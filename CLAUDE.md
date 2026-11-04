@@ -21,12 +21,14 @@ App de bajo costo para postulantes a universidades peruanas (UNI, San Marcos, UN
 docs/fundacional.md            documento base (copia del doc vivo en claude.ai)
 docs/vision-futura.md          ideas de Gerson para después (todos los grados, seguimiento, curar contenido externo, historia); no se desarrollan aún
 docs/taxonomia-uni-2026.md     temario de física y química de la UNI (sílabo CEPRE-UNI 2026-2)
+docs/taxonomia-unmsm-2026.md   temario de San Marcos (CEPRE-UNMSM 2026-I) comparado con la UNI
 docs/investigacion/            informes de investigación por tema (ideas erróneas, fuentes)
 plantillas/<tema>/index.html   la escena (HTML; carga motor.js de la misma carpeta)
 plantillas/<tema>/motor.js     la física, sin DOM; sirve en el navegador y en Node
 plantillas/<tema>/casos.json   casos de prueba del motor
 plantillas/<tema>/motor.test.js  corre casos.json contra el motor (npm test o node --test)
 fuentes/por-conseguir.md       lista de libros, tesis y artículos que faltan, con prioridad
+fuentes/drive.tsv + descargar.sh  PDF de Google Drive (simulacros y temarios de San Marcos); en una sesión nueva: bash fuentes/descargar.sh
 fuentes/prospectos/            prospectos y temarios oficiales (no se versionan si son pesados o con derechos; ver .gitignore)
 fuentes/examenes/              exámenes pasados
 fuentes/libros/                libros y manuales de consulta
@@ -41,8 +43,8 @@ fuentes/libros/                libros y manuales de consulta
 ## Próximas tareas, en orden
 
 1. ~~Extraer el motor de la lente a un módulo JS puro y correr `casos.json` con `node --test`.~~ Hecho. Es el patrón para las plantillas que siguen: `motor.js` + `casos.json` + `motor.test.js`.
-2. Leer los prospectos/temarios que Gerson suba a `fuentes/prospectos/` y fijar la taxonomía de `docs/fundacional.md` (la UNI como techo de dificultad). UNI hecha con el sílabo del CEPRE-UNI 2026-2: `docs/taxonomia-uni-2026.md`. Faltan San Marcos, UNA Puno, UNSA y UNSAAC.
-3. Clasificar unos 50 problemas reales (UNA Puno primero) por plantilla y medir cobertura.
+2. Leer los prospectos/temarios que Gerson suba a `fuentes/prospectos/` y fijar la taxonomía de `docs/fundacional.md` (la UNI como techo de dificultad). UNI hecha con el sílabo del CEPRE-UNI 2026-2: `docs/taxonomia-uni-2026.md`. San Marcos hecha con el temario del CEPRE-UNMSM 2026-I: `docs/taxonomia-unmsm-2026.md`. Faltan UNA Puno, UNSA y UNSAAC.
+3. Clasificar unos 50 problemas reales por plantilla y medir cobertura. Ya hay 44 simulacros oficiales de San Marcos (2022-II a 2027-I, áreas A a E) en `fuentes/examenes/unmsm-simulacros/`; casi todos son escaneos y necesitan OCR (tesseract con español). De la UNA Puno todavía no hay exámenes.
 4. Investigar, tema por tema, las ideas erróneas típicas para las opciones de predicción. Física y química completas según el temario UNI (ver la columna "Investigación" de `docs/taxonomia-uni-2026.md`); fuera quedan nomenclatura, orgánica y ecología. Lo que sigue es confirmar las hipótesis con postulantes reales (pase 2). En el Banco Óptico, agregar al explorador las predicciones "¿qué pasa si…?" propuestas en el informe (requiere trazar un abanico de rayos).
 5. Construir a mano: espejos esféricos, MRUV, tiro parabólico. Interacción principal: arrastrar en pantalla táctil (celular primero) y que funcione sin conexión.
 6. Recién después de 4 plantillas probadas: destilar un skill de "cómo se construye una plantilla".
