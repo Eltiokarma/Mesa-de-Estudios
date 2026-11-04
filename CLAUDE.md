@@ -19,6 +19,7 @@ App de bajo costo para postulantes a universidades peruanas (UNI, San Marcos, UN
 
 ```
 docs/fundacional.md            documento base (copia del doc vivo en claude.ai)
+docs/taxonomia-uni-2026.md     temario de física y química de la UNI (sílabo CEPRE-UNI 2026-2)
 docs/investigacion/            informes de investigación por tema (ideas erróneas, fuentes)
 plantillas/<tema>/index.html   la plantilla (hoy: HTML autocontenido)
 plantillas/<tema>/casos.json   casos de prueba del motor
@@ -37,7 +38,7 @@ fuentes/libros/                libros y manuales de consulta
 ## Próximas tareas, en orden
 
 1. Extraer el motor de la lente (funciones `chain`, `trace`, `geo`) a un módulo JS puro y hacer que `casos.json` corra contra él con `node --test`.
-2. Leer los prospectos/temarios que Gerson suba a `fuentes/prospectos/` y fijar la taxonomía de `docs/fundacional.md` (la UNI como techo de dificultad).
+2. Leer los prospectos/temarios que Gerson suba a `fuentes/prospectos/` y fijar la taxonomía de `docs/fundacional.md` (la UNI como techo de dificultad). UNI hecha con el sílabo del CEPRE-UNI 2026-2: `docs/taxonomia-uni-2026.md`. Faltan San Marcos, UNA Puno, UNSA y UNSAAC.
 3. Clasificar unos 50 problemas reales (UNA Puno primero) por plantilla y medir cobertura.
 4. Investigar, tema por tema, las ideas erróneas típicas para las opciones de predicción. Óptica (lentes y espejos esféricos), cinemática y dinámica hechas; queda estequiometría. En el Banco Óptico, agregar al explorador las predicciones "¿qué pasa si…?" propuestas en el informe (requiere trazar un abanico de rayos).
 5. Construir a mano: espejos esféricos, MRUV, tiro parabólico. Interacción principal: arrastrar en pantalla táctil (celular primero) y que funcione sin conexión.
