@@ -4,6 +4,7 @@ Simuladores visuales para preparar el examen de admisión a universidades peruan
 
 - **Documento base:** [`docs/fundacional.md`](docs/fundacional.md)
 - **Primera plantilla:** [`plantillas/optica-lente-delgada/`](plantillas/optica-lente-delgada/) — abre `index.html` en el navegador. Tiene dos modos: una lente y sistemas de 2 o 3 lentes.
+- **Pruebas:** `npm test` (necesita Node 20 o más). Corre los casos de prueba de cada plantilla contra su motor.
 - **Instrucciones para Claude Code:** [`CLAUDE.md`](CLAUDE.md)
 
 ## Estado

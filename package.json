@@ -1,0 +1,11 @@
+{
+  "name": "laboratorio-admision",
+  "private": true,
+  "description": "Simuladores visuales para preparar el examen de admisión a universidades peruanas",
+  "scripts": {
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

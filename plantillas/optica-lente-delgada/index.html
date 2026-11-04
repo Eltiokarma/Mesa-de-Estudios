@@ -181,6 +181,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{ ou
   </div>
 </main>
 
+<script src="motor.js"></script>
 <script>
 /* ================= MODO 1: una lente ================= */
 (function(){
@@ -209,10 +210,11 @@ function resize(){
 }
 
 function geo(d){
-  const inf = Math.abs(d - F) < 0.25;
-  const di = inf ? Infinity : d*F/(d - F);
-  const m = inf ? Infinity : -di/d;
-  return { d, di, m, hi: m*HO, inf };
+  // La física está en motor.js; aquí solo se adapta al formato del dibujo.
+  // La tolerancia de 0,25 cm hace que el deslizador "enganche" el foco.
+  const r = MotorLente.imagen(d, F, HO, 0.25);
+  if (r.inf) return { d, di: Infinity, m: Infinity, hi: Infinity, inf: true };
+  return { d, di: r.i, m: r.m, hi: r.h, inf: false };
 }
 function extend(x0, y0, dx, dy, xEnd){
   let t = (xEnd - x0)/dx, y = y0 + dy*t;
@@ -515,26 +517,18 @@ const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).
 const X = x => (x - XMIN)*sx, Y = y => H/2 - y*sy;
 const cp = v => Math.max(-1e5, Math.min(1e5, v));
 
+// La física está en motor.js; aquí solo se adapta al formato del dibujo.
 function build(p){
-  const xs = [0]; for (let k = 1; k < p.n; k++) xs.push(xs[k-1] + p.d[k-1]);
-  return { x0:-p.o1, h:HO, lenses: xs.map((x,k) => ({x, f:p.f[k]})) };
+  const lentes = p.f.slice(0, p.n).map((f, k) => k ? { f, d: p.d[k-1] } : { f });
+  const s = MotorLente.sistema(p.o1, HO, lentes);
+  return { x0: s.x0, h: s.h, lenses: s.lentes };
 }
 function chain(sys){
-  let xo = sys.x0, h = sys.h; const out = [];
-  for (const L of sys.lenses){
-    const o = L.x - xo, den = o - L.f;
-    if (Math.abs(den) < 0.05){ out.push({o, inf:true, L}); break; }
-    const i = o*L.f/den, m = -L.f/den;
-    out.push({o, i, m, h:m*h, x:L.x + i, L, inf:false});
-    xo = L.x + i; h = m*h;
-  }
-  return out;
+  return MotorLente.cadena({ x0: sys.x0, h: sys.h, lentes: sys.lenses });
 }
 function trace(sys, u0){
-  let x = sys.x0, y = sys.h, u = u0; const pts = [[x,y]], at = [];
-  for (const L of sys.lenses){ y += u*(L.x - x); x = L.x; pts.push([x,y]); const uin = u; u -= y/L.f; at.push({x, y, uin, uout:u}); }
-  const xe = XMAX + 5; pts.push([xe, y + u*(xe - x)]);
-  return {pts, at};
+  const r = MotorLente.trazar({ x0: sys.x0, h: sys.h, lentes: sys.lenses }, u0, XMAX + 5);
+  return { pts: r.pts, at: r.en.map(e => ({ x: e.x, y: e.y, uin: e.uEntra, uout: e.uSale })) };
 }
 function rays(sys){
   const L1 = sys.lenses[0], x0 = sys.x0, h = sys.h, us = [0, -h/(L1.x - x0)];

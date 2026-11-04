@@ -22,8 +22,10 @@ docs/fundacional.md            documento base (copia del doc vivo en claude.ai)
 docs/vision-futura.md          ideas de Gerson para después (todos los grados, seguimiento, curar contenido externo, historia); no se desarrollan aún
 docs/taxonomia-uni-2026.md     temario de física y química de la UNI (sílabo CEPRE-UNI 2026-2)
 docs/investigacion/            informes de investigación por tema (ideas erróneas, fuentes)
-plantillas/<tema>/index.html   la plantilla (hoy: HTML autocontenido)
+plantillas/<tema>/index.html   la escena (HTML; carga motor.js de la misma carpeta)
+plantillas/<tema>/motor.js     la física, sin DOM; sirve en el navegador y en Node
 plantillas/<tema>/casos.json   casos de prueba del motor
+plantillas/<tema>/motor.test.js  corre casos.json contra el motor (npm test o node --test)
 fuentes/por-conseguir.md       lista de libros, tesis y artículos que faltan, con prioridad
 fuentes/prospectos/            prospectos y temarios oficiales (no se versionan si son pesados o con derechos; ver .gitignore)
 fuentes/examenes/              exámenes pasados
@@ -34,11 +36,11 @@ fuentes/libros/                libros y manuales de consulta
 
 - Fase 0 en curso. Hecho: documento fundacional, Banco Óptico (lente sola + sistemas de 2 o 3 lentes) en `plantillas/optica-lente-delgada/`.
 - Investigación de ideas erróneas en óptica (lentes): `docs/investigacion/optica-ideas-erroneas.md`. Conclusión clave: los errores conceptuales están documentados; los de cálculo (signos, sistemas, aumento total) no, y se tratan como hipótesis. Espejos esféricos: `docs/investigacion/optica-espejos-esfericos.md`, con predicciones y casos de prueba propuestos para la plantilla. Cinemática (MRUV, caída libre, tiro parabólico): `docs/investigacion/cinematica-ideas-erroneas.md`; aquí sí hay datos fuertes (Beichner 1994, Thornton y Sokoloff 1998, Prescott y Mitchelmore 2005). Dinámica: `docs/investigacion/dinamica-ideas-erroneas.md`, con el único dato peruano encontrado (FCI en 4535 alumnos de la PUCP, Castillo y otros 2013). Además: estática y energía, choques/gravitación/ondas, fluidos/calor/termodinámica, y electricidad/magnetismo/refracción/física moderna, cada uno en su informe de `docs/investigacion/`. Química: estequiometría, gases y soluciones, equilibrio/ácidos/electroquímica, y átomo/tabla periódica/enlace. Libros y artículos pendientes de conseguir: `fuentes/por-conseguir.md`.
-- El motor del Banco Óptico está dentro del HTML (dos IIFE, una por modo). Las pruebas de `casos.json` todavía no corren contra él.
+- El motor del Banco Óptico está en `plantillas/optica-lente-delgada/motor.js`; los dos modos del HTML lo usan. `npm test` corre los 7 casos de `casos.json` y comprueba que los rayos trazados se cruzan donde la ecuación pone la imagen (14 pruebas en verde).
 
 ## Próximas tareas, en orden
 
-1. Extraer el motor de la lente (funciones `chain`, `trace`, `geo`) a un módulo JS puro y hacer que `casos.json` corra contra él con `node --test`.
+1. ~~Extraer el motor de la lente a un módulo JS puro y correr `casos.json` con `node --test`.~~ Hecho. Es el patrón para las plantillas que siguen: `motor.js` + `casos.json` + `motor.test.js`.
 2. Leer los prospectos/temarios que Gerson suba a `fuentes/prospectos/` y fijar la taxonomía de `docs/fundacional.md` (la UNI como techo de dificultad). UNI hecha con el sílabo del CEPRE-UNI 2026-2: `docs/taxonomia-uni-2026.md`. Faltan San Marcos, UNA Puno, UNSA y UNSAAC.
 3. Clasificar unos 50 problemas reales (UNA Puno primero) por plantilla y medir cobertura.
 4. Investigar, tema por tema, las ideas erróneas típicas para las opciones de predicción. Física y química completas según el temario UNI (ver la columna "Investigación" de `docs/taxonomia-uni-2026.md`); fuera quedan nomenclatura, orgánica y ecología. Lo que sigue es confirmar las hipótesis con postulantes reales (pase 2). En el Banco Óptico, agregar al explorador las predicciones "¿qué pasa si…?" propuestas en el informe (requiere trazar un abanico de rayos).
@@ -47,6 +49,8 @@ fuentes/libros/                libros y manuales de consulta
 7. Más adelante (no ahora): las ideas de `docs/vision-futura.md`.
 
 ## Cómo se trabaja
+
+- Antes de subir un cambio en una plantilla: `npm test` en verde.
 
 - Cambios chicos y revisables; un commit por plantilla o por cambio de documento.
 - Antes de afirmar algo sobre evidencia pedagógica, cita la fuente en `docs/fundacional.md`.

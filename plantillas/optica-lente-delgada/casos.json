@@ -28,6 +28,16 @@
       "nombre": "Objeto virtual en la segunda lente",
       "entrada": { "lentes": [{ "f": 10 }, { "f": 10, "d": 25 }], "o1": 15, "h": 2 },
       "esperado": { "i": [30, 3.3333], "o": [15, -5], "A": -1.3333, "h_final": -2.6667 }
+    },
+    {
+      "nombre": "Lente divergente sola",
+      "entrada": { "lentes": [{ "f": -10 }], "o1": 10, "h": 4 },
+      "esperado": { "i": [-5], "A": 0.5, "h_final": 2 }
+    },
+    {
+      "nombre": "Tres lentes, la última divergente (sistema del explorador)",
+      "entrada": { "lentes": [{ "f": 10 }, { "f": 10, "d": 50 }, { "f": -10, "d": 30 }], "o1": 15, "h": 2 },
+      "esperado": { "i": [30, 20, -5], "o": [15, 20, 10], "A": 1, "h_final": 2 }
     }
   ]
 }
