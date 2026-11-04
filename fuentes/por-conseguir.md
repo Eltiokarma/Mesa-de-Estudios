@@ -71,6 +71,22 @@ Artículos que las investigaciones de estática, ondas, termodinámica y electri
 | [ ] | C | "Una escoba para barrer algunos preconceptos", Revista Cubana de Física (2007) | Centro de gravedad |
 | [ ] | C | Leinonen y otros (2013), sobre termodinámica | No se pudo descargar |
 
+### Química (informes de noviembre de 2026)
+
+| ✓ | Prioridad | Referencia | Para qué |
+| --- | --- | --- | --- |
+| [ ] | A | Kind (2004), *Beyond appearances: students' misconceptions about basic chemical ideas*, Royal Society of Chemistry | Es la revisión de referencia de toda la química escolar. Es gratuita, pero el sitio de la RSC pidió verificación humana; desde tu navegador debería bajar |
+| [ ] | A | Furió, Azcona y Guisasola (2002, 2006) sobre el concepto de mol, *Enseñanza de las Ciencias* | Datos en español sobre mol y cantidad de sustancia |
+| [ ] | A | Peterson, Treagust y Garnett (1989), test de enlace y estructura, Journal of Research in Science Teaching 26(4) | Porcentajes por pregunta de enlace, geometría y polaridad |
+| [ ] | B | Mulford y Robinson (2002), *An inventory for alternate conceptions among first-semester general chemistry students*, J. Chem. Educ. 79(6) | Porcentajes por opción del inventario de química |
+| [ ] | B | Sanger y Greenbowe (1997), sobre celdas electroquímicas, Journal of Research in Science Teaching 34(4) y J. Chem. Educ. 74(7) | Electrones en el puente salino y la disolución |
+| [ ] | B | Demerouti, Kousathana y Tsaparlis (2004), sobre ácidos y bases, The Chemical Educator | Ácidos y bases con porcentajes |
+| [ ] | B | Quílez y Solaz (1995), Quílez (2004, 2006), sobre Le Chatelier | Equilibrio, en español |
+| [ ] | B | Nurrenbern y Pickering (1987), J. Chem. Educ. 64(6); Sanger (2005), J. Chem. Educ. 82(1) | Fuentes originales de "calcular no es entender" en estequiometría |
+| [ ] | C | Riboldi, Pliego y Odetti (2004), sobre enlace químico, *Enseñanza de las Ciencias* | Enlace, en español |
+| [ ] | C | Artículos de *Educación Química* (UNAM) sobre reactivo limitante y soluciones | El sitio dio error 503 o pidió verificación |
+| [ ] | C | Schmidt, Kaufmann y Treagust (2009), sobre ebullición y enlaces, Chemistry Education Research and Practice | Porcentaje de "hervir rompe enlaces covalentes" |
+
 ## 3. Libros de consulta
 
 Para diseñar plantillas y escribir problemas propios, no para copiar (ver "Uso de fuentes y derechos" en `docs/fundacional.md`).

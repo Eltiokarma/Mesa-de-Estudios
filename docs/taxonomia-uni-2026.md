@@ -43,24 +43,24 @@ La columna "Investigación" remite a los informes de `docs/investigacion/`.
 
 ## Química
 
-| Semana | Tema del sílabo | Potencial visual (de `docs/fundacional.md`) |
-| --- | --- | --- |
-| 0–2 | Materia; estructura atómica, modelos atómicos, números cuánticos, configuración electrónica | Medio |
-| 3 | Tabla periódica y propiedades periódicas | Medio |
-| 5–6 | Enlace químico: iónico, covalente, Lewis, resonancia, hibridación, geometría, polaridad, fuerzas intermoleculares | Medio |
-| 7 | Nomenclatura inorgánica | Bajo |
-| 8–9 | **Estequiometría**: mol, masa molar, balance (tanteo y redox ion-electrón), leyes ponderales, composición centesimal, fórmula empírica, equivalentes, reactivo limitante, rendimiento, reactivos impuros | Alto |
-| 10–11 | Estados de agregación; **gases**: leyes, ecuación de estado, mezclas, Dalton, Amagat, Graham | Alto |
-| 12 | Líquidos (presión de vapor, humedad relativa) y sólidos | Medio |
-| 13 | **Soluciones**: concentración (incluye normalidad y molalidad), dilución, mezcla; coloides | Alto |
-| 13 | Equilibrio químico: Kc, Kp, Le Chatelier | Medio |
-| 14 | Ácidos y bases: Arrhenius, Brønsted-Lowry, Lewis, Ka, Kb, pH, titulación | Medio |
-| 15 | Electroquímica: celdas galvánicas y electrolíticas, leyes de Faraday | Medio |
-| 16–18 | Química orgánica: hidrocarburos, nomenclatura, isomería, grupos funcionales; petróleo y combustión | Bajo |
-| 18–19 | Ecología y contaminación ambiental | Bajo |
-| 20 | Química aplicada: nanotecnología, polímeros, corrosión | Bajo |
+| Semana | Tema del sílabo | Potencial visual (de `docs/fundacional.md`) | Investigación |
+| --- | --- | --- | --- |
+| 0–2 | Materia; estructura atómica, modelos atómicos, números cuánticos, configuración electrónica | Medio | [Hecha](investigacion/atomo-enlace-ideas-erroneas.md) |
+| 3 | Tabla periódica y propiedades periódicas | Medio | [Hecha](investigacion/atomo-enlace-ideas-erroneas.md) |
+| 5–6 | Enlace químico: iónico, covalente, Lewis, resonancia, hibridación, geometría, polaridad, fuerzas intermoleculares | Medio | [Hecha](investigacion/atomo-enlace-ideas-erroneas.md) |
+| 7 | Nomenclatura inorgánica | Bajo | No (memoria y reglas) |
+| 8–9 | **Estequiometría**: mol, masa molar, balance (tanteo y redox ion-electrón), leyes ponderales, composición centesimal, fórmula empírica, equivalentes, reactivo limitante, rendimiento, reactivos impuros | Alto | [Hecha](investigacion/estequiometria-ideas-erroneas.md) |
+| 10–11 | Estados de agregación; **gases**: leyes, ecuación de estado, mezclas, Dalton, Amagat, Graham | Alto | [Hecha](investigacion/gases-soluciones-ideas-erroneas.md) |
+| 12 | Líquidos (presión de vapor, humedad relativa) y sólidos | Medio | [Gases y soluciones](investigacion/gases-soluciones-ideas-erroneas.md), en parte |
+| 13 | **Soluciones**: concentración (incluye normalidad y molalidad), dilución, mezcla; coloides | Alto | [Hecha](investigacion/gases-soluciones-ideas-erroneas.md) |
+| 13 | Equilibrio químico: Kc, Kp, Le Chatelier | Medio | [Hecha](investigacion/equilibrio-acidos-electroquimica-ideas-erroneas.md) |
+| 14 | Ácidos y bases: Arrhenius, Brønsted-Lowry, Lewis, Ka, Kb, pH, titulación | Medio | [Hecha](investigacion/equilibrio-acidos-electroquimica-ideas-erroneas.md) |
+| 15 | Electroquímica: celdas galvánicas y electrolíticas, leyes de Faraday | Medio | [Hecha](investigacion/equilibrio-acidos-electroquimica-ideas-erroneas.md) |
+| 16–18 | Química orgánica: hidrocarburos, nomenclatura, isomería, grupos funcionales; petróleo y combustión | Bajo | No |
+| 18–19 | Ecología y contaminación ambiental | Bajo | No |
+| 20 | Química aplicada: nanotecnología, polímeros, corrosión | Bajo | No |
 
-**Para el laboratorio:** los tres bloques de química con más potencial visual (estequiometría, gases y soluciones) ocupan las semanas 8 a 13, el centro del ciclo. La investigación de errores típicos en estequiometría sigue pendiente (tarea 4).
+**Para el laboratorio:** los tres bloques de química con más potencial visual (estequiometría, gases y soluciones) ocupan las semanas 8 a 13, el centro del ciclo. Nomenclatura, orgánica, ecología y química aplicada no se investigaron: son memoria y reglas, con poca escena posible.
 
 ## Pendiente
 
