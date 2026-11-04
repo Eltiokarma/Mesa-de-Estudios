@@ -19,6 +19,7 @@ App de bajo costo para postulantes a universidades peruanas (UNI, San Marcos, UN
 
 ```
 docs/fundacional.md            documento base (copia del doc vivo en claude.ai)
+docs/investigacion/            informes de investigación por tema (ideas erróneas, fuentes)
 plantillas/<tema>/index.html   la plantilla (hoy: HTML autocontenido)
 plantillas/<tema>/casos.json   casos de prueba del motor
 fuentes/prospectos/            prospectos y temarios oficiales (no se versionan si son pesados o con derechos; ver .gitignore)
@@ -29,6 +30,7 @@ fuentes/libros/                libros y manuales de consulta
 ## Estado (4 nov 2026)
 
 - Fase 0 en curso. Hecho: documento fundacional, Banco Óptico (lente sola + sistemas de 2 o 3 lentes) en `plantillas/optica-lente-delgada/`.
+- Investigación de ideas erróneas en óptica (lentes): `docs/investigacion/optica-ideas-erroneas.md`. Conclusión clave: los errores conceptuales están documentados; los de cálculo (signos, sistemas, aumento total) no, y se tratan como hipótesis.
 - El motor del Banco Óptico está dentro del HTML (dos IIFE, una por modo). Las pruebas de `casos.json` todavía no corren contra él.
 
 ## Próximas tareas, en orden
@@ -36,7 +38,7 @@ fuentes/libros/                libros y manuales de consulta
 1. Extraer el motor de la lente (funciones `chain`, `trace`, `geo`) a un módulo JS puro y hacer que `casos.json` corra contra él con `node --test`.
 2. Leer los prospectos/temarios que Gerson suba a `fuentes/prospectos/` y fijar la taxonomía de `docs/fundacional.md` (la UNI como techo de dificultad).
 3. Clasificar unos 50 problemas reales (UNA Puno primero) por plantilla y medir cobertura.
-4. Investigar, tema por tema, las ideas erróneas típicas (empezar por óptica geométrica) para las opciones de predicción.
+4. Investigar, tema por tema, las ideas erróneas típicas para las opciones de predicción. Óptica (lentes) hecha; sigue espejos esféricos y cinemática (MRUV, tiro parabólico), en el orden de la fase 1. En el Banco Óptico, agregar al explorador las predicciones "¿qué pasa si…?" propuestas en el informe (requiere trazar un abanico de rayos).
 5. Construir a mano: espejos esféricos, MRUV, tiro parabólico. Interacción principal: arrastrar en pantalla táctil (celular primero) y que funcione sin conexión.
 6. Recién después de 4 plantillas probadas: destilar un skill de "cómo se construye una plantilla".
 
