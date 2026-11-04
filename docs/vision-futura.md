@@ -33,7 +33,6 @@
 - Casi todo el contenido tiene un **contexto histórico**: se creó, se descubrió o se propuso en una fecha, por alguien.
 - Ese contexto puede sorprender al alumno y hacer que le guste más un curso. Ejemplo: al padre de la química moderna, Antoine Lavoisier, lo ejecutaron en la guillotina en 1794, durante la Revolución Francesa.
 - Hay muchas formas de sorprender, y en la era de la inteligencia artificial se pueden **condensar en la aplicación**: historia, videos, experimentos reales, escenas interactivas.
-- Idea relacionada: el skill `futbol-timeline` muestra que una línea de tiempo interactiva por tema es barata de producir.
 
 ## Cómo encaja con lo que ya existe
 
