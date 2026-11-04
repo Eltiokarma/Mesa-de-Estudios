@@ -19,6 +19,7 @@ App de bajo costo para postulantes a universidades peruanas (UNI, San Marcos, UN
 
 ```
 docs/fundacional.md            documento base (copia del doc vivo en claude.ai)
+docs/hoja-de-ruta.md           hoja de ruta con Gantt, estado de pendientes, plataforma (PWA) y referencia de interfaz
 docs/vision-futura.md          ideas de Gerson para después (todos los grados, seguimiento, curar contenido externo, historia); no se desarrollan aún
 docs/taxonomia-uni-2026.md     temario de física y química de la UNI (sílabo CEPRE-UNI 2026-2)
 docs/taxonomia-unmsm-2026.md   temario de San Marcos (CEPRE-UNMSM 2026-I) comparado con la UNI
