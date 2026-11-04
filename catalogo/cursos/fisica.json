@@ -1,0 +1,332 @@
+{
+  "id": "fisica",
+  "nombre": "Física",
+  "area": "ciencias",
+  "formato_principal": "escena",
+  "unidades": [
+    {
+      "id": "fisica.magnitudes-y-vectores",
+      "nombre": "Magnitudes y vectores",
+      "temas": [
+        "Magnitudes fundamentales y derivadas",
+        "Sistema Internacional",
+        "Análisis dimensional",
+        "Suma de vectores por el método gráfico",
+        "Componentes y vector unitario",
+        "Producto escalar y vectorial"
+      ],
+      "universidades": {"uni": {"semanas": [0]}, "unmsm": {"temas": [1, 2]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "fisica.movimiento-rectilineo",
+      "nombre": "MRU, MRUV y caída libre",
+      "temas": [
+        "Posición, desplazamiento y distancia",
+        "Velocidad y rapidez media",
+        "MRU y velocidad relativa",
+        "MRUV",
+        "Caída libre",
+        "Gráficas x-t, v-t y a-t",
+        "La recta y la parábola como gráficas"
+      ],
+      "universidades": {"uni": {"semanas": [1, 2]}, "unmsm": {"temas": [2, 3]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": "docs/investigacion/cinematica-ideas-erroneas.md"
+    },
+    {
+      "id": "fisica.movimiento-parabolico-y-circular",
+      "nombre": "Movimiento parabólico y circular",
+      "temas": [
+        "Movimiento en dos dimensiones",
+        "Tiro parabólico",
+        "Magnitudes angulares",
+        "MCU",
+        "MCUV",
+        "Aceleración tangencial y centrípeta"
+      ],
+      "universidades": {"uni": {"semanas": [3]}, "unmsm": {"temas": [4]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": "docs/investigacion/cinematica-ideas-erroneas.md"
+    },
+    {
+      "id": "fisica.estatica",
+      "nombre": "Estática: equilibrio y torque",
+      "temas": [
+        "Primera y tercera ley de Newton",
+        "Diagrama de cuerpo libre",
+        "Rozamiento estático y cinético",
+        "Fuerza elástica",
+        "Equilibrio de una partícula",
+        "Torque",
+        "Equilibrio del cuerpo rígido",
+        "Máquinas simples"
+      ],
+      "universidades": {"uni": {"semanas": [4]}, "unmsm": {"temas": [6]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": "docs/investigacion/estatica-energia-ideas-erroneas.md"
+    },
+    {
+      "id": "fisica.dinamica",
+      "nombre": "Dinámica",
+      "temas": [
+        "Segunda ley de Newton",
+        "Masa y peso",
+        "Rozamiento en movimiento",
+        "Bloques, poleas y planos inclinados",
+        "Dinámica circular",
+        "Movimiento relativo y sistemas inerciales"
+      ],
+      "universidades": {"uni": {"semanas": [5]}, "unmsm": {"temas": [5]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": "docs/investigacion/dinamica-ideas-erroneas.md"
+    },
+    {
+      "id": "fisica.gravitacion",
+      "nombre": "Gravitación universal",
+      "temas": [
+        "Leyes de Kepler",
+        "Ley de gravitación universal",
+        "Campo gravitatorio",
+        "Variación de g con la altura"
+      ],
+      "universidades": {"uni": {"semanas": [6]}, "unmsm": {"temas": [8]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": "docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md"
+    },
+    {
+      "id": "fisica.trabajo-y-energia",
+      "nombre": "Trabajo, energía y potencia",
+      "temas": [
+        "Trabajo de fuerzas constantes y variables",
+        "Teorema trabajo-energía cinética",
+        "Energía potencial gravitatoria y elástica",
+        "Conservación de la energía mecánica",
+        "Potencia y eficiencia"
+      ],
+      "universidades": {"uni": {"semanas": [6]}, "unmsm": {"temas": [7]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": "docs/investigacion/estatica-energia-ideas-erroneas.md"
+    },
+    {
+      "id": "fisica.impulso-y-choques",
+      "nombre": "Impulso, cantidad de movimiento y choques",
+      "temas": [
+        "Impulso",
+        "Cantidad de movimiento",
+        "Conservación de la cantidad de movimiento",
+        "Centro de masa",
+        "Choques elásticos e inelásticos",
+        "Coeficiente de restitución"
+      ],
+      "universidades": {"uni": {"semanas": [7]}, "unmsm": {"temas": [8]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": "docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md"
+    },
+    {
+      "id": "fisica.oscilaciones",
+      "nombre": "Movimiento armónico simple",
+      "temas": [
+        "Movimiento periódico y oscilatorio",
+        "Ecuaciones y gráficas del MAS",
+        "Masa-resorte horizontal y vertical",
+        "Péndulo simple",
+        "Energía en el MAS"
+      ],
+      "universidades": {"uni": {"semanas": [8]}, "unmsm": {"temas": [16]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": "docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md"
+    },
+    {
+      "id": "fisica.ondas-mecanicas",
+      "nombre": "Ondas mecánicas y sonido",
+      "temas": [
+        "Ondas transversales y longitudinales",
+        "Función de onda",
+        "Rapidez de una onda en una cuerda",
+        "Reflexión y ondas estacionarias",
+        "Energía transportada por una onda",
+        "Intensidad y nivel de intensidad sonora"
+      ],
+      "universidades": {"uni": {"semanas": [9]}, "unmsm": {"temas": [16]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": "docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md"
+    },
+    {
+      "id": "fisica.fluidos",
+      "nombre": "Fluidos",
+      "temas": [
+        "Densidad y presión",
+        "Presión hidrostática y atmosférica",
+        "Manómetro, barómetro y vasos comunicantes",
+        "Principio de Pascal",
+        "Principio de Arquímedes",
+        "Tensión superficial",
+        "Caudal, continuidad y Bernoulli (solo San Marcos)"
+      ],
+      "universidades": {"uni": {"semanas": [10]}, "unmsm": {"temas": [9]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": "docs/investigacion/fluidos-calor-termodinamica-ideas-erroneas.md"
+    },
+    {
+      "id": "fisica.temperatura-y-calor",
+      "nombre": "Temperatura y calor",
+      "temas": [
+        "Temperatura, equilibrio térmico y ley cero",
+        "Escalas termométricas",
+        "Dilatación",
+        "Calor específico y capacidad calorífica",
+        "Calorimetría",
+        "Cambios de fase y calor latente",
+        "Conducción, convección y radiación"
+      ],
+      "universidades": {"uni": {"semanas": [11]}, "unmsm": {"temas": [10]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": "docs/investigacion/fluidos-calor-termodinamica-ideas-erroneas.md"
+    },
+    {
+      "id": "fisica.termodinamica",
+      "nombre": "Termodinámica",
+      "temas": [
+        "Leyes de los gases y ecuación de estado",
+        "Modelo cinético y energía interna",
+        "Primera ley",
+        "Procesos y diagrama P-V",
+        "cp y cv",
+        "Máquinas térmicas y ciclo de Carnot",
+        "Segunda ley"
+      ],
+      "universidades": {"uni": {"semanas": [12, 13]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": "docs/investigacion/fluidos-calor-termodinamica-ideas-erroneas.md"
+    },
+    {
+      "id": "fisica.electrostatica",
+      "nombre": "Electrostática",
+      "temas": [
+        "Carga y electrización",
+        "Ley de Coulomb",
+        "Campo eléctrico y líneas de fuerza",
+        "Carga en campo uniforme",
+        "Energía potencial y potencial eléctrico",
+        "Superficies equipotenciales y conductores",
+        "Condensadores en serie y en paralelo",
+        "Energía de un condensador"
+      ],
+      "universidades": {"uni": {"semanas": [13, 14, 15]}, "unmsm": {"temas": [11, 12]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": "docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md"
+    },
+    {
+      "id": "fisica.corriente-y-circuitos",
+      "nombre": "Corriente eléctrica y circuitos",
+      "temas": [
+        "Intensidad y densidad de corriente",
+        "Resistencia, resistividad y ley de Ohm",
+        "Modelo de Drude",
+        "Fuerza electromotriz",
+        "Resistencias en serie y en paralelo",
+        "Leyes de Kirchhoff",
+        "Potencia y efecto Joule",
+        "Amperímetro y voltímetro"
+      ],
+      "universidades": {"uni": {"semanas": [15, 16]}, "unmsm": {"temas": [13]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": "docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md"
+    },
+    {
+      "id": "fisica.magnetismo",
+      "nombre": "Campo y fuerza magnética",
+      "temas": [
+        "Imanes y experimento de Oersted",
+        "Campo de un conductor recto, una espira y un solenoide",
+        "Fuerza magnética sobre una carga",
+        "Fuerza sobre un conductor",
+        "Fuerza entre cables paralelos"
+      ],
+      "universidades": {"uni": {"semanas": [17]}, "unmsm": {"temas": [14]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": "docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md"
+    },
+    {
+      "id": "fisica.induccion-electromagnetica",
+      "nombre": "Inducción electromagnética",
+      "temas": [
+        "Flujo magnético",
+        "Ley de Faraday",
+        "Ley de Lenz",
+        "Fem en un conductor móvil",
+        "Generador de corriente alterna y valores eficaces",
+        "Transformador"
+      ],
+      "universidades": {"uni": {"semanas": [18]}, "unmsm": {"temas": [15]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": "docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md"
+    },
+    {
+      "id": "fisica.ondas-electromagneticas",
+      "nombre": "Ondas electromagnéticas",
+      "temas": [
+        "Características de las ondas electromagnéticas",
+        "Rapidez de la luz",
+        "Espectro electromagnético",
+        "Luz visible"
+      ],
+      "universidades": {"uni": {"semanas": [18]}, "unmsm": {"temas": [17]}},
+      "potencial_visual": "bajo",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "fisica.optica-geometrica",
+      "nombre": "Óptica geométrica",
+      "temas": [
+        "Reflexión y refracción",
+        "Reflexión total",
+        "Espejos planos",
+        "Espejos esféricos",
+        "Lentes delgadas",
+        "Ecuación del fabricante y potencia de una lente"
+      ],
+      "universidades": {"uni": {"semanas": [19]}, "unmsm": {"temas": [17]}},
+      "potencial_visual": "alto",
+      "plantillas": ["optica-lente-delgada"],
+      "investigacion": "docs/investigacion/optica-ideas-erroneas.md"
+    },
+    {
+      "id": "fisica.fisica-moderna",
+      "nombre": "Física moderna",
+      "temas": [
+        "Relatividad especial (solo San Marcos)",
+        "Radiación del cuerpo negro y Planck",
+        "Efecto fotoeléctrico",
+        "Fotones: potencia e intensidad",
+        "Rayos X",
+        "Láser",
+        "Principio de incertidumbre"
+      ],
+      "universidades": {"uni": {"semanas": [20]}, "unmsm": {"temas": [18]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": "docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md"
+    }
+  ]
+}

@@ -1,0 +1,297 @@
+{
+  "id": "aritmetica",
+  "nombre": "Aritmética",
+  "area": "matematica",
+  "formato_principal": "predicciones",
+  "unidades": [
+    {
+      "id": "aritmetica.logica-proposicional",
+      "nombre": "Lógica proposicional",
+      "temas": [
+        "Proposiciones simples y compuestas",
+        "Conectivos lógicos",
+        "Tablas de verdad",
+        "Tautología, contradicción y contingencia",
+        "Leyes lógicas",
+        "Cuantificadores"
+      ],
+      "universidades": {"unmsm": {"temas": [1]}},
+      "potencial_visual": "bajo",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "aritmetica.conjuntos",
+      "nombre": "Conjuntos",
+      "temas": [
+        "Determinación de conjuntos",
+        "Pertenencia e inclusión",
+        "Conjuntos especiales",
+        "Conjunto potencia",
+        "Operaciones con conjuntos",
+        "Diagramas de Venn y Carroll",
+        "Producto cartesiano"
+      ],
+      "universidades": {"unmsm": {"temas": [2, 3]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "aritmetica.razones-y-proporciones",
+      "nombre": "Razones y proporciones",
+      "temas": [
+        "Razón aritmética y geométrica",
+        "Proporciones discretas y continuas",
+        "Medias aritmética, geométrica y armónica",
+        "Serie de razones geométricas equivalentes"
+      ],
+      "universidades": {"uni": {"semanas": [0, 1]}, "unmsm": {"temas": [10]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "aritmetica.magnitudes-proporcionales",
+      "nombre": "Magnitudes proporcionales y reparto",
+      "temas": [
+        "Magnitudes directa e inversamente proporcionales",
+        "Gráficas de proporcionalidad",
+        "Regla de tres simple y compuesta",
+        "Reparto proporcional",
+        "Regla de compañía"
+      ],
+      "universidades": {"uni": {"semanas": [1, 2]}, "unmsm": {"temas": [11]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "aritmetica.porcentajes",
+      "nombre": "Tanto por ciento y operaciones comerciales",
+      "temas": [
+        "Tanto por cuanto",
+        "Aumentos y descuentos sucesivos",
+        "Variación porcentual",
+        "Precio de costo, de lista y de venta",
+        "Ganancia y pérdida",
+        "IGV"
+      ],
+      "universidades": {"uni": {"semanas": [3]}, "unmsm": {"temas": [12]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "aritmetica.interes-y-descuento",
+      "nombre": "Interés y descuento",
+      "temas": [
+        "Interés simple",
+        "Interés compuesto y continuo",
+        "Tasas nominal, efectiva y equivalentes",
+        "Valor presente y futuro",
+        "Descuento comercial y racional",
+        "Letras de cambio y vencimiento común"
+      ],
+      "universidades": {"uni": {"semanas": [4, 5]}, "unmsm": {"temas": [13]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "aritmetica.mezclas-y-aleaciones",
+      "nombre": "Mezclas y aleaciones",
+      "temas": ["Precio medio", "Mezclas alcohólicas", "Regla del aspa", "Aleaciones y ley del oro en quilates"],
+      "universidades": {"uni": {"semanas": [6]}, "unmsm": {"temas": [14]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "aritmetica.estadistica",
+      "nombre": "Estadística descriptiva",
+      "temas": [
+        "Población, muestra y variables",
+        "Tablas de frecuencias",
+        "Gráficos estadísticos",
+        "Media, mediana y moda",
+        "Medias ponderada, geométrica y armónica",
+        "Cuartiles y percentiles",
+        "Varianza, desviación estándar y coeficiente de variación"
+      ],
+      "universidades": {"uni": {"semanas": [7, 8, 9]}, "unmsm": {"temas": [16]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "aritmetica.analisis-combinatorio",
+      "nombre": "Análisis combinatorio",
+      "temas": [
+        "Principios de adición y multiplicación",
+        "Factorial",
+        "Variaciones",
+        "Permutaciones lineales y circulares",
+        "Permutaciones con repetición",
+        "Combinaciones y números combinatorios"
+      ],
+      "universidades": {"uni": {"semanas": [9, 10]}, "unmsm": {"temas": [17]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "aritmetica.probabilidades",
+      "nombre": "Probabilidades",
+      "temas": [
+        "Experimento aleatorio y espacio muestral",
+        "Eventos y álgebra de eventos",
+        "Probabilidad clásica y frecuencial",
+        "Eventos excluyentes e independientes",
+        "Probabilidad condicional",
+        "Probabilidad total y Bayes",
+        "Variable aleatoria discreta y esperanza"
+      ],
+      "universidades": {"uni": {"semanas": [10, 11]}, "unmsm": {"temas": [18]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "aritmetica.numeracion",
+      "nombre": "Sistemas de numeración",
+      "temas": ["Base de un sistema", "Descomposición polinómica", "Cambio de base", "Conteo de números y cifras"],
+      "universidades": {"uni": {"semanas": [11, 12]}, "unmsm": {"temas": [4]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "aritmetica.cuatro-operaciones",
+      "nombre": "Las cuatro operaciones",
+      "temas": [
+        "Adición y sumatorias",
+        "Sustracción y complemento aritmético",
+        "Multiplicación",
+        "Operaciones en otras bases",
+        "División entera por defecto y por exceso",
+        "Cantidad de cifras de un producto o cociente"
+      ],
+      "universidades": {"uni": {"semanas": [12, 13, 14]}, "unmsm": {"temas": [4, 5]}},
+      "potencial_visual": "bajo",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "aritmetica.divisibilidad",
+      "nombre": "Divisibilidad",
+      "temas": [
+        "Múltiplos y divisores",
+        "Teoremas de la divisibilidad",
+        "Restos potenciales",
+        "Criterios de divisibilidad",
+        "Ecuaciones diofánticas lineales"
+      ],
+      "universidades": {"uni": {"semanas": [14, 15]}, "unmsm": {"temas": [5]}},
+      "potencial_visual": "bajo",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "aritmetica.numeros-primos-y-divisores",
+      "nombre": "Números primos y divisores",
+      "temas": [
+        "Primos y compuestos",
+        "Números PESI",
+        "Criba de Eratóstenes",
+        "Teorema fundamental de la aritmética",
+        "Cantidad, suma y producto de divisores",
+        "Función de Euler",
+        "Teoremas de Fermat y Wilson"
+      ],
+      "universidades": {"uni": {"semanas": [15, 16]}, "unmsm": {"temas": [6]}},
+      "potencial_visual": "bajo",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "aritmetica.mcd-y-mcm",
+      "nombre": "MCD y MCM",
+      "temas": [
+        "Máximo común divisor",
+        "Mínimo común múltiplo",
+        "Algoritmo de Euclides",
+        "Relación entre MCD y MCM",
+        "Fracciones continuas",
+        "Problemas de aplicación"
+      ],
+      "universidades": {"uni": {"semanas": [17]}, "unmsm": {"temas": [7]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "aritmetica.numeros-racionales",
+      "nombre": "Números racionales, fracciones y decimales",
+      "temas": [
+        "Racionales como clases de equivalencia",
+        "Racionales e irracionales",
+        "Clases de fracciones",
+        "Orden entre fracciones",
+        "Decimales exactos y periódicos",
+        "Fracción generatriz",
+        "Números en otras bases"
+      ],
+      "universidades": {"uni": {"semanas": [18, 19]}, "unmsm": {"temas": [8, 9]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "aritmetica.potenciacion-y-radicacion",
+      "nombre": "Potenciación y radicación",
+      "temas": [
+        "Cuadrados y cubos perfectos",
+        "Criterios de inclusión y exclusión",
+        "Raíz cuadrada y cúbica entera",
+        "Raíces aproximadas"
+      ],
+      "universidades": {"uni": {"semanas": [20]}, "unmsm": {"temas": [4]}},
+      "potencial_visual": "bajo",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "aritmetica.sucesiones-y-series",
+      "nombre": "Sucesiones y series numéricas",
+      "temas": [
+        "Progresión aritmética y cantidad de términos",
+        "Progresión geométrica",
+        "Sumas notables",
+        "Sucesiones de orden superior",
+        "Sumas infinitas"
+      ],
+      "universidades": {"uni": {"semanas": [12]}, "unmsm": {"temas": [15]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "aritmetica.razonamiento-numerico",
+      "nombre": "Problemas de razonamiento numérico",
+      "temas": [
+        "Falsa suposición",
+        "Método regresivo",
+        "Móviles",
+        "Edades",
+        "Criptoaritmética",
+        "Suficiencia de datos",
+        "Distribuciones numéricas"
+      ],
+      "universidades": {"uni": {"semanas": [20]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": null
+    }
+  ]
+}

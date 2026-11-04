@@ -1,0 +1,270 @@
+{
+  "id": "geometria",
+  "nombre": "Geometría",
+  "area": "matematica",
+  "formato_principal": "escena",
+  "unidades": [
+    {
+      "id": "geometria.segmentos-y-angulos",
+      "nombre": "Segmentos y ángulos",
+      "temas": [
+        "Punto, recta y plano",
+        "Segmentos y su medida",
+        "Clases de ángulos",
+        "Bisectriz",
+        "Ángulos complementarios y suplementarios",
+        "Rectas paralelas y una secante"
+      ],
+      "universidades": {"uni": {"semanas": [0, 1]}, "unmsm": {"temas": [1, 2]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "geometria.triangulos",
+      "nombre": "Triángulos y líneas notables",
+      "temas": [
+        "Clasificación",
+        "Suma de ángulos internos y ángulo externo",
+        "Desigualdad triangular",
+        "Líneas notables",
+        "Ángulos formados por bisectrices"
+      ],
+      "universidades": {"uni": {"semanas": [1]}, "unmsm": {"temas": [2, 3]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "geometria.congruencia",
+      "nombre": "Congruencia de triángulos",
+      "temas": [
+        "Criterios LAL, ALA y LLL",
+        "Teorema de la mediatriz y de la bisectriz",
+        "Teorema de la base media",
+        "Mediana relativa a la hipotenusa",
+        "Triángulos rectángulos notables"
+      ],
+      "universidades": {"uni": {"semanas": [2]}, "unmsm": {"temas": [2, 4]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "geometria.poligonos-y-cuadrilateros",
+      "nombre": "Polígonos y cuadriláteros",
+      "temas": [
+        "Suma de ángulos internos y externos",
+        "Número de diagonales",
+        "Paralelogramos",
+        "Trapecios",
+        "Trapezoides"
+      ],
+      "universidades": {"uni": {"semanas": [3]}, "unmsm": {"temas": [4, 5]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "geometria.circunferencia",
+      "nombre": "Circunferencia y ángulos en ella",
+      "temas": [
+        "Elementos y teoremas de tangencia",
+        "Posiciones relativas de dos circunferencias",
+        "Teoremas de Poncelet y Pitot",
+        "Ángulos central, inscrito, semiinscrito, interior y exterior",
+        "Cuadrilátero inscrito e inscriptible"
+      ],
+      "universidades": {"uni": {"semanas": [4, 5]}, "unmsm": {"temas": [6, 7]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "geometria.proporcionalidad-y-semejanza",
+      "nombre": "Proporcionalidad y semejanza",
+      "temas": [
+        "Teorema de Thales",
+        "Teoremas de la bisectriz y del incentro",
+        "Menelao y Ceva",
+        "Criterios de semejanza de triángulos"
+      ],
+      "universidades": {"uni": {"semanas": [5, 6]}, "unmsm": {"temas": [8]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "geometria.puntos-notables",
+      "nombre": "Puntos notables del triángulo",
+      "temas": [
+        "Baricentro, incentro, circuncentro, ortocentro y excentro",
+        "Propiedades de los puntos notables",
+        "Recta y circunferencia de Euler"
+      ],
+      "universidades": {"uni": {"semanas": [6, 7]}, "unmsm": {"temas": [7]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "geometria.relaciones-metricas",
+      "nombre": "Relaciones métricas",
+      "temas": [
+        "Teorema de Pitágoras y relaciones en el triángulo rectángulo",
+        "Teorema de Euclides o de la proyección",
+        "Teoremas de Stewart y de la mediana",
+        "Longitud de la bisectriz",
+        "Teorema de Herón",
+        "Cuerdas, secantes y tangente",
+        "Teoremas de Ptolomeo y Viette"
+      ],
+      "universidades": {"uni": {"semanas": [7, 8]}, "unmsm": {"temas": [9]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "geometria.poligonos-regulares",
+      "nombre": "Polígonos regulares",
+      "temas": [
+        "Ángulo central y apotema",
+        "Polígonos regulares inscritos notables",
+        "Polígono de 2n lados",
+        "Sección áurea"
+      ],
+      "universidades": {"uni": {"semanas": [8, 9]}, "unmsm": {"temas": [4]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "geometria.simetria",
+      "nombre": "Simetría en el plano y en el espacio",
+      "temas": ["Simetría respecto de un punto", "Simetría respecto de una recta", "Simetría respecto de un plano"],
+      "universidades": {"uni": {"semanas": [9, 15]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "geometria.areas-poligonales",
+      "nombre": "Áreas de regiones triangulares y cuadrangulares",
+      "temas": [
+        "Área del triángulo con distintos datos",
+        "Relación entre áreas de triángulos",
+        "Área de paralelogramos y rombos",
+        "Área de trapecios y trapezoides",
+        "Relaciones entre áreas de cuadriláteros"
+      ],
+      "universidades": {"uni": {"semanas": [10, 11]}, "unmsm": {"temas": [10, 11]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "geometria.longitud-y-areas-circulares",
+      "nombre": "Longitud de la circunferencia y áreas circulares",
+      "temas": [
+        "Número pi y longitud de la circunferencia",
+        "Longitud de arco",
+        "Área del círculo y sector circular",
+        "Segmento y corona circular",
+        "Trapecio circular, lúnula y otras regiones"
+      ],
+      "universidades": {"uni": {"semanas": [10, 12]}, "unmsm": {"temas": [11]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "geometria.geometria-del-espacio",
+      "nombre": "Rectas y planos en el espacio",
+      "temas": [
+        "Recta perpendicular a un plano",
+        "Teorema de las tres perpendiculares",
+        "Distancia entre rectas cruzadas",
+        "Proyección ortogonal",
+        "Ángulo entre recta y plano",
+        "Ángulo diedro",
+        "Ángulo triedro"
+      ],
+      "universidades": {"uni": {"semanas": [12, 13, 14]}, "unmsm": {"temas": [12]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "geometria.poliedros",
+      "nombre": "Poliedros",
+      "temas": ["Elementos y clasificación", "Teorema de Euler", "Poliedros regulares"],
+      "universidades": {"uni": {"semanas": [14, 15]}, "unmsm": {"temas": [13]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "geometria.prisma-y-piramide",
+      "nombre": "Prisma y pirámide",
+      "temas": [
+        "Prisma recto, oblicuo y regular",
+        "Paralelepípedos y cubo",
+        "Tronco de prisma",
+        "Pirámide regular y apotema",
+        "Tronco de pirámide",
+        "Áreas y volúmenes",
+        "Semejanza de sólidos"
+      ],
+      "universidades": {"uni": {"semanas": [16, 17]}, "unmsm": {"temas": [13, 14]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "geometria.solidos-de-revolucion",
+      "nombre": "Cilindro, cono y esfera",
+      "temas": [
+        "Cilindro y tronco de cilindro",
+        "Cono y tronco de cono",
+        "Desarrollos de superficies",
+        "Superficie esférica, zona y casquete",
+        "Esfera y sus partes",
+        "Teorema de Pappus-Guldin"
+      ],
+      "universidades": {"uni": {"semanas": [18, 19, 20]}, "unmsm": {"temas": [14, 15]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "geometria.geometria-analitica",
+      "nombre": "Geometría analítica",
+      "temas": [
+        "Distancia y punto que divide un segmento",
+        "Pendiente y ecuación de la recta",
+        "Distancia de un punto a una recta",
+        "Ecuación de la circunferencia",
+        "Parábola",
+        "Elipse"
+      ],
+      "universidades": {"unmsm": {"temas": [16, 17, 18]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "geometria.razonamiento-con-figuras",
+      "nombre": "Razonamiento con figuras",
+      "temas": [
+        "Perímetros de figuras",
+        "Series y analogías de figuras",
+        "Distribución de figuras",
+        "Conteo de figuras, rutas y cubos"
+      ],
+      "universidades": {"uni": {"semanas": [6, 10, 12, 20]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": null
+    }
+  ]
+}

@@ -1,0 +1,207 @@
+{
+  "id": "razonamiento-matematico",
+  "nombre": "Razonamiento matemático",
+  "area": "razonamiento",
+  "formato_principal": "escena",
+  "unidades": [
+    {
+      "id": "razonamiento-matematico.razonamiento-deductivo",
+      "nombre": "Razonamiento deductivo y parentesco",
+      "temas": [
+        "Diagramas lineales y de Venn-Euler",
+        "Deductivo directo e indirecto",
+        "Cuadros de doble entrada",
+        "Parentesco"
+      ],
+      "universidades": {"unmsm": {"temas": [1, 2, 18]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "razonamiento-matematico.trazos-y-perimetros",
+      "nombre": "Trazos de figuras y perímetros",
+      "temas": [
+        "Figuras de un solo trazo",
+        "Longitud mínima de un recorrido",
+        "Perímetros de figuras poligonales",
+        "Perímetros de figuras circulares"
+      ],
+      "universidades": {"unmsm": {"temas": [1, 2, 3, 4]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "razonamiento-matematico.ordenamiento-de-informacion",
+      "nombre": "Ordenamiento de información",
+      "temas": ["Ordenamiento lineal", "Ordenamiento circular", "Ordenamiento poligonal"],
+      "universidades": {"unmsm": {"temas": [3]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "razonamiento-matematico.verdades-y-mentiras",
+      "nombre": "Verdades y mentiras",
+      "temas": [
+        "Método de suposición",
+        "Afirmaciones contradictorias",
+        "Personajes que siempre mienten o dicen la verdad"
+      ],
+      "universidades": {"unmsm": {"temas": [4]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "razonamiento-matematico.traslados-y-puntos-cardinales",
+      "nombre": "Traslados y puntos cardinales",
+      "temas": ["Traslado de fichas y figuras", "Traslado de números", "Puntos cardinales y orientación"],
+      "universidades": {"unmsm": {"temas": [5]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "razonamiento-matematico.arreglos-numericos",
+      "nombre": "Arreglos numéricos y cuadrados mágicos",
+      "temas": ["Arreglos en polígonos", "Cuadrados mágicos", "Distribución de números con condiciones"],
+      "universidades": {"unmsm": {"temas": [6]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "razonamiento-matematico.razonamiento-inductivo",
+      "nombre": "Razonamiento inductivo",
+      "temas": ["Inducción numérica", "Inducción verbal", "Inducción con figuras"],
+      "universidades": {"unmsm": {"temas": [7]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "razonamiento-matematico.juegos-recreativos",
+      "nombre": "Elementos recreativos",
+      "temas": ["Dominó", "Dados", "Fichas y cerillas"],
+      "universidades": {"unmsm": {"temas": [8]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "razonamiento-matematico.cronometria-y-calendarios",
+      "nombre": "Relojes y calendarios",
+      "temas": [
+        "Adelantos y atrasos",
+        "Ángulo entre las agujas del reloj",
+        "Campanadas",
+        "Años normales y bisiestos",
+        "Día de la semana de una fecha"
+      ],
+      "universidades": {"unmsm": {"temas": [8, 9, 16]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "razonamiento-matematico.certezas",
+      "nombre": "Certezas",
+      "temas": ["Extracción de objetos", "Peor caso", "Identificación de objetos"],
+      "universidades": {"unmsm": {"temas": [9]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "razonamiento-matematico.frecuencia-de-sucesos",
+      "nombre": "Frecuencia de sucesos",
+      "temas": ["Pastillas y recetas", "Dietas y turnos", "Número de campanadas"],
+      "universidades": {"unmsm": {"temas": [10]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "razonamiento-matematico.ruedas-poleas-engranajes",
+      "nombre": "Ruedas, poleas y engranajes",
+      "temas": ["Engranajes en contacto", "Ruedas unidas por faja", "Ruedas en un mismo eje", "Número de vueltas"],
+      "universidades": {"unmsm": {"temas": [10]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "razonamiento-matematico.maximos-y-minimos",
+      "nombre": "Máximos y mínimos",
+      "temas": [
+        "Cantidad mínima de personas u objetos",
+        "Precios máximos y mínimos",
+        "Regiones pintadas",
+        "Recorridos mínimos con reflejos y simetrías"
+      ],
+      "universidades": {"unmsm": {"temas": [11]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "razonamiento-matematico.cortes-y-pesadas",
+      "nombre": "Cortes, pesadas y balanzas",
+      "temas": ["Cortes rectos de objetos", "Equilibrio de objetos", "Balanzas y pesas", "Número mínimo de pesadas"],
+      "universidades": {"unmsm": {"temas": [12, 13]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "razonamiento-matematico.planteo-de-ecuaciones",
+      "nombre": "Planteo de ecuaciones",
+      "temas": [
+        "Del enunciado a la ecuación",
+        "Ecuaciones lineales",
+        "Ecuaciones cuadráticas",
+        "Sistemas de ecuaciones"
+      ],
+      "universidades": {"unmsm": {"temas": [12]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "razonamiento-matematico.transformaciones-de-figuras",
+      "nombre": "Movimiento y comparación de figuras",
+      "temas": [
+        "Congruencia de figuras",
+        "Rotación y traslación",
+        "Rodamiento y recorrido de un punto",
+        "Área de la región generada",
+        "Semejanza de figuras",
+        "Aplicaciones de áreas"
+      ],
+      "universidades": {"unmsm": {"temas": [13, 14, 15]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "razonamiento-matematico.rutas-y-visualizacion-espacial",
+      "nombre": "Rutas y visualización espacial",
+      "temas": ["Rutas en el plano", "Rutas en el espacio", "Proyecciones principales de un sólido"],
+      "universidades": {"unmsm": {"temas": [15, 16]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "razonamiento-matematico.tablas-graficos-y-suficiencia",
+      "nombre": "Tablas, gráficos y suficiencia de datos",
+      "temas": ["Lectura de tablas y gráficos", "Situaciones deportivas", "Suficiencia de datos"],
+      "universidades": {"unmsm": {"temas": [17]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": null
+    }
+  ]
+}

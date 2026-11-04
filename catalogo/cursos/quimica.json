@@ -1,0 +1,339 @@
+{
+  "id": "quimica",
+  "nombre": "Química",
+  "area": "ciencias",
+  "formato_principal": "predicciones",
+  "unidades": [
+    {
+      "id": "quimica.materia-y-energia",
+      "nombre": "Materia y energía",
+      "temas": [
+        "Qué estudia la química",
+        "Sustancias y mezclas",
+        "Estados de agregación",
+        "Propiedades físicas y químicas",
+        "Fenómenos físicos, químicos y nucleares",
+        "Calor sensible y latente",
+        "Equivalencia masa-energía"
+      ],
+      "universidades": {"uni": {"semanas": [0]}, "unmsm": {"temas": [1]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": "docs/investigacion/atomo-enlace-ideas-erroneas.md"
+    },
+    {
+      "id": "quimica.estructura-atomica",
+      "nombre": "Estructura atómica",
+      "temas": [
+        "Partículas subatómicas",
+        "Número atómico y de masa",
+        "Isótopos",
+        "Modelos atómicos de Dalton a Bohr",
+        "Modelo actual",
+        "Números cuánticos y orbitales",
+        "Configuración electrónica de átomos e iones",
+        "Paramagnetismo y especies isoelectrónicas"
+      ],
+      "universidades": {"uni": {"semanas": [0, 1, 2]}, "unmsm": {"temas": [2]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": "docs/investigacion/atomo-enlace-ideas-erroneas.md"
+    },
+    {
+      "id": "quimica.tabla-periodica",
+      "nombre": "Tabla periódica",
+      "temas": [
+        "Ley periódica",
+        "Periodos, grupos y bloques",
+        "Metales, no metales y semimetales",
+        "Notación de Lewis",
+        "Ubicación de un elemento",
+        "Radio atómico e iónico",
+        "Energía de ionización y afinidad electrónica",
+        "Electronegatividad"
+      ],
+      "universidades": {"uni": {"semanas": [3]}, "unmsm": {"temas": [2]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": "docs/investigacion/atomo-enlace-ideas-erroneas.md"
+    },
+    {
+      "id": "quimica.enlace-quimico",
+      "nombre": "Enlace químico y fuerzas intermoleculares",
+      "temas": [
+        "Regla del octeto",
+        "Enlace iónico",
+        "Enlace covalente y estructuras de Lewis",
+        "Resonancia",
+        "Hibridación y geometría molecular",
+        "Polaridad",
+        "Enlace metálico",
+        "Fuerzas intermoleculares"
+      ],
+      "universidades": {"uni": {"semanas": [5, 6]}, "unmsm": {"temas": [3]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": "docs/investigacion/atomo-enlace-ideas-erroneas.md"
+    },
+    {
+      "id": "quimica.nomenclatura-inorganica",
+      "nombre": "Nomenclatura inorgánica",
+      "temas": [
+        "Estados de oxidación",
+        "Tipos de nomenclatura",
+        "Óxidos e hidruros",
+        "Hidróxidos",
+        "Ácidos oxácidos e hidrácidos",
+        "Sales oxisales y haloideas",
+        "Sales ácidas, básicas e hidratadas",
+        "Peróxidos"
+      ],
+      "universidades": {"uni": {"semanas": [7]}, "unmsm": {"temas": [4, 5]}},
+      "potencial_visual": "bajo",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "quimica.mol-y-composicion",
+      "nombre": "Mol, masa molar y composición",
+      "temas": [
+        "Unidad de masa atómica y masa atómica promedio",
+        "Número de Avogadro y mol",
+        "Masa molar",
+        "Relaciones molares en una fórmula",
+        "Composición centesimal",
+        "Fórmula empírica y molecular",
+        "Leyes ponderales"
+      ],
+      "universidades": {"uni": {"semanas": [8, 9]}, "unmsm": {"temas": [4, 5]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": "docs/investigacion/estequiometria-ideas-erroneas.md"
+    },
+    {
+      "id": "quimica.reacciones-y-balance",
+      "nombre": "Reacciones químicas y balance",
+      "temas": [
+        "Evidencias de una reacción",
+        "Clasificación de las reacciones",
+        "Balance por tanteo",
+        "Oxidación, reducción y agentes",
+        "Balance redox por ion-electrón"
+      ],
+      "universidades": {"uni": {"semanas": [8, 9]}, "unmsm": {"temas": [6]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": "docs/investigacion/estequiometria-ideas-erroneas.md"
+    },
+    {
+      "id": "quimica.estequiometria",
+      "nombre": "Estequiometría",
+      "temas": [
+        "Relaciones masa-masa, mol-mol y volumen-volumen",
+        "Reactivo limitante y en exceso",
+        "Rendimiento de una reacción",
+        "Reactivos impuros",
+        "Equivalente químico y masa equivalente"
+      ],
+      "universidades": {"uni": {"semanas": [9]}, "unmsm": {"temas": [6]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": "docs/investigacion/estequiometria-ideas-erroneas.md"
+    },
+    {
+      "id": "quimica.gases",
+      "nombre": "Estado gaseoso",
+      "temas": [
+        "Presión y temperatura",
+        "Leyes de Boyle, Charles y Gay-Lussac",
+        "Ecuación de estado",
+        "Densidad y masa molar de un gas",
+        "Volumen molar y condiciones normales",
+        "Mezclas: Dalton y Amagat",
+        "Difusión y efusión: Graham",
+        "Estequiometría con gases"
+      ],
+      "universidades": {"uni": {"semanas": [10, 11]}, "unmsm": {"temas": [8]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": "docs/investigacion/gases-soluciones-ideas-erroneas.md"
+    },
+    {
+      "id": "quimica.liquidos-y-solidos",
+      "nombre": "Líquidos, sólidos y cambios de estado",
+      "temas": [
+        "Propiedades de los estados de agregación",
+        "Diagrama de fases",
+        "Tensión superficial, viscosidad y capilaridad",
+        "Presión de vapor y punto de ebullición",
+        "Gases húmedos y humedad relativa",
+        "Sólidos cristalinos y amorfos"
+      ],
+      "universidades": {"uni": {"semanas": [10, 12]}, "unmsm": {"temas": [8]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": "docs/investigacion/gases-soluciones-ideas-erroneas.md"
+    },
+    {
+      "id": "quimica.soluciones",
+      "nombre": "Soluciones y coloides",
+      "temas": [
+        "Sistemas dispersos: soluciones, coloides y suspensiones",
+        "Solubilidad y curvas de solubilidad",
+        "Concentración: porcentajes, molaridad, normalidad y molalidad",
+        "Dilución y mezcla de soluciones",
+        "Estequiometría en soluciones"
+      ],
+      "universidades": {"uni": {"semanas": [13]}, "unmsm": {"temas": [9]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": "docs/investigacion/gases-soluciones-ideas-erroneas.md"
+    },
+    {
+      "id": "quimica.cinetica-quimica",
+      "nombre": "Cinética química",
+      "temas": [
+        "Velocidad de reacción",
+        "Teoría de colisiones y complejo activado",
+        "Perfil de energía de una reacción",
+        "Factores que afectan la velocidad",
+        "Leyes de velocidad y orden de reacción",
+        "Vida media"
+      ],
+      "universidades": {"uni": {"semanas": [13]}, "unmsm": {"temas": [10]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "quimica.equilibrio-quimico",
+      "nombre": "Equilibrio químico",
+      "temas": [
+        "Reacciones reversibles y equilibrio dinámico",
+        "Kc y Kp",
+        "Grado de reacción",
+        "Principio de Le Chatelier"
+      ],
+      "universidades": {"uni": {"semanas": [13]}, "unmsm": {"temas": [10]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": "docs/investigacion/equilibrio-acidos-electroquimica-ideas-erroneas.md"
+    },
+    {
+      "id": "quimica.acidos-y-bases",
+      "nombre": "Ácidos y bases",
+      "temas": [
+        "Teorías de Arrhenius, Brønsted-Lowry y Lewis",
+        "Pares conjugados y fuerza relativa",
+        "Ka, Kb y Kw",
+        "pH y pOH",
+        "Neutralización y titulación"
+      ],
+      "universidades": {"uni": {"semanas": [14]}, "unmsm": {"temas": [11]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": "docs/investigacion/equilibrio-acidos-electroquimica-ideas-erroneas.md"
+    },
+    {
+      "id": "quimica.electroquimica",
+      "nombre": "Electroquímica",
+      "temas": [
+        "Semirreacciones y potenciales de reducción",
+        "Celdas galvánicas y fem",
+        "Espontaneidad redox",
+        "Electrólisis",
+        "Leyes de Faraday",
+        "Diagrama de Pourbaix (solo San Marcos)"
+      ],
+      "universidades": {"uni": {"semanas": [15]}, "unmsm": {"temas": [7]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": "docs/investigacion/equilibrio-acidos-electroquimica-ideas-erroneas.md"
+    },
+    {
+      "id": "quimica.hidrocarburos",
+      "nombre": "Química orgánica: hidrocarburos",
+      "temas": [
+        "El carbono e hibridación",
+        "Tipos de fórmulas y cadenas",
+        "Alcanos, alquenos y alquinos",
+        "Cicloalcanos",
+        "Aromáticos",
+        "Isomería estructural y geométrica",
+        "Isomería óptica (solo San Marcos)",
+        "Tipos de reacciones orgánicas"
+      ],
+      "universidades": {"uni": {"semanas": [16, 17]}, "unmsm": {"temas": [12]}},
+      "potencial_visual": "bajo",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "quimica.funciones-organicas",
+      "nombre": "Funciones orgánicas oxigenadas y nitrogenadas",
+      "temas": [
+        "Grupos funcionales",
+        "Alcoholes, fenoles y éteres",
+        "Aldehídos y cetonas",
+        "Ácidos carboxílicos y ésteres",
+        "Aminas, amidas y nitrilos",
+        "Isomería de función",
+        "Nomenclatura de compuestos monofuncionales"
+      ],
+      "universidades": {"uni": {"semanas": [17]}, "unmsm": {"temas": [13, 14, 15]}},
+      "potencial_visual": "bajo",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "quimica.biomoleculas-y-productos-naturales",
+      "nombre": "Biomoléculas y productos naturales",
+      "temas": [
+        "Carbohidratos",
+        "Lípidos",
+        "Aminoácidos y proteínas",
+        "Vitaminas",
+        "Alcaloides y polifenoles",
+        "Colorantes naturales"
+      ],
+      "universidades": {"uni": {"semanas": [18]}, "unmsm": {"temas": [13, 14, 15, 16]}},
+      "potencial_visual": "bajo",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "quimica.recursos-naturales",
+      "nombre": "Petróleo y recursos naturales",
+      "temas": [
+        "Petróleo y refinación",
+        "Gasolina y octanaje",
+        "Gas natural y carbón",
+        "Combustión completa e incompleta",
+        "Recursos minerales del Perú (solo San Marcos)",
+        "Metalurgia del Fe, Cu, Pb, Zn, Au y Ag (solo San Marcos)"
+      ],
+      "universidades": {"uni": {"semanas": [18]}, "unmsm": {"temas": [17]}},
+      "potencial_visual": "bajo",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "quimica.ambiente-y-quimica-aplicada",
+      "nombre": "Contaminación ambiental y química aplicada",
+      "temas": [
+        "Ecosistemas y contaminantes",
+        "Efecto invernadero",
+        "Smog y lluvia ácida",
+        "Capa de ozono",
+        "Contaminación y potabilización del agua",
+        "Eutrofización",
+        "Reciclaje y tecnologías limpias",
+        "Nanotecnología, polímeros y corrosión (solo UNI)"
+      ],
+      "universidades": {"uni": {"semanas": [18, 19, 20]}, "unmsm": {"temas": [18]}},
+      "potencial_visual": "bajo",
+      "plantillas": [],
+      "investigacion": null
+    }
+  ]
+}

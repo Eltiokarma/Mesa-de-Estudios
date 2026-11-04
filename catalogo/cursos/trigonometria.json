@@ -1,0 +1,264 @@
+{
+  "id": "trigonometria",
+  "nombre": "Trigonometría",
+  "area": "matematica",
+  "formato_principal": "escena",
+  "unidades": [
+    {
+      "id": "trigonometria.angulo-trigonometrico",
+      "nombre": "Ángulo trigonométrico y sistemas de medida",
+      "temas": [
+        "Sentido de giro y signo",
+        "Sistemas sexagesimal, centesimal y radial",
+        "Radián",
+        "Conversión entre sistemas"
+      ],
+      "universidades": {"uni": {"semanas": [0]}, "unmsm": {"temas": [1]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "trigonometria.longitud-de-arco-y-sector",
+      "nombre": "Longitud de arco y sector circular",
+      "temas": [
+        "Longitud de arco",
+        "Área del sector y del trapecio circular",
+        "Número de vueltas de una rueda",
+        "Ruedas, poleas y engranajes"
+      ],
+      "universidades": {"uni": {"semanas": [2]}, "unmsm": {"temas": [2]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "trigonometria.razones-trigonometricas-agudas",
+      "nombre": "Razones trigonométricas de ángulos agudos",
+      "temas": [
+        "Definición en el triángulo rectángulo",
+        "Ángulos notables",
+        "Ángulos aproximados (37°, 53°, 16°, 74°)",
+        "Razones recíprocas y complementarias"
+      ],
+      "universidades": {"uni": {"semanas": [1]}, "unmsm": {"temas": [3, 4]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "trigonometria.triangulos-rectangulos",
+      "nombre": "Resolución de triángulos rectángulos",
+      "temas": ["Resolver con un lado y un ángulo", "Ángulos de elevación y depresión", "Ángulo de observación"],
+      "universidades": {"uni": {"semanas": [1]}, "unmsm": {"temas": [3, 12]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "trigonometria.recta-en-el-plano",
+      "nombre": "Plano cartesiano y la recta",
+      "temas": [
+        "Distancia entre dos puntos",
+        "División de un segmento y punto medio",
+        "Baricentro y área con coordenadas",
+        "Pendiente e inclinación",
+        "Ecuaciones de la recta",
+        "Paralelas, perpendiculares y distancia a una recta"
+      ],
+      "universidades": {"uni": {"semanas": [3]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "trigonometria.angulos-en-posicion-normal",
+      "nombre": "Ángulos en posición normal",
+      "temas": [
+        "Razones de un ángulo en posición normal",
+        "Signos por cuadrante",
+        "Ángulos coterminales",
+        "Ángulos cuadrantales",
+        "Ángulos negativos"
+      ],
+      "universidades": {"uni": {"semanas": [4]}, "unmsm": {"temas": [5]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "trigonometria.reduccion-al-primer-cuadrante",
+      "nombre": "Reducción al primer cuadrante",
+      "temas": [
+        "Ángulos menores de una vuelta",
+        "Ángulos mayores de una vuelta",
+        "Ángulos negativos",
+        "Ángulos suplementarios y de una vuelta"
+      ],
+      "universidades": {"uni": {"semanas": [5]}, "unmsm": {"temas": [6]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "trigonometria.circunferencia-trigonometrica",
+      "nombre": "Circunferencia trigonométrica",
+      "temas": [
+        "Elementos y arcos dirigidos",
+        "Ubicación de números reales",
+        "Líneas seno y coseno",
+        "Líneas tangente y cotangente",
+        "Líneas secante y cosecante",
+        "Variación de las líneas por cuadrante"
+      ],
+      "universidades": {"uni": {"semanas": [5, 6]}, "unmsm": {"temas": [13, 14]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "trigonometria.identidades-fundamentales",
+      "nombre": "Identidades trigonométricas fundamentales",
+      "temas": [
+        "Identidades recíprocas y por división",
+        "Identidades pitagóricas",
+        "Identidades auxiliares",
+        "Simplificación y demostración"
+      ],
+      "universidades": {"uni": {"semanas": [6]}, "unmsm": {"temas": [7]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "trigonometria.arcos-compuestos",
+      "nombre": "Suma y diferencia de ángulos",
+      "temas": ["Seno, coseno y tangente de la suma y la diferencia", "Identidades auxiliares", "Suma de tres ángulos"],
+      "universidades": {"uni": {"semanas": [7]}, "unmsm": {"temas": [8]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "trigonometria.arcos-multiples",
+      "nombre": "Ángulo doble, mitad y triple",
+      "temas": ["Identidades del ángulo doble", "Degradación de potencias", "Ángulo mitad", "Ángulo triple"],
+      "universidades": {"uni": {"semanas": [7, 8]}, "unmsm": {"temas": [9]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "trigonometria.transformaciones-trigonometricas",
+      "nombre": "Transformaciones y series trigonométricas",
+      "temas": ["Suma a producto", "Producto a suma", "Sumatorias de senos y cosenos", "Productorias trigonométricas"],
+      "universidades": {"uni": {"semanas": [8, 9]}, "unmsm": {"temas": [10]}},
+      "potencial_visual": "bajo",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "trigonometria.funciones-trigonometricas",
+      "nombre": "Funciones trigonométricas",
+      "temas": [
+        "Funciones seno y coseno",
+        "Amplitud, periodo y frecuencia",
+        "Funciones tangente y cotangente",
+        "Funciones secante y cosecante",
+        "Periodo de funciones generalizadas"
+      ],
+      "universidades": {"uni": {"semanas": [9, 10, 11]}, "unmsm": {"temas": [15, 16]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "trigonometria.funciones-trigonometricas-inversas",
+      "nombre": "Funciones trigonométricas inversas",
+      "temas": [
+        "Arco seno, arco coseno y arco tangente",
+        "Arco cotangente, arco secante y arco cosecante",
+        "Dominio, rango y gráfica",
+        "Propiedades"
+      ],
+      "universidades": {"uni": {"semanas": [11, 12]}, "unmsm": {"temas": [17, 18]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "trigonometria.ecuaciones-trigonometricas",
+      "nombre": "Ecuaciones trigonométricas",
+      "temas": [
+        "Ecuaciones elementales",
+        "Solución general y particular",
+        "Ecuaciones no elementales",
+        "Sistemas de ecuaciones trigonométricas"
+      ],
+      "universidades": {"uni": {"semanas": [13]}, "unmsm": {"temas": [11]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "trigonometria.triangulos-oblicuangulos",
+      "nombre": "Resolución de triángulos oblicuángulos",
+      "temas": [
+        "Ley de senos",
+        "Ley de cosenos",
+        "Leyes de proyecciones y de tangentes",
+        "Ángulos horizontales y rumbos"
+      ],
+      "universidades": {"uni": {"semanas": [14]}, "unmsm": {"temas": [12]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "trigonometria.areas-y-lineas-notables",
+      "nombre": "Áreas y líneas notables con trigonometría",
+      "temas": [
+        "Área de un triángulo con dos lados y el ángulo",
+        "Área con inradio, circunradio y exradio",
+        "Fórmula de Herón y semiángulos",
+        "Longitud de cevianas, bisectrices y medianas",
+        "Área de un cuadrilátero"
+      ],
+      "universidades": {"uni": {"semanas": [15, 16]}, "unmsm": {"temas": [3]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "trigonometria.conicas",
+      "nombre": "Lugar geométrico y cónicas",
+      "temas": [
+        "Lugar geométrico",
+        "Parábola",
+        "Elipse",
+        "Hipérbola",
+        "Recta tangente a una cónica",
+        "Rotación de ejes",
+        "Ecuación general de segundo grado"
+      ],
+      "universidades": {"uni": {"semanas": [17, 18, 19]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "trigonometria.coordenadas-polares-y-complejos",
+      "nombre": "Coordenadas polares y números complejos",
+      "temas": [
+        "Coordenadas polares",
+        "Forma trigonométrica de un complejo",
+        "Teorema de De Moivre",
+        "Forma exponencial"
+      ],
+      "universidades": {"uni": {"semanas": [20]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": null
+    }
+  ]
+}

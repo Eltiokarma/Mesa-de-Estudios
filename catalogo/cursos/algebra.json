@@ -1,0 +1,300 @@
+{
+  "id": "algebra",
+  "nombre": "Álgebra",
+  "area": "matematica",
+  "formato_principal": "predicciones",
+  "unidades": [
+    {
+      "id": "algebra.logica-y-conjuntos",
+      "nombre": "Lógica, conjuntos y juegos lógicos",
+      "temas": [
+        "Proposiciones y conectores",
+        "Tautología y equivalencias",
+        "Condición necesaria y suficiente",
+        "Conjuntos y operaciones",
+        "Conjunto potencia y cardinalidad",
+        "Cuantificadores",
+        "Juegos lógicos: ordenamientos, parentescos y certezas"
+      ],
+      "universidades": {"uni": {"semanas": [1, 2, 18]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "algebra.numeros-reales",
+      "nombre": "Números reales e intervalos",
+      "temas": [
+        "Axiomas de cuerpo y de orden",
+        "Desigualdades",
+        "Intervalos y sus operaciones",
+        "Conjuntos acotados y densidad",
+        "Operaciones binarias y tablas"
+      ],
+      "universidades": {"uni": {"semanas": [2, 3]}, "unmsm": {"temas": [1]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "algebra.exponentes-y-productos-notables",
+      "nombre": "Exponentes, radicales y productos notables",
+      "temas": [
+        "Leyes de exponentes",
+        "Propiedades de radicales",
+        "Productos notables",
+        "Radicales dobles",
+        "Racionalización"
+      ],
+      "universidades": {"uni": {"semanas": [2, 7]}, "unmsm": {"temas": [2, 5]}},
+      "potencial_visual": "bajo",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "algebra.ecuaciones-lineales-y-cuadraticas",
+      "nombre": "Ecuaciones de primer y segundo grado",
+      "temas": [
+        "Ecuación de primer grado",
+        "Planteo de ecuaciones",
+        "Ecuación cuadrática y discriminante",
+        "Propiedades de las raíces",
+        "Interpretación geométrica"
+      ],
+      "universidades": {"uni": {"semanas": [4]}, "unmsm": {"temas": [3]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "algebra.inecuaciones",
+      "nombre": "Inecuaciones",
+      "temas": [
+        "Inecuaciones lineales",
+        "Inecuaciones cuadráticas",
+        "Método de los puntos críticos",
+        "Inecuaciones de grado superior",
+        "Inecuaciones fraccionarias"
+      ],
+      "universidades": {"uni": {"semanas": [4]}, "unmsm": {"temas": [3, 12]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "algebra.valor-absoluto-y-radicales",
+      "nombre": "Valor absoluto y ecuaciones con radicales",
+      "temas": [
+        "Valor absoluto y distancia",
+        "Ecuaciones e inecuaciones con valor absoluto",
+        "Ecuaciones con radicales",
+        "Inecuaciones con radicales"
+      ],
+      "universidades": {"uni": {"semanas": [4]}, "unmsm": {"temas": [4, 11, 12]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "algebra.polinomios",
+      "nombre": "Polinomios",
+      "temas": [
+        "Grado absoluto y relativo",
+        "Valor numérico",
+        "Polinomios especiales",
+        "Igualdad de polinomios",
+        "Operaciones con polinomios"
+      ],
+      "universidades": {"uni": {"semanas": [5]}, "unmsm": {"temas": [6]}},
+      "potencial_visual": "bajo",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "algebra.division-de-polinomios",
+      "nombre": "División de polinomios y cocientes notables",
+      "temas": [
+        "Algoritmo de la división",
+        "Métodos de Horner y Ruffini",
+        "Teorema del resto",
+        "Divisibilidad de polinomios",
+        "Cocientes notables y término general"
+      ],
+      "universidades": {"uni": {"semanas": [6]}, "unmsm": {"temas": [7, 10]}},
+      "potencial_visual": "bajo",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "algebra.factorizacion",
+      "nombre": "Factorización",
+      "temas": [
+        "Factor común e identidades",
+        "Aspa simple, doble y doble especial",
+        "Divisores binómicos",
+        "Teorema del factor",
+        "MCD y MCM de polinomios"
+      ],
+      "universidades": {"uni": {"semanas": [7]}, "unmsm": {"temas": [8]}},
+      "potencial_visual": "bajo",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "algebra.ecuaciones-polinomiales",
+      "nombre": "Ecuaciones polinomiales",
+      "temas": [
+        "Teorema fundamental del álgebra",
+        "Relaciones entre raíces y coeficientes",
+        "Raíces racionales",
+        "Paridad de raíces irracionales y complejas",
+        "Ecuaciones bicuadradas y recíprocas",
+        "Ecuación binómica"
+      ],
+      "universidades": {"uni": {"semanas": [4, 10]}, "unmsm": {"temas": [9, 11]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "algebra.funciones",
+      "nombre": "Funciones y sus gráficas",
+      "temas": [
+        "Dominio y rango",
+        "Funciones lineal y cuadrática",
+        "Valor absoluto, raíz cuadrada, signo y máximo entero",
+        "Operaciones y composición de funciones",
+        "Traslaciones y reflexiones de gráficas",
+        "Gráfica de una función polinomial"
+      ],
+      "universidades": {"uni": {"semanas": [8, 9, 10]}, "unmsm": {"temas": [13]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "algebra.tipos-de-funciones-e-inversa",
+      "nombre": "Tipos de funciones y función inversa",
+      "temas": [
+        "Funciones par e impar",
+        "Funciones monótonas y acotadas",
+        "Inyectiva, sobreyectiva y biyectiva",
+        "Función inversa",
+        "Modelación con funciones"
+      ],
+      "universidades": {"uni": {"semanas": [8, 10]}, "unmsm": {"temas": [14]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "algebra.exponenciales-y-logaritmos",
+      "nombre": "Exponenciales y logaritmos",
+      "temas": [
+        "Función exponencial",
+        "Logaritmo y propiedades",
+        "El número e",
+        "Función logarítmica",
+        "Ecuaciones exponenciales y logarítmicas",
+        "Inecuaciones exponenciales y logarítmicas"
+      ],
+      "universidades": {"uni": {"semanas": [11]}, "unmsm": {"temas": [15]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "algebra.numeros-complejos",
+      "nombre": "Números complejos",
+      "temas": [
+        "Unidad imaginaria",
+        "Forma binómica y operaciones",
+        "Conjugado y módulo",
+        "Forma polar y exponencial",
+        "Fórmula de De Moivre y raíces",
+        "Regiones en el plano complejo"
+      ],
+      "universidades": {"uni": {"semanas": [12]}, "unmsm": {"temas": [5]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "algebra.matrices-y-determinantes",
+      "nombre": "Matrices y determinantes",
+      "temas": [
+        "Tipos de matrices",
+        "Operaciones con matrices",
+        "Traza y transpuesta",
+        "Determinantes y propiedades",
+        "Matriz inversa y adjunta",
+        "Rango de una matriz"
+      ],
+      "universidades": {"uni": {"semanas": [13, 14, 16]}, "unmsm": {"temas": [16]}},
+      "potencial_visual": "bajo",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "algebra.sistemas-de-ecuaciones",
+      "nombre": "Sistemas de ecuaciones",
+      "temas": [
+        "Sistemas lineales 2x2 e interpretación gráfica",
+        "Sistemas 3x3",
+        "Regla de Cramer",
+        "Método de Gauss",
+        "Compatibilidad: Rouché-Frobenius",
+        "Sistemas no lineales"
+      ],
+      "universidades": {"uni": {"semanas": [15, 16]}, "unmsm": {"temas": [17]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "algebra.programacion-lineal",
+      "nombre": "Inecuaciones con dos variables y programación lineal",
+      "temas": [
+        "Inecuaciones con dos variables",
+        "Sistemas de inecuaciones",
+        "Región factible",
+        "Función objetivo",
+        "Método gráfico de optimización"
+      ],
+      "universidades": {"uni": {"semanas": [16, 17]}, "unmsm": {"temas": [18]}},
+      "potencial_visual": "alto",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "algebra.sucesiones-y-series",
+      "nombre": "Sucesiones y series",
+      "temas": [
+        "Sucesiones monótonas y acotadas",
+        "Límite de sucesiones",
+        "Sucesiones recurrentes y Fibonacci",
+        "Sumas notables y series telescópicas",
+        "Serie geométrica y convergencia",
+        "Progresiones aritméticas y geométricas"
+      ],
+      "universidades": {"uni": {"semanas": [18, 19, 20]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "algebra.binomio-de-newton",
+      "nombre": "Binomio de Newton",
+      "temas": [
+        "Desarrollo del binomio",
+        "Término general",
+        "Binomio con exponente no natural",
+        "Potencia de un polinomio"
+      ],
+      "universidades": {"uni": {"semanas": [20]}, "unmsm": {"temas": [10]}},
+      "potencial_visual": "bajo",
+      "plantillas": [],
+      "investigacion": null
+    }
+  ]
+}

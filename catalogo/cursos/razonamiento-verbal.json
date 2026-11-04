@@ -1,0 +1,213 @@
+{
+  "id": "razonamiento-verbal",
+  "nombre": "Razonamiento verbal",
+  "area": "razonamiento",
+  "formato_principal": "lectura",
+  "unidades": [
+    {
+      "id": "razonamiento-verbal.definiciones",
+      "nombre": "Definiciones",
+      "temas": ["Género próximo", "Diferencia específica", "Rasgos mínimos de significado"],
+      "universidades": {"uni": {"semanas": [0, 1]}},
+      "potencial_visual": "bajo",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "razonamiento-verbal.analogias",
+      "nombre": "Analogías",
+      "temas": ["Sinonimia y antonimia", "Género y especie", "Causa y efecto", "Parte y todo", "Agente e instrumento"],
+      "universidades": {"uni": {"semanas": [2]}},
+      "potencial_visual": "bajo",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "razonamiento-verbal.sentido-contextual",
+      "nombre": "Precisión léxica y sentido contextual",
+      "temas": [
+        "Denotación y connotación",
+        "Precisión léxica",
+        "Sinónimos en contexto",
+        "Antónimos en contexto",
+        "Inferencias léxicas"
+      ],
+      "universidades": {"uni": {"semanas": [3, 4, 16]}, "unmsm": {"temas": [3]}},
+      "potencial_visual": "bajo",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "razonamiento-verbal.conectores",
+      "nombre": "Conectores lógico-textuales",
+      "temas": ["Clases de conectores", "Conectores de adición, contraste y causa", "Locuciones conjuntivas"],
+      "universidades": {"uni": {"semanas": [5]}},
+      "potencial_visual": "bajo",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "razonamiento-verbal.eliminacion-de-oraciones",
+      "nombre": "Eliminación de oraciones",
+      "temas": ["Redundancia", "Impertinencia", "Incompatibilidad"],
+      "universidades": {"uni": {"semanas": [6]}},
+      "potencial_visual": "bajo",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "razonamiento-verbal.plan-de-redaccion",
+      "nombre": "Plan de redacción",
+      "temas": [
+        "Tema y subtemas",
+        "Secuencia cronológica",
+        "Secuencia causa-efecto",
+        "Secuencias de análisis y comparación"
+      ],
+      "universidades": {"uni": {"semanas": [7]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "razonamiento-verbal.cohesion-y-coherencia",
+      "nombre": "Cohesión y coherencia textual",
+      "temas": [
+        "Inclusión de enunciado",
+        "Progresión temática: tópico y comento",
+        "Repetición, sustitución y elipsis",
+        "Anáfora y catáfora",
+        "Principio de no contradicción"
+      ],
+      "universidades": {"uni": {"semanas": [8, 9]}, "unmsm": {"temas": [6, 7]}},
+      "potencial_visual": "bajo",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "razonamiento-verbal.tipologia-textual",
+      "nombre": "El texto y sus tipos",
+      "temas": [
+        "Texto y normas de textualidad",
+        "Niveles de comprensión lectora",
+        "Textos expositivos",
+        "Textos narrativos y descriptivos",
+        "Textos argumentativos"
+      ],
+      "universidades": {"uni": {"semanas": [10, 12]}, "unmsm": {"temas": [1, 2]}},
+      "potencial_visual": "bajo",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "razonamiento-verbal.tema-e-idea-principal",
+      "nombre": "Tema central e idea principal",
+      "temas": [
+        "Jerarquía textual",
+        "Tema central",
+        "Idea principal e ideas secundarias",
+        "Subrayado",
+        "Mapas conceptuales"
+      ],
+      "universidades": {"uni": {"semanas": [11, 14]}, "unmsm": {"temas": [4]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "razonamiento-verbal.resumen-y-sintesis",
+      "nombre": "Resumen y síntesis",
+      "temas": ["Resumen literal", "Paráfrasis", "Resumen interpretativo", "Síntesis"],
+      "universidades": {"uni": {"semanas": [15]}, "unmsm": {"temas": [5]}},
+      "potencial_visual": "bajo",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "razonamiento-verbal.textos-discontinuos",
+      "nombre": "Textos discontinuos e infografías",
+      "temas": ["Tablas y cuadros", "Gráficos", "Textos mixtos", "Infografías"],
+      "universidades": {"uni": {"semanas": [13]}, "unmsm": {"temas": [1, 9, 15]}},
+      "potencial_visual": "medio",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "razonamiento-verbal.inferencias",
+      "nombre": "Inferencias",
+      "temas": [
+        "Inferencia deductiva e inductiva",
+        "Inferencia de la intención",
+        "Inferencia holística",
+        "Información implícita"
+      ],
+      "universidades": {"uni": {"semanas": [17]}, "unmsm": {"temas": [10, 11]}},
+      "potencial_visual": "bajo",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "razonamiento-verbal.compatibilidad",
+      "nombre": "Compatibilidad e incompatibilidad",
+      "temas": [
+        "Compatibilidad explícita e implícita",
+        "Incompatibilidad explícita e implícita",
+        "Incompatibilidad con la idea principal"
+      ],
+      "universidades": {"uni": {"semanas": [18]}, "unmsm": {"temas": [8]}},
+      "potencial_visual": "bajo",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "razonamiento-verbal.extrapolacion",
+      "nombre": "Extrapolación y lectura crítica",
+      "temas": ["Extrapolación cognitiva y referencial", "Condicional subjuntivo", "Mundos posibles"],
+      "universidades": {"uni": {"semanas": [19]}, "unmsm": {"temas": [13]}},
+      "potencial_visual": "bajo",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "nombre": "Textos argumentativos, dialécticos y debate",
+      "temas": [
+        "Tesis y argumentos",
+        "Tesis, antítesis y síntesis",
+        "La cuestión disputada",
+        "Puntos de vista en un debate"
+      ],
+      "universidades": {"uni": {"semanas": [12]}, "unmsm": {"temas": [2, 12, 14]}},
+      "potencial_visual": "bajo",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "razonamiento-verbal.texto-y-contexto",
+      "nombre": "Texto y contexto",
+      "temas": ["Situación comunicativa", "Relación entre emisor y destinatario", "Contexto y situación"],
+      "universidades": {"uni": {"semanas": [16]}, "unmsm": {"temas": [18]}},
+      "potencial_visual": "bajo",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "razonamiento-verbal.textos-filosoficos-y-cientificos",
+      "nombre": "Textos filosóficos y científicos",
+      "temas": ["Rasgos del texto filosófico", "Rasgos del texto científico"],
+      "universidades": {"uni": {"semanas": [20]}},
+      "potencial_visual": "bajo",
+      "plantillas": [],
+      "investigacion": null
+    },
+    {
+      "id": "razonamiento-verbal.lectura-en-ingles",
+      "nombre": "Lectura en inglés",
+      "temas": ["Inglés básico", "Idea principal (main idea)", "Resumen (summary)", "Lo que el texto dice y lo que no"],
+      "universidades": {"unmsm": {"temas": [2, 16, 17]}},
+      "potencial_visual": "bajo",
+      "plantillas": [],
+      "investigacion": null
+    }
+  ]
+}
