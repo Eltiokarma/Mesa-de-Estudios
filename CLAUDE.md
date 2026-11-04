@@ -19,6 +19,7 @@ App de bajo costo para postulantes a universidades peruanas (UNI, San Marcos, UN
 
 ```
 docs/fundacional.md            documento base (copia del doc vivo en claude.ai)
+docs/vision-futura.md          ideas de Gerson para después (todos los grados, seguimiento, curar contenido externo, historia); no se desarrollan aún
 docs/taxonomia-uni-2026.md     temario de física y química de la UNI (sílabo CEPRE-UNI 2026-2)
 docs/investigacion/            informes de investigación por tema (ideas erróneas, fuentes)
 plantillas/<tema>/index.html   la plantilla (hoy: HTML autocontenido)
@@ -43,6 +44,7 @@ fuentes/libros/                libros y manuales de consulta
 4. Investigar, tema por tema, las ideas erróneas típicas para las opciones de predicción. Física y química completas según el temario UNI (ver la columna "Investigación" de `docs/taxonomia-uni-2026.md`); fuera quedan nomenclatura, orgánica y ecología. Lo que sigue es confirmar las hipótesis con postulantes reales (pase 2). En el Banco Óptico, agregar al explorador las predicciones "¿qué pasa si…?" propuestas en el informe (requiere trazar un abanico de rayos).
 5. Construir a mano: espejos esféricos, MRUV, tiro parabólico. Interacción principal: arrastrar en pantalla táctil (celular primero) y que funcione sin conexión.
 6. Recién después de 4 plantillas probadas: destilar un skill de "cómo se construye una plantilla".
+7. Más adelante (no ahora): las ideas de `docs/vision-futura.md`.
 
 ## Cómo se trabaja
 
