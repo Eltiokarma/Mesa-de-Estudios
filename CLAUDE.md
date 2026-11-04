@@ -28,6 +28,8 @@ plantillas/<tema>/motor.js     la física, sin DOM; sirve en el navegador y en N
 plantillas/<tema>/casos.json   casos de prueba del motor
 plantillas/<tema>/motor.test.js  corre casos.json contra el motor (npm test o node --test)
 fuentes/por-conseguir.md       lista de libros, tesis y artículos que faltan, con prioridad
+herramientas/                  OCR de PDF escaneados, esquema y script de clasificación de preguntas
+docs/clasificacion-unmsm.md    qué pregunta San Marcos en física y química (datos en docs/datos/)
 fuentes/drive.tsv + descargar.sh  PDF de Google Drive (simulacros y temarios de San Marcos); en una sesión nueva: bash fuentes/descargar.sh
 fuentes/prospectos/            prospectos y temarios oficiales (no se versionan si son pesados o con derechos; ver .gitignore)
 fuentes/examenes/              exámenes pasados
@@ -44,7 +46,7 @@ fuentes/libros/                libros y manuales de consulta
 
 1. ~~Extraer el motor de la lente a un módulo JS puro y correr `casos.json` con `node --test`.~~ Hecho. Es el patrón para las plantillas que siguen: `motor.js` + `casos.json` + `motor.test.js`.
 2. Leer los prospectos/temarios que Gerson suba a `fuentes/prospectos/` y fijar la taxonomía de `docs/fundacional.md` (la UNI como techo de dificultad). UNI hecha con el sílabo del CEPRE-UNI 2026-2: `docs/taxonomia-uni-2026.md`. San Marcos hecha con el temario del CEPRE-UNMSM 2026-I: `docs/taxonomia-unmsm-2026.md`. Faltan UNA Puno, UNSA y UNSAAC.
-3. Clasificar unos 50 problemas reales por plantilla y medir cobertura. Ya hay 44 simulacros oficiales de San Marcos (2022-II a 2027-I, áreas A a E) en `fuentes/examenes/unmsm-simulacros/`; casi todos son escaneos y necesitan OCR (tesseract con español). De la UNA Puno todavía no hay exámenes.
+3. Clasificar problemas reales por plantilla y medir cobertura. San Marcos hecho: `docs/clasificacion-unmsm.md` (120 preguntas distintas de 7 periodos oficiales; la fase 1 cubre solo el 5 % de su física; calorimetría, energía y circuitos cubren el 28 %). Herramientas para repetirlo en `herramientas/`. Falta la UNA Puno: sus exámenes deciden el orden de la fase 1.
 4. Investigar, tema por tema, las ideas erróneas típicas para las opciones de predicción. Física y química completas según el temario UNI (ver la columna "Investigación" de `docs/taxonomia-uni-2026.md`); fuera quedan nomenclatura, orgánica y ecología. Lo que sigue es confirmar las hipótesis con postulantes reales (pase 2). En el Banco Óptico, agregar al explorador las predicciones "¿qué pasa si…?" propuestas en el informe (requiere trazar un abanico de rayos).
 5. Construir a mano: espejos esféricos, MRUV, tiro parabólico. Interacción principal: arrastrar en pantalla táctil (celular primero) y que funcione sin conexión.
 6. Recién después de 4 plantillas probadas: destilar un skill de "cómo se construye una plantilla".
