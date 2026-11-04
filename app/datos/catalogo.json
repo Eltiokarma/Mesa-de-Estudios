@@ -1,0 +1,3838 @@
+{
+ "universidades": {
+  "uni": {
+   "nombre": "Universidad Nacional de Ingeniería",
+   "ubicacion": "semanas"
+  },
+  "unmsm": {
+   "nombre": "Universidad Nacional Mayor de San Marcos",
+   "ubicacion": "temas"
+  },
+  "una": {
+   "nombre": "Universidad Nacional del Altiplano (Puno)",
+   "ubicacion": "temas"
+  }
+ },
+ "cursos": [
+  {
+   "id": "fisica",
+   "nombre": "Física",
+   "area": "ciencias",
+   "formato_principal": "escena",
+   "unidades": [
+    {
+     "id": "fisica.magnitudes-y-vectores",
+     "nombre": "Magnitudes y vectores",
+     "temas": [
+      "Magnitudes fundamentales y derivadas",
+      "Sistema Internacional",
+      "Análisis dimensional",
+      "Suma de vectores por el método gráfico",
+      "Componentes y vector unitario",
+      "Producto escalar y vectorial"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        0
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        1,
+        2
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "fisica.movimiento-rectilineo",
+     "nombre": "MRU, MRUV y caída libre",
+     "temas": [
+      "Posición, desplazamiento y distancia",
+      "Velocidad y rapidez media",
+      "MRU y velocidad relativa",
+      "MRUV",
+      "Caída libre",
+      "Gráficas x-t, v-t y a-t",
+      "La recta y la parábola como gráficas"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        1,
+        2
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        2,
+        3
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "fisica.movimiento-parabolico-y-circular",
+     "nombre": "Movimiento parabólico y circular",
+     "temas": [
+      "Movimiento en dos dimensiones",
+      "Tiro parabólico",
+      "Magnitudes angulares",
+      "MCU",
+      "MCUV",
+      "Aceleración tangencial y centrípeta"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        3
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        4
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "fisica.estatica",
+     "nombre": "Estática: equilibrio y torque",
+     "temas": [
+      "Primera y tercera ley de Newton",
+      "Diagrama de cuerpo libre",
+      "Rozamiento estático y cinético",
+      "Fuerza elástica",
+      "Equilibrio de una partícula",
+      "Torque",
+      "Equilibrio del cuerpo rígido",
+      "Máquinas simples"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        4
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        6
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "fisica.dinamica",
+     "nombre": "Dinámica",
+     "temas": [
+      "Segunda ley de Newton",
+      "Masa y peso",
+      "Rozamiento en movimiento",
+      "Bloques, poleas y planos inclinados",
+      "Dinámica circular",
+      "Movimiento relativo y sistemas inerciales"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        5
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        5
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "fisica.gravitacion",
+     "nombre": "Gravitación universal",
+     "temas": [
+      "Leyes de Kepler",
+      "Ley de gravitación universal",
+      "Campo gravitatorio",
+      "Variación de g con la altura"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        6
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        8
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    },
+    {
+     "id": "fisica.trabajo-y-energia",
+     "nombre": "Trabajo, energía y potencia",
+     "temas": [
+      "Trabajo de fuerzas constantes y variables",
+      "Teorema trabajo-energía cinética",
+      "Energía potencial gravitatoria y elástica",
+      "Conservación de la energía mecánica",
+      "Potencia y eficiencia"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        6
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        7
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "fisica.impulso-y-choques",
+     "nombre": "Impulso, cantidad de movimiento y choques",
+     "temas": [
+      "Impulso",
+      "Cantidad de movimiento",
+      "Conservación de la cantidad de movimiento",
+      "Centro de masa",
+      "Choques elásticos e inelásticos",
+      "Coeficiente de restitución"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        7
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        8
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "fisica.oscilaciones",
+     "nombre": "Movimiento armónico simple",
+     "temas": [
+      "Movimiento periódico y oscilatorio",
+      "Ecuaciones y gráficas del MAS",
+      "Masa-resorte horizontal y vertical",
+      "Péndulo simple",
+      "Energía en el MAS"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        8
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        16
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "fisica.ondas-mecanicas",
+     "nombre": "Ondas mecánicas y sonido",
+     "temas": [
+      "Ondas transversales y longitudinales",
+      "Función de onda",
+      "Rapidez de una onda en una cuerda",
+      "Reflexión y ondas estacionarias",
+      "Energía transportada por una onda",
+      "Intensidad y nivel de intensidad sonora"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        9
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        16
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "fisica.fluidos",
+     "nombre": "Fluidos",
+     "temas": [
+      "Densidad y presión",
+      "Presión hidrostática y atmosférica",
+      "Manómetro, barómetro y vasos comunicantes",
+      "Principio de Pascal",
+      "Principio de Arquímedes",
+      "Tensión superficial",
+      "Caudal, continuidad y Bernoulli (solo San Marcos)"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        10
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        9
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "fisica.temperatura-y-calor",
+     "nombre": "Temperatura y calor",
+     "temas": [
+      "Temperatura, equilibrio térmico y ley cero",
+      "Escalas termométricas",
+      "Dilatación",
+      "Calor específico y capacidad calorífica",
+      "Calorimetría",
+      "Cambios de fase y calor latente",
+      "Conducción, convección y radiación"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        11
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        10
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "fisica.termodinamica",
+     "nombre": "Termodinámica",
+     "temas": [
+      "Leyes de los gases y ecuación de estado",
+      "Modelo cinético y energía interna",
+      "Primera ley",
+      "Procesos y diagrama P-V",
+      "cp y cv",
+      "Máquinas térmicas y ciclo de Carnot",
+      "Segunda ley"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        12,
+        13
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "fisica.electrostatica",
+     "nombre": "Electrostática",
+     "temas": [
+      "Carga y electrización",
+      "Ley de Coulomb",
+      "Campo eléctrico y líneas de fuerza",
+      "Carga en campo uniforme",
+      "Energía potencial y potencial eléctrico",
+      "Superficies equipotenciales y conductores",
+      "Condensadores en serie y en paralelo",
+      "Energía de un condensador"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        13,
+        14,
+        15
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        11,
+        12
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "fisica.corriente-y-circuitos",
+     "nombre": "Corriente eléctrica y circuitos",
+     "temas": [
+      "Intensidad y densidad de corriente",
+      "Resistencia, resistividad y ley de Ohm",
+      "Modelo de Drude",
+      "Fuerza electromotriz",
+      "Resistencias en serie y en paralelo",
+      "Leyes de Kirchhoff",
+      "Potencia y efecto Joule",
+      "Amperímetro y voltímetro"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        15,
+        16
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        13
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "fisica.magnetismo",
+     "nombre": "Campo y fuerza magnética",
+     "temas": [
+      "Imanes y experimento de Oersted",
+      "Campo de un conductor recto, una espira y un solenoide",
+      "Fuerza magnética sobre una carga",
+      "Fuerza sobre un conductor",
+      "Fuerza entre cables paralelos"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        17
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        14
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "fisica.induccion-electromagnetica",
+     "nombre": "Inducción electromagnética",
+     "temas": [
+      "Flujo magnético",
+      "Ley de Faraday",
+      "Ley de Lenz",
+      "Fem en un conductor móvil",
+      "Generador de corriente alterna y valores eficaces",
+      "Transformador"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        18
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        15
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "fisica.ondas-electromagneticas",
+     "nombre": "Ondas electromagnéticas",
+     "temas": [
+      "Características de las ondas electromagnéticas",
+      "Rapidez de la luz",
+      "Espectro electromagnético",
+      "Luz visible"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        18
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        17
+       ]
+      }
+     },
+     "potencial_visual": "bajo",
+     "plantillas": []
+    },
+    {
+     "id": "fisica.optica-geometrica",
+     "nombre": "Óptica geométrica",
+     "temas": [
+      "Reflexión y refracción",
+      "Reflexión total",
+      "Espejos planos",
+      "Espejos esféricos",
+      "Lentes delgadas",
+      "Ecuación del fabricante y potencia de una lente"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        19
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        17
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": [
+      "optica-lente-delgada"
+     ]
+    },
+    {
+     "id": "fisica.fisica-moderna",
+     "nombre": "Física moderna",
+     "temas": [
+      "Relatividad especial (solo San Marcos)",
+      "Radiación del cuerpo negro y Planck",
+      "Efecto fotoeléctrico",
+      "Fotones: potencia e intensidad",
+      "Rayos X",
+      "Láser",
+      "Principio de incertidumbre"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        20
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        18
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    }
+   ]
+  },
+  {
+   "id": "quimica",
+   "nombre": "Química",
+   "area": "ciencias",
+   "formato_principal": "predicciones",
+   "unidades": [
+    {
+     "id": "quimica.materia-y-energia",
+     "nombre": "Materia y energía",
+     "temas": [
+      "Qué estudia la química",
+      "Sustancias y mezclas",
+      "Estados de agregación",
+      "Propiedades físicas y químicas",
+      "Fenómenos físicos, químicos y nucleares",
+      "Calor sensible y latente",
+      "Equivalencia masa-energía"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        0
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        1
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    },
+    {
+     "id": "quimica.estructura-atomica",
+     "nombre": "Estructura atómica",
+     "temas": [
+      "Partículas subatómicas",
+      "Número atómico y de masa",
+      "Isótopos",
+      "Modelos atómicos de Dalton a Bohr",
+      "Modelo actual",
+      "Números cuánticos y orbitales",
+      "Configuración electrónica de átomos e iones",
+      "Paramagnetismo y especies isoelectrónicas"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        0,
+        1,
+        2
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        2
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    },
+    {
+     "id": "quimica.tabla-periodica",
+     "nombre": "Tabla periódica",
+     "temas": [
+      "Ley periódica",
+      "Periodos, grupos y bloques",
+      "Metales, no metales y semimetales",
+      "Notación de Lewis",
+      "Ubicación de un elemento",
+      "Radio atómico e iónico",
+      "Energía de ionización y afinidad electrónica",
+      "Electronegatividad"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        3
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        2
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    },
+    {
+     "id": "quimica.enlace-quimico",
+     "nombre": "Enlace químico y fuerzas intermoleculares",
+     "temas": [
+      "Regla del octeto",
+      "Enlace iónico",
+      "Enlace covalente y estructuras de Lewis",
+      "Resonancia",
+      "Hibridación y geometría molecular",
+      "Polaridad",
+      "Enlace metálico",
+      "Fuerzas intermoleculares"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        5,
+        6
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        3
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    },
+    {
+     "id": "quimica.nomenclatura-inorganica",
+     "nombre": "Nomenclatura inorgánica",
+     "temas": [
+      "Estados de oxidación",
+      "Tipos de nomenclatura",
+      "Óxidos e hidruros",
+      "Hidróxidos",
+      "Ácidos oxácidos e hidrácidos",
+      "Sales oxisales y haloideas",
+      "Sales ácidas, básicas e hidratadas",
+      "Peróxidos"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        7
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        4,
+        5
+       ]
+      }
+     },
+     "potencial_visual": "bajo",
+     "plantillas": []
+    },
+    {
+     "id": "quimica.mol-y-composicion",
+     "nombre": "Mol, masa molar y composición",
+     "temas": [
+      "Unidad de masa atómica y masa atómica promedio",
+      "Número de Avogadro y mol",
+      "Masa molar",
+      "Relaciones molares en una fórmula",
+      "Composición centesimal",
+      "Fórmula empírica y molecular",
+      "Leyes ponderales"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        8,
+        9
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        4,
+        5
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "quimica.reacciones-y-balance",
+     "nombre": "Reacciones químicas y balance",
+     "temas": [
+      "Evidencias de una reacción",
+      "Clasificación de las reacciones",
+      "Balance por tanteo",
+      "Oxidación, reducción y agentes",
+      "Balance redox por ion-electrón"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        8,
+        9
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        6
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    },
+    {
+     "id": "quimica.estequiometria",
+     "nombre": "Estequiometría",
+     "temas": [
+      "Relaciones masa-masa, mol-mol y volumen-volumen",
+      "Reactivo limitante y en exceso",
+      "Rendimiento de una reacción",
+      "Reactivos impuros",
+      "Equivalente químico y masa equivalente"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        9
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        6
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "quimica.gases",
+     "nombre": "Estado gaseoso",
+     "temas": [
+      "Presión y temperatura",
+      "Leyes de Boyle, Charles y Gay-Lussac",
+      "Ecuación de estado",
+      "Densidad y masa molar de un gas",
+      "Volumen molar y condiciones normales",
+      "Mezclas: Dalton y Amagat",
+      "Difusión y efusión: Graham",
+      "Estequiometría con gases"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        10,
+        11
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        8
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "quimica.liquidos-y-solidos",
+     "nombre": "Líquidos, sólidos y cambios de estado",
+     "temas": [
+      "Propiedades de los estados de agregación",
+      "Diagrama de fases",
+      "Tensión superficial, viscosidad y capilaridad",
+      "Presión de vapor y punto de ebullición",
+      "Gases húmedos y humedad relativa",
+      "Sólidos cristalinos y amorfos"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        10,
+        12
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        8
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    },
+    {
+     "id": "quimica.soluciones",
+     "nombre": "Soluciones y coloides",
+     "temas": [
+      "Sistemas dispersos: soluciones, coloides y suspensiones",
+      "Solubilidad y curvas de solubilidad",
+      "Concentración: porcentajes, molaridad, normalidad y molalidad",
+      "Dilución y mezcla de soluciones",
+      "Estequiometría en soluciones"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        13
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        9
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "quimica.cinetica-quimica",
+     "nombre": "Cinética química",
+     "temas": [
+      "Velocidad de reacción",
+      "Teoría de colisiones y complejo activado",
+      "Perfil de energía de una reacción",
+      "Factores que afectan la velocidad",
+      "Leyes de velocidad y orden de reacción",
+      "Vida media"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        13
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        10
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "quimica.equilibrio-quimico",
+     "nombre": "Equilibrio químico",
+     "temas": [
+      "Reacciones reversibles y equilibrio dinámico",
+      "Kc y Kp",
+      "Grado de reacción",
+      "Principio de Le Chatelier"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        13
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        10
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    },
+    {
+     "id": "quimica.acidos-y-bases",
+     "nombre": "Ácidos y bases",
+     "temas": [
+      "Teorías de Arrhenius, Brønsted-Lowry y Lewis",
+      "Pares conjugados y fuerza relativa",
+      "Ka, Kb y Kw",
+      "pH y pOH",
+      "Neutralización y titulación"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        14
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        11
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    },
+    {
+     "id": "quimica.electroquimica",
+     "nombre": "Electroquímica",
+     "temas": [
+      "Semirreacciones y potenciales de reducción",
+      "Celdas galvánicas y fem",
+      "Espontaneidad redox",
+      "Electrólisis",
+      "Leyes de Faraday",
+      "Diagrama de Pourbaix (solo San Marcos)"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        15
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        7
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    },
+    {
+     "id": "quimica.hidrocarburos",
+     "nombre": "Química orgánica: hidrocarburos",
+     "temas": [
+      "El carbono e hibridación",
+      "Tipos de fórmulas y cadenas",
+      "Alcanos, alquenos y alquinos",
+      "Cicloalcanos",
+      "Aromáticos",
+      "Isomería estructural y geométrica",
+      "Isomería óptica (solo San Marcos)",
+      "Tipos de reacciones orgánicas"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        16,
+        17
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        12
+       ]
+      }
+     },
+     "potencial_visual": "bajo",
+     "plantillas": []
+    },
+    {
+     "id": "quimica.funciones-organicas",
+     "nombre": "Funciones orgánicas oxigenadas y nitrogenadas",
+     "temas": [
+      "Grupos funcionales",
+      "Alcoholes, fenoles y éteres",
+      "Aldehídos y cetonas",
+      "Ácidos carboxílicos y ésteres",
+      "Aminas, amidas y nitrilos",
+      "Isomería de función",
+      "Nomenclatura de compuestos monofuncionales"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        17
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        13,
+        14,
+        15
+       ]
+      }
+     },
+     "potencial_visual": "bajo",
+     "plantillas": []
+    },
+    {
+     "id": "quimica.biomoleculas-y-productos-naturales",
+     "nombre": "Biomoléculas y productos naturales",
+     "temas": [
+      "Carbohidratos",
+      "Lípidos",
+      "Aminoácidos y proteínas",
+      "Vitaminas",
+      "Alcaloides y polifenoles",
+      "Colorantes naturales"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        18
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        13,
+        14,
+        15,
+        16
+       ]
+      }
+     },
+     "potencial_visual": "bajo",
+     "plantillas": []
+    },
+    {
+     "id": "quimica.recursos-naturales",
+     "nombre": "Petróleo y recursos naturales",
+     "temas": [
+      "Petróleo y refinación",
+      "Gasolina y octanaje",
+      "Gas natural y carbón",
+      "Combustión completa e incompleta",
+      "Recursos minerales del Perú (solo San Marcos)",
+      "Metalurgia del Fe, Cu, Pb, Zn, Au y Ag (solo San Marcos)"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        18
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        17
+       ]
+      }
+     },
+     "potencial_visual": "bajo",
+     "plantillas": []
+    },
+    {
+     "id": "quimica.ambiente-y-quimica-aplicada",
+     "nombre": "Contaminación ambiental y química aplicada",
+     "temas": [
+      "Ecosistemas y contaminantes",
+      "Efecto invernadero",
+      "Smog y lluvia ácida",
+      "Capa de ozono",
+      "Contaminación y potabilización del agua",
+      "Eutrofización",
+      "Reciclaje y tecnologías limpias",
+      "Nanotecnología, polímeros y corrosión (solo UNI)"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        18,
+        19,
+        20
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        18
+       ]
+      }
+     },
+     "potencial_visual": "bajo",
+     "plantillas": []
+    }
+   ]
+  },
+  {
+   "id": "algebra",
+   "nombre": "Álgebra",
+   "area": "matematica",
+   "formato_principal": "predicciones",
+   "unidades": [
+    {
+     "id": "algebra.logica-y-conjuntos",
+     "nombre": "Lógica, conjuntos y juegos lógicos",
+     "temas": [
+      "Proposiciones y conectores",
+      "Tautología y equivalencias",
+      "Condición necesaria y suficiente",
+      "Conjuntos y operaciones",
+      "Conjunto potencia y cardinalidad",
+      "Cuantificadores",
+      "Juegos lógicos: ordenamientos, parentescos y certezas"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        1,
+        2,
+        18
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    },
+    {
+     "id": "algebra.numeros-reales",
+     "nombre": "Números reales e intervalos",
+     "temas": [
+      "Axiomas de cuerpo y de orden",
+      "Desigualdades",
+      "Intervalos y sus operaciones",
+      "Conjuntos acotados y densidad",
+      "Operaciones binarias y tablas"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        2,
+        3
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        1
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    },
+    {
+     "id": "algebra.exponentes-y-productos-notables",
+     "nombre": "Exponentes, radicales y productos notables",
+     "temas": [
+      "Leyes de exponentes",
+      "Propiedades de radicales",
+      "Productos notables",
+      "Radicales dobles",
+      "Racionalización"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        2,
+        7
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        2,
+        5
+       ]
+      }
+     },
+     "potencial_visual": "bajo",
+     "plantillas": []
+    },
+    {
+     "id": "algebra.ecuaciones-lineales-y-cuadraticas",
+     "nombre": "Ecuaciones de primer y segundo grado",
+     "temas": [
+      "Ecuación de primer grado",
+      "Planteo de ecuaciones",
+      "Ecuación cuadrática y discriminante",
+      "Propiedades de las raíces",
+      "Interpretación geométrica"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        4
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        3
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    },
+    {
+     "id": "algebra.inecuaciones",
+     "nombre": "Inecuaciones",
+     "temas": [
+      "Inecuaciones lineales",
+      "Inecuaciones cuadráticas",
+      "Método de los puntos críticos",
+      "Inecuaciones de grado superior",
+      "Inecuaciones fraccionarias"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        4
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        3,
+        12
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    },
+    {
+     "id": "algebra.valor-absoluto-y-radicales",
+     "nombre": "Valor absoluto y ecuaciones con radicales",
+     "temas": [
+      "Valor absoluto y distancia",
+      "Ecuaciones e inecuaciones con valor absoluto",
+      "Ecuaciones con radicales",
+      "Inecuaciones con radicales"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        4
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        4,
+        11,
+        12
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    },
+    {
+     "id": "algebra.polinomios",
+     "nombre": "Polinomios",
+     "temas": [
+      "Grado absoluto y relativo",
+      "Valor numérico",
+      "Polinomios especiales",
+      "Igualdad de polinomios",
+      "Operaciones con polinomios"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        5
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        6
+       ]
+      }
+     },
+     "potencial_visual": "bajo",
+     "plantillas": []
+    },
+    {
+     "id": "algebra.division-de-polinomios",
+     "nombre": "División de polinomios y cocientes notables",
+     "temas": [
+      "Algoritmo de la división",
+      "Métodos de Horner y Ruffini",
+      "Teorema del resto",
+      "Divisibilidad de polinomios",
+      "Cocientes notables y término general"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        6
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        7,
+        10
+       ]
+      }
+     },
+     "potencial_visual": "bajo",
+     "plantillas": []
+    },
+    {
+     "id": "algebra.factorizacion",
+     "nombre": "Factorización",
+     "temas": [
+      "Factor común e identidades",
+      "Aspa simple, doble y doble especial",
+      "Divisores binómicos",
+      "Teorema del factor",
+      "MCD y MCM de polinomios"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        7
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        8
+       ]
+      }
+     },
+     "potencial_visual": "bajo",
+     "plantillas": []
+    },
+    {
+     "id": "algebra.ecuaciones-polinomiales",
+     "nombre": "Ecuaciones polinomiales",
+     "temas": [
+      "Teorema fundamental del álgebra",
+      "Relaciones entre raíces y coeficientes",
+      "Raíces racionales",
+      "Paridad de raíces irracionales y complejas",
+      "Ecuaciones bicuadradas y recíprocas",
+      "Ecuación binómica"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        4,
+        10
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        9,
+        11
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    },
+    {
+     "id": "algebra.funciones",
+     "nombre": "Funciones y sus gráficas",
+     "temas": [
+      "Dominio y rango",
+      "Funciones lineal y cuadrática",
+      "Valor absoluto, raíz cuadrada, signo y máximo entero",
+      "Operaciones y composición de funciones",
+      "Traslaciones y reflexiones de gráficas",
+      "Gráfica de una función polinomial"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        8,
+        9,
+        10
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        13
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "algebra.tipos-de-funciones-e-inversa",
+     "nombre": "Tipos de funciones y función inversa",
+     "temas": [
+      "Funciones par e impar",
+      "Funciones monótonas y acotadas",
+      "Inyectiva, sobreyectiva y biyectiva",
+      "Función inversa",
+      "Modelación con funciones"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        8,
+        10
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        14
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "algebra.exponenciales-y-logaritmos",
+     "nombre": "Exponenciales y logaritmos",
+     "temas": [
+      "Función exponencial",
+      "Logaritmo y propiedades",
+      "El número e",
+      "Función logarítmica",
+      "Ecuaciones exponenciales y logarítmicas",
+      "Inecuaciones exponenciales y logarítmicas"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        11
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        15
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "algebra.numeros-complejos",
+     "nombre": "Números complejos",
+     "temas": [
+      "Unidad imaginaria",
+      "Forma binómica y operaciones",
+      "Conjugado y módulo",
+      "Forma polar y exponencial",
+      "Fórmula de De Moivre y raíces",
+      "Regiones en el plano complejo"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        12
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        5
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "algebra.matrices-y-determinantes",
+     "nombre": "Matrices y determinantes",
+     "temas": [
+      "Tipos de matrices",
+      "Operaciones con matrices",
+      "Traza y transpuesta",
+      "Determinantes y propiedades",
+      "Matriz inversa y adjunta",
+      "Rango de una matriz"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        13,
+        14,
+        16
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        16
+       ]
+      }
+     },
+     "potencial_visual": "bajo",
+     "plantillas": []
+    },
+    {
+     "id": "algebra.sistemas-de-ecuaciones",
+     "nombre": "Sistemas de ecuaciones",
+     "temas": [
+      "Sistemas lineales 2x2 e interpretación gráfica",
+      "Sistemas 3x3",
+      "Regla de Cramer",
+      "Método de Gauss",
+      "Compatibilidad: Rouché-Frobenius",
+      "Sistemas no lineales"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        15,
+        16
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        17
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "algebra.programacion-lineal",
+     "nombre": "Inecuaciones con dos variables y programación lineal",
+     "temas": [
+      "Inecuaciones con dos variables",
+      "Sistemas de inecuaciones",
+      "Región factible",
+      "Función objetivo",
+      "Método gráfico de optimización"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        16,
+        17
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        18
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "algebra.sucesiones-y-series",
+     "nombre": "Sucesiones y series",
+     "temas": [
+      "Sucesiones monótonas y acotadas",
+      "Límite de sucesiones",
+      "Sucesiones recurrentes y Fibonacci",
+      "Sumas notables y series telescópicas",
+      "Serie geométrica y convergencia",
+      "Progresiones aritméticas y geométricas"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        18,
+        19,
+        20
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    },
+    {
+     "id": "algebra.binomio-de-newton",
+     "nombre": "Binomio de Newton",
+     "temas": [
+      "Desarrollo del binomio",
+      "Término general",
+      "Binomio con exponente no natural",
+      "Potencia de un polinomio"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        20
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        10
+       ]
+      }
+     },
+     "potencial_visual": "bajo",
+     "plantillas": []
+    }
+   ]
+  },
+  {
+   "id": "aritmetica",
+   "nombre": "Aritmética",
+   "area": "matematica",
+   "formato_principal": "predicciones",
+   "unidades": [
+    {
+     "id": "aritmetica.logica-proposicional",
+     "nombre": "Lógica proposicional",
+     "temas": [
+      "Proposiciones simples y compuestas",
+      "Conectivos lógicos",
+      "Tablas de verdad",
+      "Tautología, contradicción y contingencia",
+      "Leyes lógicas",
+      "Cuantificadores"
+     ],
+     "universidades": {
+      "unmsm": {
+       "temas": [
+        1
+       ]
+      }
+     },
+     "potencial_visual": "bajo",
+     "plantillas": []
+    },
+    {
+     "id": "aritmetica.conjuntos",
+     "nombre": "Conjuntos",
+     "temas": [
+      "Determinación de conjuntos",
+      "Pertenencia e inclusión",
+      "Conjuntos especiales",
+      "Conjunto potencia",
+      "Operaciones con conjuntos",
+      "Diagramas de Venn y Carroll",
+      "Producto cartesiano"
+     ],
+     "universidades": {
+      "unmsm": {
+       "temas": [
+        2,
+        3
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "aritmetica.razones-y-proporciones",
+     "nombre": "Razones y proporciones",
+     "temas": [
+      "Razón aritmética y geométrica",
+      "Proporciones discretas y continuas",
+      "Medias aritmética, geométrica y armónica",
+      "Serie de razones geométricas equivalentes"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        0,
+        1
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        10
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    },
+    {
+     "id": "aritmetica.magnitudes-proporcionales",
+     "nombre": "Magnitudes proporcionales y reparto",
+     "temas": [
+      "Magnitudes directa e inversamente proporcionales",
+      "Gráficas de proporcionalidad",
+      "Regla de tres simple y compuesta",
+      "Reparto proporcional",
+      "Regla de compañía"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        1,
+        2
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        11
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "aritmetica.porcentajes",
+     "nombre": "Tanto por ciento y operaciones comerciales",
+     "temas": [
+      "Tanto por cuanto",
+      "Aumentos y descuentos sucesivos",
+      "Variación porcentual",
+      "Precio de costo, de lista y de venta",
+      "Ganancia y pérdida",
+      "IGV"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        3
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        12
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    },
+    {
+     "id": "aritmetica.interes-y-descuento",
+     "nombre": "Interés y descuento",
+     "temas": [
+      "Interés simple",
+      "Interés compuesto y continuo",
+      "Tasas nominal, efectiva y equivalentes",
+      "Valor presente y futuro",
+      "Descuento comercial y racional",
+      "Letras de cambio y vencimiento común"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        4,
+        5
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        13
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    },
+    {
+     "id": "aritmetica.mezclas-y-aleaciones",
+     "nombre": "Mezclas y aleaciones",
+     "temas": [
+      "Precio medio",
+      "Mezclas alcohólicas",
+      "Regla del aspa",
+      "Aleaciones y ley del oro en quilates"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        6
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        14
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    },
+    {
+     "id": "aritmetica.estadistica",
+     "nombre": "Estadística descriptiva",
+     "temas": [
+      "Población, muestra y variables",
+      "Tablas de frecuencias",
+      "Gráficos estadísticos",
+      "Media, mediana y moda",
+      "Medias ponderada, geométrica y armónica",
+      "Cuartiles y percentiles",
+      "Varianza, desviación estándar y coeficiente de variación"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        7,
+        8,
+        9
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        16
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "aritmetica.analisis-combinatorio",
+     "nombre": "Análisis combinatorio",
+     "temas": [
+      "Principios de adición y multiplicación",
+      "Factorial",
+      "Variaciones",
+      "Permutaciones lineales y circulares",
+      "Permutaciones con repetición",
+      "Combinaciones y números combinatorios"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        9,
+        10
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        17
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    },
+    {
+     "id": "aritmetica.probabilidades",
+     "nombre": "Probabilidades",
+     "temas": [
+      "Experimento aleatorio y espacio muestral",
+      "Eventos y álgebra de eventos",
+      "Probabilidad clásica y frecuencial",
+      "Eventos excluyentes e independientes",
+      "Probabilidad condicional",
+      "Probabilidad total y Bayes",
+      "Variable aleatoria discreta y esperanza"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        10,
+        11
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        18
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    },
+    {
+     "id": "aritmetica.numeracion",
+     "nombre": "Sistemas de numeración",
+     "temas": [
+      "Base de un sistema",
+      "Descomposición polinómica",
+      "Cambio de base",
+      "Conteo de números y cifras"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        11,
+        12
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        4
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    },
+    {
+     "id": "aritmetica.cuatro-operaciones",
+     "nombre": "Las cuatro operaciones",
+     "temas": [
+      "Adición y sumatorias",
+      "Sustracción y complemento aritmético",
+      "Multiplicación",
+      "Operaciones en otras bases",
+      "División entera por defecto y por exceso",
+      "Cantidad de cifras de un producto o cociente"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        12,
+        13,
+        14
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        4,
+        5
+       ]
+      }
+     },
+     "potencial_visual": "bajo",
+     "plantillas": []
+    },
+    {
+     "id": "aritmetica.divisibilidad",
+     "nombre": "Divisibilidad",
+     "temas": [
+      "Múltiplos y divisores",
+      "Teoremas de la divisibilidad",
+      "Restos potenciales",
+      "Criterios de divisibilidad",
+      "Ecuaciones diofánticas lineales"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        14,
+        15
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        5
+       ]
+      }
+     },
+     "potencial_visual": "bajo",
+     "plantillas": []
+    },
+    {
+     "id": "aritmetica.numeros-primos-y-divisores",
+     "nombre": "Números primos y divisores",
+     "temas": [
+      "Primos y compuestos",
+      "Números PESI",
+      "Criba de Eratóstenes",
+      "Teorema fundamental de la aritmética",
+      "Cantidad, suma y producto de divisores",
+      "Función de Euler",
+      "Teoremas de Fermat y Wilson"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        15,
+        16
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        6
+       ]
+      }
+     },
+     "potencial_visual": "bajo",
+     "plantillas": []
+    },
+    {
+     "id": "aritmetica.mcd-y-mcm",
+     "nombre": "MCD y MCM",
+     "temas": [
+      "Máximo común divisor",
+      "Mínimo común múltiplo",
+      "Algoritmo de Euclides",
+      "Relación entre MCD y MCM",
+      "Fracciones continuas",
+      "Problemas de aplicación"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        17
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        7
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    },
+    {
+     "id": "aritmetica.numeros-racionales",
+     "nombre": "Números racionales, fracciones y decimales",
+     "temas": [
+      "Racionales como clases de equivalencia",
+      "Racionales e irracionales",
+      "Clases de fracciones",
+      "Orden entre fracciones",
+      "Decimales exactos y periódicos",
+      "Fracción generatriz",
+      "Números en otras bases"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        18,
+        19
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        8,
+        9
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    },
+    {
+     "id": "aritmetica.potenciacion-y-radicacion",
+     "nombre": "Potenciación y radicación",
+     "temas": [
+      "Cuadrados y cubos perfectos",
+      "Criterios de inclusión y exclusión",
+      "Raíz cuadrada y cúbica entera",
+      "Raíces aproximadas"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        20
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        4
+       ]
+      }
+     },
+     "potencial_visual": "bajo",
+     "plantillas": []
+    },
+    {
+     "id": "aritmetica.sucesiones-y-series",
+     "nombre": "Sucesiones y series numéricas",
+     "temas": [
+      "Progresión aritmética y cantidad de términos",
+      "Progresión geométrica",
+      "Sumas notables",
+      "Sucesiones de orden superior",
+      "Sumas infinitas"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        12
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        15
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    },
+    {
+     "id": "aritmetica.razonamiento-numerico",
+     "nombre": "Problemas de razonamiento numérico",
+     "temas": [
+      "Falsa suposición",
+      "Método regresivo",
+      "Móviles",
+      "Edades",
+      "Criptoaritmética",
+      "Suficiencia de datos",
+      "Distribuciones numéricas"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        20
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    }
+   ]
+  },
+  {
+   "id": "geometria",
+   "nombre": "Geometría",
+   "area": "matematica",
+   "formato_principal": "escena",
+   "unidades": [
+    {
+     "id": "geometria.segmentos-y-angulos",
+     "nombre": "Segmentos y ángulos",
+     "temas": [
+      "Punto, recta y plano",
+      "Segmentos y su medida",
+      "Clases de ángulos",
+      "Bisectriz",
+      "Ángulos complementarios y suplementarios",
+      "Rectas paralelas y una secante"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        0,
+        1
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        1,
+        2
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "geometria.triangulos",
+     "nombre": "Triángulos y líneas notables",
+     "temas": [
+      "Clasificación",
+      "Suma de ángulos internos y ángulo externo",
+      "Desigualdad triangular",
+      "Líneas notables",
+      "Ángulos formados por bisectrices"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        1
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        2,
+        3
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "geometria.congruencia",
+     "nombre": "Congruencia de triángulos",
+     "temas": [
+      "Criterios LAL, ALA y LLL",
+      "Teorema de la mediatriz y de la bisectriz",
+      "Teorema de la base media",
+      "Mediana relativa a la hipotenusa",
+      "Triángulos rectángulos notables"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        2
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        2,
+        4
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "geometria.poligonos-y-cuadrilateros",
+     "nombre": "Polígonos y cuadriláteros",
+     "temas": [
+      "Suma de ángulos internos y externos",
+      "Número de diagonales",
+      "Paralelogramos",
+      "Trapecios",
+      "Trapezoides"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        3
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        4,
+        5
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "geometria.circunferencia",
+     "nombre": "Circunferencia y ángulos en ella",
+     "temas": [
+      "Elementos y teoremas de tangencia",
+      "Posiciones relativas de dos circunferencias",
+      "Teoremas de Poncelet y Pitot",
+      "Ángulos central, inscrito, semiinscrito, interior y exterior",
+      "Cuadrilátero inscrito e inscriptible"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        4,
+        5
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        6,
+        7
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "geometria.proporcionalidad-y-semejanza",
+     "nombre": "Proporcionalidad y semejanza",
+     "temas": [
+      "Teorema de Thales",
+      "Teoremas de la bisectriz y del incentro",
+      "Menelao y Ceva",
+      "Criterios de semejanza de triángulos"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        5,
+        6
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        8
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "geometria.puntos-notables",
+     "nombre": "Puntos notables del triángulo",
+     "temas": [
+      "Baricentro, incentro, circuncentro, ortocentro y excentro",
+      "Propiedades de los puntos notables",
+      "Recta y circunferencia de Euler"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        6,
+        7
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        7
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "geometria.relaciones-metricas",
+     "nombre": "Relaciones métricas",
+     "temas": [
+      "Teorema de Pitágoras y relaciones en el triángulo rectángulo",
+      "Teorema de Euclides o de la proyección",
+      "Teoremas de Stewart y de la mediana",
+      "Longitud de la bisectriz",
+      "Teorema de Herón",
+      "Cuerdas, secantes y tangente",
+      "Teoremas de Ptolomeo y Viette"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        7,
+        8
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        9
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "geometria.poligonos-regulares",
+     "nombre": "Polígonos regulares",
+     "temas": [
+      "Ángulo central y apotema",
+      "Polígonos regulares inscritos notables",
+      "Polígono de 2n lados",
+      "Sección áurea"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        8,
+        9
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        4
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "geometria.simetria",
+     "nombre": "Simetría en el plano y en el espacio",
+     "temas": [
+      "Simetría respecto de un punto",
+      "Simetría respecto de una recta",
+      "Simetría respecto de un plano"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        9,
+        15
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "geometria.areas-poligonales",
+     "nombre": "Áreas de regiones triangulares y cuadrangulares",
+     "temas": [
+      "Área del triángulo con distintos datos",
+      "Relación entre áreas de triángulos",
+      "Área de paralelogramos y rombos",
+      "Área de trapecios y trapezoides",
+      "Relaciones entre áreas de cuadriláteros"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        10,
+        11
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        10,
+        11
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "geometria.longitud-y-areas-circulares",
+     "nombre": "Longitud de la circunferencia y áreas circulares",
+     "temas": [
+      "Número pi y longitud de la circunferencia",
+      "Longitud de arco",
+      "Área del círculo y sector circular",
+      "Segmento y corona circular",
+      "Trapecio circular, lúnula y otras regiones"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        10,
+        12
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        11
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "geometria.geometria-del-espacio",
+     "nombre": "Rectas y planos en el espacio",
+     "temas": [
+      "Recta perpendicular a un plano",
+      "Teorema de las tres perpendiculares",
+      "Distancia entre rectas cruzadas",
+      "Proyección ortogonal",
+      "Ángulo entre recta y plano",
+      "Ángulo diedro",
+      "Ángulo triedro"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        12,
+        13,
+        14
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        12
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "geometria.poliedros",
+     "nombre": "Poliedros",
+     "temas": [
+      "Elementos y clasificación",
+      "Teorema de Euler",
+      "Poliedros regulares"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        14,
+        15
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        13
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "geometria.prisma-y-piramide",
+     "nombre": "Prisma y pirámide",
+     "temas": [
+      "Prisma recto, oblicuo y regular",
+      "Paralelepípedos y cubo",
+      "Tronco de prisma",
+      "Pirámide regular y apotema",
+      "Tronco de pirámide",
+      "Áreas y volúmenes",
+      "Semejanza de sólidos"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        16,
+        17
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        13,
+        14
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "geometria.solidos-de-revolucion",
+     "nombre": "Cilindro, cono y esfera",
+     "temas": [
+      "Cilindro y tronco de cilindro",
+      "Cono y tronco de cono",
+      "Desarrollos de superficies",
+      "Superficie esférica, zona y casquete",
+      "Esfera y sus partes",
+      "Teorema de Pappus-Guldin"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        18,
+        19,
+        20
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        14,
+        15
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "geometria.geometria-analitica",
+     "nombre": "Geometría analítica",
+     "temas": [
+      "Distancia y punto que divide un segmento",
+      "Pendiente y ecuación de la recta",
+      "Distancia de un punto a una recta",
+      "Ecuación de la circunferencia",
+      "Parábola",
+      "Elipse"
+     ],
+     "universidades": {
+      "unmsm": {
+       "temas": [
+        16,
+        17,
+        18
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "geometria.razonamiento-con-figuras",
+     "nombre": "Razonamiento con figuras",
+     "temas": [
+      "Perímetros de figuras",
+      "Series y analogías de figuras",
+      "Distribución de figuras",
+      "Conteo de figuras, rutas y cubos"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        6,
+        10,
+        12,
+        20
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    }
+   ]
+  },
+  {
+   "id": "trigonometria",
+   "nombre": "Trigonometría",
+   "area": "matematica",
+   "formato_principal": "escena",
+   "unidades": [
+    {
+     "id": "trigonometria.angulo-trigonometrico",
+     "nombre": "Ángulo trigonométrico y sistemas de medida",
+     "temas": [
+      "Sentido de giro y signo",
+      "Sistemas sexagesimal, centesimal y radial",
+      "Radián",
+      "Conversión entre sistemas"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        0
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        1
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "trigonometria.longitud-de-arco-y-sector",
+     "nombre": "Longitud de arco y sector circular",
+     "temas": [
+      "Longitud de arco",
+      "Área del sector y del trapecio circular",
+      "Número de vueltas de una rueda",
+      "Ruedas, poleas y engranajes"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        2
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        2
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "trigonometria.razones-trigonometricas-agudas",
+     "nombre": "Razones trigonométricas de ángulos agudos",
+     "temas": [
+      "Definición en el triángulo rectángulo",
+      "Ángulos notables",
+      "Ángulos aproximados (37°, 53°, 16°, 74°)",
+      "Razones recíprocas y complementarias"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        1
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        3,
+        4
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "trigonometria.triangulos-rectangulos",
+     "nombre": "Resolución de triángulos rectángulos",
+     "temas": [
+      "Resolver con un lado y un ángulo",
+      "Ángulos de elevación y depresión",
+      "Ángulo de observación"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        1
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        3,
+        12
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "trigonometria.recta-en-el-plano",
+     "nombre": "Plano cartesiano y la recta",
+     "temas": [
+      "Distancia entre dos puntos",
+      "División de un segmento y punto medio",
+      "Baricentro y área con coordenadas",
+      "Pendiente e inclinación",
+      "Ecuaciones de la recta",
+      "Paralelas, perpendiculares y distancia a una recta"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        3
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "trigonometria.angulos-en-posicion-normal",
+     "nombre": "Ángulos en posición normal",
+     "temas": [
+      "Razones de un ángulo en posición normal",
+      "Signos por cuadrante",
+      "Ángulos coterminales",
+      "Ángulos cuadrantales",
+      "Ángulos negativos"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        4
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        5
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "trigonometria.reduccion-al-primer-cuadrante",
+     "nombre": "Reducción al primer cuadrante",
+     "temas": [
+      "Ángulos menores de una vuelta",
+      "Ángulos mayores de una vuelta",
+      "Ángulos negativos",
+      "Ángulos suplementarios y de una vuelta"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        5
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        6
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "trigonometria.circunferencia-trigonometrica",
+     "nombre": "Circunferencia trigonométrica",
+     "temas": [
+      "Elementos y arcos dirigidos",
+      "Ubicación de números reales",
+      "Líneas seno y coseno",
+      "Líneas tangente y cotangente",
+      "Líneas secante y cosecante",
+      "Variación de las líneas por cuadrante"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        5,
+        6
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        13,
+        14
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "trigonometria.identidades-fundamentales",
+     "nombre": "Identidades trigonométricas fundamentales",
+     "temas": [
+      "Identidades recíprocas y por división",
+      "Identidades pitagóricas",
+      "Identidades auxiliares",
+      "Simplificación y demostración"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        6
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        7
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    },
+    {
+     "id": "trigonometria.arcos-compuestos",
+     "nombre": "Suma y diferencia de ángulos",
+     "temas": [
+      "Seno, coseno y tangente de la suma y la diferencia",
+      "Identidades auxiliares",
+      "Suma de tres ángulos"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        7
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        8
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    },
+    {
+     "id": "trigonometria.arcos-multiples",
+     "nombre": "Ángulo doble, mitad y triple",
+     "temas": [
+      "Identidades del ángulo doble",
+      "Degradación de potencias",
+      "Ángulo mitad",
+      "Ángulo triple"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        7,
+        8
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        9
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    },
+    {
+     "id": "trigonometria.transformaciones-trigonometricas",
+     "nombre": "Transformaciones y series trigonométricas",
+     "temas": [
+      "Suma a producto",
+      "Producto a suma",
+      "Sumatorias de senos y cosenos",
+      "Productorias trigonométricas"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        8,
+        9
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        10
+       ]
+      }
+     },
+     "potencial_visual": "bajo",
+     "plantillas": []
+    },
+    {
+     "id": "trigonometria.funciones-trigonometricas",
+     "nombre": "Funciones trigonométricas",
+     "temas": [
+      "Funciones seno y coseno",
+      "Amplitud, periodo y frecuencia",
+      "Funciones tangente y cotangente",
+      "Funciones secante y cosecante",
+      "Periodo de funciones generalizadas"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        9,
+        10,
+        11
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        15,
+        16
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "trigonometria.funciones-trigonometricas-inversas",
+     "nombre": "Funciones trigonométricas inversas",
+     "temas": [
+      "Arco seno, arco coseno y arco tangente",
+      "Arco cotangente, arco secante y arco cosecante",
+      "Dominio, rango y gráfica",
+      "Propiedades"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        11,
+        12
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        17,
+        18
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "trigonometria.ecuaciones-trigonometricas",
+     "nombre": "Ecuaciones trigonométricas",
+     "temas": [
+      "Ecuaciones elementales",
+      "Solución general y particular",
+      "Ecuaciones no elementales",
+      "Sistemas de ecuaciones trigonométricas"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        13
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        11
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "trigonometria.triangulos-oblicuangulos",
+     "nombre": "Resolución de triángulos oblicuángulos",
+     "temas": [
+      "Ley de senos",
+      "Ley de cosenos",
+      "Leyes de proyecciones y de tangentes",
+      "Ángulos horizontales y rumbos"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        14
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        12
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "trigonometria.areas-y-lineas-notables",
+     "nombre": "Áreas y líneas notables con trigonometría",
+     "temas": [
+      "Área de un triángulo con dos lados y el ángulo",
+      "Área con inradio, circunradio y exradio",
+      "Fórmula de Herón y semiángulos",
+      "Longitud de cevianas, bisectrices y medianas",
+      "Área de un cuadrilátero"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        15,
+        16
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        3
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "trigonometria.conicas",
+     "nombre": "Lugar geométrico y cónicas",
+     "temas": [
+      "Lugar geométrico",
+      "Parábola",
+      "Elipse",
+      "Hipérbola",
+      "Recta tangente a una cónica",
+      "Rotación de ejes",
+      "Ecuación general de segundo grado"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        17,
+        18,
+        19
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "trigonometria.coordenadas-polares-y-complejos",
+     "nombre": "Coordenadas polares y números complejos",
+     "temas": [
+      "Coordenadas polares",
+      "Forma trigonométrica de un complejo",
+      "Teorema de De Moivre",
+      "Forma exponencial"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        20
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    }
+   ]
+  },
+  {
+   "id": "razonamiento-matematico",
+   "nombre": "Razonamiento matemático",
+   "area": "razonamiento",
+   "formato_principal": "escena",
+   "unidades": [
+    {
+     "id": "razonamiento-matematico.razonamiento-deductivo",
+     "nombre": "Razonamiento deductivo y parentesco",
+     "temas": [
+      "Diagramas lineales y de Venn-Euler",
+      "Deductivo directo e indirecto",
+      "Cuadros de doble entrada",
+      "Parentesco"
+     ],
+     "universidades": {
+      "unmsm": {
+       "temas": [
+        1,
+        2,
+        18
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    },
+    {
+     "id": "razonamiento-matematico.trazos-y-perimetros",
+     "nombre": "Trazos de figuras y perímetros",
+     "temas": [
+      "Figuras de un solo trazo",
+      "Longitud mínima de un recorrido",
+      "Perímetros de figuras poligonales",
+      "Perímetros de figuras circulares"
+     ],
+     "universidades": {
+      "unmsm": {
+       "temas": [
+        1,
+        2,
+        3,
+        4
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "razonamiento-matematico.ordenamiento-de-informacion",
+     "nombre": "Ordenamiento de información",
+     "temas": [
+      "Ordenamiento lineal",
+      "Ordenamiento circular",
+      "Ordenamiento poligonal"
+     ],
+     "universidades": {
+      "unmsm": {
+       "temas": [
+        3
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "razonamiento-matematico.verdades-y-mentiras",
+     "nombre": "Verdades y mentiras",
+     "temas": [
+      "Método de suposición",
+      "Afirmaciones contradictorias",
+      "Personajes que siempre mienten o dicen la verdad"
+     ],
+     "universidades": {
+      "unmsm": {
+       "temas": [
+        4
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    },
+    {
+     "id": "razonamiento-matematico.traslados-y-puntos-cardinales",
+     "nombre": "Traslados y puntos cardinales",
+     "temas": [
+      "Traslado de fichas y figuras",
+      "Traslado de números",
+      "Puntos cardinales y orientación"
+     ],
+     "universidades": {
+      "unmsm": {
+       "temas": [
+        5
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "razonamiento-matematico.arreglos-numericos",
+     "nombre": "Arreglos numéricos y cuadrados mágicos",
+     "temas": [
+      "Arreglos en polígonos",
+      "Cuadrados mágicos",
+      "Distribución de números con condiciones"
+     ],
+     "universidades": {
+      "unmsm": {
+       "temas": [
+        6
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    },
+    {
+     "id": "razonamiento-matematico.razonamiento-inductivo",
+     "nombre": "Razonamiento inductivo",
+     "temas": [
+      "Inducción numérica",
+      "Inducción verbal",
+      "Inducción con figuras"
+     ],
+     "universidades": {
+      "unmsm": {
+       "temas": [
+        7
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    },
+    {
+     "id": "razonamiento-matematico.juegos-recreativos",
+     "nombre": "Elementos recreativos",
+     "temas": [
+      "Dominó",
+      "Dados",
+      "Fichas y cerillas"
+     ],
+     "universidades": {
+      "unmsm": {
+       "temas": [
+        8
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "razonamiento-matematico.cronometria-y-calendarios",
+     "nombre": "Relojes y calendarios",
+     "temas": [
+      "Adelantos y atrasos",
+      "Ángulo entre las agujas del reloj",
+      "Campanadas",
+      "Años normales y bisiestos",
+      "Día de la semana de una fecha"
+     ],
+     "universidades": {
+      "unmsm": {
+       "temas": [
+        8,
+        9,
+        16
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    },
+    {
+     "id": "razonamiento-matematico.certezas",
+     "nombre": "Certezas",
+     "temas": [
+      "Extracción de objetos",
+      "Peor caso",
+      "Identificación de objetos"
+     ],
+     "universidades": {
+      "unmsm": {
+       "temas": [
+        9
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    },
+    {
+     "id": "razonamiento-matematico.frecuencia-de-sucesos",
+     "nombre": "Frecuencia de sucesos",
+     "temas": [
+      "Pastillas y recetas",
+      "Dietas y turnos",
+      "Número de campanadas"
+     ],
+     "universidades": {
+      "unmsm": {
+       "temas": [
+        10
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    },
+    {
+     "id": "razonamiento-matematico.ruedas-poleas-engranajes",
+     "nombre": "Ruedas, poleas y engranajes",
+     "temas": [
+      "Engranajes en contacto",
+      "Ruedas unidas por faja",
+      "Ruedas en un mismo eje",
+      "Número de vueltas"
+     ],
+     "universidades": {
+      "unmsm": {
+       "temas": [
+        10
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "razonamiento-matematico.maximos-y-minimos",
+     "nombre": "Máximos y mínimos",
+     "temas": [
+      "Cantidad mínima de personas u objetos",
+      "Precios máximos y mínimos",
+      "Regiones pintadas",
+      "Recorridos mínimos con reflejos y simetrías"
+     ],
+     "universidades": {
+      "unmsm": {
+       "temas": [
+        11
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    },
+    {
+     "id": "razonamiento-matematico.cortes-y-pesadas",
+     "nombre": "Cortes, pesadas y balanzas",
+     "temas": [
+      "Cortes rectos de objetos",
+      "Equilibrio de objetos",
+      "Balanzas y pesas",
+      "Número mínimo de pesadas"
+     ],
+     "universidades": {
+      "unmsm": {
+       "temas": [
+        12,
+        13
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "razonamiento-matematico.planteo-de-ecuaciones",
+     "nombre": "Planteo de ecuaciones",
+     "temas": [
+      "Del enunciado a la ecuación",
+      "Ecuaciones lineales",
+      "Ecuaciones cuadráticas",
+      "Sistemas de ecuaciones"
+     ],
+     "universidades": {
+      "unmsm": {
+       "temas": [
+        12
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    },
+    {
+     "id": "razonamiento-matematico.transformaciones-de-figuras",
+     "nombre": "Movimiento y comparación de figuras",
+     "temas": [
+      "Congruencia de figuras",
+      "Rotación y traslación",
+      "Rodamiento y recorrido de un punto",
+      "Área de la región generada",
+      "Semejanza de figuras",
+      "Aplicaciones de áreas"
+     ],
+     "universidades": {
+      "unmsm": {
+       "temas": [
+        13,
+        14,
+        15
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "razonamiento-matematico.rutas-y-visualizacion-espacial",
+     "nombre": "Rutas y visualización espacial",
+     "temas": [
+      "Rutas en el plano",
+      "Rutas en el espacio",
+      "Proyecciones principales de un sólido"
+     ],
+     "universidades": {
+      "unmsm": {
+       "temas": [
+        15,
+        16
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "plantillas": []
+    },
+    {
+     "id": "razonamiento-matematico.tablas-graficos-y-suficiencia",
+     "nombre": "Tablas, gráficos y suficiencia de datos",
+     "temas": [
+      "Lectura de tablas y gráficos",
+      "Situaciones deportivas",
+      "Suficiencia de datos"
+     ],
+     "universidades": {
+      "unmsm": {
+       "temas": [
+        17
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    }
+   ]
+  },
+  {
+   "id": "razonamiento-verbal",
+   "nombre": "Razonamiento verbal",
+   "area": "razonamiento",
+   "formato_principal": "lectura",
+   "unidades": [
+    {
+     "id": "razonamiento-verbal.definiciones",
+     "nombre": "Definiciones",
+     "temas": [
+      "Género próximo",
+      "Diferencia específica",
+      "Rasgos mínimos de significado"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        0,
+        1
+       ]
+      }
+     },
+     "potencial_visual": "bajo",
+     "plantillas": []
+    },
+    {
+     "id": "razonamiento-verbal.analogias",
+     "nombre": "Analogías",
+     "temas": [
+      "Sinonimia y antonimia",
+      "Género y especie",
+      "Causa y efecto",
+      "Parte y todo",
+      "Agente e instrumento"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        2
+       ]
+      }
+     },
+     "potencial_visual": "bajo",
+     "plantillas": []
+    },
+    {
+     "id": "razonamiento-verbal.sentido-contextual",
+     "nombre": "Precisión léxica y sentido contextual",
+     "temas": [
+      "Denotación y connotación",
+      "Precisión léxica",
+      "Sinónimos en contexto",
+      "Antónimos en contexto",
+      "Inferencias léxicas"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        3,
+        4,
+        16
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        3
+       ]
+      }
+     },
+     "potencial_visual": "bajo",
+     "plantillas": []
+    },
+    {
+     "id": "razonamiento-verbal.conectores",
+     "nombre": "Conectores lógico-textuales",
+     "temas": [
+      "Clases de conectores",
+      "Conectores de adición, contraste y causa",
+      "Locuciones conjuntivas"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        5
+       ]
+      }
+     },
+     "potencial_visual": "bajo",
+     "plantillas": []
+    },
+    {
+     "id": "razonamiento-verbal.eliminacion-de-oraciones",
+     "nombre": "Eliminación de oraciones",
+     "temas": [
+      "Redundancia",
+      "Impertinencia",
+      "Incompatibilidad"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        6
+       ]
+      }
+     },
+     "potencial_visual": "bajo",
+     "plantillas": []
+    },
+    {
+     "id": "razonamiento-verbal.plan-de-redaccion",
+     "nombre": "Plan de redacción",
+     "temas": [
+      "Tema y subtemas",
+      "Secuencia cronológica",
+      "Secuencia causa-efecto",
+      "Secuencias de análisis y comparación"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        7
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    },
+    {
+     "id": "razonamiento-verbal.cohesion-y-coherencia",
+     "nombre": "Cohesión y coherencia textual",
+     "temas": [
+      "Inclusión de enunciado",
+      "Progresión temática: tópico y comento",
+      "Repetición, sustitución y elipsis",
+      "Anáfora y catáfora",
+      "Principio de no contradicción"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        8,
+        9
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        6,
+        7
+       ]
+      }
+     },
+     "potencial_visual": "bajo",
+     "plantillas": []
+    },
+    {
+     "id": "razonamiento-verbal.tipologia-textual",
+     "nombre": "El texto y sus tipos",
+     "temas": [
+      "Texto y normas de textualidad",
+      "Niveles de comprensión lectora",
+      "Textos expositivos",
+      "Textos narrativos y descriptivos",
+      "Textos argumentativos"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        10,
+        12
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        1,
+        2
+       ]
+      }
+     },
+     "potencial_visual": "bajo",
+     "plantillas": []
+    },
+    {
+     "id": "razonamiento-verbal.tema-e-idea-principal",
+     "nombre": "Tema central e idea principal",
+     "temas": [
+      "Jerarquía textual",
+      "Tema central",
+      "Idea principal e ideas secundarias",
+      "Subrayado",
+      "Mapas conceptuales"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        11,
+        14
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        4
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    },
+    {
+     "id": "razonamiento-verbal.resumen-y-sintesis",
+     "nombre": "Resumen y síntesis",
+     "temas": [
+      "Resumen literal",
+      "Paráfrasis",
+      "Resumen interpretativo",
+      "Síntesis"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        15
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        5
+       ]
+      }
+     },
+     "potencial_visual": "bajo",
+     "plantillas": []
+    },
+    {
+     "id": "razonamiento-verbal.textos-discontinuos",
+     "nombre": "Textos discontinuos e infografías",
+     "temas": [
+      "Tablas y cuadros",
+      "Gráficos",
+      "Textos mixtos",
+      "Infografías"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        13
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        1,
+        9,
+        15
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "plantillas": []
+    },
+    {
+     "id": "razonamiento-verbal.inferencias",
+     "nombre": "Inferencias",
+     "temas": [
+      "Inferencia deductiva e inductiva",
+      "Inferencia de la intención",
+      "Inferencia holística",
+      "Información implícita"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        17
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        10,
+        11
+       ]
+      }
+     },
+     "potencial_visual": "bajo",
+     "plantillas": []
+    },
+    {
+     "id": "razonamiento-verbal.compatibilidad",
+     "nombre": "Compatibilidad e incompatibilidad",
+     "temas": [
+      "Compatibilidad explícita e implícita",
+      "Incompatibilidad explícita e implícita",
+      "Incompatibilidad con la idea principal"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        18
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        8
+       ]
+      }
+     },
+     "potencial_visual": "bajo",
+     "plantillas": []
+    },
+    {
+     "id": "razonamiento-verbal.extrapolacion",
+     "nombre": "Extrapolación y lectura crítica",
+     "temas": [
+      "Extrapolación cognitiva y referencial",
+      "Condicional subjuntivo",
+      "Mundos posibles"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        19
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        13
+       ]
+      }
+     },
+     "potencial_visual": "bajo",
+     "plantillas": []
+    },
+    {
+     "id": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+     "nombre": "Textos argumentativos, dialécticos y debate",
+     "temas": [
+      "Tesis y argumentos",
+      "Tesis, antítesis y síntesis",
+      "La cuestión disputada",
+      "Puntos de vista en un debate"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        12
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        2,
+        12,
+        14
+       ]
+      }
+     },
+     "potencial_visual": "bajo",
+     "plantillas": []
+    },
+    {
+     "id": "razonamiento-verbal.texto-y-contexto",
+     "nombre": "Texto y contexto",
+     "temas": [
+      "Situación comunicativa",
+      "Relación entre emisor y destinatario",
+      "Contexto y situación"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        16
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        18
+       ]
+      }
+     },
+     "potencial_visual": "bajo",
+     "plantillas": []
+    },
+    {
+     "id": "razonamiento-verbal.textos-filosoficos-y-cientificos",
+     "nombre": "Textos filosóficos y científicos",
+     "temas": [
+      "Rasgos del texto filosófico",
+      "Rasgos del texto científico"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        20
+       ]
+      }
+     },
+     "potencial_visual": "bajo",
+     "plantillas": []
+    },
+    {
+     "id": "razonamiento-verbal.lectura-en-ingles",
+     "nombre": "Lectura en inglés",
+     "temas": [
+      "Inglés básico",
+      "Idea principal (main idea)",
+      "Resumen (summary)",
+      "Lo que el texto dice y lo que no"
+     ],
+     "universidades": {
+      "unmsm": {
+       "temas": [
+        2,
+        16,
+        17
+       ]
+      }
+     },
+     "potencial_visual": "bajo",
+     "plantillas": []
+    }
+   ]
+  }
+ ],
+ "plantillas": {
+  "optica-lente-delgada": {
+   "id": "optica-lente-delgada",
+   "titulo": "Banco Óptico",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.optica-geometrica"
+   ],
+   "url": "/plantillas/optica-lente-delgada/index.html",
+   "archivos": [
+    "/plantillas/optica-lente-delgada/index.html",
+    "/plantillas/optica-lente-delgada/motor.js"
+   ]
+  }
+ }
+}

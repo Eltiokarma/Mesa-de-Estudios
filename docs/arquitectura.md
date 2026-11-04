@@ -11,7 +11,7 @@ Separar **qué** se enseña de **cómo** se enseña y de **dónde** se muestra:
 | Catálogo | Cursos, unidades y temas; en qué universidad entra cada uno; qué módulos los cubren | `catalogo/` (JSON) | Se edita un archivo; no se toca código |
 | Módulos | Las plantillas: escena, motor, casos de prueba y problemas de papel | `plantillas/<id>/` | Cada módulo es independiente; se agrega una carpeta |
 | Núcleo compartido | Piezas que usan varios módulos: dibujo de flechas y cotas, colores por variable, gráficas de funciones, geometría plana | `nucleo/` (todavía no existe) | Se crea recién cuando un segundo módulo necesite lo mismo que el primero |
-| App | La PWA: inicio, planificador, progreso, modo lápiz y papel; carga los módulos | `app/` (todavía no existe) | Lee el catálogo; no conoce los módulos por dentro |
+| App | La PWA: bienvenida, inicio, cursos, progreso y perfil; carga los módulos y funciona sin conexión | `app/` (primera versión) | Lee el catálogo; no conoce los módulos por dentro |
 | Datos del alumno | Progreso, predicciones, repasos pendientes | En el celular primero; sincronización después | Se guardan con el **id de la unidad**, que nunca cambia |
 
 Así, la app nunca tiene una lista de cursos escrita en el código: la saca del catálogo. Agregar trigonometría es agregar `catalogo/cursos/trigonometria.json`; agregar una plantilla es agregar su carpeta y nombrarla en la unidad que cubre.
@@ -43,7 +43,7 @@ En matemática, el potencial es desigual:
 
 **Después, cuando haga falta y no antes:**
 - `nucleo/`: se extrae la primera pieza compartida cuando el segundo módulo la necesite. Hacerlo antes sería adivinar.
-- `app/`: el esqueleto PWA (fase 0 de la [hoja de ruta](hoja-de-ruta.md)), que lee el catálogo.
+- `app/`: ya existe una primera versión (bienvenida, inicio, cursos, progreso y perfil, sin conexión). Falta el planificador y el modo lápiz y papel.
 - El motor de predicciones generadas, con la primera unidad de aritmética o química que lo use.
 - Biología y los cursos de letras: el catálogo ya los admite (`area: "letras"`); se agregan cuando entren al alcance.
 

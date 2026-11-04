@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hoja de ruta</title>
+<style>
+:root{
+  --bg:#f4f2fb; --panel:#ffffff; --ink:#1d1838; --muted:#6c6787; --line:#e3dff2; --grid:#efecf8;
+  --brand:#7b61ff; --brand-ink:#ffffff; --brand-soft:#e7e1ff; --lime:#d6f36a; --lime-ink:#2c3a06;
+  --done:#9a94b8; --crit:#e5484d; --today:#ff7a45; --shadow:0 1px 2px rgba(29,24,56,.06),0 6px 20px rgba(29,24,56,.06);
+  --font:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#13111f; --panel:#1c1930; --ink:#ece9fb; --muted:#a29dc2; --line:#2e2a48; --grid:#221f38;
+  --brand:#9a85ff; --brand-ink:#14102a; --brand-soft:#2e2752; --lime:#c8ea4f; --lime-ink:#1d2604; --done:#6d6890; color-scheme:dark }}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font:14px/1.4 var(--font);display:flex;flex-direction:column}
+header{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;padding:14px 16px;border-bottom:1px solid var(--line);background:var(--panel)}
+h1{font-size:18px;margin:0 8px 0 0;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:12px}
+.grupo{display:flex;gap:4px;align-items:center}
+button,select,input,textarea{font:inherit;color:inherit}
+button{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:6px 12px;cursor:pointer;white-space:nowrap}
+button:hover{border-color:var(--brand)}
+button.on{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+button.primario{background:var(--brand);color:var(--brand-ink);border-color:var(--brand);font-weight:600}
+button.primario[disabled]{opacity:.45;cursor:default}
+button.peligro{color:var(--crit)}
+.chips{display:flex;gap:8px;margin-left:auto;flex-wrap:wrap}
+.chip{background:var(--brand-soft);border-radius:999px;padding:4px 10px;font-size:12px;white-space:nowrap}
+.chip b{font-variant-numeric:tabular-nums}
+#msg{font-size:12px;color:var(--muted);min-width:0}
+#msg.error{color:var(--crit)}
+main{flex:1;display:flex;min-height:0}
+#gantt{flex:1;display:grid;grid-template-columns:var(--izq,300px) 1fr;min-height:0;overflow:hidden}
+#lista,#linea{overflow:auto}
+#lista{border-right:1px solid var(--line);background:var(--panel);scrollbar-width:none}
+#lista::-webkit-scrollbar{display:none}
+.cab{position:sticky;top:0;z-index:3;height:52px;background:var(--panel);border-bottom:1px solid var(--line)}
+.fila{height:36px;display:flex;align-items:center;gap:8px;padding:0 12px;border-bottom:1px solid var(--grid);cursor:pointer;white-space:nowrap}
+.fila:hover,.fila.sel{background:var(--brand-soft)}
+.fila .nom{overflow:hidden;text-overflow:ellipsis;flex:1}
+.fila .pct{color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums}
+.sec{height:30px;display:flex;align-items:center;padding:0 12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);background:var(--bg);border-bottom:1px solid var(--line)}
+.punto{width:10px;height:10px;border-radius:50%;flex:none}
+.punto.hecho{background:var(--done)} .punto.en_curso{background:var(--brand)} .punto.pendiente{border:2px solid var(--brand)}
+#linea{position:relative}
+#lienzo{position:relative}
+.escala{position:sticky;top:0;z-index:2;height:52px;background:var(--panel);border-bottom:1px solid var(--line)}
+.mes,.dia{position:absolute;font-size:11px;color:var(--muted);white-space:nowrap;border-left:1px solid var(--line);padding-left:4px}
+.mes{top:4px;height:22px;font-weight:600;color:var(--ink);font-size:12px}
+.dia{top:28px;height:24px;line-height:24px}
+.vgrid{position:absolute;top:52px;bottom:0;width:1px;background:var(--grid)}
+.vgrid.lunes{background:var(--line)}
+.hoy{position:absolute;top:0;bottom:0;width:2px;background:var(--today);z-index:1}
+.hoy::after{content:"Hoy";position:absolute;top:2px;left:4px;font-size:11px;font-weight:700;color:var(--today)}
+.banda{position:absolute;left:0;right:0;height:30px;background:var(--bg);opacity:.6}
+.barra{position:absolute;height:22px;border-radius:7px;display:flex;align-items:center;overflow:hidden;cursor:grab;touch-action:none;box-shadow:var(--shadow);user-select:none}
+.barra:active{cursor:grabbing}
+.barra.pendiente{background:var(--panel);border:1.5px solid var(--brand)}
+.barra.en_curso{background:var(--brand-soft);border:1.5px solid var(--brand)}
+.barra.hecho{background:var(--done);border:1.5px solid var(--done)}
+.barra.critico{outline:2px solid var(--crit);outline-offset:1px}
+.barra.sel{outline:3px solid var(--lime);outline-offset:1px}
+.barra .relleno{position:absolute;left:0;top:0;bottom:0;background:var(--brand);opacity:.85}
+.barra.hecho .relleno{background:var(--done)}
+.barra .txt{position:relative;padding:0 8px;font-size:12px;white-space:nowrap;font-weight:600;color:var(--ink)}
+.barra.hecho .txt{color:#fff}
+.barra .asa{position:absolute;right:0;top:0;bottom:0;width:8px;cursor:ew-resize}
+.etq{position:absolute;height:22px;line-height:22px;font-size:12px;color:var(--muted);white-space:nowrap;pointer-events:none}
+aside{width:340px;max-width:100%;border-left:1px solid var(--line);background:var(--panel);padding:16px;overflow:auto;display:none}
+aside.abierto{display:block}
+aside h2{font-size:15px;margin:0 0 12px}
+label{display:block;font-size:12px;color:var(--muted);margin:10px 0 4px}
+input[type=text],input[type=date],select,textarea{width:100%;border:1px solid var(--line);border-radius:8px;padding:7px 9px;background:var(--bg)}
+textarea{min-height:70px;resize:vertical}
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.deps{max-height:140px;overflow:auto;border:1px solid var(--line);border-radius:8px;padding:6px 8px;background:var(--bg)}
+.deps label{display:flex;gap:6px;align-items:center;margin:2px 0;color:var(--ink);font-size:12px}
+.acciones{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+@media (max-width:760px){
+  #gantt{--izq:150px}
+  aside{position:fixed;inset:auto 0 0 0;max-height:70vh;border-left:0;border-top:1px solid var(--line);box-shadow:0 -10px 30px rgba(0,0,0,.15);z-index:10}
+  .chips{margin-left:0}
+}
+</style>
+</head>
+<body>
+<header>
+  <div><h1 id="titulo">Hoja de ruta</h1><div class="sub" id="sub"></div></div>
+  <div class="grupo" role="group" aria-label="Escala">
+    <button data-zoom="dias">Días</button><button data-zoom="semanas">Semanas</button><button data-zoom="meses">Meses</button>
+  </div>
+  <div class="grupo">
+    <button id="bHoy">Hoy</button>
+    <select id="filtro" aria-label="Filtrar por estado">
+      <option value="">Todas</option><option value="pendiente">Pendientes</option><option value="en_curso">En curso</option><option value="hecho">Hechas</option>
+    </select>
+    <button id="bNueva">+ Tarea</button>
+    <button id="bGuardar" class="primario" disabled>Guardar</button>
+  </div>
+  <span id="msg" role="status"></span>
+  <div class="chips" id="chips"></div>
+</header>
+<main>
+  <div id="gantt">
+    <div id="lista"><div class="cab"></div><div id="filas"></div></div>
+    <div id="linea"><div id="lienzo"></div></div>
+  </div>
+  <aside id="panel" aria-label="Editar tarea"></aside>
+</main>
+<script>
+(() => {
+'use strict';
+const $ = s => document.querySelector(s);
+const DIA = 86400000;
+const ANCHOS = { dias: 30, semanas: 12, meses: 4 };
+const FILA = 36, SEC = 30, CAB = 52;
+const NOMBRES_MES = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+const ESTADO_TXT = { pendiente: 'Pendiente', en_curso: 'En curso', hecho: 'Hecho' };
+let datos = null, original = '', zoom = leerPref('zoom', 'semanas'), sel = null, soloLectura = false;
+
+function leerPref(k, def){ try { return localStorage.getItem('hdr-' + k) || def; } catch { return def; } }
+function guardarPref(k, v){ try { localStorage.setItem('hdr-' + k, v); } catch {} }
+const aDia = f => Date.UTC(+f.slice(0,4), +f.slice(5,7) - 1, +f.slice(8,10)) / DIA;
+const aFecha = n => new Date(n * DIA).toISOString().slice(0, 10);
+const hoyDia = () => { const d = new Date(); return Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / DIA; };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
+
+function mensaje(t, error){ const m = $('#msg'); m.textContent = t; m.className = error ? 'error' : ''; }
+function sucio(){ const s = JSON.stringify(datos) !== original; $('#bGuardar').disabled = !s || soloLectura; return s; }
+
+async function cargar(){
+  try {
+    const r = await fetch('/api/hoja-de-ruta', { cache: 'no-store' });
+    if (!r.ok) throw 0;
+    datos = await r.json();
+  } catch {
+    // Sin servidor (abierto como archivo o publicado como estático): solo lectura.
+    const r = await fetch('../docs/hoja-de-ruta.json', { cache: 'no-store' });
+    datos = await r.json(); soloLectura = true;
+    mensaje('Modo solo lectura: para editar, abre con "npm run dev".');
+  }
+  original = JSON.stringify(datos);
+  dibujar(); irAHoy();
+}
+
+function visibles(){
+  const f = $('#filtro').value;
+  return datos.tareas.filter(t => !f || t.estado === f);
+}
+
+function rango(){
+  const ts = datos.tareas;
+  let a = Math.min(...ts.map(t => aDia(t.inicio)), hoyDia()), b = Math.max(...ts.map(t => aDia(t.fin)), hoyDia());
+  a -= 7; b += 21;
+  const d = new Date(a * DIA); a -= (d.getUTCDay() + 6) % 7; // empezar en lunes
+  return [a, b];
+}
+
+function resumen(){
+  const ts = datos.tareas, dur = t => aDia(t.fin) - aDia(t.inicio) + 1;
+  const total = ts.reduce((n, t) => n + dur(t), 0);
+  const hecho = ts.reduce((n, t) => n + dur(t) * t.progreso / 100, 0);
+  const c = k => ts.filter(t => t.estado === k).length;
+  $('#chips').innerHTML = `<span class="chip">Avance <b>${Math.round(100 * hecho / total)} %</b></span>` +
+    `<span class="chip">Hechas <b>${c('hecho')}</b></span><span class="chip">En curso <b>${c('en_curso')}</b></span>` +
+    `<span class="chip">Pendientes <b>${c('pendiente')}</b></span>`;
+  $('#titulo').textContent = 'Hoja de ruta';
+  $('#sub').textContent = `${datos.titulo} · actualizada ${datos.actualizado}`;
+}
+
+function dibujar(){
+  resumen();
+  document.querySelectorAll('[data-zoom]').forEach(b => b.classList.toggle('on', b.dataset.zoom === zoom));
+  const w = ANCHOS[zoom], [a, b0] = rango(), x = n => (n - a) * w;
+  const b = Math.max(b0, a + Math.ceil($('#linea').clientWidth / w)); // que el lienzo llene la pantalla
+  const ts = visibles();
+  let filas = '', capas = '', y = CAB, alto;
+  for (const s of datos.secciones) {
+    const deS = ts.filter(t => t.seccion === s);
+    if (!deS.length) continue;
+    filas += `<div class="sec">${esc(s)}</div>`;
+    capas += `<div class="banda" style="top:${y}px"></div>`;
+    y += SEC;
+    for (const t of deS) {
+      const i = aDia(t.inicio), f = aDia(t.fin) + 1, top = y + (FILA - 22) / 2, ancho = Math.max((f - i) * w, 6);
+      const cabe = ancho > t.nombre.length * 7 + 20; // el nombre entra completo dentro de la barra
+      filas += `<div class="fila${sel === t.id ? ' sel' : ''}" data-id="${t.id}" title="${esc(t.nombre)}"><span class="punto ${t.estado}"></span><span class="nom">${esc(t.nombre)}</span><span class="pct">${t.progreso}%</span></div>`;
+      capas += `<div class="barra ${t.estado}${t.critico ? ' critico' : ''}${sel === t.id ? ' sel' : ''}" data-id="${t.id}" style="left:${x(i)}px;top:${top}px;width:${ancho}px" title="${esc(t.nombre)}: ${t.inicio} a ${t.fin} · ${ESTADO_TXT[t.estado]} · ${t.progreso}%">` +
+        `<span class="relleno" style="width:${t.estado === 'hecho' ? 100 : t.progreso}%"></span>${cabe ? `<span class="txt">${esc(t.nombre)}</span>` : ''}<span class="asa"></span></div>`;
+      if (!cabe) capas += `<span class="etq" style="left:${x(f) + 6}px;top:${top}px">${esc(t.nombre)}</span>`;
+      y += FILA;
+    }
+  }
+  alto = y + 20;
+  // Escala: meses arriba, días o semanas abajo.
+  let escala = '', grid = '';
+  for (let n = a; n <= b; n++) {
+    const d = new Date(n * DIA), dom = d.getUTCDate(), lunes = d.getUTCDay() === 1;
+    if (dom === 1 || (n === a && dom <= 20)) escala += `<div class="mes" style="left:${x(n)}px">${NOMBRES_MES[d.getUTCMonth()]} ${d.getUTCFullYear()}</div>`;
+    if (zoom === 'dias') { escala += `<div class="dia" style="left:${x(n)}px;width:${w}px">${dom}</div>`; grid += `<div class="vgrid${lunes ? ' lunes' : ''}" style="left:${x(n)}px"></div>`; }
+    else if (zoom === 'semanas' && lunes) { escala += `<div class="dia" style="left:${x(n)}px">${dom}</div>`; grid += `<div class="vgrid lunes" style="left:${x(n)}px"></div>`; }
+    else if (zoom === 'meses' && dom === 1) grid += `<div class="vgrid lunes" style="left:${x(n)}px"></div>`;
+  }
+  const hoy = hoyDia();
+  $('#lienzo').style.width = `${x(b + 1)}px`; $('#lienzo').style.height = `${alto}px`;
+  $('#lienzo').innerHTML = `<div class="escala">${escala}</div>${grid}${capas}<div class="hoy" style="left:${x(hoy) + w / 2}px"></div>`;
+  $('#filas').innerHTML = filas;
+  sucio();
+}
+
+function irAHoy(){ const w = ANCHOS[zoom], [a] = rango(); $('#linea').scrollLeft = Math.max(0, (hoyDia() - a) * w - 120); }
+
+// Desplazamiento vertical sincronizado entre la lista y la línea de tiempo.
+$('#linea').addEventListener('scroll', () => { $('#lista').scrollTop = $('#linea').scrollTop; });
+$('#lista').addEventListener('wheel', e => { $('#linea').scrollTop += e.deltaY; e.preventDefault(); }, { passive: false });
+
+// Arrastrar barras: mover (cuerpo) o cambiar el fin (asa derecha). Ajusta por días.
+let arrastre = null;
+$('#lienzo').addEventListener('pointerdown', e => {
+  const barra = e.target.closest('.barra'); if (!barra) return;
+  const t = datos.tareas.find(t => t.id === barra.dataset.id);
+  arrastre = { t, modo: e.target.classList.contains('asa') ? 'fin' : 'mover', x0: e.clientX, i0: aDia(t.inicio), f0: aDia(t.fin), movio: false };
+  barra.setPointerCapture(e.pointerId);
+});
+$('#lienzo').addEventListener('pointermove', e => {
+  if (!arrastre || soloLectura) return;
+  const dd = Math.round((e.clientX - arrastre.x0) / ANCHOS[zoom]);
+  if (!dd && !arrastre.movio) return;
+  arrastre.movio = true;
+  const { t, modo, i0, f0 } = arrastre;
+  if (modo === 'mover') { t.inicio = aFecha(i0 + dd); t.fin = aFecha(f0 + dd); }
+  else t.fin = aFecha(Math.max(i0, f0 + dd));
+  const scroll = $('#linea').scrollLeft; dibujar(); $('#linea').scrollLeft = scroll;
+  if (sel === t.id) abrir(t.id);
+});
+$('#lienzo').addEventListener('pointerup', () => {
+  if (arrastre && !arrastre.movio) abrir(arrastre.t.id);
+  else if (arrastre) mensaje(`${arrastre.t.nombre}: ${arrastre.t.inicio} a ${arrastre.t.fin}. Falta guardar.`);
+  arrastre = null;
+});
+$('#filas').addEventListener('click', e => { const f = e.target.closest('.fila'); if (f) abrir(f.dataset.id); });
+
+function abrir(id){
+  sel = id; const t = datos.tareas.find(t => t.id === id);
+  const opcSec = datos.secciones.map(s => `<option${s === t.seccion ? ' selected' : ''}>${esc(s)}</option>`).join('');
+  const opcEst = Object.entries(ESTADO_TXT).map(([k, v]) => `<option value="${k}"${k === t.estado ? ' selected' : ''}>${v}</option>`).join('');
+  const deps = datos.tareas.filter(o => o.id !== id).map(o => `<label><input type="checkbox" value="${o.id}"${t.depende_de.includes(o.id) ? ' checked' : ''}>${esc(o.nombre)}</label>`).join('');
+  $('#panel').innerHTML = `<h2>Editar tarea</h2>
+    <label for="eNom">Nombre</label><input type="text" id="eNom" value="${esc(t.nombre)}">
+    <label for="eSec">Sección</label><select id="eSec">${opcSec}</select>
+    <div class="dos"><div><label for="eIni">Inicio</label><input type="date" id="eIni" value="${t.inicio}"></div>
+    <div><label for="eFin">Fin</label><input type="date" id="eFin" value="${t.fin}"></div></div>
+    <div class="dos"><div><label for="eEst">Estado</label><select id="eEst">${opcEst}</select></div>
+    <div><label for="ePro">Progreso: <b id="vPro">${t.progreso}</b> %</label><input type="range" id="ePro" min="0" max="100" step="5" value="${t.progreso}"></div></div>
+    <label><input type="checkbox" id="eCri"${t.critico ? ' checked' : ''}> Crítica (si se atrasa, se atrasa todo)</label>
+    <label>Depende de</label><div class="deps" id="eDep">${deps}</div>
+    <label for="eNot">Notas</label><textarea id="eNot">${esc(t.notas || '')}</textarea>
+    <div class="acciones"><button class="primario" id="eApl">Aplicar</button><button id="eCer">Cerrar</button><button class="peligro" id="eBor">Eliminar</button></div>`;
+  $('#panel').classList.add('abierto');
+  $('#ePro').oninput = e => { $('#vPro').textContent = e.target.value; };
+  $('#eEst').onchange = e => { if (e.target.value === 'hecho') { $('#ePro').value = 100; $('#vPro').textContent = 100; } };
+  $('#eApl').onclick = () => {
+    const nom = $('#eNom').value.trim(), ini = $('#eIni').value, fin = $('#eFin').value;
+    if (!nom || /[:#;]/.test(nom)) return mensaje('El nombre no puede estar vacío ni llevar ":", "#" o ";".', true);
+    if (!ini || !fin || fin < ini) return mensaje('Revisa las fechas: el fin no puede ser antes del inicio.', true);
+    Object.assign(t, { nombre: nom, seccion: $('#eSec').value, inicio: ini, fin, estado: $('#eEst').value,
+      progreso: +$('#ePro').value, critico: $('#eCri').checked, notas: $('#eNot').value,
+      depende_de: [...document.querySelectorAll('#eDep input:checked')].map(c => c.value) });
+    mensaje('Cambios aplicados. Falta guardar.'); dibujar();
+  };
+  $('#eCer').onclick = () => { sel = null; $('#panel').classList.remove('abierto'); dibujar(); };
+  $('#eBor').onclick = () => {
+    if (!confirm(`¿Eliminar "${t.nombre}"?`)) return;
+    datos.tareas = datos.tareas.filter(o => o.id !== id);
+    datos.tareas.forEach(o => { o.depende_de = o.depende_de.filter(d => d !== id); });
+    sel = null; $('#panel').classList.remove('abierto'); mensaje('Tarea eliminada. Falta guardar.'); dibujar();
+  };
+  dibujar();
+}
+
+$('#bNueva').onclick = () => {
+  let n = 1; while (datos.tareas.some(t => t.id === `t${n}`)) n++;
+  const hoy = aFecha(hoyDia());
+  datos.tareas.push({ id: `t${n}`, seccion: datos.secciones[0], nombre: 'Nueva tarea', inicio: hoy, fin: aFecha(hoyDia() + 6),
+    estado: 'pendiente', progreso: 0, critico: false, depende_de: [], notas: '' });
+  $('#filtro').value = ''; abrir(`t${n}`); irAHoy();
+};
+
+async function guardar(){
+  if (soloLectura || !sucio()) return;
+  mensaje('Guardando…');
+  const r = await fetch('/api/hoja-de-ruta', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) });
+  const cuerpo = await r.json();
+  if (!r.ok) return mensaje('No se guardó: ' + cuerpo.errores.join(' · '), true);
+  datos = cuerpo; original = JSON.stringify(datos); dibujar();
+  mensaje('Guardado en docs/hoja-de-ruta.json y docs/hoja-de-ruta.md.');
+}
+$('#bGuardar').onclick = guardar;
+document.addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); guardar(); } });
+window.addEventListener('beforeunload', e => { if (datos && sucio()) e.preventDefault(); });
+document.querySelectorAll('[data-zoom]').forEach(b => b.onclick = () => { zoom = b.dataset.zoom; guardarPref('zoom', zoom); dibujar(); irAHoy(); });
+$('#bHoy').onclick = irAHoy;
+$('#filtro').onchange = dibujar;
+cargar().catch(e => mensaje('No pude cargar la hoja de ruta: ' + e.message, true));
+})();
+</script>
+</body>
+</html>

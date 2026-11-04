@@ -1,0 +1,296 @@
+{
+  "titulo": "Laboratorio de Admisión: hoja de ruta tentativa",
+  "actualizado": "2026-11-04",
+  "secciones": [
+    "Fase 0: base",
+    "Pase 2 piloto",
+    "Fase 1: plantillas",
+    "App alrededor",
+    "Fase 2: escala"
+  ],
+  "tareas": [
+    {
+      "id": "f0a",
+      "seccion": "Fase 0: base",
+      "nombre": "Fundacional, investigación, temarios UNI y San Marcos",
+      "inicio": "2026-11-04",
+      "fin": "2026-11-04",
+      "estado": "hecho",
+      "progreso": 100,
+      "critico": false,
+      "depende_de": [],
+      "notas": "docs/fundacional.md, docs/investigacion/, docs/taxonomia-*.md"
+    },
+    {
+      "id": "f0b",
+      "seccion": "Fase 0: base",
+      "nombre": "Motor del Banco Óptico + pruebas",
+      "inicio": "2026-11-04",
+      "fin": "2026-11-04",
+      "estado": "hecho",
+      "progreso": 100,
+      "critico": false,
+      "depende_de": [],
+      "notas": "plantillas/optica-lente-delgada/motor.js, npm test"
+    },
+    {
+      "id": "f0c",
+      "seccion": "Fase 0: base",
+      "nombre": "Clasificación de simulacros de San Marcos",
+      "inicio": "2026-11-04",
+      "fin": "2026-11-04",
+      "estado": "hecho",
+      "progreso": 100,
+      "critico": false,
+      "depende_de": [],
+      "notas": "docs/clasificacion-unmsm.md"
+    },
+    {
+      "id": "f0g",
+      "seccion": "Fase 0: base",
+      "nombre": "Arquitectura por módulos y catálogo de 8 cursos",
+      "inicio": "2026-11-04",
+      "fin": "2026-11-04",
+      "estado": "hecho",
+      "progreso": 100,
+      "critico": false,
+      "depende_de": [],
+      "notas": "docs/arquitectura.md, catalogo/"
+    },
+    {
+      "id": "f0d",
+      "seccion": "Fase 0: base",
+      "nombre": "Decidir plataforma (PWA)",
+      "inicio": "2026-11-04",
+      "fin": "2026-11-04",
+      "estado": "hecho",
+      "progreso": 100,
+      "critico": false,
+      "depende_de": [],
+      "notas": "Aprobada por Gerson el 4 nov 2026"
+    },
+    {
+      "id": "f0e",
+      "seccion": "Fase 0: base",
+      "nombre": "Sistema de diseño mínimo (colores por variable, tipografía)",
+      "inicio": "2026-11-04",
+      "fin": "2026-11-13",
+      "estado": "en_curso",
+      "progreso": 50,
+      "critico": false,
+      "depende_de": [
+        "f0d"
+      ],
+      "notas": "app/estilos.css: tokens de la cáscara (morado y lima solo fuera de las escenas). Referencias en docs/referencias/"
+    },
+    {
+      "id": "f0f",
+      "seccion": "Fase 0: base",
+      "nombre": "Esqueleto PWA sin conexión con el Banco Óptico",
+      "inicio": "2026-11-04",
+      "fin": "2026-11-20",
+      "estado": "en_curso",
+      "progreso": 70,
+      "critico": false,
+      "depende_de": [
+        "f0d"
+      ],
+      "notas": "app/: PWA con bienvenida, inicio, cursos, progreso y perfil; funciona sin conexión con el Banco Óptico. Falta: probar en celulares reales y publicar"
+    },
+    {
+      "id": "p2a",
+      "seccion": "Pase 2 piloto",
+      "nombre": "Problemas de papel antes y después (lentes)",
+      "inicio": "2026-11-16",
+      "fin": "2026-11-20",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [],
+      "notas": "Regla 6: 5 a 10 problemas propios"
+    },
+    {
+      "id": "p2b",
+      "seccion": "Pase 2 piloto",
+      "nombre": "Prueba con 3 a 5 postulantes",
+      "inicio": "2026-11-23",
+      "fin": "2026-12-03",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": true,
+      "depende_de": [
+        "f0f",
+        "p2a"
+      ],
+      "notas": "Cuenta el papel, no la opinión"
+    },
+    {
+      "id": "p2c",
+      "seccion": "Pase 2 piloto",
+      "nombre": "Ajustar el formato según resultados",
+      "inicio": "2026-12-04",
+      "fin": "2026-12-10",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [
+        "p2b"
+      ],
+      "notas": ""
+    },
+    {
+      "id": "f1a",
+      "seccion": "Fase 1: plantillas",
+      "nombre": "Circuitos de corriente continua",
+      "inicio": "2026-11-21",
+      "fin": "2026-12-04",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [
+        "p2a"
+      ],
+      "notas": "docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md"
+    },
+    {
+      "id": "f1b",
+      "seccion": "Fase 1: plantillas",
+      "nombre": "Calorimetría y cambios de fase",
+      "inicio": "2026-12-05",
+      "fin": "2026-12-16",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [
+        "f1a"
+      ],
+      "notas": ""
+    },
+    {
+      "id": "f1c",
+      "seccion": "Fase 1: plantillas",
+      "nombre": "Trabajo, energía y potencia",
+      "inicio": "2026-12-17",
+      "fin": "2026-12-28",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [
+        "f1b"
+      ],
+      "notas": ""
+    },
+    {
+      "id": "f1d",
+      "seccion": "Fase 1: plantillas",
+      "nombre": "Espejos esféricos (reusa el motor de lentes)",
+      "inicio": "2026-12-29",
+      "fin": "2027-01-04",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [
+        "f1c"
+      ],
+      "notas": ""
+    },
+    {
+      "id": "f1e",
+      "seccion": "Fase 1: plantillas",
+      "nombre": "MRUV y gráficas",
+      "inicio": "2027-01-05",
+      "fin": "2027-01-14",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [
+        "f1d"
+      ],
+      "notas": ""
+    },
+    {
+      "id": "f1f",
+      "seccion": "Fase 1: plantillas",
+      "nombre": "Tiro parabólico",
+      "inicio": "2027-01-15",
+      "fin": "2027-01-24",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [
+        "f1e"
+      ],
+      "notas": ""
+    },
+    {
+      "id": "apa",
+      "seccion": "App alrededor",
+      "nombre": "Inicio, planificador y progreso por tema",
+      "inicio": "2026-12-11",
+      "fin": "2026-12-31",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [
+        "p2c"
+      ],
+      "notas": ""
+    },
+    {
+      "id": "apb",
+      "seccion": "App alrededor",
+      "nombre": "Modo lápiz y papel con temporizador",
+      "inicio": "2027-01-01",
+      "fin": "2027-01-07",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [
+        "apa"
+      ],
+      "notas": ""
+    },
+    {
+      "id": "f2a",
+      "seccion": "Fase 2: escala",
+      "nombre": "Método de construcción de plantillas (skill)",
+      "inicio": "2026-12-29",
+      "fin": "2027-01-04",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [
+        "f1c"
+      ],
+      "notas": "Tarea 6 de CLAUDE.md"
+    },
+    {
+      "id": "f2b",
+      "seccion": "Fase 2: escala",
+      "nombre": "Química y matemática con predicciones generadas",
+      "inicio": "2027-01-05",
+      "fin": "2027-01-25",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [
+        "f2a"
+      ],
+      "notas": "docs/arquitectura.md: formato predicciones"
+    },
+    {
+      "id": "f2c",
+      "seccion": "Fase 2: escala",
+      "nombre": "Material de la UNA Puno (cuando llegue)",
+      "inicio": "2027-01-05",
+      "fin": "2027-01-18",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [
+        "f2a"
+      ],
+      "notas": ""
+    }
+  ]
+}

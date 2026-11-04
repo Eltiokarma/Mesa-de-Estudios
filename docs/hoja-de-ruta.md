@@ -15,6 +15,14 @@ Primero se demuestra que **una plantilla hace aprender** (pase 2). Después se c
 5. **Escala (desde enero).** Destilar el método de construcción de plantillas (tarea 6), química con predicciones rápidas, más universidades.
 6. **Visión a futuro, después del piloto pagado.** Todos los grados, seguimiento adaptativo, curaduría de videos, historia ([`vision-futura.md`](vision-futura.md)).
 
+## Cómo verla y actualizarla
+
+```bash
+npm run dev
+```
+
+Abre <http://localhost:4173/gestion/>. Ahí se navega por días, semanas o meses, se edita una tarea con un clic, se arrastra una barra para moverla (o su borde para alargarla) y se guarda con el botón o con Ctrl+S. Al guardar se actualizan `docs/hoja-de-ruta.json` (la única fuente) y el Gantt de abajo, que GitHub dibuja solo. La app está en <http://localhost:4173/app/>.
+
 ## Gantt
 
 Con este calendario, las primeras plantillas estarían listas antes de que arranquen los ciclos CEPRE de marzo de 2027.
@@ -26,34 +34,35 @@ gantt
     axisFormat  %d %b
 
     section Fase 0: base
-    Fundacional, investigación, temarios UNI y San Marcos  :done,    f0a, 2026-11-04, 1d
-    Motor del Banco Óptico + pruebas                       :done,    f0b, 2026-11-04, 1d
-    Clasificación de simulacros de San Marcos              :done,    f0c, 2026-11-04, 1d
-    Decidir plataforma (PWA)                               :active,  f0d, 2026-11-09, 3d
-    Sistema de diseño mínimo (colores por variable, tipografía) :    f0e, after f0d, 5d
-    Esqueleto PWA sin conexión con el Banco Óptico          :        f0f, after f0e, 7d
+    Fundacional, investigación, temarios UNI y San Marcos :done, f0a, 2026-11-04, 2026-11-05
+    Motor del Banco Óptico + pruebas :done, f0b, 2026-11-04, 2026-11-05
+    Clasificación de simulacros de San Marcos :done, f0c, 2026-11-04, 2026-11-05
+    Arquitectura por módulos y catálogo de 8 cursos :done, f0g, 2026-11-04, 2026-11-05
+    Decidir plataforma (PWA) :done, f0d, 2026-11-04, 2026-11-05
+    Sistema de diseño mínimo (colores por variable, tipografía) :active, f0e, 2026-11-04, 2026-11-14
+    Esqueleto PWA sin conexión con el Banco Óptico :active, f0f, 2026-11-04, 2026-11-21
 
     section Pase 2 piloto
-    Problemas de papel antes y después (lentes)            :         p2a, 2026-11-16, 5d
-    Prueba con 3 a 5 postulantes                            :crit,   p2b, after f0f, 10d
-    Ajustar el formato según resultados                     :        p2c, after p2b, 7d
+    Problemas de papel antes y después (lentes) :p2a, 2026-11-16, 2026-11-21
+    Prueba con 3 a 5 postulantes :crit, p2b, 2026-11-23, 2026-12-04
+    Ajustar el formato según resultados :p2c, 2026-12-04, 2026-12-11
 
     section Fase 1: plantillas
-    Circuitos de corriente continua                         :        f1a, after p2a, 14d
-    Calorimetría y cambios de fase                          :        f1b, after f1a, 12d
-    Trabajo, energía y potencia                             :        f1c, after f1b, 12d
-    Espejos esféricos (reusa el motor de lentes)            :        f1d, after f1c, 7d
-    MRUV y gráficas                                         :        f1e, after f1d, 10d
-    Tiro parabólico                                         :        f1f, after f1e, 10d
+    Circuitos de corriente continua :f1a, 2026-11-21, 2026-12-05
+    Calorimetría y cambios de fase :f1b, 2026-12-05, 2026-12-17
+    Trabajo, energía y potencia :f1c, 2026-12-17, 2026-12-29
+    Espejos esféricos (reusa el motor de lentes) :f1d, 2026-12-29, 2027-01-05
+    MRUV y gráficas :f1e, 2027-01-05, 2027-01-15
+    Tiro parabólico :f1f, 2027-01-15, 2027-01-25
 
     section App alrededor
-    Inicio, planificador y progreso por tema                :        apa, after p2c, 21d
-    Modo lápiz y papel con temporizador                     :        apb, after apa, 7d
+    Inicio, planificador y progreso por tema :apa, 2026-12-11, 2027-01-01
+    Modo lápiz y papel con temporizador :apb, 2027-01-01, 2027-01-08
 
     section Fase 2: escala
-    Método de construcción de plantillas (skill)            :        f2a, after f1c, 7d
-    Química con predicciones rápidas                        :        f2b, after f2a, 21d
-    Material de la UNA Puno (cuando llegue)                 :        f2c, after f2a, 14d
+    Método de construcción de plantillas (skill) :f2a, 2026-12-29, 2027-01-05
+    Química y matemática con predicciones generadas :f2b, 2027-01-05, 2027-01-26
+    Material de la UNA Puno (cuando llegue) :f2c, 2027-01-05, 2027-01-19
 ```
 
 ## Estado de los pendientes
@@ -85,7 +94,7 @@ La PWA gana en casi todo para este público. Si más adelante hace falta estar e
 
 ## Referencia de interfaz
 
-La [imagen de referencia](referencias/ui-study-planner-pinterest.jpg) (un *study planner* de Pinterest) tiene cuatro pantallas. Así se traducen al laboratorio:
+Hay dos referencias: un [*study planner* de Pinterest](referencias/ui-study-planner-pinterest.jpg), del que sale la estructura de cuatro pantallas, y una [app de ejercicio](referencias/ui-fitness-dribbble.webp), de la que salen el estilo (tarjetas redondeadas, morado con acento lima, "reto del día", estadísticas de hoy, progreso en anillo) y la bienvenida. Así se traducen al laboratorio:
 
 | Pantalla de la referencia | En el laboratorio |
 | --- | --- |
@@ -94,4 +103,4 @@ La [imagen de referencia](referencias/ui-study-planner-pinterest.jpg) (un *study
 | Temporizador de enfoque | El modo **lápiz y papel**: problemas sin la escena, con tiempo de examen (unos 2 minutos por pregunta) |
 | Progreso por materia | Avance por **tema del temario** y aciertos en las predicciones; la racha de días va aquí |
 
-Se toma la estructura de la referencia, no su diseño: los colores de la app los manda la regla de un color por variable, y el morado de la referencia chocaría con los colores de las escenas.
+El morado y el lima de la marca se usan solo en la cáscara de la app (inicio, cursos, progreso, perfil). Dentro de una escena no aparecen, porque ahí el morado es la distancia focal y el verde, la separación entre lentes (regla 4). La primera versión está en `app/`.

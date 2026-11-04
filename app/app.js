@@ -1,0 +1,237 @@
+// Laboratorio de Admisión: la app (cáscara PWA).
+// Lee el catálogo (datos/catalogo.json, armado desde catalogo/) y nunca tiene cursos escritos
+// en el código. El progreso del alumno se guarda en el celular con el id de cada unidad.
+(() => {
+'use strict';
+const $app = document.getElementById('app');
+const $nav = document.getElementById('nav');
+const CLAVE = 'lab-v1';
+const ICONOS = { fisica: 'Fís', quimica: 'Quí', aritmetica: 'Ari', algebra: 'Álg', geometria: 'Geo', trigonometria: 'Tri', 'razonamiento-matematico': 'RM', 'razonamiento-verbal': 'RV' };
+const AREA_TXT = { ciencias: 'Ciencias', matematica: 'Matemática', razonamiento: 'Razonamiento', letras: 'Letras' };
+const FORMATO_TXT = { escena: 'Escenas', predicciones: 'Predicciones', lectura: 'Lectura' };
+const UNI_CORTA = { uni: 'UNI', unmsm: 'San Marcos', una: 'UNA Puno' };
+const UNI_SIGLA = { uni: 'UNI', unmsm: 'SM', una: 'UNA' };
+const textoDias = n => `${n} ${n === 1 ? 'día seguido' : 'días seguidos'}`;
+let cat = null, instalar = null, offlineListo = false;
+
+// ---------- Datos del alumno (en el celular) ----------
+function cargarEstado() {
+  try { return JSON.parse(localStorage.getItem(CLAVE)) || {}; } catch { return {}; }
+}
+let est = Object.assign({ nombre: '', uni: '', vistas: {}, dias: [], tema: '' }, cargarEstado());
+function guardar() { try { localStorage.setItem(CLAVE, JSON.stringify(est)); } catch { /* sin almacenamiento: la app sigue */ } }
+const hoy = () => new Date().toLocaleDateString('en-CA');
+function marcarDia() { if (!est.dias.includes(hoy())) { est.dias.push(hoy()); est.dias = est.dias.slice(-400); guardar(); } }
+function racha() {
+  const s = new Set(est.dias); let n = 0; const d = new Date();
+  if (!s.has(d.toLocaleDateString('en-CA'))) d.setDate(d.getDate() - 1); // la racha sigue viva hasta el final del día
+  while (s.has(d.toLocaleDateString('en-CA'))) { n++; d.setDate(d.getDate() - 1); }
+  return n;
+}
+function aplicarTema() { if (est.tema) document.documentElement.dataset.theme = est.tema; else delete document.documentElement.dataset.theme; }
+
+// ---------- Catálogo ----------
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const unidadesDe = (c, uni) => c.unidades.filter(u => !uni || u.universidades[uni]);
+const ubic = (u, uni) => { const k = cat.universidades[uni]?.ubicacion; return k && u.universidades[uni] ? u.universidades[uni][k] : null; };
+const etiquetaUbic = (u, k) => { const v = ubic(u, k); if (!v) return ''; const pal = cat.universidades[k].ubicacion === 'semanas' ? 'sem.' : 'tema';
+  return `${UNI_CORTA[k] || k} · ${pal} ${v.length > 2 ? `${v[0]}–${v[v.length - 1]}` : v.join(', ')}`; };
+const visto = id => !!est.vistas[id];
+function avance(c, uni) { const us = unidadesDe(c, uni); return us.length ? us.filter(u => visto(u.id)).length / us.length : 0; }
+// Orden de estudio: el del cronograma de su universidad (semana o tema), intercalando cursos.
+function cola(uni) {
+  const todas = [];
+  cat.cursos.forEach((c, ci) => unidadesDe(c, uni).forEach(u => todas.push({ c, u, k: Math.min(...(ubic(u, uni) || [99])), ci })));
+  return todas.sort((a, b) => a.k - b.k || a.ci - b.ci);
+}
+
+// ---------- Vistas ----------
+const icono = id => `<span class="ico" aria-hidden="true" style="font-weight:800;font-size:14px">${esc(ICONOS[id] || id.slice(0, 3))}</span>`;
+
+function vBienvenida() {
+  $nav.hidden = true;
+  const opc = Object.entries(cat.universidades).filter(([k]) => k !== 'una').map(([k, v]) =>
+    `<button class="opcion${est.uni === k ? ' on' : ''}" data-uni="${k}"><span class="avatar" style="width:40px;height:40px;font-size:14px">${esc(UNI_SIGLA[k] || k)}</span><span><b>${esc(v.nombre)}</b><br><span class="sub">Ordenar todo según su temario</span></span></button>`).join('');
+  $app.innerHTML = `<section class="bienvenida">
+    <div class="hero">
+      <svg class="deco" viewBox="0 0 200 150" aria-hidden="true"><g fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round">
+        <path d="M100 18v114" opacity=".5"/><ellipse cx="100" cy="75" rx="12" ry="56" fill="rgba(255,255,255,.18)"/>
+        <path d="M18 95V48" stroke="#d6f36a" stroke-width="5"/><path d="M18 48l82 0 76 48" /><path d="M18 48l158 54" opacity=".7"/>
+        <path d="M176 96v-20" stroke="#d6f36a" stroke-width="5" opacity=".9"/></g></svg>
+      <h1>Ve la física.<br>Entiende el examen.</h1>
+      <p>Escenas que se mueven, predicciones antes de ver la respuesta y problemas para resolver en papel.</p>
+    </div>
+    <label class="sub" for="nombre">¿Cómo te llamas?</label>
+    <input type="text" id="nombre" autocomplete="given-name" maxlength="30" placeholder="Tu nombre" value="${esc(est.nombre)}">
+    <span class="sub">¿A qué universidad postulas?</span>
+    <div class="opciones">${opc}</div>
+    <button class="btn lima ancho" id="empezar"${est.uni ? '' : ' disabled'}>Empezar</button>
+    <span class="sub" style="text-align:center">Tu avance se guarda en este celular. Funciona sin internet.</span>
+  </section>`;
+  $app.querySelectorAll('[data-uni]').forEach(b => b.onclick = () => {
+    est.uni = b.dataset.uni; $app.querySelectorAll('[data-uni]').forEach(x => x.classList.toggle('on', x === b));
+    document.getElementById('empezar').disabled = false;
+  });
+  document.getElementById('empezar').onclick = () => {
+    est.nombre = document.getElementById('nombre').value.trim(); guardar(); marcarDia(); location.hash = '#/inicio';
+  };
+}
+
+function vInicio() {
+  const q = cola(est.uni), pend = q.filter(x => !visto(x.u.id));
+  const conEscena = pend.find(x => x.u.plantillas.length) || pend[0];
+  const totalU = q.length, hechas = q.length - pend.length;
+  const reto = conEscena ? `<div class="reto">
+      <div class="etq">Reto de hoy · ${esc(conEscena.c.nombre)}</div>
+      <h3>${esc(conEscena.u.nombre)}</h3>
+      <p>${conEscena.u.plantillas.length ? 'Predice antes de ver: la escena te espera.' : esc(conEscena.u.temas.slice(0, 3).join(' · '))}</p>
+      ${conEscena.u.plantillas.length
+        ? `<a class="btn blanco" href="${esc(cat.plantillas[conEscena.u.plantillas[0]].url)}?desde=app" data-abrir="${esc(conEscena.u.id)}">Abrir escena ›</a>`
+        : `<a class="btn blanco" href="#/curso/${esc(conEscena.c.id)}">Ver unidad ›</a>`}
+    </div>` : `<div class="reto"><h3>¡Terminaste todo el temario!</h3><p>Repasa lo que más te costó.</p></div>`;
+  const sig = pend.filter(x => x !== conEscena).slice(0, 4).map(x => `<a class="item" href="#/curso/${esc(x.c.id)}">${icono(x.c.id)}
+      <span class="tx"><span class="t">${esc(x.u.nombre)}</span><br><span class="d">${esc(x.c.nombre)} · ${esc(etiquetaUbic(x.u, est.uni))}</span></span>
+      <span class="der">${x.u.plantillas.length ? '<span class="tag lima">Escena</span>' : ''}›</span></a>`).join('');
+  $app.innerHTML = `
+    <header class="saludo"><span class="avatar">${esc((est.nombre || '?')[0].toUpperCase())}</span>
+      <div><p class="sub">Hola${est.nombre ? `, ${esc(est.nombre)}` : ''} 👋</p><h1>¿Qué entendemos hoy?</h1></div></header>
+    ${reto}
+    <h2>Hoy</h2>
+    <div class="stats">
+      <div class="stat"><div class="ic" style="background:var(--lime);color:var(--lime-ink)">🔥</div><div class="n">${racha()}</div><div class="l">${racha() === 1 ? 'día seguido' : 'días seguidos'}</div></div>
+      <div class="stat"><div class="ic" style="background:var(--brand-soft)">✓</div><div class="n">${hechas}</div><div class="l">unidades estudiadas</div></div>
+      <div class="stat"><div class="ic" style="background:var(--brand-soft)">%</div><div class="n">${totalU ? Math.round(100 * hechas / totalU) : 0}<span style="font-size:16px">%</span></div><div class="l">del temario ${esc(UNI_CORTA[est.uni] || '')}</div></div>
+    </div>
+    <h2>Lo que sigue <a href="#/cursos">Ver cursos ›</a></h2>
+    <div class="lista">${sig || '<p class="vacio">No hay más unidades pendientes.</p>'}</div>`;
+}
+
+function vCursos() {
+  const tarjetas = cat.cursos.map(c => {
+    const us = unidadesDe(c, est.uni); if (!us.length) return '';
+    const p = avance(c, est.uni), escenas = us.filter(u => u.plantillas.length).length;
+    return `<a class="curso" href="#/curso/${esc(c.id)}">${icono(c.id)}
+      <span class="t">${esc(c.nombre)}</span>
+      <span class="d">${us.length} unidades · ${FORMATO_TXT[c.formato_principal] || ''}${escenas ? ` · ${escenas} con escena` : ''}</span>
+      <span class="barra" aria-label="${Math.round(p * 100)} % estudiado"><i style="width:${Math.round(p * 100)}%"></i></span></a>`;
+  }).join('');
+  $app.innerHTML = `<h1>Cursos</h1><p class="sub">Ordenados según el temario de ${esc(cat.universidades[est.uni]?.nombre || '')}.</p>
+    <div class="cursos" style="margin-top:18px">${tarjetas}</div>`;
+}
+
+function vCurso(id) {
+  const c = cat.cursos.find(x => x.id === id); if (!c) return ir('#/cursos');
+  const todas = sessionStorage.getItem('todas') === '1';
+  const us = todas ? c.unidades : unidadesDe(c, est.uni);
+  const ord = [...us].sort((a, b) => Math.min(...(ubic(a, est.uni) || [99])) - Math.min(...(ubic(b, est.uni) || [99])));
+  const filas = ord.map(u => {
+    const pl = u.plantillas.map(p => cat.plantillas[p]).filter(Boolean);
+    const tags = Object.keys(u.universidades).map(k => `<span class="tag">${esc(etiquetaUbic(u, k))}</span>`).join('');
+    return `<article class="unidad"><div class="fila">
+        <span class="t">${esc(u.nombre)}</span>
+        <button class="check${visto(u.id) ? ' on' : ''}" data-ver="${esc(u.id)}" aria-pressed="${visto(u.id)}" aria-label="Marcar ${esc(u.nombre)} como estudiada">${visto(u.id) ? '✓' : ''}</button></div>
+      <div class="temas">${esc(u.temas.join(' · '))}</div>
+      <div class="acc">${tags}${pl.map(p => `<a class="btn morado" style="padding:8px 14px;font-size:14px" href="${esc(p.url)}?desde=app" data-abrir="${esc(u.id)}">${esc(p.titulo)} ›</a>`).join('')}
+        ${pl.length ? '' : '<span class="sub" style="font-size:12px">Escena en preparación</span>'}</div></article>`;
+  }).join('');
+  $app.innerHTML = `<a class="volver" href="#/cursos" aria-label="Volver">‹</a>
+    <h1>${esc(c.nombre)}</h1><p class="sub">${esc(AREA_TXT[c.area])} · ${us.length} unidades · ${Math.round(avance(c, todas ? '' : est.uni) * 100)} % estudiado</p>
+    <div class="chips"><button class="chip${todas ? '' : ' on'}" data-todas="0">${esc(UNI_CORTA[est.uni] || 'Mi universidad')}</button><button class="chip${todas ? ' on' : ''}" data-todas="1">Todas las unidades</button></div>
+    <div class="lista" style="margin-top:12px">${filas}</div>`;
+  $app.querySelectorAll('[data-todas]').forEach(b => b.onclick = () => { sessionStorage.setItem('todas', b.dataset.todas); vCurso(id); });
+  $app.querySelectorAll('[data-ver]').forEach(b => b.onclick = () => {
+    const k = b.dataset.ver; if (est.vistas[k]) delete est.vistas[k]; else { est.vistas[k] = hoy(); marcarDia(); }
+    guardar(); vCurso(id);
+  });
+}
+
+function vProgreso() {
+  const q = cola(est.uni), hechas = q.filter(x => visto(x.u.id)).length, p = q.length ? hechas / q.length : 0;
+  const R = 70, L = Math.PI * R; // medio anillo
+  const dias = [...Array(7)].map((_, i) => { const d = new Date(); d.setDate(d.getDate() - 6 + i); const f = d.toLocaleDateString('en-CA');
+    return { l: d.toLocaleDateString('es-PE', { weekday: 'narrow' }), on: est.dias.includes(f), n: Object.values(est.vistas).filter(v => v === f).length }; });
+  const max = Math.max(1, ...dias.map(d => d.n));
+  $app.innerHTML = `<h1>Tu progreso</h1><p class="sub">Temario de ${esc(cat.universidades[est.uni]?.nombre || '')}</p>
+    <div class="card" style="margin-top:18px">
+      <div class="anillo"><svg width="180" height="100" viewBox="0 0 180 100" role="img" aria-label="${Math.round(p * 100)} % del temario">
+        <path d="M20 90a70 70 0 0 1 140 0" fill="none" stroke="var(--brand-soft)" stroke-width="18" stroke-linecap="round"/>
+        <path d="M20 90a70 70 0 0 1 140 0" fill="none" stroke="var(--brand)" stroke-width="18" stroke-linecap="round" stroke-dasharray="${L}" stroke-dashoffset="${L * (1 - p)}"/></svg>
+        <div style="margin-top:-46px;text-align:center"><div class="n">${Math.round(p * 100)}<span style="font-size:20px">%</span></div><div class="l">${hechas} de ${q.length} unidades</div></div></div>
+      ${q.length - hechas ? `<div class="aviso">👊 Te faltan ${q.length - hechas} unidades. Una por día también cuenta.</div>` : ''}
+    </div>
+    <h2>Últimos 7 días</h2>
+    <div class="card"><div style="display:flex;gap:10px;align-items:flex-end;height:110px">
+      ${dias.map(d => `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px">
+        <div style="width:100%;max-width:28px;height:${8 + 70 * d.n / max}px;border-radius:8px;background:${d.on ? 'var(--brand)' : 'var(--brand-soft)'}"></div>
+        <span class="sub" style="font-size:12px">${esc(d.l)}</span></div>`).join('')}
+    </div><p class="sub" style="margin-top:10px">🔥 Racha: ${textoDias(racha())}</p></div>
+    <h2>Por curso</h2>
+    <div class="lista">${cat.cursos.filter(c => unidadesDe(c, est.uni).length).map(c => { const a = avance(c, est.uni);
+      return `<a class="item" href="#/curso/${esc(c.id)}">${icono(c.id)}<span class="tx"><span class="t">${esc(c.nombre)}</span>
+        <span class="barra" style="display:block;margin-top:8px"><i style="width:${Math.round(a * 100)}%"></i></span></span><span class="der">${Math.round(a * 100)} %</span></a>`; }).join('')}</div>`;
+}
+
+function vPerfil() {
+  const unis = Object.entries(cat.universidades).filter(([k]) => k !== 'una').map(([k]) =>
+    `<button class="chip${est.uni === k ? ' on' : ''}" data-uni="${k}">${esc(UNI_CORTA[k] || k)}</button>`).join('');
+  const temas = [['', 'Automático'], ['light', 'Claro'], ['dark', 'Oscuro']].map(([k, v]) =>
+    `<button class="chip${est.tema === k ? ' on' : ''}" data-tema="${k}">${v}</button>`).join('');
+  $app.innerHTML = `<h1>Perfil</h1>
+    <h2>Nombre</h2><input type="text" id="nombre" maxlength="30" value="${esc(est.nombre)}" placeholder="Tu nombre">
+    <h2>Universidad</h2><div class="chips">${unis}</div>
+    <h2>Apariencia</h2><div class="chips">${temas}</div>
+    <h2>Esta app</h2>
+    <div class="lista">
+      <div class="item"><span class="ico" aria-hidden="true">${offlineListo ? '✓' : '…'}</span><span class="tx"><span class="t">${offlineListo ? 'Lista para usar sin internet' : 'Preparando modo sin internet'}</span><br>
+        <span class="d">Las escenas y el catálogo quedan guardados en el celular.</span></span></div>
+      ${instalar ? '<button class="btn morado ancho" id="instalar">Instalar en este celular</button>' : ''}
+      <button class="btn borde ancho" id="borrar">Borrar mi avance</button>
+    </div>`;
+  document.getElementById('nombre').onchange = e => { est.nombre = e.target.value.trim(); guardar(); };
+  $app.querySelectorAll('[data-uni]').forEach(b => b.onclick = () => { est.uni = b.dataset.uni; guardar(); vPerfil(); });
+  $app.querySelectorAll('[data-tema]').forEach(b => b.onclick = () => { est.tema = b.dataset.tema; guardar(); aplicarTema(); vPerfil(); });
+  const bi = document.getElementById('instalar');
+  if (bi) bi.onclick = async () => { instalar.prompt(); await instalar.userChoice; instalar = null; vPerfil(); };
+  document.getElementById('borrar').onclick = () => {
+    if (!confirm('¿Borrar tu avance de este celular? No se puede deshacer.')) return;
+    est = { nombre: '', uni: '', vistas: {}, dias: [], tema: '' }; guardar(); aplicarTema(); ir('#/bienvenida');
+  };
+}
+
+// ---------- Rutas ----------
+function ir(h) { if (location.hash === h) render(); else location.hash = h; }
+function render() {
+  const [, ruta = 'inicio', arg] = location.hash.split('/');
+  if (!est.uni && ruta !== 'bienvenida') return ir('#/bienvenida');
+  if (ruta === 'bienvenida') return vBienvenida();
+  $nav.hidden = false;
+  $nav.querySelectorAll('a').forEach(a => a.classList.toggle('on', a.dataset.ruta === (ruta === 'curso' ? 'cursos' : ruta)));
+  ({ inicio: vInicio, cursos: vCursos, curso: () => vCurso(decodeURIComponent(arg || '')), progreso: vProgreso, perfil: vPerfil }[ruta] || vInicio)();
+  window.scrollTo(0, 0);
+}
+// Abrir una escena cuenta como día activo y marca la unidad como estudiada.
+document.addEventListener('click', e => {
+  const a = e.target.closest('[data-abrir]'); if (!a) return;
+  est.vistas[a.dataset.abrir] = est.vistas[a.dataset.abrir] || hoy(); marcarDia(); guardar();
+});
+window.addEventListener('hashchange', render);
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); instalar = e; });
+
+// ---------- Modo sin conexión ----------
+async function registrarSW() {
+  if (!('serviceWorker' in navigator)) return;
+  try {
+    // Alcance "/" para cubrir también /plantillas/ (el servidor manda Service-Worker-Allowed).
+    await navigator.serviceWorker.register('sw.js', { scope: '/' });
+  } catch {
+    try { await navigator.serviceWorker.register('sw.js'); } catch { return; }
+  }
+  await navigator.serviceWorker.ready;
+  offlineListo = true;
+  if (location.hash.startsWith('#/perfil')) render();
+}
+
+aplicarTema();
+fetch('datos/catalogo.json').then(r => r.json()).then(c => { cat = c; render(); registrarSW(); })
+  .catch(() => { $app.innerHTML = '<p class="vacio">No se pudo cargar el catálogo. Revisa tu conexión e inténtalo otra vez.</p>'; });
+})();

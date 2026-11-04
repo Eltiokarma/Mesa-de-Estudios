@@ -22,7 +22,10 @@ docs/fundacional.md            documento base (copia del doc vivo en claude.ai)
 docs/arquitectura.md           capas (catálogo, módulos, núcleo, app, datos), formatos de módulo y cómo agregar cursos o unidades
 catalogo/                      qué se enseña: cursos, unidades, en qué universidad entra cada una (JSON; ver catalogo/LEEME.md)
 plantillas/<tema>/plantilla.json  ficha del módulo: unidades que cubre, estado, versión, archivos
-docs/hoja-de-ruta.md           hoja de ruta con Gantt, estado de pendientes, plataforma (PWA) y referencia de interfaz
+docs/hoja-de-ruta.md + .json   hoja de ruta; el JSON es la fuente, se edita en http://localhost:4173/gestion/ (npm run dev)
+app/                           la PWA: lee app/datos/catalogo.json (npm run catalogo lo arma desde catalogo/); sw.js la deja sin conexión
+gestion/                       página del Gantt navegable y editable
+herramientas/servidor.js       servidor local sin dependencias: npm run dev → http://localhost:4173
 docs/vision-futura.md          ideas de Gerson para después (todos los grados, seguimiento, curar contenido externo, historia); no se desarrollan aún
 docs/taxonomia-uni-2026.md     temario de física y química de la UNI (sílabo CEPRE-UNI 2026-2)
 docs/taxonomia-unmsm-2026.md   temario de San Marcos (CEPRE-UNMSM 2026-I) comparado con la UNI
@@ -59,6 +62,7 @@ fuentes/libros/                libros y manuales de consulta
 ## Cómo se trabaja
 
 - Antes de subir un cambio en una plantilla: `npm test` en verde.
+- Si cambia `catalogo/` o una `plantilla.json`: `npm run catalogo`. Si cambia la cáscara de la app: subir `VERSION` en `app/sw.js`.
 
 - Cambios chicos y revisables; un commit por plantilla o por cambio de documento.
 - Antes de afirmar algo sobre evidencia pedagógica, cita la fuente en `docs/fundacional.md`.

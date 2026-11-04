@@ -3,7 +3,10 @@
   "private": true,
   "description": "Simuladores visuales para preparar el examen de admisión a universidades peruanas",
   "scripts": {
-    "test": "node --test"
+    "test": "node --test",
+    "dev": "node herramientas/servidor.js",
+    "catalogo": "node herramientas/construir-catalogo.js",
+    "hoja": "node herramientas/hoja-de-ruta.js"
   },
   "engines": {
     "node": ">=20"
