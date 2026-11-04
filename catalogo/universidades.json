@@ -1,0 +1,20 @@
+{
+  "uni": {
+    "nombre": "Universidad Nacional de Ingeniería",
+    "temario": "docs/taxonomia-uni-2026.md",
+    "fuente": "Sílabos del CEPRE-UNI, ciclo preuniversitario 2026-2",
+    "ubicacion": "semanas"
+  },
+  "unmsm": {
+    "nombre": "Universidad Nacional Mayor de San Marcos",
+    "temario": "docs/taxonomia-unmsm-2026.md",
+    "fuente": "Temario del CEPRE-UNMSM, ciclo 2026-I",
+    "ubicacion": "temas"
+  },
+  "una": {
+    "nombre": "Universidad Nacional del Altiplano (Puno)",
+    "temario": null,
+    "fuente": null,
+    "ubicacion": "temas"
+  }
+}

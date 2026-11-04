@@ -1,0 +1,12 @@
+{
+  "id": "optica-lente-delgada",
+  "titulo": "Banco Óptico",
+  "unidades": ["fisica.optica-geometrica"],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": null
+}

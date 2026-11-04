@@ -80,7 +80,7 @@ La jerarquía es **curso → tema → plantilla → tipo de pregunta**. Una plan
 | Enlace y reacciones | Enlace y geometría molecular; balanceo; redox | Medio |
 | Nomenclatura y orgánica | Inorgánica; hidrocarburos y grupos funcionales | Bajo: es memoria y reglas, no un fenómeno que se mueva |
 
-**Fuera del primer alcance:** razonamiento matemático (son acertijos, no fenómenos) y álgebra pura, donde ya existen buenas herramientas de álgebra paso a paso. Geometría y biología son candidatas para una segunda fase.
+**Alcance ampliado (decisión de Gerson, 4 de noviembre de 2026):** entran también aritmética, álgebra, geometría, trigonometría, razonamiento matemático y razonamiento verbal. No todos se enseñan con una escena: cada curso usa el formato que mejor le calza (escena, predicciones rápidas o lectura), y la arquitectura permite agregar cursos y unidades sin tocar código. Ver [`arquitectura.md`](arquitectura.md) y el catálogo en `catalogo/`. Biología y los cursos de letras quedan para después; el catálogo ya los admite.
 
 **Pendiente:** subir los prospectos de la UNI y San Marcos y los temarios de la UNSAAC, la UNSA y la UNA Puno, y fijar la taxonomía con ellos (la UNI como techo de dificultad). Después, clasificar unos 50 problemas reales por plantilla: eso dice qué porcentaje del examen cubre el laboratorio y en qué orden construir.
 

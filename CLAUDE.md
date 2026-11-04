@@ -4,7 +4,7 @@ Lee esto antes de trabajar en el repo. Responde y escribe en español peruano in
 
 ## Qué es
 
-App de bajo costo para postulantes a universidades peruanas (UNI, San Marcos, UNA Puno, UNSA, UNSAAC). Cada problema de examen se convierte en una escena visual donde cada variable de la ecuación está amarrada, por color, a un objeto que se ve. El documento que manda es `docs/fundacional.md`: principios, taxonomía, especificación de plantilla, arquitectura, fuentes y hoja de ruta.
+App de bajo costo para postulantes a universidades peruanas (UNI, San Marcos, UNA Puno, UNSA, UNSAAC). Cursos: física, química, aritmética, álgebra, geometría, trigonometría, razonamiento matemático y razonamiento verbal (decisión de Gerson, 4 nov 2026); el catálogo crece sin tocar código. Cada problema de examen se convierte en una escena visual donde cada variable de la ecuación está amarrada, por color, a un objeto que se ve. El documento que manda es `docs/fundacional.md`: principios, taxonomía, especificación de plantilla, arquitectura, fuentes y hoja de ruta.
 
 ## Reglas que no se rompen
 
@@ -19,6 +19,9 @@ App de bajo costo para postulantes a universidades peruanas (UNI, San Marcos, UN
 
 ```
 docs/fundacional.md            documento base (copia del doc vivo en claude.ai)
+docs/arquitectura.md           capas (catálogo, módulos, núcleo, app, datos), formatos de módulo y cómo agregar cursos o unidades
+catalogo/                      qué se enseña: cursos, unidades, en qué universidad entra cada una (JSON; ver catalogo/LEEME.md)
+plantillas/<tema>/plantilla.json  ficha del módulo: unidades que cubre, estado, versión, archivos
 docs/hoja-de-ruta.md           hoja de ruta con Gantt, estado de pendientes, plataforma (PWA) y referencia de interfaz
 docs/vision-futura.md          ideas de Gerson para después (todos los grados, seguimiento, curar contenido externo, historia); no se desarrollan aún
 docs/taxonomia-uni-2026.md     temario de física y química de la UNI (sílabo CEPRE-UNI 2026-2)
