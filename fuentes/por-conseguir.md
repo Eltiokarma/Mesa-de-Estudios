@@ -53,6 +53,24 @@ Casi todos están en el *American Journal of Physics* (AJP) o *The Physics Teach
 | [ ] | C | McCloskey, Caramazza y Green (1980), *Curvilinear motion in the absence of external forces*, Science 210, 1139–1141 | Fuerza centrífuga y trayectorias curvas |
 | [ ] | C | Rosengrant, Van Heuvelen y Etkina (2009), *Do students use and understand free-body diagrams?*, Physical Review ST PER 5, 010108 | Si dibujar el diagrama de cuerpo libre mejora el resultado. Es de acceso abierto en la web de APS |
 
+### Otros temas de física (informes de noviembre de 2026)
+
+Artículos que las investigaciones de estática, ondas, termodinámica y electricidad no pudieron abrir. Casi todos están en revistas en español o en el American Journal of Physics.
+
+| ✓ | Prioridad | Referencia | Para qué |
+| --- | --- | --- | --- |
+| [ ] | A | McDermott y Shaffer (1992), *Research as a guide for curriculum development: An example from introductory electricity. Part I*, AJP 60(11) | Fuente original de los errores de circuitos; hoy la cifra sale de diapositivas |
+| [ ] | A | Maloney, O'Kuma, Hieggelke y Van Heuvelen (2001), *Surveying students' conceptual knowledge of electricity and magnetism* (CSEM), AJP 69(S1) | Porcentajes por pregunta en magnetismo e inducción |
+| [ ] | B | Ortiz, Heron y Shaffer (2005), *Student understanding of static equilibrium*, AJP 73(6) | Confirmar el 80 % del bate, que hoy sale de un póster |
+| [ ] | B | Lindsey, Heron y Shaffer (2009, 2012), sobre trabajo y energía, AJP | Errores de sistema en energía |
+| [ ] | B | Loverude, Kautz y Heron (2002, 2003) y Kautz y otros (2005, partes I y II), AJP | Primera ley, Arquímedes y gases ideales; hoy se usa la tesis de Loverude |
+| [ ] | B | Yeo y Zadnik (2001), *Introductory thermal concept evaluation*, The Physics Teacher 39 | Calor y temperatura |
+| [ ] | B | Bravo, Pesa y Caballero (2009) sobre sonido, y los artículos de Guisasola y otros sobre inducción, en *Enseñanza de las Ciencias* | Datos en español. El sitio de la revista falló desde aquí |
+| [ ] | B | Barniol y Zavala (2016), Physical Review PER, y su versión en español en la Revista Brasileira de Ensino de Física (2019) | Ondas, con alumnos mexicanos |
+| [ ] | C | Gutiérrez-Berraondo y otros (2018), Revista Brasileira de Ensino de Física | Energía en sistemas, en español |
+| [ ] | C | "Una escoba para barrer algunos preconceptos", Revista Cubana de Física (2007) | Centro de gravedad |
+| [ ] | C | Leinonen y otros (2013), sobre termodinámica | No se pudo descargar |
+
 ## 3. Libros de consulta
 
 Para diseñar plantillas y escribir problemas propios, no para copiar (ver "Uso de fuentes y derechos" en `docs/fundacional.md`).

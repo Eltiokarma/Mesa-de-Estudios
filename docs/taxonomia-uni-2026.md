@@ -10,29 +10,29 @@
 
 ## Física
 
-La columna "Investigación" remite a los informes de `docs/investigacion/`. "En curso" significa que el informe se está escribiendo.
+La columna "Investigación" remite a los informes de `docs/investigacion/`.
 
 | Semana | Tema del sílabo | Plantillas propuestas | Investigación |
 | --- | --- | --- | --- |
 | 0 | Magnitudes, SI, análisis dimensional, vectores (incluye producto escalar y vectorial) | Suma de vectores y componentes | No |
 | 1–2 | Cinemática en 1D: MRU, MRUV, caída libre, gráficas | MRUV, gráficas x-t y v-t | [Hecha](investigacion/cinematica-ideas-erroneas.md) |
 | 3 | Cinemática en 2D: proyectiles, MCU, MCUV, aceleración centrípeta | Tiro parabólico, movimiento circular | [Hecha](investigacion/cinematica-ideas-erroneas.md) (sin MCUV) |
-| 4 | Estática: fuerzas, roce, tercera ley, diagrama de cuerpo libre, equilibrio de partícula y de cuerpo rígido, torque, máquinas simples | Diagrama de cuerpo libre, plano inclinado, palanca y torque | [Dinámica hecha](investigacion/dinamica-ideas-erroneas.md); torque en curso |
+| 4 | Estática: fuerzas, roce, tercera ley, diagrama de cuerpo libre, equilibrio de partícula y de cuerpo rígido, torque, máquinas simples | Diagrama de cuerpo libre, plano inclinado, palanca y torque | [Dinámica](investigacion/dinamica-ideas-erroneas.md) y [estática](investigacion/estatica-energia-ideas-erroneas.md) hechas |
 | 5 | Dinámica: segunda ley, fuerzas en el movimiento circular, movimiento relativo | Poleas, ascensor, curva peraltada | [Hecha](investigacion/dinamica-ideas-erroneas.md) |
-| 6 | Gravitación: Kepler, ley de gravitación, g con la altura | Órbitas | En curso |
-| 6 | Trabajo y energía: trabajo, teorema trabajo-energía, energía potencial gravitatoria y elástica, conservación, potencia, eficiencia | Conservación de la energía (rampa y resorte) | En curso |
-| 7 | Impulso y cantidad de movimiento, centro de masa, choques en 1D | Choques | En curso |
-| 8 | Oscilaciones: MAS, masa-resorte horizontal y vertical, péndulo, energía en el MAS | Resorte y péndulo | En curso |
-| 9 | Ondas mecánicas y sonido: función de onda, ondas estacionarias, intensidad y nivel de intensidad | Onda en cuerda | En curso |
-| 10 | Fluidos: presión, presión hidrostática, manómetro, barómetro, Pascal, Arquímedes | Presión hidrostática, flotación | En curso |
-| 11 | Temperatura y calor: dilatación, calorimetría, cambios de fase, transferencia de calor | Calorimetría y cambios de fase | En curso |
-| 12–13 | Termodinámica: gases ideales, modelo cinético, primera ley, cp y cv, ciclos, Carnot, segunda ley | Diagrama P-V | En curso |
-| 13–15 | Electrostática: Coulomb, campo, potencial, conductores, condensadores | Campo de cargas puntuales, condensadores | En curso |
-| 15–16 | Corriente: Ohm, resistividad, modelo de Drude, circuitos de corriente continua, Kirchhoff, potencia, efecto Joule, amperímetro y voltímetro | Circuitos en serie y paralelo | En curso |
-| 17–18 | Electromagnetismo e inducción: campo de un conductor, de una espira y de un solenoide, fuerza magnética, Faraday, Lenz, corriente alterna, transformadores | Fuerza sobre carga y corriente, inducción | En curso |
+| 6 | Gravitación: Kepler, ley de gravitación, g con la altura | Órbitas | [Hecha](investigacion/momento-gravitacion-ondas-ideas-erroneas.md) |
+| 6 | Trabajo y energía: trabajo, teorema trabajo-energía, energía potencial gravitatoria y elástica, conservación, potencia, eficiencia | Conservación de la energía (rampa y resorte) | [Hecha](investigacion/estatica-energia-ideas-erroneas.md) |
+| 7 | Impulso y cantidad de movimiento, centro de masa, choques en 1D | Choques | [Hecha](investigacion/momento-gravitacion-ondas-ideas-erroneas.md) |
+| 8 | Oscilaciones: MAS, masa-resorte horizontal y vertical, péndulo, energía en el MAS | Resorte y péndulo | [Hecha](investigacion/momento-gravitacion-ondas-ideas-erroneas.md) (pocos datos) |
+| 9 | Ondas mecánicas y sonido: función de onda, ondas estacionarias, intensidad y nivel de intensidad | Onda en cuerda | [Hecha](investigacion/momento-gravitacion-ondas-ideas-erroneas.md) |
+| 10 | Fluidos: presión, presión hidrostática, manómetro, barómetro, Pascal, Arquímedes | Presión hidrostática, flotación | [Hecha](investigacion/fluidos-calor-termodinamica-ideas-erroneas.md) |
+| 11 | Temperatura y calor: dilatación, calorimetría, cambios de fase, transferencia de calor | Calorimetría y cambios de fase | [Hecha](investigacion/fluidos-calor-termodinamica-ideas-erroneas.md) |
+| 12–13 | Termodinámica: gases ideales, modelo cinético, primera ley, cp y cv, ciclos, Carnot, segunda ley | Diagrama P-V | [Hecha](investigacion/fluidos-calor-termodinamica-ideas-erroneas.md) |
+| 13–15 | Electrostática: Coulomb, campo, potencial, conductores, condensadores | Campo de cargas puntuales, condensadores | [Hecha](investigacion/electromagnetismo-moderna-ideas-erroneas.md) |
+| 15–16 | Corriente: Ohm, resistividad, modelo de Drude, circuitos de corriente continua, Kirchhoff, potencia, efecto Joule, amperímetro y voltímetro | Circuitos en serie y paralelo | [Hecha](investigacion/electromagnetismo-moderna-ideas-erroneas.md) |
+| 17–18 | Electromagnetismo e inducción: campo de un conductor, de una espira y de un solenoide, fuerza magnética, Faraday, Lenz, corriente alterna, transformadores | Fuerza sobre carga y corriente, inducción | [Hecha](investigacion/electromagnetismo-moderna-ideas-erroneas.md) |
 | 18 | Ondas electromagnéticas y espectro | — | No |
-| 19 | Reflexión, refracción, reflexión total; espejos; lentes delgadas; **ecuación del fabricante; potencia de una lente** | Espejos esféricos, lente delgada (hecha), refracción | Lentes y espejos [hechos](investigacion/optica-ideas-erroneas.md); refracción en curso |
-| 20 | Física moderna: cuerpo negro y Planck, efecto fotoeléctrico, rayos X | Efecto fotoeléctrico | En curso |
+| 19 | Reflexión, refracción, reflexión total; espejos; lentes delgadas; **ecuación del fabricante; potencia de una lente** | Espejos esféricos, lente delgada (hecha), refracción | Lentes y espejos [hechos](investigacion/optica-ideas-erroneas.md); [refracción](investigacion/electromagnetismo-moderna-ideas-erroneas.md) hecha |
+| 20 | Física moderna: cuerpo negro y Planck, efecto fotoeléctrico, rayos X | Efecto fotoeléctrico | [Hecha](investigacion/electromagnetismo-moderna-ideas-erroneas.md) |
 
 **Diferencias con la taxonomía inicial de `docs/fundacional.md`:**
 
