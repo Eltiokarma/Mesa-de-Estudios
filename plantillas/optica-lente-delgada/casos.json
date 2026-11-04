@@ -1,0 +1,33 @@
+{
+  "plantilla": "optica-lente-delgada",
+  "unidades": "cm",
+  "convencion": "Descartes para lentes: 1/f = 1/o + 1/i; A = -i/o. o > 0 objeto real; i > 0 imagen real; f > 0 convergente.",
+  "tolerancia": 0.01,
+  "casos": [
+    {
+      "nombre": "Lente sola, objeto lejano",
+      "entrada": { "lentes": [{ "f": 10 }], "o1": 30, "h": 4 },
+      "esperado": { "i": [15], "A": -0.5, "h_final": -2 }
+    },
+    {
+      "nombre": "Lente sola, objeto en el foco",
+      "entrada": { "lentes": [{ "f": 10 }], "o1": 10, "h": 4 },
+      "esperado": { "sin_imagen": true }
+    },
+    {
+      "nombre": "Lente sola, lupa",
+      "entrada": { "lentes": [{ "f": 10 }], "o1": 5, "h": 4 },
+      "esperado": { "i": [-10], "A": 2, "h_final": 8 }
+    },
+    {
+      "nombre": "Dos lentes convergentes",
+      "entrada": { "lentes": [{ "f": 10 }, { "f": 10, "d": 50 }], "o1": 15, "h": 2 },
+      "esperado": { "i": [30, 20], "o": [15, 20], "A": 2, "h_final": 4 }
+    },
+    {
+      "nombre": "Objeto virtual en la segunda lente",
+      "entrada": { "lentes": [{ "f": 10 }, { "f": 10, "d": 25 }], "o1": 15, "h": 2 },
+      "esperado": { "i": [30, 3.3333], "o": [15, -5], "A": -1.3333, "h_final": -2.6667 }
+    }
+  ]
+}

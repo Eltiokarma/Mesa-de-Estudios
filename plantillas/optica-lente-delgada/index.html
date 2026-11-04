@@ -1,0 +1,873 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>[hidden]{display:none!important} body{margin:0}</style>
+<title>Banco Óptico</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: pestañas por modo; en cada modo, banco óptico (lienzo) arriba y guía paso a paso abajo; una columna de máx. 980px */
+:root{
+  --bg:#e9eef4; --paper:#f7f9fc; --card:#ffffff; --ink:#15223a; --muted:#5b6b84;
+  --line:#cdd7e3; --grid:#dfe6ef; --lens:#7fa6d9;
+  --c-o:#b85a06; --c-f:#6b3dbd; --c-i:#08807a; --c-h:#c0364a; --c-d:#4f7a17; --ray:#1f3f78;
+  --display:"Bricolage Grotesque", "Trebuchet MS", sans-serif;
+  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, "Courier New", monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0d1420; --paper:#111a29; --card:#162133; --ink:#e3eaf4; --muted:#93a3ba;
+  --line:#28364c; --grid:#1b2638; --lens:#5f86c4;
+  --c-o:#f0a04a; --c-f:#ab8cf2; --c-i:#3dcdc3; --c-h:#f17384; --c-d:#a3d65e; --ray:#94b6ff; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#0d1420; --paper:#111a29; --card:#162133; --ink:#e3eaf4; --muted:#93a3ba;
+  --line:#28364c; --grid:#1b2638; --lens:#5f86c4;
+  --c-o:#f0a04a; --c-f:#ab8cf2; --c-i:#3dcdc3; --c-h:#f17384; --c-d:#a3d65e; --ray:#94b6ff; color-scheme:dark }
+
+body{ background:var(--bg); color:var(--ink); font-family:var(--body); font-size:16px; line-height:1.55 }
+.wrap{ max-width:980px; margin:0 auto; padding-block:24px 56px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px }
+.mode{ display:grid; gap:16px; min-width:0 }
+.mode[hidden]{ display:none }
+header{ display:grid; gap:2px }
+.eyebrow{ margin:0; font-size:.78rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted) }
+h1{ margin:0; font-family:var(--display); font-weight:700; font-size:clamp(1.8rem, 4vw, 2.4rem); line-height:1.1; text-wrap:balance }
+
+.tabs{ display:flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:10px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100% }
+.tabs a{ padding:8px 16px; border-radius:7px; color:var(--muted); text-decoration:none; font-weight:700 }
+.tabs a[aria-current="page"]{ background:var(--ink); color:var(--card) }
+.tabs a:hover:not([aria-current]){ color:var(--ink) }
+
+.bench{ background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:8px; display:grid; gap:8px; min-width:0 }
+canvas{ display:block; width:100%; touch-action:pan-y }
+.legend{ display:flex; flex-wrap:wrap; gap:6px 14px; padding:2px 6px 4px; font-size:.85rem; color:var(--muted) }
+.legend span{ display:inline-flex; align-items:center; gap:6px; cursor:default }
+.legend i{ width:12px; height:4px; border-radius:2px; display:inline-block }
+
+.guide{ background:var(--card); border:1px solid var(--line); border-radius:10px; padding:20px; display:grid; gap:14px; min-width:0 }
+.dots{ list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px }
+.dots button{ width:30px; height:30px; border-radius:50%; border:1.5px solid var(--line); background:transparent; color:var(--muted);
+  font:700 .8rem var(--mono); cursor:pointer; font-variant-numeric:tabular-nums }
+.dots button.done{ border-color:var(--ink); color:var(--ink) }
+.dots button.on{ background:var(--ink); border-color:var(--ink); color:var(--card) }
+.dots button:disabled{ opacity:.4; cursor:not-allowed }
+.step-k{ margin:0; font-size:.75rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted) }
+.step-t{ margin:2px 0 0; font-family:var(--display); font-weight:700; font-size:1.4rem; line-height:1.2; text-wrap:balance }
+.body{ display:grid; gap:12px; min-width:0 }
+.body p{ margin:0; max-width:66ch }
+.problem{ border-left:3px solid var(--line); padding:4px 0 4px 14px; font-size:1.05rem; max-width:66ch }
+.map{ display:grid; gap:6px; margin:0; padding:0; list-style:none }
+.map li{ display:flex; gap:10px; align-items:baseline; flex-wrap:wrap }
+.map b{ font-family:var(--mono); min-width:4.5em }
+
+.v{ font-weight:700; border-radius:4px; padding:0 3px; cursor:pointer; outline-offset:2px;
+  text-decoration:underline dotted 1.5px; text-underline-offset:3px }
+.v-o{ color:var(--c-o); background:color-mix(in srgb, var(--c-o) 12%, transparent) }
+.v-f{ color:var(--c-f); background:color-mix(in srgb, var(--c-f) 12%, transparent) }
+.v-i{ color:var(--c-i); background:color-mix(in srgb, var(--c-i) 12%, transparent) }
+.v-d{ color:var(--c-d); background:color-mix(in srgb, var(--c-d) 12%, transparent) }
+.v-h, .v-A{ color:var(--c-h); background:color-mix(in srgb, var(--c-h) 12%, transparent) }
+.v.hl{ background:color-mix(in srgb, currentColor 26%, transparent) }
+
+.eqs{ display:grid; gap:10px; padding:14px; border-radius:8px; background:var(--paper); border:1px solid var(--line); overflow-x:auto }
+.eq{ display:flex; align-items:center; gap:.45em; font-family:var(--mono); font-size:1.1rem; white-space:nowrap; font-variant-numeric:tabular-nums }
+.eq .note{ font-family:var(--body); font-size:.85rem; color:var(--muted); margin-left:.6em; white-space:normal }
+.frac{ display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1.15 }
+.frac > span:first-child{ border-bottom:1.5px solid currentColor; padding:0 .25em }
+.frac > span:last-child{ padding:0 .25em }
+.answer{ font-weight:700; padding:10px 14px; border-radius:8px; border:1.5px solid var(--c-i); max-width:66ch }
+
+.opts{ display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:8px }
+@media (max-width:520px){ .opts{ grid-template-columns:1fr } }
+.opt{ text-align:left; padding:12px 14px; border-radius:8px; border:1.5px solid var(--line); background:var(--paper);
+  color:var(--ink); font:inherit; cursor:pointer }
+.opt:hover:not(:disabled){ border-color:var(--ink) }
+.opt:disabled{ cursor:default }
+.opt.correct{ border-color:var(--c-i); background:color-mix(in srgb, var(--c-i) 10%, var(--paper)) }
+.opt.wrong{ border-color:var(--c-h); background:color-mix(in srgb, var(--c-h) 10%, var(--paper)) }
+.fb{ font-weight:700 }
+
+.slider{ display:grid; gap:6px }
+.slider label{ font-weight:700; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap }
+.slider output{ font-family:var(--mono); color:var(--muted) }
+input[type=range]{ width:100%; accent-color:var(--c-o) }
+.chips{ display:flex; flex-wrap:wrap; gap:6px }
+.chip{ font-size:.85rem; padding:3px 10px; border-radius:999px; border:1px solid var(--line); background:var(--paper) }
+.chip.real{ border-color:var(--c-i); color:var(--c-i) }
+.chip.virt{ border-color:var(--c-f); color:var(--c-f) }
+
+.seg{ display:inline-flex; flex-wrap:wrap; gap:4px; padding:3px; border-radius:8px; border:1px solid var(--line); background:var(--paper); justify-self:start }
+.seg button{ font:700 .9rem var(--body); padding:6px 12px; border-radius:6px; border:0; background:transparent; color:var(--muted); cursor:pointer }
+.seg button[aria-pressed="true"]{ background:var(--ink); color:var(--card) }
+.ctrls{ display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap:12px }
+.lensbox{ margin:0; border:1px solid var(--line); border-radius:8px; padding:10px 12px 12px; display:grid; gap:10px; min-width:0 }
+.lensbox legend{ font:700 .9rem var(--mono); padding:0 4px }
+
+.nav{ display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap }
+.nav button{ font:700 .95rem var(--body); padding:10px 18px; border-radius:8px; border:1.5px solid var(--line);
+  background:transparent; color:var(--ink); cursor:pointer }
+.nav button.primary{ background:var(--ink); border-color:var(--ink); color:var(--card) }
+.nav button:disabled{ opacity:.4; cursor:not-allowed }
+button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{ outline:2px solid var(--c-f); outline-offset:2px }
+.hint{ font-size:.88rem; color:var(--muted) }
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <header>
+    <p class="eyebrow">Óptica · Lentes delgadas · Problemas tipo admisión</p>
+    <h1>Banco Óptico</h1>
+  </header>
+
+  <nav class="tabs" aria-label="Modo del banco">
+    <a href="#una-lente" id="tab1">Una lente</a>
+    <a href="#sistema" id="tab2">Dos o tres lentes</a>
+  </nav>
+
+  <!-- ===== MODO 1: una lente ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Simulación de una lente">
+      <canvas id="cv" aria-label="Lente convergente con objeto, focos y rayos"></canvas>
+      <div class="legend">
+        <span data-var="o"><i style="background:var(--c-o)"></i>o · distancia del objeto</span>
+        <span data-var="f"><i style="background:var(--c-f)"></i>f · distancia focal</span>
+        <span data-var="i"><i style="background:var(--c-i)"></i>i · distancia de la imagen</span>
+        <span data-var="h"><i style="background:var(--c-h)"></i>h · alturas</span>
+      </div>
+    </section>
+    <section class="guide" aria-live="polite">
+      <ol class="dots" id="dots"></ol>
+      <div>
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button">Anterior</button>
+        <button id="next" type="button" class="primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: sistema de lentes ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Simulación de un sistema de lentes">
+      <canvas id="cv2" aria-label="Dos o tres lentes en fila con sus rayos e imágenes intermedias"></canvas>
+      <div class="legend">
+        <span><i style="background:var(--c-o)"></i>o · distancia del objeto a cada lente</span>
+        <span><i style="background:var(--c-f)"></i>F · focos</span>
+        <span><i style="background:var(--c-i)"></i>i · distancia de cada imagen</span>
+        <span><i style="background:var(--c-d)"></i>d · separación entre lentes</span>
+        <span><i style="background:var(--c-h)"></i>O, I₁, I₂ · objeto e imágenes (punteada: virtual o que nunca llega a formarse)</span>
+      </div>
+    </section>
+    <section class="guide" aria-live="polite">
+      <ol class="dots" id="dots2"></ol>
+      <div>
+        <p class="step-k" id="stepK2"></p>
+        <h2 class="step-t" id="stepT2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+      <div class="nav">
+        <button id="prev2" type="button">Anterior</button>
+        <button id="next2" type="button" class="primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+</main>
+
+<script>
+/* ================= MODO 1: una lente ================= */
+(function(){
+const cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const F = 10, HO = 4, BASE = 30, XR = 44, YL = 12;
+const S = { step:0, max:0, d:BASE, rays:[0,0,0], pred:null, hl:null,
+  show:{obj:false, f:false, img:false, i:false}, active:-1, explore:false };
+let W = 0, H = 0, sx = 1, sy = 1, anim = null;
+
+const fmt = n => n.toLocaleString('es-PE', {maximumFractionDigits:1});
+const fmt2 = n => n.toLocaleString('es-PE', {maximumFractionDigits:2});
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const fr = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
+const X = x => W/2 + x*sx, Y = y => H/2 - y*sy;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+function resize(){
+  W = cv.clientWidth; if (!W) return;
+  H = Math.max(240, Math.min(400, W*0.52));
+  const dpr = window.devicePixelRatio || 1;
+  cv.style.height = H + 'px'; cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  sx = W/(2*XR); sy = (H/2 - 14)/9.6;
+  draw();
+}
+
+function geo(d){
+  const inf = Math.abs(d - F) < 0.25;
+  const di = inf ? Infinity : d*F/(d - F);
+  const m = inf ? Infinity : -di/d;
+  return { d, di, m, hi: m*HO, inf };
+}
+function extend(x0, y0, dx, dy, xEnd){
+  let t = (xEnd - x0)/dx, y = y0 + dy*t;
+  if (Math.abs(y) > YL){ const yt = Math.sign(y)*YL; t = (yt - y0)/dy; return [x0 + dx*t, yt]; }
+  return [xEnd, y];
+}
+function rayPaths(d){
+  const r1 = [[-d,HO],[0,HO], extend(0,HO,F,-HO,XR)];
+  const r2 = [[-d,HO], extend(-d,HO,d,-HO,XR)];
+  let r3 = null, yl = null;
+  const dx = Math.abs(d - F);
+  if (dx > 1e-6){
+    const dy = d > F ? -HO : HO;
+    yl = HO + dy/dx*d;
+    if (Math.abs(yl) > YL) r3 = [[-d,HO], extend(-d,HO,dx,dy,0)];
+    else r3 = [[-d,HO],[0,yl],[XR,yl]];
+  }
+  return { paths:[r1,r2,r3], yl };
+}
+
+function line(x1,y1,x2,y2){ ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke(); }
+function glow(on, color){ ctx.shadowColor = on ? color : 'transparent'; ctx.shadowBlur = on ? 10 : 0; }
+function arrow(x, h, color, w, dashed){
+  const x0 = X(x), y0 = Y(0), y1 = Y(h);
+  ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = w; ctx.setLineDash(dashed ? [5,4] : []);
+  line(x0,y0,x0,y1); ctx.setLineDash([]);
+  const s = Math.sign(h) || 1, a = 7 + w;
+  ctx.beginPath(); ctx.moveTo(x0, y1 - s*2); ctx.lineTo(x0 - a*0.6, y1 + s*a); ctx.lineTo(x0 + a*0.6, y1 + s*a); ctx.closePath(); ctx.fill();
+}
+function dim(x1, x2, y, color, label, on){
+  const a = X(Math.min(x1,x2)), b = X(Math.max(x1,x2)), yy = Y(y);
+  glow(on, color); ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = on ? 2.6 : 1.5;
+  line(a,yy,b,yy); line(a,yy-5,a,yy+5); line(b,yy-5,b,yy+5);
+  ctx.font = `700 ${on ? 13 : 12}px ${css('--mono')}`; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+  ctx.fillText(label, (a+b)/2, yy - 4); glow(false);
+}
+function drawPath(pts, p, color, w){
+  const c = pts.map(q => [X(q[0]), Y(q[1])]);
+  const seg = []; let L = 0;
+  for (let k = 1; k < c.length; k++){ const l = Math.hypot(c[k][0]-c[k-1][0], c[k][1]-c[k-1][1]); seg.push(l); L += l; }
+  let left = L*p; ctx.strokeStyle = color; ctx.lineWidth = w; ctx.beginPath(); ctx.moveTo(c[0][0], c[0][1]);
+  for (let k = 1; k < c.length && left > 0; k++){
+    const t = Math.min(1, left/seg[k-1]);
+    ctx.lineTo(c[k-1][0] + (c[k][0]-c[k-1][0])*t, c[k-1][1] + (c[k][1]-c[k-1][1])*t); left -= seg[k-1];
+  }
+  ctx.stroke();
+}
+
+function draw(){
+  if (!W) return;
+  const c = { ink:css('--ink'), muted:css('--muted'), grid:css('--grid'), lens:css('--lens'), paper:css('--paper'),
+    o:css('--c-o'), f:css('--c-f'), i:css('--c-i'), h:css('--c-h'), ray:css('--ray') };
+  ctx.clearRect(0,0,W,H);
+  ctx.lineWidth = 1; ctx.strokeStyle = c.grid; ctx.setLineDash([]);
+  for (let x = -40; x <= 40; x += 5) line(X(x),0,X(x),H);
+  for (let y = -8; y <= 8; y += 2) line(0,Y(y),W,Y(y));
+  ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; line(0,Y(0),W,Y(0));
+
+  ctx.save(); ctx.globalAlpha = 0.28; ctx.fillStyle = c.lens;
+  ctx.beginPath(); ctx.ellipse(X(0), Y(0), Math.max(5, 0.7*sx), 8.6*sy, 0, 0, Math.PI*2); ctx.fill(); ctx.restore();
+  ctx.strokeStyle = c.lens; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.ellipse(X(0), Y(0), Math.max(5, 0.7*sx), 8.6*sy, 0, 0, Math.PI*2); ctx.stroke();
+
+  const g = geo(S.d), hl = S.hl;
+  const {paths} = rayPaths(S.d);
+
+  if (S.show.f){
+    ctx.font = `700 12px ${css('--mono')}`; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    [[-2*F,'2F',c.muted],[-F,'F',c.f],[F,'F′',c.f],[2*F,'2F′',c.muted]].forEach(([x,lab,col]) => {
+      const on = hl === 'f' && Math.abs(x) === F;
+      glow(on, col); ctx.fillStyle = col;
+      ctx.beginPath(); ctx.arc(X(x), Y(0), on ? 5 : 3.5, 0, Math.PI*2); ctx.fill();
+      ctx.fillText(lab, X(x), Y(0) + 7); glow(false);
+    });
+    dim(0, F, -8.5, c.f, `f = ${fmt(F)} cm`, hl === 'f');
+  }
+
+  if (S.show.obj){
+    const onH = hl === 'h' || hl === 'A';
+    glow(onH || hl === 'o', c.h); arrow(-S.d, HO, c.h, onH ? 3.4 : 2.4, false); glow(false);
+    dim(-S.d, 0, -6.6, c.o, `o = ${fmt(S.d)} cm`, hl === 'o');
+  }
+
+  ctx.lineCap = 'round';
+  paths.forEach((p, k) => {
+    if (!p || S.rays[k] <= 0) return;
+    drawPath(p, S.rays[k], c.ray, k === S.active ? 2.6 : 1.6);
+    if (S.rays[k] >= 1) labelRay(k, p, c);
+  });
+  ctx.lineCap = 'butt';
+
+  if (S.show.img && !g.inf && Math.abs(g.di) < XR){
+    const virt = g.di < 0;
+    if (virt){
+      const {yl} = rayPaths(S.d);
+      ctx.strokeStyle = c.ray; ctx.lineWidth = 1.2; ctx.setLineDash([4,4]); ctx.globalAlpha = 0.7;
+      line(X(0),Y(HO),X(g.di),Y(g.hi)); line(X(0),Y(0),X(g.di),Y(g.hi));
+      if (yl !== null && Math.abs(yl) < YL) line(X(0),Y(yl),X(g.di),Y(g.hi));
+      ctx.setLineDash([]); ctx.globalAlpha = 1;
+    }
+    if (Math.abs(g.hi) < YL){
+      const onH = hl === 'h' || hl === 'A' || hl === 'i';
+      glow(onH, c.h); arrow(g.di, g.hi, c.h, onH ? 3.4 : 2.4, virt); glow(false);
+    }
+    if (S.show.i) dim(0, g.di, virt ? 8.6 : -6.6, c.i, `i = ${fmt(Math.abs(g.di))} cm`, hl === 'i');
+  }
+}
+function labelRay(k, p, c){
+  const a = p[0], b = p[1];
+  const t = k === 1 ? 0.35 : 0.5;
+  const x = X(a[0] + (b[0]-a[0])*t), y = Y(a[1] + (b[1]-a[1])*t);
+  ctx.fillStyle = c.paper; ctx.beginPath(); ctx.arc(x, y - 11, 8, 0, Math.PI*2); ctx.fill();
+  ctx.strokeStyle = c.ray; ctx.lineWidth = 1.2; ctx.stroke();
+  ctx.fillStyle = c.ray; ctx.font = `700 11px ${css('--mono')}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(String(k+1), x, y - 11);
+}
+
+function animateRay(k, done){
+  cancelAnimationFrame(anim);
+  if (RM){ S.rays[k] = 1; draw(); done && done(); return; }
+  const t0 = performance.now(), dur = 1400;
+  const tick = now => {
+    const t = Math.min(1, (now - t0)/dur);
+    S.rays[k] = 1 - Math.pow(1 - t, 2); draw();
+    if (t < 1) anim = requestAnimationFrame(tick); else { done && done(); }
+  };
+  anim = requestAnimationFrame(tick);
+}
+
+const steps = [
+ { k:'Paso 1', t:'El problema', show:{}, rays:0,
+   body:() => `<p class="problem">Un objeto de ${V('h','4 cm')} de altura se coloca a ${V('o','30 cm')} de una lente convergente de distancia focal ${V('f','10 cm')}. ¿A qué distancia de la lente se forma la imagen y cuánto mide?</p>
+   <p>Cada dato del enunciado tiene un color. Ese mismo color lo vas a ver en el dibujo y en la ecuación. Toca o pasa el mouse sobre un dato para ver dónde vive.</p>` },
+ { k:'Paso 2', t:'Del texto al dibujo', show:{obj:true, f:true}, rays:0,
+   body:() => `<ul class="map">
+     <li><b class="v-o">o = 30</b><span>Distancia del ${V('o','objeto')} a la lente. Es la flecha que está a la izquierda.</span></li>
+     <li><b class="v-f">f = 10</b><span>Distancia ${V('f','focal')}: el punto F′ donde la lente junta los rayos que llegan paralelos. Hay un foco a cada lado.</span></li>
+     <li><b class="v-h">h<sub>o</sub> = 4</b><span>Altura del ${V('h','objeto')}.</span></li>
+   </ul>
+   <p class="hint">Los puntos 2F y 2F′ están a 2·f = 20 cm. No son datos del problema, pero son la regla con la que se clasifica la imagen.</p>` },
+ { k:'Paso 3', t:'Antes de calcular, predice', show:{obj:true, f:true}, rays:0, gate:true,
+   body:() => `<p>El objeto está a 30 cm, más allá de 2F. ¿Dónde crees que se forma la imagen?</p>
+   <div class="opts">
+     <button class="opt" type="button" data-k="a">Entre la lente y F′</button>
+     <button class="opt" type="button" data-k="b">Entre F′ y 2F′</button>
+     <button class="opt" type="button" data-k="c">Más allá de 2F′</button>
+     <button class="opt" type="button" data-k="d">Del mismo lado que el objeto</button>
+   </div><p class="fb" id="fb"></p>` },
+ { k:'Paso 4', t:'Rayo 1: paralelo al eje', show:{obj:true, f:true}, rays:1, anim:0,
+   body:() => `<p>Sale de la punta del objeto paralelo al eje. La lente lo dobla y lo obliga a pasar por ${V('f','F′')}.</p>
+   <p>Así se define el foco: es el punto donde se juntan todos los rayos que llegan paralelos.</p>` },
+ { k:'Paso 5', t:'Rayo 2: por el centro', show:{obj:true, f:true}, rays:2, anim:1,
+   body:() => `<p>El rayo que pasa por el centro de la lente sigue de largo, sin desviarse.</p>
+   <p>En el centro la lente es casi una lámina delgada de caras paralelas, así que no tiene cómo doblarlo.</p>` },
+ { k:'Paso 6', t:'Rayo 3: por el foco F', show:{obj:true, f:true}, rays:3, anim:2, after:{img:true, i:true},
+   body:() => `<p>El rayo que pasa por ${V('f','F')} antes de la lente sale paralelo al eje. Es el rayo 1 recorrido al revés: la luz hace el mismo camino en los dos sentidos.</p>
+   <p>Donde los tres rayos se cruzan está la punta de la imagen. Basta con dos rayos; el tercero sirve para comprobar.</p>` },
+ { k:'Paso 7', t:'La ecuación es el mismo dibujo', show:{obj:true, f:true, img:true, i:true}, rays:3,
+   body:() => `<div class="eqs">
+     <div class="eq">${fr('1',V('f','f'))} = ${fr('1',V('o','o'))} + ${fr('1',V('i','i'))}<span class="note">Ecuación de Descartes para lentes</span></div>
+     <div class="eq">${fr('1',V('f','10'))} = ${fr('1',V('o','30'))} + ${fr('1',V('i','i'))}<span class="note">Reemplazas cada color por su dato</span></div>
+     <div class="eq">${fr('1',V('i','i'))} = ${fr('1','10')} − ${fr('1','30')} = ${fr('3','30')} − ${fr('1','30')} = ${fr('2','30')}</div>
+     <div class="eq">${V('i','i')} = 15 cm<span class="note">Positivo: la imagen es real, al otro lado de la lente</span></div>
+   </div>
+   <p>Los rayos se cruzaron a 15 cm, entre F′ (10 cm) y 2F′ (20 cm). La ecuación y el dibujo dicen lo mismo. ${S.pred === 'b' ? 'Tu predicción era correcta.' : 'Compara con lo que predijiste en el paso 3.'}</p>` },
+ { k:'Paso 8', t:'El tamaño de la imagen', show:{obj:true, f:true, img:true, i:true}, rays:3,
+   body:() => `<div class="eqs">
+     <div class="eq">${V('A','A')} = −${fr(V('i','i'),V('o','o'))} = −${fr(V('i','15'),V('o','30'))} = −0,5<span class="note">Aumento</span></div>
+     <div class="eq">${V('h','h<sub>i</sub>')} = ${V('A','A')}·${V('h','h<sub>o</sub>')} = (−0,5)(4 cm) = −2 cm</div>
+   </div>
+   <p>El signo menos es lo que ves en el dibujo: la imagen está de cabeza. El 0,5 dice que mide la mitad del objeto.</p>
+   <p class="answer">Respuesta: la imagen se forma a 15 cm de la lente y mide 2 cm (real, invertida y más pequeña).</p>` },
+ { k:'Paso 9', t:'Ahora mueve tú el objeto', show:{obj:true, f:true, img:true, i:true}, rays:3, explore:true,
+   body:() => `<div class="slider">
+     <label for="do-slider"><span>Distancia del objeto (${V('o','o')})</span><output id="do-out"></output></label>
+     <input id="do-slider" type="range" min="4" max="40" step="0.5" value="${S.d}">
+   </div>
+   <div id="live"></div>
+   <p class="hint">Prueba tres zonas: más allá de 2F, entre 2F y F, y más cerca que F. Fíjate qué pasa justo en o = 10 cm.</p>` }
+];
+
+const $ = id => document.getElementById(id);
+const dots = $('dots');
+steps.forEach((s, n) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = n + 1; b.setAttribute('aria-label', `Ir al ${s.k.toLowerCase()}: ${s.t}`);
+  b.addEventListener('click', () => go(n)); li.appendChild(b); dots.appendChild(li);
+});
+
+function go(n){
+  if (n < 0 || n >= steps.length || n > S.max) return;
+  cancelAnimationFrame(anim);
+  const s = steps[n]; S.step = n; S.hl = null;
+  if (!s.explore) S.d = BASE;
+  S.show = Object.assign({obj:false, f:false, img:false, i:false}, s.show);
+  S.rays = [0,1,2].map(k => k < s.rays ? 1 : 0);
+  S.active = -1;
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === n ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+  });
+  if (s.anim !== undefined){
+    S.rays[s.anim] = 0; S.active = s.anim;
+    animateRay(s.anim, () => { if (s.after){ Object.assign(S.show, s.after); } draw(); });
+  }
+  if (s.gate) setupPred();
+  if (s.explore) setupExplore();
+  updateNav(); draw();
+}
+function updateNav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0;
+  $('next').disabled = S.step === steps.length - 1 || (s.gate && !S.pred);
+  $('next').textContent = s.gate && !S.pred ? 'Elige una opción' : (S.step === 5 ? 'Ver la ecuación' : 'Siguiente');
+}
+function unlock(n){ if (n > S.max){ S.max = n; } }
+
+function setupPred(){
+  const btns = [...$('stepBody').querySelectorAll('.opt')];
+  const paint = () => {
+    if (!S.pred) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === 'b') b.classList.add('correct'); else if (b.dataset.k === S.pred) b.classList.add('wrong'); });
+    $('fb').textContent = S.pred === 'b'
+      ? 'Bien. Con el objeto más allá de 2F, la imagen cae entre F′ y 2F′. Ahora veamos por qué con los rayos.'
+      : 'No es ahí. La correcta está marcada en verde. Mira los rayos y vas a ver por qué.';
+  };
+  btns.forEach(b => b.addEventListener('click', () => { S.pred = b.dataset.k; unlock(S.step + 1); paint(); updateNav(); refreshDots(); }));
+  paint();
+}
+function refreshDots(){ [...dots.querySelectorAll('button')].forEach((b,k) => { b.disabled = k > S.max; if (k !== S.step) b.className = k <= S.max ? 'done' : ''; }); }
+
+function setupExplore(){
+  const sl = $('do-slider');
+  const upd = () => { S.d = parseFloat(sl.value); $('do-out').textContent = `${fmt(S.d)} cm`; renderLive(); draw(); };
+  sl.addEventListener('input', upd); upd();
+}
+function renderLive(){
+  const g = geo(S.d), live = $('live');
+  if (g.inf){
+    live.innerHTML = `<div class="eqs"><div class="eq">${fr('1',V('f','10'))} = ${fr('1',V('o','10'))} + ${fr('1',V('i','i'))} → ${fr('1',V('i','i'))} = 0</div></div>
+    <p>Con el objeto justo en el foco, los rayos salen paralelos y nunca se cruzan. No se forma imagen (o se forma "en el infinito").</p>`;
+    return;
+  }
+  const real = g.di > 0, inv = g.m < 0, am = Math.abs(g.m);
+  const size = Math.abs(am - 1) < 0.02 ? 'Del mismo tamaño' : (am > 1 ? 'Más grande' : 'Más pequeña');
+  live.innerHTML = `<div class="eqs">
+    <div class="eq">${fr('1',V('f','10'))} = ${fr('1',V('o',fmt(S.d)))} + ${fr('1',V('i','i'))} → ${V('i','i')} = ${fmt(g.di)} cm</div>
+    <div class="eq">${V('A','A')} = −${fr(V('i',fmt(g.di)),V('o',fmt(S.d)))} = ${fmt2(g.m)} → ${V('h','h<sub>i</sub>')} = ${fmt(g.hi)} cm</div>
+  </div>
+  <div class="chips">
+    <span class="chip ${real ? 'real' : 'virt'}">${real ? 'Real' : 'Virtual'}</span>
+    <span class="chip">${inv ? 'Invertida' : 'Derecha'}</span>
+    <span class="chip">${size}</span>
+  </div>
+  ${real ? '' : '<p>Los rayos salen separándose y no se cruzan detrás de la lente. Sus prolongaciones (punteadas) sí se cruzan, del lado del objeto: por eso la imagen es virtual y la i sale negativa. Así funciona una lupa.</p>'}
+  ${!real || Math.abs(g.di) < XR ? '' : '<p class="hint">La imagen se forma tan lejos que no entra en el banco.</p>'}`;
+}
+
+$('next').addEventListener('click', () => { unlock(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+
+function setHL(k){
+  S.hl = k;
+  document.querySelectorAll('#m1 .v').forEach(e => e.classList.toggle('hl', !!k && e.dataset.var === k));
+  draw();
+}
+document.addEventListener('pointerover', e => { const t = e.target.closest('#m1 [data-var]'); if (t) setHL(t.dataset.var); });
+document.addEventListener('pointerout', e => { const t = e.target.closest('#m1 [data-var]'); if (t && !t.contains(e.relatedTarget)) setHL(null); });
+document.addEventListener('focusin', e => { const t = e.target.closest('#m1 [data-var]'); if (t) setHL(t.dataset.var); });
+document.addEventListener('focusout', e => { if (e.target.closest('#m1 [data-var]')) setHL(null); });
+
+new ResizeObserver(resize).observe(cv);
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', draw);
+new MutationObserver(draw).observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
+document.fonts && document.fonts.ready.then(draw);
+resize(); go(0);
+})();
+
+/* ================= MODO 2: sistema de 2 o 3 lentes ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const cv = $('cv2'), ctx = cv.getContext('2d');
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const YL = 10, HO = 2, LH = 7.5;
+const PROBP = { n:2, o1:15, d:[50,30], f:[10,10,-10] };
+const EXP   = { n:2, o1:15, d:[50,30], f:[10,10,-10] };
+const S = { step:0, max:0, pred:null, hl:null, reveal:-1e9, imgs:0, dims:[], explore:false };
+let W = 0, H = 0, sx = 1, sy = 1, XMIN = -22, XMAX = 78, anim = null;
+const SUB = ['₀','₁','₂','₃'];
+
+const r1 = n => Math.round(n*10)/10 + 0, r2 = n => Math.round(n*100)/100 + 0;
+const fmt = n => r1(n).toLocaleString('es-PE',{maximumFractionDigits:1}).replace('-','−');
+const fmt2 = n => r2(n).toLocaleString('es-PE',{maximumFractionDigits:2}).replace('-','−');
+const par = n => r1(n) < 0 ? `(${fmt(n)})` : fmt(n);
+const V = (key, cls, t) => `<span class="v v-${cls}" data-var="${key}" tabindex="0">${t}</span>`;
+const fr = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const X = x => (x - XMIN)*sx, Y = y => H/2 - y*sy;
+const cp = v => Math.max(-1e5, Math.min(1e5, v));
+
+function build(p){
+  const xs = [0]; for (let k = 1; k < p.n; k++) xs.push(xs[k-1] + p.d[k-1]);
+  return { x0:-p.o1, h:HO, lenses: xs.map((x,k) => ({x, f:p.f[k]})) };
+}
+function chain(sys){
+  let xo = sys.x0, h = sys.h; const out = [];
+  for (const L of sys.lenses){
+    const o = L.x - xo, den = o - L.f;
+    if (Math.abs(den) < 0.05){ out.push({o, inf:true, L}); break; }
+    const i = o*L.f/den, m = -L.f/den;
+    out.push({o, i, m, h:m*h, x:L.x + i, L, inf:false});
+    xo = L.x + i; h = m*h;
+  }
+  return out;
+}
+function trace(sys, u0){
+  let x = sys.x0, y = sys.h, u = u0; const pts = [[x,y]], at = [];
+  for (const L of sys.lenses){ y += u*(L.x - x); x = L.x; pts.push([x,y]); const uin = u; u -= y/L.f; at.push({x, y, uin, uout:u}); }
+  const xe = XMAX + 5; pts.push([xe, y + u*(xe - x)]);
+  return {pts, at};
+}
+function rays(sys){
+  const L1 = sys.lenses[0], x0 = sys.x0, h = sys.h, us = [0, -h/(L1.x - x0)];
+  const xF = L1.x - L1.f; if (Math.abs(xF - x0) > 0.6) us.push(-h/(xF - x0));
+  return us.map(u => trace(sys, u));
+}
+
+function resize(){
+  W = cv.clientWidth; if (!W) return;
+  H = Math.max(260, Math.min(420, W*0.5));
+  const dpr = window.devicePixelRatio || 1;
+  cv.style.height = H + 'px'; cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  sy = (H/2 - 16)/10.4;
+  draw();
+}
+function line(x1,y1,x2,y2){ ctx.beginPath(); ctx.moveTo(x1,cp(y1)); ctx.lineTo(x2,cp(y2)); ctx.stroke(); }
+function glow(on, color){ ctx.shadowColor = on ? color : 'transparent'; ctx.shadowBlur = on ? 10 : 0; }
+function arrow(x, h, color, w, dashed, label){
+  const x0 = X(x), y0 = Y(0), y1 = Y(h);
+  ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = w; ctx.setLineDash(dashed ? [5,4] : []);
+  line(x0,y0,x0,y1); ctx.setLineDash([]);
+  const s = Math.sign(h) || 1, a = 6 + w;
+  ctx.beginPath(); ctx.moveTo(x0, y1 - s*2); ctx.lineTo(x0 - a*0.6, y1 + s*a); ctx.lineTo(x0 + a*0.6, y1 + s*a); ctx.closePath(); ctx.fill();
+  ctx.font = `700 12px ${css('--mono')}`; ctx.textAlign = 'center'; ctx.textBaseline = s > 0 ? 'bottom' : 'top';
+  ctx.fillText(label, x0, y1 - s*6);
+}
+function dim(x1, x2, y, color, label, on){
+  const a = X(Math.min(x1,x2)), b = X(Math.max(x1,x2)), yy = Y(y);
+  glow(on, color); ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = on ? 2.6 : 1.5;
+  line(a,yy,b,yy); line(a,yy-5,a,yy+5); line(b,yy-5,b,yy+5);
+  ctx.font = `700 ${on ? 13 : 12}px ${css('--mono')}`; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+  ctx.fillText(label, (a+b)/2, yy - 4); glow(false);
+}
+function lens(L, k, c){
+  const x = X(L.x), top = Y(LH), bot = Y(-LH), w = Math.max(5, Math.min(9, 0.8*sx));
+  ctx.beginPath();
+  if (L.f > 0) ctx.ellipse(x, Y(0), w, LH*sy, 0, 0, Math.PI*2);
+  else {
+    ctx.moveTo(x - w, top); ctx.lineTo(x + w, top);
+    ctx.quadraticCurveTo(x + w*0.15, Y(0), x + w, bot); ctx.lineTo(x - w, bot);
+    ctx.quadraticCurveTo(x - w*0.15, Y(0), x - w, top); ctx.closePath();
+  }
+  ctx.save(); ctx.globalAlpha = 0.28; ctx.fillStyle = c.lens; ctx.fill(); ctx.restore();
+  ctx.strokeStyle = c.lens; ctx.lineWidth = 1.5; ctx.stroke();
+  ctx.fillStyle = c.muted; ctx.font = `700 12px ${css('--mono')}`; ctx.textAlign = 'left'; ctx.textBaseline = 'bottom';
+  ctx.fillText(`L${SUB[k+1]}`, x + w + 3, top + 4);
+}
+
+function draw(){
+  if (!W) return;
+  const p = S.explore ? EXP : PROBP, sys = build(p), ch = chain(sys);
+  if (S.explore){
+    const xl = sys.lenses[sys.lenses.length - 1].x, last = ch[ch.length - 1];
+    XMIN = sys.x0 - 7; XMAX = xl + 30;
+    if (ch.length === sys.lenses.length && !last.inf && last.i > 0 && last.x < xl + 70) XMAX = Math.max(XMAX, last.x + 8);
+  } else { XMIN = -22; XMAX = 78; }
+  sx = W/(XMAX - XMIN);
+  const c = { ink:css('--ink'), muted:css('--muted'), grid:css('--grid'), lens:css('--lens'), paper:css('--paper'),
+    o:css('--c-o'), f:css('--c-f'), i:css('--c-i'), h:css('--c-h'), d:css('--c-d'), ray:css('--ray') };
+  const hl = S.hl;
+  ctx.clearRect(0,0,W,H); ctx.setLineDash([]); ctx.globalAlpha = 1;
+  ctx.lineWidth = 1; ctx.strokeStyle = c.grid;
+  for (let x = Math.ceil(XMIN/5)*5; x <= XMAX; x += 5) line(X(x),0,X(x),H);
+  for (let y = -8; y <= 8; y += 2) line(0,Y(y),W,Y(y));
+  ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; line(0,Y(0),W,Y(0));
+
+  sys.lenses.forEach((L,k) => lens(L, k, c));
+
+  ctx.font = `700 11px ${css('--mono')}`; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  sys.lenses.forEach((L,k) => {
+    const a = Math.abs(L.f), on = hl === 'f' + (k+1);
+    [[L.x - a, `F${SUB[k+1]}`],[L.x + a, `F${SUB[k+1]}′`]].forEach(([x,lab]) => {
+      glow(on, c.f); ctx.fillStyle = c.f;
+      ctx.beginPath(); ctx.arc(X(x), Y(0), on ? 5 : 3.2, 0, Math.PI*2); ctx.fill();
+      ctx.fillText(lab, X(x), Y(0) + 6); glow(false);
+    });
+  });
+
+  const D = {
+    o1: () => [sys.x0, sys.lenses[0].x, -7.2, c.o, `o₁ = ${fmt(ch[0].o)} cm`],
+    i1: () => ch[0] && !ch[0].inf ? [sys.lenses[0].x, ch[0].x, -8.9, c.i, `i₁ = ${fmt(ch[0].i)} cm`] : null,
+    d:  () => sys.lenses[1] ? [sys.lenses[0].x, sys.lenses[1].x, 9.3, c.d, `d = ${fmt(sys.lenses[1].x)} cm`] : null,
+    o2: () => ch[1] ? [ch[0].x, sys.lenses[1].x, -7.2, c.o, `o₂ = ${fmt(ch[1].o)} cm`] : null,
+    i2: () => ch[1] && !ch[1].inf ? [sys.lenses[1].x, ch[1].x, -8.9, c.i, `i₂ = ${fmt(ch[1].i)} cm`] : null
+  };
+  S.dims.forEach(key => { const r = D[key] && D[key](); if (r) dim(r[0], r[1], r[2], r[3], r[4], hl === key); });
+
+  ctx.save(); ctx.beginPath(); ctx.rect(0, 0, Math.max(0, Math.min(W, X(S.reveal))), H); ctx.clip();
+  const R = rays(sys);
+  ctx.lineCap = 'round'; ctx.strokeStyle = c.ray; ctx.lineWidth = 1.6;
+  R.forEach(r => { ctx.beginPath(); r.pts.forEach((q,k) => { const x = X(q[0]), y = cp(Y(q[1])); k ? ctx.lineTo(x,y) : ctx.moveTo(x,y); }); ctx.stroke(); });
+  ctx.setLineDash([4,4]); ctx.globalAlpha = 0.7; ctx.lineWidth = 1.2;
+  R.forEach(r => r.at.forEach((a,k) => {
+    const ck = ch[k]; if (!ck) return;
+    if (k < S.imgs && !ck.inf && ck.i < 0) line(X(a.x), Y(a.y), X(ck.x), Y(a.y + a.uout*(ck.x - a.x)));
+    if (k > 0 && k - 1 < S.imgs && ck.o < 0){ const pv = ch[k-1]; line(X(a.x), Y(a.y), X(pv.x), Y(a.y + a.uin*(pv.x - a.x))); }
+  }));
+  ctx.restore(); ctx.lineCap = 'butt';
+
+  const onO = hl === 'h' || hl === 'o1';
+  glow(onO, c.h); arrow(sys.x0, sys.h, c.h, onO ? 3.4 : 2.4, false, 'O'); glow(false);
+
+  ch.forEach((ck, k) => {
+    if (k >= S.imgs || ck.inf) return;
+    if (ck.x < XMIN - 2 || ck.x > XMAX + 2 || Math.abs(ck.h) > YL - 0.5) return;
+    const isLast = k === sys.lenses.length - 1, nextL = sys.lenses[k+1];
+    const dashed = ck.i < 0 || (nextL && ck.x > nextL.x);
+    const on = hl === 'h' || hl === 'A' || hl === 'i' + (k+1);
+    ctx.globalAlpha = isLast || on ? 1 : 0.75;
+    glow(on, c.h); arrow(ck.x, ck.h, c.h, on ? 3.4 : (isLast ? 2.6 : 1.8), dashed, `I${SUB[k+1]}`); glow(false);
+    ctx.globalAlpha = 1;
+  });
+}
+
+function animReveal(a, b, done){
+  cancelAnimationFrame(anim);
+  if (RM){ S.reveal = b; done(); draw(); return; }
+  const t0 = performance.now(), dur = 1700;
+  const tick = now => {
+    const t = Math.min(1, (now - t0)/dur);
+    S.reveal = a + (b - a)*(1 - Math.pow(1 - t, 2)); draw();
+    if (t < 1) anim = requestAnimationFrame(tick); else { done(); draw(); }
+  };
+  anim = requestAnimationFrame(tick);
+}
+
+const L1 = 'L<sub>1</sub>', L2 = 'L<sub>2</sub>', I1 = 'I<sub>1</sub>', I2 = 'I<sub>2</sub>';
+const sub = (b, n) => `${b}<sub>${n}</sub>`;
+const steps = [
+ { k:'Paso 1', t:'El problema', reveal:-1e9, imgs:0, dims:['o1','d'],
+   body:() => `<p class="problem">Un objeto de ${V('h','h','2 cm')} de altura está a ${V('o1','o','15 cm')} de una lente convergente ${L1} de distancia focal ${V('f1','f','10 cm')}. A ${V('d','d','50 cm')} de ${L1} hay una segunda lente convergente ${L2}, también de ${V('f2','f','10 cm')}. ¿Dónde se forma la imagen final y cómo es?</p>
+   <p>Es el mismo juego de la lente sola, dos veces seguidas. Toca cualquier dato de color para ver dónde está en el banco.</p>` },
+ { k:'Paso 2', t:'La regla de la cadena', reveal:-1e9, imgs:0, dims:['o1','d'],
+   body:() => `<p>Cada lente trabaja sola y no sabe que la otra existe. ${L2} solo ve la luz que le llega, y esa luz viene de la imagen que formó ${L1}.</p>
+   <ol class="map">
+     <li><b>${L1}</b><span>forma la imagen ${I1} del objeto.</span></li>
+     <li><b>${I1}</b><span>pasa a ser el objeto de ${L2}.</span></li>
+     <li><b>${L2}</b><span>forma la imagen final ${I2}.</span></li>
+   </ol>
+   <p class="hint">El aumento total es el producto de los aumentos de cada lente: A = A<sub>1</sub> · A<sub>2</sub>.</p>` },
+ { k:'Paso 3', t:'Antes de calcular, predice', reveal:-1e9, imgs:0, dims:['o1','d'], gate:true,
+   body:() => `<p>Comparada con el objeto, ¿cómo crees que queda la imagen final?</p>
+   <div class="opts">
+     <button class="opt" type="button" data-k="a">Invertida y más grande</button>
+     <button class="opt" type="button" data-k="b">Derecha y más grande</button>
+     <button class="opt" type="button" data-k="c">Invertida y más pequeña</button>
+     <button class="opt" type="button" data-k="d">Derecha y del mismo tamaño</button>
+   </div><p class="fb" id="fb2"></p>` },
+ { k:'Paso 4', t:'Lente 1: la primera imagen', imgs:0, dims:['o1','i1'], anim:{from:-16, to:50, imgs:1, end:50},
+   body:() => `<div class="eqs">
+     <div class="eq">${fr('1',V('f1','f',sub('f',1)))} = ${fr('1',V('o1','o',sub('o',1)))} + ${fr('1',V('i1','i',sub('i',1)))}<span class="note">Descartes para ${L1}</span></div>
+     <div class="eq">${fr('1',V('f1','f','10'))} = ${fr('1',V('o1','o','15'))} + ${fr('1',V('i1','i',sub('i',1)))}</div>
+     <div class="eq">${fr('1',V('i1','i',sub('i',1)))} = ${fr('3','30')} − ${fr('2','30')} = ${fr('1','30')}</div>
+     <div class="eq">${V('i1','i',sub('i',1))} = 30 cm<span class="note">Real: los rayos se cruzan de verdad entre las dos lentes</span></div>
+     <div class="eq">${V('A','A',sub('A',1))} = −${fr('30','15')} = −2 → ${V('h','h',sub('h',1))} = (−2)(2 cm) = −4 cm</div>
+   </div>
+   <p>${I1} sale de cabeza y del doble del tamaño. Los rayos se cruzan en ${I1} y siguen de largo hacia ${L2}.</p>` },
+ { k:'Paso 5', t:'La imagen pasa a ser objeto', reveal:50, imgs:1, dims:['i1','d','o2'],
+   body:() => `<div class="eqs">
+     <div class="eq">${V('o2','o',sub('o',2))} = ${V('d','d','d')} − ${V('i1','i',sub('i',1))} = 50 − 30 = 20 cm<span class="note">Distancia de ${I1} a ${L2}</span></div>
+   </div>
+   <p>Para ${L2}, ${I1} es un objeto como cualquier otro. A ${L2} le da igual que la luz salga de una vela o de una imagen: lo que le llega son rayos que salen de ese punto.</p>
+   <p class="hint">Si ${I1} cayera más allá de ${L2}, o<sub>2</sub> saldría negativo. Eso se llama objeto virtual: los rayos llegan a ${L2} juntándose hacia un punto al que nunca llegan. Lo puedes probar en el paso 8.</p>` },
+ { k:'Paso 6', t:'Lente 2: la imagen final', imgs:1, dims:['o2','i2'], anim:{from:50, to:80, imgs:2, end:Infinity},
+   body:() => `<div class="eqs">
+     <div class="eq">${fr('1',V('f2','f',sub('f',2)))} = ${fr('1',V('o2','o',sub('o',2)))} + ${fr('1',V('i2','i',sub('i',2)))}<span class="note">Descartes para ${L2}</span></div>
+     <div class="eq">${fr('1',V('f2','f','10'))} = ${fr('1',V('o2','o','20'))} + ${fr('1',V('i2','i',sub('i',2)))}</div>
+     <div class="eq">${fr('1',V('i2','i',sub('i',2)))} = ${fr('2','20')} − ${fr('1','20')} = ${fr('1','20')}</div>
+     <div class="eq">${V('i2','i',sub('i',2))} = 20 cm<span class="note">Real, a la derecha de ${L2}</span></div>
+     <div class="eq">${V('A','A',sub('A',2))} = −${fr('20','20')} = −1 → ${V('h','h',sub('h',2))} = (−1)(−4 cm) = +4 cm</div>
+   </div>
+   <p>${L2} voltea la imagen otra vez. Lo que estaba de cabeza vuelve a quedar derecho.</p>` },
+ { k:'Paso 7', t:'El aumento total', reveal:Infinity, imgs:2, dims:['o1','i1','o2','i2'],
+   body:() => `<div class="eqs">
+     <div class="eq">${V('A','A','A')} = A<sub>1</sub> · A<sub>2</sub> = (−2)(−1) = +2<span class="note">Positivo: derecha. Mayor que 1: más grande</span></div>
+     <div class="eq">${V('h','h','h<sub>final</sub>')} = A · h<sub>o</sub> = (+2)(2 cm) = 4 cm</div>
+   </div>
+   <p>${S.pred === 'b' ? 'Tu predicción era correcta: dos inversiones se cancelan.' : 'Compara con lo que predijiste en el paso 3: cada lente invierte una vez, y dos inversiones se cancelan.'}</p>
+   <p class="answer">Respuesta: la imagen final se forma 20 cm a la derecha de ${L2} (70 cm de ${L1}). Es real, derecha y mide 4 cm, el doble del objeto.</p>` },
+ { k:'Paso 8', t:'Ahora arma tu propio sistema', reveal:Infinity, imgs:3, dims:[], explore:true,
+   body:() => explorerHTML() }
+];
+
+function explorerHTML(){
+  let h = `<div class="seg" role="group" aria-label="Número de lentes">
+    <button type="button" data-n="2" aria-pressed="${EXP.n === 2}">2 lentes</button>
+    <button type="button" data-n="3" aria-pressed="${EXP.n === 3}">3 lentes</button></div>
+  <div class="ctrls">
+    <div class="slider lensbox" style="align-content:start"><label for="e-o1"><span>Objeto a L<sub>1</sub> (${V('o1','o','o<sub>1</sub>')})</span><output id="e-o1-out"></output></label>
+    <input id="e-o1" type="range" min="4" max="40" step="0.5" value="${EXP.o1}"></div>`;
+  for (let k = 0; k < EXP.n; k++){
+    const conv = EXP.f[k] > 0;
+    h += `<fieldset class="lensbox"><legend>L${SUB[k+1]}</legend>
+      <div class="seg" role="group" aria-label="Tipo de L${SUB[k+1]}">
+        <button type="button" data-k="${k}" data-t="1" aria-pressed="${conv}">Convergente</button>
+        <button type="button" data-k="${k}" data-t="-1" aria-pressed="${!conv}">Divergente</button></div>
+      <div class="slider"><label for="e-f${k}"><span>Focal ${V('f'+(k+1),'f','f<sub>'+(k+1)+'</sub>')}</span><output id="e-f${k}-out"></output></label>
+      <input id="e-f${k}" type="range" min="4" max="25" step="0.5" value="${Math.abs(EXP.f[k])}"></div>`;
+    if (k > 0) h += `<div class="slider"><label for="e-d${k}"><span>Distancia desde L${SUB[k]}</span><output id="e-d${k}-out"></output></label>
+      <input id="e-d${k}" type="range" min="2" max="70" step="0.5" value="${EXP.d[k-1]}"></div>`;
+    h += `</fieldset>`;
+  }
+  h += `</div><div id="live2" style="display:grid;gap:12px;min-width:0"></div>
+  <p class="hint">Prueba a acercar las lentes hasta que I<sub>1</sub> caiga detrás de L<sub>2</sub> (objeto virtual), o cambia una lente a divergente.</p>`;
+  return h;
+}
+function setupExplore(){
+  const body = $('body2');
+  body.querySelectorAll('[data-n]').forEach(b => b.addEventListener('click', () => { EXP.n = +b.dataset.n; go(S.step); }));
+  body.querySelectorAll('[data-t]').forEach(b => b.addEventListener('click', () => {
+    const k = +b.dataset.k; EXP.f[k] = Math.abs(EXP.f[k]) * +b.dataset.t;
+    body.querySelectorAll(`[data-k="${k}"]`).forEach(x => x.setAttribute('aria-pressed', x === b));
+    upd();
+  }));
+  const ins = [...body.querySelectorAll('input[type=range]')];
+  function upd(){
+    EXP.o1 = parseFloat($('e-o1').value); $('e-o1-out').textContent = `${fmt(EXP.o1)} cm`;
+    for (let k = 0; k < EXP.n; k++){
+      const a = parseFloat($('e-f'+k).value); EXP.f[k] = Math.sign(EXP.f[k]) * a;
+      $(`e-f${k}-out`).textContent = `${fmt(EXP.f[k])} cm`;
+      if (k > 0){ EXP.d[k-1] = parseFloat($('e-d'+k).value); $(`e-d${k}-out`).textContent = `${fmt(EXP.d[k-1])} cm`; }
+    }
+    renderLive(); draw();
+  }
+  ins.forEach(i => i.addEventListener('input', upd));
+  upd();
+}
+function renderLive(){
+  const sys = build(EXP), ch = chain(sys);
+  let eq = '', notes = [];
+  ch.forEach((c, k) => {
+    const n = k + 1, s = n;
+    if (k > 0){
+      const pv = ch[k-1], dn = `d<sub>${k}${k+1}</sub>`;
+      eq += `<div class="eq">${V('o'+n,'o',sub('o',s))} = ${dn} − ${V('i'+k,'i',sub('i',k))} = ${fmt(EXP.d[k-1])} − ${par(pv.i)} = ${fmt(c.o)} cm<span class="note">${c.o < 0 ? 'Objeto virtual' : 'Objeto real'}</span></div>`;
+      if (c.o < 0) notes.push(`I<sub>${k}</sub> cae detrás de L<sub>${n}</sub>, así que o<sub>${n}</sub> es negativo: objeto virtual. Los rayos llegan a L<sub>${n}</sub> juntándose hacia I<sub>${k}</sub> (línea punteada) pero L<sub>${n}</sub> los desvía antes de que se crucen.`);
+    }
+    if (c.inf){ eq += `<div class="eq">o<sub>${n}</sub> = f<sub>${n}</sub> → los rayos salen paralelos</div>`; return; }
+    eq += `<div class="eq">${fr('1',V('f'+n,'f',par(c.L.f)))} = ${fr('1',V('o'+n,'o',par(c.o)))} + ${fr('1',V('i'+n,'i',sub('i',s)))} → ${V('i'+n,'i',sub('i',s))} = ${fmt(c.i)} cm<span class="note">A<sub>${n}</sub> = ${fmt2(c.m)}</span></div>`;
+  });
+  const done = ch.length === sys.lenses.length && !ch[ch.length - 1].inf;
+  let out = `<div class="eqs">${eq}`;
+  if (done){
+    const A = ch.reduce((p, c) => p*c.m, 1), last = ch[ch.length - 1], nL = ch.length;
+    const prod = ch.map(c => r2(c.m) < 0 ? `(${fmt2(c.m)})` : fmt2(c.m)).join(' · ');
+    out += `<div class="eq">${V('A','A','A')} = ${prod} = ${fmt2(A)} → ${V('h','h','h<sub>final</sub>')} = ${fmt(A*HO)} cm</div></div>`;
+    const real = last.i > 0, am = Math.abs(A);
+    const size = Math.abs(am - 1) < 0.02 ? 'Del mismo tamaño' : (am > 1 ? 'Más grande' : 'Más pequeña');
+    out += `<div class="chips"><span class="chip ${real ? 'real' : 'virt'}">${real ? 'Real' : 'Virtual'}</span>
+      <span class="chip">${A > 0 ? 'Derecha' : 'Invertida'}</span><span class="chip">${size}</span></div>
+      <p>La imagen final está a ${fmt(Math.abs(last.i))} cm a la ${real ? 'derecha' : 'izquierda'} de L<sub>${nL}</sub>.${Math.abs(last.h) > YL - 0.5 || last.x > XMAX || last.x < XMIN ? ' Queda fuera del banco: es muy grande o está muy lejos.' : ''}</p>`;
+  } else {
+    out += `</div><p>Una de las imágenes cae justo en el foco de la lente siguiente. Los rayos salen paralelos y no se forma imagen final.</p>`;
+  }
+  notes.forEach(n => out += `<p class="hint">${n}</p>`);
+  $('live2').innerHTML = out;
+}
+
+const dots = $('dots2');
+steps.forEach((s, n) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = n + 1; b.setAttribute('aria-label', `Ir al ${s.k.toLowerCase()}: ${s.t}`);
+  b.addEventListener('click', () => go(n)); li.appendChild(b); dots.appendChild(li);
+});
+function refreshDots(){ [...dots.querySelectorAll('button')].forEach((b,k) => { b.disabled = k > S.max; b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); }); }
+function unlock(n){ if (n > S.max) S.max = n; }
+
+function go(n){
+  if (n < 0 || n >= steps.length || n > S.max) return;
+  cancelAnimationFrame(anim);
+  const s = steps[n]; S.step = n; S.hl = null;
+  S.explore = !!s.explore; S.dims = s.dims || []; S.imgs = s.imgs || 0;
+  S.reveal = s.reveal !== undefined ? s.reveal : Infinity;
+  $('stepK2').textContent = `${s.k} de ${steps.length}`;
+  $('stepT2').textContent = s.t;
+  $('body2').innerHTML = s.body();
+  refreshDots();
+  if (s.anim){ S.reveal = s.anim.from; animReveal(s.anim.from, s.anim.to, () => { S.imgs = s.anim.imgs; S.reveal = s.anim.end; }); }
+  if (s.gate) setupPred();
+  if (s.explore) setupExplore();
+  updateNav(); draw();
+}
+function updateNav(){
+  const s = steps[S.step];
+  $('prev2').disabled = S.step === 0;
+  $('next2').disabled = S.step === steps.length - 1 || (s.gate && !S.pred);
+  $('next2').textContent = s.gate && !S.pred ? 'Elige una opción' : (S.step === 6 ? 'Armar el mío' : 'Siguiente');
+}
+function setupPred(){
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const paint = () => {
+    if (!S.pred) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === 'b') b.classList.add('correct'); else if (b.dataset.k === S.pred) b.classList.add('wrong'); });
+    $('fb2').textContent = S.pred === 'b'
+      ? 'Bien. Cada lente invierte la imagen y dos inversiones se cancelan. Veamos el tamaño con los números.'
+      : 'No es esa. La correcta está en verde; los rayos te van a mostrar por qué.';
+  };
+  btns.forEach(b => b.addEventListener('click', () => { S.pred = b.dataset.k; unlock(S.step + 1); paint(); updateNav(); refreshDots(); }));
+  paint();
+}
+$('next2').addEventListener('click', () => { unlock(S.step + 1); go(S.step + 1); });
+$('prev2').addEventListener('click', () => go(S.step - 1));
+
+function setHL(k){
+  S.hl = k;
+  document.querySelectorAll('#m2 .v').forEach(e => e.classList.toggle('hl', !!k && e.dataset.var === k));
+  draw();
+}
+document.addEventListener('pointerover', e => { const t = e.target.closest('#m2 [data-var]'); if (t) setHL(t.dataset.var); });
+document.addEventListener('pointerout', e => { const t = e.target.closest('#m2 [data-var]'); if (t && !t.contains(e.relatedTarget)) setHL(null); });
+document.addEventListener('focusin', e => { const t = e.target.closest('#m2 [data-var]'); if (t) setHL(t.dataset.var); });
+document.addEventListener('focusout', e => { if (e.target.closest('#m2 [data-var]')) setHL(null); });
+
+new ResizeObserver(resize).observe(cv);
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', draw);
+new MutationObserver(draw).observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
+document.fonts && document.fonts.ready.then(draw);
+resize(); go(0);
+})();
+
+/* ================= Pestañas ================= */
+(function(){
+  const m1 = document.getElementById('m1'), m2 = document.getElementById('m2');
+  const t1 = document.getElementById('tab1'), t2 = document.getElementById('tab2');
+  function route(){
+    const two = location.hash === '#sistema';
+    m1.hidden = two; m2.hidden = !two;
+    if (two){ t2.setAttribute('aria-current','page'); t1.removeAttribute('aria-current'); }
+    else { t1.setAttribute('aria-current','page'); t2.removeAttribute('aria-current'); }
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>
