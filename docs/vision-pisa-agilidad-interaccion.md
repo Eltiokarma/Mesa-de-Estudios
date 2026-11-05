@@ -15,12 +15,13 @@ Tres ideas que se refuerzan entre sí:
 ### Qué es PISA
 
 - PISA (*Programme for International Student Assessment*) es la prueba de la OCDE que se toma cada pocos años a alumnos de 15 años en matemática, lectura y ciencia, y con la que se compara a los países.
-- Perú sale entre los últimos de la tabla. *Por verificar con el informe oficial antes de citarlo en el producto o en una presentación:* en PISA 2022 Perú sacó alrededor de 391 en matemática, 408 en lectura y 408 en ciencia, frente a promedios OCDE cercanos a 472, 476 y 485, y la mayoría de alumnos peruanos quedó por debajo del nivel 2 en matemática (el nivel que la OCDE llama "básico").
+- Perú sale entre los últimos de la tabla. En PISA 2025 (resultados del 8 de setiembre de 2026) sacó 382 en matemática, 390 en lectura y 406 en ciencia, frente a promedios OCDE de 463, 461 y 482. **7 de cada 10 alumnos de 15 años no llegan al nivel básico en matemática.** Detalle, fuentes y lo que falta verificar: `docs/investigacion/pisa-y-evaluaciones.md`.
 - Lo que PISA mide no es si el alumno se sabe la fórmula, sino si la **usa en una situación de la vida real**: leer un enunciado largo, sacar los datos que importan de una tabla o un gráfico, decidir qué modelo aplicar, estimar y juzgar si la respuesta tiene sentido.
 
 ### Por qué nos importa
 
-- Los colegios (nuestro primer cliente, el piloto) se evalúan con pruebas de este tipo: PISA y, en Perú, las evaluaciones del Minedu (ECE / Evaluación Nacional de Logros de Aprendizaje), que siguen un enfoque parecido. *Por verificar cuál toma hoy el Minedu y en qué grados.*
+- Los colegios (nuestro primer cliente, el piloto) se evalúan con pruebas de este tipo: PISA y, en Perú, la Evaluación Nacional de Logros de Aprendizaje (ENLA) del Minedu. Según la ENLA 2025, solo el 12,8 % de 5.º de secundaria llega al nivel esperado en matemática (por verificar en el informe de la UMC).
+- Lo que nos falta no es calcular, que las escenas ya entrenan: es **formular** (pasar de una situación desordenada a un problema) e **interpretar** (juzgar si el resultado tiene sentido y decidir). Son dos de los tres procesos que mide PISA en matemática; ver el informe.
 - Un argumento de venta para el colegio piloto: "no solo prepara para la academia; entrena lo que mide PISA".
 - El examen de admisión y PISA piden cosas distintas. La admisión premia velocidad y trucos sobre problemas cerrados; PISA premia leer, modelar y razonar en contexto. **Necesitamos los dos modos**, no reemplazar uno por otro.
 
@@ -36,13 +37,9 @@ Tres ideas que se refuerzan entre sí:
 - Niveles de dificultad que imitan los niveles de desempeño de PISA (del 1 al 6), para que el colegio vea en qué nivel está cada salón.
 - Contexto local: Juliaca, Puno, el mercado, las combis, el lago, la altura (ya hay "modo altura" en circuitos). Que el alumno reconozca su mundo.
 
-### Fuentes por conseguir
+### Fuentes
 
-- Marcos de evaluación de PISA (matemática, ciencia, lectura) de la OCDE.
-- Ítems liberados de PISA y de las pruebas del Minedu: sirven para entender el formato y el nivel. **Regla 5 de `CLAUDE.md`:** no se copian al producto; se escriben problemas propios con el mismo tipo de razonamiento.
-- Informe nacional de resultados de Perú en PISA (Minedu / UMC).
-
-Agregar estas fuentes a `fuentes/por-conseguir.md` cuando se retome el tema.
+Marcos de la OCDE, nota de país de Perú, informe nacional del Minedu e ítems liberados, con enlaces: `docs/investigacion/pisa-y-evaluaciones.md`, sección 5. **Regla 5 de `CLAUDE.md`:** los ítems liberados no se copian al producto; se escriben problemas propios con el mismo tipo de razonamiento.
 
 ---
 
@@ -139,7 +136,8 @@ Lo que se repite en todos y vale copiar: **una sola regla que se entiende en 5 s
 
 ## Pendientes para cuando se retome
 
-- [ ] Conseguir y leer los marcos de PISA y los ítems liberados; verificar las cifras de Perú.
+- [x] Cifras de Perú en PISA 2025 y fuentes reunidas (`docs/investigacion/pisa-y-evaluaciones.md`).
+- [ ] Leer los marcos de la OCDE y los ítems liberados; verificar lo marcado "por verificar" en ese informe (sobre todo las simulaciones de ciencia y la ENLA 2025 de 5.º de secundaria).
 - [ ] Capturas de los juegos de Peak que más gustaron (la tabla de la sección 2 tiene los que se confirmaron; faltan los de cálculo y lenguaje).
 - [ ] Revisar varias lecciones de Brilliant y anotar qué interacciones usan en física y química.
 - [ ] Citar en `docs/fundacional.md` la evidencia sobre entrenamiento cerebral y sobre fluidez en cálculo.
