@@ -1,0 +1,1095 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Espejos esféricos</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md).
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
+   o naranja, f morado, i turquesa, h rojo y R verde. El morado de marca no se usa aquí. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
+  --detras:#f6ece4; --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --plata-1:#f7f9fc; --plata-2:#c3cad6; --plata-3:#8e97a8; --plata-borde:#545c6c;
+  --c-o:#b85a06; --c-f:#6b3dbd; --c-i:#08807a; --c-h:#c0364a; --c-r:#4f7a17; --ray:#1f3f78;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --plata-1:#d9dee8; --plata-2:#8f98aa; --plata-3:#5d6678; --plata-borde:#c9d0dc;
+  --c-o:#f0a04a; --c-f:#ab8cf2; --c-i:#3dcdc3; --c-h:#f17384; --c-r:#a3d65e; --ray:#94b6ff; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --plata-1:#d9dee8; --plata-2:#8f98aa; --plata-3:#5d6678; --plata-borde:#c9d0dc;
+  --c-o:#f0a04a; --c-f:#ab8cf2; --c-i:#3dcdc3; --c-h:#f17384; --c-r:#a3d65e; --ray:#94b6ff; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y; -webkit-user-select:none; user-select:none}
+canvas.arrastrable{cursor:grab}
+canvas.agarrando{cursor:grabbing}
+canvas.sin-scroll{touch-action:none}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+.map{display:grid; gap:8px; margin:0; padding:0; list-style:none}
+.map li{display:flex; gap:10px; align-items:baseline}
+.map b{font-family:var(--mono); min-width:4.6em; flex:none}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-o{color:var(--c-o); background:color-mix(in srgb, var(--c-o) 12%, transparent)}
+.v-f{color:var(--c-f); background:color-mix(in srgb, var(--c-f) 12%, transparent)}
+.v-i{color:var(--c-i); background:color-mix(in srgb, var(--c-i) 12%, transparent)}
+.v-R{color:var(--c-r); background:color-mix(in srgb, var(--c-r) 13%, transparent)}
+.v-h, .v-A{color:var(--c-h); background:color-mix(in srgb, var(--c-h) 12%, transparent)}
+.v.hl{background:color-mix(in srgb, currentColor 26%, transparent)}
+b.v-o{color:var(--c-o)} b.v-R{color:var(--c-r)} b.v-h{color:var(--c-h)}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.05rem; white-space:nowrap; font-variant-numeric:tabular-nums}
+.eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.5em; white-space:normal}
+.frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1.15}
+.frac > span:first-child{border-bottom:1.5px solid currentColor; padding:0 .25em}
+.frac > span:last-child{padding:0 .25em}
+.answer{font-weight:700; padding:12px 16px; border-radius:16px; background:var(--paper); border:2px solid var(--c-i); max-width:66ch}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.ctrls{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap:12px; align-items:end}
+.slider{display:grid; gap:4px}
+.slider label{font-weight:700; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.slider output{font-family:var(--mono); color:var(--muted)}
+input[type=range]{width:100%; accent-color:var(--ink); min-height:28px}
+input.r-o{accent-color:var(--c-o)} input.r-R{accent-color:var(--c-r)}
+.chips{display:flex; flex-wrap:wrap; gap:6px}
+.chip{font-size:.86rem; padding:4px 12px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); font-weight:700}
+.chip.real{border-color:var(--c-i); color:var(--c-i)}
+.chip.virt{border-style:dashed}
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:999px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.exps{border-radius:20px}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.4fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Física · Óptica · Problemas tipo admisión</p>
+      <h1>Espejos esféricos</h1>
+      <p class="sub">Cóncavos y convexos: dónde se forma la imagen y cómo es.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Espejo, vela y rayos">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Espejo esférico con una vela delante, sus puntos F y C, los rayos y la imagen"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="legend">
+        <span><i style="background:var(--c-o)"></i>o · distancia del objeto</span>
+        <span><i style="background:var(--c-f)"></i>f · distancia focal (F)</span>
+        <span><i style="background:var(--c-r)"></i>R · radio de curvatura (C)</span>
+        <span><i style="background:var(--c-i)"></i>i · distancia de la imagen</span>
+        <span><i style="background:var(--c-h)"></i>h · alturas</span>
+      </div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite" id="vivo1">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos con espejos">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Espejo, objeto, rayos e imagen del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="legend" id="leyenda2">
+        <span><i style="background:var(--c-h)"></i>objeto e imagen (punteada: virtual)</span>
+        <span><i style="background:var(--ray)"></i>rayos de luz</span>
+        <span><i style="background:var(--c-f)"></i>F · foco</span>
+        <span><i style="background:var(--c-r)"></i>C · centro de curvatura</span>
+      </div>
+    </section>
+    <section class="guide">
+      <div class="seg exps" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/optica-espejo-esferico">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'optica-espejo-esferico', unidad: 'fisica.optica-geometrica', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas de dibujo compartidas =================
+   Toda la física sale de MotorEspejo (motor.js); aquí solo se pinta.
+   Coordenadas del motor: espejo en x = 0, objeto a la izquierda, detrás del espejo a la derecha. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+// Coma decimal y signo menos tipográfico.
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '∞';
+  const p = Math.pow(10, d === undefined ? 1 : d), r = Math.round(n*p)/p + 0;
+  return String(r).replace('.', ',').replace('-', '−');
+}
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const fr = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+
+function colores(){
+  return { ink:css('--ink'), muted:css('--muted'), grid:css('--grid'), paper:css('--paper'), card:css('--card'), detras:css('--detras'),
+    o:css('--c-o'), f:css('--c-f'), i:css('--c-i'), h:css('--c-h'), r:css('--c-r'), ray:css('--ray'),
+    p1:css('--plata-1'), p2:css('--plata-2'), p3:css('--plata-3'), pb:css('--plata-borde'), mono:css('--mono'), font:css('--font') };
+}
+
+function crearLienzo(cv, vista, dibujar){
+  const ctx = cv.getContext('2d');
+  const L = { cv, ctx, W:0, H:0, sx:1, sy:1, vista, D:20, f:10 };
+  L.X = x => (x - L.vista.xmin)*L.sx;
+  L.Y = y => L.H/2 - y*L.sy;
+  L.aModelo = (px, py) => [px/L.sx + L.vista.xmin, (L.H/2 - py)/L.sy];
+  L.resize = () => {
+    const W = cv.clientWidth; if (!W) return;
+    const H = Math.round(clamp(W*0.64, 260, 460)), dpr = window.devicePixelRatio || 1;
+    L.W = W; L.H = H; cv.style.height = H + 'px'; cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    L.sx = W/(L.vista.xmax - L.vista.xmin); L.sy = (H/2 - 12)/L.vista.ymax;
+    dibujar();
+  };
+  // Curvatura del dibujo: unos píxeles en los bordes, exagerada a propósito pero chica (el cálculo es paraxial).
+  L.sag = () => Math.sign(L.f) * Math.min(9, 0.42*L.sx);
+  // Píxel x de la superficie del espejo a la altura y (el cóncavo se curva hacia el objeto).
+  L.sup = y => L.X(0) - L.sag()*Math.min(1, (y/(L.D/2))**2);
+  new ResizeObserver(L.resize).observe(cv);
+  return L;
+}
+
+function linea(ctx, x1, y1, x2, y2){ ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
+
+function fondo(L, c){
+  const { ctx, W, H } = L;
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = c.detras; ctx.fillRect(L.X(0), 0, W - L.X(0), H);
+  ctx.lineWidth = 1; ctx.strokeStyle = c.grid; ctx.setLineDash([]);
+  for (let x = Math.ceil(L.vista.xmin/5)*5; x <= L.vista.xmax; x += 5) linea(ctx, L.X(x), 0, L.X(x), H);
+  for (let y = -Math.floor(L.vista.ymax/2)*2; y <= L.vista.ymax; y += 2) linea(ctx, 0, L.Y(y), W, L.Y(y));
+  ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; ctx.globalAlpha = .8; linea(ctx, 0, L.Y(0), W, L.Y(0)); ctx.globalAlpha = 1;
+  ctx.font = `600 11px ${c.font}`; ctx.fillStyle = c.muted; ctx.textBaseline = 'top';
+  ctx.textAlign = 'left'; ctx.fillText('delante', 8, 6);
+  ctx.textAlign = 'right'; ctx.fillText('detrás', W - 8, 6);
+}
+
+// Espejo con aspecto de espejo: banda plateada curva y achurado detrás.
+function espejo(L, c){
+  const { ctx } = L, t = 7, n = 28, yA = L.D/2;
+  const pts = [];
+  for (let k = 0; k <= n; k++){ const y = -yA + 2*yA*k/n; pts.push([L.sup(y), L.Y(y)]); }
+  // Achurado detrás
+  ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; ctx.globalAlpha = .55;
+  for (let k = 1; k <= n; k++){ const [x, y] = pts[k]; linea(ctx, x + t, y, x + t + 8, y - 8); }
+  ctx.restore();
+  // Banda plateada
+  const g = ctx.createLinearGradient(0, L.Y(yA), 0, L.Y(-yA));
+  g.addColorStop(0, c.p2); g.addColorStop(.18, c.p1); g.addColorStop(.42, c.p3); g.addColorStop(.6, c.p1); g.addColorStop(.85, c.p2); g.addColorStop(1, c.p3);
+  ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]);
+  for (const [x, y] of pts) ctx.lineTo(x, y);
+  for (let k = n; k >= 0; k--) ctx.lineTo(pts[k][0] + t, pts[k][1]);
+  ctx.closePath();
+  ctx.save(); ctx.shadowColor = 'rgba(60,40,80,.25)'; ctx.shadowBlur = 8; ctx.shadowOffsetX = 2;
+  ctx.fillStyle = g; ctx.fill(); ctx.restore();
+  ctx.strokeStyle = c.pb; ctx.lineWidth = 1; ctx.stroke();
+  // Superficie que refleja
+  ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]); for (const [x, y] of pts) ctx.lineTo(x, y);
+  ctx.strokeStyle = c.pb; ctx.lineWidth = 2; ctx.stroke();
+  // Brillo
+  ctx.beginPath(); ctx.moveTo(pts[3][0] + 2.5, pts[3][1]); for (let k = 3; k < 11; k++) ctx.lineTo(pts[k][0] + 2.5, pts[k][1]);
+  ctx.strokeStyle = 'rgba(255,255,255,.85)'; ctx.lineWidth = 1.5; ctx.stroke();
+}
+
+function brillo(ctx, on, color){ ctx.shadowColor = on ? color : 'transparent'; ctx.shadowBlur = on ? 12 : 0; }
+
+// Puntos F y C (detrás del espejo en el convexo: son virtuales).
+function puntos(L, c, f, hl){
+  const { ctx } = L;
+  ctx.font = `800 12px ${c.mono}`; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  [[-2*f, 'C', c.r, hl === 'R'], [-f, 'F', c.f, hl === 'f']].forEach(([x, lab, col, on]) => {
+    if (x < L.vista.xmin || x > L.vista.xmax) return;
+    brillo(ctx, on, col); ctx.fillStyle = col; ctx.strokeStyle = c.card; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(L.X(x), L.Y(0), on ? 5.5 : 4.2, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+    ctx.fillText(lab, L.X(x), L.Y(0) + 7); brillo(ctx, false);
+  });
+}
+
+// Cota horizontal con su etiqueta, en el color de la variable.
+function cota(L, c, x1, x2, y, color, label, on){
+  const { ctx } = L, a = L.X(Math.min(x1, x2)), b = L.X(Math.max(x1, x2)), yy = L.Y(y);
+  brillo(ctx, on, color); ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = on ? 2.6 : 1.6; ctx.setLineDash([]);
+  linea(ctx, a, yy, b, yy); linea(ctx, a, yy - 5, a, yy + 5); linea(ctx, b, yy - 5, b, yy + 5);
+  ctx.font = `800 ${on ? 13 : 12}px ${c.mono}`; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+  const tw = ctx.measureText(label).width, mx = clamp((a + b)/2, tw/2 + 4, L.W - tw/2 - 4);
+  ctx.save(); ctx.shadowColor = 'transparent'; ctx.fillStyle = c.paper; ctx.globalAlpha = .85; ctx.fillRect(mx - tw/2 - 3, yy - 18, tw + 6, 15); ctx.restore();
+  ctx.fillStyle = color; ctx.fillText(label, mx, yy - 4); brillo(ctx, false);
+}
+
+// La vela: cuerpo, mecha y llama. La punta de la llama es el punto de donde salen los rayos (altura h).
+function vela(L, c, x, h, op){
+  op = op || {};
+  const { ctx } = L, px = L.X(x), w = clamp(L.sx*0.85, 7, 13), s = Math.sign(h) || 1;
+  const Y = k => L.Y(k*h);
+  ctx.save(); ctx.globalAlpha = op.alpha === undefined ? 1 : op.alpha;
+  brillo(ctx, op.on, c.h);
+  ctx.setLineDash(op.virt ? [4, 3] : []);
+  // Plato
+  ctx.fillStyle = c.h; ctx.globalAlpha *= .35; ctx.beginPath(); ctx.ellipse(px, L.Y(0), w*1.05, 2.6, 0, 0, Math.PI*2); ctx.fill();
+  ctx.globalAlpha = op.alpha === undefined ? 1 : op.alpha;
+  // Cuerpo
+  const yTop = Y(.64), yBot = L.Y(0) - s*2;
+  ctx.beginPath(); ctx.rect(px - w/2, Math.min(yTop, yBot), w, Math.abs(yBot - yTop));
+  ctx.fillStyle = c.paper; ctx.fill();
+  ctx.fillStyle = c.h; ctx.globalAlpha *= op.virt ? .14 : .24; ctx.fill(); ctx.globalAlpha = op.alpha === undefined ? 1 : op.alpha;
+  ctx.strokeStyle = c.h; ctx.lineWidth = op.on ? 2.4 : 1.6; ctx.stroke();
+  // Mecha
+  ctx.setLineDash([]); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; linea(ctx, px, yTop, px, Y(.7));
+  // Llama (gota)
+  const yb = Y(.68), yt = L.Y(h), ym = Y(.8), r = w*.62;
+  ctx.beginPath(); ctx.moveTo(px, yt);
+  ctx.bezierCurveTo(px + r*.5, ym - (ym - yt)*.2, px + r*1.1, ym + (yb - ym)*.4, px, yb);
+  ctx.bezierCurveTo(px - r*1.1, ym + (yb - ym)*.4, px - r*.5, ym - (ym - yt)*.2, px, yt);
+  ctx.closePath();
+  ctx.setLineDash(op.virt ? [3, 2] : []);
+  ctx.fillStyle = c.h; ctx.globalAlpha *= op.virt ? .5 : 1; ctx.fill(); ctx.globalAlpha = op.alpha === undefined ? 1 : op.alpha;
+  if (op.virt){ ctx.strokeStyle = c.h; ctx.lineWidth = 1.4; ctx.stroke(); }
+  // Centro claro de la llama
+  ctx.beginPath(); ctx.ellipse(px, Y(.76), r*.32, Math.abs(Y(.76) - Y(.7))*.9 + 1, 0, 0, Math.PI*2);
+  ctx.fillStyle = c.paper; ctx.globalAlpha *= .7; ctx.fill();
+  ctx.restore(); ctx.setLineDash([]);
+}
+
+// Un auto visto de costado (objeto del retrovisor). Su alto es h; el largo es solo un dibujo.
+function auto(L, c, x, h, op){
+  op = op || {};
+  const { ctx } = L, px = L.X(x), y0 = L.Y(0), hp = Math.abs(L.Y(h) - y0), s = Math.sign(h) || 1, len = hp*1.9;
+  const Y = k => y0 - s*k*hp;
+  ctx.save(); ctx.setLineDash(op.virt ? [4, 3] : []); ctx.strokeStyle = c.h; ctx.lineWidth = op.virt ? 1.4 : 1.8;
+  ctx.beginPath();
+  ctx.moveTo(px - len/2, Y(.18)); ctx.lineTo(px - len/2, Y(.5)); ctx.lineTo(px - len*.28, Y(.55));
+  ctx.lineTo(px - len*.15, Y(1)); ctx.lineTo(px + len*.2, Y(1)); ctx.lineTo(px + len*.34, Y(.56));
+  ctx.lineTo(px + len/2, Y(.5)); ctx.lineTo(px + len/2, Y(.18)); ctx.closePath();
+  ctx.fillStyle = c.h; ctx.globalAlpha = op.virt ? .18 : .28; ctx.fill(); ctx.globalAlpha = 1; ctx.stroke();
+  ctx.fillStyle = c.paper; ctx.globalAlpha = .9;
+  ctx.fillRect(px - len*.1, Math.min(Y(.62), Y(.9)), len*.24, Math.abs(Y(.9) - Y(.62)));
+  ctx.globalAlpha = 1; ctx.setLineDash([]);
+  ctx.fillStyle = c.ink;
+  [-.28, .28].forEach(k => { ctx.beginPath(); ctx.arc(px + k*len, Y(.17), Math.max(1.5, hp*.15), 0, Math.PI*2); ctx.fill(); });
+  // Punta (de donde salen los rayos): el techo, a la altura h
+  ctx.fillStyle = c.h; ctx.beginPath(); ctx.arc(px, L.Y(h), 2.6, 0, Math.PI*2); ctx.fill();
+  ctx.restore();
+}
+
+// Un ojo que mira hacia el espejo (a la derecha).
+function ojo(L, c, x, y, activo){
+  const { ctx } = L, px = L.X(x), py = L.Y(y), r = 12;
+  ctx.save();
+  if (activo){ ctx.strokeStyle = c.muted; ctx.setLineDash([3, 3]); ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(px, py, r + 8, 0, Math.PI*2); ctx.stroke(); ctx.setLineDash([]); }
+  ctx.shadowColor = 'rgba(60,40,80,.25)'; ctx.shadowBlur = 6;
+  ctx.beginPath(); ctx.moveTo(px - r, py); ctx.quadraticCurveTo(px, py - r*.95, px + r, py); ctx.quadraticCurveTo(px, py + r*.95, px - r, py); ctx.closePath();
+  ctx.fillStyle = c.card; ctx.fill(); ctx.shadowBlur = 0; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.stroke();
+  ctx.beginPath(); ctx.arc(px + r*.28, py, r*.38, 0, Math.PI*2); ctx.fillStyle = c.muted; ctx.fill();
+  ctx.beginPath(); ctx.arc(px + r*.36, py, r*.17, 0, Math.PI*2); ctx.fillStyle = c.ink; ctx.fill();
+  ctx.beginPath(); ctx.arc(px + r*.2, py - r*.12, r*.08, 0, Math.PI*2); ctx.fillStyle = c.card; ctx.fill();
+  ctx.restore();
+}
+
+// Recorre una polilínea (en píxeles) hasta la fracción p, con una flechita que marca el sentido de la luz.
+function trazo(ctx, pts, p, color, w, dash, alpha){
+  const seg = []; let tot = 0;
+  for (let k = 1; k < pts.length; k++){ const l = Math.hypot(pts[k][0] - pts[k-1][0], pts[k][1] - pts[k-1][1]); seg.push(l); tot += l; }
+  let resto = tot*(p === undefined ? 1 : p);
+  ctx.save(); ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = w; ctx.setLineDash(dash || []); ctx.globalAlpha = alpha === undefined ? 1 : alpha;
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]);
+  const flechas = [];
+  for (let k = 1; k < pts.length && resto > 0; k++){
+    const t = Math.min(1, resto/seg[k-1]);
+    const x = pts[k-1][0] + (pts[k][0] - pts[k-1][0])*t, y = pts[k-1][1] + (pts[k][1] - pts[k-1][1])*t;
+    ctx.lineTo(x, y);
+    if (t >= .55 && seg[k-1] > 40 && !dash) flechas.push([pts[k-1], pts[k]]);
+    resto -= seg[k-1];
+  }
+  ctx.stroke(); ctx.setLineDash([]);
+  for (const [a, b] of flechas){
+    const mx = a[0] + (b[0] - a[0])*.5, my = a[1] + (b[1] - a[1])*.5, ang = Math.atan2(b[1] - a[1], b[0] - a[0]), s = 4 + w;
+    ctx.beginPath(); ctx.moveTo(mx + Math.cos(ang)*s, my + Math.sin(ang)*s);
+    ctx.lineTo(mx + Math.cos(ang + 2.5)*s, my + Math.sin(ang + 2.5)*s); ctx.lineTo(mx + Math.cos(ang - 2.5)*s, my + Math.sin(ang - 2.5)*s);
+    ctx.closePath(); ctx.fill();
+  }
+  ctx.restore();
+}
+
+// Punto donde un rayo reflejado (y = yM + pend·x) sale del dibujo por la izquierda, arriba o abajo.
+function salida(L, yM, pend, xHasta){
+  let x = xHasta === undefined ? L.vista.xmin : xHasta, y = yM + pend*x;
+  const ym = L.vista.ymax + 1;
+  if (Math.abs(y) > ym){ x = (Math.sign(y)*ym - yM)/pend; y = Math.sign(y)*ym; }
+  return [x, y];
+}
+// Polilínea en píxeles de un rayo { yM, pend } que sale de la punta del objeto (-o, h).
+function camino(L, o, h, rayo, xHasta){
+  const hit = [L.sup(rayo.yM), L.Y(rayo.yM)];
+  const [xs, ys] = salida(L, rayo.yM, rayo.pend, xHasta);
+  return [[L.X(-o), L.Y(h)], hit, [L.X(xs), L.Y(ys)]];
+}
+// Prolongación punteada detrás del espejo, hasta el punto imagen virtual.
+function prolongar(L, c, rayo, xImg, alpha){
+  const y = rayo.yM + rayo.pend*xImg;
+  trazo(L.ctx, [[L.sup(rayo.yM), L.Y(rayo.yM)], [L.X(xImg), L.Y(y)]], 1, c.ray, 1.2, [4, 4], alpha === undefined ? .65 : alpha);
+}
+function etiquetaRayo(L, c, pts, n){
+  const t = [.22, .5, .78][(n - 1) % 3];
+  const { ctx } = L, a = pts[0], b = pts[1], x = a[0] + (b[0] - a[0])*t, y = a[1] + (b[1] - a[1])*t - 12;
+  ctx.fillStyle = c.paper; ctx.strokeStyle = c.ray; ctx.lineWidth = 1.3;
+  ctx.beginPath(); ctx.arc(x, y, 9, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = c.ray; ctx.font = `800 11px ${c.mono}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(String(n), x, y + .5);
+}
+function texto(L, c, x, y, t, color, align){
+  const { ctx } = L; ctx.font = `700 12px ${c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+  const tw = ctx.measureText(t).width, px = clamp(L.X(x), (align === 'left' ? 4 : tw/2 + 4), L.W - (align === 'left' ? tw + 4 : tw/2 + 4)), py = L.Y(y);
+  ctx.fillStyle = c.paper; ctx.globalAlpha = .88; ctx.fillRect(px - (align === 'left' ? 3 : tw/2 + 3), py - 9, tw + 6, 18); ctx.globalAlpha = 1;
+  ctx.fillStyle = color; ctx.fillText(t, px, py);
+}
+
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function describirImagen(r){
+  if (r.inf) return 'No se forma imagen: los rayos reflejados salen paralelos.';
+  const d = MotorEspejo.describir(r, 0.02);
+  return `Imagen ${d.real ? 'real, ' + fmt(r.i) + ' cm delante' : 'virtual, ' + fmt(-r.i) + ' cm detrás'} del espejo, ${d.derecha ? 'derecha' : 'invertida'} y ${d.tamano === 'igual' ? 'del mismo tamaño' : d.tamano === 'mayor' ? 'más grande' : 'más pequeña'} (A = ${fmt(r.m, 2)}).`;
+}
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso =================
+   Problema guiado de docs/investigacion/optica-espejos-esfericos.md: cóncavo de R = 20 cm, vela a 15 cm. */
+(function(){
+const $ = id => document.getElementById(id);
+const cv = $('cv');
+const HO = 4, R0 = 20, O0 = 15, D = 22;
+const S = { step:0, max:0, pred:null, hl:null, tipo:'concavo', R:R0, o:O0, rays:[0,0,0], active:-1,
+  show:{ obj:true, pts:false, o:false, f:false, R:false, img:false, i:false } };
+let anim = null, arrastre = false;
+const L = crearLienzo(cv, { xmin:-45, xmax:21, ymax:12.5 }, draw);
+L.D = D;
+
+const f = () => MotorEspejo.focal(S.R, S.tipo);
+const geo = () => MotorEspejo.imagen(S.o, f(), HO, S.tipo === 'concavo' ? 0.25 : 1e-9);
+
+function draw(){
+  if (!L.W) return;
+  const c = colores(), ctx = L.ctx, F = f(), r = geo(), hl = S.hl;
+  L.f = F;
+  fondo(L, c); espejo(L, c);
+  if (S.show.pts) puntos(L, c, F, hl);
+  if (S.show.R) cota(L, c, -2*F, 0, -11.2, c.r, `R = ${fmt(Math.abs(2*F))} cm`, hl === 'R');
+  if (S.show.f) cota(L, c, -F, 0, -9.3, c.f, `f = ${fmt(F)} cm`, hl === 'f');
+  if (S.show.o) cota(L, c, -S.o, 0, 10.5, c.o, `o = ${fmt(S.o)} cm`, hl === 'o');
+
+  // Rayos principales: 1 paralelo, 2 por F, 3 al vértice.
+  const rp = MotorEspejo.rayosPrincipales(S.o, F, HO);
+  const lista = [rp.paralelo, rp.foco, rp.vertice];
+  lista.forEach((rayo, k) => {
+    if (!rayo || S.rays[k] <= 0) return;
+    if (Math.abs(rayo.yM) > D/2 + 0.01){
+      // Pega fuera del espejo: solo se dibuja la llegada, tenue.
+      trazo(ctx, [[L.X(-S.o), L.Y(HO)], [L.X(0), L.Y(rayo.yM)]], S.rays[k], c.ray, 1.2, [2, 4], .5);
+      return;
+    }
+    const pts = camino(L, S.o, HO, rayo);
+    trazo(ctx, pts, S.rays[k], c.ray, k === S.active ? 2.8 : 1.8);
+    if (S.rays[k] >= 1 && !S.explora) etiquetaRayo(L, c, pts, k + 1);
+    if (S.rays[k] >= 1 && S.show.img && !r.inf && !r.real && r.x < L.vista.xmax + 30) prolongar(L, c, rayo, r.x);
+  });
+
+  vela(L, c, -S.o, HO, { on: hl === 'h' || hl === 'A' || hl === 'o' });
+
+  if (S.show.img && !r.inf){
+    const dentro = r.x > L.vista.xmin - 2 && r.x < L.vista.xmax + 2;
+    if (dentro){
+      vela(L, c, r.x, r.h, { virt: !r.real, on: hl === 'h' || hl === 'A' || hl === 'i' });
+      if (S.show.i) cota(L, c, 0, r.x, 8.5, c.i, `i = ${fmt(r.i)} cm`, hl === 'i');
+    } else if (S.explora){
+      texto(L, c, r.real ? L.vista.xmin + 6 : L.vista.xmax - 6, 7, r.real ? '← imagen más lejos' : 'imagen más lejos →', c.i, 'center');
+    }
+  }
+  if (S.explora){
+    // Asa para arrastrar la vela
+    ctx.save(); ctx.strokeStyle = c.o; ctx.globalAlpha = .7; ctx.setLineDash([3, 3]); ctx.lineWidth = 1.4;
+    ctx.beginPath(); ctx.roundRect ? ctx.roundRect(L.X(-S.o) - 14, L.Y(HO) - 8, 28, L.Y(0) - L.Y(HO) + 16, 10) : ctx.rect(L.X(-S.o) - 14, L.Y(HO) - 8, 28, L.Y(0) - L.Y(HO) + 16);
+    ctx.stroke(); ctx.restore();
+  }
+}
+
+function animar(k, listo){
+  cancelAnimationFrame(anim);
+  if (RM){ S.rays[k] = 1; draw(); listo && listo(); return; }
+  const t0 = performance.now(), dur = 1500;
+  const tick = now => {
+    const t = Math.min(1, (now - t0)/dur);
+    S.rays[k] = 1 - Math.pow(1 - t, 2); draw();
+    if (t < 1) anim = requestAnimationFrame(tick); else listo && listo();
+  };
+  anim = requestAnimationFrame(tick);
+}
+
+const OPS = [
+  ['a', 'Sobre la superficie del espejo'],
+  ['b', 'Detrás del espejo'],
+  ['c', 'Delante del espejo, más allá de C, invertida y más grande'],
+  ['d', 'Delante del espejo, entre F y C, invertida y más pequeña'],
+];
+// Error que representa cada opción incorrecta (tabla del informe).
+const ERR = { a:['S1-en-la-superficie', 'documentado'], b:['S6-detras-como-lente', 'hipotesis'], d:['S5-zona', 'documentado'] };
+const FB = {
+  c: '¡Bien! Con el objeto entre C y F, la imagen cae más allá de C: invertida y más grande. Ahora veamos por qué con los rayos.',
+  a: 'Elegiste la A. Es una idea muy común, pero el espejo no es una pantalla: solo desvía la luz. La correcta está marcada; mira dónde se cruzan los rayos.',
+  b: 'Elegiste la B. En una lente, la imagen real sale al otro lado; un espejo, en cambio, no deja pasar la luz: la devuelve. La correcta está marcada.',
+  d: 'Elegiste la D. Cuidado con las zonas: más allá de C es la vela la que estaría; aquí está entre C y F. La correcta está marcada.',
+};
+
+const steps = [
+ { k:'Paso 1', t:'El problema', show:{},
+   body:() => `<p class="problem">Una vela de ${V('h','4 cm')} de altura está a ${V('o','15 cm')} de un espejo cóncavo cuyo radio de curvatura es ${V('R','20 cm')}. ¿A qué distancia del espejo se forma la imagen? ¿Es real o virtual, derecha o invertida, mayor o menor?</p>
+   <p>Cada dato tiene un color. Ese mismo color lo vas a ver en el dibujo y en la ecuación. Toca o pasa el puntero sobre un dato para ver dónde vive.</p>` },
+ { k:'Paso 2', t:'Del radio al foco', show:{pts:true, o:true, R:true, f:true},
+   body:() => `<ul class="map">
+     <li><b class="v-o">o = 15</b><span>Distancia de la ${V('o','vela')} al espejo.</span></li>
+     <li><b class="v-R">R = 20</b><span>Radio de curvatura: el espejo es un pedazo de una esfera, y ${V('R','C')} es su centro.</span></li>
+     <li><b class="v-h">h = 4</b><span>Altura de la ${V('h','vela')}, hasta la punta de la llama.</span></li>
+   </ul>
+   <div class="eqs"><div class="eq">${V('f','f')} = ${fr(V('R','R'),'2')} = ${fr(V('R','20'),'2')} = ${V('f','10 cm')}<span class="note">El foco está a mitad de camino entre el espejo y C</span></div></div>
+   <p>Los rayos que llegan paralelos al eje rebotan y se juntan en el foco ${V('f','F')}. Por la forma de la esfera, ese punto queda a la mitad del radio.</p>
+   <p class="aviso">Ojo: muchos problemas dan el radio y no la focal. Si usas 20 como si fuera f, todo lo que sigue sale mal.</p>` },
+ { k:'Paso 3', t:'Antes de calcular, predice', show:{pts:true, o:true, f:true, R:true}, gate:true,
+   body:() => `<p>La vela está entre C (20 cm) y F (10 cm). ¿Dónde crees que se forma la imagen?</p>
+   <div class="opts">${OPS.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div>
+   <p class="fb" id="fb"></p>` },
+ { k:'Paso 4', t:'Rayo 1: paralelo al eje', show:{pts:true}, rays:0, anim:0,
+   body:() => `<p>Sale de la punta de la llama paralelo al eje. El espejo cóncavo lo refleja hacia el foco ${V('f','F')}.</p>
+   <p>Así se define el foco: es el punto donde se juntan los rayos que llegan paralelos.</p>` },
+ { k:'Paso 5', t:'Rayo 2: por el foco', show:{pts:true}, rays:1, anim:1,
+   body:() => `<p>Este rayo pasa por ${V('f','F')} antes de llegar al espejo, y sale paralelo al eje.</p>
+   <p>Es el rayo 1 recorrido al revés: la luz hace el mismo camino en los dos sentidos.</p>` },
+ { k:'Paso 6', t:'Rayo 3: al vértice', show:{pts:true}, rays:2, anim:2, after:{img:true, i:true},
+   body:() => `<p>Este rayo llega al centro del espejo (el vértice) y rebota con el mismo ángulo hacia el otro lado del eje, como en un espejo plano.</p>
+   <p>Donde se cruzan los rayos está la punta de la llama de la imagen: <b>delante</b> del espejo, en el aire. Basta con dos rayos; el tercero sirve para comprobar.</p>` },
+ { k:'Paso 7', t:'La ecuación es el mismo dibujo', show:{pts:true, img:true, i:true, o:true, f:true}, rays:3,
+   body:() => `<div class="eqs">
+     <div class="eq">${fr('1',V('f','f'))} = ${fr('1',V('o','o'))} + ${fr('1',V('i','i'))}<span class="note">La misma ecuación que en las lentes</span></div>
+     <div class="eq">${fr('1',V('f','10'))} = ${fr('1',V('o','15'))} + ${fr('1',V('i','i'))}<span class="note">Cada color por su dato</span></div>
+     <div class="eq">${fr('1',V('i','i'))} = ${fr('1','10')} − ${fr('1','15')} = ${fr('3','30')} − ${fr('2','30')} = ${fr('1','30')}</div>
+     <div class="eq">${V('i','i')} = 30 cm<span class="note">Positiva: imagen real</span></div>
+   </div>
+   <p>Los rayos se cruzaron a 30 cm, más allá de C (20 cm). La ecuación y el dibujo dicen lo mismo. ${S.pred === 'c' ? 'Tu predicción era correcta.' : 'Compara con lo que predijiste en el paso 3.'}</p>
+   <p class="aviso">En una lente, la imagen real sale al otro lado. En el espejo la luz rebota, así que la imagen real queda <b>del mismo lado que el objeto</b>. Por eso, en espejos, i positiva significa <b>delante</b> del espejo, e i negativa, detrás.</p>` },
+ { k:'Paso 8', t:'El tamaño de la imagen', show:{pts:true, img:true, i:true, o:true}, rays:3,
+   body:() => `<div class="eqs">
+     <div class="eq">${V('A','A')} = −${fr(V('i','i'),V('o','o'))} = −${fr(V('i','30'),V('o','15'))} = −2<span class="note">Aumento</span></div>
+     <div class="eq">${V('h','h<sub>i</sub>')} = ${V('A','A')} · ${V('h','h')} = (−2)(4 cm) = −8 cm</div>
+   </div>
+   <p>El signo menos es lo que ves en el dibujo: la llama de la imagen apunta hacia abajo. El 2 dice que mide el doble.</p>
+   <p class="answer">Respuesta: la imagen se forma a 30 cm delante del espejo, más allá de C. Es real, invertida y el doble de grande (mide 8 cm).</p>` },
+ { k:'Paso 9', t:'Ahora explora tú', show:{pts:true, img:true, i:true, o:true, f:true}, rays:3, explora:true,
+   body:() => `<div class="ctrls">
+     <div class="seg" role="group" aria-label="Tipo de espejo">
+       <button type="button" data-tipo="concavo" aria-pressed="${S.tipo === 'concavo'}">Cóncavo</button>
+       <button type="button" data-tipo="convexo" aria-pressed="${S.tipo === 'convexo'}">Convexo</button>
+     </div>
+     <div class="slider"><label for="o-sl"><span>Distancia de la vela (${V('o','o')})</span><output id="o-out"></output></label>
+       <input id="o-sl" class="r-o" type="range" min="2" max="42" step="0.5" value="${S.o}"></div>
+     <div class="slider"><label for="r-sl"><span>Radio de curvatura (${V('R','R')})</span><output id="r-out"></output></label>
+       <input id="r-sl" class="r-R" type="range" min="8" max="40" step="1" value="${S.R}"></div>
+   </div>
+   <div id="live" class="body"></div>
+   <p class="hint">Arrastra la vela en el dibujo o usa el deslizador. Prueba las zonas del cóncavo: más allá de C, entre C y F, en F y entre F y el espejo. Luego cambia a convexo.</p>` },
+];
+
+const dots = $('dots');
+steps.forEach((s, n) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = n + 1; b.setAttribute('aria-label', `Ir al ${s.k.toLowerCase()}: ${s.t}`);
+  b.addEventListener('click', () => go(n)); li.appendChild(b); dots.appendChild(li);
+});
+
+function go(n){
+  if (n < 0 || n >= steps.length || n > S.max) return;
+  cancelAnimationFrame(anim);
+  const s = steps[n]; S.step = n; S.hl = null; S.explora = !!s.explora;
+  if (!s.explora){ S.tipo = 'concavo'; S.R = R0; S.o = O0; }
+  S.show = Object.assign({ obj:true, pts:false, o:false, f:false, R:false, img:false, i:false }, s.show);
+  const nr = s.rays || 0;
+  S.rays = [0,1,2].map(k => k < nr ? 1 : 0); S.active = -1;
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  pintarDots();
+  cv.classList.toggle('arrastrable', S.explora);
+  if (s.anim !== undefined){
+    S.active = s.anim;
+    animar(s.anim, () => { if (s.after) Object.assign(S.show, s.after); S.active = -1; draw(); describir(); });
+  }
+  if (s.gate) prediccion();
+  if (s.explora) explorar();
+  nav(); draw(); describir();
+}
+function describir(){
+  const s = steps[S.step];
+  $('desc1').textContent = (S.show.img || s.explora) ? describirImagen(geo()) : '';
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0;
+  $('next').disabled = S.step === steps.length - 1 || (s.gate && !S.pred);
+  $('next').textContent = s.gate && !S.pred ? 'Elige una opción' : (S.step === 5 ? 'Ver la ecuación' : 'Siguiente');
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(n){ if (n > S.max) S.max = n; }
+
+function prediccion(){
+  const btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    if (!S.pred) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === 'c') b.classList.add('correct'); else if (b.dataset.k === S.pred) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = FB[S.pred]; fb.className = 'fb ' + (S.pred === 'c' ? 'ok' : 'mal');
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred) return;
+    S.pred = b.dataset.k; desbloquear(S.step + 1); pintar(); nav(); pintarDots();
+    const e = ERR[S.pred] || ['', ''];
+    registrarPrediccion('espejo-paso3', S.pred, S.pred === 'c', e[0], e[1], t0);
+    $('next').focus();
+  }));
+  pintar();
+}
+
+function explorar(){
+  const sl = $('o-sl'), rs = $('r-sl');
+  sl.addEventListener('input', () => { S.o = +sl.value; vivo(); });
+  rs.addEventListener('input', () => { S.R = +rs.value; vivo(); });
+  $('stepBody').querySelectorAll('[data-tipo]').forEach(b => b.addEventListener('click', () => {
+    S.tipo = b.dataset.tipo;
+    $('stepBody').querySelectorAll('[data-tipo]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    vivo();
+  }));
+  vivo();
+}
+const ZONA = { 'mas-alla-de-C':'Vela más allá de C', 'en-C':'Vela en C', 'entre-C-y-F':'Vela entre C y F', 'en-F':'Vela en F', 'entre-F-y-espejo':'Vela entre F y el espejo', 'convexo':'Convexo: siempre el mismo tipo de imagen' };
+function vivo(){
+  const sl = $('o-sl'), rs = $('r-sl'); if (!sl) return;
+  sl.value = S.o; rs.value = S.R;
+  $('o-out').textContent = `${fmt(S.o)} cm`; $('r-out').textContent = `${fmt(S.R)} cm`;
+  const F = f(), r = geo(), z = MotorEspejo.zona(S.o, F, S.tipo === 'concavo' ? 0.25 : 1e-9);
+  const conv = S.tipo === 'convexo';
+  const lf = `<div class="eq">${V('f','f')} = ${conv ? '−' : ''}${fr(V('R',fmt(S.R)),'2')} = ${V('f',fmt(F) + ' cm')}<span class="note">${conv ? 'Negativa: espejo convexo' : 'Positiva: espejo cóncavo'}</span></div>`;
+  if (r.inf){
+    $('live').innerHTML = `<div class="eqs">${lf}<div class="eq">${fr('1',V('f',fmt(F)))} = ${fr('1',V('o',fmt(S.o)))} + ${fr('1',V('i','i'))} → ${fr('1',V('i','i'))} = 0</div></div>
+      <div class="chips"><span class="chip">${ZONA[z]}</span><span class="chip">Sin imagen</span></div>
+      <p>Con la vela justo en el foco, los rayos reflejados salen paralelos y nunca se cruzan: no se forma imagen (se dice que está "en el infinito"). Así funciona el faro de un auto.</p>`;
+  } else {
+    const d = MotorEspejo.describir(r, 0.02);
+    $('live').innerHTML = `<div class="eqs">${lf}
+      <div class="eq">${fr('1',V('f',fmt(F)))} = ${fr('1',V('o',fmt(S.o)))} + ${fr('1',V('i','i'))} → ${V('i','i')} = ${fmt(r.i)} cm</div>
+      <div class="eq">${V('A','A')} = −${fr(V('i',fmt(r.i)),V('o',fmt(S.o)))} = ${fmt(r.m, 2)} → ${V('h','h<sub>i</sub>')} = ${fmt(r.h)} cm</div></div>
+      <div class="chips">
+        <span class="chip">${ZONA[z]}</span>
+        <span class="chip ${d.real ? 'real' : 'virt'}">${d.real ? 'Real · delante' : 'Virtual · detrás'}</span>
+        <span class="chip">${d.derecha ? 'Derecha' : 'Invertida'}</span>
+        <span class="chip">${d.tamano === 'igual' ? 'Del mismo tamaño' : d.tamano === 'mayor' ? 'Mayor' : 'Menor'}</span>
+      </div>
+      ${d.real ? '' : '<p>Los rayos reflejados se abren y no se cruzan delante del espejo. Sus prolongaciones (punteadas) sí se cruzan, detrás: ahí parece estar la imagen. Por eso es virtual y la i sale negativa.</p>'}`;
+  }
+  draw(); describir();
+}
+
+// Arrastrar la vela (pointer events: mouse, dedo o lápiz).
+cv.addEventListener('pointerdown', e => {
+  if (!S.explora) return;
+  const b = cv.getBoundingClientRect(), [x] = L.aModelo(e.clientX - b.left, e.clientY - b.top);
+  if (Math.abs(L.X(x) - L.X(-S.o)) > 28 || x > 0) return;
+  arrastre = true; cv.setPointerCapture(e.pointerId); cv.classList.add('agarrando'); e.preventDefault();
+});
+cv.addEventListener('pointermove', e => {
+  if (!arrastre) return;
+  const b = cv.getBoundingClientRect(), [x] = L.aModelo(e.clientX - b.left, e.clientY - b.top);
+  S.o = clamp(Math.round(-x*2)/2, 2, 42); vivo();
+});
+const soltar = () => { arrastre = false; cv.classList.remove('agarrando'); };
+cv.addEventListener('pointerup', soltar); cv.addEventListener('pointercancel', soltar);
+
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+
+function marcar(k){
+  S.hl = k;
+  document.querySelectorAll('#m1 .v').forEach(e => e.classList.toggle('hl', !!k && e.dataset.var === k));
+  draw();
+}
+document.addEventListener('pointerover', e => { const t = e.target.closest && e.target.closest('#m1 [data-var]'); if (t) marcar(t.dataset.var); });
+document.addEventListener('pointerout', e => { const t = e.target.closest && e.target.closest('#m1 [data-var]'); if (t && !t.contains(e.relatedTarget)) marcar(null); });
+document.addEventListener('focusin', e => { const t = e.target.closest && e.target.closest('#m1 [data-var]'); if (t) marcar(t.dataset.var); });
+document.addEventListener('focusout', e => { if (e.target.closest && e.target.closest('#m1 [data-var]')) marcar(null); });
+
+alRedibujarTema(draw);
+addEventListener('modo', () => L.resize());
+L.resize(); go(0);
+})();
+</script>
+
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Las cuatro preguntas de docs/investigacion/optica-espejos-esfericos.md (S2, S4, S3 y cruzar F).
+   La escena cambia recién después de responder. Lo que se dibuja sale de MotorEspejo. */
+(function(){
+const $ = id => document.getElementById(id);
+const cv = $('cv2');
+const L = crearLienzo(cv, { xmin:-45, xmax:21, ymax:12.5 }, draw);
+let anim = null, arrastre = false;
+
+// Estado de la escena; cada experimento lo arma de nuevo.
+const E = {};
+function reiniciar(x){
+  Object.assign(E, { f:10, o:15, h:4, D:20, obj:'vela', ojo:null, rastro:[], pantalla:true, rayos:'principales', imagen:true, campo:false, xRayo:null });
+  x.antes();
+}
+
+const EXPS = [
+  { id:'ojo', corto:'Muevo el ojo',
+    q:'Te miras la vela en un espejo de maquillaje (cóncavo, f = 10 cm), con la vela a 5 cm. Ves su imagen detrás del espejo. Si mueves la cabeza (subes, bajas, te acercas o te alejas), ¿qué pasa con la imagen?',
+    opts:[['a','Se mueve contigo','S2-imagen-sigue-al-ojo','documentado'],
+          ['b','Se queda en el mismo sitio',null],
+          ['c','Desaparece apenas te mueves','S2-imagen-desaparece','hipotesis']],
+    ok:'b',
+    antes:() => Object.assign(E, { f:10, o:5, h:3, D:22, ojo:{ x:-28, y:1 }, rayos:'ojo' }),
+    despues:() => {},
+    ctrl:() => `<div class="ctrls">
+      <div class="slider"><label for="oy"><span>Altura del ojo</span><output id="oy-out"></output></label><input id="oy" type="range" min="-11" max="11" step="0.5" value="${E.ojo.y}"></div>
+      <div class="slider"><label for="ox"><span>Distancia del ojo al espejo</span><output id="ox-out"></output></label><input id="ox" type="range" min="6" max="43" step="0.5" value="${-E.ojo.x}"></div>
+    </div>
+    <p class="hint">También puedes arrastrar el ojo en el dibujo. Los rayos tenues son los que llegaban al ojo donde estuvo antes. <button type="button" class="btn" id="borrar" style="padding:6px 14px;min-height:36px">Borrar el rastro</button></p>
+    <p id="ojo-info" class="hint"></p>`,
+    exp:`<p>Arrastra el ojo: cambia el rayo que te llega, pero todos los rayos, prolongados hacia atrás, salen del <b>mismo punto</b>. La imagen depende de dónde están la vela y el espejo, no de dónde estás tú. Tu ojo solo decide qué rayo recibes, o si no te llega ninguno.</p>
+      <p class="fuente">Es la idea errónea más frecuente medida con espejos planos: el 63 % de 317 estudiantes de profesorado eligió que la imagen se mueve con quien mira (Taşlıdere y Eryılmaz, 2015).</p>` },
+  { id:'retrovisor', corto:'El retrovisor',
+    q:'El retrovisor de una moto es un espejo convexo. Un auto viene detrás. Comparada con el auto, ¿cómo es su imagen en el retrovisor?',
+    opts:[['a','Más grande','S4-convexo-agranda','documentado'],
+          ['b','Del mismo tamaño','S4-convexo-igual','hipotesis'],
+          ['c','Más pequeña',null]],
+    ok:'c',
+    antes:() => Object.assign(E, { f:-10, o:30, h:4, D:16, obj:'auto', ojo:{ x:-18, y:-8 }, rayos:'ninguno', imagen:false }),
+    despues:() => Object.assign(E, { rayos:'principales', imagen:true, campo:true }),
+    ctrl:() => `<div class="slider"><label for="oa"><span>Distancia del auto</span><output id="oa-out"></output></label><input id="oa" class="r-o" type="range" min="6" max="43" step="0.5" value="${E.o}"></div>
+      <p id="ret-info" class="hint"></p>
+      <figure style="margin:0"><canvas id="comp" role="img" aria-label="Uno al lado del otro: la imagen del auto en un espejo plano y en el convexo, con su aumento"></canvas>
+      <figcaption class="hint" style="text-align:center">La imagen, uno al lado del otro: en el convexo el auto y los postes salen más chicos.</figcaption></figure>`,
+    exp:`<p>El convexo siempre da una imagen virtual, derecha y <b>más pequeña</b>. Entonces, ¿por qué en el retrovisor se ve tanto? Porque el convexo abarca un campo de visión más ancho: la zona sombreada es lo que ves en él; la línea punteada, lo que verías en un espejo plano del mismo tamaño. Cabe más, pero todo se ve más chico.</p>
+      <p class="fuente">La idea de que el convexo agranda apareció en entrevistas con escolares de 4.º de secundaria, sin porcentaje (Handayani y Arifin, 2021).</p>` },
+  { id:'pantalla', corto:'Quito la pantalla',
+    q:'La imagen de la vela se ve nítida en una cartulina puesta a 30 cm del espejo cóncavo. Si quitas la cartulina, ¿qué pasa con la imagen?',
+    opts:[['a','Desaparece: sin pantalla no hay imagen','S3-sin-pantalla','documentado'],
+          ['b','Sigue ahí, en el aire, donde se cruzan los rayos',null],
+          ['c','Pasa a formarse sobre el espejo','S1-en-la-superficie','documentado'],
+          ['d','Se forma más brillante','S3-mas-brillante','hipotesis']],
+    ok:'b',
+    antes:() => Object.assign(E, { f:10, o:15, h:4, D:20, rayos:'abanico', pantalla:true }),
+    despues:() => Object.assign(E, { pantalla:false }),
+    ctrl:() => `<div class="seg" role="group" aria-label="Cartulina"><button type="button" data-pant="0">Sin cartulina</button><button type="button" data-pant="1">Con cartulina</button></div>`,
+    exp:`<p>Los rayos se cruzan en el mismo punto haya o no cartulina: la imagen real está ahí, en el aire, delante del espejo. La cartulina no la "atrapa"; solo esparce la luz para que la veas desde cualquier lugar. Sin cartulina, la ves si pones el ojo más allá de la imagen, mirando hacia el espejo, donde llegan esos rayos.</p>
+      <p class="fuente">Goldberg y McDermott (1987) estudiaron lentes y espejos cóncavos: los alumnos no podían concebir una imagen en el aire, sin una superficie. Para espejos no hay porcentaje; con lentes, el 80 % de los escolares dijo que la imagen desaparece.</p>` },
+  { id:'cruzar-f', corto:'Cruzo el foco',
+    q:'La vela está a 15 cm de un espejo cóncavo de f = 10 cm, y su imagen es real, invertida y más grande. Si acercas la vela hasta 5 cm del espejo (pasando por F), ¿cómo queda la imagen?',
+    opts:[['a','Real, invertida y aún más grande, delante del espejo','S5-zona','documentado'],
+          ['b','Virtual, derecha y más grande, detrás del espejo',null],
+          ['c','Virtual, derecha y más pequeña, detrás del espejo','concavo-achica-cerca','hipotesis'],
+          ['d','No se forma ninguna imagen','cerca-de-F-sin-imagen','hipotesis']],
+    ok:'b',
+    antes:() => Object.assign(E, { f:10, o:15, h:3, D:22, rayos:'principales' }),
+    despues:() => { recorrer(15, 5); },
+    ctrl:() => `<div class="slider"><label for="of"><span>Distancia de la vela (o)</span><output id="of-out"></output></label><input id="of" class="r-o" type="range" min="2" max="30" step="0.5" value="${E.o}"></div>
+      <div class="chips" id="of-chips"></div>
+      <p><button type="button" class="btn" id="repetir">Repetir el recorrido</button></p>`,
+    exp:`<p>Al cruzar F, la imagen salta: delante del foco es real e invertida; entre F y el espejo es virtual, derecha y más grande. Justo en F no hay imagen, y muy cerca de F (a cualquier lado) la imagen es enorme.</p>
+      <p>El espejo de maquillaje o de afeitar se usa con la cara entre F y el espejo; por eso parece que el cóncavo "siempre agranda". Lejos, más allá de C, el mismo espejo achica.</p>
+      <p class="fuente">Ubicar la imagen según la zona fue el error más firme en un test con 125 escolares de 4.º de secundaria: el 41,6 % lo tenía con seguridad (Handayani y Arifin, 2021). Que "el cóncavo siempre agranda" es, por ahora, una hipótesis nuestra.</p>` },
+];
+const S = { k:0, pred:{}, t0:Date.now() };
+
+function recorrer(desde, hasta){
+  cancelAnimationFrame(anim);
+  if (RM){ E.o = hasta; sincronizar(); return; }
+  const t0 = performance.now(), dur = 2200;
+  const tick = now => {
+    const t = Math.min(1, (now - t0)/dur), s = t < .5 ? 2*t*t : 1 - Math.pow(-2*t + 2, 2)/2;
+    E.o = Math.round((desde + (hasta - desde)*s)*10)/10; sincronizar();
+    if (t < 1) anim = requestAnimationFrame(tick);
+  };
+  anim = requestAnimationFrame(tick);
+}
+
+function draw(){
+  if (!L.W) return;
+  const c = colores(), ctx = L.ctx, x = EXPS[S.k];
+  L.f = E.f; L.D = E.D;
+  fondo(L, c);
+  const r = MotorEspejo.imagen(E.o, E.f, E.h, 0.2);
+
+  // Campo de visión (retrovisor): convexo sombreado, plano del mismo tamaño punteado.
+  if (E.campo && E.ojo){
+    const cvx = MotorEspejo.campoVisual(E.ojo.x, E.ojo.y, E.f, E.D), pl = MotorEspejo.campoVisual(E.ojo.x, E.ojo.y, Infinity, E.D);
+    const cuña = (bs) => { const lejos = -300; return [[0, bs[0].yM], [lejos, bs[0].yM + bs[0].pend*lejos], [lejos, bs[1].yM + bs[1].pend*lejos], [0, bs[1].yM]]; };
+    ctx.save(); ctx.beginPath(); ctx.rect(0, 0, L.X(0), L.H); ctx.clip(); ctx.beginPath(); cuña(cvx.bordes).forEach(([a, b], k) => k ? ctx.lineTo(L.X(a), L.Y(b)) : ctx.moveTo(L.X(a), L.Y(b)));
+    ctx.closePath(); ctx.fillStyle = c.ray; ctx.globalAlpha = .07; ctx.fill(); ctx.restore();
+    ctx.save(); ctx.strokeStyle = c.ray; ctx.globalAlpha = .45; ctx.lineWidth = 1;
+    for (const b of cvx.bordes){ const [xs, ys] = salida(L, b.yM, b.pend); linea(ctx, L.X(0), L.Y(b.yM), L.X(xs), L.Y(ys)); linea(ctx, L.X(E.ojo.x), L.Y(E.ojo.y), L.X(0), L.Y(b.yM)); }
+    ctx.setLineDash([5, 4]); ctx.strokeStyle = c.muted; ctx.globalAlpha = .9; ctx.lineWidth = 1.3;
+    for (const b of pl.bordes){ const [xs, ys] = salida(L, b.yM, b.pend); linea(ctx, L.X(0), L.Y(b.yM), L.X(xs), L.Y(ys)); }
+    ctx.restore();
+    texto(L, c, -40, 11.3, 'campo del convexo', c.ray, 'left');
+  }
+
+  espejo(L, c); puntos(L, c, E.f, null);
+
+  const dibObj = (px, h, op) => E.obj === 'auto' ? auto(L, c, px, h, op) : vela(L, c, px, h, op);
+
+  // Rayos
+  if (E.rayos === 'principales'){
+    const rp = MotorEspejo.rayosPrincipales(E.o, E.f, E.h);
+    [rp.paralelo, rp.foco, rp.vertice].forEach(rayo => {
+      if (!rayo) return;
+      if (Math.abs(rayo.yM) > E.D/2 + 0.01){ trazo(ctx, [[L.X(-E.o), L.Y(E.h)], [L.X(0), L.Y(rayo.yM)]], 1, c.ray, 1.1, [2, 4], .45); return; }
+      trazo(ctx, camino(L, E.o, E.h, rayo), 1, c.ray, 1.7);
+      if (!r.inf && !r.real && r.x < 60) prolongar(L, c, rayo, r.x);
+    });
+  } else if (E.rayos === 'abanico'){
+    const xFin = E.pantalla ? r.x : undefined;
+    for (const rayo of MotorEspejo.abanico(E.o, E.f, E.h, E.D, 9))
+      trazo(ctx, camino(L, E.o, E.h, rayo, xFin), 1, c.ray, 1.3, null, .8);
+  } else if (E.rayos === 'ojo' && E.ojo){
+    // Rastro: rayos que llegaban al ojo donde estuvo antes.
+    E.rastro.forEach(p => {
+      const ry = MotorEspejo.rayoAlOjo(E.o, E.f, E.h, p.x, p.y, E.D); if (!ry || !ry.enEspejo) return;
+      trazo(ctx, [[L.X(-E.o), L.Y(E.h)], [L.sup(ry.yM), L.Y(ry.yM)], [L.X(p.x), L.Y(p.y)]], 1, c.ray, 1.1, null, .28);
+      prolongar(L, c, ry, r.x, .3);
+    });
+    const ry = MotorEspejo.rayoAlOjo(E.o, E.f, E.h, E.ojo.x, E.ojo.y, E.D);
+    E.xRayo = ry;
+    if (ry && ry.enEspejo){
+      trazo(ctx, [[L.X(-E.o), L.Y(E.h)], [L.sup(ry.yM), L.Y(ry.yM)], [L.X(E.ojo.x), L.Y(E.ojo.y)]], 1, c.ray, 2.2);
+      prolongar(L, c, ry, r.x, .8);
+    } else if (ry){
+      trazo(ctx, [[L.X(-E.o), L.Y(E.h)], [L.X(0), L.Y(ry.yM)], [L.X(E.ojo.x), L.Y(E.ojo.y)]], 1, c.muted, 1.1, [3, 4], .6);
+    }
+  }
+
+  // Cartulina (pantalla)
+  if (E.rayos === 'abanico' && E.pantalla && !r.inf){
+    ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; ctx.shadowColor = 'rgba(60,40,80,.25)'; ctx.shadowBlur = 6;
+    const px = L.X(r.x) - 6, y1 = L.Y(-0.4), y2 = L.Y(-11.5);
+    ctx.beginPath(); ctx.roundRect ? ctx.roundRect(px - 5, y1, 6, y2 - y1, 2) : ctx.rect(px - 5, y1, 6, y2 - y1); ctx.fill(); ctx.shadowBlur = 0; ctx.stroke(); ctx.restore();
+    texto(L, c, r.x - 3, -12.2, 'cartulina', c.muted, 'center');
+  }
+
+  dibObj(-E.o, E.h);
+
+  if (E.imagen && !r.inf && r.x > L.vista.xmin - 2 && r.x < L.vista.xmax + 2){
+    dibObj(r.x, r.h, { virt: !r.real });
+    if (E.rayos === 'abanico' && !E.pantalla) texto(L, c, r.x, r.h - 1.8, 'imagen, en el aire', c.h, 'center');
+    if (E.rayos === 'ojo'){ ctx.fillStyle = c.h; ctx.beginPath(); ctx.arc(L.X(r.x), L.Y(r.h), 3.5, 0, Math.PI*2); ctx.fill(); }
+  }
+  if (E.imagen && r.inf) texto(L, c, -30, 9.5, 'En F: los rayos salen paralelos, no hay imagen', c.f, 'center');
+
+  if (E.rayos === 'abanico' && !E.pantalla) ojo(L, c, -42.5, -7, false);
+  if (E.ojo) ojo(L, c, E.ojo.x, E.ojo.y, x.id === 'ojo' && S.pred[x.id]);
+  if (E.campo) inserto(c, r);
+  $('desc2').textContent = E.imagen ? describirImagen(r) : '';
+}
+
+// Retrovisor: lo que ves, uno al lado del otro. Todo se escala con el aumento que da el motor
+// (en el espejo plano, A = 1): en el convexo el auto y los postes salen más chicos y caben más.
+function inserto(c, r){
+  const cc = document.getElementById('comp'); if (!cc || !cc.clientWidth) return;
+  const ctx = cc.getContext('2d'), dpr = window.devicePixelRatio || 1, CW = cc.clientWidth, CH = 132;
+  cc.style.height = CH + 'px'; cc.width = Math.round(CW*dpr); cc.height = Math.round(CH*dpr); ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0, 0, CW, CH);
+  const gap = 12, w = Math.min(170, (CW - gap - 4)/2), h = CH - 36, x0 = (CW - 2*w - gap)/2, y0 = 2;
+  [['espejo plano', 1], ['convexo', r.m]].forEach(([lab, A], k) => {
+    const x = x0 + k*(w + gap), s = Math.abs(A);
+    ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = c.pb; ctx.lineWidth = 1.5; ctx.shadowColor = 'rgba(60,40,80,.2)'; ctx.shadowBlur = 6;
+    ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y0, w, h, 10) : ctx.rect(x, y0, w, h); ctx.fill(); ctx.shadowBlur = 0; ctx.stroke(); ctx.clip();
+    const cx = x + w/2, base = y0 + h*.78;
+    ctx.fillStyle = c.grid; ctx.fillRect(x, base, w, h);
+    // Postes al borde del camino, separados igual en la realidad
+    const paso = w*.36*s, alto = h*.42*s;
+    ctx.strokeStyle = c.muted; ctx.lineWidth = 1.4;
+    for (let j = -12; j <= 12; j++){ const px = cx + (j + .5)*paso; if (px > x - 2 && px < x + w + 2) linea(ctx, px, base, px, base - alto); }
+    // Auto
+    const hh = h*.5*s, len = hh*1.9;
+    ctx.fillStyle = c.h; ctx.globalAlpha = .3; ctx.strokeStyle = c.h; ctx.lineWidth = 1.4;
+    ctx.beginPath(); ctx.moveTo(cx - len/2, base); ctx.lineTo(cx - len/2, base - hh*.5); ctx.lineTo(cx - len*.15, base - hh); ctx.lineTo(cx + len*.2, base - hh); ctx.lineTo(cx + len/2, base - hh*.5); ctx.lineTo(cx + len/2, base); ctx.closePath();
+    ctx.fill(); ctx.globalAlpha = 1; ctx.stroke();
+    ctx.restore();
+    ctx.fillStyle = c.ink; ctx.font = `700 11px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    ctx.fillText(lab, x + w/2, y0 + h + 3);
+    ctx.fillStyle = c.h; ctx.font = `800 11px ${c.mono}`; ctx.fillText(`A = ${fmt(A, 2)}`, x + w/2, y0 + h + 16);
+  });
+}
+
+function sincronizar(){
+  const of = $('of');
+  if (of){
+    of.value = E.o; $('of-out').textContent = `${fmt(E.o)} cm`;
+    const r = MotorEspejo.imagen(E.o, E.f, E.h, 0.2);
+    const ch = $('of-chips');
+    if (r.inf) ch.innerHTML = '<span class="chip">Vela en F</span><span class="chip">Sin imagen</span>';
+    else { const d = MotorEspejo.describir(r, 0.02);
+      ch.innerHTML = `<span class="chip ${d.real ? 'real' : 'virt'}">${d.real ? 'Real · delante' : 'Virtual · detrás'}</span><span class="chip">${d.derecha ? 'Derecha' : 'Invertida'}</span><span class="chip">${d.tamano === 'mayor' ? 'Mayor' : d.tamano === 'menor' ? 'Menor' : 'Del mismo tamaño'}</span><span class="chip">A = ${fmt(r.m, 2)}</span>`; }
+  }
+  const oa = $('oa');
+  if (oa){
+    oa.value = E.o; $('oa-out').textContent = `${fmt(E.o)} cm`;
+    const r = MotorEspejo.imagen(E.o, E.f, E.h);
+    const ang = MotorEspejo.campoVisual(E.ojo.x, E.ojo.y, E.f, E.D).angulo / MotorEspejo.campoVisual(E.ojo.x, E.ojo.y, Infinity, E.D).angulo;
+    $('ret-info').textContent = `Imagen virtual a ${fmt(-r.i)} cm detrás del espejo, ${fmt(r.m, 2)} veces el tamaño del auto. El campo de visión es ${fmt(ang, 1)} veces el de un espejo plano igual.`;
+  }
+  const oy = $('oy');
+  if (oy && E.ojo){
+    oy.value = E.ojo.y; $('ox').value = -E.ojo.x;
+    $('oy-out').textContent = `${fmt(E.ojo.y)} cm`; $('ox-out').textContent = `${fmt(-E.ojo.x)} cm`;
+    const ry = MotorEspejo.rayoAlOjo(E.o, E.f, E.h, E.ojo.x, E.ojo.y, E.D);
+    $('ojo-info').textContent = ry && ry.enEspejo
+      ? 'La imagen sigue en el mismo punto: 10 cm detrás del espejo, con la llama a 6 cm del eje.'
+      : 'Desde ahí no ves la llama: el rayo tendría que rebotar fuera del espejo. La imagen sigue en su sitio; solo que su luz no te llega.';
+  }
+  draw();
+}
+
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  cancelAnimationFrame(anim);
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k];
+  reiniciar(x);
+  const resp = S.pred[x.id];
+  if (resp) x.despues();
+  botones();
+  cv.classList.toggle('sin-scroll', x.id === 'ojo' && !!resp);
+  cv.classList.toggle('arrastrable', x.id === 'ojo' && !!resp);
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>
+    <div class="opts">${x.opts.map(([l, t]) => `<button class="opt" type="button" data-k="${l}"><span class="l">${l.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div>
+    <p class="fb" id="fb2"></p><div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. La correcta está marcada; mira la escena para ver por qué.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.ctrl() + x.exp + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
+    controles();
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; x.despues(); pintar();
+    cv.classList.toggle('sin-scroll', x.id === 'ojo'); cv.classList.toggle('arrastrable', x.id === 'ojo');
+    sincronizar();
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+  });
+  pintar(); sincronizar();
+}
+function controles(){
+  const res = $('res2');
+  const marcar = v => res.querySelectorAll('[data-pant]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.pant === v)));
+  res.querySelectorAll('[data-pant]').forEach(b => b.onclick = () => { E.pantalla = b.dataset.pant === '1'; marcar(b.dataset.pant); draw(); });
+  if (res.querySelector('[data-pant]')) marcar(E.pantalla ? '1' : '0');
+  const of = $('of'); if (of) of.oninput = () => { cancelAnimationFrame(anim); E.o = +of.value; sincronizar(); };
+  const rep = $('repetir'); if (rep) rep.onclick = () => recorrer(15, 5);
+  const oa = $('oa'); if (oa) oa.oninput = () => { E.o = +oa.value; sincronizar(); };
+  const oy = $('oy'), ox = $('ox');
+  if (oy){
+    const mover = () => { moverOjo(E.ojo.x, +oy.value); };
+    oy.oninput = mover;
+    ox.oninput = () => moverOjo(-ox.value, E.ojo.y);
+    $('borrar').onclick = () => { E.rastro = []; draw(); };
+  }
+}
+function moverOjo(x, y){
+  const ant = E.ojo;
+  if (Math.hypot(ant.x - x, ant.y - y) > 0.01){
+    const ult = E.rastro[E.rastro.length - 1];
+    if (!ult || Math.hypot(ult.x - ant.x, ult.y - ant.y) > 2.5){ E.rastro.push({ x: ant.x, y: ant.y }); if (E.rastro.length > 8) E.rastro.shift(); }
+  }
+  E.ojo = { x, y };
+  sincronizar();
+}
+
+// Arrastrar el ojo (solo en "Muevo el ojo", después de responder).
+cv.addEventListener('pointerdown', e => {
+  const x = EXPS[S.k];
+  if (x.id !== 'ojo' || !S.pred[x.id]) return;
+  const b = cv.getBoundingClientRect(), px = e.clientX - b.left, py = e.clientY - b.top;
+  if (Math.hypot(px - L.X(E.ojo.x), py - L.Y(E.ojo.y)) > 34) return;
+  arrastre = true; cv.setPointerCapture(e.pointerId); cv.classList.add('agarrando'); e.preventDefault();
+});
+cv.addEventListener('pointermove', e => {
+  if (!arrastre) return;
+  const b = cv.getBoundingClientRect(), [x, y] = L.aModelo(e.clientX - b.left, e.clientY - b.top);
+  moverOjo(clamp(Math.round(x*2)/2, -43, -6), clamp(Math.round(y*2)/2, -11, 11));
+});
+const soltar = () => { arrastre = false; cv.classList.remove('agarrando'); };
+cv.addEventListener('pointerup', soltar); cv.addEventListener('pointercancel', soltar);
+
+alRedibujarTema(draw);
+addEventListener('modo', () => L.resize());
+L.resize(); ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

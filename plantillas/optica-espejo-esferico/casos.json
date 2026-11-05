@@ -1,0 +1,44 @@
+{
+  "plantilla": "optica-espejo-esferico",
+  "unidades": "cm",
+  "convencion": "1/f = 1/o + 1/i; A = -i/o; f = R/2. f > 0 cóncavo, f < 0 convexo. o > 0 objeto real; i > 0 imagen real, delante del espejo; i < 0 virtual, detrás.",
+  "verificacion": "Los siete casos son los de docs/investigacion/optica-espejos-esfericos.md. Se recalcularon el 5 de noviembre de 2026 con fracciones exactas en Python (fractions.Fraction): i = 1/(1/f - 1/o), A = -i/o, h_i = A·h, sin pasar por el motor. Todos dieron valores exactos (por ejemplo, i = -15/2 y A = 1/4 en el convexo con o = 30), y el caso del foco da o - f = 0: no hay imagen.",
+  "tolerancia": 1e-9,
+  "casos": [
+    {
+      "nombre": "Cóncavo, objeto entre C y F (problema guiado)",
+      "entrada": { "R": 20, "tipo": "concavo", "o": 15, "h": 4 },
+      "esperado": { "f": 10, "i": 30, "A": -2, "h_imagen": -8, "real": true, "derecha": false, "tamano": "mayor", "zona": "entre-C-y-F" }
+    },
+    {
+      "nombre": "Cóncavo, objeto más allá de C",
+      "entrada": { "f": 10, "o": 30, "h": 4 },
+      "esperado": { "i": 15, "A": -0.5, "h_imagen": -2, "real": true, "derecha": false, "tamano": "menor", "zona": "mas-alla-de-C" }
+    },
+    {
+      "nombre": "Cóncavo, objeto en C",
+      "entrada": { "f": 10, "o": 20, "h": 4 },
+      "esperado": { "i": 20, "A": -1, "h_imagen": -4, "real": true, "derecha": false, "tamano": "igual", "zona": "en-C" }
+    },
+    {
+      "nombre": "Cóncavo, objeto en F",
+      "entrada": { "f": 10, "o": 10, "h": 4 },
+      "esperado": { "sin_imagen": true, "zona": "en-F" }
+    },
+    {
+      "nombre": "Cóncavo, espejo de maquillaje",
+      "entrada": { "f": 10, "o": 5, "h": 4 },
+      "esperado": { "i": -10, "A": 2, "h_imagen": 8, "real": false, "derecha": true, "tamano": "mayor", "zona": "entre-F-y-espejo" }
+    },
+    {
+      "nombre": "Convexo, objeto cerca",
+      "entrada": { "R": 20, "tipo": "convexo", "o": 10, "h": 4 },
+      "esperado": { "f": -10, "i": -5, "A": 0.5, "h_imagen": 2, "real": false, "derecha": true, "tamano": "menor", "zona": "convexo" }
+    },
+    {
+      "nombre": "Convexo, objeto lejos",
+      "entrada": { "f": -10, "o": 30, "h": 4 },
+      "esperado": { "i": -7.5, "A": 0.25, "h_imagen": 1, "real": false, "derecha": true, "tamano": "menor", "zona": "convexo" }
+    }
+  ]
+}

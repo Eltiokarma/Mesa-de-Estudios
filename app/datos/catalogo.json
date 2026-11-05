@@ -538,7 +538,8 @@
      "potencial_visual": "alto",
      "grado": 5,
      "plantillas": [
-      "optica-lente-delgada"
+      "optica-lente-delgada",
+      "optica-espejo-esferico"
      ]
     },
     {
@@ -3988,6 +3989,23 @@
    "papel": null,
    "archivos": [
     "/plantillas/estequiometria-limitante/generador.js"
+   ]
+  },
+  "optica-espejo-esferico": {
+   "id": "optica-espejo-esferico",
+   "titulo": "Espejos esféricos",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.optica-geometrica"
+   ],
+   "url": "/plantillas/optica-espejo-esferico/index.html",
+   "papel": "/plantillas/optica-espejo-esferico/papel.json",
+   "archivos": [
+    "/plantillas/optica-espejo-esferico/index.html",
+    "/plantillas/optica-espejo-esferico/motor.js",
+    "/plantillas/optica-espejo-esferico/papel.json"
    ]
   },
   "optica-lente-delgada": {

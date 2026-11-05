@@ -327,7 +327,7 @@
       "universidades": {"uni": {"semanas": [19]}, "unmsm": {"temas": [17]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": ["optica-lente-delgada"],
+      "plantillas": ["optica-lente-delgada", "optica-espejo-esferico"],
       "investigacion": "docs/investigacion/optica-ideas-erroneas.md"
     },
     {

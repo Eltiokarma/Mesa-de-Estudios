@@ -11,20 +11,21 @@
 <style>
 /* Layout: pestañas por modo; en cada modo, banco óptico (lienzo) arriba y guía paso a paso abajo; una columna de máx. 980px */
 :root{
-  --bg:#e9eef4; --paper:#f7f9fc; --card:#ffffff; --ink:#15223a; --muted:#5b6b84;
-  --line:#cdd7e3; --grid:#dfe6ef; --lens:#7fa6d9;
+  /* Cáscara acogedora, igual que espejos (docs/diseno.md); los colores de las variables no cambian. */
+  --bg:#fbf3ec; --paper:#fdf7f1; --card:#fffaf6; --ink:#2d2340; --muted:#716579;
+  --line:#efe3dc; --grid:#f3e8e0; --lens:#7fa6d9;
   --c-o:#b85a06; --c-f:#6b3dbd; --c-i:#08807a; --c-h:#c0364a; --c-d:#4f7a17; --ray:#1f3f78;
   --display:"Bricolage Grotesque", "Trebuchet MS", sans-serif;
   --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
   --mono:"JetBrains Mono", ui-monospace, "Courier New", monospace;
 }
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
-  --bg:#0d1420; --paper:#111a29; --card:#162133; --ink:#e3eaf4; --muted:#93a3ba;
-  --line:#28364c; --grid:#1b2638; --lens:#5f86c4;
+  --bg:#1d1626; --paper:#241c2e; --card:#2a2135; --ink:#f1ebf7; --muted:#a99cb8;
+  --line:#3a2f48; --grid:#2d2439; --lens:#5f86c4;
   --c-o:#f0a04a; --c-f:#ab8cf2; --c-i:#3dcdc3; --c-h:#f17384; --c-d:#a3d65e; --ray:#94b6ff; color-scheme:dark } }
 :root[data-theme="dark"]{
-  --bg:#0d1420; --paper:#111a29; --card:#162133; --ink:#e3eaf4; --muted:#93a3ba;
-  --line:#28364c; --grid:#1b2638; --lens:#5f86c4;
+  --bg:#1d1626; --paper:#241c2e; --card:#2a2135; --ink:#f1ebf7; --muted:#a99cb8;
+  --line:#3a2f48; --grid:#2d2439; --lens:#5f86c4;
   --c-o:#f0a04a; --c-f:#ab8cf2; --c-i:#3dcdc3; --c-h:#f17384; --c-d:#a3d65e; --ray:#94b6ff; color-scheme:dark }
 
 body{ background:var(--bg); color:var(--ink); font-family:var(--body); font-size:16px; line-height:1.55 }
@@ -42,13 +43,13 @@ h1{ margin:0; font-family:var(--display); font-weight:700; font-size:clamp(1.8re
 .tabs a[aria-current="page"]{ background:var(--ink); color:var(--card) }
 .tabs a:hover:not([aria-current]){ color:var(--ink) }
 
-.bench{ background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:8px; display:grid; gap:8px; min-width:0 }
+.bench{ background:var(--paper); border:1px solid var(--line); border-radius:20px; padding:10px; display:grid; gap:8px; min-width:0; box-shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.08) }
 canvas{ display:block; width:100%; touch-action:pan-y }
 .legend{ display:flex; flex-wrap:wrap; gap:6px 14px; padding:2px 6px 4px; font-size:.85rem; color:var(--muted) }
 .legend span{ display:inline-flex; align-items:center; gap:6px; cursor:default }
 .legend i{ width:12px; height:4px; border-radius:2px; display:inline-block }
 
-.guide{ background:var(--card); border:1px solid var(--line); border-radius:10px; padding:20px; display:grid; gap:14px; min-width:0 }
+.guide{ background:var(--card); border:1px solid var(--line); border-radius:20px; box-shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.08); padding:20px; display:grid; gap:14px; min-width:0 }
 .dots{ list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px }
 .dots button{ width:30px; height:30px; border-radius:50%; border:1.5px solid var(--line); background:transparent; color:var(--muted);
   font:700 .8rem var(--mono); cursor:pointer; font-variant-numeric:tabular-nums }

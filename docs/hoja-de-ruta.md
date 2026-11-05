@@ -73,7 +73,7 @@ gantt
 
     section Física
     Banco Óptico, predicciones qué pasa si y problemas de papel :active, fi1, 2026-11-12, 2026-11-17
-    Espejos esféricos (reusa el motor de lentes) :fi5, 2026-11-17, 2026-11-20
+    Espejos esféricos (reusa el motor de lentes) :active, fi5, 2026-11-05, 2026-11-20
     Circuitos de corriente continua :fi2, 2026-11-13, 2026-11-21
     Calorimetría y cambios de fase :fi3, 2026-11-20, 2026-11-27
     Trabajo, energía y potencia :fi4, 2026-11-26, 2026-12-03

@@ -176,13 +176,13 @@
       "id": "fi5",
       "seccion": "Física",
       "nombre": "Espejos esféricos (reusa el motor de lentes)",
-      "inicio": "2026-11-17",
+      "inicio": "2026-11-05",
       "fin": "2026-11-19",
-      "estado": "pendiente",
-      "progreso": 0,
+      "estado": "en_curso",
+      "progreso": 80,
       "critico": false,
       "depende_de": [],
-      "notas": ""
+      "notas": "Hecho: motor, 7 casos, 34 pruebas, papel (9), paso a paso y qué pasa si (S1 a S5). Falta: animación del doblez y el pase con alumnos."
     },
     {
       "id": "fi2",
@@ -373,12 +373,12 @@
       "inicio": "2026-12-01",
       "fin": "2026-12-06",
       "estado": "pendiente",
-      "progreso": 55,
+      "progreso": 65,
       "critico": false,
       "depende_de": [
         "f0e"
       ],
-      "notas": "Dirección acogedora (Gerson, 5 nov 2026; referencia: study planner de Pinterest). Hecho: paleta, ilustraciones SVG (gato, taza, escritorio), íconos por curso, ícono de la app. Falta: animaciones y tipografía común; pasar las escenas a la paleta. Ver docs/diseno.md."
+      "notas": "Dirección acogedora (Gerson, 5 nov 2026; referencia: study planner de Pinterest). Hecho: paleta, ilustraciones SVG (gato, taza, escritorio), íconos por curso, ícono de la app. Falta: animaciones y tipografía común; —; escenas de lentes y espejos ya con cáscara crema. Ver docs/diseno.md."
     },
     {
       "id": "la1",

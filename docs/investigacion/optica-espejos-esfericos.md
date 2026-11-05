@@ -40,6 +40,8 @@ Se confirman igual que los de lentes: con hojas resueltas de postulantes en la p
 
 ## Propuesta para la plantilla
 
+**Hecho (5 nov 2026):** `plantillas/optica-espejo-esferico/` sigue esta propuesta. Tiene el motor con 34 pruebas, los 7 casos de abajo, 9 problemas de papel, el paso a paso y las 4 preguntas "¿qué pasa si…?". Cada predicción se registra con su id de error. Falta la animación del "doblez" del lado real; por ahora la cubre una nota en el paso 7.
+
 **La física.** Se usa la misma ecuación que en lentes, con la convención que ya tiene el Banco Óptico:
 
 - 1/f = 1/o + 1/i, con A = −i/o, y f = R/2.

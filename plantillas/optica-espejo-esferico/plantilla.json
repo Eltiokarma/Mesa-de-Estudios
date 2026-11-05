@@ -1,0 +1,15 @@
+{
+  "id": "optica-espejo-esferico",
+  "titulo": "Espejos esféricos",
+  "formato": "escena",
+  "unidades": [
+    "fisica.optica-geometrica"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}
