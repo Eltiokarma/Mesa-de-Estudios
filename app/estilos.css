@@ -105,7 +105,7 @@ input[type=text]:focus{outline:none;border-color:var(--brand)}
 .practica .etq-p{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
 .practica .enun{font-size:17px;margin:10px 0}
 .practica .preg{font-weight:700;font-size:17px;margin:12px 0}
-.var{font-weight:700;padding:0 4px;border-radius:6px;border-bottom:2px dotted currentColor}
+.var{white-space:nowrap;font-weight:700;padding:0 4px;border-radius:6px;border-bottom:2px dotted currentColor}
 .var.c-o{color:var(--c-o);background:color-mix(in srgb,var(--c-o) 12%,transparent)}
 .var.c-i{color:var(--c-i);background:color-mix(in srgb,var(--c-i) 12%,transparent)}
 .var.c-h{color:var(--c-h);background:color-mix(in srgb,var(--c-h) 12%,transparent)}
@@ -195,3 +195,16 @@ details[open] summary{margin-bottom:8px}
 .curso>*{position:relative;z-index:1}
 @media (min-width:900px){ .bienvenida svg.deco{max-width:420px;margin-bottom:auto} }
 .curso .ico{align-self:flex-start}
+
+/* ---------- Práctica con ilustraciones ---------- */
+.retro{position:relative}
+.retro.bien{padding-right:84px;min-height:84px}
+.retro .retro-gato{position:absolute;right:8px;bottom:4px;width:70px}
+@media (prefers-reduced-motion:no-preference){ .retro .retro-gato{animation:salto .6s ease-out} }
+@keyframes salto{0%{transform:translateY(16px) scale(.8);opacity:0}60%{transform:translateY(-6px) scale(1.04);opacity:1}100%{transform:none}}
+.resultado{text-align:center}
+.resultado .resultado-taza{width:96px;display:block;margin:0 auto 8px}
+.resultado .stats{text-align:left}
+.practica{position:relative;overflow:hidden}
+.practica::before{content:"";position:absolute;right:-40px;top:-40px;width:120px;height:120px;border-radius:50%;background:var(--brand-soft);opacity:.7}
+.practica>*{position:relative}

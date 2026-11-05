@@ -5,6 +5,8 @@
 (function () {
 'use strict';
 const N_PRUEBA = 3, MIN_PRACTICA = 5;
+// Un mimo distinto en cada acierto (dirección acogedora, docs/diseno.md).
+const PREMIOS = ['Te ganaste un bombón. 🍫', 'Así se piensa. ✨', 'El gato está orgulloso. 🐾', 'Una más para la racha. ☕', 'Predijiste antes de calcular: eso es entender. 💜'];
 
 function texto(partes, p, esc) {
   return partes.map(x => {
@@ -99,7 +101,8 @@ async function vista(ctx, id) {
         error: a.error ? a.error.id : '', respaldo: a.error ? a.error.respaldo : '', ms: Date.now() - t0 });
       document.getElementById('retro').innerHTML = `
         <div class="retro ${a.correcta ? 'bien' : 'malo'}">
-          <b>${a.correcta ? '¡Bien! Es la ' + correcta.letra + '.' : `Elegiste la ${a.letra}. La correcta es la ${correcta.letra}: ${esc(correcta.texto)}.`}</b>
+          ${a.correcta && window.Ilus ? Ilus.gato('class="retro-gato"') : ''}
+          <b>${a.correcta ? `¡Bien! Es la ${correcta.letra}. ${PREMIOS[st.hechos % PREMIOS.length]}` : `Elegiste la ${a.letra}. La correcta es la ${correcta.letra}: ${esc(correcta.texto)}.`}</b>
           ${a.correcta ? '' : `<p>${esc(a.error.explicacion)}</p>`}
         </div>
         <h3 class="sol-t">Solución paso a paso</h3>
@@ -112,7 +115,8 @@ async function vista(ctx, id) {
 
   function resultado() {
     const e = st.entrada, s = st.salida;
-    $app.innerHTML = cabecera('Resultados') + `<div class="card" style="margin-top:16px">
+    $app.innerHTML = cabecera('Resultados') + `<div class="card resultado" style="margin-top:16px">
+      ${window.Ilus ? Ilus.taza('class="resultado-taza"') : ''}
       <div class="stats" style="grid-template-columns:1fr 1fr">
         <div class="stat"><div class="l">Prueba de entrada</div><div class="n">${e ? `${e.aciertos}/${e.total}` : '—'}</div></div>
         <div class="stat"><div class="l">Prueba final</div><div class="n">${s ? `${s.aciertos}/${s.total}` : '—'}</div></div>
