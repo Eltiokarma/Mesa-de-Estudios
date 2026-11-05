@@ -137,6 +137,15 @@ Se confirman igual que en los otros temas: con hojas resueltas en la prueba del 
 
 ### Circuitos (la plantilla más importante del bloque)
 
+**Hecho (5 nov 2026):** `plantillas/circuitos-cc/`. Tiene:
+- un motor nodal general con detección de cortos y 35 pruebas;
+- 9 casos y 9 problemas de papel verificados con fracciones por métodos distintos;
+- el problema guiado 1, con dos predicciones;
+- "¿qué pasa si…?" con McDermott, C2, C6, C10, C1/C7 y C12;
+- el explorador, con el modo altura.
+
+Faltan los medidores que se arrastran (C15); el motor ya los resuelve.
+
 Es la más importante por tres razones: tiene los datos más fuertes, los errores más persistentes y el patrón más claro de "sabe calcular, no entiende". La regla de la escena: **cada bombilla brilla según su potencia**, con un color fijo para corriente (I), otro para voltaje (V) y otro para resistencia (R). La corriente se muestra como número en cada tramo, a la entrada y a la salida de cada bombilla.
 
 **Problema guiado 1 (circuito mixto).** Pila ideal de 6 V. La bombilla B1 está en serie con dos bombillas en paralelo, B2 y B3. Las tres son iguales, de 12 Ω. Paso 1: ¿cuál brilla más? Paso 2 (predicción): *se quita B3 sin poner nada en su lugar. ¿Qué pasa con B1 y B2?*

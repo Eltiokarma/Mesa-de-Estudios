@@ -1,0 +1,15 @@
+{
+  "id": "circuitos-cc",
+  "titulo": "Circuitos",
+  "formato": "escena",
+  "unidades": [
+    "fisica.corriente-y-circuitos"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}

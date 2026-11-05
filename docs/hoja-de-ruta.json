@@ -188,13 +188,13 @@
       "id": "fi2",
       "seccion": "Física",
       "nombre": "Circuitos de corriente continua",
-      "inicio": "2026-11-13",
+      "inicio": "2026-11-05",
       "fin": "2026-11-20",
-      "estado": "pendiente",
-      "progreso": 0,
+      "estado": "en_curso",
+      "progreso": 80,
       "critico": false,
       "depende_de": [],
-      "notas": "docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md"
+      "notas": "Hecho: motor nodal, 9 casos, 35 pruebas, papel (9), paso a paso, qué pasa si (6), modo altura. Falta: medidores arrastrables (C15), rótulos apretados en el celular y el pase con alumnos."
     },
     {
       "id": "fi3",

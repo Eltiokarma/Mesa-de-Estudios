@@ -25,6 +25,8 @@ Todos los textos pasan el contraste AA (4,5 a 1) sobre su fondo: blanco sobre la
 | **Marca** | Lavanda `#7f5ae0` (`--brand`), rosa bombón `#ffd3e2` (`--acento`) | La cáscara: bienvenida, inicio, cursos, progreso, perfil, botones de la práctica | Nunca dentro de una escena: ahí el morado es la distancia focal y el verde, la separación entre lentes |
 | **Variables** | `--c-o` naranja, `--c-i` turquesa, `--c-h` rojo, `--c-d` verde (y el morado `--c-f` solo en escenas) | Enunciados, soluciones y dibujos: cada variable tiene un color y lo conserva en el texto, la figura y la ecuación (regla 4) | Nunca como decoración |
 
+**Variables de circuitos** (`plantillas/circuitos-cc/`): corriente I `--c-I` azul (#1f5fbf, oscuro #7cb0ff), voltaje V `--c-V` magenta (#b3246b, oscuro #ff86bd), resistencia R `--c-R` turquesa (#0f766e, oscuro #5ed9c8) y potencia P `--c-P` ámbar (#8f5800, oscuro #ffc04d). El halo de cada bombilla usa `--luz`, la versión luminosa del ámbar, y su área es proporcional a P. Cada escena define sus variables; dentro de una misma escena, un color nunca nombra dos cosas.
+
 Correcto e incorrecto usan `--ok` (verde) y `--warn` (rojo), siempre con texto (“¡Bien!”, “Elegiste la B…”) y nunca solo con el color.
 
 El modo oscuro redefine todos los tokens. Se sigue al sistema o se fija en Perfil → Apariencia.

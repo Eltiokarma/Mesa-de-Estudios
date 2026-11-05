@@ -432,7 +432,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "circuitos-cc"
+     ]
     },
     {
      "id": "fisica.magnetismo",
@@ -3976,6 +3978,23 @@
   }
  ],
  "plantillas": {
+  "circuitos-cc": {
+   "id": "circuitos-cc",
+   "titulo": "Circuitos",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.corriente-y-circuitos"
+   ],
+   "url": "/plantillas/circuitos-cc/index.html",
+   "papel": "/plantillas/circuitos-cc/papel.json",
+   "archivos": [
+    "/plantillas/circuitos-cc/index.html",
+    "/plantillas/circuitos-cc/motor.js",
+    "/plantillas/circuitos-cc/papel.json"
+   ]
+  },
   "estequiometria-limitante": {
    "id": "estequiometria-limitante",
    "titulo": "Reactivo limitante",

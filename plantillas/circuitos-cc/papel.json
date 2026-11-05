@@ -1,0 +1,151 @@
+{
+  "titulo": "Circuitos: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Usa V = I·R; en serie Req = R1 + R2 + …; en paralelo 1/Req = 1/R1 + 1/R2 + …; P = V·I = I²·R = V²/R. Antes de calcular, dibuja el circuito y marca por dónde va la corriente. Pilas y cables ideales, salvo que el problema diga otra cosa.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Tres resistencias de 2 Ω, 4 Ω y 6 Ω se conectan en serie a una batería de 24 V. ¿Qué corriente pasa por cada una y qué voltaje hay entre los extremos de cada una?",
+      "respuesta": "Pasa la misma corriente, 2 A, por las tres. Voltajes: 4 V, 8 V y 12 V (suman los 24 V de la batería).",
+      "pasos": ["En serie la corriente no tiene otro camino: es la misma en todo el circuito.", "Req = 2 + 4 + 6 = 12 Ω, así que I = 24 V / 12 Ω = 2 A.", "V = I·R: 2 × 2 = 4 V; 2 × 4 = 8 V; 2 × 6 = 12 V.", "Comprueba: 4 + 8 + 12 = 24 V. La resistencia mayor se lleva el voltaje mayor."],
+      "verificar": {
+        "circuito": { "tierra": "n", "ramas": [
+          { "id": "bat", "tipo": "pila", "a": "n", "b": "p", "fem": 24 },
+          { "id": "R2", "tipo": "resistencia", "a": "p", "b": "x", "R": 2 },
+          { "id": "R4", "tipo": "resistencia", "a": "x", "b": "y", "R": 4 },
+          { "id": "R6", "tipo": "resistencia", "a": "y", "b": "n", "R": 6 } ] },
+        "espera": { "Req": 12, "ramas": { "R2": { "I": 2, "V": 4 }, "R4": { "I": 2, "V": 8 }, "R6": { "I": 2, "V": 12 } } }
+      }
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Una resistencia de 6 Ω y otra de 3 Ω se conectan en paralelo a una batería de 12 V. ¿Qué corriente pasa por cada una, cuál es la corriente que sale de la batería y cuál es la resistencia equivalente?",
+      "respuesta": "2 A por la de 6 Ω y 4 A por la de 3 Ω; de la batería salen 6 A. Req = 2 Ω.",
+      "pasos": ["En paralelo, las dos resistencias tienen el mismo voltaje: 12 V.", "I = V/R: 12/6 = 2 A y 12/3 = 4 A. Por la de menor resistencia pasa más corriente; no se reparte por mitades.", "En el nudo se juntan: 2 + 4 = 6 A salen de la batería.", "1/Req = 1/6 + 1/3 = 3/6, así que Req = 2 Ω. Comprueba: 12 V / 2 Ω = 6 A. Req es menor que la menor de las dos."],
+      "verificar": {
+        "circuito": { "tierra": "n", "ramas": [
+          { "id": "bat", "tipo": "pila", "a": "n", "b": "p", "fem": 12 },
+          { "id": "R6", "tipo": "resistencia", "a": "p", "b": "n", "R": 6 },
+          { "id": "R3", "tipo": "resistencia", "a": "p", "b": "n", "R": 3 } ] },
+        "espera": { "Req": 2, "ramas": { "R6": { "I": 2 }, "R3": { "I": 4 }, "bat": { "I": 6 } } }
+      }
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Una resistencia de 7 Ω está en serie con un grupo de dos resistencias en paralelo, de 12 Ω y 4 Ω. El conjunto se conecta a una fuente de 30 V. Halla la corriente que da la fuente, el voltaje en el grupo en paralelo y la corriente por la resistencia de 12 Ω.",
+      "respuesta": "La fuente da 3 A; el grupo en paralelo tiene 9 V; por la de 12 Ω pasan 0,75 A (y 2,25 A por la de 4 Ω).",
+      "pasos": ["Paralelo: 1/Rp = 1/12 + 1/4 = 4/12, así que Rp = 3 Ω.", "Req = 7 + 3 = 10 Ω e I = 30/10 = 3 A.", "La de 7 Ω se lleva 3 × 7 = 21 V; al paralelo le quedan 30 − 21 = 9 V (o 3 A × 3 Ω = 9 V).", "Por la de 12 Ω: 9/12 = 0,75 A; por la de 4 Ω: 9/4 = 2,25 A. Suman 3 A."],
+      "verificar": {
+        "circuito": { "tierra": "n", "ramas": [
+          { "id": "fuente", "tipo": "pila", "a": "n", "b": "p", "fem": 30 },
+          { "id": "R7", "tipo": "resistencia", "a": "p", "b": "x", "R": 7 },
+          { "id": "R12", "tipo": "resistencia", "a": "x", "b": "n", "R": 12 },
+          { "id": "R4", "tipo": "resistencia", "a": "x", "b": "n", "R": 4 } ] },
+        "espera": { "Req": 10, "ramas": { "fuente": { "I": 3 }, "R7": { "V": 21 }, "R12": { "I": 0.75, "V": 9 }, "R4": { "I": 2.25 } } }
+      }
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Una bombilla tiene la etiqueta «12 V, 24 W» y otra, «12 V, 12 W». Se conectan en serie a una batería de 12 V. ¿Cuál brilla más? ¿Y si se conectan en paralelo a la misma batería?",
+      "respuesta": "En serie brilla más la de 12 W (16/3 W ≈ 5,3 W contra 8/3 W ≈ 2,7 W). En paralelo brilla más la de 24 W (24 W contra 12 W).",
+      "pasos": ["La etiqueta da la resistencia: R = V²/P. La de 24 W tiene 144/24 = 6 Ω; la de 12 W, 144/12 = 12 Ω.", "En serie: I = 12/(6 + 12) = 2/3 A, la misma en las dos.", "P = I²R: la de 6 Ω recibe (4/9)·6 = 8/3 W; la de 12 Ω, (4/9)·12 = 16/3 W. Con la misma corriente, brilla más la de mayor resistencia.", "En paralelo cada una tiene sus 12 V, como dice su etiqueta: 24 W y 12 W. Con el mismo voltaje, brilla más la de menor resistencia."],
+      "verificar": {
+        "circuito": { "tierra": "n", "ramas": [
+          { "id": "bat", "tipo": "pila", "a": "n", "b": "p", "fem": 12 },
+          { "id": "B24", "tipo": "resistencia", "a": "p", "b": "m", "R": 6 },
+          { "id": "B12", "tipo": "resistencia", "a": "m", "b": "n", "R": 12 } ] },
+        "espera": { "ramas": { "B24": { "I": 0.6666666666666666, "P": 2.6666666666666665 }, "B12": { "P": 5.333333333333333 } } },
+        "tambien": {
+          "circuito": { "tierra": "n", "ramas": [
+            { "id": "bat", "tipo": "pila", "a": "n", "b": "p", "fem": 12 },
+            { "id": "B24", "tipo": "resistencia", "a": "p", "b": "n", "R": 6 },
+            { "id": "B12", "tipo": "resistencia", "a": "p", "b": "n", "R": 12 } ] },
+          "espera": { "ramas": { "B24": { "P": 24 }, "B12": { "P": 12 } } }
+        }
+      }
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Una pila de 9 V y otra de 3 V, cada una con 0,5 Ω de resistencia interna, se conectan en oposición (el borne + de una unido al borne + de la otra) y en serie con una resistencia de 5 Ω. ¿Qué corriente circula? ¿Qué voltaje marca un voltímetro ideal en los bornes de cada pila?",
+      "respuesta": "Circula 1 A. En los bornes de la pila de 9 V hay 8,5 V; en los de la pila de 3 V, 3,5 V (más que su fem: la están cargando).",
+      "pasos": ["En oposición las fem se restan: la fem neta es 9 − 3 = 6 V. Sí pasa corriente.", "Resistencia total: 0,5 + 0,5 + 5 = 6 Ω, así que I = 6/6 = 1 A.", "La de 9 V entrega corriente: V = ε − I·r = 9 − 0,5 = 8,5 V.", "Por la de 3 V la corriente entra por el borne +: V = ε + I·r = 3 + 0,5 = 3,5 V."],
+      "verificar": {
+        "circuito": { "tierra": "n", "ramas": [
+          { "id": "P9", "tipo": "pila", "a": "n", "b": "m", "fem": 9, "r": 0.5 },
+          { "id": "P3", "tipo": "pila", "a": "p", "b": "m", "fem": 3, "r": 0.5 },
+          { "id": "R", "tipo": "resistencia", "a": "p", "b": "n", "R": 5 } ] },
+        "espera": { "ramas": { "P9": { "I": 1, "bornes": 8.5 }, "P3": { "I": -1, "bornes": 3.5 }, "R": { "I": 1, "P": 5 } } }
+      }
+    },
+    {
+      "id": "p6",
+      "nivel": "avanzado",
+      "enunciado": "Dos ramas con pila y una rama central se unen en dos nudos, uno arriba y otro abajo. Rama izquierda: una batería de 10 V (borne + hacia arriba) en serie con 1 Ω. Rama derecha: una batería de 4 V (borne + hacia arriba) en serie con 2 Ω. Rama central: una resistencia de 2 Ω. Halla la corriente en cada rama y su sentido.",
+      "respuesta": "Rama izquierda: 4 A hacia arriba. Rama central: 3 A hacia abajo. Rama derecha: 1 A hacia abajo, es decir, entra por el borne + de la batería de 4 V (la está cargando).",
+      "pasos": ["Llama V al potencial del nudo de arriba, con el de abajo en 0.", "Ley de nudos: lo que sube por la izquierda y por la derecha baja por el centro: (10 − V)/1 + (4 − V)/2 = V/2.", "Multiplica por 2: 20 − 2V + 4 − V = V, así que V = 6 V.", "Izquierda: (10 − 6)/1 = 4 A hacia arriba. Centro: 6/2 = 3 A hacia abajo. Derecha: (4 − 6)/2 = −1 A: el signo menos dice que va hacia abajo.", "Comprueba en el nudo: 4 = 3 + 1."],
+      "verificar": {
+        "circuito": { "tierra": "g", "ramas": [
+          { "id": "E10", "tipo": "pila", "a": "g", "b": "m1", "fem": 10 },
+          { "id": "R1", "tipo": "resistencia", "a": "m1", "b": "t", "R": 1 },
+          { "id": "Rc", "tipo": "resistencia", "a": "t", "b": "g", "R": 2 },
+          { "id": "E4", "tipo": "pila", "a": "g", "b": "m2", "fem": 4 },
+          { "id": "R2", "tipo": "resistencia", "a": "m2", "b": "t", "R": 2 } ] },
+        "espera": { "V": { "t": 6 }, "ramas": { "R1": { "I": 4 }, "Rc": { "I": 3 }, "R2": { "I": -1 }, "E4": { "I": -1 } } }
+      }
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Una batería de 12 V con 1 Ω de resistencia interna alimenta dos resistencias en serie, de 3 Ω y 8 Ω. Un amperímetro ideal está en serie con ellas y un voltímetro ideal está conectado entre los extremos de la de 8 Ω. ¿Qué marcan? ¿Qué marcaría el voltímetro si lo pasas a los bornes de la batería?",
+      "respuesta": "El amperímetro marca 1 A y el voltímetro, 8 V. En los bornes de la batería marcaría 11 V, no 12 V.",
+      "pasos": ["El amperímetro ideal no tiene resistencia y el voltímetro ideal no deja pasar corriente: ninguno cambia el circuito.", "Resistencia total: 1 + 3 + 8 = 12 Ω, así que I = 12/12 = 1 A.", "En la de 8 Ω: V = 1 × 8 = 8 V.", "En los bornes: V = ε − I·r = 12 − 1 = 11 V. El voltio que falta se queda dentro de la batería."],
+      "verificar": {
+        "circuito": { "tierra": "n", "ramas": [
+          { "id": "bat", "tipo": "pila", "a": "n", "b": "p", "fem": 12, "r": 1 },
+          { "id": "A", "tipo": "amperimetro", "a": "p", "b": "q" },
+          { "id": "R3", "tipo": "resistencia", "a": "q", "b": "x", "R": 3 },
+          { "id": "R8", "tipo": "resistencia", "a": "x", "b": "n", "R": 8 },
+          { "id": "V8", "tipo": "voltimetro", "a": "x", "b": "n" },
+          { "id": "Vbat", "tipo": "voltimetro", "a": "p", "b": "n" } ] },
+        "espera": { "ramas": { "A": { "lectura": 1 }, "V8": { "lectura": 8, "I": 0 }, "Vbat": { "lectura": 11 }, "R8": { "I": 1 } } }
+      }
+    },
+    {
+      "id": "p8",
+      "nivel": "básico",
+      "enunciado": "Una terma eléctrica tiene la etiqueta «220 V, 2000 W» y en una casa se usa 1,5 horas al día. Si el kilowatt-hora cuesta S/ 0,80, ¿cuánta energía consume en 30 días y cuánto se paga por ella? ¿Qué corriente pasa por la terma?",
+      "respuesta": "Consume 90 kWh en 30 días y cuesta S/ 72. Por la terma pasan unos 9,1 A (100/11 A).",
+      "pasos": ["La potencia en kilowatts: 2000 W = 2 kW.", "Energía = P × t = 2 kW × 1,5 h × 30 = 90 kWh. El kWh es energía: potencia por tiempo.", "Costo = 90 × S/ 0,80 = S/ 72.", "Corriente: I = P/V = 2000/220 = 100/11 ≈ 9,1 A. Su resistencia es R = V²/P = 24,2 Ω."],
+      "verificar": {
+        "circuito": { "tierra": "n", "ramas": [
+          { "id": "red", "tipo": "pila", "a": "n", "b": "p", "fem": 220 },
+          { "id": "terma", "tipo": "resistencia", "a": "p", "b": "n", "R": 24.2 } ] },
+        "espera": { "ramas": { "terma": { "P": 2000, "I": 9.090909090909092 } }, "energia": { "rama": "terma", "horas": 1.5, "dias": 30, "tarifa": 0.8, "kWh": 90, "costo": 72 } }
+      }
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Una bombilla de 6 Ω está conectada sola a una batería de 12 V. Luego se agrega en serie una resistencia de 2 Ω. ¿La potencia de la bombilla sube, baja o queda igual? ¿En qué porcentaje cambia?",
+      "respuesta": "Baja de 24 W a 13,5 W: un 43,75 % menos. No queda igual: agregar algo en serie cambia la corriente de todo el circuito.",
+      "pasos": ["Sola: P = V²/R = 144/6 = 24 W.", "Con la resistencia: I = 12/(6 + 2) = 1,5 A, menor que los 2 A de antes.", "P = I²R = 2,25 × 6 = 13,5 W.", "Cambio: (24 − 13,5)/24 = 10,5/24 = 0,4375, es decir, 43,75 % menos."],
+      "verificar": {
+        "circuito": { "tierra": "n", "ramas": [
+          { "id": "bat", "tipo": "pila", "a": "n", "b": "p", "fem": 12 },
+          { "id": "B", "tipo": "resistencia", "a": "p", "b": "m", "R": 6 },
+          { "id": "R", "tipo": "resistencia", "a": "m", "b": "n", "R": 2 } ] },
+        "espera": { "ramas": { "B": { "I": 1.5, "P": 13.5 } }, "cambio": { "rama": "B", "antes": 24, "porcentaje": -43.75 } },
+        "tambien": {
+          "circuito": { "tierra": "n", "ramas": [
+            { "id": "bat", "tipo": "pila", "a": "n", "b": "p", "fem": 12 },
+            { "id": "B", "tipo": "resistencia", "a": "p", "b": "n", "R": 6 } ] },
+          "espera": { "ramas": { "B": { "I": 2, "P": 24 } } }
+        }
+      }
+    }
+  ]
+}

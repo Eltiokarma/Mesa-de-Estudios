@@ -1,0 +1,1258 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Circuitos</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), la misma de Espejos esféricos.
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
+     --c-I  corriente (A)          azul     #1f5fbf claro / #7cb0ff oscuro   contraste sobre el papel 5,7 / 7,4
+     --c-V  voltaje y fem (V)      magenta  #b3246b claro / #ff86bd oscuro   5,8 / 7,3
+     --c-R  resistencia (Ω)        turquesa #0f766e claro / #5ed9c8 oscuro   5,2 / 9,6
+     --c-P  potencia, brillo (W)   ámbar    #8f5800 claro / #ffc04d oscuro   5,5 / 10,1
+     --luz  halo de las bombillas: la versión luminosa del ámbar de P (no es texto).
+   Contraste medido contra --paper (#fdf7f1 claro, #241c2e oscuro); todos pasan AA (4,5 a 1) también sobre --card y --bg.
+   El lavanda de la marca (#7f5ae0) no se usa aquí. El resto (cable, vidrio, metal, pila, suelo) son colores neutros del dibujo. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f1e5dc;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-I:#1f5fbf; --c-V:#b3246b; --c-R:#0f766e; --c-P:#8f5800; --luz:#ffc53d;
+  --cable:#4b3f5c; --vidrio:#f3eee8; --vidrio-borde:#9b8fa6; --filamento:#6b5f78; --metal-1:#eceef2; --metal-2:#9aa1ad;
+  --pila-1:#3a2f4a; --pila-2:#66557d; --cobre:#c77a36; --suelo:#f4eae2;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2c2337;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-I:#7cb0ff; --c-V:#ff86bd; --c-R:#5ed9c8; --c-P:#ffc04d; --luz:#ffd36b;
+  --cable:#cfc4dc; --vidrio:#3a3046; --vidrio-borde:#8d80a0; --filamento:#a99cb8; --metal-1:#d3d7df; --metal-2:#6d7584;
+  --pila-1:#16111d; --pila-2:#4a3d5c; --cobre:#d48a48; --suelo:#2a2234; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2c2337;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-I:#7cb0ff; --c-V:#ff86bd; --c-R:#5ed9c8; --c-P:#ffc04d; --luz:#ffd36b;
+  --cable:#cfc4dc; --vidrio:#3a3046; --vidrio-borde:#8d80a0; --filamento:#a99cb8; --metal-1:#d3d7df; --metal-2:#6d7584;
+  --pila-1:#16111d; --pila-2:#4a3d5c; --cobre:#d48a48; --suelo:#2a2234; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y; -webkit-user-select:none; user-select:none}
+canvas.tocable{cursor:pointer}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+.legend i.dot{width:8px; height:8px; border-radius:50%}
+.legend i.halo{width:14px; height:14px; border-radius:50%; background:radial-gradient(circle, var(--luz) 0 35%, transparent 72%)}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+.map{display:grid; gap:8px; margin:0; padding:0; list-style:none}
+.map li{display:flex; gap:10px; align-items:baseline}
+.map b{font-family:var(--mono); min-width:3.2em; flex:none}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px; white-space:nowrap}
+.v-I{color:var(--c-I); background:color-mix(in srgb, var(--c-I) 11%, transparent)}
+.v-V{color:var(--c-V); background:color-mix(in srgb, var(--c-V) 11%, transparent)}
+.v-R{color:var(--c-R); background:color-mix(in srgb, var(--c-R) 11%, transparent)}
+.v-P{color:var(--c-P); background:color-mix(in srgb, var(--c-P) 12%, transparent)}
+.v.hl{background:color-mix(in srgb, currentColor 26%, transparent)}
+b.v-I{color:var(--c-I)} b.v-V{color:var(--c-V)} b.v-R{color:var(--c-R)} b.v-P{color:var(--c-P)}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.02rem; font-variant-numeric:tabular-nums}
+.eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.5em; white-space:normal}
+.frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1.15}
+.frac > span:first-child{border-bottom:1.5px solid currentColor; padding:0 .25em}
+.frac > span:last-child{padding:0 .25em}
+.answer{font-weight:700; padding:12px 16px; border-radius:16px; background:var(--paper); border:2px solid var(--c-P); max-width:66ch}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+
+.tabla{width:100%; border-collapse:separate; border-spacing:0; font-variant-numeric:tabular-nums; font-size:.93rem;
+  background:var(--paper); border:1px solid var(--line); border-radius:16px; overflow:hidden}
+.tabla th, .tabla td{padding:7px 10px; text-align:right; border-bottom:1px solid var(--line)}
+.tabla th:first-child, .tabla td:first-child{text-align:left}
+.tabla tr:last-child td{border-bottom:0}
+.tabla thead th{font-size:.78rem; text-transform:uppercase; letter-spacing:.04em; color:var(--muted)}
+.tabla .sube{color:var(--ok); font-weight:800} .tabla .baja{color:var(--warn); font-weight:800}
+.tabla-wrap{overflow-x:auto; border-radius:16px}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.ctrls{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap:12px; align-items:end}
+.slider{display:grid; gap:4px}
+.slider label{font-weight:700; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.slider output{font-family:var(--mono); color:var(--muted)}
+input[type=range]{width:100%; accent-color:var(--ink); min-height:28px}
+input.r-R{accent-color:var(--c-R)}
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:999px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.exps{border-radius:20px}
+.toggles{display:flex; flex-wrap:wrap; gap:8px}
+.tog{display:inline-flex; align-items:center; gap:8px; font:700 .92rem var(--font); padding:8px 14px 8px 10px; border-radius:999px;
+  border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:40px}
+.tog .sw{width:34px; height:20px; border-radius:999px; background:var(--line); position:relative; flex:none; transition:background .2s}
+.tog .sw::after{content:""; position:absolute; top:2px; left:2px; width:16px; height:16px; border-radius:50%; background:var(--card); box-shadow:0 1px 2px rgba(0,0,0,.25); transition:left .2s}
+.tog[aria-pressed="true"] .sw{background:var(--ink)}
+.tog[aria-pressed="true"] .sw::after{left:16px}
+@media (prefers-reduced-motion: reduce){ .tog .sw, .tog .sw::after{transition:none} }
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn.chico{padding:7px 14px; min-height:38px; font-size:.9rem}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.estado{margin:0; padding:2px 8px 4px; font-size:.84rem; color:var(--muted)}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.35fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Física · Electricidad · Problemas tipo admisión</p>
+      <h1>Circuitos</h1>
+      <p class="sub">Corriente, voltaje y brillo: qué cambia en todo el circuito cuando tocas una sola parte.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Circuito con una pila y tres bombillas">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Circuito: una pila, la bombilla B1 en serie con B2 y B3 en paralelo" aria-describedby="desc1"></canvas></div>
+      <p class="estado" id="desc1" aria-live="polite"></p>
+      <div class="legend">
+        <span><i class="dot" style="background:var(--c-I)"></i>I · corriente (los puntos se mueven más rápido si es mayor)</span>
+        <span><i style="background:var(--c-V)"></i>V · voltaje</span>
+        <span><i style="background:var(--c-R)"></i>R · resistencia</span>
+        <span><i class="halo"></i><b style="color:var(--c-P)">P</b> · potencia: el área del halo</span>
+      </div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite" id="vivo1">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos con circuitos">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Circuito del experimento elegido" aria-describedby="desc2"></canvas></div>
+      <p class="estado" id="desc2" aria-live="polite"></p>
+      <div class="legend">
+        <span><i class="dot" style="background:var(--c-I)"></i>I · corriente</span>
+        <span><i style="background:var(--c-V)"></i>V · voltaje de las pilas</span>
+        <span><i style="background:var(--c-R)"></i>R · resistencia</span>
+        <span><i class="halo"></i><b style="color:var(--c-P)">P</b> · potencia (brillo)</span>
+      </div>
+    </section>
+    <section class="guide">
+      <div class="seg exps" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/circuitos-cc">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'circuitos-cc', unidad: 'fisica.corriente-y-circuitos', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la física sale de MotorCircuito (motor.js); aquí solo se pinta lo que el motor calcula.
+   Un "panel" es un circuito del motor + su dibujo (layout) en unidades de cuadrícula.
+   Cada rama del layout tiene un camino que va del nodo a al nodo b de la rama del motor,
+   y el componente (bombilla, pila, reóstato, interruptor) se dibuja en uno de sus tramos. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+// Coma decimal y signo menos tipográfico.
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '∞';
+  const p = Math.pow(10, d === undefined ? 2 : d), r = Math.round(n*p)/p + 0;
+  return String(r).replace('.', ',').replace('-', '−');
+}
+const vr = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const fr = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
+const ESP = 0.62;             // separación entre puntos de corriente (unidades)
+const HALF = { bombilla:0.5, pila:0.74, reostato:0.56, interruptor:0.5 };
+
+function colores(){
+  const k = ['ink','muted','grid','paper','card','line','warn','c-I','c-V','c-R','c-P','luz','cable','vidrio','vidrio-borde','filamento','metal-1','metal-2','pila-1','pila-2','cobre','suelo','font','mono'];
+  const c = {}; k.forEach(n => c[n] = css('--' + n)); return c;
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+
+// Geometría de un camino (polilínea en unidades).
+function prepararCamino(path){
+  const cum = [0];
+  for (let k = 1; k < path.length; k++) cum.push(cum[k-1] + Math.hypot(path[k][0] - path[k-1][0], path[k][1] - path[k-1][1]));
+  return { path, cum, L: cum[cum.length - 1] };
+}
+function puntoEn(g, s){
+  s = clamp(s, 0, g.L);
+  let k = 1; while (k < g.path.length - 1 && g.cum[k] < s) k++;
+  const a = g.path[k-1], b = g.path[k], l = g.cum[k] - g.cum[k-1] || 1, t = (s - g.cum[k-1])/l;
+  return [a[0] + (b[0] - a[0])*t, a[1] + (b[1] - a[1])*t, (b[0] - a[0])/l, (b[1] - a[1])/l];
+}
+// Puntos del camino entre s0 y s1: los vértices y, si denso, uno cada paso.
+function muestras(g, s0, s1, denso){
+  const ss = [s0];
+  for (let k = 1; k < g.path.length - 1; k++) if (g.cum[k] > s0 && g.cum[k] < s1) ss.push(g.cum[k]);
+  if (denso) for (let s = s0 + 0.18; s < s1; s += 0.18) ss.push(s);
+  ss.push(s1); ss.sort((a, b) => a - b);
+  return ss;
+}
+
+function linea(ctx, pts){ ctx.beginPath(); pts.forEach(([x, y], k) => k ? ctx.lineTo(x, y) : ctx.moveTo(x, y)); }
+function redondeado(ctx, pts, r){
+  ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]);
+  for (let k = 1; k < pts.length - 1; k++) ctx.arcTo(pts[k][0], pts[k][1], pts[k+1][0], pts[k+1][1], r);
+  ctx.lineTo(pts[pts.length-1][0], pts[pts.length-1][1]);
+}
+function cable(ctx, c, pts, s, op){
+  op = op || {};
+  ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  const w = clamp(s*0.13, 3.5, 6);
+  const trazo = () => op.plano ? linea(ctx, pts) : redondeado(ctx, pts, clamp(s*0.32, 6, 16));
+  trazo(); ctx.strokeStyle = op.color || c.cable; ctx.lineWidth = w; ctx.stroke();
+  trazo(); ctx.strokeStyle = 'rgba(255,255,255,.28)'; ctx.lineWidth = Math.max(1, w*0.3); ctx.stroke();
+  ctx.restore();
+}
+function rrect(ctx, x, y, w, h, r){ ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h); }
+// Etiqueta en una pastilla. ancla: 'centro' | 'izq' (el texto termina en x) | 'der' (empieza en x).
+function pastilla(ctx, c, x, y, txt, color, op){
+  op = op || {};
+  ctx.save(); ctx.font = `${op.bold ? 800 : 700} ${op.tam || 11}px ${c.mono}`; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(txt).width + 10, h = (op.tam || 11) + 6;
+  let x0 = x - w/2; if (op.ancla === 'izq') x0 = x - w; if (op.ancla === 'der') x0 = x;
+  x0 = clamp(x0, 2, ctx.canvas.clientWidth - w - 2);
+  rrect(ctx, x0, y - h/2, w, h, h/2); ctx.fillStyle = c.paper; ctx.globalAlpha = .94; ctx.fill(); ctx.globalAlpha = 1;
+  ctx.strokeStyle = color; ctx.lineWidth = op.bold ? 1.6 : 1; ctx.globalAlpha = op.bold ? 1 : .55; ctx.stroke(); ctx.globalAlpha = 1;
+  ctx.fillStyle = color; ctx.textAlign = 'center'; ctx.fillText(txt, x0 + w/2, y + .5);
+  ctx.restore();
+}
+// Varias líneas de texto junto a un punto, hacia un lado.
+function rotulos(ctx, c, x, y, lado, dist, lineas, tam){
+  if (!lineas.length) return;
+  ctx.save(); ctx.textBaseline = 'middle';
+  const lh = tam + 3, n = lineas.length;
+  let x0 = x, y0 = y, align = 'center';
+  if (lado === 'izq'){ x0 = x - dist; align = 'right'; y0 = y - (n - 1)*lh/2; }
+  else if (lado === 'der'){ x0 = x + dist; align = 'left'; y0 = y - (n - 1)*lh/2; }
+  else if (lado === 'arr'){ y0 = y - dist - (n - 1)*lh - lh/2 + 4; }
+  else { y0 = y + dist + lh/2 - 2; }
+  ctx.textAlign = align;
+  lineas.forEach(([t, col, peso], k) => {
+    ctx.font = `${peso || 700} ${tam}px ${peso === 900 ? c.font : c.mono}`;
+    const yy = y0 + k*lh, w = ctx.measureText(t).width;
+    const xl = align === 'center' ? x0 - w/2 : align === 'right' ? x0 - w : x0;
+    ctx.fillStyle = c.paper; ctx.globalAlpha = .82; ctx.fillRect(xl - 2, yy - lh/2 + 1, w + 4, lh - 1); ctx.globalAlpha = 1;
+    ctx.fillStyle = col; ctx.fillText(t, x0, yy);
+  });
+  ctx.restore();
+}
+
+/* ---------- Componentes (en coordenadas de pantalla: del punto A al punto B) ---------- */
+function bombilla(ctx, c, A, B, r, op){
+  const mx = (A[0] + B[0])/2, my = (A[1] + B[1])/2, ang = Math.atan2(B[1] - A[1], B[0] - A[0]);
+  const b = op.brillo || 0;
+  ctx.save();
+  if (op.quitada){
+    // Portalámparas vacío: dos contactos y el hueco.
+    ctx.translate(mx, my); ctx.rotate(ang);
+    ctx.strokeStyle = c.muted; ctx.setLineDash([3, 3]); ctx.lineWidth = 1.4;
+    ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI*2); ctx.stroke(); ctx.setLineDash([]);
+    [-1, 1].forEach(sg => { rrect(ctx, sg*(r + 1) - 4, -5, 8, 10, 2); ctx.fillStyle = c['metal-2']; ctx.fill(); });
+    ctx.restore(); return;
+  }
+  // Halo: su área es proporcional a la potencia (radio ∝ √P).
+  if (b > 0.002){
+    const rg = r*(1.05 + 1.7*Math.sqrt(Math.min(b, 1.8)));
+    const g = ctx.createRadialGradient(mx, my, r*0.6, mx, my, rg);
+    g.addColorStop(0, c.luz); g.addColorStop(0.45, c.luz); g.addColorStop(1, 'transparent');
+    ctx.globalAlpha = clamp(0.35 + 0.6*Math.sqrt(b), 0, 0.92); ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(mx, my, rg, 0, Math.PI*2); ctx.fill(); ctx.globalAlpha = 1;
+  }
+  ctx.translate(mx, my); ctx.rotate(ang);
+  // Casquillos metálicos donde entra el cable.
+  [-1, 1].forEach(sg => {
+    const g = ctx.createLinearGradient(0, -5, 0, 5); g.addColorStop(0, c['metal-1']); g.addColorStop(1, c['metal-2']);
+    rrect(ctx, sg > 0 ? r*0.78 : -r*0.78 - r*0.42, -r*0.36, r*0.42, r*0.72, 2.5); ctx.fillStyle = g; ctx.fill();
+  });
+  // Vidrio.
+  ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI*2);
+  ctx.fillStyle = c.vidrio; ctx.fill();
+  if (b > 0.002){ ctx.fillStyle = c.luz; ctx.globalAlpha = clamp(0.25 + 0.85*Math.sqrt(b), 0, 1); ctx.fill(); ctx.globalAlpha = 1; }
+  ctx.strokeStyle = op.hlR ? c['c-R'] : c['vidrio-borde']; ctx.lineWidth = op.hlR ? 2.6 : 1.4; ctx.stroke();
+  // Filamento: dos soportes y un resorte.
+  ctx.strokeStyle = b > 0.05 ? '#fff6d8' : c.filamento; ctx.lineWidth = 1.3; ctx.lineJoin = 'round';
+  const fx = r*0.42, fy = -r*0.22;
+  ctx.beginPath(); ctx.moveTo(-r*0.8, 0); ctx.lineTo(-fx, fy); ctx.moveTo(r*0.8, 0); ctx.lineTo(fx, fy); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-fx, fy);
+  for (let k = 1; k <= 8; k++) ctx.lineTo(-fx + 2*fx*k/8, fy + (k % 2 ? -1 : 1)*r*0.13);
+  if (b > 0.05){ ctx.shadowColor = '#ffb300'; ctx.shadowBlur = 6; }
+  ctx.stroke(); ctx.shadowBlur = 0;
+  // Brillo del vidrio.
+  ctx.beginPath(); ctx.arc(0, 0, r*0.72, Math.PI*1.12, Math.PI*1.42); ctx.strokeStyle = 'rgba(255,255,255,.75)'; ctx.lineWidth = 1.6; ctx.stroke();
+  ctx.restore();
+}
+function pila(ctx, c, A, B, t, op){
+  const mx = (A[0] + B[0])/2, my = (A[1] + B[1])/2, ang = Math.atan2(B[1] - A[1], B[0] - A[0]), len = Math.hypot(B[0] - A[0], B[1] - A[1]);
+  ctx.save(); ctx.translate(mx, my); ctx.rotate(ang);
+  const nub = t*0.2, x0 = -len/2, x1 = len/2 - nub;
+  ctx.save(); ctx.shadowColor = 'rgba(40,20,60,.28)'; ctx.shadowBlur = 6; ctx.shadowOffsetY = 2;
+  const g = ctx.createLinearGradient(0, -t/2, 0, t/2);
+  g.addColorStop(0, c['pila-2']); g.addColorStop(0.35, c['pila-1']); g.addColorStop(1, c['pila-1']);
+  rrect(ctx, x0, -t/2, x1 - x0, t, t*0.22); ctx.fillStyle = g; ctx.fill(); ctx.restore();
+  // Banda de cobre del lado +.
+  const gb = ctx.createLinearGradient(0, -t/2, 0, t/2); gb.addColorStop(0, '#f2b277'); gb.addColorStop(.4, c.cobre); gb.addColorStop(1, '#8a4d1c');
+  ctx.save(); rrect(ctx, x0, -t/2, x1 - x0, t, t*0.22); ctx.clip();
+  ctx.fillStyle = gb; ctx.fillRect(x1 - (x1 - x0)*0.3, -t/2, (x1 - x0)*0.3, t); ctx.restore();
+  // Borne +.
+  const gm = ctx.createLinearGradient(0, -t*0.2, 0, t*0.2); gm.addColorStop(0, c['metal-1']); gm.addColorStop(1, c['metal-2']);
+  rrect(ctx, x1 - 1, -t*0.2, nub + 1, t*0.4, 2); ctx.fillStyle = gm; ctx.fill();
+  // Signos.
+  ctx.fillStyle = '#fff'; ctx.font = `900 ${Math.round(t*0.55)}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.save(); ctx.translate(x1 - (x1 - x0)*0.15, 0); ctx.rotate(-ang); ctx.fillText('+', 0, 1); ctx.restore();
+  ctx.save(); ctx.translate(x0 + t*0.42, 0); ctx.rotate(-ang); ctx.fillText('−', 0, 1); ctx.restore();
+  // Brillo.
+  ctx.strokeStyle = 'rgba(255,255,255,.22)'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(x0 + t*0.3, -t*0.3); ctx.lineTo(x1 - t*0.3, -t*0.3); ctx.stroke();
+  ctx.restore();
+}
+function reostato(ctx, c, A, B, t, op){
+  const mx = (A[0] + B[0])/2, my = (A[1] + B[1])/2, ang = Math.atan2(B[1] - A[1], B[0] - A[0]), len = Math.hypot(B[0] - A[0], B[1] - A[1]);
+  ctx.save(); ctx.translate(mx, my); ctx.rotate(ang);
+  const a = t*0.34, n = 7;
+  rrect(ctx, -len/2 - 2, -a - 4, len + 4, 2*a + 8, 6); ctx.fillStyle = c.paper; ctx.fill();
+  ctx.beginPath(); ctx.moveTo(-len/2, 0);
+  for (let k = 1; k < n; k++) ctx.lineTo(-len/2 + len*k/n, (k % 2 ? -a : a));
+  ctx.lineTo(len/2, 0);
+  ctx.strokeStyle = c['c-R']; ctx.lineWidth = op.hl ? 3 : 2.2; ctx.lineJoin = 'round'; ctx.stroke();
+  // Flecha: resistencia variable.
+  ctx.beginPath(); ctx.moveTo(-len*0.38, a*1.7); ctx.lineTo(len*0.38, -a*1.7); ctx.lineWidth = 1.5; ctx.stroke();
+  const ah = Math.atan2(-a*3.4, len*0.76);
+  ctx.beginPath(); ctx.moveTo(len*0.38, -a*1.7);
+  ctx.lineTo(len*0.38 - 7*Math.cos(ah - .45), -a*1.7 - 7*Math.sin(ah - .45));
+  ctx.lineTo(len*0.38 - 7*Math.cos(ah + .45), -a*1.7 - 7*Math.sin(ah + .45)); ctx.closePath(); ctx.fillStyle = c['c-R']; ctx.fill();
+  ctx.restore();
+}
+function interruptor(ctx, c, A, B, op){
+  const ang = Math.atan2(B[1] - A[1], B[0] - A[0]), len = Math.hypot(B[0] - A[0], B[1] - A[1]);
+  ctx.save(); ctx.translate(A[0], A[1]); ctx.rotate(ang);
+  const col = op.color || c.ink;
+  ctx.strokeStyle = col; ctx.lineWidth = 3.2; ctx.lineCap = 'round';
+  const giro = op.cerrado ? 0 : -0.5;
+  ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(len*Math.cos(giro), len*Math.sin(giro)); ctx.stroke();
+  [[0, 0], [len, 0]].forEach(([x, y]) => { ctx.beginPath(); ctx.arc(x, y, 4, 0, Math.PI*2); ctx.fillStyle = c.paper; ctx.fill(); ctx.lineWidth = 2; ctx.stroke(); });
+  ctx.restore();
+}
+
+/* ---------- La escena: dibuja paneles y mueve los puntos de corriente ---------- */
+function crearEscena(cv, opciones){
+  opciones = opciones || {};
+  const ctx = cv.getContext('2d');
+  const E = { W:0, H:0, paneles:[], vista:'plano', hl:null, fase:{}, anim:{}, hits:[], raf:0, tPrev:0 };
+  const GAP = 0.5;
+
+  function altoDeseado(W){
+    if (!E.paneles.length) return 260;
+    if (E.vista === 'altura') return Math.round(clamp(W*0.7, 260, 480));
+    const tw = E.paneles.reduce((s, p) => s + p.layout.w, 0) + GAP*(E.paneles.length - 1);
+    const th = Math.max(...E.paneles.map(p => p.layout.h + (p.titulo ? 0.75 : 0)));
+    return Math.round(clamp(W*th/tw, 190, 470));
+  }
+  E.resize = () => {
+    const W = cv.clientWidth; if (!W) return;
+    const H = altoDeseado(W), dpr = window.devicePixelRatio || 1;
+    if (W !== E.W || H !== E.H){
+      E.W = W; E.H = H; cv.style.height = H + 'px'; cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    dibujar();
+  };
+  new ResizeObserver(() => E.resize()).observe(cv);
+
+  // Datos de cada rama del panel: geometría, componente, corriente y potenciales.
+  function ramasDe(p){
+    const out = [];
+    const porId = {}; p.circuito.ramas.forEach(r => porId[r.id] = r);
+    for (const [id, l] of Object.entries(p.layout.ramas)){
+      const r = porId[id]; if (!r) continue;
+      const g = prepararCamino(l.path);
+      let sc = 0, half = 0;
+      if (l.comp && l.comp !== 'cable'){
+        let en = l.en;
+        if (en === undefined){ en = 0; for (let k = 1; k < l.path.length - 1; k++) if (g.cum[k+1] - g.cum[k] > g.cum[en+1] - g.cum[en]) en = k; }
+        sc = (g.cum[en] + g.cum[en+1])/2; half = HALF[l.comp] || 0.5;
+      }
+      const x = p.sol.ok ? p.sol.ramas[id] : null;
+      out.push({ id, l, r, g, sc, half, I: x ? x.I : 0, P: x ? x.P : 0, Va: p.sol.ok ? p.sol.V[r.a] : 0, Vb: p.sol.ok ? p.sol.V[r.b] : 0 });
+    }
+    for (const [k, t] of (p.layout.tramos || []).entries()){
+      const g = prepararCamino(t.path), v = p.sol.ok ? p.sol.V[t.nodo] : 0;
+      out.push({ id: 'tramo' + k, l: { comp:'cable', etI: t.etI }, r: null, g, sc:0, half:0, I: p.sol.ok ? t.I(p.sol) : 0, P:0, Va:v, Vb:v, tramo:true });
+    }
+    return out;
+  }
+  const potencial = (x, s) => {
+    if (!x.half) return x.Va;
+    if (s <= x.sc - x.half) return x.Va;
+    if (s >= x.sc + x.half) return x.Vb;
+    return x.Va + (x.Vb - x.Va)*(s - (x.sc - x.half))/(2*x.half);
+  };
+
+  // Proyección de cada panel: plano (vista de arriba) o altura (el potencial sube el cable).
+  function proyecciones(){
+    const W = E.W, H = E.H;
+    if (E.vista === 'altura'){
+      const p = E.paneles[0], w = p.layout.w, h = p.layout.h, mi = 2.1;
+      const s = W/(mi + w + 0.38*h), piso = 0.42*h*s, top = 30, vE = p.vEscala || 6;
+      const kv = Math.max(10, (H - top - 22 - piso)/vE);
+      const T = (x, y, v) => [s*(mi + x + 0.38*(h - y)), top + vE*kv + 0.42*y*s - v*kv];
+      return [{ T, s, kv, vE, mi }];
+    }
+    const tw = E.paneles.reduce((a, q) => a + q.layout.w, 0) + GAP*(E.paneles.length - 1);
+    const th = Math.max(...E.paneles.map(q => q.layout.h + (q.titulo ? 0.75 : 0)));
+    const s = Math.min(W/tw, H/th);
+    let ox = (W - tw*s)/2;
+    return E.paneles.map(q => {
+      const oy = (H - th*s)/2 + (q.titulo ? 0.75*s : 0), x0 = ox;
+      ox += (q.layout.w + GAP)*s;
+      return { T: (x, y) => [x0 + x*s, oy + y*s], s, x0, oy };
+    });
+  }
+
+  // Avanza los valores animados (brillo y rapidez de los puntos) hacia los del motor.
+  function objetivo(p, x){ return p.encendido && p.sol.ok ? { I:x.I, P:x.P } : { I:0, P:0 }; }
+  function avanzar(dt){
+    const k = RM ? 1 : 1 - Math.exp(-dt*5);
+    E.paneles.forEach((p, ip) => ramasDe(p).forEach(x => {
+      const key = ip + ':' + x.id, o = objetivo(p, x), a = E.anim[key] || (E.anim[key] = { I:o.I, P:o.P });
+      a.I += (o.I - a.I)*k; a.P += (o.P - a.P)*k;
+      if (!RM){
+        const vel = (0.95/(p.iRef || 1))*a.I; // unidades por segundo
+        E.fase[key] = (((E.fase[key] || 0) + vel*dt) % ESP + ESP) % ESP;
+      }
+    }));
+  }
+
+  function dibujar(){
+    if (!E.W || !E.paneles.length) return;
+    const c = colores();
+    ctx.clearRect(0, 0, E.W, E.H);
+    // Papel con puntitos, como una protoboard.
+    ctx.fillStyle = c.grid;
+    const paso = 18;
+    for (let y = paso/2; y < E.H; y += paso) for (let x = paso/2; x < E.W; x += paso){ ctx.fillRect(x - 1, y - 1, 2, 2); }
+    E.hits = [];
+    const pr = proyecciones();
+    E.paneles.forEach((p, ip) => (E.vista === 'altura' ? dibujarAltura : dibujarPlano)(p, ip, pr[ip], c));
+  }
+
+  function puntosCorriente(p, ip, x, P, c, T){
+    if (!p.encendido || !p.sol.ok) return;
+    const key = ip + ':' + x.id, a = E.anim[key] || { I:x.I };
+    const quieto = Math.abs(x.I) < 1e-9;
+    const f = E.fase[key] || 0, rad = clamp(P.s*0.075, 2.2, 3.6) * (E.hl === 'I' ? 1.3 : 1);
+    ctx.save(); ctx.fillStyle = c['c-I']; ctx.globalAlpha = quieto ? .3 : .95;
+    for (let s = f; s < x.g.L; s += ESP){
+      if (x.half && s > x.sc - x.half - 0.05 && s < x.sc + x.half + 0.05) continue;
+      const q = puntoEn(x.g, s), [X, Y] = T(q[0], q[1], potencial(x, s));
+      ctx.beginPath(); ctx.arc(X, Y, rad, 0, Math.PI*2); ctx.fill();
+    }
+    // Sin animación: una flecha por rama muestra el sentido.
+    if (RM && !quieto){
+      const s = x.half ? (x.sc - x.half > x.g.L - x.sc - x.half ? (x.sc - x.half)/2 : (x.sc + x.half + x.g.L)/2) : x.g.L/2;
+      const q = puntoEn(x.g, s), [X, Y] = T(q[0], q[1], potencial(x, s)), q2 = puntoEn(x.g, s + 0.05), [X2, Y2] = T(q2[0], q2[1], potencial(x, s + 0.05));
+      const ang = Math.atan2(Y2 - Y, X2 - X) + (a.I < 0 || x.I < 0 ? Math.PI : 0), h = 8;
+      ctx.globalAlpha = 1; ctx.beginPath(); ctx.moveTo(X + h*Math.cos(ang), Y + h*Math.sin(ang));
+      ctx.lineTo(X + h*Math.cos(ang + 2.5), Y + h*Math.sin(ang + 2.5)); ctx.lineTo(X + h*Math.cos(ang - 2.5), Y + h*Math.sin(ang - 2.5)); ctx.closePath(); ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  // Pastillas de corriente a la entrada y a la salida de cada componente (o al medio de un tramo de cable).
+  function pastillasI(p, x, P, c, T){
+    if (!p.encendido || !p.sol.ok || !p.mostrar.I || x.l.etI === false) return;
+    const txt = fmt(Math.abs(x.I)) + ' A', lado = x.l.etI || 'arr', d = 13;
+    const ss = x.half ? [x.sc - x.half - 0.42, x.sc + x.half + 0.42] : (x.l.etIMedio === false ? [] : [x.g.L/2]);
+    for (const s0 of ss){
+      const s = clamp(s0, 0.2, x.g.L - 0.2), q = puntoEn(x.g, s);
+      let [X, Y] = T(q[0], q[1], potencial(x, s));
+      let ancla = 'centro';
+      if (E.vista === 'altura') Y -= 14;
+      else if (lado === 'arr') Y -= d; else if (lado === 'aba') Y += d;
+      else if (lado === 'izq'){ X -= 8; ancla = 'izq'; } else { X += 8; ancla = 'der'; }
+      pastilla(ctx, c, X, Y, txt, c['c-I'], { bold: E.hl === 'I', ancla });
+    }
+  }
+
+  function componente(p, ip, x, P, c, T, enAltura){
+    const A0 = puntoEn(x.g, x.sc - x.half), B0 = puntoEn(x.g, x.sc + x.half);
+    const A = T(A0[0], A0[1], potencial(x, x.sc - x.half)), B = T(B0[0], B0[1], potencial(x, x.sc + x.half));
+    const M = [(A[0] + B[0])/2, (A[1] + B[1])/2];
+    const lado = enAltura ? 'arr' : (x.l.et || 'aba');
+    const key = ip + ':' + x.id, a = E.anim[key] || { P:0 };
+    const tam = clamp(Math.round(P.s*0.32), 10, 13);
+    if (x.l.comp === 'bombilla'){
+      const r = enAltura ? clamp(P.s*0.3, 8, 17) : clamp(P.s*0.4, 9, 24);
+      const quitada = !!x.r.abierta;
+      bombilla(ctx, c, A, B, r, { brillo: quitada ? 0 : Math.max(0, a.P)/(p.Pref || 1), quitada, hlR: E.hl === 'R' });
+      E.hits.push({ id: x.id, x: M[0], y: M[1], r: r + 8 });
+      const lin = [];
+      if (x.l.nombre) lin.push([x.l.nombre, c.ink, 900]);
+      if (quitada) lin.push(['quitada', c.muted]);
+      else {
+        if (p.mostrar.R) lin.push([fmt(x.r.R, 1) + ' Ω', c['c-R'], E.hl === 'R' ? 800 : 700]);
+        if ((p.mostrar.V || E.hl === 'V') && p.encendido && p.sol.ok) lin.push([fmt(x.Va - x.Vb) + ' V', c['c-V'], E.hl === 'V' ? 800 : 700]);
+        if (p.mostrar.P && p.encendido && p.sol.ok) lin.push([fmt(x.P) + ' W', c['c-P'], 800]);
+      }
+      if (quitada && p.mostrar.V && p.sol.ok && Math.abs(x.Va - x.Vb) > 1e-9) lin.push([fmt(x.Va - x.Vb) + ' V', c['c-V'], 700]);
+      rotulos(ctx, c, M[0], M[1], lado, r + 7, enAltura ? lin.slice(0, 1).concat(lin.slice(-1).filter(z => z[1] === c['c-P'])) : lin, tam);
+    } else if (x.l.comp === 'pila'){
+      const t = enAltura ? clamp(P.s*0.42, 11, 22) : clamp(P.s*0.56, 13, 28);
+      pila(ctx, c, A, B, t, {});
+      const lin = [];
+      if (x.l.nombre) lin.push([x.l.nombre, c.ink, 900]);
+      lin.push([fmt(x.r.fem, 1) + ' V', c['c-V'], E.hl === 'V' ? 900 : 800]);
+      if (x.l.et !== 'no') rotulos(ctx, c, M[0], M[1], enAltura ? 'izq' : (x.l.et || 'izq'), t*0.5 + 7, lin, tam);
+    } else if (x.l.comp === 'reostato'){
+      const t = clamp(P.s*0.5, 12, 24);
+      reostato(ctx, c, A, B, t, { hl: E.hl === 'R' });
+      rotulos(ctx, c, M[0], M[1], enAltura ? 'arr' : (x.l.et || 'arr'), t*0.7 + 4, [['Rv = ' + fmt(x.r.R, 1) + ' Ω', c['c-R'], 800]], tam);
+    } else if (x.l.comp === 'interruptor'){
+      const enLazo = p.sol.corto && p.sol.lazo.includes(x.id);
+      interruptor(ctx, c, A, B, { cerrado: !!x.r.cerrado, color: enLazo ? c.warn : null });
+      E.hits.push({ id: x.id, x: M[0], y: M[1], r: 22 });
+      if (x.l.nombre) rotulos(ctx, c, M[0], M[1], x.l.et || 'der', 14, [[x.l.nombre, enLazo ? c.warn : c.muted, 700]], tam - 1);
+    }
+  }
+
+  function dibujarPlano(p, ip, P, c){
+    const T = P.T, xs = ramasDe(p);
+    if (p.titulo){
+      ctx.save(); ctx.font = `800 ${clamp(Math.round(P.s*0.36), 11, 15)}px ${c.font}`; ctx.fillStyle = c.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(p.titulo, P.x0 + p.layout.w*P.s/2, P.oy - 0.42*P.s); ctx.restore();
+    }
+    // Cables (sin el tramo del componente).
+    for (const x of xs){
+      const enLazo = p.sol.corto && x.r && p.sol.lazo.includes(x.id);
+      const op = { color: enLazo ? c.warn : null };
+      const partes = x.half ? [[0, x.sc - x.half], [x.sc + x.half, x.g.L]] : [[0, x.g.L]];
+      for (const [s0, s1] of partes){
+        if (s1 - s0 < 1e-6) continue;
+        const pts = muestras(x.g, s0, s1, false).map(s => { const q = puntoEn(x.g, s); return T(q[0], q[1]); });
+        cable(ctx, c, pts, P.s, op);
+      }
+    }
+    for (const u of p.layout.uniones || []){ const [X, Y] = T(u[0], u[1]); ctx.beginPath(); ctx.arc(X, Y, clamp(P.s*0.12, 3.5, 6), 0, Math.PI*2); ctx.fillStyle = c.cable; ctx.fill(); }
+    for (const x of xs) puntosCorriente(p, ip, x, P, c, T);
+    for (const x of xs) if (x.half) componente(p, ip, x, P, c, T, false);
+    for (const x of xs) pastillasI(p, x, P, c, T);
+    if (p.sol.corto){
+      const msg = '¡Cortocircuito!', y = P.oy + 0.2*P.s, cx = P.x0 + p.layout.w*P.s/2;
+      ctx.save(); ctx.font = `800 13px ${c.font}`; const w = ctx.measureText(msg).width + 24;
+      rrect(ctx, cx - w/2, y - 13, w, 26, 13); ctx.fillStyle = c.warn; ctx.fill();
+      ctx.fillStyle = c.paper; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(msg, cx, y + .5); ctx.restore();
+    }
+  }
+
+  function dibujarAltura(p, ip, P, c){
+    const T = P.T, xs = ramasDe(p).sort((a, b) => promY(a) - promY(b)), w = p.layout.w, h = p.layout.h;
+    // Suelo.
+    const esq = [[0, 0], [w, 0], [w, h], [0, h]].map(([x, y]) => T(x, y, 0));
+    ctx.save(); linea(ctx, esq); ctx.closePath(); ctx.fillStyle = c.suelo; ctx.fill(); ctx.strokeStyle = c.line; ctx.lineWidth = 1; ctx.stroke(); ctx.restore();
+    // Regla del potencial.
+    const [rx, ry0] = T(-0.85, h, 0), ry1 = ry0 - P.vE*P.kv;
+    ctx.save(); ctx.strokeStyle = c['c-V']; ctx.fillStyle = c['c-V']; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(rx, ry0); ctx.lineTo(rx, ry1 - 6); ctx.stroke();
+    ctx.font = `700 10px ${c.mono}`; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    for (let v = 0; v <= P.vE + 1e-9; v += 1){
+      const y = ry0 - v*P.kv; ctx.beginPath(); ctx.moveTo(rx - 4, y); ctx.lineTo(rx, y); ctx.stroke();
+      if (v % 2 === 0) ctx.fillText(fmt(v) + ' V', rx - 6, y);
+    }
+    ctx.textAlign = 'left'; ctx.font = `800 11px ${c.font}`; ctx.fillText('potencial', Math.max(4, rx - 30), ry1 - 16);
+    ctx.restore();
+    // Sombra en el suelo, cortina y cable a su altura.
+    for (const x of xs){
+      const ss = muestras(x.g, 0, x.g.L, true);
+      const alto = ss.map(s => { const q = puntoEn(x.g, s); return T(q[0], q[1], potencial(x, s)); });
+      const piso = ss.map(s => { const q = puntoEn(x.g, s); return T(q[0], q[1], 0); });
+      ctx.save(); ctx.setLineDash([3, 4]); linea(ctx, piso); ctx.strokeStyle = c.muted; ctx.globalAlpha = .45; ctx.lineWidth = 1; ctx.stroke(); ctx.restore();
+      ctx.save(); ctx.beginPath(); alto.forEach(([X, Y], k) => k ? ctx.lineTo(X, Y) : ctx.moveTo(X, Y));
+      for (let k = piso.length - 1; k >= 0; k--) ctx.lineTo(piso[k][0], piso[k][1]);
+      ctx.closePath(); ctx.fillStyle = c['c-V']; ctx.globalAlpha = .08; ctx.fill(); ctx.restore();
+      ctx.save(); ctx.strokeStyle = c['c-V']; ctx.globalAlpha = .25; ctx.lineWidth = 1;
+      x.g.path.forEach(([px, py], k) => { const s = x.g.cum[k], [X, Y] = T(px, py, potencial(x, s)), [, Y0] = T(px, py, 0); ctx.beginPath(); ctx.moveTo(X, Y); ctx.lineTo(X, Y0); ctx.stroke(); });
+      ctx.restore();
+      const partes = x.half ? [[0, x.sc - x.half], [x.sc + x.half, x.g.L]] : [[0, x.g.L]];
+      for (const [s0, s1] of partes){
+        if (s1 - s0 < 1e-6) continue;
+        cable(ctx, c, muestras(x.g, s0, s1, true).map(s => { const q = puntoEn(x.g, s); return T(q[0], q[1], potencial(x, s)); }), P.s*0.8, { plano: true });
+      }
+      puntosCorriente(p, ip, x, P, c, T);
+      if (x.half && x.l.comp !== 'pila' && !x.r.abierta){
+        const ss2 = muestras(x.g, x.sc - x.half, x.sc + x.half, true).map(s => { const q = puntoEn(x.g, s); return T(q[0], q[1], potencial(x, s)); });
+        ctx.save(); ctx.setLineDash([4, 3]); linea(ctx, ss2); ctx.strokeStyle = c['c-V']; ctx.lineWidth = 2; ctx.globalAlpha = .8; ctx.stroke(); ctx.restore();
+      }
+      if (x.half) componente(p, ip, x, P, c, T, true);
+    }
+    // Potencial de los nodos.
+    for (const n of p.layout.etiquetasV || []){
+      const pos = p.layout.nodos[n]; if (!pos || !p.sol.ok) continue;
+      const [X, Y] = T(pos[0], pos[1], p.sol.V[n]);
+      pastilla(ctx, c, X, Y - 16, fmt(p.sol.V[n]) + ' V', c['c-V'], { bold: E.hl === 'V' });
+    }
+  }
+  const promY = x => x.g.path.reduce((a, q) => a + q[1], 0)/x.g.path.length;
+
+  function visible(){ return cv.offsetParent !== null && !document.hidden; }
+  function cuadro(t){
+    E.raf = 0;
+    if (!visible()) return;
+    const dt = Math.min(0.05, Math.max(0, (t - E.tPrev)/1000)); E.tPrev = t;
+    avanzar(dt); dibujar();
+    E.raf = requestAnimationFrame(cuadro);
+  }
+  E.arrancar = () => {
+    if (RM){ avanzar(1); dibujar(); return; }
+    if (!E.raf && visible()){ E.tPrev = performance.now(); E.raf = requestAnimationFrame(cuadro); }
+  };
+  E.set = (paneles, vista) => {
+    const cambio = (vista || 'plano') !== E.vista || paneles.length !== E.paneles.length || (paneles[0] && E.paneles[0] && paneles[0].layout !== E.paneles[0].layout);
+    E.paneles = paneles; E.vista = vista || 'plano';
+    if (cambio || !E.W) E.resize();
+    E.arrancar(); if (RM) dibujar();
+  };
+  E.dibujar = dibujar;
+  // Tocar una bombilla o un interruptor.
+  cv.addEventListener('click', e => {
+    if (!opciones.alTocar) return;
+    const b = cv.getBoundingClientRect(), x = e.clientX - b.left, y = e.clientY - b.top;
+    const h = E.hits.find(q => Math.hypot(q.x - x, q.y - y) <= q.r);
+    if (h) opciones.alTocar(h.id);
+  });
+  cv.addEventListener('pointermove', e => {
+    if (!opciones.alTocar) return;
+    const b = cv.getBoundingClientRect(), x = e.clientX - b.left, y = e.clientY - b.top;
+    cv.classList.toggle('tocable', !!(opciones.puedeTocar && E.hits.some(q => opciones.puedeTocar(q.id) && Math.hypot(q.x - x, q.y - y) <= q.r)));
+  });
+  document.addEventListener('visibilitychange', E.arrancar);
+  addEventListener('modo', () => { E.resize(); E.arrancar(); });
+  alRedibujarTema(() => dibujar());
+  return E;
+}
+
+/* ---------- Dibujos (layouts) en unidades de cuadrícula ---------- */
+const LAY = {};
+// Problema guiado: pila a la izquierda, B1 arriba, Rv entre B1 y el paralelo, B2 y B3 en paralelo a la derecha.
+LAY.mixto = conRv => ({
+  w:10, h:6.7, nodos:{ n:[1.1,5.7], p:[1.1,1.3], x:[4.6,1.3], y:[6,1.3], z:[6,5.7] }, etiquetasV: conRv ? ['p', 'x', 'y', 'n'] : ['p', 'y', 'n'],
+  uniones:[[6,1.3], [6,5.7]],
+  ramas:{
+    pila:{ comp:'pila', path:[[1.1,5.7],[1.1,1.3]], et:'izq', etI:'der' },
+    B1:{ comp:'bombilla', nombre:'B1', path:[[1.1,1.3],[4.6,1.3]], et:'aba', etI:'arr' },
+    Rv:{ comp: conRv ? 'reostato' : 'cable', path:[[4.6,1.3],[6,1.3]], etI:false },
+    B2:{ comp:'bombilla', nombre:'B2', path:[[6,1.3],[6,5.7]], et:'izq', etI:'der' },
+    B3:{ comp:'bombilla', nombre:'B3', path:[[6,1.3],[8.7,1.3],[8.7,5.7],[6,5.7]], en:1, et:'izq', etI:'der' },
+    retorno:{ comp:'cable', path:[[6,5.7],[1.1,5.7]], etI:'aba' },
+  },
+});
+LAY.mixto0 = LAY.mixto(false); LAY.mixto1 = LAY.mixto(true);
+// McDermott: tres circuitos chicos.
+LAY.sola = { w:4.6, h:5.4, ramas:{
+  pila:{ comp:'pila', path:[[1.25,4.9],[1.25,0.9]], et:'no' },
+  A:{ comp:'bombilla', nombre:'A', path:[[1.25,0.9],[3.9,0.9],[3.9,4.9],[1.25,4.9]], en:1, et:'izq', etI:false } } };
+LAY.serie = { w:4.6, h:5.4, ramas:{
+  pila:{ comp:'pila', path:[[1.25,4.9],[1.25,0.9]], et:'no' },
+  B:{ comp:'bombilla', nombre:'B', path:[[1.25,0.9],[3.9,0.9]], en:0, et:'aba', etI:false },
+  C:{ comp:'bombilla', nombre:'C', path:[[3.9,0.9],[3.9,4.9],[1.25,4.9]], en:0, et:'izq', etI:false } } };
+LAY.paralelo = { w:4.6, h:5.4, uniones:[[2.75,0.9],[2.75,4.9]], ramas:{
+  pila:{ comp:'pila', path:[[1.25,4.9],[1.25,0.9]], et:'no' },
+  D:{ comp:'bombilla', nombre:'D', path:[[2.75,0.9],[2.75,4.9]], et:'izq', etI:false },
+  E:{ comp:'bombilla', nombre:'E', path:[[2.75,0.9],[4.1,0.9],[4.1,4.9],[2.75,4.9]], en:1, et:'izq', etI:false } },
+  tramos:[{ path:[[1.25,0.9],[2.75,0.9]], nodo:'p', I: s => s.ramas.D.I + s.ramas.E.I, etI:false },
+          { path:[[2.75,4.9],[1.25,4.9]], nodo:'n', I: s => s.ramas.D.I + s.ramas.E.I, etI:false }] };
+// Dos bombillas en serie (y el corto): pila a la izquierda, B1 arriba, B2 a la derecha.
+LAY.dos = (corto, invertida) => {
+  const pathPila = invertida ? [[1.9,1.3],[1.9,5.4]] : [[1.9,5.4],[1.9,1.3]];
+  const L = { w:9.2, h:6.2, ramas:{
+    pila:{ comp:'pila', path:pathPila, et:'der' },
+    B1:{ comp:'bombilla', nombre:'B1', path:[[1.9,1.3],[6,1.3]], et:'aba', etI:'arr' },
+  } };
+  if (!corto){ L.ramas.B2 = { comp:'bombilla', nombre:'B2', path:[[6,1.3],[6,5.4],[1.9,5.4]], en:0, et:'izq', etI:'der' }; return L; }
+  L.uniones = [[6,1.3], [6,5.4], [1.9,1.3], [1.9,5.4]];
+  L.ramas.B2 = { comp:'bombilla', nombre:'B2', path:[[6,1.3],[6,5.4]], et:'izq', etI:'izq' };
+  L.ramas.k = { comp:'interruptor', nombre:'cable', path:[[6,1.3],[8.3,1.3],[8.3,5.4],[6,5.4]], en:1, et:'izq', etI:'izq' };
+  L.ramas.kp = { comp:'interruptor', path:[[1.9,1.3],[0.7,1.3],[0.7,5.4],[1.9,5.4]], en:1, etI:false };
+  L.ramas.pila.et = 'der';
+  L.tramos = [{ path:[[6,5.4],[1.9,5.4]], nodo:'n', I: s => s.ramas.B2.I + s.ramas.k.I, etI:'aba' }];
+  return L;
+};
+LAY.dos0 = LAY.dos(false, false); LAY.dos1 = LAY.dos(false, true); LAY.dosCorto = LAY.dos(true, false);
+// Dos pilas y una bombilla.
+LAY.pilas = modo => {
+  const B = { comp:'bombilla', nombre:'B', path:[[1.5,1.2],[6.9,1.2],[6.9,5.3],[1.5,5.3]], en:1, et:'izq', etI:'der' };
+  if (modo === 'una') return { w:8.6, h:6.2, ramas:{ P1:{ comp:'pila', path:[[1.5,5.3],[1.5,1.2]], et:'izq' }, B } };
+  if (modo === 'serie') return { w:8.6, h:6.2, ramas:{ P1:{ comp:'pila', nombre:'P1', path:[[1.5,5.3],[1.5,3.25]], et:'izq', etI:false }, P2:{ comp:'pila', nombre:'P2', path:[[1.5,3.25],[1.5,1.2]], et:'izq', etI:false }, B } };
+  if (modo === 'oposicion') return { w:8.6, h:6.2, ramas:{ P1:{ comp:'pila', nombre:'P1', path:[[1.5,5.3],[1.5,3.25]], et:'izq', etI:false }, P2:{ comp:'pila', nombre:'P2', path:[[1.5,1.2],[1.5,3.25]], et:'izq', etI:false }, B } };
+  return { w:8.6, h:6.2, uniones:[[3.1,1.2],[3.1,5.3]], ramas:{
+    P1:{ comp:'pila', nombre:'P1', path:[[3.1,5.3],[1.5,5.3],[1.5,1.2],[3.1,1.2]], en:1, et:'izq' },
+    P2:{ comp:'pila', nombre:'P2', path:[[3.1,5.3],[3.1,1.2]], et:'der' },
+    B:{ comp:'bombilla', nombre:'B', path:[[3.1,1.2],[6.9,1.2],[6.9,5.3],[3.1,5.3]], en:1, et:'izq', etI:'der' } } };
+};
+LAY.pilasDe = { una: LAY.pilas('una'), serie: LAY.pilas('serie'), oposicion: LAY.pilas('oposicion'), paralelo: LAY.pilas('paralelo') };
+
+// Texto para lectores de pantalla y para quien no ve bien el dibujo.
+function estadoTexto(sol, nombres, encendido){
+  if (sol.corto) return 'Cortocircuito: la pila queda unida por un cable sin resistencia. Las bombillas no reciben corriente y la pila se calienta.';
+  if (!encendido) return 'Circuito armado, todavía sin encender.';
+  return nombres.map(([id, nombre]) => {
+    const x = sol.ramas[id]; if (!x) return '';
+    if (x.abierta) return `${nombre}: quitada.`;
+    return `${nombre}: ${fmt(Math.abs(x.I))} A, ${fmt(Math.abs(x.V))} V, ${fmt(x.P)} W.`;
+  }).join(' ');
+}
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso =================
+   Problema guiado 1 de docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md:
+   pila ideal de 6 V; B1 en serie con B2 ∥ B3; las tres de 12 Ω. */
+(function(){
+const $ = id => document.getElementById(id);
+const S = { step:0, max:0, pred1:null, pred2:null, b:{ b1:true, b2:true, b3:true }, Rv:0, vista:'plano', encendido:false, conRv:false,
+  mostrar:{ I:false, P:false, R:true, V:false }, t0:Date.now() };
+const esc = crearEscena($('cv'), {
+  alTocar: id => { if (steps[S.step].explora && /^B[123]$/.test(id)) alternar(id.toLowerCase()); },
+  puedeTocar: id => steps[S.step].explora && /^B[123]$/.test(id),
+});
+const circuito = () => MotorCircuito.mixto({ fem:6, R1:12, R2:12, R3:12, Rv:S.Rv, b1:S.b.b1, b2:S.b.b2, b3:S.b.b3 });
+function pintar(){
+  const c = circuito(), sol = MotorCircuito.resolver(c);
+  esc.set([{ layout: S.conRv ? LAY.mixto1 : LAY.mixto0, circuito:c, sol, encendido:S.encendido, mostrar:S.mostrar, Pref:3, iRef:1/3, vEscala:6 }], S.vista);
+  c.ramas.forEach(r => { if (r.abierta) sol.ramas[r.id].abierta = true; });
+  const nombres = [['B1', 'B1'], ['B2', 'B2'], ['B3', 'B3']];
+  $('desc1').textContent = (S.encendido ? `Pila de 6 V; sale ${fmt(sol.ramas.pila.I)} A. ` : '') + estadoTexto(sol, nombres, S.encendido)
+    + (S.vista === 'altura' && S.encendido ? ` Potencial: ${fmt(sol.V.p)} V a la salida de la pila, ${fmt(sol.V.y)} V entre B1 y el paralelo, 0 V en el cable de retorno.` : '');
+  return sol;
+}
+
+const OPS1 = [['a', 'B1, la que está sola en su tramo'], ['b', 'Las tres igual, porque son iguales'], ['c', 'B2 y B3, porque están juntas en paralelo']];
+const ERR1 = { b:['C1-iguales-brillan-igual', 'hipotesis'], c:['C11-paralelo-brilla-mas', 'hipotesis'] };
+const FB1 = {
+  a: '¡Bien! Toda la corriente pasa por B1; después se divide entre B2 y B3. Mira el brillo.',
+  b: 'Elegiste la B. Son iguales, pero no reciben la misma corriente: toda pasa por B1 y luego se divide entre B2 y B3. La correcta está marcada.',
+  c: 'Elegiste la C. Estar en paralelo no da más brillo: B2 y B3 se reparten la corriente que ya pasó por B1. La correcta está marcada.',
+};
+// Tabla del informe: opción, error y respaldo (Periago y Bohigas, 2005, 184 estudiantes).
+const OPS2 = [['a', 'B2 brilla más y B1 sigue igual'], ['b', 'B1 y B2 siguen igual'], ['c', 'B1 y B2 brillan más'], ['d', 'B2 brilla más y B1 brilla menos']];
+const ERR2 = { a:['C5-toda-la-corriente-a-B2', 'documentado'], b:['C5-bombilla-independiente', 'documentado'], c:['C1-sobra-corriente', 'documentado'] };
+const FB2 = {
+  d: '¡Muy bien! Es la respuesta que casi nadie da. Pasa al siguiente paso para verlo en todo el circuito.',
+  a: 'Elegiste la A: es la respuesta más común (46 % de 184 estudiantes de ingeniería). La correcta está marcada; en el siguiente paso quitamos B3 y lo ves.',
+  b: 'Elegiste la B (la eligió el 19 % de 184 estudiantes de ingeniería). La correcta está marcada; en el siguiente paso quitamos B3 y lo ves.',
+  c: 'Elegiste la C (la eligió el 5 % de 184 estudiantes de ingeniería). La correcta está marcada; en el siguiente paso quitamos B3 y lo ves.',
+};
+const opciones = (ops) => `<div class="opts">${ops.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="fb"></p>`;
+
+const RR = vr('R','12 Ω');
+const steps = [
+ { k:'Paso 1', t:'El problema', estado:{ encendido:false, mostrar:{ R:true } },
+   body:() => `<p class="problem">Una pila ideal de ${vr('V','ε = 6 V')} alimenta tres bombillas iguales, de ${vr('R','R = 12 Ω')} cada una. La bombilla B1 está en serie con un grupo de dos bombillas en paralelo, B2 y B3.</p>
+   <ul class="map">
+     <li><b class="v-I">I</b><span>${vr('I','Corriente')}, en amperios (A): cuánta carga pasa por segundo. Son los puntos azules que se mueven.</span></li>
+     <li><b class="v-V">V</b><span>${vr('V','Voltaje')}, en voltios (V): la "subida" que da la pila y la "bajada" en cada bombilla.</span></li>
+     <li><b class="v-R">R</b><span>${vr('R','Resistencia')}, en ohmios (Ω): cuánto le cuesta a la corriente pasar.</span></li>
+     <li><b class="v-P">P</b><span>${vr('P','Potencia')}, en vatios (W): la energía por segundo que la bombilla convierte en luz y calor. Es su <b>brillo</b>.</span></li>
+   </ul>
+   <p>Cada variable tiene un color: el mismo en el texto, en el dibujo y en las ecuaciones. Toca o pasa el puntero sobre una para verla en el dibujo.</p>` },
+ { k:'Paso 2', t:'Antes de encender: ¿cuál brilla más?', gate:'pred1', estado:() => ({ encendido: !!S.pred1, mostrar:{ R:true, P: !!S.pred1 } }),
+   body:() => `<p>Las tres bombillas son iguales. Si cierras el circuito, ¿cuál crees que brilla más?</p>${opciones(OPS1)}` },
+ { k:'Paso 3', t:'La corriente, tramo por tramo', estado:{ encendido:true, mostrar:{ I:true, P:true } },
+   body:() => `<div class="eqs">
+     <div class="eq">${vr('R','R<sub>∥</sub>')} = ${fr(vr('R','12') + ' · ' + vr('R','12'), vr('R','12') + ' + ' + vr('R','12'))} = ${vr('R','6 Ω')}<span class="note">B2 y B3 en paralelo</span></div>
+     <div class="eq">${vr('R','R<sub>eq</sub>')} = ${vr('R','12')} + ${vr('R','6')} = ${vr('R','18 Ω')}<span class="note">B1 en serie con el grupo</span></div>
+     <div class="eq">${vr('I','I')} = ${fr(vr('V','ε'), vr('R','R<sub>eq</sub>'))} = ${fr(vr('V','6'), vr('R','18'))} = ${vr('I','1/3 A ≈ 0,33 A')}</div>
+     <div class="eq">${vr('I','0,33')} = ${vr('I','0,17')} + ${vr('I','0,17')}<span class="note">En el nudo, la corriente se divide entre B2 y B3</span></div>
+   </div>
+   <p>Mira los números del dibujo: a la entrada y a la salida de B1 dice lo mismo, ${vr('I','0,33 A')}. Los puntos avanzan igual de rápido antes y después de B1. La corriente no se gasta en la bombilla; lo que se convierte en luz es <b>energía</b>.</p>
+   <p class="fuente">El 58 % de 184 estudiantes de ingeniería en Barcelona creía que, de dos bombillas iguales en serie, brilla más la primera, como si la corriente se gastara (Periago y Bohigas, 2005).</p>` },
+ { k:'Paso 4', t:'El brillo es la potencia', estado:{ encendido:true, mostrar:{ I:true, P:true, V:true } },
+   body:() => `<div class="eqs">
+     <div class="eq">${vr('P','P')} = ${vr('I','I')}² · ${vr('R','R')}<span class="note">Potencia de cada bombilla</span></div>
+     <div class="eq">${vr('P','P<sub>1</sub>')} = (${vr('I','1/3')})² · ${vr('R','12')} = ${vr('P','4/3 W ≈ 1,33 W')}</div>
+     <div class="eq">${vr('P','P<sub>2</sub>')} = ${vr('P','P<sub>3</sub>')} = (${vr('I','1/6')})² · ${vr('R','12')} = ${vr('P','1/3 W ≈ 0,33 W')}</div>
+     <div class="eq">${vr('V','V<sub>1</sub>')} = ${vr('I','I')} · ${vr('R','R')} = ${vr('V','4 V')};  ${vr('V','V<sub>2</sub>')} = ${vr('V','2 V')}<span class="note">4 + 2 = 6: lo que sube la pila, lo bajan las bombillas</span></div>
+   </div>
+   <p>B1 recibe cuatro veces la potencia de B2. En la escena, el <b>área</b> del halo de cada bombilla es proporcional a su ${vr('P','potencia')}.</p>
+   <p class="answer">Brilla más B1 (${vr('P','1,33 W')}); B2 y B3 brillan igual entre ellas (${vr('P','0,33 W')} cada una).</p>` },
+ { k:'Paso 5', t:'Predice: quitamos B3', gate:'pred2', estado:{ encendido:true, mostrar:{ I:true, P:true } },
+   body:() => `<p>Ahora desenroscas B3 y dejas su portalámparas vacío, sin poner nada en su lugar. ¿Qué pasa con el brillo de B1 y de B2?</p>${opciones(OPS2)}` },
+ { k:'Paso 6', t:'Todo cambia a la vez', estado:{ encendido:true, b3:false, mostrar:{ I:true, P:true } },
+   body:() => `<div class="toggles"><button type="button" class="tog" id="tB3" aria-pressed="false"><span class="sw" aria-hidden="true"></span>B3 puesta</button></div>
+   <div class="tabla-wrap"><table class="tabla">
+     <thead><tr><th></th><th>Con B3</th><th>Sin B3</th></tr></thead>
+     <tbody>
+       <tr><td>Corriente de la pila</td><td>${vr('I','0,33 A')}</td><td>${vr('I','0,25 A')} <span class="baja" aria-label="baja">↓</span></td></tr>
+       <tr><td>B1</td><td>${vr('P','1,33 W')}</td><td>${vr('P','0,75 W')} <span class="baja" aria-label="baja">↓</span></td></tr>
+       <tr><td>B2</td><td>${vr('P','0,33 W')}</td><td>${vr('P','0,75 W')} <span class="sube" aria-label="sube">↑</span></td></tr>
+     </tbody></table></div>
+   <p>Al quitar B3 cambió <b>todo</b> el circuito a la vez, también B1, que está "antes". Sin B3 queda un solo camino: la resistencia total sube y la pila da menos corriente. B1 recibe menos y brilla menos; B2 ya no comparte y brilla más.</p>
+   <p class="hint">Pon y quita B3 con el botón para verlo otra vez: fíjate en B1.</p>
+   <p class="fuente">De 184 estudiantes de segundo año de ingeniería en Barcelona, solo 1 (0,5 %) acertó esta pregunta, aunque el 80 % había calculado bien las corrientes del mismo circuito. El 46 % eligió "B2 brilla más y B1 sigue igual" (Periago y Bohigas, 2005).</p>` },
+ { k:'Paso 7', t:'Las ecuaciones del cambio', estado:{ encendido:true, b3:false, mostrar:{ I:true, P:true } },
+   body:() => `<div class="eqs">
+     <div class="eq">${vr('R','R<sub>eq</sub>')} = ${vr('R','12')} + ${vr('R','12')} = ${vr('R','24 Ω')}<span class="note">Antes era 18 Ω</span></div>
+     <div class="eq">${vr('I','I')} = ${fr(vr('V','6'), vr('R','24'))} = ${vr('I','0,25 A')}<span class="note">Antes era 0,33 A</span></div>
+     <div class="eq">${vr('P','P<sub>1</sub>')} = ${vr('P','P<sub>2</sub>')} = (${vr('I','0,25')})² · ${vr('R','12')} = ${vr('P','0,75 W')}</div>
+   </div>
+   <p>B1 baja a 9/16 de su potencia (de ${vr('P','1,33')} a ${vr('P','0,75 W')}); B2 sube a 9/4, más del doble (de ${vr('P','0,33')} a ${vr('P','0,75 W')}).</p>
+   <p class="aviso">La pila no entrega siempre la misma corriente: mantiene su <b>voltaje</b> (${vr('V','6 V')}). La corriente la decide el circuito entero.</p>` },
+ { k:'Paso 8', t:'El potencial como altura', estado:{ encendido:true, vista:'altura', mostrar:{ I:false, P:true, V:true } },
+   body:() => `<div class="seg" role="group" aria-label="Vista"><button type="button" data-vista="plano">Circuito</button><button type="button" data-vista="altura">Altura</button></div>
+   <p>Imagina el ${vr('V','potencial')} como la altura del cable. La pila sube las cargas ${vr('V','6 V')}; cada bombilla es una bajada. B1 baja ${vr('V','4 V')}, y B2 y B3, que están en paralelo, bajan los mismos ${vr('V','2 V')}.</p>
+   <p>Los cables son planos: un cable ideal no tiene bajada, así que entre sus dos extremos no hay voltaje.</p>
+   <div class="toggles"><button type="button" class="tog" id="tB3" aria-pressed="true"><span class="sw" aria-hidden="true"></span>B3 puesta</button></div>
+   <p class="hint">Quita B3: las dos bajadas quedan iguales, de 3 V cada una. La subida de la pila no cambia.</p>` },
+ { k:'Paso 9', t:'Ahora explora tú', explora:true, estado:{ encendido:true, conRv:true, mostrar:{ I:true, P:true, V:false } },
+   body:() => `<div class="toggles" role="group" aria-label="Bombillas puestas">
+     ${['b1','b2','b3'].map(b => `<button type="button" class="tog" data-b="${b}" aria-pressed="${S.b[b]}"><span class="sw" aria-hidden="true"></span>${b.toUpperCase()}</button>`).join('')}
+   </div>
+   <div class="ctrls">
+     <div class="slider"><label for="rv"><span>${vr('R','Reóstato')} entre B1 y el paralelo</span><output id="rv-out"></output></label>
+       <input id="rv" class="r-R" type="range" min="0" max="36" step="1" value="${S.Rv}"></div>
+     <div class="seg" role="group" aria-label="Vista"><button type="button" data-vista="plano">Circuito</button><button type="button" data-vista="altura">Altura</button></div>
+   </div>
+   <div id="live"></div>
+   <p class="hint">Toca una bombilla en el dibujo para quitarla o ponerla. Sube el reóstato: B1 y B2 bajan juntas, aunque una está "antes" y la otra "después". Quita B1 y mira la vista de altura: no pasa corriente, pero el portalámparas vacío tiene 6 V.</p>` },
+];
+
+const dots = $('dots');
+steps.forEach((s, n) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = n + 1; b.setAttribute('aria-label', `Ir al ${s.k.toLowerCase()}: ${s.t}`);
+  b.addEventListener('click', () => go(n)); li.appendChild(b); dots.appendChild(li);
+});
+
+function aplicarEstado(){
+  const s = steps[S.step], e = typeof s.estado === 'function' ? s.estado() : s.estado;
+  if (!s.explora){ S.b = { b1:true, b2:true, b3: e.b3 === undefined ? true : e.b3 }; S.Rv = 0; }
+  S.encendido = e.encendido; S.vista = e.vista || 'plano'; S.conRv = !!e.conRv;
+  S.mostrar = Object.assign({ I:false, P:false, R:false, V:false }, e.mostrar);
+}
+function go(n){
+  if (n < 0 || n >= steps.length || n > S.max) return;
+  const s = steps[n]; S.step = n;
+  aplicarEstado();
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  pintarDots();
+  if (s.gate) prediccion(s.gate);
+  conectar();
+  nav(); pintar();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0;
+  const bloqueado = s.gate && !S[s.gate];
+  $('next').disabled = S.step === steps.length - 1 || bloqueado;
+  $('next').textContent = bloqueado ? 'Elige una opción' : (S.step === 4 ? 'Quitar B3' : 'Siguiente');
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(n){ if (n > S.max) S.max = n; }
+
+function prediccion(cual){
+  const btns = [...$('stepBody').querySelectorAll('.opt')];
+  const ok = cual === 'pred1' ? 'a' : 'd', FB = cual === 'pred1' ? FB1 : FB2, ERR = cual === 'pred1' ? ERR1 : ERR2;
+  const marcar = () => {
+    const p = S[cual]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = FB[p]; fb.className = 'fb ' + (p === ok ? 'ok' : 'mal');
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S[cual]) return;
+    S[cual] = b.dataset.k; desbloquear(S.step + 1); marcar(); nav(); pintarDots();
+    const e = ERR[S[cual]] || ['', ''];
+    registrarPrediccion(cual === 'pred1' ? 'circuitos-cual-brilla-mas' : 'circuitos-quitar-B3', S[cual], S[cual] === ok, e[0], e[1], t0);
+    if (cual === 'pred1'){ aplicarEstado(); pintar(); }
+    $('next').focus();
+  }));
+  marcar();
+}
+
+function conectar(){
+  const body = $('stepBody');
+  const tB3 = $('tB3');
+  if (tB3){
+    const sync = () => tB3.setAttribute('aria-pressed', String(S.b.b3));
+    tB3.onclick = () => { S.b.b3 = !S.b.b3; sync(); pintar(); };
+    sync();
+  }
+  body.querySelectorAll('[data-vista]').forEach(b => {
+    b.setAttribute('aria-pressed', String(b.dataset.vista === S.vista));
+    b.onclick = () => { S.vista = b.dataset.vista; body.querySelectorAll('[data-vista]').forEach(x => x.setAttribute('aria-pressed', String(x === b))); pintar(); vivo(); };
+  });
+  body.querySelectorAll('[data-b]').forEach(b => b.onclick = () => alternar(b.dataset.b));
+  const rv = $('rv');
+  if (rv) rv.oninput = () => { S.Rv = +rv.value; vivo(); };
+  vivo();
+}
+function alternar(b){
+  S.b[b] = !S.b[b];
+  const t = $('stepBody').querySelector(`[data-b="${b}"]`); if (t) t.setAttribute('aria-pressed', String(S.b[b]));
+  vivo();
+}
+// Tabla en vivo del explorador.
+function vivo(){
+  const live = $('live'); if (!live){ return; }
+  const sol = pintar();
+  $('rv-out').textContent = `${fmt(S.Rv)} Ω`;
+  const fila = (id, nombre) => {
+    const x = sol.ramas[id], fuera = id !== 'pila' && !S.b[id.toLowerCase()];
+    return `<tr><td>${nombre}</td><td>${fuera ? '—' : vr('I', fmt(Math.abs(x.I)) + ' A')}</td><td>${vr('V', fmt(Math.abs(x.V)) + ' V')}</td><td>${fuera ? 'quitada' : vr('P', fmt(Math.abs(x.P)) + ' W')}</td></tr>`;
+  };
+  live.innerHTML = `<div class="tabla-wrap"><table class="tabla"><thead><tr><th></th><th>I</th><th>V</th><th>P</th></tr></thead><tbody>
+    ${fila('pila', 'Pila')}${fila('B1', 'B1')}${fila('B2', 'B2')}${fila('B3', 'B3')}
+    <tr><td>Reóstato</td><td>${vr('I', fmt(Math.abs(sol.ramas.Rv.I)) + ' A')}</td><td>${vr('V', fmt(Math.abs(sol.ramas.Rv.V)) + ' V')}</td><td>${vr('P', fmt(sol.ramas.Rv.P) + ' W')}</td></tr>
+    </tbody></table></div>
+    <p class="hint">${sol.ramas.pila.I === 0 ? 'Circuito abierto: no pasa corriente por ninguna parte.' : `Resistencia que ve la pila: ${vr('R', fmt(MotorCircuito.resistenciaVista(sol, 'pila')) + ' Ω')}.`}</p>`;
+}
+
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+
+function marcar(k){
+  esc.hl = k;
+  document.querySelectorAll('#m1 .v').forEach(e => e.classList.toggle('hl', !!k && e.dataset.var === k));
+  esc.dibujar();
+}
+document.addEventListener('pointerover', e => { const t = e.target.closest && e.target.closest('#m1 [data-var]'); if (t) marcar(t.dataset.var); });
+document.addEventListener('pointerout', e => { const t = e.target.closest && e.target.closest('#m1 [data-var]'); if (t && !t.contains(e.relatedTarget)) marcar(null); });
+document.addEventListener('focusin', e => { const t = e.target.closest && e.target.closest('#m1 [data-var]'); if (t) marcar(t.dataset.var); });
+document.addEventListener('focusout', e => { if (e.target.closest && e.target.closest('#m1 [data-var]')) marcar(null); });
+
+go(0);
+})();
+</script>
+
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Preguntas de docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md (McDermott, C2, C6, C10, C1/C7, C12).
+   La escena cambia recién después de responder. Todo lo que se dibuja sale de MotorCircuito. */
+(function(){
+const $ = id => document.getElementById(id);
+const M = MotorCircuito;
+const E = {};      // estado del experimento en curso
+const S = { k:0, pred:{}, t0:Date.now() };
+const esc = crearEscena($('cv2'), {
+  alTocar: id => { const x = EXPS[S.k]; if (S.pred[x.id] && x.tocar) { x.tocar(id); actualizar(); } },
+  puedeTocar: id => { const x = EXPS[S.k]; return !!(S.pred[x.id] && x.tocar && x.tocable && x.tocable(id)); },
+});
+const panel = (layout, circuito, extra) => Object.assign({ layout, circuito, sol: M.resolver(circuito), encendido:true, mostrar:{ I:true, P:true }, Pref:3, iRef:0.5 }, extra);
+
+const EXPS = [
+  { id:'mcdermott', corto:'Tres circuitos',
+    q:'Tres pilas iguales, de 6 V cada una. En el primer circuito hay una bombilla sola (A); en el segundo, dos en serie (B y C); en el tercero, dos en paralelo (D y E). Todas las bombillas son iguales. ¿Cómo ordenas su brillo?',
+    opts:[['a','Las cinco brillan igual','C1-pila-corriente-constante','documentado'],
+          ['b','A brilla más que D y E, que se reparten la corriente','C1-reparto-paralelo','documentado'],
+          ['c','En serie, B brilla más que C','C2-corriente-se-gasta','documentado'],
+          ['d','A, D y E brillan igual; B y C, menos',null]],
+    ok:'d',
+    antes:() => {},
+    paneles:(resp) => {
+      const m = M.mcdermott({ fem:6, R:12 }), x = { encendido: !!resp, mostrar:{ I:false, P: !!resp } };
+      return [panel(LAY.sola, m.sola, Object.assign({ titulo:'Sola' }, x)), panel(LAY.serie, m.serie, Object.assign({ titulo:'En serie' }, x)), panel(LAY.paralelo, m.paralelo, Object.assign({ titulo:'En paralelo' }, x))];
+    },
+    nombres:[],
+    ctrl:() => {
+      const m = M.mcdermott({ fem:6, R:12 }), s = { sola: M.resolver(m.sola), serie: M.resolver(m.serie), paralelo: M.resolver(m.paralelo) };
+      const fila = (n, k, id) => `<tr><td>${n}</td><td>${vr('I', fmt(s[k].ramas[id].I) + ' A')}</td><td>${vr('V', fmt(s[k].ramas[id].V) + ' V')}</td><td>${vr('P', fmt(s[k].ramas[id].P) + ' W')}</td></tr>`;
+      return `<div class="tabla-wrap"><table class="tabla"><thead><tr><th>Bombilla</th><th>I</th><th>V</th><th>P</th></tr></thead><tbody>
+        ${fila('A (sola)', 'sola', 'A')}${fila('B (serie)', 'serie', 'B')}${fila('C (serie)', 'serie', 'C')}${fila('D (paralelo)', 'paralelo', 'D')}${fila('E (paralelo)', 'paralelo', 'E')}</tbody></table></div>`;
+    },
+    exp:`<p>Cada pila mantiene sus 6 V. En paralelo, D y E tienen cada una los 6 V completos, igual que A: brillan igual que A, y la pila da el doble de corriente (1 A). En serie, B y C se reparten los 6 V: pasa la cuarta parte de la potencia por cada una. Y B y C brillan igual: la corriente no se gasta en B.</p>
+      <p class="fuente">Solo el 4,3 % de 184 estudiantes de ingeniería en Barcelona ordenó bien el brillo en estos tres circuitos (Periago y Bohigas, 2005). En Estados Unidos, cerca del 15 % de más de 1000 universitarios, antes o después del curso (McDermott y Shaffer, 1992).</p>` },
+
+  { id:'serie', corto:'Dos en serie',
+    q:'Dos bombillas iguales, B1 y B2, están en serie con una pila de 6 V. La corriente sale de la pila y pasa primero por B1. ¿Cuál brilla más?',
+    opts:[['a','B1, porque la corriente llega primero a ella','C2-corriente-se-gasta','documentado'],
+          ['b','B2, porque a ella llega la corriente que sobra','C2-segunda-brilla-mas','hipotesis'],
+          ['c','Brillan igual',null]],
+    ok:'c',
+    antes:() => Object.assign(E, { inv:false }),
+    paneles:(resp) => {
+      const c = M.mcdermott({ fem:6, R:12 }).serie;
+      const cir = { tierra:'n', ramas:[Object.assign({}, c.ramas[0], E.inv ? { a:'p', b:'n' } : {}),
+        { id:'B1', tipo:'resistencia', a:'p', b:'m', R:12 }, { id:'B2', tipo:'resistencia', a:'m', b:'n', R:12 }] };
+      return [panel(E.inv ? LAY.dos1 : LAY.dos0, cir, { encendido: !!resp, mostrar:{ I:true, P:true }, Pref:3, iRef:0.25 })];
+    },
+    nombres:[['B1','B1'], ['B2','B2']],
+    ctrl:() => `<div class="toggles"><button type="button" class="tog" id="inv" aria-pressed="${E.inv}"><span class="sw" aria-hidden="true"></span>Voltear la pila</button></div>`,
+    conectar:() => { $('inv').onclick = () => { E.inv = !E.inv; $('inv').setAttribute('aria-pressed', String(E.inv)); actualizar(); }; },
+    exp:`<p>La corriente es la misma en todo el circuito en serie: ${vr('I','0,25 A')} antes de B1, entre las dos y después de B2. Las dos bombillas son iguales, así que reciben la misma ${vr('P','potencia')} y brillan igual. Voltea la pila: la corriente cambia de sentido y nada más cambia. No hay una "primera" bombilla.</p>
+      <p class="fuente">El 58,2 % de 184 estudiantes de ingeniería dijo que, de dos bombillas iguales en serie, brilla más una de ellas; el 44 % dijo en otra pregunta que la corriente se gasta al pasar por una bombilla (Periago y Bohigas, 2005).</p>` },
+
+  { id:'pilas-paralelo', corto:'Pilas en paralelo',
+    q:'Una bombilla de 3 Ω está encendida con una pila de 1,5 V. Conectas una segunda pila igual en paralelo con la primera (+ con + y − con −). Comparada con una sola pila, ¿cómo brilla la bombilla?',
+    opts:[['a','Más: dos pilas dan más voltaje','C6-paralelo-suma-voltaje','documentado'],
+          ['b','Igual',null],
+          ['c','Menos: las dos pilas se reparten la bombilla','C6-paralelo-reparte','hipotesis']],
+    ok:'b',
+    antes:() => Object.assign(E, { modo:'una' }),
+    despues:() => Object.assign(E, { modo:'paralelo' }),
+    paneles:() => [panel(LAY.pilasDe[E.modo], M.pilas({ modo:E.modo, fem1:1.5, fem2:1.5, R:3 }), { Pref:0.75, iRef:0.5, mostrar:{ I:true, P:true } })],
+    nombres:[['B','Bombilla']],
+    ctrl:() => `<div class="seg" role="group" aria-label="Cómo van las pilas">${[['una','Una pila'],['serie','Dos en serie'],['paralelo','Dos en paralelo']].map(([k, t]) => `<button type="button" data-modo="${k}">${t}</button>`).join('')}</div>`,
+    conectar:() => segModo(),
+    exp:`<p>En paralelo, la bombilla sigue teniendo ${vr('V','1,5 V')}: brilla igual que con una pila. Cada pila da la mitad de la corriente, así que duran más. En serie, en cambio, los voltajes se suman (${vr('V','3 V')}), la corriente se duplica y la potencia se cuadruplica.</p>
+      <p class="fuente">El 21 % de 692 alumnos de secundaria y universidad de Estados Unidos creyó que dos pilas en paralelo dan más voltaje que una (test DIRECT 1.1; Engelhardt y Beichner, 2004).</p>` },
+
+  { id:'oposicion', corto:'Pilas en oposición',
+    q:'Una pila de 9 V y otra de 3 V se conectan en oposición (el borne + de una unido al + de la otra), en serie con una bombilla de 12 Ω. ¿Qué pasa?',
+    opts:[['a','No hay voltaje: las pilas se anulan','C10-oposicion-sin-voltaje','documentado'],
+          ['b','Hay voltaje, pero no pasa corriente por la bombilla','C10-voltaje-sin-corriente','documentado'],
+          ['c','Pasa corriente, como con una sola pila de 6 V',null],
+          ['d','Pasa corriente, como con una pila de 12 V','C10-suma-siempre','hipotesis']],
+    ok:'c',
+    antes:() => Object.assign(E, { modo:'oposicion' }),
+    paneles:(resp) => [panel(LAY.pilasDe[E.modo], M.pilas({ modo:E.modo, fem1:9, fem2:3, R:12 }), { encendido: !!resp, Pref:3, iRef:0.5, mostrar:{ I:true, P:true } })],
+    nombres:[['B','Bombilla']],
+    ctrl:() => `<div class="seg" role="group" aria-label="Cómo van las pilas">${[['oposicion','En oposición'],['serie','A favor (en serie)']].map(([k, t]) => `<button type="button" data-modo="${k}">${t}</button>`).join('')}</div>`,
+    conectar:() => segModo(),
+    exp:`<p>En oposición, las fem se restan: la fem neta es ${vr('V','9 − 3 = 6 V')}, y pasa ${vr('I','0,5 A')} por la bombilla, como con una pila de 6 V. La pila de 9 V entrega energía; la de 3 V la recibe (si fuera recargable, se estaría cargando). A favor, se suman: ${vr('V','12 V')} y ${vr('I','1 A')}.</p>
+      <p class="fuente">Con dos pilas en oposición, el 21,2 % de 184 estudiantes de ingeniería dijo que no hay voltaje y el 31,5 %, que hay voltaje pero no pasa corriente (Periago y Bohigas, 2005). En otro estudio, el 47 % dijo que no hay voltaje (Furió y Guisasola, 1999).</p>` },
+
+  { id:'fuente-voltaje', corto:'La pila y la corriente',
+    q:'Una pila de 6 V enciende una bombilla de 12 Ω y por ella pasan 0,5 A. Cambias la bombilla por otra de 24 Ω. ¿Qué pasa con la corriente que sale de la pila y con el voltaje de la pila?',
+    opts:[['a','La corriente sigue en 0,5 A: la pila siempre da la misma','C1-pila-corriente-constante','documentado'],
+          ['b','La corriente baja a 0,25 A y el voltaje sigue en 6 V',null],
+          ['c','Bajan la corriente y también el voltaje, porque V = I·R','C7-voltaje-sigue-corriente','documentado'],
+          ['d','La corriente sube, porque la bombilla pide más','C1-mas-resistencia-mas-corriente','hipotesis']],
+    ok:'b',
+    antes:() => Object.assign(E, { R:12 }),
+    despues:() => Object.assign(E, { R:24 }),
+    paneles:() => [panel(LAY.pilasDe.una, M.pilas({ modo:'una', fem1:6, R:E.R }), { Pref:3, iRef:0.5, mostrar:{ I:true, P:true, R:true } })],
+    nombres:[['P1','Pila'], ['B','Bombilla']],
+    ctrl:() => `<div class="slider"><label for="rb"><span>${vr('R','Resistencia')} de la bombilla</span><output id="rb-out"></output></label>
+      <input id="rb" class="r-R" type="range" min="3" max="48" step="1" value="${E.R}"></div><p class="hint" id="rb-info"></p>`,
+    conectar:() => { const rb = $('rb'); rb.oninput = () => { E.R = +rb.value; actualizar(); }; },
+    info:(sol) => { const o = $('rb-out'), i = $('rb-info'); if (!o) return; o.textContent = `${fmt(E.R)} Ω`;
+      i.innerHTML = `La pila mantiene ${vr('V', fmt(sol.ramas.P1.bornes) + ' V')}; la corriente es ${vr('I', fmt(sol.ramas.P1.I) + ' A')} = ${vr('V','6')} / ${vr('R', fmt(E.R))}.`; },
+    exp:`<p>Una pila es (casi) una fuente de <b>voltaje</b> constante, no de corriente. Con más resistencia, la misma "subida" de 6 V empuja menos corriente: ${vr('I','I')} = ${vr('V','ε')} / ${vr('R','R')}. Mueve el deslizador: el voltaje de la pila no cambia; la corriente, sí.</p>
+      <p class="fuente">"La pila da siempre la misma corriente" es la idea que más aparece en las entrevistas del test DIRECT, y explica la mayoría de las respuestas al ordenar el brillo en Barcelona. Además, el 47 % de 1135 alumnos creyó que, si se duplica la corriente por una pila, su voltaje se duplica "porque V = IR" (Engelhardt y Beichner, 2004; Periago y Bohigas, 2005).</p>` },
+
+  { id:'corto', corto:'El cortocircuito',
+    q:'Dos bombillas iguales de 12 Ω están en serie con una pila de 6 V. Un cable con interruptor une los dos extremos de B2. Si cierras el interruptor, ¿qué pasa?',
+    opts:[['a','Nada cambia: la corriente sigue pasando por las dos','C12-no-ve-corto','documentado'],
+          ['b','B2 se apaga y B1 brilla más',null],
+          ['c','B2 se apaga y B1 sigue igual','C5-resto-igual','hipotesis'],
+          ['d','Se apagan las dos','C12-corto-apaga-todo','hipotesis']],
+    ok:'b',
+    antes:() => Object.assign(E, { k:false, kp:false }),
+    despues:() => Object.assign(E, { k:true }),
+    paneles:() => [panel(LAY.dosCorto, { tierra:'n', ramas:[
+      { id:'pila', tipo:'pila', a:'n', b:'p', fem:6 }, { id:'B1', tipo:'resistencia', a:'p', b:'m', R:12 }, { id:'B2', tipo:'resistencia', a:'m', b:'n', R:12 },
+      { id:'k', tipo:'interruptor', a:'m', b:'n', cerrado:E.k }, { id:'kp', tipo:'interruptor', a:'p', b:'n', cerrado:E.kp } ] }, { Pref:3, iRef:0.25, mostrar:{ I:true, P:true } })],
+    nombres:[['B1','B1'], ['B2','B2']],
+    tocable: id => id === 'k' || id === 'kp',
+    tocar: id => { E[id] = !E[id]; sincronizarTogs(); },
+    ctrl:() => `<div class="toggles">
+      <button type="button" class="tog" data-sw="k"><span class="sw" aria-hidden="true"></span>Cable que une los extremos de B2</button>
+      <button type="button" class="tog" data-sw="kp"><span class="sw" aria-hidden="true"></span>Cable que une los bornes de la pila</button></div>`,
+    conectar:() => { document.querySelectorAll('#res2 [data-sw]').forEach(b => b.onclick = () => { E[b.dataset.sw] = !E[b.dataset.sw]; sincronizarTogs(); actualizar(); }); sincronizarTogs(); },
+    exp:`<p>El cable no tiene resistencia: entre los extremos de B2 ya no hay voltaje y toda la corriente se va por el cable. B2 se apaga. Ahora solo queda B1 frente a los 6 V: la corriente sube de ${vr('I','0,25')} a ${vr('I','0,5 A')} y B1 brilla cuatro veces más (de ${vr('P','0,75')} a ${vr('P','3 W')}).</p>
+      <p>Prueba el otro cable: si unes los bornes de la pila, la corriente no pasa por ninguna bombilla y, con una pila ideal, sería infinita. Eso es un <b>cortocircuito</b> de la pila: en la vida real la pila se calienta y se gasta muy rápido.</p>
+      <p class="fuente">El 17 % de 1135 alumnos de secundaria y universidad de Estados Unidos no identificó un cortocircuito o su efecto (Engelhardt y Beichner, 2004).</p>` },
+];
+
+function segModo(){
+  const bs = document.querySelectorAll('#res2 [data-modo]');
+  const sync = () => bs.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.modo === E.modo)));
+  bs.forEach(b => b.onclick = () => { E.modo = b.dataset.modo; sync(); actualizar(); });
+  sync();
+}
+function sincronizarTogs(){ document.querySelectorAll('#res2 [data-sw]').forEach(b => b.setAttribute('aria-pressed', String(!!E[b.dataset.sw]))); }
+
+function actualizar(){
+  const x = EXPS[S.k], resp = S.pred[x.id];
+  const ps = x.paneles(resp);
+  esc.set(ps, 'plano');
+  const sol = ps[0].sol;
+  if (x.info) x.info(sol);
+  let txt;
+  if (x.id === 'mcdermott') txt = resp ? ps.map(p => p.titulo + ': ' + Object.keys(p.layout.ramas).filter(id => id !== 'pila').map(id => `${id} ${fmt(p.sol.ramas[id].P)} W`).join(', ')).join('. ') + '.' : 'Tres circuitos armados, todavía sin encender.';
+  else if (!ps[0].encendido) txt = 'Circuito armado, todavía sin encender.';
+  else {
+    txt = estadoTexto(sol, x.nombres, true);
+    if (sol.ok){ const pi = Object.values(sol.ramas).filter(r => r.fem !== undefined); txt += ' ' + pi.map(r => `Pila de ${fmt(r.fem, 1)} V: ${fmt(Math.abs(r.I))} A.`).join(' '); }
+  }
+  $('desc2').textContent = txt;
+}
+
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k];
+  for (const key of Object.keys(E)) delete E[key];
+  x.antes();
+  const resp = S.pred[x.id];
+  if (resp && x.despues) x.despues();
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>
+    <div class="opts">${x.opts.map(([l, t]) => `<button class="opt" type="button" data-k="${l}"><span class="l">${l.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div>
+    <p class="fb" id="fb2"></p><div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. La correcta está marcada; mira la escena para ver por qué.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.ctrl() + x.exp + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
+    if (x.conectar) x.conectar();
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0];
+    if (x.despues) x.despues();
+    pintar(); actualizar();
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+  });
+  pintar(); actualizar();
+}
+
+botones(); ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+{
+  "plantilla": "circuitos-cc",
+  "unidades": "SI: V, A, Ω, W",
+  "convencion": "Cada rama va de a hacia b. La corriente I se cuenta de a hacia b; V es la caída V(a) − V(b); P = I·V es la potencia que recibe la rama (negativa en una pila que entrega energía). En una pila, a es el borne − y b el borne +. Un caso con helper usa la función del mismo nombre de motor.js con esos argumentos.",
+  "verificacion": "Los casos 1 a 5 son las filas 'Circuitos' de docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md. Los nueve se recalcularon el 5 de noviembre de 2026 con fracciones exactas en Python (fractions.Fraction), sin pasar por el motor y con otro método: los casos 1 a 5 y 8 por reducción serie-paralelo (Req, I = ε/Req, divisor de corriente, P = I²R; en el 8, el cable deja a B2 sin voltaje y queda B1 sola); el caso 6 con la ecuación de una sola malla (ε1 − ε2 = I·(r1 + r2 + R)); el caso 7 es un corto: la fem neta del lazo pila-cable no es cero, así que no hay solución finita; el caso 9 con corrientes de malla y la regla de Cramer (6·J1 − 4·J2 = 12; −4·J1 + 8·J2 = −4, que da J1 = 5/2 A y J2 = 3/4 A). El motor, en cambio, usa análisis nodal. Todos los valores salieron exactos (por ejemplo, 8/3 W y −3/4 A); el caso 6 se comprobó también con la potencia: 12 W entregados = 4 W que recibe la pila de 4 V + 1 W + 1 W en las resistencias internas + 6 W en la bombilla.",
+  "tolerancia": 1e-9,
+  "casos": [
+    {
+      "nombre": "Serie-paralelo: 4 Ω en serie con (6 Ω ∥ 3 Ω), ε = 12 V",
+      "circuito": { "tierra": "n", "ramas": [
+        { "id": "pila", "tipo": "pila", "a": "n", "b": "p", "fem": 12 },
+        { "id": "R4", "tipo": "resistencia", "a": "p", "b": "x", "R": 4 },
+        { "id": "R6", "tipo": "resistencia", "a": "x", "b": "n", "R": 6 },
+        { "id": "R3", "tipo": "resistencia", "a": "x", "b": "n", "R": 3 } ] },
+      "esperado": {
+        "Req": 6,
+        "ramas": { "pila": { "I": 2 }, "R4": { "I": 2, "V": 8 }, "R6": { "I": 0.6666666666666666, "V": 4 }, "R3": { "I": 1.3333333333333333, "V": 4 } },
+        "V": { "p": 12, "x": 4, "n": 0 }
+      }
+    },
+    {
+      "nombre": "Potencias del mismo circuito: la pila entrega lo que reciben las resistencias",
+      "circuito": { "tierra": "n", "ramas": [
+        { "id": "pila", "tipo": "pila", "a": "n", "b": "p", "fem": 12 },
+        { "id": "R4", "tipo": "resistencia", "a": "p", "b": "x", "R": 4 },
+        { "id": "R6", "tipo": "resistencia", "a": "x", "b": "n", "R": 6 },
+        { "id": "R3", "tipo": "resistencia", "a": "x", "b": "n", "R": 3 } ] },
+      "esperado": {
+        "ramas": { "R4": { "P": 16 }, "R6": { "P": 2.6666666666666665 }, "R3": { "P": 5.333333333333333 }, "pila": { "entrega": 24, "P": -24 } }
+      }
+    },
+    {
+      "nombre": "Brillo en los tres circuitos de McDermott (ε = 6 V, bombillas de 12 Ω)",
+      "helper": "mcdermott", "args": { "fem": 6, "R": 12 },
+      "esperado": {
+        "sola": { "ramas": { "A": { "P": 3, "I": 0.5 } } },
+        "serie": { "ramas": { "B": { "P": 0.75, "I": 0.25 }, "C": { "P": 0.75, "I": 0.25 } } },
+        "paralelo": { "ramas": { "D": { "P": 3, "I": 0.5 }, "E": { "P": 3, "I": 0.5 }, "pila": { "I": 1 } } }
+      }
+    },
+    {
+      "nombre": "Mixto (problema guiado), antes de quitar B3",
+      "helper": "mixto", "args": { "fem": 6, "R1": 12, "R2": 12, "R3": 12 },
+      "esperado": {
+        "Req": 18,
+        "ramas": { "B1": { "I": 0.3333333333333333, "V": 4, "P": 1.3333333333333333 }, "B2": { "I": 0.16666666666666666, "V": 2, "P": 0.3333333333333333 }, "B3": { "I": 0.16666666666666666, "V": 2, "P": 0.3333333333333333 } }
+      }
+    },
+    {
+      "nombre": "Mixto sin B3: B1 baja a 9/16 de su potencia y B2 sube a 9/4",
+      "helper": "mixto", "args": { "fem": 6, "R1": 12, "R2": 12, "R3": 12, "b3": false },
+      "esperado": {
+        "Req": 24,
+        "ramas": { "B1": { "I": 0.25, "V": 3, "P": 0.75 }, "B2": { "I": 0.25, "V": 3, "P": 0.75 }, "B3": { "I": 0, "P": 0 } }
+      }
+    },
+    {
+      "nombre": "Pilas en oposición: 12 V (r = 1 Ω) contra 4 V (r = 1 Ω), bombilla de 6 Ω",
+      "circuito": { "tierra": "n", "ramas": [
+        { "id": "P1", "tipo": "pila", "a": "n", "b": "m", "fem": 12, "r": 1 },
+        { "id": "P2", "tipo": "pila", "a": "p", "b": "m", "fem": 4, "r": 1 },
+        { "id": "B", "tipo": "resistencia", "a": "p", "b": "n", "R": 6 } ] },
+      "esperado": {
+        "ramas": {
+          "P1": { "I": 1, "entrega": 12, "interna": 1, "bornes": 11 },
+          "P2": { "I": -1, "P": 5, "interna": 1, "bornes": 5 },
+          "B": { "I": 1, "V": 6, "P": 6 }
+        },
+        "V": { "n": 0, "m": 11, "p": 6 }
+      }
+    },
+    {
+      "nombre": "Cortocircuito: un cable une los bornes de una pila ideal",
+      "circuito": { "tierra": "n", "ramas": [
+        { "id": "pila", "tipo": "pila", "a": "n", "b": "p", "fem": 6 },
+        { "id": "B", "tipo": "resistencia", "a": "p", "b": "n", "R": 12 },
+        { "id": "cable", "tipo": "cable", "a": "p", "b": "n" } ] },
+      "esperado": { "corto": true, "pilas": ["pila"] }
+    },
+    {
+      "nombre": "Bombilla en corto: un cable une los extremos de B2 (dos bombillas de 12 Ω en serie, ε = 6 V)",
+      "circuito": { "tierra": "n", "ramas": [
+        { "id": "pila", "tipo": "pila", "a": "n", "b": "p", "fem": 6 },
+        { "id": "B1", "tipo": "resistencia", "a": "p", "b": "m", "R": 12 },
+        { "id": "B2", "tipo": "resistencia", "a": "m", "b": "n", "R": 12 },
+        { "id": "cable", "tipo": "cable", "a": "m", "b": "n" } ] },
+      "esperado": {
+        "ramas": { "B1": { "I": 0.5, "V": 6, "P": 3 }, "B2": { "I": 0, "V": 0, "P": 0 }, "cable": { "I": 0.5, "V": 0 } },
+        "avisos": ["en-corto"]
+      }
+    },
+    {
+      "nombre": "Kirchhoff, dos mallas: 12 V con 2 Ω, 4 V con 4 Ω y 4 Ω en el centro",
+      "circuito": { "tierra": "g", "ramas": [
+        { "id": "E1", "tipo": "pila", "a": "g", "b": "m1", "fem": 12 },
+        { "id": "R1", "tipo": "resistencia", "a": "m1", "b": "t", "R": 2 },
+        { "id": "R3", "tipo": "resistencia", "a": "t", "b": "g", "R": 4 },
+        { "id": "E2", "tipo": "pila", "a": "g", "b": "m2", "fem": 4 },
+        { "id": "R2", "tipo": "resistencia", "a": "m2", "b": "t", "R": 4 } ] },
+      "esperado": {
+        "ramas": { "R1": { "I": 2.5, "P": 12.5 }, "R3": { "I": 1.75, "V": 7 }, "R2": { "I": -0.75, "V": -3 }, "E2": { "I": -0.75, "entrega": -3 } },
+        "V": { "t": 7, "m1": 12, "m2": 4 }
+      }
+    }
+  ]
+}
