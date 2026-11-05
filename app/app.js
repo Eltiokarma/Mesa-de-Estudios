@@ -75,8 +75,8 @@ function vBienvenida() {
     <div class="hero">
       <svg class="deco" viewBox="0 0 200 150" aria-hidden="true"><g fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round">
         <path d="M100 18v114" opacity=".5"/><ellipse cx="100" cy="75" rx="12" ry="56" fill="rgba(255,255,255,.18)"/>
-        <path d="M18 95V48" stroke="#d6f36a" stroke-width="5"/><path d="M18 48l82 0 76 48" /><path d="M18 48l158 54" opacity=".7"/>
-        <path d="M176 96v-20" stroke="#d6f36a" stroke-width="5" opacity=".9"/></g></svg>
+        <path d="M18 95V48" stroke="#ffd3e2" stroke-width="5"/><path d="M18 48l82 0 76 48" /><path d="M18 48l158 54" opacity=".7"/>
+        <path d="M176 96v-20" stroke="#ffd3e2" stroke-width="5" opacity=".9"/></g></svg>
       <h1>Ve la física.<br>Entiende el examen.</h1>
       <p>Escenas que se mueven, predicciones antes de ver la respuesta y problemas para resolver en papel.</p>
     </div>
@@ -86,7 +86,7 @@ function vBienvenida() {
     <div class="opciones">${opc}</div>
     <span class="sub">¿En qué grado estás?</span>
     <div class="chips" style="margin:0">${GRADOS.map(([k, t]) => `<button class="chip${est.grado === k ? ' on' : ''}" data-grado="${k}">${esc(t)}</button>`).join('')}</div>
-    <button class="btn lima ancho" id="empezar"${est.uni && est.grado ? '' : ' disabled'}>Empezar</button>
+    <button class="btn acento ancho" id="empezar"${est.uni && est.grado ? '' : ' disabled'}>Empezar</button>
     <span class="sub" style="text-align:center">Tu avance se guarda en este celular. Funciona sin internet.</span>
   </section>`;
   $app.querySelectorAll('[data-uni]').forEach(b => b.onclick = () => {
@@ -116,7 +116,7 @@ function vInicio() {
     </div>` : `<div class="reto"><h3>¡Terminaste todo el temario!</h3><p>Repasa lo que más te costó.</p></div>`;
   const sig = pend.filter(x => x !== conEscena).slice(0, 4).map(x => `<a class="item" href="#/curso/${esc(x.c.id)}">${icono(x.c.id)}
       <span class="tx"><span class="t">${esc(x.u.nombre)}</span><br><span class="d">${esc(x.c.nombre)} · ${esc(etiquetaUbic(x.u, est.uni))}</span></span>
-      <span class="der">${tagAdelanto(x.u)}${x.u.plantillas.length ? `<span class="tag lima">${cat.plantillas[x.u.plantillas[0]].formato === 'escena' ? 'Escena' : 'Práctica'}</span>` : ''}›</span></a>`).join('');
+      <span class="der">${tagAdelanto(x.u)}${x.u.plantillas.length ? `<span class="tag acento">${cat.plantillas[x.u.plantillas[0]].formato === 'escena' ? 'Escena' : 'Práctica'}</span>` : ''}›</span></a>`).join('');
   $app.innerHTML = `
     <header class="saludo"><span class="avatar">${esc((est.nombre || '?')[0].toUpperCase())}</span>
       <div><p class="sub">Hola${est.nombre ? `, ${esc(est.nombre)}` : ''} 👋</p><h1>¿Qué entendemos hoy?</h1></div></header>
@@ -124,7 +124,7 @@ function vInicio() {
     ${reto}
     <h2>Hoy</h2>
     <div class="stats">
-      <div class="stat"><div class="ic" style="background:var(--lime);color:var(--lime-ink)">🔥</div><div class="n">${racha()}</div><div class="l">${racha() === 1 ? 'día seguido' : 'días seguidos'}</div></div>
+      <div class="stat"><div class="ic" style="background:var(--acento);color:var(--acento-ink)">🔥</div><div class="n">${racha()}</div><div class="l">${racha() === 1 ? 'día seguido' : 'días seguidos'}</div></div>
       <div class="stat"><div class="ic" style="background:var(--brand-soft)">✓</div><div class="n">${hechas}</div><div class="l">unidades estudiadas</div></div>
       <div class="stat"><div class="ic" style="background:var(--brand-soft)">%</div><div class="n">${totalU ? Math.round(100 * hechas / totalU) : 0}<span style="font-size:16px">%</span></div><div class="l">del temario ${esc(UNI_CORTA[est.uni] || '')}</div></div>
     </div></div><div>

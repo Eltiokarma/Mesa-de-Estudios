@@ -2,11 +2,21 @@
 
 5 de noviembre de 2026 · Lo que ya está en `app/estilos.css`. Si algo cambia allá, se actualiza aquí.
 
+## Dirección: acogedora
+
+**Decisión de Gerson (5 nov 2026):** la app tiene que sentirse acogedora, "como comer bombones mientras aprendes matemáticas y ciencias". La referencia que manda es el [*study planner* de Pinterest](referencias/ui-study-planner-pinterest.jpg); la [app de ejercicio](referencias/ui-fitness-dribbble.webp) queda solo como referencia de estructura (reto del día, estadísticas, anillo).
+
+- **Ya aplicado (paleta):** fondo crema (`#fbf3ec`), tarjetas blanco cálido, tinta ciruela, lavanda como marca (`#7f5ae0`) y rosa bombón como acento (`#ffd3e2`). Esquinas más redondas (28 px) y sombras con tono ciruela, no gris. El modo oscuro es ciruela profundo, no azul.
+- **Falta (semana de pulido, tarea `pl6`):** ilustraciones propias con personajes (un gato, una taza, el alumno estudiando), íconos dibujados por curso en vez de siglas, el ícono de la app con la paleta nueva, animaciones suaves al acertar y una tipografía redondeada común a la app y las escenas.
+- **Lo que no cambia:** dentro de las escenas mandan los colores de las variables (regla 4). Lo acogedor va en la cáscara, los fondos y las ilustraciones, no en los datos.
+
+Todos los textos pasan el contraste AA (4,5 a 1) sobre su fondo: blanco sobre lavanda 4,7; gris sobre crema 4,6; tinta sobre crema 13,4.
+
 ## Dos familias de color que no se mezclan
 
 | Familia | Colores | Dónde se usa | Dónde no |
 | --- | --- | --- | --- |
-| **Marca** | Morado `#7b61ff` (`--brand`), lima `#d6f36a` (`--lime`) | La cáscara: bienvenida, inicio, cursos, progreso, perfil, botones de la práctica | Nunca dentro de una escena: ahí el morado es la distancia focal y el verde, la separación entre lentes |
+| **Marca** | Lavanda `#7f5ae0` (`--brand`), rosa bombón `#ffd3e2` (`--acento`) | La cáscara: bienvenida, inicio, cursos, progreso, perfil, botones de la práctica | Nunca dentro de una escena: ahí el morado es la distancia focal y el verde, la separación entre lentes |
 | **Variables** | `--c-o` naranja, `--c-i` turquesa, `--c-h` rojo, `--c-d` verde (y el morado `--c-f` solo en escenas) | Enunciados, soluciones y dibujos: cada variable tiene un color y lo conserva en el texto, la figura y la ecuación (regla 4) | Nunca como decoración |
 
 Correcto e incorrecto usan `--ok` (verde) y `--warn` (rojo), siempre con texto (“¡Bien!”, “Elegiste la B…”) y nunca solo con el color.
@@ -31,7 +41,7 @@ El modo oscuro redefine todos los tokens. Se sigue al sistema o se fija en Perfi
 | Chip | `.chip` | Elegir una opción (universidad, grado, tema) |
 | Alternativa | `.alt` | Predicciones. Lleva una letra (A–E) y cambia a `ok` o `mal` |
 | Variable | `.var.c-*` | Un dato del enunciado con su color |
-| Aviso | `.aviso` | Una sola línea en lima para motivar o para ofrecer el siguiente paso |
+| Aviso | `.aviso` | Una sola línea en rosa bombón para motivar o para ofrecer el siguiente paso |
 
 ## Dos pantallas: celular y laboratorio de cómputo
 
