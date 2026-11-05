@@ -65,7 +65,7 @@ Aquí se declara **qué** enseña la app: cursos, unidades y temas, en qué univ
 }
 ```
 
-`formato`: `escena` (necesita `escena`, `motor`, `casos` y `pruebas`) o `predicciones` (necesita `generador`, `casos` y `pruebas`; ver `nucleo/predicciones.js`). `estado`: `borrador` (en construcción), `probada` (pasó sus casos de prueba y el pase 2), `publicada` (está en la app). `papel` apunta al archivo de problemas para resolver sin la escena (regla 6), o `null` si falta.
+`formato`: `escena` (necesita `escena`, `motor`, `casos` y `pruebas`) o `predicciones` (necesita `generador`, `casos` y `pruebas`; ver `nucleo/predicciones.js`). `estado`: `borrador` (en construcción), `probada` (pasó sus casos de prueba y el pase 2), `publicada` (está en la app). `papel` apunta al archivo de problemas para resolver sin la escena (regla 6), o `null` si falta. El formato está en `plantillas/optica-lente-delgada/papel.json`: `indicacion` y una lista `problemas` con `id`, `nivel`, `enunciado`, `respuesta`, `pasos` y `verificar`, que son los datos con los que la prueba de la plantilla recalcula la respuesta con el motor. La app los muestra en `#/papel/<id>`, con la respuesta escondida y un botón para imprimir.
 
 ## Decisiones de agrupación pendientes (4 nov 2026)
 

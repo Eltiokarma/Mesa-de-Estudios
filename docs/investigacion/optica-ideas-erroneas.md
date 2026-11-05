@@ -65,6 +65,8 @@ Está bien planteada: las cuatro zonas son las que el examen usa para clasificar
 
 ## Predicciones nuevas que propongo para el explorador
 
+**Hecho (5 nov 2026).** Las cuatro están en la pestaña "¿Qué pasa si…?" del Banco Óptico, con el abanico de rayos que calcula el motor (`abanico` y `mancha` en `motor.js`, con sus pruebas). Cada respuesta se registra de forma anónima con el id del error (`E1-mitad-arriba`, `E2-sin-pantalla`, `E4-mas-grande`, `E5-pantalla-cualquier-lado`, etc.). Las opciones sin respaldo en la tabla van marcadas como `hipotesis`. El paso 3 de los modos "una lente" y "sistemas" también se registra.
+
 Las ideas E1 a E5 son las mejor documentadas y las más frecuentes, y el Banco Óptico todavía no las toca. Son preguntas conceptuales; en el examen de admisión aparecen menos que las numéricas, pero corrigen el modelo de fondo que hace fallar las numéricas. Cada una cabe en el explorador como un botón ("¿Qué pasa si…?") con predicción antes de mostrar:
 
 1. **Tapar media lente** (E1). Opciones: desaparece la mitad de arriba / desaparece la mitad de abajo / la imagen queda entera pero más tenue / no se forma imagen. La escena dibuja, por ejemplo, 9 rayos desde la punta del objeto, oscurece los que chocan con la tapa y muestra que los que quedan llegan al mismo punto.

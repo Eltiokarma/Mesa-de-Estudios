@@ -127,6 +127,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{ ou
   <nav class="tabs" aria-label="Modo del banco">
     <a href="#una-lente" id="tab1">Una lente</a>
     <a href="#sistema" id="tab2">Dos o tres lentes</a>
+    <a href="#que-pasa-si" id="tab3">¿Qué pasa si…?</a>
   </nav>
 
   <!-- ===== MODO 1: una lente ===== -->
@@ -179,6 +180,28 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{ ou
       </div>
     </section>
   </div>
+
+  <!-- ===== MODO 3: ¿qué pasa si…? (abanico de rayos) ===== -->
+  <div id="m3" class="mode" hidden>
+    <section class="bench" aria-label="Lente con un abanico de rayos que salen de la punta del objeto">
+      <canvas id="cv3" aria-label="Lente convergente, objeto, abanico de rayos y pantalla con la imagen"></canvas>
+      <div class="legend">
+        <span><i style="background:var(--c-h)"></i>objeto e imagen</span>
+        <span><i style="background:var(--ray)"></i>rayos que salen de la punta del objeto</span>
+        <span><i style="background:var(--c-f)"></i>F · focos (f = 10 cm)</span>
+        <span><i style="background:var(--muted)"></i>pantalla</span>
+      </div>
+    </section>
+    <section class="guide" aria-live="polite">
+      <div class="seg" id="exps3" role="group" aria-label="Experimentos"></div>
+      <div>
+        <p class="step-k" id="k3"></p>
+        <h2 class="step-t" id="t3"></h2>
+      </div>
+      <div id="body3" class="body"></div>
+      <p class="hint">¿Quieres practicar sin la escena? <a id="papel3" href="/app/#/papel/optica-lente-delgada">Problemas para lápiz y papel</a>.</p>
+    </section>
+  </div>
 </main>
 
 <script>
@@ -191,6 +214,21 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 });
 </script>
 <script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'optica-lente-delgada', unidad: 'fisica.optica-geometrica', version: '0.2.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+// Errores que representa cada opción incorrecta de los pasos 3 (ver docs/investigacion/optica-ideas-erroneas.md).
+const ERR_PASO3 = {
+  m1: { a: 'objeto-lejano-en-el-foco', c: 'imagen-espejo', d: 'real-virtual' },
+  m2: { a: 'E6-una-sola-inversion', c: 'sistema-invertida-menor', d: 'sistema-mismo-tamano' },
+};
+</script>
 <script>
 /* ================= MODO 1: una lente ================= */
 (function(){
@@ -452,7 +490,9 @@ function setupPred(){
       ? 'Bien. Con el objeto más allá de 2F, la imagen cae entre F′ y 2F′. Ahora veamos por qué con los rayos.'
       : 'No es ahí. La correcta está marcada en verde. Mira los rayos y vas a ver por qué.';
   };
-  btns.forEach(b => b.addEventListener('click', () => { S.pred = b.dataset.k; unlock(S.step + 1); paint(); updateNav(); refreshDots(); }));
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => { S.pred = b.dataset.k; unlock(S.step + 1); paint(); updateNav(); refreshDots();
+    registrarPrediccion('una-lente-paso3', S.pred, S.pred === 'b', ERR_PASO3.m1[S.pred], 'hipotesis', t0); }));
   paint();
 }
 function refreshDots(){ [...dots.querySelectorAll('button')].forEach((b,k) => { b.disabled = k > S.max; if (k !== S.step) b.className = k <= S.max ? 'done' : ''; }); }
@@ -836,7 +876,9 @@ function setupPred(){
       ? 'Bien. Cada lente invierte la imagen y dos inversiones se cancelan. Veamos el tamaño con los números.'
       : 'No es esa. La correcta está en verde; los rayos te van a mostrar por qué.';
   };
-  btns.forEach(b => b.addEventListener('click', () => { S.pred = b.dataset.k; unlock(S.step + 1); paint(); updateNav(); refreshDots(); }));
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => { S.pred = b.dataset.k; unlock(S.step + 1); paint(); updateNav(); refreshDots();
+    registrarPrediccion('sistema-paso3', S.pred, S.pred === 'b', ERR_PASO3.m2[S.pred], 'hipotesis', t0); }));
   paint();
 }
 $('next2').addEventListener('click', () => { unlock(S.step + 1); go(S.step + 1); });
@@ -859,15 +901,227 @@ document.fonts && document.fonts.ready.then(draw);
 resize(); go(0);
 })();
 
+/* ================= MODO 3: ¿qué pasa si…? =================
+   Cuatro predicciones conceptuales con las ideas erróneas mejor documentadas sobre lentes
+   (E1, E2, E4 y E5 de docs/investigacion/optica-ideas-erroneas.md). Lo que se dibuja sale de
+   MotorLente.abanico y MotorLente.mancha: todos los rayos de un punto llegan a un mismo punto. */
+(function(){
+const cv = document.getElementById('cv3'), ctx = cv.getContext('2d');
+const $ = id => document.getElementById(id);
+const O = 30, F = 10, HO = 4, XR = 40, YL = 10, NR = 9, D0 = 8;
+const IMG = MotorLente.imagen(O, F, HO); // i = 15, altura −2
+let W = 0, H = 0, sx = 1, sy = 1;
+const X = x => W*0.5 + x*sx, Y = y => H/2 - y*sy;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const fmt = n => n.toLocaleString('es-PE', {maximumFractionDigits:1});
+
+// Estado de la escena: lo cambia cada experimento después de la predicción.
+const E = { tapa:null, pantalla:true, xp:IMG.i, D:D0 };
+const EXPS = [
+  { id:'tapar', corto:'Tapar media lente',
+    q:'La imagen se ve nítida en la pantalla. Tapas la <b>mitad de arriba</b> de la lente con un cartón. ¿Qué pasa con la imagen?',
+    opts:[['a','Desaparece la mitad de arriba de la imagen','E1-mitad-arriba','documentado'],
+          ['b','Desaparece la mitad de abajo de la imagen','E1-mitad-abajo','documentado'],
+          ['c','Se sigue viendo entera, pero más tenue',null],
+          ['d','Ya no se forma ninguna imagen','E1-sin-imagen','hipotesis']],
+    ok:'c', aplicar:() => { E.tapa = 'arriba'; },
+    ctrl:() => `<div class="seg" role="group" aria-label="Cartón"><button type="button" data-tapa="arriba">Lente tapada a medias</button><button type="button" data-tapa="">Lente destapada</button></div>`,
+    exp:`<p>Fíjate en los rayos: salen de la punta del objeto hacia <b>toda</b> la lente. Los que chocan con el cartón se pierden, pero los que pasan por la mitad de abajo llegan exactamente al mismo punto de la imagen. Lo mismo pasa con cada punto del objeto, así que la imagen queda <b>entera</b>. Solo llega la mitad de la luz: se ve <b>más tenue</b>.</p>
+      <p class="hint">Es la idea errónea más común sobre lentes. En un estudio con 70 escolares, 46 dijeron que desaparece la mitad de arriba y 10, la de abajo; solo 1 acertó (John, Molepo y Chirwa, 2017; Goldberg y McDermott, 1987).</p>` },
+  { id:'pantalla', corto:'Quitar la pantalla',
+    q:'La imagen se ve nítida en la pantalla. Si <b>quitas la pantalla</b>, ¿qué pasa con la imagen?',
+    opts:[['a','Desaparece: sin pantalla no hay imagen','E2-sin-pantalla','documentado'],
+          ['b','Sigue ahí, en el aire, donde se cruzan los rayos',null],
+          ['c','Se forma más brillante','E2-mas-brillante','hipotesis']],
+    ok:'b', aplicar:() => { E.pantalla = false; },
+    ctrl:() => `<div class="seg" role="group" aria-label="Pantalla"><button type="button" data-pant="0">Sin pantalla</button><button type="button" data-pant="1">Con pantalla</button></div>`,
+    exp:`<p>Los rayos se cruzan en el mismo punto haya o no pantalla: la imagen real está ahí, en el aire. La pantalla no la "atrapa"; solo desvía la luz hacia todos lados para que la veas desde cualquier lugar. Sin pantalla, la ves si pones el ojo más allá de la imagen, mirando hacia la lente, donde llegan esos rayos.</p>
+      <p class="hint">En el mismo estudio con 70 escolares, 56 dijeron que la imagen desaparece; solo 2 acertaron (John, Molepo y Chirwa, 2017; Galili, Bendall y Goldberg, 1993).</p>` },
+  { id:'correr', corto:'Correr la pantalla',
+    q:'La imagen se ve nítida con la pantalla a 15 cm de la lente. Si <b>alejas la pantalla</b> hasta 25 cm, ¿qué ves en ella?',
+    opts:[['a','La misma imagen, más grande y todavía nítida','E5-pantalla-cualquier-lado','documentado'],
+          ['b','Nada cambia','E5-no-cambia','hipotesis'],
+          ['c','Una mancha borrosa',null]],
+    ok:'c', aplicar:() => { E.xp = 25; },
+    ctrl:() => `<div class="slider"><label for="xp3"><span>Pantalla a</span><output id="xp3-out"></output></label><input id="xp3" type="range" min="6" max="36" step="0.5" value="${E.xp}"></div><p id="xp3-info" class="hint"></p>`,
+    exp:`<p>Hay una sola distancia donde todos los rayos de un punto se juntan: la que da la ecuación (i = 15 cm). Antes o después, los rayos de cada punto llegan separados y dejan una mancha; las manchas de todos los puntos se enciman y la imagen se ve <b>borrosa</b>. Mueve la pantalla y busca el punto nítido.</p>
+      <p class="hint">Idea documentada en Galili, Bendall y Goldberg (1993) y en Galili y Hazan (2000), sin porcentaje en las fuentes leídas.</p>` },
+  { id:'ancha', corto:'Lente más ancha',
+    q:'Cambias la lente por otra con la <b>misma distancia focal</b> pero el <b>doble de ancha</b>. ¿Qué pasa con la imagen?',
+    opts:[['a','Sale más grande','E4-mas-grande','documentado'],
+          ['b','Sale más pequeña','E4-mas-pequena','documentado'],
+          ['c','No cambia nada','E4-nada','documentado'],
+          ['d','Mismo tamaño y mismo lugar, pero más brillante',null]],
+    ok:'d', aplicar:() => { E.D = 2*D0; },
+    ctrl:() => `<div class="slider"><label for="d3"><span>Ancho de la lente</span><output id="d3-out"></output></label><input id="d3" type="range" min="4" max="18" step="0.5" value="${E.D}"></div><p id="d3-info" class="hint"></p>`,
+    exp:`<p>El tamaño y el lugar de la imagen dependen solo de f y de o (la ecuación no tiene el ancho de la lente). Una lente más ancha recoge más rayos de cada punto del objeto y los manda al mismo punto imagen: la imagen sale <b>más brillante</b>. Si la lente es redonda, el doble de ancho junta 4 veces más luz.</p>
+      <p class="hint">De 70 escolares, 25 dijeron "más grande", 6 "más pequeña" y 12 "no cambia nada"; solo 18 dijeron "más brillante" (John, Molepo y Chirwa, 2017).</p>` },
+];
+const S = { k:0, pred:{}, t0:Date.now() };
+
+function resize(){
+  W = cv.clientWidth; if (!W) return;
+  H = Math.max(240, Math.min(400, W*0.52));
+  const dpr = window.devicePixelRatio || 1;
+  cv.style.height = H + 'px'; cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  sx = W/(2*XR); sy = (H/2 - 14)/YL;
+  draw();
+}
+function line(x1,y1,x2,y2){ ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke(); }
+function arrow(x, h, color, w){
+  const x0 = X(x), y0 = Y(0), y1 = Y(h); ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = w;
+  line(x0,y0,x0,y1); const s = Math.sign(h) || 1, a = 7 + w;
+  ctx.beginPath(); ctx.moveTo(x0, y1 - s*2); ctx.lineTo(x0 - a*0.6, y1 + s*a); ctx.lineTo(x0 + a*0.6, y1 + s*a); ctx.closePath(); ctx.fill();
+}
+// Punto donde un rayo (desde (0, y) con pendiente u) sale del dibujo o llega a xEnd.
+function hasta(y, u, xEnd){
+  let x = xEnd, yy = y + u*x;
+  if (Math.abs(yy) > YL){ x = (Math.sign(yy)*YL - y)/u; yy = Math.sign(yy)*YL; }
+  return [x, yy];
+}
+
+function draw(){
+  if (!W) return;
+  const c = { ink:css('--ink'), muted:css('--muted'), grid:css('--grid'), lens:css('--lens'), paper:css('--paper'),
+    f:css('--c-f'), h:css('--c-h'), ray:css('--ray') };
+  ctx.clearRect(0,0,W,H);
+  ctx.lineWidth = 1; ctx.strokeStyle = c.grid;
+  for (let x = -40; x <= 40; x += 5) line(X(x),0,X(x),H);
+  for (let y = -10; y <= 10; y += 2) line(0,Y(y),W,Y(y));
+  ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; line(0,Y(0),W,Y(0));
+  // Lente: su alto en el dibujo es su ancho real (diámetro D).
+  ctx.save(); ctx.globalAlpha = 0.28; ctx.fillStyle = c.lens;
+  ctx.beginPath(); ctx.ellipse(X(0), Y(0), Math.max(5, 0.7*sx), E.D/2*sy, 0, 0, Math.PI*2); ctx.fill(); ctx.restore();
+  ctx.strokeStyle = c.lens; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.ellipse(X(0), Y(0), Math.max(5, 0.7*sx), E.D/2*sy, 0, 0, Math.PI*2); ctx.stroke();
+  // Focos
+  ctx.font = `700 12px ${css('--mono')}`; ctx.textAlign = 'center'; ctx.textBaseline = 'top'; ctx.fillStyle = c.f;
+  [[-F,'F'],[F,'F′']].forEach(([x,l]) => { ctx.beginPath(); ctx.arc(X(x), Y(0), 3.5, 0, Math.PI*2); ctx.fill(); ctx.fillText(l, X(x), Y(0) + 7); });
+  // Objeto
+  arrow(-O, HO, c.h, 2.4);
+  // Abanico de rayos desde la punta del objeto
+  const xFin = E.pantalla ? E.xp : XR;
+  for (const r of MotorLente.abanico(O, F, HO, E.D, NR, E.tapa)){
+    ctx.strokeStyle = c.ray; ctx.lineWidth = 1.4; ctx.globalAlpha = r.tapado ? 0.35 : 0.85;
+    line(X(-O), Y(HO), X(0), Y(r.yL));
+    if (!r.tapado){ const [x2, y2] = hasta(r.yL, r.uSale, xFin); line(X(0), Y(r.yL), X(x2), Y(y2)); }
+    ctx.globalAlpha = 1;
+  }
+  // Cartón que tapa la mitad de arriba
+  if (E.tapa){
+    ctx.fillStyle = c.ink; ctx.globalAlpha = 0.85;
+    ctx.fillRect(X(0) - Math.max(5, 0.7*sx) - 3, Y(E.D/2 + 0.6), 2*Math.max(5, 0.7*sx) + 6, (E.D/2 + 0.6)*sy);
+    ctx.globalAlpha = 1; ctx.fillStyle = c.muted; ctx.textAlign = 'left'; ctx.textBaseline = 'bottom';
+    ctx.fillText('cartón', X(0) + 12, Y(E.D/2 + 0.6));
+  }
+  // Brillo relativo: luz que entra (proporcional al área de una lente redonda) por la fracción no tapada.
+  const luz = (E.D/D0)**2 * (E.tapa ? 0.5 : 1);
+  if (E.pantalla){
+    ctx.strokeStyle = c.muted; ctx.lineWidth = 4; line(X(E.xp), Y(9.5), X(E.xp), Y(-9.5));
+    ctx.fillStyle = c.muted; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom'; ctx.fillText('pantalla', X(E.xp), Y(9.5) - 2);
+    // Lo que queda en la pantalla: la mancha de cada punto del objeto (un punto si está en foco).
+    for (let k = 0; k <= 16; k++){
+      const m = MotorLente.mancha(O, F, HO*k/16, E.D, E.xp, E.tapa);
+      ctx.strokeStyle = c.h; ctx.lineWidth = 5; ctx.lineCap = 'round';
+      ctx.globalAlpha = Math.min(0.95, 0.75*luz/(1 + m.ancho*1.5));
+      line(X(E.xp), Y(m.min), X(E.xp), Y(m.max) + 0.01);
+    }
+    ctx.globalAlpha = 1; ctx.lineCap = 'butt';
+    vista(c, luz);
+  } else {
+    // Sin pantalla: la imagen sigue en el aire, donde se cruzan los rayos.
+    ctx.setLineDash([5,4]); arrow(IMG.i, IMG.h, c.h, 2.4); ctx.setLineDash([]);
+    ctx.fillStyle = c.h; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+    ctx.fillText('imagen (en el aire)', X(IMG.i) - 20, Y(IMG.h - 5));
+  }
+}
+// Recuadro: la pantalla vista de frente. Cada punto del objeto deja un círculo de luz.
+function vista(c, luz){
+  // Abajo a la izquierda: ahí no pasan rayos (salen de la punta del objeto, por encima del eje).
+  const w = Math.min(130, W*0.22), h = Math.min(w*1.1, H/2 - 16), x0 = 8, y0 = H - h - 8, cx = x0 + w/2, esc = h/22;
+  ctx.fillStyle = c.paper; ctx.strokeStyle = c.muted; ctx.lineWidth = 1;
+  ctx.fillRect(x0, y0, w, h); ctx.strokeRect(x0, y0, w, h);
+  ctx.fillStyle = c.muted; ctx.font = `600 11px ${css('--body')}`; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  ctx.fillText(W < 600 ? 'de frente' : 'pantalla de frente', cx, y0 + 4);
+  ctx.save(); ctx.beginPath(); ctx.rect(x0, y0 + 18, w, h - 18); ctx.clip();
+  const yc = y0 + h/2 + 6;
+  for (let k = 0; k <= 24; k++){
+    const m = MotorLente.mancha(O, F, HO*k/24, E.D, E.xp, E.tapa);
+    const r = Math.max(1.6, m.ancho/2*esc);
+    ctx.fillStyle = c.h; ctx.globalAlpha = Math.min(0.9, 0.55*luz*(1.6/r)**1.2);
+    ctx.beginPath(); ctx.arc(cx, yc - m.centro*esc*1.6, r, 0, Math.PI*2); ctx.fill();
+  }
+  ctx.restore(); ctx.globalAlpha = 1;
+}
+
+function botones(){
+  $('exps3').innerHTML = EXPS.map((x, k) => `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
+  $('exps3').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function reiniciar(){ E.tapa = null; E.pantalla = true; E.xp = IMG.i; E.D = D0; }
+function ir(k){
+  S.k = k; S.t0 = Date.now(); reiniciar();
+  const x = EXPS[k], p = S.pred[x.id];
+  if (p) x.aplicar();
+  botones();
+  $('k3').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t3').textContent = x.corto;
+  $('body3').innerHTML = `<p>${x.q}</p>
+    <div class="opts">${x.opts.map(([l, t]) => `<button class="opt" type="button" data-k="${l}">${t}</button>`).join('')}</div>
+    <p class="fb" id="fb3"></p><div id="res3" class="body"></div>`;
+  const btns = [...$('body3').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    $('fb3').textContent = p === x.ok ? 'Bien pensado. Mira la escena para ver por qué.' : 'No es esa. La correcta está marcada; mira la escena para ver por qué.';
+    $('res3').innerHTML = x.ctrl() + x.exp + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="primary" id="sig3">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
+    controles();
+    const sig = $('sig3'); if (sig) sig.onclick = () => { ir(k + 1); scrollTo({ top: 0, behavior: 'smooth' }); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; x.aplicar(); pintar(); draw();
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+  });
+  pintar(); draw();
+}
+function controles(){
+  const marcar = (sel, v) => $('res3').querySelectorAll(sel).forEach(b => b.setAttribute('aria-pressed', String(b.dataset[Object.keys(b.dataset)[0]] === v)));
+  $('res3').querySelectorAll('[data-tapa]').forEach(b => b.onclick = () => { E.tapa = b.dataset.tapa || null; marcar('[data-tapa]', b.dataset.tapa); draw(); });
+  if ($('res3').querySelector('[data-tapa]')) marcar('[data-tapa]', E.tapa || '');
+  $('res3').querySelectorAll('[data-pant]').forEach(b => b.onclick = () => { E.pantalla = b.dataset.pant === '1'; marcar('[data-pant]', b.dataset.pant); draw(); });
+  if ($('res3').querySelector('[data-pant]')) marcar('[data-pant]', E.pantalla ? '1' : '0');
+  const xp = $('xp3');
+  if (xp){ const upd = () => { E.xp = +xp.value; const m = MotorLente.mancha(O, F, HO, E.D, E.xp, null);
+      $('xp3-out').textContent = fmt(E.xp) + ' cm';
+      $('xp3-info').textContent = m.ancho < 0.05 ? 'Nítida: aquí se juntan los rayos de cada punto (i = 15 cm).' : `La punta del objeto deja una mancha de ${fmt(m.ancho)} cm de alto.`; draw(); };
+    xp.oninput = upd; upd(); }
+  const d = $('d3');
+  if (d){ const upd = () => { E.D = +d.value;
+      $('d3-out').textContent = fmt(E.D) + ' cm';
+      $('d3-info').textContent = `Luz que llega a la imagen: ${fmt((E.D/D0)**2)} veces la de la lente de ${D0} cm. La imagen sigue a 15 cm y mide 2 cm.`; draw(); };
+    d.oninput = upd; upd(); }
+}
+
+new ResizeObserver(resize).observe(cv);
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', draw);
+new MutationObserver(draw).observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
+document.fonts && document.fonts.ready.then(draw);
+resize(); ir(0);
+})();
+
 /* ================= Pestañas ================= */
 (function(){
-  const m1 = document.getElementById('m1'), m2 = document.getElementById('m2');
-  const t1 = document.getElementById('tab1'), t2 = document.getElementById('tab2');
+  const modos = [['#una-lente', 'm1', 'tab1'], ['#sistema', 'm2', 'tab2'], ['#que-pasa-si', 'm3', 'tab3']];
   function route(){
-    const two = location.hash === '#sistema';
-    m1.hidden = two; m2.hidden = !two;
-    if (two){ t2.setAttribute('aria-current','page'); t1.removeAttribute('aria-current'); }
-    else { t1.setAttribute('aria-current','page'); t2.removeAttribute('aria-current'); }
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
   }
   addEventListener('hashchange', route); route();
 })();

@@ -39,3 +39,15 @@ test('unir quita eventos repetidos entre archivos e informe los resume', () => {
   assert.match(md, /2 alumnos/);
   assert.match(md, /\| ES20 \| 2 \| documentado \|/);
 });
+
+test('guardar: agrega el perfil anónimo y no guarda sin alumno', () => {
+  const datos = {};
+  const almacen = { getItem: k => datos[k] ?? null, setItem: (k, v) => { datos[k] = v; } };
+  assert.equal(M.guardar({ tipo: 'prediccion', modulo: 'x' }, '1.0', null, almacen), false);
+  datos['lab-v1'] = JSON.stringify({ alumno: 'a1', grado: '4', colegio: 'ABC', nombre: 'Ana' });
+  assert.equal(M.guardar({ tipo: 'prediccion', modulo: 'x', correcta: true }, '1.0', null, almacen), true);
+  const l = M.eventosGuardados(almacen);
+  assert.equal(l.length, 1);
+  assert.equal(l[0].alumno, 'a1'); assert.equal(l[0].grado, '4'); assert.equal(l[0].colegio, 'ABC');
+  assert.ok(!JSON.stringify(l).includes('Ana'), 'nunca se guarda el nombre');
+});

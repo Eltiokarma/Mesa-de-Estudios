@@ -168,3 +168,10 @@ kbd{font:600 12px/1 var(--font);border:1.5px solid var(--line);border-bottom-wid
   .bienvenida .hero{grid-column:1;grid-row:1 / span 9;min-height:520px}
   .bienvenida>:not(.hero){grid-column:2}
 }
+
+/* ---------- Lápiz y papel ---------- */
+details summary{cursor:pointer;font-weight:700;color:var(--brand)}
+details[open] summary{margin-bottom:8px}
+@media (min-width:900px){ .lista.papel{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start} }
+@media print{ #nav,.volver,.btn{display:none!important} body{background:#fff} #app{margin:0!important;max-width:none!important;padding:0!important}
+  .card{box-shadow:none;border:1px solid #ccc;break-inside:avoid} details{display:none} }

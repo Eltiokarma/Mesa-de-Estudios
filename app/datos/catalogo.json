@@ -3985,6 +3985,7 @@
     "quimica.estequiometria"
    ],
    "url": "#/practica/estequiometria-limitante",
+   "papel": null,
    "archivos": [
     "/plantillas/estequiometria-limitante/generador.js"
    ]
@@ -3994,14 +3995,16 @@
    "titulo": "Banco Óptico",
    "formato": "escena",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "fisica.optica-geometrica"
    ],
    "url": "/plantillas/optica-lente-delgada/index.html",
+   "papel": "/plantillas/optica-lente-delgada/papel.json",
    "archivos": [
     "/plantillas/optica-lente-delgada/index.html",
-    "/plantillas/optica-lente-delgada/motor.js"
+    "/plantillas/optica-lente-delgada/motor.js",
+    "/plantillas/optica-lente-delgada/papel.json"
    ]
   },
   "porcentajes-sucesivos": {
@@ -4014,6 +4017,7 @@
     "aritmetica.porcentajes"
    ],
    "url": "#/practica/porcentajes-sucesivos",
+   "papel": null,
    "archivos": [
     "/plantillas/porcentajes-sucesivos/generador.js"
    ]

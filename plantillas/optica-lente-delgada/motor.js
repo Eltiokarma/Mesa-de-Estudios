@@ -88,5 +88,39 @@
     return pasos.reduce((A, p) => A * p.m, 1);
   }
 
-  return { imagen, sistema, cadena, trazar, aumentoTotal };
+  /*
+   * Abanico: n rayos que salen de un punto del objeto (altura y0, a una
+   * distancia o de la lente) y atraviesan la lente en alturas repartidas
+   * de manera pareja entre -D/2 y D/2 (D = diámetro de la lente).
+   * Cada rayo: { yL, uEntra, uSale, tapado }. tapa: 'arriba', 'abajo' o null
+   * (qué mitad de la lente está tapada). Sirve para las predicciones
+   * "¿qué pasa si…?": todos los rayos que pasan llegan al mismo punto imagen.
+   */
+  function abanico(o, f, y0, D, n, tapa) {
+    const rayos = [];
+    for (let k = 0; k < n; k++) {
+      const yL = n === 1 ? 0 : -D / 2 + D * k / (n - 1);
+      const uEntra = (yL - y0) / o;
+      const tapado = (tapa === 'arriba' && yL > 1e-9) || (tapa === 'abajo' && yL < -1e-9);
+      rayos.push({ yL, uEntra, uSale: uEntra - yL / f, tapado });
+    }
+    return rayos;
+  }
+
+  /*
+   * Mancha que deja en una pantalla a xp de la lente la luz de un punto del
+   * objeto (altura y0). Con la ecuación de la lente, la altura de llegada de
+   * un rayo es lineal en yL: y = yL·(1 + xp/o − xp/f) − y0·xp/o. Por eso la
+   * mancha mide D·|1 + xp/o − xp/f| y es cero justo en la imagen (xp = i).
+   * luz: fracción de la lente que deja pasar luz (la mitad si se tapa media).
+   */
+  function mancha(o, f, y0, D, xp, tapa) {
+    const k = 1 + xp / o - xp / f, c = -y0 * xp / o;
+    // Parte de la lente por donde pasa luz: tapar arriba deja [-D/2, 0]; abajo, [0, D/2].
+    const lo = tapa === 'abajo' ? 0 : -D / 2, hi = tapa === 'arriba' ? 0 : D / 2;
+    const y1 = lo * k + c, y2 = hi * k + c;
+    return { centro: (y1 + y2) / 2, min: Math.min(y1, y2), max: Math.max(y1, y2), ancho: Math.abs(y2 - y1), luz: tapa ? 0.5 : 1 };
+  }
+
+  return { imagen, sistema, cadena, trazar, aumentoTotal, abanico, mancha };
 });

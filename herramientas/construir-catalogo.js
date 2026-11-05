@@ -33,9 +33,11 @@ function construir() {
     const f = leer(ficha);
     const formato = f.formato || 'escena';
     // Escena: página propia. Predicciones: se juega dentro de la app con el generador del módulo.
-    const archivos = (formato === 'escena' ? [f.escena, f.motor] : [f.generador]).map(a => `/plantillas/${f.id}/${a}`);
+    // El primer archivo es el que se carga (escena o generador); los problemas de papel van al final.
+    const archivos = [...(formato === 'escena' ? [f.escena, f.motor] : [f.generador]), ...(f.papel ? [f.papel] : [])].map(a => `/plantillas/${f.id}/${a}`);
     plantillas[f.id] = { id: f.id, titulo: f.titulo, formato, estado: f.estado, version: f.version, unidades: f.unidades,
-      url: formato === 'escena' ? `/plantillas/${f.id}/${f.escena}` : `#/practica/${f.id}`, archivos };
+      url: formato === 'escena' ? `/plantillas/${f.id}/${f.escena}` : `#/practica/${f.id}`,
+      papel: f.papel ? `/plantillas/${f.id}/${f.papel}` : null, archivos };
   }
   const nombresUni = Object.fromEntries(Object.entries(universidades).map(([k, v]) => [k, { nombre: v.nombre, ubicacion: v.ubicacion }]));
   return { universidades: nombresUni, cursos, plantillas };

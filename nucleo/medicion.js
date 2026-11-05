@@ -55,5 +55,25 @@
     });
   }
 
-  return { COLUMNAS, aCSV, resumir };
+  // Guardar un evento en el dispositivo (solo navegador). Lo usan la app y las escenas, que
+  // comparten el mismo origen y por eso el mismo almacenamiento. perfil: { alumno, grado, colegio };
+  // si no se pasa, se lee el de la app. Sin perfil (escena abierta sin pasar por la app) no se guarda:
+  // un evento sin alumno no sirve para comparar entrada y salida.
+  const CLAVE_PERFIL = 'lab-v1', CLAVE_EVENTOS = 'lab-medicion-v1', MAX_EVENTOS = 5000;
+  function eventosGuardados(almacen) {
+    try { return JSON.parse((almacen || localStorage).getItem(CLAVE_EVENTOS)) || []; } catch { return []; }
+  }
+  function guardar(ev, version, perfil, almacen) {
+    try {
+      almacen = almacen || localStorage;
+      perfil = perfil || JSON.parse(almacen.getItem(CLAVE_PERFIL)) || {};
+      if (!perfil.alumno) return false;
+      const l = eventosGuardados(almacen);
+      l.push({ t: new Date().toISOString(), alumno: perfil.alumno, grado: perfil.grado || '', colegio: perfil.colegio || '', version, ...ev });
+      almacen.setItem(CLAVE_EVENTOS, JSON.stringify(l.slice(-MAX_EVENTOS)));
+      return true;
+    } catch { return false; } // sin almacenamiento o sin espacio: se pierde este evento, la app sigue
+  }
+
+  return { COLUMNAS, aCSV, resumir, guardar, eventosGuardados };
 });
