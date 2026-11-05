@@ -100,7 +100,8 @@ Lo que se repite en todos y vale copiar: **una sola regla que se entiende en 5 s
 ### La idea
 
 - Brilliant es la app de aprendizaje interactivo de matemática y ciencia. Lo nuestro va por el mismo camino, pero más bonito, más acogedor y más tranquilo (`docs/diseno.md`). La idea es **copiar sus buenas ideas, no su producto**.
-- Lo que vale de Brilliant: lecciones en pasos cortos, se aprende haciendo y no leyendo, retroalimentación inmediata en cada paso, y muchas formas de responder además de elegir una alternativa.
+- Lo que vale de Brilliant: lecciones en pasos cortos, se aprende haciendo y no leyendo, **primero el problema y después la explicación**, el error abre una explicación interactiva, y piezas interactivas reutilizables entre cursos.
+- "Primero el problema" tiene evidencia: Sinha y Kapur (2021), metaanálisis de 53 estudios, efecto moderado a favor en secundaria (no en primaria). Detalle, críticas, qué copiamos y qué no: `docs/investigacion/brilliant.md`.
 
 ### Tipos de interacción para agregar al catálogo de formatos
 
@@ -139,6 +140,7 @@ Lo que se repite en todos y vale copiar: **una sola regla que se entiende en 5 s
 - [x] Cifras de Perú en PISA 2025 y fuentes reunidas (`docs/investigacion/pisa-y-evaluaciones.md`).
 - [ ] Leer los marcos de la OCDE y los ítems liberados; verificar lo marcado "por verificar" en ese informe (sobre todo las simulaciones de ciencia y la ENLA 2025 de 5.º de secundaria).
 - [ ] Capturas de los juegos de Peak que más gustaron (la tabla de la sección 2 tiene los que se confirmaron; faltan los de cálculo y lenguaje).
-- [ ] Revisar varias lecciones de Brilliant y anotar qué interacciones usan en física y química.
+- [x] Investigación de Brilliant reunida (`docs/investigacion/brilliant.md`).
+- [ ] Probar la versión gratis de Brilliant y anotar 5 lecciones de física o química, pantalla por pantalla.
 - [ ] Citar en `docs/fundacional.md` la evidencia sobre entrenamiento cerebral y sobre fluidez en cálculo.
 - [ ] Decidir cuál de las tres entra primero en la hoja de ruta (propuesta: componentes de interacción, porque los usan las otras dos).
