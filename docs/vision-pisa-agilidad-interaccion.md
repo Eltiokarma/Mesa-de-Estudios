@@ -52,7 +52,24 @@ Agregar estas fuentes a `fuentes/por-conseguir.md` cuando se retome el tema.
 
 - Peak es una app de "entrenamiento cerebral" con minijuegos cortos y bonitos de memoria, atención, cálculo, lenguaje y agilidad mental.
 - Lo que vale de Peak para nosotros: **sesiones de pocos minutos, divertidas, con tiempo y con mejora visible**. Si el alumno multiplica, suma, saca porcentajes y despeja rápido, un problema de energía, cantidad de movimiento, óptica o geometría le sale mucho más rápido, porque la cabeza queda libre para pensar en la física y no en la cuenta.
-- Pendiente: conseguir capturas de pantalla de los juegos de Peak que más gustaron, para describir qué mecánicas copiar.
+- Las capturas no se pudieron bajar en esta sesión (la red bloquea la App Store). Se ven en la ficha de la App Store (`apps.apple.com/app/id806223188`) y en los videos de YouTube de cada juego.
+
+### Juegos de Peak que se pudieron confirmar (búsqueda web, 5 nov 2026)
+
+Peak dice tener más de 45 juegos, en áreas como memoria, atención, resolución de problemas, agilidad mental, cálculo, lenguaje y creatividad. Solo pude confirmar las mecánicas de estos:
+
+| Juego | Área | Qué hace el jugador | Cómo lo usaríamos nosotros |
+| --- | --- | --- | --- |
+| Must Sort | Atención | Clasificar imágenes a toda velocidad hacia uno u otro lado | Lanzar a un lado o al otro: ¿imagen real o virtual?, ¿serie o paralelo?, ¿ácido o base?, ¿m/s o km/h? |
+| Rush Back | Atención | Decir si cada imagen es igual a la anterior (tarea *1-back*) | Comparar el resultado de un cálculo con el anterior: ¿mayor, menor o igual? |
+| Partial Match | Memoria | Decir si cada figura coincide toda, en parte (mismo color u otra forma) o nada con la anterior | Comparar dos magnitudes: mismo valor y misma unidad, mismo valor en otra unidad (1 km y 1000 m) o distintas |
+| Perilous Path | Memoria | Memorizar dónde están las minas en una cuadrícula y luego trazar un camino que las esquive | Memorizar un circuito o un diagrama de rayos y luego reconstruirlo |
+| Low Pop | Resolución de problemas | Tocar las fichas de menor a mayor | Ordenar resultados de cuentas, potencias de 10 o fracciones de menor a mayor sin calcularlas del todo (estimar) |
+| Turtle Traffic | Agilidad mental | Tocar para que la tortuga suba y soltar para que baje, comiendo medusas | Poco aprovechable tal cual; sirve como ejemplo de juego con historia y personaje (nuestro gatito) |
+
+Fuentes: [Dr Jack Lewis, reseña de Peak](https://www.drjack.co.uk/brain-training-review-of-peak-by-dr-jack-lewis/), [Saga, prueba de 5 apps](https://www.saga.co.uk/magazine/health-and-wellbeing/brain-training-apps-best-and-do-they-work), [Peak Labs, Partial Match](https://medium.com/@peaklabs/train-your-working-memory-with-partial-match-20b2df130969), [Peak Play, Turtle Traffic](https://medium.com/peak-play/from-concept-to-final-product-peak-s-lead-game-designer-on-creating-turtle-traffic-an-7de30749e6a0), videos de YouTube de [Low Pop](https://www.youtube.com/watch?v=oRPlpKBJvTI), [Must Sort](https://www.youtube.com/watch?v=1w0Jwh0M-J8) y [Turtle Traffic](https://www.youtube.com/watch?v=lKQEqjFfKBY).
+
+Lo que se repite en todos y vale copiar: **una sola regla que se entiende en 5 segundos**, respuesta con un toque o un deslizamiento, tiempo corto (alrededor de un minuto), dificultad que sube sola si aciertas y un puntaje al final que compara con tu récord. Las mecánicas no son de nadie; los nombres, el arte y la marca sí: se hacen versiones propias.
 
 ### Ojo con la evidencia (de frente)
 
@@ -123,7 +140,7 @@ Agregar estas fuentes a `fuentes/por-conseguir.md` cuando se retome el tema.
 ## Pendientes para cuando se retome
 
 - [ ] Conseguir y leer los marcos de PISA y los ítems liberados; verificar las cifras de Perú.
-- [ ] Capturas de los juegos de Peak que más gustaron.
+- [ ] Capturas de los juegos de Peak que más gustaron (la tabla de la sección 2 tiene los que se confirmaron; faltan los de cálculo y lenguaje).
 - [ ] Revisar varias lecciones de Brilliant y anotar qué interacciones usan en física y química.
 - [ ] Citar en `docs/fundacional.md` la evidencia sobre entrenamiento cerebral y sobre fluidez en cálculo.
 - [ ] Decidir cuál de las tres entra primero en la hoja de ruta (propuesta: componentes de interacción, porque los usan las otras dos).
