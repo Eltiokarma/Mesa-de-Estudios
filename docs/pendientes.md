@@ -106,3 +106,4 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 
 - El documento fundacional vivo en claude.ai no se actualizó con los cambios de alcance: los cursos de matemática y razonamiento, el lanzamiento en el colegio y la dirección acogedora. Conviene copiarlos desde `docs/fundacional.md` y `docs/diseno.md`.
 - `fuentes/por-conseguir.md` tiene la lista de libros y artículos que faltan.
+- Pasar capturas de los juegos de Peak que más gustaron, sobre todo los de cálculo y lenguaje: una de las instrucciones, otra jugando y otra de los resultados. Con eso se completa la tabla de la sección 2 de `docs/vision-pisa-agilidad-interaccion.md`. Las capturas no se suben al repo (son material de Peak); solo se anota lo que muestran.
