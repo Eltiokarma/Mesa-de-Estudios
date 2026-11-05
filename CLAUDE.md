@@ -20,6 +20,7 @@ App de bajo costo para postulantes a universidades peruanas (UNI, San Marcos, UN
 ```
 docs/fundacional.md            documento base (copia del doc vivo en claude.ai)
 docs/arquitectura.md           capas (catálogo, módulos, núcleo, app, datos), formatos de módulo y cómo agregar cursos o unidades
+docs/pendientes.md             traspaso: qué hay hecho, cómo arrancar y pendientes en orden (léelo al empezar)
 docs/diseno.md                 sistema de diseño: colores de marca y de variables, componentes, celular y pantalla grande
 catalogo/                      qué se enseña: cursos, unidades, en qué universidad entra cada una (JSON; ver catalogo/LEEME.md)
 plantillas/<tema>/plantilla.json  ficha del módulo: unidades que cubre, estado, versión, archivos
@@ -47,7 +48,15 @@ fuentes/examenes/              exámenes pasados
 fuentes/libros/                libros y manuales de consulta
 ```
 
-## Estado (4 nov 2026)
+## Estado (5 nov 2026)
+
+**Sesión nueva: lee `docs/pendientes.md`.** Ahí está qué hay hecho, cómo arrancar y los pendientes en orden de prioridad.
+
+- Plantillas: Banco Óptico, espejos esféricos y circuitos (escenas); reactivo limitante y porcentajes sucesivos (predicciones). `npm test`: 136 pruebas en verde.
+- App PWA con medición anónima, lápiz y papel, celular y laboratorio de cómputo, y diseño acogedor (`docs/diseno.md`).
+- Lanzamiento: un colegio, 3.º a 5.º de secundaria, diciembre de 2026 (fecha por confirmar).
+
+### Historia
 
 - Fase 0 en curso. Hecho: documento fundacional, Banco Óptico (lente sola + sistemas de 2 o 3 lentes) en `plantillas/optica-lente-delgada/`.
 - Investigación de ideas erróneas en óptica (lentes): `docs/investigacion/optica-ideas-erroneas.md`. Conclusión clave: los errores conceptuales están documentados; los de cálculo (signos, sistemas, aumento total) no, y se tratan como hipótesis. Espejos esféricos: `docs/investigacion/optica-espejos-esfericos.md`, con predicciones y casos de prueba propuestos para la plantilla. Cinemática (MRUV, caída libre, tiro parabólico): `docs/investigacion/cinematica-ideas-erroneas.md`; aquí sí hay datos fuertes (Beichner 1994, Thornton y Sokoloff 1998, Prescott y Mitchelmore 2005). Dinámica: `docs/investigacion/dinamica-ideas-erroneas.md`, con el único dato peruano encontrado (FCI en 4535 alumnos de la PUCP, Castillo y otros 2013). Además: estática y energía, choques/gravitación/ondas, fluidos/calor/termodinámica, y electricidad/magnetismo/refracción/física moderna, cada uno en su informe de `docs/investigacion/`. Química: estequiometría, gases y soluciones, equilibrio/ácidos/electroquímica, y átomo/tabla periódica/enlace. Libros y artículos pendientes de conseguir: `fuentes/por-conseguir.md`.
@@ -58,6 +67,8 @@ fuentes/libros/                libros y manuales de consulta
 - **Decisión de Gerson (5 nov 2026):** no hay prueba previa con alumnos. El prototipo se lanza en un colegio, donde se evalúa casi todo; se va con un prototipo mucho más avanzado que un producto mínimo. La app debe medir por sí misma (predicciones y pruebas de antes y después, anónimas), porque es la única fuente de datos.
 
 ## Próximas tareas, en orden
+
+La lista vigente y detallada está en `docs/pendientes.md` y en la hoja de ruta (`docs/hoja-de-ruta.json`). Esta es la lista original de la fase 0:
 
 1. ~~Extraer el motor de la lente a un módulo JS puro y correr `casos.json` con `node --test`.~~ Hecho. Es el patrón para las plantillas que siguen: `motor.js` + `casos.json` + `motor.test.js`.
 2. Leer los prospectos/temarios que Gerson suba a `fuentes/prospectos/` y fijar la taxonomía de `docs/fundacional.md` (la UNI como techo de dificultad). UNI hecha con el sílabo del CEPRE-UNI 2026-2: `docs/taxonomia-uni-2026.md`. San Marcos hecha con el temario del CEPRE-UNMSM 2026-I: `docs/taxonomia-unmsm-2026.md`. Faltan UNA Puno, UNSA y UNSAAC.
