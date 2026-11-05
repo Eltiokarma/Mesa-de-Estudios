@@ -44,3 +44,7 @@
 | Contexto histórico | No | Una capa de "sorpresa" por tema |
 
 **Regla que no cambia:** aunque se enlace contenido externo, la física de las escenas y los cálculos sigue viviendo en el motor (regla 1 de `CLAUDE.md`), y todo lo que se enlace se revisa antes de publicarse.
+
+## Más ideas a futuro
+
+- Modo PISA, agilidad mental (al estilo de Peak) e interacciones tipo juego (al estilo de Brilliant): `docs/vision-pisa-agilidad-interaccion.md` (5 nov 2026).
