@@ -15,6 +15,7 @@
       ],
       "universidades": {"unmsm": {"temas": [1, 2, 18]}},
       "potencial_visual": "medio",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -29,6 +30,7 @@
       ],
       "universidades": {"unmsm": {"temas": [1, 2, 3, 4]}},
       "potencial_visual": "alto",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -38,6 +40,7 @@
       "temas": ["Ordenamiento lineal", "Ordenamiento circular", "Ordenamiento poligonal"],
       "universidades": {"unmsm": {"temas": [3]}},
       "potencial_visual": "alto",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -51,6 +54,7 @@
       ],
       "universidades": {"unmsm": {"temas": [4]}},
       "potencial_visual": "medio",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -60,6 +64,7 @@
       "temas": ["Traslado de fichas y figuras", "Traslado de números", "Puntos cardinales y orientación"],
       "universidades": {"unmsm": {"temas": [5]}},
       "potencial_visual": "alto",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -69,6 +74,7 @@
       "temas": ["Arreglos en polígonos", "Cuadrados mágicos", "Distribución de números con condiciones"],
       "universidades": {"unmsm": {"temas": [6]}},
       "potencial_visual": "medio",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -78,6 +84,7 @@
       "temas": ["Inducción numérica", "Inducción verbal", "Inducción con figuras"],
       "universidades": {"unmsm": {"temas": [7]}},
       "potencial_visual": "medio",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -87,6 +94,7 @@
       "temas": ["Dominó", "Dados", "Fichas y cerillas"],
       "universidades": {"unmsm": {"temas": [8]}},
       "potencial_visual": "alto",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -102,6 +110,7 @@
       ],
       "universidades": {"unmsm": {"temas": [8, 9, 16]}},
       "potencial_visual": "medio",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -111,6 +120,7 @@
       "temas": ["Extracción de objetos", "Peor caso", "Identificación de objetos"],
       "universidades": {"unmsm": {"temas": [9]}},
       "potencial_visual": "medio",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -120,6 +130,7 @@
       "temas": ["Pastillas y recetas", "Dietas y turnos", "Número de campanadas"],
       "universidades": {"unmsm": {"temas": [10]}},
       "potencial_visual": "medio",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -129,6 +140,7 @@
       "temas": ["Engranajes en contacto", "Ruedas unidas por faja", "Ruedas en un mismo eje", "Número de vueltas"],
       "universidades": {"unmsm": {"temas": [10]}},
       "potencial_visual": "alto",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -143,6 +155,7 @@
       ],
       "universidades": {"unmsm": {"temas": [11]}},
       "potencial_visual": "medio",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -152,6 +165,7 @@
       "temas": ["Cortes rectos de objetos", "Equilibrio de objetos", "Balanzas y pesas", "Número mínimo de pesadas"],
       "universidades": {"unmsm": {"temas": [12, 13]}},
       "potencial_visual": "alto",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -166,6 +180,7 @@
       ],
       "universidades": {"unmsm": {"temas": [12]}},
       "potencial_visual": "medio",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -182,6 +197,7 @@
       ],
       "universidades": {"unmsm": {"temas": [13, 14, 15]}},
       "potencial_visual": "alto",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -191,6 +207,7 @@
       "temas": ["Rutas en el plano", "Rutas en el espacio", "Proyecciones principales de un sólido"],
       "universidades": {"unmsm": {"temas": [15, 16]}},
       "potencial_visual": "alto",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -200,6 +217,7 @@
       "temas": ["Lectura de tablas y gráficos", "Situaciones deportivas", "Suficiencia de datos"],
       "universidades": {"unmsm": {"temas": [17]}},
       "potencial_visual": "medio",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     }

@@ -17,6 +17,7 @@
       ],
       "universidades": {"uni": {"semanas": [0]}, "unmsm": {"temas": [1, 2]}},
       "potencial_visual": "alto",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -34,6 +35,7 @@
       ],
       "universidades": {"uni": {"semanas": [1, 2]}, "unmsm": {"temas": [2, 3]}},
       "potencial_visual": "alto",
+      "grado": 3,
       "plantillas": [],
       "investigacion": "docs/investigacion/cinematica-ideas-erroneas.md"
     },
@@ -50,6 +52,7 @@
       ],
       "universidades": {"uni": {"semanas": [3]}, "unmsm": {"temas": [4]}},
       "potencial_visual": "alto",
+      "grado": 4,
       "plantillas": [],
       "investigacion": "docs/investigacion/cinematica-ideas-erroneas.md"
     },
@@ -68,6 +71,7 @@
       ],
       "universidades": {"uni": {"semanas": [4]}, "unmsm": {"temas": [6]}},
       "potencial_visual": "alto",
+      "grado": 4,
       "plantillas": [],
       "investigacion": "docs/investigacion/estatica-energia-ideas-erroneas.md"
     },
@@ -84,6 +88,7 @@
       ],
       "universidades": {"uni": {"semanas": [5]}, "unmsm": {"temas": [5]}},
       "potencial_visual": "alto",
+      "grado": 4,
       "plantillas": [],
       "investigacion": "docs/investigacion/dinamica-ideas-erroneas.md"
     },
@@ -98,6 +103,7 @@
       ],
       "universidades": {"uni": {"semanas": [6]}, "unmsm": {"temas": [8]}},
       "potencial_visual": "medio",
+      "grado": 4,
       "plantillas": [],
       "investigacion": "docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md"
     },
@@ -113,6 +119,7 @@
       ],
       "universidades": {"uni": {"semanas": [6]}, "unmsm": {"temas": [7]}},
       "potencial_visual": "alto",
+      "grado": 4,
       "plantillas": [],
       "investigacion": "docs/investigacion/estatica-energia-ideas-erroneas.md"
     },
@@ -129,6 +136,7 @@
       ],
       "universidades": {"uni": {"semanas": [7]}, "unmsm": {"temas": [8]}},
       "potencial_visual": "alto",
+      "grado": 4,
       "plantillas": [],
       "investigacion": "docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md"
     },
@@ -144,6 +152,7 @@
       ],
       "universidades": {"uni": {"semanas": [8]}, "unmsm": {"temas": [16]}},
       "potencial_visual": "alto",
+      "grado": 5,
       "plantillas": [],
       "investigacion": "docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md"
     },
@@ -160,6 +169,7 @@
       ],
       "universidades": {"uni": {"semanas": [9]}, "unmsm": {"temas": [16]}},
       "potencial_visual": "alto",
+      "grado": 5,
       "plantillas": [],
       "investigacion": "docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md"
     },
@@ -177,6 +187,7 @@
       ],
       "universidades": {"uni": {"semanas": [10]}, "unmsm": {"temas": [9]}},
       "potencial_visual": "alto",
+      "grado": 4,
       "plantillas": [],
       "investigacion": "docs/investigacion/fluidos-calor-termodinamica-ideas-erroneas.md"
     },
@@ -194,6 +205,7 @@
       ],
       "universidades": {"uni": {"semanas": [11]}, "unmsm": {"temas": [10]}},
       "potencial_visual": "alto",
+      "grado": 4,
       "plantillas": [],
       "investigacion": "docs/investigacion/fluidos-calor-termodinamica-ideas-erroneas.md"
     },
@@ -211,6 +223,7 @@
       ],
       "universidades": {"uni": {"semanas": [12, 13]}},
       "potencial_visual": "alto",
+      "grado": 5,
       "plantillas": [],
       "investigacion": "docs/investigacion/fluidos-calor-termodinamica-ideas-erroneas.md"
     },
@@ -229,6 +242,7 @@
       ],
       "universidades": {"uni": {"semanas": [13, 14, 15]}, "unmsm": {"temas": [11, 12]}},
       "potencial_visual": "alto",
+      "grado": 5,
       "plantillas": [],
       "investigacion": "docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md"
     },
@@ -247,6 +261,7 @@
       ],
       "universidades": {"uni": {"semanas": [15, 16]}, "unmsm": {"temas": [13]}},
       "potencial_visual": "alto",
+      "grado": 5,
       "plantillas": [],
       "investigacion": "docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md"
     },
@@ -262,6 +277,7 @@
       ],
       "universidades": {"uni": {"semanas": [17]}, "unmsm": {"temas": [14]}},
       "potencial_visual": "alto",
+      "grado": 5,
       "plantillas": [],
       "investigacion": "docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md"
     },
@@ -278,6 +294,7 @@
       ],
       "universidades": {"uni": {"semanas": [18]}, "unmsm": {"temas": [15]}},
       "potencial_visual": "alto",
+      "grado": 5,
       "plantillas": [],
       "investigacion": "docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md"
     },
@@ -292,6 +309,7 @@
       ],
       "universidades": {"uni": {"semanas": [18]}, "unmsm": {"temas": [17]}},
       "potencial_visual": "bajo",
+      "grado": 5,
       "plantillas": [],
       "investigacion": null
     },
@@ -308,6 +326,7 @@
       ],
       "universidades": {"uni": {"semanas": [19]}, "unmsm": {"temas": [17]}},
       "potencial_visual": "alto",
+      "grado": 5,
       "plantillas": ["optica-lente-delgada"],
       "investigacion": "docs/investigacion/optica-ideas-erroneas.md"
     },
@@ -325,6 +344,7 @@
       ],
       "universidades": {"uni": {"semanas": [20]}, "unmsm": {"temas": [18]}},
       "potencial_visual": "medio",
+      "grado": 5,
       "plantillas": [],
       "investigacion": "docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md"
     }

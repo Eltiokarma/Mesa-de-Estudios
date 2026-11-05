@@ -140,13 +140,13 @@
       "id": "pl5",
       "seccion": "Plataforma y medición",
       "nombre": "Nivel por grado (3.º, 4.º, 5.º) en el catálogo",
-      "inicio": "2026-11-09",
-      "fin": "2026-11-12",
-      "estado": "pendiente",
-      "progreso": 0,
+      "inicio": "2026-11-05",
+      "fin": "2026-11-05",
+      "estado": "hecho",
+      "progreso": 100,
       "critico": false,
       "depende_de": [],
-      "notas": "Currículo nacional de secundaria"
+      "notas": "Estimación; confirmar con la programación anual del colegio (catalogo/LEEME.md, Grados)."
     },
     {
       "id": "pl4",

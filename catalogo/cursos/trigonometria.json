@@ -15,6 +15,7 @@
       ],
       "universidades": {"uni": {"semanas": [0]}, "unmsm": {"temas": [1]}},
       "potencial_visual": "alto",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -29,6 +30,7 @@
       ],
       "universidades": {"uni": {"semanas": [2]}, "unmsm": {"temas": [2]}},
       "potencial_visual": "alto",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -43,6 +45,7 @@
       ],
       "universidades": {"uni": {"semanas": [1]}, "unmsm": {"temas": [3, 4]}},
       "potencial_visual": "alto",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -52,6 +55,7 @@
       "temas": ["Resolver con un lado y un ángulo", "Ángulos de elevación y depresión", "Ángulo de observación"],
       "universidades": {"uni": {"semanas": [1]}, "unmsm": {"temas": [3, 12]}},
       "potencial_visual": "alto",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -68,6 +72,7 @@
       ],
       "universidades": {"uni": {"semanas": [3]}},
       "potencial_visual": "alto",
+      "grado": 4,
       "plantillas": [],
       "investigacion": null
     },
@@ -83,6 +88,7 @@
       ],
       "universidades": {"uni": {"semanas": [4]}, "unmsm": {"temas": [5]}},
       "potencial_visual": "alto",
+      "grado": 4,
       "plantillas": [],
       "investigacion": null
     },
@@ -97,6 +103,7 @@
       ],
       "universidades": {"uni": {"semanas": [5]}, "unmsm": {"temas": [6]}},
       "potencial_visual": "alto",
+      "grado": 4,
       "plantillas": [],
       "investigacion": null
     },
@@ -113,6 +120,7 @@
       ],
       "universidades": {"uni": {"semanas": [5, 6]}, "unmsm": {"temas": [13, 14]}},
       "potencial_visual": "alto",
+      "grado": 4,
       "plantillas": [],
       "investigacion": null
     },
@@ -127,6 +135,7 @@
       ],
       "universidades": {"uni": {"semanas": [6]}, "unmsm": {"temas": [7]}},
       "potencial_visual": "medio",
+      "grado": 4,
       "plantillas": [],
       "investigacion": null
     },
@@ -136,6 +145,7 @@
       "temas": ["Seno, coseno y tangente de la suma y la diferencia", "Identidades auxiliares", "Suma de tres ángulos"],
       "universidades": {"uni": {"semanas": [7]}, "unmsm": {"temas": [8]}},
       "potencial_visual": "medio",
+      "grado": 5,
       "plantillas": [],
       "investigacion": null
     },
@@ -145,6 +155,7 @@
       "temas": ["Identidades del ángulo doble", "Degradación de potencias", "Ángulo mitad", "Ángulo triple"],
       "universidades": {"uni": {"semanas": [7, 8]}, "unmsm": {"temas": [9]}},
       "potencial_visual": "medio",
+      "grado": 5,
       "plantillas": [],
       "investigacion": null
     },
@@ -154,6 +165,7 @@
       "temas": ["Suma a producto", "Producto a suma", "Sumatorias de senos y cosenos", "Productorias trigonométricas"],
       "universidades": {"uni": {"semanas": [8, 9]}, "unmsm": {"temas": [10]}},
       "potencial_visual": "bajo",
+      "grado": 5,
       "plantillas": [],
       "investigacion": null
     },
@@ -169,6 +181,7 @@
       ],
       "universidades": {"uni": {"semanas": [9, 10, 11]}, "unmsm": {"temas": [15, 16]}},
       "potencial_visual": "alto",
+      "grado": 5,
       "plantillas": [],
       "investigacion": null
     },
@@ -183,6 +196,7 @@
       ],
       "universidades": {"uni": {"semanas": [11, 12]}, "unmsm": {"temas": [17, 18]}},
       "potencial_visual": "alto",
+      "grado": 5,
       "plantillas": [],
       "investigacion": null
     },
@@ -197,6 +211,7 @@
       ],
       "universidades": {"uni": {"semanas": [13]}, "unmsm": {"temas": [11]}},
       "potencial_visual": "alto",
+      "grado": 5,
       "plantillas": [],
       "investigacion": null
     },
@@ -211,6 +226,7 @@
       ],
       "universidades": {"uni": {"semanas": [14]}, "unmsm": {"temas": [12]}},
       "potencial_visual": "alto",
+      "grado": 5,
       "plantillas": [],
       "investigacion": null
     },
@@ -226,6 +242,7 @@
       ],
       "universidades": {"uni": {"semanas": [15, 16]}, "unmsm": {"temas": [3]}},
       "potencial_visual": "alto",
+      "grado": 5,
       "plantillas": [],
       "investigacion": null
     },
@@ -243,6 +260,7 @@
       ],
       "universidades": {"uni": {"semanas": [17, 18, 19]}},
       "potencial_visual": "alto",
+      "grado": 5,
       "plantillas": [],
       "investigacion": null
     },
@@ -257,6 +275,7 @@
       ],
       "universidades": {"uni": {"semanas": [20]}},
       "potencial_visual": "medio",
+      "grado": 5,
       "plantillas": [],
       "investigacion": null
     }

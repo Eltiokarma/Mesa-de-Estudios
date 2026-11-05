@@ -22,7 +22,7 @@ function construir() {
       id: c.id, nombre: c.nombre, area: c.area, formato_principal: c.formato_principal,
       unidades: c.unidades.map(u => ({
         id: u.id, nombre: u.nombre, temas: u.temas, universidades: u.universidades,
-        potencial_visual: u.potencial_visual, plantillas: u.plantillas,
+        potencial_visual: u.potencial_visual, grado: u.grado, plantillas: u.plantillas,
       })),
     }));
   const dirPl = path.join(RAIZ, 'plantillas');

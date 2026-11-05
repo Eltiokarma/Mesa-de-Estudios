@@ -49,6 +49,7 @@ test('las unidades tienen ids únicos y campos válidos', () => {
       assert.ok(u.nombre, `${u.id}: falta nombre`);
       assert.ok(Array.isArray(u.temas) && u.temas.length > 0, `${u.id}: falta la lista de temas`);
       assert.ok(VISUAL.includes(u.potencial_visual), `${u.id}: potencial_visual inválido`);
+      assert.ok([3, 4, 5].includes(u.grado), `${u.id}: grado debe ser 3, 4 o 5 (desde qué grado de secundaria se puede estudiar)`);
       assert.ok(Array.isArray(u.plantillas), `${u.id}: plantillas debe ser una lista`);
       const unis = Object.keys(u.universidades || {});
       assert.ok(unis.length > 0, `${u.id}: no dice en qué universidad entra`);

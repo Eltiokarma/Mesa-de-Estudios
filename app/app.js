@@ -59,11 +59,14 @@ const visto = id => !!est.vistas[id];
 // Las escenas abren su propia página (con botón para volver); las predicciones se juegan dentro de la app.
 const enlace = p => p.formato === 'escena' ? `${p.url}?desde=app` : p.url;
 function avance(c, uni) { const us = unidadesDe(c, uni); return us.length ? us.filter(u => visto(u.id)).length / us.length : 0; }
-// Orden de estudio: el del cronograma de su universidad (semana o tema), intercalando cursos.
+// Grado: una unidad de un grado mayor al del alumno es un "adelanto". No se oculta, pero va al final.
+const adelanto = u => u.grado > (Number(est.grado) || 99);
+const tagAdelanto = u => adelanto(u) ? `<span class="tag gris" title="Normalmente se ve en ${u.grado}.º de secundaria">Adelanto · ${u.grado}.º</span>` : '';
+// Orden de estudio: primero lo de su grado; dentro, el cronograma de su universidad (semana o tema), intercalando cursos.
 function cola(uni) {
   const todas = [];
-  cat.cursos.forEach((c, ci) => unidadesDe(c, uni).forEach(u => todas.push({ c, u, k: Math.min(...(ubic(u, uni) || [99])), ci })));
-  return todas.sort((a, b) => a.k - b.k || a.ci - b.ci);
+  cat.cursos.forEach((c, ci) => unidadesDe(c, uni).forEach(u => todas.push({ c, u, a: adelanto(u) ? 1 : 0, k: Math.min(...(ubic(u, uni) || [99])), ci })));
+  return todas.sort((a, b) => a.a - b.a || a.k - b.k || a.ci - b.ci);
 }
 
 // ---------- Vistas ----------
@@ -106,7 +109,7 @@ function vBienvenida() {
 
 function vInicio() {
   const q = cola(est.uni), pend = q.filter(x => !visto(x.u.id));
-  const conEscena = pend.find(x => x.u.plantillas.length) || pend[0];
+  const conEscena = pend.find(x => !x.a && x.u.plantillas.length) || pend[0];
   const totalU = q.length, hechas = q.length - pend.length;
   const reto = conEscena ? `<div class="reto">
       <div class="etq">Reto de hoy · ${esc(conEscena.c.nombre)}</div>
@@ -118,7 +121,7 @@ function vInicio() {
     </div>` : `<div class="reto"><h3>¡Terminaste todo el temario!</h3><p>Repasa lo que más te costó.</p></div>`;
   const sig = pend.filter(x => x !== conEscena).slice(0, 4).map(x => `<a class="item" href="#/curso/${esc(x.c.id)}">${icono(x.c.id)}
       <span class="tx"><span class="t">${esc(x.u.nombre)}</span><br><span class="d">${esc(x.c.nombre)} · ${esc(etiquetaUbic(x.u, est.uni))}</span></span>
-      <span class="der">${x.u.plantillas.length ? `<span class="tag lima">${cat.plantillas[x.u.plantillas[0]].formato === 'escena' ? 'Escena' : 'Práctica'}</span>` : ''}›</span></a>`).join('');
+      <span class="der">${tagAdelanto(x.u)}${x.u.plantillas.length ? `<span class="tag lima">${cat.plantillas[x.u.plantillas[0]].formato === 'escena' ? 'Escena' : 'Práctica'}</span>` : ''}›</span></a>`).join('');
   $app.innerHTML = `
     <header class="saludo"><span class="avatar">${esc((est.nombre || '?')[0].toUpperCase())}</span>
       <div><p class="sub">Hola${est.nombre ? `, ${esc(est.nombre)}` : ''} 👋</p><h1>¿Qué entendemos hoy?</h1></div></header>
@@ -154,7 +157,7 @@ function vCurso(id) {
   const ord = [...us].sort((a, b) => Math.min(...(ubic(a, est.uni) || [99])) - Math.min(...(ubic(b, est.uni) || [99])));
   const filas = ord.map(u => {
     const pl = u.plantillas.map(p => cat.plantillas[p]).filter(Boolean);
-    const tags = Object.keys(u.universidades).map(k => `<span class="tag">${esc(etiquetaUbic(u, k))}</span>`).join('');
+    const tags = tagAdelanto(u) + Object.keys(u.universidades).map(k => `<span class="tag">${esc(etiquetaUbic(u, k))}</span>`).join('');
     return `<article class="unidad"><div class="fila">
         <span class="t">${esc(u.nombre)}</span>
         <button class="check${visto(u.id) ? ' on' : ''}" data-ver="${esc(u.id)}" aria-pressed="${visto(u.id)}" aria-label="Marcar ${esc(u.nombre)} como estudiada">${visto(u.id) ? '✓' : ''}</button></div>

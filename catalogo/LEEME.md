@@ -26,6 +26,7 @@ Aquí se declara **qué** enseña la app: cursos, unidades y temas, en qué univ
         "unmsm": { "temas": [17] }
       },
       "potencial_visual": "alto",
+      "grado": 5,
       "plantillas": ["optica-lente-delgada"],
       "investigacion": "docs/investigacion/optica-ideas-erroneas.md"
     }
@@ -42,6 +43,7 @@ Aquí se declara **qué** enseña la app: cursos, unidades y temas, en qué univ
 | `temas` | Lista corta de subtemas, en palabras propias. |
 | `universidades` | Dónde entra la unidad. `uni.semanas`: semanas del sílabo CEPRE-UNI 2026-2. `unmsm.temas`: números de tema del temario CEPRE-UNMSM 2026-I. Si una universidad no la pide, se omite. Se agregan `una`, `unsa`, `unsaac` cuando haya temario. |
 | `potencial_visual` | `alto`, `medio` o `bajo`. |
+| `grado` | Desde qué grado de secundaria (3, 4 o 5) se puede estudiar la unidad. A un alumno de un grado menor se le muestra como "adelanto" y va al final de su cola; no se le oculta. Es una estimación: ver "Grados" más abajo. |
 | `plantillas` | Ids de plantillas que existen en `plantillas/`. Vacío si todavía no hay. |
 | `investigacion` | Ruta al informe de errores típicos, o `null`. |
 
@@ -82,3 +84,16 @@ El catálogo inicial de 8 cursos y 151 unidades se armó con los sílabos del CE
    - Relatividad, dentro de `fisica.fisica-moderna`.
 4. **Cinética química** no tiene informe de errores típicos (`investigacion: null`).
 5. **Correspondencia de semanas a revisar:** las sesiones de trigonometría de la UNI en las semanas 0 a 4 se asignaron por fecha impresa. Conviene revisarlas con el PDF.
+
+## Grados (5 nov 2026)
+
+El lanzamiento es con 3.º, 4.º y 5.º de secundaria, y no todos han visto lo mismo. Cada unidad dice desde qué grado se puede estudiar (`grado`). Hoy hay 72 unidades de 3.º, 40 de 4.º y 39 de 5.º.
+
+**Es una estimación y hay que confirmarla con los profesores del colegio.** El Currículo Nacional (CNEB) organiza Ciencia y Tecnología y Matemática por competencias, no por una lista fija de temas por grado, así que cada colegio reparte los temas a su manera. La estimación sigue el orden más común en los colegios y en los ciclos preuniversitarios:
+
+- **Física.** 3.º: magnitudes, vectores y movimiento rectilíneo. 4.º: tiro parabólico y movimiento circular, estática, dinámica, energía, choques, gravitación, fluidos y calor. 5.º: oscilaciones, ondas, termodinámica, electricidad, magnetismo, óptica y física moderna.
+- **Química.** 3.º: materia, átomo, tabla periódica, enlace y nomenclatura. 4.º: mol, reacciones, estequiometría, gases, soluciones y orgánica. 5.º: cinética, equilibrio, ácidos y bases, electroquímica y biomoléculas.
+- **Matemática.** 3.º: aritmética básica (numeración, divisibilidad, fracciones, razones, porcentajes), expresiones algebraicas y factorización, geometría plana básica y razones trigonométricas. 4.º: inecuaciones, funciones, sistemas, áreas y semejanza, circunferencia trigonométrica e identidades. 5.º: logaritmos, complejos, matrices, sucesiones, combinatoria y probabilidades, geometría del espacio y analítica, y la trigonometría de arcos compuestos en adelante.
+- **Razonamiento matemático y verbal:** desde 3.º, porque son habilidades y no temas de un grado.
+
+Cuando el colegio pase su programación anual, se corrige este campo; no hace falta tocar código.

@@ -45,6 +45,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -74,6 +75,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -100,6 +102,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 4,
      "plantillas": []
     },
     {
@@ -128,6 +131,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 4,
      "plantillas": []
     },
     {
@@ -154,6 +158,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 4,
      "plantillas": []
     },
     {
@@ -178,6 +183,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 4,
      "plantillas": []
     },
     {
@@ -203,6 +209,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 4,
      "plantillas": []
     },
     {
@@ -229,6 +236,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 4,
      "plantillas": []
     },
     {
@@ -254,6 +262,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 5,
      "plantillas": []
     },
     {
@@ -280,6 +289,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 5,
      "plantillas": []
     },
     {
@@ -307,6 +317,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 4,
      "plantillas": []
     },
     {
@@ -334,6 +345,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 4,
      "plantillas": []
     },
     {
@@ -357,6 +369,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 5,
      "plantillas": []
     },
     {
@@ -388,6 +401,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 5,
      "plantillas": []
     },
     {
@@ -417,6 +431,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 5,
      "plantillas": []
     },
     {
@@ -442,6 +457,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 5,
      "plantillas": []
     },
     {
@@ -468,6 +484,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 5,
      "plantillas": []
     },
     {
@@ -492,6 +509,7 @@
       }
      },
      "potencial_visual": "bajo",
+     "grado": 5,
      "plantillas": []
     },
     {
@@ -518,6 +536,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 5,
      "plantillas": [
       "optica-lente-delgada"
      ]
@@ -547,6 +566,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 5,
      "plantillas": []
     }
    ]
@@ -582,6 +602,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -612,6 +633,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -640,6 +662,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -669,6 +692,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -698,6 +722,7 @@
       }
      },
      "potencial_visual": "bajo",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -727,6 +752,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 4,
      "plantillas": []
     },
     {
@@ -753,6 +779,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 4,
      "plantillas": []
     },
     {
@@ -778,6 +805,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 4,
      "plantillas": [
       "estequiometria-limitante"
      ]
@@ -809,6 +837,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 4,
      "plantillas": []
     },
     {
@@ -836,6 +865,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 4,
      "plantillas": []
     },
     {
@@ -861,6 +891,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 4,
      "plantillas": []
     },
     {
@@ -887,6 +918,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 5,
      "plantillas": []
     },
     {
@@ -911,6 +943,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 5,
      "plantillas": []
     },
     {
@@ -936,6 +969,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 5,
      "plantillas": []
     },
     {
@@ -962,6 +996,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 5,
      "plantillas": []
     },
     {
@@ -991,6 +1026,7 @@
       }
      },
      "potencial_visual": "bajo",
+     "grado": 4,
      "plantillas": []
     },
     {
@@ -1020,6 +1056,7 @@
       }
      },
      "potencial_visual": "bajo",
+     "grado": 4,
      "plantillas": []
     },
     {
@@ -1049,6 +1086,7 @@
       }
      },
      "potencial_visual": "bajo",
+     "grado": 5,
      "plantillas": []
     },
     {
@@ -1075,6 +1113,7 @@
       }
      },
      "potencial_visual": "bajo",
+     "grado": 4,
      "plantillas": []
     },
     {
@@ -1105,6 +1144,7 @@
       }
      },
      "potencial_visual": "bajo",
+     "grado": 4,
      "plantillas": []
     }
    ]
@@ -1137,6 +1177,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -1163,6 +1204,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -1190,6 +1232,7 @@
       }
      },
      "potencial_visual": "bajo",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -1215,6 +1258,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -1241,6 +1285,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 4,
      "plantillas": []
     },
     {
@@ -1267,6 +1312,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 4,
      "plantillas": []
     },
     {
@@ -1292,6 +1338,7 @@
       }
      },
      "potencial_visual": "bajo",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -1318,6 +1365,7 @@
       }
      },
      "potencial_visual": "bajo",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -1343,6 +1391,7 @@
       }
      },
      "potencial_visual": "bajo",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -1371,6 +1420,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 4,
      "plantillas": []
     },
     {
@@ -1399,6 +1449,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 4,
      "plantillas": []
     },
     {
@@ -1425,6 +1476,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 5,
      "plantillas": []
     },
     {
@@ -1451,6 +1503,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 5,
      "plantillas": []
     },
     {
@@ -1477,6 +1530,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 5,
      "plantillas": []
     },
     {
@@ -1505,6 +1559,7 @@
       }
      },
      "potencial_visual": "bajo",
+     "grado": 5,
      "plantillas": []
     },
     {
@@ -1532,6 +1587,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 4,
      "plantillas": []
     },
     {
@@ -1558,6 +1614,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 5,
      "plantillas": []
     },
     {
@@ -1581,6 +1638,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 5,
      "plantillas": []
     },
     {
@@ -1605,6 +1663,7 @@
       }
      },
      "potencial_visual": "bajo",
+     "grado": 5,
      "plantillas": []
     }
    ]
@@ -1634,6 +1693,7 @@
       }
      },
      "potencial_visual": "bajo",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -1657,6 +1717,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -1682,6 +1743,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -1708,6 +1770,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -1734,6 +1797,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 3,
      "plantillas": [
       "porcentajes-sucesivos"
      ]
@@ -1763,6 +1827,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 4,
      "plantillas": []
     },
     {
@@ -1787,6 +1852,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 4,
      "plantillas": []
     },
     {
@@ -1816,6 +1882,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 4,
      "plantillas": []
     },
     {
@@ -1843,6 +1910,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 5,
      "plantillas": []
     },
     {
@@ -1871,6 +1939,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 5,
      "plantillas": []
     },
     {
@@ -1896,6 +1965,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -1925,6 +1995,7 @@
       }
      },
      "potencial_visual": "bajo",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -1951,6 +2022,7 @@
       }
      },
      "potencial_visual": "bajo",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -1979,6 +2051,7 @@
       }
      },
      "potencial_visual": "bajo",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -2005,6 +2078,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -2034,6 +2108,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -2058,6 +2133,7 @@
       }
      },
      "potencial_visual": "bajo",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -2083,6 +2159,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 4,
      "plantillas": []
     },
     {
@@ -2105,6 +2182,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 4,
      "plantillas": []
     }
    ]
@@ -2141,6 +2219,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -2167,6 +2246,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -2193,6 +2273,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -2219,6 +2300,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -2246,6 +2328,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -2271,6 +2354,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 4,
      "plantillas": []
     },
     {
@@ -2295,6 +2379,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 4,
      "plantillas": []
     },
     {
@@ -2323,6 +2408,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 4,
      "plantillas": []
     },
     {
@@ -2348,6 +2434,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 4,
      "plantillas": []
     },
     {
@@ -2367,6 +2454,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 4,
      "plantillas": []
     },
     {
@@ -2394,6 +2482,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 4,
      "plantillas": []
     },
     {
@@ -2420,6 +2509,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 4,
      "plantillas": []
     },
     {
@@ -2449,6 +2539,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 5,
      "plantillas": []
     },
     {
@@ -2473,6 +2564,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 5,
      "plantillas": []
     },
     {
@@ -2502,6 +2594,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 5,
      "plantillas": []
     },
     {
@@ -2531,6 +2624,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 5,
      "plantillas": []
     },
     {
@@ -2554,6 +2648,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 5,
      "plantillas": []
     },
     {
@@ -2576,6 +2671,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 3,
      "plantillas": []
     }
    ]
@@ -2608,6 +2704,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -2632,6 +2729,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -2657,6 +2755,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -2681,6 +2780,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -2702,6 +2802,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 4,
      "plantillas": []
     },
     {
@@ -2727,6 +2828,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 4,
      "plantillas": []
     },
     {
@@ -2751,6 +2853,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 4,
      "plantillas": []
     },
     {
@@ -2779,6 +2882,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 4,
      "plantillas": []
     },
     {
@@ -2803,6 +2907,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 4,
      "plantillas": []
     },
     {
@@ -2826,6 +2931,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 5,
      "plantillas": []
     },
     {
@@ -2851,6 +2957,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 5,
      "plantillas": []
     },
     {
@@ -2876,6 +2983,7 @@
       }
      },
      "potencial_visual": "bajo",
+     "grado": 5,
      "plantillas": []
     },
     {
@@ -2904,6 +3012,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 5,
      "plantillas": []
     },
     {
@@ -2930,6 +3039,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 5,
      "plantillas": []
     },
     {
@@ -2954,6 +3064,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 5,
      "plantillas": []
     },
     {
@@ -2978,6 +3089,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 5,
      "plantillas": []
     },
     {
@@ -3004,6 +3116,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 5,
      "plantillas": []
     },
     {
@@ -3028,6 +3141,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 5,
      "plantillas": []
     },
     {
@@ -3047,6 +3161,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 5,
      "plantillas": []
     }
    ]
@@ -3076,6 +3191,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -3098,6 +3214,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -3116,6 +3233,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -3134,6 +3252,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -3152,6 +3271,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -3170,6 +3290,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -3188,6 +3309,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -3206,6 +3328,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -3228,6 +3351,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -3246,6 +3370,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -3264,6 +3389,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -3283,6 +3409,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -3302,6 +3429,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -3322,6 +3450,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -3341,6 +3470,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -3364,6 +3494,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -3383,6 +3514,7 @@
       }
      },
      "potencial_visual": "alto",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -3401,6 +3533,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 3,
      "plantillas": []
     }
    ]
@@ -3428,6 +3561,7 @@
       }
      },
      "potencial_visual": "bajo",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -3448,6 +3582,7 @@
       }
      },
      "potencial_visual": "bajo",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -3475,6 +3610,7 @@
       }
      },
      "potencial_visual": "bajo",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -3493,6 +3629,7 @@
       }
      },
      "potencial_visual": "bajo",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -3511,6 +3648,7 @@
       }
      },
      "potencial_visual": "bajo",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -3530,6 +3668,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -3557,6 +3696,7 @@
       }
      },
      "potencial_visual": "bajo",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -3584,6 +3724,7 @@
       }
      },
      "potencial_visual": "bajo",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -3610,6 +3751,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -3634,6 +3776,7 @@
       }
      },
      "potencial_visual": "bajo",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -3660,6 +3803,7 @@
       }
      },
      "potencial_visual": "medio",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -3685,6 +3829,7 @@
       }
      },
      "potencial_visual": "bajo",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -3708,6 +3853,7 @@
       }
      },
      "potencial_visual": "bajo",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -3731,6 +3877,7 @@
       }
      },
      "potencial_visual": "bajo",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -3757,6 +3904,7 @@
       }
      },
      "potencial_visual": "bajo",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -3780,6 +3928,7 @@
       }
      },
      "potencial_visual": "bajo",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -3797,6 +3946,7 @@
       }
      },
      "potencial_visual": "bajo",
+     "grado": 3,
      "plantillas": []
     },
     {
@@ -3818,6 +3968,7 @@
       }
      },
      "potencial_visual": "bajo",
+     "grado": 3,
      "plantillas": []
     }
    ]

@@ -10,6 +10,7 @@
       "temas": ["Género próximo", "Diferencia específica", "Rasgos mínimos de significado"],
       "universidades": {"uni": {"semanas": [0, 1]}},
       "potencial_visual": "bajo",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -19,6 +20,7 @@
       "temas": ["Sinonimia y antonimia", "Género y especie", "Causa y efecto", "Parte y todo", "Agente e instrumento"],
       "universidades": {"uni": {"semanas": [2]}},
       "potencial_visual": "bajo",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -34,6 +36,7 @@
       ],
       "universidades": {"uni": {"semanas": [3, 4, 16]}, "unmsm": {"temas": [3]}},
       "potencial_visual": "bajo",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -43,6 +46,7 @@
       "temas": ["Clases de conectores", "Conectores de adición, contraste y causa", "Locuciones conjuntivas"],
       "universidades": {"uni": {"semanas": [5]}},
       "potencial_visual": "bajo",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -52,6 +56,7 @@
       "temas": ["Redundancia", "Impertinencia", "Incompatibilidad"],
       "universidades": {"uni": {"semanas": [6]}},
       "potencial_visual": "bajo",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -66,6 +71,7 @@
       ],
       "universidades": {"uni": {"semanas": [7]}},
       "potencial_visual": "medio",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -81,6 +87,7 @@
       ],
       "universidades": {"uni": {"semanas": [8, 9]}, "unmsm": {"temas": [6, 7]}},
       "potencial_visual": "bajo",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -96,6 +103,7 @@
       ],
       "universidades": {"uni": {"semanas": [10, 12]}, "unmsm": {"temas": [1, 2]}},
       "potencial_visual": "bajo",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -111,6 +119,7 @@
       ],
       "universidades": {"uni": {"semanas": [11, 14]}, "unmsm": {"temas": [4]}},
       "potencial_visual": "medio",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -120,6 +129,7 @@
       "temas": ["Resumen literal", "Paráfrasis", "Resumen interpretativo", "Síntesis"],
       "universidades": {"uni": {"semanas": [15]}, "unmsm": {"temas": [5]}},
       "potencial_visual": "bajo",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -129,6 +139,7 @@
       "temas": ["Tablas y cuadros", "Gráficos", "Textos mixtos", "Infografías"],
       "universidades": {"uni": {"semanas": [13]}, "unmsm": {"temas": [1, 9, 15]}},
       "potencial_visual": "medio",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -143,6 +154,7 @@
       ],
       "universidades": {"uni": {"semanas": [17]}, "unmsm": {"temas": [10, 11]}},
       "potencial_visual": "bajo",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -156,6 +168,7 @@
       ],
       "universidades": {"uni": {"semanas": [18]}, "unmsm": {"temas": [8]}},
       "potencial_visual": "bajo",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -165,6 +178,7 @@
       "temas": ["Extrapolación cognitiva y referencial", "Condicional subjuntivo", "Mundos posibles"],
       "universidades": {"uni": {"semanas": [19]}, "unmsm": {"temas": [13]}},
       "potencial_visual": "bajo",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -179,6 +193,7 @@
       ],
       "universidades": {"uni": {"semanas": [12]}, "unmsm": {"temas": [2, 12, 14]}},
       "potencial_visual": "bajo",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -188,6 +203,7 @@
       "temas": ["Situación comunicativa", "Relación entre emisor y destinatario", "Contexto y situación"],
       "universidades": {"uni": {"semanas": [16]}, "unmsm": {"temas": [18]}},
       "potencial_visual": "bajo",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -197,6 +213,7 @@
       "temas": ["Rasgos del texto filosófico", "Rasgos del texto científico"],
       "universidades": {"uni": {"semanas": [20]}},
       "potencial_visual": "bajo",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -206,6 +223,7 @@
       "temas": ["Inglés básico", "Idea principal (main idea)", "Resumen (summary)", "Lo que el texto dice y lo que no"],
       "universidades": {"unmsm": {"temas": [2, 16, 17]}},
       "potencial_visual": "bajo",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     }

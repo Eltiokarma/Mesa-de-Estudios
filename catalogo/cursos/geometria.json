@@ -17,6 +17,7 @@
       ],
       "universidades": {"uni": {"semanas": [0, 1]}, "unmsm": {"temas": [1, 2]}},
       "potencial_visual": "alto",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -32,6 +33,7 @@
       ],
       "universidades": {"uni": {"semanas": [1]}, "unmsm": {"temas": [2, 3]}},
       "potencial_visual": "alto",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -47,6 +49,7 @@
       ],
       "universidades": {"uni": {"semanas": [2]}, "unmsm": {"temas": [2, 4]}},
       "potencial_visual": "alto",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -62,6 +65,7 @@
       ],
       "universidades": {"uni": {"semanas": [3]}, "unmsm": {"temas": [4, 5]}},
       "potencial_visual": "alto",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -77,6 +81,7 @@
       ],
       "universidades": {"uni": {"semanas": [4, 5]}, "unmsm": {"temas": [6, 7]}},
       "potencial_visual": "alto",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -91,6 +96,7 @@
       ],
       "universidades": {"uni": {"semanas": [5, 6]}, "unmsm": {"temas": [8]}},
       "potencial_visual": "alto",
+      "grado": 4,
       "plantillas": [],
       "investigacion": null
     },
@@ -104,6 +110,7 @@
       ],
       "universidades": {"uni": {"semanas": [6, 7]}, "unmsm": {"temas": [7]}},
       "potencial_visual": "alto",
+      "grado": 4,
       "plantillas": [],
       "investigacion": null
     },
@@ -121,6 +128,7 @@
       ],
       "universidades": {"uni": {"semanas": [7, 8]}, "unmsm": {"temas": [9]}},
       "potencial_visual": "alto",
+      "grado": 4,
       "plantillas": [],
       "investigacion": null
     },
@@ -135,6 +143,7 @@
       ],
       "universidades": {"uni": {"semanas": [8, 9]}, "unmsm": {"temas": [4]}},
       "potencial_visual": "alto",
+      "grado": 4,
       "plantillas": [],
       "investigacion": null
     },
@@ -144,6 +153,7 @@
       "temas": ["Simetría respecto de un punto", "Simetría respecto de una recta", "Simetría respecto de un plano"],
       "universidades": {"uni": {"semanas": [9, 15]}},
       "potencial_visual": "alto",
+      "grado": 4,
       "plantillas": [],
       "investigacion": null
     },
@@ -159,6 +169,7 @@
       ],
       "universidades": {"uni": {"semanas": [10, 11]}, "unmsm": {"temas": [10, 11]}},
       "potencial_visual": "alto",
+      "grado": 4,
       "plantillas": [],
       "investigacion": null
     },
@@ -174,6 +185,7 @@
       ],
       "universidades": {"uni": {"semanas": [10, 12]}, "unmsm": {"temas": [11]}},
       "potencial_visual": "alto",
+      "grado": 4,
       "plantillas": [],
       "investigacion": null
     },
@@ -191,6 +203,7 @@
       ],
       "universidades": {"uni": {"semanas": [12, 13, 14]}, "unmsm": {"temas": [12]}},
       "potencial_visual": "alto",
+      "grado": 5,
       "plantillas": [],
       "investigacion": null
     },
@@ -200,6 +213,7 @@
       "temas": ["Elementos y clasificación", "Teorema de Euler", "Poliedros regulares"],
       "universidades": {"uni": {"semanas": [14, 15]}, "unmsm": {"temas": [13]}},
       "potencial_visual": "alto",
+      "grado": 5,
       "plantillas": [],
       "investigacion": null
     },
@@ -217,6 +231,7 @@
       ],
       "universidades": {"uni": {"semanas": [16, 17]}, "unmsm": {"temas": [13, 14]}},
       "potencial_visual": "alto",
+      "grado": 5,
       "plantillas": [],
       "investigacion": null
     },
@@ -233,6 +248,7 @@
       ],
       "universidades": {"uni": {"semanas": [18, 19, 20]}, "unmsm": {"temas": [14, 15]}},
       "potencial_visual": "alto",
+      "grado": 5,
       "plantillas": [],
       "investigacion": null
     },
@@ -249,6 +265,7 @@
       ],
       "universidades": {"unmsm": {"temas": [16, 17, 18]}},
       "potencial_visual": "alto",
+      "grado": 5,
       "plantillas": [],
       "investigacion": null
     },
@@ -263,6 +280,7 @@
       ],
       "universidades": {"uni": {"semanas": [6, 10, 12, 20]}},
       "potencial_visual": "medio",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     }

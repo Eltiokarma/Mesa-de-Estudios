@@ -29,6 +29,7 @@
         }
       },
       "potencial_visual": "medio",
+      "grado": 3,
       "plantillas": [],
       "investigacion": "docs/investigacion/atomo-enlace-ideas-erroneas.md"
     },
@@ -60,6 +61,7 @@
         }
       },
       "potencial_visual": "medio",
+      "grado": 3,
       "plantillas": [],
       "investigacion": "docs/investigacion/atomo-enlace-ideas-erroneas.md"
     },
@@ -89,6 +91,7 @@
         }
       },
       "potencial_visual": "medio",
+      "grado": 3,
       "plantillas": [],
       "investigacion": "docs/investigacion/atomo-enlace-ideas-erroneas.md"
     },
@@ -119,6 +122,7 @@
         }
       },
       "potencial_visual": "medio",
+      "grado": 3,
       "plantillas": [],
       "investigacion": "docs/investigacion/atomo-enlace-ideas-erroneas.md"
     },
@@ -149,6 +153,7 @@
         }
       },
       "potencial_visual": "bajo",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -179,6 +184,7 @@
         }
       },
       "potencial_visual": "alto",
+      "grado": 4,
       "plantillas": [],
       "investigacion": "docs/investigacion/estequiometria-ideas-erroneas.md"
     },
@@ -206,6 +212,7 @@
         }
       },
       "potencial_visual": "medio",
+      "grado": 4,
       "plantillas": [],
       "investigacion": "docs/investigacion/estequiometria-ideas-erroneas.md"
     },
@@ -232,6 +239,7 @@
         }
       },
       "potencial_visual": "alto",
+      "grado": 4,
       "plantillas": [
         "estequiometria-limitante"
       ],
@@ -264,6 +272,7 @@
         }
       },
       "potencial_visual": "alto",
+      "grado": 4,
       "plantillas": [],
       "investigacion": "docs/investigacion/gases-soluciones-ideas-erroneas.md"
     },
@@ -292,6 +301,7 @@
         }
       },
       "potencial_visual": "medio",
+      "grado": 4,
       "plantillas": [],
       "investigacion": "docs/investigacion/gases-soluciones-ideas-erroneas.md"
     },
@@ -318,6 +328,7 @@
         }
       },
       "potencial_visual": "alto",
+      "grado": 4,
       "plantillas": [],
       "investigacion": "docs/investigacion/gases-soluciones-ideas-erroneas.md"
     },
@@ -345,6 +356,7 @@
         }
       },
       "potencial_visual": "alto",
+      "grado": 5,
       "plantillas": [],
       "investigacion": null
     },
@@ -370,6 +382,7 @@
         }
       },
       "potencial_visual": "medio",
+      "grado": 5,
       "plantillas": [],
       "investigacion": "docs/investigacion/equilibrio-acidos-electroquimica-ideas-erroneas.md"
     },
@@ -396,6 +409,7 @@
         }
       },
       "potencial_visual": "medio",
+      "grado": 5,
       "plantillas": [],
       "investigacion": "docs/investigacion/equilibrio-acidos-electroquimica-ideas-erroneas.md"
     },
@@ -423,6 +437,7 @@
         }
       },
       "potencial_visual": "medio",
+      "grado": 5,
       "plantillas": [],
       "investigacion": "docs/investigacion/equilibrio-acidos-electroquimica-ideas-erroneas.md"
     },
@@ -453,6 +468,7 @@
         }
       },
       "potencial_visual": "bajo",
+      "grado": 4,
       "plantillas": [],
       "investigacion": null
     },
@@ -483,6 +499,7 @@
         }
       },
       "potencial_visual": "bajo",
+      "grado": 4,
       "plantillas": [],
       "investigacion": null
     },
@@ -513,6 +530,7 @@
         }
       },
       "potencial_visual": "bajo",
+      "grado": 5,
       "plantillas": [],
       "investigacion": null
     },
@@ -540,6 +558,7 @@
         }
       },
       "potencial_visual": "bajo",
+      "grado": 4,
       "plantillas": [],
       "investigacion": null
     },
@@ -571,6 +590,7 @@
         }
       },
       "potencial_visual": "bajo",
+      "grado": 4,
       "plantillas": [],
       "investigacion": null
     }

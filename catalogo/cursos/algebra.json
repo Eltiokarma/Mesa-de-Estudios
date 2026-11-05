@@ -18,6 +18,7 @@
       ],
       "universidades": {"uni": {"semanas": [1, 2, 18]}},
       "potencial_visual": "medio",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -33,6 +34,7 @@
       ],
       "universidades": {"uni": {"semanas": [2, 3]}, "unmsm": {"temas": [1]}},
       "potencial_visual": "medio",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -48,6 +50,7 @@
       ],
       "universidades": {"uni": {"semanas": [2, 7]}, "unmsm": {"temas": [2, 5]}},
       "potencial_visual": "bajo",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -63,6 +66,7 @@
       ],
       "universidades": {"uni": {"semanas": [4]}, "unmsm": {"temas": [3]}},
       "potencial_visual": "medio",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -78,6 +82,7 @@
       ],
       "universidades": {"uni": {"semanas": [4]}, "unmsm": {"temas": [3, 12]}},
       "potencial_visual": "medio",
+      "grado": 4,
       "plantillas": [],
       "investigacion": null
     },
@@ -92,6 +97,7 @@
       ],
       "universidades": {"uni": {"semanas": [4]}, "unmsm": {"temas": [4, 11, 12]}},
       "potencial_visual": "medio",
+      "grado": 4,
       "plantillas": [],
       "investigacion": null
     },
@@ -107,6 +113,7 @@
       ],
       "universidades": {"uni": {"semanas": [5]}, "unmsm": {"temas": [6]}},
       "potencial_visual": "bajo",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -122,6 +129,7 @@
       ],
       "universidades": {"uni": {"semanas": [6]}, "unmsm": {"temas": [7, 10]}},
       "potencial_visual": "bajo",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -137,6 +145,7 @@
       ],
       "universidades": {"uni": {"semanas": [7]}, "unmsm": {"temas": [8]}},
       "potencial_visual": "bajo",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -153,6 +162,7 @@
       ],
       "universidades": {"uni": {"semanas": [4, 10]}, "unmsm": {"temas": [9, 11]}},
       "potencial_visual": "medio",
+      "grado": 4,
       "plantillas": [],
       "investigacion": null
     },
@@ -169,6 +179,7 @@
       ],
       "universidades": {"uni": {"semanas": [8, 9, 10]}, "unmsm": {"temas": [13]}},
       "potencial_visual": "alto",
+      "grado": 4,
       "plantillas": [],
       "investigacion": null
     },
@@ -184,6 +195,7 @@
       ],
       "universidades": {"uni": {"semanas": [8, 10]}, "unmsm": {"temas": [14]}},
       "potencial_visual": "alto",
+      "grado": 5,
       "plantillas": [],
       "investigacion": null
     },
@@ -200,6 +212,7 @@
       ],
       "universidades": {"uni": {"semanas": [11]}, "unmsm": {"temas": [15]}},
       "potencial_visual": "alto",
+      "grado": 5,
       "plantillas": [],
       "investigacion": null
     },
@@ -216,6 +229,7 @@
       ],
       "universidades": {"uni": {"semanas": [12]}, "unmsm": {"temas": [5]}},
       "potencial_visual": "alto",
+      "grado": 5,
       "plantillas": [],
       "investigacion": null
     },
@@ -232,6 +246,7 @@
       ],
       "universidades": {"uni": {"semanas": [13, 14, 16]}, "unmsm": {"temas": [16]}},
       "potencial_visual": "bajo",
+      "grado": 5,
       "plantillas": [],
       "investigacion": null
     },
@@ -248,6 +263,7 @@
       ],
       "universidades": {"uni": {"semanas": [15, 16]}, "unmsm": {"temas": [17]}},
       "potencial_visual": "alto",
+      "grado": 4,
       "plantillas": [],
       "investigacion": null
     },
@@ -263,6 +279,7 @@
       ],
       "universidades": {"uni": {"semanas": [16, 17]}, "unmsm": {"temas": [18]}},
       "potencial_visual": "alto",
+      "grado": 5,
       "plantillas": [],
       "investigacion": null
     },
@@ -279,6 +296,7 @@
       ],
       "universidades": {"uni": {"semanas": [18, 19, 20]}},
       "potencial_visual": "medio",
+      "grado": 5,
       "plantillas": [],
       "investigacion": null
     },
@@ -293,6 +311,7 @@
       ],
       "universidades": {"uni": {"semanas": [20]}, "unmsm": {"temas": [10]}},
       "potencial_visual": "bajo",
+      "grado": 5,
       "plantillas": [],
       "investigacion": null
     }

@@ -23,6 +23,7 @@
         }
       },
       "potencial_visual": "bajo",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -47,6 +48,7 @@
         }
       },
       "potencial_visual": "alto",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -73,6 +75,7 @@
         }
       },
       "potencial_visual": "medio",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -100,6 +103,7 @@
         }
       },
       "potencial_visual": "alto",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -127,6 +131,7 @@
         }
       },
       "potencial_visual": "medio",
+      "grado": 3,
       "plantillas": [
         "porcentajes-sucesivos"
       ],
@@ -157,6 +162,7 @@
         }
       },
       "potencial_visual": "medio",
+      "grado": 4,
       "plantillas": [],
       "investigacion": null
     },
@@ -182,6 +188,7 @@
         }
       },
       "potencial_visual": "medio",
+      "grado": 4,
       "plantillas": [],
       "investigacion": null
     },
@@ -212,6 +219,7 @@
         }
       },
       "potencial_visual": "alto",
+      "grado": 4,
       "plantillas": [],
       "investigacion": null
     },
@@ -240,6 +248,7 @@
         }
       },
       "potencial_visual": "medio",
+      "grado": 5,
       "plantillas": [],
       "investigacion": null
     },
@@ -269,6 +278,7 @@
         }
       },
       "potencial_visual": "medio",
+      "grado": 5,
       "plantillas": [],
       "investigacion": null
     },
@@ -295,6 +305,7 @@
         }
       },
       "potencial_visual": "medio",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -325,6 +336,7 @@
         }
       },
       "potencial_visual": "bajo",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -352,6 +364,7 @@
         }
       },
       "potencial_visual": "bajo",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -381,6 +394,7 @@
         }
       },
       "potencial_visual": "bajo",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -408,6 +422,7 @@
         }
       },
       "potencial_visual": "medio",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -438,6 +453,7 @@
         }
       },
       "potencial_visual": "medio",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -463,6 +479,7 @@
         }
       },
       "potencial_visual": "bajo",
+      "grado": 3,
       "plantillas": [],
       "investigacion": null
     },
@@ -489,6 +506,7 @@
         }
       },
       "potencial_visual": "medio",
+      "grado": 4,
       "plantillas": [],
       "investigacion": null
     },
@@ -512,6 +530,7 @@
         }
       },
       "potencial_visual": "medio",
+      "grado": 4,
       "plantillas": [],
       "investigacion": null
     }
