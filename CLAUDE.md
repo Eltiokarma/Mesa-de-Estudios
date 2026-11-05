@@ -25,6 +25,9 @@ plantillas/<tema>/plantilla.json  ficha del módulo: unidades que cubre, estado,
 docs/hoja-de-ruta.md + .json   hoja de ruta; el JSON es la fuente, se edita en http://localhost:4173/gestion/ (npm run dev)
 app/                           la PWA: lee app/datos/catalogo.json (npm run catalogo lo arma desde catalogo/); sw.js la deja sin conexión
 gestion/                       página del Gantt navegable y editable
+nucleo/                        piezas compartidas: azar con semilla, armado de alternativas, medición (navegador y Node)
+plantillas/<id>/generador.js   módulos de formato "predicciones": generan problemas con errores típicos (ver nucleo/predicciones.js)
+herramientas/analizar-medicion.js  junta los datos que exportan los alumnos y resume entrada, salida y errores por módulo
 herramientas/servidor.js       servidor local sin dependencias: npm run dev → http://localhost:4173
 docs/vision-futura.md          ideas de Gerson para después (todos los grados, seguimiento, curar contenido externo, historia); no se desarrollan aún
 docs/taxonomia-uni-2026.md     temario de física y química de la UNI (sílabo CEPRE-UNI 2026-2)

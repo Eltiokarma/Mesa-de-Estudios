@@ -1,0 +1,103 @@
+{
+  "plantilla": "porcentajes-sucesivos",
+  "tolerancia": 0.005,
+  "nota": "Calculado aparte con fracciones exactas.",
+  "casos": [
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "descuento-unico",
+        "precio": 1000,
+        "a": 40,
+        "b": 20
+      },
+      "esperado": {
+        "respuesta": 52.0
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "dos-descuentos",
+        "precio": 800,
+        "a": 10,
+        "b": 20
+      },
+      "esperado": {
+        "respuesta": 576.0
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "descuento-unico",
+        "precio": 80,
+        "a": 20,
+        "b": 50
+      },
+      "esperado": {
+        "respuesta": 60.0
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "aumento-descuento",
+        "precio": 250,
+        "a": 40,
+        "b": 40
+      },
+      "esperado": {
+        "respuesta": 210.0
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "dos-descuentos",
+        "precio": 1000,
+        "a": 10,
+        "b": 40
+      },
+      "esperado": {
+        "respuesta": 540.0
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "aumento-descuento",
+        "precio": 1200,
+        "a": 50,
+        "b": 15
+      },
+      "esperado": {
+        "respuesta": 1530.0
+      }
+    },
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "descuento-unico",
+        "precio": 1000,
+        "a": 15,
+        "b": 30
+      },
+      "esperado": {
+        "respuesta": 40.5
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "tipo": "descuento-unico",
+        "precio": 600,
+        "a": 40,
+        "b": 30
+      },
+      "esperado": {
+        "respuesta": 58.0
+      }
+    }
+  ]
+}

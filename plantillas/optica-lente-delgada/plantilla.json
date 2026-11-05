@@ -1,7 +1,10 @@
 {
   "id": "optica-lente-delgada",
   "titulo": "Banco Óptico",
-  "unidades": ["fisica.optica-geometrica"],
+  "formato": "escena",
+  "unidades": [
+    "fisica.optica-geometrica"
+  ],
   "estado": "borrador",
   "version": "0.1.0",
   "escena": "index.html",

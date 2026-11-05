@@ -5,6 +5,8 @@
   --bg:#f3f2f8; --card:#ffffff; --ink:#16132b; --muted:#6b6785; --line:#e6e3f1;
   --brand:#7b61ff; --brand-2:#9b87ff; --brand-ink:#ffffff; --brand-soft:#ece8ff;
   --lime:#d6f36a; --lime-ink:#26330a; --ok:#1f9d6b; --warn:#e5484d;
+  /* Colores de variables: los mismos de las escenas (regla 4). Solo se usan en enunciados y soluciones. */
+  --c-o:#b85a06; --c-i:#08807a; --c-h:#c0364a; --c-d:#4f7a17;
   --radius:24px; --radius-s:16px; --shadow:0 1px 2px rgba(22,19,43,.05),0 8px 24px rgba(22,19,43,.07);
   --font:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
   color-scheme:light;
@@ -12,11 +14,13 @@
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --bg:#110f1d; --card:#1b1830; --ink:#efecfd; --muted:#a6a1c6; --line:#2c2846;
   --brand:#9580ff; --brand-2:#7b61ff; --brand-ink:#ffffff; --brand-soft:#2a2450;
-  --lime:#c9ea4f; --lime-ink:#1d2604; --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25); color-scheme:dark }}
+  --lime:#c9ea4f; --lime-ink:#1d2604; --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25); color-scheme:dark;
+  --c-o:#f0a04a; --c-i:#3dcdc3; --c-h:#f17384; --c-d:#a3d65e }}
 :root[data-theme="dark"]{
   --bg:#110f1d; --card:#1b1830; --ink:#efecfd; --muted:#a6a1c6; --line:#2c2846;
   --brand:#9580ff; --brand-2:#7b61ff; --brand-ink:#ffffff; --brand-soft:#2a2450;
-  --lime:#c9ea4f; --lime-ink:#1d2604; --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25); color-scheme:dark }
+  --lime:#c9ea4f; --lime-ink:#1d2604; --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25); color-scheme:dark;
+  --c-o:#f0a04a; --c-i:#3dcdc3; --c-h:#f17384; --c-d:#a3d65e }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 var(--font);min-height:100dvh}
@@ -94,3 +98,34 @@ input[type=text]:focus{outline:none;border-color:var(--brand)}
 #nav svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 :focus-visible{outline:3px solid var(--brand);outline-offset:2px}
 @media (prefers-reduced-motion:no-preference){.curso,.item,.btn{transition:transform .15s}.curso:active,.item:active,.btn:active{transform:scale(.98)}}
+
+/* ---------- Práctica (formato predicciones) ---------- */
+.practica .etq-p{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.practica .enun{font-size:17px;margin:10px 0}
+.practica .preg{font-weight:700;font-size:17px;margin:12px 0}
+.var{font-weight:700;padding:0 4px;border-radius:6px;border-bottom:2px dotted currentColor}
+.var.c-o{color:var(--c-o);background:color-mix(in srgb,var(--c-o) 12%,transparent)}
+.var.c-i{color:var(--c-i);background:color-mix(in srgb,var(--c-i) 12%,transparent)}
+.var.c-h{color:var(--c-h);background:color-mix(in srgb,var(--c-h) 12%,transparent)}
+.var.c-d{color:var(--c-d);background:color-mix(in srgb,var(--c-d) 12%,transparent)}
+.formula{font-weight:600;white-space:nowrap}
+.alts{display:grid;gap:10px;margin-top:6px}
+.alt{display:flex;align-items:center;gap:12px;text-align:left;background:var(--bg);border:2px solid var(--line);border-radius:var(--radius-s);padding:12px 14px;font-size:17px;font-weight:600}
+.alt .letra{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--card);border:2px solid var(--line);font-size:14px;flex:none}
+.alt:not(:disabled):hover{border-color:var(--brand)}
+.alt.ok{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,var(--card))}
+.alt.ok .letra{background:var(--ok);border-color:var(--ok);color:#fff}
+.alt.mal{border-color:var(--warn);background:color-mix(in srgb,var(--warn) 10%,var(--card))}
+.alt.mal .letra{background:var(--warn);border-color:var(--warn);color:#fff}
+.alt:disabled{cursor:default;opacity:1;color:inherit}
+.retro{margin-top:16px;border-radius:var(--radius-s);padding:14px 16px}
+.retro.bien{background:color-mix(in srgb,var(--ok) 14%,var(--card))}
+.retro.malo{background:color-mix(in srgb,var(--warn) 10%,var(--card))}
+.retro p{margin:8px 0 0}
+.sol-t{font-size:16px;margin:18px 0 6px}
+.sol{margin:0 0 16px;padding-left:22px;display:grid;gap:8px}
+.aviso a{color:inherit}
+.tabla{overflow-x:auto}
+.tabla table{width:100%;border-collapse:collapse;font-size:13px}
+.tabla th,.tabla td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+.acciones-datos{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}

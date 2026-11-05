@@ -66,8 +66,8 @@ gantt
     Sistema de diseño (colores por variable y marca, tipografía) :active, f0e, 2026-11-04, 2026-11-11
     Esqueleto PWA sin conexión :active, f0f, 2026-11-04, 2026-11-11
     Diseño para pantalla grande (laboratorio de cómputo) :pl1, 2026-11-09, 2026-11-12
-    Motor de predicciones generadas (química, aritmética, RM) :crit, pl3, 2026-11-06, 2026-11-14
-    Medición integrada (entrada y salida, registro anónimo, exportar para el profesor) :crit, pl2, 2026-11-10, 2026-11-18
+    Motor de predicciones generadas (química, aritmética, RM) :active, crit, pl3, 2026-11-06, 2026-11-14
+    Medición integrada (entrada y salida, registro anónimo, exportar para el profesor) :active, crit, pl2, 2026-11-10, 2026-11-18
     Nivel por grado (3.º, 4.º, 5.º) en el catálogo :pl5, 2026-11-09, 2026-11-13
     Formato lectura (razonamiento verbal) :pl4, 2026-11-16, 2026-11-20
 
@@ -80,13 +80,13 @@ gantt
     MRUV y gráficas :fi6, 2026-12-01, 2026-12-08
 
     section Química
-    Estequiometría y reactivo limitante con partículas :qu1, 2026-11-16, 2026-11-24
+    Estequiometría y reactivo limitante con partículas :active, qu1, 2026-11-16, 2026-11-24
     Gases y soluciones :qu2, 2026-11-23, 2026-11-28
     Ácidos, bases y pH :qu3, 2026-11-27, 2026-12-03
     Redox y electroquímica :qu4, 2026-12-02, 2026-12-08
 
     section Matemática
-    Aritmética, porcentajes y proporcionalidad :ma4, 2026-11-17, 2026-11-22
+    Aritmética, porcentajes y proporcionalidad :active, ma4, 2026-11-17, 2026-11-22
     Trigonometría, circunferencia y razones :ma1, 2026-11-14, 2026-11-22
     Geometría, triángulos y áreas :ma2, 2026-11-21, 2026-11-29
     Álgebra, funciones y gráficas :ma3, 2026-11-28, 2026-12-05

@@ -778,7 +778,9 @@
       }
      },
      "potencial_visual": "alto",
-     "plantillas": []
+     "plantillas": [
+      "estequiometria-limitante"
+     ]
     },
     {
      "id": "quimica.gases",
@@ -1732,7 +1734,9 @@
       }
      },
      "potencial_visual": "medio",
-     "plantillas": []
+     "plantillas": [
+      "porcentajes-sucesivos"
+     ]
     },
     {
      "id": "aritmetica.interes-y-descuento",
@@ -3820,9 +3824,24 @@
   }
  ],
  "plantillas": {
+  "estequiometria-limitante": {
+   "id": "estequiometria-limitante",
+   "titulo": "Reactivo limitante",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.estequiometria"
+   ],
+   "url": "#/practica/estequiometria-limitante",
+   "archivos": [
+    "/plantillas/estequiometria-limitante/generador.js"
+   ]
+  },
   "optica-lente-delgada": {
    "id": "optica-lente-delgada",
    "titulo": "Banco Óptico",
+   "formato": "escena",
    "estado": "borrador",
    "version": "0.1.0",
    "unidades": [
@@ -3832,6 +3851,20 @@
    "archivos": [
     "/plantillas/optica-lente-delgada/index.html",
     "/plantillas/optica-lente-delgada/motor.js"
+   ]
+  },
+  "porcentajes-sucesivos": {
+   "id": "porcentajes-sucesivos",
+   "titulo": "Aumentos y descuentos sucesivos",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "aritmetica.porcentajes"
+   ],
+   "url": "#/practica/porcentajes-sucesivos",
+   "archivos": [
+    "/plantillas/porcentajes-sucesivos/generador.js"
    ]
   }
  }

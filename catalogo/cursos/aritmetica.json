@@ -15,7 +15,13 @@
         "Leyes lógicas",
         "Cuantificadores"
       ],
-      "universidades": {"unmsm": {"temas": [1]}},
+      "universidades": {
+        "unmsm": {
+          "temas": [
+            1
+          ]
+        }
+      },
       "potencial_visual": "bajo",
       "plantillas": [],
       "investigacion": null
@@ -32,7 +38,14 @@
         "Diagramas de Venn y Carroll",
         "Producto cartesiano"
       ],
-      "universidades": {"unmsm": {"temas": [2, 3]}},
+      "universidades": {
+        "unmsm": {
+          "temas": [
+            2,
+            3
+          ]
+        }
+      },
       "potencial_visual": "alto",
       "plantillas": [],
       "investigacion": null
@@ -46,7 +59,19 @@
         "Medias aritmética, geométrica y armónica",
         "Serie de razones geométricas equivalentes"
       ],
-      "universidades": {"uni": {"semanas": [0, 1]}, "unmsm": {"temas": [10]}},
+      "universidades": {
+        "uni": {
+          "semanas": [
+            0,
+            1
+          ]
+        },
+        "unmsm": {
+          "temas": [
+            10
+          ]
+        }
+      },
       "potencial_visual": "medio",
       "plantillas": [],
       "investigacion": null
@@ -61,7 +86,19 @@
         "Reparto proporcional",
         "Regla de compañía"
       ],
-      "universidades": {"uni": {"semanas": [1, 2]}, "unmsm": {"temas": [11]}},
+      "universidades": {
+        "uni": {
+          "semanas": [
+            1,
+            2
+          ]
+        },
+        "unmsm": {
+          "temas": [
+            11
+          ]
+        }
+      },
       "potencial_visual": "alto",
       "plantillas": [],
       "investigacion": null
@@ -77,9 +114,22 @@
         "Ganancia y pérdida",
         "IGV"
       ],
-      "universidades": {"uni": {"semanas": [3]}, "unmsm": {"temas": [12]}},
+      "universidades": {
+        "uni": {
+          "semanas": [
+            3
+          ]
+        },
+        "unmsm": {
+          "temas": [
+            12
+          ]
+        }
+      },
       "potencial_visual": "medio",
-      "plantillas": [],
+      "plantillas": [
+        "porcentajes-sucesivos"
+      ],
       "investigacion": null
     },
     {
@@ -93,7 +143,19 @@
         "Descuento comercial y racional",
         "Letras de cambio y vencimiento común"
       ],
-      "universidades": {"uni": {"semanas": [4, 5]}, "unmsm": {"temas": [13]}},
+      "universidades": {
+        "uni": {
+          "semanas": [
+            4,
+            5
+          ]
+        },
+        "unmsm": {
+          "temas": [
+            13
+          ]
+        }
+      },
       "potencial_visual": "medio",
       "plantillas": [],
       "investigacion": null
@@ -101,8 +163,24 @@
     {
       "id": "aritmetica.mezclas-y-aleaciones",
       "nombre": "Mezclas y aleaciones",
-      "temas": ["Precio medio", "Mezclas alcohólicas", "Regla del aspa", "Aleaciones y ley del oro en quilates"],
-      "universidades": {"uni": {"semanas": [6]}, "unmsm": {"temas": [14]}},
+      "temas": [
+        "Precio medio",
+        "Mezclas alcohólicas",
+        "Regla del aspa",
+        "Aleaciones y ley del oro en quilates"
+      ],
+      "universidades": {
+        "uni": {
+          "semanas": [
+            6
+          ]
+        },
+        "unmsm": {
+          "temas": [
+            14
+          ]
+        }
+      },
       "potencial_visual": "medio",
       "plantillas": [],
       "investigacion": null
@@ -119,7 +197,20 @@
         "Cuartiles y percentiles",
         "Varianza, desviación estándar y coeficiente de variación"
       ],
-      "universidades": {"uni": {"semanas": [7, 8, 9]}, "unmsm": {"temas": [16]}},
+      "universidades": {
+        "uni": {
+          "semanas": [
+            7,
+            8,
+            9
+          ]
+        },
+        "unmsm": {
+          "temas": [
+            16
+          ]
+        }
+      },
       "potencial_visual": "alto",
       "plantillas": [],
       "investigacion": null
@@ -135,7 +226,19 @@
         "Permutaciones con repetición",
         "Combinaciones y números combinatorios"
       ],
-      "universidades": {"uni": {"semanas": [9, 10]}, "unmsm": {"temas": [17]}},
+      "universidades": {
+        "uni": {
+          "semanas": [
+            9,
+            10
+          ]
+        },
+        "unmsm": {
+          "temas": [
+            17
+          ]
+        }
+      },
       "potencial_visual": "medio",
       "plantillas": [],
       "investigacion": null
@@ -152,7 +255,19 @@
         "Probabilidad total y Bayes",
         "Variable aleatoria discreta y esperanza"
       ],
-      "universidades": {"uni": {"semanas": [10, 11]}, "unmsm": {"temas": [18]}},
+      "universidades": {
+        "uni": {
+          "semanas": [
+            10,
+            11
+          ]
+        },
+        "unmsm": {
+          "temas": [
+            18
+          ]
+        }
+      },
       "potencial_visual": "medio",
       "plantillas": [],
       "investigacion": null
@@ -160,8 +275,25 @@
     {
       "id": "aritmetica.numeracion",
       "nombre": "Sistemas de numeración",
-      "temas": ["Base de un sistema", "Descomposición polinómica", "Cambio de base", "Conteo de números y cifras"],
-      "universidades": {"uni": {"semanas": [11, 12]}, "unmsm": {"temas": [4]}},
+      "temas": [
+        "Base de un sistema",
+        "Descomposición polinómica",
+        "Cambio de base",
+        "Conteo de números y cifras"
+      ],
+      "universidades": {
+        "uni": {
+          "semanas": [
+            11,
+            12
+          ]
+        },
+        "unmsm": {
+          "temas": [
+            4
+          ]
+        }
+      },
       "potencial_visual": "medio",
       "plantillas": [],
       "investigacion": null
@@ -177,7 +309,21 @@
         "División entera por defecto y por exceso",
         "Cantidad de cifras de un producto o cociente"
       ],
-      "universidades": {"uni": {"semanas": [12, 13, 14]}, "unmsm": {"temas": [4, 5]}},
+      "universidades": {
+        "uni": {
+          "semanas": [
+            12,
+            13,
+            14
+          ]
+        },
+        "unmsm": {
+          "temas": [
+            4,
+            5
+          ]
+        }
+      },
       "potencial_visual": "bajo",
       "plantillas": [],
       "investigacion": null
@@ -192,7 +338,19 @@
         "Criterios de divisibilidad",
         "Ecuaciones diofánticas lineales"
       ],
-      "universidades": {"uni": {"semanas": [14, 15]}, "unmsm": {"temas": [5]}},
+      "universidades": {
+        "uni": {
+          "semanas": [
+            14,
+            15
+          ]
+        },
+        "unmsm": {
+          "temas": [
+            5
+          ]
+        }
+      },
       "potencial_visual": "bajo",
       "plantillas": [],
       "investigacion": null
@@ -209,7 +367,19 @@
         "Función de Euler",
         "Teoremas de Fermat y Wilson"
       ],
-      "universidades": {"uni": {"semanas": [15, 16]}, "unmsm": {"temas": [6]}},
+      "universidades": {
+        "uni": {
+          "semanas": [
+            15,
+            16
+          ]
+        },
+        "unmsm": {
+          "temas": [
+            6
+          ]
+        }
+      },
       "potencial_visual": "bajo",
       "plantillas": [],
       "investigacion": null
@@ -225,7 +395,18 @@
         "Fracciones continuas",
         "Problemas de aplicación"
       ],
-      "universidades": {"uni": {"semanas": [17]}, "unmsm": {"temas": [7]}},
+      "universidades": {
+        "uni": {
+          "semanas": [
+            17
+          ]
+        },
+        "unmsm": {
+          "temas": [
+            7
+          ]
+        }
+      },
       "potencial_visual": "medio",
       "plantillas": [],
       "investigacion": null
@@ -242,7 +423,20 @@
         "Fracción generatriz",
         "Números en otras bases"
       ],
-      "universidades": {"uni": {"semanas": [18, 19]}, "unmsm": {"temas": [8, 9]}},
+      "universidades": {
+        "uni": {
+          "semanas": [
+            18,
+            19
+          ]
+        },
+        "unmsm": {
+          "temas": [
+            8,
+            9
+          ]
+        }
+      },
       "potencial_visual": "medio",
       "plantillas": [],
       "investigacion": null
@@ -256,7 +450,18 @@
         "Raíz cuadrada y cúbica entera",
         "Raíces aproximadas"
       ],
-      "universidades": {"uni": {"semanas": [20]}, "unmsm": {"temas": [4]}},
+      "universidades": {
+        "uni": {
+          "semanas": [
+            20
+          ]
+        },
+        "unmsm": {
+          "temas": [
+            4
+          ]
+        }
+      },
       "potencial_visual": "bajo",
       "plantillas": [],
       "investigacion": null
@@ -271,7 +476,18 @@
         "Sucesiones de orden superior",
         "Sumas infinitas"
       ],
-      "universidades": {"uni": {"semanas": [12]}, "unmsm": {"temas": [15]}},
+      "universidades": {
+        "uni": {
+          "semanas": [
+            12
+          ]
+        },
+        "unmsm": {
+          "temas": [
+            15
+          ]
+        }
+      },
       "potencial_visual": "medio",
       "plantillas": [],
       "investigacion": null
@@ -288,7 +504,13 @@
         "Suficiencia de datos",
         "Distribuciones numéricas"
       ],
-      "universidades": {"uni": {"semanas": [20]}},
+      "universidades": {
+        "uni": {
+          "semanas": [
+            20
+          ]
+        }
+      },
       "potencial_visual": "medio",
       "plantillas": [],
       "investigacion": null

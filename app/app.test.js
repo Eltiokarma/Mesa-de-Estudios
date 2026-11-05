@@ -18,7 +18,7 @@ test('el service worker guarda archivos que existen', () => {
   const lista = JSON.parse(sw.match(/const CASCARA = (\[[\s\S]*?\]);/)[1].replace(/'/g, '"'));
   for (const u of lista) assert.ok(fs.existsSync(deUrl(u)), `sw.js guarda ${u}, que no existe`);
   const cat = JSON.parse(fs.readFileSync(SALIDA, 'utf8'));
-  for (const p of Object.values(cat.plantillas)) for (const u of [p.url, ...p.archivos]) {
+  for (const p of Object.values(cat.plantillas)) for (const u of [...(p.formato === 'escena' ? [p.url] : []), ...p.archivos]) {
     assert.ok(fs.existsSync(deUrl(u)), `la plantilla ${p.id} apunta a ${u}, que no existe`);
   }
 });
@@ -28,4 +28,10 @@ test('el manifiesto es instalable', () => {
   for (const k of ['name', 'short_name', 'start_url', 'display', 'icons']) assert.ok(m[k], `falta ${k}`);
   assert.ok(m.icons.some(i => i.sizes === '192x192') && m.icons.some(i => i.sizes === '512x512'), 'faltan íconos 192 y 512');
   for (const i of m.icons) assert.ok(fs.existsSync(deUrl(i.src)), `no existe el ícono ${i.src}`);
+});
+
+test('el service worker descarga el catálogo con una sola dirección', () => {
+  // Protege contra una edición que rompió el fetch del catálogo y dejó las escenas sin guardar.
+  const sw = fs.readFileSync(path.join(__dirname, 'sw.js'), 'utf8');
+  assert.match(sw, /fetch\('\/app\/datos\/catalogo\.json', \{ cache: 'no-store' \}\)/);
 });

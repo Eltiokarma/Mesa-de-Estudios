@@ -1,0 +1,14 @@
+{
+  "id": "porcentajes-sucesivos",
+  "titulo": "Aumentos y descuentos sucesivos",
+  "formato": "predicciones",
+  "unidades": [
+    "aritmetica.porcentajes"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": null
+}

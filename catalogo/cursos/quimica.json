@@ -16,7 +16,18 @@
         "Calor sensible y latente",
         "Equivalencia masa-energía"
       ],
-      "universidades": {"uni": {"semanas": [0]}, "unmsm": {"temas": [1]}},
+      "universidades": {
+        "uni": {
+          "semanas": [
+            0
+          ]
+        },
+        "unmsm": {
+          "temas": [
+            1
+          ]
+        }
+      },
       "potencial_visual": "medio",
       "plantillas": [],
       "investigacion": "docs/investigacion/atomo-enlace-ideas-erroneas.md"
@@ -34,7 +45,20 @@
         "Configuración electrónica de átomos e iones",
         "Paramagnetismo y especies isoelectrónicas"
       ],
-      "universidades": {"uni": {"semanas": [0, 1, 2]}, "unmsm": {"temas": [2]}},
+      "universidades": {
+        "uni": {
+          "semanas": [
+            0,
+            1,
+            2
+          ]
+        },
+        "unmsm": {
+          "temas": [
+            2
+          ]
+        }
+      },
       "potencial_visual": "medio",
       "plantillas": [],
       "investigacion": "docs/investigacion/atomo-enlace-ideas-erroneas.md"
@@ -52,7 +76,18 @@
         "Energía de ionización y afinidad electrónica",
         "Electronegatividad"
       ],
-      "universidades": {"uni": {"semanas": [3]}, "unmsm": {"temas": [2]}},
+      "universidades": {
+        "uni": {
+          "semanas": [
+            3
+          ]
+        },
+        "unmsm": {
+          "temas": [
+            2
+          ]
+        }
+      },
       "potencial_visual": "medio",
       "plantillas": [],
       "investigacion": "docs/investigacion/atomo-enlace-ideas-erroneas.md"
@@ -70,7 +105,19 @@
         "Enlace metálico",
         "Fuerzas intermoleculares"
       ],
-      "universidades": {"uni": {"semanas": [5, 6]}, "unmsm": {"temas": [3]}},
+      "universidades": {
+        "uni": {
+          "semanas": [
+            5,
+            6
+          ]
+        },
+        "unmsm": {
+          "temas": [
+            3
+          ]
+        }
+      },
       "potencial_visual": "medio",
       "plantillas": [],
       "investigacion": "docs/investigacion/atomo-enlace-ideas-erroneas.md"
@@ -88,7 +135,19 @@
         "Sales ácidas, básicas e hidratadas",
         "Peróxidos"
       ],
-      "universidades": {"uni": {"semanas": [7]}, "unmsm": {"temas": [4, 5]}},
+      "universidades": {
+        "uni": {
+          "semanas": [
+            7
+          ]
+        },
+        "unmsm": {
+          "temas": [
+            4,
+            5
+          ]
+        }
+      },
       "potencial_visual": "bajo",
       "plantillas": [],
       "investigacion": null
@@ -105,7 +164,20 @@
         "Fórmula empírica y molecular",
         "Leyes ponderales"
       ],
-      "universidades": {"uni": {"semanas": [8, 9]}, "unmsm": {"temas": [4, 5]}},
+      "universidades": {
+        "uni": {
+          "semanas": [
+            8,
+            9
+          ]
+        },
+        "unmsm": {
+          "temas": [
+            4,
+            5
+          ]
+        }
+      },
       "potencial_visual": "alto",
       "plantillas": [],
       "investigacion": "docs/investigacion/estequiometria-ideas-erroneas.md"
@@ -120,7 +192,19 @@
         "Oxidación, reducción y agentes",
         "Balance redox por ion-electrón"
       ],
-      "universidades": {"uni": {"semanas": [8, 9]}, "unmsm": {"temas": [6]}},
+      "universidades": {
+        "uni": {
+          "semanas": [
+            8,
+            9
+          ]
+        },
+        "unmsm": {
+          "temas": [
+            6
+          ]
+        }
+      },
       "potencial_visual": "medio",
       "plantillas": [],
       "investigacion": "docs/investigacion/estequiometria-ideas-erroneas.md"
@@ -135,9 +219,22 @@
         "Reactivos impuros",
         "Equivalente químico y masa equivalente"
       ],
-      "universidades": {"uni": {"semanas": [9]}, "unmsm": {"temas": [6]}},
+      "universidades": {
+        "uni": {
+          "semanas": [
+            9
+          ]
+        },
+        "unmsm": {
+          "temas": [
+            6
+          ]
+        }
+      },
       "potencial_visual": "alto",
-      "plantillas": [],
+      "plantillas": [
+        "estequiometria-limitante"
+      ],
       "investigacion": "docs/investigacion/estequiometria-ideas-erroneas.md"
     },
     {
@@ -153,7 +250,19 @@
         "Difusión y efusión: Graham",
         "Estequiometría con gases"
       ],
-      "universidades": {"uni": {"semanas": [10, 11]}, "unmsm": {"temas": [8]}},
+      "universidades": {
+        "uni": {
+          "semanas": [
+            10,
+            11
+          ]
+        },
+        "unmsm": {
+          "temas": [
+            8
+          ]
+        }
+      },
       "potencial_visual": "alto",
       "plantillas": [],
       "investigacion": "docs/investigacion/gases-soluciones-ideas-erroneas.md"
@@ -169,7 +278,19 @@
         "Gases húmedos y humedad relativa",
         "Sólidos cristalinos y amorfos"
       ],
-      "universidades": {"uni": {"semanas": [10, 12]}, "unmsm": {"temas": [8]}},
+      "universidades": {
+        "uni": {
+          "semanas": [
+            10,
+            12
+          ]
+        },
+        "unmsm": {
+          "temas": [
+            8
+          ]
+        }
+      },
       "potencial_visual": "medio",
       "plantillas": [],
       "investigacion": "docs/investigacion/gases-soluciones-ideas-erroneas.md"
@@ -184,7 +305,18 @@
         "Dilución y mezcla de soluciones",
         "Estequiometría en soluciones"
       ],
-      "universidades": {"uni": {"semanas": [13]}, "unmsm": {"temas": [9]}},
+      "universidades": {
+        "uni": {
+          "semanas": [
+            13
+          ]
+        },
+        "unmsm": {
+          "temas": [
+            9
+          ]
+        }
+      },
       "potencial_visual": "alto",
       "plantillas": [],
       "investigacion": "docs/investigacion/gases-soluciones-ideas-erroneas.md"
@@ -200,7 +332,18 @@
         "Leyes de velocidad y orden de reacción",
         "Vida media"
       ],
-      "universidades": {"uni": {"semanas": [13]}, "unmsm": {"temas": [10]}},
+      "universidades": {
+        "uni": {
+          "semanas": [
+            13
+          ]
+        },
+        "unmsm": {
+          "temas": [
+            10
+          ]
+        }
+      },
       "potencial_visual": "alto",
       "plantillas": [],
       "investigacion": null
@@ -214,7 +357,18 @@
         "Grado de reacción",
         "Principio de Le Chatelier"
       ],
-      "universidades": {"uni": {"semanas": [13]}, "unmsm": {"temas": [10]}},
+      "universidades": {
+        "uni": {
+          "semanas": [
+            13
+          ]
+        },
+        "unmsm": {
+          "temas": [
+            10
+          ]
+        }
+      },
       "potencial_visual": "medio",
       "plantillas": [],
       "investigacion": "docs/investigacion/equilibrio-acidos-electroquimica-ideas-erroneas.md"
@@ -229,7 +383,18 @@
         "pH y pOH",
         "Neutralización y titulación"
       ],
-      "universidades": {"uni": {"semanas": [14]}, "unmsm": {"temas": [11]}},
+      "universidades": {
+        "uni": {
+          "semanas": [
+            14
+          ]
+        },
+        "unmsm": {
+          "temas": [
+            11
+          ]
+        }
+      },
       "potencial_visual": "medio",
       "plantillas": [],
       "investigacion": "docs/investigacion/equilibrio-acidos-electroquimica-ideas-erroneas.md"
@@ -245,7 +410,18 @@
         "Leyes de Faraday",
         "Diagrama de Pourbaix (solo San Marcos)"
       ],
-      "universidades": {"uni": {"semanas": [15]}, "unmsm": {"temas": [7]}},
+      "universidades": {
+        "uni": {
+          "semanas": [
+            15
+          ]
+        },
+        "unmsm": {
+          "temas": [
+            7
+          ]
+        }
+      },
       "potencial_visual": "medio",
       "plantillas": [],
       "investigacion": "docs/investigacion/equilibrio-acidos-electroquimica-ideas-erroneas.md"
@@ -263,7 +439,19 @@
         "Isomería óptica (solo San Marcos)",
         "Tipos de reacciones orgánicas"
       ],
-      "universidades": {"uni": {"semanas": [16, 17]}, "unmsm": {"temas": [12]}},
+      "universidades": {
+        "uni": {
+          "semanas": [
+            16,
+            17
+          ]
+        },
+        "unmsm": {
+          "temas": [
+            12
+          ]
+        }
+      },
       "potencial_visual": "bajo",
       "plantillas": [],
       "investigacion": null
@@ -280,7 +468,20 @@
         "Isomería de función",
         "Nomenclatura de compuestos monofuncionales"
       ],
-      "universidades": {"uni": {"semanas": [17]}, "unmsm": {"temas": [13, 14, 15]}},
+      "universidades": {
+        "uni": {
+          "semanas": [
+            17
+          ]
+        },
+        "unmsm": {
+          "temas": [
+            13,
+            14,
+            15
+          ]
+        }
+      },
       "potencial_visual": "bajo",
       "plantillas": [],
       "investigacion": null
@@ -296,7 +497,21 @@
         "Alcaloides y polifenoles",
         "Colorantes naturales"
       ],
-      "universidades": {"uni": {"semanas": [18]}, "unmsm": {"temas": [13, 14, 15, 16]}},
+      "universidades": {
+        "uni": {
+          "semanas": [
+            18
+          ]
+        },
+        "unmsm": {
+          "temas": [
+            13,
+            14,
+            15,
+            16
+          ]
+        }
+      },
       "potencial_visual": "bajo",
       "plantillas": [],
       "investigacion": null
@@ -312,7 +527,18 @@
         "Recursos minerales del Perú (solo San Marcos)",
         "Metalurgia del Fe, Cu, Pb, Zn, Au y Ag (solo San Marcos)"
       ],
-      "universidades": {"uni": {"semanas": [18]}, "unmsm": {"temas": [17]}},
+      "universidades": {
+        "uni": {
+          "semanas": [
+            18
+          ]
+        },
+        "unmsm": {
+          "temas": [
+            17
+          ]
+        }
+      },
       "potencial_visual": "bajo",
       "plantillas": [],
       "investigacion": null
@@ -330,7 +556,20 @@
         "Reciclaje y tecnologías limpias",
         "Nanotecnología, polímeros y corrosión (solo UNI)"
       ],
-      "universidades": {"uni": {"semanas": [18, 19, 20]}, "unmsm": {"temas": [18]}},
+      "universidades": {
+        "uni": {
+          "semanas": [
+            18,
+            19,
+            20
+          ]
+        },
+        "unmsm": {
+          "temas": [
+            18
+          ]
+        }
+      },
       "potencial_visual": "bajo",
       "plantillas": [],
       "investigacion": null

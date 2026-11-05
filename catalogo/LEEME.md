@@ -51,6 +51,7 @@ Aquí se declara **qué** enseña la app: cursos, unidades y temas, en qué univ
 {
   "id": "optica-lente-delgada",
   "titulo": "Banco Óptico",
+  "formato": "escena",
   "unidades": ["fisica.optica-geometrica"],
   "estado": "borrador",
   "version": "0.1.0",
@@ -62,7 +63,7 @@ Aquí se declara **qué** enseña la app: cursos, unidades y temas, en qué univ
 }
 ```
 
-`estado`: `borrador` (en construcción), `probada` (pasó sus casos de prueba y el pase 2), `publicada` (está en la app). `papel` apunta al archivo de problemas para resolver sin la escena (regla 6), o `null` si falta.
+`formato`: `escena` (necesita `escena`, `motor`, `casos` y `pruebas`) o `predicciones` (necesita `generador`, `casos` y `pruebas`; ver `nucleo/predicciones.js`). `estado`: `borrador` (en construcción), `probada` (pasó sus casos de prueba y el pase 2), `publicada` (está en la app). `papel` apunta al archivo de problemas para resolver sin la escena (regla 6), o `null` si falta.
 
 ## Decisiones de agrupación pendientes (4 nov 2026)
 

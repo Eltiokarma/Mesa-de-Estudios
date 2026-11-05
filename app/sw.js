@@ -2,10 +2,11 @@
 // Estrategia: al instalar, guarda la cáscara, el catálogo y los archivos de cada plantilla.
 // Después responde desde lo guardado y actualiza en segundo plano (stale-while-revalidate).
 // Al cambiar algo de la cáscara, subir VERSION para que los celulares la renueven.
-const VERSION = 'v2';
+const VERSION = 'v5';
 const CACHE = `lab-${VERSION}`;
 const CASCARA = ['/app/', '/app/index.html', '/app/estilos.css', '/app/app.js', '/app/manifest.webmanifest',
-  '/app/datos/catalogo.json', '/app/iconos/icono.svg', '/app/iconos/icono-192.png', '/app/iconos/icono-512.png'];
+  '/app/practica.js', '/app/datos/catalogo.json',
+  '/nucleo/azar.js', '/nucleo/predicciones.js', '/nucleo/medicion.js', '/app/iconos/icono.svg', '/app/iconos/icono-192.png', '/app/iconos/icono-512.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil((async () => {
@@ -31,8 +32,8 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
   if (e.request.method !== 'GET' || url.origin !== location.origin || url.pathname.startsWith('/api/')) return;
-  // Solo la app y las plantillas; la hoja de ruta (/gestion/) es una herramienta interna.
-  if (!url.pathname.startsWith('/app/') && !url.pathname.startsWith('/plantillas/')) return;
+  // Solo la app, el núcleo y las plantillas; la hoja de ruta (/gestion/) es una herramienta interna.
+  if (!/^\/(app|plantillas|nucleo)\//.test(url.pathname)) return;
   e.respondWith((async () => {
     const c = await caches.open(CACHE);
     const guardada = await c.match(e.request, { ignoreSearch: true });

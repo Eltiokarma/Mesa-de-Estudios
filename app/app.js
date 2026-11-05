@@ -13,14 +13,33 @@ const UNI_CORTA = { uni: 'UNI', unmsm: 'San Marcos', una: 'UNA Puno' };
 const UNI_SIGLA = { uni: 'UNI', unmsm: 'SM', una: 'UNA' };
 const textoDias = n => `${n} ${n === 1 ? 'día seguido' : 'días seguidos'}`;
 let cat = null, instalar = null, offlineListo = false;
+const VERSION_APP = '0.2.0';
+const CLAVE_MED = 'lab-medicion-v1';
+const GRADOS = [['3', '3.º de secundaria'], ['4', '4.º de secundaria'], ['5', '5.º de secundaria'], ['egresado', 'Ya terminé el colegio']];
 
 // ---------- Datos del alumno (en el celular) ----------
 function cargarEstado() {
   try { return JSON.parse(localStorage.getItem(CLAVE)) || {}; } catch { return {}; }
 }
-let est = Object.assign({ nombre: '', uni: '', vistas: {}, dias: [], tema: '' }, cargarEstado());
+let est = Object.assign({ nombre: '', uni: '', grado: '', colegio: '', alumno: '', vistas: {}, dias: [], tema: '', practica: {} }, cargarEstado());
+// Identificador anónimo del dispositivo: la medición nunca guarda nombres.
+if (!est.alumno) est.alumno = 'a' + Array.from(crypto.getRandomValues(new Uint8Array(5)), b => b.toString(16).padStart(2, '0')).join('');
+// Código del colegio: llega en el enlace que reparte el profesor (…/app/?colegio=ABC).
+{ const c = new URLSearchParams(location.search).get('colegio'); if (c) est.colegio = c.trim().toUpperCase().slice(0, 20); }
 function guardar() { try { localStorage.setItem(CLAVE, JSON.stringify(est)); } catch { /* sin almacenamiento: la app sigue */ } }
 const hoy = () => new Date().toLocaleDateString('en-CA');
+// ---------- Medición (anónima; ver nucleo/medicion.js) ----------
+function eventos() { try { return JSON.parse(localStorage.getItem(CLAVE_MED)) || []; } catch { return []; } }
+function registrar(ev) {
+  const l = eventos();
+  l.push({ t: new Date().toISOString(), alumno: est.alumno, grado: est.grado, colegio: est.colegio, version: VERSION_APP, ...ev });
+  try { localStorage.setItem(CLAVE_MED, JSON.stringify(l.slice(-5000))); } catch { /* sin espacio: se pierde este evento */ }
+}
+function descargar(nombre, contenido, tipo) {
+  const url = URL.createObjectURL(new Blob([contenido], { type: tipo }));
+  const a = document.createElement('a'); a.href = url; a.download = nombre; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
 function marcarDia() { if (!est.dias.includes(hoy())) { est.dias.push(hoy()); est.dias = est.dias.slice(-400); guardar(); } }
 function racha() {
   const s = new Set(est.dias); let n = 0; const d = new Date();
@@ -37,6 +56,8 @@ const ubic = (u, uni) => { const k = cat.universidades[uni]?.ubicacion; return k
 const etiquetaUbic = (u, k) => { const v = ubic(u, k); if (!v) return ''; const pal = cat.universidades[k].ubicacion === 'semanas' ? 'sem.' : 'tema';
   return `${UNI_CORTA[k] || k} · ${pal} ${v.length > 2 ? `${v[0]}–${v[v.length - 1]}` : v.join(', ')}`; };
 const visto = id => !!est.vistas[id];
+// Las escenas abren su propia página (con botón para volver); las predicciones se juegan dentro de la app.
+const enlace = p => p.formato === 'escena' ? `${p.url}?desde=app` : p.url;
 function avance(c, uni) { const us = unidadesDe(c, uni); return us.length ? us.filter(u => visto(u.id)).length / us.length : 0; }
 // Orden de estudio: el del cronograma de su universidad (semana o tema), intercalando cursos.
 function cola(uni) {
@@ -65,12 +86,18 @@ function vBienvenida() {
     <input type="text" id="nombre" autocomplete="given-name" maxlength="30" placeholder="Tu nombre" value="${esc(est.nombre)}">
     <span class="sub">¿A qué universidad postulas?</span>
     <div class="opciones">${opc}</div>
-    <button class="btn lima ancho" id="empezar"${est.uni ? '' : ' disabled'}>Empezar</button>
+    <span class="sub">¿En qué grado estás?</span>
+    <div class="chips" style="margin:0">${GRADOS.map(([k, t]) => `<button class="chip${est.grado === k ? ' on' : ''}" data-grado="${k}">${esc(t)}</button>`).join('')}</div>
+    <button class="btn lima ancho" id="empezar"${est.uni && est.grado ? '' : ' disabled'}>Empezar</button>
     <span class="sub" style="text-align:center">Tu avance se guarda en este celular. Funciona sin internet.</span>
   </section>`;
   $app.querySelectorAll('[data-uni]').forEach(b => b.onclick = () => {
     est.uni = b.dataset.uni; $app.querySelectorAll('[data-uni]').forEach(x => x.classList.toggle('on', x === b));
-    document.getElementById('empezar').disabled = false;
+    document.getElementById('empezar').disabled = !(est.uni && est.grado);
+  });
+  $app.querySelectorAll('[data-grado]').forEach(b => b.onclick = () => {
+    est.grado = b.dataset.grado; $app.querySelectorAll('[data-grado]').forEach(x => x.classList.toggle('on', x === b));
+    document.getElementById('empezar').disabled = !(est.uni && est.grado);
   });
   document.getElementById('empezar').onclick = () => {
     est.nombre = document.getElementById('nombre').value.trim(); guardar(); marcarDia(); location.hash = '#/inicio';
@@ -84,14 +111,14 @@ function vInicio() {
   const reto = conEscena ? `<div class="reto">
       <div class="etq">Reto de hoy · ${esc(conEscena.c.nombre)}</div>
       <h3>${esc(conEscena.u.nombre)}</h3>
-      <p>${conEscena.u.plantillas.length ? 'Predice antes de ver: la escena te espera.' : esc(conEscena.u.temas.slice(0, 3).join(' · '))}</p>
+      <p>${conEscena.u.plantillas.length ? 'Predice antes de ver la respuesta.' : esc(conEscena.u.temas.slice(0, 3).join(' · '))}</p>
       ${conEscena.u.plantillas.length
-        ? `<a class="btn blanco" href="${esc(cat.plantillas[conEscena.u.plantillas[0]].url)}?desde=app" data-abrir="${esc(conEscena.u.id)}">Abrir escena ›</a>`
+        ? `<a class="btn blanco" href="${esc(enlace(cat.plantillas[conEscena.u.plantillas[0]]))}" data-abrir="${esc(conEscena.u.id)}">${cat.plantillas[conEscena.u.plantillas[0]].formato === 'escena' ? 'Abrir escena' : 'Practicar'} ›</a>`
         : `<a class="btn blanco" href="#/curso/${esc(conEscena.c.id)}">Ver unidad ›</a>`}
     </div>` : `<div class="reto"><h3>¡Terminaste todo el temario!</h3><p>Repasa lo que más te costó.</p></div>`;
   const sig = pend.filter(x => x !== conEscena).slice(0, 4).map(x => `<a class="item" href="#/curso/${esc(x.c.id)}">${icono(x.c.id)}
       <span class="tx"><span class="t">${esc(x.u.nombre)}</span><br><span class="d">${esc(x.c.nombre)} · ${esc(etiquetaUbic(x.u, est.uni))}</span></span>
-      <span class="der">${x.u.plantillas.length ? '<span class="tag lima">Escena</span>' : ''}›</span></a>`).join('');
+      <span class="der">${x.u.plantillas.length ? `<span class="tag lima">${cat.plantillas[x.u.plantillas[0]].formato === 'escena' ? 'Escena' : 'Práctica'}</span>` : ''}›</span></a>`).join('');
   $app.innerHTML = `
     <header class="saludo"><span class="avatar">${esc((est.nombre || '?')[0].toUpperCase())}</span>
       <div><p class="sub">Hola${est.nombre ? `, ${esc(est.nombre)}` : ''} 👋</p><h1>¿Qué entendemos hoy?</h1></div></header>
@@ -131,7 +158,7 @@ function vCurso(id) {
         <span class="t">${esc(u.nombre)}</span>
         <button class="check${visto(u.id) ? ' on' : ''}" data-ver="${esc(u.id)}" aria-pressed="${visto(u.id)}" aria-label="Marcar ${esc(u.nombre)} como estudiada">${visto(u.id) ? '✓' : ''}</button></div>
       <div class="temas">${esc(u.temas.join(' · '))}</div>
-      <div class="acc">${tags}${pl.map(p => `<a class="btn morado" style="padding:8px 14px;font-size:14px" href="${esc(p.url)}?desde=app" data-abrir="${esc(u.id)}">${esc(p.titulo)} ›</a>`).join('')}
+      <div class="acc">${tags}${pl.map(p => `<a class="btn morado" style="padding:8px 14px;font-size:14px" href="${esc(enlace(p))}" data-abrir="${esc(u.id)}">${esc(p.titulo)} ›</a>`).join('')}
         ${pl.length ? '' : '<span class="sub" style="font-size:12px">Escena en preparación</span>'}</div></article>`;
   }).join('');
   $app.innerHTML = `<a class="volver" href="#/cursos" aria-label="Volver">‹</a>
@@ -171,6 +198,14 @@ function vProgreso() {
         <span class="barra" style="display:block;margin-top:8px"><i style="width:${Math.round(a * 100)}%"></i></span></span><span class="der">${Math.round(a * 100)} %</span></a>`; }).join('')}</div>`;
 }
 
+function resumenHTML() {
+  const r = Medicion.resumir(eventos());
+  if (!r.length) return '<p class="sub">Todavía no hay prácticas registradas.</p>';
+  const pct = x => x === null ? '—' : Math.round(x * 100) + ' %';
+  return `<div class="tabla"><table><thead><tr><th>Módulo</th><th>Entrada</th><th>Salida</th><th>Predicciones</th></tr></thead><tbody>${r.map(m =>
+    `<tr><td>${esc((cat.plantillas[m.modulo] || {}).titulo || m.modulo)}</td><td>${pct(m.entrada)}</td><td>${pct(m.salida)}</td><td>${m.predicciones} (${pct(m.acierto)} bien)</td></tr>`).join('')}</tbody></table></div>`;
+}
+
 function vPerfil() {
   const unis = Object.entries(cat.universidades).filter(([k]) => k !== 'una').map(([k]) =>
     `<button class="chip${est.uni === k ? ' on' : ''}" data-uni="${k}">${esc(UNI_CORTA[k] || k)}</button>`).join('');
@@ -179,6 +214,8 @@ function vPerfil() {
   $app.innerHTML = `<h1>Perfil</h1>
     <h2>Nombre</h2><input type="text" id="nombre" maxlength="30" value="${esc(est.nombre)}" placeholder="Tu nombre">
     <h2>Universidad</h2><div class="chips">${unis}</div>
+    <h2>Grado</h2><div class="chips">${GRADOS.map(([k, t]) => `<button class="chip${est.grado === k ? ' on' : ''}" data-grado="${k}">${esc(t)}</button>`).join('')}</div>
+    <h2>Código del colegio</h2><input type="text" id="colegio" maxlength="20" value="${esc(est.colegio)}" placeholder="Lo da tu profesor" autocapitalize="characters">
     <h2>Apariencia</h2><div class="chips">${temas}</div>
     <h2>Esta app</h2>
     <div class="lista">
@@ -186,15 +223,26 @@ function vPerfil() {
         <span class="d">Las escenas y el catálogo quedan guardados en el celular.</span></span></div>
       ${instalar ? '<button class="btn morado ancho" id="instalar">Instalar en este celular</button>' : ''}
       <button class="btn borde ancho" id="borrar">Borrar mi avance</button>
+    </div>
+    <h2>Datos para el profesor</h2>
+    <div class="card">
+      <p class="sub" style="margin:0 0 10px">Se guardan en este dispositivo, sin tu nombre: tus predicciones y tus pruebas de entrada y salida (${eventos().length} registros).</p>
+      ${resumenHTML()}
+      <div class="acciones-datos"><button class="btn morado" id="csv">Descargar CSV</button><button class="btn borde" id="json">Descargar JSON</button></div>
     </div>`;
   document.getElementById('nombre').onchange = e => { est.nombre = e.target.value.trim(); guardar(); };
+  document.getElementById('colegio').onchange = e => { est.colegio = e.target.value.trim().toUpperCase(); guardar(); };
+  $app.querySelectorAll('[data-grado]').forEach(b => b.onclick = () => { est.grado = b.dataset.grado; guardar(); vPerfil(); });
+  const archivo = `laboratorio-${est.colegio || 'sin-colegio'}-${est.alumno}-${new Date().toLocaleDateString('en-CA')}`;
+  document.getElementById('csv').onclick = () => descargar(archivo + '.csv', Medicion.aCSV(eventos()), 'text/csv');
+  document.getElementById('json').onclick = () => descargar(archivo + '.json', JSON.stringify(eventos()), 'application/json');
   $app.querySelectorAll('[data-uni]').forEach(b => b.onclick = () => { est.uni = b.dataset.uni; guardar(); vPerfil(); });
   $app.querySelectorAll('[data-tema]').forEach(b => b.onclick = () => { est.tema = b.dataset.tema; guardar(); aplicarTema(); vPerfil(); });
   const bi = document.getElementById('instalar');
   if (bi) bi.onclick = async () => { instalar.prompt(); await instalar.userChoice; instalar = null; vPerfil(); };
   document.getElementById('borrar').onclick = () => {
     if (!confirm('¿Borrar tu avance de este celular? No se puede deshacer.')) return;
-    est = { nombre: '', uni: '', vistas: {}, dias: [], tema: '' }; guardar(); aplicarTema(); ir('#/bienvenida');
+    est = { nombre: '', uni: '', grado: '', colegio: est.colegio, alumno: est.alumno, vistas: {}, dias: [], tema: '', practica: {} }; guardar(); aplicarTema(); ir('#/bienvenida');
   };
 }
 
@@ -202,10 +250,15 @@ function vPerfil() {
 function ir(h) { if (location.hash === h) render(); else location.hash = h; }
 function render() {
   const [, ruta = 'inicio', arg] = location.hash.split('/');
-  if (!est.uni && ruta !== 'bienvenida') return ir('#/bienvenida');
+  if ((!est.uni || !est.grado) && ruta !== 'bienvenida') return ir('#/bienvenida');
   if (ruta === 'bienvenida') return vBienvenida();
   $nav.hidden = false;
   $nav.querySelectorAll('a').forEach(a => a.classList.toggle('on', a.dataset.ruta === (ruta === 'curso' ? 'cursos' : ruta)));
+  if (ruta === 'practica') {
+    $nav.querySelectorAll('a').forEach(a => a.classList.toggle('on', a.dataset.ruta === 'cursos'));
+    window.scrollTo(0, 0);
+    return Practica.vista({ $app, cat, est, esc, guardar, registrar, marcarDia }, decodeURIComponent(arg || ''));
+  }
   ({ inicio: vInicio, cursos: vCursos, curso: () => vCurso(decodeURIComponent(arg || '')), progreso: vProgreso, perfil: vPerfil }[ruta] || vInicio)();
   window.scrollTo(0, 0);
 }

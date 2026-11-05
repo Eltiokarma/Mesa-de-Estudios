@@ -1,0 +1,128 @@
+{
+  "plantilla": "estequiometria-limitante",
+  "unidades": "g",
+  "tolerancia": 0.05,
+  "nota": "Calculado aparte con fracciones exactas: el limitante es el reactivo que daría menos producto.",
+  "casos": [
+    {
+      "semilla": 1,
+      "entrada": {
+        "reaccion": "metano",
+        "mA": 8,
+        "mB": 192
+      },
+      "esperado": {
+        "limitante": "CH₄",
+        "masa_producto": 22.0
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "reaccion": "aluminio",
+        "mA": 270,
+        "mB": 288
+      },
+      "esperado": {
+        "limitante": "Al",
+        "masa_producto": 510.0
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "reaccion": "agua",
+        "mA": 8,
+        "mB": 96
+      },
+      "esperado": {
+        "limitante": "H₂",
+        "masa_producto": 72.0
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "reaccion": "agua",
+        "mA": 12,
+        "mB": 64
+      },
+      "esperado": {
+        "limitante": "O₂",
+        "masa_producto": 72.0
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "reaccion": "amoniaco",
+        "mA": 112,
+        "mB": 18
+      },
+      "esperado": {
+        "limitante": "H₂",
+        "masa_producto": 102.0
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "reaccion": "propano",
+        "mA": 220,
+        "mB": 640
+      },
+      "esperado": {
+        "limitante": "O₂",
+        "masa_producto": 528.0
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "reaccion": "amoniaco",
+        "mA": 70,
+        "mB": 6
+      },
+      "esperado": {
+        "limitante": "H₂",
+        "masa_producto": 34.0
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "reaccion": "aluminio",
+        "mA": 216,
+        "mB": 96
+      },
+      "esperado": {
+        "limitante": "O₂",
+        "masa_producto": 204.0
+      }
+    },
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "reaccion": "propano",
+        "mA": 22,
+        "mB": 400
+      },
+      "esperado": {
+        "limitante": "C₃H₈",
+        "masa_producto": 66.0
+      }
+    },
+    {
+      "semilla": "salida-1",
+      "entrada": {
+        "reaccion": "magnesio",
+        "mA": 120,
+        "mB": 16
+      },
+      "esperado": {
+        "limitante": "O₂",
+        "masa_producto": 40.0
+      }
+    }
+  ]
+}

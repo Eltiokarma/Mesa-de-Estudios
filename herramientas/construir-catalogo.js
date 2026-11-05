@@ -31,8 +31,11 @@ function construir() {
     const ficha = path.join(dirPl, d, 'plantilla.json');
     if (!fs.existsSync(ficha)) continue;
     const f = leer(ficha);
-    plantillas[f.id] = { id: f.id, titulo: f.titulo, estado: f.estado, version: f.version, unidades: f.unidades,
-      url: `/plantillas/${f.id}/${f.escena}`, archivos: [f.escena, f.motor].map(a => `/plantillas/${f.id}/${a}`) };
+    const formato = f.formato || 'escena';
+    // Escena: página propia. Predicciones: se juega dentro de la app con el generador del módulo.
+    const archivos = (formato === 'escena' ? [f.escena, f.motor] : [f.generador]).map(a => `/plantillas/${f.id}/${a}`);
+    plantillas[f.id] = { id: f.id, titulo: f.titulo, formato, estado: f.estado, version: f.version, unidades: f.unidades,
+      url: formato === 'escena' ? `/plantillas/${f.id}/${f.escena}` : `#/practica/${f.id}`, archivos };
   }
   const nombresUni = Object.fromEntries(Object.entries(universidades).map(([k, v]) => [k, { nombre: v.nombre, ubicacion: v.ubicacion }]));
   return { universidades: nombresUni, cursos, plantillas };

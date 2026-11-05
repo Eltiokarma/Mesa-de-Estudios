@@ -116,11 +116,11 @@
       "nombre": "Motor de predicciones generadas (química, aritmética, RM)",
       "inicio": "2026-11-06",
       "fin": "2026-11-13",
-      "estado": "pendiente",
-      "progreso": 0,
+      "estado": "en_curso",
+      "progreso": 70,
       "critico": true,
       "depende_de": [],
-      "notas": "docs/arquitectura.md, formato predicciones"
+      "notas": "nucleo/azar.js, nucleo/predicciones.js, nucleo/probar-generador.js; app/practica.js. Hecho con 2 módulos. Falta: más tipos de pregunta (V/F, elegir concepto)"
     },
     {
       "id": "pl2",
@@ -128,13 +128,13 @@
       "nombre": "Medición integrada (entrada y salida, registro anónimo, exportar para el profesor)",
       "inicio": "2026-11-10",
       "fin": "2026-11-17",
-      "estado": "pendiente",
-      "progreso": 0,
+      "estado": "en_curso",
+      "progreso": 70,
       "critico": true,
       "depende_de": [
         "f0f"
       ],
-      "notas": "Única fuente de datos del lanzamiento"
+      "notas": "nucleo/medicion.js, herramientas/analizar-medicion.js. Hecho: entrada y salida, predicciones, exportar CSV/JSON, informe para el profesor. Falta: decidir si se suma un servidor para juntar datos sin pasar archivos"
     },
     {
       "id": "pl5",
@@ -238,13 +238,13 @@
       "nombre": "Estequiometría y reactivo limitante con partículas",
       "inicio": "2026-11-16",
       "fin": "2026-11-23",
-      "estado": "pendiente",
-      "progreso": 0,
+      "estado": "en_curso",
+      "progreso": 40,
       "critico": false,
       "depende_de": [
         "pl3"
       ],
-      "notas": ""
+      "notas": "plantillas/estequiometria-limitante (predicciones). Falta: escena de partículas y problemas de papel"
     },
     {
       "id": "qu2",
@@ -294,13 +294,13 @@
       "nombre": "Aritmética, porcentajes y proporcionalidad",
       "inicio": "2026-11-17",
       "fin": "2026-11-21",
-      "estado": "pendiente",
-      "progreso": 0,
+      "estado": "en_curso",
+      "progreso": 40,
       "critico": false,
       "depende_de": [
         "pl3"
       ],
-      "notas": ""
+      "notas": "plantillas/porcentajes-sucesivos (predicciones, errores como hipótesis). Falta: proporcionalidad y problemas de papel"
     },
     {
       "id": "ma1",

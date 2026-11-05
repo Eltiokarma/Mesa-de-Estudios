@@ -82,7 +82,10 @@ test('cada plantilla tiene ficha válida y está en el catálogo', () => {
     assert.equal(f.id, d, `${ficha}: el id debe ser "${d}"`);
     assert.ok(ESTADOS.includes(f.estado), `${ficha}: estado inválido`);
     assert.match(f.version, /^\d+\.\d+\.\d+$/, `${ficha}: versión inválida`);
-    for (const campo of ['escena', 'motor', 'casos', 'pruebas']) {
+    // Cada formato exige sus archivos (docs/arquitectura.md).
+    const REQUERIDOS = { escena: ['escena', 'motor', 'casos', 'pruebas'], predicciones: ['generador', 'casos', 'pruebas'] };
+    assert.ok(REQUERIDOS[f.formato], `${ficha}: formato "${f.formato}" no es uno de ${Object.keys(REQUERIDOS)}`);
+    for (const campo of REQUERIDOS[f.formato]) {
       assert.ok(f[campo] && existe(`plantillas/${d}/${f[campo]}`), `${ficha}: no existe el archivo de ${campo}`);
     }
     if (f.papel) assert.ok(existe(`plantillas/${d}/${f.papel}`), `${ficha}: no existe el archivo de papel`);

@@ -44,7 +44,7 @@ En matemática, el potencial es desigual:
 **Después, cuando haga falta y no antes:**
 - `nucleo/`: se extrae la primera pieza compartida cuando el segundo módulo la necesite. Hacerlo antes sería adivinar.
 - `app/`: ya existe una primera versión (bienvenida, inicio, cursos, progreso y perfil, sin conexión). Falta el planificador y el modo lápiz y papel.
-- El motor de predicciones generadas, con la primera unidad de aritmética o química que lo use.
+- ~~El motor de predicciones generadas.~~ Hecho (5 nov 2026): `nucleo/predicciones.js`, `app/practica.js` y dos módulos (`estequiometria-limitante`, `porcentajes-sucesivos`). Cada alternativa incorrecta lleva el id del error, su explicación y su respaldo (`documentado` o `hipotesis`); la medición registra cuál eligió cada alumno.
 - Biología y los cursos de letras: el catálogo ya los admite (`area: "letras"`); se agregan cuando entren al alcance.
 
 ## Cómo agregar cosas
