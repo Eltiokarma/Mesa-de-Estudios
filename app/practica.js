@@ -48,6 +48,7 @@ async function vista(ctx, id) {
       <p class="preg">${texto(p.pregunta, p, esc)}</p>
       <div class="alts" role="group" aria-label="Alternativas">${p.alternativas.map(a =>
         `<button class="alt" data-letra="${a.letra}"><span class="letra">${a.letra}</span><span>${esc(a.texto)}</span></button>`).join('')}</div>
+      <p class="solo-teclado">Con teclado: <kbd>A</kbd>–<kbd>E</kbd> o <kbd>1</kbd>–<kbd>5</kbd> para elegir, <kbd>Enter</kbd> para seguir.</p>
       <div id="retro"></div>
     </article>`;
   }
@@ -125,6 +126,25 @@ async function vista(ctx, id) {
   else if (st.salida) resultado();
   else practica();
 }
+
+// Teclado (laboratorio de cómputo): A–E o 1–5 eligen una alternativa; Enter pasa al siguiente.
+// Un solo oyente para toda la app; solo actúa en la ruta de práctica.
+document.addEventListener('keydown', e => {
+  if (!location.hash.startsWith('#/practica') || e.ctrlKey || e.metaKey || e.altKey || e.repeat) return;
+  if (e.target.closest && e.target.closest('input, textarea, select')) return;
+  const k = e.key.toUpperCase();
+  const letra = /^[A-E]$/.test(k) ? k : /^[1-5]$/.test(k) ? 'ABCDE'[+k - 1] : null;
+  if (letra) {
+    const b = document.querySelector(`.alt[data-letra="${letra}"]:not(:disabled)`);
+    if (b) { e.preventDefault(); b.click(); }
+    return;
+  }
+  // Enter sobre un botón enfocado ya lo activa el navegador: no repetir.
+  if (e.key === 'Enter' && !(e.target.closest && e.target.closest('button, a'))) {
+    const b = document.getElementById('otro') || document.getElementById('seguir');
+    if (b) { e.preventDefault(); b.click(); }
+  }
+});
 
 window.Practica = { vista };
 })();

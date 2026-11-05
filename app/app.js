@@ -13,7 +13,7 @@ const UNI_CORTA = { uni: 'UNI', unmsm: 'San Marcos', una: 'UNA Puno' };
 const UNI_SIGLA = { uni: 'UNI', unmsm: 'SM', una: 'UNA' };
 const textoDias = n => `${n} ${n === 1 ? 'día seguido' : 'días seguidos'}`;
 let cat = null, instalar = null, offlineListo = false;
-const VERSION_APP = '0.2.0';
+const VERSION_APP = '0.3.0';
 const CLAVE_MED = 'lab-medicion-v1';
 const GRADOS = [['3', '3.º de secundaria'], ['4', '4.º de secundaria'], ['5', '5.º de secundaria'], ['egresado', 'Ya terminé el colegio']];
 
@@ -70,7 +70,7 @@ function cola(uni) {
 const icono = id => `<span class="ico" aria-hidden="true" style="font-weight:800;font-size:14px">${esc(ICONOS[id] || id.slice(0, 3))}</span>`;
 
 function vBienvenida() {
-  $nav.hidden = true;
+  $nav.hidden = true; document.body.dataset.ruta = 'bienvenida'; document.body.classList.remove('con-nav');
   const opc = Object.entries(cat.universidades).filter(([k]) => k !== 'una').map(([k, v]) =>
     `<button class="opcion${est.uni === k ? ' on' : ''}" data-uni="${k}"><span class="avatar" style="width:40px;height:40px;font-size:14px">${esc(UNI_SIGLA[k] || k)}</span><span><b>${esc(v.nombre)}</b><br><span class="sub">Ordenar todo según su temario</span></span></button>`).join('');
   $app.innerHTML = `<section class="bienvenida">
@@ -122,15 +122,16 @@ function vInicio() {
   $app.innerHTML = `
     <header class="saludo"><span class="avatar">${esc((est.nombre || '?')[0].toUpperCase())}</span>
       <div><p class="sub">Hola${est.nombre ? `, ${esc(est.nombre)}` : ''} 👋</p><h1>¿Qué entendemos hoy?</h1></div></header>
+    <div class="col2 inicio"><div>
     ${reto}
     <h2>Hoy</h2>
     <div class="stats">
       <div class="stat"><div class="ic" style="background:var(--lime);color:var(--lime-ink)">🔥</div><div class="n">${racha()}</div><div class="l">${racha() === 1 ? 'día seguido' : 'días seguidos'}</div></div>
       <div class="stat"><div class="ic" style="background:var(--brand-soft)">✓</div><div class="n">${hechas}</div><div class="l">unidades estudiadas</div></div>
       <div class="stat"><div class="ic" style="background:var(--brand-soft)">%</div><div class="n">${totalU ? Math.round(100 * hechas / totalU) : 0}<span style="font-size:16px">%</span></div><div class="l">del temario ${esc(UNI_CORTA[est.uni] || '')}</div></div>
-    </div>
+    </div></div><div>
     <h2>Lo que sigue <a href="#/cursos">Ver cursos ›</a></h2>
-    <div class="lista">${sig || '<p class="vacio">No hay más unidades pendientes.</p>'}</div>`;
+    <div class="lista">${sig || '<p class="vacio">No hay más unidades pendientes.</p>'}</div></div></div>`;
 }
 
 function vCursos() {
@@ -164,7 +165,7 @@ function vCurso(id) {
   $app.innerHTML = `<a class="volver" href="#/cursos" aria-label="Volver">‹</a>
     <h1>${esc(c.nombre)}</h1><p class="sub">${esc(AREA_TXT[c.area])} · ${us.length} unidades · ${Math.round(avance(c, todas ? '' : est.uni) * 100)} % estudiado</p>
     <div class="chips"><button class="chip${todas ? '' : ' on'}" data-todas="0">${esc(UNI_CORTA[est.uni] || 'Mi universidad')}</button><button class="chip${todas ? ' on' : ''}" data-todas="1">Todas las unidades</button></div>
-    <div class="lista" style="margin-top:12px">${filas}</div>`;
+    <div class="lista unidades" style="margin-top:12px">${filas}</div>`;
   $app.querySelectorAll('[data-todas]').forEach(b => b.onclick = () => { sessionStorage.setItem('todas', b.dataset.todas); vCurso(id); });
   $app.querySelectorAll('[data-ver]').forEach(b => b.onclick = () => {
     const k = b.dataset.ver; if (est.vistas[k]) delete est.vistas[k]; else { est.vistas[k] = hoy(); marcarDia(); }
@@ -179,6 +180,7 @@ function vProgreso() {
     return { l: d.toLocaleDateString('es-PE', { weekday: 'narrow' }), on: est.dias.includes(f), n: Object.values(est.vistas).filter(v => v === f).length }; });
   const max = Math.max(1, ...dias.map(d => d.n));
   $app.innerHTML = `<h1>Tu progreso</h1><p class="sub">Temario de ${esc(cat.universidades[est.uni]?.nombre || '')}</p>
+    <div class="col2"><div>
     <div class="card" style="margin-top:18px">
       <div class="anillo"><svg width="180" height="100" viewBox="0 0 180 100" role="img" aria-label="${Math.round(p * 100)} % del temario">
         <path d="M20 90a70 70 0 0 1 140 0" fill="none" stroke="var(--brand-soft)" stroke-width="18" stroke-linecap="round"/>
@@ -191,11 +193,11 @@ function vProgreso() {
       ${dias.map(d => `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px">
         <div style="width:100%;max-width:28px;height:${8 + 70 * d.n / max}px;border-radius:8px;background:${d.on ? 'var(--brand)' : 'var(--brand-soft)'}"></div>
         <span class="sub" style="font-size:12px">${esc(d.l)}</span></div>`).join('')}
-    </div><p class="sub" style="margin-top:10px">🔥 Racha: ${textoDias(racha())}</p></div>
-    <h2>Por curso</h2>
+    </div><p class="sub" style="margin-top:10px">🔥 Racha: ${textoDias(racha())}</p></div></div><div>
+    <h2 class="primero">Por curso</h2>
     <div class="lista">${cat.cursos.filter(c => unidadesDe(c, est.uni).length).map(c => { const a = avance(c, est.uni);
       return `<a class="item" href="#/curso/${esc(c.id)}">${icono(c.id)}<span class="tx"><span class="t">${esc(c.nombre)}</span>
-        <span class="barra" style="display:block;margin-top:8px"><i style="width:${Math.round(a * 100)}%"></i></span></span><span class="der">${Math.round(a * 100)} %</span></a>`; }).join('')}</div>`;
+        <span class="barra" style="display:block;margin-top:8px"><i style="width:${Math.round(a * 100)}%"></i></span></span><span class="der">${Math.round(a * 100)} %</span></a>`; }).join('')}</div></div></div>`;
 }
 
 function resumenHTML() {
@@ -212,6 +214,7 @@ function vPerfil() {
   const temas = [['', 'Automático'], ['light', 'Claro'], ['dark', 'Oscuro']].map(([k, v]) =>
     `<button class="chip${est.tema === k ? ' on' : ''}" data-tema="${k}">${v}</button>`).join('');
   $app.innerHTML = `<h1>Perfil</h1>
+    <div class="col2"><div>
     <h2>Nombre</h2><input type="text" id="nombre" maxlength="30" value="${esc(est.nombre)}" placeholder="Tu nombre">
     <h2>Universidad</h2><div class="chips">${unis}</div>
     <h2>Grado</h2><div class="chips">${GRADOS.map(([k, t]) => `<button class="chip${est.grado === k ? ' on' : ''}" data-grado="${k}">${esc(t)}</button>`).join('')}</div>
@@ -223,13 +226,13 @@ function vPerfil() {
         <span class="d">Las escenas y el catálogo quedan guardados en el celular.</span></span></div>
       ${instalar ? '<button class="btn morado ancho" id="instalar">Instalar en este celular</button>' : ''}
       <button class="btn borde ancho" id="borrar">Borrar mi avance</button>
-    </div>
+    </div></div><div>
     <h2>Datos para el profesor</h2>
     <div class="card">
       <p class="sub" style="margin:0 0 10px">Se guardan en este dispositivo, sin tu nombre: tus predicciones y tus pruebas de entrada y salida (${eventos().length} registros).</p>
       ${resumenHTML()}
       <div class="acciones-datos"><button class="btn morado" id="csv">Descargar CSV</button><button class="btn borde" id="json">Descargar JSON</button></div>
-    </div>`;
+    </div></div></div>`;
   document.getElementById('nombre').onchange = e => { est.nombre = e.target.value.trim(); guardar(); };
   document.getElementById('colegio').onchange = e => { est.colegio = e.target.value.trim().toUpperCase(); guardar(); };
   $app.querySelectorAll('[data-grado]').forEach(b => b.onclick = () => { est.grado = b.dataset.grado; guardar(); vPerfil(); });
@@ -252,7 +255,7 @@ function render() {
   const [, ruta = 'inicio', arg] = location.hash.split('/');
   if ((!est.uni || !est.grado) && ruta !== 'bienvenida') return ir('#/bienvenida');
   if (ruta === 'bienvenida') return vBienvenida();
-  $nav.hidden = false;
+  $nav.hidden = false; document.body.dataset.ruta = ruta; document.body.classList.add('con-nav');
   $nav.querySelectorAll('a').forEach(a => a.classList.toggle('on', a.dataset.ruta === (ruta === 'curso' ? 'cursos' : ruta)));
   if (ruta === 'practica') {
     $nav.querySelectorAll('a').forEach(a => a.classList.toggle('on', a.dataset.ruta === 'cursos'));

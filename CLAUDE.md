@@ -20,6 +20,7 @@ App de bajo costo para postulantes a universidades peruanas (UNI, San Marcos, UN
 ```
 docs/fundacional.md            documento base (copia del doc vivo en claude.ai)
 docs/arquitectura.md           capas (catálogo, módulos, núcleo, app, datos), formatos de módulo y cómo agregar cursos o unidades
+docs/diseno.md                 sistema de diseño: colores de marca y de variables, componentes, celular y pantalla grande
 catalogo/                      qué se enseña: cursos, unidades, en qué universidad entra cada una (JSON; ver catalogo/LEEME.md)
 plantillas/<tema>/plantilla.json  ficha del módulo: unidades que cubre, estado, versión, archivos
 docs/hoja-de-ruta.md + .json   hoja de ruta; el JSON es la fuente, se edita en http://localhost:4173/gestion/ (npm run dev)

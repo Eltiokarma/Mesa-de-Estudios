@@ -1,6 +1,6 @@
 {
   "titulo": "Laboratorio de Admisión: hacia el lanzamiento en el colegio",
-  "actualizado": "2026-11-04",
+  "actualizado": "2026-11-05",
   "secciones": [
     "Base (hecho)",
     "Plataforma y medición",
@@ -79,7 +79,7 @@
       "inicio": "2026-11-04",
       "fin": "2026-11-10",
       "estado": "en_curso",
-      "progreso": 50,
+      "progreso": 80,
       "critico": false,
       "depende_de": [],
       "notas": "app/estilos.css; referencias en docs/referencias/"
@@ -100,10 +100,10 @@
       "id": "pl1",
       "seccion": "Plataforma y medición",
       "nombre": "Diseño para pantalla grande (laboratorio de cómputo)",
-      "inicio": "2026-11-09",
-      "fin": "2026-11-11",
-      "estado": "pendiente",
-      "progreso": 0,
+      "inicio": "2026-11-05",
+      "fin": "2026-11-05",
+      "estado": "hecho",
+      "progreso": 100,
       "critico": false,
       "depende_de": [
         "f0f"

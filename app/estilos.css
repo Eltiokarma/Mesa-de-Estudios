@@ -129,3 +129,41 @@ input[type=text]:focus{outline:none;border-color:var(--brand)}
 .tabla table{width:100%;border-collapse:collapse;font-size:13px}
 .tabla th,.tabla td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
 .acciones-datos{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+kbd{font:600 12px/1 var(--font);border:1.5px solid var(--line);border-bottom-width:3px;border-radius:6px;padding:2px 6px;background:var(--card)}
+.solo-teclado{display:none;font-size:13px;color:var(--muted);margin:12px 0 0}
+#nav .marca{display:none}
+.col2>div>h2:first-child{margin-top:28px}
+
+/* ---------- Mouse y teclado (laboratorio de cómputo) ---------- */
+@media (hover:hover) and (pointer:fine){
+  .solo-teclado{display:block}
+  .curso:hover,.item:hover{box-shadow:0 1px 2px rgba(22,19,43,.05),0 12px 32px rgba(22,19,43,.12);transform:translateY(-1px)}
+  #nav a:not(.on):hover{color:var(--ink);background:var(--bg)}
+  .chip:not(.on):hover,.opcion:not(.on):hover{border-color:var(--brand-2)}
+}
+
+/* ---------- Pantalla grande (desde 900 px): menú lateral y columnas ---------- */
+@media (min-width:900px){
+  body.con-nav #app{max-width:none;margin:0 0 0 240px;padding:36px clamp(28px,4vw,56px) 48px}
+  body.con-nav #app>*{max-width:1080px}
+  #nav{left:0;top:0;bottom:0;transform:none;width:240px;border-radius:0;box-shadow:none;border-right:1px solid var(--line);
+    display:flex;flex-direction:column;gap:4px;padding:24px 14px}
+  #nav .marca{display:flex;align-items:center;gap:10px;font-weight:800;font-size:15px;line-height:1.15;letter-spacing:-.01em;padding:0 8px 24px}
+  #nav .marca img{border-radius:10px}
+  #nav a{flex-direction:row;gap:12px;font-size:15px;padding:11px 14px;border-radius:14px}
+  h1{font-size:30px}
+  .col2{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:0 32px;align-items:start}
+  .col2.inicio>div:last-child>h2:first-child{margin-top:20px}
+  .col2>div>h2.primero{margin-top:18px}
+  .cursos{grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+  .lista.unidades{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}
+  /* La práctica se lee mejor angosta, como una hoja. */
+  body[data-ruta="practica"] #app>*{max-width:760px}
+  .practica .enun,.practica .preg{font-size:18px}
+  .alts{grid-template-columns:1fr 1fr}
+  /* Bienvenida: la portada a la izquierda y el formulario a la derecha. */
+  body[data-ruta="bienvenida"] #app{max-width:1080px;padding:32px}
+  .bienvenida{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);grid-auto-rows:min-content;gap:12px 40px;min-height:calc(100dvh - 64px);align-content:center}
+  .bienvenida .hero{grid-column:1;grid-row:1 / span 9;min-height:520px}
+  .bienvenida>:not(.hero){grid-column:2}
+}

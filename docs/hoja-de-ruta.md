@@ -65,7 +65,7 @@ gantt
     section Plataforma y medición
     Sistema de diseño (colores por variable y marca, tipografía) :active, f0e, 2026-11-04, 2026-11-11
     Esqueleto PWA sin conexión :active, f0f, 2026-11-04, 2026-11-11
-    Diseño para pantalla grande (laboratorio de cómputo) :pl1, 2026-11-09, 2026-11-12
+    Diseño para pantalla grande (laboratorio de cómputo) :done, pl1, 2026-11-05, 2026-11-06
     Motor de predicciones generadas (química, aritmética, RM) :active, crit, pl3, 2026-11-06, 2026-11-14
     Medición integrada (entrada y salida, registro anónimo, exportar para el profesor) :active, crit, pl2, 2026-11-10, 2026-11-18
     Nivel por grado (3.º, 4.º, 5.º) en el catálogo :pl5, 2026-11-09, 2026-11-13
