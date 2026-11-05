@@ -1,0 +1,98 @@
+{
+  "titulo": "Calorimetría: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Usa Q = m·c·ΔT para calentar o enfriar y Q = m·L para cambiar de fase; en una mezcla, calor ganado = calor cedido. Toma c del agua = 1 cal/g°C, c del hielo = 0,5 cal/g°C, c del vapor = 0,5 cal/g°C, Lf = 80 cal/g y Lv = 540 cal/g. Sin pérdidas, salvo que el problema diga otra cosa. Si hay hielo o vapor, revisa primero si el calor alcanza para completar el cambio de fase.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Se mezclan 300 g de agua a 70 °C con 200 g de agua a 20 °C en un recipiente que no absorbe calor. ¿Cuál es la temperatura final?",
+      "respuesta": "50 °C.",
+      "pasos": ["El agua caliente cede lo que gana el agua fría: 300·1·(70 − T) = 200·1·(T − 20).", "21 000 − 300T = 200T − 4000, así que 500T = 25 000 y T = 50 °C.", "No es el promedio de 70 y 20 (45 °C): pesa más el agua que hay en mayor cantidad.", "Comprueba: la caliente cede 300·20 = 6000 cal y la fría gana 200·30 = 6000 cal."],
+      "verificar": [ { "cuerpos": [
+        { "id": "a", "sustancia": "agua", "m": 300, "T": 70 }, { "id": "b", "sustancia": "agua", "m": 200, "T": 20 } ],
+        "espera": { "T": 50, "cuerpos": { "a": { "Q": -6000 }, "b": { "Q": 6000 } } } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "¿Cuánto calor hay que darle a 40 g de hielo a −15 °C para convertirlos en agua a 30 °C?",
+      "respuesta": "4700 cal.",
+      "pasos": ["Son tres tramos, uno tras otro.", "Calentar el hielo de −15 °C a 0 °C: 40·0,5·15 = 300 cal.", "Fundirlo a 0 °C: 40·80 = 3200 cal. Mientras se funde, la temperatura no cambia.", "Calentar el agua de 0 °C a 30 °C: 40·1·30 = 1200 cal.", "Total: 300 + 3200 + 1200 = 4700 cal. El tramo más caro es la fusión."],
+      "verificar": [ { "calor": { "cuerpo": { "id": "h", "sustancia": "agua", "m": 40, "T": -15 }, "T": 30 }, "espera": 4700 } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Un bloque de metal de 400 g a 150 °C se echa en un calorímetro con 500 g de agua a 20 °C. El calorímetro equivale a 100 g de agua (absorbe como si fueran 100 g más de agua). La temperatura final es 30 °C. ¿Cuál es el calor específico del metal?",
+      "respuesta": "0,125 cal/g°C.",
+      "pasos": ["Gana calor el agua y también el calorímetro: (500 + 100)·1·(30 − 20) = 6000 cal.", "Ese calor lo cede el metal: 400·c·(150 − 30) = 48 000·c.", "48 000·c = 6000, así que c = 0,125 cal/g°C.", "Si olvidas el calorímetro, te sale 0,104: es un descuido frecuente."],
+      "verificar": [ { "cuerpos": [
+        { "id": "metal", "m": 400, "c": 0.125, "T": 150 }, { "id": "agua", "sustancia": "agua", "m": 500, "T": 20 }, { "id": "cal", "C": 100, "T": 20 } ],
+        "espera": { "T": 30, "cuerpos": { "metal": { "Q": -6000 } } } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Se echan 100 g de hielo a 0 °C en 400 g de agua a 40 °C. ¿Cuál es la temperatura final?",
+      "respuesta": "16 °C, con todo el hielo derretido.",
+      "pasos": ["¿Alcanza? Para fundir el hielo hacen falta 100·80 = 8000 cal; el agua puede ceder hasta 400·40 = 16 000 cal antes de llegar a 0 °C. Sí alcanza.", "Ganado = cedido: 8000 + 100·1·(T − 0) = 400·1·(40 − T).", "8000 + 100T = 16 000 − 400T, así que 500T = 8000 y T = 16 °C.", "Si olvidas el calor latente, te sale 32 °C."],
+      "verificar": [ { "cuerpos": [
+        { "id": "hielo", "sustancia": "agua", "m": 100, "T": 0, "fase": "hielo" }, { "id": "agua", "sustancia": "agua", "m": 400, "T": 40 } ],
+        "espera": { "T": 16, "hielo": 0, "liquido": 500 } },
+        { "k": { "Lf": 0 }, "cuerpos": [
+        { "id": "hielo", "sustancia": "agua", "m": 100, "T": 0, "fase": "hielo" }, { "id": "agua", "sustancia": "agua", "m": 400, "T": 40 } ],
+        "espera": { "T": 32 } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Se echan 200 g de hielo a 0 °C en 300 g de agua a 40 °C. ¿Cuál es la temperatura final y cuánto hielo queda?",
+      "respuesta": "0 °C; quedan 50 g de hielo sin derretir.",
+      "pasos": ["¿Alcanza? Fundir todo el hielo pide 200·80 = 16 000 cal, pero el agua solo puede ceder 300·40 = 12 000 cal hasta llegar a 0 °C. No alcanza.", "Entonces el agua baja a 0 °C y se detiene ahí, con hielo y agua juntos.", "Con 12 000 cal se funden 12 000 / 80 = 150 g. Quedan 200 − 150 = 50 g de hielo.", "Si usas la ecuación de siempre sin revisar, te sale −8 °C: imposible, porque el agua no puede pasar de 40 °C a bajo cero sin congelarse."],
+      "verificar": [ { "cuerpos": [
+        { "id": "hielo", "sustancia": "agua", "m": 200, "T": 0, "fase": "hielo" }, { "id": "agua", "sustancia": "agua", "m": 300, "T": 40 } ],
+        "espera": { "T": 0, "hielo": 50, "liquido": 450 } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Se inyectan 20 g de vapor de agua a 100 °C en 290 g de agua a 20 °C. ¿Cuál es la temperatura final?",
+      "respuesta": "60 °C.",
+      "pasos": ["El vapor cede calor en dos tramos: al condensarse (20·540 = 10 800 cal) y al enfriarse como agua de 100 °C a T: 20·1·(100 − T).", "El agua fría gana 290·1·(T − 20).", "10 800 + 2000 − 20T = 290T − 5800, así que 310T = 18 600 y T = 60 °C.", "Un poco de vapor calienta mucho: por eso una quemadura con vapor es peor que con agua hirviendo."],
+      "verificar": [ { "cuerpos": [
+        { "id": "vapor", "sustancia": "agua", "m": 20, "T": 100, "fase": "vapor" }, { "id": "agua", "sustancia": "agua", "m": 290, "T": 20 } ],
+        "espera": { "T": 60, "vapor": 0, "liquido": 310 } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Una hornilla entrega 200 cal cada segundo a una olla con 100 g de hielo a −20 °C (la olla no absorbe calor y no hay pérdidas). ¿Cuánto tarda en derretirse todo el hielo? ¿Cuánto más tarda el agua en empezar a hervir?",
+      "respuesta": "45 s en derretirse todo; 50 s más para empezar a hervir.",
+      "pasos": ["Calentar el hielo a 0 °C: 100·0,5·20 = 1000 cal, o sea 5 s.", "Fundirlo: 100·80 = 8000 cal, o sea 40 s. Durante esos 40 s el termómetro marca 0 °C todo el tiempo, aunque la hornilla sigue dando calor.", "Total hasta que no queda hielo: 9000 cal / 200 = 45 s.", "Calentar el agua de 0 °C a 100 °C: 100·1·100 = 10 000 cal, o sea 50 s más."],
+      "verificar": [
+        { "calor": { "cuerpo": { "id": "h", "sustancia": "agua", "m": 100, "T": -20 }, "T": 0, "fase": "liquido" }, "espera": 9000 },
+        { "calor": { "cuerpo": { "id": "h", "sustancia": "agua", "m": 100, "T": 0, "fase": "liquido" }, "T": 100, "fase": "liquido" }, "espera": 10000 } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Se echan 200 g de hielo a −30 °C en 100 g de agua a 10 °C. ¿Cuál es el estado final de la mezcla?",
+      "respuesta": "Queda a 0 °C, con 225 g de hielo y 75 g de agua: se congelan 25 g del agua.",
+      "pasos": ["El hielo necesita 200·0,5·30 = 3000 cal para llegar a 0 °C.", "El agua, al enfriarse a 0 °C, solo da 100·1·10 = 1000 cal. Faltan 2000 cal.", "Si toda el agua se congelara, daría 100·80 = 8000 cal más: sobraría. Entonces se congela solo una parte y todo queda a 0 °C.", "Se congelan 2000 / 80 = 25 g: quedan 200 + 25 = 225 g de hielo y 75 g de agua."],
+      "verificar": [ { "cuerpos": [
+        { "id": "hielo", "sustancia": "agua", "m": 200, "T": -30 }, { "id": "agua", "sustancia": "agua", "m": 100, "T": 10 } ],
+        "espera": { "T": 0, "hielo": 225, "liquido": 75, "cuerpos": { "agua": { "hielo": 25 } } } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "En Juliaca (3825 m), el agua hierve a unos 87 °C; en Lima, a 100 °C. Se calientan 250 g de agua desde 12 °C hasta que empieza a hervir. ¿Cuánto calor hace falta en cada ciudad? ¿Por qué en Juliaca la papa tarda más en cocinarse, si el agua igual hierve?",
+      "respuesta": "18 750 cal en Juliaca y 22 000 cal en Lima. La papa tarda más porque el agua hirviendo está a 87 °C y no a 100 °C: hervir no hace que suba más.",
+      "pasos": ["Juliaca: 250·1·(87 − 12) = 18 750 cal.", "Lima: 250·1·(100 − 12) = 22 000 cal.", "A más altura hay menos presión de aire, y el agua hierve a menor temperatura.", "Mientras hierve, la temperatura no sube aunque subas el fuego: el calor se va en convertir agua en vapor. La papa se cocina en agua más fría, y tarda más. Por eso en la sierra se usa la olla a presión."],
+      "verificar": [
+        { "calor": { "cuerpo": { "id": "a", "sustancia": "agua", "m": 250, "T": 12 }, "T": 87 }, "espera": 18750 },
+        { "calor": { "cuerpo": { "id": "a", "sustancia": "agua", "m": 250, "T": 12 }, "T": 100, "fase": "liquido" }, "espera": 22000 },
+        { "ebullicion": 3825, "espera": 87, "tolerancia": 0.5 } ]
+    }
+  ]
+}

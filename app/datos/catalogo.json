@@ -346,7 +346,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "calorimetria"
+     ]
     },
     {
      "id": "fisica.termodinamica",
@@ -3978,6 +3980,23 @@
   }
  ],
  "plantillas": {
+  "calorimetria": {
+   "id": "calorimetria",
+   "titulo": "Calorimetría",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.temperatura-y-calor"
+   ],
+   "url": "/plantillas/calorimetria/index.html",
+   "papel": "/plantillas/calorimetria/papel.json",
+   "archivos": [
+    "/plantillas/calorimetria/index.html",
+    "/plantillas/calorimetria/motor.js",
+    "/plantillas/calorimetria/papel.json"
+   ]
+  },
   "circuitos-cc": {
    "id": "circuitos-cc",
    "titulo": "Circuitos",

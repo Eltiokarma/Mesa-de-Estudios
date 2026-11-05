@@ -200,13 +200,13 @@
       "id": "fi3",
       "seccion": "Física",
       "nombre": "Calorimetría y cambios de fase",
-      "inicio": "2026-11-20",
+      "inicio": "2026-11-05",
       "fin": "2026-11-26",
-      "estado": "pendiente",
-      "progreso": 0,
+      "estado": "en_curso",
+      "progreso": 80,
       "critico": false,
       "depende_de": [],
-      "notas": ""
+      "notas": "Hecho: motor por energía con mesetas a 0 y 100 °C, 15 casos, 33 pruebas, papel (9), paso a paso (mezcla con las dos curvas que se cruzan) y qué pasa si (5: Q7, Q9 en Juliaca, Q4, Q8 y Q1). Falta: dilatación y transferencia de calor, y el pase con alumnos."
     },
     {
       "id": "fi4",

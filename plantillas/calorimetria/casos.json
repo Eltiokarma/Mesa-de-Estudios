@@ -1,0 +1,122 @@
+{
+  "plantilla": "calorimetria",
+  "unidades": "g, °C, cal (ebullición: m y Pa; contacto: °C)",
+  "constantes": "c del agua 1 cal/g°C, c del hielo 0,5, c del vapor 0,5, Lf = 80 cal/g, Lv = 540 cal/g, salvo que el caso diga otra cosa (k).",
+  "convencion": "Cada caso con 'cuerpos' se resuelve con equilibrio(cuerpos, k). En 'esperado', T es la temperatura final; hielo, liquido y vapor son los gramos totales de agua en cada fase; 'cuerpos' trae por cuerpo su T final, sus gramos por fase y Q, el calor que ganó (negativo si lo cedió). Un caso con 'helper' usa la función del mismo nombre de motor.js con esos argumentos.",
+  "verificacion": "Los casos 1 y 3 son las filas 'Calorimetría' de docs/investigacion/fluidos-calor-termodinamica-ideas-erroneas.md. Todos se recalcularon el 5 de noviembre de 2026 con fracciones exactas en Python (fractions.Fraction), sin pasar por el motor y con otro método: el balance de calor por etapas de los libros (calor ganado = calor cedido), revisando antes en cada caso si el calor disponible alcanza para completar el cambio de fase (casos 3, 7, 9 y 12) o no. El motor, en cambio, usa la energía total desde un estado de referencia y busca en qué tramo cae. El caso 6 da 1040/21 °C y el 9, 20/3 g que se condensan. La ebullición (caso 14) y la temperatura de contacto (caso 15) son modelos aproximados: se comprobaron con las mismas fórmulas en Python, y con datos conocidos (el agua hierve a unos 87 °C en Juliaca y Puno, a 3825 m).",
+  "tolerancia": 1e-9,
+  "casos": [
+    {
+      "nombre": "Mezcla con fusión completa (problema guiado): 50 g de hielo a −10 °C + 200 g de agua a 50 °C",
+      "cuerpos": [
+        { "id": "hielo", "sustancia": "agua", "m": 50, "T": -10 },
+        { "id": "agua", "sustancia": "agua", "m": 200, "T": 50 } ],
+      "esperado": { "T": 23, "hielo": 0, "liquido": 250, "vapor": 0, "intercambiado": 5400,
+        "cuerpos": { "hielo": { "Q": 5400, "liquido": 50 }, "agua": { "Q": -5400 } } },
+      "calorHasta0": { "cuerpo": "hielo", "T": 0, "fase": "liquido", "Q": 4250 }
+    },
+    {
+      "nombre": "La misma mezcla sin calor latente (Lf = 0): el error de olvidarlo da 39 °C",
+      "k": { "Lf": 0 },
+      "cuerpos": [
+        { "id": "hielo", "sustancia": "agua", "m": 50, "T": -10 },
+        { "id": "agua", "sustancia": "agua", "m": 200, "T": 50 } ],
+      "esperado": { "T": 39 }
+    },
+    {
+      "nombre": "Fusión parcial: 100 g de hielo a 0 °C + 200 g de agua a 20 °C",
+      "cuerpos": [
+        { "id": "hielo", "sustancia": "agua", "m": 100, "T": 0, "fase": "hielo" },
+        { "id": "agua", "sustancia": "agua", "m": 200, "T": 20 } ],
+      "esperado": { "T": 0, "hielo": 50, "liquido": 250, "vapor": 0, "meseta": "fusion",
+        "cuerpos": { "hielo": { "hielo": 50, "liquido": 50, "Q": 4000 }, "agua": { "liquido": 200, "Q": -4000 } } }
+    },
+    {
+      "nombre": "Agua con agua: 100 g a 80 °C + 300 g a 20 °C",
+      "cuerpos": [
+        { "id": "a", "sustancia": "agua", "m": 100, "T": 80 },
+        { "id": "b", "sustancia": "agua", "m": 300, "T": 20 } ],
+      "esperado": { "T": 35, "liquido": 400, "cuerpos": { "a": { "Q": -4500 }, "b": { "Q": 4500 } } }
+    },
+    {
+      "nombre": "Metal en el calorímetro: 300 g (c = 0,2) a 120 °C + 200 g de agua a 20 °C + calorímetro de 40 cal/°C",
+      "cuerpos": [
+        { "id": "metal", "m": 300, "c": 0.2, "T": 120 },
+        { "id": "agua", "sustancia": "agua", "m": 200, "T": 20 },
+        { "id": "calorimetro", "C": 40, "T": 20 } ],
+      "esperado": { "T": 40, "cuerpos": { "metal": { "Q": -4800 }, "agua": { "Q": 4000 }, "calorimetro": { "Q": 800 } } }
+    },
+    {
+      "nombre": "Vapor que se condensa: 10 g de vapor a 100 °C + 200 g de agua a 20 °C",
+      "cuerpos": [
+        { "id": "vapor", "sustancia": "agua", "m": 10, "T": 100, "fase": "vapor" },
+        { "id": "agua", "sustancia": "agua", "m": 200, "T": 20 } ],
+      "esperado": { "T": 49.523809523809526, "liquido": 210, "vapor": 0 }
+    },
+    {
+      "nombre": "Parte del agua se congela: 300 g de hielo a −20 °C + 100 g de agua a 10 °C",
+      "cuerpos": [
+        { "id": "hielo", "sustancia": "agua", "m": 300, "T": -20 },
+        { "id": "agua", "sustancia": "agua", "m": 100, "T": 10 } ],
+      "esperado": { "T": 0, "hielo": 325, "liquido": 75, "meseta": "fusion",
+        "cuerpos": { "hielo": { "hielo": 300, "Q": 3000 }, "agua": { "hielo": 25, "liquido": 75, "Q": -3000 } } }
+    },
+    {
+      "nombre": "Todo se congela y sigue bajando: 200 g de hielo a −40 °C + 20 g de agua a 10 °C",
+      "cuerpos": [
+        { "id": "hielo", "sustancia": "agua", "m": 200, "T": -40 },
+        { "id": "agua", "sustancia": "agua", "m": 20, "T": 10 } ],
+      "esperado": { "T": -20, "hielo": 220, "liquido": 0, "cuerpos": { "hielo": { "Q": 2000 }, "agua": { "Q": -2000 } } }
+    },
+    {
+      "nombre": "No todo el vapor se condensa: 10 g de vapor a 100 °C + 20 g de hielo a 0 °C",
+      "cuerpos": [
+        { "id": "vapor", "sustancia": "agua", "m": 10, "T": 100, "fase": "vapor" },
+        { "id": "hielo", "sustancia": "agua", "m": 20, "T": 0, "fase": "hielo" } ],
+      "esperado": { "T": 100, "meseta": "ebullicion", "hielo": 0, "liquido": 26.666666666666668, "vapor": 3.3333333333333335,
+        "cuerpos": { "hielo": { "liquido": 20, "Q": 3600 }, "vapor": { "vapor": 3.3333333333333335, "Q": -3600 } } }
+    },
+    {
+      "nombre": "Calentar hielo con 10 000 cal: 100 g a −20 °C terminan como agua a 10 °C",
+      "helper": "agregarCalor", "args": [{ "id": "h", "sustancia": "agua", "m": 100, "T": -20 }, 10000],
+      "esperado": { "T": 10, "hielo": 0, "liquido": 100, "vapor": 0 }
+    },
+    {
+      "nombre": "Calor para llevar 20 g de hielo a −10 °C hasta vapor a 110 °C",
+      "helper": "calorNecesario", "args": [{ "id": "h", "sustancia": "agua", "m": 20, "T": -10 }, 110],
+      "esperado": 14600
+    },
+    {
+      "nombre": "Más hielo del que el agua puede fundir: 160 g de hielo a −10 °C + 200 g de agua a 50 °C",
+      "cuerpos": [
+        { "id": "hielo", "sustancia": "agua", "m": 160, "T": -10 },
+        { "id": "agua", "sustancia": "agua", "m": 200, "T": 50 } ],
+      "esperado": { "T": 0, "meseta": "fusion", "hielo": 45, "liquido": 315,
+        "cuerpos": { "hielo": { "hielo": 45, "liquido": 115, "Q": 10000 }, "agua": { "liquido": 200, "Q": -10000 } } }
+    },
+    {
+      "nombre": "Tramos del problema guiado: calentar el hielo 250 cal, fundirlo 4000 cal, calentar el deshielo 1150 cal",
+      "helper": "tramos", "args": [{ "id": "hielo", "sustancia": "agua", "m": 50, "T": -10 }, { "T": 23 }],
+      "esperado": [
+        { "tipo": "sensible", "fase": "hielo", "desde": -10, "hasta": 0, "Q": 250 },
+        { "tipo": "latente", "fase": "fusion", "desde": 0, "hasta": 0, "Q": 4000 },
+        { "tipo": "sensible", "fase": "liquido", "desde": 0, "hasta": 23, "Q": 1150 } ]
+    },
+    {
+      "nombre": "Punto de ebullición (modelo): unos 100 °C a nivel del mar y unos 87 °C en Juliaca (3825 m)",
+      "helper": "ebullicion",
+      "puntos": [ { "altitud": 0, "T": 99.997, "P": 101325 }, { "altitud": 3825, "T": 87.271, "P": 63059 } ],
+      "tolerancia": 0.001
+    },
+    {
+      "nombre": "Temperatura de contacto (modelo): mano a 34 °C sobre aluminio, madera y lana a 20 °C y a 43 °C",
+      "helper": "contacto",
+      "puntos": [
+        { "material": "aluminio", "T": 20, "contacto": 20.61354581673307 },
+        { "material": "madera", "T": 20, "contacto": 30.266666666666666 },
+        { "material": "lana", "T": 20, "contacto": 33.275862068965516 },
+        { "material": "aluminio", "T": 43, "contacto": 42.60557768924303 },
+        { "material": "madera", "T": 43, "contacto": 36.4 } ]
+    }
+  ]
+}

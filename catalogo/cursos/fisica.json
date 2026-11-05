@@ -206,7 +206,7 @@
       "universidades": {"uni": {"semanas": [11]}, "unmsm": {"temas": [10]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "plantillas": [],
+      "plantillas": ["calorimetria"],
       "investigacion": "docs/investigacion/fluidos-calor-termodinamica-ideas-erroneas.md"
     },
     {
