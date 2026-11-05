@@ -1,19 +1,41 @@
 # Hoja de ruta y pendientes
 
-4 de noviembre de 2026 · Propuesta para que Gerson la ajuste. Las fechas son tentativas: el fundacional dice que las fases tienen fecha recién al cerrar la fase 0, y esta es la propuesta para cerrarla.
+5 de noviembre de 2026 · Rehecha tras la decisión de Gerson: el prototipo se lanza en un colegio en diciembre de 2026, sin prueba previa con alumnos. Las fechas son editables en el Gantt (`npm run dev`).
+
+## El lanzamiento
+
+| Dato | Lo que se sabe |
+| --- | --- |
+| Dónde | Un colegio. Ahí se evalúa casi todo. |
+| Cuándo | Diciembre de 2026. La fecha exacta está por confirmar; el plan asume la semana del 14. |
+| Quiénes | 3.º, 4.º y 5.º de secundaria |
+| En qué | En el celular de cada alumno y en el laboratorio de cómputo |
+| Qué cursos | Física, química, matemática (aritmética, álgebra, geometría y trigonometría) y razonamiento (matemático y verbal) |
+| Feedback previo | Ninguno. Se va con un prototipo bastante más avanzado que un producto mínimo. |
 
 ## La idea en una línea
 
-Primero se demuestra que **una plantilla hace aprender** (pase 2). Después se construye la app alrededor. Una app bonita con planner, racha y temporizador se puede copiar en semanas; lo que no se puede copiar es la escena que hace entender y la evidencia de que funciona.
+Como no hay prueba previa, **la app tiene que medir por sí misma**: pruebas cortas de entrada y salida por tema, y registro anónimo de cada predicción. Sin eso, el lanzamiento no deja evidencia de si los alumnos aprendieron.
 
 ## Orden propuesto
 
-1. **Cerrar la fase 0 (noviembre).** Decidir la plataforma, armar un sistema de diseño mínimo y un esqueleto de app que funcione sin conexión y que ya incluya el Banco Óptico.
-2. **Pase 2 piloto, con lo que ya existe (noviembre a diciembre).** Probar el Banco Óptico con 3 a 5 postulantes, en papel antes y después. No hace falta construir nada nuevo: se prueba el *formato*, no la cobertura. Si falla, se corrige antes de hacer diez plantillas iguales.
-3. **Plantillas de alto rendimiento para la UNI y San Marcos (fines de noviembre a enero).** Primero circuitos, calorimetría y trabajo y energía, que cubren el 28 % de la física de San Marcos y también están en la UNI. Después espejos, MRUV y tiro parabólico, que pesan más en la UNI.
-4. **La app alrededor (diciembre a enero, en paralelo).** Inicio, planificador por semana del CEPRE, progreso por tema del temario y modo "lápiz y papel" con temporizador. Ver la [referencia de interfaz](referencias/ui-study-planner-pinterest.jpg).
-5. **Escala (desde enero).** Destilar el método de construcción de plantillas (tarea 6), química con predicciones rápidas, más universidades.
-6. **Visión a futuro, después del piloto pagado.** Todos los grados, seguimiento adaptativo, curaduría de videos, historia ([`vision-futura.md`](vision-futura.md)).
+1. **Plataforma y medición (hasta el 17 de noviembre).**
+   - Lo que más trabajo ahorra: el **motor de predicciones generadas**, que sirve a química, aritmética y razonamiento matemático, y la **medición integrada**, que es la única fuente de datos.
+   - Lo que exige el colegio: el diseño para pantalla grande del laboratorio y el **nivel por grado** de cada unidad (3.º, 4.º y 5.º no ven lo mismo).
+2. **Contenido de los cuatro bloques, en paralelo (del 12 de noviembre al 7 de diciembre).** Pocos módulos por curso, pero completos: predicción con errores típicos, explicación, problemas de papel y casos de prueba.
+   - **Física:** Banco Óptico completo, espejos, circuitos, calorimetría, energía y MRUV.
+   - **Química:** reactivo limitante con partículas, gases y soluciones, pH, redox.
+   - **Matemática:** trigonometría, geometría y funciones con escena; aritmética con predicciones.
+   - **Razonamiento:** matemático con predicciones generadas; verbal con textos propios.
+3. **Preparar el lanzamiento (del 30 de noviembre al 11 de diciembre).**
+   - Pruebas de entrada y salida por curso.
+   - Pruebas en celulares y computadoras como las del colegio.
+   - Publicar la app con dominio y HTTPS.
+   - Una guía corta para profesores.
+4. **Lanzamiento (semana del 14 de diciembre) y análisis de datos** hasta inicios de enero.
+5. **Después:** destilar el método de construcción de plantillas, la UNA Puno y la [visión a futuro](vision-futura.md).
+
+**El riesgo principal no es el código, es el contenido.** Cada módulo necesita problemas propios, verificados y con errores típicos bien elegidos (reglas 2, 3, 5 y 6). Es mejor llegar con menos módulos completos que con muchos a medias: un módulo flojo en el colegio da datos que no sirven.
 
 ## Cómo verla y actualizarla
 
@@ -29,40 +51,61 @@ Con este calendario, las primeras plantillas estarían listas antes de que arran
 
 ```mermaid
 gantt
-    title Laboratorio de Admisión: hoja de ruta tentativa
+    title Laboratorio de Admisión: hacia el lanzamiento en el colegio
     dateFormat  YYYY-MM-DD
     axisFormat  %d %b
 
-    section Fase 0: base
+    section Base (hecho)
     Fundacional, investigación, temarios UNI y San Marcos :done, f0a, 2026-11-04, 2026-11-05
     Motor del Banco Óptico + pruebas :done, f0b, 2026-11-04, 2026-11-05
     Clasificación de simulacros de San Marcos :done, f0c, 2026-11-04, 2026-11-05
     Arquitectura por módulos y catálogo de 8 cursos :done, f0g, 2026-11-04, 2026-11-05
     Decidir plataforma (PWA) :done, f0d, 2026-11-04, 2026-11-05
-    Sistema de diseño mínimo (colores por variable, tipografía) :active, f0e, 2026-11-04, 2026-11-14
-    Esqueleto PWA sin conexión con el Banco Óptico :active, f0f, 2026-11-04, 2026-11-21
 
-    section Pase 2 piloto
-    Problemas de papel antes y después (lentes) :p2a, 2026-11-16, 2026-11-21
-    Prueba con 3 a 5 postulantes :crit, p2b, 2026-11-23, 2026-12-04
-    Ajustar el formato según resultados :p2c, 2026-12-04, 2026-12-11
+    section Plataforma y medición
+    Sistema de diseño (colores por variable y marca, tipografía) :active, f0e, 2026-11-04, 2026-11-11
+    Esqueleto PWA sin conexión :active, f0f, 2026-11-04, 2026-11-11
+    Diseño para pantalla grande (laboratorio de cómputo) :pl1, 2026-11-09, 2026-11-12
+    Motor de predicciones generadas (química, aritmética, RM) :crit, pl3, 2026-11-06, 2026-11-14
+    Medición integrada (entrada y salida, registro anónimo, exportar para el profesor) :crit, pl2, 2026-11-10, 2026-11-18
+    Nivel por grado (3.º, 4.º, 5.º) en el catálogo :pl5, 2026-11-09, 2026-11-13
+    Formato lectura (razonamiento verbal) :pl4, 2026-11-16, 2026-11-20
 
-    section Fase 1: plantillas
-    Circuitos de corriente continua :f1a, 2026-11-21, 2026-12-05
-    Calorimetría y cambios de fase :f1b, 2026-12-05, 2026-12-17
-    Trabajo, energía y potencia :f1c, 2026-12-17, 2026-12-29
-    Espejos esféricos (reusa el motor de lentes) :f1d, 2026-12-29, 2027-01-05
-    MRUV y gráficas :f1e, 2027-01-05, 2027-01-15
-    Tiro parabólico :f1f, 2027-01-15, 2027-01-25
+    section Física
+    Banco Óptico, predicciones qué pasa si y problemas de papel :fi1, 2026-11-12, 2026-11-17
+    Espejos esféricos (reusa el motor de lentes) :fi5, 2026-11-17, 2026-11-20
+    Circuitos de corriente continua :fi2, 2026-11-13, 2026-11-21
+    Calorimetría y cambios de fase :fi3, 2026-11-20, 2026-11-27
+    Trabajo, energía y potencia :fi4, 2026-11-26, 2026-12-03
+    MRUV y gráficas :fi6, 2026-12-01, 2026-12-08
 
-    section App alrededor
-    Inicio, planificador y progreso por tema :apa, 2026-12-11, 2027-01-01
-    Modo lápiz y papel con temporizador :apb, 2027-01-01, 2027-01-08
+    section Química
+    Estequiometría y reactivo limitante con partículas :qu1, 2026-11-16, 2026-11-24
+    Gases y soluciones :qu2, 2026-11-23, 2026-11-28
+    Ácidos, bases y pH :qu3, 2026-11-27, 2026-12-03
+    Redox y electroquímica :qu4, 2026-12-02, 2026-12-08
 
-    section Fase 2: escala
-    Método de construcción de plantillas (skill) :f2a, 2026-12-29, 2027-01-05
-    Química y matemática con predicciones generadas :f2b, 2027-01-05, 2027-01-26
-    Material de la UNA Puno (cuando llegue) :f2c, 2027-01-05, 2027-01-19
+    section Matemática
+    Aritmética, porcentajes y proporcionalidad :ma4, 2026-11-17, 2026-11-22
+    Trigonometría, circunferencia y razones :ma1, 2026-11-14, 2026-11-22
+    Geometría, triángulos y áreas :ma2, 2026-11-21, 2026-11-29
+    Álgebra, funciones y gráficas :ma3, 2026-11-28, 2026-12-05
+
+    section Razonamiento
+    Razonamiento matemático, sucesiones, conteo y planteo :ra1, 2026-11-20, 2026-11-28
+    Razonamiento verbal, textos propios con preguntas :ra2, 2026-11-20, 2026-12-03
+
+    section Lanzamiento en el colegio
+    Problemas de papel y pruebas de entrada y salida por curso :la1, 2026-11-30, 2026-12-08
+    Publicar la app (dominio y HTTPS) :crit, la3, 2026-12-08, 2026-12-11
+    Pruebas en celulares y computadoras del colegio :crit, la2, 2026-12-07, 2026-12-11
+    Guía corta para profesores :la4, 2026-12-08, 2026-12-12
+    Lanzamiento en el colegio (fecha por confirmar) :crit, la5, 2026-12-14, 2026-12-19
+    Análisis de datos del colegio y ajustes :la6, 2026-12-19, 2027-01-09
+
+    section Después del lanzamiento
+    Método de construcción de plantillas (skill) :f2a, 2027-01-11, 2027-01-16
+    Material de la UNA Puno (cuando llegue) :f2c, 2027-01-11, 2027-01-23
 ```
 
 ## Estado de los pendientes

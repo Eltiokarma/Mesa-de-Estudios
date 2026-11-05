@@ -1,17 +1,20 @@
 {
-  "titulo": "Laboratorio de Admisión: hoja de ruta tentativa",
+  "titulo": "Laboratorio de Admisión: hacia el lanzamiento en el colegio",
   "actualizado": "2026-11-04",
   "secciones": [
-    "Fase 0: base",
-    "Pase 2 piloto",
-    "Fase 1: plantillas",
-    "App alrededor",
-    "Fase 2: escala"
+    "Base (hecho)",
+    "Plataforma y medición",
+    "Física",
+    "Química",
+    "Matemática",
+    "Razonamiento",
+    "Lanzamiento en el colegio",
+    "Después del lanzamiento"
   ],
   "tareas": [
     {
       "id": "f0a",
-      "seccion": "Fase 0: base",
+      "seccion": "Base (hecho)",
       "nombre": "Fundacional, investigación, temarios UNI y San Marcos",
       "inicio": "2026-11-04",
       "fin": "2026-11-04",
@@ -23,7 +26,7 @@
     },
     {
       "id": "f0b",
-      "seccion": "Fase 0: base",
+      "seccion": "Base (hecho)",
       "nombre": "Motor del Banco Óptico + pruebas",
       "inicio": "2026-11-04",
       "fin": "2026-11-04",
@@ -35,7 +38,7 @@
     },
     {
       "id": "f0c",
-      "seccion": "Fase 0: base",
+      "seccion": "Base (hecho)",
       "nombre": "Clasificación de simulacros de San Marcos",
       "inicio": "2026-11-04",
       "fin": "2026-11-04",
@@ -47,7 +50,7 @@
     },
     {
       "id": "f0g",
-      "seccion": "Fase 0: base",
+      "seccion": "Base (hecho)",
       "nombre": "Arquitectura por módulos y catálogo de 8 cursos",
       "inicio": "2026-11-04",
       "fin": "2026-11-04",
@@ -59,7 +62,7 @@
     },
     {
       "id": "f0d",
-      "seccion": "Fase 0: base",
+      "seccion": "Base (hecho)",
       "nombre": "Decidir plataforma (PWA)",
       "inicio": "2026-11-04",
       "fin": "2026-11-04",
@@ -71,225 +74,402 @@
     },
     {
       "id": "f0e",
-      "seccion": "Fase 0: base",
-      "nombre": "Sistema de diseño mínimo (colores por variable, tipografía)",
+      "seccion": "Plataforma y medición",
+      "nombre": "Sistema de diseño (colores por variable y marca, tipografía)",
       "inicio": "2026-11-04",
-      "fin": "2026-11-13",
+      "fin": "2026-11-10",
       "estado": "en_curso",
       "progreso": 50,
       "critico": false,
-      "depende_de": [
-        "f0d"
-      ],
-      "notas": "app/estilos.css: tokens de la cáscara (morado y lima solo fuera de las escenas). Referencias en docs/referencias/"
+      "depende_de": [],
+      "notas": "app/estilos.css; referencias en docs/referencias/"
     },
     {
       "id": "f0f",
-      "seccion": "Fase 0: base",
-      "nombre": "Esqueleto PWA sin conexión con el Banco Óptico",
+      "seccion": "Plataforma y medición",
+      "nombre": "Esqueleto PWA sin conexión",
       "inicio": "2026-11-04",
-      "fin": "2026-11-20",
+      "fin": "2026-11-10",
       "estado": "en_curso",
       "progreso": 70,
       "critico": false,
-      "depende_de": [
-        "f0d"
-      ],
-      "notas": "app/: PWA con bienvenida, inicio, cursos, progreso y perfil; funciona sin conexión con el Banco Óptico. Falta: probar en celulares reales y publicar"
+      "depende_de": [],
+      "notas": "app/"
     },
     {
-      "id": "p2a",
-      "seccion": "Pase 2 piloto",
-      "nombre": "Problemas de papel antes y después (lentes)",
+      "id": "pl1",
+      "seccion": "Plataforma y medición",
+      "nombre": "Diseño para pantalla grande (laboratorio de cómputo)",
+      "inicio": "2026-11-09",
+      "fin": "2026-11-11",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [
+        "f0f"
+      ],
+      "notas": ""
+    },
+    {
+      "id": "pl3",
+      "seccion": "Plataforma y medición",
+      "nombre": "Motor de predicciones generadas (química, aritmética, RM)",
+      "inicio": "2026-11-06",
+      "fin": "2026-11-13",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": true,
+      "depende_de": [],
+      "notas": "docs/arquitectura.md, formato predicciones"
+    },
+    {
+      "id": "pl2",
+      "seccion": "Plataforma y medición",
+      "nombre": "Medición integrada (entrada y salida, registro anónimo, exportar para el profesor)",
+      "inicio": "2026-11-10",
+      "fin": "2026-11-17",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": true,
+      "depende_de": [
+        "f0f"
+      ],
+      "notas": "Única fuente de datos del lanzamiento"
+    },
+    {
+      "id": "pl5",
+      "seccion": "Plataforma y medición",
+      "nombre": "Nivel por grado (3.º, 4.º, 5.º) en el catálogo",
+      "inicio": "2026-11-09",
+      "fin": "2026-11-12",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [],
+      "notas": "Currículo nacional de secundaria"
+    },
+    {
+      "id": "pl4",
+      "seccion": "Plataforma y medición",
+      "nombre": "Formato lectura (razonamiento verbal)",
       "inicio": "2026-11-16",
+      "fin": "2026-11-19",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [],
+      "notas": ""
+    },
+    {
+      "id": "fi1",
+      "seccion": "Física",
+      "nombre": "Banco Óptico, predicciones qué pasa si y problemas de papel",
+      "inicio": "2026-11-12",
+      "fin": "2026-11-16",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [],
+      "notas": "docs/investigacion/optica-ideas-erroneas.md"
+    },
+    {
+      "id": "fi5",
+      "seccion": "Física",
+      "nombre": "Espejos esféricos (reusa el motor de lentes)",
+      "inicio": "2026-11-17",
+      "fin": "2026-11-19",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [],
+      "notas": ""
+    },
+    {
+      "id": "fi2",
+      "seccion": "Física",
+      "nombre": "Circuitos de corriente continua",
+      "inicio": "2026-11-13",
       "fin": "2026-11-20",
       "estado": "pendiente",
       "progreso": 0,
       "critico": false,
       "depende_de": [],
-      "notas": "Regla 6: 5 a 10 problemas propios"
+      "notas": "docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md"
     },
     {
-      "id": "p2b",
-      "seccion": "Pase 2 piloto",
-      "nombre": "Prueba con 3 a 5 postulantes",
-      "inicio": "2026-11-23",
-      "fin": "2026-12-03",
+      "id": "fi3",
+      "seccion": "Física",
+      "nombre": "Calorimetría y cambios de fase",
+      "inicio": "2026-11-20",
+      "fin": "2026-11-26",
       "estado": "pendiente",
       "progreso": 0,
-      "critico": true,
-      "depende_de": [
-        "f0f",
-        "p2a"
-      ],
-      "notas": "Cuenta el papel, no la opinión"
+      "critico": false,
+      "depende_de": [],
+      "notas": ""
     },
     {
-      "id": "p2c",
-      "seccion": "Pase 2 piloto",
-      "nombre": "Ajustar el formato según resultados",
-      "inicio": "2026-12-04",
-      "fin": "2026-12-10",
+      "id": "fi4",
+      "seccion": "Física",
+      "nombre": "Trabajo, energía y potencia",
+      "inicio": "2026-11-26",
+      "fin": "2026-12-02",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [],
+      "notas": ""
+    },
+    {
+      "id": "fi6",
+      "seccion": "Física",
+      "nombre": "MRUV y gráficas",
+      "inicio": "2026-12-01",
+      "fin": "2026-12-07",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [],
+      "notas": ""
+    },
+    {
+      "id": "qu1",
+      "seccion": "Química",
+      "nombre": "Estequiometría y reactivo limitante con partículas",
+      "inicio": "2026-11-16",
+      "fin": "2026-11-23",
       "estado": "pendiente",
       "progreso": 0,
       "critico": false,
       "depende_de": [
-        "p2b"
+        "pl3"
       ],
       "notas": ""
     },
     {
-      "id": "f1a",
-      "seccion": "Fase 1: plantillas",
-      "nombre": "Circuitos de corriente continua",
+      "id": "qu2",
+      "seccion": "Química",
+      "nombre": "Gases y soluciones",
+      "inicio": "2026-11-23",
+      "fin": "2026-11-27",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [
+        "pl3"
+      ],
+      "notas": ""
+    },
+    {
+      "id": "qu3",
+      "seccion": "Química",
+      "nombre": "Ácidos, bases y pH",
+      "inicio": "2026-11-27",
+      "fin": "2026-12-02",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [
+        "pl3"
+      ],
+      "notas": ""
+    },
+    {
+      "id": "qu4",
+      "seccion": "Química",
+      "nombre": "Redox y electroquímica",
+      "inicio": "2026-12-02",
+      "fin": "2026-12-07",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [
+        "pl3"
+      ],
+      "notas": ""
+    },
+    {
+      "id": "ma4",
+      "seccion": "Matemática",
+      "nombre": "Aritmética, porcentajes y proporcionalidad",
+      "inicio": "2026-11-17",
+      "fin": "2026-11-21",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [
+        "pl3"
+      ],
+      "notas": ""
+    },
+    {
+      "id": "ma1",
+      "seccion": "Matemática",
+      "nombre": "Trigonometría, circunferencia y razones",
+      "inicio": "2026-11-14",
+      "fin": "2026-11-21",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [],
+      "notas": ""
+    },
+    {
+      "id": "ma2",
+      "seccion": "Matemática",
+      "nombre": "Geometría, triángulos y áreas",
       "inicio": "2026-11-21",
+      "fin": "2026-11-28",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [],
+      "notas": ""
+    },
+    {
+      "id": "ma3",
+      "seccion": "Matemática",
+      "nombre": "Álgebra, funciones y gráficas",
+      "inicio": "2026-11-28",
       "fin": "2026-12-04",
       "estado": "pendiente",
       "progreso": 0,
       "critico": false,
-      "depende_de": [
-        "p2a"
-      ],
-      "notas": "docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md"
+      "depende_de": [],
+      "notas": ""
     },
     {
-      "id": "f1b",
-      "seccion": "Fase 1: plantillas",
-      "nombre": "Calorimetría y cambios de fase",
-      "inicio": "2026-12-05",
-      "fin": "2026-12-16",
+      "id": "ra1",
+      "seccion": "Razonamiento",
+      "nombre": "Razonamiento matemático, sucesiones, conteo y planteo",
+      "inicio": "2026-11-20",
+      "fin": "2026-11-27",
       "estado": "pendiente",
       "progreso": 0,
       "critico": false,
       "depende_de": [
-        "f1a"
+        "pl3"
       ],
       "notas": ""
     },
     {
-      "id": "f1c",
-      "seccion": "Fase 1: plantillas",
-      "nombre": "Trabajo, energía y potencia",
-      "inicio": "2026-12-17",
-      "fin": "2026-12-28",
+      "id": "ra2",
+      "seccion": "Razonamiento",
+      "nombre": "Razonamiento verbal, textos propios con preguntas",
+      "inicio": "2026-11-20",
+      "fin": "2026-12-02",
       "estado": "pendiente",
       "progreso": 0,
       "critico": false,
       "depende_de": [
-        "f1b"
+        "pl4"
       ],
       "notas": ""
     },
     {
-      "id": "f1d",
-      "seccion": "Fase 1: plantillas",
-      "nombre": "Espejos esféricos (reusa el motor de lentes)",
-      "inicio": "2026-12-29",
-      "fin": "2027-01-04",
+      "id": "la1",
+      "seccion": "Lanzamiento en el colegio",
+      "nombre": "Problemas de papel y pruebas de entrada y salida por curso",
+      "inicio": "2026-11-30",
+      "fin": "2026-12-07",
       "estado": "pendiente",
       "progreso": 0,
       "critico": false,
       "depende_de": [
-        "f1c"
+        "pl2"
       ],
       "notas": ""
     },
     {
-      "id": "f1e",
-      "seccion": "Fase 1: plantillas",
-      "nombre": "MRUV y gráficas",
-      "inicio": "2027-01-05",
-      "fin": "2027-01-14",
+      "id": "la3",
+      "seccion": "Lanzamiento en el colegio",
+      "nombre": "Publicar la app (dominio y HTTPS)",
+      "inicio": "2026-12-08",
+      "fin": "2026-12-10",
       "estado": "pendiente",
       "progreso": 0,
-      "critico": false,
+      "critico": true,
+      "depende_de": [],
+      "notas": ""
+    },
+    {
+      "id": "la2",
+      "seccion": "Lanzamiento en el colegio",
+      "nombre": "Pruebas en celulares y computadoras del colegio",
+      "inicio": "2026-12-07",
+      "fin": "2026-12-10",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": true,
       "depende_de": [
-        "f1d"
+        "pl1"
       ],
       "notas": ""
     },
     {
-      "id": "f1f",
-      "seccion": "Fase 1: plantillas",
-      "nombre": "Tiro parabólico",
-      "inicio": "2027-01-15",
-      "fin": "2027-01-24",
+      "id": "la4",
+      "seccion": "Lanzamiento en el colegio",
+      "nombre": "Guía corta para profesores",
+      "inicio": "2026-12-08",
+      "fin": "2026-12-11",
       "estado": "pendiente",
       "progreso": 0,
       "critico": false,
+      "depende_de": [],
+      "notas": ""
+    },
+    {
+      "id": "la5",
+      "seccion": "Lanzamiento en el colegio",
+      "nombre": "Lanzamiento en el colegio (fecha por confirmar)",
+      "inicio": "2026-12-14",
+      "fin": "2026-12-18",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": true,
       "depende_de": [
-        "f1e"
+        "la1",
+        "la2",
+        "la3"
       ],
       "notas": ""
     },
     {
-      "id": "apa",
-      "seccion": "App alrededor",
-      "nombre": "Inicio, planificador y progreso por tema",
-      "inicio": "2026-12-11",
-      "fin": "2026-12-31",
+      "id": "la6",
+      "seccion": "Lanzamiento en el colegio",
+      "nombre": "Análisis de datos del colegio y ajustes",
+      "inicio": "2026-12-19",
+      "fin": "2027-01-08",
       "estado": "pendiente",
       "progreso": 0,
       "critico": false,
       "depende_de": [
-        "p2c"
-      ],
-      "notas": ""
-    },
-    {
-      "id": "apb",
-      "seccion": "App alrededor",
-      "nombre": "Modo lápiz y papel con temporizador",
-      "inicio": "2027-01-01",
-      "fin": "2027-01-07",
-      "estado": "pendiente",
-      "progreso": 0,
-      "critico": false,
-      "depende_de": [
-        "apa"
+        "la5"
       ],
       "notas": ""
     },
     {
       "id": "f2a",
-      "seccion": "Fase 2: escala",
+      "seccion": "Después del lanzamiento",
       "nombre": "Método de construcción de plantillas (skill)",
-      "inicio": "2026-12-29",
-      "fin": "2027-01-04",
+      "inicio": "2027-01-11",
+      "fin": "2027-01-15",
       "estado": "pendiente",
       "progreso": 0,
       "critico": false,
-      "depende_de": [
-        "f1c"
-      ],
+      "depende_de": [],
       "notas": "Tarea 6 de CLAUDE.md"
     },
     {
-      "id": "f2b",
-      "seccion": "Fase 2: escala",
-      "nombre": "Química y matemática con predicciones generadas",
-      "inicio": "2027-01-05",
-      "fin": "2027-01-25",
-      "estado": "pendiente",
-      "progreso": 0,
-      "critico": false,
-      "depende_de": [
-        "f2a"
-      ],
-      "notas": "docs/arquitectura.md: formato predicciones"
-    },
-    {
       "id": "f2c",
-      "seccion": "Fase 2: escala",
+      "seccion": "Después del lanzamiento",
       "nombre": "Material de la UNA Puno (cuando llegue)",
-      "inicio": "2027-01-05",
-      "fin": "2027-01-18",
+      "inicio": "2027-01-11",
+      "fin": "2027-01-22",
       "estado": "pendiente",
       "progreso": 0,
       "critico": false,
-      "depende_de": [
-        "f2a"
-      ],
+      "depende_de": [],
       "notas": ""
     }
   ]
