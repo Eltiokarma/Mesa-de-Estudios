@@ -167,6 +167,12 @@ flowchart LR
 
 Cada pase exige evidencia, no solo trabajo terminado. Las fases no tienen fechas aún: se ponen cuando se cierre la fase 0.
 
+**Cambio de plan (decisión de Gerson, 5 de noviembre de 2026).** No habrá prueba previa con postulantes. El prototipo se lanza directamente en un colegio, y ahí se evalúa casi todo. Como Claude programa rápido, se llega con un prototipo bastante más avanzado que un producto mínimo. Consecuencias:
+
+- El pase 2 deja de ser una puerta antes de construir: se mide en el colegio, con el mismo criterio de abajo (cuenta el papel, no la opinión).
+- La app tiene que traer su propia medición, porque no habrá otra oportunidad de recoger datos antes. Debe registrar, de forma anónima, las predicciones y las pruebas de antes y después.
+- Sin datos previos, las opciones de predicción se apoyan en la investigación de `docs/investigacion/`. Las que hoy son hipótesis se confirman o se descartan con los datos del colegio.
+
 **Cómo se mide el pase 2.** De 3 a 5 postulantes reales, de academia o del entorno, resuelven en papel un problema del tema. Luego usan la plantilla unos 10 minutos y resuelven en papel un problema nuevo del mismo tipo. Pasa si la mayoría resuelve el segundo y no resolvía el primero. Lo que digan ("qué bonito") no cuenta; cuenta el papel.
 
 **Preguntas abiertas**
