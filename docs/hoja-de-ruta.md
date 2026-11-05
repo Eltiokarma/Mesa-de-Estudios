@@ -96,6 +96,7 @@ gantt
     Razonamiento verbal, textos propios con preguntas :ra2, 2026-11-20, 2026-12-03
 
     section Lanzamiento en el colegio
+    Pulido visual de la app y las escenas :pl6, 2026-12-01, 2026-12-07
     Problemas de papel y pruebas de entrada y salida por curso :la1, 2026-11-30, 2026-12-08
     Publicar la app (dominio y HTTPS) :crit, la3, 2026-12-08, 2026-12-11
     Pruebas en celulares y computadoras del colegio :crit, la2, 2026-12-07, 2026-12-11

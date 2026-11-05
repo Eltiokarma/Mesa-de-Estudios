@@ -367,6 +367,20 @@
       "notas": ""
     },
     {
+      "id": "pl6",
+      "seccion": "Lanzamiento en el colegio",
+      "nombre": "Pulido visual de la app y las escenas",
+      "inicio": "2026-12-01",
+      "fin": "2026-12-06",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [
+        "f0e"
+      ],
+      "notas": "Pedido de Gerson (5 nov 2026): hoy se ve llano. Ideas: ilustración propia por curso, íconos en vez de siglas, una sola tipografía entre app y escenas, animación al acertar y al subir de racha, mejor portada de cada unidad y estados vacíos. Va después del contenido y antes de probar en los equipos del colegio."
+    },
+    {
       "id": "la1",
       "seccion": "Lanzamiento en el colegio",
       "nombre": "Problemas de papel y pruebas de entrada y salida por curso",
