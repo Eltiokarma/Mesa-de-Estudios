@@ -7,7 +7,13 @@
 **Decisión de Gerson (5 nov 2026):** la app tiene que sentirse acogedora, "como comer bombones mientras aprendes matemáticas y ciencias". La referencia que manda es el [*study planner* de Pinterest](referencias/ui-study-planner-pinterest.jpg); la [app de ejercicio](referencias/ui-fitness-dribbble.webp) queda solo como referencia de estructura (reto del día, estadísticas, anillo).
 
 - **Ya aplicado (paleta):** fondo crema (`#fbf3ec`), tarjetas blanco cálido, tinta ciruela, lavanda como marca (`#7f5ae0`) y rosa bombón como acento (`#ffd3e2`). Esquinas más redondas (28 px) y sombras con tono ciruela, no gris. El modo oscuro es ciruela profundo, no azul.
-- **Falta (semana de pulido, tarea `pl6`):** ilustraciones propias con personajes (un gato, una taza, el alumno estudiando), íconos dibujados por curso en vez de siglas, el ícono de la app con la paleta nueva, animaciones suaves al acertar y una tipografía redondeada común a la app y las escenas.
+- **Ya aplicado (ilustraciones, `app/ilustraciones.js`):** todo en SVG propio y liviano.
+  - El gatito de la app: sentado en el reto del día y dormido cuando no hay pendientes.
+  - La taza de chocolate con carita, en la tarjeta de racha.
+  - El escritorio de noche de la bienvenida: lámpara, libros, gato, taza y un prisma con arcoíris.
+  - Un ícono dibujado por curso, sobre su propio pastel.
+  - El ícono de la app: la cara del gato sobre lavanda.
+- **Falta (semana de pulido, tarea `pl6`):** animaciones suaves al acertar y una tipografía redondeada común a la app y las escenas.
 - **Lo que no cambia:** dentro de las escenas mandan los colores de las variables (regla 4). Lo acogedor va en la cáscara, los fondos y las ilustraciones, no en los datos.
 
 Todos los textos pasan el contraste AA (4,5 a 1) sobre su fondo: blanco sobre lavanda 4,7; gris sobre crema 4,6; tinta sobre crema 13,4.

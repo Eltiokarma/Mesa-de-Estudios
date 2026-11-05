@@ -2,10 +2,10 @@
 // Estrategia: al instalar, guarda la cáscara, el catálogo y los archivos de cada plantilla.
 // Después responde desde lo guardado y actualiza en segundo plano (stale-while-revalidate).
 // Al cambiar algo de la cáscara, subir VERSION para que los celulares la renueven.
-const VERSION = 'v9';
+const VERSION = 'v11';
 const CACHE = `lab-${VERSION}`;
 const CASCARA = ['/app/', '/app/index.html', '/app/estilos.css', '/app/app.js', '/app/manifest.webmanifest',
-  '/app/practica.js', '/app/datos/catalogo.json',
+  '/app/practica.js', '/app/ilustraciones.js', '/app/datos/catalogo.json',
   '/nucleo/azar.js', '/nucleo/predicciones.js', '/nucleo/medicion.js', '/app/iconos/icono.svg', '/app/iconos/icono-192.png', '/app/iconos/icono-512.png'];
 
 self.addEventListener('install', e => {

@@ -373,12 +373,12 @@
       "inicio": "2026-12-01",
       "fin": "2026-12-06",
       "estado": "pendiente",
-      "progreso": 15,
+      "progreso": 55,
       "critico": false,
       "depende_de": [
         "f0e"
       ],
-      "notas": "Dirección acogedora (Gerson, 5 nov 2026; referencia: study planner de Pinterest). Hecho: paleta crema, lavanda y rosa bombón. Falta: ilustraciones con personajes, íconos por curso, ícono de la app, animaciones, tipografía común. Ver docs/diseno.md."
+      "notas": "Dirección acogedora (Gerson, 5 nov 2026; referencia: study planner de Pinterest). Hecho: paleta, ilustraciones SVG (gato, taza, escritorio), íconos por curso, ícono de la app. Falta: animaciones y tipografía común; pasar las escenas a la paleta. Ver docs/diseno.md."
     },
     {
       "id": "la1",
