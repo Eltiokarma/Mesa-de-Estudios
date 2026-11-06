@@ -150,8 +150,13 @@
     // Choques por segundo contra las paredes, en promedio: cada partícula va y vuelve entre las paredes
     // izquierda y derecha (separadas por 'ancho') y entre las de arriba y abajo (separadas por 1), así que
     // choca v·|dx|/ancho + v·|dy| veces por segundo. Es exacto en promedio (las partículas no chocan entre sí)
-    // y crece con √T y con n: es la presión de la escena.
+    // y crece con √T y con n. No es la presión: la presión es el empuje (abajo), que suma también la fuerza de cada choque.
     S.tasaChoques = () => S.parts.filter(p => !p.fuera).reduce((t, p) => t + S.v(p) * (Math.abs(p.dx) / S.ancho + Math.abs(p.dy)), 0);
+    // Empuje promedio sobre las paredes por unidad de área (en unidades de la escena): cada choque contra una pared
+    // empuja con 2·M·v·|componente|, y hay v·|componente|/separación choques por segundo. Sumando las cuatro paredes y
+    // dividiendo por su largo total, da Σ M·v²/ancho. Como M·v² ∝ T para cualquier gas, el empuje es ∝ n·T/V y no
+    // depende de la masa: es la presión. El número de choques solo crece con √T; la fuerza de cada choque, con el otro √T.
+    S.empuje = gas => S.parts.filter(p => !p.fuera && (!gas || p.gas === gas)).reduce((t, p) => t + masaMolar(p.gas) * S.v(p) * S.v(p), 0) / S.ancho;
     S.quedan = gas => S.parts.filter(p => !p.fuera && (!gas || p.gas === gas)).length;
     return S;
   }

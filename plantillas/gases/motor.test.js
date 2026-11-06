@@ -71,6 +71,17 @@ test('la tasa promedio de choques coincide con la contada y crece con √T y con
   const ancho2 = motor.caja({ especies: [{ gas: 'O2', n: 60 }], T: 300, semilla: 3 }); ancho2.anchura(2);
   assert.ok(ancho2.tasaChoques() < tasa, 'más volumen, menos choques');
 });
+test('el empuje es la presión: ∝ n·T/V y no depende de la masa de cada gas (Dalton)', () => {
+  const mk = (o, a) => { const c = motor.caja(o); if (a) c.anchura(a); return c; };
+  const base = mk({ especies: [{ gas: 'O2', n: 400 }], T: 300, semilla: 2 }).empuje();
+  cerca(mk({ especies: [{ gas: 'O2', n: 400 }], T: 600, semilla: 2 }).empuje() / base, 2, 'doble T', 1e-9);
+  cerca(mk({ especies: [{ gas: 'O2', n: 400 }], T: 300, semilla: 2 }, 2).empuje() / base, 0.5, 'doble V', 1e-9);
+  // Mismos factores de rapidez (misma semilla), distinto gas: el mismo empuje.
+  cerca(mk({ especies: [{ gas: 'H2', n: 400 }], T: 300, semilla: 2 }).empuje() / base, 1, 'H₂ contra O₂', 1e-9);
+  // Mezcla de 20 O₂ y 40 CH₄: el CH₄ empuja unas 2 veces más (por número), aunque choque unas 3 veces más.
+  const m = mk({ especies: [{ gas: 'O2', n: 2000 }, { gas: 'CH4', n: 4000 }], T: 300, semilla: 21 });
+  cerca(m.empuje('CH4') / m.empuje('O2'), 2, 'razón de presiones parciales', 0.08);
+});
 test('GQ2: al enfriar, el gas sigue repartido por toda la caja (no se junta en el fondo)', () => {
   const c = motor.caja({ especies: [{ gas: 'N2', n: 400 }], T: 300, semilla: 9 });
   c.temperatura(273);

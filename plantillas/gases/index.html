@@ -7,14 +7,14 @@
 <style>
 /* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md).
    Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
-   P azul, T rojo, V verde, n naranja; cada gas con su color (aire violeta grisáceo, H₂ turquesa, O₂ magenta, CH₄ ámbar). */
+   P azul, T rojo, V verde, n naranja; cada gas con su color (aire violeta grisáceo, H₂ turquesa, O₂ magenta, CH₄ violeta). */
 [hidden]{display:none!important}
 :root{
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
   --detras:#f6ece4; --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
   --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
   --c-P:#1f5fbf; --c-T:#c0364a; --c-V:#4f7a17; --c-n:#b85a06;
-  --g-aire:#7a6a8c; --g-H2:#0f766e; --g-O2:#b3246b; --g-CH4:#8f5800; --vidrio:#8e97a8;
+  --g-aire:#7a6a8c; --g-H2:#0f766e; --g-O2:#b3246b; --g-CH4:#7905c7; --vidrio:#8e97a8;
   --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
   --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
   color-scheme:light;
@@ -24,13 +24,13 @@
   --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
   --c-P:#7cb0ff; --c-T:#f17384; --c-V:#a3d65e; --c-n:#f0a04a;
-  --g-aire:#b9a9cc; --g-H2:#5ed9c8; --g-O2:#ff86bd; --g-CH4:#ffc04d; --vidrio:#a99cb8; color-scheme:dark } }
+  --g-aire:#b9a9cc; --g-H2:#5ed9c8; --g-O2:#ff86bd; --g-CH4:#b360fb; --vidrio:#5e5670; color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
   --c-P:#7cb0ff; --c-T:#f17384; --c-V:#a3d65e; --c-n:#f0a04a;
-  --g-aire:#b9a9cc; --g-H2:#5ed9c8; --g-O2:#ff86bd; --g-CH4:#ffc04d; --vidrio:#a99cb8; color-scheme:dark }
+  --g-aire:#b9a9cc; --g-H2:#5ed9c8; --g-O2:#ff86bd; --g-CH4:#b360fb; --vidrio:#5e5670; color-scheme:dark }
 
 *{box-sizing:border-box}
 body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
@@ -159,7 +159,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
     <header>
       <p class="eyebrow">Química · Gases · Problemas tipo admisión</p>
       <h1>Gases: lo que pasa adentro</h1>
-      <p class="sub">Partículas que nunca se quedan quietas. La presión son sus choques contra las paredes.</p>
+      <p class="sub">Partículas que nunca se quedan quietas. La presión es el empuje de sus choques contra las paredes.</p>
     </header>
     <nav class="tabs" aria-label="Modo de la escena">
       <a href="#paso-a-paso" id="tab1">Paso a paso</a>
@@ -357,7 +357,7 @@ function recipiente(ctx, c, b, sim, op){
   ctx.restore();
   if (op.embolo){
     ctx.fillStyle = c.metal; ctx.fillRect(b.x + w - 4, b.y - 6, 10, b.h + 12);
-    ctx.fillRect(b.x + w + 6, b.y + b.h/2 - 4, b.w - w + 20, 8);
+    if (b.w - w > 8) ctx.fillRect(b.x + w + 6, b.y + b.h/2 - 4, b.w - w - 6, 8);
   }
   if (op.agujero){ ctx.fillStyle = c.paper; ctx.fillRect(b.x + w - 5, b.y + b.h*(sim.agujero.y - sim.agujero.alto/2), 7, b.h*sim.agujero.alto); }
   return w;
@@ -431,13 +431,13 @@ function draw(){
   }
   const lx = ancho ? W*0.62 + 6 : 20, ly = ancho ? 30 : H*0.6 + 30, lw = ancho ? W*0.38 - 20 : W - 40;
   const Pabs = presion();
-  manometro(ctx, c, lx + 52, ly + 52, 44, Pabs - 1, 6, 'manómetro');
+  manometro(ctx, c, lx + 52, ly + 52, 44, Pabs - 1, Math.max(6, Math.ceil(Pabs)), 'manómetro');
   termometro(ctx, c, lx + 132, ly + 14, 80, S.T);
   ctx.font = `800 12px ${c.font}`; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
   const fila = (k, t, v, col) => { const y = ly + 124 + k*22; ctx.fillStyle = c.muted; ctx.font = `700 12px ${c.font}`; ctx.fillText(t, lx, y); ctx.fillStyle = col; ctx.font = `800 12px ${c.mono}`; ctx.textAlign = 'right'; ctx.fillText(v, lx + lw, y); ctx.textAlign = 'left'; };
   fila(0, 'P absoluta', `${fmt(Pabs, 2)} atm`, c.P);
-  fila(1, 'choques por segundo (promedio)', `${fmt(S.sim.tasaChoques(), 0)}`, c.P);
-  fila(2, 'partículas (n)', `${S.n}`, c.n);
+  fila(1, 'choques por segundo (promedio)', `${fmt(S.sim.tasaChoques(), 0)}`, c.ink);
+  fila(2, 'cantidad (n)', `${S.n} dibujadas`, c.n);
   $('desc1').textContent = `Temperatura ${fmt(S.T - 273, 0)} °C. Presión absoluta ${fmt(Pabs, 2)} atm; el manómetro marca ${fmt(Pabs - 1, 2)} atm.`;
 }
 const P1 = { id:'gases-paso3', ok:'a', opts:[
@@ -464,30 +464,30 @@ const P3 = { id:'gases-paso7', ok:'a', opts:[
   ['c','2 atm: no cambia, porque el tanque es rígido','rigido-presion-fija','parcial'],
   ['d','Unas 13 atm','usa-celsius','hipotesis']],
   fb:{ a:'¡Bien! La absoluta pasa de 3 a 4 atm, y el manómetro marca 4 − 1 = 3 atm.',
-    b:'Elegiste la B. Usaste la presión del manómetro (2 atm) en P/T constante. La ley vale para la presión absoluta: 2 + 1 = 3 atm. La correcta está marcada.',
+    b:'Elegiste la B. Usaste la presión del manómetro (2 atm) en P₁/T₁ = P₂/T₂. La ley vale para la presión absoluta: 2 + 1 = 3 atm. La correcta está marcada.',
     c:'Elegiste la C. Rígido quiere decir que no cambia el volumen; la presión sí cambia. La correcta está marcada.',
     d:'Elegiste la D. 127/27 sale de usar °C. Las leyes de los gases van en kelvin: 300 K y 400 K. La correcta está marcada.' } };
 const opciones = P => `<div class="opts">${P.opts.map(([k, t, , , dib]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span>${dib ? bosquejo(dib) : ''}<span>${t}</span></button>`).join('')}</div><p class="fb" id="fb"></p>`;
 const steps = [
  { k:'Paso 1', t:'El problema', T:300,
    body:() => `<p class="problem">Un tanque rígido de aire está a ${V('T','27 °C')} y su manómetro marca ${V('P','2 atm')}. La presión atmosférica es 1 atm. Se calienta hasta ${V('T','127 °C')}. ¿Qué marca el manómetro?</p>
-   <p>En el dibujo ves el aire por dentro, como con una lupa enorme: cada pareja de esferas es una molécula. Toca o pasa el puntero sobre un dato para ver dónde está.</p>` },
+   <p>En el dibujo ves el aire por dentro, como con una lupa enorme: cada pareja de esferas es una molécula. El dibujo no está a escala: las moléculas reales son mucho más chicas y están mucho más separadas.</p>` },
  { k:'Paso 2', t:'Entre las partículas no hay nada', T:300,
-   body:() => `<p>Las partículas se mueven siempre, en línea recta, hasta chocar con una pared o con otra. La estela que dejan muestra qué tan rápido van.</p>
+   body:() => `<p>Las partículas se mueven siempre, en línea recta, hasta chocar con una pared o con otra partícula (en el dibujo solo se ven los choques con las paredes). La estela que dejan muestra qué tan rápido van.</p>
    <p>¿Y entre una partícula y otra? <b>Nada</b>: un gas es casi todo espacio vacío. No hay aire entre las partículas del aire.</p>
-   <p>Cada choque contra la pared la empuja un poquito. Millones de choques por segundo son la ${V('P','presión')}: el contador de la derecha los cuenta en el dibujo.</p>
+   <p>Cada choque contra la pared la empuja un poquito. La ${V('P','presión')} depende de cuántos choques hay por segundo y de qué tan fuerte es cada uno. En el tanque real hay cientos de miles de trillones de choques por segundo en cada centímetro cuadrado; el dibujo tiene pocas partículas, y el contador junto al tanque cuenta sus choques.</p>
    <p class="fuente">El 64 % de 104 futuros profesores de primaria respondió que entre las partículas de un gas hay aire; solo el 14 % respondió "nada" (Köksal, 2018).</p>` },
  { k:'Paso 3', t:'Antes de calentar, predice', T:300, gate:P1,
    body:() => `<p>Primero, al revés: el tanque se enfría a ${V('T','0 °C')}, pero el aire sigue siendo gas. ¿Cómo quedan las partículas?</p>${opciones(P1)}` },
  { k:'Paso 4', t:'Al enfriar, siguen repartidas', T:273,
-   body:() => `<p>Mira el tanque a ${V('T','0 °C')}: las partículas siguen por todas partes, del mismo tamaño. Solo sus estelas son más cortas: van más lento, así que chocan menos y la ${V('P','presión')} baja un poco.</p>
+   body:() => `<p>Mira el tanque a ${V('T','0 °C')}: las partículas siguen por todas partes, del mismo tamaño. Solo sus estelas son más cortas: van más lento, así que chocan menos seguido y con menos fuerza, y la ${V('P','presión')} baja un poco.</p>
    <p class="fuente">Con el aire enfriado de 25 °C a 0 °C, solo el 1,9 % dejó las partículas repartidas; el 48,1 % las puso en el fondo y el 34,6 % en el centro (Köksal, 2018).</p>` },
  { k:'Paso 5', t:'Al calentar, ¿por qué sube la presión?', T:300, gate:P2,
    body:() => `<p>Ahora sí: el tanque se calienta de ${V('T','27 °C')} a ${V('T','127 °C')}. La ${V('P','presión')} sube. ¿Por qué?</p>${opciones(P2)}` },
  { k:'Paso 6', t:'Más rápidas, más choques', T:400,
    body:() => `<p>Compara el contador de choques con el del paso 4: las partículas van más rápido, así que chocan más veces por segundo, y cada choque empuja más fuerte. Las dos cosas suben la ${V('P','presión')}.</p>
-   <p>Ni una partícula de más, ni una más grande: las mismas, más rápidas. Por eso, a volumen fijo, ${V('P','P')} es proporcional a ${V('T','T')} en kelvin.</p>
-   <p class="fuente">Solo el 36,5 % explicó la subida de presión con los choques; el 23,1 % dijo que las partículas crecen y el 21,2 % que se acumulan en las paredes (Köksal, 2018).</p>` },
+   <p>Ni una partícula de más, ni una más grande: las mismas, más rápidas. Cada uno de los dos efectos crece con la raíz de ${V('T','T')}; los dos juntos hacen que, a volumen fijo, ${V('P','P')} sea proporcional a ${V('T','T')} en kelvin. Por eso el contador de choques crece menos que la presión.</p>
+   <p class="fuente">Solo el 36,5 % explicó la subida de presión con los choques; el 23,1 % dijo que las partículas crecen y el 21,2 % que se condensan en las paredes (Köksal, 2018).</p>` },
  { k:'Paso 7', t:'Predice el manómetro', T:400, gate:P3,
    body:() => `<p>Con el tanque a ${V('T','127 °C')}, ¿qué marca el manómetro?</p>${opciones(P3)}` },
  { k:'Paso 8', t:'La cuenta, con presión absoluta y kelvin', T:400,
@@ -498,14 +498,14 @@ const steps = [
      <div class="eq">Manómetro: 4 − 1 = ${V('P','3 atm')}</div>
    </div>
    <p class="answer">Respuesta: el manómetro marca 3 atm.</p>
-   <p class="aviso">Dos trampas: la ecuación va con la presión absoluta (no la del manómetro) y con kelvin (no °C). Son errores que suponemos, sin estudio con porcentaje; se apoyan en que muchos no distinguen la presión absoluta de la manométrica (Köksal, 2018).</p>` },
+   <p class="aviso">Dos trampas: la ecuación va con la presión absoluta (no la del manómetro) y con kelvin (no °C). Son errores que suponemos, sin estudio con porcentaje. El de la presión se apoya en un dato parecido: el 77 % de 104 futuros profesores creyó que un globo desinflado tiene menos presión que la atmósfera, o presión cero (Köksal, 2018).</p>` },
  { k:'Paso 9', t:'Ahora explora tú', explora:true,
    body:() => `<div class="ctrls">
      <div class="slider"><label for="et"><span>Temperatura (${V('T','T')})</span><output id="et-o"></output></label><input id="et" class="r-T" type="range" min="200" max="500" step="5" value="${S.T}"></div>
      <div class="slider"><label for="ev"><span>Volumen (${V('V','V')}, el émbolo)</span><output id="ev-o"></output></label><input id="ev" class="r-V" type="range" min="0.5" max="1.6" step="0.05" value="${S.ancho}"></div>
-     <div class="slider"><label for="en"><span>Partículas (${V('n','n')}, la válvula)</span><output id="en-o"></output></label><input id="en" class="r-n" type="range" min="10" max="140" step="5" value="${S.n}"></div>
+     <div class="slider"><label for="en"><span>Cantidad de gas (${V('n','n')}, la válvula)</span><output id="en-o"></output></label><input id="en" class="r-n" type="range" min="10" max="140" step="5" value="${S.n}"></div>
    </div>
-   <label class="check"><input type="checkbox" id="libre" ${S.libre ? 'checked' : ''}> Émbolo libre (la presión se queda fija y el volumen cambia)</label>
+   <label class="check"><input type="checkbox" id="libre" ${S.libre ? 'checked' : ''}> Émbolo libre, con una pesa encima (la presión se queda en 3 atm y el volumen cambia)</label>
    <div id="live" class="body"></div>
    <p class="hint">Con el émbolo libre, calentar ya no sube la presión: el gas empuja el émbolo y ocupa más volumen.</p>` },
 ];
@@ -571,10 +571,11 @@ function explorar(){
   vivo();
 }
 function vivo(){
-  $('et-o').textContent = `${fmt(S.T - 273, 0)} °C (${S.T} K)`; $('ev-o').textContent = `${fmt(S.ancho*10, 1)} L`; $('en-o').textContent = `${S.n}`;
+  $('et-o').textContent = `${fmt(S.T - 273, 0)} °C (${S.T} K)`; $('ev-o').textContent = `${fmt(S.ancho*10, 1)} L`; $('en-o').textContent = `${S.n} partículas dibujadas`;
   const P = presion();
   $('live').innerHTML = `<div class="eqs"><div class="eq">${V('P','P')} = 3 atm · ${fr(V('n','n'), String(N0))} · ${fr(V('T','T'), '300 K')} · ${fr('10 L', V('V','V'))} = ${V('P', fmt(P, 2) + ' atm')}</div>
-    <div class="eq"><span class="note" style="margin:0">Arrancamos con 3 atm absolutas, ${N0} partículas, 300 K y 10 L. ${S.libre ? 'Con el émbolo libre la presión no cambia: el volumen sigue a T y n.' : ''}</span></div></div>`;
+    <div class="eq"><span class="note" style="margin:0">Arrancamos con 3 atm absolutas, ${N0} partículas, 300 K y 10 L. ${S.libre ? (Math.abs(P - 3) > 0.01 ? 'El émbolo llegó al tope: el volumen ya no puede cambiar más, así que ahora la presión sí cambia.' : 'Con el émbolo libre la presión no cambia: el volumen sigue a T y n.') : ''}</span></div></div>
+    ${P < 1 ? '<p class="hint">La presión adentro es menor que la de afuera: el manómetro marcaría negativo (es un vacuómetro).</p>' : ''}`;
   draw();
 }
 $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
@@ -603,6 +604,7 @@ const EXPS = [
     antes:() => Object.assign(E, { tipo:'nada', sim:M.caja({ especies:[{ gas:'aire', n:24 }], T:300, semilla:4 }), ver:false }),
     despues:() => { E.ver = true; },
     exp:`<p>Entre las partículas no hay nada: es vacío. El aire <b>son</b> las partículas; no hay "más aire" entre ellas. En el aire que respiras, el espacio vacío ocupa casi todo el volumen: las moléculas ocupan menos de una milésima parte.</p>
+      <p>El aire es una mezcla: sus partículas son de nitrógeno, oxígeno, un poco de vapor de agua y otros gases. Entre todas ellas no hay nada. El dibujo no está a escala: si lo estuviera, las moléculas serían puntitos casi invisibles, separados unas 10 veces su propio tamaño.</p>
       <p class="fuente">El 64,4 % de 104 futuros profesores de primaria respondió "aire"; el 12,5 %, "otros gases"; el 4,8 %, "vapor de agua"; el 3,8 %, "polvo". Solo el 14,4 % respondió "nada" (Köksal, 2018). La idea de que el vacío no existe la describieron Novick y Nussbaum (1978, 1981).</p>` },
   { id:'graham', corto:'El tubo de Graham',
     q:`Un tubo de 100 cm tiene H₂ en un extremo y O₂ en el otro. Los dos gases avanzan por el tubo a la misma temperatura. ¿A cuántos centímetros del extremo del H₂ se encuentran?`,
@@ -612,7 +614,7 @@ const EXPS = [
     despues:() => { E.ver = true; correr(0, 1); },
     exp:`<p>A la misma temperatura, todas las partículas tienen la misma energía cinética media. El H₂ (2 g/mol) es 16 veces más liviano que el O₂ (32 g/mol), así que va √16 = 4 veces más rápido: en el tiempo en que el O₂ avanza 20 cm, el H₂ avanza 80 cm.</p>
       <p>Sin la raíz te sale 16 a 1, unos 94 cm; al revés, 20 cm.</p>
-      <p class="fuente">Con una membrana entre dos gases, el 42,3 % eligió la opción que supone "más masa molar, más rápido"; acertó el 13,5 % (Köksal, 2018).</p>` },
+      <p class="fuente">Con una membrana entre dos gases, el 42,3 % eligió la opción que supone "más masa molar, más rápido"; acertó el 13,5 %. En el problema clásico del tubo, acertó el 58,7 % y el 23,1 % eligió la opción con el gas más pesado más rápido (Köksal, 2018).</p>` },
   { id:'embolo', corto:'El émbolo libre',
     q:`Un cilindro con un émbolo que se mueve sin roce tiene aire a 27 °C. Se calienta hasta 177 °C. ¿Qué pasa con la presión del aire?`,
     opts:[['a','Sube, porque está más caliente','GQ20-calor-sube-presion','documentado'], ['b','No cambia: sube el volumen',null], ['c','Baja, porque el gas se expande','expansion-baja-presion','hipotesis'], ['d','Suben la presión y el volumen','sube-todo','hipotesis']],
@@ -621,14 +623,14 @@ const EXPS = [
     despues:() => { E.ver = true; correr(300, 450, 'T'); },
     exp:`<p>Al calentar, las partículas chocan más fuerte contra el émbolo y lo empujan hasta que la presión de adentro vuelve a igualar la de afuera. La presión queda igual; el volumen crece en proporción a T en kelvin: de 300 K a 450 K, 1,5 veces (Charles).</p>
       <p>"Más temperatura, más presión" solo vale si el volumen no puede cambiar, como en el tanque rígido del paso a paso.</p>
-      <p class="fuente">Que el gas más caliente siempre tiene más presión, aunque el émbolo esté libre, lo eligieron el 38 % y el 57 % en dos grupos de universitarios (Wattanakasiwich y otros, 2013; ver el informe de física).</p>` },
+      <p class="fuente">En una encuesta a 349 universitarios australianos que ya habían llevado el tema, el 38 % dijo que la presión de un gas con émbolo libre sube al calentarlo. En otra pregunta, el 57 % dijo que el cilindro más caliente tiene más presión, aunque los émbolos estén en equilibrio (Wattanakasiwich y otros, 2013; ver el informe de física).</p>` },
   { id:'globo', corto:'El globo de hidrógeno',
     q:`Un globo de hidrógeno, bien atado, amanece desinflado al día siguiente, en la misma habitación. ¿Por qué?`,
-    opts:[['a','El hidrógeno escapó por los poros de la goma',null], ['b','El frío de la noche juntó las moléculas','GQ12-frio-junta','documentado'], ['c','Subió la presión de afuera','GQ12-presion-externa','documentado'], ['d','Las moléculas se detuvieron','GQ12-se-detienen','documentado']],
+    opts:[['a','El hidrógeno se coló poco a poco a través de la goma',null], ['b','El frío de la noche juntó las moléculas','GQ12-frio-junta','documentado'], ['c','Subió la presión de afuera','GQ12-presion-externa','documentado'], ['d','Las moléculas se detuvieron','GQ12-se-detienen','documentado']],
     ok:'a',
     antes:() => Object.assign(E, { tipo:'globo', sim:M.caja({ especies:[{ gas:'H2', n:150 }, { gas:'O2', n:150 }], agujero:{ y:0.5, alto:0.12 }, T:300, semilla:12 }), ver:false }),
     despues:() => { E.ver = true; },
-    exp:`<p>La goma tiene poros diminutos. Las moléculas de H₂ son tan livianas y rápidas que pasan por ellos muchas más veces que las de otros gases: es la efusión. En el dibujo, la caja tiene un agujerito y hay tantas moléculas de H₂ como de O₂: mira el contador: al principio sale unas 4 veces más H₂ que O₂ (Graham); después la razón baja, porque ya quedan menos moléculas de H₂ adentro.</p>
+    exp:`<p>La goma no es una pared perfecta: las moléculas muy pequeñas y rápidas, como las de H₂, se cuelan poco a poco a través de ella. En el dibujo lo representamos con un agujerito (efusión). Hay tantas moléculas de H₂ como de O₂; mira el contador: al principio sale unas 4 veces más H₂ que O₂ (Graham), y después la razón baja porque ya quedan menos moléculas de H₂ adentro.</p>
       <p>Por eso los globos de helio de las fiestas se desinflan en un día o dos, y los de aire duran mucho más.</p>
       <p class="fuente">Solo el 14,4 % de 104 futuros profesores eligió la efusión; el 33,7 % dijo que el frío junta las moléculas y el 31,7 %, que subió la presión de afuera (Köksal, 2018).</p>` },
   { id:'dalton', corto:'La presión de cada gas',
@@ -638,7 +640,7 @@ const EXPS = [
     antes:() => Object.assign(E, { tipo:'dalton', sim:M.caja({ especies:[{ gas:'O2', n:20 }, { gas:'CH4', n:40 }], T:300, semilla:21 }), solo:null, ver:false }),
     despues:() => { E.ver = true; },
     ctrl:() => `<div class="seg" role="group" aria-label="Qué gas mostrar"><button type="button" data-solo="" aria-pressed="true">Los dos</button><button type="button" data-solo="O2" aria-pressed="false">Solo O₂</button><button type="button" data-solo="CH4" aria-pressed="false">Solo CH₄</button></div>`,
-    exp:`<p>La presión sale de los choques, y los choques dependen de cuántas partículas hay, no de cuánto pesan. 16 g de O₂ son 0,5 mol y 16 g de CH₄ son 1 mol: el CH₄ tiene el doble de moléculas. La fracción molar del O₂ es 1/3, y su presión parcial, 1/3 de 3 atm = 1 atm.</p>
+    exp:`<p>Cada molécula de O₂ pesa el doble que una de CH₄ y va más lenta: choca menos seguido, pero cada choque empuja más. A la misma temperatura las dos cosas se compensan, así que la presión depende solo de cuántas moléculas hay, no de cuánto pesan. 16 g de O₂ son 0,5 mol y 16 g de CH₄ son 1 mol: el CH₄ tiene el doble de moléculas. La fracción molar del O₂ es 1/3, y su presión parcial, 1/3 de 3 atm = 1 atm.</p>
       <p>Usa "Solo O₂": son las moléculas de O₂, sin las de CH₄, en el mismo recipiente. Su presión es la que tendrían si estuvieran solas.</p>
       <p class="fuente">Repartir la presión por masas es un error que suponemos, sin estudio con porcentaje. Se apoya en una dificultad medida con el mol: el 23,1 % negó que igual número de moléculas sea igual número de moles (Köksal, 2018).</p>` },
 ];
