@@ -1947,7 +1947,9 @@
      },
      "potencial_visual": "medio",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "probabilidad-dados"
+     ]
     },
     {
      "id": "aritmetica.probabilidades",
@@ -1976,7 +1978,9 @@
      },
      "potencial_visual": "medio",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "probabilidad-dados"
+     ]
     },
     {
      "id": "aritmetica.numeracion",
@@ -2816,7 +2820,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "circunferencia-trig"
+     ]
     },
     {
      "id": "trigonometria.triangulos-rectangulos",
@@ -2841,7 +2847,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "circunferencia-trig"
+     ]
     },
     {
      "id": "trigonometria.recta-en-el-plano",
@@ -2889,7 +2897,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "circunferencia-trig"
+     ]
     },
     {
      "id": "trigonometria.reduccion-al-primer-cuadrante",
@@ -2914,7 +2924,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "circunferencia-trig"
+     ]
     },
     {
      "id": "trigonometria.circunferencia-trigonometrica",
@@ -2943,7 +2955,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "circunferencia-trig"
+     ]
     },
     {
      "id": "trigonometria.identidades-fundamentales",
@@ -3073,7 +3087,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "circunferencia-trig"
+     ]
     },
     {
      "id": "trigonometria.funciones-trigonometricas-inversas",
@@ -3125,7 +3141,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "circunferencia-trig"
+     ]
     },
     {
      "id": "trigonometria.triangulos-oblicuangulos",
@@ -3389,7 +3407,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "probabilidad-dados"
+     ]
     },
     {
      "id": "razonamiento-matematico.cronometria-y-calendarios",
@@ -4179,6 +4199,29 @@
     "/plantillas/circuitos-cc/papel.json"
    ]
   },
+  "circunferencia-trig": {
+   "id": "circunferencia-trig",
+   "titulo": "La circunferencia que se desenrolla: seno, coseno y sus gráficas",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "trigonometria.razones-trigonometricas-agudas",
+    "trigonometria.triangulos-rectangulos",
+    "trigonometria.angulos-en-posicion-normal",
+    "trigonometria.reduccion-al-primer-cuadrante",
+    "trigonometria.circunferencia-trigonometrica",
+    "trigonometria.funciones-trigonometricas",
+    "trigonometria.ecuaciones-trigonometricas"
+   ],
+   "url": "/plantillas/circunferencia-trig/index.html",
+   "papel": "/plantillas/circunferencia-trig/papel.json",
+   "archivos": [
+    "/plantillas/circunferencia-trig/index.html",
+    "/plantillas/circunferencia-trig/motor.js",
+    "/plantillas/circunferencia-trig/papel.json"
+   ]
+  },
   "dinamica": {
    "id": "dinamica",
    "titulo": "Dinámica: fuerzas, plano inclinado y poleas",
@@ -4363,6 +4406,25 @@
    "papel": null,
    "archivos": [
     "/plantillas/porcentajes-sucesivos/generador.js"
+   ]
+  },
+  "probabilidad-dados": {
+   "id": "probabilidad-dados",
+   "titulo": "La tabla de los dos dados: conteo y probabilidad",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "aritmetica.probabilidades",
+    "aritmetica.analisis-combinatorio",
+    "razonamiento-matematico.juegos-recreativos"
+   ],
+   "url": "/plantillas/probabilidad-dados/index.html",
+   "papel": "/plantillas/probabilidad-dados/papel.json",
+   "archivos": [
+    "/plantillas/probabilidad-dados/index.html",
+    "/plantillas/probabilidad-dados/motor.js",
+    "/plantillas/probabilidad-dados/papel.json"
    ]
   },
   "regla-de-tres": {

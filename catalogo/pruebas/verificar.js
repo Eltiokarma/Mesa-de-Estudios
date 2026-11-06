@@ -26,11 +26,12 @@ const V = {
       errores: { 'G2-altura-entre-tiempo': d.x2 / d.t2, 'G2-pendiente-es-altura': d.x2, 'G2-lee-el-eje': d.x1 } };
   },
   'fis-02': d => {
-    const M = motor('mruv'), lv = M.lanzamientoVertical({ v0: d.v0 });
-    if (Math.abs(lv.tSubida - d.tSubida) > 1e-9) throw new Error(`el enunciado dice que sube ${d.tSubida} s y el motor da ${lv.tSubida} s`);
-    const a = M.movil(lv.movil).a(lv.tSubida);
-    return { correcta: Math.abs(a + 10) < 1e-9 ? 'abajo' : 'otra', errores: { 'C1-aceleracion-cero-en-la-cima': 'cero',
-      'K3-aceleracion-en-sentido-del-movimiento': 'arriba', 'C2-depende-de-la-masa': 'masa' } };
+    // Velocidad en un instante después de la cima: v = v0 − g·t (el motor no deja que se quede arriba).
+    const M = motor('mruv'), lv = M.lanzamientoVertical({ v0: d.v0 }), v = M.movil(lv.movil).v(d.t);
+    if (!(d.t > lv.tSubida)) throw new Error('el instante debe ser después de la cima');
+    const k = x => `${x < 0 ? 'abajo' : x > 0 ? 'arriba' : 'quieta'}-${num(Math.abs(x))}`;
+    return { correcta: k(v), errores: { 'K3-aceleracion-en-sentido-del-movimiento': k(d.v0 + 10 * d.t),
+      'C1-aceleracion-cero-en-la-cima': 'quieta-0', 'signo-de-la-velocidad': k(-v) } };
   },
   'fis-03': d => {
     const r = motor('dinamica').plano({ m: d.m, angulo: d.angulo, mus: 0, v0: 1 });
@@ -57,18 +58,23 @@ const V = {
     } };
   },
   'fis-07': d => {
+    // B1 en serie con un grupo en paralelo; se agrega una bombilla más al grupo.
     const M = motor('circuitos-cc');
-    const antes = M.resolver(M.mixto({ fem: d.fem, R1: d.R, R2: d.R, R3: d.R })), despues = M.resolver(M.mixto({ fem: d.fem, R1: d.R, R2: d.R, R3: d.R, b3: false }));
+    const c = cuarta => ({ tierra: 'n', ramas: [{ id: 'pila', tipo: 'pila', a: 'n', b: 'p', fem: d.fem, r: 0 },
+      { id: 'B1', tipo: 'resistencia', a: 'p', b: 'y', R: d.R }, { id: 'B2', tipo: 'resistencia', a: 'y', b: 'n', R: d.R },
+      { id: 'B3', tipo: 'resistencia', a: 'y', b: 'n', R: d.R }, { id: 'B4', tipo: 'resistencia', a: 'y', b: 'n', R: d.R, abierta: !cuarta }] });
+    const antes = M.resolver(c(false)), despues = M.resolver(c(true));
     const cmp = (a, b) => (b > a + 1e-9 ? 'mas' : b < a - 1e-9 ? 'menos' : 'igual');
     return { correcta: `serie-${cmp(antes.ramas.B1.P, despues.ramas.B1.P)}|paralelo-${cmp(antes.ramas.B2.P, despues.ramas.B2.P)}`,
-      errores: { 'C5-toda-la-corriente-a-B2': 'serie-igual|paralelo-mas', 'C5-bombilla-independiente': 'serie-igual|paralelo-igual', 'C1-sobra-corriente': 'serie-mas|paralelo-mas' } };
+      errores: { 'C5-toda-la-corriente-a-B2': 'serie-igual|paralelo-menos', 'C5-bombilla-independiente': 'serie-igual|paralelo-igual', 'C1-pila-corriente-constante': 'serie-menos|paralelo-menos' } };
   },
   'fis-08': d => {
-    const L = motor('optica-lente-delgada'), im = L.imagen(d.o, d.f, d.h);
-    // Con la mitad de arriba tapada, la luz de la punta y de la base de la vela sigue llegando a un punto
-    // de la pantalla (mancha de ancho cero) y en el lugar de la imagen completa; solo llega la mitad de la luz.
-    const ok = [0, d.h].every(y => { const m = L.mancha(d.o, d.f, y, d.D, im.i, 'arriba'); return m.ancho < 1e-9 && Math.abs(m.centro - im.m * y) < 1e-9 && m.luz === 0.5; });
-    return { correcta: ok ? 'completa-tenue' : 'otra', errores: { 'E1-mitad-arriba': 'sin-arriba', 'E1-mitad-abajo': 'sin-abajo', 'E1-sin-imagen': 'nada' } };
+    const im = motor('optica-lente-delgada').imagen(d.o, d.f, 1);
+    return { correcta: im.i, errores: { 'lente-suma-inversas': 1 / (1 / d.f + 1 / d.o), 'objeto-lejano-en-el-foco': d.f, 'imagen-espejo': d.o } };
+  },
+  'fis-10': d => {
+    const r = motor('energia').rampaResorte({ m: d.m, h: d.h, k: 1 }), g = 10;
+    return { correcta: r.v, errores: { 'energia-sin-raiz': 2 * g * d.h, 'energia-sin-mitad': Math.sqrt(g * d.h), 'energia-v-igual-gh': g * d.h } };
   },
   'fis-09': d => {
     const E = motor('optica-espejo-esferico'), im = E.imagen(d.o, d.f, 1), ds = E.describir(im);
@@ -117,7 +123,17 @@ const V = {
   },
   'qui-07': d => {
     const r = motor('acidos-bases').razonH(d.pH1, d.pH2);
-    return { correcta: r.veces, errores: { 'AB4-escala-lineal': r.errores.resta, 'AB4-razon-de-pH': r.errores.razonPH } };
+    return { correcta: r.veces, errores: { 'AB4-escala-lineal': r.errores.resta, 'AB4-razon-de-pH': r.errores.razonPH, 'AB5-mas-pH-mas-H': 1 / r.veces } };
+  },
+  'qui-09': d => {
+    const K = motor('cinetica'), r = K.factor(d.ordenes, d.factores);
+    const coef = K.factor(d.coeficientes, d.factores).valor; // CI9: los coeficientes de la ecuación como órdenes
+    return { correcta: r.valor, errores: { 'orden-uno': r.sinExponentes, 'suma-factores': Object.values(d.factores).reduce((a, b) => a + b, 0), CI9: coef } };
+  },
+  'qui-10': d => {
+    const n = d.tiempo / d.vidaMedia, r = motor('cinetica').fraccionQueda(n);
+    if (!Number.isInteger(n)) throw new Error('el tiempo debe ser un número entero de vidas medias');
+    return { correcta: 100 * r.valor, errores: { 'vidas-medias-restando': 100 * r.restando, 'vidas-medias-dividiendo': 100 * r.dividiendo, 'una-vida-media': 50 } };
   },
   'qui-08': d => {
     const C = motor('celda-galvanica'), p = C.pila(d.metal, 'Ag');
@@ -131,17 +147,20 @@ const V = {
   'geo-02': d => { const r = motor('ampliadora').segunMagnitud(d.volumen, d.k, 'volumen');
     return { correcta: r.resultado, errores: { 'GE2-volumen-como-arista': r.errores.lineal, 'GE2-volumen-como-area': r.errores.cuadrado } }; },
   'geo-03': d => { const r = motor('ampliadora').conosParaLlenar(1, 1);
-    return { correcta: d.cilindro / r.conos, errores: { 'GE20-sin-tercio': d.cilindro / r.errores.sinTercio, 'cono-mitad': d.cilindro / r.errores.mitad } }; },
+    // Del cono al cilindro: hacen falta r.conos conos para llenarlo.
+    return { correcta: d.cono * r.conos, errores: { 'GE20-sin-tercio': d.cono * r.errores.sinTercio, 'cono-mitad': d.cono * r.errores.mitad, 'invierte-tercio': d.cono / r.conos } }; },
   'geo-04': d => {
     // B en el origen, C en el eje x, A sobre la prolongación de CB: la altura cae fuera.
     const pie = Math.sqrt(d.AB * d.AB - d.h * d.h), t = motor('triangulo-estira').triangulo({ x: -pie, y: d.h }, { x: 0, y: 0 }, { x: d.BC, y: 0 });
     if (t.tipoAngulo !== 'obtusángulo' || t.verticeObtuso !== 'B') throw new Error('el triángulo del ítem no es obtuso en B');
-    return { correcta: t.area, errores: { 'area-sin-dividir-entre-2': t.errores.areaSinMitad, 'GE7-lado-como-altura': t.errores.areaConAB } };
+    return { correcta: t.area, errores: { 'area-sin-dividir-entre-2': t.errores.areaSinMitad, 'GE7-lado-como-altura': t.errores.areaConAB, 'base-prolongacion': pie * d.h / 2 } };
   },
   'geo-05': d => {
-    const g = d.anguloObtuso * PI / 180, t = motor('triangulo-estira').triangulo({ x: 4 * Math.cos(g), y: 4 * Math.sin(g) }, { x: 0, y: 0 }, { x: 5, y: 0 });
-    if (t.tipoAngulo !== 'obtusángulo') throw new Error('no es obtusángulo');
-    return { correcta: t.alturasFuera, errores: { 'GE7-altura-siempre-dentro': 0, 'GE7-solo-una-fuera': 1, 'GE7-todas-fuera': 3 } };
+    // Triángulo rectángulo en B: la altura desde B cae sobre la hipotenusa AC.
+    const T = motor('triangulo-estira'), A = { x: 0, y: d.c1 }, B = { x: 0, y: 0 }, C = { x: d.c2, y: 0 };
+    if (T.triangulo(A, B, C).verticeRecto !== 'B') throw new Error('no es rectángulo en B');
+    const h = T.altura(B, A, C), hip = Math.hypot(d.c1, d.c2), m = d.c1 * d.c1 / hip;
+    return { correcta: h.longitud, errores: { 'GE18-promedio-catetos': (d.c1 + d.c2) / 2, 'GE8-altura-como-mediana': h.errores.hastaPuntoMedio, 'proyeccion-como-altura': m } };
   },
   'geo-06': () => {
     const T = motor('triangulo-estira'), A = { x: 1, y: 3 }, B = { x: 0, y: 0 }, C = { x: 5, y: 0 };
@@ -149,13 +168,13 @@ const V = {
     return { correcta: areas.every(a => Math.abs(a - a0) < 1e-9) ? 'igual' : 'cambia',
       errores: { 'GE6-acostado-mas-area': 'crece', 'GE6-acostado-menos-area': 'baja', 'GE6-isosceles-mas-area': 'maximo-isosceles' } };
   },
-  'geo-07': d => { const r = motor('angulo-inscrito').inscrito(0, d.central, d.central + (360 - d.central) / 2, 5);
-    if (r.pEnArco !== 'mayor') throw new Error('P debe estar en el arco mayor');
-    return { correcta: r.angulo, errores: { 'GE15-inscrito-igual-central': r.central, 'GE15-inscrito-doble': 2 * r.central } }; },
+  'geo-07': d => { const r = motor('angulo-inscrito').inscrito(0, 2 * d.inscrito, d.inscrito + 180, 5);
+    if (r.pEnArco !== 'mayor' || Math.abs(r.angulo - d.inscrito) > 1e-9) throw new Error('el inscrito del motor no es el del enunciado');
+    return { correcta: r.central, errores: { 'GE15-inscrito-igual-central': r.angulo, 'GE15-inscrito-doble': r.angulo / 2 } }; },
   'geo-08': d => { const r = motor('angulo-inscrito').exterior(d.lejano, d.cercano);
-    return { correcta: r.angulo, errores: { 'GE16-exterior-suma': r.errores.suma, 'GE16-exterior-sin-dividir': r.errores.sinDividir, 'GE16-exterior-suma-sin-dividir': r.errores.sumaSinDividir } }; },
+    return { correcta: r.angulo, errores: { 'GE16-exterior-suma': r.errores.suma, 'GE16-exterior-sin-dividir': r.errores.sinDividir, 'exterior-mitad-del-cercano': d.cercano / 2 } }; },
   'geo-09': d => { const r = motor('angulo-inscrito').longitudArco(d.arco, d.r);
-    return { correcta: r.longitud, errores: { 'GE19-diametro-como-radio': r.errores.conDiametro * PI, 'GE19-area-por-longitud': r.errores.areaSector * PI, 'GE19-sin-fraccion': r.errores.sinFraccion * PI } }; },
+    return { correcta: r.longitud, errores: { 'GE19-diametro-como-radio': r.errores.conDiametro * PI, 'GE19-area-por-longitud': r.errores.areaSector * PI, 'GE19-pi-r': r.errores.mitadDelRadio * PI } }; },
 
   // ---------------- Trigonometría ----------------
   'tri-01': d => { const r = motor('cinta-radio').convertir({ R: d.R });
@@ -164,8 +183,8 @@ const V = {
     return { correcta: r.R, errores: { 'TR5-vuelta-un-radian': d.vueltas, 'TR3-grados-como-radianes': r.errores.gradosComoRadianes, 'TR1-pi-es-la-vuelta': d.vueltas * PI } }; },
   'tri-03': d => { const r = motor('cinta-radio').sector({ r: d.r, theta: d.theta, unidad: 'sex' });
     return { correcta: r.L, errores: { 'TR4-arco-con-grados': r.errores.arcoConGrados, 'TR2-arco-igual-radio': r.errores.arcoIgualRadio, 'arco-sin-radio': r.errores.arcoSinRadio } }; },
-  'tri-04': d => { const r = motor('cinta-radio').sector({ r: d.r, theta: d.theta, unidad: 'sex' });
-    return { correcta: r.A, errores: { 'area-sin-mitad': r.errores.areaSinMitad, 'TR4-area-con-grados': r.errores.areaConGrados, 'area-igual-arco': r.errores.areaIgualArco } }; },
+  'tri-04': d => { const r = motor('cinta-radio').convertir({ S: d.S });
+    return { correcta: r.C, errores: { 'centesimal-igual': r.errores.centesimalIgual, 'factor-centesimal-invertido': d.S * 9 / 10 } }; },
   'tri-05': d => { const r = motor('cinta-radio').escalarRadio({ r: d.r, theta: d.theta, unidad: 'sex' }, d.k);
     const c = (L, A) => `${num(L)}|${num(A)}`;
     return { correcta: c(r.razonL, r.razonA), errores: { 'GE1-area-como-lado': c(d.k, d.k), 'arco-depende-solo-del-angulo': c(1, 1), 'arco-igual-area-doble': c(1, d.k) } }; },
@@ -197,13 +216,19 @@ const V = {
     if (r.cruce.x !== d.cruce) throw new Error(`las rectas se cruzan en x = ${r.cruce.x}, no en ${d.cruce}`);
     return { correcta: nombre(r.masRapida), errores: { 'AL25-altura-como-pendiente': nombre(r.errores.alturaComoPendiente), 'intervalo-punto-cruce': 'iguales' } }; },
 
+  // ---------------- Trigonometría en reserva (circunferencia-trig, todavía fuera del catálogo) ----------------
+  'ct-01': d => { const r = motor('circunferencia-trig').reducir('cos', d.angulo);
+    return { correcta: r.valor, errores: { 'TR11-TR12-abscisa-sin-signo': r.errores.sinSigno, 'TR14-cambia-de-razon': r.errores.cambiaRazon180, 'TR11-cruza-seno-coseno': r.errores.otraCoordenada } }; },
+  'ct-02': d => { const r = motor('circunferencia-trig').senoidal({ fn: d.fn, A: d.A, B: d.B, unidad: 'sex' });
+    return { correcta: r.periodo, errores: { 'TR18-periodo-por-B': r.errores.periodoPorB, 'TR18-periodo-igual-B': r.errores.periodoIgualB, 'periodo-con-amplitud': r.errores.periodoConAmplitud } }; },
+
   // ---------------- Aritmética (cuentas exactas, ver arriba) ----------------
   'ari-01': d => { const f = (1 - d.a / 100) * (1 - d.b / 100);
     return { correcta: d.P * f, errores: { 'suma-descuentos': d.P * (1 - (d.a + d.b) / 100), 'monto-descuento': d.P * (1 - f), 'un-solo-descuento': d.P * (1 - Math.max(d.a, d.b) / 100) } }; },
   'ari-02': d => { const f = (1 + d.a / 100) * (1 - d.b / 100);
     return { correcta: d.P * f, errores: { 'se-compensan': d.P * (1 + (d.a - d.b) / 100), 'solo-aumento': d.P * (1 + d.a / 100), 'monto-variacion': Math.abs(d.P - d.P * f) } }; },
-  'ari-03': d => { const queda = (1 - d.a / 100) * (1 - d.b / 100);
-    return { correcta: 100 * (1 - queda), errores: { 'suma-descuentos': d.a + d.b, producto: d.a * d.b / 100, 'lo-que-queda': 100 * queda } }; },
+  'ari-03': d => { const c = 100 * (d.despues - d.antes) / d.antes;
+    return { correcta: c, errores: { AR3: 100 * (d.despues - d.antes) / d.despues, 'monto-variacion': d.despues - d.antes, 'lo-que-queda': 100 * d.despues / d.antes } }; },
   'ari-04': d => { const f = (1 + d.a / 100) * (1 - d.a / 100);
     return { correcta: d.P * f, errores: { 'se-compensan': d.P, 'solo-aumento': d.P * (1 + d.a / 100), 'monto-variacion': d.P - d.P * f } }; },
   'ari-05': d => { const f = (1 + d.a / 100) * (1 + d.b / 100);

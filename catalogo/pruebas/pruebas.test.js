@@ -8,7 +8,8 @@ const fs = require('node:fs');
 const path = require('node:path');
 const Pruebas = require('../../nucleo/pruebas.js');
 const { verificadores } = require('./verificar.js');
-const { textoPruebas, SALIDA_PRUEBAS } = require('../../herramientas/construir-catalogo.js');
+const { textoPruebas, SALIDA_PRUEBAS, construirPruebas } = require('../../herramientas/construir-catalogo.js');
+const Parecidos = require('./parecidos.js');
 
 const raiz = path.join(__dirname, '..', '..');
 const leer = p => JSON.parse(fs.readFileSync(path.join(raiz, p), 'utf8'));
@@ -21,6 +22,8 @@ function leerNumero(texto) {
   const t = texto.replace(/−/g, '-');
   const pi = t.match(/(-?\d+(?:,\d+)?)?π(?:\/(\d+))?/);
   if (pi) return { v: (pi[1] === undefined ? 1 : Number(pi[1].replace(',', '.'))) * Math.PI / (pi[2] ? Number(pi[2]) : 1), tol: 1e-3, rel: true };
+  const rz = t.match(/(-?)√(\d+)(?:\/(\d+))?/);
+  if (rz) return { v: (rz[1] ? -1 : 1) * Math.sqrt(Number(rz[2])) / (rz[3] ? Number(rz[3]) : 1), tol: 1e-3, rel: true };
   const fr = t.match(/(-?\d+)\/(\d+)/);
   if (fr) return { v: Number(fr[1]) / Number(fr[2]), tol: 1e-3, rel: true };
   const n = t.match(/-?\d+(?: \d{3})*(?:,(\d+))?/);
@@ -62,8 +65,8 @@ for (const b of bancos) {
     if (pls.length >= 4) for (const [pl, n] of Object.entries(porPlantilla)) assert.ok(n <= 2, `${c.id}: ${pl} tiene ${n} ítems (máximo 2)`);
   });
 
-  test(`${b.curso}: las respuestas y los distractores salen del motor`, () => {
-    for (const p of b.pares) {
+  test(`${b.curso}: las respuestas y los distractores salen del motor (también la reserva)`, () => {
+    for (const p of [...b.pares, ...(b.reserva || [])]) {
       const v = verificadores[p.par];
       assert.ok(v, `${p.par}: falta su verificador en catalogo/pruebas/verificar.js`);
       for (const f of Pruebas.FORMAS) {
@@ -102,6 +105,83 @@ for (const b of bancos) {
     }
   });
 }
+
+for (const b of bancos) {
+  test(`${b.curso}: la reserva es de plantillas que existen y cubren su unidad`, t => {
+    for (const p of b.reserva || []) {
+      assert.ok(fs.existsSync(path.join(raiz, 'plantillas', p.plantilla, 'plantilla.json')), `${p.par}: no existe la plantilla ${p.plantilla}`);
+      assert.ok(leer(`plantillas/${p.plantilla}/plantilla.json`).unidades.includes(p.unidad), `${p.par}: ${p.plantilla} no cubre ${p.unidad}`);
+      if (plantillasDe(cursos[b.curso]).includes(p.plantilla)) t.diagnostic(`${p.par}: ${p.plantilla} ya está en el catálogo; pasa el par de "reserva" a "pares"`);
+    }
+  });
+
+  test(`${b.curso}: ningún ítem repite una predicción de su escena o un problema de su generador`, () => {
+    const h = Parecidos.revisar([b]);
+    assert.deepEqual(h.map(x => `${x.item} ~ ${x.plantilla}: ${x.motivo} | ${x.texto.slice(0, 120)}`), []);
+  });
+
+  test(`${b.curso}: la respuesta no es un número que ya está en el enunciado, y los atajos son iguales en A y B`, () => {
+    for (const p of b.pares) {
+      const firma = {};
+      for (const f of Pruebas.FORMAS) {
+        const it = p[f], id = p.par + f, nums = new Set((it.enunciado.replace(/−/g, '-').match(/\d+(?:,\d+)?/g) || []).map(x => x.replace(',', '.')));
+        const enEnunciado = o => { const n = leerNumero(o.texto); return n && !n.rel && nums.has(String(n.v)); };
+        const ok = it.opciones.find(o => o.correcta);
+        if (typeof ok.valor === 'number' && ok.valor !== 0) assert.ok(!enEnunciado(ok), `${id}: la respuesta «${ok.texto}» ya está escrita en el enunciado`);
+        // Un "atajo" (copiar un número del enunciado) debe caer en el mismo lugar en las dos formas.
+        firma[f] = it.opciones.filter(o => typeof o.valor === 'number' && enEnunciado(o)).map(o => (o.correcta ? 'correcta' : o.error)).sort().join(',');
+      }
+      assert.equal(firma.A, firma.B, `${p.par}: copiar un número del enunciado da ${firma.A || 'nada'} en A y ${firma.B || 'nada'} en B`);
+    }
+  });
+
+  test(`${b.curso}: forma de las opciones (largo) y lugar de la correcta entre los valores`, () => {
+    let corta = 0, larga = 0, textuales = 0, menor = 0, mayor = 0, numericos = 0;
+    for (const p of b.pares) for (const f of Pruebas.FORMAS) {
+      const op = p[f].opciones, id = p.par + f, c = op.findIndex(o => o.correcta);
+      const L = op.map(o => o.texto.length), otros = L.filter((_, i) => i !== c);
+      // Ninguna opción correcta mucho más larga o mucho más corta que todas las demás.
+      assert.ok(L[c] <= 1.6 * Math.max(...otros) + 4, `${id}: la correcta es mucho más larga que las demás`);
+      assert.ok(L[c] >= 0.5 * Math.min(...otros) - 4, `${id}: la correcta es mucho más corta que las demás`);
+      if (op.every(o => typeof o.valor === 'number')) {
+        numericos++;
+        const v = op.map(o => o.valor), ord = [...v].sort((a, x) => a - x);
+        if (v[c] === ord[0]) menor++; if (v[c] === ord[ord.length - 1]) mayor++;
+      } else {
+        textuales++;
+        if (L[c] < Math.min(...otros)) corta++; if (L[c] > Math.max(...otros)) larga++;
+      }
+    }
+    // En el banco, la correcta no puede ser casi siempre la más corta, la más larga, la menor o la mayor.
+    if (textuales >= 6) {
+      assert.ok(corta / textuales <= 0.4, `${b.curso}: la correcta es la más corta en ${corta} de ${textuales} ítems de texto`);
+      assert.ok(larga / textuales <= 0.4, `${b.curso}: la correcta es la más larga en ${larga} de ${textuales} ítems de texto`);
+    }
+    if (numericos >= 6) {
+      assert.ok(menor / numericos <= 0.4, `${b.curso}: la correcta es el menor valor en ${menor} de ${numericos} ítems`);
+      assert.ok(mayor / numericos <= 0.4, `${b.curso}: la correcta es el mayor valor en ${mayor} de ${numericos} ítems`);
+    }
+  });
+}
+
+test('aritmética marca qué pares miden transferencia (ideas que el módulo no practica)', () => {
+  const b = bancos.find(x => x.curso === 'aritmetica');
+  const tr = b.pares.filter(p => p.transferencia === true).map(p => p.par);
+  assert.ok(tr.length >= 1 && tr.length < b.pares.length, `transferencia: ${tr.join(', ')}`);
+});
+
+test('app/datos/pruebas.json no trae la correcta ni los errores en texto plano, y se recuperan igual', () => {
+  const app = construirPruebas();
+  const texto = JSON.stringify(app);
+  assert.ok(!/"correcta"|"error"|"valor"|"clave"|"datos"|"reserva"/.test(texto), 'el banco de la app trae campos que no debe');
+  for (const b of bancos) for (const f of Pruebas.FORMAS) {
+    const fuente = Pruebas.items(b, f), deApp = Pruebas.items(app.cursos[b.curso], f);
+    assert.deepEqual(deApp.map(i => i.opciones), fuente.map(i => i.opciones.map(o => (o.correcta ? { texto: o.texto, correcta: true } : { texto: o.texto, error: o.error }))));
+  }
+  const k = Pruebas.ocultar('x-01A', [{ texto: 'a', error: 'E1' }, { texto: 'b', correcta: true }]);
+  assert.deepEqual(Pruebas.revelar('x-01A', k), { c: 1, errores: ['E1', ''] });
+  assert.notDeepEqual(Pruebas.ocultar('x-01B', [{ texto: 'a', error: 'E1' }, { texto: 'b', correcta: true }]), k);
+});
 
 test('el orden A→B o B→A se reparte cerca de la mitad y no cambia para un mismo alumno', () => {
   let ab = 0; const N = 2000;

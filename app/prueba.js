@@ -2,8 +2,9 @@
 // catalogo/pruebas/ (formato en docs/arquitectura.md). Lógica compartida: nucleo/pruebas.js.
 // - Entrada: la primera vez que el alumno entra a un curso. Corta, sin nota y SIN decirle qué acertó,
 //   para no enseñarle las respuestas antes de la salida.
-// - Salida: cuando el alumno la pide (botón en el curso) o cuando el profesor la habilita con el
-//   enlace …/app/?salida=fisica (o ?salida=todas). Al final sí se muestran los resultados.
+// - Salida: SOLO cuando el profesor la abre en ese navegador con el enlace …/app/?salida=fisica (o =todas).
+//   Al final se ve solo el puntaje de entrada contra salida; la revisión pregunta por pregunta (correcta y
+//   error) aparece solo si el profesor la abre con …/app/?soluciones=fisica (o =todas).
 // - Formas A y B en orden contrabalanceado: Pruebas.orden(alumno, curso) da 'AB' o 'BA'.
 // Cada respuesta se registra con ctx.registrar (nucleo/medicion.js): tipo 'item' por pregunta y
 // tipo 'prueba' al terminar.
@@ -17,7 +18,9 @@ function estado(est, curso) {
   if (!st.orden) st.orden = Pruebas.orden(est.alumno, curso);
   return st;
 }
-const habilitada = (est, curso) => (est.salidaHabilitada || []).some(x => x === curso || x === 'todas');
+const enLista = (l, curso) => (l || []).some(x => x === curso || x === 'todas');
+const habilitada = (est, curso) => enLista(est.salidaHabilitada, curso);
+const conSoluciones = (est, curso) => enLista(est.solucionesHabilitadas, curso);
 const unidadesVistas = (cat, est, curso) => { const c = cat.cursos.find(x => x.id === curso); return c ? c.unidades.filter(u => est.vistas[u.id]).length : 0; };
 
 // ¿Hay que pedirle la entrada antes de dejarlo entrar al curso?
@@ -40,10 +43,11 @@ function tarjeta(ctx, curso) {
   if (!st.entrada) return `<div class="card prueba-tarjeta"><div class="etq-p">Prueba de entrada pendiente</div>
     <p>${n} preguntas, unos ${b.minutos} minutos. No es nota: sirve para ver de dónde partes.</p>${boton('entrada', 'Hacer la prueba de entrada ›', 'morado')}</div>`;
   if (!st.salida) {
-    const prof = habilitada(est, curso);
-    return `<div class="card prueba-tarjeta${prof ? ' destacada' : ''}"><div class="etq-p">Prueba de salida</div>
-      <p>${prof ? 'Tu profesor ya la habilitó.' : 'Cuando termines de estudiar el curso.'} Son ${n} preguntas parecidas a las de la entrada, y al final ves cuánto avanzaste.</p>
-      ${boton('salida', 'Hacer la prueba de salida ›', prof ? 'morado' : 'borde')}</div>`;
+    if (!habilitada(est, curso)) return `<div class="card prueba-tarjeta"><div class="etq-p">Prueba de salida</div>
+      <p>La prueba de salida la abre tu profesor cuando terminen el curso.</p></div>`;
+    return `<div class="card prueba-tarjeta destacada"><div class="etq-p">Prueba de salida</div>
+      <p>Tu profesor ya la abrió. Son ${n} preguntas parecidas a las de la entrada, y al final ves cuánto avanzaste.</p>
+      ${boton('salida', 'Hacer la prueba de salida ›', 'morado')}</div>`;
   }
   return `<div class="card prueba-tarjeta"><div class="etq-p">Pruebas del curso</div>
     <p>Entrada ${st.entrada.aciertos} de ${st.entrada.total} · Salida <b>${st.salida.aciertos} de ${st.salida.total}</b></p>${boton('salida', 'Ver resultados ›', 'borde')}</div>`;
@@ -65,12 +69,17 @@ function vista(ctx, curso, fase) {
     return;
   }
   if (st[fase]) return fase === 'salida' ? resultado() : listo();
+  if (fase === 'salida' && !habilitada(est, curso)) {
+    $app.innerHTML = cab('') + `<div class="card prueba-intro"><p>La prueba de salida la abre tu profesor cuando terminen el curso.</p>
+      <a class="btn morado ancho" href="#/curso/${esc(curso)}">Volver al curso</a></div>`;
+    return;
+  }
   if (st.enCurso && st.enCurso.fase === fase) return pregunta();
   if (st.enCurso && st.enCurso.fase !== fase) { location.hash = `#/prueba/${curso}/${st.enCurso.fase}`; return; }
   intro();
 
   function intro() {
-    const prof = fase === 'salida' && habilitada(est, curso);
+    const prof = fase === 'salida';
     $app.innerHTML = cab('') + `<div class="card prueba-intro">
       ${window.Ilus ? Ilus.taza('class="prueba-taza"') : ''}
       <div class="stats" style="grid-template-columns:1fr 1fr"><div class="stat"><div class="n">${n}</div><div class="l">preguntas</div></div>
@@ -78,14 +87,14 @@ function vista(ctx, curso, fase) {
       ${fase === 'entrada'
         ? `<p><b>No es nota.</b> Sirve para saber de dónde partes y, al final del curso, cuánto avanzaste. Tus respuestas se guardan sin tu nombre.</p>
            <p>Si no sabes una, elige la que te parezca más razonable: no se descuenta nada. Esta vez no te diremos cuáles acertaste; lo verás al final, con la prueba de salida.</p>`
-        : `${prof ? '<div class="aviso">Tu profesor habilitó la prueba de salida.</div>' : ''}
-           <p>Son preguntas <b>parecidas</b> a las de la entrada, no las mismas. Hazla cuando hayas estudiado el curso: se hace una sola vez.</p>
-           <p>Al terminar verás cuántas acertaste antes y ahora, y la solución de cada pregunta.</p>`}
+        : `<div class="aviso">Tu profesor abrió la prueba de salida.</div>
+           <p>Son preguntas <b>parecidas</b> a las de la entrada, no las mismas. Se hace una sola vez.</p>
+           <p>Al terminar verás cuántas acertaste antes y ahora.</p>`}
       <div class="acciones-prueba"><button class="btn morado" id="empezar">Empezar</button>
         <button class="btn borde" id="luego">${fase === 'entrada' ? 'Ahora no' : 'Todavía no'}</button></div></div>`;
     document.getElementById('empezar').onclick = () => {
       st.enCurso = { fase, forma: Pruebas.formaDe(st.orden, fase), respuestas: [], ms: 0,
-        origen: fase === 'entrada' ? (sessionStorage.getItem('prueba-auto-' + curso) === '1' ? 'primera-vez' : 'alumno') : (prof ? 'profesor' : 'alumno'),
+        origen: fase === 'entrada' ? (sessionStorage.getItem('prueba-auto-' + curso) === '1' ? 'primera-vez' : 'alumno') : 'profesor',
         previas: fase === 'entrada' ? unidadesVistas(cat, est, curso) : undefined };
       guardar(); pregunta();
     };
@@ -142,22 +151,27 @@ function vista(ctx, curso, fase) {
     document.getElementById('alCurso').focus({ preventScroll: true });
   }
 
-  // Fin de la salida: antes y después, qué mide cada pregunta y la revisión de cada respuesta.
+  // Fin de la salida: el puntaje de entrada contra salida. La revisión pregunta por pregunta (qué mide, la
+  // correcta y el error) solo si el profesor la abrió con ?soluciones=<curso>: así no circulan las respuestas
+  // entre compañeros que todavía no rinden la salida.
   function resultado() {
-    const e = st.entrada, s = st.salida;
-    const porPar = l => Object.fromEntries((l || []).map(r => [r.par, r]));
-    const pe = porPar(e && e.respuestas), ps = porPar(s.respuestas);
-    const marca = r => !r ? '<span class="sub">—</span>' : r.correcta ? '<span class="ok-t">✓ bien</span>' : '<span class="mal-t">✗</span>';
-    const lista = Pruebas.items(b, s.forma);
+    const e = st.entrada, s = st.salida, sol = conSoluciones(est, curso);
     const subio = e ? s.aciertos - e.aciertos : 0;
-    $app.innerHTML = cab('Resultados') + `<div class="card resultado" style="margin-top:16px">
+    if (sol && !st.vioSoluciones) { st.vioSoluciones = true; guardar(); registrar({ tipo: 'habilitacion', que: 'soluciones-vistas', curso, origen: 'profesor' }); }
+    let html = cab('Resultados') + `<div class="card resultado" style="margin-top:16px">
       ${window.Ilus ? Ilus.taza('class="resultado-taza"') : ''}
       <div class="stats" style="grid-template-columns:1fr 1fr">
         <div class="stat"><div class="l">Prueba de entrada</div><div class="n">${e ? `${e.aciertos}/${e.total}` : '—'}</div></div>
         <div class="stat"><div class="l">Prueba de salida</div><div class="n">${s.aciertos}/${s.total}</div></div>
       </div>
-      <p class="sub" style="margin-top:12px">${!e ? '' : subio > 0 ? `Acertaste ${subio} ${subio === 1 ? 'pregunta' : 'preguntas'} más que al empezar. 💜` : subio === 0 ? 'Acertaste las mismas que al empezar. Repasa las que fallaste: abajo está la solución.' : 'Esta vez acertaste menos. Mira abajo en qué te confundiste y vuelve a la escena de ese tema.'}</p></div>
-      <h2>Qué mide cada pregunta</h2>
+      <p class="sub" style="margin-top:12px">${!e ? '' : subio > 0 ? `Acertaste ${subio} ${subio === 1 ? 'pregunta' : 'preguntas'} más que al empezar. 💜` : subio === 0 ? 'Acertaste las mismas que al empezar.' : 'Esta vez acertaste menos que al empezar.'}</p>
+      ${sol ? '' : '<p class="sub">Tu profesor revisará las soluciones con la clase.</p>'}</div>`;
+    if (sol) {
+      const porPar = l => Object.fromEntries((l || []).map(r => [r.par, r]));
+      const pe = porPar(e && e.respuestas), ps = porPar(s.respuestas);
+      const marca = r => !r ? '<span class="sub">—</span>' : r.correcta ? '<span class="ok-t">✓ bien</span>' : '<span class="mal-t">✗</span>';
+      const lista = Pruebas.items(b, s.forma);
+      html += `<h2>Qué mide cada pregunta</h2>
       <div class="tabla card"><table><thead><tr><th>Tema</th><th>Entrada</th><th>Salida</th></tr></thead><tbody>${b.pares.map(p =>
         `<tr><td style="white-space:normal">${esc(p.mide)}</td><td>${marca(pe[p.par])}</td><td>${marca(ps[p.par])}</td></tr>`).join('')}</tbody></table></div>
       <h2>Tus respuestas de salida</h2>
@@ -167,8 +181,9 @@ function vista(ctx, curso, fase) {
           <p>${esc(it.enunciado)}</p>
           ${el ? `<p>Elegiste: <b>${esc(el.texto)}</b>${el.correcta ? ' <span class="ok-t">¡Bien!</span>' : ''}</p>` : ''}
           ${el && !el.correcta ? `<p>La correcta: <b>${esc(ok.texto)}</b></p>${err ? `<p class="sub">Lo que suele pasar: ${esc(err.describe)}.</p>` : ''}` : ''}
-        </details>`; }).join('')}</div>
-      <p style="margin-top:18px"><a class="btn morado" href="#/curso/${esc(curso)}">Volver al curso</a></p>`;
+        </details>`; }).join('')}</div>`;
+    }
+    $app.innerHTML = html + `<p style="margin-top:18px"><a class="btn morado" href="#/curso/${esc(curso)}">Volver al curso</a></p>`;
   }
 }
 
@@ -183,5 +198,5 @@ document.addEventListener('keydown', e => {
   if (b) { e.preventDefault(); b.click(); }
 });
 
-window.PruebaCurso = { vista, tarjeta, pideEntrada, habilitada };
+window.PruebaCurso = { vista, tarjeta, pideEntrada, habilitada, conSoluciones };
 })();

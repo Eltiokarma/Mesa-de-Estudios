@@ -49,17 +49,21 @@ function construir() {
 function texto() { return JSON.stringify(construir(), null, 1) + '\n'; }
 
 // Banco de pruebas para la app: lo que el alumno ve y lo que se registra. Quedan fuera "datos",
-// "valor" y "clave", que usa catalogo/pruebas/pruebas.test.js para comprobar cada respuesta con el motor.
+// "valor", "clave" y la "reserva" (ítems listos para plantillas que todavía no están en el catálogo),
+// que usa catalogo/pruebas/pruebas.test.js. La correcta y los códigos de error no van en texto plano:
+// van en "k", mezclados con una cifra del ítem (nucleo/pruebas.js, ocultar). No es seguridad real.
 function construirPruebas() {
+  const Pruebas = require('../nucleo/pruebas.js');
   const dir = path.join(RAIZ, 'catalogo', 'pruebas');
   const cursos = {};
   if (!fs.existsSync(dir)) return { cursos };
   for (const f of fs.readdirSync(dir).filter(x => x.endsWith('.json')).sort()) {
     const b = JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8'));
-    const forma = x => ({ enunciado: x.enunciado, opciones: x.opciones.map(o => (o.correcta ? { texto: o.texto, correcta: true } : { texto: o.texto, error: o.error })) });
+    const forma = (id, x) => ({ enunciado: x.enunciado, opciones: x.opciones.map(o => ({ texto: o.texto })), k: Pruebas.ocultar(id, x.opciones) });
     cursos[b.curso] = { curso: b.curso, version: b.version, minutos: b.minutos,
       errores: Object.fromEntries(Object.entries(b.errores).map(([k, e]) => [k, { respaldo: e.respaldo, describe: e.describe }])),
-      pares: b.pares.map(p => ({ par: p.par, plantilla: p.plantilla, unidad: p.unidad, mide: p.mide, A: forma(p.A), B: forma(p.B) })) };
+      pares: b.pares.map(p => ({ par: p.par, plantilla: p.plantilla, unidad: p.unidad, mide: p.mide, ...(p.transferencia ? { transferencia: true } : {}),
+        A: forma(p.par + 'A', p.A), B: forma(p.par + 'B', p.B) })) };
   }
   return { cursos };
 }

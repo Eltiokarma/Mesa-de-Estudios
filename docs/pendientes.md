@@ -8,7 +8,7 @@
 npm test
 ```
 
-Deben pasar 869 pruebas.
+Deben pasar 985 pruebas.
 
 ```bash
 npm run dev
@@ -52,11 +52,11 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 | Id | Módulo | Informe de ideas erróneas | Nota |
 | --- | --- | --- | --- |
 | ma2 | Geometría | Hechas: `ampliadora` (semejanza, área y volumen), `triangulo-estira` (líneas notables y área) y `angulo-inscrito` (ángulos en la circunferencia) | Las tres escenas del informe están hechas; faltan polígonos, congruencia, espacio y analítica |
-| ma1 | Trigonometría | Hecha: `cinta-radio` (sistemas de medida, arco, sector, ruedas) | Siguen la circunferencia que se desenrolla y el compás del caso ambiguo |
+| ma1 | Trigonometría | Hechas: `cinta-radio` (sistemas de medida, arco, sector, ruedas) y `circunferencia-trig` (razones, C.T., reducción, gráficas y ecuaciones) | Sigue el compás del caso ambiguo (ley de senos y cosenos) |
 | ma3 | Álgebra | Hecha: `grafica-perillas` (transformaciones, inversa, inecuaciones, valor absoluto) | Siguen el traductor de enunciados y el cuadrado que crece |
 | ma1 a ma3 | Trigonometría, geometría, funciones | Informes del 6 nov: `trigonometria-`, `geometria-` y `algebra-funciones-ideas-erroneas.md` | Cifras de resúmenes, por verificar con los PDF (`fuentes/por-conseguir.md`); cada informe trae 3 escenas y casos |
-| ma4 | Aritmética | `aritmetica-razonamiento-ideas-erroneas.md` | Porcentajes sucesivos ya existe; suma-descuentos y se-compensan ya tienen respaldo (AR1, AR2) |
-| ra1 | Razonamiento matemático | Mismo informe (RM1 a RM6, casi todo hipótesis) | Formato predicciones |
+| ma4 | Aritmética | Hechas: `porcentajes-sucesivos` (predicciones), `regla-de-tres` y `probabilidad-dados` | Faltan fracciones y decimales, MCD y MCM, promedios e interés |
+| ra1 | Razonamiento matemático | Hechas: `probabilidad-dados` (conteo y probabilidad) y `regla-de-tres` (engranajes) | Faltan sucesiones, planteo de ecuaciones, edades y móviles, orden de información y verdades y mentiras |
 | ra2 y pl4 | Razonamiento verbal y formato lectura | `razonamiento-verbal-ideas-erroneas.md` (RV1 a RV32, ninguno documentado; hecho por la rutina) | La rutina sigue con el diseño del formato lectura, 30 textos propios y la guía docente |
 
 ### 2. Detalles de las plantillas ya hechas
@@ -112,12 +112,14 @@ Tres conversaciones aparte trabajan solas cada día, cada una en su rama y sin t
   - Una tipografía redondeada común entre la app y las escenas.
   - Revisar el modo oscuro de las ilustraciones.
   - Llevar a `nucleo/` lo que cada escena repite (la cinta y la gráfica ya dejan el dibujo fijo arriba mientras se elige: `.bench` sticky y lienzo de ~240 px) y las revisiones vuelven a encontrar: en el celular, subir el lienzo al responder (scrollIntoView y animar después) y dejar que el dedo desplace la página sobre el dibujo salvo cerca de lo que se arrastra (touch-action: pan-y). Salió en la celda, la ampliadora y el triángulo.
-- **la1, pruebas de entrada y salida por curso (hecha el 6 nov 2026):** banco en `catalogo/pruebas/` (formato en `docs/arquitectura.md`), dos formas paralelas A y B por curso en orden contrabalanceado, 50 ítems por forma en física, química, geometría, trigonometría, álgebra y aritmética, cada respuesta y cada distractor verificados con el motor de su plantilla. La app pide la entrada al entrar al curso por primera vez y ofrece la salida en el curso (o la habilita el profesor con `?salida=<curso>`). Se registra cada respuesta y `analizar-medicion.js` da la ganancia de Hake y los errores antes y después. Falta:
+- **la1, pruebas de entrada y salida por curso (hecha el 6 nov 2026; revisada el mismo día, banco 1.1.0):** banco en `catalogo/pruebas/` (formato en `docs/arquitectura.md`), dos formas paralelas A y B por curso en orden contrabalanceado, 53 ítems por forma (física 10, química 10, geometría 9, trigonometría 8, álgebra 8, aritmética 8), cada respuesta y cada distractor verificados con el motor de su plantilla. Tras la revisión: ningún ítem repite una predicción de escena ni un problema de generador (prueba automática), la respuesta nunca está escrita en el enunciado, los atajos caen igual en A y B, las opciones tienen la misma forma, química suma cinética y física conservación de la energía. La salida solo la abre el profesor (`?salida=<curso>`), las soluciones también (`?soluciones=<curso>`), y hay «Otro alumno en esta PC» para el laboratorio. Falta:
   - Razonamiento matemático y verbal: sin banco hasta que tengan módulos. Al agregar una plantilla a un curso, sumar sus ítems (la prueba avisa).
-  - Aritmética son 8 ítems de porcentajes porque es su único módulo; trigonometría, 8 de la cinta del radio.
+  - Trigonometría tiene 2 pares de `circunferencia-trig` en `reserva`: cuando esa plantilla entre al catálogo, pasarlos a `pares` (la prueba avisa) y revisar que no pase de 10.
+  - Aritmética: 8 ítems de porcentajes (su único módulo); los marcados con `transferencia` miden ideas que el módulo no practica.
   - La equivalencia de A y B es por diseño (ítems isomorfos); hay que confirmarla con los datos del colegio (columna «Forma A / B»).
   - Los enunciados no usan los colores de variables (una prueba es neutra) ni tienen figuras: todo va en texto.
-  - **Para Gerson:** ¿la entrada debe ser obligatoria (hoy se puede decir «Ahora no», y se registra cuántas unidades del curso ya había abierto)? ¿El profesor habilita la salida solo con el enlace (sin clave) o hace falta un código? ¿Revisar la redacción de los 100 ítems con un profesor del colegio?
+  - La respuesta en `app/datos/pruebas.json` va mezclada, no cifrada: no es seguridad real.
+  - **Para Gerson:** ¿la entrada debe ser obligatoria (hoy se puede decir «Ahora no», y se registra cuántas unidades del curso ya había abierto)? ¿Revisar la redacción de los 106 ítems con un profesor del colegio? La guía para profesores (la4) debe explicar los enlaces `?salida=` y `?soluciones=` y el botón «Otro alumno en esta PC».
 - **Planificador por semana del CEPRE y modo examen con tiempo:** estaban en la referencia de interfaz y todavía no existen.
 - **Medición:** por decisión de Gerson (5 nov 2026), solo se exportan archivos. Un servidor (Railway está disponible) queda para después.
 

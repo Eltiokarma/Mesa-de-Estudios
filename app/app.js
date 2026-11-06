@@ -12,27 +12,47 @@ const UNI_CORTA = { uni: 'UNI', unmsm: 'San Marcos', una: 'UNA Puno' };
 const UNI_SIGLA = { uni: 'UNI', unmsm: 'SM', una: 'UNA' };
 const textoDias = n => `${n} ${n === 1 ? 'día seguido' : 'días seguidos'}`;
 let cat = null, pruebas = null, instalar = null, offlineListo = false;
-const VERSION_APP = '0.4.0';
+const VERSION_APP = '0.5.0';
 const GRADOS = [['3', '3.º de secundaria'], ['4', '4.º de secundaria'], ['5', '5.º de secundaria'], ['egresado', 'Ya terminé el colegio']];
 
 // ---------- Datos del alumno (en el celular) ----------
 function cargarEstado() {
   try { return JSON.parse(localStorage.getItem(CLAVE)) || {}; } catch { return {}; }
 }
-let est = Object.assign({ nombre: '', uni: '', grado: '', colegio: '', alumno: '', vistas: {}, dias: [], tema: '', practica: {}, pruebas: {}, salidaHabilitada: [] }, cargarEstado());
+let est = Object.assign({ nombre: '', uni: '', grado: '', colegio: '', alumno: '', vistas: {}, dias: [], tema: '', practica: {}, pruebas: {}, salidaHabilitada: [], solucionesHabilitadas: [] }, cargarEstado());
 // Identificador anónimo del dispositivo: la medición nunca guarda nombres.
-if (!est.alumno) est.alumno = 'a' + Array.from(crypto.getRandomValues(new Uint8Array(5)), b => b.toString(16).padStart(2, '0')).join('');
+const idNuevo = () => 'a' + Array.from(crypto.getRandomValues(new Uint8Array(5)), b => b.toString(16).padStart(2, '0')).join('');
+if (!est.alumno) est.alumno = idNuevo();
 // Código del colegio: llega en el enlace que reparte el profesor (…/app/?colegio=ABC).
 { const c = new URLSearchParams(location.search).get('colegio'); if (c) est.colegio = c.trim().toUpperCase().slice(0, 20); }
-// El profesor habilita la prueba de salida con el mismo enlace: …/app/?salida=fisica,quimica (o ?salida=todas).
-// No hay servidor ni clave: la prueba no es nota, y lo que se quiere saber es si la pidió el alumno o el profesor.
-{ const s = new URLSearchParams(location.search).get('salida');
-  if (s) est.salidaHabilitada = [...new Set([...(est.salidaHabilitada || []), ...s.toLowerCase().split(',').map(x => x.trim()).filter(x => /^[a-z0-9-]+$/.test(x))])]; }
+// Solo el profesor abre la prueba de salida y la revisión de soluciones, con el enlace que reparte en clase:
+// …/app/?salida=fisica,quimica (o ?salida=todas) y …/app/?soluciones=fisica (o =todas). Queda guardado en este
+// navegador, también si cambia el alumno. No hay servidor ni clave: el control es que el enlace lo da el profesor.
+const habilitacionesNuevas = [];
+for (const [param, campo] of [['salida', 'salidaHabilitada'], ['soluciones', 'solucionesHabilitadas']]) {
+  const v = new URLSearchParams(location.search).get(param);
+  if (!v) continue;
+  const lista = v.toLowerCase().split(',').map(x => x.trim()).filter(x => /^[a-z0-9-]+$/.test(x));
+  const antes = new Set(est[campo] || []);
+  for (const c of lista) if (!antes.has(c)) habilitacionesNuevas.push({ que: param, curso: c });
+  est[campo] = [...new Set([...antes, ...lista])];
+}
 function guardar() { try { localStorage.setItem(CLAVE, JSON.stringify(est)); } catch { /* sin almacenamiento: la app sigue */ } }
 const hoy = () => new Date().toLocaleDateString('en-CA');
 // ---------- Medición (anónima; ver nucleo/medicion.js) ----------
 const eventos = () => Medicion.eventosGuardados();
 const registrar = ev => Medicion.guardar(ev, VERSION_APP, est);
+// Quién habilitó qué: cada habilitación nueva queda en la medición (origen: el enlace del profesor).
+for (const h of habilitacionesNuevas) registrar({ tipo: 'habilitacion', que: h.que, curso: h.curso, origen: 'profesor' });
+// Registros todavía sin descargar (de cualquier alumno de este navegador): desde la última descarga.
+const CLAVE_EXPORTADO = 'lab-exportado-v1';
+const sinExportar = () => { const t = localStorage.getItem(CLAVE_EXPORTADO) || ''; return eventos().filter(e => String(e.t) > t).length; };
+function exportar(formato) {
+  const ev = eventos(), archivo = `laboratorio-${est.colegio || 'sin-colegio'}-${est.alumno}-${new Date().toLocaleDateString('en-CA')}`;
+  if (formato === 'csv') descargar(archivo + '.csv', Medicion.aCSV(ev), 'text/csv');
+  else descargar(archivo + '.json', JSON.stringify(ev), 'application/json');
+  if (ev.length) try { localStorage.setItem(CLAVE_EXPORTADO, String(ev[ev.length - 1].t)); } catch { /* sin almacenamiento */ }
+}
 function descargar(nombre, contenido, tipo) {
   const url = URL.createObjectURL(new Blob([contenido], { type: tipo }));
   const a = document.createElement('a'); a.href = url; a.download = nombre; document.body.appendChild(a); a.click(); a.remove();
@@ -121,9 +141,10 @@ function vInicio() {
       <span class="der">${tagAdelanto(x.u)}${x.u.plantillas.length ? `<span class="tag acento">${cat.plantillas[x.u.plantillas[0]].formato === 'escena' ? 'Escena' : 'Práctica'}</span>` : ''}›</span></a>`).join('');
   const salidas = pruebas ? cat.cursos.filter(c => pruebas.cursos[c.id] && PruebaCurso.habilitada(est, c.id) && est.pruebas[c.id] && est.pruebas[c.id].entrada && !est.pruebas[c.id].salida) : [];
   $app.innerHTML = `
-    ${salidas.map(c => `<a class="aviso" style="display:block;text-decoration:none;margin-top:0" href="#/prueba/${esc(c.id)}/salida">Tu profesor habilitó la prueba de salida de ${esc(c.nombre)}. Hazla aquí ›</a>`).join('')}
+    ${salidas.map(c => `<a class="aviso" style="display:block;text-decoration:none;margin-top:0" href="#/prueba/${esc(c.id)}/salida">Tu profesor abrió la prueba de salida de ${esc(c.nombre)}. Hazla aquí ›</a>`).join('')}
     <header class="saludo"><span class="avatar">${esc((est.nombre || '?')[0].toUpperCase())}</span>
-      <div><p class="sub">Hola${est.nombre ? `, ${esc(est.nombre)}` : ''} 👋</p><h1>¿Qué entendemos hoy?</h1></div></header>
+      <div><p class="sub">Hola${est.nombre ? `, ${esc(est.nombre)}` : ''} 👋</p><h1>¿Qué entendemos hoy?</h1></div>
+      <a class="btn borde solo-grande" href="#/otro" style="margin-left:auto">Otro alumno en esta PC</a></header>
     <div class="col2 inicio"><div>
     ${reto}
     <h2>Hoy</h2>
@@ -236,20 +257,20 @@ function vPerfil() {
       <div class="item"><span class="ico" aria-hidden="true">${offlineListo ? '✓' : '…'}</span><span class="tx"><span class="t">${offlineListo ? 'Lista para usar sin internet' : 'Preparando modo sin internet'}</span><br>
         <span class="d">Las escenas y el catálogo quedan guardados en el celular.</span></span></div>
       ${instalar ? '<button class="btn morado ancho" id="instalar">Instalar en este celular</button>' : ''}
+      <a class="btn borde ancho" href="#/otro" id="otroAlumno">Otro alumno en esta PC</a>
       <button class="btn borde ancho" id="borrar">Borrar mi avance</button>
     </div></div><div>
     <h2>Datos para el profesor</h2>
     <div class="card">
-      <p class="sub" style="margin:0 0 10px">Se guardan en este dispositivo, sin tu nombre: tus predicciones y tus pruebas de entrada y salida (${eventos().length} registros).</p>
+      <p class="sub" style="margin:0 0 10px">Se guardan en este dispositivo, sin tu nombre: tus predicciones y tus pruebas de entrada y salida (${eventos().length} registros${sinExportar() ? `, ${sinExportar()} sin descargar` : ', todos descargados'}).</p>
       ${resumenHTML()}
       <div class="acciones-datos"><button class="btn morado" id="csv">Descargar CSV</button><button class="btn borde" id="json">Descargar JSON</button></div>
     </div></div></div>`;
   document.getElementById('nombre').onchange = e => { est.nombre = e.target.value.trim(); guardar(); };
   document.getElementById('colegio').onchange = e => { est.colegio = e.target.value.trim().toUpperCase(); guardar(); };
   $app.querySelectorAll('[data-grado]').forEach(b => b.onclick = () => { est.grado = b.dataset.grado; guardar(); vPerfil(); });
-  const archivo = `laboratorio-${est.colegio || 'sin-colegio'}-${est.alumno}-${new Date().toLocaleDateString('en-CA')}`;
-  document.getElementById('csv').onclick = () => descargar(archivo + '.csv', Medicion.aCSV(eventos()), 'text/csv');
-  document.getElementById('json').onclick = () => descargar(archivo + '.json', JSON.stringify(eventos()), 'application/json');
+  document.getElementById('csv').onclick = () => { exportar('csv'); vPerfil(); };
+  document.getElementById('json').onclick = () => { exportar('json'); vPerfil(); };
   $app.querySelectorAll('[data-uni]').forEach(b => b.onclick = () => { est.uni = b.dataset.uni; guardar(); vPerfil(); });
   $app.querySelectorAll('[data-tema]').forEach(b => b.onclick = () => { est.tema = b.dataset.tema; guardar(); aplicarTema(); vPerfil(); });
   const bi = document.getElementById('instalar');
@@ -257,7 +278,36 @@ function vPerfil() {
   document.getElementById('borrar').onclick = () => {
     if (!confirm('¿Borrar tu avance de este celular? No se puede deshacer.')) return;
     // Las pruebas de entrada y salida se conservan: se hacen una sola vez y son los datos del colegio.
-    est = { nombre: '', uni: '', grado: '', colegio: est.colegio, alumno: est.alumno, vistas: {}, dias: [], tema: '', practica: {}, pruebas: est.pruebas, salidaHabilitada: est.salidaHabilitada }; guardar(); aplicarTema(); ir('#/bienvenida');
+    est = { nombre: '', uni: '', grado: '', colegio: est.colegio, alumno: est.alumno, vistas: {}, dias: [], tema: '', practica: {}, pruebas: est.pruebas,
+      salidaHabilitada: est.salidaHabilitada, solucionesHabilitadas: est.solucionesHabilitadas }; guardar(); aplicarTema(); ir('#/bienvenida');
+  };
+}
+
+// Otro alumno en esta PC (laboratorio de cómputo): primero se descargan los datos que falten; después se crea un
+// id anónimo nuevo y se dejan en blanco el avance y las pruebas. Quedan el colegio, la apariencia y lo que habilitó
+// el profesor en este navegador. Los registros del alumno anterior siguen guardados (con su id) y salen en la próxima descarga.
+function vOtro() {
+  const n = sinExportar();
+  $app.innerHTML = `<a class="volver" href="#/perfil" aria-label="Volver">‹</a><h1>Otro alumno en esta PC</h1>
+    <div class="card prueba-intro">
+      <p>Así el siguiente alumno empieza desde cero, con un código anónimo nuevo, y sus pruebas no se mezclan con las tuyas.</p>
+      ${n ? `<div class="aviso">Hay ${n} ${n === 1 ? 'registro' : 'registros'} sin descargar. Descárgalos para el profesor antes de cambiar.</div>` : '<p class="sub">Todos los registros ya se descargaron.</p>'}
+      <div class="acciones-prueba">
+        ${n ? '<button class="btn morado" id="bajarCambiar">Descargar y cambiar</button><button class="btn borde" id="soloCambiar">Cambiar sin descargar</button>'
+          : '<button class="btn morado" id="soloCambiar">Cambiar de alumno</button>'}
+        <a class="btn borde" href="#/perfil">Cancelar</a></div></div>`;
+  const cambiar = bajar => {
+    registrar({ tipo: 'sesion', accion: 'otro-alumno' });
+    if (bajar) exportar('json');
+    est = { nombre: '', uni: '', grado: '', colegio: est.colegio, alumno: idNuevo(), vistas: {}, dias: [], tema: est.tema, practica: {}, pruebas: {},
+      salidaHabilitada: est.salidaHabilitada, solucionesHabilitadas: est.solucionesHabilitadas };
+    guardar(); sessionStorage.clear(); ir('#/bienvenida');
+  };
+  const b = document.getElementById('bajarCambiar');
+  if (b) b.onclick = () => cambiar(true);
+  document.getElementById('soloCambiar').onclick = () => {
+    if (n && !confirm(`Quedan ${n} registros sin descargar. Siguen guardados en esta PC y saldrán en la próxima descarga. ¿Cambiar igual?`)) return;
+    cambiar(false);
   };
 }
 
@@ -286,14 +336,14 @@ function render() {
   if ((!est.uni || !est.grado) && ruta !== 'bienvenida') return ir('#/bienvenida');
   if (ruta === 'bienvenida') return vBienvenida();
   $nav.hidden = false; document.body.dataset.ruta = ruta; document.body.classList.add('con-nav');
-  $nav.querySelectorAll('a').forEach(a => a.classList.toggle('on', a.dataset.ruta === (['curso', 'papel', 'practica', 'prueba'].includes(ruta) ? 'cursos' : ruta)));
+  $nav.querySelectorAll('a').forEach(a => a.classList.toggle('on', a.dataset.ruta === (['curso', 'papel', 'practica', 'prueba'].includes(ruta) ? 'cursos' : ruta === 'otro' ? 'perfil' : ruta)));
   if (ruta === 'practica') {
     $nav.querySelectorAll('a').forEach(a => a.classList.toggle('on', a.dataset.ruta === 'cursos'));
     window.scrollTo(0, 0);
     return Practica.vista({ $app, cat, est, esc, guardar, registrar, marcarDia }, decodeURIComponent(arg || ''));
   }
   if (ruta === 'prueba') { window.scrollTo(0, 0); return PruebaCurso.vista(ctxPrueba(), decodeURIComponent(arg || ''), location.hash.split('/')[3] || 'entrada'); }
-  ({ inicio: vInicio, cursos: vCursos, curso: () => vCurso(decodeURIComponent(arg || '')), progreso: vProgreso, perfil: vPerfil, papel: () => vPapel(decodeURIComponent(arg || '')) }[ruta] || vInicio)();
+  ({ inicio: vInicio, otro: vOtro, cursos: vCursos, curso: () => vCurso(decodeURIComponent(arg || '')), progreso: vProgreso, perfil: vPerfil, papel: () => vPapel(decodeURIComponent(arg || '')) }[ruta] || vInicio)();
   window.scrollTo(0, 0);
 }
 // Abrir una escena cuenta como día activo y marca la unidad como estudiada.

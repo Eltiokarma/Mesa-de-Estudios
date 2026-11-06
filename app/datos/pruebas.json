@@ -2,7 +2,7 @@
  "cursos": {
   "algebra": {
    "curso": "algebra",
-   "version": "1.0.0",
+   "version": "1.1.0",
    "minutos": 12,
    "errores": {
     "AL28-h-al-reves": {
@@ -96,43 +96,37 @@
       "enunciado": "¿Dónde está el vértice de la parábola y = (x − 3)² + 2?",
       "opciones": [
        {
-        "texto": "(−3; 2)",
-        "error": "AL28-h-al-reves"
+        "texto": "(−3; 2)"
        },
        {
-        "texto": "(3; 2)",
-        "correcta": true
+        "texto": "(3; 2)"
        },
        {
-        "texto": "(0; −1)",
-        "error": "h-como-vertical"
+        "texto": "(0; −1)"
        },
        {
-        "texto": "(2; 3)",
-        "error": "h-k-cruzados"
+        "texto": "(2; 3)"
        }
-      ]
+      ],
+      "k": "cdeb27a75e8a0d0731306a9bddcb505326618a6aa4889bce35c98fb2f5db8ac745dbbdae313aec355fbb9c37cd59be49749beee5492f0bce352230"
      },
      "B": {
       "enunciado": "¿Dónde está el vértice de la parábola y = (x + 1)² − 4?",
       "opciones": [
        {
-        "texto": "(1; −4)",
-        "error": "AL28-h-al-reves"
+        "texto": "(1; −4)"
        },
        {
-        "texto": "(−1; −4)",
-        "correcta": true
+        "texto": "(−1; −4)"
        },
        {
-        "texto": "(0; −3)",
-        "error": "h-como-vertical"
+        "texto": "(0; −3)"
        },
        {
-        "texto": "(−4; −1)",
-        "error": "h-k-cruzados"
+        "texto": "(−4; −1)"
        }
-      ]
+      ],
+      "k": "b8eff616dc18007d0dfba559f13246a4d372e41a08f74d88345962f0fede8a6e72fd594173e6eb27668401b7f0af813b9edfd93d4bb3eb93fa4db4"
      }
     },
     {
@@ -144,43 +138,37 @@
       "enunciado": "Si f(x) = x² + 3, entonces f(2) = 7. ¿Cuánto vale f(2 + 4)?",
       "opciones": [
        {
-        "texto": "11",
-        "error": "AL27-suma-fuera"
+        "texto": "11"
        },
        {
-        "texto": "26",
-        "error": "AL27-suma-de-partes"
+        "texto": "26"
        },
        {
-        "texto": "23",
-        "error": "AL8-cuadrado-por-partes"
+        "texto": "23"
        },
        {
-        "texto": "39",
-        "correcta": true
+        "texto": "39"
        }
-      ]
+      ],
+      "k": "66910af517b94ac8a1dad3d2e254778384385262d5998ceab324e32bee4a4df79ace8487ad71cac81e960c33b52d01591280f2bda5433504d59b82363ad30fd6d2ba366f9384b77b2ef2"
      },
      "B": {
-      "enunciado": "Si f(x) = x² + 1, entonces f(3) = 10. ¿Cuánto vale f(3 + 2)?",
+      "enunciado": "Si f(x) = x² + 2, entonces f(1) = 3. ¿Cuánto vale f(1 + 4)?",
       "opciones": [
        {
-        "texto": "12",
-        "error": "AL27-suma-fuera"
+        "texto": "7"
        },
        {
-        "texto": "15",
-        "error": "AL27-suma-de-partes"
+        "texto": "21"
        },
        {
-        "texto": "14",
-        "error": "AL8-cuadrado-por-partes"
+        "texto": "19"
        },
        {
-        "texto": "26",
-        "correcta": true
+        "texto": "27"
        }
-      ]
+      ],
+      "k": "aad08d82a926e32cdbdc1c9de1879d0b8d2224c0f9335382ed9b993e936f510355f82064029921486bbd197a8302ec9f73fca23c8554b2cd61123a1a864901ecb1e17dae9965b27bcf0c"
      }
     },
     {
@@ -192,43 +180,37 @@
       "enunciado": "Si f(x) = 3x + 4, ¿cuánto vale f⁻¹(19)?",
       "opciones": [
        {
-        "texto": "1/61",
-        "error": "AL29-inversa-como-reciproco"
+        "texto": "1/61"
        },
        {
-        "texto": "5",
-        "correcta": true
+        "texto": "5"
        },
        {
-        "texto": "61",
-        "error": "inversa-calcula-f"
+        "texto": "61"
        },
        {
-        "texto": "45",
-        "error": "inversa-despeje-al-reves"
+        "texto": "45"
        }
-      ]
+      ],
+      "k": "d6a6eea971adb81b0b50ea79bcb9b0d479b5a49eb61622b62a648745b19939126de37f1a2e21e027871eb887a25447af53ed02322ea77811b48d9ce7f60cc63830361cefea8985dd7eacc3ca1ed908d197e340053f"
      },
      "B": {
-      "enunciado": "Si f(x) = 2x + 6, ¿cuánto vale f⁻¹(14)?",
+      "enunciado": "Si f(x) = 5x − 2, ¿cuánto vale f⁻¹(18)?",
       "opciones": [
        {
-        "texto": "1/34",
-        "error": "AL29-inversa-como-reciproco"
+        "texto": "1/88"
        },
        {
-        "texto": "4",
-        "correcta": true
+        "texto": "4"
        },
        {
-        "texto": "34",
-        "error": "inversa-calcula-f"
+        "texto": "88"
        },
        {
-        "texto": "16",
-        "error": "inversa-despeje-al-reves"
+        "texto": "100"
        }
-      ]
+      ],
+      "k": "ff22b3f59ce4522c2d43e7ee63142ec37bea074562fbada9d363528d3e9613e1660eab073573b0186bace84e15f2635942f40528e9a5a2c9875edd0166c636219c74de781296609dc2ddec9d47e6bb76191201bd2b"
      }
     },
     {
@@ -240,43 +222,37 @@
       "enunciado": "Si f(x) = 3x − 5, ¿cuál es la regla de su función inversa?",
       "opciones": [
        {
-        "texto": "f⁻¹(x) = 1/(3x − 5)",
-        "error": "AL29-inversa-como-reciproco"
+        "texto": "f⁻¹(x) = 1/(3x − 5)"
        },
        {
-        "texto": "f⁻¹(x) = x/3 + 5",
-        "error": "inversa-orden-sin-invertir"
+        "texto": "f⁻¹(x) = x/3 + 5"
        },
        {
-        "texto": "f⁻¹(x) = (x − 5)/3",
-        "error": "AL16-signo-mal"
+        "texto": "f⁻¹(x) = (x − 5)/3"
        },
        {
-        "texto": "f⁻¹(x) = (x + 5)/3",
-        "correcta": true
+        "texto": "f⁻¹(x) = (x + 5)/3"
        }
-      ]
+      ],
+      "k": "c65b1bf20b31231bc611419f8b7100fd881a332997177500c066c6c5ba376a72549f48259a7b3b66260340a3e4f263decf046c8a44e6340944d1ea51cc7ebf344e8cb7724cc75c1a834e6c2997ead7722555896f"
      },
      "B": {
       "enunciado": "Si f(x) = 4x + 7, ¿cuál es la regla de su función inversa?",
       "opciones": [
        {
-        "texto": "f⁻¹(x) = 1/(4x + 7)",
-        "error": "AL29-inversa-como-reciproco"
+        "texto": "f⁻¹(x) = 1/(4x + 7)"
        },
        {
-        "texto": "f⁻¹(x) = x/4 − 7",
-        "error": "inversa-orden-sin-invertir"
+        "texto": "f⁻¹(x) = x/4 − 7"
        },
        {
-        "texto": "f⁻¹(x) = (x + 7)/4",
-        "error": "AL16-signo-mal"
+        "texto": "f⁻¹(x) = (x + 7)/4"
        },
        {
-        "texto": "f⁻¹(x) = (x − 7)/4",
-        "correcta": true
+        "texto": "f⁻¹(x) = (x − 7)/4"
        }
-      ]
+      ],
+      "k": "2bacf1cb3953d98ea2d50c98988ea2967ca3928a4a495ab2c76f31cf270ce1795efd8d7b3db0eb013cec80cb77a0ce11cd39f12efc8c28cec51f45f3973f02e67038eebbf04caa7d64201efabf4d2a6bc3cb7919"
      }
     },
     {
@@ -288,43 +264,37 @@
       "enunciado": "¿Qué valores de x cumplen −3x + 2 > 14?",
       "opciones": [
        {
-        "texto": "x > −4",
-        "error": "AL20-no-invierte"
+        "texto": "x > −4"
        },
        {
-        "texto": "x < −4",
-        "correcta": true
+        "texto": "x < −4"
        },
        {
-        "texto": "x < −16/3",
-        "error": "AL16-transpone-mal"
+        "texto": "x < −16/3"
        },
        {
-        "texto": "x = −4",
-        "error": "AL19-como-ecuacion"
+        "texto": "x = −4"
        }
-      ]
+      ],
+      "k": "1285b463fb9ec720f44ba9fc20272db36db513f9ccd92c1a887fcae051b66b98805b1434d7368df748eedefbc00b6aa9190b4634351cf9c2b704f24fb74fc9acb8f2682be3"
      },
      "B": {
       "enunciado": "¿Qué valores de x cumplen −5x + 3 < 18?",
       "opciones": [
        {
-        "texto": "x < −3",
-        "error": "AL20-no-invierte"
+        "texto": "x < −3"
        },
        {
-        "texto": "x > −3",
-        "correcta": true
+        "texto": "x > −3"
        },
        {
-        "texto": "x > −21/5",
-        "error": "AL16-transpone-mal"
+        "texto": "x > −21/5"
        },
        {
-        "texto": "x = −3",
-        "error": "AL19-como-ecuacion"
+        "texto": "x = −3"
        }
-      ]
+      ],
+      "k": "652be87840afca3e147d07f7ef9fd9764dea08c57e66dcaa693d776268a3f986e6707fc6e51a86abe4980c1589b6ed08ea184c7f5647c9f4f44d8560c77051379d9162e5a4"
      }
     },
     {
@@ -336,35 +306,31 @@
       "enunciado": "¿Qué valores de x cumplen x² < 16?",
       "opciones": [
        {
-        "texto": "⟨−∞; 4⟩",
-        "error": "AL19-como-ecuacion"
+        "texto": "⟨−∞; 4⟩"
        },
        {
-        "texto": "⟨−4; 4⟩",
-        "correcta": true
+        "texto": "⟨−4; 4⟩"
        },
        {
-        "texto": "⟨−∞; −4⟩ ∪ ⟨4; +∞⟩",
-        "error": "cuadratica-adentro-afuera"
+        "texto": "⟨−∞; −4⟩ ∪ ⟨4; +∞⟩"
        }
-      ]
+      ],
+      "k": "9bdb7fb397ee04e83371793bdb6c393511233bcb862c2aaa133c89baf06e86cfa16adceff8eb27cea2ac6befa09c29bb8f6a2062540181190f"
      },
      "B": {
       "enunciado": "¿Qué valores de x cumplen x² < 25?",
       "opciones": [
        {
-        "texto": "⟨−∞; 5⟩",
-        "error": "AL19-como-ecuacion"
+        "texto": "⟨−∞; 5⟩"
        },
        {
-        "texto": "⟨−5; 5⟩",
-        "correcta": true
+        "texto": "⟨−5; 5⟩"
        },
        {
-        "texto": "⟨−∞; −5⟩ ∪ ⟨5; +∞⟩",
-        "error": "cuadratica-adentro-afuera"
+        "texto": "⟨−∞; −5⟩ ∪ ⟨5; +∞⟩"
        }
-      ]
+      ],
+      "k": "457d8054f78ee078b93928b0a8fbc6f318dcaef247c3b4abfb0046475f5fb2816b95ba5a6ac3b37964b388a376edf78e7fb60023441dba281c"
      }
     },
     {
@@ -376,43 +342,37 @@
       "enunciado": "¿Qué valores de x cumplen |x − 5| < 3?",
       "opciones": [
        {
-        "texto": "⟨−∞; 8⟩",
-        "error": "AL22-quita-barras"
+        "texto": "⟨−∞; 8⟩"
        },
        {
-        "texto": "⟨−8; 8⟩",
-        "error": "AL22-separa-barras"
+        "texto": "⟨−8; 8⟩"
        },
        {
-        "texto": "⟨2; 8⟩",
-        "correcta": true
+        "texto": "⟨2; 8⟩"
        },
        {
-        "texto": "⟨−∞; 2⟩ ∪ ⟨8; +∞⟩",
-        "error": "abs-adentro-afuera"
+        "texto": "⟨−∞; 2⟩ ∪ ⟨8; +∞⟩"
        }
-      ]
+      ],
+      "k": "bcc6fd2aacbce28f0f328f7234c63eef86b6d6b40bce95e63061ad3c6f1f47e59adbc15b12af7fd118e25986244773c10a375cb940c30eea90a47080686c5dd4467cea682322"
      },
      "B": {
       "enunciado": "¿Qué valores de x cumplen |x − 4| < 6?",
       "opciones": [
        {
-        "texto": "⟨−∞; 10⟩",
-        "error": "AL22-quita-barras"
+        "texto": "⟨−∞; 10⟩"
        },
        {
-        "texto": "⟨−10; 10⟩",
-        "error": "AL22-separa-barras"
+        "texto": "⟨−10; 10⟩"
        },
        {
-        "texto": "⟨−2; 10⟩",
-        "correcta": true
+        "texto": "⟨−2; 10⟩"
        },
        {
-        "texto": "⟨−∞; −2⟩ ∪ ⟨10; +∞⟩",
-        "error": "abs-adentro-afuera"
+        "texto": "⟨−∞; −2⟩ ∪ ⟨10; +∞⟩"
        }
-      ]
+      ],
+      "k": "1bb245df428fa266f91897aae7db57599456fb2aecef805b7802e390f572d84d5ca3da723805a48c0148acd061e320631598b7ac5b28f257a0216d7e63ede664b62d5d302862"
      }
     },
     {
@@ -424,42 +384,38 @@
       "enunciado": "Las rectas L1: y = x + 6 y L2: y = 3x − 2 se cruzan en x = 4. En x = 1, L1 está más arriba que L2. ¿Cuál de las dos crece más rápido?",
       "opciones": [
        {
-        "texto": "L1, porque en x = 1 está más arriba",
-        "error": "AL25-altura-como-pendiente"
+        "texto": "L1"
        },
        {
-        "texto": "Las dos igual, porque se cruzan en x = 4",
-        "error": "intervalo-punto-cruce"
+        "texto": "Las dos igual"
        },
        {
-        "texto": "L2",
-        "correcta": true
+        "texto": "L2"
        }
-      ]
+      ],
+      "k": "6a9f7ed4cb83c36a2cf3ba979dd10a77013c638b5087480a0aa8fa2d4460f41befbf13e6ed0521ab2506edc1ddc5c5edc261476aed8ae08c12d4417c2a"
      },
      "B": {
       "enunciado": "Las rectas L1: y = 3x − 3 y L2: y = x + 5 se cruzan en x = 4. En x = 1, L2 está más arriba que L1. ¿Cuál de las dos crece más rápido?",
       "opciones": [
        {
-        "texto": "L2, porque en x = 1 está más arriba",
-        "error": "AL25-altura-como-pendiente"
+        "texto": "L2"
        },
        {
-        "texto": "Las dos igual, porque se cruzan en x = 4",
-        "error": "intervalo-punto-cruce"
+        "texto": "Las dos igual"
        },
        {
-        "texto": "L1",
-        "correcta": true
+        "texto": "L1"
        }
-      ]
+      ],
+      "k": "392149cee00b64a95a497898121246bcd19271a56fdeaa979a781b9e08862dfe8013b9c82e8c35541df5a0f845d1866b5d4217c2c3dc242ad6b9b66052"
      }
     }
    ]
   },
   "aritmetica": {
    "curso": "aritmetica",
-   "version": "1.0.0",
+   "version": "1.1.0",
    "minutos": 12,
    "errores": {
     "suma-descuentos": {
@@ -484,7 +440,7 @@
     },
     "monto-variacion": {
      "respaldo": "hipotesis",
-     "describe": "Responde cuánto cambió y no el valor final (AR5)"
+     "describe": "Responde cuánto cambió y no lo que se pregunta (AR5)"
     },
     "producto": {
      "respaldo": "parcial",
@@ -496,7 +452,7 @@
     },
     "AR3": {
      "respaldo": "parcial",
-     "describe": "Calcula el porcentaje sobre la base equivocada al revertir un cambio"
+     "describe": "Calcula el porcentaje sobre la base equivocada (el valor nuevo en vez del de antes, o al revés)"
     },
     "AR16": {
      "respaldo": "documentado",
@@ -510,46 +466,40 @@
      "unidad": "aritmetica.porcentajes",
      "mide": "Dos descuentos sucesivos se multiplican, no se suman",
      "A": {
-      "enunciado": "Una casaca cuesta S/ 400. La tienda le hace un descuento del 20 % y, sobre el nuevo precio, otro descuento del 10 %. ¿Cuánto se paga al final?",
+      "enunciado": "En una campaña, una casaca de S/ 450 se rebaja un 20 %. Días después, al precio ya rebajado se le quita otro 10 %. ¿Cuál es el precio final?",
       "opciones": [
        {
-        "texto": "S/ 280",
-        "error": "suma-descuentos"
+        "texto": "S/ 315"
        },
        {
-        "texto": "S/ 288",
-        "correcta": true
+        "texto": "S/ 324"
        },
        {
-        "texto": "S/ 112",
-        "error": "monto-descuento"
+        "texto": "S/ 126"
        },
        {
-        "texto": "S/ 320",
-        "error": "un-solo-descuento"
+        "texto": "S/ 360"
        }
-      ]
+      ],
+      "k": "a1d127658436585659395db9b9cae8c8680ea5dc912daaec4ba0317ea3ce3b417795ea039bbe4fbc3527329dd24112cab9d0b8ebcd12cce23c6672304e313512"
      },
      "B": {
-      "enunciado": "Unas zapatillas cuestan S/ 600. La tienda les hace un descuento del 25 % y, sobre el nuevo precio, otro descuento del 20 %. ¿Cuánto se paga al final?",
+      "enunciado": "En una liquidación, unas zapatillas de S/ 700 se rebajan un 25 %. A la semana, al precio ya rebajado se le quita otro 20 %. ¿Cuál es el precio final?",
       "opciones": [
        {
-        "texto": "S/ 330",
-        "error": "suma-descuentos"
+        "texto": "S/ 385"
        },
        {
-        "texto": "S/ 360",
-        "correcta": true
+        "texto": "S/ 420"
        },
        {
-        "texto": "S/ 240",
-        "error": "monto-descuento"
+        "texto": "S/ 280"
        },
        {
-        "texto": "S/ 450",
-        "error": "un-solo-descuento"
+        "texto": "S/ 525"
        }
-      ]
+      ],
+      "k": "e3a3c54db215af542a98d915a9ac72e3b6cb883e739d397a7859928c5d1b000621ae3e596106f5f0871cf2cf588a1f48cc5885de189c88e9c2cf8f06cf701713"
      }
     },
     {
@@ -558,94 +508,83 @@
      "unidad": "aritmetica.porcentajes",
      "mide": "Un aumento seguido de un descuento: el descuento se calcula sobre el precio ya aumentado",
      "A": {
-      "enunciado": "El precio de una mochila era S/ 200. Subió un 30 % y luego bajó un 10 %. ¿Cuál es su precio ahora?",
+      "enunciado": "El precio de una mochila era S/ 350. Subió un 20 % y luego bajó un 10 %. ¿Cuál es su precio ahora?",
       "opciones": [
        {
-        "texto": "S/ 240",
-        "error": "se-compensan"
+        "texto": "S/ 385"
        },
        {
-        "texto": "S/ 260",
-        "error": "solo-aumento"
+        "texto": "S/ 420"
        },
        {
-        "texto": "S/ 234",
-        "correcta": true
+        "texto": "S/ 378"
        },
        {
-        "texto": "S/ 34",
-        "error": "monto-variacion"
+        "texto": "S/ 28"
        }
-      ]
+      ],
+      "k": "610e0f65af4a8055498f7676bb8b19eeeb2075d7909354fd4100934c8224a2318d680ca0732f138c0285bc07b91cb5cdccd08b2f0ccec5b9"
      },
      "B": {
-      "enunciado": "El precio de una licuadora era S/ 300. Subió un 40 % y luego bajó un 10 %. ¿Cuál es su precio ahora?",
+      "enunciado": "El precio de una licuadora era S/ 900. Subió un 40 % y luego bajó un 10 %. ¿Cuál es su precio ahora?",
       "opciones": [
        {
-        "texto": "S/ 390",
-        "error": "se-compensan"
+        "texto": "S/ 1170"
        },
        {
-        "texto": "S/ 420",
-        "error": "solo-aumento"
+        "texto": "S/ 1260"
        },
        {
-        "texto": "S/ 378",
-        "correcta": true
+        "texto": "S/ 1134"
        },
        {
-        "texto": "S/ 78",
-        "error": "monto-variacion"
+        "texto": "S/ 234"
        }
-      ]
+      ],
+      "k": "bd4c1581c991d966da39bf1118fdb9a8fe8e7b56091fa9b386bf08a8321cd2090412427b5debc00eaa36a34406166c3f44f1751f761d69b1"
      }
     },
     {
      "par": "ari-03",
      "plantilla": "porcentajes-sucesivos",
      "unidad": "aritmetica.porcentajes",
-     "mide": "Descuento único equivalente a dos descuentos sucesivos",
+     "mide": "Variación porcentual: el cambio se divide entre el valor de antes",
+     "transferencia": true,
      "A": {
-      "enunciado": "Dos descuentos sucesivos, primero del 20 % y luego del 25 %, ¿a qué descuento único equivalen?",
+      "enunciado": "El pasaje en combi subió de S/ 2,40 a S/ 3. ¿En qué porcentaje subió?",
       "opciones": [
        {
-        "texto": "45 %",
-        "error": "suma-descuentos"
+        "texto": "20 %"
        },
        {
-        "texto": "40 %",
-        "correcta": true
+        "texto": "25 %"
        },
        {
-        "texto": "5 %",
-        "error": "producto"
+        "texto": "0,6 %"
        },
        {
-        "texto": "60 %",
-        "error": "lo-que-queda"
+        "texto": "125 %"
        }
-      ]
+      ],
+      "k": "ec1fb56f846b43f340bfe0bf876528178d3d886ed7ce997076caa304605b8962bc480b398e486469de83f1b765ad19"
      },
      "B": {
-      "enunciado": "Dos descuentos sucesivos, primero del 10 % y luego del 30 %, ¿a qué descuento único equivalen?",
+      "enunciado": "El kilo de papa subió de S/ 2,50 a S/ 3. ¿En qué porcentaje subió?",
       "opciones": [
        {
-        "texto": "40 %",
-        "error": "suma-descuentos"
+        "texto": "16,7 %"
        },
        {
-        "texto": "37 %",
-        "correcta": true
+        "texto": "20 %"
        },
        {
-        "texto": "3 %",
-        "error": "producto"
+        "texto": "0,5 %"
        },
        {
-        "texto": "63 %",
-        "error": "lo-que-queda"
+        "texto": "120 %"
        }
-      ]
+      ],
+      "k": "22ca2219b15d061a39d6b522537d0d53d83fdf286fd0aa4b166829b50bdeadb580ba2a5c8e88f2bfb8f2c33d21be2f"
      }
     },
     {
@@ -657,43 +596,37 @@
       "enunciado": "Un sueldo de S/ 1500 sube un 10 % y, al mes siguiente, baja un 10 %. ¿Cuánto es el sueldo ahora?",
       "opciones": [
        {
-        "texto": "S/ 1500, porque sube y baja lo mismo",
-        "error": "se-compensan"
+        "texto": "S/ 1500"
        },
        {
-        "texto": "S/ 1485",
-        "correcta": true
+        "texto": "S/ 1485"
        },
        {
-        "texto": "S/ 1650",
-        "error": "solo-aumento"
+        "texto": "S/ 1650"
        },
        {
-        "texto": "S/ 15",
-        "error": "monto-variacion"
+        "texto": "S/ 15"
        }
-      ]
+      ],
+      "k": "34ef253dda024a039d64e494ec607013fcc67284bfb44354504f2bfa8a4eb326f398ff437cc8567d56361d19ca80b3b4930cbcb4d0793994"
      },
      "B": {
       "enunciado": "Un pasaje de S/ 2000 sube un 20 % en julio y, en agosto, baja un 20 %. ¿Cuánto cuesta ahora?",
       "opciones": [
        {
-        "texto": "S/ 2000, porque sube y baja lo mismo",
-        "error": "se-compensan"
+        "texto": "S/ 2000"
        },
        {
-        "texto": "S/ 1920",
-        "correcta": true
+        "texto": "S/ 1920"
        },
        {
-        "texto": "S/ 2400",
-        "error": "solo-aumento"
+        "texto": "S/ 2400"
        },
        {
-        "texto": "S/ 80",
-        "error": "monto-variacion"
+        "texto": "S/ 80"
        }
-      ]
+      ],
+      "k": "992411e60be2316829ef0037f8d52b156a61c37a53eb17832024dbe7767bba7e0baac0bc4ee356c0ea03009ff6b9a3e0a5516b8eb4377551"
      }
     },
     {
@@ -701,47 +634,42 @@
      "plantilla": "porcentajes-sucesivos",
      "unidad": "aritmetica.porcentajes",
      "mide": "Aumento único equivalente a dos aumentos sucesivos",
+     "transferencia": true,
      "A": {
       "enunciado": "El precio del pan subió un 10 % en enero y un 20 % en febrero. ¿En qué porcentaje subió en total desde diciembre?",
       "opciones": [
        {
-        "texto": "30 %",
-        "error": "suma-descuentos"
+        "texto": "30 %"
        },
        {
-        "texto": "2 %",
-        "error": "producto"
+        "texto": "2 %"
        },
        {
-        "texto": "32 %",
-        "correcta": true
+        "texto": "32 %"
        },
        {
-        "texto": "132 %",
-        "error": "lo-que-queda"
+        "texto": "132 %"
        }
-      ]
+      ],
+      "k": "ca27d03ffa0516d20abf24985463ce9d5b75bede57e54b8cce8d7832f09f77785a3a563c0402f95d6eb64fb2391cdbe69ec19e18"
      },
      "B": {
       "enunciado": "La matrícula de una academia subió un 20 % un año y un 30 % al año siguiente. ¿En qué porcentaje subió en total en esos dos años?",
       "opciones": [
        {
-        "texto": "50 %",
-        "error": "suma-descuentos"
+        "texto": "50 %"
        },
        {
-        "texto": "6 %",
-        "error": "producto"
+        "texto": "6 %"
        },
        {
-        "texto": "56 %",
-        "correcta": true
+        "texto": "56 %"
        },
        {
-        "texto": "156 %",
-        "error": "lo-que-queda"
+        "texto": "156 %"
        }
-      ]
+      ],
+      "k": "27c6cbba7d30fa13d1ced63a1b02785dd99e93fad3b78c3b2bdb57cfd1e369aabc88ad5a24432d32846686cb091ee59f0d73b5d3"
      }
     },
     {
@@ -749,39 +677,36 @@
      "plantilla": "porcentajes-sucesivos",
      "unidad": "aritmetica.porcentajes",
      "mide": "Revertir un cambio: el porcentaje se calcula sobre el valor nuevo",
+     "transferencia": true,
      "A": {
       "enunciado": "Un sueldo subió un 25 %. ¿Qué porcentaje tiene que bajar el sueldo nuevo para volver al de antes?",
       "opciones": [
        {
-        "texto": "25 %",
-        "error": "AR3"
+        "texto": "25 %"
        },
        {
-        "texto": "20 %",
-        "correcta": true
+        "texto": "20 %"
        },
        {
-        "texto": "80 %",
-        "error": "lo-que-queda"
+        "texto": "80 %"
        }
-      ]
+      ],
+      "k": "cc9989464385f646cd15b4f7a63df9167999ea7babd00e037cad679b4c"
      },
      "B": {
       "enunciado": "El precio de un cuaderno bajó un 20 %. ¿Qué porcentaje tiene que subir el precio nuevo para volver al de antes?",
       "opciones": [
        {
-        "texto": "20 %",
-        "error": "AR3"
+        "texto": "20 %"
        },
        {
-        "texto": "25 %",
-        "correcta": true
+        "texto": "25 %"
        },
        {
-        "texto": "125 %",
-        "error": "lo-que-queda"
+        "texto": "125 %"
        }
-      ]
+      ],
+      "k": "99fc16e4d1a89d472eb823244017f09e4f3c9420c6d799d6b91675ad69"
      }
     },
     {
@@ -789,47 +714,42 @@
      "plantilla": "porcentajes-sucesivos",
      "unidad": "aritmetica.porcentajes",
      "mide": "Interés compuesto: aumentos sucesivos del mismo porcentaje",
+     "transferencia": true,
      "A": {
       "enunciado": "Se depositan S/ 2000 al 10 % de interés anual compuesto (el interés de cada año se suma al depósito). ¿Cuánto dinero hay al cabo de 2 años?",
       "opciones": [
        {
-        "texto": "S/ 2400",
-        "error": "AR16"
+        "texto": "S/ 2400"
        },
        {
-        "texto": "S/ 2420",
-        "correcta": true
+        "texto": "S/ 2420"
        },
        {
-        "texto": "S/ 420",
-        "error": "monto-variacion"
+        "texto": "S/ 420"
        },
        {
-        "texto": "S/ 2200",
-        "error": "solo-aumento"
+        "texto": "S/ 2200"
        }
-      ]
+      ],
+      "k": "5d6e2cf276b8d548b63e81f7b31c7691153ca9b467c762a9e503760579ac4b14d3730424539d8d1a80e459d3534d9876"
      },
      "B": {
       "enunciado": "Se depositan S/ 5000 al 20 % de interés anual compuesto (el interés de cada año se suma al depósito). ¿Cuánto dinero hay al cabo de 2 años?",
       "opciones": [
        {
-        "texto": "S/ 7000",
-        "error": "AR16"
+        "texto": "S/ 7000"
        },
        {
-        "texto": "S/ 7200",
-        "correcta": true
+        "texto": "S/ 7200"
        },
        {
-        "texto": "S/ 2200",
-        "error": "monto-variacion"
+        "texto": "S/ 2200"
        },
        {
-        "texto": "S/ 6000",
-        "error": "solo-aumento"
+        "texto": "S/ 6000"
        }
-      ]
+      ],
+      "k": "f27c14db7f8c5519face3c716d082d81f7a075573bb56ffdcac18257dfb6d6d9ddaa0d3fe041daeecece151c4ef816ff"
      }
     },
     {
@@ -837,47 +757,44 @@
      "plantilla": "porcentajes-sucesivos",
      "unidad": "aritmetica.porcentajes",
      "mide": "Hallar el precio de antes: dividir entre el factor, no aplicar el porcentaje al precio nuevo",
+     "transferencia": true,
      "A": {
       "enunciado": "Después de un descuento del 20 %, una licuadora cuesta S/ 240. ¿Cuánto costaba antes del descuento?",
       "opciones": [
        {
-        "texto": "S/ 288",
-        "error": "AR3"
+        "texto": "S/ 288"
        },
        {
-        "texto": "S/ 300",
-        "correcta": true
+        "texto": "S/ 300"
        },
        {
-        "texto": "S/ 60",
-        "error": "monto-variacion"
+        "texto": "S/ 60"
        }
-      ]
+      ],
+      "k": "d1c0cf5a7bdfd653af6f07c97c6363460ced4e3114e4564776d26b2a77bf6b90"
      },
      "B": {
       "enunciado": "Después de un aumento del 25 %, una bicicleta cuesta S/ 500. ¿Cuánto costaba antes del aumento?",
       "opciones": [
        {
-        "texto": "S/ 375",
-        "error": "AR3"
+        "texto": "S/ 375"
        },
        {
-        "texto": "S/ 400",
-        "correcta": true
+        "texto": "S/ 400"
        },
        {
-        "texto": "S/ 100",
-        "error": "monto-variacion"
+        "texto": "S/ 100"
        }
-      ]
+      ],
+      "k": "59cd0d1bf01bf126999fb0619235ae726454ef2708cdab52f4f0a81b5ee56fd5"
      }
     }
    ]
   },
   "fisica": {
    "curso": "fisica",
-   "version": "1.0.0",
-   "minutos": 15,
+   "version": "1.1.0",
+   "minutos": 16,
    "errores": {
     "G2-altura-entre-tiempo": {
      "respaldo": "documentado",
@@ -893,15 +810,11 @@
     },
     "C1-aceleracion-cero-en-la-cima": {
      "respaldo": "documentado",
-     "describe": "Cree que en el punto más alto la aceleración es cero"
+     "describe": "Cree que en el punto más alto la aceleración es cero y el cuerpo se queda arriba"
     },
     "K3-aceleracion-en-sentido-del-movimiento": {
      "respaldo": "documentado",
-     "describe": "Cree que la aceleración apunta hacia donde se mueve"
-    },
-    "C2-depende-de-la-masa": {
-     "respaldo": "documentado",
-     "describe": "Cree que la aceleración de caída depende de la masa"
+     "describe": "Cree que la aceleración apunta hacia donde se mueve (suma g·t en vez de restarlo)"
     },
     "N-igual-mg": {
      "respaldo": "hipotesis",
@@ -921,7 +834,7 @@
     },
     "D1-movimiento-necesita-fuerza": {
      "respaldo": "documentado",
-     "describe": "Cree que sin fuerza no hay movimiento"
+     "describe": "Cree que sin fuerza no hay movimiento: se detiene enseguida"
     },
     "sigue-acelerando": {
      "respaldo": "hipotesis",
@@ -953,27 +866,11 @@
     },
     "C5-toda-la-corriente-a-B2": {
      "respaldo": "documentado",
-     "describe": "Cree que la corriente de la rama quitada pasa entera a la otra y el resto sigue igual"
+     "describe": "Cree que la rama nueva solo le quita corriente a las de su grupo y el resto sigue igual"
     },
     "C5-bombilla-independiente": {
      "respaldo": "documentado",
      "describe": "Cree que cada bombilla no depende del resto del circuito"
-    },
-    "C1-sobra-corriente": {
-     "respaldo": "documentado",
-     "describe": "Cree que la pila da siempre la misma corriente y la que sobra va a las demás"
-    },
-    "E1-mitad-arriba": {
-     "respaldo": "documentado",
-     "describe": "Cree que tapar media lente borra la misma mitad de la imagen"
-    },
-    "E1-mitad-abajo": {
-     "respaldo": "documentado",
-     "describe": "Cree que tapar media lente borra la mitad opuesta de la imagen"
-    },
-    "E1-sin-imagen": {
-     "respaldo": "hipotesis",
-     "describe": "Cree que tapar media lente deja sin imagen"
     },
     "S1-en-la-superficie": {
      "respaldo": "documentado",
@@ -981,11 +878,43 @@
     },
     "S6-detras-como-lente": {
      "respaldo": "hipotesis",
-     "describe": "Pone la imagen real detrás del espejo, como en una lente"
+     "describe": "Pone la imagen detrás del espejo, como si la luz lo atravesara"
     },
     "S5-zona": {
      "respaldo": "documentado",
      "describe": "Confunde las zonas del espejo cóncavo (entre F y C con más allá de C)"
+    },
+    "signo-de-la-velocidad": {
+     "respaldo": "hipotesis",
+     "describe": "Calcula bien el valor, pero no ve que la velocidad ya cambió de sentido"
+    },
+    "C1-pila-corriente-constante": {
+     "respaldo": "documentado",
+     "describe": "Cree que la pila da siempre la misma corriente, que se reparte entre más bombillas"
+    },
+    "lente-suma-inversas": {
+     "respaldo": "hipotesis",
+     "describe": "Suma 1/f y 1/o en vez de restarlos al despejar 1/i"
+    },
+    "objeto-lejano-en-el-foco": {
+     "respaldo": "hipotesis",
+     "describe": "Pone la imagen en el foco, como si el objeto estuviera muy lejos"
+    },
+    "imagen-espejo": {
+     "respaldo": "hipotesis",
+     "describe": "Pone la imagen a la misma distancia que el objeto, como en un espejo plano"
+    },
+    "energia-sin-raiz": {
+     "respaldo": "hipotesis",
+     "describe": "Iguala bien las energías, pero da v² como si fuera v"
+    },
+    "energia-sin-mitad": {
+     "respaldo": "hipotesis",
+     "describe": "Olvida el 1/2 de la energía cinética"
+    },
+    "energia-v-igual-gh": {
+     "respaldo": "hipotesis",
+     "describe": "Multiplica g por h sin pasar por la energía"
     }
    },
    "pares": [
@@ -995,94 +924,82 @@
      "unidad": "fisica.movimiento-rectilineo",
      "mide": "Leer la velocidad como pendiente de una recta x-t que no pasa por el origen",
      "A": {
-      "enunciado": "La gráfica posición-tiempo (x-t) de un ciclista es una recta que pasa por los puntos (0 s; 6 m) y (5 s; 26 m). ¿Qué velocidad lleva el ciclista?",
+      "enunciado": "Un ciclista avanza por una pista recta. En el instante 0 s está a 6 m de la partida y a los 5 s, a 26 m; entre esos instantes, su posición contra el tiempo forma una línea recta. ¿Qué velocidad lleva?",
       "opciones": [
        {
-        "texto": "5,2 m/s",
-        "error": "G2-altura-entre-tiempo"
+        "texto": "5,2 m/s"
        },
        {
-        "texto": "4 m/s",
-        "correcta": true
+        "texto": "4 m/s"
        },
        {
-        "texto": "26 m/s",
-        "error": "G2-pendiente-es-altura"
+        "texto": "26 m/s"
        },
        {
-        "texto": "6 m/s",
-        "error": "G2-lee-el-eje"
+        "texto": "6 m/s"
        }
-      ]
+      ],
+      "k": "68e1ed028612a9efa00efe7debc7c34a4af1227f0b9c09e8469229d50c47fdf0fea892facdc3915e8a0111607cde13b56c352c71ad43b4f402df0dd2995d90d3c1131a8342b10ec250dd"
      },
      "B": {
-      "enunciado": "La gráfica posición-tiempo (x-t) de un mototaxi es una recta que pasa por los puntos (0 s; 8 m) y (4 s; 20 m). ¿Qué velocidad lleva el mototaxi?",
+      "enunciado": "Un microbús avanza por una avenida recta. En el instante 0 s está a 8 m del paradero y a los 4 s, a 20 m; entre esos instantes, su posición contra el tiempo forma una línea recta. ¿Qué velocidad lleva?",
       "opciones": [
        {
-        "texto": "5 m/s",
-        "error": "G2-altura-entre-tiempo"
+        "texto": "5 m/s"
        },
        {
-        "texto": "3 m/s",
-        "correcta": true
+        "texto": "3 m/s"
        },
        {
-        "texto": "20 m/s",
-        "error": "G2-pendiente-es-altura"
+        "texto": "20 m/s"
        },
        {
-        "texto": "8 m/s",
-        "error": "G2-lee-el-eje"
+        "texto": "8 m/s"
        }
-      ]
+      ],
+      "k": "0e87dac416875db77808a7c0940d345f05c6b45e5dc189a9c7d49cb21c2a646954d9d3624f0f34082b81e2fb00a414c5c1857140829889a2c4e6c435b27dd5f5b73e13f910b91ad3a6ab"
      }
     },
     {
      "par": "fis-02",
      "plantilla": "mruv",
      "unidad": "fisica.movimiento-rectilineo",
-     "mide": "La aceleración en el punto más alto de un lanzamiento vertical",
+     "mide": "La aceleración no cambia en la cima: la velocidad sigue bajando después del punto más alto",
      "A": {
-      "enunciado": "Lanzas una pelota verticalmente hacia arriba con 20 m/s. Sube durante 2 s, se detiene un instante en el punto más alto y baja. Sin contar el aire, ¿cuánto vale su aceleración en el punto más alto? (g = 10 m/s²)",
+      "enunciado": "Se lanza una piedra verticalmente hacia arriba con 35 m/s. Sin contar el aire, ¿qué velocidad tiene 4 s después del lanzamiento? (g = 10 m/s²)",
       "opciones": [
        {
-        "texto": "Cero, porque ahí está quieta",
-        "error": "C1-aceleracion-cero-en-la-cima"
+        "texto": "5 m/s, hacia arriba"
        },
        {
-        "texto": "10 m/s², hacia arriba, porque venía subiendo",
-        "error": "K3-aceleracion-en-sentido-del-movimiento"
+        "texto": "0 m/s"
        },
        {
-        "texto": "10 m/s², hacia abajo",
-        "correcta": true
+        "texto": "5 m/s, hacia abajo"
        },
        {
-        "texto": "Depende de la masa de la pelota",
-        "error": "C2-depende-de-la-masa"
+        "texto": "75 m/s, hacia arriba"
        }
-      ]
+      ],
+      "k": "ffaeeeb3f119e73e7a50e5c53e87ff4b898266900c9071d9ae8b8d10ef1e7880aad51149e93c051a48febb208fc284a5e357bf7034610e5a882e1d7b503985edee3f2d8cbef7b4a1eefa1da6c6e4f753660016b744f9f94f71f6e09874c6e14eedd82205bac40021b8fd1463"
      },
      "B": {
-      "enunciado": "Un futbolista patea un balón verticalmente hacia arriba con 15 m/s. A los 1,5 s llega a su altura máxima y empieza a bajar. Sin contar el aire, ¿cuánto vale la aceleración del balón a los 1,5 s? (g = 10 m/s²)",
+      "enunciado": "Desde el suelo se patea un balón verticalmente hacia arriba con 25 m/s. Sin contar el aire, ¿qué velocidad tiene 4 s después de la patada? (g = 10 m/s²)",
       "opciones": [
        {
-        "texto": "Cero, porque ahí está quieto",
-        "error": "C1-aceleracion-cero-en-la-cima"
+        "texto": "15 m/s, hacia arriba"
        },
        {
-        "texto": "10 m/s², hacia arriba, porque venía subiendo",
-        "error": "K3-aceleracion-en-sentido-del-movimiento"
+        "texto": "0 m/s"
        },
        {
-        "texto": "10 m/s², hacia abajo",
-        "correcta": true
+        "texto": "15 m/s, hacia abajo"
        },
        {
-        "texto": "Depende de la masa del balón",
-        "error": "C2-depende-de-la-masa"
+        "texto": "65 m/s, hacia arriba"
        }
-      ]
+      ],
+      "k": "3e2149ecbcd940da08337ce0887d04ad1df7b0f6904eecbcb66b5c492c9f94166021c7062ba30383bdff7cb4d19ed19ae0e12123583a16ec6b447d7ea06ff6a49bc1d9d02bd714a3f50a5b206a777c798ec48a2d53d0ba53bd0d0671bbfb81bc9e12f48fcf9bea5118d27647"
      }
     },
     {
@@ -1094,43 +1011,37 @@
       "enunciado": "Una caja de 5 kg baja deslizando por una rampa lisa inclinada 53°. ¿Cuánto vale la fuerza normal que la rampa ejerce sobre la caja? (g = 10 m/s²; sen 53° = 0,8; cos 53° = 0,6)",
       "opciones": [
        {
-        "texto": "50 N, igual al peso",
-        "error": "N-igual-mg"
+        "texto": "50 N"
        },
        {
-        "texto": "40 N",
-        "error": "sen-cos-cambiados"
+        "texto": "40 N"
        },
        {
-        "texto": "0 N, porque la caja se está moviendo",
-        "error": "normal-cero-si-se-mueve"
+        "texto": "0 N"
        },
        {
-        "texto": "30 N",
-        "correcta": true
+        "texto": "30 N"
        }
-      ]
+      ],
+      "k": "009b3503c42af007876bf99a185850e428b1e28bbddd9136d14abc92a93e27d09fe88500256e919dc86b001a3d02cce9010350a363835884d058c1366d4173a9129e37"
      },
      "B": {
       "enunciado": "Un saco de 20 kg resbala por un tobogán liso inclinado 37°. ¿Cuánto vale la fuerza normal que el tobogán ejerce sobre el saco? (g = 10 m/s²; sen 37° = 0,6; cos 37° = 0,8)",
       "opciones": [
        {
-        "texto": "200 N, igual al peso",
-        "error": "N-igual-mg"
+        "texto": "200 N"
        },
        {
-        "texto": "120 N",
-        "error": "sen-cos-cambiados"
+        "texto": "120 N"
        },
        {
-        "texto": "0 N, porque el saco se está moviendo",
-        "error": "normal-cero-si-se-mueve"
+        "texto": "0 N"
        },
        {
-        "texto": "160 N",
-        "correcta": true
+        "texto": "160 N"
        }
-      ]
+      ],
+      "k": "9c0295856a73a0dd5ce4fc4d97849d3877e5a6fc668e4fa0c048e4848905197479c2143ca59b95c3d848b00a3dab008238f3377056faae51148ef8db6449001a35b06a"
      }
     },
     {
@@ -1139,46 +1050,40 @@
      "unidad": "fisica.dinamica",
      "mide": "Inercia: sin fuerza neta, la velocidad no cambia",
      "A": {
-      "enunciado": "Empujas un disco de 2 kg con una fuerza de 10 N durante 1 s sobre una pista de hielo tan lisa que el roce no cuenta. Luego lo sueltas. ¿Qué hace el disco después de soltarlo?",
+      "enunciado": "Una nave de 500 kg viaja por el espacio, lejos de todo planeta. Sus motores la empujan con 1000 N durante 10 s y luego se apagan. ¿Qué hace la nave después de apagar los motores?",
       "opciones": [
        {
-        "texto": "Sigue en línea recta con la misma velocidad",
-        "correcta": true
+        "texto": "Sigue con la misma velocidad"
        },
        {
-        "texto": "Va frenando poco a poco, porque la fuerza del empujón se va gastando",
-        "error": "D2-la-fuerza-se-gasta"
+        "texto": "Va frenando poco a poco hasta detenerse"
        },
        {
-        "texto": "Se detiene apenas lo sueltas: sin fuerza no hay movimiento",
-        "error": "D1-movimiento-necesita-fuerza"
+        "texto": "Se detiene enseguida"
        },
        {
-        "texto": "Sigue acelerando un rato más",
-        "error": "sigue-acelerando"
+        "texto": "Sigue acelerando un rato más"
        }
-      ]
+      ],
+      "k": "b30d4052da16b72ac298d47398eb35e3a2fb18c0733662eac8c6a0ca321f04971446dd5efeb374e7b21b83338ca4fcc2c088ad724905b427bdd79dce8dca4a1edb10e1f0f502ce24e1f51bbff5213eb623bc89"
      },
      "B": {
       "enunciado": "Un carrito de 4 kg está sobre un riel horizontal sin roce. Lo empujas con una fuerza de 6 N durante 2 s y luego lo sueltas. ¿Qué hace el carrito después de soltarlo?",
       "opciones": [
        {
-        "texto": "Sigue en línea recta con la misma velocidad",
-        "correcta": true
+        "texto": "Sigue con la misma velocidad"
        },
        {
-        "texto": "Va frenando poco a poco, porque la fuerza del empujón se va gastando",
-        "error": "D2-la-fuerza-se-gasta"
+        "texto": "Va frenando poco a poco hasta detenerse"
        },
        {
-        "texto": "Se detiene apenas lo sueltas: sin fuerza no hay movimiento",
-        "error": "D1-movimiento-necesita-fuerza"
+        "texto": "Se detiene enseguida"
        },
        {
-        "texto": "Sigue acelerando un rato más",
-        "error": "sigue-acelerando"
+        "texto": "Sigue acelerando un rato más"
        }
-      ]
+      ],
+      "k": "5233e7ac15fd93378903f262680e7643f08e2fb10e3b4e15b32e5863cf6c8f6d6c584c904a18834d5bc4c563900c5e7d6745c77d6156161035d2fbf50702e91b72f417ad7471c8082cc156b0fd3f2f43a0628b"
      }
     },
     {
@@ -1187,46 +1092,40 @@
      "unidad": "fisica.trabajo-y-energia",
      "mide": "Potencia consumida por un motor con eficiencia (P útil ÷ eficiencia)",
      "A": {
-      "enunciado": "El motor de un montacargas sube 50 kg a 18 m de altura en 15 s, a velocidad constante. Su eficiencia es del 75 %. ¿Qué potencia consume el motor? (g = 10 m/s²)",
+      "enunciado": "Un montacargas eléctrico eleva una carga de 50 kg hasta 18 m en 15 s, con rapidez constante. Solo el 75 % de la energía eléctrica que recibe se aprovecha para subir la carga. ¿Cuánta potencia eléctrica recibe? (g = 10 m/s²)",
       "opciones": [
        {
-        "texto": "600 W",
-        "error": "ignora-eficiencia"
+        "texto": "600 W"
        },
        {
-        "texto": "800 W",
-        "correcta": true
+        "texto": "800 W"
        },
        {
-        "texto": "450 W",
-        "error": "multiplica-eficiencia"
+        "texto": "450 W"
        },
        {
-        "texto": "9000 W",
-        "error": "W15-energia-por-potencia"
+        "texto": "9000 W"
        }
-      ]
+      ],
+      "k": "29d07c2913ec63a37071061b7f547f4a10382630898533d4f9c785ed9b05dc1e8df046d59e251caf97c7f5907e5ab758bc9d143158031d47a968c73d4fa3889502b3b47aee4ef5eccf38fd75bf626b"
      },
      "B": {
-      "enunciado": "Una bomba eleva 80 kg de agua a 15 m de altura en 20 s, a velocidad constante. Su eficiencia es del 60 %. ¿Qué potencia consume la bomba? (g = 10 m/s²)",
+      "enunciado": "Una bomba de agua eleva 80 kg de agua hasta un tanque a 15 m en 20 s, con rapidez constante. Solo el 60 % de la energía eléctrica que recibe se aprovecha para subir el agua. ¿Cuánta potencia eléctrica recibe? (g = 10 m/s²)",
       "opciones": [
        {
-        "texto": "600 W",
-        "error": "ignora-eficiencia"
+        "texto": "600 W"
        },
        {
-        "texto": "1000 W",
-        "correcta": true
+        "texto": "1000 W"
        },
        {
-        "texto": "360 W",
-        "error": "multiplica-eficiencia"
+        "texto": "360 W"
        },
        {
-        "texto": "12 000 W",
-        "error": "W15-energia-por-potencia"
+        "texto": "12 000 W"
        }
-      ]
+      ],
+      "k": "0e89bd93e2f9e617cecfd838bad647e0907fd793231036eed4a2072b325b300de9f109988a4eb217e0d5dd364d507103172d321131a9cc3f475ad5dfcfb6ebf058edb30c0b584b132a990ab9574293"
      }
     },
     {
@@ -1238,139 +1137,121 @@
       "enunciado": "En un termo se mezclan 100 g de hielo a 0 °C con 200 g de agua a 30 °C. ¿A qué temperatura queda la mezcla? (Calor de fusión del hielo: 80 cal/g; calor específico del agua: 1 cal/g·°C)",
       "opciones": [
        {
-        "texto": "20 °C",
-        "error": "Q7-olvida-calor-latente"
+        "texto": "20 °C"
        },
        {
-        "texto": "15 °C",
-        "error": "Q4-promedio-simple"
+        "texto": "15 °C"
        },
        {
-        "texto": "−6,7 °C",
-        "error": "Q8-no-revisa-si-alcanza"
+        "texto": "−6,7 °C"
        },
        {
-        "texto": "0 °C, y queda hielo sin derretir",
-        "correcta": true
+        "texto": "0 °C"
        }
-      ]
+      ],
+      "k": "74412dfbcf2bea3ad94817dde718085878e1e797793a99d3bbeee14b24258c6e1c321a8e5017a8bf5fbdc88e2402a5a913dc4099a861d9c4fcbc1b6b9b55f98545aa6dc58b76067a7ad0b8119e559d5bfb"
      },
      "B": {
       "enunciado": "En un recipiente aislado se mezclan 120 g de hielo a 0 °C con 300 g de agua a 20 °C. ¿A qué temperatura queda la mezcla? (Calor de fusión del hielo: 80 cal/g; calor específico del agua: 1 cal/g·°C)",
       "opciones": [
        {
-        "texto": "14,3 °C",
-        "error": "Q7-olvida-calor-latente"
+        "texto": "14,3 °C"
        },
        {
-        "texto": "10 °C",
-        "error": "Q4-promedio-simple"
+        "texto": "10 °C"
        },
        {
-        "texto": "−8,6 °C",
-        "error": "Q8-no-revisa-si-alcanza"
+        "texto": "−8,6 °C"
        },
        {
-        "texto": "0 °C, y queda hielo sin derretir",
-        "correcta": true
+        "texto": "0 °C"
        }
-      ]
+      ],
+      "k": "cf8b4acf91dbdd42b398422e7e74b7cded9e06d036e27bbded3b5f36c6aea773bd7854bf055e79695d489de7e7f449db5ad51de26e860b1d71fbe135d7d679e30bcc0abba27d5252c5d9c6e7063f597797"
      }
     },
     {
      "par": "fis-07",
      "plantilla": "circuitos-cc",
      "unidad": "fisica.corriente-y-circuitos",
-     "mide": "Quitar una rama en paralelo cambia la corriente de todo el circuito",
+     "mide": "Agregar una rama en paralelo cambia la corriente de todo el circuito",
      "A": {
-      "enunciado": "Una pila de 6 V alimenta a la bombilla B1, conectada en serie con dos bombillas en paralelo, B2 y B3. Las tres bombillas son iguales. Si desenroscas B3, ¿qué pasa con el brillo de B1 y de B2?",
+      "enunciado": "En un circuito, la lámpara P va en serie con un grupo de dos lámparas en paralelo, Q y R, y todo se conecta a una pila de 6 V. Las lámparas son iguales. Si se agrega una cuarta lámpara igual en paralelo con Q y R, ¿qué pasa con el brillo de P y de Q?",
       "opciones": [
        {
-        "texto": "B2 brilla más y B1 sigue igual",
-        "error": "C5-toda-la-corriente-a-B2"
+        "texto": "P brilla igual y Q brilla menos"
        },
        {
-        "texto": "B2 brilla más y B1 brilla menos",
-        "correcta": true
+        "texto": "P brilla más y Q brilla menos"
        },
        {
-        "texto": "B1 y B2 siguen igual",
-        "error": "C5-bombilla-independiente"
+        "texto": "P brilla igual y Q brilla igual"
        },
        {
-        "texto": "B1 y B2 brillan más",
-        "error": "C1-sobra-corriente"
+        "texto": "P brilla menos y Q brilla menos"
        }
-      ]
+      ],
+      "k": "6a8efa3eb7ba2be6eb53502c2a2524d68c8be035ce668d20dd5983355ff8619200979b0b01485f076e3159778ae933e93462a3acbe38c9716a03a3ab4f5876d51322a0c6740ff00b51f79c30f878712e07b0a50e602c4adc52404c899542"
      },
      "B": {
-      "enunciado": "Una batería de 9 V alimenta a la bombilla X, conectada en serie con dos bombillas en paralelo, Y y Z. Las tres bombillas son iguales. Si Z se quema y deja de conducir, ¿qué pasa con el brillo de X y de Y?",
+      "enunciado": "En un circuito, el foco X va en serie con un grupo de dos focos en paralelo, Y y Z, y todo se conecta a una batería de 9 V. Los focos son iguales. Si se agrega un cuarto foco igual en paralelo con Y y Z, ¿qué pasa con el brillo de X y de Y?",
       "opciones": [
        {
-        "texto": "Y brilla más y X sigue igual",
-        "error": "C5-toda-la-corriente-a-B2"
+        "texto": "X brilla igual e Y brilla menos"
        },
        {
-        "texto": "Y brilla más y X brilla menos",
-        "correcta": true
+        "texto": "X brilla más e Y brilla menos"
        },
        {
-        "texto": "X e Y siguen igual",
-        "error": "C5-bombilla-independiente"
+        "texto": "X brilla igual e Y brilla igual"
        },
        {
-        "texto": "X e Y brillan más",
-        "error": "C1-sobra-corriente"
+        "texto": "X brilla menos e Y brilla menos"
        }
-      ]
+      ],
+      "k": "5072d52debfb1eaeeb07a5d685d29c305ae39a2db4dc5bf8010b9bab578c55689355d760252344069daae2a0aecc758589e08a0a33672d8d4c13039c62eb37b01b9d54adf3020578df60f6c1f158295ad62e0b97e90ec8aa6c4fac77e225"
      }
     },
     {
      "par": "fis-08",
      "plantilla": "optica-lente-delgada",
      "unidad": "fisica.optica-geometrica",
-     "mide": "Cada parte de una lente forma la imagen completa",
+     "mide": "Ecuación de las lentes: 1/f = 1/o + 1/i",
      "A": {
-      "enunciado": "Una vela está a 30 cm de una lente convergente de 20 cm de distancia focal, y su imagen se ve nítida en una pantalla. Si tapas con un cartón la mitad de arriba de la lente, ¿qué se ve en la pantalla?",
+      "enunciado": "Un objeto está a 36 cm de una lente convergente de 12 cm de distancia focal. ¿A qué distancia de la lente se forma su imagen?",
       "opciones": [
        {
-        "texto": "Desaparece la mitad de arriba de la imagen",
-        "error": "E1-mitad-arriba"
+        "texto": "9 cm"
        },
        {
-        "texto": "Desaparece la mitad de abajo de la imagen",
-        "error": "E1-mitad-abajo"
+        "texto": "12 cm"
        },
        {
-        "texto": "Ya no se forma ninguna imagen",
-        "error": "E1-sin-imagen"
+        "texto": "18 cm"
        },
        {
-        "texto": "La imagen completa, pero menos brillante",
-        "correcta": true
+        "texto": "36 cm"
        }
-      ]
+      ],
+      "k": "b5240559cd538a9a8bc094d97c8577671648d8b4458986e814ae9e13ccb90ba3aa1d751f882b7685249738c64ba0afee7fb8e5222de617cd6bca1b8d6e0e5012f265bf78850e4f82df"
      },
      "B": {
-      "enunciado": "Con una lupa (una lente convergente de 15 cm de distancia focal) proyectas en una hoja la imagen nítida de una linterna encendida que está a 45 cm. Si pegas una cinta opaca que tapa la mitad de arriba de la lupa, ¿qué se ve en la hoja?",
+      "enunciado": "Una vela está a 40 cm de una lupa (lente convergente) de 8 cm de distancia focal. ¿A qué distancia de la lupa se forma su imagen?",
       "opciones": [
        {
-        "texto": "Desaparece la mitad de arriba de la imagen",
-        "error": "E1-mitad-arriba"
+        "texto": "6,7 cm"
        },
        {
-        "texto": "Desaparece la mitad de abajo de la imagen",
-        "error": "E1-mitad-abajo"
+        "texto": "8 cm"
        },
        {
-        "texto": "Ya no se forma ninguna imagen",
-        "error": "E1-sin-imagen"
+        "texto": "10 cm"
        },
        {
-        "texto": "La imagen completa, pero menos brillante",
-        "correcta": true
+        "texto": "40 cm"
        }
-      ]
+      ],
+      "k": "84c68ba94d5c7fb403acde9e758768d63c9633ed9370707d3e1e07cc551c4c40a0af93c0d1cd376fd326dcca95123728678948886986f11ad8270214ccef492c255b7bfe413ddde295"
      }
     },
     {
@@ -1379,53 +1260,89 @@
      "unidad": "fisica.optica-geometrica",
      "mide": "Imagen de un espejo cóncavo con el objeto entre el foco y el centro de curvatura",
      "A": {
-      "enunciado": "Una vela está a 30 cm de un espejo cóncavo de 20 cm de distancia focal. ¿Dónde se forma su imagen y cómo es?",
+      "enunciado": "Una vela está a 30 cm de un espejo cóncavo de 20 cm de distancia focal (F es el foco y C, el centro de curvatura). ¿Dónde se forma su imagen y cómo es?",
       "opciones": [
        {
-        "texto": "Sobre la superficie del espejo",
-        "error": "S1-en-la-superficie"
+        "texto": "Sobre la superficie del espejo"
        },
        {
-        "texto": "Delante del espejo, más allá del centro de curvatura: real, invertida y más grande",
-        "correcta": true
+        "texto": "Delante del espejo, más allá de C; real, invertida y mayor"
        },
        {
-        "texto": "Detrás del espejo, como en una lente",
-        "error": "S6-detras-como-lente"
+        "texto": "Detrás del espejo; virtual, derecha y mayor"
        },
        {
-        "texto": "Delante del espejo, entre el foco y el centro de curvatura: real, invertida y más pequeña",
-        "error": "S5-zona"
+        "texto": "Delante del espejo, entre el foco y C; real, invertida y menor"
        }
-      ]
+      ],
+      "k": "4dc48c0fab45d94c1e8d73aac8cf9b8c1ac3d0dad054177d27a3e245d85a15a2369c3bc893105587a365a516c27c080167ee57457d618b2ed40cd2557e1830"
      },
      "B": {
-      "enunciado": "Un lapicero está a 25 cm de un espejo cóncavo de 15 cm de distancia focal. ¿Dónde se forma su imagen y cómo es?",
+      "enunciado": "Un lapicero está a 25 cm de un espejo cóncavo de 15 cm de distancia focal (F es el foco y C, el centro de curvatura). ¿Dónde se forma su imagen y cómo es?",
       "opciones": [
        {
-        "texto": "Sobre la superficie del espejo",
-        "error": "S1-en-la-superficie"
+        "texto": "Sobre la superficie del espejo"
        },
        {
-        "texto": "Delante del espejo, más allá del centro de curvatura: real, invertida y más grande",
-        "correcta": true
+        "texto": "Delante del espejo, más allá de C; real, invertida y mayor"
        },
        {
-        "texto": "Detrás del espejo, como en una lente",
-        "error": "S6-detras-como-lente"
+        "texto": "Detrás del espejo; virtual, derecha y mayor"
        },
        {
-        "texto": "Delante del espejo, entre el foco y el centro de curvatura: real, invertida y más pequeña",
-        "error": "S5-zona"
+        "texto": "Delante del espejo, entre el foco y C; real, invertida y menor"
        }
-      ]
+      ],
+      "k": "6d394e8158754b0ff69d6a56103cfd01d1be0d84dbf306302802a8375d78b80edb7d524179538cc7478acb3067377c0e588e0bdc7cb441e6f97b4806847d4a"
+     }
+    },
+    {
+     "par": "fis-10",
+     "plantilla": "energia",
+     "unidad": "fisica.trabajo-y-energia",
+     "mide": "Conservación de la energía: m·g·h = m·v²/2, y la masa se simplifica",
+     "A": {
+      "enunciado": "Un bloque de 2 kg se suelta desde 1,8 m de altura y baja por una rampa sin roce. ¿Con qué rapidez llega al pie de la rampa? (g = 10 m/s²)",
+      "opciones": [
+       {
+        "texto": "36 m/s"
+       },
+       {
+        "texto": "6 m/s"
+       },
+       {
+        "texto": "4,2 m/s"
+       },
+       {
+        "texto": "18 m/s"
+       }
+      ],
+      "k": "aff33d213083397932d094bb3c0b72d34b4f635eb4795ee1e45c5992d347ea350592f9294546cd6c4e34aba1dc914a5227044ff076670dca54c035b13401a3aa720c3b07"
+     },
+     "B": {
+      "enunciado": "Un niño de 30 kg se lanza desde 3,2 m de altura por un tobogán sin roce. ¿Con qué rapidez llega abajo? (g = 10 m/s²)",
+      "opciones": [
+       {
+        "texto": "64 m/s"
+       },
+       {
+        "texto": "8 m/s"
+       },
+       {
+        "texto": "5,7 m/s"
+       },
+       {
+        "texto": "32 m/s"
+       }
+      ],
+      "k": "c2f209bd8af0f9c1e5f383c39cfdb9b5a0de897ad9120cf54605423eea4fdc2d0b913e32ba567c7f1d0446ed68650bbfeb995ac797fad4abc3d2441eb8266fd014e07219"
      }
     }
    ]
   },
   "geometria": {
    "curso": "geometria",
-   "version": "1.0.0",
+   "version": "1.1.0",
    "minutos": 15,
    "errores": {
     "GE1-area-como-lado": {
@@ -1446,7 +1363,7 @@
     },
     "GE20-sin-tercio": {
      "respaldo": "hipotesis",
-     "describe": "Olvida el tercio del volumen del cono"
+     "describe": "Cree que el cono y el cilindro de igual base y altura tienen el mismo volumen"
     },
     "cono-mitad": {
      "respaldo": "hipotesis",
@@ -1460,18 +1377,6 @@
      "respaldo": "documentado",
      "describe": "Usa un lado inclinado como si fuera la altura"
     },
-    "GE7-altura-siempre-dentro": {
-     "respaldo": "documentado",
-     "describe": "Cree que la altura siempre cae dentro del triángulo"
-    },
-    "GE7-solo-una-fuera": {
-     "respaldo": "hipotesis",
-     "describe": "Cree que en el obtusángulo solo cae fuera la altura del ángulo obtuso"
-    },
-    "GE7-todas-fuera": {
-     "respaldo": "hipotesis",
-     "describe": "Cree que en el obtusángulo las tres alturas caen fuera"
-    },
     "GE6-acostado-mas-area": {
      "respaldo": "parcial",
      "describe": "Cree que el triángulo estirado tiene más área"
@@ -1482,7 +1387,7 @@
     },
     "GE6-isosceles-mas-area": {
      "respaldo": "parcial",
-     "describe": "Cree que el isósceles tiene la mayor área"
+     "describe": "Cree que el área es máxima cuando el triángulo es isósceles"
     },
     "GE15-inscrito-igual-central": {
      "respaldo": "hipotesis",
@@ -1490,7 +1395,7 @@
     },
     "GE15-inscrito-doble": {
      "respaldo": "hipotesis",
-     "describe": "Cree que el inscrito es el doble del central"
+     "describe": "Invierte la relación: cree que el inscrito es el doble del central"
     },
     "GE16-exterior-suma": {
      "respaldo": "hipotesis",
@@ -1500,10 +1405,6 @@
      "respaldo": "hipotesis",
      "describe": "Resta los arcos y no divide entre 2"
     },
-    "GE16-exterior-suma-sin-dividir": {
-     "respaldo": "hipotesis",
-     "describe": "Suma los arcos y no divide entre 2"
-    },
     "GE19-diametro-como-radio": {
      "respaldo": "hipotesis",
      "describe": "Usa el diámetro donde va el radio"
@@ -1512,9 +1413,33 @@
      "respaldo": "hipotesis",
      "describe": "Calcula el área del sector en vez de la longitud del arco"
     },
-    "GE19-sin-fraccion": {
+    "invierte-tercio": {
      "respaldo": "hipotesis",
-     "describe": "Da la circunferencia entera sin la fracción del arco"
+     "describe": "Divide entre 3 cuando hay que multiplicar (cono y cilindro al revés)"
+    },
+    "base-prolongacion": {
+     "respaldo": "hipotesis",
+     "describe": "Toma como base el tramo de la prolongación donde cae la altura"
+    },
+    "GE18-promedio-catetos": {
+     "respaldo": "hipotesis",
+     "describe": "Da el promedio de los catetos como altura"
+    },
+    "GE8-altura-como-mediana": {
+     "respaldo": "parcial",
+     "describe": "Cree que la altura llega al punto medio de la hipotenusa (es la mediana)"
+    },
+    "proyeccion-como-altura": {
+     "respaldo": "hipotesis",
+     "describe": "Da la proyección de un cateto sobre la hipotenusa como si fuera la altura"
+    },
+    "exterior-mitad-del-cercano": {
+     "respaldo": "hipotesis",
+     "describe": "Usa solo el arco cercano, como en un ángulo inscrito"
+    },
+    "GE19-pi-r": {
+     "respaldo": "hipotesis",
+     "describe": "Usa π·r como longitud de la circunferencia"
     }
    },
    "pares": [
@@ -1527,35 +1452,31 @@
       "enunciado": "Una foto rectangular tiene 30 cm² de área. Se amplía de modo que cada lado mide el triple. ¿Cuál es el área de la foto ampliada?",
       "opciones": [
        {
-        "texto": "90 cm²",
-        "error": "GE1-area-como-lado"
+        "texto": "90 cm²"
        },
        {
-        "texto": "270 cm²",
-        "correcta": true
+        "texto": "270 cm²"
        },
        {
-        "texto": "810 cm²",
-        "error": "GE2-cubo-en-area"
+        "texto": "810 cm²"
        }
-      ]
+      ],
+      "k": "4c60509f68c190a0a588c59ca1dbed8f8a43f98dbc3c62e4c224ebe511c6419e2014682957af2758073f175babac07a3"
      },
      "B": {
       "enunciado": "Un jardín rectangular tiene 40 m² de área. Se rediseña otro con la misma forma, pero con cada lado del doble de largo. ¿Cuál es el área del jardín nuevo?",
       "opciones": [
        {
-        "texto": "80 m²",
-        "error": "GE1-area-como-lado"
+        "texto": "80 m²"
        },
        {
-        "texto": "160 m²",
-        "correcta": true
+        "texto": "160 m²"
        },
        {
-        "texto": "320 m²",
-        "error": "GE2-cubo-en-area"
+        "texto": "320 m²"
        }
-      ]
+      ],
+      "k": "2495ffb98ae4bdc1e8e98a300190f3341675be9f9bce211c26507c49568e6f3944defe099ab3a66231e5df81a33edb95"
      }
     },
     {
@@ -1567,75 +1488,73 @@
       "enunciado": "En una caja cúbica caben 2 litros. Otra caja cúbica tiene la arista del doble de largo. ¿Cuántos litros caben en ella?",
       "opciones": [
        {
-        "texto": "4 litros",
-        "error": "GE2-volumen-como-arista"
+        "texto": "4 litros"
        },
        {
-        "texto": "8 litros",
-        "error": "GE2-volumen-como-area"
+        "texto": "8 litros"
        },
        {
-        "texto": "16 litros",
-        "correcta": true
+        "texto": "16 litros"
        }
-      ]
+      ],
+      "k": "072eb7b19169d8b4abd79189f03b94818a6533ecf5307f2b13cd87b7ddf014775615dc595f6c21e1bf3e0897826d1af98a67f14942da1130da58"
      },
      "B": {
       "enunciado": "Un dado de madera tiene 5 cm³ de volumen. Se fabrica otro dado con la arista del triple de largo. ¿Cuál es su volumen?",
       "opciones": [
        {
-        "texto": "15 cm³",
-        "error": "GE2-volumen-como-arista"
+        "texto": "15 cm³"
        },
        {
-        "texto": "45 cm³",
-        "error": "GE2-volumen-como-area"
+        "texto": "45 cm³"
        },
        {
-        "texto": "135 cm³",
-        "correcta": true
+        "texto": "135 cm³"
        }
-      ]
+      ],
+      "k": "8a68fc2e838ff339b626554b255cb2f1a35a9b0ffa8a204c0df181ff60fafc20e6f5a49b010c1528f9c4b4c998c4061b710bf96f2259bbf98c67"
      }
     },
     {
      "par": "geo-03",
      "plantilla": "ampliadora",
      "unidad": "geometria.solidos-de-revolucion",
-     "mide": "El cono es un tercio del cilindro de la misma base y la misma altura",
+     "mide": "El cilindro guarda el triple que el cono de la misma base y la misma altura",
      "A": {
-      "enunciado": "Un cilindro y un cono tienen la misma base y la misma altura. El volumen del cilindro es 600 cm³. ¿Cuál es el volumen del cono?",
+      "enunciado": "Un cono y un cilindro tienen la misma base y la misma altura. El volumen del cono es 200 cm³. ¿Cuál es el volumen del cilindro?",
       "opciones": [
        {
-        "texto": "600 cm³",
-        "error": "GE20-sin-tercio"
+        "texto": "200 cm³"
        },
        {
-        "texto": "300 cm³",
-        "error": "cono-mitad"
+        "texto": "400 cm³"
        },
        {
-        "texto": "200 cm³",
-        "correcta": true
+        "texto": "600 cm³"
+       },
+       {
+        "texto": "66,7 cm³"
        }
-      ]
+      ],
+      "k": "948711e4244edc7731ea41655e9448069da14c1ffddf78ec66a23fab71004809450ef31c677ff72087e15692542938bc5adb11412961a7c39c"
      },
      "B": {
-      "enunciado": "En un vaso cilíndrico caben 900 mL. Un cucurucho cónico tiene la misma boca y la misma altura que el vaso. ¿Cuántos mL caben en el cucurucho?",
+      "enunciado": "En un cucurucho cónico caben 300 mL. Un vaso cilíndrico tiene la misma boca y la misma altura que el cucurucho. ¿Cuántos mL caben en el vaso?",
       "opciones": [
        {
-        "texto": "900 mL",
-        "error": "GE20-sin-tercio"
+        "texto": "300 mL"
        },
        {
-        "texto": "450 mL",
-        "error": "cono-mitad"
+        "texto": "600 mL"
        },
        {
-        "texto": "300 mL",
-        "correcta": true
+        "texto": "900 mL"
+       },
+       {
+        "texto": "100 mL"
        }
-      ]
+      ],
+      "k": "5570d16c0ff178363775f00768c266b104e24962ff48cd8fc6c8aca535973e737904f6db13e6882ac4391773ea9ebe3d6c0a3688f41e281eae"
      }
     },
     {
@@ -1644,86 +1563,82 @@
      "unidad": "geometria.areas-poligonales",
      "mide": "Área de un obtusángulo con la altura que cae fuera del triángulo",
      "A": {
-      "enunciado": "En el triángulo ABC, el lado BC mide 6 cm y el ángulo B es obtuso. La altura trazada desde A cae fuera del triángulo, sobre la prolongación de BC, y mide 4 cm. Además, AB mide 5 cm. ¿Cuál es el área del triángulo?",
+      "enunciado": "En ABC, el vértice B es obtuso. La distancia de A a la línea que contiene a BC es 4 cm, y el pie de esa distancia cae en la prolongación de BC, más allá de B. Si BC = 7 cm y AB = 5 cm, ¿cuál es el área de ABC?",
       "opciones": [
        {
-        "texto": "24 cm²",
-        "error": "area-sin-dividir-entre-2"
+        "texto": "28 cm²"
        },
        {
-        "texto": "12 cm²",
-        "correcta": true
+        "texto": "14 cm²"
        },
        {
-        "texto": "15 cm²",
-        "error": "GE7-lado-como-altura"
+        "texto": "17,5 cm²"
+       },
+       {
+        "texto": "6 cm²"
        }
-      ]
+      ],
+      "k": "8ec8889f3702acac6097adc277dd82e457668f0f69f75dd4f17166d35768b37e329e6723a80be1bc09b3bb931eb13d508950fd240bc51b6e4004638b071ae00faaa3b3af1d8bc9a77bf6e6541657"
      },
      "B": {
-      "enunciado": "En el triángulo PQR, el lado QR mide 5 cm y el ángulo Q es obtuso. La altura trazada desde P cae fuera del triángulo, sobre la prolongación de QR, y mide 8 cm. Además, PQ mide 10 cm. ¿Cuál es el área del triángulo?",
+      "enunciado": "En PQR, el vértice Q es obtuso. La distancia de P a la línea que contiene a QR es 6 cm, y el pie de esa distancia cae en la prolongación de QR, más allá de Q. Si QR = 10 cm y PQ = 10 cm, ¿cuál es el área de PQR?",
       "opciones": [
        {
-        "texto": "40 cm²",
-        "error": "area-sin-dividir-entre-2"
+        "texto": "60 cm²"
        },
        {
-        "texto": "20 cm²",
-        "correcta": true
+        "texto": "30 cm²"
        },
        {
-        "texto": "25 cm²",
-        "error": "GE7-lado-como-altura"
+        "texto": "50 cm²"
+       },
+       {
+        "texto": "24 cm²"
        }
-      ]
+      ],
+      "k": "48481a31ba37aab9e7eef889efdd6544bd462b2ed948c2d6b66ad021872bccb5134cb8410900c46ba7590987e56d7460f0c7f4d8bb95d5edec40d560805f528f51b923873eebd278859beda1a0a0"
      }
     },
     {
      "par": "geo-05",
      "plantilla": "triangulo-estira",
-     "unidad": "geometria.puntos-notables",
-     "mide": "En un obtusángulo, dos de las tres alturas caen fuera",
+     "unidad": "geometria.relaciones-metricas",
+     "mide": "Altura relativa a la hipotenusa: h = (cateto · cateto) / hipotenusa",
      "A": {
-      "enunciado": "En el triángulo ABC, el ángulo B mide 110°. Cada vértice tiene su altura, perpendicular a la recta del lado opuesto. ¿Cuántas de las tres alturas caen fuera del triángulo?",
+      "enunciado": "Los catetos de un triángulo rectángulo miden 15 cm y 20 cm, y su hipotenusa, 25 cm. ¿Cuánto mide la altura trazada desde el ángulo recto hasta la hipotenusa?",
       "opciones": [
        {
-        "texto": "Ninguna: la altura siempre cae dentro del triángulo",
-        "error": "GE7-altura-siempre-dentro"
+        "texto": "17,5 cm"
        },
        {
-        "texto": "Una: la que sale del ángulo obtuso",
-        "error": "GE7-solo-una-fuera"
+        "texto": "12,5 cm"
        },
        {
-        "texto": "Dos",
-        "correcta": true
+        "texto": "12 cm"
        },
        {
-        "texto": "Las tres",
-        "error": "GE7-todas-fuera"
+        "texto": "9 cm"
        }
-      ]
+      ],
+      "k": "c9d64bb5b7c0d5da31eea9d12f88e7d1fac410d70eb7fb8273916d589bfe644bfeb152495ef81b37ff61a27c7c979b8c93c6a493e321be2c7e75c65ab5796426a180b026b9a03f3f5d1518b6ae5022435d16f6"
      },
      "B": {
-      "enunciado": "En el triángulo PQR, el ángulo Q mide 125°. Cada vértice tiene su altura, perpendicular a la recta del lado opuesto. ¿Cuántas de las tres alturas caen fuera del triángulo?",
+      "enunciado": "Los catetos de un triángulo rectángulo miden 9 cm y 12 cm, y su hipotenusa, 15 cm. ¿Cuánto mide la altura trazada desde el ángulo recto hasta la hipotenusa?",
       "opciones": [
        {
-        "texto": "Ninguna: la altura siempre cae dentro del triángulo",
-        "error": "GE7-altura-siempre-dentro"
+        "texto": "10,5 cm"
        },
        {
-        "texto": "Una: la que sale del ángulo obtuso",
-        "error": "GE7-solo-una-fuera"
+        "texto": "7,5 cm"
        },
        {
-        "texto": "Dos",
-        "correcta": true
+        "texto": "7,2 cm"
        },
        {
-        "texto": "Las tres",
-        "error": "GE7-todas-fuera"
+        "texto": "5,4 cm"
        }
-      ]
+      ],
+      "k": "22e82a49179a6beaa6539b2cbe297c328aaba1bd36277d9cceb7955bb86c23357aa35a9597eddf7b5db6a67b122beed2cc5ff48a7b88f613f7fbdb6dd6e2008ba673301a7091bc70683d323704533ea3af0f52"
      }
     },
     {
@@ -1732,86 +1647,76 @@
      "unidad": "geometria.areas-poligonales",
      "mide": "Con la misma base y entre paralelas, el área no cambia",
      "A": {
-      "enunciado": "El vértice A del triángulo ABC se desliza por una recta paralela a la base BC, alejándose cada vez más hacia la derecha. B y C no se mueven. ¿Qué pasa con el área del triángulo?",
+      "enunciado": "En el triángulo ABC, B y C están fijos. El vértice A empieza justo encima de B y se desliza hacia la derecha por una recta paralela a BC: pasa sobre el punto medio de BC y sigue alejándose. ¿Qué pasa con el área del triángulo?",
       "opciones": [
        {
-        "texto": "Crece, porque el triángulo se estira y sus lados se alargan",
-        "error": "GE6-acostado-mas-area"
+        "texto": "Crece todo el tiempo"
        },
        {
-        "texto": "No cambia",
-        "correcta": true
+        "texto": "No cambia"
        },
        {
-        "texto": "Disminuye, porque el triángulo se ve cada vez más delgado",
-        "error": "GE6-acostado-menos-area"
+        "texto": "Disminuye todo el tiempo"
        },
        {
-        "texto": "Es mayor cuando A está justo encima del punto medio de BC",
-        "error": "GE6-isosceles-mas-area"
+        "texto": "Crece y después disminuye"
        }
-      ]
+      ],
+      "k": "ccc26fcff4bf5c8e8fddb63a886a560c2b15df2ebd6eed9232e9025d6a91a400d1a8ddb95e4b2e6fb7387fc45aba508a54e06682b7216dfebeb25c67a3f9eaa8d7a46de74cdb603731bbbe7facdee141e3fbd7"
      },
      "B": {
-      "enunciado": "Un terreno triangular tiene un lado fijo a lo largo de una pista recta. Su tercer vértice es un poste que se puede mover por un camino paralelo a la pista. Si el poste se corre cada vez más lejos por el camino, ¿qué pasa con el área del terreno?",
+      "enunciado": "Un terreno triangular tiene un lado fijo a lo largo de una pista recta. Su tercer vértice es un poste que se mueve por un camino paralelo a la pista: parte frente a un extremo del lado fijo, pasa frente a su punto medio y sigue de largo. ¿Qué pasa con el área del terreno?",
       "opciones": [
        {
-        "texto": "Crece, porque el terreno se estira y sus lados se alargan",
-        "error": "GE6-acostado-mas-area"
+        "texto": "Crece todo el tiempo"
        },
        {
-        "texto": "No cambia",
-        "correcta": true
+        "texto": "No cambia"
        },
        {
-        "texto": "Disminuye, porque el terreno se ve cada vez más delgado",
-        "error": "GE6-acostado-menos-area"
+        "texto": "Disminuye todo el tiempo"
        },
        {
-        "texto": "Es mayor cuando el poste está justo frente al punto medio del lado fijo",
-        "error": "GE6-isosceles-mas-area"
+        "texto": "Crece y después disminuye"
        }
-      ]
+      ],
+      "k": "80b07892a59bf4bd72a10800c510e5e730548c8b050fb91e94c4bc398f478affbff11220c7b9536e545af7cef77e7da496ddfb0d8409a06ede9599a89e9faab21f084e1c2fe0eeb619aba71514d81c3d4aaed4"
      }
     },
     {
      "par": "geo-07",
      "plantilla": "angulo-inscrito",
      "unidad": "geometria.circunferencia",
-     "mide": "El ángulo inscrito mide la mitad del central que abarca el mismo arco",
+     "mide": "El ángulo central mide el doble del inscrito que abarca el mismo arco",
      "A": {
-      "enunciado": "En una circunferencia de centro O, el ángulo central AOB mide 110°. El punto P está en el arco mayor AB. ¿Cuánto mide el ángulo inscrito APB?",
+      "enunciado": "En una circunferencia de centro O, el ángulo inscrito APB mide 35° (P está en el arco mayor AB). ¿Cuánto mide el ángulo central AOB?",
       "opciones": [
        {
-        "texto": "110°",
-        "error": "GE15-inscrito-igual-central"
+        "texto": "35°"
        },
        {
-        "texto": "55°",
-        "correcta": true
+        "texto": "70°"
        },
        {
-        "texto": "220°",
-        "error": "GE15-inscrito-doble"
+        "texto": "17,5°"
        }
-      ]
+      ],
+      "k": "e68308261f152b590ce17e0e66ffb0d789f8894892c41c258438f1803934f5ad27ac0126b436f67ee8fe660fb87f081ff2c121388df79d6c2d492479"
      },
      "B": {
-      "enunciado": "En una circunferencia de centro O, el ángulo central MON mide 84°. El punto Q está en el arco mayor MN. ¿Cuánto mide el ángulo inscrito MQN?",
+      "enunciado": "En una circunferencia de centro O, el ángulo inscrito MQN mide 48° (Q está en el arco mayor MN). ¿Cuánto mide el ángulo central MON?",
       "opciones": [
        {
-        "texto": "84°",
-        "error": "GE15-inscrito-igual-central"
+        "texto": "48°"
        },
        {
-        "texto": "42°",
-        "correcta": true
+        "texto": "96°"
        },
        {
-        "texto": "168°",
-        "error": "GE15-inscrito-doble"
+        "texto": "24°"
        }
-      ]
+      ],
+      "k": "9b2f719c3a76b39840fd378d25aeedc43ff069ac9dbe5346f28fa3e9a1601640227a94c87487277109ff73b06f2f52d5ce00ae76e76538b3e1259e39"
      }
     },
     {
@@ -1823,43 +1728,37 @@
       "enunciado": "Desde un punto Q, fuera de una circunferencia, se trazan dos secantes. Entre ellas quedan dos arcos: el lejano mide 130° y el cercano, 30°. ¿Cuánto mide el ángulo que forman las secantes en Q?",
       "opciones": [
        {
-        "texto": "80°",
-        "error": "GE16-exterior-suma"
+        "texto": "80°"
        },
        {
-        "texto": "100°",
-        "error": "GE16-exterior-sin-dividir"
+        "texto": "100°"
        },
        {
-        "texto": "50°",
-        "correcta": true
+        "texto": "50°"
        },
        {
-        "texto": "160°",
-        "error": "GE16-exterior-suma-sin-dividir"
+        "texto": "15°"
        }
-      ]
+      ],
+      "k": "eb035a26759559ad10e907191f52844750467d74f56d1536e822c03599a6b4c5259bf557cba359548ed46b415f5c171a8e3db2f3738909ccb09224090e1481ebc49e9fbff0206430d152097b022cb07753d0a641bbd1"
      },
      "B": {
       "enunciado": "Desde un punto P, fuera de una circunferencia, se trazan dos secantes. Entre ellas quedan dos arcos: el lejano mide 140° y el cercano, 20°. ¿Cuánto mide el ángulo que forman las secantes en P?",
       "opciones": [
        {
-        "texto": "80°",
-        "error": "GE16-exterior-suma"
+        "texto": "80°"
        },
        {
-        "texto": "120°",
-        "error": "GE16-exterior-sin-dividir"
+        "texto": "120°"
        },
        {
-        "texto": "60°",
-        "correcta": true
+        "texto": "60°"
        },
        {
-        "texto": "160°",
-        "error": "GE16-exterior-suma-sin-dividir"
+        "texto": "10°"
        }
-      ]
+      ],
+      "k": "1bc3ad7b04b313d3dbd5d3f603ae650711eef6a98de48b1a1355a953964d301dd9d58fecd2d7d82d1d231a054bd0812741271a359686b17b2f7c3af4df0ef5a936036f11cef8dee1c262a49ddbfbd3026ab186dc4c7f"
      }
     },
     {
@@ -1871,51 +1770,45 @@
       "enunciado": "En una circunferencia de 8 cm de radio, ¿cuánto mide la longitud de un arco de 45°?",
       "opciones": [
        {
-        "texto": "2π cm",
-        "correcta": true
+        "texto": "π cm"
        },
        {
-        "texto": "4π cm",
-        "error": "GE19-diametro-como-radio"
+        "texto": "2π cm"
        },
        {
-        "texto": "8π cm",
-        "error": "GE19-area-por-longitud"
+        "texto": "4π cm"
        },
        {
-        "texto": "16π cm",
-        "error": "GE19-sin-fraccion"
+        "texto": "8π cm"
        }
-      ]
+      ],
+      "k": "e122b5bdee9f0476ee81815b72c2279f5b90fb3ba957ffc3e0e79206be866eb98d7cdd3c0fc3d29a58b1bf7d7d1f99941b279f741cc24497700fb7b63c136047d14da05ad3138b8b"
      },
      "B": {
       "enunciado": "En una circunferencia de 12 cm de radio, ¿cuánto mide la longitud de un arco de 30°?",
       "opciones": [
        {
-        "texto": "2π cm",
-        "correcta": true
+        "texto": "π cm"
        },
        {
-        "texto": "4π cm",
-        "error": "GE19-diametro-como-radio"
+        "texto": "2π cm"
        },
        {
-        "texto": "12π cm",
-        "error": "GE19-area-por-longitud"
+        "texto": "4π cm"
        },
        {
-        "texto": "24π cm",
-        "error": "GE19-sin-fraccion"
+        "texto": "12π cm"
        }
-      ]
+      ],
+      "k": "44994d032c3176a786aa86fb155502ab9aa4d44cab00ef95b3641f8b5618b44d076cad9d043d3f3983a01a11045da6b9e2d8a63aa7ce379c391ff4029a1b7411b5e99274dd7d41a6"
      }
     }
    ]
   },
   "quimica": {
    "curso": "quimica",
-   "version": "1.0.0",
-   "minutos": 15,
+   "version": "1.1.0",
+   "minutos": 16,
    "errores": {
     "ES20-menor-cantidad": {
      "respaldo": "documentado",
@@ -1943,7 +1836,7 @@
     },
     "rigido-presion-fija": {
      "respaldo": "parcial",
-     "describe": "Cree que en un recipiente rígido la presión no cambia"
+     "describe": "Cree que en un recipiente rígido la presión no cambia al calentar"
     },
     "usa-celsius": {
      "respaldo": "hipotesis",
@@ -1969,10 +1862,6 @@
      "respaldo": "hipotesis",
      "describe": "Calcula el porcentaje del solvente"
     },
-    "SO14-que-mide-cada-unidad": {
-     "respaldo": "parcial",
-     "describe": "No sabe qué datos pide cada unidad de concentración"
-    },
     "EQ3": {
      "respaldo": "documentado",
      "describe": "Cree que en el equilibrio la reacción terminó y ya no responde a cambios"
@@ -1995,7 +1884,7 @@
     },
     "AB5-mas-pH-mas-H": {
      "respaldo": "parcial",
-     "describe": "Cree que más pH es más H⁺"
+     "describe": "Cree que más pH es más H⁺ (invierte la comparación)"
     },
     "fem-multiplica-coeficientes": {
      "respaldo": "hipotesis",
@@ -2008,6 +1897,30 @@
     "fem-resta-al-reves": {
      "respaldo": "hipotesis",
      "describe": "Resta el cátodo del ánodo"
+    },
+    "orden-uno": {
+     "respaldo": "hipotesis",
+     "describe": "Multiplica los factores sin elevarlos a su orden"
+    },
+    "suma-factores": {
+     "respaldo": "hipotesis",
+     "describe": "Suma los factores de las concentraciones"
+    },
+    "CI9": {
+     "respaldo": "parcial",
+     "describe": "Usa los coeficientes de la ecuación como órdenes de reacción"
+    },
+    "vidas-medias-restando": {
+     "respaldo": "hipotesis",
+     "describe": "Resta la mitad del total en cada vida media: en dos vidas medias se acabaría todo"
+    },
+    "vidas-medias-dividiendo": {
+     "respaldo": "hipotesis",
+     "describe": "Divide entre el doble del número de vidas medias"
+    },
+    "una-vida-media": {
+     "respaldo": "hipotesis",
+     "describe": "Aplica una sola vez la mitad"
     }
    },
    "pares": [
@@ -2020,43 +1933,37 @@
       "enunciado": "En un recipiente hay 6 moléculas de H₂ y 4 moléculas de O₂, que reaccionan según 2 H₂ + O₂ → 2 H₂O. ¿Cuál es el reactivo limitante?",
       "opciones": [
        {
-        "texto": "El O₂, porque hay menos moléculas",
-        "error": "ES20-menor-cantidad"
+        "texto": "El O₂, porque hay menos moléculas"
        },
        {
-        "texto": "El O₂, porque su coeficiente es el menor",
-        "error": "ES21-menor-coeficiente"
+        "texto": "El O₂, porque su coeficiente es el menor"
        },
        {
-        "texto": "El H₂",
-        "correcta": true
+        "texto": "El H₂, porque se acaba primero"
        },
        {
-        "texto": "Los dos: se acaban a la vez",
-        "error": "ES22-se-acaban-los-dos"
+        "texto": "Los dos, porque se acaban a la vez"
        }
-      ]
+      ],
+      "k": "a6be004e0185671483dda68edc7a72cd2f8d4fca067fe4d492c942762ac2e89238c21da5cd358e29846040840938a14b044a3921529d469751cee3e7749eb9e37896b48b712323bed870a93758d8faa6"
      },
      "B": {
       "enunciado": "En un recipiente hay 3 moléculas de N₂ y 6 moléculas de H₂, que reaccionan según N₂ + 3 H₂ → 2 NH₃. ¿Cuál es el reactivo limitante?",
       "opciones": [
        {
-        "texto": "El N₂, porque hay menos moléculas",
-        "error": "ES20-menor-cantidad"
+        "texto": "El N₂, porque hay menos moléculas"
        },
        {
-        "texto": "El N₂, porque su coeficiente es el menor",
-        "error": "ES21-menor-coeficiente"
+        "texto": "El N₂, porque su coeficiente es el menor"
        },
        {
-        "texto": "El H₂",
-        "correcta": true
+        "texto": "El H₂, porque se acaba primero"
        },
        {
-        "texto": "Los dos: se acaban a la vez",
-        "error": "ES22-se-acaban-los-dos"
+        "texto": "Los dos, porque se acaban a la vez"
        }
-      ]
+      ],
+      "k": "97beea4cf9208be78151467efd72cff8eebc80321f1e91ef00e36120755d0d8e83d226af70f4aaacea1e5b2d6c4ff1e8c95275c389d185f8a782fb2a41a07875acbda710a27adb5376b8ea1547d4bb23"
      }
     },
     {
@@ -2065,46 +1972,40 @@
      "unidad": "quimica.estequiometria",
      "mide": "Masa de producto cuando el limitante es el reactivo con más gramos",
      "A": {
-      "enunciado": "En una planta de fertilizantes se mezclan 56 g de N₂ con 18 g de H₂, que reaccionan según N₂ + 3 H₂ → 2 NH₃. ¿Cuántos gramos de NH₃ se forman como máximo? (Masas molares en g/mol: N₂ = 28; H₂ = 2; NH₃ = 17)",
+      "enunciado": "En una planta de fertilizantes se mezclan 98 g de N₂ con 27 g de H₂, que reaccionan según N₂ + 3 H₂ → 2 NH₃. ¿Cuántos gramos de NH₃ se forman como máximo? (Masas molares en g/mol: N₂ = 28; H₂ = 2; NH₃ = 17)",
       "opciones": [
        {
-        "texto": "102 g",
-        "error": "ES20-menor-cantidad"
+        "texto": "153 g"
        },
        {
-        "texto": "74 g",
-        "error": "ES15-suma-de-masas"
+        "texto": "125 g"
        },
        {
-        "texto": "68 g",
-        "correcta": true
+        "texto": "119 g"
        },
        {
-        "texto": "34 g",
-        "error": "sin-coef-producto"
+        "texto": "59,5 g"
        }
-      ]
+      ],
+      "k": "368577b6f0ee71041f8ad4006f26311e7de127370abdefef049581717984212e887cf3e3c27303aeee0e3aed8da0098f828eae83461a5f44f7e3fe511c1f91e20e9454886ab676"
      },
      "B": {
-      "enunciado": "En una celda de combustible se mezclan 10 g de H₂ con 64 g de O₂, que reaccionan según 2 H₂ + O₂ → 2 H₂O. ¿Cuántos gramos de agua se forman como máximo? (Masas molares en g/mol: H₂ = 2; O₂ = 32; H₂O = 18)",
+      "enunciado": "En un laboratorio se mezclan 7 g de H₂ con 48 g de O₂, que reaccionan según 2 H₂ + O₂ → 2 H₂O. ¿Cuántos gramos de agua se forman como máximo? (Masas molares en g/mol: H₂ = 2; O₂ = 32; H₂O = 18)",
       "opciones": [
        {
-        "texto": "90 g",
-        "error": "ES20-menor-cantidad"
+        "texto": "63 g"
        },
        {
-        "texto": "74 g",
-        "error": "ES15-suma-de-masas"
+        "texto": "55 g"
        },
        {
-        "texto": "72 g",
-        "correcta": true
+        "texto": "54 g"
        },
        {
-        "texto": "36 g",
-        "error": "sin-coef-producto"
+        "texto": "27 g"
        }
-      ]
+      ],
+      "k": "0ab9f8dc3865e0938c56b18e3495ae020d50f6d9d647e06980fc90e9fcd3420cb3903102c947a7fcbe54b78dae9ada788e2c7292789e40f99ba51ea4b695654134d30bd3db3baf"
      }
     },
     {
@@ -2116,43 +2017,37 @@
       "enunciado": "Un tanque rígido tiene gas a 27 °C y su manómetro marca 3 atm. Se calienta hasta 177 °C. ¿Cuánto marca ahora el manómetro? (Presión atmosférica: 1 atm)",
       "opciones": [
        {
-        "texto": "4,5 atm",
-        "error": "usa-presion-manometrica"
+        "texto": "4,5 atm"
        },
        {
-        "texto": "3 atm, porque el tanque es rígido",
-        "error": "rigido-presion-fija"
+        "texto": "3 atm"
        },
        {
-        "texto": "25,2 atm",
-        "error": "usa-celsius"
+        "texto": "25,2 atm"
        },
        {
-        "texto": "5 atm",
-        "correcta": true
+        "texto": "5 atm"
        }
-      ]
+      ],
+      "k": "651c78627f4b10cf894f2aa19bf7bfba78aea94d9b02721c880c4eb81610eba6ba6fb733a052e0f68617ed2f3ec158550efb84dcead078e6a8b7bd1c29f6801d3bdb3b139cdf"
      },
      "B": {
       "enunciado": "Un balón de acero (rígido) tiene gas a 7 °C y su manómetro marca 2 atm. Se calienta hasta 147 °C. ¿Cuánto marca ahora el manómetro? (Presión atmosférica: 1 atm)",
       "opciones": [
        {
-        "texto": "3 atm",
-        "error": "usa-presion-manometrica"
+        "texto": "3 atm"
        },
        {
-        "texto": "2 atm, porque el balón es rígido",
-        "error": "rigido-presion-fija"
+        "texto": "2 atm"
        },
        {
-        "texto": "62 atm",
-        "error": "usa-celsius"
+        "texto": "62 atm"
        },
        {
-        "texto": "3,5 atm",
-        "correcta": true
+        "texto": "3,5 atm"
        }
-      ]
+      ],
+      "k": "e7ab34560e51af055f92cbedf48cfe2f4008190ba56b65dfca6e8201624acf8415347e3d66e24a8aaa71e2ac1ecd87fbce6ffb32bdae2bfe7832afd3cc0a9d71bfed754e0220"
      }
     },
     {
@@ -2164,43 +2059,37 @@
       "enunciado": "Se mezclan 300 mL de una solución de NaCl 2 M con 200 mL de otra solución de NaCl 0,5 M. ¿Cuál es la molaridad de la mezcla?",
       "opciones": [
        {
-        "texto": "1,25 M",
-        "error": "mezcla-promedio-simple"
+        "texto": "1,25 M"
        },
        {
-        "texto": "1,4 M",
-        "correcta": true
+        "texto": "1,4 M"
        },
        {
-        "texto": "2,5 M",
-        "error": "SO7-suma-concentraciones"
+        "texto": "2,5 M"
        },
        {
-        "texto": "0,7 M",
-        "error": "SO7-moles-como-concentracion"
+        "texto": "0,7 M"
        }
-      ]
+      ],
+      "k": "88de2df9d7e185056e06c4309e9be4b0cc5e8be6bec372a2b1f4952d46f6802161f2f125a6721d3f80080dc01c621c08aef51c50353cd7fc6e2dd363ac32409248f44a74b01c1d122f7a48bbcfc716e1f9feeda894a7a68e63c132"
      },
      "B": {
       "enunciado": "Se mezclan 100 mL de una solución de azúcar 4 M con 300 mL de otra solución de azúcar 2 M. ¿Cuál es la molaridad de la mezcla?",
       "opciones": [
        {
-        "texto": "3 M",
-        "error": "mezcla-promedio-simple"
+        "texto": "3 M"
        },
        {
-        "texto": "2,5 M",
-        "correcta": true
+        "texto": "2,5 M"
        },
        {
-        "texto": "6 M",
-        "error": "SO7-suma-concentraciones"
+        "texto": "6 M"
        },
        {
-        "texto": "1 M",
-        "error": "SO7-moles-como-concentracion"
+        "texto": "1 M"
        }
-      ]
+      ],
+      "k": "f925e5f0aac66543f79e2542423f9e97dc7776923b2f870d2d3d894ffb36ca3382ae283c00282c753d0586830cda76514bb957e40f649757ab7d5b9300eddfc85a44a62443d24abdb88f8058a4816a19abf150a59d2b1d04a2f531"
      }
     },
     {
@@ -2209,46 +2098,34 @@
      "unidad": "quimica.soluciones",
      "mide": "Porcentaje en masa: soluto entre la masa de toda la solución",
      "A": {
-      "enunciado": "Se disuelven 12 g de cloruro de sodio en 88 g de agua. ¿Cuál es el porcentaje en masa de cloruro de sodio en la solución?",
+      "enunciado": "Se disuelven 18 g de hidróxido de sodio (NaOH) en 132 g de agua. ¿Cuál es el porcentaje en masa de NaOH en la solución?",
       "opciones": [
        {
-        "texto": "13,6 %",
-        "error": "pct-sobre-solvente"
+        "texto": "13,6 %"
        },
        {
-        "texto": "12 %",
-        "correcta": true
+        "texto": "12 %"
        },
        {
-        "texto": "88 %",
-        "error": "confunde-soluto-solvente"
-       },
-       {
-        "texto": "No se puede saber sin el volumen de la solución",
-        "error": "SO14-que-mide-cada-unidad"
+        "texto": "88 %"
        }
-      ]
+      ],
+      "k": "31777c65ea7e34d35a8b9c7a2792812136206326b70e04c78758f6e5be6653cd8cfd08c416d7b94a9d69890c710d5252a2791a30594683a2"
      },
      "B": {
-      "enunciado": "Se disuelven 25 g de azúcar en 75 g de agua. ¿Cuál es el porcentaje en masa de azúcar en la solución?",
+      "enunciado": "Se disuelven 36 g de hidróxido de sodio (NaOH) en 114 g de agua. ¿Cuál es el porcentaje en masa de NaOH en la solución?",
       "opciones": [
        {
-        "texto": "33,3 %",
-        "error": "pct-sobre-solvente"
+        "texto": "31,6 %"
        },
        {
-        "texto": "25 %",
-        "correcta": true
+        "texto": "24 %"
        },
        {
-        "texto": "75 %",
-        "error": "confunde-soluto-solvente"
-       },
-       {
-        "texto": "No se puede saber sin el volumen de la solución",
-        "error": "SO14-que-mide-cada-unidad"
+        "texto": "76 %"
        }
-      ]
+      ],
+      "k": "83f52b8f5cb4f442c0256763e8e131be586166948cf9aecd37e283371bdeec146fb53d062e7455dde79f64b94bb9a18056a54f416ccb78b3"
      }
     },
     {
@@ -2260,43 +2137,37 @@
       "enunciado": "En un recipiente de 1 L, la reacción A ⇌ B está en equilibrio con 5 mol de A y 15 mol de B (Kc = 3). Sin cambiar la temperatura, se agregan 8 mol de A. ¿Cuántos moles de cada sustancia hay cuando se alcanza el nuevo equilibrio?",
       "opciones": [
        {
-        "texto": "13 mol de A y 15 mol de B: ya estaba en equilibrio, no pasa nada",
-        "error": "EQ3"
+        "texto": "13 mol de A y 15 mol de B"
        },
        {
-        "texto": "5 mol de A y 23 mol de B: todo lo agregado pasa a B",
-        "error": "EQ6"
+        "texto": "5 mol de A y 23 mol de B"
        },
        {
-        "texto": "14 mol de A y 14 mol de B: en el equilibrio quedan iguales",
-        "error": "EQ1"
+        "texto": "14 mol de A y 14 mol de B"
        },
        {
-        "texto": "7 mol de A y 21 mol de B",
-        "correcta": true
+        "texto": "7 mol de A y 21 mol de B"
        }
-      ]
+      ],
+      "k": "d890bc075847c72699a99316fedca2a1e33e9f34a6eb78448ca6"
      },
      "B": {
       "enunciado": "En un recipiente de 1 L, la reacción A ⇌ B está en equilibrio con 3 mol de A y 12 mol de B (Kc = 4). Sin cambiar la temperatura, se agregan 10 mol de A. ¿Cuántos moles de cada sustancia hay cuando se alcanza el nuevo equilibrio?",
       "opciones": [
        {
-        "texto": "13 mol de A y 12 mol de B: ya estaba en equilibrio, no pasa nada",
-        "error": "EQ3"
+        "texto": "13 mol de A y 12 mol de B"
        },
        {
-        "texto": "3 mol de A y 22 mol de B: todo lo agregado pasa a B",
-        "error": "EQ6"
+        "texto": "3 mol de A y 22 mol de B"
        },
        {
-        "texto": "12,5 mol de A y 12,5 mol de B: en el equilibrio quedan iguales",
-        "error": "EQ1"
+        "texto": "12,5 mol de A y 12,5 mol de B"
        },
        {
-        "texto": "5 mol de A y 20 mol de B",
-        "correcta": true
+        "texto": "5 mol de A y 20 mol de B"
        }
-      ]
+      ],
+      "k": "42daad083307fd01d132d64aa79912e5891e5c257bb3eeb58825"
      }
     },
     {
@@ -2308,43 +2179,37 @@
       "enunciado": "Una solución tiene pH 2 y otra tiene pH 5. ¿Cuántas veces más iones H⁺ tiene la solución de pH 2?",
       "opciones": [
        {
-        "texto": "3 veces",
-        "error": "AB4-escala-lineal"
+        "texto": "3 veces"
        },
        {
-        "texto": "2,5 veces",
-        "error": "AB4-razon-de-pH"
+        "texto": "2,5 veces"
        },
        {
-        "texto": "1000 veces",
-        "correcta": true
+        "texto": "1000 veces"
        },
        {
-        "texto": "Ninguna: la de pH 5 tiene más, porque su número es mayor",
-        "error": "AB5-mas-pH-mas-H"
+        "texto": "0,001 veces"
        }
-      ]
+      ],
+      "k": "269af0cf3261bdb41f0277a0524bb205d881c2780a736fea2a96bbb90efb28683e9a8666addc9cc786aae4bea6acf24c464cb6e9cb3018e854dedb36dac8548bca"
      },
      "B": {
       "enunciado": "Una solución tiene pH 3 y otra tiene pH 7. ¿Cuántas veces más iones H⁺ tiene la solución de pH 3?",
       "opciones": [
        {
-        "texto": "4 veces",
-        "error": "AB4-escala-lineal"
+        "texto": "4 veces"
        },
        {
-        "texto": "2,3 veces",
-        "error": "AB4-razon-de-pH"
+        "texto": "2,3 veces"
        },
        {
-        "texto": "10 000 veces",
-        "correcta": true
+        "texto": "10 000 veces"
        },
        {
-        "texto": "Ninguna: la de pH 7 tiene más, porque su número es mayor",
-        "error": "AB5-mas-pH-mas-H"
+        "texto": "0,0001 veces"
        }
-      ]
+      ],
+      "k": "4434c1720f38527ab987d8e4b8cd20a763b853c3009b845eb317b1989c54e1799ba422a680b83b8a5a81fff17653ee263f1ecddcc9a6b562383cd578a8a5054ee6"
      }
     },
     {
@@ -2356,50 +2221,128 @@
       "enunciado": "Se arma una pila con zinc y plata, en la que ocurre Zn + 2 Ag⁺ → Zn²⁺ + 2 Ag. Los potenciales de reducción son E°(Zn²⁺/Zn) = −0,76 V y E°(Ag⁺/Ag) = +0,80 V. ¿Cuál es la fem de la pila?",
       "opciones": [
        {
-        "texto": "2,36 V",
-        "error": "fem-multiplica-coeficientes"
+        "texto": "2,36 V"
        },
        {
-        "texto": "1,56 V",
-        "correcta": true
+        "texto": "1,56 V"
        },
        {
-        "texto": "0,04 V",
-        "error": "fem-suma-sin-cambiar-signo"
+        "texto": "0,04 V"
        },
        {
-        "texto": "−1,56 V",
-        "error": "fem-resta-al-reves"
+        "texto": "−1,56 V"
        }
-      ]
+      ],
+      "k": "74722701b052325edab9bfec258721cda2669546e5ab8e2598a88d250e1606f26c2e950b0424e94aec8e8d105038837446b0068548776add947954ca5bf37f2e5d2eb8de96b84fd1fc9f78f49490beec421aad6662b07b37"
      },
      "B": {
       "enunciado": "Se arma una pila con hierro y plata, en la que ocurre Fe + 2 Ag⁺ → Fe²⁺ + 2 Ag. Los potenciales de reducción son E°(Fe²⁺/Fe) = −0,44 V y E°(Ag⁺/Ag) = +0,80 V. ¿Cuál es la fem de la pila?",
       "opciones": [
        {
-        "texto": "2,04 V",
-        "error": "fem-multiplica-coeficientes"
+        "texto": "2,04 V"
        },
        {
-        "texto": "1,24 V",
-        "correcta": true
+        "texto": "1,24 V"
        },
        {
-        "texto": "0,36 V",
-        "error": "fem-suma-sin-cambiar-signo"
+        "texto": "0,36 V"
        },
        {
-        "texto": "−1,24 V",
-        "error": "fem-resta-al-reves"
+        "texto": "−1,24 V"
        }
-      ]
+      ],
+      "k": "550db674e4e519344e60d082e1b0987a68035ef5f093f50da369d873c056fe254f2ec191a5869b521518b14c887d59e51671819938508616f87d719988f51600f98c50eea2307a4fa95781e6fbc70949d54a342c1145639a"
+     }
+    },
+    {
+     "par": "qui-09",
+     "plantilla": "cinetica",
+     "unidad": "quimica.cinetica-quimica",
+     "mide": "Ley de velocidad: los órdenes son los exponentes medidos, no los coeficientes de la ecuación",
+     "A": {
+      "enunciado": "La reacción 2 A + 3 B → C tiene, según los experimentos, la ley de velocidad v = k·[A]²·[B]. Si [A] se triplica y [B] se duplica, a la misma temperatura, ¿por cuánto se multiplica la velocidad?",
+      "opciones": [
+       {
+        "texto": "6"
+       },
+       {
+        "texto": "5"
+       },
+       {
+        "texto": "18"
+       },
+       {
+        "texto": "72"
+       }
+      ],
+      "k": "dbb8dc4760808e513b10697f83a5e11b4a2b0d17e562623a11b8370c5c6215b3e766e459431ca7ec31e9"
+     },
+     "B": {
+      "enunciado": "La reacción 2 A + 3 B → C tiene, según los experimentos, la ley de velocidad v = k·[A]·[B]². Si [A] se cuadruplica y [B] se duplica, a la misma temperatura, ¿por cuánto se multiplica la velocidad?",
+      "opciones": [
+       {
+        "texto": "8"
+       },
+       {
+        "texto": "6"
+       },
+       {
+        "texto": "16"
+       },
+       {
+        "texto": "128"
+       }
+      ],
+      "k": "a85f9c62a83c19c8409cd8fb7f4a50729fcf0cd5fc2d794b5877a462fde842af31ac61ea3686dc4c2676"
+     }
+    },
+    {
+     "par": "qui-10",
+     "plantilla": "cinetica",
+     "unidad": "quimica.cinetica-quimica",
+     "mide": "Vida media de primer orden: en cada vida media queda la mitad de lo que había",
+     "A": {
+      "enunciado": "Un reactivo se descompone con una cinética de primer orden y su vida media es 20 minutos. ¿Qué porcentaje del reactivo queda después de 60 minutos?",
+      "opciones": [
+       {
+        "texto": "0 %"
+       },
+       {
+        "texto": "16,7 %"
+       },
+       {
+        "texto": "12,5 %"
+       },
+       {
+        "texto": "50 %"
+       }
+      ],
+      "k": "6806e6b16c80cbd3063723bf516f519379719ae8c8dd89839e1e033adf8f6e9b4f43b6bacd880001966e140744281bd100482866f5812e240a3b7da0aab2f1211844017f1768d77ee2a002"
+     },
+     "B": {
+      "enunciado": "Un medicamento se elimina del cuerpo con una cinética de primer orden y su vida media es 6 horas. ¿Qué porcentaje de la dosis queda después de 24 horas?",
+      "opciones": [
+       {
+        "texto": "0 %"
+       },
+       {
+        "texto": "12,5 %"
+       },
+       {
+        "texto": "6,25 %"
+       },
+       {
+        "texto": "50 %"
+       }
+      ],
+      "k": "b1e3883bc49db472c49eb6c5d828aa67d374f54e187d51250c84071b24737bf56084b659e4dff8d5f952c2fc2a8177563fe5402c00a10cafe3781e57b5eede60a30a1855d7c668f89bbd84"
      }
     }
    ]
   },
   "trigonometria": {
    "curso": "trigonometria",
-   "version": "1.0.0",
+   "version": "1.1.0",
    "minutos": 12,
    "errores": {
     "TR1-lee-2-como-2pi": {
@@ -2437,18 +2380,6 @@
     "arco-sin-radio": {
      "respaldo": "hipotesis",
      "describe": "Da el ángulo en radianes como si fuera la longitud del arco"
-    },
-    "area-sin-mitad": {
-     "respaldo": "hipotesis",
-     "describe": "Olvida el 1/2 del área del sector"
-    },
-    "TR4-area-con-grados": {
-     "respaldo": "hipotesis",
-     "describe": "Calcula el área del sector con el ángulo en grados"
-    },
-    "area-igual-arco": {
-     "respaldo": "hipotesis",
-     "describe": "Da la longitud del arco como si fuera el área"
     },
     "GE1-area-como-lado": {
      "respaldo": "documentado",
@@ -2493,6 +2424,38 @@
     "bici-faja-en-el-eje": {
      "respaldo": "hipotesis",
      "describe": "Trata la rueda como si la moviera la cadena, y no el eje del piñón"
+    },
+    "centesimal-igual": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que los grados centesimales y los sexagesimales son iguales"
+    },
+    "factor-centesimal-invertido": {
+     "respaldo": "hipotesis",
+     "describe": "Multiplica por 9/10 en vez de 10/9"
+    },
+    "TR11-TR12-abscisa-sin-signo": {
+     "respaldo": "parcial",
+     "describe": "Toma el coseno como una distancia, sin el signo del cuadrante"
+    },
+    "TR14-cambia-de-razon": {
+     "respaldo": "hipotesis",
+     "describe": "Cambia a la co-razón al reducir con 180°"
+    },
+    "TR11-cruza-seno-coseno": {
+     "respaldo": "parcial",
+     "describe": "Confunde el seno con el coseno (la ordenada con la abscisa)"
+    },
+    "TR18-periodo-por-B": {
+     "respaldo": "hipotesis",
+     "describe": "Multiplica 360° por B en vez de dividir"
+    },
+    "TR18-periodo-igual-B": {
+     "respaldo": "hipotesis",
+     "describe": "Toma como periodo el número que acompaña a x"
+    },
+    "periodo-con-amplitud": {
+     "respaldo": "hipotesis",
+     "describe": "Mezcla la amplitud con el periodo"
     }
    },
    "pares": [
@@ -2502,46 +2465,40 @@
      "unidad": "trigonometria.angulo-trigonometrico",
      "mide": "Pasar radianes sin π a grados sexagesimales",
      "A": {
-      "enunciado": "Un ángulo mide 3 rad, así, sin π. ¿Cuántos grados sexagesimales mide, aproximadamente? (π ≈ 3,14)",
+      "enunciado": "Un ángulo mide 3 rad, así, sin π. ¿Cuántos grados sexagesimales mide, aproximadamente?",
       "opciones": [
        {
-        "texto": "540°",
-        "error": "TR1-lee-2-como-2pi"
+        "texto": "540°"
        },
        {
-        "texto": "3°",
-        "error": "TR3-radian-como-grado"
+        "texto": "3°"
        },
        {
-        "texto": "Unos 172°",
-        "correcta": true
+        "texto": "171,9°"
        },
        {
-        "texto": "0,05°",
-        "error": "factor-invertido"
+        "texto": "0,05°"
        }
-      ]
+      ],
+      "k": "a385387de3bdea6f449512394c5a75d7f5ff23cf50ecb059cf3cac2f9109e1fd356e80aa75ab8c6e10ed6f14cffc60c08edca9ee93c0e370a3477a4531f8f1aa6c20891f186f8b7a"
      },
      "B": {
-      "enunciado": "Un ángulo mide 4 rad, así, sin π. ¿Cuántos grados sexagesimales mide, aproximadamente? (π ≈ 3,14)",
+      "enunciado": "Un ángulo mide 4 rad, así, sin π. ¿Cuántos grados sexagesimales mide, aproximadamente?",
       "opciones": [
        {
-        "texto": "720°",
-        "error": "TR1-lee-2-como-2pi"
+        "texto": "720°"
        },
        {
-        "texto": "4°",
-        "error": "TR3-radian-como-grado"
+        "texto": "4°"
        },
        {
-        "texto": "Unos 229°",
-        "correcta": true
+        "texto": "229,2°"
        },
        {
-        "texto": "0,07°",
-        "error": "factor-invertido"
+        "texto": "0,07°"
        }
-      ]
+      ],
+      "k": "34a828c34be31c9b9d7b5fd3bcc0813daf5311d52604a5a470f7427d4c903eda04b2293d4795c8c3af9c405598f051241fda3d77d44b0d883ac5b326cb41cbe3493444d4bd7f084d"
      }
     },
     {
@@ -2553,43 +2510,37 @@
       "enunciado": "¿Cuántos radianes mide una vuelta completa?",
       "opciones": [
        {
-        "texto": "1",
-        "error": "TR5-vuelta-un-radian"
+        "texto": "1"
        },
        {
-        "texto": "360",
-        "error": "TR3-grados-como-radianes"
+        "texto": "360"
        },
        {
-        "texto": "π",
-        "error": "TR1-pi-es-la-vuelta"
+        "texto": "π"
        },
        {
-        "texto": "2π",
-        "correcta": true
+        "texto": "2π"
        }
-      ]
+      ],
+      "k": "dbe4cf4137e78cb99cd7e81c47409109e55ac3387809babbbde7a14f53d90851d86c189b1b12a0d4db862b55457ad458c16be0ae70b00bfe23e4b43c87351bcd1e11e3acb0e2a45508a961a0c6b027ec"
      },
      "B": {
       "enunciado": "¿Cuántos radianes mide media vuelta?",
       "opciones": [
        {
-        "texto": "0,5",
-        "error": "TR5-vuelta-un-radian"
+        "texto": "0,5"
        },
        {
-        "texto": "180",
-        "error": "TR3-grados-como-radianes"
+        "texto": "180"
        },
        {
-        "texto": "π/2",
-        "error": "TR1-pi-es-la-vuelta"
+        "texto": "π/2"
        },
        {
-        "texto": "π",
-        "correcta": true
+        "texto": "π"
        }
-      ]
+      ],
+      "k": "e6cb8f4699866fef9371d6e28cd7362ab3e46cbdd6e50eb0fe8f77a1a0fab150cc99b6888213f7a3a460495dbf0c68ee345c1708294690e4dd6c69b682542bc1d45a60f8a7666c4208a199eed386461c"
      }
     },
     {
@@ -2601,91 +2552,73 @@
       "enunciado": "Un sector circular tiene un ángulo central de 120° y un radio de 3 cm. ¿Cuánto mide su arco?",
       "opciones": [
        {
-        "texto": "360 cm",
-        "error": "TR4-arco-con-grados"
+        "texto": "360 cm"
        },
        {
-        "texto": "2π cm",
-        "correcta": true
+        "texto": "2π cm"
        },
        {
-        "texto": "3 cm",
-        "error": "TR2-arco-igual-radio"
+        "texto": "3 cm"
        },
        {
-        "texto": "2π/3 cm",
-        "error": "arco-sin-radio"
+        "texto": "2π/3 cm"
        }
-      ]
+      ],
+      "k": "fd87ff34c7bcd3c34d6696730644e934b837020ceac7184f603915058e67fe25279c91d3498650ae0d54d80fa30848450869b4a91b8942e48e8e435d6c96a9ed022acd33dd05"
      },
      "B": {
       "enunciado": "Un sector circular tiene un ángulo central de 150° y un radio de 6 cm. ¿Cuánto mide su arco?",
       "opciones": [
        {
-        "texto": "900 cm",
-        "error": "TR4-arco-con-grados"
+        "texto": "900 cm"
        },
        {
-        "texto": "5π cm",
-        "correcta": true
+        "texto": "5π cm"
        },
        {
-        "texto": "6 cm",
-        "error": "TR2-arco-igual-radio"
+        "texto": "6 cm"
        },
        {
-        "texto": "5π/6 cm",
-        "error": "arco-sin-radio"
+        "texto": "5π/6 cm"
        }
-      ]
+      ],
+      "k": "f9f39c83876e6a5bc8eed8f49dad5423ac95730abcebf9404bfb8afbeb7f6c41429e09989f35686b3395f1c5911b72e1c6b555534caafc8cf46eecd3b02e3dbbdcf953a224f7"
      }
     },
     {
      "par": "tri-04",
      "plantilla": "cinta-radio",
-     "unidad": "trigonometria.longitud-de-arco-y-sector",
-     "mide": "Área del sector A = θ·r²/2, con θ en radianes",
+     "unidad": "trigonometria.angulo-trigonometrico",
+     "mide": "Sistemas sexagesimal y centesimal: S/9 = C/10",
      "A": {
-      "enunciado": "Un sector circular tiene un ángulo central de 120° y un radio de 3 cm. ¿Cuál es su área?",
+      "enunciado": "Un ángulo mide 54° sexagesimales. ¿Cuántos grados centesimales mide?",
       "opciones": [
        {
-        "texto": "6π cm²",
-        "error": "area-sin-mitad"
+        "texto": "54ᵍ"
        },
        {
-        "texto": "540 cm²",
-        "error": "TR4-area-con-grados"
+        "texto": "60ᵍ"
        },
        {
-        "texto": "3π cm²",
-        "correcta": true
-       },
-       {
-        "texto": "2π cm²",
-        "error": "area-igual-arco"
+        "texto": "48,6ᵍ"
        }
-      ]
+      ],
+      "k": "ec574bc1d3ecff30c7892fa1c9841f28f8078cdd87501ef188d67bb50a45952cf4c63632f6fab952bbfbab0c2ebc75ac90d762b2f6ef6885e7"
      },
      "B": {
-      "enunciado": "Un sector circular tiene un ángulo central de 150° y un radio de 6 cm. ¿Cuál es su área?",
+      "enunciado": "Un ángulo mide 72° sexagesimales. ¿Cuántos grados centesimales mide?",
       "opciones": [
        {
-        "texto": "30π cm²",
-        "error": "area-sin-mitad"
+        "texto": "72ᵍ"
        },
        {
-        "texto": "2700 cm²",
-        "error": "TR4-area-con-grados"
+        "texto": "80ᵍ"
        },
        {
-        "texto": "15π cm²",
-        "correcta": true
-       },
-       {
-        "texto": "5π cm²",
-        "error": "area-igual-arco"
+        "texto": "64,8ᵍ"
        }
-      ]
+      ],
+      "k": "9505bbbc31b810f3de3000dfddb9095795e5fcbf3a586f3309b333305fa685b7092c97d0b96b63c36c68f8a88abc1125cc858186febb65bef5"
      }
     },
     {
@@ -2697,43 +2630,37 @@
       "enunciado": "Un sector circular tiene un ángulo central de 60° y un radio de 4 cm. Si el radio se triplica y el ángulo no cambia, ¿qué pasa con su arco y con su área?",
       "opciones": [
        {
-        "texto": "Los dos se triplican",
-        "error": "GE1-area-como-lado"
+        "texto": "El arco el triple y el área el triple"
        },
        {
-        "texto": "Nada cambia: el ángulo es el mismo",
-        "error": "arco-depende-solo-del-angulo"
+        "texto": "El arco igual y el área igual"
        },
        {
-        "texto": "El arco se triplica y el área queda multiplicada por 9",
-        "correcta": true
+        "texto": "El arco el triple y el área 9 veces"
        },
        {
-        "texto": "El arco no cambia y el área se triplica",
-        "error": "arco-igual-area-doble"
+        "texto": "El arco igual y el área el triple"
        }
-      ]
+      ],
+      "k": "134d3b36259c398b6123bd53d35c7fc5295618a9387e66fa5d5656b49d82ecc688d9fa9255a4b03c1e4260943999bd8f8cc8eef989478cc961387544ce34909f055da7129562c89a3465b67dc6cb02926f973052"
      },
      "B": {
-      "enunciado": "Un sector circular tiene un ángulo central de 90° y un radio de 6 cm. Si el radio se reduce a la mitad y el ángulo no cambia, ¿qué pasa con su arco y con su área?",
+      "enunciado": "Un sector circular tiene un ángulo central de 45° y un radio de 10 cm. Si el radio se reduce a la mitad y el ángulo no cambia, ¿qué pasa con su arco y con su área?",
       "opciones": [
        {
-        "texto": "Los dos se reducen a la mitad",
-        "error": "GE1-area-como-lado"
+        "texto": "El arco a la mitad y el área a la mitad"
        },
        {
-        "texto": "Nada cambia: el ángulo es el mismo",
-        "error": "arco-depende-solo-del-angulo"
+        "texto": "El arco igual y el área igual"
        },
        {
-        "texto": "El arco se reduce a la mitad y el área, a la cuarta parte",
-        "correcta": true
+        "texto": "El arco a la mitad y el área a la cuarta parte"
        },
        {
-        "texto": "El arco no cambia y el área se reduce a la mitad",
-        "error": "arco-igual-area-doble"
+        "texto": "El arco igual y el área a la mitad"
        }
-      ]
+      ],
+      "k": "113ed85ab8a11dc4713c3bd9669087e431e0f0fcf7cca1ce80cea8191be0c65f9b497f981c4ce94bbb37a0173dd56e0aaf0d9ced20b9b25d1255f4c0d526e3835f2268519767687402bf6558e83e4681cb22e458"
      }
     },
     {
@@ -2742,46 +2669,40 @@
      "unidad": "trigonometria.longitud-de-arco-y-sector",
      "mide": "Vueltas de una rueda: distancia entre el perímetro 2πr",
      "A": {
-      "enunciado": "Una rueda de 0,5 m de radio avanza 20π m sin resbalar. ¿Cuántas vueltas da?",
+      "enunciado": "Un aro de 0,4 m de radio rueda por el piso sin patinar y recorre 12π m. ¿Cuántos giros completos da?",
       "opciones": [
        {
-        "texto": "40",
-        "error": "vueltas-perimetro-pi-r"
+        "texto": "30"
        },
        {
-        "texto": "20",
-        "correcta": true
+        "texto": "15"
        },
        {
-        "texto": "10",
-        "error": "vueltas-con-diametro"
+        "texto": "7,5"
        },
        {
-        "texto": "40π (unas 126)",
-        "error": "vueltas-sin-2pi"
+        "texto": "30π"
        }
-      ]
+      ],
+      "k": "14c54fcdfd0bc76a412f5485654e971732927036c282a766da9acd0878e56fcf61e178df4c93b153fe0a0952600066d870ce695df4ddf778bc7fef57ef86f121b18d25f5760b1090d7b2"
      },
      "B": {
-      "enunciado": "Una rueda de 0,25 m de radio avanza 15π m sin resbalar. ¿Cuántas vueltas da?",
+      "enunciado": "Una llanta de 0,3 m de radio rueda por la pista sin patinar y recorre 18π m. ¿Cuántos giros completos da?",
       "opciones": [
        {
-        "texto": "60",
-        "error": "vueltas-perimetro-pi-r"
+        "texto": "60"
        },
        {
-        "texto": "30",
-        "correcta": true
+        "texto": "30"
        },
        {
-        "texto": "15",
-        "error": "vueltas-con-diametro"
+        "texto": "15"
        },
        {
-        "texto": "60π (unas 188)",
-        "error": "vueltas-sin-2pi"
+        "texto": "60π"
        }
-      ]
+      ],
+      "k": "4f2fe4391d1a36e54269b3da7a4d9a09e604e896642800bbb9b2eb8c597f6ce2d2a05f7967c0dead60757a2e3aab8465a7856c6cde051f8c1dacc5174396b1ab67958fbf8ab58ba86f8e"
      }
     },
     {
@@ -2790,38 +2711,34 @@
      "unidad": "trigonometria.longitud-de-arco-y-sector",
      "mide": "Ruedas unidas por una faja: recorren el mismo arco y la grande da menos vueltas",
      "A": {
-      "enunciado": "Una faja une una rueda de 3 cm de radio con otra de 9 cm, sin resbalar. Si la rueda chica da 6 vueltas, ¿cuántas vueltas da la grande?",
+      "enunciado": "En una máquina de coser, una correa sin deslizar enlaza una polea de 3 cm de radio con otra de 9 cm. Si la polea pequeña gira 6 veces, ¿cuántos giros completa la otra?",
       "opciones": [
        {
-        "texto": "6: las dos dan las mismas vueltas",
-        "error": "faja-mismas-vueltas"
+        "texto": "6"
        },
        {
-        "texto": "18: la grande da más vueltas porque es más grande",
-        "error": "RM5-mas-grande-mas-vueltas"
+        "texto": "18"
        },
        {
-        "texto": "2",
-        "correcta": true
+        "texto": "2"
        }
-      ]
+      ],
+      "k": "af50a41ccb55b249063a124e6d22ba1c8afbd881cc6356661b64c0920b86d0ceb6150a0bb8e886795266d2a7d1ddee03aa0c360639013cf337d780"
      },
      "B": {
-      "enunciado": "Una faja une una polea de 5 cm de radio con otra de 10 cm, sin resbalar. Si la polea chica da 8 vueltas, ¿cuántas vueltas da la grande?",
+      "enunciado": "En un molino, una correa sin deslizar enlaza un disco de 5 cm de radio con otro de 10 cm. Si el disco pequeño gira 8 veces, ¿cuántos giros completa el otro?",
       "opciones": [
        {
-        "texto": "8: las dos dan las mismas vueltas",
-        "error": "faja-mismas-vueltas"
+        "texto": "8"
        },
        {
-        "texto": "16: la grande da más vueltas porque es más grande",
-        "error": "RM5-mas-grande-mas-vueltas"
+        "texto": "16"
        },
        {
-        "texto": "4",
-        "correcta": true
+        "texto": "4"
        }
-      ]
+      ],
+      "k": "0b17531340ba60355b1ebcc71f39c652984f425e0dc00488e3f2957839cc41f8c38352c7f31a495fe03b5b5f01ac24be09de55aaba2bb407dab42e"
      }
     },
     {
@@ -2830,46 +2747,124 @@
      "unidad": "trigonometria.longitud-de-arco-y-sector",
      "mide": "Cadena y eje en la bicicleta: la cadena iguala arcos y el eje iguala vueltas",
      "A": {
-      "enunciado": "En una bicicleta, el plato de los pedales tiene 12 cm de radio y la cadena lo une a un piñón de 4 cm de radio. El piñón está en el mismo eje que la rueda trasera, de 30 cm de radio. Si el pedal da 2 vueltas, ¿cuántas vueltas da la rueda trasera?",
+      "enunciado": "Pedro pedalea 2 vueltas completas. En su bicicleta, la catalina (12 cm de radio) mueve con la cadena un piñón de 4 cm de radio, y ese piñón comparte eje con la llanta trasera, de 30 cm de radio. ¿Cuántos giros da la llanta trasera?",
       "opciones": [
        {
-        "texto": "2: las mismas que el pedal",
-        "error": "bici-mismas-vueltas"
+        "texto": "2"
        },
        {
-        "texto": "0,67",
-        "error": "bici-invertido"
+        "texto": "0,67"
        },
        {
-        "texto": "6",
-        "correcta": true
+        "texto": "6"
        },
        {
-        "texto": "0,8",
-        "error": "bici-faja-en-el-eje"
+        "texto": "0,8"
        }
-      ]
+      ],
+      "k": "9411fc412d561f65d9194c250fed7fc5deb07648498212f2dc9b786cf1ce2f614a419e096e4ce6831e49ac612ca6a5a14f8f3205ec7ad3fb350ad5ba8dc2e9a7a6892c2e5b"
      },
      "B": {
-      "enunciado": "En una bicicleta, el plato de los pedales tiene 16 cm de radio y la cadena lo une a un piñón de 4 cm de radio. El piñón está en el mismo eje que la rueda trasera, de 32 cm de radio. Si el pedal da 1 vuelta, ¿cuántas vueltas da la rueda trasera?",
+      "enunciado": "Rosa pedalea 3 vueltas completas. En su bicicleta, la catalina (18 cm de radio) mueve con la cadena un piñón de 6 cm de radio, y ese piñón comparte eje con la llanta trasera, de 36 cm de radio. ¿Cuántos giros da la llanta trasera?",
       "opciones": [
        {
-        "texto": "1: las mismas que el pedal",
-        "error": "bici-mismas-vueltas"
+        "texto": "3"
        },
        {
-        "texto": "0,25",
-        "error": "bici-invertido"
+        "texto": "1"
        },
        {
-        "texto": "4",
-        "correcta": true
+        "texto": "9"
        },
        {
-        "texto": "0,5",
-        "error": "bici-faja-en-el-eje"
+        "texto": "1,5"
        }
-      ]
+      ],
+      "k": "ef97a48120ddf1d3c0929cd467d542baf52374f34cd809f945ce2eff083dd95de6606754ba54db8e63f69ce19734741099265f48ce6028c59ccd6fe5c6370ddc7add30954b"
+     }
+    },
+    {
+     "par": "ct-01",
+     "plantilla": "circunferencia-trig",
+     "unidad": "trigonometria.reduccion-al-primer-cuadrante",
+     "mide": "Reducción al primer cuadrante: signo del cuadrante y la misma razón",
+     "A": {
+      "enunciado": "¿Cuánto vale cos 120°?",
+      "opciones": [
+       {
+        "texto": "1/2"
+       },
+       {
+        "texto": "−1/2"
+       },
+       {
+        "texto": "−√3/2"
+       },
+       {
+        "texto": "√3/2"
+       }
+      ],
+      "k": "55628d1e74a05428752115e351e50b0524d7b9751eef1fe024e710b3decef6fa6c071a6123321da439571b02ae5fa725e448f579b3dff50eab71a333239aaf581c5498380b0660796692ee3c778013eace511f590eec"
+     },
+     "B": {
+      "enunciado": "¿Cuánto vale cos 150°?",
+      "opciones": [
+       {
+        "texto": "√3/2"
+       },
+       {
+        "texto": "−√3/2"
+       },
+       {
+        "texto": "−1/2"
+       },
+       {
+        "texto": "1/2"
+       }
+      ],
+      "k": "0e41af80f838ab7339d4a41b8057c9a5adbf9a8ea6b6df2381bcfd6d82f0e65d2c41639e9a8d3e25d3d4ba7974e358febb871c75b99851a3ab04260e1b753df36e30870355622cf0356b664f2384dfba0dbb7679fba5"
+     }
+    },
+    {
+     "par": "ct-02",
+     "plantilla": "circunferencia-trig",
+     "unidad": "trigonometria.funciones-trigonometricas",
+     "mide": "Periodo de y = A·sen(Bx): 360°/B, y no depende de A",
+     "A": {
+      "enunciado": "¿Cuál es el periodo de y = 3 sen(4x), con x en grados?",
+      "opciones": [
+       {
+        "texto": "1440°"
+       },
+       {
+        "texto": "4°"
+       },
+       {
+        "texto": "90°"
+       },
+       {
+        "texto": "1080°"
+       }
+      ],
+      "k": "17458c6b26e23e6bf0723cb81d74a92939339405f920cf9c4c42f22c3b07d47835876e518ef5d3f5f2f2b4a7d123201aa16918f67f677848bedc6046877ecf90fe69377f029a08c7633ffa"
+     },
+     "B": {
+      "enunciado": "¿Cuál es el periodo de y = 2 cos(3x), con x en grados?",
+      "opciones": [
+       {
+        "texto": "1080°"
+       },
+       {
+        "texto": "3°"
+       },
+       {
+        "texto": "120°"
+       },
+       {
+        "texto": "720°"
+       }
+      ],
+      "k": "856f1c923082c872430cdce259f58faeccae439fb67c8db375dd50e9c59610cebd8de63943f34b9891b9da64a9742671b5eb9da6f08355004148c224edbbc312b3326a6bae15a1720c41c0"
      }
     }
    ]

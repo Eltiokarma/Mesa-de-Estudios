@@ -1,222 +1,757 @@
 {
   "curso": "trigonometria",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "fecha": "2026-11-06",
   "minutos": 12,
-  "informes": ["docs/investigacion/trigonometria-ideas-erroneas.md"],
+  "informes": [
+    "docs/investigacion/trigonometria-ideas-erroneas.md"
+  ],
   "errores": {
-    "TR1-lee-2-como-2pi": { "respaldo": "parcial", "describe": "Lee un ángulo en radianes sin π como si tuviera π" },
-    "TR3-radian-como-grado": { "respaldo": "parcial", "describe": "Cree que un radián es un grado" },
-    "factor-invertido": { "respaldo": "hipotesis", "describe": "Multiplica por π/180 en vez de 180/π" },
-    "TR5-vuelta-un-radian": { "respaldo": "parcial", "describe": "Cree que una vuelta entera es un radián" },
-    "TR3-grados-como-radianes": { "respaldo": "hipotesis", "describe": "Da los grados como si fueran radianes" },
-    "TR1-pi-es-la-vuelta": { "respaldo": "hipotesis", "describe": "Cree que π radianes es una vuelta entera" },
-    "TR4-arco-con-grados": { "respaldo": "hipotesis", "describe": "Multiplica el radio por el ángulo en grados" },
-    "TR2-arco-igual-radio": { "respaldo": "hipotesis", "describe": "Cree que el arco mide lo mismo que el radio" },
-    "arco-sin-radio": { "respaldo": "hipotesis", "describe": "Da el ángulo en radianes como si fuera la longitud del arco" },
-    "area-sin-mitad": { "respaldo": "hipotesis", "describe": "Olvida el 1/2 del área del sector" },
-    "TR4-area-con-grados": { "respaldo": "hipotesis", "describe": "Calcula el área del sector con el ángulo en grados" },
-    "area-igual-arco": { "respaldo": "hipotesis", "describe": "Da la longitud del arco como si fuera el área" },
-    "GE1-area-como-lado": { "respaldo": "documentado", "describe": "Cree que el área crece igual que el radio" },
-    "arco-depende-solo-del-angulo": { "respaldo": "hipotesis", "describe": "Cree que el arco y el área solo dependen del ángulo" },
-    "arco-igual-area-doble": { "respaldo": "hipotesis", "describe": "Cree que el arco no cambia con el radio y el área crece como él" },
-    "vueltas-sin-2pi": { "respaldo": "hipotesis", "describe": "Divide la distancia entre el radio, sin 2π" },
-    "vueltas-perimetro-pi-r": { "respaldo": "hipotesis", "describe": "Usa π·r como perímetro de la rueda" },
-    "vueltas-con-diametro": { "respaldo": "hipotesis", "describe": "Usa 2π por el diámetro como perímetro" },
-    "faja-mismas-vueltas": { "respaldo": "hipotesis", "describe": "Cree que dos ruedas unidas por una faja dan las mismas vueltas" },
-    "RM5-mas-grande-mas-vueltas": { "respaldo": "hipotesis", "describe": "Cree que la rueda más grande da más vueltas" },
-    "bici-mismas-vueltas": { "respaldo": "hipotesis", "describe": "Cree que la rueda da las mismas vueltas que el pedal" },
-    "bici-invertido": { "respaldo": "hipotesis", "describe": "Divide los radios al revés" },
-    "bici-faja-en-el-eje": { "respaldo": "hipotesis", "describe": "Trata la rueda como si la moviera la cadena, y no el eje del piñón" }
+    "TR1-lee-2-como-2pi": {
+      "respaldo": "parcial",
+      "describe": "Lee un ángulo en radianes sin π como si tuviera π"
+    },
+    "TR3-radian-como-grado": {
+      "respaldo": "parcial",
+      "describe": "Cree que un radián es un grado"
+    },
+    "factor-invertido": {
+      "respaldo": "hipotesis",
+      "describe": "Multiplica por π/180 en vez de 180/π"
+    },
+    "TR5-vuelta-un-radian": {
+      "respaldo": "parcial",
+      "describe": "Cree que una vuelta entera es un radián"
+    },
+    "TR3-grados-como-radianes": {
+      "respaldo": "hipotesis",
+      "describe": "Da los grados como si fueran radianes"
+    },
+    "TR1-pi-es-la-vuelta": {
+      "respaldo": "hipotesis",
+      "describe": "Cree que π radianes es una vuelta entera"
+    },
+    "TR4-arco-con-grados": {
+      "respaldo": "hipotesis",
+      "describe": "Multiplica el radio por el ángulo en grados"
+    },
+    "TR2-arco-igual-radio": {
+      "respaldo": "hipotesis",
+      "describe": "Cree que el arco mide lo mismo que el radio"
+    },
+    "arco-sin-radio": {
+      "respaldo": "hipotesis",
+      "describe": "Da el ángulo en radianes como si fuera la longitud del arco"
+    },
+    "GE1-area-como-lado": {
+      "respaldo": "documentado",
+      "describe": "Cree que el área crece igual que el radio"
+    },
+    "arco-depende-solo-del-angulo": {
+      "respaldo": "hipotesis",
+      "describe": "Cree que el arco y el área solo dependen del ángulo"
+    },
+    "arco-igual-area-doble": {
+      "respaldo": "hipotesis",
+      "describe": "Cree que el arco no cambia con el radio y el área crece como él"
+    },
+    "vueltas-sin-2pi": {
+      "respaldo": "hipotesis",
+      "describe": "Divide la distancia entre el radio, sin 2π"
+    },
+    "vueltas-perimetro-pi-r": {
+      "respaldo": "hipotesis",
+      "describe": "Usa π·r como perímetro de la rueda"
+    },
+    "vueltas-con-diametro": {
+      "respaldo": "hipotesis",
+      "describe": "Usa 2π por el diámetro como perímetro"
+    },
+    "faja-mismas-vueltas": {
+      "respaldo": "hipotesis",
+      "describe": "Cree que dos ruedas unidas por una faja dan las mismas vueltas"
+    },
+    "RM5-mas-grande-mas-vueltas": {
+      "respaldo": "hipotesis",
+      "describe": "Cree que la rueda más grande da más vueltas"
+    },
+    "bici-mismas-vueltas": {
+      "respaldo": "hipotesis",
+      "describe": "Cree que la rueda da las mismas vueltas que el pedal"
+    },
+    "bici-invertido": {
+      "respaldo": "hipotesis",
+      "describe": "Divide los radios al revés"
+    },
+    "bici-faja-en-el-eje": {
+      "respaldo": "hipotesis",
+      "describe": "Trata la rueda como si la moviera la cadena, y no el eje del piñón"
+    },
+    "centesimal-igual": {
+      "respaldo": "hipotesis",
+      "describe": "Cree que los grados centesimales y los sexagesimales son iguales"
+    },
+    "factor-centesimal-invertido": {
+      "respaldo": "hipotesis",
+      "describe": "Multiplica por 9/10 en vez de 10/9"
+    },
+    "TR11-TR12-abscisa-sin-signo": {
+      "respaldo": "parcial",
+      "describe": "Toma el coseno como una distancia, sin el signo del cuadrante"
+    },
+    "TR14-cambia-de-razon": {
+      "respaldo": "hipotesis",
+      "describe": "Cambia a la co-razón al reducir con 180°"
+    },
+    "TR11-cruza-seno-coseno": {
+      "respaldo": "parcial",
+      "describe": "Confunde el seno con el coseno (la ordenada con la abscisa)"
+    },
+    "TR18-periodo-por-B": {
+      "respaldo": "hipotesis",
+      "describe": "Multiplica 360° por B en vez de dividir"
+    },
+    "TR18-periodo-igual-B": {
+      "respaldo": "hipotesis",
+      "describe": "Toma como periodo el número que acompaña a x"
+    },
+    "periodo-con-amplitud": {
+      "respaldo": "hipotesis",
+      "describe": "Mezcla la amplitud con el periodo"
+    }
   },
   "pares": [
     {
-      "par": "tri-01", "plantilla": "cinta-radio", "unidad": "trigonometria.angulo-trigonometrico",
+      "par": "tri-01",
+      "plantilla": "cinta-radio",
+      "unidad": "trigonometria.angulo-trigonometrico",
       "mide": "Pasar radianes sin π a grados sexagesimales",
       "A": {
-        "enunciado": "Un ángulo mide 3 rad, así, sin π. ¿Cuántos grados sexagesimales mide, aproximadamente? (π ≈ 3,14)",
-        "datos": { "R": 3 },
+        "enunciado": "Un ángulo mide 3 rad, así, sin π. ¿Cuántos grados sexagesimales mide, aproximadamente?",
+        "datos": {
+          "R": 3
+        },
         "opciones": [
-          { "texto": "540°", "valor": 540, "error": "TR1-lee-2-como-2pi" },
-          { "texto": "3°", "valor": 3, "error": "TR3-radian-como-grado" },
-          { "texto": "Unos 172°", "valor": 171.887, "correcta": true },
-          { "texto": "0,05°", "valor": 0.0524, "error": "factor-invertido" }
+          {
+            "texto": "540°",
+            "valor": 540,
+            "error": "TR1-lee-2-como-2pi"
+          },
+          {
+            "texto": "3°",
+            "valor": 3,
+            "error": "TR3-radian-como-grado"
+          },
+          {
+            "texto": "171,9°",
+            "valor": 171.887,
+            "correcta": true
+          },
+          {
+            "texto": "0,05°",
+            "valor": 0.0524,
+            "error": "factor-invertido"
+          }
         ]
       },
       "B": {
-        "enunciado": "Un ángulo mide 4 rad, así, sin π. ¿Cuántos grados sexagesimales mide, aproximadamente? (π ≈ 3,14)",
-        "datos": { "R": 4 },
+        "enunciado": "Un ángulo mide 4 rad, así, sin π. ¿Cuántos grados sexagesimales mide, aproximadamente?",
+        "datos": {
+          "R": 4
+        },
         "opciones": [
-          { "texto": "720°", "valor": 720, "error": "TR1-lee-2-como-2pi" },
-          { "texto": "4°", "valor": 4, "error": "TR3-radian-como-grado" },
-          { "texto": "Unos 229°", "valor": 229.183, "correcta": true },
-          { "texto": "0,07°", "valor": 0.0698, "error": "factor-invertido" }
+          {
+            "texto": "720°",
+            "valor": 720,
+            "error": "TR1-lee-2-como-2pi"
+          },
+          {
+            "texto": "4°",
+            "valor": 4,
+            "error": "TR3-radian-como-grado"
+          },
+          {
+            "texto": "229,2°",
+            "valor": 229.183,
+            "correcta": true
+          },
+          {
+            "texto": "0,07°",
+            "valor": 0.0698,
+            "error": "factor-invertido"
+          }
         ]
       }
     },
     {
-      "par": "tri-02", "plantilla": "cinta-radio", "unidad": "trigonometria.angulo-trigonometrico",
+      "par": "tri-02",
+      "plantilla": "cinta-radio",
+      "unidad": "trigonometria.angulo-trigonometrico",
       "mide": "Cuántos radianes tiene una vuelta (2π)",
       "A": {
         "enunciado": "¿Cuántos radianes mide una vuelta completa?",
-        "datos": { "modelo": { "vueltas": 1 } },
+        "datos": {
+          "modelo": {
+            "vueltas": 1
+          }
+        },
         "opciones": [
-          { "texto": "1", "valor": 1, "error": "TR5-vuelta-un-radian" },
-          { "texto": "360", "valor": 360, "error": "TR3-grados-como-radianes" },
-          { "texto": "π", "valor": 3.14159, "error": "TR1-pi-es-la-vuelta" },
-          { "texto": "2π", "valor": 6.28319, "correcta": true }
+          {
+            "texto": "1",
+            "valor": 1,
+            "error": "TR5-vuelta-un-radian"
+          },
+          {
+            "texto": "360",
+            "valor": 360,
+            "error": "TR3-grados-como-radianes"
+          },
+          {
+            "texto": "π",
+            "valor": 3.14159,
+            "error": "TR1-pi-es-la-vuelta"
+          },
+          {
+            "texto": "2π",
+            "valor": 6.28319,
+            "correcta": true
+          }
         ]
       },
       "B": {
         "enunciado": "¿Cuántos radianes mide media vuelta?",
-        "datos": { "modelo": { "vueltas": 0.5 } },
+        "datos": {
+          "modelo": {
+            "vueltas": 0.5
+          }
+        },
         "opciones": [
-          { "texto": "0,5", "valor": 0.5, "error": "TR5-vuelta-un-radian" },
-          { "texto": "180", "valor": 180, "error": "TR3-grados-como-radianes" },
-          { "texto": "π/2", "valor": 1.5708, "error": "TR1-pi-es-la-vuelta" },
-          { "texto": "π", "valor": 3.14159, "correcta": true }
+          {
+            "texto": "0,5",
+            "valor": 0.5,
+            "error": "TR5-vuelta-un-radian"
+          },
+          {
+            "texto": "180",
+            "valor": 180,
+            "error": "TR3-grados-como-radianes"
+          },
+          {
+            "texto": "π/2",
+            "valor": 1.5708,
+            "error": "TR1-pi-es-la-vuelta"
+          },
+          {
+            "texto": "π",
+            "valor": 3.14159,
+            "correcta": true
+          }
         ]
       }
     },
     {
-      "par": "tri-03", "plantilla": "cinta-radio", "unidad": "trigonometria.longitud-de-arco-y-sector",
+      "par": "tri-03",
+      "plantilla": "cinta-radio",
+      "unidad": "trigonometria.longitud-de-arco-y-sector",
       "mide": "Longitud de arco L = θ·r, con θ en radianes",
       "A": {
         "enunciado": "Un sector circular tiene un ángulo central de 120° y un radio de 3 cm. ¿Cuánto mide su arco?",
-        "datos": { "theta": 120, "r": 3 },
+        "datos": {
+          "theta": 120,
+          "r": 3
+        },
         "opciones": [
-          { "texto": "360 cm", "valor": 360, "error": "TR4-arco-con-grados" },
-          { "texto": "2π cm", "valor": 6.28319, "correcta": true },
-          { "texto": "3 cm", "valor": 3, "error": "TR2-arco-igual-radio" },
-          { "texto": "2π/3 cm", "valor": 2.0944, "error": "arco-sin-radio" }
+          {
+            "texto": "360 cm",
+            "valor": 360,
+            "error": "TR4-arco-con-grados"
+          },
+          {
+            "texto": "2π cm",
+            "valor": 6.28319,
+            "correcta": true
+          },
+          {
+            "texto": "3 cm",
+            "valor": 3,
+            "error": "TR2-arco-igual-radio"
+          },
+          {
+            "texto": "2π/3 cm",
+            "valor": 2.0944,
+            "error": "arco-sin-radio"
+          }
         ]
       },
       "B": {
         "enunciado": "Un sector circular tiene un ángulo central de 150° y un radio de 6 cm. ¿Cuánto mide su arco?",
-        "datos": { "theta": 150, "r": 6 },
+        "datos": {
+          "theta": 150,
+          "r": 6
+        },
         "opciones": [
-          { "texto": "900 cm", "valor": 900, "error": "TR4-arco-con-grados" },
-          { "texto": "5π cm", "valor": 15.70796, "correcta": true },
-          { "texto": "6 cm", "valor": 6, "error": "TR2-arco-igual-radio" },
-          { "texto": "5π/6 cm", "valor": 2.61799, "error": "arco-sin-radio" }
+          {
+            "texto": "900 cm",
+            "valor": 900,
+            "error": "TR4-arco-con-grados"
+          },
+          {
+            "texto": "5π cm",
+            "valor": 15.70796,
+            "correcta": true
+          },
+          {
+            "texto": "6 cm",
+            "valor": 6,
+            "error": "TR2-arco-igual-radio"
+          },
+          {
+            "texto": "5π/6 cm",
+            "valor": 2.61799,
+            "error": "arco-sin-radio"
+          }
         ]
       }
     },
     {
-      "par": "tri-04", "plantilla": "cinta-radio", "unidad": "trigonometria.longitud-de-arco-y-sector",
-      "mide": "Área del sector A = θ·r²/2, con θ en radianes",
+      "par": "tri-04",
+      "plantilla": "cinta-radio",
+      "unidad": "trigonometria.angulo-trigonometrico",
+      "mide": "Sistemas sexagesimal y centesimal: S/9 = C/10",
       "A": {
-        "enunciado": "Un sector circular tiene un ángulo central de 120° y un radio de 3 cm. ¿Cuál es su área?",
-        "datos": { "theta": 120, "r": 3 },
+        "enunciado": "Un ángulo mide 54° sexagesimales. ¿Cuántos grados centesimales mide?",
+        "datos": {
+          "S": 54
+        },
         "opciones": [
-          { "texto": "6π cm²", "valor": 18.84956, "error": "area-sin-mitad" },
-          { "texto": "540 cm²", "valor": 540, "error": "TR4-area-con-grados" },
-          { "texto": "3π cm²", "valor": 9.42478, "correcta": true },
-          { "texto": "2π cm²", "valor": 6.28319, "error": "area-igual-arco" }
+          {
+            "texto": "54ᵍ",
+            "valor": 54,
+            "error": "centesimal-igual"
+          },
+          {
+            "texto": "60ᵍ",
+            "valor": 60,
+            "correcta": true
+          },
+          {
+            "texto": "48,6ᵍ",
+            "valor": 48.6,
+            "error": "factor-centesimal-invertido"
+          }
         ]
       },
       "B": {
-        "enunciado": "Un sector circular tiene un ángulo central de 150° y un radio de 6 cm. ¿Cuál es su área?",
-        "datos": { "theta": 150, "r": 6 },
+        "enunciado": "Un ángulo mide 72° sexagesimales. ¿Cuántos grados centesimales mide?",
+        "datos": {
+          "S": 72
+        },
         "opciones": [
-          { "texto": "30π cm²", "valor": 94.24778, "error": "area-sin-mitad" },
-          { "texto": "2700 cm²", "valor": 2700, "error": "TR4-area-con-grados" },
-          { "texto": "15π cm²", "valor": 47.12389, "correcta": true },
-          { "texto": "5π cm²", "valor": 15.70796, "error": "area-igual-arco" }
+          {
+            "texto": "72ᵍ",
+            "valor": 72,
+            "error": "centesimal-igual"
+          },
+          {
+            "texto": "80ᵍ",
+            "valor": 80,
+            "correcta": true
+          },
+          {
+            "texto": "64,8ᵍ",
+            "valor": 64.8,
+            "error": "factor-centesimal-invertido"
+          }
         ]
       }
     },
     {
-      "par": "tri-05", "plantilla": "cinta-radio", "unidad": "trigonometria.longitud-de-arco-y-sector",
+      "par": "tri-05",
+      "plantilla": "cinta-radio",
+      "unidad": "trigonometria.longitud-de-arco-y-sector",
       "mide": "Con el mismo ángulo, el arco va con el radio y el área con el radio al cuadrado",
       "A": {
         "enunciado": "Un sector circular tiene un ángulo central de 60° y un radio de 4 cm. Si el radio se triplica y el ángulo no cambia, ¿qué pasa con su arco y con su área?",
-        "datos": { "theta": 60, "r": 4, "modelo": { "k": 3 } },
+        "datos": {
+          "theta": 60,
+          "r": 4,
+          "modelo": {
+            "k": 3
+          }
+        },
         "opciones": [
-          { "texto": "Los dos se triplican", "clave": "3|3", "error": "GE1-area-como-lado" },
-          { "texto": "Nada cambia: el ángulo es el mismo", "clave": "1|1", "error": "arco-depende-solo-del-angulo" },
-          { "texto": "El arco se triplica y el área queda multiplicada por 9", "clave": "3|9", "correcta": true },
-          { "texto": "El arco no cambia y el área se triplica", "clave": "1|3", "error": "arco-igual-area-doble" }
+          {
+            "texto": "El arco el triple y el área el triple",
+            "clave": "3|3",
+            "error": "GE1-area-como-lado"
+          },
+          {
+            "texto": "El arco igual y el área igual",
+            "clave": "1|1",
+            "error": "arco-depende-solo-del-angulo"
+          },
+          {
+            "texto": "El arco el triple y el área 9 veces",
+            "clave": "3|9",
+            "correcta": true
+          },
+          {
+            "texto": "El arco igual y el área el triple",
+            "clave": "1|3",
+            "error": "arco-igual-area-doble"
+          }
         ]
       },
       "B": {
-        "enunciado": "Un sector circular tiene un ángulo central de 90° y un radio de 6 cm. Si el radio se reduce a la mitad y el ángulo no cambia, ¿qué pasa con su arco y con su área?",
-        "datos": { "theta": 90, "r": 6, "modelo": { "k": 0.5 } },
+        "enunciado": "Un sector circular tiene un ángulo central de 45° y un radio de 10 cm. Si el radio se reduce a la mitad y el ángulo no cambia, ¿qué pasa con su arco y con su área?",
+        "datos": {
+          "theta": 45,
+          "r": 10,
+          "modelo": {
+            "k": 0.5
+          }
+        },
         "opciones": [
-          { "texto": "Los dos se reducen a la mitad", "clave": "0,5|0,5", "error": "GE1-area-como-lado" },
-          { "texto": "Nada cambia: el ángulo es el mismo", "clave": "1|1", "error": "arco-depende-solo-del-angulo" },
-          { "texto": "El arco se reduce a la mitad y el área, a la cuarta parte", "clave": "0,5|0,25", "correcta": true },
-          { "texto": "El arco no cambia y el área se reduce a la mitad", "clave": "1|0,5", "error": "arco-igual-area-doble" }
+          {
+            "texto": "El arco a la mitad y el área a la mitad",
+            "clave": "0,5|0,5",
+            "error": "GE1-area-como-lado"
+          },
+          {
+            "texto": "El arco igual y el área igual",
+            "clave": "1|1",
+            "error": "arco-depende-solo-del-angulo"
+          },
+          {
+            "texto": "El arco a la mitad y el área a la cuarta parte",
+            "clave": "0,5|0,25",
+            "correcta": true
+          },
+          {
+            "texto": "El arco igual y el área a la mitad",
+            "clave": "1|0,5",
+            "error": "arco-igual-area-doble"
+          }
         ]
       }
     },
     {
-      "par": "tri-06", "plantilla": "cinta-radio", "unidad": "trigonometria.longitud-de-arco-y-sector",
+      "par": "tri-06",
+      "plantilla": "cinta-radio",
+      "unidad": "trigonometria.longitud-de-arco-y-sector",
       "mide": "Vueltas de una rueda: distancia entre el perímetro 2πr",
       "A": {
-        "enunciado": "Una rueda de 0,5 m de radio avanza 20π m sin resbalar. ¿Cuántas vueltas da?",
-        "datos": { "r": 0.5, "dPi": 20 },
+        "enunciado": "Un aro de 0,4 m de radio rueda por el piso sin patinar y recorre 12π m. ¿Cuántos giros completos da?",
+        "datos": {
+          "r": 0.4,
+          "dPi": 12
+        },
         "opciones": [
-          { "texto": "40", "valor": 40, "error": "vueltas-perimetro-pi-r" },
-          { "texto": "20", "valor": 20, "correcta": true },
-          { "texto": "10", "valor": 10, "error": "vueltas-con-diametro" },
-          { "texto": "40π (unas 126)", "valor": 125.6637, "error": "vueltas-sin-2pi" }
+          {
+            "texto": "30",
+            "valor": 30,
+            "error": "vueltas-perimetro-pi-r"
+          },
+          {
+            "texto": "15",
+            "valor": 15,
+            "correcta": true
+          },
+          {
+            "texto": "7,5",
+            "valor": 7.5,
+            "error": "vueltas-con-diametro"
+          },
+          {
+            "texto": "30π",
+            "valor": 94.2478,
+            "error": "vueltas-sin-2pi"
+          }
         ]
       },
       "B": {
-        "enunciado": "Una rueda de 0,25 m de radio avanza 15π m sin resbalar. ¿Cuántas vueltas da?",
-        "datos": { "r": 0.25, "dPi": 15 },
+        "enunciado": "Una llanta de 0,3 m de radio rueda por la pista sin patinar y recorre 18π m. ¿Cuántos giros completos da?",
+        "datos": {
+          "r": 0.3,
+          "dPi": 18
+        },
         "opciones": [
-          { "texto": "60", "valor": 60, "error": "vueltas-perimetro-pi-r" },
-          { "texto": "30", "valor": 30, "correcta": true },
-          { "texto": "15", "valor": 15, "error": "vueltas-con-diametro" },
-          { "texto": "60π (unas 188)", "valor": 188.4956, "error": "vueltas-sin-2pi" }
+          {
+            "texto": "60",
+            "valor": 60,
+            "error": "vueltas-perimetro-pi-r"
+          },
+          {
+            "texto": "30",
+            "valor": 30,
+            "correcta": true
+          },
+          {
+            "texto": "15",
+            "valor": 15,
+            "error": "vueltas-con-diametro"
+          },
+          {
+            "texto": "60π",
+            "valor": 188.4956,
+            "error": "vueltas-sin-2pi"
+          }
         ]
       }
     },
     {
-      "par": "tri-07", "plantilla": "cinta-radio", "unidad": "trigonometria.longitud-de-arco-y-sector",
+      "par": "tri-07",
+      "plantilla": "cinta-radio",
+      "unidad": "trigonometria.longitud-de-arco-y-sector",
       "mide": "Ruedas unidas por una faja: recorren el mismo arco y la grande da menos vueltas",
       "A": {
-        "enunciado": "Una faja une una rueda de 3 cm de radio con otra de 9 cm, sin resbalar. Si la rueda chica da 6 vueltas, ¿cuántas vueltas da la grande?",
-        "datos": { "r1": 3, "r2": 9, "n1": 6 },
+        "enunciado": "En una máquina de coser, una correa sin deslizar enlaza una polea de 3 cm de radio con otra de 9 cm. Si la polea pequeña gira 6 veces, ¿cuántos giros completa la otra?",
+        "datos": {
+          "r1": 3,
+          "r2": 9,
+          "n1": 6
+        },
         "opciones": [
-          { "texto": "6: las dos dan las mismas vueltas", "valor": 6, "error": "faja-mismas-vueltas" },
-          { "texto": "18: la grande da más vueltas porque es más grande", "valor": 18, "error": "RM5-mas-grande-mas-vueltas" },
-          { "texto": "2", "valor": 2, "correcta": true }
+          {
+            "texto": "6",
+            "valor": 6,
+            "error": "faja-mismas-vueltas"
+          },
+          {
+            "texto": "18",
+            "valor": 18,
+            "error": "RM5-mas-grande-mas-vueltas"
+          },
+          {
+            "texto": "2",
+            "valor": 2,
+            "correcta": true
+          }
         ]
       },
       "B": {
-        "enunciado": "Una faja une una polea de 5 cm de radio con otra de 10 cm, sin resbalar. Si la polea chica da 8 vueltas, ¿cuántas vueltas da la grande?",
-        "datos": { "r1": 5, "r2": 10, "n1": 8 },
+        "enunciado": "En un molino, una correa sin deslizar enlaza un disco de 5 cm de radio con otro de 10 cm. Si el disco pequeño gira 8 veces, ¿cuántos giros completa el otro?",
+        "datos": {
+          "r1": 5,
+          "r2": 10,
+          "n1": 8
+        },
         "opciones": [
-          { "texto": "8: las dos dan las mismas vueltas", "valor": 8, "error": "faja-mismas-vueltas" },
-          { "texto": "16: la grande da más vueltas porque es más grande", "valor": 16, "error": "RM5-mas-grande-mas-vueltas" },
-          { "texto": "4", "valor": 4, "correcta": true }
+          {
+            "texto": "8",
+            "valor": 8,
+            "error": "faja-mismas-vueltas"
+          },
+          {
+            "texto": "16",
+            "valor": 16,
+            "error": "RM5-mas-grande-mas-vueltas"
+          },
+          {
+            "texto": "4",
+            "valor": 4,
+            "correcta": true
+          }
         ]
       }
     },
     {
-      "par": "tri-08", "plantilla": "cinta-radio", "unidad": "trigonometria.longitud-de-arco-y-sector",
+      "par": "tri-08",
+      "plantilla": "cinta-radio",
+      "unidad": "trigonometria.longitud-de-arco-y-sector",
       "mide": "Cadena y eje en la bicicleta: la cadena iguala arcos y el eje iguala vueltas",
       "A": {
-        "enunciado": "En una bicicleta, el plato de los pedales tiene 12 cm de radio y la cadena lo une a un piñón de 4 cm de radio. El piñón está en el mismo eje que la rueda trasera, de 30 cm de radio. Si el pedal da 2 vueltas, ¿cuántas vueltas da la rueda trasera?",
-        "datos": { "plato": 12, "pinon": 4, "rueda": 30, "pedal": 2 },
+        "enunciado": "Pedro pedalea 2 vueltas completas. En su bicicleta, la catalina (12 cm de radio) mueve con la cadena un piñón de 4 cm de radio, y ese piñón comparte eje con la llanta trasera, de 30 cm de radio. ¿Cuántos giros da la llanta trasera?",
+        "datos": {
+          "plato": 12,
+          "pinon": 4,
+          "rueda": 30,
+          "pedal": 2
+        },
         "opciones": [
-          { "texto": "2: las mismas que el pedal", "valor": 2, "error": "bici-mismas-vueltas" },
-          { "texto": "0,67", "valor": 0.6667, "error": "bici-invertido" },
-          { "texto": "6", "valor": 6, "correcta": true },
-          { "texto": "0,8", "valor": 0.8, "error": "bici-faja-en-el-eje" }
+          {
+            "texto": "2",
+            "valor": 2,
+            "error": "bici-mismas-vueltas"
+          },
+          {
+            "texto": "0,67",
+            "valor": 0.6667,
+            "error": "bici-invertido"
+          },
+          {
+            "texto": "6",
+            "valor": 6,
+            "correcta": true
+          },
+          {
+            "texto": "0,8",
+            "valor": 0.8,
+            "error": "bici-faja-en-el-eje"
+          }
         ]
       },
       "B": {
-        "enunciado": "En una bicicleta, el plato de los pedales tiene 16 cm de radio y la cadena lo une a un piñón de 4 cm de radio. El piñón está en el mismo eje que la rueda trasera, de 32 cm de radio. Si el pedal da 1 vuelta, ¿cuántas vueltas da la rueda trasera?",
-        "datos": { "plato": 16, "pinon": 4, "rueda": 32, "pedal": 1 },
+        "enunciado": "Rosa pedalea 3 vueltas completas. En su bicicleta, la catalina (18 cm de radio) mueve con la cadena un piñón de 6 cm de radio, y ese piñón comparte eje con la llanta trasera, de 36 cm de radio. ¿Cuántos giros da la llanta trasera?",
+        "datos": {
+          "plato": 18,
+          "pinon": 6,
+          "rueda": 36,
+          "pedal": 3
+        },
         "opciones": [
-          { "texto": "1: las mismas que el pedal", "valor": 1, "error": "bici-mismas-vueltas" },
-          { "texto": "0,25", "valor": 0.25, "error": "bici-invertido" },
-          { "texto": "4", "valor": 4, "correcta": true },
-          { "texto": "0,5", "valor": 0.5, "error": "bici-faja-en-el-eje" }
+          {
+            "texto": "3",
+            "valor": 3,
+            "error": "bici-mismas-vueltas"
+          },
+          {
+            "texto": "1",
+            "valor": 1,
+            "error": "bici-invertido"
+          },
+          {
+            "texto": "9",
+            "valor": 9,
+            "correcta": true
+          },
+          {
+            "texto": "1,5",
+            "valor": 1.5,
+            "error": "bici-faja-en-el-eje"
+          }
+        ]
+      }
+    },
+    {
+      "par": "ct-01",
+      "plantilla": "circunferencia-trig",
+      "unidad": "trigonometria.reduccion-al-primer-cuadrante",
+      "mide": "Reducción al primer cuadrante: signo del cuadrante y la misma razón",
+      "A": {
+        "enunciado": "¿Cuánto vale cos 120°?",
+        "datos": {
+          "angulo": 120
+        },
+        "opciones": [
+          {
+            "texto": "1/2",
+            "valor": 0.5,
+            "error": "TR11-TR12-abscisa-sin-signo"
+          },
+          {
+            "texto": "−1/2",
+            "valor": -0.5,
+            "correcta": true
+          },
+          {
+            "texto": "−√3/2",
+            "valor": -0.86603,
+            "error": "TR14-cambia-de-razon"
+          },
+          {
+            "texto": "√3/2",
+            "valor": 0.86603,
+            "error": "TR11-cruza-seno-coseno"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "¿Cuánto vale cos 150°?",
+        "datos": {
+          "angulo": 150
+        },
+        "opciones": [
+          {
+            "texto": "√3/2",
+            "valor": 0.86603,
+            "error": "TR11-TR12-abscisa-sin-signo"
+          },
+          {
+            "texto": "−√3/2",
+            "valor": -0.86603,
+            "correcta": true
+          },
+          {
+            "texto": "−1/2",
+            "valor": -0.5,
+            "error": "TR14-cambia-de-razon"
+          },
+          {
+            "texto": "1/2",
+            "valor": 0.5,
+            "error": "TR11-cruza-seno-coseno"
+          }
+        ]
+      }
+    },
+    {
+      "par": "ct-02",
+      "plantilla": "circunferencia-trig",
+      "unidad": "trigonometria.funciones-trigonometricas",
+      "mide": "Periodo de y = A·sen(Bx): 360°/B, y no depende de A",
+      "A": {
+        "enunciado": "¿Cuál es el periodo de y = 3 sen(4x), con x en grados?",
+        "datos": {
+          "A": 3,
+          "B": 4,
+          "modelo": {
+            "fn": "sen"
+          }
+        },
+        "opciones": [
+          {
+            "texto": "1440°",
+            "valor": 1440,
+            "error": "TR18-periodo-por-B"
+          },
+          {
+            "texto": "4°",
+            "valor": 4,
+            "error": "TR18-periodo-igual-B"
+          },
+          {
+            "texto": "90°",
+            "valor": 90,
+            "correcta": true
+          },
+          {
+            "texto": "1080°",
+            "valor": 1080,
+            "error": "periodo-con-amplitud"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "¿Cuál es el periodo de y = 2 cos(3x), con x en grados?",
+        "datos": {
+          "A": 2,
+          "B": 3,
+          "modelo": {
+            "fn": "cos"
+          }
+        },
+        "opciones": [
+          {
+            "texto": "1080°",
+            "valor": 1080,
+            "error": "TR18-periodo-por-B"
+          },
+          {
+            "texto": "3°",
+            "valor": 3,
+            "error": "TR18-periodo-igual-B"
+          },
+          {
+            "texto": "120°",
+            "valor": 120,
+            "correcta": true
+          },
+          {
+            "texto": "720°",
+            "valor": 720,
+            "error": "periodo-con-amplitud"
+          }
         ]
       }
     }

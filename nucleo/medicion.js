@@ -13,7 +13,11 @@
  *   { tipo: 'prueba', fase, curso, forma, orden, banco, aciertos, total, respuestas, ms,
  *     origen: 'primera-vez'|'alumno'|'profesor', previas, dias }        una al terminar
  *   previas: unidades del curso que ya había abierto antes de la entrada (si es más de 0, la
- *   entrada no fue "en frío"); dias: días entre la entrada y la salida.
+ *   entrada no fue "en frío"); dias: días entre la entrada y la salida. La salida solo existe si el profesor
+ *   la abrió (origen 'profesor').
+ *   { tipo: 'habilitacion', que: 'salida'|'soluciones'|'soluciones-vistas', curso, origen: 'profesor' }
+ *     cuando el enlace del profesor abre algo en ese navegador (y cuando el alumno ve las soluciones)
+ *   { tipo: 'sesion', accion: 'otro-alumno' }   el alumno de esta PC cede el lugar a otro (id nuevo)
  * Todos llevan además: t (fecha ISO), alumno (id anónimo), grado, colegio, version.
  */
 (function (root, fabrica) {
@@ -25,7 +29,7 @@
   const COLUMNAS = ['t', 'alumno', 'grado', 'colegio', 'version', 'tipo', 'fase', 'modulo', 'unidad', 'problema',
     'opcion', 'correcta', 'error', 'respaldo', 'aciertos', 'total', 'ms',
     // Pruebas por curso (al final, para no mover las columnas de los archivos ya exportados).
-    'curso', 'forma', 'orden', 'banco', 'item', 'par', 'plantilla', 'origen', 'previas', 'dias'];
+    'curso', 'forma', 'orden', 'banco', 'item', 'par', 'plantilla', 'origen', 'previas', 'dias', 'que', 'accion'];
 
   function aCSV(eventos) {
     const celda = x => { if (x === undefined || x === null) return ''; const s = String(x); return /[",\n;]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };

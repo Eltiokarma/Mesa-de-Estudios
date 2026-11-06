@@ -295,12 +295,12 @@
       "inicio": "2026-11-17",
       "fin": "2026-11-21",
       "estado": "en_curso",
-      "progreso": 40,
+      "progreso": 65,
       "critico": false,
       "depende_de": [
         "pl3"
       ],
-      "notas": "plantillas/porcentajes-sucesivos (predicciones). Informe aritmetica-razonamiento-ideas-erroneas.md: AR1 y AR2 documentados. Falta: proporcionalidad y problemas de papel"
+      "notas": "Hechas: porcentajes-sucesivos (predicciones), regla-de-tres y probabilidad-dados (escenas). Faltan: fracciones, MCD y MCM, promedios, interés"
     },
     {
       "id": "ma1",
@@ -309,10 +309,10 @@
       "inicio": "2026-11-14",
       "fin": "2026-11-21",
       "estado": "en_curso",
-      "progreso": 35,
+      "progreso": 60,
       "critico": false,
       "depende_de": [],
-      "notas": "Informe trigonometria-ideas-erroneas.md (TR1-TR25, cifras por verificar). Hecha: plantillas/cinta-radio (sistemas de medida, arco, sector, ruedas). Faltan: circunferencia que se desenrolla y caso ambiguo"
+      "notas": "Hechas: cinta-radio y circunferencia-trig. Falta: caso ambiguo (ley de senos y cosenos)"
     },
     {
       "id": "ma2",
@@ -345,12 +345,12 @@
       "inicio": "2026-11-20",
       "fin": "2026-11-27",
       "estado": "en_curso",
-      "progreso": 10,
+      "progreso": 30,
       "critico": false,
       "depende_de": [
         "pl3"
       ],
-      "notas": "Informe aritmetica-razonamiento-ideas-erroneas.md (RM1-RM6, casi todo hipótesis). Formato predicciones"
+      "notas": "Hechas: probabilidad-dados y regla-de-tres (engranajes). Faltan: sucesiones, planteo de ecuaciones, edades y móviles, orden de información"
     },
     {
       "id": "ra2",
@@ -386,13 +386,13 @@
       "nombre": "Problemas de papel y pruebas de entrada y salida por curso",
       "inicio": "2026-11-30",
       "fin": "2026-12-07",
-      "estado": "pendiente",
-      "progreso": 0,
+      "estado": "en_curso",
+      "progreso": 80,
       "critico": false,
       "depende_de": [
         "pl2"
       ],
-      "notas": ""
+      "notas": "catalogo/pruebas/ con formas A y B (110 ítems en seis cursos), salida y soluciones abiertas por el profesor, «Otro alumno en esta PC», análisis con ganancia de Hake. Falta: revisión de un profesor del colegio y bancos de razonamiento"
     },
     {
       "id": "la3",

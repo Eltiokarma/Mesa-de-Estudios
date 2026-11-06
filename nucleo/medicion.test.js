@@ -105,6 +105,8 @@ test('el informe incluye la tabla por curso y los errores con su descripción', 
   // unir no confunde dos ítems respondidos en el mismo milisegundo
   assert.equal(unir([[{ ...cursoEv[1], t: 'z' }, { ...cursoEv[2], t: 'z' }]]).length, 2);
   // el CSV lleva las columnas nuevas al final
-  assert.deepEqual(M.COLUMNAS.slice(-10), ['curso', 'forma', 'orden', 'banco', 'item', 'par', 'plantilla', 'origen', 'previas', 'dias']);
-  assert.match(M.aCSV([cursoEv[0]]), /fisica,A,AB,,,,,,0,/);
+  assert.deepEqual(M.COLUMNAS.slice(-12), ['curso', 'forma', 'orden', 'banco', 'item', 'par', 'plantilla', 'origen', 'previas', 'dias', 'que', 'accion']);
+  assert.match(M.aCSV([cursoEv[0]]), /fisica,A,AB,,,,,,0,,,/);
+  // Las habilitaciones del profesor y el cambio de alumno no entran al resumen por curso.
+  assert.equal(M.resumirCursos([...cursoEv, { t: 'h', alumno: 'a', tipo: 'habilitacion', que: 'salida', curso: 'fisica', origen: 'profesor' }])[0].alumnosEntrada, 3);
 });

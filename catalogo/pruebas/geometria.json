@@ -1,237 +1,653 @@
 {
   "curso": "geometria",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "fecha": "2026-11-06",
   "minutos": 15,
-  "informes": ["docs/investigacion/geometria-ideas-erroneas.md"],
+  "informes": [
+    "docs/investigacion/geometria-ideas-erroneas.md"
+  ],
   "errores": {
-    "GE1-area-como-lado": { "respaldo": "documentado", "describe": "Cree que el área crece igual que el lado (k en vez de k²)" },
-    "GE2-cubo-en-area": { "respaldo": "hipotesis", "describe": "Usa k³ para un área" },
-    "GE2-volumen-como-arista": { "respaldo": "parcial", "describe": "Cree que el volumen crece igual que la arista (k en vez de k³)" },
-    "GE2-volumen-como-area": { "respaldo": "parcial", "describe": "Usa k² para un volumen" },
-    "GE20-sin-tercio": { "respaldo": "hipotesis", "describe": "Olvida el tercio del volumen del cono" },
-    "cono-mitad": { "respaldo": "hipotesis", "describe": "Cree que el cono es la mitad del cilindro" },
-    "area-sin-dividir-entre-2": { "respaldo": "hipotesis", "describe": "Olvida dividir entre 2 el producto base por altura" },
-    "GE7-lado-como-altura": { "respaldo": "documentado", "describe": "Usa un lado inclinado como si fuera la altura" },
-    "GE7-altura-siempre-dentro": { "respaldo": "documentado", "describe": "Cree que la altura siempre cae dentro del triángulo" },
-    "GE7-solo-una-fuera": { "respaldo": "hipotesis", "describe": "Cree que en el obtusángulo solo cae fuera la altura del ángulo obtuso" },
-    "GE7-todas-fuera": { "respaldo": "hipotesis", "describe": "Cree que en el obtusángulo las tres alturas caen fuera" },
-    "GE6-acostado-mas-area": { "respaldo": "parcial", "describe": "Cree que el triángulo estirado tiene más área" },
-    "GE6-acostado-menos-area": { "respaldo": "parcial", "describe": "Cree que el triángulo estirado tiene menos área" },
-    "GE6-isosceles-mas-area": { "respaldo": "parcial", "describe": "Cree que el isósceles tiene la mayor área" },
-    "GE15-inscrito-igual-central": { "respaldo": "hipotesis", "describe": "Cree que el inscrito mide lo mismo que el central" },
-    "GE15-inscrito-doble": { "respaldo": "hipotesis", "describe": "Cree que el inscrito es el doble del central" },
-    "GE16-exterior-suma": { "respaldo": "hipotesis", "describe": "Usa la semisuma de los arcos para un ángulo exterior" },
-    "GE16-exterior-sin-dividir": { "respaldo": "hipotesis", "describe": "Resta los arcos y no divide entre 2" },
-    "GE16-exterior-suma-sin-dividir": { "respaldo": "hipotesis", "describe": "Suma los arcos y no divide entre 2" },
-    "GE19-diametro-como-radio": { "respaldo": "hipotesis", "describe": "Usa el diámetro donde va el radio" },
-    "GE19-area-por-longitud": { "respaldo": "hipotesis", "describe": "Calcula el área del sector en vez de la longitud del arco" },
-    "GE19-sin-fraccion": { "respaldo": "hipotesis", "describe": "Da la circunferencia entera sin la fracción del arco" }
+    "GE1-area-como-lado": {
+      "respaldo": "documentado",
+      "describe": "Cree que el área crece igual que el lado (k en vez de k²)"
+    },
+    "GE2-cubo-en-area": {
+      "respaldo": "hipotesis",
+      "describe": "Usa k³ para un área"
+    },
+    "GE2-volumen-como-arista": {
+      "respaldo": "parcial",
+      "describe": "Cree que el volumen crece igual que la arista (k en vez de k³)"
+    },
+    "GE2-volumen-como-area": {
+      "respaldo": "parcial",
+      "describe": "Usa k² para un volumen"
+    },
+    "GE20-sin-tercio": {
+      "respaldo": "hipotesis",
+      "describe": "Cree que el cono y el cilindro de igual base y altura tienen el mismo volumen"
+    },
+    "cono-mitad": {
+      "respaldo": "hipotesis",
+      "describe": "Cree que el cono es la mitad del cilindro"
+    },
+    "area-sin-dividir-entre-2": {
+      "respaldo": "hipotesis",
+      "describe": "Olvida dividir entre 2 el producto base por altura"
+    },
+    "GE7-lado-como-altura": {
+      "respaldo": "documentado",
+      "describe": "Usa un lado inclinado como si fuera la altura"
+    },
+    "GE6-acostado-mas-area": {
+      "respaldo": "parcial",
+      "describe": "Cree que el triángulo estirado tiene más área"
+    },
+    "GE6-acostado-menos-area": {
+      "respaldo": "parcial",
+      "describe": "Cree que el triángulo estirado tiene menos área"
+    },
+    "GE6-isosceles-mas-area": {
+      "respaldo": "parcial",
+      "describe": "Cree que el área es máxima cuando el triángulo es isósceles"
+    },
+    "GE15-inscrito-igual-central": {
+      "respaldo": "hipotesis",
+      "describe": "Cree que el inscrito mide lo mismo que el central"
+    },
+    "GE15-inscrito-doble": {
+      "respaldo": "hipotesis",
+      "describe": "Invierte la relación: cree que el inscrito es el doble del central"
+    },
+    "GE16-exterior-suma": {
+      "respaldo": "hipotesis",
+      "describe": "Usa la semisuma de los arcos para un ángulo exterior"
+    },
+    "GE16-exterior-sin-dividir": {
+      "respaldo": "hipotesis",
+      "describe": "Resta los arcos y no divide entre 2"
+    },
+    "GE19-diametro-como-radio": {
+      "respaldo": "hipotesis",
+      "describe": "Usa el diámetro donde va el radio"
+    },
+    "GE19-area-por-longitud": {
+      "respaldo": "hipotesis",
+      "describe": "Calcula el área del sector en vez de la longitud del arco"
+    },
+    "invierte-tercio": {
+      "respaldo": "hipotesis",
+      "describe": "Divide entre 3 cuando hay que multiplicar (cono y cilindro al revés)"
+    },
+    "base-prolongacion": {
+      "respaldo": "hipotesis",
+      "describe": "Toma como base el tramo de la prolongación donde cae la altura"
+    },
+    "GE18-promedio-catetos": {
+      "respaldo": "hipotesis",
+      "describe": "Da el promedio de los catetos como altura"
+    },
+    "GE8-altura-como-mediana": {
+      "respaldo": "parcial",
+      "describe": "Cree que la altura llega al punto medio de la hipotenusa (es la mediana)"
+    },
+    "proyeccion-como-altura": {
+      "respaldo": "hipotesis",
+      "describe": "Da la proyección de un cateto sobre la hipotenusa como si fuera la altura"
+    },
+    "exterior-mitad-del-cercano": {
+      "respaldo": "hipotesis",
+      "describe": "Usa solo el arco cercano, como en un ángulo inscrito"
+    },
+    "GE19-pi-r": {
+      "respaldo": "hipotesis",
+      "describe": "Usa π·r como longitud de la circunferencia"
+    }
   },
   "pares": [
     {
-      "par": "geo-01", "plantilla": "ampliadora", "unidad": "geometria.proporcionalidad-y-semejanza",
+      "par": "geo-01",
+      "plantilla": "ampliadora",
+      "unidad": "geometria.proporcionalidad-y-semejanza",
       "mide": "El área de figuras semejantes se multiplica por k²",
       "A": {
         "enunciado": "Una foto rectangular tiene 30 cm² de área. Se amplía de modo que cada lado mide el triple. ¿Cuál es el área de la foto ampliada?",
-        "datos": { "area": 30, "modelo": { "k": 3 } },
+        "datos": {
+          "area": 30,
+          "modelo": {
+            "k": 3
+          }
+        },
         "opciones": [
-          { "texto": "90 cm²", "valor": 90, "error": "GE1-area-como-lado" },
-          { "texto": "270 cm²", "valor": 270, "correcta": true },
-          { "texto": "810 cm²", "valor": 810, "error": "GE2-cubo-en-area" }
+          {
+            "texto": "90 cm²",
+            "valor": 90,
+            "error": "GE1-area-como-lado"
+          },
+          {
+            "texto": "270 cm²",
+            "valor": 270,
+            "correcta": true
+          },
+          {
+            "texto": "810 cm²",
+            "valor": 810,
+            "error": "GE2-cubo-en-area"
+          }
         ]
       },
       "B": {
         "enunciado": "Un jardín rectangular tiene 40 m² de área. Se rediseña otro con la misma forma, pero con cada lado del doble de largo. ¿Cuál es el área del jardín nuevo?",
-        "datos": { "area": 40, "modelo": { "k": 2 } },
+        "datos": {
+          "area": 40,
+          "modelo": {
+            "k": 2
+          }
+        },
         "opciones": [
-          { "texto": "80 m²", "valor": 80, "error": "GE1-area-como-lado" },
-          { "texto": "160 m²", "valor": 160, "correcta": true },
-          { "texto": "320 m²", "valor": 320, "error": "GE2-cubo-en-area" }
+          {
+            "texto": "80 m²",
+            "valor": 80,
+            "error": "GE1-area-como-lado"
+          },
+          {
+            "texto": "160 m²",
+            "valor": 160,
+            "correcta": true
+          },
+          {
+            "texto": "320 m²",
+            "valor": 320,
+            "error": "GE2-cubo-en-area"
+          }
         ]
       }
     },
     {
-      "par": "geo-02", "plantilla": "ampliadora", "unidad": "geometria.prisma-y-piramide",
+      "par": "geo-02",
+      "plantilla": "ampliadora",
+      "unidad": "geometria.prisma-y-piramide",
       "mide": "El volumen de sólidos semejantes se multiplica por k³",
       "A": {
         "enunciado": "En una caja cúbica caben 2 litros. Otra caja cúbica tiene la arista del doble de largo. ¿Cuántos litros caben en ella?",
-        "datos": { "volumen": 2, "modelo": { "k": 2 } },
+        "datos": {
+          "volumen": 2,
+          "modelo": {
+            "k": 2
+          }
+        },
         "opciones": [
-          { "texto": "4 litros", "valor": 4, "error": "GE2-volumen-como-arista" },
-          { "texto": "8 litros", "valor": 8, "error": "GE2-volumen-como-area" },
-          { "texto": "16 litros", "valor": 16, "correcta": true }
+          {
+            "texto": "4 litros",
+            "valor": 4,
+            "error": "GE2-volumen-como-arista"
+          },
+          {
+            "texto": "8 litros",
+            "valor": 8,
+            "error": "GE2-volumen-como-area"
+          },
+          {
+            "texto": "16 litros",
+            "valor": 16,
+            "correcta": true
+          }
         ]
       },
       "B": {
         "enunciado": "Un dado de madera tiene 5 cm³ de volumen. Se fabrica otro dado con la arista del triple de largo. ¿Cuál es su volumen?",
-        "datos": { "volumen": 5, "modelo": { "k": 3 } },
+        "datos": {
+          "volumen": 5,
+          "modelo": {
+            "k": 3
+          }
+        },
         "opciones": [
-          { "texto": "15 cm³", "valor": 15, "error": "GE2-volumen-como-arista" },
-          { "texto": "45 cm³", "valor": 45, "error": "GE2-volumen-como-area" },
-          { "texto": "135 cm³", "valor": 135, "correcta": true }
+          {
+            "texto": "15 cm³",
+            "valor": 15,
+            "error": "GE2-volumen-como-arista"
+          },
+          {
+            "texto": "45 cm³",
+            "valor": 45,
+            "error": "GE2-volumen-como-area"
+          },
+          {
+            "texto": "135 cm³",
+            "valor": 135,
+            "correcta": true
+          }
         ]
       }
     },
     {
-      "par": "geo-03", "plantilla": "ampliadora", "unidad": "geometria.solidos-de-revolucion",
-      "mide": "El cono es un tercio del cilindro de la misma base y la misma altura",
+      "par": "geo-03",
+      "plantilla": "ampliadora",
+      "unidad": "geometria.solidos-de-revolucion",
+      "mide": "El cilindro guarda el triple que el cono de la misma base y la misma altura",
       "A": {
-        "enunciado": "Un cilindro y un cono tienen la misma base y la misma altura. El volumen del cilindro es 600 cm³. ¿Cuál es el volumen del cono?",
-        "datos": { "cilindro": 600 },
+        "enunciado": "Un cono y un cilindro tienen la misma base y la misma altura. El volumen del cono es 200 cm³. ¿Cuál es el volumen del cilindro?",
+        "datos": {
+          "cono": 200
+        },
         "opciones": [
-          { "texto": "600 cm³", "valor": 600, "error": "GE20-sin-tercio" },
-          { "texto": "300 cm³", "valor": 300, "error": "cono-mitad" },
-          { "texto": "200 cm³", "valor": 200, "correcta": true }
+          {
+            "texto": "200 cm³",
+            "valor": 200,
+            "error": "GE20-sin-tercio"
+          },
+          {
+            "texto": "400 cm³",
+            "valor": 400,
+            "error": "cono-mitad"
+          },
+          {
+            "texto": "600 cm³",
+            "valor": 600,
+            "correcta": true
+          },
+          {
+            "texto": "66,7 cm³",
+            "valor": 66.667,
+            "error": "invierte-tercio"
+          }
         ]
       },
       "B": {
-        "enunciado": "En un vaso cilíndrico caben 900 mL. Un cucurucho cónico tiene la misma boca y la misma altura que el vaso. ¿Cuántos mL caben en el cucurucho?",
-        "datos": { "cilindro": 900 },
+        "enunciado": "En un cucurucho cónico caben 300 mL. Un vaso cilíndrico tiene la misma boca y la misma altura que el cucurucho. ¿Cuántos mL caben en el vaso?",
+        "datos": {
+          "cono": 300
+        },
         "opciones": [
-          { "texto": "900 mL", "valor": 900, "error": "GE20-sin-tercio" },
-          { "texto": "450 mL", "valor": 450, "error": "cono-mitad" },
-          { "texto": "300 mL", "valor": 300, "correcta": true }
+          {
+            "texto": "300 mL",
+            "valor": 300,
+            "error": "GE20-sin-tercio"
+          },
+          {
+            "texto": "600 mL",
+            "valor": 600,
+            "error": "cono-mitad"
+          },
+          {
+            "texto": "900 mL",
+            "valor": 900,
+            "correcta": true
+          },
+          {
+            "texto": "100 mL",
+            "valor": 100,
+            "error": "invierte-tercio"
+          }
         ]
       }
     },
     {
-      "par": "geo-04", "plantilla": "triangulo-estira", "unidad": "geometria.areas-poligonales",
+      "par": "geo-04",
+      "plantilla": "triangulo-estira",
+      "unidad": "geometria.areas-poligonales",
       "mide": "Área de un obtusángulo con la altura que cae fuera del triángulo",
       "A": {
-        "enunciado": "En el triángulo ABC, el lado BC mide 6 cm y el ángulo B es obtuso. La altura trazada desde A cae fuera del triángulo, sobre la prolongación de BC, y mide 4 cm. Además, AB mide 5 cm. ¿Cuál es el área del triángulo?",
-        "datos": { "BC": 6, "h": 4, "AB": 5 },
+        "enunciado": "En ABC, el vértice B es obtuso. La distancia de A a la línea que contiene a BC es 4 cm, y el pie de esa distancia cae en la prolongación de BC, más allá de B. Si BC = 7 cm y AB = 5 cm, ¿cuál es el área de ABC?",
+        "datos": {
+          "BC": 7,
+          "h": 4,
+          "AB": 5
+        },
         "opciones": [
-          { "texto": "24 cm²", "valor": 24, "error": "area-sin-dividir-entre-2" },
-          { "texto": "12 cm²", "valor": 12, "correcta": true },
-          { "texto": "15 cm²", "valor": 15, "error": "GE7-lado-como-altura" }
+          {
+            "texto": "28 cm²",
+            "valor": 28,
+            "error": "area-sin-dividir-entre-2"
+          },
+          {
+            "texto": "14 cm²",
+            "valor": 14,
+            "correcta": true
+          },
+          {
+            "texto": "17,5 cm²",
+            "valor": 17.5,
+            "error": "GE7-lado-como-altura"
+          },
+          {
+            "texto": "6 cm²",
+            "valor": 6,
+            "error": "base-prolongacion"
+          }
         ]
       },
       "B": {
-        "enunciado": "En el triángulo PQR, el lado QR mide 5 cm y el ángulo Q es obtuso. La altura trazada desde P cae fuera del triángulo, sobre la prolongación de QR, y mide 8 cm. Además, PQ mide 10 cm. ¿Cuál es el área del triángulo?",
-        "datos": { "BC": 5, "h": 8, "AB": 10 },
+        "enunciado": "En PQR, el vértice Q es obtuso. La distancia de P a la línea que contiene a QR es 6 cm, y el pie de esa distancia cae en la prolongación de QR, más allá de Q. Si QR = 10 cm y PQ = 10 cm, ¿cuál es el área de PQR?",
+        "datos": {
+          "BC": 10,
+          "h": 6,
+          "AB": 10
+        },
         "opciones": [
-          { "texto": "40 cm²", "valor": 40, "error": "area-sin-dividir-entre-2" },
-          { "texto": "20 cm²", "valor": 20, "correcta": true },
-          { "texto": "25 cm²", "valor": 25, "error": "GE7-lado-como-altura" }
+          {
+            "texto": "60 cm²",
+            "valor": 60,
+            "error": "area-sin-dividir-entre-2"
+          },
+          {
+            "texto": "30 cm²",
+            "valor": 30,
+            "correcta": true
+          },
+          {
+            "texto": "50 cm²",
+            "valor": 50,
+            "error": "GE7-lado-como-altura"
+          },
+          {
+            "texto": "24 cm²",
+            "valor": 24,
+            "error": "base-prolongacion"
+          }
         ]
       }
     },
     {
-      "par": "geo-05", "plantilla": "triangulo-estira", "unidad": "geometria.puntos-notables",
-      "mide": "En un obtusángulo, dos de las tres alturas caen fuera",
+      "par": "geo-05",
+      "plantilla": "triangulo-estira",
+      "unidad": "geometria.relaciones-metricas",
+      "mide": "Altura relativa a la hipotenusa: h = (cateto · cateto) / hipotenusa",
       "A": {
-        "enunciado": "En el triángulo ABC, el ángulo B mide 110°. Cada vértice tiene su altura, perpendicular a la recta del lado opuesto. ¿Cuántas de las tres alturas caen fuera del triángulo?",
-        "datos": { "anguloObtuso": 110 },
+        "enunciado": "Los catetos de un triángulo rectángulo miden 15 cm y 20 cm, y su hipotenusa, 25 cm. ¿Cuánto mide la altura trazada desde el ángulo recto hasta la hipotenusa?",
+        "datos": {
+          "c1": 15,
+          "c2": 20
+        },
         "opciones": [
-          { "texto": "Ninguna: la altura siempre cae dentro del triángulo", "valor": 0, "error": "GE7-altura-siempre-dentro" },
-          { "texto": "Una: la que sale del ángulo obtuso", "valor": 1, "error": "GE7-solo-una-fuera" },
-          { "texto": "Dos", "valor": 2, "correcta": true },
-          { "texto": "Las tres", "valor": 3, "error": "GE7-todas-fuera" }
+          {
+            "texto": "17,5 cm",
+            "valor": 17.5,
+            "error": "GE18-promedio-catetos"
+          },
+          {
+            "texto": "12,5 cm",
+            "valor": 12.5,
+            "error": "GE8-altura-como-mediana"
+          },
+          {
+            "texto": "12 cm",
+            "valor": 12,
+            "correcta": true
+          },
+          {
+            "texto": "9 cm",
+            "valor": 9,
+            "error": "proyeccion-como-altura"
+          }
         ]
       },
       "B": {
-        "enunciado": "En el triángulo PQR, el ángulo Q mide 125°. Cada vértice tiene su altura, perpendicular a la recta del lado opuesto. ¿Cuántas de las tres alturas caen fuera del triángulo?",
-        "datos": { "anguloObtuso": 125 },
+        "enunciado": "Los catetos de un triángulo rectángulo miden 9 cm y 12 cm, y su hipotenusa, 15 cm. ¿Cuánto mide la altura trazada desde el ángulo recto hasta la hipotenusa?",
+        "datos": {
+          "c1": 9,
+          "c2": 12
+        },
         "opciones": [
-          { "texto": "Ninguna: la altura siempre cae dentro del triángulo", "valor": 0, "error": "GE7-altura-siempre-dentro" },
-          { "texto": "Una: la que sale del ángulo obtuso", "valor": 1, "error": "GE7-solo-una-fuera" },
-          { "texto": "Dos", "valor": 2, "correcta": true },
-          { "texto": "Las tres", "valor": 3, "error": "GE7-todas-fuera" }
+          {
+            "texto": "10,5 cm",
+            "valor": 10.5,
+            "error": "GE18-promedio-catetos"
+          },
+          {
+            "texto": "7,5 cm",
+            "valor": 7.5,
+            "error": "GE8-altura-como-mediana"
+          },
+          {
+            "texto": "7,2 cm",
+            "valor": 7.2,
+            "correcta": true
+          },
+          {
+            "texto": "5,4 cm",
+            "valor": 5.4,
+            "error": "proyeccion-como-altura"
+          }
         ]
       }
     },
     {
-      "par": "geo-06", "plantilla": "triangulo-estira", "unidad": "geometria.areas-poligonales",
+      "par": "geo-06",
+      "plantilla": "triangulo-estira",
+      "unidad": "geometria.areas-poligonales",
       "mide": "Con la misma base y entre paralelas, el área no cambia",
       "A": {
-        "enunciado": "El vértice A del triángulo ABC se desliza por una recta paralela a la base BC, alejándose cada vez más hacia la derecha. B y C no se mueven. ¿Qué pasa con el área del triángulo?",
+        "enunciado": "En el triángulo ABC, B y C están fijos. El vértice A empieza justo encima de B y se desliza hacia la derecha por una recta paralela a BC: pasa sobre el punto medio de BC y sigue alejándose. ¿Qué pasa con el área del triángulo?",
         "datos": {},
         "opciones": [
-          { "texto": "Crece, porque el triángulo se estira y sus lados se alargan", "clave": "crece", "error": "GE6-acostado-mas-area" },
-          { "texto": "No cambia", "clave": "igual", "correcta": true },
-          { "texto": "Disminuye, porque el triángulo se ve cada vez más delgado", "clave": "baja", "error": "GE6-acostado-menos-area" },
-          { "texto": "Es mayor cuando A está justo encima del punto medio de BC", "clave": "maximo-isosceles", "error": "GE6-isosceles-mas-area" }
+          {
+            "texto": "Crece todo el tiempo",
+            "clave": "crece",
+            "error": "GE6-acostado-mas-area"
+          },
+          {
+            "texto": "No cambia",
+            "clave": "igual",
+            "correcta": true
+          },
+          {
+            "texto": "Disminuye todo el tiempo",
+            "clave": "baja",
+            "error": "GE6-acostado-menos-area"
+          },
+          {
+            "texto": "Crece y después disminuye",
+            "clave": "maximo-isosceles",
+            "error": "GE6-isosceles-mas-area"
+          }
         ]
       },
       "B": {
-        "enunciado": "Un terreno triangular tiene un lado fijo a lo largo de una pista recta. Su tercer vértice es un poste que se puede mover por un camino paralelo a la pista. Si el poste se corre cada vez más lejos por el camino, ¿qué pasa con el área del terreno?",
+        "enunciado": "Un terreno triangular tiene un lado fijo a lo largo de una pista recta. Su tercer vértice es un poste que se mueve por un camino paralelo a la pista: parte frente a un extremo del lado fijo, pasa frente a su punto medio y sigue de largo. ¿Qué pasa con el área del terreno?",
         "datos": {},
         "opciones": [
-          { "texto": "Crece, porque el terreno se estira y sus lados se alargan", "clave": "crece", "error": "GE6-acostado-mas-area" },
-          { "texto": "No cambia", "clave": "igual", "correcta": true },
-          { "texto": "Disminuye, porque el terreno se ve cada vez más delgado", "clave": "baja", "error": "GE6-acostado-menos-area" },
-          { "texto": "Es mayor cuando el poste está justo frente al punto medio del lado fijo", "clave": "maximo-isosceles", "error": "GE6-isosceles-mas-area" }
+          {
+            "texto": "Crece todo el tiempo",
+            "clave": "crece",
+            "error": "GE6-acostado-mas-area"
+          },
+          {
+            "texto": "No cambia",
+            "clave": "igual",
+            "correcta": true
+          },
+          {
+            "texto": "Disminuye todo el tiempo",
+            "clave": "baja",
+            "error": "GE6-acostado-menos-area"
+          },
+          {
+            "texto": "Crece y después disminuye",
+            "clave": "maximo-isosceles",
+            "error": "GE6-isosceles-mas-area"
+          }
         ]
       }
     },
     {
-      "par": "geo-07", "plantilla": "angulo-inscrito", "unidad": "geometria.circunferencia",
-      "mide": "El ángulo inscrito mide la mitad del central que abarca el mismo arco",
+      "par": "geo-07",
+      "plantilla": "angulo-inscrito",
+      "unidad": "geometria.circunferencia",
+      "mide": "El ángulo central mide el doble del inscrito que abarca el mismo arco",
       "A": {
-        "enunciado": "En una circunferencia de centro O, el ángulo central AOB mide 110°. El punto P está en el arco mayor AB. ¿Cuánto mide el ángulo inscrito APB?",
-        "datos": { "central": 110 },
+        "enunciado": "En una circunferencia de centro O, el ángulo inscrito APB mide 35° (P está en el arco mayor AB). ¿Cuánto mide el ángulo central AOB?",
+        "datos": {
+          "inscrito": 35
+        },
         "opciones": [
-          { "texto": "110°", "valor": 110, "error": "GE15-inscrito-igual-central" },
-          { "texto": "55°", "valor": 55, "correcta": true },
-          { "texto": "220°", "valor": 220, "error": "GE15-inscrito-doble" }
+          {
+            "texto": "35°",
+            "valor": 35,
+            "error": "GE15-inscrito-igual-central"
+          },
+          {
+            "texto": "70°",
+            "valor": 70,
+            "correcta": true
+          },
+          {
+            "texto": "17,5°",
+            "valor": 17.5,
+            "error": "GE15-inscrito-doble"
+          }
         ]
       },
       "B": {
-        "enunciado": "En una circunferencia de centro O, el ángulo central MON mide 84°. El punto Q está en el arco mayor MN. ¿Cuánto mide el ángulo inscrito MQN?",
-        "datos": { "central": 84 },
+        "enunciado": "En una circunferencia de centro O, el ángulo inscrito MQN mide 48° (Q está en el arco mayor MN). ¿Cuánto mide el ángulo central MON?",
+        "datos": {
+          "inscrito": 48
+        },
         "opciones": [
-          { "texto": "84°", "valor": 84, "error": "GE15-inscrito-igual-central" },
-          { "texto": "42°", "valor": 42, "correcta": true },
-          { "texto": "168°", "valor": 168, "error": "GE15-inscrito-doble" }
+          {
+            "texto": "48°",
+            "valor": 48,
+            "error": "GE15-inscrito-igual-central"
+          },
+          {
+            "texto": "96°",
+            "valor": 96,
+            "correcta": true
+          },
+          {
+            "texto": "24°",
+            "valor": 24,
+            "error": "GE15-inscrito-doble"
+          }
         ]
       }
     },
     {
-      "par": "geo-08", "plantilla": "angulo-inscrito", "unidad": "geometria.circunferencia",
+      "par": "geo-08",
+      "plantilla": "angulo-inscrito",
+      "unidad": "geometria.circunferencia",
       "mide": "El ángulo exterior entre dos secantes es la semidiferencia de los arcos",
       "A": {
         "enunciado": "Desde un punto Q, fuera de una circunferencia, se trazan dos secantes. Entre ellas quedan dos arcos: el lejano mide 130° y el cercano, 30°. ¿Cuánto mide el ángulo que forman las secantes en Q?",
-        "datos": { "lejano": 130, "cercano": 30 },
+        "datos": {
+          "lejano": 130,
+          "cercano": 30
+        },
         "opciones": [
-          { "texto": "80°", "valor": 80, "error": "GE16-exterior-suma" },
-          { "texto": "100°", "valor": 100, "error": "GE16-exterior-sin-dividir" },
-          { "texto": "50°", "valor": 50, "correcta": true },
-          { "texto": "160°", "valor": 160, "error": "GE16-exterior-suma-sin-dividir" }
+          {
+            "texto": "80°",
+            "valor": 80,
+            "error": "GE16-exterior-suma"
+          },
+          {
+            "texto": "100°",
+            "valor": 100,
+            "error": "GE16-exterior-sin-dividir"
+          },
+          {
+            "texto": "50°",
+            "valor": 50,
+            "correcta": true
+          },
+          {
+            "texto": "15°",
+            "valor": 15,
+            "error": "exterior-mitad-del-cercano"
+          }
         ]
       },
       "B": {
         "enunciado": "Desde un punto P, fuera de una circunferencia, se trazan dos secantes. Entre ellas quedan dos arcos: el lejano mide 140° y el cercano, 20°. ¿Cuánto mide el ángulo que forman las secantes en P?",
-        "datos": { "lejano": 140, "cercano": 20 },
+        "datos": {
+          "lejano": 140,
+          "cercano": 20
+        },
         "opciones": [
-          { "texto": "80°", "valor": 80, "error": "GE16-exterior-suma" },
-          { "texto": "120°", "valor": 120, "error": "GE16-exterior-sin-dividir" },
-          { "texto": "60°", "valor": 60, "correcta": true },
-          { "texto": "160°", "valor": 160, "error": "GE16-exterior-suma-sin-dividir" }
+          {
+            "texto": "80°",
+            "valor": 80,
+            "error": "GE16-exterior-suma"
+          },
+          {
+            "texto": "120°",
+            "valor": 120,
+            "error": "GE16-exterior-sin-dividir"
+          },
+          {
+            "texto": "60°",
+            "valor": 60,
+            "correcta": true
+          },
+          {
+            "texto": "10°",
+            "valor": 10,
+            "error": "exterior-mitad-del-cercano"
+          }
         ]
       }
     },
     {
-      "par": "geo-09", "plantilla": "angulo-inscrito", "unidad": "geometria.longitud-y-areas-circulares",
+      "par": "geo-09",
+      "plantilla": "angulo-inscrito",
+      "unidad": "geometria.longitud-y-areas-circulares",
       "mide": "La longitud de un arco es la fracción de la circunferencia que le toca",
       "A": {
         "enunciado": "En una circunferencia de 8 cm de radio, ¿cuánto mide la longitud de un arco de 45°?",
-        "datos": { "r": 8, "arco": 45 },
+        "datos": {
+          "r": 8,
+          "arco": 45
+        },
         "opciones": [
-          { "texto": "2π cm", "valor": 6.2832, "correcta": true },
-          { "texto": "4π cm", "valor": 12.5664, "error": "GE19-diametro-como-radio" },
-          { "texto": "8π cm", "valor": 25.1327, "error": "GE19-area-por-longitud" },
-          { "texto": "16π cm", "valor": 50.2655, "error": "GE19-sin-fraccion" }
+          {
+            "texto": "π cm",
+            "valor": 3.1416,
+            "error": "GE19-pi-r"
+          },
+          {
+            "texto": "2π cm",
+            "valor": 6.2832,
+            "correcta": true
+          },
+          {
+            "texto": "4π cm",
+            "valor": 12.5664,
+            "error": "GE19-diametro-como-radio"
+          },
+          {
+            "texto": "8π cm",
+            "valor": 25.1327,
+            "error": "GE19-area-por-longitud"
+          }
         ]
       },
       "B": {
         "enunciado": "En una circunferencia de 12 cm de radio, ¿cuánto mide la longitud de un arco de 30°?",
-        "datos": { "r": 12, "arco": 30 },
+        "datos": {
+          "r": 12,
+          "arco": 30
+        },
         "opciones": [
-          { "texto": "2π cm", "valor": 6.2832, "correcta": true },
-          { "texto": "4π cm", "valor": 12.5664, "error": "GE19-diametro-como-radio" },
-          { "texto": "12π cm", "valor": 37.6991, "error": "GE19-area-por-longitud" },
-          { "texto": "24π cm", "valor": 75.3982, "error": "GE19-sin-fraccion" }
+          {
+            "texto": "π cm",
+            "valor": 3.1416,
+            "error": "GE19-pi-r"
+          },
+          {
+            "texto": "2π cm",
+            "valor": 6.2832,
+            "correcta": true
+          },
+          {
+            "texto": "4π cm",
+            "valor": 12.5664,
+            "error": "GE19-diametro-como-radio"
+          },
+          {
+            "texto": "12π cm",
+            "valor": 37.6991,
+            "error": "GE19-area-por-longitud"
+          }
         ]
       }
     }
