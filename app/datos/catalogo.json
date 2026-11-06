@@ -1933,7 +1933,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "fracciones"
+     ]
     },
     {
      "id": "aritmetica.analisis-combinatorio",
@@ -2133,7 +2135,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "fracciones"
+     ]
     },
     {
      "id": "aritmetica.numeros-racionales",
@@ -2163,7 +2167,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "fracciones"
+     ]
     },
     {
      "id": "aritmetica.potenciacion-y-radicacion",
@@ -2359,7 +2365,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "poligonos"
+     ]
     },
     {
      "id": "geometria.circunferencia",
@@ -2501,7 +2509,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "poligonos"
+     ]
     },
     {
      "id": "geometria.simetria",
@@ -4364,6 +4374,25 @@
     "/plantillas/estequiometria-limitante/generador.js"
    ]
   },
+  "fracciones": {
+   "id": "fracciones",
+   "titulo": "La barra que se parte: fracciones, decimales, MCD y MCM",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "aritmetica.numeros-racionales",
+    "aritmetica.mcd-y-mcm",
+    "aritmetica.estadistica"
+   ],
+   "url": "/plantillas/fracciones/index.html",
+   "papel": "/plantillas/fracciones/papel.json",
+   "archivos": [
+    "/plantillas/fracciones/index.html",
+    "/plantillas/fracciones/motor.js",
+    "/plantillas/fracciones/papel.json"
+   ]
+  },
   "gases": {
    "id": "gases",
    "titulo": "Gases",
@@ -4515,6 +4544,24 @@
     "/plantillas/optica-lente-delgada/index.html",
     "/plantillas/optica-lente-delgada/motor.js",
     "/plantillas/optica-lente-delgada/papel.json"
+   ]
+  },
+  "poligonos": {
+   "id": "poligonos",
+   "titulo": "El polígono que se abre: ángulos, diagonales y cuadriláteros",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.poligonos-y-cuadrilateros",
+    "geometria.poligonos-regulares"
+   ],
+   "url": "/plantillas/poligonos/index.html",
+   "papel": "/plantillas/poligonos/papel.json",
+   "archivos": [
+    "/plantillas/poligonos/index.html",
+    "/plantillas/poligonos/motor.js",
+    "/plantillas/poligonos/papel.json"
    ]
   },
   "porcentajes-sucesivos": {

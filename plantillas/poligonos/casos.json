@@ -1,0 +1,123 @@
+{
+  "plantilla": "poligonos",
+  "unidades": "Ángulos en grados; longitudes y áreas en unidades de la cuadrícula. Los vértices van como [x, y] o { x, y }, en orden (antihorario en los ejemplos). En un cuadrilátero ABCD, los lados son AB, BC, CD y DA y las diagonales AC y BD.",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.diagonales.conLados, regular.interior); 'valor' es el resultado si es un número o una lista suelta; las listas se comparan completas y en orden; los textos (tipo, nombre) se comparan exactos. Un error típico que en ese caso da la respuesta correcta no aparece en 'errores' (y no se pide).",
+  "verificacion": "Verificado por un subagente independiente (6 nov 2026) sin leer el motor ni este archivo. Las diagonales se contaron enumerando pares de vértices no vecinos; los ángulos salieron de atan2 sobre vectores con orientación; las áreas, de trapecios bajo cada lado; con fracciones exactas y radicales a√b. Los 20 casos y sus 'tambien' coinciden; las únicas diferencias son de convención (n = 7,2 cuando el polígono no existe, el nombre 'hexágono regular').",
+  "tolerancia": 1e-9,
+  "casos": [
+    { "nombre": "Predicción del paso 2 e informe (GE23): el hexágono se parte en 4 triángulos desde un vértice; sus interiores suman 720° (180°·n: 1080°; siempre 360°: 360°; n − 1 triángulos: 900°)",
+      "fn": "poligono", "args": [6],
+      "espera": { "n": 6, "nombre": "hexágono", "sumaInteriores": 720, "sumaExteriores": 360, "triangulosDesdeVertice": 4, "diagonales": 9, "diagonalesDesdeVertice": 3,
+                  "regular.interior": 120, "regular.exterior": 60, "regular.central": 60,
+                  "errores.sumaInteriores.con180n": 1080, "errores.sumaInteriores.siempre360": 360, "errores.sumaInteriores.conNmenos1": 900,
+                  "errores.diagonales.conLados": 15 },
+      "tambien": [ { "fn": "triangulacion", "args": [6], "espera": { "valor": [[0, 1, 2], [0, 2, 3], [0, 3, 4], [0, 4, 5]] } } ] },
+
+    { "nombre": "Predicción del paso 3: el octógono tiene 8 · 5 / 2 = 20 diagonales (con los lados, n(n − 1)/2: 28; sin dividir entre 2: 40; solo desde un vértice: 5)",
+      "fn": "poligono", "args": [8],
+      "espera": { "nombre": "octógono", "diagonales": 20, "diagonalesDesdeVertice": 5, "sumaInteriores": 1080, "regular.interior": 135,
+                  "errores.diagonales.conLados": 28, "errores.diagonales.sinDividir": 40, "errores.diagonales.soloDesdeUnVertice": 5 },
+      "tambien": [ { "fn": "listaDiagonales", "args": [8], "espera": { "valor": [[0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [1, 3], [1, 4], [1, 5], [1, 6], [1, 7], [2, 4], [2, 5], [2, 6], [2, 7], [3, 5], [3, 6], [3, 7], [4, 6], [4, 7], [5, 7]] } },
+                   { "fn": "nDesdeDiagonales", "args": [20], "espera": { "n": 8, "existe": true, "nombre": "octógono" } } ] },
+
+    { "nombre": "Predicción del paso 4: si cada ángulo interior de un polígono regular mide 150°, el exterior mide 30° y n = 360/30 = 12 (con 180° en vez de 360°: 6; 360/150 = 2,4 y 150/180 + 2 ≈ 2,83, que no son números de lados)",
+      "fn": "nDesdeAngulo", "args": [{ "interior": 150 }],
+      "espera": { "n": 12, "existe": true, "exterior": 30, "interior": 150, "nombre": "dodecágono",
+                  "errores.con180": 6, "errores.interiorComoCentral": 2.4, "errores.interiorComoSuma": 2.8333333333333335 },
+      "tambien": [ { "fn": "poligono", "args": [12], "espera": { "regular.interior": 150, "regular.exterior": 30, "sumaInteriores": 1800 } } ] },
+
+    { "nombre": "El ejemplo del encargo: cada ángulo interior de 140° → exterior 40° → 9 lados, el eneágono (con 180°: 4,5)",
+      "fn": "nDesdeAngulo", "args": [{ "interior": 140 }],
+      "espera": { "n": 9, "existe": true, "exterior": 40, "nombre": "eneágono", "errores.con180": 4.5 } },
+
+    { "nombre": "No existe el polígono regular con ángulos interiores de 130°: el exterior de 50° no divide a 360° (n = 7,2)",
+      "fn": "nDesdeAngulo", "args": [{ "interior": 130 }],
+      "espera": { "n": 7.2, "existe": false, "exterior": 50, "nombre": null } },
+
+    { "nombre": "Exterior de 24° → 15 lados, el pentadecágono (tomarlo como interior: 360/156 ≈ 2,31)",
+      "fn": "nDesdeAngulo", "args": [{ "exterior": 24 }],
+      "espera": { "n": 15, "existe": true, "interior": 156, "nombre": "pentadecágono", "errores.comoInterior": 2.3076923076923075 } },
+
+    { "nombre": "Predicción del paso 5 (GE10): el cuadrado (0, 0), (4, 0), (4, 4), (0, 4) es paralelogramo, rectángulo, rombo y cuadrado; diagonales iguales, perpendiculares y que se cortan en su punto medio (sin inclusión: solo «cuadrado»)",
+      "fn": "cuadrilatero", "args": [[0, 0], [4, 0], [4, 4], [0, 4]],
+      "espera": { "tipo": "cuadrado", "nombres": ["paralelogramo", "rectángulo", "rombo", "cuadrado"], "esRombo": true, "esRectangulo": true, "esParalelogramo": true,
+                  "sumaAngulos": 360, "area": 16, "perimetro": 16, "diagonales.AC": 5.656854249492381, "diagonales.iguales": true, "diagonales.perpendiculares": true,
+                  "diagonales.seCortanEnSuPuntoMedio": true, "paralelos.AB_CD": true, "paralelos.BC_AD": true, "ladoEnEje": true,
+                  "errores.nombres.soloElMasEspecifico": ["cuadrado"], "errores.nombres.cuadradoNoEsRombo": ["paralelogramo", "rectángulo", "cuadrado"] } },
+
+    { "nombre": "«¿Qué pasa si…?» (GE9): el mismo cuadrado girado 45°, apoyado en un vértice: (0, −3), (3, 0), (0, 3), (−3, 0). Sigue siendo cuadrado; ningún lado está horizontal (por la posición: «solo rombo»)",
+      "fn": "cuadrilatero", "args": [[0, -3], [3, 0], [0, 3], [-3, 0]],
+      "espera": { "tipo": "cuadrado", "nombres": ["paralelogramo", "rectángulo", "rombo", "cuadrado"], "area": 18, "ladoEnEje": false, "diagonalesEnEje": true,
+                  "lados.AB": 4.242640687119285, "angulos.A": 90, "errores.nombres.porPosicion": ["paralelogramo", "rombo"] },
+      "tambien": [ { "fn": "girar", "args": [[[0, -3], [3, 0], [0, 3], [-3, 0]], 45, [0, 0]],
+                     "espera": { "valor": [{ "x": 2.1213203435596424, "y": -2.1213203435596424 }, { "x": 2.1213203435596424, "y": 2.1213203435596424 }, { "x": -2.1213203435596424, "y": 2.1213203435596424 }, { "x": -2.1213203435596424, "y": -2.1213203435596424 }] } } ] },
+
+    { "nombre": "Rombo que no es cuadrado: (0, 0), (5, 0), (8, 4), (3, 4); lados 5, diagonales perpendiculares y distintas (√80 y √20)",
+      "fn": "cuadrilatero", "args": [[0, 0], [5, 0], [8, 4], [3, 4]],
+      "espera": { "tipo": "rombo", "nombres": ["paralelogramo", "rombo"], "lados.AB": 5, "lados.BC": 5, "area": 20,
+                  "diagonales.AC": 8.94427190999916, "diagonales.BD": 4.47213595499958, "diagonales.perpendiculares": true, "diagonales.iguales": false,
+                  "errores.nombres.noEsParalelogramo": ["rombo"] } },
+
+    { "nombre": "Rectángulo 4 × 3 y romboide (0, 0), (5, 0), (7, 3), (2, 3): diagonales iguales en el rectángulo, distintas en el romboide",
+      "fn": "cuadrilatero", "args": [[0, 0], [4, 0], [4, 3], [0, 3]],
+      "espera": { "tipo": "rectángulo", "nombres": ["paralelogramo", "rectángulo"], "diagonales.AC": 5, "diagonales.iguales": true, "diagonales.perpendiculares": false, "area": 12 },
+      "tambien": [ { "args": [[0, 0], [5, 0], [7, 3], [2, 3]], "espera": { "tipo": "romboide", "nombres": ["paralelogramo", "romboide"], "area": 15, "diagonales.iguales": false, "diagonales.seCortanEnSuPuntoMedio": true } } ] },
+
+    { "nombre": "Predicción del paso 7: el trapecio isósceles (0, 0), (10, 0), (7, 4), (3, 4) tiene bases 10 y 4, altura 4 y mediana (10 + 4)/2 = 7 (B − b: 6; B + b: 14; (B − b)/2: 3, que es el segmento entre los puntos medios de las diagonales)",
+      "fn": "cuadrilatero", "args": [[0, 0], [10, 0], [7, 4], [3, 4]],
+      "espera": { "tipo": "trapecio isósceles", "nombres": ["trapecio", "trapecio isósceles"], "lados.BC": 5, "lados.DA": 5, "area": 28,
+                  "angulos.A": 53.13010235415598, "angulos.C": 126.86989764584402, "diagonales.iguales": true,
+                  "trapecio.baseMayor": 10, "trapecio.baseMenor": 4, "trapecio.altura": 4, "trapecio.mediana": 7, "trapecio.segmentoDiagonales": 3,
+                  "trapecio.extremosMediana": [{ "x": 8.5, "y": 2 }, { "x": 1.5, "y": 2 }],
+                  "trapecio.errores.mediana.resta": 6, "trapecio.errores.mediana.suma": 14, "trapecio.errores.mediana.mitadDeLaResta": 3 },
+      "tambien": [ { "fn": "trapecio", "args": [{ "B": 10, "b": 4 }], "espera": { "mediana": 7, "segmentoDiagonales": 3, "errores.mediana.resta": 6 } } ] },
+
+    { "nombre": "Trapecio con B = 3b (12 y 4): la mediana 8 coincide con B − b, así que ese error no se ofrece como opción",
+      "fn": "trapecio", "args": [{ "B": 12, "b": 4 }],
+      "espera": { "mediana": 8, "segmentoDiagonales": 4, "errores.mediana.suma": 16, "errores.mediana.mitadDeLaResta": 4 } },
+
+    { "nombre": "Trapecio rectángulo (0, 0), (6, 0), (6, 3), (2, 3) y trapezoide simétrico (0, 0), (3, −2), (6, 0), (3, 4)",
+      "fn": "cuadrilatero", "args": [[0, 0], [6, 0], [6, 3], [2, 3]],
+      "espera": { "tipo": "trapecio rectángulo", "nombres": ["trapecio", "trapecio rectángulo"], "trapecio.mediana": 5, "trapecio.altura": 3, "area": 15, "rectos.B": true },
+      "tambien": [ { "args": [[0, 0], [3, -2], [6, 0], [3, 4]], "espera": { "tipo": "trapezoide simétrico", "nombres": ["trapezoide", "trapezoide simétrico"], "area": 18, "diagonales.perpendiculares": true } } ] },
+
+    { "nombre": "«¿Qué pasa si…?»: el pentágono no convexo (0, 0), (6, 0), (6, 5), (3, 2), (0, 5) tiene un ángulo entrante de 270° y sus interiores suman 540°, como todo pentágono (midiendo el entrante por fuera: 360°)",
+      "fn": "poligonoVertices", "args": [[[0, 0], [6, 0], [6, 5], [3, 2], [0, 5]]],
+      "espera": { "n": 5, "area": 21, "convexo": false, "simple": true, "angulos": [90, 90, 45, 270, 45], "exteriores": [90, 90, 135, -90, 135], "entrantes": [3],
+                  "sumaInteriores": 540, "sumaSegunFormula": 540, "sumaExteriores": 360, "errores.sumaInteriores.entranteMedidoPorFuera": 360, "errores.sumaInteriores.con180n": 900, "errores.area.sinMitad": 42 } },
+
+    { "nombre": "«¿Qué pasa si…?»: los exteriores del pentágono irregular (0, 0), (6, 0), (6, 3), (3, 6), (0, 3) miden 90°, 90°, 45°, 90° y 45° y suman 360° (como los interiores, 540°; 180° por vértice, 900°); el pentágono irregular (1, 0), (5, 1), (6, 4), (3, 6), (0, 3) también",
+      "fn": "poligonoVertices", "args": [[[0, 0], [6, 0], [6, 3], [3, 6], [0, 3]]],
+      "espera": { "convexo": true, "area": 27, "sumaExteriores": 360, "sumaInteriores": 540, "angulos": [90, 90, 135, 90, 135], "exteriores": [90, 90, 45, 90, 45] },
+      "tambien": [ { "fn": "poligono", "args": [5], "espera": { "errores.sumaExteriores.comoInteriores": 540, "errores.sumaExteriores.con180n": 900 } },
+                   { "args": [[[1, 0], [5, 1], [6, 4], [3, 6], [0, 3]]], "espera": { "convexo": true, "area": 22.5, "sumaExteriores": 360,
+                     "exteriores": [85.60129464500447, 57.52880770915151, 74.74488129694222, 78.69006752597979, 63.43494882292201] } } ] },
+
+    { "nombre": "«¿Qué pasa si…?»: hexágono regular de lado 6: radio 6, apotema 3√3 ≈ 5,196 y área 54√3 ≈ 93,53 (apotema como mitad del lado: 3; como el radio: 6; distancia entre lados opuestos: 6√3 ≈ 10,39)",
+      "fn": "regular", "args": [{ "n": 6, "lado": 6 }],
+      "espera": { "nombre": "hexágono regular", "lado": 6, "radio": 6, "apotema": 5.196152422706632, "perimetro": 36, "area": 93.53074360871938, "anguloCentral": 60,
+                  "triangulo.area": 15.588457268119896, "triangulo.cantidad": 6,
+                  "errores.apotema.mitadDelLado": 3, "errores.apotema.comoRadio": 6, "errores.apotema.distanciaEntreLados": 10.392304845413264,
+                  "errores.area.conMitadDelLado": 54, "errores.area.conRadio": 108 },
+      "tambien": [ { "args": [{ "n": 6, "apotema": 5.196152422706632 }], "espera": { "lado": 6, "radio": 6 } } ] },
+
+    { "nombre": "Cuadrado de lado 8 visto como polígono regular: apotema 4 = la mitad del lado (ese «error» acierta aquí y no se incluye), radio 4√2, área 64",
+      "fn": "regular", "args": [{ "n": 4, "lado": 8 }],
+      "espera": { "nombre": "cuadrado", "apotema": 4, "radio": 5.656854249492381, "area": 64, "triangulo.area": 16, "errores.apotema.comoRadio": 5.656854249492381, "errores.area.sinMitad": 128 } },
+
+    { "nombre": "«¿Qué pasa si…?»: el triángulo no tiene diagonales, 3 · 0 / 2 = 0 (contando los lados, n(n − 1)/2: 3); el cuadrilátero tiene 2",
+      "fn": "poligono", "args": [3],
+      "espera": { "diagonales": 0, "diagonalesDesdeVertice": 0, "triangulosDesdeVertice": 1, "sumaInteriores": 180, "regular.interior": 60, "errores.diagonales.conLados": 3, "errores.diagonales.conLadosSinDividir": 6 },
+      "tambien": [ { "args": [4], "espera": { "diagonales": 2, "sumaInteriores": 360, "regular.interior": 90, "errores.diagonales.conLados": 6, "errores.sumaInteriores.con180n": 720 } } ] },
+
+    { "nombre": "De vuelta: los interiores suman 1260° → 9 lados (con 180°·n: 7); 35 diagonales → 10 lados; desde 3 vértices consecutivos del octógono salen 14 diagonales (sumando 5 + 5 + 5: 15)",
+      "fn": "nDesdeSuma", "args": [1260],
+      "espera": { "n": 9, "existe": true, "nombre": "eneágono", "errores.con180n": 7 },
+      "tambien": [ { "fn": "nDesdeDiagonales", "args": [35], "espera": { "n": 10, "existe": true, "nombre": "decágono" } },
+                   { "fn": "diagonalesDesdeVertices", "args": [8, 3], "espera": { "diagonales": 14, "porFormula": 14, "errores.cuentaDoble": 15 } } ] },
+
+    { "nombre": "Vértices del cuadrado regular de radio 1, con el lado de abajo horizontal",
+      "fn": "verticesRegular", "args": [4, { "radio": 1 }],
+      "espera": { "valor": [{ "x": -0.7071067811865475, "y": -0.7071067811865476 }, { "x": 0.7071067811865476, "y": -0.7071067811865475 }, { "x": 0.7071067811865476, "y": 0.7071067811865475 }, { "x": -0.7071067811865475, "y": 0.7071067811865476 }] } }
+  ]
+}

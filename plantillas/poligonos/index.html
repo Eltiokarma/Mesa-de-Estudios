@@ -1,0 +1,1219 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El polígono que se abre: ángulos, diagonales y cuadriláteros</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de triangulo-estira.
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
+   número de lados n azul, triángulos desde un vértice naranja, ángulo interior i fucsia, ángulo exterior e verde,
+   diagonales turquesa, lado ℓ rojo, apotema ap ámbar, radio R marrón rojizo, área S verde oscuro,
+   base mayor AB granate, base menor CD mostaza y mediana m índigo. Sumas, nombres y marcas (lados iguales,
+   ángulos rectos, flechas de paralelos) en tinta.
+   Elegidos con CIEDE2000: ΔE00 ≥ 20 entre los que salen en el mismo dibujo, en claro y en oscuro, y contraste AA
+   sobre el papel y sobre su chip (.v, fondo al 8 %). Pares parecidos (ΔE00 < 20) que solo comparten pantalla en
+   vistas que nunca coinciden: triángulos–apotema y exterior–área (el explorador muestra una sola vista del polígono a
+   la vez: ángulos, triángulos, diagonales, exteriores o apotema) y apotema–base menor (el polígono regular y el
+   trapecio son dibujos distintos). */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-n:#1f5fbf; --c-tri:#a05200; --c-i:#a10fbf; --c-e:#466d14; --c-diag:#0f766e;
+  --c-l:#c0364a; --c-ap:#8f5800; --c-R:#6b260f; --c-S:#255c1f;
+  --c-Bm:#77032c; --c-bm:#7d6a00; --c-m:#3328c4;
+  --relleno:.13;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-n:#7cb0ff; --c-tri:#f0a04a; --c-i:#cf6bfa; --c-e:#a3d65e; --c-diag:#5ed9c8;
+  --c-l:#f17384; --c-ap:#ffc04d; --c-R:#ff6600; --c-S:#5fe06a;
+  --c-Bm:#ff3dae; --c-bm:#e3c84a; --c-m:#9f9bff;
+  --relleno:.17; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-n:#7cb0ff; --c-tri:#f0a04a; --c-i:#cf6bfa; --c-e:#a3d65e; --c-diag:#5ed9c8;
+  --c-l:#f17384; --c-ap:#ffc04d; --c-R:#ff6600; --c-S:#5fe06a;
+  --c-Bm:#ff3dae; --c-bm:#e3c84a; --c-m:#9f9bff;
+  --relleno:.17; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+/* Celular con una predicción pendiente: el dibujo más bajo y pegado arriba, para que se vea mientras se elige. */
+@media (max-width:899px){
+  .mode.pendiente .bench{position:sticky; top:0; z-index:1; padding:6px; gap:4px; background:var(--card); border-radius:0 0 20px 20px}
+  .mode.pendiente .legend{display:none}
+  .mode.pendiente .lecturas{gap:4px}
+  .mode.pendiente .lectura{padding:2px 8px}
+}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+.lienzo:has(canvas:focus-visible){outline:3px solid var(--ink); outline-offset:2px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+.legend i.sq{width:12px; height:12px; border-radius:3px; opacity:.55}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+#exps{display:grid; grid-template-columns:1fr; justify-self:stretch}
+#exps button{text-align:left}
+@media (min-width:560px){ #exps{grid-template-columns:repeat(2, minmax(0, 1fr))} }
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-n{color:var(--c-n); background:color-mix(in srgb, var(--c-n) 8%, transparent)}
+.v-tri{color:var(--c-tri); background:color-mix(in srgb, var(--c-tri) 8%, transparent)}
+.v-i{color:var(--c-i); background:color-mix(in srgb, var(--c-i) 8%, transparent)}
+.v-e{color:var(--c-e); background:color-mix(in srgb, var(--c-e) 8%, transparent)}
+.v-diag{color:var(--c-diag); background:color-mix(in srgb, var(--c-diag) 8%, transparent)}
+.v-l{color:var(--c-l); background:color-mix(in srgb, var(--c-l) 8%, transparent)}
+.v-ap{color:var(--c-ap); background:color-mix(in srgb, var(--c-ap) 8%, transparent)}
+.v-R{color:var(--c-R); background:color-mix(in srgb, var(--c-R) 8%, transparent)}
+.v-S{color:var(--c-S); background:color-mix(in srgb, var(--c-S) 8%, transparent)}
+.v-Bm{color:var(--c-Bm); background:color-mix(in srgb, var(--c-Bm) 8%, transparent)}
+.v-bm{color:var(--c-bm); background:color-mix(in srgb, var(--c-bm) 8%, transparent)}
+.v-m{color:var(--c-m); background:color-mix(in srgb, var(--c-m) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.02rem; font-variant-numeric:tabular-nums}
+.eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.5em; white-space:normal}
+.frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1.15}
+.frac > span:first-child{border-bottom:1.5px solid currentColor; padding:0 .25em}
+.frac > span:last-child{padding:0 .25em}
+.answer{font-weight:700; padding:12px 16px; border-radius:16px; background:var(--paper); border:2px solid var(--ink); max-width:66ch}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.seg button i{display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px; vertical-align:0}
+
+/* Perilla del número de lados: se arrastra, se toca o se mueve con las flechas */
+.perilla{display:flex; align-items:center; gap:6px; flex-wrap:nowrap; padding:8px 10px; border-radius:16px; background:var(--paper); border:1px solid var(--line)}
+.perilla label{font-weight:800; color:var(--ink); white-space:nowrap}
+.perilla input[type=range]{flex:1 1 auto; min-width:0; width:100%; accent-color:var(--c-n); height:32px}
+.perilla .btn{min-width:44px; padding:8px 0; flex:none}
+.perilla output{font:800 1.1rem var(--mono); color:var(--c-n); min-width:2ch; text-align:center}
+
+/* Nombres que le corresponden al cuadrilátero, en tinta (son nombres, no variables) */
+.nombres{display:flex; flex-wrap:wrap; gap:6px}
+.nombres span{padding:5px 12px; border-radius:999px; border:1.5px dashed var(--line); color:var(--muted); font-weight:700; font-size:.88rem}
+.nombres span.si{border:1.5px solid var(--ink); background:var(--ink); color:var(--card)}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.acciones{display:flex; flex-wrap:wrap; gap:8px}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, a:focus-visible, input:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+/* Lecturas en vivo, cada una con el color de su variable */
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(92px, 1fr)); gap:8px}
+.lecturas:empty{display:none}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura b{display:block; color:var(--k); font:800 1.02rem var(--mono); font-variant-numeric:tabular-nums; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.lectura span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.lectura.tipo{grid-column:span 2}
+.lectura.tipo b{font:800 .9rem var(--font); white-space:normal}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.3fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Geometría · Polígonos y cuadriláteros · Problemas tipo admisión</p>
+      <h1>El polígono que se abre</h1>
+      <p class="sub">Cambia el número de lados y mira cómo se parte en triángulos y cuántas diagonales tiene. Después, arrastra los vértices de un cuadrilátero y mira cómo cambia de nombre.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo del polígono">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Polígono sobre papel"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Dibujo del experimento">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/poligonos">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'poligonos', unidad: 'geometria.poligonos-y-cuadrilateros', version: '0.1.0' };
+const U_REG = 'geometria.poligonos-regulares';
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0, unidad){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: unidad || PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la geometría (vértices del regular, triángulos, diagonales, ángulos, exteriores, clasificación del
+   cuadrilátero, mediana, giro) sale de MotorPoligono (motor.js); aquí solo se pinta, se arrastra y se anima. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MP = MotorPoligono;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+// Coma decimal y signo menos tipográfico.
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 1 : d), r = Math.round(n*p)/p + 0;
+  const [e, f] = String(Math.abs(r)).split('.');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+const gr = (x, d) => `${fmt(x, d === undefined ? (Math.abs(x - Math.round(x)) < 1e-6 ? 0 : 1) : d)}°`;
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const pot = (x, e) => `<span>${x}${e || '²'}</span>`;   // exponente pegado a su base
+const fr = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+const n_ = t => V('n', t), tri_ = t => V('tri', t), i_ = t => V('i', t), e_ = t => V('e', t), d_ = t => V('diag', t),
+  l_ = t => V('l', t), ap_ = t => V('ap', t), R_ = t => V('R', t), S_ = t => V('S', t), Bm_ = t => V('Bm', t), bm_ = t => V('bm', t), m_ = t => V('m', t);
+const NOMBRES_CUAD = ['paralelogramo', 'romboide', 'rectángulo', 'rombo', 'cuadrado', 'trapecio', 'trapezoide'];
+
+function colores(){
+  const g = n => css(n);
+  return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
+    n:g('--c-n'), tri:g('--c-tri'), i:g('--c-i'), e:g('--c-e'), diag:g('--c-diag'), l:g('--c-l'), ap:g('--c-ap'), R:g('--c-R'), S:g('--c-S'),
+    Bm:g('--c-Bm'), bm:g('--c-bm'), m:g('--c-m'), relleno:Number(g('--relleno')) || .13, font:g('--font') };
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, p, q){ ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke(); }
+// Texto con un fondo del color del papel detrás, para que se lea sobre las líneas.
+function rotulo(ctx, c, x, y, t, color, align, peso, tam){
+  ctx.font = `${peso || 700} ${tam || 13}px ${c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+  ctx.fillStyle = color; ctx.fillText(t, x, y);
+}
+const unit = (p, q) => { const dx = q.x - p.x, dy = q.y - p.y, L = Math.hypot(dx, dy) || 1; return { x:dx/L, y:dy/L }; };
+// Resaltar en el dibujo la variable que se toca en el texto (regla 4).
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+// En el celular, el dibujo se lleva a la vista antes de animar; si el alumno ya cambió de paso, no se anima.
+function alDibujo(cv, sigue, fn){
+  const chico = innerWidth < 900;
+  if (chico) cv.scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+  esperar(chico ? 380 : 0, () => { if (sigue()) fn(); });
+}
+
+/* ================= La escena =================
+   Tres clases de dibujo, en coordenadas del mundo (unidades de la cuadrícula, y hacia arriba):
+   'reg'  un polígono regular de n lados (vértices de MP.verticesRegular), con sus ángulos, los triángulos desde un
+          vértice, las diagonales, los exteriores, la apotema y el radio, o el camino que lo recorre lado por lado;
+   'cuad' un cuadrilátero ABCD de vértices arrastrables, con marcas de lados iguales, ángulos rectos y lados paralelos,
+          y la mediana si es trapecio (MP.cuadrilatero);
+   'libre' un polígono cualquiera (MP.poligonoVertices): ángulos, entrantes, triángulos y exteriores que se juntan. */
+function crearEscena(cv, idDesc, idLect, idLey){
+  const E = { modo:'reg', reg:null, q:null, p:null, lect:[], ley:[], hl:null, caja:{ x0:-4, x1:4, y0:-4, y1:4 }, rejilla:false,
+    alCambiar:null, compacto:false, ocupado:false, tok:0, desc:'' };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, arr = -1, sobre = -1, sel = 0, foco = false;
+  const chico = () => innerWidth < 900;
+  function alto(w){
+    if (E.compacto && chico()) return Math.round(clamp(w*0.6, 220, 245));
+    return w >= 560 ? Math.round(clamp(w*0.62, 320, 440)) : Math.round(clamp(w*0.86, 290, 350));
+  }
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    const h = alto(w), dpr = window.devicePixelRatio || 1;
+    if (w === W && h === H) { E.dibujar(); return; }
+    W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  alRedibujarTema(() => E.dibujar());
+  addEventListener('modo', () => { W = 0; resize(); });
+
+  E.config = o => {
+    E.tok++;
+    Object.assign(E, { modo:'reg', reg:null, q:null, p:null, lect:[], ley:[], rejilla:false, alCambiar:null, desc:'' }, o);
+    if (E.reg) E.reg = Object.assign({ n:6, R:3, giro:0, ang:false, angVal:false, tri:0, diag:0, ext:false, apot:false, camino:null, esquina:null, rotulos:true, triVal:true }, E.reg);
+    if (E.q) E.q = Object.assign({ drag:false, marcas:true, diag:false, mediana:0, bases:false, ang:false, medidas:true }, E.q, { V:E.q.V.map(p => ({ x:p[0] !== undefined ? p[0] : p.x, y:p[1] !== undefined ? p[1] : p.y })) });
+    if (E.p) E.p = Object.assign({ ang:false, cunas:true, tri:null, triF:0, ext:0, junta:0 }, E.p, { V:E.p.V.map(p => ({ x:p[0], y:p[1] })) });
+    if (!o.caja) E.caja = cajaAuto();
+    sel = 0; arr = -1;
+    cv.tabIndex = E.q && E.q.drag ? 0 : -1;
+    W = 0; resize(); E.leyenda(); E.dibujar(); E.avisar();
+  };
+  function cajaAuto(){
+    if (E.reg){ const r = E.reg.R*1.28; return { x0:-r, x1:r, y0:-r, y1:r }; }
+    const pts = (E.q || E.p).V;
+    const xs = pts.map(p => p.x), ys = pts.map(p => p.y), m = 1.2;
+    return { x0:Math.min(...xs) - m, x1:Math.max(...xs) + m, y0:Math.min(...ys) - m, y1:Math.max(...ys) + m };
+  }
+  E.compactar = on => { on = !!on; cv.closest('.mode').classList.toggle('pendiente', on); if (on === E.compacto) return; E.compacto = on; W = 0; resize(); };
+  E.permitir = on => { if (E.q) E.q.drag = on; cv.tabIndex = on ? 0 : -1; E.dibujar(); };
+
+  // ----- del mundo a la pantalla -----
+  function escala(){
+    const c = E.caja, pad = 20;
+    const k = Math.min((W - 2*pad)/(c.x1 - c.x0), (H - 2*pad)/(c.y1 - c.y0));
+    return { k, ox: W/2 - k*(c.x0 + c.x1)/2, oy: H/2 + k*(c.y0 + c.y1)/2 };
+  }
+  const aP = (P, s) => ({ x: s.ox + s.k*P.x, y: s.oy - s.k*P.y });
+  const aMundo = (px, py) => { const s = escala(); return { x:(px - s.ox)/s.k, y:(s.oy - py)/s.k }; };
+  const grosor = (k, base) => (E.hl === k ? base + 2.5 : base);
+
+  // ----- piezas de dibujo -----
+  function marcaRecta(p, u, w, color, t){
+    t = t || 10;
+    ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = 1.6; ctx.beginPath();
+    ctx.moveTo(p.x + u.x*t, p.y + u.y*t); ctx.lineTo(p.x + (u.x + w.x)*t, p.y + (u.y + w.y)*t); ctx.lineTo(p.x + w.x*t, p.y + w.y*t); ctx.stroke(); ctx.restore();
+  }
+  // Cuña de un ángulo con vértice v: desde la dirección a0 (radianes de pantalla) barriendo 'barrido' radianes
+  // en sentido antihorario de la pantalla (negativo) o horario (positivo).
+  function cuna(v, r, a0, barrido, color, alfa, bordes){
+    ctx.save(); ctx.fillStyle = color; ctx.globalAlpha = alfa;
+    ctx.beginPath(); ctx.moveTo(v.x, v.y); ctx.arc(v.x, v.y, r, a0, a0 + barrido, barrido < 0); ctx.closePath(); ctx.fill();
+    ctx.globalAlpha = 1; ctx.strokeStyle = color; ctx.lineWidth = 2;
+    ctx.beginPath(); if (bordes) ctx.moveTo(v.x, v.y); ctx.arc(v.x, v.y, r, a0, a0 + barrido, barrido < 0); if (bordes) ctx.closePath(); ctx.stroke(); ctx.restore();
+  }
+  const ang = (p, q) => Math.atan2(q.y - p.y, q.x - p.x);
+  function ticks(p, q, k, color){
+    const m = { x:(p.x + q.x)/2, y:(p.y + q.y)/2 }, u = unit(p, q), n = { x:-u.y, y:u.x };
+    ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = 2;
+    for (let j = 0; j < k; j++){ const o = (j - (k - 1)/2)*5; linea(ctx, { x:m.x + u.x*o - n.x*6, y:m.y + u.y*o - n.y*6 }, { x:m.x + u.x*o + n.x*6, y:m.y + u.y*o + n.y*6 }); }
+    ctx.restore();
+  }
+  function flechas(p, q, k, color){
+    const m = { x:(p.x + q.x)/2, y:(p.y + q.y)/2 }, u = unit(p, q), n = { x:-u.y, y:u.x };
+    ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.lineCap = 'round';
+    for (let j = 0; j < k; j++){
+      const c = { x:m.x + u.x*(j*6 - (k - 1)*3 + 22), y:m.y + u.y*(j*6 - (k - 1)*3 + 22) };
+      ctx.beginPath(); ctx.moveTo(c.x - u.x*6 + n.x*5, c.y - u.y*6 + n.y*5); ctx.lineTo(c.x, c.y); ctx.lineTo(c.x - u.x*6 - n.x*5, c.y - u.y*6 - n.y*5); ctx.stroke();
+    }
+    ctx.restore();
+  }
+  function punto(p, color, r){ ctx.fillStyle = color; ctx.beginPath(); ctx.arc(p.x, p.y, r || 4.5, 0, 7); ctx.fill(); }
+
+  function cuadricula(c, s){
+    ctx.save(); ctx.strokeStyle = c.grid; ctx.lineWidth = 1;
+    const a = aMundo(0, 0), b = aMundo(W, H);
+    for (let x = Math.floor(a.x); x <= Math.ceil(b.x); x++){ const X = aP({ x, y:0 }, s).x; linea(ctx, { x:X, y:0 }, { x:X, y:H }); }
+    for (let y = Math.floor(b.y); y <= Math.ceil(a.y); y++){ const Y = aP({ x:0, y }, s).y; linea(ctx, { x:0, y:Y }, { x:W, y:Y }); }
+    ctx.restore();
+  }
+
+  E.dibujar = () => {
+    if (!W) return;
+    const c = E.c = colores(), s = escala();
+    ctx.clearRect(0, 0, W, H); ctx.fillStyle = c.paper; ctx.fillRect(0, 0, W, H);
+    if (E.rejilla) cuadricula(c, s);
+    if (E.modo === 'reg') dibujarReg(c, s);
+    else if (E.modo === 'cuad') dibujarCuad(c, s);
+    else dibujarLibre(c, s);
+  };
+
+  // ----- polígono regular -----
+  function dibujarReg(c, s){
+    const r = E.reg, Vw = MP.verticesRegular(r.n, { radio:r.R, giro:r.giro }), Vs = Vw.map(p => aP(p, s)), n = r.n;
+    const O = aP({ x:0, y:0 }, s), lado = Math.hypot(Vs[1].x - Vs[0].x, Vs[1].y - Vs[0].y), rr = clamp(lado*0.3, 10, 24);
+    const camino = r.camino !== null ? clamp(r.camino, 0, n) : null;
+    // relleno del polígono
+    if (camino === null){
+      ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = .045; ctx.beginPath(); Vs.forEach((p, k) => k ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)); ctx.closePath(); ctx.fill(); ctx.restore();
+    }
+    // triángulos centrales (área) para la apotema
+    if (r.apot && r.centrales){
+      ctx.save(); ctx.fillStyle = c.S;
+      for (let k = 0; k < n; k++){ ctx.globalAlpha = (k % 2 ? .10 : .20) * (E.hl === 'S' ? 1.8 : 1); ctx.beginPath(); ctx.moveTo(O.x, O.y); ctx.lineTo(Vs[k].x, Vs[k].y); ctx.lineTo(Vs[(k + 1) % n].x, Vs[(k + 1) % n].y); ctx.closePath(); ctx.fill(); }
+      ctx.restore();
+    }
+    // triángulos desde el vértice 0
+    if (r.tri > 0){
+      const T = MP.triangulacion(n);
+      T.forEach((t, k) => {
+        const f = clamp(r.tri - k, 0, 1); if (f <= 0) return;
+        const [a, b, d] = t.map(j => Vs[j]);
+        ctx.save(); ctx.fillStyle = c.tri; ctx.globalAlpha = (k % 2 ? .16 : .30) * f * (E.hl === 'tri' ? 1.6 : 1);
+        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.lineTo(d.x, d.y); ctx.closePath(); ctx.fill(); ctx.restore();
+      });
+      ctx.save(); ctx.strokeStyle = c.tri; ctx.lineWidth = grosor('tri', 2.6); ctx.lineCap = 'round';
+      for (let k = 2; k <= n - 2; k++){ const f = clamp(r.tri - (k - 1), 0, 1); if (f > 0){ const q = Vs[k]; linea(ctx, Vs[0], { x:Vs[0].x + (q.x - Vs[0].x)*f, y:Vs[0].y + (q.y - Vs[0].y)*f }); } }
+      ctx.restore();
+      if (r.triVal) T.forEach((t, k) => { if (r.tri - k >= 1){ const g = { x:(Vs[t[0]].x + Vs[t[1]].x + Vs[t[2]].x)/3, y:(Vs[t[0]].y + Vs[t[1]].y + Vs[t[2]].y)/3 }; rotulo(ctx, c, g.x, g.y, '180°', c.tri, 'center', 800, lado < 60 ? 10 : 12); } });
+    }
+    // diagonales
+    if (r.diag > 0){
+      const D = MP.listaDiagonales(n);
+      ctx.save(); ctx.strokeStyle = c.diag; ctx.lineCap = 'round';
+      D.forEach(([a, b], k) => {
+        const f = clamp(r.diag - k, 0, 1); if (f <= 0) return;
+        ctx.lineWidth = grosor('diag', f < 1 || (r.diag - k < 2 && r.diag < D.length) ? 3 : 1.8); ctx.globalAlpha = f < 1 ? 1 : .85;
+        const p = Vs[a], q = Vs[b]; linea(ctx, p, { x:p.x + (q.x - p.x)*f, y:p.y + (q.y - p.y)*f });
+      });
+      ctx.restore();
+    }
+    // lados
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2.6; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+    if (camino === null){ ctx.beginPath(); Vs.forEach((p, k) => k ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)); ctx.closePath(); ctx.stroke(); }
+    else {
+      ctx.beginPath(); ctx.moveTo(Vs[0].x, Vs[0].y);
+      for (let k = 0; k < Math.floor(camino); k++) ctx.lineTo(Vs[(k + 1) % n].x, Vs[(k + 1) % n].y);
+      const f = camino - Math.floor(camino);
+      if (f > 0){ const a = Vs[Math.floor(camino) % n], b = Vs[(Math.floor(camino) + 1) % n]; ctx.lineTo(a.x + (b.x - a.x)*f, a.y + (b.y - a.y)*f); }
+      ctx.stroke();
+    }
+    if (r.lado || r.apot){ ctx.strokeStyle = c.l; ctx.lineWidth = grosor('l', 4.5); linea(ctx, Vs[0], Vs[1]); }
+    ctx.restore();
+    // ángulos interiores
+    if (r.ang && camino === null){
+      const P = MP.poligono(n);
+      for (let k = 0; k < n; k++){
+        const v = Vs[k], sig = Vs[(k + 1) % n];
+        cuna(v, rr, ang(v, sig), -P.regular.interior*Math.PI/180, c.i, E.hl === 'i' ? .4 : .2);
+        if (r.angVal && lado > 34){ const u = unit(v, O); rotulo(ctx, c, v.x + u.x*(rr + 13), v.y + u.y*(rr + 13), gr(P.regular.interior), c.i, 'center', 800, 11); }
+      }
+    }
+    // la esquina (un ángulo interior) y los exteriores del camino
+    if (camino !== null){
+      const P = MP.poligono(n);
+      if (r.esquina){ const v = Vs[1]; cuna(v, rr + 4, ang(v, Vs[2]), -P.regular.interior*Math.PI/180, c.i, .22); const u = unit(v, O); rotulo(ctx, c, v.x + u.x*(rr + 20), v.y + u.y*(rr + 20), r.esquina, c.i, 'center', 800, 13); }
+      for (let k = 1; k < n + 1; k++){
+        if (!r.ext || camino < (k === n ? n : k + 0.02)) continue;
+        const v = Vs[k % n], ant = Vs[k - 1], sig = Vs[(k + 1) % n], u = unit(ant, v), L = lado*0.55;
+        ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.4; ctx.setLineDash([4, 4]); linea(ctx, v, { x:v.x + u.x*L, y:v.y + u.y*L }); ctx.restore();
+        const b = -P.regular.exterior*Math.PI/180, a0 = ang(v, { x:v.x + u.x, y:v.y + u.y });
+        cuna(v, rr + 6, a0, b, c.e, E.hl === 'e' ? .45 : .25);
+        const m = a0 + b/2; rotulo(ctx, c, v.x + Math.cos(m)*(rr + 19), v.y + Math.sin(m)*(rr + 19), gr(P.regular.exterior), c.e, 'center', 800, 11);
+      }
+    } else if (r.ext){
+      const P = MP.poligono(n);
+      for (let k = 0; k < n; k++){
+        const v = Vs[k], ant = Vs[(k - 1 + n) % n], u = unit(ant, v), L = lado*0.5;
+        ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.4; ctx.setLineDash([4, 4]); linea(ctx, v, { x:v.x + u.x*L, y:v.y + u.y*L }); ctx.restore();
+        cuna(v, rr + 4, ang(v, { x:v.x + u.x, y:v.y + u.y }), -P.regular.exterior*Math.PI/180, c.e, E.hl === 'e' ? .45 : .25);
+      }
+    }
+    // lado, apotema y radio
+    const M01 = { x:(Vs[0].x + Vs[1].x)/2, y:(Vs[0].y + Vs[1].y)/2 }, uL = unit(O, M01);
+    if ((r.lado || r.apot) && r.rotLado) rotulo(ctx, c, M01.x + uL.x*18, M01.y + uL.y*18, r.rotLado, c.l, 'center', 800, 13);
+    if (r.apot){
+      const M = { x:(Vs[0].x + Vs[1].x)/2, y:(Vs[0].y + Vs[1].y)/2 };
+      ctx.save(); ctx.lineCap = 'round';
+      if (r.radio !== false){ ctx.strokeStyle = c.R; ctx.lineWidth = grosor('R', 3); linea(ctx, O, Vs[1]); }
+      ctx.strokeStyle = c.ap; ctx.lineWidth = grosor('ap', 3.4); linea(ctx, O, M); ctx.restore();
+      marcaRecta(M, unit(M, Vs[1]), unit(M, O), c.ap, 9);
+      punto(O, c.ink, 4);
+      if (r.rotulos){
+        if (r.rotApot) rotulo(ctx, c, (O.x + M.x)/2 - uL.y*16, (O.y + M.y)/2 + uL.x*16, r.rotApot, c.ap, 'center', 800, 13);
+        if (r.rotRadio && r.radio !== false) rotulo(ctx, c, (O.x + Vs[1].x)/2 + 14, (O.y + Vs[1].y)/2 - 6, r.rotRadio, c.R, 'center', 800, 13);
+      }
+    }
+    // vértices
+    if (r.puntos !== false) Vs.forEach((p, k) => { if (camino === null || k <= Math.ceil(camino)) punto(p, c.ink, 3.5); });
+    if (r.vertice0){ const u = unit(O, Vs[0]); rotulo(ctx, c, Vs[0].x + u.x*16, Vs[0].y + u.y*16, r.vertice0, c.ink, 'center', 800, 14); }
+  }
+
+  // ----- cuadrilátero -----
+  E.Q = () => { const v = E.q.V; return MP.cuadrilatero(v[0], v[1], v[2], v[3]); };
+  function dibujarCuad(c, s){
+    const q = E.q, Vs = q.V.map(p => aP(p, s)), Q = E.Q();
+    const G = { x:Vs.reduce((a, p) => a + p.x, 0)/4, y:Vs.reduce((a, p) => a + p.y, 0)/4 };
+    ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = .05; ctx.beginPath(); Vs.forEach((p, k) => k ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)); ctx.closePath(); ctx.fill(); ctx.restore();
+    if (q.diag && !Q.degenerado){ ctx.save(); ctx.strokeStyle = c.diag; ctx.lineWidth = grosor('diag', 2); ctx.setLineDash([7, 5]); linea(ctx, Vs[0], Vs[2]); linea(ctx, Vs[1], Vs[3]); ctx.restore(); }
+    // lados (las bases del trapecio, en su color)
+    const lados = [[0, 1], [1, 2], [2, 3], [3, 0]];
+    const T = Q.trapecio, nombreLado = ['AB', 'BC', 'CD', 'DA'];
+    ctx.save(); ctx.lineCap = 'round';
+    lados.forEach(([a, b], k) => {
+      let col = c.ink, w = 2.6;
+      if (q.bases && T){
+        const L = Q.lados[nombreLado[k]], esBase = T.bases.includes(nombreLado[k]) || (nombreLado[k] === 'DA' && T.bases.includes('AD'));
+        if (esBase){ const mayor = Math.abs(L - T.baseMayor) < 1e-9; col = mayor ? c.Bm : c.bm; w = grosor(mayor ? 'Bm' : 'bm', 4.5); }
+      }
+      ctx.strokeStyle = col; ctx.lineWidth = w; linea(ctx, Vs[a], Vs[b]);
+    });
+    ctx.restore();
+    // marcas de propiedades: lados iguales, ángulos rectos y lados paralelos
+    if (q.marcas && !Q.degenerado){
+      const L = nombreLado.map(k => Q.lados[k]), grupos = [];
+      L.forEach((x, k) => { const g = grupos.find(g => Math.abs(g.x - x) <= 1e-9*Math.max(1, x)); if (g) g.k.push(k); else grupos.push({ x, k:[k] }); });
+      let t = 0; grupos.filter(g => g.k.length > 1).forEach(g => { t++; g.k.forEach(k => ticks(Vs[lados[k][0]], Vs[lados[k][1]], t, c.ink)); });
+      ['A','B','C','D'].forEach((v, k) => { if (Q.rectos && Q.rectos[v]) marcaRecta(Vs[k], unit(Vs[k], Vs[(k + 1) % 4]), unit(Vs[k], Vs[(k + 3) % 4]), c.ink, 11); });
+      if (Q.paralelos){
+        // flechas en el mismo sentido en los dos lados de cada par
+        if (Q.paralelos.AB_CD){ flechas(Vs[0], Vs[1], 1, c.ink); flechas(Vs[3], Vs[2], 1, c.ink); }
+        if (Q.paralelos.BC_AD){ const k = Q.paralelos.AB_CD ? 2 : 1; flechas(Vs[1], Vs[2], k, c.ink); flechas(Vs[0], Vs[3], k, c.ink); }
+      }
+    }
+    // ángulos
+    if (q.ang && Q.angulos){
+      ['A','B','C','D'].forEach((v, k) => {
+        if (Q.rectos[v] && q.marcas) return;
+        const u1 = unit(Vs[k], Vs[(k + 1) % 4]), u2 = unit(Vs[k], Vs[(k + 3) % 4]), b = unit({ x:0, y:0 }, { x:u1.x + u2.x, y:u1.y + u2.y });
+        rotulo(ctx, c, Vs[k].x + b.x*30, Vs[k].y + b.y*30, gr(Q.angulos[v], 0), c.i, 'center', 800, 11);
+      });
+    }
+    // mediana del trapecio
+    if (T && q.mediana > 0){
+      const [M1, M2] = T.extremosMediana.map(p => aP(p, s)), f = q.mediana;
+      ctx.save(); ctx.strokeStyle = c.m; ctx.lineWidth = grosor('m', 3.6); ctx.lineCap = 'round';
+      linea(ctx, M2, { x:M2.x + (M1.x - M2.x)*f, y:M2.y + (M1.y - M2.y)*f }); ctx.restore();
+      punto(M1, c.m, 4.5); punto(M2, c.m, 4.5);
+      // marcas de punto medio en los laterales
+      ticks(Vs[1], aP(T.extremosMediana[0], s), 1, c.m); ticks(aP(T.extremosMediana[0], s), Vs[2], 1, c.m);
+      ticks(Vs[3], aP(T.extremosMediana[1], s), 2, c.m); ticks(aP(T.extremosMediana[1], s), Vs[0], 2, c.m);
+      if (f >= 1 && q.tramo && T.extremosSegmentoDiagonales){
+        const [N1, N2] = T.extremosSegmentoDiagonales.map(p => aP(p, s));
+        ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 6; ctx.lineCap = 'round'; linea(ctx, N1, N2); ctx.restore();
+        rotulo(ctx, c, (N1.x + N2.x)/2, (N1.y + N2.y)/2 + 14, fmt(T.segmentoDiagonales, 0), c.ink, 'center', 800, 12);
+      }
+      if (f >= 1 && q.rotMediana) rotulo(ctx, c, (M1.x + M2.x)/2, (M1.y + M2.y)/2 - 13, q.rotMediana, c.m, 'center', 800, 13);
+    }
+    if (q.bases && T && q.rotBases){
+      const lb = (k, t, col) => { const [a, b] = lados[k], m = { x:(Vs[a].x + Vs[b].x)/2, y:(Vs[a].y + Vs[b].y)/2 }, u = unit(G, m); rotulo(ctx, c, m.x + u.x*16, m.y + u.y*16, t, col, 'center', 800, 13); };
+      lb(0, q.rotBases[0], c.Bm); lb(2, q.rotBases[1], c.bm);
+    }
+    // vértices
+    ['A','B','C','D'].forEach((t, k) => {
+      const P0 = Vs[k], u = unit(G, P0);
+      if (q.drag){
+        ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = (arr === k || sobre === k) ? .18 : .08; ctx.beginPath(); ctx.arc(P0.x, P0.y, 18, 0, 7); ctx.fill(); ctx.restore();
+        ctx.fillStyle = c.card; ctx.strokeStyle = c.ink; ctx.lineWidth = 2.4; ctx.beginPath(); ctx.arc(P0.x, P0.y, 8, 0, 7); ctx.fill(); ctx.stroke();
+        if (foco && sel === k){ ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.setLineDash([3, 3]); ctx.beginPath(); ctx.arc(P0.x, P0.y, 14, 0, 7); ctx.stroke(); ctx.restore(); }
+      } else punto(P0, c.ink, 4.5);
+      rotulo(ctx, c, P0.x + u.x*(q.drag ? 24 : 17), P0.y + u.y*(q.drag ? 24 : 17), t, c.ink, 'center', 800, 15);
+    });
+  }
+
+  // ----- polígono cualquiera -----
+  E.P = () => MP.poligonoVertices(E.p.V.map(p => [p.x, p.y]));
+  function dibujarLibre(c, s){
+    const p = E.p, Vs = p.V.map(q => aP(q, s)), P = E.P(), n = Vs.length;
+    const horario = P.orientacion === 'horaria';
+    ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = .05; ctx.beginPath(); Vs.forEach((q, k) => k ? ctx.lineTo(q.x, q.y) : ctx.moveTo(q.x, q.y)); ctx.closePath(); ctx.fill(); ctx.restore();
+    if (p.tri && p.triF > 0){
+      p.tri.forEach((t, k) => {
+        const f = clamp(p.triF - k, 0, 1); if (f <= 0) return;
+        ctx.save(); ctx.fillStyle = c.tri; ctx.globalAlpha = (k % 2 ? .16 : .30)*f; ctx.beginPath(); t.forEach((j, z) => z ? ctx.lineTo(Vs[j].x, Vs[j].y) : ctx.moveTo(Vs[j].x, Vs[j].y)); ctx.closePath(); ctx.fill(); ctx.restore();
+        ctx.save(); ctx.strokeStyle = c.tri; ctx.lineWidth = 2.4; ctx.globalAlpha = f; ctx.beginPath(); t.forEach((j, z) => z ? ctx.lineTo(Vs[j].x, Vs[j].y) : ctx.moveTo(Vs[j].x, Vs[j].y)); ctx.closePath(); ctx.stroke(); ctx.restore();
+      });
+    }
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2.6; ctx.lineJoin = 'round'; ctx.beginPath(); Vs.forEach((q, k) => k ? ctx.lineTo(q.x, q.y) : ctx.moveTo(q.x, q.y)); ctx.closePath(); ctx.stroke(); ctx.restore();
+    const rr = 20;
+    // ángulos interiores (el entrante, por dentro: más de media vuelta)
+    if (p.cunas) for (let k = 0; k < n; k++){
+      const v = Vs[k], sig = Vs[(k + 1) % n], ant = Vs[(k - 1 + n) % n], a = P.angulos[k]*Math.PI/180;
+      if (horario) cuna(v, rr, ang(v, ant), -a, c.i, .2); else cuna(v, rr, ang(v, sig), -a, c.i, E.hl === 'i' ? .4 : .2);
+      if (p.ang){
+        const a0 = horario ? ang(v, ant) : ang(v, sig), m = a0 - a/2;
+        rotulo(ctx, c, v.x + Math.cos(m)*(rr + 17), v.y + Math.sin(m)*(rr + 17), gr(P.angulos[k]), c.i, 'center', 800, 12);
+      }
+    }
+    // exteriores: en cada vértice y, con 'junta', trasladados a un punto común
+    if (p.ext > 0){
+      const C0 = p.centro ? aP(p.centro, s) : { x:Vs.reduce((a, q) => a + q.x, 0)/n, y:Vs.reduce((a, q) => a + q.y, 0)/n };
+      const f = suave(clamp(p.junta, 0, 1));
+      for (let k = 0; k < n; k++){
+        const v = Vs[k], ant = Vs[(k - 1 + n) % n], u = unit(ant, v), e = P.exteriores[k]*Math.PI/180;
+        if (f < .02){ ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.4; ctx.setLineDash([4, 4]); linea(ctx, v, { x:v.x + u.x*44, y:v.y + u.y*44 }); ctx.restore(); }
+        const apex = { x:v.x + (C0.x - v.x)*f, y:v.y + (C0.y - v.y)*f };
+        const a0 = ang(v, { x:v.x + u.x, y:v.y + u.y });
+        cuna(apex, (rr + 8)*(1 + f*.9), a0, (horario ? 1 : -1)*e*Math.min(1, p.ext), c.e, (k % 2 ? .22 : .45)*(E.hl === 'e' ? 1.5 : 1), true);
+        if (f < .02 && p.ext >= 1){ const m = a0 + (horario ? 1 : -1)*e/2; rotulo(ctx, c, v.x + Math.cos(m)*(rr + 22), v.y + Math.sin(m)*(rr + 22), gr(P.exteriores[k], 0), c.e, 'center', 800, 11); }
+      }
+      if (f >= 1){ punto(C0, c.ink, 3.5); rotulo(ctx, c, C0.x, C0.y + (rr + 8)*1.9 + 14, `juntos: ${gr(P.sumaExteriores, 0)}`, c.ink, 'center', 800, 13); }
+    }
+    Vs.forEach(q => punto(q, c.ink, 3.5));
+  }
+
+  function leyenda(){
+    const it = (k, t, sq) => `<span><i class="${sq ? 'sq' : ''}" style="background:var(--c-${k})"></i>${t}</span>`;
+    return E.ley.map(([k, t, sq]) => k ? it(k, t, sq) : `<span>${t}</span>`).join('');
+  }
+  E.leyenda = () => { if (idLey) document.getElementById(idLey).innerHTML = leyenda(); };
+  // Lecturas y descripción para lectores de pantalla: dicen solo lo que se ve; antes de responder no adelantan nada.
+  E.avisar = () => {
+    const filas = E.lect.map(f => f(E)).filter(Boolean);
+    if (idLect) document.getElementById(idLect).innerHTML = filas.map(([k, t, v]) => k === 'tipo'
+      ? `<div class="lectura tipo" style="--k:var(--ink)"><span>${t}</span><b>${v}</b></div>`
+      : `<div class="lectura" style="--k:var(--c-${k})"><span>${t}</span><b>${v}</b></div>`).join('');
+    if (idDesc) document.getElementById(idDesc).textContent = [E.desc, ...filas.map(([, t, v]) => `${t}: ${v}.`)].join(' ');
+    if (E.alCambiar) E.alCambiar();
+  };
+  // Animación de un número de 'de' a 'a' (se corta si la escena se reconfigura)
+  E.animar = (de, a, dur, paso, fin) => {
+    const tok = E.tok;
+    if (RM || !dur){ paso(a); E.dibujar(); E.avisar(); if (fin) setTimeout(fin, 0); return; }
+    const t0 = performance.now();
+    const tick = now => {
+      if (tok !== E.tok) return;
+      const f = Math.min(1, (now - t0)/dur); paso(de + (a - de)*f); E.dibujar(); E.avisar();
+      if (f < 1) requestAnimationFrame(tick); else if (fin) fin();
+    };
+    requestAnimationFrame(tick);
+  };
+  // Lleva los vértices del cuadrilátero a otra posición, en línea recta (animado)
+  E.moverQ = (dest, dur, fin) => { const de = E.q.V.map(p => ({ ...p })); E.animar(0, 1, dur, f => { E.q.V = de.map((p, k) => ({ x:p.x + (dest[k][0] - p.x)*suave(f), y:p.y + (dest[k][1] - p.y)*suave(f) })); }, fin); };
+
+  // ----- arrastrar un vértice del cuadrilátero (táctil, ratón y teclado) -----
+  function ponerV(k, w){
+    const c = E.caja, x = clamp(Math.round(w.x), Math.ceil(c.x0 + .4), Math.floor(c.x1 - .4)), y = clamp(Math.round(w.y), Math.ceil(c.y0 + .4), Math.floor(c.y1 - .4));
+    if (E.q.V[k].x === x && E.q.V[k].y === y) return;
+    if (E.q.V.some((p, j) => j !== k && p.x === x && p.y === y)) return;   // dos vértices no pueden coincidir
+    E.q.V[k] = { x, y }; E.dibujar(); E.avisar();
+  }
+  const local = e => { const r = cv.getBoundingClientRect(); return { x:e.clientX - r.left, y:e.clientY - r.top }; };
+  // Con el dedo, el dibujo deja desplazar la página (touch-action: pan-y); solo un toque que empieza cerca de un
+  // vértice (40 px) se queda con el gesto. Con ratón, 32 px.
+  function cerca(p, r){
+    if (!E.q || !E.q.drag) return -1;
+    const s = escala(); let mejor = -1, dm = r;
+    E.q.V.forEach((v, k) => { const a = aP(v, s), d = Math.hypot(p.x - a.x, p.y - a.y); if (d < dm){ dm = d; mejor = k; } });
+    return mejor;
+  }
+  cv.addEventListener('touchstart', e => {
+    if (E.ocupado || e.touches.length !== 1) return;
+    const r = cv.getBoundingClientRect(), t = e.touches[0];
+    if (cerca({ x:t.clientX - r.left, y:t.clientY - r.top }, 40) >= 0) e.preventDefault();
+  }, { passive:false });
+  cv.addEventListener('pointerdown', e => {
+    if (E.ocupado) return;
+    const k = cerca(local(e), e.pointerType === 'mouse' ? 32 : 40); if (k < 0) return;
+    arr = k; sel = k; cv.setPointerCapture(e.pointerId); e.preventDefault(); cv.focus({ preventScroll:true }); E.dibujar();
+  }, { passive:false });
+  cv.addEventListener('pointermove', e => {
+    const p = local(e);
+    if (arr >= 0){ ponerV(arr, aMundo(p.x, p.y)); return; }
+    const k = E.ocupado ? -1 : cerca(p, 32);
+    if (k !== sobre){ sobre = k; cv.style.cursor = k >= 0 ? 'grab' : ''; E.dibujar(); }
+  });
+  const soltar = () => { if (arr >= 0){ arr = -1; E.dibujar(); } };
+  cv.addEventListener('pointerup', soltar); cv.addEventListener('pointercancel', soltar);
+  cv.addEventListener('focus', () => { foco = true; E.dibujar(); });
+  cv.addEventListener('blur', () => { foco = false; E.dibujar(); });
+  cv.addEventListener('keydown', e => {
+    if (!E.q || !E.q.drag || E.ocupado) return;
+    const elegir = { a:0, b:1, c:2, d:3, '1':0, '2':1, '3':2, '4':3 }[e.key.toLowerCase()];
+    if (elegir !== undefined){ sel = elegir; e.preventDefault(); E.dibujar(); return; }
+    const d = { ArrowLeft:[-1, 0], ArrowRight:[1, 0], ArrowUp:[0, 1], ArrowDown:[0, -1] }[e.key];
+    if (!d) return;
+    e.preventDefault(); ponerV(sel, { x:E.q.V[sel].x + d[0], y:E.q.V[sel].y + d[1] });
+  });
+  return E;
+}
+
+// Opciones de predicción (las mismas en los dos modos)
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+// Lecturas reutilizables
+const LECT = {
+  n: E => ['n', 'Lados n', fmt(E.reg.n, 0)],
+  nombre: E => ['tipo', 'Nombre', MP.poligono(E.reg.n).nombre],
+  tipo: E => ['tipo', 'Cuadrilátero', E.Q().tipo],
+};
+function nombresHTML(Q){ return NOMBRES_CUAD.map(t => `<span class="${Q.nombres.includes(t) ? 'si' : ''}">${t}</span>`).join(''); }
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1');
+const S = { step:0, max:0, pred:{}, hecho:{}, ocupado:false, n:5, x:null };
+
+// Caja de la esquina del paso 4: los tres primeros vértices del regular de 12 lados y radio 3, con margen.
+const ESQ_V = MP.verticesRegular(12, { radio:3 }).slice(0, 3);
+const ESQUINA = { x0:Math.min(...ESQ_V.map(p => p.x)) - 1.6, x1:Math.max(...ESQ_V.map(p => p.x)) + 1.6, y0:Math.min(...ESQ_V.map(p => p.y)) - 1.2, y1:Math.max(...ESQ_V.map(p => p.y)) + 1.4 };
+const HEX = MP.poligono(6), OCT = MP.poligono(8), A150 = MP.nDesdeAngulo({ interior:150 }), DOCE = MP.poligono(12);
+const CUAD = [[0, 0], [4, 0], [4, 4], [0, 4]];
+// El cuadrado se inclina sin cambiar sus lados: un rombo de lado 4 cuyo ángulo en A va de 90° a 60° y vuelve.
+const inclinar = (de, a, dur, fin) => E.animar(de, a, dur, t => { E.q.V = MP.rombo(4, t); }, fin);
+const TRAP = [[0, 0], [10, 0], [7, 4], [3, 4]], TQ = MP.cuadrilatero(...TRAP), TT = TQ.trapecio;
+const LIBRE0 = [[0, 0], [5, 0], [4, 3], [1, 4]], RECT = [[0, 0], [5, 0], [5, 3], [0, 3]];
+
+function perillaHTML(id){ return `<div class="perilla"><label for="${id}">Lados ${n_('n')}</label>
+  <button type="button" class="btn" data-dn="-1" aria-label="Un lado menos">−</button>
+  <input type="range" id="${id}" min="3" max="12" step="1" value="${S.n}">
+  <button type="button" class="btn" data-dn="1" aria-label="Un lado más">+</button><output id="${id}-o">${S.n}</output></div>`; }
+function perilla(id, alCambiar){
+  const r = $(id), o = $(id + '-o');
+  const poner = n => { n = clamp(n, 3, 12); r.value = n; o.textContent = n; E.reg.n = n; S.n = n; E.dibujar(); E.avisar(); if (alCambiar) alCambiar(n); };
+  r.addEventListener('input', () => poner(+r.value));
+  $('stepBody').querySelectorAll('[data-dn]').forEach(b => b.onclick = () => poner(E.reg.n + +b.dataset.dn));
+}
+
+const P1 = { id:'poligonos-paso2', ok:'a', opts:[
+  ['a', `${fmt(HEX.sumaInteriores, 0)}°`],
+  ['b', `${fmt(HEX.errores.sumaInteriores.con180n, 0)}°`, 'GE23-suma-180n', 'hipotesis'],
+  ['c', `${fmt(HEX.errores.sumaInteriores.siempre360, 0)}°`, 'suma-siempre-360', 'hipotesis'],
+  ['d', `${fmt(HEX.errores.sumaInteriores.conNmenos1, 0)}°`, 'suma-n-menos-1-triangulos', 'hipotesis']],
+  fb:{ a:'¡Bien! Desde un vértice, el hexágono se parte en 4 triángulos, y cada uno aporta 180°: 4 · 180° = 720°.',
+    b:'Elegiste la B. 180° · 6 sería un triángulo por lado. Pero desde un vértice salen solo 4 triángulos: los dos lados que tocan ese vértice no forman triángulo nuevo. La correcta está marcada.',
+    c:'Elegiste la C. 360° es lo que suman los ángulos de un cuadrilátero, o los exteriores de cualquier polígono convexo. Los interiores crecen con el número de lados. La correcta está marcada.',
+    d:'Elegiste la D. 900° serían 5 triángulos, uno menos que los lados. Desde un vértice salen 6 − 2 = 4. La correcta está marcada.' } };
+const P2 = { id:'poligonos-paso3', ok:'c', opts:[
+  ['a', fmt(OCT.errores.diagonales.conLados, 0), 'GE23-diagonales-con-lados', 'hipotesis'],
+  ['b', fmt(OCT.errores.diagonales.sinDividir, 0), 'diagonales-contadas-dos-veces', 'hipotesis'],
+  ['c', fmt(OCT.diagonales, 0)],
+  ['d', fmt(OCT.errores.diagonales.soloDesdeUnVertice, 0), 'diagonales-de-un-vertice', 'hipotesis']],
+  fb:{ c:'¡Bien! Desde cada vértice salen 8 − 3 = 5 diagonales. 8 · 5 = 40 cuenta cada una dos veces, una desde cada extremo: 40 / 2 = 20.',
+    a:'Elegiste la A. 8 · 7 / 2 = 28 cuenta todos los segmentos que unen dos vértices, también los 8 lados: 28 − 8 = 20. La correcta está marcada.',
+    b:'Elegiste la B. 8 · 5 = 40 cuenta cada diagonal dos veces: la que va de un vértice a otro es la misma que vuelve. Falta dividir entre 2. La correcta está marcada.',
+    d:'Elegiste la D. 5 son las que salen de un solo vértice. Cada uno de los 8 vértices traza las suyas. La correcta está marcada.' } };
+const P3 = { id:'poligonos-paso4', ok:'b', unidad:U_REG, opts:[
+  ['a', `Tiene ${fmt(A150.errores.con180, 0)} lados`, 'exteriores-suman-180', 'hipotesis'],
+  ['b', `Tiene ${fmt(A150.n, 0)} lados`],
+  ['c', 'No existe ese polígono', 'interior-como-central', 'hipotesis']],
+  fb:{ b:'¡Bien! Si el interior mide 150°, el exterior mide 180° − 150° = 30°. Los exteriores suman 360°: 360° / 30° = 12 lados.',
+    a:'Elegiste la A. 180° / 30° = 6 usa 180°, pero los exteriores dan una vuelta completa: suman 360°. Con 6 lados, cada interior mediría 120°. La correcta está marcada.',
+    c:'Elegiste la C. Sí existe. 360° / 150° no es entero, pero 150° no es el ángulo central ni el exterior: es el interior. El exterior mide 30°, y 360° / 30° = 12 sí es entero. La correcta está marcada.' } };
+const P4 = { id:'poligonos-paso5', ok:'c', opts:[
+  ['a', 'No: un rombo no tiene ángulos rectos', 'GE10-cuadrado-no-es-rombo', 'parcial'],
+  ['b', 'Solo si se apoya en un vértice, como se dibuja un rombo', 'GE9-depende-de-la-posicion', 'parcial'],
+  ['c', 'Sí: tiene sus cuatro lados iguales'],
+  ['d', 'No: las diagonales de un rombo tienen que ser distintas', 'GE10-propiedad-del-dibujo', 'parcial']],
+  fb:{ c:'¡Bien! El rombo es el paralelogramo con los cuatro lados iguales. El cuadrado los tiene: es un rombo que además tiene los ángulos rectos.',
+    a:'Elegiste la A. La definición del rombo pide cuatro lados iguales, y nada más. No prohíbe los ángulos rectos: el cuadrado es el rombo que los tiene. La correcta está marcada.',
+    b:'Elegiste la B. Girar una figura no cambia sus lados ni sus ángulos. El cuadrado es rombo en cualquier posición, porque tiene los cuatro lados iguales. La correcta está marcada.',
+    d:'Elegiste la D. Las diagonales del rombo son perpendiculares; no tienen por qué ser distintas. En el cuadrado son perpendiculares e iguales. La correcta está marcada.' } };
+const P5 = { id:'poligonos-paso7', ok:'d', opts:[
+  ['a', fmt(TT.errores.mediana.resta, 0), 'mediana-como-resta', 'hipotesis'],
+  ['b', fmt(TT.errores.mediana.suma, 0), 'mediana-sin-dividir', 'hipotesis'],
+  ['c', fmt(TT.errores.mediana.mitadDeLaResta, 0), 'mediana-como-semidiferencia', 'hipotesis'],
+  ['d', fmt(TT.mediana, 0)]],
+  fb:{ d:'¡Bien! La mediana es la semisuma de las bases: (10 + 4) / 2 = 7. Queda entre las dos bases, más larga que la menor y más corta que la mayor.',
+    a:'Elegiste la A. 10 − 4 = 6 no es la mediana. La mediana es el promedio de las dos bases, (10 + 4) / 2. La correcta está marcada.',
+    b:'Elegiste la B. 14 es la suma de las bases: es más larga que la base mayor, y la mediana queda entre las dos. Falta dividir entre 2. La correcta está marcada.',
+    c:'Elegiste la C. (10 − 4) / 2 = 3 es el segmento que une los puntos medios de las diagonales, que está sobre la mediana. La mediana es la semisuma, (10 + 4) / 2. La correcta está marcada.' } };
+
+const LEY_POL = [['i', 'i · ángulo interior', true]];
+const steps = [
+ { k:'Paso 1', t:'El polígono que se abre', fijo:true,
+   prep:() => { E.config({ reg:{ n:S.n, R:3, ang:true }, lect:[LECT.n, LECT.nombre], ley:LEY_POL, desc:'Polígono regular.' }); perilla('n1'); },
+   body:() => `<p class="problem">Mueve la perilla (o usa + y −) y mira cómo se abre el polígono.</p>
+   ${perillaHTML('n1')}
+   <p>Un polígono tiene ${n_('n')} lados y ${n_('n')} vértices. En cada vértice, los dos lados que llegan forman un ${i_('ángulo interior')} (la cuña pintada). Este polígono es <b>regular</b>: todos sus lados y todos sus ángulos son iguales. Y es <b>convexo</b>: ningún ángulo se hunde hacia adentro.</p>
+   <p>Mira qué pasa con los ${i_('ángulos')} cuando agregas lados. ¿Se abren o se cierran?</p>` },
+ { k:'Paso 2', t:'Predice: los ángulos del hexágono', gate:P1,
+   prep:() => E.config({ reg:{ n:6, R:3, ang:true, tri:S.pred[P1.id] ? 4 : 0, vertice0:'V' }, ley:[...LEY_POL, ...(S.pred[P1.id] ? [['tri', 'triángulos desde V', true]] : [])], desc:'Hexágono regular.',
+     lect: S.pred[P1.id] ? [LECT.n, E => ['tri', 'Triángulos', fmt(HEX.triangulosDesdeVertice, 0)], E => ['tipo', 'Suma de interiores', gr(HEX.sumaInteriores)]] : [LECT.n] }),
+   anima:fin => { E.ley = [...LEY_POL, ['tri', 'triángulos desde V', true]]; E.leyenda(); E.lect = [LECT.n, E => ['tri', 'Triángulos trazados', fmt(Math.floor(E.reg.tri + 1e-9), 0)]];
+     E.animar(0, HEX.triangulosDesdeVertice, 2600, f => { E.reg.tri = f; }, () => { E.lect = [LECT.n, E => ['tri', 'Triángulos', fmt(HEX.triangulosDesdeVertice, 0)], E => ['tipo', 'Suma de interiores', gr(HEX.sumaInteriores)]]; E.avisar(); fin(); }); },
+   body:() => `<p>Un hexágono tiene ${n_('6')} lados. ¿Cuánto suman sus seis ${i_('ángulos interiores')}?</p>${opcionesHTML(P1.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <p>Desde el vértice V se trazan segmentos a los vértices que no son sus vecinos, y el hexágono queda partido en ${tri_('4 triángulos')}. Los ángulos de los cuatro triángulos llenan justo los seis ${i_('ángulos interiores')}, sin sobrar nada.</p>
+   <div class="eqs"><div class="eq">∑${i_('i')} = 180° · (${n_('n')} − 2) = 180° · ${tri_('4')} = ${gr(HEX.sumaInteriores)}<span class="note">${n_('n')} − 2 = ${tri_('4')} triángulos desde un vértice</span></div></div>
+   <p>¿Por qué ${n_('n')} − 2? El vértice V no puede formar triángulo con sus dos vecinos: con ellos ya forma lados. Cada uno de los otros ${n_('n')} − 2 lados cierra un triángulo.</p>
+   <p class="aviso">180° · ${n_('n')} sería partir desde un punto de adentro, con ${n_('n')} triángulos; pero entonces sobran los 360° que se juntan en ese punto: 180° · 6 − 360° = 720°.</p>
+   <p class="fuente">No encontramos estudios con datos sobre estos errores. Que se use 180° · n en vez de 180°(n − 2) es una hipótesis nuestra, recogida sin respaldo en el informe de geometría; el lanzamiento en el colegio dirá si aparece.</p></div>` },
+ { k:'Paso 3', t:'Predice: las diagonales del octógono', gate:P2,
+   prep:() => E.config({ reg:{ n:8, R:3, diag:S.pred[P2.id] ? OCT.diagonales : 0 }, ley:[['diag', 'diagonales']], desc:'Octógono regular.',
+     lect: S.pred[P2.id] ? [LECT.n, E => ['diag', 'Diagonales', fmt(OCT.diagonales, 0)]] : [LECT.n] }),
+   anima:fin => { E.lect = [LECT.n, E => ['diag', 'Diagonales trazadas', fmt(Math.floor(E.reg.diag + 1e-9), 0)]];
+     E.animar(0, OCT.diagonales, 6000, f => { E.reg.diag = f; }, () => { E.lect = [LECT.n, E => ['diag', 'Diagonales', fmt(OCT.diagonales, 0)]]; E.avisar(); fin(); }); },
+   body:() => `<p>Una ${d_('diagonal')} une dos vértices que no son vecinos. ¿Cuántas ${d_('diagonales')} tiene un octógono (${n_('8')} lados)?</p>${opcionesHTML(P2.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <p>En la animación, cada vértice traza solo las ${d_('diagonales')} nuevas: el primero 5, el segundo 5, el tercero 4, luego 3, 2 y 1. Los dos últimos ya no tienen ninguna nueva.</p>
+   <div class="eqs">
+     <div class="eq">desde cada vértice: ${n_('n')} − 3 = ${n_('8')} − 3 = ${d_(fmt(OCT.diagonalesDesdeVertice, 0))}<span class="note">no se une consigo mismo ni con sus dos vecinos</span></div>
+     <div class="eq">${fr(`${n_('n')}(${n_('n')} − 3)`, '2')} = ${fr(`${n_('8')} · ${d_('5')}`, '2')} = ${d_(fmt(OCT.diagonales, 0))}<span class="note">÷ 2: cada diagonal tiene dos extremos</span></div></div>
+   <p class="aviso">${fr(`${n_('n')}(${n_('n')} − 1)`, '2')} cuenta todos los segmentos entre vértices, también los ${n_('n')} lados.</p>
+   <p class="fuente">Tampoco aquí encontramos estudios con datos: que se cuenten los lados como diagonales o que no se divida entre 2 son hipótesis nuestras.</p></div>` },
+ { k:'Paso 4', t:'Predice: ¿cuántos lados?', gate:P3,
+   prep:() => E.config({ reg:{ n:12, R:3, camino:S.pred[P3.id] ? 12 : 2, esquina:'150°', ext:!!S.pred[P3.id], puntos:true }, desc:'Una esquina de un polígono regular.',
+     // antes de responder se ve de cerca solo la esquina; el polígono entero aparece al recorrerlo
+     caja: S.pred[P3.id] ? undefined : ESQUINA,
+     ley:[['i', 'i · ángulo interior', true], ...(S.pred[P3.id] ? [['e', 'e · ángulo exterior', true]] : [])],
+     lect: S.pred[P3.id] ? [E => ['n', 'Lados n', fmt(A150.n, 0)], E => ['e', 'Cada exterior', gr(A150.exterior)], E => ['tipo', 'Suma de exteriores', gr(DOCE.sumaExteriores)]] : [E => ['i', 'Cada interior', gr(150)]] }),
+   anima:fin => { E.reg.ext = true; E.caja = { x0:-3.84, x1:3.84, y0:-3.84, y1:3.84 }; E.ley = [['i', 'i · ángulo interior', true], ['e', 'e · ángulo exterior', true]]; E.leyenda();
+     E.lect = [E => ['n', 'Lados trazados', fmt(Math.floor(E.reg.camino + 1e-9), 0)], E => ['e', 'Cada exterior', gr(A150.exterior)]];
+     E.animar(2, A150.n, 5200, f => { E.reg.camino = f; }, () => { E.lect = [E => ['n', 'Lados n', fmt(A150.n, 0)], E => ['e', 'Cada exterior', gr(A150.exterior)], E => ['tipo', 'Suma de exteriores', gr(DOCE.sumaExteriores)]]; E.avisar(); fin(); }); },
+   body:() => `<p>En un polígono regular, cada ${i_('ángulo interior')} mide ${i_('150°')}. ¿Cuántos lados ${n_('n')} tiene?</p>${opcionesHTML(P3.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <p>Recorre el polígono como si caminaras por sus lados. En cada esquina giras el ${e_('ángulo exterior')}, lo que le falta al interior para llegar a 180°. Al volver al punto de partida diste una vuelta completa: los exteriores suman 360°.</p>
+   <div class="eqs">
+     <div class="eq">${e_('e')} = 180° − ${i_('150°')} = ${e_(gr(A150.exterior))}</div>
+     <div class="eq">${n_('n')} = ${fr('360°', e_('e'))} = ${fr('360°', e_(gr(A150.exterior)))} = ${n_(fmt(A150.n, 0))}<span class="note">un ${A150.nombre}</span></div>
+     <div class="eq">Control: 180° · (${n_('12')} − 2) = ${gr(DOCE.sumaInteriores)} = ${n_('12')} · ${i_('150°')}</div></div>
+   <p class="fuente">No hay estudios con datos sobre estos errores; las opciones incorrectas son hipótesis nuestras.</p></div>` },
+ { k:'Paso 5', t:'Predice: ¿el cuadrado es un rombo?', gate:P4,
+   prep:() => { E.config({ modo:'cuad', q:{ V:CUAD, marcas:true }, caja:{ x0:-2.2, x1:6.2, y0:-1.3, y1:5.4 }, desc:'Cuadrado ABCD con sus marcas.', lect:[LECT.tipo],
+       ley:[[null, '| lados iguales'], [null, '⌐ ángulo recto'], [null, '› lados paralelos']], alCambiar:verNombres }); if (S.pred[P4.id]) botonRombo(); },
+   // Con movimiento reducido no se anima: queda el rombo de 60° con sus nombres y un botón para volver a 90°.
+   anima:fin => { if (RM){ E.q.V = MP.rombo(4, 60); E.avisar(); botonRombo(); fin(); return; }
+     inclinar(90, 60, 1800, () => esperar(600, () => inclinar(60, 90, 1500, () => { E.q.V = CUAD.map(p => ({ x:p[0], y:p[1] })); E.avisar(); fin(); }))); },
+   body:() => `<p>ABCD es un cuadrado: sus cuatro lados son iguales y sus cuatro ángulos son rectos. ¿Es también un rombo?</p>${opcionesHTML(P4.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="nombres" id="nombres5" aria-label="Nombres que le corresponden"></div>
+   <div class="acciones" id="acc5" hidden><button type="button" class="btn" id="rombo5"></button></div>
+   <p>Mira el dibujo: si los ángulos dejan de ser rectos y los lados siguen iguales, la figura deja de ser cuadrado y rectángulo, pero <b>sigue siendo rombo</b>. Al volver a los ángulos rectos, recupera los dos nombres sin perder el de rombo.</p>
+   <p class="answer">El cuadrado es rombo, rectángulo y paralelogramo a la vez. Cada nombre es una lista de propiedades, y el cuadrado las cumple todas.</p>
+   <p>Aquí el rombo es el paralelogramo con sus cuatro lados iguales, sin condición sobre los ángulos. Algunos libros del colegio agregan "y ángulos no rectos"; con esa definición el cuadrado no sería rombo.</p>
+   <p>Por eso todo lo que vale para el rombo (diagonales perpendiculares) y todo lo que vale para el rectángulo (diagonales iguales) vale también para el cuadrado.</p>
+   <p class="fuente">En entrevistas con 13 alumnos de 1.º a 12.º grado y un universitario, Burger y Shaughnessy (1986) describieron el rechazo a que una clase de figuras quepa dentro de otra (que el cuadrado sea un rectángulo); no dan porcentajes. Que la posición cambie el nombre está documentado en niños pequeños (Clements y otros, 1999).</p></div>` },
+ { k:'Paso 6', t:'El cuadrilátero que cambia de nombre', accion:true, fijo:true,
+   prep:() => { E.config({ modo:'cuad', q:{ V:S.hecho.rect ? S.hecho.rect : LIBRE0, drag:true, marcas:true }, caja:{ x0:-1.5, x1:7.5, y0:-1.5, y1:5.5 }, rejilla:true,
+       desc:'Cuadrilátero ABCD con vértices que se arrastran.', lect:[LECT.tipo], ley:[[null, '| lados iguales'], [null, '⌐ ángulo recto'], [null, '› lados paralelos']], alCambiar:revisarRect }); },
+   body:() => `<p class="problem">Arrastra los vértices A, B, C y D hasta formar un <b>rectángulo</b>.</p>
+   <div class="nombres" id="nombres6" aria-label="Nombres que le corresponden"></div>
+   <p>Los nombres que le corresponden se encienden solos. Las marcas dicen por qué: rayitas iguales en lados iguales, una escuadra en cada ángulo recto y flechas en los lados paralelos.</p>
+   <div class="acciones"><button type="button" class="btn" id="hazlo">Hazlo por mí</button></div>
+   <p class="hint">Con teclado: toca el dibujo, elige el vértice con A, B, C o D (o 1 a 4) y muévelo con las flechas.</p>
+   <p id="estado" class="hint" aria-live="polite"></p>
+   <div id="tras" class="body" ${S.hecho.rect ? '' : 'hidden'}>
+   <p>Los cuadriláteros se ordenan por sus lados paralelos: con dos pares es un <b>paralelogramo</b>: romboide si no es ni rombo ni rectángulo; el cuadrado es rombo y rectángulo a la vez. Con un solo par, un <b>trapecio</b>; sin ninguno, un <b>trapezoide</b>. Prueba a formar un rombo o un trapecio y mira qué nombres se encienden.</p></div>` },
+ { k:'Paso 7', t:'Predice: la mediana del trapecio', gate:P5,
+   prep:() => E.config({ modo:'cuad', q:{ V:TRAP, marcas:false, bases:true, mediana:S.pred[P5.id] ? 1 : 0, diag:!!S.pred[P5.id], tramo:!!S.pred[P5.id], rotBases:['AB = 10', 'CD = 4'], rotMediana:`m = ${fmt(TT.mediana, 0)}` },
+     caja:{ x0:-1, x1:11, y0:-1.4, y1:5.2 }, rejilla:!!S.pred[P5.id], desc:'Trapecio ABCD con AB paralelo a CD.',
+     ley:[['Bm', 'base mayor AB'], ['bm', 'base menor CD'], ...(S.pred[P5.id] ? [['m', 'm · mediana'], ['diag', 'diagonales']] : [])],
+     lect: S.pred[P5.id] ? [E => ['Bm', 'Base mayor', fmt(TT.baseMayor, 0)], E => ['bm', 'Base menor', fmt(TT.baseMenor, 0)], E => ['m', 'Mediana m', fmt(TT.mediana, 0)]] : [E => ['Bm', 'Base mayor', fmt(TT.baseMayor, 0)], E => ['bm', 'Base menor', fmt(TT.baseMenor, 0)]] }),
+   anima:fin => { E.ley = [['Bm', 'base mayor AB'], ['bm', 'base menor CD'], ['m', 'm · mediana'], ['diag', 'diagonales']]; E.leyenda();
+     E.animar(0, 1, 1400, f => { E.q.mediana = f; }, () => { E.rejilla = true; E.q.diag = true; E.q.tramo = true; E.lect.push(E => ['m', 'Mediana m', fmt(TT.mediana, 0)]); E.dibujar(); E.avisar(); fin(); }); },
+   body:() => `<p class="hint">Trapecio: el cuadrilátero con un solo par de lados paralelos, las bases (por eso un paralelogramo no es trapecio). Algunos libros dicen "al menos un par".</p>
+   <p>En el trapecio ABCD, la ${Bm_('base mayor AB')} mide 10 y la ${bm_('base menor CD')} mide 4. La ${m_('mediana')} une los puntos medios de los lados que no son paralelos (BC y DA). ¿Cuánto mide?</p>${opcionesHTML(P5.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${m_('m')} = ${fr(`${Bm_('10')} + ${bm_('4')}`, '2')} = ${m_(fmt(TT.mediana, 0))}<span class="note">la semisuma de las bases</span></div></div>
+   <p>Con la cuadrícula se ve: la ${m_('mediana')} está a media altura y es paralela a las bases. Mide el promedio de las dos: si la base menor creciera hasta igualar a la mayor, la figura sería un paralelogramo y la mediana mediría lo mismo que las dos bases.</p>
+   <p class="aviso">La semidiferencia, (10 − 4) / 2 = ${fmt(TT.segmentoDiagonales, 0)}, también aparece en el trapecio: es el pedazo de la mediana que queda entre las dos ${d_('diagonales')} (a trazos), el tramo grueso del dibujo.</p>
+   <p class="fuente">No encontramos estudios sobre los errores con la mediana del trapecio; las tres opciones incorrectas son hipótesis nuestras.</p></div>` },
+ { k:'Paso 8', t:'Ahora explora tú', explora:true, fijo:true,
+   prep:() => explorarPrep(),
+   body:() => `<p>Elige qué explorar. Todo lo que ves sale del motor en cada posición.</p>
+   <div class="seg" role="group" aria-label="Qué explorar">${[['pol', 'Polígono'], ['cuad', 'Cuadrilátero']].map(([k, t]) => `<button type="button" data-x="${k}" aria-pressed="${(S.x || 'pol') === k}">${t}</button>`).join('')}</div>
+   <div id="xpanel" class="body"></div>` },
+];
+
+// Botón del paso 5 con movimiento reducido: alterna entre el rombo de 60° y el cuadrado.
+function botonRombo(){
+  const b = $('rombo5'); if (!b || !RM) return;
+  $('acc5').hidden = false;
+  const pintar = () => { b.textContent = E.Q().esCuadrado ? 'Inclinar a 60°' : 'Volver a 90°'; };
+  b.onclick = () => { E.q.V = E.Q().esCuadrado ? MP.rombo(4, 60) : MP.rombo(4, 90); E.dibujar(); E.avisar(); pintar(); };
+  pintar();
+}
+function verNombres(){ const d = $('nombres5') || $('nombres6'); if (d) d.innerHTML = nombresHTML(E.Q()); }
+function revisarRect(){
+  verNombres();
+  if (steps[S.step].k !== 'Paso 6') return;
+  const Q = E.Q();
+  if (!S.hecho.rect && Q.esRectangulo){
+    S.hecho.rect = E.q.V.map(p => [p.x, p.y]); S.listo = true;
+    $('estado').textContent = Q.esCuadrado ? '¡Es un cuadrado! También cuenta como rectángulo: tiene los cuatro ángulos rectos.' : '¡Es un rectángulo! Cuatro ángulos rectos, y por eso dos pares de lados paralelos.';
+    $('tras').hidden = false; desbloquear(S.step + 1); pintarDots(); nav();
+  } else if (S.hecho.rect && $('estado') && S.ultimoTipo && Q.tipo !== S.ultimoTipo) $('estado').textContent = `Ahora es: ${Q.tipo}.`;
+  S.ultimoTipo = Q.tipo;
+}
+
+/* ----- explorador ----- */
+// Leyenda del cuadrilátero: las bases y la mediana solo si es trapecio; las diagonales solo si se ven.
+function leyCuad(){
+  const T = E.q && E.Q().trapecio, l = [[null, '| lados iguales · ⌐ recto · › paralelos'], ['i', 'ángulos', true]];
+  if (S.xd) l.push(['diag', 'diagonales']);
+  if (T) l.push(['Bm', 'base mayor'], ['bm', 'base menor'], ['m', 'm · mediana']);
+  return l;
+}
+const VISTAS = [['ang', 'Ángulos', 'i'], ['tri', 'Triángulos', 'tri'], ['diag', 'Diagonales', 'diag'], ['ext', 'Exteriores', 'e'], ['apot', 'Apotema', 'ap']];
+const PRESETS = { cuadrado:[[0, 0], [4, 0], [4, 4], [0, 4]], rectángulo:[[0, 0], [6, 0], [6, 3], [0, 3]], rombo:[[0, 0], [5, 0], [8, 4], [3, 4]],
+  romboide:[[0, 0], [5, 0], [7, 3], [2, 3]], trapecio:[[0, 0], [7, 0], [5, 3], [1, 3]], trapezoide:[[0, 0], [5, 0], [6, 4], [1, 3]] };
+function explorarPrep(){
+  const k = S.x || 'pol', panel = $('xpanel');
+  if (k === 'pol'){
+    const v = S.xv || 'ang', n = S.n;
+    const lect = { ang:[LECT.n, E => ['i', 'Cada interior', gr(MP.poligono(E.reg.n).regular.interior)], E => ['tipo', 'Suma de interiores', gr(MP.poligono(E.reg.n).sumaInteriores)]],
+      tri:[LECT.n, E => ['tri', 'Triángulos', fmt(MP.poligono(E.reg.n).triangulosDesdeVertice, 0)], E => ['tipo', 'Suma de interiores', gr(MP.poligono(E.reg.n).sumaInteriores)]],
+      diag:[LECT.n, E => ['diag', 'Desde 1 vértice', fmt(MP.poligono(E.reg.n).diagonalesDesdeVertice, 0)], E => ['diag', 'Diagonales', fmt(MP.poligono(E.reg.n).diagonales, 0)]],
+      ext:[LECT.n, E => ['e', 'Cada exterior', gr(MP.poligono(E.reg.n).regular.exterior)], E => ['tipo', 'Suma de exteriores', gr(MP.poligono(E.reg.n).sumaExteriores)]],
+      apot:[LECT.n, E => ['l', 'Lado ℓ', fmt(MP.regular({ n:E.reg.n, radio:3 }).lado, 2)], E => ['ap', 'Apotema ap', fmt(MP.regular({ n:E.reg.n, radio:3 }).apotema, 2)], E => ['R', 'Radio R', '3'], E => ['S', 'Área S', fmt(MP.regular({ n:E.reg.n, radio:3 }).area, 2)]] }[v];
+    const ley = { ang:LEY_POL, tri:[['tri', 'triángulos desde V', true]], diag:[['diag', 'diagonales']], ext:[['e', 'e · ángulo exterior', true]],
+      apot:[['l', 'ℓ · lado'], ['ap', 'ap · apotema'], ['R', 'R · radio'], ['S', 'S · área (triángulos centrales)', true]] }[v];
+    const msg = { ang:'Con más lados, cada ángulo interior se abre y se acerca a 180°, pero nunca llega.', tri:'Desde V siempre salen n − 2 triángulos: los dos vecinos de V no forman triángulo nuevo.',
+      diag:'Las diagonales crecen mucho más rápido que los lados: n(n − 3)/2.', ext:'Con más lados, cada exterior se achica, pero entre todos siguen dando una vuelta: 360°.',
+      apot:'La apotema va del centro al punto medio de un lado y es perpendicular a él. Con más lados, se acerca al radio.' }[v];
+    const MAXD = E => MP.poligono(E.reg.n).diagonales;
+    E.config({ reg:{ n, R:3, ang:v === 'ang', angVal:true, tri:v === 'tri' ? n - 2 : 0, diag:0, ext:v === 'ext', apot:v === 'apot', centrales:true, vertice0:v === 'tri' ? 'V' : null,
+      rotApot:'ap', rotRadio:'R', rotLado:'ℓ' }, lect, ley, desc:'Polígono regular.' });
+    if (v === 'diag'){ E.reg.diag = MAXD(E); E.dibujar(); }
+    panel.innerHTML = `${perillaHTML('n8')}
+      <div class="seg" role="group" aria-label="Qué se ve">${VISTAS.map(([k2, t]) => `<button type="button" data-v="${k2}" aria-pressed="${v === k2}">${t}</button>`).join('')}</div>
+      <p class="hint">${msg}</p>`;
+    perilla('n8', n2 => { if (v === 'tri') E.reg.tri = n2 - 2; if (v === 'diag') E.reg.diag = MAXD(E); E.dibujar(); });
+    panel.querySelectorAll('[data-v]').forEach(b => b.onclick = () => { S.xv = b.dataset.v; explorarPrep(); });
+  } else {
+    const V0 = S.xq || PRESETS.trapecio;
+    E.config({ modo:'cuad', q:{ V:V0, drag:true, marcas:true, diag:!!S.xd, ang:true, bases:true, mediana:1, rotMediana:'m' }, caja:{ x0:-2.5, x1:9.5, y0:-2.5, y1:6.5 }, rejilla:true,
+      desc:'Cuadrilátero ABCD con vértices que se arrastran.', lect:[LECT.tipo, E => { const T = E.Q().trapecio; return T ? ['m', 'Mediana m', fmt(T.mediana, 2)] : null; }],
+      ley:leyCuad(), alCambiar:() => { S.xq = E.q.V.map(p => [p.x, p.y]); const d = $('nombres8'); if (d) d.innerHTML = nombresHTML(E.Q()); E.ley = leyCuad(); E.leyenda(); } });
+    panel.innerHTML = `<div class="nombres" id="nombres8" aria-label="Nombres que le corresponden"></div>
+      <div class="acciones">${Object.keys(PRESETS).map(t => `<button type="button" class="btn" data-pre="${t}">${t[0].toUpperCase() + t.slice(1)}</button>`).join('')}</div>
+      <div class="acciones"><button type="button" class="btn" id="x-girar">Girar 45°</button><button type="button" class="btn" id="x-diag" aria-pressed="${!!S.xd}">Diagonales</button></div>
+      <p class="hint">Arrastra los vértices (o elígelos con A–D y muévelos con las flechas). Gira el cuadrado y mira que los nombres no cambian.</p>
+      <p id="x-msg" class="hint" aria-live="polite"></p>`;
+    E.avisar();
+    panel.querySelectorAll('[data-pre]').forEach(b => b.onclick = () => { if (E.ocupado) return; S.xq = PRESETS[b.dataset.pre]; explorarPrep(); });
+    $('x-diag').onclick = () => { S.xd = !S.xd; E.q.diag = S.xd; $('x-diag').setAttribute('aria-pressed', String(S.xd)); E.ley = leyCuad(); E.leyenda(); E.dibujar(); };
+    $('x-girar').onclick = () => {
+      if (E.ocupado) return;
+      const antes = E.Q().tipo, dest = MP.girar(E.q.V.map(p => [p.x, p.y]), 45).map(p => [p.x, p.y]);
+      E.ocupado = true;
+      E.moverQ(dest, 700, () => { E.ocupado = false; E.q.V = dest.map(p => ({ x:p[0], y:p[1] })); E.avisar();
+        $('x-msg').textContent = `Girado 45°: sigue siendo ${E.Q().tipo} (antes: ${antes}). Los lados y los ángulos no cambiaron.`; });
+    };
+  }
+}
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; b.dataset.label = `Ir al ${s.k.toLowerCase()}: ${s.t}`;
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k; S.listo = s.accion ? !!S.hecho.rect : true;
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  if (s.prep) s.prep();
+  pintarDots();
+  E.compactar((s.gate && !S.pred[s.gate.id]) || s.fijo);
+  if (s.gate) prediccion(s);
+  if (s.accion) accion();
+  if (s.explora) explorar();
+  if (E.alCambiar) E.alCambiar();
+  nav();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || (s.accion && !S.listo) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : (s.accion && !S.listo ? 'Primero forma un rectángulo' : 'Siguiente');
+  E.ocupado = S.ocupado;
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    // un paso bloqueado no delata su título
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : b.dataset.label);
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){ if (k > S.max) S.max = k; }
+function accion(){
+  $('hazlo').onclick = () => {
+    if (S.hecho.rect || S.ocupado) return;
+    S.ocupado = true; nav();
+    if (innerWidth < 900) $('cv').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+    E.moverQ(RECT, 1300, () => { S.ocupado = false; E.q.V = RECT.map(p => ({ x:p[0], y:p[1] })); E.avisar(); nav(); });
+  };
+}
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+    const nm = $('nombres5'); if (nm){ nm.innerHTML = nombresHTML(E.Q()); }
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0, P.unidad);
+    S.ocupado = true; nav();
+    E.compactar(false);
+    $('next').focus({ preventScroll:true });
+    const paso = S.step;
+    alDibujo($('cv'), () => true, () => {
+      if (S.step !== paso) { S.ocupado = false; nav(); return; }
+      s.anima(() => { S.ocupado = false; E.avisar(); nav(); });
+    });
+  }));
+  pintar();
+}
+function explorar(){
+  $('stepBody').querySelectorAll('[data-x]').forEach(b => b.onclick = () => {
+    if (E.ocupado) return;
+    S.x = b.dataset.x; $('stepBody').querySelectorAll('[data-x]').forEach(q => q.setAttribute('aria-pressed', String(q === b)));
+    explorarPrep();
+  });
+}
+
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Polígono no convexo, exteriores de un polígono irregular, el cuadrado de punta (GE9), la apotema del hexágono y
+   las diagonales del triángulo. La escena cambia recién después de responder. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2');
+const DART = [[0, 0], [6, 0], [6, 5], [3, 2], [0, 5]], PD = MP.poligonoVertices(DART);
+const PENTA = [[0, 0], [6, 0], [6, 3], [3, 6], [0, 3]], PP = MP.poligonoVertices(PENTA), P5 = MP.poligono(5);
+const PUNTA = [[0, -3], [3, 0], [0, 3], [-3, 0]], QP = MP.cuadrilatero(...PUNTA), DERECHO = MP.girar(PUNTA, 45, [0, 0]).map(p => [p.x, p.y]);
+const HEX6 = MP.regular({ n:6, lado:6 }), T3 = MP.poligono(3), C4 = MP.poligono(4);
+// En el triángulo regular (radio 3 del dibujo), el motor da el lado; el texto usa los números del dibujo.
+const EXPS = [
+  { id:'hundido', corto:'El polígono hundido',
+    q:`Este pentágono no es convexo: en un vértice se hunde hacia adentro y ese ${i_('ángulo interior')} mide más de 180°. ¿Cuánto suman sus cinco ${i_('ángulos interiores')}?`,
+    opts:[['a', `${gr(PD.sumaInteriores)}, como en todo pentágono`],
+          ['b', `${gr(PD.errores.sumaInteriores.entranteMedidoPorFuera)}, midiendo el ángulo hundido por fuera`, 'entrante-medido-por-fuera', 'hipotesis'],
+          ['c', 'No se sabe, la fórmula 180°(n − 2) vale solo para convexos', 'formula-solo-convexos', 'hipotesis'],
+          ['d', `${gr(PD.errores.sumaInteriores.con180n)}, 180° por cada vértice`, 'GE23-suma-180n', 'hipotesis']],
+    ok:'a',
+    fb:{ b:'El ángulo interior es el que mira hacia adentro del polígono; en el vértice hundido mide 270°, no 90°.', c:'La fórmula vale para todo polígono simple (sin lados que se crucen), convexo o no: desde el vértice hundido se puede partir en 3 triángulos.', d:'Desde un vértice salen 5 − 2 = 3 triángulos, no 5.' },
+    antes:ya => E.config({ modo:'libre', p:{ V:DART, ang:ya, tri:[[3, 4, 0], [3, 0, 1], [3, 1, 2]], triF:ya ? 3 : 0 }, desc:'Pentágono no convexo.',
+      ley:[['i', 'i · ángulo interior', true], ...(ya ? [['tri', 'triángulos', true]] : [])], lect: ya ? lectHund() : [] }),
+    despues:() => { E.p.ang = true; E.ley = [['i', 'i · ángulo interior', true], ['tri', 'triángulos', true]]; E.leyenda(); E.lect = lectHund(); E.animar(0, 3, 2200, f => { E.p.triF = f; }); },
+    exp:() => `<div class="eqs"><div class="eq">${PD.angulos.map(a => i_(gr(a))).join(' + ')} = ${gr(PD.sumaInteriores)}</div>
+      <div class="eq">180° · (5 − 2) = ${gr(PD.sumaSegunFormula)}</div></div>
+      <p>Desde el vértice hundido salen dos segmentos que quedan dentro del polígono y lo parten en ${tri_('3 triángulos')}: 3 · 180° = 540°. El ángulo hundido (entrante) mide ${i_(gr(PD.angulos[3]))}. Lo que sí cambia en un no convexo: algunas diagonales quedan fuera del polígono, y los exteriores ya no son todos del mismo lado.</p>
+      <p class="fuente">Las opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'afuera', corto:'Los ángulos de afuera',
+    q:`Este pentágono no es regular. En cada vértice se prolonga un lado y se forma un ${e_('ángulo exterior')}. ¿Cuánto suman los cinco ${e_('exteriores')}?`,
+    opts:[['a', `${gr(P5.errores.sumaExteriores.comoInteriores)}, lo mismo que los interiores`, 'exteriores-como-interiores', 'hipotesis'],
+          ['b', 'Depende de la forma, hay que medirlos uno por uno', 'exteriores-dependen-de-la-forma', 'hipotesis'],
+          ['c', `${gr(P5.errores.sumaExteriores.con180n)}, 180° por cada vértice`, 'exteriores-180-por-vertice', 'hipotesis'],
+          ['d', `${gr(PP.sumaExteriores)}, una vuelta completa`]],
+    ok:'d',
+    fb:{ a:'Los interiores sí crecen con el número de lados, pero los exteriores no: entre todos dan una sola vuelta.', b:'Cada exterior cambia con la forma, pero la suma no: si uno crece, otro se achica.', c:'En cada vértice, interior y exterior suman 180°; 5 · 180° = 900° es la suma de los dos juntos. Quitando los 540° de los interiores quedan 360°.' },
+    antes:ya => E.config({ modo:'libre', p:{ V:PENTA, cunas:false, ext:ya ? 1 : 0, junta:ya ? 1 : 0, centro:{ x:3, y:2.6 } }, caja:{ x0:-1.6, x1:7.6, y0:-1.6, y1:7.4 }, desc:'Pentágono irregular.',
+      ley: ya ? [['e', 'e · ángulo exterior', true]] : [], lect: ya ? [E => ['tipo', 'Suma de exteriores', gr(PP.sumaExteriores)]] : [] }),
+    despues:() => { E.ley = [['e', 'e · ángulo exterior', true]]; E.leyenda();
+      E.animar(0, 1, 1500, f => { E.p.ext = f; }, () => esperar(900, () => E.animar(0, 1, 2200, f => { E.p.junta = f; }, () => { E.lect = [E => ['tipo', 'Suma de exteriores', gr(PP.sumaExteriores)]]; E.avisar(); }))); },
+    exp:() => `<div class="eqs"><div class="eq">${PP.exteriores.map(a => e_(gr(a))).join(' + ')} = ${gr(PP.sumaExteriores)}</div></div>
+      <p>Al llevar los cinco ${e_('exteriores')} a un mismo punto, sin girarlos, encajan uno tras otro y cierran una vuelta completa. Es lo que gira quien camina por el borde: al volver al inicio mira otra vez hacia el mismo lado. Pasa con 5, con 10 o con 100 lados, regular o no (si es convexo).</p>
+      <p class="fuente">Las opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'punta', corto:'La figura apoyada en un vértice',
+    q:'Esta figura tiene sus cuatro lados iguales y sus cuatro ángulos rectos, pero está apoyada en un vértice. ¿Qué es?',
+    opts:[['a', 'Un rombo, pero no un cuadrado', 'GE9-cuadrado-girado-es-rombo', 'parcial'],
+          ['b', 'Un cuadrado, pero no un rombo', 'GE10-cuadrado-no-es-rombo', 'parcial'],
+          ['c', 'Un cuadrado, y también un rombo'],
+          ['d', 'Ni cuadrado ni rombo, porque ningún lado está horizontal', 'GE9-necesita-base-horizontal', 'parcial']],
+    ok:'c',
+    fb:{ a:'La posición no cambia los lados ni los ángulos. Con cuatro lados iguales y cuatro ángulos rectos es un cuadrado, se apoye donde se apoye.', b:'Tiene los cuatro lados iguales: eso basta para ser rombo. El cuadrado es un rombo con ángulos rectos.', d:'Los nombres no piden lados horizontales: piden lados iguales, ángulos rectos o lados paralelos, y esta figura tiene los tres.' },
+    antes:ya => { E.config({ modo:'cuad', q:{ V:ya ? DERECHO : PUNTA, marcas:true }, caja:{ x0:-4.6, x1:4.6, y0:-4.2, y1:4.2 }, desc:'Cuadrilátero apoyado en un vértice.', lect: ya ? [LECT.tipo] : [],
+      ley:[[null, '| lados iguales · ⌐ ángulo recto · › paralelos']] }); },
+    despues:() => { E.lect = [LECT.tipo]; E.moverQ(DERECHO, 1600, () => { E.avisar(); }); },
+    exp:() => `<div class="nombres">${nombresHTML(QP)}</div>
+      <p>Al girarlo 45°, aparece el cuadrado "de siempre", pero antes de girarlo ya lo era: el motor da los mismos nombres en las dos posiciones (${QP.nombres.join(', ')}). En el examen, las figuras vienen giradas a propósito: hay que fijarse en las propiedades, no en la posición.</p>
+      <p class="fuente">Reconocer una figura solo en su posición de siempre está documentado en niños de 3 a 6 años (Clements y otros, 1999) y descrito, sin cifras, en alumnos de 5.º a 8.º grado (Vinner y Hershkowitz, 1980, citados por otros autores). El rechazo a que una clase de figuras quepa dentro de otra (que el cuadrado sea un rectángulo) lo describen Burger y Shaughnessy (1986) en entrevistas, también sin porcentaje.</p>` },
+  { id:'apotema', corto:'La apotema del hexágono', unidad:U_REG,
+    q:`Un hexágono regular tiene ${l_('lado')} 6. La ${ap_('apotema')} es el segmento que va del centro al punto medio de un lado, perpendicular a él. ¿Cuánto mide?`,
+    opts:[['a', `${fmt(HEX6.errores.apotema.mitadDelLado, 0)}`, 'apotema-mitad-del-lado', 'hipotesis'],
+          ['b', `3√3, unos ${fmt(HEX6.apotema, 2)}`],
+          ['c', `${fmt(HEX6.errores.apotema.comoRadio, 0)}`, 'apotema-como-radio', 'hipotesis'],
+          ['d', `6√3, unos ${fmt(HEX6.errores.apotema.distanciaEntreLados, 2)}`, 'apotema-como-distancia-entre-lados', 'hipotesis']],
+    ok:'b',
+    fb:{ a:'3 es la mitad del lado: es un cateto del triángulo rectángulo, no la apotema. La apotema es el otro cateto, y mide más.', c:'6 es el radio, la distancia del centro a un vértice. La apotema llega al medio de un lado, que está más cerca del centro.', d:'6√3 es la distancia entre dos lados opuestos: dos apotemas.' },
+    antes:ya => E.config({ reg:{ n:6, R:3, lado:true, apot:ya, centrales:ya, rotApot:`ap = 3√3`, rotRadio:'R = 6', rotLado:'ℓ = 6', radio:ya, puntos:true }, desc:'Hexágono regular de lado 6.',
+      ley: ya ? [['l', 'ℓ · lado'], ['ap', 'ap · apotema'], ['R', 'R · radio'], ['S', 'S · área', true]] : [['l', 'ℓ · lado']],
+      lect: ya ? lectHex() : [E => ['l', 'Lado ℓ', fmt(HEX6.lado, 0)]] }),
+    despues:() => { E.reg.apot = true; E.reg.radio = true; E.ley = [['l', 'ℓ · lado'], ['ap', 'ap · apotema'], ['R', 'R · radio']]; E.leyenda(); E.dibujar();
+      esperar(1200, () => { if (E.modo !== 'reg' || S.k !== 3) return; E.reg.centrales = true; E.ley.push(['S', 'S · área', true]); E.leyenda(); E.lect = lectHex(); E.dibujar(); E.avisar(); }); },
+    exp:() => `<div class="eqs">
+      <div class="eq">${R_('R')} = ${l_('ℓ')} = ${fmt(HEX6.radio, 0)}<span class="note">los 6 triángulos centrales son equiláteros (ángulo central 60°)</span></div>
+      <div class="eq">${pot(ap_('ap'))} + ${pot('3')} = ${pot(R_('6'))} → ${ap_('ap')} = √27 = ${ap_(`3√3 ≈ ${fmt(HEX6.apotema, 2)}`)}</div>
+      <div class="eq">${S_('S')} = ${fr(`perímetro · ${ap_('ap')}`, '2')} = ${fr(`36 · ${ap_('3√3')}`, '2')} = ${S_(`54√3 ≈ ${fmt(HEX6.area, 2)}`)}</div></div>
+      <p>La ${ap_('apotema')}, la mitad del ${l_('lado')} y el ${R_('radio')} forman un triángulo rectángulo: la apotema y la mitad del lado son los catetos, y el radio es la hipotenusa. Por eso la apotema es menor que el radio y mayor que la mitad del lado. Solo en el cuadrado la apotema es la mitad del lado.</p>
+      <p class="fuente">No encontramos estudios sobre la apotema del polígono regular (el informe de geometría trata la de la pirámide, GE21). Las opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'triangulo', corto:'Las diagonales del triángulo',
+    q:`Un cuadrilátero tiene ${d_(fmt(C4.diagonales, 0))} ${d_('diagonales')}. ¿Cuántas tiene un triángulo?`,
+    opts:[['a', `${fmt(T3.errores.diagonales.conLados, 0)}`, 'GE23-diagonales-con-lados', 'hipotesis'],
+          ['b', `${fmt(T3.errores.diagonales.conLadosSinDividir, 0)}`, 'diagonales-con-lados-sin-dividir', 'hipotesis'],
+          ['c', `${fmt(T3.diagonales, 0)}`]],
+    ok:'c',
+    fb:{ a:'Los 3 segmentos que unen sus vértices son sus lados. Una diagonal une vértices que no son vecinos, y en el triángulo todos son vecinos.', b:'3 · 2 = 6 une cada vértice con los otros dos y cuenta cada segmento dos veces; además, esos segmentos son los lados, no diagonales.' },
+    antes:ya => E.config({ reg:{ n:3, R:3, tri:ya ? 1 : 0, puntos:true }, desc:'Triángulo equilátero.', ley: ya ? [['tri', 'n − 2 = 1 triángulo: él mismo', true]] : [], lect: ya ? lectTri() : [LECT.n] }),
+    despues:() => { E.lect = lectTri(); E.ley = [['tri', 'n − 2 = 1 triángulo: él mismo', true]]; E.leyenda(); E.animar(0, 1, 900, f => { E.reg.tri = f; }); },
+    exp:() => `<div class="eqs"><div class="eq">${fr(`${n_('3')}(${n_('3')} − 3)`, '2')} = ${fr(`${n_('3')} · 0`, '2')} = ${d_(fmt(T3.diagonales, 0))}</div>
+      <div class="eq">desde cada vértice: ${n_('3')} − 3 = ${d_(fmt(T3.diagonalesDesdeVertice, 0))}<span class="note">sus dos únicos compañeros son sus vecinos</span></div></div>
+      <p>Cada vértice del triángulo solo tiene dos compañeros, y los dos son vecinos: con ellos forma lados. Por eso el triángulo es el único polígono sin ${d_('diagonales')}, y el único que no se puede partir en triángulos más chicos desde un vértice: ${n_('3')} − 2 = 1, él mismo.</p>
+      <p class="fuente">Las opciones incorrectas son hipótesis nuestras.</p>` },
+];
+function lectHund(){ return [E => ['i', 'Entrante', gr(PD.angulos[3])], E => ['tipo', 'Suma de interiores', gr(PD.sumaInteriores)]]; }
+function lectHex(){ return [E => ['l', 'Lado ℓ', fmt(HEX6.lado, 0)], E => ['ap', 'Apotema ap', fmt(HEX6.apotema, 2)], E => ['R', 'Radio R', fmt(HEX6.radio, 0)], E => ['S', 'Área S', fmt(HEX6.area, 2)]]; }
+function lectTri(){ return [LECT.n, E => ['diag', 'Diagonales', fmt(T3.diagonales, 0)]]; }
+
+const S = { k:0, pred:{}, t0:Date.now() };
+// Un experimento se abre solo si todos los anteriores ya tienen respuesta; los respondidos se revisitan libremente.
+const abierto = k => EXPS.slice(0, k).every(x => !!S.pred[x.id]);
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => abierto(k)
+    ? `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  if (k < 0 || k >= EXPS.length || !abierto(k)) return;
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  x.antes(ya);
+  E.compactar(!ya);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    $('otra2').onclick = () => { x.antes(false); E.lect = []; E.avisar(); alDibujo($('cv2'), () => S.k === k, () => { x.despues(); E.avisar(); }); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar(); botones();
+    E.compactar(false);
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0, x.unidad);
+    alDibujo($('cv2'), () => S.k === k, () => { x.despues(); E.leyenda(); E.dibujar(); E.avisar(); });
+  });
+  pintar();
+}
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>
