@@ -34,7 +34,7 @@ Como no hay prueba previa, **la app tiene que medir por sí misma**: pruebas cor
    - Una guía corta para profesores.
 4. **Lanzamiento (semana del 14 de diciembre) y análisis de datos** hasta inicios de enero.
 5. **Después:** destilar el método de construcción de plantillas, la UNA Puno y la [visión a futuro](vision-futura.md).
-   - Componentes de interacción tipo Brilliant (primero completar con fichas), modo PISA y calentamientos de agilidad mental tipo Peak, en ese orden, porque los dos últimos usan los componentes ([visión](vision-pisa-agilidad-interaccion.md)).
+   - Más componentes de interacción tipo Brilliant (ordenar, emparejar, clasificar), modo PISA y calentamientos de agilidad mental tipo Peak ([visión](vision-pisa-agilidad-interaccion.md)). El componente de fichas entra antes del colegio (pl7, en Plataforma y medición).
 
 **El riesgo principal no es el código, es el contenido.** Cada módulo necesita problemas propios, verificados y con errores típicos bien elegidos (reglas 2, 3, 5 y 6). Es mejor llegar con menos módulos completos que con muchos a medias: un módulo flojo en el colegio da datos que no sirven.
 
@@ -71,6 +71,7 @@ gantt
     Motor de predicciones generadas (química, aritmética, RM) :active, crit, pl3, 2026-11-06, 2026-11-14
     Medición integrada (entrada y salida, registro anónimo, exportar para el profesor) :active, crit, pl2, 2026-11-10, 2026-11-18
     Nivel por grado (3.º, 4.º, 5.º) en el catálogo :done, pl5, 2026-11-05, 2026-11-06
+    Componente completar con fichas en el núcleo :pl7, 2026-11-10, 2026-11-16
     Formato lectura (razonamiento verbal) :pl4, 2026-11-16, 2026-11-20
 
     section Física
@@ -109,7 +110,7 @@ gantt
     section Después del lanzamiento
     Método de construcción de plantillas (skill) :f2a, 2027-01-11, 2027-01-16
     Material de la UNA Puno (cuando llegue) :f2c, 2027-01-11, 2027-01-23
-    Componentes de interacción del núcleo (fichas, ordenar, emparejar) :f2d, 2027-01-11, 2027-01-23
+    Más componentes de interacción (ordenar, emparejar, clasificar) :f2d, 2027-01-11, 2027-01-23
     Modo PISA, problemas en contexto real por plantilla :f2e, 2027-01-18, 2027-01-30
     Calentamientos de agilidad mental (estilo Peak) :f2f, 2027-01-25, 2027-02-06
 ```

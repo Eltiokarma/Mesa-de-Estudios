@@ -57,7 +57,7 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 | ma1 a ma3 | Trigonometría, geometría, funciones | Sin informe todavía | Hay que investigar las ideas erróneas antes de construir |
 | ma4 | Aritmética | Sin informe | Porcentajes sucesivos ya existe; los errores son hipótesis |
 | ra1 | Razonamiento matemático | Sin informe | Formato predicciones |
-| ra2 y pl4 | Razonamiento verbal y formato lectura | Sin informe | Textos propios; el formato lectura todavía no existe |
+| ra2 y pl4 | Razonamiento verbal y formato lectura | Sin informe | Textos propios; el formato lectura todavía no existe y se arma con el componente de fichas (pl7, del 10 al 15 nov) |
 
 ### 2. Detalles de las plantillas ya hechas
 
@@ -83,6 +83,7 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 
 ### 3. Plataforma
 
+- **pl7, componente completar con fichas (del 10 al 15 nov):** decisión del 6 nov 2026, antes del colegio. Las "nubecitas" estilo Brilliant: huecos en una oración o ecuación y fichas que se arrastran. Sirve al formato lectura (pl4), a razonamiento verbal y a despejar ecuaciones. Lo corrige el código; funciona con el dedo y sin conexión; la medición guarda la respuesta. Ver `docs/investigacion/brilliant.md`.
 - **pl6, pulido visual (65 %):**
   - Animaciones suaves al acertar y al subir la racha.
   - Una tipografía redondeada común entre la app y las escenas.

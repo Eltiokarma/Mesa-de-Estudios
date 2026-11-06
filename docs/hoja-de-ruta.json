@@ -161,6 +161,18 @@
       "notas": "Estimación; confirmar con la programación anual del colegio (catalogo/LEEME.md, Grados)."
     },
     {
+      "id": "pl7",
+      "seccion": "Plataforma y medición",
+      "nombre": "Componente completar con fichas en el núcleo",
+      "inicio": "2026-11-10",
+      "fin": "2026-11-15",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [],
+      "notas": "Estilo Brilliant (las nubecitas). Sirve al formato lectura (pl4), a razonamiento verbal y a despejar ecuaciones. Corrige el código, no un LLM; con el dedo en celular barato y sin conexión; la medición registra la respuesta. Ver docs/investigacion/brilliant.md, sección 5"
+    },
+    {
       "id": "pl4",
       "seccion": "Plataforma y medición",
       "nombre": "Formato lectura (razonamiento verbal)",
@@ -169,8 +181,10 @@
       "estado": "pendiente",
       "progreso": 0,
       "critico": false,
-      "depende_de": [],
-      "notas": ""
+      "depende_de": [
+        "pl7"
+      ],
+      "notas": "Se arma con el componente de fichas (pl7): completar oraciones, conectores y sinónimos."
     },
     {
       "id": "fi1",
@@ -501,16 +515,17 @@
     {
       "id": "f2d",
       "seccion": "Después del lanzamiento",
-      "nombre": "Componentes de interacción del núcleo (fichas, ordenar, emparejar)",
+      "nombre": "Más componentes de interacción (ordenar, emparejar, clasificar)",
       "inicio": "2027-01-11",
       "fin": "2027-01-22",
       "estado": "pendiente",
       "progreso": 0,
       "critico": false,
       "depende_de": [
-        "la6"
+        "la6",
+        "pl7"
       ],
-      "notas": "Estilo Brilliant. Primero completar con fichas (ecuaciones y razonamiento verbal). Ver docs/investigacion/brilliant.md, sección 5"
+      "notas": "Estilo Brilliant, después del colegio. Ver docs/investigacion/brilliant.md, sección 5"
     },
     {
       "id": "f2e",
@@ -523,7 +538,7 @@
       "critico": false,
       "depende_de": [
         "la6",
-        "f2d"
+        "pl7"
       ],
       "notas": "Formular e interpretar, no solo calcular; contexto de Puno. Antes, verificar cifras y leer los marcos de la OCDE. Ver docs/investigacion/pisa-y-evaluaciones.md"
     },
@@ -537,7 +552,7 @@
       "progreso": 0,
       "critico": false,
       "depende_de": [
-        "f2d"
+        "pl7"
       ],
       "notas": "Cálculo, unidades, notables y estimación, con tiempo y racha. Falta recibir capturas de Peak. Ver docs/vision-pisa-agilidad-interaccion.md, sección 2"
     }
