@@ -114,3 +114,38 @@ Cada ejecución construye una plantilla de escena de química nueva, en la rama 
   Todo eso pasó al constructor, junto con la **regla nueva de Gerson**: en "¿Qué pasa si…?", un experimento queda bloqueado hasta que se responden los anteriores.
 
 **Pruebas.** `npm test` solo falla en las 2 pruebas de catálogo, como se espera.
+
+**Correcciones aplicadas** (el constructor las probó de nuevo con Playwright: 0 errores, sin desbordes, unos 60 fps; con la CPU ×4 más lenta, la primera tabla de "¿Qué pasa si…?" sale a los 5–6 s):
+- experimentos bloqueados hasta responder los anteriores (disabled, aria-disabled y "Experimento N, bloqueado");
+- el histograma se nombra por rol ("grises: no alcanzan Ea · en tinta: sí");
+- q1 y q2 con una caja menos densa (radio 0,015), que da ×1,9–2,2 y ×4,2–4,5;
+- el paso 1 ya no regala la respuesta;
+- citas corregidas y CI13 como hipótesis;
+- Z para el factor de Arrhenius;
+- semillas al azar y cuentas de fondo más cortas, con prioridad para el modo visible.
+
+**Pendiente.**
+- **La fracción eficaz contada queda entre 2 y 9 % bajo la teoría, según la caja.** Es un error numérico del paso de tiempo con discos densos. Con un subpaso de 0,001 s coincide, pero cuesta 3 veces más. La escena dice "quedan unos pocos por ciento de diferencia".
+- **Cifras de cinética sin verificar.** Hay que leer los originales: Çakmakçı 2010 (J. Chem. Educ.), Kolomuç y Tekin 2011, Kolomuç y Çalık 2012, Jusniar y otros 2020, Popova y Bretz 2018 y Bain y Towns 2016. La red de la sesión bloqueó ijpce.org, eduhk.hk, dergipark.org.tr, files.eric.ed.gov, pubs.rsc.org y pubs.acs.org. Gerson: o se permiten esos sitios en el entorno, o se bajan los PDF a `fuentes/`. Hasta entonces, ninguna opción de cinética dice "lo cree el X %".
+- La caja es una reacción elemental (v = k[A][B]). Los órdenes que no coinciden con los coeficientes están solo en papel (p3), no en la escena.
+- Vida media y orden de reacción no están en la escena; sí en papel (p4, p5, p9).
+
+**Pedidos para la integración.**
+1. `catalogo/cursos/quimica.json`, unidad `quimica.cinetica-quimica`: `"plantillas": ["cinetica"]` y `"investigacion": "docs/investigacion/cinetica-ideas-erroneas.md"`. Después, `npm run catalogo`.
+2. Mover `plantillas/cinetica/investigacion.md` a `docs/investigacion/cinetica-ideas-erroneas.md` (yo no puedo tocar `docs/`) y ajustar el enlace en la línea de `CLAUDE.md`.
+3. `docs/diseno.md`, variables de cinética (`plantillas/cinetica/`):
+   - A azul #1f5fbf (oscuro #7cb0ff), círculo con la marca de su lado reactivo.
+   - B naranja #b55302 (oscuro #fb9c5e), cuadrado redondeado.
+   - C fucsia #c90eb4 (oscuro #fe3dd6), A y B unidos; el choque eficaz es un anillo en el color de C.
+   - T rojo #c0364a (oscuro #f17384).
+   - Ea turquesa #1c7170 (oscuro #79c6c5).
+   - ΔH verde #198036 (oscuro #4fb256).
+   - Rapidez v mostaza #856d02 (oscuro #d8c84a).
+   - Choque sin energía, con cruz, y barras bajo Ea, en gris #434038 (oscuro #8c8f85).
+   - Choque mal orientado violeta #4b06b9 (oscuro #9978fa).
+   - El tiempo va en tinta.
+   - ΔE00 mínimo: 22,1 en claro y 20,1 en oscuro. Contraste AA en los dos modos.
+4. `docs/pendientes.md`, sección 2: "**Cinética** (`plantillas/cinetica/`, hecha el 6 nov 2026 por la rutina de química): caja de discos con teoría de colisiones (energía y orientación), temperatura, catalizador y perfil de energía. Cifras de ideas erróneas sin verificar (bloqueo de red); la fracción contada queda unos pocos por ciento bajo la teoría. Falta en la escena: orden ≠ coeficiente, vida media."
+5. `CLAUDE.md`, Estado: sumar "cinética" a la lista de plantillas y una línea en Historia.
+
+**Siguiente en la cola:** `mol-composicion`.
