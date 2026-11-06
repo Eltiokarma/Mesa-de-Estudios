@@ -4,7 +4,7 @@ Cada ejecución hace la primera pieza que falte:
 
 1. [x] Informe `docs/investigacion/razonamiento-verbal-ideas-erroneas.md`
 2. [x] Diseño del formato lectura, `docs/formato-lectura.md`
-3. [ ] Banco de textos propios en `contenido/razonamiento-verbal/` (0 de 30)
+3. [ ] Banco de textos propios en `contenido/razonamiento-verbal/` (6 de 30)
 4. [ ] Guía para profesores, `docs/guia-profesores.md`
 
 ---
@@ -87,3 +87,55 @@ También agregué **RV33** al informe ("se le atribuye al autor una postura que 
 - ampliar el alcance de la rutina a `herramientas/codigos-verbal.js`, si se quiere que lo escriba ella.
 
 **Red:** Gerson no pudo agregar los dominios de revistas al entorno. Probé Google Drive como alternativa (lo usa `fuentes/descargar.sh`), pero también está bloqueado en este entorno. Las cifras del informe siguen "por verificar".
+
+---
+
+## 6 nov 2026 · Pieza 3, primera tanda: 6 textos
+
+**Qué hice.** Armé el banco en `contenido/razonamiento-verbal/`:
+
+| Texto | Tema | Preguntas | Pasos previos |
+| --- | --- | --- | --- |
+| t001 El frío que conserva | Chuño y heladas | idea principal, sentido contextual, intención | marcar oración, propósito |
+| t002 El puente que se teje cada año | Q'eswachaka | idea principal, inferencia, sentido contextual, extrapolación | marcar oración, clasificar |
+| t003 El agua prestada | Glaciares de la Cordillera Blanca y el río Santa | idea principal, conector, compatibilidad, intención | marcar oración, relación, clasificar |
+| t004 Cuerdas que guardan cuentas | Quipus, texto dialéctico | idea principal, compatibilidad, extrapolación | marcar oración, clasificar |
+| t005 Dos lenguas no se estorban | Transmitir el quechua y el aimara | tesis, intención, referente, sentido contextual | marcar oración, propósito |
+| t006 El rojo que vino de la tuna | Cochinilla | idea principal, inferencia, conector | marcar oración, clasificar, relación |
+
+En total son 21 preguntas y 14 pasos previos, con 19 códigos RV distintos en los distractores. Los que más se usan son RV2 y RV5 (9 veces cada uno) y RV3 (7). El texto más corto tiene 163 palabras y el más largo, unas 210.
+
+Archivos nuevos:
+- `textos/t001.json` a `t006.json`;
+- `indice.json`, con los 6 textos aprobados;
+- `frases.json`, con una frase para el alumno por cada uno de los 34 códigos;
+- `banco.test.js`, el validador con las reglas del diseño (5.5);
+- `LEEME.md`.
+
+En el informe agregué RV34 ("se queda en lo literal: no acepta lo que se deduce"), que el clasificador de afirmaciones necesitaba. En el diseño: los códigos del paso previo pueden ser `null` cuando el informe no tiene un error para esa respuesta; las oraciones llevan número en pantalla; y el ejemplo de t001 se corrigió.
+
+**Pruebas:** `npm test`, 837 en verde, incluido `banco.test.js`. El validador lee los códigos del propio informe y las unidades del catálogo.
+
+**Subagentes:**
+- **Tres revisores a ciegas**, cada uno con dos textos. Primero resolvieron sin ver las claves y después compararon. **Coincidieron con la clave en los 21 ítems y en los 14 pasos previos.** Igual encontraron cosas que había que arreglar:
+  - **Un hecho falso en t001.** Las heladas que arruinan la papa son las de la campaña (noviembre a marzo). En junio la papa ya está cosechada, y por eso esas heladas sirven para el chuño. Lo corregí también en el ejemplo del diseño.
+  - **Datos desactualizados o exagerados.** En el Santa, la baja del caudal de estiaje ya ocurre: 7 de 9 subcuencas ya pasaron el pico (Baraer y otros, 2012). En t004, "administraron un Estado con cuerdas" exageraba. En t006, el ejemplo de cochinilla en Paracas estaba mal (abunda desde Wari).
+  - **Distractores defendibles:** en t002, el de extrapolación y "un daño", que es un sentido de "pérdida" en el diccionario; en t003, "los reservorios detendrán…"; en t004, "los quipus todavía se usan", que es cierto.
+  - **Códigos mal puestos** (RV7 por RV33 en t005, entre otros), un enunciado de t006 que dejaba defendible otra alternativa y una clave de t003 demasiado absoluta.
+- **Una cuarta verificación** de los ítems cambiados. Pidió otros cinco ajustes y los apliqué. No le hice caso en uno: pasar a RV9 un distractor de t003 dejaba dos RV9 en la misma pregunta, así que quedó en RV7.
+
+Cada texto lleva en `revision` sus notas, con lo que se cambió.
+
+**Pendiente:**
+- **24 textos más**, en cuatro ejecuciones de 6. Conviene cubrir lo que falta:
+  - más incompatibilidad, extrapolación y referentes;
+  - textos de grado 5 y dificultad 3 (tipo UNI);
+  - textos narrativos;
+  - temas de ciencia (física y química de todos los días), de historia republicana y del Perú amazónico y costeño, no solo andino.
+- **La pareja de textos de entrada y salida** (`t000a` y `t000b`), en una de las próximas tandas. Los dos tienen que ser paralelos (mismos tipos de pregunta y dificultad parecida) y van sin paso previo.
+- **Las preguntas de incompatibilidad** ("Es incompatible con el texto…") tienen un problema de códigos. Ahí el distractor es una afirmación compatible, y el informe no tiene un error para "marcar como incompatible algo compatible". Por eso esta tanda usó solo compatibilidad. Si se quiere la otra forma, hace falta un código nuevo; lo propondría en la próxima tanda.
+- Algunas fuentes de `hechos` siguen "por confirmar con una fuente académica" (chuño: CIP o FAO).
+
+**Pedidos para la integración** (además de los de la sección 8 del diseño):
+- Mostrar en pantalla el número de cada oración (ya está en el diseño, sección 2), porque las explicaciones las citan por número.
+- Cuando entre `catalogo.test.js` con el formato lectura, `banco.test.js` ya está en `contenido/razonamiento-verbal/` y corre con `npm test`.

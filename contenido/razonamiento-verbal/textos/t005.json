@@ -33,12 +33,12 @@
       {
         "id": "o5",
         "rol": "apoyo",
-        "t": "Un niño que habla quechua en casa y castellano en el colegio no aprende cada lengua a medias: aprende a pasar de una a otra según con quién habla."
+        "t": "Un niño que habla quechua en casa y castellano en el colegio no se queda a medias en ninguna de las dos: aprende a pasar de una a otra según con quién habla."
       },
       {
         "id": "o6",
         "rol": "apoyo",
-        "t": "Los problemas aparecen más bien cuando la escuela trata la lengua materna como un defecto que hay que borrar, porque el niño aprende a avergonzarse de lo que sabe."
+        "t": "Muchos problemas aparecen más bien cuando la escuela trata la lengua materna como un defecto que hay que borrar, porque el niño aprende a avergonzarse de lo que sabe."
       }
     ],
     [
@@ -71,7 +71,7 @@
           "o1": "RV4",
           "o2": "RV3"
         },
-        "explicacion": "La oración 3 dice que el temor de los padres parte de una idea equivocada, y la 7 saca la conclusión: conservar la lengua es una riqueza. Las del medio son los argumentos.",
+        "explicacion": "La oración 3 dice que el temor de los padres parte de una idea equivocada, y la 7 saca la conclusión: conservar la lengua es una riqueza. Las demás dan el contexto o los argumentos.",
         "explicaciones": {
           "o2": "Esa oración cuenta el temor de los padres, que el autor va a discutir; no es su tesis."
         }
@@ -150,7 +150,7 @@
         },
         {
           "t": "Criticar a los padres que migraron del campo a la ciudad y abandonaron sus costumbres.",
-          "codigo": "RV7",
+          "codigo": "RV33",
           "origen": "o3",
           "explicacion": "El autor dice que el temor de los padres \"se entiende\"; no los critica por migrar ni habla de abandonar costumbres."
         },
@@ -169,7 +169,7 @@
       "enunciado": "En la oración 6, la expresión LO QUE SABE (en \"aprende a avergonzarse de lo que sabe\") se refiere a",
       "alternativas": [
         {
-          "t": "su lengua materna.",
+          "t": "a su lengua materna.",
           "correcta": true,
           "evidencia": [
             "o6"
@@ -177,19 +177,19 @@
           "explicacion": "Lo que el niño ya sabe y la escuela trata como un defecto es su lengua materna, que se nombra antes en la misma oración."
         },
         {
-          "t": "el defecto que hay que borrar.",
+          "t": "al defecto que hay que borrar.",
           "codigo": "RV27",
           "origen": "o6",
           "explicacion": "Es lo último que se nombra antes de \"lo que sabe\", pero no es lo que el niño sabe: es cómo la escuela ve su lengua."
         },
         {
-          "t": "el castellano que aprende en el colegio.",
+          "t": "al castellano que aprende en el colegio.",
           "codigo": "RV5",
           "origen": "o5",
           "explicacion": "Repite palabras de la oración 5, pero en la 6 el niño se avergüenza de su lengua materna, no del castellano."
         },
         {
-          "t": "lo que le enseñan los profesores en clase.",
+          "t": "a lo que le enseñan los profesores en clase.",
           "codigo": "RV7",
           "explicacion": "El texto no dice que el niño se avergüence de lo que aprende en clase; esa lectura va más allá de lo escrito."
         }
@@ -233,12 +233,21 @@
   "hechos": [
     {
       "afirmacion": "En gran parte del mundo es normal crecer hablando dos lenguas o más.",
-      "fuente": "Grosjean, F. (2010). Bilingual: life and reality. Harvard University Press (estima que más de la mitad de la población mundial es bilingüe)."
+      "fuente": "Grosjean, F. (2010). Bilingual: life and reality. Harvard University Press (estima que probablemente más de la mitad de la población mundial es bilingüe)."
     },
     {
       "afirmacion": "Hablar dos lenguas desde niño no hace que se aprenda cada una a medias.",
       "fuente": "Es la postura del autor del texto, apoyada en la literatura sobre bilingüismo (p. ej., Bialystok, 2001); el texto la presenta como argumento, no como dato."
+    },
+    {
+      "afirmacion": "Tratar la lengua materna como un defecto en la escuela perjudica el aprendizaje (bilingüismo sustractivo).",
+      "fuente": "Cummins, J. (2000). Language, power and pedagogy. Multilingual Matters."
     }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-06",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: 6 de 6. Cambios: código RV33 en \"Criticar…\", afirmaciones sobre bilingüismo suavizadas (\"no se queda a medias\", \"muchos problemas\"), fuente de Cummins (2000) y concordancia de p3 con \"se refiere a\"."
+  }
 }

@@ -53,7 +53,7 @@
       {
         "id": "o9",
         "rol": "detalle",
-        "t": "En 2013, la Unesco reconoció como patrimonio cultural inmaterial de la humanidad los conocimientos y el trabajo con que se renueva cada año."
+        "t": "En 2013, la Unesco reconoció como patrimonio cultural inmaterial de la humanidad los conocimientos, las técnicas y los rituales con que se renueva cada año."
       }
     ]
   ],
@@ -153,10 +153,10 @@
           "explicacion": "El texto habla de este puente. Pasar a \"cualquier tradición\" y a \"la única forma\" va mucho más allá de lo que afirma."
         },
         {
-          "t": "ocurre porque la paja se pudre y el río se lleva los puentes viejos cada invierno.",
+          "t": "ocurre porque cada año la crecida del río arrastra el puente viejo.",
           "codigo": "RV5",
           "origen": "o4",
-          "explicacion": "Mezcla palabras del texto (\"se pudre\", \"río\", \"viejo\") con una relación que el texto no establece: el río no es la causa de la renovación."
+          "explicacion": "Usa palabras del texto (\"río\", \"viejo\"), pero el texto dice que el viejo se desata cuando el nuevo está listo (oración 4): el río no es la causa de la renovación."
         },
         {
           "t": "hace que todos los jóvenes de Canas sepan construir puentes de paja.",
@@ -185,9 +185,9 @@
           "explicacion": "Es el sentido más común de \"pérdida\" (perder algo y no encontrarlo), pero aquí no se pierde ningún objeto."
         },
         {
-          "t": "un daño.",
+          "t": "una disminución.",
           "codigo": "RV19",
-          "explicacion": "\"Daño\" está cerca en el sentido, pero no es lo mismo: la oración no dice que el trabajo dañe algo, sino que se gasta en vano."
+          "explicacion": "Es del mismo campo que \"pérdida\" (perder peso, perder agua), pero aquí no disminuye nada: el trabajo se hace en vano."
         },
         {
           "t": "una costumbre que dura poco.",
@@ -210,13 +210,12 @@
             "o6",
             "o7"
           ],
-          "explicacion": "El texto dice que el saber sobrevive porque la paja se pudre y obliga a rehacer el puente. Sin esa obligación, se practicaría menos."
+          "explicacion": "Según la oración 6, como la paja se pudre hay que rehacer el puente, y al rehacerlo se practica el saber. Sin esa obligación, se practicaría menos."
         },
         {
-          "t": "el puente seguiría hecho con sogas trenzadas de q'oya.",
+          "t": "el saber para trenzar la paja se practicaría tanto como ahora.",
           "codigo": "RV12",
-          "origen": "o2",
-          "explicacion": "Eso repite lo que el texto ya dice; no saca ninguna consecuencia del cambio que plantea la pregunta."
+          "explicacion": "Cambia la condición, pero deja igual la consecuencia: si ya no hay que rehacer el puente porque se pudre, desaparece la obligación que, según la oración 6, mantiene viva la práctica."
         },
         {
           "t": "las comunidades lo reemplazarían por un puente de acero.",
@@ -239,9 +238,14 @@
       "fuente": "Unesco, Lista representativa del patrimonio cultural inmaterial (2013): \"Conocimientos, técnicas y rituales vinculados a la renovación anual del puente Q'eswachaka\"."
     },
     {
-      "afirmacion": "El puente viejo se desata y cae al río; la renovación dura pocos días.",
-      "fuente": "Misma ficha de la Unesco y crónicas de prensa sobre la renovación; por confirmar."
+      "afirmacion": "Cuando el puente nuevo está listo, el viejo se desata y cae al río; la renovación dura unos 3 o 4 días, en junio.",
+      "fuente": "Ficha de la Unesco; NEH, \"Building a bridge without a plan\" (Humanities, otoño de 2017); RPP. En 2021 el puente se cayó porque la pandemia impidió renovarlo."
     }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-06",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: 6 de 6. Cambios: distractor de extrapolación que era defendible (RV12 reescrito), \"un daño\" (es un sentido de \"pérdida\" en el diccionario) cambiado por \"una disminución\", causa del río corregida, explicación de la correcta de p4 y hechos confirmados (Unesco 2013, 3 o 4 días en junio)."
+  }
 }

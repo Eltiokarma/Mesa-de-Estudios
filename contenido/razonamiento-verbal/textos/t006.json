@@ -72,7 +72,7 @@
         ],
         "ninguna": "RV3",
         "codigos": {
-          "o1": "RV4"
+          "o5": "RV3"
         },
         "explicacion": "La oración 9 junta la historia entera: la cochinilla parecía cosa del pasado y recuperó su valor. Las demás cuentan cada etapa.",
         "explicaciones": {
@@ -85,7 +85,9 @@
           "t": "La cochinilla perdió valor frente a los colorantes artificiales y lo recuperó cuando se buscaron tintes naturales.",
           "correcta": true,
           "evidencia": [
+            "o5",
             "o6",
+            "o8",
             "o9"
           ],
           "explicacion": "Resume las etapas del texto en una sola idea: caída frente a lo artificial y regreso cuando cambió lo que se buscaba."
@@ -122,19 +124,19 @@
       "previo": {
         "tipo": "clasificar",
         "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
-        "sonda": "Los pueblos de los Andes conocían el tinte de cochinilla antes que los europeos.",
+        "sonda": "El precio de los colorantes artificiales influyó en el valor comercial de la cochinilla.",
         "clase": "se-deduce",
         "codigos": {
           "lo-dice": "RV6",
           "no-se-sabe": "RV34",
           "lo-contradice": null
         },
-        "explicacion": "El texto no lo dice así, pero se deduce: los tejedores andinos la usaban antes de los incas (oración 3) y llegó a Europa después de la conquista (oración 4)."
+        "explicacion": "No lo dice así, pero se deduce: la cochinilla perdió valor cuando aparecieron colorantes artificiales más baratos (oración 5)."
       },
-      "enunciado": "Se infiere del texto que el valor comercial de la cochinilla dependió, sobre todo, de",
+      "enunciado": "Se infiere del texto que los cambios en el valor comercial de la cochinilla se debieron, sobre todo, a",
       "alternativas": [
         {
-          "t": "la competencia con los colorantes artificiales y de lo que la gente esperaba de ellos.",
+          "t": "la competencia con los colorantes artificiales y a lo que la gente esperaba de sus alimentos.",
           "correcta": true,
           "evidencia": [
             "o5",
@@ -144,7 +146,7 @@
           "explicacion": "Perdió valor cuando aparecieron colorantes artificiales más baratos (oración 5) y lo recuperó cuando algunos resultaron dañinos (oraciones 7 a 9)."
         },
         {
-          "t": "el ácido carmínico, que deja una mancha de un rojo intenso.",
+          "t": "la cantidad de ácido carmínico, que da su rojo intenso.",
           "codigo": "RV5",
           "origen": "o2",
           "explicacion": "Repite palabras de la oración 2, pero el ácido carmínico estuvo siempre: no explica por qué el valor bajó y subió."
@@ -161,7 +163,7 @@
           "explicacion": "Choca con el texto aunque no lo diga con esas palabras: la cochinilla llegó a Europa después de la conquista, no por decisión de los incas."
         },
         {
-          "t": "la belleza de su color, que siempre fue lo único que importó.",
+          "t": "la belleza de su color, lo único que siempre importó.",
           "codigo": "RV11",
           "explicacion": "El texto muestra que importaron también el precio y la salud; \"siempre\" y \"lo único\" no salen del texto."
         }
@@ -219,7 +221,7 @@
       "fuente": "Literatura de química de colorantes (p. ej., Dapson, 2007, Biotechnic & Histochemistry, sobre el carmín)."
     },
     {
-      "afirmacion": "Hay textiles andinos preincaicos teñidos con cochinilla (p. ej., de Paracas y Nasca).",
+      "afirmacion": "Hay textiles andinos preincaicos teñidos con cochinilla, sobre todo desde el periodo Wari (700 a 1100 d. C.); en Paracas es rara.",
       "fuente": "Estudios de análisis de colorantes en textiles prehispánicos (p. ej., Wouters y Rosario-Chirinos, 1992, Journal of the American Institute for Conservation)."
     },
     {
@@ -232,8 +234,13 @@
     },
     {
       "afirmacion": "El Perú es uno de los principales productores mundiales de cochinilla.",
-      "fuente": "Fuentes del sector agrario peruano (Minagri, Promperú); por citar."
+      "fuente": "Agraria.pe (2026), \"Perú lidera mercado global de carmín de cochinilla\"; otras fuentes del sector dan entre el 70 y el 90 % del carmín mundial. El texto dice \"uno de los principales\", que es seguro."
     }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-06",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: 6 de 6. Cambios: enunciado de p2 sobre los cambios del valor (el ácido carmínico ya no es defendible), paso previo de p2 alineado con la pregunta, evidencia de p1 y hecho de Paracas corregido (la cochinilla abunda desde Wari; en Paracas es rara)."
+  }
 }

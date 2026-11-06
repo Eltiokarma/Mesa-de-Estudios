@@ -1,6 +1,13 @@
 {
   "entrada": null,
   "salida": null,
-  "textos": [],
+  "textos": [
+    "t001",
+    "t002",
+    "t003",
+    "t004",
+    "t005",
+    "t006"
+  ],
   "ejercicios": []
 }

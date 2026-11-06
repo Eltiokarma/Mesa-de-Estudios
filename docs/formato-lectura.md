@@ -48,7 +48,7 @@ Es el de `app/practica.js`, para que la medición se compare entre formatos, con
 └──────────────────────────────┘
 ```
 
-- **El texto solo, primero.** Letra de 18 px, interlineado de 1,6 y a lo sumo 65 caracteres por línea. Los párrafos llevan su número en un círculo (①, ②), porque las explicaciones los citan ("en el párrafo 2…").
+- **El texto solo, primero.** Letra de 18 px, interlineado de 1,6 y a lo sumo 65 caracteres por línea. Los párrafos llevan su número en un círculo (①, ②), y cada oración un número pequeño y gris, seguido en todo el texto (o1 es la oración 1). Las explicaciones del banco citan las oraciones por ese número ("la oración 6 dice…").
 - **"Ya lo leí"** queda al final del texto y registra el tiempo de lectura (sección 6). No hay cronómetro visible.
 - **Paso previo de marcar una oración:** se hace en esta misma pantalla, con el texto completo. Cada oración se vuelve un bloque tocable, con un poco de aire entre una y otra para que un dedo no toque la vecina. Tocar una oración la selecciona (borde en el color `idea`); hay que tocar **Confirmar** para seguir. Un toque accidental no graba nada.
 - **Durante las preguntas, el texto no desaparece.** Queda plegado en una franja fija arriba, de unos 56 px, con el título y "Ver texto ▾". Al tocarla se abre una hoja que sube desde abajo y ocupa el 85 % de la pantalla, con el texto completo y desplazable. Se cierra deslizando hacia abajo o con "Volver a la pregunta". Así el alumno relee sin perder la pregunta, como en el examen de papel.
@@ -141,7 +141,7 @@ En el índice solo entran textos con revisión aprobada (regla 9); el ejemplo de
 
 ### 5.2 Un texto
 
-Ejemplo completo, propio. Muestra el formato; si pasa la revisión de la pieza 3, entra al banco como el primer texto.
+Ejemplo completo, propio. La versión que vale es la del banco, `contenido/razonamiento-verbal/textos/t001.json`, que pasó la revisión de la pieza 3 con más cambios (hechos y fuentes).
 
 ```json
 {
@@ -154,9 +154,9 @@ Ejemplo completo, propio. Muestra el formato; si pasa la revisión de la pieza 3
   "tipo_texto": "expositivo",
   "parrafos": [
     [
-      { "id": "o1", "rol": "contraste", "t": "En las punas del sur andino, las heladas de junio pueden arruinar una chacra de papa en una sola noche." },
+      { "id": "o1", "rol": "contraste", "t": "En las punas del sur andino, una helada fuera de temporada puede arruinar una chacra de papa en una sola noche." },
       { "id": "o2", "rol": "principal", "t": "Sin embargo, las familias aymaras y quechuas convirtieron ese mismo frío en una herramienta." },
-      { "id": "o3", "rol": "detalle", "t": "Desde hace siglos, extienden las papas sobre el pasto para que se congelen de noche y se descongelen con el sol del día." },
+      { "id": "o3", "rol": "detalle", "t": "Desde hace siglos, en junio, cuando la papa ya se cosechó y las heladas son más fuertes, extienden las papas sobre el pasto para que se congelen de noche y se descongelen con el sol del día." },
       { "id": "o4", "rol": "detalle", "t": "Cada ciclo de congelar y descongelar rompe las células del tubérculo, y el agua sale con más facilidad." },
       { "id": "o5", "rol": "detalle", "t": "Después, pisan las papas para exprimirles el agua que les queda y las dejan secar al sol." }
     ],
@@ -164,7 +164,7 @@ Ejemplo completo, propio. Muestra el formato; si pasa la revisión de la pieza 3
       { "id": "o6", "rol": "detalle", "t": "El resultado es el chuño negro, un alimento liviano que puede guardarse varios años sin echarse a perder." },
       { "id": "o7", "rol": "detalle", "t": "Como ha perdido casi toda su agua, pesa mucho menos que la papa fresca y se lleva con facilidad en viajes largos." },
       { "id": "o8", "rol": "detalle", "t": "Por eso, en los años de mala cosecha, el chuño guardado ha servido como reserva contra el hambre." },
-      { "id": "o9", "rol": "principal", "t": "Así, la misma helada que amenaza la chacra se vuelve, en manos de estas familias, la forma de conservar la papa como chuño." }
+      { "id": "o9", "rol": "principal", "t": "Así, la misma helada que amenaza la chacra se vuelve, en manos de estas familias, la forma de conservar la papa." }
     ]
   ],
   "preguntas": [
@@ -192,7 +192,7 @@ Ejemplo completo, propio. Muestra el formato; si pasa la revisión de la pieza 3
         { "t": "La agricultura de las punas andinas depende de las heladas y del clima.",
           "codigo": "RV2",
           "explicacion": "Es demasiado general: el texto no habla de toda la agricultura, sino de la helada y de la papa." },
-        { "t": "Las heladas de junio pueden arruinar en una sola noche una chacra de papa.",
+        { "t": "Una helada puede arruinar en una sola noche una chacra de papa.",
           "codigo": "RV3", "origen": "o1",
           "explicacion": "Se queda con la mitad del texto. Falta lo principal: que ese mismo frío sirve para conservar." },
         { "t": "El chuño también se prepara en el altiplano de Bolivia y en el norte de Chile.",

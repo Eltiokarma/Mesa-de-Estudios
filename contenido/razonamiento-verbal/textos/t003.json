@@ -43,7 +43,7 @@
       {
         "id": "o7",
         "rol": "apoyo",
-        "t": "Cuando el glaciar se haya reducido lo suficiente, el agua de los meses secos empezará a disminuir."
+        "t": "Cuando el glaciar se ha reducido lo suficiente, el agua de los meses secos empieza a disminuir; en varias cuencas del Santa, eso ya está ocurriendo."
       }
     ],
     [
@@ -75,7 +75,7 @@
         "codigos": {
           "o1": "RV4"
         },
-        "explicacion": "La oración 6 dice por qué el aumento de agua engaña y la 8 lo resume como conclusión. Las demás explican cómo funciona el glaciar o proponen qué hacer.",
+        "explicacion": "La oración 6 dice por qué el aumento de agua engaña y la 8 lo resume como conclusión. Las demás explican cómo funciona el glaciar (1 a 4), cuentan lo que parece a primera vista (5), dicen lo que pasa después (7) o proponen qué hacer (9).",
         "explicaciones": {
           "o5": "Esa oración presenta lo que parece a primera vista; el \"Pero\" de la oración 6 lo corrige.",
           "o9": "Es la propuesta del autor, que depende de la idea principal pero no la dice."
@@ -193,10 +193,10 @@
           "explicacion": "El texto dice que un río con más agua \"puede ser\" una señal, no que \"todo\" aumento lo sea."
         },
         {
-          "t": "los reservorios de agua detendrán el retroceso de los glaciares.",
+          "t": "el aumento del caudal en la temporada seca muestra que los glaciares están creciendo.",
           "codigo": "RV7",
-          "origen": "o9",
-          "explicacion": "El texto propone reservorios para prepararse a tener menos agua, no para detener el retroceso del hielo."
+          "origen": "o5",
+          "explicacion": "El agua extra sale del hielo que se pierde (oraciones 4 y 6), no de glaciares que crecen. Esa lectura saca una conclusión que el texto no permite."
         },
         {
           "t": "las lluvias de la temporada húmeda bastan para regar el valle durante todo el año.",
@@ -218,7 +218,7 @@
       "enunciado": "¿Cuál es la intención principal del autor?",
       "alternativas": [
         {
-          "t": "Advertir que el aumento de agua en los ríos es una señal de alarma y no una buena noticia.",
+          "t": "Advertir que el aumento de agua en los ríos que nacen de glaciares puede ser una señal de alarma y no una buena noticia.",
           "correcta": true,
           "evidencia": [
             "o8",
@@ -250,12 +250,17 @@
   "hechos": [
     {
       "afirmacion": "En la Cordillera Blanca, los glaciares alimentan el río Santa en la temporada seca.",
-      "fuente": "Literatura sobre la cuenca del río Santa (p. ej., Mark y otros, estudios del glaciar y del caudal del Santa); ANA, Inventario de glaciares."
+      "fuente": "Mark, B. G. y Seltzer, G. O. (2003), Journal of Glaciology, citado por Baraer y otros (2012): el hielo aporta del 10 al 20 % del caudal anual del Santa y puede pasar del 40 % en estiaje."
     },
     {
       "afirmacion": "Cuando un glaciar retrocede, el caudal de estiaje primero aumenta y luego disminuye.",
-      "fuente": "Concepto de \"pico de agua\" (peak water) en hidrología glaciar; por citar el estudio concreto."
+      "fuente": "Baraer, M. y otros (2012). Glacier recession and water resources in Peru's Cordillera Blanca. Journal of Glaciology 58(207): 7 de 9 subcuencas del Santa probablemente ya pasaron el pico de caudal de estiaje."
     }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-06",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: 7 de 7. Cambios: en el Santa la baja del caudal de estiaje ya ocurre (Baraer y otros, 2012), la clave de p4 deja de ser absoluta (\"puede ser una señal\"), distractor de p3 que era compatible reescrito y fuentes de los hechos."
+  }
 }

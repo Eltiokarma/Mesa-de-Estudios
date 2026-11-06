@@ -50,7 +50,7 @@
       {
         "id": "o8",
         "rol": "principal",
-        "t": "Lo que sí está claro es que la falta de letras no significa falta de registros: los incas administraron un Estado enorme con cuerdas y nudos."
+        "t": "Lo que sí está claro es que la falta de letras no significa falta de registros: los incas llevaron las cuentas de un Estado enorme con cuerdas y nudos."
       }
     ]
   ],
@@ -155,13 +155,13 @@
         {
           "t": "ningún quipu podrá ser leído jamás.",
           "codigo": "RV11",
-          "origen": "o7",
-          "explicacion": "El texto dice que \"todavía no\" se ha podido leer uno que no sea numérico, no que nunca se podrá."
+          "explicacion": "Muchos quipus ya se leen: guardan números (oraciones 2 y 3). Y de los que no son numéricos, la oración 7 dice \"todavía no\", no \"nunca\"."
         },
         {
-          "t": "los quipus todavía se usan en algunas comunidades andinas.",
+          "t": "como los incas no tenían letras, no llevaban registros de sus tributos.",
           "codigo": "RV8",
-          "explicacion": "Puede ser cierto, pero el texto no dice nada sobre el uso actual de los quipus."
+          "explicacion": "Es una creencia común, pero la oración 3 dice que los quipucamayos registraban tributos, y la 8, que la falta de letras no significa falta de registros.",
+          "origen": "o8"
         }
       ]
     },
@@ -212,5 +212,10 @@
       "fuente": "Urton, G. (2003). Signs of the Inka khipu. University of Texas Press; Hyland, S. (2017), Current Anthropology, propone una lectura parcial de nombres que no es aceptada por todos."
     }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-06",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: 5 de 5. Cambios: \"administraron un Estado con cuerdas\" exageraba (ahora \"llevaron las cuentas\"), distractor RV8 de p2 que era cierto y no chocaba con el texto reescrito, explicación de RV11 corregida."
+  }
 }

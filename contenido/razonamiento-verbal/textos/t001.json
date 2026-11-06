@@ -11,7 +11,7 @@
       {
         "id": "o1",
         "rol": "contraste",
-        "t": "En las punas del sur andino, las heladas de junio pueden arruinar una chacra de papa en una sola noche."
+        "t": "En las punas del sur andino, una helada fuera de temporada puede arruinar una chacra de papa en una sola noche."
       },
       {
         "id": "o2",
@@ -21,7 +21,7 @@
       {
         "id": "o3",
         "rol": "detalle",
-        "t": "Desde hace siglos, extienden las papas sobre el pasto para que se congelen de noche y se descongelen con el sol del día."
+        "t": "Desde hace siglos, en junio, cuando la papa ya se cosechó y las heladas son más fuertes, extienden las papas sobre el pasto para que se congelen de noche y se descongelen con el sol del día."
       },
       {
         "id": "o4",
@@ -53,7 +53,7 @@
       {
         "id": "o9",
         "rol": "principal",
-        "t": "Así, la misma helada que amenaza la chacra se vuelve, en manos de estas familias, la forma de conservar la papa como chuño."
+        "t": "Así, el mismo frío que amenaza la chacra se vuelve, en manos de estas familias, la forma de conservar la papa."
       }
     ]
   ],
@@ -101,7 +101,7 @@
           "explicacion": "Es demasiado general: el texto no habla de toda la agricultura, sino de la helada y de la papa."
         },
         {
-          "t": "Las heladas de junio pueden arruinar en una sola noche una chacra de papa.",
+          "t": "Una helada fuera de temporada puede arruinar en una sola noche una chacra de papa.",
           "codigo": "RV3",
           "origen": "o1",
           "explicacion": "Se queda con la mitad del texto. Falta lo principal: que ese mismo frío sirve para conservar."
@@ -201,13 +201,22 @@
   "fecha": "2026-11-06",
   "hechos": [
     {
-      "afirmacion": "El chuño negro se hace congelando la papa de noche, descongelándola de día, pisándola y secándola al sol.",
-      "fuente": "Conocimiento etnográfico ampliamente descrito (p. ej., entradas de enciclopedias sobre el chuño); por confirmar con una fuente académica."
+      "afirmacion": "El chuño negro se hace congelando la papa varias noches, pisándola, volviéndola a congelar y secándola al sol, sin remojo (eso lo distingue de la tunta).",
+      "fuente": "Descripciones etnográficas y de divulgación (p. ej., EcuRed, \"Chuño\"; BBC Mundo sobre el chuño); por confirmar con el CIP o la FAO."
     },
     {
       "afirmacion": "El chuño se conserva varios años.",
-      "fuente": "Misma fuente; las descripciones hablan de años e incluso de más de una década."
+      "fuente": "Mismas fuentes; la divulgación habla de hasta 20 años, sin estudio que lo respalde, por eso el texto dice \"varios años\"."
+    },
+    {
+      "afirmacion": "Las heladas dañan la papa durante la campaña (noviembre a marzo), y el chuño se hace en junio y julio, con la papa ya cosechada.",
+      "fuente": "Andina (enero de 2024), avisos del Senamhi sobre heladas que afectan cultivos del altiplano de Puno."
     }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-06",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: 5 de 5 (3 preguntas y 2 pasos previos). Cambios: las heladas que arruinan la papa son las de fuera de temporada (las de junio sirven para el chuño, con la papa ya cosechada); hechos y fuentes del proceso del chuño negro."
+  }
 }
