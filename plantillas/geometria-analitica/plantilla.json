@@ -1,0 +1,15 @@
+{
+  "id": "geometria-analitica",
+  "titulo": "El plano con imán: distancia, pendiente y ecuación de la recta",
+  "formato": "escena",
+  "unidades": [
+    "geometria.geometria-analitica"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}

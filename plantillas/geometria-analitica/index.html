@@ -1,0 +1,1176 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El plano con imán: distancia, pendiente y ecuación de la recta</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de la torre de fichas.
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
+   avance Δx naranja, subida Δy verde, distancia d fucsia, el punto que divide (P, y M cuando es el punto medio)
+   turquesa, la recta L (L₁) y su pendiente m azul, la segunda recta L₂ y su pendiente rojo, el corte b granate
+   y el área S mostaza. Los puntos, las coordenadas y los rótulos, en tinta.
+   Elegidos con CIEDE2000; mínimo entre los que salen juntos 23,4 en claro y 22,2 en oscuro (b contra la tinta).
+   Pares parecidos que nunca comparten dibujo: S–Δy (17,3 / 18,1), L₂–b (17,6 / 12,6) y L₂ con el rojo de los avisos
+   (el aviso siempre va con texto). Contraste AA sobre el papel, la tarjeta y su chip (.v, fondo al 8 %), en claro
+   y en oscuro (mínimo 4,54). */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8; --eje:#a99cb0;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-dx:#a05200; --c-dy:#466d14; --c-d:#a10fbf; --c-P:#0f766e; --c-L:#1f5fbf; --c-L2:#c0364a; --c-b:#77032c; --c-S:#7d6a00;
+  --relleno:.18;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f; --eje:#6f6380;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-dx:#f0a04a; --c-dy:#a3d65e; --c-d:#cf6bfa; --c-P:#5ed9c8; --c-L:#7cb0ff; --c-L2:#f17384; --c-b:#ffa8b8; --c-S:#e3c84a;
+  --relleno:.2; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f; --eje:#6f6380;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-dx:#f0a04a; --c-dy:#a3d65e; --c-d:#cf6bfa; --c-P:#5ed9c8; --c-L:#7cb0ff; --c-L2:#f17384; --c-b:#ffa8b8; --c-S:#e3c84a;
+  --relleno:.2; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+/* Celular con una predicción pendiente: el dibujo más bajo y pegado arriba, para que se vea mientras se elige. */
+@media (max-width:899px){
+  .mode.pendiente .bench{position:sticky; top:0; z-index:1; padding:6px; gap:4px; background:var(--card); border-radius:0 0 20px 20px}
+  .mode.pendiente .legend{display:none}
+  .mode.pendiente .lecturas{gap:4px}
+  .mode.pendiente .lectura{padding:2px 8px}
+}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+.lienzo:has(canvas:focus-visible){outline:3px solid var(--ink); outline-offset:2px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+.legend i.sq{width:12px; height:12px; border-radius:3px; opacity:.55}
+.legend i.pt{width:10px; height:10px; border-radius:50%}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; grid-template-columns:minmax(0, 1fr); gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; grid-template-columns:minmax(0, 1fr); gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{white-space:nowrap; font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-dx{color:var(--c-dx); background:color-mix(in srgb, var(--c-dx) 8%, transparent)}
+.v-dy{color:var(--c-dy); background:color-mix(in srgb, var(--c-dy) 8%, transparent)}
+.v-d{color:var(--c-d); background:color-mix(in srgb, var(--c-d) 8%, transparent)}
+.v-P{color:var(--c-P); background:color-mix(in srgb, var(--c-P) 8%, transparent)}
+.v-L{color:var(--c-L); background:color-mix(in srgb, var(--c-L) 8%, transparent)}
+.v-L2{color:var(--c-L2); background:color-mix(in srgb, var(--c-L2) 8%, transparent)}
+.v-b{color:var(--c-b); background:color-mix(in srgb, var(--c-b) 8%, transparent)}
+.v-S{color:var(--c-S); background:color-mix(in srgb, var(--c-S) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eqs:empty{display:none}
+.eq{display:block; line-height:2.1; font-family:var(--mono); font-size:1.02rem; font-variant-numeric:tabular-nums}
+.eq .note{display:inline-block; line-height:1.4; font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.6em; white-space:normal}
+.fx{white-space:nowrap}
+.eq sup, .fx sup{font-size:.75em; vertical-align:.6em; line-height:0}
+.frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1.15}
+.frac > span:first-child{border-bottom:1.5px solid currentColor; padding:0 .25em}
+.frac > span:last-child{padding:0 .25em}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+/* Lecturas en vivo, cada una con el color de su variable */
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(110px, 1fr)); gap:8px}
+.lecturas:empty{display:none}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura b{display:block; color:var(--k); font:800 .95rem var(--mono); font-variant-numeric:tabular-nums; overflow-wrap:anywhere}
+.lectura span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+
+/* El zapatito: la tabla de coordenadas */
+.zap{justify-self:start; border-collapse:collapse; font:600 .95rem var(--mono); font-variant-numeric:tabular-nums; background:var(--paper); border-radius:12px; overflow:hidden}
+.zap th, .zap td{padding:3px 12px; border-bottom:1px solid var(--line); text-align:center}
+.zap th{font:700 .8rem var(--font); color:var(--muted)}
+.zap tr.rep td{color:var(--muted)}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.2fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Geometría · Geometría analítica · Problemas tipo admisión</p>
+      <h1>El plano con imán</h1>
+      <p class="sub">Los puntos se pegan a la cuadrícula como con un imán. Arrástralos y mira cómo cambian la distancia, el punto medio, la pendiente y la ecuación de la recta, antes de usar las fórmulas.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo de la escena: el plano cartesiano con sus puntos, segmentos y rectas">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Plano cartesiano de la escena"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos con puntos y rectas del plano">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Plano cartesiano del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/geometria-analitica">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'geometria-analitica', unidad: 'geometria.geometria-analitica', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0, unidad){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: unidad || PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la matemática (distancias, puntos que dividen, pendientes, las tres formas de la recta, perpendiculares,
+   distancias a una recta y el zapatito) sale de MotorAnalitica (motor.js); aquí solo se pinta, se arrastra y se anima. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MA = MotorAnalitica;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+// Coma decimal y signo menos tipográfico.
+function fmt(n, d){
+  if (n === null || n === undefined || !Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 2 : d), r = Math.round(n*p)/p + 0;
+  const [e, f] = String(Math.abs(r)).split('.');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+const num = x => MA.textoFraccion(x);          // 5/3, −2, 0
+const tp = P => MA.textoPunto(P);              // (−2; 1)
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const fr = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
+const X_ = t => V('dx', t), Y_ = t => V('dy', t), D_ = t => V('d', t), P_ = t => V('P', t), L_ = t => V('L', t), L2_ = t => V('L2', t), B_ = t => V('b', t), S_ = t => V('S', t);
+const par = x => (x < 0 ? `(${num(x)})` : num(x));      // (−2) entre paréntesis al multiplicar
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+const lerp = (a, b, f) => a + (b - a)*f;
+function tween(dur, paso, fin){
+  if (RM || !dur){ paso(1); if (fin) setTimeout(fin, 0); return; }
+  const t0 = performance.now();
+  const tick = now => { const f = Math.min(1, (now - t0)/dur); paso(suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
+  requestAnimationFrame(tick);
+}
+function colores(){
+  const c = { ink:css('--ink'), muted:css('--muted'), grid:css('--grid'), eje:css('--eje'), paper:css('--paper'), card:css('--card'), line:css('--line'),
+    relleno:Number(css('--relleno')) || .18, mono:css('--mono'), font:css('--font') };
+  for (const k of ['dx', 'dy', 'd', 'P', 'L', 'L2', 'b', 'S']) c[k] = css('--c-' + k);
+  return c;
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+// Resaltar en el dibujo la variable que se toca en el texto (regla 4).
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+/* ================= El plano =================
+   E.config({ vista:{x0,x1,y0,y1}, pts:{A:[x,y],…}, mover:['A','B'], pintar(D), lect, ley, desc, alCambiar, valido })
+   'pintar' recibe D, con las herramientas de dibujo en coordenadas del plano. Los puntos de 'mover' se arrastran
+   con el dedo, el ratón o las flechas, y se pegan a los enteros (el imán). */
+function crearPlano(cv, idDesc, idLect, idLey){
+  const E = { vista:{ x0:-5, x1:5, y0:-5, y1:5 }, pts:{}, mover:[], activo:null, pintar:null, lect:[], ley:[], desc:null, alCambiar:null, valido:null,
+    hl:null, tok:0, anim:false, ocupado:false, compacto:false };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, s = 30, ox = 0, oy = 0, arrastrando = null, sobre = null;
+  const chico = () => innerWidth < 900;
+  function alto(w){
+    if (E.compacto && chico()) return Math.round(clamp(w*0.68, 220, 250));
+    if (chico()) return Math.round(clamp(w*0.92, 280, 400));
+    return Math.round(clamp(w*0.78, 360, 540));
+  }
+  function encuadrar(){
+    const v = E.vista, pad = 22;
+    s = Math.min((W - 2*pad)/(v.x1 - v.x0), (H - 2*pad)/(v.y1 - v.y0));
+    ox = (W - s*(v.x1 - v.x0))/2 - v.x0*s; oy = (H + s*(v.y1 - v.y0))/2 + v.y0*s;
+  }
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    const h = alto(w), dpr = window.devicePixelRatio || 1;
+    if (w === W && h === H) { E.dibujar(); return; }
+    W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  alRedibujarTema(() => E.dibujar());
+  const X = x => ox + x*s, Y = y => oy - y*s;
+  const mundo = (px, py) => [(px - ox)/s, (oy - py)/s];
+
+  E.config = o => {
+    E.tok++; E.anim = false;
+    Object.assign(E, { mover:[], activo:null, pintar:null, lect:[], ley:[], desc:null, alCambiar:null, valido:null, fijos:false }, o);
+    E.pts = Object.assign({}, o.pts || {});
+    for (const k in E.pts) E.pts[k] = E.pts[k].slice();
+    E.activo = E.mover[0] || null;
+    cv.tabIndex = E.mover.length ? 0 : -1;
+    W = 0; resize(); E.leyenda(); E.avisar();
+  };
+  E.compactar = on => { on = !!on; cv.closest('.mode').classList.toggle('pendiente', on); if (on === E.compacto) return; E.compacto = on; W = 0; resize(); };
+  const g = (k, base) => (E.hl === k ? base + 2.5 : base);
+
+  // ----- herramientas de dibujo (coordenadas del plano) -----
+  function rotulo(c, x, y, t, color, align, tam, peso){
+    ctx.font = `${peso || 700} ${tam || 13}px ${c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+    const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+    ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .88; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+    ctx.fillStyle = color; ctx.fillText(t, x, y);
+  }
+  function linea(P, Q, color, ancho, trazos){
+    ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = ancho || 2; ctx.lineCap = 'round'; if (trazos) ctx.setLineDash(trazos);
+    ctx.beginPath(); ctx.moveTo(X(P[0]), Y(P[1])); ctx.lineTo(X(Q[0]), Y(Q[1])); ctx.stroke(); ctx.restore();
+  }
+  // Una recta entera, de borde a borde del lienzo, dada por [A, B, C] de Ax + By + C = 0
+  function recta(G, color, ancho, trazos){
+    const [a, b, cc] = G, [wx0, wy1] = mundo(0, 0), [wx1, wy0] = mundo(W, H);
+    if (Math.abs(b) < 1e-12){ const x = -cc/a; linea([x, wy0 - 1], [x, wy1 + 1], color, ancho, trazos); return; }
+    const y = x => (-cc - a*x)/b;
+    linea([wx0 - 1, y(wx0 - 1)], [wx1 + 1, y(wx1 + 1)], color, ancho, trazos);
+  }
+  function punto(c, P, nombre, color, o){
+    o = o || {};
+    const x = X(P[0]), y = Y(P[1]), mov = E.mover.includes(o.clave);
+    if (mov){
+      ctx.save(); ctx.strokeStyle = color; ctx.globalAlpha = (arrastrando === o.clave || sobre === o.clave) ? .55 : .28; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(x, y, (arrastrando === o.clave ? 15 : 12), 0, 2*Math.PI); ctx.stroke(); ctx.restore();
+      if (E.activo === o.clave && document.activeElement === cv){ ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; ctx.setLineDash([3, 3]);
+        ctx.beginPath(); ctx.arc(x, y, 18, 0, 2*Math.PI); ctx.stroke(); ctx.restore(); }
+    }
+    ctx.save(); ctx.fillStyle = color; ctx.strokeStyle = c.paper; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(x, y, o.r || 5.5, 0, 2*Math.PI); ctx.fill(); ctx.stroke(); ctx.restore();
+    if (nombre){
+      const t = o.coord === false ? nombre : `${nombre}${tp(P)}`;
+      const dx = o.dx === undefined ? 10 : o.dx, dy = o.dy === undefined ? -14 : o.dy;
+      rotulo(c, x + dx, y + dy, t, o.colorRot || c.ink, dx < 0 ? 'right' : dx === 0 ? 'center' : 'left', 13);
+    }
+  }
+  // El triángulo de la pendiente de A a B: Δx (horizontal, naranja) y Δy (vertical, verde). f de 0 a 2: crece por partes.
+  function triangulo(c, A, B, o){
+    o = o || {};
+    const f = o.f === undefined ? 2 : o.f, C = [B[0], A[1]];
+    const fx = clamp(f, 0, 1), fy = clamp(f - 1, 0, 1);
+    const dx = B[0] - A[0], dy = B[1] - A[1];
+    if (fx > 0 && dx !== 0) linea(A, [A[0] + dx*fx, A[1]], c.dx, g('dx', 3.5));
+    if (fy > 0 && dy !== 0) linea(C, [C[0], C[1] + dy*fy], c.dy, g('dy', 3.5));
+    if (f >= 2 && dx !== 0 && dy !== 0){   // ángulo recto en C
+      const u = Math.sign(-dx)*Math.min(10, Math.abs(dx)*s/3), v = Math.sign(dy)*Math.min(10, Math.abs(dy)*s/3);
+      ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; ctx.beginPath();
+      ctx.moveTo(X(C[0]) + u, Y(C[1])); ctx.lineTo(X(C[0]) + u, Y(C[1]) - v); ctx.lineTo(X(C[0]), Y(C[1]) - v); ctx.stroke(); ctx.restore();
+    }
+    if (o.rotulos !== false){
+      const abajo = dy >= 0 ? 15 : -15;
+      if (fx >= 1 && dx !== 0) rotulo(c, X((A[0] + B[0])/2), Y(A[1]) + abajo, `${o.nx || 'Δx'} = ${num(dx)}`, c.dx);
+      if (fy >= 1 && dy !== 0) rotulo(c, X(B[0]) + (dx >= 0 ? 10 : -10), Y((A[1] + B[1])/2), `${o.ny || 'Δy'} = ${num(dy)}`, c.dy, dx >= 0 ? 'left' : 'right');
+    }
+  }
+  function anguloRecto(c, H, u, v, color){
+    // u y v: direcciones (unitarias, en el plano) de los dos lados del ángulo recto
+    const k = 11, a = [u[0]*k, -u[1]*k], b = [v[0]*k, -v[1]*k];
+    ctx.save(); ctx.strokeStyle = color || c.muted; ctx.lineWidth = 1.4; ctx.beginPath();
+    ctx.moveTo(X(H[0]) + a[0], Y(H[1]) + a[1]); ctx.lineTo(X(H[0]) + a[0] + b[0], Y(H[1]) + a[1] + b[1]); ctx.lineTo(X(H[0]) + b[0], Y(H[1]) + b[1]); ctx.stroke(); ctx.restore();
+  }
+  function poligono(c, Vs, color, alfa, borde, rayado){
+    ctx.save(); ctx.beginPath(); Vs.forEach((P, i) => (i ? ctx.lineTo(X(P[0]), Y(P[1])) : ctx.moveTo(X(P[0]), Y(P[1])))); ctx.closePath();
+    if (alfa){ ctx.globalAlpha = alfa; ctx.fillStyle = color; ctx.fill(); ctx.globalAlpha = 1; }
+    if (rayado){ ctx.save(); ctx.clip(); ctx.strokeStyle = color; ctx.lineWidth = 1.5; ctx.globalAlpha = .7;
+      for (let k = -H; k < W; k += 9){ ctx.beginPath(); ctx.moveTo(k, H); ctx.lineTo(k + H, 0); ctx.stroke(); } ctx.restore(); }
+    if (borde){ ctx.strokeStyle = borde; ctx.lineWidth = 2; ctx.stroke(); }
+    ctx.restore();
+  }
+  function flecha(c, P, Q, color, ancho, trazos){
+    linea(P, Q, color, ancho, trazos);
+    const ang = Math.atan2(-(Q[1] - P[1]), Q[0] - P[0]), x = X(Q[0]), y = Y(Q[1]), k = 9;
+    ctx.save(); ctx.fillStyle = color; ctx.beginPath(); ctx.moveTo(x, y);
+    ctx.lineTo(x - k*Math.cos(ang - .45), y - k*Math.sin(ang - .45)); ctx.lineTo(x - k*Math.cos(ang + .45), y - k*Math.sin(ang + .45)); ctx.closePath(); ctx.fill(); ctx.restore();
+  }
+  function arco(c, Cn, r, a0, a1, color){   // ángulos en radianes, del plano (antihorario)
+    ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.arc(X(Cn[0]), Y(Cn[1]), r, -a0, -a1, true); ctx.stroke(); ctx.restore();
+  }
+  // La cuadrícula, los ejes y sus números
+  function cuadricula(c){
+    const [wx0, wy1] = mundo(0, 0), [wx1, wy0] = mundo(W, H);
+    const paso = s >= 24 ? 1 : s >= 12 ? 2 : 5;
+    ctx.save(); ctx.strokeStyle = c.grid; ctx.lineWidth = 1;
+    for (let x = Math.ceil(wx0); x <= wx1; x++){ ctx.beginPath(); ctx.moveTo(X(x), 0); ctx.lineTo(X(x), H); ctx.stroke(); }
+    for (let y = Math.ceil(wy0); y <= wy1; y++){ ctx.beginPath(); ctx.moveTo(0, Y(y)); ctx.lineTo(W, Y(y)); ctx.stroke(); }
+    ctx.strokeStyle = c.eje; ctx.lineWidth = 1.6;
+    ctx.beginPath(); ctx.moveTo(0, Y(0)); ctx.lineTo(W, Y(0)); ctx.moveTo(X(0), 0); ctx.lineTo(X(0), H); ctx.stroke();
+    ctx.fillStyle = c.muted; ctx.font = `600 11px ${c.font}`; ctx.textBaseline = 'top'; ctx.textAlign = 'center';
+    const yx = clamp(Y(0) + 4, 2, H - 14), xy = clamp(X(0) - 5, 18, W - 2);
+    for (let x = Math.ceil(wx0/paso)*paso; x <= wx1; x += paso) if (x !== 0) ctx.fillText(fmt(x, 0), X(x), yx);
+    ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    for (let y = Math.ceil(wy0/paso)*paso; y <= wy1; y += paso) if (y !== 0) ctx.fillText(fmt(y, 0), xy, Y(y));
+    ctx.textAlign = 'right'; ctx.textBaseline = 'top'; ctx.fillText('0', X(0) - 4, Y(0) + 3);
+    ctx.font = `700 12px ${c.font}`; ctx.textAlign = 'right'; ctx.fillText('x', W - 6, clamp(Y(0) - 18, 2, H - 16));
+    ctx.textAlign = 'left'; ctx.fillText('y', clamp(X(0) + 6, 4, W - 12), 4);
+    ctx.restore();
+  }
+  E.dibujar = () => {
+    if (!W) return;
+    const c = colores();
+    ctx.clearRect(0, 0, W, H); ctx.fillStyle = c.paper; ctx.fillRect(0, 0, W, H);
+    encuadrar(); cuadricula(c);
+    const D = { c, X, Y, s, W, H, g, linea, recta, punto, triangulo, anguloRecto, poligono, flecha, arco,
+      rotulo:(x, y, t, color, align, tam, peso) => rotulo(c, X(x), Y(y), t, color, align, tam, peso),
+      rotuloPx:(x, y, t, color, align, tam, peso) => rotulo(c, x, y, t, color, align, tam, peso),
+      pt:(P, nombre, color, o) => punto(c, P, nombre, color || c.ink, o) };
+    if (E.pintar) E.pintar(D, E.pts);
+  };
+  const it = (k, t, tipo) => `<span><i class="${tipo || ''}" style="background:var(${k === 'ink' ? '--ink' : k === 'muted' ? '--muted' : '--c-' + k})"></i>${t}</span>`;
+  E.leyenda = () => { document.getElementById(idLey).innerHTML = (E.ley || []).map(([k, t, tipo]) => it(k, t, tipo)).join(''); };
+  // Lecturas y descripción para lectores de pantalla (dicen lo mismo; antes de responder no adelantan la respuesta).
+  E.avisar = () => {
+    const filas = (E.lect || []).map(f => f(E));
+    document.getElementById(idLect).innerHTML = filas.map(([k, t, v]) => `<div class="lectura" style="--k:var(${k === 'ink' ? '--ink' : '--c-' + k})"><span>${t}</span><b>${v}</b></div>`).join('');
+    if (!E.anim){
+      const base = typeof E.desc === 'function' ? E.desc(E) : (E.desc || 'Plano cartesiano.');
+      const mov = E.mover.length ? ` Se pueden mover ${E.mover.join(' y ')}: toca el dibujo y usa las flechas; Enter cambia de punto.` : '';
+      document.getElementById(idDesc).textContent = [base + mov, ...filas.map(([, t, v]) => `${t}: ${v}.`)].join(' ');
+    }
+    if (E.alCambiar) E.alCambiar();
+  };
+  E.animar = (dur, paso, fin) => {
+    const tok = ++E.tok; E.anim = true;
+    tween(dur, f => { if (tok !== E.tok) return; paso(f); E.dibujar(); },
+      () => { if (tok !== E.tok) return; E.anim = false; E.dibujar(); E.avisar(); if (fin) fin(); });
+  };
+  E.parar = () => { E.tok++; E.anim = false; };
+
+  // ----- arrastrar puntos con imán (táctil, ratón y teclado) -----
+  const local = e => { const r = cv.getBoundingClientRect(); return { x:e.clientX - r.left, y:e.clientY - r.top }; };
+  function cercano(p, radio){
+    if (E.ocupado || E.anim || !E.mover.length) return null;
+    let mejor = null, dmin = radio;
+    for (const k of E.mover){ const P = E.pts[k], d = Math.hypot(X(P[0]) - p.x, Y(P[1]) - p.y); if (d < dmin){ dmin = d; mejor = k; } }
+    return mejor;
+  }
+  function poner(k, P){
+    const v = E.vista;
+    P = [clamp(Math.round(P[0]), Math.ceil(v.x0), Math.floor(v.x1)), clamp(Math.round(P[1]), Math.ceil(v.y0), Math.floor(v.y1))];
+    const ant = E.pts[k]; if (ant[0] === P[0] && ant[1] === P[1]) return;
+    // dos puntos nunca se encuentran (y cada escena puede poner su condición)
+    for (const q of Object.keys(E.pts)) if (q !== k && E.pts[q][0] === P[0] && E.pts[q][1] === P[1] && (E.mover.includes(q) || E.fijos)) return;
+    if (E.valido && !E.valido(k, P)) return;
+    E.pts[k] = P; E.dibujar(); E.avisar();
+  }
+  cv.addEventListener('touchstart', e => {
+    if (e.touches.length !== 1) return;
+    const r = cv.getBoundingClientRect(), t = e.touches[0];
+    if (cercano({ x:t.clientX - r.left, y:t.clientY - r.top }, 40)) e.preventDefault();
+  }, { passive:false });
+  cv.addEventListener('pointerdown', e => {
+    const p = local(e), k = cercano(p, e.pointerType === 'mouse' ? 32 : 40); if (!k) return;
+    arrastrando = k; E.activo = k; cv.setPointerCapture(e.pointerId); e.preventDefault(); cv.focus({ preventScroll:true }); E.dibujar();
+  }, { passive:false });
+  cv.addEventListener('pointermove', e => {
+    const p = local(e);
+    if (arrastrando){ poner(arrastrando, mundo(p.x, p.y)); return; }
+    const k = cercano(p, 32);
+    if (k !== sobre){ sobre = k; cv.style.cursor = k ? 'grab' : ''; E.dibujar(); }
+  });
+  const soltar = () => { if (arrastrando){ arrastrando = null; E.dibujar(); E.avisar(); } };
+  cv.addEventListener('pointerup', soltar); cv.addEventListener('pointercancel', soltar);
+  cv.addEventListener('focus', () => E.dibujar()); cv.addEventListener('blur', () => E.dibujar());
+  cv.addEventListener('keydown', e => {
+    if (E.ocupado || E.anim || !E.mover.length) return;
+    const k = E.activo || E.mover[0], P = E.pts[k];
+    const d = { ArrowRight:[1, 0], ArrowLeft:[-1, 0], ArrowUp:[0, 1], ArrowDown:[0, -1] }[e.key];
+    if (d){ e.preventDefault(); poner(k, [P[0] + d[0], P[1] + d[1]]); return; }
+    if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); E.activo = E.mover[(E.mover.indexOf(k) + 1) % E.mover.length]; E.dibujar();
+      document.getElementById(idDesc).textContent = `Ahora mueves ${E.activo}, en ${tp(E.pts[E.activo])}.`; }
+  });
+  return E;
+}
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+// En el celular, el dibujo se lleva arriba de la pantalla antes de animar; si el alumno cambió de paso, no se anima.
+function alDibujo(cv, sigue, fn){
+  const chico = innerWidth < 900;
+  if (chico) cv.scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+  esperar(chico ? 380 : 0, () => { if (sigue()) fn(); });
+}
+// La recta que pasa por dos puntos, como [A, B, C] (solo para dibujar: sirve también con coordenadas no enteras)
+const general = (P, Q) => [Q[1] - P[1], P[0] - Q[0], Q[0]*P[1] - P[0]*Q[1]];
+const mismo = (P, Q) => P[0] === Q[0] && P[1] === Q[1];
+// La tabla del zapatito
+function tablaZap(Vs, nombres){
+  const fila = (P, n, rep) => `<tr${rep ? ' class="rep"' : ''}><th scope="row">${n}</th><td>${num(P[0])}</td><td>${num(P[1])}</td></tr>`;
+  return `<table class="zap"><thead><tr><th></th><th>x</th><th>y</th></tr></thead><tbody>${Vs.map((P, i) => fila(P, nombres[i])).join('')}${fila(Vs[0], nombres[0], true)}</tbody></table>`;
+}
+function cuentasZap(Vs){
+  const Z = MA.area({ vertices: Vs }), n = Vs.length;
+  const baj = Vs.map((P, i) => `${par(P[0])}·${par(Vs[(i + 1) % n][1])}`).join(' + ');
+  const sub = Vs.map((P, i) => `${par(P[1])}·${par(Vs[(i + 1) % n][0])}`).join(' + ');
+  return { Z, html: `<div class="eq">↘ bajan: ${baj} = ${num(Z.sumaBajada)}</div><div class="eq">↗ suben: ${sub} = ${num(Z.sumaSubida)}</div>
+    <div class="eq">${S_('S')} = ${fr(`|${num(Z.sumaBajada)} − ${par(Z.sumaSubida)}|`, '2')} = ${fr(fmt(Math.abs(Z.det), 0), '2')} = ${S_(`${num(Z.valor)} u²`)}<span class="note">recorrido ${Z.sentido === 'antihorario' ? 'antihorario: det positivo' : Z.sentido === 'horario' ? 'horario: det negativo' : 'sin área'}</span></div>` };
+}
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearPlano($('cv'), 'desc1', 'lect1', 'leyenda1');
+const S = { step:0, max:0, pred:{}, ocupado:false, expl2:null, expl5:null };
+
+// Números de la escena: todos salen del motor
+const D1 = MA.distancia({ A:[-2, 1], B:[4, 9] });
+const DV = MA.divide({ A:[-3, 6], B:[6, -3], m:1, n:2 });
+const PE = MA.pendiente({ A:[1, 5], B:[4, 11] });
+const RQ = MA.recta({ P:[2, 1], m:3 });
+const PP = MA.perpendicular({ m:2/3 }, [3, 3]);
+const DR = MA.distanciaPuntoRecta({ P:[-2, -3], L:[3, 4, 8] });
+const TRI = [[1, 1], [3, 5], [6, 2]], AR = MA.area({ vertices: TRI });
+const u = t => `${t} u`, u2 = t => `${t} u²`;
+
+const P1 = { id:'geometria-analitica-paso1', ok:'c', opts:[
+  ['a', u(D1.errores.sumaCatetos.texto), 'distancia-suma-catetos', 'hipotesis'],
+  ['b', u(D1.errores.restaCuadrados.texto), 'GE11-resta-cuadrados', 'parcial'],
+  ['c', u(D1.texto)],
+  ['d', u(D1.errores.sinRaiz.texto), 'distancia-sin-raiz', 'hipotesis']],
+  fb:{ c:'¡Bien! Δx = 6 y Δy = 8 son los catetos de un triángulo rectángulo y AB es su hipotenusa: √(36 + 64) = √100 = 10.',
+    a:'Elegiste la A. 6 + 8 = 14 es el camino por la cuadrícula: 6 a la derecha y 8 hacia arriba. El segmento AB va en diagonal, por el atajo, y el atajo es más corto: es la hipotenusa. La correcta está marcada.',
+    b:'Elegiste la B. √(64 − 36) resta los cuadrados de los catetos. Cuando lo que se busca es la hipotenusa, Pitágoras los suma, y AB es la hipotenusa. La correcta está marcada.',
+    d:'Elegiste la D. 6² + 8² = 100 es d², el cuadrado de la distancia. Falta sacar la raíz: √100 = 10. La correcta está marcada.' } };
+const P2 = { id:'geometria-analitica-paso3', ok:'c', opts:[
+  ['a', DV.errores.comoFraccion.texto, 'razon-como-fraccion', 'hipotesis'],
+  ['b', DV.errores.alReves.texto, 'razon-pesos-cruzados', 'hipotesis'],
+  ['c', DV.texto],
+  ['d', DV.errores.sinDividir.texto, 'razon-sin-dividir', 'hipotesis']],
+  fb:{ c:'¡Bien! AP : PB = 1 : 2 parte AB en 3 partes iguales y P queda a 1 parte de A: P = A + (1/3)(B − A) = (−3 + 3; 6 − 3) = (0; 3).',
+    a:'Elegiste la A. Así P quedaría en el punto medio, como si 1 : 2 fuera 1/2. Pero 1 : 2 dice que AP es la mitad de PB: AB tiene 1 + 2 = 3 partes y AP es 1 de ellas, o sea 1/3 de AB. La correcta está marcada.',
+    b:'Elegiste la B. (3; 0) está a 2 partes de A y a 1 de B: es el punto con AP : PB = 2 : 1, al revés. En la fórmula, cada extremo se multiplica por el número del otro lado: P = (2A + 1B)/3. La correcta está marcada.',
+    d:'Elegiste la D. 2A + 1B = (0; 9) es la suma con pesos, pero falta dividir entre 1 + 2 = 3. Sin dividir, el punto ni siquiera cae en el segmento. La correcta está marcada.' } };
+const P3 = { id:'geometria-analitica-paso4', ok:'b', opts:[
+  ['a', PE.errores.unPunto.texto, 'G2-pendiente-de-un-punto', 'parcial'],
+  ['b', PE.texto],
+  ['c', PE.errores.invertida.texto, 'pendiente-invertida', 'hipotesis'],
+  ['d', PE.errores.ordenCruzado.texto, 'pendiente-orden-cruzado', 'hipotesis']],
+  fb:{ b:'¡Bien! De A a B se avanza 4 − 1 = 3 y se sube 11 − 5 = 6: m = 6/3 = 2. Por cada paso a la derecha, la recta sube 2.',
+    a:'Elegiste la A. 11/4 divide la altura de B entre su x, como si la recta saliera del origen. Esta recta no pasa por (0; 0): la pendiente se mide entre dos puntos de la recta, con lo que sube y lo que avanza. La correcta está marcada.',
+    c:'Elegiste la C. 3/6 divide lo que avanza entre lo que sube: está al revés. La pendiente es subida entre avance, Δy/Δx. La correcta está marcada.',
+    d:'Elegiste la D. −2 sale de restar arriba B − A y abajo A − B. Hay que restar en el mismo orden arriba y abajo; si no, el signo sale cambiado. Esta recta sube: su pendiente es positiva. La correcta está marcada.' } };
+const P4 = { id:'geometria-analitica-paso6', ok:'c', opts:[
+  ['a', RQ.errores.signoCambiado.texto, 'b-signo-cambiado', 'hipotesis'],
+  ['b', RQ.errores.interceptoX.texto, 'b-como-corte-eje-x', 'hipotesis'],
+  ['c', RQ.bTexto],
+  ['d', RQ.errores.bEsY1.texto, 'b-es-la-y-del-punto', 'hipotesis']],
+  fb:{ c:'¡Bien! b es la altura de la recta en x = 0. Desde Q(2; 1) se retrocede 2 en x y la recta baja 3 · 2 = 6: b = 1 − 6 = −5.',
+    a:'Elegiste la A. 1 + 3 · 2 = 7 es la altura en x = 4, dos pasos a la derecha de Q. Para llegar al eje y hay que ir a la izquierda, y por ese lado la recta baja: b = 1 − 3 · 2 = −5. La correcta está marcada.',
+    b:'Elegiste la B. 5/3 es donde la recta corta al eje x (ahí y = 0). En y = mx + b, b es el corte con el eje y (ahí x = 0). La correcta está marcada.',
+    d:'Elegiste la D. 1 es la y de Q, pero Q está en x = 2, no sobre el eje y. b es la altura de la recta en x = 0. La correcta está marcada.' } };
+const P5 = { id:'geometria-analitica-paso7', ok:'c', opts:[
+  ['a', PP.errores.opuesta.texto, 'perpendicular-solo-signo', 'hipotesis'],
+  ['b', PP.errores.inversa.texto, 'perpendicular-solo-inversa', 'hipotesis'],
+  ['c', PP.texto],
+  ['d', PP.errores.igual.texto, 'perpendicular-misma-pendiente', 'hipotesis']],
+  fb:{ c:'¡Bien! Al girar 90° el triángulo de la pendiente, los catetos se intercambian y uno cambia de sentido: 2/3 se vuelve −3/2. Y (2/3)·(−3/2) = −1.',
+    a:'Elegiste la A. Cambiar solo el signo da una recta que baja con la misma inclinación: forma una V con L₁, pero no un ángulo recto. Hay que invertir y además cambiar el signo. La correcta está marcada.',
+    b:'Elegiste la B. Invertir sin cambiar el signo da otra recta que también sube, y dos rectas que suben no pueden formar 90°. La correcta está marcada.',
+    d:'Elegiste la D. Con la misma pendiente, la recta es paralela a L₁: nunca se cortan. La correcta está marcada.' } };
+const P6 = { id:'geometria-analitica-paso8', ok:'c', opts:[
+  ['a', u(DR.errores.sinAbs.texto), 'distancia-recta-sin-valor-absoluto', 'hipotesis'],
+  ['b', u(DR.errores.sinRaiz.texto), 'distancia-recta-sin-raiz', 'hipotesis'],
+  ['c', u(DR.texto)],
+  ['d', u(DR.errores.sinDenominador.texto), 'distancia-recta-sin-denominador', 'hipotesis']],
+  fb:{ c:'¡Bien! |3·(−2) + 4·(−3) + 8| = |−10| = 10, y √(3² + 4²) = 5: la distancia es 10/5 = 2.',
+    a:'Elegiste la A. −10/5 = −2 olvida el valor absoluto. Una distancia nunca es negativa; el signo menos solo dice de qué lado de la recta está R. La correcta está marcada.',
+    b:'Elegiste la B. 10/25 divide entre A² + B² = 25, sin la raíz. El denominador es √(A² + B²) = √25 = 5. La correcta está marcada.',
+    d:'Elegiste la D. 10 es |Ax₀ + By₀ + C|, pero falta dividir entre √(A² + B²) = 5. La correcta está marcada.' } };
+const P7 = { id:'geometria-analitica-paso9', ok:'d', opts:[
+  ['a', u2(AR.errores.sinAbs.texto), 'area-sin-valor-absoluto', 'hipotesis'],
+  ['b', u2(AR.errores.sumaProductos.texto), 'area-suma-productos', 'hipotesis'],
+  ['c', u2(AR.errores.sinMitad.texto), 'area-sin-mitad', 'hipotesis'],
+  ['d', u2(AR.texto)]],
+  fb:{ d:'¡Bien! Bajan 17 y suben 35: |17 − 35|/2 = 18/2 = 9.',
+    a:'Elegiste la A. (17 − 35)/2 = −9 se queda con el signo. El menos solo dice que los vértices se recorrieron en sentido horario; el área es |−18|/2 = 9. La correcta está marcada.',
+    b:'Elegiste la B. (17 + 35)/2 suma las dos columnas. Los productos que suben se restan de los que bajan. La correcta está marcada.',
+    c:'Elegiste la C. |17 − 35| = 18 es el doble del área: falta el 1/2 de la fórmula. La correcta está marcada.' } };
+
+// ----- dibujos de cada paso -----
+const dibAB = (D, A, B, f, o) => {   // segmento AB, con el triángulo y la distancia cuando f > 0
+  o = o || {};
+  if (f > 0) D.triangulo(D.c, A, B, { f: Math.min(2, f) });
+  D.linea(A, B, f >= 2 ? D.c.d : D.c.ink, f >= 2 ? D.g('d', 3.5) : 1.6);
+  if (f >= 2 && o.rotD !== false){ const ang = Math.atan2(B[1] - A[1], B[0] - A[0]); const off = (B[0] - A[0])*(B[1] - A[1]) >= 0 ? [-.55, .55] : [.55, .55];
+    D.rotulo((A[0] + B[0])/2 + off[0]*Math.abs(Math.sin(ang)), (A[1] + B[1])/2 + off[1]*Math.abs(Math.cos(ang)), `d = ${MA.distancia({ A, B }).texto}`, D.c.d); }
+  D.pt(A, 'A', null, { clave:'A', dx: o.dxA === undefined ? -10 : o.dxA, dy: o.dyA }); D.pt(B, 'B', null, { clave:'B', dx: o.dxB, dy: o.dyB });
+};
+const lectAB = [E => { const R = MA.distancia({ A:E.pts.A, B:E.pts.B }); return ['dx', 'avance Δx', num(R.dx)]; },
+  E => ['dy', 'subida Δy', num(MA.distancia({ A:E.pts.A, B:E.pts.B }).dy)],
+  E => ['d', 'distancia d', MA.distancia({ A:E.pts.A, B:E.pts.B }).texto]];
+
+function vivo2(){
+  const el = $('vivo2'); if (!el) return;
+  const { A, B } = E.pts, R = MA.distancia({ A, B }), M = MA.puntoMedio({ A, B });
+  el.innerHTML = `<div class="eq">${D_('d')} = √(${X_(par(R.dx))}² + ${Y_(par(R.dy))}²) = √${fmt(R.d2, 0)} = ${D_(R.texto)}${R.exacta ? '' : ` ≈ ${fmt(R.valor)}`}</div>
+    <div class="eq">${P_('M')} = (${fr(`${par(A[0])} + ${par(B[0])}`, '2')}; ${fr(`${par(A[1])} + ${par(B[1])}`, '2')}) = ${P_(M.texto)}</div>`;
+}
+function vivo5(){
+  const el = $('vivo5'); if (!el) return;
+  const { A, B } = E.pts, Pd = MA.pendiente({ A, B }), R = MA.recta({ A, B });
+  if (Pd.vertical){ el.innerHTML = `<div class="eq">${L_('m')} = ${fr(Y_(num(Pd.dy)), X_('0'))}: no existe (no se divide entre cero)</div>
+    <div class="eq">${L_('L')}: ${R.texto}<span class="note">recta vertical; en forma general, ${R.general.texto}</span></div>`; return; }
+  el.innerHTML = `<div class="eq">${L_('m')} = ${fr(Y_(num(Pd.dy)), X_(num(Pd.dx)))} = ${L_(Pd.texto)}<span class="note">${{ creciente:'sube: m > 0', decreciente:'baja: m < 0', horizontal:'horizontal: m = 0' }[Pd.tipo]}</span></div>
+    <div class="eq">punto-pendiente: ${R.puntoPendiente}</div>
+    <div class="eq">pendiente-intercepto: ${R.pendienteIntercepto}<span class="note">${L_('m')} = ${L_(R.mTexto)}, ${B_('b')} = ${B_(R.bTexto)}</span></div>
+    <div class="eq">general: ${R.general.texto}</div>`;
+}
+
+const steps = [
+ { k:'Paso 1', t:'Predice: la distancia entre A y B', gate:P1,
+   prep:() => { const ya = !!S.pred[P1.id];
+     E.config({ vista:{ x0:-4, x1:7, y0:-1, y1:10 }, pts:{ A:[-2, 1], B:[4, 9] }, pintar:(D, p) => dibAB(D, p.A, p.B, ya ? 2 : 0),
+       ley: ya ? [['dx', 'avance Δx'], ['dy', 'subida Δy'], ['d', 'distancia d']] : [['ink', 'segmento AB']],
+       lect: ya ? lectAB : [], desc:'Plano cartesiano con los puntos A(−2; 1) y B(4; 9) unidos por un segmento.' }); },
+   anima:fin => { let f = 0; E.pintar = (D, p) => dibAB(D, p.A, p.B, f); E.ley = [['dx', 'avance Δx'], ['dy', 'subida Δy'], ['d', 'distancia d']]; E.leyenda();
+     E.animar(RM ? 0 : 2600, x => { f = 2*x; }, () => { E.lect = lectAB; E.avisar(); fin(); }); },
+   body:() => `<p class="problem">En el plano están los puntos A(−2; 1) y B(4; 9).</p>
+   <p>¿Cuánto mide el segmento AB, es decir, la distancia ${D_('d(A, B)')}?</p>${opcionesHTML(P1.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${X_('Δx')} = 4 − (−2) = ${X_('6')}; ${Y_('Δy')} = 9 − 1 = ${Y_('8')}</div>
+     <div class="eq">${D_('d(A, B)')} = √(${X_('Δx')}² + ${Y_('Δy')}²) = √(${X_('6')}² + ${Y_('8')}²) = √100 = ${D_('10')}</div></div>
+   <p>Debajo de cada segmento inclinado hay un triángulo rectángulo con los catetos en las direcciones de los ejes: el ${X_('avance Δx')} y la ${Y_('subida Δy')}. El segmento es la hipotenusa, y Pitágoras da su largo. Como los catetos se elevan al cuadrado, da lo mismo restar B − A o A − B.</p>
+   <p class="fuente">Restar los cuadrados en vez de sumarlos es una forma de «Pitágoras mal aplicado»: según el informe de geometría (GE11), un estudio con alumnos de 10.° grado lo describe entre los errores comunes, sin porcentajes (respaldo parcial). Sumar los catetos y olvidar la raíz son hipótesis nuestras.</p></div>` },
+ { k:'Paso 2', t:'Arrastra A y B', explora:true,
+   prep:() => { const p = S.expl2 || { A:[-2, 1], B:[4, 9] };
+     E.config({ vista:{ x0:-6, x1:7, y0:-4, y1:10 }, pts:p, mover:['A', 'B'],
+       pintar:(D, q) => { dibAB(D, q.A, q.B, 2, { rotD:false }); const M = MA.puntoMedio({ A:q.A, B:q.B }).punto; D.pt(M, 'M', D.c.P, { colorRot:D.c.P, dx:12, dy:12 }); },
+       ley:[['dx', 'avance Δx'], ['dy', 'subida Δy'], ['d', 'distancia d'], ['P', 'punto medio M', 'pt']],
+       lect:[...lectAB, E => ['P', 'punto medio M', MA.puntoMedio({ A:E.pts.A, B:E.pts.B }).texto]],
+       desc:E => `Los puntos A${tp(E.pts.A)} y B${tp(E.pts.B)}, el triángulo de catetos Δx y Δy, y el punto medio M.`,
+       alCambiar:() => { S.expl2 = E.pts; vivo2(); } }); },
+   body:() => `<p class="problem">Arrastra ${'A'} o ${'B'}: se pegan a la cuadrícula como con un imán. El triángulo de catetos ${X_('Δx')} y ${Y_('Δy')} y la ${D_('distancia d')} cambian contigo, y ${P_('M')} sigue en el punto medio.</p>
+   <div class="eqs" id="vivo2"></div>
+   <p>Prueba poner A y B en la misma horizontal: ${Y_('Δy')} = 0 y la distancia es solo |${X_('Δx')}|. Y si los cambias de lugar, nada cambia: d(A, B) = d(B, A).</p>
+   <p>El ${P_('punto medio M')} es el promedio de las coordenadas: la mitad del camino en x y la mitad del camino en y.</p>
+   <p class="hint">Con teclado: toca el dibujo; las flechas mueven el punto marcado y Enter cambia de punto.</p>` },
+ { k:'Paso 3', t:'Predice: el punto que divide AB', gate:P2,
+   prep:() => { const ya = !!S.pred[P2.id];
+     E.config({ vista:{ x0:-5, x1:8, y0:-5, y1:8 }, pts:{ A:[-3, 6], B:[6, -3] }, mover: ya ? ['A', 'B'] : [],
+       pintar:(D, p) => dibDivide(D, p, ya ? 1 : 0),
+       ley: ya ? [['ink', 'segmento AB en 3 partes'], ['P', 'punto P', 'pt']] : [['ink', 'segmento AB']],
+       lect: ya ? [E => ['P', 'P con AP : PB = 1 : 2', MA.divide({ A:E.pts.A, B:E.pts.B, m:1, n:2 }).texto]] : [],
+       desc: ya ? (E => `El segmento de A${tp(E.pts.A)} a B${tp(E.pts.B)} partido en 3 partes iguales; P está a una parte de A.`) : 'El segmento de A(−3; 6) a B(6; −3).' }); },
+   anima:fin => { let f = 0; E.pintar = (D, p) => dibDivide(D, p, f); E.ley = [['ink', 'segmento AB en 3 partes'], ['P', 'punto P', 'pt']]; E.leyenda();
+     E.animar(RM ? 0 : 2200, x => { f = x; }, () => { E.mover = ['A', 'B']; E.activo = 'A'; $('cv').tabIndex = 0;
+       E.lect = [E => ['P', 'P con AP : PB = 1 : 2', MA.divide({ A:E.pts.A, B:E.pts.B, m:1, n:2 }).texto]]; E.dibujar(); E.avisar(); fin(); }); },
+   body:() => `<p class="problem">El punto ${P_('P')} está en el segmento que va de A(−3; 6) a B(6; −3), y cumple AP : PB = 1 : 2.</p>
+   <p>¿Cuáles son las coordenadas de ${P_('P')}?</p>${opcionesHTML(P2.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${P_('P')} = ${fr('n·A + m·B', 'm + n')} = ${fr('2·A + 1·B', '3')}</div>
+     <div class="eq">x = ${fr('2·(−3) + 1·6', '3')} = 0; y = ${fr('2·6 + 1·(−3)', '3')} = 3 → ${P_(DV.texto)}</div></div>
+   <p>La razón 1 : 2 parte el segmento en 1 + 2 = 3 partes iguales, y ${P_('P')} queda a 1 parte de A: P = A + (1/3)(B − A). En la fórmula, cada extremo lleva el número del otro lado: A, que está más cerca, pesa más. Con 1 : 1 sale el punto medio.</p>
+   <p>Ahora puedes arrastrar A y B: ${P_('P')} siempre queda a un tercio del camino.</p>
+   <p class="fuente">No encontramos estudios con cifras sobre estos errores; las tres opciones incorrectas son hipótesis nuestras.</p></div>` },
+ { k:'Paso 4', t:'Predice: la pendiente', gate:P3,
+   prep:() => { const ya = !!S.pred[P3.id];
+     E.config({ vista:{ x0:-1, x1:6, y0:-1, y1:12 }, pts:{ A:[1, 5], B:[4, 11] }, pintar:(D, p) => dibPend(D, p, ya ? 3 : 0),
+       ley: ya ? [['L', 'recta L'], ['dx', 'avance Δx'], ['dy', 'subida Δy'], ['muted', 'recta desde el origen']] : [['L', 'recta L']],
+       lect: ya ? [() => ['dx', 'avance Δx', '3'], () => ['dy', 'subida Δy', '6'], () => ['L', 'pendiente m', PE.texto]] : [],
+       desc:'La recta L que pasa por A(1; 5) y B(4; 11).' }); },
+   anima:fin => { let f = 0; E.pintar = (D, p) => dibPend(D, p, f); E.ley = [['L', 'recta L'], ['dx', 'avance Δx'], ['dy', 'subida Δy'], ['muted', 'recta desde el origen']]; E.leyenda();
+     E.animar(RM ? 0 : 3200, x => { f = 3*x; }, () => { E.lect = [() => ['dx', 'avance Δx', '3'], () => ['dy', 'subida Δy', '6'], () => ['L', 'pendiente m', PE.texto]]; E.avisar(); fin(); }); },
+   body:() => `<p class="problem">La recta ${L_('L')} pasa por A(1; 5) y B(4; 11).</p>
+   <p>¿Cuál es su pendiente ${L_('m')}?</p>${opcionesHTML(P3.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${L_('m')} = ${fr(Y_('Δy'), X_('Δx'))} = ${fr('11 − 5', '4 − 1')} = ${fr(Y_('6'), X_('3'))} = ${L_('2')}</div></div>
+   <p>La pendiente es lo que la recta sube por cada paso a la derecha: aquí, 2 por paso (la escalerita). Se mide entre dos puntos de la recta. La recta gris a trazos sí sale del origen y llega a B: su pendiente es 11/4, pero es otra recta.</p>
+   <p class="fuente">Dividir la altura de un punto entre su x, como si la recta pasara por el origen, es la confusión de pendiente con altura que Beichner (1994) midió en gráficas de movimiento: según el resumen del informe de cinemática (G2), cuando la recta pasa por el origen el 73 % calcula bien la pendiente, y cuando no pasa, solo entre el 21 % y el 25 %. Aquí es una recta del plano, no una gráfica de movimiento: respaldo parcial. Invertir la división y restar en orden cruzado son hipótesis nuestras (la segunda sale del mismo mecanismo, AL25 en el informe de álgebra).</p></div>` },
+ { k:'Paso 5', t:'La pendiente y la ecuación de la recta', explora:true,
+   prep:() => { const p = S.expl5 || { A:[-2, -1], B:[2, 5] };
+     E.config({ vista:{ x0:-6, x1:6, y0:-6, y1:8 }, pts:p, mover:['A', 'B'],
+       pintar:(D, q) => { const G = general(q.A, q.B), R = MA.recta({ A:q.A, B:q.B });
+         D.recta(G, D.c.L, D.g('L', 2.5)); D.triangulo(D.c, q.A, q.B);
+         if (!R.vertical){ D.pt([0, R.b], '', D.c.b, { r:6 }); const enEje = [q.A, q.B].some(P => P[0] === 0 && P[1] === R.b);
+           D.rotuloPx(D.X(0) + (R.m > 0 ? -10 : 10), D.Y(R.b) + (enEje ? 18 : 0), `b = ${R.bTexto}`, D.c.b, R.m > 0 ? 'right' : 'left'); }
+         D.pt(q.A, 'A', null, { clave:'A', dx:-10 }); D.pt(q.B, 'B', null, { clave:'B' }); },
+       ley:[['L', 'recta L y su pendiente m'], ['dx', 'avance Δx'], ['dy', 'subida Δy'], ['b', 'corte con el eje y, b', 'pt']],
+       lect:[E => ['dx', 'avance Δx', num(MA.pendiente({ A:E.pts.A, B:E.pts.B }).dx)], E => ['dy', 'subida Δy', num(MA.pendiente({ A:E.pts.A, B:E.pts.B }).dy)],
+         E => ['L', 'pendiente m', MA.pendiente({ A:E.pts.A, B:E.pts.B }).texto], E => { const R = MA.recta({ A:E.pts.A, B:E.pts.B }); return ['b', 'corte b', R.vertical ? '—' : R.bTexto]; }],
+       desc:E => `La recta L por A${tp(E.pts.A)} y B${tp(E.pts.B)}: ${MA.recta({ A:E.pts.A, B:E.pts.B }).texto}.`,
+       alCambiar:() => { S.expl5 = E.pts; vivo5(); } }); },
+   body:() => `<p class="problem">Arrastra A o B y mira la ${L_('pendiente m')}: la ${Y_('subida')} entre el ${X_('avance')}. Busca una recta que suba, una que baje, una horizontal y una vertical.</p>
+   <div class="eqs" id="vivo5"></div>
+   <p>Si sube, ${L_('m')} es positiva; si baja, negativa; si es horizontal, ${L_('m')} = 0. Si es vertical, ${X_('Δx')} = 0 y no se puede dividir: la recta vertical <b>no tiene pendiente</b>, pero sí ecuación, x = k.</p>
+   <p>La misma recta se escribe de tres maneras. <b>Punto-pendiente</b>, y − y₁ = ${L_('m')}(x − x₁), sale directo de un punto y la pendiente. <b>Pendiente-intercepto</b>, y = ${L_('m')}x + ${B_('b')}, muestra dónde corta al eje y: en ${B_('b')}. <b>General</b>, Ax + By + C = 0, con enteros y A positivo, es la que suelen dar las alternativas del examen; de ella, ${L_('m')} = −A/B.</p>
+   <p class="hint">Con teclado: toca el dibujo; las flechas mueven el punto marcado y Enter cambia de punto.</p>` },
+ { k:'Paso 6', t:'Predice: el corte con el eje y', gate:P4,
+   prep:() => { const ya = !!S.pred[P4.id];
+     E.config({ vista:{ x0:-2, x1:5, y0:-7, y1:8 }, pts:{ Q:[2, 1] }, pintar:(D, p) => dibCorte(D, p, ya ? 1 : 0),
+       ley: ya ? [['L', 'recta L, m = 3'], ['b', 'corte b', 'pt'], ['dx', 'pasos de 1 en x'], ['dy', 'lo que baja']] : [['L', 'un tramo de L, m = 3'], ['dx', 'avance'], ['dy', 'subida']],
+       lect: ya ? [() => ['L', 'pendiente m', '3'], () => ['b', 'corte b', RQ.bTexto]] : [() => ['L', 'pendiente m', '3']],
+       desc: ya ? 'La recta L con pendiente 3 que pasa por Q(2; 1) y corta al eje y en (0; −5).' : 'El punto Q(2; 1) y un tramo corto de la recta L, que sube 3 por cada 1 que avanza.' }); },
+   anima:fin => { let f = 0; E.pintar = (D, p) => dibCorte(D, p, f); E.ley = [['L', 'recta L, m = 3'], ['b', 'corte b', 'pt'], ['dx', 'pasos de 1 en x'], ['dy', 'lo que baja']]; E.leyenda();
+     E.animar(RM ? 0 : 2800, x => { f = x; }, () => { E.lect = [() => ['L', 'pendiente m', '3'], () => ['b', 'corte b', RQ.bTexto]]; E.avisar(); fin(); }); },
+   body:() => `<p class="problem">La recta ${L_('L')} pasa por el punto Q(2; 1) y tiene pendiente ${L_('m = 3')}. En el dibujo se ve solo un tramo.</p>
+   <p>Si se escribe como y = ${L_('m')}x + ${B_('b')}, ¿cuánto vale ${B_('b')}?</p>${opcionesHTML(P4.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">punto-pendiente: ${RQ.puntoPendiente}</div>
+     <div class="eq">pendiente-intercepto: y = ${L_('3')}x − 6 + 1 = ${L_('3')}x ${B_('− 5')}</div>
+     <div class="eq">general: ${RQ.general.texto}</div></div>
+   <p>En el dibujo, desde Q se camina hacia el eje y: 2 pasos a la izquierda, y en cada uno la recta baja 3. Se llega a ${B_('b = −5')}. Las tres ecuaciones son la misma recta: de la punto-pendiente se despeja y para la segunda, y se pasa todo a un lado para la general.</p>
+   <p class="fuente">No encontramos estudios con cifras sobre estos errores; las tres opciones incorrectas son hipótesis nuestras.</p></div>` },
+ { k:'Paso 7', t:'Predice: la pendiente perpendicular', gate:P5,
+   prep:() => { const ya = !!S.pred[P5.id];
+     E.config({ vista:{ x0:-3, x1:8, y0:-2, y1:7 }, pts:{ A:[0, 1], T:[3, 3] }, mover: ya ? ['A'] : [], fijos:true,
+       pintar:(D, p) => dibPerp(D, p, ya ? 1 : 0, ya),
+       ley: ya ? [['L', 'L₁ y m₁'], ['L2', 'L₂ y m₂'], ['dx', 'avance'], ['dy', 'subida']] : [['L', 'L₁ y m₁'], ['dx', 'avance'], ['dy', 'subida']],
+       lect: ya ? lectPerp : [() => ['L', 'pendiente m₁', '2/3']],
+       desc: ya ? (E => `L₁ pasa por A${tp(E.pts.A)} y T(3; 3); L₂ es perpendicular a L₁ en T.`) : 'La recta L₁, que pasa por (0; 1) y T(3; 3), con su triángulo de pendiente: avanza 3 y sube 2.' }); },
+   anima:fin => { let f = 0; E.pintar = (D, p) => dibPerp(D, p, f, false); E.ley = [['L', 'L₁ y m₁'], ['L2', 'L₂ y m₂'], ['dx', 'avance'], ['dy', 'subida']]; E.leyenda();
+     E.animar(RM ? 0 : 3000, x => { f = x; }, () => { E.mover = ['A']; E.activo = 'A'; $('cv').tabIndex = 0; E.pintar = (D, p) => dibPerp(D, p, 1, true); E.lect = lectPerp; E.dibujar(); E.avisar(); fin(); }); },
+   body:() => `<p class="problem">La recta ${L_('L₁')} pasa por (0; 1) y T(3; 3): avanza 3 y sube 2, así que ${L_('m₁ = 2/3')}. Se quiere trazar por T una recta ${L2_('L₂')} perpendicular a ${L_('L₁')}.</p>
+   <p>¿Cuál es la pendiente ${L2_('m₂')} de ${L2_('L₂')}?</p>${opcionesHTML(P5.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${L_('m₁')} · ${L2_('m₂')} = −1 → ${L2_('m₂')} = ${fr('−1', L_('2/3'))} = ${L2_('−3/2')}</div></div>
+   <p>Al girar el triángulo de la pendiente un cuarto de vuelta alrededor de T, el ${X_('avance 3')} se vuelve una bajada de 3 y la ${Y_('subida 2')} se vuelve un avance de 2: ${L2_('m₂')} = −3/2. Los catetos se intercambian (se invierte la fracción) y uno cambia de sentido (cambia el signo). Por eso el producto de las pendientes es −1.</p>
+   <p>Paralelas, en cambio, tienen la misma pendiente: ${L_('m₁')} = ${L2_('m₂')}. Ahora puedes arrastrar el punto de ${L_('L₁')}: ${L2_('L₂')} la sigue y el producto sigue siendo −1 (salvo si una es horizontal y la otra vertical, que no tiene pendiente).</p>
+   <p class="fuente">No encontramos estudios con cifras sobre estos errores; las tres opciones incorrectas son hipótesis nuestras.</p></div>` },
+ { k:'Paso 8', t:'Predice: la distancia de un punto a una recta', gate:P6,
+   prep:() => { const ya = !!S.pred[P6.id];
+     E.config({ vista:{ x0:-7, x1:4, y0:-6, y1:3 }, pts:{ R:[-2, -3] }, mover: ya ? ['R'] : [], pintar:(D, p) => dibDistR(D, p, ya ? 1 : 0),
+       ley: ya ? [['L', 'L: 3x + 4y + 8 = 0'], ['d', 'distancia d (perpendicular)'], ['muted', 'otro camino, más largo']] : [['L', 'L: 3x + 4y + 8 = 0']],
+       lect: ya ? lectDistR : [], desc: ya ? (E => `La recta L y el punto R${tp(E.pts.R)} con su perpendicular.`) : 'La recta L: 3x + 4y + 8 = 0 y el punto R(−2; −3).' }); },
+   anima:fin => { let f = 0; E.pintar = (D, p) => dibDistR(D, p, f); E.ley = [['L', 'L: 3x + 4y + 8 = 0'], ['d', 'distancia d (perpendicular)'], ['muted', 'otro camino, más largo']]; E.leyenda();
+     E.animar(RM ? 0 : 2200, x => { f = x; }, () => { E.mover = ['R']; E.activo = 'R'; $('cv').tabIndex = 0; E.lect = lectDistR; E.dibujar(); E.avisar(); fin(); }); },
+   body:() => `<p class="problem">La recta ${L_('L')}: 3x + 4y + 8 = 0 y el punto R(−2; −3).</p>
+   <p>¿Cuál es la distancia ${D_('d(R, L)')} del punto a la recta?</p>${opcionesHTML(P6.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${D_('d(R, L)')} = ${fr('|A·x₀ + B·y₀ + C|', '√(A² + B²)')} = ${fr('|3·(−2) + 4·(−3) + 8|', '√(3² + 4²)')} = ${fr('|−10|', '5')} = ${D_('2')}</div></div>
+   <p>La distancia a una recta se mide por la ${D_('perpendicular')}: es el camino más corto. El camino gris a trazos, en línea recta hacia arriba, llega a la recta pero es más largo. El pie de la perpendicular es H${DR.pieTexto}.</p>
+   <p>Arrastra R: cuando cruza la recta, Ax₀ + By₀ + C cambia de signo. El signo dice de qué lado está R; la distancia, con el valor absoluto, siempre es positiva.</p>
+   <p class="fuente">No encontramos estudios con cifras sobre estos errores; las tres opciones incorrectas son hipótesis nuestras.</p></div>` },
+ { k:'Paso 9', t:'Predice: el área por coordenadas', gate:P7,
+   prep:() => { const ya = !!S.pred[P7.id];
+     E.config({ vista:{ x0:-1, x1:8, y0:-1, y1:7 }, pts:{ A:TRI[0], B:TRI[1], C:TRI[2] }, mover: ya ? ['A', 'B', 'C'] : [],
+       pintar:(D, p) => dibArea(D, p, ya ? 1 : 0),
+       ley: ya ? [['S', 'área S', 'sq'], ['ink', 'orden del recorrido']] : [['ink', 'triángulo ABC']],
+       lect: ya ? lectArea : [], desc: ya ? (E => `El triángulo A${tp(E.pts.A)}, B${tp(E.pts.B)}, C${tp(E.pts.C)}, recorrido en ese orden.`) : 'El triángulo de vértices A(1; 1), B(3; 5) y C(6; 2).',
+       alCambiar: ya ? vivo9 : null }); },
+   anima:fin => { let f = 0; E.pintar = (D, p) => dibArea(D, p, f); E.ley = [['S', 'área S', 'sq'], ['ink', 'orden del recorrido']]; E.leyenda();
+     E.animar(RM ? 0 : 2000, x => { f = x; }, () => { E.mover = ['A', 'B', 'C']; E.activo = 'A'; $('cv').tabIndex = 0; E.lect = lectArea; E.alCambiar = vivo9; E.dibujar(); E.avisar(); fin(); }); },
+   body:() => `<p class="problem">Un triángulo tiene vértices A(1; 1), B(3; 5) y C(6; 2), en ese orden. Se calcula su ${S_('área S')} con el «zapatito»: se escriben las coordenadas en columna, se repite el primer vértice al final y se cruzan los productos.</p>
+   ${tablaZap(TRI, ['A', 'B', 'C'])}
+   <p>¿Cuánto vale ${S_('S')}?</p>${opcionesHTML(P7.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs" id="vivo9">${cuentasZap(TRI).html}</div>
+   <p>A → B → C da la vuelta en sentido horario, como las agujas del reloj: por eso los productos que bajan suman menos que los que suben y el determinante sale negativo. El valor absoluto quita ese signo y el 1/2 deja solo el triángulo (el determinante mide el doble). Si recorres los vértices al revés, sale +18 y el área es la misma.</p>
+   <p>Arrastra los vértices: la tabla y la cuenta cambian contigo. Si pones los tres en una misma recta, el área es 0.</p>
+   <p class="fuente">No encontramos estudios con cifras sobre estos errores; las tres opciones incorrectas son hipótesis nuestras.</p></div>` },
+];
+
+// ----- dibujos de los pasos con predicción -----
+function dibDivide(D, p, f){
+  const { A, B } = p;
+  D.linea(A, B, D.c.ink, 1.8);
+  if (f > 0){
+    const k = Math.min(1, f*1.5);
+    for (const t of [1/3, 2/3]) { const T = [lerp(A[0], B[0], t), lerp(A[1], B[1], t)]; const n = [-(B[1] - A[1]), B[0] - A[0]], L = Math.hypot(...n);
+      const e = 8/D.s; D.linea([T[0] + n[0]/L*e, T[1] + n[1]/L*e], [T[0] - n[0]/L*e, T[1] - n[1]/L*e], D.c.ink, 1.6); }
+    if (f >= .5){ const P = MA.divide({ A, B, m:1, n:2 }).punto, t = Math.min(1, (f - .5)*2);
+      D.pt([lerp(A[0], P[0], t), lerp(A[1], P[1], t)], t >= 1 ? 'P' : '', D.c.P, { colorRot:D.c.P, dx:12, dy:12, r:6.5 });
+      if (k >= 1){ const n = [-(B[1] - A[1]), B[0] - A[0]], L = Math.hypot(...n), e = 22/D.s;
+        const M1 = [lerp(A[0], B[0], 1/6) + n[0]/L*e, lerp(A[1], B[1], 1/6) + n[1]/L*e], M2 = [lerp(A[0], B[0], 2/3) + n[0]/L*e, lerp(A[1], B[1], 2/3) + n[1]/L*e];
+        D.rotulo(M1[0], M1[1], '1 parte', D.c.ink, 'center', 12, 600); D.rotulo(M2[0], M2[1], '2 partes', D.c.ink, 'center', 12, 600); } }
+  }
+  D.pt(A, 'A', null, { clave:'A', dx:-10 }); D.pt(B, 'B', null, { clave:'B' });
+}
+function dibPend(D, p, f){
+  const { A, B } = p;
+  D.recta(general(A, B), D.c.L, D.g('L', 2.5));
+  if (f > 0) D.triangulo(D.c, A, B, { f: Math.min(2, f*1.2) });
+  if (f >= 2){   // la escalerita: 1 a la derecha, 2 hacia arriba, tres veces; y la recta desde el origen
+    const k = Math.min(1, f - 2);
+    D.linea([0, 0], B, D.c.muted, 1.6, [6, 5]); D.rotulo(B[0]/2 + .5, B[1]/2 - .3, 'y/x de B: 11/4', D.c.muted, 'left', 12, 600);
+    for (let j = 0; j < 3; j++){ const a = [A[0] + j, A[1] + 2*j]; if (k > j/3){ D.linea(a, [a[0], a[1] + 2], D.c.dy, 1.6, [3, 3]); D.linea([a[0], a[1] + 2], [a[0] + 1, a[1] + 2], D.c.dx, 1.6, [3, 3]); } }
+  }
+  D.pt(A, 'A', null, { dx:-10 }); D.pt(B, 'B', null, { dx:-10 });
+}
+function dibCorte(D, p, f){
+  const Q = p.Q, G = [3, -1, -5];
+  if (f <= 0){
+    D.linea([Q[0] - .5, Q[1] - 1.5], [Q[0] + 1.3, Q[1] + 3.9], D.c.L, D.g('L', 2.5));
+    D.linea(Q, [Q[0] + 1, Q[1]], D.c.dx, 2.5); D.linea([Q[0] + 1, Q[1]], [Q[0] + 1, Q[1] + 3], D.c.dy, 2.5);
+    D.rotulo(Q[0] + .5, Q[1] - .45, '1', D.c.dx); D.rotulo(Q[0] + 1.3, Q[1] + 1.5, '3', D.c.dy, 'left');
+  } else {
+    D.recta(G, D.c.L, D.g('L', 2.5));
+    for (let j = 0; j < 2; j++){ const t = clamp(f*2 - j, 0, 1); if (t <= 0) continue; const a = [Q[0] - j, Q[1] - 3*j];
+      D.linea(a, [a[0] - t, a[1]], D.c.dx, 2.5); if (t >= 1) D.linea([a[0] - 1, a[1]], [a[0] - 1, a[1] - 3], D.c.dy, 2.5); }
+    if (f >= 1){ D.pt([0, -5], '', D.c.b, { r:7 }); D.rotuloPx(D.X(0) - 10, D.Y(-5), 'b = −5', D.c.b, 'right'); D.rotulo(-.6, -1.2, '−3', D.c.dy, 'right'); D.rotulo(.5, 1.45, '−1', D.c.dx); }
+  }
+  D.pt(Q, 'Q', null, { dx:10, dy:12 });
+}
+// Gira el punto P alrededor de T un ángulo a (radianes, antihorario)
+const girar = (P, T, a) => [T[0] + (P[0] - T[0])*Math.cos(a) - (P[1] - T[1])*Math.sin(a), T[1] + (P[0] - T[0])*Math.sin(a) + (P[1] - T[1])*Math.cos(a)];
+function dibPerp(D, p, f, final){
+  const { A, T } = p, C = [T[0], A[1]];
+  D.recta(general(A, T), D.c.L, D.g('L', 2.5));
+  const ang = f*Math.PI/2;
+  if (f < 1 || !final){
+    // el triángulo de L₁ (A, C, T) girando alrededor de T
+    const A2 = girar(A, T, ang), C2 = girar(C, T, ang);
+    if (f > 0) D.linea(A2, T, D.c.L2, 2, [6, 4]);
+    D.linea(A2, C2, D.c.dx, D.g('dx', 3.5)); D.linea(C2, T, D.c.dy, D.g('dy', 3.5));
+    if (f <= 0){ D.rotulo((A[0] + T[0])/2, A[1] - .45, 'avanza 3', D.c.dx); D.rotulo(T[0] + .25, (A[1] + T[1])/2, 'sube 2', D.c.dy, 'left'); }
+    if (f >= 1){ D.recta(general(T, A2), D.c.L2, D.g('L2', 2.5)); }
+  }
+  if (final){
+    const B2 = girar(A, T, Math.PI/2).map(x => Math.round(x*1e9)/1e9);
+    D.recta(general(T, B2), D.c.L2, D.g('L2', 2.5));
+    D.triangulo(D.c, A, T, { rotulos:true });
+    D.triangulo(D.c, T, B2, { rotulos:true });
+    const un = (P, Q) => { const w = [Q[0] - P[0], Q[1] - P[1]], n = Math.hypot(...w); return [w[0]/n, w[1]/n]; };
+    D.anguloRecto(D.c, T, un(T, A), un(T, B2), D.c.ink);
+    const m1 = MA.pendiente({ A, B:T }), m2 = MA.pendiente({ A:T, B:B2 });
+    D.rotuloPx(D.X(T[0]) + 14, D.Y(T[1]) - 34, `m₁ = ${m1.texto}`, D.c.L, 'left'); D.rotuloPx(D.X(T[0]) + 14, D.Y(T[1]) - 16, `m₂ = ${m2.texto}`, D.c.L2, 'left');
+  } else if (f >= 1){
+    D.rotuloPx(D.X(T[0]) + 14, D.Y(T[1]) - 16, 'm₂ = −3/2', D.c.L2, 'left');
+  }
+  D.pt(A, '', null, { clave:'A' }); D.pt(T, 'T', null, { dx:-12, dy:-14 });
+}
+const lectPerp = [E => ['L', 'pendiente m₁', MA.pendiente({ A:E.pts.A, B:E.pts.T }).texto],
+  E => { const B2 = girar(E.pts.A, E.pts.T, Math.PI/2).map(Math.round); return ['L2', 'pendiente m₂', MA.pendiente({ A:E.pts.T, B:B2 }).texto]; },
+  E => { const R = MA.perpendicular({ m: MA.pendiente({ A:E.pts.A, B:E.pts.T }).valor }); return ['ink', 'm₁ · m₂', R.producto === null ? 'sin producto' : num(R.producto)]; }];
+const LDR = [3, 4, 8];
+function dibDistR(D, p, f){
+  const R = p.R, DD = MA.distanciaPuntoRecta({ P:R, L:LDR });
+  D.recta(LDR, D.c.L, D.g('L', 2.5));
+  if (f > 0){
+    const H = DD.pie, t = Math.min(1, f*1.4);
+    // otro camino: vertical hasta la recta (más largo)
+    const yv = (-LDR[2] - LDR[0]*R[0])/LDR[1];
+    if (f >= .6 && DD.valor > 0) { D.linea(R, [R[0], yv], D.c.muted, 1.6, [5, 4]); }
+    if (DD.valor > 0){
+      D.linea(R, [lerp(R[0], H[0], t), lerp(R[1], H[1], t)], D.c.d, D.g('d', 3.5));
+      if (t >= 1){ D.anguloRecto(D.c, H, [LDR[1]/5, -LDR[0]/5], [(R[0] - H[0])/DD.valor, (R[1] - H[1])/DD.valor], D.c.ink);
+        D.pt(H, 'H', D.c.ink, { coord:false, r:3.5, dx:8, dy:-12 });
+        D.rotulo((R[0] + H[0])/2 - .2, (R[1] + H[1])/2, `d = ${DD.texto}`, D.c.d, 'right'); }
+    }
+  }
+  D.pt(R, 'R', null, { clave:'R', dx:-10, dy:14 });
+}
+const lectDistR = [E => { const DD = MA.distanciaPuntoRecta({ P:E.pts.R, L:LDR }); return ['ink', '3x₀ + 4y₀ + 8', num(DD.N)]; },
+  E => ['d', 'distancia d', MA.distanciaPuntoRecta({ P:E.pts.R, L:LDR }).texto]];
+function dibArea(D, p, f){
+  const Vs = [p.A, p.B, p.C];
+  if (f > 0){ D.poligono(D.c, Vs, D.c.S, D.c.relleno*Math.min(1, f*1.5), null); }
+  D.poligono(D.c, Vs, null, 0, D.c.ink);
+  if (f >= .6){   // flechas del recorrido A → B → C → A
+    for (let i = 0; i < 3; i++){ const P = Vs[i], Q = Vs[(i + 1) % 3]; D.flecha(D.c, [lerp(P[0], Q[0], .35), lerp(P[1], Q[1], .35)], [lerp(P[0], Q[0], .6), lerp(P[1], Q[1], .6)], D.c.ink, 2); }
+    const Z = MA.area({ vertices: Vs }), G = [(Vs[0][0] + Vs[1][0] + Vs[2][0])/3, (Vs[0][1] + Vs[1][1] + Vs[2][1])/3];
+    if (Z.valor > 0) D.rotulo(G[0], G[1], `S = ${Z.texto} u²`, D.c.S, 'center', 14, 800);
+  }
+  D.pt(p.A, 'A', null, { clave:'A', dx:-10, dy:12 }); D.pt(p.B, 'B', null, { clave:'B', dx:-10 }); D.pt(p.C, 'C', null, { clave:'C', dx:10, dy:12 });
+}
+const lectArea = [E => ['ink', 'recorrido', MA.area({ vertices:[E.pts.A, E.pts.B, E.pts.C] }).sentido], E => ['S', 'área S', `${MA.area({ vertices:[E.pts.A, E.pts.B, E.pts.C] }).texto} u²`]];
+function vivo9(){
+  const el = $('vivo9'), Vs = [E.pts.A, E.pts.B, E.pts.C]; if (!el) return;
+  el.innerHTML = cuentasZap(Vs).html;
+  const t = $('stepBody').querySelector('.zap'); if (t) t.outerHTML = tablaZap(Vs, ['A', 'B', 'C']);
+}
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; b.dataset.label = `Ir al ${s.k.toLowerCase()}: ${s.t}`;
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  s.prep();
+  pintarDots();
+  E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.gate) prediccion(s);
+  if (E.alCambiar) E.alCambiar();
+  nav();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+  E.ocupado = S.ocupado;
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    b.setAttribute('aria-disabled', String(k > S.max));
+    // un paso bloqueado no delata su título
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : b.dataset.label);
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){ if (k > S.max) S.max = k; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0, P.unidad);
+    S.ocupado = true; nav();
+    E.compactar(false);
+    $('next').focus({ preventScroll:true });
+    const paso = S.step;
+    alDibujo($('cv'), () => true, () => {
+      if (S.step !== paso) { S.ocupado = false; nav(); return; }
+      s.anima(() => { S.ocupado = false; E.avisar(); nav(); });
+    });
+  }));
+  pintar();
+}
+
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   La recta vertical, el punto medio con negativos, la V de pendientes opuestas, la distancia entre paralelas,
+   el zapatito con los vértices en desorden y la recta más empinada. La escena cambia recién después de responder.
+   Un experimento se abre solo si los anteriores ya tienen respuesta. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearPlano($('cv2'), 'desc2', 'lect2', 'leyenda2');
+const VER = MA.recta({ A:[3, 1], B:[3, 6] }), PMV = MA.pendiente({ A:[3, 1], B:[3, 6] });
+const MED = MA.puntoMedio({ A:[-5, 2], B:[3, -6] });
+const LV1 = [2, -1, 1], LV2 = [2, 1, -5], VV = MA.posicion({ L1:LV1, L2:LV2 });
+const LP1 = [3, 4, -2], LP2 = [6, 8, 11], DP = MA.distanciaParalelas({ L1:LP1, L2:LP2 });
+const CUA = [[0, 0], [4, 0], [6, 4], [1, 6]], OC = MA.ordenCruzado({ vertices:CUA, orden:[0, 2, 1, 3] });
+const EMP = MA.masEmpinada({ m1:3, m2:-5 });
+const u = t => `${t} u`, u2 = t => `${t} u²`;
+
+function dibVertical(D, f){
+  const A = [3, 1], B = [3, 6];
+  if (f > 0){ D.recta([1, 0, -3], D.c.L, D.g('L', 2.5));
+    const y = lerp(-1, 8, f); D.pt([3, y], '', D.c.L, { r:4.5 }); D.rotuloPx(D.X(3) + 10, D.Y(y), `x = 3, y = ${fmt(y, 1)}`, D.c.L, 'left', 12); }
+  else D.linea(A, B, D.c.ink, 1.6);
+  D.pt(A, 'A', null, { dx:-10, dy:12 }); D.pt(B, 'B', null, { dx:-10 });
+}
+function dibMedio(D, f){
+  const A = [-5, 2], B = [3, -6], M = MED.punto, Hm = [(B[0] - A[0])/2, (B[1] - A[1])/2];
+  D.linea(A, B, D.c.ink, 1.6);
+  if (f > 0){
+    const t = Math.min(1, f*1.5);
+    D.flecha(D.c, A, [A[0] + Hm[0]*t, A[1] + Hm[1]*t], D.c.P, 2.5);
+    if (f >= .66){ D.flecha(D.c, [0, 0], Hm, D.c.muted, 1.6, [5, 4]); D.pt(Hm, '(4; −4)', D.c.muted, { coord:false, r:3.5, dx:10, dy:12, colorRot:D.c.muted }); }
+    if (t >= 1) D.pt(M, 'M', D.c.P, { colorRot:D.c.P, dx:12, dy:-14, r:6.5 });
+  }
+  D.pt(A, 'A', null, { dx:-10, dy:-14 }); D.pt(B, 'B', null, { dx:10, dy:12 });
+}
+function dibV(D, f){
+  if (f <= 0){ D.rotuloPx(D.W/2, 22, 'Las rectas aparecen al responder', D.c.muted, 'center', 13, 600); return; }
+  const I = VV.interseccion;
+  D.recta(LV1, D.c.L, D.g('L', 2.5)); D.recta(LV2, D.c.L2, D.g('L2', 2.5));
+  if (f >= .5){ D.recta([1, 2, -7], D.c.muted, 1.5, [6, 5]);
+    D.rotuloPx(D.X(I[0] + 2.6), D.Y(3 - 1.3) + 14, 'perpendicular de verdad', D.c.muted, 'center', 12, 600); }
+  // ángulo entre las dos rectas hacia arriba: de la dirección de L₂ (−1, 2) a la de L₁ (1, 2)
+  const a1 = Math.atan2(2, 1), a2 = Math.atan2(2, -1);
+  D.arco(D.c, I, 30, a1, a2, D.c.ink);
+  D.rotuloPx(D.X(I[0]), D.Y(I[1]) - 42, `${fmt(VV.angulo, 2)}°`, D.c.ink, 'center', 13);
+  D.rotulo(2.6, 2*2.6 + 1, 'L₁', D.c.L, 'left'); D.rotulo(-.7, 2*.7 + 5 + .2, 'L₂', D.c.L2, 'right');
+  D.pt(I, '', null, { r:4 });
+}
+function dibParalelas(D, f){
+  D.recta(LP1, D.c.L, D.g('L', 2.5)); D.rotulo(-4.6, (2 + 3*4.6)/4 + .45, 'L₁', D.c.L, 'left');
+  if (f > 0){
+    D.recta([3, 4, 11/2], D.c.L2, D.g('L2', 2.5)); D.rotulo(-4.6, (-5.5 + 3*4.6)/4 - .45, 'L₂', D.c.L2, 'left');
+    const Q = [-2, 2], t = Math.min(1, f*1.4), H = [Q[0] - 3/5*DP.valor, Q[1] - 4/5*DP.valor];
+    D.linea(Q, [lerp(Q[0], H[0], t), lerp(Q[1], H[1], t)], D.c.d, D.g('d', 3.5));
+    if (t >= 1){ D.anguloRecto(D.c, H, [4/5, -3/5], [3/5, 4/5], D.c.ink); D.rotulo(Q[0] + .25, (Q[1] + H[1])/2 + .2, `d = ${DP.texto}`, D.c.d, 'left'); }
+  }
+}
+function dibCruzado(D, f){
+  const [A, B, C, Dd] = CUA;
+  if (f <= 0){ D.poligono(D.c, CUA, D.c.S, D.c.relleno, D.c.ink); D.rotulo(3, 2.6, 'S = 24 u²', D.c.S, 'center', 14, 800); }
+  else {
+    const L = OC.lazos;
+    D.poligono(D.c, L.otro.vertices, D.c.S, D.c.relleno*1.4, null);
+    D.poligono(D.c, L.uno.vertices, D.c.ink, 0, null, true);
+    const camino = [A, C, B, Dd, A], k = Math.min(4, f*4.4);
+    for (let i = 0; i < 4; i++){ const t = clamp(k - i, 0, 1); if (t <= 0) break;
+      const P = camino[i], Q = camino[i + 1]; D.flecha(D.c, P, [lerp(P[0], Q[0], t), lerp(P[1], Q[1], t)], D.c.ink, 2.2); }
+    if (k >= 4){ const g1 = L.otro.vertices.reduce((s, P) => [s[0] + P[0]/3, s[1] + P[1]/3], [0, 0]), g2 = L.uno.vertices.reduce((s, P) => [s[0] + P[0]/3, s[1] + P[1]/3], [0, 0]);
+      D.rotulo(g1[0], g1[1], `+${fmt(L.otro.area, 0)}`, D.c.ink, 'center', 15, 800); D.rotulo(g2[0], g2[1], `${fmt(L.uno.area, 0)}`, D.c.ink, 'center', 15, 800); }
+  }
+  D.pt(A, 'A', null, { coord:false, dx:-10, dy:12 }); D.pt(B, 'B', null, { coord:false, dx:10, dy:12 }); D.pt(C, 'C', null, { coord:false, dx:10 }); D.pt(Dd, 'D', null, { coord:false, dx:-10 });
+}
+function dibEmpinada(D, f){
+  if (f <= 0){ D.rotuloPx(D.W/2, 22, 'Las rectas aparecen al responder', D.c.muted, 'center', 13, 600); return; }
+  D.recta([3, -1, 0], D.c.L, D.g('L', 2.5)); D.recta([5, 1, 0], D.c.L2, D.g('L2', 2.5));
+  if (f >= .5){
+    D.linea([0, 0], [1, 0], D.c.dx, 3); D.linea([1, 0], [1, 3], D.c.dy, 3); D.rotulo(1.15, 1.5, 'sube 3', D.c.dy, 'left', 12);
+    D.linea([0, 0], [-1, 0], D.c.dx, 3); D.linea([-1, 0], [-1, 5], D.c.dy, 3); D.rotulo(-1.15, 2.5, 'baja 5 por paso', D.c.dy, 'right', 12);
+    D.rotulo(.5, -.6, '1 paso', D.c.dx, 'left', 12);
+    D.rotulo(1.6, 4.4, `m₁ = 3 (${fmt(EMP.angulo1, 1)}°)`, D.c.L, 'left', 12); D.rotulo(-1.25, 5.6, `m₂ = −5 (${fmt(EMP.angulo2, 1)}°)`, D.c.L2, 'right', 12);
+  }
+}
+
+const EXPS = [
+  { id:'vertical', corto:'Dos puntos con la misma x',
+    q:`Una recta pasa por A(3; 1) y B(3; 6). ¿Cuál es su ecuación?`,
+    opts:[['a', 'y = 3', 'vertical-cambia-los-ejes', 'hipotesis'], ['b', VER.texto], ['c', 'y = 1', 'vertical-con-pendiente-cero', 'hipotesis'], ['d', 'No tiene ecuación', 'sin-pendiente-sin-ecuacion', 'hipotesis']],
+    ok:'b',
+    fb:{ a:'y = 3 es una recta horizontal: todos sus puntos tienen y = 3. Aquí lo que se repite es la x de los dos puntos.',
+      c:'y = 1 es la horizontal que pasa por A. Esta recta no tiene pendiente cero: no tiene pendiente, porque Δx = 0 y no se puede dividir entre cero.',
+      d:'No tiene pendiente, pero sí ecuación: todos sus puntos, y solo ellos, cumplen x = 3.' },
+    vista:{ x0:-2, x1:7, y0:-1, y1:8 }, dib:dibVertical, dur:3000, ley:[['L', 'la recta']], ley0:[['ink', 'segmento AB']], desc:'Los puntos A(3; 1) y B(3; 6).',
+    exp:() => `<div class="eqs"><div class="eq">m = ${fr(Y_('6 − 1'), X_('3 − 3'))} = ${fr(Y_('5'), X_('0'))} → no existe</div><div class="eq">${L_('L')}: ${VER.texto}<span class="note">en forma general, ${VER.general.texto} (B = 0)</span></div></div>
+      <p>El punto azul recorre la recta: su y cambia, pero su x siempre es 3. Una recta vertical no tiene pendiente (sería dividir entre cero), pero su ecuación es x = k. En la forma general Ax + By + C = 0, es la que tiene B = 0.</p>
+      <p class="fuente">No encontramos estudios con cifras sobre este caso; las opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'medio-negativos', corto:'Punto medio con negativos',
+    q:`El segmento AB va de A(−5; 2) a B(3; −6). ¿Cuál es su punto medio ${P_('M')}?`,
+    opts:[['a', MED.errores.semiResta.texto, 'medio-mitad-de-la-resta', 'hipotesis'], ['b', MED.texto], ['c', MED.errores.sinDividir.texto, 'medio-sin-dividir', 'hipotesis'], ['d', MED.errores.cruzaCoordenadas.texto, 'medio-coordenadas-cruzadas', 'hipotesis']],
+    ok:'b',
+    fb:{ a:'(4; −4) es la mitad de Δx y de Δy: dice cuánto hay que moverse desde A, no adónde se llega. Desde A(−5; 2): −5 + 4 = −1 y 2 − 4 = −2.',
+      c:'(−2; −4) es la suma de las coordenadas sin dividir entre 2. El punto medio es el promedio.',
+      d:'(−2; −1) tiene las coordenadas cruzadas: en (x; y), la primera es la x.' },
+    vista:{ x0:-7, x1:6, y0:-8, y1:4 }, dib:dibMedio, dur:2400, ley:[['ink', 'segmento AB'], ['P', 'punto medio M y el viaje desde A'], ['muted', 'la mitad de la resta, desde el origen']], ley0:[['ink', 'segmento AB']], desc:'El segmento de A(−5; 2) a B(3; −6).',
+    exp:() => `<div class="eqs"><div class="eq">${P_('M')} = (${fr('−5 + 3', '2')}; ${fr('2 + (−6)', '2')}) = ${P_(MED.texto)}</div></div>
+      <p>La flecha ${P_('turquesa')} sale de A y recorre la mitad del camino: 4 a la derecha y 4 hacia abajo. La flecha gris a trazos es ese mismo viaje, pero dibujado desde el origen: termina en (4; −4), que no es el punto medio. Promediar las coordenadas hace las dos cosas a la vez.</p>
+      <p class="fuente">No encontramos estudios con cifras sobre estos errores; las opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'la-v', corto:'Pendientes opuestas',
+    q:`Las rectas ${L_('L₁: y = 2x + 1')} y ${L2_('L₂: y = −2x + 5')} tienen pendientes ${L_('2')} y ${L2_('−2')}. ¿Son perpendiculares?`,
+    opts:[['a', 'Sí: sus pendientes son opuestas', 'perpendicular-pendiente-opuesta', 'hipotesis'], ['b', 'No: se cortan en un ángulo de unos 53°'], ['c', 'No: son paralelas', 'paralelas-mismo-numero', 'hipotesis'], ['d', 'Sí: toda pareja que se corta lo es', 'cortarse-es-perpendicular', 'hipotesis']],
+    ok:'b',
+    fb:{ a:'Opuestas no basta: forman una V simétrica, y el ángulo recto solo sale si m₁ · m₂ = −1. Aquí 2 · (−2) = −4.',
+      c:'Paralelas tendrían la misma pendiente, 2 y 2. Con 2 y −2 se cortan, en (1; 3).',
+      d:'Cortarse no basta: perpendiculares son las que se cortan en ángulo recto, y aquí el ángulo es de unos 53°.' },
+    vista:{ x0:-3, x1:5, y0:-2, y1:8 }, dib:dibV, dur:2200, ley:[['L', 'L₁'], ['L2', 'L₂'], ['muted', 'perpendicular a L₁']], desc:'Plano vacío: las rectas aparecen al responder.',
+    exp:() => `<div class="eqs"><div class="eq">${L_('m₁')} · ${L2_('m₂')} = ${L_('2')} · ${L2_('(−2)')} = −4 ≠ −1</div><div class="eq">tan θ = ${fr(`|${L2_('m₂')} − ${L_('m₁')}|`, `|1 + ${L_('m₁')}·${L2_('m₂')}|`)} = ${fr('4', '3')} → θ ≈ ${fmt(VV.angulo, 2)}°</div></div>
+      <p>La recta gris a trazos es la perpendicular de verdad a ${L_('L₁')} en (1; 3): tiene pendiente −1/2, la inversa de 2 con el signo cambiado. Las pendientes opuestas solo dan 90° cuando son 1 y −1, porque ahí invertir no cambia nada.</p>
+      <p class="fuente">No encontramos estudios con cifras sobre este caso; las opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'paralelas', corto:'Distancia entre paralelas',
+    q:`${L_('L₁: 3x + 4y − 2 = 0')} y ${L2_('L₂: 6x + 8y + 11 = 0')} son paralelas. ¿Cuál es la ${D_('distancia')} entre ellas?`,
+    opts:[['a', u(DP.errores.sinIgualar.texto), 'paralelas-sin-igualar', 'hipotesis'], ['b', u(DP.texto)], ['c', u(DP.errores.otraRaiz.texto), 'paralelas-sin-igualar-otra-raiz', 'hipotesis'], ['d', u(DP.errores.sumaC.texto), 'paralelas-suma-las-c', 'hipotesis']],
+    ok:'b',
+    fb:{ a:'Restaste −2 − 11 sin igualar los coeficientes. L₂ tiene A y B el doble que L₁: primero se divide L₂ entre 2 (su C pasa a 11/2) y recién se restan las C.',
+      c:'Usaste las C sin igualar y la raíz de L₂: la cuenta mezcla dos escalas. Divide L₂ entre 2 y usa √(3² + 4²) = 5.',
+      d:'Sumaste las C. La fórmula las resta: |C₁ − C₂|/√(A² + B²), y −2 − 11/2 = −15/2.' },
+    vista:{ x0:-6, x1:4, y0:-4, y1:5 }, dib:dibParalelas, dur:2000, ley:[['L', 'L₁'], ['L2', 'L₂'], ['d', 'distancia d']], ley0:[['L', 'L₁']], desc:'La recta L₁: 3x + 4y − 2 = 0. L₂ aparece al responder.',
+    exp:() => `<div class="eqs"><div class="eq">${L2_('L₂')} ÷ 2: 3x + 4y + ${DP.C2Texto} = 0</div><div class="eq">${D_('d')} = ${fr(`|−2 − ${DP.C2Texto}|`, '√(3² + 4²)')} = ${fr('15/2', '5')} = ${D_(DP.texto)}</div></div>
+      <p>La fórmula |C₁ − C₂|/√(A² + B²) solo vale cuando las dos rectas tienen <b>los mismos</b> A y B. 6x + 8y + 11 = 0 es la misma recta que 3x + 4y + 11/2 = 0. El segmento ${D_('fucsia')} es perpendicular a las dos: en cualquier lugar que se mida, da lo mismo.</p>
+      <p class="fuente">No encontramos estudios con cifras sobre estos errores; las opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'orden-cruzado', corto:'Vértices en desorden',
+    q:`El cuadrilátero A(0; 0), B(4; 0), C(6; 4), D(1; 6) tiene un ${S_('área de 24 u²')}. Si en el zapatito se copian los vértices en el orden A, C, B, D, ¿qué da |det|/2?`,
+    opts:[['a', u2(OC.errores.ordenNoImporta.texto), 'zapatito-orden-no-importa', 'hipotesis'], ['b', u2(OC.texto)], ['c', u2(OC.errores.sinMitad.texto), 'zapatito-sin-mitad', 'hipotesis'], ['d', u2(OC.errores.seAnula.texto), 'zapatito-se-anula', 'hipotesis']],
+    ok:'b',
+    fb:{ a:'El valor absoluto arregla el sentido del recorrido, pero no un camino que se cruza. A → C → B → D cruza su propio camino, y el zapatito resta un lazo del otro.',
+      c:'8 es |det|: falta dividir entre 2. Y aun así no es el área: el camino se cruza.',
+      d:'No se anula del todo: los dos lazos tienen áreas distintas, 8 y 4, y el zapatito las resta: 8 − 4 = 4.' },
+    vista:{ x0:-1, x1:7, y0:-1, y1:7 }, dib:dibCruzado, dur:3200, ley:[['S', 'lazo que suma', 'sq'], ['ink', 'lazo que resta (rayado)']], ley0:[['S', 'área del cuadrilátero', 'sq']], desc:'El cuadrilátero ABCD con su área de 24 u².',
+    exp:() => `<div class="eqs"><div class="eq">orden A, C, B, D: ↘ 0 + 0 + 24 + 0 = 24; ↗ 0 + 16 + 0 + 0 = 16</div><div class="eq">|24 − 16|/2 = ${fmt(OC.valor, 0)} u² = 8 − 4<span class="note">un lazo suma y el otro resta</span></div></div>
+      <p>El camino A → C → B → D se cruza en ${OC.lazos.cruceTexto}. Un lazo se recorre en sentido antihorario y suma 8; el otro, rayado, en sentido horario y resta 4. Por eso hay que copiar los vértices en el orden en que se recorre el borde, sin saltar: A, B, C, D (o al revés, que solo cambia el signo).</p>
+      <p class="fuente">No encontramos estudios con cifras sobre este error; las opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'empinada', corto:'¿Cuál está más inclinada?',
+    q:`Una recta tiene pendiente ${L_('m₁ = 3')} y otra, ${L2_('m₂ = −5')}. Las dos pasan por el origen. ¿Cuál está más inclinada?`,
+    opts:[['a', 'La de m = 3, porque 3 es mayor que −5', 'inclinacion-con-signo', 'hipotesis'], ['b', 'La de m = −5, porque |−5| es mayor que 3'], ['c', 'La de m = 3, porque sube y la otra baja', 'inclinacion-sube-mas', 'hipotesis'], ['d', 'Ninguna: si una baja, no se comparan', 'inclinacion-no-se-compara', 'hipotesis']],
+    ok:'b',
+    fb:{ a:'Mayor pendiente no es mayor inclinación: el signo dice si sube o baja, y lo empinada lo dice |m|. Por cada paso, una sube 3 y la otra baja 5.',
+      c:'Subir o bajar lo dice el signo; lo empinada es cuánto cambia por cada paso: 3 contra 5.',
+      d:'Sí se comparan: con la horizontal, una forma 71,57° y la otra 78,69°.' },
+    vista:{ x0:-3, x1:3, y0:-5, y1:7 }, dib:dibEmpinada, dur:2200, ley:[['L', 'm₁ = 3'], ['L2', 'm₂ = −5'], ['dx', 'un paso'], ['dy', 'lo que cambia']], desc:'Plano vacío: las rectas aparecen al responder.',
+    exp:() => `<div class="eqs"><div class="eq">|${L_('m₁')}| = 3 &lt; |${L2_('m₂')}| = 5</div></div>
+      <p>Por cada paso a la derecha, ${L_('L₁')} sube 3 y ${L2_('L₂')} baja 5: la segunda cambia más. El ángulo con la horizontal es ${fmt(EMP.angulo1, 2)}° contra ${fmt(EMP.angulo2, 2)}°. El ángulo de inclinación de ${L2_('L₂')}, medido desde el eje x positivo, es ${fmt(EMP.inclinacion2, 2)}°, porque baja.</p>
+      <p class="fuente">No encontramos estudios con cifras sobre este caso; las opciones incorrectas son hipótesis nuestras.</p>` },
+];
+const S = { k:0, pred:{}, t0:Date.now() };
+// Un experimento se abre solo si todos los anteriores ya tienen respuesta; los respondidos se revisitan libremente.
+const abierto = k => EXPS.slice(0, k).every(x => !!S.pred[x.id]);
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => abierto(k)
+    ? `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function configurar(x, f){
+  E.config({ vista:x.vista, pintar:D => x.dib(D, f), ley: f > 0 ? x.ley : (x.ley0 || []), desc: f > 0 ? `${x.corto}: el dibujo ya muestra la respuesta.` : x.desc });
+}
+function ir(k){
+  if (k < 0 || k >= EXPS.length || !abierto(k)) return;
+  E.parar();
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  configurar(x, ya ? 1 : 0);
+  E.compactar(!ya);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const animar = () => { let f = 0; E.pintar = D => x.dib(D, f); E.ley = x.ley; E.leyenda(); E.desc = null;
+    E.animar(RM ? 0 : x.dur, t => { f = t; }, () => { E.desc = `${x.corto}: el dibujo ya muestra la respuesta.`; E.avisar(); }); };
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    $('otra2').onclick = () => { E.parar(); alDibujo($('cv2'), () => S.k === k, animar); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar(); botones();
+    E.compactar(false);
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0, x.unidad);
+    alDibujo($('cv2'), () => S.k === k, animar);
+  });
+  pintar();
+}
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>
