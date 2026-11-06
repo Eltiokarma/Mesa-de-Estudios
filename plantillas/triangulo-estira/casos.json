@@ -1,0 +1,113 @@
+{
+  "plantilla": "triangulo-estira",
+  "unidades": "Coordenadas en unidades de la cuadrícula; ángulos en grados. El lado a es BC (opuesto a A), b es CA y c es AB.",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (alturas.A.pie.x, lados.a); un número suelto, como 'valor'; las listas se comparan completas; los textos (tipo, dónde cae el pie) se comparan exactos. Los vértices van como { x, y } en el orden A, B, C.",
+  "verificacion": "Verificado por un subagente independiente (6 nov 2026) sin leer el código del motor ni este archivo. Recalculó los 17 casos y sus 'tambien' con aritmética exacta (fracciones de Python y raíces comprobadas por sus cuadrados): área por Herón y por determinante, pie de la altura por proyección vectorial, ortocentro y circuncentro como cruces de rectas, mediana por coordenadas y por fórmula, bisectriz por el teorema y por Stewart, y giros con trigonometría directa. Todos los valores coinciden dentro de 1e-9; no hubo discrepancias.",
+  "tolerancia": 1e-9,
+  "casos": [
+    { "nombre": "Informe, caso 10 y predicción 3: B(0, 0), C(4, 0), A(−2, 3) → área 6, ángulo en B obtuso, pie de la altura en x = −2, fuera de BC (GE7: 2√13 o 6√5; sin dividir entre 2: 12)",
+      "fn": "triangulo", "args": [{ "x": -2, "y": 3 }, { "x": 0, "y": 0 }, { "x": 4, "y": 0 }],
+      "espera": { "area": 6, "areaCoordenadas": 6, "tipoAngulo": "obtusángulo", "verticeObtuso": "B", "tipoLados": "escaleno",
+                  "lados.a": 4, "lados.b": 6.708203932499369, "lados.c": 3.605551275463989,
+                  "angulos.A": 29.744881296942197, "angulos.B": 123.6900675259798, "angulos.C": 26.56505117707798, "sumaAngulos": 180,
+                  "alturas.A.pie.x": -2, "alturas.A.pie.y": 0, "alturas.A.longitud": 3, "alturas.A.donde": "fuera", "alturas.A.lado": "B", "alturas.A.prolongacion": 2,
+                  "errores.areaConAB": 7.211102550927978, "errores.areaConAC": 13.416407864998739, "errores.areaSinMitad": 12 } },
+
+    { "nombre": "Predicción 1 (paso 2): B(0, 0), C(4, 0), A(6,5; 3), con el ángulo en C obtuso: la altura desde A cae fuera, sobre la prolongación de BC más allá de C (GE8: el punto medio está a √29,25 de A; GE7: el lado AC mide √15,25). Con el ángulo obtuso en B, como en el informe, cae del lado de B",
+      "fn": "altura", "args": [{ "x": 6.5, "y": 3 }, { "x": 0, "y": 0 }, { "x": 4, "y": 0 }],
+      "espera": { "donde": "fuera", "lado": "C", "extremo": null, "longitud": 3, "pie.x": 6.5, "pie.y": 0, "t": 1.625, "prolongacion": 2.5,
+                  "errores.hastaPuntoMedio": 5.408326913195984, "errores.ladoHastaQ": 3.905124837953327 },
+      "tambien": [ { "args": [{ "x": -2, "y": 3 }, { "x": 0, "y": 0 }, { "x": 4, "y": 0 }], "espera": { "donde": "fuera", "lado": "B", "longitud": 3, "pie.x": -2, "t": -0.5, "errores.hastaPuntoMedio": 5, "errores.ladoHastaP": 3.605551275463989 } } ] },
+
+    { "nombre": "Obtusángulo: dos alturas caen fuera y el ortocentro queda fuera, en (−2, −4), del lado del ángulo obtuso; circuncentro (2; 3,5); baricentro (2/3; 1)",
+      "fn": "triangulo", "args": [{ "x": -2, "y": 3 }, { "x": 0, "y": 0 }, { "x": 4, "y": 0 }],
+      "espera": { "alturasFuera": 2, "alturas.B.donde": "dentro", "alturas.C.donde": "fuera", "alturas.C.lado": "B",
+                  "ortocentro.x": -2, "ortocentro.y": -4, "ortocentro.donde": "fuera",
+                  "circuncentro.x": 2, "circuncentro.y": 3.5, "baricentro.x": 0.6666666666666666, "baricentro.y": 1 } },
+
+    { "nombre": "Acutángulo B(0, 0), C(4, 0), A(1, 3): las tres alturas caen dentro y el ortocentro (1, 1) también",
+      "fn": "triangulo", "args": [{ "x": 1, "y": 3 }, { "x": 0, "y": 0 }, { "x": 4, "y": 0 }],
+      "espera": { "tipoAngulo": "acutángulo", "tipoLados": "escaleno", "area": 6, "alturasFuera": 0,
+                  "angulos.A": 63.43494882292201, "angulos.B": 71.56505117707798, "angulos.C": 45,
+                  "alturas.A.donde": "dentro", "alturas.A.pie.x": 1, "alturas.B.donde": "dentro", "alturas.C.donde": "dentro",
+                  "ortocentro.x": 1, "ortocentro.y": 1, "ortocentro.donde": "dentro", "baricentro.x": 1.6666666666666667, "baricentro.y": 1 } },
+
+    { "nombre": "Ángulo recto en B: la altura desde A cae en el extremo B y es el cateto AB; el ortocentro es el vértice B",
+      "fn": "triangulo", "args": [{ "x": 0, "y": 3 }, { "x": 0, "y": 0 }, { "x": 4, "y": 0 }],
+      "espera": { "tipoAngulo": "rectángulo", "verticeRecto": "B", "area": 6, "lados.b": 5,
+                  "alturas.A.donde": "extremo", "alturas.A.extremo": "B", "alturas.A.longitud": 3,
+                  "alturas.C.donde": "extremo", "alturas.C.extremo": "B", "alturas.B.donde": "dentro", "alturas.B.longitud": 2.4,
+                  "ortocentro.x": 0, "ortocentro.y": 0, "ortocentro.donde": "vertice", "ortocentro.vertice": "B",
+                  "circuncentro.x": 2, "circuncentro.y": 1.5, "circuncentro.radio": 2.5 } },
+
+    { "nombre": "Informe, caso 13: rectángulo 6-8-10 con coordenadas, B(0, 0), C(10, 0), A(3,6; 4,8). Altura 24/5 con proyecciones 18/5 y 32/5; mediana 5; la bisectriz del recto corta la hipotenusa en 30/7 y 40/7 y mide 24√2/7 (GE8: 5 y 5)",
+      "fn": "triangulo", "args": [{ "x": 3.6, "y": 4.8 }, { "x": 0, "y": 0 }, { "x": 10, "y": 0 }],
+      "espera": { "tipoAngulo": "rectángulo", "verticeRecto": "A", "area": 24, "lados.b": 8, "lados.c": 6, "angulos.A": 90,
+                  "alturas.A.longitud": 4.8, "alturas.A.pie.x": 3.6, "alturas.A.donde": "dentro",
+                  "medianas.A.longitud": 5, "medianas.A.formula": 5, "medianas.A.punto.x": 5,
+                  "bisectrices.A.segmentos": [4.285714285714286, 5.714285714285714], "bisectrices.A.longitud": 4.848732213850612,
+                  "bisectrices.A.formula": 4.848732213850612, "bisectrices.A.angulos": [45, 45], "bisectrices.A.errores.mitad": 5,
+                  "ortocentro.donde": "vertice", "ortocentro.vertice": "A", "circuncentro.x": 5, "circuncentro.y": 0 } },
+
+    { "nombre": "Predicciones 4 y 5 con las relaciones métricas: catetos 6 y 8 → h = 4,8, m = 3,6 y n = 6,4; bisectriz en 30/7 y 40/7 (GE8: 5 y 5; segmentos de la altura 3,6 y 6,4; promedio de catetos 7)",
+      "fn": "rectangulo", "args": [{ "catetos": [6, 8] }],
+      "espera": { "hipotenusa": 10, "altura": 4.8, "proyecciones": [3.6, 6.4], "area": 24, "mediana": 5,
+                  "segmentosBisectriz": [4.285714285714286, 5.714285714285714], "bisectrizRecto": 4.848732213850612,
+                  "relaciones.hCuadrado": 23.04, "relaciones.mPorN": 23.04, "relaciones.aCuadrado": 36, "relaciones.cPorM": 36,
+                  "errores.bisectrizMitad": 5, "errores.hEsMediana": 5, "errores.hPromedioCatetos": 7 } },
+
+    { "nombre": "Informe, caso 6: proyecciones m = 4 y n = 9 → h = 6; catetos 2√13 y 3√13; área 39 (GE18: h = 6,5)",
+      "fn": "rectangulo", "args": [{ "proyecciones": [4, 9] }],
+      "espera": { "altura": 6, "hipotenusa": 13, "catetos": [7.211102550927978, 10.816653826391967], "area": 39,
+                  "errores.hPromedioProyecciones": 6.5, "errores.catetoConMN": 6 } },
+
+    { "nombre": "Informe, caso 5: catetos 5 y 12 → hipotenusa 13; hipotenusa 13 y cateto 5 → cateto 12 (GE11: √194)",
+      "fn": "rectangulo", "args": [{ "catetos": [5, 12] }],
+      "espera": { "hipotenusa": 13, "area": 30, "altura": 4.615384615384615 },
+      "tambien": [ { "args": [{ "hipotenusa": 13, "cateto": 5 }], "espera": { "catetos": [5, 12], "errores.pitagorasSuma": 13.92838827718412 } },
+                   { "args": [{ "hipotenusa": 10, "proyeccion": 3.6 }], "espera": { "catetos": [6, 8], "altura": 4.8 } } ] },
+
+    { "nombre": "Isósceles B(0, 0), C(4, 0), A(2, 3): desde A, la altura, la mediana y la bisectriz llegan al mismo punto (2, 0) y miden 3",
+      "fn": "triangulo", "args": [{ "x": 2, "y": 3 }, { "x": 0, "y": 0 }, { "x": 4, "y": 0 }],
+      "espera": { "tipoLados": "isósceles", "verticeIsosceles": "A", "tipoAngulo": "acutángulo", "area": 6,
+                  "alturas.A.pie.x": 2, "alturas.A.longitud": 3, "medianas.A.punto.x": 2, "medianas.A.longitud": 3,
+                  "bisectrices.A.punto.x": 2, "bisectrices.A.longitud": 3, "bisectrices.A.segmentos": [2, 2] } },
+
+    { "nombre": "Equilátero de lado 4: ángulos de 60°, área 4√3, y el ortocentro coincide con el baricentro y el incentro",
+      "fn": "triangulo", "args": [{ "x": 2, "y": 3.4641016151377544 }, { "x": 0, "y": 0 }, { "x": 4, "y": 0 }],
+      "espera": { "tipoLados": "equilátero", "tipoAngulo": "acutángulo", "angulos.A": 60, "angulos.B": 60, "area": 6.928203230275509,
+                  "ortocentro.x": 2, "ortocentro.y": 1.1547005383792515, "baricentro.y": 1.1547005383792515, "incentro.y": 1.1547005383792515 } },
+
+    { "nombre": "Lados 5, 6 y 7 (A a 5 de B y a 6 de C): mediana desde A √73/2 por coordenadas y por la fórmula; bisectriz en 35/11 y 42/11, de longitud 12√15/11; área 6√6",
+      "fn": "triangulo", "args": [{ "x": 2.7142857142857144, "y": 4.199125273342591 }, { "x": 0, "y": 0 }, { "x": 7, "y": 0 }],
+      "espera": { "lados.a": 7, "lados.b": 6, "lados.c": 5, "area": 14.696938456699067, "tipoAngulo": "acutángulo",
+                  "medianas.A.longitud": 4.272001872658765, "medianas.A.formula": 4.272001872658765,
+                  "bisectrices.A.segmentos": [3.1818181818181817, 3.8181818181818183], "bisectrices.A.longitud": 4.225072741317183,
+                  "bisectrices.A.formula": 4.225072741317183, "bisectrices.A.formulaCoseno": 4.225072741317183 } },
+
+    { "nombre": "Mediana y bisectriz sueltas en el obtusángulo B(0, 0), C(4, 0), A(−2, 3): la mediana llega a (2, 0) y mide 5; la bisectriz no llega al medio",
+      "fn": "mediana", "args": [{ "x": -2, "y": 3 }, { "x": 0, "y": 0 }, { "x": 4, "y": 0 }],
+      "espera": { "punto.x": 2, "punto.y": 0, "longitud": 5, "formula": 5, "mitades": [2, 2] },
+      "tambien": [ { "fn": "bisectriz", "args": [{ "x": -2, "y": 3 }, { "x": 0, "y": 0 }, { "x": 4, "y": 0 }], "espera": { "segmentos": [1.398346655611956, 2.601653344388044], "longitud": 4.53307401127634, "formula": 4.53307401127634, "errores.mitad": 2 } } ] },
+
+    { "nombre": "Predicción 2, entre paralelas: A(1, 3) se corre 6 hacia la izquierda y 10 hacia la derecha por la paralela a BC; el área sigue en 6",
+      "fn": "moverEnParalela", "args": [{ "x": 1, "y": 3 }, { "x": 0, "y": 0 }, { "x": 4, "y": 0 }, -6],
+      "espera": { "A.x": -5, "A.y": 3, "area": 6, "areaAntes": 6, "altura": 3, "triangulo.tipoAngulo": "obtusángulo", "triangulo.verticeObtuso": "B" },
+      "tambien": [ { "args": [{ "x": 1, "y": 3 }, { "x": 0, "y": 0 }, { "x": 4, "y": 0 }, 10], "espera": { "A.x": 11, "area": 6, "triangulo.verticeObtuso": "C" } },
+                   { "args": [{ "x": 1, "y": 3 }, { "x": 0, "y": 0 }, { "x": 4, "y": 0 }, 1], "espera": { "A.x": 2, "area": 6, "triangulo.tipoLados": "isósceles" } } ] },
+
+    { "nombre": "Girar el 6-8-10 90° alrededor de B: los vértices cambian, las medidas no (GE9)",
+      "fn": "rotar", "args": [{ "x": 3.6, "y": 4.8 }, { "x": 0, "y": 0 }, { "x": 10, "y": 0 }, 90, { "x": 0, "y": 0 }],
+      "espera": { "A.x": -4.8, "A.y": 3.6, "C.x": 0, "C.y": 10, "lados.a": 10, "lados.b": 8, "lados.c": 6, "area": 24, "angulos.A": 90, "tipoAngulo": "rectángulo" } },
+
+    { "nombre": "¿Qué pasa si…? 3: el 5-12-13 con el ángulo recto en B, girado 200° alrededor de su baricentro (ningún lado horizontal), sigue siendo rectángulo, con área 30",
+      "fn": "rotar", "args": [{ "x": 0, "y": 5 }, { "x": 0, "y": 0 }, { "x": 12, "y": 0 }, 200],
+      "espera": { "tipoAngulo": "rectángulo", "lados.a": 12, "lados.b": 13, "lados.c": 5, "area": 30, "angulos.B": 90 },
+      "tambien": [ { "args": [{ "x": 1.9230769230769231, "y": 4.615384615384615 }, { "x": 0, "y": 0 }, { "x": 13, "y": 0 }, 37], "espera": { "tipoAngulo": "rectángulo", "lados.a": 13, "area": 30, "angulos.A": 90 } } ] },
+
+    { "nombre": "¿Qué pasa si…? 4: la mediana parte el área en dos mitades iguales (3 y 3) aunque el triángulo sea obtusángulo; la bisectriz la parte en la razón de los lados",
+      "fn": "partirArea", "args": [{ "x": -2, "y": 3 }, { "x": 0, "y": 0 }, { "x": 4, "y": 0 }, 0.5],
+      "espera": { "areas": [3, 3], "razon": 1, "total": 6, "segmentos": [2, 2], "P.x": 2 },
+      "tambien": [ { "args": [{ "x": 3.6, "y": 4.8 }, { "x": 0, "y": 0 }, { "x": 10, "y": 0 }, 0.42857142857142855], "espera": { "areas": [10.285714285714286, 13.714285714285714], "razon": 0.75 } } ] }
+  ]
+}

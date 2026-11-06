@@ -1,0 +1,18 @@
+{
+  "id": "triangulo-estira",
+  "titulo": "El triángulo que se estira: líneas notables y área",
+  "formato": "escena",
+  "unidades": [
+    "geometria.triangulos",
+    "geometria.areas-poligonales",
+    "geometria.relaciones-metricas",
+    "geometria.puntos-notables"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}

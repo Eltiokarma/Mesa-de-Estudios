@@ -2265,7 +2265,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "triangulo-estira"
+     ]
     },
     {
      "id": "geometria.congruencia",
@@ -2373,7 +2375,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "ampliadora"
+     ]
     },
     {
      "id": "geometria.puntos-notables",
@@ -2398,7 +2402,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "triangulo-estira"
+     ]
     },
     {
      "id": "geometria.relaciones-metricas",
@@ -2427,7 +2433,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "triangulo-estira"
+     ]
     },
     {
      "id": "geometria.poligonos-regulares",
@@ -2501,7 +2509,10 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "ampliadora",
+      "triangulo-estira"
+     ]
     },
     {
      "id": "geometria.longitud-y-areas-circulares",
@@ -2528,7 +2539,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "ampliadora"
+     ]
     },
     {
      "id": "geometria.geometria-del-espacio",
@@ -2613,7 +2626,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "ampliadora"
+     ]
     },
     {
      "id": "geometria.solidos-de-revolucion",
@@ -2643,7 +2658,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "ampliadora"
+     ]
     },
     {
      "id": "geometria.geometria-analitica",
@@ -4010,6 +4027,27 @@
     "/plantillas/acidos-bases/papel.json"
    ]
   },
+  "ampliadora": {
+   "id": "ampliadora",
+   "titulo": "La ampliadora: semejanza, área y volumen",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.proporcionalidad-y-semejanza",
+    "geometria.areas-poligonales",
+    "geometria.prisma-y-piramide",
+    "geometria.solidos-de-revolucion",
+    "geometria.longitud-y-areas-circulares"
+   ],
+   "url": "/plantillas/ampliadora/index.html",
+   "papel": "/plantillas/ampliadora/papel.json",
+   "archivos": [
+    "/plantillas/ampliadora/index.html",
+    "/plantillas/ampliadora/motor.js",
+    "/plantillas/ampliadora/papel.json"
+   ]
+  },
   "calorimetria": {
    "id": "calorimetria",
    "titulo": "Calorimetría",
@@ -4208,6 +4246,26 @@
     "/plantillas/soluciones/index.html",
     "/plantillas/soluciones/motor.js",
     "/plantillas/soluciones/papel.json"
+   ]
+  },
+  "triangulo-estira": {
+   "id": "triangulo-estira",
+   "titulo": "El triángulo que se estira: líneas notables y área",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.triangulos",
+    "geometria.areas-poligonales",
+    "geometria.relaciones-metricas",
+    "geometria.puntos-notables"
+   ],
+   "url": "/plantillas/triangulo-estira/index.html",
+   "papel": "/plantillas/triangulo-estira/papel.json",
+   "archivos": [
+    "/plantillas/triangulo-estira/index.html",
+    "/plantillas/triangulo-estira/motor.js",
+    "/plantillas/triangulo-estira/papel.json"
    ]
   }
  }

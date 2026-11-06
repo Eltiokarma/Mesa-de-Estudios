@@ -321,10 +321,10 @@
       "inicio": "2026-11-21",
       "fin": "2026-11-28",
       "estado": "en_curso",
-      "progreso": 10,
+      "progreso": 60,
       "critico": false,
       "depende_de": [],
-      "notas": "Informe docs/investigacion/geometria-ideas-erroneas.md (GE1-GE23, cifras por verificar). Falta construir"
+      "notas": "Informe geometria-ideas-erroneas.md (GE1-GE23, cifras por verificar). Hechas: plantillas/ampliadora (semejanza, área y volumen) y plantillas/triangulo-estira (líneas notables y área). Falta: el ángulo que no cambia (circunferencia)"
     },
     {
       "id": "ma3",

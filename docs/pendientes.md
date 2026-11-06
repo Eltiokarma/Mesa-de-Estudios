@@ -8,7 +8,7 @@
 npm test
 ```
 
-Deben pasar 451 pruebas.
+Deben pasar 535 pruebas.
 
 ```bash
 npm run dev
@@ -51,6 +51,7 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 
 | Id | Módulo | Informe de ideas erróneas | Nota |
 | --- | --- | --- | --- |
+| ma2 | Geometría | Hechas: `ampliadora` (semejanza, área y volumen) y `triangulo-estira` (líneas notables y área) | Falta «el ángulo que no cambia» (circunferencia) |
 | ma1 a ma3 | Trigonometría, geometría, funciones | Informes del 6 nov: `trigonometria-`, `geometria-` y `algebra-funciones-ideas-erroneas.md` | Cifras de resúmenes, por verificar con los PDF (`fuentes/por-conseguir.md`); cada informe trae 3 escenas y casos |
 | ma4 | Aritmética | `aritmetica-razonamiento-ideas-erroneas.md` | Porcentajes sucesivos ya existe; suma-descuentos y se-compensan ya tienen respaldo (AR1, AR2) |
 | ra1 | Razonamiento matemático | Mismo informe (RM1 a RM6, casi todo hipótesis) | Formato predicciones |
@@ -99,6 +100,7 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
   - Animaciones suaves al acertar y al subir la racha.
   - Una tipografía redondeada común entre la app y las escenas.
   - Revisar el modo oscuro de las ilustraciones.
+  - Llevar a `nucleo/` lo que cada escena repite y las revisiones vuelven a encontrar: en el celular, subir el lienzo al responder (scrollIntoView y animar después) y dejar que el dedo desplace la página sobre el dibujo salvo cerca de lo que se arrastra (touch-action: pan-y). Salió en la celda, la ampliadora y el triángulo.
 - **la1:** pruebas de entrada y salida por curso. Hoy existen por módulo de predicciones (3 + 3 preguntas); faltan en las escenas y por curso.
 - **Planificador por semana del CEPRE y modo examen con tiempo:** estaban en la referencia de interfaz y todavía no existen.
 - **Medición:** por decisión de Gerson (5 nov 2026), solo se exportan archivos. Un servidor (Railway está disponible) queda para después.

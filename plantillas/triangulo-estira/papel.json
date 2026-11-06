@@ -1,0 +1,132 @@
+{
+  "titulo": "El triángulo que se estira: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Haz siempre un dibujo, y no lo hagas \"bonito\": si el ángulo es obtuso, dibújalo obtuso. La altura es perpendicular a la recta que contiene la base y puede caer fuera del triángulo; un lado inclinado no es la altura. La mediana va al punto medio del lado; la bisectriz parte el ángulo en dos y corta el lado opuesto en la razón de los otros dos lados. Las tres coinciden solo en el isósceles, desde el vértice entre los lados iguales.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Un terreno triangular tiene un lado BC de 10 m junto a la pista. El vértice A está a 6 m de la recta de la pista, pero el punto de la pista más cercano a A queda 3 m más allá de B, fuera del lado BC. ¿Cuál es el área del terreno?",
+      "respuesta": "30 m².",
+      "pasos": [
+        "La base es BC = 10 m. La altura es la distancia de A a la recta que contiene a BC: 6 m. Que el pie caiga fuera de BC no cambia nada; solo hay que prolongar la base.",
+        "Área = base · altura / 2 = 10 · 6 / 2 = 30 m².",
+        "Ojo: el ángulo en B es obtuso. Los lados AB y AC son inclinados y miden más que 6 m; ninguno de los dos es la altura."
+      ],
+      "verificar": [ { "fn": "triangulo", "args": [{ "x": -3, "y": 6 }, { "x": 0, "y": 0 }, { "x": 10, "y": 0 }], "espera": { "area": 30, "alturas.A.longitud": 6, "alturas.A.donde": "fuera", "verticeObtuso": "B" } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Los vértices de un triángulo son B(1, 1), C(7, 1) y A(9, 5). a) ¿Dónde cae el pie de la altura trazada desde A sobre la recta BC? b) ¿Cuál es el área del triángulo?",
+      "respuesta": "a) En (9, 1), fuera del lado BC, sobre su prolongación más allá de C. b) 12.",
+      "pasos": [
+        "BC es horizontal (y = 1), así que la altura desde A es vertical: baja de A(9, 5) hasta (9, 1).",
+        "El punto (9, 1) está a la derecha de C(7, 1): cae fuera de BC, porque el ángulo en C es obtuso.",
+        "Base BC = 7 − 1 = 6. Altura = 5 − 1 = 4. Área = 6 · 4 / 2 = 12.",
+        "Comprobación por coordenadas: (1/2)·|(7 − 1)(5 − 1) − (9 − 1)(1 − 1)| = (1/2)·24 = 12."
+      ],
+      "verificar": [ { "fn": "triangulo", "args": [{ "x": 9, "y": 5 }, { "x": 1, "y": 1 }, { "x": 7, "y": 1 }], "espera": { "area": 12, "areaCoordenadas": 12, "alturas.A.pie.x": 9, "alturas.A.pie.y": 1, "alturas.A.donde": "fuera", "alturas.A.lado": "C", "verticeObtuso": "C" } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Una rampa tiene forma de triángulo rectángulo con catetos de 9 dm y 12 dm. ¿Cuánto mide la hipotenusa y cuánto la altura relativa a la hipotenusa (trazada desde el vértice del ángulo recto)?",
+      "respuesta": "Hipotenusa 15 dm; altura 7,2 dm.",
+      "pasos": [
+        "Hipotenusa: c² = 9² + 12² = 81 + 144 = 225, así que c = 15 dm.",
+        "El área se puede calcular de dos maneras: con los catetos, 9 · 12 / 2 = 54; con la hipotenusa como base, 15 · h / 2.",
+        "Igualando: 15 · h = 108, h = 7,2 dm. Es la relación h = cateto · cateto / hipotenusa.",
+        "No es 10,5 (el promedio de los catetos) ni 7,5 (la mitad de la hipotenusa, que es lo que mide la mediana)."
+      ],
+      "verificar": [ { "fn": "rectangulo", "args": [{ "catetos": [9, 12] }], "espera": { "hipotenusa": 15, "altura": 7.2, "area": 54, "mediana": 7.5 } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "En un triángulo rectángulo, la altura relativa a la hipotenusa la divide en dos segmentos de 2 cm y 8 cm. Halla la altura, los dos catetos y el área.",
+      "respuesta": "Altura 4 cm; catetos 2√5 cm y 4√5 cm; área 20 cm².",
+      "pasos": [
+        "La hipotenusa mide 2 + 8 = 10 cm.",
+        "La altura es la media geométrica de las proyecciones: h² = m · n = 2 · 8 = 16, h = 4 cm. No es el promedio (5 cm).",
+        "Cada cateto al cuadrado es la hipotenusa por su proyección: a² = 10 · 2 = 20, a = 2√5; b² = 10 · 8 = 80, b = 4√5. No es m · n.",
+        "Área = 10 · 4 / 2 = 20 cm². Comprobación: 2√5 · 4√5 / 2 = 40/2 = 20."
+      ],
+      "verificar": [ { "fn": "rectangulo", "args": [{ "proyecciones": [2, 8] }], "espera": { "altura": 4, "hipotenusa": 10, "catetos": [4.47213595499958, 8.94427190999916], "area": 20 } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "En el triángulo ABC, AB = 9, AC = 6 y BC = 10. La bisectriz del ángulo A corta a BC en D. ¿Cuánto miden BD y DC?",
+      "respuesta": "BD = 6 y DC = 4.",
+      "pasos": [
+        "Teorema de la bisectriz: BD / DC = AB / AC = 9 / 6 = 3 / 2.",
+        "BC = 10 se reparte en 3 + 2 = 5 partes de 2: BD = 3 · 2 = 6 y DC = 2 · 2 = 4.",
+        "El lado mayor (AB) se queda con el segmento mayor (BD). No es 5 y 5: eso sería la mediana."
+      ],
+      "verificar": [ { "fn": "bisectriz", "args": [{ "x": 7.25, "y": 5.332682251925386 }, { "x": 0, "y": 0 }, { "x": 10, "y": 0 }], "espera": { "segmentos": [6, 4], "errores.mitad": 5 } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Los lados de un triángulo miden AB = 7, AC = 9 y BC = 8. ¿Cuánto mide la mediana trazada desde A?",
+      "respuesta": "7.",
+      "pasos": [
+        "Fórmula de la mediana relativa al lado BC: m² = (2·AC² + 2·AB² − BC²) / 4.",
+        "m² = (2 · 81 + 2 · 49 − 64) / 4 = (162 + 98 − 64) / 4 = 196 / 4 = 49.",
+        "m = 7. La mediana va de A al punto medio de BC, que está a 4 de B y a 4 de C."
+      ],
+      "verificar": [ { "fn": "mediana", "args": [{ "x": 2, "y": 6.708203932499369 }, { "x": 0, "y": 0 }, { "x": 8, "y": 0 }], "espera": { "longitud": 7, "formula": 7, "mitades": [4, 4] } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Un triángulo tiene base BC = 6 y área 15. El vértice A se mueve por una recta paralela a BC, hasta que el triángulo queda muy inclinado, con el ángulo en B obtuso. ¿Cuánto mide su altura y cuál es su nueva área?",
+      "respuesta": "La altura sigue en 5 y el área sigue en 15.",
+      "pasos": [
+        "Al principio: 15 = 6 · h / 2, así que h = 5.",
+        "Sobre una paralela a BC, todos los puntos están a la misma distancia de BC: la altura sigue siendo 5, aunque ahora caiga fuera de la base.",
+        "Área = 6 · 5 / 2 = 15. El triángulo se ve distinto, pero tiene la misma base y la misma altura."
+      ],
+      "verificar": [ { "fn": "moverEnParalela", "args": [{ "x": 2, "y": 5 }, { "x": 0, "y": 0 }, { "x": 6, "y": 0 }, -7], "espera": { "areaAntes": 15, "area": 15, "altura": 5, "triangulo.verticeObtuso": "B" } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Los vértices de un triángulo son A(−2, 4), B(0, 0) y C(6, 0). a) ¿Qué tipo de triángulo es según sus ángulos? b) ¿Cuál es su área? c) ¿Dónde está el ortocentro (el punto donde se cortan las rectas que contienen las tres alturas)?",
+      "respuesta": "a) Obtusángulo, con el ángulo obtuso en B. b) 12. c) En (−2, −4), fuera del triángulo.",
+      "pasos": [
+        "a) Lados: AB² = 4 + 16 = 20, BC² = 36, AC² = 64 + 16 = 80. Como 80 > 20 + 36, el ángulo opuesto a AC, que es B, es obtuso.",
+        "b) Base BC = 6 y altura 4 (la distancia de A al eje x). Área = 6 · 4 / 2 = 12.",
+        "c) La altura desde A es la recta vertical x = −2. La altura desde C es perpendicular a AB; AB tiene pendiente −2, así que la altura tiene pendiente 1/2 y pasa por C(6, 0): y = (x − 6)/2.",
+        "Se cortan en x = −2: y = (−2 − 6)/2 = −4. El ortocentro es (−2, −4), debajo de BC y fuera del triángulo, como en todo obtusángulo."
+      ],
+      "verificar": [ { "fn": "triangulo", "args": [{ "x": -2, "y": 4 }, { "x": 0, "y": 0 }, { "x": 6, "y": 0 }], "espera": { "tipoAngulo": "obtusángulo", "verticeObtuso": "B", "area": 12, "ortocentro.x": -2, "ortocentro.y": -4, "ortocentro.donde": "fuera" } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "En un triángulo rectángulo, la hipotenusa mide 25 y uno de los catetos mide 15. Halla las proyecciones de los catetos sobre la hipotenusa, la altura relativa a la hipotenusa y el otro cateto.",
+      "respuesta": "Proyecciones 9 y 16; altura 12; otro cateto 20.",
+      "pasos": [
+        "Cateto² = hipotenusa · su proyección: 15² = 25 · m, así que m = 225/25 = 9. La otra proyección es n = 25 − 9 = 16.",
+        "Altura: h² = m · n = 9 · 16 = 144, h = 12.",
+        "Otro cateto: b² = 25 · 16 = 400, b = 20. Con Pitágoras: 25² − 15² = 625 − 225 = 400; se resta, porque la incógnita es un cateto.",
+        "Comprobación: h = cateto · cateto / hipotenusa = 15 · 20 / 25 = 12."
+      ],
+      "verificar": [ { "fn": "rectangulo", "args": [{ "hipotenusa": 25, "cateto": 15 }], "espera": { "proyecciones": [9, 16], "altura": 12, "catetos": [15, 20] } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "básico",
+      "enunciado": "Un triángulo isósceles tiene AB = AC = 13 y BC = 10. ¿Cuánto miden la altura, la mediana y la bisectriz trazadas desde A? ¿Cuál es el área?",
+      "respuesta": "Las tres miden 12; el área es 60.",
+      "pasos": [
+        "En el isósceles, desde el vértice entre los lados iguales, la altura, la mediana y la bisectriz son el mismo segmento: llegan al punto medio de BC.",
+        "Ese segmento parte el triángulo en dos triángulos rectángulos de hipotenusa 13 y cateto 5. El otro cateto es √(169 − 25) = √144 = 12.",
+        "Área = 10 · 12 / 2 = 60.",
+        "Desde B o desde C, en cambio, las tres líneas son distintas."
+      ],
+      "verificar": [ { "fn": "triangulo", "args": [{ "x": 5, "y": 12 }, { "x": 0, "y": 0 }, { "x": 10, "y": 0 }], "espera": { "tipoLados": "isósceles", "area": 60, "alturas.A.longitud": 12, "medianas.A.longitud": 12, "bisectrices.A.longitud": 12 } } ]
+    }
+  ]
+}

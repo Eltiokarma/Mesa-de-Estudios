@@ -34,7 +34,7 @@
       "universidades": {"uni": {"semanas": [1]}, "unmsm": {"temas": [2, 3]}},
       "potencial_visual": "alto",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["triangulo-estira"],
       "investigacion": null
     },
     {
@@ -97,7 +97,7 @@
       "universidades": {"uni": {"semanas": [5, 6]}, "unmsm": {"temas": [8]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "plantillas": [],
+      "plantillas": ["ampliadora"],
       "investigacion": null
     },
     {
@@ -111,7 +111,7 @@
       "universidades": {"uni": {"semanas": [6, 7]}, "unmsm": {"temas": [7]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "plantillas": [],
+      "plantillas": ["triangulo-estira"],
       "investigacion": null
     },
     {
@@ -129,7 +129,7 @@
       "universidades": {"uni": {"semanas": [7, 8]}, "unmsm": {"temas": [9]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "plantillas": [],
+      "plantillas": ["triangulo-estira"],
       "investigacion": null
     },
     {
@@ -170,7 +170,7 @@
       "universidades": {"uni": {"semanas": [10, 11]}, "unmsm": {"temas": [10, 11]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "plantillas": [],
+      "plantillas": ["ampliadora", "triangulo-estira"],
       "investigacion": null
     },
     {
@@ -186,7 +186,7 @@
       "universidades": {"uni": {"semanas": [10, 12]}, "unmsm": {"temas": [11]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "plantillas": [],
+      "plantillas": ["ampliadora"],
       "investigacion": null
     },
     {
@@ -232,7 +232,7 @@
       "universidades": {"uni": {"semanas": [16, 17]}, "unmsm": {"temas": [13, 14]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": [],
+      "plantillas": ["ampliadora"],
       "investigacion": null
     },
     {
@@ -249,7 +249,7 @@
       "universidades": {"uni": {"semanas": [18, 19, 20]}, "unmsm": {"temas": [14, 15]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": [],
+      "plantillas": ["ampliadora"],
       "investigacion": null
     },
     {

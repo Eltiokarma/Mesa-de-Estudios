@@ -1,0 +1,1050 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El triángulo que se estira: líneas notables y área</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de soluciones.
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
+   base b azul, altura h rojo, mediana verde, bisectriz ámbar (amarillo en modo oscuro), área S fucsia y
+   proyecciones m y n turquesa. Los puntos notables llevan el color de las líneas que los forman:
+   ortocentro H (alturas) rojo, baricentro G (medianas) verde e incentro I (bisectrices) ámbar.
+   Elegidos con CIEDE2000: ΔE00 ≥ 23,6 entre cualquier par, en claro y en oscuro, y contraste AA sobre el papel y sobre su chip (.v, fondo al 8 %). */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-b:#1f5fbf; --c-h:#c0364a; --c-med:#466d14; --c-bis:#8f5800; --c-S:#a10fbf; --c-proy:#0f766e;
+  --relleno:.13;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-b:#7cb0ff; --c-h:#f17384; --c-med:#a3d65e; --c-bis:#ffc04d; --c-S:#cf6bfa; --c-proy:#5ed9c8;
+  --relleno:.17; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-b:#7cb0ff; --c-h:#f17384; --c-med:#a3d65e; --c-bis:#ffc04d; --c-S:#cf6bfa; --c-proy:#5ed9c8;
+  --relleno:.17; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+.lienzo:focus-within{outline:3px solid var(--ink); outline-offset:2px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+.legend i.sq{width:12px; height:12px; border-radius:3px; opacity:.55}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-b{color:var(--c-b); background:color-mix(in srgb, var(--c-b) 8%, transparent)}
+.v-h{color:var(--c-h); background:color-mix(in srgb, var(--c-h) 8%, transparent)}
+.v-med{color:var(--c-med); background:color-mix(in srgb, var(--c-med) 8%, transparent)}
+.v-bis{color:var(--c-bis); background:color-mix(in srgb, var(--c-bis) 8%, transparent)}
+.v-S{color:var(--c-S); background:color-mix(in srgb, var(--c-S) 8%, transparent)}
+.v-proy{color:var(--c-proy); background:color-mix(in srgb, var(--c-proy) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.02rem; font-variant-numeric:tabular-nums}
+.eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.5em; white-space:normal}
+.frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1.15}
+.frac > span:first-child{border-bottom:1.5px solid currentColor; padding:0 .25em}
+.frac > span:last-child{padding:0 .25em}
+.answer{font-weight:700; padding:12px 16px; border-radius:16px; background:var(--paper); border:2px solid var(--ink); max-width:66ch}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.seg button i{display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px; vertical-align:0}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.acciones{display:flex; flex-wrap:wrap; gap:8px}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+/* Lecturas en vivo, cada una con el color de su variable */
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(92px, 1fr)); gap:8px}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura b{display:block; color:var(--k); font:800 1.02rem var(--mono); font-variant-numeric:tabular-nums; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.lectura span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.lectura.tipo{--k:var(--ink); grid-column:span 2}
+.lectura.tipo b{font:800 .9rem var(--font); white-space:normal}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.35fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Geometría · Triángulos · Problemas tipo admisión</p>
+      <h1>El triángulo que se estira</h1>
+      <p class="sub">Arrastra el vértice A y mira qué pasa con la altura, la mediana, la bisectriz y el área. La base BC no se mueve.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Triángulo con el vértice A arrastrable">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Triángulo ABC sobre una cuadrícula. La base BC está fija; el vértice A se puede arrastrar"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos con triángulos">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/triangulo-estira">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'triangulo-estira', unidad: 'geometria.triangulos', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la geometría (lados, ángulos, pies de las alturas, puntos medios, bisectrices, puntos notables, el giro)
+   sale de MotorTriangulo (motor.js); aquí solo se pinta, se arrastra y se anima. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MT = MotorTriangulo;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+// Coma decimal y signo menos tipográfico.
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 1 : d), r = Math.round(n*p)/p + 0;
+  const [e, f] = String(Math.abs(r)).split('.');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const fr = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+function tween(dur, paso, fin){
+  if (RM || !dur){ paso(1); if (fin) setTimeout(fin, 0); return; }
+  const t0 = performance.now();
+  const tick = now => { const f = Math.min(1, (now - t0)/dur); paso(suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
+  requestAnimationFrame(tick);
+}
+const b_ = t => V('b', t), h_ = t => V('h', t), m_ = t => V('med', t), w_ = t => V('bis', t), S_ = t => V('S', t), p_ = t => V('proy', t);
+const NOMBRE_ANG = { 'acutángulo':'Acutángulo', 'rectángulo':'Rectángulo', 'obtusángulo':'Obtusángulo' };
+function tipoTexto(T){
+  const extra = T.verticeRecto ? ` (recto en ${T.verticeRecto})` : T.verticeObtuso ? ` (obtuso en ${T.verticeObtuso})` : '';
+  return `${NOMBRE_ANG[T.tipoAngulo]}${extra} · ${T.tipoLados}`;
+}
+const DONDE = { dentro:'cae dentro de BC', extremo:'cae en un extremo de BC', fuera:'cae fuera de BC, sobre su prolongación' };
+
+function colores(){
+  const g = n => css(n);
+  return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
+    b:g('--c-b'), h:g('--c-h'), med:g('--c-med'), bis:g('--c-bis'), S:g('--c-S'), proy:g('--c-proy'),
+    relleno:Number(g('--relleno')) || .13, mono:g('--mono'), font:g('--font') };
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, p, q){ ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke(); }
+// Texto con un fondo del color del papel detrás, para que se lea sobre las líneas.
+function rotulo(ctx, c, x, y, t, color, align, peso, tam){
+  ctx.font = `${peso || 700} ${tam || 13}px ${c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+  ctx.fillStyle = color; ctx.fillText(t, x, y);
+}
+// Resaltar en el dibujo la variable que se toca en el texto (regla 4).
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+/* ================= La escena del triángulo =================
+   Coordenadas del mundo en unidades de la cuadrícula; la base BC va sobre el eje x. Una "caja" del mundo se
+   ajusta al lienzo. El giro es de todo el dibujo: los vértices girados salen de MT.rotar y todo lo demás
+   (pies, puntos medios, bisectrices) se recalcula con MT.triangulo sobre los vértices girados. */
+const VER0 = { S:true, h:false, med:false, bis:false, par:false, alturas:false, orto:false, notables:false, ejes:false, angulos:false,
+  mitades:false, proy:false, recto:true, medidas:true };
+function crearEscena(cv, idDesc, idLect, idLey){
+  const E = { A:{x:1,y:3}, B:{x:0,y:0}, C:{x:4,y:0}, caja:{x0:-5,x1:9,y0:-1.2,y1:4.6}, giro:0, centro:{x:0,y:0}, ver:{...VER0},
+    arrastrable:false, parY:null, lados:null, prog:{ h:1, med:1, bis:1 }, extra:null, hl:null, alCambiar:null, lect:['b','h','S','tipo'] };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, arrastrando = false, sobreA = false;
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    // En el celular, el alto se ajusta a la caja del paso para no dejar papel vacío arriba y abajo.
+    const c = E.caja, h = Math.round(w >= 560 ? clamp(w*0.62, 320, 460) : clamp((w - 36)*(c.y1 - c.y0)/(c.x1 - c.x0) + 36, 250, 380));
+    const dpr = window.devicePixelRatio || 1;
+    if (w === W && h === H) { E.dibujar(); return; }
+    W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  alRedibujarTema(() => E.dibujar());
+
+  E.config = o => {
+    Object.assign(E, { giro:0, arrastrable:false, parY:null, lados:null, extra:null, alCambiar:null, lect:['b','h','S','tipo'] }, o);
+    E.A = { ...o.A }; E.B = { ...(o.B || { x:0, y:0 }) }; E.C = { ...(o.C || { x:4, y:0 }) };
+    E.caja = Object.assign({ x0:-5, x1:9, y0:-1.2, y1:4.6 }, o.caja);
+    E.ver = Object.assign({ ...VER0 }, o.ver);
+    E.prog = Object.assign({ h:1, med:1, bis:1 }, o.prog);
+    E.centro = o.centro || MT.triangulo(E.A, E.B, E.C).baricentro;
+    cv.tabIndex = E.arrastrable ? 0 : -1;
+    resize();
+    if (idLey) document.getElementById(idLey).innerHTML = leyenda(E);
+    E.dibujar(); E.avisar();
+  };
+  // Geometría actual: los vértices girados (si hay giro) y el triángulo calculado sobre ellos.
+  E.geo = () => {
+    const R = E.giro ? MT.rotar(E.A, E.B, E.C, E.giro, E.centro) : { A:E.A, B:E.B, C:E.C };
+    return { R, T: MT.triangulo(R.A, R.B, R.C) };
+  };
+  E.T = () => E.geo().T;
+  E.permitir = on => { E.arrastrable = on; cv.tabIndex = on ? 0 : -1; E.dibujar(); };
+
+  // ----- del mundo a la pantalla -----
+  function escala(){
+    const c = E.caja, pad = 18;
+    const k = Math.min((W - 2*pad)/(c.x1 - c.x0), (H - 2*pad)/(c.y1 - c.y0));
+    return { k, ox: W/2 - k*(c.x0 + c.x1)/2, oy: H/2 + k*(c.y0 + c.y1)/2 };
+  }
+  const aP = (P, s) => ({ x: s.ox + s.k*P.x, y: s.oy - s.k*P.y });
+  function aMundo(px, py){
+    const s = escala(), w = { x:(px - s.ox)/s.k, y:(s.oy - py)/s.k };
+    if (!E.giro) return w;
+    // Deshacer el giro del dibujo (solo es la vista: la geometría la gira el motor).
+    const r = -E.giro*Math.PI/180, dx = w.x - E.centro.x, dy = w.y - E.centro.y;
+    return { x: E.centro.x + dx*Math.cos(r) - dy*Math.sin(r), y: E.centro.y + dx*Math.sin(r) + dy*Math.cos(r) };
+  }
+
+  // ----- dibujo -----
+  const unit = (p, q) => { const dx = q.x - p.x, dy = q.y - p.y, L = Math.hypot(dx, dy) || 1; return { x:dx/L, y:dy/L }; };
+  function grosor(k, base){ return E.hl === k ? base + 2.5 : base; }
+  function marcaRecta(p, haciaU, haciaN, color, s){
+    const t = s || 9;
+    ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = 1.6; ctx.beginPath();
+    ctx.moveTo(p.x + haciaU.x*t, p.y + haciaU.y*t); ctx.lineTo(p.x + (haciaU.x + haciaN.x)*t, p.y + (haciaU.y + haciaN.y)*t);
+    ctx.lineTo(p.x + haciaN.x*t, p.y + haciaN.y*t); ctx.stroke(); ctx.restore();
+  }
+  function arco(cx, cy, r, a1, a2, color, w){
+    let d = a2 - a1; while (d > Math.PI) d -= 2*Math.PI; while (d < -Math.PI) d += 2*Math.PI;
+    ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = w || 2; ctx.beginPath(); ctx.arc(cx, cy, r, a1, a1 + d, d < 0); ctx.stroke(); ctx.restore();
+    return a1 + d/2;
+  }
+  function rectaPunteada(p, q, color, ancho, extra){
+    // segmento p→q prolongado 'extra' px por el lado de q
+    const u = unit(p, q), e = extra || 0;
+    ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = ancho || 2; ctx.setLineDash([6, 5]);
+    linea(ctx, p, { x:q.x + u.x*e, y:q.y + u.y*e }); ctx.restore();
+  }
+  function tick(p, q, color){
+    const m = { x:(p.x + q.x)/2, y:(p.y + q.y)/2 }, u = unit(p, q), n = { x:-u.y, y:u.x };
+    ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = 2.2; linea(ctx, { x:m.x - n.x*6, y:m.y - n.y*6 }, { x:m.x + n.x*6, y:m.y + n.y*6 }); ctx.restore();
+  }
+  // Una altura desde V hasta su pie, con la prolongación punteada de la base si el pie cae fuera.
+  function dibujarAltura(T, s, v, f, ancho, rotular){
+    const c = E.c, h = T.alturas[v], pares = { A:['B','C'], B:['C','A'], C:['A','B'] }, [p, q] = pares[v];
+    const V = aP(T.vertices[v], s), pie = aP(h.pie, s), P = aP(T.vertices[p], s), Q = aP(T.vertices[q], s);
+    if (h.donde === 'fuera' && f > 0){
+      const ext = h.lado === p ? P : Q;
+      rectaPunteada(ext, pie, c.muted, v === 'A' ? 2.2 : 1.6, 14);
+    }
+    const fin = { x: V.x + (pie.x - V.x)*f, y: V.y + (pie.y - V.y)*f };
+    ctx.save(); ctx.strokeStyle = c.h; ctx.lineWidth = grosor('h', ancho); ctx.lineCap = 'round'; linea(ctx, V, fin); ctx.restore();
+    if (f >= 1 && h.donde !== 'extremo'){
+      const hacia = h.donde === 'fuera' ? unit(pie, h.lado === p ? P : Q) : unit(pie, Q);
+      marcaRecta(pie, hacia, unit(pie, V), c.h);
+    }
+    if (f >= 1 && rotular){
+      const m = { x:V.x + (pie.x - V.x)*.35, y:V.y + (pie.y - V.y)*.35 }, n = unit(V, pie);
+      rotulo(ctx, c, m.x + n.y*16, m.y - n.x*16, rotular, c.h, 'center', 800, 13);
+      ocupadas.push({ x:m.x + n.y*16, y:m.y - n.x*16, w:rotular.length*7.5 + 6, h:18 });
+    }
+  }
+  let ocupadas = [];   // cajas de rótulos ya puestos en este dibujo, para no encimar los de los puntos notables
+  E.dibujar = () => {
+    if (!W) return;
+    ocupadas = [];
+    const c = E.c = colores(), s = escala(), { R, T } = E.geo();
+    ctx.clearRect(0, 0, W, H); ctx.fillStyle = c.paper; ctx.fillRect(0, 0, W, H);
+    // cuadrícula: queda fija; lo que gira es el triángulo
+    ctx.save();
+    ctx.strokeStyle = c.grid; ctx.lineWidth = 1;
+    const R0 = Math.ceil(Math.max(W, H)/s.k) + 2, x0 = Math.floor(E.centro.x) - R0, y0 = Math.floor(E.centro.y) - R0;
+    for (let i = 0; i <= 2*R0; i++){
+      const a = aP({ x:x0 + i, y:0 }, s).x; linea(ctx, { x:a, y:-H*2 }, { x:a, y:H*3 });
+      const b = aP({ x:0, y:y0 + i }, s).y; linea(ctx, { x:-W*2, y:b }, { x:W*3, y:b });
+    }
+    if (E.ver.ejes && !E.giro){
+      ctx.strokeStyle = c.muted; ctx.lineWidth = 1; const o = aP({ x:0, y:0 }, s);
+      linea(ctx, { x:0, y:o.y }, { x:W, y:o.y }); linea(ctx, { x:o.x, y:0 }, { x:o.x, y:H });
+      ctx.fillStyle = c.muted; ctx.font = `600 11px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+      for (let x = Math.ceil(E.caja.x0); x <= E.caja.x1; x++) if (x !== 0 && x % 2 === 0) ctx.fillText(fmt(x, 0), aP({ x, y:0 }, s).x, o.y + 4);
+      ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+      for (let y = Math.ceil(E.caja.y0); y <= E.caja.y1; y++) if (y !== 0) ctx.fillText(fmt(y, 0), o.x - 5, aP({ x:0, y }, s).y);
+    }
+    ctx.restore();
+
+    const A = aP(R.A, s), B = aP(R.B, s), C = aP(R.C, s);
+    // área
+    if (E.ver.S){
+      ctx.save(); ctx.fillStyle = c.S;
+      if (E.ver.mitades){
+        const M = aP(T.medianas.A.punto, s);
+        ctx.globalAlpha = c.relleno*1.9; ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.lineTo(M.x, M.y); ctx.closePath(); ctx.fill();
+        ctx.globalAlpha = c.relleno*.8; ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(M.x, M.y); ctx.lineTo(C.x, C.y); ctx.closePath(); ctx.fill();
+      } else {
+        ctx.globalAlpha = E.hl === 'S' ? c.relleno*2.2 : c.relleno;
+        ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.lineTo(C.x, C.y); ctx.closePath(); ctx.fill();
+      }
+      ctx.restore();
+    }
+    // paralela a BC por A
+    if (E.ver.par){
+      const u = unit(B, C), L = Math.hypot(W, H)*2;
+      ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.8; ctx.setLineDash([3, 6]);
+      linea(ctx, { x:A.x - u.x*L, y:A.y - u.y*L }, { x:A.x + u.x*L, y:A.y + u.y*L }); ctx.restore();
+    }
+    // lados: AB y AC en tinta, la base BC en su color
+    ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 2.2; ctx.beginPath(); ctx.moveTo(B.x, B.y); ctx.lineTo(A.x, A.y); ctx.lineTo(C.x, C.y); ctx.stroke();
+    ctx.strokeStyle = c.b; ctx.lineWidth = grosor('b', 4.5); linea(ctx, B, C);
+    ctx.restore();
+    // ángulo recto en un vértice
+    if (E.ver.recto && T.verticeRecto){
+      const v = T.verticeRecto, otros = { A:['B','C'], B:['C','A'], C:['A','B'] }[v], P0 = aP(T.vertices[v], s);
+      marcaRecta(P0, unit(P0, aP(T.vertices[otros[0]], s)), unit(P0, aP(T.vertices[otros[1]], s)), c.ink, 11);
+    }
+    // las tres alturas y el ortocentro
+    if (E.ver.alturas || E.ver.orto){
+      for (const v of ['A','B','C']) if (v !== 'A' || !E.ver.h) dibujarAltura(T, s, v, 1, 2.2, '');
+      if (E.ver.orto){
+        const Hh = aP(T.ortocentro, s);
+        if (T.ortocentro.donde === 'fuera') for (const v of ['A','B','C']) {
+          const pie = aP(T.alturas[v].pie, s), Vv = aP(T.vertices[v], s);
+          // la recta de cada altura, prolongada hasta el ortocentro
+          const d1 = Math.hypot(Hh.x - Vv.x, Hh.y - Vv.y), d2 = Math.hypot(Hh.x - pie.x, Hh.y - pie.y);
+          rectaPunteada(d1 < d2 ? Vv : pie, Hh, c.h, 1.6, 0);
+        }
+      }
+    }
+    // cevianas desde A
+    if (E.ver.med && E.prog.med > 0){
+      const md = T.medianas.A, M = aP(md.punto, s), f = E.prog.med, fin = { x:A.x + (M.x - A.x)*f, y:A.y + (M.y - A.y)*f };
+      ctx.save(); ctx.strokeStyle = c.med; ctx.lineWidth = grosor('med', 3); ctx.lineCap = 'round'; linea(ctx, A, fin); ctx.restore();
+      if (f >= 1){ tick(B, M, c.med); tick(M, C, c.med); ctx.fillStyle = c.med; ctx.beginPath(); ctx.arc(M.x, M.y, 4.5, 0, 7); ctx.fill(); }
+    }
+    if (E.ver.bis && E.prog.bis > 0){
+      const bs = T.bisectrices.A, D = aP(bs.punto, s), f = E.prog.bis, fin = { x:A.x + (D.x - A.x)*f, y:A.y + (D.y - A.y)*f };
+      ctx.save(); ctx.strokeStyle = c.bis; ctx.lineWidth = grosor('bis', 3); ctx.lineCap = 'round'; linea(ctx, A, fin); ctx.restore();
+      if (f >= 1){
+        const aB = Math.atan2(B.y - A.y, B.x - A.x), aD = Math.atan2(D.y - A.y, D.x - A.x), aC = Math.atan2(C.y - A.y, C.x - A.x);
+        const r = clamp(Math.hypot(D.x - A.x, D.y - A.y)*0.3, 22, 34);
+        const m1 = arco(A.x, A.y, r, aB, aD, c.bis, 2.2), m2 = arco(A.x, A.y, r, aD, aC, c.bis, 2.2);
+        for (const m of [m1, m2]){ ctx.save(); ctx.strokeStyle = c.bis; ctx.lineWidth = 2; linea(ctx, { x:A.x + Math.cos(m)*(r - 5), y:A.y + Math.sin(m)*(r - 5) }, { x:A.x + Math.cos(m)*(r + 5), y:A.y + Math.sin(m)*(r + 5) }); ctx.restore(); }
+        ctx.fillStyle = c.bis; ctx.beginPath(); ctx.arc(D.x, D.y, 4.5, 0, 7); ctx.fill();
+      }
+    }
+    if (E.ver.h && E.prog.h > 0) dibujarAltura(T, s, 'A', E.prog.h, 3, E.ver.medidas ? `h = ${fmt(T.alturas.A.longitud, 2)}` : 'h');
+    if (E.extra) E.extra(ctx, c, P0 => aP(P0, s), T, { W, H });
+    // rótulos de la base y de los lados
+    const G = aP(T.baricentro, s);
+    const fuera = (p, q, d, t) => { const f = t === undefined ? .5 : t, m = { x:p.x + (q.x - p.x)*f, y:p.y + (q.y - p.y)*f }, u = unit(G, { x:(p.x + q.x)/2, y:(p.y + q.y)/2 }); return { x:m.x + u.x*(d || 14), y:m.y + u.y*(d || 14) }; };
+    // la "b" va corrida hacia C (a 0,78 de BC), lejos del punto medio (mediana), de D y del pie típico de la altura
+    const bl = fuera(B, C, 15, .78);
+    rotulo(ctx, c, bl.x, bl.y, E.lados && E.lados.a ? `b = ${E.lados.a}` : E.ver.medidas ? `b = ${fmt(T.lados.a, 2)}` : 'b', c.b, 'center', 800, 13);
+    if (E.lados){
+      if (E.lados.c){ const p = fuera(A, B, 16); rotulo(ctx, c, p.x, p.y, E.lados.c, c.ink, 'center', 700, 13); }
+      if (E.lados.b){ const p = fuera(A, C, 16); rotulo(ctx, c, p.x, p.y, E.lados.b, c.ink, 'center', 700, 13); }
+    }
+    // vértices
+    for (const [t, P0] of [['B', B], ['C', C], ['A', A]]){
+      const u = unit(G, P0);
+      if (t === 'A' && E.arrastrable){
+        ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = (arrastrando || sobreA) ? .18 : .09; ctx.beginPath(); ctx.arc(P0.x, P0.y, 20, 0, 7); ctx.fill(); ctx.restore();
+        ctx.fillStyle = c.card; ctx.strokeStyle = c.ink; ctx.lineWidth = 2.6; ctx.beginPath(); ctx.arc(P0.x, P0.y, 9, 0, 7); ctx.fill(); ctx.stroke();
+      } else { ctx.fillStyle = c.ink; ctx.beginPath(); ctx.arc(P0.x, P0.y, 4.5, 0, 7); ctx.fill(); }
+      const d = t === 'A' && E.arrastrable ? 24 : 16;
+      rotulo(ctx, c, P0.x + u.x*d, P0.y + u.y*d, t, c.ink, 'center', 800, 15);
+      ocupadas.push({ x:P0.x + u.x*d, y:P0.y + u.y*d, w:16, h:20 });
+      if (E.ver.angulos){
+        const ang = T.angulos[t];
+        let q = null;
+        for (const dd of [28, 40, 52, 64, 76]){ const z = { x:P0.x - u.x*dd, y:P0.y - u.y*dd, w:40, h:16 }; if (!ocupadas.some(o => Math.abs(o.x - z.x) < (o.w + z.w)/2 && Math.abs(o.y - z.y) < (o.h + z.h)/2)){ q = z; break; } }
+        if (!q) continue;   // sin lugar libre: mejor no rotular que tapar otra medida
+        rotulo(ctx, c, q.x, q.y, `${fmt(ang, Math.abs(ang - Math.round(ang)) < 1e-6 ? 0 : 1)}°`, c.muted, 'center', 700, 11);
+        ocupadas.push({ x:q.x, y:q.y, w:40, h:16 });
+      }
+    }
+    // puntos notables
+    if (E.ver.notables || E.ver.orto){
+      // cada rótulo sale hacia un lado distinto (G arriba a la derecha, I arriba a la izquierda, H abajo) para que no se enciman
+      const pts = E.ver.notables ? [['G', T.baricentro, c.med, [13, -12]], ['I', T.incentro, c.bis, [-13, -12]], ['H', T.ortocentro, c.h, [12, 14]]] : [['H', T.ortocentro, c.h, [12, 14]]];
+      const ps = pts.map(([t, P0, col, d]) => [t, aP(P0, s), col, d]);
+      for (const [, p, col] of ps){ ctx.fillStyle = col; ctx.strokeStyle = c.paper; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(p.x, p.y, 5.5, 0, 7); ctx.fill(); ctx.stroke(); }
+      // cada rótulo prueba varias posiciones alrededor de su punto y se queda con la primera libre
+      const choca = q => ocupadas.some(o => Math.abs(o.x - q.x) < (o.w + q.w)/2 && Math.abs(o.y - q.y) < (o.h + q.h)/2)
+        || ps.some(([, p]) => Math.abs(p.x - q.x) < q.w/2 + 5 && Math.abs(p.y - q.y) < q.h/2 + 5);
+      for (const [t, p, , [dx, dy]] of ps){
+        const cand = [[dx, dy], [-dx, dy], [dx, -dy], [-dx, -dy], [0, -18], [0, 18], [20, 0], [-20, 0], [2*dx, 2*dy], [-2*dx, 2*dy], [2*dx, -2*dy], [-2*dx, -2*dy], [0, -32], [0, 32]];
+        let q = null;
+        for (const [ox, oy] of cand){ const z = { x:p.x + ox, y:p.y + oy, w:16, h:18 }; if (!choca(z)){ q = z; break; } }
+        if (!q) q = { x:p.x + dx, y:p.y + dy, w:16, h:18 };
+        ocupadas.push(q);
+        if (Math.hypot(q.x - p.x, q.y - p.y) > 22){ ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1; linea(ctx, p, q); ctx.restore(); }
+        rotulo(ctx, c, q.x, q.y, t, c.ink, 'center', 800, 13);
+      }
+    }
+  };
+  function leyenda(E){
+    const it = (k, t, sq) => `<span><i class="${sq ? 'sq' : ''}" style="background:var(--c-${k})"></i>${t}</span>`;
+    const v = E.ver, l = [it('b', 'b · base BC')];
+    if (v.h || v.alturas || v.orto) l.push(it('h', 'h · altura'));
+    if (v.med) l.push(it('med', 'mediana'));
+    if (v.bis) l.push(it('bis', 'bisectriz'));
+    if (v.proy) l.push(it('proy', 'm y n · proyecciones'));
+    if (v.S) l.push(it('S', 'S · área', true));
+    if (v.par) l.push('<span>···· paralela a BC</span>');
+    if (v.notables) l.push(`<span><i class="sq" style="background:var(--c-med);border-radius:50%;opacity:1"></i>G baricentro (medianas)</span><span><i class="sq" style="background:var(--c-bis);border-radius:50%;opacity:1"></i>I incentro (bisectrices)</span><span><i class="sq" style="background:var(--c-h);border-radius:50%;opacity:1"></i>H ortocentro (alturas)</span>`);
+    else if (v.orto) l.push(`<span><i class="sq" style="background:var(--c-h);border-radius:50%;opacity:1"></i>H ortocentro (alturas)</span>`);
+    return l.join('');
+  }
+  E.leyenda = () => { if (idLey) document.getElementById(idLey).innerHTML = leyenda(E); };
+  // Lecturas y descripción para lectores de pantalla
+  E.avisar = () => {
+    const T = E.T();
+    if (idLect){
+      const caja = (k, t, val) => `<div class="lectura" style="--k:var(--c-${k})"><span>${t}</span><b>${val}</b></div>`;
+      const L = { b: () => caja('b', 'Base b', fmt(T.lados.a, 2)), h: () => caja('h', 'Altura h', fmt(T.alturas.A.longitud, 2)),
+        S: () => caja('S', 'Área S', fmt(T.area, 2)), med: () => caja('med', 'Mediana', fmt(T.medianas.A.longitud, 2)),
+        bis: () => caja('bis', 'Bisectriz', fmt(T.bisectrices.A.longitud, 2)),
+        tipo: () => `<div class="lectura tipo"><span>Tipo</span><b>${tipoTexto(T)}</b></div>` };
+      document.getElementById(idLect).innerHTML = E.lect.map(k => L[k]()).join('');
+    }
+    // La descripción dice solo lo que muestran las lecturas: antes de responder no adelanta la respuesta.
+    if (idDesc){
+      const l = E.lect, d = [`Triángulo ABC. Vértice A en (${fmt(E.A.x, 1)}; ${fmt(E.A.y, 1)})${E.giro ? `, dibujo girado ${fmt(E.giro, 0)}°` : ''}.`];
+      if (l.includes('tipo')) d.push(`${tipoTexto(T)}.`);
+      if (l.includes('b')) d.push(`Base ${fmt(T.lados.a, 2)}.`);
+      if (l.includes('h')) d.push(`Altura ${fmt(T.alturas.A.longitud, 2)}: ${DONDE[T.alturas.A.donde]}.`);
+      if (l.includes('S')) d.push(`Área ${fmt(T.area, 2)}.`);
+      document.getElementById(idDesc).textContent = d.join(' ');
+    }
+    if (E.alCambiar) E.alCambiar(T);
+  };
+  // Mover A (animado), sin pasar por la recta BC
+  E.moverA = (dest, dur, fin) => {
+    const de = { ...E.A };
+    tween(dur, f => { E.A = { x: de.x + (dest.x - de.x)*f, y: de.y + (dest.y - de.y)*f }; E.dibujar(); E.avisar(); }, fin);
+  };
+  E.girarA = (g, dur, fin) => {
+    const de = E.giro;
+    tween(dur, f => { E.giro = de + (g - de)*f; E.dibujar(); E.avisar(); }, fin);
+  };
+  E.crecer = (k, dur, fin) => { E.ver[k] = true; E.prog[k] = 0; E.leyenda(); tween(dur, f => { E.prog[k] = f; E.dibujar(); }, fin); };
+
+  // ----- arrastrar A (táctil, ratón y teclado) -----
+  function ajustar(p){
+    let x = Math.round(p.x*2)/2, y = Math.round(p.y*2)/2;
+    x = clamp(x, Math.ceil((E.caja.x0 + .4)*2)/2, Math.floor((E.caja.x1 - .4)*2)/2);
+    y = E.parY !== null ? E.parY : clamp(y, .5, Math.floor((E.caja.y1 - .3)*2)/2);
+    if (y === 0) y = .5;
+    return { x, y };
+  }
+  function ponerA(p){
+    const n = ajustar(p);
+    if (n.x === E.A.x && n.y === E.A.y) return;
+    E.A = n; E.dibujar(); E.avisar();
+  }
+  const local = e => { const r = cv.getBoundingClientRect(); return { x:e.clientX - r.left, y:e.clientY - r.top }; };
+  // Con el dedo, el dibujo deja desplazar la página (touch-action: pan-y); solo un toque que empieza cerca de A
+  // (radio de 40 px) se queda con el gesto y arrastra A. Con ratón, radio de 32 px.
+  function cercaDeA(p, r){ const s = escala(), a = aP(E.geo().R.A, s); return Math.hypot(p.x - a.x, p.y - a.y) < (r || 32); }
+  cv.addEventListener('touchstart', e => {
+    if (!E.arrastrable || E.ocupado || e.touches.length !== 1) return;
+    const r = cv.getBoundingClientRect(), t = e.touches[0];
+    if (cercaDeA({ x:t.clientX - r.left, y:t.clientY - r.top }, 40)) e.preventDefault();
+  }, { passive:false });
+  cv.addEventListener('pointerdown', e => {
+    if (!E.arrastrable || E.ocupado) return;
+    const p = local(e); if (!cercaDeA(p, e.pointerType === 'mouse' ? 32 : 40)) return;
+    arrastrando = true; cv.setPointerCapture(e.pointerId); e.preventDefault(); cv.focus({ preventScroll:true }); E.dibujar();
+  }, { passive:false });
+  cv.addEventListener('pointermove', e => {
+    const p = local(e);
+    if (arrastrando){ ponerA(aMundo(p.x, p.y)); return; }
+    const s = E.arrastrable && !E.ocupado && cercaDeA(p);
+    if (s !== sobreA){ sobreA = s; cv.style.cursor = s ? 'grab' : ''; E.dibujar(); }
+  });
+  const soltar = () => { if (arrastrando){ arrastrando = false; E.dibujar(); } };
+  cv.addEventListener('pointerup', soltar); cv.addEventListener('pointercancel', soltar);
+  cv.addEventListener('keydown', e => {
+    if (!E.arrastrable || E.ocupado) return;
+    const d = { ArrowLeft:[-.5, 0], ArrowRight:[.5, 0], ArrowUp:[0, .5], ArrowDown:[0, -.5] }[e.key];
+    if (!d) return;
+    e.preventDefault();
+    // con el dibujo girado, la flecha mueve A por el eje de la cuadrícula más parecido a la dirección de la pantalla
+    const r = -E.giro*Math.PI/180, dx = d[0]*Math.cos(r) - d[1]*Math.sin(r), dy = d[0]*Math.sin(r) + d[1]*Math.cos(r);
+    const paso = Math.abs(dx) >= Math.abs(dy) ? { x:E.A.x + Math.sign(dx)*.5, y:E.A.y } : { x:E.A.x, y:E.A.y + Math.sign(dy)*.5 };
+    ponerA(paso);
+  });
+  return E;
+}
+
+// Opciones de predicción (las mismas en los dos modos)
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1');
+const S = { step:0, max:0, pred:{}, hecho:{}, ocupado:false, x:null };
+
+// Triángulos de la escena (todas las medidas salen del motor)
+const BASE = { B:{ x:0, y:0 }, C:{ x:4, y:0 } };
+const P1A = { x:6.5, y:3 }, P3A = { x:-2, y:3 }, PARA = { x:1, y:3 };
+const R6 = { A:{ x:3.6, y:4.8 }, B:{ x:0, y:0 }, C:{ x:10, y:0 } }, REL = MT.rectangulo({ catetos:[6, 8] });
+const T3 = MT.triangulo(P3A, BASE.B, BASE.C);
+const T6 = MT.triangulo(R6.A, R6.B, R6.C);
+
+function vivoArea(T){
+  const d = $('vivo'); if (!d) return;
+  d.innerHTML = `${S_('S')} = ${fr(`${b_('b')} · ${h_('h')}`, '2')} = ${fr(`${b_(fmt(T.lados.a, 2))} · ${h_(fmt(T.alturas.A.longitud, 2))}`, '2')} = ${S_(fmt(T.area, 2))}<span class="note">la altura ${DONDE[T.alturas.A.donde]}</span>`;
+}
+function cfgLibre(A, ver, extra){
+  E.config(Object.assign({ A, ...BASE, caja:{ x0:-3.5, x1:7.5, y0:-1.5, y1:6 }, arrastrable:true, ver, alCambiar:vivoArea }, extra));
+}
+
+// Proyecciones m y n sobre la hipotenusa del 6-8-10, en su color
+function extraProy(ctx, c, aP, T){
+  const pie = aP(T.alturas.A.pie), B = aP(T.vertices.B), C = aP(T.vertices.C);
+  ctx.save(); ctx.strokeStyle = c.proy; ctx.lineWidth = 6; ctx.globalAlpha = .9; ctx.lineCap = 'butt';
+  const off = 9; linea(ctx, { x:B.x, y:B.y + off }, { x:pie.x, y:pie.y + off }); linea(ctx, { x:pie.x, y:pie.y + off }, { x:C.x, y:C.y + off });
+  ctx.restore();
+  ctx.fillStyle = c.proy; ctx.fillRect(pie.x - 1, pie.y + 3, 2, 12);
+  rotulo(ctx, c, (B.x + pie.x)/2, B.y + 28, `m = ${fmt(REL.proyecciones[0], 1)}`, c.proy, 'center', 800, 13);
+  rotulo(ctx, c, (pie.x + C.x)/2, B.y + 28, `n = ${fmt(REL.proyecciones[1], 1)}`, c.proy, 'center', 800, 13);
+}
+// Segmentos BD y DC de la bisectriz, y dónde caen la mediana y la altura para comparar
+function extraBis(ctx, c, aP, T){
+  const D = aP(T.bisectrices.A.punto), B = aP(T.vertices.B), C = aP(T.vertices.C);
+  rotulo(ctx, c, (B.x + D.x)/2, B.y + 30, `BD = 30/7 ≈ ${fmt(T.bisectrices.A.segmentos[0], 2)}`, c.bis, 'center', 800, 12);
+  rotulo(ctx, c, (D.x + C.x)/2, B.y + 48, `DC = 40/7 ≈ ${fmt(T.bisectrices.A.segmentos[1], 2)}`, c.bis, 'center', 800, 12);
+}
+
+const P1 = { id:'triangulo-estira-paso2', ok:'c', opts:[
+  ['a','En el punto medio de BC','GE8-altura-al-punto-medio','parcial'],
+  ['b','Dentro de BC: una línea inclinada que baja desde A hasta la base','GE7-altura-siempre-dentro','documentado'],
+  ['c','Fuera del triángulo, sobre la prolongación de BC, más allá de C'],
+  ['d','En C: el lado AC es la altura','GE7-lado-como-altura','documentado']],
+  fb:{ c:'¡Bien! La altura es perpendicular a la recta que contiene la base. Con el ángulo en C obtuso, esa perpendicular cae fuera: hay que prolongar BC.',
+    a:'Elegiste la A. La altura no tiene por qué llegar al punto medio: eso lo hace la mediana. La altura cae donde la perpendicular desde A toca la recta BC. La correcta está marcada.',
+    b:'Elegiste la B. Una línea inclinada hasta BC no es perpendicular a la base, así que no es la altura. Con el ángulo en C obtuso, la perpendicular cae fuera de BC. La correcta está marcada.',
+    d:'Elegiste la D. El lado AC no es perpendicular a BC: forma con ella un ángulo obtuso. La altura es otra línea, más corta, que cae fuera. La correcta está marcada.' } };
+const P3 = { id:'triangulo-estira-paso3', ok:'b', opts:[
+  ['a',`2√13 ≈ ${fmt(T3.errores.areaConAB, 1)}: base 4 y altura AB`,'GE7-lado-como-altura','documentado'],
+  ['b','6'],
+  ['c','12','area-sin-dividir-entre-2','hipotesis'],
+  ['d',`6√5 ≈ ${fmt(T3.errores.areaConAC, 1)}: base 4 y altura AC`,'GE7-lado-como-altura','documentado']],
+  fb:{ b:'¡Bien! La base es 4 y la altura es 3, la distancia de A a la recta BC, aunque caiga fuera: S = 4 · 3 / 2 = 6.',
+    a:'Elegiste la A. AB es un lado inclinado, no la altura: no es perpendicular a BC. La altura es la distancia de A a la recta BC, que mide 3. La correcta está marcada.',
+    c:'Elegiste la C. 4 · 3 = 12 es el área del rectángulo de base 4 y altura 3. El triángulo es la mitad: falta dividir entre 2. La correcta está marcada.',
+    d:'Elegiste la D. AC es un lado inclinado, no la altura: no es perpendicular a BC. La altura es la distancia de A a la recta BC, que mide 3. La correcta está marcada.' } };
+const P2 = { id:'triangulo-estira-paso4', ok:'d', opts:[
+  ['a','Crece: el triángulo se estira y sus lados se alargan','GE6-acostado-mas-area','parcial'],
+  ['b','Disminuye: el triángulo se ve cada vez más delgado','GE6-acostado-menos-area','parcial'],
+  ['c','Es mayor cuando A está justo encima del medio de BC (el triángulo isósceles)','GE6-isosceles-mas-area','parcial'],
+  ['d','No cambia']],
+  fb:{ d:'¡Bien! Sobre la paralela, A está siempre a la misma distancia de BC: la misma base y la misma altura dan la misma área.',
+    a:'Elegiste la A. Los lados AB y AC sí se alargan, pero el área no depende de ellos: depende de la base y de la altura, y la altura no cambia sobre la paralela. La correcta está marcada.',
+    b:'Elegiste la B. Se ve más delgado, pero también más largo. Base y altura no cambian, y el área tampoco. La correcta está marcada.',
+    c:'Elegiste la C. El isósceles se ve más "completo", pero su altura es la misma que la de los demás triángulos de la paralela. Misma base y misma altura: misma área. La correcta está marcada.' } };
+const P4 = { id:'triangulo-estira-paso5', ok:'c', opts:[
+  ['a','5 y 5: la bisectriz llega al punto medio','GE8-bisectriz-al-punto-medio','parcial'],
+  ['b','3,6 y 6,4','GE8-bisectriz-como-altura','parcial'],
+  ['c','30/7 y 40/7 (unos 4,3 y 5,7)']],
+  fb:{ c:'¡Bien! La bisectriz corta la hipotenusa en la razón de los catetos: BD / DC = 6 / 8.',
+    a:'Elegiste la A. La que llega al punto medio es la mediana. La bisectriz parte el ángulo en dos, no el lado: lo corta en la razón de los otros dos lados, 6 a 8. La correcta está marcada.',
+    b:'Elegiste la B. 3,6 y 6,4 son los segmentos que deja la altura (las proyecciones de los catetos). La bisectriz es otra línea y corta en otro punto. La correcta está marcada.' } };
+const P5 = { id:'triangulo-estira-paso6', ok:'b', opts:[
+  ['a','7: el promedio de los catetos','GE18-promedio-catetos','hipotesis'],
+  ['b','4,8'],
+  ['c','5: llega al punto medio de la hipotenusa','GE8-altura-como-mediana','parcial'],
+  ['d','6: la altura es el cateto','GE7-lado-como-altura','documentado']],
+  fb:{ b:'¡Bien! Con la hipotenusa como base, 10 · h / 2 tiene que dar el área, 6 · 8 / 2 = 24. Entonces h = 48/10 = 4,8.',
+    a:'Elegiste la A. Promediar los catetos no tiene que ver con la altura. Con la hipotenusa como base, el área 24 = 10 · h / 2 da h = 4,8. La correcta está marcada.',
+    c:'Elegiste la C. 5 es la mediana: va al punto medio de la hipotenusa. La altura es perpendicular a la hipotenusa y cae en otro punto. La correcta está marcada.',
+    d:'Elegiste la D. Los catetos son alturas, pero la del otro cateto, no la de la hipotenusa. La altura relativa a la hipotenusa es la perpendicular trazada desde el vértice del ángulo recto. La correcta está marcada.' } };
+
+const steps = [
+ { k:'Paso 1', t:'El triángulo que se estira', prep:() => cfgLibre({ x:1, y:3 }, { h:true }),
+   body:() => `<p class="problem">Arrastra el vértice A (el círculo grande). La base BC no se mueve.</p>
+   <p>La base ${b_('b')} es el lado BC. La altura ${h_('h')} es la distancia de A a la <b>recta</b> que contiene la base, medida en perpendicular: forma un ángulo recto con ella. El área ${S_('S')} es la región pintada.</p>
+   <div class="eqs"><div class="eq" id="vivo"></div></div>
+   <p>Mueve A hacia los costados y hacia arriba. Mira cuándo cambia la ${h_('altura')} y cuándo no, y qué le pasa al ${S_('área')}.</p>
+   <p class="hint">Con teclado: toca el dibujo y usa las flechas.</p>` },
+ { k:'Paso 2', t:'Predice: ¿dónde cae la altura?', gate:P1,
+   prep:() => cfgLibre(S.pred[P1.id] ? P1A : { x:1, y:3 }, { h:!!S.pred[P1.id], angulos:true }, { arrastrable:false, caja:{ x0:-1.5, x1:8, y0:-1.5, y1:4.6 }, lect: S.pred[P1.id] ? ['b','h','S','tipo'] : ['b','S','tipo'] }),
+   entrar:() => { if (!S.pred[P1.id]) { S.ocupado = true; nav(); esperar(350, () => E.moverA(P1A, 1100, () => { S.ocupado = false; nav(); })); } },
+   anima:fin => { E.lect = ['b','h','S','tipo']; E.crecer('h', 900, () => { E.avisar(); fin(); }); },
+   body:() => `<p>Se arrastró A hacia la derecha, hasta que el ángulo en C quedó obtuso (mayor que 90°). ¿Dónde cae la ${h_('altura')} trazada desde A sobre la base ${b_('BC')}?</p>${opcionesHTML(P1.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <p>La ${h_('altura')} baja desde A en perpendicular a la recta BC y cae fuera, más allá de C. Para verla hay que <b>prolongar la base</b> (la línea punteada). El triángulo no cambió: la altura de un obtusángulo puede quedar fuera.</p>
+   <p class="aviso">La altura no es "la línea vertical", ni la que va al medio de la base, ni un lado inclinado. Es la perpendicular a la recta de la base.</p>
+   <p class="fuente">Dibujar la altura cuando cae fuera es difícil, aun después de estudiarla: según estudios israelíes citados por otros autores, menos del 30 % de los alumnos de 8.º grado dominaba el concepto, y costaba más en los triángulos rectángulos y obtusángulos que en los acutángulos (Hershkowitz, 1987 y 1989). Con 190 futuros maestros españoles, la idea de altura falló justo en los triángulos que no se parecen al dibujo de siempre (Gutiérrez y Jaime, 1999).</p></div>` },
+ { k:'Paso 3', t:'Predice: el área del obtusángulo', gate:P3,
+   prep:() => cfgLibre(P3A, { h:!!S.pred[P3.id], ejes:true }, { arrastrable:false, caja:{ x0:-3.6, x1:5.6, y0:-1.6, y1:4.6 }, lados:{ c:'√13', b:'3√5' }, lect: S.pred[P3.id] ? ['b','h','S','tipo'] : ['b','tipo'] }),
+   anima:fin => { E.lect = ['b','h','S','tipo']; E.crecer('h', 900, () => { E.avisar(); fin(); }); },
+   body:() => `<p>Los vértices son B(0, 0), C(4, 0) y A(−2, 3). Los lados inclinados miden AB = √13 y AC = 3√5. ¿Cuál es el área del triángulo?</p>${opcionesHTML(P3.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${b_('b')} = 4 − 0 = ${b_('4')} · ${h_('h')} = 3 − 0 = ${h_('3')}<span class="note">la altura es la distancia de A a la recta BC (el eje x)</span></div>
+     <div class="eq">${S_('S')} = ${fr(`${b_('4')} · ${h_('3')}`, '2')} = ${S_('6')}</div>
+     <div class="eq">Por coordenadas: ${S_('S')} = ½ · |(4 − 0)(3 − 0) − (−2 − 0)(0 − 0)| = ½ · 12 = ${S_(fmt(T3.areaCoordenadas, 0))}</div></div>
+   <p>La altura cae en (−2, 0), fuera de la base. No importa: se multiplica la base por la altura igual. Los lados AB y AC son más largos que la altura porque son inclinados; usarlos como altura da un área demasiado grande.</p></div>` },
+ { k:'Paso 4', t:'Predice: entre paralelas', gate:P2,
+   prep:() => cfgLibre(PARA, { h:true, par:true }, { parY:3, arrastrable:!!S.pred[P2.id], caja:{ x0:-4, x1:8, y0:-1.2, y1:4.2 } }),
+   anima:fin => {
+     E.ocupado = true;
+     E.moverA({ x:-3, y:3 }, 1300, () => E.moverA({ x:7, y:3 }, 2200, () => E.moverA(PARA, 1200, () => { E.ocupado = false; E.permitir(true); fin(); })));
+   },
+   body:() => `<p>Ahora A solo puede moverse por la recta punteada, que es paralela a la base BC. Si A se va muy a un costado, el triángulo se "acuesta". ¿Qué pasa con su ${S_('área')}?</p>${opcionesHTML(P2.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq" id="vivo"></div></div>
+   <p>Arrastra A por la paralela. La ${h_('altura')} sigue en 3 porque todos los puntos de una paralela están a la misma distancia de BC. Misma ${b_('base')} y misma ${h_('altura')}: misma ${S_('área')}, aunque el triángulo se vea muy distinto.</p>
+   <p class="fuente">A simple vista, el área engaña: aun alumnos de alto rendimiento estimaron mal áreas de figuras de igual base y altura (Kospentaris, Spyrou y Lappas, 2011, con 21 alumnos griegos de último año de secundaria y universitarios de matemática). Por eso aquí se mide, no se estima.</p></div>` },
+ { k:'Paso 5', t:'Predice: la bisectriz', gate:P4,
+   prep:() => E.config({ ...R6, caja:{ x0:-.8, x1:10.8, y0:-2.6, y1:5.6 }, ver:{ S:false, bis:!!S.pred[P4.id], med:!!S.pred[P4.id], medidas:false },
+     lados:{ a:'10', c:'6', b:'8' }, lect:['b','tipo'], extra:S.pred[P4.id] ? extraBis : null }),
+   anima:fin => { E.crecer('bis', 900, () => { E.extra = extraBis; E.crecer('med', 600, () => { E.lect = ['b','bis','med','tipo']; E.avisar(); fin(); }); }); },
+   body:() => `<p>Un triángulo rectángulo tiene catetos AB = 6 y AC = 8, y la hipotenusa ${b_('BC = 10')}. La ${w_('bisectriz')} del ángulo recto (en A) corta la hipotenusa en D. ¿En qué segmentos la divide?</p>${opcionesHTML(P4.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${fr(w_('BD'), w_('DC'))} = ${fr('AB', 'AC')} = ${fr('6', '8')}<span class="note">teorema de la bisectriz</span></div>
+     <div class="eq">${w_('BD')} = 10 · ${fr('6', '6 + 8')} = ${w_('30/7')} · ${w_('DC')} = 10 · ${fr('8', '14')} = ${w_('40/7')}</div></div>
+   <p>La ${w_('bisectriz')} parte el <b>ángulo</b> en dos ángulos de 45° (los dos arcos iguales), no el lado. El segmento más corto queda junto al cateto más corto. La ${m_('mediana')} sí va al punto medio, a 5 de cada extremo: son dos líneas distintas. La bisectriz mide ${w_(`24√2/7 ≈ ${fmt(T6.bisectrices.A.longitud, 2)}`)}.</p>
+   <p class="fuente">Que muchos alumnos imaginen la altura como en el triángulo isósceles, donde altura, mediana y bisectriz coinciden, lo describe Hershkowitz (1989, citado por otros autores), sin dar un porcentaje.</p></div>` },
+ { k:'Paso 6', t:'Predice: la altura a la hipotenusa', gate:P5,
+   prep:() => E.config({ ...R6, caja:{ x0:-.8, x1:10.8, y0:-2.6, y1:5.6 }, ver:{ S:false, h:!!S.pred[P5.id], proy:!!S.pred[P5.id], medidas:!!S.pred[P5.id] },
+     lados:{ a:'10', c:'6', b:'8' }, lect:['b','tipo'], extra:S.pred[P5.id] ? extraProy : null }),
+   anima:fin => { E.ver.medidas = true; E.crecer('h', 900, () => { E.ver.proy = true; E.extra = extraProy; E.lect = ['b','h','S','tipo']; E.leyenda(); E.avisar(); E.dibujar(); fin(); }); },
+   body:() => `<p>En el mismo triángulo (catetos 6 y 8, hipotenusa ${b_('10')}), ¿cuánto mide la ${h_('altura')} relativa a la hipotenusa, trazada desde el vértice del ángulo recto?</p>${opcionesHTML(P5.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${S_('S')} = ${fr('6 · 8', '2')} = ${fr(`${b_('10')} · ${h_('h')}`, '2')} → ${h_('h')} = ${fr('6 · 8', b_('10'))} = ${h_(fmt(REL.altura, 1))}<span class="note">h = cateto · cateto / hipotenusa</span></div>
+     <div class="eq">${h_('h')}² = ${p_('m')} · ${p_('n')} → ${h_('4,8')}² = ${p_('3,6')} · ${p_('6,4')} = ${fmt(REL.relaciones.mPorN, 2)}</div>
+     <div class="eq">6² = ${b_('10')} · ${p_('3,6')} · 8² = ${b_('10')} · ${p_('6,4')}<span class="note">cateto² = hipotenusa · su proyección</span></div></div>
+   <p>Las ${p_('proyecciones')} ${p_('m')} y ${p_('n')} son los dos pedazos en que la altura parte la hipotenusa. La ${h_('altura')} es su media geométrica, no su promedio: el promedio de 3,6 y 6,4 es 5, que es la mediana.</p>
+   <p class="fuente">No encontramos estudios que midan los errores con las relaciones métricas. Que la altura se tome como promedio de las proyecciones o de los catetos es una hipótesis nuestra; el lanzamiento en el colegio dirá si aparece.</p></div>` },
+ { k:'Paso 7', t:'Las tres en una', accion:true,
+   prep:() => cfgLibre(S.hecho.iso ? { x:2, y:3 } : { x:.5, y:3 }, { h:true, med:true, bis:true, medidas:false }, { lect:['h','med','bis','tipo'], alCambiar:revisarIso, caja:{ x0:-2, x1:6, y0:-1.2, y1:5 } }),
+   body:() => `<p>Ahora se ven las tres líneas desde A: la ${h_('altura')}, la ${m_('mediana')} y la ${w_('bisectriz')}. Arrastra A hasta que las tres se junten en una sola.</p>
+   <div class="acciones"><button type="button" class="btn" id="iso">Hazlo por mí</button></div>
+   <p id="estado" class="hint" aria-live="polite"></p>
+   <div id="tras" class="body" ${S.hecho.iso ? '' : 'hidden'}>
+   <p class="answer">Se juntan solo cuando AB = AC: en el triángulo isósceles, desde el vértice entre los lados iguales.</p>
+   <p>En cualquier otro caso son tres líneas distintas, y la ${w_('bisectriz')} siempre queda entre la ${h_('altura')} y la ${m_('mediana')}. Cuidado: aun en el isósceles, desde B o desde C las tres vuelven a separarse (lo puedes ver en "¿Qué pasa si…?").</p></div>` },
+ { k:'Paso 8', t:'Ahora explora tú', explora:true,
+   prep:() => cfgLibre(S.x ? S.x.A : { x:1, y:3 }, S.x ? S.x.ver : { h:true }, { caja:{ x0:-2, x1:6.5, y0:-1.5, y1:5 }, lect:['b','h','S','med','bis','tipo'], giro:S.x ? S.x.giro : 0, centro:S.x ? S.x.centro : undefined, parY:S.x && S.x.ver.par ? S.x.A.y : null }),
+   body:() => `<p>Prende y apaga lo que quieras ver, arrastra A y gira el dibujo. Las medidas salen del motor en cada posición.</p>
+   <div class="seg" role="group" aria-label="Qué se ve">${[['h','Altura','h'],['med','Mediana','med'],['bis','Bisectriz','bis'],['S','Área','S'],['par','Entre paralelas',null],['alturas','Las tres alturas','h'],['notables','Puntos notables',null],['angulos','Ángulos',null]]
+     .map(([k, t, col]) => `<button type="button" data-ver="${k}" aria-pressed="${!!E.ver[k]}">${col ? `<i style="background:var(--c-${col})"></i>` : ''}${t}</button>`).join('')}</div>
+   <div class="acciones"><button type="button" class="btn" id="x-girar">Girar 45°</button><button type="button" class="btn" id="x-recto">Enderezar</button><button type="button" class="btn" id="x-reset">Volver a empezar</button></div>
+   <div class="eqs"><div class="eq" id="vivo"></div></div>
+   <p id="x-msg" class="hint" aria-live="polite"></p>` },
+];
+
+function revisarIso(T){
+  if (S.hecho.iso || steps[S.step].k !== 'Paso 7') return;
+  if (T.tipoLados !== 'escaleno' && T.verticeIsosceles === 'A' || T.tipoLados === 'equilátero'){
+    S.hecho.iso = true; S.listo = true;
+    $('estado').textContent = 'Las tres líneas llegan al mismo punto: el medio de BC.';
+    $('tras').hidden = false; desbloquear(S.step + 1); pintarDots(); nav();
+  } else if ($('estado')) $('estado').textContent = `Altura ${fmt(T.alturas.A.longitud, 2)} · bisectriz ${fmt(T.bisectrices.A.longitud, 2)} · mediana ${fmt(T.medianas.A.longitud, 2)}: todavía son distintas.`;
+}
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; b.setAttribute('aria-label', `Ir al ${s.k.toLowerCase()}: ${s.t}`);
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k; S.listo = s.accion ? !!S.hecho.iso : true;
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  if (s.prep) s.prep();
+  pintarDots();
+  if (s.gate) prediccion(s);
+  if (s.accion) accion();
+  if (s.explora) explorar();
+  nav();
+  if (s.entrar) s.entrar();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || (s.accion && !S.listo) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : (s.accion && !S.listo ? 'Primero junta las tres' : 'Siguiente');
+  $('stepBody').querySelectorAll('.opt').forEach(b => { if (!S.pred[s.gate && s.gate.id]) b.disabled = S.ocupado; });
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){ if (k > S.max) S.max = k; }
+function accion(){
+  $('iso').onclick = () => {
+    if (S.hecho.iso || S.ocupado) return;
+    S.ocupado = true; E.ocupado = true; nav();
+    E.moverA({ x:2, y:E.A.y }, 900, () => { S.ocupado = false; E.ocupado = false; E.A = { x:2, y:E.A.y }; E.avisar(); nav(); });
+  };
+  E.avisar();
+}
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    S.ocupado = true; nav();
+    $('next').focus({ preventScroll:true });
+    // En el celular, el dibujo queda arriba de la pantalla: se lleva a la vista antes de animar.
+    const paso = S.step, chico = innerWidth < 900;
+    if (chico) $('cv').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+    esperar(chico ? 380 : 0, () => {
+      if (S.step !== paso) { S.ocupado = false; nav(); return; }
+      s.anima(() => { S.ocupado = false; E.avisar(); nav(); });
+    });
+  }));
+  pintar();
+}
+
+// ----- explorador -----
+const MSG = {
+  h:'La altura es la perpendicular desde A a la recta BC. Cuando el ángulo en B o en C es obtuso, cae fuera y la base se prolonga (punteada).',
+  med:'La mediana va de A al punto medio de BC (las dos marcas iguales). Parte el triángulo en dos de igual área.',
+  bis:'La bisectriz parte el ángulo en A en dos ángulos iguales (los dos arcos). Corta BC en la razón AB : AC.',
+  S:'El área es b · h / 2. Solo cambia si cambia la altura.',
+  par:'A queda atado a la paralela a BC: la altura no cambia y el área tampoco.',
+  alturas:'Las tres alturas, una desde cada vértice. En el obtusángulo, dos caen fuera; en el rectángulo, dos son los catetos.',
+  notables:'G (baricentro) es donde se cortan las medianas; I (incentro), las bisectrices; H (ortocentro), las alturas. H sale del triángulo cuando hay un ángulo obtuso.',
+  angulos:'Los tres ángulos suman siempre 180°.',
+};
+function guardarX(){ S.x = { A:{ ...E.A }, ver:{ ...E.ver }, giro:E.giro, centro:E.centro }; }
+function explorar(){
+  const body = $('stepBody');
+  E.alCambiar = T => { vivoArea(T); guardarX(); };
+  body.querySelectorAll('[data-ver]').forEach(b => b.onclick = () => {
+    const k = b.dataset.ver, on = !E.ver[k];
+    E.ver[k] = on; b.setAttribute('aria-pressed', String(on));
+    if (k === 'par') E.parY = on ? E.A.y : null;
+    if (k === 'notables' && on) E.ver.orto = false;
+    E.prog[k] = 1; E.leyenda(); E.dibujar(); guardarX();
+    $('x-msg').textContent = on ? MSG[k] : '';
+  });
+  $('x-girar').onclick = () => {
+    if (E.ocupado) return;
+    if (!E.giro) E.centro = MT.triangulo(E.A, E.B, E.C).baricentro;
+    E.ocupado = true; const T0 = E.T();
+    E.girarA(E.giro + 45, 700, () => {
+      E.ocupado = false; guardarX(); const T1 = E.T();
+      $('x-msg').textContent = `Giraste el dibujo ${fmt(((E.giro % 360) + 360) % 360, 0)}°. Lados ${fmt(T1.lados.a, 2)}; ${fmt(T1.lados.b, 2)}; ${fmt(T1.lados.c, 2)} y área ${fmt(T1.area, 2)}: lo mismo que antes (${fmt(T0.area, 2)}). Sigue siendo ${T1.tipoAngulo}. La figura no depende de cómo está puesta.`;
+    });
+  };
+  $('x-recto').onclick = () => { if (E.ocupado || !E.giro) return; E.ocupado = true; E.girarA(0, 600, () => { E.ocupado = false; E.giro = 0; guardarX(); $('x-msg').textContent = 'De vuelta con la base horizontal.'; }); };
+  $('x-reset').onclick = () => { if (E.ocupado) return; S.x = null; go(S.step); };
+  E.avisar();
+}
+
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Experimentos del catálogo de docs/investigacion/geometria-ideas-erroneas.md: GE7 (alturas fuera y
+   ortocentro), GE8 (el isósceles mirado desde otro vértice), GE9 (el triángulo girado) y GE6 (la mediana
+   que parte el área). La escena cambia recién después de responder. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2');
+const OBT = { A:{ x:-2, y:3 }, B:{ x:0, y:0 }, C:{ x:4, y:0 } };
+const ISO = { A:{ x:2, y:6 }, B:{ x:0, y:0 }, C:{ x:4, y:0 } };
+const R512 = { A:{ x:0, y:5 }, B:{ x:0, y:0 }, C:{ x:12, y:0 } }, GIRO = 200;
+const T_OBT = MT.triangulo(OBT.A, OBT.B, OBT.C), T_ISO = MT.triangulo(ISO.A, ISO.B, ISO.C);
+const MIT = MT.partirArea(OBT.A, OBT.B, OBT.C, 0.5);
+
+// Desde B en el isósceles: altura, mediana y bisectriz hacia el lado CA
+function extraDesdeB(ctx, c, aP, T, ver){
+  const B = aP(T.vertices.B), h = aP(T.alturas.B.pie), m = aP(T.medianas.B.punto), w = aP(T.bisectrices.B.punto);
+  const tramo = (q, col) => { ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = 3; ctx.lineCap = 'round'; linea(ctx, B, q); ctx.restore(); ctx.fillStyle = col; ctx.beginPath(); ctx.arc(q.x, q.y, 4.5, 0, 7); ctx.fill(); };
+  if (!ver.desdeB) return;
+  tramo(m, c.med); tramo(w, c.bis); tramo(h, c.h);
+}
+// Las dos mitades que deja la mediana, con su área
+function extraMitades(ctx, c, aP, T){
+  if (!E.ver.mitades) return;
+  const A = aP(T.vertices.A), B = aP(T.vertices.B), C = aP(T.vertices.C), M = aP(T.medianas.A.punto);
+  const g1 = { x:(A.x + B.x + M.x)/3, y:(A.y + B.y + M.y)/3 }, g2 = { x:(A.x + M.x + C.x)/3, y:(A.y + M.y + C.y)/3 };
+  rotulo(ctx, c, g1.x, g1.y, `S₁ = ${fmt(MIT.areas[0], 1)}`, c.S, 'center', 800, 13);
+  rotulo(ctx, c, g2.x, g2.y, `S₂ = ${fmt(MIT.areas[1], 1)}`, c.S, 'center', 800, 13);
+}
+
+const EXPS = [
+  { id:'alturas-fuera', corto:'Alturas afuera',
+    q:`Este triángulo tiene el ángulo en B obtuso. Cada vértice tiene su ${h_('altura')}, perpendicular a la recta del lado opuesto. ¿Cuántas de las tres alturas caen fuera del triángulo?`,
+    opts:[['a','Ninguna: la altura siempre cae dentro del triángulo','GE7-altura-siempre-dentro','documentado'],
+          ['b','Una: la que sale del ángulo obtuso','GE7-solo-una-fuera','hipotesis'],
+          ['c','Dos'],
+          ['d','Las tres','GE7-todas-fuera','hipotesis']],
+    ok:'c',
+    fb:{ a:'En el obtusángulo no: las alturas que salen de los extremos del lado mayor caen sobre las prolongaciones de los otros lados.', b:'La que sale del ángulo obtuso es justo la única que cae dentro, sobre el lado opuesto; las otras dos caen fuera.', d:'La que sale del vértice del ángulo obtuso cae dentro, sobre el lado mayor; fuera caen solo dos.' },
+    antes:ver => E.config({ ...OBT, caja:{ x0:-4.5, x1:6, y0:-2.6, y1:4.4 }, ver:{ alturas:ver, S:true, medidas:false }, lect:['tipo'] }),
+    despues:() => { E.ver.alturas = true; E.leyenda(); E.dibujar(); },
+    exp:() => `<p>La altura desde A cae fuera, sobre la prolongación de CB, más allá de B; la altura desde C también cae fuera, sobre la prolongación de AB, más allá de B. Solo la que sale de B, el vértice del ángulo obtuso, cae dentro, sobre el lado AC. En el obtusángulo hay ${h_(`${T_OBT.alturasFuera} alturas fuera`)}; en el rectángulo, dos alturas son los catetos.</p>
+      <p class="fuente">Las alturas de triángulos rectángulos y obtusángulos son las que más se dibujan mal (Hershkowitz, 1987, citado por otros autores). Las opciones "una" y "las tres" son hipótesis nuestras.</p>` },
+  { id:'isosceles-desde-B', corto:'El isósceles, desde B',
+    q:`En este triángulo isósceles, AB = AC. Desde A, la ${h_('altura')}, la ${m_('mediana')} y la ${w_('bisectriz')} son la misma línea. Si ahora se trazan las tres desde B, ¿qué pasa?`,
+    opts:[['a','También coinciden: el triángulo es isósceles','GE8-coinciden-en-todo-isosceles','parcial'],
+          ['b','Coinciden la altura y la mediana, pero no la bisectriz','GE8-dos-de-tres','hipotesis'],
+          ['c','Son tres líneas distintas'],
+          ['d','Coinciden la mediana y la bisectriz, pero no la altura','GE8-dos-de-tres','hipotesis']],
+    ok:'c',
+    fb:{ a:'Solo coinciden desde el vértice que está entre los dos lados iguales; desde B los lados del ángulo (BA y BC) son distintos.', b:'Desde B, la altura no llega al punto medio de CA: para eso BA y BC tendrían que ser iguales.', d:'Desde B, la bisectriz corta CA en la razón BA : BC, que no es 1 : 1, así que no llega al punto medio.' },
+    antes:ver => E.config({ ...ISO, caja:{ x0:-1.5, x1:5.5, y0:-1, y1:7 }, ver:{ S:false, h:true, med:true, bis:true, medidas:false, desdeB:ver },
+      lados:{ c:'AB = 2√10', b:'AC = 2√10' }, lect:['tipo'], extra:(ctx, c, aP, T) => extraDesdeB(ctx, c, aP, T, E.ver) }),
+    despues:() => { E.ver.desdeB = true; E.dibujar(); },
+    exp:() => `<div class="eqs"><div class="eq">Desde B: ${h_('altura')} ${fmt(T_ISO.alturas.B.longitud, 2)} · ${w_('bisectriz')} ${fmt(T_ISO.bisectrices.B.longitud, 2)} · ${m_('mediana')} ${fmt(T_ISO.medianas.B.longitud, 2)}</div></div>
+      <p>Las tres coinciden solo desde el vértice que está entre los dos lados iguales. Desde B, los lados que forman el ángulo (BA = 2√10 y BC = 4) son distintos, y las tres líneas se separan. Solo en el equilátero coinciden desde los tres vértices.</p>
+      <p class="fuente">Muchos alumnos tienen como imagen de la altura la del triángulo isósceles (Hershkowitz, 1989, citado por otros autores; sin porcentaje). Las opciones de "dos de tres" son hipótesis nuestras.</p>` },
+  { id:'girado', corto:'El triángulo girado',
+    q:`Los lados de este triángulo miden 5, 12 y 13, y ninguno está horizontal. ¿Qué tipo de triángulo es según sus ángulos?`,
+    opts:[['a','Obtusángulo: se ve "caído"','GE9-posicion-cambia-tipo','parcial'],
+          ['b','Rectángulo'],
+          ['c','No se puede saber sin un lado horizontal que sirva de base','GE9-necesita-base-horizontal','parcial'],
+          ['d','Acutángulo: ninguno de sus lados es vertical','GE9-posicion-cambia-tipo','parcial']],
+    ok:'b',
+    fb:{ a:'Girar un triángulo no cambia sus ángulos: 5² + 12² = 13², así que tiene un ángulo recto.', c:'El tipo lo deciden los lados y los ángulos, no la posición: con 5² + 12² = 13² ya se sabe que es rectángulo.', d:'Que ningún lado sea vertical no dice nada de sus ángulos: 5² + 12² = 13², y eso lo hace rectángulo.' },
+    antes:ver => E.config({ ...R512, caja:{ x0:-3.5, x1:15.5, y0:-5.5, y1:9.5 }, giro: ver ? 0 : GIRO, centro:MT.triangulo(R512.A, R512.B, R512.C).baricentro,
+      ver:{ S:true, recto:ver, medidas:false }, lados:{ a:'12', c:'5', b:'13' }, lect: ver ? ['b','S','tipo'] : ['b'] }),
+    despues:() => { E.ver.recto = true; E.lect = ['b','S','tipo']; E.girarA(0, 1600, () => { E.avisar(); }); },
+    exp:() => { const r = MT.rotar(R512.A, R512.B, R512.C, GIRO); return `<div class="eqs"><div class="eq">5² + 12² = 25 + 144 = 169 = 13²</div>
+      <div class="eq">Girado ${GIRO}°: lados ${fmt(r.lados.c, 2)}; ${fmt(r.lados.a, 2)}; ${fmt(r.lados.b, 2)} · ángulo en B ${fmt(r.angulos.B, 1)}° · área ${fmt(r.area, 1)}<span class="note">el motor lo calcula con el triángulo girado</span></div></div>
+      <p>Al girarlo de vuelta aparece el dibujo de siempre, con el ángulo recto abajo a la izquierda. Pero ya era rectángulo antes de girarlo: el tipo lo deciden los lados y los ángulos, no la posición. En el examen, las figuras vienen giradas a propósito.</p>
+      <p class="fuente">Reconocer una figura solo en su posición "de siempre" está documentado en niños pequeños (Clements y otros, 1999) y descrito, sin cifras, en secundaria (Vinner y Hershkowitz, 1980).</p>`; } },
+  { id:'mediana-area', corto:'La mediana y el área',
+    q:`La ${m_('mediana')} desde A va al punto medio M de BC y parte el triángulo en dos: ABM (a la izquierda) y AMC (a la derecha). ¿Cuál tiene más ${S_('área')}?`,
+    opts:[['a','AMC: se ve más grande y tiene los lados más largos','GE6-se-ve-mas-grande','parcial'],
+          ['b','Tienen la misma área'],
+          ['c','Son iguales solo si el triángulo es isósceles','GE8-solo-en-isosceles','parcial'],
+          ['d','ABM: está junto al ángulo obtuso','GE6-se-ve-mas-grande','parcial']],
+    ok:'b',
+    fb:{ a:'Verse más grande no es tener más área: los dos tienen base 2 (BM = MC) y la misma altura desde A.', c:'La mediana parte el área en dos mitades en cualquier triángulo: las dos bases son iguales y la altura es la misma.', d:'Estar junto al ángulo obtuso no cambia la cuenta: base 2 y la misma altura que el otro.' },
+    antes:ver => E.config({ ...OBT, caja:{ x0:-4, x1:6, y0:-1.4, y1:4.2 }, ver:{ S:true, med:true, mitades:ver, h:ver, medidas:false }, lect: ['S','tipo'], extra:extraMitades }),
+    despues:() => { E.ver.mitades = true; E.crecer('h', 800); },
+    exp:() => `<div class="eqs"><div class="eq">${S_('S₁')} = ${fr(`${b_('BM')} · ${h_('h')}`, '2')} = ${fr(`${b_('2')} · ${h_('3')}`, '2')} = ${S_(fmt(MIT.areas[0], 0))} · ${S_('S₂')} = ${fr(`${b_('MC')} · ${h_('h')}`, '2')} = ${S_(fmt(MIT.areas[1], 0))}</div></div>
+      <p>Los dos triángulos tienen bases iguales (BM = MC = 2) y la misma ${h_('altura')}, la de A sobre BC: tienen la misma ${S_('área')}. Pasa en todo triángulo, isósceles o no. Por eso la mediana siempre parte el área en dos mitades.</p>
+      <p class="fuente">A simple vista se estiman mal áreas de triángulos de igual base y altura (Kospentaris, Spyrou y Lappas, 2011, con 21 alumnos griegos de último año de secundaria y universitarios de matemática).</p>` },
+  { id:'ortocentro', corto:'¿Dónde se cortan las alturas?',
+    q:`Las tres ${h_('alturas')} de un triángulo (o sus prolongaciones) se cortan en un punto, el ortocentro H. En este obtusángulo, ¿dónde está H?`,
+    opts:[['a','Dentro del triángulo, como en todo triángulo','GE7-ortocentro-dentro','hipotesis'],
+          ['b','En B, el vértice del ángulo obtuso','ortocentro-en-vertice','hipotesis'],
+          ['c','En el punto medio del lado más largo','ortocentro-como-circuncentro','hipotesis'],
+          ['d','Fuera del triángulo, del lado del ángulo obtuso']],
+    ok:'d',
+    fb:{ a:'En el obtusángulo dos alturas caen fuera, y sus prolongaciones se cortan fuera del triángulo.', b:'El ortocentro está en un vértice solo en el triángulo rectángulo, donde dos alturas son los catetos.', c:'El punto medio del lado mayor es el circuncentro del triángulo rectángulo, no el ortocentro.' },
+    antes:ver => E.config({ ...OBT, caja:{ x0:-5, x1:6.5, y0:-5, y1:4.2 }, ver:{ S:true, alturas:true, orto:ver, medidas:false }, lect:['tipo'] }),
+    despues:() => { E.ver.orto = true; E.dibujar(); },
+    exp:() => `<div class="eqs"><div class="eq">${h_('H')} = (${fmt(T_OBT.ortocentro.x, 0)}; ${fmt(T_OBT.ortocentro.y, 0)})<span class="note">debajo de BC, fuera del triángulo</span></div></div>
+      <p>Para encontrar H hay que prolongar las alturas (las líneas punteadas). Cuando el triángulo es acutángulo, H queda dentro; cuando es rectángulo, H es el vértice del ángulo recto; cuando es obtusángulo, H queda fuera, más allá del ángulo obtuso. Prueba los tres casos en "Paso a paso", paso 8, con "Puntos notables".</p>
+      <p class="fuente">No encontramos estudios sobre el ortocentro. Lo proponemos porque extiende la idea de que la altura siempre cae dentro (GE7); las tres opciones incorrectas son hipótesis nuestras.</p>` },
+];
+const S = { k:0, pred:{}, t0:Date.now() };
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k];
+  x.antes(!!S.pred[x.id]);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar();
+    const chico = innerWidth < 900;
+    if (chico) $('cv2').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+    esperar(chico ? 380 : 0, () => { if (S.k !== k) return; x.despues(); E.leyenda(); E.dibujar(); });
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+  });
+  pintar();
+}
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>
