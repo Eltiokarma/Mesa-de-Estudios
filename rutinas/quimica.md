@@ -33,14 +33,27 @@ Cada ejecución construye una plantilla de escena de química nueva, en la rama 
   - los ids de error se repetían dentro de un mismo problema;
   - algunas ecuaciones quedaban cortadas.
   
-  Las correcciones se están aplicando (este reporte se actualiza al terminar).
+  Todo eso se corrigió:
+  - título neutro;
+  - opciones numeradas del 1 al 4 (la medición sigue guardando a-d);
+  - opciones con el mismo formato, sin la cuenta de la correcta;
+  - pasos bloqueados que dicen solo "Paso N, bloqueado";
+  - Q con rombo;
+  - la curva "sin catalizador" fina y translúcida;
+  - citas "ítems 27 a 29" y "ítems 20 a 22", y el 53 % marcado como extensión nuestra;
+  - ids de error únicos por opción (EQ12-rendimiento, EQ11-hacia-X, EQ14-hacia-B, etc.);
+  - ecuaciones partidas;
+  - y los detalles menores (anillo de 0,4 s, rótulo de V fuera de la caja, "rapidez" en todo el texto, aria-live repetido a 1,2 s).
+
+  El constructor volvió a probar las 8 combinaciones con Playwright: 0 errores de consola y sin desborde.
+- **Queda a medias:** en comprimir 2 X ⇌ Y, la opción "K sube" no lleva cantidades. Con K al doble, el equilibrio no da porciones enteras.
 
 **Pruebas.** `npm test`: solo fallan las 2 de catálogo, como se esperaba (`catalogo.test.js` y `app.test.js`), porque la plantilla todavía no está en el catálogo.
 
 **Pendiente.**
 - No hay gráfica de "Kp con presiones parciales" en la escena (está en papel, p7). No hay gas inerte a presión constante (EQ14, el caso más fino de Quílez).
 - El calor de reacción y la energía de activación de la escena se eligieron para que K salga redonda (4 → 3/2 entre 300 y 400 K); la escena lo dice.
-- La gráfica de rapideces muestra un pico de unos 11, no 12, porque el historial guarda un punto cada 0,1 s.
+- La gráfica de rapideces muestra un pico de unos 11, no 12, porque el historial guarda un punto cada 0,1 s; el texto dice "unos 12".
 - Las opciones de comprimir A ⇌ B, "se gasta todo el A" y las de agregar A y B a la vez (Quílez, sin porcentaje) son hipótesis o tienen respaldo sin cifra.
 
 **Pedidos para la integración (rama principal).**

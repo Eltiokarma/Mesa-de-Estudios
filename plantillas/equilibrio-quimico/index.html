@@ -102,7 +102,8 @@ input.r-T{accent-color:var(--c-T)}
 
 .eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
 .eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.05rem; white-space:nowrap; font-variant-numeric:tabular-nums}
-.eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.5em; white-space:normal}
+.eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); white-space:normal; flex-basis:100%}
+.eq{min-width:0}
 .frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1.15}
 .frac > span:first-child{border-bottom:1.5px solid currentColor; padding:0 .25em}
 .frac > span:last-child{padding:0 .25em}
@@ -169,8 +170,8 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
   <div class="top">
     <header>
       <p class="eyebrow">Química · Equilibrio químico · Problemas tipo admisión</p>
-      <h1>Equilibrio químico: nada se detiene</h1>
-      <p class="sub">Por fuera no cambia nada; por dentro, la reacción va en los dos sentidos todo el tiempo.</p>
+      <h1>Equilibrio químico: ¿qué pasa adentro de la caja?</h1>
+      <p class="sub">Una caja con dos sustancias que reaccionan entre sí. Mira, predice y compara Q con K.</p>
     </header>
     <nav class="tabs" aria-label="Modo de la escena">
       <a href="#paso-a-paso" id="tab1">Paso a paso</a>
@@ -183,14 +184,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
     <section class="bench" aria-label="Caja con porciones de A y B, barras de cantidad y gráficas">
       <div class="lienzo"><canvas id="cv" role="img" aria-label="Una caja de 1 litro con porciones de A (círculos) y de B (triángulos); debajo, barras con la cantidad de cada una; al lado, contadores de cambios, la comparación de Q con K y una gráfica en el tiempo"></canvas></div>
       <p class="sr" id="desc1" aria-live="polite"></p>
-      <div class="legend">
-        <span><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="5.5" fill="var(--c-A)"/></svg>A · cada círculo, una porción</span>
-        <span><svg width="14" height="14" aria-hidden="true"><path d="M7 1.5 L13 12.5 L1 12.5 Z" fill="var(--c-B)"/></svg>B · cada triángulo, una porción</span>
-        <span><i style="background:var(--c-Q)"></i>Q · cociente</span>
-        <span><i style="background:var(--c-K)"></i>K · constante</span>
-        <span><i style="background:var(--c-T)"></i>T · temperatura</span>
-        <span>línea continua: A → B · a trazos: B → A</span>
-      </div>
+      <div class="legend" id="ley1"></div>
     </section>
     <section class="guide">
       <ol class="dots" id="dots"></ol>
@@ -319,7 +313,7 @@ function nombre(tipo, rol){ return tipo === 'AB' ? rol : (rol === 'A' ? 'X' : 'Y
    E.vista dice qué se ve. Antes de responder una predicción la caja queda congelada y sin contadores, Q, K nuevo
    ni gráfica: nada regala la respuesta. */
 const ESCENAS = [];
-function crearEscena(cv, idDesc, modoId, conTermo){
+function crearEscena(cv, idDesc, modoId, conTermo, idLey){
   const E = { sim:null, vista:{}, extra:null, Vdib:1, hl:null, casa:new WeakMap(), ultDesc:0, modoId };
   ESCENAS.push(E);
   const ctx = cv.getContext('2d');
@@ -378,7 +372,7 @@ function crearEscena(cv, idDesc, modoId, conTermo){
       let q = p; if (RM){ q = E.casa.get(p); if (!q){ q = { x:Math.random(), y:Math.random() }; E.casa.set(p, q); } }
       const px = b.x + 10 + q.x*(w - 20), py = b.y + 10 + q.y*(b.h - 20);
       const edad = s.t - p.cambio;
-      if (corre && edad >= 0 && edad < (RM ? 1 : 0.7)){
+      if (corre && edad >= 0 && edad < (RM ? 0.4 : 0.7)){
         const col = p.tipo === 'A' ? (s.tipo === 'AB' ? c.A : c.X) : (s.tipo === 'AB' ? c.B : c.Y);
         if (RM){ ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(px, py, R*1.75, 0, Math.PI*2); ctx.stroke(); }
         else { ctx.globalAlpha = 0.45*(1 - edad/0.7); ctx.fillStyle = col; ctx.beginPath(); ctx.arc(px, py, R*(1.6 + edad*1.6), 0, Math.PI*2); ctx.fill(); ctx.globalAlpha = 1; }
@@ -389,7 +383,7 @@ function crearEscena(cv, idDesc, modoId, conTermo){
     if (v.embolo){
       ctx.fillStyle = c.metal; ctx.fillRect(b.x + w - 3, b.y - 6, 9, b.h + 12);
       if (b.w - w > 8) ctx.fillRect(b.x + w + 6, b.y + b.h/2 - 4, b.w - w - 6, 8);
-      rotulo(ctx, c, b.x + 12, b.y + 16, `V = ${fmt(s.V, 1)} L`, c.V, 'left', 800, 12);
+      ctx.font = `800 12px ${c.font}`; ctx.fillStyle = c.V; ctx.textAlign = 'right'; ctx.textBaseline = 'top'; ctx.fillText(`V = ${fmt(s.V, 1)} L`, b.x + b.w, b.y + b.h + 16);
     } else { ctx.font = `700 11px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'right'; ctx.textBaseline = 'top'; ctx.fillText(`caja de ${fmt(s.V, 1)} L`, b.x + b.w, b.y + b.h + 16); }
     if (v.congelada && v.lupa && v.aviso){ ctx.font = `800 12px ${c.font}`; ctx.fillStyle = c.ink; ctx.textAlign = 'right'; ctx.textBaseline = 'bottom'; ctx.fillText(v.aviso, b.x + b.w, b.y - 6); }
   }
@@ -442,12 +436,12 @@ function crearEscena(cv, idDesc, modoId, conTermo){
     ctx.font = `800 11px ${c.mono}`; ctx.fillStyle = c.K; ctx.textBaseline = 'bottom';
     const xk = clamp(X(K), x0 + 22, x1 - 22); ctx.fillText(`K = ${fmtK(K)}`, xk, y - 12);
     const xq = X(Q === Infinity ? 1e9 : Q === 0 ? 1e-9 : Q), r = E.hl === 'Q' ? 8 : 6;
-    ctx.fillStyle = c.Q; ctx.beginPath(); ctx.moveTo(xq, y + 2); ctx.lineTo(xq - r, y + 2 + r*1.5); ctx.lineTo(xq + r, y + 2 + r*1.5); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = c.Q; ctx.beginPath(); ctx.moveTo(xq, y - r); ctx.lineTo(xq + r*0.75, y); ctx.lineTo(xq, y + r); ctx.lineTo(xq - r*0.75, y); ctx.closePath(); ctx.fill();
     const tq = Q === Infinity ? 'Q muy grande' : `Q = ${fmtK(Q)}`;
     ctx.font = `800 11px ${c.mono}`; ctx.textBaseline = 'top'; ctx.textAlign = 'center';
     ctx.save(); const wq = ctx.measureText(tq).width, xt = clamp(xq, x0 + wq/2, x1 - wq/2);
-    ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(xt - wq/2 - 3, y + 13, wq + 6, 14); ctx.restore();
-    ctx.fillStyle = c.Q; ctx.fillText(tq, xt, y + 14);
+    ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(xt - wq/2 - 3, y + 11, wq + 6, 14); ctx.restore();
+    ctx.fillStyle = c.Q; ctx.fillText(tq, xt, y + 12);
   }
   function termometro(c, t){
     const s = E.sim; if (!E.vista.termo) return;
@@ -467,8 +461,8 @@ function crearEscena(cv, idDesc, modoId, conTermo){
     let series;
     if (v.graf === 'cat'){
       const e = E.extra;
-      series = [{ pts:e.con.map(h => [h.t, h.b]), col:c.B, t:'[B]' }, { pts:e.sin.map(h => [h.t, h.b]), col:c.B, trazos:true, t:'' },
-                { pts:e.con.map(h => [h.t, h.a]), col:c.A, t:'[A]' }, { pts:e.sin.map(h => [h.t, h.a]), col:c.A, trazos:true, t:'' }];
+      series = [{ pts:e.con.map(h => [h.t, h.b]), col:c.B, t:'[B]' }, { pts:e.sin.map(h => [h.t, h.b]), col:c.B, fina:true, t:'' },
+                { pts:e.con.map(h => [h.t, h.a]), col:c.A, t:'[A]' }, { pts:e.sin.map(h => [h.t, h.a]), col:c.A, fina:true, t:'' }];
     } else if (v.graf === 'rap'){
       const ca = s.tipo === 'AB' ? 'A' : '2 X', cb = nombre(s.tipo, 'B');
       series = [{ pts:hist.map(h => [h.t, h.directa]), col:c.ink, t:`${ca} → ${cb}` }, { pts:hist.map(h => [h.t, h.inversa]), col:c.ink, trazos:true, t:`${cb} → ${ca}` }];
@@ -504,9 +498,9 @@ function crearEscena(cv, idDesc, modoId, conTermo){
     }
     ctx.beginPath(); ctx.rect(b.x, b.y - 2, b.w, b.h + 4); ctx.clip();
     for (const se of series){
-      ctx.strokeStyle = se.col; ctx.lineWidth = 2.5; ctx.setLineDash(se.trazos ? [6, 4] : []); ctx.beginPath(); let i = 0;
+      ctx.strokeStyle = se.col; ctx.lineWidth = se.fina ? 1.5 : 2.8; ctx.globalAlpha = se.fina ? .5 : 1; ctx.setLineDash(se.trazos ? [6, 4] : []); ctx.beginPath(); let i = 0;
       for (const [t, y] of se.pts){ if (t < x0 - 0.2) continue; if (i++) ctx.lineTo(X(t), Y(y)); else ctx.moveTo(X(t), Y(y)); }
-      ctx.stroke();
+      ctx.stroke(); ctx.globalAlpha = 1;
     }
     ctx.restore();
     ctx.strokeStyle = c.muted; ctx.lineWidth = 1.4; linea(ctx, b.x, b.y + b.h, b.x + b.w, b.y + b.h); linea(ctx, b.x, b.y, b.x, b.y + b.h);
@@ -516,7 +510,7 @@ function crearEscena(cv, idDesc, modoId, conTermo){
     let prev = -1e9;
     for (const f of fines){ const y = Math.max(f.y - 10, prev + 15); prev = y; rotulo(ctx, c, b.x + b.w - 4, clamp(y, b.y + 8, b.y + b.h - 8), f.se.t, f.se.col, 'right', 800, 11); }
     ctx.font = `700 10px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'left'; ctx.textBaseline = 'bottom';
-    ctx.fillText(v.graf === 'rap' ? 'cambios por segundo' : v.graf === 'cat' ? 'por litro · continua: con catalizador · a trazos: sin' : 'porciones por litro', b.x - 26, b.y - 3);
+    ctx.fillText(v.graf === 'rap' ? 'cambios por segundo' : v.graf === 'cat' ? 'por litro · gruesa: con catalizador · fina: sin' : 'porciones por litro', b.x - 26, b.y - 3);
     ctx.textAlign = 'right'; ctx.textBaseline = 'top'; ctx.fillText('t (s)', b.x + b.w, b.y + b.h + 15);
   }
   E.dibujar = () => {
@@ -524,6 +518,8 @@ function crearEscena(cv, idDesc, modoId, conTermo){
     const c = colores(); ctx.clearRect(0, 0, W, H);
     ecuacion(c, Lz.eq); caja(c, Lz.box); termometro(c, Lz.termo); barras(c, Lz.bars);
     contadores(c, Lz.cont); medidor(c, Lz.qk); grafica(c, Lz.graf);
+    const ley = leyendaHTML(E.sim, E.vista), el = document.getElementById(idLey);
+    if (el && el.dataset.k !== ley){ el.dataset.k = ley; el.innerHTML = ley; }
   };
   // Descripción para lector de pantalla: solo lo que ya se puede saber.
   E.describir = (forzar) => {
@@ -542,6 +538,24 @@ function crearEscena(cv, idDesc, modoId, conTermo){
     const el = document.getElementById(idDesc); if (el.textContent !== t) el.textContent = t;
   };
   return E;
+}
+// Leyenda con solo lo que se ve en ese momento.
+function leyendaHTML(s, v){
+  const sv = (w, body) => `<svg width="${w}" height="14" aria-hidden="true">${body}</svg>`, it = [];
+  if (s.tipo === 'AB'){
+    it.push(`<span>${sv(14, '<circle cx="7" cy="7" r="5.5" fill="var(--c-A)"/>')}A · cada círculo, una porción</span>`);
+    it.push(`<span>${sv(14, '<path d="M7 1.5 L13 12.5 L1 12.5 Z" fill="var(--c-B)"/>')}B · cada triángulo, una porción</span>`);
+  } else {
+    it.push(`<span>${sv(14, '<circle cx="7" cy="7" r="4" fill="var(--c-X)"/>')}X · cada círculo pequeño, una porción</span>`);
+    it.push(`<span>${sv(22, '<circle cx="7" cy="7" r="4" fill="var(--c-Y)"/><circle cx="14" cy="7" r="4" fill="var(--c-Y)"/>')}Y · cada pareja, una porción de Y (no una molécula)</span>`);
+  }
+  if (v.qk) it.push(`<span>${sv(14, '<path d="M7 1 L12 7 L7 13 L2 7 Z" fill="var(--c-Q)"/>')}Q · cociente</span>`);
+  if (v.K || v.qk) it.push(`<span><i style="background:var(--c-K)"></i>K · constante</span>`);
+  if (v.termo) it.push(`<span><i style="background:var(--c-T)"></i>T · temperatura</span>`);
+  if (v.embolo) it.push(`<span><i style="background:var(--c-V)"></i>V · volumen</span>`);
+  if (v.contadores || v.graf === 'rap'){ const a = s.tipo === 'AB' ? 'A' : '2 X', b = s.tipo === 'AB' ? 'B' : 'Y'; it.push(`<span>línea continua: ${a} → ${b} · a trazos: ${b} → ${a}</span>`); }
+  if (v.graf === 'cat') it.push(`<span>gráfica: línea gruesa, con catalizador · fina y clara, sin</span>`);
+  return it.join('');
 }
 // "Q < K: avanza hacia B", con la cuenta exacta del motor. Como las porciones son enteras, a veces Q no puede
 // igualar a K: si ya están en el entero más cercano al equilibrio, se dice que está en equilibrio.
@@ -580,7 +594,7 @@ function gradual(E, dur, paso, fin){
   let t = 0;
   E.anima = dt => { t += dt; const f = Math.min(1, t/dur); paso(f); if (f >= 1){ E.anima = null; if (fin) fin(); } };
 }
-const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}" aria-label="Opción ${'abcd'.indexOf(k) + 1}: ${t}"><span class="l">${'abcd'.indexOf(k) + 1}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
 const otraVez = `<button type="button" class="btn" data-repetir>Ver de nuevo</button>`;
 const segGraf = (sel) => `<div class="seg" role="group" aria-label="Qué muestra la gráfica"><button type="button" data-graf="conc" aria-pressed="${sel === 'conc'}">Cantidades</button><button type="button" data-graf="rap" aria-pressed="${sel === 'rap'}">Rapideces</button></div>`;
 function enlazarSeg(raiz, E, alElegir){
@@ -597,7 +611,7 @@ function enlazarSeg(raiz, E, alElegir){
    300 K, Kc = 4, la directa libera calor. 2 A y 8 B en equilibrio; se agregan 10 A. */
 (function(){
 const $ = id => document.getElementById(id);
-const E = crearEscena($('cv'), 'desc1', 'm1', true);
+const E = crearEscena($('cv'), 'desc1', 'm1', true, 'ley1');
 const SEM = 7;
 const S = { step:0, max:0, pred:{}, graf:{}, ocupado:false };
 const base = (nA, nB) => { const s = ME.caja({ tipo:'AB', nA, nB, T:300, semilla:SEM }); adelantar(s, 4); return s; };
@@ -610,30 +624,30 @@ const RES = (doc, txt) => doc;
 const P0 = { id:'equilibrio-quimico-paso2', ok:'c', opts:[
   ['a','Ya no reacciona nada: la reacción terminó.','EQ3', RES('documentado','Riddle y Lo-Fan-Hin 2023: 6 % de 63 y 13 % de 16')],
   ['b','Va y viene: un rato casi todo pasa a B y otro rato vuelve a A.','EQ2', RES('documentado','Bilgin y otros 2003, ítem 5: 51 % de 216')],
-  ['c','Sigue cambiando en los dos sentidos, tantas de A a B como de B a A.'],
+  ['c','Sigue cambiando: tantas de A a B como de B a A.'],
   ['d','Sigue cambiando, pero más de A a B que de B a A.','EQ4', RES('documentado','Bilgin y otros 2003, ítem 7: 40 % de 216')]],
   fb:{ c:'¡Bien! Las porciones siguen cambiando en los dos sentidos, tantas de ida como de vuelta: por eso las cantidades no se mueven. Mira los contadores.',
-    a:'Elegiste la A. La reacción no se detiene: mira los contadores, siguen cambiando porciones en los dos sentidos. Según Riddle y Lo-Fan-Hin (2023), el 6 % de 63 estudiantes de secundaria y el 13 % de 16 de último año creen que en el equilibrio la reacción terminó. La correcta está marcada.',
-    b:'Elegiste la B. No va y viene: las dos reacciones ocurren a la vez, todo el tiempo, y por eso las cantidades no se mueven. Según Bilgin y otros (2003), el 51 % de 216 estudiantes piensa en ese vaivén. La correcta está marcada.',
-    d:'Elegiste la D. Si pasaran más porciones de A a B que de B a A, el número de B subiría, y no sube. Según Bilgin y otros (2003), el 40 % de 216 cree que en el equilibrio las dos rapideces no son iguales. La correcta está marcada.' } };
+    a:'Elegiste la 1. La reacción no se detiene: mira los contadores, siguen cambiando porciones en los dos sentidos. Según Riddle y Lo-Fan-Hin (2023), el 6 % de 63 estudiantes de secundaria y el 13 % de 16 de último año creen que en el equilibrio la reacción terminó. La correcta está marcada.',
+    b:'Elegiste la 2. No va y viene: las dos reacciones ocurren a la vez, todo el tiempo, y por eso las cantidades no se mueven. Según Bilgin y otros (2003), el 51 % de 216 estudiantes piensa en ese vaivén. La correcta está marcada.',
+    d:'Elegiste la 4. Si pasaran más porciones de A a B que de B a A, el número de B subiría, y no sube. Según Bilgin y otros (2003), el 40 % de 216 cree que en el equilibrio las dos rapideces no son iguales. La correcta está marcada.' } };
 const P1 = { id:'equilibrio-quimico-paso4', ok:'d', opts:[
   ['a','12 A y 8 B: no pasa nada, ya estaba en equilibrio','EQ3', RES('documentado','Riddle y Lo-Fan-Hin 2023: 6 % de 63 y 13 % de 16')],
-  ['b','2 A y 18 B: se gasta todo lo agregado y A vuelve a lo que tenía','EQ6', RES('parcial','Bilgin y otros 2003, ítem 11 (parcial): 53 % de 216 cree que las velocidades vuelven a las iniciales')],
+  ['b','2 A y 18 B: se gasta todo lo agregado','EQ6', RES('parcial','Bilgin y otros 2003, ítem 11 (parcial): 53 % de 216 cree que las rapideces vuelven a las iniciales')],
   ['c','10 A y 10 B: quedan iguales','EQ1', RES('documentado','Bilgin y otros 2003: 36 % de 216; Riddle y Lo-Fan-Hin 2023: 48 % de 63')],
-  ['d','4 A y 16 B']],
+  ['d','4 A y 16 B: parte de lo agregado pasa a B']],
   fb:{ d:'¡Bien! Quedan 4 A y 16 B: [B]/[A] vuelve a ser 4. Mira cómo llega la caja; en el paso 6 está la cuenta.',
-    a:'Elegiste la A. Al agregar A, el equilibrio se rompe: la reacción directa se acelera y parte del A pasa a B. Según Riddle y Lo-Fan-Hin (2023), el 6 % de 63 y el 13 % de 16 creen que en el equilibrio la reacción terminó. La correcta está marcada.',
-    b:'Elegiste la B. No se gasta todo lo agregado: solo 8 de las 10 porciones pasan a B, y el sistema llega a un equilibrio nuevo, no al de antes. Según Bilgin y otros (2003), el 53 % de 216 cree que al volver al equilibrio todo regresa a como estaba (las rapideces). La correcta está marcada.',
-    c:'Elegiste la C. En el equilibrio las cantidades quedan constantes, no iguales: su relación la fija K. Según Bilgin y otros (2003), el 36 % de 216 cree que quedan iguales; según Riddle y Lo-Fan-Hin (2023), el 48 % de 63. La correcta está marcada.' } };
+    a:'Elegiste la 1. Al agregar A, el equilibrio se rompe: la reacción directa se acelera y parte del A pasa a B. Según Riddle y Lo-Fan-Hin (2023), el 6 % de 63 y el 13 % de 16 creen que en el equilibrio la reacción terminó. La correcta está marcada.',
+    b:'Elegiste la 2. No se gasta todo lo agregado: solo 8 de las 10 porciones pasan a B, y el sistema llega a un equilibrio nuevo, no al de antes. Según Bilgin y otros (2003, ítem 11), el 53 % de 216 cree que las rapideces vuelven a las de antes; que las cantidades vuelvan es una extensión nuestra. La correcta está marcada.',
+    c:'Elegiste la 3. En el equilibrio las cantidades quedan constantes, no iguales: su relación la fija K. Según Bilgin y otros (2003), el 36 % de 216 cree que quedan iguales; según Riddle y Lo-Fan-Hin (2023), el 48 % de 63. La correcta está marcada.' } };
 const P2 = { id:'equilibrio-quimico-paso7', ok:'c', opts:[
   ['a','No cambia: K es constante','EQ9', RES('documentado','Bilgin y otros 2003, ítem 19: 44 % de 216')],
   ['b','Sube: con más temperatura todo reacciona más','EQ8', RES('documentado','Bilgin y otros 2003, ítem 18: 22 % de 216')],
-  ['c','Baja'],
-  ['d','Depende de cuánto A y B haya en la caja','EQ10', RES('documentado','Tagle Barrios 2024 (UNAM), sin porcentaje')]],
+  ['c','Baja: se favorece la reacción que absorbe calor'],
+  ['d','Depende: de cuánto A y B haya en la caja','EQ10', RES('documentado','Tagle Barrios 2024 (UNAM), sin porcentaje')]],
   fb:{ c:'¡Bien! La directa libera calor; al calentar se favorece la inversa, que lo absorbe. K baja.',
-    a:'Elegiste la A. K es constante solo mientras no cambie la temperatura. Según Bilgin y otros (2003), el 44 % de 216 cree que K no cambia al calentar. La correcta está marcada.',
-    b:'Elegiste la B. Al calentar, las dos reacciones se aceleran, pero la inversa (la que absorbe calor) se acelera más, y K baja. Según Bilgin y otros (2003), el 22 % de 216 cree que K sube. La correcta está marcada.',
-    d:'Elegiste la D. K no depende de cuánto A y B haya: solo de la temperatura. Esta idea aparece en estudiantes de la UNAM (Tagle Barrios, 2024), sin porcentaje. La correcta está marcada.' } };
+    a:'Elegiste la 1. K es constante solo mientras no cambie la temperatura. Según Bilgin y otros (2003), el 44 % de 216 cree que K no cambia al calentar. La correcta está marcada.',
+    b:'Elegiste la 2. Al calentar, las dos reacciones se aceleran, pero la inversa (la que absorbe calor) se acelera más, y K baja. Según Bilgin y otros (2003), el 22 % de 216 cree que K sube. La correcta está marcada.',
+    d:'Elegiste la 4. K no depende de cuánto A y B haya: solo de la temperatura. Esta idea aparece en estudiantes de la UNAM (Tagle Barrios, 2024), sin porcentaje. La correcta está marcada.' } };
 
 // Vistas: qué se ve en cada paso. 'r' = ya respondió la predicción del paso.
 const VISTA = {
@@ -649,10 +663,11 @@ const steps = [
    vista:r => r ? VISTA.adentro() : { ...VISTA.lejos(), ph:'Responde para ver los contadores', phGraf:'Responde para ver la gráfica' },
    body:() => `<p>La caja está en equilibrio: el número de ${A_('A')} y de ${B_('B')} no cambia. ¿Qué pasa adentro?</p>${opcionesHTML(P0.opts, 'fb')}
    <p class="hint" id="tras" hidden>Ahora la caja se ve con lupa. Cada porción que acaba de cambiar se marca un instante${RM ? ' con un borde' : ' con un halo'}. Los contadores dicen cuántas cambiaron en el último segundo, en cada sentido.</p>` },
- { k:'Paso 3', t:'Equilibrio dinámico', arma:() => base(2, 8), vista:() => VISTA.adentro(),
-   body:() => `<p>Los dos contadores marcan lo mismo y ninguno marca cero: cada segundo, unas porciones de ${A_('A')} pasan a ${B_('B')} y otras tantas de ${B_('B')} pasan a ${A_('A')}. Por eso nada cambia a la vista.</p>
+ { k:'Paso 3', t:'Adentro de la caja en equilibrio', arma:() => base(2, 8), vista:() => VISTA.adentro(),
+   body:() => `<p>Los dos contadores marcan lo mismo y ninguno marca cero: cada segundo, unas porciones de ${A_('A')} pasan a ${B_('B')} y otras tantas de ${B_('B')} pasan a ${A_('A')}. Por eso nada cambia a la vista: es un equilibrio dinámico.</p>
    <div class="eqs">
-     <div class="eq">rapidez directa (A → B) = rapidez inversa (B → A)</div>
+     <div class="eq">rapidez directa (A → B)</div>
+     <div class="eq">= rapidez inversa (B → A)</div>
      <div class="eq">${K_('Kc')} = ${fr(B_('[B]'), A_('[A]'))} = ${fr(B_('8'), A_('2'))} = ${K_('4')}<span class="note">[A] es la concentración de A: porciones por litro. La caja es de 1 L, así que es el mismo número.</span></div>
    </div>
    <p>Las concentraciones quedan constantes, no iguales: hay 4 veces más ${B_('B')} que ${A_('A')}. Esa razón es la constante de equilibrio, ${K_('Kc')}.</p>
@@ -661,10 +676,10 @@ const steps = [
    vista:r => r ? VISTA.adentro() : { lupa:true, congelada:true, contadores:false, graf:null, qk:false, K:false, aviso:'detenida en el instante en que entran', ph:'Responde para ver los contadores', phGraf:'Responde para ver la gráfica' },
    body:() => `<p>Se agregan ${A_('10 porciones de A')} de golpe. En este instante hay ${A_('12 de A')} y ${B_('8 de B')}: la caja está detenida en ese instante. Cuando vuelva al equilibrio, ¿cuánto habrá de cada uno?</p>${opcionesHTML(P1.opts, 'fb')}` },
  { k:'Paso 5', t:'Lo que pasa adentro', arma:agregado, vista:() => VISTA.adentro(S.graf[4] || 'rap'), graf:true,
-   body:() => `<p>En el instante en que entran las 10 porciones, solo sube la rapidez directa: hay más ${A_('A')} que puede pasar a ${B_('B')}, y salta de 2 a 12 cambios por segundo. La inversa sigue en 2, porque todavía hay las mismas 8 porciones de ${B_('B')}.</p>
+   body:() => `<p>En el instante en que entran las 10 porciones, solo sube la rapidez directa: hay más ${A_('A')} que puede pasar a ${B_('B')}, y salta de 2 a unos 12 cambios por segundo. La inversa sigue en 2, porque todavía hay las mismas 8 porciones de ${B_('B')}.</p>
    <p>Mientras la directa gane, ${A_('A')} baja y ${B_('B')} sube; la directa se frena y la inversa se acelera, hasta que vuelven a ser iguales: 4 cambios por segundo cada una, más que antes. Quedan ${A_('4 A')} y ${B_('16 B')}.</p>
    <div class="nav">${segGraf(S.graf[4] || 'rap')}${otraVez}</div>
-   <p class="fuente">Según Bilgin y otros (2003), el 49 % de 216 estudiantes cree que al agregar un reactivo la reacción inversa se frena al instante, y el 53 %, que las velocidades vuelven a las de antes.</p>` },
+   <p class="fuente">Según Bilgin y otros (2003), el 49 % de 216 estudiantes cree que al agregar un reactivo la reacción inversa se frena al instante, y el 53 %, que las rapideces vuelven a las de antes.</p>` },
  { k:'Paso 6', t:'La cuenta: Q contra K', arma:agregado, vista:() => ({ ...VISTA.adentro(), qk:true }),
    body:() => `<p>Justo después de agregar, el cociente de reacción ${Q_('Q')} se calcula igual que K, pero con lo que hay en ese instante:</p>
    <div class="eqs">
@@ -674,16 +689,18 @@ const steps = [
    <table class="tabla"><thead><tr><th></th><th>${A_('A')}</th><th>${B_('B')}</th></tr></thead><tbody>
      <tr><td>al agregar</td><td>12</td><td>8</td></tr><tr><td>cambia</td><td>− x</td><td>+ x</td></tr><tr><td>equilibrio</td><td>12 − x</td><td>8 + x</td></tr></tbody></table>
    <div class="eqs">
-     <div class="eq">${fr(B_('8 + x'), A_('12 − x'))} = ${K_('4')} → 8 + x = 48 − 4x → 5x = 40 → x = 8</div>
+     <div class="eq">${fr(B_('8 + x'), A_('12 − x'))} = ${K_('4')}</div>
+     <div class="eq">8 + x = 48 − 4x</div>
+     <div class="eq">5x = 40 → x = 8</div>
    </div>
    <p class="answer">Respuesta: quedan 4 porciones de A y 16 de B.</p>
    <div class="nav"><span></span>${otraVez}</div>
-   <p>De las 10 porciones agregadas, solo 8 pasan a ${B_('B')}: las otras 2 se quedan como ${A_('A')}. En el dibujo, el triángulo de ${Q_('Q')} se acerca a la raya de ${K_('K')} hasta llegar.</p>
+   <p>De las 10 porciones agregadas, solo 8 pasan a ${B_('B')}: las otras 2 se quedan como ${A_('A')}. En el dibujo, el rombo de ${Q_('Q')} se acerca a la raya de ${K_('K')} hasta llegar.</p>
    <p class="aviso">Comparar Q con K funciona siempre; la regla de Le Chatelier memorizada a veces falla (Quílez, 2017).</p>` },
  { k:'Paso 7', t:'Al calentar: predice', gate:P2, arma:() => base(4, 16),
    vista:r => ({ lupa:true, congelada:!r, contadores:!!r, graf:r ? 'rap' : null, qk:!!r, K:true, termo:true, aviso:r ? '' : 'detenida a 300 K', ph:'Responde para ver los contadores', phGraf:'Responde para ver la gráfica', phQK:r ? '' : 'Responde para ver Q y K' }),
    body:() => `<p>La caja quedó en equilibrio con ${A_('4 A')} y ${B_('16 B')}, a ${T_('300 K')}. La reacción directa (A → B) libera calor. Se calienta la caja de ${T_('300 K')} a ${T_('400 K')}. ¿Qué pasa con ${K_('K')}?</p>${opcionesHTML(P2.opts, 'fb')}` },
- { k:'Paso 8', t:'Al calentar, K baja', arma:caliente, vista:() => ({ ...VISTA.adentro(S.graf[7] || 'rap'), qk:true, termo:true }), graf:true,
+ { k:'Paso 8', t:'Al calentar: lo que pasa', arma:caliente, vista:() => ({ ...VISTA.adentro(S.graf[7] || 'rap'), qk:true, termo:true }), graf:true,
    body:() => `<p>Al calentar, las dos reacciones se aceleran, pero la inversa (la que absorbe calor) se acelera más. Mientras la inversa gane, ${B_('B')} pasa a ${A_('A')}.</p>
    <div class="eqs">
      <div class="eq">${K_('Kc')} a ${T_('400 K')} = ${K_('3/2')} = ${K_('1,5')}</div>
@@ -741,6 +758,7 @@ function nav(){
 function pintarDots(){
   [...dots.querySelectorAll('button')].forEach((b, k) => {
     b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : `Ir al ${steps[k].k.toLowerCase()}: ${steps[k].t}`);
     if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
   });
 }
@@ -767,7 +785,7 @@ function prediccion(s){
       if (S.step !== paso) return;
       E.vista = s.vista(true); E.casa = new WeakMap();
       if (P === P2){ const T0 = E.sim.T; gradual(E, 1.6, f => E.sim.temperatura(T0 + (400 - T0)*f)); }
-      E.dibujar(); E.describir(true);
+      E.dibujar(); E.describir(true); setTimeout(() => E.describir(true), 1200);
     });
   }));
   pintar();
@@ -806,9 +824,9 @@ go(0);
    congelado; la caja cambia y corre recién después de responder. */
 (function(){
 const $ = id => document.getElementById(id);
-const E = crearEscena($('cv2'), 'desc2', 'm2', false);
+const E = crearEscena($('cv2'), 'desc2', 'm2', false, 'ley2');
 const A_ = t => V('A', t), B_ = t => V('B', t), X_ = t => V('X', t), Y_ = t => V('Y', t), Q_ = t => V('Q', t), K_ = t => V('K', t), V_ = t => V('V', t);
-const RES = (doc, txt) => `${doc}: ${txt}`;
+const RES = (doc, txt) => doc;
 const AB = (nA, nB, sem) => { const s = ME.caja({ tipo:'AB', nA, nB, T:300, semilla:sem }); adelantar(s, 4); return s; };
 const antes = (extra) => ({ lupa:true, congelada:true, contadores:false, graf:null, qk:false, K:true, ph:'Responde para ver los contadores', phGraf:'Responde para ver la gráfica', phQK:'Responde para ver Q y K', ...extra });
 const despues = (extra) => ({ lupa:true, congelada:false, contadores:true, graf:'conc', qk:true, K:true, ...extra });
@@ -821,28 +839,28 @@ const comprimir = () => { const V0 = E.Vdib; E.sim.volumen(0.5); gradual(E, 0.9,
 const EXPS = [
   { id:'catalizador', corto:'Un catalizador', tipo:'AB',
     q:`En una caja de 1 L hay ${A_('4 porciones de A')} y ${B_('16 de B')} en equilibrio (A ⇌ B, ${K_('Kc = 4')}). Se agrega un catalizador. ¿Qué pasa?`,
-    opts:[['a','Se forma más B: el catalizador da más producto','EQ12', RES('documentado','Riddle y Lo-Fan-Hin 2023: 40 % de 63')],
-          ['b','K cambia','EQ12', RES('documentado','Bilgin y otros 2003, ítem 29: 25 % de 216')],
-          ['c','Las dos rapideces suben igual; las cantidades no cambian'],
-          ['d','Se acelera solo la reacción directa','EQ12', RES('documentado','Bilgin y otros 2003, ítem 28: 40 % de 216 cree que acelera una u otra según cuál favorezca')]],
+    opts:[['a','Se forma más B: el catalizador da más producto','EQ12-rendimiento', RES('documentado','Riddle y Lo-Fan-Hin 2023: 40 % de 63')],
+          ['b','K cambia: el catalizador mueve el equilibrio','EQ12-cambia-K', RES('documentado','Bilgin y otros 2003, ítem 29: 25 % de 216')],
+          ['c','Nada en las cantidades: las dos rapideces suben igual'],
+          ['d','Se acelera solo la directa: se forma más B','EQ12-solo-directa', RES('documentado','Bilgin y otros 2003, ítem 28: 40 % de 216 cree que acelera una u otra según cuál favorezca')]],
     ok:'c',
     fb:{ a:'Un catalizador no da más producto: acelera las dos reacciones por igual. Según Riddle y Lo-Fan-Hin (2023), el 40 % de 63 estudiantes cree que sí aumenta el rendimiento.',
-      b:'K no cambia con un catalizador: solo con la temperatura. Según Bilgin y otros (2003), el 25 % de 216 cree que sí cambia.',
-      d:'Acelera las dos por igual. Según Bilgin y otros (2003), el 40 % de 216 cree que acelera una u otra, según cuál favorezca.' },
+      b:'K no cambia con un catalizador: solo con la temperatura. Según Bilgin y otros (2003, ítems 27 a 29), el 25 % de 216 cree que sí cambia.',
+      d:'Acelera las dos por igual. Según Bilgin y otros (2003, ítems 27 a 29), el 40 % de 216 cree que acelera una u otra, según cuál favorezca.' },
     arma:() => AB(4, 16, 5), vAntes:() => antes(),
     alResponder:() => { E.sim.catalizador(true); E.extra = curvasCatalizador(); E.vista = despues({ cat:true, graf:'cat' }); },
     exp:() => `<p>Con el catalizador, los dos contadores se triplican: de unos 4 a unos 12 cambios por segundo en cada sentido. Las cantidades no se mueven: siguen ${A_('4 A')} y ${B_('16 B')}, y ${K_('K')} sigue en 4.</p>
-      <p>La gráfica parte de 12 A y 8 B, como en el paso a paso: con catalizador (línea continua) el equilibrio llega antes, pero a la misma altura que sin catalizador (a trazos).</p>
-      <p class="fuente">Según Bilgin y otros (2003), el 25 % de 216 estudiantes cree que el catalizador cambia K y el 40 %, que acelera una u otra reacción según cuál favorezca. Según Riddle y Lo-Fan-Hin (2023), el 40 % de 63 cree que da más producto.</p>` },
+      <p>La gráfica parte de 12 A y 8 B, como en el paso a paso: con catalizador (línea gruesa) el equilibrio llega antes, pero a la misma altura que sin catalizador (línea fina y clara).</p>
+      <p class="fuente">Según Bilgin y otros (2003, ítems 27 a 29), el 25 % de 216 estudiantes cree que el catalizador cambia K y el 40 %, que acelera una u otra reacción según cuál favorezca. Según Riddle y Lo-Fan-Hin (2023), el 40 % de 63 cree que da más producto.</p>` },
   { id:'comprimir-2x', corto:'Comprimir 2 X ⇌ Y', tipo:'A2B',
-    q:`Otra reacción: 2 ${X_('X')} ⇌ ${Y_('Y')}, con ${K_('Kc = 1/8')}. Cada círculo pequeño es una porción de ${X_('X')}; cada pareja, una porción de ${Y_('Y')} (dos de X se juntan en una de Y). En una caja de ${V_('1 L')} hay ${X_('8 X')} y ${Y_('8 Y')} en equilibrio. Se reduce el volumen a la mitad. ¿Qué pasa?`,
-    opts:[['a','Nada: el volumen no afecta al equilibrio','EQ11', RES('documentado','Riddle y Lo-Fan-Hin 2023: 33 % de 63 y 63 % de 16')],
-          ['b','Se forma más Y: quedan 6 X y 9 Y'],
-          ['c','Se forma más X','EQ11', RES('documentado','Bilgin y otros 2003, ítems 21 y 22: entre 24 % y 40 % de 216 predice mal el nuevo equilibrio al comprimir')],
-          ['d','K sube','EQ10', RES('documentado','Bilgin y otros 2003, ítem 26: 20 % de 216')]],
+    q:`Otra reacción: 2 ${X_('X')} ⇌ ${Y_('Y')}, con ${K_('Kc = 1/8')}. Cada círculo pequeño es una porción de ${X_('X')}; cada pareja es una porción de ${Y_('Y')}, no una molécula (dos porciones de X se juntan en una de Y). En una caja de ${V_('1 L')} hay ${X_('8 X')} y ${Y_('8 Y')} en equilibrio. Se reduce el volumen a la mitad. ¿Qué pasa?`,
+    opts:[['a','Nada: quedan 8 X y 8 Y','EQ11-no-afecta', RES('documentado','Riddle y Lo-Fan-Hin 2023: 33 % de 63 y 63 % de 16')],
+          ['b','Más Y: quedan 6 X y 9 Y'],
+          ['c','Más X: quedan 10 X y 7 Y','EQ11-hacia-X', RES('documentado','Bilgin y otros 2003, ítems 20 a 22: en dos preguntas, el 40 % y el 24 % de 216 predicen mal el nuevo equilibrio')],
+          ['d','K sube: la constante cambia con el volumen','EQ10', RES('documentado','Bilgin y otros 2003, ítem 26: 20 % de 216')]],
     ok:'b',
     fb:{ a:'El volumen sí importa cuando los dos lados tienen distinto número de porciones de gas. Según Riddle y Lo-Fan-Hin (2023), el 33 % de 63 y el 63 % de 16 creen que el volumen no afecta al equilibrio.',
-      c:'Se forma más Y, no más X: el sistema se corre hacia el lado con menos porciones de gas. Según Bilgin y otros (2003), entre el 24 % y el 40 % de 216 predice mal el nuevo equilibrio al comprimir.',
+      c:'Se forma más Y, no más X: el sistema se corre hacia el lado con menos porciones de gas. Según Bilgin y otros (2003, ítems 20 a 22), en dos preguntas, el 40 % y el 24 % de 216 predicen mal el nuevo equilibrio.',
       d:'K no cambia al comprimir: solo con la temperatura. Según Bilgin y otros (2003), el 20 % de 216 cree que K sube.' },
     arma:() => { const s = ME.caja({ tipo:'A2B', nA:8, nB:8, T:300, semilla:9 }); adelantar(s, 4); return s; },
     vAntes:() => antes({ embolo:true, conc:true }),
@@ -850,13 +868,13 @@ const EXPS = [
     exp:() => { const Q = ME.cociente('2 X(g) = Y(g)', { X:16, Y:16 }); return `<p>Al comprimir, todas las concentraciones suben al instante: [${X_('X')}] = [${Y_('Y')}] = 8/0,5 = 16 porciones por litro.</p>
       <div class="eqs"><div class="eq">${Q_('Q')} = ${fr(Y_('[Y]'), X_('[X]') + '²')} = ${fr(Y_('16'), X_('16') + '²')} = ${Q_(fmtK(Q))} &lt; ${K_('Kc')} = ${K_('1/8')}</div></div>
       <p>Avanza la directa: el sistema se corre hacia el lado con menos porciones de gas (2 X → 1 Y). Quedan ${X_('6 X')} y ${Y_('9 Y')} en ${V_('0,5 L')}: [Y]/[X]² = 18/12² = 1/8.</p>
-      <p class="fuente">Según Bilgin y otros (2003), entre el 24 % y el 40 % de 216 estudiantes predice mal el nuevo equilibrio al comprimir, y el 20 % cree que K sube. Según Riddle y Lo-Fan-Hin (2023), el 33 % de 63 y el 63 % de 16 creen que el volumen no afecta al equilibrio.</p>`; } },
+      <p class="fuente">Según Bilgin y otros (2003, ítems 20 a 22), en dos preguntas, el 40 % y el 24 % de 216 estudiantes predicen mal el nuevo equilibrio al comprimir; el 20 % cree que K sube. Según Riddle y Lo-Fan-Hin (2023), el 33 % de 63 y el 63 % de 16 creen que el volumen no afecta al equilibrio.</p>`; } },
   { id:'comprimir-ab', corto:'Comprimir A ⇌ B', tipo:'AB',
     q:`Volvemos a A ⇌ B (${K_('Kc = 4')}), con ${A_('4 A')} y ${B_('16 B')} en ${V_('1 L')}, en equilibrio. Se reduce el volumen a la mitad. ¿Qué pasa?`,
-    opts:[['a','Se forma más B','comprimir-dn0', RES('hipotesis','hipótesis nuestra (sale de EQ11)')],
-          ['b','Se forma más A','comprimir-dn0-inv', RES('hipotesis','hipótesis nuestra (sale de EQ11)')],
-          ['c','Las concentraciones se duplican y el equilibrio no se corre'],
-          ['d','Las concentraciones bajan a la mitad','EQ11', RES('documentado','Bilgin y otros 2003, ítem 20: 27 % de 216')]],
+    opts:[['a','Se forma más B: el equilibrio se corre hacia B','comprimir-dn0', RES('hipotesis','hipótesis nuestra (sale de EQ11)')],
+          ['b','Se forma más A: el equilibrio se corre hacia A','comprimir-dn0-inv', RES('hipotesis','hipótesis nuestra (sale de EQ11)')],
+          ['c','No se corre: las dos concentraciones se duplican'],
+          ['d','No se corre: las dos concentraciones bajan a la mitad','EQ11', RES('documentado','Bilgin y otros 2003, ítem 20: 27 % de 216')]],
     ok:'c',
     fb:{ a:'Con A ⇌ B hay una porción de gas a cada lado: comprimir sube las dos concentraciones por igual y Q no cambia. Es un error que suponemos: aplicar "comprimir corre el equilibrio" donde no corresponde.',
       b:'Con A ⇌ B hay una porción de gas a cada lado: comprimir sube las dos concentraciones por igual y Q no cambia. Es un error que suponemos: aplicar "comprimir corre el equilibrio" donde no corresponde.',
@@ -869,10 +887,10 @@ const EXPS = [
       <p class="fuente">Según Bilgin y otros (2003), el 27 % de 216 estudiantes cree que al comprimir las concentraciones bajan. Que A ⇌ B se corra al comprimir es un error que suponemos, sin estudio con porcentaje.</p>` },
   { id:'quitar-b', corto:'Quitar B', tipo:'AB',
     q:`En la caja de 1 L hay ${A_('4 A')} y ${B_('16 B')} en equilibrio (${K_('Kc = 4')}). Se sacan ${B_('10 porciones de B')}. ¿Qué pasa?`,
-    opts:[['a','K baja, porque hay menos B','EQ10', RES('documentado','Tagle Barrios 2024 (UNAM), sin porcentaje')],
+    opts:[['a','K baja a 1,5: quedan 4 A y 6 B','EQ10', RES('documentado','Tagle Barrios 2024 (UNAM), sin porcentaje')],
           ['b','Todo el A pasa a B: quedan 0 A y 10 B','consume-todo', RES('hipotesis','hipótesis nuestra')],
-          ['c','Parte del A pasa a B: quedan 2 A y 8 B, y K sigue en 4'],
-          ['d','No pasa nada: ya estaba en equilibrio','EQ3', RES('documentado','Riddle y Lo-Fan-Hin 2023: 6 % de 63 y 13 % de 16')]],
+          ['c','Parte del A pasa a B: quedan 2 A y 8 B'],
+          ['d','No pasa nada: quedan 4 A y 6 B','EQ3', RES('documentado','Riddle y Lo-Fan-Hin 2023: 6 % de 63 y 13 % de 16')]],
     ok:'c',
     fb:{ a:'K no cambia al quitar sustancia: solo con la temperatura. Esta idea aparece en estudiantes de la UNAM (Tagle Barrios, 2024), sin porcentaje.',
       b:'No pasa todo: solo lo necesario para que [B]/[A] vuelva a 4. Es un error que suponemos, sin estudio con porcentaje.',
@@ -886,10 +904,10 @@ const EXPS = [
       <p class="fuente">Que K cambie al quitar una sustancia aparece en estudiantes de la UNAM (Tagle Barrios, 2024), sin porcentaje. Que se gaste todo el A es un error que suponemos.</p>` },
   { id:'agregar-ab', corto:'Agregar A y B a la vez', tipo:'AB',
     q:`En la caja de 1 L hay ${A_('4 A')} y ${B_('16 B')} en equilibrio (${K_('Kc = 4')}). Se agregan a la vez ${A_('5 porciones de A')} y ${B_('20 de B')}. ¿Hacia dónde se corre?`,
-    opts:[['a','Hacia B: se agregó reactivo','EQ14', RES('documentado','Quílez 2017: la regla se aplica a ciegas; sin porcentaje')],
-          ['b','Hacia A: se agregó más producto que reactivo','EQ14', RES('documentado','Quílez 2017: la regla se aplica a ciegas; sin porcentaje')],
-          ['c','No se corre'],
-          ['d','K sube, porque hay más de todo','EQ10', RES('documentado','Tagle Barrios 2024 (UNAM), sin porcentaje')]],
+    opts:[['a','Hacia B: se agregó reactivo','EQ14-hacia-B', RES('documentado','Quílez 2017: la regla se aplica a ciegas; sin porcentaje')],
+          ['b','Hacia A: se agregó más producto que reactivo','EQ14-hacia-A', RES('documentado','Quílez 2017: la regla se aplica a ciegas; sin porcentaje')],
+          ['c','Hacia ningún lado: Q sigue igual a K'],
+          ['d','K sube: hay más de todo','EQ10', RES('documentado','Tagle Barrios 2024 (UNAM), sin porcentaje')]],
     ok:'c',
     fb:{ a:'Se agregó reactivo, pero también producto: la regla "se agregó reactivo, se corre hacia los productos" aquí falla. Lo seguro es comparar Q con K. Quílez (2017) describe que la regla se aplica a ciegas, sin porcentaje.',
       b:'Contar cuánto se agregó de cada uno no basta: lo seguro es comparar Q con K. Quílez (2017) describe que la regla de Le Chatelier se aplica a ciegas, sin porcentaje.',
@@ -902,12 +920,6 @@ const EXPS = [
       <p class="fuente">Quílez (2017) describe que alumnos y profesores aplican la regla de Le Chatelier "de forma ciega y mecánica"; no da porcentaje. Comparar Q con K no falla.</p>` },
 ];
 const S = { k:0, pred:{}, t0:Date.now() };
-function leyenda(tipo){
-  const fig = tipo === 'AB'
-    ? `<span><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="5.5" fill="var(--c-A)"/></svg>A · cada círculo, una porción</span><span><svg width="14" height="14" aria-hidden="true"><path d="M7 1.5 L13 12.5 L1 12.5 Z" fill="var(--c-B)"/></svg>B · cada triángulo, una porción</span>`
-    : `<span><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="4" fill="var(--c-X)"/></svg>X · cada círculo pequeño, una porción</span><span><svg width="22" height="14" aria-hidden="true"><circle cx="7" cy="7" r="4" fill="var(--c-Y)"/><circle cx="14" cy="7" r="4" fill="var(--c-Y)"/></svg>Y · cada pareja, una porción</span>`;
-  $('ley2').innerHTML = fig + `<span><i style="background:var(--c-Q)"></i>Q · cociente</span><span><i style="background:var(--c-K)"></i>K · constante</span><span><i style="background:var(--c-V)"></i>V · volumen</span><span>línea continua: directa · a trazos: inversa</span>`;
-}
 function botones(){
   $('exps').innerHTML = EXPS.map((x, k) => `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
   $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
@@ -917,7 +929,7 @@ function ir(k){
   const x = EXPS[k];
   E.anima = null; E.Vdib = 1; E.extra = null; E.casa = new WeakMap();
   E.sim = x.arma(); E.vista = x.vAntes();
-  leyenda(x.tipo); botones();
+  botones();
   $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
   $('t2').textContent = x.corto;
   $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
@@ -926,7 +938,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la caja para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la caja para ver por qué.' : `Elegiste la ${'abcd'.indexOf(p) + 1}. ${x.fb[p]} La correcta está marcada.`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
     const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
@@ -938,7 +950,7 @@ function ir(k){
     registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
     const chico = innerWidth < 900;
     if (chico) $('cv2').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
-    esperar(chico ? 380 : 0, () => { if (S.k !== k) return; x.alResponder(); E.casa = new WeakMap(); E.dibujar(); E.describir(true); });
+    esperar(chico ? 380 : 0, () => { if (S.k !== k) return; x.alResponder(); E.casa = new WeakMap(); E.dibujar(); E.describir(true); setTimeout(() => E.describir(true), 1200); });
   });
   // Si ya respondió antes, se muestra directo lo que pasa.
   if (S.pred[x.id]){ x.alResponder(); if (E.anima){ const f = E.anima; E.anima = null; f(99); } }
