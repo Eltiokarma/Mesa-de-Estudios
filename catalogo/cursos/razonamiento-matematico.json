@@ -86,7 +86,7 @@
       "potencial_visual": "medio",
       "grado": 3,
       "plantillas": [],
-      "investigacion": null
+      "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
       "id": "razonamiento-matematico.juegos-recreativos",
@@ -122,7 +122,7 @@
       "potencial_visual": "medio",
       "grado": 3,
       "plantillas": [],
-      "investigacion": null
+      "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
       "id": "razonamiento-matematico.frecuencia-de-sucesos",
@@ -132,7 +132,7 @@
       "potencial_visual": "medio",
       "grado": 3,
       "plantillas": [],
-      "investigacion": null
+      "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
       "id": "razonamiento-matematico.ruedas-poleas-engranajes",
@@ -142,7 +142,7 @@
       "potencial_visual": "alto",
       "grado": 3,
       "plantillas": [],
-      "investigacion": null
+      "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
       "id": "razonamiento-matematico.maximos-y-minimos",
@@ -182,7 +182,7 @@
       "potencial_visual": "medio",
       "grado": 3,
       "plantillas": [],
-      "investigacion": null
+      "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
       "id": "razonamiento-matematico.transformaciones-de-figuras",

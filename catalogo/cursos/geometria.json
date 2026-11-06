@@ -19,7 +19,7 @@
       "potencial_visual": "alto",
       "grado": 3,
       "plantillas": [],
-      "investigacion": null
+      "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {
       "id": "geometria.triangulos",
@@ -35,7 +35,7 @@
       "potencial_visual": "alto",
       "grado": 3,
       "plantillas": ["triangulo-estira"],
-      "investigacion": null
+      "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {
       "id": "geometria.congruencia",
@@ -51,7 +51,7 @@
       "potencial_visual": "alto",
       "grado": 3,
       "plantillas": [],
-      "investigacion": null
+      "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {
       "id": "geometria.poligonos-y-cuadrilateros",
@@ -67,7 +67,7 @@
       "potencial_visual": "alto",
       "grado": 3,
       "plantillas": [],
-      "investigacion": null
+      "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {
       "id": "geometria.circunferencia",
@@ -82,8 +82,8 @@
       "universidades": {"uni": {"semanas": [4, 5]}, "unmsm": {"temas": [6, 7]}},
       "potencial_visual": "alto",
       "grado": 3,
-      "plantillas": [],
-      "investigacion": null
+      "plantillas": ["angulo-inscrito"],
+      "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {
       "id": "geometria.proporcionalidad-y-semejanza",
@@ -98,7 +98,7 @@
       "potencial_visual": "alto",
       "grado": 4,
       "plantillas": ["ampliadora"],
-      "investigacion": null
+      "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {
       "id": "geometria.puntos-notables",
@@ -112,7 +112,7 @@
       "potencial_visual": "alto",
       "grado": 4,
       "plantillas": ["triangulo-estira"],
-      "investigacion": null
+      "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {
       "id": "geometria.relaciones-metricas",
@@ -130,7 +130,7 @@
       "potencial_visual": "alto",
       "grado": 4,
       "plantillas": ["triangulo-estira"],
-      "investigacion": null
+      "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {
       "id": "geometria.poligonos-regulares",
@@ -145,7 +145,7 @@
       "potencial_visual": "alto",
       "grado": 4,
       "plantillas": [],
-      "investigacion": null
+      "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {
       "id": "geometria.simetria",
@@ -171,7 +171,7 @@
       "potencial_visual": "alto",
       "grado": 4,
       "plantillas": ["ampliadora", "triangulo-estira"],
-      "investigacion": null
+      "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {
       "id": "geometria.longitud-y-areas-circulares",
@@ -186,8 +186,8 @@
       "universidades": {"uni": {"semanas": [10, 12]}, "unmsm": {"temas": [11]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "plantillas": ["ampliadora"],
-      "investigacion": null
+      "plantillas": ["ampliadora", "angulo-inscrito"],
+      "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {
       "id": "geometria.geometria-del-espacio",
@@ -205,7 +205,7 @@
       "potencial_visual": "alto",
       "grado": 5,
       "plantillas": [],
-      "investigacion": null
+      "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {
       "id": "geometria.poliedros",
@@ -215,7 +215,7 @@
       "potencial_visual": "alto",
       "grado": 5,
       "plantillas": [],
-      "investigacion": null
+      "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {
       "id": "geometria.prisma-y-piramide",
@@ -233,7 +233,7 @@
       "potencial_visual": "alto",
       "grado": 5,
       "plantillas": ["ampliadora"],
-      "investigacion": null
+      "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {
       "id": "geometria.solidos-de-revolucion",
@@ -250,7 +250,7 @@
       "potencial_visual": "alto",
       "grado": 5,
       "plantillas": ["ampliadora"],
-      "investigacion": null
+      "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {
       "id": "geometria.geometria-analitica",
@@ -282,7 +282,7 @@
       "potencial_visual": "medio",
       "grado": 3,
       "plantillas": [],
-      "investigacion": null
+      "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     }
   ]
 }
