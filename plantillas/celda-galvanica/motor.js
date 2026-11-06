@@ -15,7 +15,7 @@
  *   celda({ anodo:'Zn', catodo:'Cu' })   E° = E°(cátodo) − E°(ánodo), si es espontánea, reacción global, polos y sentidos
  *   pila('Cu', 'Zn')                     arma la pila espontánea con el Cu a la izquierda y el Zn a la derecha
  *   electrolisis('Zn', 'Cu')             la misma celda forzada por una fuente externa: se invierte la reacción
- *   voltimetro(celda, { puente:'sal' })  lo que marca el voltímetro: la fem con puente salino, casi 0 sin él
+ *   voltimetro(celda, { puente:'sal' })  lo que marca el voltímetro: la fem con puente salino, 0 sin puente, null con un alambre
  *   faraday({ especie:'Cu', I:5, s:1930 })  Q = I·t, moles de e⁻, moles y gramos depositados
  *   tiempoFaraday({ especie:'Al', g:2.7, I:10 })  el problema al revés
  *   serie(9650, ['Cu', 'Ag'])            segunda ley: la misma carga por celdas en serie
@@ -144,12 +144,14 @@
   }
 
   // Lo que marca el voltímetro entre los dos electrodos de una pila: la fem si el circuito de iones está
-  // cerrado por el puente salino; casi cero si no hay puente o si se cambia por un alambre (EC1).
+  // cerrado por el puente salino y 0 si no hay puente (circuito abierto). Con un alambre en lugar del puente
+  // devuelve null: las puntas del alambre forman electrodos nuevos, con otras reacciones, y ya no es esta
+  // pila; lo que marque depende de esos electrodos, no de la tabla (EC1).
   function voltimetro(c, o) {
     if (!c || typeof c.E !== 'number') throw new Error('falta la celda');
     const puente = o && o.puente !== undefined ? o.puente : 'sal';
     if (!['sal', 'ninguno', 'alambre'].includes(puente)) throw new Error(`puente desconocido: ${puente}`);
-    return puente === 'sal' ? Math.abs(c.E) : 0;
+    return puente === 'sal' ? Math.abs(c.E) : puente === 'ninguno' ? 0 : null;
   }
 
   // ---------- Faraday ----------

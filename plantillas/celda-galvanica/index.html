@@ -16,16 +16,19 @@
      --c-Ag  plata y Ag⁺                         turquesa  #0f766e / #5ed9c8
      --c-Fe  hierro y Fe²⁺                       granate   #57191d / #ff4d58
      --c-I   corriente (Faraday)                 azul      #1f5fbf / #7cb0ff (el de circuitos-cc)
-     --c-t   tiempo (Faraday)                    violeta   #5719b3 / #aa7eed
-   La masa depositada va en el color de su metal. Entre colores que aparecen en el mismo dibujo, la diferencia
-   CIEDE2000 mínima es 21,0 (claro y oscuro); todos pasan el contraste AA sobre el papel y la tarjeta. */
+     --c-t   tiempo (Faraday)                    oliva     #474515 / #f1f0d0
+   La masa depositada va en el color de su metal. Diferencia CIEDE2000 mínima entre colores que aparecen en el
+   mismo dibujo: 20,1 (claro y oscuro, NO₃⁻–t); contra la tinta y el gris, 19,7 o más. El tiempo está a 20 o más
+   de los diez colores en los dos modos. Quedan cerca dos pares que nunca se ven juntos (I solo sale en Faraday,
+   sin Zn ni K⁺): Zn–I 9,4 (claro) / 11,1 (oscuro) e I–K⁺ 16,8 (oscuro); separarlos rompía Zn–Ag, que sí se ven
+   juntos. Todos pasan el contraste AA sobre el papel y la tarjeta. */
 [hidden]{display:none!important}
 :root{
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
   --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
   --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
   --c-e:#8f5f00; --c-E:#b3246b; --c-cat:#0f04a9; --c-an:#4f7a17; --c-Zn:#1975b3; --c-Cu:#c93c0c; --c-Ag:#0f766e; --c-Fe:#57191d;
-  --c-I:#1f5fbf; --c-t:#5719b3;
+  --c-I:#1f5fbf; --c-t:#474515;
   --cable:#4b3f5c; --vidrio:#8e97a8; --liquido:rgba(31,95,191,.06); --puente:#efe6dc;
   --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
   --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
@@ -36,14 +39,14 @@
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
   --c-e:#ffd54a; --c-E:#ff86bd; --c-cat:#857eed; --c-an:#a3d65e; --c-Zn:#99d6ff; --c-Cu:#ff9a66; --c-Ag:#5ed9c8; --c-Fe:#ff4d58;
-  --c-I:#7cb0ff; --c-t:#aa7eed;
+  --c-I:#7cb0ff; --c-t:#f1f0d0;
   --cable:#cfc4dc; --vidrio:#a99cb8; --liquido:rgba(124,176,255,.07); --puente:#3a3046; color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
   --c-e:#ffd54a; --c-E:#ff86bd; --c-cat:#857eed; --c-an:#a3d65e; --c-Zn:#99d6ff; --c-Cu:#ff9a66; --c-Ag:#5ed9c8; --c-Fe:#ff4d58;
-  --c-I:#7cb0ff; --c-t:#aa7eed;
+  --c-I:#7cb0ff; --c-t:#f1f0d0;
   --cable:#cfc4dc; --vidrio:#a99cb8; --liquido:rgba(124,176,255,.07); --puente:#3a3046; color-scheme:dark }
 
 *{box-sizing:border-box}
@@ -252,10 +255,14 @@ function fmt(n, d){
   return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
 }
 const fV = x => `${fmt(x, 2)} V`;
+// lo que marca el voltímetro: la fem, 0 V sin puente, o "—" si un alambre reemplaza al puente (ya no es esta pila)
+const lecturaV = v => v === null ? '— V' : v === 0 ? '0 V' : fV(v);
 const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
 const fr = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
 const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 const MC = MotorCelda;
+// En el celular, tras responder, llevar la vista al dibujo: el texto pide mirarlo y queda arriba, fuera de la pantalla.
+function verDibujo(id){ if (innerWidth < 900) document.getElementById(id).scrollIntoView({ behavior: RM ? 'auto' : 'smooth', block:'start' }); }
 const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
 // Metales con color propio en la escena; los demás de la tabla solo aparecen en texto.
 const METALES = ['Zn', 'Fe', 'Cu', 'Ag'];
@@ -309,11 +316,11 @@ function colores(){
   return c;
 }
 const colorDe = (c, id) => c[id] || c.ink;
-const leyendaPila = (a, b, extra) => `<span><i class="pt" style="background:var(--c-e)"></i>e⁻ · electrones (solo en metal y alambre)</span>`
-  + `<span><i class="pt" style="background:var(--c-cat)"></i>K⁺ · catión del puente</span>`
+const leyendaPila = (a, b, extra, puente) => `<span><i class="pt" style="background:var(--c-e)"></i>e⁻ · electrones (solo en metal y alambre)</span>`
+  + (puente === undefined || puente === 'sal' ? `<span><i class="pt" style="background:var(--c-cat)"></i>K⁺ · catión del puente</span>` : '')
   + `<span><i class="pt" style="background:var(--c-an)"></i>NO₃⁻ · anión</span>`
   + [a, b].map(m => `<span><i class="pt" style="background:var(--c-${m})"></i>${MC.par(m).red} y ${MC.par(m).ox} · ${NOMBRE[m]}</span>`).join('')
-  + `<span><i style="background:var(--c-E)"></i>E° · fem (voltímetro)</span>` + (extra || '');
+  + `<span><i style="background:var(--c-E)"></i>E° (fem) y lo que marca el voltímetro</span>` + (extra || '');
 
 // Resaltar en el dibujo la variable que se toca en el texto (regla 4: el mismo color en el texto y en el dibujo).
 const ESCENAS = [];
@@ -345,7 +352,7 @@ function crearEscena(cv, idDesc, idLey){
       E.ultimoDep = 0;
     } else iniciarFaraday();
     if (idLey) document.getElementById(idLey).innerHTML = cfg.leyenda !== undefined ? cfg.leyenda
-      : E.tipo === 'pila' ? leyendaPila(E.cfg.izq, E.cfg.der) : leyendaFaraday();
+      : E.tipo === 'pila' ? leyendaPila(E.cfg.izq, E.cfg.der, '', E.cfg.puente) : leyendaFaraday();
     E.dibujar();
   };
   E.soltar = () => { E.cfg.pausa = false; if (E.est) E.est.abierto = false; };
@@ -459,8 +466,8 @@ function crearEscena(cv, idDesc, idLey){
     } else rotulo(ctx, c, x, yb, `${SAL[id] || MC.par(id).ox} 1 M`, c.muted, 'center', 700, 11);
     if (E.cfg.cargas){
       const q = MC.cargas(E.est)[cual === 'A' ? 'vasoA' : 'vasoC'];
-      const t = q === 0 ? 'carga del vaso: 0' : `carga del vaso: ${q > 0 ? '+' : '−'}${Math.abs(q)}`;
-      rotulo(ctx, c, x, yb + 18, t, q !== 0 && E.cfg.puente !== 'sal' ? c.warn : c.muted, 'center', 800, 11.5);
+      const t = q === 0 ? 'carga del vaso: 0' : `⚠ carga del vaso: ${q > 0 ? '+' : '−'}${Math.abs(q)}`;
+      rotulo(ctx, c, x, yb + 18, t, q !== 0 && E.cfg.puente !== 'sal' ? c.ink : c.muted, 'center', 800, 11.5);
     }
     // nombre de la disolución, arriba y afuera
     if (E.cfg.roles) rotulo(ctx, c, der ? x + l.bw/2 + (l.ancho ? 4 : -8) : x - l.bw/2 - (l.ancho ? 4 : -8), l.ancho ? l.yT - 14 : l.yB - 10, `${SAL[id] || MC.par(id).ox} 1 M`, c.muted, der ? 'right' : 'left', 700, 10);
@@ -497,7 +504,6 @@ function crearEscena(cv, idDesc, idLey){
     if (k.puente === 'sal'){
       ctx.save(); ctx.lineJoin = 'round'; ctx.lineCap = 'butt'; trazo(ctx, pp); ctx.strokeStyle = c.vidrio; ctx.lineWidth = 22; ctx.stroke();
       trazo(ctx, pp); ctx.strokeStyle = c.puente; ctx.lineWidth = 18; ctx.stroke(); ctx.restore();
-      rotulo(ctx, c, (pp[1][0] + pp[2][0])/2, pp[1][1] - 20, 'puente salino (KNO₃)', E.hl === 'cat' || E.hl === 'an' ? c.ink : c.muted, 'center', 800, 11);
     } else if (k.puente === 'alambre'){
       ctx.save(); ctx.lineJoin = 'round'; trazo(ctx, pp); ctx.strokeStyle = c.Cu; ctx.lineWidth = 3; ctx.stroke(); ctx.restore();
       rotulo(ctx, c, (pp[1][0] + pp[2][0])/2, pp[1][1] - 14, l.ancho ? 'alambre de cobre en lugar del puente' : 'alambre de cobre', c.muted, 'center', 800, 11);
@@ -510,6 +516,8 @@ function crearEscena(cv, idDesc, idLey){
       if (p.zona === 'vasoA' || p.zona === 'vasoC'){ const q = enVaso(l, p.zona === 'vasoA' ? 'A' : 'C', p.u, p.v); dibujarIon(ctx, c, q.x, q.y, p, R, now); }
       else if (p.zona === 'puente'){ const q = sobre(pp, p.sp), off = p.w*6; dibujarIon(ctx, c, q.x + (q.dy ? off : 0), q.y + (q.dx ? off : 0), p, R*0.95, now); }
     }
+    // el rótulo del puente va encima de los iones, para que no lo tapen
+    if (k.puente === 'sal') rotulo(ctx, c, (pp[1][0] + pp[2][0])/2, pp[1][1] - 20, 'puente salino (KNO₃)', E.hl === 'cat' || E.hl === 'an' ? c.ink : c.muted, 'center', 800, 11);
     // electrones: en el alambre y los que esperan en cada electrodo
     const re = l.ancho ? 4.2 : 3.8, sinV = (x) => Math.abs(x - l.cx) < 44;
     for (const p of est.parts) if (p.zona === 'alambre'){ const q = sobre(pa, p.sp); if (!(Math.abs(q.y - l.yW) < 1 && sinV(q.x))) electron(ctx, c, q.x, q.y, re); }
@@ -536,12 +544,13 @@ function crearEscena(cv, idDesc, idLey){
       rotulo(ctx, c, l.cx, by - 11, 'voltímetro', c.muted, 'center', 800, 11);
       const v = MC.voltimetro(E.celda, { puente:k.puente });
       ctx.font = `800 16px ${c.mono}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = c.E;
-      ctx.fillText(k.ocultarV ? '¿? V' : fV(v), l.cx, l.yW + 1);
+      ctx.fillText(k.ocultarV ? '¿? V' : lecturaV(v), l.cx, l.yW + 1);
+      if (v === null && !k.ocultarV) rotulo(ctx, c, l.cx, l.yW + 30, 'ya no es la pila de zinc y cobre', c.muted, 'center', 800, 11);
     }
     // avisos
-    const ya = l.yW + 36;
+    const ya = l.yW + (MC.voltimetro(E.celda, { puente:k.puente }) === null ? 48 : 36);
     if (k.pausa) rotulo(ctx, c, l.cx, ya, 'Pausa: responde para ver el movimiento', c.muted, 'center', 800, 11.5);
-    else if (est.frenada && k.puente !== 'sal') rotulo(ctx, c, l.cx, ya, 'La reacción se detuvo', c.warn, 'center', 800, 11.5);
+    else if (est.frenada && k.puente !== 'sal') rotulo(ctx, c, l.cx, ya, '⚠ La reacción se detuvo', c.ink, 'center', 800, 11.5);
     else if (E.fin) rotulo(ctx, c, l.cx, ya, l.ancho ? 'En el dibujo se acabaron los iones: vuelve a empezar' : 'Se acabaron los iones: vuelve a empezar', c.muted, 'center', 700, 11);
     if (E.cfg.grande) rotulo(ctx, c, l.cx, H - 10, 'láminas y vasos más grandes, los mismos metales', c.muted, 'center', 700, 11);
   }
@@ -640,7 +649,7 @@ function crearEscena(cv, idDesc, idLey){
     if (E.tipo === 'pila' && E.est){
       const q = MC.cargas(E.est), k = E.cfg;
       d = `Pila de ${NOMBRE[k.izq]} (izquierda) y ${NOMBRE[k.der]} (derecha). ` + (k.roles ? `Ánodo: ${NOMBRE[E.celda.anodo]}; cátodo: ${NOMBRE[E.celda.catodo]}. ` : '')
-        + (k.fuente ? `Fuente externa de ${fmt(E.celda.fuente, 1)} V. ` : `Voltímetro: ${k.ocultarV ? 'oculto' : fV(MC.voltimetro(E.celda, { puente:k.puente }))}. `)
+        + (k.fuente ? `Fuente externa de ${fmt(E.celda.fuente, 1)} V. ` : `Voltímetro: ${k.ocultarV ? 'oculto' : lecturaV(MC.voltimetro(E.celda, { puente:k.puente }))}. `)
         + `Puente: ${k.puente === 'sal' ? 'salino' : k.puente === 'alambre' ? 'un alambre de cobre' : 'ninguno'}. `
         + `Átomos disueltos: ${E.est.disueltos}; depositados: ${E.est.depositados}. Carga de los vasos: ${q.vasoA} y ${q.vasoC}.`;
     } else if (E.far) d = E.far.esp.map((m, k) => `Celda de ${NOMBRE[m]}: ${E.far.llegados[k]} electrones, ${MC.deposito(m, E.far.llegados[k]).depositados} átomos depositados`).join('. ');
@@ -677,12 +686,12 @@ const P1 = { id:'celda-paso2', ok:'a', anima:() => { E.cfg.roles = true; E.solta
     c:'Elegiste la C. Los electrones no pueden andar sueltos en el agua: solo van por los metales y el alambre. Por el puente pasan iones. La correcta está marcada.',
     d:'Elegiste la D. El lado del dibujo no decide nada: aquí el zinc está a la derecha y los electrones van de derecha a izquierda. La correcta está marcada.' } };
 const P2 = { id:'celda-paso4', ok:'c', anima:() => E.cambiarPuente('alambre'), opts:[
-  ['a','Lo mismo: los electrones pasan por el alambre igual que por el puente','EC1-puente-lleva-electrones','documentado'],
-  ['b','Lo mismo: el metal conduce iones y electrones','EC1-metal-conduce-iones','documentado'],
-  ['c','Casi cero: por el alambre no pueden pasar iones, y sin iones entre los dos vasos cada disolución se carga y la reacción se detiene'],
-  ['d','El doble, porque ahora hay dos caminos para los electrones','EC1-dos-caminos','hipotesis']],
-  fb:{ c:'¡Bien! El puente no lleva electrones: lleva iones que mantienen neutra cada disolución. Sin ellos, la reacción se frena enseguida.',
-    a:'Elegiste la A. Por el puente salino nunca pasaron electrones: pasaban iones. Un alambre no deja pasar iones, así que cada vaso se carga y la reacción se detiene. La correcta está marcada.',
+  ['a','Sí, igual: los electrones pasan por el alambre igual que por el puente','EC1-puente-lleva-electrones','documentado'],
+  ['b','Sí, igual: el metal conduce iones y electrones','EC1-metal-conduce-iones','documentado'],
+  ['c','No: por el alambre no pueden pasar iones; sin iones entre los vasos, cada disolución se carga y la pila de zinc y cobre se detiene.'],
+  ['d','Funciona mejor, porque ahora hay dos caminos para los electrones','EC1-dos-caminos','hipotesis']],
+  fb:{ c:'¡Bien! El puente no lleva electrones: lleva iones que mantienen neutra cada disolución. Sin ellos, la pila de zinc y cobre se frena enseguida.',
+    a:'Elegiste la A. Por el puente salino nunca pasaron electrones: pasaban iones. Un alambre no deja pasar iones, así que cada vaso se carga y la pila de zinc y cobre se detiene. La correcta está marcada.',
     b:'Elegiste la B. Un metal conduce electrones, pero no iones: los iones no pueden entrar al alambre. La correcta está marcada.',
     d:'Elegiste la D. El circuito de los electrones ya estaba cerrado por arriba; lo que se rompe es el camino de los iones. La correcta está marcada.' } };
 const P3 = { id:'celda-paso5', ok:'c', anima:() => { E.cfg.ocultarV = false; E.soltar(); }, opts:[
@@ -704,7 +713,7 @@ const tabla = (ids, celda) => `<div class="tabla" role="table" aria-label="Poten
 
 const steps = [
  { k:'Paso 1', t:'La pila de zinc y cobre', prep:() => cfgDaniell({ pausa:true, roles:false }),
-   body:() => `<p class="problem">En un vaso hay una lámina de ${Zn('zinc')} en una disolución de ${Zn('Zn²⁺')} 1 M; en otro, una lámina de ${Cu('cobre')} en ${Cu('Cu²⁺')} 1 M. Las láminas se unen por arriba con un alambre y un voltímetro, y los vasos, con un tubo de gel salado: el puente salino. ¿Qué pasa por dentro?</p>
+   body:() => `<p class="problem">En un vaso hay una lámina de ${Zn('zinc')} en una disolución de ${Zn('Zn²⁺')} 1 M; en otro, una lámina de ${Cu('cobre')} en ${Cu('Cu²⁺')} 1 M. Las láminas se unen por arriba con un alambre y un voltímetro, y los vasos, con un tubo con una sal disuelta en gel (KNO₃): el puente salino. ¿Qué pasa por dentro?</p>
    <p>En el dibujo, cada punto representa muchísimas partículas: ${e('electrones')}, ${K('cationes K⁺')} y ${N('aniones NO₃⁻')} del puente, y los iones de cada metal. Las disoluciones son de nitratos (NO₃⁻), así que hay un solo tipo de anión. El agua no se dibuja.</p>
    ${tabla(['Zn', 'Cu'])}
    <p>El zinc tiene el potencial de reducción más bajo: es el que tiende a oxidarse, a perder electrones. El cobre, el más alto: sus iones tienden a ganarlos.</p>` },
@@ -720,13 +729,14 @@ const steps = [
      <div class="eq">${Zn('Zn')} + ${Cu('Cu²⁺')} → ${Zn('Zn²⁺')} + ${Cu('Cu')}<span class="note">2 electrones por cada átomo de zinc</span></div></div>
    <p>Cada vez que un átomo de ${Zn('zinc')} se disuelve, el vaso del zinc gana una carga +2; cada vez que un ${Cu('Cu²⁺')} se deposita, el vaso del cobre pierde una carga +2. El puente lo compensa: sus ${N('aniones NO₃⁻')} entran al vaso del zinc y sus ${K('cationes K⁺')} entran al del cobre. Mira el contador "carga del vaso": casi siempre está en 0.</p>
    <p>Los aniones van hacia el ánodo, que es el polo negativo. Suena raro, pero lo que los atrae es la carga positiva que aparece en la disolución alrededor del zinc.</p>
-   <p class="aviso">El voltímetro real casi no deja pasar corriente. En el dibujo los electrones se mueven como si hubiera un foquito encendido, para que se vea su camino.</p>
+   <p class="aviso">Un voltímetro casi no deja pasar corriente: mide la fem sin gastar la pila. En el dibujo dejamos que los electrones avancen, como pasaría si en el alambre hubiera un foquito, para que se vea su camino. Con el foco conectado, el voltaje en los bornes sería un poco menor que 1,10 V.</p>
    <p class="fuente">En Turquía, el 25,42 % de 59 escolares cree que en la disolución la corriente la llevan solo los iones negativos (Şen y otros, 2016). Se mueven los dos, en sentidos opuestos.</p>` },
  { k:'Paso 4', t:'Predice: un alambre en lugar del puente', gate:P2, prep:() => cfgDaniell({ puente: S.pred[P2.id] ? 'alambre' : 'sal' }),
-   body:() => `<p>Se saca el puente salino y en su lugar se pone un alambre de cobre, con una punta en cada vaso. ¿Qué marca ahora el ${Ev('voltímetro')}?</p>${opciones(P2)}
+   body:() => `<p>Se saca el puente salino y en su lugar se pone un alambre de cobre, con una punta en cada vaso. ¿Sigue funcionando la pila de zinc y cobre como antes?</p>${opciones(P2)}
    <div id="tras" class="body" hidden>
-   <p>Mira los contadores: en cuanto se disuelven un par de átomos de ${Zn('zinc')}, el vaso del zinc queda con carga positiva y el del cobre con carga negativa. Esa carga frena la reacción y los ${e('electrones')} dejan de pasar. El voltímetro marca ${Ev('casi cero')}.</p>
-   <p class="fuente">En la Facultad de Química de la UNAM (306 respuestas de cinco grupos), 161 (52,6 %) eligieron que habría electricidad "porque hay un flujo constante de electrones por el alambre"; por grupo, 47 %, 52 %, 55 %, 49 % y 69 %, y el más alto es un grupo de Electroquímica. Otro 21,2 % eligió que el metal conduce iones y electrones. Solo el 13,1 % dio la respuesta esperada (Tagle Barrios, 2024, ítem 5, tabla 19, leído de sus gráficas). La opción "el doble" es una hipótesis nuestra.</p></div>` },
+   <p>Mira los contadores: en cuanto se disuelven dos puntos de ${Zn('zinc')}, el vaso del zinc queda con carga positiva y el del cobre con carga negativa. En una pila real, eso pasa con una cantidad tan pequeña que ninguna balanza la detecta. Esa carga frena la reacción y los ${e('electrones')} dejan de pasar.</p>
+   <p class="aviso">En el laboratorio el ${Ev('voltímetro')} puede marcar algo, porque las puntas del alambre forman electrodos nuevos con otras reacciones; pero ya no es la pila de zinc y cobre, y el puente nunca llevó electrones.</p>
+   <p class="fuente">En la Facultad de Química de la UNAM (306 respuestas de cinco grupos), cerca de 161 (unas 53 %) eligieron que habría electricidad "porque hay un flujo constante de electrones por el alambre"; por grupo, 47 %, 52 %, 55 %, 49 % y 69 %, y el más alto es un grupo de Electroquímica. Otro 21 % eligió que el metal conduce iones y electrones. Solo el 13 % dio la respuesta esperada (Tagle Barrios, 2024, ítem 5, tabla 19; cifras leídas de sus gráficas). El ítem usaba un alambre de platino, y la respuesta esperada de la tesis también tenía un error: decía que "ni iones ni electrones pueden fluir por el alambre de Pt", cuando los electrones sí pueden. La opción "funciona mejor" es una hipótesis nuestra.</p></div>` },
  { k:'Paso 5', t:'Predice: la fem de la pila de cobre y plata', gate:P3, prep:() => E.config({ izq:'Cu', der:'Ag', semilla:5, pausa:!S.pred[P3.id], ocultarV:!S.pred[P3.id] }),
    body:() => `<p>Ahora la pila es de ${Cu('cobre')} y ${Ag('plata')}. La reacción global es ${Cu('Cu')} + 2 ${Ag('Ag⁺')} → ${Cu('Cu²⁺')} + 2 ${Ag('Ag')}. ¿Cuánto marca el ${Ev('voltímetro')}?</p>
    ${tabla(['Cu', 'Ag'], CUAG)}${opciones(P3)}
@@ -734,10 +744,10 @@ const steps = [
      <div class="eq">${Cu('Cu')} → ${Cu('Cu²⁺')} + 2 ${e('e⁻')}</div>
      <div class="eq">2 × (${Ag('Ag⁺')} + ${e('e⁻')} → ${Ag('Ag')})<span class="note">se multiplica para igualar los electrones</span></div>
      <div class="eq">${Ev('E°')} = ${Ev('0,80')} − ${Ev('0,34')} = ${Ev(fV(CUAG.E))}<span class="note">el potencial no se multiplica</span></div></div>
-   <p>En el dibujo, por cada átomo de ${Cu('cobre')} que se disuelve salen dos ${e('electrones')}, y en el cátodo se depositan dos átomos de ${Ag('plata')}. Lo que se multiplica es la cantidad que reacciona; la "fuerza" con que empuja cada electrón, la fem, sigue igual.</p>
-   <p class="fuente">No encontramos estudios que midan estos errores de cálculo: las tres opciones incorrectas son hipótesis nuestras. Lo que sí se midió es lo contrario: la mayoría de 16 universitarios con ideas erróneas sobre la pila igual calculaba bien el potencial (Sanger y Greenbowe, 1997, según el resumen). Saber la fórmula no garantiza entender la pila.</p></div>` },
+   <p>En el dibujo, por cada átomo de ${Cu('cobre')} que se disuelve salen dos ${e('electrones')}, y en el cátodo se depositan dos puntos de ${Ag('plata')}. Lo que se multiplica es la cantidad que reacciona; la "fuerza" con que empuja cada electrón, la fem, sigue igual.</p>
+   <p class="fuente">No encontramos estudios que midan estos errores de cálculo: las tres opciones incorrectas son hipótesis nuestras. Lo que sí se midió es otra cosa: la mayoría de 16 universitarios con ideas erróneas sobre la pila igual calculaba bien el potencial (Sanger y Greenbowe, 1997b, según el resumen). Saber la fórmula no garantiza entender la pila.</p></div>` },
  { k:'Paso 6', t:'¿Cuánto cobre se deposita?', accion:true, prep:() => E.config({ tipo:'faraday', especies:['Cu'], meta:8, semilla:2, aviso:'Pulsa el botón para hacer pasar la corriente', corriendo:false, leyenda:undefined }),
-   body:() => `<p class="problem">Se hace pasar una corriente de ${Iv('5 A')} durante ${tv('1930 s')} por una celda con ${Cu('Cu²⁺')}. ¿Cuántos gramos de ${Cu('cobre')} se depositan en el cátodo?</p>
+   body:() => `<p class="problem">Se hace pasar una corriente de ${Iv('5 A')} durante ${tv('1930 s')} por una celda con ${Cu('Cu²⁺')} y dos láminas de ${Cu('cobre')}. La del ánodo se disuelve y repone los ${Cu('Cu²⁺')} que se depositan en el cátodo. ¿Cuántos gramos de ${Cu('cobre')} se depositan en el cátodo?</p>
    <p>Ahora una fuente empuja los electrones: es una celda de electrólisis. En el dibujo, cada ${e('electrón')} representa 0,0125 mol de electrones; pasarán 8.</p>
    <div class="acciones"><button type="button" class="btn primary" id="correr">Hacer pasar la corriente</button></div>
    <div id="tras" class="body" ${S.hecho.correr ? '' : 'hidden'}><div class="eqs">
@@ -746,7 +756,7 @@ const steps = [
      <div class="eq">${Cu('Cu²⁺')} + 2 ${e('e⁻')} → ${Cu('Cu')} : ${fr(e('0,1'), '2')} = ${Cu('0,05 mol de Cu')}<span class="note">4 átomos en el dibujo</span></div>
      <div class="eq">${Cu('m')} = ${Cu('0,05')} · 63,5 = ${Cu(`${fmt(FAR.g, 3)} g`)}</div></div>
    <p class="answer">Se depositan ${Cu(`${fmt(FAR.g, 3)} g de cobre`)}.</p>
-   <p class="aviso">Ojo: cada Cu²⁺ necesita dos electrones. Si no divides entre la carga del ion, te sale ${fmt(FAR.errores.sinCarga, 2)} g, el doble. Y el tiempo va en segundos: F está en culombios por mol y un culombio es un amperio por segundo.</p>
+   <p class="aviso">Ojo: cada Cu²⁺ necesita dos electrones. Si no divides entre la carga del ion, te sale ${fmt(FAR.errores.sinCarga, 2)} g, el doble. Y el tiempo va en segundos: F está en culombios por mol, y 1 C = 1 A · s: la carga que pasa con un amperio durante un segundo.</p>
    <p class="fuente">No encontramos ningún estudio con porcentajes sobre la ley de Faraday: el error de olvidar la carga del ion es una hipótesis nuestra.</p></div>
    <p id="estado" class="hint"></p>` },
  { k:'Paso 7', t:'Lo que no cambia', fin:true, prep:() => cfgDaniell({}),
@@ -755,9 +765,10 @@ const steps = [
      <div class="eq">${e('e⁻')}: del ánodo al cátodo, solo por el alambre</div>
      <div class="eq">${N('aniones')} → ánodo · ${K('cationes')} → cátodo<span class="note">por el puente y las disoluciones</span></div>
      <div class="eq">${Ev('E°')} = ${Ev('E°')}(cátodo) − ${Ev('E°')}(ánodo), sin multiplicar<span class="note">${Ev('E°')} &gt; 0: espontánea</span></div>
-     <div class="eq">${e('n(e⁻)')} = ${fr(`${Iv('I')}·${tv('t')}`, 'F')} · moles de metal = ${fr(e('n(e⁻)'), 'carga del ion')}</div></div>
+     <div class="eq">${e('n(e⁻)')} = ${fr(`${Iv('I')}·${tv('t')}`, 'F')}</div>
+     <div class="eq">moles de metal = ${fr(e('n(e⁻)'), 'carga del ion')}</div></div>
    <p>El polo cambia (en la pila el cátodo es positivo; en la electrólisis, negativo), pero la regla "cátodo = reducción" no cambia. Ánodo y cátodo se reconocen por la reacción, nunca por el lado del dibujo.</p>
-   <p class="fuente">En la UNAM, la idea más frecuente fue que el cátodo es siempre positivo (o siempre negativo), y el error del puente salino no bajó con los semestres: los de quinto se equivocaron con más seguridad (Tagle Barrios, 2024, conclusiones). Por eso la escena pinta siempre los electrones y los iones de colores distintos.</p>` },
+   <p class="fuente">En la UNAM, la idea errónea que la tesis señala como la más extendida fue que el cátodo es siempre positivo (o siempre negativo), y el error del puente salino no bajó con los semestres: los de quinto se equivocaron con más seguridad (Tagle Barrios, 2024, conclusiones). Por eso la escena pinta siempre los electrones y los iones de colores distintos.</p>` },
  { k:'Paso 8', t:'Ahora explora tú', explora:true,
    body:() => `<p>Elige el metal de cada vaso y mira quién se oxida, cuánto marca el voltímetro y hacia dónde va todo.</p>
    <div class="control"><span>Vaso izquierdo</span><div class="seg" role="group" aria-label="Metal del vaso izquierdo">${METALES.map(m => `<button type="button" data-lado="izq" data-m="${m}">${MC.par(m).red}</button>`).join('')}</div></div>
@@ -833,7 +844,8 @@ function prediccion(P){
     S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots();
     registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
     P.anima(); nav();
-    $('next').focus();
+    $('next').focus({ preventScroll:true });
+    verDibujo('cv');
   }));
   pintar();
 }
@@ -856,14 +868,14 @@ function pintarX(){
   const lado = l => l === 'izq' ? 'izquierda' : 'derecha';
   const v = MC.voltimetro(c, { puente:x.puente });
   $('x-lect').innerHTML =
-      caja('E', x.fuente ? fV(c.E) : fV(v), x.fuente ? 'E° de la reacción forzada' : 'Voltímetro', x.fuente ? `no es espontánea: la fuente da ${fmt(c.fuente, 1)} V` : (x.puente === 'sal' ? `E° = ${fmt(c.Ecatodo)} − (${fmt(c.Eanodo)})` : 'sin puente: casi cero'))
+      caja('E', x.fuente ? fV(c.E) : lecturaV(v), x.fuente ? 'E° de la reacción forzada' : 'Voltímetro', x.fuente ? `no es espontánea: la fuente da ${fmt(c.fuente, 1)} V` : (x.puente === 'sal' ? `E° = ${fmt(c.Ecatodo)} − (${fmt(c.Eanodo)})` : 'sin puente el circuito de iones queda abierto: 0 V'))
     + caja('e', c.sentido.electrones.lado === 'izq→der' ? 'izquierda → derecha' : 'derecha → izquierda', 'Electrones, por el alambre', `del ${NOMBRE[c.anodo]} al ${NOMBRE[c.catodo]}`)
     + caja(c.anodo, `${MC.par(c.anodo).red} (${c.polos.anodo})`, 'Ánodo: oxidación', `a la ${lado(c.lados.anodo)}; aniones hacia aquí`)
     + caja(c.catodo, `${MC.par(c.catodo).red} (${c.polos.catodo})`, 'Cátodo: reducción', `a la ${lado(c.lados.catodo)}; cationes hacia aquí`);
   $('x-tabla').innerHTML = `<div class="eqs"><div class="eq">${c.reaccion.texto.replace(/(Zn|Fe|Cu|Ag)(²⁺|⁺)?/g, (s, m) => Mx(m, s))}</div></div>` + tabla(METALES, c);
   const msg = [];
   if (x.fuente) msg.push(`Con la fuente, la reacción va al revés: ahora se oxida el ${NOMBRE[c.anodo]} (el de mayor potencial) y el cátodo es el polo negativo. Sigue siendo cierto que en el cátodo ocurre la reducción y que los electrones van del ánodo al cátodo por el alambre.`);
-  if (x.puente !== 'sal') msg.push('Sin puente, en cuanto reaccionan un par de átomos cada vaso queda cargado y la reacción se detiene.');
+  if (x.puente !== 'sal') msg.push('Sin puente, en cuanto reacciona muy poco, cada vaso queda cargado y la reacción se detiene: el voltímetro marca 0 V.');
   if (!x.fuente && c.lados.anodo === 'der') msg.push('El ánodo quedó a la derecha: lo decide la reacción, no el lado.');
   $('x-msg').textContent = msg.join(' ');
 }
@@ -899,20 +911,20 @@ const EXPS = [
     antes:ver => E.config({ izq:'Zn', der:'Cu', semilla:21, pausa:!ver }),
     despues:() => E.soltar(),
     exp:() => `<p>Por el puente solo pasan iones: ${N('NO₃⁻')} hacia el vaso del ${Zn('zinc')}, donde aparecen ${Zn('Zn²⁺')}, y ${K('K⁺')} hacia el del ${Cu('cobre')}, donde desaparecen ${Cu('Cu²⁺')}. Así cada disolución sigue neutra y la reacción puede continuar. Los ${e('electrones')} van por arriba, por el alambre.</p>
-      <p class="fuente">En la UNAM, ante la pregunta de cambiar el puente por un alambre, 161 de 306 respuestas (52,6 %) eligieron que habría electricidad "porque hay un flujo constante de electrones por el alambre" (Tagle Barrios, 2024, ítem 5, leído de sus gráficas). En Turquía, el 25,42 % de 59 escolares cree que en la disolución la corriente la llevan solo los iones negativos (Şen, Yılmaz y Geban, 2016, tabla 2). Que los aniones vayan "al polo positivo" es una hipótesis nuestra.</p>` },
+      <p class="fuente">En la UNAM, ante la pregunta de cambiar el puente por un alambre de platino, cerca de 161 de 306 respuestas (unas 53 %) eligieron que habría electricidad "porque hay un flujo constante de electrones por el alambre" (Tagle Barrios, 2024, ítem 5; cifras leídas de sus gráficas). En Turquía, el 25,42 % de 59 escolares cree que en la disolución la corriente la llevan solo los iones negativos (Şen, Yılmaz y Geban, 2016, tabla 2). Que los aniones vayan "al polo positivo" es una hipótesis nuestra.</p>` },
   { id:'sin-puente', corto:'Quito el puente',
     q:`Se arma la pila de ${Zn('zinc')} y ${Cu('cobre')} sin puente salino: los vasos solo se unen por el alambre. ¿Qué pasa con la carga de cada disolución?`,
     opts:[['a','El vaso del zinc queda positivo, el del cobre negativo, y la reacción se detiene',null],
           ['b','Siguen neutras: los electrones del alambre compensan la carga','EC11-electrones-compensan','parcial'],
           ['c','Nada cambia: el puente solo sirve para que no se mezclen las disoluciones','puente-solo-separa','hipotesis'],
-          ['d','El vaso del zinc queda negativo y el del cobre positivo','EC3-signo-del-polo','hipotesis']],
+          ['d','El vaso del zinc queda negativo y el del cobre positivo','vaso-zinc-negativo','hipotesis']],
     ok:'a',
     fb:{ b:'Elegiste la B. Los electrones no entran a la disolución: se quedan en los metales. La carga de cada vaso solo la pueden compensar iones, y sin puente no llegan. La correcta está marcada.',
       c:'Elegiste la C. El puente sí separa las disoluciones, pero su trabajo es dejar pasar iones. Sin él, la reacción se frena. La correcta está marcada.',
       d:'Elegiste la D. Al vaso del zinc llegan Zn²⁺ (carga positiva) y del vaso del cobre se van Cu²⁺: el del zinc queda positivo y el del cobre, negativo. La correcta está marcada.' },
     antes:ver => E.config({ izq:'Zn', der:'Cu', puente:'ninguno', semilla:22, pausa:!ver, ocultarV:!ver }),
     despues:() => { E.cfg.ocultarV = false; E.soltar(); },
-    exp:() => `<p>Mira los contadores: se disuelven dos átomos de ${Zn('zinc')} y se depositan dos de ${Cu('cobre')}; el vaso del zinc queda con +4 y el del cobre con −4, y ya no pasa ningún ${e('electrón')} más. En una pila real eso ocurre en una fracción de segundo: la carga que se acumula frena la reacción. El voltímetro marca ${Ev('casi cero')}.</p>
+    exp:() => `<p>Mira los contadores: se disuelven dos puntos de ${Zn('zinc')} y se depositan dos de ${Cu('cobre')}; el vaso del zinc queda con +4 y el del cobre con −4, y ya no pasa ningún ${e('electrón')} más. En una pila real basta que reaccione una cantidad que ninguna balanza detecta: la carga que se acumula frena la reacción. Sin puente, el voltímetro marca ${Ev('0 V')}.</p>
       <p class="fuente">En São Paulo, con 125 estudiantes que ya habían estudiado el tema, apareció la idea de que los electrones van de un electrodo al otro sin que la disolución cambie de carga; es un estudio cualitativo, sin porcentaje (Caramel y Pacca, 2011). Las opciones C y D son hipótesis nuestras.</p>` },
   { id:'duplicar', corto:'Duplico la reacción',
     q:`Si escribo la reacción como 2 ${Zn('Zn')} + 2 ${Cu('Cu²⁺')} → 2 ${Zn('Zn²⁺')} + 2 ${Cu('Cu')}, o si armo la pila con láminas y vasos el doble de grandes, ¿cuánto marca el ${Ev('voltímetro')}?`,
@@ -928,9 +940,9 @@ const EXPS = [
     despues:() => { E.cfg.ocultarV = false; E.soltar(); },
     exp:() => `<div class="eqs"><div class="eq">${Ev('E°')} = ${Ev('0,34')} − (${Ev('−0,76')}) = ${Ev(fV(DUP.E))}<span class="note">con 1, 2 o 100 átomos de zinc</span></div></div>
       <p>La fem es intensiva, como la temperatura: depende de qué metales son y de las concentraciones, no de cuánto metal hay. Una pila más grande da la misma fem y dura más. Para tener más voltaje, se conectan pilas en serie.</p>
-      <p class="fuente">No encontramos estudios que midan este error: las tres opciones incorrectas son hipótesis nuestras, ligadas a un dato: la mayoría de 16 universitarios con ideas erróneas sobre la pila calculaba bien el potencial (Sanger y Greenbowe, 1997, según el resumen).</p>` },
+      <p class="fuente">No encontramos estudios que midan este error: las tres opciones incorrectas son hipótesis nuestras, ligadas a un dato: la mayoría de 16 universitarios con ideas erróneas sobre la pila calculaba bien el potencial (Sanger y Greenbowe, 1997b, según el resumen).</p>` },
   { id:'faraday', corto:'Faraday: Cu²⁺ y Ag⁺',
-    q:`Una celda con ${Cu('Cu²⁺')} y otra con ${Ag('Ag⁺')} están en serie: por las dos pasa la misma corriente. Mientras pasan 8 ${e('electrones')} por cada una, ¿cuántos átomos se depositan en cada cátodo?`,
+    q:`Una celda con ${Cu('Cu²⁺')} y dos láminas de ${Cu('cobre')}, y otra con ${Ag('Ag⁺')} y dos láminas de ${Ag('plata')}, están en serie. En cada una, la lámina del ánodo se disuelve y repone los iones que se depositan en el cátodo. Por las dos pasa la misma corriente. Mientras pasan 8 ${e('electrones')} por cada una, ¿cuántos átomos se depositan en cada cátodo?`,
     opts:[['a','8 de cobre y 8 de plata','faraday-sin-carga-del-ion','hipotesis'],
           ['b','4 de cobre y 8 de plata',null],
           ['c','8 de cobre y 4 de plata','faraday-carga-al-reves','hipotesis'],
@@ -993,6 +1005,7 @@ function ir(k){
     if (S.pred[x.id]) return;
     const o = x.opts.find(q => q[0] === b.dataset.k);
     S.pred[x.id] = o[0]; pintar(); x.despues(); E.dibujar();
+    verDibujo('cv2');
     registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
   });
   pintar(); E.dibujar();

@@ -1,6 +1,6 @@
 {
   "titulo": "Redox y pilas: problemas para lápiz y papel",
-  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Usa los potenciales estándar de reducción: Mg²⁺/Mg −2,37 V; Al³⁺/Al −1,66 V; Zn²⁺/Zn −0,76 V; Fe²⁺/Fe −0,44 V; Sn²⁺/Sn −0,14 V; Pb²⁺/Pb −0,13 V; H⁺/H₂ 0 V; Cu²⁺/Cu +0,34 V; Ag⁺/Ag +0,80 V. Antes de calcular, decide quién se oxida (el de menor potencial: es el ánodo) y quién se reduce (el de mayor potencial: es el cátodo). La fem es E°(cátodo) − E°(ánodo) y no se multiplica por los coeficientes. En Faraday, pasa el tiempo a segundos y divide los moles de electrones entre la carga del ion. F = 96 500 C/mol; Cu = 63,5; Ag = 108; Pb = 207.",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Usa los potenciales estándar de reducción: Mg²⁺/Mg −2,37 V; Al³⁺/Al −1,66 V; Zn²⁺/Zn −0,76 V; Fe²⁺/Fe −0,44 V; Sn²⁺/Sn −0,14 V; Pb²⁺/Pb −0,13 V; H⁺/H₂ 0 V; Cu²⁺/Cu +0,34 V; Ag⁺/Ag +0,80 V. En una pila, antes de calcular, decide quién se oxida (el de menor potencial: es el ánodo) y quién se reduce (el de mayor potencial: es el cátodo). En la electrólisis manda la fuente, pero el cátodo sigue siendo donde ocurre la reducción. La fem es E°(cátodo) − E°(ánodo) y no se multiplica por los coeficientes. En Faraday, pasa el tiempo a segundos y divide los moles de electrones entre la carga del ion. F = 96 500 C/mol; Cu = 63,5; Ag = 108; Pb = 207.",
   "problemas": [
     {
       "id": "p1",
@@ -11,7 +11,8 @@
         "El zinc tiene el menor potencial de reducción (−0,76 V): es el que se oxida, así que es el ánodo. Zn → Zn²⁺ + 2 e⁻.",
         "El cobre tiene el mayor (+0,34 V): sus iones se reducen, así que es el cátodo. Cu²⁺ + 2 e⁻ → Cu.",
         "Fem = E°(cátodo) − E°(ánodo) = 0,34 − (−0,76) = 1,10 V.",
-        "Ojo: si sumas 0,34 + (−0,76) sin cambiar nada, te sale −0,42 V, y una pila que funciona no puede tener fem negativa. Ánodo y cátodo se deciden por la reacción, no por cuál está a la izquierda."
+        "Ojo: si sumas 0,34 + (−0,76) sin cambiar nada, te sale −0,42 V, y una pila que funciona no puede tener fem negativa.",
+        "Ánodo y cátodo se deciden por la reacción (oxidación o reducción), nunca por el lado del dibujo en que está cada vaso."
       ],
       "verificar": [ { "fn": "pila", "args": ["Zn", "Cu"], "espera": { "anodo": "Zn", "catodo": "Cu", "E": 1.1, "errores.sumaSinCambiarSigno": -0.42 } } ]
     },
@@ -43,11 +44,11 @@
     {
       "id": "p4",
       "nivel": "intermedio",
-      "enunciado": "Las planchas de calamina de los techos son de acero (hierro) cubierto con una capa de zinc. Cuando la plancha se raya y el hierro queda expuesto a la lluvia, ¿cuál de los dos metales se oxida primero? ¿Cuánto vale la fem de la pila que se forma entre los dos?",
+      "enunciado": "Las planchas de calamina de los techos son de acero (hierro) cubierto con una capa de zinc. Cuando la plancha se raya y el hierro queda expuesto a la lluvia, ¿cuál de los dos metales se oxida primero? Para compararlos, calcula la fem de la pila Zn │ Zn²⁺ ║ Fe²⁺ │ Fe.",
       "respuesta": "Se oxida el zinc; el hierro queda protegido mientras quede zinc. Fem = 0,32 V.",
       "pasos": [
         "Compara los potenciales de reducción: Zn −0,76 V y Fe −0,44 V. El de menor potencial se oxida: el zinc es el ánodo.",
-        "El hierro hace de cátodo: sobre él se reduce lo que hay en el agua (por ejemplo, el oxígeno disuelto), pero el hierro no se gasta.",
+        "Ojo: en el techo no hay disoluciones 1 M de Zn²⁺ y Fe²⁺. Sobre el hierro, que hace de cátodo, se reduce el oxígeno disuelto en el agua de lluvia, así que la pila real no es exactamente Zn │ Zn²⁺ ║ Fe²⁺ │ Fe. Pero el que se oxida sigue siendo el zinc, y el hierro no se gasta.",
         "Fem = −0,44 − (−0,76) = 0,32 V.",
         "El zinc se llama ánodo de sacrificio: se gasta él para que el hierro no se oxide. Así la calamina dura años aunque tenga rayones."
       ],
@@ -56,11 +57,12 @@
     {
       "id": "p5",
       "nivel": "intermedio",
-      "enunciado": "Una lata de conservas es de hierro cubierto con estaño (hojalata). Si se abolla y el hierro queda expuesto a la humedad, ¿quién se oxida? ¿Protege el estaño al hierro como el zinc de la calamina?",
+      "enunciado": "Una lata de conservas es de hierro cubierto con estaño (hojalata). Si se abolla y el hierro queda expuesto a la humedad, ¿quién se oxida? ¿Protege el estaño al hierro como el zinc de la calamina? Para comparar, calcula la fem de la pila Fe │ Fe²⁺ ║ Sn²⁺ │ Sn.",
       "respuesta": "Se oxida el hierro (fem 0,30 V): el estaño no lo protege si la capa se rompe.",
       "pasos": [
         "Potenciales: Fe −0,44 V y Sn −0,14 V. Ahora el de menor potencial es el hierro: el hierro es el ánodo.",
         "Fem = −0,14 − (−0,44) = 0,30 V.",
+        "En la lata, sobre el estaño se reduce el oxígeno del aire húmedo, así que la pila real no es exactamente Fe │ Fe²⁺ ║ Sn²⁺ │ Sn. Pero el que se oxida sigue siendo el hierro.",
         "El estaño solo protege mientras la capa está entera, como una pintura. Una vez rota, el hierro se oxida incluso más rápido que si estuviera solo, porque el estaño hace de cátodo.",
         "No es que el metal de encima siempre proteja: depende de cuál tiene el menor potencial."
       ],

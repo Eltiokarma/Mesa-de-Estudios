@@ -201,27 +201,11 @@ test('animación: el ánodo pierde átomos y nunca queda con menos de cero', () 
   assert.equal(e.atomosA, 0); assert.equal(e.disueltos, 3); assert.ok(e.agotada);
 });
 
-test('voltímetro: la fem con puente salino; casi cero sin puente o con un alambre en su lugar (EC1)', () => {
+test('voltímetro: la fem con puente salino; 0 sin puente; con un alambre en su lugar ya no es esa pila (null) (EC1)', () => {
   for (const [i, d] of pares) {
     const p = motor.pila(i, d);
     cerca(motor.voltimetro(p), p.E, 'por omisión hay puente'); cerca(motor.voltimetro(p, { puente: 'sal' }), p.E, 'sal');
-    assert.equal(motor.voltimetro(p, { puente: 'alambre' }), 0); assert.equal(motor.voltimetro(p, { puente: 'ninguno' }), 0);
-  }
-});
-test('animación: con el circuito abierto no sale ningún electrón ni se disuelve nada, y al cerrarlo empieza', () => {
-  const e = motor.crearParticulas({ anodo: 'Zn', catodo: 'Cu', abierto: true, semilla: 9 });
-  for (let k = 0; k < 900; k++) motor.pasoParticulas(e, 1 / 30);
-  assert.equal(e.disueltos, 0); assert.equal(e.emitidos, 0); assert.equal(motor.cargas(e).total, 0);
-  e.abierto = false;
-  for (let k = 0; k < 900; k++) motor.pasoParticulas(e, 1 / 30);
-  assert.ok(e.disueltos > 0 && e.depositados > 0);
-});
-
-test('voltímetro: la fem con puente salino; casi cero sin puente o con un alambre en su lugar (EC1)', () => {
-  for (const [i, d] of pares) {
-    const p = motor.pila(i, d);
-    cerca(motor.voltimetro(p), p.E, 'por omisión hay puente'); cerca(motor.voltimetro(p, { puente: 'sal' }), p.E, 'sal');
-    assert.equal(motor.voltimetro(p, { puente: 'alambre' }), 0); assert.equal(motor.voltimetro(p, { puente: 'ninguno' }), 0);
+    assert.equal(motor.voltimetro(p, { puente: 'alambre' }), null); assert.equal(motor.voltimetro(p, { puente: 'ninguno' }), 0);
   }
 });
 test('animación: con el circuito abierto no sale ningún electrón ni se disuelve nada, y al cerrarlo empieza', () => {
