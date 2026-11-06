@@ -358,8 +358,8 @@
       },
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": [],
-      "investigacion": null
+      "plantillas": ["cinetica"],
+      "investigacion": "docs/investigacion/cinetica-ideas-erroneas.md"
     },
     {
       "id": "quimica.equilibrio-quimico",

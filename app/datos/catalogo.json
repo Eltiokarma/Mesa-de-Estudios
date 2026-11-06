@@ -935,7 +935,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "cinetica"
+     ]
     },
     {
      "id": "quimica.equilibrio-quimico",
@@ -4117,6 +4119,23 @@
     "/plantillas/celda-galvanica/index.html",
     "/plantillas/celda-galvanica/motor.js",
     "/plantillas/celda-galvanica/papel.json"
+   ]
+  },
+  "cinetica": {
+   "id": "cinetica",
+   "titulo": "Cinética química",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.cinetica-quimica"
+   ],
+   "url": "/plantillas/cinetica/index.html",
+   "papel": "/plantillas/cinetica/papel.json",
+   "archivos": [
+    "/plantillas/cinetica/index.html",
+    "/plantillas/cinetica/motor.js",
+    "/plantillas/cinetica/papel.json"
    ]
   },
   "cinta-radio": {

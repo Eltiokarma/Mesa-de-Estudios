@@ -51,3 +51,60 @@ test('guardar: agrega el perfil anónimo y no guarda sin alumno', () => {
   assert.equal(l[0].alumno, 'a1'); assert.equal(l[0].grado, '4'); assert.equal(l[0].colegio, 'ABC');
   assert.ok(!JSON.stringify(l).includes('Ana'), 'nunca se guarda el nombre');
 });
+
+// ---------- Pruebas de entrada y salida por curso ----------
+const { informeCursos } = require('../herramientas/analizar-medicion.js');
+// Tres alumnos en física: a (A→B) y b (B→A) hacen las dos; c solo la entrada.
+const pr = (alumno, fase, forma, aciertos, previas) => ({ t: `${fase}-${alumno}`, alumno, tipo: 'prueba', fase, curso: 'fisica', forma, orden: 'AB', aciertos, total: 4, previas });
+const it = (alumno, fase, n, error, plantilla = 'mruv') => ({ t: `${fase}-${alumno}-${n}`, alumno, tipo: 'item', fase, curso: 'fisica', item: `fis-0${n}A`, plantilla, correcta: !error, error: error || '' });
+const cursoEv = [
+  pr('a', 'entrada', 'A', 1, 0), it('a', 'entrada', 1, 'G2-lee-el-eje'), it('a', 'entrada', 2, 'C1-aceleracion-cero-en-la-cima'), it('a', 'entrada', 3, 'C1-aceleracion-cero-en-la-cima', 'dinamica'), it('a', 'entrada', 4, ''),
+  pr('a', 'salida', 'B', 3), it('a', 'salida', 1, ''), it('a', 'salida', 2, 'C1-aceleracion-cero-en-la-cima'), it('a', 'salida', 3, '', 'dinamica'), it('a', 'salida', 4, ''),
+  pr('b', 'entrada', 'B', 2, 3), it('b', 'entrada', 1, 'G2-lee-el-eje'),
+  pr('b', 'salida', 'A', 4), it('b', 'salida', 1, ''),
+  pr('c', 'entrada', 'A', 0, 0), it('c', 'entrada', 1, 'G2-lee-el-eje'),
+  { t: 'x', alumno: 'a', tipo: 'prediccion', modulo: 'mruv', correcta: true }, // de una escena: no entra al resumen por curso
+];
+
+test('resumen por curso: puntajes, ganancia de Hake y errores antes y después', () => {
+  const [r] = M.resumirCursos(cursoEv);
+  assert.equal(r.curso, 'fisica');
+  assert.equal(r.alumnosEntrada, 3); assert.equal(r.alumnosSalida, 2); assert.equal(r.pareados, 2);
+  assert.ok(Math.abs(r.entrada - (1 / 4 + 2 / 4 + 0) / 3) < 1e-12);
+  // Pareados: entrada (0,25 + 0,5)/2 = 0,375; salida (0,75 + 1)/2 = 0,875; <g> = 0,5 / 0,625 = 0,8.
+  assert.ok(Math.abs(r.entradaPareados - 0.375) < 1e-12);
+  assert.ok(Math.abs(r.salidaPareados - 0.875) < 1e-12);
+  assert.ok(Math.abs(r.hake - 0.8) < 1e-12);
+  // g individuales: a (0,75 − 0,25)/0,75 = 2/3; b (1 − 0,5)/0,5 = 1.
+  assert.ok(Math.abs(r.hakeIndividual - (2 / 3 + 1) / 2) < 1e-12);
+  assert.equal(r.entradaConPrevias, 1);
+  assert.deepEqual(r.porForma.A, { alumnos: 2, entrada: 0.125 });
+  assert.deepEqual(r.porForma.B, { alumnos: 1, entrada: 0.5 });
+  const err = Object.fromEntries(r.errores.map(e => [e.id, e]));
+  // G2: a y b en la entrada (c no está pareado), nadie en la salida. C1: a antes y después (se cuenta una vez por alumno).
+  assert.deepEqual([err['G2-lee-el-eje'].antes, err['G2-lee-el-eje'].despues, err['G2-lee-el-eje'].antesTodos], [2, 0, 3]);
+  assert.deepEqual([err['C1-aceleracion-cero-en-la-cima'].antes, err['C1-aceleracion-cero-en-la-cima'].despues], [1, 1]);
+  const pl = Object.fromEntries(r.plantillas.map(p => [p.id, p]));
+  assert.ok(Math.abs(pl.mruv.entrada - 1 / 5) < 1e-12); // 5 ítems de mruv en la entrada, 1 bien
+  assert.equal(pl.dinamica.salida, 1);
+});
+
+test('resumen por curso: sin pareados no hay ganancia, y el resumen por módulo no se mezcla', () => {
+  const [r] = M.resumirCursos(cursoEv.filter(e => e.fase !== 'salida'));
+  assert.equal(r.pareados, 0); assert.equal(r.hake, null); assert.equal(r.hakeIndividual, null);
+  assert.deepEqual(M.resumir(cursoEv).map(x => x.modulo), ['mruv']);
+});
+
+test('el informe incluye la tabla por curso y los errores con su descripción', () => {
+  const banco = { fisica: { errores: { 'G2-lee-el-eje': { describe: 'Lee el corte con el eje', respaldo: 'documentado' } } } };
+  const md = informeCursos(cursoEv, banco);
+  assert.match(md, /\| fisica \| 25 % \(3\) \| 88 % \(2\) \| 2 \| 38 % \| 88 % \| 0,80 \| 0,83 \|/);
+  assert.match(md, /\| G2-lee-el-eje \| Lee el corte con el eje \| documentado \| 2 \| 0 \| -2 \|/);
+  assert.match(md, /1 alumno\(s\) hicieron la entrada de fisica después de abrir/);
+  assert.equal(informeCursos([]), '');
+  // unir no confunde dos ítems respondidos en el mismo milisegundo
+  assert.equal(unir([[{ ...cursoEv[1], t: 'z' }, { ...cursoEv[2], t: 'z' }]]).length, 2);
+  // el CSV lleva las columnas nuevas al final
+  assert.deepEqual(M.COLUMNAS.slice(-10), ['curso', 'forma', 'orden', 'banco', 'item', 'par', 'plantilla', 'origen', 'previas', 'dias']);
+  assert.match(M.aCSV([cursoEv[0]]), /fisica,A,AB,,,,,,0,/);
+});

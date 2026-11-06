@@ -1,0 +1,210 @@
+{
+  "curso": "aritmetica",
+  "version": "1.0.0",
+  "fecha": "2026-11-06",
+  "minutos": 12,
+  "informes": ["docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"],
+  "nota": "Aritmética tiene por ahora un solo módulo (porcentajes sucesivos): los 8 ítems son de porcentajes. Cuando entren más módulos, el banco crece con ellos.",
+  "errores": {
+    "suma-descuentos": { "respaldo": "documentado", "describe": "Suma los porcentajes sucesivos (AR1)" },
+    "monto-descuento": { "respaldo": "hipotesis", "describe": "Responde cuánto se descontó y no cuánto se paga (AR5)" },
+    "un-solo-descuento": { "respaldo": "hipotesis", "describe": "Aplica uno solo de los descuentos" },
+    "se-compensan": { "respaldo": "documentado", "describe": "Cree que subir y bajar se compensan, como si se restaran (AR1, AR2)" },
+    "solo-aumento": { "respaldo": "hipotesis", "describe": "Aplica solo el aumento (o un solo periodo)" },
+    "monto-variacion": { "respaldo": "hipotesis", "describe": "Responde cuánto cambió y no el valor final (AR5)" },
+    "producto": { "respaldo": "parcial", "describe": "Multiplica los porcentajes entre sí (AR4)" },
+    "lo-que-queda": { "respaldo": "parcial", "describe": "Confunde el factor con el porcentaje: lo que queda con lo que cambia (AR4)" },
+    "AR3": { "respaldo": "parcial", "describe": "Calcula el porcentaje sobre la base equivocada al revertir un cambio" },
+    "AR16": { "respaldo": "documentado", "describe": "Calcula el interés compuesto como simple" }
+  },
+  "pares": [
+    {
+      "par": "ari-01", "plantilla": "porcentajes-sucesivos", "unidad": "aritmetica.porcentajes",
+      "mide": "Dos descuentos sucesivos se multiplican, no se suman",
+      "A": {
+        "enunciado": "Una casaca cuesta S/ 400. La tienda le hace un descuento del 20 % y, sobre el nuevo precio, otro descuento del 10 %. ¿Cuánto se paga al final?",
+        "datos": { "P": 400, "a": 20, "b": 10 },
+        "opciones": [
+          { "texto": "S/ 280", "valor": 280, "error": "suma-descuentos" },
+          { "texto": "S/ 288", "valor": 288, "correcta": true },
+          { "texto": "S/ 112", "valor": 112, "error": "monto-descuento" },
+          { "texto": "S/ 320", "valor": 320, "error": "un-solo-descuento" }
+        ]
+      },
+      "B": {
+        "enunciado": "Unas zapatillas cuestan S/ 600. La tienda les hace un descuento del 25 % y, sobre el nuevo precio, otro descuento del 20 %. ¿Cuánto se paga al final?",
+        "datos": { "P": 600, "a": 25, "b": 20 },
+        "opciones": [
+          { "texto": "S/ 330", "valor": 330, "error": "suma-descuentos" },
+          { "texto": "S/ 360", "valor": 360, "correcta": true },
+          { "texto": "S/ 240", "valor": 240, "error": "monto-descuento" },
+          { "texto": "S/ 450", "valor": 450, "error": "un-solo-descuento" }
+        ]
+      }
+    },
+    {
+      "par": "ari-02", "plantilla": "porcentajes-sucesivos", "unidad": "aritmetica.porcentajes",
+      "mide": "Un aumento seguido de un descuento: el descuento se calcula sobre el precio ya aumentado",
+      "A": {
+        "enunciado": "El precio de una mochila era S/ 200. Subió un 30 % y luego bajó un 10 %. ¿Cuál es su precio ahora?",
+        "datos": { "P": 200, "a": 30, "b": 10 },
+        "opciones": [
+          { "texto": "S/ 240", "valor": 240, "error": "se-compensan" },
+          { "texto": "S/ 260", "valor": 260, "error": "solo-aumento" },
+          { "texto": "S/ 234", "valor": 234, "correcta": true },
+          { "texto": "S/ 34", "valor": 34, "error": "monto-variacion" }
+        ]
+      },
+      "B": {
+        "enunciado": "El precio de una licuadora era S/ 300. Subió un 40 % y luego bajó un 10 %. ¿Cuál es su precio ahora?",
+        "datos": { "P": 300, "a": 40, "b": 10 },
+        "opciones": [
+          { "texto": "S/ 390", "valor": 390, "error": "se-compensan" },
+          { "texto": "S/ 420", "valor": 420, "error": "solo-aumento" },
+          { "texto": "S/ 378", "valor": 378, "correcta": true },
+          { "texto": "S/ 78", "valor": 78, "error": "monto-variacion" }
+        ]
+      }
+    },
+    {
+      "par": "ari-03", "plantilla": "porcentajes-sucesivos", "unidad": "aritmetica.porcentajes",
+      "mide": "Descuento único equivalente a dos descuentos sucesivos",
+      "A": {
+        "enunciado": "Dos descuentos sucesivos, primero del 20 % y luego del 25 %, ¿a qué descuento único equivalen?",
+        "datos": { "a": 20, "b": 25 },
+        "opciones": [
+          { "texto": "45 %", "valor": 45, "error": "suma-descuentos" },
+          { "texto": "40 %", "valor": 40, "correcta": true },
+          { "texto": "5 %", "valor": 5, "error": "producto" },
+          { "texto": "60 %", "valor": 60, "error": "lo-que-queda" }
+        ]
+      },
+      "B": {
+        "enunciado": "Dos descuentos sucesivos, primero del 10 % y luego del 30 %, ¿a qué descuento único equivalen?",
+        "datos": { "a": 10, "b": 30 },
+        "opciones": [
+          { "texto": "40 %", "valor": 40, "error": "suma-descuentos" },
+          { "texto": "37 %", "valor": 37, "correcta": true },
+          { "texto": "3 %", "valor": 3, "error": "producto" },
+          { "texto": "63 %", "valor": 63, "error": "lo-que-queda" }
+        ]
+      }
+    },
+    {
+      "par": "ari-04", "plantilla": "porcentajes-sucesivos", "unidad": "aritmetica.porcentajes",
+      "mide": "Subir y bajar el mismo porcentaje no devuelve el valor inicial",
+      "A": {
+        "enunciado": "Un sueldo de S/ 1500 sube un 10 % y, al mes siguiente, baja un 10 %. ¿Cuánto es el sueldo ahora?",
+        "datos": { "P": 1500, "a": 10 },
+        "opciones": [
+          { "texto": "S/ 1500, porque sube y baja lo mismo", "valor": 1500, "error": "se-compensan" },
+          { "texto": "S/ 1485", "valor": 1485, "correcta": true },
+          { "texto": "S/ 1650", "valor": 1650, "error": "solo-aumento" },
+          { "texto": "S/ 15", "valor": 15, "error": "monto-variacion" }
+        ]
+      },
+      "B": {
+        "enunciado": "Un pasaje de S/ 2000 sube un 20 % en julio y, en agosto, baja un 20 %. ¿Cuánto cuesta ahora?",
+        "datos": { "P": 2000, "a": 20 },
+        "opciones": [
+          { "texto": "S/ 2000, porque sube y baja lo mismo", "valor": 2000, "error": "se-compensan" },
+          { "texto": "S/ 1920", "valor": 1920, "correcta": true },
+          { "texto": "S/ 2400", "valor": 2400, "error": "solo-aumento" },
+          { "texto": "S/ 80", "valor": 80, "error": "monto-variacion" }
+        ]
+      }
+    },
+    {
+      "par": "ari-05", "plantilla": "porcentajes-sucesivos", "unidad": "aritmetica.porcentajes",
+      "mide": "Aumento único equivalente a dos aumentos sucesivos",
+      "A": {
+        "enunciado": "El precio del pan subió un 10 % en enero y un 20 % en febrero. ¿En qué porcentaje subió en total desde diciembre?",
+        "datos": { "a": 10, "b": 20 },
+        "opciones": [
+          { "texto": "30 %", "valor": 30, "error": "suma-descuentos" },
+          { "texto": "2 %", "valor": 2, "error": "producto" },
+          { "texto": "32 %", "valor": 32, "correcta": true },
+          { "texto": "132 %", "valor": 132, "error": "lo-que-queda" }
+        ]
+      },
+      "B": {
+        "enunciado": "La matrícula de una academia subió un 20 % un año y un 30 % al año siguiente. ¿En qué porcentaje subió en total en esos dos años?",
+        "datos": { "a": 20, "b": 30 },
+        "opciones": [
+          { "texto": "50 %", "valor": 50, "error": "suma-descuentos" },
+          { "texto": "6 %", "valor": 6, "error": "producto" },
+          { "texto": "56 %", "valor": 56, "correcta": true },
+          { "texto": "156 %", "valor": 156, "error": "lo-que-queda" }
+        ]
+      }
+    },
+    {
+      "par": "ari-06", "plantilla": "porcentajes-sucesivos", "unidad": "aritmetica.porcentajes",
+      "mide": "Revertir un cambio: el porcentaje se calcula sobre el valor nuevo",
+      "A": {
+        "enunciado": "Un sueldo subió un 25 %. ¿Qué porcentaje tiene que bajar el sueldo nuevo para volver al de antes?",
+        "datos": { "a": 25, "modelo": { "signo": 1 } },
+        "opciones": [
+          { "texto": "25 %", "valor": 25, "error": "AR3" },
+          { "texto": "20 %", "valor": 20, "correcta": true },
+          { "texto": "80 %", "valor": 80, "error": "lo-que-queda" }
+        ]
+      },
+      "B": {
+        "enunciado": "El precio de un cuaderno bajó un 20 %. ¿Qué porcentaje tiene que subir el precio nuevo para volver al de antes?",
+        "datos": { "a": 20, "modelo": { "signo": -1 } },
+        "opciones": [
+          { "texto": "20 %", "valor": 20, "error": "AR3" },
+          { "texto": "25 %", "valor": 25, "correcta": true },
+          { "texto": "125 %", "valor": 125, "error": "lo-que-queda" }
+        ]
+      }
+    },
+    {
+      "par": "ari-07", "plantilla": "porcentajes-sucesivos", "unidad": "aritmetica.porcentajes",
+      "mide": "Interés compuesto: aumentos sucesivos del mismo porcentaje",
+      "A": {
+        "enunciado": "Se depositan S/ 2000 al 10 % de interés anual compuesto (el interés de cada año se suma al depósito). ¿Cuánto dinero hay al cabo de 2 años?",
+        "datos": { "C": 2000, "i": 10, "anos": 2 },
+        "opciones": [
+          { "texto": "S/ 2400", "valor": 2400, "error": "AR16" },
+          { "texto": "S/ 2420", "valor": 2420, "correcta": true },
+          { "texto": "S/ 420", "valor": 420, "error": "monto-variacion" },
+          { "texto": "S/ 2200", "valor": 2200, "error": "solo-aumento" }
+        ]
+      },
+      "B": {
+        "enunciado": "Se depositan S/ 5000 al 20 % de interés anual compuesto (el interés de cada año se suma al depósito). ¿Cuánto dinero hay al cabo de 2 años?",
+        "datos": { "C": 5000, "i": 20, "anos": 2 },
+        "opciones": [
+          { "texto": "S/ 7000", "valor": 7000, "error": "AR16" },
+          { "texto": "S/ 7200", "valor": 7200, "correcta": true },
+          { "texto": "S/ 2200", "valor": 2200, "error": "monto-variacion" },
+          { "texto": "S/ 6000", "valor": 6000, "error": "solo-aumento" }
+        ]
+      }
+    },
+    {
+      "par": "ari-08", "plantilla": "porcentajes-sucesivos", "unidad": "aritmetica.porcentajes",
+      "mide": "Hallar el precio de antes: dividir entre el factor, no aplicar el porcentaje al precio nuevo",
+      "A": {
+        "enunciado": "Después de un descuento del 20 %, una licuadora cuesta S/ 240. ¿Cuánto costaba antes del descuento?",
+        "datos": { "a": 20, "final": 240, "modelo": { "signo": -1 } },
+        "opciones": [
+          { "texto": "S/ 288", "valor": 288, "error": "AR3" },
+          { "texto": "S/ 300", "valor": 300, "correcta": true },
+          { "texto": "S/ 60", "valor": 60, "error": "monto-variacion" }
+        ]
+      },
+      "B": {
+        "enunciado": "Después de un aumento del 25 %, una bicicleta cuesta S/ 500. ¿Cuánto costaba antes del aumento?",
+        "datos": { "a": 25, "final": 500, "modelo": { "signo": 1 } },
+        "opciones": [
+          { "texto": "S/ 375", "valor": 375, "error": "AR3" },
+          { "texto": "S/ 400", "valor": 400, "correcta": true },
+          { "texto": "S/ 100", "valor": 100, "error": "monto-variacion" }
+        ]
+      }
+    }
+  ]
+}

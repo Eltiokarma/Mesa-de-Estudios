@@ -8,7 +8,7 @@
 npm test
 ```
 
-Deben pasar 762 pruebas.
+Deben pasar 828 pruebas.
 
 ```bash
 npm run dev
@@ -61,6 +61,8 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 
 ### 2. Detalles de las plantillas ya hechas
 
+- **Cinética** (`plantillas/cinetica/`, rutina de química, 6 nov 2026): caja de discos con teoría de colisiones (energía y orientación), temperatura, catalizador y perfil de energía. Informe `docs/investigacion/cinetica-ideas-erroneas.md` (CI1 a CI13) con cifras sin verificar por el bloqueo de red: la escena no muestra porcentajes de cinética. La fracción contada queda unos pocos por ciento bajo la teoría. Falta en la escena: orden ≠ coeficiente y vida media.
+
 - **Dinámica** (`plantillas/dinamica/`, rutina de física, 6 nov 2026): plano inclinado con roce estático que se ajusta, poleas, ascensor, tercera ley y empujón; 21 casos verificados aparte; 10 de papel; 3 predicciones y 6 «¿qué pasa si…?» (Halloun y Hestenes 1985, Bao y otros 2002, Castillo y otros 2013). Falta: dinámica circular en escena (va con tiro parabólico), tren de bloques, bloque sobre bloque, polea móvil y péndulo en un vagón. Para Gerson: en «¿qué pasa si…?» las pastillas dejan saltar sin responder (como en MRUV).
 - **Equilibrio químico** (`plantillas/equilibrio-quimico/`, rutina de química, 6 nov 2026): A ⇌ B y 2 X ⇌ Y con partículas, Q contra K en vez de la regla de Le Chatelier (Quílez 2017); 18 casos verificados aparte; 9 de papel. Falta el gas inerte a presión constante y Kp en la escena (está en papel). ΔH y Ea de la escena elegidos para números redondos.
 
@@ -110,7 +112,12 @@ Tres conversaciones aparte trabajan solas cada día, cada una en su rama y sin t
   - Una tipografía redondeada común entre la app y las escenas.
   - Revisar el modo oscuro de las ilustraciones.
   - Llevar a `nucleo/` lo que cada escena repite (la cinta y la gráfica ya dejan el dibujo fijo arriba mientras se elige: `.bench` sticky y lienzo de ~240 px) y las revisiones vuelven a encontrar: en el celular, subir el lienzo al responder (scrollIntoView y animar después) y dejar que el dedo desplace la página sobre el dibujo salvo cerca de lo que se arrastra (touch-action: pan-y). Salió en la celda, la ampliadora y el triángulo.
-- **la1:** pruebas de entrada y salida por curso. Hoy existen por módulo de predicciones (3 + 3 preguntas); faltan en las escenas y por curso.
+- **la1, pruebas de entrada y salida por curso (hecha el 6 nov 2026):** banco en `catalogo/pruebas/` (formato en `docs/arquitectura.md`), dos formas paralelas A y B por curso en orden contrabalanceado, 50 ítems por forma en física, química, geometría, trigonometría, álgebra y aritmética, cada respuesta y cada distractor verificados con el motor de su plantilla. La app pide la entrada al entrar al curso por primera vez y ofrece la salida en el curso (o la habilita el profesor con `?salida=<curso>`). Se registra cada respuesta y `analizar-medicion.js` da la ganancia de Hake y los errores antes y después. Falta:
+  - Razonamiento matemático y verbal: sin banco hasta que tengan módulos. Al agregar una plantilla a un curso, sumar sus ítems (la prueba avisa).
+  - Aritmética son 8 ítems de porcentajes porque es su único módulo; trigonometría, 8 de la cinta del radio.
+  - La equivalencia de A y B es por diseño (ítems isomorfos); hay que confirmarla con los datos del colegio (columna «Forma A / B»).
+  - Los enunciados no usan los colores de variables (una prueba es neutra) ni tienen figuras: todo va en texto.
+  - **Para Gerson:** ¿la entrada debe ser obligatoria (hoy se puede decir «Ahora no», y se registra cuántas unidades del curso ya había abierto)? ¿El profesor habilita la salida solo con el enlace (sin clave) o hace falta un código? ¿Revisar la redacción de los 100 ítems con un profesor del colegio?
 - **Planificador por semana del CEPRE y modo examen con tiempo:** estaban en la referencia de interfaz y todavía no existen.
 - **Medición:** por decisión de Gerson (5 nov 2026), solo se exportan archivos. Un servidor (Railway está disponible) queda para después.
 

@@ -47,6 +47,42 @@ En matemática, el potencial es desigual:
 - ~~El motor de predicciones generadas.~~ Hecho (5 nov 2026): `nucleo/predicciones.js`, `app/practica.js` y dos módulos (`estequiometria-limitante`, `porcentajes-sucesivos`). Cada alternativa incorrecta lleva el id del error, su explicación y su respaldo (`documentado` o `hipotesis`); la medición registra cuál eligió cada alumno.
 - Biología y los cursos de letras: el catálogo ya los admite (`area: "letras"`); se agregan cuando entren al alcance.
 
+## Pruebas de entrada y salida por curso (la1, 6 nov 2026)
+
+Miden lo que se aprende en el piloto. El banco vive en `catalogo/pruebas/<curso>.json`, uno por curso con plantillas (hoy: física 9 ítems, química 8, geometría 9, trigonometría 8, álgebra 8 y aritmética 8, por forma). `npm run catalogo` lo copia a `app/datos/pruebas.json` sin los campos de verificación; el servidor local lo arma al vuelo.
+
+```json
+{
+  "curso": "fisica", "version": "1.0.0", "fecha": "2026-11-06", "minutos": 15,
+  "informes": ["docs/investigacion/cinematica-ideas-erroneas.md"],
+  "errores": { "G2-lee-el-eje": { "respaldo": "documentado", "describe": "Lee el corte con el eje en vez de la pendiente" } },
+  "pares": [{
+    "par": "fis-01", "plantilla": "mruv", "unidad": "fisica.movimiento-rectilineo",
+    "mide": "Leer la velocidad como pendiente de una recta x-t que no pasa por el origen",
+    "A": { "enunciado": "…(0 s; 6 m) y (5 s; 26 m)…", "datos": { "t1": 0, "x1": 6, "t2": 5, "x2": 26 },
+           "opciones": [ { "texto": "4 m/s", "valor": 4, "correcta": true },
+                         { "texto": "6 m/s", "valor": 6, "error": "G2-lee-el-eje" } ] },
+    "B": { … }
+  }]
+}
+```
+
+| Campo | Qué es |
+| --- | --- |
+| `pares` | De 8 a 10. Cada par es una pregunta con dos versiones paralelas, `A` y `B`: misma plantilla, misma unidad, mismo número de opciones y **los mismos códigos de error**. El id del ítem es `par` + forma (`fis-01A`). |
+| `opciones` | De 3 a 5. Una con `correcta: true`; cada incorrecta con `error`, un código de los informes de `docs/investigacion/` o de las escenas (el mismo que registran las escenas). |
+| `valor` / `clave` | Lo que calcula el motor: un número (`valor`) o un texto (`clave`; si falta, se compara el `texto`). |
+| `datos` | Los números del enunciado, que recibe el verificador. Los que no salen en el enunciado (la altura de la vela, el radio de la bombilla) van dentro de `datos.modelo`. La prueba exige que cada número de `datos` aparezca en el enunciado. |
+| `errores` | Diccionario de los códigos usados, con `respaldo` (`documentado`, `parcial`, `hipotesis`) y una descripción corta que ve el analista y el alumno al final de la salida. |
+
+**Verificación (regla 1).** `catalogo/pruebas/verificar.js` tiene un verificador por par que llama al motor de la plantilla (`plantillas/<id>/motor.js`) con los `datos` y devuelve la respuesta y el valor de cada distractor. `catalogo/pruebas/pruebas.test.js` comprueba con eso cada respuesta, cada distractor, que el número escrito en el texto sea el `valor`, que ningún distractor coincida con la respuesta, el formato (`Pruebas.validar`) y que las formas sean paralelas. Aritmética no tiene motor (el generador de porcentajes no expone sus cuentas): sus ítems se recalculan con factores exactos dentro del verificador. Un curso o una plantilla sin ítems no rompe las pruebas: sale un aviso (diagnóstico).
+
+**Contrabalanceo.** `nucleo/pruebas.js` asigna a cada alumno y curso el orden `AB` (A de entrada, B de salida) o `BA`, al azar con una semilla hecha del id anónimo; las opciones se barajan con otra semilla fija por alumno e ítem.
+
+**En la app** (`app/prueba.js`): la entrada aparece la primera vez que el alumno entra al curso o abre una de sus unidades (puede decir «Ahora no»), sin decirle qué acertó. La salida está en una tarjeta del curso; el profesor la habilita con `…/app/?salida=fisica` (o `?salida=todas`) y entonces se destaca. Al final de la salida se ven los dos puntajes, qué mide cada pregunta y la solución.
+
+**Registro** (`nucleo/medicion.js`): un evento `item` por respuesta (curso, fase, forma, orden, banco, item, par, plantilla, unidad, opcion, correcta, error, ms) y uno `prueba` al terminar (aciertos, total, respuestas, ms, origen, previas, dias). Las columnas nuevas van al final del CSV. `herramientas/analizar-medicion.js` resume por curso: puntajes, ganancia normalizada de Hake, la forma A contra la B en la entrada (para ver si son equivalentes), acierto por plantilla y, por código de error, cuántos alumnos pareados lo cometieron antes y después.
+
 ## Cómo agregar cosas
 
 **Una universidad nueva** (por ejemplo, la UNA Puno):

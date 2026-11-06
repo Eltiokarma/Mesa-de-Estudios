@@ -9,6 +9,7 @@
 //   /api/hoja-de-ruta    → GET devuelve docs/hoja-de-ruta.json; PUT lo valida, lo guarda
 //                          y regenera el Gantt de Mermaid de docs/hoja-de-ruta.md
 //   /app/datos/catalogo.json → el catálogo armado al vuelo desde catalogo/ (ver construir-catalogo.js)
+//   /app/datos/pruebas.json  → el banco de pruebas de entrada y salida, armado al vuelo desde catalogo/pruebas/
 // Todo lo demás se sirve como archivo estático desde la raíz del repositorio.
 // Solo escucha en 127.0.0.1: es una herramienta de desarrollo, no un servidor público.
 
@@ -16,7 +17,7 @@ const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
 const hoja = require('./hoja-de-ruta');
-const { construir } = require('./construir-catalogo');
+const { construir, construirPruebas } = require('./construir-catalogo');
 
 const RAIZ = path.join(__dirname, '..');
 const PUERTO = Number(process.env.PORT) || 4173;
@@ -62,6 +63,7 @@ const servidor = http.createServer(async (req, res) => {
   if (ruta === '/') return enviar(res, 302, '', undefined, { Location: '/app/' });
   if (ruta === '/api/hoja-de-ruta') return api(req, res);
   if (ruta === '/app/datos/catalogo.json') return enviar(res, 200, JSON.stringify(construir()), TIPOS['.json']);
+  if (ruta === '/app/datos/pruebas.json') return enviar(res, 200, JSON.stringify(construirPruebas()), TIPOS['.json']);
   if (PROHIBIDO.test(ruta)) return enviar(res, 404, 'No encontrado');
   if (ruta.endsWith('/')) ruta += 'index.html';
   const archivo = path.normalize(path.join(RAIZ, ruta));
