@@ -1,0 +1,161 @@
+{
+  "titulo": "El cuadrado que crece: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Antes de usar una regla, dibuja las piezas: (a + b)² tiene cuatro (a², b² y dos rectángulos ab), no dos. Si dudas de una regla, pruébala con números chicos, por ejemplo a = 1 y b = 1: (1 + 1)² = 4, pero 1² + 1² = 2. Al factorizar, multiplica tu respuesta y mira si vuelves al polinomio de partida.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Desarrolla (2x + 5)² y comprueba tu resultado con x = 1.",
+      "respuesta": "4x² + 20x + 25. Con x = 1, los dos lados valen 49.",
+      "pasos": [
+        "Dibuja un cuadrado de lado 2x + 5. Tiene cuatro piezas: un cuadrado de lado 2x, un cuadrado de lado 5 y dos rectángulos de 2x por 5.",
+        "Las áreas son (2x)² = 4x², 5² = 25 y dos veces 2x · 5 = 10x, o sea 20x.",
+        "Total: 4x² + 20x + 25. Si escribes 4x² + 25, te olvidaste de los dos rectángulos.",
+        "Comprobación con x = 1: (2 · 1 + 5)² = 7² = 49, y 4 + 20 + 25 = 49. Coinciden."
+      ],
+      "verificar": [
+        { "fn": "desarrollar", "args": ["(2x + 5)²"], "espera": { "texto": "4x² + 20x + 25" } },
+        { "fn": "comprobar", "args": ["(2x + 5)²", "4x² + 20x + 25", { "x": 1 }], "espera": { "iguales": true, "izq.valor": 49 } },
+        { "fn": "comprobar", "args": ["(2x + 5)²", "4x² + 25", { "x": 1 }], "espera": { "iguales": false, "der.valor": 29 } }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Calcula 99² sin calculadora, escribiendo 99 como 100 − 1.",
+      "respuesta": "9801.",
+      "pasos": [
+        "(100 − 1)² = 100² − 2 · 100 · 1 + 1².",
+        "= 10 000 − 200 + 1 = 9801.",
+        "Si escribes 100² − 1² = 9999, no quitaste las dos tiras de 100 por 1 (−200) y además restaste la esquina en vez de devolverla: no es lo mismo."
+      ],
+      "verificar": [
+        { "fn": "binomioCuadrado", "args": [{ "a": 100, "b": 1, "signo": "-" }], "espera": { "valor": 9801, "terminos.dobleAB": 200, "errores.sinDoble.valor": 9999 } }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Factoriza: a) x² − 49; b) 4x² − 1.",
+      "respuesta": "a) (x + 7)(x − 7). b) (2x + 1)(2x − 1).",
+      "pasos": [
+        "Las dos son diferencias de cuadrados: algo al cuadrado menos otra cosa al cuadrado.",
+        "a) x² − 7² = (x + 7)(x − 7). b) (2x)² − 1² = (2x + 1)(2x − 1).",
+        "Comprueba multiplicando: (x + 7)(x − 7) = x² − 7x + 7x − 49 = x² − 49. En cambio (x − 7)² = x² − 14x + 49: no es lo mismo."
+      ],
+      "verificar": [
+        { "fn": "factorizar", "args": ["x² − 49"], "espera": { "texto": "(x + 7)(x − 7)", "metodos": ["diferencia de cuadrados"], "errores.cuadradoDeResta.texto": "x² − 14x + 49" } },
+        { "fn": "factorizar", "args": ["4x² − 1"], "espera": { "texto": "(2x + 1)(2x − 1)", "identidad": true } }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Si a + b = 9 y ab = 20, halla a² + b² y (a − b)².",
+      "respuesta": "a² + b² = 41 y (a − b)² = 1.",
+      "pasos": [
+        "(a + b)² = a² + 2ab + b², así que a² + b² = (a + b)² − 2ab = 81 − 40 = 41.",
+        "(a − b)² = a² + b² − 2ab = 41 − 40 = 1.",
+        "Comprobación: los números son 4 y 5 (suman 9 y multiplican 20). 16 + 25 = 41 y (5 − 4)² = 1.",
+        "Si respondes 81, tomaste (a + b)² como si fuera a² + b²: faltó quitar los dos rectángulos."
+      ],
+      "verificar": [
+        { "fn": "sumaProducto", "args": [{ "suma": 9, "producto": 20 }], "espera": { "valor": 41, "cuadradoDeLaResta": 1, "numeros": [4, 5], "errores.sinDoble.valor": 81 } }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Factoriza x² − x − 12 por aspa simple.",
+      "respuesta": "(x − 4)(x + 3).",
+      "pasos": [
+        "Busca dos números que multiplicados den −12 y sumados den −1 (el coeficiente de x).",
+        "−4 y 3: (−4) · 3 = −12 y −4 + 3 = −1.",
+        "En el aspa: x por 3 da 3x, y −4 por x da −4x; sumados, −x. Queda (x − 4)(x + 3).",
+        "Comprobación con x = 2: (2 − 4)(2 + 3) = −10, y 4 − 2 − 12 = −10."
+      ],
+      "verificar": [
+        { "fn": "factorizar", "args": ["x² − x − 12"], "espera": { "texto": "(x − 4)(x + 3)", "metodos": ["aspa simple"], "aspa.cruces": [3, -4], "comprobacion.izq.valor": -10 } }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Un terreno rectangular mide 5 m por 12 m. ¿Cuánto mide su diagonal? ¿Por qué no mide 17 m?",
+      "respuesta": "13 m. 17 m es lo que se camina por los dos lados; la diagonal es un atajo.",
+      "pasos": [
+        "La diagonal es la hipotenusa de un triángulo rectángulo de catetos 5 y 12: √(5² + 12²) = √(25 + 144) = √169 = 13.",
+        "√(5² + 12²) no es 5 + 12: la raíz de una suma no es la suma de las raíces.",
+        "5 + 12 = 17 es el camino por los dos lados. La diagonal va en línea recta y siempre es más corta."
+      ],
+      "verificar": [
+        { "fn": "hipotenusa", "args": [{ "a": 5, "b": 12 }], "espera": { "valor": 13, "camino": 17, "ahorro": 4, "errores.sumaDeRaices.valor": 17 } }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Si 2ⁿ = 5, ¿cuánto vale 2ⁿ⁺³?",
+      "respuesta": "40.",
+      "pasos": [
+        "2ⁿ⁺³ = 2ⁿ · 2³: al sumar exponentes, las potencias se multiplican.",
+        "= 5 · 8 = 40.",
+        "Si escribes 2ⁿ + 2³ = 13, repartiste el exponente sobre la suma. Pruébalo con n = 1: 2⁴ = 16, pero 2¹ + 2³ = 10."
+      ],
+      "verificar": [
+        { "fn": "identidad", "args": ["2^(n + 3)", "2^n · 2³"], "espera": { "identidad": true } },
+        { "fn": "identidad", "args": ["2^(n + 3)", "2^n + 2³"], "espera": { "identidad": false, "contraejemplo.izq": 16, "contraejemplo.der": 10 } },
+        { "fn": "evaluar", "args": ["5 · 2³"], "espera": { "valor": 40 } }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Un compañero simplificó (x + 3)/(x + 5) tachando las x y escribió 3/5. ¿Tiene razón? Pruébalo con x = 1.",
+      "respuesta": "No. Con x = 1, (1 + 3)/(1 + 5) = 4/6 = 2/3, que no es 3/5. La fracción ya no se simplifica.",
+      "pasos": [
+        "Con x = 1: (1 + 3)/(1 + 5) = 4/6 = 2/3. En cambio 3/5 es otro número: 2/3 ≈ 0,67 y 3/5 = 0,6.",
+        "Solo se tacha lo que multiplica a todo el numerador y a todo el denominador (un factor común). Aquí la x está sumando, no multiplicando.",
+        "Por ejemplo, 3x/(5x) = 3/5 sí se simplifica (si x no es 0), pero (x + 3)/(x + 5) no: no tiene factores comunes.",
+        "Tachar la x solo daría lo mismo con x = 0, y eso no basta: una igualdad de álgebra tiene que valer para todo x."
+      ],
+      "verificar": [
+        { "fn": "fraccionSumandos", "args": [{ "x": 1, "m": 3, "n": 5 }], "espera": { "exacto": "2/3", "sustituida": "(1 + 3)/(1 + 5)", "errores.tachaX.valor": 0.6 } },
+        { "fn": "fraccionSumandos", "args": [{ "x": 0, "m": 3, "n": 5 }], "espera": { "coinciden": ["tachaX"] } },
+        { "fn": "identidad", "args": ["(x + 3)/(x + 5)", "3/5"], "espera": { "identidad": false } }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Resuelve log x + log(x − 3) = 1.",
+      "respuesta": "x = 5.",
+      "pasos": [
+        "La suma de logaritmos es el logaritmo del producto: log(x(x − 3)) = 1, o sea x(x − 3) = 10.",
+        "x² − 3x − 10 = 0 se factoriza por aspa: (x − 5)(x + 2) = 0, así que x = 5 o x = −2.",
+        "x = −2 no sirve: log(−2) no existe. Queda x = 5. Comprobación: log 5 + log 2 = log 10 = 1.",
+        "Si escribes log(x + x − 3) = 1, usaste la regla falsa log a + log b = log(a + b), y te sale otro número."
+      ],
+      "verificar": [
+        { "fn": "factorizar", "args": ["x² − 3x − 10"], "espera": { "texto": "(x − 5)(x + 2)" } },
+        { "fn": "evaluar", "args": ["log 5 + log(5 − 3)"], "espera": { "valor": 1 } },
+        { "fn": "comprobar", "args": ["log 5 + log 2", "log(5 + 2)", {}], "espera": { "iguales": false } }
+      ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Sin elevar al cubo, explica cuánto le falta a 2³ + 3³ para llegar a (2 + 3)³.",
+      "respuesta": "Le faltan 90: las seis piezas del medio, 3 · 2² · 3 + 3 · 2 · 3² = 36 + 54.",
+      "pasos": [
+        "El cubo de arista 2 + 3 se corta en ocho piezas: un cubo de 2, un cubo de 3, tres bloques de 2 · 2 · 3 y tres de 2 · 3 · 3.",
+        "2³ + 3³ = 8 + 27 = 35 son solo los dos cubos de las esquinas.",
+        "Faltan 3 · 12 + 3 · 18 = 36 + 54 = 90. Comprobación: 35 + 90 = 125 = 5³."
+      ],
+      "verificar": [
+        { "fn": "cuboBinomio", "args": [{ "a": 2, "b": 3 }], "espera": { "valor": 125, "errores.reparte.valor": 35, "terminos.a2b": 12, "terminos.ab2": 18 } },
+        { "fn": "evaluar", "args": ["3 · 12 + 3 · 18"], "espera": { "valor": 90 } }
+      ]
+    }
+  ]
+}

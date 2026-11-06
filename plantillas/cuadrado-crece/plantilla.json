@@ -1,0 +1,16 @@
+{
+  "id": "cuadrado-crece",
+  "titulo": "El cuadrado que crece: productos notables y linealidad indebida",
+  "formato": "escena",
+  "unidades": [
+    "algebra.exponentes-y-productos-notables",
+    "algebra.factorizacion"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}
