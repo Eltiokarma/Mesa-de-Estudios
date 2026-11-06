@@ -35,36 +35,38 @@
         "Masa molar del NaOH: 23 + 16 + 1 = 40 g/mol. Moles: 4/40 = 0,1 mol.",
         "Pasa el volumen a litros: 250 mL = 0,25 L.",
         "M = n/V = 0,1/0,25 = 0,4 mol/L.",
-        "Si divides entre 250 sin pasar a litros te sale 0,0004: un número absurdo para una solución de laboratorio. Y el volumen es el de la solución terminada, no el del agua que se echó."
+        "Si divides entre 250 sin pasar a litros te sale 0,0004, pero eso son mol por mililitro, no mol por litro. Y el volumen es el de la solución terminada, no el del agua que se echó."
       ],
       "verificar": [ { "fn": "solucion", "args": [{ "soluto": "NaOH", "g": 4, "mL": 250 }], "espera": { "n": 0.1, "M": 0.4 } } ]
     },
     {
       "id": "p4",
       "nivel": "intermedio",
-      "enunciado": "Un vinagre tiene 12 g de ácido acético (CH₃COOH) en cada 250 mL. a) ¿Cuál es su molaridad? b) Para un aliño se toman 50 mL de ese vinagre y se completan con agua hasta 200 mL. ¿Cuál es la nueva molaridad?",
-      "respuesta": "a) 0,8 M. b) 0,2 M.",
+      "enunciado": "Un vinagre tiene 12 g de ácido acético (CH₃COOH) en cada 250 mL. a) ¿Cuál es su molaridad? b) ¿Cuál es su porcentaje masa-volumen (gramos de ácido por cada 100 mL)? c) Para un aliño se toman 50 mL de ese vinagre y se completan con agua hasta 200 mL. ¿Cuál es la nueva molaridad?",
+      "respuesta": "a) 0,8 M. b) 4,8 % m/v. c) 0,2 M.",
       "pasos": [
         "a) Masa molar del CH₃COOH: 2·12 + 4·1 + 2·16 = 60 g/mol. Moles: 12/60 = 0,2 mol. M = 0,2/0,25 = 0,8 M.",
-        "b) En los 50 mL hay n = 0,8 · 0,050 = 0,04 mol. Al agregar agua, esos moles no cambian: el agua no trae ni se lleva ácido.",
+        "b) % m/v = 100 · 12 g / 250 mL = 4,8 %: 4,8 g de ácido en cada 100 mL de vinagre. Se divide entre el volumen de la solución, no entre la masa.",
+        "c) En los 50 mL hay n = 0,8 · 0,050 = 0,04 mol. Al agregar agua, esos moles no cambian: el agua no trae ni se lleva ácido.",
         "La nueva concentración es 0,04/0,200 = 0,2 M. Es lo mismo que C₁V₁ = C₂V₂: 0,8 · 50 = C₂ · 200.",
         "El volumen final es 200 mL porque dice \"se completan hasta 200 mL\". No sumes 200 mL de agua a los 50."
       ],
       "verificar": [
         { "fn": "solucion", "args": [{ "soluto": "CH3COOH", "g": 12, "mL": 250 }], "espera": { "M": 0.8 } },
+        { "fn": "solucion", "args": [{ "soluto": "CH3COOH", "g": 12, "mL": 250 }], "espera": { "pctMasaVolumen": 4.8 } },
         { "fn": "diluir", "args": [0.8, 50, 200], "espera": { "n": 0.04, "M2": 0.2 } }
       ]
     },
     {
       "id": "p5",
       "nivel": "intermedio",
-      "enunciado": "A 100 mL de ácido clorhídrico 3 M se le agregan 200 mL de agua. ¿Cuál es la concentración final?",
+      "enunciado": "Se mezclan 100 mL de ácido clorhídrico 3 M con 200 mL de agua. ¿Cuál es la concentración final?",
       "respuesta": "1 M.",
       "pasos": [
         "Moles de HCl: 3 · 0,100 = 0,3 mol. No cambian al agregar agua.",
-        "Aquí 200 mL es el agua agregada, no el volumen final: el volumen final es 100 + 200 = 300 mL.",
+        "Aquí 200 mL es el agua, no el volumen final: el volumen final es 100 + 200 = 300 mL.",
         "C₂ = 0,3/0,300 = 1 M.",
-        "Si usas 200 mL como volumen final te sale 1,5 M. Lee siempre si el problema dice \"se agregan\" o \"se completan hasta\"."
+        "Si usas 200 mL como volumen final te sale 1,5 M. Lee siempre si el problema da el agua o el volumen final (\"se completan hasta\"). Y en el laboratorio el ácido se vierte poco a poco sobre el agua, nunca el agua sobre el ácido concentrado."
       ],
       "verificar": [ { "fn": "diluirConAgua", "args": [3, 100, 200], "espera": { "mL2": 300, "M2": 1, "n": 0.3 } } ]
     },
@@ -84,7 +86,7 @@
     {
       "id": "p7",
       "nivel": "intermedio",
-      "enunciado": "Para un suero glucosado se disuelven 90 g de glucosa (C₆H₁₂O₆) en 500 g de agua. ¿Cuál es la molalidad de la solución?",
+      "enunciado": "Para preparar un jarabe se disuelven 90 g de glucosa (C₆H₁₂O₆) en 500 g de agua. ¿Cuál es la molalidad de la solución?",
       "respuesta": "1 mol/kg (1 molal).",
       "pasos": [
         "Masa molar de la glucosa: 6·12 + 12·1 + 6·16 = 180 g/mol. Moles: 90/180 = 0,5 mol.",

@@ -145,7 +145,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
     <header>
       <p class="eyebrow">Química · Soluciones · Problemas tipo admisión</p>
       <h1>Concentración, dilución y mezcla</h1>
-      <p class="sub">Cada cuadro es un poco de solución; cada punto, un poco de soluto. La concentración es cuántos puntos tocan a cada cuadro.</p>
+      <p class="sub">Cada cuadro es un poco de solución; cada punto, un poco de soluto. La concentración es cuántos puntos hay en cada cuadro.</p>
     </header>
     <nav class="tabs" aria-label="Modo de la escena">
       <a href="#paso-a-paso" id="tab1">Paso a paso</a>
@@ -422,7 +422,7 @@ function crearEscena(cv, idDesc, idLey){
     E.lay.l = {};
     if (zl){
       const fila = zl.w >= zl.h*nl*0.7;
-      const R = Math.max(30, Math.min(fila ? zl.w/nl/2 - 16 : zl.w/2 - 16, fila ? zl.h/2 - 46 : zl.h/nl/2 - 46, 108));
+      const R = Math.max(30, Math.min(fila ? zl.w/nl/2 - 16 : zl.w/2 - 16, fila ? zl.h/2 - 58 : zl.h/nl/2 - 58, 108));
       E.lupas.forEach((lu, k) => {
         E.lay.l[lu.id] = fila ? { x: zl.x + zl.w*(k + 0.5)/nl, y: zl.y + zl.h/2 + 2, R }
                               : { x: zl.x + zl.w/2, y: zl.y + zl.h*(k + 0.5)/nl + 2, R };
@@ -450,7 +450,16 @@ function crearEscena(cv, idDesc, idLey){
     ctx.strokeStyle = c.V; ctx.lineWidth = 1.2; ctx.globalAlpha = .8;
     for (let r = 1; r <= vs.cap; r++) linea(ctx, x - 4, base - r*cel, x - 10, base - r*cel);
     ctx.restore();
-    if (vs.etiqueta) rotulo(ctx, c, x + w/2, top - 26, vs.etiqueta, c.ink, 'center', 800, 13);
+    if (vs.etiqueta){
+      // la concentración del rótulo ('A · 2 M', '0,8 M') va en magenta (regla 4)
+      const m = /^(.*?)(\d[\d,]* M)$/.exec(vs.etiqueta);
+      if (!m) rotulo(ctx, c, x + w/2, top - 26, vs.etiqueta, c.ink, 'center', 800, 13);
+      else {
+        ctx.font = `800 13px ${c.font}`; const w1 = ctx.measureText(m[1]).width, w2 = ctx.measureText(m[2]).width, x1 = x + w/2 - (w1 + w2)/2;
+        if (m[1]) rotulo(ctx, c, x1, top - 26, m[1], c.ink, 'left', 800, 13);
+        rotulo(ctx, c, x1 + w1, top - 26, m[2], c.M, 'left', 800, 13);
+      }
+    }
     if (vs.oculto){
       ctx.save(); rr(ctx, x - 2, top, w + 4, base - top, 8); ctx.fillStyle = c.card; ctx.fill(); ctx.strokeStyle = c.line; ctx.stroke();
       ctx.fillStyle = c.muted; ctx.font = `800 ${Math.round(clamp(cel*0.9, 16, 30))}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
@@ -513,11 +522,13 @@ function crearEscena(cv, idDesc, idLey){
     ctx.lineWidth = 6; ctx.lineCap = 'round'; ctx.strokeStyle = c.vidrio;
     linea(ctx, x + R*0.72, y + R*0.72, x + R*0.72 + 14, y + R*0.72 + 14); ctx.restore();
     const tit = lu.titulo.replace(/\s*·\s*volumen muy pequeño$/, '');
-    rotulo(ctx, c, x, y - R - 28, tit, c.ink, 'center', 800, 11);
-    rotulo(ctx, c, x, y - R - 13, /^Después/.test(tit) ? 'el mismo volumen pequeño' : 'volumen muy pequeño', c.muted, 'center', 700, 10);
+    rotulo(ctx, c, x, y - R - 40, tit, c.ink, 'center', 800, 11);
+    rotulo(ctx, c, x, y - R - 26, 'volumen muy pequeño:', c.muted, 'center', 700, 10);
+    rotulo(ctx, c, x, y - R - 13, 'mismo volumen que un cuadro', c.muted, 'center', 700, 10);
     const k = Math.round(lu.cuenta), exacto = Math.abs(lu.cuenta - k) < 1e-6;
     const t = `${exacto ? k : fmt(lu.cuenta, 1)} ${k === 1 && exacto ? 'punto' : 'puntos'}${exacto ? '' : ' en promedio'}${lu.sub ? ' · ' + lu.sub : ''}`;
     rotulo(ctx, c, x, y + R + 15, t, c.M, 'center', 800, 12);
+    if (lu.subEq) rotulo(ctx, c, x, y + R + 33, lu.subEq, c.eq, 'center', 800, 12);
   }
   function dibujar(now){
     if (!L.W) return;
@@ -568,7 +579,7 @@ const SAC = MS.sacar(1, 2000, 500);
 function cfgJarra(fin){
   E.config({ esc:ESC_JARRA, vasos:[
       { id:'jarra', cap:4, n: fin ? SAC.queda.n : SAC.inicial.n, mL: fin ? 1500 : 2000, etiqueta:'Jarra', sem:7 },
-      { id:'vaso', cap:2, n: fin ? SAC.sacado.n : 0, mL: fin ? 500 : 0, etiqueta:'Lo que se saca', sem:9 }],
+      { id:'vaso', cap:2, n: fin ? SAC.sacado.n : 0, mL: fin ? 500 : 0, etiqueta:'Lo que se sacó', sem:9 }],
     lupas: fin ? [{ id:'lj', vaso:'jarra', cuenta:MS.lupa(SAC.queda.M, ESC_JARRA), titulo:'Lo que queda', sub:fM(SAC.queda.M) },
                   { id:'lv', vaso:'vaso', cuenta:MS.lupa(SAC.sacado.M, ESC_JARRA), titulo:'Lo que se sacó', sub:fM(SAC.sacado.M) }]
                : [{ id:'lj', vaso:'jarra', cuenta:MS.lupa(1, ESC_JARRA), sub:fM(1) }] });
@@ -576,7 +587,7 @@ function cfgJarra(fin){
 const MEZ = MS.mezclar([[2, 100], [1, 300]]);
 function cfgMezcla(fin){
   E.config({ esc:ESC_MEZ, vasos:[
-      { id:'a', cap:4, n: fin ? 0 : MEZ.partes[0].n, mL: fin ? 0 : 100, etiqueta:'A · 2 M', sem:11 },
+      { id:'a', cap:4, n: fin ? 0 : MEZ.partes[0].n, mL: fin ? 0 : 100, etiqueta: fin ? 'A (vacío)' : 'A · 2 M', sem:11 },
       { id:'b', cap:8, n: fin ? MEZ.n : MEZ.partes[1].n, mL: fin ? 400 : 300, etiqueta: fin ? 'Mezcla' : 'B · 1 M', sem: fin ? 17 : 13 }],
     lupas: fin ? [{ id:'lb', vaso:'b', cuenta:MS.lupa(MEZ.M, ESC_MEZ), titulo:'La mezcla', sub:fM(MEZ.M) }]
                : [{ id:'la', vaso:'a', cuenta:MS.lupa(2, ESC_MEZ), titulo:'Lupa en A', sub:fM(2) }, { id:'lb', vaso:'b', cuenta:MS.lupa(1, ESC_MEZ), titulo:'Lupa en B', sub:fM(1) }] });
@@ -606,7 +617,7 @@ function animarMezcla(fin){
   const a = E.vaso('a'), b = E.vaso('b'), cu = Math.round(300/ESC_MEZ.mLporCuadro);
   // los puntos de A entran por arriba de B
   E.pasar('a', 'b', () => true, (p, k) => ({ c: cu + (k % 4), u:p.u, v:p.v }));
-  a.n = 0; a.mL = 0; b.n = MEZ.n; b.mL = 400; b.etiqueta = 'Mezcla';
+  a.n = 0; a.mL = 0; a.etiqueta = 'A (vacío)'; b.n = MEZ.n; b.mL = 400; b.etiqueta = 'Mezcla';
   E.lupas = E.lupas.filter(l => l.id !== 'la');
   E.nivel('a', 0); E.nivel('b', 400, () => E.reubicar('b', 17, () => { E.lupaA('lb', MS.lupa(MEZ.M, ESC_MEZ)); Object.assign(E.lupa('lb'), { titulo:'La mezcla', sub:fM(MEZ.M) }); fin && fin(); }));
 }
@@ -615,7 +626,7 @@ const P1 = { id:'soluciones-paso2', ok:'b', anima:animarAzucar, opts:[
   ['a','Los mismos puntos que antes','SO12-cuenta-sin-volumen','documentado'],
   ['b','La mitad de puntos que antes'],
   ['c','Menos puntos, porque el agua disolvió más azúcar y algunos granos desaparecen','SO11-agua-disuelve-mas','documentado'],
-  ['d','Ningún punto: el azúcar disuelta no se ve','SO2-no-se-ve-no-esta','documentado']],
+  ['d','Ningún punto: el azúcar disuelta no se ve','SO2-no-se-ve-no-esta','parcial']],
   fb:{ b:'¡Bien! El azúcar es la misma, pero ahora se reparte en el doble de volumen: en cada volumen pequeño hay la mitad.',
     a:'Elegiste la A. En todo el vaso sí hay los mismos puntos, pero la lupa mira siempre el mismo volumen pequeño, y ahora ese azúcar se reparte en el doble de volumen. La correcta está marcada.',
     c:'Elegiste la C. El agua no disuelve "más" azúcar ni hace desaparecer granos: el azúcar ya estaba disuelta. Solo se reparte en más volumen. La correcta está marcada.',
@@ -624,11 +635,11 @@ const P2 = { id:'soluciones-paso4', ok:'c', anima:animarJarra, opts:[
   ['a','Aumenta, porque se sacó solo agua','SO10-sube-al-sacar','documentado'],
   ['b','Baja a 0,75 M, porque queda menos soluto','SO7-baja-como-cantidad','documentado'],
   ['c','Sigue siendo 1 M'],
-  ['d','Baja a 0,25 M, lo que se sacó','SO7-regla-de-tres','documentado']],
+  ['d','Lo que queda sigue en 1 M, pero lo que se sacó tiene 0,25 M','SO7-regla-de-tres','parcial']],
   fb:{ c:'¡Bien! Lo que se saca se lleva soluto y agua en la misma proporción. Queda menos solución, pero igual de concentrada.',
     a:'Elegiste la A. La solución es pareja: el cuarto que se saca tiene soluto y agua, no solo agua. Mira los cuadros: cada uno sigue con 2 puntos. La correcta está marcada.',
-    b:'Elegiste la B. Queda menos soluto (0,75 mol en vez de 1), pero también menos volumen (1,5 L en vez de 2). La concentración es soluto entre volumen, y esa razón no cambió. La correcta está marcada.',
-    d:'Elegiste la D. Lo que se sacó también tiene 1 M: es un cuarto del soluto en un cuarto del volumen. La correcta está marcada.' } };
+    b:'Elegiste la B. Queda menos soluto (1,5 mol en vez de 2), pero también menos volumen (1,5 L en vez de 2). La concentración es soluto entre volumen, y esa razón no cambió. La correcta está marcada.',
+    d:'Elegiste la D. Lo que queda sí sigue en 1 M, y lo que se sacó también: es un cuarto del soluto (0,5 mol) en un cuarto del volumen (0,5 L). El 0,25 sale de multiplicar 1 M por un cuarto, como si la concentración se repartiera; lo que se reparte es el soluto. La correcta está marcada.' } };
 const P3 = { id:'soluciones-paso5', ok:'d', anima:animarMezcla, opts:[
   ['a','1,5 M: el promedio de 2 y 1','mezcla-promedio-simple','hipotesis'],
   ['b','3 M: 2 + 1','SO7-suma-concentraciones','parcial'],
@@ -644,14 +655,14 @@ const n = t => V('n', t), Vv = t => V('V', t), Mm = t => V('M', t);
 const steps = [
  { k:'Paso 1', t:'El problema', prep:() => cfgHCl(HCL.V1),
    body:() => `<p class="problem">Se toman ${Vv('50 mL')} de ácido clorhídrico ${Mm('6 M')} y se completan con agua hasta ${Vv('200 mL')}. ¿Cuál es la concentración de la nueva solución?</p>
-   <p>Antes de calcular, mira la solución por dentro. El recipiente está dividido en ${Vv('cuadros')}: cada cuadro es ${Vv('25 mL')} de solución. Cada ${n('punto')} es un poquito de soluto, 0,0125 mol de HCl. El agua no se dibuja: está en todo el espacio entre los puntos.</p>
+   <p>Antes de calcular, mira la solución por dentro. El recipiente está dividido en ${Vv('cuadros')}: cada cuadro es ${Vv('25 mL')} de solución. Cada ${n('punto')} representa 0,0125 mol de HCl, muchísimas moléculas: no es un grano, es una forma de contar (en el agua el HCl está separado en iones; aquí lo contamos como HCl). El agua no se dibuja: está en todo el espacio entre los puntos.</p>
    <div class="eqs"><div class="eq">${n('n')} = ${Mm('M')} · ${Vv('V')} = ${Mm('6')} · ${Vv('0,050 L')} = ${n('0,3 mol')}<span class="note">24 puntos</span></div>
-   <div class="eq">${Mm('6 M')} → ${Mm('12 puntos')} en cada cuadro<span class="note">la concentración es cuántos puntos tocan a cada cuadro</span></div></div>
-   <p>La ${Mm('lupa')} muestra un volumen muy pequeño, del tamaño de un cuadro. Su borde no es una pared: los puntos entran y salen. Los puntos se mueven siempre, porque en una solución las partículas nunca están quietas.</p>` },
+   <div class="eq">${Mm('6 M')} → ${Mm('12 puntos')} en cada cuadro<span class="note">la concentración es cuántos puntos hay en cada cuadro</span></div></div>
+   <p>La ${Mm('lupa')} muestra un volumen pequeño, igual al de un cuadro. Su borde no es una pared: los puntos entran y salen. Los puntos se mueven siempre, porque en una solución las partículas nunca están quietas.</p>` },
  { k:'Paso 2', t:'Predice: ¿qué muestra la lupa?', gate:P1, prep:() => cfgAzucar(!!S.pred[P1.id]),
    body:() => `<p>Antes de diluir el ácido, un caso más sencillo. El vaso tiene ${Vv('500 mL')} de agua con azúcar. Se agrega agua hasta ${Vv('1000 mL')}. ¿Qué muestra la lupa, que mira un volumen igual al de antes?</p>${opciones(P1)}
    <div id="tras" class="body" hidden><p>El vaso sigue con los mismos ${n('32 puntos')}, ahora repartidos en el doble de ${Vv('cuadros')}: de ${Mm('8')} por cuadro se pasa a ${Mm('4')}. La concentración bajó a la mitad; la cantidad de azúcar no cambió.</p>
-   <p class="fuente">Al diluir al doble de volumen, el 84 % de escolares eligió el dibujo correcto, pero solo el 51 % lo justificó bien, y el 21 % sostuvo que "el agua disuelve más" (Adadan y Savasci, 2012, citado por Raviolo y Farré, 2020). Ante seis moléculas de azúcar disueltas, el 28 % de universitarios de primer año eligió un recuadro vacío (de Berg, 2012, misma cita).</p></div>` },
+   <p class="fuente">Al diluir al doble de volumen, el 84 % de escolares eligió el dibujo correcto, pero solo el 51 % lo justificó bien, y el 21 % sostuvo que "el agua disuelve más" (Adadan y Savasci, 2012, citado por Raviolo y Farré, 2020). Ante seis moléculas de azúcar disueltas, el 28 % de universitarios de primer año eligió un recuadro vacío; el autor lo atribuye más al dibujo del recipiente que a creer que el azúcar desapareció (de Berg, 2012, misma cita).</p></div>` },
  { k:'Paso 3', t:'Diluye el ácido', accion:true, prep:() => cfgHCl(S.hecho.diluir ? HCL.V2 : HCL.V1),
    body:() => `<p>Vuelve a los ${Vv('50 mL')} de HCl ${Mm('6 M')}. Completa con agua hasta ${Vv('200 mL')} y mira qué pasa con los ${n('puntos')} y con la ${Mm('lupa')}.</p>
    <div class="acciones"><button type="button" class="btn primary" id="diluir">Completar con agua hasta 200 mL</button></div>
@@ -662,12 +673,12 @@ const steps = [
      <div class="eq">${Mm('M₁')}·${Vv('V₁')} = ${Mm('M₂')}·${Vv('V₂')} → ${Mm('6')} · ${Vv('50')} = ${Mm('1,5')} · ${Vv('200')}</div>
    </div>
    <p class="answer">La nueva solución es ${Mm('1,5 M')}: los ${n('0,3 mol')} de HCl ahora ocupan ${Vv('200 mL')}.</p>
-   <p class="aviso">Ojo con "se completan hasta 200 mL": 200 mL es el volumen final. Si sumas 200 mL de agua a los 50 mL, te sale ${fM(dil.errores.sumaAgua)}; si tomas los 150 mL de agua agregada como volumen final, ${fM(dil.errores.aguaComoFinal)}.</p></div>
+   <p class="aviso">Ojo con "se completan hasta 200 mL": 200 mL es el volumen final. Si sumas 200 mL de agua a los 50 mL, te sale ${fM(dil.errores.sumaAgua)}; si tomas los 150 mL de agua agregada como volumen final, ${fM(dil.errores.aguaComoFinal)}. En el laboratorio se hace al revés: primero se pone parte del agua, se agrega el ácido poco a poco y al final se completa hasta la marca. Nunca se echa agua sobre un ácido concentrado.</p></div>
    <p id="estado" class="hint"></p>` },
  { k:'Paso 4', t:'Predice: sacar una parte', gate:P2, prep:() => cfgJarra(!!S.pred[P2.id]),
    body:() => `<p>Una jarra tiene ${Vv('2 L')} de solución ${Mm('1 M')}. Se saca un cuarto (${Vv('500 mL')}). ¿Qué pasa con la concentración de lo que queda?</p>${opciones(P2)}
    <div id="tras" class="body" hidden><div class="eqs">
-     <div class="eq">Queda: ${fr(n('0,75 mol'), Vv('1,5 L'))} = ${Mm('1 M')}</div><div class="eq">Se sacó: ${fr(n('0,25 mol'), Vv('0,5 L'))} = ${Mm('1 M')}</div></div>
+     <div class="eq">Queda: ${fr(n('1,5 mol'), Vv('1,5 L'))} = ${Mm('1 M')}</div><div class="eq">Se sacó: ${fr(n('0,5 mol'), Vv('0,5 L'))} = ${Mm('1 M')}</div></div>
    <p>Cada cuadro tenía ${Mm('2 puntos')} y sigue con 2, en la jarra y en lo que se sacó. La concentración no depende de cuánta solución hay: es una propiedad <b>intensiva</b>, como la temperatura.</p>
    <p class="fuente">Al sacar un cuarto de 2 L de una solución de azúcar 1 M, el 56 % de alumnos de 16 y 17 años acertó y el 32 % creyó que la concentración aumenta (Adadan y Savasci, 2012, citado por Raviolo y Farré, 2020).</p></div>` },
  { k:'Paso 5', t:'Predice: mezclar dos soluciones', gate:P3, prep:() => cfgMezcla(!!S.pred[P3.id]),
@@ -675,20 +686,20 @@ const steps = [
    <div id="tras" class="body" hidden><div class="eqs">
      <div class="eq">${n('n')} = ${Mm('2')} · ${Vv('0,1')} + ${Mm('1')} · ${Vv('0,3')} = ${n('0,2')} + ${n('0,3')} = ${n('0,5 mol')}</div>
      <div class="eq">${Mm('M')} = ${fr(n('0,5 mol'), Vv('0,4 L'))} = ${Mm('1,25 M')}<span class="note">80 puntos en 16 cuadros: 5 por cuadro</span></div></div>
-   <p>La mezcla queda entre 1 M y 2 M, más cerca de 1 M porque de esa solución hay el triple. Los ${n('moles')} se suman y los ${Vv('volúmenes')} se suman; las ${Mm('concentraciones')}, no.</p>
+   <p>La mezcla queda entre 1 M y 2 M, más cerca de 1 M porque de esa solución hay el triple. Los ${n('moles')} se suman y los ${Vv('volúmenes')} se suman (con soluciones acuosas diluidas los volúmenes se suman casi exactos; los problemas lo suponen); las ${Mm('concentraciones')}, no.</p>
    <p class="fuente">Confundir cantidad de soluto con concentración es el error central del tema: en entrevistas, 8 de 16 universitarios argentinos mezclaron moles y molaridad (Raviolo y Farré, 2018). Que la mezcla se calcule como promedio simple es una hipótesis nuestra, sin estudio que la mida.</p></div>` },
  { k:'Paso 6', t:'Lo que cambia y lo que no', fin:true, prep:() => cfgHCl(HCL.V2),
    body:() => `<div class="eqs">
      <div class="eq">Diluir: ${n('n')} igual · ${Vv('V')} sube · ${Mm('M')} baja<span class="note">${Mm('M₁')}${Vv('V₁')} = ${Mm('M₂')}${Vv('V₂')}</span></div>
      <div class="eq">Sacar una parte: ${n('n')} baja · ${Vv('V')} baja · ${Mm('M')} igual</div>
-     <div class="eq">Mezclar: se suman ${n('n')} y ${Vv('V')}; ${Mm('M')} queda entre las dos</div>
-     <div class="eq">Agregar soluto: ${n('n')} sube · ${Vv('V')} igual · ${Mm('M')} sube</div></div>
+     <div class="eq">Mezclar: se suman ${n('n')} y ${Vv('V')}; ${Mm('M')} queda entre las dos<span class="note">con soluciones acuosas diluidas los volúmenes se suman casi exactos; los problemas lo suponen</span></div>
+     <div class="eq">Agregar soluto y completar hasta el mismo volumen: ${n('n')} sube · ${Vv('V')} igual · ${Mm('M')} sube</div></div>
    <p>Antes de usar una fórmula, pregúntate qué pasa con los ${n('puntos')} y qué pasa con los ${Vv('cuadros')}. La ${Mm('concentración')} es la razón entre los dos.</p>
    <p class="fuente">De 36 universitarios que ya habían estudiado concentración con dibujos y animaciones, ninguno pensó en partículas por su cuenta: se imaginaban frascos, colores o números (Raviolo y Farré, 2020). Por eso esta escena dibuja siempre los puntos.</p>` },
  { k:'Paso 7', t:'Ahora explora tú', explora:true,
    body:() => `<p>Cambia la solución de cuatro maneras y mira qué le pasa a cada variable: ${n('soluto')} (puntos), ${Vv('volumen')} (cuadros) y ${Mm('concentración')} (puntos por cuadro).</p>
    <div class="acciones">
-     <button type="button" class="btn" id="x-soluto">Agregar soluto (+0,1 mol)</button>
+     <button type="button" class="btn" id="x-soluto">Agregar soluto (+0,1 mol, mismo volumen)</button>
      <button type="button" class="btn" id="x-agua">Agregar agua (+100 mL)</button>
      <button type="button" class="btn" id="x-sacar">Sacar 100 mL</button>
      <button type="button" class="btn" id="x-mezclar">Mezclar con la otra</button>
@@ -767,7 +778,7 @@ function prediccion(P){
 }
 
 // ----- explorador: los cuatro cambios de Raviolo y Farré (2020) -----
-const X_MAX_V = 500, X_MIN_V = 100, X_MAX_M = 8;
+const X_MAX_V = 500, X_MIN_V = 100, X_MAX_M = 6;
 function cfgX(){
   const x = S.x;
   E.config({ esc:ESC_X, vasos:[
@@ -817,10 +828,10 @@ function lecturas(){
   $('x-msg').textContent = (x.msg || '') + (m.exacto ? '' : ` Con esta escala el soluto da ${fmt(m.puntosExactos, 2)} puntos y se dibujan ${m.puntos}: el dibujo redondea, el cálculo no.`);
 }
 const MENSAJE = {
-  soluto:'Agregaste soluto sin cambiar el volumen: más puntos en los mismos cuadros. La concentración sube.',
+  soluto:'Agregaste soluto y la solución sigue ocupando el mismo volumen (en la realidad sube un poco; en el laboratorio se completa hasta la marca). Más puntos en los mismos cuadros: la concentración sube.',
   agua:'Agregaste agua: los puntos son los mismos, pero se reparten en más cuadros. La concentración baja; el soluto no cambia.',
   sacar:'Sacaste una parte: se van puntos y cuadros en la misma proporción. Queda menos soluto, pero la concentración no cambia.',
-  mezclar:'Mezclaste: se suman los puntos y se suman los cuadros. La concentración queda entre las dos.',
+  mezclar:'Mezclaste: se suman los puntos y se suman los cuadros. La concentración queda entre las dos. La otra se vuelve a llenar para que puedas repetir.',
 };
 function cambiar(a){
   if (S.ocupado || !posible(a)) return;
@@ -893,7 +904,7 @@ function barrasUnidades(ctx, c, W, H){
   const SEL = { pct:[['masa', 0], ['masa', 'todo']], molal:[['mol', 0], ['masa', 1]], molar:[['mol', 0], ['vol', 'todo']], x:[['mol', 0], ['mol', 'todo']] };
   const sel = ver ? SEL[u] : null, h = clamp(H/9, 26, 44), paso = (H - 70)/3;
   visibles.forEach((f, k) => {
-    const y = 34 + k*paso;
+    const y = (W >= 560 ? 34 : 44) + k*paso;
     ctx.font = `800 13px ${c.font}`; ctx.textAlign = 'left'; ctx.textBaseline = 'bottom'; ctx.fillStyle = c.ink; ctx.fillText(f.t, x0, y + 18);
     if (f.total){ ctx.textAlign = 'right'; ctx.fillStyle = c.muted; ctx.fillText(`total: ${f.total}`, x0 + w, y + 18); }
     const suma = f.partes.reduce((s, p) => s + p[0], 0); let xx = x0;
@@ -907,23 +918,22 @@ function barrasUnidades(ctx, c, W, H){
       else { ctx.fillStyle = col; ctx.textAlign = 'left'; ctx.fillText(txt, j ? xx + 6 : xx + ww + 6, yb + h + 14); }
       if (sel){
         if (sel[0][0] === f.id && sel[0][1] === j){ ctx.save(); rr(ctx, xx - 3, yb - 3, ww + 4, h + 6, 10); ctx.strokeStyle = c.ink; ctx.lineWidth = 3; ctx.stroke(); ctx.restore();
-          ctx.font = `800 13px ${c.font}`; rotulo(ctx, c, x0 + ctx.measureText(f.t).width + 14, y + 11, 'arriba (numerador): el recuadro', c.ink, 'left', 800, 11); }
-        if (sel[1][0] === f.id && sel[1][1] === j){ ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 3; ctx.setLineDash([6, 4]); rr(ctx, xx - 3, yb - 3, ww + 4, h + 6, 10); ctx.stroke(); ctx.restore();
-          rotulo(ctx, c, xx + ww/2, yb + h + 30, 'abajo (denominador)', c.ink, 'center', 800, 11); }
+          }
+        if (sel[1][0] === f.id && sel[1][1] === j){ ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 3; ctx.setLineDash([6, 4]); rr(ctx, xx - 3, yb - 3, ww + 4, h + 6, 10); ctx.stroke(); ctx.restore(); }
       }
       xx += ww;
     });
     if (sel && sel[1][0] === f.id && sel[1][1] === 'todo'){
       ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 3; ctx.setLineDash([6, 4]); rr(ctx, x0 - 4, yb - 4, w + 6, h + 8, 11); ctx.stroke(); ctx.restore();
-      rotulo(ctx, c, x0 + w/2, yb + h + 30, 'abajo (denominador): todo', c.ink, 'center', 800, 11);
     }
   });
+  if (sel){ const una = W >= 560; rotulo(ctx, c, x0, 12, 'numerador: borde continuo', c.ink, 'left', 800, 11); rotulo(ctx, c, una ? x0 + w : x0, una ? 12 : 27, 'denominador: borde a trazos', c.ink, una ? 'right' : 'left', 800, 11); }
   if (!ver) rotulo(ctx, c, W/2, H - 40, 'Responde para ver las otras unidades', c.muted, 'center', 700, 12);
 }
 const UNIDADES = {
   pct:{ t:'% en masa', eq:() => `% = ${fr(G('20 g'), `${G('20')} + ${Sv('80')} g`)} · 100 = ${fmt(UNI.pctMasa, 0)} %`, d:'Divide entre la masa de la <b>solución</b>: soluto + solvente.' },
   molal:{ t:'Molalidad', eq:() => `m = ${fr(n('0,5 mol'), Sv('0,080 kg'))} = ${fmt(UNI.molalidad, 2)} mol/kg`, d:'Divide entre los kilogramos de <b>solvente</b> solamente.' },
-  molar:{ t:'Molaridad', eq:() => `M = ${fr(n('0,5 mol'), Vv(`${fmt(UNI.L, 4)} L`))} = ${Mm(fM(UNI.M))}`, d:`Divide entre los litros de <b>solución</b>. Hace falta la densidad: ${fmt(UNI.gSolucion, 0)} g / 1,2 g/mL = ${fmt(UNI.mL, 1)} mL.` },
+  molar:{ t:'Molaridad', eq:() => `${Mm('M')} = ${fr(n('0,5 mol'), Vv(`${fmt(UNI.L, 4)} L`))} = ${Mm(fM(UNI.M))}`, d:`Divide entre los litros de <b>solución</b>. Hace falta la densidad: ${fmt(UNI.gSolucion, 0)} g / 1,2 g/mL = ${fmt(UNI.mL, 1)} mL.` },
   x:{ t:'Fracción molar', eq:() => `x = ${fr(n('0,5'), `${n('0,5')} + ${Sv(fmt(UNI.nSolvente, 2))}`)} = ${fmt(UNI.xSoluto, 3)}`, d:'Divide entre los moles de <b>todo</b>: soluto y solvente. Se cuenta con moles, no con gramos.' },
 };
 
@@ -931,7 +941,7 @@ const EXPS = [
   { id:'menos-volumen', corto:'¿Cuál ocupa menos?',
     q:`Tres frascos tienen la misma cantidad de soluto: ${n('0,20 mol')} de sal cada uno. Uno es ${Mm('0,8 M')}, otro ${Mm('2 M')} y otro ${Mm('4 M')}. ¿Cuál ocupa menos volumen?`,
     opts:[['a','El de 0,8 M','SO9-proporcion-inversa','documentado'],
-          ['b','Los tres igual: tienen los mismos moles','SO7-mismos-moles-mismo-volumen','hipotesis'],
+          ['b','Los tres igual: tienen los mismos moles','SO7-mismos-moles-mismo-volumen','parcial'],
           ['c','El de 4 M',null],
           ['d','El de 2 M','SO9-opcion-intermedia','documentado']],
     ok:'c',
@@ -939,12 +949,12 @@ const EXPS = [
     despues:() => { E.vasos.forEach(v => { v.oculto = false; v.nivel = 0; E.nivel(v.id, v.mL); }); },
     exp:() => `<div class="eqs"><div class="eq">${Vv('V')} = ${fr(n('n'), Mm('M'))}: ${fr(n('0,20'), Mm('0,8'))} = ${Vv('250 mL')} · ${fr(n('0,20'), Mm('2'))} = ${Vv('100 mL')} · ${fr(n('0,20'), Mm('4'))} = ${Vv('50 mL')}</div></div>
       <p>Los tres frascos tienen los mismos ${n('20 puntos')}. En el de ${Mm('4 M')} se apretujan 10 por cuadro, así que caben en 2 cuadros. Con los moles fijos, concentración y volumen son inversos: el más concentrado ocupa menos.</p>
-      <p class="fuente">Con 76 universitarios argentinos que ya habían rendido el tema, el 55,3 % acertó y 30 de 76 (39,5 %) eligió la de 0,80 M, la menos concentrada. Fue el ítem más difícil. En las entrevistas, 8 de 16 mezclaron moles y molaridad (Raviolo y Farré, 2018, tabla 1). Del total de respuestas de esos ítems, el 4,6 % fue a la opción intermedia.</p>` },
+      <p class="fuente">Con 76 universitarios argentinos que ya habían dado examen del tema, el 55,3 % acertó y 30 de 76 (39,5 %) eligió la de 0,80 M, la menos concentrada. Fue el ítem más difícil. En las entrevistas, 8 de 16 mezclaron moles y molaridad (Raviolo y Farré, 2018, tabla 1). Del total de respuestas de esos ítems, el 4,6 % fue a la opción intermedia.</p>` },
   { id:'servir', corto:'Servir un vaso',
-    q:`De una jarra con ${Vv('1 L')} de limonada se sirve un vaso de ${Vv('250 mL')}. ¿Dónde está más concentrada el azúcar?`,
+    q:`De una jarra con ${Vv('1 L')} de limonada se sirve un vaso de ${Vv('250 mL')}. ¿Dónde es mayor la concentración de azúcar?`,
     opts:[['a','En la jarra: lo que se sirvió fue sobre todo agua','SO10-sube-al-sacar','documentado'],
           ['b','Igual en los dos',null],
-          ['c','En la jarra: ahí quedó más azúcar','SO7-mas-moles-mas-concentrada','documentado'],
+          ['c','En la jarra: ahí quedó más azúcar','SO8-mas-moles-mas-concentrada','documentado'],
           ['d','En el vaso: es más chico y el azúcar queda más junta','vaso-chico-mas-concentrado','hipotesis']],
     ok:'b',
     antes:ver => E.config({ esc:ESC_SERV, vasos:[
@@ -966,11 +976,14 @@ const EXPS = [
       <p class="fuente">Al sacar un cuarto de 2 L de una solución de azúcar 1 M, el 56 % de alumnos de 16 y 17 años acertó y el 32 % creyó que la concentración aumenta (Adadan y Savasci, 2012, citado por Raviolo y Farré, 2020). De cuatro soluciones de sal, la mitad de alumnos de 16 años eligió como "la más concentrada" la que tenía más moles (Johnstone, 1983, citado por Raviolo y Farré, 2018).</p>` },
   { id:'agua', corto:'Agregar agua',
     q:`Un vaso tiene ${Vv('200 mL')} de salmuera ${Mm('1 M')}: ${n('16 puntos')} de sal. Se agrega agua hasta ${Vv('400 mL')}. ¿Cuántos puntos de sal habrá en todo el vaso?`,
-    opts:[['a','Más de 16: el agua disuelve más sal','SO11-agua-disuelve-mas','documentado'],
+    opts:[['a','Menos de 16: el agua termina de disolver la sal y algunos puntos desaparecen','SO11-agua-disuelve-mas','documentado'],
           ['b','8: la mitad, porque la concentración baja a la mitad','SO7-baja-como-cantidad','documentado'],
           ['c','Los mismos 16',null],
-          ['d','Ninguno: la sal se termina de disolver y ya no está','SO2-no-se-ve-no-esta','documentado']],
+          ['d','Ninguno: la sal se termina de disolver y ya no está','SO2-no-se-ve-no-esta','parcial']],
     ok:'c',
+    fb:{ a:'Elegiste la A. La sal ya estaba disuelta: el agua no la "termina de disolver" ni hace desaparecer puntos. Siguen los 16; solo se reparten en el doble de cuadros. La correcta está marcada.',
+      b:'Elegiste la B. Lo que baja a la mitad es la concentración (puntos por cuadro), no la cantidad de sal: siguen los 16 puntos. La correcta está marcada.',
+      d:'Elegiste la D. Que la sal disuelta no se vea no quiere decir que no esté: sus partículas siguen en el agua. La correcta está marcada.' },
     antes:ver => E.config({ esc:ESC_AGUA, vasos:[{ id:'s', cap:4, n:AGUA.n, mL: ver ? 400 : 200, etiqueta:'Salmuera', sem:91 }],
       lupas:[{ id:'ls', vaso:'s', cuenta:MS.lupa(ver ? AGUA.M2 : 1, ESC_AGUA), sub:fM(ver ? AGUA.M2 : 1) }] }),
     despues:() => { const s = E.vaso('s'); s.mL = 400; E.nivel('s', 400, () => E.reubicar('s', 93, () => { E.lupaA('ls', MS.lupa(AGUA.M2, ESC_AGUA)); E.lupa('ls').sub = fM(AGUA.M2); })); },
@@ -985,27 +998,27 @@ const EXPS = [
           ['c','No se puede saber sin el volumen','SO14-que-mide-cada-unidad','parcial'],
           ['d','80 %: el agua entre la solución','confunde-soluto-solvente','hipotesis']],
     ok:'b',
-    antes:ver => { U.ver = ver; E.config({ vasos:[], lupas:[], extra:barrasUnidades, leyenda:`<span><i style="background:var(--c-g)"></i>masa de soluto</span><span><i style="background:var(--c-solv)"></i>solvente (agua)</span><span><i style="background:var(--c-n)"></i>n · moles de soluto</span><span><i style="background:var(--c-V)"></i>V · volumen de solución</span>`,
+    antes:ver => { U.ver = ver; E.config({ vasos:[], lupas:[], extra:barrasUnidades, leyenda:`<span><i style="background:var(--c-g)"></i>masa de soluto</span><span><i style="background:var(--c-solv)"></i>solvente (agua): su masa y sus moles</span><span><i style="background:var(--c-n)"></i>n · moles de soluto</span><span><i style="background:var(--c-V)"></i>V · volumen de solución</span>`,
       descr:() => U.ver ? `Unidad: ${UNIDADES[U.unidad].t}. Masa de solución 100 g: 20 g de NaOH y 80 g de agua; 0,5 mol de NaOH y 4,44 mol de agua; 83,3 mL de solución.` : 'Masa de solución: 20 g de NaOH y 80 g de agua.' }); },
     despues:() => { U.ver = true; },
     ctrl:() => `<div class="seg" role="group" aria-label="Unidad de concentración">${Object.entries(UNIDADES).map(([k, u]) => `<button type="button" data-uni="${k}" aria-pressed="${U.unidad === k}">${u.t}</button>`).join('')}</div><div id="uni-eq"></div>`,
     exp:() => `<p>Todas las unidades son una razón: algo del soluto <b>arriba</b> y algo de la solución o del solvente <b>abajo</b>. Lo que cambia de una a otra es qué va abajo. Toca cada unidad y mira qué parte del dibujo divide.</p>
       <p class="fuente">De 131 futuros profesores de ciencias, solo el 1,5 % definió bien "concentración"; el 29,0 % definió bien el % en masa, el 19,8 % el % en volumen y el 12,2 % el % masa-volumen, que el 55,7 % dejó sin responder (Karaer, 2019, tablas 2 y 3). Dividir entre el solvente para el % en masa es una hipótesis nuestra, ligada a ese dato.</p>` },
   { id:'normalidad', corto:'Normalidad',
-    q:`Se disuelven 49 g de H₂SO₄ en agua hasta ${Vv('500 mL')}: la solución es ${Mm('1 M')}. ¿Cuál es su normalidad, si el ácido entrega sus dos H⁺?`,
+    q:`Se disuelven ${G('49 g')} de H₂SO₄ en agua y se completa hasta ${Vv('500 mL')}: la solución es ${Mm('1 M')}. ¿Cuál es su normalidad, si el ácido entrega sus dos H⁺?`,
     opts:[['a','1 N: igual que la molaridad','SO15-N-igual-M','parcial'],
           ['b','0,5 N: se divide entre θ = 2','N-divide-theta','hipotesis'],
           ['c','2 N',null],
           ['d','4 N','N-multiplica-dos-veces','hipotesis']],
     ok:'c',
     antes:ver => E.config({ esc:ESC_NOR, vasos:[{ id:'h', cap:3, n:NOR.n, mL:500, etiqueta:'H₂SO₄', sem:101, iones: ver ? 2 : 0 }],
-      lupas:[{ id:'lh', vaso:'h', cuenta:MS.lupa(NOR.M, ESC_NOR), iones: ver ? 2 : 0, sub: ver ? '8 H⁺ → 2 N' : fM(NOR.M) }],
+      lupas:[{ id:'lh', vaso:'h', cuenta:MS.lupa(NOR.M, ESC_NOR), iones: ver ? 2 : 0, sub: ver ? '' : fM(NOR.M), subEq: ver ? '8 H⁺ → 2 N' : '' }],
       leyenda: leyendaBase(ESC_NOR, `<span><i class="pt" style="background:var(--c-eq)"></i>H⁺ · equivalentes</span>`) }),
-    despues:() => { E.iones('h', 2); E.lupa('lh').sub = '8 H⁺ → 2 N'; },
-    exp:() => `<div class="eqs"><div class="eq">${n('n')} = ${fr('49 g', '98 g/mol')} = ${n(fmol(NOR.n))} · ${Mm('M')} = ${fr(n('0,5'), Vv('0,5'))} = ${Mm(fM(NOR.M))}</div>
-      <div class="eq">${Q('θ = 2')} H⁺ por fórmula → ${Q(`${fmt(NOR.eq, 0)} equivalente`)} · ${Q('N')} = ${Mm('1')} · ${Q('2')} = ${Q(`${fmt(NOR.N, 0)} N`)}</div></div>
-      <p>Cada H₂SO₄ suelta dos H⁺ (los puntos morados). La lupa tenía 4 fórmulas y ahora cuenta 8 H⁺: hay el doble de H⁺ que de moléculas. La normalidad cuenta equivalentes (los H⁺ que puede entregar), no fórmulas. Por eso N = M · θ no es una regla suelta: sale de contar.</p>
-      <p class="fuente">De 131 futuros profesores de ciencias, el 62,6 % definió bien la normalidad, pero solo el 29,8 % el número de equivalentes: usan N = M · θ como fórmula, sin contar equivalentes (Karaer, 2019, tabla 3). Las opciones 0,5 N y 4 N son hipótesis nuestras, sin estudio que las mida.</p>` },
+    despues:() => { E.iones('h', 2); E.lupa('lh').sub = ''; E.lupa('lh').subEq = '8 H⁺ → 2 N'; },
+    exp:() => `<div class="eqs"><div class="eq">${n('n')} = ${fr(G('49 g'), '98 g/mol')} = ${n(fmol(NOR.n))} · ${Mm('M')} = ${fr(n('0,5'), Vv('0,5'))} = ${Mm(fM(NOR.M))}</div>
+      <div class="eq">${Q('θ = 2')} H⁺ por fórmula → ${Q(`${fmt(NOR.eq, 0)} equivalente`)} </div><div class="eq">${Q('N')} = ${fr(Q('1 eq'), Vv('0,5 L'))} = ${Q('2 N')}</div><div class="eq">${Q('N')} = ${Mm('M')} · ${Q('θ')} = ${Mm('1')} · ${Q('2')} = ${Q(`${fmt(NOR.N, 0)} N`)}</div></div>
+      <p>Cada H₂SO₄ puede entregar dos H⁺ al reaccionar con una base (los puntos morados). La lupa tenía 4 fórmulas y ahora cuenta 8 H⁺: hay el doble de H⁺ que de moléculas. La normalidad cuenta equivalentes (los H⁺ que puede entregar), no fórmulas. Por eso N = M · θ no es una regla suelta: sale de contar.</p>
+      <p class="fuente">De 131 futuros profesores de ciencias, el 62,6 % definió bien la normalidad, pero solo el 29,8 % el número de equivalentes: la autora lo interpreta como uso de N = M · θ sin contar equivalentes (Karaer, 2019, tabla 3). Las opciones 0,5 N y 4 N son hipótesis nuestras, sin estudio que las mida.</p>` },
 ];
 const S = { k:0, pred:{}, t0:Date.now() };
 function botones(){
@@ -1031,7 +1044,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. La correcta está marcada; mira la escena para ver por qué.`;
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : (x.fb && x.fb[p]) || `Elegiste la ${p.toUpperCase()}. La correcta está marcada; mira la escena para ver por qué.`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = (x.ctrl ? x.ctrl() : '') + x.exp() + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
     $('res2').querySelectorAll('[data-uni]').forEach(b => b.onclick = () => { U.unidad = b.dataset.uni; $('res2').querySelectorAll('[data-uni]').forEach(y => y.setAttribute('aria-pressed', String(y === b))); pintarUnidad(); E.dibujar(); });

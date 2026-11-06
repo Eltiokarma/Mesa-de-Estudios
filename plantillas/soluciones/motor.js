@@ -112,10 +112,11 @@
       r.errores.molaridadEnMl = n / mL;                            // no pasa los mL a litros
       if (gSolvente !== undefined && gSolvente > 0) r.errores.molaridadConSolvente = n / (gSolvente / 1000); // toma el agua (1 g ≈ 1 mL) como volumen de solución
     }
+    // % masa-volumen: gramos de soluto por cada 100 mL de solución. Solo pide g y mL (no la densidad).
+    if (g !== undefined && mL !== undefined) r.pctMasaVolumen = 100 * g / mL;
     if (gSolucion !== undefined && g !== undefined) {
       r.pctMasa = 100 * g / gSolucion;
       if (gSolvente > 0) r.errores.pctSobreSolvente = 100 * g / gSolvente;        // divide entre el solvente
-      if (mL !== undefined) r.pctMasaVolumen = 100 * g / mL;                         // g de soluto por 100 mL
       if (densidad === undefined && mL !== undefined) r.densidad = gSolucion / mL;
     }
     if (gSolvente !== undefined && gSolvente > 0) {
