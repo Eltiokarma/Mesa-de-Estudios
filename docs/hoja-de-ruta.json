@@ -266,13 +266,13 @@
       "nombre": "Ácidos, bases y pH",
       "inicio": "2026-11-27",
       "fin": "2026-12-02",
-      "estado": "pendiente",
-      "progreso": 0,
+      "estado": "en_curso",
+      "progreso": 80,
       "critico": false,
       "depende_de": [
         "pl3"
       ],
-      "notas": ""
+      "notas": "plantillas/acidos-bases (construida por un subagente): pH con balance de cargas completo (el agua cuenta: HCl 10⁻⁸ M da 6,98), débiles con aproximación y cuadrática, dilución, neutralización y titulación; lupa de partículas; 23 casos verificados aparte; 47 pruebas; papel (10); 5 qué pasa si. Falta: pares conjugados, indicadores, Lewis y el pase con alumnos."
     },
     {
       "id": "qu4",

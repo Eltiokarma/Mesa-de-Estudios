@@ -984,7 +984,9 @@
      },
      "potencial_visual": "medio",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "acidos-bases"
+     ]
     },
     {
      "id": "quimica.electroquimica",
@@ -3989,6 +3991,23 @@
   }
  ],
  "plantillas": {
+  "acidos-bases": {
+   "id": "acidos-bases",
+   "titulo": "Ácidos, bases y pH",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.acidos-y-bases"
+   ],
+   "url": "/plantillas/acidos-bases/index.html",
+   "papel": "/plantillas/acidos-bases/papel.json",
+   "archivos": [
+    "/plantillas/acidos-bases/index.html",
+    "/plantillas/acidos-bases/motor.js",
+    "/plantillas/acidos-bases/papel.json"
+   ]
+  },
   "calorimetria": {
    "id": "calorimetria",
    "titulo": "Calorimetría",

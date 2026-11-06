@@ -82,7 +82,7 @@ gantt
     section Química
     Estequiometría y reactivo limitante con partículas :active, qu1, 2026-11-06, 2026-11-24
     Gases y soluciones :active, qu2, 2026-11-06, 2026-11-28
-    Ácidos, bases y pH :qu3, 2026-11-27, 2026-12-03
+    Ácidos, bases y pH :active, qu3, 2026-11-27, 2026-12-03
     Redox y electroquímica :qu4, 2026-12-02, 2026-12-08
 
     section Matemática

@@ -411,7 +411,7 @@
       },
       "potencial_visual": "medio",
       "grado": 5,
-      "plantillas": [],
+      "plantillas": ["acidos-bases"],
       "investigacion": "docs/investigacion/equilibrio-acidos-electroquimica-ideas-erroneas.md"
     },
     {

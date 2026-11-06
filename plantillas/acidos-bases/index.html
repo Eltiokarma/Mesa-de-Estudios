@@ -1,0 +1,1061 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ácidos, bases y pH</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), copiada del molde de soluciones.
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
+   H⁺, [H⁺] y pH rojo; OH⁻, [OH⁻] y pOH turquesa; anión A⁻ verde; concentración del ácido C magenta;
+   fuerza Ka morado; volumen V azul; moles n café. La molécula entera HA se dibuja como su A⁻ con un H⁺ pegado.
+   Los iones que no cambian el pH (Na⁺, Ca²⁺) y las moléculas neutras van en gris: no son variables.
+   Los 7 colores se eligieron con CIEDE2000: ningún par baja de ΔE 24 en claro ni de 28 en oscuro, y todos pasan
+   el contraste AA (4,5 a 1) sobre el papel. La escala de pH es gris: sin los colores de un indicador. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
+  --detras:#f6ece4; --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-H:#8e2929; --c-OH:#006657; --c-A:#557b0a; --c-C:#cc00b1; --c-Ka:#3900d6; --c-V:#2c6a96; --c-n:#674c1e;
+  --vidrio:#8e97a8;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-H:#d26565; --c-OH:#4dcbac; --c-A:#b2ff1a; --c-C:#f4bee7; --c-Ka:#b657ff; --c-V:#4d97cb; --c-n:#cb9d4d;
+  --vidrio:#a99cb8; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-H:#d26565; --c-OH:#4dcbac; --c-A:#b2ff1a; --c-C:#f4bee7; --c-Ka:#b657ff; --c-V:#4d97cb; --c-n:#cb9d4d;
+  --vidrio:#a99cb8; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y; -webkit-user-select:none; user-select:none}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+.legend i.pt{width:8px; height:8px; border-radius:50%}
+.legend i.gr{width:11px; height:11px; border-radius:50%}
+.legend i.rombo{width:8px; height:8px; border-radius:1px; transform:rotate(45deg)}
+.legend i.cuad{width:8px; height:8px; border-radius:2px}
+.legend i.hueco{width:10px; height:10px; border-radius:50%; background:none!important; border:1.6px solid var(--muted)}
+.legend i.par{width:16px; height:11px; border-radius:6px; background:linear-gradient(90deg, var(--c-A) 0 66%, var(--c-H) 66%)}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-H{color:var(--c-H); background:color-mix(in srgb, var(--c-H) 12%, transparent)}
+.v-OH{color:var(--c-OH); background:color-mix(in srgb, var(--c-OH) 12%, transparent)}
+.v-A{color:var(--c-A); background:color-mix(in srgb, var(--c-A) 12%, transparent)}
+.v-C{color:var(--c-C); background:color-mix(in srgb, var(--c-C) 12%, transparent)}
+.v-Ka{color:var(--c-Ka); background:color-mix(in srgb, var(--c-Ka) 12%, transparent)}
+.v-V{color:var(--c-V); background:color-mix(in srgb, var(--c-V) 12%, transparent)}
+.v-n{color:var(--c-n); background:color-mix(in srgb, var(--c-n) 12%, transparent)}
+.v.hl{background:color-mix(in srgb, currentColor 26%, transparent)}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.05rem; white-space:nowrap; font-variant-numeric:tabular-nums}
+.eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.5em; white-space:normal}
+.frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1.15}
+.frac > span:first-child{border-bottom:1.5px solid currentColor; padding:0 .25em}
+.frac > span:last-child{padding:0 .25em}
+.answer{font-weight:700; padding:12px 16px; border-radius:16px; background:var(--paper); border:2px solid var(--c-H); max-width:66ch}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:999px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.seg button:disabled{opacity:.45; cursor:not-allowed}
+.exps{border-radius:20px}
+.control{display:grid; gap:6px}
+.control > p{margin:0}
+input[type=range]{width:100%; max-width:420px; accent-color:var(--c-V); min-height:32px}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.acciones{display:flex; flex-wrap:wrap; gap:8px}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+/* Lecturas del explorador, cada una con el color de su variable */
+.lecturas{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:8px}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:8px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura b{display:block; color:var(--k); font:800 1.02rem var(--mono); font-variant-numeric:tabular-nums; overflow-wrap:anywhere}
+.lectura span{display:block; font-size:.78rem; color:var(--muted)}
+.tabla{border-collapse:collapse; font-variant-numeric:tabular-nums; font-size:.95rem}
+.tabla th, .tabla td{padding:4px 10px; border-bottom:1px solid var(--line); text-align:right}
+.tabla th:first-child, .tabla td:first-child{text-align:left}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.4fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Química · Ácidos y bases · Problemas tipo admisión</p>
+      <h1>Ácidos, bases y pH</h1>
+      <p class="sub">La lupa muestra lo que hay en el agua: moléculas enteras, iones sueltos y los H⁺ que deciden el pH. Fuerte es cuántas se rompen; concentrado, cuántas hay.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Lupas con las partículas de la solución y escala de pH">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Una o más lupas circulares con las partículas disueltas que se mueven, y abajo una escala de pH de 0 a 14 con la posición de cada solución"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos con ácidos y bases">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Lupas del experimento elegido y escala de pH"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg exps" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/acidos-bases">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'acidos-bases', unidad: 'quimica.acidos-y-bases', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la química (pH, ionización, neutralización y cuántas partículas ve cada lupa) sale de MotorAcido
+   (motor.js); aquí solo se pinta y se anima. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+// Coma decimal, espacio de miles (desde 5 cifras) y signo menos tipográfico.
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 1 : d), r = Math.round(n*p)/p + 0;
+  let [e, f] = String(Math.abs(r)).split('.');
+  if (e.length >= 5) e = e.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+const SUP = { '-':'⁻', '0':'⁰', '1':'¹', '2':'²', '3':'³', '4':'⁴', '5':'⁵', '6':'⁶', '7':'⁷', '8':'⁸', '9':'⁹' };
+const pot = e => '10' + String(e).split('').map(c => SUP[c]).join('');
+// Notación científica: 0,002 → "2 × 10⁻³"; 0,01 → "10⁻²"
+function sci(x, d){
+  if (!(x > 0)) return '0';
+  let e = Math.floor(Math.log10(x) + 1e-12), m = x / Math.pow(10, e);
+  const p = Math.pow(10, d === undefined ? 2 : d); m = Math.round(m*p)/p;
+  if (m >= 10){ m /= 10; e++; }
+  if (e >= -2 && e <= 2 && Math.abs(m - 1) > 1e-9) return fmt(x, Math.max(0, (d === undefined ? 2 : d) - e));
+  return Math.abs(m - 1) < 1e-9 ? pot(e) : `${fmt(m, d === undefined ? 2 : d)} × ${pot(e)}`;
+}
+const fpH = x => fmt(x, 2);
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const fr = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const MA = MotorAcido;
+const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+const H = t => V('H', t), OH = t => V('OH', t), An = t => V('A', t), Cc = t => V('C', t), Ka = t => V('Ka', t), Vv = t => V('V', t), Nn = t => V('n', t);
+
+function crearLienzo(cv, alto, dibujar){
+  const ctx = cv.getContext('2d');
+  const L = { cv, ctx, W:0, H:0 };
+  L.resize = () => {
+    const W = cv.clientWidth; if (!W) return;
+    const Hh = Math.round(alto(W)), dpr = window.devicePixelRatio || 1;
+    L.W = W; L.H = Hh; cv.style.height = Hh + 'px'; cv.width = Math.round(W*dpr); cv.height = Math.round(Hh*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    dibujar();
+  };
+  new ResizeObserver(L.resize).observe(cv);
+  return L;
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, x1, y1, x2, y2){ ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
+function rr(ctx, x, y, w, h, r){ ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h); }
+// Texto con un fondo claro detrás, para que se lea sobre las líneas.
+function rotulo(ctx, c, x, y, t, color, align, peso, tam){
+  ctx.font = `${peso || 700} ${tam || 12}px ${c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .88; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+  ctx.fillStyle = color; ctx.fillText(t, x, y);
+  return w;
+}
+// Varios trozos de texto de distinto color en una línea, centrados en x: [[texto, color], …]
+function rotulos(ctx, c, x, y, trozos, peso, tam){
+  ctx.font = `${peso || 800} ${tam || 12}px ${c.font}`;
+  const ws = trozos.map(([t]) => ctx.measureText(t).width), total = ws.reduce((s, w) => s + w, 0);
+  let xx = x - total/2;
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .88; ctx.fillRect(xx - 3, y - 9, total + 6, 18); ctx.restore();
+  ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+  trozos.forEach(([t, col], k) => { ctx.fillStyle = col; ctx.fillText(t, xx, y); xx += ws[k]; });
+  return total;
+}
+function colores(){
+  const g = n => css(n);
+  return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'), detras:g('--detras'),
+    H:g('--c-H'), OH:g('--c-OH'), A:g('--c-A'), C:g('--c-C'), Ka:g('--c-Ka'), V:g('--c-V'), n:g('--c-n'),
+    vidrio:g('--vidrio'), mono:g('--mono'), font:g('--font') };
+}
+// Resaltar en el dibujo la variable que se toca en el texto (regla 4: el mismo color en el texto y en el dibujo).
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => E.hl = k); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+// Leyenda: solo las partículas que aparecen en la escena.
+const LEY = {
+  H:'<span><i class="pt" style="background:var(--c-H)"></i>H⁺ (en el agua, H₃O⁺) · pH</span>',
+  OH:'<span><i class="rombo" style="background:var(--c-OH)"></i>OH⁻ · pOH</span>',
+  A:'<span><i class="gr" style="background:var(--c-A)"></i>A⁻ · anión del ácido</span>',
+  HA:'<span><i class="par"></i>HA · molécula entera (A⁻ con su H⁺)</span>',
+  M:'<span><i class="cuad" style="background:var(--muted)"></i>catión que no cambia el pH (Na⁺, Ba²⁺)</span>',
+  N:'<span><i class="hueco"></i>molécula neutra</span>',
+  B:'<span><i class="hueco" style="border-radius:2px"></i>NH₃ · NH₄⁺ con su H⁺ pegado</span>',
+};
+function leyenda(tipos, extra){ return [...new Set(tipos)].map(t => LEY[t] || '').join('') + (extra || ''); }
+
+/* ================= La escena: lupas y escala de pH =================
+   Cada lupa mira un volumen muy pequeño de la solución. Cada partícula dibujada vale 'escala' mol/L: la lupa
+   muestra [X]/escala partículas de cada especie (MotorAcido.particulas). Las partículas se mueven siempre; el
+   borde de la lupa no es una pared, así que salen por un lado y entran por el otro. El agua se sugiere con
+   puntitos muy tenues. Abajo, una escala de pH gris (sin colores de indicador): cada marca es un factor de 10. */
+const MAXP = 150;   // partículas que se dibujan, como máximo, de cada especie
+function crearEscena(cv, idDesc, idLey){
+  const rnd = MA.azar(7331);
+  const E = { lupas:[], marcas:[], pOH:false, extra:null, hl:null, lay:{}, desc:'', descr:null, sinEscala:false };
+  ESCENAS.push(E);
+  const alto = W => {
+    const n = Math.max(1, E.lupas.length);
+    if (W >= 560) return clamp(W*0.6, 380, 470);
+    return n > 2 ? 610 : (n === 2 ? 410 : 440);
+  };
+  const L = crearLienzo(cv, alto, () => dibujar(performance.now()));
+  E.L = L;
+  const VEL = RM ? 0.04 : 0.16;
+  const agua = MA.ubicar(46, 5);
+  const nueva = (t, x, y, a) => ({ t, x, y, ang: rnd()*Math.PI*2, alpha: a, sale:false, bond: rnd()*Math.PI*2 });
+  const alAzar = () => { const r = Math.sqrt(rnd())*0.85, a = rnd()*Math.PI*2; return [Math.cos(a)*r, Math.sin(a)*r]; };
+  E.lupa = id => E.lupas.find(l => l.id === id);
+
+  // Una lupa: { id, titulo, nota, notaV, sol, escala, nombres, oculto, sem, pie }
+  function armar(o){
+    const lu = Object.assign({ titulo:'Lupa', nota:'volumen muy pequeño', notaV:false, nombres:{}, oculto:false, sem:1, parts:[], obj:{}, info:null, pie:null }, o);
+    if (lu.sol) fijar(lu, lu.sol, lu.escala, true);
+    return lu;
+  }
+  function fijar(lu, sol, escala, inmediato){
+    lu.sol = sol; lu.escala = escala;
+    lu.info = MA.particulas(sol, escala, { max: MAXP });
+    lu.obj = lu.info.n;
+    if (inmediato){
+      lu.parts = [];
+      const tot = Object.values(lu.obj).reduce((s, k) => s + k, 0), pos = MA.ubicar(tot, lu.sem);
+      let j = 0;
+      for (const [t, k] of Object.entries(lu.obj)) for (let i = 0; i < k; i++){ const q = pos[j++]; lu.parts.push(nueva(t, q.x, q.y, 1)); }
+    }
+  }
+  E.config = cfg => {
+    E.lupas = (cfg.lupas || []).map(armar);
+    E.marcas = (cfg.marcas || []).map(m => Object.assign({ etiqueta:'', fantasma:false }, m, { ver: m.pH }));
+    E.pOH = !!cfg.pOH; E.extra = cfg.extra || null; E.descr = cfg.descr || null; E.sinEscala = !!cfg.sinEscala;
+    if (idLey) document.getElementById(idLey).innerHTML = cfg.leyenda !== undefined ? cfg.leyenda : leyenda(['H', 'OH', 'A', 'HA']);
+    L.resize();
+  };
+  // Cambiar lo que mira una lupa: las partículas se rompen, se juntan, entran o salen poco a poco.
+  E.lupaA = (id, sol, escala, cambios) => { const lu = E.lupa(id); if (!lu) return; fijar(lu, sol, escala === undefined ? lu.escala : escala, false); if (cambios) Object.assign(lu, cambios); };
+  E.agregarLupa = o => { E.lupas.push(armar(o)); L.resize(); };
+  E.quitarLupa = id => { E.lupas = E.lupas.filter(l => l.id !== id); L.resize(); };
+  E.marca = (id, pH, cambios) => { const m = E.marcas.find(q => q.id === id); if (m){ m.pH = pH; if (cambios) Object.assign(m, cambios); } };
+  E.agregarMarca = m => E.marcas.push(Object.assign({ etiqueta:'', fantasma:false }, m, { ver: m.ver !== undefined ? m.ver : m.pH }));
+
+  // ----- movimiento: siempre -----
+  let ultimo = performance.now();
+  function cuenta(lu){ const k = {}; for (const p of lu.parts) if (!p.sale) k[p.t] = (k[p.t] || 0) + 1; return k; }
+  function mover(dt){
+    for (const lu of E.lupas){
+      if (lu.oculto) continue;
+      const k = cuenta(lu), g = t => k[t] || 0, o = t => lu.obj[t] || 0;
+      const paso = d => Math.max(1, Math.ceil(Math.abs(d)/(RM ? 1 : 14)));
+      // HA ⇌ A⁻ + H⁺: la molécula se rompe en su sitio y el H⁺ sale; o un A⁻ atrapa un H⁺.
+      if (g('HA') > o('HA') && g('A') < o('A')){
+        for (let i = 0, m = paso(Math.min(g('HA') - o('HA'), o('A') - g('A'))); i < m; i++){
+          const p = lu.parts.find(q => q.t === 'HA' && !q.sale); if (!p) break;
+          p.t = 'A';
+          if (g('H') + i < o('H')){ const h = nueva('H', p.x + Math.cos(p.bond)*0.06, p.y + Math.sin(p.bond)*0.06, 1); h.ang = p.bond; lu.parts.push(h); }
+        }
+      } else if (g('HA') < o('HA') && g('A') > o('A')){
+        for (let i = 0, m = paso(Math.min(o('HA') - g('HA'), g('A') - o('A'))); i < m; i++){
+          const p = lu.parts.find(q => q.t === 'A' && !q.sale); if (!p) break;
+          p.t = 'HA';
+          const h = lu.parts.find(q => q.t === 'H' && !q.sale); if (h && g('H') - i > o('H')) h.sale = true;
+        }
+      }
+      // B + H₂O ⇌ BH⁺ + OH⁻
+      if (g('B') > o('B') && g('BH') < o('BH')){
+        const p = lu.parts.find(q => q.t === 'B' && !q.sale); if (p){ p.t = 'BH'; if (g('OH') < o('OH')) lu.parts.push(nueva('OH', p.x, p.y, 1)); }
+      }
+      // H⁺ + OH⁻ → H₂O: si sobran los dos, se encuentran y desaparecen juntos
+      if (g('H') > o('H') && g('OH') > o('OH')){
+        const h = lu.parts.find(q => q.t === 'H' && !q.sale), w = lu.parts.find(q => q.t === 'OH' && !q.sale);
+        if (h && w){ h.sale = true; w.sale = true; }
+      }
+      const k2 = cuenta(lu);
+      for (const t of MA_TIPOS){
+        const d = (lu.obj[t] || 0) - (k2[t] || 0);
+        if (d > 0) for (let i = 0, m = paso(d); i < m; i++){ const [x, y] = alAzar(); lu.parts.push(nueva(t, x, y, 0)); }
+        else if (d < 0){
+          const vivos = lu.parts.filter(q => q.t === t && !q.sale);
+          for (let i = 0, m = paso(d); i < m && vivos.length; i++) vivos.splice(Math.floor(rnd()*vivos.length), 1)[0].sale = true;
+        }
+      }
+      for (const q of lu.parts){
+        q.alpha = clamp(q.alpha + (q.sale ? -2.5 : 2.5)*dt*(RM ? 50 : 1), 0, 1);
+        q.ang += (rnd() - .5)*dt*3;
+        const v = VEL*(q.t === 'H' ? 1.6 : q.t === 'OH' ? 1.3 : 1);
+        q.x += Math.cos(q.ang)*v*dt; q.y += Math.sin(q.ang)*v*dt;
+        q.bond += dt*0.6;
+        if (q.x*q.x + q.y*q.y > 1){ q.x *= -0.96; q.y *= -0.96; } // sale por un lado y entra por el otro
+      }
+      lu.parts = lu.parts.filter(q => !(q.sale && q.alpha <= 0));
+    }
+    for (const m of E.marcas){ const d = m.pH - m.ver; m.ver += RM ? d : d*Math.min(1, dt*5); if (Math.abs(d) < 1e-3) m.ver = m.pH; }
+  }
+  function loop(now){
+    const dt = Math.min(0.05, (now - ultimo)/1000); ultimo = now;
+    if (cv.offsetParent !== null && L.W){ mover(dt); dibujar(now); }
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+
+  // ----- dibujo -----
+  // Rótulos de las marcas: las que se enciman suben de fila. Se calcula antes del layout para reservar lugar.
+  function filasMarcas(ctx, c, W){
+    const x0 = 44, x1 = W - 22, X = p => x0 + (x1 - x0)*clamp(p, 0, 14)/14, filas = [], out = [];
+    ctx.font = `800 11px ${c.font}`;
+    for (const m of [...E.marcas].sort((a, b) => a.ver - b.ver)){
+      const xx = X(m.ver), t = m.etiqueta ? `${m.etiqueta}: pH ${fpH(m.ver)}` : `pH ${fpH(m.ver)}`, w = ctx.measureText(t).width + 10;
+      let f = 0; while (filas[f] !== undefined && filas[f] > xx - w/2) f++;
+      filas[f] = xx + w/2; out.push({ m, xx, t, w, f });
+    }
+    return { lista: out, n: filas.length };
+  }
+  function layout(W, Hh, nf){
+    const ancho = W >= 560, nl = E.lupas.length;
+    const extra = 17*Math.max(0, nf - 2);
+    const zE = E.sinEscala ? 0 : (E.pOH ? 136 : 124) + extra;
+    E.extraMarcas = extra;
+    const zl = { x:0, y:0, w:W, h:Hh - zE };
+    E.lay = { escala:{ y: Hh - zE, h: zE }, l:{} };
+    if (!nl) return;
+    const cols = ancho ? nl : (nl > 2 ? 2 : nl), filas = Math.ceil(nl/cols);
+    const cw = zl.w/cols, ch = zl.h/filas;
+    const R = Math.max(34, Math.min(cw/2 - 14, ch/2 - 44, 128));
+    E.lupas.forEach((lu, k) => {
+      const col = k % cols, fila = Math.floor(k/cols);
+      E.lay.l[lu.id] = { x: zl.x + cw*(col + .5), y: zl.y + ch*(fila + .5) + 6, R };
+    });
+  }
+  function particula(ctx, c, q, px, py, s){
+    const rA = s*1.0, rH = s*0.5, hl = E.hl;
+    ctx.globalAlpha = q.alpha;
+    const conH = (dx, dy) => { ctx.beginPath(); ctx.arc(dx, dy, rH*(hl === 'H' ? 1.4 : 1), 0, Math.PI*2); ctx.fillStyle = c.H; ctx.fill(); };
+    if (q.t === 'H'){ conH(px, py); return; }
+    if (q.t === 'OH'){
+      const r = s*0.72*(hl === 'OH' ? 1.35 : 1);
+      ctx.beginPath(); ctx.moveTo(px, py - r); ctx.lineTo(px + r, py); ctx.lineTo(px, py + r); ctx.lineTo(px - r, py); ctx.closePath(); ctx.fillStyle = c.OH; ctx.fill(); return;
+    }
+    if (q.t === 'A' || q.t === 'HA'){
+      const r = rA*(hl === 'A' ? 1.25 : 1);
+      ctx.beginPath(); ctx.arc(px, py, r, 0, Math.PI*2); ctx.fillStyle = c.A; ctx.fill();
+      if (q.t === 'HA'){
+        conH(px + Math.cos(q.bond)*(r + rH*0.55), py + Math.sin(q.bond)*(r + rH*0.55));
+        if (hl === 'Ka'){ ctx.beginPath(); ctx.arc(px, py, r + rH*2.2, 0, Math.PI*2); ctx.strokeStyle = c.Ka; ctx.lineWidth = 1.6; ctx.stroke(); }
+      }
+      return;
+    }
+    if (q.t === 'M'){ const r = s*0.62; rr(ctx, px - r, py - r, 2*r, 2*r, 2); ctx.fillStyle = c.muted; ctx.fill(); return; }
+    if (q.t === 'N'){ ctx.beginPath(); ctx.arc(px, py, rA, 0, Math.PI*2); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.6; ctx.stroke(); return; }
+    if (q.t === 'B' || q.t === 'BH'){
+      const r = rA*1.1;
+      ctx.beginPath(); ctx.moveTo(px, py - r); ctx.lineTo(px + r*0.95, py + r*0.7); ctx.lineTo(px - r*0.95, py + r*0.7); ctx.closePath();
+      ctx.strokeStyle = c.muted; ctx.lineWidth = 1.6; ctx.stroke();
+      if (q.t === 'BH') conH(px + Math.cos(q.bond)*(r + rH*0.4), py + Math.sin(q.bond)*(r + rH*0.4));
+    }
+  }
+  function nombre(lu, t){ return lu.nombres[t] || { H:'H⁺', OH:'OH⁻', A:'A⁻', HA:'HA', M:'Na⁺', B:'NH₃', BH:'NH₄⁺', N:'moléculas' }[t]; }
+  const COLOR = { H:'H', OH:'OH', A:'A', HA:'A', M:'muted', B:'muted', BH:'muted', N:'muted' };
+  function numeroP(x){ const k = Math.round(x); return Math.abs(x - k) < 0.05 ? fmt(k, 0) : (x < 10 ? fmt(x, 1) : fmt(x, 0)); }
+  function dibujarLupa(ctx, c, lu, now){
+    const l = E.lay.l[lu.id]; if (!l) return;
+    const { x, y, R } = l;
+    ctx.save();
+    ctx.beginPath(); ctx.arc(x, y, R, 0, Math.PI*2); ctx.fillStyle = c.paper; ctx.fill(); ctx.clip();
+    // el agua, apenas sugerida
+    ctx.fillStyle = c.muted; ctx.globalAlpha = .16;
+    for (const a of agua){ ctx.beginPath(); ctx.arc(x + a.x*R, y + a.y*R, 1.6, 0, Math.PI*2); ctx.fill(); }
+    if (lu.oculto){
+      ctx.globalAlpha = 1; ctx.fillStyle = c.muted; ctx.font = `800 ${Math.round(R*0.5)}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('?', x, y);
+    } else {
+      const vivos = lu.parts.length, s = R*0.052*clamp(Math.sqrt(50/Math.max(50, vivos)), 0.5, 1);
+      for (const q of lu.parts) particula(ctx, c, q, x + q.x*R, y + q.y*R, s);
+    }
+    ctx.restore();
+    ctx.save(); ctx.beginPath(); ctx.arc(x, y, R, 0, Math.PI*2);
+    ctx.strokeStyle = E.hl === 'C' ? c.C : c.ink; ctx.lineWidth = E.hl === 'C' ? 4 : 2.4; ctx.stroke();
+    ctx.lineWidth = 6; ctx.lineCap = 'round'; ctx.strokeStyle = c.vidrio;
+    linea(ctx, x + R*0.72, y + R*0.72, x + R*0.72 + 12, y + R*0.72 + 12); ctx.restore();
+    rotulo(ctx, c, x, y - R - 28, lu.titulo, c.ink, 'center', 800, 12);
+    rotulo(ctx, c, x, y - R - 12, lu.nota, lu.notaV ? c.V : c.muted, 'center', E.hl === 'V' && lu.notaV ? 900 : 700, 10.5);
+    if (lu.oculto || !lu.info) return;
+    // conteo debajo, cada especie en su color
+    const e = lu.info.esperado, trozos = [];
+    for (const t of ['HA', 'A', 'H', 'OH', 'M', 'B', 'BH', 'N']){
+      if (e[t] < 0.05 && !(lu.siempre || []).includes(t)) continue;
+      if (trozos.length) trozos.push([' · ', c.muted]);
+      trozos.push([`${numeroP(e[t])} ${nombre(lu, t)}`, c[COLOR[t]]]);
+    }
+    if (!trozos.length) trozos.push(['casi vacía', c.muted]);
+    rotulos(ctx, c, x, y + R + 14, trozos, 800, R < 70 ? 10.5 : 11.5);
+    const extra = lu.pie || (lu.info.recorte ? `se dibujan ${MAXP} de cada especie como máximo` : (!lu.info.exacto ? (R < 95 ? 'dibujo redondeado' : 'el dibujo redondea; los números, no') : ''));
+    if (extra) rotulo(ctx, c, x, y + R + 30, extra, c.muted, 'center', 700, 10);
+  }
+  function dibujarEscala(ctx, c, W){
+    const z = E.lay.escala; if (!z.h) return;
+    const x0 = 44, x1 = W - 22, yb = z.y + 58 + (E.extraMarcas || 0), hb = 16, X = p => x0 + (x1 - x0)*p/14;
+    const ancho = W >= 560;
+    // barra gris, sin colores de indicador
+    rr(ctx, x0, yb - hb/2, x1 - x0, hb, 8); ctx.fillStyle = c.detras; ctx.fill(); ctx.strokeStyle = c.line; ctx.lineWidth = 1.2; ctx.stroke();
+    ctx.save(); ctx.font = `700 10px ${c.font}`; ctx.textBaseline = 'middle'; ctx.fillStyle = c.muted;
+    ctx.textAlign = 'left'; ctx.fillText('más ácido', X(0.25), yb + 0.5);
+    ctx.textAlign = 'right'; ctx.fillText('más básico', X(13.75), yb + 0.5); ctx.restore();
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 1;
+    for (let p = 0; p <= 14; p++){
+      const xx = X(p), largo = p === 7 ? 9 : 4;
+      linea(ctx, xx, yb + hb/2, xx, yb + hb/2 + largo);
+      if (ancho || p % 2 === 0 || p === 7){
+        ctx.font = `${p === 7 ? 800 : 700} 11px ${c.mono}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillStyle = E.hl === 'H' ? c.H : c.ink; ctx.fillText(String(p), xx, yb + hb/2 + 17);
+      }
+    }
+    rotulo(ctx, c, X(7), yb + hb/2 + 31, 'neutro', c.muted, 'center', 700, 10);
+    ctx.font = `800 11px ${c.font}`; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    ctx.fillStyle = c.H; ctx.fillText('pH', 8, yb + hb/2 + 17);
+    if (E.pOH){
+      ctx.fillStyle = c.OH; ctx.fillText('pOH', 4, yb + hb/2 + 45); ctx.font = `700 11px ${c.mono}`; ctx.textAlign = 'center';
+      for (let p = 0; p <= 14; p += (ancho ? 1 : 2)) ctx.fillText(String(14 - p), X(p), yb + hb/2 + 45);
+    } else if (ancho){
+      ctx.font = `700 9.5px ${c.font}`; ctx.textAlign = 'center'; ctx.fillStyle = c.H;
+      for (let p = 0; p <= 14; p += 2) ctx.fillText(p === 0 ? '1 M' : pot(-p), X(p), yb + hb/2 + 45);
+      ctx.fillStyle = c.muted; ctx.textAlign = 'left'; ctx.fillText('[H⁺]', 4, yb + hb/2 + 45);
+    }
+    // marcas: un triángulo encima de la barra y su rótulo; las que se enciman suben de fila
+    for (const { m, xx, t, w, f } of filasMarcas(ctx, c, W).lista){
+      const col = m.fantasma ? c.muted : c.H, yl = yb - hb/2 - 18 - f*17;
+      ctx.save(); ctx.globalAlpha = m.fantasma ? .8 : 1;
+      ctx.beginPath(); ctx.moveTo(xx, yb - hb/2 + 2); ctx.lineTo(xx - 6, yb - hb/2 - 8); ctx.lineTo(xx + 6, yb - hb/2 - 8); ctx.closePath();
+      if (m.fantasma){ ctx.strokeStyle = col; ctx.lineWidth = 1.5; ctx.setLineDash([2, 2]); ctx.stroke(); } else { ctx.fillStyle = col; ctx.fill(); }
+      ctx.setLineDash([]);
+      if (f){ ctx.strokeStyle = col; ctx.lineWidth = 1; ctx.globalAlpha = .5; linea(ctx, xx, yb - hb/2 - 9, xx, yl + 8); ctx.globalAlpha = 1; }
+      const xt = clamp(xx, x0 + w/2 - 20, x1 - w/2 + 20);
+      rotulo(ctx, c, xt, yl, t, col, 'center', E.hl === 'H' ? 900 : 800, 11);
+      ctx.restore();
+    }
+  }
+  function dibujar(now){
+    if (!L.W) return;
+    const c = colores(), { ctx, W } = L, Hh = L.H;
+    ctx.clearRect(0, 0, W, Hh);
+    layout(W, Hh, filasMarcas(ctx, c, W).n);
+    if (E.extra) E.extra(ctx, c, W, Hh, now);
+    for (const lu of E.lupas) dibujarLupa(ctx, c, lu, now);
+    dibujarEscala(ctx, c, W);
+    const d = E.descr ? E.descr() : E.lupas.map(lu => lu.oculto ? `${lu.titulo}: oculta hasta que respondas` :
+        `${lu.titulo}: ` + Object.entries(lu.info ? lu.info.esperado : {}).filter(([, v]) => v >= 0.05).map(([t, v]) => `${numeroP(v)} ${nombre(lu, t)}`).join(', ')).join('. ')
+      + (E.marcas.length ? '. Escala de pH: ' + E.marcas.map(m => `${m.etiqueta || 'solución'} en pH ${fpH(m.pH)}`).join(', ') : '');
+    if (d !== E.desc && idDesc){ E.desc = d; document.getElementById(idDesc).textContent = d; }
+  }
+  E.dibujar = () => dibujar(performance.now());
+  alRedibujarTema(E.dibujar);
+  addEventListener('modo', () => L.resize());
+  return E;
+}
+const MA_TIPOS = ['H', 'OH', 'A', 'HA', 'M', 'B', 'BH', 'N'];
+</script>
+<script>
+/* ================= MODO 1: paso a paso =================
+   Problemas guiados 1 y 2 de docs/investigacion/equilibrio-acidos-electroquimica-ideas-erroneas.md
+   ("Propuesta para las plantillas → pH y dilución"), con sus predicciones y respaldos. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'leyenda1');
+const S = { step:0, max:0, pred:{}, ocupado:false, x:{ C0:0.1, K:Infinity, d:0 } };
+
+// Problema 1: HCl 0,01 M diluido 100 veces. Lupa: una partícula por cada 0,0005 mol/L → 20 H⁺ y 20 Cl⁻.
+const P1D = MA.diluir({ acido:0.01 }, 100), ESC1 = 0.0005;
+// Problema 2: HA 0,2 M, Ka = 2 × 10⁻⁵, diluido 100 veces. Lupa: una partícula por cada 0,002 mol/L → 100 fórmulas.
+const KA2 = 2e-5, P2D = MA.diluir({ acido:0.2, Ka:KA2 }, 100), ESC2 = 0.002;
+const HA0 = P2D.antes, HA1 = P2D.despues;
+// Bases: NaOH 0,001 M y Ba(OH)₂ 0,0005 M (la mitad de fórmulas, los mismos OH⁻). Una partícula por cada 0,00005 mol/L.
+const NAOH = MA.solucion({ base:0.001 }), BA = MA.solucion({ base:0.0005, theta:2 }), ESCB = 0.00005;
+const CL = { A:'Cl⁻', HA:'HCl' };
+
+function cfg1(fin){
+  E.config({
+    lupas: fin ? [{ id:'l1', titulo:'HCl diluido', nota:'el mismo volumen que antes', notaV:true, sol:P1D.despues, escala:ESC1, nombres:CL, sem:3 },
+                  { id:'l2', titulo:'HCl diluido', nota:'un volumen 100 veces mayor', notaV:true, sol:P1D.despues, escala:ESC1/100, nombres:CL, sem:4 }]
+               : [{ id:'l1', titulo:'HCl 0,01 M', nota:'volumen muy pequeño', notaV:true, sol:P1D.antes, escala:ESC1, nombres:CL, sem:3 }],
+    marcas: fin ? [{ id:'m', pH:P1D.despues.pH, etiqueta:'diluido' }, { id:'f', pH:P1D.antes.pH, etiqueta:'antes', fantasma:true }]
+                : [{ id:'m', pH:P1D.antes.pH, etiqueta:'HCl 0,01 M' }],
+    leyenda: leyenda(['H', 'A'], '<span><i style="background:var(--c-V)"></i>V · volumen que mira la lupa</span>') });
+}
+function animar1(fin){
+  E.lupaA('l1', P1D.despues, ESC1, { titulo:'HCl diluido', nota:'el mismo volumen que antes' });
+  E.marca('m', P1D.despues.pH, { etiqueta:'diluido' }); E.agregarMarca({ id:'f', pH:P1D.antes.pH, etiqueta:'antes', fantasma:true });
+  esperar(1300, () => { E.agregarLupa({ id:'l2', titulo:'HCl diluido', nota:'un volumen 100 veces mayor', notaV:true, sol:P1D.despues, escala:ESC1/100, nombres:CL, sem:4 }); fin && fin(); });
+}
+function cfg3(){
+  const a = MA.solucion({ acido:0.01 }), b = MA.solucion({ acido:0.001 });
+  E.config({ lupas:[{ id:'a', titulo:'HCl 0,01 M', nota:'volumen muy pequeño', notaV:true, sol:a, escala:ESC1, nombres:CL, sem:3 },
+                    { id:'b', titulo:'HCl 0,001 M', nota:'el mismo volumen', notaV:true, sol:b, escala:ESC1, nombres:CL, sem:6 }],
+    marcas:[{ id:'a', pH:a.pH, etiqueta:'0,01 M' }, { id:'b', pH:b.pH, etiqueta:'0,001 M' }, { id:'c', pH:P1D.despues.pH, etiqueta:'0,0001 M' }],
+    leyenda: leyenda(['H', 'A']) });
+}
+function cfg4(){
+  E.config({ lupas:[{ id:'l1', titulo:'HA 0,2 M (débil)', nota:'volumen muy pequeño', notaV:true, sol:HA0, escala:ESC2, sem:8 }],
+    marcas:[{ id:'m', pH:HA0.pH, etiqueta:'HA 0,2 M' }, { id:'f', pH:HA0.errores.comoFuerte, etiqueta:'si fuera fuerte', fantasma:true }],
+    leyenda: leyenda(['HA', 'A', 'H']) });
+}
+function cfg5(fin){
+  E.config({
+    lupas: fin ? [{ id:'l1', titulo:'HA diluido', nota:'el mismo volumen que antes', notaV:true, sol:HA1, escala:ESC2, sem:8 },
+                  { id:'l2', titulo:'HA diluido', nota:'un volumen 100 veces mayor', notaV:true, sol:HA1, escala:ESC2/100, sem:9 }]
+               : [{ id:'l1', titulo:'HA 0,2 M (débil)', nota:'volumen muy pequeño', notaV:true, sol:HA0, escala:ESC2, sem:8 }],
+    marcas: fin ? [{ id:'m', pH:HA1.pH, etiqueta:'diluido' }, { id:'f', pH:HA0.pH, etiqueta:'antes', fantasma:true }]
+                : [{ id:'m', pH:HA0.pH, etiqueta:'HA 0,2 M' }],
+    leyenda: leyenda(['HA', 'A', 'H'], '<span><i style="background:var(--c-V)"></i>V · volumen que mira la lupa</span>') });
+}
+function animar5(fin){
+  E.lupaA('l1', HA1, ESC2, { titulo:'HA diluido', nota:'el mismo volumen que antes' });
+  E.marca('m', HA1.pH, { etiqueta:'diluido' }); E.agregarMarca({ id:'f', pH:HA0.pH, etiqueta:'antes', fantasma:true });
+  esperar(1300, () => {
+    // la lupa grande empieza viendo las mismas 100 fórmulas como estaban (1 rota) y después se rompen más
+    E.agregarLupa({ id:'l2', titulo:'HA diluido', nota:'un volumen 100 veces mayor', notaV:true, sol:{ especies:{ HA:HA0.especies.HA/100, A:HA0.especies.A/100, H:HA0.especies.H/100 } }, escala:ESC2/100, sem:9 });
+    esperar(700, () => { E.lupaA('l2', HA1, ESC2/100); fin && fin(); });
+  });
+}
+function cfg6(){
+  E.config({ lupas:[{ id:'a', titulo:'NaOH 0,001 M', nota:'volumen muy pequeño', sol:NAOH, escala:ESCB, nombres:{ M:'Na⁺' }, sem:11 },
+                    { id:'b', titulo:'Ba(OH)₂ 0,0005 M', nota:'el mismo volumen', sol:BA, escala:ESCB, nombres:{ M:'Ba²⁺' }, sem:12 }],
+    marcas:[{ id:'a', pH:NAOH.pH, etiqueta:'las dos' }], pOH:true, leyenda: leyenda(['OH', 'M', 'H']) });
+}
+function cfg7(){
+  const a = MA.solucion({ acido:0.01 });
+  E.config({ lupas:[{ id:'a', titulo:'HCl 0,01 M (fuerte)', nota:'todo roto', sol:a, escala:ESC1, nombres:CL, sem:3 },
+                    { id:'b', titulo:'HA 0,2 M (débil)', nota:'casi todo entero', sol:HA0, escala:ESC2, sem:8 }],
+    marcas:[{ id:'a', pH:a.pH, etiqueta:'HCl' }, { id:'b', pH:HA0.pH, etiqueta:'HA' }], leyenda: leyenda(['HA', 'A', 'H']) });
+}
+
+const P1 = { id:'acidos-bases-paso2', ok:'c', anima:animar1, opts:[
+  ['a','2: sigue siendo el mismo ácido fuerte','AB2-fuerte-es-concentrado','parcial'],
+  ['b','0: el ácido diluido tiene menor pH','AB5-diluido-menor-pH','documentado'],
+  ['c','4'],
+  ['d','7: con tanta agua se vuelve neutro','pH-diluir-hasta-7','hipotesis']],
+  fb:{ c:'¡Bien! Hay 100 veces menos H⁺ en cada volumen: [H⁺] pasa de 10⁻² a 10⁻⁴ M, y el pH, de 2 a 4.',
+    a:'Elegiste la A. Sigue siendo HCl y sigue siendo fuerte (todo roto), pero ahora hay 100 veces menos en cada mililitro. El pH mide cuántos H⁺ hay por litro, no qué tan fuerte es el ácido. La correcta está marcada.',
+    b:'Elegiste la B. Al diluir hay menos H⁺ por volumen, así que el pH sube, no baja: más H⁺, menor pH. La correcta está marcada.',
+    d:'Elegiste la D. 100 veces más agua no basta para llegar a 7: el pH sube 2 unidades, de 2 a 4. Haría falta diluir muchísimo más, y aun así se acercaría a 7 sin pasarlo. La correcta está marcada.' } };
+const P2 = { id:'acidos-bases-paso5', ok:'b', anima:animar5, opts:[
+  ['a','4,7: sube 2, como el ácido fuerte','debil-sube-como-fuerte','hipotesis'],
+  ['b','Cerca de 3,7'],
+  ['c','2,7: no cambia, porque Ka es la misma','debil-pH-no-cambia-por-Ka','hipotesis'],
+  ['d','0,7: al diluir se ioniza todo','debil-se-ioniza-todo','hipotesis']],
+  fb:{ b:'¡Bien! Al diluir, el ácido débil se ioniza más (de 1 % a casi 10 %) y repone parte de los H⁺: el pH sube cerca de 1, no 2.',
+    a:'Elegiste la A. Así sería con un ácido fuerte. El débil, al diluirse, rompe más moléculas y suelta H⁺ nuevos: el pH sube menos, cerca de 1. La correcta está marcada.',
+    c:'Elegiste la C. Ka no cambia, pero la concentración sí: hay 100 veces menos ácido por litro, y eso deja menos H⁺. El pH sube. La correcta está marcada.',
+    d:'Elegiste la D. Se ioniza más, pero no todo: un 10 %. Y aunque se rompiera todo, con 0,002 M el pH sería 2,7, no 0,7; 0,7 es el pH de 0,2 M de un ácido fuerte. La correcta está marcada.' } };
+
+const opciones = P => `<div class="opts">${P.opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="fb"></p>`;
+const steps = [
+ { k:'Paso 1', t:'El problema', prep:() => cfg1(false),
+   body:() => `<p class="problem">El HCl es un ácido fuerte. Una solución de HCl ${Cc('0,01 M')} se diluye con agua hasta 100 veces su ${Vv('volumen')}. ¿Cuál es el nuevo ${H('pH')}?</p>
+   <p>Antes de calcular, mira la solución por dentro. La lupa muestra un ${Vv('volumen')} muy pequeño. Cada partícula dibujada representa muchísimas partículas reales: es una forma de contar. El HCl es fuerte: en el agua se rompe todo en ${H('H⁺')} y ${An('Cl⁻')}. No queda ninguna molécula de HCl entera.</p>
+   <div class="eqs"><div class="eq">HCl → ${H('H⁺')} + ${An('Cl⁻')}<span class="note">fuerte: se rompe todo</span></div>
+   <div class="eq">${H('[H⁺]')} = ${Cc('C')} = ${Cc('0,01 M')} = ${H(pot(-2) + ' M')}</div>
+   <div class="eq">${H('pH')} = −log ${H('[H⁺]')} = −log ${pot(-2)} = ${H('2')}<span class="note">20 H⁺ en la lupa</span></div></div>
+   <p class="hint">"H⁺" es la forma corta: en el agua, cada H⁺ va pegado a una molécula de agua y forma H₃O⁺. El agua no se dibuja; solo se sugiere con puntitos tenues.</p>` },
+ { k:'Paso 2', t:'Predice: diluir 100 veces', gate:P1, prep:() => cfg1(!!S.pred[P1.id]),
+   body:() => `<p>Se agrega agua hasta que el ${Vv('volumen')} es 100 veces el inicial. ¿Cuál es el nuevo ${H('pH')}?</p>${opciones(P1)}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${Cc('C')} = ${fr(Cc('0,01'), '100')} = ${Cc(pot(-4) + ' M')}<span class="note">los moles de HCl no cambian; el volumen crece 100 veces</span></div>
+     <div class="eq">${H('pH')} = −log ${pot(-4)} = ${H('4')}</div></div>
+   <p>En la lupa del mismo volumen casi no queda nada: en promedio, 0,2 ${H('H⁺')}. Para volver a ver 20 hay que mirar un ${Vv('volumen 100 veces mayor')}: las mismas partículas, más repartidas.</p>
+   <p class="fuente">En un grupo turco de 24 alumnos con enseñanza tradicional, el 45 % eligió "un ácido concentrado siempre es más fuerte que uno diluido" (solo el 4 % acertó) y el 29 % eligió "el pH de un ácido concentrado siempre es mayor que el de uno diluido" (Çetingül y Geban, 2011, pregunta 12). Que el pH llegue a 7 al diluir es una hipótesis nuestra, sin estudio que la mida.</p></div>` },
+ { k:'Paso 3', t:'Cada unidad de pH es un factor de 10', prep:cfg3,
+   body:() => `<p>Compara las dos lupas: el mismo ${Vv('volumen')}, una con HCl ${Cc('0,01 M')} y otra con ${Cc('0,001 M')}. La segunda tiene 10 veces menos ${H('H⁺')}, y su ${H('pH')} es solo 1 más.</p>
+   <div class="eqs">
+     <div class="eq">${H('[H⁺]')} = ${pot(-2)} → ${H('pH 2')} · ${pot(-3)} → ${H('pH 3')} · ${pot(-4)} → ${H('pH 4')}</div>
+     <div class="eq">diluir 10 veces → ${H('pH')} + 1 · 100 veces → + 2 · 1000 veces → + 3<span class="note">en un ácido fuerte</span></div></div>
+   <p>El pH no es una regla lineal: es el exponente de ${H('[H⁺]')} con el signo cambiado. Una solución de pH 3 tiene 100 veces más ${H('H⁺')} que una de pH 5, no "un poco más". Y pH 0 es muy ácido: ${H('[H⁺]')} = 1 M.</p>
+   <p class="fuente">De 16 escolares estadounidenses, solo 4 dieron la fórmula del pH; los otros 12 lo trataron como una escala lineal, y solo 1 explicó que pH 3 y pH 5 difieren 100 veces (Sheppard, 2006, citado por Damanhuri y otros, 2016). El 11,8 % de 304 escolares de Malasia cree que una disolución de pH 3 tiene más OH⁻ que H⁺ (Damanhuri y otros, 2016, ítem B2).</p>` },
+ { k:'Paso 4', t:'Un ácido débil', prep:cfg4,
+   body:() => `<p class="problem">Un ácido débil HA ${Cc('0,2 M')} tiene ${Ka('Ka = 2 × 10⁻⁵')}. ¿Cuál es su ${H('pH')}?</p>
+   <p>Ahora la lupa tiene 100 fórmulas de ácido y casi todas están enteras: solo una se rompió en ${An('A⁻')} y ${H('H⁺')}. Eso es ser débil. ${Ka('Ka')} mide cuánto se rompe.</p>
+   <div class="eqs">
+     <div class="eq">HA ⇌ ${H('H⁺')} + ${An('A⁻')} · ${Ka('Ka')} = ${fr(`${H('[H⁺]')}·${An('[A⁻]')}`, '[HA]')} = ${fr('x²', `${Cc('C')} − x`)}</div>
+     <div class="eq">si se rompe poco: x ≈ <span>√(${Ka('Ka')} · ${Cc('C')})</span> = <span>√(${Ka('2 × 10⁻⁵')} · ${Cc('0,2')})</span> = ${H('2 × 10⁻³ M')}</div>
+     <div class="eq">${H('pH')} = 3 − log 2 = ${H(fpH(HA0.aprox.pH))}<span class="note">ionización: ${fr(H('0,002'), Cc('0,2'))} = 1 %</span></div>
+     <div class="eq">con la cuadrática (x² + ${Ka('Ka')}·x − ${Ka('Ka')}·${Cc('C')} = 0): x = ${H(sci(HA0.cuadratica.H, 3))}<span class="note">${fmt(HA0.errorAprox*100, 1)} % de diferencia: la aproximación sirve</span></div></div>
+   <p class="aviso">La aproximación √(Ka·C) vale si la ionización que da es de 5 % o menos. Si sale más, resuelve la cuadrática. Y no trates un débil como fuerte: si este se rompiera todo, el pH sería ${fpH(HA0.errores.comoFuerte)} (la marca gris).</p>
+   <p>Mira algo raro: este ácido es 20 veces más concentrado que el HCl del paso 1 (pH 2), y aun así su pH es mayor. Fuerte y concentrado no son lo mismo.</p>
+   <p class="fuente">El 27,6 % de 304 escolares de Malasia cree que el H₂SO₄ y el ácido acético son ácidos fuertes, y el 28,9 % que el KOH y el amoníaco son bases débiles (Damanhuri y otros, 2016, ítems B4 y B9). No encontramos estudios con porcentajes sobre Ka ni sobre la aproximación: lo de usarla con más de 5 % de ionización es una hipótesis.</p>` },
+ { k:'Paso 5', t:'Predice: diluir el débil', gate:P2, prep:() => cfg5(!!S.pred[P2.id]),
+   body:() => `<p>El ácido HA ${Cc('0,2 M')} (pH 2,7) se diluye hasta 100 veces su ${Vv('volumen')}. ¿Cuál es el nuevo ${H('pH')}?</p>${opciones(P2)}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${Cc('C')} = ${fr(Cc('0,2'), '100')} = ${Cc('0,002 M')}</div>
+     <div class="eq">x ≈ <span>√(${Ka('2 × 10⁻⁵')} · ${Cc('0,002')})</span> = ${H('2 × 10⁻⁴')} → ${H('pH')} ≈ ${H('3,7')}</div>
+     <div class="eq">ionización: ${fr(H('0,0002'), Cc('0,002'))} = 10 %<span class="note">pasa del 5 %: hay que usar la cuadrática</span></div>
+     <div class="eq">cuadrática: x = ${H(sci(HA1.cuadratica.H, 2))} → ${H('pH')} = ${H(fpH(HA1.cuadratica.pH))}<span class="note">ionización ${fmt(HA1.cuadratica.ionizacion*100, 1)} %</span></div></div>
+   <p>En la lupa del mismo ${Vv('volumen')} casi no queda nada. En la lupa ${Vv('100 veces mayor')} están las mismas 100 fórmulas, pero ahora se rompieron cerca de 10, no 1. Al diluir, el ácido débil se ioniza más y repone parte de los ${H('H⁺')}: por eso el pH sube cerca de 1 y no 2, como el fuerte.</p>
+   <p class="fuente">Ninguna opción incorrecta de esta pregunta tiene un estudio que la mida: son hipótesis para medir con los alumnos. Salen de confundir fuerza con concentración, que sí está documentado (Çetingül y Geban, 2011). Un estudio turco con futuros profesores reporta "la dilución no cambia el porcentaje de ionización de un ácido débil", pero solo se leyó su resumen.</p></div>` },
+ { k:'Paso 6', t:'Las bases también tienen pH', prep:cfg6,
+   body:() => `<p>Una base fuerte suelta ${OH('OH⁻')}. Con ella se calcula primero el ${OH('pOH')} y después el ${H('pH')}: a 25 °C, ${H('pH')} + ${OH('pOH')} = 14.</p>
+   <div class="eqs">
+     <div class="eq">NaOH ${Cc('0,001 M')}: ${OH('[OH⁻]')} = ${OH(pot(-3))} → ${OH('pOH 3')} → ${H('pH')} = 14 − 3 = ${H('11')}</div>
+     <div class="eq">Ba(OH)₂ ${Cc('0,0005 M')}: cada fórmula suelta 2 ${OH('OH⁻')} → ${OH('[OH⁻]')} = 2 · ${Cc('0,0005')} = ${OH(pot(-3))} → ${H('pH 11')}</div></div>
+   <p>Las dos lupas tienen los mismos ${OH('OH⁻')}: la de Ba(OH)₂ tiene la mitad de fórmulas, pero cada una entrega dos. Los ${H('H⁺')} no desaparecen en una base: quedan poquísimos (${H(pot(-11) + ' M')}), tan pocos que la lupa no ve ninguno.</p>
+   <p class="aviso">Dos errores de examen: dar 3 como pH (es el pOH; falta restarlo de 14) y olvidar los dos OH⁻. Con Ba(OH)₂ 0,005 M, [OH⁻] = 0,01 M y el pH es 12, no ${fpH(MA.solucion({ base:0.005, theta:2 }).errores.sinTheta)}.</p>
+   <p class="fuente">La mayoría de 27 escolares turcos creía que el pH es solo para ácidos y el pOH solo para bases; 21 ordenaron bien el pH de tres sustancias, pero solo 1 lo explicó bien (Kala, Yaman y Ayas, 2013, citado por Damanhuri y otros, 2016). Olvidar los dos OH⁻ es una hipótesis nuestra, sin estudio que la mida.</p>` },
+ { k:'Paso 7', t:'Lo que cambia y lo que no', prep:cfg7,
+   body:() => `<div class="eqs">
+     <div class="eq">Fuerte: ${H('[H⁺]')} = θ · ${Cc('C')}<span class="note">se rompe todo; θ = 2 en H₂SO₄ (convención de los problemas)</span></div>
+     <div class="eq">Débil: ${H('[H⁺]')} ≈ <span>√(${Ka('Ka')} · ${Cc('C')})</span><span class="note">si la ionización sale de 5 % o menos</span></div>
+     <div class="eq">Base: ${OH('pOH')} = −log ${OH('[OH⁻]')} · ${H('pH')} = 14 − ${OH('pOH')}</div>
+     <div class="eq">Diluir 10 veces: fuerte ${H('pH')} + 1; débil, menos de 1<span class="note">los moles no cambian; la concentración baja</span></div>
+     <div class="eq">Por más agua que se agregue, un ácido no pasa de ${H('pH 7')}</div></div>
+   <p>Antes de usar una fórmula, pregúntate dos cosas: ¿cuántas fórmulas hay por volumen (${Cc('concentración')})? ¿Qué parte se rompe (${Ka('fuerza')})? El ${H('pH')} depende de las dos.</p>
+   <p class="fuente">Furió, Calatayud y Bárcenas (2000) encontraron que los alumnos de Valencia mezclan tres niveles: lo que se ve, las partículas y la fórmula. Por eso esta escena dibuja siempre las partículas que hay en el agua.</p>` },
+ { k:'Paso 8', t:'Ahora explora tú', explora:true,
+   body:() => `<p>Elige un ácido y diluye. La lupa sigue siempre a 40 fórmulas de ácido: cuanto más diluido, más ${Vv('volumen')} tiene que mirar para encontrarlas.</p>
+   <div class="control"><p class="hint">Concentración inicial (${Cc('C')}):</p>
+   <div class="seg" role="group" aria-label="Concentración inicial" id="x-C">${[[1, '1 M'], [0.1, '0,1 M'], [0.01, '0,01 M']].map(([v, t]) => `<button type="button" data-v="${v}" aria-pressed="${S.x.C0 === v}">${t}</button>`).join('')}</div></div>
+   <div class="control"><p class="hint">Fuerza (${Ka('Ka')}):</p>
+   <div class="seg" role="group" aria-label="Fuerza del ácido" id="x-K">${[['Infinity', 'Fuerte'], ['0.01', 'Ka 10⁻²'], ['0.001', 'Ka 10⁻³'], ['0.00002', 'Ka 2 × 10⁻⁵']].map(([v, t]) => `<button type="button" data-v="${v}" aria-pressed="${S.x.K === Number(v)}">${t}</button>`).join('')}</div></div>
+   <div class="control"><label class="hint" for="x-d">Agregar agua: el ${Vv('volumen')} final es <b id="x-dt"></b> el inicial</label>
+   <input type="range" id="x-d" min="0" max="6" step="1" value="${S.x.d}"></div>
+   <div class="lecturas" id="x-lect"></div>
+   <p id="x-msg" class="hint" aria-live="polite"></p>` },
+];
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; b.setAttribute('aria-label', `Ir al ${s.k.toLowerCase()}: ${s.t}`);
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  if (s.prep) s.prep();
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  pintarDots();
+  if (s.gate) prediccion(s.gate);
+  if (s.explora) explorar();
+  nav(); E.dibujar();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){ if (k > S.max) S.max = k; }
+function prediccion(P){
+  const btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    S.ocupado = true; nav();
+    P.anima(() => { S.ocupado = false; nav(); });
+    $('next').focus();
+  }));
+  pintar();
+}
+
+// ----- explorador: concentración, fuerza y dilución -----
+const V0 = 10;   // mL iniciales
+function estadoX(){
+  const x = S.x, f = Math.pow(10, x.d), C = x.C0/f;
+  const sol = MA.solucion({ acido:C, Ka:x.K }), ini = MA.solucion({ acido:x.C0, Ka:x.K });
+  return { f, C, sol, ini, n: x.C0*V0/1000, mL: V0*f };
+}
+const nombreK = K => K === Infinity ? 'fuerte' : `Ka ${sci(K, 1)}`;
+function cfgX(){
+  const e = estadoX();
+  E.config({ lupas:[{ id:'x', titulo:`Ácido ${nombreK(S.x.K)}`, nota:notaX(e), notaV:true, sol:e.sol, escala:e.C/40, sem:21, siempre:['H'] }],
+    marcas:[{ id:'m', pH:e.sol.pH, etiqueta:'ahora' }, { id:'f', pH:e.ini.pH, etiqueta:'al inicio', fantasma:true }],
+    leyenda: leyenda(['HA', 'A', 'H', 'OH'], '<span><i style="background:var(--c-V)"></i>V · volumen que mira la lupa</span>') });
+}
+function notaX(e){ return e.f === 1 ? '40 fórmulas de ácido' : `40 fórmulas en un volumen ${e.f >= 1e4 ? pot(Math.round(Math.log10(e.f))) : fmt(e.f, 0)} veces mayor`; }
+function actualizarX(suave){
+  const e = estadoX();
+  if (!suave) cfgX();
+  else { E.lupaA('x', e.sol, e.C/40, { nota:notaX(e), titulo:`Ácido ${nombreK(S.x.K)}` }); E.marca('m', e.sol.pH); E.marca('f', e.ini.pH); }
+  $('x-dt').textContent = e.f >= 1e4 ? pot(Math.round(Math.log10(e.f))) + ' veces' : fmt(e.f, 0) + (e.f === 1 ? ' vez' : ' veces');
+  const caja = (k, que, val, det) => `<div class="lectura" style="--k:var(--c-${k})"><span>${que}</span><b>${val}</b><span>${det}</span></div>`;
+  $('x-lect').innerHTML = caja('n', 'Ácido, n', `${sci(e.n, 2)} mol`, 'no cambia al diluir')
+    + caja('V', 'Volumen, V', e.mL >= 1e4 ? `${fmt(e.mL/1000, 0)} L` : `${fmt(e.mL, 0)} mL`, `${fmt(e.f, 0)} × el inicial`)
+    + caja('C', 'Concentración, C', `${sci(e.C, 2)} M`, 'baja al diluir')
+    + caja('H', '[H⁺]', `${sci(e.sol.H, 2)} M`, `pH ${fpH(e.sol.pH)}`)
+    + caja('OH', '[OH⁻]', `${sci(e.sol.OH, 2)} M`, `pOH ${fpH(e.sol.pOH)}`)
+    + caja('Ka', 'Se rompe', `${fmt(e.sol.ionizacion*100, e.sol.ionizacion < 0.1 ? 2 : 1)} %`, S.x.K === Infinity ? 'fuerte: todo' : `de las fórmulas (${nombreK(S.x.K)})`);
+  let m = '';
+  if (S.x.K === Infinity) m = 'Fuerte: todas las fórmulas están rotas, diluyas o no. ';
+  else m = `Débil: se rompe el ${fmt(e.sol.ionizacion*100, e.sol.ionizacion < 0.1 ? 2 : 1)} %. Al diluir, se rompe una parte mayor. `;
+  if (S.x.d > 0) m += `Los moles de ácido son los mismos; la concentración bajó ${fmt(e.f, 0)} veces y el pH subió ${fmt(e.sol.pH - e.ini.pH, 2)}. `;
+  if (e.C < 1e-6) m += 'Ya hay más H⁺ y OH⁻ del agua que del ácido: el pH se acerca a 7, pero no lo pasa. ';
+  $('x-msg').textContent = m;
+}
+function explorar(){
+  cfgX(); actualizarX(true);
+  $('x-C').querySelectorAll('button').forEach(b => b.onclick = () => { S.x.C0 = Number(b.dataset.v); $('x-C').querySelectorAll('button').forEach(y => y.setAttribute('aria-pressed', String(y === b))); actualizarX(true); });
+  $('x-K').querySelectorAll('button').forEach(b => b.onclick = () => { S.x.K = Number(b.dataset.v); $('x-K').querySelectorAll('button').forEach(y => y.setAttribute('aria-pressed', String(y === b))); actualizarX(true); });
+  $('x-d').oninput = e => { S.x.d = Number(e.target.value); actualizarX(true); };
+}
+
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Experimentos del catálogo "Ácidos y bases" del informe: AB2 (fuerte contra concentrado), AB1 (¿tiene H,
+   entonces es ácido?), diluir mil veces (hipótesis que sale de AB4 y AB6), AB4 (la escala es logarítmica)
+   y AB9 (neutralizar no siempre da pH 7). La escena cambia recién después de responder. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'leyenda2');
+const CL = { A:'Cl⁻', HA:'HCl' };
+
+// 1. Fuerte contra concentrado. Una partícula por cada 0,0025 mol/L: 0,1 M → 40 fórmulas; 0,01 M → 4.
+const ESC_F = 0.0025, KAF = 2e-5;
+const F = { A:MA.solucion({ acido:0.01 }), B:MA.solucion({ acido:0.1, Ka:KAF }), C:MA.solucion({ acido:0.1 }), D:MA.solucion({ acido:0.01, Ka:KAF }) };
+// 2. ¿Tiene H? Cinco sustancias 0,1 M; una partícula por cada 0,0025 mol/L → 40 fórmulas.
+const SUST = [
+  ['CH3OH', 'CH₃OH', { N:'CH₃OH' }, 'El metanol se disuelve entero: no suelta H⁺ ni OH⁻. Tiene H y tiene OH en la fórmula, pero el pH queda en 7.'],
+  ['NH3', 'NH₃', { B:'NH₃', BH:'NH₄⁺' }, 'El amoníaco no tiene OH, pero es base: algunas moléculas le quitan un H⁺ al agua (NH₃ + H₂O ⇌ NH₄⁺ + OH⁻) y dejan OH⁻ sueltos.'],
+  ['SO2', 'SO₂', { HA:'H₂SO₃', A:'HSO₃⁻' }, 'El SO₂ no tiene H, pero da una disolución ácida: con el agua forma H₂SO₃, que suelta H⁺. Por eso la lluvia con SO₂ es ácida.'],
+  ['HCl', 'HCl', { A:'Cl⁻', HA:'HCl' }, 'El HCl es fuerte: se rompe todo en H⁺ y Cl⁻.'],
+  ['NaOH', 'NaOH', { M:'Na⁺' }, 'El NaOH es una base fuerte: se separa en Na⁺ y OH⁻. El Na⁺ no cambia el pH.'],
+];
+const ESC_S = 0.0025;
+const U = { s:0, neu:'debil' };
+// 3. Diluir mil veces: HCl 10⁻⁵ M → 10⁻⁸ M.
+const D3 = MA.diluir({ acido:1e-5 }, 1000), ESC_D = 5e-7;
+// 4. pH 3 contra pH 5 (HCl 10⁻³ M y 10⁻⁵ M). Una partícula por cada 2 × 10⁻⁵ mol/L.
+const L3 = MA.solucion({ acido:1e-3 }), L5 = MA.solucion({ acido:1e-5 }), ESC_L = 2e-5, RZ = MA.razonH(3, 5);
+// 5. Neutralizar: 20 mL de ácido 0,1 M con 20 mL de NaOH 0,1 M. Una partícula por cada 0,005 mol/L.
+const ESC_N = 0.005, KAN = 2e-5;
+const N_HA = MA.solucion({ acido:0.1, Ka:KAN }), N_OH = MA.solucion({ base:0.1 }), N_HCl = MA.solucion({ acido:0.1 });
+const MEZ = { debil: MA.mezclar({ acido:{ C:0.1, mL:20, Ka:KAN }, base:{ C:0.1, mL:20 } }), fuerte: MA.mezclar({ acido:{ C:0.1, mL:20 }, base:{ C:0.1, mL:20 } }) };
+const TIT = { debil: MA.titulacion({ C:0.1, mL:20, Ka:KAN }, { C:0.1 }, [0, 10, 20, 30]), fuerte: MA.titulacion({ C:0.1, mL:20 }, { C:0.1 }, [0, 10, 20, 30]) };
+
+const H = t => V('H', t), OH = t => V('OH', t), An = t => V('A', t), Cc = t => V('C', t), Ka = t => V('Ka', t), Vv = t => V('V', t);
+
+function lupaSust(k){
+  const [f, t, nombres] = SUST[k], s = MA.sustancia(f, 0.1);
+  return { s, lupa:{ id:'s', titulo:`${t} 0,1 M`, nota:'volumen muy pequeño', sol:s, escala:ESC_S, nombres, sem:40 + k } };
+}
+function pintarSust(){
+  const { s, lupa } = lupaSust(U.s);
+  E.config({ lupas:[lupa], marcas:[{ id:'m', pH:s.pH, etiqueta:SUST[U.s][1] }], leyenda: leyenda(['HA', 'A', 'H', 'OH', 'M', 'N', 'B']) });
+  const d = $('sust-txt'); if (d) d.innerHTML = `<p>${SUST[U.s][3]} pH = ${H(fpH(s.pH))}.</p>`;
+}
+function pintarNeu(){
+  const m = MEZ[U.neu], nom = U.neu === 'debil' ? { A:'A⁻', HA:'HA' } : CL;
+  E.config({ lupas:[{ id:'m', titulo:`Mezcla con ${U.neu === 'debil' ? 'HA (débil)' : 'HCl (fuerte)'}`, nota:'40 mL · volumen muy pequeño', sol:m, escala:ESC_N, nombres:nom, sem:61, siempre:['OH', 'H'],
+      pie: U.neu === 'debil' ? `por cada ${fmt(Math.round(m.especies.A/m.especies.HA/1000)*1000, 0)} A⁻, 1 HA y 1 OH⁻` : 'H⁺ y OH⁻: los del agua' }],
+    marcas:[{ id:'m', pH:m.pH, etiqueta:'equivalencia' }], leyenda: leyenda(['HA', 'A', 'H', 'OH', 'M']) });
+  const d = $('neu-txt'); if (!d) return;
+  const t = TIT[U.neu];
+  d.innerHTML = `<table class="tabla"><thead><tr><th>NaOH agregado</th>${t.map(r => `<th>${fmt(r.mL, 0)} mL</th>`).join('')}</tr></thead>
+    <tbody><tr><td>${H('pH')}</td>${t.map(r => `<td>${fpH(r.pH)}</td>`).join('')}</tr></tbody></table>
+    <p class="hint">20 mL de ácido 0,1 M con NaOH 0,1 M. A 20 mL hay los mismos moles de ácido y de base.</p>`;
+}
+
+const EXPS = [
+  { id:'fuerte-concentrado', corto:'Fuerte o concentrado',
+    q:`Vaso A: HCl ${Cc('0,01 M')}, un ácido fuerte. Vaso B: HA ${Cc('0,1 M')}, un ácido débil (${Ka('Ka = 2 × 10⁻⁵')}), diez veces más concentrado. ¿Cuál tiene menor ${H('pH')}, es decir, es más ácido?`,
+    opts:[['a','B, porque es más concentrado','AB2-concentrado-mas-acido','documentado'],
+          ['b','A',null],
+          ['c','Tienen el mismo pH: B tiene diez veces más ácido, pero es débil','fuerza-y-concentracion-se-compensan','hipotesis'],
+          ['d','No se pueden comparar: uno es fuerte y el otro, débil','AB2-no-separa-fuerza-concentracion','hipotesis']],
+    ok:'b',
+    antes:ver => ver ? E.config({ lupas:[
+          { id:'a', titulo:'A · HCl 0,01 M', nota:'fuerte, diluido', sol:F.A, escala:ESC_F, nombres:CL, sem:31 },
+          { id:'b', titulo:'B · HA 0,1 M', nota:'débil, concentrado', sol:F.B, escala:ESC_F, sem:32 },
+          { id:'c', titulo:'C · HCl 0,1 M', nota:'fuerte, concentrado', sol:F.C, escala:ESC_F, nombres:CL, sem:33 },
+          { id:'d', titulo:'D · HA 0,01 M', nota:'débil, diluido', sol:F.D, escala:ESC_F, sem:34 }],
+        marcas:Object.entries(F).map(([k, s]) => ({ id:k, pH:s.pH, etiqueta:k })), leyenda: leyenda(['HA', 'A', 'H']) })
+      : E.config({ lupas:[{ id:'a', titulo:'A · HCl 0,01 M', oculto:true, sol:F.A, escala:ESC_F, nombres:CL }, { id:'b', titulo:'B · HA 0,1 M', oculto:true, sol:F.B, escala:ESC_F }], marcas:[], leyenda: leyenda(['HA', 'A', 'H']) }),
+    despues:() => EXPS[0].antes(true),
+    exp:() => `<div class="eqs"><div class="eq">A: ${H('[H⁺]')} = ${Cc('0,01')} = ${H(pot(-2))} → ${H('pH 2')}</div>
+      <div class="eq">B: ${H('[H⁺]')} ≈ <span><span>√(${Ka('2 × 10⁻⁵')} · ${Cc('0,1')})</span></span> = ${H(sci(F.B.aprox.H, 1))} → ${H('pH ' + fpH(F.B.pH))}</div></div>
+      <p>Mira las cuatro lupas, todas del mismo volumen. Arriba de cada una dice si es fuerte o débil, y concentrado o diluido. "Concentrado" es cuántas fórmulas hay (C y B tienen 40). "Fuerte" es qué parte se rompe (en A y C, todas; en B y D, casi ninguna). El pH lo deciden los ${H('H⁺')} sueltos, y A tiene más que B.</p>
+      <p class="fuente">En un grupo turco de 24 alumnos con enseñanza tradicional, el 45 % eligió "un ácido concentrado siempre es más fuerte que uno diluido" y solo el 4 % acertó; el 33 % eligió "cualquier ácido concentrado siempre es más ácido que uno diluido" (Çetingül y Geban, 2011, preguntas 12 y 21). El 27,6 % de 304 escolares de Malasia cree que el ácido acético es fuerte (Damanhuri y otros, 2016, ítem B4). Las opciones C y D son hipótesis nuestras.</p>` },
+  { id:'tiene-H', corto:'¿Tiene H, es ácido?',
+    q:'El metanol, CH₃OH, tiene átomos de H y un grupo OH. Si se disuelve en agua, ¿qué es?',
+    opts:[['a','Un ácido, porque tiene H','AB1-tiene-H-es-acido','documentado'],
+          ['b','Una base, porque tiene OH','AB1-tiene-OH-es-base','documentado'],
+          ['c','Ni ácido ni base: no suelta H⁺ ni OH⁻ al agua',null],
+          ['d','Ácido y base a la vez, porque tiene los dos','AB1-ambos','hipotesis']],
+    ok:'c',
+    antes:ver => { if (ver) pintarSust(); else E.config({ lupas:[{ id:'s', titulo:'CH₃OH 0,1 M', oculto:true, sol:lupaSust(0).s, escala:ESC_S }], marcas:[], leyenda: leyenda(['N', 'H', 'OH']) }); },
+    despues:() => { U.s = 0; pintarSust(); },
+    ctrl:() => `<div class="control"><p class="hint">Mira qué hace cada sustancia en el agua (todas 0,1 M):</p><div class="seg" role="group" aria-label="Sustancia">${SUST.map(([, t], k) => `<button type="button" data-sust="${k}" aria-pressed="${U.s === k}">${t}</button>`).join('')}</div></div><div id="sust-txt"></div>`,
+    exp:() => `<p>Ácido es lo que suelta ${H('H⁺')} en el agua (o se los da a otra sustancia); base, lo que suelta ${OH('OH⁻')} o atrapa ${H('H⁺')}. No basta con mirar las letras de la fórmula: hay que mirar qué partículas aparecen en el agua.</p>
+      <p class="fuente">De 229 alumnos de 18 años de Valencia, acertaron si era ácido o base: H₂SO₄ 74 %, NaOH 66 %, NH₃ 55 %, CH₃COOH 54 %, CH₃NH₂ 25 %, CH₃OH 23 % y SO₂ 7 %. Ninguno usó las propiedades de las sustancias para decidir (Furió, Calatayud y Bárcenas, 2000, tabla 2). "HCl y CH₄ son ácidos porque tienen H": 16,8 % de 304 escolares de Malasia (Damanhuri y otros, 2016). "Un ácido debe tener H y una base, OH": 45 % de 24 (Çetingül y Geban, 2011). La opción D es una hipótesis nuestra.</p>` },
+  { id:'diluir-mil', corto:'Diluir mil veces',
+    q:`Una solución de HCl ${Cc('10⁻⁵ M')} tiene pH 5. Se diluye hasta mil veces su ${Vv('volumen')}: el ácido queda ${Cc('10⁻⁸ M')}. ¿Cuál es su ${H('pH')}?`,
+    opts:[['a','8, porque −log 10⁻⁸ = 8','pH-pasa-7-sin-agua','hipotesis'],
+          ['b','Exactamente 7: con tanta agua ya es agua pura','pH-diluir-hasta-7','hipotesis'],
+          ['c','Un poco menos de 7',null],
+          ['d','5: sigue siendo el mismo ácido fuerte','AB2-fuerte-es-concentrado','parcial']],
+    ok:'c',
+    antes:ver => E.config({ lupas: ver
+        ? [{ id:'a', titulo:'Antes · HCl 10⁻⁵ M', nota:'volumen muy pequeño', notaV:true, sol:D3.antes, escala:ESC_D, nombres:CL, sem:51 },
+           { id:'b', titulo:'Después · HCl 10⁻⁸ M', nota:'un volumen 100 veces mayor', notaV:true, sol:D3.despues, escala:ESC_D/100, nombres:CL, sem:52, siempre:['A'] }]
+        : [{ id:'a', titulo:'Antes · HCl 10⁻⁵ M', nota:'volumen muy pequeño', notaV:true, sol:D3.antes, escala:ESC_D, nombres:CL, sem:51 }],
+      marcas: ver ? [{ id:'a', pH:D3.antes.pH, etiqueta:'antes', fantasma:true }, { id:'b', pH:D3.despues.pH, etiqueta:'después' }] : [{ id:'a', pH:D3.antes.pH, etiqueta:'antes' }],
+      leyenda: leyenda(['H', 'OH', 'A'], '<span><i style="background:var(--c-V)"></i>V · volumen que mira la lupa</span>') }),
+    despues:() => {
+      E.marca('a', D3.antes.pH, { fantasma:true, etiqueta:'antes' }); E.agregarMarca({ id:'b', pH:D3.antes.pH, etiqueta:'después' });
+      esperar(200, () => E.marca('b', D3.despues.pH));
+      E.agregarLupa({ id:'b', titulo:'Después · HCl 10⁻⁸ M', nota:'un volumen 100 veces mayor', notaV:true, sol:D3.despues, escala:ESC_D/100, nombres:CL, sem:52, siempre:['A'] });
+    },
+    exp:() => `<div class="eqs"><div class="eq">del ácido: ${pot(-8)} M · del agua: cerca de ${pot(-7)} M</div>
+      <div class="eq">${H('[H⁺]')} = ${H(sci(D3.despues.H, 2) + ' M')} → ${H('pH')} = ${H(fpH(D3.despues.pH))}<span class="note">se resuelve [H⁺]² − 10⁻⁸·[H⁺] − 10⁻¹⁴ = 0</span></div></div>
+      <p>El agua pura ya tiene ${H('H⁺')} y ${OH('OH⁻')}: ${pot(-7)} M de cada uno. En la lupa grande hay 2 ${An('Cl⁻')} del ácido, pero unos 21 ${H('H⁺')} y 19 ${OH('OH⁻')}: casi todo viene del agua. El ácido suma un poco de ${H('H⁺')}, así que el pH queda apenas debajo de 7. Por más agua que agregues, un ácido no se vuelve básico.</p>
+      <p class="fuente">Que un ácido diluido llegue a pH 8 no tiene un estudio que lo mida: es una hipótesis. Sale de dos errores documentados: tratar el pH como una escala lineal (12 de 16 escolares estadounidenses; Sheppard, 2006, citado por Damanhuri y otros, 2016) y creer que al diluir cambian los moles de soluto o sube la concentración (55,2 % de 304 escolares de Malasia; Damanhuri y otros, 2016, ítem A9).</p>` },
+  { id:'escala-log', corto:'pH 3 contra pH 5',
+    q:`Una solución tiene ${H('pH 3')} y otra, ${H('pH 5')}. ¿Cuántas veces más ${H('H⁺')} tiene la de pH 3?`,
+    opts:[['a','2 veces: 5 − 3 = 2','AB4-escala-lineal','documentado'],
+          ['b','100 veces',null],
+          ['c','Ninguna: la de pH 5 tiene más, porque su número es mayor','AB5-mas-pH-mas-H','parcial'],
+          ['d','Casi 1,7 veces: 5 entre 3','AB4-razon-de-pH','hipotesis']],
+    ok:'b',
+    antes:ver => E.config({ lupas:[{ id:'a', titulo:'pH 3', nota:'volumen muy pequeño', oculto:!ver, sol:L3, escala:ESC_L, nombres:CL, sem:71 },
+                                  { id:'b', titulo:'pH 5', nota:'el mismo volumen', oculto:!ver, sol:L5, escala:ESC_L, nombres:CL, sem:72, siempre:['H'] }],
+      marcas:[{ id:'a', pH:L3.pH, etiqueta:'pH 3' }, { id:'b', pH:L5.pH, etiqueta:'pH 5' }], leyenda: leyenda(['H', 'A']) }),
+    despues:() => EXPS[3].antes(true),
+    exp:() => `<div class="eqs"><div class="eq">${H('pH 3')}: ${H('[H⁺]')} = ${pot(-3)} · ${H('pH 5')}: ${H('[H⁺]')} = ${pot(-5)}</div>
+      <div class="eq">${fr(pot(-3), pot(-5))} = ${pot(2)} = ${fmt(RZ.veces, 0)}<span class="note">cada unidad de pH es un factor de 10</span></div></div>
+      <p>En el mismo volumen, la lupa de pH 3 tiene 50 ${H('H⁺')} y la de pH 5, medio (casi siempre está vacía). La escala de pH aprieta: de 3 a 5 son solo dos marcas, pero los ${H('H⁺')} cambian cien veces.</p>
+      <p class="fuente">De 16 escolares estadounidenses, 12 trataron el pH como una escala lineal, y solo 1 explicó que pH 3 y pH 5 difieren 100 veces (Sheppard, 2006, citado por Damanhuri y otros, 2016). Ante "¿cuál es más ácido?", el 25 % de 24 alumnos turcos eligió pH 1 en vez de pH 0 (Çetingül y Geban, 2011, pregunta 4). Que el pH mayor tenga más H⁺ sale de "más concentrado, mayor pH", que eligió el 29 % de esos 24 (pregunta 12); la opción D es una hipótesis nuestra.</p>` },
+  { id:'neutralizar', corto:'Neutralizar',
+    q:`Se mezclan 20 mL de un ácido débil HA ${Cc('0,1 M')} (${Ka('Ka = 2 × 10⁻⁵')}) con 20 mL de NaOH ${Cc('0,1 M')}: los mismos moles de ácido y de base. ¿Cómo queda la mezcla?`,
+    opts:[['a','Neutra, pH 7: se neutralizaron','AB9-neutralizada-es-neutra','documentado'],
+          ['b','Ácida: el ácido débil no alcanza a reaccionar','debil-no-reacciona','hipotesis'],
+          ['c','Básica, con pH cercano a 8,7',null],
+          ['d','Neutra: el indicador cambia de color en pH 7','AB11-indicador-en-7','documentado']],
+    ok:'c',
+    antes:ver => { if (ver){ U.neu = 'debil'; pintarNeu(); return; }
+      E.config({ lupas:[{ id:'a', titulo:'HA 0,1 M (débil)', nota:'20 mL · volumen muy pequeño', sol:N_HA, escala:ESC_N, sem:62 },
+                        { id:'b', titulo:'NaOH 0,1 M', nota:'20 mL · el mismo volumen', sol:N_OH, escala:ESC_N, nombres:{ M:'Na⁺' }, sem:63 }],
+        marcas:[{ id:'a', pH:N_HA.pH, etiqueta:'HA' }, { id:'b', pH:N_OH.pH, etiqueta:'NaOH' }], leyenda: leyenda(['HA', 'A', 'H', 'OH', 'M']) }); },
+    despues:() => { U.neu = 'debil'; pintarNeu(); },
+    ctrl:() => `<div class="control"><p class="hint">Compara con un ácido fuerte de la misma concentración:</p><div class="seg" role="group" aria-label="Ácido de la mezcla">
+      <button type="button" data-neu="debil" aria-pressed="${U.neu === 'debil'}">HA (débil)</button><button type="button" data-neu="fuerte" aria-pressed="${U.neu === 'fuerte'}">HCl (fuerte)</button></div></div><div id="neu-txt"></div>`,
+    exp:() => `<div class="eqs"><div class="eq">HA + ${OH('OH⁻')} → ${An('A⁻')} + H₂O<span class="note">reaccionan desde la primera gota</span></div>
+      <div class="eq">${An('A⁻')} + H₂O ⇌ HA + ${OH('OH⁻')}<span class="note">el A⁻ de un ácido débil atrapa algunos H⁺ del agua</span></div>
+      <div class="eq">${H('pH')} = ${H(fpH(MEZ.debil.pH))} con HA · ${H(fpH(MEZ.fuerte.pH))} con HCl</div></div>
+      <p>Con los mismos moles, todo el ácido reaccionó. Pero el ${An('A⁻')} de un ácido débil es una base: de cada ${fmt(Math.round(MEZ.debil.especies.A/MEZ.debil.especies.HA/1000)*1000, 0)} A⁻, uno le quita un H⁺ al agua y deja un ${OH('OH⁻')} suelto. Es poco, pero alcanza para un pH básico. Solo ácido fuerte con base fuerte da pH 7. El ${An('Cl⁻')} del HCl no atrapa H⁺.</p>
+      <p class="fuente">Cerca del 25 % de escolares taiwaneses (Chiu, 2004) y 13 de 16 estadounidenses (Sheppard, 2006) creen que lo que sale de una neutralización es neutro, los dos citados por Damanhuri y otros (2016). De 8 alumnos de COU entrevistados en Valencia, solo 2 explicaron por qué el Na₂CO₃ da una disolución básica (Furió y otros, 2000). 14 de esos 16 estadounidenses creían que todo indicador cambia de color en pH 7 (Sheppard, 2006). La opción B es una hipótesis nuestra.</p>` },
+];
+const S = { k:0, pred:{}, t0:Date.now() };
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k];
+  x.antes(!!S.pred[x.id]);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>
+    <div class="opts">${x.opts.map(([l, t]) => `<button class="opt" type="button" data-k="${l}"><span class="l">${l.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div>
+    <p class="fb" id="fb2"></p><div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. La correcta está marcada; mira la escena para ver por qué.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = (x.ctrl ? x.ctrl() : '') + x.exp() + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
+    $('res2').querySelectorAll('[data-sust]').forEach(b => b.onclick = () => { U.s = +b.dataset.sust; $('res2').querySelectorAll('[data-sust]').forEach(y => y.setAttribute('aria-pressed', String(y === b))); pintarSust(); });
+    $('res2').querySelectorAll('[data-neu]').forEach(b => b.onclick = () => { U.neu = b.dataset.neu; $('res2').querySelectorAll('[data-neu]').forEach(y => y.setAttribute('aria-pressed', String(y === b))); pintarNeu(); });
+    if ($('sust-txt')) pintarSust();
+    if ($('neu-txt')) pintarNeu();
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar(); x.despues(); E.dibujar();
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+  });
+  pintar(); E.dibujar();
+}
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+{
+  "id": "acidos-bases",
+  "titulo": "Ácidos, bases y pH",
+  "formato": "escena",
+  "unidades": [
+    "quimica.acidos-y-bases"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}
