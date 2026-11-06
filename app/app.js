@@ -11,19 +11,23 @@ const FORMATO_TXT = { escena: 'Escenas', predicciones: 'Predicciones', lectura: 
 const UNI_CORTA = { uni: 'UNI', unmsm: 'San Marcos', una: 'UNA Puno' };
 const UNI_SIGLA = { uni: 'UNI', unmsm: 'SM', una: 'UNA' };
 const textoDias = n => `${n} ${n === 1 ? 'día seguido' : 'días seguidos'}`;
-let cat = null, instalar = null, offlineListo = false;
-const VERSION_APP = '0.3.0';
+let cat = null, pruebas = null, instalar = null, offlineListo = false;
+const VERSION_APP = '0.4.0';
 const GRADOS = [['3', '3.º de secundaria'], ['4', '4.º de secundaria'], ['5', '5.º de secundaria'], ['egresado', 'Ya terminé el colegio']];
 
 // ---------- Datos del alumno (en el celular) ----------
 function cargarEstado() {
   try { return JSON.parse(localStorage.getItem(CLAVE)) || {}; } catch { return {}; }
 }
-let est = Object.assign({ nombre: '', uni: '', grado: '', colegio: '', alumno: '', vistas: {}, dias: [], tema: '', practica: {} }, cargarEstado());
+let est = Object.assign({ nombre: '', uni: '', grado: '', colegio: '', alumno: '', vistas: {}, dias: [], tema: '', practica: {}, pruebas: {}, salidaHabilitada: [] }, cargarEstado());
 // Identificador anónimo del dispositivo: la medición nunca guarda nombres.
 if (!est.alumno) est.alumno = 'a' + Array.from(crypto.getRandomValues(new Uint8Array(5)), b => b.toString(16).padStart(2, '0')).join('');
 // Código del colegio: llega en el enlace que reparte el profesor (…/app/?colegio=ABC).
 { const c = new URLSearchParams(location.search).get('colegio'); if (c) est.colegio = c.trim().toUpperCase().slice(0, 20); }
+// El profesor habilita la prueba de salida con el mismo enlace: …/app/?salida=fisica,quimica (o ?salida=todas).
+// No hay servidor ni clave: la prueba no es nota, y lo que se quiere saber es si la pidió el alumno o el profesor.
+{ const s = new URLSearchParams(location.search).get('salida');
+  if (s) est.salidaHabilitada = [...new Set([...(est.salidaHabilitada || []), ...s.toLowerCase().split(',').map(x => x.trim()).filter(x => /^[a-z0-9-]+$/.test(x))])]; }
 function guardar() { try { localStorage.setItem(CLAVE, JSON.stringify(est)); } catch { /* sin almacenamiento: la app sigue */ } }
 const hoy = () => new Date().toLocaleDateString('en-CA');
 // ---------- Medición (anónima; ver nucleo/medicion.js) ----------
@@ -50,6 +54,8 @@ const ubic = (u, uni) => { const k = cat.universidades[uni]?.ubicacion; return k
 const etiquetaUbic = (u, k) => { const v = ubic(u, k); if (!v) return ''; const pal = cat.universidades[k].ubicacion === 'semanas' ? 'sem.' : 'tema';
   return `${UNI_CORTA[k] || k} · ${pal} ${v.length > 2 ? `${v[0]}–${v[v.length - 1]}` : v.join(', ')}`; };
 const visto = id => !!est.vistas[id];
+const cursoDeUnidad = id => cat.cursos.find(c => c.unidades.some(u => u.id === id));
+const ctxPrueba = () => ({ $app, cat, est, esc, guardar, registrar, marcarDia, pruebas });
 // Las escenas abren su propia página (con botón para volver); las predicciones se juegan dentro de la app.
 const enlace = p => p.formato === 'escena' ? `${p.url}?desde=app` : p.url;
 function avance(c, uni) { const us = unidadesDe(c, uni); return us.length ? us.filter(u => visto(u.id)).length / us.length : 0; }
@@ -113,7 +119,9 @@ function vInicio() {
   const sig = pend.filter(x => x !== conEscena).slice(0, 4).map(x => `<a class="item" href="#/curso/${esc(x.c.id)}">${icono(x.c.id)}
       <span class="tx"><span class="t">${esc(x.u.nombre)}</span><br><span class="d">${esc(x.c.nombre)} · ${esc(etiquetaUbic(x.u, est.uni))}</span></span>
       <span class="der">${tagAdelanto(x.u)}${x.u.plantillas.length ? `<span class="tag acento">${cat.plantillas[x.u.plantillas[0]].formato === 'escena' ? 'Escena' : 'Práctica'}</span>` : ''}›</span></a>`).join('');
+  const salidas = pruebas ? cat.cursos.filter(c => pruebas.cursos[c.id] && PruebaCurso.habilitada(est, c.id) && est.pruebas[c.id] && est.pruebas[c.id].entrada && !est.pruebas[c.id].salida) : [];
   $app.innerHTML = `
+    ${salidas.map(c => `<a class="aviso" style="display:block;text-decoration:none;margin-top:0" href="#/prueba/${esc(c.id)}/salida">Tu profesor habilitó la prueba de salida de ${esc(c.nombre)}. Hazla aquí ›</a>`).join('')}
     <header class="saludo"><span class="avatar">${esc((est.nombre || '?')[0].toUpperCase())}</span>
       <div><p class="sub">Hola${est.nombre ? `, ${esc(est.nombre)}` : ''} 👋</p><h1>¿Qué entendemos hoy?</h1></div></header>
     <div class="col2 inicio"><div>
@@ -143,6 +151,8 @@ function vCursos() {
 
 function vCurso(id) {
   const c = cat.cursos.find(x => x.id === id); if (!c) return ir('#/cursos');
+  // La primera vez que entra a un curso con banco de pruebas, va primero la prueba de entrada.
+  if (PruebaCurso.pideEntrada(ctxPrueba(), id) && !(est.pruebas[id] || {}).enCurso) { sessionStorage.setItem('prueba-auto-' + id, '1'); return ir(`#/prueba/${id}/entrada`); }
   const todas = sessionStorage.getItem('todas') === '1';
   const us = todas ? c.unidades : unidadesDe(c, est.uni);
   const ord = [...us].sort((a, b) => Math.min(...(ubic(a, est.uni) || [99])) - Math.min(...(ubic(b, est.uni) || [99])));
@@ -159,6 +169,7 @@ function vCurso(id) {
   }).join('');
   $app.innerHTML = `<a class="volver" href="#/cursos" aria-label="Volver">‹</a>
     <h1>${esc(c.nombre)}</h1><p class="sub">${esc(AREA_TXT[c.area])} · ${us.length} unidades · ${Math.round(avance(c, todas ? '' : est.uni) * 100)} % estudiado</p>
+    ${PruebaCurso.tarjeta(ctxPrueba(), c.id)}
     <div class="chips"><button class="chip${todas ? '' : ' on'}" data-todas="0">${esc(UNI_CORTA[est.uni] || 'Mi universidad')}</button><button class="chip${todas ? ' on' : ''}" data-todas="1">Todas las unidades</button></div>
     <div class="lista unidades" style="margin-top:12px">${filas}</div>`;
   $app.querySelectorAll('[data-todas]').forEach(b => b.onclick = () => { sessionStorage.setItem('todas', b.dataset.todas); vCurso(id); });
@@ -199,9 +210,12 @@ function vProgreso() {
 
 function resumenHTML() {
   const r = Medicion.resumir(eventos());
-  if (!r.length) return '<p class="sub">Todavía no hay prácticas registradas.</p>';
+  const cursosP = cat.cursos.filter(c => est.pruebas[c.id] && est.pruebas[c.id].entrada);
+  const tablaP = cursosP.length ? `<div class="tabla" style="margin-bottom:10px"><table><thead><tr><th>Curso</th><th>Entrada</th><th>Salida</th></tr></thead><tbody>${cursosP.map(c => { const p = est.pruebas[c.id];
+    return `<tr><td>${esc(c.nombre)}</td><td>${p.entrada.aciertos}/${p.entrada.total} (forma ${esc(p.entrada.forma)})</td><td>${p.salida ? `${p.salida.aciertos}/${p.salida.total} (forma ${esc(p.salida.forma)})` : '—'}</td></tr>`; }).join('')}</tbody></table></div>` : '';
+  if (!r.length) return tablaP || '<p class="sub">Todavía no hay prácticas registradas.</p>';
   const pct = x => x === null ? '—' : Math.round(x * 100) + ' %';
-  return `<div class="tabla"><table><thead><tr><th>Módulo</th><th>Entrada</th><th>Salida</th><th>Predicciones</th></tr></thead><tbody>${r.map(m =>
+  return `${tablaP}<div class="tabla"><table><thead><tr><th>Módulo</th><th>Entrada</th><th>Salida</th><th>Predicciones</th></tr></thead><tbody>${r.map(m =>
     `<tr><td>${esc((cat.plantillas[m.modulo] || {}).titulo || m.modulo)}</td><td>${pct(m.entrada)}</td><td>${pct(m.salida)}</td><td>${m.predicciones} (${pct(m.acierto)} bien)</td></tr>`).join('')}</tbody></table></div>`;
 }
 
@@ -242,7 +256,8 @@ function vPerfil() {
   if (bi) bi.onclick = async () => { instalar.prompt(); await instalar.userChoice; instalar = null; vPerfil(); };
   document.getElementById('borrar').onclick = () => {
     if (!confirm('¿Borrar tu avance de este celular? No se puede deshacer.')) return;
-    est = { nombre: '', uni: '', grado: '', colegio: est.colegio, alumno: est.alumno, vistas: {}, dias: [], tema: '', practica: {} }; guardar(); aplicarTema(); ir('#/bienvenida');
+    // Las pruebas de entrada y salida se conservan: se hacen una sola vez y son los datos del colegio.
+    est = { nombre: '', uni: '', grado: '', colegio: est.colegio, alumno: est.alumno, vistas: {}, dias: [], tema: '', practica: {}, pruebas: est.pruebas, salidaHabilitada: est.salidaHabilitada }; guardar(); aplicarTema(); ir('#/bienvenida');
   };
 }
 
@@ -271,18 +286,26 @@ function render() {
   if ((!est.uni || !est.grado) && ruta !== 'bienvenida') return ir('#/bienvenida');
   if (ruta === 'bienvenida') return vBienvenida();
   $nav.hidden = false; document.body.dataset.ruta = ruta; document.body.classList.add('con-nav');
-  $nav.querySelectorAll('a').forEach(a => a.classList.toggle('on', a.dataset.ruta === (['curso', 'papel', 'practica'].includes(ruta) ? 'cursos' : ruta)));
+  $nav.querySelectorAll('a').forEach(a => a.classList.toggle('on', a.dataset.ruta === (['curso', 'papel', 'practica', 'prueba'].includes(ruta) ? 'cursos' : ruta)));
   if (ruta === 'practica') {
     $nav.querySelectorAll('a').forEach(a => a.classList.toggle('on', a.dataset.ruta === 'cursos'));
     window.scrollTo(0, 0);
     return Practica.vista({ $app, cat, est, esc, guardar, registrar, marcarDia }, decodeURIComponent(arg || ''));
   }
+  if (ruta === 'prueba') { window.scrollTo(0, 0); return PruebaCurso.vista(ctxPrueba(), decodeURIComponent(arg || ''), location.hash.split('/')[3] || 'entrada'); }
   ({ inicio: vInicio, cursos: vCursos, curso: () => vCurso(decodeURIComponent(arg || '')), progreso: vProgreso, perfil: vPerfil, papel: () => vPapel(decodeURIComponent(arg || '')) }[ruta] || vInicio)();
   window.scrollTo(0, 0);
 }
 // Abrir una escena cuenta como día activo y marca la unidad como estudiada.
 document.addEventListener('click', e => {
   const a = e.target.closest('[data-abrir]'); if (!a) return;
+  // Si el curso de esa unidad tiene la prueba de entrada pendiente, va primero la prueba (así la entrada es en frío).
+  const c = cursoDeUnidad(a.dataset.abrir);
+  if (c && PruebaCurso.pideEntrada(ctxPrueba(), c.id)) {
+    e.preventDefault(); sessionStorage.setItem('prueba-auto-' + c.id, '1');
+    if (!(est.pruebas[c.id] || {}).enCurso) return ir(`#/prueba/${c.id}/entrada`);
+    return ir(`#/prueba/${c.id}/${est.pruebas[c.id].enCurso.fase}`);
+  }
   est.vistas[a.dataset.abrir] = est.vistas[a.dataset.abrir] || hoy(); marcarDia(); guardar();
 });
 window.addEventListener('hashchange', render);
@@ -303,6 +326,8 @@ async function registrarSW() {
 }
 
 aplicarTema();
-fetch('datos/catalogo.json').then(r => r.json()).then(c => { cat = c; render(); registrarSW(); })
+// El banco de pruebas es opcional: si no carga, la app funciona igual, sin pruebas por curso.
+const cargarPruebas = fetch('datos/pruebas.json').then(r => (r.ok ? r.json() : null)).catch(() => null);
+fetch('datos/catalogo.json').then(r => r.json()).then(async c => { cat = c; pruebas = await cargarPruebas; render(); registrarSW(); })
   .catch(() => { $app.innerHTML = '<p class="vacio">No se pudo cargar el catálogo. Revisa tu conexión e inténtalo otra vez.</p>'; });
 })();

@@ -1,0 +1,254 @@
+{
+  "curso": "fisica",
+  "version": "1.0.0",
+  "fecha": "2026-11-06",
+  "minutos": 15,
+  "informes": ["docs/investigacion/cinematica-ideas-erroneas.md", "docs/investigacion/dinamica-ideas-erroneas.md", "docs/investigacion/estatica-energia-ideas-erroneas.md", "docs/investigacion/fluidos-calor-termodinamica-ideas-erroneas.md", "docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md", "docs/investigacion/optica-ideas-erroneas.md", "docs/investigacion/optica-espejos-esfericos.md"],
+  "errores": {
+    "G2-altura-entre-tiempo": { "respaldo": "documentado", "describe": "Divide la altura del punto entre el tiempo, como si la recta pasara por el origen" },
+    "G2-pendiente-es-altura": { "respaldo": "documentado", "describe": "Toma la altura de la gráfica como si fuera la pendiente" },
+    "G2-lee-el-eje": { "respaldo": "documentado", "describe": "Lee el corte con el eje en vez de la pendiente" },
+    "C1-aceleracion-cero-en-la-cima": { "respaldo": "documentado", "describe": "Cree que en el punto más alto la aceleración es cero" },
+    "K3-aceleracion-en-sentido-del-movimiento": { "respaldo": "documentado", "describe": "Cree que la aceleración apunta hacia donde se mueve" },
+    "C2-depende-de-la-masa": { "respaldo": "documentado", "describe": "Cree que la aceleración de caída depende de la masa" },
+    "N-igual-mg": { "respaldo": "hipotesis", "describe": "Toma la normal igual al peso en un plano inclinado" },
+    "sen-cos-cambiados": { "respaldo": "hipotesis", "describe": "Usa el seno donde va el coseno al descomponer el peso" },
+    "normal-cero-si-se-mueve": { "respaldo": "hipotesis", "describe": "Cree que no hay normal si el cuerpo se desliza" },
+    "D2-la-fuerza-se-gasta": { "respaldo": "documentado", "describe": "Cree que el empujón se gasta y por eso el cuerpo frena" },
+    "D1-movimiento-necesita-fuerza": { "respaldo": "documentado", "describe": "Cree que sin fuerza no hay movimiento" },
+    "sigue-acelerando": { "respaldo": "hipotesis", "describe": "Cree que sigue acelerando después de soltarlo" },
+    "ignora-eficiencia": { "respaldo": "hipotesis", "describe": "Da la potencia útil como si fuera la consumida" },
+    "multiplica-eficiencia": { "respaldo": "hipotesis", "describe": "Multiplica por la eficiencia en vez de dividir" },
+    "W15-energia-por-potencia": { "respaldo": "parcial", "describe": "Da la energía (J) como si fuera la potencia (W)" },
+    "Q7-olvida-calor-latente": { "respaldo": "hipotesis", "describe": "Olvida el calor que se gasta en derretir el hielo" },
+    "Q4-promedio-simple": { "respaldo": "hipotesis", "describe": "Promedia las temperaturas sin pesar por la masa" },
+    "Q8-no-revisa-si-alcanza": { "respaldo": "hipotesis", "describe": "Usa la ecuación sin revisar si el calor alcanza para fundir todo el hielo" },
+    "C5-toda-la-corriente-a-B2": { "respaldo": "documentado", "describe": "Cree que la corriente de la rama quitada pasa entera a la otra y el resto sigue igual" },
+    "C5-bombilla-independiente": { "respaldo": "documentado", "describe": "Cree que cada bombilla no depende del resto del circuito" },
+    "C1-sobra-corriente": { "respaldo": "documentado", "describe": "Cree que la pila da siempre la misma corriente y la que sobra va a las demás" },
+    "E1-mitad-arriba": { "respaldo": "documentado", "describe": "Cree que tapar media lente borra la misma mitad de la imagen" },
+    "E1-mitad-abajo": { "respaldo": "documentado", "describe": "Cree que tapar media lente borra la mitad opuesta de la imagen" },
+    "E1-sin-imagen": { "respaldo": "hipotesis", "describe": "Cree que tapar media lente deja sin imagen" },
+    "S1-en-la-superficie": { "respaldo": "documentado", "describe": "Cree que la imagen se forma sobre la superficie del espejo" },
+    "S6-detras-como-lente": { "respaldo": "hipotesis", "describe": "Pone la imagen real detrás del espejo, como en una lente" },
+    "S5-zona": { "respaldo": "documentado", "describe": "Confunde las zonas del espejo cóncavo (entre F y C con más allá de C)" }
+  },
+  "pares": [
+    {
+      "par": "fis-01", "plantilla": "mruv", "unidad": "fisica.movimiento-rectilineo",
+      "mide": "Leer la velocidad como pendiente de una recta x-t que no pasa por el origen",
+      "A": {
+        "enunciado": "La gráfica posición-tiempo (x-t) de un ciclista es una recta que pasa por los puntos (0 s; 6 m) y (5 s; 26 m). ¿Qué velocidad lleva el ciclista?",
+        "datos": { "t1": 0, "x1": 6, "t2": 5, "x2": 26 },
+        "opciones": [
+          { "texto": "5,2 m/s", "valor": 5.2, "error": "G2-altura-entre-tiempo" },
+          { "texto": "4 m/s", "valor": 4, "correcta": true },
+          { "texto": "26 m/s", "valor": 26, "error": "G2-pendiente-es-altura" },
+          { "texto": "6 m/s", "valor": 6, "error": "G2-lee-el-eje" }
+        ]
+      },
+      "B": {
+        "enunciado": "La gráfica posición-tiempo (x-t) de un mototaxi es una recta que pasa por los puntos (0 s; 8 m) y (4 s; 20 m). ¿Qué velocidad lleva el mototaxi?",
+        "datos": { "t1": 0, "x1": 8, "t2": 4, "x2": 20 },
+        "opciones": [
+          { "texto": "5 m/s", "valor": 5, "error": "G2-altura-entre-tiempo" },
+          { "texto": "3 m/s", "valor": 3, "correcta": true },
+          { "texto": "20 m/s", "valor": 20, "error": "G2-pendiente-es-altura" },
+          { "texto": "8 m/s", "valor": 8, "error": "G2-lee-el-eje" }
+        ]
+      }
+    },
+    {
+      "par": "fis-02", "plantilla": "mruv", "unidad": "fisica.movimiento-rectilineo",
+      "mide": "La aceleración en el punto más alto de un lanzamiento vertical",
+      "A": {
+        "enunciado": "Lanzas una pelota verticalmente hacia arriba con 20 m/s. Sube durante 2 s, se detiene un instante en el punto más alto y baja. Sin contar el aire, ¿cuánto vale su aceleración en el punto más alto? (g = 10 m/s²)",
+        "datos": { "v0": 20, "tSubida": 2 },
+        "opciones": [
+          { "texto": "Cero, porque ahí está quieta", "clave": "cero", "error": "C1-aceleracion-cero-en-la-cima" },
+          { "texto": "10 m/s², hacia arriba, porque venía subiendo", "clave": "arriba", "error": "K3-aceleracion-en-sentido-del-movimiento" },
+          { "texto": "10 m/s², hacia abajo", "clave": "abajo", "correcta": true },
+          { "texto": "Depende de la masa de la pelota", "clave": "masa", "error": "C2-depende-de-la-masa" }
+        ]
+      },
+      "B": {
+        "enunciado": "Un futbolista patea un balón verticalmente hacia arriba con 15 m/s. A los 1,5 s llega a su altura máxima y empieza a bajar. Sin contar el aire, ¿cuánto vale la aceleración del balón a los 1,5 s? (g = 10 m/s²)",
+        "datos": { "v0": 15, "tSubida": 1.5 },
+        "opciones": [
+          { "texto": "Cero, porque ahí está quieto", "clave": "cero", "error": "C1-aceleracion-cero-en-la-cima" },
+          { "texto": "10 m/s², hacia arriba, porque venía subiendo", "clave": "arriba", "error": "K3-aceleracion-en-sentido-del-movimiento" },
+          { "texto": "10 m/s², hacia abajo", "clave": "abajo", "correcta": true },
+          { "texto": "Depende de la masa del balón", "clave": "masa", "error": "C2-depende-de-la-masa" }
+        ]
+      }
+    },
+    {
+      "par": "fis-03", "plantilla": "dinamica", "unidad": "fisica.dinamica",
+      "mide": "La fuerza normal en un plano inclinado (N = m·g·cos θ)",
+      "A": {
+        "enunciado": "Una caja de 5 kg baja deslizando por una rampa lisa inclinada 53°. ¿Cuánto vale la fuerza normal que la rampa ejerce sobre la caja? (g = 10 m/s²; sen 53° = 0,8; cos 53° = 0,6)",
+        "datos": { "m": 5, "angulo": 53 },
+        "opciones": [
+          { "texto": "50 N, igual al peso", "valor": 50, "error": "N-igual-mg" },
+          { "texto": "40 N", "valor": 40, "error": "sen-cos-cambiados" },
+          { "texto": "0 N, porque la caja se está moviendo", "valor": 0, "error": "normal-cero-si-se-mueve" },
+          { "texto": "30 N", "valor": 30, "correcta": true }
+        ]
+      },
+      "B": {
+        "enunciado": "Un saco de 20 kg resbala por un tobogán liso inclinado 37°. ¿Cuánto vale la fuerza normal que el tobogán ejerce sobre el saco? (g = 10 m/s²; sen 37° = 0,6; cos 37° = 0,8)",
+        "datos": { "m": 20, "angulo": 37 },
+        "opciones": [
+          { "texto": "200 N, igual al peso", "valor": 200, "error": "N-igual-mg" },
+          { "texto": "120 N", "valor": 120, "error": "sen-cos-cambiados" },
+          { "texto": "0 N, porque el saco se está moviendo", "valor": 0, "error": "normal-cero-si-se-mueve" },
+          { "texto": "160 N", "valor": 160, "correcta": true }
+        ]
+      }
+    },
+    {
+      "par": "fis-04", "plantilla": "dinamica", "unidad": "fisica.dinamica",
+      "mide": "Inercia: sin fuerza neta, la velocidad no cambia",
+      "A": {
+        "enunciado": "Empujas un disco de 2 kg con una fuerza de 10 N durante 1 s sobre una pista de hielo tan lisa que el roce no cuenta. Luego lo sueltas. ¿Qué hace el disco después de soltarlo?",
+        "datos": { "m": 2, "F": 10, "dur": 1 },
+        "opciones": [
+          { "texto": "Sigue en línea recta con la misma velocidad", "clave": "misma", "correcta": true },
+          { "texto": "Va frenando poco a poco, porque la fuerza del empujón se va gastando", "clave": "frena", "error": "D2-la-fuerza-se-gasta" },
+          { "texto": "Se detiene apenas lo sueltas: sin fuerza no hay movimiento", "clave": "para", "error": "D1-movimiento-necesita-fuerza" },
+          { "texto": "Sigue acelerando un rato más", "clave": "acelera", "error": "sigue-acelerando" }
+        ]
+      },
+      "B": {
+        "enunciado": "Un carrito de 4 kg está sobre un riel horizontal sin roce. Lo empujas con una fuerza de 6 N durante 2 s y luego lo sueltas. ¿Qué hace el carrito después de soltarlo?",
+        "datos": { "m": 4, "F": 6, "dur": 2 },
+        "opciones": [
+          { "texto": "Sigue en línea recta con la misma velocidad", "clave": "misma", "correcta": true },
+          { "texto": "Va frenando poco a poco, porque la fuerza del empujón se va gastando", "clave": "frena", "error": "D2-la-fuerza-se-gasta" },
+          { "texto": "Se detiene apenas lo sueltas: sin fuerza no hay movimiento", "clave": "para", "error": "D1-movimiento-necesita-fuerza" },
+          { "texto": "Sigue acelerando un rato más", "clave": "acelera", "error": "sigue-acelerando" }
+        ]
+      }
+    },
+    {
+      "par": "fis-05", "plantilla": "energia", "unidad": "fisica.trabajo-y-energia",
+      "mide": "Potencia consumida por un motor con eficiencia (P útil ÷ eficiencia)",
+      "A": {
+        "enunciado": "El motor de un montacargas sube 50 kg a 18 m de altura en 15 s, a velocidad constante. Su eficiencia es del 75 %. ¿Qué potencia consume el motor? (g = 10 m/s²)",
+        "datos": { "m": 50, "h": 18, "t": 15, "eficiencia": 75 },
+        "opciones": [
+          { "texto": "600 W", "valor": 600, "error": "ignora-eficiencia" },
+          { "texto": "800 W", "valor": 800, "correcta": true },
+          { "texto": "450 W", "valor": 450, "error": "multiplica-eficiencia" },
+          { "texto": "9000 W", "valor": 9000, "error": "W15-energia-por-potencia" }
+        ]
+      },
+      "B": {
+        "enunciado": "Una bomba eleva 80 kg de agua a 15 m de altura en 20 s, a velocidad constante. Su eficiencia es del 60 %. ¿Qué potencia consume la bomba? (g = 10 m/s²)",
+        "datos": { "m": 80, "h": 15, "t": 20, "eficiencia": 60 },
+        "opciones": [
+          { "texto": "600 W", "valor": 600, "error": "ignora-eficiencia" },
+          { "texto": "1000 W", "valor": 1000, "correcta": true },
+          { "texto": "360 W", "valor": 360, "error": "multiplica-eficiencia" },
+          { "texto": "12 000 W", "valor": 12000, "error": "W15-energia-por-potencia" }
+        ]
+      }
+    },
+    {
+      "par": "fis-06", "plantilla": "calorimetria", "unidad": "fisica.temperatura-y-calor",
+      "mide": "Mezcla con hielo: revisar si el calor alcanza para derretirlo todo",
+      "A": {
+        "enunciado": "En un termo se mezclan 100 g de hielo a 0 °C con 200 g de agua a 30 °C. ¿A qué temperatura queda la mezcla? (Calor de fusión del hielo: 80 cal/g; calor específico del agua: 1 cal/g·°C)",
+        "datos": { "mHielo": 100, "mAgua": 200, "TAgua": 30 },
+        "opciones": [
+          { "texto": "20 °C", "valor": 20, "error": "Q7-olvida-calor-latente" },
+          { "texto": "15 °C", "valor": 15, "error": "Q4-promedio-simple" },
+          { "texto": "−6,7 °C", "valor": -6.667, "error": "Q8-no-revisa-si-alcanza" },
+          { "texto": "0 °C, y queda hielo sin derretir", "valor": 0, "correcta": true }
+        ]
+      },
+      "B": {
+        "enunciado": "En un recipiente aislado se mezclan 120 g de hielo a 0 °C con 300 g de agua a 20 °C. ¿A qué temperatura queda la mezcla? (Calor de fusión del hielo: 80 cal/g; calor específico del agua: 1 cal/g·°C)",
+        "datos": { "mHielo": 120, "mAgua": 300, "TAgua": 20 },
+        "opciones": [
+          { "texto": "14,3 °C", "valor": 14.286, "error": "Q7-olvida-calor-latente" },
+          { "texto": "10 °C", "valor": 10, "error": "Q4-promedio-simple" },
+          { "texto": "−8,6 °C", "valor": -8.571, "error": "Q8-no-revisa-si-alcanza" },
+          { "texto": "0 °C, y queda hielo sin derretir", "valor": 0, "correcta": true }
+        ]
+      }
+    },
+    {
+      "par": "fis-07", "plantilla": "circuitos-cc", "unidad": "fisica.corriente-y-circuitos",
+      "mide": "Quitar una rama en paralelo cambia la corriente de todo el circuito",
+      "A": {
+        "enunciado": "Una pila de 6 V alimenta a la bombilla B1, conectada en serie con dos bombillas en paralelo, B2 y B3. Las tres bombillas son iguales. Si desenroscas B3, ¿qué pasa con el brillo de B1 y de B2?",
+        "datos": { "fem": 6, "modelo": { "R": 12 } },
+        "opciones": [
+          { "texto": "B2 brilla más y B1 sigue igual", "clave": "serie-igual|paralelo-mas", "error": "C5-toda-la-corriente-a-B2" },
+          { "texto": "B2 brilla más y B1 brilla menos", "clave": "serie-menos|paralelo-mas", "correcta": true },
+          { "texto": "B1 y B2 siguen igual", "clave": "serie-igual|paralelo-igual", "error": "C5-bombilla-independiente" },
+          { "texto": "B1 y B2 brillan más", "clave": "serie-mas|paralelo-mas", "error": "C1-sobra-corriente" }
+        ]
+      },
+      "B": {
+        "enunciado": "Una batería de 9 V alimenta a la bombilla X, conectada en serie con dos bombillas en paralelo, Y y Z. Las tres bombillas son iguales. Si Z se quema y deja de conducir, ¿qué pasa con el brillo de X y de Y?",
+        "datos": { "fem": 9, "modelo": { "R": 6 } },
+        "opciones": [
+          { "texto": "Y brilla más y X sigue igual", "clave": "serie-igual|paralelo-mas", "error": "C5-toda-la-corriente-a-B2" },
+          { "texto": "Y brilla más y X brilla menos", "clave": "serie-menos|paralelo-mas", "correcta": true },
+          { "texto": "X e Y siguen igual", "clave": "serie-igual|paralelo-igual", "error": "C5-bombilla-independiente" },
+          { "texto": "X e Y brillan más", "clave": "serie-mas|paralelo-mas", "error": "C1-sobra-corriente" }
+        ]
+      }
+    },
+    {
+      "par": "fis-08", "plantilla": "optica-lente-delgada", "unidad": "fisica.optica-geometrica",
+      "mide": "Cada parte de una lente forma la imagen completa",
+      "A": {
+        "enunciado": "Una vela está a 30 cm de una lente convergente de 20 cm de distancia focal, y su imagen se ve nítida en una pantalla. Si tapas con un cartón la mitad de arriba de la lente, ¿qué se ve en la pantalla?",
+        "datos": { "o": 30, "f": 20, "modelo": { "h": 2, "D": 4 } },
+        "opciones": [
+          { "texto": "Desaparece la mitad de arriba de la imagen", "clave": "sin-arriba", "error": "E1-mitad-arriba" },
+          { "texto": "Desaparece la mitad de abajo de la imagen", "clave": "sin-abajo", "error": "E1-mitad-abajo" },
+          { "texto": "Ya no se forma ninguna imagen", "clave": "nada", "error": "E1-sin-imagen" },
+          { "texto": "La imagen completa, pero menos brillante", "clave": "completa-tenue", "correcta": true }
+        ]
+      },
+      "B": {
+        "enunciado": "Con una lupa (una lente convergente de 15 cm de distancia focal) proyectas en una hoja la imagen nítida de una linterna encendida que está a 45 cm. Si pegas una cinta opaca que tapa la mitad de arriba de la lupa, ¿qué se ve en la hoja?",
+        "datos": { "o": 45, "f": 15, "modelo": { "h": 3, "D": 5 } },
+        "opciones": [
+          { "texto": "Desaparece la mitad de arriba de la imagen", "clave": "sin-arriba", "error": "E1-mitad-arriba" },
+          { "texto": "Desaparece la mitad de abajo de la imagen", "clave": "sin-abajo", "error": "E1-mitad-abajo" },
+          { "texto": "Ya no se forma ninguna imagen", "clave": "nada", "error": "E1-sin-imagen" },
+          { "texto": "La imagen completa, pero menos brillante", "clave": "completa-tenue", "correcta": true }
+        ]
+      }
+    },
+    {
+      "par": "fis-09", "plantilla": "optica-espejo-esferico", "unidad": "fisica.optica-geometrica",
+      "mide": "Imagen de un espejo cóncavo con el objeto entre el foco y el centro de curvatura",
+      "A": {
+        "enunciado": "Una vela está a 30 cm de un espejo cóncavo de 20 cm de distancia focal. ¿Dónde se forma su imagen y cómo es?",
+        "datos": { "o": 30, "f": 20 },
+        "opciones": [
+          { "texto": "Sobre la superficie del espejo", "clave": "superficie", "error": "S1-en-la-superficie" },
+          { "texto": "Delante del espejo, más allá del centro de curvatura: real, invertida y más grande", "clave": "mas-alla-de-C|invertida|mayor", "correcta": true },
+          { "texto": "Detrás del espejo, como en una lente", "clave": "detras", "error": "S6-detras-como-lente" },
+          { "texto": "Delante del espejo, entre el foco y el centro de curvatura: real, invertida y más pequeña", "clave": "entre-F-y-C|invertida|menor", "error": "S5-zona" }
+        ]
+      },
+      "B": {
+        "enunciado": "Un lapicero está a 25 cm de un espejo cóncavo de 15 cm de distancia focal. ¿Dónde se forma su imagen y cómo es?",
+        "datos": { "o": 25, "f": 15 },
+        "opciones": [
+          { "texto": "Sobre la superficie del espejo", "clave": "superficie", "error": "S1-en-la-superficie" },
+          { "texto": "Delante del espejo, más allá del centro de curvatura: real, invertida y más grande", "clave": "mas-alla-de-C|invertida|mayor", "correcta": true },
+          { "texto": "Detrás del espejo, como en una lente", "clave": "detras", "error": "S6-detras-como-lente" },
+          { "texto": "Delante del espejo, entre el foco y el centro de curvatura: real, invertida y más pequeña", "clave": "entre-F-y-C|invertida|menor", "error": "S5-zona" }
+        ]
+      }
+    }
+  ]
+}

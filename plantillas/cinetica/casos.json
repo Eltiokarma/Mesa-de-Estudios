@@ -1,0 +1,317 @@
+{
+  "plantilla": "cinetica",
+  "unidades": "mol/L, s, K, J/mol (kJ/mol en el perfil)",
+  "constantes": "R = 8,314 J/(mol·K); T(K) = T(°C) + 273; ln 2 sin redondear en los casos (0,693 solo en los textos).",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (ordenes.A); un número suelto, como 'valor'. Los textos ('unidades', 'tipo') se comparan tal cual.",
+  "verificacion": "Recalculados el 6 de noviembre de 2026 por un subagente que no leyó el motor ni este archivo: en Python con fractions.Fraction para lo racional, y con Decimal de 30 dígitos más una segunda vía para logaritmos y exponenciales (series propias de ln y exp, conteo de vidas medias y la ley diferencial integrada con RK4 de 200 000 pasos). La k de la tabla de velocidades iniciales reproduce las tres filas. Ojo: se usa T + 273, no 273,15; con 273,15 las Ea cambian en unas decenas de J/mol.",
+  "tolerancia": 1e-09,
+  "casos": [
+    {
+      "nombre": "Ley de velocidad: v = 0,5·[A]·[B]² con [A] = 0,2 y [B] = 0,1 da 0,001 mol/(L·s)",
+      "fn": "velocidad",
+      "args": [
+        {
+          "k": 0.5,
+          "ordenes": {
+            "A": 1,
+            "B": 2
+          }
+        },
+        {
+          "A": 0.2,
+          "B": 0.1
+        }
+      ],
+      "espera": {
+        "valor": 0.001
+      }
+    },
+    {
+      "nombre": "Duplicar [A] y triplicar [B] con v = k[A][B]²: la velocidad por 18 (sin exponentes daría 6)",
+      "fn": "factor",
+      "args": [
+        {
+          "A": 1,
+          "B": 2
+        },
+        {
+          "A": 2,
+          "B": 3
+        }
+      ],
+      "espera": {
+        "valor": 18,
+        "sinExponentes": 6
+      }
+    },
+    {
+      "nombre": "Velocidades iniciales: orden 1 en A, 2 en B, total 3 y k = 2 (proporción directa daría 3 en B)",
+      "fn": "ordenes",
+      "args": [
+        [
+          {
+            "conc": {
+              "A": 0.1,
+              "B": 0.1
+            },
+            "v": 0.002
+          },
+          {
+            "conc": {
+              "A": 0.2,
+              "B": 0.1
+            },
+            "v": 0.004
+          },
+          {
+            "conc": {
+              "A": 0.1,
+              "B": 0.3
+            },
+            "v": 0.018
+          }
+        ]
+      ],
+      "espera": {
+        "ordenes.A": 1,
+        "ordenes.B": 2,
+        "ordenTotal": 3,
+        "k": 2,
+        "unidades": "L²/(mol²·s)",
+        "proporcion.A": 1,
+        "proporcion.B": 3
+      }
+    },
+    {
+      "nombre": "Primer orden con k = 0,1 s⁻¹: vida media ln 2/0,1 ≈ 6,93 s",
+      "fn": "vidaMedia",
+      "args": [
+        1,
+        0.1
+      ],
+      "espera": {
+        "valor": 6.931471805599453
+      }
+    },
+    {
+      "nombre": "Primer orden, [A]₀ = 0,8 y t½ = 20 s: a los 60 s queda 0,1 (tres vidas medias)",
+      "fn": "concentracion",
+      "args": [
+        1,
+        0.03465735902799726,
+        0.8,
+        60
+      ],
+      "espera": {
+        "valor": 0.1
+      },
+      "tambien": [
+        {
+          "fn": "tiempo",
+          "args": [
+            1,
+            0.03465735902799726,
+            0.8,
+            0.1
+          ],
+          "espera": {
+            "valor": 60
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "Segundo orden, k = 0,5 y [A]₀ = 0,4: vida media 5 s; a los 10 s, 2/15 M",
+      "fn": "vidaMedia",
+      "args": [
+        2,
+        0.5,
+        0.4
+      ],
+      "espera": {
+        "valor": 5
+      },
+      "tambien": [
+        {
+          "fn": "concentracion",
+          "args": [
+            2,
+            0.5,
+            0.4,
+            10
+          ],
+          "espera": {
+            "valor": 0.13333333333333333
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "Orden cero, k = 0,01 y [A]₀ = 0,5: vida media 25 s; 0,3 M a los 20 s y 0 a los 60 s (se acaba a los 50 s)",
+      "fn": "vidaMedia",
+      "args": [
+        0,
+        0.01,
+        0.5
+      ],
+      "espera": {
+        "valor": 25
+      },
+      "tambien": [
+        {
+          "fn": "concentracion",
+          "args": [
+            0,
+            0.01,
+            0.5,
+            20
+          ],
+          "espera": {
+            "valor": 0.3
+          }
+        },
+        {
+          "fn": "concentracion",
+          "args": [
+            0,
+            0.01,
+            0.5,
+            60
+          ],
+          "espera": {
+            "valor": 0
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "Tras 3 vidas medias queda 1/8 (restar la mitad cada vez daría 0; 1/(2n), 1/6)",
+      "fn": "fraccionQueda",
+      "args": [
+        3
+      ],
+      "espera": {
+        "valor": 0.125,
+        "restando": 0,
+        "dividiendo": 0.16666666666666666
+      }
+    },
+    {
+      "nombre": "Arrhenius: si k se duplica de 300 K a 310 K, Ea = R·ln 2·9300 ≈ 53,6 kJ/mol",
+      "fn": "energiaActivacion",
+      "args": [
+        1,
+        300,
+        2,
+        310
+      ],
+      "espera": {
+        "valor": 53594.27863033108
+      },
+      "tambien": [
+        {
+          "fn": "razonK",
+          "args": [
+            5000,
+            300,
+            400
+          ],
+          "espera": {
+            "valor": 1.6506393495873326
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "Regla de 10 °C: 30 °C más multiplican por 2³ = 8 (no por 6); con q = 3 y 20 °C, por 9",
+      "fn": "regla10",
+      "args": [
+        30
+      ],
+      "espera": {
+        "valor": 8,
+        "lineal": 6
+      },
+      "tambien": [
+        {
+          "args": [
+            20,
+            3
+          ],
+          "espera": {
+            "valor": 9
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "Perfil: Ea = 80 y ΔH = −30 dan Ea inversa 110; con catalizador (Ea = 50), 80, y ΔH no cambia",
+      "fn": "perfil",
+      "args": [
+        {
+          "Ea": 80,
+          "dH": -30,
+          "EaCat": 50
+        }
+      ],
+      "espera": {
+        "EaVuelta": 110,
+        "EaVueltaCat": 80,
+        "baja": 30,
+        "dHCat": -30,
+        "tipo": "exotérmica"
+      }
+    },
+    {
+      "nombre": "Unidades de k: el exponente de mol/L es 1 − n (1, 0, −1 y −2 para orden 0 a 3)",
+      "fn": "unidadesK",
+      "args": [
+        0
+      ],
+      "espera": {
+        "exponenteM": 1,
+        "texto": "mol/(L·s)"
+      },
+      "tambien": [
+        {
+          "args": [
+            1
+          ],
+          "espera": {
+            "exponenteM": 0,
+            "texto": "s⁻¹"
+          }
+        },
+        {
+          "args": [
+            2
+          ],
+          "espera": {
+            "exponenteM": -1,
+            "texto": "L/(mol·s)"
+          }
+        },
+        {
+          "args": [
+            3
+          ],
+          "espera": {
+            "exponenteM": -2,
+            "texto": "L²/(mol²·s)"
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "Choques con energía suficiente: e^(−5000/(8,314·300)) ≈ 0,135; la caja de la escena por un tercio (orientación)",
+      "fn": "fraccionEficaz",
+      "args": [
+        5000,
+        300
+      ],
+      "espera": {
+        "valor": 0.13470732865164853
+      }
+    }
+  ]
+}

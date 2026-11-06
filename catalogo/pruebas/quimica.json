@@ -1,0 +1,226 @@
+{
+  "curso": "quimica",
+  "version": "1.0.0",
+  "fecha": "2026-11-06",
+  "minutos": 15,
+  "informes": ["docs/investigacion/estequiometria-ideas-erroneas.md", "docs/investigacion/gases-soluciones-ideas-erroneas.md", "docs/investigacion/equilibrio-acidos-electroquimica-ideas-erroneas.md"],
+  "errores": {
+    "ES20-menor-cantidad": { "respaldo": "documentado", "describe": "Toma como limitante al reactivo del que hay menos (moléculas o gramos)" },
+    "ES21-menor-coeficiente": { "respaldo": "documentado", "describe": "Toma como limitante al reactivo de menor coeficiente" },
+    "ES22-se-acaban-los-dos": { "respaldo": "documentado", "describe": "Cree que los dos reactivos se acaban a la vez" },
+    "ES15-suma-de-masas": { "respaldo": "parcial", "describe": "Suma las masas de los reactivos sin ver que uno sobra" },
+    "sin-coef-producto": { "respaldo": "hipotesis", "describe": "Pasa a moles, pero usa una relación 1 a 1 con el producto" },
+    "usa-presion-manometrica": { "respaldo": "parcial", "describe": "Usa la presión manométrica en la ecuación de los gases" },
+    "rigido-presion-fija": { "respaldo": "parcial", "describe": "Cree que en un recipiente rígido la presión no cambia" },
+    "usa-celsius": { "respaldo": "hipotesis", "describe": "Usa grados Celsius en vez de kelvin" },
+    "mezcla-promedio-simple": { "respaldo": "hipotesis", "describe": "Promedia las concentraciones sin pesar por el volumen" },
+    "SO7-suma-concentraciones": { "respaldo": "parcial", "describe": "Suma las concentraciones como si fueran cantidades" },
+    "SO7-moles-como-concentracion": { "respaldo": "documentado", "describe": "Da los moles como si fueran la concentración" },
+    "pct-sobre-solvente": { "respaldo": "hipotesis", "describe": "Divide el soluto entre el solvente y no entre la solución" },
+    "confunde-soluto-solvente": { "respaldo": "hipotesis", "describe": "Calcula el porcentaje del solvente" },
+    "SO14-que-mide-cada-unidad": { "respaldo": "parcial", "describe": "No sabe qué datos pide cada unidad de concentración" },
+    "EQ3": { "respaldo": "documentado", "describe": "Cree que en el equilibrio la reacción terminó y ya no responde a cambios" },
+    "EQ6": { "respaldo": "parcial", "describe": "Cree que todo lo agregado se gasta y vuelve al estado anterior" },
+    "EQ1": { "respaldo": "documentado", "describe": "Cree que en el equilibrio las cantidades quedan iguales" },
+    "AB4-escala-lineal": { "respaldo": "documentado", "describe": "Lee el pH como escala lineal (resta)" },
+    "AB4-razon-de-pH": { "respaldo": "hipotesis", "describe": "Divide los pH como si fueran proporcionales a H⁺" },
+    "AB5-mas-pH-mas-H": { "respaldo": "parcial", "describe": "Cree que más pH es más H⁺" },
+    "fem-multiplica-coeficientes": { "respaldo": "hipotesis", "describe": "Multiplica el potencial por el coeficiente de la ecuación" },
+    "fem-suma-sin-cambiar-signo": { "respaldo": "hipotesis", "describe": "Suma los potenciales de reducción tal cual" },
+    "fem-resta-al-reves": { "respaldo": "hipotesis", "describe": "Resta el cátodo del ánodo" }
+  },
+  "pares": [
+    {
+      "par": "qui-01", "plantilla": "limitante-particulas", "unidad": "quimica.estequiometria",
+      "mide": "Reactivo limitante con partículas: comparar con la receta, no la cantidad ni el coeficiente",
+      "A": {
+        "enunciado": "En un recipiente hay 6 moléculas de H₂ y 4 moléculas de O₂, que reaccionan según 2 H₂ + O₂ → 2 H₂O. ¿Cuál es el reactivo limitante?",
+        "datos": { "moleculas": { "H2": 6, "O2": 4 }, "otro": "O2", "reaccion": { "reactivos": [[2, "H2"], [1, "O2"]], "productos": [[2, "H2O"]] } },
+        "opciones": [
+          { "texto": "El O₂, porque hay menos moléculas", "clave": "O2-cantidad", "error": "ES20-menor-cantidad" },
+          { "texto": "El O₂, porque su coeficiente es el menor", "clave": "O2-coeficiente", "error": "ES21-menor-coeficiente" },
+          { "texto": "El H₂", "clave": "H2", "correcta": true },
+          { "texto": "Los dos: se acaban a la vez", "clave": "los-dos", "error": "ES22-se-acaban-los-dos" }
+        ]
+      },
+      "B": {
+        "enunciado": "En un recipiente hay 3 moléculas de N₂ y 6 moléculas de H₂, que reaccionan según N₂ + 3 H₂ → 2 NH₃. ¿Cuál es el reactivo limitante?",
+        "datos": { "moleculas": { "N2": 3, "H2": 6 }, "otro": "N2", "reaccion": { "reactivos": [[1, "N2"], [3, "H2"]], "productos": [[2, "NH3"]] } },
+        "opciones": [
+          { "texto": "El N₂, porque hay menos moléculas", "clave": "N2-cantidad", "error": "ES20-menor-cantidad" },
+          { "texto": "El N₂, porque su coeficiente es el menor", "clave": "N2-coeficiente", "error": "ES21-menor-coeficiente" },
+          { "texto": "El H₂", "clave": "H2", "correcta": true },
+          { "texto": "Los dos: se acaban a la vez", "clave": "los-dos", "error": "ES22-se-acaban-los-dos" }
+        ]
+      }
+    },
+    {
+      "par": "qui-02", "plantilla": "estequiometria-limitante", "unidad": "quimica.estequiometria",
+      "mide": "Masa de producto cuando el limitante es el reactivo con más gramos",
+      "A": {
+        "enunciado": "En una planta de fertilizantes se mezclan 56 g de N₂ con 18 g de H₂, que reaccionan según N₂ + 3 H₂ → 2 NH₃. ¿Cuántos gramos de NH₃ se forman como máximo? (Masas molares en g/mol: N₂ = 28; H₂ = 2; NH₃ = 17)",
+        "datos": { "gramos": { "N2": 56, "H2": 18 }, "reaccion": { "reactivos": [[1, "N2"], [3, "H2"]], "productos": [[2, "NH3"]] } },
+        "opciones": [
+          { "texto": "102 g", "valor": 102, "error": "ES20-menor-cantidad" },
+          { "texto": "74 g", "valor": 74, "error": "ES15-suma-de-masas" },
+          { "texto": "68 g", "valor": 68, "correcta": true },
+          { "texto": "34 g", "valor": 34, "error": "sin-coef-producto" }
+        ]
+      },
+      "B": {
+        "enunciado": "En una celda de combustible se mezclan 10 g de H₂ con 64 g de O₂, que reaccionan según 2 H₂ + O₂ → 2 H₂O. ¿Cuántos gramos de agua se forman como máximo? (Masas molares en g/mol: H₂ = 2; O₂ = 32; H₂O = 18)",
+        "datos": { "gramos": { "H2": 10, "O2": 64 }, "reaccion": { "reactivos": [[2, "H2"], [1, "O2"]], "productos": [[2, "H2O"]] } },
+        "opciones": [
+          { "texto": "90 g", "valor": 90, "error": "ES20-menor-cantidad" },
+          { "texto": "74 g", "valor": 74, "error": "ES15-suma-de-masas" },
+          { "texto": "72 g", "valor": 72, "correcta": true },
+          { "texto": "36 g", "valor": 36, "error": "sin-coef-producto" }
+        ]
+      }
+    },
+    {
+      "par": "qui-03", "plantilla": "gases", "unidad": "quimica.gases",
+      "mide": "Ecuación de los gases con presión absoluta y temperatura en kelvin",
+      "A": {
+        "enunciado": "Un tanque rígido tiene gas a 27 °C y su manómetro marca 3 atm. Se calienta hasta 177 °C. ¿Cuánto marca ahora el manómetro? (Presión atmosférica: 1 atm)",
+        "datos": { "Pman1": 3, "T1C": 27, "T2C": 177 },
+        "opciones": [
+          { "texto": "4,5 atm", "valor": 4.5, "error": "usa-presion-manometrica" },
+          { "texto": "3 atm, porque el tanque es rígido", "valor": 3, "error": "rigido-presion-fija" },
+          { "texto": "25,2 atm", "valor": 25.222, "error": "usa-celsius" },
+          { "texto": "5 atm", "valor": 5, "correcta": true }
+        ]
+      },
+      "B": {
+        "enunciado": "Un balón de acero (rígido) tiene gas a 7 °C y su manómetro marca 2 atm. Se calienta hasta 147 °C. ¿Cuánto marca ahora el manómetro? (Presión atmosférica: 1 atm)",
+        "datos": { "Pman1": 2, "T1C": 7, "T2C": 147 },
+        "opciones": [
+          { "texto": "3 atm", "valor": 3, "error": "usa-presion-manometrica" },
+          { "texto": "2 atm, porque el balón es rígido", "valor": 2, "error": "rigido-presion-fija" },
+          { "texto": "62 atm", "valor": 62, "error": "usa-celsius" },
+          { "texto": "3,5 atm", "valor": 3.5, "correcta": true }
+        ]
+      }
+    },
+    {
+      "par": "qui-04", "plantilla": "soluciones", "unidad": "quimica.soluciones",
+      "mide": "Mezcla de soluciones: se suman los moles y los volúmenes",
+      "A": {
+        "enunciado": "Se mezclan 300 mL de una solución de NaCl 2 M con 200 mL de otra solución de NaCl 0,5 M. ¿Cuál es la molaridad de la mezcla?",
+        "datos": { "soluciones": [{ "M": 2, "mL": 300 }, { "M": 0.5, "mL": 200 }] },
+        "opciones": [
+          { "texto": "1,25 M", "valor": 1.25, "error": "mezcla-promedio-simple" },
+          { "texto": "1,4 M", "valor": 1.4, "correcta": true },
+          { "texto": "2,5 M", "valor": 2.5, "error": "SO7-suma-concentraciones" },
+          { "texto": "0,7 M", "valor": 0.7, "error": "SO7-moles-como-concentracion" }
+        ]
+      },
+      "B": {
+        "enunciado": "Se mezclan 100 mL de una solución de azúcar 4 M con 300 mL de otra solución de azúcar 2 M. ¿Cuál es la molaridad de la mezcla?",
+        "datos": { "soluciones": [{ "M": 4, "mL": 100 }, { "M": 2, "mL": 300 }] },
+        "opciones": [
+          { "texto": "3 M", "valor": 3, "error": "mezcla-promedio-simple" },
+          { "texto": "2,5 M", "valor": 2.5, "correcta": true },
+          { "texto": "6 M", "valor": 6, "error": "SO7-suma-concentraciones" },
+          { "texto": "1 M", "valor": 1, "error": "SO7-moles-como-concentracion" }
+        ]
+      }
+    },
+    {
+      "par": "qui-05", "plantilla": "soluciones", "unidad": "quimica.soluciones",
+      "mide": "Porcentaje en masa: soluto entre la masa de toda la solución",
+      "A": {
+        "enunciado": "Se disuelven 12 g de cloruro de sodio en 88 g de agua. ¿Cuál es el porcentaje en masa de cloruro de sodio en la solución?",
+        "datos": { "g": 12, "gAgua": 88, "soluto": "NaCl" },
+        "opciones": [
+          { "texto": "13,6 %", "valor": 13.636, "error": "pct-sobre-solvente" },
+          { "texto": "12 %", "valor": 12, "correcta": true },
+          { "texto": "88 %", "valor": 88, "error": "confunde-soluto-solvente" },
+          { "texto": "No se puede saber sin el volumen de la solución", "error": "SO14-que-mide-cada-unidad" }
+        ]
+      },
+      "B": {
+        "enunciado": "Se disuelven 25 g de azúcar en 75 g de agua. ¿Cuál es el porcentaje en masa de azúcar en la solución?",
+        "datos": { "g": 25, "gAgua": 75, "soluto": "C12H22O11" },
+        "opciones": [
+          { "texto": "33,3 %", "valor": 33.333, "error": "pct-sobre-solvente" },
+          { "texto": "25 %", "valor": 25, "correcta": true },
+          { "texto": "75 %", "valor": 75, "error": "confunde-soluto-solvente" },
+          { "texto": "No se puede saber sin el volumen de la solución", "error": "SO14-que-mide-cada-unidad" }
+        ]
+      }
+    },
+    {
+      "par": "qui-06", "plantilla": "equilibrio-quimico", "unidad": "quimica.equilibrio-quimico",
+      "mide": "Al agregar un reactivo, el equilibrio se rehace con la misma K",
+      "A": {
+        "enunciado": "En un recipiente de 1 L, la reacción A ⇌ B está en equilibrio con 5 mol de A y 15 mol de B (Kc = 3). Sin cambiar la temperatura, se agregan 8 mol de A. ¿Cuántos moles de cada sustancia hay cuando se alcanza el nuevo equilibrio?",
+        "datos": { "A": 5, "B": 15, "K": 3, "agregaA": 8 },
+        "opciones": [
+          { "texto": "13 mol de A y 15 mol de B: ya estaba en equilibrio, no pasa nada", "clave": "13-15", "error": "EQ3" },
+          { "texto": "5 mol de A y 23 mol de B: todo lo agregado pasa a B", "clave": "5-23", "error": "EQ6" },
+          { "texto": "14 mol de A y 14 mol de B: en el equilibrio quedan iguales", "clave": "14-14", "error": "EQ1" },
+          { "texto": "7 mol de A y 21 mol de B", "clave": "7-21", "correcta": true }
+        ]
+      },
+      "B": {
+        "enunciado": "En un recipiente de 1 L, la reacción A ⇌ B está en equilibrio con 3 mol de A y 12 mol de B (Kc = 4). Sin cambiar la temperatura, se agregan 10 mol de A. ¿Cuántos moles de cada sustancia hay cuando se alcanza el nuevo equilibrio?",
+        "datos": { "A": 3, "B": 12, "K": 4, "agregaA": 10 },
+        "opciones": [
+          { "texto": "13 mol de A y 12 mol de B: ya estaba en equilibrio, no pasa nada", "clave": "13-12", "error": "EQ3" },
+          { "texto": "3 mol de A y 22 mol de B: todo lo agregado pasa a B", "clave": "3-22", "error": "EQ6" },
+          { "texto": "12,5 mol de A y 12,5 mol de B: en el equilibrio quedan iguales", "clave": "12,5-12,5", "error": "EQ1" },
+          { "texto": "5 mol de A y 20 mol de B", "clave": "5-20", "correcta": true }
+        ]
+      }
+    },
+    {
+      "par": "qui-07", "plantilla": "acidos-bases", "unidad": "quimica.acidos-y-bases",
+      "mide": "La escala de pH es logarítmica: un punto de pH es diez veces más H⁺",
+      "A": {
+        "enunciado": "Una solución tiene pH 2 y otra tiene pH 5. ¿Cuántas veces más iones H⁺ tiene la solución de pH 2?",
+        "datos": { "pH1": 2, "pH2": 5 },
+        "opciones": [
+          { "texto": "3 veces", "valor": 3, "error": "AB4-escala-lineal" },
+          { "texto": "2,5 veces", "valor": 2.5, "error": "AB4-razon-de-pH" },
+          { "texto": "1000 veces", "valor": 1000, "correcta": true },
+          { "texto": "Ninguna: la de pH 5 tiene más, porque su número es mayor", "error": "AB5-mas-pH-mas-H" }
+        ]
+      },
+      "B": {
+        "enunciado": "Una solución tiene pH 3 y otra tiene pH 7. ¿Cuántas veces más iones H⁺ tiene la solución de pH 3?",
+        "datos": { "pH1": 3, "pH2": 7 },
+        "opciones": [
+          { "texto": "4 veces", "valor": 4, "error": "AB4-escala-lineal" },
+          { "texto": "2,3 veces", "valor": 2.333, "error": "AB4-razon-de-pH" },
+          { "texto": "10 000 veces", "valor": 10000, "correcta": true },
+          { "texto": "Ninguna: la de pH 7 tiene más, porque su número es mayor", "error": "AB5-mas-pH-mas-H" }
+        ]
+      }
+    },
+    {
+      "par": "qui-08", "plantilla": "celda-galvanica", "unidad": "quimica.electroquimica",
+      "mide": "La fem de una pila: E° del cátodo menos E° del ánodo, sin multiplicar por coeficientes",
+      "A": {
+        "enunciado": "Se arma una pila con zinc y plata, en la que ocurre Zn + 2 Ag⁺ → Zn²⁺ + 2 Ag. Los potenciales de reducción son E°(Zn²⁺/Zn) = −0,76 V y E°(Ag⁺/Ag) = +0,80 V. ¿Cuál es la fem de la pila?",
+        "datos": { "metal": "Zn", "Eanodo": -0.76, "Ecatodo": 0.8 },
+        "opciones": [
+          { "texto": "2,36 V", "valor": 2.36, "error": "fem-multiplica-coeficientes" },
+          { "texto": "1,56 V", "valor": 1.56, "correcta": true },
+          { "texto": "0,04 V", "valor": 0.04, "error": "fem-suma-sin-cambiar-signo" },
+          { "texto": "−1,56 V", "valor": -1.56, "error": "fem-resta-al-reves" }
+        ]
+      },
+      "B": {
+        "enunciado": "Se arma una pila con hierro y plata, en la que ocurre Fe + 2 Ag⁺ → Fe²⁺ + 2 Ag. Los potenciales de reducción son E°(Fe²⁺/Fe) = −0,44 V y E°(Ag⁺/Ag) = +0,80 V. ¿Cuál es la fem de la pila?",
+        "datos": { "metal": "Fe", "Eanodo": -0.44, "Ecatodo": 0.8 },
+        "opciones": [
+          { "texto": "2,04 V", "valor": 2.04, "error": "fem-multiplica-coeficientes" },
+          { "texto": "1,24 V", "valor": 1.24, "correcta": true },
+          { "texto": "0,36 V", "valor": 0.36, "error": "fem-suma-sin-cambiar-signo" },
+          { "texto": "−1,24 V", "valor": -1.24, "error": "fem-resta-al-reves" }
+        ]
+      }
+    }
+  ]
+}

@@ -74,6 +74,7 @@ canvas.tocable{cursor:pointer}
 .dots button.done{border-color:var(--ink); color:var(--ink)}
 .dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
 .dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
 .step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
   color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
 .step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
@@ -1195,11 +1196,18 @@ function actualizar(){
   $('desc2').textContent = txt;
 }
 
+// Pastillas: la k solo se abre si todos los experimentos anteriores ya tienen respuesta;
+// las respondidas se revisitan libres (misma regla que los puntos del paso a paso).
+function primeraLibre(){ const j = EXPS.findIndex(x => !S.pred[x.id]); return j < 0 ? EXPS.length - 1 : j; }
 function botones(){
-  $('exps').innerHTML = EXPS.map((x, k) => `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
+  const libre = primeraLibre();
+  $('exps').innerHTML = EXPS.map((x, k) => k > libre
+    ? `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
   $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
 }
 function ir(k){
+  if (k > primeraLibre()) return;
   S.k = k; S.t0 = Date.now();
   const x = EXPS[k];
   for (const key of Object.keys(E)) delete E[key];
@@ -1226,7 +1234,7 @@ function ir(k){
   btns.forEach(b => b.onclick = () => {
     if (S.pred[x.id]) return;
     const o = x.opts.find(q => q[0] === b.dataset.k);
-    S.pred[x.id] = o[0];
+    S.pred[x.id] = o[0]; botones();
     if (x.despues) x.despues();
     pintar(); actualizar();
     registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);

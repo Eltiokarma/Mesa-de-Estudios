@@ -80,6 +80,7 @@ canvas{display:block; width:100%; touch-action:pan-y; -webkit-user-select:none; 
 .dots button.done{border-color:var(--ink); color:var(--ink)}
 .dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
 .dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
 .step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
   color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
 .step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
@@ -976,11 +977,18 @@ const EXPS = [
       <p class="fuente">En Turquía, con 59 escolares de 11.º grado: el 15,25 % cree que el ánodo siempre está a la izquierda, el 5,08 % que depende de la ubicación de las semiceldas y el 6,78 % que en la pila el ánodo es positivo y el cátodo negativo (Şen, Yılmaz y Geban, 2016, tabla 2). En la UNAM, "el cátodo siempre es positivo" (o siempre negativo) fue la idea más frecuente, sin porcentaje legible (Tagle Barrios, 2024).</p>` },
 ];
 const S = { k:0, pred:{}, t0:Date.now() };
+// Pastillas: la k solo se abre si todos los experimentos anteriores ya tienen respuesta;
+// las respondidas se revisitan libres (misma regla que los puntos del paso a paso).
+function primeraLibre(){ const j = EXPS.findIndex(x => !S.pred[x.id]); return j < 0 ? EXPS.length - 1 : j; }
 function botones(){
-  $('exps').innerHTML = EXPS.map((x, k) => `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
+  const libre = primeraLibre();
+  $('exps').innerHTML = EXPS.map((x, k) => k > libre
+    ? `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
   $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
 }
 function ir(k){
+  if (k > primeraLibre()) return;
   S.k = k; S.t0 = Date.now();
   const x = EXPS[k], visto = !!S.pred[x.id];
   x.antes(visto);
@@ -1004,7 +1012,7 @@ function ir(k){
   btns.forEach(b => b.onclick = () => {
     if (S.pred[x.id]) return;
     const o = x.opts.find(q => q[0] === b.dataset.k);
-    S.pred[x.id] = o[0]; pintar(); x.despues(); E.dibujar();
+    S.pred[x.id] = o[0]; botones(); pintar(); x.despues(); E.dibujar();
     verDibujo('cv2');
     registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
   });

@@ -1,0 +1,219 @@
+{
+  "curso": "algebra",
+  "version": "1.0.0",
+  "fecha": "2026-11-06",
+  "minutos": 12,
+  "informes": ["docs/investigacion/algebra-funciones-ideas-erroneas.md"],
+  "errores": {
+    "AL28-h-al-reves": { "respaldo": "parcial", "describe": "Corre la gráfica al revés: (x − h) a la izquierda" },
+    "h-como-vertical": { "respaldo": "hipotesis", "describe": "Toma el h de adentro como un corrimiento vertical" },
+    "h-k-cruzados": { "respaldo": "hipotesis", "describe": "Cruza los corrimientos horizontal y vertical" },
+    "AL27-suma-fuera": { "respaldo": "hipotesis", "describe": "Toma f(x + d) como f(x) + d" },
+    "AL27-suma-de-partes": { "respaldo": "hipotesis", "describe": "Toma f(a + b) como f(a) + f(b)" },
+    "AL8-cuadrado-por-partes": { "respaldo": "parcial", "describe": "Eleva al cuadrado por partes: (a + b)² = a² + b²" },
+    "AL29-inversa-como-reciproco": { "respaldo": "parcial", "describe": "Confunde la inversa f⁻¹ con el recíproco 1/f" },
+    "inversa-calcula-f": { "respaldo": "hipotesis", "describe": "Calcula f en vez de f⁻¹" },
+    "inversa-despeje-al-reves": { "respaldo": "hipotesis", "describe": "Despeja en el orden equivocado" },
+    "inversa-orden-sin-invertir": { "respaldo": "hipotesis", "describe": "Deshace las operaciones sin invertir su orden" },
+    "AL16-signo-mal": { "respaldo": "hipotesis", "describe": "Transpone un término sin cambiarle el signo" },
+    "AL20-no-invierte": { "respaldo": "hipotesis", "describe": "No invierte la desigualdad al multiplicar o dividir por un negativo" },
+    "AL16-transpone-mal": { "respaldo": "hipotesis", "describe": "Transpone un término con el signo equivocado" },
+    "AL19-como-ecuacion": { "respaldo": "parcial", "describe": "Resuelve la inecuación como si fuera una ecuación" },
+    "cuadratica-adentro-afuera": { "respaldo": "hipotesis", "describe": "Da la solución de afuera cuando va la de adentro" },
+    "AL22-quita-barras": { "respaldo": "parcial", "describe": "Quita las barras del valor absoluto sin más" },
+    "AL22-separa-barras": { "respaldo": "parcial", "describe": "Separa |x − c| como |x| − c" },
+    "abs-adentro-afuera": { "respaldo": "hipotesis", "describe": "Da la solución de afuera cuando va la de adentro" },
+    "AL25-altura-como-pendiente": { "respaldo": "documentado", "describe": "Cree que la recta más alta es la que crece más rápido" },
+    "intervalo-punto-cruce": { "respaldo": "parcial", "describe": "Cree que dos rectas que se cruzan crecen igual" }
+  },
+  "pares": [
+    {
+      "par": "alg-01", "plantilla": "grafica-perillas", "unidad": "algebra.funciones",
+      "mide": "Corrimientos de la parábola: (x − h)² + k tiene su vértice en (h; k)",
+      "A": {
+        "enunciado": "¿Dónde está el vértice de la parábola y = (x − 3)² + 2?",
+        "datos": { "h": 3, "k": 2 },
+        "opciones": [
+          { "texto": "(−3; 2)", "error": "AL28-h-al-reves" },
+          { "texto": "(3; 2)", "correcta": true },
+          { "texto": "(0; −1)", "error": "h-como-vertical" },
+          { "texto": "(2; 3)", "error": "h-k-cruzados" }
+        ]
+      },
+      "B": {
+        "enunciado": "¿Dónde está el vértice de la parábola y = (x + 1)² − 4?",
+        "datos": { "h": -1, "k": -4 },
+        "opciones": [
+          { "texto": "(1; −4)", "error": "AL28-h-al-reves" },
+          { "texto": "(−1; −4)", "correcta": true },
+          { "texto": "(0; −3)", "error": "h-como-vertical" },
+          { "texto": "(−4; −1)", "error": "h-k-cruzados" }
+        ]
+      }
+    },
+    {
+      "par": "alg-02", "plantilla": "grafica-perillas", "unidad": "algebra.funciones",
+      "mide": "Evaluar f en una suma: f(a + b) no es f(a) + b ni f(a) + f(b)",
+      "A": {
+        "enunciado": "Si f(x) = x² + 3, entonces f(2) = 7. ¿Cuánto vale f(2 + 4)?",
+        "datos": { "k": 3, "x0": 2, "fx0": 7, "suma": 4 },
+        "opciones": [
+          { "texto": "11", "valor": 11, "error": "AL27-suma-fuera" },
+          { "texto": "26", "valor": 26, "error": "AL27-suma-de-partes" },
+          { "texto": "23", "valor": 23, "error": "AL8-cuadrado-por-partes" },
+          { "texto": "39", "valor": 39, "correcta": true }
+        ]
+      },
+      "B": {
+        "enunciado": "Si f(x) = x² + 1, entonces f(3) = 10. ¿Cuánto vale f(3 + 2)?",
+        "datos": { "k": 1, "x0": 3, "fx0": 10, "suma": 2 },
+        "opciones": [
+          { "texto": "12", "valor": 12, "error": "AL27-suma-fuera" },
+          { "texto": "15", "valor": 15, "error": "AL27-suma-de-partes" },
+          { "texto": "14", "valor": 14, "error": "AL8-cuadrado-por-partes" },
+          { "texto": "26", "valor": 26, "correcta": true }
+        ]
+      }
+    },
+    {
+      "par": "alg-03", "plantilla": "grafica-perillas", "unidad": "algebra.tipos-de-funciones-e-inversa",
+      "mide": "Evaluar la inversa: f⁻¹(y) es el x que da y, no 1/f",
+      "A": {
+        "enunciado": "Si f(x) = 3x + 4, ¿cuánto vale f⁻¹(19)?",
+        "datos": { "m": 3, "n": 4, "y": 19 },
+        "opciones": [
+          { "texto": "1/61", "valor": 0.016393, "error": "AL29-inversa-como-reciproco" },
+          { "texto": "5", "valor": 5, "correcta": true },
+          { "texto": "61", "valor": 61, "error": "inversa-calcula-f" },
+          { "texto": "45", "valor": 45, "error": "inversa-despeje-al-reves" }
+        ]
+      },
+      "B": {
+        "enunciado": "Si f(x) = 2x + 6, ¿cuánto vale f⁻¹(14)?",
+        "datos": { "m": 2, "n": 6, "y": 14 },
+        "opciones": [
+          { "texto": "1/34", "valor": 0.029412, "error": "AL29-inversa-como-reciproco" },
+          { "texto": "4", "valor": 4, "correcta": true },
+          { "texto": "34", "valor": 34, "error": "inversa-calcula-f" },
+          { "texto": "16", "valor": 16, "error": "inversa-despeje-al-reves" }
+        ]
+      }
+    },
+    {
+      "par": "alg-04", "plantilla": "grafica-perillas", "unidad": "algebra.tipos-de-funciones-e-inversa",
+      "mide": "La regla de la inversa: deshacer las operaciones en orden inverso",
+      "A": {
+        "enunciado": "Si f(x) = 3x − 5, ¿cuál es la regla de su función inversa?",
+        "datos": { "m": 3, "n": -5 },
+        "opciones": [
+          { "texto": "f⁻¹(x) = 1/(3x − 5)", "clave": "1/(3x − 5)", "error": "AL29-inversa-como-reciproco" },
+          { "texto": "f⁻¹(x) = x/3 + 5", "clave": "x/3 + 5", "error": "inversa-orden-sin-invertir" },
+          { "texto": "f⁻¹(x) = (x − 5)/3", "clave": "(x − 5)/3", "error": "AL16-signo-mal" },
+          { "texto": "f⁻¹(x) = (x + 5)/3", "clave": "(x + 5)/3", "correcta": true }
+        ]
+      },
+      "B": {
+        "enunciado": "Si f(x) = 4x + 7, ¿cuál es la regla de su función inversa?",
+        "datos": { "m": 4, "n": 7 },
+        "opciones": [
+          { "texto": "f⁻¹(x) = 1/(4x + 7)", "clave": "1/(4x + 7)", "error": "AL29-inversa-como-reciproco" },
+          { "texto": "f⁻¹(x) = x/4 − 7", "clave": "x/4 − 7", "error": "inversa-orden-sin-invertir" },
+          { "texto": "f⁻¹(x) = (x + 7)/4", "clave": "(x + 7)/4", "error": "AL16-signo-mal" },
+          { "texto": "f⁻¹(x) = (x − 7)/4", "clave": "(x − 7)/4", "correcta": true }
+        ]
+      }
+    },
+    {
+      "par": "alg-05", "plantilla": "grafica-perillas", "unidad": "algebra.inecuaciones",
+      "mide": "Inecuación lineal: al dividir entre un negativo se invierte el sentido",
+      "A": {
+        "enunciado": "¿Qué valores de x cumplen −3x + 2 > 14?",
+        "datos": { "m": -3, "n": 2, "op": ">", "c": 14 },
+        "opciones": [
+          { "texto": "x > −4", "error": "AL20-no-invierte" },
+          { "texto": "x < −4", "correcta": true },
+          { "texto": "x < −16/3", "error": "AL16-transpone-mal" },
+          { "texto": "x = −4", "error": "AL19-como-ecuacion" }
+        ]
+      },
+      "B": {
+        "enunciado": "¿Qué valores de x cumplen −5x + 3 < 18?",
+        "datos": { "m": -5, "n": 3, "op": "<", "c": 18 },
+        "opciones": [
+          { "texto": "x < −3", "error": "AL20-no-invierte" },
+          { "texto": "x > −3", "correcta": true },
+          { "texto": "x > −21/5", "error": "AL16-transpone-mal" },
+          { "texto": "x = −3", "error": "AL19-como-ecuacion" }
+        ]
+      }
+    },
+    {
+      "par": "alg-06", "plantilla": "grafica-perillas", "unidad": "algebra.inecuaciones",
+      "mide": "Inecuación cuadrática: x² < c² es el intervalo entre −c y c",
+      "A": {
+        "enunciado": "¿Qué valores de x cumplen x² < 16?",
+        "datos": { "c": 16 },
+        "opciones": [
+          { "texto": "⟨−∞; 4⟩", "error": "AL19-como-ecuacion" },
+          { "texto": "⟨−4; 4⟩", "correcta": true },
+          { "texto": "⟨−∞; −4⟩ ∪ ⟨4; +∞⟩", "error": "cuadratica-adentro-afuera" }
+        ]
+      },
+      "B": {
+        "enunciado": "¿Qué valores de x cumplen x² < 25?",
+        "datos": { "c": 25 },
+        "opciones": [
+          { "texto": "⟨−∞; 5⟩", "error": "AL19-como-ecuacion" },
+          { "texto": "⟨−5; 5⟩", "correcta": true },
+          { "texto": "⟨−∞; −5⟩ ∪ ⟨5; +∞⟩", "error": "cuadratica-adentro-afuera" }
+        ]
+      }
+    },
+    {
+      "par": "alg-07", "plantilla": "grafica-perillas", "unidad": "algebra.valor-absoluto-y-radicales",
+      "mide": "|x − c| < r: los puntos a menos de r de c",
+      "A": {
+        "enunciado": "¿Qué valores de x cumplen |x − 5| < 3?",
+        "datos": { "c": 5, "r": 3 },
+        "opciones": [
+          { "texto": "⟨−∞; 8⟩", "error": "AL22-quita-barras" },
+          { "texto": "⟨−8; 8⟩", "error": "AL22-separa-barras" },
+          { "texto": "⟨2; 8⟩", "correcta": true },
+          { "texto": "⟨−∞; 2⟩ ∪ ⟨8; +∞⟩", "error": "abs-adentro-afuera" }
+        ]
+      },
+      "B": {
+        "enunciado": "¿Qué valores de x cumplen |x − 4| < 6?",
+        "datos": { "c": 4, "r": 6 },
+        "opciones": [
+          { "texto": "⟨−∞; 10⟩", "error": "AL22-quita-barras" },
+          { "texto": "⟨−10; 10⟩", "error": "AL22-separa-barras" },
+          { "texto": "⟨−2; 10⟩", "correcta": true },
+          { "texto": "⟨−∞; −2⟩ ∪ ⟨10; +∞⟩", "error": "abs-adentro-afuera" }
+        ]
+      }
+    },
+    {
+      "par": "alg-08", "plantilla": "grafica-perillas", "unidad": "algebra.funciones",
+      "mide": "Crece más rápido la recta de mayor pendiente, no la que está más arriba",
+      "A": {
+        "enunciado": "Las rectas L1: y = x + 6 y L2: y = 3x − 2 se cruzan en x = 4. En x = 1, L1 está más arriba que L2. ¿Cuál de las dos crece más rápido?",
+        "datos": { "L1": { "m": 1, "n": 6 }, "L2": { "m": 3, "n": -2 }, "x": 1, "cruce": 4 },
+        "opciones": [
+          { "texto": "L1, porque en x = 1 está más arriba", "clave": "L1", "error": "AL25-altura-como-pendiente" },
+          { "texto": "Las dos igual, porque se cruzan en x = 4", "clave": "iguales", "error": "intervalo-punto-cruce" },
+          { "texto": "L2", "clave": "L2", "correcta": true }
+        ]
+      },
+      "B": {
+        "enunciado": "Las rectas L1: y = 3x − 3 y L2: y = x + 5 se cruzan en x = 4. En x = 1, L2 está más arriba que L1. ¿Cuál de las dos crece más rápido?",
+        "datos": { "L1": { "m": 3, "n": -3 }, "L2": { "m": 1, "n": 5 }, "x": 1, "cruce": 4 },
+        "opciones": [
+          { "texto": "L2, porque en x = 1 está más arriba", "clave": "L2", "error": "AL25-altura-como-pendiente" },
+          { "texto": "Las dos igual, porque se cruzan en x = 4", "clave": "iguales", "error": "intervalo-punto-cruce" },
+          { "texto": "L1", "clave": "L1", "correcta": true }
+        ]
+      }
+    }
+  ]
+}

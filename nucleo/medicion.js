@@ -7,6 +7,13 @@
  * Tipos de evento:
  *   { tipo: 'prediccion', modulo, unidad, problema, opcion, correcta, error, respaldo, ms }
  *   { tipo: 'prueba', fase: 'entrada'|'salida', modulo, unidad, aciertos, total, respuestas, ms }
+ * Pruebas de entrada y salida por curso (nucleo/pruebas.js, banco en catalogo/pruebas/):
+ *   { tipo: 'item', fase, curso, forma: 'A'|'B', orden: 'AB'|'BA', banco, item, par, plantilla, unidad,
+ *     opcion (letra que vio), correcta, error, ms }                       una por respuesta
+ *   { tipo: 'prueba', fase, curso, forma, orden, banco, aciertos, total, respuestas, ms,
+ *     origen: 'primera-vez'|'alumno'|'profesor', previas, dias }        una al terminar
+ *   previas: unidades del curso que ya había abierto antes de la entrada (si es más de 0, la
+ *   entrada no fue "en frío"); dias: días entre la entrada y la salida.
  * Todos llevan además: t (fecha ISO), alumno (id anónimo), grado, colegio, version.
  */
 (function (root, fabrica) {
@@ -16,7 +23,9 @@
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
   const COLUMNAS = ['t', 'alumno', 'grado', 'colegio', 'version', 'tipo', 'fase', 'modulo', 'unidad', 'problema',
-    'opcion', 'correcta', 'error', 'respaldo', 'aciertos', 'total', 'ms'];
+    'opcion', 'correcta', 'error', 'respaldo', 'aciertos', 'total', 'ms',
+    // Pruebas por curso (al final, para no mover las columnas de los archivos ya exportados).
+    'curso', 'forma', 'orden', 'banco', 'item', 'par', 'plantilla', 'origen', 'previas', 'dias'];
 
   function aCSV(eventos) {
     const celda = x => { if (x === undefined || x === null) return ''; const s = String(x); return /[",\n;]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
@@ -55,6 +64,64 @@
     });
   }
 
+  // Resumen por curso de las pruebas de entrada y salida.
+  // Puntaje de cada alumno = aciertos / total de su prueba (si repite, vale la última).
+  // Ganancia normalizada de Hake (1998): <g> = (salida − entrada) / (1 − entrada), con los promedios
+  // de los alumnos pareados (los que hicieron las dos). También se da el promedio de las g individuales
+  // (sin los que sacaron todo en la entrada, para quienes g no existe).
+  // Por error: cuántos alumnos pareados lo eligieron al menos una vez en la entrada y en la salida.
+  // Las formas son paralelas (mismos códigos de error), así que la comparación es justa.
+  // porForma compara A con B en la entrada: si las formas fueran equivalentes, se parecen.
+  function resumirCursos(eventos) {
+    const por = {};
+    const c = id => (por[id] = por[id] || { curso: id, entrada: {}, salida: {}, forma: { entrada: {}, salida: {} }, errores: { entrada: {}, salida: {} },
+      plantillas: {}, previas: {} });
+    for (const e of eventos) {
+      if (!e.curso || (e.fase !== 'entrada' && e.fase !== 'salida')) continue;
+      const r = c(e.curso);
+      if (e.tipo === 'prueba' && e.total) {
+        r[e.fase][e.alumno] = e.aciertos / e.total;
+        r.forma[e.fase][e.alumno] = e.forma;
+        if (e.fase === 'entrada') r.previas[e.alumno] = Number(e.previas) || 0;
+      } else if (e.tipo === 'item') {
+        if (!e.correcta && e.error) ((r.errores[e.fase][e.error] = r.errores[e.fase][e.error] || new Set())).add(e.alumno);
+        if (e.plantilla) {
+          const p = (r.plantillas[e.plantilla] = r.plantillas[e.plantilla] || { entrada: [0, 0], salida: [0, 0] });
+          p[e.fase][0] += e.correcta ? 1 : 0; p[e.fase][1]++;
+        }
+      }
+    }
+    const prom = l => (l.length ? l.reduce((a, b) => a + b, 0) / l.length : null);
+    return Object.values(por).sort((a, b) => a.curso.localeCompare(b.curso)).map(r => {
+      const pareados = Object.keys(r.entrada).filter(a => a in r.salida);
+      const pre = prom(pareados.map(a => r.entrada[a])), post = prom(pareados.map(a => r.salida[a]));
+      const gi = pareados.filter(a => r.entrada[a] < 1).map(a => (r.salida[a] - r.entrada[a]) / (1 - r.entrada[a]));
+      const enPar = new Set(pareados);
+      const ids = new Set([...Object.keys(r.errores.entrada), ...Object.keys(r.errores.salida)]);
+      const cuenta = (fase, id) => [...(r.errores[fase][id] || [])].filter(a => enPar.has(a)).length;
+      const formas = {};
+      for (const f of ['A', 'B']) {
+        const al = Object.keys(r.entrada).filter(a => r.forma.entrada[a] === f);
+        formas[f] = { alumnos: al.length, entrada: prom(al.map(a => r.entrada[a])) };
+      }
+      return {
+        curso: r.curso,
+        alumnosEntrada: Object.keys(r.entrada).length, alumnosSalida: Object.keys(r.salida).length, pareados: pareados.length,
+        entrada: prom(Object.values(r.entrada)), salida: prom(Object.values(r.salida)),
+        entradaPareados: pre, salidaPareados: post,
+        hake: pre === null ? null : pre >= 1 ? null : (post - pre) / (1 - pre),
+        hakeIndividual: prom(gi),
+        entradaConPrevias: Object.values(r.previas).filter(n => n > 0).length,
+        porForma: formas,
+        errores: [...ids].map(id => ({ id, antes: cuenta('entrada', id), despues: cuenta('salida', id),
+          antesTodos: (r.errores.entrada[id] || new Set()).size, despuesTodos: (r.errores.salida[id] || new Set()).size }))
+          .sort((a, b) => b.antes - a.antes || b.despues - a.despues || a.id.localeCompare(b.id)),
+        plantillas: Object.entries(r.plantillas).map(([id, p]) => ({ id, entrada: p.entrada[1] ? p.entrada[0] / p.entrada[1] : null, salida: p.salida[1] ? p.salida[0] / p.salida[1] : null }))
+          .sort((a, b) => a.id.localeCompare(b.id)),
+      };
+    });
+  }
+
   // Guardar un evento en el dispositivo (solo navegador). Lo usan la app y las escenas, que
   // comparten el mismo origen y por eso el mismo almacenamiento. perfil: { alumno, grado, colegio };
   // si no se pasa, se lee el de la app. Sin perfil (escena abierta sin pasar por la app) no se guarda:
@@ -75,5 +142,5 @@
     } catch { return false; } // sin almacenamiento o sin espacio: se pierde este evento, la app sigue
   }
 
-  return { COLUMNAS, aCSV, resumir, guardar, eventosGuardados };
+  return { COLUMNAS, aCSV, resumir, resumirCursos, guardar, eventosGuardados };
 });

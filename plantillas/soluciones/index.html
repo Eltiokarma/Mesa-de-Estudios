@@ -64,6 +64,7 @@ canvas{display:block; width:100%; touch-action:pan-y; -webkit-user-select:none; 
 .dots button.done{border-color:var(--ink); color:var(--ink)}
 .dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
 .dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
 .step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
   color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
 .step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
@@ -309,7 +310,9 @@ function crearEscena(cv, idDesc, idLey){
     for (let i = 0; i < k; i++){ const r = Math.sqrt(rnd())*0.85, a = rnd()*Math.PI*2; lu.parts.push(parte(Math.cos(a)*r, Math.sin(a)*r, 1)); }
   }
   E.nuevaLupa = o => { const lu = Object.assign({ titulo:'Lupa · volumen muy pequeño', sub:'', iones:0 }, o); llenarLupa(lu); return lu; };
+  // E.gen cambia con cada config: los avisos de fin de una animación vieja no tocan la escena nueva.
   E.config = cfg => {
+    E.gen = (E.gen || 0) + 1;
     E.esc = cfg.esc || E.esc; E.cols = cfg.cols || 2; E.extra = cfg.extra || null; E.descr = cfg.descr || null; E.nota = cfg.nota || '';
     E.vasos = (cfg.vasos || []).map(o => {
       const vs = { id:o.id, cap:o.cap, mL:o.mL, nivel:o.mL, n:o.n, etiqueta:o.etiqueta || '', oculto:!!o.oculto, iones:o.iones || 0, puntos:[], aviso:'' };
@@ -340,17 +343,17 @@ function crearEscena(cv, idDesc, idLey){
   }
   // Reacomodar los puntos de un recipiente con el reparto del motor (todos los cuadros con lo mismo, ±1).
   E.reubicar = (id, sem, fin) => {
-    const vs = E.vaso(id), now = performance.now(), cu = cuadrosDe(vs);
+    const vs = E.vaso(id), now = performance.now(), cu = cuadrosDe(vs), gen = E.gen;
     const nuevos = MS.ubicar(vs.puntos.length, cu, sem || 1);
     const ord = (a, b) => (a.c - b.c) || (a.u - b.u);
     const viejos = [...vs.puntos].sort(ord); nuevos.sort(ord);
     viejos.forEach((p, i) => { p.from = ahora(vs, p, now); p.t0 = now; p.c = nuevos[i].c; p.u = nuevos[i].u; p.v = nuevos[i].v; });
-    esperar(DUR + 50, () => fin && fin());
+    esperar(DUR + 50, () => fin && E.gen === gen && fin());
   };
   // Subir o bajar el nivel del líquido (agregar agua, sacar, verter).
   E.nivel = (id, mL, fin) => {
-    const vs = E.vaso(id), de = vs.nivel;
-    tween(RM ? 0 : 1100, f => { vs.nivel = de + (mL - de)*f; }, () => { vs.nivel = mL; fin && fin(); });
+    const vs = E.vaso(id), de = vs.nivel, gen = E.gen;
+    tween(RM ? 0 : 1100, f => { vs.nivel = de + (mL - de)*f; }, () => { vs.nivel = mL; fin && E.gen === gen && fin(); });
   };
   // Pasar puntos de un recipiente a otro: filtro(p) elige cuáles y mapear(p) da su cuadro y lugar en el destino.
   E.pasar = (de, a, filtro, mapear) => {
@@ -1021,8 +1024,14 @@ const EXPS = [
       <p class="fuente">De 131 futuros profesores de ciencias, el 62,6 % definió bien la normalidad, pero solo el 29,8 % el número de equivalentes: la autora lo interpreta como uso de N = M · θ sin contar equivalentes (Karaer, 2019, tabla 3). Las opciones 0,5 N y 4 N son hipótesis nuestras, sin estudio que las mida.</p>` },
 ];
 const S = { k:0, pred:{}, t0:Date.now() };
+// Pastillas: la k solo se abre si todos los experimentos anteriores ya tienen respuesta;
+// las respondidas se revisitan libres (misma regla que los puntos del paso a paso).
+function primeraLibre(){ const j = EXPS.findIndex(x => !S.pred[x.id]); return j < 0 ? EXPS.length - 1 : j; }
 function botones(){
-  $('exps').innerHTML = EXPS.map((x, k) => `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
+  const libre = primeraLibre();
+  $('exps').innerHTML = EXPS.map((x, k) => k > libre
+    ? `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
   $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
 }
 function pintarUnidad(){
@@ -1030,6 +1039,7 @@ function pintarUnidad(){
   d.innerHTML = `<div class="eqs"><div class="eq">${u.eq()}</div></div><p>${u.d}</p>`;
 }
 function ir(k){
+  if (k > primeraLibre()) return;
   S.k = k; S.t0 = Date.now();
   const x = EXPS[k];
   x.antes(!!S.pred[x.id]);
@@ -1054,7 +1064,7 @@ function ir(k){
   btns.forEach(b => b.onclick = () => {
     if (S.pred[x.id]) return;
     const o = x.opts.find(q => q[0] === b.dataset.k);
-    S.pred[x.id] = o[0]; pintar(); x.despues(); E.dibujar();
+    S.pred[x.id] = o[0]; botones(); pintar(); x.despues(); E.dibujar();
     registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
   });
   pintar(); E.dibujar();

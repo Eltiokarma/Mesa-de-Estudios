@@ -208,3 +208,23 @@ details[open] summary{margin-bottom:8px}
 .practica{position:relative;overflow:hidden}
 .practica::before{content:"";position:absolute;right:-40px;top:-40px;width:120px;height:120px;border-radius:50%;background:var(--brand-soft);opacity:.7}
 .practica>*{position:relative}
+
+/* ---------- Pruebas de entrada y salida por curso (app/prueba.js) ---------- */
+.prueba-tarjeta{margin-top:14px;display:grid;gap:6px;justify-items:start}
+.prueba-tarjeta p{margin:0 0 6px;font-size:14px}
+.prueba-tarjeta .etq-p,.prueba-intro .etq-p{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.prueba-tarjeta.destacada{background:linear-gradient(135deg,var(--brand-soft),color-mix(in srgb,var(--acento) 55%,var(--card)))}
+.prueba-intro{margin-top:16px}
+.prueba-intro p{margin:12px 0 0}
+.prueba-intro .prueba-taza,.prueba-intro .prueba-gato{width:96px;display:block;margin:0 auto 10px}
+.acciones-prueba{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.acciones-prueba .btn{flex:1 1 140px;justify-content:center;padding:14px}
+.progreso-prueba .barra{display:block;margin-top:12px}
+.alt.elegida{border-color:var(--brand);background:var(--brand-soft)}
+.alt.elegida .letra{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
+.ok-t{color:var(--ok);font-weight:700}
+.mal-t{color:var(--warn);font-weight:700}
+.revision details summary{color:var(--ink)}
+.revision details p{margin:8px 0 0}
+.tabla.card{padding:8px 12px}
+@media (min-width:900px){ body[data-ruta="prueba"] #app>*{max-width:760px} }
