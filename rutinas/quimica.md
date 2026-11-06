@@ -73,4 +73,44 @@ Cada ejecución construye una plantilla de escena de química nueva, en la rama 
 3. `docs/pendientes.md`, sección 2, línea nueva: "**Equilibrio químico** (`plantillas/equilibrio-quimico/`, hecha el 6 nov 2026 por la rutina de química): A ⇌ B y 2 X ⇌ Y con partículas, Q contra K en vez de la regla de Le Chatelier (Quílez 2017). Falta el gas inerte a presión constante y Kp en la escena (está en papel). ΔH y Ea de la escena elegidos para números redondos."
 4. `CLAUDE.md`, Estado: sumar "equilibrio químico" a la lista de plantillas y una línea en Historia como las de las otras escenas: 18 casos verificados aparte, papel, 3 predicciones y 5 "¿qué pasa si…?" con los datos de Bilgin y otros 2003 y Riddle y Lo-Fan-Hin 2023.
 
-**Siguiente en la cola:** `cinetica`.
+
+## 6 nov 2026 (segunda ejecución) · cinetica
+
+**Antes de empezar.** Junté `claude/awesome-wozniak-5etl1n` en la rama, sin conflictos. Equilibrio químico ya quedó integrado por la conversación principal.
+
+**Qué se hizo.** `plantillas/cinetica/` completa:
+
+- **`investigacion.md`.** Esta unidad no tenía informe (`"investigacion": null`), así que un subagente lo armó: CI1 a CI13, con 14 errores de examen que quedan como hipótesis. **Ojo:** la red de la sesión no dejó abrir ningún artículo; solo pasaba el buscador. Las ideas están ubicadas en sus estudios (Çakmakçı 2010, Kolomuç y Tekin 2011, Kurt y Ayas 2012, Popova y Bretz 2018 y otros), pero las cifras salieron del buscador y van "por verificar". Por eso la escena no muestra ningún porcentaje de cinética. La única cifra es la de Riddle y Lo-Fan-Hin (2023) sobre catalizador y rendimiento, que ya estaba en el informe de equilibrio.
+- **`motor.js`** (UMD, sin DOM; `window.MotorCinetica`):
+  - **Cálculo:**
+    - ley de velocidad y factor al cambiar concentraciones (con el error "sin exponentes");
+    - órdenes y k desde una tabla de velocidades iniciales (con el error "proporción directa"), y unidades de k;
+    - leyes integradas y vida media de orden 0, 1 y 2, y lo que queda tras n vidas medias;
+    - Arrhenius: k a otra temperatura y Ea desde dos k;
+    - la regla de 10 °C (con el error lineal) y el perfil de energía con catalizador.
+  - **Caja de discos que chocan de verdad.** Choques elásticos medidos en el instante de contacto, Maxwell y termostato. Un choque A–B forma C si su energía por la línea de centros llega a Ea y si B llega por el lado reactivo de A (±60°). La fracción eficaz sigue a p·e^(−Ea/RT) de la teoría de colisiones, a pocos por ciento.
+- **`casos.json`:** 13 casos. **`papel.json`:** 9 problemas. **`motor.test.js`:** 40 pruebas, incluida la teoría de colisiones contada en la caja.
+- **`index.html`:**
+  - **Paso a paso, 9 pasos.** Tres predicciones: la rapidez en el tiempo (CI1, CI2), por qué acelera el calor (CI3, CI4) y qué hace el catalizador (CI7). Muestra contadores de choques (todos, con energía y eficaces), un histograma de energía con la línea de Ea, la gráfica en el tiempo y el perfil de energía con el eje "avance de la reacción" (CI12).
+  - **¿Qué pasa si…?, 5 casos:** el doble de A, el doble de A y de B, el producto final con catalizador (EQ12), una barrera más alta (CI13, CI5) y orientación libre.
+
+**Subagentes.**
+- **Investigador:** escribió `investigacion.md`; se topó con el bloqueo de red.
+- **Verificador:** sin leer el motor, recalculó los 22 resultados (13 casos y 9 de papel) con Fraction, Decimal y una segunda vía (vidas medias contadas, RK4). Coinciden todos.
+- **Constructor:** hizo `index.html` y lo probó con Playwright.
+- **Revisor:** encontró dos fallas graves del motor, que corregí yo:
+  - los choques se medían con los discos ya encimados, y la fracción eficaz salía 7–19 % baja;
+  - formar C se llevaba la energía del choque y la caja se enfriaba.
+
+  Ahora el motor retrocede hasta el instante de contacto, el subpaso se achica con √T, los discos nacen sin encimarse y C nace con velocidad térmica. La prueba bajó su tolerancia de 15 % a 8 %. El revisor también halló:
+  - el histograma decía lo contrario en oscuro;
+  - la caja densa daba ×2,4 y ×5,7 donde la ley dice ×2 y ×4;
+  - q5 delataba la correcta;
+  - el paso 1 regalaba parte de la respuesta del paso 5;
+  - algunas citas no calzaban con el informe;
+  - la letra A se usaba también como factor de Arrhenius;
+  - las cuentas de fondo eran lentas en un celular lento.
+  
+  Todo eso pasó al constructor, junto con la **regla nueva de Gerson**: en "¿Qué pasa si…?", un experimento queda bloqueado hasta que se responden los anteriores.
+
+**Pruebas.** `npm test` solo falla en las 2 pruebas de catálogo, como se espera.

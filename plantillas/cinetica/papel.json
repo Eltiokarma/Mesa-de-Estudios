@@ -275,7 +275,7 @@
     {
       "id": "p9",
       "nivel": "avanzado",
-      "enunciado": "La descomposición 2 NO₂(g) → 2 NO(g) + O₂(g) es de segundo orden, con k = 0,5 L/(mol·s). Si [NO₂] inicial es 0,2 M: a) ¿cuál es la primera vida media? b) ¿cuánto tarda en llegar a 0,05 M? c) ¿cuánto dura la segunda vida media?",
+      "enunciado": "La descomposición 2 NO₂(g) → 2 NO(g) + O₂(g) es de segundo orden: la concentración de NO₂ baja según −Δ[NO₂]/Δt = k·[NO₂]², con k = 0,5 L/(mol·s). Si [NO₂] inicial es 0,2 M: a) ¿cuál es la primera vida media? b) ¿cuánto tarda en llegar a 0,05 M? c) ¿cuánto dura la segunda vida media?",
       "respuesta": "a) 10 s. b) 30 s. c) 20 s: en segundo orden cada vida media dura el doble que la anterior.",
       "pasos": [
         "a) En segundo orden, t½ = 1/(k·[A]₀) = 1/(0,5 · 0,2) = 10 s.",
