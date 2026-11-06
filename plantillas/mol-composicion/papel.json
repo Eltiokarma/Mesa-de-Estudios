@@ -210,27 +210,27 @@
     {
       "id": "p8",
       "nivel": "avanzado",
-      "enunciado": "Un compuesto tiene 70 % de hierro y 30 % de oxígeno en masa. Halla su fórmula empírica. (Fe = 56, O = 16)",
-      "respuesta": "Fe₂O₃.",
+      "enunciado": "Un óxido de hierro tiene 72,4 % de hierro y 27,6 % de oxígeno en masa. Halla su fórmula empírica. (Fe = 56, O = 16)",
+      "respuesta": "Fe₃O₄.",
       "pasos": [
-        "En 100 g: 70/56 = 1,25 mol de Fe y 30/16 = 1,875 mol de O.",
-        "Divide entre el menor: Fe = 1 y O = 1,875/1,25 = 1,5.",
-        "1,5 no es entero, y tampoco se redondea (daría FeO₂ o FeO). Se multiplica todo por 2: Fe = 2 y O = 3. Fórmula: Fe₂O₃.",
-        "Regla: si sale 1,5, multiplica por 2; si sale 1,33 o 1,67, por 3; si sale 1,25, por 4."
+        "En 100 g: 72,4/56 ≈ 1,293 mol de Fe y 27,6/16 = 1,725 mol de O.",
+        "Divide entre el menor: Fe = 1 y O = 1,725/1,293 ≈ 1,33.",
+        "1,33 no es entero y no se redondea (daría FeO). Como 1,33 ≈ 4/3, se multiplica todo por 3: Fe = 3 y O = 4. Fórmula: Fe₃O₄ (la magnetita).",
+        "Regla: si sale 1,5, multiplica por 2; si sale 1,33 o 1,67, por 3; si sale 1,25, por 4. Los datos de laboratorio vienen redondeados, así que 4,003 cuenta como 4."
       ],
       "verificar": [
         {
           "fn": "empirica",
           "args": [
             {
-              "Fe": 70,
-              "O": 30
+              "Fe": 72.4,
+              "O": 27.6
             }
           ],
           "espera": {
-            "formula": "Fe2O3",
-            "multiplicador": 2,
-            "redondeando": "FeO2"
+            "formula": "Fe3O4",
+            "multiplicador": 3,
+            "redondeando": "FeO"
           }
         }
       ]
@@ -265,6 +265,46 @@
           ],
           "espera": {
             "valor": 208
+          }
+        }
+      ]
+    },
+    {
+      "id": "p10",
+      "nivel": "básico",
+      "enunciado": "¿Qué volumen ocupan 8,8 g de dióxido de carbono (CO₂) en condiciones normales (1 atm y 0 °C)? ¿Y 3,6 g de agua líquida (densidad 1 g/mL)? (C = 12, O = 16, H = 1)",
+      "respuesta": "El CO₂ ocupa 4,48 L; el agua, 3,6 mL.",
+      "pasos": [
+        "Moles de CO₂: 8,8/44 = 0,2 mol. Un gas en condiciones normales ocupa 22,4 L por mol: 0,2 · 22,4 = 4,48 L.",
+        "Moles de agua: 3,6/18 = 0,2 mol, los mismos que de CO₂. Pero el agua es líquida: el 22,4 L/mol no vale.",
+        "Volumen del agua: masa/densidad = 3,6 g / (1 g/mL) = 3,6 mL. Unas 1200 veces menos que el gas con los mismos moles."
+      ],
+      "verificar": [
+        {
+          "fn": "volumen",
+          "args": [
+            "CO2",
+            {
+              "gramos": 8.8,
+              "estado": "g"
+            }
+          ],
+          "espera": {
+            "litros": 4.48
+          }
+        },
+        {
+          "fn": "volumen",
+          "args": [
+            "H2O",
+            {
+              "gramos": 3.6,
+              "densidad": 1
+            }
+          ],
+          "espera": {
+            "mililitros": 3.6,
+            "con224": 4.48
           }
         }
       ]

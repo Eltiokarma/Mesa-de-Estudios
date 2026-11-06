@@ -161,7 +161,7 @@
       ]
     },
     {
-      "nombre": "70 % Fe y 30 % O: razón 1 a 1,5, se multiplica por 2: Fe₂O₃ (redondear daría FeO₂)",
+      "nombre": "70 % Fe y 30 % O: razón 1 a 1,5, se multiplica por 2: Fe₂O₃ (redondear daría FeO₂; la razón de masas, Fe₇O₃)",
       "fn": "empirica",
       "args": [
         {
@@ -175,7 +175,8 @@
         "razon.O": 1.5,
         "multiplicador": 2,
         "formula": "Fe2O3",
-        "redondeando": "FeO2"
+        "redondeando": "FeO2",
+        "porMasas": "Fe7O3"
       }
     },
     {

@@ -136,11 +136,13 @@
     const min = Math.min(...Object.values(n)), razon = {};
     for (const e of els) razon[e] = n[e] / min;
     let mult = 0;
-    for (let k = 1; k <= 6 && !mult; k++) if (els.every(e => Math.abs(razon[e] * k - Math.round(razon[e] * k)) < 0.02 * k)) mult = k;
+    for (let k = 1; k <= 6 && !mult; k++) if (els.every(e => Math.abs(razon[e] * k - Math.round(razon[e] * k)) < 0.03)) mult = k;
     if (!mult) throw new Error('la razón de moles no da enteros pequeños; revisa los datos');
     const sub = {}; for (const e of els) sub[e] = Math.round(razon[e] * mult);
     const mmin = Math.min(...els.map(e => datos[e])), porMasas = {}, redondeo = {};
-    for (const e of els) { porMasas[e] = Math.round(datos[e] / mmin); redondeo[e] = Math.max(1, Math.round(razon[e])); }
+    // Razón de masas (ES16): si las masas son enteras, se simplifican tal cual (70 y 30 → 7 a 3); si no, se dividen entre la menor y se redondean.
+    const enteras = els.every(e => Number.isInteger(datos[e]));
+    for (const e of els) { porMasas[e] = enteras ? datos[e] : Math.max(1, Math.round(datos[e] / mmin)); redondeo[e] = Math.max(1, Math.round(razon[e])); }
     return { moles: n, razon, multiplicador: mult, subindices: sub, formula: escribir(sub), M: masaMolar(escribir(sub)).valor,
       porMasas: escribir(simplificar(porMasas)), redondeando: escribir(redondeo) };
   }
