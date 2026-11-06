@@ -66,6 +66,33 @@ Peak dice tener más de 45 juegos, en áreas como memoria, atención, resolució
 
 Fuentes: [Dr Jack Lewis, reseña de Peak](https://www.drjack.co.uk/brain-training-review-of-peak-by-dr-jack-lewis/), [Saga, prueba de 5 apps](https://www.saga.co.uk/magazine/health-and-wellbeing/brain-training-apps-best-and-do-they-work), [Peak Labs, Partial Match](https://medium.com/@peaklabs/train-your-working-memory-with-partial-match-20b2df130969), [Peak Play, Turtle Traffic](https://medium.com/peak-play/from-concept-to-final-product-peak-s-lead-game-designer-on-creating-turtle-traffic-an-7de30749e6a0), videos de YouTube de [Low Pop](https://www.youtube.com/watch?v=oRPlpKBJvTI), [Must Sort](https://www.youtube.com/watch?v=1w0Jwh0M-J8) y [Turtle Traffic](https://www.youtube.com/watch?v=lKQEqjFfKBY).
 
+### Lo que muestran las capturas de la app (6 nov 2026)
+
+Once capturas de la versión en español, en un celular Android. No se suben al repo porque son material de Peak; aquí solo se anota lo que se ve.
+
+**Catálogo de juegos diarios.** Son 43 juegos en 7 categorías, cada una con su color. "Ícono" quiere decir que la mecánica se deduce del dibujo y no está confirmada.
+
+| Categoría (color) | Juegos | Los que nos sirven |
+| --- | --- | --- |
+| Lenguaje (morado), 6 | Word Fresh, Babble Bots, Word Hunt, Grow, Word Pairs, Word Path | Word Pairs (pares de palabras: sinónimos y antónimos, ícono) y Word Path o Word Fresh (armar palabras en una cuadrícula de letras, ícono), para razonamiento verbal |
+| Memoria (naranja), 6 | Perilous Path, Partial Match, Spin Cycle, Baggage Claim, Memory Sweep, Bounce | Partial Match y Perilous Path (ver la tabla de arriba) |
+| Razonamiento (verde), 10 | Moving Math, Square Numbers, Low Pop, Pixel Logic, Puzzle Blox, Castle Block, Earth Defense, Slider, Size Counts, Matcha Madness | **Los de cálculo:** Size Counts ("8 + 2" contra "30 ÷ 2": cuál es mayor, ícono), Moving Math (armar operaciones con "+" y "=", ícono), Square Numbers (cuadrícula de números, mecánica desconocida), Low Pop (ordenar de menor a mayor, también con negativos) |
+| Concentración (rojo), 10 | Must Sort, Unique, Objectifind, Decoder, Tap Trap, Rush Back, Tracker, True View, Rush Back+, Tunnel Trance | Must Sort y Rush Back |
+| Agilidad mental (azul), 7 | Turtle Traffic, Speed Spotting, True Color, Face Switch, Zap Gap, Flight Path, Refocus | True Color (sí o no rápido, ícono) y Refocus ("P9" y "A6" con sí o no: cambiar de regla según la tarjeta, ícono). El cambio de regla sirve para signos: "si es lente divergente, f es negativo" |
+| Emoción (lila), 2 | Smile On Me, Face To Face | No |
+| Coordinación (turquesa), 2 | Flame Dodge, Jump Control | No |
+
+**Pantallas que valen como modelo:**
+
+- **Inicio:** un solo número que lo resume todo ("Puntaje mental 442/1000"), la racha en días al lado, un botón grande "Entrenamiento mental" del día (no hay que elegir nada) y un evento de temporada con tiempo límite ("Edición Fiestas", juego de Halloween que dura 4 días). Para nosotros, el evento podría ser un reto la semana antes del examen de la UNI o de San Marcos, o por Fiestas Patrias o la Candelaria.
+- **Rendimiento:** una barra por categoría, con su color y su puntaje (por ejemplo Razonamiento 600, Lenguaje 330), y marcas que parten la barra en niveles. Tiene pestañas "por el tiempo" y "percentil", y botones para comparar y compartir. Para nosotros: una barra por curso con el color de cada curso, el avance en el tiempo y, para el profesor, el mismo cuadro por salón.
+- **Por juego:** un escudo con estrellas y un color de rango muestra el nivel de dominio. Se pueden marcar favoritos con una pulsación larga.
+- **Dos pestañas:** "Juegos diarios" y "Entrenamiento avanzado".
+
+- **Prueba de entrada recomendada:** arriba de la pestaña "Tests", Peak recomienda una "Prueba Cognitiva" que evalúa memoria, atención, razonamiento lógico y lenguaje con distintas tareas. Al final dice en qué eres fuerte y en qué áreas te conviene entrenar. **Esto sí lo copiamos**, con nuestra forma: una prueba de entrada por curso (la1) que termina en "estas son tus unidades fuertes y estas te conviene practicar", y arma el plan del alumno. Sin llamarla "cognitiva" ni dar un número de inteligencia.
+
+**Lo que no copiamos (de frente):** además, la pestaña "Tests" ofrece una "prueba general de CI", un "test de CI rápido", una prueba de desgaste laboral y, "próximamente", una evaluación de riesgo de demencia de inicio precoz. Un juego de celular no mide el CI ni diagnostica demencia, y ponerle a un escolar un número de CI hace daño. Eso no entra en la app. Tampoco el "percentil" contra otros alumnos visible para el alumno; como mucho, su propio avance.
+
 Lo que se repite en todos y vale copiar: **una sola regla que se entiende en 5 segundos**, respuesta con un toque o un deslizamiento, tiempo corto (alrededor de un minuto), dificultad que sube sola si aciertas y un puntaje al final que compara con tu récord. Las mecánicas no son de nadie; los nombres, el arte y la marca sí: se hacen versiones propias.
 
 ### Ojo con la evidencia (de frente)
@@ -139,7 +166,8 @@ Lo que se repite en todos y vale copiar: **una sola regla que se entiende en 5 s
 
 - [x] Cifras de Perú en PISA 2025 y fuentes reunidas (`docs/investigacion/pisa-y-evaluaciones.md`).
 - [ ] Leer los marcos de la OCDE y los ítems liberados; verificar lo marcado "por verificar" en ese informe (sobre todo las simulaciones de ciencia y la ENLA 2025 de 5.º de secundaria).
-- [ ] Capturas de los juegos de Peak que más gustaron (la tabla de la sección 2 tiene los que se confirmaron; faltan los de cálculo y lenguaje).
+- [x] Capturas de Peak recibidas (6 nov 2026): catálogo completo y pantallas de inicio y rendimiento, en la sección 2.
+- [ ] Capturas jugando Size Counts, Moving Math y Square Numbers, para confirmar sus mecánicas.
 - [x] Investigación de Brilliant reunida (`docs/investigacion/brilliant.md`).
 - [ ] Probar la versión gratis de Brilliant y anotar 5 lecciones de física o química, pantalla por pantalla.
 - [ ] Citar en `docs/fundacional.md` la evidencia sobre entrenamiento cerebral y sobre fluidez en cálculo.
