@@ -1,0 +1,16 @@
+{
+  "id": "poligonos",
+  "titulo": "El polígono que se abre: ángulos, diagonales y cuadriláteros",
+  "formato": "escena",
+  "unidades": [
+    "geometria.poligonos-y-cuadrilateros",
+    "geometria.poligonos-regulares"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}

@@ -1429,8 +1429,8 @@
   },
   "geometria": {
    "curso": "geometria",
-   "version": "1.1.0",
-   "minutos": 15,
+   "version": "1.2.0",
+   "minutos": 12,
    "errores": {
     "GE1-area-como-lado": {
      "respaldo": "documentado",
@@ -1448,14 +1448,6 @@
      "respaldo": "parcial",
      "describe": "Usa k² para un volumen"
     },
-    "GE20-sin-tercio": {
-     "respaldo": "hipotesis",
-     "describe": "Cree que el cono y el cilindro de igual base y altura tienen el mismo volumen"
-    },
-    "cono-mitad": {
-     "respaldo": "hipotesis",
-     "describe": "Cree que el cono es la mitad del cilindro"
-    },
     "area-sin-dividir-entre-2": {
      "respaldo": "hipotesis",
      "describe": "Olvida dividir entre 2 el producto base por altura"
@@ -1463,18 +1455,6 @@
     "GE7-lado-como-altura": {
      "respaldo": "documentado",
      "describe": "Usa un lado inclinado como si fuera la altura"
-    },
-    "GE6-acostado-mas-area": {
-     "respaldo": "parcial",
-     "describe": "Cree que el triángulo estirado tiene más área"
-    },
-    "GE6-acostado-menos-area": {
-     "respaldo": "parcial",
-     "describe": "Cree que el triángulo estirado tiene menos área"
-    },
-    "GE6-isosceles-mas-area": {
-     "respaldo": "parcial",
-     "describe": "Cree que el área es máxima cuando el triángulo es isósceles"
     },
     "GE15-inscrito-igual-central": {
      "respaldo": "hipotesis",
@@ -1491,18 +1471,6 @@
     "GE16-exterior-sin-dividir": {
      "respaldo": "hipotesis",
      "describe": "Resta los arcos y no divide entre 2"
-    },
-    "GE19-diametro-como-radio": {
-     "respaldo": "hipotesis",
-     "describe": "Usa el diámetro donde va el radio"
-    },
-    "GE19-area-por-longitud": {
-     "respaldo": "hipotesis",
-     "describe": "Calcula el área del sector en vez de la longitud del arco"
-    },
-    "invierte-tercio": {
-     "respaldo": "hipotesis",
-     "describe": "Divide entre 3 cuando hay que multiplicar (cono y cilindro al revés)"
     },
     "base-prolongacion": {
      "respaldo": "hipotesis",
@@ -1524,9 +1492,29 @@
      "respaldo": "hipotesis",
      "describe": "Usa solo el arco cercano, como en un ángulo inscrito"
     },
-    "GE19-pi-r": {
+    "GE23-diagonales-con-lados": {
      "respaldo": "hipotesis",
-     "describe": "Usa π·r como longitud de la circunferencia"
+     "describe": "Une todos los pares de vértices y cuenta también los lados: n(n − 1)/2"
+    },
+    "diagonales-contadas-dos-veces": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta cada diagonal dos veces, una desde cada extremo"
+    },
+    "diagonales-de-un-vertice": {
+     "respaldo": "hipotesis",
+     "describe": "Se queda con las diagonales de un solo vértice"
+    },
+    "GE23-suma-180n": {
+     "respaldo": "hipotesis",
+     "describe": "Un triángulo por lado: 180°·n, sin restar los 360° del centro"
+    },
+    "suma-siempre-360": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que los ángulos interiores siempre suman 360°"
+    },
+    "suma-n-menos-1-triangulos": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta n − 1 triángulos desde un vértice"
     }
    },
    "pares": [
@@ -1600,48 +1588,6 @@
        }
       ],
       "k": "8a68fc2e838ff339b626554b255cb2f1a35a9b0ffa8a204c0df181ff60fafc20e6f5a49b010c1528f9c4b4c998c4061b710bf96f2259bbf98c67"
-     }
-    },
-    {
-     "par": "geo-03",
-     "plantilla": "ampliadora",
-     "unidad": "geometria.solidos-de-revolucion",
-     "mide": "El cilindro guarda el triple que el cono de la misma base y la misma altura",
-     "A": {
-      "enunciado": "Un cono y un cilindro tienen la misma base y la misma altura. El volumen del cono es 200 cm³. ¿Cuál es el volumen del cilindro?",
-      "opciones": [
-       {
-        "texto": "200 cm³"
-       },
-       {
-        "texto": "400 cm³"
-       },
-       {
-        "texto": "600 cm³"
-       },
-       {
-        "texto": "66,7 cm³"
-       }
-      ],
-      "k": "948711e4244edc7731ea41655e9448069da14c1ffddf78ec66a23fab71004809450ef31c677ff72087e15692542938bc5adb11412961a7c39c"
-     },
-     "B": {
-      "enunciado": "En un cucurucho cónico caben 300 mL. Un vaso cilíndrico tiene la misma boca y la misma altura que el cucurucho. ¿Cuántos mL caben en el vaso?",
-      "opciones": [
-       {
-        "texto": "300 mL"
-       },
-       {
-        "texto": "600 mL"
-       },
-       {
-        "texto": "900 mL"
-       },
-       {
-        "texto": "100 mL"
-       }
-      ],
-      "k": "5570d16c0ff178363775f00768c266b104e24962ff48cd8fc6c8aca535973e737904f6db13e6882ac4391773ea9ebe3d6c0a3688f41e281eae"
      }
     },
     {
@@ -1729,48 +1675,6 @@
      }
     },
     {
-     "par": "geo-06",
-     "plantilla": "triangulo-estira",
-     "unidad": "geometria.areas-poligonales",
-     "mide": "Con la misma base y entre paralelas, el área no cambia",
-     "A": {
-      "enunciado": "En el triángulo ABC, B y C están fijos. El vértice A empieza justo encima de B y se desliza hacia la derecha por una recta paralela a BC: pasa sobre el punto medio de BC y sigue alejándose. ¿Qué pasa con el área del triángulo?",
-      "opciones": [
-       {
-        "texto": "Crece todo el tiempo"
-       },
-       {
-        "texto": "No cambia"
-       },
-       {
-        "texto": "Disminuye todo el tiempo"
-       },
-       {
-        "texto": "Crece y después disminuye"
-       }
-      ],
-      "k": "ccc26fcff4bf5c8e8fddb63a886a560c2b15df2ebd6eed9232e9025d6a91a400d1a8ddb95e4b2e6fb7387fc45aba508a54e06682b7216dfebeb25c67a3f9eaa8d7a46de74cdb603731bbbe7facdee141e3fbd7"
-     },
-     "B": {
-      "enunciado": "Un terreno triangular tiene un lado fijo a lo largo de una pista recta. Su tercer vértice es un poste que se mueve por un camino paralelo a la pista: parte frente a un extremo del lado fijo, pasa frente a su punto medio y sigue de largo. ¿Qué pasa con el área del terreno?",
-      "opciones": [
-       {
-        "texto": "Crece todo el tiempo"
-       },
-       {
-        "texto": "No cambia"
-       },
-       {
-        "texto": "Disminuye todo el tiempo"
-       },
-       {
-        "texto": "Crece y después disminuye"
-       }
-      ],
-      "k": "80b07892a59bf4bd72a10800c510e5e730548c8b050fb91e94c4bc398f478affbff11220c7b9536e545af7cef77e7da496ddfb0d8409a06ede9599a89e9faab21f084e1c2fe0eeb619aba71514d81c3d4aaed4"
-     }
-    },
-    {
      "par": "geo-07",
      "plantilla": "angulo-inscrito",
      "unidad": "geometria.circunferencia",
@@ -1849,45 +1753,87 @@
      }
     },
     {
-     "par": "geo-09",
-     "plantilla": "angulo-inscrito",
-     "unidad": "geometria.longitud-y-areas-circulares",
-     "mide": "La longitud de un arco es la fracción de la circunferencia que le toca",
+     "par": "geo-10",
+     "plantilla": "poligonos",
+     "unidad": "geometria.poligonos-y-cuadrilateros",
+     "mide": "Diagonales de un polígono: n(n − 3)/2",
      "A": {
-      "enunciado": "En una circunferencia de 8 cm de radio, ¿cuánto mide la longitud de un arco de 45°?",
+      "enunciado": "¿Cuántas diagonales tiene un polígono convexo de 10 lados?",
       "opciones": [
        {
-        "texto": "π cm"
+        "texto": "45"
        },
        {
-        "texto": "2π cm"
+        "texto": "35"
        },
        {
-        "texto": "4π cm"
+        "texto": "70"
        },
        {
-        "texto": "8π cm"
+        "texto": "7"
        }
       ],
-      "k": "e122b5bdee9f0476ee81815b72c2279f5b90fb3ba957ffc3e0e79206be866eb98d7cdd3c0fc3d29a58b1bf7d7d1f99941b279f741cc24497700fb7b63c136047d14da05ad3138b8b"
+      "k": "06aaa6a6340d87052f2d4e3222a978d880bdd39e56193d69c38a7e19264608ca264d6d010cf4a947d497c6d532eb95d28ca7098444b15da38e7611e23410b859585df519e412f34f0b83bf548ff26f2fac65844fbe9546385997179a370582"
      },
      "B": {
-      "enunciado": "En una circunferencia de 12 cm de radio, ¿cuánto mide la longitud de un arco de 30°?",
+      "enunciado": "¿Cuántas diagonales tiene un polígono convexo de 12 lados?",
       "opciones": [
        {
-        "texto": "π cm"
+        "texto": "66"
        },
        {
-        "texto": "2π cm"
+        "texto": "54"
        },
        {
-        "texto": "4π cm"
+        "texto": "108"
        },
        {
-        "texto": "12π cm"
+        "texto": "9"
        }
       ],
-      "k": "44994d032c3176a786aa86fb155502ab9aa4d44cab00ef95b3641f8b5618b44d076cad9d043d3f3983a01a11045da6b9e2d8a63aa7ce379c391ff4029a1b7411b5e99274dd7d41a6"
+      "k": "869a6e2ba24136e03888c3ada9d662fa25709a581be44391b2711ae98bb4e9b1cd9dae87cbd29fc4a4fc91474482493941aa45fd00d0e0809f5422d0fddb8ccfb2dc18caf62e2bf1e81b0b4997bed330bb2fd3ea6ac6bd92ab192b2fa56652"
+     }
+    },
+    {
+     "par": "geo-11",
+     "plantilla": "poligonos",
+     "unidad": "geometria.poligonos-y-cuadrilateros",
+     "mide": "Suma de ángulos interiores: 180°(n − 2)",
+     "A": {
+      "enunciado": "Un heptágono convexo tiene 7 lados. ¿Cuál es la suma de las medidas de todos sus ángulos internos?",
+      "opciones": [
+       {
+        "texto": "1260°"
+       },
+       {
+        "texto": "900°"
+       },
+       {
+        "texto": "360°"
+       },
+       {
+        "texto": "1080°"
+       }
+      ],
+      "k": "2ed2841c2cda66df7edd1934cbff5ffbcf8ca90e8815dca9f2955ed6bf86f6089bac309585bba692db48f10bef9ff7a39da523a1e663ad73a1981bc8daace208ef028d6da89f7aad"
+     },
+     "B": {
+      "enunciado": "Un eneágono convexo tiene 9 lados. ¿Cuál es la suma de las medidas de todos sus ángulos internos?",
+      "opciones": [
+       {
+        "texto": "1620°"
+       },
+       {
+        "texto": "1260°"
+       },
+       {
+        "texto": "360°"
+       },
+       {
+        "texto": "1440°"
+       }
+      ],
+      "k": "a4d4d6c0650446730896442c37471754948c3ef29ed767d0913c7d47e72ecfabe02100dec109a13064c1d0f6d5765a492d1840508a13d99005893c51074f44dd67a81d280f758ec4"
      }
     }
    ]

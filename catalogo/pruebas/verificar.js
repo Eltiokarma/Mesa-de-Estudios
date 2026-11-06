@@ -176,6 +176,11 @@ const V = {
   'geo-09': d => { const r = motor('angulo-inscrito').longitudArco(d.arco, d.r);
     return { correcta: r.longitud, errores: { 'GE19-diametro-como-radio': r.errores.conDiametro * PI, 'GE19-area-por-longitud': r.errores.areaSector * PI, 'GE19-pi-r': r.errores.mitadDelRadio * PI } }; },
 
+  'geo-10': d => { const r = motor('poligonos').poligono(d.n), e = r.errores.diagonales;
+    return { correcta: r.diagonales, errores: { 'GE23-diagonales-con-lados': e.conLados, 'diagonales-contadas-dos-veces': e.sinDividir, 'diagonales-de-un-vertice': e.soloDesdeUnVertice } }; },
+  'geo-11': d => { const r = motor('poligonos').poligono(d.n), e = r.errores.sumaInteriores;
+    return { correcta: r.sumaInteriores, errores: { 'GE23-suma-180n': e.con180n, 'suma-siempre-360': e.siempre360, 'suma-n-menos-1-triangulos': e.conNmenos1 } }; },
+
   // ---------------- Trigonometría ----------------
   'tri-01': d => { const r = motor('cinta-radio').convertir({ R: d.R });
     return { correcta: r.S, errores: { 'TR1-lee-2-como-2pi': r.errores.leePiEnR, 'TR3-radian-como-grado': r.errores.radianComoGrado, 'factor-invertido': r.errores.factorInvertido } }; },
