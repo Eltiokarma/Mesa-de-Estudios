@@ -1,0 +1,306 @@
+{
+  "plantilla": "mol-composicion",
+  "unidades": "g, mol, g/mol, u, %, L, mL",
+  "constantes": "Masas atómicas de academia: H = 1, C = 12, N = 14, O = 16, Na = 23, Mg = 24, Al = 27, S = 32, Cl = 35,5, K = 39, Ca = 40, Fe = 56, Cu = 63,5, Ba = 137. Nₐ = 6,02 × 10²³. 22,4 L/mol para gases en condiciones normales.",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (porcentajes.O); un número suelto, como 'valor'. Las fórmulas se comparan como texto.",
+  "verificacion": "Recalculados el 6 de noviembre de 2026 por un subagente que no leyó el motor ni este archivo, en Python con fractions.Fraction y las masas atómicas como fracciones exactas (Cl = 71/2, Cu = 127/2): la composición como masa de cada elemento en 100 g y cada fórmula empírica comprobada de vuelta contra sus porcentajes. Son los 'Casos de prueba propuestos' de mol y composición de docs/investigacion/estequiometria-ideas-erroneas.md, más hidratos, paréntesis, volumen y moléculas. El caso del volumen del agua líquida (densidad 1 g/mL) lo agregó la plantilla.",
+  "tolerancia": 1e-09,
+  "casos": [
+    {
+      "nombre": "36 g de H₂O: 2 mol, 1,204 × 10²⁴ moléculas y 3,612 × 10²⁴ átomos (invertir la fórmula da 0,5)",
+      "fn": "moles",
+      "args": [
+        "H2O",
+        {
+          "gramos": 36
+        }
+      ],
+      "espera": {
+        "n": 2,
+        "moleculas": 1.204e+24,
+        "atomos": 3.612e+24,
+        "invertido": 0.5
+      }
+    },
+    {
+      "nombre": "Misma masa, distinto número: 1 g de H₂ es 1/2 mol y 1 g de O₂, 1/32 mol (16 veces menos moléculas)",
+      "fn": "moles",
+      "args": [
+        "H2",
+        {
+          "gramos": 1
+        }
+      ],
+      "espera": {
+        "n": 0.5
+      },
+      "tambien": [
+        {
+          "args": [
+            "O2",
+            {
+              "gramos": 1
+            }
+          ],
+          "espera": {
+            "n": 0.03125
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "Un átomo de C pesa 12/Nₐ ≈ 1,993 × 10⁻²³ g",
+      "fn": "masaParticula",
+      "args": [
+        "C"
+      ],
+      "espera": {
+        "valor": 1.9933554817275746e-23
+      }
+    },
+    {
+      "nombre": "Masa atómica promedio del Cl con 75 % de Cl-35 y 25 % de Cl-37: 35,5 (el promedio simple daría 36)",
+      "fn": "promedio",
+      "args": [
+        [
+          {
+            "masa": 35,
+            "abundancia": 75
+          },
+          {
+            "masa": 37,
+            "abundancia": 25
+          }
+        ]
+      ],
+      "espera": {
+        "valor": 35.5,
+        "simple": 36
+      }
+    },
+    {
+      "nombre": "Composición del CaCO₃: M = 100; 40 % de Ca, 12 % de C y 48 % de O (sin subíndices, el O daría 400/17 %)",
+      "fn": "composicion",
+      "args": [
+        "CaCO3"
+      ],
+      "espera": {
+        "M": 100,
+        "porcentajes.Ca": 40,
+        "porcentajes.C": 12,
+        "porcentajes.O": 48,
+        "sinSubindices.O": 23.529411764705884,
+        "sinSubindices.Ca": 58.8235294117647
+      }
+    },
+    {
+      "nombre": "H₂SO₄: M = 98 y S = 1600/49 % ≈ 32,65 %",
+      "fn": "composicion",
+      "args": [
+        "H2SO4"
+      ],
+      "espera": {
+        "M": 98,
+        "porcentajes.S": 32.6530612244898
+      }
+    },
+    {
+      "nombre": "Proust: 9 g de agua tienen 1 g de H y 8 g de O",
+      "fn": "masasElementos",
+      "args": [
+        "H2O",
+        9
+      ],
+      "espera": {
+        "H": 1,
+        "O": 8
+      }
+    },
+    {
+      "nombre": "Fórmula empírica con 75 % de C y 25 % de H: CH₄ (la razón de masas daría C₃H)",
+      "fn": "empirica",
+      "args": [
+        {
+          "C": 75,
+          "H": 25
+        }
+      ],
+      "espera": {
+        "formula": "CH4",
+        "porMasas": "C3H",
+        "razon.H": 4
+      }
+    },
+    {
+      "nombre": "Glucosa: 40 % C, 20/3 % H y 160/3 % O dan CH₂O (M = 30); con M = 180, k = 6 y C₆H₁₂O₆ (180/4 = 45 es el error)",
+      "fn": "empirica",
+      "args": [
+        {
+          "C": 40,
+          "H": 6.666666666666667,
+          "O": 53.333333333333336
+        }
+      ],
+      "espera": {
+        "formula": "CH2O",
+        "M": 30
+      },
+      "tambien": [
+        {
+          "fn": "molecular",
+          "args": [
+            "CH2O",
+            180
+          ],
+          "espera": {
+            "k": 6,
+            "formula": "C6H12O6",
+            "porAtomos": 45
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "70 % Fe y 30 % O: razón 1 a 1,5, se multiplica por 2: Fe₂O₃ (redondear daría FeO₂; la razón de masas, Fe₇O₃)",
+      "fn": "empirica",
+      "args": [
+        {
+          "Fe": 70,
+          "O": 30
+        }
+      ],
+      "espera": {
+        "moles.Fe": 1.25,
+        "moles.O": 1.875,
+        "razon.O": 1.5,
+        "multiplicador": 2,
+        "formula": "Fe2O3",
+        "redondeando": "FeO2",
+        "porMasas": "Fe7O3"
+      }
+    },
+    {
+      "nombre": "Hidrato: 15,95 g de CuSO₄ y 9 g de agua dan x = 5 (la razón de masas da 180/319)",
+      "fn": "hidrato",
+      "args": [
+        "CuSO4",
+        15.95,
+        9
+      ],
+      "espera": {
+        "x": 5,
+        "nSal": 0.1,
+        "nAgua": 0.5,
+        "porMasas": 0.5642633228840125
+      }
+    },
+    {
+      "nombre": "10 átomos de Mg (24 u) pesan lo mismo que 20 de C (12 u); no 10 ni 5",
+      "fn": "igualarMasa",
+      "args": [
+        "Mg",
+        10,
+        "C"
+      ],
+      "espera": {
+        "valor": 20,
+        "misma": 10,
+        "invertida": 5
+      }
+    },
+    {
+      "nombre": "Masas molares con paréntesis e hidratos: Ca(OH)₂ = 74, Al₂(SO₄)₃ = 342, CuSO₄·5H₂O = 249,5; CaCO₃ sin subíndices daría 68",
+      "fn": "masaMolar",
+      "args": [
+        "Ca(OH)2"
+      ],
+      "espera": {
+        "valor": 74
+      },
+      "tambien": [
+        {
+          "args": [
+            "Al2(SO4)3"
+          ],
+          "espera": {
+            "valor": 342
+          }
+        },
+        {
+          "args": [
+            "CuSO4·5H2O"
+          ],
+          "espera": {
+            "valor": 249.5
+          }
+        },
+        {
+          "args": [
+            "CaCO3"
+          ],
+          "espera": {
+            "valor": 100,
+            "sinSubindices": 68
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "11,2 L de CO₂ en condiciones normales: 0,5 mol y 22 g",
+      "fn": "moles",
+      "args": [
+        "CO2",
+        {
+          "litrosCN": 11.2
+        }
+      ],
+      "espera": {
+        "n": 0.5,
+        "gramos": 22
+      }
+    },
+    {
+      "nombre": "3,01 × 10²³ moléculas de O₂: 0,5 mol y 16 g",
+      "fn": "moles",
+      "args": [
+        "O2",
+        {
+          "moleculas": 3.01e+23
+        }
+      ],
+      "espera": {
+        "n": 0.5,
+        "gramos": 16
+      }
+    },
+    {
+      "nombre": "18 g de agua líquida ocupan 18 mL, no 22,4 L (22,4 L/mol es solo para gases en condiciones normales)",
+      "fn": "volumen",
+      "args": [
+        "H2O",
+        {
+          "gramos": 18,
+          "densidad": 1
+        }
+      ],
+      "espera": {
+        "mililitros": 18,
+        "con224": 22.4
+      },
+      "tambien": [
+        {
+          "args": [
+            "CO2",
+            {
+              "gramos": 44,
+              "estado": "g"
+            }
+          ],
+          "espera": {
+            "litros": 22.4
+          }
+        }
+      ]
+    }
+  ]
+}
