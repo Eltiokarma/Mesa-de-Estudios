@@ -1,0 +1,352 @@
+{
+  "titulo": "Tiro parabólico y movimiento circular: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. En el tiro parabólico, separa dos movimientos: en horizontal, velocidad constante (x = vx·t); en vertical, caída libre con 10 m/s² hacia abajo (y = y₀ + vy·t − 5t²), también en el punto más alto. El tiempo lo comparten. Descompón la velocidad inicial: vx = v₀·cos θ y vy = v₀·sen θ, con sen 37° = 3/5 y cos 37° = 4/5. En el movimiento circular uniforme, la rapidez es constante pero hay aceleración hacia el centro: ac = v²/r = ω²·r, con v = ω·r y ω = 2π/T. Toma g = 10 m/s² y no cuentes el aire.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "En un taller, una polea de 10 cm de radio, montada en un motor, gira a 30 rad/s y mueve con una faja a otra polea de 30 cm de radio. En el mismo eje de esta segunda polea hay una rueda de 50 cm de radio. ¿Con qué velocidad angular gira la polea grande y a qué rapidez va el borde de la rueda de 50 cm?",
+      "respuesta": "La polea de 30 cm gira a 10 rad/s y el borde de la rueda de 50 cm va a 5 m/s.",
+      "pasos": [
+        "La faja no resbala: todos sus puntos van igual de rápido, así que el borde de las dos poleas tiene la misma rapidez: v = ω·r = 30·0,1 = 3 m/s.",
+        "Polea de 30 cm: ω = v/r = 3/0,3 = 10 rad/s. Gira más lento que la chica, porque su borde da una vuelta más larga.",
+        "La rueda de 50 cm está en el mismo eje: gira junto con la polea, con la misma ω, 10 rad/s. Lo que es igual aquí es ω, no v.",
+        "Borde de la rueda: v = 10·0,5 = 5 m/s. Con faja, igual v; en el mismo eje, igual ω."
+      ],
+      "verificar": [
+        {
+          "fn": "transmision",
+          "args": [
+            {
+              "r1": 0.1,
+              "r2": 0.3,
+              "omega1": 30,
+              "tipo": "faja"
+            }
+          ],
+          "espera": {
+            "omega2": 10,
+            "v2": 3
+          }
+        },
+        {
+          "fn": "transmision",
+          "args": [
+            {
+              "r1": 0.3,
+              "r2": 0.5,
+              "omega1": 10,
+              "tipo": "eje"
+            }
+          ],
+          "espera": {
+            "omega2": 10,
+            "v2": 5
+          }
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Desde un mirador de 45 m de altura, una alumna lanza una piedra en horizontal a 10 m/s y, en el mismo instante, su compañero suelta otra piedra desde el mismo lugar. ¿Cuál llega primero al suelo? ¿A qué distancia del pie del mirador cae la piedra lanzada?",
+      "respuesta": "Llegan a la vez, a los 3 s. La lanzada cae a 30 m del pie del mirador.",
+      "pasos": [
+        "En vertical, las dos piedras empiezan con velocidad vertical cero y caen con la misma aceleración, 10 m/s². Lo horizontal no cambia eso.",
+        "45 = ½·10·t², así que t² = 9 y t = 3 s, para las dos.",
+        "La lanzada avanza en horizontal 10 m/s durante 3 s: 30 m.",
+        "Que la lanzada recorra un camino más largo no la hace tardar más: recorre ese camino más rápido."
+      ],
+      "verificar": [
+        {
+          "fn": "proyectil",
+          "args": [
+            {
+              "vx": 10,
+              "y0": 45
+            }
+          ],
+          "espera": {
+            "tVuelo": 3,
+            "alcance": 30,
+            "errores.tSoltado": 3
+          }
+        },
+        {
+          "fn": "proyectil",
+          "args": [
+            {
+              "vx": 0,
+              "y0": 45
+            }
+          ],
+          "espera": {
+            "tVuelo": 3
+          }
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Un proyectil se lanza desde el suelo con 20 m/s, formando 53° con la horizontal. ¿Cuánto valen las componentes de su velocidad inicial, cuánto tarda en llegar a lo más alto, qué altura máxima alcanza, cuánto tiempo está en el aire y cuál es su alcance?",
+      "respuesta": "vx = 12 m/s y vy = 16 m/s; sube 1,6 s, llega a 12,8 m, está 3,2 s en el aire y su alcance es 38,4 m.",
+      "pasos": [
+        "Componentes: vx = 20·cos 53° = 20·3/5 = 12 m/s; vy = 20·sen 53° = 20·4/5 = 16 m/s. Ojo: con 53°, el seno es 4/5.",
+        "Sube mientras vy > 0: 0 = 16 − 10t, así que t = 1,6 s.",
+        "Altura máxima: 0 = 16² − 2·10·H, así que H = 256/20 = 12,8 m.",
+        "Desde el suelo y de vuelta al suelo, baja en el mismo tiempo que sube: 3,2 s en total.",
+        "Alcance: 12 m/s durante 3,2 s, 38,4 m."
+      ],
+      "verificar": [
+        {
+          "fn": "proyectil",
+          "args": [
+            {
+              "v0": 20,
+              "angulo": 53
+            }
+          ],
+          "espera": {
+            "vx": 12,
+            "vy": 16,
+            "tSubida": 1.6,
+            "H": 12.8,
+            "tVuelo": 3.2,
+            "alcance": 38.4
+          }
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Un futbolista patea la pelota desde el piso con 25 m/s, a 37° sobre la horizontal. ¿A qué distancia cae? En el punto más alto, ¿cuánto vale la velocidad de la pelota y cuánto su aceleración?",
+      "respuesta": "Cae a 60 m. En el punto más alto su velocidad es 20 m/s, horizontal, y su aceleración es 10 m/s² hacia abajo.",
+      "pasos": [
+        "Componentes: vx = 25·4/5 = 20 m/s; vy = 25·3/5 = 15 m/s.",
+        "Tiempo de vuelo: sube 15/10 = 1,5 s y baja otros 1,5 s: 3 s. Alcance: 20·3 = 60 m.",
+        "En lo más alto, vy = 0, pero vx sigue igual: la velocidad es 20 m/s en horizontal, no cero.",
+        "La aceleración es la de la gravedad todo el vuelo, también arriba: 10 m/s² hacia abajo. Si fuera cero allí, la pelota seguiría en línea recta y no bajaría."
+      ],
+      "verificar": [
+        {
+          "fn": "proyectil",
+          "args": [
+            {
+              "v0": 25,
+              "angulo": 37
+            }
+          ],
+          "espera": {
+            "alcance": 60,
+            "tVuelo": 3,
+            "vCima": 20
+          }
+        },
+        {
+          "fn": "estadoEn",
+          "args": [
+            {
+              "v0": 25,
+              "angulo": 37
+            },
+            1.5
+          ],
+          "espera": {
+            "vy": 0,
+            "v": 20,
+            "ay": -10
+          }
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Dos proyectiles salen del suelo con la misma rapidez, 30 m/s: uno a 37° y otro a 53°. ¿Cuál llega más lejos? ¿Cuál sube más alto y cuál está más tiempo en el aire?",
+      "respuesta": "Llegan igual de lejos, a 86,4 m. El de 53° sube más (28,8 m contra 16,2 m) y está más tiempo en el aire (4,8 s contra 3,6 s).",
+      "pasos": [
+        "37°: vx = 24, vy = 18. Tiempo 3,6 s, alcance 24·3,6 = 86,4 m, altura 18²/20 = 16,2 m.",
+        "53°: vx = 18, vy = 24. Tiempo 4,8 s, alcance 18·4,8 = 86,4 m, altura 24²/20 = 28,8 m.",
+        "Los dos alcances son iguales porque el alcance depende del producto vx·vy, y al cambiar 37° por 53° solo se intercambian. Pasa con cualquier par de ángulos que sumen 90°, siempre que se lance y caiga a la misma altura.",
+        "Más ángulo no quiere decir más lejos: el de 53° sube más y tarda más, pero avanza más lento en horizontal."
+      ],
+      "verificar": [
+        {
+          "fn": "proyectil",
+          "args": [
+            {
+              "v0": 30,
+              "angulo": 37
+            }
+          ],
+          "espera": {
+            "alcance": 86.4,
+            "H": 16.2,
+            "tVuelo": 3.6
+          }
+        },
+        {
+          "fn": "proyectil",
+          "args": [
+            {
+              "v0": 30,
+              "angulo": 53
+            }
+          ],
+          "espera": {
+            "alcance": 86.4,
+            "H": 28.8,
+            "tVuelo": 4.8
+          }
+        }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Una avioneta vuela en horizontal a 50 m/s, a 180 m de altura, y suelta un paquete con víveres. Sin aire, ¿cuánto tarda el paquete en llegar al suelo, a qué distancia horizontal del punto donde lo soltaron cae y dónde está la avioneta en ese momento?",
+      "respuesta": "Tarda 6 s y cae a 300 m del punto donde lo soltaron. La avioneta está justo encima del paquete.",
+      "pasos": [
+        "Al soltarlo, el paquete ya va a 50 m/s en horizontal, igual que la avioneta: no cae recto hacia abajo.",
+        "En vertical cae desde el reposo: 180 = 5t², t² = 36, t = 6 s.",
+        "En horizontal avanza 50·6 = 300 m.",
+        "La avioneta también avanzó 300 m en esos 6 s: sin aire, el paquete cae siempre justo debajo de ella."
+      ],
+      "verificar": [
+        {
+          "fn": "proyectil",
+          "args": [
+            {
+              "vx": 50,
+              "y0": 180
+            }
+          ],
+          "espera": {
+            "tVuelo": 6,
+            "alcance": 300
+          }
+        }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "La rueda de una bicicleta, de 0,3 m de radio, da 2 vueltas por segundo. ¿Cuánto valen su periodo, su velocidad angular, la rapidez de un punto del borde y su aceleración centrípeta? Usa π.",
+      "respuesta": "T = 0,5 s; ω = 4π rad/s; v = 1,2π m/s (unos 3,8 m/s); ac = 4,8π² m/s² (unos 47 m/s²).",
+      "pasos": [
+        "Frecuencia: 2 vueltas por segundo, f = 2 Hz. Periodo: T = 1/f = 0,5 s.",
+        "Velocidad angular: ω = 2π·f = 4π rad/s.",
+        "Rapidez del borde: v = ω·r = 4π·0,3 = 1,2π m/s.",
+        "Aceleración centrípeta: ac = v²/r = ω²·r = 16π²·0,3 = 4,8π² m/s², hacia el centro. La rapidez no cambia, pero la dirección sí: por eso hay aceleración."
+      ],
+      "verificar": [
+        {
+          "fn": "mcu",
+          "args": [
+            {
+              "r": 0.3,
+              "frecuencia": 2
+            }
+          ],
+          "espera": {
+            "periodo": 0.5,
+            "omega": 12.566370614359172,
+            "v": 3.7699111843077517,
+            "ac": 47.37410112522892
+          }
+        }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Un auto da la vuelta a una rotonda de 50 m de radio a 10 m/s constantes. ¿Tiene aceleración? Si la tiene, ¿cuánto vale y hacia dónde apunta? Si de pronto la pista estuviera aceitada y no hubiera roce, ¿qué camino seguiría el auto?",
+      "respuesta": "Sí: 2 m/s², hacia el centro de la rotonda. Sin roce, seguiría en línea recta, tangente a la rotonda.",
+      "pasos": [
+        "La rapidez es constante, pero la dirección de la velocidad cambia todo el tiempo: eso es aceleración.",
+        "ac = v²/r = 100/50 = 2 m/s², hacia el centro.",
+        "Lo que da esa aceleración es el roce de la pista sobre las llantas, que apunta al centro. No hay una fuerza que empuje el auto hacia afuera.",
+        "Sin roce no hay nada que lo desvíe: sigue en línea recta en la dirección que llevaba, tangente a la curva. Por eso parece que «sale disparado hacia afuera»: en realidad sigue recto mientras la pista se curva."
+      ],
+      "verificar": [
+        {
+          "fn": "mcu",
+          "args": [
+            {
+              "r": 50,
+              "v": 10
+            }
+          ],
+          "espera": {
+            "ac": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Desde la azotea de un edificio de 20 m se lanza una pelota con 25 m/s, a 37° sobre la horizontal. ¿Qué altura máxima alcanza sobre el suelo, cuánto tarda en llegar al suelo, a qué distancia del edificio cae y con qué rapidez llega?",
+      "respuesta": "Llega a 31,25 m, cae a los 4 s, a 80 m del edificio, con una rapidez de √1025 m/s (unos 32 m/s).",
+      "pasos": [
+        "Componentes: vx = 20 m/s, vy = 15 m/s.",
+        "Altura máxima: sube 15²/20 = 11,25 m sobre la azotea: 31,25 m sobre el suelo.",
+        "Tiempo hasta el suelo: y = 20 + 15t − 5t² = 0, es decir t² − 3t − 4 = 0, así que t = 4 s (la otra raíz, −1, no sirve). No es el doble del tiempo de subida: parte de más arriba de donde llega.",
+        "Distancia: 20·4 = 80 m.",
+        "Al llegar: vy = 15 − 10·4 = −25 m/s y vx = 20 m/s, así que v = √(400 + 625) = √1025 m/s, unos 32 m/s. Por energía: v² = 25² + 2·10·20 = 1025."
+      ],
+      "verificar": [
+        {
+          "fn": "proyectil",
+          "args": [
+            {
+              "v0": 25,
+              "angulo": 37,
+              "y0": 20
+            }
+          ],
+          "espera": {
+            "H": 31.25,
+            "tVuelo": 4,
+            "alcance": 80,
+            "vFinal.vy": -25,
+            "vFinal.modulo": 32.01562118716424
+          }
+        }
+      ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Un disco de 0,5 m de radio gira a 2 rad/s y empieza a acelerar con una aceleración angular constante de 1 rad/s². A los 4 s, ¿cuál es su velocidad angular, cuántos radianes giró, y cuánto valen la aceleración tangencial y la centrípeta de un punto del borde?",
+      "respuesta": "ω = 6 rad/s; giró 16 rad (unas 2,5 vueltas); at = 0,5 m/s² y ac = 18 m/s².",
+      "pasos": [
+        "ω = ω₀ + α·t = 2 + 1·4 = 6 rad/s.",
+        "θ = ω₀·t + ½·α·t² = 8 + 8 = 16 rad, que son 16/(2π), unas 2,5 vueltas.",
+        "Tangencial: at = α·r = 0,5 m/s². Cambia la rapidez del punto.",
+        "Centrípeta: ac = ω²·r = 36·0,5 = 18 m/s², con la ω de ese instante (no con la inicial). Cambia la dirección de la velocidad. Las dos son perpendiculares."
+      ],
+      "verificar": [
+        {
+          "fn": "mcuv",
+          "args": [
+            {
+              "r": 0.5,
+              "omega0": 2,
+              "alfa": 1,
+              "t": 4
+            }
+          ],
+          "espera": {
+            "omega": 6,
+            "theta": 16,
+            "at": 0.5,
+            "ac": 18
+          }
+        }
+      ]
+    }
+  ]
+}
