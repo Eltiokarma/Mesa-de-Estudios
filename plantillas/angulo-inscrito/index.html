@@ -1,0 +1,1210 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El ángulo que no cambia: ángulos en la circunferencia</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de triangulo-estira.
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
+   arco que abarca el ángulo (o arco lejano) morado, segundo arco (cercano u opuesto) rosado, ángulo central azul,
+   ángulo inscrito ∠APB naranja, ángulo ∠AQB verde, radio r turquesa, longitud ℓ rojo ladrillo
+   y área del sector S mostaza. Elegidos con CIEDE2000: ΔE00 ≥ 20 entre los que salen juntos, en claro y en oscuro,
+   y contraste AA (≥ 4,5) sobre el papel y sobre su chip (.v, fondo al 8 %). */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-arco:#7a2fc0; --c-arco2:#c0246e; --c-cen:#0f66b0; --c-ins:#a34a00; --c-Q:#4a7314; --c-r:#0f766e; --c-l:#8e2929; --c-S:#7d6a00;
+  --relleno:.13;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-arco:#c08cff; --c-arco2:#ff7fb8; --c-cen:#5fb2f5; --c-ins:#f59a4a; --c-Q:#a3d65e; --c-r:#5ed9c8; --c-l:#e88a80; --c-S:#e3c84a;
+  --relleno:.17; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-arco:#c08cff; --c-arco2:#ff7fb8; --c-cen:#5fb2f5; --c-ins:#f59a4a; --c-Q:#a3d65e; --c-r:#5ed9c8; --c-l:#e88a80; --c-S:#e3c84a;
+  --relleno:.17; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+.lienzo:focus-within{outline:3px solid var(--ink); outline-offset:2px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+.legend i.sq{width:12px; height:12px; border-radius:3px; opacity:.55}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body > *{min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-arco{color:var(--c-arco); background:color-mix(in srgb, var(--c-arco) 8%, transparent)}
+.v-arco2{color:var(--c-arco2); background:color-mix(in srgb, var(--c-arco2) 8%, transparent)}
+.v-cen{color:var(--c-cen); background:color-mix(in srgb, var(--c-cen) 8%, transparent)}
+.v-ins{color:var(--c-ins); background:color-mix(in srgb, var(--c-ins) 8%, transparent)}
+.v-Q{color:var(--c-Q); background:color-mix(in srgb, var(--c-Q) 8%, transparent)}
+.v-r{color:var(--c-r); background:color-mix(in srgb, var(--c-r) 8%, transparent)}
+.v-l{color:var(--c-l); background:color-mix(in srgb, var(--c-l) 8%, transparent)}
+.v-S{color:var(--c-S); background:color-mix(in srgb, var(--c-S) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.02rem; font-variant-numeric:tabular-nums}
+.eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.5em; white-space:normal}
+.frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1.15}
+.frac > span:first-child{border-bottom:1.5px solid currentColor; padding:0 .25em}
+.frac > span:last-child{padding:0 .25em}
+.answer{font-weight:700; padding:12px 16px; border-radius:16px; background:var(--paper); border:2px solid var(--ink); max-width:66ch}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.seg button i{display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px; vertical-align:0}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.acciones{display:flex; flex-wrap:wrap; gap:8px}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+/* Lecturas en vivo, cada una con el color de su variable */
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(104px, 1fr)); gap:8px}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura b{display:block; color:var(--k); font:800 1.02rem var(--mono); font-variant-numeric:tabular-nums; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.lectura span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.lectura.tipo{--k:var(--ink); grid-column:span 2}
+.lectura.tipo b{font:800 .9rem var(--font); white-space:normal}
+
+/* Tabla de posiciones de P (o de Q) */
+.tabla-caja{overflow-x:auto; border-radius:16px; border:1px solid var(--line); background:var(--paper)}
+table.tabla{border-collapse:collapse; width:100%; font-size:.92rem; font-variant-numeric:tabular-nums}
+.tabla th, .tabla td{padding:6px 8px; text-align:left; border-bottom:1px solid var(--line); white-space:nowrap}
+.tabla th{font-size:.78rem; color:var(--muted); font-weight:700; white-space:normal; vertical-align:bottom}
+.tabla tr:last-child td{border-bottom:0}
+.tabla td.num{font-family:var(--mono); font-weight:800}
+.tabla .vacia{color:var(--muted)}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.25fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Geometría · Circunferencia · Problemas tipo admisión</p>
+      <h1>El ángulo que no cambia</h1>
+      <p class="sub">Arrastra un punto por la circunferencia y mira qué pasa con el ángulo desde donde se ven dos puntos fijos, A y B. Después, mete el vértice dentro y sácalo fuera del círculo.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Circunferencia con puntos arrastrables">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Circunferencia de centro O con los puntos A y B fijos y un punto que se puede arrastrar"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos con ángulos en la circunferencia">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/angulo-inscrito">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'angulo-inscrito', unidad: 'geometria.circunferencia', version: '0.1.0' };
+const UNIDAD_DE = { 'angulo-inscrito-paso7': 'geometria.longitud-y-areas-circulares' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: UNIDAD_DE[problema] || PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la geometría (arcos, ángulos por coordenadas y por arcos, cortes de las rectas, tangentes, longitud de
+   arco y sector) sale de MotorAngulo (motor.js); aquí solo se pinta, se arrastra y se anima. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MA = MotorAngulo;
+const GR = Math.PI/180;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+// Coma decimal y signo menos tipográfico.
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 1 : d), r = Math.round(n*p)/p + 0;
+  const [e, f] = String(Math.abs(r)).split('.');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+// Grados: sin decimales si es entero (con tolerancia), si no, con uno.
+const gr = x => `${fmt(x, Math.abs(x - Math.round(x)) < 1e-6 ? 0 : 1)}°`;
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const fr = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+function tween(dur, paso, fin){
+  if (RM || !dur){ paso(1); if (fin) setTimeout(fin, 0); return; }
+  const t0 = performance.now();
+  const tick = now => { const f = Math.min(1, (now - t0)/dur); paso(suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
+  requestAnimationFrame(tick);
+}
+const arco_ = t => V('arco', t), arco2_ = t => V('arco2', t), cen_ = t => V('cen', t), ins_ = t => V('ins', t), Q_ = t => V('Q', t),
+  r_ = t => V('r', t), l_ = t => V('l', t), S_ = t => V('S', t);
+// El recorrido antihorario de x a y que no pasa por z: [inicio, medida]
+function arcoSin(x, y, z){ const d = MA.ccw(x, y), e = MA.ccw(x, z); return (e > 0 && e < d) ? [y, 360 - d] : [x, d]; }
+
+function colores(){
+  const g = n => css(n);
+  return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
+    arco:g('--c-arco'), arco2:g('--c-arco2'), cen:g('--c-cen'), ins:g('--c-ins'), Q:g('--c-Q'), r:g('--c-r'), l:g('--c-l'), S:g('--c-S'),
+    relleno:Number(g('--relleno')) || .13, mono:g('--mono'), font:g('--font') };
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, p, q){ ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke(); }
+// Texto con un fondo del color del papel detrás, para que se lea sobre las líneas.
+function rotulo(ctx, c, x, y, t, color, align, peso, tam){
+  ctx.font = `${peso || 700} ${tam || 13}px ${c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+  ctx.fillStyle = color; ctx.fillText(t, x, y);
+}
+// Resaltar en el dibujo la variable que se toca en el texto (regla 4).
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+/* ================= La escena de la circunferencia =================
+   Coordenadas del mundo: centro O en el origen y radio 5. Un punto de la curva se guarda por su ángulo (grados,
+   antihorario desde el eje x). Tres modos de dibujo:
+     'inscrito'  A, B y P en la curva (P se arrastra); opcional, un segundo vértice Q en la curva o libre
+     'secantes'  Q libre; las rectas pasan por Q y por A y por B; C y D son los otros cortes
+     'sector'    sector de ángulo θ, radio r, arco ℓ y área S */
+const R = 5;
+const VER0 = { circulo:true, O:true, arco:false, medArco:false, central:false, medCen:false, ins:false, medIns:false, recto:true,
+  tangente:false, semi:false, q2:false, medQ:false, testigos:null, lej:false, cer:false, medArcos:false, angQ:false, radiosT:false,
+  rad:false, theta:false, l:false, medL:false, S:false, medS:false, partes:0, porteria:false, detras:false };
+function crearEscena(cv, idDesc, idLect, idLey){
+  const E = { modo:'inscrito', a:220, b:320, p:90, q:{ x:-8, y:0 }, q2:null, sec:{ t0:20, theta:60, rTexto:'6', unidad:'cm' },
+    caja:{ x0:-6.6, x1:6.6, y0:-6.4, y1:6.4 }, ver:{ ...VER0 }, mover:[], foco:null, ladoP:null, limB:null, prog:{ ins:1, Q:1, l:1, S:1 },
+    hl:null, alCambiar:null, alSoltar:null, lect:[], ocupado:false, textos:{} };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, arrastrando = null, sobre = null;
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    // En el celular, el alto se ajusta a la caja del paso para no dejar papel vacío arriba y abajo.
+    const c = E.caja, h = Math.round(w >= 560 ? clamp(w*0.66, 320, 470) : clamp((w - 36)*(c.y1 - c.y0)/(c.x1 - c.x0) + 36, 250, 390));
+    const dpr = window.devicePixelRatio || 1;
+    if (w === W && h === H) { E.dibujar(); return; }
+    W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  alRedibujarTema(() => E.dibujar());
+
+  E.config = o => {
+    Object.assign(E, { modo:'inscrito', a:220, b:320, p:90, q2:null, mover:[], foco:null, limB:null, alCambiar:null, alSoltar:null, lect:[], ocupado:false, textos:{} }, o);
+    if (o.q) E.q = { ...o.q };
+    if (o.q2) E.q2 = { ...o.q2 };
+    E.sec = Object.assign({ t0:20, theta:60, rTexto:'6', unidad:'cm' }, o.sec);
+    E.caja = Object.assign({ x0:-6.6, x1:6.6, y0:-6.4, y1:6.4 }, o.caja);
+    E.ver = Object.assign({ ...VER0 }, o.ver);
+    E.prog = Object.assign({ ins:1, Q:1, l:1, S:1 }, o.prog);
+    E.ladoP = E.modo === 'inscrito' ? enRec(E.a, E.b, E.p) : null;
+    E.foco = E.mover[0] || null;
+    cv.tabIndex = E.mover.length ? 0 : -1;
+    resize();
+    E.leyenda(); E.dibujar(); E.avisar();
+  };
+  E.permitir = lista => { E.mover = lista; E.foco = lista[0] || null; if (E.modo === 'inscrito') E.ladoP = enRec(E.a, E.b, E.p); cv.tabIndex = lista.length ? 0 : -1; E.dibujar(); };
+  const enRec = (a, b, p) => { const d = MA.ccw(a, b), e = MA.ccw(a, p); return e > 0 && e < d; };
+
+  // ----- geometría actual (toda del motor) -----
+  E.geo = () => {
+    if (E.modo === 'inscrito'){
+      const g = { ins: MA.inscrito(E.a, E.b, E.p, R), cen: MA.central(E.a, E.b, R) };
+      if (E.q2 && E.q2.ang !== undefined) g.q2 = MA.inscrito(E.a, E.b, E.q2.ang, R);
+      else if (E.q2) g.q2 = MA.anguloDesde(E.q2, E.a, E.b, R);
+      if (E.ver.semi) g.semi = MA.semiinscrito(E.a, E.b, R);
+      return g;
+    }
+    if (E.modo === 'secantes'){
+      const A = MA.puntoEn(E.a, R), B = MA.puntoEn(E.b, R), Q = E.q;
+      const s = MA.dosRectas(Q, Math.atan2(A.y - Q.y, A.x - Q.x)/GR, Math.atan2(B.y - Q.y, B.x - Q.x)/GR, R);
+      return { sec: s };
+    }
+    return { l: MA.longitudArco(E.sec.theta, Number(E.sec.rTexto)), S: MA.sector(E.sec.theta, Number(E.sec.rTexto)) };
+  };
+
+  // ----- del mundo a la pantalla -----
+  function escala(){
+    const c = E.caja, pad = 16;
+    const k = Math.min((W - 2*pad)/(c.x1 - c.x0), (H - 2*pad)/(c.y1 - c.y0));
+    return { k, ox: W/2 - k*(c.x0 + c.x1)/2, oy: H/2 + k*(c.y0 + c.y1)/2 };
+  }
+  const aP = (P, s) => ({ x: s.ox + s.k*P.x, y: s.oy - s.k*P.y });
+  const enCurva = (ang, s) => aP(MA.puntoEn(ang, R), s);
+  const aMundo = (px, py) => { const s = escala(); return { x:(px - s.ox)/s.k, y:(s.oy - py)/s.k }; };
+  const unit = (p, q) => { const dx = q.x - p.x, dy = q.y - p.y, L = Math.hypot(dx, dy) || 1; return { x:dx/L, y:dy/L }; };
+  const grosor = (k, base) => E.hl === k ? base + 2.5 : base;
+
+  // Arco de la circunferencia (en el mundo, antihorario desde 'ini' una medida 'd'), en pantalla.
+  function trazoArco(s, ini, d, color, ancho, f){
+    const o = aP({ x:0, y:0 }, s), rp = R*s.k, fin = ini + d*(f === undefined ? 1 : f);
+    ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = ancho; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.arc(o.x, o.y, rp, -ini*GR, -fin*GR, true); ctx.stroke(); ctx.restore();
+  }
+  // Si el rótulo cae cerca de 'evitar' (el vértice Q y su medida), se pone por dentro de la circunferencia.
+  function rotuloArco(c, s, ini, d, texto, color, fuera, evitar){
+    const m = ini + d/2, o = aP({ x:0, y:0 }, s);
+    let rp = R*s.k + (fuera || 20);
+    if (evitar && Math.hypot(o.x + rp*Math.cos(m*GR) - evitar.x, o.y - rp*Math.sin(m*GR) - evitar.y) < 64) rp = R*s.k - 26;
+    rotulo(ctx, c, o.x + rp*Math.cos(m*GR), o.y - rp*Math.sin(m*GR), texto, color, 'center', 800, 14);
+  }
+  // Marca de un ángulo en V entre las direcciones hacia X e Y (la abertura menor de 180°), con su rótulo.
+  function marcaAngulo(c, V, X, Y, color, texto, radio, f, cuadrado){
+    const a1 = Math.atan2(X.y - V.y, X.x - V.x), a2 = Math.atan2(Y.y - V.y, Y.x - V.x);
+    let d = a2 - a1; while (d > Math.PI) d -= 2*Math.PI; while (d < -Math.PI) d += 2*Math.PI;
+    const r = radio || 26, ff = f === undefined ? 1 : f;
+    ctx.save(); ctx.strokeStyle = color; ctx.fillStyle = color;
+    if (cuadrado){
+      const u = unit(V, X), w = unit(V, Y), t = 12;
+      ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(V.x + u.x*t, V.y + u.y*t); ctx.lineTo(V.x + (u.x + w.x)*t, V.y + (u.y + w.y)*t); ctx.lineTo(V.x + w.x*t, V.y + w.y*t); ctx.stroke();
+    } else {
+      ctx.globalAlpha = .22; ctx.beginPath(); ctx.moveTo(V.x, V.y); ctx.arc(V.x, V.y, r, a1, a1 + d*ff, d < 0); ctx.closePath(); ctx.fill();
+      ctx.globalAlpha = 1; ctx.lineWidth = 2.4; ctx.beginPath(); ctx.arc(V.x, V.y, r, a1, a1 + d*ff, d < 0); ctx.stroke();
+    }
+    ctx.restore();
+    if (texto && ff >= 1){
+      const m = a1 + d/2, rr = r + 18;
+      rotulo(ctx, c, V.x + Math.cos(m)*rr, V.y + Math.sin(m)*rr, texto, color, 'center', 800, 14);
+    }
+  }
+  function punto(c, P, t, grande, activo, desde, dist){
+    if (grande){
+      ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = activo ? .18 : .09; ctx.beginPath(); ctx.arc(P.x, P.y, 20, 0, 7); ctx.fill(); ctx.restore();
+      ctx.fillStyle = c.card; ctx.strokeStyle = c.ink; ctx.lineWidth = 2.6; ctx.beginPath(); ctx.arc(P.x, P.y, 9, 0, 7); ctx.fill(); ctx.stroke();
+    } else { ctx.fillStyle = c.ink; ctx.beginPath(); ctx.arc(P.x, P.y, 4.5, 0, 7); ctx.fill(); }
+    if (t){ const u = unit(desde, P), d = dist || (grande ? 24 : 16); rotulo(ctx, c, P.x + u.x*d, P.y + u.y*d, t, c.ink, 'center', 800, 15); }
+  }
+  // Recta que pasa por p y q, prolongada 'm' píxeles más allá de cada extremo indicado.
+  function recta(p, q, color, ancho, mp, mq, guiones){
+    const u = unit(p, q);
+    ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = ancho; ctx.lineCap = 'round'; if (guiones) ctx.setLineDash(guiones);
+    linea(ctx, { x:p.x - u.x*(mp || 0), y:p.y - u.y*(mp || 0) }, { x:q.x + u.x*(mq || 0), y:q.y + u.y*(mq || 0) }); ctx.restore();
+  }
+
+  E.dibujar = () => {
+    if (!W) return;
+    const c = E.c = colores(), s = escala(), v = E.ver;
+    ctx.clearRect(0, 0, W, H); ctx.fillStyle = c.paper; ctx.fillRect(0, 0, W, H);
+    const O = aP({ x:0, y:0 }, s), rp = R*s.k;
+    let g; try { g = E.geo(); } catch (e) { return; }
+    if (v.circulo && v.detras && E.modo === 'inscrito'){
+      // la cancha: el arco que pasa por P en tinta; el de detrás de la portería, gris punteado
+      const [i0, d0] = arcoSin(E.a, E.b, E.p), [i1, d1] = [i0 + d0, 360 - d0];
+      ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.5; ctx.setLineDash([5, 6]); ctx.beginPath(); ctx.arc(O.x, O.y, rp, -i0*GR, -(i0 + d0)*GR, true); ctx.stroke(); ctx.restore();
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(O.x, O.y, rp, -i1*GR, -(i1 + d1)*GR, true); ctx.stroke(); ctx.restore();
+    } else if (v.circulo){ ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(O.x, O.y, rp, 0, 7); ctx.stroke(); ctx.restore(); }
+    if (E.modo === 'inscrito') dibujarInscrito(c, s, g, O);
+    else if (E.modo === 'secantes') dibujarSecantes(c, s, g, O);
+    else dibujarSector(c, s, g, O);
+    if (v.O && v.circulo){
+      ctx.fillStyle = c.ink; ctx.beginPath(); ctx.arc(O.x, O.y, 3.5, 0, 7); ctx.fill();
+      // el rótulo O se calla si Q está encima (modo secantes)
+      const qs = E.modo === 'secantes' ? aP(E.q, s) : (E.q2 && E.q2.ang === undefined && v.q2 ? aP(E.q2, s) : null);
+      if (!qs || Math.hypot(qs.x - O.x, qs.y - O.y) > 44) rotulo(ctx, c, O.x - 12, O.y + 12, 'O', c.muted, 'center', 700, 13);
+    }
+  };
+
+  function dibujarInscrito(c, s, g, O){
+    const v = E.ver, A = enCurva(E.a, s), B = enCurva(E.b, s), P = enCurva(E.p, s);
+    // el arco que abarca ∠APB: el que no contiene a P
+    const [ini, d] = arcoSin(E.a, E.b, E.p);
+    // ángulo central: del arco que abarca P, o el menor (el ∠AOB de siempre) si así se pide
+    if (v.central){
+      // el ángulo central ∠AOB es siempre el menor de 180° (el arco mayor se lee solo en el arco morado)
+      const [ci, cd] = MA.ccw(E.a, E.b) <= 180 ? [E.a, MA.ccw(E.a, E.b)] : [E.b, 360 - MA.ccw(E.a, E.b)];
+      ctx.save(); ctx.fillStyle = c.cen; ctx.globalAlpha = E.hl === 'cen' ? c.relleno*2.2 : c.relleno;
+      ctx.beginPath(); ctx.moveTo(O.x, O.y); ctx.arc(O.x, O.y, R*s.k, -ci*GR, -(ci + cd)*GR, true); ctx.closePath(); ctx.fill(); ctx.restore();
+      ctx.save(); ctx.strokeStyle = c.cen; ctx.lineWidth = grosor('cen', 2.6); linea(ctx, O, A); linea(ctx, O, B); ctx.restore();
+      const rr = 24; ctx.save(); ctx.strokeStyle = c.cen; ctx.lineWidth = 2.2; ctx.beginPath(); ctx.arc(O.x, O.y, rr, -ci*GR, -(ci + cd)*GR, true); ctx.stroke(); ctx.restore();
+      if (v.medCen){ const m = (ci + cd/2)*GR; rotulo(ctx, c, O.x + Math.cos(m)*(rr + 22), O.y - Math.sin(m)*(rr + 22), gr(cd), c.cen, 'center', 800, 14); }
+    }
+    if (v.arco){
+      trazoArco(s, ini, d, c.arco, grosor('arco', 6));
+      if (v.medArco) rotuloArco(c, s, ini, d, gr(g.ins.arcoAbarcado), c.arco, 22);
+    }
+    if (v.tangente){
+      // la tangente en A: perpendicular al radio OA
+      const t = { x:-Math.sin(E.a*GR), y:Math.cos(E.a*GR) }, L = Math.hypot(W, H);
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.8;
+      linea(ctx, { x:A.x - t.x*L, y:A.y + t.y*L }, { x:A.x + t.x*L, y:A.y - t.y*L }); ctx.restore();
+      rotulo(ctx, c, A.x - t.x*70 + 10, A.y + t.y*70 - 12, 'tangente', c.muted, 'center', 700, 12);
+      if (!v.ins){ ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.8; linea(ctx, A, B); ctx.restore(); }
+    }
+    if (v.semi && g.semi){
+      // del lado del arco AB menor (la tangente apunta hacia B)
+      const t = { x:-Math.sin(E.a*GR), y:Math.cos(E.a*GR) }, sg = MA.ccw(E.a, E.b) <= 180 ? 1 : -1;
+      const T = { x:A.x + sg*t.x*60, y:A.y - sg*t.y*60 };
+      ctx.save(); ctx.strokeStyle = c.ins; ctx.lineWidth = grosor('ins', 3); ctx.lineCap = 'round'; linea(ctx, A, B); linea(ctx, A, T); ctx.restore();
+      marcaAngulo(c, A, T, B, c.ins, '', 30, 1);
+      // el rótulo va del lado de afuera de la tangente, lejos del arco AB
+      const u = unit(A, T), n0 = { x:A.x + u.x*44, y:A.y + u.y*44 }, o = unit(O, A);
+      rotulo(ctx, c, n0.x + o.x*18, n0.y + o.y*18, v.medIns ? gr(g.semi.angulo) : '?', c.ins, 'center', 800, 14);
+    }
+    // el segundo vértice Q (cuadrilátero o cancha)
+    if (v.q2 && g.q2){
+      const Q = E.q2.ang !== undefined ? enCurva(E.q2.ang, s) : aP(E.q2, s);
+      ctx.save(); ctx.strokeStyle = c.Q; ctx.lineWidth = grosor('Q', 3); ctx.lineCap = 'round'; linea(ctx, Q, A); linea(ctx, Q, B); ctx.restore();
+      marcaAngulo(c, Q, A, B, c.Q, v.medQ ? gr(g.q2.angulo) : '?', 24, E.prog.Q);
+      punto(c, Q, 'Q', E.mover.includes('Q'), arrastrando === 'Q' || sobre === 'Q', E.q2.ang !== undefined ? O : { x:Q.x, y:Q.y + 1 }, 22);
+    }
+    if (v.ins){
+      ctx.save(); ctx.strokeStyle = c.ins; ctx.lineWidth = grosor('ins', 3); ctx.lineCap = 'round'; linea(ctx, P, A); linea(ctx, P, B); ctx.restore();
+      const recto = g.ins.recto && v.recto && v.medIns;
+      marcaAngulo(c, P, A, B, c.ins, v.medIns ? gr(g.ins.angulo) : '?', 26, E.prog.ins, recto);
+    } else if (!v.semi && !v.tangente && v.q2){ ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; linea(ctx, A, B); ctx.restore(); }
+    // otros puntos de la curva que ven AB con el mismo ángulo
+    if (v.testigos) for (const t of v.testigos){
+      const X = enCurva(t, s), ins = MA.inscrito(E.a, E.b, t, R);
+      ctx.save(); ctx.strokeStyle = c.ins; ctx.globalAlpha = .45; ctx.lineWidth = 1.4; linea(ctx, X, A); linea(ctx, X, B); ctx.restore();
+      ctx.fillStyle = c.ins; ctx.beginPath(); ctx.arc(X.x, X.y, 4, 0, 7); ctx.fill();
+      const u = unit(O, X); rotulo(ctx, c, X.x + u.x*20, X.y + u.y*20, gr(ins.porCoordenadas), c.ins, 'center', 800, 12);
+    }
+    if (v.porteria){
+      // la portería: el segmento AB, más grueso
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 4; ctx.lineCap = 'round'; linea(ctx, A, B); ctx.restore();
+    }
+    const centro = v.circulo ? O : { x:(A.x + B.x)/2, y:(A.y + B.y)/2 - 1 };
+    punto(c, A, 'A', E.mover.includes('A'), arrastrando === 'A' || sobre === 'A', centro);
+    punto(c, B, 'B', E.mover.includes('B'), arrastrando === 'B' || sobre === 'B', centro);
+    if (!v.semi || E.textos.verP) punto(c, P, 'P', E.mover.includes('P'), arrastrando === 'P' || sobre === 'P', v.circulo ? O : { x:P.x, y:P.y + 1 });
+  }
+
+  function dibujarSecantes(c, s, g, O){
+    const v = E.ver, r = g.sec, an = r.angulos;
+    if (!r.puntos.A || !r.puntos.B) return;   // semiinscrito: no pasa con rectas hacia A y hacia B
+    const Q = aP(E.q, s), PA = aP(r.puntos.A, s), PB = aP(r.puntos.B, s), PC = aP(r.puntos.C || r.puntos.A, s), PD = aP(r.puntos.D || r.puntos.B, s);
+    // las rectas, en tinta: de Q a través de sus dos cortes, un poco más allá
+    if (r.tipo === 'interior'){ recta(PC, PA, c.ink, 1.8, 10, 10); recta(PD, PB, c.ink, 1.8, 10, 10); }
+    else { recta(Q, PA, c.ink, 1.8, 0, 10); recta(Q, PB, c.ink, 1.8, 0, 10); }
+    // los arcos: entre los cortes de cada recta (lejano y cercano, o entre los lados y el opuesto)
+    let a1 = null, a2 = null;
+    if (r.tipo === 'interior' || (r.tipo === 'exterior' && r.subtipo === 'dos secantes')){ a1 = arcoSin(an.A, an.B, an.C); a2 = arcoSin(an.C, an.D, an.A); }
+    else if (r.subtipo === 'secante y tangente'){ const t1 = r.tangentes[0]; a1 = t1 ? arcoSin(an.A, an.B, an.D) : arcoSin(an.A, an.B, an.C); a2 = t1 ? arcoSin(an.C, an.D, an.B) : arcoSin(an.C, an.D, an.A); }
+    else if (r.subtipo === 'dos tangentes'){ const d = MA.ccw(an.A, an.B); a2 = d <= 180 ? [an.A, d] : [an.B, 360 - d]; a1 = d <= 180 ? [an.B, 360 - d] : [an.A, d]; }
+    else if (r.tipo === 'inscrito'){ a1 = arcoSin(an.A, an.B, an.Q); }
+    if (v.lej && a1){ trazoArco(s, a1[0], a1[1], c.arco, grosor('arco', 6)); if (v.medArcos) rotuloArco(c, s, a1[0], a1[1], gr(r.arco1), c.arco, 22, Q); }
+    if (v.cer && a2){ trazoArco(s, a2[0], a2[1], c.arco2, grosor('arco2', 6)); if (v.medArcos) rotuloArco(c, s, a2[0], a2[1], gr(r.arco2), c.arco2, 22, Q); }
+    // radios a los puntos de tangencia, perpendiculares a las tangentes
+    if (v.radiosT && r.subtipo === 'dos tangentes'){
+      ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.6; ctx.setLineDash([5, 5]); linea(ctx, O, PA); linea(ctx, O, PB); ctx.restore();
+      marcaAngulo(c, PA, O, Q, c.muted, '', 10, 1, true); marcaAngulo(c, PB, O, Q, c.muted, '', 10, 1, true);
+    }
+    // el ángulo en Q
+    if (v.angQ){
+      ctx.save(); ctx.strokeStyle = c.Q; ctx.lineWidth = grosor('Q', 3); ctx.lineCap = 'round';
+      linea(ctx, Q, aP(MA.puntoEn(E.a, R), s)); linea(ctx, Q, aP(MA.puntoEn(E.b, R), s)); ctx.restore();
+      marcaAngulo(c, Q, aP(MA.puntoEn(E.a, R), s), aP(MA.puntoEn(E.b, R), s), c.Q, v.medQ ? gr(r.angulo) : '?', 28, E.prog.Q);
+    }
+    // puntos: A y B son los de las rectas; C y D, los otros cortes
+    const etiquetas = [];
+    const Ah = aP(MA.puntoEn(E.a, R), s), Bh = aP(MA.puntoEn(E.b, R), s);
+    const otro = (P1, P2, H0) => (Math.hypot(P1.x - H0.x, P1.y - H0.y) < Math.hypot(P2.x - H0.x, P2.y - H0.y) ? P2 : P1);
+    if (r.tipo !== 'inscrito' && r.tipo !== 'semiinscrito'){
+      const tan1 = r.tipo === 'exterior' && r.tangentes[0], tan2 = r.tipo === 'exterior' && r.tangentes[1];
+      if (!tan1) etiquetas.push([otro(PA, PC, Ah), 'C']);
+      if (!tan2) etiquetas.push([otro(PB, PD, Bh), 'D']);
+    }
+    for (const [P0, t] of etiquetas) punto(c, P0, t, false, false, O);
+    punto(c, Ah, 'A', E.mover.includes('A'), arrastrando === 'A' || sobre === 'A', O);
+    punto(c, Bh, 'B', E.mover.includes('B'), arrastrando === 'B' || sobre === 'B', O);
+    const dq = Math.hypot(Q.x - O.x, Q.y - O.y) < 4 ? { x:Q.x - 1, y:Q.y - 1 } : O;
+    // el rótulo de Q va del lado contrario a la abertura del ángulo
+    const mA = unit(Q, Ah), mB = unit(Q, Bh), bis = { x:Q.x + (mA.x + mB.x)*10, y:Q.y + (mA.y + mB.y)*10 };
+    punto(c, Q, 'Q', E.mover.includes('Q'), arrastrando === 'Q' || sobre === 'Q', Math.hypot(bis.x - Q.x, bis.y - Q.y) > 1 ? bis : dq, 24);
+  }
+
+  function dibujarSector(c, s, g, O){
+    const v = E.ver, t0 = E.sec.t0, th = E.sec.theta, rp = R*s.k;
+    const P1 = enCurva(t0, s), P2 = enCurva(t0 + th, s);
+    if (v.partes){
+      ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; ctx.setLineDash([4, 5]);
+      for (let k = 1; k < v.partes; k++) linea(ctx, O, enCurva(t0 + th*k, s)); ctx.restore();
+      for (let k = 1; k < v.partes; k++){ const m = (t0 + th*(k + .5))*GR; rotulo(ctx, c, O.x + Math.cos(m)*rp*.62, O.y - Math.sin(m)*rp*.62, `${k + 1}`, c.muted, 'center', 700, 12); }
+    }
+    if (v.S && E.prog.S > 0){
+      ctx.save(); ctx.fillStyle = c.S; ctx.globalAlpha = (E.hl === 'S' ? 2 : 1.4)*c.relleno; ctx.beginPath(); ctx.moveTo(O.x, O.y);
+      ctx.arc(O.x, O.y, rp*E.prog.S, -t0*GR, -(t0 + th)*GR, true); ctx.closePath(); ctx.fill(); ctx.restore();
+      // en el celular, S va solo en la lectura (no cabe junto a θ)
+      if (v.medS && E.prog.S >= 1 && W >= 560){ const m = (t0 + th/2)*GR; rotulo(ctx, c, O.x + Math.cos(m)*rp*.74, O.y - Math.sin(m)*rp*.74, `S = ${piTxt(g.S.pi)} ${E.sec.unidad}²`, c.S, 'center', 800, 13); }
+    }
+    if (v.rad){
+      ctx.save(); ctx.strokeStyle = c.r; ctx.lineWidth = grosor('r', 3); ctx.lineCap = 'round'; linea(ctx, O, P1); linea(ctx, O, P2); ctx.restore();
+      const m = { x:(O.x + P1.x)/2, y:(O.y + P1.y)/2 }, u = unit(O, P1);
+      rotulo(ctx, c, m.x - u.y*16, m.y + u.x*16, `r = ${E.sec.rTexto} ${E.sec.unidad}`, c.r, 'center', 800, 13);
+    }
+    if (v.theta){
+      const rr = 30; ctx.save(); ctx.strokeStyle = c.cen; ctx.fillStyle = c.cen; ctx.globalAlpha = .2; ctx.beginPath(); ctx.moveTo(O.x, O.y);
+      ctx.arc(O.x, O.y, rr, -t0*GR, -(t0 + th)*GR, true); ctx.closePath(); ctx.fill(); ctx.globalAlpha = 1; ctx.lineWidth = 2.4;
+      ctx.beginPath(); ctx.arc(O.x, O.y, rr, -t0*GR, -(t0 + th)*GR, true); ctx.stroke(); ctx.restore();
+      const m = (t0 + th/2)*GR; rotulo(ctx, c, O.x + Math.cos(m)*(rr + 20), O.y - Math.sin(m)*(rr + 20), `θ = ${gr(th)}`, c.cen, 'center', 800, 13);
+    }
+    if (v.l){
+      trazoArco(s, t0, th, c.l, grosor('l', 6), E.prog.l);
+      if (E.prog.l >= 1) rotuloArco(c, s, t0, th, v.medL ? `ℓ = ${piTxt(g.l.pi)} ${E.sec.unidad}` : 'ℓ = ?', c.l, 30);
+    }
+    punto(c, P1, '', false, false, O); punto(c, P2, '', false, false, O);
+  }
+  function leyenda(){
+    const it = (k, t, sq) => `<span><i class="${sq ? 'sq' : ''}" style="background:var(--c-${k})"></i>${t}</span>`;
+    const v = E.ver, l = [];
+    if (E.modo === 'inscrito'){
+      if (v.arco){ let mayor = false; try { mayor = E.geo().ins.arcoAbarcado > 180; } catch (e) {} l.push(it('arco', mayor ? 'arco mayor AB, el que abarca ∠APB' : 'arco AB que abarca ∠APB')); }
+      if (v.central) l.push(it('cen', 'ángulo central ∠AOB', true));
+      if (v.ins || v.semi) l.push(it('ins', v.semi ? 'ángulo semiinscrito (límite de ∠APB)' : v.circulo ? 'ángulo inscrito ∠APB' : 'ángulo ∠APB'));
+      if (v.q2) l.push(it('Q', 'ángulo ∠AQB'));
+    } else if (E.modo === 'secantes'){
+      let t1 = 'arco lejano', t2 = 'arco cercano';
+      try { const r = E.geo().sec; if (r.tipo === 'interior'){ t1 = 'arco entre los lados de ∠AQB'; t2 = 'arco opuesto (entre C y D)'; } else if (r.tipo !== 'exterior'){ t1 = 'arco que abarca ∠AQB'; } } catch (e) {}
+      if (v.lej) l.push(it('arco', t1));
+      if (v.cer) l.push(it('arco2', t2));
+      if (v.angQ) l.push(it('Q', 'ángulo ∠AQB'));
+    } else {
+      if (v.theta) l.push(it('cen', 'θ · ángulo central', true));
+      if (v.rad) l.push(it('r', 'r · radio'));
+      if (v.l) l.push(it('l', 'ℓ · longitud del arco'));
+      if (v.S) l.push(it('S', 'S · área del sector', true));
+    }
+    return l.join('');
+  }
+  // Qué muestra el dibujo, para lectores de pantalla (cambia con el modo)
+  function etiquetaLienzo(){
+    const v = E.ver;
+    if (E.modo === 'secantes') return 'Circunferencia de centro O y dos rectas que se cortan en Q: una pasa por A y la otra por B; C y D son los otros puntos donde cortan a la circunferencia' + (E.mover.includes('Q') ? '. Q se puede arrastrar' : '');
+    if (E.modo === 'sector') return 'Sector circular de centro O, con su ángulo central θ, sus dos radios r y su arco de longitud ℓ';
+    if (v.porteria) return v.circulo ? 'Portería AB, el punto P y la circunferencia que pasa por A, B y P; Q se puede arrastrar de este lado de la portería' : 'Portería AB vista desde el punto P';
+    const extra = [v.tangente ? 'la tangente en A' : '', v.q2 ? 'el punto Q, también en la circunferencia' : ''].filter(Boolean).join(' y ');
+    return 'Circunferencia de centro O con los puntos A, B y P' + (extra ? ', y ' + extra : '') + (E.mover.length ? `. Se pueden arrastrar: ${E.mover.join(', ')}` : '');
+  }
+  E.leyenda = () => { if (idLey) document.getElementById(idLey).innerHTML = leyenda(); };
+
+  // Lecturas y descripción para lectores de pantalla: dicen solo lo que ya se puede ver.
+  E.avisar = () => {
+    let g; try { g = E.geo(); } catch (e) { return; }
+    const v = E.ver, L = [], d = [];
+    const caja = (k, t, val) => `<div class="lectura" style="--k:var(--c-${k})"><span>${t}</span><b>${val}</b></div>`;
+    for (const k of E.lect){
+      if (k === 'arco'){ L.push(caja('arco', 'Arco AB', gr(g.ins.arcoAbarcado))); d.push(`El arco AB que abarca el ángulo en P mide ${gr(g.ins.arcoAbarcado)}.`); }
+      if (k === 'cen'){ const x = g.cen.angulo; L.push(caja('cen', 'Central ∠AOB', gr(x))); d.push(`Ángulo central ${gr(x)}.`); }
+      if (k === 'ins'){ L.push(caja('ins', '∠APB', v.medIns ? gr(g.ins.angulo) : '?')); if (v.medIns) d.push(`Ángulo APB ${gr(g.ins.angulo)}.`); }
+      if (k === 'semi' && g.semi){ L.push(caja('ins', 'Semiinscrito', gr(g.semi.angulo))); d.push(`Ángulo entre la tangente y la cuerda ${gr(g.semi.angulo)}.`); }
+      if (k === 'q2' && g.q2){ L.push(caja('Q', '∠AQB', v.medQ ? gr(g.q2.angulo) : '?')); if (v.medQ) d.push(`Ángulo AQB ${gr(g.q2.angulo)}.`); }
+      if (k === 'arco1' && g.sec){ const r = g.sec, t1 = r.tipo === 'interior' ? 'Arco AB' : r.tipo === 'exterior' ? 'Arco lejano' : 'Arco que abarca'; L.push(caja('arco', t1, gr(r.arco1))); d.push(`${t1} ${gr(r.arco1)}.`); }
+      if (k === 'arco2' && g.sec && g.sec.arco2 !== null){ const r = g.sec, t2 = r.tipo === 'interior' ? 'Arco CD' : 'Arco cercano'; L.push(caja('arco2', t2, gr(r.arco2))); d.push(`${t2} ${gr(r.arco2)}.`); }
+      if (k === 'Q' && g.sec){ L.push(caja('Q', '∠AQB', v.medQ ? gr(g.sec.angulo) : '?')); if (v.medQ) d.push(`Ángulo AQB ${gr(g.sec.angulo)}.`); }
+      if (k === 'donde' && g.sec){ const t = { dentro:'Dentro del círculo', fuera:'Fuera del círculo', sobre:'Sobre la circunferencia' }[g.sec.posicion]; L.push(`<div class="lectura tipo"><span>Q está</span><b>${t}</b></div>`); d.push(`Q está ${t.toLowerCase()}.`); }
+      if (k === 'theta'){ L.push(caja('cen', 'Ángulo θ', gr(E.sec.theta))); d.push(`Sector de ${gr(E.sec.theta)}.`); }
+      if (k === 'r'){ L.push(caja('r', 'Radio r', `${E.sec.rTexto} ${E.sec.unidad}`)); d.push(`Radio ${E.sec.rTexto} ${E.sec.unidad}.`); }
+      if (k === 'l'){ L.push(caja('l', 'Longitud ℓ', v.medL ? `${piTxt(g.l.pi)} ${E.sec.unidad}` : '?')); if (v.medL) d.push(`Longitud del arco ${piTxt(g.l.pi)} ${E.sec.unidad}.`); }
+      if (k === 'S'){ L.push(caja('S', 'Sector S', v.medS ? `${piTxt(g.S.pi)} ${E.sec.unidad}²` : '?')); if (v.medS) d.push(`Área del sector ${piTxt(g.S.pi)} ${E.sec.unidad} cuadrados.`); }
+    }
+    if (idLect) document.getElementById(idLect).innerHTML = L.join('');
+    E.leyenda();   // dentro o fuera, arco mayor o menor: cambian los nombres
+    cv.setAttribute('aria-label', etiquetaLienzo());
+    if (idDesc) document.getElementById(idDesc).textContent = d.join(' ');
+    if (E.alCambiar) E.alCambiar(g);
+  };
+
+  // ----- arrastrar (táctil, ratón y teclado) -----
+  // Cada punto arrastrable pasa por 'probar': si la posición nueva no sirve (P sobre A, Q sobre la recta AB…), no se mueve.
+  function probar(nom, val){
+    const viejo = { a:E.a, b:E.b, p:E.p, q:{ ...E.q }, q2:E.q2 && { ...E.q2 } };
+    const lejos = (x, y, m) => { const d = MA.ccw(x, y); return d >= m && 360 - d >= m; };
+    if (nom === 'P'){
+      const p = Math.round(val);
+      if (!lejos(p, E.a, E.ladoP === null ? 3 : 6) || !lejos(p, E.b, E.ladoP === null ? 3 : 6)) return false;
+      if (E.ladoP !== null && E.restringirP !== false && enRec(E.a, E.b, p) !== E.ladoP) return false;
+      E.p = p;
+    } else if (nom === 'A' || nom === 'B'){
+      const x = Math.round(val);
+      if (nom === 'A'){ if (!lejos(x, E.b, 8) || (E.modo === 'inscrito' && !lejos(x, E.p, 4))) return false; E.a = x; }
+      else {
+        if (E.limB && !E.limB(x)) return false;
+        if (!lejos(x, E.a, 8) || (E.modo === 'inscrito' && !lejos(x, E.p, 4))) return false; E.b = x;
+      }
+      if (E.modo === 'inscrito' && E.restringirP === false) E.ladoP = null;
+    } else if (nom === 'Q'){
+      if (E.modo === 'inscrito' && E.q2 && E.q2.ang !== undefined){
+        const q = Math.round(val);
+        if (!lejos(q, E.a, 6) || !lejos(q, E.b, 6) || enRec(E.a, E.b, q) === E.ladoP) return false;
+        E.q2 = { ang:q };
+      } else {
+        const p = { x:Math.round(val.x*10)/10, y:Math.round(val.y*10)/10 }, c = E.caja;
+        p.x = clamp(p.x, c.x0 + .3, c.x1 - .3); p.y = clamp(p.y, c.y0 + .3, c.y1 - .3);
+        const A = MA.puntoEn(E.a, R), B = MA.puntoEn(E.b, R);
+        if (Math.hypot(p.x - A.x, p.y - A.y) < .35 || Math.hypot(p.x - B.x, p.y - B.y) < .35) return false;
+        if (E.modo === 'inscrito'){
+          // en la cancha, Q se queda del mismo lado de la portería que P (no cruza la recta AB)
+          const lado = X => Math.sign((B.x - A.x)*(X.y - A.y) - (B.y - A.y)*(X.x - A.x));
+          if (lado(p) !== lado(MA.puntoEn(E.p, R))) return false;
+          E.q2 = p;
+        } else E.q = p;
+      }
+    }
+    try { E.geo(); } catch (e) { Object.assign(E, { a:viejo.a, b:viejo.b, p:viejo.p, q:viejo.q, q2:viejo.q2 }); return false; }
+    return true;
+  }
+  E.poner = (nom, val) => { if (probar(nom, val)){ E.dibujar(); E.avisar(); } };
+  function posicion(nom){
+    const s = escala();
+    if (nom === 'A') return enCurva(E.a, s);
+    if (nom === 'B') return enCurva(E.b, s);
+    if (nom === 'P') return enCurva(E.p, s);
+    if (nom === 'Q') return E.modo === 'inscrito' ? (E.q2.ang !== undefined ? enCurva(E.q2.ang, s) : aP(E.q2, s)) : aP(E.q, s);
+  }
+  // El más cercano de los puntos arrastrables, si está a menos de r píxeles.
+  function cercano(p, r){
+    let mejor = null, dm = r;
+    for (const n of E.mover){ const q = posicion(n), d = Math.hypot(p.x - q.x, p.y - q.y); if (d < dm){ dm = d; mejor = n; } }
+    return mejor;
+  }
+  function mover(nom, px, py){
+    const w = aMundo(px, py);
+    if (nom === 'Q' && !(E.modo === 'inscrito' && E.q2 && E.q2.ang !== undefined)) E.poner('Q', w);
+    else { if (Math.hypot(w.x, w.y) < .2) return; E.poner(nom, MA.proyectar(w, R).angulo); }
+  }
+  const local = e => { const r = cv.getBoundingClientRect(); return { x:e.clientX - r.left, y:e.clientY - r.top }; };
+  // Con el dedo, el dibujo deja desplazar la página (touch-action: pan-y); solo un toque que empieza cerca de un
+  // punto arrastrable (radio de 40 px) se queda con el gesto. Con ratón, radio de 32 px.
+  cv.addEventListener('touchstart', e => {
+    if (!E.mover.length || E.ocupado || e.touches.length !== 1) return;
+    const r = cv.getBoundingClientRect(), t = e.touches[0];
+    if (cercano({ x:t.clientX - r.left, y:t.clientY - r.top }, 40)) e.preventDefault();
+  }, { passive:false });
+  cv.addEventListener('pointerdown', e => {
+    if (!E.mover.length || E.ocupado) return;
+    const n = cercano(local(e), e.pointerType === 'mouse' ? 32 : 40); if (!n) return;
+    arrastrando = n; E.foco = n; cv.setPointerCapture(e.pointerId); e.preventDefault(); cv.focus({ preventScroll:true }); E.dibujar();
+  }, { passive:false });
+  cv.addEventListener('pointermove', e => {
+    const p = local(e);
+    if (arrastrando){ mover(arrastrando, p.x, p.y); return; }
+    const n = E.mover.length && !E.ocupado ? cercano(p, 32) : null;
+    if (n !== sobre){ sobre = n; cv.style.cursor = n ? 'grab' : ''; E.dibujar(); }
+  });
+  const soltar = () => { if (arrastrando){ const n = arrastrando; arrastrando = null; E.dibujar(); if (E.alSoltar) E.alSoltar(n); } };
+  cv.addEventListener('pointerup', soltar); cv.addEventListener('pointercancel', soltar);
+  cv.addEventListener('keydown', e => {
+    if (!E.mover.length || E.ocupado) return;
+    const k = e.key.toUpperCase();
+    if (E.mover.includes(k) && k.length === 1){ E.foco = k; e.preventDefault(); return; }
+    const d = { ArrowLeft:[-1, 0], ArrowRight:[1, 0], ArrowUp:[0, 1], ArrowDown:[0, -1] }[e.key];
+    if (!d || !E.foco) return;
+    e.preventDefault();
+    const n = E.foco;
+    if (n === 'Q' && !(E.modo === 'inscrito' && E.q2 && E.q2.ang !== undefined)){ const q = E.modo === 'inscrito' ? E.q2 : E.q; E.poner('Q', { x:q.x + d[0]*.1, y:q.y + d[1]*.1 }); }
+    else { const actual = n === 'A' ? E.a : n === 'B' ? E.b : n === 'P' ? E.p : E.q2.ang; E.poner(n, actual + (d[0] || d[1])); }
+    if (E.alSoltar) E.alSoltar(n);
+  });
+  return E;
+}
+// π como coeficiente: 2 → "2π", 1 → "π", 0,5 → "0,5π"
+function piTxt(k){ return (Math.abs(k - 1) < 1e-9 ? '' : fmt(k, 2)) + 'π'; }
+// Opciones de predicción (las mismas en los dos modos)
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+// Tabla de posiciones: cada fila es una posición del punto con el ángulo que da el motor
+function tablaHTML(filas, cols){
+  if (!filas.length) return `<div class="tabla-caja"><table class="tabla"><thead><tr>${cols.map(c => `<th scope="col">${c}</th>`).join('')}</tr></thead><tbody><tr><td class="vacia" colspan="${cols.length}">Todavía no hay posiciones anotadas.</td></tr></tbody></table></div>`;
+  return `<div class="tabla-caja"><table class="tabla"><thead><tr>${cols.map(c => `<th scope="col">${c}</th>`).join('')}</tr></thead><tbody>${filas.map((f, i) => `<tr><td>${i + 1}</td>${f.map(x => `<td class="${x.num ? 'num' : ''}" ${x.k ? `style="color:var(--c-${x.k})"` : ''}>${x.t}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+}
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1');
+const S = { step:0, max:0, pred:{}, hecho:{}, ocupado:false, x:null, tabla:[], tablaX:[] };
+
+// Figuras de la escena (todas las medidas salen del motor)
+const INS = { a:220, b:320, p:90 };
+const EXT = MA.exteriorConArcos(110, 30, R, 0), INT = MA.interiorConArcos(110, 30, R, 0);
+const CAJA_SEC = { x0:-9.4, x1:7, y0:-6.2, y1:6.2 };
+const LA = MA.longitudArco(60, 6), SE = MA.sector(60, 6);
+const lugar = g => g.ins.pEnArco === 'mayor' ? 'arco mayor' : g.ins.pEnArco === 'menor' ? 'arco menor' : 'semicircunferencia';
+
+function cfgIns(o){ E.config(Object.assign({ modo:'inscrito', ...INS, caja:{ x0:-6.6, x1:6.6, y0:-6.6, y1:6.6 } }, o)); }
+function cfgSec(fig, o){
+  const k = fig.construccion;
+  E.config(Object.assign({ modo:'secantes', a:k.A, b:k.B, q:fig.Q, caja:CAJA_SEC }, o));
+}
+function vivoIns(g){
+  const d = $('vivo'); if (!d) return;
+  const extra = g.ins.recto ? '<span class="note">AB es un diámetro: el ángulo es recto</span>' : `<span class="note">P está en el ${lugar(g)}; el arco que abarca es el que no contiene a P</span>`;
+  d.innerHTML = `${ins_('∠APB')} = ${fr(arco_('arco AB'), '2')} = ${fr(arco_(gr(g.ins.arcoAbarcado)), '2')} = ${ins_(gr(g.ins.angulo))}${extra}`;
+}
+function vivoSec(g){
+  const d = $('vivo'); if (!d || !g.sec) return;
+  const r = g.sec;
+  if (r.tipo === 'interior') d.innerHTML = `${Q_('∠AQB')} = ${fr(`${arco_('arco AB')} + ${arco2_('arco CD')}`, '2')} = ${fr(`${arco_(gr(r.arco1))} + ${arco2_(gr(r.arco2))}`, '2')} = ${Q_(gr(r.angulo))}<span class="note">Q dentro: se suman los dos arcos</span>`;
+  else if (r.tipo === 'exterior') d.innerHTML = `${Q_('∠AQB')} = ${fr(`${arco_('lejano')} − ${arco2_('cercano')}`, '2')} = ${fr(`${arco_(gr(r.arco1))} − ${arco2_(gr(r.arco2))}`, '2')} = ${Q_(gr(r.angulo))}<span class="note">Q fuera: se restan</span>`;
+  else d.innerHTML = `${Q_('∠AQB')} = ${fr(arco_(gr(r.arco1)), '2')} = ${Q_(gr(r.angulo))}<span class="note">Q sobre la circunferencia: es un ángulo inscrito</span>`;
+}
+function filaIns(g){ return [{ t:lugar(g) }, { t:gr(g.ins.arcoAbarcado), k:'arco', num:true }, { t:gr(g.ins.porCoordenadas), k:'ins', num:true }]; }
+const COLS_INS = ['#', 'Dónde está P', 'Arco que abarca', '∠APB medido'];
+function anotar(lista, id, fila){
+  lista.push(fila); if (lista.length > 6) lista.shift();
+  const t = $(id); if (t) t.innerHTML = tablaHTML(lista, id === 'tabla' ? COLS_P3 : (E.modo === 'secantes' ? COLS_SEC : COLS_INS));
+}
+// Paso 3: las cuerdas PA y PB cambian (el triángulo APB cambia) y el ángulo no
+const COLS_P3 = ['#', 'P cerca de', 'PA', 'PB', '∠APB medido'];
+function filaP3(g){
+  const PA = MA.distancia(g.ins.P, g.ins.A), PB = MA.distancia(g.ins.P, g.ins.B);
+  const cerca = PA < .6*PB ? 'A' : PB < .6*PA ? 'B' : 'el medio';
+  return [{ t:cerca }, { t:fmt(PA, 1), num:true }, { t:fmt(PB, 1), num:true }, { t:gr(g.ins.porCoordenadas), k:'ins', num:true }];
+}
+const COLS_SEC = ['#', 'Dónde está Q', 'Arcos', '∠AQB medido'];
+function filaSec(g){
+  const r = g.sec, t = { dentro:'dentro', fuera:'fuera', sobre:'sobre la curva' }[r.posicion];
+  return [{ t }, { t: r.arco2 === null ? gr(r.arco1) : `${gr(r.arco1)} y ${gr(r.arco2)}`, num:true }, { t:gr(r.angulo), k:'Q', num:true }];
+}
+
+const P1 = { id:'angulo-inscrito-paso2', ok:'b', opts:[
+  ['a','100°: lo mismo que el central','GE15-inscrito-igual-central','hipotesis'],
+  ['b','50°'],
+  ['c','200°: el doble del central','GE15-inscrito-doble','hipotesis']],
+  fb:{ b:'¡Bien! El ángulo inscrito mide la mitad del arco que abarca: 100° / 2 = 50°.',
+    a:'Elegiste la A. El central tiene su vértice en O; el inscrito, en la circunferencia, y mide la mitad del arco: 50°. La correcta está marcada.',
+    c:'Elegiste la C. Es al revés: el central es el doble del inscrito, no el inscrito el doble del central. El inscrito mide 100° / 2 = 50°. La correcta está marcada.' } };
+const P2 = { id:'angulo-inscrito-paso3', ok:'b', opts:[
+  ['a','Crece cuando P se acerca a A o a B','GE12-crece-cerca-de-A','hipotesis'],
+  ['b','No cambia'],
+  ['c','Disminuye cuando P se acerca a A o a B','GE12-disminuye-cerca-de-A','hipotesis'],
+  ['d','Cambia; solo se quedaría fijo si AB fuera un diámetro','GE12-solo-en-diametro','parcial']],
+  fb:{ b:'¡Bien! Mientras P esté en el arco mayor, ∠APB abarca el mismo arco AB, y mide siempre la mitad: 50°.',
+    a:'Elegiste la A. Cerca de A, el triángulo APB se ve muy distinto, pero el ángulo en P sigue abarcando el mismo arco AB: no cambia. La correcta está marcada.',
+    c:'Elegiste la C. Cerca de A el ángulo parece cerrarse, pero lo que se acorta es el lado PA, no la abertura: sigue abarcando el mismo arco AB y mide lo mismo. La correcta está marcada.',
+    d:'Elegiste la D. El diámetro es solo un caso (el de 90°). Con cualquier cuerda AB, todos los ángulos inscritos que abarcan el mismo arco miden lo mismo. La correcta está marcada.' } };
+const P3 = { id:'angulo-inscrito-paso5', ok:'b', opts:[
+  ['a','70°: la mitad de 110° + 30°','GE16-exterior-suma','hipotesis'],
+  ['b','40°'],
+  ['c','80°: 110° − 30°','GE16-exterior-sin-dividir','hipotesis'],
+  ['d','140°: 110° + 30°','GE16-exterior-suma-sin-dividir','hipotesis']],
+  fb:{ b:'¡Bien! Con el vértice fuera, el ángulo mide la semidiferencia de los arcos: (110° − 30°) / 2 = 40°.',
+    a:'Elegiste la A. Con el vértice fuera, el arco cercano no se suma: le quita abertura al ángulo, así que se resta. (110° − 30°) / 2 = 40°. La correcta está marcada.',
+    c:'Elegiste la C. La resta va bien, pero falta dividir entre 2, como en el ángulo inscrito: (110° − 30°) / 2 = 40°. La correcta está marcada.',
+    d:'Elegiste la D. Fuera los arcos se restan y luego se divide entre 2: (110° − 30°) / 2 = 40°. La correcta está marcada.' } };
+const P4 = { id:'angulo-inscrito-paso6', ok:'b', opts:[
+  ['a','40°: igual que afuera, se restan','GE16-interior-resta','hipotesis'],
+  ['b','70°'],
+  ['c','140°: 110° + 30°','GE16-interior-sin-dividir','hipotesis'],
+  ['d','55°: la mitad del arco AB, como un inscrito','interior-solo-un-arco','hipotesis']],
+  fb:{ b:'¡Bien! Con el vértice dentro, el ángulo mide la semisuma: (110° + 30°) / 2 = 70°.',
+    a:'Elegiste la A. Dentro, los dos arcos están "del lado" del ángulo (uno entre sus lados y otro entre los lados de su opuesto por el vértice): se suman. (110° + 30°) / 2 = 70°. La correcta está marcada.',
+    c:'Elegiste la C. La suma va bien, pero falta dividir entre 2: (110° + 30°) / 2 = 70°. La correcta está marcada.',
+    d:'Elegiste la D. 55° sería el ángulo si Q estuviera sobre la circunferencia. Dentro, el ángulo se abre más y también cuenta el arco CD: (110° + 30°) / 2 = 70°. La correcta está marcada.' } };
+const P5 = { id:'angulo-inscrito-paso7', ok:'b', opts:[
+  ['a','4π cm','GE19-diametro-como-radio','hipotesis'],
+  ['b','2π cm'],
+  ['c','6π cm','GE19-area-por-longitud','hipotesis'],
+  ['d','12π cm','GE19-sin-fraccion','hipotesis']],
+  fb:{ b:'¡Bien! 60° es la sexta parte de la vuelta: ℓ = (60/360) · 2π · 6 = 2π cm.',
+    a:'Elegiste la A. Así sale si se usa el diámetro, 12, en lugar del radio: (60/360) · 2π · 12 = 4π cm. Con r = 6, ℓ = 2π cm. La correcta está marcada.',
+    c:'Elegiste la C. 6π es el área del sector, (60/360) · π · 6², que se mide en cm². La longitud del arco usa 2πr: (60/360) · 2π · 6 = 2π cm. La correcta está marcada.',
+    d:'Elegiste la D. 12π cm es la longitud de la circunferencia entera, 2π · 6. El arco de 60° es un sexto de la vuelta: su longitud es 2π cm. La correcta está marcada.' } };
+
+const steps = [
+ { k:'Paso 1', t:'El ángulo desde P', prep:() => cfgIns({ ver:{ arco:true, medArco:true, central:true, medCen:true, ins:true }, mover:['P'], lect:['arco','cen'] }),
+   body:() => `<p class="problem">Arrastra el punto P (el círculo grande): se queda pegado a la circunferencia. A y B no se mueven.</p>
+   <p>La cuerda AB deja dos arcos. El ${arco_('arco AB')} que se ve pintado es el menor, el que no contiene a P. Su medida en grados es la del ${cen_('ángulo central ∠AOB')}, el que tiene el vértice en el centro O: aquí, 100°.</p>
+   <p>El ${ins_('ángulo inscrito ∠APB')} tiene su vértice P en la circunferencia y sus lados son las cuerdas PA y PB. Abarca el mismo ${arco_('arco AB')}.</p>
+   <p class="hint">Con teclado: toca el dibujo y usa las flechas.</p>` },
+ { k:'Paso 2', t:'Predice: el inscrito y el central', gate:P1,
+   prep:() => cfgIns({ ver:{ arco:true, medArco:true, central:true, medCen:true, ins:true, medIns:!!S.pred[P1.id] }, lect:['arco','cen','ins'] }),
+   anima:fin => { E.ver.medIns = true; E.prog.ins = 0; tween(800, f => { E.prog.ins = f; E.dibujar(); }, () => { E.avisar(); fin(); }); },
+   body:() => `<p>El ${cen_('ángulo central ∠AOB')} mide 100°. P está en el arco mayor. ¿Cuánto mide el ${ins_('ángulo inscrito ∠APB')}, que abarca el mismo ${arco_('arco AB')}?</p>${opcionesHTML(P1.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${ins_('∠APB')} = ${fr(arco_('arco AB'), '2')} = ${fr(arco_('100°'), '2')} = ${ins_('50°')}<span class="note">el inscrito mide la mitad del arco que abarca</span></div>
+     <div class="eq">${cen_('∠AOB')} = ${arco_('arco AB')} = ${cen_('100°')}<span class="note">el central mide lo mismo que su arco</span></div></div>
+   <p>¿Por qué la mitad? Si trazas el diámetro que sale de P, quedan triángulos con dos lados iguales (dos radios). En cada uno, el ángulo exterior en O es la suma de los dos ángulos iguales: el doble del que está en P.</p>
+   <p class="fuente">No encontramos estudios con datos sobre este error. Que el inscrito se iguale al central, o se tome el doble, es una hipótesis nuestra; el lanzamiento en el colegio dirá si aparece.</p></div>` },
+ { k:'Paso 3', t:'Predice: P se mueve', gate:P2,
+   prep:() => cfgIns({ p:S.pred[P2.id] ? E.p : 90, ver:{ arco:true, medArco:true, central:true, medCen:true, ins:true, medIns:true }, lect:['arco','cen','ins'],
+     mover:S.pred[P2.id] ? ['P'] : [], alSoltar:() => { if (S.pred[P2.id] && !S.ocupado) anotar(S.tabla, 'tabla', filaP3(E.geo())); } }),
+   anima:fin => {
+     E.ocupado = true;
+     const ruta = [205, 20, 335, 90], g0 = E.geo(); if (!S.tabla.length) anotar(S.tabla, 'tabla', filaP3(g0));
+     const ir = k => {
+       if (k >= ruta.length){ E.ocupado = false; E.permitir(['P']); fin(); return; }
+       const de = E.p, a = ruta[k];
+       // por el arco mayor: se avanza en el sentido que no cruza el arco AB (de 220° a 320°)
+       // 90 → 205 (antihorario), 205 → 20 y 20 → 335 (horario), 335 → 90 (antihorario)
+       const dd = [a - de, a - de, (a - 360) - de, (a + 360) - de][k];
+       tween(Math.abs(dd)*12, f => { E.p = MA.n360(de + dd*f); E.dibujar(); E.avisar(); }, () => { E.p = a; E.avisar(); if (k < 3) anotar(S.tabla, 'tabla', filaP3(E.geo())); esperar(250, () => ir(k + 1)); });
+     };
+     ir(0);
+   },
+   body:() => `<p>Ahora P va a recorrer el arco mayor: primero hasta cerca de A, luego hasta cerca de B. ¿Qué pasa con el ${ins_('ángulo ∠APB')}?</p>${opcionesHTML(P2.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div id="tabla">${tablaHTML(S.tabla, COLS_P3)}</div>
+   <p>La tabla anota, en cada parada, las cuerdas PA y PB (con radio 5) y ∠APB medido con coordenadas: el triángulo APB cambia, el ángulo no. Arrastra P tú también: cada vez que lo sueltas se anota otra fila.</p>
+   <p class="answer">Todos los ángulos inscritos que abarcan el mismo arco miden lo mismo, la mitad del arco. Por eso es "el ángulo que no cambia".</p>
+   <p class="fuente">Un estudio con alumnos chilenos de secundaria describe que usaban el teorema del ángulo inscrito casi solo en la semicircunferencia, el caso del ángulo recto (Espinoza-Vergara y otros, 2020; no da porcentajes y lo conocemos por un resumen). Que el ángulo "crezca" o "disminuya" cerca de A son hipótesis nuestras.</p></div>` },
+ { k:'Paso 4', t:'El diámetro', accion:true,
+   prep:() => cfgIns({ b:S.hecho.diam ? 40 : 320, ver:{ arco:true, medArco:true, central:true, medCen:true, ins:true, medIns:true }, lect:['arco','cen','ins'],
+     mover:S.hecho.diam ? ['B', 'P'] : ['B'], limB:b => { const d = MA.ccw(220, b); return d >= 20 && d <= 220 && MA.ccw(220, E.p) > d + 6; }, alCambiar:revisarDiam }),
+   body:() => `<p>Ahora mueve B (P se queda quieto). Mira cómo cambian el ${arco_('arco AB')}, el ${cen_('ángulo central')} y el ${ins_('ángulo inscrito')}. Lleva B hasta que AB pase por el centro O: que AB sea un diámetro.</p>
+   <div class="eqs"><div class="eq" id="vivo"></div></div>
+   <div class="acciones"><button type="button" class="btn" id="diam">Hazlo por mí</button></div>
+   <p id="estado" class="hint" aria-live="polite"></p>
+   <div id="tras" class="body" ${S.hecho.diam ? '' : 'hidden'}>
+   <p class="answer">Si AB es un diámetro, el arco es media circunferencia (180°) y todo ángulo inscrito en ella mide 180° / 2 = 90°.</p>
+   <p>Es el caso más conocido del teorema, pero no el único: con cualquier cuerda, el inscrito mide la mitad de su arco. Arrastra P por la semicircunferencia: siempre 90°.</p></div>` },
+ { k:'Paso 5', t:'Predice: el vértice fuera', gate:P3,
+   prep:() => cfgSec(EXT, { ver:{ lej:true, cer:true, medArcos:true, angQ:true, medQ:!!S.pred[P3.id], O:true }, lect:['arco1','arco2','Q'], alCambiar:vivoSec }),
+   anima:fin => { E.ver.medQ = true; E.prog.Q = 0; tween(800, f => { E.prog.Q = f; E.dibujar(); }, () => { E.avisar(); fin(); }); },
+   body:() => `<p>Desde Q, fuera de la circunferencia, salen dos secantes: la de A corta antes en C y la de B corta antes en D. Entre ellas quedan dos arcos: el ${arco_('arco lejano AB')}, de 110°, y el ${arco2_('arco cercano CD')}, de 30°. ¿Cuánto mide el ${Q_('ángulo ∠AQB')}?</p>${opcionesHTML(P3.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs"><div class="eq" id="vivo"></div></div>
+   <p>Desde fuera, Q "ve" el ${arco_('arco lejano')}, pero el ${arco2_('arco cercano')} le estorba: se resta. Y como en el inscrito, se divide entre 2.</p>
+   <p class="fuente">No encontramos estudios sobre los ángulos con el vértice dentro o fuera. Sumar en vez de restar u olvidar dividir entre 2 son hipótesis nuestras.</p></div>` },
+ { k:'Paso 6', t:'Predice: el vértice dentro', gate:P4,
+   prep:() => cfgSec(S.pred[P4.id] ? INT : EXT, { ver:{ lej:true, cer:true, medArcos:true, angQ:true, medQ:!!S.pred[P4.id], O:true }, lect:['arco1','arco2','Q'], alCambiar:vivoSec,
+     mover:S.pred[P4.id] ? ['Q'] : [], q:S.pred[P4.id] && S.qDentro ? S.qDentro : (S.pred[P4.id] ? INT.Q : EXT.Q) }),
+   entrar:() => {
+     if (S.pred[P4.id]) return;
+     // Q entra: C y D se acercan, se juntan sobre la curva (Q pasa por la circunferencia) y se cruzan
+     S.ocupado = true; E.ocupado = true; nav();
+     const c0 = EXT.construccion.C, d0 = EXT.construccion.D, c1 = INT.construccion.C, d1 = INT.construccion.D, paso = S.step;
+     esperar(350, () => tween(2200, f => {
+       if (S.step !== paso) return;
+       const fig = MA.rectasPorPuntos(55, c0 + (c1 - c0)*f, 305, d0 + (d1 - d0)*f, R);
+       E.q = fig.Q; E.dibujar(); E.avisar();
+     }, () => { E.q = { ...INT.Q }; E.ocupado = false; S.ocupado = false; if (S.step === paso){ E.dibujar(); E.avisar(); } nav(); }));
+   },
+   anima:fin => { E.ver.medQ = true; E.prog.Q = 0; tween(800, f => { E.prog.Q = f; E.dibujar(); }, () => { E.avisar(); E.permitir(['Q']); E.alSoltar = () => { S.qDentro = { ...E.q }; }; fin(); }); },
+   body:() => `<p>Ahora Q se metió dentro del círculo. Las dos rectas son cuerdas, AC y BD, que se cortan en Q. Entre los lados del ${Q_('ángulo ∠AQB')} queda el ${arco_('arco AB')}, de 110°; enfrente, entre los lados del ángulo opuesto por el vértice, queda el ${arco2_('arco CD')}, de 30°. ¿Cuánto mide ∠AQB?</p>${opcionesHTML(P4.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs"><div class="eq" id="vivo"></div></div>
+   <p>Arrastra Q: sácalo del círculo y vuelve a meterlo. Fuera se restan los arcos; justo sobre la circunferencia, C y D se juntan y queda un ángulo inscrito (110° / 2 = 55°); dentro se suman.</p>
+   <div class="eqs">
+     <div class="eq">fuera: ${fr(`${arco_('110°')} − ${arco2_('30°')}`, '2')} = ${Q_('40°')} · sobre: ${fr(arco_('110°'), '2')} = ${Q_('55°')} · dentro: ${fr(`${arco_('110°')} + ${arco2_('30°')}`, '2')} = ${Q_('70°')}</div></div></div>` },
+ { k:'Paso 7', t:'Predice: la longitud del arco', gate:P5,
+   prep:() => E.config({ modo:'sector', caja:{ x0:-6.4, x1:6.4, y0:-6.2, y1:6.4 }, ver:{ rad:true, theta:true, l:true, medL:!!S.pred[P5.id], S:!!S.pred[P5.id], medS:!!S.pred[P5.id], partes:S.pred[P5.id] ? 6 : 0 },
+     lect: S.pred[P5.id] ? ['theta','r','l','S'] : ['theta','r','l'] }),
+   anima:fin => {
+     E.ver.partes = 6; E.ver.medL = true; E.prog.l = 0; E.dibujar();
+     tween(900, f => { E.prog.l = f; E.dibujar(); }, () => {
+       E.ver.S = true; E.ver.medS = true; E.prog.S = 0; E.lect = ['theta','r','l','S']; E.leyenda();
+       tween(800, f => { E.prog.S = f; E.dibujar(); }, () => { E.avisar(); fin(); });
+     });
+   },
+   body:() => `<p>Un sector circular tiene un ${cen_('ángulo central θ')} de 60° y un ${r_('radio')} de 6 cm. ¿Cuál es la ${l_('longitud ℓ')} del arco, su borde curvo?</p>${opcionesHTML(P5.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${l_('ℓ')} = ${fr(cen_('θ'), '360°')} · 2π${r_('r')} = ${fr(cen_('60°'), '360°')} · 2π · ${r_('6')} = ${l_(`${piTxt(LA.pi)} cm`)}<span class="note">una longitud</span></div>
+     <div class="eq">${S_('S')} = ${fr(cen_('θ'), '360°')} · π${r_('r')}² = ${fr(cen_('60°'), '360°')} · π · ${r_('6')}² = ${S_(`${piTxt(SE.pi)} cm²`)}<span class="note">un área</span></div></div>
+   <p>Seis sectores de 60° llenan el círculo (las líneas punteadas): la longitud del arco es un sexto de la circunferencia, 12π / 6 = 2π cm, y el sector es un sexto del círculo, 36π / 6 = 6π cm². Si te dan el diámetro, primero divídelo entre 2.</p>
+   <p class="fuente">Confundir radio con diámetro, o longitud con área, en el arco y el sector es una hipótesis nuestra: no encontramos estudios con datos.</p></div>` },
+ { k:'Paso 8', t:'Ahora explora tú', explora:true,
+   prep:() => {
+     const x = S.x || { modo:'inscrito', a:220, b:320, p:90, q:{ x:-8, y:1.5 }, central:true };
+     if (x.modo === 'inscrito') cfgIns({ a:x.a, b:x.b, p:x.p, restringirP:false, ver:{ arco:true, medArco:true, central:x.central, medCen:true, ins:true, medIns:true }, mover:['P','A','B'], lect:['arco','cen','ins'], alCambiar:alCambiarX, alSoltar:soltarX });
+     else E.config({ modo:'secantes', a:x.a, b:x.b, q:x.q, caja:CAJA_SEC, ver:{ lej:true, cer:true, medArcos:true, angQ:true, medQ:true }, mover:['Q','A','B'], lect:['arco1','arco2','Q','donde'], alCambiar:alCambiarX, alSoltar:soltarX });
+     E.ladoP = null;
+   },
+   body:() => { const sec = S.x && S.x.modo === 'secantes'; return `<p>Elige qué explorar. Arrastra P, A y B (o Q, A y B): el motor mide los ángulos con coordenadas en cada posición.</p>
+   <div class="seg" role="group" aria-label="Qué explorar"><button type="button" data-modo="inscrito" aria-pressed="${!sec}"><i style="background:var(--c-ins)"></i>Ángulo inscrito</button><button type="button" data-modo="secantes" aria-pressed="${sec}"><i style="background:var(--c-Q)"></i>Secantes y cuerdas</button></div>
+   <div class="eqs"><div class="eq" id="vivo"></div></div>
+   <div class="acciones">${sec ? '' : `<button type="button" class="btn" id="x-central">${!S.x || S.x.central !== false ? 'Ocultar' : 'Mostrar'} el ángulo central</button>`}<button type="button" class="btn" id="x-anotar">Anotar en la tabla</button><button type="button" class="btn" id="x-reset">Volver a empezar</button></div>
+   <div id="tablaX">${tablaHTML(S.tablaX, sec ? COLS_SEC : COLS_INS)}</div>
+   <p id="x-msg" class="hint" aria-live="polite"></p>
+   <p class="hint">Con teclado: toca el dibujo, elige el punto con su letra (P, A, B o Q) y muévelo con las flechas.</p>`; } },
+];
+
+function revisarDiam(g){
+  vivoIns(g);
+  if (steps[S.step].k !== 'Paso 4' || !$('estado')) return;
+  if (g.ins.recto){
+    if (!S.hecho.diam){ S.hecho.diam = true; S.listo = true; $('tras').hidden = false; desbloquear(S.step + 1); pintarDots(); nav(); E.permitir(['B', 'P']); }
+    $('estado').textContent = 'AB pasa por O: es un diámetro. El ángulo en P es recto.';
+  } else $('estado').textContent = S.hecho.diam ? 'AB ya no es un diámetro: el ángulo deja de ser recto.' : `El arco AB mide ${gr(g.ins.arcoAbarcado)}: todavía no es media circunferencia.`;
+}
+function guardarX(){
+  S.x = E.modo === 'inscrito' ? { modo:'inscrito', a:E.a, b:E.b, p:E.p, central:E.ver.central, q:(S.x && S.x.q) || { x:-8, y:1.5 } }
+    : { modo:'secantes', a:E.a, b:E.b, q:{ ...E.q }, central:S.x ? S.x.central : true };
+}
+function alCambiarX(g){
+  if (E.modo === 'inscrito'){
+    vivoIns(g);
+    const m = $('x-msg'); if (m) m.textContent = g.ins.recto ? 'AB es un diámetro: el ángulo inscrito mide 90° en toda la semicircunferencia.' : g.ins.pEnArco === 'menor' ? 'P está en el arco menor: abarca el arco mayor, así que ∠APB = 180° − (arco menor) / 2.' : '';
+  } else {
+    vivoSec(g);
+    const m = $('x-msg'); if (m) m.textContent = g.sec.posicion === 'sobre' ? 'Q está sobre la circunferencia: es un ángulo inscrito.' : '';
+  }
+}
+function soltarX(){ guardarX(); }
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; b.setAttribute('aria-label', `Ir al ${s.k.toLowerCase()}: ${s.t}`);
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k; S.listo = s.accion ? !!S.hecho.diam : true;
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  if (s.prep) s.prep();
+  pintarDots();
+  if (s.gate) prediccion(s);
+  if (s.accion) accion();
+  if (s.explora) explorar();
+  nav();
+  if (s.entrar) s.entrar();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || (s.accion && !S.listo) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : (s.accion && !S.listo ? 'Primero haz el diámetro' : 'Siguiente');
+  $('stepBody').querySelectorAll('.opt').forEach(b => { if (!S.pred[s.gate && s.gate.id]) b.disabled = S.ocupado; });
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){ if (k > S.max) S.max = k; }
+function accion(){
+  $('diam').onclick = () => {
+    if (S.hecho.diam || S.ocupado) return;
+    S.ocupado = true; E.ocupado = true; nav();
+    const de = E.b, paso = S.step, dd = ((40 - de + 540) % 360) - 180;
+    tween(Math.abs(dd)*10 + 200, f => { if (S.step === paso){ E.b = Math.round(MA.n360(de + dd*f)); E.dibujar(); E.avisar(); } },
+      () => { S.ocupado = false; E.ocupado = false; if (S.step === paso){ E.b = 40; E.avisar(); } nav(); });
+  };
+  E.avisar();
+}
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+    E.avisar();
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    S.ocupado = true; nav();
+    $('next').focus({ preventScroll:true });
+    // En el celular, el dibujo queda arriba de la pantalla: se lleva a la vista antes de animar.
+    const paso = S.step, chico = innerWidth < 900;
+    if (chico) $('cv').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+    esperar(chico ? 380 : 0, () => {
+      if (S.step !== paso) { S.ocupado = false; nav(); return; }
+      s.anima(() => { S.ocupado = false; if (S.step === paso) E.avisar(); nav(); });
+    });
+  }));
+  pintar();
+}
+
+// ----- explorador -----
+function explorar(){
+  const body = $('stepBody');
+  body.querySelectorAll('[data-modo]').forEach(b => b.onclick = () => {
+    const m = b.dataset.modo; if (E.ocupado || (S.x && S.x.modo === m) || (!S.x && m === 'inscrito')) return;
+    guardarX();
+    S.x = m === 'secantes' ? { modo:'secantes', a:55, b:305, q:{ x:-8, y:1.5 }, central:S.x.central } : { modo:'inscrito', a:220, b:320, p:90, central:S.x.central };
+    S.tablaX = []; go(S.step);
+  });
+  const bc = $('x-central');
+  if (bc) bc.onclick = () => { const on = !E.ver.central; E.ver.central = on; bc.textContent = `${on ? 'Ocultar' : 'Mostrar'} el ángulo central`; E.leyenda(); E.dibujar(); guardarX(); };
+  $('x-anotar').onclick = () => { const g = E.geo(); anotar(S.tablaX, 'tablaX', E.modo === 'inscrito' ? filaIns(g) : filaSec(g)); };
+  $('x-reset').onclick = () => { if (E.ocupado) return; S.x = S.x && S.x.modo === 'secantes' ? { modo:'secantes', a:55, b:305, q:{ x:-8, y:1.5 }, central:true } : null; S.tablaX = []; go(S.step); };
+  E.alSoltar = () => { guardarX(); anotar(S.tablaX, 'tablaX', E.modo === 'inscrito' ? filaIns(E.geo()) : filaSec(E.geo())); };
+  E.avisar();
+}
+
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Experimentos con las ideas del informe docs/investigacion/geometria-ideas-erroneas.md (GE12, GE15, GE16) y
+   algunas propias: P en el arco menor, el cuadrilátero inscrito, la tangente como límite de la cuerda, dos
+   tangentes desde un punto y el ángulo de la cancha. La escena cambia recién después de responder. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2');
+const CAJA = { x0:-6.6, x1:6.6, y0:-6.6, y1:6.6 };
+const MEN = MA.inscrito(220, 320, 270, R);
+const CUA = MA.cuadrilatero([200, 100, 340, 250], R);
+const SEMI = MA.semiinscrito(220, 320, R);
+// dos tangentes: arco cercano de 100° entre A (230°) y B (130°); Q sobre el eje, a r / cos 50° del centro
+const TQ = { x:-R/Math.cos(50*GR), y:0 }, TAN = MA.tangentes(TQ, R), DT = MA.dosTangentes(100);
+// la cancha: postes A (200°) y B (340°); P fuera de la mediatriz, a 125°; su simétrico está a 55°
+const CAN = MA.inscrito(200, 340, 125, R), CAN_DETRAS = MA.inscrito(200, 340, 270, R), QCAN = { x:1.6, y:2.4 };
+const TESTIGOS = [170, 150, 95, 75, 35, 10];
+
+const EXPS = [
+  { id:'arco-menor', corto:'P en el arco menor',
+    q:`El ${V('cen', 'ángulo central ∠AOB')} mide 100°. Ahora P está en el arco menor, entre A y B. ¿Cuánto mide el ${V('ins', 'ángulo ∠APB')}?`,
+    opts:[['a','50°: la mitad del arco AB','mitad-del-arco-menor','hipotesis'],
+          ['b','100°: lo mismo que el central','GE15-inscrito-igual-central','hipotesis'],
+          ['c','130°'],
+          ['d','260°: lo que queda de la vuelta','GE15-inscrito-igual-arco','hipotesis']],
+    ok:'c',
+    fb:{ a:'50° sería el ángulo desde el arco mayor. Desde el arco menor, ∠APB abarca el otro arco, el de 260°.', b:'El central de 100° abarca el arco menor. Desde P, en el arco menor, el ángulo abarca el arco mayor, de 260°.', d:'260° es el arco que abarca, pero el ángulo inscrito mide su mitad.' },
+    antes:ver => E.config({ modo:'inscrito', a:220, b:320, p:270, caja:CAJA, ver:{ central:true, medCen:true, ins:true, medIns:ver, arco:ver, medArco:ver }, lect:ver ? ['arco','cen','ins'] : ['cen','ins'], mover:ver ? ['P'] : [] }),
+    despues:() => { E.ver.arco = true; E.ver.medArco = true; E.ver.medIns = true; E.lect = ['arco','cen','ins']; E.permitir(['P']); E.leyenda(); E.avisar(); },
+    exp:() => `<div class="eqs"><div class="eq">${V('ins', '∠APB')} = ${fr(V('arco', 'arco que abarca'), '2')} = ${fr(V('arco', gr(MEN.arcoAbarcado)), '2')} = ${V('ins', gr(MEN.angulo))} = 180° − ${fr('100°', '2')}</div></div>
+      <p>El ángulo inscrito abarca el arco que <b>no</b> contiene a P. Si P está en el arco menor, abarca el mayor: ${gr(MEN.arcoAbarcado)}, y mide ${gr(MEN.angulo)}, un ángulo obtuso. Arrastra P por el arco menor: siempre ${gr(MEN.angulo)}.</p>
+      <p class="fuente">No encontramos estudios sobre este caso. Las tres opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'cuadrilatero', corto:'El cuadrilátero inscrito',
+    q:`A, P, B y Q están en la circunferencia y forman el cuadrilátero APBQ. El ${V('ins', 'ángulo ∠APB')} mide 70°. ¿Cuánto mide el ángulo opuesto, ${V('Q', '∠AQB')}?`,
+    opts:[['a','70°: los ángulos opuestos son iguales','cuadrilatero-opuestos-iguales','hipotesis'],
+          ['b','110°'],
+          ['c','140°: el doble de ∠APB','cuadrilatero-doble','hipotesis'],
+          ['d','35°: la mitad de ∠APB','cuadrilatero-mitad','hipotesis']],
+    ok:'b',
+    fb:{ a:'Los opuestos iguales son los del paralelogramo. En el cuadrilátero inscrito, cada uno abarca uno de los dos arcos AB, y esos arcos suman 360°: los ángulos suman 180°.', c:'∠AQB no abarca el doble de arco que ∠APB: abarca el otro arco AB, lo que falta para 360°.', d:'∠AQB abarca el arco AB que contiene a P, que es el grande: no puede ser menor que 90°.' },
+    antes:ver => E.config({ modo:'inscrito', a:200, b:340, p:100, q2:{ ang:250 }, caja:CAJA, ver:{ ins:true, medIns:true, q2:true, medQ:ver, arco:ver, medArco:ver }, lect:['ins','q2'], mover:ver ? ['P','Q'] : [] }),
+    despues:() => { E.ver.medQ = true; E.ver.arco = true; E.ver.medArco = true; E.prog.Q = 0; E.leyenda(); tween(700, f => { E.prog.Q = f; E.dibujar(); }, () => { E.permitir(['P','Q']); E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">${V('ins', '∠APB')} + ${V('Q', '∠AQB')} = ${fr(V('arco', '140°'), '2')} + ${fr('220°', '2')} = ${V('ins', gr(CUA.angulos[1]))} + ${V('Q', gr(CUA.angulos[3]))} = 180°</div></div>
+      <p>∠APB abarca el ${V('arco', 'arco AB')} de 140° (el que no contiene a P). ∠AQB abarca el otro, 360° − 140° = 220°. Las mitades suman 360° / 2 = 180°: en todo cuadrilátero inscrito, los ángulos opuestos son suplementarios. Arrastra P y Q por sus arcos: la suma no cambia.</p>
+      <p class="fuente">No encontramos estudios sobre este error. Las opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'tangente', corto:'La tangente y la cuerda',
+    q:`P está en el arco mayor y se va a acercar a A. Cuando P está muy cerca de A, la recta PA se confunde con la tangente en A. ¿Cuánto mide el ángulo entre la tangente en A y la cuerda AB, del lado del ${V('arco', 'arco AB')} de 100°?`,
+    opts:[['a','100°: lo mismo que el arco','semiinscrito-igual-arco','hipotesis'],
+          ['b','90°: la tangente es perpendicular','tangente-perpendicular-a-la-cuerda','hipotesis'],
+          ['c','50°'],
+          ['d','0°: cuando P llega a A ya no hay ángulo','sin-angulo-en-el-limite','hipotesis']],
+    ok:'c',
+    fb:{ a:'Mide lo mismo que el arco el ángulo central, con el vértice en O. Con el vértice en la circunferencia, mide la mitad.', b:'La tangente es perpendicular al radio OA, no a la cuerda AB.', d:'Cuando P llega a A, la recta PA se vuelve la tangente, y entre la tangente y la cuerda sí hay un ángulo: el que tenía P.' },
+    antes:ver => E.config({ modo:'inscrito', a:220, b:320, p:ver ? 219 : 160, caja:CAJA, ver:{ arco:true, medArco:true, tangente:true, ins:!ver, medIns:ver, semi:ver }, lect:ver ? ['arco','semi'] : ['arco'], mover:[] }),
+    despues:() => {
+      E.ver.medIns = true; E.lect = ['arco','ins']; E.avisar();
+      const de = E.p;
+      tween(1800, f => { E.p = Math.round(de + (219 - de)*f); E.dibujar(); E.avisar(); }, () => { E.ver.ins = false; E.ver.semi = true; E.lect = ['arco','semi']; E.leyenda(); E.dibujar(); E.avisar(); });
+    },
+    exp:() => `<div class="eqs"><div class="eq">ángulo entre la tangente y AB = ${fr(V('arco', 'arco AB'), '2')} = ${fr(V('arco', '100°'), '2')} = ${V('ins', gr(SEMI.angulo))}<span class="note">ángulo semiinscrito</span></div></div>
+      <p>Mientras P se acerca a A, el ${V('ins', 'ángulo ∠APB')} no cambia: sigue abarcando el arco AB. Cuando P llega a A, la cuerda PA se vuelve la tangente, y el ángulo entre la tangente y la cuerda (el semiinscrito) mide lo mismo que todos los inscritos de ese arco: la mitad, ${gr(SEMI.angulo)}. Del otro lado de la cuerda mide ${gr(SEMI.haciaMayor)}.</p>
+      <p class="fuente">No encontramos estudios sobre este error. Las opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'dos-tangentes', corto:'Dos tangentes desde Q',
+    q:`Desde Q salen las dos tangentes a la circunferencia, que la tocan en A y en B. El ${V('arco2', 'arco cercano AB')} (el que mira a Q) mide 100°. ¿Cuánto mide el ${V('Q', 'ángulo ∠AQB')}?`,
+    opts:[['a','50°: la mitad del arco cercano','tangentes-mitad-del-cercano','hipotesis'],
+          ['b','80°'],
+          ['c','160°: 260° − 100°','GE16-exterior-sin-dividir','hipotesis'],
+          ['d','180°: (260° + 100°) / 2','GE16-exterior-suma','hipotesis']],
+    ok:'b',
+    fb:{ a:'Q no está en la circunferencia: está fuera. Su ángulo es la semidiferencia del arco lejano y el cercano.', c:'La resta va bien, pero falta dividir entre 2: (260° − 100°) / 2.', d:'Con el vértice fuera se restan los arcos: (260° − 100°) / 2. Además, 180° sería una recta, no un ángulo entre dos tangentes.' },
+    antes:ver => E.config({ modo:'secantes', a:TAN.angulos[0], b:TAN.angulos[1], q:TQ, caja:{ x0:-8.8, x1:7.2, y0:-6.4, y1:6.4 },
+      ver:{ cer:true, lej:ver, medArcos:true, angQ:true, medQ:ver, radiosT:ver }, lect:ver ? ['arco1','arco2','Q'] : ['arco2','Q'], mover:[] }),
+    despues:() => { E.ver.lej = true; E.ver.medQ = true; E.ver.radiosT = true; E.prog.Q = 0; E.lect = ['arco1','arco2','Q']; E.leyenda(); tween(800, f => { E.prog.Q = f; E.dibujar(); }, () => E.avisar()); },
+    exp:() => `<div class="eqs"><div class="eq">${V('Q', '∠AQB')} = ${fr(`${V('arco', 'lejano')} − ${V('arco2', 'cercano')}`, '2')} = ${fr(`${V('arco', gr(DT.lejano))} − ${V('arco2', '100°')}`, '2')} = ${V('Q', gr(TAN.angulo))} = 180° − ${V('arco2', '100°')}</div></div>
+      <p>Las tangentes son secantes cuyos dos cortes se juntaron en A y en B. El ${V('arco', 'arco lejano')} es todo lo demás: 360° − 100° = 260°. Otra forma: los radios OA y OB son perpendiculares a las tangentes (las marcas de ángulo recto), y en el cuadrilátero QAOB, 90° + 90° + 100° + ∠Q = 360°. Las dos tangentes QA y QB miden lo mismo (con radio 5, cada una mide unos ${fmt(TAN.longitud, 2)}).</p>
+      <p class="fuente">No encontramos estudios sobre este error. Las opciones incorrectas son hipótesis nuestras; dos de ellas son las del ángulo exterior (no dividir, sumar).</p>` },
+  { id:'cancha', corto:'El ángulo de la cancha',
+    q:`A y B son los postes de una portería. Desde P, una jugadora ve la portería con un ${V('ins', 'ángulo ∠APB')} de ${gr(CAN.angulo)}. ¿Desde qué otros lugares de la cancha (del mismo lado de la portería) se la ve con el mismo ángulo?`,
+    opts:[['a','Desde los puntos de la recta paralela a AB que pasa por P','cancha-paralela','hipotesis'],
+          ['b','Desde los puntos del arco de circunferencia que va de A a B pasando por P (sin contar A ni B)'],
+          ['c','Desde los puntos que están a la misma distancia del medio de la portería que P','cancha-misma-distancia','hipotesis'],
+          ['d','Solo desde P y desde su simétrico respecto de la mediatriz de AB','cancha-solo-simetrico','hipotesis']],
+    ok:'b',
+    fb:{ a:'En la paralela, al alejarse hacia un costado, la portería se ve de lado y el ángulo se cierra.', c:'A la misma distancia del medio de la portería, el ángulo cambia: es más abierto justo enfrente que hacia los costados.', d:'Hay muchos más: todos los puntos de un arco de circunferencia.' },
+    antes:ver => E.config({ modo:'inscrito', a:200, b:340, p:125, q2:ver ? QCAN : null, caja:{ x0:-6.6, x1:6.6, y0:-5.8, y1:6.8 },
+      ver:{ porteria:true, detras:true, circulo:ver, O:ver, ins:true, medIns:true, q2:ver, medQ:ver, testigos:ver ? TESTIGOS : null }, lect:ver ? ['ins','q2'] : ['ins'], mover:ver ? ['Q'] : [] }),
+    despues:() => { E.ver.circulo = true; E.ver.O = true; E.ver.testigos = TESTIGOS; E.q2 = { ...QCAN }; E.ver.q2 = true; E.ver.medQ = true; E.lect = ['ins','q2']; E.permitir(['Q']);
+      // se compara con el inscrito del lado de Q (el motor lo calcula), nunca con un número fijo
+      E.alCambiar = g => { const m = $('can-msg'); if (m && g.q2) m.textContent = { mayor:`Q está dentro del círculo: ve la portería con ${gr(g.q2.angulo)}, más que ${gr(g.q2.inscrito)}.`, menor:`Q está fuera del círculo: ve la portería con ${gr(g.q2.angulo)}, menos que ${gr(g.q2.inscrito)}.`, igual:`Q está sobre la circunferencia: ve la portería con ${gr(g.q2.inscrito)}, como P.` }[g.q2.comparado]; };
+      E.leyenda(); E.dibujar(); E.avisar(); },
+    exp:() => `<p>Todos los puntos del arco que va de A a B pasando por P ven la portería con ${gr(CAN.angulo)}: son ángulos inscritos que abarcan el mismo arco AB. Arrastra Q (no puede cruzar la portería): dentro del círculo, el ${V('Q', 'ángulo ∠AQB')} es mayor; fuera, menor.</p>
+      <p>Detrás de la portería, los puntos de esta misma circunferencia (el arco gris punteado) la verían con 180° − ${gr(CAN.angulo)} = ${gr(CAN_DETRAS.angulo)}. Los que la ven con ${gr(CAN.angulo)} forman otro arco, el reflejo de este respecto de AB.</p>
+      <p id="can-msg" class="hint" aria-live="polite"></p>
+      <p class="fuente">Un estudio chileno trabajó el ángulo inscrito con un problema de percepción visual, con alumnos de secundaria, y describe que usaban el teorema casi solo en la semicircunferencia (Espinoza-Vergara y otros, 2020; lo conocemos por un resumen). Las opciones incorrectas son hipótesis nuestras.</p>` },
+];
+const S = { k:0, pred:{}, t0:Date.now() };
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k];
+  x.antes(!!S.pred[x.id]);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    E.avisar();
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar();
+    const chico = innerWidth < 900;
+    if (chico) $('cv2').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+    esperar(chico ? 380 : 0, () => { if (S.k !== k) return; x.despues(); E.leyenda(); E.dibujar(); });
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+  });
+  pintar();
+}
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

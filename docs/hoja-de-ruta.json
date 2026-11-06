@@ -309,10 +309,10 @@
       "inicio": "2026-11-14",
       "fin": "2026-11-21",
       "estado": "en_curso",
-      "progreso": 10,
+      "progreso": 35,
       "critico": false,
       "depende_de": [],
-      "notas": "Informe docs/investigacion/trigonometria-ideas-erroneas.md (TR1-TR25, cifras por verificar). Falta construir"
+      "notas": "Informe trigonometria-ideas-erroneas.md (TR1-TR25, cifras por verificar). Hecha: plantillas/cinta-radio (sistemas de medida, arco, sector, ruedas). Faltan: circunferencia que se desenrolla y caso ambiguo"
     },
     {
       "id": "ma2",
@@ -321,10 +321,10 @@
       "inicio": "2026-11-21",
       "fin": "2026-11-28",
       "estado": "en_curso",
-      "progreso": 60,
+      "progreso": 75,
       "critico": false,
       "depende_de": [],
-      "notas": "Informe geometria-ideas-erroneas.md (GE1-GE23, cifras por verificar). Hechas: plantillas/ampliadora (semejanza, área y volumen) y plantillas/triangulo-estira (líneas notables y área). Falta: el ángulo que no cambia (circunferencia)"
+      "notas": "Informe geometria-ideas-erroneas.md (GE1-GE23, cifras por verificar). Hechas: ampliadora, triangulo-estira y angulo-inscrito. Faltan: polígonos, congruencia, espacio y analítica"
     },
     {
       "id": "ma3",
@@ -333,10 +333,10 @@
       "inicio": "2026-11-28",
       "fin": "2026-12-04",
       "estado": "en_curso",
-      "progreso": 10,
+      "progreso": 35,
       "critico": false,
       "depende_de": [],
-      "notas": "Informe docs/investigacion/algebra-funciones-ideas-erroneas.md (AL1-AL33, cifras por verificar). Falta construir"
+      "notas": "Informe algebra-funciones-ideas-erroneas.md (AL1-AL33, cifras por verificar). Hecha: plantillas/grafica-perillas (transformaciones, inversa, inecuaciones y valor absoluto). Faltan: traductor de enunciados y cuadrado que crece"
     },
     {
       "id": "ra1",

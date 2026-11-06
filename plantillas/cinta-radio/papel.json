@@ -1,0 +1,129 @@
+{
+  "titulo": "La cinta del radio: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Recuerda: S/180 = C/200 = R/π, donde S, C y R son el mismo ángulo en grados sexagesimales, grados centesimales y radianes. Un radián es el ángulo cuyo arco mide lo mismo que el radio (unos 57,3°, no 1°). En L = θ·r y en A = θ·r²/2, el ángulo θ va siempre en radianes. Una rueda que rueda sin resbalar avanza 2πr por vuelta. Ojo: R mayúscula es el ángulo en radianes y r minúscula es el radio. En muchos libros el área del sector se escribe S; aquí usamos A para no confundirla con los grados sexagesimales.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Expresa un ángulo de 135° en radianes y en grados centesimales.",
+      "respuesta": "3π/4 rad y 150ᵍ.",
+      "pasos": [
+        "De S/180 = R/π: R = 135 · π/180 = 3π/4 rad. Se deja π como coeficiente: es un número (3,14…), no \"180\".",
+        "De S/180 = C/200: C = 135 · 200/180 = 150ᵍ.",
+        "Control: 135° es 3/8 de vuelta; 3/8 de 2π es 3π/4 y 3/8 de 400ᵍ es 150ᵍ."
+      ],
+      "verificar": [ { "fn": "convertir", "args": [{ "S": 135 }], "espera": { "textoR": "3π/4", "C": 150 } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Un ángulo mide 2 rad (así, sin π). ¿Cuántos grados sexagesimales mide, aproximadamente? Exprésalo en grados y minutos.",
+      "respuesta": "360/π ≈ 114,6°, es decir, unos 114°35'.",
+      "pasos": [
+        "S = R · 180/π = 2 · 180/π = 360/π. Aquí el 2 no lleva π: no son 2π rad, ni 360°.",
+        "360/π ≈ 114,59°. La parte decimal, 0,59°, por 60 da unos 35,5 minutos.",
+        "Respuesta: unos 114°35'. Tiene sentido: cada radián es unos 57,3°, y 2 · 57,3 ≈ 114,6."
+      ],
+      "verificar": [ { "fn": "convertir", "args": [{ "R": 2 }], "espera": { "S": 114.59155902616465, "sexagesimal.grados": 114, "sexagesimal.minutos": 35, "errores.leePiEnR": 360 } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Un abanico de 18 cm de radio se abre 100°. ¿Cuánto mide el arco de su borde y cuál es el área de la tela (un sector circular)?",
+      "respuesta": "Arco 10π cm (unos 31,4 cm); área 90π cm² (unos 283 cm²).",
+      "pasos": [
+        "Primero el ángulo en radianes: θ = 100 · π/180 = 5π/9 rad.",
+        "Arco: L = θ · r = (5π/9) · 18 = 10π cm. Con 100 en lugar de 5π/9 saldría 1800 cm: un abanico de 18 metros de borde, imposible.",
+        "Área: A = θ · r²/2 = (5π/9) · 324/2 = 90π cm². También A = L · r/2 = 10π · 18/2 = 90π cm²."
+      ],
+      "verificar": [ { "fn": "sector", "args": [{ "r": 18, "theta": 100, "unidad": "sex" }], "espera": { "thetaTexto": "5π/9", "Lpi": 10, "Api": 90 } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Los números S y C de grados sexagesimales y centesimales de un mismo ángulo cumplen C − S = 4. ¿Cuánto mide el ángulo en radianes?",
+      "respuesta": "π/5 rad.",
+      "pasos": [
+        "Se iguala todo a una constante: S/180 = C/200 = R/π = k, así que S = 180k, C = 200k y R = πk.",
+        "C − S = 200k − 180k = 20k = 4, de donde k = 1/5.",
+        "R = πk = π/5 rad (es decir, S = 36 y C = 40). Cuidado: k = 1/5 no es la respuesta; falta multiplicar por π."
+      ],
+      "verificar": [ { "fn": "resolverSCR", "args": [{ "C": 1, "S": -1 }, 4], "espera": { "textoR": "π/5", "S": 36, "C": 40, "errores.kComoRespuesta": 0.2 } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "En una pista circular de 40 m de radio, una ciclista recorre 100 m. a) ¿Qué ángulo central barre, en radianes? b) Otra ciclista, en una pista de 80 m de radio, recorre 200 m. ¿Barre un ángulo mayor, menor o igual?",
+      "respuesta": "a) 2,5 rad (unos 143°). b) Igual: 2,5 rad.",
+      "pasos": [
+        "θ = L/r = 100/40 = 2,5 rad: en el arco caben dos radios y medio. En grados, 2,5 · 180/π ≈ 143,2°.",
+        "En la pista grande, θ = 200/80 = 2,5 rad. El arco y el radio se duplicaron juntos, así que su razón no cambió.",
+        "El radián mide cuántos radios caben en el arco; no depende del tamaño de la circunferencia."
+      ],
+      "verificar": [ { "fn": "sector", "args": [{ "L": 100, "r": 40 }], "espera": { "theta": 2.5, "grados": 143.2394487827058 } },
+                     { "fn": "sector", "args": [{ "L": 200, "r": 80 }], "espera": { "theta": 2.5 } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "La escobilla de un limpiaparabrisas va desde 15 cm hasta 45 cm del eje y gira 120°. ¿Qué área del vidrio limpia? (Es un trapecio circular.)",
+      "respuesta": "600π cm², unos 1885 cm².",
+      "pasos": [
+        "θ = 120 · π/180 = 2π/3 rad. Los arcos son L₁ = (2π/3) · 15 = 10π cm y L₂ = (2π/3) · 45 = 30π cm; el ancho es 45 − 15 = 30 cm.",
+        "Área del trapecio circular: (L₁ + L₂)/2 · ancho = (10π + 30π)/2 · 30 = 600π cm².",
+        "Comprobación: sector grande menos sector chico = (2π/3) · (45² − 15²)/2 = (2π/3) · 900 = 600π cm². Con (45 − 15)² en vez de 45² − 15² saldría 300π, que es otra cosa."
+      ],
+      "verificar": [ { "fn": "trapecio", "args": [{ "r1": 15, "r2": 45, "theta": 120, "unidad": "sex" }], "espera": { "Api": 600, "Asectores": 1884.9555921538756, "L1": 31.41592653589793 } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "básico",
+      "enunciado": "Una rueda de 30 cm de radio rueda sin resbalar y avanza 180π m. ¿Cuántas vueltas da?",
+      "respuesta": "300 vueltas.",
+      "pasos": [
+        "Todo en la misma unidad: 180π m = 18 000π cm.",
+        "En cada vuelta la rueda avanza su perímetro: 2π · 30 = 60π cm.",
+        "n = 18 000π / 60π = 300 vueltas. Dividir solo entre el radio daría 600π, que es el ángulo girado en radianes, no las vueltas."
+      ],
+      "verificar": [ { "fn": "vueltas", "args": [{ "d": 56548.66776461628, "r": 30 }], "espera": { "n": 300, "errores.sinDosPi": 1884.9555921538756 } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "La polea de un motor tiene 5 cm de radio y da 1200 vueltas por minuto. Una faja la une a una polea de 15 cm de radio, y en el mismo eje de esta va una rueda de 25 cm de radio. a) ¿Cuántas vueltas por minuto da la rueda? b) ¿Cuánto recorre en un minuto un punto del borde de la rueda?",
+      "respuesta": "a) 400 vueltas por minuto. b) 20 000π cm, unos 628 m.",
+      "pasos": [
+        "Con faja, los bordes de las dos poleas recorren el mismo arco: 1200 · 5 = n · 15, de donde n = 400 vueltas por minuto. La polea grande da menos vueltas.",
+        "La rueda está en el mismo eje que la polea de 15 cm: gira el mismo ángulo y da también 400 vueltas por minuto.",
+        "Su borde recorre 400 · 2π · 25 = 20 000π cm por minuto, unos 628 m."
+      ],
+      "verificar": [ { "fn": "transmision", "args": [{ "r1": 5, "r2": 15, "union": "faja", "n1": 1200 }], "espera": { "n2": 400, "errores.proporcional": 3600 } },
+                     { "fn": "transmision", "args": [{ "r1": 15, "r2": 25, "union": "eje", "n1": 400 }], "espera": { "n2": 400, "L2": 62831.853071795864 } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Una moneda de 1 cm de radio rueda sin resbalar alrededor de un disco fijo de 5 cm de radio, por fuera, hasta volver a su lugar. ¿Cuántas vueltas da sobre sí misma? ¿Y si rodara por dentro de un aro de 5 cm de radio?",
+      "respuesta": "Por fuera, 6 vueltas; por dentro, 4.",
+      "pasos": [
+        "Lo que cuenta es el camino del centro de la moneda. Por fuera, el centro va a 5 + 1 = 6 cm del centro del disco y recorre 2π · 6 = 12π cm.",
+        "La moneda da una vuelta por cada 2π · 1 = 2π cm que avanza su centro: 12π / 2π = 6 vueltas. Contar solo el borde del disco (10π) daría 5, una menos.",
+        "Por dentro, el centro va a 5 − 1 = 4 cm y recorre 8π cm: 8π / 2π = 4 vueltas."
+      ],
+      "verificar": [ { "fn": "alrededor", "args": [{ "fijo": 5, "r": 1, "lado": "fuera" }], "espera": { "vueltas": 6, "errores.soloArco": 5 } },
+                     { "fn": "alrededor", "args": [{ "fijo": 5, "r": 1, "lado": "dentro" }], "espera": { "vueltas": 4 } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "intermedio",
+      "enunciado": "Convierte 50ᵍ25ᵐ a grados, minutos y segundos sexagesimales.",
+      "respuesta": "45°13'30\".",
+      "pasos": [
+        "En el sistema centesimal, 1ᵍ = 100ᵐ: 50ᵍ25ᵐ = 50,25ᵍ. (Si se contaran los minutos de 60 en 60 saldría otra cosa.)",
+        "S = C · 180/200 = 50,25 · 0,9 = 45,225°.",
+        "0,225° · 60 = 13,5' y 0,5' · 60 = 30\". Respuesta: 45°13'30\"."
+      ],
+      "verificar": [ { "fn": "desdeCentesimal", "args": [50, 25, 0], "espera": { "S": 45.225, "sexagesimal.grados": 45, "sexagesimal.minutos": 13, "sexagesimal.segundos": 30 } } ]
+    }
+  ]
+}

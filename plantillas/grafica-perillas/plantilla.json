@@ -1,0 +1,18 @@
+{
+  "id": "grafica-perillas",
+  "titulo": "La gráfica con perillas: funciones y sus transformaciones",
+  "formato": "escena",
+  "unidades": [
+    "algebra.funciones",
+    "algebra.tipos-de-funciones-e-inversa",
+    "algebra.inecuaciones",
+    "algebra.valor-absoluto-y-radicales"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}

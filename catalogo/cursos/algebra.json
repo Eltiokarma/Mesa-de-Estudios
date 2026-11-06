@@ -52,7 +52,7 @@
       "potencial_visual": "bajo",
       "grado": 3,
       "plantillas": [],
-      "investigacion": null
+      "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
     {
       "id": "algebra.ecuaciones-lineales-y-cuadraticas",
@@ -68,7 +68,7 @@
       "potencial_visual": "medio",
       "grado": 3,
       "plantillas": [],
-      "investigacion": null
+      "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
     {
       "id": "algebra.inecuaciones",
@@ -83,8 +83,8 @@
       "universidades": {"uni": {"semanas": [4]}, "unmsm": {"temas": [3, 12]}},
       "potencial_visual": "medio",
       "grado": 4,
-      "plantillas": [],
-      "investigacion": null
+      "plantillas": ["grafica-perillas"],
+      "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
     {
       "id": "algebra.valor-absoluto-y-radicales",
@@ -98,8 +98,8 @@
       "universidades": {"uni": {"semanas": [4]}, "unmsm": {"temas": [4, 11, 12]}},
       "potencial_visual": "medio",
       "grado": 4,
-      "plantillas": [],
-      "investigacion": null
+      "plantillas": ["grafica-perillas"],
+      "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
     {
       "id": "algebra.polinomios",
@@ -147,7 +147,7 @@
       "potencial_visual": "bajo",
       "grado": 3,
       "plantillas": [],
-      "investigacion": null
+      "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
     {
       "id": "algebra.ecuaciones-polinomiales",
@@ -180,8 +180,8 @@
       "universidades": {"uni": {"semanas": [8, 9, 10]}, "unmsm": {"temas": [13]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "plantillas": [],
-      "investigacion": null
+      "plantillas": ["grafica-perillas"],
+      "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
     {
       "id": "algebra.tipos-de-funciones-e-inversa",
@@ -196,8 +196,8 @@
       "universidades": {"uni": {"semanas": [8, 10]}, "unmsm": {"temas": [14]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": [],
-      "investigacion": null
+      "plantillas": ["grafica-perillas"],
+      "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
     {
       "id": "algebra.exponenciales-y-logaritmos",
@@ -214,7 +214,7 @@
       "potencial_visual": "alto",
       "grado": 5,
       "plantillas": [],
-      "investigacion": null
+      "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
     {
       "id": "algebra.numeros-complejos",
@@ -265,7 +265,7 @@
       "potencial_visual": "alto",
       "grado": 4,
       "plantillas": [],
-      "investigacion": null
+      "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
     {
       "id": "algebra.programacion-lineal",

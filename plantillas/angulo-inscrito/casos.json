@@ -1,0 +1,111 @@
+{
+  "plantilla": "angulo-inscrito",
+  "unidades": "Ángulos y arcos en grados. Un punto de la circunferencia se da por su ángulo, medido desde el eje x en sentido antihorario; los demás puntos van como { x, y }. Si no se dice otra cosa, el centro O es el origen y el radio es 1. En longitudArco y sector, 'pi' es el coeficiente de π (pi = 2 quiere decir 2π).",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (arcos.lejano, Q.x); las listas se comparan completas; los textos (tipo, subtipo, en qué arco está P) se comparan exactos. 'angulo' es el que sale de la fórmula de arcos (o de coordenadas, según la función) y 'porCoordenadas' o 'porArcos', el otro cálculo: deben coincidir.",
+  "verificacion": "Verificado por un subagente independiente (6 nov 2026) sin leer el código del motor ni este archivo: recalculó cada ángulo por coordenadas (producto punto entre vectores) y por la fórmula de arcos con aritmética exacta (Fraction), las intersecciones con la cuadrática del rayo y determinantes, y el arco y el sector con el coeficiente de π exacto. Los 20 casos y sus variantes coinciden con 'espera' dentro de 1e-9; no hubo discrepancias.",
+  "tolerancia": 1e-9,
+  "casos": [
+    { "nombre": "Informe, caso 1 y predicción 1: A a 220° y B a 320° (arco menor AB de 100°, central de 100°), P a 90°, en el arco mayor → inscrito de 50° (GE15: 100° o 200°)",
+      "fn": "inscrito", "args": [220, 320, 90],
+      "espera": { "angulo": 50, "porCoordenadas": 50, "arcoAbarcado": 100, "arcoConP": 260, "pEnArco": "mayor", "recto": false, "central": 100,
+                  "errores.igualArco": 100, "errores.dobleArco": 200, "errores.igualCentral": 100, "errores.mitadDelOtroArco": 130 } },
+
+    { "nombre": "Predicción 2: P recorre el arco mayor (a 150°, 10° y 200°, cerca de A) y el ángulo APB no cambia: 50°",
+      "fn": "inscrito", "args": [220, 320, 150],
+      "espera": { "angulo": 50, "porCoordenadas": 50, "pEnArco": "mayor" },
+      "tambien": [ { "args": [220, 320, 10], "espera": { "angulo": 50, "porCoordenadas": 50, "pEnArco": "mayor" } },
+                   { "args": [220, 320, 200], "espera": { "angulo": 50, "porCoordenadas": 50, "pEnArco": "mayor" } } ] },
+
+    { "nombre": "P en el arco menor (a 270°, entre A y B): abarca el arco mayor de 260° → 130° = 180° − 50° (hipótesis: 50°, la mitad del arco menor; GE15: 100°, el central)",
+      "fn": "inscrito", "args": [220, 320, 270],
+      "espera": { "angulo": 130, "porCoordenadas": 130, "arcoAbarcado": 260, "arcoConP": 100, "pEnArco": "menor",
+                  "errores.mitadDelOtroArco": 50, "errores.igualCentral": 100, "errores.igualArco": 260 } },
+
+    { "nombre": "AB es un diámetro (A a 180°, B a 0°): el ángulo inscrito en la semicircunferencia mide 90° esté donde esté P",
+      "fn": "inscrito", "args": [180, 0, 60],
+      "espera": { "angulo": 90, "porCoordenadas": 90, "recto": true, "pEnArco": "semicircunferencia", "arcoAbarcado": 180, "central": 180 },
+      "tambien": [ { "args": [180, 0, 135], "espera": { "angulo": 90, "porCoordenadas": 90, "recto": true } },
+                   { "args": [180, 0, 290], "espera": { "angulo": 90, "porCoordenadas": 90, "recto": true } } ] },
+
+    { "nombre": "Circunferencia de radio 3 con centro (2, −1): A a 30°, B a 250°, P a 140° → arco abarcado de 140° e inscrito de 70° (el centro y el radio no cambian los ángulos)",
+      "fn": "inscrito", "args": [30, 250, 140, 3, { "x": 2, "y": -1 }],
+      "espera": { "angulo": 70, "porCoordenadas": 70, "arcoAbarcado": 140, "central": 140, "pEnArco": "mayor",
+                  "A.x": 4.598076211353316, "A.y": 0.5 } },
+
+    { "nombre": "Arcos de la cuerda AB (A a 220°, B a 320°) y en cuál está P a 90°: menor 100°, mayor 260°; P en el mayor",
+      "fn": "arcos", "args": [220, 320, 90],
+      "espera": { "menor": 100, "mayor": 260, "antihorario": 100, "esDiametro": false, "arcoConP": 260, "arcoSinP": 100, "pEnArco": "mayor" } },
+
+    { "nombre": "Ángulo central AOB con A a 220° y B a 320° en un círculo de radio 5: 100° por coordenadas; los arcos 100° y 260°",
+      "fn": "central", "args": [220, 320, 5],
+      "espera": { "angulo": 100, "menor": 100, "mayor": 260, "A.x": -3.8302222155948904, "A.y": -3.2139380484326963 } },
+
+    { "nombre": "Informe, caso 2 y predicción 3: arco lejano 110° y cercano 30° → ángulo exterior de 40° (GE16: 70° si suma, 80° si no divide, 140° si suma sin dividir)",
+      "fn": "exterior", "args": [110, 30],
+      "espera": { "angulo": 40, "errores.suma": 70, "errores.sinDividir": 80, "errores.sumaSinDividir": 140 } },
+
+    { "nombre": "Informe, caso 2 y predicción 4: los mismos arcos con Q dentro → ángulo interior de 70° (GE16: 40° si resta, como afuera; 140° si no divide)",
+      "fn": "interior", "args": [110, 30],
+      "espera": { "angulo": 70, "errores.resta": 40, "errores.sinDividir": 140, "errores.soloUnArco": 55 } },
+
+    { "nombre": "Predicción 3 con coordenadas: dos secantes desde Q con arcos de 110° y 30° (r = 5, arco lejano centrado en 0°). Q = (−8,385…; 0); el ángulo medido con vectores da 40°, como la fórmula",
+      "fn": "exteriorConArcos", "args": [110, 30, 5, 0],
+      "espera": { "tipo": "exterior", "subtipo": "dos secantes", "posicion": "fuera", "angulo": 40, "porArcos": 40,
+                  "arcos.lejano": 110, "arcos.cercano": 30, "Q.x": -8.38512654216526, "Q.y": 0, "distancia": 8.38512654216526,
+                  "angulos.A": 55, "angulos.B": 305, "angulos.C": 165, "angulos.D": 195, "errores.suma": 70 } },
+
+    { "nombre": "Predicción 4 con coordenadas: cuerdas AC y BD con arco AB de 110° y arco CD de 30° (r = 5). Se cortan en Q = (−2,981…; 0), dentro; el ángulo AQB mide 70° con vectores y con la fórmula",
+      "fn": "interiorConArcos", "args": [110, 30, 5, 0],
+      "espera": { "tipo": "interior", "posicion": "dentro", "angulo": 70, "porArcos": 70, "arcos.entreLados": 110, "arcos.opuesto": 30,
+                  "Q.x": -2.981469614595029, "Q.y": 0, "angulos.A": 55, "angulos.B": 305, "angulos.C": 195, "angulos.D": 165, "errores.resta": 40 } },
+
+    { "nombre": "Dos cuerdas dadas por sus extremos, en un círculo de radio 2 con centro (1, −1): recta por 10° y 200° y recta por 80° y 250° → arcos de 70° y 50°, ángulo interior de 60°",
+      "fn": "rectasPorPuntos", "args": [10, 200, 80, 250, 2, { "x": 1, "y": -1 }],
+      "espera": { "tipo": "interior", "angulo": 60, "porArcos": 60, "arcos.entreLados": 70, "arcos.opuesto": 50,
+                  "Q.x": 0.7534863331351231, "Q.y": -1.2465136668648773 } },
+
+    { "nombre": "Secante y tangente desde Q = (0, 10), r = 5: la tangente (dirección −60°) toca en 30°; la secante por el centro (dirección −90°) corta en 90° y 270°. Arcos 120° y 60°: ángulo de 30°",
+      "fn": "dosRectas", "args": [{ "x": 0, "y": 10 }, -60, -90, 5],
+      "espera": { "tipo": "exterior", "subtipo": "secante y tangente", "tangentes": [true, false], "angulo": 30, "porArcos": 30,
+                  "arcos.lejano": 120, "arcos.cercano": 60, "angulos.A": 30, "angulos.B": 270, "angulos.D": 90 } },
+
+    { "nombre": "Dos tangentes desde Q = (0, 10), r = 5: tocan en 30° y 150°, cada una mide √75; arco cercano 120°, lejano 240°, ángulo 60° = 180° − 120°",
+      "fn": "tangentes", "args": [{ "x": 0, "y": 10 }, 5],
+      "espera": { "angulo": 60, "cercano": 120, "lejano": 240, "angulos": [150, 30], "longitud": 8.660254037844387,
+                  "longitudes": [8.660254037844387, 8.660254037844387], "perpendicular": [0, 0],
+                  "dosRectas.subtipo": "dos tangentes", "dosRectas.porArcos": 60 } },
+
+    { "nombre": "«¿Qué pasa si…?», dos tangentes: arco cercano de 100° → lejano 260° y ángulo de 80° (hipótesis: 50°, la mitad del cercano; GE16: 160° sin dividir, 180° sumando)",
+      "fn": "dosTangentes", "args": [100],
+      "espera": { "angulo": 80, "lejano": 260, "suplemento": 80, "errores.mitadCercano": 50, "errores.sinDividir": 160, "errores.suma": 180, "errores.igualCercano": 100 } },
+
+    { "nombre": "Semiinscrito: tangente en A (a 0°) y cuerda AB con B a 100° → 50° del lado del arco menor y 130° del otro; la tangente es perpendicular al radio OA",
+      "fn": "semiinscrito", "args": [0, 100],
+      "espera": { "angulo": 50, "haciaMenor": 50, "haciaMayor": 130, "porArcos.menor": 50, "porArcos.mayor": 130, "tangentePorRadio": 0,
+                  "errores.igualArco": 100, "errores.perpendicular": 90 },
+      "tambien": [ { "args": [100, 0, 2, { "x": 1, "y": 1 }], "espera": { "angulo": 50, "haciaMenor": 50, "haciaMayor": 130 } } ] },
+
+    { "nombre": "Q sobre la circunferencia (a 270°, r = 5): con dos cuerdas es un inscrito de 60°; si una de las rectas es la tangente en Q, es un semiinscrito de 60°",
+      "fn": "dosRectas", "args": [{ "x": 0, "y": -5 }, 60, 120, 5],
+      "espera": { "tipo": "inscrito", "posicion": "sobre", "angulo": 60, "porArcos": 60, "arcos.abarcado": 120, "angulos.A": 30, "angulos.B": 150 },
+      "tambien": [ { "args": [{ "x": 0, "y": -5 }, 0, 60, 5], "espera": { "tipo": "semiinscrito", "angulo": 60, "porArcos": 60, "arcos.abarcado": 120 } } ] },
+
+    { "nombre": "Cuadrilátero inscrito APBQ en r = 5: A a 200°, P a 100°, B a 340°, Q a 250°. ∠P = 70° y ∠Q = 110°: los opuestos suman 180° (hipótesis: 70° si se creen iguales, 140° si se duplica)",
+      "fn": "cuadrilatero", "args": [[200, 100, 340, 250], 5],
+      "espera": { "angulos": [105, 70, 75, 110], "porArcos": [105, 70, 75, 110], "opuestos": [180, 180], "suma": 360,
+                  "errores.opuestosIguales": [105, 70], "errores.dobleDelOpuesto": [210, 140] } },
+
+    { "nombre": "Ángulo de la cancha: postes A a 200° y B a 340° (r = 5). Desde la curva se ven con 70°; desde (0, 1), dentro, con más; desde (0, 7), fuera, con menos",
+      "fn": "anguloDesde", "args": [{ "x": 0, "y": 1 }, 200, 340, 5],
+      "espera": { "angulo": 120.04680567847784, "inscrito": 70, "arcoAbarcado": 140, "posicion": "dentro", "comparado": "mayor" },
+      "tambien": [ { "args": [{ "x": 0, "y": 7 }, 200, 340, 5], "espera": { "angulo": 56.68723946145636, "inscrito": 70, "posicion": "fuera", "comparado": "menor" } },
+                   { "args": [{ "x": 3, "y": 4 }, 200, 340, 5], "espera": { "angulo": 70, "posicion": "sobre", "comparado": "igual" } } ] },
+
+    { "nombre": "Informe, caso 7 y predicción 5: r = 6 y sector de 60° → arco 2π y sector 6π (GE19: 4π y 24π con el diámetro; 6π si se da el área por la longitud; 12π sin la fracción del ángulo)",
+      "fn": "longitudArco", "args": [60, 6],
+      "espera": { "pi": 2, "longitud": 6.283185307179586, "fraccion": 0.16666666666666666, "circunferencia.pi": 12,
+                  "errores.conDiametro": 4, "errores.areaSector": 6, "errores.sinFraccion": 12 },
+      "tambien": [ { "fn": "sector", "args": [60, 6], "espera": { "pi": 6, "area": 18.84955592153876, "circulo.pi": 36,
+                     "errores.conDiametro": 24, "errores.longitudArco": 2, "errores.sinFraccion": 36, "perimetro.recto": 12, "perimetro.pi": 2 } } ] }
+  ]
+}

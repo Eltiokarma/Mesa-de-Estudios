@@ -77,7 +77,7 @@
       "potencial_visual": "medio",
       "grado": 3,
       "plantillas": [],
-      "investigacion": null
+      "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
       "id": "aritmetica.magnitudes-proporcionales",
@@ -105,7 +105,7 @@
       "potencial_visual": "alto",
       "grado": 3,
       "plantillas": [],
-      "investigacion": null
+      "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
       "id": "aritmetica.porcentajes",
@@ -135,7 +135,7 @@
       "plantillas": [
         "porcentajes-sucesivos"
       ],
-      "investigacion": null
+      "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
       "id": "aritmetica.interes-y-descuento",
@@ -164,7 +164,7 @@
       "potencial_visual": "medio",
       "grado": 4,
       "plantillas": [],
-      "investigacion": null
+      "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
       "id": "aritmetica.mezclas-y-aleaciones",
@@ -221,7 +221,7 @@
       "potencial_visual": "alto",
       "grado": 4,
       "plantillas": [],
-      "investigacion": null
+      "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
       "id": "aritmetica.analisis-combinatorio",
@@ -250,7 +250,7 @@
       "potencial_visual": "medio",
       "grado": 5,
       "plantillas": [],
-      "investigacion": null
+      "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
       "id": "aritmetica.probabilidades",
@@ -280,7 +280,7 @@
       "potencial_visual": "medio",
       "grado": 5,
       "plantillas": [],
-      "investigacion": null
+      "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
       "id": "aritmetica.numeracion",
@@ -424,7 +424,7 @@
       "potencial_visual": "medio",
       "grado": 3,
       "plantillas": [],
-      "investigacion": null
+      "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
       "id": "aritmetica.numeros-racionales",
@@ -455,7 +455,7 @@
       "potencial_visual": "medio",
       "grado": 3,
       "plantillas": [],
-      "investigacion": null
+      "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
       "id": "aritmetica.potenciacion-y-radicacion",

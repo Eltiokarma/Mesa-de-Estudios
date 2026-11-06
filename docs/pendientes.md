@@ -8,7 +8,7 @@
 npm test
 ```
 
-Deben pasar 535 pruebas.
+Deben pasar 671 pruebas.
 
 ```bash
 npm run dev
@@ -51,7 +51,9 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 
 | Id | Módulo | Informe de ideas erróneas | Nota |
 | --- | --- | --- | --- |
-| ma2 | Geometría | Hechas: `ampliadora` (semejanza, área y volumen) y `triangulo-estira` (líneas notables y área) | Falta «el ángulo que no cambia» (circunferencia) |
+| ma2 | Geometría | Hechas: `ampliadora` (semejanza, área y volumen), `triangulo-estira` (líneas notables y área) y `angulo-inscrito` (ángulos en la circunferencia) | Las tres escenas del informe están hechas; faltan polígonos, congruencia, espacio y analítica |
+| ma1 | Trigonometría | Hecha: `cinta-radio` (sistemas de medida, arco, sector, ruedas) | Siguen la circunferencia que se desenrolla y el compás del caso ambiguo |
+| ma3 | Álgebra | Hecha: `grafica-perillas` (transformaciones, inversa, inecuaciones, valor absoluto) | Siguen el traductor de enunciados y el cuadrado que crece |
 | ma1 a ma3 | Trigonometría, geometría, funciones | Informes del 6 nov: `trigonometria-`, `geometria-` y `algebra-funciones-ideas-erroneas.md` | Cifras de resúmenes, por verificar con los PDF (`fuentes/por-conseguir.md`); cada informe trae 3 escenas y casos |
 | ma4 | Aritmética | `aritmetica-razonamiento-ideas-erroneas.md` | Porcentajes sucesivos ya existe; suma-descuentos y se-compensan ya tienen respaldo (AR1, AR2) |
 | ra1 | Razonamiento matemático | Mismo informe (RM1 a RM6, casi todo hipótesis) | Formato predicciones |
@@ -94,13 +96,17 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 - **Celda galvánica** (`plantillas/celda-galvanica/`, hecha el 6 nov 2026 por un subagente): puente de KNO₃ con nitratos en los vasos (con Ag⁺, el KCl precipitaría AgCl). No cubre la electrólisis del agua ni Nernst; el explorador dibuja Zn, Fe, Cu y Ag (el motor tiene más metales).
 - **Todas:** el estado es `borrador`. Pasan a `probada` con los datos del colegio.
 
+### Rutinas automáticas (6 nov 2026)
+
+Tres conversaciones aparte trabajan solas cada día, cada una en su rama y sin tocar catálogo, app, nucleo ni estos documentos: física (`rutina/fisica`, 2:13 a. m.), química (`rutina/quimica`, 4:37 a. m.) y razonamiento verbal con la guía docente (`rutina/verbal`, 4:41 p. m.). Cada una deja su reporte en `rutinas/<curso>.md` con los pedidos de integración. Integrarlas: leer el reporte, revisar, hacer merge a esta rama, agregar al catálogo, `npm run catalogo`, subir `VERSION` y documentar.
+
 ### 3. Plataforma
 
 - **pl6, pulido visual (65 %):**
   - Animaciones suaves al acertar y al subir la racha.
   - Una tipografía redondeada común entre la app y las escenas.
   - Revisar el modo oscuro de las ilustraciones.
-  - Llevar a `nucleo/` lo que cada escena repite y las revisiones vuelven a encontrar: en el celular, subir el lienzo al responder (scrollIntoView y animar después) y dejar que el dedo desplace la página sobre el dibujo salvo cerca de lo que se arrastra (touch-action: pan-y). Salió en la celda, la ampliadora y el triángulo.
+  - Llevar a `nucleo/` lo que cada escena repite (la cinta y la gráfica ya dejan el dibujo fijo arriba mientras se elige: `.bench` sticky y lienzo de ~240 px) y las revisiones vuelven a encontrar: en el celular, subir el lienzo al responder (scrollIntoView y animar después) y dejar que el dedo desplace la página sobre el dibujo salvo cerca de lo que se arrastra (touch-action: pan-y). Salió en la celda, la ampliadora y el triángulo.
 - **la1:** pruebas de entrada y salida por curso. Hoy existen por módulo de predicciones (3 + 3 preguntas); faltan en las escenas y por curso.
 - **Planificador por semana del CEPRE y modo examen con tiempo:** estaban en la referencia de interfaz y todavía no existen.
 - **Medición:** por decisión de Gerson (5 nov 2026), solo se exportan archivos. Un servidor (Railway está disponible) queda para después.

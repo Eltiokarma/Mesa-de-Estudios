@@ -1,0 +1,1319 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La gráfica con perillas: funciones y sus transformaciones</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de triangulo-estira.
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
+   la función f azul, la perilla h (corrimiento horizontal) rojo, la perilla k (vertical) verde, la perilla a
+   (estirar o dar vuelta) morado, la inversa f⁻¹ ámbar, el recíproco 1/f óxido, el conjunto solución turquesa
+   y la pendiente fucsia. La base (antes de mover las perillas) va en gris fino; las rectas A y B, en tinta.
+   Elegidos con CIEDE2000: ΔE00 ≥ 20,9 entre los que salen juntos (f, h, k, a, f⁻¹ y 1/f en el explorador;
+   f con la solución; f con la pendiente), en claro y en oscuro, y contraste AA sobre el papel y sobre su chip (.v, fondo al 8 %). */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8; --eje:#b9abb5;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-f:#1f5fbf; --c-h:#c0364a; --c-k:#466d14; --c-a:#630f6b; --c-inv:#8f5c14; --c-rec:#6b260f; --c-sol:#0f766e; --c-m:#b42d9d;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f; --eje:#6c5d7c;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-f:#7cb0ff; --c-h:#f17384; --c-k:#a3d65e; --c-a:#d27aff; --c-inv:#ff9f1a; --c-rec:#ff4d00; --c-sol:#5ed9c8; --c-m:#f2a6df;
+  color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f; --eje:#6c5d7c;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-f:#7cb0ff; --c-h:#f17384; --c-k:#a3d65e; --c-a:#d27aff; --c-inv:#ff9f1a; --c-rec:#ff4d00; --c-sol:#5ed9c8; --c-m:#f2a6df;
+  color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+/* Celular con una predicción pendiente: el dibujo más bajo y pegado arriba, para que se vea mientras se elige. */
+@media (max-width:899px){
+  .mode.pendiente .bench{position:sticky; top:0; z-index:1; padding:6px; gap:4px; background:var(--card); border-radius:0 0 20px 20px}
+  .mode.pendiente .legend{display:none}
+  .mode.pendiente .lecturas{gap:4px}
+  .mode.pendiente .lectura{padding:2px 8px}
+}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+.lienzo:focus-within{outline:3px solid var(--ink); outline-offset:2px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:16px; height:0; border-top:3px solid; display:inline-block}
+.legend i.fino{border-top-width:1.5px}
+.legend i.trazos{border-top-style:dashed}
+.legend i.punto{width:10px; height:10px; border:0; border-radius:50%}
+
+/* Perillas: deslizadores con el color de su variable */
+.perillas{display:grid; gap:6px; padding:2px 6px}
+.perilla{display:grid; grid-template-columns:auto 1fr 3.2em; align-items:center; gap:10px; font-size:.9rem}
+.perilla input{width:100%; accent-color:var(--k); min-height:32px; margin:0}
+.perilla output{font:800 1rem var(--mono); color:var(--k); text-align:right; font-variant-numeric:tabular-nums}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-f{color:var(--c-f); background:color-mix(in srgb, var(--c-f) 8%, transparent)}
+.v-h{color:var(--c-h); background:color-mix(in srgb, var(--c-h) 8%, transparent)}
+.v-k{color:var(--c-k); background:color-mix(in srgb, var(--c-k) 8%, transparent)}
+.v-a{color:var(--c-a); background:color-mix(in srgb, var(--c-a) 8%, transparent)}
+.v-inv{color:var(--c-inv); background:color-mix(in srgb, var(--c-inv) 8%, transparent)}
+.v-rec{color:var(--c-rec); background:color-mix(in srgb, var(--c-rec) 8%, transparent)}
+.v-sol{color:var(--c-sol); background:color-mix(in srgb, var(--c-sol) 8%, transparent)}
+.v-m{color:var(--c-m); background:color-mix(in srgb, var(--c-m) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+.v sup, .eq sup{font-size:.72em}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{font-family:var(--mono); font-size:1.02rem; line-height:1.7; font-variant-numeric:tabular-nums}
+.fx{white-space:nowrap}
+.eq .note{display:inline-block; font-family:var(--font); font-size:.84rem; line-height:1.35; color:var(--muted); margin-left:.6em; white-space:normal}
+.answer{font-weight:700; padding:12px 16px; border-radius:16px; background:var(--paper); border:2px solid var(--ink); max-width:66ch}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.seg button i{display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px; vertical-align:0}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.acciones{display:flex; flex-wrap:wrap; gap:8px}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, a:focus-visible, input:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+/* Lecturas en vivo, cada una con el color de su variable */
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(92px, 1fr)); gap:8px}
+.lecturas:empty{display:none}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura b{display:block; color:var(--k); font:800 1.02rem var(--mono); font-variant-numeric:tabular-nums; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.lectura span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.lectura.ancha{grid-column:span 2}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.25fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Álgebra · Funciones · Problemas tipo admisión</p>
+      <h1>La gráfica con perillas</h1>
+      <p class="sub">Mueve las perillas y mira a dónde se va la gráfica. Refléjala en la recta y = x para ver su inversa, y resuelve desigualdades en una recta que gira.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Plano cartesiano con la gráfica">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Plano cartesiano con la gráfica de una función"></canvas></div>
+      <div class="perillas" id="per1"></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos con funciones">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <div class="perillas" id="per2"></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/grafica-perillas">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+// Cada predicción se guarda con la unidad del catálogo que mide.
+const PLANTILLA = { id: 'grafica-perillas', unidad: 'algebra.funciones', version: '0.1.0' };
+const UNIDAD_DE = {
+  'grafica-perillas-paso4':'algebra.tipos-de-funciones-e-inversa', 'grafica-perillas-paso5':'algebra.tipos-de-funciones-e-inversa',
+  'grafica-perillas-paso7':'algebra.inecuaciones', 'que-pasa-si-inversa-o-reciproco':'algebra.tipos-de-funciones-e-inversa',
+  'que-pasa-si-raiz-corrida':'algebra.valor-absoluto-y-radicales', 'que-pasa-si-x2-menor-9':'algebra.inecuaciones',
+  'que-pasa-si-distancia-a-3':'algebra.valor-absoluto-y-radicales',
+};
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: UNIDAD_DE[problema] || PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la matemática (valores, dominios, el punto gemelo, la inversa, los cortes, las inecuaciones y el giro de la
+   recta) sale de MotorGrafica (motor.js); aquí solo se pinta, se arrastra y se anima. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MG = MotorGrafica;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 1 : d), r = Math.round(n*p)/p + 0;
+  const [e, f] = String(Math.abs(r)).split('.');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const f_ = t => V('f', t), h_ = t => V('h', t), k_ = t => V('k', t), a_ = t => V('a', t), i_ = t => V('inv', t), r_ = t => V('rec', t), s_ = t => V('sol', t), m_ = t => V('m', t);
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+function tween(dur, paso, fin){
+  if (RM || !dur){ paso(1); if (fin) setTimeout(fin, 0); return; }
+  const t0 = performance.now();
+  const tick = now => { const f = Math.min(1, (now - t0)/dur); paso(suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
+  requestAnimationFrame(tick);
+}
+// Una cadena de animaciones: cada una recibe su 'fin'. Si 'vigente()' deja de ser cierto (el alumno cambió de paso), se corta.
+function cadena(pasos, vigente, fin){
+  let i = 0;
+  const sig = () => { if (vigente && !vigente()) return; if (i >= pasos.length) { if (fin) fin(); return; } pasos[i++](sig); };
+  sig();
+}
+// f(x) = … con cada número pintado con el color de la perilla que lo cambia (las partes salen de MG.formula).
+function formulaHTML(F, nombre){
+  const P = MG.formula(F).partes;
+  let html = '', sup = '';
+  const cierra = () => { if (sup) { html += `<sup>${sup}</sup>`; sup = ''; } };
+  for (const [t, v, s] of P){
+    const pedazo = v ? V(v, t.trim() === t ? t : t.replace(/^ /, '').replace(/ $/, '')) : t;
+    const conEspacios = v && t !== t.trim() ? (t.startsWith(' ') ? ' ' : '') + pedazo + (t.endsWith(' ') ? ' ' : '') : pedazo;
+    if (s === 'sup') sup += conEspacios; else { cierra(); html += conEspacios; }
+  }
+  cierra();
+  return `<span class="fx">${(nombre === undefined ? f_('f') + '(x) = ' : nombre) + html}</span>`;
+}
+
+function colores(){
+  const g = n => css(n);
+  return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), eje:g('--eje'), paper:g('--paper'), card:g('--card'), line:g('--line'),
+    f:g('--c-f'), h:g('--c-h'), k:g('--c-k'), a:g('--c-a'), inv:g('--c-inv'), rec:g('--c-rec'), sol:g('--c-sol'), m:g('--c-m'),
+    mono:g('--mono'), font:g('--font') };
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, p, q){ ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke(); }
+// Texto con un fondo del color del papel detrás, para que se lea sobre la cuadrícula y las curvas.
+function rotulo(ctx, c, x, y, t, color, align, peso, tam){
+  ctx.font = `${peso || 700} ${tam || 13}px ${c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+  ctx.fillStyle = color; ctx.fillText(t, x, y);
+  return { x0: x0 - 3, x1: x0 + w + 3, y0: y - 9, y1: y + 9 };
+}
+function flecha(ctx, p, q, color, ancho){
+  const L = Math.hypot(q.x - p.x, q.y - p.y); if (L < 2) return;
+  const ux = (q.x - p.x)/L, uy = (q.y - p.y)/L, s = Math.min(9, L*.45);
+  ctx.save(); ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = ancho || 2.4; ctx.lineCap = 'round';
+  linea(ctx, p, { x:q.x - ux*s*.6, y:q.y - uy*s*.6 });
+  ctx.beginPath(); ctx.moveTo(q.x, q.y); ctx.lineTo(q.x - ux*s - uy*s*.55, q.y - uy*s + ux*s*.55); ctx.lineTo(q.x - ux*s + uy*s*.55, q.y - uy*s - ux*s*.55); ctx.closePath(); ctx.fill();
+  ctx.restore();
+}
+// Resaltar en el dibujo la variable que se toca en el texto (regla 4).
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+/* ================= La escena =================
+   Dos vistas en el mismo lienzo:
+   - 'plano': cuadrícula, ejes, la base en gris, la función f en azul (muestreada por el motor en cada cuadro), el
+     punto gemelo, el reflejo en y = x (cada punto lo dobla MG.reflejoAnimado), 1/f, rectas, pendientes y la
+     recta vertical que se arrastra.
+   - 'recta': una recta numérica; al multiplicar por −1 da media vuelta alrededor del 0 (MG.posicionRecta). */
+const PER = { h:{ min:-5, max:5, paso:.5, t:'h · corre a los lados' }, k:{ min:-5, max:5, paso:.5, t:'k · sube o baja' }, a:{ min:-3, max:3, paso:.5, t:'a · estira o da vuelta' } };
+function crearEscena(cv, idDesc, idLect, idLey, idPer){
+  const E = { gen:0 };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, agarre = null, sobre = null;
+  const DEF = () => ({ modo:'plano', caja:{ x0:-6, x1:6, y0:-4, y1:6 }, unif:true, f:null, base:null, x0:1,
+    ver:{ f:true, base:true, gemelo:false, yx:false, reflejo:false, rec:false, asintotas:true, vertice:false },
+    tRef:0, rama:null, hasta:null, vertical:null, relVertical:null, rectas:[], secantes:[], marcas:[], banda:null, solEje:null, guias:[],
+    recta:null, perillas:[], arrastra:{ ancla:false, gemelo:false, vertical:false }, bloqueaH:false, lect:[], alCambiar:null, rotulos:{ f:'f' },
+    alto:null, extra:null, leyF:null, leyInv:null, leyExtra:'', viaja:null });
+  Object.assign(E, DEF());
+
+  // ----- perillas (deslizadores) -----
+  const cajaPer = idPer ? document.getElementById(idPer) : null;
+  if (cajaPer) cajaPer.innerHTML = ['h','k','a'].map(p => `<label class="perilla" data-p="${p}" style="--k:var(--c-${p})" hidden>
+    <span>${V(p, p)} <span class="hint">${PER[p].t.split(' · ')[1]}</span></span>
+    <input type="range" min="${PER[p].min}" max="${PER[p].max}" step="${PER[p].paso}" aria-label="Perilla ${p}: ${PER[p].t.split(' · ')[1]}">
+    <output></output></label>`).join('');
+  function pintarPerillas(){
+    if (!cajaPer) return;
+    cajaPer.querySelectorAll('.perilla').forEach(l => {
+      const p = l.dataset.p, on = E.perillas.includes(p) && !!E.f;
+      l.hidden = !on; if (!on) return;
+      const inp = l.querySelector('input');
+      inp.value = E.f[p]; l.querySelector('output').textContent = fmt(E.f[p], 1);
+      inp.disabled = !!E.ocupado;
+    });
+  }
+  if (cajaPer) cajaPer.addEventListener('input', e => {
+    const l = e.target.closest('.perilla'); if (!l || !E.f || E.ocupado) return;
+    const p = l.dataset.p; let v = Number(e.target.value);
+    if (p === 'a' && v === 0) v = E.f.a > 0 ? -.5 : .5;      // a = 0 aplastaría la gráfica
+    E.f = { ...E.f, [p]:v }; pintarPerillas(); E.dibujar(); E.avisar();
+  });
+
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    const c = E.caja, prop = E.unif ? (c.y1 - c.y0)/(c.x1 - c.x0) : .9;
+    let h = E.alto ? E.alto : Math.round(w >= 560 ? clamp(w*Math.min(prop, .78), 300, 470) : clamp(w*prop, 240, 400));
+    // En pantalla grande el dibujo queda fijo al lado de la guía: que quepa con sus perillas y lecturas.
+    if (innerWidth >= 900) h = Math.max(260, Math.min(h, innerHeight - 250 - 40*E.perillas.length));
+    else if (E.compacto) h = Math.min(h, 240);   // celular con predicción pendiente: el dibujo queda bajito y fijo arriba
+    const dpr = window.devicePixelRatio || 1;
+    if (w === W && h === H) { E.dibujar(); return; }
+    W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  alRedibujarTema(() => E.dibujar());
+
+  E.config = o => {
+    const d = DEF();
+    Object.assign(E, d, o, { ver:Object.assign(d.ver, o.ver), arrastra:Object.assign(d.arrastra, o.arrastra), rotulos:Object.assign(d.rotulos, o.rotulos) });
+    if (E.f) E.f = MG.ficha(E.f);
+    if (E.f && E.base === null) E.base = { base:E.f.base };
+    E.ocupado = false; E.gen++;
+    const mueve = E.arrastra.ancla || E.arrastra.gemelo || E.arrastra.vertical;
+    cv.tabIndex = mueve ? 0 : -1;
+    W = 0; resize(); pintarPerillas();
+    E.leyenda(); E.dibujar(); E.avisar();
+  };
+  // Con una predicción pendiente en el celular, el dibujo se achica y queda pegado arriba (como en cinta-radio).
+  E.compactar = on => { on = !!on; cv.closest('.mode').classList.toggle('pendiente', on); if (on === !!E.compacto) return; E.compacto = on; W = 0; resize(); };
+  E.setCaja = c => { E.caja = c; W = 0; resize(); };
+  E.permitir = (que, on) => { E.arrastra[que] = on; cv.tabIndex = (E.arrastra.ancla || E.arrastra.gemelo || E.arrastra.vertical) ? 0 : -1; E.dibujar(); };
+  E.ponerPerillas = l => { E.perillas = l; pintarPerillas(); };
+  E.ocupar = on => { E.ocupado = on; pintarPerillas(); };
+
+  // ----- del mundo a la pantalla -----
+  function escala(){
+    const c = E.caja, pad = 14;
+    let kx = (W - 2*pad)/(c.x1 - c.x0), ky = (H - 2*pad)/(c.y1 - c.y0);
+    if (E.unif) kx = ky = Math.min(kx, ky);
+    return { kx, ky, ox: W/2 - kx*(c.x0 + c.x1)/2, oy: H/2 + ky*(c.y0 + c.y1)/2 };
+  }
+  const aP = (P, s) => ({ x: s.ox + s.kx*P.x, y: s.oy - s.ky*P.y });
+  const aPa = (p, s) => aP({ x:p[0], y:p[1] }, s);
+  function ventana(s){ return { x0:(0 - s.ox)/s.kx, x1:(W - s.ox)/s.kx, y0:(s.oy - H)/s.ky, y1:s.oy/s.ky }; }
+  function aMundo(px, py){ const s = escala(); return { x:(px - s.ox)/s.kx, y:(s.oy - py)/s.ky }; }
+  function trazar(tramos, s, color, ancho, trazos, hasta){
+    ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = ancho; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+    if (trazos) ctx.setLineDash(trazos);
+    for (const t of tramos){
+      ctx.beginPath(); let empez = false;
+      for (const p of t){ if (hasta !== undefined && hasta !== null && p[0] > hasta) break; const q = aPa(p, s); if (!empez){ ctx.moveTo(q.x, q.y); empez = true; } else ctx.lineTo(q.x, q.y); }
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+  const grosor = (k, b) => E.hl === k ? b + 2.5 : b;
+  // Un rótulo junto a la curva, en un punto visible hacia la derecha de la ventana
+  let ocupadas = [];
+  const choca = r => ocupadas.some(o => r.x0 < o.x1 && r.x1 > o.x0 && r.y0 < o.y1 && r.y1 > o.y0);
+  function rotularCurva(tramos, s, texto, color, frac){
+    const vw = ventana(s), pts = [];
+    for (const t of tramos) for (const p of t) if (p[0] > vw.x0 + .3 && p[0] < vw.x1 - .3 && p[1] > vw.y0 + .5 && p[1] < vw.y1 - .5) pts.push(p);
+    if (!pts.length) return;
+    pts.sort((p, q) => p[0] - q[0]);
+    const orden = [frac || .82, .7, .9, .55, .4, .25, .1].map(f => pts[Math.min(pts.length - 1, Math.floor(f*pts.length))]);
+    for (const p of orden){
+      const q = aPa(p, s);
+      for (const [dx, dy] of [[14, -14], [-14, -14], [14, 14], [-14, 14], [0, -20], [0, 20]]){
+        ctx.font = `800 14px ${E.c.font}`; const w = ctx.measureText(texto).width;
+        const x = clamp(q.x + dx, w/2 + 4, W - w/2 - 4), y = clamp(q.y + dy, 12, H - 12);
+        const r = { x0:x - w/2 - 3, x1:x + w/2 + 3, y0:y - 9, y1:y + 9 };
+        if (!choca(r)){ ocupadas.push(rotulo(ctx, E.c, x, y, texto, color, 'center', 800, 14)); return; }
+      }
+    }
+  }
+  function punto(p, color, r, anillo){
+    ctx.save(); ctx.fillStyle = anillo ? E.c.paper : color; ctx.strokeStyle = color; ctx.lineWidth = 2.4;
+    ctx.beginPath(); ctx.arc(p.x, p.y, r || 5, 0, 7); ctx.fill(); if (anillo) ctx.stroke(); ctx.restore();
+  }
+
+  E.dibujar = () => {
+    if (!W) return;
+    ocupadas = [];
+    const c = E.c = colores();
+    ctx.clearRect(0, 0, W, H); ctx.fillStyle = c.paper; ctx.fillRect(0, 0, W, H);
+    if (E.modo === 'recta') dibujarRecta(c); else dibujarPlano(c);
+  };
+
+  function dibujarPlano(c){
+    const s = escala(), vw = ventana(s);
+    // cuadrícula y ejes, con un paso que deja al menos 14 px entre líneas
+    const pasoDe = k => [1, 2, 5, 10].find(p => p*k >= 14) || 10;
+    const gx = pasoDe(s.kx), gy = pasoDe(s.ky);
+    ctx.save(); ctx.strokeStyle = c.grid; ctx.lineWidth = 1;
+    for (let x = Math.ceil(vw.x0/gx)*gx; x <= vw.x1; x += gx){ const p = aP({ x, y:0 }, s); linea(ctx, { x:p.x, y:0 }, { x:p.x, y:H }); }
+    for (let y = Math.ceil(vw.y0/gy)*gy; y <= vw.y1; y += gy){ const p = aP({ x:0, y }, s); linea(ctx, { x:0, y:p.y }, { x:W, y:p.y }); }
+    const o = aP({ x:0, y:0 }, s);
+    ctx.strokeStyle = c.eje; ctx.lineWidth = 1.4;
+    if (o.y >= 0 && o.y <= H) linea(ctx, { x:0, y:o.y }, { x:W, y:o.y });
+    if (o.x >= 0 && o.x <= W) linea(ctx, { x:o.x, y:0 }, { x:o.x, y:H });
+    ctx.fillStyle = c.muted; ctx.font = `600 11px ${c.font}`;
+    const lx = [1, 2, 5, 10].find(p => p*s.kx >= 26) || 10, ly = [1, 2, 5, 10].find(p => p*s.ky >= 22) || 10;
+    const yEt = clamp(o.y + 4, 2, H - 14), xEt = clamp(o.x - 5, 22, W - 4);
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    for (let x = Math.ceil(vw.x0/lx)*lx; x <= vw.x1; x += lx) if (x !== 0){ const p = aP({ x, y:0 }, s); if (p.x > 8 && p.x < W - 8){ const t = fmt(x, 0); ctx.fillText(t, p.x, yEt); ocupadas.push({ x0:p.x - t.length*3.6 - 2, x1:p.x + t.length*3.6 + 2, y0:yEt - 1, y1:yEt + 13 }); } }
+    ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    for (let y = Math.ceil(vw.y0/ly)*ly; y <= vw.y1; y += ly) if (y !== 0){ const p = aP({ x:0, y }, s); if (p.y > 8 && p.y < H - 8){ const t = fmt(y, 0); ctx.fillText(t, xEt, p.y); ocupadas.push({ x0:xEt - t.length*7.2 - 2, x1:xEt + 2, y0:p.y - 7, y1:p.y + 7 }); } }
+    ctx.restore();
+    const X0 = vw.x0 - .5, X1 = vw.x1 + .5, opc = { y0:vw.y0, y1:vw.y1 };
+    // Los rótulos de las curvas se ponen al final, cuando ya se sabe dónde están los puntos y sus nombres.
+    const diferidos = [];
+
+    // la recta y = x
+    if (E.ver.yx){
+      ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.6; ctx.setLineDash([6, 6]);
+      const m0 = Math.min(vw.x0, vw.y0) - 1, m1 = Math.max(vw.x1, vw.y1) + 1; linea(ctx, aP({ x:m0, y:m0 }, s), aP({ x:m1, y:m1 }, s)); ctx.restore();
+      const t = Math.min(vw.x1, vw.y1) - .8; const p = aP({ x:t, y:t }, s);
+      ocupadas.push(rotulo(ctx, c, p.x - 4, p.y + 14, 'y = x', c.muted, 'right', 700, 12));
+    }
+    // banda horizontal (x² < 9: la recta y = 9) y guías punteadas
+    for (const g of E.guias){
+      ctx.save(); ctx.strokeStyle = g.color ? c[g.color] : c.muted; ctx.lineWidth = g.ancho || 1.4; ctx.setLineDash(g.trazos || [3, 5]);
+      linea(ctx, aP(g.p, s), aP(g.q, s)); ctx.restore();
+      if (g.texto){ const m = aP(g.en || g.q, s); ocupadas.push(rotulo(ctx, c, m.x + (g.dx || 0), m.y + (g.dy || 0), g.texto, g.colorT ? c[g.colorT] : c.muted, g.align || 'center', 700, 12)); }
+    }
+    if (E.banda){
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.setLineDash([8, 5]);
+      linea(ctx, aP({ x:X0, y:E.banda.y }, s), aP({ x:X1, y:E.banda.y }, s)); ctx.restore();
+      const p = aP({ x:vw.x1 - .2, y:E.banda.y }, s); ocupadas.push(rotulo(ctx, c, p.x, p.y - 13, E.banda.texto, c.ink, 'right', 800, 13));
+    }
+    // la base, en gris fino
+    if (E.ver.base && E.base) trazar(MG.muestrear(E.base, X0, X1, opc), s, c.muted, grosor('base', 1.7), [5, 4]);
+    // asíntotas de 1/x corrida
+    if (E.f && E.f.base === 'reciproca' && E.ver.asintotas && E.ver.f){
+      ctx.save(); ctx.strokeStyle = c.f; ctx.globalAlpha = .55; ctx.lineWidth = 1.2; ctx.setLineDash([2, 5]);
+      const p = aP({ x:E.f.h, y:E.f.k }, s); linea(ctx, { x:p.x, y:0 }, { x:p.x, y:H }); linea(ctx, { x:0, y:p.y }, { x:W, y:p.y }); ctx.restore();
+    }
+    // la solución sobre el eje x (x² < 9)
+    if (E.solEje) dibujarConjuntoEnEje(c, s, E.solEje);
+    // la función
+    let tramosF = null;
+    if (E.f && E.ver.f){
+      tramosF = MG.muestrear(E.f, X0, X1, opc);
+      trazar(tramosF, s, c.f, grosor('f', 3.2), null, E.hasta);
+    }
+    // 1/f
+    if (E.f && E.ver.rec){
+      const tr = MG.muestrearReciproco(E.f, X0, X1, opc);
+      trazar(tr, s, c.rec, grosor('rec', 2.6), [9, 5]);
+      diferidos.push(() => rotularCurva(tr, s, E.rotulos.rec || '1/f', c.rec, E.rotulos.recFrac || .7));
+    }
+    // el reflejo en y = x: cada punto de f se dobla sobre el pliegue (en t = 1 queda en (y; x))
+    if (E.f && E.ver.reflejo){
+      let tr;
+      if (E.rama) tr = MG.muestrear(E.rama, X0, X1, opc);
+      else {
+        const lo = Math.min(vw.x0, vw.y0) - 1, hi = Math.max(vw.x1, vw.y1) + 1;
+        tr = MG.muestrear(E.f, lo, hi, { y0:lo, y1:hi, n:500 }).map(t => t.map(p => { const q = MG.reflejoAnimado(p, E.tRef); return [q.x, q.y]; }));
+      }
+      // si f no es inyectiva, su reflejo no es una función: va a trazos y no se llama f⁻¹
+      const noFn = noEsFuncion();
+      trazar(tr, s, c.inv, grosor('inv', 3), noFn ? [9, 5] : null);
+      if (E.tRef >= 1 || E.rama) diferidos.push(() => rotularCurva(tr, s, E.rotulos.inv || (noFn ? 'reflejo' : 'f⁻¹'), c.inv, E.rotulos.invFrac || .3));
+      // un punto marcado viaja con el reflejo, por un segmento perpendicular a y = x
+      if (E.viaja && E.tRef > 0 && E.tRef < 1){
+        const v = E.viaja, q = MG.reflejoAnimado(v, E.tRef);
+        ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.4; ctx.setLineDash([2, 4]); linea(ctx, aP(v, s), aP({ x:v.y, y:v.x }, s)); ctx.restore();
+        punto(aP(q, s), c.inv, 5.5);
+      }
+    }
+    // rectas A y B, en tinta
+    for (const r of E.rectas){
+      const tr = MG.muestrear({ base:'lineal', a:r.m, k:r.n }, X0, X1, opc);
+      trazar(tr, s, c.ink, 2.6, r.trazos || null);
+      const x = r.rotuloX, p = aP({ x, y:r.m*x + r.n }, s);
+      ocupadas.push(rotulo(ctx, c, p.x + (r.dx || 0), p.y + (r.dy || -14), r.nombre, c.ink, 'center', 800, 15));
+    }
+    if (tramosF && E.rotulos.f) diferidos.push(() => rotularCurva(E.hasta !== null ? tramosF.map(t => t.filter(p => p[0] <= E.hasta)).filter(t => t.length > 1) : tramosF, s, E.rotulos.f, c.f, E.rotulos.fFrac));
+    // pendientes: cuánto sube por cada paso a la derecha
+    for (const z of E.secantes){
+      const p1 = aP({ x:z.x1, y:z.y1 }, s), p2 = aP({ x:z.x2, y:z.y1 }, s), p3 = aP({ x:z.x2, y:z.y2 }, s);
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.setLineDash([3, 3]); linea(ctx, p1, p2); ctx.restore();
+      ctx.save(); ctx.strokeStyle = c.m; ctx.lineWidth = grosor('m', 4); ctx.lineCap = 'round'; linea(ctx, p2, p3); ctx.restore();
+      if (z.texto) ocupadas.push(rotulo(ctx, c, p3.x + (z.dx === undefined ? 8 : z.dx), (p2.y + p3.y)/2 + (z.dy || 0), z.texto, c.m, z.align || 'left', 800, 13));
+      if (z.paso) ocupadas.push(rotulo(ctx, c, (p1.x + p2.x)/2, p1.y + 11, z.paso, c.muted, 'center', 700, 11));
+    }
+    // recta vertical que se arrastra, con sus cortes
+    if (E.vertical !== null){
+      const p = aP({ x:E.vertical, y:0 }, s);
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.setLineDash([7, 5]); linea(ctx, { x:p.x, y:0 }, { x:p.x, y:H }); ctx.restore();
+      const cs = E.relVertical ? MG.cortesVertical(E.relVertical, E.vertical) : { ys:[], cortes:0 };
+      for (const y of cs.ys){ const q = aP({ x:E.vertical, y }, s); if (q.y > -10 && q.y < H + 10){ punto(q, c.ink, 7, true); } }
+      const n = cs.cortes;
+      ocupadas.push(rotulo(ctx, c, clamp(p.x + 8, 4, W - 120), 16, `x = ${fmt(E.vertical, 1)}: ${n === 1 ? '1 corte' : n + ' cortes'}`, c.ink, 'left', 800, 13));
+      if (E.arrastra.vertical){ const kn = { x:p.x, y:H - 22 }; ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = (agarre === 'vertical' || sobre === 'vertical') ? .2 : .1; ctx.beginPath(); ctx.arc(kn.x, kn.y, 19, 0, 7); ctx.fill(); ctx.restore();
+        ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = c.ink; ctx.lineWidth = 2.6; ctx.beginPath(); ctx.arc(kn.x, kn.y, 9, 0, 7); ctx.fill(); ctx.stroke(); ctx.restore();
+        ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; linea(ctx, { x:kn.x - 4, y:kn.y }, { x:kn.x + 4, y:kn.y }); ctx.restore(); }
+    }
+    // punto gemelo: P en la base, P′ en f, y el camino h (a los lados), ×a y k (arriba o abajo)
+    if (E.f && E.ver.gemelo){
+      const G = MG.gemelo(E.f, E.x0);
+      if (G.definido){
+        const P = aP(G.base, s), P2 = aP(G.gemelo, s), F = E.f;
+        const esq1 = aP({ x:G.gemelo.x, y:G.base.y }, s), esq2 = aP({ x:G.gemelo.x, y:F.a*G.base.y }, s);
+        if (Math.abs(G.gemelo.x - G.base.x) > 1e-9) flecha(ctx, P, esq1, c.h, grosor('h', 2.4));
+        if (Math.abs(F.a - 1) > 1e-9 && Math.abs(G.base.y) > 1e-9) flecha(ctx, esq1, esq2, c.a, grosor('a', 2.4));
+        if (Math.abs(F.k) > 1e-9) flecha(ctx, esq2, P2, c.k, grosor('k', 2.4));
+        punto(P, c.muted, 6, true);
+        punto(P2, c.f, 6);
+        ocupadas.push(rotulo(ctx, c, P.x - 14, P.y + 14, 'P', c.muted, 'center', 800, 14));
+        ocupadas.push(rotulo(ctx, c, P2.x + 15, P2.y - 14, 'P′', c.f, 'center', 800, 14));
+        if (E.arrastra.gemelo){ ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = (agarre === 'gemelo' || sobre === 'gemelo') ? .2 : .09; ctx.beginPath(); ctx.arc(P.x, P.y, 18, 0, 7); ctx.fill(); ctx.restore(); }
+      }
+    }
+    // marcas sueltas
+    for (const m of E.marcas){
+      const p = aP(m, s); if (p.x < -20 || p.x > W + 20 || p.y < -20 || p.y > H + 20) continue;
+      punto(p, c[m.color] || m.color || c.ink, m.r || 5.5, m.anillo);
+      if (m.texto) ocupadas.push(rotulo(ctx, c, clamp(p.x + (m.dx || 0), 30, W - 30), clamp(p.y + (m.dy === undefined ? -15 : m.dy), 10, H - 10), m.texto, c[m.colorT || m.color] || c.ink, m.align || 'center', 800, 13));
+    }
+    // el ancla que se arrastra (mueve h y k)
+    if (E.f && E.arrastra.ancla){
+      const A = aP(MG.ancla(E.f), s);
+      ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = (agarre === 'ancla' || sobre === 'ancla') ? .2 : .1; ctx.beginPath(); ctx.arc(A.x, A.y, 20, 0, 7); ctx.fill(); ctx.restore();
+      ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = c.f; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(A.x, A.y, 9, 0, 7); ctx.fill(); ctx.stroke(); ctx.restore();
+    }
+    diferidos.forEach(f => f());
+    if (E.extra) E.extra(ctx, c, P0 => aP(P0, s), { W, H });
+  }
+  function noEsFuncion(){ return !E.rama && !!E.f && !MG.inversa(E.f).invertible; }
+  function dibujarConjuntoEnEje(c, s, z){
+    const vw = ventana(s);
+    for (const I of z.intervalos){
+      const lo = Math.max(I.lo, vw.x0 - 1), hi = Math.min(I.hi, vw.x1 + 1);
+      const a = aP({ x:lo, y:0 }, s), b = aP({ x:hi, y:0 }, s), p = z.prog === undefined ? 1 : z.prog;
+      const m = (a.x + b.x)/2, a2 = { x:m + (a.x - m)*p, y:a.y }, b2 = { x:m + (b.x - m)*p, y:b.y };
+      ctx.save(); ctx.strokeStyle = c.sol; ctx.lineWidth = grosor('sol', 7); ctx.globalAlpha = .9; ctx.lineCap = 'butt'; linea(ctx, a2, b2); ctx.restore();
+      if (p >= 1){
+        if (Number.isFinite(I.lo)) punto(a, c.sol, 6, !I.cLo);
+        if (Number.isFinite(I.hi)) punto(b, c.sol, 6, !I.cHi);
+      }
+    }
+  }
+
+  // ----- la recta numérica -----
+  function dibujarRecta(c){
+    const R = E.recta; if (!R) return;
+    const pad = 22, k = (W - 2*pad)/(R.u1 - R.u0), ox = pad - k*R.u0, oy = H*.62;
+    // Durante la media vuelta la vista se aleja un poco (solo la vista: la posición la da el motor) para que la recta quepa parada.
+    const umax = Math.max(Math.abs(R.u0), Math.abs(R.u1)), zmin = Math.min(1, .8*(oy - 56)/(k*umax), .8*(H - 30 - oy)/(k*umax));
+    const z = R.tr && R.tr.tipo === 'girar' ? 1 - (1 - zmin)*Math.sin(Math.PI*(R.t || 0)) : 1;
+    const P = u => { const q = MG.posicionRecta(R.tr, u, R.t || 0); return { x:ox + k*z*q.x, y:oy - k*z*q.y }; };
+    // dirección de la recta y su normal, para las marcas
+    const a = P(R.u0), b = P(R.u1), L = Math.hypot(b.x - a.x, b.y - a.y) || 1, ux = (b.x - a.x)/L, uy = (b.y - a.y)/L, nx = -uy, ny = ux;
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, a, b); ctx.restore();
+    const paso = k*z >= 24 ? 1 : k*z >= 13 ? 2 : 5;   // con la vista alejada, menos números para que no se enciman
+    ctx.save(); ctx.fillStyle = c.muted; ctx.font = `600 11px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    for (let u = Math.ceil(R.u0); u <= R.u1; u++){
+      const p = P(u), t = u === 0 ? 9 : (u % paso === 0 ? 6 : 3.5);
+      ctx.strokeStyle = u === 0 ? c.ink : c.eje; ctx.lineWidth = u === 0 ? 2 : 1.3;
+      linea(ctx, { x:p.x - nx*t, y:p.y - ny*t }, { x:p.x + nx*t, y:p.y + ny*t });
+      if (u % paso === 0) { ctx.fillStyle = u === 0 ? c.ink : c.muted; ctx.fillText(fmt(u, 0), p.x - nx*(-19), p.y - ny*(-19)); }
+    }
+    ctx.restore();
+    // el conjunto
+    if (R.conj){
+      for (const I of R.conj){
+        const lo = Math.max(I.lo, R.u0), hi = Math.min(I.hi, R.u1);
+        if (lo > hi) continue;
+        const p = R.prog === undefined ? 1 : R.prog, m = R.centro !== undefined ? R.centro : (Number.isFinite(I.lo) ? I.lo : I.hi);
+        const l2 = m + (lo - m)*p, h2 = m + (hi - m)*p;
+        const A = P(l2), B = P(h2);
+        ctx.save(); ctx.strokeStyle = c.sol; ctx.lineWidth = grosor('sol', 8); ctx.globalAlpha = .85; linea(ctx, A, B); ctx.restore();
+        if (I.hi === Infinity && p >= 1) flecha(ctx, P(R.u1 - .8), P(R.u1), c.sol, 4);
+        if (I.lo === -Infinity && p >= 1) flecha(ctx, P(R.u0 + .8), P(R.u0), c.sol, 4);
+        if (p >= 1){ if (Number.isFinite(I.lo)) punto(P(I.lo), c.sol, 7, !I.cLo); if (Number.isFinite(I.hi) && I.hi !== I.lo) punto(P(I.hi), c.sol, 7, !I.cHi); if (I.lo === I.hi) punto(P(I.lo), c.sol, 7); }
+      }
+    }
+    // valor absoluto: el centro y la distancia hacia cada lado
+    if (R.centro !== undefined && R.radio !== undefined){
+      const C0 = P(R.centro); punto(C0, c.ink, 5.5);
+      if (R.prog > 0){
+        const r = R.radio*R.prog;
+        const ar = (u1, u2, dy) => { const p1 = P(u1), p2 = P(u2); ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(p1.x, p1.y - 10); ctx.quadraticCurveTo((p1.x + p2.x)/2, p1.y - 10 - dy, p2.x, p2.y - 10); ctx.stroke(); ctx.restore(); };
+        ar(R.centro, R.centro - r, 26); ar(R.centro, R.centro + r, 26);
+        if (R.prog >= 1){ const m1 = P(R.centro - r/2), m2 = P(R.centro + r/2); ocupadas.push(rotulo(ctx, c, m1.x, m1.y - 33, fmt(R.radio, 0), c.ink, 'center', 800, 13)); ocupadas.push(rotulo(ctx, c, m2.x, m2.y - 33, fmt(R.radio, 0), c.ink, 'center', 800, 13)); }
+      }
+    }
+    // marcas en la recta
+    for (const m of R.marcas || []){ const p = P(m.u); punto(p, c[m.color] || c.ink, 5, m.anillo); if (m.texto) rotulo(ctx, c, p.x, p.y - 18, m.texto, c[m.color] || c.ink, 'center', 800, 12); }
+    // la desigualdad de este paso, arriba, y lo que se hizo
+    if (R.etiqueta) rotulo(ctx, c, W/2, 22, R.etiqueta, c.ink, 'center', 800, 17);
+    if (R.nota) rotulo(ctx, c, W/2, 46, R.nota, c.muted, 'center', 700, 12);
+    if (R.debajo) rotulo(ctx, c, W/2, H - 16, R.debajo, c.muted, 'center', 700, 12);
+  }
+
+  E.leyenda = () => {
+    if (!idLey) return;
+    const it = (col, t, cl) => `<span><i class="${cl || ''}" style="border-color:var(--${col});background:var(--${col})"></i>${t}</span>`;
+    const l = [];
+    if (E.modo === 'recta') l.push(it('c-sol', 'conjunto solución', 'punto'));
+    else {
+      if (E.ver.base && E.base) l.push(`<span><i class="fino trazos" style="border-color:var(--muted)"></i>base</span>`);
+      if (E.f && E.ver.f) l.push(it('c-f', E.leyF || 'f · la función'));
+      if (E.ver.reflejo){
+        if (E.leyInv) l.push(E.rama ? it('c-inv', E.leyInv) : `<span><i class="trazos" style="border-color:var(--c-inv)"></i>${E.leyInv}</span>`);
+        else if (noEsFuncion()) l.push(`<span><i class="trazos" style="border-color:var(--c-inv)"></i>reflejo en y = x (no es función)</span>`);
+        else l.push(it('c-inv', 'f⁻¹ · reflejo en y = x'));
+      }
+      if (E.ver.rec) l.push(`<span><i class="trazos" style="border-color:var(--c-rec)"></i>1/f · recíproco</span>`);
+      if (E.ver.yx) l.push(`<span><i class="fino trazos" style="border-color:var(--muted)"></i>y = x</span>`);
+      if (E.ver.gemelo) l.push(it('c-h', 'h · a los lados') + it('c-k', 'k · arriba o abajo') + (E.f && E.f.a !== 1 ? it('c-a', '×a') : ''));
+      if (E.rectas.length) l.push(E.rectas.map(r => `<span><i class="${r.trazos ? 'trazos' : ''}" style="border-color:var(--ink)"></i>${r.nombre}</span>`).join(''));
+      if (E.secantes.length) l.push(it('c-m', 'pendiente: lo que sube por cada paso'));
+      if (E.solEje) l.push(it('c-sol', 'conjunto solución', 'punto'));
+    }
+    document.getElementById(idLey).innerHTML = l.join('') + (E.modo === 'plano' ? E.leyExtra : '');
+  };
+  // Lecturas y descripción para lectores de pantalla: solo lo que cada paso deja ver.
+  E.avisar = () => {
+    const F = E.f;
+    const caja = (k, t, val, ancha) => `<div class="lectura${ancha ? ' ancha' : ''}" style="--k:var(--${k})"><span>${t}</span><b>${val}</b></div>`;
+    const L = {
+      h: () => caja('c-h', 'Perilla h', fmt(F.h, 1)), k: () => caja('c-k', 'Perilla k', fmt(F.k, 1)), a: () => caja('c-a', 'Perilla a', fmt(F.a, 1)),
+      dom: () => caja('ink', 'Dominio', MG.dominio(F).texto, true), ran: () => caja('ink', 'Rango', MG.rango(F).texto, true),
+      gem: () => { const G = MG.gemelo(F, E.x0); return G.definido ? caja('c-f', 'P → P′', `(${fmt(G.base.x, 1)}; ${fmt(G.base.y, 2)}) → (${fmt(G.gemelo.x, 1)}; ${fmt(G.gemelo.y, 2)})`, true) : ''; },
+      vert: () => { const c = MG.cortesVertical(E.relVertical, E.vertical); return caja('ink', `Cortes en x = ${fmt(E.vertical, 1)}`, c.ys.length ? c.ys.map(y => fmt(y, 2)).join(' y ') : 'ninguno', true); },
+    };
+    if (idLect) document.getElementById(idLect).innerHTML = F ? E.lect.map(k => L[k] ? L[k]() : '').join('') : '';
+    if (idDesc){
+      const d = [];
+      if (E.modo === 'recta') d.push(E.recta && E.recta.etiqueta ? `Recta numérica: ${E.recta.etiqueta}.` : 'Recta numérica.');
+      else {
+        if (F && E.ver.f) d.push(`Gráfica de f(x) = ${MG.formula(F).texto}.`);
+        if (E.lect.includes('h')) d.push(`h = ${fmt(F.h, 1)}.`);
+        if (E.lect.includes('k')) d.push(`k = ${fmt(F.k, 1)}.`);
+        if (E.lect.includes('a')) d.push(`a = ${fmt(F.a, 1)}.`);
+        if (E.lect.includes('gem')) { const G = MG.gemelo(F, E.x0); if (G.definido) d.push(`El punto P (${fmt(G.base.x, 1)}; ${fmt(G.base.y, 2)}) de la base va a P′ (${fmt(G.gemelo.x, 1)}; ${fmt(G.gemelo.y, 2)}).`); }
+        if (E.lect.includes('vert')) d.push(`La recta vertical x = ${fmt(E.vertical, 1)} corta ${MG.cortesVertical(E.relVertical, E.vertical).cortes} veces.`);
+      }
+      document.getElementById(idDesc).textContent = d.join(' ');
+    }
+    if (E.alCambiar) E.alCambiar(F);
+  };
+  // Animaciones: perillas, reflejo, curva que se dibuja de izquierda a derecha, recta numérica
+  // Cada animación se corta si la escena se reconfiguró (el alumno cambió de paso o de experimento).
+  const animar = (dur, paso, fin) => { const g = E.gen; tween(dur, f => { if (E.gen === g) paso(f); }, () => { if (E.gen === g && fin) fin(); }); };
+  E.animarFicha = (dest, dur, fin) => {
+    const de = { ...E.f };
+    animar(dur, f => { E.f = { ...de, h:de.h + (dest.h === undefined ? 0 : dest.h - de.h)*f, k:de.k + (dest.k === undefined ? 0 : dest.k - de.k)*f, a:de.a + (dest.a === undefined ? 0 : dest.a - de.a)*f }; E.dibujar(); },
+      () => { E.f = { ...de, ...dest }; pintarPerillas(); E.dibujar(); E.avisar(); if (fin) fin(); });
+  };
+  E.reflejar = (hacia, dur, fin) => { const de = E.tRef; E.ver.reflejo = true; E.leyenda(); animar(dur, f => { E.tRef = de + (hacia - de)*f; E.dibujar(); }, () => { E.tRef = hacia; E.dibujar(); if (fin) fin(); }); };
+  E.barrer = (x0, x1, dur, fin) => { animar(dur, f => { E.hasta = x0 + (x1 - x0)*f; E.dibujar(); }, () => { E.hasta = null; E.dibujar(); if (fin) fin(); }); };
+  E.girarRecta = (tr, dur, fin) => { E.recta.tr = tr; animar(dur, f => { E.recta.t = f; E.dibujar(); }, () => { if (fin) fin(); }); };
+  E.crecer = (obj, campo, dur, fin) => animar(dur, f => { obj[campo] = f; E.dibujar(); }, () => { obj[campo] = 1; E.dibujar(); if (fin) fin(); });
+  E.animar = animar;
+  E.vig = () => { const g = E.gen; return () => E.gen === g; };
+
+  // ----- arrastrar (táctil, ratón y teclado) -----
+  const local = e => { const r = cv.getBoundingClientRect(); return { x:e.clientX - r.left, y:e.clientY - r.top }; };
+  // ¿Qué hay cerca del dedo o del ratón? El ancla de f, el punto P de la base o la perilla de la recta vertical.
+  function queHay(p, r){
+    if (E.ocupado || E.modo !== 'plano') return null;
+    const s = escala(), d = q => Math.hypot(p.x - q.x, p.y - q.y);
+    if (E.arrastra.ancla && E.f){ if (d(aP(MG.ancla(E.f), s)) < r) return 'ancla'; }
+    if (E.arrastra.gemelo && E.f){ const G = MG.gemelo(E.f, E.x0); if (G.definido && d(aP(G.base, s)) < r) return 'gemelo'; }
+    if (E.arrastra.vertical && E.vertical !== null){ const q = aP({ x:E.vertical, y:0 }, s); if (d({ x:q.x, y:H - 22 }) < r) return 'vertical'; }
+    return null;
+  }
+  const medio = v => Math.round(v*2)/2;
+  function mover(que, w){
+    const vw = ventana(escala());
+    if (que === 'ancla'){
+      let P = { x:clamp(medio(w.x), -5, 5), y:clamp(medio(w.y), vw.y0 + .5, vw.y1 - .5) };
+      let hk = MG.desdeAncla(E.f, P);
+      hk = { h:clamp(hk.h, PER.h.min, PER.h.max), k:clamp(hk.k, PER.k.min, PER.k.max) };
+      if (E.bloqueaH) hk.h = E.f.h;
+      if (hk.h === E.f.h && hk.k === E.f.k) return;
+      E.f = { ...E.f, ...hk };
+    } else if (que === 'gemelo'){
+      let x = clamp(medio(w.x), Math.ceil(vw.x0) + .5, Math.floor(vw.x1) - .5);
+      const B = MG.dominio(E.base).intervalos;
+      if (!MG.pertenece(B, x)) return;
+      if (x === E.x0) return; E.x0 = x;
+    } else if (que === 'vertical'){
+      const x = clamp(Math.round(w.x*4)/4, Math.ceil(vw.x0) + .25, Math.floor(vw.x1) - .25);
+      if (x === E.vertical) return; E.vertical = x;
+    }
+    pintarPerillas(); E.dibujar(); E.avisar();
+  }
+  cv.addEventListener('touchstart', e => {
+    if (e.touches.length !== 1) return;
+    const r = cv.getBoundingClientRect(), t = e.touches[0];
+    if (queHay({ x:t.clientX - r.left, y:t.clientY - r.top }, 40)) e.preventDefault();
+  }, { passive:false });
+  cv.addEventListener('pointerdown', e => {
+    const q = queHay(local(e), e.pointerType === 'mouse' ? 30 : 40); if (!q) return;
+    agarre = q; cv.setPointerCapture(e.pointerId); e.preventDefault(); cv.focus({ preventScroll:true }); E.dibujar();
+  }, { passive:false });
+  cv.addEventListener('pointermove', e => {
+    const p = local(e);
+    if (agarre){ mover(agarre, aMundo(p.x, p.y)); return; }
+    const q = queHay(p, 30);
+    if (q !== sobre){ sobre = q; cv.style.cursor = q ? 'grab' : ''; E.dibujar(); }
+  });
+  const soltar = () => { if (agarre){ agarre = null; E.dibujar(); } };
+  cv.addEventListener('pointerup', soltar); cv.addEventListener('pointercancel', soltar);
+  cv.addEventListener('keydown', e => {
+    if (E.ocupado) return;
+    const d = { ArrowLeft:[-1, 0], ArrowRight:[1, 0], ArrowUp:[0, 1], ArrowDown:[0, -1] }[e.key];
+    if (!d) return;
+    if (E.arrastra.ancla && E.f){ e.preventDefault(); const A = MG.ancla(E.f); mover('ancla', { x:A.x + d[0]*.5, y:A.y + d[1]*.5 }); }
+    else if (E.arrastra.gemelo && d[0]){ e.preventDefault(); mover('gemelo', { x:E.x0 + d[0]*.5, y:0 }); }
+    else if (E.arrastra.vertical && d[0]){ e.preventDefault(); mover('vertical', { x:E.vertical + d[0]*.25, y:0 }); }
+  });
+  return E;
+}
+
+// Opciones de predicción (las mismas en los dos modos)
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+// La recta numérica de un paso de inecuación (todo sale del motor)
+const rectaDePaso = (p, u0, u1, extra) => Object.assign({ u0, u1, tr:null, t:0, conj:MG.conjuntoSimple(p.op, p.valor), etiqueta:p.texto }, extra);
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1', 'per1');
+const S = { step:0, max:0, pred:{}, ocupado:false, x:null };
+
+// Datos de los problemas (todas las respuestas y los distractores salen del motor)
+const PAR = { base:'cuadratica', h:2, k:1 };
+const VX = MG.vertice(PAR);
+const F3 = { base:'cuadratica', k:1 }, SUMA = MG.evaluarSuma(F3, 3, 2);
+const F4 = { base:'lineal', a:2, k:6 }, INV4 = MG.inversa(F4), EN4 = MG.inversaEn(F4, 10);
+const RA = { m:.5, n:4 }, RB = { m:2, n:-2 }, CMP = MG.compararRectas(RA, RB, 2);
+const INEC = MG.inecuacionLineal(-2, 3, '>', 11);
+const par = P => `(${fmt(P.x, 2)}; ${fmt(P.y, 2)})`;
+
+function vivo(F){
+  const d = $('vivo'); if (!d || !F) return;
+  d.innerHTML = formulaHTML(F) + (F.base === 'cuadratica' || F.base === 'abs' ? `<span class="note">vértice ${par(MG.vertice(F))}</span>` : '');
+}
+
+const P2 = { id:'grafica-perillas-paso2', ok:'b', opts:[
+  ['a',`En ${par(VX.errores.hAlReves)}: el «− 2» la corre 2 a la izquierda y el «+ 1» la sube 1`,'AL28-h-al-reves','parcial'],
+  ['b',`En ${par(VX)}: el «− 2» la corre 2 a la derecha y el «+ 1» la sube 1`],
+  ['c',`En ${par(VX.errores.hComoVertical)}: el «− 2» la baja 2 y el «+ 1» la sube 1`,'h-como-vertical','hipotesis'],
+  ['d',`En ${par(VX.errores.hkCruzados)}: el «+ 1» la corre 1 a la derecha y el 2 de adentro la sube 2`,'h-k-cruzados','hipotesis']],
+  fb:{ b:'¡Bien! (x − 2)² vale 0 cuando x = 2: el vértice está en x = 2. La parábola se corrió 2 a la derecha y 1 hacia arriba.',
+    a:'Elegiste la A. Es la trampa más común: «menos» parece «izquierda». Pero (x − 2)² vale 0 cuando x = 2, no cuando x = −2: el vértice se va a la derecha. La correcta está marcada.',
+    c:'Elegiste la C. El «− 2» está dentro del paréntesis, junto a la x: mueve la gráfica a los lados, no hacia arriba ni hacia abajo. Lo de afuera (+ 1) es lo único que la sube. La correcta está marcada.',
+    d:'Elegiste la D. Es al revés: lo de adentro, junto a la x, corre la gráfica a los lados; lo de afuera la sube o la baja. (x − 2)² vale 0 cuando x = 2, y ahí la altura es 1. La correcta está marcada.' } };
+const P3 = { id:'grafica-perillas-paso3', ok:'c', opts:[
+  ['a',`${fmt(SUMA.errores.sumaFuera, 0)}: f(3) + 2`,'AL27-suma-fuera','hipotesis'],
+  ['b',`${fmt(SUMA.errores.sumaDePartes, 0)}: f(3) + f(2)`,'AL27-suma-de-partes','hipotesis'],
+  ['c',`${fmt(SUMA.valor, 0)}: f(5)`],
+  ['d',`${fmt(SUMA.errores.cuadradoPorPartes, 0)}: 3² + 2² + 1`,'AL8-cuadrado-por-partes','parcial']],
+  fb:{ c:'¡Bien! Primero se suma: 3 + 2 = 5. Después se aplica f: f(5) = 5² + 1 = 26.',
+    a:'Elegiste la A. f(3) + 2 es otra cosa: primero aplica f y después suma 2, lo que sube la gráfica 2 en x = 3. f(3 + 2) pide el valor de f en x = 5. La correcta está marcada.',
+    b:'Elegiste la B. f no es una multiplicación: f(3 + 2) no se reparte en f(3) + f(2). Se suma primero, 3 + 2 = 5, y se aplica f una vez. La correcta está marcada.',
+    d:'Elegiste la D. (3 + 2)² no es 3² + 2²: es 5² = 25. El cuadrado de una suma no se reparte. La correcta está marcada.' } };
+const P4 = { id:'grafica-perillas-paso4', ok:'b', opts:[
+  ['a','1/26: 1/f(10)','AL29-inversa-como-reciproco','parcial'],
+  ['b',`${fmt(EN4.valor, 0)}: el x con f(x) = 10`],
+  ['c',`${fmt(EN4.errores.directo, 0)}: f(10)`,'inversa-calcula-f','hipotesis'],
+  ['d',`${fmt(EN4.errores.despejeAlReves, 0)}: (10 − 6) · 2`,'inversa-despeje-al-reves','hipotesis']],
+  fb:{ b:'¡Bien! f⁻¹(10) es el número que f convierte en 10: 2x + 6 = 10 da x = 2. Comprobación: f(2) = 10.',
+    a:'Elegiste la A. El −1 de f⁻¹ no es un exponente: f⁻¹ no es 1/f. f⁻¹(10) es el número que f convierte en 10, y ese es 2, porque f(2) = 10. La correcta está marcada.',
+    c:'Elegiste la C. 26 es f(10): lo que f hace con el 10. La inversa hace lo contrario: busca qué número da 10 al aplicarle f. La correcta está marcada.',
+    d:'Elegiste la D. Para deshacer «multiplicar por 2 y sumar 6» se resta 6 y se DIVIDE entre 2: (10 − 6)/2 = 2. Multiplicar otra vez no deshace nada. La correcta está marcada.' } };
+const P5 = { id:'grafica-perillas-paso5', ok:'c', opts:[
+  ['a','Sí: es la inversa de una función, y toda función tiene inversa','inversa-siempre-funcion','hipotesis'],
+  ['b','Sí: se puede escribir con una fórmula, y = ±√x','AL26-funcion-es-formula','parcial'],
+  ['c','No: hay rectas verticales que la cortan dos veces'],
+  ['d','No: una función no puede tomar valores negativos de y','funcion-sin-negativos','hipotesis']],
+  fb:{ c:'¡Bien! Para cada x tiene que haber una sola y. La recta x = 4 la corta en y = −2 y en y = 2: a x = 4 le tocan dos valores.',
+    a:'Elegiste la A. No toda función tiene inversa: x² manda a −2 y a 2 al mismo 4. Al reflejarla, a x = 4 le tocan dos valores de y. La correcta está marcada.',
+    b:'Elegiste la B. Tener una fórmula no la vuelve función: el «±» dice justo que a cada x le tocan dos y. Lo que decide es la recta vertical. La correcta está marcada.',
+    d:'Elegiste la D. Una función sí puede tomar valores negativos (y = x lo hace). Lo que falla aquí es otra cosa: a x = 4 le tocan dos valores, −2 y 2. La correcta está marcada.' } };
+const P6 = { id:'grafica-perillas-paso6', ok:'b', opts:[
+  ['a','L₁, porque en x = 2 está más arriba','AL25-altura-como-pendiente','documentado'],
+  ['b','L₂: por cada paso a la derecha sube más'],
+  ['c','Las dos igual, porque se cruzan en x = 4','intervalo-punto-cruce','parcial']],
+  fb:{ b:'¡Bien! Rápido es cuánto sube por cada paso a la derecha (la pendiente): L₂ sube 2 por paso y L₁ solo 1/2. Estar más arriba es otra cosa.',
+    a:'Elegiste la A. L₁ está más arriba, pero eso es la altura, no la rapidez. L₂ sube 2 por cada paso a la derecha y L₁ solo 1/2: por eso L₂ la alcanza en x = 4. La correcta está marcada.',
+    c:'Elegiste la C. Que se crucen en x = 4 dice que ahí tienen la misma altura, no la misma pendiente. L₂ sube 2 por paso y L₁, 1/2. La correcta está marcada.' } };
+const P7 = { id:'grafica-perillas-paso7', ok:'c', opts:[
+  ['a',INEC.errores.sinInvertir.textoX,'AL20-no-invierte','hipotesis'],
+  ['b',INEC.errores.transponeMal.textoX,'AL16-transpone-mal','hipotesis'],
+  ['c',INEC.textoX],
+  ['d',INEC.errores.comoEcuacion.textoX,'AL19-como-ecuacion','parcial']],
+  fb:{ c:'¡Bien! Al dividir entre −2 el sentido se invierte: −2x > 8 da x < −4. Mira la recta: al multiplicar por −1, da media vuelta.',
+    a:'Elegiste la A. Al dividir entre −2 hay que invertir el sentido. Prueba con x = 0: −2 · 0 + 3 = 3, que no es mayor que 11, y sin embargo 0 > −4. La correcta está marcada.',
+    b:'Elegiste la B. El + 3 pasa al otro lado restando: −2x > 11 − 3 = 8, no 14. La correcta está marcada.',
+    d:'Elegiste la D. x = −4 es solo la frontera: ahí −2x + 3 vale 11, que no es mayor que 11. La solución es todo un tramo de la recta. La correcta está marcada.' } };
+
+const steps = [
+ { k:'Paso 1', t:'La gráfica con perillas',
+   prep:() => E.config({ f:{ base:'cuadratica', k:2 }, caja:{ x0:-4.5, x1:4.5, y0:-1.5, y1:7.5 }, perillas:['k'], bloqueaH:true, x0:1,
+     ver:{ gemelo:true }, arrastra:{ ancla:true, gemelo:true }, lect:['k','gem'], alCambiar:vivo }),
+   body:() => `<p class="problem">La curva gris punteada es la <b>base</b>, y = x². La azul, de trazo continuo, es ${f_('f')}(x) = x² + ${k_('k')}.</p>
+   <div class="eqs"><div class="eq" id="vivo"></div></div>
+   <p>Mueve la perilla ${k_('k')} (o arrastra el círculo grande hacia arriba y hacia abajo). Después arrastra el punto P, el anillo gris, sobre la base: su <b>gemelo</b> P′ está sobre ${f_('f')}, justo ${k_('k')} más arriba.</p>
+   <p>El ${k_('k')} va <b>afuera</b>: se suma después de elevar al cuadrado, y mueve toda la gráfica hacia arriba o hacia abajo.</p>
+   <p class="hint">Con teclado: toca el dibujo y usa las flechas, o mueve la perilla con las flechas.</p>` },
+ { k:'Paso 2', t:'Predice: ¿hacia dónde se mueve?', gate:P2,
+   prep:() => E.config({ f:S.pred[P2.id] ? PAR : { base:'cuadratica' }, caja:{ x0:-4.5, x1:4.5, y0:-1.5, y1:7.5 }, x0:0,
+     ver:{ f:!!S.pred[P2.id], gemelo:!!S.pred[P2.id] }, perillas:S.pred[P2.id] ? ['h','k'] : [], arrastra:{ ancla:!!S.pred[P2.id], gemelo:!!S.pred[P2.id] },
+     lect:S.pred[P2.id] ? ['h','k','gem'] : [], alCambiar:vivo }),
+   anima:(fin, vig) => {
+     E.f = MG.ficha({ base:'cuadratica' }); E.ver.f = true; E.ver.gemelo = true; E.x0 = 0; E.leyenda(); E.dibujar();
+     cadena([
+       n => esperar(250, n),
+       n => E.animarFicha({ h:PAR.h }, 1300, n),
+       n => E.animarFicha({ k:PAR.k }, 900, n),
+       n => { E.lect = ['h','k','gem']; E.ponerPerillas(['h','k']); E.permitir('ancla', true); E.permitir('gemelo', true); E.leyenda(); E.avisar(); n(); },
+     ], vig, fin);
+   },
+   body:() => `<p>Ahora la perilla está adentro, junto a la x: ${f_('f')}(x) = (x − 2)² + 1. La base sigue siendo y = x², con el vértice en (0; 0). ¿Dónde queda el vértice de ${f_('f')}?</p>${opcionesHTML(P2.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq" id="vivo"></div><div class="eq">${f_('f')}(2) = (2 − 2)² + 1 = 0 + 1 = 1<span class="note">lo de adentro vale 0 en x = 2</span></div></div>
+   <p>El punto P = (0; 0) de la base se fue a P′ = (2; 1): ${f_('f')} <b>en 2</b> vale lo que la base en 0. Para que (x − ${h_('h')}) dé lo mismo que antes daba x, la x tiene que ser ${h_('h')} unidades más grande: por eso la gráfica se corre a la <b>derecha</b> cuando se resta ${h_('h')}.</p>
+   <p>Ahora mueve las perillas ${h_('h')} y ${k_('k')}, o arrastra el círculo grande a donde quieras.</p>
+   <p class="fuente">Que «menos es izquierda» es un obstáculo lo describen Zazkis, Liljedahl y Gadowsky (2003), sin dar un porcentaje; también muestran que elegir bien la dirección no prueba que se entienda por qué. Las opciones C y D son hipótesis nuestras.</p></div>` },
+ { k:'Paso 3', t:'Predice: f(3 + 2)', gate:P3,
+   prep:() => E.config({ f:F3, base:false, unif:false, caja:{ x0:-1.2, x1:6.4, y0:-2, y1:30 }, ver:{ f:!!S.pred[P3.id], base:false },
+     marcas:S.pred[P3.id] ? marcas3() : [], rotulos:{ f:'f', fFrac:.35 } }),
+   anima:(fin, vig) => { E.ver.f = true; E.leyenda(); cadena([n => E.barrer(-1.2, 6.4, 1400, n), n => { E.marcas = marcas3(); E.dibujar(); n(); }], vig, fin); },
+   body:() => `<p>Si ${f_('f')}(x) = x² + 1, ¿cuánto vale ${f_('f')}(3 + 2)?</p>${opcionesHTML(P3.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${f_('f')}(3 + 2) = ${f_('f')}(5) = 5² + 1 = ${f_(fmt(SUMA.valor, 0))}<span class="note">primero se suma, después se aplica f</span></div>
+     <div class="eq">${f_('f')}(3) + 2 = 10 + 2 = ${fmt(SUMA.errores.sumaFuera, 0)}<span class="note">es subir 2 la gráfica en x = 3: otro punto</span></div></div>
+   <p>En la gráfica, ${f_('f')}(5) es la altura de la curva en x = 5. El punto (3; ${fmt(SUMA.errores.sumaFuera, 0)}) ni siquiera está sobre la curva: ${f_('f')}(3) + 2 sube la gráfica, no la recorre hasta x = 5.</p>
+   <p class="fuente">Tratar f como una multiplicación que se reparte, f(a + b) = f(a) + f(b), es una hipótesis nuestra: sale de la «extrapolación lineal» que describió Matz (1982), y no encontramos un estudio que la mida en funciones. Repartir el cuadrado, (a + b)² = a² + b², sí aparece como error típico en evaluaciones de Chile, México y Costa Rica, sin porcentaje a la vista.</p></div>` },
+ { k:'Paso 4', t:'Predice: la inversa', gate:P4,
+   prep:() => E.config({ f:F4, base:false, caja:S.pred[P4.id] ? { x0:-5, x1:13.5, y0:-3.5, y1:13.5 } : { x0:-6, x1:9, y0:-3, y1:9 },
+     ver:{ base:false, yx:!!S.pred[P4.id], reflejo:!!S.pred[P4.id], rec:!!S.pred[P4.id] }, tRef:S.pred[P4.id] ? 1 : 0,
+     marcas:S.pred[P4.id] ? marcas4() : [], rotulos:{ f:'f', fFrac:.45, recFrac:.35, invFrac:.85 } }),
+   anima:(fin, vig) => {
+     E.ver.yx = true; E.marcas = [marcas4()[0]]; E.setCaja({ x0:-5, x1:13.5, y0:-3.5, y1:13.5 }); E.leyenda();
+     E.viaja = { x:2, y:10 };
+     cadena([n => esperar(350, n), n => E.reflejar(1, 1600, n), n => { E.marcas = marcas4(); E.dibujar(); n(); },
+       n => esperar(300, n), n => { E.ver.rec = true; E.leyenda(); E.dibujar(); n(); }], vig, () => { $('re4').hidden = false; fin(); });
+   },
+   body:() => `<p>${f_('f')}(x) = 2x + 6. ¿Cuánto vale ${i_('f⁻¹')}(10)?</p>${opcionesHTML(P4.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">2x + 6 = 10 → 2x = 4 → x = ${i_(fmt(EN4.valor, 0))}<span class="note">comprobación: ${f_('f')}(2) = 10</span></div>
+     <div class="eq">${i_('f⁻¹')}(x) = ${i_(INV4.texto)}<span class="note">se resta 6 y se divide entre 2</span></div>
+     <div class="eq">${r_('1/f')}(10) = 1/26 ≈ ${fmt(EN4.errores.reciproco, 2)}<span class="note">otra cosa: casi pegado al eje</span></div></div>
+   <p>Al reflejar en la recta y = x, cada punto (x; y) de ${f_('f')} va a (y; x): el (2; 10) va al (10; 2). La gráfica ámbar es ${i_('f⁻¹')}, que deshace lo que hace ${f_('f')}. La línea a trazos es ${r_('1/f')}: no se parece en nada.</p>
+   <div class="acciones" id="re4" hidden><button type="button" class="btn" id="b-re4">Reflejar otra vez</button></div>
+   <p class="fuente">Leer el −1 de f⁻¹ como un exponente está descrito en estudios sobre el razonamiento reversible, sin porcentaje. En otro error con inversas, un estudio con 69 estudiantes de ciencias e ingeniería de EE. UU. encontró que solo cerca de 1 de cada 5 eligió bien el signo de la raíz al invertir (2025, según un resumen). Las opciones C y D son hipótesis nuestras.</p></div>` },
+ { k:'Paso 5', t:'Predice: ¿es función?', gate:P5,
+   prep:() => E.config({ f:{ base:'cuadratica' }, base:false, caja:{ x0:-3.5, x1:6.5, y0:-3.5, y1:6.5 }, ver:{ base:false, yx:true, reflejo:true }, tRef:1,
+     vertical:S.pred[P5.id] ? 4 : null, relVertical:{ tipo:'reflejo', ficha:{ base:'cuadratica' } }, arrastra:{ vertical:!!S.pred[P5.id] },
+     lect:S.pred[P5.id] ? ['vert'] : [], rotulos:{ f:'y = x²', inv:'reflejo', fFrac:.8, invFrac:.97 }, leyF:'y = x²', leyInv:S.pred[P5.id] ? null : 'reflejo de y = x² en y = x' }),
+   anima:(fin, vig) => {
+     E.vertical = -3; E.leyInv = null; E.leyenda(); E.dibujar();
+     cadena([n => E.animar(1300, f => { E.vertical = Math.round((-3 + 7*f)*4)/4; E.dibujar(); }, n),
+       n => { E.vertical = 4; E.lect = ['vert']; E.permitir('vertical', true); E.avisar(); E.dibujar(); n(); }], vig, () => { $('rama5').hidden = false; fin(); });
+   },
+   body:() => `<p>Al reflejar y = x² en la recta y = x sale la curva ámbar (la de trazos largos). ¿Es la gráfica de una función y = f(x)?</p>${opcionesHTML(P5.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <p>Toda curva del plano es una relación: un conjunto de pares (x; y). Es función solo si a cada x le toca una sola y. El reflejo de y = x² es la relación x = y², y a x = 4 le tocan y = 2 e y = −2.</p>
+   <p>Una gráfica es de una función si <b>ninguna</b> recta vertical la corta más de una vez: a cada x le toca una sola y. Arrastra la recta punteada (el círculo de abajo): para cada x > 0 hay dos cortes.</p>
+   <div class="acciones" id="rama5" hidden><button type="button" class="btn" id="b-rama5">Quedarse con la mitad de arriba</button></div>
+   <p id="m-rama5" class="hint" aria-live="polite"></p>
+   <p class="fuente">Que la definición de función que se recita no coincide con la que se usa (función = fórmula) lo encontraron Vinner y Dreyfus (1989) con 271 universitarios y 36 profesores de Israel, sin porcentaje por pregunta. Las opciones A y D son hipótesis nuestras.</p></div>` },
+ { k:'Paso 6', t:'Predice: ¿cuál crece más rápido?', gate:P6,
+   prep:() => E.config({ f:null, base:null, unif:false, caja:{ x0:-.8, x1:7, y0:-3, y1:10.5 }, rectas:[{ ...RA, nombre:'L₁', rotuloX:6.4 }, { ...RB, nombre:'L₂', trazos:[9, 5], rotuloX:5.7, dx:-16, dy:0 }],
+     guias:[{ p:{ x:2, y:-3 }, q:{ x:2, y:10.5 }, texto:'x = 2', en:{ x:2, y:9.6 }, dx:24 }], secantes:S.pred[P6.id] ? sec6() : [] }),
+   anima:(fin, vig) => cadena([n => esperar(200, n), n => { E.secantes = sec6(); E.leyenda(); E.dibujar(); n(); }], vig, fin),
+   body:() => `<p>Las rectas L₁ (continua) y L₂ (a trazos) se cruzan en x = 4. En x = 2, ¿cuál crece más rápido?</p>${opcionesHTML(P6.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">L₁: y = x/2 + 4</div><div class="eq">L₂: y = 2x − 2</div>
+     <div class="eq">En x = 2: L₁ está en ${fmt(CMP.alturas.A, 0)} y L₂ en ${fmt(CMP.alturas.B, 0)}<span class="note">altura: L₁ va arriba</span></div>
+     <div class="eq">Por cada paso a la derecha: L₁ sube ${m_(MG.num(CMP.pendientes.A))} y L₂ sube ${m_(fmt(CMP.pendientes.B, 0))}<span class="note">pendiente: L₂ es más rápida</span></div></div>
+   <p>La altura dice <b>dónde está</b> la gráfica; la ${m_('pendiente')} dice <b>qué tan rápido cambia</b>. L₂ empieza abajo, pero como sube más por cada paso, alcanza a L₁ en x = 4 y después la pasa.</p>
+   <p class="fuente">Confundir la pendiente con la altura está documentado: en un estudio con universitarios de EE. UU., con gráficas de distancia contra tiempo, hasta la mitad eligió el objeto más lento cuando se le preguntó cuál iba más rápido (Clement, 1985; cifra de un resumen). Leinhardt, Zaslavsky y Stein (1990) describen esta confusión y la de mirar un punto (el cruce) en vez de un tramo.</p></div>` },
+ { k:'Paso 7', t:'Predice: −2x + 3 > 11', gate:P7,
+   prep:() => {
+     const fin = INEC.pasos[INEC.pasos.length - 1];
+     E.config({ modo:'recta', f:null, alto:innerWidth >= 900 ? 340 : 250, recta:S.pred[P7.id] ? rectaDePaso(fin, -11, 13, { debajo:'valores de x' }) : { u0:-11, u1:13, conj:null, etiqueta:INEC.pasos[0].texto } });
+   },
+   anima:(fin, vig) => animarInecuacion(vig, () => { $('re7').hidden = false; fin(); }),
+   body:() => `<p>¿Qué valores de x cumplen −2x + 3 > 11?</p>${opcionesHTML(P7.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     ${INEC.pasos.map((p, i) => `<div class="eq">${p.texto.replace(INEC.textoX, s_(INEC.textoX))}${i ? `<span class="note">${p.explica}</span>` : ''}</div>`).join('')}</div>
+   <p>En la recta, la parte ${s_('turquesa')} (la franja gruesa) son los números que cumplen. Al multiplicar por −1, la recta da <b>media vuelta</b> alrededor del 0: lo que estaba a la derecha del 8 queda a la izquierda del −8. Por eso el sentido se invierte. Dividir entre 2, que es positivo, solo la encoge.</p>
+   <p class="answer">Solución: ${s_(INEC.textoX)}, es decir, ${s_(INEC.texto)}.</p>
+   <div class="acciones" id="re7" hidden><button type="button" class="btn" id="b-re7">Ver otra vez</button></div>
+   <p class="fuente">Resolver la inecuación como si fuera una ecuación es la dificultad principal que encontraron Tsamir y Almog (2001) en Israel y Blanco y Garrote (2007) en España, sin porcentajes. No invertir el sentido al dividir entre un negativo es muy citado por los profesores, pero no encontramos un estudio que lo mida: es una hipótesis nuestra, igual que la opción B.</p></div>` },
+ { k:'Paso 8', t:'Ahora explora tú', explora:true,
+   prep:() => { const x = S.x || { f:{ base:'cuadratica', h:1, k:-1 }, ver:{ gemelo:true }, x0:1 };
+     E.config({ f:x.f, caja:{ x0:-6.5, x1:6.5, y0:-5.5, y1:6.5 }, perillas:['h','k','a'], x0:x.x0, ver:{ ...x.ver, yx:!!x.ver.reflejo }, tRef:x.ver.reflejo ? 1 : 0,
+       arrastra:{ ancla:true, gemelo:!!x.ver.gemelo }, lect:['h','k','a'].concat(x.ver.gemelo ? ['gem'] : []) }); },
+   body:() => `<p>Elige una base, mueve las perillas ${h_('h')}, ${k_('k')} y ${a_('a')} o arrastra el círculo grande. Todo lo que ves sale del motor en cada posición.</p>
+   <div class="seg" role="group" aria-label="Base" id="x-bases">${[['cuadratica','x²'],['abs','|x|'],['raiz','√x'],['cubica','x³'],['exp2','2<sup>x</sup>'],['log2','log₂ x'],['reciproca','1/x'],['lineal','x']]
+     .map(([b, t]) => `<button type="button" data-base="${b}" aria-pressed="${E.f && E.f.base === b}">${t}</button>`).join('')}</div>
+   <div class="seg" role="group" aria-label="Qué se ve">${[['gemelo','Punto gemelo','f'],['reflejo','Reflejar en y = x','inv'],['rec','1/f','rec'],['base','Base gris',null]]
+     .map(([k, t, col]) => `<button type="button" data-ver="${k}" aria-pressed="${!!E.ver[k]}">${col ? `<i style="background:var(--c-${col})"></i>` : ''}${t}</button>`).join('')}</div>
+   <div class="eqs" id="x-eqs"></div>
+   <div class="acciones"><button type="button" class="btn" id="x-reset">Volver a empezar</button></div>
+   <p id="x-msg" class="hint" aria-live="polite"></p>` },
+];
+
+function marcas3(){
+  const y5 = MG.evaluar(F3, 5).valor, y3 = MG.evaluar(F3, 3).valor;
+  return [{ x:5, y:y5, color:'f', texto:`f(5) = ${fmt(y5, 0)}`, dx:-44, dy:-2 },
+    { x:3, y:y3, color:'f', r:4.5, texto:`f(3) = ${fmt(y3, 0)}`, dx:44, dy:6 },
+    { x:3, y:SUMA.errores.sumaFuera, color:'muted', anillo:true, texto:`f(3) + 2 = ${fmt(SUMA.errores.sumaFuera, 0)}`, dx:-56, dy:-4 }];
+}
+function marcas4(){
+  return [{ x:2, y:10, color:'f', texto:'(2; 10)', dx:-30, dy:-4 }, { x:10, y:EN4.valor, color:'inv', texto:'(10; 2)', dx:0, dy:-16 },
+    { x:10, y:EN4.errores.reciproco, color:'rec', r:4.5, texto:'(10; 1/26)', dx:2, dy:16 }];
+}
+function sec6(){
+  const z = (r, txt, dx) => { const s = MG.secante({ base:'lineal', a:r.m, k:r.n }, 2, 3); return { x1:2, x2:3, y1:s.alturas[0], y2:s.alturas[1], texto:txt + MG.num(s.sube), dx }; };
+  return [z(RA, 'L₁: +', 8), z(RB, 'L₂: +', 8)];
+}
+// La recta del paso 7: cada paso del motor, y entre uno y otro, su transformación (trasladar, media vuelta, encoger)
+function animarInecuacion(vig, fin){
+  const P = INEC.pasos, u0 = -11, u1 = 13, nombre = ['valores de −2x + 3', 'valores de −2x', 'valores de 2x', 'valores de x'];
+  // En el dibujo, una nota corta de lo que se hizo (la explicación larga va en la guía)
+  const corta = tr => !tr ? '' : tr.tipo === 'trasladar' ? `${tr.d < 0 ? '−' : '+'} ${fmt(Math.abs(tr.d), 2)} a los dos lados` : tr.tipo === 'girar' ? '× (−1): media vuelta' : `÷ ${fmt(1/tr.f, 2)}: se encoge`;
+  const de = i => rectaDePaso(P[i], u0, u1, { nota:corta(P[i].transformacion), debajo:i === P.length - 1 ? 'valores de x' : nombre[Math.min(i, 2)] });
+  const ani = [n => { E.recta = de(0); E.dibujar(); esperar(700, n); }];
+  for (let i = 1; i < P.length; i++) ani.push(n => { E.recta.nota = corta(P[i].transformacion); E.girarRecta(P[i].transformacion, P[i].transformacion.tipo === 'girar' ? 1500 : 900, n); },
+    n => { E.recta = de(i); E.dibujar(); E.avisar(); esperar(650, n); });
+  cadena(ani, vig, fin);
+}
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; b.setAttribute('aria-label', `Ir al ${s.k.toLowerCase()}: ${s.t}`);
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  if (s.prep) s.prep();
+  pintarDots();
+  E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.gate) prediccion(s);
+  if (s.explora) explorar();
+  extras(s);
+  nav();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+  E.ocupar(S.ocupado);
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){ if (k > S.max) S.max = k; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+    if (s.alResponder) s.alResponder();
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); E.compactar(false); pintar(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    S.ocupado = true; nav();
+    $('next').focus({ preventScroll:true });
+    // En el celular, el dibujo queda arriba de la pantalla: se lleva a la vista antes de animar.
+    const paso = S.step, chico = innerWidth < 900, vig = () => S.step === paso;
+    if (chico) $('cv').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+    esperar(chico ? 380 : 0, () => {
+      if (!vig()) { S.ocupado = false; nav(); return; }
+      s.anima(() => { if (vig()) { S.ocupado = false; E.avisar(); nav(); } }, vig);
+    });
+  }));
+  pintar();
+}
+// Botones de "ver otra vez" y de la rama, que aparecen después de responder
+function extras(s){
+  const listo = s.gate && S.pred[s.gate.id];
+  if (s.k === 'Paso 4' && $('b-re4')){
+    $('re4').hidden = !listo;
+    $('b-re4').onclick = () => { if (S.ocupado) return; S.ocupado = true; nav(); const paso = S.step;
+      E.ver.rec = false; E.tRef = 0; E.marcas = [marcas4()[0]]; E.dibujar();
+      E.viaja = { x:2, y:10 };
+      cadena([n => esperar(250, n), n => E.reflejar(1, 1600, n), n => { E.marcas = marcas4(); E.ver.rec = true; E.leyenda(); E.dibujar(); n(); }], () => S.step === paso, () => { S.ocupado = false; nav(); }); };
+  }
+  if (s.k === 'Paso 5' && $('b-rama5')){
+    $('rama5').hidden = !listo;
+    $('b-rama5').onclick = () => {
+      const I = MG.inversa({ base:'cuadratica' });
+      const on = !E.rama; E.rama = on ? I.rama.ficha : null;
+      E.relVertical = on ? { tipo:'funcion', ficha:I.rama.ficha } : { tipo:'reflejo', ficha:{ base:'cuadratica' } };
+      E.rotulos.inv = on ? I.rama.texto : 'reflejo';
+      E.leyInv = on ? `y = ${I.rama.texto} · mitad de arriba del reflejo` : null; E.leyenda();
+      $('b-rama5').textContent = on ? 'Volver al reflejo completo' : 'Quedarse con la mitad de arriba';
+      $('m-rama5').textContent = on ? `Con la mitad de arriba (y ≥ 0) queda y = ${I.rama.texto}: ahora cada recta vertical la corta a lo más una vez, y sí es función. Es la inversa de y = x² con x ≥ 0.` : '';
+      E.dibujar(); E.avisar();
+    };
+  }
+  if (s.k === 'Paso 7' && $('b-re7')){
+    $('re7').hidden = !listo;
+    $('b-re7').onclick = () => { if (S.ocupado) return; S.ocupado = true; nav(); const paso = S.step; animarInecuacion(() => S.step === paso, () => { S.ocupado = false; nav(); }); };
+  }
+}
+
+// ----- explorador -----
+function explorar(){
+  $('x-bases').querySelectorAll('button').forEach(q => q.setAttribute('aria-pressed', String(q.dataset.base === E.f.base)));
+  $('stepBody').querySelectorAll('[data-ver]').forEach(q => q.setAttribute('aria-pressed', String(!!E.ver[q.dataset.ver])));
+  const guardar = () => { S.x = { f:{ ...E.f }, ver:{ gemelo:E.ver.gemelo, reflejo:E.ver.reflejo, rec:E.ver.rec, base:E.ver.base }, x0:E.x0 }; };
+  const eqs = () => {
+    const F = E.f, d = [];
+    d.push(`<div class="eq">${formulaHTML(F)}</div>`);
+    if (F.base === 'cuadratica' || F.base === 'abs'){ const v = MG.vertice(F); d.push(`<div class="eq"><span>vértice (${h_(fmt(v.x, 1))}; ${k_(fmt(v.y, 1))})</span><span class="note">un ${v.tipo}</span></div>`); }
+    d.push(`<div class="eq">dominio ${MG.dominio(F).texto}; rango ${MG.rango(F).texto}</div>`);
+    const z = MG.ceros(F).ceros;
+    const corto = x => { const t = MG.num(x); return t.includes(',') ? fmt(x, 2) : t; };   // fracción si es corta; si no, decimal
+    d.push(`<div class="eq">ceros: ${z.length ? z.map(corto).join(' y ') : 'no corta al eje x'}</div>`);
+    const I = MG.inversa(F);
+    d.push(I.invertible ? `<div class="eq"><span class="fx">${i_('f⁻¹')}(x) = ${i_(I.texto)},</span> <span class="fx">x ∈ ${I.dominio.texto}</span></div>` : `<div class="eq">sin ${i_('f⁻¹')}<span class="note">${I.motivo}; su reflejo en y = x no es función</span></div>`);
+    $('x-eqs').innerHTML = d.join('');
+  };
+  E.alCambiar = () => { if ($('x-eqs')) { eqs(); guardar(); } };
+  $('x-bases').querySelectorAll('button').forEach(b => b.onclick = () => {
+    E.f = MG.ficha({ ...E.f, base:b.dataset.base }); E.base = { base:b.dataset.base };
+    if (!MG.gemelo(E.f, E.x0).definido) E.x0 = 1;
+    $('x-bases').querySelectorAll('button').forEach(q => q.setAttribute('aria-pressed', String(q === b)));
+    E.ponerPerillas(['h','k','a']); E.dibujar(); E.avisar();
+    const I = MG.inversa(E.f);
+    $('x-msg').textContent = I.invertible ? '' : `Esta base no tiene inversa: ${I.motivo}. Su reflejo en y = x no es una función.`;
+  });
+  $('stepBody').querySelectorAll('[data-ver]').forEach(b => b.onclick = () => {
+    const k = b.dataset.ver, on = !E.ver[k];
+    b.setAttribute('aria-pressed', String(on));
+    if (k === 'reflejo'){
+      E.ver.yx = true; E.ocupar(true);
+      E.reflejar(on ? 1 : 0, 1000, () => { E.ver.reflejo = on; E.ver.yx = on; E.ocupar(false); E.leyenda(); E.dibujar(); guardar(); });
+      $('x-msg').textContent = on ? 'Cada punto (x; y) de f va a (y; x). Si una recta horizontal corta a f dos veces, el reflejo no es función.' : '';
+      return;
+    }
+    E.ver[k] = on;
+    if (k === 'gemelo'){ E.permitir('gemelo', on); E.lect = ['h','k','a'].concat(on ? ['gem'] : []); }
+    E.leyenda(); E.dibujar(); E.avisar(); guardar();
+    $('x-msg').textContent = on ? { gemelo:'Arrastra P sobre la base: P′ se corre h a los lados, se estira por a y sube k.', rec:'1/f es otra función: donde f vale 0, 1/f se va al infinito. No es la inversa.', base:'' }[k] : '';
+  });
+  $('x-reset').onclick = () => { if (E.ocupado) return; S.x = null; go(S.step); };
+  eqs();
+}
+
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Experimentos de docs/investigacion/algebra-funciones-ideas-erroneas.md: AL28 y AL27 (f(x + 3) contra f(x) + 3),
+   AL29 (la inversa de 2x + 1 contra 1/(2x + 1)), AL19 (x² < 9), AL22 (|x − 3| < 2 en la recta) y AL25 (una
+   gráfica que sube mientras su pendiente baja). La escena cambia recién después de responder. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2', 'per2');
+const RAIZ = { base:'raiz', h:-3 }, G1 = MG.gemelo(RAIZ, 0), SUB = MG.gemelo({ base:'raiz', k:3 }, 0);
+const L2 = { base:'lineal', a:2, k:1 }, I2 = MG.inversa(L2);
+const Q3 = MG.inecuacionCuadratica(1, 0, -9, '<');
+const A4 = MG.valorAbsoluto(3, 2, '<');
+const R5 = { base:'raiz' }, SEC5 = [1, 4, 9].map(x => MG.secante(R5, x, x + 1));
+const par = P => `(${fmt(P.x, 0)}; ${fmt(P.y, 0)})`;
+
+const EXPS = [
+  { id:'raiz-corrida', corto:'√(x + 3)',
+    q:`La base gris es y = √x, que empieza en (0; 0). ¿Dónde empieza la gráfica de ${f_('f')}(x) = √(x + 3)?`,
+    opts:[['a',`En ${par(G1.errores.hAlReves)}: el + 3 la corre a la derecha`,'AL28-h-al-reves','parcial'],
+          ['b',`En ${par(G1.gemelo)}: el + 3 la corre a la izquierda`],
+          ['c',`En ${par(SUB.gemelo)}: el + 3 la sube`,'AL27-adentro-como-afuera','hipotesis'],
+          ['d','En (0; 0): sumar dentro de la raíz no mueve el punto donde empieza','adentro-no-mueve','hipotesis']],
+    ok:'b',
+    fb:{ a:'Lo de adentro es x + 3 = x − (−3): la gráfica se corre 3 a la izquierda. La raíz empieza donde lo de adentro vale 0, en x = −3.',
+      c:'Subirla 3 sería √x + 3, con el 3 afuera. Dentro de la raíz, el 3 corre la gráfica a los lados: empieza donde x + 3 = 0.',
+      d:'En x = 0 la raíz vale √3, no 0. Empieza donde lo de adentro vale 0: x + 3 = 0, x = −3.' },
+    antes:ver => E.config({ f:RAIZ, base:{ base:'raiz' }, caja:{ x0:-4.5, x1:6.5, y0:-1.2, y1:5.2 }, x0:0, ver:{ f:ver, gemelo:ver }, rotulos:{ f:'√(x + 3)', fFrac:.75 },
+      lect:ver ? ['h','dom'] : [], extra:ver ? extraSube : null, leyF:'f(x) = √(x + 3)', leyExtra:ver ? LEY_SUBE : '' }),
+    despues:fin => { E.f = MG.ficha({ base:'raiz' }); E.ver.f = true; E.ver.gemelo = true; E.leyenda();
+      cadena([n => esperar(200, n), n => E.animarFicha({ h:RAIZ.h }, 1300, n), n => { E.extra = extraSube; E.leyExtra = LEY_SUBE; E.leyenda(); E.lect = ['h','dom']; E.avisar(); E.dibujar(); n(); }], E.vig(), fin); },
+    exp:() => `<div class="eqs"><div class="eq">${f_('f')}(x) = √(x ${h_('+ 3')})<span class="note">adentro: se corre 3 a la izquierda (h = −3)</span></div>
+      <div class="eq">y = √x ${k_('+ 3')}<span class="note">afuera: sube 3 (k = 3); la línea de tinta a trazos</span></div>
+      <div class="eq">dominio de ${f_('f')}: x + 3 ≥ 0 → ${MG.dominio(RAIZ).texto}</div></div>
+      <p>Lo de adentro actúa antes que la raíz, así que mueve la gráfica a los lados; lo de afuera actúa después, y la mueve hacia arriba o abajo. f(x + 3) y f(x) + 3 son dos movimientos distintos.</p>
+      <p class="fuente">«Menos es izquierda» (y «más es derecha») es un obstáculo descrito por Zazkis, Liljedahl y Gadowsky (2003), sin porcentaje. Confundir f(x + 3) con f(x) + 3 es una hipótesis nuestra, en la línea de la extrapolación lineal de Matz (1982).</p>` },
+  { id:'inversa-o-reciproco', corto:'La inversa de 2x + 1',
+    q:`Si ${f_('f')}(x) = 2x + 1, ¿cuál es la regla de ${i_('f⁻¹')}?`,
+    opts:[['a',`${i_('f⁻¹')}(x) = ${I2.errores.reciproco.texto}`,'AL29-inversa-como-reciproco','parcial'],
+          ['b',`${i_('f⁻¹')}(x) = ${I2.errores.ordenSinInvertir.texto}`,'inversa-orden-sin-invertir','hipotesis'],
+          ['c',`${i_('f⁻¹')}(x) = ${I2.texto}`],
+          ['d',`${i_('f⁻¹')}(x) = ${I2.errores.signoMal.texto}`,'AL16-signo-mal','hipotesis']],
+    ok:'c',
+    fb:{ a:'1/(2x + 1) es el recíproco, 1/f. La inversa deshace a f: si f(1) = 3, f⁻¹(3) tiene que dar 1, y 1/(2 · 3 + 1) = 1/7.',
+      b:'Para deshacer «por 2 y después + 1» hay que ir al revés: primero − 1 y después ÷ 2. Con x/2 − 1, f⁻¹(3) = 1/2, no 1.',
+      d:'Al pasar el + 1 al otro lado se resta: x = (y − 1)/2. Con (x + 1)/2, f⁻¹(3) = 2, pero f(2) = 5, no 3.' },
+    antes:ver => E.config({ f:L2, base:false, caja:{ x0:-5, x1:7, y0:-5, y1:7 }, ver:{ base:false, yx:ver, reflejo:ver, rec:ver }, tRef:ver ? 1 : 0,
+      marcas:ver ? marcas2() : [], rotulos:{ f:'f', fFrac:.62, invFrac:.85, recFrac:.25 } }),
+    despues:fin => { E.ver.yx = true; E.marcas = [marcas2()[0]]; E.dibujar();
+      E.viaja = { x:1, y:3 };
+      cadena([n => esperar(300, n), n => E.reflejar(1, 1500, n), n => { E.marcas = marcas2(); E.ver.rec = true; E.leyenda(); E.dibujar(); n(); }], E.vig(), fin); },
+    exp:() => `<div class="eqs"><div class="eq">y = 2x + 1 → x = ${fr2('y − 1', '2')} → ${i_('f⁻¹')}(x) = ${i_(I2.texto)}</div>
+      <div class="eq">${f_('f')}(1) = 3</div><div class="eq">${i_('f⁻¹')}(3) = 1</div><div class="eq">${r_('1/f')}(3) = 1/7<span class="note">otra cosa</span></div></div>
+      <p>Al reflejar ${f_('f')} en y = x, el (1; 3) va al (3; 1): esa es ${i_('f⁻¹')}, una recta. ${r_('1/f')} (a trazos) es una curva con una asíntota en x = −1/2, donde ${f_('f')} vale 0: no se parece en nada.</p>
+      <p class="fuente">Leer el −1 como exponente está descrito en estudios sobre el razonamiento reversible, sin porcentaje. Las opciones B y D son hipótesis nuestras; la D sale de la transposición como regla sin significado (Kieran, 1992).</p>` },
+  { id:'x2-menor-9', corto:'x² < 9',
+    q:`¿Qué valores de x cumplen x² < 9?`,
+    opts:[['a',`x < 3`,'AL19-como-ecuacion','parcial'],
+          ['b',`−3 < x < 3`],
+          ['c',`x < −3 o x > 3`,'cuadratica-adentro-afuera','hipotesis']],
+    ok:'b',
+    fb:{ a:'Es resolver como una ecuación y «poner el signo». Pero x = −5 cumple x < 3 y (−5)² = 25, que no es menor que 9.',
+      c:'Es al revés: esos son los x con x² > 9. Por ejemplo, x = 4 da 16, que no es menor que 9.' },
+    antes:ver => E.config({ f:{ base:'cuadratica' }, base:false, unif:false, caja:{ x0:-5, x1:5, y0:-2, y1:13 }, ver:{ f:ver, base:false },
+      banda:ver ? { y:9, texto:'y = 9' } : null, solEje:ver ? { intervalos:Q3.intervalos } : null, rotulos:{ f:'y = x²', fFrac:.88 }, leyF:'y = x²' }),
+    despues:fin => { E.ver.f = true; E.leyenda();
+      cadena([n => E.barrer(-5, 5, 1000, n), n => { E.banda = { y:9, texto:'y = 9' }; E.dibujar(); esperar(400, n); },
+        n => { E.solEje = { intervalos:Q3.intervalos, prog:0 }; E.leyenda(); E.crecer(E.solEje, 'prog', 900, n); }], E.vig(), fin); },
+    exp:() => `<div class="eqs"><div class="eq">x² = 9 → x = −3 o x = 3<span class="note">las fronteras</span></div>
+      <div class="eq">x² < 9 → ${s_('−3 < x < 3')} = ${s_(Q3.texto)}</div></div>
+      <p>La parábola queda <b>debajo</b> de la recta y = 9 solo entre −3 y 3. Una inecuación cuadrática no se resuelve «como ecuación»: hay que mirar dónde la gráfica está arriba o abajo.</p>
+      <p class="fuente">Tratar las inecuaciones como ecuaciones es la dificultad principal que describen Tsamir y Almog (2001) en Israel y Blanco y Garrote (2007) en España, sin porcentajes. La opción C es una hipótesis nuestra.</p>` },
+  { id:'distancia-a-3', corto:'|x − 3| < 2',
+    q:`¿Qué valores de x cumplen |x − 3| < 2?`,
+    opts:[['a',A4.errores.quitaBarras.texto,'AL22-quita-barras','parcial'],
+          ['b',A4.errores.separaBarras.texto,'AL22-separa-barras','parcial'],
+          ['c',A4.texto],
+          ['d',A4.errores.alReves.texto,'abs-adentro-afuera','hipotesis']],
+    ok:'c',
+    fb:{ a:'Quitar las barras pierde los números a la izquierda de 3. Además, x = −10 cumple x < 5 y está a 13 de 3, no a menos de 2.',
+      b:'Las barras no se separan: |x − 3| no es |x| − 3. Con x = −4: |−4 − 3| = 7, que no es menor que 2.',
+      d:'Esos son los números a más de 2 del 3: los que cumplen |x − 3| > 2, lo contrario.' },
+    antes:ver => E.config({ modo:'recta', f:null, alto:innerWidth >= 900 ? 300 : 230, recta:ver ? { u0:-6, u1:9, conj:A4.intervalos, centro:3, radio:2, prog:1, etiqueta:'|x − 3| < 2', debajo:'los x a menos de 2 del 3' } : { u0:-6, u1:9, conj:null, etiqueta:'|x − 3| < 2' } }),
+    despues:fin => { E.recta = { u0:-6, u1:9, conj:A4.intervalos, centro:3, radio:2, prog:0, etiqueta:'|x − 3| < 2', debajo:'los x a menos de 2 del 3' }; E.leyenda(); cadena([n => esperar(200, n), n => E.crecer(E.recta, 'prog', 1300, n)], E.vig(), fin); },
+    exp:() => `<div class="eqs"><div class="eq">|x − 3| = distancia de x a 3</div>
+      <div class="eq">|x − 3| < 2 → −2 < x − 3 < 2 → ${s_('1 < x < 5')} = ${s_(A4.texto)}</div></div>
+      <p>En la recta: se para en el 3 y se camina 2 hacia cada lado. Los números que quedan a menos de 2 del 3 están entre 1 y 5 (sin incluirlos, porque es «menor que»).</p>
+      <p class="fuente">Almog e Ilany (2012) clasificaron los errores de 481 escolares israelíes de 10.° y 11.° grado con desigualdades de valor absoluto y encontraron errores consistentes, entre ellos quitar las barras y repartirlas; no tenemos los porcentajes. La opción D es una hipótesis nuestra.</p>` },
+  { id:'sube-pendiente-baja', corto:'Sube, pero…',
+    q:`Entre x = 1 y x = 9, la gráfica de ${f_('f')}(x) = √x sube: su altura pasa de 1 a 3. ¿Qué pasa con su ${m_('pendiente')}, lo que sube por cada paso de 1 hacia la derecha?`,
+    opts:[['a','También aumenta, porque la gráfica sube','AL25-sube-pendiente-crece','parcial'],
+          ['b','Disminuye: cada paso sube menos que el anterior'],
+          ['c','Es la misma en todas partes: sube parejo','pendiente-constante','hipotesis'],
+          ['d','Es cero, porque la gráfica se aplana','pendiente-cero','hipotesis']],
+    ok:'b',
+    fb:{ a:'Que la gráfica suba dice que la pendiente es positiva, no que crezca. De x = 1 a 2 sube 0,41; de 9 a 10, solo 0,16.',
+      c:'Eso pasa solo en las rectas. √x sube 0,41 de x = 1 a 2, pero solo 0,16 de 9 a 10.',
+      d:'Se aplana, pero nunca deja de subir: de x = 9 a 10 todavía sube 0,16.' },
+    antes:ver => E.config({ f:R5, base:false, unif:false, caja:{ x0:-.6, x1:11, y0:-.5, y1:3.8 }, ver:{ base:false }, secantes:ver ? sec5() : [], rotulos:{ f:'√x', fFrac:.6 } }),
+    despues:fin => { E.secantes = []; E.leyenda(); const s = sec5(); cadena(s.map(z => n => { E.secantes.push(z); E.leyenda(); E.dibujar(); esperar(500, n); }), E.vig(), fin); },
+    exp:() => `<div class="eqs"><div class="eq">De 1 a 2 sube ${m_(fmt(SEC5[0].valor, 2))}; de 4 a 5, ${m_(fmt(SEC5[1].valor, 2))}; de 9 a 10, ${m_(fmt(SEC5[2].valor, 2))}</div>
+      <div class="eq">Alturas: ${fmt(SEC5[0].alturas[0], 0)} → ${fmt(SEC5[1].alturas[0], 0)} → ${fmt(SEC5[2].alturas[0], 0)}<span class="note">la altura crece mientras la pendiente baja</span></div></div>
+      <p>La altura y la ${m_('pendiente')} son dos lecturas distintas de la misma gráfica: una dice dónde está, la otra qué tan rápido cambia. √x siempre sube, pero cada vez más despacio.</p>
+      <p class="fuente">Es pariente de la confusión entre altura y pendiente, que sí está medida en gráficas de distancia contra tiempo (Clement, 1985, cifra de un resumen); para esta forma del error no encontramos dato. Las opciones C y D son hipótesis nuestras.</p>` },
+];
+const fr2 = (a, b) => `(${a})/${b}`;
+const LEY_SUBE = `<span><i class="trazos" style="border-color:var(--ink)"></i>y = √x + 3</span>`;
+function extraSube(ctx, c, aP){
+  // y = √x + 3 en tinta a trazos, para comparar con f(x) = √(x + 3)
+  const tr = MG.muestrear({ base:'raiz', k:3 }, 0, 7, { y0:-2, y1:6 });
+  ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.8; ctx.setLineDash([6, 5]); ctx.beginPath();
+  tr[0].forEach((p, i) => { const q = aP({ x:p[0], y:p[1] }); if (i) ctx.lineTo(q.x, q.y); else ctx.moveTo(q.x, q.y); }); ctx.stroke(); ctx.restore();
+  const O = aP({ x:0, y:0 }), S3 = aP(SUB.gemelo);
+  flecha(ctx, O, S3, c.k, 2.4);
+  rotulo(ctx, c, S3.x + 6, S3.y - 14, '√x + 3', c.ink, 'left', 800, 13);
+}
+function marcas2(){
+  return [{ x:1, y:3, color:'f', texto:'(1; 3)', dx:-30, dy:-4 }, { x:3, y:1, color:'inv', texto:'(3; 1)', dx:26, dy:10 }];
+}
+function sec5(){
+  return SEC5.map((s, i) => ({ x1:[1, 4, 9][i], x2:[2, 5, 10][i], y1:s.alturas[0], y2:s.alturas[1], texto:'+' + fmt(s.sube, 2), dx:i === 2 ? -6 : 6, align:i === 2 ? 'right' : 'left', dy:i === 2 ? -14 : 0 }));
+}
+
+const S = { k:0, pred:{}, t0:Date.now() };
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k];
+  x.antes(!!S.pred[x.id]);
+  E.compactar(!S.pred[x.id]);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; E.compactar(false); pintar();
+    const chico = innerWidth < 900;
+    if (chico) $('cv2').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+    esperar(chico ? 380 : 0, () => { if (S.k !== k) return; x.despues(() => { if (S.k === k) { E.leyenda(); E.avisar(); E.dibujar(); } }); });
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+  });
+  pintar();
+}
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>
