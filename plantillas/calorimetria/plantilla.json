@@ -1,0 +1,15 @@
+{
+  "id": "calorimetria",
+  "titulo": "Calorimetría",
+  "formato": "escena",
+  "unidades": [
+    "fisica.temperatura-y-calor"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}

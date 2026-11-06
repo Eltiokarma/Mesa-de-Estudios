@@ -1,0 +1,97 @@
+{
+  "titulo": "Trabajo, energía y potencia: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Usa W = F·d·cos θ para una fuerza constante, el área bajo la gráfica F–x para una fuerza variable, W neto = ΔEc = ½mv² − ½mv₀², Ep = mgh, Ee = ½kx² (x es la deformación del resorte, no su largo) y P = W/t. La eficiencia es potencia útil entre potencia consumida. Toma g = 10 m/s², sen 37° = cos 53° = 3/5 y cos 37° = sen 53° = 4/5. Sin roce ni aire, salvo que el problema diga otra cosa. Antes de calcular, dibuja las fuerzas y decide el signo del trabajo de cada una.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Una caja de 8 kg se arrastra 15 m sobre un piso horizontal con una fuerza horizontal, a velocidad constante. El coeficiente de roce entre la caja y el piso es 0,25. ¿Cuánto trabajo hace la fuerza que arrastra, cuánto el roce y cuánto es el trabajo neto?",
+      "respuesta": "La fuerza que arrastra hace 300 J, el roce −300 J y el trabajo neto es 0 J.",
+      "pasos": ["En el piso horizontal, N = mg = 80 N, así que el roce vale 0,25·80 = 20 N.", "Velocidad constante quiere decir fuerza neta cero: la fuerza que arrastra vale lo mismo que el roce, 20 N. No es mayor, aunque la caja avance.", "Trabajo de la fuerza: 20·15 = 300 J. Trabajo del roce: −20·15 = −300 J, negativo porque va contra el movimiento.", "El peso y la normal son perpendiculares al desplazamiento: no hacen trabajo. El neto es 300 − 300 = 0 J, y por eso la energía cinética no cambia."],
+      "verificar": [ { "fn": "trabajos", "args": [{ "m": 8, "d": 15, "mu": 0.25, "F": "constante" }],
+        "espera": { "F": 20, "WF": 300, "Wroce": -300, "Wpeso": 0, "WN": 0, "Wneto": 0 } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Un bloque de 4 kg está en reposo sobre un piso horizontal con coeficiente de roce 0,5. Se lo empuja con una fuerza horizontal de 30 N a lo largo de 5 m. ¿Cuál es el trabajo neto y con qué rapidez termina?",
+      "respuesta": "El trabajo neto es 50 J y termina a 5 m/s.",
+      "pasos": ["Roce: 0,5·40 = 20 N. Su trabajo es −20·5 = −100 J.", "Trabajo de la fuerza: 30·5 = 150 J. El peso y la normal no trabajan.", "Trabajo neto: 150 − 100 = 50 J. Por el teorema trabajo-energía, eso es lo que gana de energía cinética.", "½·4·v² = 50, así que v² = 25 y v = 5 m/s.", "Si usas solo el trabajo de la fuerza (150 J) te sale v ≈ 8,7 m/s: el teorema pide el trabajo de todas las fuerzas."],
+      "verificar": [ { "fn": "trabajos", "args": [{ "m": 4, "d": 5, "mu": 0.5, "F": 30, "v0": 0 }],
+        "espera": { "WF": 150, "Wroce": -100, "Wneto": 50, "v2": 25 } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Dos niños, uno de 20 kg y otro de 40 kg, se sueltan desde el reposo en lo alto de un tobogán curvo de 5 m de altura, sin roce. ¿Con qué rapidez llega cada uno al pie del tobogán?",
+      "respuesta": "Los dos llegan a 10 m/s.",
+      "pasos": ["Sin roce, la energía mecánica se conserva: mgh = ½mv².", "La masa está en los dos lados y se cancela: v² = 2gh = 2·10·5 = 100, así que v = 10 m/s.", "El más pesado tiene más energía al llegar (2000 J contra 1000 J), pero no va más rápido.", "Tampoco importa la forma del tobogán: solo cuenta la altura que baja."],
+      "verificar": [ { "fn": "rapidez", "args": [5, 0, 0], "espera": { "valor": 10 } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Un bloque de 0,5 kg se suelta desde el reposo a 0,8 m de altura en una rampa sin roce. Al llegar al piso horizontal, también sin roce, choca con un resorte de constante 200 N/m. ¿Con qué rapidez llega al resorte y cuánto lo comprime como máximo?",
+      "respuesta": "Llega a 4 m/s y comprime el resorte 0,2 m.",
+      "pasos": ["Al pie de la rampa: v² = 2·10·0,8 = 16, así que v = 4 m/s. Su energía cinética es ½·0,5·16 = 4 J.", "En la compresión máxima el bloque se detiene un instante: toda esa energía queda en el resorte.", "½·200·x² = 4, así que x² = 0,04 y x = 0,2 m.", "Si usas kx = 4 (sin el ½ ni el cuadrado), te sale 0,02 m; si usas kx² = 4, te sale 0,14 m. La energía del resorte es el área del triángulo bajo F = kx: ½kx²."],
+      "verificar": [ { "fn": "rampaResorte", "args": [{ "m": 0.5, "h": 0.8, "k": 200 }],
+        "espera": { "v2": 16, "E": 4, "Eresorte": 4, "x2": 0.04 } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Sobre un bloque de 4 kg, en reposo en un piso sin roce, actúa una fuerza horizontal que cambia con la posición: sube en forma pareja de 0 N a 40 N en los primeros 4 m, se mantiene en 40 N hasta x = 6 m y baja en forma pareja hasta 0 N en x = 8 m. ¿Cuánto trabajo hace la fuerza en los 8 m y con qué rapidez termina el bloque?",
+      "respuesta": "La fuerza hace 200 J y el bloque termina a 10 m/s.",
+      "pasos": ["Con una fuerza variable, el trabajo es el área bajo la gráfica F–x, no F·d con un solo valor de F.", "Triángulo de 0 a 4 m: ½·4·40 = 80 J. Rectángulo de 4 a 6 m: 2·40 = 80 J. Triángulo de 6 a 8 m: ½·2·40 = 40 J.", "Total: 80 + 80 + 40 = 200 J. Si usas 40·8 = 320 J, tomas la fuerza máxima como si actuara todo el tiempo.", "Es el mismo trabajo que haría una fuerza constante de 200/8 = 25 N en los 8 m.", "Sin roce, todo el trabajo va a energía cinética: ½·4·v² = 200, así que v² = 100 y v = 10 m/s."],
+      "verificar": [ { "fn": "trabajoArea", "args": [[[0, 0], [4, 40], [6, 40], [8, 0]]], "espera": { "valor": 200 } },
+        { "fn": "trabajoArea", "args": [[[0, 0], [4, 40], [6, 40], [8, 0]], 0, 4], "espera": { "valor": 80 } },
+        { "fn": "trabajos", "args": [{ "m": 4, "d": 8, "F": 25, "v0": 0 }], "espera": { "WF": 200, "v2": 100 } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Un resorte de constante 400 N/m ya está estirado 0,1 m. ¿Cuánto trabajo hay que hacer para estirarlo hasta 0,3 m?",
+      "respuesta": "16 J.",
+      "pasos": ["El trabajo es lo que cambia la energía del resorte: ½k(x₂² − x₁²).", "½·400·(0,3² − 0,1²) = 200·(0,09 − 0,01) = 200·0,08 = 16 J.", "Si usas ½k(x₂ − x₁)² = ½·400·0,2², te sale 8 J: eso sería estirarlo 0,2 m desde su largo natural, que cuesta menos porque al inicio la fuerza es chica.", "En la gráfica F–x, el área de 0,1 m a 0,3 m es un trapecio: bases de 40 N y 120 N, altura 0,2 m, área ½·(40 + 120)·0,2 = 16 J."],
+      "verificar": [ { "fn": "trabajoResorte", "args": [400, 0.1, 0.3], "espera": { "valor": 16 } },
+        { "fn": "trabajoResorte", "args": [400, 0, 0.2], "espera": { "valor": 8 } },
+        { "fn": "trabajoArea", "args": [[[0.1, 40], [0.3, 120]]], "espera": { "valor": 16 } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "En una casa de Puno, una bomba sube 900 L de agua desde la cisterna hasta el tanque del techo, 12 m más arriba, en 6 minutos. La bomba tiene una eficiencia del 60 %. ¿Qué potencia útil entrega y qué potencia consume de la red eléctrica? (1 L de agua tiene 1 kg de masa.)",
+      "respuesta": "Entrega 300 W útiles y consume 500 W.",
+      "pasos": ["Trabajo para subir el agua: mgh = 900·10·12 = 108 000 J.", "Tiempo: 6 min = 360 s. Potencia útil: 108 000 / 360 = 300 W. Es W/t, no W·t.", "La eficiencia es útil entre consumida: 0,6 = 300 / P, así que P = 300 / 0,6 = 500 W.", "Si multiplicas 300·0,6 te sale 180 W: menos de lo que entrega, imposible. La bomba siempre consume más de lo que entrega; los 200 W restantes se van en calor y roce."],
+      "verificar": [ { "fn": "potencia", "args": [{ "m": 900, "h": 12, "t": 360, "eficiencia": 0.6 }],
+        "espera": { "W": 108000, "Putil": 300, "Pconsumida": 500, "perdidas": 200 } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Un bloque de 2 kg se suelta desde el reposo en lo alto de un plano inclinado de 37° y baja 8 m a lo largo del plano. El coeficiente de roce es 0,25. ¿Cuánto trabajo hacen el peso y el roce, y con qué rapidez llega abajo?",
+      "respuesta": "El peso hace 96 J, el roce −32 J y llega a 8 m/s.",
+      "pasos": ["La altura que baja no es 8 m: es 8·sen 37° = 8·3/5 = 4,8 m. Trabajo del peso: 20·4,8 = 96 J, positivo porque baja.", "En el plano, la normal no es mg: N = mg·cos 37° = 20·4/5 = 16 N. Roce: 0,25·16 = 4 N, y su trabajo es −4·8 = −32 J.", "La normal no trabaja. Trabajo neto: 96 − 32 = 64 J.", "½·2·v² = 64, así que v² = 64 y v = 8 m/s.", "Con N = mg, el roce saldría −40 J y v² = 56. Con h = 8 m, el peso saldría 160 J. Son los dos descuidos más comunes en el plano."],
+      "verificar": [ { "fn": "trabajos", "args": [{ "m": 2, "d": 8, "angulo": 37, "mu": 0.25, "sentido": "abajo", "v0": 0 }],
+        "espera": { "h": 4.8, "N": 16, "roce": 4, "Wpeso": 96, "Wroce": -32, "WN": 0, "Wneto": 64, "v2": 64, "WroceConNmg": -40 } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Un bloque de 2 kg baja desde el reposo por una rampa sin roce de 1,25 m de altura. Al pie recorre 2 m de un piso horizontal con coeficiente de roce 0,25 y luego entra a una zona sin roce, donde comprime un resorte de constante 750 N/m. ¿Con qué rapidez llega al pie de la rampa y cuánto comprime el resorte como máximo?",
+      "respuesta": "Llega a 5 m/s al pie de la rampa y comprime el resorte 0,2 m.",
+      "pasos": ["Al pie de la rampa: v² = 2·10·1,25 = 25, así que v = 5 m/s. Su energía es mgh = 2·10·1,25 = 25 J.", "En el tramo con roce: roce = 0,25·20 = 5 N, y su trabajo es −5·2 = −10 J. Al resorte llegan 25 − 10 = 15 J.", "½·750·x² = 15, así que x² = 0,04 y x = 0,2 m.", "Si olvidas el roce, te sale x² = 50/750 y x ≈ 0,26 m. Revisa siempre qué tramos tienen roce y cuáles no."],
+      "verificar": [ { "fn": "rampaResorte", "args": [{ "m": 2, "h": 1.25, "k": 750, "mu": 0.25, "d": 2 }],
+        "espera": { "v2": 25, "E": 25, "Wroce": -10, "Eresorte": 15, "x2": 0.04, "seDetiene": false } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Una ciclista sube una cuesta en las afueras del Cusco. Ella y su bicicleta suman 80 kg. La cuesta mide 600 m de largo y sube 30 m de altura; la recorre a velocidad constante en 2 minutos. Sin contar el roce ni el aire, ¿cuánto aumenta la energía mecánica, qué potencia útil desarrolla y, si su cuerpo convierte en trabajo solo el 25 % de la energía que consume, cuánta potencia consume?",
+      "respuesta": "La energía mecánica aumenta 24 000 J; desarrolla 200 W útiles y consume 800 W.",
+      "pasos": ["A velocidad constante la energía cinética no cambia, pero la potencial sube: mgh = 80·10·30 = 24 000 J. La energía mecánica no se conserva; aumenta por el trabajo de la ciclista.", "El largo de la cuesta no entra: el trabajo contra el peso solo depende de los 30 m que sube. Una cuesta más suave pide menos fuerza, pero más recorrido, y el trabajo es el mismo.", "Potencia útil: 24 000 J / 120 s = 200 W.", "Eficiencia del 25 %: consume 200 / 0,25 = 800 W. El resto lo vuelve calor, por eso suda."],
+      "verificar": [ { "fn": "potencia", "args": [{ "m": 80, "h": 30, "t": 120, "eficiencia": 0.25 }],
+        "espera": { "W": 24000, "Putil": 200, "Pconsumida": 800 } } ]
+    }
+  ]
+}

@@ -210,7 +210,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "energia"
+     ]
     },
     {
      "id": "fisica.impulso-y-choques",
@@ -346,7 +348,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "calorimetria"
+     ]
     },
     {
      "id": "fisica.termodinamica",
@@ -3978,6 +3982,23 @@
   }
  ],
  "plantillas": {
+  "calorimetria": {
+   "id": "calorimetria",
+   "titulo": "Calorimetría",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.temperatura-y-calor"
+   ],
+   "url": "/plantillas/calorimetria/index.html",
+   "papel": "/plantillas/calorimetria/papel.json",
+   "archivos": [
+    "/plantillas/calorimetria/index.html",
+    "/plantillas/calorimetria/motor.js",
+    "/plantillas/calorimetria/papel.json"
+   ]
+  },
   "circuitos-cc": {
    "id": "circuitos-cc",
    "titulo": "Circuitos",
@@ -3993,6 +4014,23 @@
     "/plantillas/circuitos-cc/index.html",
     "/plantillas/circuitos-cc/motor.js",
     "/plantillas/circuitos-cc/papel.json"
+   ]
+  },
+  "energia": {
+   "id": "energia",
+   "titulo": "Trabajo y energía",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.trabajo-y-energia"
+   ],
+   "url": "/plantillas/energia/index.html",
+   "papel": "/plantillas/energia/papel.json",
+   "archivos": [
+    "/plantillas/energia/index.html",
+    "/plantillas/energia/motor.js",
+    "/plantillas/energia/papel.json"
    ]
   },
   "estequiometria-limitante": {
