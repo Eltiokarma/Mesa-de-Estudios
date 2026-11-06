@@ -1,0 +1,324 @@
+{
+  "titulo": "Cinética química: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. En la ley de velocidad v = k·[A]^m·[B]^n, los órdenes m y n salen de los experimentos, no de los coeficientes de la ecuación (salvo en una reacción elemental). Cada concentración se eleva a su orden. Vida media: orden 1, t½ = ln 2/k (no depende de la concentración); orden 2, t½ = 1/(k·[A]₀); orden 0, t½ = [A]₀/(2k). Temperaturas en kelvin: T(K) = T(°C) + 273. R = 8,314 J/(mol·K); ln 2 ≈ 0,693. Un catalizador baja la energía de activación pero no cambia ΔH.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "La reacción 2 NO(g) + O₂(g) → 2 NO₂(g) tiene la ley de velocidad v = k·[NO]²·[O₂]. Si la concentración de NO se duplica y la de O₂ se reduce a la mitad, ¿qué pasa con la velocidad?",
+      "respuesta": "Se duplica (se multiplica por 2).",
+      "pasos": [
+        "Cada concentración entra elevada a su orden: el NO a 2 y el O₂ a 1.",
+        "Factor del NO: 2² = 4. Factor del O₂: (1/2)¹ = 1/2.",
+        "La velocidad se multiplica por 4 · 1/2 = 2.",
+        "Si olvidas los exponentes, sale 2 · 1/2 = 1 («no cambia»): está mal, porque [NO] va al cuadrado."
+      ],
+      "verificar": [
+        {
+          "fn": "factor",
+          "args": [
+            {
+              "NO": 2,
+              "O2": 1
+            },
+            {
+              "NO": 2,
+              "O2": 0.5
+            }
+          ],
+          "espera": {
+            "valor": 2,
+            "sinExponentes": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Para la misma reacción, v = k·[NO]²·[O₂]. Cuando [NO] = 0,2 mol/L y [O₂] = 0,1 mol/L, la velocidad es 0,004 mol/(L·s). Calcula k y sus unidades.",
+      "respuesta": "k = 1 L²/(mol²·s).",
+      "pasos": [
+        "Despeja k: k = v / ([NO]²·[O₂]) = 0,004 / (0,04 · 0,1) = 0,004/0,004 = 1.",
+        "Orden total: 2 + 1 = 3. Las unidades de k son las que hacen que v salga en mol/(L·s): (mol/L)^(1−3)·s⁻¹ = L²/(mol²·s).",
+        "Las unidades de k cambian con el orden total: s⁻¹ para orden 1, L/(mol·s) para orden 2."
+      ],
+      "verificar": [
+        {
+          "fn": "velocidad",
+          "args": [
+            {
+              "k": 1,
+              "ordenes": {
+                "NO": 2,
+                "O2": 1
+              }
+            },
+            {
+              "NO": 0.2,
+              "O2": 0.1
+            }
+          ],
+          "espera": {
+            "valor": 0.004
+          }
+        },
+        {
+          "fn": "unidadesK",
+          "args": [
+            3
+          ],
+          "espera": {
+            "exponenteM": -2
+          }
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Para la reacción A + 2 B → C se midieron velocidades iniciales: con [A] = 0,1 M y [B] = 0,1 M, v = 3 × 10⁻⁴ M/s; con [A] = 0,3 M y [B] = 0,1 M, v = 2,7 × 10⁻³ M/s; con [A] = 0,1 M y [B] = 0,2 M, v = 6 × 10⁻⁴ M/s. Halla la ley de velocidad y k.",
+      "respuesta": "v = k·[A]²·[B], con k = 0,3 L²/(mol²·s). Orden total 3.",
+      "pasos": [
+        "Compara los experimentos 1 y 2: [B] no cambia y [A] se triplica; la velocidad se multiplica por 2,7 × 10⁻³ / 3 × 10⁻⁴ = 9 = 3². El orden en A es 2.",
+        "Compara 1 y 3: [A] no cambia y [B] se duplica; la velocidad se duplica (2¹). El orden en B es 1.",
+        "Los órdenes salen de los datos, no de la ecuación: B tiene coeficiente 2 pero orden 1.",
+        "k = v/([A]²·[B]) = 3 × 10⁻⁴ / (0,01 · 0,1) = 0,3. Con los otros experimentos sale lo mismo."
+      ],
+      "verificar": [
+        {
+          "fn": "ordenes",
+          "args": [
+            [
+              {
+                "conc": {
+                  "A": 0.1,
+                  "B": 0.1
+                },
+                "v": 0.0003
+              },
+              {
+                "conc": {
+                  "A": 0.3,
+                  "B": 0.1
+                },
+                "v": 0.0027
+              },
+              {
+                "conc": {
+                  "A": 0.1,
+                  "B": 0.2
+                },
+                "v": 0.0006
+              }
+            ]
+          ],
+          "espera": {
+            "ordenes.A": 2,
+            "ordenes.B": 1,
+            "ordenTotal": 3,
+            "k": 0.3
+          }
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "básico",
+      "enunciado": "Una sustancia se descompone con cinética de primer orden y su vida media es de 5 minutos. Si al inicio hay 80 g, ¿cuántos gramos quedan a los 20 minutos?",
+      "respuesta": "5 g.",
+      "pasos": [
+        "20 minutos son 20/5 = 4 vidas medias.",
+        "En cada vida media queda la mitad: 80 → 40 → 20 → 10 → 5 g. Queda (1/2)⁴ = 1/16 de lo inicial.",
+        "No se acaba en dos vidas medias: la segunda mitad no se gasta en el mismo tiempo que la primera, porque cada vez queda menos que reaccione.",
+        "En primer orden, la vida media no depende de cuánto haya: siempre son 5 minutos."
+      ],
+      "verificar": [
+        {
+          "fn": "concentracion",
+          "args": [
+            1,
+            0.13862943611198905,
+            80,
+            20
+          ],
+          "espera": {
+            "valor": 5
+          }
+        },
+        {
+          "fn": "fraccionQueda",
+          "args": [
+            4
+          ],
+          "espera": {
+            "valor": 0.0625
+          }
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Una reacción de primer orden tiene k = 0,02 s⁻¹. a) ¿Cuál es su vida media? b) ¿Cuánto tarda la concentración en bajar de 0,5 M a 0,125 M? (ln 2 ≈ 0,693)",
+      "respuesta": "a) Unos 34,7 s. b) Unos 69,3 s.",
+      "pasos": [
+        "a) En primer orden, t½ = ln 2 / k = 0,693 / 0,02 ≈ 34,7 s.",
+        "b) De 0,5 a 0,125 M queda la cuarta parte: son 2 vidas medias, 2 · 34,7 ≈ 69,3 s.",
+        "Con la ley integrada: t = ln(0,5/0,125)/k = ln 4 / 0,02 = 1,386/0,02 ≈ 69,3 s. Sale lo mismo."
+      ],
+      "verificar": [
+        {
+          "fn": "vidaMedia",
+          "args": [
+            1,
+            0.02
+          ],
+          "espera": {
+            "valor": 34.657359027997266
+          }
+        },
+        {
+          "fn": "tiempo",
+          "args": [
+            1,
+            0.02,
+            0.5,
+            0.125
+          ],
+          "espera": {
+            "valor": 69.31471805599453
+          }
+        }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Según la regla práctica, la velocidad de una reacción se duplica por cada 10 °C de aumento. Si a 20 °C la reacción tarda 40 minutos, ¿cuánto tarda a 50 °C?",
+      "respuesta": "5 minutos (la velocidad se multiplica por 8).",
+      "pasos": [
+        "De 20 °C a 50 °C hay 30 °C, es decir, tres aumentos de 10 °C.",
+        "La velocidad se multiplica por 2 · 2 · 2 = 2³ = 8, no por 2 · 3 = 6.",
+        "Si va 8 veces más rápido, tarda 8 veces menos: 40/8 = 5 minutos.",
+        "Es una regla aproximada: vale para reacciones con energías de activación típicas cerca de la temperatura ambiente."
+      ],
+      "verificar": [
+        {
+          "fn": "regla10",
+          "args": [
+            30
+          ],
+          "espera": {
+            "valor": 8,
+            "lineal": 6
+          }
+        }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "La constante de velocidad de una reacción se triplica al pasar de 27 °C a 47 °C. Calcula la energía de activación. (R = 8,314 J/(mol·K); ln 3 ≈ 1,1)",
+      "respuesta": "Unos 44 kJ/mol (43,8 kJ/mol con ln 3 = 1,0986).",
+      "pasos": [
+        "Temperaturas en kelvin: 300 K y 320 K.",
+        "Arrhenius con dos temperaturas: ln(k₂/k₁) = (Ea/R)·(1/T₁ − 1/T₂).",
+        "1/300 − 1/320 = 20/96 000 = 1/4800. Entonces ln 3 = Ea/(8,314 · 4800).",
+        "Ea = 8,314 · 4800 · 1,1 ≈ 43 900 J/mol ≈ 44 kJ/mol. Con °C en vez de kelvin la cuenta no tiene sentido (1/27 − 1/47)."
+      ],
+      "verificar": [
+        {
+          "fn": "energiaActivacion",
+          "args": [
+            1,
+            300,
+            3,
+            320
+          ],
+          "espera": {
+            "valor": 43842.54032633597
+          }
+        }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "básico",
+      "enunciado": "Una reacción tiene energía de activación de 120 kJ/mol y ΔH = +40 kJ/mol. a) ¿Cuál es la energía de activación de la reacción inversa? b) Un catalizador baja la energía de activación directa a 70 kJ/mol. ¿Cuánto valen ahora la energía de activación inversa y ΔH?",
+      "respuesta": "a) 80 kJ/mol. b) Ea inversa = 30 kJ/mol; ΔH sigue siendo +40 kJ/mol.",
+      "pasos": [
+        "a) En el perfil de energía, los productos están 40 kJ/mol más arriba que los reactivos. Desde los productos hasta la cima faltan 120 − 40 = 80 kJ/mol.",
+        "b) El catalizador abre un camino con la cima más baja: 70 kJ/mol desde los reactivos. Desde los productos: 70 − 40 = 30 kJ/mol.",
+        "Los reactivos y los productos no cambian, así que ΔH no cambia: +40 kJ/mol. El catalizador baja las dos barreras en lo mismo (50 kJ/mol).",
+        "Tampoco cambia hacia dónde llega una reacción reversible: solo hace que llegue antes."
+      ],
+      "verificar": [
+        {
+          "fn": "perfil",
+          "args": [
+            {
+              "Ea": 120,
+              "dH": 40,
+              "EaCat": 70
+            }
+          ],
+          "espera": {
+            "EaVuelta": 80,
+            "EaVueltaCat": 30,
+            "dHCat": 40,
+            "baja": 50
+          }
+        }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "La descomposición 2 NO₂(g) → 2 NO(g) + O₂(g) es de segundo orden, con k = 0,5 L/(mol·s). Si [NO₂] inicial es 0,2 M: a) ¿cuál es la primera vida media? b) ¿cuánto tarda en llegar a 0,05 M? c) ¿cuánto dura la segunda vida media?",
+      "respuesta": "a) 10 s. b) 30 s. c) 20 s: en segundo orden cada vida media dura el doble que la anterior.",
+      "pasos": [
+        "a) En segundo orden, t½ = 1/(k·[A]₀) = 1/(0,5 · 0,2) = 10 s.",
+        "b) Ley integrada: 1/[A] = 1/[A]₀ + k·t, es decir 1/0,05 = 1/0,2 + 0,5·t: 20 = 5 + 0,5·t, y t = 30 s.",
+        "c) La segunda vida media va de 0,1 a 0,05 M: 1/(0,5 · 0,1) = 20 s. Comprueba: 10 + 20 = 30 s.",
+        "Si usas la fórmula de primer orden (ln 2/k ≈ 1,4 s) sale mal: la vida media de segundo orden depende de la concentración."
+      ],
+      "verificar": [
+        {
+          "fn": "vidaMedia",
+          "args": [
+            2,
+            0.5,
+            0.2
+          ],
+          "espera": {
+            "valor": 10
+          }
+        },
+        {
+          "fn": "tiempo",
+          "args": [
+            2,
+            0.5,
+            0.2,
+            0.05
+          ],
+          "espera": {
+            "valor": 30
+          }
+        },
+        {
+          "fn": "vidaMedia",
+          "args": [
+            2,
+            0.5,
+            0.1
+          ],
+          "espera": {
+            "valor": 20
+          }
+        }
+      ]
+    }
+  ]
+}
