@@ -77,6 +77,7 @@ Los ejemplos son propios, escritos para este informe.
 | RV10 | **Se pasa por alto una negación** o un cuantificador ("no", "solo", "ningún"), y se marca como compatible lo incompatible. | Texto: "El quechua no se habla solo en el campo: también se oye en los mercados de Lima." Pregunta: "Es compatible con el texto…". Distractor: "El quechua se habla solo en el campo" (el alumno no ve el "no" y lo marca como compatible). Correcta: "El quechua también se habla en la ciudad". | Sin estudio encontrado. | Hipótesis | — |
 | RV11 | **Términos absolutos**: se acepta una alternativa con "siempre", "nunca", "todos" o "únicamente" cuando el texto dice "a menudo" o "algunos". | "El texto afirma que todos los glaciares peruanos desaparecerán." | Solo en guías de técnica de examen. | Hipótesis | — |
 | RV12 | **Extrapolación literal**: ante "si…, entonces…", se responde con lo que el texto ya dice, o se cambia la condición sin cambiar la consecuencia. | "Si el puente de Q'eswachaka no se renovara cada año, …"; distractor: "se seguiría tejiendo con ichu" (repite el texto, no extrapola). | Sin estudio encontrado sobre extrapolación. | Hipótesis (ligada a RV5) | — |
+| RV34 | **Se queda en lo literal**: no acepta lo que se deduce del texto porque no está dicho con esas palabras ("el texto no lo dice"). | El texto dice que la paja del puente se pudre y que el saber solo sobrevive si se practica; ante "si no se renovara, el saber podría perderse", el alumno responde "no se puede saber". | Indirecto: en la UNA Puno, el nivel literal es el más alto y el inferencial queda "en medio". Sin cifra de este error. | Hipótesis (con contexto indirecto) | Valero-Ancco y otros (2024) |
 
 ### Intención del autor
 
@@ -84,6 +85,7 @@ Los ejemplos son propios, escritos para este informe.
 | --- | --- | --- | --- | --- | --- |
 | RV13 | **Se confunde el propósito con la forma del texto**: "contar una historia" cuando la anécdota es un medio para informar o convencer. | Texto que empieza con la historia de un pescador del Titicaca para explicar la contaminación; distractor: "narrar la vida de un pescador". | En un ítem de propósito de la ECE 2007, más de la tercera parte eligió "contarnos una historia". Es primaria, y la cifra se vio en un solo fragmento. | Parcial (por verificar; primaria) | UMC (2007), *Guía de análisis* |
 | RV14 | **Se omite el punto de vista del autor**: se describe el tema sin la postura (informar cuando el texto critica o defiende). | Texto que defiende la papa nativa frente a la importada; distractor: "describir las variedades de papa". | Los distractores que omiten el punto de vista del autor atrajeron solo a los lectores de nivel bajo. | Parcial (por verificar) | Terao e Ishii (2020) |
+| RV33 | **Se atribuye al autor una postura que no toma**: un texto que explica se lee como si quisiera convencer, o se le atribuye una preferencia que no expresa. | Texto que explica cómo se hace el chuño; distractor: "convencer de que el chuño es mejor que la papa fresca". | Sin estudio encontrado. Es el error contrario a RV14. | Hipótesis (ligada a RV7) | — |
 
 ### Analogías
 
@@ -138,6 +140,7 @@ Errores que suponemos en los ítems de academia, sin estudio que los mida. Cada 
 | --- | --- |
 | Primera oración como idea principal (RV4) | RV1 (detalle por idea principal) |
 | Lo literal tomado como inferencia (RV6) | Contexto indirecto: UNA Puno y PIRLS |
+| No aceptar lo que se deduce (RV34) | RV6 (es el error contrario) |
 | Inferencia que generaliza de más (RV7) | RV2 (demasiado general) |
 | Negación pasada por alto (RV10) | RV9 (incompatibilidad implícita) |
 | Términos absolutos (RV11) | Sin dato |
@@ -147,6 +150,7 @@ Errores que suponemos en los ítems de academia, sin estudio que los mida. Cada 
 | Plan por cronología superficial (RV29) | Sin dato; el único estudio apunta en contra |
 | Eliminar lo pertinente (RV30) | RV5 (eco literal) |
 | Redundancia por paráfrasis (RV32) | Sin dato |
+| Postura que el autor no toma (RV33) | RV7 (inferencia no autorizada) |
 | Definiciones: elegir un rasgo accidental como diferencia específica | Sin dato (unidad `definiciones`) |
 | Textos discontinuos: leer el título del gráfico y no los ejes | Sin dato en esta revisión (unidad `textos-discontinuos`) |
 | Lectura en inglés: traducir palabra por palabra los falsos amigos | Sin dato en esta revisión (unidad `lectura-en-ingles`) |
@@ -167,7 +171,7 @@ El diseño detallado va en la pieza 2 de la rutina (`docs/formato-lectura.md`). 
 | Inferencia | RV5 (eco literal), RV6 (literal), RV7 (no autorizada), RV8 (saber del mundo) |
 | Compatibilidad e incompatibilidad | RV5, RV8, RV9, RV10 o RV11 |
 | Extrapolación | RV12, RV7, RV8 |
-| Intención del autor | RV13 (forma por propósito), RV14 (sin postura), RV2 |
+| Intención del autor | RV13 (forma por propósito), RV14 (sin postura), RV33 (postura que no toma), RV2 |
 | Analogías | RV15 (asociación con C), RV16 (invertida), RV17 (mismo campo) |
 | Sinónimo o antónimo en contexto | RV18 (sentido frecuente), RV19 (mismo campo), RV20 (parónimo), RV21 |
 | Conectores y oraciones incompletas | RV24 (causal por contracausal), RV25 (concesivo), RV26 (aditivo), RV23 |

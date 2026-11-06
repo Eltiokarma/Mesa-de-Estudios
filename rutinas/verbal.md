@@ -3,8 +3,8 @@
 Cada ejecución hace la primera pieza que falte:
 
 1. [x] Informe `docs/investigacion/razonamiento-verbal-ideas-erroneas.md`
-2. [ ] Diseño del formato lectura, `docs/formato-lectura.md`
-3. [ ] Banco de textos propios en `contenido/razonamiento-verbal/` (0 de 30)
+2. [x] Diseño del formato lectura, `docs/formato-lectura.md`
+3. [ ] Banco de textos propios en `contenido/razonamiento-verbal/` (6 de 30)
 4. [ ] Guía para profesores, `docs/guia-profesores.md`
 
 ---
@@ -38,3 +38,104 @@ Trae además una sección de contexto peruano (PISA 2018 y 2022, evaluación mue
 - `docs/pendientes.md`, fila "ra2 y pl4": cambiar "Sin informe" por el nombre del informe.
 - `CLAUDE.md`, sección Historia: agregar el informe de razonamiento verbal a la lista de informes.
 - `fuentes/por-conseguir.md`: agregar Terao e Ishii (2020), Ludewig y otros (2023), Zunino (2016), Borzone (2005), Cain y Nash (2011), NITE e239 y los informes de la UMC para el docente de secundaria.
+
+---
+
+## 6 nov 2026 · Pieza 2: el diseño del formato lectura
+
+**Qué hice.** Escribí `docs/formato-lectura.md`:
+- la pantalla (celular primero, con el texto plegado arriba y una hoja que sube para releer; dos columnas en el laboratorio);
+- el **paso previo** antes de las alternativas, de seis tipos: marcar oración, clasificar una afirmación, elegir la relación de un conector, la relación de una analogía con su sentido, el propósito del autor y ordenar tarjetas en el plan de redacción. Cada uno trae en el JSON la respuesta aceptada y un código RV por respuesta incorrecta, así que calificar es buscar en una tabla;
+- la explicación pintada en el texto con tres colores de la familia de variables;
+- el **formato JSON del banco**, con un texto de ejemplo completo (t001, "El frío que conserva", 173 palabras, 3 preguntas);
+- los eventos de medición y cómo lo cargaría un módulo, paso por paso.
+
+También agregué **RV33** al informe ("se le atribuye al autor una postura que no toma", hipótesis), porque el ejemplo la necesitaba y no existía.
+
+**Lo que decidí, de frente:**
+- El paso previo se registra como evento propio (`tipo: 'previo'`), **no como predicción**: si no, se sumaba al acierto y contaba dos veces el mismo error.
+- En `opcion` va la posición de la alternativa en el banco, no la letra, porque las letras se barajan para cada alumno.
+- Las pruebas de entrada y salida van sin paso previo y con semilla fija.
+
+**Pruebas:** `npm test`, 762 en verde (no toqué código). Validé el JSON del ejemplo con un guion: es válido, los códigos existen, las referencias apuntan a oraciones reales, no hay códigos repetidos y la correcta nunca es la más larga.
+
+**Subagentes:**
+- Un revisor del diseño contra el código real. Encontró cuatro problemas graves, todos corregidos:
+  - el banco en `/contenido/` no se serviría sin conexión, porque `sw.js` solo atiende `app`, `plantillas` y `nucleo`;
+  - el paso previo contaminaba el acierto;
+  - la letra registrada no se puede comparar entre alumnos;
+  - el esquema del paso previo estaba incompleto.
+- Un revisor que resolvió el ejemplo a ciegas. Acertó todo, pero vio que la correcta era la más larga (agregué la regla 10 del banco) y que la idea principal admitía dos oraciones (ahora se aceptan las dos). Corregí los datos del chuño (secado al sol, chuño negro) y cambié "malograrse" por "echarse a perder".
+- Una segunda revisión del documento corregido. Confirmó que lo grave quedó resuelto y encontró huecos menores, también corregidos:
+  - faltaban las explicaciones del paso previo (ahora están, más `frases.json` por código);
+  - los roles de "marcar oración" no cerraban;
+  - las analogías no tenían relaciones inversas;
+  - tres códigos del ejemplo estaban mal puestos;
+  - la vista de papel necesita un ajuste.
+
+**Pendiente:**
+- La pieza 3, el banco de textos. La primera ejecución arranca con t001 (revisión incluida), más 5 textos nuevos, el `indice.json`, `frases.json` y `banco.test.js` con las 12 reglas de la sección 5.5.
+- `codigos.json` lo genera un guion en `herramientas/`, que está fuera de mi alcance. Mientras no exista, `banco.test.js` puede leer los códigos directo del informe.
+
+**Pedidos para la integración:** los de la sección 8 de `docs/formato-lectura.md`. Los más importantes:
+- `contenido` en la expresión del `fetch` de `app/sw.js`;
+- `REQUERIDOS.lectura` en `catalogo.test.js`;
+- la rama de lectura en `construir-catalogo.js` (antes de crear la ficha);
+- `nucleo/lectura.js` y `app/lectura.js`;
+- aceptar el respaldo `parcial`;
+- unidades para término excluido y oraciones incompletas;
+- ampliar el alcance de la rutina a `herramientas/codigos-verbal.js`, si se quiere que lo escriba ella.
+
+**Red:** Gerson no pudo agregar los dominios de revistas al entorno. Probé Google Drive como alternativa (lo usa `fuentes/descargar.sh`), pero también está bloqueado en este entorno. Las cifras del informe siguen "por verificar".
+
+---
+
+## 6 nov 2026 · Pieza 3, primera tanda: 6 textos
+
+**Qué hice.** Armé el banco en `contenido/razonamiento-verbal/`:
+
+| Texto | Tema | Preguntas | Pasos previos |
+| --- | --- | --- | --- |
+| t001 El frío que conserva | Chuño y heladas | idea principal, sentido contextual, intención | marcar oración, propósito |
+| t002 El puente que se teje cada año | Q'eswachaka | idea principal, inferencia, sentido contextual, extrapolación | marcar oración, clasificar |
+| t003 El agua prestada | Glaciares de la Cordillera Blanca y el río Santa | idea principal, conector, compatibilidad, intención | marcar oración, relación, clasificar |
+| t004 Cuerdas que guardan cuentas | Quipus, texto dialéctico | idea principal, compatibilidad, extrapolación | marcar oración, clasificar |
+| t005 Dos lenguas no se estorban | Transmitir el quechua y el aimara | tesis, intención, referente, sentido contextual | marcar oración, propósito |
+| t006 El rojo que vino de la tuna | Cochinilla | idea principal, inferencia, conector | marcar oración, clasificar, relación |
+
+En total son 21 preguntas y 14 pasos previos, con 19 códigos RV distintos en los distractores. Los que más se usan son RV2 y RV5 (9 veces cada uno) y RV3 (7). El texto más corto tiene 163 palabras y el más largo, unas 210.
+
+Archivos nuevos:
+- `textos/t001.json` a `t006.json`;
+- `indice.json`, con los 6 textos aprobados;
+- `frases.json`, con una frase para el alumno por cada uno de los 34 códigos;
+- `banco.test.js`, el validador con las reglas del diseño (5.5);
+- `LEEME.md`.
+
+En el informe agregué RV34 ("se queda en lo literal: no acepta lo que se deduce"), que el clasificador de afirmaciones necesitaba. En el diseño: los códigos del paso previo pueden ser `null` cuando el informe no tiene un error para esa respuesta; las oraciones llevan número en pantalla; y el ejemplo de t001 se corrigió.
+
+**Pruebas:** `npm test`, 837 en verde, incluido `banco.test.js`. El validador lee los códigos del propio informe y las unidades del catálogo.
+
+**Subagentes:**
+- **Tres revisores a ciegas**, cada uno con dos textos. Primero resolvieron sin ver las claves y después compararon. **Coincidieron con la clave en los 21 ítems y en los 14 pasos previos.** Igual encontraron cosas que había que arreglar:
+  - **Un hecho falso en t001.** Las heladas que arruinan la papa son las de la campaña (noviembre a marzo). En junio la papa ya está cosechada, y por eso esas heladas sirven para el chuño. Lo corregí también en el ejemplo del diseño.
+  - **Datos desactualizados o exagerados.** En el Santa, la baja del caudal de estiaje ya ocurre: 7 de 9 subcuencas ya pasaron el pico (Baraer y otros, 2012). En t004, "administraron un Estado con cuerdas" exageraba. En t006, el ejemplo de cochinilla en Paracas estaba mal (abunda desde Wari).
+  - **Distractores defendibles:** en t002, el de extrapolación y "un daño", que es un sentido de "pérdida" en el diccionario; en t003, "los reservorios detendrán…"; en t004, "los quipus todavía se usan", que es cierto.
+  - **Códigos mal puestos** (RV7 por RV33 en t005, entre otros), un enunciado de t006 que dejaba defendible otra alternativa y una clave de t003 demasiado absoluta.
+- **Una cuarta verificación** de los ítems cambiados. Pidió otros cinco ajustes y los apliqué. No le hice caso en uno: pasar a RV9 un distractor de t003 dejaba dos RV9 en la misma pregunta, así que quedó en RV7.
+
+Cada texto lleva en `revision` sus notas, con lo que se cambió.
+
+**Pendiente:**
+- **24 textos más**, en cuatro ejecuciones de 6. Conviene cubrir lo que falta:
+  - más incompatibilidad, extrapolación y referentes;
+  - textos de grado 5 y dificultad 3 (tipo UNI);
+  - textos narrativos;
+  - temas de ciencia (física y química de todos los días), de historia republicana y del Perú amazónico y costeño, no solo andino.
+- **La pareja de textos de entrada y salida** (`t000a` y `t000b`), en una de las próximas tandas. Los dos tienen que ser paralelos (mismos tipos de pregunta y dificultad parecida) y van sin paso previo.
+- **Las preguntas de incompatibilidad** ("Es incompatible con el texto…") tienen un problema de códigos. Ahí el distractor es una afirmación compatible, y el informe no tiene un error para "marcar como incompatible algo compatible". Por eso esta tanda usó solo compatibilidad. Si se quiere la otra forma, hace falta un código nuevo; lo propondría en la próxima tanda.
+- Algunas fuentes de `hechos` siguen "por confirmar con una fuente académica" (chuño: CIP o FAO).
+
+**Pedidos para la integración** (además de los de la sección 8 del diseño):
+- Mostrar en pantalla el número de cada oración (ya está en el diseño, sección 2), porque las explicaciones las citan por número.
+- Cuando entre `catalogo.test.js` con el formato lectura, `banco.test.js` ya está en `contenido/razonamiento-verbal/` y corre con `npm test`.

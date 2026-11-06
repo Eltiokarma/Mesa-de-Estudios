@@ -1,0 +1,266 @@
+{
+  "id": "t003",
+  "version": 1,
+  "titulo": "El agua prestada",
+  "tema": "Ciencia · clima y agua en los Andes",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "argumentativo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "apoyo",
+        "t": "En la Cordillera Blanca, en Áncash, los glaciares funcionan como un depósito de agua."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "Durante la temporada de lluvias, la nieve se acumula en las cumbres; en los meses secos, el hielo se derrite poco a poco y alimenta ríos como el Santa."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "Gracias a ese goteo constante, los campos y las ciudades del valle tienen agua cuando casi no llueve."
+      }
+    ],
+    [
+      {
+        "id": "o4",
+        "rol": "detalle",
+        "t": "Con el calentamiento del clima, muchos de esos glaciares pierden cada año más hielo del que reciben."
+      },
+      {
+        "id": "o5",
+        "rol": "contraste",
+        "t": "Al principio, el efecto parece bueno: como se derrite más hielo, los ríos llevan más agua en la temporada seca."
+      },
+      {
+        "id": "o6",
+        "rol": "principal",
+        "t": "Pero ese aumento es engañoso, porque se está gastando la reserva y no solo lo que cada año se repone."
+      },
+      {
+        "id": "o7",
+        "rol": "apoyo",
+        "t": "Cuando el glaciar se ha reducido lo suficiente, el agua de los meses secos empieza a disminuir; en varias cuencas del Santa, eso ya está ocurriendo."
+      }
+    ],
+    [
+      {
+        "id": "o8",
+        "rol": "principal",
+        "t": "Por eso, un río con más agua no siempre es una buena noticia: puede ser la señal de que el depósito se está vaciando."
+      },
+      {
+        "id": "o9",
+        "rol": "apoyo",
+        "t": "Prepararse para ese momento con reservorios, riego cuidadoso y protección de los humedales de altura no es un lujo, sino una necesidad."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que mejor resume la idea del autor.",
+        "aceptadas": [
+          "o6",
+          "o8"
+        ],
+        "ninguna": "RV3",
+        "codigos": {
+          "o1": "RV4"
+        },
+        "explicacion": "La oración 6 dice por qué el aumento de agua engaña y la 8 lo resume como conclusión. Las demás explican cómo funciona el glaciar (1 a 4), cuentan lo que parece a primera vista (5), dicen lo que pasa después (7) o proponen qué hacer (9).",
+        "explicaciones": {
+          "o5": "Esa oración presenta lo que parece a primera vista; el \"Pero\" de la oración 6 lo corrige.",
+          "o9": "Es la propuesta del autor, que depende de la idea principal pero no la dice."
+        }
+      },
+      "enunciado": "¿Cuál es la idea principal del texto?",
+      "alternativas": [
+        {
+          "t": "El mayor caudal de los ríos que nacen de glaciares en retroceso anuncia una futura escasez de agua.",
+          "correcta": true,
+          "evidencia": [
+            "o6",
+            "o8"
+          ],
+          "explicacion": "Es lo que el autor quiere mostrar: el agua extra sale de la reserva, y por eso después habrá menos."
+        },
+        {
+          "t": "Durante la temporada de lluvias, la nieve se acumula en las cumbres de la Cordillera Blanca y luego alimenta ríos como el Santa.",
+          "codigo": "RV1",
+          "origen": "o2",
+          "explicacion": "Es la explicación de cómo funciona el glaciar, un detalle que el autor necesita para llegar a su idea."
+        },
+        {
+          "t": "El cambio climático afecta a todos los ecosistemas del planeta.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto habla de los glaciares de la Cordillera Blanca y del agua de sus ríos."
+        },
+        {
+          "t": "Los glaciares de la Cordillera Blanca funcionan como un depósito de agua.",
+          "codigo": "RV3",
+          "origen": "o1",
+          "explicacion": "Es el punto de partida, pero deja fuera lo principal: que ese depósito se está gastando aunque los ríos lleven más agua."
+        },
+        {
+          "t": "El Perú tiene la mayor parte de los glaciares tropicales del mundo.",
+          "codigo": "RV8",
+          "explicacion": "Puede ser cierto, pero el texto no lo dice. La idea principal sale de lo que se leyó."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "conector",
+      "unidad": "razonamiento-verbal.conectores",
+      "previo": {
+        "tipo": "relacion",
+        "pide": "Antes de ver las alternativas: ¿qué relación hay entre la oración 5 y la oración 6?",
+        "aceptada": "oposicion",
+        "codigos": {
+          "suma": "RV26",
+          "causa": "RV24"
+        },
+        "explicacion": "La oración 5 dice que el efecto parece bueno; la 6 empieza con \"Pero\" y dice que es engañoso. Se oponen."
+      },
+      "enunciado": "¿Qué relación hay entre la oración 5 (\"Al principio, el efecto parece bueno…\") y la oración 6 (\"Pero ese aumento es engañoso…\")?",
+      "alternativas": [
+        {
+          "t": "La 6 corrige la impresión que deja la 5.",
+          "correcta": true,
+          "evidencia": [
+            "o5",
+            "o6"
+          ],
+          "explicacion": "La 5 presenta lo que parece; la 6, con \"Pero\", dice que esa apariencia engaña."
+        },
+        {
+          "t": "La 6 es una consecuencia de lo que dice la 5.",
+          "codigo": "RV24",
+          "explicacion": "Se lee como causa y efecto lo que es una oposición: el \"Pero\" indica que la 6 va en contra de lo que se esperaba por la 5."
+        },
+        {
+          "t": "La 6 agrega otro beneficio al que menciona la 5.",
+          "codigo": "RV26",
+          "explicacion": "La 6 no suma un beneficio: dice que el beneficio de la 5 es engañoso."
+        },
+        {
+          "t": "La 6 repite que los ríos llevan más agua en la temporada seca.",
+          "codigo": "RV5",
+          "origen": "o5",
+          "explicacion": "Esa frase repite palabras de la oración 5, no de la 6. La 6 dice algo distinto: que ese aumento engaña."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "compatibilidad",
+      "unidad": "razonamiento-verbal.compatibilidad",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
+        "sonda": "Los glaciares de la Cordillera Blanca habrán desaparecido antes del año 2050.",
+        "clase": "no-se-sabe",
+        "codigos": {
+          "lo-dice": null,
+          "se-deduce": "RV7",
+          "lo-contradice": null
+        },
+        "explicacion": "El texto dice que los glaciares se reducen, pero no da fechas ni dice que vayan a desaparecer del todo. No se puede saber con lo que dice."
+      },
+      "enunciado": "Es compatible con el texto afirmar que",
+      "alternativas": [
+        {
+          "t": "una reducción del agua en los meses secos puede llegar después de un periodo de aumento.",
+          "correcta": true,
+          "evidencia": [
+            "o5",
+            "o7"
+          ],
+          "explicacion": "Es lo que describe el texto: primero los ríos llevan más agua (oración 5) y, cuando el glaciar se reduzca, menos (oración 7)."
+        },
+        {
+          "t": "todo aumento del caudal de un río indica que un glaciar se está vaciando.",
+          "codigo": "RV11",
+          "origen": "o8",
+          "explicacion": "El texto dice que un río con más agua \"puede ser\" una señal, no que \"todo\" aumento lo sea."
+        },
+        {
+          "t": "el aumento del caudal en la temporada seca muestra que los glaciares están creciendo.",
+          "codigo": "RV7",
+          "origen": "o5",
+          "explicacion": "El agua extra sale del hielo que se pierde (oraciones 4 y 6), no de glaciares que crecen. Esa lectura saca una conclusión que el texto no permite."
+        },
+        {
+          "t": "las lluvias de la temporada húmeda bastan para regar el valle durante todo el año.",
+          "codigo": "RV9",
+          "explicacion": "Choca con el texto, aunque no lo diga con esas palabras: si en los meses secos el agua viene del hielo que se derrite (oraciones 2 y 3), las lluvias no bastan."
+        },
+        {
+          "t": "el derretimiento del hielo no aumenta el caudal de los ríos en ningún momento.",
+          "codigo": "RV10",
+          "origen": "o5",
+          "explicacion": "La oración 5 dice lo contrario: al principio, como se derrite más hielo, los ríos llevan más agua."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "intencion",
+      "unidad": "razonamiento-verbal.inferencias",
+      "enunciado": "¿Cuál es la intención principal del autor?",
+      "alternativas": [
+        {
+          "t": "Advertir que el aumento de agua en los ríos que nacen de glaciares puede ser una señal de alarma y no una buena noticia.",
+          "correcta": true,
+          "evidencia": [
+            "o8",
+            "o9"
+          ],
+          "explicacion": "El autor no solo explica: concluye que hay que prepararse, y presenta el aumento de agua como una señal de que el depósito se vacía."
+        },
+        {
+          "t": "Contar cómo cambió la vida de los pobladores del valle del Santa en los últimos años.",
+          "codigo": "RV13",
+          "explicacion": "El texto no narra hechos de personas: explica un fenómeno y saca una conclusión."
+        },
+        {
+          "t": "Describir paso a paso cómo se forman los glaciares en las cumbres de la Cordillera Blanca y cómo se derriten en los meses secos.",
+          "codigo": "RV14",
+          "origen": "o2",
+          "explicacion": "Es solo la parte que explica; deja fuera la postura del autor, que es una advertencia."
+        },
+        {
+          "t": "Informar sobre los efectos del clima en todo el Perú.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto trata de los glaciares de una cordillera y del agua de sus ríos."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-06",
+  "hechos": [
+    {
+      "afirmacion": "En la Cordillera Blanca, los glaciares alimentan el río Santa en la temporada seca.",
+      "fuente": "Mark, B. G. y Seltzer, G. O. (2003), Journal of Glaciology, citado por Baraer y otros (2012): el hielo aporta del 10 al 20 % del caudal anual del Santa y puede pasar del 40 % en estiaje."
+    },
+    {
+      "afirmacion": "Cuando un glaciar retrocede, el caudal de estiaje primero aumenta y luego disminuye.",
+      "fuente": "Baraer, M. y otros (2012). Glacier recession and water resources in Peru's Cordillera Blanca. Journal of Glaciology 58(207): 7 de 9 subcuencas del Santa probablemente ya pasaron el pico de caudal de estiaje."
+    }
+  ],
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-06",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: 7 de 7. Cambios: en el Santa la baja del caudal de estiaje ya ocurre (Baraer y otros, 2012), la clave de p4 deja de ser absoluta (\"puede ser una señal\"), distractor de p3 que era compatible reescrito y fuentes de los hechos."
+  }
+}

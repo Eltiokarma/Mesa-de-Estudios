@@ -1,0 +1,253 @@
+{
+  "id": "t005",
+  "version": 1,
+  "titulo": "Dos lenguas no se estorban",
+  "tema": "Sociedad · lenguas originarias",
+  "grado": 3,
+  "dificultad": 1,
+  "tipo_texto": "argumentativo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "En muchas familias que migraron del campo a la ciudad, los abuelos hablan quechua o aimara, los padres lo entienden y los hijos ya no lo usan."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "A veces los propios padres dejan de enseñarlo porque temen que confunda a los niños o que les traiga problemas en la escuela."
+      },
+      {
+        "id": "o3",
+        "rol": "principal",
+        "t": "Ese temor, aunque se entiende, parte de una idea equivocada: que en la cabeza solo cabe una lengua y que la segunda le quita espacio a la primera."
+      }
+    ],
+    [
+      {
+        "id": "o4",
+        "rol": "apoyo",
+        "t": "En gran parte del mundo, lo normal es crecer hablando dos lenguas o más."
+      },
+      {
+        "id": "o5",
+        "rol": "apoyo",
+        "t": "Un niño que habla quechua en casa y castellano en el colegio no se queda a medias en ninguna de las dos: aprende a pasar de una a otra según con quién habla."
+      },
+      {
+        "id": "o6",
+        "rol": "apoyo",
+        "t": "Muchos problemas aparecen más bien cuando la escuela trata la lengua materna como un defecto que hay que borrar, porque el niño aprende a avergonzarse de lo que sabe."
+      }
+    ],
+    [
+      {
+        "id": "o7",
+        "rol": "principal",
+        "t": "Por eso, conservar la lengua de los abuelos no es un obstáculo para progresar, sino una riqueza que se pierde si no se transmite."
+      },
+      {
+        "id": "o8",
+        "rol": "apoyo",
+        "t": "Y una lengua que deja de pasar de padres a hijos no se recupera con un decreto: se recupera hablándola."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que mejor resume la tesis del autor.",
+        "aceptadas": [
+          "o3",
+          "o7"
+        ],
+        "ninguna": "RV3",
+        "codigos": {
+          "o1": "RV4",
+          "o2": "RV3"
+        },
+        "explicacion": "La oración 3 dice que el temor de los padres parte de una idea equivocada, y la 7 saca la conclusión: conservar la lengua es una riqueza. Las demás dan el contexto o los argumentos.",
+        "explicaciones": {
+          "o2": "Esa oración cuenta el temor de los padres, que el autor va a discutir; no es su tesis."
+        }
+      },
+      "enunciado": "¿Cuál es la tesis del autor?",
+      "alternativas": [
+        {
+          "t": "Transmitir la lengua materna a los hijos no los perjudica y evita perder una riqueza.",
+          "correcta": true,
+          "evidencia": [
+            "o3",
+            "o7"
+          ],
+          "explicacion": "Junta lo que el autor rechaza (el temor de que dos lenguas confundan) y lo que concluye (es una riqueza que se pierde si no se transmite)."
+        },
+        {
+          "t": "En muchas familias migrantes, los abuelos hablan quechua o aimara, los padres lo entienden y los hijos ya no lo usan.",
+          "codigo": "RV1",
+          "origen": "o1",
+          "explicacion": "Es la situación con la que empieza el texto, un detalle. La tesis es lo que el autor sostiene sobre esa situación."
+        },
+        {
+          "t": "Todas las lenguas del mundo merecen ser respetadas.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto habla de transmitir el quechua y el aimara a los hijos, no de todas las lenguas."
+        },
+        {
+          "t": "Muchos padres temen que hablar dos lenguas confunda a sus hijos.",
+          "codigo": "RV3",
+          "origen": "o2",
+          "explicacion": "Es lo que el autor discute, no lo que sostiene: deja fuera su respuesta a ese temor."
+        },
+        {
+          "t": "El castellano debería dejar de enseñarse en las escuelas de los Andes.",
+          "codigo": "RV33",
+          "explicacion": "El autor no dice eso: defiende que el niño hable las dos lenguas, no que deje una."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "intencion",
+      "unidad": "razonamiento-verbal.inferencias",
+      "previo": {
+        "tipo": "proposito",
+        "pide": "Antes de ver las alternativas: ¿qué busca sobre todo el autor?",
+        "aceptada": "convencer",
+        "codigos": {
+          "explicar": "RV14",
+          "narrar": "RV13"
+        },
+        "explicacion": "El autor discute una idea (\"parte de una idea equivocada\") y defiende otra: quiere convencer."
+      },
+      "enunciado": "¿Cuál es la intención principal del autor?",
+      "alternativas": [
+        {
+          "t": "Persuadir a los padres de que enseñar su lengua a los hijos no los perjudica.",
+          "correcta": true,
+          "evidencia": [
+            "o3",
+            "o7"
+          ],
+          "explicacion": "El autor responde a un temor de los padres y les da razones para transmitir su lengua."
+        },
+        {
+          "t": "Explicar cómo aprende un niño una segunda lengua en el colegio y en su casa.",
+          "codigo": "RV14",
+          "origen": "o5",
+          "explicacion": "El texto menciona cómo aprende un niño bilingüe, pero lo hace para defender una postura, y esta alternativa la deja fuera."
+        },
+        {
+          "t": "Contar la historia de una familia que migró del campo a la ciudad.",
+          "codigo": "RV13",
+          "origen": "o1",
+          "explicacion": "El texto no sigue a una familia ni cuenta hechos en orden: presenta una situación frecuente para discutirla."
+        },
+        {
+          "t": "Criticar a los padres que migraron del campo a la ciudad y abandonaron sus costumbres.",
+          "codigo": "RV33",
+          "origen": "o3",
+          "explicacion": "El autor dice que el temor de los padres \"se entiende\"; no los critica por migrar ni habla de abandonar costumbres."
+        },
+        {
+          "t": "Informar sobre las lenguas que se hablan en distintos países del mundo.",
+          "codigo": "RV2",
+          "origen": "o4",
+          "explicacion": "El texto menciona el mundo solo como argumento (oración 4); no es un informe sobre lenguas."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "referente",
+      "unidad": "razonamiento-verbal.cohesion-y-coherencia",
+      "enunciado": "En la oración 6, la expresión LO QUE SABE (en \"aprende a avergonzarse de lo que sabe\") se refiere a",
+      "alternativas": [
+        {
+          "t": "a su lengua materna.",
+          "correcta": true,
+          "evidencia": [
+            "o6"
+          ],
+          "explicacion": "Lo que el niño ya sabe y la escuela trata como un defecto es su lengua materna, que se nombra antes en la misma oración."
+        },
+        {
+          "t": "al defecto que hay que borrar.",
+          "codigo": "RV27",
+          "origen": "o6",
+          "explicacion": "Es lo último que se nombra antes de \"lo que sabe\", pero no es lo que el niño sabe: es cómo la escuela ve su lengua."
+        },
+        {
+          "t": "al castellano que aprende en el colegio.",
+          "codigo": "RV5",
+          "origen": "o5",
+          "explicacion": "Repite palabras de la oración 5, pero en la 6 el niño se avergüenza de su lengua materna, no del castellano."
+        },
+        {
+          "t": "a lo que le enseñan los profesores en clase.",
+          "codigo": "RV7",
+          "explicacion": "El texto no dice que el niño se avergüence de lo que aprende en clase; esa lectura va más allá de lo escrito."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.sentido-contextual",
+      "enunciado": "En la oración 7, la palabra RIQUEZA significa",
+      "alternativas": [
+        {
+          "t": "algo valioso que se tiene.",
+          "correcta": true,
+          "evidencia": [
+            "o7"
+          ],
+          "explicacion": "La oración contrapone la lengua como \"obstáculo\" y como \"riqueza\": algo valioso, no un estorbo."
+        },
+        {
+          "t": "abundancia de dinero.",
+          "codigo": "RV18",
+          "explicacion": "Es el sentido más común de \"riqueza\", pero aquí no se habla de dinero, sino del valor de una lengua."
+        },
+        {
+          "t": "una herencia de tierras o de bienes.",
+          "codigo": "RV19",
+          "explicacion": "Está en el mismo campo (lo que se recibe de los mayores), pero la oración no habla de bienes."
+        },
+        {
+          "t": "un obstáculo para progresar.",
+          "codigo": "RV5",
+          "origen": "o7",
+          "explicacion": "Repite palabras de la misma oración, pero es lo contrario: el autor dice que la lengua \"no es un obstáculo\"."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-06",
+  "hechos": [
+    {
+      "afirmacion": "En gran parte del mundo es normal crecer hablando dos lenguas o más.",
+      "fuente": "Grosjean, F. (2010). Bilingual: life and reality. Harvard University Press (estima que probablemente más de la mitad de la población mundial es bilingüe)."
+    },
+    {
+      "afirmacion": "Hablar dos lenguas desde niño no hace que se aprenda cada una a medias.",
+      "fuente": "Es la postura del autor del texto, apoyada en la literatura sobre bilingüismo (p. ej., Bialystok, 2001); el texto la presenta como argumento, no como dato."
+    },
+    {
+      "afirmacion": "Tratar la lengua materna como un defecto en la escuela perjudica el aprendizaje (bilingüismo sustractivo).",
+      "fuente": "Cummins, J. (2000). Language, power and pedagogy. Multilingual Matters."
+    }
+  ],
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-06",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: 6 de 6. Cambios: código RV33 en \"Criticar…\", afirmaciones sobre bilingüismo suavizadas (\"no se queda a medias\", \"muchos problemas\"), fuente de Cummins (2000) y concordancia de p3 con \"se refiere a\"."
+  }
+}
