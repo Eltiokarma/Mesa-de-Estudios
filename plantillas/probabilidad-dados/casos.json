@@ -1,0 +1,104 @@
+{
+  "plantilla": "probabilidad-dados",
+  "unidades": "Dados de 6 caras salvo que se diga otra cosa; el dado 0 es el rojo, el 1 el azul y el 2 el café. Las monedas salen 'cara' o 'sello'. Las probabilidades son fracciones exactas: se comparan su numerador (num), su denominador (den) y su texto.",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (p.texto, errores.sumasEquiprobables.texto); los números se comparan con la tolerancia y los textos y listas exactos. Los eventos son objetos JSON con 'tipo' (ver la cabecera de motor.js). Las simulaciones usan nucleo/azar.js con la semilla dada; de ellas solo se comprueban propiedades en motor.test.js, no números exactos.",
+  "verificacion": "Verificado por un subagente independiente (6 nov 2026) que no leyó el código del motor (solo su cabecera) ni este archivo mientras calculaba. Todo se recalculó en Python con Fraction, enumerando con itertools el espacio muestral, los grupos sin orden, comités, anagramas y permutaciones circulares, y comparando con la fórmula. Coinciden los 135 campos; las únicas diferencias fueron de interpretación (`separados` en comités, el formato de `parciales` en la placa) y este archivo tenía razón.",
+  "tolerancia": 1e-9,
+  "casos": [
+    { "nombre": "Informe, caso Dados (AR20): con dos dados, P(suma 7) = 6/36 = 1/6; si todas las sumas valieran lo mismo, 1/11; contando (1, 6) y (6, 1) como uno, 3 grupos de 21",
+      "fn": "probabilidad", "args": [{ "dados": 2 }, { "tipo": "suma", "valor": 7 }],
+      "espera": { "favorables": 6, "total": 36, "p.num": 1, "p.den": 6, "texto": "1/6", "gruposTotal": 21,
+                  "errores.sumasEquiprobables.texto": "1/11", "errores.sinOrden.texto": "1/7", "errores.sinOrdenSobreTotal.texto": "1/12" } },
+
+    { "nombre": "Predicción del paso 3: P(suma 12) = 1/36, seis veces menos que la suma 7 (AR20: también 1/11)",
+      "fn": "probabilidad", "args": [{ "dados": 2 }, { "tipo": "suma", "valor": 12 }],
+      "espera": { "favorables": 1, "total": 36, "texto": "1/36", "errores.sumasEquiprobables.texto": "1/11", "errores.sinOrden.texto": "1/21" } },
+
+    { "nombre": "Informe, caso Dados: P(suma 11) = 2/36 = 1/18 (AR20: 1/11; AR17, contar solo (5, 6): 1/36)",
+      "fn": "probabilidad", "args": [{ "dados": 2 }, { "tipo": "suma", "valor": 11 }],
+      "espera": { "favorables": 2, "texto": "1/18", "errores.sumasEquiprobables.texto": "1/11", "errores.sinOrdenSobreTotal.texto": "1/36", "errores.sinOrden.texto": "1/21" } },
+
+    { "nombre": "Predicción del paso 4 (Lecoutre): «un 5 y un 6» sin importar cuál dado es 2/36 = 1/18, y «dos 6» es 1/36; contar (5, 6) y (6, 5) como uno da 1/36 para los dos (AR20)",
+      "fn": "probabilidad", "args": [{ "dados": 2 }, { "tipo": "valores", "valores": [5, 6] }],
+      "espera": { "favorables": 2, "texto": "1/18", "errores.sinOrdenSobreTotal.texto": "1/36", "errores.sinOrden.texto": "1/21" },
+      "tambien": [ { "args": [{ "dados": 2 }, { "tipo": "valores", "valores": [6, 6] }], "espera": { "favorables": 1, "texto": "1/36", "errores.sinOrdenSobreTotal.texto": "1/36" } } ] },
+
+    { "nombre": "Predicción del paso 2 (AR17): dos dados de colores distintos dan 6 · 6 = 36 resultados; sin orden serían 21; las sumas posibles son 11",
+      "fn": "distribucionSuma", "args": [{ "dados": 2 }],
+      "espera": { "total": 36, "sumas": 11, "moda": 7, "maneras.2": 1, "maneras.7": 6, "maneras.12": 1, "p.8.texto": "5/36" },
+      "tambien": [ { "fn": "combinacionesConRepeticion", "args": [6, 2], "espera": { "valor": 21 } }, { "fn": "multiplicacion", "args": [[6, 6]], "espera": { "valor": 36 } }, { "fn": "adicion", "args": [[6, 6]], "espera": { "valor": 12 } } ] },
+
+    { "nombre": "¿Qué pasa si…? Al menos un 6 con dos dados: 1 − (5/6)² = 11/36, no 1/6 + 1/6 = 1/3 (se cuenta dos veces el (6, 6)); exactamente uno: 10/36",
+      "fn": "alMenosUno", "args": [{ "dados": 2, "valor": 6 }],
+      "espera": { "p.num": 11, "p.den": 36, "ninguno.texto": "25/36", "errores.sumaProbabilidades.texto": "1/3", "errores.todos.texto": "1/36", "errores.exactamenteUno.texto": "5/18" },
+      "tambien": [ { "fn": "probabilidad", "args": [{ "dados": 2 }, { "tipo": "alMenosUno", "valor": 6 }], "espera": { "favorables": 11, "texto": "11/36", "errores.sumaProbabilidades.texto": "1/3" } } ] },
+
+    { "nombre": "¿Qué pasa si…? Tres dados (el problema de Galileo): suma 9 = 25/216 y suma 10 = 27/216 = 1/8, aunque las dos se arman con 6 grupos de tres números (AR17: 6/56 = 3/28 para cada una; AR20: 1/16)",
+      "fn": "probabilidad", "args": [{ "dados": 3 }, { "tipo": "suma", "valor": 10 }],
+      "espera": { "favorables": 27, "total": 216, "texto": "1/8", "gruposTotal": 56, "errores.sinOrden.texto": "3/28", "errores.sumasEquiprobables.texto": "1/16" },
+      "tambien": [ { "args": [{ "dados": 3 }, { "tipo": "suma", "valor": 9 }], "espera": { "favorables": 25, "texto": "25/216", "errores.sinOrden.texto": "3/28" } } ] },
+
+    { "nombre": "Unión con dos dados: P(suma 7 o dobles) = 12/36 = 1/3, eventos excluyentes; P(suma par o dobles) = 18/36, y sumar sin restar la intersección da 24/36",
+      "fn": "union", "args": [{ "dados": 2 }, { "tipo": "suma", "valor": 7 }, { "tipo": "iguales" }],
+      "espera": { "favorables": 12, "p.texto": "1/3", "pAyB.texto": "0", "excluyentes": true, "errores.sumaDirecta.texto": "1/3" },
+      "tambien": [ { "args": [{ "dados": 2 }, { "tipo": "suma", "op": "par" }, { "tipo": "iguales" }], "espera": { "favorables": 18, "p.texto": "1/2", "pAyB.texto": "1/6", "excluyentes": false, "errores.sumaDirecta.texto": "2/3" } } ] },
+
+    { "nombre": "Condicional (papel p9): sabiendo que la suma es 8, P(algún dado es 3) = 2/5; la conjunta es 2/36 = 1/18 y la transpuesta 2/11",
+      "fn": "condicional", "args": [{ "dados": 2 }, { "tipo": "alMenosUno", "valor": 3 }, { "tipo": "suma", "valor": 8 }],
+      "espera": { "favorables": 2, "total": 5, "p.texto": "2/5", "errores.conjunta.texto": "1/18", "errores.transpuesta.texto": "2/11", "errores.sinCondicion.texto": "11/36" } },
+
+    { "nombre": "Independencia: «el rojo sale 2» y «la suma es 7» son independientes (1/36 = 1/6 · 1/6); «el rojo sale 2» y «la suma es 8», no (1/36 frente a 5/216)",
+      "fn": "independientes", "args": [{ "dados": 2 }, { "tipo": "dado", "i": 0, "valor": 2 }, { "tipo": "suma", "valor": 7 }],
+      "espera": { "independientes": true, "pAyB.texto": "1/36", "producto.texto": "1/36" },
+      "tambien": [ { "args": [{ "dados": 2 }, { "tipo": "dado", "i": 0, "valor": 2 }, { "tipo": "suma", "valor": 8 }], "espera": { "independientes": false, "pAyB.texto": "1/36", "producto.texto": "5/216" } } ] },
+
+    { "nombre": "Complemento: P(no salen dobles) = 1 − 6/36 = 5/6; P(ambos pares) = 9/36 = 1/4; P(producto par) = 27/36 = 3/4",
+      "fn": "complemento", "args": [{ "dados": 2 }, { "tipo": "iguales" }],
+      "espera": { "p.texto": "5/6", "pA.texto": "1/6", "favorables": 30 },
+      "tambien": [ { "fn": "probabilidad", "args": [{ "dados": 2 }, { "tipo": "todos", "op": "par" }], "espera": { "favorables": 9, "texto": "1/4" } },
+                   { "fn": "probabilidad", "args": [{ "dados": 2 }, { "tipo": "producto", "op": "par" }], "espera": { "favorables": 27, "texto": "3/4" } } ] },
+
+    { "nombre": "Predicción del paso 7 (AR17, AR19): comités de 3 con 5 personas = C(5, 3) = 10; con orden, V(5, 3) = 60 = 10 · 3!; con repetición, 5³ = 125",
+      "fn": "comite", "args": [{ "n": 5, "k": 3 }],
+      "espera": { "valor": 10, "porEnumeracion": 10, "ordenes": 60, "ordenesPorComite": 6, "errores.variacion": 60, "errores.conRepeticion": 125, "errores.producto": 15 } },
+
+    { "nombre": "Informe, caso Fichas (AR17): comités de 3 con 7 personas = 35 (variación: 210; con repetición: 343)",
+      "fn": "comite", "args": [{ "n": 7, "k": 3 }],
+      "espera": { "valor": 35, "porEnumeracion": 35, "errores.variacion": 210, "errores.conRepeticion": 343 } },
+
+    { "nombre": "Comité con restricción (papel p5): 3 de 5 mujeres y 4 hombres con al menos una mujer = 84 − 4 = 80 (fijar una mujer y elegir 2 de los 8 restantes cuenta de más: 140)",
+      "fn": "comiteConGrupos", "args": [{ "grupos": [{ "nombre": "mujeres", "n": 5 }, { "nombre": "hombres", "n": 4 }], "k": 3, "condicion": { "grupo": "mujeres", "alMenos": 1 } }],
+      "espera": { "valor": 80, "porEnumeracion": 80, "errores.sinRestriccion": 84, "errores.fijarUno": 140 },
+      "tambien": [ { "args": [{ "grupos": [{ "nombre": "mujeres", "n": 4 }, { "nombre": "hombres", "n": 3 }], "k": 3, "condicion": { "grupo": "mujeres", "exactos": 2 } }], "espera": { "valor": 18, "porEnumeracion": 18, "errores.sumar": 9 } },
+                   { "args": [{ "grupos": [{ "nombre": "todos", "n": 7 }], "k": 3, "separados": true }], "espera": { "valor": 30, "porEnumeracion": 30 } } ] },
+
+    { "nombre": "Informe, caso Fichas (AR19): claves de 3 dígitos = 10³ = 1000 (sin repetir: 720; sin orden: 120)",
+      "fn": "clave", "args": [{ "simbolos": 10, "largo": 3 }],
+      "espera": { "valor": 1000, "errores.sinRepeticion": 720, "errores.combinacion": 120 },
+      "tambien": [ { "args": [{ "simbolos": 10, "largo": 4, "repetir": false }], "espera": { "valor": 5040 } } ] },
+
+    { "nombre": "¿Qué pasa si…? La placa: 3 letras (de 26) y 3 dígitos = 26³ · 10³ = 17 576 000 (AR19, sin repetir: 11 232 000; sumar en vez de multiplicar: 18 576; AR17, sin orden: 312 000)",
+      "fn": "placa", "args": [{ "letras": 3, "digitos": 3, "alfabeto": 26 }],
+      "espera": { "valor": 17576000, "parciales": [26, 676, 17576, 175760, 1757600, 17576000], "errores.sinRepeticion": 11232000, "errores.suma": 18576, "errores.sinOrdenNiRepeticion": 312000 } },
+
+    { "nombre": "Permutación circular (papel p7) y con repetición (papel p8): 6 en una mesa redonda = 5! = 120 (en fila, 720); anagramas de MANZANA = 7!/(3! · 2!) = 420",
+      "fn": "circular", "args": [6],
+      "espera": { "valor": 120, "porEnumeracion": 120, "errores.lineal": 720 },
+      "tambien": [ { "fn": "anagramas", "args": ["MANZANA"], "espera": { "valor": 420, "porEnumeracion": 420, "errores.todasDistintas": 5040 } } ] },
+
+    { "nombre": "¿Qué pasa si…? Moneda (AR21): cara-sello-cara-cara-sello vale 1/32, lo mismo que cinco caras; «3 caras y 2 sellos en cualquier orden» son 10 secuencias, 10/32 = 5/16",
+      "fn": "secuenciaMoneda", "args": [["cara", "sello", "cara", "cara", "sello"]],
+      "espera": { "texto": "1/32", "mismaComposicion": 10, "errores.composicion.texto": "5/16" },
+      "tambien": [ { "args": [["cara", "cara", "cara", "cara", "cara"]], "espera": { "texto": "1/32", "mismaComposicion": 1 } },
+                   { "fn": "probabilidad", "args": [{ "dados": 0, "monedas": 3 }, { "tipo": "caras", "valor": 2 }], "espera": { "favorables": 3, "total": 8, "texto": "3/8" } } ] },
+
+    { "nombre": "Predicción del paso 6 (AR22): tras cinco 6 seguidos, el próximo 6 sigue en 1/6; seis 6 seguidos desde el inicio sería 1/46 656",
+      "fn": "siguiente", "args": [{ "historia": [2, 6, 6, 6, 6, 6], "valor": 6 }],
+      "espera": { "texto": "1/6", "racha": 5, "errores.rachaCompleta.texto": "1/46656", "errores.recenciaNegativa": "menor" } },
+
+    { "nombre": "¿Qué pasa si…? Cumpleaños: con 23 alumnos, P(dos cumplen el mismo día) ≈ 0,5073 (365 días igual de probables); 253 parejas; 23/365 ≈ 0,063; desde 23 pasa de la mitad",
+      "fn": "cumpleanos", "args": [{ "n": 23 }],
+      "espera": { "p": 0.5072972343239857, "parejas": 253, "errores.lineal": 0.06301369863013699, "errores.unaPareja": 0.0027397260273972603 },
+      "tambien": [ { "fn": "curvaCumpleanos", "args": [60], "espera": { "mitad": 23 } } ] }
+  ]
+}

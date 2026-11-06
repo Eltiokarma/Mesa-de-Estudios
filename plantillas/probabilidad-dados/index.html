@@ -1,0 +1,1242 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La tabla de los dos dados: conteo y probabilidad</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de la cinta del radio.
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
+   dado rojo (y su valor) rojo, dado azul azul, tercer dado café, casos favorables (las casillas que se encienden y el
+   numerador) verde, probabilidad exacta P fucsia, frecuencia relativa f (lo que da la simulación) ámbar, comités sin
+   orden C turquesa y órdenes con orden V índigo. Los casos posibles, las sumas y las personas van en tinta.
+   Elegidos con CIEDE2000: ΔE00 ≥ 25 entre los que salen juntos (mínimo 25,3 en claro y 26,5 en oscuro). Los pares
+   más parecidos (café–ámbar, índigo–azul e índigo–fucsia, ΔE00 de 12 a 17) nunca salen en el mismo dibujo. Todos
+   pasan el contraste AA (≥ 4,56) sobre el papel, la tarjeta y su chip (.v, fondo al 8 %). */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#e6d8cd;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-R:#c0364a; --c-B:#1f5fbf; --c-T:#6b3a14; --c-F:#466d14; --c-P:#a10fbf; --c-f:#8f5800; --c-C:#0f766e; --c-V:#3328c4;
+  --relleno:.10;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#3d3249;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-R:#f17384; --c-B:#7cb0ff; --c-T:#e0a878; --c-F:#a3d65e; --c-P:#cf6bfa; --c-f:#ffc04d; --c-C:#5ed9c8; --c-V:#9f9bff;
+  --relleno:.08; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#3d3249;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-R:#f17384; --c-B:#7cb0ff; --c-T:#e0a878; --c-F:#a3d65e; --c-P:#cf6bfa; --c-f:#ffc04d; --c-C:#5ed9c8; --c-V:#9f9bff;
+  --relleno:.08; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+/* Celular con una predicción pendiente: el dibujo más bajo y pegado arriba, para que se vea mientras se elige. */
+@media (max-width:899px){
+  .mode.pendiente .bench{position:sticky; top:0; z-index:1; padding:6px; gap:4px; background:var(--card); border-radius:0 0 20px 20px}
+  .mode.pendiente .legend{display:none}
+  .mode.pendiente .lecturas{gap:4px}
+  .mode.pendiente .lectura{padding:2px 8px}
+}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+.legend i.sq{width:12px; height:12px; border-radius:3px}
+.legend i.sq.suave{opacity:.55}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-R{color:var(--c-R); background:color-mix(in srgb, var(--c-R) 8%, transparent)}
+.v-B{color:var(--c-B); background:color-mix(in srgb, var(--c-B) 8%, transparent)}
+.v-T{color:var(--c-T); background:color-mix(in srgb, var(--c-T) 8%, transparent)}
+.v-F{color:var(--c-F); background:color-mix(in srgb, var(--c-F) 8%, transparent)}
+.v-P{color:var(--c-P); background:color-mix(in srgb, var(--c-P) 8%, transparent)}
+.v-f{color:var(--c-f); background:color-mix(in srgb, var(--c-f) 8%, transparent)}
+.v-C{color:var(--c-C); background:color-mix(in srgb, var(--c-C) 8%, transparent)}
+.v-V{color:var(--c-V); background:color-mix(in srgb, var(--c-V) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.02rem; font-variant-numeric:tabular-nums}
+.eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.5em; white-space:normal}
+.frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1.15}
+.frac > span:first-child{border-bottom:1.5px solid currentColor; padding:0 .25em}
+.frac > span:last-child{padding:0 .25em}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.seg button:disabled{opacity:.45; cursor:not-allowed}
+.seg button i{display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px; vertical-align:0}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.acciones{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn.chico{padding:6px 14px; min-height:40px; min-width:44px}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+.fichas{display:flex; flex-wrap:wrap; gap:6px}
+.fichas button{font:700 .95rem var(--font); padding:8px 14px; min-height:44px; border-radius:999px; border:1.5px solid var(--ink); background:var(--paper); color:var(--ink); cursor:pointer}
+.fichas button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.paso-s{display:inline-flex; align-items:center; gap:6px}
+
+/* Lecturas en vivo, cada una con el color de su variable */
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(128px, 1fr)); gap:8px}
+.lecturas:empty{display:none}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura b{display:block; color:var(--k); font:800 .95rem var(--mono); font-variant-numeric:tabular-nums; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.lectura span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.15fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Razonamiento matemático y aritmética · Conteo y probabilidad · Problemas tipo admisión</p>
+      <h1>La tabla de los dos dados</h1>
+      <p class="sub">Dos dados de colores, una tabla de 6 × 6 que se enciende y miles de lanzamientos simulados: para contar bien antes de dividir.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dados, tabla de resultados y gráficos">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Dibujo del paso: dados, la tabla de 6 por 6, el gráfico de barras o las fichas del comité"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos de conteo y probabilidad">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/probabilidad-dados">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="../../nucleo/azar.js"></script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'probabilidad-dados', unidad: 'aritmetica.probabilidades', version: '0.1.0' };
+// Las predicciones de comités y placas van a la unidad de análisis combinatorio.
+const UNIDAD_CONTEO = 'aritmetica.analisis-combinatorio';
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0, unidad){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: unidad || PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la matemática (espacio muestral, conteos, fracciones exactas, comités, la animación de cada tirada y las
+   simulaciones con semilla) sale de MotorDados (motor.js); aquí solo se pinta y se anima. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MD = MotorDados, PI = Math.PI;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+// Coma decimal, espacio de miles (sin corte) y signo menos tipográfico.
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 1 : d), r = Math.round(n*p)/p + 0;
+  const [e, f] = String(Math.abs(r)).split('.');
+  return (r < 0 ? '−' : '') + e.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + (f ? ',' + f : '');
+}
+const ent = n => fmt(n, 0);
+const pct = (x, d) => fmt(100*x, d === undefined ? 1 : d) + ' %';
+const txF = F => (F.den === 1 ? String(F.num) : `${F.num}/${F.den}`);
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const fr = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
+const R_ = t => V('R', t), B_ = t => V('B', t), T_ = t => V('T', t), F_ = t => V('F', t), P_ = t => V('P', t), f_ = t => V('f', t), C_ = t => V('C', t), V_ = t => V('V', t);
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+function tween(dur, paso, fin, lineal){
+  if (RM || !dur){ paso(1); if (fin) setTimeout(fin, 0); return; }
+  const t0 = performance.now();
+  const tick = now => { const f = Math.min(1, (now - t0)/dur); paso(lineal ? f : suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
+  requestAnimationFrame(tick);
+}
+const clave = r => r.join(',');
+const setDe = lista => new Set(lista.map(clave));
+
+function colores(){
+  const g = n => css(n);
+  return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
+    R:g('--c-R'), B:g('--c-B'), T:g('--c-T'), F:g('--c-F'), P:g('--c-P'), f:g('--c-f'), C:g('--c-C'), V:g('--c-V'),
+    relleno:Number(g('--relleno')) || .10, mono:g('--mono'), font:g('--font') };
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function rr(ctx, x, y, w, h, r){ ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+// Texto con un fondo del color del papel detrás, para que se lea sobre las líneas.
+function rotulo(ctx, c, x, y, t, color, align, peso, tam, fondo){
+  ctx.font = `${peso || 700} ${tam || 13}px ${c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  if (fondo !== false){ ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - (tam || 13)*.7, w + 6, (tam || 13)*1.4); ctx.restore(); }
+  ctx.fillStyle = color; ctx.fillText(t, x, y);
+  return w;
+}
+const PIPS = { 1:[[0,0]], 2:[[-1,-1],[1,1]], 3:[[-1,-1],[0,0],[1,1]], 4:[[-1,-1],[1,-1],[-1,1],[1,1]], 5:[[-1,-1],[1,-1],[0,0],[-1,1],[1,1]], 6:[[-1,-1],[1,-1],[-1,0],[1,0],[-1,1],[1,1]] };
+// Un dado: cuadrado redondeado del color de su variable, con puntos del color del papel. v = null: dado por conocer.
+function dado(ctx, c, x, y, s, v, col, giro, marca){
+  ctx.save(); ctx.translate(x, y); if (giro) ctx.rotate(giro*PI/180);
+  rr(ctx, -s/2, -s/2, s, s, s*.2);
+  if (v == null){
+    ctx.setLineDash([5, 4]); ctx.strokeStyle = col || c.muted; ctx.lineWidth = 2; ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = col || c.muted; ctx.font = `800 ${Math.round(s*.5)}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('?', 0, 1);
+  } else {
+    ctx.fillStyle = col; ctx.fill();
+    if (marca){ ctx.lineWidth = 3; ctx.strokeStyle = c.ink; ctx.stroke(); }
+    ctx.fillStyle = c.paper;
+    for (const [i, j] of PIPS[v]){ ctx.beginPath(); ctx.arc(i*s*.26, j*s*.26, Math.max(1.6, s*.085), 0, 2*PI); ctx.fill(); }
+  }
+  ctx.restore();
+}
+// Moneda: cara = disco lleno; sello = aro.
+function moneda(ctx, c, x, y, r, v, col){
+  ctx.save(); ctx.beginPath(); ctx.arc(x, y, r, 0, 2*PI);
+  if (v === 'cara'){ ctx.fillStyle = col || c.ink; ctx.fill(); }
+  else { ctx.lineWidth = Math.max(1.5, r*.28); ctx.strokeStyle = col || c.ink; ctx.beginPath(); ctx.arc(x, y, r - ctx.lineWidth/2, 0, 2*PI); ctx.stroke(); }
+  ctx.restore();
+}
+
+// Resaltar en el dibujo la variable que se toca en el texto (regla 4).
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+/* ================= La escena =================
+   Modos: 'dados' (los dados solos), 'tabla' (la tabla de 6 × 6 con la tira de dados arriba), 'histo' (barras de
+   las sumas), 'racha' (lo que sale después de cinco 6), 'comite' (fichas y comités), y los de «¿Qué pasa si…?»:
+   'tres' (seis tablitas, una por cada valor del dado café), 'moneda', 'cumple' y 'placa'. */
+const BASE = () => ({ modo:'dados', dados:{ vals:[4, 2], cuadro:null, gris:false, pregunta:false },
+  tabla:null, histo:null, racha:null, comite:null, tres:null, moneda:null, cumple:null, placa:null, lect:[], ley:null, base:'' });
+function crearEscena(cv, idDesc, idLect, idLey){
+  const E = Object.assign(BASE(), { hl:null, tok:0, anim:false, compacto:false });
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0;
+  function alto(w){
+    const g = w >= 560;
+    switch (E.modo){
+      case 'dados': return g ? 250 : 170;
+      case 'tabla': { const side = Math.min(w - 16, g ? 400 : 999); return Math.round(side + (E.tabla.dados ? (g ? 84 : 70) : 6) + (E.tabla.barra ? 46 : 0) + 8); }
+      case 'histo': return g ? 400 : 310;
+      case 'racha': return g ? 390 : 310;
+      case 'comite': return g ? 400 : 370;
+      case 'tres': return g ? 430 : 280;
+      case 'moneda': return g ? 360 : 320;
+      case 'cumple': return g ? 380 : 300;
+      case 'placa': return g ? 280 : 180;
+    }
+    return 300;
+  }
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    const h = (E.compacto && innerWidth < 900) ? 240 : alto(w);
+    const dpr = window.devicePixelRatio || 1;
+    if (w === W && h === H) { E.dibujar(); return; }
+    W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  alRedibujarTema(() => E.dibujar());
+
+  E.config = o => {
+    E.tok++; E.anim = false;   // una animación vieja no sigue moviendo el dibujo nuevo
+    const d = BASE(); Object.assign(E, d, o);
+    E.dados = Object.assign(d.dados, o.dados);
+    W = 0; resize(); E.leyenda(); E.dibujar(); E.avisar();
+  };
+  // Con una predicción pendiente en el celular, el dibujo se achica y queda pegado arriba (sticky) para verse al elegir.
+  E.compactar = on => { on = !!on; cv.closest('.mode').classList.toggle('pendiente', on); if (on === !!E.compacto) return; E.compacto = on; W = 0; resize(); };
+  E.relayout = () => { W = 0; resize(); };
+  const chico = () => E.compacto && innerWidth < 900;
+
+  // ----- los dados -----
+  const colDado = (c, j) => (E.dados.gris ? c.muted : [c.R, c.B, c.T][j]);
+  function tiraDados(c, cx, cy, s, espacio, salto){
+    const q = E.dados.cuadro, n = q ? q.caras.length : E.dados.vals.length;
+    for (let j = 0; j < n; j++){
+      const x = cx + (j - (n - 1)/2)*espacio;
+      const v = E.dados.pregunta ? null : (q ? q.caras[j] : E.dados.vals[j]);
+      const y = cy - (q ? q.alto[j]*salto : 0);
+      // sombra en el piso
+      ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = .08; ctx.beginPath(); ctx.ellipse(x, cy + s*.58, s*.42*(1 - (q ? q.alto[j]*.4 : 0)), s*.09, 0, 0, 2*PI); ctx.fill(); ctx.restore();
+      dado(ctx, c, x, y, s, v, E.dados.pregunta ? colDado(c, j) : colDado(c, j), q ? q.giro[j] : 0, E.hl === ['R', 'B', 'T'][j]);
+    }
+  }
+  function dibDados(c){
+    const n = E.dados.cuadro ? E.dados.cuadro.caras.length : E.dados.vals.length;
+    const s = Math.min(96, H*.42, W/(n*1.7)), cy = H*.58;
+    tiraDados(c, W/2, cy, s, s*1.55, H*.34);
+    if (H > 150){
+      const nombres = E.dados.gris ? ['', '', ''] : ['dado rojo', 'dado azul', 'dado café'];
+      for (let j = 0; j < n; j++) if (nombres[j]) rotulo(ctx, c, W/2 + (j - (n - 1)/2)*s*1.55, cy + s*.78 + 6, nombres[j], [c.R, c.B, c.T][j], 'center', 700, 13, false);
+    }
+  }
+
+  // ----- la tabla de 6 × 6 -----
+  function lay(){
+    const T = E.tabla, g = W >= 560;
+    const strip = T.dados && !chico() ? (g ? 84 : 70) : 0, barra = T.barra && !chico() ? 46 : 0;
+    const side = Math.min(W - 16, H - strip - barra - 8, g ? 400 : 999), hdr = Math.max(18, Math.min(26, side*.075));
+    return { strip, barra, side, hdr, x0:(W - side)/2, y0:strip + 2, cs:(side - hdr)/6 };
+  }
+  function dibTabla(c){
+    const T = E.tabla, L = lay();
+    if (L.strip){ const s = L.strip*.6; tiraDados(c, W/2, L.strip*.5, s, s*1.5, L.strip*.3); }
+    const gx = L.x0 + L.hdr, gy = L.y0 + L.hdr, cs = L.cs;
+    // encabezados: el rojo en las filas y el azul en las columnas
+    ctx.save(); ctx.fillStyle = E.dados.gris ? c.muted : c.R; rr(ctx, L.x0 + 2, gy + 2, L.hdr - 6, 6*cs - 4, 4); ctx.globalAlpha = .12; ctx.fill(); ctx.restore();
+    ctx.save(); ctx.fillStyle = E.dados.gris ? c.muted : c.B; rr(ctx, gx + 2, L.y0 + 2, 6*cs - 4, L.hdr - 6, 4); ctx.globalAlpha = .12; ctx.fill(); ctx.restore();
+    const ft = Math.round(clamp(L.hdr*.62, 11, 15));
+    for (let i = 1; i <= 6; i++){
+      rotulo(ctx, c, L.x0 + L.hdr/2 - 1, gy + (i - .5)*cs, String(i), E.dados.gris ? c.muted : c.R, 'center', 800, ft, false);
+      rotulo(ctx, c, gx + (i - .5)*cs, L.y0 + L.hdr/2 - 1, String(i), E.dados.gris ? c.muted : c.B, 'center', 800, ft, false);
+    }
+    const lab = Math.round(clamp(cs*.34, 9, 15));
+    for (let a = 1; a <= 6; a++) for (let b = 1; b <= 6; b++){
+      const k = (a - 1)*6 + (b - 1), x = gx + (b - 1)*cs, y = gy + (a - 1)*cs, key = a + ',' + b;
+      if (k >= T.revelar) continue;
+      const on = T.lit && T.lit.has(key);
+      ctx.save(); rr(ctx, x + 1.5, y + 1.5, cs - 3, cs - 3, Math.min(6, cs*.15));
+      ctx.fillStyle = c.card; ctx.fill();
+      // relleno suave (0,10 en claro, 0,08 en oscuro) y borde grueso: el rojo, el azul y el gris quedan con contraste AA
+      if (on){ ctx.save(); ctx.fillStyle = c.F; ctx.globalAlpha = c.relleno; ctx.fill(); ctx.restore(); }
+      ctx.lineWidth = on ? (E.hl === 'F' ? 4.2 : 3) : 1; ctx.strokeStyle = on ? c.F : c.grid; ctx.stroke();
+      ctx.restore();
+      if (T.marcas && T.marcas.has(key)){ ctx.save(); rr(ctx, x + 3, y + 3, cs - 6, cs - 6, Math.min(5, cs*.12)); ctx.setLineDash([4, 3]); ctx.lineWidth = 2; ctx.strokeStyle = c.ink; ctx.stroke(); ctx.restore(); }
+      if (T.ultimo === key){ ctx.save(); rr(ctx, x, y, cs, cs, Math.min(7, cs*.16)); ctx.lineWidth = 3; ctx.strokeStyle = c.ink; ctx.stroke(); ctx.restore(); }
+      const cx = x + cs/2, cy = y + cs/2;
+      if (T.etiqueta === 'par'){
+        ctx.font = `800 ${lab}px ${c.font}`; ctx.textBaseline = 'middle';
+        const wa = ctx.measureText(String(a)).width, wc = ctx.measureText(',').width, wb = ctx.measureText(String(b)).width, x0 = cx - (wa + wc + wb)/2;
+        ctx.textAlign = 'left';
+        ctx.fillStyle = E.dados.gris ? c.muted : c.R; ctx.fillText(String(E.dados.gris ? Math.min(a, b) : a), x0, cy);
+        ctx.fillStyle = c.muted; ctx.fillText(',', x0 + wa, cy);
+        ctx.fillStyle = E.dados.gris ? c.muted : c.B; ctx.fillText(String(E.dados.gris ? Math.max(a, b) : b), x0 + wa + wc, cy);
+      } else if (T.etiqueta === 'suma') rotulo(ctx, c, cx, cy, String(a + b), c.ink, 'center', 800, lab + 1, false);
+      if (T.doble && T.doble.has(key)){
+        ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(cx, cy, cs*.4, 0, 2*PI); ctx.stroke(); ctx.restore();
+      }
+    }
+    // la barra de frecuencia del explorador: f (ámbar) contra P (fucsia)
+    if (L.barra){
+      const by = L.y0 + L.side + 10, bx = L.x0 + 4, bw = L.side - 8, bh = 14;
+      ctx.save(); rr(ctx, bx, by, bw, bh, 7); ctx.fillStyle = c.card; ctx.fill(); ctx.strokeStyle = c.grid; ctx.lineWidth = 1; ctx.stroke(); ctx.restore();
+      if (T.barra.N){ ctx.save(); rr(ctx, bx, by, Math.max(4, bw*T.barra.f), bh, 7); ctx.fillStyle = c.f; ctx.globalAlpha = E.hl === 'f' ? 1 : .85; ctx.fill(); ctx.restore(); }
+      const xp = bx + bw*T.barra.p;
+      ctx.save(); ctx.strokeStyle = c.P; ctx.lineWidth = E.hl === 'P' ? 5 : 3.5; ctx.beginPath(); ctx.moveTo(xp, by - 6); ctx.lineTo(xp, by + bh + 6); ctx.stroke(); ctx.restore();
+      rotulo(ctx, c, bx, by + bh + 14, '0', c.muted, 'left', 700, 11, false);
+      rotulo(ctx, c, bx + bw, by + bh + 14, '1', c.muted, 'right', 700, 11, false);
+    }
+  }
+
+  // ----- barras (sumas o caras) -----
+  function barras(c, x0, y0, w, h, o){
+    // o: { cats, frec, exacta (números o null), ymax, paso, rotulo }
+    const n = o.cats.length, bw = w/n, ys = v => y0 + h - h*v/o.ymax;
+    ctx.save(); ctx.strokeStyle = c.grid; ctx.lineWidth = 1; ctx.font = `700 11px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    for (let v = 0; v <= o.ymax + 1e-9; v += o.paso){ const y = ys(v); ctx.beginPath(); ctx.moveTo(x0, y); ctx.lineTo(x0 + w, y); ctx.stroke(); ctx.fillText(pct(v, 0), x0 - 4, y); }
+    ctx.restore();
+    o.cats.forEach((k, i) => {
+      const x = x0 + i*bw, fv = o.frec ? o.frec[i] : 0;
+      if (o.frec && fv > 0){ ctx.save(); ctx.fillStyle = c.f; ctx.globalAlpha = E.hl === 'f' ? 1 : .8; rr(ctx, x + bw*.16, ys(Math.min(fv, o.ymax)), bw*.68, h*Math.min(fv, o.ymax)/o.ymax, 3); ctx.fill(); ctx.restore(); }
+      if (o.exacta){ const y = ys(o.exacta[i]); ctx.save(); ctx.strokeStyle = c.P; ctx.lineWidth = E.hl === 'P' ? 5 : 3.2; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(x + bw*.08, y); ctx.lineTo(x + bw*.92, y); ctx.stroke(); ctx.restore(); }
+      rotulo(ctx, c, x + bw/2, y0 + h + 12, String(k), o.foco === k ? c.ink : c.muted, 'center', o.foco === k ? 800 : 700, 12, false);
+    });
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.moveTo(x0, y0 + h); ctx.lineTo(x0 + w, y0 + h); ctx.stroke(); ctx.restore();
+    if (o.rotulo) rotulo(ctx, c, x0 + w/2, y0 + h + 28, o.rotulo, c.muted, 'center', 700, 12, false);
+  }
+  function dibHisto(c){
+    const Hs = E.histo, strip = chico() ? 0 : (W >= 560 ? 80 : 64);
+    if (strip){ const s = strip*.58; tiraDados(c, W/2, strip*.5, s, s*1.5, strip*.28); }
+    const x0 = 44, y0 = strip + 12, w = W - x0 - 12, h = H - y0 - (chico() ? 30 : 44);
+    barras(c, x0, y0, w, h, { cats:Hs.cats, frec:Hs.frec, exacta:Hs.exacta, ymax:Hs.ymax, paso:.05, rotulo: chico() ? null : 'suma de los dos dados', foco:Hs.foco });
+  }
+  function dibRacha(c){
+    const Rr = E.racha, n = Rr.historia.length + 1, s = Math.min(Rr.sig ? 46 : 56, (W - 24)/(n*1.3)), top = Rr.sig ? (chico() ? 30 : 40) : H*.42;
+    for (let j = 0; j < n; j++){
+      const x = W/2 + (j - (n - 1)/2)*s*1.3;
+      dado(ctx, c, x, top, s, j < n - 1 ? Rr.historia[j] : null, c.R, 0, false);
+    }
+    if (!Rr.sig) { if (!chico()) rotulo(ctx, c, W/2, top + s*.5 + 18, 'cinco 6 seguidos con el dado rojo… ¿y ahora?', c.muted, 'center', 700, 13, false); return; }
+    const x0 = 44, y0 = top + s*.5 + 18, w = W - x0 - 12, h = H - y0 - (chico() ? 26 : 44);
+    barras(c, x0, y0, w, h, { cats:[1, 2, 3, 4, 5, 6], frec:Rr.sig.frec.map(v => v*Rr.prog), exacta:Rr.prog >= 1 ? Array(6).fill(1/6) : null, ymax:.3, paso:.1, rotulo: chico() ? null : 'lo que salió justo después de cinco 6', foco:6 });
+  }
+
+  // ----- comités -----
+  function dibComite(c){
+    const K = E.comite, n = K.personas.length, g = W >= 560;
+    const rF = Math.min(K.mostrar ? 22 : 28, W/(n*2.8)), yF = K.mostrar ? rF + 10 : H*.42;
+    K.personas.forEach((p, i) => {
+      const x = W/2 + (i - (n - 1)/2)*rF*2.7, orden = K.sel.indexOf(p);
+      ctx.save(); ctx.beginPath(); ctx.arc(x, yF, rF, 0, 2*PI); ctx.fillStyle = c.card; ctx.fill(); ctx.lineWidth = 2.2; ctx.strokeStyle = c.ink; ctx.stroke(); ctx.restore();
+      rotulo(ctx, c, x, yF + 1, p[0], c.ink, 'center', 800, Math.round(rF*.9), false);
+      if (!chico()) rotulo(ctx, c, x, yF + rF + 11, p, c.muted, 'center', 700, 11, false);
+      if (orden >= 0){
+        ctx.save(); ctx.beginPath(); ctx.arc(x + rF*.78, yF - rF*.72, 9, 0, 2*PI); ctx.fillStyle = c.V; ctx.fill(); ctx.restore();
+        rotulo(ctx, c, x + rF*.78, yF - rF*.72 + .5, String(orden + 1), c.paper, 'center', 800, 11, false);
+      }
+    });
+    if (!K.mostrar) return;
+    const cols = 5, filas = Math.ceil(K.comites.length/cols), top = yF + rF + (chico() ? 8 : 22), gap = 6;
+    const bw = (W - 12 - gap*(cols - 1))/cols, bh = (H - top - 6 - gap*(filas - 1))/filas;
+    const visibles = K.listaOrdenes.slice(0, K.revelar), elegido = K.sel.length === 3 ? K.sel.join('') : null;
+    const filaAlto = Math.min(14, (bh - 22)/6), ft = Math.round(clamp(filaAlto*.85, 8, 12));
+    K.comites.forEach((cm, j) => {
+      const x = 6 + (j % cols)*(bw + gap), y = top + Math.floor(j/cols)*(bh + gap);
+      const mios = visibles.filter(o => o.comite === j);
+      const activo = elegido && K.listaOrdenes.find(o => o.orden.join('') === elegido).comite === j;
+      ctx.save(); rr(ctx, x, y, bw, bh, 10); ctx.fillStyle = c.card; ctx.fill();
+      ctx.lineWidth = activo ? 3.2 : mios.length ? (E.hl === 'C' ? 3 : 1.8) : 1; ctx.strokeStyle = mios.length ? c.C : c.grid; if (!mios.length) ctx.setLineDash([4, 4]); ctx.stroke(); ctx.restore();
+      if (mios.length) rotulo(ctx, c, x + bw/2, y + 11, cm.map(p => p[0]).join(' '), c.C, 'center', 800, g ? 13 : 12, false);
+      mios.forEach((o, t) => {
+        const yo = y + 22 + t*filaAlto + filaAlto/2, s = o.orden.map(p => p[0]).join('');
+        const este = elegido === o.orden.join('');
+        rotulo(ctx, c, x + bw/2, yo, s, c.V, 'center', este ? 900 : 700, este ? ft + 1 : ft, false);
+        // el orden elegido lleva un marco que no sale de su propia fila
+        if (este){ const w = ctx.measureText(s).width; ctx.save(); ctx.strokeStyle = c.V; ctx.lineWidth = 1.4; rr(ctx, x + bw/2 - w/2 - 4, yo - filaAlto/2 + .7, w + 8, filaAlto - 1.4, 3); ctx.stroke(); ctx.restore(); }
+      });
+    });
+  }
+
+  // ----- tres dados: seis tablitas -----
+  function dibTres(c){
+    const X = E.tres;
+    if (!X.mostrar){ const s = Math.min(80, H*.36, W/5.4); E.dados.cuadro = null; tiraDados(c, W/2, H*.5, s, s*1.5, 0);
+      if (!chico()) [0, 1, 2].forEach(j => rotulo(ctx, c, W/2 + (j - 1)*s*1.5, H*.5 + s*.78 + 6, ['rojo', 'azul', 'café'][j], [c.R, c.B, c.T][j], 'center', 700, 13, false)); return; }
+    const g = W >= 560, cols = 3, filas = 2, gap = g ? 16 : 8, cab = 22;
+    const side = Math.min((W - 12 - gap*(cols - 1))/cols, (H - 8 - filas*cab - gap)/filas), x00 = (W - (cols*side + (cols - 1)*gap))/2;
+    const cs = side/6;
+    for (let k = 1; k <= 6; k++){
+      const x0 = x00 + ((k - 1) % cols)*(side + gap), y0 = 4 + Math.floor((k - 1)/cols)*(side + cab + gap) + cab;
+      dado(ctx, c, x0 + 10, y0 - cab/2 - 1, 16, k, c.T, 0, E.hl === 'T');
+      rotulo(ctx, c, x0 + 24, y0 - cab/2, 'café ' + k, c.T, 'left', 800, 12, false);
+      // filas: rojo; columnas: azul (las rayitas de color al borde lo recuerdan)
+      ctx.save(); ctx.fillStyle = c.R; ctx.fillRect(x0 - 4, y0, 2.5, side); ctx.fillStyle = c.B; ctx.fillRect(x0, y0 - 4, side, 2.5); ctx.restore();
+      let cuenta = 0;
+      for (let a = 1; a <= 6; a++) for (let b = 1; b <= 6; b++){
+        const key = a + ',' + b + ',' + k, on = X.lit && X.lit.has(key) && X.orden.get(key) < X.prog;
+        if (on) cuenta++;
+        ctx.save(); rr(ctx, x0 + (b - 1)*cs + 1, y0 + (a - 1)*cs + 1, cs - 2, cs - 2, 3);
+        ctx.fillStyle = c.card; ctx.fill();
+        if (on){ ctx.save(); ctx.fillStyle = c.F; ctx.globalAlpha = c.relleno; ctx.fill(); ctx.restore(); }
+        ctx.lineWidth = on ? (E.hl === 'F' ? 2.6 : 2) : 1; ctx.strokeStyle = on ? c.F : c.grid; ctx.stroke(); ctx.restore();
+      }
+      if (cuenta) rotulo(ctx, c, x0 + side, y0 - cab/2, String(cuenta), c.F, 'right', 800, 12, false);
+    }
+  }
+
+  // ----- monedas -----
+  function dibMoneda(c){
+    const M = E.moneda;
+    if (!M.lista){
+      const r = Math.min(18, W/16), top = H*.32;
+      M.seqs.forEach((s, j) => {
+        const y = top + j*(r*2 + (chico() ? 30 : 44));
+        rotulo(ctx, c, W/2 - 2.5*r*2.4 - 6, y, `${j + 1}.ª`, c.muted, 'right', 800, 13, false);
+        s.forEach((v, i) => moneda(ctx, c, W/2 + (i - 2)*r*2.4, y, r, v));
+      });
+      return;
+    }
+    const todas = M.todas, cols = W >= 560 ? 4 : 4, filas = Math.ceil(todas.length/cols);
+    const cw = (W - 16)/cols, rh = (H - 12)/filas, r = Math.min(7, rh*.3, cw/14);
+    todas.forEach((s, k) => {
+      const x = 8 + (k % cols)*cw, y = 6 + Math.floor(k/cols)*rh, on = M.lit.has(k) && M.orden.get(k) < M.prog;
+      ctx.save(); rr(ctx, x + 2, y + 1, cw - 4, rh - 2, 6); ctx.fillStyle = c.card; ctx.fill();
+      if (on){ ctx.save(); ctx.fillStyle = c.F; ctx.globalAlpha = c.relleno; ctx.fill(); ctx.restore(); }
+      ctx.lineWidth = on ? (E.hl === 'F' ? 3.6 : 2.6) : 1; ctx.strokeStyle = on ? c.F : c.grid; ctx.stroke(); ctx.restore();
+      s.forEach((v, i) => moneda(ctx, c, x + cw/2 + (i - 2)*r*2.6, y + rh/2, r, v));
+    });
+  }
+
+  // ----- cumpleaños -----
+  function dibCumple(c){
+    const K = E.cumple;
+    if (!K.curva){
+      const cols = 8, filas = Math.ceil(K.n/cols), r = Math.min(9, (H - 50)/(filas*3)), gx = r*3.2;
+      for (let i = 0; i < K.n; i++){
+        const x = W/2 + ((i % cols) - (cols - 1)/2)*gx, y = H*.42 + (Math.floor(i/cols) - (filas - 1)/2)*r*3.2;
+        ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = .75; ctx.beginPath(); ctx.arc(x, y - r*.55, r*.45, 0, 2*PI); ctx.fill();
+        ctx.beginPath(); ctx.ellipse(x, y + r*.45, r*.62, r*.5, 0, PI, 2*PI); ctx.fill(); ctx.restore();
+      }
+      if (!chico()) rotulo(ctx, c, W/2, H - 22, `${K.n} alumnos · 365 días posibles para cada uno`, c.muted, 'center', 700, 13, false);
+      return;
+    }
+    const x0 = 46, y0 = 14, w = W - x0 - 14, h = H - y0 - (chico() ? 28 : 42), N = K.curva.puntos.length;
+    const xs = n => x0 + w*(n - 1)/(N - 1), ys = p => y0 + h - h*p;
+    ctx.save(); ctx.strokeStyle = c.grid; ctx.lineWidth = 1; ctx.fillStyle = c.muted; ctx.font = `700 11px ${c.font}`; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    for (const p of [0, .25, .5, .75, 1]){ ctx.beginPath(); ctx.moveTo(x0, ys(p)); ctx.lineTo(x0 + w, ys(p)); ctx.stroke(); ctx.fillText(pct(p, 0), x0 - 4, ys(p)); }
+    ctx.textAlign = 'center'; for (let n = 10; n <= N; n += 10) ctx.fillText(String(n), xs(n), y0 + h + 12);
+    ctx.restore();
+    if (!chico()) rotulo(ctx, c, x0 + w/2, y0 + h + 28, 'alumnos en el salón', c.muted, 'center', 700, 12, false);
+    const hasta = 1 + (N - 1)*K.prog;
+    // la recta del error lineal (n/365), en gris a trazos
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.6; ctx.setLineDash([5, 4]); ctx.beginPath(); ctx.moveTo(xs(1), ys(1/365)); ctx.lineTo(xs(hasta), ys(hasta/365)); ctx.stroke(); ctx.restore();
+    ctx.save(); ctx.strokeStyle = c.P; ctx.lineWidth = E.hl === 'P' ? 4.5 : 3; ctx.lineJoin = 'round'; ctx.beginPath();
+    K.curva.puntos.filter(q => q.n <= hasta).forEach((q, i) => (i ? ctx.lineTo(xs(q.n), ys(q.p)) : ctx.moveTo(xs(q.n), ys(q.p)))); ctx.stroke(); ctx.restore();
+    if (hasta >= K.n){
+      const q = K.curva.puntos[K.n - 1];
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.2; ctx.setLineDash([3, 3]); ctx.beginPath(); ctx.moveTo(xs(K.n), y0 + h); ctx.lineTo(xs(K.n), ys(q.p)); ctx.stroke(); ctx.restore();
+      ctx.save(); ctx.fillStyle = c.P; ctx.beginPath(); ctx.arc(xs(K.n), ys(q.p), 5.5, 0, 2*PI); ctx.fill(); ctx.restore();
+      rotulo(ctx, c, xs(K.n) - 8, ys(q.p) - 14, `${K.n} alumnos: ${pct(q.p)}`, c.P, 'right', 800, 13);
+      rotulo(ctx, c, xs(K.n) + 8, ys(K.n/365) - 12, `n/365: ${pct(K.n/365)}`, c.muted, 'left', 700, 12);
+    }
+  }
+
+  // ----- la placa -----
+  function dibPlaca(c){
+    const P = E.placa, n = P.etapas.length, g = W >= 560;
+    const sw = Math.min(g ? 58 : 46, (W - 30)/(n + .8)), sh = sw*1.3, x00 = W/2 - (n*sw + sw*.6 + (n - 1)*4)/2, y = H*.18;
+    let x = x00;
+    for (let i = 0; i < n; i++){
+      if (i === 3){ rotulo(ctx, c, x + sw*.3, y + sh/2, '–', c.ink, 'center', 800, 22, false); x += sw*.6; }
+      const quieta = P.cuadro && i < P.cuadro.quietas;
+      ctx.save(); rr(ctx, x, y, sw, sh, 8); ctx.fillStyle = c.card; ctx.fill(); ctx.lineWidth = quieta ? 2.4 : 1.4; ctx.strokeStyle = quieta ? c.ink : c.grid; ctx.stroke(); ctx.restore();
+      if (P.cuadro) rotulo(ctx, c, x + sw/2, y + sh/2, P.cuadro.casillas[i], quieta ? c.ink : c.muted, 'center', 800, Math.round(sw*.55), false);
+      if (!chico()) rotulo(ctx, c, x + sw/2, y + sh + 14, i < 3 ? 'letra' : 'dígito', c.muted, 'center', 700, 11, false);
+      if (P.mostrar) rotulo(ctx, c, x + sw/2, y + sh + (chico() ? 16 : 34), String(P.etapas[i]), c.V, 'center', 800, 14, false);
+      x += sw + 4;
+    }
+    if (P.mostrar && P.cuadro && P.cuadro.quietas >= n){
+      rotulo(ctx, c, W/2, y + sh + (chico() ? 46 : 70), `${P.etapas.join(' · ')} = ${ent(P.valor)} placas`, c.V, 'center', 800, g ? 17 : 14, false);
+    }
+  }
+
+  E.dibujar = () => {
+    if (!W) return;
+    const c = colores();
+    ctx.clearRect(0, 0, W, H); ctx.fillStyle = c.paper; ctx.fillRect(0, 0, W, H);
+    ({ dados:dibDados, tabla:dibTabla, histo:dibHisto, racha:dibRacha, comite:dibComite, tres:dibTres, moneda:dibMoneda, cumple:dibCumple, placa:dibPlaca })[E.modo](c);
+  };
+  E.leyenda = () => {
+    if (!idLey) return;
+    const it = (k, t, sq, suave) => !k ? `<span>${t}</span>` : `<span><i class="${sq ? 'sq' : ''}${suave ? ' suave' : ''}" style="background:${k === 'ink' || k === 'muted' ? `var(--${k})` : `var(--c-${k})`}"></i>${t}</span>`;
+    let l = E.ley;
+    if (!l){
+      const dadosL = E.dados.gris ? [['muted', 'dos dados iguales, sin color', true]] : [['R', 'dado rojo: las filas', true], ['B', 'dado azul: las columnas', true]];
+      if (E.modo === 'dados') l = E.dados.gris ? dadosL : [['R', 'dado rojo', true], ['B', 'dado azul', true]];
+      else if (E.modo === 'tabla') l = dadosL.concat(E.tabla.lit && E.tabla.lit.size ? [['F', 'casos favorables', true, true]] : []).concat(E.tabla.barra ? [['f', 'frecuencia relativa f'], ['P', 'probabilidad P']] : []);
+      else if (E.modo === 'histo') l = [['f', 'frecuencia relativa f (simulación)', true]].concat(E.histo.exacta ? [['P', 'probabilidad exacta P']] : []);
+      else if (E.modo === 'racha') l = [['R', 'dado rojo', true]].concat(E.racha.sig ? [['f', 'frecuencia del siguiente', true], ['P', 'P = 1/6']] : []);
+      else if (E.modo === 'comite') l = E.comite.mostrar ? [['C', 'comités (sin orden)', true], ['V', 'órdenes (con orden)']] : [['ink', 'cinco compañeros', true]];
+      else if (E.modo === 'tres') l = [['R', 'rojo: filas', true], ['B', 'azul: columnas', true], ['T', 'café: una tablita por valor', true]].concat(E.tres.mostrar ? [['F', 'casos favorables', true, true]] : []);
+      else if (E.modo === 'moneda') l = [[null, '● cara · ○ sello']].concat(E.moneda.lista ? [['F', 'casos favorables', true, true]] : []);
+      else if (E.modo === 'cumple') l = E.cumple.curva ? [['P', 'probabilidad de un cumpleaños repetido'], ['muted', 'n/365 (no es la probabilidad)']] : [['ink', 'alumnos', true]];
+      else if (E.modo === 'placa') l = E.placa.mostrar ? [['V', 'opciones por casilla y total (con orden)']] : [['ink', 'casillas de la placa', true]];
+    }
+    document.getElementById(idLey).innerHTML = (l || []).map(([k, t, sq, sv]) => it(k, t, sq, sv)).join('');
+  };
+  // Lecturas y descripción para lectores de pantalla (dicen lo mismo; antes de responder no adelantan la respuesta).
+  E.avisar = () => {
+    const filas = E.lect.map(k => (typeof k === 'function' ? k(E) : k)).filter(Boolean);
+    if (idLect) document.getElementById(idLect).innerHTML = filas.map(([k, t, v]) => `<div class="lectura" style="--k:${k === 'ink' ? 'var(--ink)' : `var(--c-${k})`}"><span>${t}</span><b>${v}</b></div>`).join('');
+    if (idDesc) document.getElementById(idDesc).textContent = [E.base, ...filas.map(([, t, v]) => `${t}: ${v}.`)].join(' ');
+  };
+  E.animar = (dur, paso, fin, lineal) => {
+    const tok = ++E.tok; E.anim = true;
+    tween(dur, f => { if (tok !== E.tok) return; paso(f); E.dibujar(); }, () => { if (tok !== E.tok) return; E.anim = false; E.avisar(); if (fin) fin(); }, lineal);
+  };
+  // Un lanzamiento animado: los cuadros (caras, giro y salto) los calcula el motor con la semilla.
+  E.lanzar = (semilla, n, fin) => {
+    const t = MD.tirada({ semilla, dados:n || 2 });
+    E.animar(900, f => { E.dados.cuadro = t.cuadros[Math.round(f*(t.cuadros.length - 1))]; }, () => { E.dados.cuadro = null; E.dados.vals = t.valores; E.dibujar(); if (fin) fin(t.valores); }, true);
+    return t.valores;
+  };
+  return E;
+}
+
+// Opciones de predicción (las mismas en los dos modos)
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+// Pequeños ayudantes de datos (todo sale del motor)
+const CFG2 = { dados:2 };
+const PE = ev => MD.probabilidad(CFG2, ev);
+const EV = { suma:s => ({ tipo:'suma', valor:s }), cincoSeis:{ tipo:'valores', valores:[5, 6] }, dosSeis:{ tipo:'valores', valores:[6, 6] }, alMenos6:{ tipo:'alMenosUno', valor:6 },
+  dobles:{ tipo:'iguales' }, pares:{ tipo:'todos', op:'par' }, prodPar:{ tipo:'producto', op:'par' }, suma10:{ tipo:'suma', op:'>=', valor:10 } };
+const DIST2 = MD.distribucionSuma({ dados:2 }), SUMAS = Array.from({ length:11 }, (_, i) => i + 2);
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1');
+const S = { step:0, max:0, pred:{}, ocupado:false, lanz:0, x:null, ver3:7, ver4:'cinco' };
+
+// Números de la escena: todos salen del motor
+const P7 = PE(EV.suma(7)), P12 = PE(EV.suma(12)), P56 = PE(EV.cincoSeis), P66 = PE(EV.dosSeis);
+const SIN_ORDEN = P7.gruposTotal;                                   // 21
+const SIM = MD.simular({ lanzamientos:1000, semilla:'histograma-1000', pasos:100 });
+const SIG = MD.siguiente({ historia:[6, 6, 6, 6, 6], valor:6 });
+const CINCO6 = MD.potencia(MD.fraccion(1, 6), 5);
+// 15 millones de lanzamientos: el resultado viene precalculado en el motor (motor.test.js lo vuelve a simular y compara).
+const RACHA = MD.RACHA_CINCO_SEIS;
+const racha = () => RACHA;
+const COM = MD.comite({ n:5, k:3 });
+
+const P_TOTAL = { id:'dados-paso2', ok:'c', opts:[
+  ['a','12: 6 caras del rojo más 6 del azul','suma-en-vez-de-producto','hipotesis'],
+  ['b',`${SIN_ORDEN}: rojo 1 y azul 2 es lo mismo que rojo 2 y azul 1`,'AR17-sin-orden','parcial'],
+  ['c',`${DIST2.total}: cada cara del rojo va con las 6 del azul`],
+  ['d',`${DIST2.sumas}: las sumas del 2 al 12`,'sumas-como-resultados','hipotesis']],
+  fb:{ c:`¡Bien! Por cada cara del rojo hay 6 del azul: 6 · 6 = ${DIST2.total}.`,
+    a:`Elegiste la A. Sumar 6 + 6 serviría si se lanzara un dado o el otro. Aquí salen los dos a la vez: por cada cara del rojo hay 6 del azul, 6 · 6 = ${DIST2.total}. La correcta está marcada.`,
+    b:`Elegiste la B. Con dados de colores distintos, rojo 1 y azul 2 no es lo mismo que rojo 2 y azul 1: son dos casillas. Contarlas como una da ${SIN_ORDEN}, pero son ${DIST2.total}. La correcta está marcada.`,
+    d:`Elegiste la D. Las sumas son ${DIST2.sumas}, pero una suma no es un resultado: la suma 7 sale con seis pares distintos. Los resultados son ${DIST2.total}. La correcta está marcada.` } };
+const P_SUMAS = { id:'dados-paso3', ok:'b', opts:[
+  ['a',`Igual de probables: cada suma, del 2 al 12, tiene ${txF(P7.errores.sumasEquiprobables)}`,'AR20-sumas-equiprobables','documentado'],
+  ['b','La suma 7: se arma con más pares que el 12'],
+  ['c','La suma 12: el 6 es la cara más grande','suma-12-mayor','hipotesis'],
+  ['d','No se puede saber: es pura suerte','azar-no-se-sabe','hipotesis']],
+  fb:{ b:`¡Bien! La suma 7 sale con ${P7.favorables} casillas y la 12 con ${P12.favorables} sola.`,
+    a:`Elegiste la A. Las 11 sumas no son igual de probables: los ${DIST2.total} pares sí lo son. El 7 se forma con ${P7.favorables} pares y el 12 con ${P12.favorables}. La correcta está marcada.`,
+    c:`Elegiste la C. Que el 6 sea la cara más grande no lo hace más probable. Para sumar 12 hace falta 6 y 6: una sola casilla. El 7 tiene ${P7.favorables}. La correcta está marcada.`,
+    d:`Elegiste la D. No se sabe qué saldrá en un lanzamiento, pero sí cuál es más probable: el 7 tiene ${P7.favorables} casillas de ${DIST2.total} y el 12, ${P12.favorables}. La correcta está marcada.` } };
+const P_LEC = { id:'dados-paso4', ok:'a', opts:[
+  ['a','Un 5 y un 6: cualquiera de los dos dados puede dar el 5'],
+  ['b','Igual de probables: cada uno es un solo resultado','AR20-equiprobabilidad-lecoutre','documentado'],
+  ['c','Dos 6: es el par más alto','dos-seis-mas-probable','hipotesis']],
+  fb:{ a:`¡Bien! Un 5 y un 6 sale de ${P56.favorables} maneras (rojo 5 y azul 6, o rojo 6 y azul 5); dos 6, de ${P66.favorables}.`,
+    b:`Elegiste la B. Si los dados se ven distintos, rojo 5 y azul 6 no es lo mismo que rojo 6 y azul 5: un 5 y un 6 ocupa ${P56.favorables} casillas, y dos 6, ${P66.favorables}. La correcta está marcada.`,
+    c:`Elegiste la C. Dos 6 se forma de una sola manera: rojo 6 y azul 6. Un 5 y un 6 se forma de ${P56.favorables}. La correcta está marcada.` } };
+const P_HISTO = { id:'dados-paso5', ok:'b', opts:[
+  ['a','Plano: todas las barras más o menos iguales','AR20-histograma-plano','parcial'],
+  ['b','Una montaña con la cima en el 7, que baja hacia el 2 y el 12'],
+  ['c','Una U: altas en el 2 y el 12, bajas al centro','histograma-en-u','hipotesis'],
+  ['d','Sin forma: con el azar, cada vez sale distinto','azar-sin-patron','hipotesis']],
+  fb:{ b:'¡Bien! Cada barra crece según cuántas casillas tiene su suma: 1, 2, 3, 4, 5, 6, 5, 4, 3, 2, 1.',
+    a:'Elegiste la A. Las sumas no son igual de probables: el 7 tiene 6 casillas y el 2, una. Con 1000 lanzamientos, eso se nota. La correcta está marcada.',
+    c:'Elegiste la C. Es al revés: los extremos (2 y 12) tienen una sola casilla cada uno, y el centro (7) tiene seis. La correcta está marcada.',
+    d:'Elegiste la D. Cada lanzamiento es impredecible, pero con muchos la forma se repite: las barras se acercan a las probabilidades exactas. La correcta está marcada.' } };
+const P_RACHA = { id:'dados-paso6', ok:'b', opts:[
+  ['a','Menos de 1/6: ya salió mucho, ahora toca otro número','AR22-recencia-negativa','parcial'],
+  ['b',`${txF(SIG.p)}: el dado no recuerda lo que salió antes`],
+  ['c','Más de 1/6: el dado está en racha','recencia-positiva','hipotesis'],
+  ['d',`Casi cero: seis 6 seguidos pasa 1 vez en ${ent(SIG.errores.rachaCompleta.den)}`,'racha-completa','hipotesis']],
+  fb:{ b:'¡Bien! El dado no recuerda lo que salió: cada lanzamiento vale 1/6 para el 6.',
+    a:'Elegiste la A. El dado no sabe lo que salió antes: no hay nada que lo «compense». El próximo 6 sigue valiendo 1/6. La correcta está marcada.',
+    c:'Elegiste la C. Con un dado equilibrado no hay rachas que empujen: el próximo 6 sigue valiendo 1/6. La correcta está marcada.',
+    d:`Elegiste la D. ${ent(SIG.errores.rachaCompleta.den)} es para seis 6 seguidos contados desde antes del primero. Cinco ya salieron: solo falta uno, y ese vale 1/6. La correcta está marcada.` } };
+const P_COMITE = { id:'dados-paso7', unidad:UNIDAD_CONTEO, ok:'c', opts:[
+  ['a',`${COM.errores.variacion}: 5 · 4 · 3`,'AR17-variacion-en-vez-de-combinacion','documentado'],
+  ['b',`${COM.errores.conRepeticion}: 5 · 5 · 5`,'AR19-con-repeticion','parcial'],
+  ['c',`${COM.valor}: 5 · 4 · 3 entre 3 · 2 · 1`],
+  ['d',`${COM.errores.producto}: 5 · 3`,'producto-n-por-k','hipotesis']],
+  fb:{ c:`¡Bien! Con orden serían ${COM.ordenes}, pero cada comité aparece ${COM.ordenesPorComite} veces: ${COM.ordenes}/${COM.ordenesPorComite} = ${COM.valor}.`,
+    a:`Elegiste la A. ${COM.ordenes} cuenta los órdenes: Gina-Hugo-Iris y Hugo-Gina-Iris salen como dos, pero son el mismo comité. Cada comité se repite ${COM.ordenesPorComite} veces: ${COM.ordenes}/${COM.ordenesPorComite} = ${COM.valor}. La correcta está marcada.`,
+    b:`Elegiste la B. 5 · 5 · 5 deja elegir a la misma persona dos o tres veces, y además cuenta órdenes. Son ${COM.valor} comités. La correcta está marcada.`,
+    d:`Elegiste la D. Multiplicar 5 por 3 no cuenta comités. Con orden serían 5 · 4 · 3 = ${COM.ordenes}, y cada comité se repite ${COM.ordenesPorComite} veces: ${COM.valor}. La correcta está marcada.` } };
+
+// Lecturas
+const LD = { rojo: x => ['R', 'Dado rojo', String(x.dados.vals[0])], azul: x => ['B', 'Dado azul', String(x.dados.vals[1])], suma: x => ['ink', 'Suma', String(x.dados.vals[0] + x.dados.vals[1])],
+  lanz: () => ['ink', 'Lanzamientos', ent(S.lanz)] };
+const lecEvento = (nombre, pr) => [() => ['F', 'Favorables', String(pr.favorables)], () => ['ink', 'Posibles', String(pr.total)], () => ['P', `P(${nombre})`, pr.texto]];
+
+function tablaBase(o){ return Object.assign({ revelar:36, lit:null, etiqueta:'par', marcas:null, doble:null, ultimo:null, barra:null, dados:true }, o); }
+const steps = [
+ { k:'Paso 1', t:'Dos dados de colores',
+   prep:() => E.config({ modo:'dados', dados:{ vals:[4, 2] }, lect: S.lanz ? [LD.rojo, LD.azul, LD.suma, LD.lanz] : [], base:'Un dado rojo y un dado azul.' }),
+   body:() => `<p class="problem">Lanza los dos dados. Uno es ${R_('rojo')} y el otro ${B_('azul')}: así siempre se sabe cuál es cuál.</p>
+   <p>Un resultado es lo que muestran los dos dados a la vez. Lo escribimos como un par: (${R_('4')}, ${B_('2')}) quiere decir rojo 4 y azul 2. El primer número es siempre el del rojo.</p>
+   <div class="acciones"><button type="button" class="btn primary" id="lanzar1">Lanzar los dados</button></div>
+   <p class="hint" id="msg1" aria-live="polite"></p>
+   <p class="hint">Cada lanzamiento lo sortea la computadora con una semilla: la animación y el resultado salen de la misma cuenta, y se pueden repetir.</p>` },
+ { k:'Paso 2', t:'Predice: ¿cuántos resultados?', gate:P_TOTAL,
+   prep:() => { const ya = !!S.pred[P_TOTAL.id];
+     if (!ya) E.config({ modo:'dados', dados:{ vals:E.dados.vals.slice(0, 2) }, lect:[], base:'Un dado rojo y un dado azul.' });
+     else E.config({ modo:'tabla', tabla:tablaBase({ marcas:setDe([[1, 2], [2, 1]]) }), lect:[() => ['ink', 'Resultados', '36']], base:'Tabla de 6 por 6: filas del dado rojo, columnas del dado azul.' }); },
+   anima:fin => {
+     E.config({ modo:'tabla', tabla:tablaBase({ revelar:0 }), lect:[x => ['ink', 'Resultados', String(x.tabla.revelar)]], base:'Tabla de 6 por 6: filas del dado rojo, columnas del dado azul.' });
+     E.animar(2200, f => { E.tabla.revelar = Math.round(36*f); E.avisar(); }, () => { E.tabla.marcas = setDe([[1, 2], [2, 1]]); E.dibujar(); fin(); }, true); },
+   body:() => `<p>Se lanzan a la vez un dado ${R_('rojo')} y uno ${B_('azul')}. Un resultado es lo que muestran los dos: por ejemplo, rojo 4 y azul 2. ¿Cuántos resultados distintos puede haber?</p>${opcionesHTML(P_TOTAL.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${R_('6')} caras del rojo · ${B_('6')} caras del azul = ${DIST2.total} resultados<span class="note">principio de multiplicación</span></div></div>
+   <p>Cada fila es un valor del ${R_('rojo')} y cada columna, uno del ${B_('azul')}. Las dos casillas marcadas, (${R_('1')}, ${B_('2')}) y (${R_('2')}, ${B_('1')}), son resultados distintos: en una el rojo sale 1 y en la otra, 2.</p>
+   <p class="aviso">Principio de multiplicación: si una cosa sale de 6 maneras y otra de 6, las dos juntas salen de 6 · 6 = ${DIST2.total} maneras. Se suma (6 + 6) cuando pasa una cosa <b>o</b> la otra, no las dos.</p>
+   <p class="fuente">Contar sin orden donde el orden importa (o al revés) es el «error de orden». En un estudio con 720 alumnos españoles de 14 y 15 años, fue el error más frecuente entre los que ya habían estudiado combinatoria (Navarro-Pelayo, Batanero y Godino, 1996, según una tesis que lo cita; la cifra está por confirmar en el original). Las opciones 12 y 11 son hipótesis nuestras.</p></div>` },
+ { k:'Paso 3', t:'Predice: ¿suma 7 o suma 12?', gate:P_SUMAS,
+   prep:() => { const ya = !!S.pred[P_SUMAS.id];
+     if (!ya) E.config({ modo:'tabla', tabla:tablaBase({ etiqueta:'nada', dados:false }), lect:[], base:'Tabla de 6 por 6 de los dos dados, sin marcar.' });
+     else verSuma(S.ver3); },
+   anima:fin => { verSuma(12); esperar(900, () => { if (S.step !== 2) return fin(); verSuma(7, true, fin); }); },
+   body:() => `<p>Se lanzan los dos dados y se suman los puntos. ¿Qué suma es más probable: 7 o 12?</p>${opcionesHTML(P_SUMAS.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="seg" role="group" aria-label="Qué suma se enciende"><button type="button" data-s="7" aria-pressed="${S.ver3 === 7}">Suma 7</button><button type="button" data-s="12" aria-pressed="${S.ver3 === 12}">Suma 12</button></div>
+   <div class="eqs">
+     <div class="eq">${P_('P')}(suma 7) = ${fr(F_(String(P7.favorables)), String(P7.total))} = ${P_(P7.texto)}</div>
+     <div class="eq">${P_('P')}(suma 12) = ${fr(F_(String(P12.favorables)), String(P12.total))} = ${P_(P12.texto)}</div></div>
+   <p>Los ${DIST2.total} pares son igual de probables; las 11 sumas, no. El 7 se arma de ${P7.favorables} maneras, una por cada valor del ${R_('rojo')}: (1, 6), (2, 5), … (6, 1). El 12, solo con (6, 6). Por eso el 7 es seis veces más probable.</p>
+   <p class="aviso">P = casos favorables / casos posibles vale solo si los casos posibles son igual de probables. Las 11 sumas no lo son: hay que contar casillas.</p>
+   <p class="fuente">Creer que todo resultado «de azar» es igual de probable es el sesgo de equiprobabilidad. Lecoutre (1992), con una pregunta de dados como la del paso 4, lo encontró en al menos la mitad de más de 600 personas, hubieran estudiado probabilidad o no; en niños españoles de 10 a 14 años aparece en cerca de 1 de cada 4 respuestas por pregunta y baja muy despacio con la edad (Cañizares y Batanero, 1998). Son cifras de resúmenes, por confirmar. Las opciones C y D son hipótesis nuestras.</p></div>` },
+ { k:'Paso 4', t:'Predice: un 5 y un 6, o dos 6', gate:P_LEC,
+   prep:() => { const ya = !!S.pred[P_LEC.id];
+     if (!ya) E.config({ modo:'tabla', tabla:tablaBase({ etiqueta:'nada', dados:false }), lect:[], base:'Tabla de 6 por 6 de los dos dados, sin marcar.' });
+     else verLec(S.ver4); },
+   anima:fin => { verLec('dos'); esperar(900, () => { if (S.step !== 3) return fin(); verLec('cinco', true, fin); }); },
+   body:() => `<p>Se lanzan los dos dados. ¿Qué es más probable: sacar un 5 y un 6 (no importa qué dado muestra cuál), o sacar dos 6?</p>${opcionesHTML(P_LEC.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="seg" role="group" aria-label="Qué evento se enciende"><button type="button" data-e="cinco" aria-pressed="${S.ver4 === 'cinco'}">Un 5 y un 6</button><button type="button" data-e="dos" aria-pressed="${S.ver4 === 'dos'}">Dos 6</button></div>
+   <div class="eqs">
+     <div class="eq">${P_('P')}(un 5 y un 6) = ${fr(F_(String(P56.favorables)), String(P56.total))} = ${P_(P56.texto)}<span class="note">(${R_('5')}, ${B_('6')}) y (${R_('6')}, ${B_('5')})</span></div>
+     <div class="eq">${P_('P')}(dos 6) = ${fr(F_(String(P66.favorables)), String(P66.total))} = ${P_(P66.texto)}<span class="note">solo (${R_('6')}, ${B_('6')})</span></div></div>
+   <p>Un 5 y un 6 es el doble de probable que dos 6. Pasa lo mismo con cualquier par de números distintos frente a un doble: el par distinto ocupa dos casillas y el doble, una.</p>
+   <p class="fuente">Es la pregunta que usó Lecoutre (1992). Según un fragmento de su tabla, cerca de la mitad de una muestra de unas 300 personas respondió «igual de probables» (cifra de un resumen, por confirmar). La opción C es hipótesis nuestra.</p></div>` },
+ { k:'Paso 5', t:'Predice: mil lanzamientos', gate:P_HISTO,
+   prep:() => { const ya = !!S.pred[P_HISTO.id];
+     E.config({ modo:'histo', histo:{ cats:SUMAS, frec: ya ? SUMAS.map(s => SIM.frecuencias[s]) : null, exacta: ya ? SUMAS.map(s => DIST2.p[s].valor) : null, ymax:.2, foco: ya ? 7 : null },
+       dados:{ vals:ya ? SIM.resultados[999] : [4, 2] }, lect: ya ? lecHisto(SIM.lanzamientos, SIM.veces[7]) : [], base:'Gráfico de barras de las sumas de 2 a 12.' }); },
+   anima:fin => {
+     E.histo.foco = 7; E.lect = [x => ['ink', 'Lanzamientos', ent(x.histo.n || 0)]];
+     E.animar(2600, f => { const q = SIM.serie[Math.max(0, Math.round(f*SIM.serie.length) - 1)]; E.histo.n = q.n; E.histo.frec = SUMAS.map(s => q.veces[s]/q.n); E.dados.cuadro = null; E.dados.vals = q.ultimo; E.avisar(); },
+       () => { E.histo.exacta = SUMAS.map(s => DIST2.p[s].valor); E.lect = lecHisto(SIM.lanzamientos, SIM.veces[7]); E.leyenda(); E.dibujar(); fin(); }, true); },
+   body:() => `<p>Si se lanzan los dos dados 1000 veces y se anota cuántas veces sale cada suma, ¿qué forma tendrá el gráfico de barras?</p>${opcionesHTML(P_HISTO.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${f_('f')}(7) = ${fr(String(SIM.veces[7]), '1000')} = ${f_(pct(SIM.frecuencias[7]))}<span class="note">lo que salió en la simulación</span></div>
+     <div class="eq">${P_('P')}(7) = ${fr(F_(String(P7.favorables)), '36')} ≈ ${P_(pct(P7.valor))}<span class="note">lo que dice el conteo</span></div></div>
+   <p>Las barras ${f_('f')} son la frecuencia relativa: cuántas veces salió cada suma entre los lanzamientos. Las rayas ${P_('P')} son la probabilidad exacta. Con 1000 lanzamientos ya se parecen; con más, se parecen más.</p>
+   <div class="acciones"><button type="button" class="btn" id="mas">Lanzar 100&nbsp;000 veces</button></div>
+   <p class="hint" id="masmsg" aria-live="polite"></p>
+   <p class="fuente">La opción A es el sesgo de equiprobabilidad (Lecoutre, 1992) llevado a un gráfico: que aparezca así es una extensión nuestra. Las opciones C y D son hipótesis nuestras. La probabilidad la da el conteo de casillas; la simulación solo se le acerca.</p></div>` },
+ { k:'Paso 6', t:'Predice: después de cinco 6', gate:P_RACHA,
+   prep:() => { const ya = !!S.pred[P_RACHA.id];
+     E.config({ modo:'racha', racha:{ historia:[6, 6, 6, 6, 6], sig: ya ? { frec:racha().frecuencias } : null, prog:1 }, lect: ya ? lecRacha() : [], base:'Cinco lanzamientos del dado rojo, todos 6, y el siguiente por conocer.' }); },
+   anima:fin => { E.racha.sig = { frec:racha().frecuencias }; E.racha.prog = 0; E.leyenda();
+     E.animar(1800, f => { E.racha.prog = f; }, () => { E.lect = lecRacha(); E.leyenda(); E.dibujar(); fin(); }); },
+   body:() => `<p>Con un dado ${R_('rojo')} equilibrado (sin trucos) salió 6 cinco veces seguidas. ¿Cuál es la probabilidad de que el próximo lanzamiento también sea 6?</p>${opcionesHTML(P_RACHA.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <p>La computadora lanzó el dado ${ent(RACHA.lanzamientos)} veces y, cada vez que acababan de salir cinco 6 seguidos, anotó lo que salió después. Pasó ${ent(racha().veces)} veces. El 6 salió en ${ent(racha().siguiente[5])} de ellas:</p>
+   <div class="eqs">
+     <div class="eq">${f_('f')}(6 después de cinco 6) = ${fr(ent(racha().siguiente[5]), ent(racha().veces))} ≈ ${f_(pct(racha().frecuenciaValor))}</div>
+     <div class="eq">${P_('P')}(6) = ${P_(SIG.texto)} ≈ ${P_(pct(SIG.valor))}</div></div>
+   <p>Las seis barras quedan cerca de ${P_('1/6')}: con unos ${ent(Math.round(racha().veces/100)*100)} casos, la frecuencia ${f_('f')} puede alejarse un punto o dos de la probabilidad, para arriba o para abajo, sin que el dado «compense» nada.</p>
+   <p>El dado no recuerda: cada lanzamiento es independiente de los anteriores. Lo raro era que salieran cinco 6 seguidos (${P_(txF(CINCO6))}); una vez que ya salieron, el siguiente sigue valiendo ${P_(SIG.texto)}.</p>
+   <p class="fuente">Creer que «ahora toca otro número» es la recencia negativa, o falacia del jugador. Fischbein y Schnarch (1997) la estudiaron con alumnos de 5.º grado a la universidad y reportan que baja con la edad; no vimos cifras. Las opciones C y D son hipótesis nuestras.</p></div>` },
+ { k:'Paso 7', t:'Predice: el comité de 3', gate:P_COMITE,
+   prep:() => { const ya = !!S.pred[P_COMITE.id];
+     E.config({ modo:'comite', comite:{ personas:COM.personas, comites:COM.comites, listaOrdenes:COM.listaOrdenes, revelar: ya ? 60 : 0, mostrar:ya, sel:[] },
+       lect: ya ? lecComite() : [], base:'Cinco compañeros: Gina, Hugo, Iris, Juan y Kati.' }); },
+   anima:fin => { E.comite.mostrar = true; E.leyenda(); E.lect = lecComite();
+     E.animar(3600, f => { E.comite.revelar = Math.round(60*f); E.avisar(); }, () => { fin(); }, true); },
+   body:() => `<p>Con 5 compañeros (Gina, Hugo, Iris, Juan y Kati) se forma un comité de 3, sin cargos: los tres tienen el mismo puesto. ¿Cuántos comités distintos se pueden formar?</p>${opcionesHTML(P_COMITE.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${V_('V(5, 3)')} = 5 · 4 · 3 = ${V_(String(COM.ordenes))}<span class="note">órdenes: importa quién va primero</span></div>
+     <div class="eq">${C_('C(5, 3)')} = ${fr(V_(String(COM.ordenes)), '3!')} = ${fr(String(COM.ordenes), String(COM.ordenesPorComite))} = ${C_(String(COM.valor))}<span class="note">cada comité sale 3! = ${COM.ordenesPorComite} veces</span></div></div>
+   <p>La computadora escribió los ${V_(String(COM.ordenes))} órdenes y los echó cada uno en la caja de su comité. Cada caja recibe ${COM.ordenesPorComite}: GHI, GIH, HGI, HIG, IGH e IHG son el mismo comité. Hay ${C_(String(COM.valor))} cajas.</p>
+   <p>Ahora tú: toca tres nombres en el orden que quieras y mira en qué caja cae tu orden.</p>
+   <div class="fichas" id="fichas">${COM.personas.map(p => `<button type="button" data-p="${p}" aria-pressed="false">${p}</button>`).join('')}</div>
+   <p class="hint" id="fichasmsg" aria-live="polite"></p>
+   <p class="aviso">Antes de contar, pregúntate: ¿importa el orden? En un comité sin cargos, no: se usa ${C_('C(n, k)')}, que en la academia se escribe ${C_('Cⁿₖ')}. Si hubiera presidente, secretario y tesorero, sí: ${V_('V(n, k)')}, que se escribe ${V_('Vⁿₖ')}.</p>
+   <p class="fuente">Contar con orden cuando no importa es el error de orden: en el estudio de Navarro-Pelayo, Batanero y Godino (1996) con 720 alumnos de 14 y 15 años, fue el más frecuente entre los que ya habían estudiado combinatoria (según una tesis que lo cita; cifra por confirmar). Repetir a alguien que no se puede repetir es el error de repetición, descrito en el mismo estudio sin porcentaje. La opción 15 es hipótesis nuestra.</p></div>` },
+ { k:'Paso 8', t:'Ahora explora tú', explora:true,
+   prep:() => { const x = S.x || (S.x = { ev:'suma', s:7, res:[], k:0, sumas:false, gris:false });
+     E.config({ modo:'tabla', tabla:tablaBase({ lit:setDe(evX().casillas), etiqueta: x.gris ? 'par' : x.sumas ? 'suma' : 'par', barra:{ N:0, f:0, p:evX().valor } }), dados:{ vals:x.res.length ? x.res[x.res.length - 1] : [4, 2], gris:x.gris },
+       lect:lecX(), base:'Tabla de 6 por 6 con las casillas del evento encendidas.' });
+     contarX(); },
+   body:() => `<p>Elige un evento: se encienden sus casillas. Lanza una vez o muchas y compara la frecuencia ${f_('f')} con la probabilidad exacta ${P_('P')}.</p>
+   <div class="seg" role="group" aria-label="Evento" id="evs">${[['suma', 'Suma'], ['cinco', 'Un 5 y un 6'], ['dos6', 'Dos 6'], ['al6', 'Al menos un 6'], ['dobles', 'Dobles'], ['pares', 'Los dos pares'], ['prod', 'Producto par'], ['s10', 'Suma 10 o más']]
+     .map(([k, t]) => `<button type="button" data-ev="${k}" aria-pressed="${S.x && S.x.ev === k}">${t}</button>`).join('')}</div>
+   <div class="acciones paso-s" id="sumas-paso"><button type="button" class="btn chico" id="s-menos" aria-label="Bajar la suma">−</button><span id="s-val" aria-live="polite"></span><button type="button" class="btn chico" id="s-mas" aria-label="Subir la suma">+</button></div>
+   <div class="acciones"><button type="button" class="btn primary" id="x1">Lanzar una vez</button><button type="button" class="btn" id="x100">Lanzar 100</button><button type="button" class="btn" id="x1000">Lanzar 1000</button><button type="button" class="btn" id="x0">Volver a cero</button></div>
+   <div class="seg" role="group" aria-label="Cómo se ve la tabla"><button type="button" id="t-sumas" aria-pressed="${!!(S.x && S.x.sumas)}">Ver sumas</button><button type="button" id="t-gris" aria-pressed="${!!(S.x && S.x.gris)}">Dados del mismo color</button></div>
+   <div class="eqs" id="vivo"></div>
+   <p id="x-msg" class="hint" aria-live="polite"></p>` },
+];
+
+function verSuma(s, animar, fin){
+  S.ver3 = s; const pr = PE(EV.suma(s)), lista = pr.casillas;
+  E.config({ modo:'tabla', tabla:tablaBase({ etiqueta:'suma', dados:false, lit:animar ? new Set() : setDe(lista) }), lect:lecEvento('suma ' + s, pr), base:`Tabla de los dos dados con las sumas; encendidas las casillas de la suma ${s}.` });
+  if (animar) E.animar(1400, f => { E.tabla.lit = setDe(lista.slice(0, Math.round(lista.length*f))); }, () => { E.leyenda(); if (fin) fin(); }, true);
+  else if (fin) fin();
+  document.querySelectorAll('[data-s]').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.s === s)));
+}
+function verLec(cual, animar, fin){
+  S.ver4 = cual; const pr = cual === 'cinco' ? P56 : P66, lista = pr.casillas;
+  E.config({ modo:'tabla', tabla:tablaBase({ etiqueta:'par', dados:false, lit:animar ? new Set() : setDe(lista) }), lect:lecEvento(cual === 'cinco' ? 'un 5 y un 6' : 'dos 6', pr), base:`Tabla de los dos dados con los pares; encendidas las casillas de ${cual === 'cinco' ? 'un 5 y un 6' : 'dos 6'}.` });
+  if (animar) E.animar(900, f => { E.tabla.lit = setDe(lista.slice(0, Math.round(lista.length*f))); }, () => { E.leyenda(); if (fin) fin(); }, true);
+  else if (fin) fin();
+  document.querySelectorAll('[data-e]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.e === cual)));
+}
+const lecHisto = (N, v7) => [() => ['ink', 'Lanzamientos', ent(N)], () => ['f', 'f(suma 7)', pct(v7/N)], () => ['P', 'P(suma 7)', `${P7.texto} ≈ ${pct(P7.valor)}`]];
+const lecRacha = () => [() => ['ink', 'Veces tras cinco 6', ent(racha().veces)], () => ['f', 'f(6 después)', pct(racha().frecuenciaValor)], () => ['P', 'P(6)', SIG.texto]];
+const lecComite = () => [x => ['V', 'Órdenes', String(x.comite.revelar)], x => ['C', 'Comités', String(new Set(x.comite.listaOrdenes.slice(0, x.comite.revelar).map(o => o.comite)).size)]];
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; b.setAttribute('aria-label', `Ir al ${s.k.toLowerCase()}: ${s.t}`);
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  if (s.explora && !S.x) S.x = { ev:'suma', s:7, res:[], k:0, sumas:false, gris:false };
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.prep) s.prep();
+  pintarDots();
+  if (s.gate) prediccion(s);
+  if (k === 0) paso1();
+  if (k === 2) $('stepBody').querySelectorAll('[data-s]').forEach(b => b.onclick = () => { if (!E.anim && !S.ocupado) verSuma(+b.dataset.s); });
+  if (k === 3) $('stepBody').querySelectorAll('[data-e]').forEach(b => b.onclick = () => { if (!E.anim && !S.ocupado) verLec(b.dataset.e); });
+  if (k === 4) paso5();
+  if (k === 6) paso7();
+  if (s.explora) explorar();
+  nav();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){ if (k > S.max) S.max = k; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0, P.unidad);
+    S.ocupado = true; nav();
+    E.compactar(false);
+    $('next').focus({ preventScroll:true });
+    // En el celular, el dibujo queda arriba de la pantalla: se lleva a la vista antes de animar.
+    const paso = S.step, chico = innerWidth < 900;
+    if (chico) $('cv').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+    esperar(chico ? 380 : 0, () => {
+      if (S.step !== paso) { S.ocupado = false; nav(); return; }
+      s.anima(() => { S.ocupado = false; E.avisar(); nav(); });
+    });
+  }));
+  pintar();
+}
+
+// ----- paso 1: lanzar -----
+function paso1(){
+  const b = $('lanzar1');
+  b.onclick = () => {
+    if (E.anim) return;
+    S.lanz++; b.disabled = true;
+    E.lect = [];
+    E.lanzar('paso1-' + S.lanz, 2, v => {
+      b.disabled = false; E.lect = [LD.rojo, LD.azul, LD.suma, LD.lanz]; E.avisar();
+      $('msg1').textContent = `Salió (${v[0]}, ${v[1]}): rojo ${v[0]} y azul ${v[1]}.` + (S.lanz >= 3 ? ' Cuando quieras, pasa al paso 2.' : '');
+    });
+  };
+}
+// ----- paso 5: muchos más lanzamientos -----
+function paso5(){
+  const b = $('mas'); if (!b) return;
+  b.onclick = () => {
+    if (E.anim || S.ocupado) return;
+    const G = MD.simular({ lanzamientos:100000, semilla:'histograma-100000', pasos:100 });
+    b.disabled = true;
+    const chico = innerWidth < 900; if (chico) $('cv').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+    esperar(chico ? 380 : 0, () => {
+      if (S.step !== 4) return;
+      E.lect = [x => ['ink', 'Lanzamientos', ent(x.histo.n || 0)]];
+      E.animar(2600, f => { const q = G.serie[Math.max(0, Math.round(f*G.serie.length) - 1)]; E.histo.n = q.n; E.histo.frec = SUMAS.map(s => q.veces[s]/q.n); E.dados.vals = q.ultimo; E.avisar(); },
+        () => { E.lect = lecHisto(G.lanzamientos, G.veces[7]); E.avisar(); b.disabled = false;
+          $('masmsg').textContent = `Con ${ent(G.lanzamientos)} lanzamientos, ninguna barra se aleja más de ${fmt(100*G.desvioMax, 2)} puntos de su probabilidad; con 1000 se alejaba hasta ${fmt(100*SIM.desvioMax, 1)}.`; }, true);
+    });
+  };
+}
+// ----- paso 7: tu propio orden -----
+function paso7(){
+  const caja = $('fichas'); if (!caja) return;
+  caja.querySelectorAll('button').forEach(b => b.onclick = () => {
+    if (E.anim || S.ocupado) return;
+    const K = E.comite, p = b.dataset.p;
+    if (K.sel.length === 3) K.sel = [];
+    if (K.sel.includes(p)) return;
+    K.sel.push(p);
+    caja.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(K.sel.includes(x.dataset.p))));
+    if (K.sel.length === 3){
+      const o = K.listaOrdenes.find(q => q.orden.join() === K.sel.join()), cm = K.comites[o.comite];
+      $('fichasmsg').textContent = `Tu orden ${K.sel.join(' → ')} cae en la caja del comité ${cm.join(', ')}, con otros ${COM.ordenesPorComite - 1} órdenes de las mismas tres personas. Toca otro nombre para empezar de nuevo.`;
+      if (innerWidth < 900) $('cv').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+    } else $('fichasmsg').textContent = `Llevas: ${K.sel.join(' → ')}.`;
+    E.dibujar();
+  });
+}
+
+// ----- explorador -----
+const evObjX = () => ({ suma:EV.suma(S.x.s), cinco:EV.cincoSeis, dos6:EV.dosSeis, al6:EV.alMenos6, dobles:EV.dobles, pares:EV.pares, prod:EV.prodPar, s10:EV.suma10 })[S.x.ev];
+const evX = () => PE(evObjX());
+const nombreX = () => ({ suma:`suma ${S.x.s}`, cinco:'un 5 y un 6', dos6:'dos 6', al6:'al menos un 6', dobles:'dobles', pares:'los dos pares', prod:'producto par', s10:'suma 10 o más' })[S.x.ev];
+function lecX(){
+  return [() => ['F', 'Favorables', String(evX().favorables)], () => ['ink', 'Posibles', '36'], () => ['P', 'P exacta', evX().texto],
+    () => ['ink', 'Lanzamientos', ent(S.x.res.length)], () => ['f', 'Frecuencia f', S.x.res.length ? pct(S.x.veces/S.x.res.length) : '—']];
+}
+function contarX(){
+  const x = S.x, pr = evX(), ev = evObjX();
+  x.veces = x.res.filter(r => MD.cumple(ev, r, CFG2)).length;
+  E.tabla.lit = setDe(pr.casillas);
+  E.tabla.barra = { N:x.res.length, f:x.res.length ? x.veces/x.res.length : 0, p:pr.valor };
+  E.tabla.ultimo = x.res.length ? clave(x.res[x.res.length - 1]) : null;
+  E.tabla.etiqueta = x.sumas && !x.gris ? 'suma' : 'par';
+  E.leyenda(); E.dibujar(); E.avisar();
+  const v = $('vivo'); if (!v) return;
+  const gr = pr.grupos.length;
+  v.innerHTML = `<div class="eq">${P_('P')}(${nombreX()}) = ${fr(F_(String(pr.favorables)), '36')} = ${P_(pr.texto)}</div>
+    <div class="eq">${f_('f')} = ${fr(String(x.veces), ent(x.res.length))} = ${f_(x.res.length ? pct(x.veces/x.res.length) : '—')}<span class="note">${x.res.length < 100 ? 'con pocos lanzamientos, f puede estar lejos de P' : `diferencia con P: ${fmt(100*Math.abs(x.veces/x.res.length - pr.valor), 1)} puntos`}</span></div>`
+    + (x.gris ? `<p>Con dados iguales, ${gr} ${gr === 1 ? 'resultado se ve' : 'resultados se ven'} distinto${gr === 1 ? '' : 's'}, pero son ${F_(String(pr.favorables))} casillas: (1, 2) y (2, 1) se ven igual y siguen siendo dos casos.</p>` : '');
+  const sp = $('sumas-paso'); if (sp) sp.hidden = x.ev !== 'suma';
+  const sv = $('s-val'); if (sv) sv.textContent = `suma ${x.s}`;
+}
+function explorar(){
+  const x = S.x, body = $('stepBody');
+  body.querySelectorAll('[data-ev]').forEach(b => b.onclick = () => { if (E.anim) return; x.ev = b.dataset.ev; body.querySelectorAll('[data-ev]').forEach(y => y.setAttribute('aria-pressed', String(y === b))); contarX(); });
+  $('s-menos').onclick = () => { if (E.anim) return; x.s = clamp(x.s - 1, 2, 12); contarX(); };
+  $('s-mas').onclick = () => { if (E.anim) return; x.s = clamp(x.s + 1, 2, 12); contarX(); };
+  const lanzarMuchos = n => { if (E.anim) return; const r = MD.simular({ lanzamientos:n, semilla:`explora-${x.k++}` }); x.res.push(...r.resultados); if (x.res.length > 200000) x.res = x.res.slice(-200000); E.dados.vals = x.res[x.res.length - 1]; contarX();
+    $('x-msg').textContent = `Van ${ent(x.res.length)} lanzamientos.`; };
+  $('x1').onclick = () => { if (E.anim) return;
+    const chico = innerWidth < 900; if (chico) $('cv').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+    esperar(chico ? 380 : 0, () => { if (S.step !== 7) return; E.tabla.ultimo = null;
+      E.lanzar(`explora-${x.k++}`, 2, v => { x.res.push(v); contarX(); $('x-msg').textContent = `Salió (${v[0]}, ${v[1]}): ${MD.cumple(evObjX(), v, CFG2) ? 'está' : 'no está'} en el evento.`; }); }); };
+  $('x100').onclick = () => lanzarMuchos(100);
+  $('x1000').onclick = () => lanzarMuchos(1000);
+  $('x0').onclick = () => { if (E.anim) return; x.res = []; contarX(); $('x-msg').textContent = 'Conteo en cero.'; };
+  $('t-sumas').onclick = e => { if (E.anim) return; x.sumas = !x.sumas; e.currentTarget.setAttribute('aria-pressed', String(x.sumas)); contarX();
+    $('x-msg').textContent = x.sumas ? (x.gris ? 'Con los dados del mismo color se ven los pares sin orden; apaga ese botón para ver las sumas.' : 'Cada casilla muestra la suma: las diagonales tienen la misma suma.') : ''; };
+  $('t-gris').onclick = e => { if (E.anim) return; x.gris = !x.gris; e.currentTarget.setAttribute('aria-pressed', String(x.gris)); E.dados.gris = x.gris; contarX();
+    $('x-msg').textContent = x.gris ? `Dos dados iguales: (1, 2) y (2, 1) se ven igual. Se distinguen solo ${SIN_ORDEN} resultados, pero las casillas siguen siendo 36 y cada par distinto pesa el doble que un doble.` : 'Otra vez de colores.'; };
+  contarX();
+}
+
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Experimentos de docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md: tres dados (AR17, AR20), al menos
+   un 6, la moneda (AR21), los cumpleaños y la placa (AR17, AR19). La escena cambia recién después de responder.
+   Un experimento se abre solo si todos los anteriores ya tienen respuesta. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2');
+const S9 = MD.probabilidad({ dados:3 }, { tipo:'suma', valor:9 }), S10 = MD.probabilidad({ dados:3 }, { tipo:'suma', valor:10 });
+const AL6 = MD.alMenosUno({ dados:2, valor:6 }), AL6c = PE(EV.alMenos6);
+const SEQ = [['cara', 'cara', 'cara', 'cara', 'cara'], ['cara', 'sello', 'cara', 'cara', 'sello']];
+const MON = SEQ.map(s => MD.secuenciaMoneda(s)), ESP5 = MD.espacio({ dados:0, monedas:5 }).resultados;
+const TRES_C = MD.probabilidad({ dados:0, monedas:5 }, { tipo:'caras', valor:3 });
+const CU = MD.cumpleanos({ n:23 }), CURVA = MD.curvaCumpleanos(60), SIMC = MD.simularCumpleanos({ n:23, salones:1000, semilla:'salones' });
+const PL = MD.placa({ letras:3, digitos:3, alfabeto:26 }), SORTEO = MD.sortearPlaca({ semilla:'placa-1' });
+// una fracción escrita sobre 36, para comparar opciones (12/36, 1/36, 11/36, 10/36)
+const a36 = F => `${F.num*36/F.den}/36`;
+const gruposTxt = pr => pr.grupos.sort((a, b) => b.ordenes - a.ordenes || a.valores.join().localeCompare(b.valores.join())).map(g => `${g.valores.join('+')} (${g.ordenes})`).join(', ');
+
+function luces(lista){ const orden = new Map(); lista.forEach((r, i) => orden.set(clave(r), i)); return { lit:setDe(lista), orden }; }
+function tresCon(pr, prog){ const L = luces(pr.casillas); return { mostrar:true, lit:L.lit, orden:L.orden, prog }; }
+
+const EXPS = [
+  { id:'tres-dados', corto:'Tres dados',
+    q:`Se lanzan tres dados equilibrados: uno ${R_('rojo')}, uno ${B_('azul')} y uno ${T_('café')}. ¿Qué suma es más probable, 9 o 10?`,
+    opts:[['a','La suma 9: con números chicos es más fácil de armar','suma-9-mayor','hipotesis'],
+          ['b','Igual: cada una se arma con 6 grupos de tres números','AR17-grupos-sin-orden','parcial'],
+          ['c','La suma 10: sus grupos de tres números tienen más órdenes'],
+          ['d',`Igual: todas las sumas, del 3 al 18, valen ${txF(S9.errores.sumasEquiprobables)}`,'AR20-sumas-equiprobables','documentado']],
+    ok:'c',
+    fb:{ a:`El 9 sale de ${S9.favorables} maneras y el 10 de ${S10.favorables}: el 10 es un poco más probable.`,
+      b:`Los dos tienen 6 grupos, pero no todos los grupos valen lo mismo: 1+2+6 se ordena de 6 maneras y 3+3+3 de una sola. Contando órdenes, el 9 tiene ${S9.favorables} casos y el 10, ${S10.favorables}.`,
+      d:`Las 16 sumas no son igual de probables, igual que con dos dados. El 9 tiene ${S9.favorables} casos de 216 y el 10, ${S10.favorables}.` },
+    antes:ya => { if (ya) E.config({ modo:'tres', tres:tresCon(S10, 1e9), dados:{ vals:[null, null, null] }, lect:lecTres(S10, 10), base:'Seis tablitas de 6 por 6, una por cada valor del dado café.' });
+      else E.config({ modo:'tres', tres:{ mostrar:false }, dados:{ vals:[1, 1, 1], pregunta:true }, lect:[], base:'Tres dados: rojo, azul y café.' }); },
+    despues:() => { E.config({ modo:'tres', tres:tresCon(S9, 0), lect:lecTres(S9, 9), base:'Seis tablitas de 6 por 6, una por cada valor del dado café; encendida la suma 9.' });
+      E.animar(1700, f => { E.tres.prog = f*S9.favorables; }, () => { esperar(700, () => { if (S.k !== 0) return;
+        E.config({ modo:'tres', tres:tresCon(S10, 0), lect:lecTres(S10, 10), base:'Seis tablitas, encendida la suma 10.' });
+        E.animar(1700, f => { E.tres.prog = f*S10.favorables; }); }); }, true); },
+    exp:() => `<div class="eqs">
+      <div class="eq">${P_('P')}(suma 9) = ${fr(F_(String(S9.favorables)), '216')} = ${P_(S9.texto)}<span class="note">${gruposTxt(S9)}</span></div>
+      <div class="eq">${P_('P')}(suma 10) = ${fr(F_(String(S10.favorables)), '216')} = ${P_(S10.texto)}<span class="note">${gruposTxt(S10)}</span></div></div>
+      <p>Entre paréntesis, cuántos órdenes tiene cada grupo: un grupo de tres números distintos se ordena de 6 maneras, uno con un número repetido de 3 y uno como 3+3+3 de una sola. El 9 tiene el 3+3+3 (1 orden) donde el 10 tiene el 3+3+4 (3 órdenes): ahí está la diferencia.</p>
+      <p>Según la historia, este problema se lo plantearon a Galileo hace unos cuatro siglos: los jugadores notaban que el 10 salía un poco más que el 9, aunque los dos se arman con 6 grupos.</p>
+      <p class="fuente">Contar grupos sin orden donde cuentan los órdenes es el error de orden (Navarro-Pelayo, Batanero y Godino, 1996); llevarlo a tres dados es una extensión nuestra. La opción de ${txF(S9.errores.sumasEquiprobables)} es el sesgo de equiprobabilidad (Lecoutre, 1992). La opción A es hipótesis nuestra.</p>` },
+  { id:'al-menos-un-6', corto:'Al menos un 6',
+    q:`Se lanzan dos dados, uno ${R_('rojo')} y uno ${B_('azul')}. ¿Cuál es la probabilidad de que salga al menos un 6?`,
+    opts:[['a',`${a36(AL6.errores.sumaProbabilidades)}: 6/36 por cada dado`,'suma-probabilidades','hipotesis'],
+          ['b',`${a36(AL6.errores.todos)}: tienen que salir los dos 6`,'ambos-seis','hipotesis'],
+          ['c',`${a36(AL6.p)}: la fila y la columna del 6, sin repetir el (6, 6)`],
+          ['d',`${a36(AL6.errores.exactamenteUno)}: sin contar el doble 6`,'sin-el-doble','hipotesis']],
+    ok:'c',
+    fb:{ a:'6/36 + 6/36 cuenta dos veces la casilla (6, 6): está en la fila del 6 y en la columna del 6. Son 6 + 6 − 1 = 11 casillas: 11/36.',
+      b:'1/36 es que salgan los dos 6. «Al menos uno» también incluye que salga 6 en uno solo: 11 casillas, 11/36.',
+      d:'El doble 6 también tiene «al menos un 6»: se cuenta, pero una sola vez. Son 11 casillas: 11/36.' },
+    antes:ya => E.config({ modo:'tabla', tabla:{ revelar:36, lit: ya ? setDe(AL6c.casillas) : null, etiqueta: ya ? 'par' : 'nada', doble: ya ? setDe([[6, 6]]) : null, dados:false }, lect: ya ? lecAl6() : [], base:'Tabla de 6 por 6 de los dos dados.' }),
+    despues:() => {
+      const fila = [1, 2, 3, 4, 5, 6].map(b => [6, b]), col = [1, 2, 3, 4, 5].map(a => [a, 6]);
+      E.config({ modo:'tabla', tabla:{ revelar:36, lit:new Set(), etiqueta:'par', doble:null, dados:false }, lect:[x => ['F', 'Contadas', String(x.tabla.lit.size)], () => ['ink', 'Posibles', '36']], base:'Tabla de 6 por 6: se encienden la fila del 6 rojo y la columna del 6 azul.' });
+      E.animar(1300, f => { E.tabla.lit = setDe(fila.slice(0, Math.round(6*f))); E.avisar(); }, () => {
+        E.tabla.doble = setDe([[6, 6]]); E.leyenda(); E.dibujar();
+        esperar(600, () => { if (S.k !== 1) return; E.animar(1100, f => { E.tabla.lit = setDe(fila.concat(col.slice(0, Math.round(5*f)))); E.avisar(); }, () => { E.lect = lecAl6(); E.avisar(); }, true); });
+      }, true); },
+    exp:() => `<div class="eqs">
+      <div class="eq">${F_('6')} (fila del 6 rojo) + ${F_('6')} (columna del 6 azul) − ${F_('1')} (el (6, 6), que está en las dos) = ${F_(String(AL6c.favorables))}</div>
+      <div class="eq">${P_('P')}(al menos un 6) = 1 − ${fr('5 · 5', '36')} = 1 − ${fr('25', '36')} = ${P_(AL6.texto)}<span class="note">por el complemento: ningún 6</span></div></div>
+      <p>El círculo marca el (6, 6): se enciende con la fila y con la columna, pero es una sola casilla. Por eso sumar 6/36 + 6/36 = 12/36 se pasa. Con 7 dados, sumar 1/6 por dado daría 7/6: más que 1, imposible para una probabilidad.</p>
+      <p class="fuente">No encontramos estudios que midan cuánto se suman probabilidades en «al menos uno»; lo relacionamos con el sesgo de equiprobabilidad. Las tres opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'moneda', corto:'La moneda',
+    q:'Una moneda equilibrada se lanza 5 veces. ¿Qué secuencia exacta es más probable: cara-cara-cara-cara-cara (la 1.ª del dibujo) o cara-sello-cara-cara-sello (la 2.ª)?',
+    opts:[['a','cara-sello-cara-cara-sello: se parece más al azar','AR21-representatividad','parcial'],
+          ['b',`Igual de probables: ${MON[0].texto} cada una`],
+          ['c','Cinco caras: la moneda agarró racha','racha-caliente','hipotesis']],
+    ok:'b',
+    fb:{ a:`Cada lanzamiento es 1/2, sea cual sea: cualquier secuencia exacta de 5 vale (1/2)⁵ = ${MON[1].texto}. La 2.ª «parece» más al azar, pero es una sola de las 32 secuencias, igual que la 1.ª.`,
+      c:`La moneda no agarra racha: cada lanzamiento es 1/2. Cinco caras es una de las 32 secuencias, igual que la otra: ${MON[0].texto}.` },
+    antes:ya => { if (ya) E.config({ modo:'moneda', moneda:monedaLista([0, 1].map(j => ESP5.findIndex(r => r.join() === SEQ[j].join())), 99), lect:lecMon(), base:'Las 32 secuencias de 5 lanzamientos.' });
+      else E.config({ modo:'moneda', moneda:{ lista:false, seqs:SEQ }, lect:[], base:'Dos secuencias de 5 monedas.' }); },
+    despues:() => { const idx = [0, 1].map(j => ESP5.findIndex(r => r.join() === SEQ[j].join()));
+      E.config({ modo:'moneda', moneda:monedaLista(idx, 0), lect:lecMon(), base:'Las 32 secuencias de 5 lanzamientos; encendidas las dos de la pregunta.' });
+      E.animar(900, f => { E.moneda.prog = 2*f; }); },
+    extra:() => { const idx = ESP5.map((r, i) => (TRES_C.casillas.some(c => c.join() === r.join()) ? i : -1)).filter(i => i >= 0);
+      E.config({ modo:'moneda', moneda:monedaLista(idx, 0), lect:[() => ['F', 'Con 3 caras y 2 sellos', String(TRES_C.favorables)], () => ['ink', 'Secuencias', '32'], () => ['P', 'P(3 caras)', TRES_C.texto]], base:'Las 32 secuencias; encendidas las 10 con 3 caras y 2 sellos.' });
+      E.animar(1400, f => { E.moneda.prog = idx.length*f; }, null, true);
+      $('extra2msg').textContent = `«3 caras y 2 sellos en cualquier orden» sí es más probable que cinco caras: son ${TRES_C.favorables} secuencias, ${TRES_C.texto}. Pero cara-sello-cara-cara-sello es solo una de esas ${TRES_C.favorables}.`; },
+    exp:() => `<div class="eqs">
+      <div class="eq">${P_('P')}(cara-cara-cara-cara-cara) = ${fr(F_('1'), '32')} = ${P_(MON[0].texto)}<span class="note">(1/2)⁵: una casilla de 32</span></div>
+      <div class="eq">${P_('P')}(cara-sello-cara-cara-sello) = ${fr(F_('1'), '32')} = ${P_(MON[1].texto)}<span class="note">también una casilla de 32</span></div></div>
+      <p>Hay 2⁵ = 32 secuencias de 5 lanzamientos, todas igual de probables. Cada una ocupa una casilla. La 2.ª parece «más al azar» porque mezcla caras y sellos, pero es tan exacta como la 1.ª.</p>
+      <div class="acciones"><button type="button" class="btn" id="extra2">¿Y «3 caras y 2 sellos» en cualquier orden?</button></div><p class="hint" id="extra2msg" aria-live="polite"></p>
+      <p class="fuente">Kahneman y Tversky (1972), con el orden de nacimientos de niños y niñas, encontraron que la mayoría juzgaba más probable un orden «mezclado» que uno ordenado (la representatividad); Fischbein y Schnarch (1997) reportan que esta idea baja con la edad, y Leong y otros (2022) matizan que parte del efecto viene de cómo se lee la pregunta. La opción C es hipótesis nuestra.</p>` },
+  { id:'cumpleanos', corto:'Cumpleaños',
+    q:'En un salón de 23 alumnos, ¿cuál es la probabilidad de que al menos dos cumplan años el mismo día? Supón que no hay gemelos y que los 365 días son igual de probables.',
+    opts:[['a',`Unos ${pct(CU.errores.lineal, 0)}: 23 de 365 días`,'cumple-lineal','hipotesis'],
+          ['b','Menos del 1 %: dos el mismo día es rarísimo, 1/365','cumple-una-pareja','hipotesis'],
+          ['c','Un poco más del 50 %: con 23 alumnos hay muchas parejas que pueden coincidir']],
+    ok:'c',
+    fb:{ a:`23/365 sería como si cada alumno solo pudiera coincidir con un día fijo. Pero cualquier pareja puede coincidir, y con 23 alumnos hay ${CU.parejas} parejas. La probabilidad es de unos ${pct(CU.p)}.`,
+      b:`1/365 es para una sola pareja. Con 23 alumnos hay ${CU.parejas} parejas posibles, y basta que una coincida. La probabilidad es de unos ${pct(CU.p)}.` },
+    antes:ya => E.config({ modo:'cumple', cumple:{ n:23, curva: ya ? CURVA : null, prog:1 }, lect: ya ? lecCumple() : [], base: ya ? 'Curva de la probabilidad de un cumpleaños repetido según el número de alumnos.' : 'Un salón de 23 alumnos.' }),
+    despues:() => { E.config({ modo:'cumple', cumple:{ n:23, curva:CURVA, prog:0 }, lect:[], base:'Curva de la probabilidad de un cumpleaños repetido según el número de alumnos.' });
+      E.animar(2600, f => { E.cumple.prog = f; }, () => { E.lect = lecCumple(); E.avisar(); }, true); },
+    exp:() => `<div class="eqs">
+      <div class="eq">${P_('P')}(ninguno repite) = ${fr('365 · 364 · 363 · … · 343', '365²³')} ≈ ${pct(CU.ninguno)}</div>
+      <div class="eq">${P_('P')}(al menos dos el mismo día) = 1 − ${pct(CU.ninguno)} ≈ ${P_(pct(CU.p))}</div></div>
+      <p>Por el complemento: el primer alumno puede nacer cualquier día; el segundo, en uno de los 364 restantes; el tercero, en 363… Con 23 alumnos hay ${CU.parejas} parejas, y cada una es una oportunidad de coincidir. Desde ${CURVA.mitad} alumnos, la curva pasa de la mitad. La recta gris a trazos es n/365: crece mucho más despacio.</p>
+      <p>En ${ent(SIMC.salones)} salones de 23 simulados por la computadora, ${ent(SIMC.conCoincidencia)} tuvieron un cumpleaños repetido: ${pct(SIMC.frecuencia)}.</p>
+      <p class="fuente">No encontramos estudios con datos sobre este problema; las opciones incorrectas son hipótesis nuestras. La A se parece a la ilusión de linealidad, documentada en otros temas (Van Dooren y otros, 2005).</p>` },
+  { id:'placa', corto:'La placa', unidad:UNIDAD_CONTEO,
+    q:'Una placa de auto tiene 3 letras seguidas de 3 dígitos, como ABC-123. Hay 26 letras posibles (sin la ñ), y las letras y los dígitos se pueden repetir. ¿Cuántas placas distintas hay?',
+    opts:[['a',`${ent(PL.errores.sinRepeticion)}: 26 · 25 · 24 · 10 · 9 · 8`,'AR19-sin-repeticion','parcial'],
+          ['b',`${ent(PL.errores.suma)}: 26³ + 10³`,'suma-en-vez-de-producto','hipotesis'],
+          ['c',`${ent(PL.valor)}: 26³ · 10³`],
+          ['d',`${ent(PL.errores.sinOrdenNiRepeticion)}: C(26, 3) · C(10, 3)`,'AR17-sin-orden','parcial']],
+    ok:'c',
+    fb:{ a:`Esa cuenta no deja repetir: 26 · 25 · 24 · 10 · 9 · 8. Pero AAA-111 es una placa válida: cada casilla tiene todas sus opciones, 26 o 10.`,
+      b:'Se suma cuando se elige una cosa o la otra. Aquí se eligen las letras y además los dígitos: se multiplica, 26³ · 10³.',
+      d:'Esa cuenta usa combinaciones: como si ABC y CBA fueran la misma placa. En una placa el orden importa, y además se puede repetir.' },
+    antes:ya => E.config({ modo:'placa', placa:{ etapas:PL.etapas, valor:PL.valor, mostrar:ya, cuadro: ya ? SORTEO.cuadros[SORTEO.cuadros.length - 1] : null }, lect: ya ? lecPlaca() : [], base:'Seis casillas de una placa: tres letras y tres dígitos.' }),
+    despues:() => { E.config({ modo:'placa', placa:{ etapas:PL.etapas, valor:PL.valor, mostrar:true, cuadro:SORTEO.cuadros[0] }, lect:[], base:'Seis casillas de una placa: tres letras y tres dígitos.' });
+      E.animar(2600, f => { E.placa.cuadro = SORTEO.cuadros[Math.round(f*(SORTEO.cuadros.length - 1))]; }, () => { E.lect = lecPlaca(); E.avisar(); }, true); },
+    exp:() => `<div class="eqs">
+      <div class="eq">${V_('26')} · ${V_('26')} · ${V_('26')} · ${V_('10')} · ${V_('10')} · ${V_('10')} = 26³ · 10³ = ${V_(ent(PL.valor))}<span class="note">principio de multiplicación, con orden y con repetición</span></div></div>
+      <p>Cada casilla se llena sin mirar las otras: 26 opciones para cada letra y 10 para cada dígito. Debajo de cada casilla, en el dibujo, va cuántas opciones tiene; el total es el producto. La placa que salió en el sorteo, ${SORTEO.texto}, es una de las ${ent(PL.valor)}.</p>
+      <p class="aviso">Dos preguntas antes de contar: ¿importa el orden? (en una placa, sí: ABC no es CBA) y ¿se puede repetir? (sí: AAA-111 vale). Con orden y repetición: nᵏ por cada parte.</p>
+      <p class="fuente">El error de repetición (no repetir cuando se puede, o al revés) está descrito por Navarro-Pelayo, Batanero y Godino (1996), sin porcentaje (por ejemplo, contar 720 claves de 3 dígitos en vez de 1000). Contar sin orden es el error de orden, el más frecuente en ese estudio entre los que ya habían estudiado combinatoria (cifra por confirmar). Sumar en vez de multiplicar es hipótesis nuestra.</p>` },
+];
+function monedaLista(idx, prog){ const orden = new Map(); idx.forEach((i, t) => orden.set(i, t)); return { lista:true, todas:ESP5, lit:new Set(idx), orden, prog, seqs:SEQ }; }
+const lecTres = (pr, s) => [x => ['F', 'Favorables', String(Math.min(pr.favorables, Math.round(x.tres.prog)))], () => ['ink', 'Posibles', '216'], () => ['P', `P(suma ${s})`, pr.texto]];
+const lecAl6 = () => [() => ['F', 'Favorables', String(AL6c.favorables)], () => ['ink', 'Posibles', '36'], () => ['P', 'P(al menos un 6)', AL6.texto]];
+const lecMon = () => [() => ['F', 'Cada secuencia', '1 casilla'], () => ['ink', 'Secuencias', '32'], () => ['P', 'P de cada una', MON[0].texto]];
+const lecCumple = () => [() => ['P', 'P con 23 alumnos', pct(CU.p)], () => ['ink', 'Parejas', String(CU.parejas)], () => ['ink', 'Salones simulados', ent(SIMC.salones)], () => ['ink', 'Con repetido', pct(SIMC.frecuencia)]];
+const lecPlaca = () => [() => ['V', 'Placas distintas', ent(PL.valor)], () => ['ink', 'La sorteada', SORTEO.texto]];
+
+const S = { k:0, pred:{}, t0:Date.now() };
+const bloqueado = k => EXPS.slice(0, k).some(x => !S.pred[x.id]);
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => { const b = bloqueado(k);
+    return `<button type="button" aria-pressed="${k === S.k}" data-k="${k}"${b ? ` disabled aria-label="Experimento ${k + 1}, bloqueado"` : ''}>${k + 1}. ${x.corto}</button>`; }).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  if (bloqueado(k)) return;
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  E.compactar(!ya);
+  x.antes(ya);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    const ex = $('extra2'); if (ex && x.extra) ex.onclick = () => { if (E.anim) return; const chico = innerWidth < 900; if (chico) $('cv2').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' }); esperar(chico ? 380 : 0, () => { if (S.k === k) x.extra(); }); };
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    $('otra2').onclick = () => { if (E.anim) return; const m = $('extra2msg'); if (m) m.textContent = ''; const chico = innerWidth < 900; if (chico) $('cv2').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' }); esperar(chico ? 380 : 0, () => { if (S.k === k) x.despues(); }); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar(); botones();
+    E.compactar(false);
+    const chico = innerWidth < 900;
+    if (chico) $('cv2').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+    esperar(chico ? 380 : 0, () => { if (S.k !== k) return; x.despues(); E.leyenda(); E.dibujar(); });
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0, x.unidad);
+  });
+  pintar();
+}
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "id": "probabilidad-dados",
+  "titulo": "La tabla de los dos dados: conteo y probabilidad",
+  "formato": "escena",
+  "unidades": [
+    "aritmetica.probabilidades",
+    "aritmetica.analisis-combinatorio",
+    "razonamiento-matematico.juegos-recreativos"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}

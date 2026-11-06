@@ -95,7 +95,7 @@
       "universidades": {"unmsm": {"temas": [8]}},
       "potencial_visual": "alto",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["probabilidad-dados"],
       "investigacion": null
     },
     {

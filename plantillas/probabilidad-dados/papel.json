@@ -1,0 +1,326 @@
+{
+  "titulo": "La tabla de los dos dados: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Recuerda: P = casos favorables / casos posibles, y vale solo si todos los casos posibles son igual de probables (con dos dados, los 36 pares ordenados; no las 11 sumas). Antes de contar, pregúntate dos cosas: ¿importa el orden? y ¿se puede repetir? Con orden, V(n, k) = n!/(n − k)!; sin orden, C(n, k) = n!/(k!·(n − k)!); con repetición y orden, nᵏ. C(n, k), que en la academia se escribe Cⁿₖ; V(n, k), Vⁿₖ; n! = Pₙ. «Al menos uno» suele salir más fácil por el complemento: 1 − P(ninguno).",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Se lanzan dos dados, uno rojo y uno azul. ¿Cuál es la probabilidad de que la suma sea 8?",
+      "respuesta": "5/36.",
+      "pasos": [
+        "Casos posibles: 6 · 6 = 36 pares (rojo, azul), todos igual de probables.",
+        "Casos favorables: (2, 6), (3, 5), (4, 4), (5, 3) y (6, 2). Son 5: el (3, 5) y el (5, 3) son casillas distintas, pero el (4, 4) es una sola.",
+        "P = 5/36. No es 1/11: las 11 sumas posibles no son igual de probables."
+      ],
+      "verificar": [
+        {
+          "fn": "probabilidad",
+          "args": [
+            {
+              "dados": 2
+            },
+            {
+              "tipo": "suma",
+              "valor": 8
+            }
+          ],
+          "espera": {
+            "favorables": 5,
+            "total": 36,
+            "texto": "5/36"
+          }
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Se lanzan dos dados. ¿Cuál es la probabilidad de obtener al menos un 4?",
+      "respuesta": "11/36.",
+      "pasos": [
+        "Lo contrario de «al menos un 4» es «ningún 4»: cada dado tiene 5 caras que no son 4, así que hay 5 · 5 = 25 casos.",
+        "P(al menos un 4) = 1 − 25/36 = 11/36.",
+        "Control: en la tabla son la fila del 4 (6 casillas) y la columna del 4 (6 casillas), pero el (4, 4) está en las dos: 6 + 6 − 1 = 11. Sumar 1/6 + 1/6 = 12/36 cuenta dos veces el (4, 4)."
+      ],
+      "verificar": [
+        {
+          "fn": "alMenosUno",
+          "args": [
+            {
+              "dados": 2,
+              "valor": 4
+            }
+          ],
+          "espera": {
+            "p.texto": "11/36",
+            "errores.sumaProbabilidades.texto": "1/3"
+          }
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Se lanza una moneda tres veces. ¿Cuál es la probabilidad de obtener exactamente dos caras?",
+      "respuesta": "3/8.",
+      "pasos": [
+        "Casos posibles: 2 · 2 · 2 = 8 secuencias, igual de probables.",
+        "Favorables: cara-cara-sello, cara-sello-cara y sello-cara-cara. Son 3: se elige en cuál de los 3 lanzamientos sale el sello.",
+        "P = 3/8. No es 1/4 (como si «0, 1, 2 o 3 caras» fueran igual de probables)."
+      ],
+      "verificar": [
+        {
+          "fn": "probabilidad",
+          "args": [
+            {
+              "dados": 0,
+              "monedas": 3
+            },
+            {
+              "tipo": "caras",
+              "valor": 2
+            }
+          ],
+          "espera": {
+            "favorables": 3,
+            "total": 8,
+            "texto": "3/8"
+          }
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "En un aula de 9 alumnos se elige una comisión de 4. a) ¿Cuántas comisiones distintas hay? b) ¿Y si los 4 tienen cargos distintos (presidente, secretario, tesorero y vocal)?",
+      "respuesta": "a) 126; b) 3024.",
+      "pasos": [
+        "a) Sin cargos, el orden no importa: C(9, 4) = (9 · 8 · 7 · 6)/(4 · 3 · 2 · 1) = 3024/24 = 126.",
+        "b) Con cargos, el orden sí importa: V(9, 4) = 9 · 8 · 7 · 6 = 3024.",
+        "Control: cada comisión se puede repartir en cargos de 4! = 24 maneras, y 126 · 24 = 3024."
+      ],
+      "verificar": [
+        {
+          "fn": "combinaciones",
+          "args": [
+            9,
+            4
+          ],
+          "espera": {
+            "valor": 126
+          }
+        },
+        {
+          "fn": "variaciones",
+          "args": [
+            9,
+            4
+          ],
+          "espera": {
+            "valor": 3024
+          }
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Un grupo tiene 5 mujeres y 4 hombres. ¿De cuántas maneras se puede formar un comité de 3 personas en el que haya al menos una mujer?",
+      "respuesta": "80.",
+      "pasos": [
+        "Sin restricción: C(9, 3) = 84 comités.",
+        "Los que no tienen ninguna mujer son de 3 hombres: C(4, 3) = 4.",
+        "Al menos una mujer: 84 − 4 = 80. También por casos: 1 mujer (5 · 6 = 30) + 2 mujeres (10 · 4 = 40) + 3 mujeres (10) = 80.",
+        "Ojo: «elijo primero una mujer (5) y luego 2 de los 8 restantes (28)» da 140, porque cuenta varias veces el mismo comité."
+      ],
+      "verificar": [
+        {
+          "fn": "comiteConGrupos",
+          "args": [
+            {
+              "grupos": [
+                {
+                  "nombre": "mujeres",
+                  "n": 5
+                },
+                {
+                  "nombre": "hombres",
+                  "n": 4
+                }
+              ],
+              "k": 3,
+              "condicion": {
+                "grupo": "mujeres",
+                "alMenos": 1
+              }
+            }
+          ],
+          "espera": {
+            "valor": 80,
+            "errores.fijarUno": 140
+          }
+        }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Una clave tiene 4 dígitos (del 0 al 9). ¿Cuántas claves hay si los dígitos se pueden repetir? ¿Y si no se pueden repetir?",
+      "respuesta": "10 000 con repetición y 5040 sin repetición.",
+      "pasos": [
+        "Con repetición: cada posición tiene 10 opciones: 10 · 10 · 10 · 10 = 10 000 (principio de multiplicación).",
+        "Sin repetición: 10 · 9 · 8 · 7 = 5040.",
+        "En una clave el orden importa: 1234 y 4321 son claves distintas. Por eso no es C(10, 4) = 210."
+      ],
+      "verificar": [
+        {
+          "fn": "clave",
+          "args": [
+            {
+              "simbolos": 10,
+              "largo": 4
+            }
+          ],
+          "espera": {
+            "valor": 10000,
+            "errores.sinRepeticion": 5040,
+            "errores.combinacion": 210
+          }
+        }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Seis amigos se sientan alrededor de una mesa redonda. ¿De cuántas maneras pueden hacerlo? ¿Y si dos de ellos quieren sentarse juntos?",
+      "respuesta": "120; con los dos juntos, 48.",
+      "pasos": [
+        "En una mesa redonda, girar a todos un asiento no cambia el arreglo: se fija a uno y se ordena al resto. (6 − 1)! = 5! = 120. En fila serían 6! = 720.",
+        "Juntos: se amarran como un solo bloque. Quedan 5 «personas» en ronda: (5 − 1)! = 24, y dentro del bloque se pueden ordenar de 2 maneras: 24 · 2 = 48."
+      ],
+      "verificar": [
+        {
+          "fn": "circular",
+          "args": [
+            6
+          ],
+          "espera": {
+            "valor": 120,
+            "errores.lineal": 720
+          }
+        },
+        {
+          "fn": "permutacionesCirculares",
+          "args": [
+            5
+          ],
+          "espera": {
+            "valor": 24
+          }
+        }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "¿Cuántas palabras distintas (con o sin sentido) se pueden formar con todas las letras de MANZANA?",
+      "respuesta": "420.",
+      "pasos": [
+        "MANZANA tiene 7 letras: la A se repite 3 veces, la N 2 veces, y la M y la Z una vez.",
+        "Si todas fueran distintas habría 7! = 5040. Pero cambiar entre sí las tres A no da una palabra nueva (3! = 6 maneras), ni cambiar las dos N (2! = 2).",
+        "7!/(3! · 2!) = 5040/12 = 420."
+      ],
+      "verificar": [
+        {
+          "fn": "anagramas",
+          "args": [
+            "MANZANA"
+          ],
+          "espera": {
+            "valor": 420,
+            "errores.todasDistintas": 5040
+          }
+        }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Se lanzan dos dados y te dicen que la suma salió 8. ¿Cuál es la probabilidad de que uno de los dados sea un 3?",
+      "respuesta": "2/5.",
+      "pasos": [
+        "Saber que la suma es 8 reduce los casos posibles a 5: (2, 6), (3, 5), (4, 4), (5, 3) y (6, 2).",
+        "De esos, tienen un 3 el (3, 5) y el (5, 3): 2 casos.",
+        "P(un 3 | suma 8) = 2/5. No es 2/36 = 1/18: esa sería la probabilidad de «suma 8 y un 3» sin saber nada antes."
+      ],
+      "verificar": [
+        {
+          "fn": "condicional",
+          "args": [
+            {
+              "dados": 2
+            },
+            {
+              "tipo": "alMenosUno",
+              "valor": 3
+            },
+            {
+              "tipo": "suma",
+              "valor": 8
+            }
+          ],
+          "espera": {
+            "p.texto": "2/5",
+            "errores.conjunta.texto": "1/18"
+          }
+        }
+      ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Se lanzan tres dados. ¿Qué es más probable: que la suma sea 9 o que sea 10? Da las dos probabilidades.",
+      "respuesta": "Es más probable 10: 27/216 = 1/8, frente a 25/216 para el 9.",
+      "pasos": [
+        "Casos posibles: 6 · 6 · 6 = 216 ternas ordenadas.",
+        "Suma 9 sale con los grupos 1-2-6, 1-3-5, 2-3-4 (6 órdenes cada uno), 1-4-4, 2-2-5 (3 órdenes cada uno) y 3-3-3 (1 orden): 6 + 6 + 6 + 3 + 3 + 1 = 25.",
+        "Suma 10 sale con 1-3-6, 1-4-5, 2-3-5 (6 cada uno), 2-2-6, 2-4-4, 3-3-4 (3 cada uno): 6 + 6 + 6 + 3 + 3 + 3 = 27.",
+        "Las dos tienen 6 grupos, pero cuentan los órdenes: P(9) = 25/216 y P(10) = 27/216 = 1/8."
+      ],
+      "verificar": [
+        {
+          "fn": "probabilidad",
+          "args": [
+            {
+              "dados": 3
+            },
+            {
+              "tipo": "suma",
+              "valor": 9
+            }
+          ],
+          "espera": {
+            "favorables": 25,
+            "texto": "25/216"
+          }
+        },
+        {
+          "fn": "probabilidad",
+          "args": [
+            {
+              "dados": 3
+            },
+            {
+              "tipo": "suma",
+              "valor": 10
+            }
+          ],
+          "espera": {
+            "favorables": 27,
+            "texto": "1/8"
+          }
+        }
+      ]
+    }
+  ]
+}
