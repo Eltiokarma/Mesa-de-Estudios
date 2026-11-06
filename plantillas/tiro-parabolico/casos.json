@@ -1,78 +1,581 @@
 {
-  "plantilla": "tiro-parabolico",
-  "unidades": "SI: m, s, m/s, m/s², rad, rad/s; g = 10 m/s²; sin aire; ángulos en grados con sen 37° = 3/5 y cos 37° = 4/5 (53° y 16° igual)",
-  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (vFinal.vy, errores.tSoltado). 'estadoEn' es proyectil(o).estado(t); 'cuandoEn' es proyectil(o).cuando(h), una lista que se compara por índice y por 'largo'. y positivo hacia arriba, el suelo en y = 0; los ángulos de la velocidad final van en grados, negativos hacia abajo. En el círculo, ω positiva es antihoraria y el ángulo se mide desde el eje x.",
-  "verificacion": "Verificado por un subagente independiente (6 nov 2026) sin leer motor.js ni las pruebas. Recalculó los 17 casos y sus 'tambien' (143 claves) con fracciones exactas de Python (fractions.Fraction) y, para π, raíces y arcotangentes, con math y tolerancia 1e-9. Usó sus propias ecuaciones y un segundo camino en cada caso: la altura máxima por v² y por la posición en la cima; el tiempo de vuelo por la cuadrática y por la simetría; el alcance por componentes y por v0²·sen 2θ/g; la rapidez final por componentes y por energía; ac como v²/r y como ω²r; en el MCUV, θ por la ecuación y por el área bajo ω-t; al soltarse del círculo, por ω × r. No hubo discrepancias. A pedido suyo se agregaron: un caso con raíz negativa, otro con h = 0 en cuandoEn, el giro horario a 37°, los ángulos de 53° y 16°, el MCUV que frena y la transmisión por faja y por eje; los volvió a verificar. Los casos del oblicuo a 37° y del horizontal desde 80 m son las filas de 'Casos de prueba propuestos' de docs/investigacion/cinematica-ideas-erroneas.md.",
-  "tolerancia": 1e-9,
-  "casos": [
-    { "nombre": "Problema guiado: 50 m/s a 37° → vx = 40, vy = 30; sube 3 s, llega a 45 m, vuela 6 s, alcance 240 m, en la cima va a 40 m/s",
-      "fn": "proyectil", "args": [{ "v0": 50, "angulo": 37 }],
-      "espera": { "vx": 40, "vy": 30, "tSubida": 3, "H": 45, "tVuelo": 6, "alcance": 240, "vCima": 40, "vFinal.vy": -30, "vFinal.modulo": 50,
-                  "errores.tSubidaSenCos": 4, "errores.HSenCos": 80, "errores.alcanceSoloSubida": 120, "errores.alcanceConV0": 300, "errores.vCimaCero": 0, "errores.vCimaIgualV0": 50 } },
-    { "nombre": "En la cima (t = 3 s): vy = 0, vx = 40 y la aceleración sigue siendo −10",
-      "fn": "estadoEn", "args": [{ "v0": 50, "angulo": 37 }, 3],
-      "espera": { "x": 120, "y": 45, "vx": 40, "vy": 0, "ay": -10, "ax": 0, "v": 40 },
-      "tambien": [ { "args": [{ "v0": 50, "angulo": 37 }, 1], "espera": { "x": 40, "y": 25, "vy": 20 } },
-                   { "args": [{ "v0": 50, "angulo": 37 }, 5], "espera": { "x": 200, "y": 25, "vy": -20 } } ] },
-    { "nombre": "Pasa por 40 m de altura dos veces: a los 2 s y a los 4 s",
-      "fn": "cuandoEn", "args": [{ "v0": 50, "angulo": 37 }, 40],
-      "espera": { "largo": 2, "0": 2, "1": 4 },
-      "tambien": [ { "args": [{ "v0": 50, "angulo": 37 }, 45], "espera": { "largo": 1, "0": 3 } },
-                   { "args": [{ "v0": 50, "angulo": 37 }, 50], "espera": { "largo": 0 } },
-                   { "args": [{ "vx": 15, "y0": 80 }, 60], "espera": { "largo": 1, "0": 2 } },
-                   { "args": [{ "v0": 25, "angulo": 37, "y0": 20 }, 0], "espera": { "largo": 1, "0": 4 } } ] },
-    { "nombre": "Ángulo complementario, 53°: mismo alcance (240 m), pero sube a 80 m y vuela 8 s",
-      "fn": "proyectil", "args": [{ "v0": 50, "angulo": 53 }],
-      "espera": { "vx": 30, "vy": 40, "alcance": 240, "H": 80, "tVuelo": 8 } },
-    { "nombre": "Horizontal desde 80 m a 15 m/s: tarda 4 s, toca el suelo a 60 m del pie, llega con vx = 15 y vy = −40; soltada desde ahí también tarda 4 s",
-      "fn": "proyectil", "args": [{ "vx": 15, "y0": 80 }],
-      "espera": { "tVuelo": 4, "alcance": 60, "tSubida": 0, "H": 80, "vFinal.vx": 15, "vFinal.vy": -40, "vFinal.modulo": 42.720018726587654, "vFinal.angulo": -69.44395478041653, "errores.tSoltado": 4 } },
-    { "nombre": "P1 y P2: soltada, a 15 m/s o a 30 m/s desde 80 m, las tres tardan 4 s",
-      "fn": "proyectil", "args": [{ "vx": 0, "y0": 80 }],
-      "espera": { "tVuelo": 4, "alcance": 0 },
-      "tambien": [ { "args": [{ "vx": 30, "y0": 80 }], "espera": { "tVuelo": 4, "alcance": 120 } } ] },
-    { "nombre": "P3: horizontalmente avanza lo mismo cada segundo (15 m), mientras cae 5, 15, 25 y 35 m",
-      "fn": "estadoEn", "args": [{ "vx": 15, "y0": 80 }, 1],
-      "espera": { "x": 15, "y": 75 },
-      "tambien": [ { "args": [{ "vx": 15, "y0": 80 }, 2], "espera": { "x": 30, "y": 60 } },
-                   { "args": [{ "vx": 15, "y0": 80 }, 3], "espera": { "x": 45, "y": 35 } } ] },
-    { "nombre": "Oblicuo desde 20 m de altura, 25 m/s a 37°: llega a 31,25 m y cae a los 4 s, a 80 m",
-      "fn": "proyectil", "args": [{ "v0": 25, "angulo": 37, "y0": 20 }],
-      "espera": { "vx": 20, "vy": 15, "tSubida": 1.5, "H": 31.25, "tVuelo": 4, "alcance": 80, "vFinal.vy": -25 } },
-    { "nombre": "Hacia abajo: desde 32 m con 10 m/s a −37°: vx = 8, vy = −6; cae a los 2 s, a 16 m",
-      "fn": "proyectil", "args": [{ "v0": 10, "angulo": -37, "y0": 32 }],
-      "espera": { "vx": 8, "vy": -6, "tSubida": 0, "H": 32, "tVuelo": 2, "alcance": 16, "vFinal.vy": -26, "vFinal.modulo": 27.202941017470888 } },
-    { "nombre": "Alcance máximo con 20 m/s: 40 m, a 45°",
-      "fn": "alcanceMaximo", "args": [20],
-      "espera": { "valor": 40 },
-      "tambien": [ { "fn": "proyectil", "args": [{ "v0": 20, "angulo": 45 }], "espera": { "alcance": 40, "H": 10 } },
-                   { "fn": "proyectil", "args": [{ "v0": 20, "angulo": 30 }], "espera": { "alcance": 34.64101615137754, "H": 5 } } ] },
-    { "nombre": "MCU: radio 0,5 m a 120 rpm → f = 2 Hz, T = 0,5 s, ω = 4π, v = 2π, ac = 8π²",
-      "fn": "mcu", "args": [{ "r": 0.5, "rpm": 120 }],
-      "espera": { "frecuencia": 2, "periodo": 0.5, "omega": 12.566370614359172, "v": 6.283185307179586, "ac": 78.95683520871486 } },
-    { "nombre": "MCU con rapidez: r = 2 m, v = 4 m/s → ω = 2 rad/s, ac = 8 m/s² (ni 2 ni 32)",
-      "fn": "mcu", "args": [{ "r": 2, "v": 4 }],
-      "espera": { "omega": 2, "ac": 8, "periodo": 3.141592653589793, "errores.acSinCuadrado": 2, "errores.acPorRadio": 32 },
-      "tambien": [ { "args": [{ "r": 50, "v": 10 }], "espera": { "ac": 2, "omega": 0.2 } } ] },
-    { "nombre": "MCUV: r = 0,5 m, ω0 = 2 rad/s, α = 1 rad/s², a los 4 s → ω = 6, θ = 16 rad, at = 0,5, ac = 18",
-      "fn": "mcuv", "args": [{ "r": 0.5, "omega0": 2, "alfa": 1, "t": 4 }],
-      "espera": { "omega": 6, "theta": 16, "v": 3, "at": 0.5, "ac": 18, "a": 18.006943105369107, "vueltas": 2.5464790894703255, "tParada": null } },
-    { "nombre": "MCUV frenando: ω0 = 10 rad/s, α = −2 rad/s²: a los 3 s, ω = 4 y θ = 21 rad; se detiene a los 5 s tras girar 25 rad",
-      "fn": "mcuv", "args": [{ "r": 1, "omega0": 10, "alfa": -2, "t": 3 }],
-      "espera": { "omega": 4, "theta": 21, "v": 4, "at": -2, "ac": 16, "a": 16.1245154965971, "tParada": 5, "thetaParada": 25, "vueltasParada": 3.978873577297384 } },
-    { "nombre": "Transmisión: polea de 10 cm a 30 rad/s unida por faja a otra de 30 cm → ω2 = 10 rad/s (misma v = 3 m/s); en el eje de esa, una rueda de 50 cm gira a 10 rad/s y su borde va a 5 m/s",
-      "fn": "transmision", "args": [{ "r1": 0.1, "r2": 0.3, "omega1": 30, "tipo": "faja" }],
-      "espera": { "v1": 3, "omega2": 10, "v2": 3, "errores.omegaIgualConFaja": 30 },
-      "tambien": [ { "args": [{ "r1": 0.3, "r2": 0.5, "omega1": 10, "tipo": "eje" }], "espera": { "omega2": 10, "v2": 5, "v1": 3, "errores.vIgualEnEje": 3 } } ] },
-    { "nombre": "Se suelta en (2, 0) girando antihorario con ω = 3: sigue recto hacia +y a 6 m/s; al segundo está en (2, 6)",
-      "fn": "soltarDelCirculo", "args": [{ "r": 2, "omega": 3, "theta": 0, "t": 1 }],
-      "espera": { "vx": 0, "vy": 6, "x": 2, "y": 6, "distanciaAlCentro": 6.324555320336759, "errores.haciaAfuera.x": 8, "errores.haciaAfuera.y": 0 },
-      "tambien": [ { "args": [{ "r": 2, "omega": 3, "theta": 90, "t": 0.5 }], "espera": { "vx": -6, "vy": 0, "x": -3, "y": 2 } },
-                   { "args": [{ "r": 5, "omega": -2, "theta": 37, "t": 1 }], "espera": { "vx": 6, "vy": -8, "x": 10, "y": -5, "errores.haciaAfuera.x": 12, "errores.haciaAfuera.y": 9 } } ] },
-    { "nombre": "Ángulos de academia: sen 37° = 3/5; con exacto, el seno de verdad",
-      "fn": "trig", "args": [37],
-      "espera": { "sen": 0.6, "cos": 0.8 },
-      "tambien": [ { "args": [37, true], "espera": { "sen": 0.6018150231520483 } }, { "args": [-37], "espera": { "sen": -0.6, "cos": 0.8 } },
-                   { "args": [53], "espera": { "sen": 0.8, "cos": 0.6 } }, { "args": [16], "espera": { "sen": 0.28, "cos": 0.96 } } ] }
-  ]
+ "plantilla": "tiro-parabolico",
+ "unidades": "SI: m, s, m/s, m/s², rad, rad/s; g = 10 m/s²; sin aire; ángulos en grados con sen 37° = 3/5 y cos 37° = 4/5 (53° y 16° igual)",
+ "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (vFinal.vy, errores.tSoltado). 'estadoEn' es proyectil(o).estado(t); 'cuandoEn' es proyectil(o).cuando(h), una lista que se compara por índice y por 'largo'. y positivo hacia arriba, el suelo en y = 0; los ángulos de la velocidad final van en grados, negativos hacia abajo. En el círculo, ω positiva es antihoraria y el ángulo se mide desde el eje x.",
+ "verificacion": "Verificado por un subagente independiente (6 nov 2026) sin leer motor.js ni las pruebas. Recalculó los 17 casos y sus 'tambien' (143 claves) con fracciones exactas de Python (fractions.Fraction) y, para π, raíces y arcotangentes, con math y tolerancia 1e-9. Usó sus propias ecuaciones y un segundo camino en cada caso: la altura máxima por v² y por la posición en la cima; el tiempo de vuelo por la cuadrática y por la simetría; el alcance por componentes y por v0²·sen 2θ/g; la rapidez final por componentes y por energía; ac como v²/r y como ω²r; en el MCUV, θ por la ecuación y por el área bajo ω-t; al soltarse del círculo, por ω × r. No hubo discrepancias. A pedido suyo se agregaron: un caso con raíz negativa, otro con h = 0 en cuandoEn, el giro horario a 37°, los ángulos de 53° y 16°, el MCUV que frena y la transmisión por faja y por eje; los volvió a verificar. Los casos del oblicuo a 37° y del horizontal desde 80 m son las filas de 'Casos de prueba propuestos' de docs/investigacion/cinematica-ideas-erroneas.md.",
+ "tolerancia": 1e-09,
+ "casos": [
+  {
+   "nombre": "Problema guiado: 50 m/s a 37° → vx = 40, vy = 30; sube 3 s, llega a 45 m, vuela 6 s, alcance 240 m, en la cima va a 40 m/s",
+   "fn": "proyectil",
+   "args": [
+    {
+     "v0": 50,
+     "angulo": 37
+    }
+   ],
+   "espera": {
+    "vx": 40,
+    "vy": 30,
+    "tSubida": 3,
+    "H": 45,
+    "tVuelo": 6,
+    "alcance": 240,
+    "vCima": 40,
+    "vFinal.vy": -30,
+    "vFinal.modulo": 50,
+    "errores.tSubidaSenCos": 4,
+    "errores.HSenCos": 80,
+    "errores.alcanceSoloSubida": 120,
+    "errores.alcanceConV0": 300,
+    "errores.vCimaCero": 0,
+    "errores.vCimaIgualV0": 50,
+    "errores.vxConSeno": 30,
+    "errores.vyConCoseno": 40
+   }
+  },
+  {
+   "nombre": "En la cima (t = 3 s): vy = 0, vx = 40 y la aceleración sigue siendo −10",
+   "fn": "estadoEn",
+   "args": [
+    {
+     "v0": 50,
+     "angulo": 37
+    },
+    3
+   ],
+   "espera": {
+    "x": 120,
+    "y": 45,
+    "vx": 40,
+    "vy": 0,
+    "ay": -10,
+    "ax": 0,
+    "v": 40
+   },
+   "tambien": [
+    {
+     "args": [
+      {
+       "v0": 50,
+       "angulo": 37
+      },
+      1
+     ],
+     "espera": {
+      "x": 40,
+      "y": 25,
+      "vy": 20
+     }
+    },
+    {
+     "args": [
+      {
+       "v0": 50,
+       "angulo": 37
+      },
+      5
+     ],
+     "espera": {
+      "x": 200,
+      "y": 25,
+      "vy": -20
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "Pasa por 40 m de altura dos veces: a los 2 s y a los 4 s",
+   "fn": "cuandoEn",
+   "args": [
+    {
+     "v0": 50,
+     "angulo": 37
+    },
+    40
+   ],
+   "espera": {
+    "largo": 2,
+    "0": 2,
+    "1": 4
+   },
+   "tambien": [
+    {
+     "args": [
+      {
+       "v0": 50,
+       "angulo": 37
+      },
+      45
+     ],
+     "espera": {
+      "largo": 1,
+      "0": 3
+     }
+    },
+    {
+     "args": [
+      {
+       "v0": 50,
+       "angulo": 37
+      },
+      50
+     ],
+     "espera": {
+      "largo": 0
+     }
+    },
+    {
+     "args": [
+      {
+       "vx": 15,
+       "y0": 80
+      },
+      60
+     ],
+     "espera": {
+      "largo": 1,
+      "0": 2
+     }
+    },
+    {
+     "args": [
+      {
+       "v0": 25,
+       "angulo": 37,
+       "y0": 20
+      },
+      0
+     ],
+     "espera": {
+      "largo": 1,
+      "0": 4
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "Ángulo complementario, 53°: mismo alcance (240 m), pero sube a 80 m y vuela 8 s",
+   "fn": "proyectil",
+   "args": [
+    {
+     "v0": 50,
+     "angulo": 53
+    }
+   ],
+   "espera": {
+    "vx": 30,
+    "vy": 40,
+    "alcance": 240,
+    "H": 80,
+    "tVuelo": 8
+   }
+  },
+  {
+   "nombre": "Horizontal desde 80 m a 15 m/s: tarda 4 s, toca el suelo a 60 m del pie, llega con vx = 15 y vy = −40; soltada desde ahí también tarda 4 s",
+   "fn": "proyectil",
+   "args": [
+    {
+     "vx": 15,
+     "y0": 80
+    }
+   ],
+   "espera": {
+    "tVuelo": 4,
+    "alcance": 60,
+    "tSubida": 0,
+    "H": 80,
+    "vFinal.vx": 15,
+    "vFinal.vy": -40,
+    "vFinal.modulo": 42.720018726587654,
+    "vFinal.angulo": -69.44395478041653,
+    "errores.tSoltado": 4
+   }
+  },
+  {
+   "nombre": "P1 y P2: soltada, a 15 m/s o a 30 m/s desde 80 m, las tres tardan 4 s",
+   "fn": "proyectil",
+   "args": [
+    {
+     "vx": 0,
+     "y0": 80
+    }
+   ],
+   "espera": {
+    "tVuelo": 4,
+    "alcance": 0
+   },
+   "tambien": [
+    {
+     "args": [
+      {
+       "vx": 30,
+       "y0": 80
+      }
+     ],
+     "espera": {
+      "tVuelo": 4,
+      "alcance": 120
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "P3: horizontalmente avanza lo mismo cada segundo (15 m), mientras cae 5, 15, 25 y 35 m",
+   "fn": "estadoEn",
+   "args": [
+    {
+     "vx": 15,
+     "y0": 80
+    },
+    1
+   ],
+   "espera": {
+    "x": 15,
+    "y": 75
+   },
+   "tambien": [
+    {
+     "args": [
+      {
+       "vx": 15,
+       "y0": 80
+      },
+      2
+     ],
+     "espera": {
+      "x": 30,
+      "y": 60
+     }
+    },
+    {
+     "args": [
+      {
+       "vx": 15,
+       "y0": 80
+      },
+      3
+     ],
+     "espera": {
+      "x": 45,
+      "y": 35
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "Oblicuo desde 20 m de altura, 25 m/s a 37°: llega a 31,25 m y cae a los 4 s, a 80 m",
+   "fn": "proyectil",
+   "args": [
+    {
+     "v0": 25,
+     "angulo": 37,
+     "y0": 20
+    }
+   ],
+   "espera": {
+    "vx": 20,
+    "vy": 15,
+    "tSubida": 1.5,
+    "H": 31.25,
+    "tVuelo": 4,
+    "alcance": 80,
+    "vFinal.vy": -25
+   }
+  },
+  {
+   "nombre": "Hacia abajo: desde 32 m con 10 m/s a −37°: vx = 8, vy = −6; cae a los 2 s, a 16 m",
+   "fn": "proyectil",
+   "args": [
+    {
+     "v0": 10,
+     "angulo": -37,
+     "y0": 32
+    }
+   ],
+   "espera": {
+    "vx": 8,
+    "vy": -6,
+    "tSubida": 0,
+    "H": 32,
+    "tVuelo": 2,
+    "alcance": 16,
+    "vFinal.vy": -26,
+    "vFinal.modulo": 27.202941017470888
+   }
+  },
+  {
+   "nombre": "Alcance máximo con 20 m/s: 40 m, a 45°",
+   "fn": "alcanceMaximo",
+   "args": [
+    20
+   ],
+   "espera": {
+    "valor": 40
+   },
+   "tambien": [
+    {
+     "fn": "proyectil",
+     "args": [
+      {
+       "v0": 20,
+       "angulo": 45
+      }
+     ],
+     "espera": {
+      "alcance": 40,
+      "H": 10
+     }
+    },
+    {
+     "fn": "proyectil",
+     "args": [
+      {
+       "v0": 20,
+       "angulo": 30
+      }
+     ],
+     "espera": {
+      "alcance": 34.64101615137754,
+      "H": 5
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "MCU: radio 0,5 m a 120 rpm → f = 2 Hz, T = 0,5 s, ω = 4π, v = 2π, ac = 8π²",
+   "fn": "mcu",
+   "args": [
+    {
+     "r": 0.5,
+     "rpm": 120
+    }
+   ],
+   "espera": {
+    "frecuencia": 2,
+    "periodo": 0.5,
+    "omega": 12.566370614359172,
+    "v": 6.283185307179586,
+    "ac": 78.95683520871486
+   }
+  },
+  {
+   "nombre": "MCU con rapidez: r = 2 m, v = 4 m/s → ω = 2 rad/s, ac = 8 m/s² (ni 2 ni 32)",
+   "fn": "mcu",
+   "args": [
+    {
+     "r": 2,
+     "v": 4
+    }
+   ],
+   "espera": {
+    "omega": 2,
+    "ac": 8,
+    "periodo": 3.141592653589793,
+    "errores.acSinCuadrado": 2,
+    "errores.acPorRadio": 32
+   },
+   "tambien": [
+    {
+     "args": [
+      {
+       "r": 50,
+       "v": 10
+      }
+     ],
+     "espera": {
+      "ac": 2,
+      "omega": 0.2
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "MCUV: r = 0,5 m, ω0 = 2 rad/s, α = 1 rad/s², a los 4 s → ω = 6, θ = 16 rad, at = 0,5, ac = 18",
+   "fn": "mcuv",
+   "args": [
+    {
+     "r": 0.5,
+     "omega0": 2,
+     "alfa": 1,
+     "t": 4
+    }
+   ],
+   "espera": {
+    "omega": 6,
+    "theta": 16,
+    "v": 3,
+    "at": 0.5,
+    "ac": 18,
+    "a": 18.006943105369107,
+    "vueltas": 2.5464790894703255,
+    "tParada": null
+   }
+  },
+  {
+   "nombre": "MCUV frenando: ω0 = 10 rad/s, α = −2 rad/s²: a los 3 s, ω = 4 y θ = 21 rad; se detiene a los 5 s tras girar 25 rad",
+   "fn": "mcuv",
+   "args": [
+    {
+     "r": 1,
+     "omega0": 10,
+     "alfa": -2,
+     "t": 3
+    }
+   ],
+   "espera": {
+    "omega": 4,
+    "theta": 21,
+    "v": 4,
+    "at": -2,
+    "ac": 16,
+    "a": 16.1245154965971,
+    "tParada": 5,
+    "thetaParada": 25,
+    "vueltasParada": 3.978873577297384
+   }
+  },
+  {
+   "nombre": "Transmisión: polea de 10 cm a 30 rad/s unida por faja a otra de 30 cm → ω2 = 10 rad/s (misma v = 3 m/s); en el eje de esa, una rueda de 50 cm gira a 10 rad/s y su borde va a 5 m/s",
+   "fn": "transmision",
+   "args": [
+    {
+     "r1": 0.1,
+     "r2": 0.3,
+     "omega1": 30,
+     "tipo": "faja"
+    }
+   ],
+   "espera": {
+    "v1": 3,
+    "omega2": 10,
+    "v2": 3,
+    "errores.omegaIgualConFaja": 30
+   },
+   "tambien": [
+    {
+     "args": [
+      {
+       "r1": 0.3,
+       "r2": 0.5,
+       "omega1": 10,
+       "tipo": "eje"
+      }
+     ],
+     "espera": {
+      "omega2": 10,
+      "v2": 5,
+      "v1": 3,
+      "errores.vIgualEnEje": 3
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "Se suelta en (2, 0) girando antihorario con ω = 3: sigue recto hacia +y a 6 m/s; al segundo está en (2, 6)",
+   "fn": "soltarDelCirculo",
+   "args": [
+    {
+     "r": 2,
+     "omega": 3,
+     "theta": 0,
+     "t": 1
+    }
+   ],
+   "espera": {
+    "vx": 0,
+    "vy": 6,
+    "x": 2,
+    "y": 6,
+    "distanciaAlCentro": 6.324555320336759,
+    "errores.haciaAfuera.x": 8,
+    "errores.haciaAfuera.y": 0
+   },
+   "tambien": [
+    {
+     "args": [
+      {
+       "r": 2,
+       "omega": 3,
+       "theta": 90,
+       "t": 0.5
+      }
+     ],
+     "espera": {
+      "vx": -6,
+      "vy": 0,
+      "x": -3,
+      "y": 2
+     }
+    },
+    {
+     "args": [
+      {
+       "r": 5,
+       "omega": -2,
+       "theta": 37,
+       "t": 1
+      }
+     ],
+     "espera": {
+      "vx": 6,
+      "vy": -8,
+      "x": 10,
+      "y": -5,
+      "errores.haciaAfuera.x": 12,
+      "errores.haciaAfuera.y": 9
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "Ángulos de academia: sen 37° = 3/5; con exacto, el seno de verdad",
+   "fn": "trig",
+   "args": [
+    37
+   ],
+   "espera": {
+    "sen": 0.6,
+    "cos": 0.8
+   },
+   "tambien": [
+    {
+     "args": [
+      37,
+      true
+     ],
+     "espera": {
+      "sen": 0.6018150231520483
+     }
+    },
+    {
+     "args": [
+      -37
+     ],
+     "espera": {
+      "sen": -0.6,
+      "cos": 0.8
+     }
+    },
+    {
+     "args": [
+      53
+     ],
+     "espera": {
+      "sen": 0.8,
+      "cos": 0.6
+     }
+    },
+    {
+     "args": [
+      16
+     ],
+     "espera": {
+      "sen": 0.28,
+      "cos": 0.96
+     }
+    }
+   ]
+  }
+ ]
 }
