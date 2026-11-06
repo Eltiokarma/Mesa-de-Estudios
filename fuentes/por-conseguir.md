@@ -87,6 +87,60 @@ Artículos que las investigaciones de estática, ondas, termodinámica y electri
 | [ ] | C | Artículos de *Educación Química* (UNAM) sobre reactivo limitante y soluciones | El sitio dio error 503 o pidió verificación |
 | [ ] | C | Schmidt, Kaufmann y Treagust (2009), sobre ebullición y enlaces, Chemistry Education Research and Practice | Porcentaje de "hervir rompe enlaces covalentes" |
 
+### Matemática: álgebra y funciones (informe del 6 de noviembre de 2026)
+
+En esta sesión no se pudo abrir ningún PDF; las cifras del informe vienen de resúmenes. Ver `docs/investigacion/algebra-funciones-ideas-erroneas.md`.
+
+| ✓ | Prioridad | Referencia | Para qué |
+| --- | --- | --- | --- |
+| [ ] | A | Clement (1982), *Algebra word problem solutions*, JRME 13(1), 16–30; y Clement, Lochhead y Monk (1981), American Mathematical Monthly 88 | Confirmar el 63 % de aciertos y el reparto de errores en el problema de estudiantes y profesores (AL1, AL2) |
+| [ ] | A | Hart (ed.), *Children's understanding of mathematics: 11–16* (1981), capítulo de álgebra de Küchemann; y Küchemann (1978), Mathematics in School 7(4) | Porcentajes por ítem y por edad de los usos de la letra (AL3 a AL5) |
+| [ ] | A | Knuth, Stephens, McNeil y Alibali (2006), JRME 37(4); Knuth y otros (2008), MTMS 13(9); Alibali y otros (2007), Mathematical Thinking and Learning 9(3) | Confirmar 29 % y 46 % de definición relacional del signo igual (AL6) |
+| [ ] | A | *Errores algebraicos más comunes en los estudiantes de primer ingreso*, Educación y Humanismo (2015), Universidad de Guadalajara; Gamboa, Castillo e Hidalgo (2019), Actualidades Investigativas en Educación 19(1); Aguerrea, Solís y Huincahue (2022), Uniciencia 36(1) | Datos por ítem de ingresantes latinoamericanos (binomio, raíces, logaritmos, cuadráticas) |
+| [ ] | A | Agencia de Calidad de la Educación (Chile), *Aprendiendo de los errores* (SIMCE) | Porcentaje del error del binomio al cuadrado (AL8) |
+| [ ] | A | Tesis de la Universidad de Piura sobre errores algebraicos en 2.° y 4.° de secundaria (repositorio ALICIA de CONCYTEC) | Únicos datos peruanos encontrados |
+| [ ] | B | Almog e Ilany (2012), ESM 81(3); Tsamir y Almog (2001), IJMEST 32(4); Blanco y Garrote (2007), EJMSTE 3(3) | Porcentajes en inecuaciones y valor absoluto (AL19 a AL23) |
+| [ ] | B | Vinner y Dreyfus (1989), JRME 20(4); Breidenbach y otros (1992), ESM 23; Carlson (1998), RCME III | Porcentajes sobre el concepto de función y covariación (AL26, AL30) |
+| [ ] | B | Zazkis, Liljedahl y Gadowsky (2003), Journal of Mathematical Behavior 22(4) | Desplazamientos de gráficas (AL28) |
+| [ ] | B | Clement (1985), *Misconceptions in graphing*, PME 9; Leinhardt, Zaslavsky y Stein (1990), Review of Educational Research 60(1) | Confirmar "hasta la mitad" en pendiente y altura (AL25) |
+| [ ] | B | Ganesan y Dindyal (2014), MERGA 37; Chua y Wood (2005), The Mathematics Educator 8(2) | Porcentajes de errores en logaritmos (AL10, AL31) |
+| [ ] | B | Ochoviet y Oktaç (2009), The Mathematics Enthusiast 6(1); Ochoviet (2009), tesis CICATA-IPN; Vaiyavutjamai y Clements (2006), MERJ 18(1) | Producto cero, cuadráticas y sistemas (AL14, AL17) |
+| [ ] | C | Socas (1997), en Rico (coord.), Horsori; Ruano, Socas y Palarea (2008), PNA 2(2); Ursini y Trigueros (1997, 2003) | Marcos en español (España y México) para clasificar los errores |
+| [ ] | C | Matz (1982), en Sleeman y Brown (eds.); Booth (1984), NFER-Nelson; Kirshner y Awtry (2004), JRME 35(4); Kieran (1981, 1992, 2007) | Clásicos de la linealidad indebida y del signo igual |
+
+### Trigonometría (informe del 6 de noviembre de 2026)
+
+En esa sesión no abrió ninguna página de artículos; todo salió de resúmenes. Varios son de acceso abierto y deberían bajar desde un navegador.
+
+| ✓ | Prioridad | Referencia | Para qué |
+| --- | --- | --- | --- |
+| [ ] | A | Tuna (2013), *A conceptual analysis of the knowledge of prospective mathematics teachers about degree and radian*, World Journal of Education 3(4). DOI 10.5430/wje.v3n4p1. Acceso abierto | Confirmar el ≈90 % que define mal el radián (TR2) |
+| [ ] | A | Akkoç (2008), *Pre-service mathematics teachers' concept images of radian*, IJMEST 39(7), 857–878. Copia en la página de la autora (mimoza.marmara.edu.tr) | Conteos por ítem de "π es 180" y de entradas en grados (TR1, TR3) |
+| [ ] | A | Martín-Fernández (2014), actas SEIEM XVIII, y Martín-Fernández, Ruiz-Hidalgo y Rico (2016), *Enseñanza de las Ciencias* 34(3). En Funes y en la web de la revista | A qué muestra corresponde el 56,10 % de "el seno es una longitud" (TR7) |
+| [ ] | B | Weber (2005), *Students' understanding of trigonometric functions*, MERJ 17(3). ERIC EJ747914, acceso abierto | Cifras por curso (TR13) |
+| [ ] | B | Brown (2005), tesis, Illinois State; Fi (2003), tesis, Universidad de Iowa | Signo de sen 210° (TR12) y definición del radián (TR2) |
+| [ ] | B | Kendal y Stacey (1996), actas de MERGA, y (1997), *Vinculum* 34(1) | Cuánto pesa elegir mal la razón (TR9) |
+| [ ] | B | Castro y Cárcamo, errores en ecuaciones trigonométricas, Bolema (SciELO Brasil); Torres-Corrales y Montiel-Espinosa (2021), *Educación Matemática* 33(3) | Las dos fuentes latinoamericanas (TR21, TR10, TR25) |
+| [ ] | C | Moore (2013), ESM 83(2), y (2014), JRME 45(1); De Kee, Mura y Dionne (1996), FLM 16(2); Gür (2009), ERIC EJ860819 | Secuencia de "medir con arcos" y casos cualitativos |
+
+### Matemática: aritmética y razonamiento matemático (informe del 6 de noviembre de 2026)
+
+En esta sesión no se pudo abrir ningún PDF; las cifras del informe vienen de resúmenes. Ver `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`.
+
+| ✓ | Prioridad | Referencia | Para qué |
+| --- | --- | --- | --- |
+| [ ] | A | Jacobs Danan y Gelman (2018), *The problem with percentages*, Phil. Trans. R. Soc. B 373 (acceso abierto en PMC5784045) | Confirmar el reparto de errores por tipo (sumar porcentajes, base equivocada) para la plantilla `porcentajes-sucesivos` (AR1 a AR4) |
+| [ ] | A | Maz y Gutiérrez (2008), *Errores de los estudiantes de magisterio frente a situaciones que implican porcentajes* (acceso abierto en Helvia, Universidad de Córdoba) | Único dato en español sobre porcentajes (AR1, AR3) |
+| [ ] | A | Navarro-Pelayo, Batanero y Godino (1996), Educación Matemática 8(1); Batanero, Navarro-Pelayo y Godino (1997), ESM 32; tesis de Roa (2000), Universidad de Granada (las tres en acceso abierto) | Confirmar 37,8 % (error de orden) y 66,6 % (enumeración sin sistema), y sacar el porcentaje del error de repetición (AR17 a AR19) |
+| [ ] | A | Hart (ed.), *Children's understanding of mathematics: 11–16* (1981), capítulo de razón; Karplus, Karplus y Wollman (1974), School Science and Mathematics 74(6) | Porcentajes del Sr. Bajo y el Sr. Alto y de la respuesta aditiva por ítem (AR6) |
+| [ ] | A | Van Dooren y otros (2005), Cognition and Instruction 23(1); De Bock, Verschaffel y Janssens (1998), ESM 35 | Porcentajes por grado de la ilusión de linealidad (AR7), base de la regla de tres inversa y del reparto |
+| [ ] | B | Lecoutre (1992), ESM 23; Cañizares y Batanero (1998), ICOTS 5; Cardeñoso y otros (2017), AIEM | Confirmar el 51 % (dados) y el 25 %, y la cifra argentina del sesgo de equiprobabilidad (AR20) |
+| [ ] | B | Resnick y otros (1989), JRME 20(1); Steinle y Stacey (1998), MERGA 21 | Confirmar el 40 % de la regla del número entero en decimales (AR11) |
+| [ ] | B | Fischbein y Schnarch (1997), JRME 28(1) | Porcentajes por edad de representatividad y recencia (AR21, AR22) |
+| [ ] | B | Pollatsek, Lima y Well (1981), ESM 12; estudio *Why is calculating the average speed difficult?* | Promedio ponderado y velocidad media (AR14, AR15) |
+| [ ] | B | Informes de la Evaluación Censal de Estudiantes (Minedu, 2.º de secundaria) e ítems liberados de PISA para el Perú | Porcentajes por opción con alumnos peruanos en ítems de proporción y porcentaje |
+| [ ] | C | Stacey (1989), ESM 20; Cerdán (2010), PNA 4(3) | Objeto entero en sucesiones (RM2) y catálogo español de errores de traducción (RM1) |
+
 ## 3. Libros de consulta
 
 Para diseñar plantillas y escribir problemas propios, no para copiar (ver "Uso de fuentes y derechos" en `docs/fundacional.md`).
