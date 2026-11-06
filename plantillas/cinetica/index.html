@@ -1,0 +1,1200 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cinética química</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md).
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4).
+
+   Colores de esta escena (claro / oscuro). Revisados con CIEDE2000 y contraste WCAG sobre --paper y --card:
+     A (círculo con marca)        azul      #1f5fbf / #7cb0ff   (el de docs/diseno.md)
+     B (cuadrado redondeado)      naranja   #b55302 / #fb9c5e
+     C (A y B unidos)             fucsia    #c90eb4 / #fe3dd6   (y el anillo del choque eficaz: ahí se forma una C)
+     T (temperatura)              rojo      #c0364a / #f17384   (el de docs/diseno.md)
+     Ea (barrera)                 turquesa  #1c7170 / #79c6c5
+     ΔH (calor de reacción)       verde     #198036 / #4fb256
+     v (rapidez)                  mostaza   #856d02 / #d8c84a
+     choque sin energía (cruz)    gris      #434038 / #8c8f85   (y las barras del histograma bajo Ea)
+     choque mal orientado (flecha que gira)  violeta  #4b06b9 / #9978fa
+   Todos pueden salir a la vez (el explorador muestra todo), así que se revisaron todos contra todos y contra la
+   tinta y el gris de los rótulos (--ink, --muted). ΔE00 mínimo: 22,1 en claro (A–violeta, Ea–ΔH) y 20,1 en oscuro
+   (A–violeta). Contraste mínimo: 4,70 en claro (C) y 4,67 en oscuro (gris); todos pasan AA (4,5).
+   El tiempo t va en tinta, como los ejes: un décimo color propio no entra a ΔE00 ≥ 20 de los otros nueve en oscuro
+   (lo probamos: el marrón o el naranja del tiempo quedan a menos de 15 del naranja de B). La tinta no nombra otra
+   variable. Los tres choques se distinguen además por forma: anillo (eficaz), cruz (sin energía) y flecha que gira
+   (mal orientado). */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
+  --detras:#f6ece4; --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-A:#1f5fbf; --c-B:#b55302; --c-C:#c90eb4; --c-T:#c0364a; --c-Ea:#1c7170; --c-dH:#198036; --c-v:#856d02;
+  --c-sinE:#434038; --c-malO:#4b06b9;
+  --vidrio:#8e97a8;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-A:#7cb0ff; --c-B:#fb9c5e; --c-C:#fe3dd6; --c-T:#f17384; --c-Ea:#79c6c5; --c-dH:#4fb256; --c-v:#d8c84a;
+  --c-sinE:#8c8f85; --c-malO:#9978fa;
+  --vidrio:#5e5670; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-A:#7cb0ff; --c-B:#fb9c5e; --c-C:#fe3dd6; --c-T:#f17384; --c-Ea:#79c6c5; --c-dH:#4fb256; --c-v:#d8c84a;
+  --c-sinE:#8c8f85; --c-malO:#9978fa;
+  --vidrio:#5e5670; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+/* Nada se arrastra en esta escena: el dedo siempre desplaza la página sobre el dibujo. */
+canvas{display:block; width:100%; touch-action:pan-y; -webkit-user-select:none; user-select:none}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+.legend svg{flex:none}
+.pelicula{display:flex; flex-wrap:wrap; align-items:center; gap:6px 10px; padding:0 6px 2px; font-size:.86rem; color:var(--muted); font-weight:700}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px; white-space:nowrap}
+.v-A{color:var(--c-A); background:color-mix(in srgb, var(--c-A) 12%, transparent)}
+.v-B{color:var(--c-B); background:color-mix(in srgb, var(--c-B) 12%, transparent)}
+.v-C{color:var(--c-C); background:color-mix(in srgb, var(--c-C) 12%, transparent)}
+.v-T{color:var(--c-T); background:color-mix(in srgb, var(--c-T) 12%, transparent)}
+.v-Ea{color:var(--c-Ea); background:color-mix(in srgb, var(--c-Ea) 12%, transparent)}
+.v-dH{color:var(--c-dH); background:color-mix(in srgb, var(--c-dH) 12%, transparent)}
+.v-v{color:var(--c-v); background:color-mix(in srgb, var(--c-v) 12%, transparent)}
+.v-sinE{color:var(--c-sinE); background:color-mix(in srgb, var(--c-sinE) 12%, transparent)}
+.v-malO{color:var(--c-malO); background:color-mix(in srgb, var(--c-malO) 12%, transparent)}
+.v.hl{background:color-mix(in srgb, currentColor 26%, transparent)}
+input.r-T{accent-color:var(--c-T)}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.05rem; white-space:nowrap; font-variant-numeric:tabular-nums}
+.eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); white-space:normal; flex-basis:100%}
+.eq{min-width:0}
+.eq .ex{white-space:normal; line-height:2}
+.frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1.15}
+.frac > span:first-child{border-bottom:1.5px solid currentColor; padding:0 .25em}
+.frac > span:last-child{padding:0 .25em}
+sup{font-size:.72em; line-height:0}
+.answer{font-weight:700; padding:12px 16px; border-radius:16px; background:var(--paper); border:2px solid var(--c-C); max-width:66ch}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+.tabla{border-collapse:collapse; font-family:var(--mono); font-size:.95rem; font-variant-numeric:tabular-nums}
+.tabla th, .tabla td{padding:4px 10px; border-bottom:1px solid var(--line); text-align:center; white-space:nowrap}
+.tabla thead th{white-space:normal}
+.tabla th:first-child, .tabla td:first-child{text-align:left; font-family:var(--font); color:var(--muted); font-weight:700; font-size:.88rem; white-space:normal}
+.scroll{overflow-x:auto; max-width:100%}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.ctrls{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap:12px; align-items:end}
+.slider{display:grid; gap:4px}
+.slider label{font-weight:700; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.slider output{font-family:var(--mono); color:var(--muted)}
+input[type=range]{width:100%; accent-color:var(--ink); min-height:28px}
+.botones{display:flex; flex-wrap:wrap; gap:6px}
+.botones .btn{padding:9px 14px; min-width:64px}
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:999px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.seg button:disabled{opacity:.45; cursor:not-allowed}
+.exps{border-radius:20px}
+.lect{font-family:var(--mono); font-size:.95rem; font-variant-numeric:tabular-nums; display:flex; flex-wrap:wrap; gap:4px 16px}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+.check{display:inline-flex; align-items:center; gap:8px; font-weight:700; font-size:.92rem; cursor:pointer; min-height:44px}
+.check input{width:20px; height:20px; accent-color:var(--ink)}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.4fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Química · Cinética química · Problemas tipo admisión</p>
+      <h1>Cinética química: choques que reaccionan</h1>
+      <p class="sub">Una caja donde A y B chocan y a veces forman C. Mira, predice y cuenta los choques.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Caja con porciones de A, B y C, contadores de choques y gráficas">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Una caja con porciones de A (círculos con una marca), de B (cuadrados) y de C (A y B unidos); al lado, contadores de choques, un histograma de energía, una gráfica en el tiempo y un perfil de energía"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="legend" id="ley1"></div>
+      <div class="pelicula" id="vel1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos con la rapidez de reacción">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Una caja con porciones de A, B y C y, al responder, contadores de choques, un histograma de energía y una gráfica en el tiempo"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="legend" id="ley2"></div>
+      <div class="pelicula" id="vel2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg exps" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/cinetica">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'cinetica', unidad: 'quimica.cinetica-quimica', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la química sale de MotorCinetica (motor.js): la caja de partículas, los choques y por qué fallan,
+   la fracción e^(−Ea/RT), el perfil de energía, la regla de los 10 °C y los factores de la ley de velocidad.
+   Aquí solo se pinta y se cuenta lo que el motor dice. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MC = MotorCinetica;
+const EA = 5000, EA_CAT = 2000, DH = -3000, EA_ALTA = 8000; // J/mol, en la escala de la escena
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+// Coma decimal, espacio de miles (desde 5 cifras) y signo menos tipográfico.
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 1 : d), r = Math.round(n*p)/p + 0;
+  let [e, f] = String(Math.abs(r)).split('.');
+  if (e.length > 4) e = e.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+const pct = (x, d) => { d = d === undefined ? 1 : d; return Number.isFinite(x) ? `${(100*x).toFixed(d).replace('.', ',')} %` : '—'; };
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const fr = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
+const A_ = t => V('A', t), B_ = t => V('B', t), C_ = t => V('C', t), T_ = t => V('T', t), Ea_ = t => V('Ea', t),
+  dH_ = t => V('dH', t), v_ = t => V('v', t);
+
+function colores(){
+  const g = n => css(n);
+  return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
+    A:g('--c-A'), B:g('--c-B'), C:g('--c-C'), T:g('--c-T'), Ea:g('--c-Ea'), dH:g('--c-dH'), v:g('--c-v'),
+    sinE:g('--c-sinE'), malO:g('--c-malO'), metal:g('--vidrio'), mono:g('--mono'), font:g('--font') };
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, x1, y1, x2, y2){ ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
+function rr(ctx, x, y, w, h, r){ ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h); }
+function rotulo(ctx, c, x, y, t, color, align, peso, tam){
+  ctx.font = `${peso || 700} ${tam || 12}px ${c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+  ctx.fillStyle = color; ctx.fillText(t, x, y);
+}
+function flecha(ctx, x1, y1, x2, y2, col, lw){
+  ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = lw || 2; linea(ctx, x1, y1, x2, y2);
+  const a = Math.atan2(y2 - y1, x2 - x1), s = 7;
+  ctx.beginPath(); ctx.moveTo(x2, y2); ctx.lineTo(x2 - s*Math.cos(a - 0.45), y2 - s*Math.sin(a - 0.45)); ctx.lineTo(x2 - s*Math.cos(a + 0.45), y2 - s*Math.sin(a + 0.45)); ctx.closePath(); ctx.fill();
+}
+
+// Las figuras. A: círculo con una marca en su lado reactivo (el arco de ±60° alrededor de p.ang, el mismo que usa
+// el motor). B: cuadrado redondeado. C: A y B unidos. Cada figura es una porción, no una molécula.
+function figura(ctx, c, tipo, x, y, R, ang, conMarca, hl){
+  ctx.save();
+  if (tipo === 'A'){
+    ctx.fillStyle = c.A; ctx.beginPath(); ctx.arc(x, y, R, 0, Math.PI*2); ctx.fill();
+    if (conMarca){ ctx.strokeStyle = c.ink; ctx.lineWidth = Math.max(2, R*0.32); ctx.lineCap = 'round'; ctx.beginPath(); ctx.arc(x, y, R + ctx.lineWidth*0.5 + 0.5, ang - Math.PI/3, ang + Math.PI/3); ctx.stroke(); }
+    if (hl){ ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(x, y, R + 4.5, 0, Math.PI*2); ctx.stroke(); }
+  } else if (tipo === 'B'){
+    const l = R*1.72; ctx.fillStyle = c.B; rr(ctx, x - l/2, y - l/2, l, l, R*0.42); ctx.fill();
+    if (hl){ ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; rr(ctx, x - l/2 - 3.5, y - l/2 - 3.5, l + 7, l + 7, R*0.6); ctx.stroke(); }
+  } else {
+    // C mide 1,4 veces el radio de A en el motor. Se dibuja girada, con su parte A y su parte B.
+    const Rc = R*1.4; ctx.translate(x, y); ctx.rotate(ang || 0);
+    ctx.fillStyle = c.C;
+    ctx.beginPath(); ctx.arc(-Rc*0.42, 0, Rc*0.6, 0, Math.PI*2); ctx.fill();
+    const l = Rc*1.05; rr(ctx, Rc*0.42 - l/2, -l/2, l, l, Rc*0.22); ctx.fill();
+    ctx.strokeStyle = c.paper; ctx.lineWidth = 1.2; linea(ctx, -Rc*0.02, -Rc*0.42, -Rc*0.02, Rc*0.42);
+    if (hl){ ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.ellipse(0, 0, Rc*1.25, Rc*0.85, 0, 0, Math.PI*2); ctx.stroke(); }
+  }
+  ctx.restore();
+}
+// Marcas de los choques A–B: anillo (eficaz, en el color de C), cruz (sin energía, gris), flecha que gira (mal orientado).
+function marcaChoque(ctx, c, tipo, x, y, s, alfa){
+  ctx.save(); ctx.globalAlpha = alfa === undefined ? 1 : alfa; ctx.lineCap = 'round'; ctx.lineWidth = 2.4;
+  if (tipo === 'eficaz'){ ctx.strokeStyle = c.C; ctx.beginPath(); ctx.arc(x, y, s, 0, Math.PI*2); ctx.stroke(); }
+  else if (tipo === 'energia'){ ctx.strokeStyle = c.sinE; const d = s*0.62; linea(ctx, x - d, y - d, x + d, y + d); linea(ctx, x - d, y + d, x + d, y - d); }
+  else {
+    ctx.strokeStyle = c.malO; ctx.fillStyle = c.malO; const r = s*0.72, a0 = -0.3*Math.PI, a1 = 1.25*Math.PI;
+    ctx.beginPath(); ctx.arc(x, y, r, a0, a1); ctx.stroke();
+    const ex = x + r*Math.cos(a1), ey = y + r*Math.sin(a1), tx = -Math.sin(a1), ty = Math.cos(a1), k = s*0.42;
+    ctx.beginPath(); ctx.moveTo(ex + tx*k*0.9, ey + ty*k*0.9); ctx.lineTo(ex + k*0.6*Math.cos(a1) - tx*k*0.2, ey + k*0.6*Math.sin(a1) - ty*k*0.2);
+    ctx.lineTo(ex - k*0.6*Math.cos(a1) - tx*k*0.2, ey - k*0.6*Math.sin(a1) - ty*k*0.2); ctx.closePath(); ctx.fill();
+  }
+  ctx.restore();
+}
+const svgFig = {
+  A: (marca) => `<svg width="16" height="16" aria-hidden="true"><circle cx="8" cy="8" r="5" fill="var(--c-A)"/>${marca ? '<path d="M12.4 4.6 A6.4 6.4 0 0 1 12.4 11.4" stroke="var(--ink)" stroke-width="2" fill="none" stroke-linecap="round"/>' : ''}</svg>`,
+  B: () => `<svg width="16" height="16" aria-hidden="true"><rect x="3" y="3" width="10" height="10" rx="2.6" fill="var(--c-B)"/></svg>`,
+  C: () => `<svg width="22" height="16" aria-hidden="true"><circle cx="7" cy="8" r="5" fill="var(--c-C)"/><rect x="10" y="3.5" width="9" height="9" rx="2" fill="var(--c-C)"/></svg>`,
+  eficaz: () => `<svg width="16" height="16" aria-hidden="true"><circle cx="8" cy="8" r="5.5" stroke="var(--c-C)" stroke-width="2.2" fill="none"/></svg>`,
+  energia: () => `<svg width="16" height="16" aria-hidden="true"><path d="M4 4 L12 12 M4 12 L12 4" stroke="var(--c-sinE)" stroke-width="2.2" stroke-linecap="round"/></svg>`,
+  orientacion: () => `<svg width="16" height="16" aria-hidden="true"><path d="M11 3.6 A5 5 0 1 0 12.6 9" stroke="var(--c-malO)" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M8.6 1.6 L12.6 3.2 L10 6.4 Z" fill="var(--c-malO)"/></svg>`,
+};
+
+/* ----- Cuentas por detrás (sin dibujar) -----
+   Una caja sola fluctúa mucho. Para comparar rapideces se cuentan varias cajas, con otras semillas, en pedacitos
+   para no trabar la animación. Cola de tareas que avanza unos milisegundos en cada cuadro. */
+const TAREAS = [];
+// modos: en qué pestaña se usa el resultado ('m1', 'm2'). Solo avanzan las de la pestaña visible; primero = adelante.
+function tarea(gen, modos, primero){ const t = { gen, modos, listo:null, hecho:false, valor:null }; if (primero) TAREAS.unshift(t); else TAREAS.push(t); return t; }
+function avanzarTareas(ms){
+  const fin = performance.now() + ms, visibles = ['m1', 'm2'].filter(m => !document.getElementById(m).hidden);
+  while (performance.now() < fin){
+    const t = TAREAS.find(q => q.modos.some(m => visibles.includes(m))); if (!t) return;
+    const r = t.gen.next();
+    if (r.done){ TAREAS.splice(TAREAS.indexOf(t), 1); t.hecho = true; t.valor = r.value; if (t.listo) t.listo(r.value); }
+  }
+}
+// Promedio de A y C contra t en n cajas iguales (semillas distintas). prep(caja) se aplica al crearla.
+function* promedio(o, dur, n, sem0, prep){
+  const curvas = [];
+  for (let k = 0; k < n; k++){
+    const c = MC.caja({ ...o, semilla:sem0 + k }); if (prep) prep(c);
+    while (c.t < dur){ for (let j = 0; j < 8; j++) c.paso(0.05); yield; }
+    curvas.push(c.historial);
+  }
+  const m = Math.min(...curvas.map(h => h.length)), r = [];
+  for (let i = 0; i < m; i++){ let A = 0, C = 0; for (const h of curvas){ A += h[i].A; C += h[i].C; } r.push({ t:curvas[0][i].t, A:A/n, C:C/n }); }
+  return r;
+}
+// Choques contados en n cajas que no reaccionan (reaccionar:false): 2 s de calentamiento y luego dur segundos.
+// Semillas al azar: cada vez que se abre la página, la cuenta sale un poco distinta. Devuelve por segundo.
+function* contar(o, dur, n, prep){
+  const s = { choquesAB:0, eficaces:0, sinEnergia:0, malOrientados:0 };
+  for (let k = 0; k < n; k++){
+    const c = MC.caja({ ...o, reaccionar:false, semilla:1 + Math.floor(Math.random()*1e9) }); if (prep) prep(c);
+    while (c.t < 2){ for (let j = 0; j < 6; j++) c.paso(0.05); yield; }
+    c.reiniciarCuenta(); const t0 = c.t;
+    while (c.t - t0 < dur){ for (let j = 0; j < 6; j++) c.paso(0.05); yield; }
+    for (const q in s) s[q] += c.cuenta[q];
+  }
+  for (const q in s) s[q] /= n*dur;
+  s.cajas = n; s.dur = dur; s.choquesTot = s.choquesAB*n*dur; s.eficacesTot = s.eficaces*n*dur;
+  return s;
+}
+// Lo que se calcula al abrir la página: los choques a 300 K y a 400 K (paso 6) y el promedio de la caja del paso
+// a paso, con y sin catalizador (gráfica del paso 3 y de la pregunta 3 de "¿Qué pasa si…?").
+const BASE = { nA:30, nB:30, T:300, Ea:EA };
+const FONDO = {
+  prom: tarea(promedio(BASE, 120, 3, 40), ['m1', 'm2']),
+  med300: tarea(contar(BASE, 4, 4), ['m1']), med400: tarea(contar({ ...BASE, T:400 }, 4, 4), ['m1']),
+  promCat: tarea(promedio(BASE, 120, 3, 40, c => c.catalizador(EA_CAT)), ['m1', 'm2']),
+};
+// Valor de una curva promedio en el instante t (interpolación lineal).
+function enT(curva, t, campo){
+  if (!curva || !curva.length) return NaN;
+  if (t <= curva[0].t) return curva[0][campo];
+  for (let i = 1; i < curva.length; i++) if (curva[i].t >= t){ const a = curva[i-1], b = curva[i], f = (t - a.t)/(b.t - a.t); return a[campo] + f*(b[campo] - a[campo]); }
+  return NaN;
+}
+// Rapidez en t, como la pendiente de la curva promedio de A (cuántas porciones de A se gastan por segundo).
+function rapidezEn(curva, t){ const h = 3, a = enT(curva, Math.max(0, t - h), 'A'), b = enT(curva, t + h, 'A'); return (a - b)/(Math.min(t, h) + h); }
+
+/* ----- La escena: caja, termómetro, contadores, histograma, gráfica y perfil -----
+   E.vista dice qué se ve. Antes de responder una predicción la caja queda congelada y los paneles dicen
+   "Responde para ver…": nada regala la respuesta. */
+const ESCENAS = [];
+function crearEscena(cv, idDesc, modoId, idLey, idVel){
+  const E = { sim:null, vista:{}, hl:null, casa:new WeakMap(), ultDesc:0, modoId, vel:1, base:null, marcas:[], fondo:FONDO };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, Lz = null, llaveLz = '';
+  const llave = w => { const v = E.vista; return `${w}|${!!v.perfil}|${v.phPerfil === ''}|${!!v.cont}|${!!v.hist}|${!!v.graf}`; };
+  function layout(w){
+    const v = E.vista;
+    if (w >= 560){
+      const wL = Math.round(w*0.47), xr = wL + 26, wr = w - xr - 14;
+      const s = Math.round(Math.min(wL - 14 - 40, 520 - 44 - 128)), sinPerfil = !v.perfil && v.phPerfil === '';
+      const h = Math.max(44 + s + 16 + 124, sinPerfil ? 350 : 530);
+      return { H:h, eq:{ x:14, y:22, max:wL }, box:{ x:14, y:44, s }, termo:{ x:14 + s + 22, y:44 + 26, h:s - 60 },
+        cont:{ x:14, y:44 + s + 16, w:wL - 14 }, hist:{ x:xr + 30, y:30, w:wr - 34, h:96 },
+        graf:{ x:xr + 30, y:184, w:wr - 34, h:116 }, perfil:sinPerfil ? null : { x:xr, y:362, w:wr, h:146 } };
+    }
+    let y = 34;
+    const s = Math.round(Math.min(w - 24 - 40, 270));
+    const box = { x:12, y, s }; y += s + 14;
+    // En el celular, los paneles que todavía no se ven ocupan poco, para que las opciones queden más arriba.
+    const cont = { x:12, y, w:w - 24, ph:38 }; y += v.cont ? 124 : 48;
+    const hh = v.hist ? 78 : 0, hist = { x:42, y:y + 18, w:w - 42 - 14, h:hh }; y += v.hist ? 18 + hh + 34 : 50;
+    const hg = v.graf ? 112 : 0, graf = { x:42, y:y + 18, w:w - 42 - 14, h:hg }; y += v.graf ? 18 + hg + 34 : 50;
+    let perfil = null; if (v.perfil){ perfil = { x:12, y:y + 4, w:w - 24, h:132 }; y += 4 + 132 + 32; }
+    return { H:y, eq:{ x:12, y:18, max:w - 8 }, box, termo:{ x:box.x + s + 22, y:box.y + 26, h:s - 60 }, cont, hist, graf, perfil };
+  }
+  E.resize = () => {
+    const w = cv.clientWidth; if (!w) return;
+    Lz = layout(w); llaveLz = llave(w); const h = Lz.H, dpr = window.devicePixelRatio || 1;
+    if (w !== W || h !== H){ W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); ctx.setTransform(dpr,0,0,dpr,0,0); }
+  };
+  new ResizeObserver(() => { E.resize(); E.dibujar(); }).observe(cv);
+
+  function ecuacion(c, p){
+    const s = E.sim, v = E.vista; let x = p.x;
+    ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
+    // Lo que no entra en el ancho se omite (en el celular), nunca se corta a medias.
+    const pieza = (t, col, peso, tam, fuente) => { ctx.font = `${peso || 800} ${tam || 16}px ${fuente || c.mono}`; const w = ctx.measureText(t).width; if (x + w > p.max) return; ctx.fillStyle = col; ctx.fillText(t, x, p.y); x += w; };
+    pieza('A', c.A); pieza(' + ', c.ink, 700); pieza('B', c.B); pieza(' → ', c.ink, 700); pieza('C', c.C);
+    if (v.termo){ x += 12; pieza(`T = ${fmt(s.T, 0)} K`, c.T, 800, 12); }
+    if (v.eaTxt){ x += 10; pieza(`Ea = ${fmt(s.EaEfectiva(), 0)}`, c.Ea, 800, 12); }
+    if (s.cat !== null && v.catTxt !== false){ x += 10; pieza('con catalizador', c.ink, 700, 12, c.font); }
+    if (!s.orientacion){ x += 10; pieza('cualquier lado sirve', c.ink, 700, 12, c.font); }
+  }
+  function caja(c, b){
+    const s = E.sim, v = E.vista, S = b.s, R = s.r*S, corre = !v.congelada;
+    ctx.save();
+    rr(ctx, b.x, b.y, S, S, 12); ctx.fillStyle = c.paper; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = c.metal; ctx.stroke();
+    ctx.beginPath(); rr(ctx, b.x + 1.5, b.y + 1.5, S - 3, S - 3, 10); ctx.clip();
+    const pos = p => {
+      // Con movimiento reducido, cada porción se queda en su lugar: solo cambia de forma.
+      if (!RM) return [b.x + p.x*S, b.y + p.y*S, p.ang];
+      let q = E.casa.get(p); if (!q){ q = { x:0.04 + Math.random()*0.92, y:0.04 + Math.random()*0.92, a:p.ang }; E.casa.set(p, q); }
+      return [b.x + q.x*S, b.y + q.y*S, q.a];
+    };
+    const edadMax = 0.6*E.vel;
+    // Anillo donde se acaba de formar una C (sigue a la C nueva).
+    if (corre) for (const p of s.parts){
+      if (p.tipo !== 'C') continue; const edad = s.t - p.cambio; if (edad < 0 || edad > edadMax*1.4) continue;
+      const [x, y] = pos(p), f = edad/(edadMax*1.4);
+      marcaChoque(ctx, c, 'eficaz', x, y, R*(RM ? 2.2 : 1.8 + 2.2*f), RM ? 1 : 1 - f*0.8);
+    }
+    for (const p of s.parts){ const [x, y, a] = pos(p); figura(ctx, c, p.tipo, x, y, R, a, p.tipo === 'A' && s.orientacion, E.hl === p.tipo); }
+    // Choques que no formaron C: cruz (sin energía) o flecha que gira (mal orientado), donde chocaron.
+    if (corre && v.destellos === 'todos' && !RM){
+      for (let i = s.eventos.length - 1; i >= 0; i--){
+        const e = s.eventos[i], edad = s.t - e.t; if (edad > edadMax) break;
+        if (e.tipo === 'eficaz') continue;
+        marcaChoque(ctx, c, e.tipo, b.x + e.x*S, b.y + e.y*S, R*1.25, 1 - 0.7*edad/edadMax);
+      }
+    }
+    ctx.restore();
+    if (v.congelada && v.aviso){ ctx.font = `800 12px ${c.font}`; ctx.fillStyle = c.ink; ctx.textAlign = 'left'; ctx.textBaseline = 'bottom'; ctx.fillText(v.aviso, b.x + 4, b.y + S + 14); }
+  }
+  function termometro(c, t){
+    const s = E.sim; if (!E.vista.termo) return;
+    const x = t.x, y = t.y, h = t.h;
+    ctx.save();
+    rr(ctx, x - 4, y, 8, h, 4); ctx.fillStyle = c.card; ctx.fill(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.3; ctx.stroke();
+    ctx.beginPath(); ctx.arc(x, y + h + 5, 8, 0, Math.PI*2); ctx.fillStyle = c.T; ctx.fill();
+    const f = clamp((s.T - 200)/320, 0, 1); ctx.fillStyle = c.T; ctx.fillRect(x - 2, y + h - f*(h - 4), 4, f*(h - 4) + 2);
+    if (E.hl === 'T'){ ctx.strokeStyle = c.ink; ctx.lineWidth = 2; rr(ctx, x - 7, y - 3, 14, h + 20, 7); ctx.stroke(); }
+    ctx.font = `800 12px ${c.mono}`; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom'; ctx.fillStyle = c.T;
+    ctx.fillText(`${fmt(s.T, 0)} K`, x, y - 5);
+    ctx.restore();
+  }
+  function placeholder(c, b, h, t){
+    ctx.save(); ctx.setLineDash([4, 4]); ctx.strokeStyle = c.line; ctx.lineWidth = 1.5; rr(ctx, b.x, b.y, b.w, h, 10); ctx.stroke(); ctx.restore();
+    ctx.font = `700 12px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(t, b.x + b.w/2, b.y + h/2);
+  }
+  // Contadores del último segundo y, debajo, cómo se reparten todos los choques A–B desde el último cambio.
+  function contadores(c, b){
+    const s = E.sim, v = E.vista;
+    if (!v.cont){ placeholder(c, b, W < 560 ? b.ph : 92, v.phCont || 'Los contadores aparecen más adelante'); return; }
+    const u = s.ultimos(1), full = v.cont === 'todos';
+    ctx.font = `700 11px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+    ctx.fillText('Choques A–B en el último segundo', b.x, b.y);
+    const filas = [['choques A–B', u.choquesAB, c.ink, null], ['con energía suficiente (E ≥ Ea)', u.eficaces + u.malOrientados, c.ink, 'Ea'], ['eficaces: forman C', u.eficaces, c.C, 'eficaz']];
+    filas.forEach(([t, n, col, ic], j) => {
+      const y = b.y + 24 + j*20;
+      if (!full && j > 0){ ctx.font = `700 12px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText(j === 1 ? 'Cuáles sirven: en el paso 4' : '', b.x + 22, y); return; }
+      if (ic === 'eficaz') marcaChoque(ctx, c, 'eficaz', b.x + 8, y, 5.5);
+      else if (ic === 'Ea'){ ctx.strokeStyle = c.Ea; ctx.lineWidth = 3; linea(ctx, b.x + 8, y - 7, b.x + 8, y + 7); }
+      else { ctx.fillStyle = c.ink; ctx.font = `800 11px ${c.mono}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('A·B', b.x + 8, y); }
+      ctx.font = `700 13px ${c.font}`; ctx.fillStyle = col; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText(t, b.x + 22, y);
+      ctx.textAlign = 'right'; ctx.font = `800 15px ${c.mono}`; ctx.fillText(String(n), b.x + b.w - 4, y);
+    });
+    if (!full) return;
+    // Barra con el reparto acumulado: gris (sin energía), violeta (mal orientados), fucsia (eficaces).
+    const k = s.cuenta, b0 = E.base || { choquesAB:0, eficaces:0, sinEnergia:0, malOrientados:0 };
+    const n = k.choquesAB - b0.choquesAB, y = b.y + 86, x0 = b.x, w = b.w;
+    if (n < 1){ ctx.font = `700 11px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText('Reparto: esperando choques…', x0, y + 6); return; }
+    const partes = [[k.sinEnergia - b0.sinEnergia, c.sinE], [k.malOrientados - b0.malOrientados, c.malO], [k.eficaces - b0.eficaces, c.C]];
+    let x = x0; ctx.fillStyle = c.grid; rr(ctx, x0, y, w, 12, 4); ctx.fill();
+    ctx.save(); rr(ctx, x0, y, w, 12, 4); ctx.clip();
+    for (const [m, col] of partes){ const ww = w*m/n; ctx.fillStyle = col; ctx.fillRect(x, y, ww, 12); x += ww; }
+    ctx.restore();
+    ctx.font = `700 11px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+    ctx.fillText(`De ${n} choques A–B: ${pct((k.eficaces - b0.eficaces + k.malOrientados - b0.malOrientados)/n, 0)} con energía, ${pct((k.eficaces - b0.eficaces)/n, 1)} eficaces`, x0, y + 15);
+  }
+  // Histograma de la energía de los choques A–B, según la teoría: la fracción con E ≥ x es e^(−x/RT)
+  // (MC.fraccionEficaz). Las barras bajo Ea van en gris (no les alcanza); las de encima, en tinta.
+  function histograma(c, b){
+    const s = E.sim, v = E.vista;
+    if (!v.hist){ placeholder(c, { x:b.x - 28, y:b.y - 16, w:b.w + 28 }, b.h + 40, v.phHist || 'El histograma de energía aparece en el paso 4'); return; }
+    const dE = 1000, nb = 16, ymax = 0.42, Ea = s.EaEfectiva();
+    const X = e => b.x + e/(dE*nb)*b.w, Y = f => b.y + b.h - f/ymax*b.h;
+    const barras = T => { const r = []; for (let k = 0; k < nb; k++) r.push(MC.fraccionEficaz(k*dE, T) - MC.fraccionEficaz((k + 1)*dE, T)); return r; };
+    ctx.save();
+    ctx.strokeStyle = c.grid; ctx.lineWidth = 1; ctx.font = `600 10px ${c.mono}`; ctx.fillStyle = c.muted; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    for (const f of [0, 0.2, 0.4]){ linea(ctx, b.x, Y(f), b.x + b.w, Y(f)); ctx.fillText(`${fmt(100*f, 0)} %`, b.x - 4, Y(f)); }
+    const fb = barras(s.T), bw = b.w/nb;
+    fb.forEach((f, k) => {
+      const x0 = X(k*dE), x1 = X((k + 1)*dE) - 1, xe = clamp(X(Ea), x0, x1), y = Y(f);
+      if (xe > x0){ ctx.fillStyle = c.sinE; ctx.globalAlpha = .45; ctx.fillRect(x0, y, xe - x0, b.y + b.h - y); }
+      if (x1 > xe){ ctx.fillStyle = c.ink; ctx.globalAlpha = 1; ctx.fillRect(xe, y, x1 - xe, b.y + b.h - y); }
+      ctx.globalAlpha = 1;
+    });
+    // La curva de otra temperatura, para comparar (a trazos).
+    if (v.fantasma && Math.abs(v.fantasma - s.T) > 1){
+      ctx.strokeStyle = c.muted; ctx.lineWidth = 1.6; ctx.setLineDash([4, 3]); ctx.beginPath();
+      barras(v.fantasma).forEach((f, k) => { const x0 = X(k*dE), x1 = X((k + 1)*dE) - 1; if (k) ctx.lineTo(x0, Y(f)); else ctx.moveTo(x0, Y(f)); ctx.lineTo(x1, Y(f)); });
+      ctx.stroke(); ctx.setLineDash([]);
+      rotulo(ctx, c, X(2.5*dE), Y(barras(v.fantasma)[2]) - 10, `a ${fmt(v.fantasma, 0)} K`, c.muted, 'left', 700, 10);
+    }
+    ctx.restore();
+    ctx.strokeStyle = c.muted; ctx.lineWidth = 1.4; linea(ctx, b.x, b.y + b.h, b.x + b.w, b.y + b.h);
+    ctx.font = `600 10px ${c.mono}`; ctx.fillStyle = c.muted; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    for (let e = 0; e <= 16000; e += 4000) ctx.fillText(fmt(e, 0), clamp(X(e), b.x + 8, b.x + b.w - 14), b.y + b.h + 3);
+    // Líneas de Ea: la de ahora, continua; la de comparación (sin catalizador, o la otra barrera), a trazos.
+    const lineaEa = (e, trazos, txt) => {
+      ctx.save(); ctx.strokeStyle = c.Ea; ctx.lineWidth = E.hl === 'Ea' ? 4.5 : 3; if (trazos) ctx.setLineDash([5, 4]);
+      linea(ctx, X(e), b.y - 2, X(e), b.y + b.h); ctx.restore();
+      rotulo(ctx, c, X(e) + 4, b.y + 6 + (trazos ? 16 : 0), txt, c.Ea, 'left', 800, 11);
+    };
+    for (const o of (v.otrasEa || [])) if (Math.abs(o.e - Ea) > 1) lineaEa(o.e, true, o.t);
+    lineaEa(Ea, false, `Ea = ${fmt(Ea, 0)}`);
+    ctx.font = `700 11px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'left'; ctx.textBaseline = 'bottom';
+    ctx.fillText('Energía de los choques A–B (teoría)', b.x - 28, b.y - 4);
+    rotulo(ctx, c, b.x + b.w - 2, b.y + 8, `E ≥ Ea: ${pct(MC.fraccionEficaz(Ea, s.T), 1)}`, c.ink, 'right', 800, 11);
+    ctx.font = `700 10px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'right'; ctx.textBaseline = 'top';
+    ctx.fillText('E del choque (J/mol)', b.x + b.w, b.y + b.h + 15);
+  }
+  // Gráfica de A y C contra el tiempo (la caja que se ve), con el promedio de 3 cajas y la rapidez como pendiente.
+  function grafica(c, b){
+    const s = E.sim, v = E.vista;
+    if (!v.graf){ placeholder(c, { x:b.x - 28, y:b.y - 16, w:b.w + 28 }, b.h + 40, v.phGraf || 'La gráfica aparece más adelante'); return; }
+    const prom = E.fondo.prom.valor, promCat = E.fondo.promCat.valor;
+    let x0 = 0, x1, series = [];
+    if (v.graf === 'cat'){
+      x1 = 120;
+      if (prom) series.push({ pts:prom.map(h => [h.t, h.C]), col:c.C, fina:true, t:'C sin catalizador' });
+      if (promCat) series.push({ pts:promCat.map(h => [h.t, h.C]), col:c.C, t:'C con catalizador' });
+    } else {
+      x1 = Math.min(200, Math.max(v.prom ? 120 : 40, Math.ceil((s.t + 8)/20)*20)); if (s.t > 196){ x1 = s.t + 4; x0 = x1 - 200; }
+      if (v.prom && prom){ series.push({ pts:prom.map(h => [h.t, h.A]), col:c.A, fina:true, t:'' }, { pts:prom.map(h => [h.t, h.C]), col:c.C, fina:true, t:'' }); }
+      series.push({ pts:s.historial.map(h => [h.t, h.A]), col:c.A, t:'A', gruesa:E.hl === 'A' }, { pts:s.historial.map(h => [h.t, h.C]), col:c.C, t:'C', gruesa:E.hl === 'C' });
+    }
+    const ymax = Math.max(30, ...s.historial.map(h => Math.max(h.A, h.C))), y1 = ymax <= 32 ? 35 : Math.ceil(ymax/10)*10;
+    const X = t => b.x + (t - x0)/(x1 - x0)*b.w, Y = y => b.y + b.h - y/y1*b.h;
+    ctx.save();
+    ctx.fillStyle = c.paper; ctx.fillRect(b.x, b.y, b.w, b.h);
+    ctx.strokeStyle = c.grid; ctx.lineWidth = 1; ctx.font = `600 10px ${c.mono}`; ctx.fillStyle = c.muted; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    for (let y = 0; y <= y1 + 1e-9; y += 10){ linea(ctx, b.x, Y(y), b.x + b.w, Y(y)); ctx.fillText(String(y), b.x - 5, Y(y)); }
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    const pt = (x1 - x0) > 100 ? 40 : 10;
+    for (let t = Math.ceil(x0/pt)*pt; t <= x1 + 1e-9; t += pt){ linea(ctx, X(t), b.y, X(t), b.y + b.h); ctx.fillText(fmt(t, 0), clamp(X(t), b.x + 6, b.x + b.w - 8), b.y + b.h + 4); }
+    if (v.graf === 'cat'){
+      ctx.setLineDash([5, 4]); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.3; linea(ctx, b.x, Y(30), b.x + b.w, Y(30)); ctx.setLineDash([]);
+      rotulo(ctx, c, b.x + b.w - 4, Y(30) - 9, '30: se acabaron A y B', c.muted, 'right', 700, 10);
+    }
+    // Cambios hechos a mano en el explorador: rayas con su número arriba (la lista está en las lecturas).
+    if (v.graf !== 'cat'){
+      ctx.setLineDash([3, 3]); ctx.strokeStyle = c.muted; ctx.lineWidth = 1;
+      E.marcas.forEach((m, k) => { if (m.t < x0 || m.t > x1) return; linea(ctx, X(m.t), b.y, X(m.t), b.y + b.h); });
+      ctx.setLineDash([]); ctx.font = `800 9px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      let xPrev = -1e9;
+      E.marcas.forEach((m, k) => { if (m.t < x0 || m.t > x1) return; const x = Math.max(X(m.t), xPrev + 13); xPrev = x;
+        ctx.fillStyle = c.muted; ctx.beginPath(); ctx.arc(x, b.y + b.h - 8, 6, 0, Math.PI*2); ctx.fill(); ctx.fillStyle = c.paper; ctx.fillText(String(k + 1), x, b.y + b.h - 8); });
+    }
+    ctx.beginPath(); ctx.rect(b.x, b.y - 2, b.w, b.h + 4); ctx.clip();
+    for (const se of series){
+      ctx.strokeStyle = se.col; ctx.lineWidth = se.fina ? 1.6 : se.gruesa ? 4 : 2.6; ctx.globalAlpha = se.fina ? .5 : 1; ctx.beginPath(); let i = 0;
+      for (const [t, y] of se.pts){ if (t < x0 - 0.3) continue; if (t > x1 + 0.3) break; if (i++) ctx.lineTo(X(t), Y(y)); else ctx.moveTo(X(t), Y(y)); }
+      ctx.stroke(); ctx.globalAlpha = 1;
+    }
+    // La rapidez: pendiente del promedio de A en el instante de la caja.
+    let vTxt = '';
+    if (v.tang && prom && s.t > 0.5 && s.t < prom[prom.length - 1].t - 4){
+      const yA = enT(prom, s.t, 'A'), r = rapidezEn(prom, s.t), d = Math.min(14, (x1 - x0)*0.12);
+      ctx.strokeStyle = c.v; ctx.lineWidth = E.hl === 'v' ? 4.5 : 3; ctx.lineCap = 'round';
+      linea(ctx, X(s.t - d), Y(yA + r*d), X(s.t + d), Y(yA - r*d));
+      ctx.fillStyle = c.v; ctx.beginPath(); ctx.arc(X(s.t), Y(yA), 3.5, 0, Math.PI*2); ctx.fill();
+      vTxt = `v ≈ ${fmt(r, 2)} porciones de A por segundo`;
+      ctx.restore(); ctx.save();
+      ctx.font = `800 11px ${c.font}`; const wv = ctx.measureText(vTxt).width;
+      rotulo(ctx, c, clamp(X(s.t + d) + 4, b.x + 4, b.x + b.w - wv - 4), clamp(Y(yA - r*d) + 12, b.y + 10, b.y + b.h - 10), vTxt, c.v, 'left', 800, 11);
+    }
+    ctx.restore();
+    ctx.strokeStyle = c.muted; ctx.lineWidth = 1.4; linea(ctx, b.x, b.y + b.h, b.x + b.w, b.y + b.h); linea(ctx, b.x, b.y, b.x, b.y + b.h);
+    // Rótulos al final de cada línea, sin taparse.
+    // En la de catalizador, cada rótulo va debajo de su curva, donde las dos están separadas.
+    if (v.graf === 'cat'){
+      if (promCat) rotulo(ctx, c, X(6), Y(enT(promCat, 6, 'C')) - 12, 'C con catalizador', c.C, 'left', 800, 11);
+      if (prom) rotulo(ctx, c, X(50), Y(enT(prom, 50, 'C')) + 14, 'C sin catalizador', c.C, 'left', 800, 11);
+    }
+    const fines = v.graf === 'cat' ? [] : series.filter(se => se.t).map(se => { const u = [...se.pts].reverse().find(p => p[0] <= x1); return u ? { se, x:X(u[0]), y:Y(u[1]) } : null; }).filter(Boolean).sort((a, b) => a.y - b.y);
+    let prev = -1e9;
+    for (const f of fines){ const y = Math.max(f.y - 9, prev + 15); prev = y; const al = f.x > b.x + b.w - 110 ? 'right' : 'left'; rotulo(ctx, c, al === 'right' ? Math.min(f.x, b.x + b.w) - 4 : f.x + 5, clamp(y, b.y + 8, b.y + b.h - 8), f.se.t, f.se.col, al, 800, 11); }
+    ctx.font = `700 11px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'left'; ctx.textBaseline = 'bottom';
+    const tit = v.graf === 'cat' ? 'Porciones de C · promedio de 3 cajas' : (v.prom ? 'Porciones · gruesa: esta caja · fina: promedio de 3' : 'Porciones en la caja');
+    ctx.fillText(tit, b.x - 28, b.y - 4);
+    if ((v.prom || v.graf === 'cat') && !prom){ ctx.fillStyle = c.muted; ctx.textAlign = 'right'; ctx.fillText('calculando el promedio…', b.x + b.w, b.y - 4); }
+    ctx.font = `800 11px ${c.font}`; ctx.fillStyle = c.ink; ctx.textAlign = 'right'; ctx.textBaseline = 'top'; ctx.fillText('t (s)', b.x + b.w, b.y + b.h + 15);
+  }
+  // Perfil de energía (MC.perfil): eje horizontal = avance de la reacción, no el tiempo.
+  function perfil(c, b){
+    const v = E.vista; if (!b) return;
+    if (!v.perfil){ placeholder(c, b, b.h + 10, v.phPerfil || 'El perfil de energía aparece en el paso 7'); return; }
+    const conCat = v.perfil === 'cat', P = MC.perfil(conCat ? { Ea:EA, dH:DH, EaCat:EA_CAT } : { Ea:EA, dH:DH });
+    const lo = P.dH - 1500, hi = P.Ea + 1300, x0 = b.x + 30, x1 = b.x + b.w - 6, w = x1 - x0;
+    const Y = e => b.y + 12 + (hi - e)/(hi - lo)*(b.h - 12);
+    const xR = x0 + w*0.24, xP = x0 + w*0.46, xC = x0 + w*0.68;
+    const loma = (pico, trazos, gruesa) => {
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = gruesa ? 2.6 : 1.8; if (trazos) ctx.setLineDash([6, 4]);
+      ctx.beginPath(); ctx.moveTo(x0, Y(0)); ctx.lineTo(xR, Y(0));
+      ctx.bezierCurveTo(xR + w*0.11, Y(0), xP - w*0.1, Y(pico), xP, Y(pico));
+      ctx.bezierCurveTo(xP + w*0.1, Y(pico), xC - w*0.11, Y(P.dH), xC, Y(P.dH)); ctx.lineTo(x1, Y(P.dH)); ctx.stroke(); ctx.restore();
+    };
+    loma(P.Ea, conCat, !conCat); if (conCat) loma(P.EaCat, false, true);
+    ctx.strokeStyle = c.muted; ctx.lineWidth = 1.3; linea(ctx, x0 - 8, b.y + 4, x0 - 8, b.y + b.h + 2); linea(ctx, x0 - 8, b.y + b.h + 2, x1, b.y + b.h + 2);
+    ctx.save(); ctx.translate(x0 - 17, b.y + b.h/2 + 6); ctx.rotate(-Math.PI/2); ctx.font = `700 10px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('energía', 0, 0); ctx.restore();
+    ctx.font = `700 10px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'right'; ctx.textBaseline = 'top'; ctx.fillText('avance de la reacción (no es el tiempo) →', x1, b.y + b.h + 5);
+    // Ea: flechas desde el nivel de los reactivos hasta cada cima.
+    const lw = E.hl === 'Ea' ? 3.5 : 2.2, xa1 = x0 + w*0.09, xa2 = x0 + w*0.17;
+    ctx.save(); ctx.setLineDash([2, 3]); ctx.strokeStyle = c.Ea; ctx.lineWidth = 1; linea(ctx, xa1, Y(P.Ea), xP, Y(P.Ea)); if (conCat) linea(ctx, xa2, Y(P.EaCat), xP, Y(P.EaCat)); ctx.restore();
+    flecha(ctx, xa1, Y(0), xa1, Y(P.Ea) + 1, c.Ea, lw);
+    rotulo(ctx, c, xa1 + 5, Y(P.Ea) + 10, `Ea = ${fmt(P.Ea, 0)}`, c.Ea, 'left', 800, 11);
+    if (conCat){ flecha(ctx, xa2, Y(0), xa2, Y(P.EaCat) + 1, c.Ea, lw); rotulo(ctx, c, xa2 + 5, Y(P.EaCat) - 9, `Ea = ${fmt(P.EaCat, 0)}`, c.Ea, 'left', 800, 11); }
+    // ΔH: del nivel de los reactivos al del producto (el mismo con y sin catalizador).
+    const xh = x0 + w*0.93;
+    ctx.save(); ctx.setLineDash([2, 3]); ctx.strokeStyle = c.dH; ctx.lineWidth = 1; linea(ctx, xR, Y(0), xh + 4, Y(0)); ctx.restore();
+    flecha(ctx, xh, Y(0), xh, Y(P.dH) - 1, c.dH, E.hl === 'dH' ? 3.5 : 2.2);
+    rotulo(ctx, c, xh - 5, (Y(0) + Y(P.dH))/2, `ΔH = ${fmt(P.dH, 0)}`, c.dH, 'right', 800, 11);
+    // Reactivos y producto, debajo de su nivel.
+    ctx.font = `800 12px ${c.mono}`; ctx.textAlign = 'left'; ctx.textBaseline = 'top'; let x = x0 + 2; const yR = Y(0) + 4;
+    for (const [t, col] of [['A', c.A], [' + ', c.ink], ['B', c.B]]){ ctx.fillStyle = col; ctx.fillText(t, x, yR); x += ctx.measureText(t).width; }
+    ctx.fillStyle = c.C; ctx.textAlign = 'left'; ctx.fillText('C', xC + 4, Y(P.dH) + 4);
+    ctx.font = `700 11px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'left'; ctx.textBaseline = 'bottom';
+    ctx.fillText(conCat ? 'Perfil de energía (J/mol) · a trazos: sin catalizador' : 'Perfil de energía (J/mol)', b.x, b.y + 2);
+  }
+  E.dibujar = () => {
+    if (!E.sim) return;
+    const w = cv.clientWidth; if (!w) return;
+    if (!Lz || llaveLz !== llave(w)) E.resize();
+    const c = colores(); ctx.clearRect(0, 0, W, H);
+    ecuacion(c, Lz.eq); caja(c, Lz.box); termometro(c, Lz.termo); contadores(c, Lz.cont);
+    histograma(c, Lz.hist); grafica(c, Lz.graf); perfil(c, Lz.perfil);
+    const ley = leyendaHTML(E.sim, E.vista), el = document.getElementById(idLey);
+    if (el && el.dataset.k !== ley){ el.dataset.k = ley; el.innerHTML = ley; }
+    pintarVel();
+  };
+  // Velocidad de la película: la química no cambia, solo se ve más rápido.
+  const velEl = document.getElementById(idVel);
+  function pintarVel(){
+    const quieta = !!E.vista.congelada, k = `${E.vel}|${quieta}`;
+    if (velEl.dataset.k === k) return; velEl.dataset.k = k;
+    velEl.innerHTML = `<span>Película:</span><span class="seg" role="group" aria-label="Velocidad de la película">${[1, 4].map(n => `<button type="button" data-vel="${n}" aria-pressed="${E.vel === n}"${quieta ? ' disabled' : ''}>${n === 1 ? 'normal' : 'rápida ×4'}</button>`).join('')}</span>`;
+    velEl.querySelectorAll('[data-vel]').forEach(b => b.onclick = () => { E.vel = +b.dataset.vel; pintarVel(); });
+  }
+  // Descripción para lector de pantalla: solo lo que ya se puede saber.
+  E.describir = (forzar) => {
+    if (!forzar) return; // El lector de pantalla habla al cambiar de paso, al responder y al pedirlo, no cada pocos segundos.
+    const s = E.sim, v = E.vista; if (!s) return;
+    const n = s.contar();
+    let t = `Hay ${n.A} porciones de A, ${n.B} de B y ${n.C} de C${v.termo ? `, a ${fmt(s.T, 0)} K` : ''}.`;
+    if (v.congelada) t = `Caja detenida en este instante: ${n.A} porciones de A, ${n.B} de B y ${n.C} de C${v.termo ? `, a ${fmt(s.T, 0)} K` : ''}.`;
+    else if (v.cont){
+      const u = s.ultimos(1);
+      t += v.cont === 'todos' ? ` En el último segundo, ${u.choquesAB} choques A–B: ${u.eficaces + u.malOrientados} con energía suficiente y ${u.eficaces} eficaces, que forman C.` : ` En el último segundo, ${u.choquesAB} choques A–B.`;
+    }
+    if (!v.congelada && v.hist) t += ` Según la teoría, el ${pct(MC.fraccionEficaz(s.EaEfectiva(), s.T), 0)} de los choques alcanza Ea = ${fmt(s.EaEfectiva(), 0)} J/mol.`;
+    if (v.perfil) t += v.perfil === 'cat' ? ` Perfil de energía: sin catalizador la cima está a ${fmt(EA, 0)} J/mol y con catalizador a ${fmt(EA_CAT, 0)}; ΔH es ${fmt(DH, 0)} en los dos.` : ` Perfil de energía: la cima está a ${fmt(EA, 0)} J/mol sobre los reactivos y el producto queda ${fmt(-DH, 0)} J/mol más abajo.`;
+    const el = document.getElementById(idDesc); if (el.textContent !== t) el.textContent = t;
+  };
+  return E;
+}
+// Leyenda con solo lo que se ve en ese momento.
+function leyendaHTML(s, v){
+  const it = [];
+  const hay = s.contar();
+  it.push(`<span>${svgFig.A(s.orientacion)}A · cada círculo, una porción${s.orientacion ? '; la marca es el lado que reacciona' : ''}</span>`);
+  it.push(`<span>${svgFig.B()}B · cada cuadrado, una porción</span>`);
+  if (hay.C || !v.congelada) it.push(`<span>${svgFig.C()}C · A y B unidos</span>`);
+  if (!v.congelada){
+    it.push(`<span>${svgFig.eficaz()}choque eficaz: se forma C</span>`);
+    if (v.destellos === 'todos' && !RM) it.push(`<span>${svgFig.energia()}choque sin energía suficiente</span><span>${svgFig.orientacion()}choque mal orientado</span>`);
+  }
+  if (v.hist || v.perfil || (v.cont === 'todos')) it.push(`<span><i style="background:var(--c-Ea)"></i>Ea · energía de activación</span>`);
+  if (v.hist) it.push(`<span><i style="background:var(--c-sinE)"></i>histograma: barras grises, no alcanzan Ea · en tinta, sí la alcanzan</span>`);
+  if (v.perfil) it.push(`<span><i style="background:var(--c-dH)"></i>ΔH · calor de reacción</span>`);
+  if (v.termo) it.push(`<span><i style="background:var(--c-T)"></i>T · temperatura</span>`);
+  if (v.tang) it.push(`<span><i style="background:var(--c-v)"></i>v · rapidez</span>`);
+  return it.join('');
+}
+// Resaltar en el dibujo la variable que se toca en el texto (regla 4).
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+// Un solo bucle: avanza la caja que está a la vista (si no está congelada), la dibuja y avanza las cuentas de fondo.
+// Con movimiento reducido la química sigue (los contadores cuentan), pero las porciones no se desplazan.
+(function(){
+  let ultimo = performance.now();
+  const tick = now => {
+    const dt = Math.min(0.05, (now - ultimo)/1000); ultimo = now;
+    for (const E of ESCENAS){
+      if (document.getElementById(E.modoId).hidden || !E.sim) continue;
+      if (E.anima) E.anima(dt);
+      if (!E.vista.congelada && dt > 0) E.sim.paso(dt*E.vel);
+      // Paso 1: la caja repite sus primeros segundos en bucle, para no mostrar todavía cómo cambia la rapidez.
+      if (E.vista.bucle && E.sim.t > E.vista.bucle){ E.sim = E.rearmar(); E.casa = new WeakMap(); }
+      E.dibujar();
+    }
+    // Con la caja quieta (esperando una respuesta) sobra tiempo en cada cuadro: las cuentas avanzan más.
+    if (TAREAS.length) avanzarTareas(ESCENAS.some(E => !document.getElementById(E.modoId).hidden && E.vista.congelada) ? 16 : 12);
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+})();
+// Cambio gradual (temperatura). Con movimiento reducido, de una vez.
+function gradual(E, dur, paso, fin){
+  if (RM){ paso(1); E.anima = null; if (fin) fin(); return; }
+  let t = 0;
+  E.anima = dt => { t += dt; const f = Math.min(1, t/dur); paso(f); if (f >= 1){ E.anima = null; if (fin) fin(); } };
+}
+function marcarBase(E){ E.base = { ...E.sim.cuenta }; }
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}" aria-label="Opción ${'abcd'.indexOf(k) + 1}: ${t}"><span class="l">${'abcd'.indexOf(k) + 1}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+const otraVez = `<button type="button" class="btn" data-repetir>Ver de nuevo</button>`;
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso =================
+   Problema guiado de plantillas/cinetica/investigacion.md: A + B → C en una caja a 300 K (la reacción libera calor),
+   30 porciones de A y 30 de B, Ea = 5000 J/mol en la escala de la escena. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'm1', 'ley1', 'vel1');
+const SEM = 13;
+const S = { step:0, max:0, pred:{} };
+const nueva = () => MC.caja({ ...BASE, semilla:SEM });
+const caliente = () => { const s = nueva(); s.temperatura(400); return s; };
+const catalizada = () => { const s = nueva(); s.catalizador(EA_CAT); return s; };
+// El texto de la fuente queda aquí para quien lea el código; la medición guarda solo la categoría, como las demás escenas.
+const RES = (doc, txt) => doc;
+
+const P0 = { id:'cinetica-paso2', ok:'c', opts:[
+  ['a','Se mantiene igual hasta que se acaban A y B','CI2-constante', RES('documentado','Jusniar y otros 2020; revisión vía buscador; sin cifra verificada')],
+  ['b','Aumenta, porque cada vez hay más C en la caja','CI1-cantidad', RES('documentado','Çakmakçı 2010; sin cifra verificada')],
+  ['c','Disminuye, porque quedan menos A y B para chocar'],
+  ['d','Aumenta un rato y después para de golpe','sube-y-para', RES('hipotesis','hipótesis nuestra')]],
+  fb:{ c:'¡Bien! Al principio hay muchas porciones de A y B, y chocan seguido. A medida que se gastan, los choques A–B se hacen más raros y C se forma cada vez más despacio. Mira la gráfica: la curva de C se va aplanando.',
+    a:'Elegiste la 1. La rapidez no se mantiene: depende de cuántas porciones de A y B quedan para chocar, y cada vez quedan menos. Es una idea documentada en Jusniar y otros (2020), sin cifra verificada. La correcta está marcada.',
+    b:'Elegiste la 2. Que haya cada vez más C no quiere decir que se forme más rápido: la rapidez es cuánto C se forma por segundo, y eso baja. Confundir la rapidez con la cantidad de producto es una idea documentada en Çakmakçı (2010), sin cifra verificada. La correcta está marcada.',
+    d:'Elegiste la 4. No para de golpe: se va frenando poco a poco, porque los choques A–B se hacen cada vez más raros. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.' } };
+const P1 = { id:'cinetica-paso5', ok:'b', opts:[
+  ['a','Sí, porque al calentar baja la energía de activación','CI4-baja-Ea', RES('documentado','Çakmakçı 2010; sin cifra verificada')],
+  ['b','Sí, porque más choques alcanzan la energía de activación'],
+  ['c','Sí, pero solo porque hay muchos más choques por segundo','solo-mas-choques', RES('hipotesis','hipótesis nuestra')],
+  ['d','No, porque la reacción ya libera calor por su cuenta','CI3-exotermica', RES('documentado','Çakmakçı 2010; Kolomuç y Tekin 2011; sin cifra verificada')]],
+  fb:{ b:'¡Bien! A 400 K los choques A–B son solo un poco más seguidos, pero muchos más alcanzan la energía de activación. Mira el histograma: se aplana y se estira hacia la derecha, y la línea de Ea no se mueve.',
+    a:'Elegiste la 1. La energía de activación es la altura de la barrera y no cambia al calentar: mira la línea de Ea, se queda en su sitio. Lo que cambia es cuántos choques la alcanzan. Es una idea documentada en Çakmakçı (2010), sin cifra verificada. La correcta está marcada.',
+    c:'Elegiste la 3. Al calentar sí hay más choques por segundo, pero solo unos pocos más. Lo que más pesa es que muchos más choques alcanzan la energía de activación. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.',
+    d:'Elegiste la 4. Calentar acelera toda reacción, libere calor o lo absorba. Lo que depende del calor de reacción es el equilibrio, no la rapidez. Es una idea documentada en Çakmakçı (2010) y en Kolomuç y Tekin (2011), sin cifra verificada. La correcta está marcada.' } };
+const P2 = { id:'cinetica-paso7', ok:'d', opts:[
+  ['a','Les da más energía a las porciones de A y B','CI7-energia', RES('documentado','según revisiones: Kurt y Ayas 2012, entre otros; sin cifra verificada')],
+  ['b','Sube la energía de activación de la reacción','CI7b-sube-Ea', RES('documentado','Kolomuç y Tekin 2011 y otros, según revisiones; sin cifra verificada')],
+  ['c','Hace que la reacción libere más calor','cat-cambia-dH', RES('hipotesis','hipótesis nuestra')],
+  ['d','Abre otro camino, con una barrera más baja']],
+  fb:{ d:'¡Bien! El catalizador abre otro camino, con una barrera más baja. La temperatura no cambia, así que el histograma queda igual: lo que se mueve es la línea de Ea.',
+    a:'Elegiste la 1. El catalizador no cambia la energía de las porciones: la temperatura sigue en 300 K y el histograma no se mueve. Lo que baja es la barrera. Es una idea documentada según revisiones (Kurt y Ayas, 2012, entre otros), sin cifra verificada. La correcta está marcada.',
+    b:'Elegiste la 2. Si la barrera subiera, la reacción iría más lenta. El catalizador la baja. Es una idea documentada en Kolomuç y Tekin (2011) y otros, según una revisión, sin cifra verificada. La correcta está marcada.',
+    c:'Elegiste la 3. El catalizador no cambia ΔH: en el perfil, los reactivos y el producto quedan a la misma altura, con catalizador y sin él. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.' } };
+
+// Vistas: qué se ve en cada paso. 'r' = ya respondió la predicción del paso.
+const PH = { phCont:'Responde para ver los contadores', phHist:'Responde para ver el histograma', phGraf:'Responde para ver la gráfica' };
+const quieta = (extra) => ({ congelada:true, cont:false, hist:false, graf:null, perfil:false, termo:true, destellos:'eficaz', ...PH, ...extra });
+const corre = (extra) => ({ congelada:false, cont:'todos', hist:true, graf:'AC', perfil:false, termo:true, destellos:'todos', ...extra });
+const steps = [
+ { k:'Paso 1', t:'El problema', arma:nueva,
+   vista:() => ({ congelada:false, bucle:4, cont:false, hist:false, graf:null, perfil:false, termo:true, destellos:'eficaz', phCont:'Los contadores aparecen en el paso 3', phGraf:'La gráfica aparece en el paso 3' }),
+   body:() => `<p class="problem">En una caja, ${A_('A')} y ${B_('B')} reaccionan cuando chocan: <span style="white-space:nowrap">A + B → ${C_('C')}</span>, y la reacción libera calor. A ${T_('27 °C')} es lenta. Si se calienta a ${T_('127 °C')}, ¿se forma ${C_('C')} más rápido o más lento? ¿Por qué?</p>
+   <p>En el dibujo, cada círculo es una porción de ${A_('A')}, cada cuadrado una porción de ${B_('B')} y cada figura doble una porción de ${C_('C')} (A y B unidos). Una porción es una cantidad fija de sustancia, no una molécula. Al principio hay 30 de ${A_('A')} y 30 de ${B_('B')}.</p>
+   <p>Las porciones se mueven y chocan. ${A_('A')} tiene una marca oscura: es su lado que reacciona. Cuando una ${C_('C')} se forma, aparece un anillo.</p>
+   <p class="hint">La caja se mantiene a ${T_('300 K')} (27 °C): el calor que libera la reacción se va por las paredes. Por ahora, la caja repite sus primeros 4 segundos.</p>` },
+ { k:'Paso 2', t:'Antes de contar, predice', gate:P0, arma:nueva,
+   vista:r => r ? corre({ cont:'total', hist:false, destellos:'eficaz', prom:true, phHist:'El histograma de energía aparece en el paso 4' }) : quieta({ aviso:'detenida en el instante inicial' }),
+   body:() => `<p>Hay 30 porciones de ${A_('A')} y 30 de ${B_('B')}. Mientras pasa el tiempo, ¿cómo cambia la rapidez con que se forma ${C_('C')}?</p>${opcionesHTML(P0.opts, 'fb')}
+   <p class="hint" id="tras" hidden>Ahora la caja corre. La gráfica muestra cuántas porciones de ${A_('A')} y de ${C_('C')} hay en cada instante. Si quieres verla avanzar más rápido, usa «Película: rápida ×4», debajo del dibujo.</p>` },
+ { k:'Paso 3', t:'La rapidez baja', arma:nueva, sigue:true,
+   vista:() => corre({ cont:'total', hist:false, destellos:'eficaz', prom:true, tang:true, phHist:'El histograma de energía aparece en el paso 4' }),
+   body:() => `<p>La rapidez es cuánto cambia la cantidad por segundo: es la pendiente de la curva. En la gráfica, la raya ${v_('v')} toca la curva de ${A_('A')} en el instante actual.</p>
+   <div class="eqs">
+     <div class="eq"><span class="ex">${v_('v')} = − ${fr('Δ' + A_('[A]'), 'Δt')} = ${fr('Δ' + C_('[C]'), 'Δt')}</span><span class="note">Cada porción de C que se forma gasta una de A y una de B. El signo menos es porque A disminuye.</span></div>
+   </div>
+   <p>Al principio la curva baja empinada; después se va haciendo más chata: ${v_('v')} baja. Con menos ${A_('A')} y ${B_('B')} en la caja, hay menos choques A–B por segundo (mira el contador).</p>
+   <p>La curva gruesa es esta caja: sube a saltos, porque las porciones son pocas. La fina es el promedio de 3 cajas iguales, que el motor corre por detrás; la pendiente ${v_('v')} se mide sobre esa.</p>
+   <div class="nav"><span></span>${otraVez}</div>
+   <p class="fuente">Que la rapidez se mantiene constante, o que crece con el tiempo, son ideas documentadas según una revisión (Jusniar y otros, 2020), sin cifra verificada.</p>` },
+ { k:'Paso 4', t:'No todo choque sirve', arma:nueva, sigue:true,
+   vista:() => corre({ prom:true }),
+   body:() => `<p>Ahora mira los contadores: de muchos choques A–B por segundo, muy pocos forman ${C_('C')}. Los que no sirven fallan por una de dos razones:</p>
+   <p>${svgFig.energia()} <b>Sin energía suficiente:</b> el choque es suave y no alcanza la energía de activación, ${Ea_('Ea')}. ${svgFig.orientacion()} <b>Mal orientado:</b> tiene energía, pero ${B_('B')} llega por el lado de ${A_('A')} que no reacciona (fuera de la marca).</p>
+   <div class="eqs">
+     <div class="eq"><span class="ex">fracción con E ≥ ${Ea_('Ea')} = <span style="white-space:nowrap">e<sup>−${Ea_('Ea')}/R${T_('T')}</sup></span></span></div>
+     <div class="eq"><span class="ex">= <span style="white-space:nowrap">e<sup>−${Ea_('5000')}/(8,314 · ${T_('300')})</sup></span> ≈ ${fmt(MC.fraccionEficaz(EA, 300), 3)}</span></div>
+     <div class="eq"><span class="ex">eficaces ≈ ${fmt(MC.fraccionEficaz(EA, 300), 3)} × ${fr('1', '3')} ≈ ${fmt(E.sim ? E.sim.fraccionTeorica() : MC.fraccionEficaz(EA, 300)/3, 3)}</span><span class="note">La marca de A abarca un tercio de la vuelta: solo 1 de cada 3 choques con energía llega por el lado que reacciona. Así, cerca del ${pct(MC.fraccionEficaz(EA, 300)/3, 1)} de los choques A–B forma C.</span></div>
+   </div>
+   <p>El histograma muestra cómo se reparte la energía de los choques: casi todos son suaves (barras grises) y solo la cola de la derecha, en tinta, pasa la línea de ${Ea_('Ea')}. Las barras salen de la teoría (la fracción con energía mayor que E es <span style="white-space:nowrap">e<sup>−E/RT</sup></span>); la barra de los contadores cuenta los choques de verdad.</p>
+   <p class="aviso">En la escena, la barrera es mucho más baja que en una reacción real (${Ea_('5000 J/mol')} contra decenas de miles), para que se vean choques eficaces. En una reacción real, solo uno de cada muchísimos choques alcanza la barrera.</p>` },
+ { k:'Paso 5', t:'Se calienta: predice', gate:P1, arma:nueva,
+   vista:r => r ? corre({ fantasma:300 }) : quieta({ aviso:'detenida a 300 K' }),
+   body:() => `<p>Una caja nueva, con 30 de ${A_('A')} y 30 de ${B_('B')} a ${T_('300 K')}. Se calienta de ${T_('300 K')} a ${T_('400 K')}. ¿Se forma ${C_('C')} más rápido? ¿Por qué?</p>${opcionesHTML(P1.opts, 'fb')}` },
+ { k:'Paso 6', t:'Lo que pasa al calentar', arma:caliente, sigue:true,
+   asegura:s => { if (s.T === 400) return false; E.anima = null; s.temperatura(400); return true; },
+   vista:() => corre({ fantasma:300 }),
+   body:() => paso6() },
+ { k:'Paso 7', t:'Un catalizador: predice', gate:P2, arma:nueva,
+   vista:r => r ? corre({ perfil:'cat', otrasEa:[{ e:EA, t:'sin catalizador' }] }) : quieta({ perfil:true, aviso:'detenida a 300 K, sin catalizador' }),
+   body:() => `<p>Otra caja con 30 de ${A_('A')} y 30 de ${B_('B')}, a ${T_('300 K')}. Abajo está su perfil de energía: la loma es la barrera ${Ea_('Ea')} y el desnivel es ${dH_('ΔH')}, el calor que libera. Se agrega un catalizador. ¿Qué hace?</p>${opcionesHTML(P2.opts, 'fb')}` },
+ { k:'Paso 8', t:'El camino más bajo', arma:catalizada, sigue:true,
+   asegura:s => { if (s.cat !== null) return false; s.catalizador(EA_CAT); return true; },
+   vista:() => corre({ perfil:'cat', otrasEa:[{ e:EA, t:'sin catalizador' }] }),
+   body:() => {
+     const r = MC.fraccionEficaz(EA_CAT, 300)/MC.fraccionEficaz(EA, 300), P = MC.perfil({ Ea:EA, dH:DH, EaCat:EA_CAT });
+     return `<p>Con el catalizador, la reacción va por otro camino, con una barrera más baja: ${Ea_('Ea')} pasa de ${Ea_(fmt(P.Ea, 0))} a ${Ea_(fmt(P.EaCat, 0) + ' J/mol')}. La temperatura sigue en ${T_('300 K')}: el histograma no cambia; se mueve la línea de ${Ea_('Ea')}.</p>
+   <div class="eqs">
+     <div class="eq"><span class="ex">${fr('<span style="white-space:nowrap">e<sup>−' + Ea_(fmt(EA_CAT, 0)) + '/R' + T_('T') + '</sup></span>', '<span style="white-space:nowrap">e<sup>−' + Ea_(fmt(EA, 0)) + '/R' + T_('T') + '</sup></span>')} = ${fr(fmt(MC.fraccionEficaz(EA_CAT, 300), 3), fmt(MC.fraccionEficaz(EA, 300), 3))} ≈ ${fmt(r, 1)}</span><span class="note">A 300 K, unas ${fmt(r, 1)} veces más choques alcanzan la barrera. Los choques por segundo son los mismos.</span></div>
+     <div class="eq"><span class="ex">${dH_('ΔH')} = ${dH_(fmt(P.dH, 0) + ' J/mol')}, con y sin catalizador</span></div>
+   </div>
+   <p>En el perfil, las dos lomas salen de los mismos reactivos y llegan al mismo producto: el desnivel ${dH_('ΔH')} no cambia. El catalizador baja la barrera de ida y también la de vuelta (de ${fmt(P.EaVuelta, 0)} a ${fmt(P.EaVueltaCat, 0)} J/mol).</p>
+   <p>El eje horizontal del perfil es el avance de la reacción, no el tiempo: de izquierda a derecha, los reactivos se convierten en el producto.</p>
+   <div class="nav"><span></span>${otraVez}</div>
+   <p class="fuente">Que el catalizador da energía a las moléculas o sube la barrera son ideas documentadas según revisiones (Kurt y Ayas, 2012, entre otros) y en Kolomuç y Tekin (2011) y otros, según una revisión, sin cifra verificada. Leer el eje del perfil como tiempo está documentado en universitarios (Popova y Bretz, 2018), sin cifra verificada.</p>`; } },
+ { k:'Paso 9', t:'Ahora explora tú', explora:true, arma:nueva,
+   vista:() => corre({ perfil:'expl', eaTxt:true }),
+   body:() => `<div class="ctrls">
+     <div class="slider"><label for="et"><span>Temperatura (${T_('T')})</span><output id="et-o"></output></label><input id="et" class="r-T" type="range" min="250" max="500" step="10" value="300"></div>
+     <div class="botones" role="group" aria-label="Agregar porciones">
+       <button type="button" class="btn" data-acc="A" aria-label="Agregar 5 porciones de A">+5 <b style="color:var(--c-A)">A</b></button>
+       <button type="button" class="btn" data-acc="B" aria-label="Agregar 5 porciones de B">+5 <b style="color:var(--c-B)">B</b></button>
+     </div>
+   </div>
+   <label class="check"><input type="checkbox" id="cat"> <span>Con catalizador: ${Ea_('Ea')} baja a ${fmt(EA_CAT, 0)} J/mol</span></label>
+   <label class="check"><input type="checkbox" id="ori"> Orientación: cualquier lado de A sirve</label>
+   <div class="lect" id="live"></div>
+   <div class="nav"><span></span><button type="button" class="btn" id="reset">Volver a empezar</button></div>
+   <p class="hint">Pista: compara la fracción eficaz contada con la de la teoría. Con pocos choques, la contada salta; espera unos segundos. Después se acerca a la teoría: quedan unos pocos por ciento de diferencia. Las rayas numeradas de la gráfica son tus cambios.</p>` },
+];
+function paso6(){
+  const m3 = FONDO.med300.valor, m4 = FONDO.med400.valor, f3 = MC.fraccionEficaz(EA, 300), f4 = MC.fraccionEficaz(EA, 400), rf = f4/f3;
+  const rz = MC.razonK(EA, 300, 400), r10 = MC.regla10(10).valor, r30 = MC.regla10(30), real = MC.razonK(50000, 300, 310);
+  const rc = m3 && m4 ? m4.choquesAB/m3.choquesAB : NaN;
+  return `<p>Al pasar de ${T_('300 K')} a ${T_('400 K')}, las porciones se mueven más rápido. Los choques A–B por segundo suben poco; lo que sube mucho es la parte de los choques que alcanza ${Ea_('Ea')}. El histograma se aplana y se estira hacia la derecha (a trazos, cómo era a 300 K) y la línea de ${Ea_('Ea')} no se mueve.</p>
+   <div class="scroll"><table class="tabla"><thead><tr><th></th><th>${T_('300 K')}</th><th>${T_('400 K')}</th><th>razón</th></tr></thead><tbody>
+     <tr><td>choques A–B por segundo</td><td>${m3 ? fmt(m3.choquesAB, 0) : '…'}</td><td>${m4 ? fmt(m4.choquesAB, 0) : '…'}</td><td>${m3 && m4 ? '× ' + fmt(rc, 2) : 'contando…'}</td></tr>
+     <tr><td>fracción con E ≥ ${Ea_('Ea')}</td><td>${fmt(f3, 3)}</td><td>${fmt(f4, 3)}</td><td>× ${fmt(rf, 2)}</td></tr>
+     <tr><td>rapidez de formación de ${C_('C')}</td><td></td><td></td><td>${m3 && m4 ? '≈ × ' + fmt(rc*rf, 1) : '…'}</td></tr>
+   </tbody></table></div>
+   <p class="hint">Los choques se contaron en 4 cajas que no reaccionan, 4 s cada una, con semillas al azar: cambia un poco cada vez que abres la página. La fracción es <span style="white-space:nowrap">e<sup>−Ea/RT</sup></span> con Ea = 5000 J/mol; su razón es la de Arrhenius entre las dos temperaturas (${fmt(rz, 2)}). La rapidez es el producto de las dos razones.</p>
+   <p>En la caja, 100 K más apenas duplican la rapidez porque la barrera es muy baja. Con una barrera real, la temperatura pesa muchísimo más.</p>
+   <p class="aviso">Regla de academia: en muchas reacciones reales, unos 10 °C más duplican la rapidez (× ${fmt(r10, 0)}); 30 °C más, × 2³ = × ${fmt(r30.valor, 0)}, y no × ${fmt(r30.lineal, 0)}. Es una regla aproximada: con una barrera de 50 000 J/mol, de 300 K a 310 K la rapidez sube × ${fmt(real, 2)}.</p>
+   <div class="nav"><span></span>${otraVez}</div>
+   <p class="fuente">Que al calentar baja la energía de activación, y que calentar no acelera una reacción que libera calor, son ideas documentadas en Çakmakçı (2010) y en Kolomuç y Tekin (2011), sin cifra verificada.</p>`;
+}
+FONDO.med400.listo = () => { if (S.step === 5 && !$('m1').hidden) { $('stepBody').innerHTML = paso6(); enlazarRepetir(); } };
+const dots = $('dots');
+steps.forEach((s, n) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = n + 1; b.setAttribute('aria-label', `Ir al ${s.k.toLowerCase()}: ${s.t}`);
+  b.addEventListener('click', () => go(n)); li.appendChild(b); dots.appendChild(li);
+});
+function enlazarRepetir(){
+  const s = steps[S.step], rep = $('stepBody').querySelector('[data-repetir]');
+  if (rep) rep.onclick = () => { E.sim = s.arma(); E.casa = new WeakMap(); marcarBase(E); E.dibujar(); E.describir(true); };
+}
+function go(n){
+  if (n < 0 || n >= steps.length || n > S.max) return;
+  const s = steps[n], previo = S.step; S.step = n; E.marcas = []; E.rearmar = s.arma;
+  const r = s.gate ? !!S.pred[s.gate.id] : true;
+  // Si se llega desde el paso anterior y el paso sigue la misma caja, la caja continúa; si no, se arma de nuevo.
+  const sigue = s.sigue && previo === n - 1 && E.sim && !(steps[previo].gate && !S.pred[steps[previo].gate.id]);
+  if (!sigue){ E.anima = null; E.sim = s.arma(); E.casa = new WeakMap(); marcarBase(E); }
+  else if (s.asegura && s.asegura(E.sim)) marcarBase(E);
+  // Una predicción ya respondida muestra directo lo que pasa.
+  if (s.gate && r){ if (s.gate === P1) E.sim.temperatura(400); if (s.gate === P2) E.sim.catalizador(EA_CAT); marcarBase(E); }
+  E.vista = s.vista(r);
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  enlazarRepetir();
+  pintarDots();
+  if (s.gate) prediccion(s);
+  if (s.explora) explorar();
+  nav(); E.dibujar(); E.describir(true);
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0;
+  $('next').disabled = S.step === steps.length - 1 || (s.gate && !S.pred[s.gate.id]);
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : `Ir al ${steps[k].k.toLowerCase()}: ${steps[k].t}`);
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(n){ if (n > S.max) S.max = n; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    const tras = $('tras'); if (tras) tras.hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id]) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots(); nav();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    $('next').focus({ preventScroll:true });
+    // En el celular, el dibujo queda arriba de la pantalla: se lleva a la vista antes de que la caja corra.
+    const paso = S.step, chico = innerWidth < 900;
+    if (chico) $('cv').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+    esperar(chico ? 380 : 0, () => {
+      if (S.step !== paso) return;
+      E.vista = s.vista(true); E.casa = new WeakMap(); marcarBase(E);
+      if (P === P1){ const T0 = E.sim.T; gradual(E, 1.6, f => E.sim.temperatura(T0 + (400 - T0)*f), () => marcarBase(E)); }
+      if (P === P2) E.sim.catalizador(EA_CAT);
+      E.dibujar(); E.describir(true); setTimeout(() => E.describir(true), 1200);
+    });
+  }));
+  pintar();
+}
+function explorar(){
+  const body = $('stepBody');
+  const cambio = que => { marcarBase(E); E.marcas.push({ t:E.sim.t, que }); E.describir(true); vivo(); };
+  const vivo = () => {
+    const s = E.sim, n = s.contar(), k = s.cuenta, b0 = E.base, N = k.choquesAB - b0.choquesAB, ef = k.eficaces - b0.eficaces;
+    $('et-o').textContent = `${fmt(s.T, 0)} K`;
+    const C = (c, t) => `<b style="color:var(--c-${c})">${t}</b>`;
+    $('live').innerHTML = `<span>${C('A', 'A')}: ${n.A}</span><span>${C('B', 'B')}: ${n.B}</span><span>${C('C', 'C')}: ${n.C}</span>
+      <span>fracción eficaz contada: ${N ? `${pct(ef/N, 1)} (${ef} de ${N})` : '—'}</span><span>teoría: ${pct(s.fraccionTeorica(), 1)}</span>
+      ${E.marcas.length ? `<span style="font-family:var(--font)">Cambios: ${E.marcas.map((m, k) => `${k + 1} · ${m.que}`).join('; ')}</span>` : ''}`;
+    body.querySelectorAll('[data-acc]').forEach(b => { b.disabled = n[b.dataset.acc] > 55; });
+  };
+  body.querySelectorAll('[data-acc]').forEach(b => b.onclick = () => { E.sim.agregar(b.dataset.acc, 5); cambio('+5 ' + b.dataset.acc); });
+  let tT = null;
+  $('et').oninput = () => { E.sim.temperatura(+$('et').value); marcarBase(E); vivo(); clearTimeout(tT); tT = setTimeout(() => cambio(`${$('et').value} K`), 500); };
+  $('cat').onchange = () => { E.sim.catalizador($('cat').checked ? EA_CAT : null); E.vista.perfil = $('cat').checked ? 'cat' : 'expl'; cambio($('cat').checked ? 'catalizador' : 'sin catalizador'); };
+  $('ori').onchange = () => { E.sim.orientacion = !$('ori').checked; cambio($('ori').checked ? 'cualquier lado' : 'con marca'); };
+  $('reset').onclick = () => { E.sim = nueva(); E.casa = new WeakMap(); E.marcas = []; $('et').value = 300; $('cat').checked = false; $('ori').checked = false; E.vista.perfil = 'expl'; marcarBase(E); vivo(); E.describir(true); };
+  clearInterval(S.vivo); S.vivo = setInterval(() => { if (S.step === 8 && !$('m1').hidden && $('live')) vivo(); else clearInterval(S.vivo); }, 400);
+  vivo();
+}
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+alRedibujarTema(() => E.dibujar());
+addEventListener('modo', () => { E.resize(); E.dibujar(); if (S.step === 8) explorar(); });
+go(0);
+})();
+</script>
+
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Preguntas de plantillas/cinetica/investigacion.md (CI5, CI9, CI13 y EQ12) y de la ley de velocidad. Cada una
+   arranca con la caja congelada; la caja corre y se muestran las cuentas recién después de responder.
+   Para comparar rapideces se cuentan varias cajas por detrás: una caja sola fluctúa mucho. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'm2', 'ley2', 'vel2');
+const RES = (doc, txt) => doc;
+const antes = (extra) => ({ congelada:true, cont:false, hist:false, graf:null, perfil:false, phPerfil:'', termo:false, destellos:'eficaz', phCont:'Responde para ver los contadores', phHist:'Responde para ver el histograma', phGraf:'Responde para ver la gráfica', ...extra });
+const despues = (extra) => ({ congelada:false, cont:'todos', hist:true, graf:'AC', perfil:false, phPerfil:'', termo:false, destellos:'todos', ...extra });
+const caja = (o) => MC.caja({ ...BASE, semilla:31, ...o });
+// En las preguntas 1 y 2 la caja tiene 90 o 120 porciones. Con el radio de siempre (0,03) ocuparían tanto piso que
+// los choques subirían más de lo que dice la ley (como en un gas muy comprimido). Con radio 0,015 la caja se parece a
+// un gas: el doble de A da cerca de × 2 los choques A–B y el doble de A y de B, cerca de × 4 (medido en Node con el
+// motor: × 1,9 a 2,1 y × 4,2 a 4,5). La caja que se ve y las que se cuentan por detrás son del mismo tipo.
+const CHICO = 0.015;
+const contadas = (n, dur) => `Promedio de ${n} cajas como esta, ${dur} s cada una, con semillas al azar: cambia un poco cada vez que abres la página.`;
+const tabla = (filas) => `<div class="scroll"><table class="tabla"><thead><tr><th></th>${filas.cab.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${filas.filas.map(f => `<tr><td>${f[0]}</td>${f.slice(1).map(x => `<td>${x}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+const contando = n => `<p class="hint">Contando choques en ${n} cajas por detrás…</p>`;
+const EXPS = [
+  { id:'doble-A', corto:'El doble de A',
+    q:`Una caja empieza con ${A_('30 de A')} y ${B_('30 de B')}. Otra igual empieza con ${A_('60 de A')} y las mismas ${B_('30 de B')}, a la misma temperatura. ¿Qué pasa con la rapidez al inicio?`,
+    opts:[['a','Baja a la mitad','orden-inverso', RES('hipotesis','hipótesis nuestra')],
+          ['b','No cambia','orden-cero', RES('hipotesis','hipótesis nuestra')],
+          ['c','Se duplica'],
+          ['d','Se cuadruplica','orden-cuadrado', RES('hipotesis','hipótesis nuestra')]],
+    ok:'c',
+    fb:{ a:'La rapidez no baja: con más A hay más choques A–B. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      b:'Sí cambia: con el doble de A, cada B choca con A el doble de veces. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      d:'Se cuadruplicaría si se duplicaran A y B a la vez. Aquí solo se duplica A. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    arma:() => caja({ nA:60, nB:30, radio:CHICO }), vAntes:() => antes({ aviso:'detenida: 60 de A y 30 de B' }),
+    medir:() => [tarea(contar({ ...BASE, radio:CHICO }, 4, 4), ['m2'], true), tarea(contar({ ...BASE, nA:60, radio:CHICO }, 4, 4), ['m2'], true)],
+    alResponder:() => { E.vista = despues(); },
+    exp:([m1, m2]) => { const f = MC.factor({ A:1, B:1 }, { A:2 }).valor;
+      return `<p>Cada choque A–B es una oportunidad de reaccionar: con el doble de ${A_('A')}, cada ${B_('B')} se encuentra con ${A_('A')} el doble de veces. La fracción de choques eficaces no cambia (misma temperatura), así que la rapidez sigue a los choques.</p>
+      <div class="eqs"><div class="eq"><span class="ex">${v_('v')} = k · ${A_('[A]')} · ${B_('[B]')}</span></div><div class="eq"><span class="ex">${v_('v')}′ = k · (2${A_('[A]')}) · ${B_('[B]')} = ${f} · ${v_('v')}</span></div></div>
+      ${m1 && m2 ? tabla({ cab:['choques A–B por segundo'], filas:[['30 A y 30 B', fmt(m1.choquesAB, 1)], ['60 A y 30 B', fmt(m2.choquesAB, 1)], ['razón', '× ' + fmt(m2.choquesAB/m1.choquesAB, 2)]] }) +
+        `<p class="hint">${contadas(4, 4)}</p>` : contando(8)}
+      <p>Aquí el exponente de cada concentración es 1 porque la reacción ocurre en un solo choque (es elemental). En una reacción cualquiera, los exponentes se miden en experimentos: no se leen de los coeficientes de la ecuación.</p>
+      <p class="fuente">Leer los exponentes de los coeficientes de la ecuación es una idea documentada incluso en profesores (Kolomuç y Tekin, 2011), sin cifra verificada. Las opciones de esta pregunta son hipótesis nuestras.</p>`; } },
+  { id:'doble-AB', corto:'El doble de A y de B',
+    q:`Ahora la caja empieza con ${A_('60 de A')} y ${B_('60 de B')}, el doble de cada una, a la misma temperatura. ¿Qué pasa con la rapidez al inicio, comparada con 30 y 30?`,
+    opts:[['a','No cambia, porque la proporción es la misma','orden-proporcion', RES('hipotesis','hipótesis nuestra')],
+          ['b','Se duplica','orden-suma', RES('hipotesis','hipótesis nuestra')],
+          ['c','Se cuadruplica'],
+          ['d','Se multiplica por 8','orden-cubo', RES('hipotesis','hipótesis nuestra')]],
+    ok:'c',
+    fb:{ a:'La proporción es la misma, pero hay más de cada una y chocan más seguido. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      b:'Duplicar A duplica la rapidez, y duplicar B la vuelve a duplicar: los factores se multiplican, no se suman. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      d:'Sería × 8 si la rapidez dependiera de tres concentraciones. Aquí son dos: × 2 · 2 = × 4. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    arma:() => caja({ nA:60, nB:60, radio:CHICO }), vAntes:() => antes({ aviso:'detenida: 60 de A y 60 de B' }),
+    medir:() => [tarea(contar({ ...BASE, radio:CHICO }, 4, 4), ['m2'], true), tarea(contar({ ...BASE, nA:60, nB:60, radio:CHICO }, 4, 4), ['m2'], true)],
+    alResponder:() => { E.vista = despues(); },
+    exp:([m1, m2]) => { const f = MC.factor({ A:1, B:1 }, { A:2, B:2 });
+      return `<div class="eqs"><div class="eq"><span class="ex">${v_('v')}′ = k · (2${A_('[A]')}) · (2${B_('[B]')}) = ${f.valor} · ${v_('v')}</span></div></div>
+      ${m1 && m2 ? tabla({ cab:['choques A–B por segundo'], filas:[['30 A y 30 B', fmt(m1.choquesAB, 1)], ['60 A y 60 B', fmt(m2.choquesAB, 1)], ['razón', '× ' + fmt(m2.choquesAB/m1.choquesAB, 2)]] }) +
+        `<p class="hint">${contadas(4, 4)} Sale cerca de × 4, y no exacto, porque las porciones ocupan algo de lugar en la caja, como en un gas un poco comprimido.</p>` : contando(8)}
+      <p>Cada ${A_('A')} tiene el doble de ${B_('B')} con quien chocar, y además hay el doble de ${A_('A')}: 2 × 2 = 4 veces más choques A–B. Los factores de cada concentración se multiplican.</p>
+      <p class="fuente">Las opciones de esta pregunta son hipótesis nuestras: no encontramos estudios que midan estos errores de cálculo.</p>`; } },
+  { id:'catalizador-final', corto:'Al final, con catalizador',
+    q:`Dos cajas con ${A_('30 de A')} y ${B_('30 de B')} a 300 K; una tiene catalizador. Cuando ya no quede ${A_('A')} ni ${B_('B')}, ¿cuánto ${C_('C')} habrá en la caja con catalizador, comparada con la otra?`,
+    opts:[['a','La misma cantidad de C, pero se llega antes'],
+          ['b','Más C, porque el catalizador da más producto','EQ12-rendimiento', RES('documentado','Riddle y Lo-Fan-Hin 2023: 40 % de 63, encuesta no validada')],
+          ['c','La misma cantidad de C, en el mismo tiempo','cat-sin-efecto', RES('hipotesis','hipótesis nuestra')],
+          ['d','Menos C, porque parte queda en el catalizador','cat-menos-producto', RES('hipotesis','hipótesis nuestra')]],
+    ok:'a',
+    fb:{ b:'Con 30 de A y 30 de B solo se pueden formar 30 de C, con catalizador o sin él. Que el catalizador da más producto es una idea documentada: según Riddle y Lo-Fan-Hin (2023), el 40 % de 63 escolares ingleses de 15–16 años está de acuerdo en que el catalizador aumenta el rendimiento (encuesta no validada).',
+      c:'Se llega al mismo final, pero antes: el catalizador acelera la reacción. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      d:'El catalizador no se gasta ni se queda con producto: se recupera al final. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    arma:() => { const s = caja({}); s.catalizador(EA_CAT); return s; }, vAntes:() => antes({ aviso:'detenida: con catalizador' }),
+    alResponder:() => { E.vista = despues({ graf:'cat', perfil:'cat', otrasEa:[{ e:EA, t:'sin catalizador' }] }); },
+    exp:() => `<p>La gráfica muestra el ${C_('C')} de las dos cajas, cada una como promedio de 3 cajas iguales. Con catalizador, la curva sube mucho más rápido; sin catalizador, sigue subiendo despacio. Las dos van hacia la misma altura: 30.</p>
+      <div class="eqs"><div class="eq"><span class="ex">30 ${A_('A')} + 30 ${B_('B')} → 30 ${C_('C')}</span><span class="note">Cada C usa una porción de A y una de B: con o sin catalizador, cuando se acaban, hay 30 de C.</span></div></div>
+      <p>El catalizador cambia qué tan rápido se llega, no cuánto se forma. (En una reacción que llega al equilibrio pasa lo mismo: se llega antes al mismo equilibrio.)</p>
+      <p class="fuente">Que el catalizador da más producto: según Riddle y Lo-Fan-Hin (2023), el 40 % de 63 escolares ingleses de 15–16 años está de acuerdo en que el catalizador aumenta el rendimiento (encuesta no validada). Las opciones 3 y 4 son hipótesis nuestras.</p>` },
+  { id:'barrera-alta', corto:'Barrera más alta',
+    q:`Dos reacciones distintas a la misma temperatura, 300 K, cada una con 30 porciones de cada reactivo. Una tiene una barrera ${Ea_('Ea = 5000 J/mol')}; la otra, ${Ea_('Ea = 8000 J/mol')} (en la escala de la escena). La caja muestra la de 8000. ¿Cuál forma producto más rápido?`,
+    opts:[['a','La de barrera más alta','CI13-mas-Ea', RES('hipotesis','CI13: estudio de diagramas de energía, por confirmar')],
+          ['b','Las dos igual: solo importa la temperatura','solo-temperatura', RES('hipotesis','hipótesis nuestra')],
+          ['c','La que libere más calor, sea cual sea su barrera','CI5-dH', RES('documentado','Çakmakçı 2010; sin cifra verificada')],
+          ['d','La de barrera más baja']],
+    ok:'d',
+    fb:{ a:'Con la barrera más alta, menos choques la alcanzan y la reacción va más lenta. Esta idea aparece en un estudio sobre diagramas de energía que todavía está por confirmar (quizá Popova y Bretz, 2018).',
+      b:'A la misma temperatura, la energía de los choques se reparte igual, pero la parte que alcanza la barrera depende de la barrera. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      c:'El calor que libera una reacción (ΔH) no dice qué tan rápida es: eso lo dice la barrera. Confundir las dos cosas es una idea documentada en Çakmakçı (2010), sin cifra verificada.' },
+    arma:() => caja({ Ea:EA_ALTA }), vAntes:() => antes({ aviso:'detenida: Ea = 8000 J/mol', eaTxt:true }),
+    medir:() => [tarea(contar(BASE, 6, 8), ['m2'], true), tarea(contar({ ...BASE, Ea:EA_ALTA }, 8, 14), ['m2'], true)],
+    alResponder:() => { E.vista = despues({ eaTxt:true, otrasEa:[{ e:EA, t:'Ea = 5000' }] }); },
+    exp:([m1, m2]) => { const f5 = MC.fraccionEficaz(EA, 300), f8 = MC.fraccionEficaz(EA_ALTA, 300);
+      return `<p>A 300 K, los choques se reparten igual en las dos reacciones (el mismo histograma). Con la barrera en 8000, la parte que la alcanza es mucho menor.</p>
+      <div class="eqs"><div class="eq"><span class="ex">${fr('<span style="white-space:nowrap">e<sup>−' + Ea_('5000') + '/R' + T_('T') + '</sup></span>', '<span style="white-space:nowrap">e<sup>−' + Ea_('8000') + '/R' + T_('T') + '</sup></span>')} = ${fr(fmt(f5, 3), fmt(f8, 3))} ≈ ${fmt(f5/f8, 1)}</span><span class="note">La de Ea = 5000 forma producto unas ${fmt(f5/f8, 1)} veces más rápido. Es la ecuación de Arrhenius: k = Z · <span style="white-space:nowrap">e<sup>−Ea/RT</sup></span>, con Z el factor de choques; más barrera, menor k.</span></div></div>
+      ${m1 && m2 ? tabla({ cab:['choques eficaces por segundo'], filas:[['Ea = 5000', fmt(m1.eficaces, 2)], ['Ea = 8000', fmt(m2.eficaces, 2)], ['razón', '× ' + fmt(m1.eficaces/m2.eficaces, 1)]] }) +
+        `<p class="hint">Contado en 8 cajas con Ea = 5000 (6 s cada una) y 14 con Ea = 8000 (8 s cada una): ${fmt(m1.eficacesTot, 0)} y ${fmt(m2.eficacesTot, 0)} choques eficaces. Semillas al azar: cambia un poco cada vez que abres la página. La teoría dice × ${fmt(f5/f8, 1)}.</p>` : contando(22)}
+      <p>Y el calor que libera cada reacción no entra en esta cuenta: la rapidez depende de la loma (Ea), no del desnivel (ΔH).</p>
+      <p class="fuente">Que más barrera da más rapidez aparece en un estudio sobre diagramas de energía que está por confirmar (quizá Popova y Bretz, 2018). Confundir ΔH con Ea está documentado en Çakmakçı (2010), sin cifra verificada.</p>`; } },
+  { id:'cualquier-lado', corto:'Cualquier lado sirve',
+    q:`En la caja, ${B_('B')} solo forma ${C_('C')} si choca con ${A_('A')} por el lado de la marca, que cubre 120° de la vuelta (un tercio). ¿Y si ${B_('B')} pudiera reaccionar al chocar con ${A_('A')} por cualquier lado, con todo lo demás igual?`,
+    opts:[['a','Igual de rápido: los choques A–B son los mismos','orientacion-igual', RES('hipotesis','hipótesis nuestra')],
+          ['b','Más rápido: sirven más de los choques A–B'],
+          ['c','Igual de rápido: solo habrá más C al final','orientacion-mas-C', RES('hipotesis','hipótesis nuestra')],
+          ['d','Más lento: los choques A–B se reparten más','orientacion-lento', RES('hipotesis','hipótesis nuestra')]],
+    ok:'b',
+    fb:{ a:'Los choques por segundo son los mismos, pero ahora sirven también los que llegaban por el lado equivocado. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      c:'Al final hay los mismos 30 de C: lo que cambia es qué tan rápido se llega. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      d:'Nada se reparte: los choques que ya servían siguen sirviendo, y se suman los que antes fallaban por la orientación. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    arma:() => caja({ orientacion:false }), vAntes:() => antes({ aviso:'detenida: cualquier lado sirve' }),
+    medir:() => [tarea(contar(BASE, 5, 6), ['m2'], true), tarea(contar({ ...BASE, orientacion:false }, 5, 6), ['m2'], true)],
+    alResponder:() => { E.vista = despues(); },
+    exp:([m1, m2]) => { const p1 = MC.caja({ ...BASE, nA:0, nB:0 }).p(), p2 = MC.caja({ ...BASE, nA:0, nB:0, orientacion:false }).p();
+      return `<p>La marca de ${A_('A')} abarca 120°, un tercio de la vuelta (60° a cada lado). Sirven unas 3 veces más choques. Con la marca, solo 1 de cada 3 choques con energía suficiente llega por el lado que reacciona; sin ella, sirven todos.</p>
+      <div class="eqs"><div class="eq"><span class="ex">${fr(fmt(p2, 0), fr('1', '3'))} = ${fmt(p2/p1, 0)}</span><span class="note">La fracción de orientaciones buenas pasa de 1/3 a 1: la rapidez se multiplica por 3.</span></div></div>
+      ${m1 && m2 ? tabla({ cab:['choques eficaces por segundo'], filas:[['con la marca', fmt(m1.eficaces, 2)], ['cualquier lado', fmt(m2.eficaces, 2)], ['razón', '× ' + fmt(m2.eficaces/m1.eficaces, 1)]] }) +
+        `<p class="hint">${contadas(6, 5)} La teoría dice × ${fmt(p2/p1, 0)}.</p>` : contando(12)}
+      <p>En las moléculas reales también importa por dónde chocan: por eso, en las reacciones entre moléculas grandes, muchos choques con energía suficiente no reaccionan.</p>
+      <p class="fuente">Las opciones de esta pregunta son hipótesis nuestras: no encontramos estudios que midan este error.</p>`; } },
+];
+const S = { k:0, pred:{}, t0:Date.now() };
+// Regla de Gerson: un experimento se abre solo si todos los anteriores ya tienen respuesta. Los respondidos se
+// pueden volver a abrir.
+const abierto = k => EXPS.slice(0, k).every(x => S.pred[x.id]);
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => abierto(k)
+    ? `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}. ${x.corto}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  if (!abierto(k)) return;
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k];
+  E.anima = null; E.casa = new WeakMap(); E.marcas = [];
+  E.sim = x.arma(); E.vista = x.vAntes(); marcarBase(E);
+  // Las cuentas de fondo empiezan ya (no se muestran hasta responder).
+  if (!x.tareas && x.medir) x.tareas = x.medir();
+  else if (x.tareas) [...x.tareas].reverse().forEach(t => { const i = TAREAS.indexOf(t); if (i > 0){ TAREAS.splice(i, 1); TAREAS.unshift(t); } });
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const explicar = () => {
+    if (S.k !== k || !S.pred[x.id]) return;
+    const vals = (x.tareas || []).map(t => t.hecho ? t.valor : null);
+    $('res2').innerHTML = x.exp(vals.some(v => !v) ? [] : vals) + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    if (vals.some(v => !v)) setTimeout(explicar, 400);
+  };
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la caja y las cuentas para ver por qué.' : `Elegiste la ${'abcd'.indexOf(p) + 1}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    explicar();
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar(); botones();
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+    const chico = innerWidth < 900;
+    if (chico) $('cv2').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+    esperar(chico ? 380 : 0, () => { if (S.k !== k) return; x.alResponder(); E.casa = new WeakMap(); marcarBase(E); E.dibujar(); E.describir(true); setTimeout(() => E.describir(true), 1200); });
+  });
+  // Si ya respondió antes, se muestra directo lo que pasa.
+  if (S.pred[x.id]) x.alResponder();
+  pintar(); E.dibujar(); E.describir(true);
+}
+alRedibujarTema(() => E.dibujar());
+addEventListener('modo', () => { E.resize(); E.dibujar(); });
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>
