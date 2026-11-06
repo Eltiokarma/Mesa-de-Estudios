@@ -1,0 +1,1214 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La barra que se parte: fracciones, decimales, MCD y MCM</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de la torre de fichas.
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4). Cada problema tiene dos datos
+   y un resultado, y cada uno conserva su papel en toda la escena: el primer dato (la fracción, el decimal, la cinta, el
+   bus o la velocidad de ida, el aula A) azul; el segundo dato naranja; el resultado (la suma, el cociente, la fracción
+   buscada, la velocidad media, el promedio) fucsia; el MCD (el trozo común más largo) verde, y el MCM (el denominador
+   común, la primera coincidencia) turquesa. Los tiempos, los pesos y lo que no es variable, en tinta.
+   Elegidos con CIEDE2000: mínimo entre los cinco 23,6 en claro y 25,3 en oscuro (verde y turquesa); azul y fucsia,
+   27,1 y 29,3. Contraste AA sobre el papel, la tarjeta y su chip (.v, fondo al 8 %), en claro y en oscuro (mínimo 4,63). */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-a:#1f5fbf; --c-b:#a05200; --c-s:#a10fbf; --c-g:#466d14; --c-m:#0f766e;
+  --relleno:.14;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-a:#7cb0ff; --c-b:#f0a04a; --c-s:#cf6bfa; --c-g:#a3d65e; --c-m:#5ed9c8;
+  --relleno:.17; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-a:#7cb0ff; --c-b:#f0a04a; --c-s:#cf6bfa; --c-g:#a3d65e; --c-m:#5ed9c8;
+  --relleno:.17; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+/* Celular con una predicción pendiente: el dibujo más bajo y pegado arriba, para que se vea mientras se elige. */
+@media (max-width:899px){
+  .mode.pendiente .bench{position:sticky; top:0; z-index:1; padding:6px; gap:4px; background:var(--card); border-radius:0 0 20px 20px}
+  .mode.pendiente .legend{display:none}
+  .mode.pendiente .lecturas{gap:4px}
+  .mode.pendiente .lectura{padding:2px 8px}
+}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+.lienzo:has(canvas:focus-visible){outline:3px solid var(--ink); outline-offset:2px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+.legend i.sq{width:12px; height:12px; border-radius:3px; opacity:.55}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; grid-template-columns:minmax(0, 1fr); gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; grid-template-columns:minmax(0, 1fr); gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-a{color:var(--c-a); background:color-mix(in srgb, var(--c-a) 8%, transparent)}
+.v-b{color:var(--c-b); background:color-mix(in srgb, var(--c-b) 8%, transparent)}
+.v-s{color:var(--c-s); background:color-mix(in srgb, var(--c-s) 8%, transparent)}
+.v-g{color:var(--c-g); background:color-mix(in srgb, var(--c-g) 8%, transparent)}
+.v-m{color:var(--c-m); background:color-mix(in srgb, var(--c-m) 8%, transparent)}
+.per{border-top:1.5px solid currentColor; border-radius:50% 50% 0 0/6px 6px 0 0; padding-top:1px}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eqs:empty{display:none}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.02rem; font-variant-numeric:tabular-nums}
+.eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.5em; white-space:normal}
+.fx{white-space:nowrap}
+.eq sup, .fx sup{font-size:.75em; vertical-align:.6em; line-height:0}
+.eq > sup{align-self:flex-start}
+.frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1.15}
+.frac > span:first-child{border-bottom:1.5px solid currentColor; padding:0 .25em}
+.frac > span:last-child{padding:0 .25em}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.seg button:disabled{opacity:.45; cursor:not-allowed}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+/* Lecturas en vivo, cada una con el color de su variable */
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(120px, 1fr)); gap:8px}
+.lecturas:empty{display:none}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura b{display:block; color:var(--k); font:800 .95rem var(--mono); font-variant-numeric:tabular-nums; overflow-wrap:anywhere}
+.lectura span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.25fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+/* tabla de Euclides */
+.tabla{border-collapse:collapse; font-variant-numeric:tabular-nums; font-size:.92rem; background:var(--paper); border-radius:12px; overflow:hidden}
+.tabla th,.tabla td{padding:4px 8px; border-bottom:1px solid var(--line); text-align:center; min-width:2.3em}
+.tabla th{font-size:.8rem; color:var(--muted); font-weight:700; text-align:left; white-space:nowrap}
+.tabla td.vacia{color:var(--muted)}
+.tabla-wrap{overflow-x:auto; max-width:100%}
+@media (min-width:900px){ .tabla th,.tabla td{padding:4px 4px; min-width:1.9em} .tabla th{padding-right:8px} }
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Aritmética · Fracciones, decimales, MCD y MCM · Problemas tipo admisión</p>
+      <h1>La barra que se parte</h1>
+      <p class="sub">Parte barras en trozos iguales, mira decimales con lupa, corta cintas y espera buses. Antes de cada respuesta, predice; después, la escena te muestra por qué.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo de la escena: barras partidas, la recta numérica con lupa, cintas, buses o un viaje">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Dibujo de la escena"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos con fracciones, decimales y promedios">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/fracciones">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'fracciones', unidad: 'aritmetica.numeros-racionales', version: '0.1.0' };
+const U_MCD = 'aritmetica.mcd-y-mcm', U_EST = 'aritmetica.estadistica';
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0, unidad){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: unidad || PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la matemática (fracciones, denominador común, división larga, generatriz, MCD, MCM, cortes, coincidencias,
+   promedios, la posición del auto y el giro del balancín) sale de MotorFracciones (motor.js); aquí solo se pinta,
+   se arrastra y se anima. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const M = MotorFracciones;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+// Coma decimal, espacio de miles (desde 5 cifras) y signo menos tipográfico.
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 2 : d), r = Math.round(n*p)/p + 0;
+  let [e, f] = String(Math.abs(r)).split('.');
+  if (e.length > 4) e = e.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+// Con una cantidad fija de cifras decimales (0,20; 0,25; 0,30), para las marcas de la lupa.
+const fijo = (n, d) => (Math.round(n*Math.pow(10, d))/Math.pow(10, d)).toFixed(d).replace('.', ',');
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const fr = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
+const frF = f => (f.d === 1 ? String(f.n) : fr(f.n, f.d));
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+const lerp = (a, b, f) => a + (b - a)*f;
+function tween(dur, paso, fin, lineal){
+  if (RM || !dur){ paso(1); if (fin) setTimeout(fin, 0); return; }
+  const t0 = performance.now();
+  const tick = now => { const f = Math.min(1, (now - t0)/dur); paso(lineal ? f : suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
+  requestAnimationFrame(tick);
+}
+const a_ = t => V('a', t), b_ = t => V('b', t), s_ = t => V('s', t), g_ = t => V('g', t), m_ = t => V('m', t);
+const T = f => M.texto(f);
+// Un periódico como en las academias: arco sobre el periodo (0,1 6 con arco sobre el 6).
+const per = dec => `${dec.negativo ? '−' : ''}${dec.entero},${dec.anteperiodo}<span class="per">${dec.periodo}</span>`;
+// Hora del reloj a partir de los minutos desde las 6:00 (solo para mostrar).
+const hora = m => { const h = 6 + Math.floor(m/60), mm = Math.round(m % 60); return `${h}:${String(mm).padStart(2, '0')}`; };
+
+function colores(){
+  const g = n => css(n);
+  const c = { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
+    relleno:Number(g('--relleno')) || .14, mono:g('--mono'), font:g('--font') };
+  for (const k of 'absgm') c[k] = g('--c-' + k);
+  return c;
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, p, q){ ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke(); }
+// Texto con un fondo del color del papel detrás, para que se lea sobre las líneas.
+function rotulo(ctx, c, x, y, t, color, align, peso, tam){
+  ctx.font = `${peso || 700} ${tam || 13}px ${c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9*(ctx.globalAlpha || 1); ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+  ctx.fillStyle = color; ctx.fillText(t, x, y);
+  return w;
+}
+function redondeado(ctx, x, y, w, h, r){ r = Math.max(0, Math.min(r, w/2, h/2)); ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+// Resaltar en el dibujo la variable que se toca en el texto (regla 4).
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+/* ================= La escena =================
+   Modos: 'barras' (dos fracciones en barras, el cuchillo que las parte en N trozos y la suma), 'recta' (la recta
+   numérica con puntos y una lupa que agranda un tramo diez veces), 'cintas' (dos cintas cortadas en trozos iguales,
+   y abajo los múltiplos de sus largos), 'buses' (dos buses en una línea de tiempo), 'viaje' (ida y vuelta, con la
+   gráfica velocidad–tiempo), 'area' (la fracción de una fracción en un rectángulo), 'cuantas' (cuántos trozos caben)
+   y 'balanza' (el balancín de la media ponderada). Cada modo guarda su estado en E.st. */
+function crearEscena(cv, idDesc, idLect, idLey){
+  const E = { modo:'barras', st:{}, lect:[], ley:null, hl:null, alCambiar:null, ocupado:false, tok:0, anim:false, compacto:false, desc:null };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, arrastrando = null, sobre = false;
+  const chico = () => innerWidth < 900;
+  const ALTO = { barras: w => E.st.slider ? (w >= 560 ? 330 : 310) : (w >= 560 ? 290 : 270), recta: () => 250,
+    cintas: w => E.st.linea ? (w >= 560 ? 300 : 290) : 220, buses: () => 230, viaje: w => (w >= 560 ? 310 : 290),
+    area: () => 270, cuantas: w => (w >= 640 ? 190 : 240), balanza: () => 270 };
+  function alto(w){ if (E.compacto && chico()) return Math.round(clamp(w*0.62, 220, 245)); return ALTO[E.modo](w); }
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    const h = alto(w), dpr = window.devicePixelRatio || 1;
+    if (w === W && h === H) { E.dibujar(); return; }
+    W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  alRedibujarTema(() => E.dibujar());
+  const grosor = (k, base) => (E.hl === k ? base + 2.5 : base);
+
+  E.config = o => {
+    E.tok++; E.anim = false;   // una animación vieja no sigue moviendo el dibujo nuevo
+    Object.assign(E, { modo:'barras', st:{}, lect:[], ley:null, alCambiar:null, desc:null }, o);
+    E.listo = true;
+    cv.tabIndex = MAN[E.modo] && MAN[E.modo]().length ? 0 : -1;
+    W = 0; resize(); E.leyenda(); E.dibujar(); E.avisar();
+  };
+  // Con una predicción pendiente en el celular, el dibujo se achica y queda pegado arriba (sticky) para verse al elegir.
+  E.compactar = on => { on = !!on; cv.closest('.mode').classList.toggle('pendiente', on); if (on === E.compacto) return; E.compacto = on; W = 0; resize(); };
+
+  // ----- barras -----
+  const NMAX = 24;
+  function geoBarras(){
+    const s = E.st, bw = Math.min(W - 48, 640), bx = (W - bw)/2, bajo = s.slider ? 58 : 0;
+    const bh = H < 250 ? 24 : 30, top = 8, P = (H - bajo - top - 26)/3;
+    return { bx, bw, bh, ys:[0, 1, 2].map(k => top + 18 + k*P), sy: H - 30 };
+  }
+  function barra(c, g, y, f, k, o){
+    const { bx, bw, bh } = g; o = o || {};
+    ctx.save(); ctx.fillStyle = c.card; redondeado(ctx, bx, y, bw, bh, 6); ctx.fill(); ctx.restore();
+    if (f && o.relleno > 0){
+      const w = bw*Math.min(1, f.n/f.d);
+      ctx.save(); ctx.globalAlpha = .3*o.relleno; ctx.fillStyle = c[k]; ctx.fillRect(bx, y, w, bh);
+      ctx.globalAlpha = o.relleno; ctx.strokeStyle = c[k]; ctx.lineWidth = grosor(k, 2.2); ctx.strokeRect(bx + 1, y + 1, w - 2, bh - 2); ctx.restore();
+    }
+    if (f){ ctx.save(); ctx.strokeStyle = c.ink; ctx.globalAlpha = .6; ctx.lineWidth = 1.3;
+      for (let j = 1; j < f.d; j++){ const x = bx + bw*j/f.d; linea(ctx, { x, y }, { x, y:y + bh }); } ctx.restore(); }
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; if (o.vacia) ctx.setLineDash([5, 4]); redondeado(ctx, bx, y, bw, bh, 6); ctx.stroke(); ctx.restore();
+    if (o.rot) rotulo(ctx, c, bx, y - 10, o.rot, k && !o.vacia ? c[k] : c.ink, 'left', 800, 14);
+  }
+  function bloque(c, g, x, y, n, N, k){
+    const w = g.bw*n/N;
+    ctx.save(); ctx.globalAlpha = .32; ctx.fillStyle = c[k]; ctx.fillRect(x, y, w, g.bh); ctx.restore();
+    ctx.save(); ctx.strokeStyle = c[k]; ctx.lineWidth = grosor(k, 2.2); ctx.strokeRect(x + 1, y + 1, w - 2, g.bh - 2); ctx.restore();
+    ctx.save(); ctx.strokeStyle = c.m; ctx.lineWidth = grosor('m', 1.6); for (let j = 1; j < n; j++){ const xx = x + g.bw*j/N; linea(ctx, { x:xx, y }, { x:xx, y:y + g.bh }); } ctx.restore();
+  }
+  function dibBarras(c){
+    const s = E.st, g = geoBarras(), [yA, yB, yR] = g.ys, { bx, bw, bh } = g;
+    const cu = s.N ? M.cuchillo([s.A, s.B], s.N) : null, mueve = cu && cu.todas && s.g > 0, gs = suave(clamp(s.g || 0, 0, 1));
+    barra(c, g, yA, s.A, 'a', { rot:T(s.A), relleno: mueve ? 1 - .8*gs : 1 });
+    barra(c, g, yB, s.B, 'b', { rot:T(s.B), relleno: mueve ? 1 - .8*gs : 1 });
+    barra(c, g, yR, null, null, { rot: s.rotR || 'juntas', vacia:true });
+    if (s.N && s.fc > 0){
+      ctx.save(); ctx.globalAlpha = s.fc; ctx.strokeStyle = c.m; ctx.lineWidth = grosor('m', 1.8);
+      for (let j = 1; j < s.N; j++){ const x = bx + bw*j/s.N; for (const y of [yA, yB, yR]) linea(ctx, { x, y:y - 3 }, { x, y:y + bh + 3 }); }
+      ctx.restore();
+    }
+    if (mueve){
+      const na = cu.fracciones[0].ampliada, nb = cu.fracciones[1].ampliada;
+      bloque(c, g, bx, lerp(yA, yR, gs), na, s.N, 'a');
+      bloque(c, g, lerp(bx, bx + bw*na/s.N, gs), lerp(yB, yR, gs), nb, s.N, 'b');
+      if (s.res && s.g >= 1){
+        const w = bw*(na + nb)/s.N, y = yR + bh + 5;
+        ctx.save(); ctx.strokeStyle = c.s; ctx.lineWidth = grosor('s', 2); ctx.beginPath(); ctx.moveTo(bx, y); ctx.lineTo(bx, y + 5); ctx.lineTo(bx + w, y + 5); ctx.lineTo(bx + w, y); ctx.stroke(); ctx.restore();
+        rotulo(ctx, c, bx + w/2, y + 15, s.rotS, c.s, 'center', 800, 14);
+      }
+    }
+    if (s.fantasma && s.res){
+      const x = bx + bw*M.valor(s.fantasma);
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.setLineDash([4, 3]); linea(ctx, { x, y:yR - 4 }, { x, y:yR + bh + 4 }); ctx.restore();
+      rotulo(ctx, c, x, yR - 10, T(s.fantasma), c.ink, 'center', 800, 12);
+    }
+    if (s.slider){
+      const sx = N => bx + bw*(N - 1)/(NMAX - 1), y = g.sy;
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.globalAlpha = .25; ctx.lineWidth = 4; ctx.lineCap = 'round'; linea(ctx, { x:bx, y }, { x:bx + bw, y }); ctx.restore();
+      ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1; for (let N = 1; N <= NMAX; N++) linea(ctx, { x:sx(N), y:y + 6 }, { x:sx(N), y:y + 9 }); ctx.restore();
+      for (const N of [1, 6, 12, 18, 24]) rotulo(ctx, c, sx(N), y + 19, String(N), c.muted, 'center', 700, 11);
+      rotulo(ctx, c, bx, y - 21, `cuchillo: ${s.N} trozo${s.N > 1 ? 's' : ''} iguales`, c.m, 'left', 800, 13);
+      const x = sx(s.N);
+      ctx.save(); ctx.fillStyle = c.m; ctx.beginPath(); ctx.arc(x, y, 13, 0, 7); ctx.fill();
+      if (arrastrando || sobre){ ctx.strokeStyle = c.m; ctx.lineWidth = 2; ctx.globalAlpha = .4; ctx.beginPath(); ctx.arc(x, y, 18, 0, 7); ctx.stroke(); } ctx.restore();
+      ctx.save(); ctx.fillStyle = c.card; ctx.font = `800 12px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(String(s.N), x, y + .5); ctx.restore();
+    }
+  }
+
+  // ----- recta numérica con lupa -----
+  function geoRecta(){
+    const s = E.st, x0 = 30, x1 = W - 30, [r0, r1] = s.rango;
+    return { x0, x1, yM:56, yL:H - 64, X: v => x0 + (v - r0)/(r1 - r0)*(x1 - x0) };
+  }
+  function punto(c, x, y, k, t, abajo, alfa, dy){
+    const col = k === 'ink' ? c.ink : c[k];
+    ctx.save(); ctx.globalAlpha = alfa === undefined ? 1 : alfa;
+    ctx.fillStyle = col; ctx.beginPath(); ctx.arc(x, y, E.hl === k ? 8 : 6, 0, 7); ctx.fill();
+    ctx.strokeStyle = c.card; ctx.lineWidth = 2; ctx.stroke();
+    if (t) rotulo(ctx, c, x, y + (dy !== undefined ? dy : abajo ? 22 : -20), t, col, 'center', 800, 13);
+    ctx.restore();
+  }
+  function dibRecta(c){
+    const s = E.st, g = geoRecta(), { x0, x1, yM, yL, X } = g, [r0, r1] = s.rango, paso = s.paso || 0.1;
+    const n = Math.round((r1 - r0)/paso);
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, { x:x0, y:yM }, { x:x1, y:yM });
+    for (let j = 0; j <= n; j++){ const x = X(r0 + j*paso), h = (j === 0 || j === n) ? 12 : (2*j === n ? 9 : 6); ctx.lineWidth = 1.4; linea(ctx, { x, y:yM - h }, { x, y:yM + h }); }
+    ctx.restore();
+    const L = s.lupa, f = L ? clamp(L.f === undefined ? 1 : L.f, 0, 1) : 0;
+    if (L && f > 0){
+      const a = X(L.desde), b = Math.max(X(L.hasta), a + 4);
+      ctx.save(); ctx.globalAlpha = f;
+      ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; redondeado(ctx, a - 3, yM - 14, b - a + 6, 28, 6); ctx.stroke();
+      ctx.setLineDash([4, 4]); ctx.globalAlpha = .45*f; linea(ctx, { x:a - 3, y:yM + 14 }, { x:x0, y:yL - 16 }); linea(ctx, { x:b + 3, y:yM + 14 }, { x:x1, y:yL - 16 }); ctx.setLineDash([]);
+      ctx.globalAlpha = f; ctx.lineWidth = 2; linea(ctx, { x:x0, y:yL }, { x:x1, y:yL });
+      const Xl = v => x0 + (v - L.desde)/(L.hasta - L.desde)*(x1 - x0), esp = (x1 - x0)/10;
+      for (let j = 0; j <= 10; j++){ const v = L.desde + j*(L.hasta - L.desde)/10, h = (j === 0 || j === 10) ? 12 : j === 5 ? 9 : 6; ctx.lineWidth = 1.4; linea(ctx, { x:Xl(v), y:yL - h }, { x:Xl(v), y:yL + h });
+        if (esp >= 44 || j % 5 === 0) rotulo(ctx, c, Xl(v), yL + 24, fijo(v, L.dec), c.muted, 'center', 700, 11); }
+      rotulo(ctx, c, L.izq ? x0 : x1, yL - 46, L.rot || 'lupa: el tramo agrandado 10 veces', c.muted, L.izq ? 'left' : 'right', 700, 11);
+      ctx.restore();
+      for (const p of s.puntos) if (p.enLupa !== false && p.x >= L.desde - 1e-12 && p.x <= L.hasta + 1e-12) punto(c, Xl(p.x), yL, p.k, p.tl === undefined ? p.t : p.tl, p.labajo, f*(p.alfa === undefined ? 1 : p.alfa), p.dyl);
+    }
+    // las marcas de la recta, encima de las líneas de la lupa
+    const dec = s.dec === undefined ? 1 : s.dec;
+    if (s.etiquetas){ const esp = (x1 - x0)/n; for (let j = 0; j <= n; j++) if (esp >= 30 || j === 0 || j === n || 2*j === n) rotulo(ctx, c, X(r0 + j*paso), yM + 24, j === 0 || j === n ? fmt(r0 + j*paso, dec) : fijo(r0 + j*paso, dec), c.muted, 'center', 700, 11); }
+    else { rotulo(ctx, c, x0, yM + 24, fmt(r0, dec), c.muted, 'center', 700, 12); rotulo(ctx, c, x1, yM + 24, fmt(r1, dec), c.muted, 'center', 700, 12); }
+    for (const p of s.puntos) if (p.enMain !== false) punto(c, X(p.x), yM, p.k, p.tm === undefined ? p.t : p.tm, p.abajo, p.alfa, p.dy);
+    if (s.drag && s.puntos[0] && (arrastrando !== null || sobre !== false)){ ctx.save(); ctx.strokeStyle = c[s.puntos[0].k]; ctx.globalAlpha = .4; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(X(s.puntos[0].x), yM, 14, 0, 7); ctx.stroke(); ctx.restore(); }
+  }
+
+  // ----- cintas -----
+  function geoCintas(){
+    const s = E.st, x0 = 24, x1 = W - 34, maxL = s.escala || Math.max(s.a, s.b);
+    return { x0, x1, sc:(x1 - x0)/maxL, maxL, yA:30, yB:86, h:24, yR:140, yT:186 };
+  }
+  function dibCintas(c){
+    const s = E.st, g = geoCintas(), { x0, x1, sc, yR, h } = g;
+    for (const [len, y, k, nom] of [[s.a, g.yA, 'a', 'A'], [s.b, g.yB, 'b', 'B']]){
+      const w = len*sc;
+      ctx.save(); ctx.globalAlpha = .22; ctx.fillStyle = c[k]; redondeado(ctx, x0, y, w, h, 5); ctx.fill(); ctx.restore();
+      ctx.save(); ctx.strokeStyle = c[k]; ctx.lineWidth = grosor(k, 2); redondeado(ctx, x0, y, w, h, 5); ctx.stroke(); ctx.restore();
+      rotulo(ctx, c, x0, y - 11, `cinta ${nom}: ${len} cm`, c[k], 'left', 800, 13);
+      if (s.L){
+        const cr = M.cortar(len, s.L), lim = (s.prog === undefined ? 1 : s.prog)*g.maxL;
+        ctx.save(); ctx.strokeStyle = c.g; ctx.lineWidth = grosor('g', 2.4);
+        for (let j = 1; j <= cr.trozos; j++){ if (j*s.L > lim + 1e-9) break; if (j*s.L === len) continue; const x = x0 + j*s.L*sc; linea(ctx, { x, y:y - 5 }, { x, y:y + h + 5 }); }
+        ctx.restore();
+        if (!cr.justo && lim >= len){
+          const a = x0 + cr.trozos*s.L*sc;
+          ctx.save(); redondeado(ctx, a, y, w - (a - x0), h, 0); ctx.clip(); ctx.strokeStyle = c.ink; ctx.globalAlpha = .55; ctx.lineWidth = 1.2;
+          for (let x = a - h; x < x0 + w; x += 7) linea(ctx, { x, y:y + h }, { x:x + h, y }); ctx.restore();
+          rotulo(ctx, c, a + (w - (a - x0))/2, y + h + 12, `sobran ${cr.sobra} cm`, c.ink, 'center', 700, 11);
+        }
+      }
+      if (s.drag){ const x = x0 + w, yy = y + h/2; ctx.save(); ctx.fillStyle = c[k]; ctx.beginPath(); ctx.arc(x, yy, 9, 0, 7); ctx.fill(); ctx.strokeStyle = c.card; ctx.lineWidth = 2; ctx.stroke();
+        if (arrastrando === k || sobre === k){ ctx.strokeStyle = c[k]; ctx.globalAlpha = .4; ctx.beginPath(); ctx.arc(x, yy, 15, 0, 7); ctx.stroke(); } ctx.restore(); }
+    }
+    if (s.L){
+      const w = Math.min(s.L*sc, x1 - x0);
+      ctx.save(); ctx.fillStyle = c.g; ctx.globalAlpha = .85; redondeado(ctx, x0, yR - 5, w, 10, 4); ctx.fill(); ctx.restore();
+      rotulo(ctx, c, x0, yR - 16, s.rotL || `trozo: ${s.L} cm`, c.g, 'left', 800, 13);
+    }
+    if (s.linea){
+      const Mv = M.mcm([s.a, s.b]).valor, ya = g.yT + 30, Xt = v => x0 + v/Mv*(x1 - x0)*0.92;
+      rotulo(ctx, c, x0, g.yT, 'múltiplos de A (arriba) y de B (abajo)', c.muted, 'left', 700, 11);
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; linea(ctx, { x:x0, y:ya }, { x:x1, y:ya }); ctx.restore();
+      ctx.save(); ctx.lineWidth = grosor('a', 1.8); ctx.strokeStyle = c.a; for (let v = s.a; v < Mv; v += s.a) linea(ctx, { x:Xt(v), y:ya - 12 }, { x:Xt(v), y:ya }); ctx.restore();
+      ctx.save(); ctx.lineWidth = grosor('b', 1.8); ctx.strokeStyle = c.b; for (let v = s.b; v < Mv; v += s.b) linea(ctx, { x:Xt(v), y:ya }, { x:Xt(v), y:ya + 12 }); ctx.restore();
+      ctx.save(); ctx.strokeStyle = c.m; ctx.lineWidth = grosor('m', 3); linea(ctx, { x:Xt(Mv), y:ya - 16 }, { x:Xt(Mv), y:ya + 16 }); ctx.restore();
+      rotulo(ctx, c, x0, ya + 24, '0', c.muted, 'center', 700, 11);
+      rotulo(ctx, c, Xt(Mv), ya + 26, `${Mv} cm`, c.m, 'center', 800, 13);
+    }
+  }
+
+  // ----- buses -----
+  function geoBuses(){ const s = E.st, x0 = 34, x1 = W - 26; return { x0, x1, yA:48, yB:100, yE:H - 46, X: m => x0 + m/s.tmax*(x1 - x0) }; }
+  function bus(c, x, y, k){
+    ctx.save(); ctx.fillStyle = c[k]; redondeado(ctx, x - 9, y - 7, 18, 12, 3); ctx.fill();
+    ctx.fillStyle = c.card; ctx.fillRect(x - 6, y - 4, 4, 3); ctx.fillRect(x + 1, y - 4, 4, 3);
+    ctx.fillStyle = c.ink; ctx.beginPath(); ctx.arc(x - 5, y + 6, 2.4, 0, 7); ctx.arc(x + 5, y + 6, 2.4, 0, 7); ctx.fill(); ctx.restore();
+  }
+  function dibBuses(c){
+    const s = E.st, g = geoBuses(), { x0, x1, yA, yB, yE, X } = g, co = M.coinciden(s.a, s.b, s.tmax), t = s.t || 0;
+    ctx.save(); ctx.strokeStyle = c.line; ctx.lineWidth = 2; ctx.setLineDash([3, 4]); linea(ctx, { x:x0, y:yA }, { x:x1, y:yA }); linea(ctx, { x:x0, y:yB }, { x:x1, y:yB }); ctx.restore();
+    for (const m of co.juntos) if (m <= t + 1e-9){
+      ctx.save(); ctx.strokeStyle = c.m; ctx.lineWidth = grosor('m', 2.4); linea(ctx, { x:X(m), y:yA - 12 }, { x:X(m), y:yE }); ctx.restore();
+      rotulo(ctx, c, X(m), yE + 32, hora(m), c.m, 'center', 800, 12);
+    }
+    for (const m of co.salidasA) if (m <= t + 1e-9) bus(c, X(m), yA, 'a');
+    for (const m of co.salidasB) if (m <= t + 1e-9) bus(c, X(m), yB, 'b');
+    if (s.cursor && t > 0){ ctx.save(); ctx.strokeStyle = c.ink; ctx.globalAlpha = .6; ctx.setLineDash([4, 3]); ctx.lineWidth = 1.4; linea(ctx, { x:X(t), y:yA - 14 }, { x:X(t), y:yE }); ctx.restore(); }
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; linea(ctx, { x:x0, y:yE }, { x:x1, y:yE });
+    for (let m = 0; m <= s.tmax; m += 2) linea(ctx, { x:X(m), y:yE }, { x:X(m), y:yE + (m % 10 === 0 ? 7 : 3) }); ctx.restore();
+    for (let m = 0; m <= s.tmax; m += 10) rotulo(ctx, c, X(m), yE + 16, m === 0 ? '0 min' : String(m), c.muted, 'center', 700, 11);
+    rotulo(ctx, c, x0 + 16, yA - 22, `bus A: cada ${s.a} min`, c.a, 'left', 800, 13);
+    rotulo(ctx, c, x0 + 16, yB - 22, `bus B: cada ${s.b} min`, c.b, 'left', 800, 13);
+  }
+
+  // ----- viaje de ida y vuelta -----
+  function dibViaje(c){
+    const s = E.st, x0 = 40, x1 = W - 40, yR = 46, iv = M.idaVuelta(s.d, s.v1, s.v2), t = s.t || 0, pos = M.posicionViaje(s.d, s.v1, s.v2, t);
+    const X = x => x0 + x/s.d*(x1 - x0);
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.globalAlpha = .35; ctx.lineWidth = 3; linea(ctx, { x:x0, y:yR }, { x:x1, y:yR }); ctx.restore();
+    if (pos.recorrido > 0){ ctx.save(); ctx.strokeStyle = c.a; ctx.lineWidth = grosor('a', 4); ctx.lineCap = 'round'; linea(ctx, { x:x0, y:yR - 7 }, { x:X(Math.min(pos.recorrido, s.d)), y:yR - 7 }); ctx.restore(); }
+    if (pos.recorrido > s.d){ ctx.save(); ctx.strokeStyle = c.b; ctx.lineWidth = grosor('b', 4); ctx.lineCap = 'round'; linea(ctx, { x:x1, y:yR + 7 }, { x:X(2*s.d - pos.recorrido), y:yR + 7 }); ctx.restore(); }
+    for (const [x, t2] of [[x0, 'A'], [x1, 'B']]){ ctx.save(); ctx.fillStyle = c.ink; ctx.beginPath(); ctx.arc(x, yR, 6, 0, 7); ctx.fill(); ctx.restore(); rotulo(ctx, c, x, yR - 20, t2, c.ink, 'center', 800, 13); }
+    rotulo(ctx, c, (x0 + x1)/2, yR - 20, `${fmt(s.d, 0)} km`, c.ink, 'center', 700, 12);
+    const vuelta = pos.tramo === 'vuelta', cx = X(pos.x), cy = vuelta ? yR + 7 : yR - 7;
+    ctx.save(); ctx.fillStyle = vuelta ? c.b : c.a; redondeado(ctx, cx - 9, cy - 5, 18, 10, 4); ctx.fill(); ctx.strokeStyle = c.card; ctx.lineWidth = 1.5; ctx.stroke(); ctx.restore();
+    rotulo(ctx, c, x0 - 14, yR + 30, `ida: ${fmt(s.v1, 0)} km/h →`, c.a, 'left', 800, 12);
+    rotulo(ctx, c, x1 + 14, yR + 30, `← vuelta: ${fmt(s.v2, 0)} km/h`, c.b, 'right', 800, 12);
+    // la gráfica velocidad–tiempo (el área de cada rectángulo es la distancia de un tramo)
+    const gx0 = 58, gx1 = W - 30, gy0 = yR + 66, gy1 = H - 30;
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; linea(ctx, { x:gx0, y:gy0 - 6 }, { x:gx0, y:gy1 }); linea(ctx, { x:gx0, y:gy1 }, { x:gx1, y:gy1 }); ctx.restore();
+    rotulo(ctx, c, gx0 + 6, gy0 - 12, 'velocidad (km/h)', c.muted, 'left', 700, 11);
+    rotulo(ctx, c, gx1, gy1 + 16, 'horas', c.muted, 'right', 700, 11);
+    if (!s.graf) return;
+    const vmax = Math.max(s.v1, s.v2)*1.2, GX = h => gx0 + h/iv.tiempo*(gx1 - gx0 - 50), GY = v => gy1 - v/vmax*(gy1 - gy0);
+    const t1 = Math.min(t, iv.t1);
+    if (t1 > 0){ ctx.save(); ctx.globalAlpha = .25; ctx.fillStyle = c.a; ctx.fillRect(GX(0), GY(s.v1), GX(t1) - GX(0), gy1 - GY(s.v1)); ctx.globalAlpha = 1; ctx.strokeStyle = c.a; ctx.lineWidth = grosor('a', 2); ctx.strokeRect(GX(0), GY(s.v1), GX(t1) - GX(0), gy1 - GY(s.v1)); ctx.restore(); }
+    if (t > iv.t1){ const t2 = Math.min(t, iv.tiempo); ctx.save(); ctx.globalAlpha = .25; ctx.fillStyle = c.b; ctx.fillRect(GX(iv.t1), GY(s.v2), GX(t2) - GX(iv.t1), gy1 - GY(s.v2)); ctx.globalAlpha = 1; ctx.strokeStyle = c.b; ctx.lineWidth = grosor('b', 2); ctx.strokeRect(GX(iv.t1), GY(s.v2), GX(t2) - GX(iv.t1), gy1 - GY(s.v2)); ctx.restore(); }
+    for (let hh = 1; hh <= Math.floor(t + 1e-9) && hh <= iv.tiempo; hh++){ ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.2; linea(ctx, { x:GX(hh), y:gy1 }, { x:GX(hh), y:gy1 + 5 }); ctx.restore(); rotulo(ctx, c, GX(hh), gy1 + 16, String(hh), c.muted, 'center', 700, 11); }
+    if (t >= iv.t1){ rotulo(ctx, c, gx0 - 6, GY(s.v1), fmt(s.v1, 0), c.a, 'right', 800, 12); if (GX(iv.t1) - GX(0) > 50) rotulo(ctx, c, (GX(0) + GX(iv.t1))/2, (GY(s.v1) + gy1)/2, `${fmt(s.d, 0)} km`, c.ink, 'center', 700, 12); }
+    if (t >= iv.tiempo){ rotulo(ctx, c, gx0 - 6, GY(s.v2), fmt(s.v2, 0), c.b, 'right', 800, 12); if (GX(iv.tiempo) - GX(iv.t1) > 50) rotulo(ctx, c, (GX(iv.t1) + GX(iv.tiempo))/2, (GY(s.v2) + gy1)/2, `${fmt(s.d, 0)} km`, c.ink, 'center', 700, 12); }
+    if (s.res){
+      ctx.save(); ctx.strokeStyle = c.s; ctx.lineWidth = grosor('s', 2.4); ctx.setLineDash([7, 4]); linea(ctx, { x:GX(0), y:GY(iv.media) }, { x:GX(iv.tiempo), y:GY(iv.media) }); ctx.restore();
+      rotulo(ctx, c, GX(iv.tiempo) + 6, GY(iv.media), `media ${fmt(iv.media)}`, c.s, 'left', 800, 12);
+    }
+  }
+
+  // ----- fracción de una fracción en un rectángulo -----
+  function dibArea(c){
+    const s = E.st, w = Math.min(W - 100, 360), h = Math.min(H - 76, 190), x = (W - w)/2 + 12, y = 24, f = s.f || 0;
+    const cw = w/s.B.d, rh = h/s.A.d, r = clamp(f, 0, 1), q = clamp(f - 1, 0, 1);
+    ctx.save(); ctx.fillStyle = c.card; ctx.fillRect(x, y, w, h); ctx.globalAlpha = .26; ctx.fillStyle = c.b; ctx.fillRect(x, y, cw*s.B.n, h); ctx.restore();
+    ctx.save(); ctx.strokeStyle = c.b; ctx.lineWidth = grosor('b', 2.2); ctx.strokeRect(x + 1, y + 1, cw*s.B.n - 2, h - 2); ctx.restore();
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.globalAlpha = .6; ctx.lineWidth = 1.2; for (let j = 1; j < s.B.d; j++) linea(ctx, { x:x + j*cw, y }, { x:x + j*cw, y:y + h }); ctx.restore();
+    if (r > 0){ ctx.save(); ctx.globalAlpha = r; ctx.strokeStyle = c.a; ctx.lineWidth = grosor('a', 1.8); for (let j = 1; j < s.A.d; j++) linea(ctx, { x, y:y + j*rh }, { x:x + w, y:y + j*rh }); ctx.restore();
+      ctx.save(); ctx.globalAlpha = r; rotulo(ctx, c, x - 10, y + rh*s.A.n/2, T(s.A), c.a, 'right', 800, 14); ctx.restore(); }
+    if (q > 0){
+      ctx.save(); ctx.globalAlpha = .3*q; ctx.fillStyle = c.s; ctx.fillRect(x, y, cw*s.B.n, rh*s.A.n); ctx.restore();
+      ctx.save(); ctx.globalAlpha = q; ctx.strokeStyle = c.s; ctx.lineWidth = grosor('s', 2.6);
+      for (let i = 0; i < s.B.n; i++) for (let j = 0; j < s.A.n; j++) ctx.strokeRect(x + i*cw + 3, y + j*rh + 3, cw - 6, rh - 6); ctx.restore();
+    }
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.8; ctx.strokeRect(x, y, w, h); ctx.restore();
+    rotulo(ctx, c, x + cw*s.B.n/2, y + h + 15, T(s.B), c.b, 'center', 800, 14);
+    rotulo(ctx, c, x + w, y + h + 15, 'la barra entera', c.muted, 'right', 700, 11);
+  }
+
+  // ----- cuántos trozos caben -----
+  function dibCuantas(c){
+    const s = E.st, cols = W >= 640 ? s.n : Math.ceil(s.n/2), filas = Math.ceil(s.n/cols), gap = 14, bw = (W - 48 - gap*(cols - 1))/cols, bh = 36;
+    const y0 = (H - filas*bh - (filas - 1)*34)/2, f = clamp(s.f || 0, 0, 1);
+    for (let i = 0; i < s.n; i++){
+      const x = 24 + (i % cols)*(bw + gap), y = y0 + Math.floor(i/cols)*(bh + 34);
+      ctx.save(); ctx.globalAlpha = .14; ctx.fillStyle = c.a; redondeado(ctx, x, y, bw, bh, 6); ctx.fill(); ctx.restore();
+      for (let p = 0; p < s.d; p++){
+        const j = i*s.d + p; if (j >= (s.k || 0)) continue;
+        const px = x + bw*p/s.d;
+        ctx.save(); ctx.globalAlpha = .28; ctx.fillStyle = c.s; ctx.fillRect(px + 2, y + 2, bw/s.d - 4, bh - 4); ctx.restore();
+        rotulo(ctx, c, px + bw/s.d/2, y + bh/2, String(j + 1), c.s, 'center', 800, 13);
+      }
+      if (f > 0){ ctx.save(); ctx.globalAlpha = f; ctx.strokeStyle = c.b; ctx.lineWidth = grosor('b', 2.2); for (let p = 1; p < s.d; p++){ const xx = x + bw*p/s.d; linea(ctx, { x:xx, y:y - 4 }, { x:xx, y:y + bh + 4 }); } ctx.restore(); }
+      ctx.save(); ctx.strokeStyle = c.a; ctx.lineWidth = grosor('a', 2); redondeado(ctx, x, y, bw, bh, 6); ctx.stroke(); ctx.restore();
+      rotulo(ctx, c, x + bw/2, y + bh + 13, 'una barra', c.muted, 'center', 700, 10);
+    }
+  }
+
+  // ----- el balancín de la media ponderada -----
+  function dibBalanza(c){
+    const s = E.st, x0 = 44, x1 = W - 44, v0 = s.desde, v1 = s.hasta, X = v => x0 + (v - v0)/(v1 - v0)*(x1 - x0), yB = H - 92;
+    const P = s.pesos.reduce((a, b) => a + b, 0);
+    const th = s.c === null || s.c === undefined ? 0 : clamp(M.momento(s.valores, s.pesos, s.c)/P*0.5, -0.2, 0.2);
+    const pv = { x: s.c === null || s.c === undefined ? (x0 + x1)/2 : X(s.c), y: yB };
+    const R = (v, up) => { const dx = X(v) - pv.x, dy = -up; return { x: pv.x + dx*Math.cos(th) - dy*Math.sin(th), y: pv.y + dx*Math.sin(th) + dy*Math.cos(th) }; };
+    const suelo = yB + 30;
+    ctx.save(); ctx.strokeStyle = c.line; ctx.lineWidth = 2; linea(ctx, { x:x0 - 20, y:suelo }, { x:x1 + 20, y:suelo }); ctx.restore();
+    if (s.c === null || s.c === undefined){ ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = .45; for (const v of [v0, v1]){ const p = R(v, 0); ctx.fillRect(p.x - 3, p.y + 3, 6, suelo - p.y - 3); } ctx.restore(); }
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 5; ctx.lineCap = 'round'; linea(ctx, R(v0, 0), R(v1, 0)); ctx.restore();
+    ctx.save(); ctx.strokeStyle = c.card; ctx.lineWidth = 1.4; for (let v = Math.ceil(v0); v <= v1; v++) linea(ctx, R(v, -2), R(v, 2)); ctx.restore();
+    s.valores.forEach((v, j) => {
+      const k = j === 0 ? 'a' : 'b', n = s.pesos[j]/s.porFicha;
+      for (let i = 0; i < n; i++){ const p = R(v, 10 + i*13);
+        ctx.save(); ctx.globalAlpha = .4; ctx.fillStyle = c[k]; redondeado(ctx, p.x - 14, p.y - 6, 28, 11, 4); ctx.fill(); ctx.globalAlpha = 1; ctx.strokeStyle = c[k]; ctx.lineWidth = grosor(k, 1.6); ctx.stroke(); ctx.restore(); }
+      const p = R(v, 10 + n*13 + 6);
+      rotulo(ctx, c, p.x, p.y, `${s.pesos[j]} alumnos, ${fmt(v)}`, c[k], 'center', 800, 12);
+    });
+    if (s.c !== null && s.c !== undefined){
+      ctx.save(); ctx.fillStyle = c.s; ctx.beginPath(); ctx.moveTo(pv.x, pv.y + 4); ctx.lineTo(pv.x - 13, suelo); ctx.lineTo(pv.x + 13, suelo); ctx.closePath(); ctx.fill(); ctx.restore();
+    }
+    const yE = H - 30;
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; linea(ctx, { x:x0, y:yE }, { x:x1, y:yE }); for (let v = Math.ceil(v0); v <= v1; v++) linea(ctx, { x:X(v), y:yE - 4 }, { x:X(v), y:yE + 4 }); ctx.restore();
+    for (let v = Math.ceil(v0); v <= v1; v++) rotulo(ctx, c, X(v), yE + 15, String(v), c.muted, 'center', 700, 11);
+    if (s.res && s.c !== null && s.c !== undefined){ ctx.save(); ctx.strokeStyle = c.s; ctx.lineWidth = 2; linea(ctx, { x:X(s.c), y:suelo + 2 }, { x:X(s.c), y:yE - 24 }); ctx.restore(); rotulo(ctx, c, X(s.c), yE - 12, fmt(s.c), c.s, 'center', 800, 12); }
+  }
+
+  const DIB = { barras:dibBarras, recta:dibRecta, cintas:dibCintas, buses:dibBuses, viaje:dibViaje, area:dibArea, cuantas:dibCuantas, balanza:dibBalanza };
+  E.dibujar = () => { if (!W || !E.listo) return; const c = colores(); ctx.clearRect(0, 0, W, H); DIB[E.modo](c); };
+
+  // ----- lo que se arrastra en cada modo (táctil, ratón y teclado) -----
+  const MAN = {
+    barras: () => { const s = E.st; if (!s.slider) return []; const g = geoBarras(); return [{ id:'N', x: g.bx + g.bw*(s.N - 1)/(NMAX - 1), y: g.sy }]; },
+    recta: () => { const s = E.st; if (!s.drag || !s.puntos[0]) return []; const g = geoRecta(); return [{ id:0, x: g.X(s.puntos[0].x), y: g.yM }]; },
+    cintas: () => { const s = E.st; if (!s.drag) return []; const g = geoCintas(); return [{ id:'a', x: g.x0 + s.a*g.sc, y: g.yA + g.h/2 }, { id:'b', x: g.x0 + s.b*g.sc, y: g.yB + g.h/2 }]; },
+  };
+  const ARR = {
+    barras: (id, p) => { const g = geoBarras(); return { N: clamp(Math.round((p.x - g.bx)/g.bw*(NMAX - 1)) + 1, 1, NMAX) }; },
+    recta: (id, p) => { const g = geoRecta(), [r0, r1] = E.st.rango, sn = E.st.snap || 0.01; return { x: clamp(Math.round((r0 + (p.x - g.x0)/(g.x1 - g.x0)*(r1 - r0))/sn)*sn, r0, r1) }; },
+    cintas: (id, p) => { const g = geoCintas(); return { [id]: clamp(Math.round((p.x - g.x0)/g.sc), E.st.min || 2, g.maxL) }; },
+  };
+  const TEC = {
+    barras: k => (k === 'ArrowRight' || k === 'ArrowUp') ? { N: clamp(E.st.N + 1, 1, NMAX) } : (k === 'ArrowLeft' || k === 'ArrowDown') ? { N: clamp(E.st.N - 1, 1, NMAX) } : null,
+    recta: k => { const sn = E.st.snap || 0.01, x = E.st.puntos[0].x, [r0, r1] = E.st.rango;
+      return (k === 'ArrowRight' || k === 'ArrowUp') ? { x: clamp(Math.round((x + sn)/sn)*sn, r0, r1) } : (k === 'ArrowLeft' || k === 'ArrowDown') ? { x: clamp(Math.round((x - sn)/sn)*sn, r0, r1) } : null; },
+    cintas: k => { const g = geoCintas(), mn = E.st.min || 2;
+      return k === 'ArrowRight' ? { a: clamp(E.st.a + 1, mn, g.maxL) } : k === 'ArrowLeft' ? { a: clamp(E.st.a - 1, mn, g.maxL) }
+        : k === 'ArrowUp' ? { b: clamp(E.st.b + 1, mn, g.maxL) } : k === 'ArrowDown' ? { b: clamp(E.st.b - 1, mn, g.maxL) } : null; },
+  };
+  // El modo decide qué hacer con el cambio (E.st.mover); si no, se copia al estado.
+  function aplicar(cambio){
+    if (!cambio) return false;
+    const s = E.st, distinto = Object.keys(cambio).some(k => (k === 'x' ? Math.abs(s.puntos[0].x - cambio.x) > 1e-12 : s[k] !== cambio[k]));
+    if (!distinto) return true;
+    if (s.mover) s.mover(cambio); else Object.assign(s, cambio);
+    E.dibujar(); E.avisar(); return true;
+  }
+  const local = e => { const r = cv.getBoundingClientRect(); return { x:e.clientX - r.left, y:e.clientY - r.top }; };
+  // Con el dedo, el dibujo deja desplazar la página (touch-action: pan-y); solo un toque que empieza cerca de una
+  // manija (radio de 40 px) se queda con el gesto. Con ratón, radio de 32 px.
+  function cerca(p, radio){
+    if (E.ocupado || E.anim || !MAN[E.modo]) return null;
+    let best = null, d = radio;
+    for (const m of MAN[E.modo]()){ const z = Math.hypot(p.x - m.x, p.y - m.y); if (z < d){ d = z; best = m.id; } }
+    return best;
+  }
+  cv.addEventListener('touchstart', e => {
+    if (e.touches.length !== 1) return;
+    const r = cv.getBoundingClientRect(), t = e.touches[0];
+    if (cerca({ x:t.clientX - r.left, y:t.clientY - r.top }, 40) !== null) e.preventDefault();
+  }, { passive:false });
+  cv.addEventListener('pointerdown', e => {
+    const p = local(e), id = cerca(p, e.pointerType === 'mouse' ? 32 : 40); if (id === null) return;
+    arrastrando = id; cv.setPointerCapture(e.pointerId); e.preventDefault(); cv.focus({ preventScroll:true }); E.dibujar();
+  }, { passive:false });
+  cv.addEventListener('pointermove', e => {
+    const p = local(e);
+    if (arrastrando !== null){ if (ARR[E.modo]) aplicar(ARR[E.modo](arrastrando, p)); return; }
+    const sv = cerca(p, 32), hay = sv !== null ? sv : false;
+    if (hay !== sobre){ sobre = hay; cv.style.cursor = hay !== false ? 'grab' : ''; E.dibujar(); }
+  });
+  const soltar = () => { if (arrastrando !== null){ arrastrando = null; E.dibujar(); } };
+  cv.addEventListener('pointerup', soltar); cv.addEventListener('pointercancel', soltar);
+  cv.addEventListener('keydown', e => {
+    if (E.ocupado || E.anim || !TEC[E.modo] || !MAN[E.modo]().length) return;
+    if (aplicar(TEC[E.modo](e.key))) e.preventDefault();
+  });
+
+  E.leyenda = () => {
+    if (!idLey) return;
+    const it = (k, t) => `<span><i style="background:var(${k === 'ink' ? '--ink' : '--c-' + k})"></i>${t}</span>`;
+    document.getElementById(idLey).innerHTML = (E.ley || []).map(([k, t]) => it(k, t)).join('');
+  };
+  // Lecturas y descripción para lectores de pantalla (dicen lo mismo; antes de responder no adelantan la respuesta).
+  E.avisar = () => {
+    const filas = E.lect.map(k => k(E));
+    if (idLect) document.getElementById(idLect).innerHTML = filas.map(([k, t, v]) => `<div class="lectura" style="--k:var(${k === 'ink' ? '--ink' : '--c-' + k})"><span>${t}</span><b>${v}</b></div>`).join('');
+    if (idDesc && !E.anim){
+      const base = E.desc || { barras:'Barras partidas en trozos iguales.', recta:'Una recta numérica.', cintas:'Dos cintas.', buses:'Una línea de tiempo con dos buses.',
+        viaje:'Un camino entre dos pueblos y una gráfica de velocidad y tiempo.', area:'Un rectángulo que representa una barra entera.', cuantas:'Barras enteras.', balanza:'Un balancín con fichas.' }[E.modo];
+      document.getElementById(idDesc).textContent = [base, ...filas.map(([, t, v]) => `${t}: ${v}.`)].join(' ');
+    }
+    if (E.alCambiar) E.alCambiar();
+  };
+  E.animar = (de, a, dur, paso, fin, lineal) => {
+    const tok = ++E.tok; E.anim = true;
+    tween(dur, f => { if (tok !== E.tok) return; paso(de + (a - de)*f); E.dibujar(); },
+      () => { if (tok !== E.tok) return; E.anim = false; E.avisar(); if (fin) fin(); }, lineal);
+  };
+  // Una lista de estados, uno tras otro (cada uno se queda ms[j] milisegundos).
+  E.secuencia = (estados, ms, fin) => {
+    const tok = ++E.tok; E.anim = true; let j = 0;
+    const sig = () => { if (tok !== E.tok) return;
+      if (j >= estados.length){ E.anim = false; E.avisar(); if (fin) fin(); return; }
+      Object.assign(E.st, estados[j]); E.dibujar(); E.avisar(); const espera = Array.isArray(ms) ? ms[j] : ms; j++; setTimeout(sig, RM ? 0 : espera); };
+    sig();
+  };
+  E.parar = () => { E.tok++; E.anim = false; };
+  return E;
+}
+
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}" tabindex="-1"></p>`;
+// En el celular, el dibujo se lleva arriba de la pantalla antes de animar; si el alumno cambió de paso, no se anima.
+function alDibujo(cv, sigue, fn){
+  const chico = innerWidth < 900;
+  if (chico) cv.scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+  esperar(chico ? 380 : 0, () => { if (sigue()) fn(); });
+}
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1');
+const S = { step:0, max:0, pred:{}, ocupado:false, par:0, N:4, f4:M.fr(35, 100), niv4:1, a7:18, b7:30 };
+
+// Números de la escena: todos salen del motor
+const A1 = M.fr(1, 2), B1 = M.fr(1, 3), SUMA = M.sumar(A1, B1);
+const DEC = M.compararDecimales('0,25', '0,3'), LUPA3 = M.lupa(0.25, 1);
+const CIN = M.cintas(24, 36), MCD5 = M.mcd([24, 36]);
+const BUS = M.coinciden(12, 18, 72), MB = M.mcd([12, 18]), MM = M.mcm([12, 18]);
+const IV = M.idaVuelta(120, 60, 40);
+const fb = (letra, ok, txt) => (letra === ok ? txt : `Elegiste la ${letra.toUpperCase()}. ${txt} La correcta está marcada.`);
+
+const P_SUMA = { id:'fracciones-paso1', ok:'c', opts:[
+  ['a', T(SUMA.errores.sumaTodo), 'AR12-suma-numeradores-y-denominadores', 'documentado'],
+  ['b', T(SUMA.errores.multiplica), 'multiplica-en-vez-de-sumar', 'hipotesis'],
+  ['c', SUMA.texto],
+  ['d', T(SUMA.errores.sumaNumMultDen), 'suma-numeradores-multiplica-denominadores', 'hipotesis']],
+  fb:{ c:'¡Bien! Con trozos del mismo tamaño, los sextos, 1/2 son 3 sextos y 1/3 son 2 sextos: juntos, 5/6.',
+    a:'2/5 sale de sumar arriba (1 + 1) y abajo (2 + 3). Pero 2/5 es menos que 1/2: juntar dos trozos no puede dar menos que uno de ellos. Mira cómo se parten las barras.',
+    b:'1/6 es 1/2 por 1/3: la mitad de un tercio. Eso es multiplicar, no juntar, y da menos que cada trozo.',
+    d:'Multiplicar los denominadores da sextos, y eso sirve; pero 1/2 no es 1 sexto: son 3 sextos. Y 1/3 son 2 sextos.' } };
+
+// ¿0,25 o 0,3? Las opciones se arman con lo que dice el motor: el mayor, la regla «más largo es mayor» y el redondeo.
+const TXT_DEC = { a:'0,25 es mayor', b:'0,3 es mayor', iguales:'Valen lo mismo' }, LET_DEC = { a:'a', b:'b', iguales:'c' };
+const P_DEC = { id:'fracciones-paso3', ok:LET_DEC[DEC.mayor], opts:['a', 'b', 'iguales'].map(k => {
+    if (k === DEC.mayor) return [LET_DEC[k], TXT_DEC[k]];
+    if (k === DEC.errores.masLargo) return [LET_DEC[k], TXT_DEC[k], 'AR11-mas-largo-es-mayor', 'parcial'];
+    return [LET_DEC[k], TXT_DEC[k], 'redondea-a-decimas', 'hipotesis']; }),
+  fb:{ b:'¡Bien! 0,3 son 3 décimas, es decir, 30 centésimas; 0,25 son 25 centésimas. 30 centésimas es más.',
+    a:'25 es más que 3, pero aquí no se comparan 25 y 3: el 2 de 0,25 vale 2 décimas y el 3 de 0,3 vale 3 décimas. Tener más cifras no hace mayor a un número. Mira la lupa.',
+    c:'Redondeado a décimas, 0,25 se vuelve 0,3, pero redondear cambia el número: 0,25 está justo en la mitad entre 0,2 y 0,3.' } };
+
+const P_CINTA = { id:'fracciones-paso5', unidad:U_MCD, ok:'d', opts:[
+  ['a', `${CIN.errores.otroDivisor} cm`, 'divisor-comun-no-maximo', 'hipotesis'],
+  ['b', `${CIN.errores.mcm} cm`, 'AR13-mcm-en-vez-de-mcd', 'parcial'],
+  ['c', `${CIN.errores.producto} cm`, 'producto', 'hipotesis'],
+  ['d', `${CIN.trozo} cm`]],
+  fb:{ d:'¡Bien! El trozo tiene que caber justo en 24 y en 36: es un divisor común. Los divisores comunes son 1, 2, 3, 4, 6 y 12; el más grande, el MCD, es 12.',
+    b:'72 es el MCM: el primer largo que se puede armar poniendo cintas de 24 una tras otra, o de 36. Pero un trozo de 72 cm no se puede sacar de una cinta de 24 cm. Para partir en trozos iguales lo más grandes posible se usa el MCD.',
+    a:'Con trozos de 6 cm no sobra nada, pero no son los más largos: trozos más largos también caben justo en las dos cintas.',
+    c:'864 es 24 · 36: es mucho más largo que las dos cintas juntas. Un trozo de una cinta no puede ser más largo que la cinta.' } };
+
+const P_BUS = { id:'fracciones-paso6', unidad:U_MCD, ok:'a', opts:[
+  ['a', `${BUS.minutos} min`],
+  ['b', `${BUS.errores.mcd} min`, 'AR13-mcd-en-vez-de-mcm', 'parcial'],
+  ['c', `${BUS.errores.suma} min`, 'suma', 'hipotesis'],
+  ['d', `${BUS.errores.producto} min`, 'AR13-producto', 'parcial']],
+  fb:{ a:'¡Bien! A pasa a los 12, 24, 36, … minutos y B a los 18, 36, …: el primer múltiplo común de 12 y 18 es 36, el MCM.',
+    b:'6 es el MCD de 12 y 18. Pero a los 6 minutos ningún bus ha vuelto todavía: el primero vuelve a los 12. Para volver a coincidir lo antes posible se usa el MCM.',
+    c:'12 + 18 = 30, pero a los 30 minutos no pasa ninguno de los dos: A pasa a los 24 y a los 36, y B a los 18 y a los 36.',
+    d:'12 · 18 = 216 es un múltiplo común, así que a esa hora sí coinciden, pero no es la primera vez: antes coinciden a los 36, a los 72, …' } };
+
+const P_VIAJE = { id:'fracciones-paso8', unidad:U_EST, ok:'c', opts:[
+  ['a', `${fmt(IV.errores.simple)} km/h`, 'AR14-promedio-simple-de-velocidades', 'parcial'],
+  ['b', `${fmt(IV.errores.sinElDos)} km/h`, 'armonica-sin-el-2', 'hipotesis'],
+  ['c', `${fmt(IV.media)} km/h`],
+  ['d', `${fmt(IV.errores.suma)} km/h`, 'suma-de-velocidades', 'hipotesis']],
+  fb:{ c:`¡Bien! La ida dura 120/60 = ${fmt(IV.t1)} h y la vuelta 120/40 = ${fmt(IV.t2)} h: ${fmt(IV.distancia)} km en ${fmt(IV.tiempo)} h son ${fmt(IV.media)} km/h.`,
+    a:'50 es el promedio de 60 y 40, como si el auto pasara el mismo tiempo a cada velocidad. Pero a 40 km/h tarda más: pasa 3 horas a 40 y solo 2 a 60.',
+    b:'60 · 40/(60 + 40) = 24 es la fórmula de ida y vuelta sin el 2 de arriba. 24 es menos que las dos velocidades: el auto nunca fue tan lento.',
+    d:'60 + 40 = 100 es más que las dos velocidades: el auto nunca fue tan rápido. La velocidad media siempre queda entre la más lenta y la más rápida.' } };
+
+// ----- paso 2: el cuchillo -----
+const PARES = [[[1, 2], [1, 3]], [[2, 3], [1, 4]], [[3, 4], [5, 6]], [[1, 6], [3, 8]]].map(([a, b]) => [M.fr(a[0], a[1]), M.fr(b[0], b[1])]);
+function rotSuma(cu){ if (!cu.todas) return ''; const s = M.simplificar(cu.suma.n, cu.suma.d); return s.factor > 1 ? `${T(cu.suma)} = ${s.texto}` : T(cu.suma); }
+function prep2(){
+  const [A, B] = PARES[S.par];
+  const extra = () => { const cu = M.cuchillo([A, B], S.N); return { N:S.N, rotS:rotSuma(cu), rotR: cu.todas ? `${T(A)} + ${T(B)}` : 'juntas: los cortes no encajan' }; };
+  E.config({ modo:'barras', st:Object.assign({ A, B, fc:1, g:1, res:true, slider:true, mover:c => { S.N = c.N; Object.assign(E.st, extra()); } }, extra()),
+    ley:[['a', T(A)], ['b', T(B)], ['m', 'cortes del cuchillo'], ['s', 'la suma']],
+    desc:`Dos barras: ${T(A)} y ${T(B)}. Un cuchillo las parte en N trozos iguales.`,
+    lect:[() => ['m', 'trozos N', String(S.N)],
+      () => { const c = M.cuchillo([A, B], S.N).fracciones[0]; return ['a', T(A), c.encaja ? `${c.ampliada}/${S.N}` : 'no encaja']; },
+      () => { const c = M.cuchillo([A, B], S.N).fracciones[1]; return ['b', T(B), c.encaja ? `${c.ampliada}/${S.N}` : 'no encaja']; },
+      () => { const cu = M.cuchillo([A, B], S.N); return ['s', 'suma', cu.todas ? rotSuma(cu) : '—']; }],
+    alCambiar:vivo2 });
+}
+function vivo2(){
+  const d = $('vivo2'); if (!d) return;
+  const [A, B] = PARES[S.par], cu = M.cuchillo([A, B], S.N);
+  d.innerHTML = cu.todas
+    ? `<div class="eq">${a_(frF(A))} + ${b_(frF(B))} = ${a_(fr(cu.fracciones[0].ampliada, m_(S.N)))} + ${b_(fr(cu.fracciones[1].ampliada, m_(S.N)))} = ${s_(fr(cu.suma.n, cu.suma.d))}<span class="note">${S.N === cu.mcm ? `${m_(S.N)} es el MCM de ${A.d} y ${B.d}: el menor que sirve` : `también sirve, pero el menor es ${cu.mcm}`}</span></div>`
+    : `<div class="eq">${m_(`N = ${S.N}`)}<span class="note">${cu.fracciones.map((c, j) => { if (c.encaja) return null; const F = j ? B : A;
+        const cuantos = c.coinciden === 0 ? (c.cortes === 1 ? 'no cae' : 'ninguno cae') : `solo ${c.coinciden} cae${c.coinciden > 1 ? 'n' : ''}`;
+        return `${c.cortes === 1 ? `el corte de ${T(F)}` : `de los ${c.cortes} cortes de ${T(F)}, ${cuantos}`}${c.cortes === 1 ? ` ${cuantos}` : ''} sobre un corte del cuchillo: ${S.N} no es múltiplo de ${F.d}`; }).filter(Boolean).join('; ')}</span></div>`;
+}
+// ----- paso 4: la recta con lupa -----
+const PRESET4 = [[1, 4], [3, 8], [1, 3], [1, 6], [2, 7], [5, 8]].map(([n, d]) => M.fr(n, d));
+const TIPO = { exacto:'exacto', 'periodico-puro':'periódico puro', 'periodico-mixto':'periódico mixto' };
+function lupa4(){ const x = Math.min(M.valor(S.f4), 1 - 1e-9), L = M.lupa(x, S.niv4); return Object.assign(L, { dec:S.niv4 + 1, f:1, rot: S.niv4 === 1 ? 'lupa ×10: un tramo de una décima, en centésimas' : 'lupa ×100: un tramo de una centésima, en milésimas' }); }
+function prep4(){
+  const pone = () => { const t = M.decimal(S.f4).conPuntos; Object.assign(E.st, { puntos:[{ x:M.valor(S.f4), k:'a', t }], lupa:lupa4() }); };
+  E.config({ modo:'recta', st:{ rango:[0, 1], etiquetas:true, drag:true, snap:0.01, puntos:[], mover:c => { S.f4 = M.fr(Math.round(c.x*100), 100); pone(); } },
+    ley:[['a', 'el número']], desc:'Una recta numérica de 0 a 1 con un punto que se arrastra, y una lupa debajo.',
+    lect:[() => ['a', 'el número', M.decimal(S.f4).conPuntos], () => ['a', 'como fracción', T(S.f4)], () => ['ink', 'decimal', TIPO[M.decimal(S.f4).tipo] || 'entero']],
+    alCambiar:vivo4 });
+  pone(); E.dibujar(); E.avisar();
+}
+function vivo4(){
+  const d = $('vivo4'); if (!d) return;
+  const dec = M.decimal(S.f4), f = S.f4;
+  const regla = f.d === 1 ? 'es un entero' : dec.tipo === 'exacto' ? `el denominador ${f.d} = ${dec.factoresDen} solo tiene 2 y 5: exacto` : dec.tipo === 'periodico-puro' ? `el denominador ${f.d} = ${dec.factoresDen} no tiene ni 2 ni 5: periódico puro` : `el denominador ${f.d} = ${dec.factoresDen} tiene 2 o 5 y otros primos: periódico mixto`;
+  d.innerHTML = `<div class="eq">${a_(dec.conPuntos)} = ${a_(frF(f))}<span class="note">${regla}</span></div>${dec.periodo ? `<div class="eq">${a_(per(dec))}<span class="note">el arco va sobre el periodo: las cifras que se repiten sin fin</span></div>` : ''}`;
+}
+// ----- paso 7: cortar y coincidir -----
+function prep7(){
+  const pone = () => { const g = M.mcd([S.a7, S.b7]).valor; Object.assign(E.st, { a:S.a7, b:S.b7, L:g, rotL:`trozo más largo que cabe en las dos: ${g} cm` }); };
+  E.config({ modo:'cintas', st:{ a:S.a7, b:S.b7, escala:48, min:2, drag:true, linea:true, prog:1, mover:c => { if (c.a !== undefined) S.a7 = c.a; if (c.b !== undefined) S.b7 = c.b; pone(); } },
+    ley:[['a', 'cinta A'], ['b', 'cinta B'], ['g', 'trozo común más largo (MCD)'], ['m', 'primer múltiplo común (MCM)']],
+    desc:'Dos cintas que se alargan arrastrando su extremo derecho, cortadas en trozos iguales, y abajo los múltiplos de sus largos.',
+    lect:[() => ['a', 'cinta A', `${S.a7} cm`], () => ['b', 'cinta B', `${S.b7} cm`], () => ['g', 'MCD', `${M.mcd([S.a7, S.b7]).valor} cm`], () => ['m', 'MCM', `${M.mcm([S.a7, S.b7]).valor} cm`]],
+    alCambiar:vivo7 });
+  pone(); E.dibujar(); E.avisar();
+}
+function vivo7(){
+  const d = $('vivo7'); if (!d) return;
+  const g = M.mcd([S.a7, S.b7]), m = M.mcm([S.a7, S.b7]);
+  d.innerHTML = `<div class="eqs"><div class="eq">${a_(S.a7)} = ${g.descomposiciones[0]}</div><div class="eq">${b_(S.b7)} = ${g.descomposiciones[1]}</div>
+    <div class="eq">MCD = ${g.textoFactores} = ${g_(g.valor)}<span class="note">los primos comunes, con el menor exponente</span></div>
+    <div class="eq">MCM = ${m.textoFactores} = ${m_(m.valor)}<span class="note">todos los primos, con el mayor exponente</span></div>
+    <div class="eq">${g_(g.valor)} · ${m_(m.valor)} = ${a_(S.a7)} · ${b_(S.b7)} = ${fmt(S.a7*S.b7, 0)}</div></div>
+    <div class="tabla-wrap"><table class="tabla"><caption class="sr">Algoritmo de Euclides</caption><tbody>
+    <tr><th scope="row">dividendo</th>${g.euclides.map(p => `<td>${p[0]}</td>`).join('')}</tr>
+    <tr><th scope="row">divisor</th>${g.euclides.map((p, j) => `<td>${j === g.euclides.length - 1 ? g_(p[1]) : p[1]}</td>`).join('')}</tr>
+    <tr><th scope="row">cociente</th>${g.euclides.map(p => `<td>${p[2]}</td>`).join('')}</tr>
+    <tr><th scope="row">resto</th>${g.euclides.map(p => `<td>${p[3]}</td>`).join('')}</tr></tbody></table></div>`;
+}
+
+const LECT_SUMA = [() => ['m', 'denominador común', String(SUMA.comun)], () => ['s', 'suma', SUMA.texto]];
+const LECT_DEC = [() => ['a', '0,25', `${DEC.centesimas[0]} centésimas`], () => ['b', '0,3', `${DEC.centesimas[1]} centésimas`]];
+const LECT_CIN = [() => ['g', 'trozo', `${CIN.trozo} cm`], () => ['ink', 'trozos', `${CIN.trozosA} + ${CIN.trozosB} = ${CIN.trozos}`]];
+const LECT_BUS = [() => ['m', 'juntos otra vez', `a los ${BUS.minutos} min (${hora(BUS.minutos)})`]];
+const LECT_IV = [() => ['ink', 'ida', `${fmt(IV.t1)} h`], () => ['ink', 'vuelta', `${fmt(IV.t2)} h`], () => ['s', 'velocidad media', `${fmt(IV.media)} km/h`]];
+const LEY_DEC = [['a', '0,25'], ['b', '0,3']];
+const PUNTOS_DEC = () => [{ x:M.valor(DEC.fracciones[0]), k:'a', t:'0,25' }, { x:M.valor(DEC.fracciones[1]), k:'b', t:'0,3', tl:DEC.alineados[1], dy:-40 }];
+const LUPA_DEC = f => ({ desde:LUPA3.desde, hasta:LUPA3.hasta, dec:2, f, rot:'lupa: de 0,2 a 0,3, en centésimas' });
+
+const DESC1 = `Las dos barras partidas en sextos: 1/2 son ${SUMA.na} sextos y 1/3 son ${SUMA.nb}; juntos llenan ${SUMA.texto} de la tercera barra. Una línea a trazos marca 2/5, antes de la mitad.`;
+const DESC3 = 'En la recta, 0,25 y 0,3. La lupa agranda el tramo de 0,2 a 0,3 en centésimas: 0,25 queda en la mitad y 0,30 al final.';
+const DESC5 = `Las dos cintas cortadas en trozos de ${CIN.trozo} cm: ${CIN.trozosA} trozos la de 24 y ${CIN.trozosB} la de 36.`;
+const DESC6 = `Los buses salen juntos a las 6:00 y vuelven a salir juntos a los ${BUS.minutos} minutos (${hora(BUS.minutos)}) y a los ${2*BUS.minutos} minutos.`;
+const DESC8 = `El auto hace la ida en ${fmt(IV.t1)} h y la vuelta en ${fmt(IV.t2)} h. En la gráfica, dos rectángulos de 120 km de área y una línea a trazos en la velocidad media, ${fmt(IV.media)} km/h.`;
+const steps = [
+ { k:'Paso 1', t:'Predice: dos trozos juntos', gate:P_SUMA,
+   prep:() => { const ya = !!S.pred[P_SUMA.id];
+     E.config({ modo:'barras', st: ya ? { A:A1, B:B1, N:SUMA.comun, fc:1, g:1, res:true, fantasma:SUMA.errores.sumaTodo, rotR:'1/2 + 1/3', rotS:SUMA.texto } : { A:A1, B:B1, N:null, rotR:'1/2 + 1/3 = ?' },
+       ley: ya ? [['a', '1/2'], ['b', '1/3'], ['m', 'cortes en trozos iguales'], ['s', 'la suma']] : [['a', '1/2'], ['b', '1/3']],
+       desc: ya ? DESC1 : 'Dos barras iguales: una partida en mitades con una pintada, otra en tercios con uno pintado, y una barra vacía para juntarlas.', lect: ya ? LECT_SUMA : [] }); },
+   anima:fin => { const s = E.st; Object.assign(s, { N:SUMA.comun, fc:0, g:0, rotR:'1/2 + 1/3' });
+     E.ley = [['a', '1/2'], ['b', '1/3'], ['m', 'cortes en trozos iguales'], ['s', 'la suma']]; E.leyenda();
+     E.animar(0, 1, 1000, f => { s.fc = f; }, () => esperar(300, () => E.animar(0, 1, 1500, f => { s.g = f; }, () => {
+       Object.assign(s, { res:true, fantasma:SUMA.errores.sumaTodo, rotS:SUMA.texto }); E.lect = LECT_SUMA; E.desc = DESC1; E.dibujar(); E.avisar(); fin(); }))); },
+   body:() => `<p class="problem">Dos barras de chocolate iguales: una se parte en mitades y la otra en tercios. Tomas ${a_('1/2')} de la primera y ${b_('1/3')} de la segunda.</p>
+   <p>Si juntas los dos trozos, ¿qué parte de una barra tienes? Es decir, ¿cuánto es ${a_('1/2')} + ${b_('1/3')}?</p>${opcionesHTML(P_SUMA.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${a_(fr(1, 2))} + ${b_(fr(1, 3))} = ${a_(fr(SUMA.na, m_(SUMA.comun)))} + ${b_(fr(SUMA.nb, m_(SUMA.comun)))} = ${s_(fr(5, 6))}<span class="note">denominador común ${m_(SUMA.comun)}</span></div>
+     <div class="eq">${fr('1 + 1', '2 + 3')} = ${fr(2, 5)}<span class="note">y 2/5 es menos que 1/2: no puede ser</span></div></div>
+   <p>Para juntar trozos y contarlos, tienen que ser del mismo tamaño. El cuchillo ${m_('turquesa')} parte las dos barras en ${m_('sextos')}: la mitad son 3 sextos y el tercio, 2 sextos. Ahora sí se cuentan: 3 + 2 = 5 sextos. La línea a trazos marca 2/5: queda antes de la mitad.</p>
+   <p class="fuente">Sumar numeradores y denominadores es un error muy extendido. En una evaluación nacional de EE. UU. (NAEP), al estimar 12/13 + 7/8 entre 1, 2, 19 y 21, más de la mitad de los alumnos de 13 años eligió 19 o 21, que salen de sumar solo los numeradores (12 + 7) o solo los denominadores (13 + 8) (citado por Braithwaite y Siegler, 2021; cifras por verificar en el original). Las otras dos opciones incorrectas son hipótesis nuestras.</p></div>` },
+ { k:'Paso 2', t:'Partir en trozos que encajen', explora:true,
+   prep:() => prep2(),
+   body:() => `<p class="problem">Arrastra el ${m_('cuchillo')} (el círculo de abajo) para partir las tres barras en N trozos iguales. Cuando sus cortes caen justo sobre los de las dos fracciones, las dos se escriben con ese denominador y se suman.</p>
+   <div class="seg" role="group" aria-label="Qué suma">${PARES.map(([a, b], j) => `<button type="button" data-par="${j}" aria-pressed="${S.par === j}">${T(a)} + ${T(b)}</button>`).join('')}</div>
+   <div class="eqs" id="vivo2"></div>
+   <p>Los N que sirven son los múltiplos comunes de los denominadores; el más chico es el ${m_('MCM')}. El producto de los denominadores también sirve, pero puede ser más grande que lo necesario: en 3/4 + 5/6 da 24, y basta con 12.</p>
+   <p class="hint">Con teclado: toca el dibujo; las flechas cambian N de uno en uno.</p>`,
+   luego:() => { $('stepBody').querySelectorAll('[data-par]').forEach(b => b.onclick = () => {
+     S.par = +b.dataset.par; $('stepBody').querySelectorAll('[data-par]').forEach(q => q.setAttribute('aria-pressed', String(q === b))); prep2(); }); } },
+ { k:'Paso 3', t:'Predice: dos decimales', gate:P_DEC,
+   prep:() => { const ya = !!S.pred[P_DEC.id];
+     E.config({ modo:'recta', st: ya ? { rango:[0, 1], etiquetas:true, puntos:PUNTOS_DEC(), lupa:LUPA_DEC(1) } : { rango:[0, 1], puntos:[] },
+       ley: LEY_DEC, desc: ya ? DESC3 : 'Una recta numérica de 0 a 1 partida en décimas.', lect: ya ? LECT_DEC : [] }); },
+   anima:fin => { const s = E.st, P = PUNTOS_DEC(), meta = P.map(p => p.x); Object.assign(s, { etiquetas:true, puntos:P.map(p => Object.assign(p, { x:0 })) });
+     E.animar(0, 1, 1400, f => { s.puntos.forEach((p, j) => { p.x = meta[j]*f; }); }, () => esperar(250, () => {
+       s.lupa = LUPA_DEC(0); E.animar(0, 1, 900, f => { s.lupa.f = f; }, () => { E.lect = LECT_DEC; E.desc = DESC3; E.avisar(); fin(); }); })); },
+   body:() => `<p class="problem">Dos números con coma: ${a_('0,25')} y ${b_('0,3')}.</p>
+   <p>¿Cuál es mayor? Es decir, ¿cuál queda más a la derecha en la recta numérica?</p>${opcionesHTML(P_DEC.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${a_('0,25')} = ${a_(fr(DEC.centesimas[0], 100))} = ${a_(frF(DEC.fracciones[0]))}</div>
+     <div class="eq">${b_('0,3')} = ${b_(DEC.alineados[1])} = ${b_(fr(DEC.centesimas[1], 100))} = ${b_(frF(DEC.fracciones[1]))}<span class="note">un cero a la derecha no cambia el número</span></div>
+     <div class="eq">${b_(DEC.alineados[1])} &gt; ${a_(DEC.alineados[0])}</div></div>
+   <p>La lupa agranda el tramo de 0,2 a 0,3 y lo parte en 10 centésimas: ${a_('0,25')} queda en la mitad y ${b_('0,3')}, que es 0,30, al final. Para comparar decimales, iguala la cantidad de cifras con ceros a la derecha y compara como enteros: 30 centésimas contra 25.</p>
+   <p class="fuente">Leer las cifras después de la coma como un número entero («más largo es mayor») es una de las reglas erróneas que describieron Resnick y otros (1989). Un estudio en Australia con alumnos de 5.º a 10.º grado encontró que cerca del 5 % la seguía usando (Steinle y Stacey, 1998; cifra por verificar en el original). Que valgan lo mismo por redondear es hipótesis nuestra.</p></div>` },
+ { k:'Paso 4', t:'La recta con lupa', explora:true,
+   prep:() => prep4(),
+   body:() => `<p class="problem">Arrastra el punto ${a_('azul')} por la recta, o elige una fracción. La lupa muestra el tramo donde está el punto, agrandado 10 o 100 veces.</p>
+   <div class="seg" role="group" aria-label="Elegir una fracción">${PRESET4.map((f, j) => `<button type="button" data-f="${j}">${T(f)}</button>`).join('')}</div>
+   <div class="seg" role="group" aria-label="Aumento de la lupa"><button type="button" data-niv="1" aria-pressed="${S.niv4 === 1}">Lupa ×10</button><button type="button" data-niv="2" aria-pressed="${S.niv4 === 2}">Lupa ×100</button></div>
+   <div class="eqs" id="vivo4"></div>
+   <p>Una fracción da un decimal exacto cuando, simplificada, su denominador solo tiene los factores 2 y 5 (como 8 = 2³ o 20 = 2²·5): se puede convertir en décimas, centésimas o milésimas. Si no, el decimal es periódico, y por más que agrandes con la lupa, el punto nunca cae justo sobre una marca: 1/3 = 0,333… siempre queda a un tercio del tramo.</p>
+   <p class="hint">Con teclado: toca el dibujo; las flechas mueven el punto de centésima en centésima.</p>`,
+   luego:() => { const b = $('stepBody');
+     b.querySelectorAll('[data-f]').forEach(x => x.onclick = () => { S.f4 = PRESET4[+x.dataset.f]; prep4(); });
+     b.querySelectorAll('[data-niv]').forEach(x => x.onclick = () => { S.niv4 = +x.dataset.niv; b.querySelectorAll('[data-niv]').forEach(q => q.setAttribute('aria-pressed', String(q === x))); prep4(); }); } },
+ { k:'Paso 5', t:'Predice: las dos cintas', gate:P_CINTA,
+   prep:() => { const ya = !!S.pred[P_CINTA.id];
+     E.config({ modo:'cintas', st: ya ? { a:24, b:36, L:CIN.trozo, prog:1, rotL:`trozo: ${CIN.trozo} cm` } : { a:24, b:36, L:null },
+       ley: ya ? [['a', 'cinta A'], ['b', 'cinta B'], ['g', 'cortes y trozo']] : [['a', 'cinta A'], ['b', 'cinta B']],
+       desc: ya ? DESC5 : 'Dos cintas, de 24 cm y de 36 cm.', lect: ya ? LECT_CIN : [] }); },
+   anima:fin => { const pruebas = CIN.comunes.map(L => ({ L, prog:1, rotL:`trozo de ${L} cm: cabe justo` }))
+       .concat([{ L:2*CIN.trozo, rotL:`trozo de ${2*CIN.trozo} cm: en la cinta B sobra` }, { L:CIN.trozo, rotL:`trozo: ${CIN.trozo} cm` }]);
+     E.ley = [['a', 'cinta A'], ['b', 'cinta B'], ['g', 'cortes y trozo']]; E.leyenda();
+     E.secuencia(pruebas, pruebas.map((_, j) => j < CIN.comunes.length ? 650 : 1400), () => { E.lect = LECT_CIN; E.desc = DESC5; E.avisar(); fin(); }); },
+   body:() => `<p class="problem">Hay dos cintas: una de ${a_('24 cm')} y otra de ${b_('36 cm')}. Se quieren cortar las dos en trozos todos del mismo largo, sin que sobre nada, y lo más largos posible.</p>
+   <p>¿Cuánto debe medir cada ${g_('trozo')}?</p>${opcionesHTML(P_CINTA.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${a_('24')} = ${MCD5.descomposiciones[0]}</div><div class="eq">${b_('36')} = ${MCD5.descomposiciones[1]}</div>
+     <div class="eq">MCD = ${MCD5.textoFactores} = ${g_(MCD5.valor)}<span class="note">los primos comunes, con el menor exponente</span></div>
+     <div class="eq">${a_('24')} ÷ ${g_(CIN.trozo)} = ${CIN.trozosA} trozos</div><div class="eq">${b_('36')} ÷ ${g_(CIN.trozo)} = ${CIN.trozosB} trozos</div></div>
+   <p>El trozo tiene que caber justo en las dos cintas: es un divisor de 24 y de 36. En el dibujo se prueban los divisores comunes, del más chico al más grande; con 24 cm ya sobra en la cinta B. <b>Partir en trozos iguales lo más grandes posible es el MCD.</b> El MCD nunca es mayor que el número más chico.</p>
+   <p class="fuente">Usar el MCM donde va el MCD, y al revés, está descrito en estudios con escolares de primaria de Indonesia y de Taiwán, sin una cifra que se pueda comparar. Las otras dos opciones incorrectas son hipótesis nuestras.</p></div>` },
+ { k:'Paso 6', t:'Predice: los dos buses', gate:P_BUS,
+   prep:() => { const ya = !!S.pred[P_BUS.id];
+     E.config({ modo:'buses', st:{ a:12, b:18, tmax:72, t: ya ? 72 : 0 }, ley:[['a', 'bus A'], ['b', 'bus B'], ['m', 'salen juntos']],
+       desc: ya ? DESC6 : 'Una línea de tiempo de 72 minutos desde las 6:00, con las salidas de dos buses.', lect: ya ? LECT_BUS : [] }); },
+   anima:fin => { const s = E.st; s.cursor = true;
+     E.animar(0, s.tmax, 6000, t => { s.t = t; }, () => { s.cursor = false; E.lect = LECT_BUS; E.desc = DESC6; E.dibujar(); E.avisar(); fin(); }, true); },
+   body:() => `<p class="problem">Dos buses salen juntos del paradero a las 6:00. Después, el bus ${a_('A')} sale cada ${a_('12 min')} y el bus ${b_('B')}, cada ${b_('18 min')}.</p>
+   <p>¿Cuántos minutos después vuelven a salir ${m_('juntos')} por primera vez?</p>${opcionesHTML(P_BUS.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${a_('12')} = ${MM.descomposiciones[0]}</div><div class="eq">${b_('18')} = ${MM.descomposiciones[1]}</div>
+     <div class="eq">MCM = ${MM.textoFactores} = ${m_(MM.valor)}<span class="note">todos los primos, con el mayor exponente</span></div>
+     <div class="eq">MCD = ${MB.textoFactores} = ${g_(MB.valor)}<span class="note">los comunes, con el menor</span></div>
+     <div class="eq">${g_(MB.valor)} · ${m_(MM.valor)} = ${a_('12')} · ${b_('18')} = ${fmt(12*18, 0)}<span class="note">con dos números, siempre</span></div></div>
+   <p>A sale a los 12, 24, 36, … minutos (los múltiplos de 12) y B a los 18, 36, … (los de 18). Coinciden en los múltiplos comunes: ${m_('36')}, 72, 108, … <b>Volver a coincidir lo antes posible es el MCM.</b> El MCM nunca es menor que el número más grande.</p>
+   <div class="aviso">Para saber cuál usar, pregúntate qué buscas: un trozo que quepa justo en las dos cosas, lo más grande posible (MCD, a lo más el número menor), o algo que se repite y vuelve a coincidir, lo antes posible (MCM, al menos el número mayor).</div>
+   <p class="fuente">Confundir el MCD con el MCM en problemas está descrito en estudios con escolares de primaria, sin una cifra comparable. Dar el producto (216) también es un error típico de este problema, sin cifra medida. Sumar los dos tiempos es hipótesis nuestra.</p></div>` },
+ { k:'Paso 7', t:'Cortar y coincidir', explora:true,
+   prep:() => prep7(),
+   body:() => `<p class="problem">Arrastra el extremo derecho de cada cinta para cambiar su largo. Arriba se cortan en el ${g_('trozo común más largo')}; abajo, los múltiplos de los dos largos se encuentran por primera vez en el ${m_('MCM')}.</p>
+   <div id="vivo7"></div>
+   <p>El algoritmo de Euclides halla el MCD sin descomponer: divide el mayor entre el menor; luego el divisor entre el resto, y así hasta que el resto sea 0. El último divisor es el ${g_('MCD')}. Sirve porque un trozo que cabe justo en los dos largos también cabe justo en lo que sobra al restar uno del otro.</p>
+   <p class="hint">Con teclado: toca el dibujo; ← y → cambian la cinta A; ↑ y ↓, la cinta B.</p>` },
+ { k:'Paso 8', t:'Predice: ida y vuelta', gate:P_VIAJE,
+   prep:() => { const ya = !!S.pred[P_VIAJE.id];
+     E.config({ modo:'viaje', st:{ d:120, v1:60, v2:40, t: ya ? IV.tiempo : 0, graf:ya, res:ya },
+       ley: ya ? [['a', 'ida'], ['b', 'vuelta'], ['s', 'velocidad media']] : [['a', 'ida'], ['b', 'vuelta']],
+       desc: ya ? DESC8 : 'Un camino de 120 km entre los pueblos A y B, y una gráfica vacía de velocidad y tiempo.', lect: ya ? LECT_IV : [] }); },
+   anima:fin => { const s = E.st; s.graf = true; E.ley = [['a', 'ida'], ['b', 'vuelta'], ['s', 'velocidad media']]; E.leyenda();
+     E.animar(0, IV.tiempo, 6000, t => { s.t = t; }, () => { s.res = true; E.lect = LECT_IV; E.desc = DESC8; E.dibujar(); E.avisar(); fin(); }, true); },
+   body:() => `<p class="problem">Un auto va del pueblo A al pueblo B, que están a 120 km, a ${a_('60 km/h')}. Vuelve por el mismo camino a ${b_('40 km/h')}.</p>
+   <p>¿Cuál es su ${s_('velocidad media')} en todo el viaje de ida y vuelta?</p>${opcionesHTML(P_VIAJE.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${s_('velocidad media')} = ${fr('distancia total', 'tiempo total')} = ${fr(`${fmt(IV.distancia)} km`, `${fmt(IV.t1)} h + ${fmt(IV.t2)} h`)} = ${s_(`${fmt(IV.media)} km/h`)}</div>
+     <div class="eq">${fr(`2 · ${a_('60')} · ${b_('40')}`, `${a_('60')} + ${b_('40')}`)} = ${s_(fmt(IV.media))}<span class="note">la media armónica, solo si los dos tramos miden lo mismo</span></div>
+     <div class="eq">${fr(`${a_('60')} · ${fmt(IV.t1)} + ${b_('40')} · ${fmt(IV.t2)}`, fmt(IV.tiempo))} = ${s_(fmt(IV.media))}<span class="note">un promedio pesado por el tiempo</span></div></div>
+   <p>En la gráfica, el área de cada rectángulo es la distancia de un tramo: ${a_('60')} · ${fmt(IV.t1)} = 120 y ${b_('40')} · ${fmt(IV.t2)} = 120. La ${s_('velocidad media')} es la altura de un solo rectángulo con la misma área total en las mismas ${fmt(IV.tiempo)} horas. Como el auto pasa más tiempo a 40 que a 60, la media queda más cerca de 40.</p>
+   <p>Es un promedio ponderado: cada velocidad pesa según el tiempo que dura. En «¿Qué pasa si…?» hay otro: el promedio de dos aulas con distinta cantidad de alumnos.</p>
+   <p class="fuente">Tomar el promedio simple de las velocidades es un error conocido; un estudio con adultos y alumnos de 16 años lo atribuye a la palabra «promedio» (no vimos su cifra). Las otras dos opciones incorrectas son hipótesis nuestras.</p>
+   <p><a class="btn primary" href="#que-pasa-si" style="display:inline-block; text-decoration:none">Seguir con ¿Qué pasa si…?</a></p></div>` },
+];
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; b.dataset.label = `Ir al ${s.k.toLowerCase()}: ${s.t}`;
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.prep) s.prep();
+  pintarDots();
+  if (s.gate) prediccion(s);
+  if (s.luego) s.luego();
+  if (E.alCambiar) E.alCambiar();
+  nav();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+  E.ocupado = S.ocupado;
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    // un paso bloqueado no delata su título
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : b.dataset.label);
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){ if (k > S.max) S.max = k; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const f = $('fb'); f.textContent = fb(p, P.ok, P.fb[p]); f.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0, P.unidad);
+    S.ocupado = true; nav();
+    E.compactar(false);
+    $('fb').focus({ preventScroll:true });
+    const paso = S.step;
+    alDibujo($('cv'), () => true, () => {
+      if (S.step !== paso) { S.ocupado = false; nav(); return; }
+      s.anima(() => { S.ocupado = false; E.avisar(); nav(); });
+    });
+  }));
+  pintar();
+}
+
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   0,999… y 1, dividir entre 1/2, la fracción de una fracción, el promedio de dos aulas y un periódico mixto.
+   La escena cambia recién después de responder. Un experimento se abre solo si los anteriores ya tienen respuesta. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2');
+const G9 = M.generatriz('0,(9)'), DIV = M.dividir(6, [1, 2]), DE = M.fraccionDe([[2, 3], [3, 4]]), PON = M.ponderado([14, 16], [30, 20]), GM = M.generatriz('0,1(6)');
+// 0,9; 0,99; 0,999; 0,9999: cada uno con lo que le falta para llegar a 1 y la lupa sobre ese tramo.
+const NUEVES = [1, 2, 3, 4].map(k => { const f = M.generatriz('0,' + '9'.repeat(k)).resultado, x = M.valor(f), L = M.lupa(x, k);
+  return { k, x, txt:'0,' + '9'.repeat(k), falta:M.decimal(M.restar(1, f).resultado).conPuntos, L }; });
+const estadoNueves = q => ({ puntos:[{ x:q.x, k:'a', t:q.txt, tm:'' }, { x:1, k:'s', t:'1', tm:'' }],
+  lupa:{ desde:q.L.desde, hasta:q.L.hasta, dec:q.k + 1, f:1, rot:`lupa: de ${q.txt} a 1` }, falta:q.falta });
+// Con infinitos nueves: el punto 0,999… cae sobre el 1 y no le falta nada.
+const FIN9 = { puntos:[{ x:1, k:'a', t:'0,999…', tm:'', dyl:-40 }, { x:1, k:'s', t:'1', tm:'' }],
+  lupa:{ desde:NUEVES[3].L.desde, hasta:NUEVES[3].L.hasta, dec:5, f:1, izq:true, rot:'con infinitos nueves: no queda ningún tramo' }, falta:'nada: 0' };
+const LEY9 = [['a', '0,9…9 con más y más nueves'], ['s', 'el 1']];
+const DESC9 = 'Con más y más nueves, el punto se acerca al 1; con infinitos nueves, 0,999… cae sobre el 1 y no le falta nada.';
+const P16 = { x:M.valor(GM.resultado), k:'a', t:'0,1666…', tm:'0,1666…' };
+const ERR16 = [{ x:M.valor(GM.errores.comoPuro), k:'ink', t:T(GM.errores.comoPuro), tm:'' }, { x:M.valor(GM.errores.comoExacto), k:'ink', t:T(GM.errores.comoExacto), tm:'' },
+  { x:M.valor(GM.errores.sinRestar), k:'ink', t:T(GM.errores.sinRestar), abajo:true }];
+const L16 = (() => { const L = M.lupa(M.valor(GM.errores.comoExacto), 2); return { desde:L.desde, hasta:L.hasta, dec:3, f:1, rot:'lupa: de 0,16 a 0,17, en milésimas' }; })();
+const lectBal = () => [() => ['s', 'apoyo del balancín', E.st.c === null ? '—' : fmt(E.st.c)]];
+
+const EXPS = [
+  { id:'nueves', corto:'Nueves sin fin',
+    q:`El número ${a_('0,999…')} tiene nueves que se repiten sin fin. ¿Qué fracción es?`,
+    opts:[['a', T(G9.errores.comoExacto), 'generatriz-como-exacto', 'hipotesis'], ['b', T(G9.errores.tresVeces), 'corta-el-periodo', 'hipotesis'],
+          ['c', T(G9.sinSimplificar)], ['d', T(G9.errores.comoMixto), 'puro-como-mixto', 'hipotesis']],
+    ok:'c',
+    fb:{ a:'9/10 = 0,9: le faltan todos los nueves que siguen.',
+      b:'999/1000 = 0,999 se detiene en la tercera cifra; 0,999… sigue para siempre.',
+      d:'9/90 = 0,1. Esa regla, con un 0 en el denominador, es la de los periódicos mixtos, que tienen cifras que no se repiten antes del periodo.' },
+    antes:ya => E.config({ modo:'recta', st: Object.assign({ rango:[0, 1], etiquetas:true, puntos:[] }, ya ? FIN9 : {}),
+      ley: ya ? LEY9 : [['a', '0,9…9 con más y más nueves']], desc: ya ? DESC9 : 'Una recta numérica de 0 a 1.',
+      lect: ya ? [() => ['ink', 'le falta para 1', E.st.falta || '—']] : [] }),
+    despues:() => { E.lect = [() => ['ink', 'le falta para 1', E.st.falta || '—']]; E.ley = LEY9; E.leyenda();
+      E.secuencia(NUEVES.map(estadoNueves).concat([FIN9]), [1500, 1500, 1500, 1500, 0], () => { E.desc = DESC9; E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">${a_('0,999…')} = ${a_(`0,<span class="per">9</span>`)} = ${fr(9, 9)} = ${s_('1')}<span class="note">el arco va sobre el periodo: las cifras que se repiten sin fin; el periodo va sobre tantos 9 como cifras tiene</span></div>
+      <div class="eq">${fr(1, 3)} = 0,333… → 3 · ${fr(1, 3)} = ${a_('0,999…')} = ${s_('1')}</div>
+      <div class="eq">x = ${a_('0,999…')} → 10x − x = 9,999… − 0,999… = 9 → x = ${s_('1')}</div></div>
+      <p>Con cada nueve, lo que falta para llegar a 1 se divide entre 10: 0,1; 0,01; 0,001… La lupa tiene que agrandar cada vez más para verlo. Con infinitos nueves no falta nada: no hay ningún número entre ${a_('0,999…')} y ${s_('1')}, así que son el mismo número escrito de dos formas.</p>
+      <p class="fuente">No encontramos estudios con cifras sobre este número en postulantes; las opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'entre-medio', corto:'Dividir entre 1/2',
+    q:`¿Cuánto es ${a_('6')} ÷ ${b_('1/2')}?`,
+    opts:[['a', T(DIV.errores.sinInvertir), 'no-invierte-el-divisor', 'hipotesis'], ['b', T(DIV.errores.invierteDividendo), 'invierte-el-dividendo', 'hipotesis'],
+          ['c', DIV.texto], ['d', T(DIV.errores.invierteAmbos), 'invierte-las-dos', 'hipotesis']],
+    ok:'c',
+    fb:{ a:'3 es 6 · 1/2, la mitad de 6. Dividir entre 1/2 no es dividir entre 2: es preguntar cuántos medios caben en 6.',
+      b:'1/12 sale de invertir el 6 en vez del 1/2: (1/6) · (1/2). Se invierte el divisor, el número que va después del ÷.',
+      d:'1/3 sale de invertir los dos números: (1/6) · 2. Solo se invierte el divisor.' },
+    antes:ya => E.config({ modo:'cuantas', st:{ n:6, d:2, f: ya ? 1 : 0, k: ya ? 12 : 0 }, ley: ya ? [['a', 'barras enteras'], ['b', 'cortes en medios'], ['s', 'medios contados']] : [['a', 'barras enteras']],
+      desc:'Seis barras enteras.', lect: ya ? [() => ['s', 'medios que caben', String(E.st.k)]] : [] }),
+    despues:() => { const s = E.st; E.ley = [['a', 'barras enteras'], ['b', 'cortes en medios'], ['s', 'medios contados']]; E.leyenda();
+      E.animar(0, 1, 800, f => { s.f = f; }, () => E.animar(0, 12, 3600, k => { s.k = Math.floor(k + 1e-9); }, () => { E.lect = [() => ['s', 'medios que caben', String(s.k)]]; E.avisar(); }, true)); },
+    exp:() => `<div class="eqs"><div class="eq">${a_('6')} ÷ ${b_(fr(1, 2))} = ${a_('6')} · ${fr(2, 1)} = ${s_(DIV.texto)}</div>
+      <div class="eq">${s_(DIV.texto)} · ${b_(fr(1, 2))} = ${a_('6')}<span class="note">control: el cociente por el divisor da el dividendo</span></div></div>
+      <p>En cada barra caben 2 medios; en 6 barras caben ${s_('12')}. Dividir entre un número menor que 1 da un resultado mayor que el dividendo. Por eso se invierte el divisor: dividir entre 1/2 es lo mismo que multiplicar por 2.</p>
+      <p class="fuente">No encontramos estudios con cifras sobre estos errores; las opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'de', corto:'La fracción de una fracción',
+    q:`De una barra se separan los ${b_('3/4')}. De ese pedazo, alguien se come los ${a_('2/3')}. ¿Qué parte de la barra entera se comió?`,
+    opts:[['a', T(DE.errores.suma), 'de-como-suma', 'hipotesis'], ['b', DE.texto], ['c', T(DE.errores.sumaTodo), 'de-como-suma-de-numeradores-y-denominadores', 'hipotesis'],
+          ['d', T(DE.errores.cruzado), 'multiplica-en-cruz', 'hipotesis']],
+    ok:'b',
+    fb:{ a:'17/12 = 2/3 + 3/4 es más que una barra entera, y se comió solo una parte de un pedazo. «Los 2/3 de» quiere decir tomar 2 de 3 partes iguales de lo que hay: se multiplica.',
+      c:'5/7 sale de sumar arriba (2 + 3) y abajo (3 + 4). «De» no es sumar, y las fracciones tampoco se suman así.',
+      d:'8/9 sale de multiplicar en cruz (2 · 4 y 3 · 3), que es lo que se hace al dividir. Para «de» se multiplica derecho: arriba con arriba y abajo con abajo.' },
+    antes:ya => E.config({ modo:'area', st:{ A:M.fr(2, 3), B:M.fr(3, 4), f: ya ? 2 : 0 }, ley: ya ? [['b', 'los 3/4'], ['a', 'los 2/3 de ese pedazo'], ['s', 'lo que se comió']] : [['b', 'los 3/4']],
+      desc:'Un rectángulo que es la barra entera, con tres de sus cuatro columnas pintadas.', lect: ya ? [() => ['s', 'cuadritos comidos', `${DE.sinSimplificar.n} de ${DE.sinSimplificar.d}`]] : [] }),
+    despues:() => { const s = E.st; E.ley = [['b', 'los 3/4'], ['a', 'los 2/3 de ese pedazo'], ['s', 'lo que se comió']]; E.leyenda();
+      E.animar(0, 2, 2600, f => { s.f = f; }, () => { E.lect = [() => ['s', 'cuadritos comidos', `${DE.sinSimplificar.n} de ${DE.sinSimplificar.d}`]]; E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">${a_(fr(2, 3))} de ${b_(fr(3, 4))} = ${a_(fr(2, 3))} · ${b_(fr(3, 4))} = ${fr(`2 · 3`, `3 · 4`)} = ${s_(fr(DE.sinSimplificar.n, DE.sinSimplificar.d))} = ${s_(frF(DE.resultado))}</div></div>
+      <p>El rectángulo es la barra entera. Las ${b_('3 columnas de 4')} son los 3/4. Al partirlo en ${a_('3 filas')} y tomar 2, quedan 2 · 3 = 6 cuadritos de los 3 · 4 = 12: arriba se multiplican los numeradores y abajo los denominadores.</p>
+      <p class="fuente">No encontramos estudios con cifras sobre estos errores con «de»; las opciones incorrectas son hipótesis nuestras (la C repite con otra operación el error de sumar numeradores y denominadores, que sí está medido en sumas).</p>` },
+  { id:'ponderado', corto:'El promedio de dos aulas', unidad:U_EST,
+    q:`En un examen, los 30 alumnos del aula ${a_('A')} sacaron ${a_('14')} de promedio y los 20 alumnos del aula ${b_('B')} sacaron ${b_('16')}. ¿Cuál es el ${s_('promedio')} de los 50 alumnos juntos?`,
+    opts:[['a', fmt(PON.errores.simple), 'AR15-promedio-de-promedios', 'parcial'], ['b', fmt(PON.errores.pesosCruzados), 'pesos-cruzados', 'hipotesis'],
+          ['c', fmt(PON.errores.grupoMayor), 'grupo-mayor', 'hipotesis'], ['d', fmt(PON.media)]],
+    ok:'d',
+    fb:{ a:'15 es el promedio de 14 y 16, como si las dos aulas tuvieran la misma cantidad de alumnos. El aula A tiene más, y su nota pesa más.',
+      b:'15,2 cruza los pesos: le da 20 alumnos al 14 y 30 al 16. Es al revés.',
+      c:'14 es la nota del aula más grande, pero los 20 alumnos con 16 también cuentan: suben el promedio.' },
+    antes:ya => E.config({ modo:'balanza', st:{ valores:[14, 16], pesos:[30, 20], desde:12, hasta:18, porFicha:5, c: ya ? PON.media : null, res:ya },
+      ley: ya ? [['a', 'aula A (cada ficha, 5 alumnos)'], ['b', 'aula B'], ['s', 'el apoyo']] : [['a', 'aula A (cada ficha, 5 alumnos)'], ['b', 'aula B']],
+      desc:'Un balancín sobre una recta de notas de 12 a 18: seis fichas en el 14 y cuatro en el 16, cada ficha son 5 alumnos.', lect: ya ? lectBal() : [] }),
+    despues:() => { const s = E.st; E.ley = [['a', 'aula A (cada ficha, 5 alumnos)'], ['b', 'aula B'], ['s', 'el apoyo']]; E.leyenda();
+      s.c = PON.errores.simple; E.lect = lectBal(); E.dibujar(); E.avisar();
+      E.secuencia([{}], 1200, () => E.animar(PON.errores.simple, PON.media, 1800, c => { s.c = c; }, () => { s.c = PON.media; s.res = true; E.dibujar(); E.avisar(); })); },
+    exp:() => `<div class="eqs"><div class="eq">${s_('promedio')} = ${fr(`30 · ${a_('14')} + 20 · ${b_('16')}`, '30 + 20')} = ${fr(fmt(PON.suma, 0), fmt(PON.sumaPesos, 0))} = ${s_(fmt(PON.media))}</div></div>
+      <p>En el balancín, cada ficha son 5 alumnos. Apoyado en el 15, el lado del 14 pesa más y se inclina; queda derecho justo en ${s_(fmt(PON.media))}, el promedio ponderado. Es la misma idea del viaje de ida y vuelta: ahí cada velocidad pesaba según el tiempo que duraba.</p>
+      <p class="fuente">Pollatsek, Lima y Well (1981) mostraron que universitarios que sabían la fórmula de la media no ponderaban al juntar dos grupos (no vimos cifras). Las otras dos opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'mixto', corto:'Un periódico mixto',
+    q:`En ${a_('0,1666…')} el 1 no se repite y el 6 se repite sin fin. ¿Qué fracción es?`,
+    opts:[['a', T(GM.errores.comoPuro), 'mixto-como-puro', 'hipotesis'], ['b', T(GM.sinSimplificar)], ['c', T(GM.errores.comoExacto), 'generatriz-como-exacto', 'hipotesis'],
+          ['d', T(GM.errores.sinRestar), 'no-resta-el-anteperiodo', 'hipotesis']],
+    ok:'b',
+    fb:{ a:'16/99 = 0,1616…: ahí se repite el bloque 16, no solo el 6. Esa es la regla de los periódicos puros.',
+      c:'16/100 = 0,16 se detiene en la segunda cifra.',
+      d:'16/90 = 0,1777…: falta restar la parte que no se repite, 16 − 1.' },
+    antes:ya => E.config({ modo:'recta', st:{ rango:[0.1, 0.2], paso:0.01, dec:1, puntos: ya ? [P16].concat(ERR16) : [], lupa: ya ? L16 : null },
+      ley:[['a', '0,1666…'], ['ink', 'otras fracciones']], desc:'Una recta numérica de 0,1 a 0,2 partida en centésimas.', lect: ya ? [() => ['s', '0,1666… es', frTxt(GM)]] : [] }),
+    despues:() => { E.lect = [() => ['s', '0,1666… es', frTxt(GM)]];
+      E.secuencia([{ puntos:[Object.assign({}, P16)], lupa:null }, { lupa:L16 }, { puntos:[P16].concat(ERR16) }], [900, 1200, 0]); },
+    exp:() => `<div class="eqs"><div class="eq">x = ${a_('0,1666…')} = ${a_(per(M.decimal(GM.resultado)))}<span class="note">el arco va sobre el periodo: las cifras que se repiten sin fin</span></div>
+      <div class="eq">100x − 10x = 16,666… − 1,666… = 15</div>
+      <div class="eq">90x = 15 → x = ${s_(fr(GM.sinSimplificar.n, GM.sinSimplificar.d))} = ${s_(frF(GM.resultado))}</div></div>
+      <p>Regla del periódico mixto: arriba, el número con todas las cifras hasta el final del primer periodo menos las que no se repiten (16 − 1); abajo, un 9 por cada cifra del periodo y un 0 por cada cifra que no se repite (90). En la lupa se ve que las otras fracciones son puntos distintos: 16/100 se queda en 0,16 y 16/99 apenas pasa de ahí.</p>
+      <p class="fuente">No encontramos estudios con cifras sobre estos errores; las opciones incorrectas son hipótesis nuestras.</p>` },
+];
+function frTxt(G){ return `${T(G.sinSimplificar)} = ${G.texto}`; }
+const S = { k:0, pred:{}, t0:Date.now() };
+// Un experimento se abre solo si todos los anteriores ya tienen respuesta; los respondidos se revisitan libremente.
+const abierto = k => EXPS.slice(0, k).every(x => !!S.pred[x.id]);
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => abierto(k)
+    ? `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  if (k < 0 || k >= EXPS.length || !abierto(k)) return;
+  E.parar();
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  E.compactar(!ya);
+  x.antes(ya);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p class="problem">${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const f = $('fb2');
+    f.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    f.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    $('otra2').onclick = () => { E.parar(); x.antes(false); alDibujo($('cv2'), () => S.k === k, () => { x.despues(); E.avisar(); }); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar(); botones();
+    E.compactar(false); $('fb2').focus({ preventScroll:true });
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0, x.unidad);
+    alDibujo($('cv2'), () => S.k === k, () => { x.despues(); E.leyenda(); E.dibujar(); E.avisar(); });
+  });
+  pintar();
+}
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

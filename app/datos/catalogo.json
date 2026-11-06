@@ -1933,7 +1933,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "fracciones"
+     ]
     },
     {
      "id": "aritmetica.analisis-combinatorio",
@@ -2133,7 +2135,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "fracciones"
+     ]
     },
     {
      "id": "aritmetica.numeros-racionales",
@@ -2163,7 +2167,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "fracciones"
+     ]
     },
     {
      "id": "aritmetica.potenciacion-y-radicacion",
@@ -4362,6 +4368,25 @@
    "papel": null,
    "archivos": [
     "/plantillas/estequiometria-limitante/generador.js"
+   ]
+  },
+  "fracciones": {
+   "id": "fracciones",
+   "titulo": "La barra que se parte: fracciones, decimales, MCD y MCM",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "aritmetica.numeros-racionales",
+    "aritmetica.mcd-y-mcm",
+    "aritmetica.estadistica"
+   ],
+   "url": "/plantillas/fracciones/index.html",
+   "papel": "/plantillas/fracciones/papel.json",
+   "archivos": [
+    "/plantillas/fracciones/index.html",
+    "/plantillas/fracciones/motor.js",
+    "/plantillas/fracciones/papel.json"
    ]
   },
   "gases": {
