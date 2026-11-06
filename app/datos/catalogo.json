@@ -1287,7 +1287,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "traductor-enunciados"
+     ]
     },
     {
      "id": "algebra.inecuaciones",
@@ -1624,7 +1626,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "traductor-enunciados"
+     ]
     },
     {
      "id": "algebra.programacion-lineal",
@@ -3172,7 +3176,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "caso-ambiguo"
+     ]
     },
     {
      "id": "trigonometria.areas-y-lineas-notables",
@@ -3199,7 +3205,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "caso-ambiguo"
+     ]
     },
     {
      "id": "trigonometria.conicas",
@@ -3557,7 +3565,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "traductor-enunciados"
+     ]
     },
     {
      "id": "razonamiento-matematico.transformaciones-de-figuras",
@@ -4150,6 +4160,24 @@
     "/plantillas/calorimetria/papel.json"
    ]
   },
+  "caso-ambiguo": {
+   "id": "caso-ambiguo",
+   "titulo": "El compás del caso ambiguo: ley de senos y de cosenos",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "trigonometria.triangulos-oblicuangulos",
+    "trigonometria.areas-y-lineas-notables"
+   ],
+   "url": "/plantillas/caso-ambiguo/index.html",
+   "papel": "/plantillas/caso-ambiguo/papel.json",
+   "archivos": [
+    "/plantillas/caso-ambiguo/index.html",
+    "/plantillas/caso-ambiguo/motor.js",
+    "/plantillas/caso-ambiguo/papel.json"
+   ]
+  },
   "celda-galvanica": {
    "id": "celda-galvanica",
    "titulo": "Redox y celda galvánica: electrones por el alambre, iones por el puente",
@@ -4546,6 +4574,25 @@
     "/plantillas/tiro-parabolico/index.html",
     "/plantillas/tiro-parabolico/motor.js",
     "/plantillas/tiro-parabolico/papel.json"
+   ]
+  },
+  "traductor-enunciados": {
+   "id": "traductor-enunciados",
+   "titulo": "El traductor de enunciados: letras, ecuaciones y planteo",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "algebra.ecuaciones-lineales-y-cuadraticas",
+    "algebra.sistemas-de-ecuaciones",
+    "razonamiento-matematico.planteo-de-ecuaciones"
+   ],
+   "url": "/plantillas/traductor-enunciados/index.html",
+   "papel": "/plantillas/traductor-enunciados/papel.json",
+   "archivos": [
+    "/plantillas/traductor-enunciados/index.html",
+    "/plantillas/traductor-enunciados/motor.js",
+    "/plantillas/traductor-enunciados/papel.json"
    ]
   },
   "triangulo-estira": {

@@ -8,7 +8,7 @@
 npm test
 ```
 
-Deben pasar 1093 pruebas.
+Deben pasar 1180 pruebas.
 
 ```bash
 npm run dev
@@ -52,8 +52,8 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 | Id | Módulo | Informe de ideas erróneas | Nota |
 | --- | --- | --- | --- |
 | ma2 | Geometría | Hechas: `ampliadora` (semejanza, área y volumen), `triangulo-estira` (líneas notables y área) y `angulo-inscrito` (ángulos en la circunferencia) | Las tres escenas del informe están hechas; faltan polígonos, congruencia, espacio y analítica |
-| ma1 | Trigonometría | Hechas: `cinta-radio` (sistemas de medida, arco, sector, ruedas) y `circunferencia-trig` (razones, C.T., reducción, gráficas y ecuaciones) | Sigue el compás del caso ambiguo (ley de senos y cosenos) |
-| ma3 | Álgebra | Hecha: `grafica-perillas` (transformaciones, inversa, inecuaciones, valor absoluto) | Siguen el traductor de enunciados y el cuadrado que crece |
+| ma1 | Trigonometría | Hechas: `cinta-radio`, `circunferencia-trig` y `caso-ambiguo` (ley de senos y cosenos) | Las tres escenas del informe están hechas; faltan identidades, arcos compuestos y funciones inversas |
+| ma3 | Álgebra | Hechas: `grafica-perillas` y `traductor-enunciados` (letras, ecuaciones, sistemas, edades y móviles) | Sigue el cuadrado que crece (productos notables); faltan polinomios, logaritmos y sucesiones |
 | ma1 a ma3 | Trigonometría, geometría, funciones | Informes del 6 nov: `trigonometria-`, `geometria-` y `algebra-funciones-ideas-erroneas.md` | Cifras de resúmenes, por verificar con los PDF (`fuentes/por-conseguir.md`); cada informe trae 3 escenas y casos |
 | ma4 | Aritmética | Hechas: `porcentajes-sucesivos` (predicciones), `regla-de-tres` y `probabilidad-dados` | Faltan fracciones y decimales, MCD y MCM, promedios e interés |
 | ra1 | Razonamiento matemático | Hechas: `probabilidad-dados` (conteo y probabilidad) y `regla-de-tres` (engranajes) | Faltan sucesiones, planteo de ecuaciones, edades y móviles, orden de información y verdades y mentiras |

@@ -181,7 +181,7 @@
       "universidades": {"unmsm": {"temas": [12]}},
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["traductor-enunciados"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {

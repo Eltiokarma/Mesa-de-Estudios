@@ -67,7 +67,7 @@
       "universidades": {"uni": {"semanas": [4]}, "unmsm": {"temas": [3]}},
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["traductor-enunciados"],
       "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
     {
@@ -264,7 +264,7 @@
       "universidades": {"uni": {"semanas": [15, 16]}, "unmsm": {"temas": [17]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "plantillas": [],
+      "plantillas": ["traductor-enunciados"],
       "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
     {
