@@ -904,7 +904,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "soluciones"
+     ]
     },
     {
      "id": "quimica.cinetica-quimica",
@@ -4151,6 +4153,23 @@
    "papel": null,
    "archivos": [
     "/plantillas/porcentajes-sucesivos/generador.js"
+   ]
+  },
+  "soluciones": {
+   "id": "soluciones",
+   "titulo": "Soluciones: concentración, dilución y mezcla",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.soluciones"
+   ],
+   "url": "/plantillas/soluciones/index.html",
+   "papel": "/plantillas/soluciones/papel.json",
+   "archivos": [
+    "/plantillas/soluciones/index.html",
+    "/plantillas/soluciones/motor.js",
+    "/plantillas/soluciones/papel.json"
    ]
   }
  }

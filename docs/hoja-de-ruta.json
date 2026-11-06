@@ -253,12 +253,12 @@
       "inicio": "2026-11-06",
       "fin": "2026-11-27",
       "estado": "en_curso",
-      "progreso": 50,
+      "progreso": 85,
       "critico": false,
       "depende_de": [
         "pl3"
       ],
-      "notas": "Gases hecho (plantillas/gases): motor con ecuación de estado, absoluta y manométrica, densidad, Dalton, Graham y caja de partículas con choques promedio y efusión; 14 casos verificados aparte; 34 pruebas; papel (9); tanque que se enfría y se calienta (GQ1, GQ2, GQ4, GQ5) y 5 qué pasa si (GQ1, GQ11, GQ20, GQ12, Dalton). Soluciones: en construcción."
+      "notas": "Gases hecho (plantillas/gases): motor con ecuación de estado, absoluta y manométrica, densidad, Dalton, Graham y caja de partículas con choques promedio y efusión; 14 casos verificados aparte; 34 pruebas; papel (9); tanque que se enfría y se calienta (GQ1, GQ2, GQ4, GQ5) y 5 qué pasa si (GQ1, GQ11, GQ20, GQ12, Dalton). Soluciones hecho (plantillas/soluciones, construida por un subagente en paralelo): motor de concentraciones con cuadros y puntos, 23 casos verificados aparte, 47 pruebas, papel (10), dilución guiada con lupa y 5 qué pasa si (SO7/SO9, SO10, SO11, SO14, SO15). Falta: el pase con alumnos."
     },
     {
       "id": "qu3",
