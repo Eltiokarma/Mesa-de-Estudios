@@ -7,14 +7,14 @@
 <style>
 /* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md).
    Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
-   cada elemento con su color (N azul, H turquesa, O rojo, Cl verde, Al naranja), productos morado, mol magenta y g índigo. */
+   cada elemento con su color (N azul, H turquesa, O rojo, Cl verde, Al naranja), productos morado, mol mostaza y g siena. */
 [hidden]{display:none!important}
 :root{
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
   --detras:#f6ece4; --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
   --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
-  --c-N:#1f5fbf; --c-H:#0f766e; --c-O:#c0364a; --c-Cl:#4f7a17; --c-Al:#b85a06; --c-C:#3d3a45; --c-Ca:#8f5800;
-  --c-prod:#6b3dbd; --c-mol:#b3246b; --c-g:#0b0b8e; --vidrio:#8e97a8; --letra-atomo:#ffffff;
+  --c-N:#1f5fbf; --c-H:#0f766e; --c-O:#c0364a; --c-Cl:#4f7a17; --c-Al:#b85a06; --c-C:#3d3a45; --c-Ca:#5b6470;
+  --c-prod:#6b3dbd; --c-mol:#7d6a00; --c-g:#773922; --vidrio:#8e97a8; --letra-atomo:#ffffff;
   --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
   --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
   color-scheme:light;
@@ -23,14 +23,14 @@
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-N:#7cb0ff; --c-H:#5ed9c8; --c-O:#f17384; --c-Cl:#a3d65e; --c-Al:#f0a04a; --c-C:#c9c3d3; --c-Ca:#ffc04d;
-  --c-prod:#ab8cf2; --c-mol:#ff86bd; --c-g:#8f9bff; --vidrio:#a99cb8; --letra-atomo:#1d1626; color-scheme:dark } }
+  --c-N:#7cb0ff; --c-H:#5ed9c8; --c-O:#f17384; --c-Cl:#a3d65e; --c-Al:#f0a04a; --c-C:#c9c3d3; --c-Ca:#9aa3b2;
+  --c-prod:#ab8cf2; --c-mol:#e3c84a; --c-g:#e0a07a; --vidrio:#a99cb8; --letra-atomo:#1d1626; color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-N:#7cb0ff; --c-H:#5ed9c8; --c-O:#f17384; --c-Cl:#a3d65e; --c-Al:#f0a04a; --c-C:#c9c3d3; --c-Ca:#ffc04d;
-  --c-prod:#ab8cf2; --c-mol:#ff86bd; --c-g:#8f9bff; --vidrio:#a99cb8; --letra-atomo:#1d1626; color-scheme:dark }
+  --c-N:#7cb0ff; --c-H:#5ed9c8; --c-O:#f17384; --c-Cl:#a3d65e; --c-Al:#f0a04a; --c-C:#c9c3d3; --c-Ca:#9aa3b2;
+  --c-prod:#ab8cf2; --c-mol:#e3c84a; --c-g:#e0a07a; --vidrio:#a99cb8; --letra-atomo:#1d1626; color-scheme:dark }
 
 *{box-sizing:border-box}
 body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
@@ -323,6 +323,8 @@ function claveDe(f, r){
   const at = Object.keys(M.atomos(f));
   return at.length === 1 && ELEM[at[0]] ? at[0] : 'ink';
 }
+// n tercios escritos como fracción: 2 → ⅔, 4 → 1⅓, 6 → 2.
+const tercios = n => { const e = Math.floor(n/3), r = n % 3; return (e || !r ? String(e) : '') + (r === 1 ? '⅓' : r === 2 ? '⅔' : '').replace(/^0(?=[⅓⅔])/, ''); };
 const sub = f => f.replace(/\d/g, d => '₀₁₂₃₄₅₆₇₈₉'[d]);
 const S_ = (f, r, t) => { const k = claveDe(f, r); return k === 'ink' ? `<b>${t || sub(f)}</b>` : V(k, t || sub(f)); };
 function ecuacionHTML(r, cant){
@@ -394,7 +396,7 @@ function contadores(ctx, c, b, r, cant, op){
   const sus = [...r.reactivos.map(x => x[1]), ...r.productos.map(x => x[1])], n = sus.length;
   const h = Math.min(56, (b.h - 30)/n);
   ctx.font = `800 11px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
-  ctx.fillText(op.titulo || 'Moléculas en la caja', b.x, b.y);
+  ctx.fillText(op.titulo || 'Partículas en la caja', b.x, b.y);
   sus.forEach((f, k) => {
     const y = b.y + 24 + k*h + h/2, col = claveDe(f, r) === 'prod' ? c.prod : (c.el[claveDe(f, r)] || c.ink);
     molecula(ctx, c, f, b.x + 20, y, 9, { halo: claveDe(f, r) === 'prod' ? c.prod : null });
@@ -450,7 +452,7 @@ function vuelta(lista, r, alTerminar, dibujar){
   elegidas.forEach(m => { m.usado = true; m.marca = true; });
   const cx = elegidas.reduce((s, m) => s + m.x, 0)/elegidas.length, cy = elegidas.reduce((s, m) => s + m.y, 0)/elegidas.length;
   const nuevas = [];
-  r.productos.forEach(([c, f]) => { for (let k = 0; k < c; k++) nuevas.push({ f, x:0, y:0, alpha:0 }); });
+  r.productos.forEach(([c, f]) => { for (let k = 0; k < c; k++) nuevas.push({ f, x:0, y:0, alpha:0, nueva:true }); });
   // Cada molécula nueva aparece donde estaba una de las que reaccionaron, repartidas entre ellas: así no se enciman.
   nuevas.forEach((m, k) => { const o = elegidas[Math.floor(k*elegidas.length/nuevas.length)]; m.x = o.x; m.y = o.y; });
   lista.push(...nuevas);
@@ -462,13 +464,14 @@ function vuelta(lista, r, alTerminar, dibujar){
     nuevas.forEach(m => { m.alpha = f; });
     dibujar();
     if (f < 1) requestAnimationFrame(tick);
-    else { elegidas.forEach(m => { m.alpha = 0; m.marca = false; }); alTerminar && alTerminar(); }
+    else { elegidas.forEach(m => { m.alpha = 0; m.marca = false; }); nuevas.forEach(m => { m.nueva = false; m.alpha = 1; }); alTerminar && alTerminar(); }
   };
   requestAnimationFrame(tick);
   return true;
 }
-function contar(lista){ const r = {}; for (const m of lista) if (m.alpha > 0.5 && !m.usado) r[m.f] = (r[m.f] || 0) + 1; return r; }
-function contarFinal(lista){ const r = {}; for (const m of lista) if (!m.usado || m.alpha > 0.5) { if (m.usado) continue; r[m.f] = (r[m.f] || 0) + (m.alpha > 0.01 ? 1 : 0); } return r; }
+// Cuenta lo que hay. Durante una vuelta, los reactivos cuentan hasta la mitad de la animación y los productos desde ahí:
+// el cambio es simultáneo y la masa total nunca baja.
+function contar(lista){ const r = {}; for (const m of lista) if (m.nueva ? m.alpha >= 0.5 : m.alpha > 0.5) r[m.f] = (r[m.f] || 0) + 1; return r; }
 const REAC = {
   amoniaco: M.reaccion({ reactivos:[[1, 'N2'], [3, 'H2']], productos:[[2, 'NH3']] }),
   agua: M.reaccion({ reactivos:[[2, 'H2'], [1, 'O2']], productos:[[2, 'H2O']] }),
@@ -493,10 +496,13 @@ function draw(){
   if (!L.W) return;
   const c = colores(), { ctx, W, H } = L, z = zonas(W, H), r = S.r;
   ctx.clearRect(0, 0, W, H);
-  dibujarCaja(ctx, c, z.caja, S.lista, r, { titulo: S.gramos ? 'Cada molécula dibujada representa medio mol' : 'La caja' });
+  dibujarCaja(ctx, c, z.caja, S.lista, r, { titulo: S.gramos ? 'Cada molécula dibujada: medio mol (3,01 × 10²³ moléculas)' : 'La caja' });
   const cant = contar(S.lista);
   receta(ctx, c, { x:z.lado.x, y:z.lado.y, w:z.lado.w }, r);
-  if (S.gramos){
+  if (S.gramos && steps[S.step].gate && !S.pred[steps[S.step].gate.id]){
+    ctx.font = `700 12px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+    ctx.fillText('Responde para ver los moles y la balanza', z.lado.x, z.lado.y + 70);
+  } else if (S.gramos){
     contadores(ctx, c, { x:z.lado.x, y:z.lado.y + 62, w:z.lado.w, h:z.lado.h*0.5 }, r, cant, { titulo:'Moles en la caja', fmt:(n, f) => `${fmt(n/2, 1)} mol` });
     const g = Object.entries(cant).reduce((s, [f, n]) => s + n/2*r.M[f], 0);
     balanza(ctx, c, { x:z.lado.x, y:z.lado.y + 62 + z.lado.h*0.5, w:z.lado.w, h:z.lado.h*0.5 - 62 }, g, 'todo lo que hay en la caja');
@@ -532,14 +538,14 @@ const P2 = { id:'limitante-paso3', ok:'c', opts:[
   fb:{ c:'¡Bien! Tres vueltas dan 6 NH₃, y sobra el N₂ que no se usó. Ahora arma tú las moléculas.',
     a:'Elegiste la A. La ecuación es la receta de una vuelta, no lo que hay en la caja. En la caja caben varias vueltas. La correcta está marcada.',
     b:'Elegiste la B. Para 8 NH₃ harían falta 12 H₂, y solo hay 9: faltan átomos de H. La correcta está marcada.',
-    d:'Elegiste la D. Los H₂ que reaccionaron ya no están: sus átomos ahora son parte del NH₃. La correcta está marcada.' } };
+    d:'Elegiste la D. Los H₂ que reaccionaron ya no están: sus átomos ahora son parte del NH₃. Cuenta los H: 6·3 + 3·2 = 24, y al inicio había 18. La correcta está marcada.' } };
 const P3 = { id:'limitante-paso6', ok:'b', opts:[
   ['a','4 N₂ + 9 H₂ → 6 NH₃ + N₂','ES9-sobrante-en-la-ecuacion','documentado'],
   ['b','N₂ + 3 H₂ → 2 NH₃'],
   ['c','4 N₂ + 9 H₂ → N₈H₁₈','ES11-coeficientes-como-subindices','documentado'],
   ['d','4 N₂ + 9 H₂ → 6 NH₃','ecuacion-sin-balancear','hipotesis']],
   fb:{ b:'¡Bien! La ecuación solo dice qué reacciona y en qué proporción. Lo que sobró es un dato del problema, no de la ecuación.',
-    a:'Elegiste la A. El N₂ que sobró no reaccionó: no va en la ecuación. Cuenta además los átomos: a la izquierda hay 8 N y a la derecha, 8; parece cuadrar, pero esa "ecuación" solo describe esta caja. La correcta está marcada.',
+    a:'Elegiste la A. Los átomos sí cuadran (8 N y 18 H a cada lado), pero eso no la hace correcta: el N₂ que sobró no reaccionó y no va en la ecuación. Si quitas el N₂ que aparece a los dos lados, queda 3 N₂ + 9 H₂ → 6 NH₃, que es la receta repetida 3 veces. La ecuación describe la reacción, no lo que hay en esta caja. La correcta está marcada.',
     c:'Elegiste la C. Los átomos no se juntan todos en una sola molécula gigante: forman NH₃, de 1 N y 3 H. El subíndice dice cuántos átomos hay en una molécula; el coeficiente, cuántas moléculas. La correcta está marcada.',
     d:'Elegiste la D. Cuenta los N: a la izquierda hay 8 y a la derecha, 6. Esa ecuación no está balanceada. La correcta está marcada.' } };
 const P4 = { id:'limitante-paso7', ok:'d', opts:[
@@ -549,8 +555,8 @@ const P4 = { id:'limitante-paso7', ok:'d', opts:[
   ['d','72 g']],
   fb:{ d:'¡Bien! Limita el O₂, aunque tenga más gramos. Ahora lo vemos con moléculas.',
     a:'Elegiste la A. Solo se convierte en agua lo que reacciona; si algo sobra, no pasa al producto. La correcta está marcada.',
-    b:'Elegiste la B. 10 g de H₂ son 5 mol, y 64 g de O₂ son solo 2 mol. Además, 90 g de agua no pueden salir de 74 g de reactivos. La correcta está marcada.',
-    c:'Elegiste la C. Los 2 moles de la ecuación son de una vuelta de la receta; aquí hay material para dos vueltas. La correcta está marcada.' } };
+    b:'Elegiste la B. 10 g de H₂ son 5 mol y 64 g de O₂ son 2 mol. La receta pide 2 H₂ por cada O₂: los 2 mol de O₂ piden 4 mol de H₂, y hay 5. Se acaba primero el O₂. Además, 90 g de agua no pueden salir de 74 g de reactivos. La correcta está marcada.',
+    c:'Elegiste la C. Los 2 moles de agua de la ecuación son de una vuelta de la receta en moles. Aquí los 2 mol de O₂ alcanzan para dos de esas vueltas, que dan 4 mol de agua. La correcta está marcada.' } };
 const opciones = P => `<div class="opts">${P.opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="fb"></p>`;
 const A = REAC.amoniaco, H = REAC.agua;
 const steps = [
@@ -579,9 +585,9 @@ const steps = [
    body:() => `<div class="eqs">
      <div class="eq">${V('H','H₂')}: ${fr(V('g','10 g'), '2 g/mol')} = ${V('mol','5 mol')}  ·  ${V('O','O₂')}: ${fr(V('g','64 g'), '32 g/mol')} = ${V('mol','2 mol')}</div>
      <div class="eq">La receta pide 2 ${V('H','H₂')} por cada ${V('O','O₂')}: 2 mol de ${V('O','O₂')} piden 4 mol de ${V('H','H₂')}, y hay 5. Limita el ${V('O','O₂')}.</div>
-     <div class="eq">${V('prod','H₂O')}: 4 mol · 18 g/mol = ${V('g','72 g')}  ·  sobra 1 mol de ${V('H','H₂')} = ${V('g','2 g')}</div>
+     <div class="eq">${V('prod','H₂O')}: ${V('mol','4 mol')} · 18 g/mol = ${V('g','72 g')}  ·  sobra ${V('mol','1 mol')} de ${V('H','H₂')} = ${V('g','2 g')}</div>
    </div>
-   <p>En la caja, cada molécula dibujada representa medio mol: hay 10 de ${V('H','H₂')} y 4 de ${V('O','O₂')}. Arma las vueltas y mira la balanza: antes marca ${V('g','74 g')} y al final también (72 + 2). La masa se conserva contando lo que sobra.</p>
+   <p>En la caja, cada molécula dibujada representa medio mol (3,01 × 10²³ moléculas): hay 10 de ${V('H','H₂')} y 4 de ${V('O','O₂')}. Por eso verás 4 vueltas de moléculas dibujadas: equivalen a las 2 vueltas en moles. Arma las vueltas y mira la balanza: antes marca ${V('g','74 g')} y al final también (72 + 2). La masa se conserva contando lo que sobra.</p>
    <div class="nav" style="justify-content:flex-start"><button type="button" class="btn primary" id="todas">Reaccionar</button></div>
    <p class="aviso">El ${V('O','O₂')} tiene más gramos y aun así es el limitante: lo que cuenta es cuántas vueltas de la receta alcanzan. Solo el 15,5 % de 97 escolares tailandeses razonó bien el reactivo limitante; su error típico fue "es el que está en menor cantidad" (Dahsah y otros, 2006).</p>
    <p id="estado-armar" class="hint"></p>` },
@@ -670,14 +676,16 @@ function llenarExp(){
   if (S.ocupado) return;
   const r = REAC[S.reac], [a, b] = r.reactivos.map(x => x[1]);
   preparar(r, { [a]:S.nA, [b]:S.nB }, 11 + S.nA*13 + S.nB);
-  $('na-l').innerHTML = `Moléculas de ${S_(a, r)}`; $('nb-l').innerHTML = `Moléculas de ${S_(b, r)}`;
+  const nombre = f => Object.values(M.atomos(f)).reduce((s, n) => s + n, 0) === 1 ? 'Átomos' : 'Moléculas';
+  $('na-l').innerHTML = `${nombre(a)} de ${S_(a, r)}`; $('nb-l').innerHTML = `${nombre(b)} de ${S_(b, r)}`;
   $('na-o').textContent = S.nA; $('nb-o').textContent = S.nB;
   vivo(); draw();
 }
 function vivo(){
   const r = REAC[S.reac], [a, b] = r.reactivos.map(x => x[1]);
   const s = M.porParticulas(r, { [a]:S.nA, [b]:S.nB });
-  const lim = s.limitantes.length === 2 ? 'los dos (están en la proporción justa)' : s.limitantes.map(f => sub(f)).join(' y ');
+  const vacio = S.nA === 0 && S.nB === 0;
+  const lim = vacio ? 'no hay reactivos en la caja' : s.limitantes.length === 2 ? 'los dos (están en la proporción justa)' : s.limitantes.map(f => sub(f)).join(' y ');
   $('live').innerHTML = `<div class="eqs"><div class="eq">Receta: ${ecuacionHTML(r)}</div>
     <div class="eq">Vueltas: ${S_(a, r)} alcanza para ${fmt(S.nA/r.reactivos[0][0], 2)}; ${S_(b, r)}, para ${fmt(S.nB/r.reactivos[1][0], 2)} → la receta va ${s.veces} ${s.veces === 1 ? 'vez' : 'veces'}</div>
     <div class="eq"><span class="note" style="margin:0">Limita: ${lim}. Al final: ${Object.entries(s.finales).filter(([, n]) => n > 0).map(([f, n]) => `${n} ${sub(f)}`).join(', ') || 'nada'}.</span></div></div>
@@ -707,7 +715,7 @@ const EXPS = [
     q:`${ecuacionHTML(REAC.cloruro)}. Se mezclan ${V('g','54 g')} de ${V('Al','aluminio')} y ${V('g','142 g')} de ${V('Cl','cloro')}. ¿Cuál es el reactivo limitante?`,
     opts:[['a','El Al, porque hay menos gramos','ES20-menor-cantidad','documentado'],
           ['b','El Cl₂',null],
-          ['c','Ninguno: se acaban los dos','ES22-se-acaban-los-dos','documentado'],
+          ['c','Los dos: se acaban a la vez','ES22-se-acaban-los-dos','documentado'],
           ['d','El Al, porque su coeficiente es el menor','ES21-menor-coeficiente','documentado']],
     ok:'b', r:REAC.cloruro,
     antes:() => Object.assign(E, { tipo:'caja', r:REAC.cloruro, lista:llenar({ Al:6, Cl2:6 }, 21), ver:false }),
@@ -728,7 +736,7 @@ const EXPS = [
       <p>"En exceso" no quiere decir "que aumenta": quiere decir "que hay más de lo que la receta alcanza a usar".</p>
       <p class="fuente">Solo el 6 % de 79 escolares argentinos identificó bien las tres curvas; el 65 % eligió la curva que sube como la del reactivo en exceso (Casado y Raviolo, 2005).</p>` },
   { id:'balanza', corto:'El gas en la balanza',
-    q:`En un frasco <b>cerrado</b> sobre una balanza se mezclan ${V('g','10 g')} de caliza (CaCO₃) con ${V('g','7,3 g')} de ácido clorhídrico (HCl). Se forma gas (CO₂) y burbujea. Al terminar, ¿qué marca la balanza (sin contar el frasco)?`,
+    q:`En un frasco <b>cerrado</b> sobre una balanza se mezclan ${V('g','10 g')} de carbonato de calcio (CaCO₃) con una solución de ácido clorhídrico que contiene ${V('g','7,3 g')} de HCl. Se forma gas (CO₂) y burbujea. Al terminar, ¿cuánto marca la balanza, sin contar el frasco ni el agua de la solución?`,
     opts:[['a','Menos de 17,3 g: el gas no pesa','ES13-el-gas-no-pesa','documentado'],
           ['b','17,3 g, lo mismo que al inicio',null],
           ['c','Más de 17,3 g: se formó una sustancia nueva','masa-sube-al-reaccionar','hipotesis'],
@@ -750,7 +758,7 @@ const EXPS = [
     antes:() => Object.assign(E, { tipo:'proporcion', ver:false }),
     despues:() => { E.ver = true; draw(); },
     exp:`<p>28 g de N₂ son 1 mol (28 g/mol). La receta pide 3 mol de H₂ por cada mol de N₂, y 3 mol de H₂ pesan 3 · 2 = 6 g. La proporción 1 a 3 es en moléculas (o en moles), no en gramos: una molécula de N₂ pesa 14 veces lo que una de H₂.</p>
-      <p class="fuente">Con la reacción de Haber, solo el 3,1 % de 97 escolares relacionó bien masa y número de partículas; la idea errónea más citada fue "la razón de moléculas es igual a la razón de masas" (Dahsah y otros, 2006).</p>` },
+      <p class="fuente">Con la reacción de Haber, solo el 3,1 % de 97 escolares relacionó bien masa, volumen y número de partículas; una idea errónea que aparece es "la razón de moléculas es igual a la razón de masas" (Dahsah y otros, 2006).</p>` },
   { id:'no-alcanza', corto:'Si no alcanza',
     q:`En la caja hay 2 ${V('N','N₂')} y solo 3 ${V('H','H₂')}, cuando la receta del amoníaco pide 1 N₂ por cada 3 H₂. ¿Qué pasa?`,
     opts:[['a','No hay reacción: falta H₂ para todo el N₂','ES23-sin-proporcion-no-hay-reaccion','documentado'],
@@ -784,11 +792,11 @@ function draw(){
   const ancho = W >= 560;
   if (E.tipo === 'caja'){
     const caja = ancho ? { x:6, y:22, w:W*0.6 - 12, h:H - 30 } : { x:6, y:22, w:W - 12, h:H*0.55 };
-    dibujarCaja(ctx, c, caja, E.lista, E.r, { titulo: E.r === REAC.cloruro ? 'Cada partícula: un tercio de mol' : 'La caja' });
+    dibujarCaja(ctx, c, caja, E.lista, E.r, { titulo: E.r === REAC.cloruro ? 'Cada partícula dibujada: un tercio de mol (unas 2 × 10²³ partículas)' : 'La caja' });
     const lado = ancho ? { x:W*0.6 + 10, y:10, w:W*0.4 - 18, h:H - 20 } : { x:12, y:H*0.55 + 30, w:W - 24, h:H*0.45 - 36 };
     receta(ctx, c, { x:lado.x, y:lado.y, w:lado.w }, E.r);
     const cant = contar(E.lista);
-    contadores(ctx, c, { x:lado.x, y:lado.y + 62, w:lado.w, h:lado.h - 62 }, E.r, cant, E.r === REAC.cloruro ? { titulo:'Moles en la caja', fmt:(n, f) => `${fmt(n/3, 2)} mol` } : undefined);
+    contadores(ctx, c, { x:lado.x, y:lado.y + 62, w:lado.w, h:lado.h - 62 }, E.r, cant, E.r === REAC.cloruro ? { titulo:'Moles en la caja', fmt:(n, f) => `${tercios(n)} mol` } : undefined);
     $('desc2').textContent = 'En la caja: ' + Object.entries(cant).map(([f, n]) => `${n} de ${sub(f)}`).join(', ') + '.';
   } else if (E.tipo === 'curvas'){
     const r = E.r, ini = { N2:4, H2:9, NH3:0 };
@@ -819,7 +827,7 @@ function draw(){
       const yy = E.abierto ? base - 30 - ((k*37) % 200) : base - 30 - ((k*29) % 110), xx = cx + ((k*23) % 70) - 35;
       molecula(ctx, c, 'CO2', xx, yy, 5, { halo:c.prod, alpha: E.abierto && yy < base - 160 ? 0.5 : 1 });
     }
-    balanza(ctx, c, { x:cx - 100, y:base - 4, w:200, h:44 }, masa, E.abierto ? 'el CO₂ se escapa' : 'frasco cerrado (sin contar el vidrio)');
+    balanza(ctx, c, { x:cx - 100, y:base - 4, w:200, h:44 }, masa, E.abierto ? 'el CO₂ se escapa' : 'sin contar el frasco ni el agua');
     if (E.ver){
       const lx = ancho ? W*0.62 : 14, ly = ancho ? 30 : 14;
       ctx.font = `800 12px ${c.font}`; ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillStyle = c.ink;
@@ -829,13 +837,13 @@ function draw(){
     $('desc2').textContent = `La balanza marca ${fmt(masa, 1)} g.`;
   } else if (E.tipo === 'proporcion'){
     const caja = ancho ? { x:6, y:22, w:W*0.5 - 12, h:H - 30 } : { x:6, y:22, w:W - 12, h:H*0.5 };
-    dibujarCaja(ctx, c, caja, E.lista || (E.lista = llenar({ N2:3, H2:9 }, 41)), REAC.amoniaco, { titulo:'1 N₂ por cada 3 H₂' });
+    dibujarCaja(ctx, c, caja, E.lista || (E.lista = llenar({ N2:3, H2:9 }, 41)), REAC.amoniaco, { titulo:'3 N₂ y 9 H₂: la misma proporción, 1 a 3' });
     const lado = ancho ? { x:W*0.5 + 20, y:20, w:W*0.5 - 40, h:H - 40 } : { x:20, y:H*0.5 + 30, w:W - 40, h:H*0.5 - 40 };
     if (!E.ver){ rotulo(ctx, c, lado.x + lado.w/2, lado.y + lado.h/2, 'Responde para ver las masas', c.muted); $('desc2').textContent = ''; return; }
     const filas = [['N₂', 'N', 1, 28], ['H₂', 'H', 3, 6]], maxG = 28, h = Math.min(60, lado.h/3);
     filas.forEach(([n, e, mol, g], k) => {
       const y = lado.y + 20 + k*(h + 24);
-      ctx.font = `800 13px ${c.font}`; ctx.fillStyle = c.el[e]; ctx.textAlign = 'left'; ctx.textBaseline = 'bottom'; ctx.fillText(`${n}: ${mol} mol`, lado.x, y);
+      ctx.font = `800 13px ${c.font}`; ctx.textAlign = 'left'; ctx.textBaseline = 'bottom'; ctx.fillStyle = c.el[e]; ctx.fillText(`${n}: `, lado.x, y); ctx.fillStyle = c.mol; ctx.fillText(`${mol} mol`, lado.x + ctx.measureText(`${n}: `).width, y);
       ctx.fillStyle = c.grid; ctx.fillRect(lado.x, y + 4, lado.w, h*0.5); ctx.fillStyle = c.g; ctx.fillRect(lado.x, y + 4, lado.w*g/maxG, h*0.5);
       ctx.font = `800 13px ${c.mono}`; const dentro = g/maxG > 0.6; ctx.fillStyle = dentro ? c.card : c.g; ctx.textAlign = dentro ? 'right' : 'left'; ctx.textBaseline = 'middle'; ctx.fillText(`${g} g`, dentro ? lado.x + lado.w*g/maxG - 8 : lado.x + lado.w*g/maxG + 6, y + 4 + h*0.25);
     });

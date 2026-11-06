@@ -85,7 +85,7 @@
     {
       "id": "p6",
       "nivel": "intermedio",
-      "enunciado": "En un frasco cerrado se ponen 50 g de caliza (CaCO₃) y 73 g de ácido clorhídrico (HCl), que reaccionan según CaCO₃ + 2HCl → CaCl₂ + H₂O + CO₂. Sin contar el frasco, ¿qué masa marca la balanza al terminar la reacción? ¿Cuántos gramos de CO₂ se forman y cuánto HCl sobra? ¿Cuántos gramos menos marcaría la balanza si el frasco estuviera abierto y todo el CO₂ escapara?",
+      "enunciado": "En un frasco cerrado se ponen 50 g de carbonato de calcio (CaCO₃) y una solución de ácido clorhídrico que contiene 73 g de HCl. Reaccionan según CaCO₃ + 2HCl → CaCl₂ + H₂O + CO₂. Sin contar el frasco ni el agua de la solución, ¿qué masa marca la balanza al terminar la reacción? ¿Cuántos gramos de CO₂ se forman y cuánto HCl sobra? ¿Cuántos gramos menos marcaría la balanza si el frasco estuviera abierto y todo el CO₂ escapara?",
       "respuesta": "Con el frasco cerrado, la balanza sigue marcando 123 g. Se forman 22 g de CO₂ y sobran 36,5 g de HCl. Con el frasco abierto, marcaría 22 g menos.",
       "pasos": [
         "Moles: CaCO₃, 50/100 = 0,5 mol; HCl, 73/36,5 = 2 mol. Entre coeficientes: 0,5 y 1. El CaCO₃ es el limitante.",
