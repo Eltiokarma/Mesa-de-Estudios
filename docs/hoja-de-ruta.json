@@ -236,15 +236,15 @@
       "id": "qu1",
       "seccion": "Química",
       "nombre": "Estequiometría y reactivo limitante con partículas",
-      "inicio": "2026-11-16",
+      "inicio": "2026-11-06",
       "fin": "2026-11-23",
       "estado": "en_curso",
-      "progreso": 40,
+      "progreso": 85,
       "critico": false,
       "depende_de": [
         "pl3"
       ],
-      "notas": "plantillas/estequiometria-limitante (predicciones). Falta: escena de partículas y problemas de papel"
+      "notas": "plantillas/estequiometria-limitante (predicciones) y plantillas/limitante-particulas (escena): motor de reacciones con balance y masas de academia, 13 casos verificados aparte, 31 pruebas, papel (9), caja de partículas con la receta, 4 predicciones (ES20/21/22, ES8, ES9/11, ES15/20) y 5 qué pasa si (ES20/21, ES24, ES13, ES19, ES23). Falta: composición y fórmula empírica, rendimiento y pureza, y el pase con alumnos."
     },
     {
       "id": "qu2",

@@ -8,7 +8,7 @@
 npm test
 ```
 
-Deben pasar 245 pruebas.
+Deben pasar 276 pruebas.
 
 ```bash
 npm run dev
@@ -35,7 +35,7 @@ Si hay que hacer OCR, instala tesseract en español: `apt-get install -y tessera
 | Catálogo | 8 cursos y 151 unidades, con su universidad (UNI, San Marcos) y su grado (3.º, 4.º o 5.º, estimado) |
 | App (PWA) | Bienvenida, inicio, cursos, práctica, lápiz y papel, progreso y perfil. Funciona sin conexión y en celular y computadora (menú lateral desde 900 px, atajos de teclado). Diseño acogedor con ilustraciones SVG propias |
 | Medición | Pruebas de entrada y salida y registro anónimo de cada predicción, también desde las escenas. Se exporta a CSV o JSON desde Perfil; `herramientas/analizar-medicion.js` junta los archivos |
-| Plantillas de escena | Banco Óptico (lentes), espejos esféricos, circuitos de corriente continua, calorimetría con cambios de fase, trabajo y energía (rampa con resorte) y MRUV con gráficas. Cada una con motor, casos verificados con fracciones, paso a paso con predicción, "¿qué pasa si…?" y 9 problemas de papel |
+| Plantillas de escena | Banco Óptico (lentes), espejos esféricos, circuitos de corriente continua, calorimetría con cambios de fase, trabajo y energía (rampa con resorte), MRUV con gráficas y reactivo limitante con partículas (la primera de química). Cada una con motor, casos verificados con fracciones, paso a paso con predicción, "¿qué pasa si…?" y 9 problemas de papel |
 | Plantillas de predicciones | Reactivo limitante (química) y aumentos y descuentos sucesivos (aritmética), con generador por semilla |
 
 ## Pendientes, en orden de prioridad
@@ -51,8 +51,7 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 
 | Id | Módulo | Informe de ideas erróneas | Nota |
 | --- | --- | --- | --- |
-| qu1 | Reactivo limitante con partículas (escena) | `estequiometria-ideas-erroneas.md` | Siguiente. Ya existe el módulo de predicciones; falta la escena con partículas |
-| qu2 a qu4 | Gases y soluciones, pH, redox | Los de química | |
+| qu2 a qu4 | Gases y soluciones, pH, redox | Los de química | Siguiente: gases (qu2) |
 | ma1 a ma3 | Trigonometría, geometría, funciones | Sin informe todavía | Hay que investigar las ideas erróneas antes de construir |
 | ma4 | Aritmética | Sin informe | Porcentajes sucesivos ya existe; los errores son hipótesis |
 | ra1 | Razonamiento matemático | Sin informe | Formato predicciones |
@@ -82,6 +81,9 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
   - Falta que el alumno dibuje la gráfica con el dedo antes de verla (lo que recomiendan Beichner y Thornton y Sokoloff); hoy elige entre dibujos.
   - Tiro parabólico (P1 a P5 del informe) queda para su propia plantilla, en la unidad de movimiento parabólico.
   - Las opciones del frenado y del quinto segundo son hipótesis.
+- **Reactivo limitante con partículas** (`plantillas/limitante-particulas/`, hecha el 6 nov 2026):
+  - Faltan las otras dos escenas que propone el informe de estequiometría: composición y fórmula empírica (ES16), y rendimiento y pureza (solo hipótesis).
+  - En el modo "¿qué pasa si…?", cada partícula dibujada vale un tercio de mol en el ejemplo del aluminio; se avisa en la caja.
 - **Todas:** el estado es `borrador`. Pasan a `probada` con los datos del colegio.
 
 ### 3. Plataforma

@@ -1,0 +1,155 @@
+{
+  "titulo": "Reactivo limitante: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Primero revisa que la ecuación esté balanceada. Después pasa todo a moles (n = m/M) y divide los moles de cada reactivo entre su coeficiente: el que da el número más chico es el limitante, porque permite menos vueltas de la receta. Todo lo que se forma y todo lo que se gasta se calcula con el limitante. Usa H = 1, C = 12, N = 14, O = 16, Na = 23, Mg = 24, Al = 27, S = 32, Cl = 35,5, Ca = 40 y Fe = 56. Ojo: el O₂ pesa 32 g/mol, no 16. En un recipiente cerrado, la masa total no cambia: masa de reactivos al inicio = masa de productos + masa que sobra.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "En una hornilla se queman moléculas de metano según CH₄ + 2O₂ → CO₂ + 2H₂O. Si hay 5 moléculas de CH₄ y 8 moléculas de O₂, ¿cuál es el reactivo limitante y qué moléculas hay al final?",
+      "respuesta": "El limitante es el O₂. Al final hay 4 moléculas de CO₂, 8 de H₂O y sobra 1 molécula de CH₄.",
+      "pasos": [
+        "La receta pide 1 CH₄ con 2 O₂. Vueltas que permite cada uno: CH₄, 5/1 = 5; O₂, 8/2 = 4.",
+        "El O₂ permite menos vueltas: es el limitante, aunque hay más moléculas de O₂ que de CH₄. No basta con ver cuál hay menos.",
+        "Tampoco es el limitante el CH₄ por tener coeficiente 1: el coeficiente solo dice la proporción.",
+        "La receta ocurre 4 veces: se gastan 4 CH₄ y 8 O₂, y se forman 4 CO₂ y 8 H₂O.",
+        "No se acaban los dos: sobra 1 CH₄. Y ese CH₄ sobrante no se escribe en la ecuación; es dato de la mezcla."
+      ],
+      "verificar": [ { "fn": "porParticulas", "args": [{ "reactivos": [[1, "CH4"], [2, "O2"]], "productos": [[1, "CO2"], [2, "H2O"]] }, { "CH4": 5, "O2": 8 }],
+        "espera": { "veces": 4, "limitantes": ["O2"], "sobran.CH4": 1, "sobran.O2": 0, "finales.CO2": 4, "finales.H2O": 8 } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "En una planta de fertilizantes se produce amoníaco según N₂ + 3H₂ → 2NH₃. Se hacen reaccionar 3 mol de N₂ con 6 mol de H₂. ¿Cuál es el reactivo limitante, cuántos moles de NH₃ se forman y cuántos moles sobran del reactivo en exceso?",
+      "respuesta": "El limitante es el H₂. Se forman 4 mol de NH₃ y sobra 1 mol de N₂.",
+      "pasos": [
+        "Moles entre coeficiente: N₂, 3/1 = 3; H₂, 6/3 = 2. El H₂ da menos: es el limitante, aunque hay el doble de moles de H₂.",
+        "Con 6 mol de H₂ reaccionan 6/3 = 2 mol de N₂ y se forman 2·2 = 4 mol de NH₃.",
+        "Sobran 3 − 2 = 1 mol de N₂.",
+        "Si calculas el NH₃ con el N₂ (el reactivo en exceso), te salen 6 mol: más de lo que el H₂ permite. El producto siempre se calcula con el limitante."
+      ],
+      "verificar": [
+        { "fn": "maximo", "args": [{ "reactivos": [[1, "N2"], [3, "H2"]], "productos": [[2, "NH3"]] }, { "N2": 3, "H2": 6 }],
+          "espera": { "xi": 2, "limitantes": ["H2"], "vueltas.N2": 3, "vueltas.H2": 2 } },
+        { "fn": "avance", "args": [{ "reactivos": [[1, "N2"], [3, "H2"]], "productos": [[2, "NH3"]] }, { "N2": 3, "H2": 6 }, 2],
+          "espera": { "NH3": 4, "N2": 1, "H2": 0 } }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Para preparar lechada de cal se apaga cal viva con agua: CaO + H₂O → Ca(OH)₂. ¿Cuántos gramos de agua reaccionan con 28 g de CaO y cuántos gramos de Ca(OH)₂ se forman?",
+      "respuesta": "Reaccionan 9 g de agua y se forman 37 g de Ca(OH)₂.",
+      "pasos": [
+        "Masas molares: CaO = 40 + 16 = 56 g/mol; H₂O = 2 + 16 = 18 g/mol; Ca(OH)₂ = 40 + 2·(16 + 1) = 74 g/mol.",
+        "28 g de CaO son 28/56 = 0,5 mol.",
+        "La ecuación dice 1 mol de CaO con 1 mol de H₂O, no 1 g con 1 g. Reaccionan 0,5 mol de agua: 0,5·18 = 9 g, no 28 g.",
+        "Se forma 0,5 mol de Ca(OH)₂: 0,5·74 = 37 g. Comprueba la masa: 28 + 9 = 37 g."
+      ],
+      "verificar": [
+        { "fn": "masaMolar", "args": ["Ca(OH)2"], "espera": { "valor": 74 } },
+        { "fn": "gramosQueReaccionan", "args": [{ "reactivos": [[1, "CaO"], [1, "H2O"]], "productos": [[1, "Ca(OH)2"]] }, "CaO", 28, "H2O"], "espera": { "valor": 9 } },
+        { "fn": "gramosQueReaccionan", "args": [{ "reactivos": [[1, "CaO"], [1, "H2O"]], "productos": [[1, "Ca(OH)2"]] }, "CaO", 28, "Ca(OH)2"], "espera": { "valor": 37 } }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Unos clavos de hierro se oxidan según 4Fe + 3O₂ → 2Fe₂O₃. En un recipiente cerrado hay 112 g de hierro y 64 g de oxígeno. ¿Cuál es el reactivo limitante, cuántos gramos de Fe₂O₃ se forman y cuántos gramos sobran del reactivo en exceso?",
+      "respuesta": "El limitante es el Fe. Se forman 160 g de Fe₂O₃ y sobran 16 g de O₂.",
+      "pasos": [
+        "Moles: Fe, 112/56 = 2 mol; O₂, 64/32 = 2 mol. El O₂ pesa 32 g/mol porque tiene dos átomos de O.",
+        "Moles entre coeficiente: Fe, 2/4 = 0,5; O₂, 2/3 ≈ 0,67. El Fe es el limitante, aunque hay más gramos de hierro que de oxígeno.",
+        "Con 2 mol de Fe se forma 1 mol de Fe₂O₃ (2 a 4): 1·160 = 160 g. Fe₂O₃ = 2·56 + 3·16 = 160 g/mol.",
+        "Reaccionan 2·3/4 = 1,5 mol de O₂, que son 48 g. Sobran 64 − 48 = 16 g de O₂.",
+        "Comprueba: 112 + 64 = 176 g al inicio; 160 + 16 = 176 g al final. Si dijeras que se forman 176 g de óxido, estarías sumando también el O₂ que no reaccionó."
+      ],
+      "verificar": [ { "fn": "porMasas", "args": [{ "reactivos": [[4, "Fe"], [3, "O2"]], "productos": [[2, "Fe2O3"]] }, { "Fe": 112, "O2": 64 }],
+        "espera": { "limitantes": ["Fe"], "forman.Fe2O3": 160, "sobran.O2": 16, "sobran.Fe": 0, "antes": 176, "despues": 176 } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "El gas de un balón de cocina es principalmente propano, que se quema según C₃H₈ + 5O₂ → 3CO₂ + 4H₂O. Se mezclan 88 g de propano con 160 g de oxígeno y se hace la combustión. ¿Qué reactivo sobra y cuántos gramos? ¿Cuántos gramos de CO₂ y de agua se forman?",
+      "respuesta": "Sobran 44 g de propano. Se forman 132 g de CO₂ y 72 g de agua.",
+      "pasos": [
+        "Masas molares: C₃H₈ = 3·12 + 8 = 44 g/mol; O₂ = 32 g/mol; CO₂ = 44 g/mol; H₂O = 18 g/mol.",
+        "Moles: propano, 88/44 = 2 mol; O₂, 160/32 = 5 mol. Entre coeficientes: propano, 2/1 = 2; O₂, 5/5 = 1. El O₂ es el limitante.",
+        "Si usas 16 g/mol para el O₂, te salen 10 mol y concluyes que se acaban los dos. El O₂ es una molécula de dos átomos: 32 g/mol.",
+        "La receta ocurre 1 vez: se gasta 1 mol de propano (44 g) y sobran 88 − 44 = 44 g.",
+        "Se forman 3 mol de CO₂ (132 g) y 4 mol de H₂O (72 g). Comprueba: 88 + 160 = 248 g = 44 + 132 + 72."
+      ],
+      "verificar": [ { "fn": "porMasas", "args": [{ "reactivos": [[1, "C3H8"], [5, "O2"]], "productos": [[3, "CO2"], [4, "H2O"]] }, { "C3H8": 88, "O2": 160 }],
+        "espera": { "xi": 1, "limitantes": ["O2"], "sobran.C3H8": 44, "forman.CO2": 132, "forman.H2O": 72, "antes": 248, "despues": 248 } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "En un frasco cerrado se ponen 50 g de caliza (CaCO₃) y 73 g de ácido clorhídrico (HCl), que reaccionan según CaCO₃ + 2HCl → CaCl₂ + H₂O + CO₂. Sin contar el frasco, ¿qué masa marca la balanza al terminar la reacción? ¿Cuántos gramos de CO₂ se forman y cuánto HCl sobra? ¿Cuántos gramos menos marcaría la balanza si el frasco estuviera abierto y todo el CO₂ escapara?",
+      "respuesta": "Con el frasco cerrado, la balanza sigue marcando 123 g. Se forman 22 g de CO₂ y sobran 36,5 g de HCl. Con el frasco abierto, marcaría 22 g menos.",
+      "pasos": [
+        "Moles: CaCO₃, 50/100 = 0,5 mol; HCl, 73/36,5 = 2 mol. Entre coeficientes: 0,5 y 1. El CaCO₃ es el limitante.",
+        "Reaccionan 2·0,5 = 1 mol de HCl (36,5 g); sobran 73 − 36,5 = 36,5 g.",
+        "Se forman 0,5 mol de cada producto: CaCl₂, 0,5·111 = 55,5 g; H₂O, 0,5·18 = 9 g; CO₂, 0,5·44 = 22 g.",
+        "Frasco cerrado: 36,5 + 55,5 + 9 + 22 = 123 g, lo mismo que 50 + 73. El gas también pesa; no desaparece porque no se vea.",
+        "Frasco abierto: el CO₂ se va al aire y la balanza marca 123 − 22 = 101 g. La masa no se perdió; salió del frasco."
+      ],
+      "verificar": [ { "fn": "porMasas", "args": [{ "reactivos": [[1, "CaCO3"], [2, "HCl"]], "productos": [[1, "CaCl2"], [1, "H2O"], [1, "CO2"]] }, { "CaCO3": 50, "HCl": 73 }],
+        "espera": { "limitantes": ["CaCO3"], "antes": 123, "despues": 123, "forman.CO2": 22, "forman.CaCl2": 55.5, "forman.H2O": 9, "sobran.HCl": 36.5, "sobran.CaCO3": 0 } },
+        { "fn": "gramosQueReaccionan", "args": [{ "reactivos": [[1, "CaCO3"], [2, "HCl"]], "productos": [[1, "CaCl2"], [1, "H2O"], [1, "CO2"]] }, "CaCO3", 50, "CO2"], "espera": { "valor": 22 } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "En la fabricación de ácido nítrico, el amoníaco se oxida según 4NH₃ + 5O₂ → 4NO + 6H₂O. Se mezclan 34 g de NH₃ y 80 g de O₂. ¿Cuál es el reactivo limitante? ¿Cuántos gramos de NO y de agua se forman?",
+      "respuesta": "No sobra ninguno: los dos reactivos se acaban a la vez. Se forman 60 g de NO y 54 g de agua.",
+      "pasos": [
+        "Moles: NH₃, 34/17 = 2 mol; O₂, 80/32 = 2,5 mol. Entre coeficientes: 2/4 = 0,5 y 2,5/5 = 0,5.",
+        "Los dos dan lo mismo: la mezcla está justo en la proporción de la ecuación y se acaban los dos. Esto pasa solo en este caso; casi siempre sobra uno.",
+        "Se forman 4·0,5 = 2 mol de NO (2·30 = 60 g) y 6·0,5 = 3 mol de H₂O (3·18 = 54 g).",
+        "Comprueba: 34 + 80 = 114 g = 60 + 54. Aquí sí la masa de los productos es la suma de los reactivos, porque no sobra nada."
+      ],
+      "verificar": [ { "fn": "porMasas", "args": [{ "reactivos": [[4, "NH3"], [5, "O2"]], "productos": [[4, "NO"], [6, "H2O"]] }, { "NH3": 34, "O2": 80 }],
+        "espera": { "xi": 0.5, "limitantes": ["NH3", "O2"], "forman.NO": 60, "forman.H2O": 54, "sobran.NH3": 0, "sobran.O2": 0 } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "En un reactor hay 213 g de cloro (Cl₂) y se le va agregando aluminio de a pocos. Reaccionan según 2Al + 3Cl₂ → 2AlCl₃. ¿A partir de cuántos gramos de aluminio deja de aumentar la masa de AlCl₃ y cuál es esa masa máxima? Si se agregan 81 g de aluminio, ¿cuántos gramos de aluminio sobran?",
+      "respuesta": "Desde 54 g de aluminio; el máximo es 267 g de AlCl₃. En el último caso sobran 27 g de aluminio.",
+      "pasos": [
+        "Cl₂ = 71 g/mol: 213/71 = 3 mol. Con 3 mol de Cl₂ reaccionan 3·2/3 = 2 mol de Al, que son 2·27 = 54 g.",
+        "Mientras haya menos de 54 g de Al, el Al es el limitante y el AlCl₃ crece en proporción. Desde 54 g, el limitante pasa a ser el Cl₂ y el producto ya no aumenta: la gráfica sube en recta y se aplana.",
+        "Máximo: 2 mol de AlCl₃. AlCl₃ = 27 + 3·35,5 = 133,5 g/mol, así que 2·133,5 = 267 g.",
+        "Con 81 g de Al (3 mol): 3/2 = 1,5 contra 3/3 = 1 del Cl₂. Limita el Cl₂, reaccionan 54 g de Al y sobran 81 − 54 = 27 g.",
+        "Si calculas el AlCl₃ con los 81 g de Al te salen 400,5 g, más que los 294 g que hay en el reactor. Eso viola la conservación de la masa: el producto sale del limitante."
+      ],
+      "verificar": [
+        { "fn": "quiebre", "args": [{ "reactivos": [[2, "Al"], [3, "Cl2"]], "productos": [[2, "AlCl3"]] }, { "Cl2": 3 }, "Al", "AlCl3"], "espera": { "cantidad": 2, "producto": 2 } },
+        { "fn": "gramosQueReaccionan", "args": [{ "reactivos": [[2, "Al"], [3, "Cl2"]], "productos": [[2, "AlCl3"]] }, "Cl2", 213, "Al"], "espera": { "valor": 54 } },
+        { "fn": "porMasas", "args": [{ "reactivos": [[2, "Al"], [3, "Cl2"]], "productos": [[2, "AlCl3"]] }, { "Al": 81, "Cl2": 213 }],
+          "espera": { "limitantes": ["Cl2"], "sobran.Al": 27, "forman.AlCl3": 267, "antes": 294, "despues": 294 } },
+        { "fn": "gramosQueReaccionan", "args": [{ "reactivos": [[2, "Al"], [3, "Cl2"]], "productos": [[2, "AlCl3"]] }, "Al", 81, "AlCl3"], "espera": { "valor": 400.5 } }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "En el laboratorio se obtiene hidrógeno con magnesio y ácido clorhídrico: Mg + 2HCl → MgCl₂ + H₂. a) ¿Qué masas mínimas de Mg y de HCl se necesitan para obtener 2 g de H₂? b) Si en cambio se mezclan 36 g de Mg con 73 g de HCl en un recipiente cerrado, ¿cuántos gramos de H₂ y de MgCl₂ se forman y cuánto sobra del reactivo en exceso?",
+      "respuesta": "a) 24 g de Mg y 73 g de HCl. b) Se forman 2 g de H₂ y 95 g de MgCl₂, y sobran 12 g de Mg.",
+      "pasos": [
+        "a) 2 g de H₂ son 2/2 = 1 mol (el H₂ pesa 2 g/mol, no 1). Se necesita 1 mol de Mg (24 g) y 2 mol de HCl (2·36,5 = 73 g).",
+        "La proporción 1 a 2 es de moles, no de gramos: no se necesitan 24 g y 48 g.",
+        "b) Moles: Mg, 36/24 = 1,5; HCl, 73/36,5 = 2. Entre coeficientes: 1,5 y 1. El HCl es el limitante, aunque su coeficiente es el mayor.",
+        "Reacciona 1 mol de Mg (24 g); sobran 36 − 24 = 12 g. Se forma 1 mol de H₂ (2 g) y 1 mol de MgCl₂ (24 + 71 = 95 g).",
+        "Comprueba: 36 + 73 = 109 g = 12 + 95 + 2. El H₂ es un gas liviano, pero sus 2 g cuentan en la balanza mientras el recipiente esté cerrado."
+      ],
+      "verificar": [
+        { "fn": "gramosQueReaccionan", "args": [{ "reactivos": [[1, "Mg"], [2, "HCl"]], "productos": [[1, "MgCl2"], [1, "H2"]] }, "H2", 2, "Mg"], "espera": { "valor": 24 } },
+        { "fn": "gramosQueReaccionan", "args": [{ "reactivos": [[1, "Mg"], [2, "HCl"]], "productos": [[1, "MgCl2"], [1, "H2"]] }, "H2", 2, "HCl"], "espera": { "valor": 73 } },
+        { "fn": "porMasas", "args": [{ "reactivos": [[1, "Mg"], [2, "HCl"]], "productos": [[1, "MgCl2"], [1, "H2"]] }, { "Mg": 36, "HCl": 73 }],
+          "espera": { "limitantes": ["HCl"], "forman.H2": 2, "forman.MgCl2": 95, "sobran.Mg": 12, "antes": 109, "despues": 109 } }
+      ]
+    }
+  ]
+}

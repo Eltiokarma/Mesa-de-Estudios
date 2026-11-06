@@ -816,7 +816,8 @@
      "potencial_visual": "alto",
      "grado": 4,
      "plantillas": [
-      "estequiometria-limitante"
+      "estequiometria-limitante",
+      "limitante-particulas"
      ]
     },
     {
@@ -4048,6 +4049,23 @@
    "papel": null,
    "archivos": [
     "/plantillas/estequiometria-limitante/generador.js"
+   ]
+  },
+  "limitante-particulas": {
+   "id": "limitante-particulas",
+   "titulo": "Reactivo limitante con partículas",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.estequiometria"
+   ],
+   "url": "/plantillas/limitante-particulas/index.html",
+   "papel": "/plantillas/limitante-particulas/papel.json",
+   "archivos": [
+    "/plantillas/limitante-particulas/index.html",
+    "/plantillas/limitante-particulas/motor.js",
+    "/plantillas/limitante-particulas/papel.json"
    ]
   },
   "mruv": {
