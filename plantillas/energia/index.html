@@ -364,7 +364,7 @@ function resorte(ctx, c, x1, x2, y, a, on){
 }
 // Barras de energía en la caja b. e = { Ep, Ec, Ee, Eroce }; tope = valor de la barra llena; total = línea punteada.
 function barras(ctx, c, b, e, tope, total, hl){
-  const lista = [['Ep', 'Eₚ', c.h, 'h'], ['Ec', 'E꜀', c.v, 'v'], ['Ee', 'Eₑ', c.x, 'x'], ['Eroce', 'calor', c.f, 'f']];
+  const lista = [['Ep', 'p', c.h, 'h'], ['Ec', 'c', c.v, 'v'], ['Ee', 'e', c.x, 'x'], ['Eroce', 'calor', c.f, 'f']];
   const n = lista.length, gap = 8, w = Math.min(46, (b.w - gap*(n + 1))/n), x0 = b.x + (b.w - n*w - (n - 1)*gap)/2;
   const base = b.y + b.h - 34, alto = b.h - 62, Y = v => base - clamp(v/tope, 0, 1.05)*alto;
   ctx.save();
@@ -378,7 +378,9 @@ function barras(ctx, c, b, e, tope, total, hl){
     ctx.fillRect(x, Y(v), w, base - Y(v)); ctx.shadowBlur = 0;
     ctx.fillStyle = col; ctx.font = `800 11px ${c.mono}`; ctx.textBaseline = 'bottom';
     ctx.fillText(fmt(v, v < 10 ? 1 : 0), x + w/2, Math.min(Y(v), base) - 3);
-    ctx.fillStyle = c.ink; ctx.font = `800 12px ${c.font}`; ctx.textBaseline = 'top'; ctx.fillText(nombre, x + w/2, base + 5);
+    ctx.fillStyle = c.ink; ctx.font = `800 12px ${c.font}`; ctx.textBaseline = 'top';
+    if (nombre.length > 1) ctx.fillText(nombre, x + w/2, base + 5);
+    else { ctx.textAlign = 'right'; ctx.fillText('E', x + w/2 + 2, base + 5); ctx.textAlign = 'left'; ctx.font = `800 9px ${c.font}`; ctx.fillText(nombre, x + w/2 + 2, base + 11); ctx.textAlign = 'center'; }
   });
   if (total){
     ctx.setLineDash([5, 4]); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; ctx.globalAlpha = .7;
@@ -503,7 +505,7 @@ const P2 = { id:'energia-paso6', ok:'a',
         ['c','Cuatro veces más','cuadrado-al-reves','hipotesis'], ['d','Lo mismo, porque el resorte es el mismo','compresion-fija','hipotesis']],
   fb:{ a:'¡Bien! El doble de altura da el doble de energía, y como la energía del resorte va con x², la compresión crece √2 veces.',
        b:'Elegiste la B. El doble de altura da el doble de energía, pero la energía del resorte va con x²: para guardar el doble, x crece √2 veces, no el doble. La correcta está marcada.',
-       c:'Elegiste la C. Cuatro veces sería si la energía creciera cuatro veces. Aquí la energía se duplica, y x crece con su raíz. La correcta está marcada.',
+       c:'Elegiste la C. Cuatro veces más compresión pediría dieciséis veces más energía, porque la energía del resorte va con x². Aquí la energía solo se duplica, así que x crece √2 veces. La correcta está marcada.',
        d:'Elegiste la D. El resorte no tiene una compresión fija: se comprime hasta guardar toda la energía que trae el bloque. La correcta está marcada.' } };
 const opciones = P => `<div class="opts">${P.opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="fb"></p>`;
 const steps = [
@@ -513,22 +515,22 @@ const steps = [
  { k:'Paso 2', t:'Primero, el sistema', sistema:true,
    body:() => `<p>Antes de hacer cuentas, elige qué cuerpos entran. Aquí el sistema es <b>el bloque, la Tierra y el resorte</b> (el recuadro punteado). Dentro de él, la energía solo cambia de forma:</p>
    <ul class="map">
-     <li><b class="v-h">E<sub>p</sub> = mgh</b><span>Energía potencial gravitatoria. No está "en el bloque": es del par bloque-Tierra, y depende de la ${V('h','altura')}.</span></li>
-     <li><b class="v-v">E<sub>c</sub> = ½mv²</b><span>Energía cinética: depende de la ${V('v','rapidez')}.</span></li>
-     <li><b class="v-x">E<sub>e</sub> = ½kx²</b><span>Energía elástica del resorte: depende de cuánto se ${V('x','comprime')}.</span></li>
+     <li><b>${V('h','E<sub>p</sub>')} = ${V('m','m')}g${V('h','h')}</b><span>Energía potencial gravitatoria. No está "en el bloque": es del par bloque-Tierra, y depende de la ${V('h','altura')}.</span></li>
+     <li><b>${V('v','E<sub>c</sub>')} = ½${V('m','m')}${V('v','v')}²</b><span>Energía cinética: depende de la ${V('v','rapidez')}.</span></li>
+     <li><b>${V('x','E<sub>e</sub>')} = ½${V('k','k')}${V('x','x')}²</b><span>Energía elástica del resorte: depende de cuánto se ${V('x','comprime')}.</span></li>
    </ul>
    <div class="eqs"><div class="eq">${V('h','E<sub>p</sub>')} = ${V('m','m')}·g·${V('h','h')} = ${V('m','2')}·10·${V('h','1')} = ${V('h','20 J')}<span class="note">Al inicio, toda la energía es potencial</span></div></div>
    <p class="fuente">El 98,9 % de 320 escolares de Valencia dijo que la energía potencial "está en el cuerpo" (Solbes y Tarín, 1998). Sin elegir el sistema, el balance de energía se enreda.</p>` },
  { k:'Paso 3', t:'Antes de calcular, predice', sistema:true, gate:P1,
    body:() => `<p>Si en lugar del bloque de 2 kg se suelta uno de ${V('m','4 kg')} desde la misma altura, ¿qué pasa con su ${V('v','rapidez')} al pie de la rampa?</p>${opciones(P1)}` },
- { k:'Paso 4', t:'La bajada: Eₚ se vuelve E꜀', sistema:true, anim:'bajada',
+ { k:'Paso 4', t:'La bajada: Ep se vuelve Ec', sistema:true, anim:'bajada',
    body:() => `<div class="eqs">
-     <div class="eq">${V('m','m')}·g·${V('h','h')} = ½·${V('m','m')}·${V('v','v')}²<span class="note">Arriba solo E<sub>p</sub>; abajo solo E<sub>c</sub></span></div>
+     <div class="eq">${V('m','m')}·g·${V('h','h')} = ½·${V('m','m')}·${V('v','v')}²<span class="note">Arriba solo E<sub>p</sub>; abajo solo E<sub>c</sub> (altura medida desde el piso)</span></div>
      <div class="eq">${V('v','v')}² = 2·g·${V('h','h')} = 2·10·${V('h','1')} = 20 → ${V('v','v ≈ 4,47 m/s')}</div>
    </div>
    <p>La ${V('m','masa')} está a los dos lados y se cancela: un bloque de 4 kg llega igual de rápido. Lo que cambia es cuánta energía trae (40 J en vez de 20 J). ${S.pred['energia-paso3'] === 'a' ? 'Tu predicción era correcta.' : 'Compara con tu predicción del paso 3.'}</p>
    <p>Mira las barras: la verde baja y la roja sube, y la suma no cambia. Tampoco importa la forma de la rampa, solo la altura que baja.</p>` },
- { k:'Paso 5', t:'El resorte: E꜀ se vuelve Eₑ', sistema:true, anim:'resorte',
+ { k:'Paso 5', t:'El resorte: Ec se vuelve Ee', sistema:true, anim:'resorte',
    body:() => `<div class="eqs">
      <div class="eq">½·${V('m','m')}·${V('v','v')}² = ½·${V('k','k')}·${V('x','x')}²<span class="note">En la compresión máxima, el bloque se detiene un instante</span></div>
      <div class="eq">20 = ½·${V('k','1000')}·${V('x','x')}² → ${V('x','x')}² = 0,04 → ${V('x','x = 0,2 m')}</div>
@@ -539,8 +541,8 @@ const steps = [
  { k:'Paso 7', t:'Doble altura', sistema:true, anim:'todo', est:{ h:2 },
    body:() => `<div class="eqs">
      <div class="eq">${V('h','E<sub>p</sub>')} = ${V('m','2')}·10·${V('h','2')} = 40 J<span class="note">El doble de energía</span></div>
-     <div class="eq">40 = ½·${V('k','1000')}·${V('x','x')}² → ${V('x','x')}² = 0,08 → ${V('x','x ≈ 0,28 m')}</div>
-     <div class="eq">0,28 / 0,2 = √2 ≈ 1,41<span class="note">No el doble</span></div>
+     <div class="eq">40 = ½·${V('k','1000')}·${V('x','x')}² → ${V('x','x')}² = 0,08 → ${V('x','x ≈ 0,283 m')}</div>
+     <div class="eq">${V('x','x')} = 0,2·√2 ≈ 0,283 m<span class="note">√2 ≈ 1,41 veces, no el doble</span></div>
    </div>
    <p>Como la energía va con x², para guardar el doble de energía basta con comprimir √2 veces. Con la rapidez pasa lo mismo: v² = 40, así que v ≈ 6,3 m/s, también √2 veces más.</p>
    ${S.pred['energia-paso6'] ? '' : ''}` },
@@ -668,7 +670,7 @@ const E = {};
 const FORMAS = [['recta', 'Recta'], ['curva', 'Curva'], ['lomas', 'Con loma']];
 const EXPS = [
   { id:'formas', corto:'Cambio la rampa',
-    q:'Tres bloques iguales se sueltan a la vez desde 1 m de altura, por tres rampas sin roce: una recta, una curva (empinada al inicio) y una con una loma en el camino. ¿Cuál llega abajo con más rapidez?',
+    q:`Tres bloques iguales se sueltan a la vez desde ${V('h','1 m')} de altura, por tres rampas sin roce: una recta, una curva (empinada al inicio) y una con una loma en el camino. ¿Cuál llega abajo con más ${V('v','rapidez')}?`,
     opts:[['a','La recta, porque el camino es el más corto','forma-recta-mas-rapida','hipotesis'],
           ['b','La curva, porque arranca más empinada','forma-empinada-mas-rapida','hipotesis'],
           ['c','Las tres llegan con la misma rapidez',null],
@@ -678,10 +680,10 @@ const EXPS = [
     despues:() => { E.ver = true; correr('t', 0, tFormas(), 2.2); },
     ctrl:() => `<p><button type="button" class="btn" id="repetir">Soltar otra vez</button></p><div class="chips" id="chips"></div>`,
     exp:`<p>Las tres llegan con la misma rapidez, √20 ≈ 4,47 m/s, porque bajan la misma altura y no hay roce: toda la energía potencial se vuelve cinética. La forma de la rampa no entra en mgh = ½mv².</p>
-      <p>Lo que sí cambia es el <b>tiempo</b>: la curva, empinada al inicio, gana rapidez antes y llega primero. Por eso, en un problema que pregunta por el tiempo, la energía sola no alcanza.</p>
-      <p class="fuente">Esta pregunta es nuestra; sus opciones incorrectas son hipótesis. La idea de fondo sí está medida: el 21 % de 336 universitarios cree, después del curso, que el trabajo del peso depende del camino (Singh y Rosengrant, 2003, ítem 1).</p>` },
+      <p>Lo que sí cambia es el <b>tiempo</b>: en estas tres rampas, la curva, empinada al inicio, gana rapidez antes y llega primero. Por eso, en un problema que pregunta por el tiempo, la energía sola no alcanza.</p>
+      <p class="fuente">Esta pregunta es nuestra; sus opciones incorrectas son hipótesis. La idea de fondo sí está medida: el 25 % de 336 universitarios cree, después del curso, que el trabajo del peso depende del camino (Singh y Rosengrant, 2003, ítem 1).</p>` },
   { id:'arrastre', corto:'Arrastro la caja',
-    q:'Arrastras una caja de 5 kg a lo largo de 10 m de piso (μ = 0,4), a velocidad constante, con una cuerda horizontal. ¿Cómo es el trabajo de tu fuerza comparado con el del roce?',
+    q:`Arrastras una caja de ${V('m','5 kg')} a lo largo de 10 m de piso (${V('f','μ = 0,4')}), a velocidad constante, con una cuerda horizontal. ¿Cómo es el trabajo de tu ${V('F','fuerza')} comparado con el del ${V('f','roce')}?`,
     opts:[['a','Iguales en tamaño: +200 J y −200 J',null],
           ['b','Tu fuerza hace más trabajo, porque tiene que ser mayor que el roce para que la caja avance','W5-fuerza-mayor-que-roce','documentado'],
           ['c','El trabajo neto es positivo, porque la caja avanza','W5-neto-positivo','documentado'],
@@ -692,11 +694,11 @@ const EXPS = [
     ctrl:() => `<div class="slider"><label for="fa"><span>Tu fuerza (${V('F','F')})</span><output id="fa-o"></output></label><input id="fa" class="r-F" type="range" min="10" max="40" step="1" value="${E.F}"></div>
       <div id="arr-info" class="body"></div>`,
     exp:`<p>Velocidad constante quiere decir fuerza neta cero: tu fuerza vale lo mismo que el roce, 20 N. Sus trabajos son +200 J y −200 J, y el neto es cero, por eso la energía cinética no cambia. Tu trabajo no se pierde: el roce lo vuelve calor en el piso y en la caja.</p>
-      <p>Para que la caja <b>empiece</b> a moverse sí hace falta un empujón mayor que el roce. Pero una vez que se mueve, para mantener la rapidez basta con igualarlo. Sube la fuerza con el deslizador: el neto deja de ser cero y la caja acelera.</p>
-      <p class="fuente">Es el distractor más fuerte del test EMCS: el 61 % lo eligió antes del curso y el 51 %, después (336 universitarios; Singh y Rosengrant, 2003, ítem 12). En tercer año de física, todavía el 21 % (Brundage y otros, 2023).</p>` },
+      <p>Para arrancarla desde el reposo, tu fuerza tiene que superar por un momento al roce (y en reposo el roce suele ser algo mayor que cuando ya se desliza). Pero una vez que se mueve, para mantener la rapidez basta con igualar el roce: ni un newton más. Mueve el deslizador: si tu fuerza cambia, el neto deja de ser cero y la caja acelera o frena.</p>
+      <p class="fuente">Es el error más elegido de las preguntas de trabajo y energía del test EMCS: el 61 % de 352 universitarios lo eligió antes del curso y el 51 % de 336, después (Singh y Rosengrant, 2003, ítem 12). En tercer año de física, todavía el 21 % (Brundage y otros, 2023).</p>` },
   { id:'plano', corto:'Subo por el plano',
-    q:'Hay que subir un bloque de 10 kg hasta 3 m de altura, a velocidad constante y sin roce. Puedes levantarlo en vertical, o subirlo por un plano inclinado de 37° (recorre 5 m). ¿Qué camino pide más trabajo?',
-    opts:[['a','Los dos, el mismo trabajo',null],
+    q:`Hay que subir un bloque de ${V('m','10 kg')} hasta ${V('h','3 m')} de altura, a velocidad constante y sin roce. Puedes levantarlo en vertical, o subirlo por un plano inclinado de 37° (recorre 5 m). ¿Qué camino pide más trabajo?`,
+    opts:[['a','Los dos piden el mismo trabajo',null],
           ['b','El vertical: por el plano cuesta menos, porque la fuerza es menor','W2-plano-menos-trabajo','documentado'],
           ['c','El plano, porque el camino es más largo','W1-camino-largo-mas-trabajo','hipotesis'],
           ['d','Depende de la rapidez con que se suba','W1-depende-rapidez','documentado']],
@@ -706,10 +708,10 @@ const EXPS = [
     ctrl:() => `<div class="slider"><label for="an"><span>Inclinación del plano</span><output id="an-o"></output></label><input id="an" type="range" min="10" max="90" step="1" value="${E.ang}"></div>
       <div id="pl-info" class="body"></div>`,
     exp:`<p>Por el plano la fuerza es menor (60 N contra 100 N), pero el recorrido es mayor (5 m contra 3 m): 60 × 5 = 100 × 3 = 300 J. En la gráfica, los dos rectángulos tienen la misma área. Ninguna máquina simple ahorra trabajo: cambia fuerza por distancia.</p>
-      <p>Por eso los caminos de la sierra van en zigzag: no ahorran energía, pero piden menos fuerza en cada paso.</p>
+      <p>Por eso los caminos de la sierra van en zigzag: no ahorran el trabajo contra el peso (mgh es el mismo), pero la pendiente es menor y cada paso pide menos fuerza.</p>
       <p class="fuente">El 33 % de 336 universitarios cree, después del curso, que por el plano se hace menos trabajo (Singh y Rosengrant, 2003, ítem 8); en el cuarto con peor puntaje no mejoró nada. En tercer año de física, todavía el 29 % (Brundage y otros, 2023).</p>` },
   { id:'grua', corto:'La grúa',
-    q:'El motor de una grúa sube 200 kg a 12 m de altura en 20 s, a velocidad constante. Su eficiencia es del 80 %. ¿Qué potencia consume el motor?',
+    q:`El motor de una grúa sube ${V('m','200 kg')} a ${V('h','12 m')} de altura en 20 s, a velocidad constante. Su eficiencia es del 80 %. ¿Qué ${V('P','potencia')} consume el motor?`,
     opts:[['a','1500 W',null],
           ['b','960 W','multiplica-eficiencia','hipotesis'],
           ['c','1200 W','ignora-eficiencia','hipotesis'],
@@ -718,13 +720,13 @@ const EXPS = [
     antes:() => Object.assign(E, { tipo:'grua', t:20, ef:0.8, s:0, ver:false }),
     despues:() => { E.ver = true; correr('s', 0, 1, 2.4); },
     ctrl:() => `<div class="slider"><label for="gt"><span>Tiempo de subida (t)</span><output id="gt-o"></output></label><input id="gt" type="range" min="5" max="60" step="1" value="${E.t}"></div>
-      <div class="slider"><label for="ge"><span>Eficiencia</span><output id="ge-o"></output></label><input id="ge" class="r-P" type="range" min="20" max="100" step="5" value="${E.ef*100}"></div>
+      <div class="slider"><label for="ge"><span>Eficiencia</span><output id="ge-o"></output></label><input id="ge" type="range" min="20" max="100" step="5" value="${E.ef*100}"></div>
       <div id="gr-info" class="body"></div>`,
     exp:`<p>Subir 200 kg a 12 m cuesta mgh = 24 000 J, en 20 s: la potencia útil es 24 000/20 = 1200 W. Pero el motor no convierte todo: con 80 % de eficiencia, consume 1200/0,8 = 1500 W, y 300 W se le van en calor y roce.</p>
-      <p>La eficiencia divide, no multiplica: lo que consume siempre es más que lo que entrega. Si sale menos, el número está volteado. Y 24 000 es energía (joules), no potencia (watts): la potencia es qué tan rápido se entrega esa energía.</p>
-      <p class="fuente">Las opciones de 960 W y 1200 W son errores que suponemos. Confundir potencia con energía o con fuerza sí está medido: solo 8 de 56 futuros profesores de física (14 %) definieron bien la potencia (Sağlam-Arslan y Kurnaz, 2009).</p>` },
+      <p>La eficiencia divide, no multiplica: lo que consume nunca es menos que lo que entrega. Si sale menos, el número está volteado. Y 24 000 es energía (joules), no potencia (watts): la potencia es qué tan rápido se entrega esa energía.</p>
+      <p class="fuente">Las opciones de 960 W y 1200 W son errores que suponemos. Confundir potencia con energía o con fuerza sí está medido: solo 8 de 56 futuros profesores de física en Turquía (14 %) definieron bien la potencia (Sağlam-Arslan y Kurnaz, 2009).</p>` },
   { id:'pelotas', corto:'Lanzo tres pelotas',
-    q:'Desde una azotea de 20 m lanzas tres pelotas iguales con la misma rapidez, 10 m/s: una hacia arriba (53°), otra horizontal y otra hacia abajo (37° bajo la horizontal). Sin aire, ¿cuál llega al suelo con más rapidez?',
+    q:`Desde una azotea de ${V('h','20 m')} lanzas tres pelotas iguales con la misma ${V('v','rapidez')}, ${V('v','10 m/s')}: una hacia arriba (37° sobre la horizontal), otra horizontal y otra hacia abajo (53° bajo la horizontal). Sin aire, ¿cuál llega al suelo con más rapidez?`,
     opts:[['a','La lanzada hacia abajo','W10-componente-vertical','documentado'],
           ['b','La lanzada hacia arriba, porque cae desde más alto','W10-sube-mas-cae-mas','hipotesis'],
           ['c','La horizontal','W10-componente-horizontal','documentado'],
@@ -737,7 +739,7 @@ const EXPS = [
       <p>La rapidez es un número sin dirección; por eso la energía, que tampoco tiene dirección, la da tan fácil.</p>
       <p class="fuente">Es la pregunta más difícil del test EMCS: acierta solo el 29 %, y el 39 % ordena según la componente vertical (Singh y Rosengrant, 2003, ítem 22). En tercer año de física acierta también el 29 %: el 33 % ordena por la componente vertical y el 31 % por la horizontal (Brundage y otros, 2023).</p>` },
 ];
-const PELOTAS = [[53, 'arriba'], [0, 'horizontal'], [-37, 'abajo']];
+const PELOTAS = [[37, 'arriba'], [0, 'horizontal'], [-53, 'abajo']];
 const lanz = () => PELOTAS.map(([a]) => M.lanzamiento({ v0:10, angulo:a, h0:20, n:120 }));
 const tPelotas = () => Math.max(...lanz().map(r => r.t));
 const recs = () => FORMAS.map(([f]) => M.movimiento({ m:2, h:1, k:1000, forma:f, piso:1.2 }));
@@ -769,18 +771,23 @@ function drawFormas(ctx, c, W, H){
   });
   $('desc2').textContent = E.ver ? 'Las tres llegan abajo con 4,47 m/s; la curva llega primero.' : '';
 }
+// Si el roce la frena antes de los 10 m, los trabajos se cuentan hasta donde se detiene: d = ½·m·v0² / (roce − F).
+function arrastre(F){
+  const r = M.trabajos({ m:5, d:10, mu:0.4, F, v0:2 });
+  return r.v === null ? Object.assign(M.trabajos({ m:5, d:0.5*5*4/(r.roce - F), mu:0.4, F, v0:2 }), { frena:true }) : r;
+}
 function drawArrastre(ctx, c, W, H){
-  const r = M.trabajos({ m:5, d:10, mu:0.4, F:E.F, v0:2 }), x0 = 30, x1 = W - 150, y0 = H*0.42, sc = (x1 - x0 - 60)/10;
+  const r = arrastre(E.F), x0 = 30, x1 = W - 150, y0 = H*0.42, sc = (x1 - x0 - 60)/10;
   ctx.fillStyle = c.suelo; ctx.globalAlpha = .55; ctx.fillRect(10, y0, W - 20, 14); ctx.globalAlpha = 1;
   ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, 10, y0, W - 10, y0);
   ctx.strokeStyle = c.f; ctx.lineWidth = 1.1; for (let x = 14; x < W - 14; x += 9) linea(ctx, x, y0 + 12, x + 6, y0 + 3);
   // Avance: con fuerza neta, la caja acelera; el dibujo solo muestra el recorrido de 10 m.
-  const px = x0 + 30 + (E.ver ? E.s : 0)*10*sc, s = 54;
+  const px = x0 + 30 + (E.ver ? E.s : 0)*(r.frena ? r.WF/E.F : 10)*sc, s = 54;
   bloque(ctx, c, px, y0, s, 0, '5 kg');
   // Fuerzas
   const k = 2.2;
   flecha(ctx, px + s/2, y0 - s/2, px + s/2 + E.F*k, y0 - s/2, c.F, 4); rotulo(ctx, c, px + s/2 + E.F*k + 6, y0 - s/2 - 12, `F = ${fmt(E.F, 0)} N`, c.F, 'left', 800);
-  flecha(ctx, px - s/2, y0 - 6, px - s/2 - r.roce*k, y0 - 6, c.f, 4); rotulo(ctx, c, px - s/2 - r.roce*k - 4, y0 - 20, `roce = ${fmt(r.roce, 0)} N`, c.f, 'right', 800);
+  flecha(ctx, px - s/2, y0 - 6, px - s/2 - r.roce*k, y0 - 6, c.f, 4); rotulo(ctx, c, Math.max(px - s/2 - r.roce*k - 4, 100), y0 - 20, `roce = ${fmt(r.roce, 0)} N`, c.f, 'right', 800);
   cota(ctx, c, x0 + 30, y0 + 30, x0 + 30 + 10*sc, y0 + 30, c.muted, 'd = 10 m');
   // Barras de trabajo
   const b = { x:20, y:H*0.62, w:W - 40, h:H*0.34 }, tope = 400, mid = b.x + b.w/2, esc = (b.w/2 - 70)/tope;
@@ -826,9 +833,9 @@ function drawPlano(ctx, c, W, H){
   const ej = ejes(ctx, c, g, { x0:0, x1:Math.max(6, Math.ceil(dPl + 0.5)), y0:0, y1:110 }, { x:'d (m)', colX:c.muted, y:'F (N)', colY:c.F });
   if (E.ver){
     ctx.save(); ctx.globalAlpha = .22; ctx.fillStyle = c.F; ctx.fillRect(ej.X(0), ej.Y(rv.F), ej.X(3) - ej.X(0), ej.Y(0) - ej.Y(rv.F));
-    ctx.globalAlpha = .35; ctx.fillStyle = c.h; ctx.fillRect(ej.X(0), ej.Y(rp.F), ej.X(dPl) - ej.X(0), ej.Y(0) - ej.Y(rp.F)); ctx.restore();
+    ctx.globalAlpha = .12; ctx.fillStyle = c.F; ctx.fillRect(ej.X(0), ej.Y(rp.F), ej.X(dPl) - ej.X(0), ej.Y(0) - ej.Y(rp.F)); ctx.restore();
     ctx.strokeStyle = c.F; ctx.lineWidth = 2; ctx.strokeRect(ej.X(0), ej.Y(rv.F), ej.X(3) - ej.X(0), ej.Y(0) - ej.Y(rv.F));
-    ctx.setLineDash([6, 4]); ctx.strokeStyle = c.h; ctx.strokeRect(ej.X(0), ej.Y(rp.F), ej.X(dPl) - ej.X(0), ej.Y(0) - ej.Y(rp.F)); ctx.setLineDash([]);
+    ctx.setLineDash([6, 4]); ctx.strokeStyle = c.F; ctx.strokeRect(ej.X(0), ej.Y(rp.F), ej.X(dPl) - ej.X(0), ej.Y(0) - ej.Y(rp.F)); ctx.setLineDash([]);
     rotulo(ctx, c, ej.X(1.5), ej.Y(rv.F) - 10, `vertical: ${fmt(rv.F, 0)} × 3 = ${fmt(rv.WF, 0)} J`, c.F, 'left', 800);
     rotulo(ctx, c, ej.X(dPl) - 4, ej.Y(rp.F/2), `plano: ${fmt(rp.F, 0)} × ${fmt(dPl, 2)} = ${fmt(rp.WF, 0)} J`, c.ink, 'right', 800);
   }
@@ -851,7 +858,7 @@ function drawGrua(ctx, c, W, H){
   const g = W >= 560 ? { x:anchoG + 20, y:30, w:W - anchoG - 40 } : { x:20, y:altoG + 10, w:W - 40 };
   ctx.font = `800 12px ${c.font}`; ctx.fillStyle = c.ink; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
   if (!E.ver){ rotulo(ctx, c, g.x + g.w/2, g.y + 40, 'Responde para ver la energía', c.muted); $('desc2').textContent = ''; return; }
-  const filas = [['Consume', r.Pconsumida, c.P], ['Entrega (útil)', r.Putil, c.F], ['Se pierde', r.perdidas, c.f]];
+  const filas = [['Consume', r.Pconsumida, c.P], ['Entrega (útil)', r.Putil, c.P], ['Se pierde', r.perdidas, c.f]];
   const maxP = Math.max(3000, r.Pconsumida);
   filas.forEach(([t, v, col], j) => {
     const y = g.y + j*46;
@@ -871,10 +878,10 @@ function drawPelotas(ctx, c, W, H){
   ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.strokeRect(xe - 6*sc, Y(20), 6*sc, yg - Y(20)); linea(ctx, 4, yg, W - 4, yg);
   for (let y = 2; y < 20; y += 4) for (let x = 1; x < 6; x += 2){ ctx.strokeStyle = c.muted; ctx.lineWidth = 1; ctx.strokeRect(xe - x*sc - sc*0.8, Y(y + 2), sc*0.8, sc*1.2); }
   cota(ctx, c, xe - 6*sc - 10, yg, xe - 6*sc - 10, Y(20), c.h, '20 m');
-  const cols = [c.F, c.m, c.k];
+  const trazos = [[], [8, 5], [2, 4]];
   rs.forEach((r, j) => {
-    const col = cols[j], tt = Math.min(E.t, r.t), n = r.puntos.length - 1, k = Math.round(tt/r.t*n);
-    ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = 2; ctx.setLineDash(E.ver ? [] : [3, 4]); ctx.globalAlpha = E.ver ? 1 : .35;
+    const col = c.ink, tt = Math.min(E.t, r.t), n = r.puntos.length - 1, k = Math.round(tt/r.t*n);
+    ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = 2; ctx.setLineDash(trazos[j]); ctx.globalAlpha = E.ver ? 1 : .35;
     ctx.beginPath(); r.puntos.slice(0, E.ver ? k + 1 : n + 1).forEach(([x, y], i) => i ? ctx.lineTo(X(x), Y(y)) : ctx.moveTo(X(x), Y(y))); ctx.stroke(); ctx.restore();
     if (!E.ver) return;
     const [x, y] = r.puntos[k]; punto(ctx, X(x), Y(y), 6, col, c.card);
@@ -892,21 +899,21 @@ function sincronizar(){
   const fa = $('fa');
   if (fa){
     fa.value = E.F; $('fa-o').textContent = `${fmt(E.F, 0)} N`;
-    const r = M.trabajos({ m:5, d:10, mu:0.4, F:E.F, v0:2 });
+    const r = arrastre(E.F);
     $('arr-info').innerHTML = `${tiraHTML([['F', r.WF, `+${fmt(r.WF, 0)} J`], ['f', r.Wroce, `${fmt(r.Wroce, 0)} J`]])}
-      <p class="hint" style="margin:0">Trabajo neto: ${fmt(r.Wneto, 0)} J. ${Math.abs(r.Wneto) < 1e-9 ? 'La caja sigue con la misma rapidez (supón 2 m/s).' : r.v === null ? 'El roce la frena antes de los 10 m.' : `Si iba a 2 m/s, termina a ${fmt(r.v, 2)} m/s.`}</p>`;
+      <p class="hint" style="margin:0">Trabajo neto: ${fmt(r.Wneto, 0)} J. ${Math.abs(r.Wneto) < 1e-9 ? 'La caja sigue con la misma rapidez (supón 2 m/s).' : r.frena ? `El roce la frena en ${fmt(r.WF/E.F, 2)} m: sus 10 J de energía cinética (a 2 m/s) se acaban.` : `Si iba a 2 m/s, termina a ${fmt(r.v, 2)} m/s.`}</p>`;
   }
   const an = $('an');
   if (an){
     an.value = E.ang; $('an-o').textContent = `${E.ang}°`;
     const nt = M.notable(E.ang), rp = M.trabajos({ m:10, d:3/nt.sen, angulo:E.ang, F:'constante' });
-    $('pl-info').innerHTML = `<div class="chips"><span class="chip">Fuerza: ${fmt(rp.F, 1)} N</span><span class="chip">Recorrido: ${fmt(3/nt.sen, 2)} m</span><span class="chip real">Trabajo: ${fmt(rp.WF, 0)} J</span></div>`;
+    $('pl-info').innerHTML = `<div class="chips"><span class="chip">Fuerza: ${fmt(rp.F, 1)} N</span><span class="chip">Recorrido: ${fmt(3/nt.sen, 2)} m</span><span class="chip" style="border-color:var(--c-F);color:var(--c-F)">Trabajo: ${fmt(rp.WF, 0)} J</span></div>`;
   }
   const gt = $('gt');
   if (gt){
     gt.value = E.t; $('ge').value = E.ef*100; $('gt-o').textContent = `${E.t} s`; $('ge-o').textContent = `${fmt(E.ef*100, 0)} %`;
     const r = M.potencia({ m:200, h:12, t:E.t, eficiencia:E.ef });
-    $('gr-info').innerHTML = `${tiraHTML([['F', r.Putil, `útil ${fmt(r.Putil, 0)} W`], ['f', r.perdidas, `pérdida ${fmt(r.perdidas, 0)} W`]])}
+    $('gr-info').innerHTML = `${tiraHTML([['P', r.Putil, `útil ${fmt(r.Putil, 0)} W`], ['f', r.perdidas, `pérdida ${fmt(r.perdidas, 0)} W`]])}
       <p class="hint" style="margin:0">P útil = ${fmt(r.W, 0)} J / ${E.t} s = ${fmt(r.Putil, 0)} W. P consumida = ${fmt(r.Putil, 0)} / ${fmt(E.ef, 2)} = ${fmt(r.Pconsumida, 0)} W. El mismo trabajo en el doble de tiempo pide la mitad de potencia.</p>`;
   }
   const ch = $('chips');
