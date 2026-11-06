@@ -62,6 +62,8 @@ Peak dice tener más de 45 juegos, en áreas como memoria, atención, resolució
 | Partial Match | Memoria | Decir si cada figura coincide toda, en parte (mismo color u otra forma) o nada con la anterior | Comparar dos magnitudes: mismo valor y misma unidad, mismo valor en otra unidad (1 km y 1000 m) o distintas |
 | Perilous Path | Memoria | Memorizar dónde están las minas en una cuadrícula y luego trazar un camino que las esquive | Memorizar un circuito o un diagrama de rayos y luego reconstruirlo |
 | Low Pop | Resolución de problemas | Tocar las fichas de menor a mayor | Ordenar resultados de cuentas, potencias de 10 o fracciones de menor a mayor sin calcularlas del todo (estimar) |
+| Size Counts | Razonamiento | Dos tarjetas con una operación cada una ("3 + 4" y "16 − 1"); se toca la de resultado más alto, o el botón del medio si son iguales ("4 + 1" y "2 + 3") | **"¿Cuál pesa más?"**: 2³ o 3²; 0,5 × 40 o 40 ÷ 0,5; 72 km/h o 25 m/s; 1 L o 1000 cm³ (iguales); 10 sen 37° o 5. Entrena estimar y convertir sin calculadora |
+| Square Numbers | Razonamiento | Arriba aparece un objetivo (4) y abajo cuatro fichas (3, 6, 16, 1); se tocan las fichas hasta llegar al objetivo (3 + 1 = 4, que quedan marcadas). Hay un botón para deshacer | **"Llega al número"**: el objetivo es una resistencia equivalente, una masa o una velocidad, y las fichas son resistencias, pesas o datos con unidades. En química, coeficientes para balancear |
 | Turtle Traffic | Agilidad mental | Tocar para que la tortuga suba y soltar para que baje, comiendo medusas | Poco aprovechable tal cual; sirve como ejemplo de juego con historia y personaje (nuestro gatito) |
 
 Fuentes: [Dr Jack Lewis, reseña de Peak](https://www.drjack.co.uk/brain-training-review-of-peak-by-dr-jack-lewis/), [Saga, prueba de 5 apps](https://www.saga.co.uk/magazine/health-and-wellbeing/brain-training-apps-best-and-do-they-work), [Peak Labs, Partial Match](https://medium.com/@peaklabs/train-your-working-memory-with-partial-match-20b2df130969), [Peak Play, Turtle Traffic](https://medium.com/peak-play/from-concept-to-final-product-peak-s-lead-game-designer-on-creating-turtle-traffic-an-7de30749e6a0), videos de YouTube de [Low Pop](https://www.youtube.com/watch?v=oRPlpKBJvTI), [Must Sort](https://www.youtube.com/watch?v=1w0Jwh0M-J8) y [Turtle Traffic](https://www.youtube.com/watch?v=lKQEqjFfKBY).
@@ -76,7 +78,7 @@ Once capturas de la versión en español, en un celular Android. No se suben al 
 | --- | --- | --- |
 | Lenguaje (morado), 6 | Word Fresh, Babble Bots, Word Hunt, Grow, Word Pairs, Word Path | Word Pairs (pares de palabras: sinónimos y antónimos, ícono) y Word Path o Word Fresh (armar palabras en una cuadrícula de letras, ícono), para razonamiento verbal |
 | Memoria (naranja), 6 | Perilous Path, Partial Match, Spin Cycle, Baggage Claim, Memory Sweep, Bounce | Partial Match y Perilous Path (ver la tabla de arriba) |
-| Razonamiento (verde), 10 | Moving Math, Square Numbers, Low Pop, Pixel Logic, Puzzle Blox, Castle Block, Earth Defense, Slider, Size Counts, Matcha Madness | **Los de cálculo:** Size Counts ("8 + 2" contra "30 ÷ 2": cuál es mayor, ícono), Moving Math (armar operaciones con "+" y "=", ícono), Square Numbers (cuadrícula de números, mecánica desconocida), Low Pop (ordenar de menor a mayor, también con negativos) |
+| Razonamiento (verde), 10 | Moving Math, Square Numbers, Low Pop, Pixel Logic, Puzzle Blox, Castle Block, Earth Defense, Slider, Size Counts, Matcha Madness | **Los de cálculo:** Size Counts y Square Numbers (confirmados, ver abajo), Moving Math (armar operaciones con "+" y "=", ícono), Low Pop (ordenar de menor a mayor, también con negativos) |
 | Concentración (rojo), 10 | Must Sort, Unique, Objectifind, Decoder, Tap Trap, Rush Back, Tracker, True View, Rush Back+, Tunnel Trance | Must Sort y Rush Back |
 | Agilidad mental (azul), 7 | Turtle Traffic, Speed Spotting, True Color, Face Switch, Zap Gap, Flight Path, Refocus | True Color (sí o no rápido, ícono) y Refocus ("P9" y "A6" con sí o no: cambiar de regla según la tarjeta, ícono). El cambio de regla sirve para signos: "si es lente divergente, f es negativo" |
 | Emoción (lila), 2 | Smile On Me, Face To Face | No |
@@ -92,6 +94,12 @@ Once capturas de la versión en español, en un celular Android. No se suben al 
 - **Prueba de entrada recomendada:** arriba de la pestaña "Tests", Peak recomienda una "Prueba Cognitiva" que evalúa memoria, atención, razonamiento lógico y lenguaje con distintas tareas. Al final dice en qué eres fuerte y en qué áreas te conviene entrenar. **Esto sí lo copiamos**, con nuestra forma: una prueba de entrada por curso (la1) que termina en "estas son tus unidades fuertes y estas te conviene practicar", y arma el plan del alumno. Sin llamarla "cognitiva" ni dar un número de inteligencia.
 
 **Lo que no copiamos (de frente):** además, la pestaña "Tests" ofrece una "prueba general de CI", un "test de CI rápido", una prueba de desgaste laboral y, "próximamente", una evaluación de riesgo de demencia de inicio precoz. Un juego de celular no mide el CI ni diagnostica demencia, y ponerle a un escolar un número de CI hace daño. Eso no entra en la app. Tampoco el "percentil" contra otros alumnos visible para el alumno; como mucho, su propio avance.
+
+**Cómo enseña y cómo mide cada juego (capturas de Size Counts y Square Numbers):**
+
+- **Tutorial jugando, no leyendo.** Antes de empezar se juega una ronda de ejemplo con un globo de texto de una línea ("Decide qué tarjeta tiene el resultado más alto y tócala"; "Si los resultados son iguales, toca el botón Iguales"). Primero son sumas fáciles; la dificultad sube después.
+- **Ficha de cada juego:** mejor rango ("Experto"), mejor puntuación, puntuaciones recientes, botón "Cómo jugar" y un **desafío para subir de rango: "Logra al menos 62 220 puntos dos veces seguidas para llegar a Maestro"**. Para subir hay que repetir el logro; un golpe de suerte no basta. Para nosotros: una unidad se da por dominada con dos sesiones buenas en días distintos, lo que encaja con "recordar en vez de releer".
+- **Detalle que no hay que repetir:** el globo dice "toca el botón Iguales", pero el botón dice "EQUAL". La traducción quedó a medias. En la app, todo en español, sin palabras en inglés sueltas.
 
 Lo que se repite en todos y vale copiar: **una sola regla que se entiende en 5 segundos**, respuesta con un toque o un deslizamiento, tiempo corto (alrededor de un minuto), dificultad que sube sola si aciertas y un puntaje al final que compara con tu récord. Las mecánicas no son de nadie; los nombres, el arte y la marca sí: se hacen versiones propias.
 
@@ -167,7 +175,8 @@ Lo que se repite en todos y vale copiar: **una sola regla que se entiende en 5 s
 - [x] Cifras de Perú en PISA 2025 y fuentes reunidas (`docs/investigacion/pisa-y-evaluaciones.md`).
 - [ ] Leer los marcos de la OCDE y los ítems liberados; verificar lo marcado "por verificar" en ese informe (sobre todo las simulaciones de ciencia y la ENLA 2025 de 5.º de secundaria).
 - [x] Capturas de Peak recibidas (6 nov 2026): catálogo completo y pantallas de inicio y rendimiento, en la sección 2.
-- [ ] Capturas jugando Size Counts, Moving Math y Square Numbers, para confirmar sus mecánicas.
+- [x] Capturas jugando Size Counts y Square Numbers (6 nov 2026).
+- [ ] Captura jugando Moving Math (opcional).
 - [x] Investigación de Brilliant reunida (`docs/investigacion/brilliant.md`).
 - [ ] Probar la versión gratis de Brilliant y anotar 5 lecciones de física o química, pantalla por pantalla.
 - [ ] Citar en `docs/fundacional.md` la evidencia sobre entrenamiento cerebral y sobre fluidez en cálculo.

@@ -113,4 +113,4 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 
 - El documento fundacional vivo en claude.ai no se actualizó con los cambios de alcance: los cursos de matemática y razonamiento, el lanzamiento en el colegio y la dirección acogedora. Conviene copiarlos desde `docs/fundacional.md` y `docs/diseno.md`.
 - `fuentes/por-conseguir.md` tiene la lista de libros y artículos que faltan.
-- Capturas de Peak: llegaron las del catálogo y las pantallas (6 nov 2026; anotadas en la sección 2 de `docs/vision-pisa-agilidad-interaccion.md`). Faltan capturas jugando Size Counts, Moving Math y Square Numbers, para confirmar cómo se juegan. No se suben al repo; solo se anota lo que muestran.
+- Capturas de Peak: llegaron las del catálogo y las pantallas (6 nov 2026; anotadas en la sección 2 de `docs/vision-pisa-agilidad-interaccion.md`). Size Counts y Square Numbers ya están confirmados con capturas jugando; solo falta Moving Math (opcional). No se suben al repo; solo se anota lo que muestran.
