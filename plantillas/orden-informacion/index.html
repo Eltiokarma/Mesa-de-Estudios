@@ -1,0 +1,1198 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El tablero de las pistas: orden de información y verdades y mentiras</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de la torre de fichas.
+   Dentro del dibujo y del texto solo mandan los colores de las variables (regla 4). Aquí las variables son las
+   personas: Flor fucsia, Gael índigo, Hugo café, Iris oliva y Juan granate; cada una tiene su color en el enunciado,
+   en su ficha, en el cuadro y en las frases. En la urna, las bolas rojas, azules y verdes llevan su color de verdad;
+   ningún color de persona es el de una bola. Que una pista se cumpla o no va con --ok y --warn, siempre con ✓ o ✗ y
+   texto. Elegidos con CIEDE2000: mínimo entre las cinco personas 23,4 (claro) y 23,5 (oscuro); entre las tres bolas,
+   39,8; las personas quedan a 15 o más de --ok y --warn, y a 10,6 o más de las bolas (nunca salen juntas). La bola roja
+   está a ΔE00 ≈ 5 del rojo de los avisos: el aviso siempre va con texto. Contraste AA sobre el papel, la tarjeta y su
+   chip (.v, fondo al 8 %), en claro y en oscuro (mínimo 4,56). La cantidad de soluciones, las butacas y los números van
+   en tinta. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-F:#aa099a; --c-G:#0909aa; --c-H:#914c08; --c-I:#6c6c13; --c-J:#790629;
+  --c-roja:#c0364a; --c-azul:#1f5fbf; --c-verde:#466d14;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-F:#ff3dec; --c-G:#9999ff; --c-H:#ffcc99; --c-I:#ffff3d; --c-J:#f0a8be;
+  --c-roja:#f17384; --c-azul:#7cb0ff; --c-verde:#a3d65e; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-F:#ff3dec; --c-G:#9999ff; --c-H:#ffcc99; --c-I:#ffff3d; --c-J:#f0a8be;
+  --c-roja:#f17384; --c-azul:#7cb0ff; --c-verde:#a3d65e; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+/* Celular con una predicción pendiente: el dibujo más bajo y pegado arriba, para que se vea mientras se elige. */
+@media (max-width:899px){
+  .mode.pendiente .bench{position:sticky; top:0; z-index:1; padding:6px; gap:4px; background:var(--card); border-radius:0 0 20px 20px}
+  .mode.pendiente .legend, .mode.pendiente .pistas{display:none}
+  .mode.pendiente .lecturas{gap:4px}
+  .mode.pendiente .lectura{padding:2px 8px}
+}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+.lienzo:has(canvas:focus-visible){outline:3px solid var(--ink); outline-offset:2px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:12px; height:12px; border-radius:50%; display:inline-block}
+
+/* Las pistas (o las frases, o las afirmaciones) debajo del dibujo: se encienden según lo colocado */
+.pistas{list-style:none; margin:0; padding:0; display:grid; gap:6px; counter-reset:p}
+.pistas:empty{display:none}
+.pistas li{display:flex; gap:8px; align-items:flex-start; padding:6px 10px; border-radius:14px; background:var(--paper); border:1.5px solid var(--line); font-size:.93rem; line-height:1.35}
+.pistas .ic{flex:none; width:22px; height:22px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.8rem; border:1.5px solid var(--line); color:var(--muted); background:var(--card)}
+.pistas .tx{min-width:0}
+.pistas .n{font-weight:800; color:var(--muted); margin-right:4px}
+.pistas li.cumple{border-color:var(--ok)} .pistas li.cumple .ic{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.pistas li.falla{border-color:var(--warn)} .pistas li.falla .ic{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.pistas li.apagada{opacity:.6} .pistas li.apagada .tx{text-decoration:line-through}
+.pistas li.foco{outline:2.5px solid var(--ink); outline-offset:1px}
+.pistas .est{display:block; font-size:.78rem; color:var(--muted); font-weight:700}
+.pistas li.cumple .est{color:var(--ok)} .pistas li.falla .est{color:var(--warn)}
+.pistas button.tg{all:unset; display:flex; gap:8px; align-items:flex-start; width:100%; cursor:pointer}
+.pistas button.tg:focus-visible{outline:3px solid var(--ink); outline-offset:3px; border-radius:8px}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; grid-template-columns:minmax(0, 1fr); gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; grid-template-columns:minmax(0, 1fr); gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+ol.lista{margin:0; padding-left:1.4em; display:grid; gap:2px; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-F{color:var(--c-F); background:color-mix(in srgb, var(--c-F) 8%, transparent)}
+.v-G{color:var(--c-G); background:color-mix(in srgb, var(--c-G) 8%, transparent)}
+.v-H{color:var(--c-H); background:color-mix(in srgb, var(--c-H) 8%, transparent)}
+.v-I{color:var(--c-I); background:color-mix(in srgb, var(--c-I) 8%, transparent)}
+.v-J{color:var(--c-J); background:color-mix(in srgb, var(--c-J) 8%, transparent)}
+.v-roja{color:var(--c-roja); background:color-mix(in srgb, var(--c-roja) 8%, transparent)}
+.v-azul{color:var(--c-azul); background:color-mix(in srgb, var(--c-azul) 8%, transparent)}
+.v-verde{color:var(--c-verde); background:color-mix(in srgb, var(--c-verde) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eqs:empty{display:none}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.02rem; font-variant-numeric:tabular-nums}
+.eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.5em; white-space:normal}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:40px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.seg button:disabled{opacity:.45; cursor:not-allowed}
+.seg button .nm{font-weight:800}
+.seg button[aria-pressed="true"] .nm{color:inherit!important; text-decoration:underline}
+.etq{font-size:.85rem; color:var(--muted); font-weight:700; margin:0}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(120px, 1fr)); gap:8px}
+.lecturas:empty{display:none}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura b{display:block; color:var(--k); font:800 .95rem var(--mono); font-variant-numeric:tabular-nums; overflow-wrap:anywhere}
+.lectura span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.2fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Razonamiento matemático · Orden de información, verdades y mentiras, certezas · Problemas tipo admisión</p>
+      <h1>El tablero de las pistas</h1>
+      <p class="sub">Cinco amigos, unas cuantas pistas y un tablero. Arrastra a cada persona a su lugar, mira qué pistas se cumplen y descubre qué es seguro y qué es solo posible.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Tablero: la fila del cine, las frases de los amigos o la caja de bolas">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Tablero de la escena"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="lecturas" id="lect1"></div>
+      <ol class="pistas" id="pistas1" aria-label="Pistas"></ol>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Tablero del experimento elegido">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Tablero del experimento"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="lecturas" id="lect2"></div>
+      <ol class="pistas" id="pistas2" aria-label="Pistas"></ol>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/orden-informacion">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'orden-informacion', unidad: 'razonamiento-matematico.ordenamiento-de-informacion', version: '0.1.0' };
+const U_VM = 'razonamiento-matematico.verdades-y-mentiras', U_CE = 'razonamiento-matematico.certezas', U_DE = 'razonamiento-matematico.razonamiento-deductivo';
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0, unidad){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: unidad || PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la lógica (soluciones, qué pista se cumple con lo colocado, qué es seguro, quién miente, el peor caso) sale de
+   MotorOrden (motor.js); aquí solo se pinta, se arrastra y se anima. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MO = MotorOrden, PI = Math.PI;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const fmt = n => (Number.isFinite(n) ? String(n) : '—');
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+const lerp = (a, b, f) => a + (b - a)*f;
+function tween(dur, paso, fin){
+  if (RM || !dur){ paso(1); if (fin) setTimeout(fin, 0); return; }
+  const t0 = performance.now();
+  const tick = now => { const f = Math.min(1, (now - t0)/dur); paso(suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
+  requestAnimationFrame(tick);
+}
+// Las personas y sus colores (regla 4: el mismo en el texto, la ficha y el cuadro)
+const PER = ['Flor', 'Gael', 'Hugo', 'Iris', 'Juan'];
+const PK = { Flor:'F', Gael:'G', Hugo:'H', Iris:'I', Juan:'J' };
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const nom = x => V(PK[x], x);
+// Pone cada nombre del texto en su color
+const conNombres = t => t.replace(/\b(Flor|Gael|Hugo|Iris|Juan)\b/g, m => nom(m));
+const bola = (c, t) => V(c, t);
+const texto = (q, p) => conNombres(MO.textoPista(q, p));
+// Nombres en su color dentro de un botón (sin tabindex: el botón ya recibe el foco)
+const pintaNombres = t => t.replace(/\b(Flor|Gael|Hugo|Iris|Juan)\b/g, m => `<span class="nm" style="color:var(--c-${PK[m]})">${m}</span>`);
+
+function colores(){
+  const g = n => css(n);
+  const c = { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
+    ok:g('--ok'), warn:g('--warn'), acento:g('--acento'), font:g('--font'), mono:g('--mono') };
+  for (const k of 'FGHIJ') c[k] = g('--c-' + k);
+  for (const k of ['roja', 'azul', 'verde']) c[k] = g('--c-' + k);
+  return c;
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, a, b){ ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); }
+function rotulo(ctx, c, x, y, t, color, align, peso, tam){
+  ctx.font = `${peso || 700} ${tam || 13}px ${c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+  ctx.fillStyle = color; ctx.fillText(t, x, y);
+  return w;
+}
+function redondeado(ctx, x, y, w, h, r){ ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+/* ================= El tablero =================
+   Modos: 'fila' (butacas del cine), 'mesa' (mesa redonda), 'cuadro' (doble entrada), 'verdades' (frases en globos) y
+   'urna' (bolas que se sacan). En la fila y la mesa, las fichas se arrastran (dedo, ratón o teclado) cuando drag es
+   true; con mapa, cada butaca muestra quiénes pueden ir ahí. */
+function crearTablero(cv, idDesc, idLect, idPistas, idLey){
+  const E = { modo:'fila', hl:null, lect:[], ley:null, alCambiar:null, ocupado:false, tok:0, anim:false, compacto:false,
+    p:null, arr:null, drag:false, mapa:null, quitados:null, aviso:null, giro:0, cuadro:null, ver:null, urna:null, items:null, sel:0, lleva:false, destino:0 };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, arrastre = null, sobre = null;
+  const chico = () => innerWidth < 900;
+  function alto(w){
+    const comp = E.compacto && chico();
+    if (E.modo === 'mesa') return comp ? 240 : (w >= 560 ? 360 : 330);
+    if (E.modo === 'cuadro') return comp ? 220 : 236;
+    if (E.modo === 'verdades') return comp ? 210 : 236;
+    if (E.modo === 'urna') return comp ? 220 : 250;
+    if (E.mapa) return (comp ? 34 + 108 : 34 + 128) + 42;
+    return comp ? 244 : 292;
+  }
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    const h = alto(w), dpr = window.devicePixelRatio || 1;
+    if (w === W && h === H) { E.dibujar(); return; }
+    W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  alRedibujarTema(() => E.dibujar());
+
+  E.config = o => {
+    E.tok++; E.anim = false; arrastre = null; E.lleva = false;
+    Object.assign(E, { modo:'fila', lect:[], ley:null, alCambiar:null, p:null, arr:null, drag:false, mapa:null, quitados:null, aviso:null,
+      giro:0, cuadro:null, ver:null, urna:null, items:null, luces:false, sel:0, destino:0, mostrar:null, rotSol:null, solo:null }, o);
+    if ((E.modo === 'fila' || E.modo === 'mesa') && !E.arr) E.arr = Array(E.p.personas.length).fill(null);
+    cv.tabIndex = E.drag || E.modo === 'verdades' && E.ver && E.ver.tocar ? 0 : -1;
+    W = 0; resize(); E.leyenda(); E.dibujar(); E.avisar();
+  };
+  E.compactar = on => { on = !!on; cv.closest('.mode').classList.toggle('pendiente', on); if (on === E.compacto) return; E.compacto = on; W = 0; resize(); };
+
+  // ----- geometría de la fila -----
+  function geoFila(){
+    const n = E.p.personas.length, m = 12, gap = W >= 560 ? 12 : 6, comp = E.compacto && chico();
+    const sw = (W - 2*m - gap*(n - 1))/n, top = 34, sh = comp ? 108 : 128;
+    const asientos = Array.from({ length: n }, (_, i) => ({ x: m + i*(sw + gap), y: top, w: sw, h: sh, cx: m + i*(sw + gap) + sw/2, cy: top + sh/2 }));
+    const r = clamp(Math.min(sw*0.34, 22), 13, 22), by = top + sh + (comp ? 58 : 72);
+    const banco = E.p.personas.map((_, i) => ({ x: m + (i + .5)*(W - 2*m)/E.p.personas.length, y: by }));
+    return { asientos, r, banco, top, sh, by };
+  }
+  // ----- geometría de la mesa -----
+  function geoMesa(){
+    const n = E.p.personas.length, comp = E.compacto && chico(), by = H - (comp ? 26 : 30);
+    const cx = W/2, cy = (by - 30)/2 + 6, R = Math.min(W*0.32, (by - 40)/2 - 14), r = clamp(R*0.24, 14, 22);
+    const asientos = MO.asientosMesa(n).map((s, i) => { const a = s.angulo + E.giro; return { cx: cx + (R + r*0.2)*Math.sin(a), cy: cy + (R + r*0.2)*Math.cos(a), i }; });
+    const banco = E.p.personas.map((_, i) => ({ x: 12 + (i + .5)*(W - 24)/n, y: by }));
+    return { asientos, r, banco, cx, cy, R, by };
+  }
+  const geo = () => (E.modo === 'mesa' ? geoMesa() : geoFila());
+  // Dónde se dibuja cada ficha: en su asiento, en el banco o bajo el dedo.
+  function posFicha(g, nombre){
+    if (arrastre && arrastre.nombre === nombre) return { x: arrastre.x, y: arrastre.y };
+    const arr = E.mostrar || E.arr, i = arr.indexOf(nombre);
+    if (i >= 0) return { x: g.asientos[i].cx, y: g.asientos[i].cy };
+    return g.banco[E.p.personas.indexOf(nombre)];
+  }
+  function ficha(c, x, y, r, nombre, o){
+    o = o || {};
+    const k = PK[nombre], col = c[k] || c.ink, hl = E.hl === k;
+    ctx.save(); ctx.globalAlpha = o.alfa === undefined ? 1 : o.alfa;
+    const alfaNombre = o.nombreEntero ? 1 : (o.alfa === undefined ? 1 : o.alfa);
+    if (o.sombra){ ctx.fillStyle = c.ink; ctx.globalAlpha *= .15; ctx.beginPath(); ctx.arc(x + 2, y + 3, r, 0, 7); ctx.fill(); ctx.globalAlpha = o.alfa === undefined ? 1 : o.alfa; }
+    ctx.fillStyle = col; ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fill();
+    if (hl || o.anillo){ ctx.strokeStyle = o.anillo || col; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(x, y, r + 4, 0, 7); ctx.stroke(); }
+    ctx.fillStyle = c.card; ctx.font = `800 ${Math.round(r*0.95)}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(nombre[0], x, y + 1);
+    ctx.restore();
+    if (o.nombre !== false && r >= 13){ ctx.save(); ctx.globalAlpha = alfaNombre; ctx.fillStyle = col; ctx.font = `800 ${r >= 18 ? 12 : 11}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'top'; ctx.fillText(nombre, x, y + r + 3); ctx.restore(); }
+  }
+
+  function dibFila(c){
+    const g = geoFila(), n = E.p.personas.length;
+    // la pantalla del cine, arriba: todos miran hacia ella, como quien mira el dibujo
+    ctx.save(); ctx.fillStyle = c.grid; redondeado(ctx, 30, 8, W - 60, 12, 6); ctx.fill(); ctx.restore();
+    rotulo(ctx, c, W/2, 14, 'pantalla', c.muted, 'center', 700, 11);
+    g.asientos.forEach((s, i) => {
+      const destino = E.lleva && E.destino === i;
+      ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = destino ? c.ink : c.line; ctx.lineWidth = destino ? 3 : 1.5;
+      if (E.mapa && E.mapa[i] && E.mapa[i].length === 1 && (E.solo === null || E.solo === undefined || E.solo === i)){ ctx.strokeStyle = c.ink; ctx.lineWidth = 2.5; }
+      redondeado(ctx, s.x, s.y, s.w, s.h, 12); ctx.fill(); ctx.stroke(); ctx.restore();
+      rotulo(ctx, c, s.cx, s.y + s.h + 12, `${i + 1}`, c.ink, 'center', 800, 13);
+    });
+    if (E.mapa){
+      // cada butaca: quiénes pueden ir ahí (las que se acaban de tachar se desvanecen)
+      const rr = clamp(Math.min(g.asientos[0].w*0.2, (g.sh - 12)/(2*n) - 1.2), 6, 11), paso = (g.sh - 14)/n;
+      g.asientos.forEach((s, i) => {
+        // con 'solo', se muestra una sola butaca (la que se preguntó) y las otras quedan con un signo de pregunta
+        if (E.solo !== null && E.solo !== undefined && i !== E.solo){ rotulo(ctx, c, s.cx, s.cy, '?', c.muted, 'center', 800, 18); return; }
+        const seguro = E.mapa[i].length === 1 && !(E.quitados && E.quitados[i] && E.quitados[i].length);
+        if (seguro){ ficha(c, s.cx, s.cy - 6, g.r, E.mapa[i][0]); return; }
+        E.p.personas.forEach((x, j) => {
+          const esta = E.mapa[i].includes(x), sale = E.quitados && E.quitados[i] && E.quitados[i].includes(x);
+          if (!esta && !sale) return;
+          const y = s.y + 7 + paso*(j + .5);
+          ficha(c, s.cx, y, rr, x, { nombre:false, alfa: sale ? E.fadeQ : 1, anillo: esta && E.mapa[i].length === 1 ? c.ink : null });
+          if (sale && E.fadeQ < 1){ ctx.save(); ctx.globalAlpha = E.fadeQ; ctx.strokeStyle = c.warn; ctx.lineWidth = 2; linea(ctx, { x:s.cx - rr - 2, y:y - rr - 2 }, { x:s.cx + rr + 2, y:y + rr + 2 }); ctx.restore(); }
+        });
+      });
+      if (E.aviso) rotulo(ctx, c, W/2, H - 12, E.aviso, c.ink, 'center', 800, 13);
+      return;
+    }
+    if (!E.mostrar && E.arr.some(x => x === null)) rotulo(ctx, c, 14, g.by - g.r - 12, E.drag ? 'Sin sentar (arrástralos):' : 'Sin sentar:', c.muted, 'left', 700, 11);
+    if (E.aviso) rotulo(ctx, c, W/2, Math.min(H - 10, g.by + g.r + 30), E.aviso, c.ink, 'center', 800, 12);
+    dibFichas(c, g);
+  }
+  function dibFichas(c, g){
+    const orden = E.p.personas.slice().sort((a, b) => (arrastre && a === arrastre.nombre) - (arrastre && b === arrastre.nombre));
+    for (const x of orden){
+      const arr = E.mostrar || E.arr;
+      if (E.mostrar && arr.indexOf(x) < 0) continue;
+      const q = posFicha(g, x), enBanco = arr.indexOf(x) < 0 && !(arrastre && arrastre.nombre === x);
+      const sel = E.drag && document.activeElement === cv && E.p.personas[E.sel] === x;
+      ficha(c, q.x, q.y, g.r, x, { sombra: arrastre && arrastre.nombre === x, alfa: enBanco && !E.drag ? .55 : 1, nombreEntero: true, anillo: sel ? c.ink : (sobre === x ? c.muted : null) });
+    }
+  }
+  function dibMesa(c){
+    const g = geoMesa();
+    ctx.save(); ctx.fillStyle = c.grid; ctx.beginPath(); ctx.arc(g.cx, g.cy, g.R - g.r - 4, 0, 7); ctx.fill(); ctx.restore();
+    rotulo(ctx, c, g.cx, g.cy, 'mesa', c.muted, 'center', 700, 12);
+    // el sentido de «a la derecha» (antihorario visto desde arriba)
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.5; ctx.setLineDash([4, 4]);
+    ctx.beginPath(); ctx.arc(g.cx, g.cy, g.R*0.42, PI*0.62, PI*0.38, true); ctx.stroke(); ctx.setLineDash([]);
+    const ax = g.cx + g.R*0.42*Math.cos(PI*0.38), ay = g.cy + g.R*0.42*Math.sin(PI*0.38);
+    ctx.fillStyle = c.muted; ctx.beginPath(); ctx.moveTo(ax + 6, ay - 2); ctx.lineTo(ax - 3, ay - 7); ctx.lineTo(ax - 2, ay + 4); ctx.closePath(); ctx.fill(); ctx.restore();
+    rotulo(ctx, c, g.cx, g.cy + g.R*0.42 + 12, 'derecha →', c.muted, 'center', 700, 10);
+    g.asientos.forEach((s, i) => {
+      const destino = E.lleva && E.destino === i;
+      ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = destino ? c.ink : c.line; ctx.lineWidth = destino ? 3 : 1.5;
+      ctx.beginPath(); ctx.arc(s.cx, s.cy, g.r + 6, 0, 7); ctx.fill(); ctx.stroke(); ctx.restore();
+    });
+    if (!E.mostrar && E.arr.some(x => x === null)) rotulo(ctx, c, 14, g.by - g.r - 12, E.drag ? 'Sin sentar (arrástralos):' : 'Sin sentar:', c.muted, 'left', 700, 11);
+    if (E.aviso) rotulo(ctx, c, W/2, 14, E.aviso, c.ink, 'center', 800, 12);
+    dibFichas(c, g);
+  }
+  // ----- cuadro de doble entrada: ✓ seguro, ✗ descartado, vacío si todavía puede ser -----
+  function dibCuadro(c){
+    const Q = E.cuadro, p = Q.p, ats = Object.keys(p.atributos), cols = ats.flatMap(a => p.atributos[a].map(v => [a, v]));
+    const izq = 62, cw = (W - izq - 12)/cols.length, top = 52, rh = Math.min(52, (H - top - 30)/p.personas.length);
+    ats.forEach((a, j) => {
+      const x0 = izq + j*p.atributos[a].length*cw, w = p.atributos[a].length*cw;
+      rotulo(ctx, c, x0 + w/2, 13, a === 'oficio' ? 'oficio' : 'ciudad', c.muted, 'center', 800, 12);
+      p.atributos[a].forEach((v, i) => rotulo(ctx, c, x0 + (i + .5)*cw, 36, v, c.ink, 'center', 700, cw < 52 ? 10 : 12));
+    });
+    p.personas.forEach((x, i) => {
+      const y = top + i*rh;
+      rotulo(ctx, c, 8, y + rh/2, x, c[PK[x]], 'left', 800, 13);
+      cols.forEach(([a, v], j) => {
+        const cx = izq + (j + .5)*cw, cy = y + rh/2, pos = Q.marcas ? Q.marcas[a][i] : null;
+        ctx.save(); ctx.strokeStyle = c.line; ctx.lineWidth = 1; ctx.strokeRect(izq + j*cw, y, cw, rh); ctx.restore();
+        if (!pos) return;
+        const esta = pos.includes(v), unico = esta && pos.length === 1, recien = Q.recien && Q.recien[a][i] && Q.recien[a][i].includes(v);
+        if (!esta){ ctx.save(); ctx.globalAlpha = recien ? Q.fade : 1; ctx.fillStyle = c.muted; ctx.font = `800 15px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('✗', cx, cy); ctx.restore(); }
+        else if (unico){ ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(cx, cy, Math.min(13, rh/2 - 4), 0, 7); ctx.stroke();
+          ctx.fillStyle = c.ink; ctx.font = `800 15px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('✓', cx, cy + 1); ctx.restore(); }
+      });
+    });
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, { x: izq + 3*cw, y: top - 4 }, { x: izq + 3*cw, y: top + p.personas.length*rh }); ctx.restore();
+    if (E.aviso) rotulo(ctx, c, W/2, H - 12, E.aviso, c.ink, 'center', 800, 12);
+  }
+  // ----- verdades y mentiras: cada persona con su globo -----
+  function dibVerdades(c){
+    const Vd = E.ver, p = Vd.p, n = p.personas.length, cw = (W - 16)/n, comp = E.compacto && chico();
+    const yP = H - (comp ? 46 : 70), r = clamp(cw*0.2, 14, 22);
+    const H0 = Vd.hip;   // la hipótesis: { mentirosos, culpables, choques, requiere } o null
+    const choque = H0 && !H0.consistente && H0.choques.length ? H0.choques[0] : [];
+    p.personas.forEach((x, i) => {
+      const cx = 8 + (i + .5)*cw, f = p.frases.find(z => z.de === x), t = f ? MO.textoFrase(f) : '';
+      const bw = Math.min(cw - 8, 118), bh = comp ? 46 : 54, by = 14;
+      let borde = c.ink, ancho = 1.5, dash = [];
+      if (H0){
+        if (choque.includes(i)){ borde = c.warn; ancho = 3; }
+        else if (H0.consistente){ borde = c.ok; ancho = 2.5; }
+        if (!H0.requiere[i]) dash = [5, 4];
+      }
+      ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = borde; ctx.lineWidth = ancho; ctx.setLineDash(dash);
+      redondeado(ctx, cx - bw/2, by, bw, bh, 12); ctx.fill(); ctx.stroke(); ctx.setLineDash([]);
+      ctx.beginPath(); ctx.moveTo(cx - 6, by + bh); ctx.lineTo(cx, by + bh + 9); ctx.lineTo(cx + 6, by + bh); ctx.fillStyle = c.card; ctx.fill();
+      ctx.beginPath(); ctx.moveTo(cx - 6, by + bh); ctx.lineTo(cx, by + bh + 9); ctx.lineTo(cx + 6, by + bh); ctx.stroke(); ctx.restore();
+      // el texto del globo, en una o dos líneas
+      ctx.fillStyle = c.ink; ctx.font = `700 ${cw < 90 ? 12 : 13}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      const pal = `«${t}»`.split(' '); let l1 = pal.join(' '), l2 = '';
+      if (ctx.measureText(l1).width > bw - 10){ const k = Math.ceil(pal.length/2); l1 = pal.slice(0, k).join(' '); l2 = pal.slice(k).join(' '); }
+      if (l2){ ctx.fillText(l1, cx, by + bh/2 - 9); ctx.fillText(l2, cx, by + bh/2 + 9); } else ctx.fillText(l1, cx, by + bh/2);
+      if (H0){
+        const etq = H0.requiere[i] ? (cw < 100 ? 'verdad' : 'dice la verdad') : 'miente';
+        rotulo(ctx, c, cx, by + bh + 20, etq, H0.requiere[i] ? c.ink : c.warn, 'center', 800, 11);
+      }
+      const sel = Vd.tocar && document.activeElement === cv && Vd.sel === i;
+      ficha(c, cx, yP, r, x, { anillo: sel ? c.ink : null });
+      if (H0 && H0.consistente && H0.culpables.length === 1 && H0.culpables[0] === x) rotulo(ctx, c, cx, yP - r - 12, 'la dejó abierta', c.ink, 'center', 800, 11);
+    });
+    if (E.aviso) rotulo(ctx, c, W/2, H - 12, E.aviso, c.ink, 'center', 800, 12);
+  }
+  // ----- la urna: las bolas que quedan y las que salieron, en orden -----
+  function dibUrna(c){
+    const U = E.urna, cs = Object.keys(U.urna), total = cs.reduce((s, k) => s + U.urna[k], 0), saca = U.sacadas.slice(0, Math.floor(U.k + 1e-9));
+    const comp = E.compacto && chico(), r = comp ? 9 : 11, ux = 14, uw = Math.min(W*0.42, 190), uy = 22, uh = comp ? 120 : 150;
+    // la caja
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.fillStyle = c.card; redondeado(ctx, ux, uy, uw, uh, 16); ctx.fill(); ctx.stroke(); ctx.restore();
+    rotulo(ctx, c, ux + uw/2, uy - 10, 'la caja (no se ve adentro)', c.muted, 'center', 700, 11);
+    const quedan = []; cs.forEach(k => { const usadas = saca.filter(x => x === k).length; for (let z = 0; z < U.urna[k] - usadas; z++) quedan.push(k); });
+    const porFila = Math.max(1, Math.floor((uw - 12)/(2*r + 4)));
+    quedan.forEach((k, j) => { const fx = j % porFila, fy = Math.floor(j/porFila); dibBola(c, ux + 10 + r + fx*(2*r + 4), uy + uh - 10 - r - fy*(2*r + 4), r, k); });
+    // las que salieron
+    const tx = ux + uw + 18, tw = W - tx - 10, porF = Math.max(1, Math.floor(tw/(2*r + 8)));
+    rotulo(ctx, c, tx, uy - 10, 'las que salieron, en orden', c.muted, 'left', 700, 11);
+    saca.forEach((k, j) => {
+      const fx = j % porF, fy = Math.floor(j/porF), x = tx + r + fx*(2*r + 8), y = uy + 8 + r + fy*(2*r + 22);
+      dibBola(c, x, y, r, k, U.resaltar === j);
+      ctx.fillStyle = c.muted; ctx.font = `700 10px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'top'; ctx.fillText(String(j + 1), x, y + r + 2);
+    });
+    if (E.aviso) rotulo(ctx, c, W/2, H - 14, E.aviso, c.ink, 'center', 800, 12);
+    else rotulo(ctx, c, W/2, H - 14, `${total} bolas: ${cs.map(k => `${U.urna[k]} ${k === 'roja' ? 'rojas' : k === 'azul' ? 'azules' : 'verdes'}`).join(', ')}`, c.muted, 'center', 700, 12);
+  }
+  function dibBola(c, x, y, r, k, hl){
+    ctx.save(); ctx.fillStyle = c[k]; ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fill();
+    if (hl || E.hl === k){ ctx.strokeStyle = c.ink; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(x, y, r + 4, 0, 7); ctx.stroke(); }
+    // la inicial del color, para quien no distingue bien los colores
+    ctx.fillStyle = c.card; ctx.font = `800 ${Math.round(r*1.05)}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(k === 'roja' ? 'R' : k === 'azul' ? 'A' : 'V', x, y + 1); ctx.restore();
+  }
+
+  E.dibujar = () => {
+    if (!W) return;
+    if (alto(W) !== H){ W = 0; resize(); return; }
+    const c = colores();
+    ctx.clearRect(0, 0, W, H); ctx.fillStyle = c.paper; ctx.fillRect(0, 0, W, H);
+    if (E.modo === 'fila') dibFila(c);
+    else if (E.modo === 'mesa') dibMesa(c);
+    else if (E.modo === 'cuadro') dibCuadro(c);
+    else if (E.modo === 'verdades') dibVerdades(c);
+    else if (E.modo === 'urna') dibUrna(c);
+  };
+  const it = (k, t) => `<span><i style="background:var(--c-${k})"></i>${t}</span>`;
+  E.leyenda = () => {
+    let l = E.ley;
+    if (!l){
+      if (E.modo === 'urna') l = [['roja', 'rojas (R)'], ['azul', 'azules (A)'], ['verde', 'verdes (V)']];
+      else if (E.modo === 'cuadro') l = E.cuadro.p.personas.map(x => [PK[x], x]);
+      else if (E.modo === 'verdades') l = E.ver.p.personas.map(x => [PK[x], x]);
+      else l = E.p.personas.map(x => [PK[x], x]);
+    }
+    document.getElementById(idLey).innerHTML = l.map(([k, t]) => it(k, t)).join('');
+  };
+  // El panel de pistas: cada pista con su estado (✓ se cumple, ✗ no se cumple, · todavía no se sabe)
+  const ICON = { cumple:'✓', falla:'✗', pendiente:'·', neutro:'', apagada:'–' };
+  const EST = { cumple:'se cumple', falla:'no se cumple', pendiente:'todavía no se sabe', apagada:'borrada' };
+  E.pintarPistas = () => {
+    const ol = document.getElementById(idPistas); if (!ol) return;
+    let items = E.items;
+    if (!items && (E.modo === 'fila' || E.modo === 'mesa')){
+      const est = E.luces ? MO.evaluar(E.p, E.mostrar || E.arr).estados : null;
+      items = E.p.pistas.map((q, i) => ({ html: texto(q, E.p), estado: est ? est[i] : 'neutro' }));
+    }
+    if (!items){ ol.innerHTML = ''; return; }
+    ol.innerHTML = items.map((x, i) => {
+      const est = x.estado || 'neutro', ic = x.icono !== undefined ? x.icono : ICON[est], e2 = x.est !== undefined ? x.est : (EST[est] || '');
+      const cuerpo = `<span class="ic" aria-hidden="true">${ic}</span><span class="tx"><span class="n">${x.n || (i + 1)}.</span>${x.html}${e2 ? `<span class="est">${e2}</span>` : ''}</span>`;
+      const cls = [est, x.foco ? 'foco' : ''].join(' ');
+      return x.boton ? `<li class="${cls}"><button type="button" class="tg" data-i="${i}" aria-pressed="${est !== 'apagada'}">${cuerpo}</button></li>` : `<li class="${cls}">${cuerpo}</li>`;
+    }).join('');
+    if (E.alTocarItem) ol.querySelectorAll('button.tg').forEach(b => b.onclick = () => E.alTocarItem(+b.dataset.i));
+  };
+  // Lecturas y descripción para lectores de pantalla (antes de responder no adelantan la respuesta).
+  E.avisar = () => {
+    if (E.alCambiar) E.alCambiar();
+    const filas = E.lect.map(k => k(E));
+    if (idLect) document.getElementById(idLect).innerHTML = filas.map(([k, t, v]) => `<div class="lectura" style="--k:var(${k === 'ink' ? '--ink' : '--c-' + k})"><span>${t}</span><b>${v}</b></div>`).join('');
+    E.pintarPistas();
+    if (idDesc && !E.anim){
+      let base = '';
+      if (E.modo === 'fila' || E.modo === 'mesa'){
+        const arr = E.mostrar || E.arr, lug = E.modo === 'mesa' ? 'Asiento' : 'Butaca';
+        base = E.mapa ? `${E.modo === 'mesa' ? 'Mesa' : 'Fila'} con las personas posibles en cada butaca: ` + E.mapa.map((xs, i) => (E.solo !== null && E.solo !== undefined && i !== E.solo) ? `${lug} ${i + 1}: sin mostrar` : `${lug} ${i + 1}: ${xs.join(' o ') || 'nadie'}`).join('; ') + '.'
+          : `${E.modo === 'mesa' ? 'Mesa redonda' : 'Fila de butacas'}: ` + arr.map((x, i) => `${lug} ${i + 1}: ${x || 'vacía'}`).join('; ') + '.';
+        if (E.lleva) base += ` Llevas a ${E.p.personas[E.sel]} al ${lug.toLowerCase()} ${E.destino + 1}.`;
+      } else if (E.modo === 'cuadro') base = 'Cuadro de doble entrada con personas, oficios y ciudades.';
+      else if (E.modo === 'verdades') base = 'Cuatro amigos, cada uno con una frase en un globo.' + (E.ver.hip ? ` Suponiendo que miente ${E.ver.hip.mentirosos.join(' y ')}: ${E.ver.hip.consistente ? `todo encaja; la ventana la dejó abierta ${E.ver.hip.culpables[0]}` : 'hay frases que chocan'}.` : '');
+      else if (E.modo === 'urna') base = `Una caja con bolas de colores; salieron ${Math.floor(E.urna.k + 1e-9)}: ${E.urna.sacadas.slice(0, Math.floor(E.urna.k + 1e-9)).join(', ') || 'ninguna'}.`;
+      document.getElementById(idDesc).textContent = [base, ...filas.map(([, t, v]) => `${t}: ${v}.`)].join(' ');
+    }
+  };
+  E.parar = () => { E.tok++; E.anim = false; };
+  // Una secuencia de cuadros: cada uno es una función que deja el tablero listo; se pasa de uno al otro cada 'ms'.
+  E.secuencia = (cuadros, ms, fin) => {
+    const tok = ++E.tok; E.anim = true; let k = 0;
+    const sig = () => { if (tok !== E.tok) return; cuadros[k](); E.dibujar(); E.avisar(); k++;
+      if (k >= cuadros.length){ E.anim = false; E.avisar(); if (fin) fin(); return; } setTimeout(sig, RM ? 0 : ms); };
+    sig();
+  };
+  E.animar = (dur, paso, fin) => {
+    const tok = ++E.tok; E.anim = true;
+    tween(dur, f => { if (tok !== E.tok) return; paso(f); E.dibujar(); }, () => { if (tok !== E.tok) return; E.anim = false; E.avisar(); if (fin) fin(); });
+  };
+  // ----- arrastrar fichas (táctil, ratón y teclado) -----
+  const local = e => { const r = cv.getBoundingClientRect(); return { x:e.clientX - r.left, y:e.clientY - r.top }; };
+  const puedeArrastrar = () => E.drag && !E.ocupado && !E.anim && (E.modo === 'fila' || E.modo === 'mesa') && !E.mapa && !E.mostrar;
+  // Con el dedo, el tablero deja desplazar la página (touch-action: pan-y); solo un toque que empieza cerca de una
+  // ficha (radio de 40 px) se queda con el gesto. Con ratón, radio de 32 px.
+  function fichaCerca(pt, radio){
+    if (!puedeArrastrar()) return null;
+    const g = geo(); let best = null, d = Infinity;
+    for (const x of E.p.personas){ const q = posFicha(g, x), z = Math.hypot(q.x - pt.x, q.y - pt.y); if (z < d){ d = z; best = x; } }
+    return d < Math.max(radio, g.r + 6) ? best : null;
+  }
+  function asientoCerca(pt){
+    const g = geo(); let best = -1, d = Infinity;
+    g.asientos.forEach((s, i) => { const z = Math.hypot(s.cx - pt.x, s.cy - pt.y); if (z < d){ d = z; best = i; } });
+    const lim = E.modo === 'mesa' ? g.r + 26 : Math.max(g.asientos[0].w*0.62, 34);
+    return d < lim ? best : -1;
+  }
+  // Pone a alguien en un asiento; si estaba ocupado, el otro va adonde estaba el primero (o al banco).
+  function colocar(nombre, i){
+    const arr = E.arr.slice(), de = arr.indexOf(nombre);
+    if (i < 0){ if (de >= 0) arr[de] = null; }
+    else { const otro = arr[i]; if (de >= 0) arr[de] = otro === undefined ? null : otro; else if (otro) {/* el otro vuelve al banco */} arr[i] = nombre; }
+    E.arr = arr; E.dibujar(); E.avisar();
+  }
+  E.colocar = colocar;
+  cv.addEventListener('touchstart', e => {
+    if (e.touches.length !== 1) return;
+    const r = cv.getBoundingClientRect(), t = e.touches[0];
+    if (fichaCerca({ x:t.clientX - r.left, y:t.clientY - r.top }, 40)) e.preventDefault();
+  }, { passive:false });
+  cv.addEventListener('pointerdown', e => {
+    const pt = local(e);
+    if (E.modo === 'verdades' && E.ver && E.ver.tocar && !E.ocupado && !E.anim){
+      const n = E.ver.p.personas.length, i = clamp(Math.floor((pt.x - 8)/((W - 16)/n)), 0, n - 1);
+      if (pt.y > H*0.45){ E.ver.sel = i; E.ver.tocar(E.ver.p.personas[i]); }
+      return;
+    }
+    const x = fichaCerca(pt, e.pointerType === 'mouse' ? 32 : 40); if (!x) return;
+    arrastre = { nombre:x, x:pt.x, y:pt.y }; E.sel = E.p.personas.indexOf(x); E.lleva = false;
+    cv.setPointerCapture(e.pointerId); e.preventDefault(); cv.focus({ preventScroll:true }); E.dibujar();
+  }, { passive:false });
+  cv.addEventListener('pointermove', e => {
+    const pt = local(e);
+    if (arrastre){ arrastre.x = pt.x; arrastre.y = pt.y; E.dibujar(); return; }
+    const sv = fichaCerca(pt, 32);
+    if (sv !== sobre){ sobre = sv; cv.style.cursor = sv ? 'grab' : ''; E.dibujar(); }
+  });
+  const soltar = e => {
+    if (!arrastre) return;
+    const x = arrastre.nombre, i = asientoCerca(arrastre);
+    arrastre = null; colocar(x, i);
+  };
+  cv.addEventListener('pointerup', soltar);
+  cv.addEventListener('pointercancel', () => { arrastre = null; E.dibujar(); });
+  cv.addEventListener('focus', () => E.dibujar()); cv.addEventListener('blur', () => { E.lleva = false; E.dibujar(); });
+  // Teclado: ← → eligen a la persona; Enter la toma; ← → mueven el destino; Enter la sienta; Supr la devuelve al banco.
+  cv.addEventListener('keydown', e => {
+    if (E.modo === 'verdades' && E.ver && E.ver.tocar){
+      const n = E.ver.p.personas.length;
+      if (['ArrowRight', 'ArrowLeft'].includes(e.key)){ e.preventDefault(); E.ver.sel = ((E.ver.sel || 0) + (e.key === 'ArrowRight' ? 1 : n - 1)) % n; E.dibujar(); }
+      if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); E.ver.tocar(E.ver.p.personas[E.ver.sel || 0]); }
+      return;
+    }
+    if (!puedeArrastrar()) return;
+    const n = E.p.personas.length, k = e.key;
+    if (k === 'ArrowRight' || k === 'ArrowLeft' || k === 'ArrowUp' || k === 'ArrowDown'){
+      e.preventDefault(); const d = (k === 'ArrowRight' || k === 'ArrowDown') ? 1 : -1;
+      if (E.lleva) E.destino = (E.destino + d + E.arr.length) % E.arr.length; else E.sel = (E.sel + d + n) % n;
+      E.dibujar(); E.avisar(); return;
+    }
+    if (k === 'Enter' || k === ' '){
+      e.preventDefault(); const x = E.p.personas[E.sel];
+      if (!E.lleva){ E.lleva = true; const i = E.arr.indexOf(x); E.destino = i >= 0 ? i : Math.max(0, E.arr.indexOf(null)); E.dibujar(); E.avisar(); }
+      else { E.lleva = false; colocar(x, E.destino); }
+      return;
+    }
+    if (k === 'Escape' && E.lleva){ E.lleva = false; E.dibujar(); E.avisar(); }
+    if (k === 'Delete' || k === 'Backspace'){ e.preventDefault(); E.lleva = false; colocar(E.p.personas[E.sel], -1); }
+  });
+  return E;
+}
+
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+// En el celular, el dibujo se lleva arriba de la pantalla antes de animar; si el alumno cambió de paso, no se anima.
+function alDibujo(cv, sigue, fn){
+  const chico = innerWidth < 900;
+  if (chico) cv.scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+  esperar(chico ? 380 : 0, () => { if (sigue()) fn(); });
+}
+const lista = items => `<ol class="lista">${items.map(x => `<li>${x}</li>`).join('')}</ol>`;
+const pistasHTML = p => lista(p.pistas.map(q => texto(q, p) + '.'));
+
+// ===== Los acertijos (los mismos que prueba motor.test.js) =====
+const CINE = { forma:'lineal', personas:PER, pistas:[{ tipo:'izquierda', a:'Flor', b:'Gael' }, { tipo:'noJuntos', a:'Gael', b:'Hugo' }, { tipo:'lugar', a:'Flor', k:2 }, { tipo:'noExtremo', a:'Hugo' }] };
+const SOBRA = { forma:'lineal', personas:PER, pistas:[{ tipo:'lugar', a:'Flor', k:2 }, { tipo:'noJuntos', a:'Flor', b:'Gael' }, { tipo:'izquierda', a:'Flor', b:'Gael' }, { tipo:'inmIzquierda', a:'Hugo', b:'Iris' }] };
+const DER = { forma:'lineal', personas:PER, pistas:[{ tipo:'derecha', a:'Juan', b:'Iris' }, { tipo:'lugar', a:'Iris', k:2 }] };
+const MESA = { forma:'circular', personas:PER, pistas:[{ tipo:'inmDerecha', a:'Gael', b:'Flor' }, { tipo:'noJuntos', a:'Hugo', b:'Flor' }, { tipo:'juntos', a:'Iris', b:'Gael' }] };
+const CUADRO = { forma:'cuadro', personas:['Gael', 'Iris', 'Juan'], atributos:{ oficio:['chef', 'docente', 'piloto'], ciudad:['Puno', 'Cusco', 'Arequipa'] }, frases:{ oficio:'es {v}', ciudad:'es de {v}' },
+  pistas:[{ tipo:'es', persona:'Gael', atributo:'oficio', valor:'chef' }, { tipo:'noEs', persona:'Gael', atributo:'ciudad', valor:'Puno' }, { tipo:'noEs', persona:'Iris', atributo:'oficio', valor:'docente' }, { tipo:'mismo', atr1:'oficio', val1:'docente', atr2:'ciudad', val2:'Cusco' }] };
+const VENTANA = { personas:['Flor', 'Gael', 'Hugo', 'Iris'], frases:[{ de:'Flor', dice:{ tipo:'culpable', x:'Flor' } }, { de:'Gael', dice:{ tipo:'culpable', x:'Flor' } }, { de:'Hugo', dice:{ tipo:'culpable', x:'Gael' } }, { de:'Iris', dice:{ tipo:'noCulpable', x:'Gael' } }], mienten:{ exactamente:1 } };
+const URNA = { roja:6, azul:5, verde:4 };
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearTablero($('cv'), 'desc1', 'lect1', 'pistas1', 'leyenda1');
+const S = { step:0, max:0, pred:{}, ocupado:false, arr2:null, hallados:new Set(), activas:[true, true, true, true], quinta:null, hip:null };
+
+// Números de la escena: todos salen del motor
+const Q1 = MO.quien(CINE, { tipo:'lugar', k:3 });
+const AF = [{ tipo:'extremo', a:'Iris' }, { tipo:'noJuntos', a:'Iris', b:'Juan' }, { tipo:'juntos', a:'Hugo', b:'Juan' }, { tipo:'izquierda', a:'Gael', b:'Juan' }];
+const N3 = MO.necesario(CINE, AF), SOL = MO.resolver(CINE).soluciones;
+const S4 = MO.sinPista(CINE, 3);
+const QUINTAS = [{ tipo:'juntos', a:'Iris', b:'Flor' }, { tipo:'izquierda', a:'Hugo', b:'Gael' }, { tipo:'juntos', a:'Flor', b:'Gael' }];
+const VV = MO.verdades(VENTANA), U8 = MO.certeza({ urna:URNA, objetivo:{ tipo:'mismoColor', k:2 } });
+const COD = { olvidaNegativa:'olvida-pista-negativa', leeSinNo:'lee-sin-el-no', sentidoInvertido:'izquierda-derecha-al-reves', inmediata:'derecha-como-inmediata',
+  posibleComoSeguro:'posible-como-seguro', comoSiSobrara:'quitar-pista-no-cambia', culpableEsMentiroso:'culpable-como-mentiroso', otroDelPar:'otro-del-par',
+  acusadoMiente:'acusado-como-mentiroso', mejorCaso:'RM6-mejor-caso', sinMasUno:'peor-caso-sin-la-ultima', porColores:'k-de-cada-color' };
+
+const FUENTE_RM = 'Para el orden de información y las verdades y mentiras no encontramos estudios de errores con cifras: son acertijos de examen. Las opciones incorrectas son hipótesis nuestras, armadas con lecturas equivocadas de las pistas; los datos del colegio dirán cuáles se dan.';
+
+const P1 = { id:'orden-informacion-paso1', ok:'c', opts:[
+  ['a', nom(Q1.errores.olvidaNegativa), COD.olvidaNegativa, 'hipotesis'],
+  ['b', nom(Q1.errores.sentidoInvertido), COD.sentidoInvertido, 'hipotesis'],
+  ['c', nom(Q1.respuesta)],
+  ['d', nom(Q1.errores.leeSinNo), COD.leeSinNo, 'hipotesis']],
+  fb:{ c:'¡Bien! Flor está en la 2. Hugo no puede ir en un extremo, así que va en la 3 o en la 4. Si fuera en la 4, Gael (a la derecha de Flor) caería en la 3 o en la 5, siempre junto a Hugo. Entonces Hugo va al centro.',
+    a:`Elegiste la A. Gael podría ir en la 3 si no existieran las pistas con «no». Pero «Gael no se sienta junto a Hugo» y «Hugo no se sienta en ningún extremo» también quitan lugares. La correcta está marcada.`,
+    b:`Elegiste la B. Iris podría quedar al centro si Flor estuviera a la derecha de Gael, al revés de la pista 1. Izquierda y derecha son las de ellos, que miran a la pantalla igual que tú. La correcta está marcada.`,
+    d:`Elegiste la D. Juan podría quedar al centro leyendo las pistas sin el «no»: con Hugo en un extremo y junto a Gael. La pista dice lo contrario. La correcta está marcada.` } };
+const P3 = { id:'orden-informacion-paso3', ok:'b', opts:[
+  ['a', texto(AF[0], CINE), COD[N3.errorDe[0]], 'hipotesis'],
+  ['b', texto(AF[1], CINE)],
+  ['c', texto(AF[2], CINE), COD[N3.errorDe[2]], 'hipotesis'],
+  ['d', texto(AF[3], CINE), COD[N3.errorDe[3]], 'hipotesis']],
+  fb:{ b:'¡Bien! En una solución Iris está en la 1 y Juan en la 4; en la otra, al revés. En las dos quedan separados: eso es necesariamente cierto.',
+    a:'Elegiste la A. Iris está en un extremo en una de las dos soluciones, pero en la otra está en la 4. Es posible, no seguro. La correcta está marcada.',
+    c:'Elegiste la C. Hugo está junto a Juan en una de las dos soluciones, pero en la otra Juan está en la 1. Es posible, no seguro. La correcta está marcada.',
+    d:'Elegiste la D. Gael está en la 5, a la derecha de todos: no puede estar a la izquierda de Juan. Sería cierto si Flor estuviera a la derecha de Gael, al revés de la pista 1. La correcta está marcada.' } };
+const P4 = { id:'orden-informacion-paso4', ok:'c', opts:[
+  ['a', `${S4.errores.comoSiSobrara} soluciones`, COD.comoSiSobrara, 'hipotesis'],
+  ['b', `${S4.errores.olvidaNegativa} soluciones`, COD.olvidaNegativa, 'hipotesis'],
+  ['c', `${S4.total} soluciones`],
+  ['d', `${S4.errores.inmediata} soluciones`, COD.inmediata, 'hipotesis']],
+  fb:{ c:`¡Bien! Sin la pista 4, Hugo puede ir también en la 1 o en la 5, y aparecen más maneras: ${S4.total} en total.`,
+    a:`Elegiste la A. La pista 4 no sobraba: quitarla deja a Hugo ir a los extremos, y salen más arreglos. La correcta está marcada.`,
+    b:`Elegiste la B. ${S4.errores.olvidaNegativa} es lo que queda si además se olvida la pista 2, «Gael no se sienta junto a Hugo». Esa sigue en pie. La correcta está marcada.`,
+    d:`Elegiste la D. ${S4.errores.inmediata} sale si Gael tuviera que estar inmediatamente a la derecha de Flor. La pista 1 solo dice «a la izquierda»: Gael puede estar más lejos. La correcta está marcada.` } };
+const P6 = { id:'orden-informacion-paso6', unidad:U_VM, ok:'c', opts:[
+  ['a', nom('Flor'), COD.culpableEsMentiroso, 'hipotesis'],
+  ['b', nom('Gael'), COD.acusadoMiente, 'hipotesis'],
+  ['c', nom('Hugo')],
+  ['d', nom('Iris'), COD.otroDelPar, 'hipotesis']],
+  fb:{ c:'¡Bien! Hugo dice «Fue Gael» e Iris dice «No fue Gael»: uno de los dos miente. Entonces Flor y Gael dicen la verdad, y fue Flor. Así, Iris dice la verdad y el que miente es Hugo.',
+    a:'Elegiste la A. Flor dejó abierta la ventana, pero no miente: dice «Fui yo». Ser culpable no es lo mismo que mentir. La correcta está marcada.',
+    b:'Elegiste la B. A Gael lo acusan, pero él no dice nada falso: «Fue Flor» es verdad. Que te acusen no te vuelve mentiroso. La correcta está marcada.',
+    d:'Elegiste la D. Iris y Hugo se contradicen, así que uno de los dos miente. Pero si mintiera Iris, habría sido Gael, y entonces Flor y Gael también mentirían: serían tres. La correcta está marcada.' } };
+const P8 = { id:'orden-informacion-paso8', unidad:U_CE, ok:'c', opts:[
+  ['a', `${U8.errores.mejorCaso} bolas`, COD.mejorCaso, 'hipotesis'],
+  ['b', `${U8.errores.sinMasUno} bolas`, COD.sinMasUno, 'hipotesis'],
+  ['c', `${U8.n} bolas`],
+  ['d', `${U8.errores.porColores} bolas`, COD.porColores, 'hipotesis']],
+  fb:{ c:'¡Bien! Con la peor suerte salen una roja, una azul y una verde. La cuarta, sea del color que sea, repite uno.',
+    a:'Elegiste la A. Con 2 bolas puedes tener suerte, pero no seguridad: pueden salir de colores distintos. La correcta está marcada.',
+    b:'Elegiste la B. Con 3 todavía puede salir una de cada color, sin repetir. Hace falta una más. La correcta está marcada.',
+    d:'Elegiste la D. 6 sería sacar 2 de cada color, como si hicieran falta dos de cada uno. Aquí basta con que un color se repita: alcanzan 4. La correcta está marcada.' } };
+
+// Estados de lectura
+const LT = {
+  cumplen: E => ['ink', 'Pistas que se cumplen', `${MO.evaluar(E.p, E.arr).cumplen} de ${E.p.pistas.length}`],
+  hallados: () => ['ink', 'Soluciones encontradas', `${S.hallados.size} de ${SOL.length}`],
+};
+const cfgCine = o => E.config(Object.assign({ modo:'fila', p:CINE }, o || {}));
+
+const steps = [
+ { k:'Paso 1', t:'Predice: la butaca del centro', gate:P1,
+   prep:() => { if (S.pred[P1.id]) cfgCine({ mapa: MO.posibles(CINE).asientos, solo:2, lect:[() => ['ink', 'Soluciones', fmt(SOL.length)]] }); else cfgCine(); },
+   anima:fin => { cfgCine(); const orden = [2, 3, 0, 1], P = MO.pasos(CINE, orden);
+     E.secuencia(P.map((x, j) => () => {
+       E.mapa = x.asientos; E.quitados = j ? P[j - 1].asientos.map((ys, i) => ys.filter(y => !x.asientos[i].includes(y))) : null; E.fadeQ = 1;
+       E.solo = j === P.length - 1 ? 2 : null;
+       const usadas = orden.slice(0, j);
+       E.items = CINE.pistas.map((q, i) => ({ html: texto(q, CINE), estado: usadas.includes(i) ? 'cumple' : 'neutro', est: usadas.includes(i) ? 'ya usada' : '', foco: orden[j - 1] === i }));
+       E.lect = [() => ['ink', 'Pistas usadas', `${j} de 4`]];
+       if (j){ const tok = E.tok; tween(RM ? 0 : 700, f => { if (tok !== E.tok) return; E.fadeQ = 1 - f; E.dibujar(); }); }
+     }), 1300, () => { E.quitados = null; E.items = null; E.lect = [() => ['ink', 'Soluciones', fmt(SOL.length)]]; E.dibujar(); E.avisar(); fin(); }); },
+   body:() => `<p class="problem">${nom('Flor')}, ${nom('Gael')}, ${nom('Hugo')}, ${nom('Iris')} y ${nom('Juan')} van al cine y se sientan en una fila de 5 butacas, numeradas del 1 al 5 de izquierda a derecha. Izquierda y derecha son las de ellos, que miran a la pantalla igual que tú en el dibujo.</p>
+   ${pistasHTML(CINE)}
+   <p>¿Quién se sienta en la butaca del centro, la 3?</p>${opcionesHTML(P1.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <p>En el tablero, cada butaca empezó con las cinco personas. Cada pista tachó a quienes no podían ir ahí: primero la pista 3 (Flor en la 2), luego la 4 (Hugo fuera de los extremos), la 1 (Gael a la derecha de Flor) y la 2 (Gael no junto a Hugo). Al final, la butaca 3 tiene una sola persona: ${nom('Hugo')}.</p>
+   <p>Las otras butacas no se terminan de llenar: las pistas dejan <b>2 soluciones</b>. Aun así, la pregunta tiene una sola respuesta: en las dos, Hugo está al centro. En el paso siguiente las buscarás tú.</p>
+   <p class="fuente">${FUENTE_RM}</p></div>` },
+ { k:'Paso 2', t:'Siéntalos tú', explora:true,
+   prep:() => { cfgCine({ drag:true, luces:true, arr: S.arr2 || Array(5).fill(null), lect:[LT.cumplen, LT.hallados],
+     alCambiar:() => { S.arr2 = E.arr; const ev = MO.evaluar(CINE, E.arr); if (ev.esSolucion && !S.hallados.has(ev.clave)){ S.hallados.add(ev.clave); E.avisar(); }
+       const m = $('msg2'); if (m) m.innerHTML = ev.esSolucion ? (S.hallados.size >= SOL.length ? `¡Encontraste las ${SOL.length}! Compáralas: ¿qué cambió de una a otra y qué se quedó igual?` : '¡Todas las pistas en verde: es una solución! ¿Hay otra? Cambia a alguien de lugar y búscala.')
+         : ev.fallan ? 'Hay una pista en rojo: con lo que colocaste ya no se puede cumplir.' : ev.completo ? '' : 'Las pistas en gris todavía dependen de dónde pongas a los que faltan.'; } }); },
+   body:() => `<p class="problem">Arrastra a cada amigo a una butaca. Cada pista se pone en verde (✓) cuando ya se cumple, pongas a los demás donde los pongas, y en rojo (✗) cuando ya no se puede cumplir.</p>
+   <p id="msg2" class="aviso">Empieza por la pista que fija un lugar.</p>
+   <p>Una pista con «no» también trabaja: «Hugo no se sienta en ningún extremo» le quita dos butacas a Hugo. Y «Flor está a la izquierda de Gael» no dice que estén juntos: Gael puede estar en cualquier butaca a la derecha de Flor.</p>
+   <p class="hint">Con teclado: toca el tablero; ← → eligen a la persona, Enter la toma, ← → mueven el destino y Enter la sienta. Supr la devuelve a su sitio.</p>` },
+ { k:'Paso 3', t:'Predice: ¿qué es seguro?', gate:P3,
+   prep:() => { if (S.pred[P3.id]) mostrarAfirmaciones(SOL.length, true); else cfgCine(); },
+   anima:fin => { cfgCine(); const cuadros = [];
+     for (let v = 0; v < 2; v++) SOL.forEach((s, j) => cuadros.push(() => { E.mostrar = s; E.lect = [() => ['ink', 'Solución', `${j + 1} de ${SOL.length}`]]; E.items = itemsAfirm(s); }));
+     cuadros.push(() => mostrarAfirmaciones(SOL.length, false));
+     E.secuencia(cuadros, 1300, fin); },
+   body:() => `<p class="problem">Con las mismas 4 pistas hay 2 maneras de sentarse. ¿Cuál de estas afirmaciones es <b>necesariamente</b> cierta?</p>${opcionesHTML(P3.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <p>El tablero mostró las dos soluciones, una tras otra, y debajo, si cada afirmación se cumple en la que se ve. Solo la B se cumple en las dos: Iris y Juan cambian de butaca, pero nunca quedan juntos.</p>
+   <div class="eqs"><div class="eq">necesariamente cierta = se cumple en <b>todas</b> las soluciones</div><div class="eq">posible = se cumple en <b>al menos una</b></div></div>
+   <p>En el examen, «necesariamente», «con seguridad» o «siempre» piden lo primero. Si encuentras un arreglo que cumple las pistas, todavía no terminas: busca si hay otro y mira qué cambia.</p>
+   <p class="fuente">Tomar «posible» como «seguro» es una hipótesis nuestra; también lo es la opción D, que sale de cambiar izquierda y derecha.</p></div>` },
+ { k:'Paso 4', t:'Predice: sin la cuarta pista', gate:P4,
+   prep:() => { if (S.pred[P4.id]) cfgSin4(true); else { cfgCine(); E.items = CINE.pistas.map((q, i) => ({ html: texto(q, CINE), estado: i === 3 ? 'apagada' : 'neutro' })); E.avisar(); } },
+   anima:fin => { cfgSin4(false); const cuadros = S4.soluciones.map((s, j) => () => { E.mostrar = s; E.lect = [() => ['ink', 'Solución', `${j + 1} de ${S4.total}`]]; });
+     cuadros.push(() => cfgSin4(true)); E.secuencia(cuadros, 550, fin); },
+   body:() => `<p class="problem">Ahora se borra la pista 4, «${texto(CINE.pistas[3], CINE)}». Con las pistas 1, 2 y 3, ¿cuántas maneras hay de sentar a los cinco?</p>${opcionesHTML(P4.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <p>El tablero pasó por las ${S4.total} soluciones. Sin la pista 4, Hugo puede ir en la 1, en la 3 o en la 5, y en cada caso los demás se acomodan de varias maneras.</p>
+   <p>Con las 4 pistas había ${S4.conTodas}; sin pistas, ${S4.errores.todasLasPermutaciones}. Cada pista que se agrega quita soluciones, o no quita ninguna: entonces sobra.</p>
+   <p class="fuente">Las opciones incorrectas son hipótesis nuestras: creer que quitar una pista no cambia nada, olvidar también la otra pista con «no» y leer «a la izquierda» como «inmediatamente a la izquierda».</p></div>` },
+ { k:'Paso 5', t:'Pistas que faltan, sobran o chocan', explora:true,
+   prep:() => cfgPistas(),
+   body:() => `<p class="problem">Toca una pista de la lista para borrarla o volver a ponerla, y mira cuántas soluciones quedan. Luego prueba agregar una quinta pista.</p>
+   <p class="etq">Quinta pista:</p>
+   <div class="seg" id="quinta" role="group" aria-label="Quinta pista">${['Ninguna'].concat(QUINTAS.map(q => pintaNombres(MO.textoPista(q, CINE)))).map((t, i) => `<button type="button" data-i="${i - 1}" aria-pressed="${(S.quinta === null ? -1 : S.quinta) === i - 1}">${t}</button>`).join('')}</div>
+   <p id="msg5" class="aviso"></p>
+   <p>Una pista <b>falta</b> cuando queda más de una solución; <b>sobra</b> cuando no quita ninguna (las otras ya la garantizan); y <b>contradice</b> cuando deja cero. Un buen acertijo tiene una sola solución y ninguna pista que sobre.</p>` },
+ { k:'Paso 6', t:'Predice: ¿quién miente?', gate:P6,
+   prep:() => { cfgVent(S.pred[P6.id] ? ['Hugo'] : null); },
+   anima:fin => { cfgVent(null); const cuadros = VENTANA.personas.map(x => () => { E.ver.hip = Object.assign({ mentirosos:[x] }, MO.hipotesis(VENTANA, [x])); E.aviso = `Supón que miente ${x}`; });
+     cuadros.push(() => { E.ver.hip = Object.assign({ mentirosos:['Hugo'] }, MO.hipotesis(VENTANA, ['Hugo'])); E.aviso = 'Solo así todo encaja'; }); E.secuencia(cuadros, 1500, fin); },
+   body:() => `<p class="problem">Alguien dejó abierta la ventana del aula y entró la lluvia. Uno de los cuatro fue. ${nom('Flor')} dice: «Fui yo». ${nom('Gael')} dice: «Fue Flor». ${nom('Hugo')} dice: «Fue Gael». ${nom('Iris')} dice: «No fue Gael». Solo uno de los cuatro miente.</p>
+   <p>¿Quién miente?</p>${opcionesHTML(P6.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <p>El tablero probó a cada uno como mentiroso. Con Flor, Gael o Iris, dos frases chocan (en rojo): no pueden ser verdad a la vez. Solo con Hugo todo encaja, y la ventana la dejó abierta Flor.</p>
+   <p>El atajo: busca <b>dos frases que se contradicen</b> («Fue Gael» y «No fue Gael»). Una de las dos es falsa, así que el único mentiroso está entre esos dos. Los otros dicen la verdad, y eso basta para resolver.</p>
+   <p class="fuente">${FUENTE_RM}</p></div>` },
+ { k:'Paso 7', t:'Supón y comprueba', explora:true,
+   prep:() => { cfgVent(S.hip, true); },
+   body:() => `<p class="problem">Elige a quién supones mentiroso. El globo de esa persona queda a trazos: su frase debe ser falsa. Las de los demás deben ser verdad. Si dos frases no pueden cumplirse a la vez, chocan en rojo.</p>
+   <p class="etq">Supón que miente:</p>
+   <div class="seg" id="hip" role="group" aria-label="Supón que miente">${VENTANA.personas.map(x => `<button type="button" data-x="${x}" aria-pressed="${(S.hip || [])[0] === x}">${x}</button>`).join('')}</div>
+   <p id="msg7" class="aviso">Toca a una persona, en el tablero o en los botones.</p>
+   <p>Este es el <b>método de suposición</b>: supones, sigues las consecuencias y descartas lo que choca. Si una sola suposición encaja, esa es la respuesta. En otros problemas, cada persona siempre miente o siempre dice la verdad; el método es el mismo.</p>
+   <p class="hint">Con teclado: toca el tablero; ← → eligen a la persona y Enter la supone mentirosa.</p>` },
+ { k:'Paso 8', t:'Predice: con seguridad', gate:P8,
+   prep:() => { E.config({ modo:'urna', urna:{ urna:URNA, sacadas: S.pred[P8.id] ? U8.secuencia : [], k: S.pred[P8.id] ? U8.n : 0, resaltar: S.pred[P8.id] ? U8.n - 1 : null } }); if (S.pred[P8.id]) E.aviso = 'La 4.ª repite un color, sea cual sea'; E.dibujar(); },
+   anima:fin => { E.config({ modo:'urna', urna:{ urna:URNA, sacadas:U8.secuencia, k:0, resaltar:null }, lect:[E => ['ink', 'Sacadas', fmt(Math.floor(E.urna.k + 1e-9))]] });
+     const cuadros = U8.secuencia.map((_, j) => () => { E.urna.k = j + 1; E.aviso = j < U8.n - 1 ? 'La peor suerte: todavía ninguna se repite' : 'La 4.ª repite un color, sea cual sea'; if (j === U8.n - 1) E.urna.resaltar = j; });
+     E.secuencia(cuadros, 900, fin); },
+   body:() => `<p class="problem">En una caja hay ${bola('roja', '6 bolas rojas')}, ${bola('azul', '5 azules')} y ${bola('verde', '4 verdes')}. Sin mirar, ¿cuántas hay que sacar, como mínimo, para tener <b>con seguridad</b> 2 bolas del mismo color?</p>${opcionesHTML(P8.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">peor caso: ${bola('roja', 'R')} ${bola('azul', 'A')} ${bola('verde', 'V')} → la 4.ª repite<span class="note">3 colores + 1 = 4</span></div></div>
+   <p>«Con seguridad» pide pensar en la peor suerte, no en la mejor. Con 3 colores, la mala suerte puede darte una de cada uno; la cuarta ya no tiene un color nuevo. Cuántas bolas hay de cada color no importa aquí: importa cuántos colores hay.</p>
+   <p class="fuente">El informe de ideas erróneas recoge este error (calcular el caso favorable y no el peor caso) como hipótesis, sin estudios con cifras. Las otras dos opciones incorrectas también son hipótesis nuestras.</p></div>` },
+];
+
+function itemsAfirm(s, fin){
+  return AF.map((a, i) => {
+    if (fin) return { html: texto(a, CINE), estado: N3.estados[i] === 'siempre' ? 'cumple' : N3.estados[i] === 'nunca' ? 'falla' : 'pendiente', n: String.fromCharCode(65 + i),
+      icono: N3.estados[i] === 'siempre' ? '✓' : N3.estados[i] === 'nunca' ? '✗' : '½', est: N3.estados[i] === 'siempre' ? 'en las 2 soluciones: necesaria' : N3.estados[i] === 'nunca' ? 'en ninguna' : 'en 1 de 2: solo posible' };
+    const v = MO.cumple(CINE, a, s);
+    return { html: texto(a, CINE), estado: v ? 'cumple' : 'falla', n: String.fromCharCode(65 + i), est: v ? 'se cumple en esta' : 'no se cumple en esta' };
+  });
+}
+function mostrarAfirmaciones(n, cfg){
+  if (cfg) cfgCine();
+  E.mostrar = null; E.mapa = MO.posibles(CINE).asientos; E.items = itemsAfirm(null, true); E.lect = [() => ['ink', 'Soluciones', fmt(n)]];
+}
+function cfgSin4(fin){
+  const p3 = Object.assign({}, CINE, { pistas: CINE.pistas.slice(0, 3) });
+  cfgCine({ lect:[() => ['ink', 'Soluciones', fmt(S4.total)]] });
+  if (fin) E.mapa = MO.posibles(p3).asientos;
+  E.items = CINE.pistas.map((q, i) => ({ html: texto(q, CINE), estado: i === 3 ? 'apagada' : (E.mostrar ? 'cumple' : 'neutro') }));
+  E.alCambiar = () => { if (E.mostrar) E.items = CINE.pistas.map((q, i) => ({ html: texto(q, CINE), estado: i === 3 ? 'apagada' : 'cumple' })); };
+  E.avisar();
+}
+// Paso 5: las pistas se borran y se vuelven a poner; el mapa y el contador se actualizan.
+function problema5(){
+  const ps = CINE.pistas.filter((_, i) => S.activas[i]); if (S.quinta !== null) ps.push(QUINTAS[S.quinta]);
+  return Object.assign({}, CINE, { pistas: ps });
+}
+function cfgPistas(){
+  cfgCine({ lect:[() => ['ink', 'Soluciones', fmt(MO.resolver(problema5()).total)]] });
+  const pinta = () => {
+    const p = problema5(), R = MO.resolver(p), A = MO.analizar(p);
+    E.mapa = R.total ? MO.posibles(p).asientos : null; E.mostrar = null;
+    E.aviso = R.total ? null : 'Ninguna manera cumple todas las pistas';
+    const todas = CINE.pistas.concat(S.quinta !== null ? [QUINTAS[S.quinta]] : []);
+    const idxs = todas.map((_, i) => i), activasIdx = idxs.filter(i => i >= 4 || S.activas[i]);
+    E.items = todas.map((q, i) => {
+      const on = i >= 4 || S.activas[i], pos = activasIdx.indexOf(i), sob = on && A.sobran.includes(pos), choca = on && A.culpables && A.culpables.includes(pos);
+      return { html: texto(q, CINE), estado: on ? (choca ? 'falla' : 'neutro') : 'apagada', boton: i < 4, n: i < 4 ? String(i + 1) : '5', icono: on ? (sob ? '=' : choca ? '!' : '') : '–',
+        est: !on ? 'borrada (tócala para volver a ponerla)' : sob ? 'sobra: sin ella quedan las mismas soluciones' : choca ? 'choca con las otras' : (i < 4 ? 'tócala para borrarla' : 'la quinta pista') };
+    });
+    const m = $('msg5');
+    if (m) m.innerHTML = !R.total ? `Contradicción: con estas pistas no queda ninguna solución. Si se quita una de las que chocan, vuelve a haber.`
+      : R.total === 1 ? (A.sobran.length ? 'Queda una sola solución, pero hay una pista que sobra.' : '¡Una sola solución y ninguna pista sobra! Así es un acertijo bien hecho.')
+      : `Quedan ${R.total} soluciones: falta información. ${A.sobran.length ? 'Y alguna pista sobra.' : ''}`;
+    E.dibujar(); E.avisar();
+  };
+  E.alTocarItem = i => { if (i < 4){ S.activas[i] = !S.activas[i]; pinta(); const b = document.querySelector(`#pistas1 button.tg[data-i="${i}"]`); if (b) b.focus(); } };
+  const q = $('quinta'); if (q) q.querySelectorAll('button').forEach(b => b.onclick = () => { const i = +b.dataset.i; S.quinta = i < 0 ? null : i; q.querySelectorAll('button').forEach(z => z.setAttribute('aria-pressed', String(z === b))); pinta(); });
+  pinta();
+}
+// Pasos 6 y 7: la ventana abierta
+function cfgVent(mentirosos, tocar){
+  E.config({ modo:'verdades', ver:{ p:VENTANA, hip: mentirosos ? Object.assign({ mentirosos }, MO.hipotesis(VENTANA, mentirosos)) : null, sel:0, tocar: tocar ? x => elegirHip(x) : null } });
+  const frases = () => VENTANA.frases.map((f, i) => {
+    const H = E.ver.hip; let est = 'neutro', e2 = '';
+    if (H){ const ch = !H.consistente && H.choques[0] && H.choques[0].includes(i); est = ch ? 'falla' : H.consistente ? 'cumple' : 'neutro';
+      e2 = (H.requiere[i] ? 'debe ser verdad' : 'debe ser falsa (miente)') + (ch ? ': choca' : H.consistente ? ': encaja' : ''); }
+    return { html: `${nom(f.de)}: «${MO.textoFrase(f)}»`, estado: est, est: e2, icono: est === 'falla' ? '✗' : est === 'cumple' ? '✓' : '' };
+  });
+  E.alCambiar = () => { E.items = frases(); };
+  E.avisar();
+  if (tocar){
+    const h = document.getElementById('hip');
+    if (h) h.querySelectorAll('button').forEach(b => b.onclick = () => elegirHip(b.dataset.x));
+    pintarHip();
+  }
+}
+function elegirHip(x){
+  S.hip = [x]; E.ver.hip = Object.assign({ mentirosos:[x] }, MO.hipotesis(VENTANA, [x])); E.ver.sel = VENTANA.personas.indexOf(x);
+  E.dibujar(); E.avisar(); pintarHip();
+}
+function pintarHip(){
+  const h = document.getElementById('hip'); if (h) h.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String((S.hip || [])[0] === b.dataset.x)));
+  const m = document.getElementById('msg7'); if (!m || !E.ver || !E.ver.hip) return;
+  const H = E.ver.hip, x = H.mentirosos[0];
+  if (H.consistente) m.innerHTML = `Si miente ${nom(x)}, todo encaja: la ventana la dejó abierta ${nom(H.culpables[0])}. Es la única suposición que funciona.`;
+  else { const [i, j] = H.choques[0]; const fi = VENTANA.frases[i], fj = j === undefined ? null : VENTANA.frases[j];
+    m.innerHTML = `Si miente ${nom(x)}, ` + (fj ? `la frase de ${nom(fi.de)} («${MO.textoFrase(fi)}») ${H.requiere[i] ? 'debe ser verdad' : 'debe ser falsa'} y la de ${nom(fj.de)} («${MO.textoFrase(fj)}») ${H.requiere[j] ? 'debe ser verdad' : 'debe ser falsa'}, y no puede pasar las dos cosas a la vez. Se descarta.` : `la frase de ${nom(fi.de)} no puede cumplirse. Se descarta.`); }
+}
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; b.dataset.label = `Ir al ${s.k.toLowerCase()}: ${s.t}`;
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  E.alTocarItem = null;
+  if (s.prep) s.prep();
+  pintarDots();
+  E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.gate) prediccion(s);
+  if (E.alCambiar) E.alCambiar();
+  E.avisar();
+  nav();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+  E.ocupado = S.ocupado;
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : b.dataset.label);
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){ if (k > S.max) S.max = k; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0, P.unidad);
+    S.ocupado = true; nav();
+    E.compactar(false);
+    $('next').focus({ preventScroll:true });
+    const paso = S.step;
+    alDibujo($('cv'), () => true, () => {
+      if (S.step !== paso) { S.ocupado = false; nav(); return; }
+      s.anima(() => { S.ocupado = false; E.avisar(); nav(); });
+    });
+  }));
+  pintar();
+}
+
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Una pista que sobra, «a la derecha» frente a «inmediatamente a la derecha», la mesa redonda (los giros son el mismo
+   arreglo), el cuadro de doble entrada y la certeza de sacar dos rojas. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearTablero($('cv2'), 'desc2', 'lect2', 'pistas2', 'leyenda2');
+const PS = MO.pistaQueSobra(SOBRA), LD = MO.lugaresDe(DER, 'Juan'), MN = MO.maneras('circular', 5);
+const QC = MO.quien(CUADRO, { tipo:'valor', persona:'Iris', atributo:'ciudad' }), RJ = MO.certeza({ urna:URNA, objetivo:{ tipo:'deColor', color:'roja', k:2 } });
+const butacas = xs => xs.length === 1 ? `Solo en la ${xs[0]}` : `En la ${xs.slice(0, -1).join(', la ')} o la ${xs[xs.length - 1]}`;
+const lectSol = p => () => ['ink', 'Soluciones', fmt(MO.resolver(p).total)];
+const sinI = (p, i) => Object.assign({}, p, { pistas: p.pistas.filter((_, j) => j !== i) });
+const itemsDe = (p, apagada, est) => p.pistas.map((q, i) => ({ html: texto(q, p), estado: i === apagada ? 'apagada' : (est || 'neutro') }));
+
+const EXPS = [
+  { id:'sobra', corto:'Una pista de más',
+    q:`Cinco amigos en una fila de 5 butacas (1 a 5, de izquierda a derecha). Con estas cuatro pistas hay una sola manera de sentarse:${pistasHTML(SOBRA)}Una de las pistas se puede borrar y sigue habiendo una sola manera. ¿Cuál?`,
+    opts:[['a', `La 1: ${texto(SOBRA.pistas[0], SOBRA)}`, 'pista-necesaria-como-sobrante', 'hipotesis'],
+          ['b', `La 2: ${texto(SOBRA.pistas[1], SOBRA)}`, 'negativa-no-restringe', 'hipotesis'],
+          ['c', `La 3: ${texto(SOBRA.pistas[2], SOBRA)}`],
+          ['d', `La 4: ${texto(SOBRA.pistas[3], SOBRA)}`, 'pista-necesaria-como-sobrante', 'hipotesis']],
+    ok:'c',
+    fb:{ a:`Sin la pista 1, Flor podría estar en otras butacas y salen ${PS.sin[0]} soluciones.`,
+      b:`Sin la pista 2 salen ${PS.sin[1]} soluciones: Gael podría sentarse junto a Flor. Una pista con «no» también quita posibilidades.`,
+      d:`Sin la pista 4 salen ${PS.sin[3]} soluciones: Hugo e Iris ya no tendrían que ir juntos.` },
+    antes:ya => { E.config({ modo:'fila', p:SOBRA, mapa: ya ? MO.posibles(SOBRA).asientos : null, lect: ya ? [lectSol(SOBRA)] : [] }); },
+    despues:() => {
+      const vistas = [[null, SOBRA], [2, sinI(SOBRA, 2)], [1, sinI(SOBRA, 1)], [null, SOBRA]];
+      E.config({ modo:'fila', p:SOBRA, lect:[] });
+      E.secuencia(vistas.map(([i, p]) => () => { E.mapa = MO.posibles(p).asientos; E.items = itemsDe(SOBRA, i); E.lect = [lectSol(p)];
+        E.aviso = i === null ? 'Con las 4 pistas' : `Sin la pista ${i + 1}`; }), 1800, () => { E.aviso = null; E.dibujar(); }); },
+    exp:() => `<p>El tablero mostró qué queda posible con las cuatro pistas, sin la 3 (lo mismo: una sola manera) y sin la 2 (dos maneras). La pista 3 sobra porque las pistas 1 y 2 ya la garantizan: Flor está en la 2 y Gael no puede estar en la 1 ni en la 3, así que Gael queda a la derecha de Flor, en la 4 o la 5.</p>
+      <p>Una pista sobra cuando, sin ella, quedan exactamente las mismas soluciones. No es lo mismo que «no sirve para empezar»: la pista 2, con su «no», es imprescindible.</p>
+      <p class="fuente">Las opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'derecha', corto:'«A la derecha» o «inmediatamente»',
+    q:`En una fila de 5 butacas, numeradas del 1 al 5 de izquierda a derecha (izquierda y derecha son las de quienes se sientan, que miran a la pantalla), ${nom('Iris')} se sienta en la butaca 2 y ${nom('Juan')} está a la derecha de ${nom('Iris')}. ¿En qué butacas puede sentarse ${nom('Juan')}?`,
+    opts:[['a', butacas(LD.errores.inmediata), 'derecha-como-inmediata', 'hipotesis'],
+          ['b', butacas(LD.respuesta)],
+          ['c', butacas(LD.errores.sentidoInvertido), 'izquierda-derecha-al-reves', 'hipotesis'],
+          ['d', butacas(LD.errores.sinDireccion), 'ignora-el-sentido', 'hipotesis']],
+    ok:'b',
+    fb:{ a:'Eso diría «inmediatamente a la derecha». «A la derecha» deja a Juan en cualquier butaca con un número mayor que la de Iris, junto a ella o más lejos.',
+      c:'La 1 está a la izquierda de Iris. Izquierda y derecha son las de ellos, que miran a la pantalla como tú.',
+      d:'La pista sí dice un lado: la derecha. Las butacas a la izquierda de Iris quedan fuera.' },
+    antes:() => E.config({ modo:'fila', p:DER, arr:[null, 'Iris', null, null, null] }),
+    despues:() => {
+      E.config({ modo:'fila', p:DER, arr:[null, 'Iris', null, null, null], luces:true, lect:[() => ['J', 'Juan en la butaca', String(E.arr.indexOf('Juan') + 1 || '—')]] });
+      const cuadros = [3, 4, 5, 1, 3].map(k => () => { const a = [null, 'Iris', null, null, null]; a[k - 1] = 'Juan'; E.arr = a;
+        E.aviso = k === 1 ? 'En la 1 no: queda a la izquierda' : `En la ${k} sí: a la derecha de Iris`; });
+      E.secuencia(cuadros, 1300, () => { E.drag = true; E.aviso = 'Mueve a Juan y mira la pista 1'; E.dibujar(); E.avisar(); $('cv2').tabIndex = 0; });
+    },
+    exp:() => `<div class="eqs"><div class="eq">«a la derecha de Iris» → butaca de Juan &gt; 2 → 3, 4 o 5</div><div class="eq">«inmediatamente a la derecha de Iris» → butaca de Juan = 2 + 1 = 3</div></div>
+      <p>En la escena, Juan pasó por la 3, la 4 y la 5 (la pista 1 en verde) y por la 1 (en rojo). Ahora puedes moverlo tú. «A la derecha» no pide estar juntos; «inmediatamente a la derecha», sí. Leer una como la otra cambia la cantidad de soluciones y, a veces, la respuesta.</p>
+      <p class="fuente">Las opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'mesa', corto:'La mesa redonda',
+    q:`Los cinco se sientan alrededor de una mesa redonda con 5 sillas iguales, mirando al centro. Dos maneras son la misma si una es la otra girada: cada uno tiene a los mismos vecinos a cada lado. Sin ninguna pista, ¿cuántas maneras distintas hay?`,
+    opts:[['a', `${MN.errores.rotacionesDistintas}`, 'AR17-circular-como-lineal', 'parcial'],
+          ['b', `${MN.total}`],
+          ['c', `${MN.errores.tambienReflejos}`, 'cuenta-reflejos-como-iguales', 'hipotesis'],
+          ['d', `${MN.errores.sinFactorial}`, 'sin-factorial', 'hipotesis']],
+    ok:'b',
+    fb:{ a:'120 = 5! cuenta las maneras de sentarlos en una fila. En la mesa, cada arreglo aparece 5 veces, una por cada giro: 120 ÷ 5 = 24.',
+      c:'12 contaría como iguales también los arreglos de espejo. Pero en el espejo, el que estaba a tu derecha queda a tu izquierda: no es la misma mesa.',
+      d:'4 es la cantidad de personas que se acomodan después de fijar a una. Pero esas 4 se ordenan de 4! = 24 maneras, no de 4.' },
+    antes:ya => { E.config({ modo:'mesa', p:MESA, arr: ya ? ['Flor', 'Gael', 'Iris', 'Hugo', 'Juan'] : Array(5).fill(null), luces: !!ya, drag: !!ya, lect: ya ? [lectSol(MESA)] : [] }); },
+    despues:() => {
+      const arr = ['Flor', 'Gael', 'Iris', 'Hugo', 'Juan'];
+      let v = 0;
+      E.config({ modo:'mesa', p:MESA, arr, luces:true, lect:[() => ['ink', 'Giros', `${v} de 5`]] });
+      E.aviso = 'Giran todos juntos: nadie cambia de vecinos'; const paso = () => { if (v >= 5){ E.giro = 0; E.aviso = 'Arrastra o usa «Girar la mesa»'; E.drag = true; $('cv2').tabIndex = 0; E.lect = [lectSol(MESA)]; E.dibujar(); E.avisar(); return; }
+        const g0 = E.giro; E.animar(900, f => { E.giro = g0 + f*2*PI/5; }, () => { v++; E.avisar(); setTimeout(paso, RM ? 0 : 250); }); };
+      paso();
+    },
+    exp:() => `<div class="eqs"><div class="eq">en fila: 5! = 120</div><div class="eq">en la mesa: 120 ÷ 5 giros = 4! = ${MN.total}<span class="note">fijas a una persona y ordenas a las otras 4</span></div></div>
+      <p>La mesa dio una vuelta completa en 5 giros: las pistas siguieron en verde porque «a la derecha de» y «junto a» no cambian al girar. En una mesa redonda no hay butaca 1: lo único que cuenta es quién está al lado de quién.</p>
+      <p>Ahora la mesa tiene tres pistas y una sola solución. Mueve a alguien y mira cómo cambian. Con «Girar la mesa», todos avanzan una silla.</p>
+      <p><button type="button" class="btn" id="girar">Girar la mesa</button></p>
+      <p class="fuente">El informe de aritmética liga contar una mesa redonda como una fila al error de orden en combinatoria: un estudio con 720 alumnos españoles de 14 y 15 años lo encontró como el error más frecuente entre los que ya habían estudiado el tema (cifra por confirmar en el original). Para la mesa redonda en sí no hay cifra. Las otras dos opciones son hipótesis nuestras.</p>`,
+    // girar: cada uno pasa al asiento siguiente; se anima el giro y luego se cambia el arreglo (queda igual a la vista)
+    luego:() => { const b = $('girar'); if (b) b.onclick = () => { if (E.anim || E.modo !== 'mesa') return; const a = MO.girar(E.arr, 1);
+      E.animar(700, f => { E.giro = f*2*PI/5; }, () => { E.giro = 0; E.arr = a; E.dibujar(); E.avisar(); }); }; } },
+  { id:'cuadro', corto:'El cuadro de doble entrada', unidad:U_DE,
+    q:`${nom('Gael')}, ${nom('Iris')} y ${nom('Juan')} tienen oficios distintos (chef, docente y piloto) y son de ciudades distintas (Puno, Cusco y Arequipa).${pistasHTML(CUADRO)}¿De qué ciudad es ${nom('Iris')}?`,
+    opts:[['a', 'De Cusco', 'olvida-pista-negativa', 'hipotesis'],
+          ['b', 'De Puno'],
+          ['c', 'De Arequipa', 'no-cruza-las-pistas', 'hipotesis']],
+    ok:'b', okVal:QC.respuesta,
+    fb:{ a:'Iris sería de Cusco si fuera docente, pero la pista 3 dice que no lo es. Las pistas con «no» también tachan casillas.',
+      c:'Arequipa queda libre solo si no se usa la pista 4, la que une un oficio con una ciudad. Con ella, Juan (el docente) es de Cusco y Gael no es de Puno: Gael es de Arequipa.' },
+    antes:ya => { E.config({ modo:'cuadro', cuadro:{ p:CUADRO, marcas: ya ? MO.posibles(CUADRO).casillas : null } }); E.items = itemsDe(CUADRO); E.avisar(); },
+    despues:() => {
+      const orden = [0, 2, 3, 1], P = MO.pasos(CUADRO, orden); E.config({ modo:'cuadro', cuadro:{ p:CUADRO, marcas:null } });
+      E.secuencia(P.map((x, k) => () => { E.cuadro.marcas = x.casillas; E.cuadro.recien = k ? Object.fromEntries(Object.keys(x.casillas).map(a => [a, P[k - 1].casillas[a].map((vs, i) => vs.filter(v => !x.casillas[a][i].includes(v)))])) : null; E.cuadro.fade = 1;
+        const usadas = orden.slice(0, k);
+        E.items = CUADRO.pistas.map((q, i) => ({ html: texto(q, CUADRO), estado: usadas.includes(i) ? 'cumple' : 'neutro', est: usadas.includes(i) ? 'usada' : '', foco: orden[k - 1] === i }));
+        E.aviso = k ? `Pista ${orden[k - 1] + 1}` : 'Todas las casillas son posibles';
+        if (k){ const tok = E.tok; tween(RM ? 0 : 900, f => { if (tok !== E.tok) return; E.cuadro.fade = f; E.dibujar(); }); } }), 1600, () => { E.aviso = 'Una sola marca ✓ por fila y por columna'; E.dibujar(); });
+    },
+    exp:() => `<p>El cuadro se llenó pista por pista, en el orden 1, 3, 4 y 2: ✗ donde ya no puede ser, ✓ donde es seguro. La pista 1 pone a Gael de chef; la 3 deja a Iris de piloto (no puede ser docente ni chef) y a Juan de docente; la 4 lleva a Juan a Cusco; la 2 deja a Gael en Arequipa; e Iris queda en Puno.</p>
+      <p>En cada fila y en cada columna del cuadro va un solo ✓: cuando quedan todas tachadas menos una, esa es la buena. Las pistas que cruzan dos cosas («quien es docente es de Cusco») son las que unen las dos mitades del cuadro.</p>
+      <p class="fuente">Las opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'rojas', corto:'Dos rojas con seguridad', unidad:U_CE,
+    q:`Con la misma caja (${bola('roja', '6 rojas')}, ${bola('azul', '5 azules')} y ${bola('verde', '4 verdes')}), ¿cuántas bolas hay que sacar, sin mirar, para tener con seguridad 2 ${bola('roja', 'rojas')}?`,
+    opts:[['a', `${RJ.errores.mejorCaso}`, 'RM6-mejor-caso', 'hipotesis'],
+          ['b', `${RJ.errores.soloUnOtro}`, 'olvida-un-color', 'hipotesis'],
+          ['c', `${RJ.errores.sinMasUno}`, 'peor-caso-sin-la-ultima', 'hipotesis'],
+          ['d', `${RJ.n}`]],
+    ok:'d',
+    fb:{ a:'Con suerte, las 2 primeras son rojas. Pero «con seguridad» pide la peor suerte.',
+      b:'7 cuenta las 5 azules y 2 rojas, pero se olvida de que también pueden salir antes las 4 verdes.',
+      c:'Con 10, la mala suerte da las 5 azules, las 4 verdes y una sola roja. Falta una más.' },
+    antes:ya => E.config({ modo:'urna', urna:{ urna:URNA, sacadas: ya ? RJ.secuencia : [], k: ya ? RJ.n : 0, resaltar: ya ? RJ.n - 1 : null } }),
+    despues:() => { E.config({ modo:'urna', urna:{ urna:URNA, sacadas:RJ.secuencia, k:0, resaltar:null }, lect:[E => ['ink', 'Sacadas', fmt(Math.floor(E.urna.k + 1e-9))]] });
+      E.secuencia(RJ.secuencia.map((c, j) => () => { E.urna.k = j + 1; E.aviso = j < 9 ? 'La peor suerte: primero las que no sirven' : j === 9 ? 'Una roja… falta otra' : '¡La segunda roja!'; if (j === RJ.n - 1) E.urna.resaltar = j; }), 600); },
+    exp:() => `<div class="eqs"><div class="eq">5 ${bola('azul', 'azules')} + 4 ${bola('verde', 'verdes')} + 2 ${bola('roja', 'rojas')} = ${RJ.n}</div></div>
+      <p>Para estar seguro de un color en particular, la peor suerte saca primero <b>todas</b> las de los otros colores. Recién después, cada bola es roja a la fuerza. Compara con «2 del mismo color», donde bastaban 4: ahí cualquier color sirve.</p>
+      <p class="fuente">El informe recoge el error del mejor caso en las certezas como hipótesis, sin estudios con cifras; las demás opciones también son hipótesis nuestras.</p>` },
+];
+const S = { k:0, pred:{}, t0:Date.now() };
+const abierto = k => EXPS.slice(0, k).every(x => !!S.pred[x.id]);
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => abierto(k)
+    ? `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  if (k < 0 || k >= EXPS.length || !abierto(k)) return;
+  E.parar();
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  x.antes(ya);
+  E.compactar(!ya);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<div class="problem">${x.q}</div>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira el tablero para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    $('otra2').onclick = () => { E.parar(); x.antes(false); alDibujo($('cv2'), () => S.k === k, () => { x.despues(); E.avisar(); }); };
+    if (x.luego) x.luego();
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar(); botones();
+    E.compactar(false);
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0, x.unidad);
+    alDibujo($('cv2'), () => S.k === k, () => { x.despues(); E.leyenda(); E.dibujar(); E.avisar(); });
+  });
+  pintar();
+}
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

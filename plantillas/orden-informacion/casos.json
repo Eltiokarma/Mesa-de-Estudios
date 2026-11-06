@@ -1,0 +1,1690 @@
+{
+ "plantilla": "orden-informacion",
+ "unidades": "Cantidades sin unidad: soluciones (arreglos distintos), butacas (numeradas desde 1, de izquierda a derecha), asientos de la mesa (índices desde 0; el siguiente está a la derecha de quien se sienta) y objetos sacados de una urna. Los arreglos de la fila y la mesa son listas de asientos con el nombre de quien se sienta; los de la mesa se guardan con la primera persona en el asiento 0 (un representante por giro). Los del cuadro son { atributo: [valor de cada persona] }.",
+ "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.inmediata; en una lista, el índice: 0.total, choques.0); las listas se comparan completas y los textos exactos. 'tambien' son llamadas extra del mismo caso; una 'espera' vacía pide solo que la llamada devuelva true. Un error que no aparece en 'errores' es porque en ese caso daría la respuesta correcta o no se aplica.",
+ "verificacion": "Verificado por un subagente independiente (6 nov 2026) sin leer el motor ni este archivo, con fuerza bruta propia en Python: todas las permutaciones (en la mesa, un representante por giro), todos los cuadros y todas las combinaciones de culpable y mentirosos; las certezas, con las 630 630 secuencias de extracción de la urna; las llaves, simulando las 24 permutaciones. Los 18 casos y sus 'tambien' coinciden; los errores con varias respuestas posibles caen dentro del conjunto de posibles calculado aparte.",
+ "tolerancia": 0,
+ "casos": [
+  {
+   "nombre": "Predicción del paso 1: fila del cine con 4 pistas; Flor en la butaca 2, Hugo no puede ir en un extremo ni en la 4 (ahí Gael quedaría a su lado), así que Hugo va al centro y Gael en la 5. Hay 2 soluciones (Iris y Juan se pueden cambiar), pero el centro es siempre Hugo (sin las pistas con «no»: Gael; leyendo las pistas sin el «no»: Juan; con izquierda y derecha cambiadas: Iris)",
+   "fn": "quien",
+   "args": [
+    {
+     "forma": "lineal",
+     "personas": [
+      "Flor",
+      "Gael",
+      "Hugo",
+      "Iris",
+      "Juan"
+     ],
+     "pistas": [
+      {
+       "tipo": "izquierda",
+       "a": "Flor",
+       "b": "Gael"
+      },
+      {
+       "tipo": "noJuntos",
+       "a": "Gael",
+       "b": "Hugo"
+      },
+      {
+       "tipo": "lugar",
+       "a": "Flor",
+       "k": 2
+      },
+      {
+       "tipo": "noExtremo",
+       "a": "Hugo"
+      }
+     ]
+    },
+    {
+     "tipo": "lugar",
+     "k": 3
+    }
+   ],
+   "espera": {
+    "respuesta": "Hugo",
+    "unica": true,
+    "soluciones": 2,
+    "errores.olvidaNegativa": "Gael",
+    "errores.leeSinNo": "Juan",
+    "errores.sentidoInvertido": "Iris"
+   },
+   "tambien": [
+    {
+     "fn": "resolver",
+     "args": [
+      {
+       "forma": "lineal",
+       "personas": [
+        "Flor",
+        "Gael",
+        "Hugo",
+        "Iris",
+        "Juan"
+       ],
+       "pistas": [
+        {
+         "tipo": "izquierda",
+         "a": "Flor",
+         "b": "Gael"
+        },
+        {
+         "tipo": "noJuntos",
+         "a": "Gael",
+         "b": "Hugo"
+        },
+        {
+         "tipo": "lugar",
+         "a": "Flor",
+         "k": 2
+        },
+        {
+         "tipo": "noExtremo",
+         "a": "Hugo"
+        }
+       ]
+      }
+     ],
+     "espera": {
+      "total": 2,
+      "soluciones": [
+       [
+        "Iris",
+        "Flor",
+        "Hugo",
+        "Juan",
+        "Gael"
+       ],
+       [
+        "Juan",
+        "Flor",
+        "Hugo",
+        "Iris",
+        "Gael"
+       ]
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "Predicción del paso 3: con las 2 soluciones, «Gael se sienta en un extremo» es necesariamente cierta; «Iris se sienta en un extremo» y «Hugo se sienta junto a Juan» son solo posibles; «Gael está a la izquierda de Juan» no se cumple nunca, pero sería necesaria con izquierda y derecha cambiadas",
+   "fn": "necesario",
+   "args": [
+    {
+     "forma": "lineal",
+     "personas": [
+      "Flor",
+      "Gael",
+      "Hugo",
+      "Iris",
+      "Juan"
+     ],
+     "pistas": [
+      {
+       "tipo": "izquierda",
+       "a": "Flor",
+       "b": "Gael"
+      },
+      {
+       "tipo": "noJuntos",
+       "a": "Gael",
+       "b": "Hugo"
+      },
+      {
+       "tipo": "lugar",
+       "a": "Flor",
+       "k": 2
+      },
+      {
+       "tipo": "noExtremo",
+       "a": "Hugo"
+      }
+     ]
+    },
+    [
+     {
+      "tipo": "extremo",
+      "a": "Iris"
+     },
+     {
+      "tipo": "extremo",
+      "a": "Gael"
+     },
+     {
+      "tipo": "juntos",
+      "a": "Hugo",
+      "b": "Juan"
+     },
+     {
+      "tipo": "izquierda",
+      "a": "Gael",
+      "b": "Juan"
+     }
+    ]
+   ],
+   "espera": {
+    "respuesta": 1,
+    "estados": [
+     "aveces",
+     "siempre",
+     "aveces",
+     "nunca"
+    ],
+    "en": [
+     1,
+     2,
+     1,
+     0
+    ],
+    "total": 2,
+    "errores.posibleComoSeguro": 0,
+    "errores.sentidoInvertido": 3,
+    "errorDe": [
+     "posibleComoSeguro",
+     null,
+     "posibleComoSeguro",
+     "sentidoInvertido"
+    ]
+   }
+  },
+  {
+   "nombre": "Predicción del paso 4: sin la cuarta pista (Hugo no se sienta en ningún extremo) quedan 10 soluciones (como si sobrara: 2; leyendo «inmediatamente a la izquierda»: 4; olvidando también la otra pista con «no»: 18; sin ninguna pista: 120)",
+   "fn": "sinPista",
+   "args": [
+    {
+     "forma": "lineal",
+     "personas": [
+      "Flor",
+      "Gael",
+      "Hugo",
+      "Iris",
+      "Juan"
+     ],
+     "pistas": [
+      {
+       "tipo": "izquierda",
+       "a": "Flor",
+       "b": "Gael"
+      },
+      {
+       "tipo": "noJuntos",
+       "a": "Gael",
+       "b": "Hugo"
+      },
+      {
+       "tipo": "lugar",
+       "a": "Flor",
+       "k": 2
+      },
+      {
+       "tipo": "noExtremo",
+       "a": "Hugo"
+      }
+     ]
+    },
+    3
+   ],
+   "espera": {
+    "total": 10,
+    "conTodas": 2,
+    "errores.comoSiSobrara": 2,
+    "errores.inmediata": 4,
+    "errores.olvidaNegativa": 18,
+    "errores.todasLasPermutaciones": 120
+   }
+  },
+  {
+   "nombre": "Paso 5: una quinta pista puede dejar una sola solución, sobrar o contradecir",
+   "fn": "probarPista",
+   "args": [
+    {
+     "forma": "lineal",
+     "personas": [
+      "Flor",
+      "Gael",
+      "Hugo",
+      "Iris",
+      "Juan"
+     ],
+     "pistas": [
+      {
+       "tipo": "izquierda",
+       "a": "Flor",
+       "b": "Gael"
+      },
+      {
+       "tipo": "noJuntos",
+       "a": "Gael",
+       "b": "Hugo"
+      },
+      {
+       "tipo": "lugar",
+       "a": "Flor",
+       "k": 2
+      },
+      {
+       "tipo": "noExtremo",
+       "a": "Hugo"
+      }
+     ]
+    },
+    {
+     "tipo": "juntos",
+     "a": "Iris",
+     "b": "Flor"
+    }
+   ],
+   "espera": {
+    "antes": 2,
+    "despues": 1,
+    "efecto": "unica"
+   },
+   "tambien": [
+    {
+     "fn": "probarPista",
+     "args": [
+      {
+       "forma": "lineal",
+       "personas": [
+        "Flor",
+        "Gael",
+        "Hugo",
+        "Iris",
+        "Juan"
+       ],
+       "pistas": [
+        {
+         "tipo": "izquierda",
+         "a": "Flor",
+         "b": "Gael"
+        },
+        {
+         "tipo": "noJuntos",
+         "a": "Gael",
+         "b": "Hugo"
+        },
+        {
+         "tipo": "lugar",
+         "a": "Flor",
+         "k": 2
+        },
+        {
+         "tipo": "noExtremo",
+         "a": "Hugo"
+        }
+       ]
+      },
+      {
+       "tipo": "izquierda",
+       "a": "Hugo",
+       "b": "Gael"
+      }
+     ],
+     "espera": {
+      "despues": 2,
+      "efecto": "sobra"
+     }
+    },
+    {
+     "fn": "probarPista",
+     "args": [
+      {
+       "forma": "lineal",
+       "personas": [
+        "Flor",
+        "Gael",
+        "Hugo",
+        "Iris",
+        "Juan"
+       ],
+       "pistas": [
+        {
+         "tipo": "izquierda",
+         "a": "Flor",
+         "b": "Gael"
+        },
+        {
+         "tipo": "noJuntos",
+         "a": "Gael",
+         "b": "Hugo"
+        },
+        {
+         "tipo": "lugar",
+         "a": "Flor",
+         "k": 2
+        },
+        {
+         "tipo": "noExtremo",
+         "a": "Hugo"
+        }
+       ]
+      },
+      {
+       "tipo": "juntos",
+       "a": "Flor",
+       "b": "Gael"
+      }
+     ],
+     "espera": {
+      "despues": 0,
+      "efecto": "contradice"
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "La deducción del paso 1, pista por pista (Flor en la 2, Hugo fuera de los extremos, Gael a la derecha de Flor, Gael lejos de Hugo): lo que puede ir en cada butaca",
+   "fn": "pasos",
+   "args": [
+    {
+     "forma": "lineal",
+     "personas": [
+      "Flor",
+      "Gael",
+      "Hugo",
+      "Iris",
+      "Juan"
+     ],
+     "pistas": [
+      {
+       "tipo": "izquierda",
+       "a": "Flor",
+       "b": "Gael"
+      },
+      {
+       "tipo": "noJuntos",
+       "a": "Gael",
+       "b": "Hugo"
+      },
+      {
+       "tipo": "lugar",
+       "a": "Flor",
+       "k": 2
+      },
+      {
+       "tipo": "noExtremo",
+       "a": "Hugo"
+      }
+     ]
+    },
+    [
+     2,
+     3,
+     0,
+     1
+    ]
+   ],
+   "espera": {
+    "0.total": 120,
+    "1.total": 24,
+    "2.total": 12,
+    "3.total": 8,
+    "4.total": 2,
+    "4.seguros": [
+     null,
+     "Flor",
+     "Hugo",
+     null,
+     "Gael"
+    ]
+   }
+  },
+  {
+   "nombre": "Lo colocado a medias: con Flor en la 2 y Gael en la 5, las pistas 1 y 3 ya se cumplen y las otras dos dependen de dónde vayan Hugo, Iris y Juan; quedan 2 soluciones",
+   "fn": "evaluar",
+   "args": [
+    {
+     "forma": "lineal",
+     "personas": [
+      "Flor",
+      "Gael",
+      "Hugo",
+      "Iris",
+      "Juan"
+     ],
+     "pistas": [
+      {
+       "tipo": "izquierda",
+       "a": "Flor",
+       "b": "Gael"
+      },
+      {
+       "tipo": "noJuntos",
+       "a": "Gael",
+       "b": "Hugo"
+      },
+      {
+       "tipo": "lugar",
+       "a": "Flor",
+       "k": 2
+      },
+      {
+       "tipo": "noExtremo",
+       "a": "Hugo"
+      }
+     ]
+    },
+    [
+     null,
+     "Flor",
+     null,
+     null,
+     "Gael"
+    ]
+   ],
+   "espera": {
+    "estados": [
+     "cumple",
+     "pendiente",
+     "cumple",
+     "pendiente"
+    ],
+    "posibles": 2,
+    "completo": false
+   },
+   "tambien": [
+    {
+     "fn": "evaluar",
+     "args": [
+      {
+       "forma": "lineal",
+       "personas": [
+        "Flor",
+        "Gael",
+        "Hugo",
+        "Iris",
+        "Juan"
+       ],
+       "pistas": [
+        {
+         "tipo": "izquierda",
+         "a": "Flor",
+         "b": "Gael"
+        },
+        {
+         "tipo": "noJuntos",
+         "a": "Gael",
+         "b": "Hugo"
+        },
+        {
+         "tipo": "lugar",
+         "a": "Flor",
+         "k": 2
+        },
+        {
+         "tipo": "noExtremo",
+         "a": "Hugo"
+        }
+       ]
+      },
+      [
+       "Hugo",
+       null,
+       null,
+       null,
+       null
+      ]
+     ],
+     "espera": {
+      "estados": [
+       "pendiente",
+       "pendiente",
+       "pendiente",
+       "falla"
+      ],
+      "posibles": 0
+     }
+    },
+    {
+     "fn": "evaluar",
+     "args": [
+      {
+       "forma": "lineal",
+       "personas": [
+        "Flor",
+        "Gael",
+        "Hugo",
+        "Iris",
+        "Juan"
+       ],
+       "pistas": [
+        {
+         "tipo": "izquierda",
+         "a": "Flor",
+         "b": "Gael"
+        },
+        {
+         "tipo": "noJuntos",
+         "a": "Gael",
+         "b": "Hugo"
+        },
+        {
+         "tipo": "lugar",
+         "a": "Flor",
+         "k": 2
+        },
+        {
+         "tipo": "noExtremo",
+         "a": "Hugo"
+        }
+       ]
+      },
+      [
+       "Iris",
+       "Flor",
+       "Hugo",
+       "Juan",
+       "Gael"
+      ]
+     ],
+     "espera": {
+      "estados": [
+       "cumple",
+       "cumple",
+       "cumple",
+       "cumple"
+      ],
+      "esSolucion": true,
+      "clave": "Iris|Flor|Hugo|Juan|Gael"
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "Una pista que contradice: con «Flor se sienta junto a Gael» no queda ninguna solución; quitando cualquiera de las cinco pistas vuelve a haber",
+   "fn": "analizar",
+   "args": [
+    {
+     "forma": "lineal",
+     "personas": [
+      "Flor",
+      "Gael",
+      "Hugo",
+      "Iris",
+      "Juan"
+     ],
+     "pistas": [
+      {
+       "tipo": "izquierda",
+       "a": "Flor",
+       "b": "Gael"
+      },
+      {
+       "tipo": "noJuntos",
+       "a": "Gael",
+       "b": "Hugo"
+      },
+      {
+       "tipo": "lugar",
+       "a": "Flor",
+       "k": 2
+      },
+      {
+       "tipo": "noExtremo",
+       "a": "Hugo"
+      },
+      {
+       "tipo": "juntos",
+       "a": "Flor",
+       "b": "Gael"
+      }
+     ]
+    }
+   ],
+   "espera": {
+    "total": 0,
+    "contradiccion": true,
+    "culpables": [
+     0,
+     1,
+     2,
+     3,
+     4
+    ]
+   }
+  },
+  {
+   "nombre": "¿Qué pasa si…? 1: la pista que sobra es «Flor está a la izquierda de Gael»: Flor en la 2 y Gael lejos de ella ya ponen a Gael en la 4 o la 5 (la pista negativa sí hacía falta: sin ella hay 2 soluciones)",
+   "fn": "pistaQueSobra",
+   "args": [
+    {
+     "forma": "lineal",
+     "personas": [
+      "Flor",
+      "Gael",
+      "Hugo",
+      "Iris",
+      "Juan"
+     ],
+     "pistas": [
+      {
+       "tipo": "lugar",
+       "a": "Flor",
+       "k": 2
+      },
+      {
+       "tipo": "noJuntos",
+       "a": "Flor",
+       "b": "Gael"
+      },
+      {
+       "tipo": "izquierda",
+       "a": "Flor",
+       "b": "Gael"
+      },
+      {
+       "tipo": "inmIzquierda",
+       "a": "Hugo",
+       "b": "Iris"
+      }
+     ]
+    }
+   ],
+   "espera": {
+    "respuesta": 2,
+    "total": 1,
+    "sin": [
+     6,
+     2,
+     1,
+     12
+    ],
+    "errores.negativaNoRestringe": 1
+   },
+   "tambien": [
+    {
+     "fn": "resolver",
+     "args": [
+      {
+       "forma": "lineal",
+       "personas": [
+        "Flor",
+        "Gael",
+        "Hugo",
+        "Iris",
+        "Juan"
+       ],
+       "pistas": [
+        {
+         "tipo": "lugar",
+         "a": "Flor",
+         "k": 2
+        },
+        {
+         "tipo": "noJuntos",
+         "a": "Flor",
+         "b": "Gael"
+        },
+        {
+         "tipo": "izquierda",
+         "a": "Flor",
+         "b": "Gael"
+        },
+        {
+         "tipo": "inmIzquierda",
+         "a": "Hugo",
+         "b": "Iris"
+        }
+       ]
+      }
+     ],
+     "espera": {
+      "soluciones": [
+       [
+        "Juan",
+        "Flor",
+        "Hugo",
+        "Iris",
+        "Gael"
+       ]
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "¿Qué pasa si…? 2: Iris en la butaca 2 y Juan a la derecha de Iris (no necesariamente junto): Juan puede ir en la 3, la 4 o la 5 (leído «inmediatamente»: solo la 3; con izquierda y derecha cambiadas: la 1; sin la pista de dirección: 1, 3, 4 o 5)",
+   "fn": "lugaresDe",
+   "args": [
+    {
+     "forma": "lineal",
+     "personas": [
+      "Flor",
+      "Gael",
+      "Hugo",
+      "Iris",
+      "Juan"
+     ],
+     "pistas": [
+      {
+       "tipo": "derecha",
+       "a": "Juan",
+       "b": "Iris"
+      },
+      {
+       "tipo": "lugar",
+       "a": "Iris",
+       "k": 2
+      }
+     ]
+    },
+    "Juan"
+   ],
+   "espera": {
+    "respuesta": [
+     3,
+     4,
+     5
+    ],
+    "total": 18,
+    "errores.inmediata": [
+     3
+    ],
+    "errores.sentidoInvertido": [
+     1
+    ],
+    "errores.sinDireccion": [
+     1,
+     3,
+     4,
+     5
+    ]
+   }
+  },
+  {
+   "nombre": "¿Qué pasa si…? 3: cinco personas en una mesa redonda de 5 sillas, sin pistas: 4! = 24 maneras, porque los giros son la misma (contadas como en fila: 120; contando también los reflejos como iguales: 12)",
+   "fn": "maneras",
+   "args": [
+    "circular",
+    5
+   ],
+   "espera": {
+    "total": 24,
+    "formula": 24,
+    "errores.rotacionesDistintas": 120,
+    "errores.tambienReflejos": 12,
+    "errores.sinFactorial": 4
+   },
+   "tambien": [
+    {
+     "fn": "maneras",
+     "args": [
+      "lineal",
+      5
+     ],
+     "espera": {
+      "total": 120
+     }
+    },
+    {
+     "fn": "mismoArreglo",
+     "args": [
+      {
+       "forma": "circular",
+       "personas": [
+        "Flor",
+        "Gael",
+        "Hugo",
+        "Iris",
+        "Juan"
+       ],
+       "pistas": [
+        {
+         "tipo": "inmDerecha",
+         "a": "Gael",
+         "b": "Flor"
+        },
+        {
+         "tipo": "noJuntos",
+         "a": "Hugo",
+         "b": "Flor"
+        },
+        {
+         "tipo": "juntos",
+         "a": "Iris",
+         "b": "Gael"
+        }
+       ]
+      },
+      [
+       "Flor",
+       "Gael",
+       "Iris",
+       "Hugo",
+       "Juan"
+      ],
+      [
+       "Juan",
+       "Flor",
+       "Gael",
+       "Iris",
+       "Hugo"
+      ]
+     ],
+     "espera": {}
+    }
+   ]
+  },
+  {
+   "nombre": "Mesa redonda con pistas: Gael inmediatamente a la derecha de Flor, Hugo lejos de Flor e Iris junto a Gael dejan un solo arreglo (salvo giros): a la derecha de Iris está Hugo",
+   "fn": "quien",
+   "args": [
+    {
+     "forma": "circular",
+     "personas": [
+      "Flor",
+      "Gael",
+      "Hugo",
+      "Iris",
+      "Juan"
+     ],
+     "pistas": [
+      {
+       "tipo": "inmDerecha",
+       "a": "Gael",
+       "b": "Flor"
+      },
+      {
+       "tipo": "noJuntos",
+       "a": "Hugo",
+       "b": "Flor"
+      },
+      {
+       "tipo": "juntos",
+       "a": "Iris",
+       "b": "Gael"
+      }
+     ]
+    },
+    {
+     "tipo": "derechaDe",
+     "de": "Iris"
+    }
+   ],
+   "espera": {
+    "respuesta": "Hugo",
+    "soluciones": 1,
+    "errores.olvidaNegativa": "Juan",
+    "errores.sentidoInvertido": "Gael"
+   },
+   "tambien": [
+    {
+     "fn": "resolver",
+     "args": [
+      {
+       "forma": "circular",
+       "personas": [
+        "Flor",
+        "Gael",
+        "Hugo",
+        "Iris",
+        "Juan"
+       ],
+       "pistas": [
+        {
+         "tipo": "inmDerecha",
+         "a": "Gael",
+         "b": "Flor"
+        },
+        {
+         "tipo": "noJuntos",
+         "a": "Hugo",
+         "b": "Flor"
+        },
+        {
+         "tipo": "juntos",
+         "a": "Iris",
+         "b": "Gael"
+        }
+       ]
+      }
+     ],
+     "espera": {
+      "total": 1,
+      "soluciones": [
+       [
+        "Flor",
+        "Gael",
+        "Iris",
+        "Hugo",
+        "Juan"
+       ]
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "¿Qué pasa si…? 4: cuadro de doble entrada (oficio y ciudad); Iris es de Puno (sin las pistas con «no»: Cusco; sin la pista que cruza oficio y ciudad: Arequipa)",
+   "fn": "quien",
+   "args": [
+    {
+     "forma": "cuadro",
+     "personas": [
+      "Gael",
+      "Iris",
+      "Juan"
+     ],
+     "atributos": {
+      "oficio": [
+       "chef",
+       "docente",
+       "piloto"
+      ],
+      "ciudad": [
+       "Puno",
+       "Cusco",
+       "Arequipa"
+      ]
+     },
+     "frases": {
+      "oficio": "es {v}",
+      "ciudad": "es de {v}"
+     },
+     "pistas": [
+      {
+       "tipo": "es",
+       "persona": "Gael",
+       "atributo": "oficio",
+       "valor": "chef"
+      },
+      {
+       "tipo": "noEs",
+       "persona": "Gael",
+       "atributo": "ciudad",
+       "valor": "Puno"
+      },
+      {
+       "tipo": "noEs",
+       "persona": "Iris",
+       "atributo": "oficio",
+       "valor": "docente"
+      },
+      {
+       "tipo": "mismo",
+       "atr1": "oficio",
+       "val1": "docente",
+       "atr2": "ciudad",
+       "val2": "Cusco"
+      }
+     ]
+    },
+    {
+     "tipo": "valor",
+     "persona": "Iris",
+     "atributo": "ciudad"
+    }
+   ],
+   "espera": {
+    "respuesta": "Puno",
+    "soluciones": 1,
+    "errores.olvidaNegativa": "Cusco",
+    "errores.sinCruce": "Arequipa"
+   },
+   "tambien": [
+    {
+     "fn": "resolver",
+     "args": [
+      {
+       "forma": "cuadro",
+       "personas": [
+        "Gael",
+        "Iris",
+        "Juan"
+       ],
+       "atributos": {
+        "oficio": [
+         "chef",
+         "docente",
+         "piloto"
+        ],
+        "ciudad": [
+         "Puno",
+         "Cusco",
+         "Arequipa"
+        ]
+       },
+       "frases": {
+        "oficio": "es {v}",
+        "ciudad": "es de {v}"
+       },
+       "pistas": [
+        {
+         "tipo": "es",
+         "persona": "Gael",
+         "atributo": "oficio",
+         "valor": "chef"
+        },
+        {
+         "tipo": "noEs",
+         "persona": "Gael",
+         "atributo": "ciudad",
+         "valor": "Puno"
+        },
+        {
+         "tipo": "noEs",
+         "persona": "Iris",
+         "atributo": "oficio",
+         "valor": "docente"
+        },
+        {
+         "tipo": "mismo",
+         "atr1": "oficio",
+         "val1": "docente",
+         "atr2": "ciudad",
+         "val2": "Cusco"
+        }
+       ]
+      }
+     ],
+     "espera": {
+      "total": 1,
+      "soluciones": [
+       {
+        "oficio": [
+         "chef",
+         "piloto",
+         "docente"
+        ],
+        "ciudad": [
+         "Arequipa",
+         "Puno",
+         "Cusco"
+        ]
+       }
+      ]
+     }
+    },
+    {
+     "fn": "quien",
+     "args": [
+      {
+       "forma": "cuadro",
+       "personas": [
+        "Gael",
+        "Iris",
+        "Juan"
+       ],
+       "atributos": {
+        "oficio": [
+         "chef",
+         "docente",
+         "piloto"
+        ],
+        "ciudad": [
+         "Puno",
+         "Cusco",
+         "Arequipa"
+        ]
+       },
+       "frases": {
+        "oficio": "es {v}",
+        "ciudad": "es de {v}"
+       },
+       "pistas": [
+        {
+         "tipo": "es",
+         "persona": "Gael",
+         "atributo": "oficio",
+         "valor": "chef"
+        },
+        {
+         "tipo": "noEs",
+         "persona": "Gael",
+         "atributo": "ciudad",
+         "valor": "Puno"
+        },
+        {
+         "tipo": "noEs",
+         "persona": "Iris",
+         "atributo": "oficio",
+         "valor": "docente"
+        },
+        {
+         "tipo": "mismo",
+         "atr1": "oficio",
+         "val1": "docente",
+         "atr2": "ciudad",
+         "val2": "Cusco"
+        }
+       ]
+      },
+      {
+       "tipo": "quienTiene",
+       "atributo": "oficio",
+       "valor": "docente"
+      }
+     ],
+     "espera": {
+      "respuesta": "Juan"
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "Predicción del paso 6: la ventana abierta, con un solo mentiroso. Las frases de Hugo («Fue Gael») e Iris («No fue Gael») se contradicen, así que Flor y Gael dicen la verdad: fue Flor y miente Hugo (la culpable como mentirosa: Flor; el otro del par: Iris; el acusado: Gael)",
+   "fn": "verdades",
+   "args": [
+    {
+     "personas": [
+      "Flor",
+      "Gael",
+      "Hugo",
+      "Iris"
+     ],
+     "frases": [
+      {
+       "de": "Flor",
+       "dice": {
+        "tipo": "culpable",
+        "x": "Flor"
+       }
+      },
+      {
+       "de": "Gael",
+       "dice": {
+        "tipo": "culpable",
+        "x": "Flor"
+       }
+      },
+      {
+       "de": "Hugo",
+       "dice": {
+        "tipo": "culpable",
+        "x": "Gael"
+       }
+      },
+      {
+       "de": "Iris",
+       "dice": {
+        "tipo": "noCulpable",
+        "x": "Gael"
+       }
+      }
+     ],
+     "mienten": {
+      "exactamente": 1
+     }
+    }
+   ],
+   "espera": {
+    "unica": true,
+    "culpable": "Flor",
+    "mentirosos": [
+     "Hugo"
+    ],
+    "pares": [
+     [
+      2,
+      3
+     ]
+    ],
+    "textos": [
+     "Fui yo",
+     "Fue Flor",
+     "Fue Gael",
+     "No fue Gael"
+    ],
+    "erroresMiente.culpableEsMentiroso": "Flor",
+    "erroresMiente.otroDelPar": "Iris",
+    "erroresMiente.acusadoMiente": "Gael",
+    "erroresCulpable.mentirosoEsCulpable": "Hugo",
+    "erroresCulpable.creeAlMentiroso": "Gael"
+   }
+  },
+  {
+   "nombre": "Paso 7: suponer quién miente. Si miente Hugo, todo encaja y la culpable es Flor; si miente Flor, su frase («Fui yo») y la de Gael («Fue Flor») chocan",
+   "fn": "hipotesis",
+   "args": [
+    {
+     "personas": [
+      "Flor",
+      "Gael",
+      "Hugo",
+      "Iris"
+     ],
+     "frases": [
+      {
+       "de": "Flor",
+       "dice": {
+        "tipo": "culpable",
+        "x": "Flor"
+       }
+      },
+      {
+       "de": "Gael",
+       "dice": {
+        "tipo": "culpable",
+        "x": "Flor"
+       }
+      },
+      {
+       "de": "Hugo",
+       "dice": {
+        "tipo": "culpable",
+        "x": "Gael"
+       }
+      },
+      {
+       "de": "Iris",
+       "dice": {
+        "tipo": "noCulpable",
+        "x": "Gael"
+       }
+      }
+     ],
+     "mienten": {
+      "exactamente": 1
+     }
+    },
+    [
+     "Hugo"
+    ]
+   ],
+   "espera": {
+    "consistente": true,
+    "culpables": [
+     "Flor"
+    ],
+    "requiere": [
+     true,
+     true,
+     false,
+     true
+    ],
+    "valores": [
+     true,
+     true,
+     false,
+     true
+    ]
+   },
+   "tambien": [
+    {
+     "fn": "hipotesis",
+     "args": [
+      {
+       "personas": [
+        "Flor",
+        "Gael",
+        "Hugo",
+        "Iris"
+       ],
+       "frases": [
+        {
+         "de": "Flor",
+         "dice": {
+          "tipo": "culpable",
+          "x": "Flor"
+         }
+        },
+        {
+         "de": "Gael",
+         "dice": {
+          "tipo": "culpable",
+          "x": "Flor"
+         }
+        },
+        {
+         "de": "Hugo",
+         "dice": {
+          "tipo": "culpable",
+          "x": "Gael"
+         }
+        },
+        {
+         "de": "Iris",
+         "dice": {
+          "tipo": "noCulpable",
+          "x": "Gael"
+         }
+        }
+       ],
+       "mienten": {
+        "exactamente": 1
+       }
+      },
+      [
+       "Flor"
+      ]
+     ],
+     "espera": {
+      "consistente": false,
+      "culpables": [],
+      "choques.0": [
+       0,
+       1
+      ]
+     }
+    },
+    {
+     "fn": "hipotesis",
+     "args": [
+      {
+       "personas": [
+        "Flor",
+        "Gael",
+        "Hugo",
+        "Iris"
+       ],
+       "frases": [
+        {
+         "de": "Flor",
+         "dice": {
+          "tipo": "culpable",
+          "x": "Flor"
+         }
+        },
+        {
+         "de": "Gael",
+         "dice": {
+          "tipo": "culpable",
+          "x": "Flor"
+         }
+        },
+        {
+         "de": "Hugo",
+         "dice": {
+          "tipo": "culpable",
+          "x": "Gael"
+         }
+        },
+        {
+         "de": "Iris",
+         "dice": {
+          "tipo": "noCulpable",
+          "x": "Gael"
+         }
+        }
+       ],
+       "mienten": {
+        "exactamente": 1
+       }
+      },
+      [
+       "Iris"
+      ]
+     ],
+     "espera": {
+      "consistente": false,
+      "choques.0": [
+       0,
+       2
+      ]
+     }
+    },
+    {
+     "fn": "hipotesis",
+     "args": [
+      {
+       "personas": [
+        "Flor",
+        "Gael",
+        "Hugo",
+        "Iris"
+       ],
+       "frases": [
+        {
+         "de": "Flor",
+         "dice": {
+          "tipo": "culpable",
+          "x": "Flor"
+         }
+        },
+        {
+         "de": "Gael",
+         "dice": {
+          "tipo": "culpable",
+          "x": "Flor"
+         }
+        },
+        {
+         "de": "Hugo",
+         "dice": {
+          "tipo": "culpable",
+          "x": "Gael"
+         }
+        },
+        {
+         "de": "Iris",
+         "dice": {
+          "tipo": "noCulpable",
+          "x": "Gael"
+         }
+        }
+       ],
+       "mienten": {
+        "exactamente": 1
+       }
+      },
+      [
+       "Gael"
+      ]
+     ],
+     "espera": {
+      "consistente": false,
+      "choques.0": [
+       0,
+       1
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "Los que siempre mienten o siempre dicen la verdad: Flor dice «Gael miente», Gael dice «Hugo miente» y Hugo dice «Flor y Gael mienten». Solo Gael dice la verdad",
+   "fn": "verdades",
+   "args": [
+    {
+     "personas": [
+      "Flor",
+      "Gael",
+      "Hugo"
+     ],
+     "culpables": null,
+     "frases": [
+      {
+       "de": "Flor",
+       "dice": {
+        "tipo": "miente",
+        "x": "Gael"
+       }
+      },
+      {
+       "de": "Gael",
+       "dice": {
+        "tipo": "miente",
+        "x": "Hugo"
+       }
+      },
+      {
+       "de": "Hugo",
+       "dice": {
+        "tipo": "y",
+        "p": [
+         {
+          "tipo": "miente",
+          "x": "Flor"
+         },
+         {
+          "tipo": "miente",
+          "x": "Gael"
+         }
+        ]
+       }
+      }
+     ],
+     "mienten": "libre"
+    }
+   ],
+   "espera": {
+    "unica": true,
+    "total": 1,
+    "mentirosos": [
+     "Flor",
+     "Hugo"
+    ],
+    "pares": [
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      2
+     ]
+    ]
+   }
+  },
+  {
+   "nombre": "Predicción del paso 8 (RM6): 6 rojas, 5 azules y 4 verdes; para tener con seguridad 2 del mismo color hay que sacar 4: en el peor caso salen una de cada color y la cuarta repite (mejor caso: 2; sin la última: 3; dos de cada color: 6; las del color más abundante más una: 7)",
+   "fn": "certeza",
+   "args": [
+    {
+     "urna": {
+      "roja": 6,
+      "azul": 5,
+      "verde": 4
+     },
+     "objetivo": {
+      "tipo": "mismoColor",
+      "k": 2
+     }
+    }
+   ],
+   "espera": {
+    "n": 4,
+    "total": 15,
+    "secuencia": [
+     "roja",
+     "azul",
+     "verde",
+     "roja"
+    ],
+    "errores.mejorCaso": 2,
+    "errores.sinMasUno": 3,
+    "errores.porColores": 6,
+    "errores.masAbundante": 7
+   }
+  },
+  {
+   "nombre": "¿Qué pasa si…? 5: para tener con seguridad 2 rojas hay que sacar 11: en el peor caso salen antes las 5 azules y las 4 verdes (mejor caso: 2; con una roja menos: 10; olvidando un color: 7; la respuesta de «2 del mismo color»: 4)",
+   "fn": "certeza",
+   "args": [
+    {
+     "urna": {
+      "roja": 6,
+      "azul": 5,
+      "verde": 4
+     },
+     "objetivo": {
+      "tipo": "deColor",
+      "color": "roja",
+      "k": 2
+     }
+    }
+   ],
+   "espera": {
+    "n": 11,
+    "secuencia": [
+     "azul",
+     "azul",
+     "azul",
+     "azul",
+     "azul",
+     "verde",
+     "verde",
+     "verde",
+     "verde",
+     "roja",
+     "roja"
+    ],
+    "errores.mejorCaso": 2,
+    "errores.sinMasUno": 10,
+    "errores.soloUnOtro": 7,
+    "errores.confundeMismoColor": 4
+   },
+   "tambien": [
+    {
+     "fn": "certeza",
+     "args": [
+      {
+       "urna": {
+        "roja": 6,
+        "azul": 5,
+        "verde": 4
+       },
+       "objetivo": {
+        "tipo": "unoDeCada"
+       }
+      }
+     ],
+     "espera": {
+      "n": 12,
+      "errores.mejorCaso": 3
+     }
+    },
+    {
+     "fn": "certeza",
+     "args": [
+      {
+       "urna": {
+        "roja": 6,
+        "azul": 5,
+        "verde": 4
+       },
+       "objetivo": {
+        "tipo": "distintos"
+       }
+      }
+     ],
+     "espera": {
+      "n": 7,
+      "errores.mejorCaso": 2
+     }
+    },
+    {
+     "fn": "certeza",
+     "args": [
+      {
+       "urna": {
+        "roja": 6,
+        "azul": 5,
+        "verde": 4
+       },
+       "objetivo": {
+        "tipo": "mismoColor",
+        "k": 3
+       }
+      }
+     ],
+     "espera": {
+      "n": 7
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "Llaves y candados: con 4 llaves y 4 candados mezclados, en el peor caso hacen falta 3 + 2 + 1 = 6 intentos para saber cuál abre cada uno (probando todas en cada candado: 12)",
+   "fn": "llaves",
+   "args": [
+    4
+   ],
+   "espera": {
+    "intentos": 6,
+    "porCandado": [
+     3,
+     2,
+     1
+    ],
+    "errores.sinDescontar": 12,
+    "errores.nCuadrado": 16
+   }
+  }
+ ]
+}
