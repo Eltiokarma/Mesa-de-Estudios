@@ -1,0 +1,132 @@
+{
+  "titulo": "Alturas que no se suman: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Dibuja el triángulo de hipotenusa 1 o la circunferencia cuando te ayude. Tres controles antes de marcar: el seno de una suma no es la suma de los senos (sen(a + b) = sen a cos b + cos a sen b); sen²x es (sen x)², no sen(x²); y en el ángulo mitad, el signo lo da el cuadrante de x/2, no el de x.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Si cos x = 5/13 y x es agudo, calcula sen x, tan x y csc x.",
+      "respuesta": "sen x = 12/13, tan x = 12/5 y csc x = 13/12.",
+      "pasos": [
+        "Con sen²x + cos²x = 1: sen²x = 1 − 25/169 = 144/169.",
+        "x es agudo, así que sen x es positivo: sen x = 12/13. No es 1 − 5/13 = 8/13: lo que suma 1 son los cuadrados, no las razones.",
+        "Por cociente, tan x = sen x / cos x = (12/13)/(5/13) = 12/5. Por recíproca, csc x = 1/sen x = 13/12.",
+        "Control: es el triángulo de lados 5, 12 y 13; 25 + 144 = 169."
+      ],
+      "verificar": [ { "fn": "pitagorica", "args": [{ "cos": "5/13" }], "espera": { "texto": "12/13", "tan.texto": "12/5", "errores.lineal.texto": "8/13" } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Simplifica E = (sec x − cos x) / tan x.",
+      "respuesta": "E = sen x.",
+      "pasos": [
+        "Todo en senos y cosenos: sec x − cos x = 1/cos x − cos x = (1 − cos²x)/cos x.",
+        "Con la pitagórica, 1 − cos²x = sen²x: el numerador queda sen²x / cos x.",
+        "Dividir entre tan x = sen x / cos x es multiplicar por cos x / sen x: (sen²x / cos x) · (cos x / sen x) = sen x.",
+        "Control con x = 30°: (2/√3 − √3/2)/(1/√3) = (1/(2√3))·√3 = 1/2 = sen 30°."
+      ],
+      "verificar": [ { "fn": "identidad", "args": [{ "izq": "(sec(x) - cos(x))/tan(x)", "der": "sen(x)" }], "espera": { "es": true } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Demuestra que tan x + cot x = sec x · csc x.",
+      "respuesta": "Se cumple para todo x con sen x ≠ 0 y cos x ≠ 0.",
+      "pasos": [
+        "Se trabaja un solo lado, el izquierdo: tan x + cot x = sen x / cos x + cos x / sen x.",
+        "Con denominador común: (sen²x + cos²x)/(sen x · cos x).",
+        "El numerador vale 1 por la pitagórica: queda 1/(sen x · cos x) = (1/cos x)(1/sen x) = sec x · csc x.",
+        "Control con x = 45°: 1 + 1 = 2 y √2 · √2 = 2."
+      ],
+      "verificar": [ { "fn": "identidad", "args": [{ "izq": "tan(x) + cot(x)", "der": "sec(x)*csc(x)" }], "espera": { "es": true } },
+                     { "fn": "identidad", "args": [{ "izq": "tan(x) + cot(x)", "der": "1" }], "espera": { "es": false } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Calcula cos 15° usando 15° = 45° − 30°.",
+      "respuesta": "cos 15° = (√6 + √2)/4 ≈ 0,97.",
+      "pasos": [
+        "cos(a − b) = cos a cos b + sen a sen b: con la resta, el signo del medio es +.",
+        "cos 45° cos 30° + sen 45° sen 30° = (√2/2)(√3/2) + (√2/2)(1/2) = √6/4 + √2/4.",
+        "Resultado: (√6 + √2)/4. No es cos 45° − cos 30°, que da un número negativo: el coseno de un ángulo agudo es positivo."
+      ],
+      "verificar": [ { "fn": "suma", "args": [{ "a": 45, "b": 30, "op": "−", "fn": "cos" }], "espera": { "texto": "(√6 + √2)/4", "errores.lineal.texto": "(−√3 + √2)/2" } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Con la convención de academia (sen 37° = 3/5), calcula sen 8° usando 8° = 45° − 37°.",
+      "respuesta": "sen 8° = √2/10.",
+      "pasos": [
+        "sen(a − b) = sen a cos b − cos a sen b.",
+        "sen 45° cos 37° − cos 45° sen 37° = (√2/2)(4/5) − (√2/2)(3/5).",
+        "= 4√2/10 − 3√2/10 = √2/10 ≈ 0,14. Control: el ángulo es chico y su seno también."
+      ],
+      "verificar": [ { "fn": "suma", "args": [{ "a": 45, "b": 37, "op": "−" }], "espera": { "texto": "√2/10" } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Si tan a = 2 y tan b = 3, con a y b agudos, calcula tan(a + b) y el ángulo a + b.",
+      "respuesta": "tan(a + b) = −1 y a + b = 135°.",
+      "pasos": [
+        "tan(a + b) = (tan a + tan b)/(1 − tan a · tan b) = (2 + 3)/(1 − 6) = 5/(−5) = −1.",
+        "Los dos son agudos, así que a + b está entre 0° y 180°. Con tangente −1, es 135°.",
+        "No es 2 + 3 = 5: la tangente de una suma tampoco es la suma de las tangentes."
+      ],
+      "verificar": [ { "fn": "sumaTan", "args": [{ "ta": "2", "tb": "3" }], "espera": { "texto": "−1", "angulo": 135, "errores.lineal.texto": "5" } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Si sen x = 5/13 y x está en el segundo cuadrante, calcula sen 2x y cos 2x.",
+      "respuesta": "sen 2x = −120/169 y cos 2x = 119/169.",
+      "pasos": [
+        "En el segundo cuadrante el coseno es negativo: cos x = −12/13.",
+        "sen 2x = 2 sen x cos x = 2 (5/13)(−12/13) = −120/169.",
+        "cos 2x = 1 − 2 sen²x = 1 − 50/169 = 119/169. Control con otra forma: cos²x − sen²x = 144/169 − 25/169 = 119/169."
+      ],
+      "verificar": [ { "fn": "doble", "args": [{ "sen": "5/13", "cuadrante": 2 }], "espera": { "senDoble.texto": "−120/169", "cosDoble.texto": "119/169", "cos.texto": "−12/13" } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Si cos x = 1/9 y x es agudo, calcula sen(x/2) y cos(x/2).",
+      "respuesta": "sen(x/2) = 2/3 y cos(x/2) = √5/3.",
+      "pasos": [
+        "x/2 también es agudo: los dos salen positivos.",
+        "sen(x/2) = √((1 − cos x)/2) = √((8/9)/2) = √(4/9) = 2/3.",
+        "cos(x/2) = √((1 + cos x)/2) = √((10/9)/2) = √(5/9) = √5/3.",
+        "Control: (2/3)² + (√5/3)² = 4/9 + 5/9 = 1. No es (1/9)/2 = 1/18: la mitad del ángulo no es la mitad del coseno."
+      ],
+      "verificar": [ { "fn": "mitad", "args": [{ "cos": "1/9", "desde": 0, "hasta": 90 }], "espera": { "texto": "√5/3", "senMitad.texto": "2/3", "errores.lineal.texto": "1/18" } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Si cos x = −7/25 y 180° < x < 270°, calcula sen(x/2) y cos(x/2).",
+      "respuesta": "sen(x/2) = 4/5 y cos(x/2) = −3/5.",
+      "pasos": [
+        "Primero el cuadrante de x/2: si 180° < x < 270°, entonces 90° < x/2 < 135°, en el segundo cuadrante. Ahí el seno es positivo y el coseno negativo.",
+        "sen(x/2) = +√((1 − cos x)/2) = √((32/25)/2) = √(16/25) = 4/5.",
+        "cos(x/2) = −√((1 + cos x)/2) = −√((18/25)/2) = −√(9/25) = −3/5.",
+        "El signo no sale de x (tercer cuadrante, donde los dos son negativos), sino de x/2."
+      ],
+      "verificar": [ { "fn": "mitad", "args": [{ "cos": "-7/25", "desde": 180, "hasta": 270 }], "espera": { "texto": "−3/5", "senMitad.texto": "4/5", "cuadranteMitad": 2, "errores.signo.texto": "3/5" } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Si sen x = 1/4, calcula sen 3x.",
+      "respuesta": "sen 3x = 11/16.",
+      "pasos": [
+        "sen 3x = 3 sen x − 4 sen³x.",
+        "3 (1/4) − 4 (1/64) = 3/4 − 1/16 = 12/16 − 1/16 = 11/16.",
+        "No es 3 sen x = 3/4: el triple del ángulo no es el triple del seno."
+      ],
+      "verificar": [ { "fn": "triple", "args": [{ "sen": "1/4" }], "espera": { "texto": "11/16", "errores.lineal.texto": "3/4" } } ]
+    }
+  ]
+}
