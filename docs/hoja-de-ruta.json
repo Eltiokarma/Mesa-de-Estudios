@@ -280,13 +280,13 @@
       "nombre": "Redox y electroquímica",
       "inicio": "2026-12-02",
       "fin": "2026-12-07",
-      "estado": "pendiente",
-      "progreso": 0,
+      "estado": "en_curso",
+      "progreso": 80,
       "critico": false,
       "depende_de": [
         "pl3"
       ],
-      "notas": ""
+      "notas": "plantillas/celda-galvanica (construida por un subagente): potenciales de academia, pila, electrólisis, voltímetro con y sin puente, Faraday y una animación donde la carga se conserva en cada paso; 21 casos verificados aparte por dos caminos (E° y ΔG); 48 pruebas; papel (10); 5 qué pasa si (EC1/EC5, EC11 con el dato de la UNAM, duplicar, Faraday, EC3/EC4). Falta: electrólisis del agua, Nernst y el pase con alumnos."
     },
     {
       "id": "ma4",

@@ -1013,7 +1013,9 @@
      },
      "potencial_visual": "medio",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "celda-galvanica"
+     ]
     },
     {
      "id": "quimica.hidrocarburos",
@@ -4023,6 +4025,23 @@
     "/plantillas/calorimetria/index.html",
     "/plantillas/calorimetria/motor.js",
     "/plantillas/calorimetria/papel.json"
+   ]
+  },
+  "celda-galvanica": {
+   "id": "celda-galvanica",
+   "titulo": "Redox y celda galvánica: electrones por el alambre, iones por el puente",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.electroquimica"
+   ],
+   "url": "/plantillas/celda-galvanica/index.html",
+   "papel": "/plantillas/celda-galvanica/papel.json",
+   "archivos": [
+    "/plantillas/celda-galvanica/index.html",
+    "/plantillas/celda-galvanica/motor.js",
+    "/plantillas/celda-galvanica/papel.json"
    ]
   },
   "circuitos-cc": {

@@ -8,7 +8,7 @@
 npm test
 ```
 
-Deben pasar 405 pruebas.
+Deben pasar 453 pruebas.
 
 ```bash
 npm run dev
@@ -35,7 +35,7 @@ Si hay que hacer OCR, instala tesseract en español: `apt-get install -y tessera
 | Catálogo | 8 cursos y 151 unidades, con su universidad (UNI, San Marcos) y su grado (3.º, 4.º o 5.º, estimado) |
 | App (PWA) | Bienvenida, inicio, cursos, práctica, lápiz y papel, progreso y perfil. Funciona sin conexión y en celular y computadora (menú lateral desde 900 px, atajos de teclado). Diseño acogedor con ilustraciones SVG propias |
 | Medición | Pruebas de entrada y salida y registro anónimo de cada predicción, también desde las escenas. Se exporta a CSV o JSON desde Perfil; `herramientas/analizar-medicion.js` junta los archivos |
-| Plantillas de escena | Banco Óptico (lentes), espejos esféricos, circuitos de corriente continua, calorimetría con cambios de fase, trabajo y energía (rampa con resorte), MRUV con gráficas, reactivo limitante con partículas, gases a nivel de partículas, soluciones con cuadros y puntos, y ácidos, bases y pH. Cada una con motor, casos verificados con fracciones, paso a paso con predicción, "¿qué pasa si…?" y 9 problemas de papel |
+| Plantillas de escena | Banco Óptico (lentes), espejos esféricos, circuitos de corriente continua, calorimetría con cambios de fase, trabajo y energía (rampa con resorte), MRUV con gráficas, reactivo limitante con partículas, gases a nivel de partículas, soluciones con cuadros y puntos, ácidos, bases y pH, y la celda galvánica. Cada una con motor, casos verificados con fracciones, paso a paso con predicción, "¿qué pasa si…?" y 9 problemas de papel |
 | Plantillas de predicciones | Reactivo limitante (química) y aumentos y descuentos sucesivos (aritmética), con generador por semilla |
 
 ## Pendientes, en orden de prioridad
@@ -51,7 +51,6 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 
 | Id | Módulo | Informe de ideas erróneas | Nota |
 | --- | --- | --- | --- |
-| qu4 | Redox y celda galvánica | `equilibrio-acidos-electroquimica-ideas-erroneas.md` | En construcción, en `plantillas/celda-galvanica/` |
 | ma1 a ma3 | Trigonometría, geometría, funciones | Sin informe todavía | Hay que investigar las ideas erróneas antes de construir |
 | ma4 | Aritmética | Sin informe | Porcentajes sucesivos ya existe; los errores son hipótesis |
 | ra1 | Razonamiento matemático | Sin informe | Formato predicciones |
@@ -91,6 +90,7 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
   - No cubre saturado contra diluido (SO13), volúmenes que no se suman (SO5), solubilidad de gases (SO6) ni coloides.
   - El modelo supone que agregar soluto no cambia el volumen; la escena lo dice. En el explorador, sacar una parte a veces no da puntos enteros: el dibujo redondea y lo avisa.
 - **pH** (`plantillas/acidos-bases/`, hecha el 6 nov 2026 por un subagente): el H₂SO₄ se toma como diprótico fuerte (convención de academia; su segunda ionización real es parcial). No cubre pares conjugados, Lewis, indicadores ni curvas de titulación dibujadas (hay tabla).
+- **Celda galvánica** (`plantillas/celda-galvanica/`, hecha el 6 nov 2026 por un subagente): puente de KNO₃ con nitratos en los vasos (con Ag⁺, el KCl precipitaría AgCl). No cubre la electrólisis del agua ni Nernst; el explorador dibuja Zn, Fe, Cu y Ag (el motor tiene más metales).
 - **Todas:** el estado es `borrador`. Pasan a `probada` con los datos del colegio.
 
 ### 3. Plataforma

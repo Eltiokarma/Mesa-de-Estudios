@@ -1,0 +1,1021 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Redox y celda galvánica: electrones por el alambre, iones por el puente</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), copiada del molde de soluciones.
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables y de las especies (regla 4):
+     --c-e   electrones, carga Q y moles de e⁻   dorado    #8f5f00 / #ffd54a
+     --c-E   potencial y fem (voltímetro)        magenta   #b3246b / #ff86bd (el mismo voltaje de circuitos-cc)
+     --c-cat cationes del puente (K⁺)            índigo    #0f04a9 / #857eed
+     --c-an  aniones (NO₃⁻)                      verde     #4f7a17 / #a3d65e
+     --c-Zn  zinc y Zn²⁺                         celeste   #1975b3 / #99d6ff
+     --c-Cu  cobre y Cu²⁺                        cobre     #c93c0c / #ff9a66
+     --c-Ag  plata y Ag⁺                         turquesa  #0f766e / #5ed9c8
+     --c-Fe  hierro y Fe²⁺                       granate   #57191d / #ff4d58
+     --c-I   corriente (Faraday)                 azul      #1f5fbf / #7cb0ff (el de circuitos-cc)
+     --c-t   tiempo (Faraday)                    violeta   #5719b3 / #aa7eed
+   La masa depositada va en el color de su metal. Entre colores que aparecen en el mismo dibujo, la diferencia
+   CIEDE2000 mínima es 21,0 (claro y oscuro); todos pasan el contraste AA sobre el papel y la tarjeta. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-e:#8f5f00; --c-E:#b3246b; --c-cat:#0f04a9; --c-an:#4f7a17; --c-Zn:#1975b3; --c-Cu:#c93c0c; --c-Ag:#0f766e; --c-Fe:#57191d;
+  --c-I:#1f5fbf; --c-t:#5719b3;
+  --cable:#4b3f5c; --vidrio:#8e97a8; --liquido:rgba(31,95,191,.06); --puente:#efe6dc;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-e:#ffd54a; --c-E:#ff86bd; --c-cat:#857eed; --c-an:#a3d65e; --c-Zn:#99d6ff; --c-Cu:#ff9a66; --c-Ag:#5ed9c8; --c-Fe:#ff4d58;
+  --c-I:#7cb0ff; --c-t:#aa7eed;
+  --cable:#cfc4dc; --vidrio:#a99cb8; --liquido:rgba(124,176,255,.07); --puente:#3a3046; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-e:#ffd54a; --c-E:#ff86bd; --c-cat:#857eed; --c-an:#a3d65e; --c-Zn:#99d6ff; --c-Cu:#ff9a66; --c-Ag:#5ed9c8; --c-Fe:#ff4d58;
+  --c-I:#7cb0ff; --c-t:#aa7eed;
+  --cable:#cfc4dc; --vidrio:#a99cb8; --liquido:rgba(124,176,255,.07); --puente:#3a3046; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y; -webkit-user-select:none; user-select:none}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+.legend i.pt{width:10px; height:10px; border-radius:50%}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-e{color:var(--c-e); background:color-mix(in srgb, var(--c-e) 12%, transparent)}
+.v-E{color:var(--c-E); background:color-mix(in srgb, var(--c-E) 12%, transparent)}
+.v-cat{color:var(--c-cat); background:color-mix(in srgb, var(--c-cat) 12%, transparent)}
+.v-an{color:var(--c-an); background:color-mix(in srgb, var(--c-an) 12%, transparent)}
+.v-Zn{color:var(--c-Zn); background:color-mix(in srgb, var(--c-Zn) 12%, transparent)}
+.v-Cu{color:var(--c-Cu); background:color-mix(in srgb, var(--c-Cu) 12%, transparent)}
+.v-Ag{color:var(--c-Ag); background:color-mix(in srgb, var(--c-Ag) 12%, transparent)}
+.v-Fe{color:var(--c-Fe); background:color-mix(in srgb, var(--c-Fe) 12%, transparent)}
+.v-I{color:var(--c-I); background:color-mix(in srgb, var(--c-I) 12%, transparent)}
+.v-t{color:var(--c-t); background:color-mix(in srgb, var(--c-t) 12%, transparent)}
+.v.hl{background:color-mix(in srgb, currentColor 26%, transparent)}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.02rem; white-space:nowrap; font-variant-numeric:tabular-nums}
+.eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.5em; white-space:normal}
+.frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1.15}
+.frac > span:first-child{border-bottom:1.5px solid currentColor; padding:0 .25em}
+.frac > span:last-child{padding:0 .25em}
+.answer{font-weight:700; padding:12px 16px; border-radius:16px; background:var(--paper); border:2px solid var(--c-E); max-width:66ch}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:999px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.seg button:disabled{opacity:.35; cursor:not-allowed}
+.exps{border-radius:20px}
+.control{display:grid; gap:6px}
+.control > span{font-size:.85rem; color:var(--muted); font-weight:700}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.acciones{display:flex; flex-wrap:wrap; gap:8px}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+/* Lecturas del explorador y tabla de potenciales */
+.lecturas{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:8px}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:8px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura b{display:block; color:var(--k); font:800 1.02rem var(--mono); font-variant-numeric:tabular-nums; overflow-wrap:anywhere}
+.lectura span{display:block; font-size:.78rem; color:var(--muted)}
+.tabla{display:grid; gap:4px; padding:10px 12px; border-radius:16px; background:var(--paper); border:1px solid var(--line)}
+.tabla .fila{display:grid; grid-template-columns:minmax(0,1fr) auto auto; gap:10px; align-items:center; font-family:var(--mono); font-size:.92rem; padding:3px 8px; border-radius:10px}
+.tabla .fila.usa{background:color-mix(in srgb, var(--k) 14%, transparent); font-weight:800}
+.tabla .fila .rol{font-family:var(--font); font-size:.8rem; font-weight:800; color:var(--ink)}
+.tabla .cab{font-size:.78rem; color:var(--muted); font-weight:700}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.4fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Química · Electroquímica · Problemas tipo admisión</p>
+      <h1>Redox y celda galvánica</h1>
+      <p class="sub">Los electrones van solo por el metal y el alambre. Por las disoluciones y el puente salino se mueven iones.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Pila con dos vasos, alambre con voltímetro y puente salino">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Dos vasos con una lámina de metal cada uno, unidos arriba por un alambre con un voltímetro y por un tubo en U, el puente salino. Los puntos son electrones e iones"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos con pilas">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg exps" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/celda-galvanica">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'celda-galvanica', unidad: 'quimica.electroquimica', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la química (quién es ánodo, E°, la reacción, cuántas partículas se mueven y cuándo, Faraday) sale de
+   MotorCelda (motor.js); aquí solo se pinta y se anima. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+// Coma decimal, espacio de miles (desde 5 cifras) y signo menos tipográfico.
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 2 : d), r = Math.round(n*p)/p + 0;
+  let [e, f] = String(Math.abs(r)).split('.');
+  if (e.length >= 5) e = e.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  if (d !== undefined && d > 0) f = (f || '').padEnd(d, '0');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+const fV = x => `${fmt(x, 2)} V`;
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const fr = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const MC = MotorCelda;
+const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
+// Metales con color propio en la escena; los demás de la tabla solo aparecen en texto.
+const METALES = ['Zn', 'Fe', 'Cu', 'Ag'];
+const NOMBRE = { Zn:'zinc', Fe:'hierro', Cu:'cobre', Ag:'plata', Mg:'magnesio', Al:'aluminio', H2:'hidrógeno' };
+const SAL = { Zn:'Zn(NO₃)₂', Fe:'Fe(NO₃)₂', Cu:'Cu(NO₃)₂', Ag:'AgNO₃' };
+const Mx = (id, t) => V(id, t === undefined ? MC.par(id).red : t);   // un metal o su ion, en su color
+
+function crearLienzo(cv, alto, dibujar){
+  const ctx = cv.getContext('2d');
+  const L = { cv, ctx, W:0, H:0 };
+  L.resize = () => {
+    const W = cv.clientWidth; if (!W) return;
+    const H = Math.round(alto(W)), dpr = window.devicePixelRatio || 1;
+    L.W = W; L.H = H; cv.style.height = H + 'px'; cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    dibujar();
+  };
+  new ResizeObserver(L.resize).observe(cv);
+  return L;
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, x1, y1, x2, y2){ ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
+function rr(ctx, x, y, w, h, r){ ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h); }
+// Texto con un fondo claro detrás, para que se lea sobre las líneas.
+function rotulo(ctx, c, x, y, t, color, align, peso, tam, fam){
+  ctx.font = `${peso || 700} ${tam || 12}px ${fam || c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .88; ctx.fillRect(x0 - 3, y - (tam || 12)*0.75, w + 6, (tam || 12)*1.5); ctx.restore();
+  ctx.fillStyle = color; ctx.fillText(t, x, y);
+  return w;
+}
+// Varios trozos de texto seguidos, cada uno con su color: [[texto, color], ...]
+function rotuloColor(ctx, c, x, y, trozos, align, peso, tam, fam){
+  ctx.font = `${peso || 700} ${tam || 12}px ${fam || c.font}`;
+  const ws = trozos.map(([t]) => ctx.measureText(t).width), w = ws.reduce((a, b) => a + b, 0);
+  let x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .88; ctx.fillRect(x0 - 3, y - (tam || 12)*0.75, w + 6, (tam || 12)*1.5); ctx.restore();
+  ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+  trozos.forEach(([t, col], k) => { ctx.fillStyle = col; ctx.fillText(t, x0, y); x0 += ws[k]; });
+  return w;
+}
+function colores(){
+  const g = n => css(n);
+  const c = { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
+    e:g('--c-e'), E:g('--c-E'), cat:g('--c-cat'), an:g('--c-an'), I:g('--c-I'), t:g('--c-t'), warn:g('--warn'),
+    cable:g('--cable'), vidrio:g('--vidrio'), liquido:g('--liquido'), puente:g('--puente'), mono:g('--mono'), font:g('--font') };
+  for (const m of METALES) c[m] = g('--c-' + m);
+  return c;
+}
+const colorDe = (c, id) => c[id] || c.ink;
+const leyendaPila = (a, b, extra) => `<span><i class="pt" style="background:var(--c-e)"></i>e⁻ · electrones (solo en metal y alambre)</span>`
+  + `<span><i class="pt" style="background:var(--c-cat)"></i>K⁺ · catión del puente</span>`
+  + `<span><i class="pt" style="background:var(--c-an)"></i>NO₃⁻ · anión</span>`
+  + [a, b].map(m => `<span><i class="pt" style="background:var(--c-${m})"></i>${MC.par(m).red} y ${MC.par(m).ox} · ${NOMBRE[m]}</span>`).join('')
+  + `<span><i style="background:var(--c-E)"></i>E° · fem (voltímetro)</span>` + (extra || '');
+
+// Resaltar en el dibujo la variable que se toca en el texto (regla 4: el mismo color en el texto y en el dibujo).
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => E.hl = k); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+/* ================= La escena =================
+   tipo 'pila': dos vasos, alambre con voltímetro (o fuente externa) y puente salino. Las partículas son las del
+   modelo del motor (MC.crearParticulas / MC.pasoParticulas); cada una representa muchísimas.
+   tipo 'faraday': celdas de electrólisis en serie con una fuente; se cuentan electrones y átomos depositados. */
+function crearEscena(cv, idDesc, idLey){
+  const E = { tipo:'pila', cfg:{}, est:null, celda:null, hl:null, desc:'', lay:null, flashes:[], fin:0, far:null };
+  ESCENAS.push(E);
+  const L = crearLienzo(cv, W => W >= 560 ? clamp(W*0.64, 380, 470) : 480, () => dibujar(performance.now()));
+  E.L = L;
+  const ESCALA = RM ? 0.6 : 1;     // con "reducir movimiento", todo va más lento
+
+  E.config = cfg => {
+    E.tipo = cfg.tipo || 'pila';
+    E.cfg = Object.assign({ izq:'Zn', der:'Cu', puente:'sal', fuente:false, pausa:false, roles:true, ocultarV:false, grande:false, semilla:1, cargas:true }, cfg);
+    E.flashes = []; E.fin = 0;
+    if (E.tipo === 'pila'){
+      const k = E.cfg;
+      E.celda = k.fuente ? MC.electrolisis(k.izq, k.der) : MC.pila(k.izq, k.der);
+      E.est = MC.crearParticulas({ anodo:E.celda.anodo, catodo:E.celda.catodo, puente: k.puente === 'sal', semilla:k.semilla, abierto:k.pausa,
+        ionesPuente: 16 });
+      E.ultimoDep = 0;
+    } else iniciarFaraday();
+    if (idLey) document.getElementById(idLey).innerHTML = cfg.leyenda !== undefined ? cfg.leyenda
+      : E.tipo === 'pila' ? leyendaPila(E.cfg.izq, E.cfg.der) : leyendaFaraday();
+    E.dibujar();
+  };
+  E.soltar = () => { E.cfg.pausa = false; if (E.est) E.est.abierto = false; };
+  E.cambiarPuente = p => { E.cfg.puente = p; E.config(Object.assign({}, E.cfg, { semilla:E.cfg.semilla + 1 })); };
+  const leyendaFaraday = () => `<span><i class="pt" style="background:var(--c-e)"></i>e⁻ · electrones (solo en metal y alambre)</span>`
+    + E.cfg.especies.map(m => `<span><i class="pt" style="background:var(--c-${m})"></i>${MC.par(m).red} y ${MC.par(m).ox} · ${NOMBRE[m]}</span>`).join('')
+    + `<span><i class="pt" style="background:var(--c-an)"></i>NO₃⁻ · anión</span>`;
+
+  // ----- tiempo -----
+  let ultimo = performance.now();
+  function loop(now){
+    const dt = Math.min(0.1, (now - ultimo)/1000)*ESCALA; ultimo = now;
+    if (cv.offsetParent !== null && L.W){
+      if (E.tipo === 'pila' && E.est){
+        const n = Math.max(1, Math.ceil(dt/0.034));
+        const antes = E.est.depositados;
+        for (let k = 0; k < n; k++) MC.pasoParticulas(E.est, dt/n);
+        if (E.est.depositados > antes && E.est.ultimoDeposito) E.flashes.push({ u:E.est.ultimoDeposito.u, v:E.est.ultimoDeposito.v, t:now });
+        // el dibujo tiene pocas partículas y se agota: al rato, vuelve a empezar
+        const enAlambre = E.est.parts.some(p => p.zona === 'alambre');
+        if (E.est.agotada && !enAlambre && !E.est.eA && !E.est.eC){ E.fin = E.fin || now; if (now - E.fin > 3500){ E.cfg.semilla++; E.config(E.cfg); } }
+        else E.fin = 0;
+      } else if (E.tipo === 'faraday') pasoFaraday(dt);
+      dibujar(now);
+    }
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+
+  /* ---------- pila ---------- */
+  function layout(W, H){
+    const ancho = W >= 560, pad = 10;
+    const bw = Math.min(W*(ancho ? 0.34 : 0.40), 250), xl = pad + bw/2 + 4, xr = W - pad - bw/2 - 4;
+    const yW = ancho ? 50 : 50, yT = Math.round(H*(ancho ? 0.43 : 0.42)), yL = yT + 14, yB = H - (ancho ? 62 : 66);
+    const yE = yT - 46;
+    return { W, H, ancho, bw, xl, xr, yW, yT, yL, yB, yE, cx: W/2 };
+  }
+  // posición de un punto (u, v) del vaso del ánodo ('A') o del cátodo ('C')
+  function enVaso(l, cual, u, v){
+    const lado = cual === 'A' ? E.celda.lados.anodo : E.celda.lados.catodo;
+    const x0 = (lado === 'izq' ? l.xl : l.xr) - l.bw/2 + 6, w = l.bw - 12;
+    const x = lado === 'izq' ? x0 + u*w : x0 + (1 - u)*w;
+    return { x, y: l.yL + v*(l.yB - l.yL - 4) };
+  }
+  // camino del alambre, del ánodo al cátodo: [[x, y], ...] y largo
+  function caminoAlambre(l){
+    const xa = E.celda.lados.anodo === 'izq' ? l.xl : l.xr, xc = E.celda.lados.anodo === 'izq' ? l.xr : l.xl;
+    return [[xa, l.yE], [xa, l.yW], [xc, l.yW], [xc, l.yE]];
+  }
+  function caminoPuente(l){
+    const ia = E.celda.lados.anodo === 'izq', xi = l.xl + l.bw/2 - 18, xd = l.xr - l.bw/2 + 18;
+    const ya = l.yL + (l.yB - l.yL)*0.2, yt = l.yT - 26;
+    const xa = ia ? xi : xd, xc = ia ? xd : xi;
+    return [[xa, ya], [xa, yt], [xc, yt], [xc, ya]];
+  }
+  function sobre(pts, s){
+    const seg = []; let tot = 0;
+    for (let k = 1; k < pts.length; k++){ const d = Math.hypot(pts[k][0] - pts[k-1][0], pts[k][1] - pts[k-1][1]); seg.push(d); tot += d; }
+    let r = clamp(s, 0, 1)*tot;
+    for (let k = 0; k < seg.length; k++){
+      if (r <= seg[k] || k === seg.length - 1){ const f = seg[k] ? r/seg[k] : 0; return { x: pts[k][0] + (pts[k+1][0] - pts[k][0])*f, y: pts[k][1] + (pts[k+1][1] - pts[k][1])*f, dx: Math.sign(pts[k+1][0] - pts[k][0]), dy: Math.sign(pts[k+1][1] - pts[k][1]) }; }
+      r -= seg[k];
+    }
+  }
+  function trazo(ctx, pts){ ctx.beginPath(); pts.forEach(([x, y], k) => k ? ctx.lineTo(x, y) : ctx.moveTo(x, y)); }
+  function anchoElectrodo(l, cual){
+    const base = 2*MC.ELECTRODO.medio*(l.bw - 12)*(E.cfg.grande ? 1.25 : 1), est = E.est;
+    if (cual === 'A') return base*(0.42 + 0.58*est.atomosA/Math.max(1, est.atomosA0));
+    return base*(1 + 0.5*Math.min(1, est.depositados/10));
+  }
+  function dibujarVaso(ctx, c, l, lado){
+    const x = lado === 'izq' ? l.xl : l.xr, x0 = x - l.bw/2, x1 = x + l.bw/2;
+    ctx.save(); ctx.fillStyle = c.liquido; ctx.fillRect(x0 + 2, l.yL, l.bw - 4, l.yB - l.yL);
+    ctx.strokeStyle = c.vidrio; ctx.globalAlpha = .7; ctx.lineWidth = 1.2; linea(ctx, x0 + 2, l.yL, x1 - 2, l.yL); ctx.restore();
+    ctx.save(); ctx.strokeStyle = c.vidrio; ctx.lineWidth = 2.2; ctx.lineJoin = 'round';
+    ctx.beginPath(); ctx.moveTo(x0 - 5, l.yT - 4); ctx.lineTo(x0, l.yT); ctx.lineTo(x0, l.yB - 6); ctx.quadraticCurveTo(x0, l.yB, x0 + 6, l.yB);
+    ctx.lineTo(x1 - 6, l.yB); ctx.quadraticCurveTo(x1, l.yB, x1, l.yB - 6); ctx.lineTo(x1, l.yT); ctx.lineTo(x1 + 5, l.yT - 4); ctx.stroke(); ctx.restore();
+  }
+  function dibujarElectrodo(ctx, c, l, cual, now){
+    const id = cual === 'A' ? E.celda.anodo : E.celda.catodo, lado = cual === 'A' ? E.celda.lados.anodo : E.celda.lados.catodo;
+    const x = lado === 'izq' ? l.xl : l.xr, w = anchoElectrodo(l, cual);
+    const yBot = l.yL + MC.ELECTRODO.vMax*(l.yB - l.yL - 4);
+    const resal = E.hl === id;
+    ctx.save(); rr(ctx, x - w/2, l.yE, w, yBot - l.yE, 3); ctx.fillStyle = colorDe(c, id); ctx.fill();
+    if (resal){ ctx.strokeStyle = c.ink; ctx.lineWidth = 2.5; ctx.stroke(); }
+    ctx.restore();
+    // destellos donde se acaba de depositar un átomo
+    if (cual === 'C') for (const f of E.flashes){
+      const a = 1 - (now - f.t)/700; if (a <= 0) continue;
+      const p = enVaso(l, 'C', f.u, f.v);
+      ctx.save(); ctx.globalAlpha = a; ctx.strokeStyle = colorDe(c, id); ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(p.x, p.y, 7 + 10*(1 - a), 0, Math.PI*2); ctx.stroke(); ctx.restore();
+    }
+    // rótulo del metal y de su papel
+    const der = lado === 'der', xt = der ? x + 10 : x - 10, al = der ? 'left' : 'right';
+    const polo = E.celda.polos[cual === 'A' ? 'anodo' : 'catodo'];
+    const sim = MC.par(id).red;
+    if (E.cfg.roles && l.ancho){
+      rotuloColor(ctx, c, xt, l.yE - 2, [[sim, colorDe(c, id)], [cual === 'A' ? ' · ánodo ' : ' · cátodo ', c.ink], [`(${polo})`, c.ink]], al, 800, 13);
+      rotulo(ctx, c, xt, l.yE + 15, cual === 'A' ? 'oxidación' : 'reducción', c.muted, al, 700, 11);
+    } else if (E.cfg.roles){
+      // en el celular, más angosto: tres líneas cortas
+      rotuloColor(ctx, c, xt, l.yE - 4, [[sim, colorDe(c, id)], [` (${polo})`, c.ink]], al, 800, 12);
+      rotulo(ctx, c, xt, l.yE + 11, cual === 'A' ? 'ánodo' : 'cátodo', c.ink, al, 800, 11);
+      rotulo(ctx, c, xt, l.yE + 25, cual === 'A' ? 'oxidación' : 'reducción', c.muted, al, 700, 10.5);
+    } else rotulo(ctx, c, xt, l.yE + 4, sim, colorDe(c, id), al, 800, 14);
+    // debajo del vaso: la semirreacción y la carga de la disolución
+    const yb = l.yB + 16;
+    if (E.cfg.roles){
+      const sr = cual === 'A' ? E.celda.oxidacion.texto : E.celda.reduccion.texto;
+      rotulo(ctx, c, x, yb, sr, c.ink, 'center', 700, l.ancho ? 12 : 10.5, c.mono);
+    } else rotulo(ctx, c, x, yb, `${SAL[id] || MC.par(id).ox} 1 M`, c.muted, 'center', 700, 11);
+    if (E.cfg.cargas){
+      const q = MC.cargas(E.est)[cual === 'A' ? 'vasoA' : 'vasoC'];
+      const t = q === 0 ? 'carga del vaso: 0' : `carga del vaso: ${q > 0 ? '+' : '−'}${Math.abs(q)}`;
+      rotulo(ctx, c, x, yb + 18, t, q !== 0 && E.cfg.puente !== 'sal' ? c.warn : c.muted, 'center', 800, 11.5);
+    }
+    // nombre de la disolución, arriba y afuera
+    if (E.cfg.roles) rotulo(ctx, c, der ? x + l.bw/2 + (l.ancho ? 4 : -8) : x - l.bw/2 - (l.ancho ? 4 : -8), l.ancho ? l.yT - 14 : l.yB - 10, `${SAL[id] || MC.par(id).ox} 1 M`, c.muted, der ? 'right' : 'left', 700, 10);
+  }
+  function dibujarIon(ctx, c, x, y, p, R, now){
+    let col, txt, r = R;
+    if (p.tipo === 'cat'){ col = c.cat; txt = '+'; r = R*0.82; }
+    else if (p.tipo === 'an'){ col = c.an; txt = '−'; r = R*0.82; }
+    else { const id = p.especie === MC.par(E.celda.anodo).ox ? E.celda.anodo : E.celda.catodo; col = colorDe(c, id); const q = p.carga; txt = q === 1 ? '+' : q + '+'; }
+    let a = 1, s = 1;
+    if (p.nace !== undefined){ const f = clamp((E.est.t - p.nace)/0.5, 0, 1); a = f; s = 0.5 + 0.5*f; }
+    const big = !!E.hl && ((E.hl === 'cat' && p.tipo === 'cat') || (E.hl === 'an' && p.tipo === 'an') || (p.tipo === 'ion' && METALES.includes(E.hl) && p.especie === MC.par(E.hl).ox));
+    ctx.save(); ctx.globalAlpha = a;
+    ctx.beginPath(); ctx.arc(x, y, r*s*(big ? 1.3 : 1), 0, Math.PI*2); ctx.fillStyle = col; ctx.fill();
+    if (r >= 5){ ctx.fillStyle = c.card; ctx.font = `800 ${Math.round(r*1.15)}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(txt, x, y + .5); }
+    ctx.restore();
+  }
+  function electron(ctx, c, x, y, r){
+    ctx.save(); ctx.beginPath(); ctx.arc(x, y, r + 2, 0, Math.PI*2); ctx.fillStyle = c.paper; ctx.globalAlpha = .85; ctx.fill();
+    ctx.globalAlpha = 1; ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2); ctx.fillStyle = c.e; ctx.fill(); ctx.restore();
+  }
+  function flechita(ctx, x, y, dx, dy, col, t){
+    ctx.save(); ctx.translate(x, y); ctx.rotate(Math.atan2(dy, dx)); ctx.fillStyle = col; ctx.globalAlpha = .9;
+    ctx.beginPath(); ctx.moveTo(t, 0); ctx.lineTo(-t*0.7, -t*0.75); ctx.lineTo(-t*0.7, t*0.75); ctx.closePath(); ctx.fill(); ctx.restore();
+  }
+  function dibujarPila(ctx, c, W, H, now){
+    const l = layout(W, H), est = E.est, k = E.cfg; E.lay = l;
+    const R = l.ancho ? 7 : 6;
+    // alambre
+    const pa = caminoAlambre(l);
+    ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round'; trazo(ctx, pa); ctx.strokeStyle = c.cable; ctx.lineWidth = 3.4; ctx.stroke(); ctx.restore();
+    // puente salino, alambre en su lugar o nada
+    const pp = caminoPuente(l);
+    if (k.puente === 'sal'){
+      ctx.save(); ctx.lineJoin = 'round'; ctx.lineCap = 'butt'; trazo(ctx, pp); ctx.strokeStyle = c.vidrio; ctx.lineWidth = 22; ctx.stroke();
+      trazo(ctx, pp); ctx.strokeStyle = c.puente; ctx.lineWidth = 18; ctx.stroke(); ctx.restore();
+      rotulo(ctx, c, (pp[1][0] + pp[2][0])/2, pp[1][1] - 20, 'puente salino (KNO₃)', E.hl === 'cat' || E.hl === 'an' ? c.ink : c.muted, 'center', 800, 11);
+    } else if (k.puente === 'alambre'){
+      ctx.save(); ctx.lineJoin = 'round'; trazo(ctx, pp); ctx.strokeStyle = c.Cu; ctx.lineWidth = 3; ctx.stroke(); ctx.restore();
+      rotulo(ctx, c, (pp[1][0] + pp[2][0])/2, pp[1][1] - 14, l.ancho ? 'alambre de cobre en lugar del puente' : 'alambre de cobre', c.muted, 'center', 800, 11);
+    } else rotulo(ctx, c, l.cx, pp[1][1] - 6, 'sin puente salino', c.muted, 'center', 800, 11);
+    // vasos y electrodos
+    dibujarVaso(ctx, c, l, 'izq'); dibujarVaso(ctx, c, l, 'der');
+    dibujarElectrodo(ctx, c, l, 'A', now); dibujarElectrodo(ctx, c, l, 'C', now);
+    // iones
+    for (const p of est.parts){
+      if (p.zona === 'vasoA' || p.zona === 'vasoC'){ const q = enVaso(l, p.zona === 'vasoA' ? 'A' : 'C', p.u, p.v); dibujarIon(ctx, c, q.x, q.y, p, R, now); }
+      else if (p.zona === 'puente'){ const q = sobre(pp, p.sp), off = p.w*6; dibujarIon(ctx, c, q.x + (q.dy ? off : 0), q.y + (q.dx ? off : 0), p, R*0.95, now); }
+    }
+    // electrones: en el alambre y los que esperan en cada electrodo
+    const re = l.ancho ? 4.2 : 3.8, sinV = (x) => Math.abs(x - l.cx) < 44;
+    for (const p of est.parts) if (p.zona === 'alambre'){ const q = sobre(pa, p.sp); if (!(Math.abs(q.y - l.yW) < 1 && sinV(q.x))) electron(ctx, c, q.x, q.y, re); }
+    const xa = pa[0][0], xc = pa[3][0];
+    for (let i = 0; i < est.eA; i++) electron(ctx, c, xa, l.yE + 10 + i*9, re);
+    for (let i = 0; i < est.eC; i++) electron(ctx, c, xc, l.yE + 10 + i*9, re);
+    // flechas del sentido (cuando ya se puede mostrar)
+    if (!k.pausa && k.roles){
+      const sg = Math.sign(pa[2][0] - pa[1][0]), m1 = (pa[1][0] + l.cx - sg*42)/2, m2 = (pa[2][0] + l.cx + sg*42)/2;
+      flechita(ctx, m1, l.yW, sg, 0, c.e, 7); flechita(ctx, m2, l.yW, sg, 0, c.e, 7);
+      rotulo(ctx, c, m1, l.yW + 14, 'e⁻', c.e, 'center', 800, 12);
+    }
+    // voltímetro o fuente externa
+    const bw = 84, bh = 38, bx = l.cx - bw/2, by = l.yW - bh/2;
+    ctx.save(); rr(ctx, bx, by, bw, bh, 10); ctx.fillStyle = c.card; ctx.fill(); ctx.strokeStyle = E.hl === 'E' ? c.E : c.cable; ctx.lineWidth = E.hl === 'E' ? 3 : 2; ctx.stroke(); ctx.restore();
+    if (k.fuente){
+      rotulo(ctx, c, l.cx, by - 11, 'fuente externa', c.muted, 'center', 800, 11);
+      ctx.font = `800 15px ${c.mono}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = c.ink; ctx.fillText(`${fmt(E.celda.fuente, 1)} V`, l.cx, l.yW + 1);
+      // los bornes: + hacia el ánodo, − hacia el cátodo
+      const izqEsA = E.celda.lados.anodo === 'izq';
+      ctx.font = `800 13px ${c.font}`; ctx.fillStyle = c.ink;
+      ctx.fillText(izqEsA ? '+' : '−', bx - 8, l.yW - 10); ctx.fillText(izqEsA ? '−' : '+', bx + bw + 8, l.yW - 10);
+    } else {
+      rotulo(ctx, c, l.cx, by - 11, 'voltímetro', c.muted, 'center', 800, 11);
+      const v = MC.voltimetro(E.celda, { puente:k.puente });
+      ctx.font = `800 16px ${c.mono}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = c.E;
+      ctx.fillText(k.ocultarV ? '¿? V' : fV(v), l.cx, l.yW + 1);
+    }
+    // avisos
+    const ya = l.yW + 36;
+    if (k.pausa) rotulo(ctx, c, l.cx, ya, 'Pausa: responde para ver el movimiento', c.muted, 'center', 800, 11.5);
+    else if (est.frenada && k.puente !== 'sal') rotulo(ctx, c, l.cx, ya, 'La reacción se detuvo', c.warn, 'center', 800, 11.5);
+    else if (E.fin) rotulo(ctx, c, l.cx, ya, l.ancho ? 'En el dibujo se acabaron los iones: vuelve a empezar' : 'Se acabaron los iones: vuelve a empezar', c.muted, 'center', 700, 11);
+    if (E.cfg.grande) rotulo(ctx, c, l.cx, H - 10, 'láminas y vasos más grandes, los mismos metales', c.muted, 'center', 700, 11);
+  }
+
+  /* ---------- Faraday: celdas en serie ---------- */
+  function iniciarFaraday(){
+    const esp = E.cfg.especies || ['Cu'], rnd = MC.azar(E.cfg.semilla*31 + 7);
+    E.far = { esp, rnd, meta:E.cfg.meta || 8, emitidos:0, reloj:0, dots:[], llegados:esp.map(() => 0), salidos:esp.map(() => 0), corriendo:!!E.cfg.corriendo,
+      iones: esp.map(m => { const p = MC.par(m), out = []; for (let i = 0; i < 4; i++){ out.push({ tipo:'ion', id:m, q:p.q, u:.34 + .32*rnd(), v:0.2 + 0.7*rnd(), a:rnd()*6.3 }); for (let j = 0; j < p.q; j++) out.push({ tipo:'an', u:.34 + .32*rnd(), v:0.2 + 0.7*rnd(), a:rnd()*6.3 }); } return out; }) };
+  }
+  E.correr = fin => { E.far.corriendo = true; E.far.alTerminar = fin; };
+  function pasoFaraday(dt){
+    const f = E.far; if (!f) return;
+    for (const lista of f.iones) for (const p of lista){
+      p.a += (f.rnd() - .5)*dt*5; p.u += Math.cos(p.a)*0.08*dt; p.v += Math.sin(p.a)*0.08*dt;
+      if (p.u < .34 || p.u > .66){ p.u = clamp(p.u, .34, .66); p.a = Math.PI - p.a; }
+      if (p.v < .1 || p.v > .94){ p.v = clamp(p.v, .1, .94); p.a = -p.a; }
+    }
+    if (!f.corriendo) return;
+    f.reloj += dt;
+    // la misma corriente en todo el circuito: sale un electrón por cada tramo a la vez
+    if (f.emitidos < f.meta && f.reloj > 0.5){ f.reloj = 0; f.emitidos++; for (let s = 0; s < f.esp.length; s++){ f.dots.push({ tramo:s, s:0 }); f.salidos[s]++; } }
+    for (const d of f.dots) d.s += dt*0.55;
+    for (const d of f.dots.filter(d => d.s >= 1)) f.llegados[d.tramo]++;
+    f.dots = f.dots.filter(d => d.s < 1);
+    if (f.emitidos >= f.meta && !f.dots.length && f.corriendo){ f.corriendo = false; const cb = f.alTerminar; f.alTerminar = null; if (cb) cb(); }
+  }
+  function layoutFar(W, H){
+    const n = E.far.esp.length, ancho = W >= 560;
+    const bw = n === 1 ? Math.min(W*0.5, 260) : Math.min(W*0.42, 250);
+    const cxs = n === 1 ? [W/2] : [10 + bw/2 + 4, W - 10 - bw/2 - 4];
+    const yW = 48, yT = Math.round(H*0.36), yL = yT + 14, yB = H - 88, yE = yT - 40, yM = yT - 20;
+    return { n, bw, cxs, yW, yT, yL, yB, yE, yM, ancho };
+  }
+  // tramos de alambre: el electrón sale del ánodo de una celda y llega al cátodo de la siguiente (o de la fuente)
+  function tramosFar(l, W){
+    const n = l.n, el = l.cxs.map(cx => ({ a: cx - l.bw*0.24, c: cx + l.bw*0.24 }));
+    const xf = W/2, bx0 = xf - 30, bx1 = xf + 30;
+    if (n === 1) return [ { de:'fuente', a:0, pts:[[bx1, l.yW], [el[0].c, l.yW], [el[0].c, l.yE]] },
+                         { de:0, a:'fuente', pts:[[el[0].a, l.yE], [el[0].a, l.yW], [bx0, l.yW]] } ];
+    // fuente(−) → cátodo de la celda 2; ánodo 2 → cátodo 1; ánodo 1 → fuente(+)
+    return [ { de:'fuente', a:1, pts:[[bx1, l.yW], [el[1].c, l.yW], [el[1].c, l.yE]] },
+             { de:1, a:0, pts:[[el[1].a, l.yE], [el[1].a, l.yM], [el[0].c, l.yM], [el[0].c, l.yE]] },
+             { de:0, a:'fuente', pts:[[el[0].a, l.yE], [el[0].a, l.yW], [bx0, l.yW]] } ];
+  }
+  function dibujarFaraday(ctx, c, W, H){
+    const f = E.far, l = layoutFar(W, H), tr = tramosFar(l, W), R = l.ancho ? 7 : 6;
+    for (const t of tr){ ctx.save(); ctx.lineJoin = 'round'; trazo(ctx, t.pts); ctx.strokeStyle = c.cable; ctx.lineWidth = 3.4; ctx.stroke(); ctx.restore(); }
+    // fuente
+    const xf = W/2;
+    ctx.save(); rr(ctx, xf - 30, l.yW - 17, 60, 34, 9); ctx.fillStyle = c.card; ctx.fill(); ctx.strokeStyle = c.cable; ctx.lineWidth = 2; ctx.stroke(); ctx.restore();
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2.5; linea(ctx, xf - 6, l.yW - 11, xf - 6, l.yW + 11); ctx.lineWidth = 4; linea(ctx, xf + 6, l.yW - 6, xf + 6, l.yW + 6); ctx.restore();
+    ctx.font = `800 13px ${c.font}`; ctx.fillStyle = c.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('+', xf - 19, l.yW); ctx.fillText('−', xf + 19, l.yW);
+    rotulo(ctx, c, xf, l.yW - 28, f.esp.length > 1 ? 'fuente · celdas en serie' : 'fuente', c.muted, 'center', 800, 11);
+    // celdas
+    f.esp.forEach((m, k) => {
+      const cx = l.cxs[k], x0 = cx - l.bw/2, x1 = cx + l.bw/2, col = colorDe(c, m), p = MC.par(m);
+      ctx.save(); ctx.fillStyle = c.liquido; ctx.fillRect(x0 + 2, l.yL, l.bw - 4, l.yB - l.yL); ctx.restore();
+      ctx.save(); ctx.strokeStyle = c.vidrio; ctx.lineWidth = 2.2; ctx.beginPath(); ctx.moveTo(x0, l.yT); ctx.lineTo(x0, l.yB - 6); ctx.quadraticCurveTo(x0, l.yB, x0 + 6, l.yB);
+      ctx.lineTo(x1 - 6, l.yB); ctx.quadraticCurveTo(x1, l.yB, x1, l.yB - 6); ctx.lineTo(x1, l.yT); ctx.stroke(); ctx.restore();
+      const dep = MC.deposito(m, f.llegados[k]).depositados, dis = MC.deposito(m, f.salidos[k]).depositados;
+      const xa = cx - l.bw*0.24, xc = cx + l.bw*0.24, yBot = l.yL + 0.8*(l.yB - l.yL), w0 = l.ancho ? 16 : 13;
+      const wa = w0*(1 - 0.05*dis);
+      ctx.save(); ctx.fillStyle = col; rr(ctx, xa - wa/2, l.yE, wa, yBot - l.yE, 3); ctx.fill(); rr(ctx, xc - w0/2, l.yE, w0, yBot - l.yE, 3); ctx.fill(); ctx.restore();
+      // átomos depositados en la cara interna del cátodo: se cuentan
+      const ra = l.ancho ? 5 : 4.4;
+      for (let i = 0; i < dep; i++){ const y = yBot - 8 - i*(2*ra + 2); ctx.beginPath(); ctx.arc(xc - w0/2 - ra - 1, y, ra, 0, Math.PI*2); ctx.fillStyle = col; ctx.fill(); ctx.strokeStyle = c.card; ctx.lineWidth = 1; ctx.stroke(); }
+      // iones en la disolución
+      for (const q of f.iones[k]){
+        const x = x0 + 8 + q.u*(l.bw - 16), y = l.yL + q.v*(l.yB - l.yL - 6);
+        ctx.beginPath(); ctx.arc(x, y, q.tipo === 'ion' ? R : R*0.82, 0, Math.PI*2); ctx.fillStyle = q.tipo === 'ion' ? col : c.an; ctx.fill();
+        ctx.fillStyle = c.card; ctx.font = `800 ${Math.round(R*1.1)}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(q.tipo === 'ion' ? (q.q === 1 ? '+' : q.q + '+') : '−', x, y + .5);
+      }
+      rotulo(ctx, c, xa, yBot + 12, 'ánodo', c.muted, 'center', 800, 10.5);
+      rotulo(ctx, c, xc, yBot + 12, 'cátodo', c.muted, 'center', 800, 10.5);
+      rotulo(ctx, c, cx, l.yB + 54, `${p.ox} + ${p.n === 1 ? '' : p.n + ' '}e⁻ → ${p.red}`, c.ink, 'center', 700, l.ancho ? 12 : 10.5, c.mono);
+      rotulo(ctx, c, cx, l.yB - 10, `${SAL[m]} 1 M`, c.muted, 'center', 700, 10);
+      rotuloColor(ctx, c, cx, l.yB + 16, [['e⁻ que llegaron: ', c.ink], [String(f.llegados[k]), c.e]], 'center', 800, 12);
+      rotuloColor(ctx, c, cx, l.yB + 34, [[`átomos de ${p.red}: `, c.ink], [String(dep), col]], 'center', 800, 12);
+    });
+    // electrones en los tramos
+    const re = l.ancho ? 4.2 : 3.8;
+    for (const d of f.dots){ const q = sobre(tr[d.tramo].pts, d.s); electron(ctx, c, q.x, q.y, re); }
+    if (!f.corriendo && !f.emitidos) rotulo(ctx, c, W/2, l.yW + 34, E.cfg.aviso || 'Responde para hacer pasar la corriente', c.muted, 'center', 800, 11.5);
+  }
+
+  function dibujar(now){
+    if (!L.W) return;
+    const c = colores(), { ctx, W, H } = L;
+    ctx.clearRect(0, 0, W, H);
+    if (E.tipo === 'pila' && E.est) dibujarPila(ctx, c, W, H, now);
+    else if (E.tipo === 'faraday' && E.far) dibujarFaraday(ctx, c, W, H);
+    let d = '';
+    if (E.tipo === 'pila' && E.est){
+      const q = MC.cargas(E.est), k = E.cfg;
+      d = `Pila de ${NOMBRE[k.izq]} (izquierda) y ${NOMBRE[k.der]} (derecha). ` + (k.roles ? `Ánodo: ${NOMBRE[E.celda.anodo]}; cátodo: ${NOMBRE[E.celda.catodo]}. ` : '')
+        + (k.fuente ? `Fuente externa de ${fmt(E.celda.fuente, 1)} V. ` : `Voltímetro: ${k.ocultarV ? 'oculto' : fV(MC.voltimetro(E.celda, { puente:k.puente }))}. `)
+        + `Puente: ${k.puente === 'sal' ? 'salino' : k.puente === 'alambre' ? 'un alambre de cobre' : 'ninguno'}. `
+        + `Átomos disueltos: ${E.est.disueltos}; depositados: ${E.est.depositados}. Carga de los vasos: ${q.vasoA} y ${q.vasoC}.`;
+    } else if (E.far) d = E.far.esp.map((m, k) => `Celda de ${NOMBRE[m]}: ${E.far.llegados[k]} electrones, ${MC.deposito(m, E.far.llegados[k]).depositados} átomos depositados`).join('. ');
+    if (d !== E.desc && idDesc){ E.desc = d; document.getElementById(idDesc).textContent = d; }
+  }
+  E.dibujar = () => dibujar(performance.now());
+  alRedibujarTema(E.dibujar);
+  addEventListener('modo', () => L.resize());
+  return E;
+}
+</script>
+<script>
+/* ================= MODO 1: paso a paso =================
+   Problemas guiados de docs/investigacion/equilibrio-acidos-electroquimica-ideas-erroneas.md ("Celda galvánica con
+   flujo de electrones e iones"): ¿por dónde van los electrones? y el puente cambiado por un alambre. Más la fem
+   Cu–Ag y la masa depositada, con los errores de "Lo que no tiene respaldo" (hipótesis). */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'leyenda1');
+const S = { step:0, max:0, pred:{}, listo:false, ocupado:false, hecho:{}, x:{ izq:'Zn', der:'Cu', puente:'sal', fuente:false } };
+const DAN = MC.pila('Cu', 'Zn'), CUAG = MC.pila('Cu', 'Ag'), FAR = MC.faraday({ especie:'Cu', I:5, s:1930 });
+const e = t => V('e', t), Ev = t => V('E', t), Zn = t => Mx('Zn', t), Cu = t => Mx('Cu', t), Ag = t => Mx('Ag', t), K = t => V('cat', t), N = t => V('an', t);
+const Iv = t => V('I', t), tv = t => V('t', t);
+
+function cfgDaniell(o){ E.config(Object.assign({ izq:'Cu', der:'Zn', puente:'sal', semilla:3 }, o)); }
+
+const P1 = { id:'celda-paso2', ok:'a', anima:() => { E.cfg.roles = true; E.soltar(); }, opts:[
+  ['a','Del Zn al Cu, por el alambre'],
+  ['b','Del Cu al Zn, por el alambre','EC6-cable-al-reves','documentado'],
+  ['c','Del Zn al Cu, por el puente salino','EC2-electrones-por-la-disolucion','documentado'],
+  ['d','Del electrodo de la izquierda al de la derecha, sea cual sea','EC4-anodo-a-la-izquierda','documentado']],
+  fb:{ a:'¡Bien! El zinc se oxida y suelta electrones; estos van por el alambre hasta el cobre, donde los toman los Cu²⁺.',
+    b:'Elegiste la B. Los electrones salen del metal que se oxida, el zinc (el de menor potencial), y van al cobre. La correcta está marcada.',
+    c:'Elegiste la C. Los electrones no pueden andar sueltos en el agua: solo van por los metales y el alambre. Por el puente pasan iones. La correcta está marcada.',
+    d:'Elegiste la D. El lado del dibujo no decide nada: aquí el zinc está a la derecha y los electrones van de derecha a izquierda. La correcta está marcada.' } };
+const P2 = { id:'celda-paso4', ok:'c', anima:() => E.cambiarPuente('alambre'), opts:[
+  ['a','Lo mismo: los electrones pasan por el alambre igual que por el puente','EC1-puente-lleva-electrones','documentado'],
+  ['b','Lo mismo: el metal conduce iones y electrones','EC1-metal-conduce-iones','documentado'],
+  ['c','Casi cero: por el alambre no pueden pasar iones, y sin iones entre los dos vasos cada disolución se carga y la reacción se detiene'],
+  ['d','El doble, porque ahora hay dos caminos para los electrones','EC1-dos-caminos','hipotesis']],
+  fb:{ c:'¡Bien! El puente no lleva electrones: lleva iones que mantienen neutra cada disolución. Sin ellos, la reacción se frena enseguida.',
+    a:'Elegiste la A. Por el puente salino nunca pasaron electrones: pasaban iones. Un alambre no deja pasar iones, así que cada vaso se carga y la reacción se detiene. La correcta está marcada.',
+    b:'Elegiste la B. Un metal conduce electrones, pero no iones: los iones no pueden entrar al alambre. La correcta está marcada.',
+    d:'Elegiste la D. El circuito de los electrones ya estaba cerrado por arriba; lo que se rompe es el camino de los iones. La correcta está marcada.' } };
+const P3 = { id:'celda-paso5', ok:'c', anima:() => { E.cfg.ocultarV = false; E.soltar(); }, opts:[
+  ['a','1,26 V: 2 · 0,80 − 0,34','fem-multiplica-coeficientes','hipotesis'],
+  ['b','1,14 V: 0,80 + 0,34','fem-suma-sin-cambiar-signo','hipotesis'],
+  ['c','0,46 V: 0,80 − 0,34'],
+  ['d','−0,46 V: 0,34 − 0,80','fem-resta-al-reves','hipotesis']],
+  fb:{ c:'¡Bien! El potencial no se multiplica por el 2 de la plata: depende de qué metales son, no de cuántos átomos escribes.',
+    a:'Elegiste la A. El 2 de "2 Ag⁺" sirve para igualar electrones, no para el potencial: E° no depende de cuánta sustancia reacciona. La correcta está marcada.',
+    b:'Elegiste la B. Los dos valores de la tabla son de reducción. Al cobre, que se oxida, se le resta: E°(cátodo) − E°(ánodo). La correcta está marcada.',
+    d:'Elegiste la D. Restaste al revés: una pila que funciona tiene fem positiva. Es E°(cátodo) − E°(ánodo), y el cátodo es la plata. La correcta está marcada.' } };
+
+const opciones = P => `<div class="opts">${P.opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="fb"></p>`;
+const tabla = (ids, celda) => `<div class="tabla" role="table" aria-label="Potenciales estándar de reducción"><div class="fila cab" role="row"><span>semirreacción de reducción</span><span>E°</span><span></span></div>`
+  + [...ids].sort((a, b) => MC.par(b).E - MC.par(a).E).map(id => {
+    const p = MC.par(id), rol = celda ? (celda.anodo === id ? 'ánodo' : celda.catodo === id ? 'cátodo' : '') : '';
+    return `<div class="fila${rol ? ' usa' : ''}" role="row" style="--k:var(--c-${id})"><span>${Mx(id, p.ox)} + ${p.n === 1 ? '' : p.n + ' '}e⁻ → ${Mx(id, p.red)}</span><span>${Ev(fV(p.E).replace(/^(\d)/, '+$1'))}</span><span class="rol">${rol}</span></div>`;
+  }).join('') + `</div>`;
+
+const steps = [
+ { k:'Paso 1', t:'La pila de zinc y cobre', prep:() => cfgDaniell({ pausa:true, roles:false }),
+   body:() => `<p class="problem">En un vaso hay una lámina de ${Zn('zinc')} en una disolución de ${Zn('Zn²⁺')} 1 M; en otro, una lámina de ${Cu('cobre')} en ${Cu('Cu²⁺')} 1 M. Las láminas se unen por arriba con un alambre y un voltímetro, y los vasos, con un tubo de gel salado: el puente salino. ¿Qué pasa por dentro?</p>
+   <p>En el dibujo, cada punto representa muchísimas partículas: ${e('electrones')}, ${K('cationes K⁺')} y ${N('aniones NO₃⁻')} del puente, y los iones de cada metal. Las disoluciones son de nitratos (NO₃⁻), así que hay un solo tipo de anión. El agua no se dibuja.</p>
+   ${tabla(['Zn', 'Cu'])}
+   <p>El zinc tiene el potencial de reducción más bajo: es el que tiende a oxidarse, a perder electrones. El cobre, el más alto: sus iones tienden a ganarlos.</p>` },
+ { k:'Paso 2', t:'Predice: ¿por dónde van los electrones?', gate:P1, prep:() => cfgDaniell({ pausa:!S.pred[P1.id], roles:!!S.pred[P1.id] }),
+   body:() => `<p>Fíjate en el dibujo: el ${Cu('cobre')} quedó a la izquierda y el ${Zn('zinc')} a la derecha. Cuando la pila funciona, ¿por dónde y hacia dónde van los ${e('electrones')}?</p>${opciones(P1)}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${Zn('Zn')} → ${Zn('Zn²⁺')} + 2 ${e('e⁻')}<span class="note">oxidación: el zinc es el ánodo</span></div>
+     <div class="eq">${Cu('Cu²⁺')} + 2 ${e('e⁻')} → ${Cu('Cu')}<span class="note">reducción: el cobre es el cátodo</span></div></div>
+   <p>Mira el dibujo: los ${e('electrones')} solo andan por el alambre, del ${Zn('zinc')} al ${Cu('cobre')}. La lámina de zinc adelgaza: sus átomos pasan a la disolución como ${Zn('Zn²⁺')}. La de cobre engrosa: los ${Cu('Cu²⁺')} que llegan a ella toman dos electrones y se quedan pegados como átomos.</p>
+   <p class="fuente">En Turquía, con 59 escolares de 11.º grado y enseñanza tradicional: el 5,08 % cree que en la pila los electrones van del cátodo al ánodo; el 3,39 %, que pasan por el electrolito y el puente salino; el 15,25 %, que el ánodo siempre está a la izquierda (Şen, Yılmaz y Geban, 2016, tabla 2). En la Facultad de Química de la UNAM, cerca de 170 de 306 respuestas (56 %) pusieron a los electrones viajando por la disolución en una celda electrolítica (Tagle Barrios, 2024, ítem 6, leído de sus gráficas).</p></div>` },
+ { k:'Paso 3', t:'La fem y el trabajo del puente', prep:() => cfgDaniell({}),
+   body:() => `<div class="eqs"><div class="eq">${Ev('E°')} = ${Ev('E°')}(cátodo) − ${Ev('E°')}(ánodo) = ${Ev('0,34')} − (${Ev('−0,76')}) = ${Ev('1,10 V')}</div>
+     <div class="eq">${Zn('Zn')} + ${Cu('Cu²⁺')} → ${Zn('Zn²⁺')} + ${Cu('Cu')}<span class="note">2 electrones por cada átomo de zinc</span></div></div>
+   <p>Cada vez que un átomo de ${Zn('zinc')} se disuelve, el vaso del zinc gana una carga +2; cada vez que un ${Cu('Cu²⁺')} se deposita, el vaso del cobre pierde una carga +2. El puente lo compensa: sus ${N('aniones NO₃⁻')} entran al vaso del zinc y sus ${K('cationes K⁺')} entran al del cobre. Mira el contador "carga del vaso": casi siempre está en 0.</p>
+   <p>Los aniones van hacia el ánodo, que es el polo negativo. Suena raro, pero lo que los atrae es la carga positiva que aparece en la disolución alrededor del zinc.</p>
+   <p class="aviso">El voltímetro real casi no deja pasar corriente. En el dibujo los electrones se mueven como si hubiera un foquito encendido, para que se vea su camino.</p>
+   <p class="fuente">En Turquía, el 25,42 % de 59 escolares cree que en la disolución la corriente la llevan solo los iones negativos (Şen y otros, 2016). Se mueven los dos, en sentidos opuestos.</p>` },
+ { k:'Paso 4', t:'Predice: un alambre en lugar del puente', gate:P2, prep:() => cfgDaniell({ puente: S.pred[P2.id] ? 'alambre' : 'sal' }),
+   body:() => `<p>Se saca el puente salino y en su lugar se pone un alambre de cobre, con una punta en cada vaso. ¿Qué marca ahora el ${Ev('voltímetro')}?</p>${opciones(P2)}
+   <div id="tras" class="body" hidden>
+   <p>Mira los contadores: en cuanto se disuelven un par de átomos de ${Zn('zinc')}, el vaso del zinc queda con carga positiva y el del cobre con carga negativa. Esa carga frena la reacción y los ${e('electrones')} dejan de pasar. El voltímetro marca ${Ev('casi cero')}.</p>
+   <p class="fuente">En la Facultad de Química de la UNAM (306 respuestas de cinco grupos), 161 (52,6 %) eligieron que habría electricidad "porque hay un flujo constante de electrones por el alambre"; por grupo, 47 %, 52 %, 55 %, 49 % y 69 %, y el más alto es un grupo de Electroquímica. Otro 21,2 % eligió que el metal conduce iones y electrones. Solo el 13,1 % dio la respuesta esperada (Tagle Barrios, 2024, ítem 5, tabla 19, leído de sus gráficas). La opción "el doble" es una hipótesis nuestra.</p></div>` },
+ { k:'Paso 5', t:'Predice: la fem de la pila de cobre y plata', gate:P3, prep:() => E.config({ izq:'Cu', der:'Ag', semilla:5, pausa:!S.pred[P3.id], ocultarV:!S.pred[P3.id] }),
+   body:() => `<p>Ahora la pila es de ${Cu('cobre')} y ${Ag('plata')}. La reacción global es ${Cu('Cu')} + 2 ${Ag('Ag⁺')} → ${Cu('Cu²⁺')} + 2 ${Ag('Ag')}. ¿Cuánto marca el ${Ev('voltímetro')}?</p>
+   ${tabla(['Cu', 'Ag'], CUAG)}${opciones(P3)}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${Cu('Cu')} → ${Cu('Cu²⁺')} + 2 ${e('e⁻')}</div>
+     <div class="eq">2 × (${Ag('Ag⁺')} + ${e('e⁻')} → ${Ag('Ag')})<span class="note">se multiplica para igualar los electrones</span></div>
+     <div class="eq">${Ev('E°')} = ${Ev('0,80')} − ${Ev('0,34')} = ${Ev(fV(CUAG.E))}<span class="note">el potencial no se multiplica</span></div></div>
+   <p>En el dibujo, por cada átomo de ${Cu('cobre')} que se disuelve salen dos ${e('electrones')}, y en el cátodo se depositan dos átomos de ${Ag('plata')}. Lo que se multiplica es la cantidad que reacciona; la "fuerza" con que empuja cada electrón, la fem, sigue igual.</p>
+   <p class="fuente">No encontramos estudios que midan estos errores de cálculo: las tres opciones incorrectas son hipótesis nuestras. Lo que sí se midió es lo contrario: la mayoría de 16 universitarios con ideas erróneas sobre la pila igual calculaba bien el potencial (Sanger y Greenbowe, 1997, según el resumen). Saber la fórmula no garantiza entender la pila.</p></div>` },
+ { k:'Paso 6', t:'¿Cuánto cobre se deposita?', accion:true, prep:() => E.config({ tipo:'faraday', especies:['Cu'], meta:8, semilla:2, aviso:'Pulsa el botón para hacer pasar la corriente', corriendo:false, leyenda:undefined }),
+   body:() => `<p class="problem">Se hace pasar una corriente de ${Iv('5 A')} durante ${tv('1930 s')} por una celda con ${Cu('Cu²⁺')}. ¿Cuántos gramos de ${Cu('cobre')} se depositan en el cátodo?</p>
+   <p>Ahora una fuente empuja los electrones: es una celda de electrólisis. En el dibujo, cada ${e('electrón')} representa 0,0125 mol de electrones; pasarán 8.</p>
+   <div class="acciones"><button type="button" class="btn primary" id="correr">Hacer pasar la corriente</button></div>
+   <div id="tras" class="body" ${S.hecho.correr ? '' : 'hidden'}><div class="eqs">
+     <div class="eq">${e('Q')} = ${Iv('I')} · ${tv('t')} = ${Iv('5')} · ${tv('1930')} = ${e('9650 C')}</div>
+     <div class="eq">${e('n(e⁻)')} = ${fr(e('9650 C'), '96 500 C/mol')} = ${e('0,1 mol')}<span class="note">8 puntos en el dibujo</span></div>
+     <div class="eq">${Cu('Cu²⁺')} + 2 ${e('e⁻')} → ${Cu('Cu')} : ${fr(e('0,1'), '2')} = ${Cu('0,05 mol de Cu')}<span class="note">4 átomos en el dibujo</span></div>
+     <div class="eq">${Cu('m')} = ${Cu('0,05')} · 63,5 = ${Cu(`${fmt(FAR.g, 3)} g`)}</div></div>
+   <p class="answer">Se depositan ${Cu(`${fmt(FAR.g, 3)} g de cobre`)}.</p>
+   <p class="aviso">Ojo: cada Cu²⁺ necesita dos electrones. Si no divides entre la carga del ion, te sale ${fmt(FAR.errores.sinCarga, 2)} g, el doble. Y el tiempo va en segundos: F está en culombios por mol y un culombio es un amperio por segundo.</p>
+   <p class="fuente">No encontramos ningún estudio con porcentajes sobre la ley de Faraday: el error de olvidar la carga del ion es una hipótesis nuestra.</p></div>
+   <p id="estado" class="hint"></p>` },
+ { k:'Paso 7', t:'Lo que no cambia', fin:true, prep:() => cfgDaniell({}),
+   body:() => `<div class="eqs">
+     <div class="eq">Ánodo = oxidación · cátodo = reducción<span class="note">en la pila y en la electrólisis</span></div>
+     <div class="eq">${e('e⁻')}: del ánodo al cátodo, solo por el alambre</div>
+     <div class="eq">${N('aniones')} → ánodo · ${K('cationes')} → cátodo<span class="note">por el puente y las disoluciones</span></div>
+     <div class="eq">${Ev('E°')} = ${Ev('E°')}(cátodo) − ${Ev('E°')}(ánodo), sin multiplicar<span class="note">${Ev('E°')} &gt; 0: espontánea</span></div>
+     <div class="eq">${e('n(e⁻)')} = ${fr(`${Iv('I')}·${tv('t')}`, 'F')} · moles de metal = ${fr(e('n(e⁻)'), 'carga del ion')}</div></div>
+   <p>El polo cambia (en la pila el cátodo es positivo; en la electrólisis, negativo), pero la regla "cátodo = reducción" no cambia. Ánodo y cátodo se reconocen por la reacción, nunca por el lado del dibujo.</p>
+   <p class="fuente">En la UNAM, la idea más frecuente fue que el cátodo es siempre positivo (o siempre negativo), y el error del puente salino no bajó con los semestres: los de quinto se equivocaron con más seguridad (Tagle Barrios, 2024, conclusiones). Por eso la escena pinta siempre los electrones y los iones de colores distintos.</p>` },
+ { k:'Paso 8', t:'Ahora explora tú', explora:true,
+   body:() => `<p>Elige el metal de cada vaso y mira quién se oxida, cuánto marca el voltímetro y hacia dónde va todo.</p>
+   <div class="control"><span>Vaso izquierdo</span><div class="seg" role="group" aria-label="Metal del vaso izquierdo">${METALES.map(m => `<button type="button" data-lado="izq" data-m="${m}">${MC.par(m).red}</button>`).join('')}</div></div>
+   <div class="control"><span>Vaso derecho</span><div class="seg" role="group" aria-label="Metal del vaso derecho">${METALES.map(m => `<button type="button" data-lado="der" data-m="${m}">${MC.par(m).red}</button>`).join('')}</div></div>
+   <div class="control"><span>Entre los vasos</span><div class="seg" role="group" aria-label="Puente">${[['sal', 'Puente salino'], ['ninguno', 'Sin puente']].map(([k, t]) => `<button type="button" data-puente="${k}">${t}</button>`).join('')}</div></div>
+   <div class="control"><span>En el alambre</span><div class="seg" role="group" aria-label="Fuente">${[[false, 'Voltímetro (pila)'], [true, 'Fuente externa (electrólisis)']].map(([k, t]) => `<button type="button" data-fuente="${k}">${t}</button>`).join('')}</div></div>
+   <div class="lecturas" id="x-lect"></div>
+   <div id="x-tabla"></div>
+   <p id="x-msg" class="hint" aria-live="polite"></p>` },
+];
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; b.setAttribute('aria-label', `Ir al ${s.k.toLowerCase()}: ${s.t}`);
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k; S.listo = s.accion ? !!S.hecho.correr : true;
+  if (s.prep) s.prep();
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  pintarDots();
+  if (s.gate) prediccion(s.gate);
+  if (s.accion) accion();
+  if (s.explora) explorar();
+  nav(); E.dibujar();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || (s.accion && !S.listo) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : (s.accion && !S.listo ? 'Primero haz pasar la corriente' : 'Siguiente');
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){ if (k > S.max) S.max = k; }
+function accion(){
+  const b = $('correr');
+  if (S.hecho.correr){
+    b.disabled = true; b.textContent = 'Listo: pasaron 9650 C';
+    E.far.llegados = [8]; E.far.salidos = [8]; E.far.emitidos = 8;
+    return;
+  }
+  b.onclick = () => {
+    b.disabled = true; S.ocupado = true; nav(); $('estado').textContent = 'Pasa la corriente…';
+    E.correr(() => {
+      S.ocupado = false; S.hecho.correr = true; S.listo = true; b.textContent = 'Listo: pasaron 9650 C';
+      $('estado').textContent = 'Llegaron 8 electrones al cátodo y se depositaron 4 átomos de cobre: uno por cada dos electrones.';
+      $('tras').hidden = false; desbloquear(S.step + 1); pintarDots(); nav();
+    });
+  };
+}
+function prediccion(P){
+  const btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    P.anima(); nav();
+    $('next').focus();
+  }));
+  pintar();
+}
+
+// ----- explorador: los cuatro metales del informe (Zn, Fe, Cu, Ag), con puente o sin él y con fuente externa -----
+function cfgX(){ const x = S.x; E.config({ izq:x.izq, der:x.der, puente:x.puente, fuente:x.fuente, semilla:11 }); }
+function explorar(){
+  cfgX(); pintarX();
+  const B = $('stepBody');
+  B.querySelectorAll('[data-m]').forEach(b => b.onclick = () => { S.x[b.dataset.lado] = b.dataset.m; cfgX(); pintarX(); });
+  B.querySelectorAll('[data-puente]').forEach(b => b.onclick = () => { S.x.puente = b.dataset.puente; cfgX(); pintarX(); });
+  B.querySelectorAll('[data-fuente]').forEach(b => b.onclick = () => { S.x.fuente = b.dataset.fuente === 'true'; cfgX(); pintarX(); });
+}
+function pintarX(){
+  const x = S.x, B = $('stepBody'), c = E.celda;
+  B.querySelectorAll('[data-m]').forEach(b => { b.setAttribute('aria-pressed', String(x[b.dataset.lado] === b.dataset.m)); b.disabled = x[b.dataset.lado === 'izq' ? 'der' : 'izq'] === b.dataset.m; });
+  B.querySelectorAll('[data-puente]').forEach(b => b.setAttribute('aria-pressed', String(x.puente === b.dataset.puente)));
+  B.querySelectorAll('[data-fuente]').forEach(b => b.setAttribute('aria-pressed', String(String(x.fuente) === b.dataset.fuente)));
+  const caja = (k, val, que, det) => `<div class="lectura" style="--k:var(--c-${k})"><span>${que}</span><b>${val}</b><span>${det}</span></div>`;
+  const lado = l => l === 'izq' ? 'izquierda' : 'derecha';
+  const v = MC.voltimetro(c, { puente:x.puente });
+  $('x-lect').innerHTML =
+      caja('E', x.fuente ? fV(c.E) : fV(v), x.fuente ? 'E° de la reacción forzada' : 'Voltímetro', x.fuente ? `no es espontánea: la fuente da ${fmt(c.fuente, 1)} V` : (x.puente === 'sal' ? `E° = ${fmt(c.Ecatodo)} − (${fmt(c.Eanodo)})` : 'sin puente: casi cero'))
+    + caja('e', c.sentido.electrones.lado === 'izq→der' ? 'izquierda → derecha' : 'derecha → izquierda', 'Electrones, por el alambre', `del ${NOMBRE[c.anodo]} al ${NOMBRE[c.catodo]}`)
+    + caja(c.anodo, `${MC.par(c.anodo).red} (${c.polos.anodo})`, 'Ánodo: oxidación', `a la ${lado(c.lados.anodo)}; aniones hacia aquí`)
+    + caja(c.catodo, `${MC.par(c.catodo).red} (${c.polos.catodo})`, 'Cátodo: reducción', `a la ${lado(c.lados.catodo)}; cationes hacia aquí`);
+  $('x-tabla').innerHTML = `<div class="eqs"><div class="eq">${c.reaccion.texto.replace(/(Zn|Fe|Cu|Ag)(²⁺|⁺)?/g, (s, m) => Mx(m, s))}</div></div>` + tabla(METALES, c);
+  const msg = [];
+  if (x.fuente) msg.push(`Con la fuente, la reacción va al revés: ahora se oxida el ${NOMBRE[c.anodo]} (el de mayor potencial) y el cátodo es el polo negativo. Sigue siendo cierto que en el cátodo ocurre la reducción y que los electrones van del ánodo al cátodo por el alambre.`);
+  if (x.puente !== 'sal') msg.push('Sin puente, en cuanto reaccionan un par de átomos cada vaso queda cargado y la reacción se detiene.');
+  if (!x.fuente && c.lados.anodo === 'der') msg.push('El ánodo quedó a la derecha: lo decide la reacción, no el lado.');
+  $('x-msg').textContent = msg.join(' ');
+}
+
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Experimentos del catálogo de docs/investigacion/equilibrio-acidos-electroquimica-ideas-erroneas.md:
+   EC1 y EC5 (¿qué lleva el puente?), EC11 (sin puente, cada vaso se carga), "duplicar la reacción" (hipótesis,
+   ligada a EC12), Faraday con Cu²⁺ y Ag⁺ en serie (hipótesis) y EC3/EC4 (¿el ánodo siempre a la izquierda?).
+   La escena se mueve recién después de responder. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'leyenda2');
+const e = t => V('e', t), Ev = t => V('E', t), Zn = t => Mx('Zn', t), Cu = t => Mx('Cu', t), Ag = t => Mx('Ag', t), K = t => V('cat', t), N = t => V('an', t);
+const SERIE = MC.serie(9650, ['Cu', 'Ag']), DUP = MC.pila('Zn', 'Cu'), AGZN = MC.pila('Ag', 'Zn');
+
+const EXPS = [
+  { id:'puente', corto:'¿Qué lleva el puente?',
+    q:`En la pila de ${Zn('zinc')} y ${Cu('cobre')}, ¿qué pasa por el puente salino mientras la pila funciona?`,
+    opts:[['a','Electrones, del zinc al cobre','EC1-puente-lleva-electrones','documentado'],
+          ['b','Iones: los aniones van hacia el vaso del zinc y los cationes hacia el del cobre',null],
+          ['c','Iones, pero solo los negativos','EC5-solo-iones-negativos','documentado'],
+          ['d','Iones: los aniones van hacia el cobre, porque es el polo positivo','aniones-al-polo-positivo','hipotesis']],
+    ok:'b',
+    fb:{ a:'Elegiste la A. Por el puente no pasa ni un electrón: mira el dibujo, los electrones solo van por el alambre. La correcta está marcada.',
+      c:'Elegiste la C. Se mueven los dos: los aniones hacia el zinc y los cationes hacia el cobre, en sentidos opuestos. La correcta está marcada.',
+      d:'Elegiste la D. Lo que mueve a los aniones no es el polo de la lámina, sino la carga de la disolución: alrededor del zinc aparecen Zn²⁺ y sobra carga positiva. Los aniones van hacia allá. La correcta está marcada.' },
+    antes:ver => E.config({ izq:'Zn', der:'Cu', semilla:21, pausa:!ver }),
+    despues:() => E.soltar(),
+    exp:() => `<p>Por el puente solo pasan iones: ${N('NO₃⁻')} hacia el vaso del ${Zn('zinc')}, donde aparecen ${Zn('Zn²⁺')}, y ${K('K⁺')} hacia el del ${Cu('cobre')}, donde desaparecen ${Cu('Cu²⁺')}. Así cada disolución sigue neutra y la reacción puede continuar. Los ${e('electrones')} van por arriba, por el alambre.</p>
+      <p class="fuente">En la UNAM, ante la pregunta de cambiar el puente por un alambre, 161 de 306 respuestas (52,6 %) eligieron que habría electricidad "porque hay un flujo constante de electrones por el alambre" (Tagle Barrios, 2024, ítem 5, leído de sus gráficas). En Turquía, el 25,42 % de 59 escolares cree que en la disolución la corriente la llevan solo los iones negativos (Şen, Yılmaz y Geban, 2016, tabla 2). Que los aniones vayan "al polo positivo" es una hipótesis nuestra.</p>` },
+  { id:'sin-puente', corto:'Quito el puente',
+    q:`Se arma la pila de ${Zn('zinc')} y ${Cu('cobre')} sin puente salino: los vasos solo se unen por el alambre. ¿Qué pasa con la carga de cada disolución?`,
+    opts:[['a','El vaso del zinc queda positivo, el del cobre negativo, y la reacción se detiene',null],
+          ['b','Siguen neutras: los electrones del alambre compensan la carga','EC11-electrones-compensan','parcial'],
+          ['c','Nada cambia: el puente solo sirve para que no se mezclen las disoluciones','puente-solo-separa','hipotesis'],
+          ['d','El vaso del zinc queda negativo y el del cobre positivo','EC3-signo-del-polo','hipotesis']],
+    ok:'a',
+    fb:{ b:'Elegiste la B. Los electrones no entran a la disolución: se quedan en los metales. La carga de cada vaso solo la pueden compensar iones, y sin puente no llegan. La correcta está marcada.',
+      c:'Elegiste la C. El puente sí separa las disoluciones, pero su trabajo es dejar pasar iones. Sin él, la reacción se frena. La correcta está marcada.',
+      d:'Elegiste la D. Al vaso del zinc llegan Zn²⁺ (carga positiva) y del vaso del cobre se van Cu²⁺: el del zinc queda positivo y el del cobre, negativo. La correcta está marcada.' },
+    antes:ver => E.config({ izq:'Zn', der:'Cu', puente:'ninguno', semilla:22, pausa:!ver, ocultarV:!ver }),
+    despues:() => { E.cfg.ocultarV = false; E.soltar(); },
+    exp:() => `<p>Mira los contadores: se disuelven dos átomos de ${Zn('zinc')} y se depositan dos de ${Cu('cobre')}; el vaso del zinc queda con +4 y el del cobre con −4, y ya no pasa ningún ${e('electrón')} más. En una pila real eso ocurre en una fracción de segundo: la carga que se acumula frena la reacción. El voltímetro marca ${Ev('casi cero')}.</p>
+      <p class="fuente">En São Paulo, con 125 estudiantes que ya habían estudiado el tema, apareció la idea de que los electrones van de un electrodo al otro sin que la disolución cambie de carga; es un estudio cualitativo, sin porcentaje (Caramel y Pacca, 2011). Las opciones C y D son hipótesis nuestras.</p>` },
+  { id:'duplicar', corto:'Duplico la reacción',
+    q:`Si escribo la reacción como 2 ${Zn('Zn')} + 2 ${Cu('Cu²⁺')} → 2 ${Zn('Zn²⁺')} + 2 ${Cu('Cu')}, o si armo la pila con láminas y vasos el doble de grandes, ¿cuánto marca el ${Ev('voltímetro')}?`,
+    opts:[['a','2,20 V: el doble','fem-duplicada','hipotesis'],
+          ['b','1,10 V: lo mismo',null],
+          ['c','0,55 V: la mitad, porque se reparte entre más átomos','fem-mitad','hipotesis'],
+          ['d','Depende de cuánta masa de zinc haya','fem-depende-de-cantidad','hipotesis']],
+    ok:'b',
+    fb:{ a:'Elegiste la A. Duplicar la reacción duplica cuánto reacciona y cuánta carga puede dar la pila, pero no la fem: cada electrón sale con el mismo "empuje". La correcta está marcada.',
+      c:'Elegiste la C. La fem no se reparte entre los átomos: depende de qué metales son. La correcta está marcada.',
+      d:'Elegiste la D. Más zinc hace que la pila dure más, no que empuje más fuerte. La correcta está marcada.' },
+    antes:ver => E.config({ izq:'Zn', der:'Cu', semilla:23, grande:true, pausa:!ver, ocultarV:!ver }),
+    despues:() => { E.cfg.ocultarV = false; E.soltar(); },
+    exp:() => `<div class="eqs"><div class="eq">${Ev('E°')} = ${Ev('0,34')} − (${Ev('−0,76')}) = ${Ev(fV(DUP.E))}<span class="note">con 1, 2 o 100 átomos de zinc</span></div></div>
+      <p>La fem es intensiva, como la temperatura: depende de qué metales son y de las concentraciones, no de cuánto metal hay. Una pila más grande da la misma fem y dura más. Para tener más voltaje, se conectan pilas en serie.</p>
+      <p class="fuente">No encontramos estudios que midan este error: las tres opciones incorrectas son hipótesis nuestras, ligadas a un dato: la mayoría de 16 universitarios con ideas erróneas sobre la pila calculaba bien el potencial (Sanger y Greenbowe, 1997, según el resumen).</p>` },
+  { id:'faraday', corto:'Faraday: Cu²⁺ y Ag⁺',
+    q:`Una celda con ${Cu('Cu²⁺')} y otra con ${Ag('Ag⁺')} están en serie: por las dos pasa la misma corriente. Mientras pasan 8 ${e('electrones')} por cada una, ¿cuántos átomos se depositan en cada cátodo?`,
+    opts:[['a','8 de cobre y 8 de plata','faraday-sin-carga-del-ion','hipotesis'],
+          ['b','4 de cobre y 8 de plata',null],
+          ['c','8 de cobre y 4 de plata','faraday-carga-al-reves','hipotesis'],
+          ['d','16 de cobre y 8 de plata','faraday-multiplica-la-carga','hipotesis']],
+    ok:'b',
+    fb:{ a:'Elegiste la A. Los electrones son los mismos, pero cada Cu²⁺ necesita dos y cada Ag⁺ solo uno. La correcta está marcada.',
+      c:'Elegiste la C. Al revés: el que necesita más electrones por átomo, el cobre, deposita menos átomos. La correcta está marcada.',
+      d:'Elegiste la D. La carga del ion divide, no multiplica: con 8 electrones alcanzan para 4 Cu²⁺. La correcta está marcada.' },
+    antes:ver => E.config({ tipo:'faraday', especies:['Cu', 'Ag'], meta:8, semilla:4, corriendo:false, aviso:'Responde para hacer pasar la corriente' }),
+    despues:() => E.correr(),
+    exp:() => `<div class="eqs"><div class="eq">${Cu('Cu²⁺')} + 2 ${e('e⁻')} → ${Cu('Cu')} · ${Ag('Ag⁺')} + ${e('e⁻')} → ${Ag('Ag')}</div>
+      <div class="eq">Con ${e('9650 C')} (${e('0,1 mol de e⁻')}): ${Cu(`${fmt(SERIE[0].mol, 2)} mol = ${fmt(SERIE[0].g, 3)} g de Cu`)} · ${Ag(`${fmt(SERIE[1].mol, 1)} mol = ${fmt(SERIE[1].g, 1)} g de Ag`)}</div></div>
+      <p>En serie, lo que es igual en las dos celdas son los ${e('moles de electrones')}, no los moles de metal. Cada metal deposita los moles de electrones divididos entre la carga de su ion. Es la segunda ley de Faraday.</p>
+      <p class="fuente">No encontramos ningún estudio con porcentajes sobre la ley de Faraday: las opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'anodo-lado', corto:'¿Ánodo a la izquierda?',
+    q:`En este dibujo la ${Ag('plata')} está a la izquierda y el ${Zn('zinc')} a la derecha. ¿Cuál es el ánodo?`,
+    opts:[['a','El de la izquierda: el ánodo siempre está a la izquierda','EC4-anodo-a-la-izquierda','documentado'],
+          ['b','El zinc, porque es el que se oxida',null],
+          ['c','La plata, porque el ánodo es el polo positivo','EC3-anodo-positivo','documentado'],
+          ['d','Depende de dónde se ubiquen las semiceldas','EC4-depende-de-la-ubicacion','documentado']],
+    ok:'b',
+    fb:{ a:'Elegiste la A. Es una costumbre de los libros dibujar el ánodo a la izquierda, no una regla: el ánodo es donde ocurre la oxidación. La correcta está marcada.',
+      c:'Elegiste la C. En una pila, el ánodo es el polo negativo: de ahí salen los electrones. La correcta está marcada.',
+      d:'Elegiste la D. Moviendo los vasos no cambia nada: el zinc se oxida esté donde esté. La correcta está marcada.' },
+    antes:ver => E.config({ izq:'Ag', der:'Zn', semilla:25, pausa:!ver, roles:ver }),
+    despues:() => { E.cfg.roles = true; E.soltar(); },
+    exp:() => `<div class="eqs"><div class="eq">${Zn('Zn')} → ${Zn('Zn²⁺')} + 2 ${e('e⁻')}<span class="note">oxidación: ánodo, polo −</span></div>
+      <div class="eq">2 ${Ag('Ag⁺')} + 2 ${e('e⁻')} → 2 ${Ag('Ag')}<span class="note">reducción: cátodo, polo +</span></div>
+      <div class="eq">${Ev('E°')} = ${Ev('0,80')} − (${Ev('−0,76')}) = ${Ev(fV(AGZN.E))}</div></div>
+      <p>Para saber cuál es el ánodo, mira la tabla de potenciales: el de menor potencial se oxida. Ahora los ${e('electrones')} van de derecha a izquierda y los ${N('aniones')} del puente, hacia la derecha.</p>
+      <p class="fuente">En Turquía, con 59 escolares de 11.º grado: el 15,25 % cree que el ánodo siempre está a la izquierda, el 5,08 % que depende de la ubicación de las semiceldas y el 6,78 % que en la pila el ánodo es positivo y el cátodo negativo (Şen, Yılmaz y Geban, 2016, tabla 2). En la UNAM, "el cátodo siempre es positivo" (o siempre negativo) fue la idea más frecuente, sin porcentaje legible (Tagle Barrios, 2024).</p>` },
+];
+const S = { k:0, pred:{}, t0:Date.now() };
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], visto = !!S.pred[x.id];
+  x.antes(visto);
+  if (visto && x.id === 'faraday'){ E.far.llegados = [8, 8]; E.far.salidos = [8, 8]; E.far.emitidos = 8; }
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>
+    <div class="opts">${x.opts.map(([l, t]) => `<button class="opt" type="button" data-k="${l}"><span class="l">${l.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div>
+    <p class="fb" id="fb2"></p><div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : (x.fb && x.fb[p]) || `Elegiste la ${p.toUpperCase()}. La correcta está marcada; mira la escena para ver por qué.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar(); x.despues(); E.dibujar();
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+  });
+  pintar(); E.dibujar();
+}
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+{
+  "titulo": "Redox y pilas: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Usa los potenciales estándar de reducción: Mg²⁺/Mg −2,37 V; Al³⁺/Al −1,66 V; Zn²⁺/Zn −0,76 V; Fe²⁺/Fe −0,44 V; Sn²⁺/Sn −0,14 V; Pb²⁺/Pb −0,13 V; H⁺/H₂ 0 V; Cu²⁺/Cu +0,34 V; Ag⁺/Ag +0,80 V. Antes de calcular, decide quién se oxida (el de menor potencial: es el ánodo) y quién se reduce (el de mayor potencial: es el cátodo). La fem es E°(cátodo) − E°(ánodo) y no se multiplica por los coeficientes. En Faraday, pasa el tiempo a segundos y divide los moles de electrones entre la carga del ion. F = 96 500 C/mol; Cu = 63,5; Ag = 108; Pb = 207.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Para una feria de ciencias se arma una pila con una lámina de zinc en Zn(NO₃)₂ 1 M y una lámina de cobre en Cu(NO₃)₂ 1 M, unidas por un puente salino. ¿Cuál es el ánodo, cuál es el cátodo y cuánto marca el voltímetro?",
+      "respuesta": "Ánodo: zinc (se oxida). Cátodo: cobre (se reduce). Fem = 1,10 V.",
+      "pasos": [
+        "El zinc tiene el menor potencial de reducción (−0,76 V): es el que se oxida, así que es el ánodo. Zn → Zn²⁺ + 2 e⁻.",
+        "El cobre tiene el mayor (+0,34 V): sus iones se reducen, así que es el cátodo. Cu²⁺ + 2 e⁻ → Cu.",
+        "Fem = E°(cátodo) − E°(ánodo) = 0,34 − (−0,76) = 1,10 V.",
+        "Ojo: si sumas 0,34 + (−0,76) sin cambiar nada, te sale −0,42 V, y una pila que funciona no puede tener fem negativa. Ánodo y cátodo se deciden por la reacción, no por cuál está a la izquierda."
+      ],
+      "verificar": [ { "fn": "pila", "args": ["Zn", "Cu"], "espera": { "anodo": "Zn", "catodo": "Cu", "E": 1.1, "errores.sumaSinCambiarSigno": -0.42 } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Una linterna necesita por lo menos 3 V para encender su foquito. Si solo tienes pilas como la del problema anterior (zinc y cobre, 1,10 V cada una), ¿cuántas necesitas como mínimo y cómo las conectas? ¿Serviría hacer una sola pila con láminas el doble de grandes?",
+      "respuesta": "Tres pilas en serie (3,30 V). Una pila más grande sigue dando 1,10 V.",
+      "pasos": [
+        "En serie, las fem se suman: 2 pilas dan 2,20 V (no alcanza) y 3 pilas dan 3,30 V.",
+        "Se conectan en serie: el cobre (polo +) de una con el zinc (polo −) de la siguiente.",
+        "Una pila con láminas más grandes o con más disolución tiene la misma fem: E° depende de qué metales son, no de cuánto metal hay. Lo que crece es cuánta carga puede entregar antes de agotarse."
+      ],
+      "verificar": [ { "fn": "celda", "args": [{ "anodo": "Zn", "catodo": "Cu" }], "espera": { "E": 1.1, "errores.duplicada": 2.2 } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Se arma la pila Cu │ Cu²⁺ (1 M) ║ Ag⁺ (1 M) │ Ag. Escribe la reacción global balanceada y calcula la fem.",
+      "respuesta": "Cu + 2 Ag⁺ → Cu²⁺ + 2 Ag; fem = 0,46 V.",
+      "pasos": [
+        "El cobre (+0,34 V) tiene menor potencial que la plata (+0,80 V): el cobre se oxida y es el ánodo. Cu → Cu²⁺ + 2 e⁻.",
+        "En el cátodo: Ag⁺ + e⁻ → Ag. Para que los electrones cedidos sean los ganados, esta semirreacción se multiplica por 2: 2 Ag⁺ + 2 e⁻ → 2 Ag.",
+        "Suma: Cu + 2 Ag⁺ → Cu²⁺ + 2 Ag. Revisa la carga: a la izquierda +2 y a la derecha +2.",
+        "Fem = 0,80 − 0,34 = 0,46 V. El potencial NO se multiplica por 2: si haces 2 · 0,80 − 0,34 te sale 1,26 V, que es el error. El potencial no depende de cuántas veces escribes la reacción."
+      ],
+      "verificar": [ { "fn": "pila", "args": ["Cu", "Ag"], "espera": { "E": 0.46, "reaccion.texto": "Cu + 2 Ag⁺ → Cu²⁺ + 2 Ag", "errores.multiplicaCoeficientes": 1.26 } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Las planchas de calamina de los techos son de acero (hierro) cubierto con una capa de zinc. Cuando la plancha se raya y el hierro queda expuesto a la lluvia, ¿cuál de los dos metales se oxida primero? ¿Cuánto vale la fem de la pila que se forma entre los dos?",
+      "respuesta": "Se oxida el zinc; el hierro queda protegido mientras quede zinc. Fem = 0,32 V.",
+      "pasos": [
+        "Compara los potenciales de reducción: Zn −0,76 V y Fe −0,44 V. El de menor potencial se oxida: el zinc es el ánodo.",
+        "El hierro hace de cátodo: sobre él se reduce lo que hay en el agua (por ejemplo, el oxígeno disuelto), pero el hierro no se gasta.",
+        "Fem = −0,44 − (−0,76) = 0,32 V.",
+        "El zinc se llama ánodo de sacrificio: se gasta él para que el hierro no se oxide. Así la calamina dura años aunque tenga rayones."
+      ],
+      "verificar": [ { "fn": "pila", "args": ["Fe", "Zn"], "espera": { "anodo": "Zn", "catodo": "Fe", "E": 0.32 } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Una lata de conservas es de hierro cubierto con estaño (hojalata). Si se abolla y el hierro queda expuesto a la humedad, ¿quién se oxida? ¿Protege el estaño al hierro como el zinc de la calamina?",
+      "respuesta": "Se oxida el hierro (fem 0,30 V): el estaño no lo protege si la capa se rompe.",
+      "pasos": [
+        "Potenciales: Fe −0,44 V y Sn −0,14 V. Ahora el de menor potencial es el hierro: el hierro es el ánodo.",
+        "Fem = −0,14 − (−0,44) = 0,30 V.",
+        "El estaño solo protege mientras la capa está entera, como una pintura. Una vez rota, el hierro se oxida incluso más rápido que si estuviera solo, porque el estaño hace de cátodo.",
+        "No es que el metal de encima siempre proteja: depende de cuál tiene el menor potencial."
+      ],
+      "verificar": [ { "fn": "pila", "args": ["Fe", "Sn"], "espera": { "anodo": "Fe", "catodo": "Sn", "E": 0.3 } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "¿Se puede guardar una disolución de sulfato de cobre (Cu²⁺) en un balde de hierro? Justifica con la fem de la reacción entre el hierro y el ion cobre.",
+      "respuesta": "No: Fe + Cu²⁺ → Fe²⁺ + Cu tiene fem 0,78 V, es espontánea y el balde se corroe.",
+      "pasos": [
+        "Si el balde reaccionara, el hierro se oxidaría (ánodo) y el Cu²⁺ se reduciría (cátodo): Fe + Cu²⁺ → Fe²⁺ + Cu.",
+        "Fem = 0,34 − (−0,44) = 0,78 V. Como es positiva, la reacción es espontánea.",
+        "El balde se va disolviendo y se cubre de cobre rojizo. Una fem positiva quiere decir espontánea; si fuera negativa, la reacción no ocurriría sola."
+      ],
+      "verificar": [ { "fn": "celda", "args": [{ "anodo": "Fe", "catodo": "Cu" }], "espera": { "E": 0.78, "espontanea": true, "reaccion.texto": "Fe + Cu²⁺ → Fe²⁺ + Cu" } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Para cobrear una llave se la usa como cátodo en una disolución de Cu²⁺ y se hace pasar una corriente de 2 A durante 16 minutos y 5 segundos. ¿Cuántos gramos de cobre se depositan?",
+      "respuesta": "0,635 g de cobre.",
+      "pasos": [
+        "Pasa el tiempo a segundos: 16 · 60 + 5 = 965 s.",
+        "Carga: Q = I · t = 2 · 965 = 1930 C. Moles de electrones: 1930 / 96 500 = 0,02 mol.",
+        "Cada Cu²⁺ necesita 2 electrones: Cu²⁺ + 2 e⁻ → Cu. Moles de Cu = 0,02 / 2 = 0,01 mol.",
+        "Masa = 0,01 · 63,5 = 0,635 g. Si olvidas dividir entre la carga del ion, te sale el doble: 1,27 g."
+      ],
+      "verificar": [ { "fn": "faraday", "args": [{ "especie": "Cu", "I": 2, "s": 965 }], "espera": { "Q": 1930, "molE": 0.02, "mol": 0.01, "g": 0.635, "errores.sinCarga": 1.27 } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "En un taller de joyería quieren depositar 1,08 g de plata sobre un anillo con una corriente de 0,5 A. ¿Cuánto tiempo debe pasar la corriente?",
+      "respuesta": "1930 s, es decir, 32 minutos y 10 segundos.",
+      "pasos": [
+        "Moles de plata: 1,08 / 108 = 0,01 mol.",
+        "Cada Ag⁺ necesita 1 electrón (Ag⁺ + e⁻ → Ag): hacen falta 0,01 mol de electrones.",
+        "Carga: Q = 0,01 · 96 500 = 965 C. Tiempo: t = Q / I = 965 / 0,5 = 1930 s.",
+        "En minutos: 1930 / 60 = 32 min y 10 s. La respuesta sale en segundos porque Q está en culombios y I en amperios (C/s)."
+      ],
+      "verificar": [ { "fn": "tiempoFaraday", "args": [{ "especie": "Ag", "g": 1.08, "I": 0.5 }], "espera": { "mol": 0.01, "molE": 0.01, "Q": 965, "s": 1930 } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Dos celdas están conectadas en serie: una con Ag⁺ y otra con Cu²⁺. Al apagar la corriente, en la primera se depositaron 2,16 g de plata. ¿Cuántos gramos de cobre se depositaron en la segunda?",
+      "respuesta": "0,635 g de cobre.",
+      "pasos": [
+        "En serie, la misma carga pasa por las dos celdas: los mismos moles de electrones.",
+        "Plata: 2,16 / 108 = 0,02 mol de Ag. Como cada Ag⁺ toma 1 electrón, pasaron 0,02 mol de electrones (1930 C).",
+        "Cobre: cada Cu²⁺ toma 2 electrones, así que se depositan 0,02 / 2 = 0,01 mol de Cu = 0,635 g.",
+        "Los moles de metal no son iguales en las dos celdas: son iguales los moles de electrones. Si pones 0,02 mol de Cu, te sale 1,27 g."
+      ],
+      "verificar": [ { "fn": "serie", "args": [1930, ["Ag", "Cu"]], "espera": { "0.g": 2.16, "0.molE": 0.02, "1.mol": 0.01, "1.g": 0.635 } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Al encender un auto, la batería de plomo entrega 193 A durante 5 s al motor de arranque. En la placa negativa el plomo se oxida: Pb → Pb²⁺ + 2 e⁻ (el Pb²⁺ queda pegado a la placa como sulfato de plomo). ¿Cuántos gramos de plomo se oxidan en ese arranque?",
+      "respuesta": "1,035 g de plomo.",
+      "pasos": [
+        "Carga: Q = 193 · 5 = 965 C. Moles de electrones: 965 / 96 500 = 0,01 mol.",
+        "Cada átomo de plomo entrega 2 electrones: 0,01 / 2 = 0,005 mol de Pb.",
+        "Masa: 0,005 · 207 = 1,035 g. Sin dividir entre 2 saldría 2,07 g.",
+        "La misma ley de Faraday vale en una pila o batería: los electrones que salen por el cable salen de la oxidación del ánodo."
+      ],
+      "verificar": [ { "fn": "faraday", "args": [{ "especie": "Pb", "I": 193, "s": 5 }], "espera": { "Q": 965, "molE": 0.01, "mol": 0.005, "g": 1.035, "errores.sinCarga": 2.07 } } ]
+    }
+  ]
+}

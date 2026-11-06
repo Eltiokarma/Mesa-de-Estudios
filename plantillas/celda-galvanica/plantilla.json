@@ -1,0 +1,15 @@
+{
+  "id": "celda-galvanica",
+  "titulo": "Redox y celda galvánica: electrones por el alambre, iones por el puente",
+  "formato": "escena",
+  "unidades": [
+    "quimica.electroquimica"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}
