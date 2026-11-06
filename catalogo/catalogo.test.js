@@ -84,10 +84,15 @@ test('cada plantilla tiene ficha válida y está en el catálogo', () => {
     assert.ok(ESTADOS.includes(f.estado), `${ficha}: estado inválido`);
     assert.match(f.version, /^\d+\.\d+\.\d+$/, `${ficha}: versión inválida`);
     // Cada formato exige sus archivos (docs/arquitectura.md).
-    const REQUERIDOS = { escena: ['escena', 'motor', 'casos', 'pruebas'], predicciones: ['generador', 'casos', 'pruebas'] };
+    // Lectura: el banco vive fuera de la plantilla (contenido/), con rutas relativas a la ficha.
+    const REQUERIDOS = { escena: ['escena', 'motor', 'casos', 'pruebas'], predicciones: ['generador', 'casos', 'pruebas'], lectura: ['banco', 'pruebas'] };
     assert.ok(REQUERIDOS[f.formato], `${ficha}: formato "${f.formato}" no es uno de ${Object.keys(REQUERIDOS)}`);
     for (const campo of REQUERIDOS[f.formato]) {
       assert.ok(f[campo] && existe(`plantillas/${d}/${f[campo]}`), `${ficha}: no existe el archivo de ${campo}`);
+    }
+    if (f.formato === 'lectura') for (const campo of REQUERIDOS.lectura) {
+      const r = path.relative(raiz, path.join(raiz, 'plantillas', d, f[campo]));
+      assert.ok(r.startsWith('contenido' + path.sep), `${ficha}: ${campo} debe apuntar dentro de contenido/ (apunta a ${r})`);
     }
     if (f.papel) assert.ok(existe(`plantillas/${d}/${f.papel}`), `${ficha}: no existe el archivo de papel`);
     if (f.estado !== 'borrador') assert.ok(f.papel, `${ficha}: una plantilla ${f.estado} necesita problemas de papel (regla 6)`);
@@ -96,5 +101,26 @@ test('cada plantilla tiene ficha válida y está en el catálogo', () => {
       assert.ok(unidades.has(u), `${ficha}: la unidad "${u}" no existe en el catálogo`);
       assert.ok(unidades.get(u).unidad.plantillas.includes(d), `${u}: debería listar la plantilla "${d}"`);
     }
+  }
+});
+
+test('un módulo de lectura cubre justo las unidades de su banco', () => {
+  for (const d of dirsPlantillas) {
+    if (!existe(`plantillas/${d}/plantilla.json`)) continue; // la prueba anterior ya lo avisa
+    const f = leer(`plantillas/${d}/plantilla.json`);
+    if (f.formato !== 'lectura') continue;
+    const banco = path.join('plantillas', d, f.banco), dir = path.dirname(banco);
+    const indice = leer(banco);
+    const items = [...indice.textos.map(id => `textos/${id}.json`), ...(indice.ejercicios || []).map(id => `ejercicios/${id}.json`)];
+    const cubiertas = new Set();
+    for (const a of items) {
+      assert.ok(existe(path.join(dir, a)), `${banco}: falta ${a}`);
+      const it = leer(path.join(dir, a));
+      for (const q of it.preguntas || [it]) cubiertas.add(q.unidad);
+    }
+    for (const id of [indice.entrada, indice.salida]) if (id) assert.ok(existe(path.join(dir, 'textos', `${id}.json`)), `${banco}: falta el texto ${id}`);
+    // Así cada unidad con textos muestra el botón y ninguna unidad lleva a una lista vacía.
+    for (const u of cubiertas) assert.ok(f.unidades.includes(u), `plantillas/${d}/plantilla.json: el banco tiene preguntas de ${u}; agrégala a "unidades" (y "${d}" a sus plantillas)`);
+    for (const u of f.unidades) assert.ok(cubiertas.has(u), `plantillas/${d}/plantilla.json: ${u} no tiene ningún texto en el índice`);
   }
 });

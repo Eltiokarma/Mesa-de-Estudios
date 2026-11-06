@@ -50,6 +50,9 @@ El modo oscuro redefine todos los tokens. Se sigue al sistema o se fija en Perfi
 | Alternativa | `.alt` | Predicciones. Lleva una letra (A–E) y cambia a `ok` o `mal` |
 | Variable | `.var.c-*` | Un dato del enunciado con su color |
 | Aviso | `.aviso` | Una sola línea en rosa bombón para motivar o para ofrecer el siguiente paso |
+| Texto de lectura | `.lec-cuerpo`, `.o.pinta-ev` / `.pinta-di` / `.pinta-idea` | Formato lectura (`app/lectura.js`): 18 px, interlineado 1,6, 65 caracteres. Pintura como `.var`: tinta, subrayado de 3 px y fondo del 12 % de `--c-i` (evidencia), `--c-o` (distractor) o `--c-d` (idea); con `.marca` del mismo color en la explicación |
+| Opción del paso previo | `.opc`, `.marcable`, `.tarjeta` | Elegir antes de ver las alternativas; la elegida lleva borde `--c-d`. Mínimo 44 px de alto |
+| Hoja del texto | `.lec-texto` en `.fase-preg` | Celular: sube desde abajo al 85 % con la franja fija de 56 px; se cierra deslizando. Desde 900 px es la columna izquierda |
 
 ## Dos pantallas: celular y laboratorio de cómputo
 

@@ -105,8 +105,63 @@ test('el informe incluye la tabla por curso y los errores con su descripción', 
   // unir no confunde dos ítems respondidos en el mismo milisegundo
   assert.equal(unir([[{ ...cursoEv[1], t: 'z' }, { ...cursoEv[2], t: 'z' }]]).length, 2);
   // el CSV lleva las columnas nuevas al final
-  assert.deepEqual(M.COLUMNAS.slice(-12), ['curso', 'forma', 'orden', 'banco', 'item', 'par', 'plantilla', 'origen', 'previas', 'dias', 'que', 'accion']);
+  assert.deepEqual(M.COLUMNAS.slice(-13, -1), ['curso', 'forma', 'orden', 'banco', 'item', 'par', 'plantilla', 'origen', 'previas', 'dias', 'que', 'accion']);
+  assert.equal(M.COLUMNAS[M.COLUMNAS.length - 1], 'respuestas');
   assert.match(M.aCSV([cursoEv[0]]), /fisica,A,AB,,,,,,0,,,/);
   // Las habilitaciones del profesor y el cambio de alumno no entran al resumen por curso.
   assert.equal(M.resumirCursos([...cursoEv, { t: 'h', alumno: 'a', tipo: 'habilitacion', que: 'salida', curso: 'fisica', origen: 'profesor' }])[0].alumnosEntrada, 3);
+});
+
+// ---------- Formato lectura: paso previo y respuesta por código RV ----------
+const { informeLectura } = require('../herramientas/analizar-medicion.js');
+const lec = (alumno, n, extra) => ({ t: `L${alumno}${n}`, alumno, grado: '4', colegio: 'ABC', version: '0.6.0', modulo: 'lectura-verbal', ...extra });
+const U1 = 'razonamiento-verbal.tema-e-idea-principal', U2 = 'razonamiento-verbal.inferencias';
+const lecturaEv = [
+  lec('a', 1, { tipo: 'lectura', unidad: U1, problema: 't001v1', ms: 60000 }),
+  lec('a', 2, { tipo: 'previo', unidad: U1, problema: 't001v1.p1', opcion: 'o5', correcta: false, error: 'RV1', respaldo: 'parcial', ms: 9000 }),
+  lec('a', 3, { tipo: 'prediccion', unidad: U1, problema: 't001v1.p1', opcion: '2', correcta: false, error: 'RV1', respaldo: 'parcial', ms: 8000 }),
+  lec('a', 4, { tipo: 'previo', unidad: U2, problema: 't001v1.p3', opcion: 'convencer', correcta: false, error: '', respaldo: '', ms: 3000 }),
+  lec('a', 5, { tipo: 'prediccion', unidad: U2, problema: 't001v1.p3', opcion: '1', correcta: true, error: '', respaldo: '', ms: 4000 }),
+  lec('b', 1, { tipo: 'lectura', unidad: U1, problema: 't001v1', ms: 90000 }),
+  lec('b', 2, { tipo: 'previo', unidad: U1, problema: 't001v1.p1', opcion: 'o2', correcta: true, error: '', respaldo: '', ms: 5000 }),
+  lec('b', 3, { tipo: 'prediccion', unidad: U1, problema: 't001v1.p1', opcion: '4', correcta: false, error: 'RV3', respaldo: 'parcial', ms: 6000 }),
+  lec('b', 4, { tipo: 'prueba', fase: 'entrada', unidad: U1, problema: 't000av1', aciertos: 2, total: 3, respuestas: '215', ms: 100 }),
+  { t: 'p', alumno: 'a', tipo: 'prediccion', modulo: 'mruv', correcta: false, error: 'G2' }, // de otro formato: no entra
+];
+
+test('resumen de lectura: el paso previo va aparte de la respuesta, por unidad y por código', () => {
+  const r = M.resumirLectura(lecturaEv);
+  assert.deepEqual(r.map(x => x.modulo), ['lectura-verbal']);
+  const [m] = r;
+  assert.equal(m.alumnos, 2);
+  assert.equal(m.textosLeidos, 2);
+  assert.equal(m.msLecturaMediana, 75000);
+  assert.equal(m.previos, 3); assert.ok(Math.abs(m.aciertoPrevio - 1 / 3) < 1e-12);
+  assert.equal(m.respuestas, 3); assert.ok(Math.abs(m.aciertoRespuesta - 1 / 3) < 1e-12);
+  assert.deepEqual(m.codigos, [{ id: 'RV1', previo: 1, respuesta: 1, respaldo: 'parcial' }, { id: 'RV3', previo: 0, respuesta: 1, respaldo: 'parcial' }]);
+  assert.deepEqual(m.sinCodigo, { previo: 1, respuesta: 0 });
+  const u = Object.fromEntries(m.unidades.map(x => [x.id, x]));
+  assert.equal(u[U1].previos, 2); assert.equal(u[U1].aciertoPrevio, 0.5); assert.equal(u[U1].aciertoRespuesta, 0);
+  assert.equal(u[U2].aciertoRespuesta, 1);
+  // El resumen general sigue contando las respuestas como predicciones, y la prueba de entrada del módulo.
+  const g = M.resumir(lecturaEv).find(x => x.modulo === 'lectura-verbal');
+  assert.equal(g.predicciones, 3);
+  assert.ok(Math.abs(g.entrada - 2 / 3) < 1e-12);
+  assert.deepEqual(M.resumirLectura(lecturaEv.slice(-1)), []);
+});
+
+test('los eventos de lectura salen en el CSV y en el informe', () => {
+  const csv = M.aCSV(lecturaEv).trim().split('\n');
+  const col = k => M.COLUMNAS.indexOf(k);
+  const fila = csv[2].split(',');
+  assert.equal(fila[col('tipo')], 'previo');
+  assert.equal(fila[col('opcion')], 'o5');
+  assert.equal(fila[col('error')], 'RV1');
+  assert.equal(csv[9].split(',')[col('respuestas')], '215');
+  const md = informeLectura(unir([lecturaEv, lecturaEv.slice(0, 4)]), { RV1: { nombre: 'Detalle como idea principal', respaldo: 'parcial' } });
+  assert.match(md, /\| lectura-verbal \| 2 \| 2 \| 75 s \| 3 \| 33 % \| 3 \| 33 % \|/);
+  assert.match(md, /\| RV1 \| Detalle como idea principal \| parcial \| 1 \| 1 \|/);
+  assert.match(md, /\| sin código \|.*\| 1 \| 0 \|/);
+  assert.match(informe(lecturaEv), /# Formato lectura: paso previo y respuesta/);
+  assert.equal(informeLectura([]), '');
 });

@@ -2,7 +2,7 @@
  * Núcleo del formato "predicciones": arma las alternativas de un problema generado.
  * Regla 1: los valores los calcula el generador de cada módulo, nunca un modelo de lenguaje.
  * Regla 3: cada alternativa incorrecta sale de un error con nombre, explicación y respaldo
- * ("documentado", con fuente, o "hipotesis", que los datos del colegio confirmarán o no).
+ * ("documentado", con fuente; "parcial", con un estudio indirecto o una sola fuente; o "hipotesis", que los datos del colegio confirmarán o no).
  * Funciona en el navegador (window.Predicciones) y en Node (require).
  */
 (function (root, fabrica) {
@@ -28,7 +28,7 @@
   /*
    * armar({ correcta, errores, rng, unidad, decimales, total })
    *   correcta: número
-   *   errores: [{ id, valor, explicacion, respaldo: 'documentado'|'hipotesis', fuente }]
+   *   errores: [{ id, valor, explicacion, respaldo: 'documentado'|'parcial'|'hipotesis', fuente }]
    * Devuelve [{ letra, valor, texto, correcta, error }], sin valores repetidos (comparados
    * ya redondeados, como los ve el alumno) y en un orden que depende solo de la semilla.
    */

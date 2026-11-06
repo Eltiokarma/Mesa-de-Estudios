@@ -8,7 +8,7 @@
 npm test
 ```
 
-Deben pasar 1036 pruebas.
+Deben pasar 1050 pruebas.
 
 ```bash
 npm run dev
@@ -57,12 +57,16 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 | ma1 a ma3 | Trigonometría, geometría, funciones | Informes del 6 nov: `trigonometria-`, `geometria-` y `algebra-funciones-ideas-erroneas.md` | Cifras de resúmenes, por verificar con los PDF (`fuentes/por-conseguir.md`); cada informe trae 3 escenas y casos |
 | ma4 | Aritmética | Hechas: `porcentajes-sucesivos` (predicciones), `regla-de-tres` y `probabilidad-dados` | Faltan fracciones y decimales, MCD y MCM, promedios e interés |
 | ra1 | Razonamiento matemático | Hechas: `probabilidad-dados` (conteo y probabilidad) y `regla-de-tres` (engranajes) | Faltan sucesiones, planteo de ecuaciones, edades y móviles, orden de información y verdades y mentiras |
-| ra2 y pl4 | Razonamiento verbal y formato lectura | `razonamiento-verbal-ideas-erroneas.md` (RV1 a RV32, ninguno documentado; hecho por la rutina) | La rutina sigue con el diseño del formato lectura, 30 textos propios y la guía docente |
+| ra2 y pl4 | Razonamiento verbal y formato lectura | `razonamiento-verbal-ideas-erroneas.md` (RV1 a RV34, ninguno documentado; hecho por la rutina) | Formato lectura hecho en la app (pl4, 6 nov); la rutina sigue con los 30 textos, los de entrada y salida, los ejercicios sueltos y la guía docente |
 
 ### 2. Detalles de las plantillas ya hechas
 
 - **Tiro parabólico y circular** (`plantillas/tiro-parabolico/`, rutina de física, 6 nov 2026): dos movimientos con sombras sobre los ejes y estroboscopio, MCU, MCUV y transmisión; 17 casos verificados aparte; 10 de papel; 3 predicciones y 6 «¿qué pasa si…?» (Prescott y Mitchelmore 2005, Thornton y Sokoloff 1998). Falta en la escena: MCUV, transmisión, encuentros en la circunferencia e impacto contra una pared (están en el motor y el papel).
-- **Formato lectura y banco de razonamiento verbal** (rutina verbal, 6 nov 2026): diseño en `docs/formato-lectura.md` (paso previo antes de las alternativas, seis tipos, evento propio `previo`) y los primeros 6 textos propios en `contenido/razonamiento-verbal/` con su validador. Falta implementar el formato en `nucleo/` y `app/` (pl4) y llegar a 30 textos.
+- **Formato lectura y banco de razonamiento verbal** (rutina verbal, 6 nov 2026; pl4 implementada el mismo día): diseño en `docs/formato-lectura.md` y los primeros 6 textos en `contenido/razonamiento-verbal/`. Ya está en la app: `nucleo/lectura.js` (con pruebas sobre los textos reales), `app/lectura.js` (los seis tipos de paso previo, que bloquean las alternativas; hoja que sube en el celular y dos columnas en la PC; texto pintado con evidencia, distractor e idea), la ficha `plantillas/lectura-verbal/` en las 8 unidades que tocan los textos, `codigos.json` generado del informe, y la medición (`previo`, `lectura`, posición en el banco, resumen por código RV en `analizar-medicion.js`). Detalle en `docs/arquitectura.md` (sección «Formato lectura»). Falta:
+  - Llegar a 30 textos y escribir los de entrada y salida (`indice.entrada` y `salida` siguen en `null`: hoy la práctica empieza sin prueba de entrada). El código de las pruebas ya está.
+  - Ejercicios sueltos (analogías, plan de redacción, eliminación, término excluido, oraciones incompletas): la app y el núcleo ya los muestran y califican (probados con ejercicios de muestra); falta escribirlos y las unidades de término excluido y oraciones incompletas en el catálogo. Al agregar un texto o ejercicio con una unidad nueva, sumarla a `plantillas/lectura-verbal/plantilla.json` y nombrar el módulo en la unidad (la prueba avisa); luego `npm run catalogo`.
+  - Lápiz y papel (regla 6): falta `herramientas/papel-lectura.js` y que `vPapel` acepte enunciados de varios párrafos (sección 7.6 del diseño). Por eso la ficha sigue en `borrador` con `papel: null`.
+  - **Para Gerson:** en el celular, la lectura esconde la barra de abajo (se vuelve con ‹) para dar espacio al texto y a la hoja; ¿de acuerdo? Los colores evidencia, distractor e idea reusan `--c-i`, `--c-o` y `--c-d` como propone el diseño; falta medir su distancia y el contraste del caso mixto (evidencia y distractor en la misma oración) en `docs/diseno.md`.
 
 - **Cinética** (`plantillas/cinetica/`, rutina de química, 6 nov 2026): caja de discos con teoría de colisiones (energía y orientación), temperatura, catalizador y perfil de energía. Informe `docs/investigacion/cinetica-ideas-erroneas.md` (CI1 a CI13) con cifras sin verificar por el bloqueo de red: la escena no muestra porcentajes de cinética. La fracción contada queda unos pocos por ciento bajo la teoría. Falta en la escena: orden ≠ coeficiente y vida media.
 

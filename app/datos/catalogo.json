@@ -3695,7 +3695,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "lectura-verbal"
+     ]
     },
     {
      "id": "razonamiento-verbal.conectores",
@@ -3714,7 +3716,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "lectura-verbal"
+     ]
     },
     {
      "id": "razonamiento-verbal.eliminacion-de-oraciones",
@@ -3781,7 +3785,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "lectura-verbal"
+     ]
     },
     {
      "id": "razonamiento-verbal.tipologia-textual",
@@ -3836,7 +3842,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "lectura-verbal"
+     ]
     },
     {
      "id": "razonamiento-verbal.resumen-y-sintesis",
@@ -3914,7 +3922,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "lectura-verbal"
+     ]
     },
     {
      "id": "razonamiento-verbal.compatibilidad",
@@ -3938,7 +3948,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "lectura-verbal"
+     ]
     },
     {
      "id": "razonamiento-verbal.extrapolacion",
@@ -3962,7 +3974,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "lectura-verbal"
+     ]
     },
     {
      "id": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
@@ -3989,7 +4003,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "lectura-verbal"
+     ]
     },
     {
      "id": "razonamiento-verbal.texto-y-contexto",
@@ -4325,6 +4341,37 @@
     "/plantillas/grafica-perillas/index.html",
     "/plantillas/grafica-perillas/motor.js",
     "/plantillas/grafica-perillas/papel.json"
+   ]
+  },
+  "lectura-verbal": {
+   "id": "lectura-verbal",
+   "titulo": "Lectura y razonamiento verbal",
+   "formato": "lectura",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-verbal.sentido-contextual",
+    "razonamiento-verbal.conectores",
+    "razonamiento-verbal.cohesion-y-coherencia",
+    "razonamiento-verbal.tema-e-idea-principal",
+    "razonamiento-verbal.inferencias",
+    "razonamiento-verbal.compatibilidad",
+    "razonamiento-verbal.extrapolacion",
+    "razonamiento-verbal.textos-argumentativos-y-dialecticos"
+   ],
+   "url": "#/lectura/lectura-verbal",
+   "banco": "/contenido/razonamiento-verbal/indice.json",
+   "papel": null,
+   "archivos": [
+    "/contenido/razonamiento-verbal/indice.json",
+    "/contenido/razonamiento-verbal/codigos.json",
+    "/contenido/razonamiento-verbal/frases.json",
+    "/contenido/razonamiento-verbal/textos/t001.json",
+    "/contenido/razonamiento-verbal/textos/t002.json",
+    "/contenido/razonamiento-verbal/textos/t003.json",
+    "/contenido/razonamiento-verbal/textos/t004.json",
+    "/contenido/razonamiento-verbal/textos/t005.json",
+    "/contenido/razonamiento-verbal/textos/t006.json"
    ]
   },
   "limitante-particulas": {

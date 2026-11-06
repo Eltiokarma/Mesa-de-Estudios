@@ -1,12 +1,12 @@
 // Service worker: deja la app y las escenas guardadas en el celular para usarlas sin internet.
-// Estrategia: al instalar, guarda la cáscara, el catálogo y los archivos de cada plantilla.
+// Estrategia: al instalar, guarda la cáscara, el catálogo y los archivos de cada plantilla (en lectura, el banco entero).
 // Después responde desde lo guardado y actualiza en segundo plano (stale-while-revalidate).
 // Al cambiar algo de la cáscara, subir VERSION para que los celulares la renueven.
-const VERSION = 'v28';
+const VERSION = 'v29';
 const CACHE = `lab-${VERSION}`;
 const CASCARA = ['/app/', '/app/index.html', '/app/estilos.css', '/app/app.js', '/app/manifest.webmanifest',
-  '/app/practica.js', '/app/prueba.js', '/app/ilustraciones.js', '/app/datos/catalogo.json', '/app/datos/pruebas.json',
-  '/nucleo/azar.js', '/nucleo/predicciones.js', '/nucleo/medicion.js', '/nucleo/pruebas.js', '/app/iconos/icono.svg', '/app/iconos/icono-192.png', '/app/iconos/icono-512.png'];
+  '/app/practica.js', '/app/prueba.js', '/app/lectura.js', '/app/ilustraciones.js', '/app/datos/catalogo.json', '/app/datos/pruebas.json',
+  '/nucleo/azar.js', '/nucleo/predicciones.js', '/nucleo/medicion.js', '/nucleo/pruebas.js', '/nucleo/lectura.js', '/app/iconos/icono.svg', '/app/iconos/icono-192.png', '/app/iconos/icono-512.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil((async () => {
@@ -32,8 +32,8 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
   if (e.request.method !== 'GET' || url.origin !== location.origin || url.pathname.startsWith('/api/')) return;
-  // Solo la app, el núcleo y las plantillas; la hoja de ruta (/gestion/) es una herramienta interna.
-  if (!/^\/(app|plantillas|nucleo)\//.test(url.pathname)) return;
+  // Solo la app, el núcleo, las plantillas y el contenido (banco de lectura); la hoja de ruta (/gestion/) es una herramienta interna.
+  if (!/^\/(app|plantillas|nucleo|contenido)\//.test(url.pathname)) return;
   e.respondWith((async () => {
     const c = await caches.open(CACHE);
     const guardada = await c.match(e.request, { ignoreSearch: true });

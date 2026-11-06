@@ -23,6 +23,22 @@ test('el service worker guarda archivos que existen', () => {
   }
 });
 
+test('el service worker sirve sin conexión todo lo que guarda', () => {
+  // Si una ruta no pasa el filtro del fetch, el archivo se guarda al instalar pero no se sirve sin red
+  // (pasó con el banco de lectura, que vive en /contenido/).
+  const sw = fs.readFileSync(path.join(__dirname, 'sw.js'), 'utf8');
+  const filtro = new RegExp(sw.match(/if \(!\/(.+)\/\.test\(url\.pathname\)\) return;/)[1]);
+  const lista = JSON.parse(sw.match(/const CASCARA = (\[[\s\S]*?\]);/)[1].replace(/'/g, '"'));
+  const cat = JSON.parse(fs.readFileSync(SALIDA, 'utf8'));
+  for (const u of [...lista, ...Object.values(cat.plantillas).flatMap(p => p.archivos)]) assert.ok(filtro.test(u), `sw.js no sirve ${u} sin conexión`);
+  // La app carga los scripts de cada formato; deben estar en la cáscara.
+  const html = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
+  for (const [, src] of html.matchAll(/<script src="([^"]+)"/g)) {
+    const u = src.startsWith('/') ? src : '/app/' + src;
+    assert.ok(lista.includes(u), `sw.js no guarda ${u}, que carga index.html`);
+  }
+});
+
 test('el manifiesto es instalable', () => {
   const m = JSON.parse(fs.readFileSync(path.join(__dirname, 'manifest.webmanifest'), 'utf8'));
   for (const k of ['name', 'short_name', 'start_url', 'display', 'icons']) assert.ok(m[k], `falta ${k}`);

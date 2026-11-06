@@ -1,0 +1,20 @@
+{
+  "id": "lectura-verbal",
+  "titulo": "Lectura y razonamiento verbal",
+  "formato": "lectura",
+  "unidades": [
+    "razonamiento-verbal.sentido-contextual",
+    "razonamiento-verbal.conectores",
+    "razonamiento-verbal.cohesion-y-coherencia",
+    "razonamiento-verbal.tema-e-idea-principal",
+    "razonamiento-verbal.inferencias",
+    "razonamiento-verbal.compatibilidad",
+    "razonamiento-verbal.extrapolacion",
+    "razonamiento-verbal.textos-argumentativos-y-dialecticos"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "banco": "../../contenido/razonamiento-verbal/indice.json",
+  "pruebas": "../../contenido/razonamiento-verbal/banco.test.js",
+  "papel": null
+}

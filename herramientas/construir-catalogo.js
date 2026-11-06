@@ -4,7 +4,8 @@
 // El servidor local lo arma al vuelo; el archivo escrito sirve para publicar la app como
 // sitio estático. Una prueba (app/app.test.js) avisa si quedó desactualizado.
 // También arma app/datos/pruebas.json con el banco de pruebas de entrada y salida por curso
-// (catalogo/pruebas/<curso>.json), sin los datos que solo sirven para verificarlo.
+// (catalogo/pruebas/<curso>.json), sin los datos que solo sirven para verificarlo, y
+// contenido/razonamiento-verbal/codigos.json desde el informe (herramientas/codigos-verbal.js).
 
 const fs = require('node:fs');
 const path = require('node:path');
@@ -35,12 +36,25 @@ function construir() {
     if (!fs.existsSync(ficha)) continue;
     const f = leer(ficha);
     const formato = f.formato || 'escena';
+    const url = a => path.posix.join(`/plantillas/${f.id}`, a); // normaliza "../../contenido/…"
+    if (formato === 'lectura') {
+      // Lectura: se lee dentro de la app (app/lectura.js). Los archivos son el banco entero, para tenerlo
+      // sin conexión: el índice primero, después los códigos, las frases y cada texto y ejercicio.
+      const banco = url(f.banco), dir = path.posix.dirname(banco);
+      const indice = leer(path.join(RAIZ, banco));
+      const items = [indice.entrada, indice.salida, ...indice.textos].filter(Boolean).map(id => `${dir}/textos/${id}.json`);
+      const ejercicios = (indice.ejercicios || []).map(id => `${dir}/ejercicios/${id}.json`);
+      plantillas[f.id] = { id: f.id, titulo: f.titulo, formato, estado: f.estado, version: f.version, unidades: f.unidades,
+        url: `#/lectura/${f.id}`, banco, papel: f.papel ? url(f.papel) : null,
+        archivos: [banco, `${dir}/codigos.json`, `${dir}/frases.json`, ...items, ...ejercicios, ...(f.papel ? [url(f.papel)] : [])] };
+      continue;
+    }
     // Escena: página propia. Predicciones: se juega dentro de la app con el generador del módulo.
     // El primer archivo es el que se carga (escena o generador); los problemas de papel van al final.
-    const archivos = [...(formato === 'escena' ? [f.escena, f.motor] : [f.generador]), ...(f.papel ? [f.papel] : [])].map(a => `/plantillas/${f.id}/${a}`);
+    const archivos = [...(formato === 'escena' ? [f.escena, f.motor] : [f.generador]), ...(f.papel ? [f.papel] : [])].map(url);
     plantillas[f.id] = { id: f.id, titulo: f.titulo, formato, estado: f.estado, version: f.version, unidades: f.unidades,
-      url: formato === 'escena' ? `/plantillas/${f.id}/${f.escena}` : `#/practica/${f.id}`,
-      papel: f.papel ? `/plantillas/${f.id}/${f.papel}` : null, archivos };
+      url: formato === 'escena' ? url(f.escena) : `#/practica/${f.id}`,
+      papel: f.papel ? url(f.papel) : null, archivos };
   }
   const nombresUni = Object.fromEntries(Object.entries(universidades).map(([k, v]) => [k, { nombre: v.nombre, ubicacion: v.ubicacion }]));
   return { universidades: nombresUni, cursos, plantillas };
@@ -72,6 +86,9 @@ function textoPruebas() { return JSON.stringify(construirPruebas(), null, 1) + '
 module.exports = { construir, texto, SALIDA, construirPruebas, textoPruebas, SALIDA_PRUEBAS };
 
 if (require.main === module) {
+  // Los códigos del formato lectura salen del informe de razonamiento verbal (la app no lee Markdown).
+  const codigos = require('./codigos-verbal');
+  fs.writeFileSync(codigos.SALIDA, codigos.texto());
   fs.mkdirSync(path.dirname(SALIDA), { recursive: true });
   fs.writeFileSync(SALIDA, texto());
   fs.writeFileSync(SALIDA_PRUEBAS, textoPruebas());

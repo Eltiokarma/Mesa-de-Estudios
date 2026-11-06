@@ -5,7 +5,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 
-const RESPALDOS = ['documentado', 'hipotesis'];
+const RESPALDOS = ['documentado', 'parcial', 'hipotesis'];
 const raiz = path.join(__dirname, '..');
 
 function probarGenerador(gen, { semillas = 400, recalcular } = {}) {

@@ -24,7 +24,7 @@ No todo se enseña con una escena. Cada curso declara su `formato_principal` y c
 | --- | --- | --- | --- |
 | **Escena** | Pasar del enunciado al modelo con una simulación | Física, geometría, trigonometría, funciones en álgebra | `motor.js` + `index.html` + `casos.json` + problemas de papel |
 | **Predicciones** | Preguntas rápidas donde las alternativas son errores típicos, con explicación inmediata | Química conceptual, aritmética, gran parte del razonamiento matemático | Banco de preguntas propias con su error típico por alternativa; un motor que genera variantes y verifica la respuesta |
-| **Lectura** | Textos con preguntas y explicación de por qué cada alternativa es correcta o no | Razonamiento verbal, comprensión de lectura | Textos propios, preguntas y explicaciones |
+| **Lectura** | Textos con preguntas, un paso previo antes de las alternativas y explicación de por qué cada alternativa es correcta o no | Razonamiento verbal, comprensión de lectura | Banco de textos propios en `contenido/`, `nucleo/lectura.js` y `app/lectura.js` (sección «Formato lectura») |
 
 Los tres comparten las reglas de `CLAUDE.md`: predecir antes de ver, errores reales como alternativas, contenido propio y problemas de papel. Lo que cambia es la interfaz.
 
@@ -93,6 +93,35 @@ Además, tras la revisión del 6 nov 2026, la prueba exige:
 **La clave no va en texto plano.** En `app/datos/pruebas.json` cada forma trae solo los textos de las opciones y `k`: el índice de la correcta y los códigos de error, mezclados (XOR) con una cifra que sale del id del ítem (`Pruebas.ocultar` y `Pruebas.revelar`). **No es seguridad real**: cualquiera que lea `nucleo/pruebas.js` puede deshacerlo. Solo evita que la respuesta se vea con abrir el JSON.
 
 **Registro** (`nucleo/medicion.js`): un evento `item` por respuesta (curso, fase, forma, orden, banco, item, par, plantilla, unidad, opcion, correcta, error, ms) y uno `prueba` al terminar (aciertos, total, respuestas, ms, origen, previas, dias; en la salida, origen es siempre `profesor`). Además, `habilitacion` (que: `salida`, `soluciones` o `soluciones-vistas`; curso; origen `profesor`) cuando el enlace del profesor abre algo, y `sesion` (accion `otro-alumno`) al cambiar de alumno. Las columnas nuevas van al final del CSV. `herramientas/analizar-medicion.js` resume por curso: puntajes, ganancia normalizada de Hake, la forma A contra la B en la entrada (para ver si son equivalentes), acierto por plantilla y, por código de error, cuántos alumnos pareados lo cometieron antes y después.
+
+## Formato lectura (pl4, 6 nov 2026)
+
+Razonamiento verbal. El diseño que manda es [`docs/formato-lectura.md`](formato-lectura.md); aquí, cómo quedó en el código.
+
+| Pieza | Archivo | Qué hace |
+| --- | --- | --- |
+| Banco | `contenido/razonamiento-verbal/` | Textos (`textos/tNNN.json`), ejercicios sueltos (`ejercicios/eNNN.json`, todavía ninguno), `indice.json`, `frases.json` y `codigos.json`. Lo escribe la rutina verbal; `banco.test.js` aplica las reglas editoriales. |
+| Códigos | `herramientas/codigos-verbal.js` | Lee las filas `\| RVn \|` del informe y escribe `codigos.json` (nombre, respaldo `documentado`/`parcial`/`hipotesis`, `por_verificar`). Lo corre `npm run catalogo`; una prueba avisa si quedó viejo. |
+| Ficha | `plantillas/lectura-verbal/plantilla.json` | `formato: "lectura"`, `banco` y `pruebas` con rutas relativas que deben caer dentro de `contenido/`. `unidades` es justo el conjunto de unidades de las preguntas del índice (la prueba lo exige en los dos sentidos), y cada una nombra `lectura-verbal` en sus `plantillas`. |
+| Catálogo | `herramientas/construir-catalogo.js` | Rama `lectura`: `url: "#/lectura/lectura-verbal"`, `banco` (la dirección del índice) y en `archivos` el banco entero ya normalizado (`/contenido/…`): índice, códigos, frases, textos de entrada, salida y práctica, y ejercicios. El service worker los guarda al instalar. |
+| Núcleo | `nucleo/lectura.js` (+ `lectura.test.js`) | Sin DOM. `normalizar` (texto o ejercicio con la misma forma), `oraciones` (número seguido), `validar`, `preparar(item, semilla)` (baraja con `nucleo/azar.js`; cada alternativa lleva su letra y `pos`, su lugar en el banco), `calificar`, `calificarPrevio` (las tablas de la sección 5.3: `codigos`, RV4 para la primera oración, el rol; inversa → RV16 en analogías; `retoma` → RV28 al ordenar), `correccionPrevio`, `pintura`, `lista` y `siguiente` (orden del índice, filtrado por unidad, sin repetir hasta acabar) y `ev` (los eventos). |
+| Pantalla | `app/lectura.js` + `app/estilos.css` | Ruta `#/lectura/<módulo>/<unidad>`. Flujo de la sección 2 del diseño; detalle abajo. |
+
+**La pantalla.** Al leer, el texto va entero (18 px, interlineado 1,6, 65 caracteres), con el número del párrafo en un círculo y el de cada oración pequeño y gris; "Ya lo leí" registra el tiempo. Por cada pregunta con `previo`, el paso previo va primero y **las alternativas no están en la página** hasta tocar "Confirmar" (en su lugar hay un aviso con candado); elegir no graba nada. Los seis tipos:
+
+- `marcar-oracion`: en celular, la consigna arriba, el texto entero con cada oración como un bloque tocable y "Confirmar" fijo abajo; "Ninguna la dice completa" si el previo la trae. Teclado: ↑ ↓ recorren las oraciones (y eligen), Enter confirma. En un ejercicio de eliminación, las oraciones del cuerpo.
+- `clasificar` (con la sonda en un recuadro), `relacion`, `proposito` y `relacion-analogia` (las 12 relaciones escritas con las palabras de la pareja: "LECHE produce VACA"): botones de opción (`role="radio"`); 1–9 o ↑ ↓ eligen, Enter confirma.
+- `ordenar`: tarjetas que se arrastran por el asa (dedo o ratón, con eventos de puntero), con botones ↑ ↓ en cada una; con teclado, Espacio toma la tarjeta, ↑ ↓ la mueven y Espacio la suelta.
+
+Después, las alternativas (`.alt`, A–E o 1–5 con teclado) y la explicación: el veredicto, por qué falla la elegida y la frase de su código (`frases.json`), la explicación de la correcta, la corrección del paso previo (su `explicacion` y, si falló, la de lo que eligió o la frase de su código), "Ver las demás alternativas" plegado, y el texto pintado con los tres colores del diseño (evidencia `--c-i`, distractor `--c-o`, idea `--c-d`; si una oración es evidencia y origen del distractor a la vez, lleva fondo naranja y subrayado turquesa). Cada bloque de la explicación cita además sus oraciones con su color, así que la idea del previo y la evidencia nunca se pintan sobre la misma copia del texto.
+
+En el celular (menos de 900 px) se esconde la barra de abajo; en las preguntas el texto queda plegado en una franja fija de 56 px ("Ver texto ▾") y se relee en una hoja que sube al 85 % de la pantalla y se cierra deslizando hacia abajo, con "Volver a la pregunta" o con Esc. Desde 900 px: dos columnas, el texto a la izquierda (480 px, fijo y con su propio desplazamiento) y la pregunta a la derecha (520 px). Modo oscuro con los tokens de siempre.
+
+**Pruebas de entrada y salida del módulo.** Si `indice.entrada` existe, va primero, sin paso previo ni corrección y con la semilla fija `'entrada'`; la de salida se ofrece después de 3 textos. Hoy las dos están en `null` en el índice (faltan los textos), así que la práctica empieza directo.
+
+**Medición.** Eventos `lectura` (al tocar "Ya lo leí"), `previo` (opcion: la oración, `ninguna`, la clase, la relación o el orden `III-I-IV-II-V`) y `prediccion` con `opcion` = **posición en el banco** (1 a 5), no la letra; `prueba` con `respuestas` en posiciones. `problema` lleva la versión (`t001v1.p1`). Un código `null` del banco se registra con `error` vacío. `respuestas` es ahora la última columna del CSV. `Medicion.resumirLectura` y la sección "Formato lectura" de `analizar-medicion.js` dan, por módulo y por unidad, el acierto del previo y de la respuesta, y por código RV cuántas veces salió sin alternativas a la vista (previo) y con ellas (respuesta).
+
+**Sin conexión.** `app/sw.js` sirve también `/contenido/` (una prueba de `app/app.test.js` exige que todo lo guardado pase el filtro del `fetch` y que cada `<script>` de `index.html` esté en la cáscara).
 
 ## Cómo agregar cosas
 

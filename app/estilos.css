@@ -230,3 +230,111 @@ details[open] summary{margin-bottom:8px}
 @media (min-width:900px){ body[data-ruta="prueba"] #app>*,body[data-ruta="otro"] #app>*{max-width:760px} }
 .solo-grande{display:none}
 @media (min-width:900px){ .saludo .solo-grande{display:inline-flex;padding:9px 16px;font-size:14px} }
+
+/* ---------- Formato lectura (app/lectura.js; diseño en docs/formato-lectura.md) ---------- */
+/* Colores del texto pintado (regla 4): evidencia --c-i turquesa, distractor --c-o naranja, idea --c-d verde.
+   Como .var.c-*: la letra en tinta, subrayado de 3 px del color y fondo del 12 %. */
+.lectura{--lec-texto:18px}
+.lec-cab h1{margin-top:2px}
+.lec-etq{margin:10px 0 0}
+.lec-cols{display:flex;flex-direction:column;gap:16px;margin-top:16px}
+.lec-texto{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px 18px 8px}
+.lec-cuerpo{font-size:var(--lec-texto);line-height:1.6;max-width:65ch}
+.lec-par{margin:0 0 14px}
+.lec-np{color:var(--muted);font-weight:700;margin-right:2px}
+.lec-cuerpo .n,.cita .n{font-size:11px;color:var(--muted);font-weight:700;margin-right:3px;vertical-align:super;line-height:0}
+.lec-hoja-barra{display:none}
+.lec-franja{display:none}
+.lec-velo{position:fixed;inset:0;background:rgba(29,22,38,.45);z-index:40}
+.lec-velo[hidden]{display:none}
+.lector{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.o.pinta-ev,.o.pinta-di,.o.pinta-idea{text-decoration:underline 3px;text-underline-offset:4px;-webkit-box-decoration-break:clone;box-decoration-break:clone;border-radius:4px;padding:0 2px}
+.o.pinta-ev{text-decoration-color:var(--c-i);background:color-mix(in srgb,var(--c-i) 12%,transparent)}
+.o.pinta-di{text-decoration-color:var(--c-o);background:color-mix(in srgb,var(--c-o) 12%,transparent)}
+/* Si la oración de donde sale el distractor también prueba la correcta: fondo naranja y subrayado turquesa. */
+.o.pinta-ev.pinta-di{text-decoration-color:var(--c-i);background:color-mix(in srgb,var(--c-o) 14%,transparent)}
+.o.pinta-idea{text-decoration-color:var(--c-d);background:color-mix(in srgb,var(--c-d) 12%,transparent)}
+.marca{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.marca.ev{background:var(--c-i)}.marca.di{background:var(--c-o)}.marca.idea{background:var(--c-d)}
+.cita{border-left:3px solid var(--line);padding:2px 0 2px 12px;margin:6px 0 12px;font-size:16px;line-height:1.55}
+.cita p{margin:4px 0}
+/* Marcar una oración: cada una es un bloque tocable, con aire entre una y otra. */
+.lec-par.marcar{display:flex;flex-direction:column;gap:8px;align-items:stretch}
+.lec-par.marcar .lec-np{margin-bottom:-4px}
+.marcable{display:block;width:100%;text-align:left;font:inherit;line-height:1.5;background:var(--bg);border:2px solid var(--line);border-radius:14px;padding:10px 12px;min-height:44px}
+.marcable:not(.sel):hover{border-color:var(--brand-2)}
+.marcable.sel,.opc.sel{border-color:var(--c-d);background:color-mix(in srgb,var(--c-d) 12%,var(--card));box-shadow:0 0 0 1px var(--c-d)}
+.marcar-ej .marcable{margin-bottom:8px}
+.previo{display:grid;gap:10px}
+.previo .pide{font-weight:700;font-size:17px;margin:0}
+.sonda{margin:0;padding:12px 14px;border-radius:var(--radius-s);background:var(--bg);border-left:4px solid var(--brand);font-size:17px}
+.opcs{display:grid;gap:8px}
+.opc{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--bg);border:2px solid var(--line);border-radius:var(--radius-s);padding:11px 14px;font-weight:600;min-height:48px}
+.opc .num{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--card);border:2px solid var(--line);font-size:13px;flex:none}
+.opc .d{display:block;font-weight:400;font-size:13px;color:var(--muted)}
+.opc:not(.sel):hover{border-color:var(--brand-2)}
+.opc.ninguna{justify-content:center;border-style:dashed}
+.lec-confirmar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding-top:4px}
+.lec-confirmar .btn:disabled{opacity:.45;cursor:not-allowed}
+.alts-bloqueadas{margin-top:12px;border:2px dashed var(--line);border-radius:var(--radius-s);padding:14px;color:var(--muted);font-size:14px;text-align:center}
+.previo-hecho{font-size:14px;color:var(--muted);margin:8px 0 0}
+.previo-hecho .etq-p{margin-right:6px}
+.lec-panel>.etq-p{margin-bottom:8px}
+.lec-panel .card.practica{margin-top:10px}
+.expl{margin-top:12px}
+.expl p{margin:8px 0}
+.expl .frase{font-style:italic;color:var(--muted)}
+.corr-previo{margin:16px 0 8px;border-radius:var(--radius-s);padding:12px 14px;background:var(--bg)}
+.corr-previo p{margin:6px 0}
+.demas{margin:14px 0}
+.demas ul{margin:8px 0 0;padding-left:18px;display:grid;gap:10px}
+.lec-base{font-size:24px;font-weight:800;letter-spacing:.04em;text-align:center;margin:4px 0}
+.lec-oracion{font-size:18px;margin:4px 0}
+.lec-lista{margin:0;padding-left:0;list-style:none;display:grid;gap:6px}
+/* Plan de redacción: tarjetas que se ordenan. */
+.tarjetas{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.tarjeta{display:flex;align-items:center;gap:10px;background:var(--bg);border:2px solid var(--line);border-radius:var(--radius-s);padding:10px 10px 10px 6px;user-select:none}
+.tarjeta .asa-t{cursor:grab;touch-action:none;font-size:22px;color:var(--muted);padding:6px 8px;line-height:1}
+.tarjeta .tx{flex:1;min-width:0}
+.tarjeta .mover{display:flex;flex-direction:column;gap:4px}
+.tarjeta .mover button{width:36px;height:32px;border-radius:10px;border:1.5px solid var(--line);background:var(--card);font-weight:800}
+.tarjeta .mover button:disabled{opacity:.35;cursor:default}
+.tarjeta.tomada,.tarjeta.arrastrando{border-color:var(--brand);box-shadow:var(--shadow);background:var(--brand-soft)}
+.tarjeta.arrastrando{position:relative;z-index:2}
+.solo-celular{display:inline-flex}
+.lec-leido .btn{margin-top:10px}
+
+/* Celular: sin la barra de abajo (el texto necesita el espacio; se vuelve con ‹). */
+@media (max-width:899px){
+  body[data-ruta="lectura"] #nav{display:none!important}
+  body[data-ruta="lectura"] #app{padding-bottom:calc(24px + env(safe-area-inset-bottom))}
+  /* Marcar una oración: la consigna arriba, el texto entero y "Confirmar" fijo abajo. */
+  .fase-marcar .lec-panel{order:-1}
+  .fase-marcar .alts-bloqueadas{display:none}
+  .fase-marcar .lec-confirmar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--card);box-shadow:0 -6px 20px rgba(92,52,110,.14);padding:10px 16px calc(10px + env(safe-area-inset-bottom))}
+  .fase-marcar .lec-cols{padding-bottom:76px}
+  /* Preguntas: el texto queda plegado en una franja fija arriba y se relee en una hoja que sube. */
+  .fase-preg .lec-franja{display:flex;position:sticky;top:0;z-index:20;width:calc(100% + 32px);margin:12px -16px 0;height:56px;align-items:center;justify-content:space-between;gap:10px;padding:0 16px;border:0;border-bottom:1px solid var(--line);background:var(--card);box-shadow:0 4px 14px rgba(92,52,110,.08);font-size:15px;text-align:left}
+  .fase-preg .lec-franja b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .fase-preg .lec-franja span{color:var(--brand);font-weight:700;white-space:nowrap}
+  .fase-preg .lec-texto{position:fixed;left:0;right:0;bottom:0;height:85dvh;z-index:50;border-radius:24px 24px 0 0;overflow:auto;overscroll-behavior:contain;
+    transform:translateY(105%);visibility:hidden;padding-top:0}
+  .fase-preg.hoja-abierta .lec-texto{transform:none;visibility:visible}
+  .fase-preg .lec-hoja-barra{display:flex;position:sticky;top:0;z-index:1;background:var(--card);flex-direction:column;align-items:center;gap:8px;padding:10px 0 12px;margin:0 -18px 8px;touch-action:none;border-bottom:1px solid var(--line)}
+  .lec-hoja-barra .asa{width:44px;height:5px;border-radius:9px;background:var(--line)}
+  .lec-hoja-barra .btn{padding:8px 16px;font-size:14px}
+}
+@media (max-width:899px) and (prefers-reduced-motion:no-preference){ .fase-preg .lec-texto{transition:transform .25s ease,visibility .25s} .fase-preg .lec-texto.arrastrando{transition:none} }
+
+/* Pantalla grande (laboratorio de cómputo): texto a la izquierda, fijo y con su propio desplazamiento. */
+@media (min-width:900px){
+  body[data-ruta="lectura"] #app>*{max-width:1040px}
+  .lectura:not(.sin-texto) .lec-cols{display:grid;grid-template-columns:minmax(0,480px) minmax(0,520px);gap:28px;align-items:start}
+  .lectura.sin-texto .lec-cols{max-width:640px}
+  .lec-texto{position:sticky;top:24px;max-height:calc(100dvh - 48px);overflow:auto}
+  .solo-celular{display:none}
+  .lec-panel .alts{grid-template-columns:1fr}
+  .opcs.muchas{grid-template-columns:1fr 1fr}
+}
+@media print{ .lec-franja,.lec-velo,.lec-hoja-barra{display:none!important} .lec-texto{position:static!important;transform:none!important;visibility:visible!important;height:auto!important} }
+.lectura button,.lectura .tarjeta{-webkit-tap-highlight-color:transparent}

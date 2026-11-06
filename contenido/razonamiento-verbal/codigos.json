@@ -1,0 +1,172 @@
+{
+ "RV1": {
+  "nombre": "Se elige un detalle o un ejemplo como idea principal",
+  "respaldo": "parcial",
+  "por_verificar": true
+ },
+ "RV2": {
+  "nombre": "Se elige una idea demasiado general",
+  "respaldo": "parcial",
+  "por_verificar": true
+ },
+ "RV3": {
+  "nombre": "Se elige una idea que omite una parte esencial",
+  "respaldo": "parcial",
+  "por_verificar": true
+ },
+ "RV4": {
+  "nombre": "La primera oración es la idea principal",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RV5": {
+  "nombre": "Eco literal",
+  "respaldo": "parcial",
+  "por_verificar": true
+ },
+ "RV6": {
+  "nombre": "Se toma lo literal como si fuera inferencia",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RV7": {
+  "nombre": "Inferencia que el texto no autoriza",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RV8": {
+  "nombre": "Se responde con lo que se sabe del mundo y no con lo que dice el texto",
+  "respaldo": "parcial",
+  "por_verificar": false
+ },
+ "RV9": {
+  "nombre": "No se detecta la incompatibilidad implícita",
+  "respaldo": "parcial",
+  "por_verificar": false
+ },
+ "RV10": {
+  "nombre": "Se pasa por alto una negación",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RV11": {
+  "nombre": "Términos absolutos",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RV12": {
+  "nombre": "Extrapolación literal",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RV13": {
+  "nombre": "Se confunde el propósito con la forma del texto",
+  "respaldo": "parcial",
+  "por_verificar": true
+ },
+ "RV14": {
+  "nombre": "Se omite el punto de vista del autor",
+  "respaldo": "parcial",
+  "por_verificar": true
+ },
+ "RV15": {
+  "nombre": "Se elige por asociación con C",
+  "respaldo": "parcial",
+  "por_verificar": false
+ },
+ "RV16": {
+  "nombre": "Se invierte el orden de la relación",
+  "respaldo": "parcial",
+  "por_verificar": true
+ },
+ "RV17": {
+  "nombre": "Se elige una pareja del mismo campo pero con otra relación",
+  "respaldo": "parcial",
+  "por_verificar": false
+ },
+ "RV18": {
+  "nombre": "Se elige el sinónimo del sentido más frecuente",
+  "respaldo": "parcial",
+  "por_verificar": true
+ },
+ "RV19": {
+  "nombre": "Se elige una palabra del mismo campo que no es sinónima",
+  "respaldo": "parcial",
+  "por_verificar": true
+ },
+ "RV20": {
+  "nombre": "Se elige por parecido de forma",
+  "respaldo": "parcial",
+  "por_verificar": true
+ },
+ "RV21": {
+  "nombre": "En antónimos, se elige el contrario de otro rasgo",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RV22": {
+  "nombre": "Término excluido por asociación temática",
+  "respaldo": "parcial",
+  "por_verificar": false
+ },
+ "RV23": {
+  "nombre": "En oraciones incompletas, se completa por coherencia local",
+  "respaldo": "parcial",
+  "por_verificar": false
+ },
+ "RV24": {
+  "nombre": "Lo contracausal se lee como causal",
+  "respaldo": "parcial",
+  "por_verificar": false
+ },
+ "RV25": {
+  "nombre": "Los concesivos del registro escrito",
+  "respaldo": "parcial",
+  "por_verificar": true
+ },
+ "RV26": {
+  "nombre": "Se pone un aditivo donde hay contraste",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RV27": {
+  "nombre": "El pronombre se asigna al último sustantivo mencionado",
+  "respaldo": "parcial",
+  "por_verificar": true
+ },
+ "RV28": {
+  "nombre": "Al ordenar, se rompe un contraste o el orden de información vieja y nueva",
+  "respaldo": "parcial",
+  "por_verificar": false
+ },
+ "RV29": {
+  "nombre": "Se ordena por cronología superficial",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RV30": {
+  "nombre": "Se elimina una oración con un dato nuevo pero pertinente",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RV31": {
+  "nombre": "No se elimina la oración incompatible",
+  "respaldo": "parcial",
+  "por_verificar": false
+ },
+ "RV32": {
+  "nombre": "No se detecta la redundancia por paráfrasis",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RV33": {
+  "nombre": "Se atribuye al autor una postura que no toma",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RV34": {
+  "nombre": "Se queda en lo literal",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ }
+}

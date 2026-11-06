@@ -18,6 +18,12 @@
  *   { tipo: 'habilitacion', que: 'salida'|'soluciones'|'soluciones-vistas', curso, origen: 'profesor' }
  *     cuando el enlace del profesor abre algo en ese navegador (y cuando el alumno ve las soluciones)
  *   { tipo: 'sesion', accion: 'otro-alumno' }   el alumno de esta PC cede el lugar a otro (id nuevo)
+ * Formato lectura (razonamiento verbal; nucleo/lectura.js y docs/formato-lectura.md, sección 6):
+ *   { tipo: 'lectura', modulo, unidad, problema: 't001v1', ms }          al tocar "Ya lo leí"
+ *   { tipo: 'previo', modulo, unidad, problema: 't001v1.p1', opcion, correcta, error, respaldo, ms }
+ *     el paso previo, antes de ver las alternativas (opcion: la oración, 'ninguna', la clase, la relación o el orden)
+ *   { tipo: 'prediccion', …, opcion: '2' }   la alternativa elegida, por su posición en el banco (1 a 5), no por la letra
+ *   { tipo: 'prueba', fase, modulo, unidad, problema, aciertos, total, respuestas: '215', ms }  (posiciones en el banco)
  * Todos llevan además: t (fecha ISO), alumno (id anónimo), grado, colegio, version.
  */
 (function (root, fabrica) {
@@ -29,7 +35,9 @@
   const COLUMNAS = ['t', 'alumno', 'grado', 'colegio', 'version', 'tipo', 'fase', 'modulo', 'unidad', 'problema',
     'opcion', 'correcta', 'error', 'respaldo', 'aciertos', 'total', 'ms',
     // Pruebas por curso (al final, para no mover las columnas de los archivos ya exportados).
-    'curso', 'forma', 'orden', 'banco', 'item', 'par', 'plantilla', 'origen', 'previas', 'dias', 'que', 'accion'];
+    'curso', 'forma', 'orden', 'banco', 'item', 'par', 'plantilla', 'origen', 'previas', 'dias', 'que', 'accion',
+    // Respuestas de cada prueba (letras en predicciones, posiciones en el banco en lectura).
+    'respuestas'];
 
   function aCSV(eventos) {
     const celda = x => { if (x === undefined || x === null) return ''; const s = String(x); return /[",\n;]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
@@ -126,6 +134,43 @@
     });
   }
 
+  // Formato lectura: el paso previo (sin alternativas a la vista) y la respuesta (con alternativas), por
+  // módulo, por unidad y por código de error. Comparar las dos columnas de un código dice si el error
+  // aparece por sí solo o porque la alternativa lo sugiere. Un error sin código cuenta en "sinCodigo".
+  // Solo entran los módulos con eventos 'previo' o 'lectura' (los de lectura).
+  function resumirLectura(eventos) {
+    const por = {};
+    const nuevo = () => ({ previos: 0, previosBien: 0, respuestas: 0, respuestasBien: 0 });
+    const m = id => (por[id] = por[id] || { modulo: id, alumnos: new Set(), lecturas: [], ...nuevo(), unidades: {}, codigos: {}, sinCodigo: { previo: 0, respuesta: 0 } });
+    const deLectura = new Set(eventos.filter(e => e.modulo && (e.tipo === 'previo' || e.tipo === 'lectura')).map(e => e.modulo));
+    for (const e of eventos) {
+      if (!deLectura.has(e.modulo)) continue;
+      const r = m(e.modulo);
+      if (e.tipo === 'lectura') { r.alumnos.add(e.alumno); if (!e.fase && Number.isFinite(Number(e.ms))) r.lecturas.push(Number(e.ms)); continue; }
+      if (e.tipo !== 'previo' && e.tipo !== 'prediccion') continue;
+      r.alumnos.add(e.alumno);
+      const cual = e.tipo === 'previo' ? 'previo' : 'respuesta';
+      const u = (r.unidades[e.unidad || '?'] = r.unidades[e.unidad || '?'] || nuevo());
+      for (const x of [r, u]) { x[cual + 's']++; if (e.correcta) x[cual + 'sBien']++; }
+      if (e.correcta) continue;
+      if (!e.error) { r.sinCodigo[cual]++; continue; }
+      const c = (r.codigos[e.error] = r.codigos[e.error] || { id: e.error, previo: 0, respuesta: 0, respaldo: e.respaldo || '' });
+      c[cual]++;
+    }
+    const tasa = (a, n) => (n ? a / n : null);
+    const mediana = l => { if (!l.length) return null; const s = [...l].sort((a, b) => a - b), k = s.length >> 1; return s.length % 2 ? s[k] : (s[k - 1] + s[k]) / 2; };
+    const num = id => Number(String(id).replace(/\D/g, '')) || 0;
+    return Object.values(por).sort((a, b) => a.modulo.localeCompare(b.modulo)).map(r => ({
+      modulo: r.modulo, alumnos: r.alumnos.size, textosLeidos: r.lecturas.length, msLecturaMediana: mediana(r.lecturas),
+      previos: r.previos, aciertoPrevio: tasa(r.previosBien, r.previos),
+      respuestas: r.respuestas, aciertoRespuesta: tasa(r.respuestasBien, r.respuestas),
+      unidades: Object.entries(r.unidades).sort((a, b) => a[0].localeCompare(b[0])).map(([id, x]) => ({ id, previos: x.previos, aciertoPrevio: tasa(x.previosBien, x.previos),
+        respuestas: x.respuestas, aciertoRespuesta: tasa(x.respuestasBien, x.respuestas) })),
+      codigos: Object.values(r.codigos).sort((a, b) => (b.previo + b.respuesta) - (a.previo + a.respuesta) || num(a.id) - num(b.id)),
+      sinCodigo: r.sinCodigo,
+    }));
+  }
+
   // Guardar un evento en el dispositivo (solo navegador). Lo usan la app y las escenas, que
   // comparten el mismo origen y por eso el mismo almacenamiento. perfil: { alumno, grado, colegio };
   // si no se pasa, se lee el de la app. Sin perfil (escena abierta sin pasar por la app) no se guarda:
@@ -146,5 +191,5 @@
     } catch { return false; } // sin almacenamiento o sin espacio: se pierde este evento, la app sigue
   }
 
-  return { COLUMNAS, aCSV, resumir, resumirCursos, guardar, eventosGuardados };
+  return { COLUMNAS, aCSV, resumir, resumirCursos, resumirLectura, guardar, eventosGuardados };
 });

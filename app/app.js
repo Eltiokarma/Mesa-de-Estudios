@@ -12,7 +12,7 @@ const UNI_CORTA = { uni: 'UNI', unmsm: 'San Marcos', una: 'UNA Puno' };
 const UNI_SIGLA = { uni: 'UNI', unmsm: 'SM', una: 'UNA' };
 const textoDias = n => `${n} ${n === 1 ? 'día seguido' : 'días seguidos'}`;
 let cat = null, pruebas = null, instalar = null, offlineListo = false;
-const VERSION_APP = '0.5.0';
+const VERSION_APP = '0.6.0';
 const GRADOS = [['3', '3.º de secundaria'], ['4', '4.º de secundaria'], ['5', '5.º de secundaria'], ['egresado', 'Ya terminé el colegio']];
 
 // ---------- Datos del alumno (en el celular) ----------
@@ -76,8 +76,11 @@ const etiquetaUbic = (u, k) => { const v = ubic(u, k); if (!v) return ''; const 
 const visto = id => !!est.vistas[id];
 const cursoDeUnidad = id => cat.cursos.find(c => c.unidades.some(u => u.id === id));
 const ctxPrueba = () => ({ $app, cat, est, esc, guardar, registrar, marcarDia, pruebas });
-// Las escenas abren su propia página (con botón para volver); las predicciones se juegan dentro de la app.
-const enlace = p => p.formato === 'escena' ? `${p.url}?desde=app` : p.url;
+// Las escenas abren su propia página (con botón para volver); las predicciones y la lectura van dentro de la app.
+// La lectura recibe además la unidad, para mostrar solo los textos que la tocan.
+const enlace = (p, unidad) => p.formato === 'escena' ? `${p.url}?desde=app` : p.formato === 'lectura' && unidad ? `${p.url}/${encodeURIComponent(unidad)}` : p.url;
+const VERBO = { escena: 'Abrir escena', predicciones: 'Practicar', lectura: 'Leer' };
+const ETIQUETA = { escena: 'Escena', predicciones: 'Práctica', lectura: 'Lectura' };
 function avance(c, uni) { const us = unidadesDe(c, uni); return us.length ? us.filter(u => visto(u.id)).length / us.length : 0; }
 // Grado: una unidad de un grado mayor al del alumno es un "adelanto". No se oculta, pero va al final.
 const adelanto = u => u.grado > (Number(est.grado) || 99);
@@ -133,12 +136,12 @@ function vInicio() {
       <h3>${esc(conEscena.u.nombre)}</h3>
       <p>${conEscena.u.plantillas.length ? 'Predice antes de ver la respuesta.' : esc(conEscena.u.temas.slice(0, 3).join(' · '))}</p>
       ${conEscena.u.plantillas.length
-        ? `<a class="btn blanco" href="${esc(enlace(cat.plantillas[conEscena.u.plantillas[0]]))}" data-abrir="${esc(conEscena.u.id)}">${cat.plantillas[conEscena.u.plantillas[0]].formato === 'escena' ? 'Abrir escena' : 'Practicar'} ›</a>`
+        ? `<a class="btn blanco" href="${esc(enlace(cat.plantillas[conEscena.u.plantillas[0]], conEscena.u.id))}" data-abrir="${esc(conEscena.u.id)}">${VERBO[cat.plantillas[conEscena.u.plantillas[0]].formato] || 'Abrir'} ›</a>`
         : `<a class="btn blanco" href="#/curso/${esc(conEscena.c.id)}">Ver unidad ›</a>`}
     </div>` : `<div class="reto">${Ilus.gatoDormido('class="reto-gato"')}<h3>¡Terminaste todo el temario!</h3><p>Repasa lo que más te costó.</p></div>`;
   const sig = pend.filter(x => x !== conEscena).slice(0, 4).map(x => `<a class="item" href="#/curso/${esc(x.c.id)}">${icono(x.c.id)}
       <span class="tx"><span class="t">${esc(x.u.nombre)}</span><br><span class="d">${esc(x.c.nombre)} · ${esc(etiquetaUbic(x.u, est.uni))}</span></span>
-      <span class="der">${tagAdelanto(x.u)}${x.u.plantillas.length ? `<span class="tag acento">${cat.plantillas[x.u.plantillas[0]].formato === 'escena' ? 'Escena' : 'Práctica'}</span>` : ''}›</span></a>`).join('');
+      <span class="der">${tagAdelanto(x.u)}${x.u.plantillas.length ? `<span class="tag acento">${ETIQUETA[cat.plantillas[x.u.plantillas[0]].formato] || 'Módulo'}</span>` : ''}›</span></a>`).join('');
   const salidas = pruebas ? cat.cursos.filter(c => pruebas.cursos[c.id] && PruebaCurso.habilitada(est, c.id) && est.pruebas[c.id] && est.pruebas[c.id].entrada && !est.pruebas[c.id].salida) : [];
   $app.innerHTML = `
     ${salidas.map(c => `<a class="aviso" style="display:block;text-decoration:none;margin-top:0" href="#/prueba/${esc(c.id)}/salida">Tu profesor abrió la prueba de salida de ${esc(c.nombre)}. Hazla aquí ›</a>`).join('')}
@@ -184,7 +187,7 @@ function vCurso(id) {
         <span class="t">${esc(u.nombre)}</span>
         <button class="check${visto(u.id) ? ' on' : ''}" data-ver="${esc(u.id)}" aria-pressed="${visto(u.id)}" aria-label="Marcar ${esc(u.nombre)} como estudiada">${visto(u.id) ? '✓' : ''}</button></div>
       <div class="temas">${esc(u.temas.join(' · '))}</div>
-      <div class="acc">${tags}${pl.map(p => `<a class="btn morado" style="padding:8px 14px;font-size:14px" href="${esc(enlace(p))}" data-abrir="${esc(u.id)}">${esc(p.titulo)} ›</a>`
+      <div class="acc">${tags}${pl.map(p => `<a class="btn morado" style="padding:8px 14px;font-size:14px" href="${esc(enlace(p, u.id))}" data-abrir="${esc(u.id)}">${esc(p.formato === 'lectura' ? VERBO.lectura : p.titulo)} ›</a>`
           + (p.papel ? `<a class="btn borde" style="padding:7px 14px;font-size:14px" href="#/papel/${esc(p.id)}">✎ Papel</a>` : '')).join('')}
         ${pl.length ? '' : '<span class="sub" style="font-size:12px">Escena en preparación</span>'}</div></article>`;
   }).join('');
@@ -262,7 +265,7 @@ function vPerfil() {
     </div></div><div>
     <h2>Datos para el profesor</h2>
     <div class="card">
-      <p class="sub" style="margin:0 0 10px">Se guardan en este dispositivo, sin tu nombre: tus predicciones y tus pruebas de entrada y salida (${eventos().length} registros${sinExportar() ? `, ${sinExportar()} sin descargar` : ', todos descargados'}).</p>
+      <p class="sub" style="margin:0 0 10px">Se guardan en este dispositivo, sin tu nombre: tus predicciones, tus pasos previos de lectura y tus pruebas de entrada y salida (${eventos().length} registros${sinExportar() ? `, ${sinExportar()} sin descargar` : ', todos descargados'}).</p>
       ${resumenHTML()}
       <div class="acciones-datos"><button class="btn morado" id="csv">Descargar CSV</button><button class="btn borde" id="json">Descargar JSON</button></div>
     </div></div></div>`;
@@ -336,11 +339,15 @@ function render() {
   if ((!est.uni || !est.grado) && ruta !== 'bienvenida') return ir('#/bienvenida');
   if (ruta === 'bienvenida') return vBienvenida();
   $nav.hidden = false; document.body.dataset.ruta = ruta; document.body.classList.add('con-nav');
-  $nav.querySelectorAll('a').forEach(a => a.classList.toggle('on', a.dataset.ruta === (['curso', 'papel', 'practica', 'prueba'].includes(ruta) ? 'cursos' : ruta === 'otro' ? 'perfil' : ruta)));
+  $nav.querySelectorAll('a').forEach(a => a.classList.toggle('on', a.dataset.ruta === (['curso', 'papel', 'practica', 'prueba', 'lectura'].includes(ruta) ? 'cursos' : ruta === 'otro' ? 'perfil' : ruta)));
   if (ruta === 'practica') {
     $nav.querySelectorAll('a').forEach(a => a.classList.toggle('on', a.dataset.ruta === 'cursos'));
     window.scrollTo(0, 0);
     return Practica.vista({ $app, cat, est, esc, guardar, registrar, marcarDia }, decodeURIComponent(arg || ''));
+  }
+  if (ruta === 'lectura') {
+    window.scrollTo(0, 0);
+    return LecturaVista.vista({ $app, cat, est, esc, guardar, registrar, marcarDia }, decodeURIComponent(arg || ''), decodeURIComponent(location.hash.split('/')[3] || ''));
   }
   if (ruta === 'prueba') { window.scrollTo(0, 0); return PruebaCurso.vista(ctxPrueba(), decodeURIComponent(arg || ''), location.hash.split('/')[3] || 'entrada'); }
   ({ inicio: vInicio, otro: vOtro, cursos: vCursos, curso: () => vCurso(decodeURIComponent(arg || '')), progreso: vProgreso, perfil: vPerfil, papel: () => vPapel(decodeURIComponent(arg || '')) }[ruta] || vInicio)();

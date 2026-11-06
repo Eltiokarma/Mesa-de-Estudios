@@ -1,0 +1,325 @@
+/*
+ * Núcleo del formato "lectura" (razonamiento verbal; diseño en docs/formato-lectura.md).
+ * Funciones puras, sin DOM: sirven en el navegador (window.Lectura) y en Node (require).
+ *
+ * Regla 1: la correcta, el código de cada distractor y la calificación del paso previo
+ * salen del banco (contenido/razonamiento-verbal/), escrito y revisado a mano. Aquí solo
+ * se buscan en sus tablas; nada se adivina.
+ * Regla 3: el paso previo se califica aparte y se registra como evento propio ('previo').
+ *
+ * Un "ítem" es un texto (textos/t001.json, con párrafos y de 3 a 5 preguntas) o un ejercicio
+ * suelto (ejercicios/e001.json: una sola pregunta con su "cuerpo"). normalizar() deja los dos
+ * con la misma forma: { id, version, ejercicio, titulo, parrafos, cuerpo, preguntas }.
+ */
+(function (root, fabrica) {
+  const api = fabrica(root);
+  if (typeof module === 'object' && module.exports) module.exports = api;
+  else root.Lectura = api;
+})(typeof self !== 'undefined' ? self : this, function (root) {
+  'use strict';
+  const Azar = (typeof module === 'object' && module.exports) ? require('./azar.js') : root.Azar;
+  const LETRAS = ['A', 'B', 'C', 'D', 'E'];
+
+  // ---------- Opciones de cada tipo de paso previo (lo que ve el alumno) ----------
+  const CLASES = [
+    { id: 'lo-dice', t: 'Lo dice el texto' },
+    { id: 'se-deduce', t: 'Se deduce del texto' },
+    { id: 'no-se-sabe', t: 'El texto no lo dice ni se deduce' },
+    { id: 'lo-contradice', t: 'Lo contradice' },
+  ];
+  const RELACIONES = [
+    { id: 'suma', t: 'Suma', d: 'y, además' },
+    { id: 'oposicion', t: 'Oposición', d: 'pero, aunque, sin embargo' },
+    { id: 'causa', t: 'Causa o consecuencia', d: 'porque, por eso' },
+  ];
+  const PROPOSITOS = [
+    { id: 'explicar', t: 'Explicar o informar' },
+    { id: 'convencer', t: 'Convencer' },
+    { id: 'narrar', t: 'Narrar' },
+  ];
+  // Analogías: {a} y {b} se reemplazan por las palabras de la pareja base. Las que tienen dirección van en pares.
+  const ANALOGIAS = [
+    { id: 'a-produce-b', t: '{a} produce {b}', inversa: 'b-produce-a' },
+    { id: 'b-produce-a', t: '{b} produce {a}', inversa: 'a-produce-b' },
+    { id: 'a-parte-de-b', t: '{a} es parte de {b}', inversa: 'b-parte-de-a' },
+    { id: 'b-parte-de-a', t: '{b} es parte de {a}', inversa: 'a-parte-de-b' },
+    { id: 'a-usa-b', t: '{a} usa {b}', inversa: 'b-usa-a' },
+    { id: 'b-usa-a', t: '{b} usa {a}', inversa: 'a-usa-b' },
+    { id: 'a-tipo-de-b', t: '{a} es un tipo de {b}', inversa: 'b-tipo-de-a' },
+    { id: 'b-tipo-de-a', t: '{b} es un tipo de {a}', inversa: 'a-tipo-de-b' },
+    { id: 'a-causa-b', t: '{a} causa {b}', inversa: 'b-causa-a' },
+    { id: 'b-causa-a', t: '{b} causa {a}', inversa: 'a-causa-b' },
+    { id: 'sinonimos', t: 'Son sinónimos' },
+    { id: 'contrarios', t: 'Son contrarios' },
+  ];
+  const TIPOS_PREVIO = ['marcar-oracion', 'clasificar', 'relacion', 'relacion-analogia', 'proposito', 'ordenar'];
+  const ROL_CODIGO = { detalle: 'RV1', ejemplo: 'RV1', cita: 'RV1', general: 'RV2', apoyo: 'RV3', contraste: 'RV3' };
+  const NOMBRE_EJERCICIO = { analogia: 'Analogía', 'termino-excluido': 'Término excluido', 'oracion-incompleta': 'Oración incompleta',
+    conector: 'Conectores', 'plan-de-redaccion': 'Plan de redacción', eliminacion: 'Eliminación de oraciones' };
+
+  // ---------- Forma común de textos y ejercicios ----------
+  function normalizar(item) {
+    if (!item || !item.id) throw new Error('Ítem sin id');
+    if (item.preguntas && 'ejercicio' in item) return item; // ya normalizado
+    if (item.preguntas) return { ...item, ejercicio: false, cuerpo: item.cuerpo || null };
+    const { id, version, cuerpo, titulo } = item;
+    const q = { ...item, id: null };
+    for (const k of ['version', 'cuerpo', 'titulo', 'revision', 'hechos', 'origen', 'fecha', 'grado', 'dificultad']) delete q[k];
+    return { id, version, titulo: titulo || NOMBRE_EJERCICIO[item.tipo] || 'Ejercicio', ejercicio: true, cuerpo: cuerpo || {}, parrafos: [], preguntas: [q] };
+  }
+
+  // Oraciones con su número seguido en todo el texto (o1 es la oración 1) y su párrafo.
+  // En los ejercicios de eliminación, las oraciones del cuerpo; su id es "id" o, si no tiene, su numeral "n".
+  function oraciones(item) {
+    if (item.parrafos && item.parrafos.length) {
+      let n = 0;
+      return item.parrafos.flatMap((p, k) => p.map(o => ({ ...o, n: ++n, parrafo: k + 1 })));
+    }
+    const l = (item.cuerpo && item.cuerpo.oraciones) || [];
+    return l.map((o, k) => ({ ...o, id: o.id || o.n, n: k + 1, parrafo: 1 }));
+  }
+  const numero = (item, id) => { const o = oraciones(item).find(x => x.id === id); return o ? o.n : null; };
+  const problemaTexto = item => `${item.id}v${item.version}`;
+  const problema = (item, q) => q && q.id ? `${problemaTexto(item)}.${q.id}` : problemaTexto(item);
+
+  // ---------- Código de cada respuesta incorrecta del paso previo (sección 5.3) ----------
+  function codigoOracion(previo, item, id) {
+    if (previo.codigos && Object.prototype.hasOwnProperty.call(previo.codigos, id)) return previo.codigos[id];
+    if (item.ejercicio) return null; // en eliminación, "codigos" es obligatorio; la regla de RV4 no se aplica
+    const ors = oraciones(item), o = ors.find(x => x.id === id);
+    if (!o) return null;
+    if (o.id === ors[0].id) return 'RV4';
+    return ROL_CODIGO[o.rol] || null;
+  }
+
+  // Opciones posibles de un paso previo (para la pantalla y para validar que cada una tenga código).
+  function opcionesPrevio(previo, item) {
+    switch (previo.tipo) {
+      case 'marcar-oracion': return [...oraciones(item).map(o => o.id), ...(previo.ninguna ? ['ninguna'] : [])];
+      case 'clasificar': return CLASES.map(c => c.id);
+      case 'relacion': return RELACIONES.map(c => c.id);
+      case 'proposito': return PROPOSITOS.map(c => c.id);
+      case 'relacion-analogia': return ANALOGIAS.map(c => c.id);
+      default: return [];
+    }
+  }
+
+  /*
+   * calificarPrevio(previo, respuesta, item) → { correcta, error, opcion }
+   *   respuesta: id de oración o 'ninguna' (marcar-oracion), una clase, una relación, un propósito,
+   *   una relación de analogía, o la lista de numerales en orden (ordenar).
+   *   error: el código RV, o null si el banco no tiene código para esa respuesta (se registra sin código).
+   *   opcion: lo que va en la columna "opcion" del evento (el orden se escribe III-I-IV-II-V).
+   */
+  function calificarPrevio(previo, respuesta, item) {
+    item = normalizar(item);
+    const t = previo.tipo;
+    if (t === 'ordenar') {
+      const orden = Array.isArray(respuesta) ? respuesta.map(String) : String(respuesta).split('-');
+      const opcion = orden.join('-');
+      if (opcion === previo.aceptada.join('-')) return { correcta: true, error: null, opcion };
+      const pos = Object.fromEntries(orden.map((n, k) => [n, k]));
+      const ors = (item.cuerpo && item.cuerpo.oraciones) || [];
+      const rompeRetoma = ors.some(o => o.retoma && o.n in pos && o.retoma in pos && pos[o.n] < pos[o.retoma]);
+      return { correcta: false, error: rompeRetoma ? 'RV28' : 'RV29', opcion };
+    }
+    const opcion = String(respuesta);
+    if (t === 'marcar-oracion') {
+      if (opcion === 'ninguna') {
+        if (!previo.ninguna) throw new Error('Este paso previo no tiene la opción "ninguna"');
+        return previo.ninguna === 'correcta' ? { correcta: true, error: null, opcion } : { correcta: false, error: previo.ninguna, opcion };
+      }
+      if (!oraciones(item).some(o => o.id === opcion)) throw new Error(`La oración ${opcion} no existe`);
+      if (previo.aceptadas.includes(opcion)) return { correcta: true, error: null, opcion };
+      return { correcta: false, error: codigoOracion(previo, item, opcion), opcion };
+    }
+    if (t === 'relacion-analogia') {
+      const a = ANALOGIAS.find(x => x.id === opcion);
+      if (!a) throw new Error(`Relación de analogía desconocida: ${opcion}`);
+      if (opcion === previo.aceptada) return { correcta: true, error: null, opcion };
+      return { correcta: false, error: a.inversa === previo.aceptada ? 'RV16' : 'RV17', opcion };
+    }
+    if (t === 'clasificar' || t === 'relacion' || t === 'proposito') {
+      const aceptada = t === 'clasificar' ? previo.clase : previo.aceptada;
+      if (!opcionesPrevio(previo, item).includes(opcion)) throw new Error(`Respuesta "${opcion}" no válida para ${t}`);
+      if (opcion === aceptada) return { correcta: true, error: null, opcion };
+      const c = (previo.codigos || {})[opcion];
+      return { correcta: false, error: c === undefined ? null : c, opcion };
+    }
+    throw new Error(`Tipo de paso previo desconocido: ${t}`);
+  }
+
+  // ---------- Barajar alternativas: la posición en el banco viaja con cada una ----------
+  /*
+   * preparar(item, semilla) → copia del ítem con, en cada pregunta, "alternativas" barajadas.
+   * Cada alternativa lleva su letra (A–E, lo que ve el alumno) y "pos" (1 a 5, su lugar en el banco:
+   * lo que se registra). La semilla de cada pregunta es `${semilla}|${problema}`: en la práctica
+   * se usa el id del alumno; en las pruebas, 'entrada' o 'salida', igual para todos.
+   */
+  function preparar(item, semilla) {
+    const it = normalizar(item);
+    return {
+      ...it,
+      problema: problemaTexto(it),
+      oraciones: oraciones(it),
+      preguntas: it.preguntas.map(q => {
+        const prob = problema(it, q);
+        const rng = Azar.crear(`${semilla}|${prob}`);
+        const alts = rng.barajar(q.alternativas.map((a, k) => ({ ...a, pos: k + 1, correcta: a.correcta === true })));
+        return { ...q, problema: prob, alternativas: alts.map((a, k) => ({ ...a, letra: LETRAS[k] })) };
+      }),
+    };
+  }
+
+  // Calificar una alternativa elegida (por su letra o por su posición en el banco).
+  function calificar(pregunta, eleccion) {
+    const a = pregunta.alternativas.find(x => (typeof eleccion === 'number' ? x.pos === eleccion : x.letra === eleccion));
+    if (!a) throw new Error(`Alternativa ${eleccion} no existe`);
+    const correcta = pregunta.alternativas.find(x => x.correcta);
+    return { alternativa: a, correcta: a.correcta, error: a.correcta ? null : a.codigo, pos: a.pos, letra: a.letra, clave: correcta };
+  }
+
+  // Respaldo de un código (codigos.json, generado del informe por herramientas/codigos-verbal.js).
+  const respaldo = (codigo, codigos) => (codigo && codigos && codigos[codigo] ? codigos[codigo].respaldo : '');
+
+  // ---------- Explicación y pintura (sección 4) ----------
+  // Qué oraciones se pintan con cada rol. Una oración puede ser evidencia y origen del distractor a la vez.
+  function pintura(pregunta, eleccion) {
+    const correcta = pregunta.alternativas.find(a => a.correcta);
+    const elegida = eleccion && pregunta.alternativas.find(a => a.letra === eleccion || a.pos === eleccion);
+    return {
+      evidencia: [...(correcta.evidencia || [])],
+      distractor: elegida && !elegida.correcta && elegida.origen ? [elegida.origen] : [],
+    };
+  }
+
+  // Texto que ve el alumno para una respuesta del paso previo.
+  function etiquetaPrevio(previo, opcion, item) {
+    const it = item ? normalizar(item) : null;
+    switch (previo.tipo) {
+      case 'marcar-oracion': return opcion === 'ninguna' ? 'Ninguna la dice completa'
+        : `la oración ${(it && it.ejercicio) ? opcion : (it ? numero(it, opcion) : opcion)}`;
+      case 'clasificar': return (CLASES.find(c => c.id === opcion) || {}).t || opcion;
+      case 'relacion': return (RELACIONES.find(c => c.id === opcion) || {}).t || opcion;
+      case 'proposito': return (PROPOSITOS.find(c => c.id === opcion) || {}).t || opcion;
+      case 'relacion-analogia': return textoAnalogia(opcion, it && it.cuerpo && it.cuerpo.base);
+      case 'ordenar': return (Array.isArray(opcion) ? opcion : String(opcion).split('-')).join(' – ');
+      default: return String(opcion);
+    }
+  }
+  function textoAnalogia(id, base) {
+    const a = ANALOGIAS.find(x => x.id === id); if (!a) return id;
+    const [pa, pb] = base || ['A', 'B'];
+    return a.t.replace('{a}', pa).replace('{b}', pb);
+  }
+  const respuestaAceptada = previo => previo.tipo === 'marcar-oracion' ? previo.aceptadas : previo.tipo === 'clasificar' ? [previo.clase] : [previo.aceptada];
+
+  /*
+   * correccionPrevio(previo, resultado, item, frases) → { correcta, eligio, aceptada, explicacion, porQue, idea }
+   *   explicacion: por qué la respuesta aceptada es la buena (siempre).
+   *   porQue: si falló, la explicación de lo que eligió (previo.explicaciones) o la frase de su código.
+   *   idea: oraciones que se pintan con el color "idea" (la aceptada, solo en marcar-oracion).
+   */
+  function correccionPrevio(previo, resultado, item, frases) {
+    const it = normalizar(item);
+    const acept = respuestaAceptada(previo);
+    let porQue = '';
+    if (!resultado.correcta) {
+      const exp = previo.explicaciones && previo.explicaciones[resultado.opcion];
+      porQue = exp || (resultado.error && frases ? frases[resultado.error] || '' : '');
+    }
+    return {
+      correcta: resultado.correcta,
+      eligio: etiquetaPrevio(previo, resultado.opcion, it),
+      aceptada: previo.tipo === 'ordenar' ? etiquetaPrevio(previo, previo.aceptada, it)
+        : acept.map(x => etiquetaPrevio(previo, x, it)).join(' o '),
+      explicacion: previo.explicacion,
+      porQue,
+      idea: previo.tipo === 'marcar-oracion' ? acept.filter(x => x !== 'ninguna') : [],
+    };
+  }
+
+  // ---------- Orden de la práctica ----------
+  // Ítems (textos y ejercicios) que tocan la unidad, en el orden del índice. Sin unidad, todos.
+  function lista(indice, items, unidad) {
+    const ids = [...(indice.textos || []), ...(indice.ejercicios || [])];
+    return ids.map(id => items[id]).filter(Boolean).map(normalizar)
+      .filter(it => !unidad || it.preguntas.some(q => q.unidad === unidad));
+  }
+  // El siguiente: el que menos veces se hizo; a igual cantidad, el primero del índice.
+  // Así un texto hecho no se repite hasta que se acaben los demás.
+  function siguiente(l, hechos) {
+    hechos = hechos || {};
+    let mejor = null;
+    for (const it of l) if (!mejor || (hechos[it.id] || 0) < (hechos[mejor.id] || 0)) mejor = it;
+    return mejor;
+  }
+
+  // ---------- Eventos de medición (sección 6; se guardan con nucleo/medicion.js) ----------
+  const ev = {
+    lectura: ({ modulo, unidad, item, ms, fase }) => ({ tipo: 'lectura', ...(fase ? { fase } : {}), modulo, unidad, problema: problemaTexto(item), ms }),
+    previo: ({ modulo, pregunta, resultado, codigos, ms }) => ({ tipo: 'previo', modulo, unidad: pregunta.unidad, problema: pregunta.problema,
+      opcion: resultado.opcion, correcta: resultado.correcta, error: resultado.error || '', respaldo: respaldo(resultado.error, codigos), ms }),
+    respuesta: ({ modulo, pregunta, resultado, codigos, ms }) => ({ tipo: 'prediccion', modulo, unidad: pregunta.unidad, problema: pregunta.problema,
+      opcion: String(resultado.pos), correcta: resultado.correcta, error: resultado.error || '', respaldo: respaldo(resultado.error, codigos), ms }),
+    // En "respuestas", la posición en el banco de cada respuesta, una por pregunta ("215").
+    prueba: ({ fase, modulo, unidad, item, resultados, ms }) => ({ tipo: 'prueba', fase, modulo, unidad, problema: problemaTexto(item),
+      aciertos: resultados.filter(r => r.correcta).length, total: resultados.length, respuestas: resultados.map(r => r.pos).join(''), ms }),
+  };
+
+  // ---------- Validación (lo que la app necesita para mostrar un ítem) ----------
+  // Devuelve la lista de problemas encontrados (vacía si está bien). banco.test.js aplica además las reglas editoriales.
+  function validar(item, { codigos, unidades } = {}) {
+    const errores = [];
+    const mal = m => errores.push(`${item && item.id}: ${m}`);
+    let it;
+    try { it = normalizar(item); } catch (e) { return [String(e.message)]; }
+    if (!Number.isInteger(it.version) || it.version < 1) mal('versión inválida');
+    const ors = oraciones(it), ids = new Set(ors.map(o => o.id));
+    if (!it.ejercicio && !ors.length) mal('el texto no tiene oraciones');
+    if (ids.size !== ors.length) mal('hay ids de oración repetidos');
+    const codigoOk = c => !codigos || Object.prototype.hasOwnProperty.call(codigos, c);
+    for (const q of it.preguntas) {
+      const d = q.id || 'ítem';
+      if (unidades && !unidades.has(q.unidad)) mal(`${d}: la unidad ${q.unidad} no está en el catálogo`);
+      if (!q.enunciado) mal(`${d}: falta el enunciado`);
+      const alts = q.alternativas || [];
+      if (alts.length < 2 || alts.length > LETRAS.length) mal(`${d}: de 2 a ${LETRAS.length} alternativas`);
+      if (alts.filter(a => a.correcta === true).length !== 1) mal(`${d}: debe haber una sola correcta`);
+      for (const a of alts) {
+        if (!a.t || !a.explicacion) mal(`${d}: alternativa sin texto o sin explicación`);
+        if (!a.correcta && !codigoOk(a.codigo)) mal(`${d}: código ${a.codigo} desconocido`);
+        for (const o of [...(a.evidencia || []), ...(a.origen ? [a.origen] : [])]) if (!it.ejercicio && !ids.has(o)) mal(`${d}: apunta a ${o}, que no existe`);
+      }
+      const p = q.previo;
+      if (!p) continue;
+      if (!TIPOS_PREVIO.includes(p.tipo)) { mal(`${d}: tipo de paso previo "${p.tipo}" desconocido`); continue; }
+      if (!p.pide || !p.explicacion) mal(`${d}: el paso previo necesita "pide" y "explicacion"`);
+      if (p.tipo === 'ordenar') {
+        const ns = ((it.cuerpo && it.cuerpo.oraciones) || []).map(o => o.n);
+        if (!Array.isArray(p.aceptada) || [...p.aceptada].sort().join() !== [...ns].sort().join()) mal(`${d}: "aceptada" debe ordenar todas las oraciones del cuerpo`);
+        continue;
+      }
+      if (p.tipo === 'clasificar' && !p.sonda) mal(`${d}: clasificar necesita "sonda"`);
+      if (p.tipo === 'relacion-analogia' && !(it.cuerpo && Array.isArray(it.cuerpo.base) && it.cuerpo.base.length === 2)) mal(`${d}: la analogía necesita cuerpo.base con dos palabras`);
+      const acept = respuestaAceptada(p);
+      const opciones = opcionesPrevio(p, it);
+      for (const a of acept) if (!opciones.includes(a)) mal(`${d}: la respuesta aceptada ${a} no es una opción`);
+      for (const o of opciones) {
+        if (acept.includes(o)) continue;
+        let r;
+        try { r = calificarPrevio(p, o, it); } catch (e) { mal(`${d}: ${e.message}`); continue; }
+        if (r.correcta) continue;
+        const sinTabla = p.tipo === 'relacion-analogia';
+        const conClave = p.tipo === 'marcar-oracion' ? (r.error !== null) : (sinTabla || Object.prototype.hasOwnProperty.call(p.codigos || {}, o));
+        if (!conClave) mal(`${d}: falta el código de la respuesta "${o}"`);
+        else if (r.error !== null && !codigoOk(r.error)) mal(`${d}: código ${r.error} desconocido`);
+      }
+    }
+    return errores;
+  }
+
+  return { LETRAS, CLASES, RELACIONES, PROPOSITOS, ANALOGIAS, TIPOS_PREVIO, NOMBRE_EJERCICIO,
+    normalizar, oraciones, numero, problema, problemaTexto, codigoOracion, opcionesPrevio, calificarPrevio,
+    preparar, calificar, respaldo, pintura, etiquetaPrevio, textoAnalogia, correccionPrevio, lista, siguiente, ev, validar };
+});

@@ -1,5 +1,6 @@
 // Junta los archivos JSON que exportan los alumnos (Perfil → Datos para el profesor →
-// Descargar JSON) y resume el lanzamiento por módulo y, para las pruebas de entrada y salida, por curso.
+// Descargar JSON) y resume el lanzamiento por módulo; en el formato lectura, el paso previo y la respuesta
+// por código RV; y, para las pruebas de entrada y salida, por curso.
 //   node herramientas/analizar-medicion.js datos/*.json            → resumen en Markdown
 //   node herramientas/analizar-medicion.js --csv todo.csv datos/*.json   → además, un CSV unido
 // Un mismo evento exportado dos veces (por ejemplo, dos descargas del mismo celular) se cuenta una vez.
@@ -34,8 +35,40 @@ function informe(eventos) {
     for (const e of m.errores) md += `| ${e.id} | ${e.n} | ${respaldo[`${m.modulo}|${e.id}`] || '?'} |\n`;
   }
   md += '\nLa ganancia se calcula solo con quienes hicieron la prueba de entrada y la de salida. Con pocos alumnos, las diferencias pueden ser azar.\n';
+  md += informeLectura(eventos);
   md += informeCursos(eventos);
   return md;
+}
+
+// Formato lectura (razonamiento verbal): el paso previo se cuenta aparte de la respuesta. El previo se responde
+// sin alternativas a la vista; si un código aparece mucho en la respuesta y poco en el previo, el error lo
+// sugiere la alternativa (RV5) más que la lectura del alumno.
+// codigos (opcional): contenido/razonamiento-verbal/codigos.json, para el nombre de cada código.
+function informeLectura(eventos, codigos) {
+  const r = Medicion.resumirLectura(eventos);
+  if (!r.length) return '';
+  codigos = codigos || cargarCodigosVerbal();
+  const pct = x => x === null ? '—' : `${Math.round(x * 100)} %`;
+  let md = '\n# Formato lectura: paso previo y respuesta\n\n';
+  md += '| Módulo | Alumnos | Textos leídos | Lectura (mediana) | Pasos previos | Acierto del previo | Respuestas | Acierto de la respuesta |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n';
+  for (const m of r) md += `| ${m.modulo} | ${m.alumnos} | ${m.textosLeidos} | ${m.msLecturaMediana === null ? '—' : `${Math.round(m.msLecturaMediana / 1000)} s`} | ${m.previos} | ${pct(m.aciertoPrevio)} | ${m.respuestas} | ${pct(m.aciertoRespuesta)} |\n`;
+  for (const m of r) {
+    if (m.unidades.length) {
+      md += `\n| Unidad (${m.modulo}) | Pasos previos | Acierto del previo | Respuestas | Acierto de la respuesta |\n| --- | --- | --- | --- | --- |\n`;
+      for (const u of m.unidades) md += `| ${u.id} | ${u.previos} | ${pct(u.aciertoPrevio)} | ${u.respuestas} | ${pct(u.aciertoRespuesta)} |\n`;
+    }
+    if (m.codigos.length || m.sinCodigo.previo || m.sinCodigo.respuesta) {
+      md += `\n## Errores por código RV en ${m.modulo}: sin alternativas (paso previo) y con alternativas (respuesta)\n\n| Código | Qué es | Respaldo previo | Paso previo | Respuesta |\n| --- | --- | --- | --- | --- |\n`;
+      for (const c of m.codigos) md += `| ${c.id} | ${(codigos[c.id] || {}).nombre || '?'} | ${c.respaldo || (codigos[c.id] || {}).respaldo || '?'} | ${c.previo} | ${c.respuesta} |\n`;
+      if (m.sinCodigo.previo || m.sinCodigo.respuesta) md += `| sin código | Respuesta incorrecta para la que el informe no tiene error | — | ${m.sinCodigo.previo} | ${m.sinCodigo.respuesta} |\n`;
+    }
+  }
+  md += '\nEn lectura, la columna "opcion" guarda la posición de la alternativa en el banco (1 a 5), no la letra que vio el alumno; en el paso previo, la oración, la clase, la relación o el orden. No se mezcla con la "opcion" de predicciones, que es la letra.\n';
+  return md;
+}
+
+function cargarCodigosVerbal() {
+  try { return JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'contenido', 'razonamiento-verbal', 'codigos.json'), 'utf8')); } catch { return {}; }
 }
 
 // Pruebas de entrada y salida por curso (formas A y B contrabalanceadas; ver nucleo/pruebas.js).
@@ -71,7 +104,7 @@ function cargarBancos() {
   return out;
 }
 
-module.exports = { unir, informe, informeCursos };
+module.exports = { unir, informe, informeCursos, informeLectura };
 
 if (require.main === module) {
   const args = process.argv.slice(2);
