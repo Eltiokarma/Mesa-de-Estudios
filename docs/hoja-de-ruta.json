@@ -1,6 +1,6 @@
 {
   "titulo": "Laboratorio de Admisión: hacia el lanzamiento en el colegio",
-  "actualizado": "2026-11-05",
+  "actualizado": "2026-11-06",
   "secciones": [
     "Base (hecho)",
     "Plataforma y medición",
@@ -71,6 +71,18 @@
       "critico": false,
       "depende_de": [],
       "notas": "Aprobada por Gerson el 4 nov 2026"
+    },
+    {
+      "id": "f0h",
+      "seccion": "Base (hecho)",
+      "nombre": "Visión e investigación de PISA, Peak y Brilliant",
+      "inicio": "2026-11-05",
+      "fin": "2026-11-05",
+      "estado": "hecho",
+      "progreso": 100,
+      "critico": false,
+      "depende_de": [],
+      "notas": "docs/vision-pisa-agilidad-interaccion.md, docs/investigacion/pisa-y-evaluaciones.md, docs/investigacion/brilliant.md"
     },
     {
       "id": "f0e",
@@ -485,6 +497,49 @@
       "critico": false,
       "depende_de": [],
       "notas": ""
+    },
+    {
+      "id": "f2d",
+      "seccion": "Después del lanzamiento",
+      "nombre": "Componentes de interacción del núcleo (fichas, ordenar, emparejar)",
+      "inicio": "2027-01-11",
+      "fin": "2027-01-22",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [
+        "la6"
+      ],
+      "notas": "Estilo Brilliant. Primero completar con fichas (ecuaciones y razonamiento verbal). Ver docs/investigacion/brilliant.md, sección 5"
+    },
+    {
+      "id": "f2e",
+      "seccion": "Después del lanzamiento",
+      "nombre": "Modo PISA, problemas en contexto real por plantilla",
+      "inicio": "2027-01-18",
+      "fin": "2027-01-29",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [
+        "la6",
+        "f2d"
+      ],
+      "notas": "Formular e interpretar, no solo calcular; contexto de Puno. Antes, verificar cifras y leer los marcos de la OCDE. Ver docs/investigacion/pisa-y-evaluaciones.md"
+    },
+    {
+      "id": "f2f",
+      "seccion": "Después del lanzamiento",
+      "nombre": "Calentamientos de agilidad mental (estilo Peak)",
+      "inicio": "2027-01-25",
+      "fin": "2027-02-05",
+      "estado": "pendiente",
+      "progreso": 0,
+      "critico": false,
+      "depende_de": [
+        "f2d"
+      ],
+      "notas": "Cálculo, unidades, notables y estimación, con tiempo y racha. Falta recibir capturas de Peak. Ver docs/vision-pisa-agilidad-interaccion.md, sección 2"
     }
   ]
 }
