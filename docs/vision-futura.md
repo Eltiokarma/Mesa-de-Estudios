@@ -47,4 +47,4 @@
 
 ## Más ideas a futuro
 
-- Modo PISA, agilidad mental (al estilo de Peak) e interacciones tipo juego (al estilo de Brilliant): `docs/vision-pisa-agilidad-interaccion.md` (5 nov 2026).
+- Modo PISA, agilidad mental (al estilo de Peak), interacciones tipo juego (al estilo de Brilliant) y aprendizaje guiado (POGIL): `docs/vision-pisa-agilidad-interaccion.md` (5 nov 2026).

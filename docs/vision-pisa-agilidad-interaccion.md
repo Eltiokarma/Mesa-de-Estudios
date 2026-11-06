@@ -2,11 +2,12 @@
 
 5 de noviembre de 2026 · Ideas dictadas en una sesión aparte. Igual que `docs/vision-futura.md`: **no se desarrolla todavía**. Antes de ejecutar algo de aquí, se discute y se pasa a `docs/fundacional.md` y a la hoja de ruta.
 
-Tres ideas que se refuerzan entre sí:
+Ideas que se refuerzan entre sí:
 
 1. **Modo PISA**: no solo rayar ejercicios de academia, sino problemas en contexto real.
 2. **Agilidad mental** (al estilo de la app Peak): calentamientos cortos que automatizan el cálculo que el examen da por sabido.
 3. **Interacciones más dinámicas** (al estilo de Brilliant): arrastrar, deslizar, completar con fichas, ordenar, emparejar.
+4. **Aprendizaje guiado paso a paso** (POGIL): el alumno descubre el concepto con preguntas escalonadas sobre un modelo.
 
 ---
 
@@ -162,6 +163,38 @@ Lo que se repite en todos y vale copiar: **una sola regla que se entiende en 5 s
 
 ---
 
+## 4. Aprendizaje guiado paso a paso (POGIL)
+
+Idea dictada el 6 nov 2026: "llevar de la manito" al alumno desde cero. Queda anotada por si se necesita; no se desarrolla todavía.
+
+### Qué es
+
+- POGIL (*Process Oriented Guided Inquiry Learning*, aprendizaje por indagación guiada orientado a procesos) nació en química universitaria en EE. UU. a fines de los noventa.
+- El alumno no recibe primero la explicación: recibe un **modelo** (un dibujo, una tabla, datos) y una **secuencia de preguntas** que lo llevan a descubrir el concepto él mismo.
+- Sigue el ciclo de aprendizaje: **explorar** el modelo, **inventar el concepto** (ponerle nombre y regla a lo que vio) y **aplicarlo** a casos nuevos.
+- Las preguntas van escalonadas: primero las que se responden mirando el modelo ("¿cuántas…?", "¿qué cambia cuando…?"), luego las que llevan a la idea ("¿qué regla cumplen todos?") y al final las abiertas.
+- En el aula se trabaja en grupos de 3 o 4 con roles (quien dirige, quien anota, quien expone, quien reflexiona) y el profesor no dicta: guía.
+- *Por verificar en pogil.org:* el ciclo de tres fases, los tipos de preguntas y los roles vienen de la descripción general del método, no de una fuente leída en esta sesión.
+
+### Ojo (de frente)
+
+- POGIL no es "llevar de la manito" en el sentido de explicar todo paso a paso. Es lo contrario: **la guía son las preguntas, no la explicación**. El alumno descubre; la secuencia de preguntas evita que se pierda.
+- Es pariente cercano de "primero el problema" (Brilliant, Sinha y Kapur 2021, `docs/investigacion/brilliant.md`) y de nuestra regla 3 (predecir antes de ver).
+
+### Evidencia
+
+- Walker y Warfa (2017), *PLOS ONE*: metaanálisis de 21 estudios con 7876 alumnos, POGIL contra clase expositiva. **El efecto en las notas es pequeño, pero baja en 38 % el riesgo de jalar el curso.** O sea, ayuda sobre todo al que estaba por caerse, que es justo nuestro público.
+- Fuente: [Walker y Warfa (2017), PLOS ONE](https://pmc.ncbi.nlm.nih.gov/articles/PMC5638339/). Citar en `docs/fundacional.md` si se adopta.
+
+### Cómo se vería en la app
+
+- Una **unidad guiada** por tema: la escena es el modelo y, en vez de explicar, la app hace de 5 a 10 preguntas en orden, cada una un poco más difícil, hasta que el alumno escribe (con fichas) la regla. Ejemplo en el Banco Óptico: mover el objeto y anotar dónde sale la imagen; ¿qué pasa cuando el objeto cruza el foco?; ¿qué regla cumplen los casos?; ahora predice uno nuevo.
+- Las preguntas se responden con los componentes del núcleo (fichas, deslizar, elegir), y la ayuda se retira a medida que acierta ("ayuda que se retira", ya en el fundacional).
+- **Modo salón (laboratorio de cómputo):** la misma unidad para grupos de 3 o 4 en una computadora, con roles que rotan y una guía para el profesor. Encaja con el lanzamiento en el colegio.
+- Sirve de puente con la idea de bajar a grados menores, con un cuidado: en primaria la evidencia de "primero el problema" es en contra (ver Brilliant). Allí la guía tendría que explicar más.
+
+---
+
 ## Cómo encaja con lo que ya existe
 
 | Idea | Ya existe | Qué agrega |
@@ -169,6 +202,7 @@ Lo que se repite en todos y vale copiar: **una sola regla que se entiende en 5 s
 | Modo PISA | No: hoy todo apunta al examen de admisión | Problemas en contexto real; argumento para el colegio piloto |
 | Agilidad mental | En parte: práctica y "recordar en vez de releer" | Calentamientos cortos de cálculo y unidades, con tiempo y racha |
 | Interacciones tipo Brilliant | En parte: deslizadores y arrastre en las escenas; alternativas en "predicciones" | Componentes de respuesta reutilizables en el núcleo |
+| Aprendizaje guiado (POGIL) | En parte: paso a paso de las escenas y "ayuda que se retira" | Unidades donde el alumno descubre la regla con preguntas escalonadas; modo salón por grupos |
 
 ## Pendientes para cuando se retome
 
@@ -180,4 +214,5 @@ Lo que se repite en todos y vale copiar: **una sola regla que se entiende en 5 s
 - [x] Investigación de Brilliant reunida (`docs/investigacion/brilliant.md`).
 - [ ] Probar la versión gratis de Brilliant y anotar 5 lecciones de física o química, pantalla por pantalla.
 - [ ] Citar en `docs/fundacional.md` la evidencia sobre entrenamiento cerebral y sobre fluidez en cálculo.
+- [ ] Leer el material de pogil.org y una actividad de química de ejemplo, para ver cómo escalonan las preguntas.
 - [ ] Decidir cuál de las tres entra primero en la hoja de ruta (propuesta: componentes de interacción, porque los usan las otras dos).
