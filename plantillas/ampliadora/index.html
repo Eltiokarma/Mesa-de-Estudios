@@ -1,0 +1,1111 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La ampliadora: semejanza, área y volumen</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), copiada del molde de soluciones.
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
+   razón k naranja (la manija y "×k"), longitud L azul (el lado y el perímetro), área A verde oliva (las baldosas)
+   y volumen V morado (los cubitos y el agua). La figura "si fuera lineal" va en gris a trazos: no es una variable.
+   Colores elegidos con CIEDE2000: ΔE00 ≥ 24,9 entre las cuatro variables y ≥ 20,4 con tinta, gris, ok y warn
+   (claro); ≥ 31,1 y ≥ 21,4 (oscuro). Todos con contraste AA sobre el papel. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-k:#a05200; --c-L:#1f5fbf; --c-A:#5f6f00; --c-V:#8a2aa8; --gris:#716579;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#32293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-k:#f0a04a; --c-L:#7cb0ff; --c-A:#c8dc3c; --c-V:#ec62e6; --gris:#a99cb8; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#32293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-k:#f0a04a; --c-L:#7cb0ff; --c-A:#c8dc3c; --c-V:#ec62e6; --gris:#a99cb8; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y; -webkit-user-select:none; user-select:none}
+canvas.arrastra{cursor:grab}
+canvas.arrastra:active{cursor:grabbing}
+canvas:focus-visible{outline:3px solid var(--c-k); outline-offset:-3px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+.legend i.cu{width:10px; height:10px; border-radius:2px}
+.legend i.tr{width:14px; height:0; border-top:2px dashed var(--gris); border-radius:0}
+.legend i.orig{width:14px; height:0; border-top:1.5px dotted var(--ink); opacity:.6; border-radius:0}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-k{color:var(--c-k); background:color-mix(in srgb, var(--c-k) 12%, transparent)}
+.v-L{color:var(--c-L); background:color-mix(in srgb, var(--c-L) 12%, transparent)}
+.v-A{color:var(--c-A); background:color-mix(in srgb, var(--c-A) 14%, transparent)}
+.v-V{color:var(--c-V); background:color-mix(in srgb, var(--c-V) 12%, transparent)}
+.v.hl{background:color-mix(in srgb, currentColor 18%, transparent)}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.02rem; font-variant-numeric:tabular-nums}
+.eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.5em; white-space:normal}
+.answer{font-weight:700; padding:12px 16px; border-radius:16px; background:var(--paper); border:2px solid var(--c-k); max-width:66ch}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:999px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.exps{border-radius:20px}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.acciones{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn[aria-pressed="true"]{border-color:var(--ink); box-shadow:inset 0 0 0 1.5px var(--ink)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+/* La barra de k (− k +) y las lecturas en vivo, cada una con el color de su variable */
+.kbar{display:flex; align-items:center; gap:10px; padding:0 4px; flex-wrap:wrap}
+.kbar button{width:44px; height:44px; border-radius:50%; border:2px solid var(--c-k); background:var(--paper); color:var(--c-k); font:800 1.3rem var(--font); cursor:pointer; flex:none}
+.kbar button:disabled{opacity:.4; cursor:not-allowed}
+.kbar output{font:800 1.15rem var(--mono); color:var(--c-k); min-width:6.5em; text-align:center; font-variant-numeric:tabular-nums}
+.kbar .hint{flex:1 1 12em; margin:0}
+.lecturas{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:8px}
+@media (min-width:480px){ .lecturas{grid-template-columns:repeat(4, minmax(0,1fr))} }
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:8px 10px; border-left:5px solid var(--q); min-width:0}
+.lectura b{display:block; color:var(--q); font:800 1.05rem var(--mono); font-variant-numeric:tabular-nums; overflow-wrap:anywhere}
+.lectura span{display:block; font-size:.78rem; color:var(--muted)}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.35fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Geometría · Semejanza · Problemas tipo admisión</p>
+      <h1>La ampliadora: semejanza, área y volumen</h1>
+      <p class="sub">Arrastra la manija y la figura crece desde un punto fijo. Si el lado se multiplica por k, ¿por cuánto se multiplican el área y el volumen?</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo de la figura ampliada">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Figura que se amplía desde un punto fijo"></canvas></div>
+      <div class="kbar" id="kbar1" hidden>
+        <button type="button" id="kmenos1" aria-label="Achicar: k más pequeño">−</button>
+        <output id="kval1" aria-live="polite"></output>
+        <button type="button" id="kmas1" aria-label="Ampliar: k más grande">+</button>
+        <p class="hint">Arrastra la manija naranja o usa las flechas del teclado.</p>
+      </div>
+      <div class="lecturas" id="lect1" hidden></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Dibujo del experimento">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <div class="lecturas" id="lect2" hidden></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg exps" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/ampliadora">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'ampliadora', unidad: 'geometria.proporcionalidad-y-semejanza', version: '0.1.0' };
+// Las predicciones de sólidos se registran con su propia unidad.
+const UNIDAD_DE = { 'ampliadora-cubitos': 'geometria.prisma-y-piramide', 'ampliadora-cono': 'geometria.solidos-de-revolucion',
+  'que-pasa-si-esfera': 'geometria.solidos-de-revolucion' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: UNIDAD_DE[problema] || PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la geometría (vértices, homotecia, baldosas, cubitos, niveles del agua) sale de MotorAmpliadora (motor.js);
+   aquí solo se pinta y se anima. */
+const MA = MotorAmpliadora;
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+// Coma decimal, espacio de miles (desde 5 cifras) y signo menos tipográfico.
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 1 : d), r = Math.round(n*p)/p + 0;
+  let [e, f] = String(Math.abs(r)).split('.');
+  if (e.length >= 5) e = e.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+// k como fracción ("4/3") cuando se puede; si no, con coma.
+function frac(x, max){ const f = MA.fraccion(x, max || 27); return f ? (f.den === 1 ? String(f.num) : `${f.num}/${f.den}`) : fmt(x, 2); }
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const kk = t => V('k', t), LL = t => V('L', t), AA = t => V('A', t), VV = t => V('V', t);
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+function tween(dur, paso, fin, lineal){
+  if (RM || !dur){ paso(1); if (fin) setTimeout(fin, 0); return; }
+  const t0 = performance.now();
+  const tick = now => { const f = Math.max(0, Math.min(1, (now - t0)/dur)); paso(lineal ? f : suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
+  requestAnimationFrame(tick);
+}
+function crearLienzo(cv, alto, dibujar){
+  const ctx = cv.getContext('2d');
+  const L = { cv, ctx, W:0, H:0 };
+  L.resize = () => {
+    const W = cv.clientWidth; if (!W) return;
+    const H = Math.round(alto(W)), dpr = window.devicePixelRatio || 1;
+    L.W = W; L.H = H; cv.style.height = H + 'px'; cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    dibujar();
+  };
+  new ResizeObserver(L.resize).observe(cv);
+  return L;
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function colores(){
+  const g = n => css(n);
+  return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
+    k:g('--c-k'), L:g('--c-L'), A:g('--c-A'), V:g('--c-V'), gris:g('--gris'), font:g('--font'), mono:g('--mono') };
+}
+function poli(ctx, pts){ ctx.beginPath(); pts.forEach((p, j) => j ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])); ctx.closePath(); }
+function linea(ctx, x1, y1, x2, y2){ ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
+// Texto con un fondo del color del papel detrás, para que se lea sobre las líneas.
+function rotulo(ctx, c, x, y, t, color, align, peso, tam){
+  ctx.font = `${peso || 700} ${tam || 12}px ${c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+  ctx.fillStyle = color; ctx.fillText(t, x, y);
+}
+// En el celular (una columna), al responder se sube hasta el dibujo y la animación arranca cuando ya se ve.
+function verLienzo(modo, fn){
+  if (innerWidth >= 900){ fn(); return; }
+  document.querySelector(modo + ' .bench').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+  setTimeout(fn, RM ? 0 : 400);
+}
+function alpha(ctx, a, fn){ ctx.save(); ctx.globalAlpha = a; fn(); ctx.restore(); }
+
+// Resaltar en el dibujo la variable que se toca en el texto (regla 4: el mismo color en el texto y en el dibujo).
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+// Los valores de k del explorador: múltiplos de 1/3 entre 1/3 y 4, para que el lado (3k) sea entero y las baldosas, enteras.
+const KS = [1/3, 2/3, 1, 4/3, 5/3, 2, 7/3, 8/3, 3, 10/3, 11/3, 4];
+const BASE = 3; // lado de la figura original: 3 cm
+const H3 = Math.sqrt(3)/2;
+
+/* ================= La escena =================
+   Un solo lienzo con varios modos: 'plano' (figura con baldosas y manija), 'terreno', 'teselado', 'cubo',
+   'maqueta', 'vertido', 'pizza', 'esfera' y 'mapa'. Cada modo se dibuja con los números del motor. */
+function crearEscena(cv, idDesc, idLey){
+  const E = { modo:'plano', hl:null, cfg:{}, alManija:null };
+  ESCENAS.push(E);
+  const L = crearLienzo(cv, W => W >= 560 ? clamp(W*0.66, 340, 460) : clamp(W*0.95, 300, 400), () => dibujar());
+  E.L = L;
+  E.set = cfg => {
+    E.cfg = Object.assign({ tipo:'cuadrado', base:BASE, k:1, maxU:12, tiles:true, copias:true, lineal:0, manija:false, original:true, anim:1 }, cfg);
+    E.modo = E.cfg.modo || 'plano';
+    cv.classList.toggle('arrastra', !!E.cfg.manija);
+    if (E.cfg.manija){ cv.tabIndex = 0; cv.setAttribute('role', 'slider'); cv.setAttribute('aria-label', 'Manija de la razón k');
+      cv.setAttribute('aria-valuemin', '0.333'); cv.setAttribute('aria-valuemax', '4'); }
+    else { cv.removeAttribute('tabindex'); cv.setAttribute('role', 'img'); ['aria-valuemin','aria-valuemax','aria-valuenow','aria-valuetext'].forEach(a => cv.removeAttribute(a)); }
+    if (idLey) document.getElementById(idLey).innerHTML = cfg.leyenda !== undefined ? cfg.leyenda : leyendaDe(E.modo);
+    dibujar();
+  };
+  E.dibujar = () => dibujar();
+  addEventListener('modo', () => L.resize());
+  alRedibujarTema(() => dibujar());
+
+  function leyendaDe(m){
+    const sp = (col, t, cl) => `<span><i class="${cl || ''}" style="background:var(--c-${col})"></i>${t}</span>`;
+    if (m === 'cubo') return (E.cfg.manija ? sp('k', 'k · razón (manija)') : '') + sp('L', 'L · arista') + (E.cfg.manija ? sp('A', 'A · superficie (caritas de 1 cm²)', 'cu') : '') + sp('V', 'V · cubitos', 'cu');
+    if (m === 'vertido') return sp('V', 'V · agua (volumen)', 'cu') + sp('L', 'r y h · radio y altura');
+    if (m === 'maqueta') return sp('k', 'k · escala (×50)') + sp('L', 'L · lados') + sp('A', 'A · vidrio (área)', 'cu');
+    if (m === 'esfera') return sp('L', 'r · radio') + sp('A', 'A · superficie', 'cu') + sp('V', 'V · volumen', 'cu');
+    if (m === 'pizza') return sp('L', 'L · diámetro') + sp('A', 'A · área', 'cu');
+    if (m === 'mapa') return sp('k', 'k · escala (×50 000)') + sp('L', 'L · lado') + sp('A', 'A · área', 'cu');
+    if (m === 'terreno') return sp('k', 'k · razón (×3)') + sp('L', 'L · lado') + sp('A', 'A · terreno (área)', 'cu');
+    return sp('k', E.cfg.manija ? 'k · razón (manija y ×k)' : 'k · razón (rayos desde O)') + sp('L', E.cfg.tipo === 'circulo' ? 'L · diámetro' : 'L · lado') + sp('A', E.cfg.tipo === 'triangulo' ? 'A · triangulitos de lado 1 cm' : 'A · baldosas de 1 cm²', 'cu')
+      + '<span><i class="orig"></i>original</span>'
+      + (E.cfg && E.cfg.lineal ? '<span><i class="tr"></i>figura con k veces el área (no semejante)</span>' : '');
+  }
+
+  // ---------- modo plano: la figura, sus baldosas y la manija ----------
+  // Un sistema de coordenadas con el origen O (el punto fijo de la homotecia) abajo a la izquierda.
+  function marco(maxU, maxV){
+    const m = 30, W = L.W, H = L.H, mv = maxV || maxU;
+    const u = Math.min((W - 2*m) / maxU, (H - 2*m - 6) / mv);
+    const ox = (W - u*maxU)/2, oy = H - m + 4 - (H - 2*m - 6 - u*mv)/2;
+    return { u, ox, oy, s:p => [ox + p[0]*u, oy - p[1]*u] };
+  }
+  // Vértices (en cm) de la figura ampliada y la posición de la manija.
+  function geometria(tipo, n){
+    if (tipo === 'circulo'){ const r = n/2, a = Math.PI/4; return { circ:{ c:[r, r], r }, manija:[r + r*Math.cos(a), r + r*Math.sin(a)] }; }
+    const v = MA.vertices(tipo, { lado:n });
+    return { v, manija: tipo === 'triangulo' ? v[2] : v[2] };
+  }
+  function plano(ctx, c){
+    const cf = E.cfg, tipo = cf.tipo, k = cf.k, n = cf.base * k;
+    const altoMax = tipo === 'triangulo' ? cf.maxU*H3 : cf.maxU;
+    // la figura "si fuera lineal" se dibuja encima (desplazada hacia arriba), sin tapar la semejante
+    const altoFig = tipo === 'triangulo' ? n*H3 : n, hLin = tipo === 'triangulo' ? cf.base*H3 : cf.base;
+    const dyLin = (cf.manija ? altoMax : altoFig) + 1.2;
+    const M = marco(Math.max(cf.maxU, cf.lineal ? cf.base*cf.lineal : 0), Math.max(altoMax, cf.lineal ? dyLin + hLin + .9 : 0));
+    const { u, s } = M; E.M = M;
+    // cuadrícula de 1 cm
+    ctx.strokeStyle = c.grid; ctx.lineWidth = 1;
+    const nx = Math.floor((L.W - M.ox)/u), ny = Math.floor(M.oy/u);
+    for (let i = 0; i <= nx; i++) linea(ctx, M.ox + i*u, M.oy, M.ox + i*u, M.oy - ny*u);
+    for (let j = 0; j <= ny; j++) linea(ctx, M.ox, M.oy - j*u, M.ox + nx*u, M.oy - j*u);
+    const g = geometria(tipo, n), g1 = geometria(tipo, cf.base);
+    const camino = gg => { if (gg.circ){ const [x, y] = s(gg.circ.c); ctx.beginPath(); ctx.arc(x, y, gg.circ.r*u, 0, 2*Math.PI); } else poli(ctx, gg.v.map(s)); };
+    // relleno de la figura ampliada
+    camino(g); alpha(ctx, .13, () => { ctx.fillStyle = c.A; ctx.fill(); });
+    // baldosas
+    const entero = Math.abs(n - Math.round(n)) < 1e-9;
+    const resA = E.hl === 'A';
+    if (cf.tiles && entero && tipo !== 'circulo' && n >= 1){
+      const t = MA.teselar(tipo, Math.round(n));
+      ctx.strokeStyle = c.A; ctx.lineWidth = resA ? 1.6 : 1;
+      alpha(ctx, resA ? .9 : .5, () => t.piezas.forEach(p => { poli(ctx, p.vertices.map(s)); ctx.stroke(); }));
+    } else if (cf.tiles && tipo === 'circulo'){
+      const b = MA.baldosas('circulo', { r:n/2 });
+      ctx.fillStyle = c.A; alpha(ctx, resA ? .42 : .26, () => b.celdas.forEach(([i, j]) => { const [x, y] = s([i, j + 1]); ctx.fillRect(x + 1, y + 1, u - 2, u - 2); }));
+    }
+    // copias de la figura original (cuando k es entero)
+    if (cf.copias && Math.abs(k - Math.round(k)) < 1e-9 && k >= 1 && tipo !== 'circulo'){
+      const t = MA.teselar(tipo, Math.round(k));
+      ctx.strokeStyle = c.A; ctx.lineWidth = 2.4;
+      t.piezas.forEach(p => { poli(ctx, p.vertices.map(q => s([q[0]*cf.base, q[1]*cf.base]))); ctx.stroke(); });
+    }
+    // la original, a trazos
+    if (cf.original && Math.abs(k - 1) > 1e-9){
+      ctx.save(); ctx.setLineDash([2, 3]); ctx.strokeStyle = c.ink; ctx.globalAlpha = .5; ctx.lineWidth = 1.5; camino(g1); ctx.stroke(); ctx.restore();
+    }
+    // rayos de la homotecia: de O a cada vértice
+    if (cf.manija || cf.rayos){
+      ctx.save(); ctx.setLineDash([3, 5]); ctx.strokeStyle = c.k; ctx.lineWidth = 1.2; ctx.globalAlpha = .55;
+      const pts = g.v ? g.v.slice(1) : [g.manija];
+      pts.forEach(p => { const [x, y] = s(p); linea(ctx, M.ox, M.oy, x, y); });
+      ctx.restore();
+    }
+    // borde de la figura
+    camino(g); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.8; ctx.stroke();
+    // el lado L (abajo) o el diámetro
+    ctx.strokeStyle = c.L; ctx.lineWidth = E.hl === 'L' ? 6 : 4; ctx.lineCap = 'round';
+    const a0 = s([0, 0]), a1 = s([n, 0]);
+    if (tipo === 'circulo'){ const [cx, cy] = s([n/2, n/2]); linea(ctx, cx - n/2*u, cy, cx + n/2*u, cy); }
+    else linea(ctx, a0[0], a0[1], a1[0], a1[1]);
+    ctx.lineCap = 'butt';
+    const etL = `${tipo === 'circulo' ? 'D' : 'L'} = ${fmt(n, 2)} cm`;
+    if (tipo === 'circulo'){ const [cx, cy] = s([n/2, n/2]); rotulo(ctx, c, cx, cy + 13, etL, c.L, 'center', 800, 12); }
+    else rotulo(ctx, c, (a0[0] + a1[0])/2, a0[1] + 14, etL, c.L, 'center', 800, 12);
+    // la figura "si fuera lineal": k veces el área, estirada en una dirección (gris, a trazos)
+    if (cf.lineal){
+      const f = MA.siFueraLineal(tipo, tipo === 'circulo' ? { r:cf.base/2 } : { lado:cf.base }, cf.lineal).lineal;
+      const sd = p => s([p[0], p[1] + dyLin]);
+      ctx.save(); ctx.setLineDash([7, 5]); ctx.strokeStyle = c.gris; ctx.lineWidth = 2.4;
+      if (f.tipo === 'elipse'){ const [x, y] = sd(f.centro); ctx.beginPath(); ctx.ellipse(x, y, f.rx*u, f.ry*u, 0, 0, 2*Math.PI); }
+      else poli(ctx, f.vertices.map(sd));
+      alpha(ctx, .16, () => { ctx.fillStyle = c.gris; ctx.fill(); }); ctx.stroke(); ctx.restore();
+      const top = f.tipo === 'elipse' ? [f.centro[0], f.centro[1]*2] : [f.base/2, f.altura];
+      const [tx, ty] = sd(top);
+      rotulo(ctx, c, clamp(tx, 90, L.W - 90), ty - 12, `${frac(cf.lineal)} veces el área: no es semejante`, c.muted, 'center', 800, 11);
+    }
+    // O, el punto fijo
+    ctx.fillStyle = c.ink; ctx.beginPath(); ctx.arc(M.ox, M.oy, 3.5, 0, 2*Math.PI); ctx.fill();
+    rotulo(ctx, c, M.ox - 6, M.oy + 12, 'O', c.ink, 'right', 800, 12);
+    // la manija
+    if (cf.manija){
+      const [hx, hy] = s(g.manija); E.manijaPx = [hx, hy]; cv.dataset.manija = `${Math.round(hx)},${Math.round(hy)}`;
+      ctx.fillStyle = c.k; ctx.beginPath(); ctx.arc(hx, hy, E.hl === 'k' || E.arrastrando ? 13 : 11, 0, 2*Math.PI); ctx.fill();
+      ctx.strokeStyle = c.paper; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(hx, hy, 5, 0, 2*Math.PI); ctx.stroke();
+      const izq = hx > L.W - 70;
+      rotulo(ctx, c, izq ? hx - 18 : hx + 18, hy - 14, `×${frac(k)}`, c.k, izq ? 'right' : 'left', 800, 14);
+      E.dirManija = (() => { const p = s(g1.manija); return [p[0] - M.ox, p[1] - M.oy]; })();
+    } else E.manijaPx = null;
+  }
+
+  // ---------- modo terreno (predicción 1): 9 copias del terreno chico ----------
+  function terreno(ctx, c){
+    const cf = E.cfg, M = marco(3.6, 3.9), { u, s } = M;
+    const big = [[0, 0], [3, 0], [3, 3], [0, 3]].map(s);
+    poli(ctx, big); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.8; ctx.setLineDash([6, 4]); ctx.stroke(); ctx.setLineDash([]);
+    const ver = Math.round(cf.anim * 9);
+    for (let j = 0; j < 9; j++){
+      const i = j % 3, f = Math.floor(j / 3), q = [[i, f], [i + 1, f], [i + 1, f + 1], [i, f + 1]].map(s);
+      if (j === 0 || j < ver){
+        poli(ctx, q); alpha(ctx, j === 0 ? .34 : .2, () => { ctx.fillStyle = c.A; ctx.fill(); }); ctx.strokeStyle = c.A; ctx.lineWidth = 2; ctx.stroke();
+        const [x, y] = s([i + .5, f + .5]); rotulo(ctx, c, x, y, '2 h', c.ink, 'center', 800, Math.min(14, u/4));
+      }
+    }
+    ctx.strokeStyle = c.L; ctx.lineWidth = 4; ctx.lineCap = 'round';
+    const a = s([0, 0]), b = s([1, 0]);
+    linea(ctx, a[0], a[1], b[0], b[1]); ctx.lineCap = 'butt';
+    rotulo(ctx, c, (a[0] + b[0])/2, a[1] + 14, '50 m', c.L, 'center', 800, 12);
+    const t = s([3, 3]), tl = s([0, 3]);
+    ctx.save(); ctx.strokeStyle = c.L; ctx.lineWidth = 1.5; ctx.setLineDash([3, 3]); linea(ctx, tl[0], tl[1] - 12, t[0], t[1] - 12); ctx.restore();
+    rotulo(ctx, c, (tl[0] + t[0])/2, tl[1] - 12, '150 m', c.L, 'center', 800, 12);
+    rotulo(ctx, c, t[0], t[1] - 32, '×3 de lado', c.k, 'right', 800, 13);
+    if (cf.anim >= 1) rotulo(ctx, c, L.W/2, 16, '9 terrenos chicos: 9 × 2 h = 18 h', c.ink, 'center', 800, 13);
+  }
+
+  // ---------- modo teselado (predicción 2): el triángulo de lado doble ----------
+  function teselado(ctx, c){
+    const cf = E.cfg, kq = cf.kTes || 2, M = marco(kq + .6, kq*H3 + .9), s = p => { const q = M.s(p); return [q[0], q[1] - 18]; };
+    const t = MA.teselar('triangulo', kq);
+    const orden = [...t.piezas].sort((p, q) => p.invertido - q.invertido);
+    const big = MA.vertices('triangulo', { lado:kq }).map(s);
+    poli(ctx, big); ctx.strokeStyle = c.ink; ctx.setLineDash([6, 4]); ctx.lineWidth = 1.8; ctx.stroke(); ctx.setLineDash([]);
+    const ver = cf.anim >= 1 ? orden.length : Math.max(1, Math.floor(cf.anim * orden.length + .001));
+    orden.forEach((p, j) => {
+      if (j >= ver) return;
+      poli(ctx, p.vertices.map(s));
+      alpha(ctx, p.invertido ? .42 : (j === 0 ? .32 : .18), () => { ctx.fillStyle = c.A; ctx.fill(); });
+      ctx.strokeStyle = c.A; ctx.lineWidth = 2.2; ctx.stroke();
+      const cx = p.vertices.reduce((a, q) => a + q[0], 0)/3, cy = p.vertices.reduce((a, q) => a + q[1], 0)/3, [x, y] = s([cx, cy]);
+      rotulo(ctx, c, x, y, String(j + 1), c.A, 'center', 800, 13);
+    });
+    const a = s([0, 0]), b = s([1, 0]), d = s([kq, 0]);
+    ctx.strokeStyle = c.L; ctx.lineWidth = 4; ctx.lineCap = 'round'; linea(ctx, a[0], a[1], b[0], b[1]); ctx.lineCap = 'butt';
+    rotulo(ctx, c, (a[0] + b[0])/2, a[1] + 14, 'L', c.L, 'center', 800, 13);
+    ctx.save(); ctx.strokeStyle = c.L; ctx.lineWidth = 1.5; ctx.setLineDash([3, 3]); linea(ctx, a[0], a[1] + 28, d[0], d[1] + 28); ctx.restore();
+    rotulo(ctx, c, (a[0] + d[0])/2, a[1] + 28, `${kq}L`, c.L, 'center', 800, 13);
+    if (cf.anim >= 1 && t.invertidos){
+      rotulo(ctx, c, L.W/2, 16, `${t.total} copias: ${t.derechos} de pie y ${t.invertidos} de cabeza`, c.A, 'center', 800, 13);
+    }
+  }
+
+  // ---------- modo cubo: n × n × n cubitos en perspectiva ----------
+  function cubo(ctx, c){
+    const cf = E.cfg, n = cf.n, sep = cf.sep || 0, maxN = cf.maxN || n;
+    const extra = sep * (n - 1) * 1.6;
+    const u = Math.min((L.W - 70) / (2*maxN*.866), (L.H - 60) / (maxN*(1 + .5 + .5) + extra + (cf.suelto ? 1.4 : 0)));
+    const a = u*.866, b = u*.5;
+    const ox = L.W/2 + (cf.suelto ? u*.8 : 0) - (cf.etiquetaCapa && sep > 0 ? u*1.2 : 0), oy = 30 + (maxN)*u - (maxN - n)*0 + extra*u + (L.H - 60 - u*(maxN*2 + extra))/2;
+    const P = (x, y, z, dz) => [ox + (x - y)*a, oy + (x + y)*b - (z + (dz || 0))*u];
+    const caraCol = [c.V, c.V, c.V];
+    const capa = (z0, z1, dz) => {
+      // tres caras visibles de la capa: arriba (z1), x = n, y = n
+      const top = [P(0,0,z1,dz), P(n,0,z1,dz), P(n,n,z1,dz), P(0,n,z1,dz)], der = [P(n,0,z1,dz), P(n,n,z1,dz), P(n,n,z0,dz), P(n,0,z0,dz)], izq = [P(0,n,z1,dz), P(n,n,z1,dz), P(n,n,z0,dz), P(0,n,z0,dz)];
+      [[top, .30], [der, .55], [izq, .42]].forEach(([q, al]) => { poli(ctx, q); ctx.fillStyle = c.paper; ctx.fill(); alpha(ctx, al, () => { ctx.fillStyle = caraCol[0]; ctx.fill(); }); });
+      ctx.strokeStyle = c.V; ctx.lineWidth = n > 8 ? .7 : 1.1;
+      for (let i = 1; i < n; i++){
+        let p = P(i,0,z1,dz), q = P(i,n,z1,dz); linea(ctx, p[0], p[1], q[0], q[1]);
+        p = P(0,i,z1,dz); q = P(n,i,z1,dz); linea(ctx, p[0], p[1], q[0], q[1]);
+        p = P(n,i,z1,dz); q = P(n,i,z0,dz); linea(ctx, p[0], p[1], q[0], q[1]);
+        p = P(i,n,z1,dz); q = P(i,n,z0,dz); linea(ctx, p[0], p[1], q[0], q[1]);
+      }
+      for (let l = z0 + 1; l < z1; l++){
+        let p = P(n,0,l,dz), q = P(n,n,l,dz); linea(ctx, p[0], p[1], q[0], q[1]);
+        p = P(0,n,l,dz); q = P(n,n,l,dz); linea(ctx, p[0], p[1], q[0], q[1]);
+      }
+      [top, der, izq].forEach(q => { poli(ctx, q); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.stroke(); });
+    };
+    if (sep > 0) for (let l = 0; l < n; l++) capa(l, l + 1, l*sep*1.6);
+    else capa(0, n, 0);
+    // los cubitos que se ven en el dibujo (las tres caras), marcados con un punto
+    if (cf.marcarVisibles && sep === 0){
+      ctx.fillStyle = c.ink;
+      for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) { const p = P(i + .5, j + .5, n); ctx.beginPath(); ctx.arc(p[0], p[1], 2.4, 0, 2*Math.PI); ctx.fill(); }
+      for (let j = 0; j < n; j++) for (let l = 0; l < n - 1; l++) { const p = P(n, j + .5, l + .5); ctx.beginPath(); ctx.arc(p[0], p[1], 2.4, 0, 2*Math.PI); ctx.fill(); }
+      for (let i = 0; i < n - 1; i++) for (let l = 0; l < n - 1; l++) { const p = P(i + .5, n, l + .5); ctx.beginPath(); ctx.arc(p[0], p[1], 2.4, 0, 2*Math.PI); ctx.fill(); }
+    }
+    // la arista L
+    const e0 = P(n, n, 0), e1 = P(n, 0, 0);
+    ctx.strokeStyle = c.L; ctx.lineWidth = E.hl === 'L' ? 6 : 4; ctx.lineCap = 'round'; linea(ctx, e0[0], e0[1], e1[0], e1[1]); ctx.lineCap = 'butt';
+    rotulo(ctx, c, (e0[0] + e1[0])/2 + 14, (e0[1] + e1[1])/2 + 10, cf.etiquetaL || `${fmt(n, 0)} cm`, c.L, 'left', 800, 12);
+    if (sep > 0 && cf.etiquetaCapa) for (let l = 0; l < n; l++){ const p = P(n, 0, l + .5, l*sep*1.6); rotulo(ctx, c, p[0] + 10, p[1], `capa ${l + 1}: ${n*n} cubitos`, c.V, 'left', 800, 12); }
+    // un cubito suelto, para comparar
+    if (cf.suelto){
+      const q = (x, y, z) => [ox - (maxN + 1.9)*a + (x - y)*a, oy + (x + y)*b - z*u];
+      const t = [q(0,0,1), q(1,0,1), q(1,1,1), q(0,1,1)], d = [q(1,0,1), q(1,1,1), q(1,1,0), q(1,0,0)], i = [q(0,1,1), q(1,1,1), q(1,1,0), q(0,1,0)];
+      [[t, .3], [d, .55], [i, .42]].forEach(([p, al]) => { poli(ctx, p); alpha(ctx, al, () => { ctx.fillStyle = c.V; ctx.fill(); }); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; ctx.stroke(); });
+      const m = q(.5, 1, 0); rotulo(ctx, c, m[0], m[1] + 14, cf.suelto, c.L, 'center', 800, 12);
+    }
+    // la manija en la esquina (n, 0, n)
+    if (cf.manija){
+      const [hx, hy] = P(n, 0, n); E.manijaPx = [hx, hy];
+      ctx.save(); ctx.setLineDash([3, 5]); ctx.strokeStyle = c.k; ctx.globalAlpha = .55; const o = P(0, 0, 0); linea(ctx, o[0], o[1], hx, hy); ctx.restore();
+      ctx.fillStyle = c.k; ctx.beginPath(); ctx.arc(hx, hy, E.hl === 'k' || E.arrastrando ? 13 : 11, 0, 2*Math.PI); ctx.fill();
+      ctx.strokeStyle = c.paper; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(hx, hy, 5, 0, 2*Math.PI); ctx.stroke();
+      rotulo(ctx, c, hx + 18, hy - 12, `×${frac(cf.k)}`, c.k, hx > L.W - 70 ? 'right' : 'left', 800, 14);
+      const p1 = P(BASE, 0, BASE), o0 = P(0, 0, 0); E.dirManija = [p1[0] - o0[0], p1[1] - o0[1]]; E.M = { ox:o0[0], oy:o0[1] };
+    } else E.manijaPx = null;
+  }
+
+  // ---------- modo maqueta (predicción 4): 50 × 50 ventanitas forman la ventana real ----------
+  function maqueta(ctx, c){
+    const cf = E.cfg, m = 24, Hh = L.H - 2*m - 16, ww = Hh*.75, x0 = L.W - m - ww - (L.W > 520 ? 30 : 0), y0 = m + 14;
+    // la ventanita de la maqueta, a la izquierda
+    const sw = Math.max(9, ww/50*3), sh = sw*4/3, mx = Math.max(m, x0 - 120), my = y0 + Hh/2 - sh/2;
+    ctx.fillStyle = c.A; alpha(ctx, .4, () => ctx.fillRect(mx, my, sw, sh)); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; ctx.strokeRect(mx, my, sw, sh);
+    rotulo(ctx, c, mx + sw/2, my - 26, 'maqueta', c.muted, 'center', 800, 11);
+    rotulo(ctx, c, mx + sw/2, my - 12, '3 cm²', c.A, 'center', 800, 12);
+    const xa = Math.max(8, mx + sw/2 - 42); rotulo(ctx, c, xa, my + sh + 12, '(ampliada', c.muted, 'left', 700, 10); rotulo(ctx, c, xa, my + sh + 25, 'para que se vea)', c.muted, 'left', 700, 10);
+    ctx.strokeStyle = c.k; ctx.lineWidth = 2; linea(ctx, mx + sw + 6, my + sh/2, x0 - 8, my + sh/2);
+    ctx.beginPath(); ctx.moveTo(x0 - 8, my + sh/2); ctx.lineTo(x0 - 16, my + sh/2 - 5); ctx.lineTo(x0 - 16, my + sh/2 + 5); ctx.closePath(); ctx.fillStyle = c.k; ctx.fill();
+    rotulo(ctx, c, (mx + sw + x0)/2, my + sh/2 + 14, '×50', c.k, 'center', 800, 13);
+    // la ventana real: 50 columnas × 50 filas de ventanitas
+    const cw = ww/50, ch = Hh/50, filas = cf.anim * 50;
+    ctx.fillStyle = c.A;
+    alpha(ctx, .3, () => { const enteras = Math.floor(filas); if (enteras) ctx.fillRect(x0, y0 + Hh - enteras*ch, ww, enteras*ch);
+      const parte = filas - enteras; if (parte > 0 && enteras < 50) ctx.fillRect(x0, y0 + Hh - (enteras + 1)*ch, ww*parte, ch); });
+    if (cf.anim > 0){ ctx.strokeStyle = c.A; ctx.lineWidth = .6; alpha(ctx, .55, () => {
+      for (let i = 1; i < 50; i++) linea(ctx, x0 + i*cw, y0, x0 + i*cw, y0 + Hh);
+      for (let j = 1; j < 50; j++) linea(ctx, x0, y0 + j*ch, x0 + ww, y0 + j*ch); }); }
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.strokeRect(x0, y0, ww, Hh);
+    ctx.strokeStyle = c.L; ctx.lineWidth = 4; linea(ctx, x0, y0 + Hh + 6, x0 + ww, y0 + Hh + 6); linea(ctx, x0 + ww + 6, y0, x0 + ww + 6, y0 + Hh);
+    rotulo(ctx, c, x0 + ww/2, y0 + Hh + 16, '×50 de ancho', c.k, 'center', 800, 11);
+    rotulo(ctx, c, x0 + ww/2, y0 - 8, '×50 de alto', c.k, 'center', 800, 11);
+    if (cf.anim >= 1/50 - 1e-9 && cf.anim < .999) rotulo(ctx, c, x0 + ww/2, y0 + Hh - ch*1.5 - 10, `${Math.round(filas)} de 50 filas`, c.A, 'center', 800, 12);
+    if (cf.anim >= .999) rotulo(ctx, c, x0 + ww/2, y0 + Hh/2, '2500 ventanitas', c.A, 'center', 800, 13);
+  }
+
+  // ---------- modo vertido (predicción 5): el cono se vacía tres veces en el cilindro ----------
+  function vertido(ctx, c){
+    const cf = E.cfg, r = 3, h = 4, est = MA.vertido(r, h, cf.t || 0);
+    const u = Math.min((L.W - 60)/(4*r + 2.5), (L.H - 70)/(h + 2.2)), ry = r*u*.22;
+    const piso = L.H - 30, gap = L.W > 520 ? 2.2*u : 1.4*u;
+    const cxC = L.W/2 - gap/2 - r*u, cxY = L.W/2 + gap/2 + r*u;   // centros del cono y del cilindro
+    const topC = piso - (h + .9)*u, apex = topC + h*u;             // el cono, alzado sobre un pie
+    ctx.strokeStyle = c.muted; ctx.lineWidth = 2; linea(ctx, 20, piso, L.W - 20, piso);
+    linea(ctx, cxC, apex, cxC, piso); linea(ctx, cxC - .8*u, piso, cxC + .8*u, piso);
+    // agua del cono
+    if (est.nivelCono > 1e-6){
+      const yw = apex - est.nivelCono*u, rw = est.radioAgua*u;
+      ctx.beginPath(); ctx.moveTo(cxC, apex); ctx.lineTo(cxC - rw, yw); ctx.ellipse(cxC, yw, rw, rw/r/u*ry, 0, Math.PI, 0, true); ctx.closePath();
+      alpha(ctx, .5, () => { ctx.fillStyle = c.V; ctx.fill(); });
+      ctx.beginPath(); ctx.ellipse(cxC, yw, rw, rw/(r*u)*ry, 0, 0, 2*Math.PI); alpha(ctx, .7, () => { ctx.fillStyle = c.V; ctx.fill(); });
+    }
+    // el cono
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 1.8;
+    ctx.beginPath(); ctx.moveTo(cxC - r*u, topC); ctx.lineTo(cxC, apex); ctx.lineTo(cxC + r*u, topC); ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(cxC, topC, r*u, ry, 0, 0, 2*Math.PI); ctx.stroke();
+    // agua del cilindro
+    const yb = piso - ry - 2, yt = yb - h*u, ycw = yb - est.nivelCilindro*u;
+    if (est.nivelCilindro > 1e-6){
+      ctx.beginPath(); ctx.moveTo(cxY - r*u, ycw); ctx.lineTo(cxY - r*u, yb); ctx.ellipse(cxY, yb, r*u, ry, 0, Math.PI, 0, true); ctx.lineTo(cxY + r*u, ycw); ctx.closePath();
+      alpha(ctx, .5, () => { ctx.fillStyle = c.V; ctx.fill(); });
+      ctx.beginPath(); ctx.ellipse(cxY, ycw, r*u, ry, 0, 0, 2*Math.PI); alpha(ctx, .7, () => { ctx.fillStyle = c.V; ctx.fill(); });
+    }
+    // marcas de tercios (solo después de responder)
+    if (cf.contar || (cf.t || 0) > 0){ ctx.save(); ctx.setLineDash([4, 4]); ctx.strokeStyle = c.muted; ctx.lineWidth = 1;
+    for (const f of [1, 2]){ const y = yb - f*h/3*u; linea(ctx, cxY - r*u, y, cxY + r*u, y); rotulo(ctx, c, cxY + r*u + 6, y, `${f}/3`, c.muted, 'left', 700, 11); }
+    ctx.restore(); }
+    // el cilindro
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 1.8;
+    linea(ctx, cxY - r*u, yt, cxY - r*u, yb); linea(ctx, cxY + r*u, yt, cxY + r*u, yb);
+    ctx.beginPath(); ctx.ellipse(cxY, yt, r*u, ry, 0, 0, 2*Math.PI); ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(cxY, yb, r*u, ry, 0, 0, Math.PI); ctx.stroke();
+    // el chorro mientras se vierte
+    if (est.fraccion > 0 && est.fraccion < 1 && (cf.t || 0) < 3){
+      ctx.strokeStyle = c.V; ctx.lineWidth = 4; ctx.globalAlpha = .75;
+      ctx.beginPath(); ctx.moveTo(cxC + r*u, topC); ctx.quadraticCurveTo((cxC + cxY)/2 + r*u/2, topC - 1.1*u, cxY - r*u*.2, ycw); ctx.stroke(); ctx.globalAlpha = 1;
+    }
+    // misma base y misma altura
+    ctx.strokeStyle = c.L; ctx.lineWidth = 3;
+    linea(ctx, cxC - r*u, topC - ry - 8, cxC, topC - ry - 8); linea(ctx, cxY - r*u, yt - ry - 8, cxY, yt - ry - 8);
+    rotulo(ctx, c, cxC - r*u/2, topC - ry - 18, 'r', c.L, 'center', 800, 12); rotulo(ctx, c, cxY - r*u/2, yt - ry - 18, 'r', c.L, 'center', 800, 12);
+    linea(ctx, cxY + r*u + 30, yt, cxY + r*u + 30, yb); rotulo(ctx, c, cxY + r*u + 30, (yt + yb)/2, 'h', c.L, 'center', 800, 12);
+    linea(ctx, cxC - r*u - 10, topC, cxC - r*u - 10, apex); rotulo(ctx, c, cxC - r*u - 10, (topC + apex)/2, 'h', c.L, 'center', 800, 12);
+    rotulo(ctx, c, cxC, piso + 14, 'cono', c.ink, 'center', 800, 12); rotulo(ctx, c, cxY, piso + 14, 'cilindro', c.ink, 'center', 800, 12);
+    if (cf.contar) rotulo(ctx, c, L.W/2, 16, (cf.t || 0) >= 3 ? 'Lleno con 3 conos' : `Vertido ${est.vertido} de 3`, c.V, 'center', 800, 13);
+  }
+
+  // ---------- modo pizza: una de 30 cm contra dos de 20 cm ----------
+  function pizza(ctx, c){
+    const cf = E.cfg, m = 22, rows = L.W < 520;
+    const gap = rows ? 34 : 6*Math.min((L.W - 2*m)/84, (L.H - 110)/30);
+    const u = Math.min((L.W - 2*m - gap)/(30 + 40 + 1.5), (L.H - 110)/30);
+    const y = 26 + 15*u, cx1 = m + 15*u, cx2 = cx1 + 15*u + gap + 10*u, cx3 = cx2 + 20*u + 1.5*u;
+    const disco = (x, R) => { ctx.beginPath(); ctx.arc(x, y, R*u, 0, 2*Math.PI); alpha(ctx, .25, () => { ctx.fillStyle = c.A; ctx.fill(); }); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.8; ctx.stroke();
+      ctx.strokeStyle = c.L; ctx.lineWidth = 3; linea(ctx, x - R*u, y, x + R*u, y); rotulo(ctx, c, x, y + 12, `${2*R} cm`, c.L, 'center', 800, 12); };
+    disco(cx1, 15); disco(cx2, 10); disco(cx3, 10);
+    rotulo(ctx, c, cx1 + 15*u + gap/2, y, 'vs.', c.muted, 'center', 800, 12);
+    if (cf.ver){
+      // barras de área con la misma escala
+      const yb = Math.min(L.H - 70, y + 15*u + 34), wmax = L.W - 2*m - 100, a1 = 225, a2 = 200, esc = wmax/a1;
+      [[a1, 'una de 30 cm', 'A = 225π ≈ 707 cm²'], [a2, 'dos de 20 cm', 'A = 200π ≈ 628 cm²']].forEach(([a, t, v], j) => {
+        const yy = yb + j*40; ctx.fillStyle = c.A; alpha(ctx, .55, () => ctx.fillRect(m + 100, yy - 8, a*esc, 16));
+        rotulo(ctx, c, m + 94, yy, t, c.ink, 'right', 700, 11); rotulo(ctx, c, m + 100, yy + 19, v, c.A, 'left', 800, 11);
+      });
+    }
+  }
+
+  // ---------- modo esfera: el radio se duplica ----------
+  function esfera(ctx, c){
+    const cf = E.cfg, m = 22, u = Math.min((L.W - 2*m)/7.2, (L.H - 120)/4.2), y = 22 + 2.1*u;
+    const bola = (x, R) => { const g = ctx.createRadialGradient(x - R*u*.35, y - R*u*.35, R*u*.1, x, y, R*u);
+      g.addColorStop(0, c.paper); g.addColorStop(1, c.V); ctx.beginPath(); ctx.arc(x, y, R*u, 0, 2*Math.PI); alpha(ctx, .55, () => { ctx.fillStyle = g; ctx.fill(); });
+      ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.stroke(); ctx.strokeStyle = c.L; ctx.lineWidth = 3; linea(ctx, x, y, x + R*u, y); rotulo(ctx, c, x + R*u/2, y - 10, R === 1 ? 'r' : '2r', c.L, 'center', 800, 12); };
+    bola(m + 1.2*u, 1); bola(m + 5*u, 2);
+    if (cf.ver){
+      const y0 = L.H - 74, cel = Math.min(22, (L.W - 2*m - 140)/8);
+      [['A', 'superficie', 4], ['V', 'volumen', 8]].forEach(([q, t, n], j) => {
+        const yy = y0 + j*34;
+        rotulo(ctx, c, m + 112, yy + cel/2, `${t}: ×${n}`, c[q], 'right', 800, 12);
+        for (let i = 0; i < n; i++){ ctx.fillStyle = c[q]; alpha(ctx, .45, () => ctx.fillRect(m + 120 + i*(cel + 4), yy, cel, cel)); ctx.strokeStyle = c[q]; ctx.lineWidth = 1.2; ctx.strokeRect(m + 120 + i*(cel + 4), yy, cel, cel); }
+      });
+    }
+  }
+
+  // ---------- modo mapa: 2 cm × 2 cm a escala 1:50 000 ----------
+  function mapa(ctx, c){
+    const cf = E.cfg, m = 26, lado = Math.min(L.H - 2*m - 24, L.W*.55), x0 = L.W - m - lado, y0 = m + 8;
+    // el cuadrito del mapa
+    const s = Math.max(16, lado*.1), mx = m + 4, my = y0 + lado/2 - s/2;
+    ctx.fillStyle = c.A; alpha(ctx, .35, () => ctx.fillRect(mx, my, s, s)); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; ctx.strokeRect(mx, my, s, s);
+    rotulo(ctx, c, mx + s/2, my - 30, '2 cm × 2 cm', c.L, 'center', 800, 11); rotulo(ctx, c, mx + s/2, my + s + 12, 'en el mapa', c.muted, 'center', 700, 11);
+    ctx.strokeStyle = c.k; ctx.lineWidth = 2; linea(ctx, mx + s + 8, my + s/2, x0 - 8, my + s/2);
+    rotulo(ctx, c, (mx + s + x0)/2, my + s/2 - 12, '×50 000', c.k, 'center', 800, 12);
+    // el terreno: 1 km × 1 km
+    ctx.fillStyle = c.A; alpha(ctx, cf.ver ? .22 : .08, () => ctx.fillRect(x0, y0, lado, lado));
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.strokeRect(x0, y0, lado, lado);
+    ctx.strokeStyle = c.L; ctx.lineWidth = 4; linea(ctx, x0, y0 + lado + 6, x0 + lado, y0 + lado + 6);
+    rotulo(ctx, c, x0 + lado/2, y0 + lado + 16, cf.ver ? '1 km = 100 000 cm' : '×50 000 de lado', cf.ver ? c.L : c.k, 'center', 800, 11);
+    if (cf.ver){
+      rotulo(ctx, c, x0 + lado/2, y0 + lado/2, 'A = 1 km²', c.A, 'center', 800, 14);
+      // 20 m² a la misma escala: un cuadrado de unos 4,5 m de lado
+      const t = Math.max(2, lado*Math.sqrt(20)/1000); ctx.fillStyle = c.ink; ctx.fillRect(x0 + 10, y0 + 10, t, t);
+      rotulo(ctx, c, x0 + 18, y0 + 12, '← 20 m², a la misma escala', c.muted, 'left', 700, 11);
+    }
+  }
+
+  function dibujar(){
+    if (!L.W) return;
+    const ctx = L.ctx, c = colores();
+    ctx.clearRect(0, 0, L.W, L.H);
+    ({ plano, terreno, teselado, cubo, maqueta, vertido, pizza, esfera, mapa })[E.modo](ctx, c);
+    if (idDesc && E.cfg.descr) document.getElementById(idDesc).textContent = E.cfg.descr();
+  }
+
+  // ---------- arrastrar la manija (dedo, ratón y teclado) ----------
+  function kDesde(ev){
+    const r = cv.getBoundingClientRect(), x = ev.clientX - r.left - E.M.ox, y = ev.clientY - r.top - E.M.oy, d = E.dirManija;
+    const t = (x*d[0] + y*d[1]) / (d[0]*d[0] + d[1]*d[1]);   // proyección sobre el rayo O → manija de k = 1
+    let best = 0; KS.forEach((k, j) => { if (Math.abs(k - t) < Math.abs(KS[best] - t)) best = j; });
+    return KS[best];
+  }
+  // En el celular, la página se desplaza con el dedo sobre el lienzo (touch-action: pan-y); solo un toque que
+  // empieza sobre la manija la arrastra: ese toque cancela el desplazamiento con preventDefault.
+  const sobreManija = (x, y) => { if (!E.cfg.manija || !E.manijaPx) return false; const r = cv.getBoundingClientRect();
+    return Math.hypot(x - r.left - E.manijaPx[0], y - r.top - E.manijaPx[1]) <= 40; };
+  cv.addEventListener('touchstart', ev => { const t = ev.touches[0]; if (t && sobreManija(t.clientX, t.clientY)) ev.preventDefault(); }, { passive:false });
+  cv.addEventListener('touchmove', ev => { if (E.arrastrando) ev.preventDefault(); }, { passive:false });
+  cv.addEventListener('pointerdown', ev => {
+    if (!E.cfg.manija || !E.manijaPx) return;
+    if (ev.pointerType !== 'mouse' && !sobreManija(ev.clientX, ev.clientY)) return;
+    E.arrastrando = true; cv.setPointerCapture(ev.pointerId); ev.preventDefault();
+    const k = kDesde(ev); if (k !== E.cfg.k && E.alManija) E.alManija(k); dibujar();
+  });
+  cv.addEventListener('pointermove', ev => {
+    if (!E.arrastrando) return;
+    const k = kDesde(ev); if (k !== E.cfg.k && E.alManija) E.alManija(k);
+  });
+  const soltar = () => { if (E.arrastrando){ E.arrastrando = false; dibujar(); } };
+  cv.addEventListener('pointerup', soltar); cv.addEventListener('pointercancel', soltar);
+  cv.addEventListener('keydown', ev => {
+    if (!E.cfg.manija || !E.alManija) return;
+    const j = KS.findIndex(k => Math.abs(k - E.cfg.k) < 1e-9);
+    let nj = j;
+    if (ev.key === 'ArrowRight' || ev.key === 'ArrowUp') nj = j + 1;
+    else if (ev.key === 'ArrowLeft' || ev.key === 'ArrowDown') nj = j - 1;
+    else if (ev.key === 'Home') nj = 0; else if (ev.key === 'End') nj = KS.length - 1; else return;
+    ev.preventDefault(); nj = clamp(nj, 0, KS.length - 1); if (nj !== j) E.alManija(KS[nj]);
+  });
+  return E;
+}
+
+// Lecturas en vivo: k, L, A y V (o copias), cada una con su color.
+function lecturasPara(cf){
+  const k = cf.k, n = BASE*k, caja = (q, que, val, det) => `<div class="lectura" style="--q:var(--c-${q})"><span>${que}</span><b>${val}</b><span>${det}</span></div>`;
+  if (cf.modo === 'cubo'){
+    const cu = MA.cubitos(Math.round(n));
+    return caja('k', 'Razón, k', frac(k), `k³ = ${frac(k*k*k)}`)
+      + caja('L', 'Arista, L', `${fmt(n, 0)} cm`, `antes ${BASE} cm`)
+      + caja('A', 'Superficie, A', `${fmt(6*n*n, 0)} cm²`, `caritas de 1 cm²`)
+      + caja('V', 'Volumen, V', `${fmt(cu.total, 0)} cubitos`, n >= 2 ? `con cara afuera: ${fmt(cu.visibles, 0)}` : 'uno solo');
+  }
+  const f = MA.figura(cf.tipo, cf.tipo === 'circulo' ? { r:n/2 } : { lado:n }), f1 = MA.figura(cf.tipo, cf.tipo === 'circulo' ? { r:BASE/2 } : { lado:BASE });
+  const unidad = cf.tipo === 'triangulo' ? 'triangulitos de lado 1 cm' : 'baldosas de 1 cm²';
+  const cuenta = cf.tipo === 'circulo' ? `≈ ${fmt(f.area, 1)} cm²` : `${fmt(n*n, 0)}`;
+  const det = cf.tipo === 'circulo' ? `${MA.baldosas('circulo', { r:n/2 }).enteras} baldosas enteras + pedazos` : unidad;
+  return caja('k', 'Razón, k', frac(k), `k² = ${frac(k*k)}`)
+    + caja('L', cf.tipo === 'circulo' ? 'Diámetro, L' : 'Lado, L', `${fmt(n, 0)} cm`, `perímetro ${fmt(f.perimetro, 1)} cm`)
+    + caja('A', 'Área, A', cuenta, det)
+    + caja('A', 'Copias de la original', fmt(f.area/f1.area, 2), Math.abs(k - Math.round(k)) < 1e-9 ? `${Math.round(k)} × ${Math.round(k)}` : 'en pedazos');
+}
+function ecuacionPara(cf){
+  const k = cf.k;
+  if (cf.modo === 'cubo') return `<div class="eq">${VV("V'")} = ${kk('k³')} · ${VV('V')} = ${kk('(' + frac(k) + ')³')} · ${VV('27')} = ${VV(fmt(27*k*k*k, 0))}<span class="note">cubitos de 1 cm³</span></div>`;
+  const a1 = cf.tipo === 'circulo' ? 'π·1,5²' : cf.tipo === 'triangulo' ? '9 ▵' : '9';
+  return `<div class="eq">${LL("L'")} = ${kk('k')} · ${LL('L')} = ${kk(frac(k))} · ${LL('3')} = ${LL(fmt(3*k, 0))}</div>
+    <div class="eq">${AA("A'")} = ${kk('k²')} · ${AA('A')} = ${kk('(' + frac(k) + ')²')} · ${AA(a1)} = ${AA(cf.tipo === 'circulo' ? `${fmt(2.25*k*k, 2)}π` : fmt(9*k*k, 0) + (cf.tipo === 'triangulo' ? ' ▵' : ''))}</div>`;
+}
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'leyenda1');
+const S = { step:0, max:0, pred:{}, ocupado:false, x:{ k:1, tipo:'cuadrado', solido:false, lineal:false } };
+
+// ----- predicciones: las opciones incorrectas llevan el código del error (docs/investigacion/geometria-ideas-erroneas.md) -----
+const P1 = { id:'ampliadora-terreno', ok:'b', opts:[
+  ['a','6 horas: el lado es el triple, así que el triple de tiempo','GE1-area-como-lado','documentado'],
+  ['b','18 horas'],
+  ['c','54 horas: 3 · 3 · 3 veces','GE2-cubo-en-area','hipotesis']],
+  fb:{ b:'¡Bien! El abono cubre el área. Con el triple de lado caben 3 · 3 = 9 terrenos chicos, y cada uno toma 2 horas.',
+    a:'Elegiste la A. El triple vale para el lado y para el borde (el perímetro), pero el abono cubre todo el terreno. Mira el dibujo: caben 9 terrenos chicos, no 3. La correcta está marcada.',
+    c:'Elegiste la C. El cubo, 3 · 3 · 3, sería para un volumen (por ejemplo, si el terreno fuera una caja que se llena). Un terreno es una superficie: se multiplica por 3 · 3 = 9. La correcta está marcada.' } };
+const P2 = { id:'ampliadora-triangulo', ok:'c', opts:[
+  ['a','2 veces: el lado es el doble','GE1-area-como-lado','documentado'],
+  ['b','3 veces: una en cada esquina','teselado-sin-centro','hipotesis'],
+  ['c','4 veces'],
+  ['d','8 veces','GE2-cubo-en-area','hipotesis']],
+  fb:{ c:'¡Bien! Caben 3 en las esquinas y 1 más en el centro, de cabeza: 4 = 2². El área se multiplica por k².',
+    a:'Elegiste la A. El doble vale para cada lado, pero el triángulo crece a lo largo y a lo alto a la vez. Mira el dibujo: caben 4. La correcta está marcada.',
+    b:'Elegiste la B. Las tres esquinas están bien, pero queda un hueco en el centro con la forma del triángulo chico, de cabeza: también es una copia. Son 4. La correcta está marcada.',
+    d:'Elegiste la D. El 8 = 2³ sería para un sólido (un tetraedro o un cubo de lado doble). El triángulo es plano: 2² = 4. La correcta está marcada.' } };
+const P3 = { id:'ampliadora-cubitos', ok:'d', opts:[
+  ['a','3 cubitos: la arista es el triple','GE2-volumen-como-arista','parcial'],
+  ['b','9 cubitos: 3 · 3','GE2-volumen-como-area','parcial'],
+  ['c','19 cubitos: los que asoman en el dibujo','GE13-cuenta-visibles','parcial'],
+  ['d','27 cubitos']],
+  fb:{ d:'¡Bien! En cada arista caben 3 cubitos, hay 3 · 3 = 9 en cada capa y 3 capas: 27 = 3³.',
+    a:'Elegiste la A. Tres cubitos solo forman una fila a lo largo de la arista. El cubo crece a lo largo, a lo ancho y a lo alto: 3 · 3 · 3 = 27. La correcta está marcada.',
+    b:'Elegiste la B. 9 es una sola capa (el área de una cara). Hay 3 capas como esa: 27. La correcta está marcada.',
+    c:'Elegiste la C. En el dibujo asoman 19 cubitos, pero detrás quedan 8 que no se ven, entre ellos el del centro. El volumen cuenta también los escondidos: 27. La correcta está marcada.' } };
+const P4 = { id:'ampliadora-maqueta', ok:'b', opts:[
+  ['a','150 cm²: 3 · 50','GE1-area-como-lado','documentado'],
+  ['b','7500 cm²'],
+  ['c','375 000 cm²: 3 · 50 · 50 · 50','GE2-cubo-en-area','hipotesis']],
+  fb:{ b:'¡Bien! La ventana real es 50 veces más ancha y 50 veces más alta: caben 50 · 50 = 2500 ventanitas de 3 cm². Son 7500 cm², unos 0,75 m².',
+    a:'Elegiste la A. Con 150 cm² solo tendrías una fila de 50 ventanitas. La ventana también es 50 veces más alta: son 50 filas. La correcta está marcada.',
+    c:'Elegiste la C. 50³ sería para un volumen (el aire de una habitación, el concreto de una columna). El vidrio es una superficie: 50². La correcta está marcada.' } };
+const P5 = { id:'ampliadora-cono', ok:'c', opts:[
+  ['a','1: tienen la misma base y la misma altura','GE20-sin-tercio','hipotesis'],
+  ['b','2: el cono es la mitad del cilindro','cono-mitad','hipotesis'],
+  ['c','3']],
+  fb:{ c:'¡Bien! El cono guarda un tercio del cilindro: V = π·r²·h/3. Mira los tres vertidos.',
+    a:'Elegiste la A. La misma base y la misma altura no dan el mismo volumen: el cono se angosta hasta la punta. Mira cuántas veces hay que vaciarlo. La correcta está marcada.',
+    b:'Elegiste la B. El cono "parece" la mitad, pero se angosta muy rápido: guarda solo un tercio. Mira los tres vertidos. La correcta está marcada.' } };
+
+const opciones = P => `<div class="opts">${P.opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="fb"></p>`;
+
+// ----- configuraciones del dibujo de cada paso -----
+const cfgExpl = () => { const x = S.x;
+  if (x.solido) return { modo:'cubo', k:x.k, n:Math.round(BASE*x.k), maxN:12, manija:true,
+    descr:() => `Cubo de ${fmt(BASE*x.k, 0)} cm de arista: ${fmt(Math.pow(BASE*x.k, 3), 0)} cubitos de 1 cm. Razón k = ${frac(x.k)}.` };
+  return { modo:'plano', tipo:x.tipo, k:x.k, manija:true, lineal: x.lineal ? x.k : 0,
+    descr:() => `${x.tipo} de lado ${fmt(BASE*x.k, 0)} cm, razón k = ${frac(x.k)}; el área se multiplica por ${frac(x.k*x.k)}.` + (x.lineal ? ` En gris, una figura con ${frac(x.k)} veces el área que no es semejante.` : '') }; };
+
+function animar(dur, paso, fin){ S.ocupado = true; nav(); tween(dur, f => { paso(f); E.dibujar(); }, () => { S.ocupado = false; nav(); fin && fin(); }, true); }
+
+const steps = [
+ { k:'Paso 1', t:'La ampliadora', explora:'intro',
+   prep:() => { S.x = { k:1, tipo:'cuadrado', solido:false, lineal:false }; E.set(cfgExpl()); },
+   body:() => `<p class="problem">Una figura se amplía cuando todas sus longitudes se multiplican por el mismo número, la razón de semejanza ${kk('k')}. ¿Por cuánto se multiplican su área y su volumen?</p>
+   <p>El cuadrado tiene ${LL('3 cm de lado')} y está hecho de ${AA('baldosas de 1 cm²')}. Arrastra la ${kk('manija naranja')}: la figura crece desde el punto fijo O, y cada vértice se aleja de O en la misma proporción. A eso se le llama homotecia. La figura nueva es semejante a la original: los mismos ángulos, la misma forma, otro tamaño.</p>
+   <div class="eqs" id="eqx"></div>
+   <p class="hint">En los pasos que siguen vas a predecir antes de ver. Las opciones incorrectas son errores reales de estudiantes.</p>` },
+ { k:'Paso 2', t:'Predice: abonar un terreno', gate:P1,
+   prep:() => E.set({ modo:'terreno', anim: S.pred[P1.id] ? 1 : 0,
+     descr:() => 'Terreno cuadrado de 50 m dentro de uno de 150 m.' }),
+   anima:fin => animar(2200, f => E.cfg.anim = f, fin),
+   body:() => `<p class="problem">Abonar un terreno cuadrado de ${LL('50 m de lado')} toma <b>2 horas</b>. ¿Cuánto toma abonar uno cuadrado de ${LL('150 m de lado')}, al mismo ritmo?</p>${opciones(P1)}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${kk('k')} = ${LL('150')} / ${LL('50')} = ${kk('3')}</div>
+     <div class="eq">${AA("A'")} = ${kk('k²')} · ${AA('A')} = ${kk('9')} · ${AA('A')}<span class="note">caben 9 terrenos chicos</span></div>
+     <div class="eq">tiempo = 9 · 2 h = 18 h<span class="note">el tiempo va con el área</span></div></div>
+   <p class="fuente">En estudios hechos en Bélgica con un problema parecido (un granjero que abona un terreno cuadrado), la gran mayoría de alumnos de 12 a 16 años respondió con el triple, como si el área creciera igual que el lado: más del 80 % en los de 16 años (De Bock, Verschaffel, Van Dooren y otros, según un resumen de sus estudios). Ver el dibujo ayudó poco. Por eso aquí se cuenta lo que cabe.</p></div>` },
+ { k:'Paso 3', t:'Predice: el triángulo de lado doble', gate:P2,
+   prep:() => E.set({ modo:'teselado', kTes:2, anim: S.pred[P2.id] ? 1 : 0, leyenda:'<span><i style="background:var(--c-L)"></i>L · lado</span><span><i class="cu" style="background:var(--c-A)"></i>A · copias del triángulo chico</span>',
+     descr:() => 'Un triángulo equilátero de lado L dentro de uno de lado 2L.' }),
+   anima:fin => animar(1800, f => E.cfg.anim = f, fin),
+   body:() => `<p class="problem">Se dibuja un triángulo equilátero con el ${LL('lado doble')} que otro (${kk('k = 2')}). ¿Cuántas veces cabe el triángulo chico en el grande?</p>${opciones(P2)}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${AA("A'")} = ${kk('2²')} · ${AA('A')} = ${AA('4A')}<span class="note">3 de pie y 1 de cabeza</span></div></div>
+   <p>Con ${kk('k = 3')} caben ${AA('9')} copias: 6 de pie y 3 de cabeza.</p>
+   <p>El área cuenta cuántas copias caben, no cuánto mide el lado. Con cualquier figura pasa igual: un cuadrado, un círculo o un mapa. Si el lado se multiplica por ${kk('k')}, el área se multiplica por ${kk('k²')}.</p>
+   <p class="fuente">Que se olvide el triángulo invertido del centro es una hipótesis nuestra: no encontramos un estudio que lo mida. Lo vamos a saber con las respuestas de este colegio.</p></div>` },
+ { k:'Paso 4', t:'Predice: cubitos en un cubo', gate:P3,
+   prep:() => { const v = !!S.pred[P3.id]; E.set({ modo:'cubo', n:3, maxN:3, sep: v ? 1 : 0, etiquetaCapa:true, etiquetaL:'6 cm', suelto:'2 cm', marcarVisibles:false,
+     descr:() => 'Un cubo de 6 cm formado por cubitos de 2 cm.' }); },
+   // primero se marcan los cubitos que asoman en el dibujo; después se separan las capas
+   anima:fin => animar(3000, f => { E.cfg.marcarVisibles = f < .45; E.cfg.sep = f < .45 ? 0 : (f - .45)/.55; }, fin),
+   body:() => `<p class="problem">Un cubo de ${LL('2 cm de arista')} se reemplaza por uno de ${LL('6 cm de arista')}. ¿Cuántos cubitos de 2 cm caben en el cubo grande?</p>
+   <p class="hint">Después de responder, los puntos marcarán los cubitos que asoman en el dibujo.</p>${opciones(P3)}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${kk('k')} = ${LL('6')} / ${LL('2')} = ${kk('3')}</div>
+     <div class="eq">${VV("V'")} = ${kk('k³')} · ${VV('V')} = ${kk('27')} · ${VV('V')}<span class="note">3 capas de 9 cubitos</span></div></div>
+   <p>En el dibujo asomaban 19 cubitos; atrás y adentro quedaban 8 más. Si se mira el cubo por todos lados, 26 tienen alguna cara hacia afuera: solo el del centro queda siempre escondido. El volumen los cuenta todos.</p>
+   <p class="fuente">En Estados Unidos, menos de la mitad de alumnos de 5.° a 8.° grado contó bien los cubitos de sólidos dibujados; el error más común fue contar las caras que se ven; otro fue contar solo los cubitos visibles (Ben-Chaim, Lappan y Houang, 1985, citado por otros autores). Que se use k o k² para el volumen está descrito por De Bock y otros, sin una cifra que hayamos podido ver.</p></div>` },
+ { k:'Paso 5', t:'Predice: la maqueta', gate:P4,
+   prep:() => E.set({ modo:'maqueta', anim: S.pred[P4.id] ? 1 : 0, descr:() => 'Una ventanita de maqueta de 3 cm² y la ventana real, 50 veces más ancha y más alta.' }),
+   anima:fin => animar(2600, f => E.cfg.anim = f < .3 ? (f/.3)/50 : 1/50 + (f - .3)/.7*(49/50), fin),
+   body:() => `<p class="problem">Una maqueta está hecha a escala ${kk('1 : 50')}. Cada ventana de la maqueta lleva ${AA('3 cm² de vidrio')}. ¿Cuánto vidrio lleva cada ventana del edificio real?</p>${opciones(P4)}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${kk('k')} = ${kk('50')}<span class="note">cada longitud real es 50 veces la de la maqueta</span></div>
+     <div class="eq">${AA("A'")} = ${kk('50²')} · ${AA('3 cm²')} = 2500 · ${AA('3')} = ${AA('7500 cm²')}<span class="note">0,75 m²</span></div></div>
+   <p>Primero se llena una fila: 50 ventanitas, 150 cm². Pero hay 50 filas. Con un mapa pasa lo mismo: a escala 1 : 50 000, cada centímetro cuadrado del mapa es 50 000² cm² del terreno.</p>
+   <p class="fuente">Multiplicar el área por la escala, sin elevar al cuadrado, es la misma ilusión de linealidad del paso 2 (De Bock y otros). Usar el cubo para un área (sobrecorregir) es una hipótesis nuestra: no encontramos un estudio que lo mida.</p></div>` },
+ { k:'Paso 6', t:'Predice: el cono y el cilindro', gate:P5,
+   prep:() => E.set({ modo:'vertido', t: S.pred[P5.id] ? 3 : 0, contar:!!S.pred[P5.id], descr:() => 'Un cono y un cilindro con la misma base y la misma altura.' }),
+   anima:fin => { E.cfg.contar = true; animar(RM ? 0 : 5400, f => E.cfg.t = 3*f, fin); },
+   body:() => `<p class="problem">Un vaso con forma de cono y un vaso cilíndrico tienen ${LL('la misma base y la misma altura')}. ¿Cuántas veces hay que llenar el cono y vaciarlo en el cilindro para llenarlo?</p>${opciones(P5)}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${VV('V')}<sub>cilindro</sub> = π · ${LL('r²')} · ${LL('h')} = π · 9 · 4 = ${VV('36π')}</div>
+     <div class="eq">${VV('V')}<sub>cono</sub> = π · ${LL('r²')} · ${LL('h')} / 3 = ${VV('12π')}<span class="note">con r = 3 y h = 4</span></div></div>
+   <p>Cada vertido sube el agua un tercio del cilindro. Mientras el cono se vacía, su nivel baja despacio al principio y rápido al final: la mitad de arriba del cono guarda 7/8 del agua. Lo mismo vale para la pirámide y el prisma de igual base y altura.</p>
+   <p class="fuente">Olvidar el tercio, o creer que el cono es la mitad, son errores frecuentes en problemas de academia, pero no encontramos un estudio que los mida: aquí son hipótesis.</p></div>` },
+ { k:'Paso 7', t:'La regla de la ampliadora', explora:'regla',
+   prep:() => { S.x = { k:2, tipo:'cuadrado', solido:false, lineal:false }; E.set(cfgExpl()); },
+   body:() => `<div class="eqs">
+     <div class="eq">longitudes: ${LL("L'")} = ${kk('k')} · ${LL('L')}<span class="note">lado, perímetro, altura, diámetro</span></div>
+     <div class="eq">áreas: ${AA("A'")} = ${kk('k²')} · ${AA('A')}<span class="note">superficie, pintura, vidrio, baldosas</span></div>
+     <div class="eq">volúmenes: ${VV("V'")} = ${kk('k³')} · ${VV('V')}<span class="note">capacidad, agua, cubitos, peso del mismo material</span></div></div>
+   <p>Antes de hacer una regla de tres, pregúntate qué se mide: una longitud, un área o un volumen.</p>
+   <p>¿Y si el área sí creciera como el lado? Aprieta el botón: la figura gris tiene ${kk('k')} veces el área de la original, pero para lograrlo hay que estirarla en una sola dirección. Ya no es semejante: cambió de forma.</p>
+   <div class="acciones"><button type="button" class="btn" id="b-lineal" aria-pressed="false">¿Y si fuera lineal?</button></div>
+   <div class="eqs" id="eqx"></div>` },
+ { k:'Paso 8', t:'Ahora explora tú', explora:'libre',
+   prep:() => { S.x.lineal = false; E.set(cfgExpl()); },
+   body:() => `<p>Elige una figura y arrastra la ${kk('manija')}. Mira cómo cambian el ${LL('lado')}, las ${AA('baldosas')} y los ${VV('cubitos')}.</p>
+   <div class="seg" role="group" aria-label="Plano o sólido"><button type="button" data-sol="0" aria-pressed="${!S.x.solido}">Figura plana</button><button type="button" data-sol="1" aria-pressed="${S.x.solido}">Sólido: cubo</button></div>
+   <div class="seg" role="group" aria-label="Figura" id="figs" ${S.x.solido ? 'hidden' : ''}>${[['cuadrado','Cuadrado'],['triangulo','Triángulo'],['circulo','Círculo']].map(([t, n]) => `<button type="button" data-fig="${t}" aria-pressed="${S.x.tipo === t}">${n}</button>`).join('')}</div>
+   <div class="acciones" id="acc-lineal" ${S.x.solido ? 'hidden' : ''}><button type="button" class="btn" id="b-lineal" aria-pressed="${S.x.lineal}">¿Y si fuera lineal?</button></div>
+   <div class="eqs" id="eqx"></div>
+   <p class="hint">Prueba ${kk('k = 1/3')}: el área queda en un noveno. Y en el cubo, con ${kk('k = 4')} hay 1728 cubitos, pero solo 728 tienen alguna cara hacia afuera: los otros 1000 están adentro.</p>` },
+];
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; b.setAttribute('aria-label', `Ir al ${s.k.toLowerCase()}: ${s.t}`);
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  if (s.prep) s.prep();
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  pintarDots();
+  $('kbar1').hidden = !s.explora; $('lect1').hidden = !s.explora;
+  if (s.gate) prediccion(s);
+  if (s.explora) explorar(s.explora);
+  nav(); E.dibujar();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){ if (k > S.max) S.max = k; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    S.ocupado = true; nav();
+    $('next').focus({ preventScroll:true });
+    verLienzo('#m1', () => s.anima(() => {}));
+  }));
+  pintar();
+}
+
+// ----- la manija y el explorador -----
+function refrescarX(){
+  E.set(cfgExpl());
+  $('kval1').textContent = `k = ${frac(S.x.k)}`;
+  const j = KS.findIndex(k => Math.abs(k - S.x.k) < 1e-9);
+  $('kmenos1').disabled = j <= 0; $('kmas1').disabled = j >= KS.length - 1;
+  $('cv').setAttribute('aria-valuenow', String(S.x.k)); $('cv').setAttribute('aria-valuetext', `k = ${frac(S.x.k)}`);
+  $('lect1').innerHTML = lecturasPara(E.cfg);
+  const eq = $('eqx'); if (eq) eq.innerHTML = ecuacionPara(E.cfg) + (S.x.lineal && !S.x.solido ? ecuacionGris(S.x) : '');
+}
+function ecuacionGris(x){
+  const k = x.k, t = x.tipo;
+  const cuenta = a => t === 'circulo' ? `${fmt(2.25*a, 2)}π cm²` : `${fmt(9*a, 1)} ${t === 'triangulo' ? 'triangulitos' : 'baldosas'}`;
+  const base = t === 'circulo' ? '2,25π' : '9';
+  return `<div class="eq">gris: ${kk(frac(k))} · ${AA(base)} = ${AA(cuenta(k))}, contra ${AA(cuenta(k*k))} de la semejante<span class="note">${Math.abs(k - 1) < 1e-9 ? 'con k = 1 coinciden' : 'el área que daría la regla de tres; la figura que la tiene no es semejante'}</span></div>`;
+}
+function cambiarK(k){ if (S.ocupado) return; S.x.k = k; refrescarX(); }
+E.alManija = cambiarK;
+$('kmenos1').onclick = () => { const j = KS.findIndex(k => Math.abs(k - S.x.k) < 1e-9); if (j > 0) cambiarK(KS[j - 1]); };
+$('kmas1').onclick = () => { const j = KS.findIndex(k => Math.abs(k - S.x.k) < 1e-9); if (j < KS.length - 1) cambiarK(KS[j + 1]); };
+function explorar(cual){
+  refrescarX();
+  const b = $('b-lineal');
+  if (b) b.onclick = () => { S.x.lineal = !S.x.lineal; b.setAttribute('aria-pressed', String(S.x.lineal)); if (S.x.lineal && S.x.k === 1) S.x.k = 2; refrescarX(); };
+  $('stepBody').querySelectorAll('[data-sol]').forEach(x => x.onclick = () => {
+    S.x.solido = x.dataset.sol === '1'; if (S.x.solido) S.x.lineal = false;
+    $('stepBody').querySelectorAll('[data-sol]').forEach(y => y.setAttribute('aria-pressed', String(y === x)));
+    $('figs').hidden = S.x.solido; $('acc-lineal').hidden = S.x.solido; const bl = $('b-lineal'); if (bl) bl.setAttribute('aria-pressed', 'false');
+    refrescarX();
+  });
+  $('stepBody').querySelectorAll('[data-fig]').forEach(x => x.onclick = () => {
+    S.x.tipo = x.dataset.fig; $('stepBody').querySelectorAll('[data-fig]').forEach(y => y.setAttribute('aria-pressed', String(y === x))); refrescarX();
+  });
+}
+
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Cinco escenas cortas con la misma regla: k para longitudes, k² para áreas, k³ para volúmenes.
+   La escena cambia recién después de responder. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'leyenda2');
+const MITAD = MA.escalar('cuadrado', { lado:4 }, 0.5), MAPA = MA.maqueta(50000, 4, 'area'), PZ = [MA.figura('circulo', { r:15 }), MA.figura('circulo', { r:10 })];
+const ESF = MA.escalar('esfera', { r:1 }, 2), LIN = MA.siFueraLineal('cuadrado', { lado:3 }, 2);
+
+const EXPS = [
+  { id:'mitad', corto:'A la mitad',
+    q:`Una foto cuadrada de ${LL('4 cm de lado')} se imprime reducida a la mitad de lado (${kk('k = 1/2')}). ¿Cuánta tinta lleva la copia, comparada con la original?`,
+    opts:[['a','La mitad','GE1-area-como-lado','documentado'], ['b','Un cuarto',null], ['c','Un octavo','GE2-cubo-en-area','hipotesis']],
+    ok:'b',
+    antes:ver => E.set({ modo:'plano', tipo:'cuadrado', base:4, k: ver ? .5 : 1, maxU:4.6, copias:false, rayos:ver, original:true,
+      descr:() => ver ? 'La copia de 2 cm de lado ocupa 4 de las 16 baldosas de la original.' : 'Una foto cuadrada de 4 cm de lado: 16 baldosas de 1 cm².' }),
+    despues:() => tween(900, f => { E.cfg.k = 1 - .5*f; E.cfg.rayos = true; E.dibujar(); }),
+    exp:() => `<div class="eqs"><div class="eq">${AA("A'")} = ${kk('(1/2)²')} · ${AA('16 cm²')} = ${kk('1/4')} · ${AA('16')} = ${AA(`${fmt(MITAD.escalada.area, 0)} cm²`)}</div></div>
+      <p>La regla vale también cuando la figura se achica: con ${kk('k = 1/2')} el lado queda en la mitad y el área en un cuarto. Cuenta las baldosas: de 16 quedan 4.</p>
+      <p class="fuente">La ilusión de linealidad está medida al ampliar; esperamos que aparezca igual al reducir, pero no lo hemos visto medido. El octavo, 1/2 · 1/2 · 1/2, sería para un volumen.</p>` },
+  { id:'mapa', corto:'Un mapa a escala',
+    q:`En un mapa a escala ${kk('1 : 50 000')}, una zona de cultivo aparece como un cuadrado de ${LL('2 cm de lado')}: ${AA('4 cm²')} de mapa. ¿Cuál es su área real?`,
+    opts:[['a','20 m²: 4 cm² · 50 000 = 200 000 cm²','GE1-area-como-lado','documentado'], ['b','1 km²',null], ['c','50 000 km²: 4 cm² · 50 000³','GE2-cubo-en-area','hipotesis']],
+    ok:'b',
+    antes:ver => E.set({ modo:'mapa', ver, descr:() => 'Un cuadrado de 2 cm en el mapa y el terreno real de 1 km de lado.' }),
+    despues:() => { E.cfg.ver = true; E.dibujar(); },
+    exp:() => `<div class="eqs"><div class="eq">${LL('2 cm')} · ${kk('50 000')} = ${LL('100 000 cm')} = ${LL('1 km')}<span class="note">de lado</span></div>
+      <div class="eq">${AA("A'")} = ${kk('50 000²')} · ${AA('4 cm²')} = ${AA(`${fmt(MAPA.real, 0)} cm²`)} = ${AA('1 km²')}</div></div>
+      <p>Con la regla de tres saldrían 20 m²: un cuadrado de unos 4,5 m de lado, el tamaño de un cuarto. En el dibujo es el puntito de la esquina. Lo más seguro es pasar primero el lado a la realidad y recién después calcular el área.</p>` },
+  { id:'pizza', corto:'Pizza grande o dos medianas',
+    q:`Por el mismo precio te ofrecen una pizza de ${LL('30 cm')} de diámetro o dos de ${LL('20 cm')}. ¿Con cuál comes más? (Las tres tienen el mismo grosor y los mismos ingredientes.)`,
+    opts:[['a','Con las dos de 20 cm: juntas suman 40 cm','GE1-compara-diametros','hipotesis'], ['b','Da igual: es la misma cantidad','iguales-a-ojo','hipotesis'], ['c','Con la de 30 cm',null]],
+    ok:'c',
+    antes:ver => E.set({ modo:'pizza', ver, descr:() => 'Una pizza de 30 cm y dos de 20 cm dibujadas a la misma escala.' }),
+    despues:() => { E.cfg.ver = true; E.dibujar(); },
+    exp:() => `<div class="eqs"><div class="eq">${AA('A')} = π · ${LL('15²')} = ${AA(`${fmt(PZ[0].pi.area, 0)}π cm²`)}<span class="note">unos ${fmt(PZ[0].area, 0)} cm²</span></div>
+      <div class="eq">2 · π · ${LL('10²')} = ${AA(`${fmt(2*PZ[1].pi.area, 0)}π cm²`)}<span class="note">unos ${fmt(2*PZ[1].area, 0)} cm²</span></div></div>
+      <p>Lo que se come es el área, y el área va con el cuadrado del diámetro: 30² = 900 contra 20² + 20² = 800. Sumar diámetros es tratar el área como si fuera una longitud.</p>
+      <p class="fuente">Comparar diámetros como si fueran áreas es la ilusión de linealidad aplicada a otra figura; no encontramos un estudio con esta pregunta exacta.</p>` },
+  { id:'esfera', corto:'El radio se duplica',
+    q:`Un globo esférico se infla hasta que su ${LL('radio se duplica')} (${kk('k = 2')}). ¿Por cuánto se multiplica el aire que tiene adentro (su volumen)?`,
+    opts:[['a','Por 2','GE2-volumen-como-arista','parcial'], ['b','Por 4','GE2-volumen-como-area','parcial'], ['c','Por 8',null]],
+    ok:'c',
+    antes:ver => E.set({ modo:'esfera', ver, descr:() => 'Una esfera de radio r y otra de radio 2r.' }),
+    despues:() => { E.cfg.ver = true; E.dibujar(); },
+    exp:() => `<div class="eqs"><div class="eq">${AA("A'")} = ${kk('2²')} · ${AA('A')} = ${AA(`${fmt(ESF.razon.area, 0)}A`)}<span class="note">la superficie del globo</span></div>
+      <div class="eq">${VV("V'")} = ${kk('2³')} · ${VV('V')} = ${VV(`${fmt(ESF.razon.volumen, 0)}V`)}<span class="note">el aire de adentro</span></div></div>
+      <p>Con la fórmula: 4/3 · π · (2r)³ = 4/3 · π · 8r³. Por eso, al duplicar el radio, la superficie del globo se estira hasta tener 4 veces el área, pero adentro cabe 8 veces más aire. Y por eso un animal grande tiene, por cada kilo, menos piel por donde perder calor que uno chico.</p>
+      <p class="fuente">Responder 2 o 4 es la creencia de que el volumen crece como la longitud o como el área (De Bock y otros, descrita sin porcentaje para el volumen).</p>` },
+  { id:'lineal', corto:'¿Y si fuera lineal?',
+    q:`Quieres un cuadrado con el ${AA('doble de área')} que uno de ${LL('3 cm de lado')}. ¿Cuánto debe medir su lado?`,
+    opts:[['a','6 cm: el doble','GE1-area-como-lado','documentado'], ['b','Unos 4,2 cm',null], ['c','12 cm: el área va con k², así que el lado por 4','invierte-k2','hipotesis']],
+    ok:'b',
+    antes:ver => E.set({ modo:'plano', tipo:'cuadrado', base:3, k: ver ? Math.SQRT2 : 1, maxU:6.6, tiles:false, copias:false, lineal: ver ? 2 : 0, rayos:ver, original:true,
+      leyenda:'<span><i style="background:var(--c-L)"></i>L · lado</span><span><i class="cu" style="background:var(--c-A)"></i>A · área</span><span><i class="tr"></i>doble de área estirando un lado (no semejante)</span>',
+      descr:() => ver ? 'El cuadrado de lado 3√2 ≈ 4,24 cm y, en gris, un rectángulo de 6 por 3 cm con el doble de área que no es un cuadrado.' : 'Un cuadrado de 3 cm de lado.' }),
+    despues:() => { E.cfg.lineal = 2; tween(900, f => { E.cfg.k = 1 + (Math.SQRT2 - 1)*f; E.cfg.rayos = true; E.dibujar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">${AA("A'")} = 2 · ${AA('9')} = ${AA('18 cm²')} → ${LL("L'")} = √18 = 3√2 ≈ ${LL(`${fmt(LIN.ladoParaArea, 2)} cm`)}</div>
+      <div class="eq">${kk('k')} = √2 ≈ ${kk(fmt(Math.SQRT2, 2))}<span class="note">para el doble de área, el lado se multiplica por √2</span></div></div>
+      <p>Si duplicas el lado (6 cm), el área se multiplica por 4, no por 2. La figura gris sí tiene el doble de área, ${AA(`${fmt(LIN.lineal.area, 0)} cm²`)}, pero se logra estirando un solo lado: es un rectángulo de 6 por 3, ya no es un cuadrado. La ampliación que conserva la forma es la de ${kk('k = √2')}.</p>
+      <p class="fuente">Doblar el lado para doblar el área es la ilusión de linealidad. Un estudio con universitarios de Croacia encontró que sigue presente en adultos y que las ayudas (dibujos o preguntas para reflexionar) la reducen (Pavlin-Bernardić y Mateša, 2012).</p>` },
+];
+
+const S = { k:0, pred:{}, t0:Date.now() };
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k];
+  x.antes(!!S.pred[x.id]);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>
+    <div class="opts">${x.opts.map(([l, t]) => `<button class="opt" type="button" data-k="${l}"><span class="l">${l.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div>
+    <p class="fb" id="fb2"></p><div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. La correcta está marcada; mira la escena para ver por qué.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar();
+    verLienzo('#m2', () => { if (S.k === k){ x.despues(); E.dibujar(); } });
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+  });
+  pintar(); E.dibujar();
+}
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

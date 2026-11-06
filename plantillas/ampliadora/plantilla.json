@@ -1,0 +1,19 @@
+{
+  "id": "ampliadora",
+  "titulo": "La ampliadora: semejanza, área y volumen",
+  "formato": "escena",
+  "unidades": [
+    "geometria.proporcionalidad-y-semejanza",
+    "geometria.areas-poligonales",
+    "geometria.prisma-y-piramide",
+    "geometria.solidos-de-revolucion",
+    "geometria.longitud-y-areas-circulares"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}

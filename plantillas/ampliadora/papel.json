@@ -1,0 +1,135 @@
+{
+  "titulo": "La ampliadora: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Antes de hacer una regla de tres, pregúntate qué se mide: una longitud (lado, perímetro, altura) se multiplica por k; un área (superficie, pintura, vidrio, baldosas) por k²; un volumen (capacidad, agua, cubitos, peso del mismo material) por k³. En un plano o un mapa a escala 1 : e, la razón es k = e.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Una alfombra cuadrada de 1,5 m de lado cuesta 60 soles. ¿Cuánto costará otra del mismo material y del mismo grosor, también cuadrada, de 3 m de lado?",
+      "respuesta": "240 soles.",
+      "pasos": [
+        "El precio depende de cuánta tela hay: del área, no del lado.",
+        "La razón de los lados es k = 3/1,5 = 2. El área se multiplica por k² = 4.",
+        "Precio: 60 · 4 = 240 soles.",
+        "Si respondiste 120 soles, multiplicaste por k: eso valdría para el borde de la alfombra (el perímetro), no para toda la tela. Dibuja la alfombra grande: caben 4 alfombras chicas."
+      ],
+      "verificar": [ { "fn": "segunMagnitud", "args": [60, 2, "area"], "espera": { "resultado": 240, "errores.lineal": 120 } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Un triángulo tiene lados de 5 cm, 12 cm y 13 cm. Se dibuja otro semejante cuyos lados miden el triple. ¿Cuánto miden el perímetro y el área del triángulo grande?",
+      "respuesta": "Perímetro 90 cm y área 270 cm².",
+      "pasos": [
+        "El triángulo chico es rectángulo (5² + 12² = 13²): su área es 5 · 12/2 = 30 cm² y su perímetro, 5 + 12 + 13 = 30 cm.",
+        "Con k = 3, el perímetro es una longitud: 30 · 3 = 90 cm.",
+        "El área se multiplica por k² = 9: 30 · 9 = 270 cm².",
+        "Compruébalo con los lados nuevos, 15, 36 y 39: área = 15 · 36/2 = 270 cm²."
+      ],
+      "verificar": [ { "fn": "escalar", "args": ["triangulo", { "a": 5, "b": 12, "c": 13 }, 3], "espera": { "original.area": 30, "escalada.perimetro": 90, "escalada.area": 270 } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Se arma un cubo grande de 4 cm de arista con cubitos de 1 cm de arista. ¿Cuántos cubitos se usan? ¿Cuántos quedan escondidos, sin ninguna cara hacia afuera?",
+      "respuesta": "64 cubitos; 8 quedan escondidos.",
+      "pasos": [
+        "En cada arista caben 4 cubitos: k = 4. El volumen se multiplica por k³: 4 · 4 · 4 = 64 cubitos.",
+        "Los escondidos forman un cubo interior al que se le quita una capa por cada lado: su arista es 4 − 2 = 2. Son 2 · 2 · 2 = 8.",
+        "Los que tienen alguna cara afuera son 64 − 8 = 56.",
+        "En un dibujo en perspectiva solo se ven 3 caras: ahí asoman 64 − 27 = 37 cubitos. Contar lo que se ve no es contar el volumen."
+      ],
+      "verificar": [ { "fn": "cubitos", "args": [4], "espera": { "total": 64, "interior": 8, "visibles": 56, "visiblesDibujo": 37 } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "En el plano de una casa, hecho a escala 1 : 200, la sala es un rectángulo de 3 cm por 2,5 cm. ¿Cuánto mide la sala en la realidad y cuál es su área real en metros cuadrados?",
+      "respuesta": "6 m por 5 m; 30 m².",
+      "pasos": [
+        "Escala 1 : 200: cada longitud real es 200 veces la del plano. 3 cm · 200 = 600 cm = 6 m y 2,5 cm · 200 = 500 cm = 5 m.",
+        "Área real: 6 · 5 = 30 m².",
+        "Por la otra vía: en el plano el área es 3 · 2,5 = 7,5 cm², y el área real es 7,5 · 200² = 300 000 cm² = 30 m² (1 m² = 10 000 cm²).",
+        "Multiplicar 7,5 cm² por 200 da 1500 cm², apenas 0,15 m²: una sala del tamaño de una mesa de noche."
+      ],
+      "verificar": [ { "fn": "maqueta", "args": [200, 3, "longitud"], "espera": { "real": 600 } },
+                     { "fn": "maqueta", "args": [200, 7.5, "area"], "espera": { "real": 300000, "errores.lineal": 1500 } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Dos pelotas son esferas de 2 cm y 6 cm de radio. ¿Cuántas veces es mayor la superficie de la grande? ¿Y su volumen?",
+      "respuesta": "La superficie es 9 veces mayor y el volumen, 27 veces.",
+      "pasos": [
+        "Todas las esferas son semejantes. La razón de los radios es k = 6/2 = 3.",
+        "Superficie: k² = 9. Con la fórmula: 4π · 6² = 144π y 4π · 2² = 16π; 144π/16π = 9.",
+        "Volumen: k³ = 27. Con la fórmula: (4/3)π · 216 = 288π y (4/3)π · 8 = (32/3)π; el cociente es 27."
+      ],
+      "verificar": [ { "fn": "escalar", "args": ["esfera", { "r": 2 }, 3], "espera": { "razon.area": 9, "razon.volumen": 27, "escalada.pi.area": 144, "escalada.pi.volumen": 288 } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Un recipiente cónico tiene 6 cm de radio y 10 cm de altura. Un recipiente cilíndrico tiene la misma base y la misma altura. ¿Cuál es el volumen de cada uno? ¿Cuántas veces hay que llenar el cono y vaciarlo en el cilindro para llenarlo?",
+      "respuesta": "Cono: 120π cm³ (unos 377 cm³). Cilindro: 360π cm³ (unos 1131 cm³). Hay que vaciar el cono 3 veces.",
+      "pasos": [
+        "Cilindro: V = π · r² · h = π · 36 · 10 = 360π cm³.",
+        "Cono: V = π · r² · h/3 = 360π/3 = 120π cm³. El tercio no es un adorno: sin él, el cono tendría lo mismo que el cilindro.",
+        "Vaciados: 360π/120π = 3."
+      ],
+      "verificar": [ { "fn": "conosParaLlenar", "args": [6, 10], "espera": { "conos": 3, "pi.Vcono": 120, "pi.Vcilindro": 360 } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Una pirámide regular tiene una base cuadrada de 8 cm de lado y una altura de 3 cm. Calcula su volumen y su área lateral.",
+      "respuesta": "Volumen 64 cm³; área lateral 80 cm².",
+      "pasos": [
+        "Volumen: área de la base · altura/3 = 64 · 3/3 = 64 cm³.",
+        "Cada cara lateral es un triángulo; su altura es la apotema de la pirámide, no la altura de la pirámide. La apotema une la cúspide con el punto medio de un lado de la base.",
+        "Apotema: la altura (3) y la mitad del lado (4) son catetos de un triángulo rectángulo; la apotema es la hipotenusa: √(9 + 16) = 5 cm.",
+        "Área lateral: 4 caras · (8 · 5/2) = 80 cm². Con la altura en lugar de la apotema saldría 4 · 8 · 3/2 = 48 cm²."
+      ],
+      "verificar": [ { "fn": "figura", "args": ["piramide", { "base": { "tipo": "cuadrado", "lado": 8 }, "h": 3 }], "espera": { "volumen": 64, "apotema": 5, "lateral": 80, "errores.lateralConAltura": 48 } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Un vaso tiene forma de cono con la punta hacia abajo. Se llena de jugo hasta la mitad de su altura. ¿Qué fracción del vaso tiene jugo?",
+      "respuesta": "Un octavo del vaso (1/8).",
+      "pasos": [
+        "El jugo forma un cono más chico, semejante al vaso: tiene la mitad de la altura y la mitad del radio. La razón es k = 1/2.",
+        "El volumen se multiplica por k³ = 1/8.",
+        "Por eso el vaso parece \"a la mitad\" y apenas tiene un octavo. Para tener la mitad del volumen, el jugo debería llegar a unos 4/5 de la altura (la raíz cúbica de 1/2 es 0,79…)."
+      ],
+      "verificar": [ { "fn": "escalar", "args": ["cono", { "r": 4, "h": 10 }, 0.5], "espera": { "razon.volumen": 0.125 } },
+                     { "fn": "vertido", "args": [4, 10, 0.875], "espera": { "nivelCono": 5 } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Un cubo de madera de 5 cm de arista se pinta por fuera y luego se corta en cubitos de 1 cm de arista. ¿Cuántos cubitos tienen exactamente dos caras pintadas? ¿Cuántos no tienen ninguna?",
+      "respuesta": "36 cubitos con dos caras pintadas y 27 sin ninguna.",
+      "pasos": [
+        "Hay 5³ = 125 cubitos.",
+        "Los de tres caras pintadas son las 8 esquinas.",
+        "Los de dos caras están sobre las 12 aristas, sin contar las esquinas: 12 · (5 − 2) = 36.",
+        "Los de ninguna forman el cubo interior de arista 5 − 2 = 3: 27.",
+        "Comprueba: los de una cara están en el centro de las 6 caras, 6 · 3² = 54; y 8 + 36 + 54 + 27 = 125."
+      ],
+      "verificar": [ { "fn": "cubitos", "args": [5], "espera": { "total": 125, "pintadas.3": 8, "pintadas.2": 36, "pintadas.1": 54, "pintadas.0": 27 } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Se quiere dibujar un cuadrado que tenga el triple del área de otro de 4 cm de lado. ¿Cuánto debe medir su lado?",
+      "respuesta": "4√3 cm, unos 6,9 cm.",
+      "pasos": [
+        "El cuadrado chico tiene 16 cm². El nuevo debe tener 3 · 16 = 48 cm².",
+        "Su lado es √48 = 4√3 ≈ 6,93 cm. La razón de los lados es √3 ≈ 1,73, no 3.",
+        "Si triplicas el lado (12 cm), el área sale 144 cm²: nueve veces, no tres. Un rectángulo de 12 cm por 4 cm sí tiene el triple del área, pero ya no es un cuadrado: no es semejante al original."
+      ],
+      "verificar": [ { "fn": "siFueraLineal", "args": ["cuadrado", { "lado": 4 }, 3], "espera": { "ladoParaArea": 6.928203230275509, "lineal.area": 48, "razonAreaSemejante": 9 } } ]
+    }
+  ]
+}
