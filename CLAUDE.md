@@ -52,7 +52,7 @@ fuentes/libros/                libros y manuales de consulta
 
 **Sesión nueva: lee `docs/pendientes.md`.** Ahí está qué hay hecho, cómo arrancar y los pendientes en orden de prioridad.
 
-- Plantillas: Banco Óptico, espejos esféricos, circuitos, calorimetría y energía (escenas); reactivo limitante y porcentajes sucesivos (predicciones). `npm test`: 208 pruebas en verde.
+- Plantillas: Banco Óptico, espejos esféricos, circuitos, calorimetría, energía y MRUV (escenas); reactivo limitante y porcentajes sucesivos (predicciones). `npm test`: 245 pruebas en verde.
 - App PWA con medición anónima, lápiz y papel, celular y laboratorio de cómputo, y diseño acogedor (`docs/diseno.md`).
 - Lanzamiento: un colegio, 3.º a 5.º de secundaria, diciembre de 2026 (fecha por confirmar).
 
@@ -60,6 +60,7 @@ fuentes/libros/                libros y manuales de consulta
 
 - Fase 0 en curso. Hecho: documento fundacional, Banco Óptico (lente sola + sistemas de 2 o 3 lentes) en `plantillas/optica-lente-delgada/`.
 - Investigación de ideas erróneas en óptica (lentes): `docs/investigacion/optica-ideas-erroneas.md`. Conclusión clave: los errores conceptuales están documentados; los de cálculo (signos, sistemas, aumento total) no, y se tratan como hipótesis. Espejos esféricos: `docs/investigacion/optica-espejos-esfericos.md`, con predicciones y casos de prueba propuestos para la plantilla. Cinemática (MRUV, caída libre, tiro parabólico): `docs/investigacion/cinematica-ideas-erroneas.md`; aquí sí hay datos fuertes (Beichner 1994, Thornton y Sokoloff 1998, Prescott y Mitchelmore 2005). Dinámica: `docs/investigacion/dinamica-ideas-erroneas.md`, con el único dato peruano encontrado (FCI en 4535 alumnos de la PUCP, Castillo y otros 2013). Además: estática y energía, choques/gravitación/ondas, fluidos/calor/termodinámica, y electricidad/magnetismo/refracción/física moderna, cada uno en su informe de `docs/investigacion/`. Química: estequiometría, gases y soluciones, equilibrio/ácidos/electroquímica, y átomo/tabla periódica/enlace. Libros y artículos pendientes de conseguir: `fuentes/por-conseguir.md`.
+- MRUV y gráficas (6 nov 2026): `plantillas/mruv/` (motor por tramos, cruces exactos, frenado sin retroceso y lanzamiento vertical; 18 casos verificados aparte; papel; pista con las tres gráficas amarradas por color; 6 "¿qué pasa si…?" con los datos de Beichner 1994 y Thornton y Sokoloff 1998).
 - Trabajo, energía y potencia (6 nov 2026): `plantillas/energia/` (motor con rampas de tres formas, resorte, trabajo por fuerza, potencia y lanzamientos; 17 casos verificados por un cálculo independiente; papel; paso a paso de la rampa con resorte y barras de energía; 5 "¿qué pasa si…?" con los distractores del test EMCS).
 - Calorimetría y cambios de fase (5 nov 2026): `plantillas/calorimetria/` (motor por energía con mesetas a 0 °C y 100 °C, 15 casos, papel, paso a paso con las dos curvas que se cruzan y 5 "¿qué pasa si…?", entre ellos el agua que hierve a 87 °C en Juliaca).
 - Circuitos de corriente continua (5 nov 2026): `plantillas/circuitos-cc/` (motor nodal, 9 casos, papel, paso a paso con "se quita B3", "¿qué pasa si…?" y modo altura).

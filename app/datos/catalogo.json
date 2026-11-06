@@ -76,7 +76,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "mruv"
+     ]
     },
     {
      "id": "fisica.movimiento-parabolico-y-circular",
@@ -4046,6 +4048,23 @@
    "papel": null,
    "archivos": [
     "/plantillas/estequiometria-limitante/generador.js"
+   ]
+  },
+  "mruv": {
+   "id": "mruv",
+   "titulo": "MRUV y gráficas",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.movimiento-rectilineo"
+   ],
+   "url": "/plantillas/mruv/index.html",
+   "papel": "/plantillas/mruv/papel.json",
+   "archivos": [
+    "/plantillas/mruv/index.html",
+    "/plantillas/mruv/motor.js",
+    "/plantillas/mruv/papel.json"
    ]
   },
   "optica-espejo-esferico": {

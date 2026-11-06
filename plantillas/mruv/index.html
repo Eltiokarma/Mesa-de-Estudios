@@ -1,0 +1,824 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MRUV y gráficas</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md).
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
+   x azul, v rojo, a verde, t naranja. El morado de marca no se usa aquí. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
+  --detras:#f6ece4; --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-x:#1f5fbf; --c-v:#c0364a; --c-a:#4f7a17; --c-t:#b85a06;
+  --suelo:#d9c8bb; --bloque:#f3e3d3;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-x:#7cb0ff; --c-v:#f17384; --c-a:#a3d65e; --c-t:#f0a04a;
+  --suelo:#4a3d55; --bloque:#5a4868; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-x:#7cb0ff; --c-v:#f17384; --c-a:#a3d65e; --c-t:#f0a04a;
+  --suelo:#4a3d55; --bloque:#5a4868; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y; -webkit-user-select:none; user-select:none}
+canvas.arrastrable{cursor:grab}
+canvas.agarrando{cursor:grabbing}
+canvas.sin-scroll{touch-action:none}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+.map{display:grid; gap:8px; margin:0; padding:0; list-style:none}
+.map li{display:flex; gap:10px; align-items:baseline}
+.map b{font-family:var(--mono); min-width:4.6em; flex:none}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-x{color:var(--c-x); background:color-mix(in srgb, var(--c-x) 12%, transparent)}
+.v-v{color:var(--c-v); background:color-mix(in srgb, var(--c-v) 12%, transparent)}
+.v-a{color:var(--c-a); background:color-mix(in srgb, var(--c-a) 12%, transparent)}
+.v-t{color:var(--c-t); background:color-mix(in srgb, var(--c-t) 12%, transparent)}
+.v.hl{background:color-mix(in srgb, currentColor 26%, transparent)}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.05rem; white-space:nowrap; font-variant-numeric:tabular-nums}
+.eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.5em; white-space:normal}
+.frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1.15}
+.frac > span:first-child{border-bottom:1.5px solid currentColor; padding:0 .25em}
+.frac > span:last-child{padding:0 .25em}
+.answer{font-weight:700; padding:12px 16px; border-radius:16px; background:var(--paper); border:2px solid var(--c-v); max-width:66ch}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.ctrls{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap:12px; align-items:end}
+.slider{display:grid; gap:4px}
+.slider label{font-weight:700; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.slider output{font-family:var(--mono); color:var(--muted)}
+input[type=range]{width:100%; accent-color:var(--ink); min-height:28px}
+input.r-x{accent-color:var(--c-x)} input.r-v{accent-color:var(--c-v)} input.r-a{accent-color:var(--c-a)} input.r-t{accent-color:var(--c-t)}
+.chips{display:flex; flex-wrap:wrap; gap:6px}
+.chip{font-size:.86rem; padding:4px 12px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); font-weight:700}
+.chip.real{border-color:var(--c-v); color:var(--c-v)}
+.chip.virt{border-style:dashed}
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:999px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.exps{border-radius:20px}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+.barra{display:grid; gap:6px}
+.fila{display:grid; grid-template-columns:7.2em 1fr; gap:8px; align-items:center; font-size:.86rem; font-weight:700}
+.tiras{display:flex; height:28px; border-radius:8px; overflow:hidden; background:var(--grid)}
+.tira{display:flex; align-items:center; justify-content:center; color:var(--card); font:700 .78rem var(--mono); white-space:nowrap; overflow:hidden; min-width:2px; border-right:2px solid var(--card)}
+.tira:last-child{border-right:0}
+
+.check{display:inline-flex; align-items:center; gap:8px; font-weight:700; font-size:.92rem; cursor:pointer; min-height:44px}
+.check input{width:20px; height:20px; accent-color:var(--ink)}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.4fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Física · Cinemática · Problemas tipo admisión</p>
+      <h1>MRUV y gráficas</h1>
+      <p class="sub">El movimiento y sus tres gráficas, a la vez: posición, velocidad y aceleración.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Pista con los móviles y sus gráficas de posición, velocidad y aceleración">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Arriba, una pista con la combi; abajo, sus gráficas de posición, velocidad y aceleración contra el tiempo"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="legend">
+        <span><i style="background:var(--c-x)"></i>x · posición (y Δx, el área)</span>
+        <span><i style="background:var(--c-v)"></i>v · velocidad</span>
+        <span><i style="background:var(--c-a)"></i>a · aceleración</span>
+        <span><i style="background:var(--c-t)"></i>t · tiempo</span>
+        <span>línea entera: combi · a trazos: mototaxi</span>
+      </div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos con gráficas de movimiento">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="legend">
+        <span><i style="background:var(--c-x)"></i>x · posición</span>
+        <span><i style="background:var(--c-v)"></i>v · velocidad</span>
+        <span><i style="background:var(--c-a)"></i>a · aceleración</span>
+        <span><i style="background:var(--c-t)"></i>t · tiempo</span>
+      </div>
+    </section>
+    <section class="guide">
+      <div class="seg exps" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/mruv">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'mruv', unidad: 'fisica.movimiento-rectilineo', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas de dibujo compartidas =================
+   Toda la física sale de MotorMRUV (motor.js); aquí solo se pinta. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+// Coma decimal, espacio de miles (desde 5 cifras) y signo menos tipográfico.
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 1 : d), r = Math.round(n*p)/p + 0;
+  let [e, f] = String(Math.abs(r)).split('.');
+  if (e.length >= 5) e = e.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const fr = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const M = MotorMRUV;
+
+function crearLienzo(cv, alto, dibujar){
+  const ctx = cv.getContext('2d');
+  const L = { cv, ctx, W:0, H:0 };
+  L.resize = () => {
+    const W = cv.clientWidth; if (!W) return;
+    const H = Math.round(alto(W)), dpr = window.devicePixelRatio || 1;
+    L.W = W; L.H = H; cv.style.height = H + 'px'; cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    dibujar();
+  };
+  new ResizeObserver(L.resize).observe(cv);
+  return L;
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, x1, y1, x2, y2){ ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
+function rr(ctx, x, y, w, h, r){ ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h); }
+// Texto con un fondo claro detrás, para que se lea sobre las líneas.
+function rotulo(ctx, c, x, y, t, color, align, peso){
+  ctx.font = `${peso || 700} 12px ${c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .88; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+  ctx.fillStyle = color; ctx.fillText(t, x, y);
+}
+function pasoBonito(rango, n){
+  const crudo = rango/n, p = Math.pow(10, Math.floor(Math.log10(crudo))), r = crudo/p;
+  return (r < 1.5 ? 1 : r < 3 ? 2 : r < 7 ? 5 : 10)*p;
+}
+// Ejes de una gráfica dentro de la caja b = {x, y, w, h}, con rango R = {x0, x1, y0, y1}.
+// tit = { x:'Q (cal)', colX, y:'T (°C)', colY }. Devuelve las funciones X(valor) e Y(valor).
+function ejes(ctx, c, b, R, tit, hl){
+  const X = v => b.x + (v - R.x0)/(R.x1 - R.x0)*b.w, Y = v => b.y + b.h - (v - R.y0)/(R.y1 - R.y0)*b.h;
+  const px = tit.pasoX || pasoBonito(R.x1 - R.x0, b.w < 260 ? 3 : 5), py = pasoBonito(R.y1 - R.y0, 5);
+  ctx.save();
+  ctx.fillStyle = c.paper; ctx.fillRect(b.x, b.y, b.w, b.h);
+  ctx.strokeStyle = c.grid; ctx.lineWidth = 1;
+  ctx.font = `600 10px ${c.mono}`; ctx.textBaseline = 'top'; ctx.textAlign = 'center'; ctx.fillStyle = tit.colX || c.muted;
+  for (let v = Math.ceil(R.x0/px)*px; v <= R.x1 + 1e-9; v += px){
+    linea(ctx, X(v), b.y, X(v), b.y + b.h);
+    ctx.fillText(tit.fmtX ? tit.fmtX(v) : fmt(v, px < 1 ? 1 : 0), clamp(X(v), b.x + 8, b.x + b.w - 8), b.y + b.h + 4);
+  }
+  ctx.textAlign = 'right'; ctx.textBaseline = 'middle'; ctx.fillStyle = tit.colY || c.muted;
+  for (let v = Math.ceil(R.y0/py)*py; v <= R.y1 + 1e-9; v += py){
+    linea(ctx, b.x, Y(v), b.x + b.w, Y(v)); ctx.fillText(fmt(v, py < 1 ? 1 : 0), b.x - 5, Y(v));
+  }
+  // 0 °C y 100 °C, temperaturas de cambio de fase del agua
+  ctx.setLineDash([4, 4]); ctx.strokeStyle = c.muted; ctx.globalAlpha = .55;
+  for (const v of tit.marcas || []) if (v > R.y0 && v < R.y1) linea(ctx, b.x, Y(v), b.x + b.w, Y(v));
+  ctx.restore();
+  ctx.strokeStyle = c.muted; ctx.lineWidth = 1.4; linea(ctx, b.x, b.y + b.h, b.x + b.w, b.y + b.h); linea(ctx, b.x, b.y, b.x, b.y + b.h);
+  if (hl === 'Q' && tit.colX){ ctx.save(); ctx.strokeStyle = tit.colX; ctx.lineWidth = 3; linea(ctx, b.x, b.y + b.h, b.x + b.w, b.y + b.h); ctx.restore(); }
+  ctx.font = `800 11px ${c.mono}`;
+  ctx.fillStyle = tit.colX || c.muted; ctx.textAlign = 'right'; ctx.textBaseline = 'bottom'; ctx.fillText(tit.x, b.x + b.w, b.y + b.h - 3);
+  ctx.fillStyle = tit.colY || c.muted; ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillText(tit.y, b.x + 4, b.y + 3);
+  return { X, Y, b, R };
+}
+function colores(){
+  const g = n => css(n);
+  return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
+    x:g('--c-x'), v:g('--c-v'), a:g('--c-a'), t:g('--c-t'), suelo:g('--suelo'), bloque:g('--bloque'), mono:g('--mono'), font:g('--font') };
+}
+function punto(ctx, x, y, r, color, borde){
+  ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2); ctx.fillStyle = color; ctx.fill();
+  if (borde){ ctx.strokeStyle = borde; ctx.lineWidth = 2; ctx.stroke(); }
+}
+function flecha(ctx, x1, y1, x2, y2, color, w){
+  const ang = Math.atan2(y2 - y1, x2 - x1), l = Math.hypot(x2 - x1, y2 - y1); if (l < 2) return;
+  const p = Math.min(9 + w, l*0.6);
+  ctx.save(); ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = w; ctx.lineCap = 'round';
+  linea(ctx, x1, y1, x2 - Math.cos(ang)*p*0.7, y2 - Math.sin(ang)*p*0.7);
+  ctx.beginPath(); ctx.moveTo(x2, y2); ctx.lineTo(x2 - Math.cos(ang - .45)*p, y2 - Math.sin(ang - .45)*p); ctx.lineTo(x2 - Math.cos(ang + .45)*p, y2 - Math.sin(ang + .45)*p);
+  ctx.closePath(); ctx.fill(); ctx.restore();
+}
+// Vehículo visto de costado: 'combi' (alta) o 'moto' (mototaxi, bajo); apoyado en (px, py), mirando a la derecha.
+function vehiculo(ctx, c, px, py, tipo, letra){
+  ctx.save(); ctx.translate(px, py);
+  ctx.fillStyle = c.bloque; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6;
+  if (tipo === 'moto'){
+    ctx.beginPath(); ctx.moveTo(-16, -6); ctx.lineTo(-16, -22); ctx.lineTo(4, -22); ctx.lineTo(14, -10); ctx.lineTo(16, -6); ctx.closePath(); ctx.fill(); ctx.stroke();
+    [[-10, 6], [11, 5]].forEach(([x, r]) => { ctx.beginPath(); ctx.arc(x, -r, r, 0, Math.PI*2); ctx.fillStyle = c.ink; ctx.fill(); });
+  } else {
+    rr(ctx, -22, -26, 44, 20, 5); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = c.paper; ctx.fillRect(-17, -22, 10, 7); ctx.fillRect(-4, -22, 10, 7); ctx.fillRect(9, -22, 9, 7);
+    [-13, 13].forEach(x => { ctx.beginPath(); ctx.arc(x, -5, 5, 0, Math.PI*2); ctx.fillStyle = c.ink; ctx.fill(); });
+  }
+  if (letra){ ctx.fillStyle = c.ink; ctx.font = `800 10px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom'; ctx.fillText(letra, 0, -28); }
+  ctx.restore();
+}
+
+/* Vista completa: pista (horizontal o vertical) y gráficas x-t, v-t, a-t apiladas con el mismo eje de tiempo.
+   P = { moviles:[{ o, tipo, nombre }], t, tmax, graficas:['x','v','a'], rango:{ x:[a,b], v:[a,b], a:[a,b] },
+         pista:'h'|'v'|null, ver:true|[...] (qué curvas mostrar), sombra:{ g, m, t1, t2 }, pendiente:{ g, m, t1, t2 },
+         ciego:{ o } (fórmula sin frenar, punteada), marcas:[{ g, t, texto }], hl } */
+function vista(L, c, P){
+  const { ctx, W, H } = L;
+  ctx.clearRect(0, 0, W, H);
+  const ms = P.moviles.map(m => Object.assign({}, m, { mov: M.movil(m.o) }));
+  const izq = 46, der = 12, altoPista = P.pista === 'h' ? 78 : 0, anchoPista = P.pista === 'v' ? 84 : 0;
+  const gx = izq + anchoPista, gw = W - gx - der, n = P.graficas.length, gap = 14;
+  const gh = (H - altoPista - 26 - gap*(n - 1) - 8)/n;
+  const tt = clamp(P.t, 0, P.tmax);
+  // ---- Pista
+  if (P.pista === 'h'){
+    const [x0, x1] = P.rango.x, X = x => gx + (x - x0)/(x1 - x0)*gw, yb = altoPista - 14;
+    ctx.fillStyle = c.suelo; ctx.globalAlpha = .55; ctx.fillRect(4, yb, W - 8, 8); ctx.globalAlpha = 1;
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; linea(ctx, 4, yb, W - 4, yb);
+    const paso = pasoBonito(x1 - x0, 6);
+    ctx.font = `600 10px ${c.mono}`; ctx.fillStyle = c.x; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    for (let x = Math.ceil(x0/paso)*paso; x <= x1 + 1e-9; x += paso){ ctx.strokeStyle = c.x; ctx.lineWidth = 1; linea(ctx, X(x), yb, X(x), yb + 4); ctx.fillText(`${fmt(x, 0)}`, X(x), yb + 4); }
+    // Paradero en x = 0
+    if (0 >= x0 && 0 <= x1){ ctx.strokeStyle = c.muted; ctx.lineWidth = 2; linea(ctx, X(0), yb, X(0), yb - 40); ctx.fillStyle = c.muted; rr(ctx, X(0) - 9, yb - 50, 18, 11, 3); ctx.fill(); }
+    ms.forEach((m, j) => {
+      const x = m.mov.x(tt), v = m.mov.v(tt), a = m.mov.a(tt), px = X(clamp(x, x0, x1)), py = yb - (j ? 0 : 0);
+      ctx.save(); ctx.globalAlpha = j ? 0.9 : 1; vehiculo(ctx, c, px, py, m.tipo, m.nombre); ctx.restore();
+      if (P.flechas !== false){
+        if (Math.abs(v) > 0.05) flecha(ctx, px, py - 40, px + v*3, py - 40, c.v, 2.6);
+        if (Math.abs(a) > 0.01) flecha(ctx, px, py - 50, px + a*8, py - 50, c.a, 2.6);
+      }
+    });
+    ctx.font = `700 10px ${c.font}`; ctx.fillStyle = c.x; ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillText('x (m)', 6, yb + 4);
+  }
+  if (P.pista === 'v'){
+    const [y0, y1] = P.rango.x, top = 8, bot = H - 30, Y = y => bot - (y - y0)/(y1 - y0)*(bot - top), xp = 22;
+    ctx.strokeStyle = c.x; ctx.lineWidth = 1.2; linea(ctx, xp, top, xp, bot);
+    const paso = pasoBonito(y1 - y0, 6);
+    ctx.font = `600 10px ${c.mono}`; ctx.fillStyle = c.x; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    for (let y = Math.ceil(y0/paso)*paso; y <= y1 + 1e-9; y += paso){ linea(ctx, xp, Y(y), xp + 4, Y(y)); ctx.fillText(fmt(y, 0), xp - 3, Y(y)); }
+    ctx.fillStyle = c.suelo; ctx.globalAlpha = .55; ctx.fillRect(4, Y(0), anchoPista + izq - 10, 8); ctx.globalAlpha = 1;
+    ms.forEach(m => {
+      const y = m.mov.x(tt), v = m.mov.v(tt), py = Y(clamp(y, y0, y1)) - 7, px = xp + 30;
+      punto(ctx, px, py, 7, c.bloque, c.ink);
+      if (P.flechas !== false){
+        if (Math.abs(v) > 0.05) flecha(ctx, px + 14, py, px + 14, py - v*1.6, c.v, 2.6);
+        flecha(ctx, px + 26, py, px + 26, py - m.mov.a(tt)*2.2, c.a, 2.6);
+      }
+    });
+  }
+  // ---- Gráficas
+  const NOMBRE = { x: P.pista === 'v' ? 'y (m)' : 'x (m)', v: 'v (m/s)', a: 'a (m/s²)' };
+  const ver = g => P.ver === true || (Array.isArray(P.ver) && P.ver.includes(g));
+  P.graficas.forEach((g, k) => {
+    const b = { x:gx, y:altoPista + 6 + k*(gh + gap), w:gw, h:gh };
+    const [y0, y1] = P.rango[g];
+    const ej = ejes(ctx, c, b, { x0:0, x1:P.tmax, y0, y1 }, { x: k === n - 1 ? 't (s)' : '', colX:c.t, y:NOMBRE[g], colY:c[g], marcas:[0], pasoX: pasoBonito(P.tmax, gw < 300 ? 4 : 8) });
+    if (k < n - 1){ ctx.fillStyle = c.paper; ctx.fillRect(b.x - 2, b.y + b.h + 2, b.w + 4, 12); }
+    const pts = ms.map(m => m.mov.puntos(P.tmax, 240));
+    // Área sombreada (desplazamiento bajo v-t, o cambio de velocidad bajo a-t)
+    if (P.sombra && P.sombra.g === g && ver(g)){
+      const s = P.sombra, m = ms[s.m || 0].mov, col = g === 'v' ? c.x : c.v;
+      ctx.save(); ctx.beginPath(); ctx.moveTo(ej.X(s.t1), ej.Y(0));
+      for (let j = 0; j <= 80; j++){ const t = s.t1 + (Math.min(s.t2, tt + (s.todo ? 1e9 : 0)) - s.t1)*j/80; ctx.lineTo(ej.X(t), ej.Y(g === 'v' ? m.v(t) : m.a(t))); }
+      ctx.lineTo(ej.X(Math.min(s.t2, s.todo ? s.t2 : tt)), ej.Y(0)); ctx.closePath();
+      ctx.fillStyle = col; ctx.globalAlpha = .22; ctx.fill(); ctx.restore();
+      if (s.texto) rotulo(ctx, c, ej.X((s.t1 + s.t2)/2), ej.Y((y0 + y1)/2*0.35 + y0*0.65 + (y1 - y0)*0.12), s.texto, col, 'center', 800);
+    }
+    // Fórmula "ciega" (sin detenerse), punteada
+    if (P.ciego && ver(g)){
+      const m = M.movil(P.ciego.o);
+      ctx.save(); ctx.beginPath(); ctx.rect(b.x, b.y, b.w, b.h); ctx.clip();
+      ctx.setLineDash([3, 4]); ctx.strokeStyle = c.muted; ctx.lineWidth = 2.4; ctx.beginPath();
+      for (let j = 0; j <= 120; j++){ const t = P.tmax*j/120, y = g === 'x' ? m.x(t) : g === 'v' ? m.v(t) : m.a(t); j ? ctx.lineTo(ej.X(t), ej.Y(y)) : ctx.moveTo(ej.X(t), ej.Y(y)); }
+      ctx.stroke(); ctx.restore();
+      if (P.ciego.texto && g === 'x') rotulo(ctx, c, b.x + b.w - 6, ej.Y(m.x(P.tmax)) + 12, P.ciego.texto, c.muted, 'right', 700);
+    }
+    // Curvas
+    if (ver(g)) pts.forEach((lista, j) => {
+      ctx.save(); ctx.beginPath(); ctx.rect(b.x - 1, b.y - 1, b.w + 2, b.h + 2); ctx.clip();
+      ctx.strokeStyle = c[g]; ctx.lineWidth = P.hl === g ? 4 : 2.6; ctx.setLineDash(j ? [8, 5] : []); ctx.lineJoin = 'round';
+      ctx.beginPath(); let primero = true;
+      for (const p of lista){ if (p.t > tt + 1e-9) break; const X = ej.X(p.t), Y = ej.Y(p[g]); primero ? ctx.moveTo(X, Y) : ctx.lineTo(X, Y); primero = false; }
+      const fin = ms[j].mov; ctx.lineTo(ej.X(tt), ej.Y(g === 'x' ? fin.x(tt) : g === 'v' ? fin.v(tt) : fin.a(tt)));
+      ctx.stroke(); ctx.restore();
+      const yv = g === 'x' ? fin.x(tt) : g === 'v' ? fin.v(tt) : fin.a(tt);
+      if (yv >= y0 && yv <= y1) punto(ctx, ej.X(tt), ej.Y(yv), 4.5, c[g], c.card);
+    });
+    // Pendiente: triángulo Δ entre t1 y t2
+    if (P.pendiente && P.pendiente.g === g && ver(g)){
+      const p = P.pendiente, m = ms[p.m || 0].mov, f = t => g === 'x' ? m.x(t) : m.v(t);
+      const xa = ej.X(p.t1), xb = ej.X(p.t2), ya = ej.Y(f(p.t1)), yb2 = ej.Y(f(p.t2)), colD = g === 'x' ? c.v : c.a;
+      ctx.save(); ctx.strokeStyle = colD; ctx.lineWidth = 2; ctx.setLineDash([5, 3]);
+      linea(ctx, xa, ya, xb, ya); linea(ctx, xb, ya, xb, yb2); ctx.restore();
+      rotulo(ctx, c, (xa + xb)/2, ya + 11, `Δt = ${fmt(p.t2 - p.t1)} s`, c.t, 'center', 800);
+      { const fuera = xb + 70 > b.x + b.w; rotulo(ctx, c, fuera ? xb - 6 : xb + 6, (ya + yb2)/2, `Δ${g} = ${fmt(f(p.t2) - f(p.t1))}`, c[g], fuera ? 'right' : 'left', 800); }
+      if (p.texto) rotulo(ctx, c, xa + 6, yb2 - 4, p.texto, colD, 'left', 800);
+    }
+    for (const mk of (P.marcas || []).filter(q => q.g === g)){
+      ctx.save(); ctx.strokeStyle = c.t; ctx.setLineDash([3, 3]); ctx.lineWidth = 1.4; linea(ctx, ej.X(mk.t), b.y, ej.X(mk.t), b.y + b.h); ctx.restore();
+      const fuera = ej.X(mk.t) + 110 > b.x + b.w;
+      rotulo(ctx, c, ej.X(mk.t) + (fuera ? -4 : 4), b.y + 12, mk.texto, c.t, fuera ? 'right' : 'left', 800);
+    }
+    // Cursor de tiempo
+    if (tt > 0 && tt < P.tmax){ ctx.save(); ctx.strokeStyle = c.t; ctx.globalAlpha = .45; ctx.lineWidth = 1; linea(ctx, ej.X(tt), b.y, ej.X(tt), b.y + b.h); ctx.restore(); }
+  });
+}
+const altoVista = n => W => W >= 560 ? clamp(W*0.66, 380, 520) : 500 + (n - 3)*120;
+// Opciones con dibujitos de gráficas (SVG en línea), para predecir la forma.
+function bosquejo(tipo){
+  const d = { recta:'M6 34 L54 8', curva:'M6 34 Q38 32 54 6', horizontal:'M6 20 L54 20', cerro:'M6 34 Q30 -6 54 34', baja:'M6 8 L54 34', cero:'M6 34 L54 34' }[tipo];
+  return `<svg width="60" height="40" viewBox="0 0 60 40" aria-hidden="true" style="flex:none"><path d="M4 2 V36 H58" fill="none" stroke="currentColor" stroke-opacity=".45" stroke-width="1.4"/><path d="${d}" fill="none" stroke="var(--c-x)" stroke-width="3" stroke-linecap="round"/></svg>`;
+}
+</script>
+<script>
+/* ================= MODO 1: paso a paso =================
+   Problema guiado de docs/investigacion/cinematica-ideas-erroneas.md: v0 = 4 m/s, a = 2 m/s², 5 s. */
+(function(){
+const $ = id => document.getElementById(id);
+const cv = $('cv');
+const COMBI = { v0:4, a:2 }, MOTO = { v0:10 };
+const S = { step:0, max:0, pred:{}, hl:null, t:0, explora:false, v0:4, a:2, frena:true, otro:true, vB:10 };
+let anim = null;
+const L = crearLienzo(cv, altoVista(3), draw);
+function escena(){
+  const s = steps[S.step];
+  if (S.explora){
+    const A = { v0:S.v0, a:S.a, frena:S.frena }, mov = [{ o:A, tipo:'combi', nombre:'combi' }];
+    if (S.otro) mov.push({ o:{ v0:S.vB }, tipo:'moto', nombre:'moto' });
+    const T = 10, xs = [], vs = [];
+    mov.forEach(m => { const mm = M.movil(m.o); for (let k = 0; k <= 50; k++){ xs.push(mm.x(T*k/50)); vs.push(mm.v(T*k/50)); } });
+    const r = (lista, pad) => { const a = Math.min(0, ...lista), b = Math.max(1, ...lista), p = pasoBonito(b - a, 4); return [Math.floor(a/p)*p - (pad || 0), Math.ceil(b/p)*p]; };
+    return { moviles:mov, t:S.t, tmax:T, graficas:['x','v','a'], rango:{ x:r(xs), v:r(vs), a:[-6, 6] }, pista:'h', ver:true, hl:S.hl,
+      marcas: S.otro ? [...M.cruces(A, { v0:S.vB }, T).filter(t => t > 0).map(t => ({ g:'x', t, texto:'se cruzan' })), ...M.igualVelocidad(A, { v0:S.vB }, T).map(t => ({ g:'v', t, texto:'igual v' }))] : [] };
+  }
+  const dos = !!s.dos;
+  const base = { moviles: dos ? [{ o:COMBI, tipo:'combi', nombre:'combi' }, { o:MOTO, tipo:'moto', nombre:'moto' }] : [{ o:COMBI, tipo:'combi', nombre:'combi' }],
+    t:S.t, tmax: dos ? 8 : 5, graficas:['x','v','a'], rango:{ x: dos ? [0, 100] : [0, 50], v:[0, dos ? 20 : 15], a:[0, 3] }, pista:'h', ver: s.ver === undefined ? true : s.ver, hl:S.hl };
+  return Object.assign(base, s.extra ? s.extra() : {});
+}
+function draw(){
+  if (!L.W) return;
+  vista(L, colores(), escena());
+  const m = M.movil(S.explora ? { v0:S.v0, a:S.a, frena:S.frena } : COMBI);
+  $('desc1').textContent = `t = ${fmt(S.t, 1)} s: la combi está en ${fmt(m.x(S.t), 1)} m, con velocidad ${fmt(m.v(S.t), 1)} m/s.`;
+}
+function animar(t0, t1, listo){
+  cancelAnimationFrame(anim);
+  if (RM){ S.t = t1; draw(); listo && listo(); return; }
+  const ini = performance.now(), dur = (t1 - t0)*650;
+  const tick = now => { const f = Math.min(1, (now - ini)/dur); S.t = t0 + (t1 - t0)*f; draw(); if (f < 1) anim = requestAnimationFrame(tick); else listo && listo(); };
+  anim = requestAnimationFrame(tick);
+}
+const P1 = { id:'mruv-paso2', ok:'b',
+  opts:[['a','Una recta que sube','recta','G3-xt-como-vt','documentado'], ['b','Una curva que sube cada vez más empinada','curva',null,''],
+        ['c','Una recta horizontal','horizontal','G3-aceleracion-constante-posicion-constante','documentado'], ['d','Una cuesta, como el camino','cerro','G1-grafica-como-foto','documentado']],
+  fb:{ b:'¡Bien! Cada segundo avanza más que el anterior, así que la posición sube cada vez más rápido: una curva (media parábola).',
+       a:'Elegiste la A. Una recta en x-t sería avanzar lo mismo cada segundo (velocidad constante). Aquí la velocidad crece: es la gráfica v-t la que sale recta. La correcta está marcada.',
+       c:'Elegiste la C. Una recta horizontal en x-t quiere decir que no se mueve. Lo que es constante aquí es la aceleración, no la posición. La correcta está marcada.',
+       d:'Elegiste la D. La gráfica no es un dibujo del camino: el eje vertical es la posición, no la altura. La correcta está marcada.' } };
+const P2 = { id:'mruv-paso6', ok:'b',
+  opts:[['a','Cuando se cruzan, a los 6 s',null,'K1-misma-posicion-misma-velocidad','documentado'], ['b','A los 3 s',null,null,''],
+        ['c','Nunca: la combi va más lenta hasta que lo alcanza',null,'nunca-igual-velocidad','hipotesis'], ['d','Al inicio, porque salen juntos del paradero',null,'K1-misma-posicion-misma-velocidad','documentado']],
+  fb:{ b:'¡Bien! 4 + 2t = 10 da t = 3 s. En ese instante van igual de rápido, pero el mototaxi va adelante.',
+       a:'Elegiste la A. Estar en el mismo lugar no quiere decir ir igual de rápido: cuando se cruzan, la combi va a 16 m/s y el mototaxi a 10 m/s. La correcta está marcada.',
+       c:'Elegiste la C. La combi acelera: a los 3 s ya va tan rápido como el mototaxi, y después más rápido. La correcta está marcada.',
+       d:'Elegiste la D. Salen del mismo lugar, pero la combi a 4 m/s y el mototaxi a 10 m/s. La correcta está marcada.' } };
+const opciones = P => `<div class="opts">${P.opts.map(([k, t, dib]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span>${dib ? bosquejo(dib) : ''}<span>${t}</span></button>`).join('')}</div><p class="fb" id="fb"></p>`;
+const steps = [
+ { k:'Paso 1', t:'El problema', ver:[],
+   body:() => `<p class="problem">Una combi pasa por un paradero con ${V('v','4 m/s')} y acelera de manera uniforme a ${V('a','2 m/s²')} durante ${V('t','5 s')}. ¿Qué ${V('v','velocidad')} tiene al final? ¿Cuánto ${V('x','avanzó')}?</p>
+   <p>Arriba ves la pista; abajo, tres gráficas que se van a dibujar mientras la combi se mueve: ${V('x','posición')}, ${V('v','velocidad')} y ${V('a','aceleración')}, todas contra el ${V('t','tiempo')}. Toca o pasa el puntero sobre un dato para ver dónde está.</p>` },
+ { k:'Paso 2', t:'Antes de verla, predice', ver:[], gate:P1,
+   body:() => `<p>¿Cómo crees que será la gráfica de la ${V('x','posición')} contra el ${V('t','tiempo')} (x-t)?</p>${opciones(P1)}` },
+ { k:'Paso 3', t:'Tres gráficas, un solo movimiento', anim:[0, 5],
+   body:() => `<p>Mira las tres gráficas mientras la combi avanza. La de ${V('a','a')} es una recta horizontal: la aceleración no cambia. La de ${V('v','v')} es una recta que sube: la velocidad crece lo mismo cada segundo. La de ${V('x','x')} es una curva: cada segundo avanza más que el anterior.</p>
+   <p>No son tres dibujos del camino: son tres maneras de describir el mismo movimiento. La flecha roja sobre la combi es su ${V('v','velocidad')}; la verde, su ${V('a','aceleración')}.</p>` },
+ { k:'Paso 4', t:'La pendiente de v-t es la aceleración', fin:true, extra:() => ({ pendiente:{ g:'v', t1:1, t2:4, texto:'pendiente = 6/3 = 2' } }),
+   body:() => `<div class="eqs">
+     <div class="eq">${V('a','a')} = ${fr('Δ' + V('v','v'), 'Δ' + V('t','t'))} = ${fr(V('v','12') + ' − ' + V('v','6'), V('t','4') + ' − ' + V('t','1'))} = ${V('a','2 m/s²')}<span class="note">Cambio entre cambio, entre dos puntos cualesquiera</span></div>
+     <div class="eq">${V('v','v')} = ${V('v','v₀')} + ${V('a','a')}·${V('t','t')} = 4 + 2·5 = ${V('v','14 m/s')}</div>
+   </div>
+   <p>La pendiente de la gráfica v-t es la aceleración, y es la misma en cualquier tramo de la recta. La velocidad final se lee en la gráfica: a los 5 s, la recta llega a 14 m/s.</p>
+   <p class="aviso">Ojo: 14/5 no es la aceleración. La recta no empieza en cero (empieza en 4 m/s): hay que restar. Cuando la recta no pasa por el origen, solo entre el 21 % y el 25 % calcula bien la pendiente (Beichner, 1994).</p>` },
+ { k:'Paso 5', t:'El área bajo v-t es lo que avanzó', fin:true, extra:() => ({ sombra:{ g:'v', t1:0, t2:5, todo:true, texto:'área = 45 m' } }),
+   body:() => `<div class="eqs">
+     <div class="eq">Δ${V('x','x')} = área = ${fr('(' + V('v','4') + ' + ' + V('v','14') + ')', '2')}·${V('t','5')} = ${V('x','45 m')}<span class="note">Un trapecio</span></div>
+     <div class="eq">${V('x','x')} = ${V('v','v₀')}·${V('t','t')} + ½·${V('a','a')}·${V('t','t')}² = 4·5 + ½·2·25 = ${V('x','45 m')}<span class="note">La fórmula dice lo mismo</span></div>
+   </div>
+   <p>La zona sombreada bajo la recta de ${V('v','velocidad')} mide, en metros, lo que avanzó la combi. Por eso la gráfica de ${V('x','x')} llega a 45 m a los 5 s.</p>
+   <p class="aviso">Si usas d = v·t con la velocidad final te sale 70 m, y con la inicial, 20 m: ninguna es la velocidad que tuvo todo el tiempo. Sacar algo del área de una gráfica es lo más difícil del test de Beichner (1994): solo el 23 % lo logró con una gráfica a-t.</p>` },
+ { k:'Paso 6', t:'Llega un mototaxi: predice', dos:true, ver:[], gate:P2,
+   body:() => `<p>Justo cuando la combi pasa por el paradero a 4 m/s, un mototaxi pasa por el mismo lugar a ${V('v','10 m/s')} constantes. La combi sigue acelerando a 2 m/s². ¿En qué momento van <b>igual de rápido</b>?</p>${opciones(P2)}` },
+ { k:'Paso 7', t:'Igual de rápido no es estar juntos', dos:true, anim:[0, 8], extra:() => ({ marcas:[{ g:'v', t:3, texto:'igual v (3 s)' }, { g:'x', t:6, texto:'se cruzan (6 s)' }] }),
+   body:() => `<div class="eqs">
+     <div class="eq">Igual ${V('v','v')}: 4 + 2${V('t','t')} = 10 → ${V('t','t = 3 s')}<span class="note">Se cortan las rectas de v-t</span></div>
+     <div class="eq">Mismo ${V('x','x')}: 4${V('t','t')} + ${V('t','t')}² = 10${V('t','t')} → ${V('t','t = 6 s')}<span class="note">Se cortan las curvas de x-t</span></div>
+   </div>
+   <p>A los 3 s van igual de rápido, pero el mototaxi va 9 m adelante (30 m contra 21 m). La combi lo alcanza recién a los 6 s, y en ese momento va mucho más rápido: 16 m/s contra 10 m/s. ${S.pred['mruv-paso6'] === 'b' ? 'Tu predicción era correcta.' : ''}</p>
+   <p class="fuente">Confundir "estar en el mismo lugar" con "ir igual de rápido" es una idea documentada en universitarios de cursos introductorios (Trowbridge y McDermott, 1980).</p>` },
+ { k:'Paso 8', t:'La respuesta', fin:true,
+   body:() => `<p class="answer">Respuesta: a los 5 s la combi va a 14 m/s y avanzó 45 m.</p>
+   <p>Las tres gráficas están amarradas: la ${V('v','velocidad')} es la pendiente de x-t, la ${V('a','aceleración')} es la pendiente de v-t, y el área bajo v-t es lo que avanzó. Con eso se resuelve casi cualquier problema de gráficas del examen.</p>` },
+ { k:'Paso 9', t:'Ahora explora tú', explora:true,
+   body:() => `<div class="ctrls">
+     <div class="slider"><label for="sv"><span>Velocidad inicial (${V('v','v₀')})</span><output id="sv-o"></output></label><input id="sv" class="r-v" type="range" min="-10" max="20" step="1" value="${S.v0}"></div>
+     <div class="slider"><label for="sa"><span>Aceleración (${V('a','a')})</span><output id="sa-o"></output></label><input id="sa" class="r-a" type="range" min="-5" max="5" step="0.5" value="${S.a}"></div>
+     <div class="slider"><label for="sb"><span>Mototaxi (${V('v','v')} constante)</span><output id="sb-o"></output></label><input id="sb" class="r-v" type="range" min="0" max="20" step="1" value="${S.vB}"></div>
+   </div>
+   <div class="nav" style="justify-content:flex-start;gap:16px">
+     <button type="button" class="btn primary" id="correr">Correr 10 s</button>
+     <label class="check"><input type="checkbox" id="sf" ${S.frena ? 'checked' : ''}> Es un auto: al frenar se detiene</label>
+     <label class="check"><input type="checkbox" id="so" ${S.otro ? 'checked' : ''}> Con mototaxi</label>
+   </div>
+   <div id="live" class="body"></div>
+   <p class="hint">Prueba una aceleración negativa: con "se detiene", la combi frena y se queda quieta; sin esa casilla, las ecuaciones la hacen retroceder, como una piedra que sube y vuelve a bajar.</p>` },
+];
+const dots = $('dots');
+steps.forEach((s, n) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = n + 1; b.setAttribute('aria-label', `Ir al ${s.k.toLowerCase()}: ${s.t}`);
+  b.addEventListener('click', () => go(n)); li.appendChild(b); dots.appendChild(li);
+});
+function go(n){
+  if (n < 0 || n >= steps.length || n > S.max) return;
+  cancelAnimationFrame(anim);
+  const s = steps[n]; S.step = n; S.hl = null; S.explora = !!s.explora;
+  S.t = s.fin ? (s.dos ? 8 : 5) : 0;
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  pintarDots();
+  if (s.anim) animar(s.anim[0], s.anim[1]);
+  if (s.gate) prediccion(s.gate);
+  if (s.explora) explorar();
+  nav(); draw();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0;
+  $('next').disabled = S.step === steps.length - 1 || (s.gate && !S.pred[s.gate.id]);
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(n){ if (n > S.max) S.max = n; }
+function prediccion(P){
+  const btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id]) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); nav(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[3] || '', o[4] || '', t0);
+    $('next').focus();
+  }));
+  pintar();
+}
+function explorar(){
+  [['sv', 'v0'], ['sa', 'a'], ['sb', 'vB']].forEach(([id, k]) => $(id).addEventListener('input', () => { cancelAnimationFrame(anim); S[k] = +$(id).value; S.t = 10; vivo(); }));
+  $('sf').addEventListener('change', () => { S.frena = $('sf').checked; vivo(); });
+  $('so').addEventListener('change', () => { S.otro = $('so').checked; vivo(); });
+  $('correr').addEventListener('click', () => animar(0, 10));
+  S.t = 10; vivo();
+}
+function vivo(){
+  $('sv-o').textContent = `${fmt(S.v0, 0)} m/s`; $('sa-o').textContent = `${fmt(S.a, 1)} m/s²`; $('sb-o').textContent = `${fmt(S.vB, 0)} m/s`;
+  const A = { v0:S.v0, a:S.a, frena:S.frena }, m = M.movil(A);
+  let txt = `<div class="eqs"><div class="eq">A los ${V('t','10 s')}: ${V('v','v = ' + fmt(m.v(10), 1) + ' m/s')}, ${V('x','x = ' + fmt(m.x(10), 1) + ' m')}</div>
+    <div class="eq">Distancia recorrida: ${fmt(m.distancia(0, 10), 1)} m<span class="note">${Math.abs(m.distancia(0, 10) - Math.abs(m.x(10))) > 0.05 ? 'distinta del desplazamiento: fue y volvió' : 'igual al desplazamiento: no cambió de sentido'}</span></div>`;
+  if (m.tParada !== null && m.tParada < 10) txt += `<div class="eq"><span class="note" style="margin:0">Se detiene a los ${fmt(m.tParada, 2)} s, en x = ${fmt(m.x(m.tParada), 1)} m, y ahí se queda.</span></div>`;
+  txt += '</div>';
+  if (S.otro){
+    const B = { v0:S.vB }, cr = M.cruces(A, B, 10).filter(t => t > 1e-9), iv = M.igualVelocidad(A, B, 10);
+    txt += `<div class="chips"><span class="chip">${cr.length ? 'Se cruzan a los ' + cr.map(t => fmt(t, 2)).join(' y ') + ' s' : 'No se cruzan en 10 s'}</span><span class="chip">${iv.length ? 'Igual velocidad a los ' + iv.map(t => fmt(t, 2)).join(' y ') + ' s' : 'Nunca van igual de rápido en 10 s'}</span></div>`;
+  }
+  $('live').innerHTML = txt;
+  draw();
+}
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+function marcar(k){
+  S.hl = k;
+  document.querySelectorAll('#m1 .v').forEach(e => e.classList.toggle('hl', !!k && e.dataset.var === k));
+  draw();
+}
+document.addEventListener('pointerover', e => { const t = e.target.closest && e.target.closest('#m1 [data-var]'); if (t) marcar(t.dataset.var); });
+document.addEventListener('pointerout', e => { const t = e.target.closest && e.target.closest('#m1 [data-var]'); if (t && !t.contains(e.relatedTarget)) marcar(null); });
+document.addEventListener('focusin', e => { const t = e.target.closest && e.target.closest('#m1 [data-var]'); if (t) marcar(t.dataset.var); });
+document.addEventListener('focusout', e => { if (e.target.closest && e.target.closest('#m1 [data-var]')) marcar(null); });
+alRedibujarTema(draw);
+addEventListener('modo', () => L.resize());
+L.resize(); go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Preguntas de docs/investigacion/cinematica-ideas-erroneas.md (frenado, C1, G3, G2, G4 y el n-ésimo segundo).
+   La escena cambia recién después de responder. Lo que se dibuja sale de MotorMRUV. */
+(function(){
+const $ = id => document.getElementById(id);
+const cv = $('cv2');
+const L = crearLienzo(cv, altoVista(3), draw);
+let anim = null;
+const E = {};
+const EXPS = [
+  { id:'frenado', corto:'El auto frena',
+    q:`Un auto va a ${V('v','20 m/s')} y frena con ${V('a','4 m/s²')}. ¿Dónde está a los ${V('t','7 s')} de empezar a frenar?`,
+    opts:[['a','A 42 m: x = 20·7 − 2·7²','formula-despues-de-parar','hipotesis'],
+          ['b','A 50 m',null],
+          ['c','A 140 m: 20 por 7','d-igual-v0-por-t','hipotesis'],
+          ['d','Más allá de 50 m, porque sigue avanzando despacio','sigue-avanzando','hipotesis']],
+    ok:'b',
+    antes:() => Object.assign(E, { cfg:{ moviles:[{ o:{ v0:20, a:-4, frena:true }, tipo:'combi' }], tmax:8, graficas:['x','v','a'], rango:{ x:[0, 60], v:[-15, 22], a:[-5, 2] }, pista:'h', ver:[] }, t:0, T:8 }),
+    despues:() => { E.cfg.ver = true; E.cfg.ciego = { o:{ v0:20, a:-4 }, texto:'fórmula a ciegas' }; E.cfg.marcas = [{ g:'v', t:5, texto:'se detiene (5 s)' }]; correr(0, 8); },
+    ctrl:() => tiempo(),
+    exp:`<p>A los 5 s la velocidad llega a cero (20 − 4·5 = 0) y el auto ya recorrió 50 m (el área del triángulo bajo v-t: ½·5·20). Desde ahí se queda quieto: el freno no lo hace retroceder.</p>
+      <p>La línea gris punteada es lo que dice la fórmula si la usas a ciegas: la velocidad se vuelve negativa y el auto "regresa" a 42 m. Las ecuaciones del MRUV no saben que un freno no da marcha atrás. Antes de reemplazar t, revisa cuándo se detiene.</p>
+      <p class="fuente">Usar la fórmula después de que el móvil se detuvo es un error que suponemos: no hay un estudio con porcentaje.</p>` },
+  { id:'cima', corto:'La moneda arriba',
+    q:`Lanzas una moneda hacia arriba con ${V('v','30 m/s')}. Sube, se detiene un instante y baja. En el punto más alto, ¿cuánto vale su ${V('a','aceleración')}?`,
+    opts:[['a','Cero, porque ahí está quieta','C1-aceleracion-cero-en-la-cima','documentado'],
+          ['b','10 m/s² hacia abajo',null],
+          ['c','10 m/s² hacia arriba, porque venía subiendo','aceleracion-hacia-arriba','hipotesis'],
+          ['d','Depende de cuánto pesa la moneda','C2-depende-de-la-masa','hipotesis']],
+    ok:'b',
+    antes:() => Object.assign(E, { cfg:{ moviles:[{ o:{ v0:30, a:-10 }, tipo:'bola' }], tmax:6, graficas:['x','v','a'], rango:{ x:[0, 50], v:[-32, 32], a:[-12, 4] }, pista:'v', ver:['x'] }, t:0, T:6 }),
+    despues:() => { E.cfg.ver = true; E.cfg.marcas = [{ g:'v', t:3, texto:'cima: v = 0' }, { g:'a', t:3, texto:'cima: a = −10' }]; correr(0, 6); },
+    ctrl:() => tiempo(),
+    exp:`<p>La gráfica de ${V('a','a')} es una recta horizontal en −10 todo el tiempo: al subir, en la cima y al bajar. En la cima la velocidad es cero, pero <b>está cambiando</b>: un instante antes subía y un instante después baja. Eso es aceleración.</p>
+      <p>Si la aceleración fuera cero en la cima, la moneda se quedaría flotando ahí arriba. La pendiente de la recta de v-t es la misma en todo el vuelo.</p>
+      <p class="fuente">Después de un curso tradicional, solo el 5 % de 240 universitarios de Oregon respondió bien las preguntas de la moneda lanzada hacia arriba. Con demostraciones en las que primero predecían, más del 90 % (Thornton y Sokoloff, 1998).</p>` },
+  { id:'formas', corto:'De v-t a a-t',
+    q:`La gráfica ${V('v','v-t')} de un móvil es una recta que sube, de 2 m/s a 11 m/s en 6 s. ¿Cómo es su gráfica ${V('a','a-t')}?`,
+    opts:[['a','Una recta que sube, igual que la de v','G3-graficas-iguales','documentado','recta'],
+          ['b','Una recta horizontal por encima del eje',null,'','horizontal'],
+          ['c','Cero todo el tiempo','a-cero','hipotesis','cero'],
+          ['d','Una recta que baja','a-baja','hipotesis','baja']],
+    ok:'b',
+    antes:() => Object.assign(E, { cfg:{ moviles:[{ o:{ v0:2, a:1.5 }, tipo:'combi' }], tmax:6, graficas:['x','v','a'], rango:{ x:[0, 45], v:[0, 12], a:[0, 2] }, pista:'h', ver:['v'] }, t:6, T:6 }),
+    despues:() => { E.cfg.ver = true; E.cfg.pendiente = { g:'v', t1:1, t2:5, texto:'pendiente = 1,5' }; correr(0, 6); },
+    ctrl:() => tiempo(),
+    exp:`<p>Cada gráfica es la pendiente de la anterior. La recta de v-t sube 1,5 m/s cada segundo, siempre igual: su pendiente es constante, así que la gráfica de ${V('a','a')} es una recta horizontal en 1,5 m/s².</p>
+      <p>Y la gráfica de ${V('x','x')} no es una recta: es una curva, porque la pendiente de x-t (la velocidad) va creciendo. Tres gráficas, tres formas distintas.</p>
+      <p class="fuente">Alrededor del 25 % de 524 alumnos ya instruidos dibuja las tres gráficas con la misma forma, cambiando solo la etiqueta del eje (Beichner, 1994).</p>` },
+  { id:'pendiente', corto:'Leo la pendiente',
+    q:`La gráfica ${V('x','x-t')} de un mototaxi es una recta que pasa por (0 s; 10 m) y por (4 s; 30 m). ¿Qué ${V('v','velocidad')} lleva?`,
+    opts:[['a','7,5 m/s, que es 30 entre 4','G2-altura-entre-tiempo','documentado'],
+          ['b','5 m/s',null],
+          ['c','30 m/s, la altura de la recta','G2-pendiente-es-altura','documentado'],
+          ['d','10 m/s, donde la recta corta el eje','lee-el-corte','hipotesis']],
+    ok:'b',
+    antes:() => Object.assign(E, { cfg:{ moviles:[{ o:{ x0:10, v0:5 }, tipo:'moto' }], tmax:4, graficas:['x','v'], rango:{ x:[0, 35], v:[0, 8] }, pista:'h', ver:['x'] }, t:4, T:4 }),
+    despues:() => { E.cfg.ver = true; E.cfg.pendiente = { g:'x', t1:0, t2:4, texto:'pendiente = 20/4 = 5' }; correr(0, 4); },
+    ctrl:() => tiempo(),
+    exp:`<p>La velocidad es la pendiente: cuánto cambia ${V('x','x')} entre cuánto cambia ${V('t','t')}. De 10 m a 30 m hay 20 m, en 4 s: 20/4 = 5 m/s. El mototaxi no salió del paradero: ya estaba a 10 m.</p>
+      <p>Dividir 30 entre 4 sería correcto solo si la recta pasara por el origen. La altura de la recta (30 m) es la posición, no la velocidad.</p>
+      <p class="fuente">Si la recta pasa por el origen, el 73 % calcula bien la pendiente; si no pasa, solo entre el 21 % y el 25 %. Alrededor de 1 de cada 4 confunde la pendiente con la altura (Beichner, 1994).</p>` },
+  { id:'area-a', corto:'El área de a-t',
+    q:`La gráfica ${V('a','a-t')} de un móvil es una recta horizontal en 3 m/s², de 0 s a 4 s. ¿Cuánto cambió su ${V('v','velocidad')} en esos 4 s?`,
+    opts:[['a','12 m/s',null],
+          ['b','0,75 m/s, que es 3 entre 4','G4-pendiente-en-vez-de-area','documentado'],
+          ['c','3 m/s, lo que marca la gráfica','G4-lee-el-eje','documentado'],
+          ['d','No se puede saber sin la velocidad inicial','falta-v0','hipotesis']],
+    ok:'a',
+    antes:() => Object.assign(E, { cfg:{ moviles:[{ o:{ v0:2, a:3 }, tipo:'combi' }], tmax:4, graficas:['a','v'], rango:{ a:[0, 4], v:[0, 16], x:[0, 35] }, pista:'h', ver:['a'] }, t:4, T:4 }),
+    despues:() => { E.cfg.ver = true; E.cfg.sombra = { g:'a', t1:0, t2:4, todo:true, texto:'área = 3·4 = 12 m/s' }; E.cfg.marcas = [{ g:'v', t:4, texto:'de 2 a 14 m/s' }]; correr(0, 4); },
+    ctrl:() => tiempo(),
+    exp:`<p>El área bajo la gráfica a-t es el cambio de velocidad: 3 m/s² × 4 s = 12 m/s. Aquí el móvil iba a 2 m/s y termina a 14 m/s.</p>
+      <p>No hace falta la velocidad inicial para el <b>cambio</b>; sí para la velocidad final. Y la pendiente de a-t (que aquí es cero) diría cómo cambia la aceleración, no la velocidad.</p>
+      <p class="fuente">Fue el objetivo más difícil del test de Beichner (1994): solo el 23 % de 524 alumnos sacó el cambio de velocidad del área de una gráfica a-t. Calcular la pendiente o leer el eje fueron los errores más comunes.</p>` },
+  { id:'enesimo', corto:'El quinto segundo',
+    q:`La combi del paso a paso sale con ${V('v','4 m/s')} y acelera a ${V('a','2 m/s²')}. ¿Cuánto avanza <b>durante</b> el quinto segundo (de t = 4 s a t = 5 s)?`,
+    opts:[['a','45 m','confunde-en-n-segundos','hipotesis'],
+          ['b','13 m',null],
+          ['c','14 m, lo que marca su velocidad a los 5 s','v-final-como-distancia','hipotesis'],
+          ['d','9 m, el promedio de 45 m en 5 s','promedio-del-total','hipotesis']],
+    ok:'b',
+    antes:() => Object.assign(E, { cfg:{ moviles:[{ o:{ v0:4, a:2 }, tipo:'combi' }], tmax:5, graficas:['x','v'], rango:{ x:[0, 50], v:[0, 15] }, pista:'h', ver:[] }, t:0, T:5 }),
+    despues:() => { E.cfg.ver = true; E.cfg.sombra = { g:'v', t1:4, t2:5, todo:true, texto:'13 m' }; E.cfg.marcas = [{ g:'x', t:4, texto:'32 m' }, { g:'x', t:5, texto:'45 m' }]; correr(0, 5); },
+    ctrl:() => tiempo(),
+    exp:`<p>En 5 s avanza 45 m y en 4 s, 32 m: durante el quinto segundo avanza 45 − 32 = 13 m. En la gráfica v-t es la franja sombreada entre 4 s y 5 s, un trapecio de alturas 12 y 14: (12 + 14)/2 = 13.</p>
+      <p>"En el quinto segundo" es un segundo solo; "en cinco segundos" son los cinco. La fórmula de las academias, d = v₀ + a(n − ½), es esa misma franja: la velocidad a los 4,5 s por un segundo.</p>
+      <p class="fuente">Es una pregunta típica de academia sin estudios con porcentaje: las opciones incorrectas son errores que suponemos.</p>` },
+];
+const S = { k:0, pred:{}, t0:Date.now() };
+function tiempo(){ return `<div class="slider"><label for="tq"><span>Tiempo (${V('t','t')})</span><output id="tq-o"></output></label><input id="tq" class="r-t" type="range" min="0" max="${E.T}" step="0.05" value="${E.t}"></div><div class="chips" id="chips"></div><p><button type="button" class="btn" id="repetir">Repetir</button></p>`; }
+function reiniciar(x){ for (const k of Object.keys(E)) delete E[k]; x.antes(); }
+function correr(desde, hasta){
+  cancelAnimationFrame(anim);
+  if (RM){ E.t = hasta; sincronizar(); return; }
+  const t0 = performance.now(), dur = (hasta - desde)*650;
+  const tick = now => { const f = Math.min(1, (now - t0)/dur); E.t = desde + (hasta - desde)*f; sincronizar(); if (f < 1) anim = requestAnimationFrame(tick); };
+  anim = requestAnimationFrame(tick);
+}
+function draw(){
+  if (!L.W || !E.cfg) return;
+  vista(L, colores(), Object.assign({}, E.cfg, { t:E.t }));
+  const m = M.movil(E.cfg.moviles[0].o);
+  $('desc2').textContent = `t = ${fmt(E.t, 1)} s: posición ${fmt(m.x(E.t), 1)} m, velocidad ${fmt(m.v(E.t), 1)} m/s, aceleración ${fmt(m.a(E.t), 1)} m/s².`;
+}
+function sincronizar(){
+  const tq = $('tq');
+  if (tq){
+    tq.value = E.t; $('tq-o').textContent = `${fmt(E.t, 2)} s`;
+    const m = M.movil(E.cfg.moviles[0].o);
+    $('chips').innerHTML = `<span class="chip">x = ${fmt(m.x(E.t), 1)} m</span><span class="chip">v = ${fmt(m.v(E.t), 1)} m/s</span><span class="chip">a = ${fmt(m.a(E.t), 1)} m/s²</span>`;
+  }
+  draw();
+}
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  cancelAnimationFrame(anim);
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k];
+  reiniciar(x);
+  if (S.pred[x.id]){ x.despues(); cancelAnimationFrame(anim); E.t = E.T; }
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>
+    <div class="opts">${x.opts.map(([l, t, , , dib]) => `<button class="opt" type="button" data-k="${l}"><span class="l">${l.toUpperCase()}</span>${dib ? bosquejo(dib).replace('var(--c-x)', 'var(--c-a)') : ''}<span>${t}</span></button>`).join('')}</div>
+    <p class="fb" id="fb2"></p><div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. La correcta está marcada; mira la escena para ver por qué.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.ctrl() + x.exp + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
+    const tq = $('tq'); if (tq) tq.oninput = () => { cancelAnimationFrame(anim); E.t = +tq.value; sincronizar(); };
+    const rep = $('repetir'); if (rep) rep.onclick = () => correr(0, E.T);
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar(); x.despues(); sincronizar();
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+  });
+  pintar(); sincronizar();
+}
+alRedibujarTema(draw);
+addEventListener('modo', () => L.resize());
+L.resize(); ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

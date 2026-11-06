@@ -224,13 +224,13 @@
       "id": "fi6",
       "seccion": "Física",
       "nombre": "MRUV y gráficas",
-      "inicio": "2026-12-01",
+      "inicio": "2026-11-06",
       "fin": "2026-12-07",
-      "estado": "pendiente",
-      "progreso": 0,
+      "estado": "en_curso",
+      "progreso": 80,
       "critico": false,
       "depende_de": [],
-      "notas": ""
+      "notas": "Hecho: motor por tramos (frena sin retroceder, cruces e igual velocidad exactos, lanzamiento vertical), 18 casos verificados aparte, 37 pruebas (pendientes y áreas comprobadas numéricamente), papel (10), paso a paso (combi con pista y las tres gráficas amarradas; predicción de la forma de x-t y K1 con el mototaxi) y qué pasa si (6: frenado, C1, G3, G2, G4 y el quinto segundo). Falta: dibujar la gráfica con el dedo (estilo Graphs and Tracks) y el pase con alumnos."
     },
     {
       "id": "qu1",

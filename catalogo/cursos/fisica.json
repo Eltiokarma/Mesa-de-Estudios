@@ -36,7 +36,7 @@
       "universidades": {"uni": {"semanas": [1, 2]}, "unmsm": {"temas": [2, 3]}},
       "potencial_visual": "alto",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["mruv"],
       "investigacion": "docs/investigacion/cinematica-ideas-erroneas.md"
     },
     {

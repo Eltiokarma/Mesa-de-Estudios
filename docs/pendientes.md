@@ -8,7 +8,7 @@
 npm test
 ```
 
-Deben pasar 208 pruebas.
+Deben pasar 245 pruebas.
 
 ```bash
 npm run dev
@@ -35,7 +35,7 @@ Si hay que hacer OCR, instala tesseract en español: `apt-get install -y tessera
 | Catálogo | 8 cursos y 151 unidades, con su universidad (UNI, San Marcos) y su grado (3.º, 4.º o 5.º, estimado) |
 | App (PWA) | Bienvenida, inicio, cursos, práctica, lápiz y papel, progreso y perfil. Funciona sin conexión y en celular y computadora (menú lateral desde 900 px, atajos de teclado). Diseño acogedor con ilustraciones SVG propias |
 | Medición | Pruebas de entrada y salida y registro anónimo de cada predicción, también desde las escenas. Se exporta a CSV o JSON desde Perfil; `herramientas/analizar-medicion.js` junta los archivos |
-| Plantillas de escena | Banco Óptico (lentes), espejos esféricos, circuitos de corriente continua, calorimetría con cambios de fase y trabajo y energía (rampa con resorte). Cada una con motor, casos verificados con fracciones, paso a paso con predicción, "¿qué pasa si…?" y 9 problemas de papel |
+| Plantillas de escena | Banco Óptico (lentes), espejos esféricos, circuitos de corriente continua, calorimetría con cambios de fase, trabajo y energía (rampa con resorte) y MRUV con gráficas. Cada una con motor, casos verificados con fracciones, paso a paso con predicción, "¿qué pasa si…?" y 9 problemas de papel |
 | Plantillas de predicciones | Reactivo limitante (química) y aumentos y descuentos sucesivos (aritmética), con generador por semilla |
 
 ## Pendientes, en orden de prioridad
@@ -51,8 +51,7 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 
 | Id | Módulo | Informe de ideas erróneas | Nota |
 | --- | --- | --- | --- |
-| fi6 | MRUV y gráficas | `cinematica-ideas-erroneas.md` | Siguiente. Datos fuertes (Beichner 1994) |
-| qu1 | Reactivo limitante con partículas (escena) | `estequiometria-ideas-erroneas.md` | Ya existe el módulo de predicciones; falta la escena con partículas |
+| qu1 | Reactivo limitante con partículas (escena) | `estequiometria-ideas-erroneas.md` | Siguiente. Ya existe el módulo de predicciones; falta la escena con partículas |
 | qu2 a qu4 | Gases y soluciones, pH, redox | Los de química | |
 | ma1 a ma3 | Trigonometría, geometría, funciones | Sin informe todavía | Hay que investigar las ideas erróneas antes de construir |
 | ma4 | Aritmética | Sin informe | Porcentajes sucesivos ya existe; los errores son hipótesis |
@@ -79,6 +78,10 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
   - Falta en la escena la fuerza variable: una gráfica F–x que se arrastra y pinta el área (el motor ya la calcula con `trabajoArea`, y está en los problemas de papel).
   - Las opciones incorrectas de "Cambio la rampa" y de la grúa son hipótesis; las demás salen del test EMCS.
   - La pregunta del paso 6 (doble altura, √2) tiene respaldo solo parcial (Brundage y otros, 2023).
+- **MRUV** (`plantillas/mruv/`, hecha el 6 nov 2026):
+  - Falta que el alumno dibuje la gráfica con el dedo antes de verla (lo que recomiendan Beichner y Thornton y Sokoloff); hoy elige entre dibujos.
+  - Tiro parabólico (P1 a P5 del informe) queda para su propia plantilla, en la unidad de movimiento parabólico.
+  - Las opciones del frenado y del quinto segundo son hipótesis.
 - **Todas:** el estado es `borrador`. Pasan a `probada` con los datos del colegio.
 
 ### 3. Plataforma

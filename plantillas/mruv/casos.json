@@ -1,0 +1,32 @@
+{
+  "plantilla": "mruv",
+  "unidades": "SI: m, s, m/s, m/s²; g = 10 m/s²",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' (una lista) y compara 'espera'. 'estado' da { x, v, a } en un instante; 'recorrido' es movil(o).distancia(t1, t2) y .desplazamiento(t1, t2); las listas (cruces, igualVelocidad) se comparan por índice y 'largo'; un resultado numérico se compara como 'valor'. Con frena: true, el móvil se queda quieto al llegar a v = 0.",
+  "verificacion": "Los casos del problema guiado, el 5.º segundo, el frenado, el lanzamiento vertical y la caída desde 80 m son las filas de 'Casos de prueba propuestos' de docs/investigacion/cinematica-ideas-erroneas.md. Todos se recalcularon el 6 de noviembre de 2026 con fracciones exactas en Python (fractions.Fraction), sin leer el motor ni este archivo, y evitando la fórmula de posición directa: áreas de triángulos, rectángulos y trapecios bajo la gráfica v-t (guiado, tramos), velocidad media en t = 4,5 s (5.º segundo), t = v0/a y d = v0²/(2a) (frenado), H = v0²/(2g) y la altura a los 4 s como H − v²/(2g) (lanzamiento), la diferencia x_A − x_B = t² − 6t (cruce), t² + 10t − 100 = 0 con t = 5√5 − 5 (encuentro de frente), Δx/Δt y área bajo a-t (gráficas), t = √(2h/g) (caída) y v² = v0² + 2g·h (ventana). El motor, en cambio, integra tramo a tramo y busca los cruces con un ajuste por tres puntos.",
+  "tolerancia": 1e-9,
+  "casos": [
+    { "nombre": "Problema guiado: v0 = 4 m/s, a = 2 m/s², a los 5 s", "fn": "estado", "args": [{ "v0": 4, "a": 2 }, 5], "espera": { "v": 14, "x": 45, "a": 2 } },
+    { "nombre": "Distancia en el 5.º segundo: 13 m (= 45 − 32)", "fn": "enesimoSegundo", "args": [4, 2, 5], "espera": { "valor": 13 } },
+    { "nombre": "El 5.º segundo como área entre t = 4 y t = 5", "fn": "recorrido", "args": [{ "v0": 4, "a": 2 }, 4, 5], "espera": { "distancia": 13, "desplazamiento": 13 } },
+    { "nombre": "Frenado: 20 m/s con 4 m/s² se detiene a los 5 s y 50 m", "fn": "estado", "args": [{ "v0": 20, "a": -4, "frena": true }, 5], "espera": { "x": 50, "v": 0 } },
+    { "nombre": "El mismo auto a los 7 s sigue en 50 m (la fórmula ciega daría 42 m)", "fn": "estado", "args": [{ "v0": 20, "a": -4, "frena": true }, 7], "espera": { "x": 50, "v": 0, "a": 0 },
+      "tambien": [{ "args": [{ "v0": 20, "a": -4 }, 7], "espera": { "x": 42, "v": -8 } }] },
+    { "nombre": "Lanzamiento vertical con 30 m/s: sube 3 s, llega a 45 m, vuela 6 s", "fn": "lanzamientoVertical", "args": [{ "v0": 30 }], "espera": { "tSubida": 3, "H": 45, "tSuelo": 6, "vSuelo": -30 } },
+    { "nombre": "Ya de bajada a los 4 s: v = −10 m/s, y = 40 m; en la cima, a = −10", "fn": "estado", "args": [{ "v0": 30, "a": -10 }, 4], "espera": { "v": -10, "x": 40, "a": -10 },
+      "tambien": [{ "args": [{ "v0": 30, "a": -10 }, 3], "espera": { "v": 0, "x": 45, "a": -10 } }] },
+    { "nombre": "Distancia en los primeros 4 s del lanzamiento: 45 + 5 = 50 m; desplazamiento 40 m", "fn": "recorrido", "args": [{ "v0": 30, "a": -10 }, 0, 4], "espera": { "distancia": 50, "desplazamiento": 40 } },
+    { "nombre": "MRUV contra MRU (K1): se cruzan a los 6 s", "fn": "cruces", "args": [{ "v0": 4, "a": 2 }, { "v0": 10 }, 10], "espera": { "largo": 2, "0": 0, "1": 6 } },
+    { "nombre": "…pero tienen la misma velocidad a los 3 s, cuando no están juntos", "fn": "igualVelocidad", "args": [{ "v0": 4, "a": 2 }, { "v0": 10 }, 10], "espera": { "largo": 1, "0": 3 } },
+    { "nombre": "En t = 3 s: el MRUV está en 21 m y el MRU en 30 m", "fn": "estado", "args": [{ "v0": 4, "a": 2 }, 3], "espera": { "x": 21, "v": 10 },
+      "tambien": [{ "args": [{ "v0": 10 }, 3], "espera": { "x": 30, "v": 10 } }] },
+    { "nombre": "Por tramos: acelera 3 s, va constante 4 s, frena", "fn": "estado", "args": [{ "tramos": [{ "dur": 3, "a": 2 }, { "dur": 4, "a": 0 }, { "a": -1 }] }, 10], "espera": { "x": 46.5, "v": 3 },
+      "tambien": [{ "args": [{ "tramos": [{ "dur": 3, "a": 2 }, { "dur": 4, "a": 0 }, { "a": -1 }] }, 3], "espera": { "x": 9, "v": 6 } },
+                  { "args": [{ "tramos": [{ "dur": 3, "a": 2 }, { "dur": 4, "a": 0 }, { "a": -1 }] }, 7], "espera": { "x": 33, "v": 6 } }] },
+    { "nombre": "Por tramos con frenado de 2 m/s²: se detiene a los 10 s en 42 m", "fn": "estado", "args": [{ "tramos": [{ "dur": 3, "a": 2 }, { "dur": 4, "a": 0 }, { "a": -2 }], "frena": true }, 20], "espera": { "x": 42, "v": 0 } },
+    { "nombre": "Encuentro de frente: A desde 100 m a −10 m/s, B del reposo con 2 m/s²: t = 5(√5 − 1) s", "fn": "cruces", "args": [{ "x0": 100, "v0": -10 }, { "a": 2 }, 20], "espera": { "largo": 1, "0": 6.180339887498949 } },
+    { "nombre": "Pendiente de x-t entre (0, 10) y (4, 30): 5 m/s (no 30/4 = 7,5)", "fn": "pendiente", "args": [0, 10, 4, 30], "espera": { "valor": 5 } },
+    { "nombre": "Área bajo a-t: a = 3 durante 4 s cambia la velocidad en 12 m/s", "fn": "estado", "args": [{ "v0": 0, "a": 3 }, 4], "espera": { "v": 12 } },
+    { "nombre": "Soltada desde 80 m: 4 s; la lanzada horizontal tarda lo mismo", "fn": "lanzamientoVertical", "args": [{ "v0": 0, "y0": 80 }], "espera": { "tSuelo": 4, "vSuelo": -40 } },
+    { "nombre": "Desde una ventana a 20 m, hacia arriba con 15 m/s: 4 s hasta el suelo, llega a −25 m/s", "fn": "lanzamientoVertical", "args": [{ "v0": 15, "y0": 20 }], "espera": { "tSubida": 1.5, "H": 31.25, "tSuelo": 4, "vSuelo": -25 } }
+  ]
+}

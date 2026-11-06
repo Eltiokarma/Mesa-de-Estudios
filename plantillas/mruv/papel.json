@@ -1,0 +1,113 @@
+{
+  "titulo": "MRU, MRUV, gráficas y caída libre: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. En el MRU, x = x₀ + v·t. En el MRUV, v = v₀ + a·t, x = x₀ + v₀·t + ½a·t² y v² = v₀² + 2a·d. En la gráfica x-t, la velocidad es la pendiente; en la v-t, la pendiente es la aceleración y el área es el desplazamiento; en la a-t, el área es el cambio de velocidad. En la caída libre, a = −10 m/s² todo el tiempo si tomas positivo hacia arriba, también en el punto más alto. Toma g = 10 m/s² y no cuentes el aire. Antes de calcular, elige un sentido positivo y escribe el signo de cada velocidad y aceleración.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "En una avenida recta de Juliaca, dos paraderos están a 600 m uno del otro. Al mismo tiempo, una combi sale del primero hacia el segundo a 12 m/s y un mototaxi sale del segundo hacia el primero a 8 m/s, los dos con velocidad constante. ¿Cuánto tardan en cruzarse y a qué distancia del primer paradero lo hacen?",
+      "respuesta": "Se cruzan a los 30 s, a 360 m del primer paradero.",
+      "pasos": ["Pon el origen en el primer paradero y el sentido positivo hacia el segundo. Combi: x = 12t. Mototaxi: x = 600 − 8t; su velocidad es −8 m/s porque va en contra.", "Se cruzan cuando están en el mismo lugar: 12t = 600 − 8t, así que 20t = 600 y t = 30 s.", "Posición: 12·30 = 360 m del primer paradero. Comprueba con el mototaxi: 600 − 8·30 = 360 m.", "Cuando se cruzan están en el mismo punto, pero no van igual de rápido: la combi va a 12 m/s y el mototaxi a 8 m/s. Misma posición no es misma velocidad."],
+      "verificar": [ { "fn": "cruces", "args": [{ "x0": 0, "v0": 12 }, { "x0": 600, "v0": -8 }, 60], "espera": { "0": 30 }, "largo": 1 },
+        { "fn": "estado", "args": [{ "x0": 0, "v0": 12 }, 30], "espera": { "x": 360, "v": 12 } },
+        { "fn": "estado", "args": [{ "x0": 600, "v0": -8 }, 30], "espera": { "x": 360, "v": -8 } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Un tren parte del reposo en una estación y acelera en forma pareja a 0,5 m/s² durante 20 s. ¿Qué velocidad alcanza y qué distancia recorre en esos 20 s?",
+      "respuesta": "Alcanza 10 m/s y recorre 100 m.",
+      "pasos": ["Velocidad: v = v₀ + a·t = 0 + 0,5·20 = 10 m/s.", "Distancia: d = v₀·t + ½a·t² = 0 + ½·0,5·400 = 100 m.", "Si haces d = v·t con la velocidad final, te sale 10·20 = 200 m: eso supone que fue a 10 m/s todo el tiempo, y al inicio iba mucho más lento.", "Otra forma: la distancia es el área del triángulo bajo la gráfica v-t, ½·20·10 = 100 m. También sirve la velocidad media, (0 + 10)/2 = 5 m/s, por 20 s."],
+      "verificar": [ { "fn": "estado", "args": [{ "v0": 0, "a": 0.5 }, 20], "espera": { "x": 100, "v": 10, "a": 0.5 } },
+        { "fn": "recorrido", "args": [{ "v0": 0, "a": 0.5 }, 0, 20], "espera": { "distancia": 100, "desplazamiento": 100 } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Desde el suelo se lanza una pelota verticalmente hacia arriba a 30 m/s. ¿Cuánto tarda en llegar a lo más alto, qué altura máxima alcanza, cuánto tarda en volver al suelo y cuál es su aceleración en el punto más alto?",
+      "respuesta": "Tarda 3 s en subir, llega a 45 m de altura, vuelve al suelo a los 6 s y en lo más alto su aceleración es 10 m/s² hacia abajo.",
+      "pasos": ["Positivo hacia arriba: v₀ = 30 m/s y a = −10 m/s² en todo el vuelo.", "En lo más alto v = 0: 0 = 30 − 10t, así que t = 3 s.", "Altura máxima: v² = v₀² + 2a·h, 0 = 900 − 20h, así que h = 45 m.", "Vuelve al suelo cuando y = 0: 30t − 5t² = 0, así que t = 6 s. Llega a 30 m/s hacia abajo: v = 30 − 10·6 = −30 m/s.", "En la cima la velocidad es cero, pero la aceleración no: sigue siendo 10 m/s² hacia abajo. Si fuera cero, la pelota se quedaría flotando allí."],
+      "verificar": [ { "fn": "lanzamientoVertical", "args": [{ "v0": 30 }], "espera": { "tSubida": 3, "H": 45, "tSuelo": 6, "vSuelo": -30 } },
+        { "fn": "estado", "args": [{ "v0": 30, "a": -10 }, 3], "espera": { "x": 45, "v": 0, "a": -10 } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Una combi va a 20 m/s por una pista recta y el chofer frena al ver el paradero. El freno le da una desaceleración pareja de 4 m/s² hasta que se detiene, y luego se queda quieta. ¿A qué distancia del punto donde empezó a frenar está 8 s después?",
+      "respuesta": "A 50 m.",
+      "pasos": ["Positivo hacia donde avanza: v₀ = 20 m/s y a = −4 m/s². La aceleración es negativa porque frena, aunque la combi vaya hacia adelante.", "Antes de reemplazar t = 8 s, averigua cuándo se detiene: 0 = 20 − 4t, así que t = 5 s. A los 8 s ya lleva 3 s parada.", "Distancia de frenado: 0 = 400 − 8d, así que d = 50 m. Desde los 5 s hasta los 8 s no se mueve: sigue en 50 m.", "Si reemplazas t = 8 en x = 20t − 2t², te sale 160 − 128 = 32 m y una velocidad de −12 m/s: la fórmula dice que retrocede, pero un freno no hace dar marcha atrás. La fórmula del MRUV solo vale mientras dura el frenado."],
+      "verificar": [ { "fn": "estado", "args": [{ "v0": 20, "a": -4, "frena": true }, 8], "espera": { "x": 50, "v": 0, "a": 0 } },
+        { "fn": "estado", "args": [{ "v0": 20, "a": -4, "frena": true }, 5], "espera": { "x": 50, "v": 0 } },
+        { "fn": "recorrido", "args": [{ "v0": 20, "a": -4, "frena": true }, 0, 8], "espera": { "distancia": 50, "desplazamiento": 50 } },
+        { "fn": "estado", "args": [{ "v0": 20, "a": -4 }, 8], "espera": { "x": 32, "v": -12 } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Un auto pasa por un semáforo a 2 m/s y desde ese instante acelera en forma pareja a 4 m/s². ¿Qué distancia recorre durante el quinto segundo y qué distancia recorre en los primeros cinco segundos?",
+      "respuesta": "Durante el quinto segundo recorre 20 m; en los primeros cinco segundos, 60 m.",
+      "pasos": ["El quinto segundo es el intervalo de t = 4 s a t = 5 s, no los cinco primeros segundos.", "Posiciones: x(4) = 2·4 + 2·16 = 40 m y x(5) = 2·5 + 2·25 = 60 m. En el quinto segundo recorre 60 − 40 = 20 m.", "Con la fórmula del n-ésimo segundo: dₙ = v₀ + a(n − ½) = 2 + 4·4,5 = 20 m. Es lo mismo; la fórmula solo ahorra restar.", "En los primeros cinco segundos recorre x(5) = 60 m. Confundir las dos preguntas es el error más común en este tipo de problema."],
+      "verificar": [ { "fn": "enesimoSegundo", "args": [2, 4, 5], "espera": { "valor": 20 } },
+        { "fn": "recorrido", "args": [{ "v0": 2, "a": 4 }, 4, 5], "espera": { "distancia": 20, "desplazamiento": 20 } },
+        { "fn": "estado", "args": [{ "v0": 2, "a": 4 }, 4], "espera": { "x": 40 } },
+        { "fn": "estado", "args": [{ "v0": 2, "a": 4 }, 5], "espera": { "x": 60 } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "La gráfica posición-tiempo de un mototaxi en una calle recta es una recta que pasa por los puntos (2 s; 30 m) y (6 s; 50 m). ¿Cuál es su velocidad, dónde estaba en t = 0 y dónde estará en t = 10 s?",
+      "respuesta": "Va a 5 m/s; en t = 0 estaba en x = 20 m y en t = 10 s estará en x = 70 m.",
+      "pasos": ["En la gráfica x-t, la velocidad es la pendiente: (50 − 30)/(6 − 2) = 20/4 = 5 m/s.", "Si divides 30/2 = 15 m/s o 50/6 ≈ 8,3 m/s, tratas la recta como si saliera del origen. No sale de allí: la pendiente se calcula con la diferencia entre dos puntos.", "Posición inicial: 30 = x₀ + 5·2, así que x₀ = 20 m. Es donde la recta corta el eje vertical.", "En t = 10 s: x = 20 + 5·10 = 70 m.", "La gráfica es una recta inclinada, pero el mototaxi no acelera: su gráfica v-t sería una recta horizontal en 5 m/s. Cada gráfica tiene su propia forma."],
+      "verificar": [ { "fn": "pendiente", "args": [2, 30, 6, 50], "espera": { "valor": 5 } },
+        { "fn": "estado", "args": [{ "x0": 20, "v0": 5 }, 0], "espera": { "x": 20 } },
+        { "fn": "estado", "args": [{ "x0": 20, "v0": 5 }, 2], "espera": { "x": 30, "v": 5, "a": 0 } },
+        { "fn": "estado", "args": [{ "x0": 20, "v0": 5 }, 6], "espera": { "x": 50 } },
+        { "fn": "estado", "args": [{ "x0": 20, "v0": 5 }, 10], "espera": { "x": 70 } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Una moto que va a 4 m/s por una pista recta tiene esta gráfica aceleración-tiempo: 3 m/s² de t = 0 a t = 4 s, cero de t = 4 s a t = 6 s y −2 m/s² de t = 6 s a t = 10 s. ¿Qué velocidad tiene en t = 4 s y en t = 10 s?",
+      "respuesta": "En t = 4 s va a 16 m/s y en t = 10 s, a 8 m/s.",
+      "pasos": ["En la gráfica a-t, el área bajo la curva es el cambio de velocidad, no la velocidad misma. Hay que sumarle la velocidad inicial.", "De 0 a 4 s: área = 3·4 = 12 m/s. Velocidad en t = 4 s: 4 + 12 = 16 m/s.", "De 4 a 6 s: área cero, sigue a 16 m/s. De 6 a 10 s: área = −2·4 = −8 m/s. Velocidad en t = 10 s: 16 − 8 = 8 m/s.", "Leer el eje vertical (3 m/s² o −2 m/s²) da aceleraciones, no velocidades. Y olvidar los 4 m/s iniciales da 12 m/s y 4 m/s.", "Entre 6 s y 10 s la moto frena, pero sigue avanzando: la aceleración negativa no quiere decir que vaya hacia atrás."],
+      "verificar": [ { "fn": "estado", "args": [{ "v0": 4, "tramos": [{ "dur": 4, "a": 3 }, { "dur": 2, "a": 0 }, { "dur": 4, "a": -2 }] }, 4], "espera": { "v": 16 } },
+        { "fn": "estado", "args": [{ "v0": 4, "tramos": [{ "dur": 4, "a": 3 }, { "dur": 2, "a": 0 }, { "dur": 4, "a": -2 }] }, 6], "espera": { "v": 16 } },
+        { "fn": "estado", "args": [{ "v0": 4, "tramos": [{ "dur": 4, "a": 3 }, { "dur": 2, "a": 0 }, { "dur": 4, "a": -2 }] }, 8], "espera": { "v": 12, "a": -2 } },
+        { "fn": "estado", "args": [{ "v0": 4, "tramos": [{ "dur": 4, "a": 3 }, { "dur": 2, "a": 0 }, { "dur": 4, "a": -2 }] }, 10], "espera": { "v": 8 } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Un vagón de prueba se mueve por una vía recta. Su gráfica velocidad-tiempo es una recta que baja de 12 m/s en t = 0 a −6 m/s en t = 6 s, y luego se mantiene en −6 m/s hasta t = 8 s. Entre t = 0 y t = 8 s, ¿cuál es su desplazamiento y qué distancia recorre?",
+      "respuesta": "El desplazamiento es 6 m y la distancia recorrida es 42 m.",
+      "pasos": ["La recta baja 18 m/s en 6 s: la aceleración es −3 m/s². Corta el eje del tiempo cuando 12 − 3t = 0, en t = 4 s. Ahí el vagón se detiene y empieza a regresar.", "El área sobre el eje, de 0 a 4 s, es un triángulo: ½·4·12 = 24 m hacia adelante.", "El área bajo el eje tiene dos partes: el triángulo de 4 a 6 s, ½·2·6 = 6 m, y el rectángulo de 6 a 8 s, 2·6 = 12 m. En total, 18 m de regreso.", "Desplazamiento: 24 − 18 = 6 m. Distancia: 24 + 18 = 42 m. El área bajo el eje cuenta negativa para el desplazamiento y positiva para la distancia.", "La pendiente (−3 m/s²) es la aceleración: no sirve para el desplazamiento. Lo que pide la pregunta es el área."],
+      "verificar": [ { "fn": "recorrido", "args": [{ "v0": 12, "tramos": [{ "dur": 6, "a": -3 }, { "dur": 2, "a": 0 }] }, 0, 8], "espera": { "distancia": 42, "desplazamiento": 6 } },
+        { "fn": "estado", "args": [{ "v0": 12, "tramos": [{ "dur": 6, "a": -3 }, { "dur": 2, "a": 0 }] }, 4], "espera": { "x": 24, "v": 0, "a": -3 } },
+        { "fn": "estado", "args": [{ "v0": 12, "tramos": [{ "dur": 6, "a": -3 }, { "dur": 2, "a": 0 }] }, 6], "espera": { "x": 18, "v": -6 } },
+        { "fn": "pendiente", "args": [0, 12, 6, -6], "espera": { "valor": -3 } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Desde un puente, a 25 m sobre el agua de un río, se lanza una piedra verticalmente hacia arriba a 20 m/s. ¿Qué altura máxima alcanza sobre el agua, cuánto tarda en llegar al agua y con qué rapidez llega?",
+      "respuesta": "Sube hasta 45 m sobre el agua, llega al agua a los 5 s y con una rapidez de 30 m/s.",
+      "pasos": ["Origen en el agua y positivo hacia arriba: y₀ = 25 m, v₀ = 20 m/s y a = −10 m/s² durante todo el vuelo, al subir y al bajar.", "Subida: 0 = 20 − 10t, así que t = 2 s; sube 20²/20 = 20 m sobre el puente. Altura máxima: 25 + 20 = 45 m sobre el agua.", "Llegada al agua: 0 = 25 + 20t − 5t², o t² − 4t − 5 = 0, que da (t − 5)(t + 1) = 0. Sirve t = 5 s; la raíz negativa no tiene sentido aquí.", "Velocidad al llegar: v = 20 − 10·5 = −30 m/s, es decir, 30 m/s hacia abajo. Comprueba: desde 45 m cae libre 3 s y 10·3 = 30 m/s.", "Si cambias el signo de g al empezar a bajar, o mides la altura desde el puente y la sumas a medias, los números ya no cierran. Elige un origen y un signo, y no los cambies."],
+      "verificar": [ { "fn": "lanzamientoVertical", "args": [{ "y0": 25, "v0": 20 }], "espera": { "tSubida": 2, "H": 45, "tSuelo": 5, "vSuelo": -30 } },
+        { "fn": "estado", "args": [{ "x0": 25, "v0": 20, "a": -10 }, 5], "espera": { "x": 0, "v": -30, "a": -10 } },
+        { "fn": "estado", "args": [{ "x0": 25, "v0": 20, "a": -10 }, 2], "espera": { "x": 45, "v": 0 } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Un auto está detenido en un cruce. En el instante en que una combi pasa a su lado a 10 m/s constantes, el auto arranca en el mismo sentido con una aceleración pareja de 2 m/s². ¿Cuánto tarda en alcanzar a la combi, qué velocidad lleva cuando la alcanza y cuál es la mayor distancia que llegan a separarse antes de eso?",
+      "respuesta": "La alcanza a los 10 s, a 100 m del cruce, cuando lleva 20 m/s. La mayor separación es de 25 m, a los 5 s.",
+      "pasos": ["Origen en el cruce. Combi: x = 10t. Auto: x = t².", "Lo alcanza cuando están en el mismo lugar: t² = 10t, así que t = 0 (la partida) o t = 10 s. Posición: 10·10 = 100 m.", "En ese instante el auto va a v = 2·10 = 20 m/s, el doble que la combi. Estar en el mismo lugar no quiere decir ir igual de rápido: lo está pasando.", "Mientras el auto va más lento que la combi, se separan; cuando va más rápido, se acercan. La separación es máxima cuando las velocidades son iguales: 2t = 10, así que t = 5 s.", "A los 5 s: la combi está en 50 m y el auto en 25 m. La mayor separación es 25 m. El instante de igual velocidad (5 s) no es el del encuentro (10 s)."],
+      "verificar": [ { "fn": "cruces", "args": [{ "v0": 10 }, { "v0": 0, "a": 2 }, 20], "espera": { "0": 0, "1": 10 }, "largo": 2 },
+        { "fn": "igualVelocidad", "args": [{ "v0": 10 }, { "v0": 0, "a": 2 }, 20], "espera": { "0": 5 }, "largo": 1 },
+        { "fn": "estado", "args": [{ "v0": 0, "a": 2 }, 10], "espera": { "x": 100, "v": 20 } },
+        { "fn": "estado", "args": [{ "v0": 10 }, 10], "espera": { "x": 100, "v": 10 } },
+        { "fn": "estado", "args": [{ "v0": 0, "a": 2 }, 5], "espera": { "x": 25, "v": 10 } },
+        { "fn": "estado", "args": [{ "v0": 10 }, 5], "espera": { "x": 50 } } ]
+    }
+  ]
+}
