@@ -76,7 +76,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "mruv"
+     ]
     },
     {
      "id": "fisica.movimiento-parabolico-y-circular",
@@ -814,7 +816,8 @@
      "potencial_visual": "alto",
      "grado": 4,
      "plantillas": [
-      "estequiometria-limitante"
+      "estequiometria-limitante",
+      "limitante-particulas"
      ]
     },
     {
@@ -845,7 +848,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "gases"
+     ]
     },
     {
      "id": "quimica.liquidos-y-solidos",
@@ -899,7 +904,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "soluciones"
+     ]
     },
     {
      "id": "quimica.cinetica-quimica",
@@ -4048,6 +4055,57 @@
     "/plantillas/estequiometria-limitante/generador.js"
    ]
   },
+  "gases": {
+   "id": "gases",
+   "titulo": "Gases",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.gases"
+   ],
+   "url": "/plantillas/gases/index.html",
+   "papel": "/plantillas/gases/papel.json",
+   "archivos": [
+    "/plantillas/gases/index.html",
+    "/plantillas/gases/motor.js",
+    "/plantillas/gases/papel.json"
+   ]
+  },
+  "limitante-particulas": {
+   "id": "limitante-particulas",
+   "titulo": "Reactivo limitante con partículas",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.estequiometria"
+   ],
+   "url": "/plantillas/limitante-particulas/index.html",
+   "papel": "/plantillas/limitante-particulas/papel.json",
+   "archivos": [
+    "/plantillas/limitante-particulas/index.html",
+    "/plantillas/limitante-particulas/motor.js",
+    "/plantillas/limitante-particulas/papel.json"
+   ]
+  },
+  "mruv": {
+   "id": "mruv",
+   "titulo": "MRUV y gráficas",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.movimiento-rectilineo"
+   ],
+   "url": "/plantillas/mruv/index.html",
+   "papel": "/plantillas/mruv/papel.json",
+   "archivos": [
+    "/plantillas/mruv/index.html",
+    "/plantillas/mruv/motor.js",
+    "/plantillas/mruv/papel.json"
+   ]
+  },
   "optica-espejo-esferico": {
    "id": "optica-espejo-esferico",
    "titulo": "Espejos esféricos",
@@ -4095,6 +4153,23 @@
    "papel": null,
    "archivos": [
     "/plantillas/porcentajes-sucesivos/generador.js"
+   ]
+  },
+  "soluciones": {
+   "id": "soluciones",
+   "titulo": "Soluciones: concentración, dilución y mezcla",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.soluciones"
+   ],
+   "url": "/plantillas/soluciones/index.html",
+   "papel": "/plantillas/soluciones/papel.json",
+   "archivos": [
+    "/plantillas/soluciones/index.html",
+    "/plantillas/soluciones/motor.js",
+    "/plantillas/soluciones/papel.json"
    ]
   }
  }

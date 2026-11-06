@@ -250,41 +250,41 @@
       "id": "fi6",
       "seccion": "Física",
       "nombre": "MRUV y gráficas",
-      "inicio": "2026-12-01",
+      "inicio": "2026-11-06",
       "fin": "2026-12-07",
-      "estado": "pendiente",
-      "progreso": 0,
+      "estado": "en_curso",
+      "progreso": 80,
       "critico": false,
       "depende_de": [],
-      "notas": ""
+      "notas": "Hecho: motor por tramos (frena sin retroceder, cruces e igual velocidad exactos, lanzamiento vertical), 18 casos verificados aparte, 37 pruebas (pendientes y áreas comprobadas numéricamente), papel (10), paso a paso (combi con pista y las tres gráficas amarradas; predicción de la forma de x-t y K1 con el mototaxi) y qué pasa si (6: frenado, C1, G3, G2, G4 y el quinto segundo). Falta: dibujar la gráfica con el dedo (estilo Graphs and Tracks) y el pase con alumnos."
     },
     {
       "id": "qu1",
       "seccion": "Química",
       "nombre": "Estequiometría y reactivo limitante con partículas",
-      "inicio": "2026-11-16",
+      "inicio": "2026-11-06",
       "fin": "2026-11-23",
       "estado": "en_curso",
-      "progreso": 40,
+      "progreso": 85,
       "critico": false,
       "depende_de": [
         "pl3"
       ],
-      "notas": "plantillas/estequiometria-limitante (predicciones). Falta: escena de partículas y problemas de papel"
+      "notas": "plantillas/estequiometria-limitante (predicciones) y plantillas/limitante-particulas (escena): motor de reacciones con balance y masas de academia, 13 casos verificados aparte, 31 pruebas, papel (9), caja de partículas con la receta, 4 predicciones (ES20/21/22, ES8, ES9/11, ES15/20) y 5 qué pasa si (ES20/21, ES24, ES13, ES19, ES23). Falta: composición y fórmula empírica, rendimiento y pureza, y el pase con alumnos."
     },
     {
       "id": "qu2",
       "seccion": "Química",
       "nombre": "Gases y soluciones",
-      "inicio": "2026-11-23",
+      "inicio": "2026-11-06",
       "fin": "2026-11-27",
-      "estado": "pendiente",
-      "progreso": 0,
+      "estado": "en_curso",
+      "progreso": 85,
       "critico": false,
       "depende_de": [
         "pl3"
       ],
-      "notas": ""
+      "notas": "Gases hecho (plantillas/gases): motor con ecuación de estado, absoluta y manométrica, densidad, Dalton, Graham y caja de partículas con choques promedio y efusión; 14 casos verificados aparte; 34 pruebas; papel (9); tanque que se enfría y se calienta (GQ1, GQ2, GQ4, GQ5) y 5 qué pasa si (GQ1, GQ11, GQ20, GQ12, Dalton). Soluciones hecho (plantillas/soluciones, construida por un subagente en paralelo): motor de concentraciones con cuadros y puntos, 23 casos verificados aparte, 47 pruebas, papel (10), dilución guiada con lupa y 5 qué pasa si (SO7/SO9, SO10, SO11, SO14, SO15). Falta: el pase con alumnos."
     },
     {
       "id": "qu3",

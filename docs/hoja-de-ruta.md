@@ -80,11 +80,11 @@ gantt
     Circuitos de corriente continua :active, fi2, 2026-11-05, 2026-11-21
     Calorimetría y cambios de fase :active, fi3, 2026-11-05, 2026-11-27
     Trabajo, energía y potencia :active, fi4, 2026-11-06, 2026-12-03
-    MRUV y gráficas :fi6, 2026-12-01, 2026-12-08
+    MRUV y gráficas :active, fi6, 2026-11-06, 2026-12-08
 
     section Química
-    Estequiometría y reactivo limitante con partículas :active, qu1, 2026-11-16, 2026-11-24
-    Gases y soluciones :qu2, 2026-11-23, 2026-11-28
+    Estequiometría y reactivo limitante con partículas :active, qu1, 2026-11-06, 2026-11-24
+    Gases y soluciones :active, qu2, 2026-11-06, 2026-11-28
     Ácidos, bases y pH :qu3, 2026-11-27, 2026-12-03
     Redox y electroquímica :qu4, 2026-12-02, 2026-12-08
 
