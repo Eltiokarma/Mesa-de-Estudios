@@ -120,6 +120,7 @@ Los ejemplos son propios, escritos para este informe.
 | RV24 | **Lo contracausal se lee como causal**: se pone "por eso" donde va "sin embargo", o se interpreta una concesiva como causa. | "Llovió toda la semana; ___, el río no creció": distractor "por lo tanto"; correcta "sin embargo". | Con conector, la relación contracausal da más errores que la causal en adultos de distinta escolaridad (tarea de continuar oraciones); la causalidad se procesa "por defecto". Orden de dificultad al completar oraciones (niños de 3.º, 6.º y 9.º grado): *because* (porque) < *and* (y) < *but* (pero) < *even though* (aunque), igual en todos los grados. Porcentajes no visibles. | Parcial (dos estudios coinciden en el orden; sin cifra visible) | Zunino (2016); Zunino, Abusamra y Raiter (2016); McClure y Steffensen (1980) |
 | RV25 | **Los concesivos del registro escrito** ("si bien", "no obstante", "aun cuando") se confunden con aditivos o con causales. | "___ el Inca Garcilaso escribió en España, su obra habla del Cusco": distractor "Dado que"; correcta "Si bien". | Los concesivos escritos siguen siendo difíciles en la adolescencia; a los 10 años los adversativos y concesivos no llegan al nivel adulto. El vocabulario y la exposición a lo escrito pesan más que la edad. | Parcial (por verificar) | Cain y Nash (2011); Zufferey y Gygax (2020); Tskhovrebova, Zufferey y Gygax (2022) |
 | RV26 | **Se pone un aditivo donde hay contraste** ("además" por "en cambio"). | "Arequipa tiene clima seco; ___, Iquitos es húmedo." Distractor: "además". | Sin cifra propia; ligado al orden de dificultad de RV24 (*and* es más fácil que *but*). | Hipótesis (ligada a RV24) | — |
+| RV35 | **Se elige un conector de otra clase por descarte o porque "suena bien"** (reformulación, ejemplo o tiempo) donde la relación es otra. | "Al principio, el efecto parece bueno. ___ ese aumento es engañoso": distractor "Es decir,"; correcta "Sin embargo,". | Sin estudio encontrado. | Hipótesis (ligada a RV24) | — |
 | RV27 | **El pronombre se asigna al último sustantivo mencionado.** | "El dirigente esperó al alcalde en la plaza; cuando este llegó, él le entregó el pliego de reclamos." ¿Quién entregó el pliego? Correcta: el dirigente (quien presenta reclamos). Distractor: el alcalde, el último mencionado. | En 3.º grado los niños superan el 90 % de aciertos, sea cual sea su nivel socioeconómico; el pronombre sin pista de género es el más difícil (Argentina). Que, sin pistas, el referente se asigne al último personaje mencionado aparece en un resumen de búsqueda, no confirmado en el de Borzone. Los lectores débiles fallan más, sobre todo si hace falta una inferencia, y les cuesta controlar su comprensión de las anáforas. | Parcial (por verificar; niños) | Borzone (2005); Yuill y Oakhill (1986); Ehrlich, Rémond y Tardieu (1999) |
 
 ### Plan de redacción y eliminación de oraciones
@@ -147,6 +148,7 @@ Errores que suponemos en los ítems de academia, sin estudio que los mida. Cada 
 | Extrapolación que repite el texto (RV12) | RV5 (eco literal) |
 | Antónimo de otro rasgo (RV21) | RV19 (mismo campo, no sinónimo) |
 | Aditivo por contraste (RV26) | RV24 (contracausal leído como causal) |
+| Conector de otra clase por descarte (RV35) | RV24 |
 | Plan por cronología superficial (RV29) | Sin dato; el único estudio apunta en contra |
 | Eliminar lo pertinente (RV30) | RV5 (eco literal) |
 | Redundancia por paráfrasis (RV32) | Sin dato |
@@ -174,7 +176,7 @@ El diseño detallado va en la pieza 2 de la rutina (`docs/formato-lectura.md`). 
 | Intención del autor | RV13 (forma por propósito), RV14 (sin postura), RV33 (postura que no toma), RV2 |
 | Analogías | RV15 (asociación con C), RV16 (invertida), RV17 (mismo campo) |
 | Sinónimo o antónimo en contexto | RV18 (sentido frecuente), RV19 (mismo campo), RV20 (parónimo), RV21 |
-| Conectores y oraciones incompletas | RV24 (causal por contracausal), RV25 (concesivo), RV26 (aditivo), RV23 |
+| Conectores y oraciones incompletas | RV24 (causal por contracausal), RV25 (concesivo), RV26 (aditivo), RV35 (otra clase), RV23 |
 | Referente | RV27 (último sustantivo) |
 | Plan de redacción | RV28 (vieja-nueva o contraste), RV29 (cronología) |
 | Eliminación de oraciones | RV30 (elimina lo pertinente), RV31 (deja lo incompatible), RV32 (redundancia) |

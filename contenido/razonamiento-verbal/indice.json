@@ -1,6 +1,6 @@
 {
-  "entrada": null,
-  "salida": null,
+  "entrada": "t000a",
+  "salida": "t000b",
   "textos": [
     "t001",
     "t002",

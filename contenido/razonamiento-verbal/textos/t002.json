@@ -1,6 +1,6 @@
 {
   "id": "t002",
-  "version": 1,
+  "version": 2,
   "titulo": "El puente que se teje cada año",
   "tema": "Perú andino · patrimonio",
   "grado": 3,
@@ -33,7 +33,7 @@
       {
         "id": "o5",
         "rol": "contraste",
-        "t": "Podría pensarse que es una pérdida de trabajo construir cada año algo que dura tan poco."
+        "t": "Podría pensarse que construir cada año algo que dura tan poco es una pérdida de tiempo y de esfuerzo."
       },
       {
         "id": "o6",
@@ -76,7 +76,14 @@
         },
         "explicacion": "La oración 6 dice la idea del autor (la renovación mantiene vivo el saber) y la 8 la repite con otras palabras. El primer párrafo solo describe el puente.",
         "explicaciones": {
-          "o5": "Esa oración presenta una opinión que el autor va a rechazar: es lo que el \"Sin embargo\" de la oración 6 contradice."
+          "o1": "La primera oración dice dónde está el puente: presenta el tema, pero no la idea del autor.",
+          "o2": "Dice qué es el puente y con qué se hace; es información de base.",
+          "o3": "Describe el trabajo de los comuneros: es un detalle.",
+          "o4": "Cuenta qué pasa con el puente viejo: es un detalle del procedimiento.",
+          "o5": "Esa oración presenta una opinión que el autor va a rechazar: es lo que el \"Sin embargo\" de la oración 6 contradice.",
+          "o7": "Dice cómo se transmite el saber; apoya la idea principal, pero no la dice.",
+          "o9": "Es un reconocimiento al puente, un dato que apoya la idea, no la idea misma.",
+          "ninguna": "La oración 6 sí lo dice completo: la renovación mantiene vivo el puente, porque el saber solo sobrevive si se practica."
         }
       },
       "enunciado": "¿Cuál es la idea principal del texto?",
@@ -121,14 +128,19 @@
       "previo": {
         "tipo": "clasificar",
         "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
-        "sonda": "Si un año no se renovara el puente, el saber para hacerlo podría empezar a perderse.",
-        "clase": "se-deduce",
+        "sonda": "Los jóvenes de Canas aprenden a trenzar la q'oya en la escuela.",
+        "clase": "no-se-sabe",
         "codigos": {
-          "lo-dice": "RV6",
-          "no-se-sabe": "RV34",
+          "lo-dice": "RV5",
+          "se-deduce": "RV7",
           "lo-contradice": null
         },
-        "explicacion": "El texto no lo dice con esas palabras, pero se deduce de la oración 6: si el saber solo sobrevive cuando se practica, dejar de practicarlo lo pone en riesgo."
+        "explicacion": "El texto dice que los mayores enseñan a los jóvenes mientras trabajan en el puente (oración 7). No dice nada sobre la escuela: no se puede saber.",
+        "explicaciones": {
+          "lo-dice": "El texto habla de jóvenes que aprenden, pero no de la escuela: dice que aprenden de los mayores mientras trabajan (oración 7).",
+          "se-deduce": "Que aprendan mientras trabajan no permite concluir nada sobre la escuela: eso va más allá del texto.",
+          "lo-contradice": "El texto no dice que no aprendan en la escuela; solo dice que aprenden de los mayores mientras trabajan. Que aprendan de una forma no excluye la otra."
+        }
       },
       "enunciado": "Se infiere del texto que la renovación anual del puente",
       "alternativas": [
@@ -169,7 +181,7 @@
       "id": "p3",
       "tipo": "sentido-contextual",
       "unidad": "razonamiento-verbal.sentido-contextual",
-      "enunciado": "En el texto, la palabra PÉRDIDA (en \"una pérdida de trabajo\") significa",
+      "enunciado": "En el texto, la palabra PÉRDIDA (en \"una pérdida de tiempo y de esfuerzo\") significa",
       "alternativas": [
         {
           "t": "un desperdicio.",
@@ -177,7 +189,7 @@
           "evidencia": [
             "o5"
           ],
-          "explicacion": "La oración dice que podría parecer un trabajo hecho en vano, porque lo construido dura poco: un desperdicio."
+          "explicacion": "La oración dice que podría parecer un esfuerzo hecho en vano, porque lo construido dura poco: un desperdicio."
         },
         {
           "t": "un extravío.",
@@ -187,7 +199,7 @@
         {
           "t": "una disminución.",
           "codigo": "RV19",
-          "explicacion": "Es del mismo campo que \"pérdida\" (perder peso, perder agua), pero aquí no disminuye nada: el trabajo se hace en vano."
+          "explicacion": "Es del mismo campo que \"pérdida\" (perder peso, perder agua), pero aquí no disminuye nada: el tiempo y el esfuerzo se gastan en vano."
         },
         {
           "t": "una costumbre que dura poco.",
@@ -224,8 +236,8 @@
         },
         {
           "t": "nadie volvería a cruzar el río Apurímac por ese lugar.",
-          "codigo": "RV11",
-          "explicacion": "Es una consecuencia exagerada y absoluta que no sale del texto: el puente seguiría ahí."
+          "codigo": "RV7",
+          "explicacion": "Es una consecuencia que no sale del texto: aunque la paja no se pudriera, el puente seguiría ahí y se podría cruzar."
         }
       ]
     }

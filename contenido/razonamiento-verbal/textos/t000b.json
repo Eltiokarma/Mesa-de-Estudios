@@ -1,0 +1,186 @@
+{
+  "version": 1,
+  "grado": 3,
+  "dificultad": 1,
+  "tipo_texto": "expositivo",
+  "origen": "propio",
+  "fecha": "2026-11-06",
+  "revision": null,
+  "id": "t000b",
+  "titulo": "Escalones para sembrar",
+  "tema": "Perú andino · agricultura en laderas",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "En muchas laderas de los Andes, los antiguos pobladores construyeron andenes, unas terrazas que suben por el cerro como escalones."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "Cada andén está sostenido por un muro de piedra, que detiene la tierra que la lluvia arrastraría cuesta abajo."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "Sobre cada muro queda una franja plana de tierra, donde se siembra papa, maíz o quinua."
+      }
+    ],
+    [
+      {
+        "id": "o4",
+        "rol": "detalle",
+        "t": "Sin embargo, cuando un muro se derrumba, la lluvia empieza a llevarse la tierra de ese escalón."
+      },
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "Por eso, en las comunidades que todavía los usan, las familias reparan los muros caídos cada año, y cada familia cuida los andenes donde siembra."
+      },
+      {
+        "id": "o6",
+        "rol": "detalle",
+        "t": "Las piedras de los muros guardan el calor del sol durante el día y lo devuelven de noche, lo que ayuda a proteger las plantas del frío."
+      },
+      {
+        "id": "o7",
+        "rol": "detalle",
+        "t": "Hoy, muchos andenes abandonados se están recuperando en distintas regiones del país."
+      }
+    ],
+    [
+      {
+        "id": "o8",
+        "rol": "principal",
+        "t": "Para quienes viven en las laderas, entonces, el andén no es solo una obra antigua: es la clave para poder sembrar donde la pendiente no lo permitiría."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "enunciado": "¿Cuál es la idea principal del texto?",
+      "alternativas": [
+        {
+          "t": "Los andenes hacen posible sembrar en las laderas, siempre que se reparen sus muros.",
+          "correcta": true,
+          "evidencia": [
+            "o5",
+            "o8"
+          ],
+          "explicacion": "Junta lo que dice la oración 8 (el andén es la clave para sembrar en la pendiente) con lo que explican las oraciones 4 y 5: hay que reparar los muros."
+        },
+        {
+          "t": "Cada andén está sostenido por un muro de piedra que detiene la tierra.",
+          "codigo": "RV1",
+          "origen": "o2",
+          "explicacion": "Es un detalle de cómo está hecho un andén. El texto lo cuenta para llegar a una idea más amplia."
+        },
+        {
+          "t": "Los pueblos que viven en los Andes se adaptaron a su entorno.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto habla de los andenes y de sembrar en las laderas, no de todos los pueblos andinos."
+        },
+        {
+          "t": "Cuando un muro se derrumba, la lluvia empieza a llevarse la tierra del escalón.",
+          "codigo": "RV3",
+          "origen": "o4",
+          "explicacion": "Es una parte del texto, pero deja fuera lo principal: que los andenes, reparados, son los que permiten sembrar en la pendiente."
+        },
+        {
+          "t": "Los andenes más conocidos del Perú están en el valle del Colca.",
+          "codigo": "RV8",
+          "explicacion": "Puede ser cierto, pero el texto no lo menciona. La idea principal sale de lo que se leyó."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.inferencias",
+      "enunciado": "Se infiere del texto que, si las familias dejaran de reparar los muros caídos,",
+      "alternativas": [
+        {
+          "t": "los andenes irían perdiendo su tierra con el tiempo.",
+          "correcta": true,
+          "evidencia": [
+            "o4",
+            "o5"
+          ],
+          "explicacion": "La oración 4 dice que, cuando un muro cae, la lluvia se lleva la tierra; las reparaciones (oración 5) lo evitan. Sin ellas, los andenes perderían su tierra."
+        },
+        {
+          "t": "las comunidades tendrían que dejar la sierra al año siguiente.",
+          "codigo": "RV7",
+          "explicacion": "El texto dice que la lluvia \"empieza\" a llevarse la tierra; dejar la sierra al año siguiente va mucho más allá de lo que se puede concluir."
+        },
+        {
+          "t": "las piedras dejarían de guardar calor y la helada se llevaría la tierra.",
+          "codigo": "RV5",
+          "origen": "o6",
+          "explicacion": "Usa palabras del texto (\"piedras\", \"calor\"), pero el texto no dice que la helada se lleve la tierra: lo que la arrastra es la lluvia."
+        },
+        {
+          "t": "todos los andenes del país desaparecerían de inmediato.",
+          "codigo": "RV11",
+          "explicacion": "\"Todos\" y \"de inmediato\" dicen más de lo que el texto permite: el daño sería lento y en los andenes que no se reparen."
+        },
+        {
+          "t": "cada andén seguiría teniendo una franja plana para sembrar.",
+          "codigo": "RV12",
+          "origen": "o3",
+          "explicacion": "Repite lo que el texto ya dice (oración 3); no saca la consecuencia de dejar de reparar los muros."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.sentido-contextual",
+      "enunciado": "En la oración 8, la palabra CLAVE significa",
+      "alternativas": [
+        {
+          "t": "lo que lo hace posible.",
+          "correcta": true,
+          "evidencia": [
+            "o8"
+          ],
+          "explicacion": "La oración dice que, sin andenes, no se podría sembrar en la pendiente: el andén es lo que lo hace posible."
+        },
+        {
+          "t": "una contraseña.",
+          "codigo": "RV18",
+          "explicacion": "Es un sentido común de \"clave\" (la de un celular), pero aquí no se habla de nada secreto."
+        },
+        {
+          "t": "una ayuda importante.",
+          "codigo": "RV19",
+          "explicacion": "Está cerca: el andén ayuda. Pero \"clave\" dice algo más fuerte: que sin él no se podría sembrar."
+        },
+        {
+          "t": "una obra antigua.",
+          "codigo": "RV5",
+          "origen": "o8",
+          "explicacion": "Repite palabras de la misma oración, pero la oración dice justo que el andén \"no es solo una obra antigua\"."
+        }
+      ]
+    }
+  ],
+  "hechos": [
+    {
+      "afirmacion": "Los andenes son terrazas con muros de piedra que retienen el suelo y reducen la erosión en las laderas.",
+      "fuente": "Literatura sobre andenería (p. ej., Denevan, W. M. (2001). Cultivated landscapes of native Amazonia and the Andes. Oxford University Press); Minagri, programas de recuperación de andenes."
+    },
+    {
+      "afirmacion": "Los muros de piedra guardan calor de día y lo devuelven de noche, lo que ayuda a proteger del frío.",
+      "fuente": "Descripción frecuente del microclima de los andenes; por confirmar con un estudio concreto."
+    },
+    {
+      "afirmacion": "Hay programas de recuperación de andenes abandonados en el Perú.",
+      "fuente": "Minagri y Agro Rural, proyectos de recuperación de andenes; por citar."
+    }
+  ]
+}

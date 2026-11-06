@@ -1,6 +1,6 @@
 {
   "id": "t001",
-  "version": 1,
+  "version": 2,
   "titulo": "El frío que conserva",
   "tema": "Perú andino · tecnología tradicional",
   "grado": 3,
@@ -16,7 +16,7 @@
       {
         "id": "o2",
         "rol": "principal",
-        "t": "Sin embargo, las familias aymaras y quechuas convirtieron ese mismo frío en una herramienta."
+        "t": "Sin embargo, las familias aimaras y quechuas convirtieron ese mismo frío en una herramienta."
       },
       {
         "id": "o3",
@@ -60,6 +60,59 @@
   "preguntas": [
     {
       "id": "p1",
+      "tipo": "intencion",
+      "unidad": "razonamiento-verbal.inferencias",
+      "previo": {
+        "tipo": "proposito",
+        "pide": "Antes de ver las alternativas: ¿qué busca sobre todo el autor?",
+        "aceptada": "explicar",
+        "codigos": {
+          "convencer": "RV33",
+          "narrar": "RV13"
+        },
+        "explicacion": "El texto cuenta cómo se hace el chuño y para qué sirve, sin defender una postura ni contar una historia.",
+        "explicaciones": {
+          "convencer": "El autor no defiende una postura ni discute otra: cuenta cómo se hace el chuño y para qué sirve.",
+          "narrar": "El texto no sigue a personas ni cuenta hechos en orden: describe un procedimiento que se repite cada año."
+        }
+      },
+      "enunciado": "¿Cuál es la intención principal del autor?",
+      "alternativas": [
+        {
+          "t": "Explicar cómo las familias andinas aprovechan la helada para conservar la papa.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o9"
+          ],
+          "explicacion": "El texto expone un procedimiento y su resultado, sin tomar partido: explica."
+        },
+        {
+          "t": "Narrar la vida diaria de las familias aimaras y quechuas.",
+          "codigo": "RV13",
+          "explicacion": "El texto no cuenta una historia ni sigue a personas: describe un procedimiento."
+        },
+        {
+          "t": "Describir el chuño negro: cuánto pesa, cuánto tiempo dura y por qué se lleva con facilidad en los viajes.",
+          "codigo": "RV3",
+          "origen": "o6",
+          "explicacion": "El chuño aparece, pero el texto lo usa para mostrar cómo la helada pasa de amenaza a recurso, y eso esta alternativa lo deja fuera."
+        },
+        {
+          "t": "Convencer al lector de que el chuño es mejor que la papa fresca.",
+          "codigo": "RV33",
+          "explicacion": "El texto no dice cuál es mejor ni intenta convencer: solo dice que el chuño pesa menos que la papa fresca y que se guarda varios años."
+        },
+        {
+          "t": "Informar sobre el clima de las punas del sur andino.",
+          "codigo": "RV2",
+          "origen": "o1",
+          "explicacion": "El clima es el punto de partida, pero el texto trata de cómo se aprovecha la helada, no del clima en general."
+        }
+      ]
+    },
+    {
+      "id": "p2",
       "tipo": "idea-principal",
       "unidad": "razonamiento-verbal.tema-e-idea-principal",
       "previo": {
@@ -73,9 +126,16 @@
         "codigos": {
           "o1": "RV4"
         },
-        "explicacion": "La oración 2 anuncia la idea y la 9 la completa: el mismo frío que amenaza la chacra sirve para conservar la papa. Las demás cuentan cómo se hace o qué se logra.",
+        "explicacion": "La oración 9 lo dice completo: el mismo frío que amenaza la chacra se vuelve la forma de conservar la papa. La 2 ya lo anunciaba.",
         "explicaciones": {
-          "o1": "La primera oración presenta el problema, pero el texto va más allá: dice cómo ese problema se vuelve útil."
+          "o1": "La primera oración presenta el problema, pero el texto va más allá: dice cómo ese problema se vuelve útil.",
+          "o3": "Cuenta cuándo y cómo se extienden las papas: es un paso del procedimiento, no la idea que lo junta todo.",
+          "o4": "Explica por qué sale el agua: es un detalle del procedimiento.",
+          "o5": "Es el último paso del procedimiento, no la idea que lo junta todo.",
+          "o6": "Dice qué se obtiene, el chuño, pero no que el frío pasa de amenaza a recurso.",
+          "o7": "Es una ventaja del chuño, un detalle que apoya la idea principal.",
+          "o8": "Es una consecuencia de que el chuño se conserve; no resume todo el texto.",
+          "ninguna": "La oración 9 sí lo dice completo: el mismo frío que amenaza la chacra se vuelve la forma de conservar la papa."
         }
       },
       "enunciado": "¿Cuál es la idea principal del texto?",
@@ -90,7 +150,7 @@
           "explicacion": "Junta las dos partes del texto: la helada como amenaza para la chacra y como medio para conservar la papa."
         },
         {
-          "t": "Después de congelarlas durante varias noches, las familias pisan las papas para sacarles el agua que les queda.",
+          "t": "Las familias pisan las papas para sacarles el agua que les queda.",
           "codigo": "RV1",
           "origen": "o5",
           "explicacion": "Es verdad, pero es un paso del procedimiento. El texto lo cuenta para explicar algo más amplio."
@@ -114,7 +174,7 @@
       ]
     },
     {
-      "id": "p2",
+      "id": "p3",
       "tipo": "sentido-contextual",
       "unidad": "razonamiento-verbal.sentido-contextual",
       "enunciado": "En el texto, la palabra HERRAMIENTA significa",
@@ -144,55 +204,6 @@
           "codigo": "RV5",
           "origen": "o1",
           "explicacion": "Repite palabras de la primera oración, pero el \"Sin embargo\" de la oración 2 dice lo contrario: ese frío ahora se usa a favor."
-        }
-      ]
-    },
-    {
-      "id": "p3",
-      "tipo": "intencion",
-      "unidad": "razonamiento-verbal.inferencias",
-      "previo": {
-        "tipo": "proposito",
-        "pide": "Antes de ver las alternativas: ¿qué busca sobre todo el autor?",
-        "aceptada": "explicar",
-        "codigos": {
-          "convencer": "RV33",
-          "narrar": "RV13"
-        },
-        "explicacion": "El texto cuenta cómo se hace el chuño y para qué sirve, sin defender una postura ni contar una historia."
-      },
-      "enunciado": "¿Cuál es la intención principal del autor?",
-      "alternativas": [
-        {
-          "t": "Explicar cómo las familias andinas aprovechan la helada para conservar la papa.",
-          "correcta": true,
-          "evidencia": [
-            "o2",
-            "o9"
-          ],
-          "explicacion": "El texto expone un procedimiento y su resultado, sin tomar partido: explica."
-        },
-        {
-          "t": "Narrar la vida diaria de las familias aymaras y quechuas.",
-          "codigo": "RV13",
-          "explicacion": "El texto no cuenta una historia ni sigue a personas: describe un procedimiento."
-        },
-        {
-          "t": "Describir el chuño negro: cuánto pesa, cuánto tiempo dura y por qué se lleva con facilidad en los viajes.",
-          "codigo": "RV3",
-          "origen": "o6",
-          "explicacion": "El chuño aparece, pero el texto lo usa para mostrar cómo la helada pasa de amenaza a recurso, y eso esta alternativa lo deja fuera."
-        },
-        {
-          "t": "Convencer al lector de que el chuño es mejor que la papa fresca.",
-          "codigo": "RV33",
-          "explicacion": "El texto no dice cuál es mejor ni intenta convencer: solo dice que el chuño pesa menos que la papa fresca y que se guarda varios años."
-        },
-        {
-          "t": "Informar sobre el clima de las punas del sur andino.",
-          "codigo": "RV2",
-          "origen": "o1",
-          "explicacion": "El clima es el punto de partida, pero el texto trata de cómo se aprovecha la helada, no del clima en general."
         }
       ]
     }
