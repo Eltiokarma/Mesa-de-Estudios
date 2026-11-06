@@ -164,12 +164,6 @@ for (const b of bancos) {
   });
 }
 
-test('aritmética marca qué pares miden transferencia (ideas que el módulo no practica)', () => {
-  const b = bancos.find(x => x.curso === 'aritmetica');
-  const tr = b.pares.filter(p => p.transferencia === true).map(p => p.par);
-  assert.ok(tr.length >= 1 && tr.length < b.pares.length, `transferencia: ${tr.join(', ')}`);
-});
-
 test('app/datos/pruebas.json no trae la correcta ni los errores en texto plano, y se recuperan igual', () => {
   const app = construirPruebas();
   const texto = JSON.stringify(app);

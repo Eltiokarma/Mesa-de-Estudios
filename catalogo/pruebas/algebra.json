@@ -1,10 +1,11 @@
 {
   "curso": "algebra",
-  "version": "1.1.0",
+  "version": "1.3.0",
   "fecha": "2026-11-06",
   "minutos": 12,
   "informes": [
-    "docs/investigacion/algebra-funciones-ideas-erroneas.md"
+    "docs/investigacion/algebra-funciones-ideas-erroneas.md",
+    "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
   ],
   "errores": {
     "AL28-h-al-reves": {
@@ -19,38 +20,6 @@
       "respaldo": "hipotesis",
       "describe": "Cruza los corrimientos horizontal y vertical"
     },
-    "AL27-suma-fuera": {
-      "respaldo": "hipotesis",
-      "describe": "Toma f(x + d) como f(x) + d"
-    },
-    "AL27-suma-de-partes": {
-      "respaldo": "hipotesis",
-      "describe": "Toma f(a + b) como f(a) + f(b)"
-    },
-    "AL8-cuadrado-por-partes": {
-      "respaldo": "parcial",
-      "describe": "Eleva al cuadrado por partes: (a + b)² = a² + b²"
-    },
-    "AL29-inversa-como-reciproco": {
-      "respaldo": "parcial",
-      "describe": "Confunde la inversa f⁻¹ con el recíproco 1/f"
-    },
-    "inversa-calcula-f": {
-      "respaldo": "hipotesis",
-      "describe": "Calcula f en vez de f⁻¹"
-    },
-    "inversa-despeje-al-reves": {
-      "respaldo": "hipotesis",
-      "describe": "Despeja en el orden equivocado"
-    },
-    "inversa-orden-sin-invertir": {
-      "respaldo": "hipotesis",
-      "describe": "Deshace las operaciones sin invertir su orden"
-    },
-    "AL16-signo-mal": {
-      "respaldo": "hipotesis",
-      "describe": "Transpone un término sin cambiarle el signo"
-    },
     "AL20-no-invierte": {
       "respaldo": "hipotesis",
       "describe": "No invierte la desigualdad al multiplicar o dividir por un negativo"
@@ -63,29 +32,77 @@
       "respaldo": "parcial",
       "describe": "Resuelve la inecuación como si fuera una ecuación"
     },
-    "cuadratica-adentro-afuera": {
+    "AL1-invertida": {
+      "respaldo": "parcial",
+      "describe": "Escribe la razón al revés, en el orden de las palabras (AL1)"
+    },
+    "AL3-por-cada-como-suma": {
       "respaldo": "hipotesis",
-      "describe": "Da la solución de afuera cuando va la de adentro"
+      "describe": "Lee «por cada» como «más que» (AL3)"
     },
-    "AL22-quita-barras": {
-      "respaldo": "parcial",
-      "describe": "Quita las barras del valor absoluto sin más"
-    },
-    "AL22-separa-barras": {
-      "respaldo": "parcial",
-      "describe": "Separa |x − c| como |x| − c"
-    },
-    "abs-adentro-afuera": {
+    "disminuido-agrupado": {
       "respaldo": "hipotesis",
-      "describe": "Da la solución de afuera cuando va la de adentro"
+      "describe": "Resta antes de multiplicar: k(x − c)"
     },
-    "AL25-altura-como-pendiente": {
-      "respaldo": "documentado",
-      "describe": "Cree que la recta más alta es la que crece más rápido"
+    "disminuido-al-reves": {
+      "respaldo": "hipotesis",
+      "describe": "Resta al revés: c − kx"
     },
-    "intervalo-punto-cruce": {
+    "disminuido-como-suma": {
+      "respaldo": "hipotesis",
+      "describe": "Suma en vez de restar"
+    },
+    "AL8-cuadrado-sin-doble-producto": {
       "respaldo": "parcial",
-      "describe": "Cree que dos rectas que se cruzan crecen igual"
+      "describe": "Eleva cada término y olvida el doble producto (AL8)"
+    },
+    "cuadrado-un-solo-rectangulo": {
+      "respaldo": "hipotesis",
+      "describe": "Cuenta un solo rectángulo bx en vez de dos"
+    },
+    "cuadrado-olvida-la-esquina": {
+      "respaldo": "hipotesis",
+      "describe": "Olvida el cuadradito b²"
+    },
+    "AL9-raiz-de-suma-como-suma-de-raices": {
+      "respaldo": "parcial",
+      "describe": "Reparte la raíz en la suma (AL9)"
+    },
+    "raiz-olvidada": {
+      "respaldo": "hipotesis",
+      "describe": "Olvida sacar la raíz"
+    },
+    "raiz-mezcla-con-producto": {
+      "respaldo": "hipotesis",
+      "describe": "Mezcla con la regla del producto: √p · √q"
+    },
+    "por-cada-sin-dividir": {
+      "respaldo": "hipotesis",
+      "describe": "Multiplica por n sin dividir entre m"
+    },
+    "n-en-vez-de-n-menos-1": {
+      "respaldo": "hipotesis",
+      "describe": "Eleva a la n en vez de a la n − 1"
+    },
+    "razon-por-diferencia": {
+      "respaldo": "hipotesis",
+      "describe": "Trata la progresión geométrica como aritmética, con la primera diferencia"
+    },
+    "RM2-objeto-entero": {
+      "respaldo": "hipotesis",
+      "describe": "Objeto entero: el término 2k sería el doble del término k (RM2)"
+    },
+    "suma-geometrica-ultimo-termino": {
+      "respaldo": "hipotesis",
+      "describe": "Da el último término en vez de la suma"
+    },
+    "suma-geometrica-sin-restar-uno": {
+      "respaldo": "hipotesis",
+      "describe": "Olvida restar 1 en a₁(qⁿ − 1)/(q − 1)"
+    },
+    "suma-geometrica-como-aritmetica": {
+      "respaldo": "hipotesis",
+      "describe": "Usa la fórmula de la suma aritmética, (primero + último)·n/2"
     }
   },
   "pares": [
@@ -141,204 +158,6 @@
           {
             "texto": "(−4; −1)",
             "error": "h-k-cruzados"
-          }
-        ]
-      }
-    },
-    {
-      "par": "alg-02",
-      "plantilla": "grafica-perillas",
-      "unidad": "algebra.funciones",
-      "mide": "Evaluar f en una suma: f(a + b) no es f(a) + b ni f(a) + f(b)",
-      "A": {
-        "enunciado": "Si f(x) = x² + 3, entonces f(2) = 7. ¿Cuánto vale f(2 + 4)?",
-        "datos": {
-          "k": 3,
-          "x0": 2,
-          "fx0": 7,
-          "suma": 4
-        },
-        "opciones": [
-          {
-            "texto": "11",
-            "valor": 11,
-            "error": "AL27-suma-fuera"
-          },
-          {
-            "texto": "26",
-            "valor": 26,
-            "error": "AL27-suma-de-partes"
-          },
-          {
-            "texto": "23",
-            "valor": 23,
-            "error": "AL8-cuadrado-por-partes"
-          },
-          {
-            "texto": "39",
-            "valor": 39,
-            "correcta": true
-          }
-        ]
-      },
-      "B": {
-        "enunciado": "Si f(x) = x² + 2, entonces f(1) = 3. ¿Cuánto vale f(1 + 4)?",
-        "datos": {
-          "k": 2,
-          "x0": 1,
-          "fx0": 3,
-          "suma": 4
-        },
-        "opciones": [
-          {
-            "texto": "7",
-            "valor": 7,
-            "error": "AL27-suma-fuera"
-          },
-          {
-            "texto": "21",
-            "valor": 21,
-            "error": "AL27-suma-de-partes"
-          },
-          {
-            "texto": "19",
-            "valor": 19,
-            "error": "AL8-cuadrado-por-partes"
-          },
-          {
-            "texto": "27",
-            "valor": 27,
-            "correcta": true
-          }
-        ]
-      }
-    },
-    {
-      "par": "alg-03",
-      "plantilla": "grafica-perillas",
-      "unidad": "algebra.tipos-de-funciones-e-inversa",
-      "mide": "Evaluar la inversa: f⁻¹(y) es el x que da y, no 1/f",
-      "A": {
-        "enunciado": "Si f(x) = 3x + 4, ¿cuánto vale f⁻¹(19)?",
-        "datos": {
-          "m": 3,
-          "n": 4,
-          "y": 19
-        },
-        "opciones": [
-          {
-            "texto": "1/61",
-            "valor": 0.016393,
-            "error": "AL29-inversa-como-reciproco"
-          },
-          {
-            "texto": "5",
-            "valor": 5,
-            "correcta": true
-          },
-          {
-            "texto": "61",
-            "valor": 61,
-            "error": "inversa-calcula-f"
-          },
-          {
-            "texto": "45",
-            "valor": 45,
-            "error": "inversa-despeje-al-reves"
-          }
-        ]
-      },
-      "B": {
-        "enunciado": "Si f(x) = 5x − 2, ¿cuánto vale f⁻¹(18)?",
-        "datos": {
-          "m": 5,
-          "n": -2,
-          "y": 18
-        },
-        "opciones": [
-          {
-            "texto": "1/88",
-            "valor": 0.011364,
-            "error": "AL29-inversa-como-reciproco"
-          },
-          {
-            "texto": "4",
-            "valor": 4,
-            "correcta": true
-          },
-          {
-            "texto": "88",
-            "valor": 88,
-            "error": "inversa-calcula-f"
-          },
-          {
-            "texto": "100",
-            "valor": 100,
-            "error": "inversa-despeje-al-reves"
-          }
-        ]
-      }
-    },
-    {
-      "par": "alg-04",
-      "plantilla": "grafica-perillas",
-      "unidad": "algebra.tipos-de-funciones-e-inversa",
-      "mide": "La regla de la inversa: deshacer las operaciones en orden inverso",
-      "A": {
-        "enunciado": "Si f(x) = 3x − 5, ¿cuál es la regla de su función inversa?",
-        "datos": {
-          "m": 3,
-          "n": -5
-        },
-        "opciones": [
-          {
-            "texto": "f⁻¹(x) = 1/(3x − 5)",
-            "clave": "1/(3x − 5)",
-            "error": "AL29-inversa-como-reciproco"
-          },
-          {
-            "texto": "f⁻¹(x) = x/3 + 5",
-            "clave": "x/3 + 5",
-            "error": "inversa-orden-sin-invertir"
-          },
-          {
-            "texto": "f⁻¹(x) = (x − 5)/3",
-            "clave": "(x − 5)/3",
-            "error": "AL16-signo-mal"
-          },
-          {
-            "texto": "f⁻¹(x) = (x + 5)/3",
-            "clave": "(x + 5)/3",
-            "correcta": true
-          }
-        ]
-      },
-      "B": {
-        "enunciado": "Si f(x) = 4x + 7, ¿cuál es la regla de su función inversa?",
-        "datos": {
-          "m": 4,
-          "n": 7
-        },
-        "opciones": [
-          {
-            "texto": "f⁻¹(x) = 1/(4x + 7)",
-            "clave": "1/(4x + 7)",
-            "error": "AL29-inversa-como-reciproco"
-          },
-          {
-            "texto": "f⁻¹(x) = x/4 − 7",
-            "clave": "x/4 − 7",
-            "error": "inversa-orden-sin-invertir"
-          },
-          {
-            "texto": "f⁻¹(x) = (x + 7)/4",
-            "clave": "(x + 7)/4",
-            "error": "AL16-signo-mal"
-          },
-          {
-            "texto": "f⁻¹(x) = (x − 7)/4",
-            "clave": "(x − 7)/4",
-            "correcta": true
           }
         ]
       }
@@ -404,173 +223,387 @@
       }
     },
     {
-      "par": "alg-06",
-      "plantilla": "grafica-perillas",
-      "unidad": "algebra.inecuaciones",
-      "mide": "Inecuación cuadrática: x² < c² es el intervalo entre −c y c",
+      "par": "alg-09",
+      "plantilla": "traductor-enunciados",
+      "unidad": "algebra.ecuaciones-lineales-y-cuadraticas",
+      "mide": "«Hay n por cada m»: la razón se mantiene (m·N = n·M), no se invierte ni se suma",
       "A": {
-        "enunciado": "¿Qué valores de x cumplen x² < 16?",
+        "enunciado": "En una granja hay 5 gallinas por cada 2 patos. Si hay 40 patos, ¿cuántas gallinas hay?",
         "datos": {
-          "c": 16
+          "n": 5,
+          "m": 2,
+          "valorM": 40
         },
         "opciones": [
           {
-            "texto": "⟨−∞; 4⟩",
-            "error": "AL19-como-ecuacion"
+            "texto": "16",
+            "valor": 16,
+            "error": "AL1-invertida"
           },
           {
-            "texto": "⟨−4; 4⟩",
+            "texto": "45",
+            "valor": 45,
+            "error": "AL3-por-cada-como-suma"
+          },
+          {
+            "texto": "100",
+            "valor": 100,
             "correcta": true
           },
           {
-            "texto": "⟨−∞; −4⟩ ∪ ⟨4; +∞⟩",
-            "error": "cuadratica-adentro-afuera"
+            "texto": "200",
+            "valor": 200,
+            "error": "por-cada-sin-dividir"
           }
         ]
       },
       "B": {
-        "enunciado": "¿Qué valores de x cumplen x² < 25?",
+        "enunciado": "En una bolsa hay 7 caramelos de fresa por cada 4 de limón. Si hay 28 caramelos de limón, ¿cuántos hay de fresa?",
         "datos": {
-          "c": 25
+          "n": 7,
+          "m": 4,
+          "valorM": 28
         },
         "opciones": [
           {
-            "texto": "⟨−∞; 5⟩",
-            "error": "AL19-como-ecuacion"
+            "texto": "16",
+            "valor": 16,
+            "error": "AL1-invertida"
           },
           {
-            "texto": "⟨−5; 5⟩",
+            "texto": "35",
+            "valor": 35,
+            "error": "AL3-por-cada-como-suma"
+          },
+          {
+            "texto": "49",
+            "valor": 49,
             "correcta": true
           },
           {
-            "texto": "⟨−∞; −5⟩ ∪ ⟨5; +∞⟩",
-            "error": "cuadratica-adentro-afuera"
+            "texto": "196",
+            "valor": 196,
+            "error": "por-cada-sin-dividir"
           }
         ]
       }
     },
     {
-      "par": "alg-07",
-      "plantilla": "grafica-perillas",
-      "unidad": "algebra.valor-absoluto-y-radicales",
-      "mide": "|x − c| < r: los puntos a menos de r de c",
+      "par": "alg-10",
+      "plantilla": "traductor-enunciados",
+      "unidad": "algebra.ecuaciones-lineales-y-cuadraticas",
+      "mide": "«El k-ple de un número, disminuido en c»: primero se multiplica y después se resta",
       "A": {
-        "enunciado": "¿Qué valores de x cumplen |x − 5| < 3?",
-        "datos": {
-          "c": 5,
-          "r": 3
-        },
-        "opciones": [
-          {
-            "texto": "⟨−∞; 8⟩",
-            "error": "AL22-quita-barras"
-          },
-          {
-            "texto": "⟨−8; 8⟩",
-            "error": "AL22-separa-barras"
-          },
-          {
-            "texto": "⟨2; 8⟩",
-            "correcta": true
-          },
-          {
-            "texto": "⟨−∞; 2⟩ ∪ ⟨8; +∞⟩",
-            "error": "abs-adentro-afuera"
-          }
-        ]
-      },
-      "B": {
-        "enunciado": "¿Qué valores de x cumplen |x − 4| < 6?",
+        "enunciado": "El quíntuple de un número, disminuido en 4, es igual a 26. ¿Cuál es el número?",
         "datos": {
           "c": 4,
-          "r": 6
+          "r": 26,
+          "modelo": {
+            "k": 5
+          }
         },
         "opciones": [
           {
-            "texto": "⟨−∞; 10⟩",
-            "error": "AL22-quita-barras"
+            "texto": "9,2",
+            "valor": 9.2,
+            "error": "disminuido-agrupado"
           },
           {
-            "texto": "⟨−10; 10⟩",
-            "error": "AL22-separa-barras"
-          },
-          {
-            "texto": "⟨−2; 10⟩",
+            "texto": "6",
+            "valor": 6,
             "correcta": true
           },
           {
-            "texto": "⟨−∞; −2⟩ ∪ ⟨10; +∞⟩",
-            "error": "abs-adentro-afuera"
+            "texto": "−4,4",
+            "valor": -4.4,
+            "error": "disminuido-al-reves"
+          },
+          {
+            "texto": "4,4",
+            "valor": 4.4,
+            "error": "disminuido-como-suma"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "El triple de un número, disminuido en 7, es igual a 20. ¿Cuál es el número?",
+        "datos": {
+          "c": 7,
+          "r": 20,
+          "modelo": {
+            "k": 3
+          }
+        },
+        "opciones": [
+          {
+            "texto": "13,67",
+            "valor": 13.667,
+            "error": "disminuido-agrupado"
+          },
+          {
+            "texto": "9",
+            "valor": 9,
+            "correcta": true
+          },
+          {
+            "texto": "−4,33",
+            "valor": -4.333,
+            "error": "disminuido-al-reves"
+          },
+          {
+            "texto": "4,33",
+            "valor": 4.333,
+            "error": "disminuido-como-suma"
           }
         ]
       }
     },
     {
-      "par": "alg-08",
-      "plantilla": "grafica-perillas",
-      "unidad": "algebra.funciones",
-      "mide": "Crece más rápido la recta de mayor pendiente, no la que está más arriba",
+      "par": "cc-01",
+      "plantilla": "cuadrado-crece",
+      "unidad": "algebra.exponentes-y-productos-notables",
+      "mide": "Cuadrado de un binomio: (x + b)² = x² + 2bx + b²",
       "A": {
-        "enunciado": "Las rectas L1: y = x + 6 y L2: y = 3x − 2 se cruzan en x = 4. En x = 1, L1 está más arriba que L2. ¿Cuál de las dos crece más rápido?",
+        "enunciado": "¿Cuál es el desarrollo de (x + 5)²?",
         "datos": {
-          "L1": {
-            "m": 1,
-            "n": 6
-          },
-          "L2": {
-            "m": 3,
-            "n": -2
-          },
-          "x": 1,
-          "cruce": 4
+          "b": 5
         },
         "opciones": [
           {
-            "texto": "L1",
-            "clave": "L1",
-            "error": "AL25-altura-como-pendiente"
+            "texto": "x² + 25",
+            "error": "AL8-cuadrado-sin-doble-producto"
           },
           {
-            "texto": "Las dos igual",
-            "clave": "iguales",
-            "error": "intervalo-punto-cruce"
-          },
-          {
-            "texto": "L2",
-            "clave": "L2",
+            "texto": "x² + 10x + 25",
             "correcta": true
+          },
+          {
+            "texto": "x² + 5x + 25",
+            "error": "cuadrado-un-solo-rectangulo"
+          },
+          {
+            "texto": "x² + 10x",
+            "error": "cuadrado-olvida-la-esquina"
           }
         ]
       },
       "B": {
-        "enunciado": "Las rectas L1: y = 3x − 3 y L2: y = x + 5 se cruzan en x = 4. En x = 1, L2 está más arriba que L1. ¿Cuál de las dos crece más rápido?",
+        "enunciado": "¿Cuál es el desarrollo de (x + 6)²?",
         "datos": {
-          "L1": {
-            "m": 3,
-            "n": -3
-          },
-          "L2": {
-            "m": 1,
-            "n": 5
-          },
-          "x": 1,
-          "cruce": 4
+          "b": 6
         },
         "opciones": [
           {
-            "texto": "L2",
-            "clave": "L2",
-            "error": "AL25-altura-como-pendiente"
+            "texto": "x² + 36",
+            "error": "AL8-cuadrado-sin-doble-producto"
           },
           {
-            "texto": "Las dos igual",
-            "clave": "iguales",
-            "error": "intervalo-punto-cruce"
-          },
-          {
-            "texto": "L1",
-            "clave": "L1",
+            "texto": "x² + 12x + 36",
             "correcta": true
+          },
+          {
+            "texto": "x² + 6x + 36",
+            "error": "cuadrado-un-solo-rectangulo"
+          },
+          {
+            "texto": "x² + 12x",
+            "error": "cuadrado-olvida-la-esquina"
+          }
+        ]
+      }
+    },
+    {
+      "par": "cc-02",
+      "plantilla": "cuadrado-crece",
+      "unidad": "algebra.exponentes-y-productos-notables",
+      "mide": "La raíz de una suma no es la suma de las raíces",
+      "A": {
+        "enunciado": "¿Cuánto vale √(9 + 16)?",
+        "datos": {
+          "p": 9,
+          "q": 16
+        },
+        "opciones": [
+          {
+            "texto": "7",
+            "valor": 7,
+            "error": "AL9-raiz-de-suma-como-suma-de-raices"
+          },
+          {
+            "texto": "25",
+            "valor": 25,
+            "error": "raiz-olvidada"
+          },
+          {
+            "texto": "5",
+            "valor": 5,
+            "correcta": true
+          },
+          {
+            "texto": "12",
+            "valor": 12,
+            "error": "raiz-mezcla-con-producto"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "¿Cuánto vale √(36 + 64)?",
+        "datos": {
+          "p": 36,
+          "q": 64
+        },
+        "opciones": [
+          {
+            "texto": "14",
+            "valor": 14,
+            "error": "AL9-raiz-de-suma-como-suma-de-raices"
+          },
+          {
+            "texto": "100",
+            "valor": 100,
+            "error": "raiz-olvidada"
+          },
+          {
+            "texto": "10",
+            "valor": 10,
+            "correcta": true
+          },
+          {
+            "texto": "48",
+            "valor": 48,
+            "error": "raiz-mezcla-con-producto"
+          }
+        ]
+      }
+    },
+    {
+      "par": "alg-11",
+      "plantilla": "sucesiones",
+      "unidad": "algebra.sucesiones-y-series",
+      "mide": "Término de una progresión geométrica: aₙ = a₁·qⁿ⁻¹",
+      "A": {
+        "enunciado": "En la sucesión 3, 6, 12, … cada término es el doble del anterior. ¿Cuál es el término que ocupa el lugar 8?",
+        "datos": {
+          "a1": 3,
+          "a2": 6,
+          "n": 8
+        },
+        "opciones": [
+          {
+            "texto": "768",
+            "valor": 768,
+            "error": "n-en-vez-de-n-menos-1"
+          },
+          {
+            "texto": "384",
+            "valor": 384,
+            "correcta": true
+          },
+          {
+            "texto": "24",
+            "valor": 24,
+            "error": "razon-por-diferencia"
+          },
+          {
+            "texto": "48",
+            "valor": 48,
+            "error": "RM2-objeto-entero"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "En la sucesión 2, 6, 18, … cada término es el triple del anterior. ¿Cuál es el término que ocupa el lugar 6?",
+        "datos": {
+          "a1": 2,
+          "a2": 6,
+          "n": 6
+        },
+        "opciones": [
+          {
+            "texto": "1458",
+            "valor": 1458,
+            "error": "n-en-vez-de-n-menos-1"
+          },
+          {
+            "texto": "486",
+            "valor": 486,
+            "correcta": true
+          },
+          {
+            "texto": "22",
+            "valor": 22,
+            "error": "razon-por-diferencia"
+          },
+          {
+            "texto": "36",
+            "valor": 36,
+            "error": "RM2-objeto-entero"
+          }
+        ]
+      }
+    },
+    {
+      "par": "alg-12",
+      "plantilla": "sucesiones",
+      "unidad": "algebra.sucesiones-y-series",
+      "mide": "Suma de una progresión geométrica: a₁(qⁿ − 1)/(q − 1)",
+      "A": {
+        "enunciado": "¿Cuánto suman los 6 primeros términos de 5 + 10 + 20 + 40 + …?",
+        "datos": {
+          "a1": 5,
+          "a2": 10,
+          "n": 6
+        },
+        "opciones": [
+          {
+            "texto": "160",
+            "valor": 160,
+            "error": "suma-geometrica-ultimo-termino"
+          },
+          {
+            "texto": "315",
+            "valor": 315,
+            "correcta": true
+          },
+          {
+            "texto": "320",
+            "valor": 320,
+            "error": "suma-geometrica-sin-restar-uno"
+          },
+          {
+            "texto": "495",
+            "valor": 495,
+            "error": "suma-geometrica-como-aritmetica"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "¿Cuánto suman los 6 primeros términos de 3 + 9 + 27 + …?",
+        "datos": {
+          "a1": 3,
+          "a2": 9,
+          "n": 6
+        },
+        "opciones": [
+          {
+            "texto": "729",
+            "valor": 729,
+            "error": "suma-geometrica-ultimo-termino"
+          },
+          {
+            "texto": "1092",
+            "valor": 1092,
+            "correcta": true
+          },
+          {
+            "texto": "1093,5",
+            "valor": 1093.5,
+            "error": "suma-geometrica-sin-restar-uno"
+          },
+          {
+            "texto": "2196",
+            "valor": 2196,
+            "error": "suma-geometrica-como-aritmetica"
           }
         ]
       }

@@ -49,7 +49,7 @@ En matemática, el potencial es desigual:
 
 ## Pruebas de entrada y salida por curso (la1, 6 nov 2026)
 
-Miden lo que se aprende en el piloto. El banco vive en `catalogo/pruebas/<curso>.json`, uno por curso con plantillas (versión 1.1.0: física 10 ítems, química 10, geometría 9, trigonometría 8, álgebra 8 y aritmética 8, por forma; 106 en total, y 2 pares en reserva). `npm run catalogo` lo copia a `app/datos/pruebas.json` sin los campos de verificación ni la reserva; el servidor local lo arma al vuelo. Si solo cambió el banco, basta con regenerar ese archivo (`construirPruebas` en `herramientas/construir-catalogo.js`).
+Miden lo que se aprende en el piloto. El banco vive en `catalogo/pruebas/<curso>.json`, uno por curso con plantillas (6 nov 2026: física 10 ítems, química 10, geometría 9, trigonometría 10, álgebra 10, aritmética 8 y razonamiento matemático 8, por forma; 130 en total, y 2 pares en reserva en álgebra). `npm run catalogo` lo copia a `app/datos/pruebas.json` sin los campos de verificación ni la reserva; el servidor local lo arma al vuelo. Si solo cambió el banco, basta con regenerar ese archivo (`construirPruebas` en `herramientas/construir-catalogo.js`).
 
 ```json
 {
@@ -73,9 +73,11 @@ Miden lo que se aprende en el piloto. El banco vive en `catalogo/pruebas/<curso>
 | `opciones` | De 3 a 5. Una con `correcta: true`; cada incorrecta con `error`, un código de los informes de `docs/investigacion/` o de las escenas (el mismo que registran las escenas). |
 | `valor` / `clave` | Lo que calcula el motor: un número (`valor`) o un texto (`clave`; si falta, se compara el `texto`). |
 | `datos` | Los números del enunciado, que recibe el verificador. Los que no salen en el enunciado (la altura de la vela, el radio de la bombilla) van dentro de `datos.modelo`. La prueba exige que cada número de `datos` aparezca en el enunciado. |
-| `transferencia` | (opcional, por par) `true` si mide una idea que el módulo no practica directamente; hoy se usa en aritmética, cuyo único módulo es porcentajes sucesivos. El análisis puede separar esos pares. |
-| `reserva` | (opcional, en el banco) pares ya verificados de una plantilla que todavía no está en el catálogo (hoy, `circunferencia-trig` en trigonometría). No van a la app; la prueba avisa cuando la plantilla entra al catálogo y hay que pasarlos a `pares` (cuidando el máximo de 10). |
+| `transferencia` | (opcional, por par) `true` si mide una idea que el módulo no practica directamente; sirve para cursos con un solo módulo (hoy ningún par lo usa: aritmética ya tiene cuatro módulos). El análisis puede separar esos pares. |
+| `reserva` | (opcional, en el banco) pares ya verificados de una plantilla que todavía no está en el catálogo (hoy, `cuadrado-crece` en álgebra). No van a la app; la prueba avisa cuando la plantilla entra al catálogo y hay que pasarlos a `pares` (cuidando el máximo de 10). |
 | `errores` | Diccionario de los códigos usados, con `respaldo` (`documentado`, `parcial`, `hipotesis`) y una descripción corta que ve el analista y el alumno al final de la salida. |
+
+**Cuántos por plantilla.** Con 4 o más plantillas en el curso, 1 o 2 pares por plantilla (aritmética y razonamiento matemático: 2 de cada una); con menos, se reparten los 8 a 10. Si una plantilla del curso no tiene ítems, la prueba solo avisa.
 
 **Verificación (regla 1).** `catalogo/pruebas/verificar.js` tiene un verificador por par que llama al motor de la plantilla (`plantillas/<id>/motor.js`) con los `datos` y devuelve la respuesta y el valor de cada distractor. `catalogo/pruebas/pruebas.test.js` comprueba con eso cada respuesta, cada distractor, que el número escrito en el texto sea el `valor`, que ningún distractor coincida con la respuesta, el formato (`Pruebas.validar`) y que las formas sean paralelas. Aritmética no tiene motor (el generador de porcentajes no expone sus cuentas): sus ítems se recalculan con factores exactos dentro del verificador. Un curso o una plantilla sin ítems no rompe las pruebas: sale un aviso (diagnóstico).
 

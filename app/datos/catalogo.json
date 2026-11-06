@@ -1261,7 +1261,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "cuadrado-crece"
+     ]
     },
     {
      "id": "algebra.ecuaciones-lineales-y-cuadraticas",
@@ -1426,7 +1428,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "cuadrado-crece"
+     ]
     },
     {
      "id": "algebra.ecuaciones-polinomiales",
@@ -2210,7 +2214,9 @@
      },
      "potencial_visual": "medio",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "sucesiones"
+     ]
     },
     {
      "id": "aritmetica.razonamiento-numerico",
@@ -4274,6 +4280,24 @@
     "/plantillas/circunferencia-trig/papel.json"
    ]
   },
+  "cuadrado-crece": {
+   "id": "cuadrado-crece",
+   "titulo": "El cuadrado que crece: productos notables y linealidad indebida",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "algebra.exponentes-y-productos-notables",
+    "algebra.factorizacion"
+   ],
+   "url": "/plantillas/cuadrado-crece/index.html",
+   "papel": "/plantillas/cuadrado-crece/papel.json",
+   "archivos": [
+    "/plantillas/cuadrado-crece/index.html",
+    "/plantillas/cuadrado-crece/motor.js",
+    "/plantillas/cuadrado-crece/papel.json"
+   ]
+  },
   "dinamica": {
    "id": "dinamica",
    "titulo": "Dinámica: fuerzas, plano inclinado y poleas",
@@ -4571,7 +4595,8 @@
    "version": "0.1.0",
    "unidades": [
     "razonamiento-matematico.razonamiento-inductivo",
-    "algebra.sucesiones-y-series"
+    "algebra.sucesiones-y-series",
+    "aritmetica.sucesiones-y-series"
    ],
    "url": "/plantillas/sucesiones/index.html",
    "papel": "/plantillas/sucesiones/papel.json",

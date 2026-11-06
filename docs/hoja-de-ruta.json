@@ -333,10 +333,10 @@
       "inicio": "2026-11-28",
       "fin": "2026-12-04",
       "estado": "en_curso",
-      "progreso": 55,
+      "progreso": 70,
       "critico": false,
       "depende_de": [],
-      "notas": "Hechas: grafica-perillas y traductor-enunciados. Faltan: cuadrado que crece (productos notables), polinomios, logaritmos, sucesiones"
+      "notas": "Hechas: grafica-perillas, traductor-enunciados, cuadrado-crece y sucesiones. Faltan: polinomios, exponenciales y logaritmos, matrices, complejos"
     },
     {
       "id": "ra1",
@@ -345,12 +345,12 @@
       "inicio": "2026-11-20",
       "fin": "2026-11-27",
       "estado": "en_curso",
-      "progreso": 40,
+      "progreso": 55,
       "critico": false,
       "depende_de": [
         "pl3"
       ],
-      "notas": "Hechas: probabilidad-dados, regla-de-tres (engranajes) y traductor-enunciados (planteo, edades, móviles). Faltan: sucesiones, orden de información, verdades y mentiras"
+      "notas": "Hechas: probabilidad-dados, regla-de-tres, traductor-enunciados y sucesiones; banco de entrada y salida. Faltan: orden de información, verdades y mentiras, cronometría"
     },
     {
       "id": "ra2",
@@ -387,7 +387,7 @@
       "inicio": "2026-11-30",
       "fin": "2026-12-07",
       "estado": "en_curso",
-      "progreso": 80,
+      "progreso": 85,
       "critico": false,
       "depende_de": [
         "pl2"

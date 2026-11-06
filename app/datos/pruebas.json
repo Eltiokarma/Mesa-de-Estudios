@@ -2,7 +2,7 @@
  "cursos": {
   "algebra": {
    "curso": "algebra",
-   "version": "1.1.0",
+   "version": "1.3.0",
    "minutos": 12,
    "errores": {
     "AL28-h-al-reves": {
@@ -17,38 +17,6 @@
      "respaldo": "hipotesis",
      "describe": "Cruza los corrimientos horizontal y vertical"
     },
-    "AL27-suma-fuera": {
-     "respaldo": "hipotesis",
-     "describe": "Toma f(x + d) como f(x) + d"
-    },
-    "AL27-suma-de-partes": {
-     "respaldo": "hipotesis",
-     "describe": "Toma f(a + b) como f(a) + f(b)"
-    },
-    "AL8-cuadrado-por-partes": {
-     "respaldo": "parcial",
-     "describe": "Eleva al cuadrado por partes: (a + b)² = a² + b²"
-    },
-    "AL29-inversa-como-reciproco": {
-     "respaldo": "parcial",
-     "describe": "Confunde la inversa f⁻¹ con el recíproco 1/f"
-    },
-    "inversa-calcula-f": {
-     "respaldo": "hipotesis",
-     "describe": "Calcula f en vez de f⁻¹"
-    },
-    "inversa-despeje-al-reves": {
-     "respaldo": "hipotesis",
-     "describe": "Despeja en el orden equivocado"
-    },
-    "inversa-orden-sin-invertir": {
-     "respaldo": "hipotesis",
-     "describe": "Deshace las operaciones sin invertir su orden"
-    },
-    "AL16-signo-mal": {
-     "respaldo": "hipotesis",
-     "describe": "Transpone un término sin cambiarle el signo"
-    },
     "AL20-no-invierte": {
      "respaldo": "hipotesis",
      "describe": "No invierte la desigualdad al multiplicar o dividir por un negativo"
@@ -61,29 +29,77 @@
      "respaldo": "parcial",
      "describe": "Resuelve la inecuación como si fuera una ecuación"
     },
-    "cuadratica-adentro-afuera": {
+    "AL1-invertida": {
+     "respaldo": "parcial",
+     "describe": "Escribe la razón al revés, en el orden de las palabras (AL1)"
+    },
+    "AL3-por-cada-como-suma": {
      "respaldo": "hipotesis",
-     "describe": "Da la solución de afuera cuando va la de adentro"
+     "describe": "Lee «por cada» como «más que» (AL3)"
     },
-    "AL22-quita-barras": {
-     "respaldo": "parcial",
-     "describe": "Quita las barras del valor absoluto sin más"
-    },
-    "AL22-separa-barras": {
-     "respaldo": "parcial",
-     "describe": "Separa |x − c| como |x| − c"
-    },
-    "abs-adentro-afuera": {
+    "disminuido-agrupado": {
      "respaldo": "hipotesis",
-     "describe": "Da la solución de afuera cuando va la de adentro"
+     "describe": "Resta antes de multiplicar: k(x − c)"
     },
-    "AL25-altura-como-pendiente": {
-     "respaldo": "documentado",
-     "describe": "Cree que la recta más alta es la que crece más rápido"
+    "disminuido-al-reves": {
+     "respaldo": "hipotesis",
+     "describe": "Resta al revés: c − kx"
     },
-    "intervalo-punto-cruce": {
+    "disminuido-como-suma": {
+     "respaldo": "hipotesis",
+     "describe": "Suma en vez de restar"
+    },
+    "AL8-cuadrado-sin-doble-producto": {
      "respaldo": "parcial",
-     "describe": "Cree que dos rectas que se cruzan crecen igual"
+     "describe": "Eleva cada término y olvida el doble producto (AL8)"
+    },
+    "cuadrado-un-solo-rectangulo": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta un solo rectángulo bx en vez de dos"
+    },
+    "cuadrado-olvida-la-esquina": {
+     "respaldo": "hipotesis",
+     "describe": "Olvida el cuadradito b²"
+    },
+    "AL9-raiz-de-suma-como-suma-de-raices": {
+     "respaldo": "parcial",
+     "describe": "Reparte la raíz en la suma (AL9)"
+    },
+    "raiz-olvidada": {
+     "respaldo": "hipotesis",
+     "describe": "Olvida sacar la raíz"
+    },
+    "raiz-mezcla-con-producto": {
+     "respaldo": "hipotesis",
+     "describe": "Mezcla con la regla del producto: √p · √q"
+    },
+    "por-cada-sin-dividir": {
+     "respaldo": "hipotesis",
+     "describe": "Multiplica por n sin dividir entre m"
+    },
+    "n-en-vez-de-n-menos-1": {
+     "respaldo": "hipotesis",
+     "describe": "Eleva a la n en vez de a la n − 1"
+    },
+    "razon-por-diferencia": {
+     "respaldo": "hipotesis",
+     "describe": "Trata la progresión geométrica como aritmética, con la primera diferencia"
+    },
+    "RM2-objeto-entero": {
+     "respaldo": "hipotesis",
+     "describe": "Objeto entero: el término 2k sería el doble del término k (RM2)"
+    },
+    "suma-geometrica-ultimo-termino": {
+     "respaldo": "hipotesis",
+     "describe": "Da el último término en vez de la suma"
+    },
+    "suma-geometrica-sin-restar-uno": {
+     "respaldo": "hipotesis",
+     "describe": "Olvida restar 1 en a₁(qⁿ − 1)/(q − 1)"
+    },
+    "suma-geometrica-como-aritmetica": {
+     "respaldo": "hipotesis",
+     "describe": "Usa la fórmula de la suma aritmética, (primero + último)·n/2"
     }
    },
    "pares": [
@@ -130,132 +146,6 @@
      }
     },
     {
-     "par": "alg-02",
-     "plantilla": "grafica-perillas",
-     "unidad": "algebra.funciones",
-     "mide": "Evaluar f en una suma: f(a + b) no es f(a) + b ni f(a) + f(b)",
-     "A": {
-      "enunciado": "Si f(x) = x² + 3, entonces f(2) = 7. ¿Cuánto vale f(2 + 4)?",
-      "opciones": [
-       {
-        "texto": "11"
-       },
-       {
-        "texto": "26"
-       },
-       {
-        "texto": "23"
-       },
-       {
-        "texto": "39"
-       }
-      ],
-      "k": "66910af517b94ac8a1dad3d2e254778384385262d5998ceab324e32bee4a4df79ace8487ad71cac81e960c33b52d01591280f2bda5433504d59b82363ad30fd6d2ba366f9384b77b2ef2"
-     },
-     "B": {
-      "enunciado": "Si f(x) = x² + 2, entonces f(1) = 3. ¿Cuánto vale f(1 + 4)?",
-      "opciones": [
-       {
-        "texto": "7"
-       },
-       {
-        "texto": "21"
-       },
-       {
-        "texto": "19"
-       },
-       {
-        "texto": "27"
-       }
-      ],
-      "k": "aad08d82a926e32cdbdc1c9de1879d0b8d2224c0f9335382ed9b993e936f510355f82064029921486bbd197a8302ec9f73fca23c8554b2cd61123a1a864901ecb1e17dae9965b27bcf0c"
-     }
-    },
-    {
-     "par": "alg-03",
-     "plantilla": "grafica-perillas",
-     "unidad": "algebra.tipos-de-funciones-e-inversa",
-     "mide": "Evaluar la inversa: f⁻¹(y) es el x que da y, no 1/f",
-     "A": {
-      "enunciado": "Si f(x) = 3x + 4, ¿cuánto vale f⁻¹(19)?",
-      "opciones": [
-       {
-        "texto": "1/61"
-       },
-       {
-        "texto": "5"
-       },
-       {
-        "texto": "61"
-       },
-       {
-        "texto": "45"
-       }
-      ],
-      "k": "d6a6eea971adb81b0b50ea79bcb9b0d479b5a49eb61622b62a648745b19939126de37f1a2e21e027871eb887a25447af53ed02322ea77811b48d9ce7f60cc63830361cefea8985dd7eacc3ca1ed908d197e340053f"
-     },
-     "B": {
-      "enunciado": "Si f(x) = 5x − 2, ¿cuánto vale f⁻¹(18)?",
-      "opciones": [
-       {
-        "texto": "1/88"
-       },
-       {
-        "texto": "4"
-       },
-       {
-        "texto": "88"
-       },
-       {
-        "texto": "100"
-       }
-      ],
-      "k": "ff22b3f59ce4522c2d43e7ee63142ec37bea074562fbada9d363528d3e9613e1660eab073573b0186bace84e15f2635942f40528e9a5a2c9875edd0166c636219c74de781296609dc2ddec9d47e6bb76191201bd2b"
-     }
-    },
-    {
-     "par": "alg-04",
-     "plantilla": "grafica-perillas",
-     "unidad": "algebra.tipos-de-funciones-e-inversa",
-     "mide": "La regla de la inversa: deshacer las operaciones en orden inverso",
-     "A": {
-      "enunciado": "Si f(x) = 3x − 5, ¿cuál es la regla de su función inversa?",
-      "opciones": [
-       {
-        "texto": "f⁻¹(x) = 1/(3x − 5)"
-       },
-       {
-        "texto": "f⁻¹(x) = x/3 + 5"
-       },
-       {
-        "texto": "f⁻¹(x) = (x − 5)/3"
-       },
-       {
-        "texto": "f⁻¹(x) = (x + 5)/3"
-       }
-      ],
-      "k": "c65b1bf20b31231bc611419f8b7100fd881a332997177500c066c6c5ba376a72549f48259a7b3b66260340a3e4f263decf046c8a44e6340944d1ea51cc7ebf344e8cb7724cc75c1a834e6c2997ead7722555896f"
-     },
-     "B": {
-      "enunciado": "Si f(x) = 4x + 7, ¿cuál es la regla de su función inversa?",
-      "opciones": [
-       {
-        "texto": "f⁻¹(x) = 1/(4x + 7)"
-       },
-       {
-        "texto": "f⁻¹(x) = x/4 − 7"
-       },
-       {
-        "texto": "f⁻¹(x) = (x + 7)/4"
-       },
-       {
-        "texto": "f⁻¹(x) = (x − 7)/4"
-       }
-      ],
-      "k": "2bacf1cb3953d98ea2d50c98988ea2967ca3928a4a495ab2c76f31cf270ce1795efd8d7b3db0eb013cec80cb77a0ce11cd39f12efc8c28cec51f45f3973f02e67038eebbf04caa7d64201efabf4d2a6bc3cb7919"
-     }
-    },
-    {
      "par": "alg-05",
      "plantilla": "grafica-perillas",
      "unidad": "algebra.inecuaciones",
@@ -298,125 +188,263 @@
      }
     },
     {
-     "par": "alg-06",
-     "plantilla": "grafica-perillas",
-     "unidad": "algebra.inecuaciones",
-     "mide": "Inecuación cuadrática: x² < c² es el intervalo entre −c y c",
+     "par": "alg-09",
+     "plantilla": "traductor-enunciados",
+     "unidad": "algebra.ecuaciones-lineales-y-cuadraticas",
+     "mide": "«Hay n por cada m»: la razón se mantiene (m·N = n·M), no se invierte ni se suma",
      "A": {
-      "enunciado": "¿Qué valores de x cumplen x² < 16?",
+      "enunciado": "En una granja hay 5 gallinas por cada 2 patos. Si hay 40 patos, ¿cuántas gallinas hay?",
       "opciones": [
        {
-        "texto": "⟨−∞; 4⟩"
+        "texto": "16"
        },
        {
-        "texto": "⟨−4; 4⟩"
+        "texto": "45"
        },
        {
-        "texto": "⟨−∞; −4⟩ ∪ ⟨4; +∞⟩"
+        "texto": "100"
+       },
+       {
+        "texto": "200"
        }
       ],
-      "k": "9bdb7fb397ee04e83371793bdb6c393511233bcb862c2aaa133c89baf06e86cfa16adceff8eb27cea2ac6befa09c29bb8f6a2062540181190f"
+      "k": "b7e86c092c9d9c06918903dcaea069a4c59854b80a9f210fc71fcbae9e533594bb3534acbb44300fb94f3b0fa3ed6f5e07f71ea9c187894eaba41d5b8d6e16680a05dd6621908e16"
      },
      "B": {
-      "enunciado": "¿Qué valores de x cumplen x² < 25?",
+      "enunciado": "En una bolsa hay 7 caramelos de fresa por cada 4 de limón. Si hay 28 caramelos de limón, ¿cuántos hay de fresa?",
       "opciones": [
        {
-        "texto": "⟨−∞; 5⟩"
+        "texto": "16"
        },
        {
-        "texto": "⟨−5; 5⟩"
+        "texto": "35"
        },
        {
-        "texto": "⟨−∞; −5⟩ ∪ ⟨5; +∞⟩"
+        "texto": "49"
+       },
+       {
+        "texto": "196"
        }
       ],
-      "k": "457d8054f78ee078b93928b0a8fbc6f318dcaef247c3b4abfb0046475f5fb2816b95ba5a6ac3b37964b388a376edf78e7fb60023441dba281c"
+      "k": "250bede47be0b1821873a9d023d333a7ded154c896267518243ed6b1487258b9f632578627081f63d56d73e5d52462c370c82ad1d90a7ccb52d14dc4b63d4df69b975a30ef9de302"
      }
     },
     {
-     "par": "alg-07",
-     "plantilla": "grafica-perillas",
-     "unidad": "algebra.valor-absoluto-y-radicales",
-     "mide": "|x − c| < r: los puntos a menos de r de c",
+     "par": "alg-10",
+     "plantilla": "traductor-enunciados",
+     "unidad": "algebra.ecuaciones-lineales-y-cuadraticas",
+     "mide": "«El k-ple de un número, disminuido en c»: primero se multiplica y después se resta",
      "A": {
-      "enunciado": "¿Qué valores de x cumplen |x − 5| < 3?",
+      "enunciado": "El quíntuple de un número, disminuido en 4, es igual a 26. ¿Cuál es el número?",
       "opciones": [
        {
-        "texto": "⟨−∞; 8⟩"
+        "texto": "9,2"
        },
        {
-        "texto": "⟨−8; 8⟩"
+        "texto": "6"
        },
        {
-        "texto": "⟨2; 8⟩"
+        "texto": "−4,4"
        },
        {
-        "texto": "⟨−∞; 2⟩ ∪ ⟨8; +∞⟩"
+        "texto": "4,4"
        }
       ],
-      "k": "bcc6fd2aacbce28f0f328f7234c63eef86b6d6b40bce95e63061ad3c6f1f47e59adbc15b12af7fd118e25986244773c10a375cb940c30eea90a47080686c5dd4467cea682322"
+      "k": "6ea43d510fe3a63c800988cbeaeb8b18afabc90a496783793b13ba4e9c77e442778a37405c439c11ea9c61783fbbf4d13753460cd5bfcec67ec7b2fba735529127e089e7dea2038f68f6b1"
      },
      "B": {
-      "enunciado": "¿Qué valores de x cumplen |x − 4| < 6?",
+      "enunciado": "El triple de un número, disminuido en 7, es igual a 20. ¿Cuál es el número?",
       "opciones": [
        {
-        "texto": "⟨−∞; 10⟩"
+        "texto": "13,67"
        },
        {
-        "texto": "⟨−10; 10⟩"
+        "texto": "9"
        },
        {
-        "texto": "⟨−2; 10⟩"
+        "texto": "−4,33"
        },
        {
-        "texto": "⟨−∞; −2⟩ ∪ ⟨10; +∞⟩"
+        "texto": "4,33"
        }
       ],
-      "k": "1bb245df428fa266f91897aae7db57599456fb2aecef805b7802e390f572d84d5ca3da723805a48c0148acd061e320631598b7ac5b28f257a0216d7e63ede664b62d5d302862"
+      "k": "4bb0ce11e9abbde06cc1a19b82c82283d1fd368e9a6b18be6d8d81ed47918bb345997b0c4cd1482b9b9316d57662532955ccb663a809c1cc365f704a262476b85463e63c2451a0af80df32"
      }
     },
     {
-     "par": "alg-08",
-     "plantilla": "grafica-perillas",
-     "unidad": "algebra.funciones",
-     "mide": "Crece más rápido la recta de mayor pendiente, no la que está más arriba",
+     "par": "cc-01",
+     "plantilla": "cuadrado-crece",
+     "unidad": "algebra.exponentes-y-productos-notables",
+     "mide": "Cuadrado de un binomio: (x + b)² = x² + 2bx + b²",
      "A": {
-      "enunciado": "Las rectas L1: y = x + 6 y L2: y = 3x − 2 se cruzan en x = 4. En x = 1, L1 está más arriba que L2. ¿Cuál de las dos crece más rápido?",
+      "enunciado": "¿Cuál es el desarrollo de (x + 5)²?",
       "opciones": [
        {
-        "texto": "L1"
+        "texto": "x² + 25"
        },
        {
-        "texto": "Las dos igual"
+        "texto": "x² + 10x + 25"
        },
        {
-        "texto": "L2"
+        "texto": "x² + 5x + 25"
+       },
+       {
+        "texto": "x² + 10x"
        }
       ],
-      "k": "6a9f7ed4cb83c36a2cf3ba979dd10a77013c638b5087480a0aa8fa2d4460f41befbf13e6ed0521ab2506edc1ddc5c5edc261476aed8ae08c12d4417c2a"
+      "k": "54666e69b78bf5c07a713de12240225e64e984518e3f22ee41752ef264a843698cfc2863cbc781bddf6711dab401a947b451241006e1068a6e7576108fe9ced01fdb8d0a2bf42ce03933912f19c177db0723fc96756c327484915643f3c529df6d9cab4209"
      },
      "B": {
-      "enunciado": "Las rectas L1: y = 3x − 3 y L2: y = x + 5 se cruzan en x = 4. En x = 1, L2 está más arriba que L1. ¿Cuál de las dos crece más rápido?",
+      "enunciado": "¿Cuál es el desarrollo de (x + 6)²?",
       "opciones": [
        {
-        "texto": "L2"
+        "texto": "x² + 36"
        },
        {
-        "texto": "Las dos igual"
+        "texto": "x² + 12x + 36"
        },
        {
-        "texto": "L1"
+        "texto": "x² + 6x + 36"
+       },
+       {
+        "texto": "x² + 12x"
        }
       ],
-      "k": "392149cee00b64a95a497898121246bcd19271a56fdeaa979a781b9e08862dfe8013b9c82e8c35541df5a0f845d1866b5d4217c2c3dc242ad6b9b66052"
+      "k": "af56f3ea11151c2f51d2cb6f028e7be014bfe507d3058e046b45a897274ed5b96e485d0f7fd800cd6c5e7dba16ff918d1d65857cc53f728dd78e1ef0b912993596ffb1d0250627ba4c1b1baeb5bd1a9cc9b331bfbb28c0b7c5a04bb484ad35fca16728be47"
+     }
+    },
+    {
+     "par": "cc-02",
+     "plantilla": "cuadrado-crece",
+     "unidad": "algebra.exponentes-y-productos-notables",
+     "mide": "La raíz de una suma no es la suma de las raíces",
+     "A": {
+      "enunciado": "¿Cuánto vale √(9 + 16)?",
+      "opciones": [
+       {
+        "texto": "7"
+       },
+       {
+        "texto": "25"
+       },
+       {
+        "texto": "5"
+       },
+       {
+        "texto": "12"
+       }
+      ],
+      "k": "b2bcb441e249977516c88d8da5850c9f66582ef90cc58470c881525b3ac7e772f43265fe4bf9a12d1d780a3563d9f6f12d15d80f915460b6a063730877ed457c876b77b2a2a03c6ac943ec367028a2a2cd3b3a42a3ad49266f8d"
+     },
+     "B": {
+      "enunciado": "¿Cuánto vale √(36 + 64)?",
+      "opciones": [
+       {
+        "texto": "14"
+       },
+       {
+        "texto": "100"
+       },
+       {
+        "texto": "10"
+       },
+       {
+        "texto": "48"
+       }
+      ],
+      "k": "414a02f6381d9042a1bd906fb9360cc47ae6b80e9229190bfdb50dfffca5604499725c8c66b1162945e6f6ab9b195c2dd1905f938fa9974e1c5a71738a29e9f6596b1e9a4eef2541b327b1316ec3a7fa54f45faa72209cbd632a"
+     }
+    },
+    {
+     "par": "alg-11",
+     "plantilla": "sucesiones",
+     "unidad": "algebra.sucesiones-y-series",
+     "mide": "Término de una progresión geométrica: aₙ = a₁·qⁿ⁻¹",
+     "A": {
+      "enunciado": "En la sucesión 3, 6, 12, … cada término es el doble del anterior. ¿Cuál es el término que ocupa el lugar 8?",
+      "opciones": [
+       {
+        "texto": "768"
+       },
+       {
+        "texto": "384"
+       },
+       {
+        "texto": "24"
+       },
+       {
+        "texto": "48"
+       }
+      ],
+      "k": "5222f28d27f311a781cc7671caedc33e2b6442f3b7282ff1b2847233a1f9bcfca2a1bfff5b3855bfc6f1f4a73e8805d11afe931d2a155e54826a26e586a497388fc1e58ee56e8ce19b29b3"
+     },
+     "B": {
+      "enunciado": "En la sucesión 2, 6, 18, … cada término es el triple del anterior. ¿Cuál es el término que ocupa el lugar 6?",
+      "opciones": [
+       {
+        "texto": "1458"
+       },
+       {
+        "texto": "486"
+       },
+       {
+        "texto": "22"
+       },
+       {
+        "texto": "36"
+       }
+      ],
+      "k": "c75abcc823244e95339aa7d4eaded4e926396091e3775ab25132db728859f2293240ba44a12b3846d32957362db132310ebb4606b5b87c1d5777043232b55425f837b6f0d75e37208faa12"
+     }
+    },
+    {
+     "par": "alg-12",
+     "plantilla": "sucesiones",
+     "unidad": "algebra.sucesiones-y-series",
+     "mide": "Suma de una progresión geométrica: a₁(qⁿ − 1)/(q − 1)",
+     "A": {
+      "enunciado": "¿Cuánto suman los 6 primeros términos de 5 + 10 + 20 + 40 + …?",
+      "opciones": [
+       {
+        "texto": "160"
+       },
+       {
+        "texto": "315"
+       },
+       {
+        "texto": "320"
+       },
+       {
+        "texto": "495"
+       }
+      ],
+      "k": "14f493d9cbd81ff9deffb81807c6641c6ab70e756febcb9f06daec0b29bbad4f34ec9798099433fd33fde5fbc59ecdb11ca1ea2ff297a6f818f6ab78d222421f669d28d54df7cde1feb6344d228913eec28169c12de4e8fc02dee47530ca8422a7b39b9c25fc92b2a9e54d3a"
+     },
+     "B": {
+      "enunciado": "¿Cuánto suman los 6 primeros términos de 3 + 9 + 27 + …?",
+      "opciones": [
+       {
+        "texto": "729"
+       },
+       {
+        "texto": "1092"
+       },
+       {
+        "texto": "1093,5"
+       },
+       {
+        "texto": "2196"
+       }
+      ],
+      "k": "235b24d170030ee163989bc42435ffca253a675558e5aa0363fa66b6efee6cffc049ce187507d2b8e249726d86fd00339386231ca94e687a0d448a14f6d0a1b4f843d624861d968e9766a4c274ff8153870a3b3c6d1c1700761f6a7ce1fa896f1203ff79233cdde575fe6e1a"
      }
     }
    ]
   },
   "aritmetica": {
    "curso": "aritmetica",
-   "version": "1.1.0",
-   "minutos": 12,
+   "version": "2.0.0",
+   "minutos": 14,
    "errores": {
     "suma-descuentos": {
      "respaldo": "documentado",
@@ -442,21 +470,73 @@
      "respaldo": "hipotesis",
      "describe": "Responde cuánto cambió y no lo que se pregunta (AR5)"
     },
-    "producto": {
-     "respaldo": "parcial",
-     "describe": "Multiplica los porcentajes entre sí (AR4)"
+    "AR8-inversa-como-directa": {
+     "respaldo": "hipotesis",
+     "describe": "Resuelve una regla de tres inversa como directa (AR8)"
     },
-    "lo-que-queda": {
+    "AR6-resta-lo-que-aumenta": {
      "respaldo": "parcial",
-     "describe": "Confunde el factor con el porcentaje: lo que queda con lo que cambia (AR4)"
+     "describe": "Estrategia aditiva: resta tanto como aumentó la otra magnitud (AR6)"
     },
-    "AR3": {
-     "respaldo": "parcial",
-     "describe": "Calcula el porcentaje sobre la base equivocada (el valor nuevo en vez del de antes, o al revés)"
+    "no-cambia": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que el tiempo no cambia"
     },
-    "AR16": {
+    "AR9-olvida-horas": {
+     "respaldo": "hipotesis",
+     "describe": "En la regla de tres compuesta, olvida una magnitud (las horas diarias)"
+    },
+    "AR9-horas-como-directa": {
+     "respaldo": "hipotesis",
+     "describe": "Clasifica mal una magnitud: las horas diarias como directas a los días (AR9)"
+    },
+    "AR8-todo-directo": {
+     "respaldo": "hipotesis",
+     "describe": "Trata todas las magnitudes como directas"
+    },
+    "AR20-sumas-equiprobables": {
      "respaldo": "documentado",
-     "describe": "Calcula el interés compuesto como simple"
+     "describe": "Cree que todas las sumas de 2 a 12 son igual de probables (AR20)"
+    },
+    "AR17-sin-orden": {
+     "respaldo": "parcial",
+     "describe": "Cuenta (2, 6) y (6, 2) como un solo resultado (AR17)"
+    },
+    "sin-orden-sobre-36": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta los casos favorables sin orden, pero los posibles con orden"
+    },
+    "AR17-variacion-en-vez-de-combinacion": {
+     "respaldo": "documentado",
+     "describe": "Cuenta con orden cuando no importa: variación en vez de combinación (AR17)"
+    },
+    "AR19-con-repeticion": {
+     "respaldo": "parcial",
+     "describe": "Permite repetir a la misma persona (AR19)"
+    },
+    "producto-n-por-k": {
+     "respaldo": "hipotesis",
+     "describe": "Multiplica el total por el tamaño del grupo"
+    },
+    "n-en-vez-de-n-menos-1": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta n saltos en vez de n − 1"
+    },
+    "diferencia-como-termino": {
+     "respaldo": "hipotesis",
+     "describe": "Toma la diferencia por n como término, sin la parte fija"
+    },
+    "objeto-entero-desde-t1": {
+     "respaldo": "hipotesis",
+     "describe": "Multiplica el primer término por n, como si la sucesión fuera proporcional (RM2)"
+    },
+    "gauss-sin-dividir": {
+     "respaldo": "hipotesis",
+     "describe": "Suma primero y último por n, sin dividir entre 2"
+    },
+    "ultimo-por-n": {
+     "respaldo": "hipotesis",
+     "describe": "Multiplica el último término por n"
     }
    },
    "pares": [
@@ -503,91 +583,6 @@
      }
     },
     {
-     "par": "ari-02",
-     "plantilla": "porcentajes-sucesivos",
-     "unidad": "aritmetica.porcentajes",
-     "mide": "Un aumento seguido de un descuento: el descuento se calcula sobre el precio ya aumentado",
-     "A": {
-      "enunciado": "El precio de una mochila era S/ 350. Subió un 20 % y luego bajó un 10 %. ¿Cuál es su precio ahora?",
-      "opciones": [
-       {
-        "texto": "S/ 385"
-       },
-       {
-        "texto": "S/ 420"
-       },
-       {
-        "texto": "S/ 378"
-       },
-       {
-        "texto": "S/ 28"
-       }
-      ],
-      "k": "610e0f65af4a8055498f7676bb8b19eeeb2075d7909354fd4100934c8224a2318d680ca0732f138c0285bc07b91cb5cdccd08b2f0ccec5b9"
-     },
-     "B": {
-      "enunciado": "El precio de una licuadora era S/ 900. Subió un 40 % y luego bajó un 10 %. ¿Cuál es su precio ahora?",
-      "opciones": [
-       {
-        "texto": "S/ 1170"
-       },
-       {
-        "texto": "S/ 1260"
-       },
-       {
-        "texto": "S/ 1134"
-       },
-       {
-        "texto": "S/ 234"
-       }
-      ],
-      "k": "bd4c1581c991d966da39bf1118fdb9a8fe8e7b56091fa9b386bf08a8321cd2090412427b5debc00eaa36a34406166c3f44f1751f761d69b1"
-     }
-    },
-    {
-     "par": "ari-03",
-     "plantilla": "porcentajes-sucesivos",
-     "unidad": "aritmetica.porcentajes",
-     "mide": "Variación porcentual: el cambio se divide entre el valor de antes",
-     "transferencia": true,
-     "A": {
-      "enunciado": "El pasaje en combi subió de S/ 2,40 a S/ 3. ¿En qué porcentaje subió?",
-      "opciones": [
-       {
-        "texto": "20 %"
-       },
-       {
-        "texto": "25 %"
-       },
-       {
-        "texto": "0,6 %"
-       },
-       {
-        "texto": "125 %"
-       }
-      ],
-      "k": "ec1fb56f846b43f340bfe0bf876528178d3d886ed7ce997076caa304605b8962bc480b398e486469de83f1b765ad19"
-     },
-     "B": {
-      "enunciado": "El kilo de papa subió de S/ 2,50 a S/ 3. ¿En qué porcentaje subió?",
-      "opciones": [
-       {
-        "texto": "16,7 %"
-       },
-       {
-        "texto": "20 %"
-       },
-       {
-        "texto": "0,5 %"
-       },
-       {
-        "texto": "120 %"
-       }
-      ],
-      "k": "22ca2219b15d061a39d6b522537d0d53d83fdf286fd0aa4b166829b50bdeadb580ba2a5c8e88f2bfb8f2c33d21be2f"
-     }
-    },
-    {
      "par": "ari-04",
      "plantilla": "porcentajes-sucesivos",
      "unidad": "aritmetica.porcentajes",
@@ -630,163 +625,255 @@
      }
     },
     {
-     "par": "ari-05",
-     "plantilla": "porcentajes-sucesivos",
-     "unidad": "aritmetica.porcentajes",
-     "mide": "Aumento único equivalente a dos aumentos sucesivos",
-     "transferencia": true,
+     "par": "ari-09",
+     "plantilla": "regla-de-tres",
+     "unidad": "aritmetica.magnitudes-proporcionales",
+     "mide": "Regla de tres inversa: más obreros, menos días",
      "A": {
-      "enunciado": "El precio del pan subió un 10 % en enero y un 20 % en febrero. ¿En qué porcentaje subió en total desde diciembre?",
+      "enunciado": "Un grupo de 15 pintores termina de pintar un colegio en 12 días. Si trabajaran 20 pintores al mismo ritmo, ¿en cuántos días terminarían?",
       "opciones": [
        {
-        "texto": "30 %"
+        "texto": "16 días"
        },
        {
-        "texto": "2 %"
+        "texto": "9 días"
        },
        {
-        "texto": "32 %"
+        "texto": "7 días"
        },
        {
-        "texto": "132 %"
+        "texto": "12 días"
        }
       ],
-      "k": "ca27d03ffa0516d20abf24985463ce9d5b75bede57e54b8cce8d7832f09f77785a3a563c0402f95d6eb64fb2391cdbe69ec19e18"
+      "k": "4be1e5dd796a8bf65aa63b5767294e03bd8a39690fca9f40d9522234dfe2a20d0519c84e77c608f7f44d650e7fde561b36270f89f9ac0cfb5ce11d2f14ccbae97c44fe908d0fb9aecccf"
      },
      "B": {
-      "enunciado": "La matrícula de una academia subió un 20 % un año y un 30 % al año siguiente. ¿En qué porcentaje subió en total en esos dos años?",
+      "enunciado": "Con 8 caños iguales se llena un reservorio en 15 horas. Si se abrieran 12 caños iguales, ¿en cuántas horas lo llenarían?",
       "opciones": [
        {
-        "texto": "50 %"
+        "texto": "22,5 horas"
        },
        {
-        "texto": "6 %"
+        "texto": "10 horas"
        },
        {
-        "texto": "56 %"
+        "texto": "11 horas"
        },
        {
-        "texto": "156 %"
+        "texto": "15 horas"
        }
       ],
-      "k": "27c6cbba7d30fa13d1ced63a1b02785dd99e93fad3b78c3b2bdb57cfd1e369aabc88ad5a24432d32846686cb091ee59f0d73b5d3"
+      "k": "12936600429aaf563717ef4e969e0f86c988a79c5e9a8104df57854dc8acb268bad93b61f2507d3207323f09b446a37288a981bdb1fd1346313686d9949ef092f8ddf586abeea4ae8e4f"
      }
     },
     {
-     "par": "ari-06",
-     "plantilla": "porcentajes-sucesivos",
-     "unidad": "aritmetica.porcentajes",
-     "mide": "Revertir un cambio: el porcentaje se calcula sobre el valor nuevo",
-     "transferencia": true,
+     "par": "ari-10",
+     "plantilla": "regla-de-tres",
+     "unidad": "aritmetica.magnitudes-proporcionales",
+     "mide": "Regla de tres compuesta: obreros y horas por día, las dos inversas a los días",
      "A": {
-      "enunciado": "Un sueldo subió un 25 %. ¿Qué porcentaje tiene que bajar el sueldo nuevo para volver al de antes?",
+      "enunciado": "Un grupo de 12 obreros, trabajando 6 horas diarias, hace una zanja en 20 días. ¿En cuántos días harían una zanja igual 16 obreros que trabajen 9 horas diarias?",
       "opciones": [
        {
-        "texto": "25 %"
+        "texto": "15 días"
        },
        {
-        "texto": "20 %"
+        "texto": "22,5 días"
        },
        {
-        "texto": "80 %"
+        "texto": "10 días"
+       },
+       {
+        "texto": "40 días"
        }
       ],
-      "k": "cc9989464385f646cd15b4f7a63df9167999ea7babd00e037cad679b4c"
+      "k": "8452ac45a9b9cea14e73550074a56639ba736878497bad35ffc17421d56f78b72ca306f91caa007404864c95a4eef3bef6ac517407272dea2617fc3cdf226514f323c8201808aa"
      },
      "B": {
-      "enunciado": "El precio de un cuaderno bajó un 20 %. ¿Qué porcentaje tiene que subir el precio nuevo para volver al de antes?",
+      "enunciado": "Un grupo de 10 albañiles, trabajando 6 horas diarias, levanta una pared en 24 días. ¿En cuántos días levantarían una pared igual 15 albañiles que trabajen 8 horas diarias?",
       "opciones": [
        {
-        "texto": "20 %"
+        "texto": "16 días"
        },
        {
-        "texto": "25 %"
+        "texto": "21,3 días"
        },
        {
-        "texto": "125 %"
+        "texto": "12 días"
+       },
+       {
+        "texto": "48 días"
        }
       ],
-      "k": "99fc16e4d1a89d472eb823244017f09e4f3c9420c6d799d6b91675ad69"
+      "k": "ebdb8c4b7c1b1bb2c1a067c40707ed6db7512f8dc0b6c408792499500141f6ba83189c7473435f80e4e6b90b56ab3e2d6dd551bab7b5454e568177bbdcc1762bc65c75c47f1211"
      }
     },
     {
-     "par": "ari-07",
-     "plantilla": "porcentajes-sucesivos",
-     "unidad": "aritmetica.porcentajes",
-     "mide": "Interés compuesto: aumentos sucesivos del mismo porcentaje",
-     "transferencia": true,
+     "par": "ari-11",
+     "plantilla": "probabilidad-dados",
+     "unidad": "aritmetica.probabilidades",
+     "mide": "Con dos dados, las sumas no son igual de probables: se cuentan los 36 resultados con orden",
      "A": {
-      "enunciado": "Se depositan S/ 2000 al 10 % de interés anual compuesto (el interés de cada año se suma al depósito). ¿Cuánto dinero hay al cabo de 2 años?",
+      "enunciado": "Se lanzan dos dados comunes, uno verde y uno blanco. ¿Cuál es la probabilidad de que la suma de los puntos sea 8?",
       "opciones": [
        {
-        "texto": "S/ 2400"
+        "texto": "1/11"
        },
        {
-        "texto": "S/ 2420"
+        "texto": "5/36"
        },
        {
-        "texto": "S/ 420"
+        "texto": "1/7"
        },
        {
-        "texto": "S/ 2200"
+        "texto": "1/12"
        }
       ],
-      "k": "5d6e2cf276b8d548b63e81f7b31c7691153ca9b467c762a9e503760579ac4b14d3730424539d8d1a80e459d3534d9876"
+      "k": "ba99ac289927f283f724e26e89b458c18cb94154e5704cb053a906232100527211f471693fa3855670e3d7aed654666f47fc0698bd71ac6ba145bcc54e53a373b57b7ebcedccbe86bb"
      },
      "B": {
-      "enunciado": "Se depositan S/ 5000 al 20 % de interés anual compuesto (el interés de cada año se suma al depósito). ¿Cuánto dinero hay al cabo de 2 años?",
+      "enunciado": "Se lanzan dos dados comunes, uno negro y uno amarillo. ¿Cuál es la probabilidad de que la suma de los puntos sea 9?",
       "opciones": [
        {
-        "texto": "S/ 7000"
+        "texto": "1/11"
        },
        {
-        "texto": "S/ 7200"
+        "texto": "1/9"
        },
        {
-        "texto": "S/ 2200"
+        "texto": "2/21"
        },
        {
-        "texto": "S/ 6000"
+        "texto": "1/18"
        }
       ],
-      "k": "f27c14db7f8c5519face3c716d082d81f7a075573bb56ffdcac18257dfb6d6d9ddaa0d3fe041daeecece151c4ef816ff"
+      "k": "ac7eacad52bb391abeb715bb242a756b367cb1f95ee027c09604e66d3dbc2a821ab4d630d97564b218c3c038f75d4a26beb20cdfc23e5fb15a2b6464e19cdc6c3f7b89aa0945473463"
      }
     },
     {
-     "par": "ari-08",
-     "plantilla": "porcentajes-sucesivos",
-     "unidad": "aritmetica.porcentajes",
-     "mide": "Hallar el precio de antes: dividir entre el factor, no aplicar el porcentaje al precio nuevo",
-     "transferencia": true,
+     "par": "ari-12",
+     "plantilla": "probabilidad-dados",
+     "unidad": "aritmetica.analisis-combinatorio",
+     "mide": "Combinaciones: en un grupo no importa el orden",
      "A": {
-      "enunciado": "Después de un descuento del 20 %, una licuadora cuesta S/ 240. ¿Cuánto costaba antes del descuento?",
+      "enunciado": "De 8 alumnos se elige una comisión de 3 para organizar la kermés. ¿Cuántas comisiones distintas se pueden formar?",
       "opciones": [
        {
-        "texto": "S/ 288"
+        "texto": "336"
        },
        {
-        "texto": "S/ 300"
+        "texto": "56"
        },
        {
-        "texto": "S/ 60"
+        "texto": "512"
+       },
+       {
+        "texto": "24"
        }
       ],
-      "k": "d1c0cf5a7bdfd653af6f07c97c6363460ced4e3114e4564776d26b2a77bf6b90"
+      "k": "5d590e1934ad8dcf8262a2d724201ef095c7450bf7f9f02e86dd0bc8f1bcc184dbb5c8eb2d86e9d4026f51f397f508076a3529f6d9435ea1b9670dd0ea65956629897cf948e1095146b58c408742d8a3ae3041a82cff03a2"
      },
      "B": {
-      "enunciado": "Después de un aumento del 25 %, una bicicleta cuesta S/ 500. ¿Cuánto costaba antes del aumento?",
+      "enunciado": "De 7 deportistas se elige un equipo de 4 para una posta. Todos corren igual: no importa quién corre primero. ¿Cuántos equipos distintos se pueden formar?",
       "opciones": [
        {
-        "texto": "S/ 375"
+        "texto": "840"
        },
        {
-        "texto": "S/ 400"
+        "texto": "35"
        },
        {
-        "texto": "S/ 100"
+        "texto": "2401"
+       },
+       {
+        "texto": "28"
        }
       ],
-      "k": "59cd0d1bf01bf126999fb0619235ae726454ef2708cdab52f4f0a81b5ee56fd5"
+      "k": "14f4291b99d939fa0350c685bf36f1d7d66a542b9a95896cc7ee9ff53006f68f4936a2e2f6adf03011c420686250e9a9ca7624e8cba1376048dc8da7e0bb19a8b481a886f7a07d8f4668c9f7d83b3dde6c619ea7e289d44a"
+     }
+    },
+    {
+     "par": "ari-13",
+     "plantilla": "sucesiones",
+     "unidad": "aritmetica.sucesiones-y-series",
+     "mide": "Término general de una progresión aritmética: del primero al enésimo hay n − 1 saltos",
+     "A": {
+      "enunciado": "En la sucesión 7, 11, 15, 19, … cada término es 4 más que el anterior. ¿Cuál es el término que ocupa el lugar 30?",
+      "opciones": [
+       {
+        "texto": "127"
+       },
+       {
+        "texto": "123"
+       },
+       {
+        "texto": "120"
+       },
+       {
+        "texto": "210"
+       }
+      ],
+      "k": "dcee91e69e54dfdd873335b1e6c4b0450d5a8e81f0cff8c2973d4af14942301be4856e23b64245dc5a994658940f501afab0ab56dc71d9d5dfe1eb5a108c5fc55a6c85264341e610829d304e74a9d4eee17748"
+     },
+     "B": {
+      "enunciado": "En la sucesión 5, 8, 11, 14, … cada término es 3 más que el anterior. ¿Cuál es el término que ocupa el lugar 40?",
+      "opciones": [
+       {
+        "texto": "125"
+       },
+       {
+        "texto": "122"
+       },
+       {
+        "texto": "120"
+       },
+       {
+        "texto": "200"
+       }
+      ],
+      "k": "6409e344637141f292bbcc9b56c160546caf3f3e9779387e1de2b7d31db23a9eb1dc4860d4d171bc48f808f36f8b46241970b8a27a7a6f60bce96aa25d6fac8a7fbdd734ec79662cd29d5bfbea18ea54093d39"
+     }
+    },
+    {
+     "par": "ari-14",
+     "plantilla": "sucesiones",
+     "unidad": "aritmetica.sucesiones-y-series",
+     "mide": "Suma de una progresión aritmética: (primero + último) · n / 2",
+     "A": {
+      "enunciado": "¿Cuánto suman los 20 primeros términos de la sucesión 3, 7, 11, 15, …?",
+      "opciones": [
+       {
+        "texto": "1640"
+       },
+       {
+        "texto": "820"
+       },
+       {
+        "texto": "1580"
+       },
+       {
+        "texto": "860"
+       }
+      ],
+      "k": "a813664c7a0bfd21e64b0291d7f5d63679b99eac7a8e09e6753fdb4b9eae224ac9b4fcd671e668ab0fe5ed17377bb536c132a19c43016f35fa7ec607dd5331cef3b554"
+     },
+     "B": {
+      "enunciado": "¿Cuánto suman los 16 primeros términos de la sucesión 2, 7, 12, 17, …?",
+      "opciones": [
+       {
+        "texto": "1264"
+       },
+       {
+        "texto": "632"
+       },
+       {
+        "texto": "1232"
+       },
+       {
+        "texto": "672"
+       }
+      ],
+      "k": "7823c414738ce299ff2ebc9916e6d32884802002b45339442a7ee387fab6746c06c830cec02ec3b5e0af7cc4e2174900b7b77a821f8d6e8fb500eddc35d6a8274ee861"
      }
     }
    ]
@@ -2340,10 +2427,429 @@
     }
    ]
   },
+  "razonamiento-matematico": {
+   "curso": "razonamiento-matematico",
+   "version": "1.0.0",
+   "minutos": 14,
+   "errores": {
+    "RM4-resta-en-encuentro": {
+     "respaldo": "hipotesis",
+     "describe": "Resta las rapideces cuando los móviles van uno hacia el otro (RM4)"
+    },
+    "promedio-rapideces": {
+     "respaldo": "hipotesis",
+     "describe": "Usa el promedio de las rapideces"
+    },
+    "solo-un-movil": {
+     "respaldo": "hipotesis",
+     "describe": "Considera solo un móvil"
+    },
+    "RM3-sin-tiempo": {
+     "respaldo": "hipotesis",
+     "describe": "Plantea la relación con las edades de hoy, sin el tiempo (RM3)"
+    },
+    "RM1-tiempo-a-uno": {
+     "respaldo": "hipotesis",
+     "describe": "Aplica el paso del tiempo solo a una persona"
+    },
+    "RM1-tiempo-solo-incognita": {
+     "respaldo": "hipotesis",
+     "describe": "Aplica el paso del tiempo solo a la incógnita"
+    },
+    "AR22-recencia-negativa": {
+     "respaldo": "parcial",
+     "describe": "Falacia del jugador: tras una racha, «ahora toca lo otro» (AR22)"
+    },
+    "recencia-positiva": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que una racha tiende a seguir"
+    },
+    "racha-completa": {
+     "respaldo": "hipotesis",
+     "describe": "Da la probabilidad de toda la racha en vez de la del próximo lanzamiento"
+    },
+    "circular-como-lineal": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta como en una fila: n! en vez de (n − 1)!"
+    },
+    "circular-mitad": {
+     "respaldo": "hipotesis",
+     "describe": "Divide además entre 2, como si se pudiera voltear (un collar)"
+    },
+    "RM5-mas-dientes-mas-vueltas": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que la rueda con más dientes da más vueltas (RM5)"
+    },
+    "aditiva": {
+     "respaldo": "hipotesis",
+     "describe": "Suma la diferencia en vez de usar la razón"
+    },
+    "mismas-vueltas": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que todas las ruedas dan las mismas vueltas"
+    },
+    "solo-la-del-medio": {
+     "respaldo": "hipotesis",
+     "describe": "Usa solo la última pareja de engranajes"
+    },
+    "RM2-objeto-entero": {
+     "respaldo": "hipotesis",
+     "describe": "Objeto entero: la figura 2n es el doble de la figura n (RM2)"
+    },
+    "diferencia-como-termino": {
+     "respaldo": "hipotesis",
+     "describe": "Toma la diferencia por n como término, sin la parte fija"
+    },
+    "lineal-en-cuadratica": {
+     "respaldo": "hipotesis",
+     "describe": "Trata como lineal una sucesión de segundo orden, con la primera diferencia"
+    },
+    "repite-la-ultima-diferencia": {
+     "respaldo": "hipotesis",
+     "describe": "Repite la última diferencia en vez de seguir su crecimiento"
+    },
+    "da-la-del-medio": {
+     "respaldo": "hipotesis",
+     "describe": "Responde las vueltas del engranaje del medio"
+    }
+   },
+   "pares": [
+    {
+     "par": "rm-01",
+     "plantilla": "traductor-enunciados",
+     "unidad": "razonamiento-matematico.planteo-de-ecuaciones",
+     "mide": "Móviles en sentidos opuestos: las rapideces se suman",
+     "A": {
+      "enunciado": "Dos ciudades están a 360 km. A la misma hora sale un bus de cada una, uno hacia el otro: uno a 50 km/h y el otro a 70 km/h. ¿En cuántas horas se cruzan?",
+      "opciones": [
+       {
+        "texto": "18 horas"
+       },
+       {
+        "texto": "3 horas"
+       },
+       {
+        "texto": "6 horas"
+       },
+       {
+        "texto": "5,1 horas"
+       }
+      ],
+      "k": "476269fcceffefbe60b333b74883937fb4534ac2cf280c66e10665bacb43d7404d8ae1cfe5426185b10f01d44fd750b00324c2d0f8048b5014cb1cfd70778fc0323fef95f3ab"
+     },
+     "B": {
+      "enunciado": "Dos pueblos están a 280 km. A la misma hora sale un camión de cada uno, uno hacia el otro: uno a 30 km/h y el otro a 40 km/h. ¿En cuántas horas se cruzan?",
+      "opciones": [
+       {
+        "texto": "28 horas"
+       },
+       {
+        "texto": "4 horas"
+       },
+       {
+        "texto": "8 horas"
+       },
+       {
+        "texto": "7 horas"
+       }
+      ],
+      "k": "9e9062b60f9124c0d09730752b236cb8c3027e96d4aa93be23bd9ddd9e9de9f8254b29faf9224ec33cde94de1e4f7b73c92e7fa3f5de5426562dc5695db19abfa8d7a9a82521"
+     }
+    },
+    {
+     "par": "rm-02",
+     "plantilla": "traductor-enunciados",
+     "unidad": "razonamiento-matematico.planteo-de-ecuaciones",
+     "mide": "Edades: el tiempo pasa para las dos personas",
+     "A": {
+      "enunciado": "Ana tiene hoy 44 años. Hace 4 años, su edad era el cuádruple de la de su hijo. ¿Cuántos años tiene hoy el hijo?",
+      "opciones": [
+       {
+        "texto": "11 años"
+       },
+       {
+        "texto": "10 años"
+       },
+       {
+        "texto": "14 años"
+       },
+       {
+        "texto": "15 años"
+       }
+      ],
+      "k": "6c876fd841aebbbe0bbb2b61b75a8dc2593b259598d19c1830f4aec5290b165fe9b4fb8c50306a61d1ff4a97178401245f53f6401956eb8ebf1f67fbb66ee44e2a470ff52c9eb714"
+     },
+     "B": {
+      "enunciado": "Luis tiene hoy 30 años. Dentro de 6 años, su edad será el doble de la de su sobrino. ¿Cuántos años tiene hoy el sobrino?",
+      "opciones": [
+       {
+        "texto": "15 años"
+       },
+       {
+        "texto": "18 años"
+       },
+       {
+        "texto": "12 años"
+       },
+       {
+        "texto": "9 años"
+       }
+      ],
+      "k": "f60bdcda50ab8a1a8a893f665ca55f8f9b94fe1e9ed170c3f271d5f32b9a9c6ba8da1231b345cb4af8d7a2b40afe6c10b3467fa42591fad13fa69006def754387495f7644b9bb098"
+     }
+    },
+    {
+     "par": "rm-03",
+     "plantilla": "probabilidad-dados",
+     "unidad": "razonamiento-matematico.juegos-recreativos",
+     "mide": "Los lanzamientos no tienen memoria (falacia del jugador)",
+     "A": {
+      "enunciado": "Una moneda equilibrada salió cara 4 veces seguidas. ¿Cuál es la probabilidad de que en el próximo lanzamiento salga sello?",
+      "opciones": [
+       {
+        "texto": "Más de 1/2"
+       },
+       {
+        "texto": "Menos de 1/2"
+       },
+       {
+        "texto": "1/2"
+       },
+       {
+        "texto": "1/32"
+       }
+      ],
+      "k": "b8b4d4f2129916976bb5a26f81be10b8ade0faf0381954d7b17e859c50dd1c08f50af72281b9742fd3cb5b4b00ecfabb17be1d4cf7072b99b1d3c999d14093783cde7df9c39d"
+     },
+     "B": {
+      "enunciado": "Un dado equilibrado mostró el 5 3 veces seguidas. ¿Cuál es la probabilidad de que en el próximo lanzamiento vuelva a salir 5?",
+      "opciones": [
+       {
+        "texto": "Menos de 1/6"
+       },
+       {
+        "texto": "Más de 1/6"
+       },
+       {
+        "texto": "1/6"
+       },
+       {
+        "texto": "1/1296"
+       }
+      ],
+      "k": "046047b3f044e29b135085945474bcd396720c22266f460ec0c16d659ae40908791125316c0bf7b769892d67a153a3864fc8b18bedbd0ef8b6c522481262b3c9570e424ede14"
+     }
+    },
+    {
+     "par": "rm-04",
+     "plantilla": "probabilidad-dados",
+     "unidad": "razonamiento-matematico.juegos-recreativos",
+     "mide": "Mesa redonda: girar a todos no cambia el orden, (n − 1)!",
+     "A": {
+      "enunciado": "¿De cuántas maneras distintas se pueden sentar 6 amigos alrededor de una mesa redonda? (Dos maneras son la misma si una es la otra girada.)",
+      "opciones": [
+       {
+        "texto": "720"
+       },
+       {
+        "texto": "120"
+       },
+       {
+        "texto": "60"
+       }
+      ],
+      "k": "00dba3c2e693dc7903defa790101be5660f531a3c2c482e16148fad96d693b3afc7226f20348e3d99edcfc37f3e957d8"
+     },
+     "B": {
+      "enunciado": "¿De cuántas maneras distintas se pueden sentar 5 primos alrededor de una fogata? (Dos maneras son la misma si una es la otra girada.)",
+      "opciones": [
+       {
+        "texto": "120"
+       },
+       {
+        "texto": "24"
+       },
+       {
+        "texto": "12"
+       }
+      ],
+      "k": "59c9f849599a52c372e45c16c19ad4f400f9d43d1888255e5c5c326eeaecab81a84f555d70a589f64b51a9be4899b787"
+     }
+    },
+    {
+     "par": "rm-05",
+     "plantilla": "regla-de-tres",
+     "unidad": "razonamiento-matematico.ruedas-poleas-engranajes",
+     "mide": "Dos engranajes: la rueda con más dientes da menos vueltas (z₁·n₁ = z₂·n₂)",
+     "A": {
+      "enunciado": "Un engranaje de 24 dientes mueve a otro de 60 dientes. Si el pequeño da 15 vueltas, ¿cuántas vueltas da el grande?",
+      "opciones": [
+       {
+        "texto": "37,5"
+       },
+       {
+        "texto": "51"
+       },
+       {
+        "texto": "6"
+       },
+       {
+        "texto": "15"
+       }
+      ],
+      "k": "6cdb188b92a66023ea4aaf760598a43b5f401b590b0248808ad063175c2823e6735475573bb5f7fd642fe0a59346e726dd95c1be67a9a953b1dde1828bd4c118cf"
+     },
+     "B": {
+      "enunciado": "Un piñón de 30 dientes mueve a una rueda de 45 dientes. Si el piñón da 12 vueltas, ¿cuántas vueltas da la rueda?",
+      "opciones": [
+       {
+        "texto": "18"
+       },
+       {
+        "texto": "27"
+       },
+       {
+        "texto": "8"
+       },
+       {
+        "texto": "12"
+       }
+      ],
+      "k": "f800e865d9dfb56e2163a4e8658d3220483f0f50cd8b95a133bb291b80287c26f0ed996e108f848b2f4643614e371a6eae0d28dbb1e68859c18e28483821c226e9"
+     }
+    },
+    {
+     "par": "rm-06",
+     "plantilla": "regla-de-tres",
+     "unidad": "razonamiento-matematico.ruedas-poleas-engranajes",
+     "mide": "Tres engranajes en fila: la del medio no cambia la cuenta entre la primera y la última",
+     "A": {
+      "enunciado": "Tres engranajes en fila: el primero tiene 20 dientes, el del medio 50 y el último 25. El primero mueve al del medio y este, al último. Si el primero da 15 vueltas, ¿cuántas da el último?",
+      "opciones": [
+       {
+        "texto": "30"
+       },
+       {
+        "texto": "18,75"
+       },
+       {
+        "texto": "12"
+       },
+       {
+        "texto": "6"
+       }
+      ],
+      "k": "c5bbf3e6c834800a1f52b54c6dfbccb30feba85aa1893a71909e4560499ddd81fce2d206c2ca2c9594e09807e1621be60a9639ede758de82593803a761df4d2d302369e22121ba2e5a7d08ab"
+     },
+     "B": {
+      "enunciado": "Tres engranajes en fila: el primero tiene 16 dientes, el del medio 40 y el último 24. El primero mueve al del medio y este, al último. Si el primero da 15 vueltas, ¿cuántas da el último?",
+      "opciones": [
+       {
+        "texto": "25"
+       },
+       {
+        "texto": "22,5"
+       },
+       {
+        "texto": "10"
+       },
+       {
+        "texto": "6"
+       }
+      ],
+      "k": "163aa6f9a42642855a5deaaf904240e64c59b329d982a43eee39dfbd71e0910266c88da7cc005310630b08a3a8e8423c49fc2b4eebab8fe14fdfdfffda410d152b573e59d059333af955880a"
+     }
+    },
+    {
+     "par": "rm-07",
+     "plantilla": "sucesiones",
+     "unidad": "razonamiento-matematico.razonamiento-inductivo",
+     "mide": "Figuras con palitos: la figura 2n no es el doble de la figura n (objeto entero)",
+     "A": {
+      "enunciado": "Con palitos se arman cuadrados en fila: 1 cuadrado usa 4 palitos, 2 cuadrados usan 7 y 3 cuadrados usan 10. Una fila de 10 cuadrados usa 31 palitos. ¿Cuántos palitos usa una fila de 20 cuadrados?",
+      "opciones": [
+       {
+        "texto": "62"
+       },
+       {
+        "texto": "60"
+       },
+       {
+        "texto": "61"
+       },
+       {
+        "texto": "41"
+       }
+      ],
+      "k": "e74df0872865ea8081cbbb9c8819308b7aa839e06b774a4661069403e18f1e51ae9994ce799c8c6c74ff575ebaf11a404b13e9bb875c6598b57dedaf85a5411f"
+     },
+     "B": {
+      "enunciado": "Con palitos se arman hexágonos en fila: 1 hexágono usa 6 palitos, 2 hexágonos usan 11 y 3 hexágonos usan 16. Una fila de 8 hexágonos usa 41 palitos. ¿Cuántos palitos usa una fila de 16 hexágonos?",
+      "opciones": [
+       {
+        "texto": "82"
+       },
+       {
+        "texto": "80"
+       },
+       {
+        "texto": "81"
+       },
+       {
+        "texto": "49"
+       }
+      ],
+      "k": "b8b9d1bb7a4af2cdeb398597d1f04fd6f5ed990879082c0e42354935a4b122482363a238c6b1a9cdd53b3e109e422a3dbf7d80ae42b9f142fba48290dba411ac"
+     }
+    },
+    {
+     "par": "rm-08",
+     "plantilla": "sucesiones",
+     "unidad": "razonamiento-matematico.razonamiento-inductivo",
+     "mide": "Sucesión de segundo orden: la diferencia crece, no se repite",
+     "A": {
+      "enunciado": "Observa la sucesión 2, 6, 12, 20, … ¿Cuál es el término que ocupa el lugar 10?",
+      "opciones": [
+       {
+        "texto": "38"
+       },
+       {
+        "texto": "68"
+       },
+       {
+        "texto": "110"
+       },
+       {
+        "texto": "60"
+       }
+      ],
+      "k": "dce5430d2b326e6b78cff60bfa573dbf2c3028e51425466378bb727a35018e72584d5bf98e7ee683303959088a08341b28751e2b8098db184ecc71349a5ac2c7d64f7eba17cbbeb58c575c7dc925944f79"
+     },
+     "B": {
+      "enunciado": "Observa la sucesión 3, 8, 15, 24, … ¿Cuál es el término que ocupa el lugar 10?",
+      "opciones": [
+       {
+        "texto": "48"
+       },
+       {
+        "texto": "78"
+       },
+       {
+        "texto": "120"
+       },
+       {
+        "texto": "70"
+       }
+      ],
+      "k": "69f36d425930519d176094890506345e579799d7eb43b9af8051b27fa8d8fb2501c7cdbd811f0ce6cf0507b36973df2191b7d00b66447b9cffb380e4ef7e4128d3b72fb00f0de1784ae1f69c30cdcc4cb6"
+     }
+    }
+   ]
+  },
   "trigonometria": {
    "curso": "trigonometria",
-   "version": "1.1.0",
-   "minutos": 12,
+   "version": "1.2.0",
+   "minutos": 14,
    "errores": {
     "TR1-lee-2-como-2pi": {
      "respaldo": "parcial",
@@ -2356,18 +2862,6 @@
     "factor-invertido": {
      "respaldo": "hipotesis",
      "describe": "Multiplica por π/180 en vez de 180/π"
-    },
-    "TR5-vuelta-un-radian": {
-     "respaldo": "parcial",
-     "describe": "Cree que una vuelta entera es un radián"
-    },
-    "TR3-grados-como-radianes": {
-     "respaldo": "hipotesis",
-     "describe": "Da los grados como si fueran radianes"
-    },
-    "TR1-pi-es-la-vuelta": {
-     "respaldo": "hipotesis",
-     "describe": "Cree que π radianes es una vuelta entera"
     },
     "TR4-arco-con-grados": {
      "respaldo": "hipotesis",
@@ -2404,14 +2898,6 @@
     "vueltas-con-diametro": {
      "respaldo": "hipotesis",
      "describe": "Usa 2π por el diámetro como perímetro"
-    },
-    "faja-mismas-vueltas": {
-     "respaldo": "hipotesis",
-     "describe": "Cree que dos ruedas unidas por una faja dan las mismas vueltas"
-    },
-    "RM5-mas-grande-mas-vueltas": {
-     "respaldo": "hipotesis",
-     "describe": "Cree que la rueda más grande da más vueltas"
     },
     "bici-mismas-vueltas": {
      "respaldo": "hipotesis",
@@ -2456,6 +2942,26 @@
     "periodo-con-amplitud": {
      "respaldo": "hipotesis",
      "describe": "Mezcla la amplitud con el periodo"
+    },
+    "TR23-solo-calculadora": {
+     "respaldo": "hipotesis",
+     "describe": "Se queda con el ángulo agudo que da la calculadora y olvida el obtuso"
+    },
+    "a-menor-que-b-no-alcanza": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que si a es menor que b el lado no alcanza a cerrar el triángulo"
+    },
+    "TR24-signo": {
+     "respaldo": "hipotesis",
+     "describe": "Suma el término 2bc·cos A en vez de restarlo"
+    },
+    "TR24-sin-termino": {
+     "respaldo": "hipotesis",
+     "describe": "Olvida el término 2bc·cos A (usa Pitágoras)"
+    },
+    "suma-de-lados": {
+     "respaldo": "hipotesis",
+     "describe": "Suma los dos lados"
     }
    },
    "pares": [
@@ -2499,48 +3005,6 @@
        }
       ],
       "k": "34a828c34be31c9b9d7b5fd3bcc0813daf5311d52604a5a470f7427d4c903eda04b2293d4795c8c3af9c405598f051241fda3d77d44b0d883ac5b326cb41cbe3493444d4bd7f084d"
-     }
-    },
-    {
-     "par": "tri-02",
-     "plantilla": "cinta-radio",
-     "unidad": "trigonometria.angulo-trigonometrico",
-     "mide": "Cuántos radianes tiene una vuelta (2π)",
-     "A": {
-      "enunciado": "¿Cuántos radianes mide una vuelta completa?",
-      "opciones": [
-       {
-        "texto": "1"
-       },
-       {
-        "texto": "360"
-       },
-       {
-        "texto": "π"
-       },
-       {
-        "texto": "2π"
-       }
-      ],
-      "k": "dbe4cf4137e78cb99cd7e81c47409109e55ac3387809babbbde7a14f53d90851d86c189b1b12a0d4db862b55457ad458c16be0ae70b00bfe23e4b43c87351bcd1e11e3acb0e2a45508a961a0c6b027ec"
-     },
-     "B": {
-      "enunciado": "¿Cuántos radianes mide media vuelta?",
-      "opciones": [
-       {
-        "texto": "0,5"
-       },
-       {
-        "texto": "180"
-       },
-       {
-        "texto": "π/2"
-       },
-       {
-        "texto": "π"
-       }
-      ],
-      "k": "e6cb8f4699866fef9371d6e28cd7362ab3e46cbdd6e50eb0fe8f77a1a0fab150cc99b6888213f7a3a460495dbf0c68ee345c1708294690e4dd6c69b682542bc1d45a60f8a7666c4208a199eed386461c"
      }
     },
     {
@@ -2706,42 +3170,6 @@
      }
     },
     {
-     "par": "tri-07",
-     "plantilla": "cinta-radio",
-     "unidad": "trigonometria.longitud-de-arco-y-sector",
-     "mide": "Ruedas unidas por una faja: recorren el mismo arco y la grande da menos vueltas",
-     "A": {
-      "enunciado": "En una máquina de coser, una correa sin deslizar enlaza una polea de 3 cm de radio con otra de 9 cm. Si la polea pequeña gira 6 veces, ¿cuántos giros completa la otra?",
-      "opciones": [
-       {
-        "texto": "6"
-       },
-       {
-        "texto": "18"
-       },
-       {
-        "texto": "2"
-       }
-      ],
-      "k": "af50a41ccb55b249063a124e6d22ba1c8afbd881cc6356661b64c0920b86d0ceb6150a0bb8e886795266d2a7d1ddee03aa0c360639013cf337d780"
-     },
-     "B": {
-      "enunciado": "En un molino, una correa sin deslizar enlaza un disco de 5 cm de radio con otro de 10 cm. Si el disco pequeño gira 8 veces, ¿cuántos giros completa el otro?",
-      "opciones": [
-       {
-        "texto": "8"
-       },
-       {
-        "texto": "16"
-       },
-       {
-        "texto": "4"
-       }
-      ],
-      "k": "0b17531340ba60355b1ebcc71f39c652984f425e0dc00488e3f2957839cc41f8c38352c7f31a495fe03b5b5f01ac24be09de55aaba2bb407dab42e"
-     }
-    },
-    {
      "par": "tri-08",
      "plantilla": "cinta-radio",
      "unidad": "trigonometria.longitud-de-arco-y-sector",
@@ -2865,6 +3293,84 @@
        }
       ],
       "k": "856f1c923082c872430cdce259f58faeccae439fb67c8db375dd50e9c59610cebd8de63943f34b9891b9da64a9742671b5eb9da6f08355004148c224edbbc312b3326a6bae15a1720c41c0"
+     }
+    },
+    {
+     "par": "tri-09",
+     "plantilla": "caso-ambiguo",
+     "unidad": "trigonometria.triangulos-oblicuangulos",
+     "mide": "Caso ambiguo: con dos lados y un ángulo no comprendido puede haber dos triángulos",
+     "A": {
+      "enunciado": "En un triángulo ABC se sabe que A = 30°, a = 5 cm y b = 8 cm. ¿Cuánto puede medir el ángulo B? (Usa sen 53° = 0,8.)",
+      "opciones": [
+       {
+        "texto": "Solo 53°"
+       },
+       {
+        "texto": "53° o 127°"
+       },
+       {
+        "texto": "Ningún valor"
+       }
+      ],
+      "k": "ac21fc1a7fd7f79f6945682e9c83a01ae0081a7aeeb09530104890545777867b4e6cf11cc85bd2718a1b0f328f4db6658f7eba3fe07e1ae99fc168"
+     },
+     "B": {
+      "enunciado": "En un triángulo PQR se sabe que P = 30°, p = 5 cm y q = 6 cm. ¿Cuánto puede medir el ángulo Q? (Usa sen 37° = 0,6.)",
+      "opciones": [
+       {
+        "texto": "Solo 37°"
+       },
+       {
+        "texto": "37° o 143°"
+       },
+       {
+        "texto": "Ningún valor"
+       }
+      ],
+      "k": "558bc87526cf0486fa4e8c1b2eb187f1f7951751d667c21fe37bb4a6c3370499bf3df3243cd27accfbf26bfa808fdd7f46ee03f026b4256a59a3bb"
+     }
+    },
+    {
+     "par": "tri-10",
+     "plantilla": "caso-ambiguo",
+     "unidad": "trigonometria.triangulos-oblicuangulos",
+     "mide": "Ley de cosenos: a² = b² + c² − 2bc·cos A",
+     "A": {
+      "enunciado": "En un triángulo, dos lados miden 5 cm y 8 cm, y el ángulo entre ellos mide 60°. ¿Cuánto mide el tercer lado? (cos 60° = 0,5)",
+      "opciones": [
+       {
+        "texto": "11,4 cm"
+       },
+       {
+        "texto": "9,4 cm"
+       },
+       {
+        "texto": "7 cm"
+       },
+       {
+        "texto": "13 cm"
+       }
+      ],
+      "k": "686d56f5bbfc28cd9691878cd2c847e833456ab8651cbcd76043d0c52125e4039946ac9dd48207481cc94ec34c07b3d270df525f40307a47"
+     },
+     "B": {
+      "enunciado": "En un triángulo, dos lados miden 15 cm y 8 cm, y el ángulo entre ellos mide 60°. ¿Cuánto mide el tercer lado? (cos 60° = 0,5)",
+      "opciones": [
+       {
+        "texto": "20,2 cm"
+       },
+       {
+        "texto": "17 cm"
+       },
+       {
+        "texto": "13 cm"
+       },
+       {
+        "texto": "23 cm"
+       }
+      ],
+      "k": "cca1c09228fa1ae104b6b70b1407c4ce5b4d99382c0fba5d6d3d98814fb925c4b692cd54ad2f302bcb78eba4461725298693e4b7c7782b2e"
      }
     }
    ]

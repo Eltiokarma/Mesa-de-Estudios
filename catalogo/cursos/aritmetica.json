@@ -507,7 +507,7 @@
       },
       "potencial_visual": "medio",
       "grado": 4,
-      "plantillas": [],
+      "plantillas": ["sucesiones"],
       "investigacion": null
     },
     {

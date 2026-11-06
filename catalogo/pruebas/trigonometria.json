@@ -1,8 +1,8 @@
 {
   "curso": "trigonometria",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "fecha": "2026-11-06",
-  "minutos": 12,
+  "minutos": 14,
   "informes": [
     "docs/investigacion/trigonometria-ideas-erroneas.md"
   ],
@@ -18,18 +18,6 @@
     "factor-invertido": {
       "respaldo": "hipotesis",
       "describe": "Multiplica por π/180 en vez de 180/π"
-    },
-    "TR5-vuelta-un-radian": {
-      "respaldo": "parcial",
-      "describe": "Cree que una vuelta entera es un radián"
-    },
-    "TR3-grados-como-radianes": {
-      "respaldo": "hipotesis",
-      "describe": "Da los grados como si fueran radianes"
-    },
-    "TR1-pi-es-la-vuelta": {
-      "respaldo": "hipotesis",
-      "describe": "Cree que π radianes es una vuelta entera"
     },
     "TR4-arco-con-grados": {
       "respaldo": "hipotesis",
@@ -66,14 +54,6 @@
     "vueltas-con-diametro": {
       "respaldo": "hipotesis",
       "describe": "Usa 2π por el diámetro como perímetro"
-    },
-    "faja-mismas-vueltas": {
-      "respaldo": "hipotesis",
-      "describe": "Cree que dos ruedas unidas por una faja dan las mismas vueltas"
-    },
-    "RM5-mas-grande-mas-vueltas": {
-      "respaldo": "hipotesis",
-      "describe": "Cree que la rueda más grande da más vueltas"
     },
     "bici-mismas-vueltas": {
       "respaldo": "hipotesis",
@@ -118,6 +98,26 @@
     "periodo-con-amplitud": {
       "respaldo": "hipotesis",
       "describe": "Mezcla la amplitud con el periodo"
+    },
+    "TR23-solo-calculadora": {
+      "respaldo": "hipotesis",
+      "describe": "Se queda con el ángulo agudo que da la calculadora y olvida el obtuso"
+    },
+    "a-menor-que-b-no-alcanza": {
+      "respaldo": "hipotesis",
+      "describe": "Cree que si a es menor que b el lado no alcanza a cerrar el triángulo"
+    },
+    "TR24-signo": {
+      "respaldo": "hipotesis",
+      "describe": "Suma el término 2bc·cos A en vez de restarlo"
+    },
+    "TR24-sin-termino": {
+      "respaldo": "hipotesis",
+      "describe": "Olvida el término 2bc·cos A (usa Pitágoras)"
+    },
+    "suma-de-lados": {
+      "respaldo": "hipotesis",
+      "describe": "Suma los dos lados"
     }
   },
   "pares": [
@@ -179,72 +179,6 @@
             "texto": "0,07°",
             "valor": 0.0698,
             "error": "factor-invertido"
-          }
-        ]
-      }
-    },
-    {
-      "par": "tri-02",
-      "plantilla": "cinta-radio",
-      "unidad": "trigonometria.angulo-trigonometrico",
-      "mide": "Cuántos radianes tiene una vuelta (2π)",
-      "A": {
-        "enunciado": "¿Cuántos radianes mide una vuelta completa?",
-        "datos": {
-          "modelo": {
-            "vueltas": 1
-          }
-        },
-        "opciones": [
-          {
-            "texto": "1",
-            "valor": 1,
-            "error": "TR5-vuelta-un-radian"
-          },
-          {
-            "texto": "360",
-            "valor": 360,
-            "error": "TR3-grados-como-radianes"
-          },
-          {
-            "texto": "π",
-            "valor": 3.14159,
-            "error": "TR1-pi-es-la-vuelta"
-          },
-          {
-            "texto": "2π",
-            "valor": 6.28319,
-            "correcta": true
-          }
-        ]
-      },
-      "B": {
-        "enunciado": "¿Cuántos radianes mide media vuelta?",
-        "datos": {
-          "modelo": {
-            "vueltas": 0.5
-          }
-        },
-        "opciones": [
-          {
-            "texto": "0,5",
-            "valor": 0.5,
-            "error": "TR5-vuelta-un-radian"
-          },
-          {
-            "texto": "180",
-            "valor": 180,
-            "error": "TR3-grados-como-radianes"
-          },
-          {
-            "texto": "π/2",
-            "valor": 1.5708,
-            "error": "TR1-pi-es-la-vuelta"
-          },
-          {
-            "texto": "π",
-            "valor": 3.14159,
-            "correcta": true
           }
         ]
       }
@@ -500,62 +434,6 @@
       }
     },
     {
-      "par": "tri-07",
-      "plantilla": "cinta-radio",
-      "unidad": "trigonometria.longitud-de-arco-y-sector",
-      "mide": "Ruedas unidas por una faja: recorren el mismo arco y la grande da menos vueltas",
-      "A": {
-        "enunciado": "En una máquina de coser, una correa sin deslizar enlaza una polea de 3 cm de radio con otra de 9 cm. Si la polea pequeña gira 6 veces, ¿cuántos giros completa la otra?",
-        "datos": {
-          "r1": 3,
-          "r2": 9,
-          "n1": 6
-        },
-        "opciones": [
-          {
-            "texto": "6",
-            "valor": 6,
-            "error": "faja-mismas-vueltas"
-          },
-          {
-            "texto": "18",
-            "valor": 18,
-            "error": "RM5-mas-grande-mas-vueltas"
-          },
-          {
-            "texto": "2",
-            "valor": 2,
-            "correcta": true
-          }
-        ]
-      },
-      "B": {
-        "enunciado": "En un molino, una correa sin deslizar enlaza un disco de 5 cm de radio con otro de 10 cm. Si el disco pequeño gira 8 veces, ¿cuántos giros completa el otro?",
-        "datos": {
-          "r1": 5,
-          "r2": 10,
-          "n1": 8
-        },
-        "opciones": [
-          {
-            "texto": "8",
-            "valor": 8,
-            "error": "faja-mismas-vueltas"
-          },
-          {
-            "texto": "16",
-            "valor": 16,
-            "error": "RM5-mas-grande-mas-vueltas"
-          },
-          {
-            "texto": "4",
-            "valor": 4,
-            "correcta": true
-          }
-        ]
-      }
-    },
-    {
       "par": "tri-08",
       "plantilla": "cinta-radio",
       "unidad": "trigonometria.longitud-de-arco-y-sector",
@@ -751,6 +629,128 @@
             "texto": "720°",
             "valor": 720,
             "error": "periodo-con-amplitud"
+          }
+        ]
+      }
+    },
+    {
+      "par": "tri-09",
+      "plantilla": "caso-ambiguo",
+      "unidad": "trigonometria.triangulos-oblicuangulos",
+      "mide": "Caso ambiguo: con dos lados y un ángulo no comprendido puede haber dos triángulos",
+      "A": {
+        "enunciado": "En un triángulo ABC se sabe que A = 30°, a = 5 cm y b = 8 cm. ¿Cuánto puede medir el ángulo B? (Usa sen 53° = 0,8.)",
+        "datos": {
+          "A": 30,
+          "a": 5,
+          "b": 8
+        },
+        "opciones": [
+          {
+            "texto": "Solo 53°",
+            "clave": "53",
+            "error": "TR23-solo-calculadora"
+          },
+          {
+            "texto": "53° o 127°",
+            "clave": "53|127",
+            "correcta": true
+          },
+          {
+            "texto": "Ningún valor",
+            "clave": "ninguno",
+            "error": "a-menor-que-b-no-alcanza"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "En un triángulo PQR se sabe que P = 30°, p = 5 cm y q = 6 cm. ¿Cuánto puede medir el ángulo Q? (Usa sen 37° = 0,6.)",
+        "datos": {
+          "A": 30,
+          "a": 5,
+          "b": 6
+        },
+        "opciones": [
+          {
+            "texto": "Solo 37°",
+            "clave": "37",
+            "error": "TR23-solo-calculadora"
+          },
+          {
+            "texto": "37° o 143°",
+            "clave": "37|143",
+            "correcta": true
+          },
+          {
+            "texto": "Ningún valor",
+            "clave": "ninguno",
+            "error": "a-menor-que-b-no-alcanza"
+          }
+        ]
+      }
+    },
+    {
+      "par": "tri-10",
+      "plantilla": "caso-ambiguo",
+      "unidad": "trigonometria.triangulos-oblicuangulos",
+      "mide": "Ley de cosenos: a² = b² + c² − 2bc·cos A",
+      "A": {
+        "enunciado": "En un triángulo, dos lados miden 5 cm y 8 cm, y el ángulo entre ellos mide 60°. ¿Cuánto mide el tercer lado? (cos 60° = 0,5)",
+        "datos": {
+          "b": 5,
+          "c": 8,
+          "A": 60
+        },
+        "opciones": [
+          {
+            "texto": "11,4 cm",
+            "valor": 11.358,
+            "error": "TR24-signo"
+          },
+          {
+            "texto": "9,4 cm",
+            "valor": 9.434,
+            "error": "TR24-sin-termino"
+          },
+          {
+            "texto": "7 cm",
+            "valor": 7,
+            "correcta": true
+          },
+          {
+            "texto": "13 cm",
+            "valor": 13,
+            "error": "suma-de-lados"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "En un triángulo, dos lados miden 15 cm y 8 cm, y el ángulo entre ellos mide 60°. ¿Cuánto mide el tercer lado? (cos 60° = 0,5)",
+        "datos": {
+          "b": 15,
+          "c": 8,
+          "A": 60
+        },
+        "opciones": [
+          {
+            "texto": "20,2 cm",
+            "valor": 20.224,
+            "error": "TR24-signo"
+          },
+          {
+            "texto": "17 cm",
+            "valor": 17,
+            "error": "TR24-sin-termino"
+          },
+          {
+            "texto": "13 cm",
+            "valor": 13,
+            "correcta": true
+          },
+          {
+            "texto": "23 cm",
+            "valor": 23,
+            "error": "suma-de-lados"
           }
         ]
       }

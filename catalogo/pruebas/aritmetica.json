@@ -1,12 +1,12 @@
 {
   "curso": "aritmetica",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "fecha": "2026-11-06",
-  "minutos": 12,
+  "minutos": 14,
   "informes": [
     "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
   ],
-  "nota": "Aritmética tiene por ahora un solo módulo (porcentajes sucesivos). Los pares con \"transferencia\": true miden ideas que el módulo no practica directamente (aumentos sucesivos, revertir un cambio, interés compuesto, variación porcentual, precio de antes): el análisis los puede separar. Los precios están fuera de la lista del generador, para que ningún ítem salga igual en la práctica.",
+  "nota": "Ocho pares, dos por cada módulo del curso: porcentajes sucesivos, regla de tres, los dos dados y la torre de fichas (sucesiones). Los precios están fuera de la lista del generador de porcentajes, para que ningún ítem salga igual en la práctica.",
   "errores": {
     "suma-descuentos": {
       "respaldo": "documentado",
@@ -32,21 +32,73 @@
       "respaldo": "hipotesis",
       "describe": "Responde cuánto cambió y no lo que se pregunta (AR5)"
     },
-    "producto": {
-      "respaldo": "parcial",
-      "describe": "Multiplica los porcentajes entre sí (AR4)"
+    "AR8-inversa-como-directa": {
+      "respaldo": "hipotesis",
+      "describe": "Resuelve una regla de tres inversa como directa (AR8)"
     },
-    "lo-que-queda": {
+    "AR6-resta-lo-que-aumenta": {
       "respaldo": "parcial",
-      "describe": "Confunde el factor con el porcentaje: lo que queda con lo que cambia (AR4)"
+      "describe": "Estrategia aditiva: resta tanto como aumentó la otra magnitud (AR6)"
     },
-    "AR3": {
-      "respaldo": "parcial",
-      "describe": "Calcula el porcentaje sobre la base equivocada (el valor nuevo en vez del de antes, o al revés)"
+    "no-cambia": {
+      "respaldo": "hipotesis",
+      "describe": "Cree que el tiempo no cambia"
     },
-    "AR16": {
+    "AR9-olvida-horas": {
+      "respaldo": "hipotesis",
+      "describe": "En la regla de tres compuesta, olvida una magnitud (las horas diarias)"
+    },
+    "AR9-horas-como-directa": {
+      "respaldo": "hipotesis",
+      "describe": "Clasifica mal una magnitud: las horas diarias como directas a los días (AR9)"
+    },
+    "AR8-todo-directo": {
+      "respaldo": "hipotesis",
+      "describe": "Trata todas las magnitudes como directas"
+    },
+    "AR20-sumas-equiprobables": {
       "respaldo": "documentado",
-      "describe": "Calcula el interés compuesto como simple"
+      "describe": "Cree que todas las sumas de 2 a 12 son igual de probables (AR20)"
+    },
+    "AR17-sin-orden": {
+      "respaldo": "parcial",
+      "describe": "Cuenta (2, 6) y (6, 2) como un solo resultado (AR17)"
+    },
+    "sin-orden-sobre-36": {
+      "respaldo": "hipotesis",
+      "describe": "Cuenta los casos favorables sin orden, pero los posibles con orden"
+    },
+    "AR17-variacion-en-vez-de-combinacion": {
+      "respaldo": "documentado",
+      "describe": "Cuenta con orden cuando no importa: variación en vez de combinación (AR17)"
+    },
+    "AR19-con-repeticion": {
+      "respaldo": "parcial",
+      "describe": "Permite repetir a la misma persona (AR19)"
+    },
+    "producto-n-por-k": {
+      "respaldo": "hipotesis",
+      "describe": "Multiplica el total por el tamaño del grupo"
+    },
+    "n-en-vez-de-n-menos-1": {
+      "respaldo": "hipotesis",
+      "describe": "Cuenta n saltos en vez de n − 1"
+    },
+    "diferencia-como-termino": {
+      "respaldo": "hipotesis",
+      "describe": "Toma la diferencia por n como término, sin la parte fija"
+    },
+    "objeto-entero-desde-t1": {
+      "respaldo": "hipotesis",
+      "describe": "Multiplica el primer término por n, como si la sucesión fuera proporcional (RM2)"
+    },
+    "gauss-sin-dividir": {
+      "respaldo": "hipotesis",
+      "describe": "Suma primero y último por n, sin dividir entre 2"
+    },
+    "ultimo-por-n": {
+      "respaldo": "hipotesis",
+      "describe": "Multiplica el último término por n"
     }
   },
   "pares": [
@@ -117,137 +169,6 @@
       }
     },
     {
-      "par": "ari-02",
-      "plantilla": "porcentajes-sucesivos",
-      "unidad": "aritmetica.porcentajes",
-      "mide": "Un aumento seguido de un descuento: el descuento se calcula sobre el precio ya aumentado",
-      "A": {
-        "enunciado": "El precio de una mochila era S/ 350. Subió un 20 % y luego bajó un 10 %. ¿Cuál es su precio ahora?",
-        "datos": {
-          "P": 350,
-          "a": 20,
-          "b": 10
-        },
-        "opciones": [
-          {
-            "texto": "S/ 385",
-            "valor": 385,
-            "error": "se-compensan"
-          },
-          {
-            "texto": "S/ 420",
-            "valor": 420,
-            "error": "solo-aumento"
-          },
-          {
-            "texto": "S/ 378",
-            "valor": 378,
-            "correcta": true
-          },
-          {
-            "texto": "S/ 28",
-            "valor": 28,
-            "error": "monto-variacion"
-          }
-        ]
-      },
-      "B": {
-        "enunciado": "El precio de una licuadora era S/ 900. Subió un 40 % y luego bajó un 10 %. ¿Cuál es su precio ahora?",
-        "datos": {
-          "P": 900,
-          "a": 40,
-          "b": 10
-        },
-        "opciones": [
-          {
-            "texto": "S/ 1170",
-            "valor": 1170,
-            "error": "se-compensan"
-          },
-          {
-            "texto": "S/ 1260",
-            "valor": 1260,
-            "error": "solo-aumento"
-          },
-          {
-            "texto": "S/ 1134",
-            "valor": 1134,
-            "correcta": true
-          },
-          {
-            "texto": "S/ 234",
-            "valor": 234,
-            "error": "monto-variacion"
-          }
-        ]
-      }
-    },
-    {
-      "par": "ari-03",
-      "plantilla": "porcentajes-sucesivos",
-      "unidad": "aritmetica.porcentajes",
-      "mide": "Variación porcentual: el cambio se divide entre el valor de antes",
-      "transferencia": true,
-      "A": {
-        "enunciado": "El pasaje en combi subió de S/ 2,40 a S/ 3. ¿En qué porcentaje subió?",
-        "datos": {
-          "antes": 2.4,
-          "despues": 3
-        },
-        "opciones": [
-          {
-            "texto": "20 %",
-            "valor": 20,
-            "error": "AR3"
-          },
-          {
-            "texto": "25 %",
-            "valor": 25,
-            "correcta": true
-          },
-          {
-            "texto": "0,6 %",
-            "valor": 0.6,
-            "error": "monto-variacion"
-          },
-          {
-            "texto": "125 %",
-            "valor": 125,
-            "error": "lo-que-queda"
-          }
-        ]
-      },
-      "B": {
-        "enunciado": "El kilo de papa subió de S/ 2,50 a S/ 3. ¿En qué porcentaje subió?",
-        "datos": {
-          "antes": 2.5,
-          "despues": 3
-        },
-        "opciones": [
-          {
-            "texto": "16,7 %",
-            "valor": 16.667,
-            "error": "AR3"
-          },
-          {
-            "texto": "20 %",
-            "valor": 20,
-            "correcta": true
-          },
-          {
-            "texto": "0,5 %",
-            "valor": 0.5,
-            "error": "monto-variacion"
-          },
-          {
-            "texto": "120 %",
-            "valor": 120,
-            "error": "lo-que-queda"
-          }
-        ]
-      }
-    },
-    {
       "par": "ari-04",
       "plantilla": "porcentajes-sucesivos",
       "unidad": "aritmetica.porcentajes",
@@ -312,253 +233,395 @@
       }
     },
     {
-      "par": "ari-05",
-      "plantilla": "porcentajes-sucesivos",
-      "unidad": "aritmetica.porcentajes",
-      "mide": "Aumento único equivalente a dos aumentos sucesivos",
-      "transferencia": true,
+      "par": "ari-09",
+      "plantilla": "regla-de-tres",
+      "unidad": "aritmetica.magnitudes-proporcionales",
+      "mide": "Regla de tres inversa: más obreros, menos días",
       "A": {
-        "enunciado": "El precio del pan subió un 10 % en enero y un 20 % en febrero. ¿En qué porcentaje subió en total desde diciembre?",
+        "enunciado": "Un grupo de 15 pintores termina de pintar un colegio en 12 días. Si trabajaran 20 pintores al mismo ritmo, ¿en cuántos días terminarían?",
         "datos": {
-          "a": 10,
-          "b": 20
+          "a1": 15,
+          "b1": 12,
+          "a2": 20
         },
         "opciones": [
           {
-            "texto": "30 %",
-            "valor": 30,
-            "error": "suma-descuentos"
+            "texto": "16 días",
+            "valor": 16,
+            "error": "AR8-inversa-como-directa"
           },
           {
-            "texto": "2 %",
-            "valor": 2,
-            "error": "producto"
-          },
-          {
-            "texto": "32 %",
-            "valor": 32,
+            "texto": "9 días",
+            "valor": 9,
             "correcta": true
           },
           {
-            "texto": "132 %",
-            "valor": 132,
-            "error": "lo-que-queda"
+            "texto": "7 días",
+            "valor": 7,
+            "error": "AR6-resta-lo-que-aumenta"
+          },
+          {
+            "texto": "12 días",
+            "valor": 12,
+            "error": "no-cambia"
           }
         ]
       },
       "B": {
-        "enunciado": "La matrícula de una academia subió un 20 % un año y un 30 % al año siguiente. ¿En qué porcentaje subió en total en esos dos años?",
+        "enunciado": "Con 8 caños iguales se llena un reservorio en 15 horas. Si se abrieran 12 caños iguales, ¿en cuántas horas lo llenarían?",
         "datos": {
-          "a": 20,
-          "b": 30
+          "a1": 8,
+          "b1": 15,
+          "a2": 12
         },
         "opciones": [
           {
-            "texto": "50 %",
-            "valor": 50,
-            "error": "suma-descuentos"
+            "texto": "22,5 horas",
+            "valor": 22.5,
+            "error": "AR8-inversa-como-directa"
           },
           {
-            "texto": "6 %",
-            "valor": 6,
-            "error": "producto"
+            "texto": "10 horas",
+            "valor": 10,
+            "correcta": true
           },
           {
-            "texto": "56 %",
+            "texto": "11 horas",
+            "valor": 11,
+            "error": "AR6-resta-lo-que-aumenta"
+          },
+          {
+            "texto": "15 horas",
+            "valor": 15,
+            "error": "no-cambia"
+          }
+        ]
+      }
+    },
+    {
+      "par": "ari-10",
+      "plantilla": "regla-de-tres",
+      "unidad": "aritmetica.magnitudes-proporcionales",
+      "mide": "Regla de tres compuesta: obreros y horas por día, las dos inversas a los días",
+      "A": {
+        "enunciado": "Un grupo de 12 obreros, trabajando 6 horas diarias, hace una zanja en 20 días. ¿En cuántos días harían una zanja igual 16 obreros que trabajen 9 horas diarias?",
+        "datos": {
+          "o1": 12,
+          "h1": 6,
+          "d1": 20,
+          "o2": 16,
+          "h2": 9
+        },
+        "opciones": [
+          {
+            "texto": "15 días",
+            "valor": 15,
+            "error": "AR9-olvida-horas"
+          },
+          {
+            "texto": "22,5 días",
+            "valor": 22.5,
+            "error": "AR9-horas-como-directa"
+          },
+          {
+            "texto": "10 días",
+            "valor": 10,
+            "correcta": true
+          },
+          {
+            "texto": "40 días",
+            "valor": 40,
+            "error": "AR8-todo-directo"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Un grupo de 10 albañiles, trabajando 6 horas diarias, levanta una pared en 24 días. ¿En cuántos días levantarían una pared igual 15 albañiles que trabajen 8 horas diarias?",
+        "datos": {
+          "o1": 10,
+          "h1": 6,
+          "d1": 24,
+          "o2": 15,
+          "h2": 8
+        },
+        "opciones": [
+          {
+            "texto": "16 días",
+            "valor": 16,
+            "error": "AR9-olvida-horas"
+          },
+          {
+            "texto": "21,3 días",
+            "valor": 21.333,
+            "error": "AR9-horas-como-directa"
+          },
+          {
+            "texto": "12 días",
+            "valor": 12,
+            "correcta": true
+          },
+          {
+            "texto": "48 días",
+            "valor": 48,
+            "error": "AR8-todo-directo"
+          }
+        ]
+      }
+    },
+    {
+      "par": "ari-11",
+      "plantilla": "probabilidad-dados",
+      "unidad": "aritmetica.probabilidades",
+      "mide": "Con dos dados, las sumas no son igual de probables: se cuentan los 36 resultados con orden",
+      "A": {
+        "enunciado": "Se lanzan dos dados comunes, uno verde y uno blanco. ¿Cuál es la probabilidad de que la suma de los puntos sea 8?",
+        "datos": {
+          "suma": 8
+        },
+        "opciones": [
+          {
+            "texto": "1/11",
+            "valor": 0.09090909090909091,
+            "error": "AR20-sumas-equiprobables"
+          },
+          {
+            "texto": "5/36",
+            "valor": 0.1388888888888889,
+            "correcta": true
+          },
+          {
+            "texto": "1/7",
+            "valor": 0.14285714285714285,
+            "error": "AR17-sin-orden"
+          },
+          {
+            "texto": "1/12",
+            "valor": 0.08333333333333333,
+            "error": "sin-orden-sobre-36"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Se lanzan dos dados comunes, uno negro y uno amarillo. ¿Cuál es la probabilidad de que la suma de los puntos sea 9?",
+        "datos": {
+          "suma": 9
+        },
+        "opciones": [
+          {
+            "texto": "1/11",
+            "valor": 0.09090909090909091,
+            "error": "AR20-sumas-equiprobables"
+          },
+          {
+            "texto": "1/9",
+            "valor": 0.1111111111111111,
+            "correcta": true
+          },
+          {
+            "texto": "2/21",
+            "valor": 0.09523809523809523,
+            "error": "AR17-sin-orden"
+          },
+          {
+            "texto": "1/18",
+            "valor": 0.05555555555555555,
+            "error": "sin-orden-sobre-36"
+          }
+        ]
+      }
+    },
+    {
+      "par": "ari-12",
+      "plantilla": "probabilidad-dados",
+      "unidad": "aritmetica.analisis-combinatorio",
+      "mide": "Combinaciones: en un grupo no importa el orden",
+      "A": {
+        "enunciado": "De 8 alumnos se elige una comisión de 3 para organizar la kermés. ¿Cuántas comisiones distintas se pueden formar?",
+        "datos": {
+          "n": 8,
+          "k": 3
+        },
+        "opciones": [
+          {
+            "texto": "336",
+            "valor": 336,
+            "error": "AR17-variacion-en-vez-de-combinacion"
+          },
+          {
+            "texto": "56",
             "valor": 56,
             "correcta": true
           },
           {
-            "texto": "156 %",
-            "valor": 156,
-            "error": "lo-que-queda"
+            "texto": "512",
+            "valor": 512,
+            "error": "AR19-con-repeticion"
+          },
+          {
+            "texto": "24",
+            "valor": 24,
+            "error": "producto-n-por-k"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "De 7 deportistas se elige un equipo de 4 para una posta. Todos corren igual: no importa quién corre primero. ¿Cuántos equipos distintos se pueden formar?",
+        "datos": {
+          "n": 7,
+          "k": 4
+        },
+        "opciones": [
+          {
+            "texto": "840",
+            "valor": 840,
+            "error": "AR17-variacion-en-vez-de-combinacion"
+          },
+          {
+            "texto": "35",
+            "valor": 35,
+            "correcta": true
+          },
+          {
+            "texto": "2401",
+            "valor": 2401,
+            "error": "AR19-con-repeticion"
+          },
+          {
+            "texto": "28",
+            "valor": 28,
+            "error": "producto-n-por-k"
           }
         ]
       }
     },
     {
-      "par": "ari-06",
-      "plantilla": "porcentajes-sucesivos",
-      "unidad": "aritmetica.porcentajes",
-      "mide": "Revertir un cambio: el porcentaje se calcula sobre el valor nuevo",
-      "transferencia": true,
+      "par": "ari-13",
+      "plantilla": "sucesiones",
+      "unidad": "aritmetica.sucesiones-y-series",
+      "mide": "Término general de una progresión aritmética: del primero al enésimo hay n − 1 saltos",
       "A": {
-        "enunciado": "Un sueldo subió un 25 %. ¿Qué porcentaje tiene que bajar el sueldo nuevo para volver al de antes?",
+        "enunciado": "En la sucesión 7, 11, 15, 19, … cada término es 4 más que el anterior. ¿Cuál es el término que ocupa el lugar 30?",
         "datos": {
-          "a": 25,
-          "modelo": {
-            "signo": 1
-          }
+          "a1": 7,
+          "a2": 11,
+          "n": 30
         },
         "opciones": [
           {
-            "texto": "25 %",
-            "valor": 25,
-            "error": "AR3"
+            "texto": "127",
+            "valor": 127,
+            "error": "n-en-vez-de-n-menos-1"
           },
           {
-            "texto": "20 %",
-            "valor": 20,
+            "texto": "123",
+            "valor": 123,
             "correcta": true
           },
           {
-            "texto": "80 %",
-            "valor": 80,
-            "error": "lo-que-queda"
+            "texto": "120",
+            "valor": 120,
+            "error": "diferencia-como-termino"
+          },
+          {
+            "texto": "210",
+            "valor": 210,
+            "error": "objeto-entero-desde-t1"
           }
         ]
       },
       "B": {
-        "enunciado": "El precio de un cuaderno bajó un 20 %. ¿Qué porcentaje tiene que subir el precio nuevo para volver al de antes?",
+        "enunciado": "En la sucesión 5, 8, 11, 14, … cada término es 3 más que el anterior. ¿Cuál es el término que ocupa el lugar 40?",
         "datos": {
-          "a": 20,
-          "modelo": {
-            "signo": -1
-          }
+          "a1": 5,
+          "a2": 8,
+          "n": 40
         },
         "opciones": [
           {
-            "texto": "20 %",
-            "valor": 20,
-            "error": "AR3"
-          },
-          {
-            "texto": "25 %",
-            "valor": 25,
-            "correcta": true
-          },
-          {
-            "texto": "125 %",
+            "texto": "125",
             "valor": 125,
-            "error": "lo-que-queda"
+            "error": "n-en-vez-de-n-menos-1"
+          },
+          {
+            "texto": "122",
+            "valor": 122,
+            "correcta": true
+          },
+          {
+            "texto": "120",
+            "valor": 120,
+            "error": "diferencia-como-termino"
+          },
+          {
+            "texto": "200",
+            "valor": 200,
+            "error": "objeto-entero-desde-t1"
           }
         ]
       }
     },
     {
-      "par": "ari-07",
-      "plantilla": "porcentajes-sucesivos",
-      "unidad": "aritmetica.porcentajes",
-      "mide": "Interés compuesto: aumentos sucesivos del mismo porcentaje",
-      "transferencia": true,
+      "par": "ari-14",
+      "plantilla": "sucesiones",
+      "unidad": "aritmetica.sucesiones-y-series",
+      "mide": "Suma de una progresión aritmética: (primero + último) · n / 2",
       "A": {
-        "enunciado": "Se depositan S/ 2000 al 10 % de interés anual compuesto (el interés de cada año se suma al depósito). ¿Cuánto dinero hay al cabo de 2 años?",
+        "enunciado": "¿Cuánto suman los 20 primeros términos de la sucesión 3, 7, 11, 15, …?",
         "datos": {
-          "C": 2000,
-          "i": 10,
-          "anos": 2
+          "a1": 3,
+          "a2": 7,
+          "n": 20
         },
         "opciones": [
           {
-            "texto": "S/ 2400",
-            "valor": 2400,
-            "error": "AR16"
+            "texto": "1640",
+            "valor": 1640,
+            "error": "gauss-sin-dividir"
           },
           {
-            "texto": "S/ 2420",
-            "valor": 2420,
+            "texto": "820",
+            "valor": 820,
             "correcta": true
           },
           {
-            "texto": "S/ 420",
-            "valor": 420,
-            "error": "monto-variacion"
+            "texto": "1580",
+            "valor": 1580,
+            "error": "ultimo-por-n"
           },
           {
-            "texto": "S/ 2200",
-            "valor": 2200,
-            "error": "solo-aumento"
+            "texto": "860",
+            "valor": 860,
+            "error": "n-en-vez-de-n-menos-1"
           }
         ]
       },
       "B": {
-        "enunciado": "Se depositan S/ 5000 al 20 % de interés anual compuesto (el interés de cada año se suma al depósito). ¿Cuánto dinero hay al cabo de 2 años?",
+        "enunciado": "¿Cuánto suman los 16 primeros términos de la sucesión 2, 7, 12, 17, …?",
         "datos": {
-          "C": 5000,
-          "i": 20,
-          "anos": 2
+          "a1": 2,
+          "a2": 7,
+          "n": 16
         },
         "opciones": [
           {
-            "texto": "S/ 7000",
-            "valor": 7000,
-            "error": "AR16"
+            "texto": "1264",
+            "valor": 1264,
+            "error": "gauss-sin-dividir"
           },
           {
-            "texto": "S/ 7200",
-            "valor": 7200,
+            "texto": "632",
+            "valor": 632,
             "correcta": true
           },
           {
-            "texto": "S/ 2200",
-            "valor": 2200,
-            "error": "monto-variacion"
+            "texto": "1232",
+            "valor": 1232,
+            "error": "ultimo-por-n"
           },
           {
-            "texto": "S/ 6000",
-            "valor": 6000,
-            "error": "solo-aumento"
-          }
-        ]
-      }
-    },
-    {
-      "par": "ari-08",
-      "plantilla": "porcentajes-sucesivos",
-      "unidad": "aritmetica.porcentajes",
-      "mide": "Hallar el precio de antes: dividir entre el factor, no aplicar el porcentaje al precio nuevo",
-      "transferencia": true,
-      "A": {
-        "enunciado": "Después de un descuento del 20 %, una licuadora cuesta S/ 240. ¿Cuánto costaba antes del descuento?",
-        "datos": {
-          "a": 20,
-          "final": 240,
-          "modelo": {
-            "signo": -1
-          }
-        },
-        "opciones": [
-          {
-            "texto": "S/ 288",
-            "valor": 288,
-            "error": "AR3"
-          },
-          {
-            "texto": "S/ 300",
-            "valor": 300,
-            "correcta": true
-          },
-          {
-            "texto": "S/ 60",
-            "valor": 60,
-            "error": "monto-variacion"
-          }
-        ]
-      },
-      "B": {
-        "enunciado": "Después de un aumento del 25 %, una bicicleta cuesta S/ 500. ¿Cuánto costaba antes del aumento?",
-        "datos": {
-          "a": 25,
-          "final": 500,
-          "modelo": {
-            "signo": 1
-          }
-        },
-        "opciones": [
-          {
-            "texto": "S/ 375",
-            "valor": 375,
-            "error": "AR3"
-          },
-          {
-            "texto": "S/ 400",
-            "valor": 400,
-            "correcta": true
-          },
-          {
-            "texto": "S/ 100",
-            "valor": 100,
-            "error": "monto-variacion"
+            "texto": "672",
+            "valor": 672,
+            "error": "n-en-vez-de-n-menos-1"
           }
         ]
       }

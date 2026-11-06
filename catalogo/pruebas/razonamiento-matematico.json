@@ -1,0 +1,652 @@
+{
+  "curso": "razonamiento-matematico",
+  "version": "1.0.0",
+  "fecha": "2026-11-06",
+  "minutos": 14,
+  "informes": [
+    "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
+  ],
+  "nota": "Ocho pares, dos por cada módulo del curso. Comparten motor con aritmética y álgebra, pero los ítems son otros (planteo, juegos, engranajes, inducción).",
+  "errores": {
+    "RM4-resta-en-encuentro": {
+      "respaldo": "hipotesis",
+      "describe": "Resta las rapideces cuando los móviles van uno hacia el otro (RM4)"
+    },
+    "promedio-rapideces": {
+      "respaldo": "hipotesis",
+      "describe": "Usa el promedio de las rapideces"
+    },
+    "solo-un-movil": {
+      "respaldo": "hipotesis",
+      "describe": "Considera solo un móvil"
+    },
+    "RM3-sin-tiempo": {
+      "respaldo": "hipotesis",
+      "describe": "Plantea la relación con las edades de hoy, sin el tiempo (RM3)"
+    },
+    "RM1-tiempo-a-uno": {
+      "respaldo": "hipotesis",
+      "describe": "Aplica el paso del tiempo solo a una persona"
+    },
+    "RM1-tiempo-solo-incognita": {
+      "respaldo": "hipotesis",
+      "describe": "Aplica el paso del tiempo solo a la incógnita"
+    },
+    "AR22-recencia-negativa": {
+      "respaldo": "parcial",
+      "describe": "Falacia del jugador: tras una racha, «ahora toca lo otro» (AR22)"
+    },
+    "recencia-positiva": {
+      "respaldo": "hipotesis",
+      "describe": "Cree que una racha tiende a seguir"
+    },
+    "racha-completa": {
+      "respaldo": "hipotesis",
+      "describe": "Da la probabilidad de toda la racha en vez de la del próximo lanzamiento"
+    },
+    "circular-como-lineal": {
+      "respaldo": "hipotesis",
+      "describe": "Cuenta como en una fila: n! en vez de (n − 1)!"
+    },
+    "circular-mitad": {
+      "respaldo": "hipotesis",
+      "describe": "Divide además entre 2, como si se pudiera voltear (un collar)"
+    },
+    "RM5-mas-dientes-mas-vueltas": {
+      "respaldo": "hipotesis",
+      "describe": "Cree que la rueda con más dientes da más vueltas (RM5)"
+    },
+    "aditiva": {
+      "respaldo": "hipotesis",
+      "describe": "Suma la diferencia en vez de usar la razón"
+    },
+    "mismas-vueltas": {
+      "respaldo": "hipotesis",
+      "describe": "Cree que todas las ruedas dan las mismas vueltas"
+    },
+    "solo-la-del-medio": {
+      "respaldo": "hipotesis",
+      "describe": "Usa solo la última pareja de engranajes"
+    },
+    "RM2-objeto-entero": {
+      "respaldo": "hipotesis",
+      "describe": "Objeto entero: la figura 2n es el doble de la figura n (RM2)"
+    },
+    "diferencia-como-termino": {
+      "respaldo": "hipotesis",
+      "describe": "Toma la diferencia por n como término, sin la parte fija"
+    },
+    "lineal-en-cuadratica": {
+      "respaldo": "hipotesis",
+      "describe": "Trata como lineal una sucesión de segundo orden, con la primera diferencia"
+    },
+    "repite-la-ultima-diferencia": {
+      "respaldo": "hipotesis",
+      "describe": "Repite la última diferencia en vez de seguir su crecimiento"
+    },
+    "da-la-del-medio": {
+      "respaldo": "hipotesis",
+      "describe": "Responde las vueltas del engranaje del medio"
+    }
+  },
+  "pares": [
+    {
+      "par": "rm-01",
+      "plantilla": "traductor-enunciados",
+      "unidad": "razonamiento-matematico.planteo-de-ecuaciones",
+      "mide": "Móviles en sentidos opuestos: las rapideces se suman",
+      "A": {
+        "enunciado": "Dos ciudades están a 360 km. A la misma hora sale un bus de cada una, uno hacia el otro: uno a 50 km/h y el otro a 70 km/h. ¿En cuántas horas se cruzan?",
+        "datos": {
+          "distancia": 360,
+          "v1": 50,
+          "v2": 70
+        },
+        "opciones": [
+          {
+            "texto": "18 horas",
+            "valor": 18,
+            "error": "RM4-resta-en-encuentro"
+          },
+          {
+            "texto": "3 horas",
+            "valor": 3,
+            "correcta": true
+          },
+          {
+            "texto": "6 horas",
+            "valor": 6,
+            "error": "promedio-rapideces"
+          },
+          {
+            "texto": "5,1 horas",
+            "valor": 5.143,
+            "error": "solo-un-movil"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Dos pueblos están a 280 km. A la misma hora sale un camión de cada uno, uno hacia el otro: uno a 30 km/h y el otro a 40 km/h. ¿En cuántas horas se cruzan?",
+        "datos": {
+          "distancia": 280,
+          "v1": 30,
+          "v2": 40
+        },
+        "opciones": [
+          {
+            "texto": "28 horas",
+            "valor": 28,
+            "error": "RM4-resta-en-encuentro"
+          },
+          {
+            "texto": "4 horas",
+            "valor": 4,
+            "correcta": true
+          },
+          {
+            "texto": "8 horas",
+            "valor": 8,
+            "error": "promedio-rapideces"
+          },
+          {
+            "texto": "7 horas",
+            "valor": 7,
+            "error": "solo-un-movil"
+          }
+        ]
+      }
+    },
+    {
+      "par": "rm-02",
+      "plantilla": "traductor-enunciados",
+      "unidad": "razonamiento-matematico.planteo-de-ecuaciones",
+      "mide": "Edades: el tiempo pasa para las dos personas",
+      "A": {
+        "enunciado": "Ana tiene hoy 44 años. Hace 4 años, su edad era el cuádruple de la de su hijo. ¿Cuántos años tiene hoy el hijo?",
+        "datos": {
+          "valor": 44,
+          "anos": 4,
+          "modelo": {
+            "signo": -1,
+            "k": 4
+          }
+        },
+        "opciones": [
+          {
+            "texto": "11 años",
+            "valor": 11,
+            "error": "RM3-sin-tiempo"
+          },
+          {
+            "texto": "10 años",
+            "valor": 10,
+            "error": "RM1-tiempo-a-uno"
+          },
+          {
+            "texto": "14 años",
+            "valor": 14,
+            "correcta": true
+          },
+          {
+            "texto": "15 años",
+            "valor": 15,
+            "error": "RM1-tiempo-solo-incognita"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Luis tiene hoy 30 años. Dentro de 6 años, su edad será el doble de la de su sobrino. ¿Cuántos años tiene hoy el sobrino?",
+        "datos": {
+          "valor": 30,
+          "anos": 6,
+          "modelo": {
+            "signo": 1,
+            "k": 2
+          }
+        },
+        "opciones": [
+          {
+            "texto": "15 años",
+            "valor": 15,
+            "error": "RM3-sin-tiempo"
+          },
+          {
+            "texto": "18 años",
+            "valor": 18,
+            "error": "RM1-tiempo-a-uno"
+          },
+          {
+            "texto": "12 años",
+            "valor": 12,
+            "correcta": true
+          },
+          {
+            "texto": "9 años",
+            "valor": 9,
+            "error": "RM1-tiempo-solo-incognita"
+          }
+        ]
+      }
+    },
+    {
+      "par": "rm-03",
+      "plantilla": "probabilidad-dados",
+      "unidad": "razonamiento-matematico.juegos-recreativos",
+      "mide": "Los lanzamientos no tienen memoria (falacia del jugador)",
+      "A": {
+        "enunciado": "Una moneda equilibrada salió cara 4 veces seguidas. ¿Cuál es la probabilidad de que en el próximo lanzamiento salga sello?",
+        "datos": {
+          "racha": 4,
+          "modelo": {
+            "caras": 2,
+            "pregunta": "otra"
+          }
+        },
+        "opciones": [
+          {
+            "texto": "Más de 1/2",
+            "clave": "mayor",
+            "error": "AR22-recencia-negativa"
+          },
+          {
+            "texto": "Menos de 1/2",
+            "clave": "menor",
+            "error": "recencia-positiva"
+          },
+          {
+            "texto": "1/2",
+            "clave": "1/2",
+            "correcta": true
+          },
+          {
+            "texto": "1/32",
+            "clave": "1/32",
+            "error": "racha-completa"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Un dado equilibrado mostró el 5 3 veces seguidas. ¿Cuál es la probabilidad de que en el próximo lanzamiento vuelva a salir 5?",
+        "datos": {
+          "racha": 3,
+          "modelo": {
+            "caras": 6,
+            "pregunta": "misma"
+          }
+        },
+        "opciones": [
+          {
+            "texto": "Menos de 1/6",
+            "clave": "menor",
+            "error": "AR22-recencia-negativa"
+          },
+          {
+            "texto": "Más de 1/6",
+            "clave": "mayor",
+            "error": "recencia-positiva"
+          },
+          {
+            "texto": "1/6",
+            "clave": "1/6",
+            "correcta": true
+          },
+          {
+            "texto": "1/1296",
+            "clave": "1/1296",
+            "error": "racha-completa"
+          }
+        ]
+      }
+    },
+    {
+      "par": "rm-04",
+      "plantilla": "probabilidad-dados",
+      "unidad": "razonamiento-matematico.juegos-recreativos",
+      "mide": "Mesa redonda: girar a todos no cambia el orden, (n − 1)!",
+      "A": {
+        "enunciado": "¿De cuántas maneras distintas se pueden sentar 6 amigos alrededor de una mesa redonda? (Dos maneras son la misma si una es la otra girada.)",
+        "datos": {
+          "n": 6
+        },
+        "opciones": [
+          {
+            "texto": "720",
+            "valor": 720,
+            "error": "circular-como-lineal"
+          },
+          {
+            "texto": "120",
+            "valor": 120,
+            "correcta": true
+          },
+          {
+            "texto": "60",
+            "valor": 60,
+            "error": "circular-mitad"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "¿De cuántas maneras distintas se pueden sentar 5 primos alrededor de una fogata? (Dos maneras son la misma si una es la otra girada.)",
+        "datos": {
+          "n": 5
+        },
+        "opciones": [
+          {
+            "texto": "120",
+            "valor": 120,
+            "error": "circular-como-lineal"
+          },
+          {
+            "texto": "24",
+            "valor": 24,
+            "correcta": true
+          },
+          {
+            "texto": "12",
+            "valor": 12,
+            "error": "circular-mitad"
+          }
+        ]
+      }
+    },
+    {
+      "par": "rm-05",
+      "plantilla": "regla-de-tres",
+      "unidad": "razonamiento-matematico.ruedas-poleas-engranajes",
+      "mide": "Dos engranajes: la rueda con más dientes da menos vueltas (z₁·n₁ = z₂·n₂)",
+      "A": {
+        "enunciado": "Un engranaje de 24 dientes mueve a otro de 60 dientes. Si el pequeño da 15 vueltas, ¿cuántas vueltas da el grande?",
+        "datos": {
+          "vueltas": 15,
+          "modelo": {
+            "dientes": [
+              24,
+              60
+            ]
+          }
+        },
+        "opciones": [
+          {
+            "texto": "37,5",
+            "valor": 37.5,
+            "error": "RM5-mas-dientes-mas-vueltas"
+          },
+          {
+            "texto": "51",
+            "valor": 51,
+            "error": "aditiva"
+          },
+          {
+            "texto": "6",
+            "valor": 6,
+            "correcta": true
+          },
+          {
+            "texto": "15",
+            "valor": 15,
+            "error": "mismas-vueltas"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Un piñón de 30 dientes mueve a una rueda de 45 dientes. Si el piñón da 12 vueltas, ¿cuántas vueltas da la rueda?",
+        "datos": {
+          "vueltas": 12,
+          "modelo": {
+            "dientes": [
+              30,
+              45
+            ]
+          }
+        },
+        "opciones": [
+          {
+            "texto": "18",
+            "valor": 18,
+            "error": "RM5-mas-dientes-mas-vueltas"
+          },
+          {
+            "texto": "27",
+            "valor": 27,
+            "error": "aditiva"
+          },
+          {
+            "texto": "8",
+            "valor": 8,
+            "correcta": true
+          },
+          {
+            "texto": "12",
+            "valor": 12,
+            "error": "mismas-vueltas"
+          }
+        ]
+      }
+    },
+    {
+      "par": "rm-06",
+      "plantilla": "regla-de-tres",
+      "unidad": "razonamiento-matematico.ruedas-poleas-engranajes",
+      "mide": "Tres engranajes en fila: la del medio no cambia la cuenta entre la primera y la última",
+      "A": {
+        "enunciado": "Tres engranajes en fila: el primero tiene 20 dientes, el del medio 50 y el último 25. El primero mueve al del medio y este, al último. Si el primero da 15 vueltas, ¿cuántas da el último?",
+        "datos": {
+          "vueltas": 15,
+          "modelo": {
+            "dientes": [
+              20,
+              50,
+              25
+            ]
+          }
+        },
+        "opciones": [
+          {
+            "texto": "30",
+            "valor": 30,
+            "error": "solo-la-del-medio"
+          },
+          {
+            "texto": "18,75",
+            "valor": 18.75,
+            "error": "RM5-mas-dientes-mas-vueltas"
+          },
+          {
+            "texto": "12",
+            "valor": 12,
+            "correcta": true
+          },
+          {
+            "texto": "6",
+            "valor": 6,
+            "error": "da-la-del-medio"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Tres engranajes en fila: el primero tiene 16 dientes, el del medio 40 y el último 24. El primero mueve al del medio y este, al último. Si el primero da 15 vueltas, ¿cuántas da el último?",
+        "datos": {
+          "vueltas": 15,
+          "modelo": {
+            "dientes": [
+              16,
+              40,
+              24
+            ]
+          }
+        },
+        "opciones": [
+          {
+            "texto": "25",
+            "valor": 25,
+            "error": "solo-la-del-medio"
+          },
+          {
+            "texto": "22,5",
+            "valor": 22.5,
+            "error": "RM5-mas-dientes-mas-vueltas"
+          },
+          {
+            "texto": "10",
+            "valor": 10,
+            "correcta": true
+          },
+          {
+            "texto": "6",
+            "valor": 6,
+            "error": "da-la-del-medio"
+          }
+        ]
+      }
+    },
+    {
+      "par": "rm-07",
+      "plantilla": "sucesiones",
+      "unidad": "razonamiento-matematico.razonamiento-inductivo",
+      "mide": "Figuras con palitos: la figura 2n no es el doble de la figura n (objeto entero)",
+      "A": {
+        "enunciado": "Con palitos se arman cuadrados en fila: 1 cuadrado usa 4 palitos, 2 cuadrados usan 7 y 3 cuadrados usan 10. Una fila de 10 cuadrados usa 31 palitos. ¿Cuántos palitos usa una fila de 20 cuadrados?",
+        "datos": {
+          "t1": 4,
+          "t2": 7,
+          "m": 10,
+          "tm": 31,
+          "n": 20
+        },
+        "opciones": [
+          {
+            "texto": "62",
+            "valor": 62,
+            "error": "RM2-objeto-entero"
+          },
+          {
+            "texto": "60",
+            "valor": 60,
+            "error": "diferencia-como-termino"
+          },
+          {
+            "texto": "61",
+            "valor": 61,
+            "correcta": true
+          },
+          {
+            "texto": "41",
+            "valor": 41,
+            "error": "aditiva"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Con palitos se arman hexágonos en fila: 1 hexágono usa 6 palitos, 2 hexágonos usan 11 y 3 hexágonos usan 16. Una fila de 8 hexágonos usa 41 palitos. ¿Cuántos palitos usa una fila de 16 hexágonos?",
+        "datos": {
+          "t1": 6,
+          "t2": 11,
+          "m": 8,
+          "tm": 41,
+          "n": 16
+        },
+        "opciones": [
+          {
+            "texto": "82",
+            "valor": 82,
+            "error": "RM2-objeto-entero"
+          },
+          {
+            "texto": "80",
+            "valor": 80,
+            "error": "diferencia-como-termino"
+          },
+          {
+            "texto": "81",
+            "valor": 81,
+            "correcta": true
+          },
+          {
+            "texto": "49",
+            "valor": 49,
+            "error": "aditiva"
+          }
+        ]
+      }
+    },
+    {
+      "par": "rm-08",
+      "plantilla": "sucesiones",
+      "unidad": "razonamiento-matematico.razonamiento-inductivo",
+      "mide": "Sucesión de segundo orden: la diferencia crece, no se repite",
+      "A": {
+        "enunciado": "Observa la sucesión 2, 6, 12, 20, … ¿Cuál es el término que ocupa el lugar 10?",
+        "datos": {
+          "k": 10,
+          "modelo": {
+            "terminos": [
+              2,
+              6,
+              12,
+              20
+            ]
+          }
+        },
+        "opciones": [
+          {
+            "texto": "38",
+            "valor": 38,
+            "error": "lineal-en-cuadratica"
+          },
+          {
+            "texto": "68",
+            "valor": 68,
+            "error": "repite-la-ultima-diferencia"
+          },
+          {
+            "texto": "110",
+            "valor": 110,
+            "correcta": true
+          },
+          {
+            "texto": "60",
+            "valor": 60,
+            "error": "RM2-objeto-entero"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Observa la sucesión 3, 8, 15, 24, … ¿Cuál es el término que ocupa el lugar 10?",
+        "datos": {
+          "k": 10,
+          "modelo": {
+            "terminos": [
+              3,
+              8,
+              15,
+              24
+            ]
+          }
+        },
+        "opciones": [
+          {
+            "texto": "48",
+            "valor": 48,
+            "error": "lineal-en-cuadratica"
+          },
+          {
+            "texto": "78",
+            "valor": 78,
+            "error": "repite-la-ultima-diferencia"
+          },
+          {
+            "texto": "120",
+            "valor": 120,
+            "correcta": true
+          },
+          {
+            "texto": "70",
+            "valor": 70,
+            "error": "RM2-objeto-entero"
+          }
+        ]
+      }
+    }
+  ]
+}

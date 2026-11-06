@@ -4,7 +4,8 @@
   "formato": "escena",
   "unidades": [
     "razonamiento-matematico.razonamiento-inductivo",
-    "algebra.sucesiones-y-series"
+    "algebra.sucesiones-y-series",
+    "aritmetica.sucesiones-y-series"
   ],
   "estado": "borrador",
   "version": "0.1.0",
