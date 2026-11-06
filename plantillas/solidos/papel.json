@@ -1,0 +1,151 @@
+{
+  "titulo": "El sólido que se abre: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Antes de usar una fórmula, dibuja el desarrollo: el área lateral es lo que se ve al abrir el sólido, y su volumen se mide en cubitos de adentro. En la pirámide y el cono, la altura h va por dentro; para el área lateral se usa la apotema ap o la generatriz g, que van por la cara.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Una caja de cartón tiene base de 5 cm por 4 cm y altura de 3 cm. Calcula su área lateral, su área total y su volumen.",
+      "respuesta": "A_L = 54 cm², A_T = 94 cm² y V = 60 cm³.",
+      "pasos": [
+        "El perímetro de la base es 2(5 + 4) = 18 cm. Abierta, las cuatro caras laterales forman un rectángulo de 18 cm por 3 cm: A_L = 18 · 3 = 54 cm².",
+        "Las dos bases miden 5 · 4 = 20 cm² cada una: A_T = 54 + 2 · 20 = 94 cm².",
+        "V = A_B · h = 20 · 3 = 60 cm³: caben 3 capas de 20 cubitos de 1 cm. Si sumas las caras (94), calculaste el área, no el volumen."
+      ],
+      "verificar": [
+        { "fn": "prisma", "args": [{ "base": { "tipo": "rectangulo", "largo": 5, "ancho": 4 }, "h": 3 }], "espera": { "lateral": 54, "total": 94, "volumen": 60, "errores.volumen.comoArea": 94 } }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Una pirámide cuadrangular regular tiene arista básica de 10 m y altura de 12 m. Calcula su apotema, su área total y su volumen.",
+      "respuesta": "ap = 13 m, A_T = 360 m² y V = 400 m³.",
+      "pasos": [
+        "La apotema de la base es la mitad del lado: 5 m. La altura, esa mitad y la apotema forman un triángulo rectángulo: ap = √(12² + 5²) = √169 = 13 m.",
+        "A_L = p · ap, con p el semiperímetro: 20 · 13 = 260 m². Con la altura en lugar de la apotema saldría 240 m², que es menos de lo que mide la superficie.",
+        "A_T = 260 + 10² = 360 m².",
+        "V = A_B · h / 3 = 100 · 12 / 3 = 400 m³. Sin el tercio saldría 1200 m³: el volumen de la caja de igual base y altura."
+      ],
+      "verificar": [
+        { "fn": "piramide", "args": [{ "base": { "tipo": "cuadrado", "lado": 10 }, "h": 12 }], "espera": { "ap": 13, "lateral": 260, "total": 360, "volumen": 400, "errores.lateral.conAltura": 240, "errores.volumen.sinTercio": 1200 } }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Un cono circular recto tiene radio de 6 cm y altura de 8 cm. Calcula su generatriz, su área lateral, su área total, su volumen y el ángulo del sector de su desarrollo.",
+      "respuesta": "g = 10 cm; A_L = 60π cm²; A_T = 96π cm²; V = 96π cm³; el sector mide 216°.",
+      "pasos": [
+        "g = √(6² + 8²) = 10 cm.",
+        "A_L = π · r · g = π · 6 · 10 = 60π cm². A_T = 60π + π · 6² = 96π cm².",
+        "V = π · r² · h / 3 = π · 36 · 8 / 3 = 96π cm³.",
+        "El sector tiene radio g = 10 y su arco es la circunferencia de la base, 12π. El ángulo es 360° · r/g = 360° · 6/10 = 216°."
+      ],
+      "verificar": [
+        { "fn": "cono", "args": [{ "r": 6, "h": 8 }], "espera": { "g": 10, "pi.lateral": 60, "pi.total": 96, "pi.volumen": 96, "angulo": 216 } }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "básico",
+      "enunciado": "Una lata cilíndrica tiene 7 cm de diámetro y 10 cm de altura. ¿Cuánto mide de largo su etiqueta (que la rodea una vez, sin solaparse) y cuál es su área?",
+      "respuesta": "El largo es 7π cm (unos 22 cm) y el área, 70π cm².",
+      "pasos": [
+        "Ojo: 7 cm es el diámetro; el radio es 3,5 cm.",
+        "La etiqueta abierta es un rectángulo. Su largo es la circunferencia de la base: 2π · 3,5 = 7π cm.",
+        "Su área es la lateral del cilindro: 7π · 10 = 70π cm². Si usas 7 como radio, te sale el doble: 140π cm²."
+      ],
+      "verificar": [
+        { "fn": "cilindro", "args": [{ "r": 3.5, "h": 10 }], "espera": { "pi.largo": 7, "pi.lateral": 70 } },
+        { "fn": "cilindro", "args": [{ "r": 7, "h": 10 }], "espera": { "pi.lateral": 140 } }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Con un sector circular de 240° y 9 cm de radio se arma la superficie lateral de un cono. Calcula el radio de la base y la altura del cono.",
+      "respuesta": "r = 6 cm y h = 3√5 cm (unos 6,7 cm).",
+      "pasos": [
+        "El radio del sector es la generatriz: g = 9 cm.",
+        "El arco del sector, 2π · 9 · 240/360 = 12π, rodea la base: 2πr = 12π, así que r = 6 cm. Atajo: r = g · ángulo / 360° = 9 · 240/360.",
+        "h = √(9² − 6²) = √45 = 3√5 cm."
+      ],
+      "verificar": [
+        { "fn": "conoDeSector", "args": [{ "g": 9, "angulo": 240 }], "espera": { "r": 6, "h": 6.708203932499369, "arcoPi": 12 } }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Una esfera está inscrita en un cilindro de 20 cm de altura (toca las dos bases y la superficie lateral). Calcula el volumen de la esfera, el del cilindro y compara el área de la esfera con el área lateral del cilindro.",
+      "respuesta": "V_esfera = 4000π/3 cm³ y V_cilindro = 2000π cm³ (la esfera es 2/3 del cilindro). El área de la esfera, 400π cm², es igual al área lateral del cilindro.",
+      "pasos": [
+        "Si la esfera toca las dos bases, su diámetro es la altura: r = 10 cm, y el cilindro tiene radio 10 cm.",
+        "V_esfera = 4π · 10³/3 = 4000π/3 cm³. V_cilindro = π · 10² · 20 = 2000π cm³. La razón es (4000/3)/2000 = 2/3.",
+        "Área de la esfera: 4π · 10² = 400π cm². Área lateral del cilindro: 2π · 10 · 20 = 400π cm². Son iguales (Arquímedes)."
+      ],
+      "verificar": [
+        { "fn": "esfera", "args": [{ "r": 10 }], "espera": { "pi.volumen": 1333.3333333333333, "pi.cilVolumen": 2000, "fraccion": 0.6666666666666666, "pi.area": 400, "pi.cilLateral": 400 } }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Un cubo de madera de 6 cm de arista se pinta por fuera y luego se corta en cubitos de 1 cm. ¿Cuántos cubitos tienen exactamente dos caras pintadas? ¿Cuántos no tienen ninguna?",
+      "respuesta": "48 cubitos con dos caras pintadas y 64 sin pintura.",
+      "pasos": [
+        "Los de dos caras están en las aristas, sin contar las esquinas: en cada arista hay 6 − 2 = 4, y el cubo tiene 12 aristas: 12 · 4 = 48.",
+        "Los que no tienen pintura forman el cubo de adentro, de 6 − 2 = 4 cubitos por arista: 4³ = 64.",
+        "Comprobación: 8 esquinas (3 caras) + 48 + 96 con una cara (6 · 4²) + 64 = 216 = 6³."
+      ],
+      "verificar": [
+        { "fn": "cuboPintado", "args": [6], "espera": { "pintadas.2": 48, "sinPintura": 64, "pintadas.1": 96, "pintadas.3": 8, "total": 216 } }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Un vaso tiene forma de tronco de cono: el radio de la boca es 4 cm, el del fondo 2 cm y la altura 6 cm. ¿Cuánto líquido le cabe?",
+      "respuesta": "56π cm³ (unos 176 cm³).",
+      "pasos": [
+        "V = π · h · (R² + r² + R · r)/3 = π · 6 · (16 + 4 + 8)/3 = 56π cm³.",
+        "Otra forma: prolonga las paredes hasta la punta. El cono grande tiene radio 4 y altura 12; el chico, radio 2 y altura 6. V = π · 16 · 12/3 − π · 4 · 6/3 = 64π − 8π = 56π cm³.",
+        "Promediar los radios (3 cm) y usar π · 3² · 6 = 54π da menos de lo que cabe."
+      ],
+      "verificar": [
+        { "fn": "troncoCono", "args": [{ "R": 4, "r": 2, "h": 6 }], "espera": { "pi.volumen": 56, "conoGrande.h": 12, "conoGrande.piVolumen": 64, "conoChico.piVolumen": 8, "errores.volumen.radioPromedio": 54 } }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "básico",
+      "enunciado": "Un poliedro convexo tiene 12 caras y 30 aristas. ¿Cuántos vértices tiene?",
+      "respuesta": "20 vértices (es el dodecaedro regular).",
+      "pasos": [
+        "Teorema de Euler: C + V = A + 2.",
+        "12 + V = 30 + 2, así que V = 20.",
+        "Comprueba con un poliedro que conozcas: el cubo tiene 6 + 8 = 12 + 2."
+      ],
+      "verificar": [
+        { "fn": "poliedro", "args": [{ "tipo": "dodecaedro" }], "espera": { "caras": 12, "aristas": 30, "vertices": 20, "cumpleEuler": true } },
+        { "fn": "poliedro", "args": [{ "tipo": "cubo" }], "espera": { "caras": 6, "vertices": 8, "aristas": 12 } }
+      ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Una cartulina de 12 cm por 8 cm se enrolla para formar la superficie lateral de un cilindro, sin solapar los bordes. Se puede enrollar de dos formas. ¿Cuál cilindro tiene mayor volumen y cuántas veces el otro?",
+      "respuesta": "El de 8 cm de alto (la circunferencia mide 12 cm): 288/π cm³, que es 3/2 del otro (192/π cm³).",
+      "pasos": [
+        "Las dos formas tienen la misma área lateral, 96 cm², pero eso no fija el volumen.",
+        "Circunferencia 12 y altura 8: r = 12/(2π) = 6/π, V = π · (6/π)² · 8 = 288/π cm³.",
+        "Circunferencia 8 y altura 12: r = 4/π, V = π · (4/π)² · 12 = 192/π cm³.",
+        "288/192 = 3/2. Guarda más el cilindro bajo y ancho, porque el radio entra al cuadrado."
+      ],
+      "verificar": [
+        { "fn": "hojaEnrollada", "args": [{ "largo": 12, "ancho": 8 }], "espera": { "lateral": 96, "bajo.sobrePi": 288, "alto.sobrePi": 192, "razon": 1.5, "respuestas.mayor": "bajo" } }
+      ]
+    }
+  ]
+}
