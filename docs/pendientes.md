@@ -8,7 +8,7 @@
 npm test
 ```
 
-Deben pasar 1307 pruebas.
+Deben pasar 1349 pruebas.
 
 ```bash
 npm run dev
@@ -51,7 +51,7 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 
 | Id | Módulo | Informe de ideas erróneas | Nota |
 | --- | --- | --- | --- |
-| ma2 | Geometría | Hechas: `ampliadora` (semejanza, área y volumen), `triangulo-estira` (líneas notables y área) y `angulo-inscrito` (ángulos en la circunferencia) | Las tres escenas del informe están hechas; faltan polígonos, congruencia, espacio y analítica |
+| ma2 | Geometría | Hechas: `ampliadora`, `triangulo-estira`, `angulo-inscrito` y `poligonos` | Faltan sólidos, analítica y congruencia (las hace la sesión paralela matematica-b) |
 | ma1 | Trigonometría | Hechas: `cinta-radio`, `circunferencia-trig` y `caso-ambiguo` (ley de senos y cosenos) | Las tres escenas del informe están hechas; faltan identidades, arcos compuestos y funciones inversas |
 | ma3 | Álgebra | Hechas: `grafica-perillas`, `traductor-enunciados`, `cuadrado-crece` (productos notables y factorización) y `sucesiones` | Faltan polinomios y división, exponenciales y logaritmos (con escena propia), matrices y complejos |
 | ma1 a ma3 | Trigonometría, geometría, funciones | Informes del 6 nov: `trigonometria-`, `geometria-` y `algebra-funciones-ideas-erroneas.md` | Cifras de resúmenes, por verificar con los PDF (`fuentes/por-conseguir.md`); cada informe trae 3 escenas y casos |

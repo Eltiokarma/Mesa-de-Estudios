@@ -2365,7 +2365,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "poligonos"
+     ]
     },
     {
      "id": "geometria.circunferencia",
@@ -2507,7 +2509,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "poligonos"
+     ]
     },
     {
      "id": "geometria.simetria",
@@ -4540,6 +4544,24 @@
     "/plantillas/optica-lente-delgada/index.html",
     "/plantillas/optica-lente-delgada/motor.js",
     "/plantillas/optica-lente-delgada/papel.json"
+   ]
+  },
+  "poligonos": {
+   "id": "poligonos",
+   "titulo": "El polígono que se abre: ángulos, diagonales y cuadriláteros",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.poligonos-y-cuadrilateros",
+    "geometria.poligonos-regulares"
+   ],
+   "url": "/plantillas/poligonos/index.html",
+   "papel": "/plantillas/poligonos/papel.json",
+   "archivos": [
+    "/plantillas/poligonos/index.html",
+    "/plantillas/poligonos/motor.js",
+    "/plantillas/poligonos/papel.json"
    ]
   },
   "porcentajes-sucesivos": {

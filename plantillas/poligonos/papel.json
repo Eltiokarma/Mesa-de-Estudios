@@ -1,0 +1,138 @@
+{
+  "titulo": "El polígono que se abre: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Desde un vértice, un polígono de n lados se parte en n − 2 triángulos: por eso sus ángulos interiores suman 180°(n − 2). Los exteriores, uno por vértice, suman siempre 360°. Cada vértice se une con todos los demás menos consigo mismo y sus dos vecinos: n − 3 diagonales, y en total n(n − 3)/2, porque cada diagonal se cuenta desde sus dos extremos. En el polígono regular, la apotema va del centro al punto medio de un lado, perpendicular a él; no es la mitad del lado. Un cuadrilátero se nombra por sus propiedades, no por cómo está dibujado: el cuadrado es también rombo, rectángulo y paralelogramo.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "a) ¿Cuánto suman los ángulos interiores de un decágono? b) Si el decágono es regular, ¿cuánto mide cada ángulo interior y cada ángulo exterior?",
+      "respuesta": "a) 1440°. b) Cada interior mide 144° y cada exterior, 36°.",
+      "pasos": [
+        "Desde un vértice, el decágono se parte en 10 − 2 = 8 triángulos, y cada uno aporta 180°: 180° · 8 = 1440°.",
+        "En el regular los 10 ángulos son iguales: 1440° / 10 = 144°.",
+        "Los exteriores suman 360°: cada uno mide 360° / 10 = 36°. Control: 144° + 36° = 180°, porque interior y exterior forman un ángulo llano.",
+        "Ojo: 180° · 10 = 1800° sería contar 10 triángulos, como si se partiera desde el centro sin restar los 360° que se juntan ahí."
+      ],
+      "verificar": [ { "fn": "poligono", "args": [10], "espera": { "sumaInteriores": 1440, "regular.interior": 144, "regular.exterior": 36, "errores.sumaInteriores.con180n": 1800 } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Un dodecágono tiene 12 lados. a) ¿Cuántas diagonales tiene en total? b) ¿Cuántas diagonales se pueden trazar desde tres vértices consecutivos?",
+      "respuesta": "a) 54. b) 26.",
+      "pasos": [
+        "Desde cada vértice salen 12 − 3 = 9 diagonales: no se une consigo mismo ni con sus dos vecinos (con ellos forma lados).",
+        "12 vértices por 9 diagonales da 108, pero así cada diagonal se cuenta dos veces, una desde cada extremo: 108 / 2 = 54.",
+        "Desde tres vértices consecutivos: el primero traza 9, el segundo otras 9 y el tercero 9, pero la diagonal que une el primero con el tercero ya se contó: 9 + 9 + 8 = 26.",
+        "Ojo: 12 · 11 / 2 = 66 cuenta todos los segmentos entre vértices, también los 12 lados (66 − 12 = 54)."
+      ],
+      "verificar": [ { "fn": "poligono", "args": [12], "espera": { "diagonales": 54, "diagonalesDesdeVertice": 9, "errores.diagonales.conLados": 66 } },
+                     { "fn": "diagonalesDesdeVertices", "args": [12, 3], "espera": { "diagonales": 26, "porFormula": 26, "errores.cuentaDoble": 27 } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "El ángulo exterior de un polígono regular mide 20°. ¿Cuántos lados tiene y cuántas diagonales?",
+      "respuesta": "18 lados y 135 diagonales.",
+      "pasos": [
+        "Los exteriores suman 360° y en el regular son todos iguales: n = 360° / 20° = 18.",
+        "Diagonales: 18 · (18 − 3) / 2 = 18 · 15 / 2 = 135.",
+        "Control: cada interior mide 180° − 20° = 160°, y 160° · 18 = 2880° = 180° · 16."
+      ],
+      "verificar": [ { "fn": "nDesdeAngulo", "args": [{ "exterior": 20 }], "espera": { "n": 18, "existe": true, "interior": 160 } },
+                     { "fn": "poligono", "args": [18], "espera": { "diagonales": 135, "sumaInteriores": 2880 } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "En un polígono regular, cada ángulo interior mide el cuádruple de cada ángulo exterior. ¿Cómo se llama el polígono?",
+      "respuesta": "Decágono (10 lados).",
+      "pasos": [
+        "En cada vértice, el interior y el exterior suman 180°. Si el interior es 4 veces el exterior: exterior + 4 · exterior = 180°, así que el exterior mide 36° y el interior, 144°.",
+        "n = 360° / 36° = 10: es el decágono.",
+        "Ojo: dividir 180° entre el exterior (180 / 36 = 5) da la mitad de los lados; los exteriores suman 360°, no 180°."
+      ],
+      "verificar": [ { "fn": "nDesdeAngulo", "args": [{ "exterior": 36 }], "espera": { "n": 10, "interior": 144, "nombre": "decágono" } },
+                     { "fn": "nDesdeAngulo", "args": [{ "interior": 144 }], "espera": { "n": 10, "errores.con180": 5 } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Los ángulos interiores de un polígono convexo suman 1980°. ¿Cuántos lados y cuántas diagonales tiene?",
+      "respuesta": "13 lados y 65 diagonales.",
+      "pasos": [
+        "180°(n − 2) = 1980°, así que n − 2 = 11 triángulos y n = 13.",
+        "Diagonales: 13 · 10 / 2 = 65.",
+        "Ojo: dividir 1980 entre 180 da 11, que es la cantidad de triángulos (n − 2), no la de lados."
+      ],
+      "verificar": [ { "fn": "nDesdeSuma", "args": [1980], "espera": { "n": 13, "existe": true, "errores.con180n": 11 } },
+                     { "fn": "poligono", "args": [13], "espera": { "diagonales": 65, "triangulosDesdeVertice": 11 } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "¿Qué polígono tiene el triple de diagonales que de lados?",
+      "respuesta": "El eneágono (9 lados y 27 diagonales).",
+      "pasos": [
+        "Se plantea n(n − 3) / 2 = 3n. Como n no es cero, se puede dividir entre n: (n − 3) / 2 = 3.",
+        "Entonces n − 3 = 6 y n = 9.",
+        "Control: 9 · 6 / 2 = 27 = 3 · 9."
+      ],
+      "verificar": [ { "fn": "poligono", "args": [9], "espera": { "diagonales": 27, "nombre": "eneágono" } },
+                     { "fn": "nDesdeDiagonales", "args": [27], "espera": { "n": 9, "existe": true } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Un hexágono regular tiene lado 4 cm. Halla su radio, su apotema y su área.",
+      "respuesta": "Radio 4 cm, apotema 2√3 cm (unos 3,46 cm) y área 24√3 cm² (unos 41,57 cm²).",
+      "pasos": [
+        "Desde el centro, el hexágono se parte en 6 triángulos con ángulo central de 360° / 6 = 60°. Son equiláteros: el radio mide lo mismo que el lado, 4 cm.",
+        "La apotema es la altura de uno de esos triángulos equiláteros: 4 · √3 / 2 = 2√3 cm. No es la mitad del lado (2 cm): la mitad del lado y la apotema son los dos catetos de un triángulo rectángulo cuya hipotenusa es el radio.",
+        "Área = perímetro · apotema / 2 = 24 · 2√3 / 2 = 24√3 cm², que es lo mismo que 6 triángulos de 4 · 2√3 / 2 = 4√3 cm² cada uno."
+      ],
+      "verificar": [ { "fn": "regular", "args": [{ "n": 6, "lado": 4 }], "espera": { "radio": 4, "apotema": 3.4641016151377544, "area": 41.569219381653056, "triangulo.area": 6.928203230275509, "errores.apotema.mitadDelLado": 2 } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "En el trapecio ABCD, el lado BC es paralelo al lado AD. Sus vértices son A(0, 0), B(3, 4), C(9, 4) y D(14, 0). a) ¿Cuánto mide la mediana, el segmento que une los puntos medios de AB y CD? b) ¿Cuánto mide el segmento que une los puntos medios de las diagonales AC y BD?",
+      "respuesta": "a) 10. b) 4.",
+      "pasos": [
+        "Las bases son los lados paralelos: AD, abajo, de (0, 0) a (14, 0), mide 14; BC, arriba, de (3, 4) a (9, 4), mide 6. Aquí la base menor está arriba y se llama BC: lo que manda es cuáles lados son paralelos, no las letras.",
+        "La mediana es la semisuma de las bases: (14 + 6) / 2 = 10. Con coordenadas: los puntos medios de AB y CD son (1,5; 2) y (11,5; 2), a 10 de distancia.",
+        "El segmento entre los puntos medios de las diagonales está sobre la mediana y mide la semidiferencia: (14 − 6) / 2 = 4. Los puntos medios de AC y BD son (4,5; 2) y (8,5; 2).",
+        "Ojo: 14 − 6 = 8 no es ninguno de los dos. La mediana nunca puede ser más corta que la base menor."
+      ],
+      "verificar": [ { "fn": "cuadrilatero", "args": [[0, 0], [3, 4], [9, 4], [14, 0]], "espera": { "esTrapecio": true, "trapecio.bases": ["BC", "AD"], "trapecio.baseMayor": 14, "trapecio.baseMenor": 6, "trapecio.mediana": 10, "trapecio.segmentoDiagonales": 4, "trapecio.extremosMediana": [{ "x": 1.5, "y": 2 }, { "x": 11.5, "y": 2 }] } },
+                     { "fn": "trapecio", "args": [{ "B": 14, "b": 6 }], "espera": { "mediana": 10, "segmentoDiagonales": 4, "errores.mediana.resta": 8 } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "intermedio",
+      "enunciado": "Los vértices de un cuadrilátero son A(0, 0), B(6, 0), C(8, 4) y D(2, 4). a) ¿Qué cuadrilátero es? b) Halla su área.",
+      "respuesta": "a) Un romboide (un paralelogramo que no es rectángulo ni rombo). b) 24.",
+      "pasos": [
+        "AB va de (0, 0) a (6, 0) y DC de (2, 4) a (8, 4): los dos son horizontales y miden 6, así que son paralelos e iguales. BC y AD avanzan 2 a la derecha y 4 hacia arriba: también son paralelos.",
+        "Con dos pares de lados paralelos es un paralelogramo. Sus ángulos no son rectos y sus lados no son todos iguales (AB = 6 y AD = 2√5): es un romboide.",
+        "Área = base · altura = 6 · 4 = 24. Por determinante: ½ · |0·0 − 6·0 + 6·4 − 8·0 + 8·4 − 2·4 + 2·0 − 0·4| = ½ · 48 = 24."
+      ],
+      "verificar": [ { "fn": "cuadrilatero", "args": [[0, 0], [6, 0], [8, 4], [2, 4]], "espera": { "tipo": "romboide", "nombres": ["paralelogramo", "romboide"], "area": 24, "lados.DA": 4.47213595499958 } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "básico",
+      "enunciado": "Indica si cada afirmación es verdadera o falsa: I. Todo cuadrado es un rombo. II. Todo rombo es un cuadrado. III. Todo rectángulo es un paralelogramo. IV. Un cuadrado apoyado en uno de sus vértices deja de ser cuadrado.",
+      "respuesta": "I verdadera, II falsa, III verdadera y IV falsa.",
+      "pasos": [
+        "I. El rombo es el paralelogramo con los cuatro lados iguales. El cuadrado los tiene: es un rombo que además tiene ángulos rectos.",
+        "II. Un rombo puede tener ángulos de 60° y 120°: tiene los cuatro lados iguales y no es cuadrado.",
+        "III. El rectángulo tiene sus dos pares de lados opuestos paralelos: es un paralelogramo.",
+        "IV. Girar una figura no cambia sus lados ni sus ángulos. El cuadrado «de punta» sigue siendo cuadrado (y rombo)."
+      ],
+      "verificar": [ { "fn": "cuadrilatero", "args": [[0, -3], [3, 0], [0, 3], [-3, 0]], "espera": { "tipo": "cuadrado", "esRombo": true, "esRectangulo": true } },
+                     { "fn": "cuadrilatero", "args": [[0, 0], [5, 0], [8, 4], [3, 4]], "espera": { "tipo": "rombo", "esCuadrado": false } },
+                     { "fn": "cuadrilatero", "args": [[0, 0], [4, 0], [4, 3], [0, 3]], "espera": { "esParalelogramo": true } } ]
+    }
+  ]
+}
