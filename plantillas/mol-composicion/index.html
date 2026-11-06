@@ -1,0 +1,1223 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mol, masa molar y composición</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md).
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4).
+
+   Colores de esta escena (claro / oscuro). Revisados con CIEDE2000 y contraste WCAG sobre --paper y --card:
+     Elementos (cada átomo y cada montón de un elemento lleva su color; el texto dice "átomos de H" o "moléculas de H₂O")
+       H  hidrógeno   turquesa      #0f766e / #5ed9c8   (los de limitante-particulas)
+       C  carbono     gris oscuro   #3d3a45 / #c9c3d3
+       O  oxígeno     rojo          #c0364a / #f17384
+       N  nitrógeno   azul          #1f5fbf / #7cb0ff
+       Ca calcio      gris pizarra  #5b6470 / #9aa3b2
+       Mg magnesio    petróleo      #005c6c / #009ca4   (nuevo; solo en los pasos 4 y 5, con C)
+       Fe hierro      celeste       #0478ac / #0898d8   (nuevo; en Fe₂O₃, con O)
+       S  azufre      añil          #3a1fe0 / #9178ff   (nuevo; en H₂SO₄, con H y O)
+       Cu cobre       cobre         #c93c0c / #ff9a66   (el de celda-galvanica; definido, pero no sale en esta escena)
+     Variables
+       m  masa (g o u)            siena     #773922 / #e0a07a   (la de limitante-particulas)
+       n  moles                   mostaza   #7d6a00 / #e3c84a   (la de limitante-particulas)
+       M  masa molar (g/mol)      fucsia    #c400ad / #ff2ed8   (nuevo)
+       N  número de partículas    verde     #0a8200 / #2da500   (nuevo)
+       %  porcentaje en masa      tinta: cada tramo de la barra lleva el color de su elemento y el número va en tinta.
+   Qué sale junto: todas las variables con todos los elementos del explorador (H, C, O, N, Ca, S, Fe; la segunda
+   sustancia del explorador es siempre H₂, O₂ o H₂O); Mg solo con C; Fe nunca con N, S, Ca ni C; S nunca con N, Fe ni C.
+   ΔE00 mínimo de los colores nuevos contra todo lo que sale con ellos: 22,3 en claro (Fe–H) y 21,2 en oscuro
+   (S–tinta gris). Contraste mínimo: 4,61 en claro (Fe) y 4,60 en oscuro (Mg); todos pasan AA (4,5).
+   Un color propio para % no entra: con M, N y % nuevos, lo mejor que encontramos (búsqueda exhaustiva por familias de
+   tono) da ΔE00 20,4, pero con dos verdes casi iguales; por eso el porcentaje va en tinta, como el tiempo en cinética.
+   Pares heredados por debajo de 20 (de limitante-particulas, se dejan como están): C–tinta 11,1 / 9,3; C–Ca 15,2 / 12,1
+   (salen juntos en CaCO₃: cada átomo lleva además su letra); m–O 18,9 en claro. Parecidos que nunca salen juntos:
+   Fe–N 12,1 / 13,3 (Fe₂O₃ y NH₃ no se muestran a la vez) y Cu–m (Cu no se usa aquí; si se agrega un hidrato de cobre,
+   hay que revisarlo). */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --e-H:#0f766e; --e-C:#3d3a45; --e-O:#c0364a; --e-N:#1f5fbf; --e-Ca:#5b6470; --e-Mg:#005c6c; --e-Fe:#0478ac; --e-S:#3a1fe0; --e-Cu:#c93c0c;
+  --c-masa:#773922; --c-mol:#7d6a00; --c-Mm:#c400ad; --c-part:#0a8200;
+  --vidrio:#8e97a8; --monton:#e3d5ca; --letra-atomo:#ffffff;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --e-H:#5ed9c8; --e-C:#c9c3d3; --e-O:#f17384; --e-N:#7cb0ff; --e-Ca:#9aa3b2; --e-Mg:#009ca4; --e-Fe:#0898d8; --e-S:#9178ff; --e-Cu:#ff9a66;
+  --c-masa:#e0a07a; --c-mol:#e3c84a; --c-Mm:#ff2ed8; --c-part:#2da500;
+  --vidrio:#5e5670; --monton:#4a3d58; --letra-atomo:#1d1626; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --e-H:#5ed9c8; --e-C:#c9c3d3; --e-O:#f17384; --e-N:#7cb0ff; --e-Ca:#9aa3b2; --e-Mg:#009ca4; --e-Fe:#0898d8; --e-S:#9178ff; --e-Cu:#ff9a66;
+  --c-masa:#e0a07a; --c-mol:#e3c84a; --c-Mm:#ff2ed8; --c-part:#2da500;
+  --vidrio:#5e5670; --monton:#4a3d58; --letra-atomo:#1d1626; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+/* Nada se arrastra en esta escena: el dedo siempre desplaza la página sobre el dibujo. */
+canvas{display:block; width:100%; touch-action:pan-y; -webkit-user-select:none; user-select:none}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+.legend svg{flex:none}
+.contar{display:flex; flex-wrap:wrap; align-items:center; gap:6px 10px; padding:0 6px 2px; font-size:.86rem; color:var(--muted); font-weight:700}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 2px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px; white-space:nowrap}
+.f{white-space:nowrap}
+.f .v{padding:0; border-radius:3px}
+.v-masa{color:var(--c-masa); background:color-mix(in srgb, var(--c-masa) 12%, transparent)}
+.v-mol{color:var(--c-mol); background:color-mix(in srgb, var(--c-mol) 12%, transparent)}
+.v-Mm{color:var(--c-Mm); background:color-mix(in srgb, var(--c-Mm) 12%, transparent)}
+.v-part{color:var(--c-part); background:color-mix(in srgb, var(--c-part) 12%, transparent)}
+.v-H{color:var(--e-H)} .v-C{color:var(--e-C)} .v-O{color:var(--e-O)} .v-N{color:var(--e-N)} .v-Ca{color:var(--e-Ca)}
+.v-Mg{color:var(--e-Mg)} .v-Fe{color:var(--e-Fe)} .v-S{color:var(--e-S)} .v-Cu{color:var(--e-Cu)}
+.v.hl{background:color-mix(in srgb, currentColor 26%, transparent)}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.02rem; font-variant-numeric:tabular-nums; min-width:0}
+.eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); white-space:normal; flex-basis:100%}
+.eq .ex{white-space:normal; line-height:2}
+.frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1.15}
+.frac > span:first-child{border-bottom:1.5px solid currentColor; padding:0 .25em}
+.frac > span:last-child{padding:0 .25em}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+.tabla{border-collapse:collapse; font-family:var(--mono); font-size:.95rem; font-variant-numeric:tabular-nums}
+.tabla th, .tabla td{padding:4px 10px; border-bottom:1px solid var(--line); text-align:center; white-space:nowrap}
+.tabla thead th{white-space:normal}
+.tabla th:first-child, .tabla td:first-child{text-align:left; font-family:var(--font); color:var(--muted); font-weight:700; font-size:.88rem; white-space:normal}
+.scroll{overflow-x:auto; max-width:100%}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.ctrls{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap:12px; align-items:end}
+.slider{display:grid; gap:4px}
+.slider label{font-weight:700; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.slider output{font-family:var(--mono); color:var(--muted)}
+input[type=range]{width:100%; accent-color:var(--ink); min-height:28px}
+input.r-masa{accent-color:var(--c-masa)}
+select{font:700 .95rem var(--font); padding:9px 12px; border-radius:12px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); min-height:44px; max-width:100%}
+.campo{display:grid; gap:4px; font-weight:700}
+.botones{display:flex; flex-wrap:wrap; gap:6px}
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:999px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.seg button:disabled{opacity:.45; cursor:not-allowed}
+.exps{border-radius:20px}
+.lect{font-size:.92rem; font-variant-numeric:tabular-nums; display:grid; gap:4px}
+.lect .fila{display:flex; flex-wrap:wrap; gap:2px 14px}
+.barra{display:flex; height:22px; border-radius:8px; overflow:hidden; border:1px solid var(--line)}
+.barra span{display:block; height:100%}
+.barra-rot{display:flex; flex-wrap:wrap; gap:2px 14px; font-size:.88rem; font-family:var(--mono)}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.25fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Química · Mol y composición · Problemas tipo admisión</p>
+      <h1>El mol: contar partículas pesando</h1>
+      <p class="sub">Una balanza, una lupa y la cuenta, con los mismos colores. Predice y después mira.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Balanza, lupa y cuenta">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Arriba, una balanza de dos platillos; al centro, una lupa con lo que hay en cada platillo; abajo, la cuenta de masa, moles y partículas"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="legend" id="ley1"></div>
+      <div class="contar" id="cnt1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos con la balanza y la lupa">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Una balanza de dos platillos, una lupa que se abre al responder y la cuenta"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="legend" id="ley2"></div>
+      <div class="contar" id="cnt2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg exps" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/mol-composicion">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'mol-composicion', unidad: 'quimica.mol-y-composicion', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la química sale de MotorMol (motor.js): masas molares, moles, partículas, igualar masas, composición,
+   fórmula empírica y molecular, Proust y el volumen de un líquido. Aquí solo se pinta lo que el motor dice.
+   Tres niveles a la vez (Johnstone): arriba la balanza (lo que se pesa), al centro la lupa (las partículas o las
+   porciones) y abajo la cuenta (los símbolos), con los mismos colores. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MM = MotorMol;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+// Coma decimal, espacio de miles (desde 5 cifras) y signo menos tipográfico.
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 1 : d), r = Math.round(n*p)/p + 0;
+  let [e, f] = String(Math.abs(r)).split('.');
+  if (e.length > 4) e = e.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+const SUP = { '-':'⁻', '0':'⁰', '1':'¹', '2':'²', '3':'³', '4':'⁴', '5':'⁵', '6':'⁶', '7':'⁷', '8':'⁸', '9':'⁹' };
+const SUB = { '0':'₀', '1':'₁', '2':'₂', '3':'₃', '4':'₄', '5':'₅', '6':'₆', '7':'₇', '8':'₈', '9':'₉' };
+const sup = n => String(n).split('').map(ch => SUP[ch] || ch).join('');
+const sub = f => String(f).replace(/\d/g, d => SUB[d]);
+// Notación científica con coma: 6,02 × 10²³ (hasta 3 decimales, sin ceros de más).
+function sci(x, d){
+  if (!Number.isFinite(x)) return '—'; if (x === 0) return '0';
+  let e = Math.floor(Math.log10(Math.abs(x))), m = x/Math.pow(10, e);
+  const p = Math.pow(10, d === undefined ? 3 : d); m = Math.round(m*p)/p; if (m >= 10){ m /= 10; e++; }
+  return `${fmt(m, d === undefined ? 3 : d)} × 10${sup(e)}`;
+}
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
+const NOMBRE = { H:'hidrógeno', C:'carbono', O:'oxígeno', N:'nitrógeno', Ca:'calcio', Mg:'magnesio', Fe:'hierro', S:'azufre', Cu:'cobre' };
+const IONICOS = ['CaCO3', 'Fe2O3'];
+// Qué se cuenta en una sustancia: átomos (un elemento suelto), unidades fórmula (sólido iónico) o moléculas.
+const esElemento = f => /^[A-Z][a-z]?$/.test(f);
+const particula = (f, plural) => esElemento(f) ? (plural === false ? 'átomo' : 'átomos') : IONICOS.includes(f) ? (plural === false ? 'unidad fórmula' : 'unidades fórmula') : (plural === false ? 'molécula' : 'moléculas');
+// Piezas de una fórmula: [["H₂","H"],["O","O"]]: cada símbolo con su subíndice, en el color de su elemento.
+function piezas(f){ const r = []; String(f).replace(/([A-Z][a-z]?)(\d*)/g, (_, e, n) => { r.push([e + sub(n), e]); }); return r; }
+// En el texto: cada elemento de la fórmula con su color, y al tocarlo se resalta en el dibujo.
+const Fh = f => `<span class="f">${piezas(f).map(([t, e]) => `<span class="v v-${e}" data-var="${e}" tabindex="0">${t}</span>`).join('')}</span>`;
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const m_ = t => V('masa', t), n_ = t => V('mol', t), M_ = t => V('Mm', t), N_ = t => V('part', t);
+const fr = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
+const NA_TXT = '6,02 × 10²³';
+
+function colores(){
+  const g = n => css(n), el = {};
+  for (const e of Object.keys(NOMBRE)) el[e] = g('--e-' + e);
+  return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
+    masa:g('--c-masa'), mol:g('--c-mol'), Mm:g('--c-Mm'), part:g('--c-part'), el, vidrio:g('--vidrio'), monton:g('--monton'),
+    letra:g('--letra-atomo'), mono:g('--mono'), font:g('--font') };
+}
+const colVar = (c, k) => k === 'masa' ? c.masa : k === 'mol' ? c.mol : k === 'Mm' ? c.Mm : k === 'part' ? c.part : k === 'ink' ? c.ink : k === 'muted' ? c.muted : (c.el[k] || c.ink);
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, x1, y1, x2, y2){ ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
+function rr(ctx, x, y, w, h, r){ ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h); }
+// Azar con semilla, para que las figuras caigan siempre en el mismo lugar.
+function azar(sem){ let s = sem >>> 0 || 1; return () => (s = (s*1664525 + 1013904223) >>> 0)/4294967296; }
+function hashTxt(t){ let h = 2166136261; for (const ch of String(t)) h = Math.imul(h ^ ch.charCodeAt(0), 16777619); return h >>> 0; }
+
+/* ----- Texto en el lienzo, por piezas de colores -----
+   Una línea es una lista de piezas [texto, clave de color, peso]. Si no entra en el ancho, baja la letra hasta 10 px;
+   nunca se corta a medias ni se sale del dibujo. */
+function anchoPiezas(ctx, c, ps, tam){ let w = 0; for (const [t, , peso, mono] of ps){ ctx.font = `${peso || 700} ${tam}px ${mono ? c.mono : c.font}`; w += ctx.measureText(t).width; } return w; }
+function tamQueEntra(ctx, c, ps, tam, max){ let t = tam; while (t > 10 && anchoPiezas(ctx, c, ps, t) > max) t -= 0.5; return t; }
+function dibujarPiezas(ctx, c, ps, x, y, tam, align, max, hl){
+  const t = max ? tamQueEntra(ctx, c, ps, tam, max) : tam, w = anchoPiezas(ctx, c, ps, t);
+  let x0 = align === 'center' ? x - w/2 : align === 'right' ? x - w : x;
+  ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+  for (const [txt, k, peso, mono] of ps){
+    ctx.font = `${peso || 700} ${t}px ${mono ? c.mono : c.font}`; const ww = ctx.measureText(txt).width;
+    if (hl && hl === k){ ctx.save(); ctx.fillStyle = colVar(c, k); ctx.globalAlpha = .18; rr(ctx, x0 - 2, y - t*0.7, ww + 4, t*1.4, 4); ctx.fill(); ctx.restore(); }
+    ctx.fillStyle = colVar(c, k); ctx.fillText(txt, x0, y); x0 += ww;
+  }
+  return w;
+}
+const pzF = (f, peso) => piezas(f).map(([t, e]) => [t, e, peso || 800]);
+// Partir un texto en líneas que entren en el ancho (para los pies de la lupa).
+function envolver(ctx, c, txt, max, tam){
+  ctx.font = `700 ${tam}px ${c.font}`; const pal = String(txt).replace(/(\d) (?=(u|g|mol|L|mL|%|×|de)\b|[×\d])/g, '$1\u00a0').replace(/ × /g, '\u00a0×\u00a0').split(' '), lineas = []; let l = '';
+  for (const p of pal){ const t = l ? l + ' ' + p : p; if (ctx.measureText(t).width > max && l){ lineas.push(l); l = p; } else l = t; }
+  if (l) lineas.push(l); return lineas;
+}
+
+/* ----- Las figuras: átomos y moléculas -----
+   Cada átomo lleva el color de su elemento y, si cabe, su letra. Las coordenadas van en radios de átomo. */
+const RADIO = { H:0.68, C:1, N:1, O:1, S:1.1, Mg:1.1, Fe:1.1, Ca:1.2, Cu:1.1 };
+const PLANTILLAS = {
+  H2:[['H',-.62,0],['H',.62,0]], O2:[['O',-.78,0],['O',.78,0]],
+  H2O:[['H',-.92,.58],['H',.92,.58],['O',0,-.12]],
+  CO2:[['O',-1.55,0],['O',1.55,0],['C',0,0]],
+  CH4:[['H',-.95,-.95],['H',.95,-.95],['H',-.95,.95],['H',.95,.95],['C',0,0]],
+  NH3:[['H',0,-1.25],['H',-1.08,.66],['H',1.08,.66],['N',0,0]],
+  CaCO3:[['Ca',-2.05,-.55],['O',.75,-1.55],['O',2.1,.78],['O',-.6,.78],['C',.75,0]],
+  H2SO4:[['H',-2.5,.62],['H',2.5,-.62],['O',-1.6,0],['O',1.6,0],['O',0,-1.6],['O',0,1.6],['S',0,0]],
+  Fe2O3:[['Fe',-1.95,.45],['Fe',1.95,.45],['O',-3.9,-.45],['O',0,-.45],['O',3.9,-.45]],
+  CH2O:[['H',-.95,.82],['H',.95,.82],['O',0,-1.45],['C',0,0]],
+};
+// La glucosa se dibuja como 6 grupos CH₂O en anillo: es la misma fórmula empírica, 6 veces.
+(function(){ const g = []; for (let k = 0; k < 6; k++){ const a = -Math.PI/2 + k*Math.PI/3, cx = 3.1*Math.cos(a), cy = 3.1*Math.sin(a);
+  for (const [e, x, y] of PLANTILLAS.CH2O){ const rx = x*Math.cos(a + Math.PI/2) - y*Math.sin(a + Math.PI/2), ry = x*Math.sin(a + Math.PI/2) + y*Math.cos(a + Math.PI/2); g.push([e, cx + rx*0.8, cy + ry*0.8, 0.8]); } }
+  PLANTILLAS.C6H12O6 = g; })();
+function plantilla(f){
+  if (PLANTILLAS[f]) return PLANTILLAS[f];
+  if (esElemento(f)) return [[f, 0, 0]];
+  // Cualquier otra: los átomos en espiral (los pesados al centro).
+  const at = MM.atomos(f), lista = []; for (const [e, n] of Object.entries(at)) for (let k = 0; k < n; k++) lista.push(e);
+  lista.sort((a, b) => (a === 'H') - (b === 'H'));
+  return lista.map((e, k) => { const r = 1.15*Math.sqrt(k), a = k*2.4; return [e, r*Math.cos(a), r*Math.sin(a)]; });
+}
+function extension(f){ let e = 0; for (const [el, x, y, s] of plantilla(f)) e = Math.max(e, Math.hypot(x, y) + (RADIO[el] || 1)*(s || 1)); return e; }
+function molecula(ctx, c, f, x, y, R, op){
+  op = op || {};
+  ctx.save(); ctx.globalAlpha = op.alpha === undefined ? 1 : op.alpha;
+  const p = plantilla(f);
+  for (const [e, dx, dy, s] of p){
+    const r = (RADIO[e] || 1)*R*(s || 1);
+    ctx.beginPath(); ctx.arc(x + dx*R, y + dy*R, r, 0, Math.PI*2);
+    ctx.fillStyle = c.el[e] || c.ink; ctx.fill(); ctx.strokeStyle = c.paper; ctx.lineWidth = r > 4 ? 1.3 : 0.8; ctx.stroke();
+    if (op.hl === e){ ctx.strokeStyle = c.ink; ctx.lineWidth = 1.8; ctx.beginPath(); ctx.arc(x + dx*R, y + dy*R, r + 2.2, 0, Math.PI*2); ctx.stroke(); }
+    if (r >= 6.5){ ctx.fillStyle = c.letra; ctx.font = `800 ${Math.round(r*(e.length > 1 ? 0.8 : 0.95))}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(e, x + dx*R, y + dy*R + 0.5); }
+  }
+  ctx.restore();
+}
+// Puntos de una cuadrícula hexagonal dentro de un círculo, mezclados con semilla: para repartir n figuras.
+function puntosEnCirculo(n, r, sem){
+  if (n <= 0) return { pts:[], d:r };
+  let d = r*Math.sqrt(Math.PI/(n*0.866))*0.92, pts = [];
+  for (let it = 0; it < 40; it++){
+    pts = [];
+    for (let j = -Math.ceil(r/d) - 1; j <= Math.ceil(r/d) + 1; j++) for (let i = -Math.ceil(r/d) - 1; i <= Math.ceil(r/d) + 1; i++){
+      const x = (i + (j % 2 ? 0.5 : 0))*d, y = j*d*0.866;
+      if (Math.hypot(x, y) <= r - d*0.5) pts.push([x, y]);
+    }
+    if (pts.length >= n) break; d *= 0.94;
+  }
+  const rnd = azar(sem); for (let i = pts.length - 1; i > 0; i--){ const j = Math.floor(rnd()*(i + 1)); [pts[i], pts[j]] = [pts[j], pts[i]]; }
+  // Las que se usan, ordenadas de arriba abajo (para que las nuevas caigan en orden en los pasos animados).
+  return { pts:pts.slice(0, n).map(([x, y]) => [x + (rnd() - .5)*d*0.18, y + (rnd() - .5)*d*0.18]), d };
+}
+// Porción de la lupa: la más chica de 1, 2 o 5 × 10^k (mol) con la que ninguna lupa pasa de 'max' figuras.
+function porcion(ns, max){
+  const top = Math.max(...ns); for (let e = -4; e <= 2; e++) for (const b of [1, 2, 5]){ const p = b*Math.pow(10, e); if (top/p <= max) return p; }
+  return 100;
+}
+const fmtMol = x => x >= 100 ? fmt(x, 1) : x >= 1 ? fmt(x, 3) : x >= 0.001 ? fmt(x, 5) : sci(x);
+
+/* ----- La escena -----
+   E.vista dice qué se ve:
+     bal:   { izq:[cosas], der:[cosas], u:'g'|'u' }  cosa = { f, m, tipo:'monton'|'atomos'|'pesa'|'bloques', n, etq, ocultaM }
+     lupa:  { tapa:'texto' } | { lentes:[{ figs:[{ f, n }], vacio }], pie:'texto' } | { agrupar:{…} } | { escala:true } | { unidad:'CaCO3' }
+     cuenta:{ cols:[{ f, m, n, M, N, etq }] } | { lineas:[[piezas]] }
+   Nada regala la respuesta antes de responder: la lupa queda tapada y los contadores dicen "responde primero". */
+const ESCENAS = [];
+function crearEscena(cv, idDesc, modoId, idLey, idCnt){
+  const E = { vista:{}, hl:null, modoId, contar:'moleculas', theta:0, anims:[], ultDesc:'' };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, Lz = null, llaveLz = '';
+  const cnt = document.getElementById(idCnt);
+  const llave = w => { const v = E.vista; return `${w}|${v.bal ? 1 : 0}|${JSON.stringify(v.lupa ? Object.keys(v.lupa) : [])}|${v.lupa && v.lupa.lentes ? v.lupa.lentes.length : 0}|${v.lupa && v.lupa.pie}|${v.cuenta ? (v.cuenta.cols ? 'c' : v.cuenta.lineas.length) : 0}`; };
+  function layout(w){
+    const v = E.vista, chico = w < 560, L = {};
+    let y = 8;
+    if (v.bal){ const h = chico ? 176 : 188; L.bal = { y, h, cx:w/2 }; y += h + 4; }
+    if (v.lupa){
+      const dos = !!(v.lupa.lentes && v.lupa.lentes.length === 2) || !!v.lupa.tapa;
+      const r = dos ? Math.min((w - 52)/4, 92) : Math.min(w/2 - 28, chico ? 112 : 124);
+      ctx.font = `700 12px ${css('--font')}`;
+      const pieTxt = v.lupa.pie || v.lupa.tapa, pie = pieTxt ? envolver(ctx, colores(), pieTxt, w - 28, 12) : [];
+      const h = (v.lupa.escala ? (chico ? 220 : 240) : 2*r + 12) + pie.length*16 + 10;
+      L.lupa = { y, h, r, dos, pie }; y += h + 4;
+    }
+    if (v.cuenta){
+      const n = v.cuenta.cols ? 6 : v.cuenta.lineas.length;
+      const h = v.cuenta.cols ? 6*19 + 18 : n*21 + 16;
+      L.cuenta = { y, h }; y += h;
+    }
+    L.H = y + 8;
+    // Separación de los platillos: en dos lupas, cada platillo queda sobre su lupa.
+    const rL = Math.min((w - 52)/4, 92);
+    L.sep = chico ? Math.max(rL + 12, w*0.24) : Math.min(w*0.29, 210);
+    L.pw = Math.min(L.sep*1.7, chico ? w/2 - 14 : 150);
+    return L;
+  }
+  E.resize = () => {
+    const w = cv.clientWidth; if (!w) return;
+    Lz = layout(w); llaveLz = llave(w); const h = Lz.H, dpr = window.devicePixelRatio || 1;
+    if (w !== W || h !== H){ W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); ctx.setTransform(dpr,0,0,dpr,0,0); }
+  };
+  new ResizeObserver(() => { E.resize(); E.dibujar(); }).observe(cv);
+
+  const masaPlato = lista => (lista || []).reduce((s, q) => s + (q.tipo === 'atomos' || q.tipo === 'bloques' ? q.n*q.m : q.m), 0);
+  E.objetivo = () => { const v = E.vista; if (!v.bal) return 0; const a = masaPlato(v.bal.izq), b = masaPlato(v.bal.der); return a + b > 0 ? clamp(0.55*(a - b)/(a + b), -0.24, 0.24) : 0; };
+
+  // ----- Balanza de dos platillos: la inclinación sale de las masas (E.theta se acerca a E.objetivo()). -----
+  function balanza(c, B){
+    const v = E.vista, cx = B.cx, py = B.y + 30, Lb = Lz.sep, th = E.theta, pw = Lz.pw, colg = 58;
+    const extremo = s => [cx + s*Lb*Math.cos(th), py - s*Lb*Math.sin(th)];
+    ctx.save();
+    // Pie y columna.
+    ctx.fillStyle = c.vidrio; rr(ctx, cx - 30, B.y + B.h - 12, 60, 8, 4); ctx.fill();
+    ctx.fillRect(cx - 3, py, 6, B.y + B.h - 12 - py);
+    // Brazo y fiel.
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 3.5; ctx.lineCap = 'round';
+    const [xl, yl] = extremo(-1), [xr, yr] = extremo(1); linea(ctx, xl, yl, xr, yr);
+    ctx.lineWidth = 2; linea(ctx, cx, py, cx - 20*Math.sin(th), py - 20*Math.cos(th));
+    ctx.fillStyle = c.ink; ctx.beginPath(); ctx.arc(cx, py, 5, 0, Math.PI*2); ctx.fill();
+    ctx.strokeStyle = c.muted; ctx.lineWidth = 1; linea(ctx, cx - 8, py - 24, cx + 8, py - 24);
+    // Platillos colgados (siempre horizontales).
+    const lados = [['izq', xl, yl], ['der', xr, yr]];
+    for (const [lado, x, y] of lados){
+      const yp = y + colg;
+      ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; linea(ctx, x, y, x - pw/2 + 6, yp); linea(ctx, x, y, x + pw/2 - 6, yp);
+      platillo(c, v.bal[lado] || [], x, yp, pw, v.bal.u || 'g');
+      ctx.strokeStyle = c.ink; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(x - pw/2, yp); ctx.quadraticCurveTo(x, yp + 9, x + pw/2, yp); ctx.stroke();
+      // Debajo del platillo: qué hay (y su masa, en siena).
+      etiquetas(c, v.bal[lado] || [], x, yp + 16, pw + 16, v.bal.u || 'g', lado);
+    }
+    ctx.restore();
+  }
+  function platillo(c, lista, x, yb, pw, u){
+    const n = lista.length; if (!n) return;
+    const mTodas = Math.max(1, ...[...(E.vista.bal.izq || []), ...(E.vista.bal.der || [])].map(q => q.tipo === 'atomos' || q.tipo === 'bloques' ? q.n*q.m : q.m));
+    lista.forEach((q, k) => {
+      const ww = pw/n, x0 = x - pw/2 + ww*k + ww/2;
+      if (q.tipo === 'atomos'){
+        // Átomos de verdad sobre el platillo (filas de hasta 10).
+        const ra = 4.6, porFila = Math.max(1, Math.floor((ww - 8)/(ra*2.1)));
+        for (let i = 0; i < q.n; i++){ const fila = Math.floor(i/porFila), col = i % porFila, enFila = Math.min(porFila, q.n - fila*porFila);
+          const px = x0 + (col - (enFila - 1)/2)*ra*2.1, pyy = yb - ra - 1 - fila*ra*1.85;
+          ctx.beginPath(); ctx.arc(px, pyy, ra, 0, Math.PI*2); ctx.fillStyle = c.el[q.f]; ctx.fill(); ctx.strokeStyle = c.paper; ctx.lineWidth = 0.8; ctx.stroke();
+          if (E.hl === q.f){ ctx.strokeStyle = c.ink; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(px, pyy, ra + 1.6, 0, Math.PI*2); ctx.stroke(); } }
+      } else if (q.tipo === 'bloques'){
+        const bw = 26, bh = 11, porFila = 3;
+        for (let i = 0; i < q.n; i++){ const fila = Math.floor(i/porFila), col = i % porFila, enFila = Math.min(porFila, q.n - fila*porFila);
+          const px = x0 + (col - (enFila - 1)/2)*(bw + 3), pyy = yb - bh - 1 - fila*(bh + 2);
+          rr(ctx, px - bw/2, pyy, bw, bh, 3); ctx.fillStyle = c.monton; ctx.fill(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1; ctx.stroke();
+          ctx.font = `800 7.5px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; let xx = px - 9;
+          for (const [t, e] of piezas(q.f)){ ctx.fillStyle = c.el[e]; ctx.textAlign = 'left'; ctx.fillText(t, xx, pyy + bh/2 + 0.5); xx += ctx.measureText(t).width; } }
+      } else if (q.tipo === 'pesa'){
+        const h = 14 + 16*Math.sqrt(q.m/mTodas), w0 = Math.min(ww*0.62, 52);
+        ctx.beginPath(); ctx.moveTo(x0 - w0/2, yb); ctx.lineTo(x0 - w0*0.36, yb - h); ctx.lineTo(x0 + w0*0.36, yb - h); ctx.lineTo(x0 + w0/2, yb); ctx.closePath();
+        ctx.fillStyle = c.card; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; ctx.stroke();
+        ctx.beginPath(); ctx.arc(x0, yb - h - 3, 3.5, 0, Math.PI*2); ctx.stroke();
+      } else {
+        // Montón: del color de su elemento si es un elemento; si es un compuesto, neutro, con su fórmula encima.
+        const h = 8 + 26*Math.sqrt(q.m/mTodas), w0 = ww*0.86;
+        ctx.beginPath(); ctx.moveTo(x0 - w0/2, yb); ctx.quadraticCurveTo(x0 - w0*0.3, yb - h*1.25, x0, yb - h); ctx.quadraticCurveTo(x0 + w0*0.3, yb - h*1.25, x0 + w0/2, yb); ctx.closePath();
+        ctx.fillStyle = esElemento(q.f) ? c.el[q.f] : c.monton; ctx.fill();
+        if (E.hl === q.f || (E.hl && !esElemento(q.f) && q.f && MM.atomos(q.f)[E.hl])){ ctx.strokeStyle = c.ink; ctx.lineWidth = 1.8; ctx.stroke(); }
+      }
+    });
+  }
+  function etiquetas(c, lista, x, y, max, u, lado){
+    if (!lista.length){ dibujarPiezas(ctx, c, [[E.vista.bal.vacio && E.vista.bal.vacio[lado] || 'vacío', 'muted', 700]], x, y, 12, 'center', max); return; }
+    const ps = [];
+    lista.forEach((q, k) => {
+      if (k) ps.push([' + ', 'ink', 700]);
+      if (q.etq) ps.push(...q.etq); else if (q.tipo === 'pesa') ps.push(['pesa', 'muted', 700]);
+      else if (q.tipo === 'atomos') ps.push([`${q.n} ${q.n === 1 ? 'átomo' : 'átomos'} de `, 'ink', 700], ...pzF(q.f));
+      else ps.push(...pzF(q.f));
+      const mt = q.tipo === 'atomos' || q.tipo === 'bloques' ? q.n*q.m : q.m;
+      if (!q.ocultaM && q.tipo !== 'pesa' && (q.tipo !== 'atomos' || q.n > 0)) ps.push([lista.length > 1 ? ` ${fmt(mt, 2)} ${u}` : ` · ${fmt(mt, 2)} ${u}`, 'masa', 800]);
+    });
+    dibujarPiezas(ctx, c, ps, x, y, 12.5, 'center', max);
+  }
+
+  // ----- La lupa -----
+  function lente(c, x, y, r, dibujoDentro){
+    ctx.save();
+    ctx.strokeStyle = c.vidrio; ctx.lineWidth = 7; ctx.lineCap = 'round';
+    linea(ctx, x + r*0.72, y + r*0.72, x + r*0.72 + 14, y + r*0.72 + 14);
+    ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2); ctx.fillStyle = c.paper; ctx.fill();
+    ctx.save(); ctx.clip(); dibujoDentro(); ctx.restore();
+    ctx.lineWidth = 4; ctx.strokeStyle = c.vidrio; ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2); ctx.stroke();
+    ctx.restore();
+  }
+  function escalaFiguras(r, figs){
+    const n = figs.reduce((s, g) => s + g.n, 0); if (!n) return Infinity;
+    const { d } = puntosEnCirculo(n, r - 4, 1), ext = Math.max(...figs.filter(g => g.n).map(g => extension(g.f)));
+    return clamp(d*0.44/ext, 2.2, figs.length === 1 && n === 1 ? r*0.7/ext : 12);
+  }
+  function figuras(c, x, y, r, figs, sem, Rcomun){
+    const lista = []; for (const g of figs) for (let k = 0; k < g.n; k++) lista.push(g.f);
+    if (!lista.length) return;
+    const { pts, d } = puntosEnCirculo(lista.length, r - 4, sem);
+    const ext = Math.max(...figs.filter(g => g.n).map(g => extension(g.f)));
+    const R = Math.min(Rcomun || Infinity, clamp(d*0.44/ext, 2.2, figs.length === 1 && lista.length === 1 ? r*0.7/ext : 12));
+    lista.forEach((f, k) => { const [dx, dy] = pts[k] || [0, 0]; molecula(ctx, c, f, x + dx, y + dy, R, { hl:E.hl }); });
+  }
+  function lupa(c, Lp){
+    const v = E.vista.lupa, w = W, yc = Lp.y + Lp.r + 4;
+    if (v.tapa){
+      const xs = [w/2 - Lz.sep, w/2 + Lz.sep];
+      for (const x of xs) lente(c, x, yc, Lp.r, () => { ctx.fillStyle = c.grid; ctx.fillRect(x - Lp.r, yc - Lp.r, 2*Lp.r, 2*Lp.r); });
+      ctx.save(); for (const x of xs){ ctx.fillStyle = c.muted; ctx.font = `800 26px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('?', x, yc); } ctx.restore();
+    } else if (v.lentes){
+      const dos = v.lentes.length === 2, xs = dos ? [w/2 - Lz.sep, w/2 + Lz.sep] : [w/2];
+      // Las dos lupas con la misma escala: un átomo se ve del mismo tamaño en las dos.
+      const Rc = Math.min(...v.lentes.map(L => escalaFiguras(Lp.r, L.figs)));
+      v.lentes.forEach((L, k) => lente(c, xs[k], yc, Lp.r, () => {
+        if (L.vacio || !L.figs.some(g => g.n)){ ctx.fillStyle = c.muted; ctx.font = `700 12px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(L.vacio || 'vacío', xs[k], yc); return; }
+        figuras(c, xs[k], yc, Lp.r, L.figs, L.sem || hashTxt(JSON.stringify(L.figs.map(g => g.f)) + k), Rc);
+      }));
+    } else if (v.agrupar) agrupar(c, w/2, yc, Lp.r, v.agrupar);
+    else if (v.unidad) unidad(c, w/2, yc, Lp.r, v.unidad);
+    else if (v.escala) escala(c, Lp);
+    // Pie: qué es cada figura.
+    ctx.save(); ctx.fillStyle = c.ink; ctx.font = `700 12px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    const y0 = v.escala ? Lp.y + Lp.h - Lp.pie.length*16 - 4 : yc + Lp.r + 16;
+    Lp.pie.forEach((l, k) => ctx.fillText(l, w/2, y0 + k*16));
+    ctx.restore();
+  }
+  // Porciones de cada elemento que se juntan en grupos (fórmula empírica). p = 0: separadas por elemento; p = 1: en grupos.
+  function agrupar(c, x, y, r, A){
+    lente(c, x, y, r, () => {
+      const total = A.partes.reduce((s, q) => s + q.n, 0), plant = plantilla(A.grupo), ext = extension(A.grupo);
+      // Lugar de cada grupo al final.
+      const { pts:gp, d:gd } = puntosEnCirculo(A.k, r - 6, 11);
+      const Rg = clamp(gd*0.42/ext, 3, A.k < 3 ? 20 : 13);
+      // Lugar de cada porción al principio: cada elemento en su sector.
+      const ini = {}; let s0 = -Math.PI/2;
+      for (const q of A.partes){ const frac = q.n/total, cxq = x + r*0.42*Math.cos(s0 + Math.PI*frac), cyq = y + r*0.42*Math.sin(s0 + Math.PI*frac);
+        const { pts } = puntosEnCirculo(q.n, Math.max(18, r*0.55*Math.sqrt(frac) + 10), hashTxt(q.e)); ini[q.e] = pts.map(([a, b]) => [cxq + a, cyq + b]); s0 += 2*Math.PI*frac; }
+      const usados = {}; const fin = {};
+      for (let g = 0; g < A.k; g++) for (const [e, dx, dy] of plant){ (fin[e] = fin[e] || []).push([x + gp[g][0] + dx*Rg, y + gp[g][1] + dy*Rg]); }
+      const p = A.p, ease = p < .5 ? 2*p*p : 1 - Math.pow(-2*p + 2, 2)/2, Rp = clamp(Rg, 3, 10);
+      for (const q of A.partes) for (let i = 0; i < q.n; i++){
+        const a = ini[q.e][i] || [x, y], b = (fin[q.e] || [])[i] || a;
+        const px = a[0] + (b[0] - a[0])*ease, py = a[1] + (b[1] - a[1])*ease, R = (RADIO[q.e] || 1)*(Rp + (Rg - Rp)*ease);
+        ctx.beginPath(); ctx.arc(px, py, R, 0, Math.PI*2); ctx.fillStyle = c.el[q.e]; ctx.fill(); ctx.strokeStyle = c.paper; ctx.lineWidth = 1; ctx.stroke();
+        if (E.hl === q.e){ ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.arc(px, py, R + 2, 0, Math.PI*2); ctx.stroke(); }
+        if (R >= 6.5){ ctx.fillStyle = c.letra; ctx.font = `800 ${Math.round(R*(q.e.length > 1 ? 0.8 : 0.95))}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(q.e, px, py + 0.5); }
+        usados[q.e] = (usados[q.e] || 0) + 1;
+      }
+      if (ease > 0.98) for (let g = 0; g < A.k; g++){ ctx.save(); ctx.setLineDash([3, 3]); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(x + gp[g][0], y + gp[g][1], ext*Rg + 4, 0, Math.PI*2); ctx.stroke(); ctx.restore(); }
+    });
+  }
+  // Una sola unidad fórmula, grande, con la masa de cada átomo en u (composición del CaCO₃).
+  function unidad(c, x, y, r, f){
+    lente(c, x, y, r, () => {
+      const R = r*0.62/extension(f), p = plantilla(f);
+      molecula(ctx, c, f, x, y - 6, R, { hl:E.hl });
+      // Cada masa, del lado de afuera de su átomo; la del átomo del centro va en el pie.
+      const cx0 = p.reduce((s, q) => s + q[1], 0)/p.length, cy0 = p.reduce((s, q) => s + q[2], 0)/p.length;
+      for (const [e, dx, dy] of p){ const rr0 = (RADIO[e] || 1)*R; let ux = dx - cx0, uy = dy - cy0, d = Math.hypot(ux, uy);
+        const central = p.filter(q => Math.hypot(q[1] - dx, q[2] - dy) < 2.2).length > 3;
+        if (central) continue; // la del átomo del centro va en el pie: junto a las otras se confundiría
+        const k = rr0 + 12;
+        dibujarPiezas(ctx, c, [[`${fmt(MM.MASAS[e], 1)} u`, 'masa', 800]], x + dx*R + ux/d*k, y - 6 + dy*R + uy/d*k, 11, 'center'); }
+    });
+  }
+  // A escala: 18 mL de agua líquida junto a una caja de 22,4 L (lo que ocupa 1 mol de gas en condiciones normales).
+  function escala(c, Lp){
+    const lado = Math.min(W*0.42, Lp.h - Lp.pie.length*16 - 46), pxcm = lado/(Math.cbrt(22400)), x0 = W/2 - lado*0.65, yb = Lp.y + 12 + lado;
+    ctx.save();
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.setLineDash([6, 4]); rr(ctx, x0, yb - lado, lado, lado, 4); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = c.ink; ctx.font = `800 12px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('22,4 L', x0 + lado/2, yb - lado/2 - 8); ctx.font = `700 11px ${c.font}`; ctx.fillStyle = c.muted;
+    ctx.fillText(`caja de ${fmt(Math.cbrt(22400), 1)} cm de lado`, x0 + lado/2, yb - lado/2 + 9);
+    // El vaso: un cilindro de 3 cm de diámetro con 18 mL de agua (2,5 cm de alto), a la misma escala.
+    const dV = 3*pxcm, hA = 18/(Math.PI*1.5*1.5)*pxcm, hV = hA*1.5, xv = x0 + lado + Math.max(26, W*0.07);
+    ctx.fillStyle = c.el.H; ctx.globalAlpha = .35; ctx.fillRect(xv, yb - hA, dV, hA); ctx.globalAlpha = 1;
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(xv, yb - hV); ctx.lineTo(xv, yb); ctx.lineTo(xv + dV, yb); ctx.lineTo(xv + dV, yb - hV); ctx.stroke();
+    ctx.strokeStyle = c.muted; ctx.lineWidth = 1; linea(ctx, x0 - 10, yb, xv + dV + 30, yb);
+    ctx.fillStyle = c.ink; ctx.font = `800 12px ${c.font}`; ctx.textAlign = 'left'; ctx.fillText('18 mL', xv + dV + 6, yb - hA - 12);
+    ctx.font = `700 11px ${c.font}`; ctx.fillStyle = c.muted; ctx.fillText('agua líquida', xv + dV + 6, yb - hA + 3);
+    ctx.restore();
+  }
+
+  // ----- La cuenta (abajo) -----
+  function cuenta(c, Cz){
+    const v = E.vista.cuenta, w = W;
+    ctx.save(); ctx.strokeStyle = c.line; ctx.lineWidth = 1; linea(ctx, 12, Cz.y + 2, w - 12, Cz.y + 2); ctx.restore();
+    if (v.cols){
+      const dos = v.cols.length === 2, xs = dos ? [w/2 - Lz.sep, w/2 + Lz.sep] : [w/2], max = dos ? Math.min(w/2 - 16, 2*Lz.sep - 12) : w - 24;
+      v.cols.forEach((q, k) => {
+        const x = xs[k]; let y = Cz.y + 16;
+        const fila = (ps, tam) => { dibujarPiezas(ctx, c, ps, x, y, tam || 13, 'center', max, E.hl); y += 19; };
+        fila(q.etq || [...pzF(q.f), [q.f && !esElemento(q.f) ? '' : '', 'ink']], 14);
+        fila(q.m === null ? [['m = ?', 'muted', 700]] : [[`m = ${fmt(q.m, 2)} ${q.u || 'g'}`, 'masa', 800]]);
+        fila(q.M === undefined ? [['', 'ink']] : q.M === null ? [['M = ?', 'muted', 700]] : [[`M = ${fmt(q.M, 2)} g/mol`, 'Mm', 800]]);
+        fila(q.n === undefined ? [['', 'ink']] : q.n === null ? [['n = ?', 'muted', 700]] : [[`n = ${fmtMol(q.n)} mol`, 'mol', 800]]);
+        if (q.N === null || q.N === undefined) { fila([[q.phN || 'partículas: responde primero', 'muted', 700]], 12); fila([['', 'ink']]); }
+        else {
+          const atomos = E.contar === 'atomos' && !esElemento(q.f), N = atomos ? q.N*MM.totalAtomos(q.f) : q.N;
+          fila([[`N = ${sci(N)}`, 'part', 800]]);
+          fila([[`${atomos ? 'átomos' : particula(q.f)} de `, 'muted', 700], ...pzF(q.f, 700)], 12);
+        }
+      });
+    } else {
+      let y = Cz.y + 18;
+      for (const ps of v.lineas){ dibujarPiezas(ctx, c, ps, w/2, y, 13, 'center', w - 20, E.hl); y += 21; }
+    }
+  }
+
+  E.dibujar = () => {
+    const w = cv.clientWidth; if (!w) return;
+    if (!Lz || llaveLz !== llave(w)) E.resize();
+    const c = colores(); ctx.clearRect(0, 0, W, H);
+    if (Lz.bal) balanza(c, Lz.bal);
+    if (Lz.lupa) lupa(c, Lz.lupa);
+    if (Lz.cuenta) cuenta(c, Lz.cuenta);
+    const ley = leyendaHTML(E.vista), el = document.getElementById(idLey);
+    if (el && el.dataset.k !== ley){ el.dataset.k = ley; el.innerHTML = ley; }
+    pintarContar();
+  };
+  // Interruptor de la cuenta: moléculas o átomos (solo cuando ya se ven las partículas).
+  function pintarContar(){
+    const v = E.vista, hay = v.cuenta && v.cuenta.cols && v.cuenta.cols.some(q => q.N !== null && q.N !== undefined && !esElemento(q.f));
+    const k = `${E.contar}|${hay}|${!!v.cuenta}`; if (cnt.dataset.k === k) return; cnt.dataset.k = k;
+    if (!v.cuenta || !v.cuenta.cols){ cnt.innerHTML = ''; return; }
+    cnt.innerHTML = `<span>Contar:</span><span class="seg" role="group" aria-label="Qué cuenta N">${[['moleculas', 'moléculas'], ['atomos', 'átomos']].map(([q, t]) => `<button type="button" data-cnt="${q}" aria-pressed="${E.contar === q}"${hay ? '' : ' disabled'}>${t}</button>`).join('')}</span>${hay ? '' : '<span>se activa al ver las partículas</span>'}`;
+    cnt.querySelectorAll('[data-cnt]').forEach(b => b.onclick = () => { E.contar = b.dataset.cnt; E.dibujar(); E.describir(true); });
+  }
+  // Descripción para lector de pantalla: solo lo que ya se puede saber.
+  E.describir = (forzar) => {
+    if (!forzar) return; // Habla al cambiar de paso, al responder y al pedirlo.
+    const v = E.vista, partes = [];
+    const desc = lista => lista.length ? lista.map(q => q.tipo === 'pesa' ? `una pesa de ${fmt(q.m, 2)} g` : q.tipo === 'atomos' ? `${q.n} átomos de ${q.f}${q.ocultaM ? '' : ` (${fmt(q.n*q.m, 2)} u)`}` : q.tipo === 'bloques' ? `${q.n} mol de ${q.f} (${fmt(q.n*q.m, 2)} g)` : `${q.ocultaM ? '' : fmt(q.m, 2) + ' g de '}${q.nombre || sub(q.f)}`).join(', ') : 'nada';
+    if (v.bal){ const t = E.objetivo(); partes.push(`Balanza: a la izquierda, ${desc(v.bal.izq)}; a la derecha, ${desc(v.bal.der)}. ${Math.abs(t) < 0.005 ? 'Está equilibrada.' : t > 0 ? 'Baja el platillo izquierdo.' : 'Baja el platillo derecho.'}`); }
+    if (v.lupa) partes.push(v.lupa.tapa ? `La lupa está tapada: ${v.lupa.tapa}.` : `Lupa: ${v.lupa.desc || ''} ${v.lupa.pie || ''}`);
+    if (v.cuenta && v.cuenta.cols) for (const q of v.cuenta.cols) if (q.n !== undefined && q.n !== null){
+      const atomos = E.contar === 'atomos' && !esElemento(q.f);
+      partes.push(`${sub(q.f)}: ${fmt(q.m, 2)} g, ${fmtMol(q.n)} mol${q.N ? `, ${sci(atomos ? q.N*MM.totalAtomos(q.f) : q.N)} ${atomos ? 'átomos' : particula(q.f)}` : ''}.`);
+    }
+    if (v.cuenta && v.cuenta.lineas && v.cuenta.leer) partes.push(v.cuenta.leer);
+    const t = partes.join(' '), el = document.getElementById(idDesc); if (el.textContent !== t) el.textContent = t;
+  };
+  return E;
+}
+// Leyenda con solo lo que se ve en ese momento.
+function elementosVistos(v){
+  const s = new Set(), agregar = f => { if (f) for (const e of Object.keys(MM.atomos(f))) s.add(e); };
+  if (v.bal) for (const q of [...(v.bal.izq || []), ...(v.bal.der || [])]) if (q.tipo !== 'pesa' && (q.tipo !== 'atomos' || q.n > 0) && (q.tipo !== 'bloques' || q.n > 0)) agregar(q.f);
+  if (v.lupa && v.lupa.lentes) for (const L of v.lupa.lentes) for (const g of L.figs) if (g.n) agregar(g.f);
+  if (v.lupa && v.lupa.agrupar) for (const q of v.lupa.agrupar.partes) s.add(q.e);
+  if (v.lupa && v.lupa.unidad) agregar(v.lupa.unidad);
+  if (v.cuenta && v.cuenta.cols) for (const q of v.cuenta.cols) if (q.f) agregar(q.f);
+  return [...s];
+}
+function leyendaHTML(v){
+  const it = elementosVistos(v).map(e => `<span><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="6" fill="var(--e-${e})"/></svg>${e} · ${NOMBRE[e]}</span>`);
+  const vars = v.vars || [];
+  if (vars.includes('masa')) it.push(`<span><i style="background:var(--c-masa)"></i>m · masa${v.bal && v.bal.u === 'u' ? ' (en u)' : ''}</span>`);
+  if (vars.includes('Mm')) it.push(`<span><i style="background:var(--c-Mm)"></i>M · masa molar</span>`);
+  if (vars.includes('mol')) it.push(`<span><i style="background:var(--c-mol)"></i>n · moles</span>`);
+  if (vars.includes('part')) it.push(`<span><i style="background:var(--c-part)"></i>N · número de partículas</span>`);
+  if (vars.includes('pct')) it.push(`<span><i style="background:var(--ink)"></i>% · porcentaje en masa, en tinta</span>`);
+  return it.join('');
+}
+// Resaltar en el dibujo lo que se toca en el texto (regla 4).
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+// Un bucle que solo corre mientras algo se mueve: la balanza se inclina poco a poco y corren las animaciones.
+let RAF = 0, ULT = 0;
+function pedir(){ if (!RAF){ ULT = performance.now(); RAF = requestAnimationFrame(tick); } }
+function tick(now){
+  RAF = 0; const dt = Math.min(0.05, (now - ULT)/1000); ULT = now; let sigue = false;
+  for (const E of ESCENAS){
+    if (document.getElementById(E.modoId).hidden) continue;
+    const obj = E.objetivo();
+    if (RM) E.theta = obj; else { E.theta += (obj - E.theta)*Math.min(1, dt*5); if (Math.abs(obj - E.theta) > 0.0005) sigue = true; else E.theta = obj; }
+    for (const a of [...E.anims]){ a.t += dt; const f = Math.min(1, a.t/a.dur); a.paso(f); if (f >= 1){ E.anims.splice(E.anims.indexOf(a), 1); if (a.fin) a.fin(); } else sigue = true; }
+    E.dibujar();
+  }
+  if (sigue) pedir();
+}
+// Animación de dur segundos; con movimiento reducido, de una vez.
+function animar(E, dur, paso, fin, retraso){
+  const a = { t:-(retraso || 0), dur, paso:f => paso(Math.max(0, f)), fin };
+  if (RM){ paso(1); if (fin) fin(); E.dibujar(); return; }
+  E.anims.push(a); pedir();
+}
+function cortar(E){ E.anims = []; }
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}" aria-label="Opción ${'abcd'.indexOf(k) + 1}: ${t.replace(/<[^>]+>/g, '')}"><span class="l">${'abcd'.indexOf(k) + 1}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+const otraVez = `<button type="button" class="btn" data-repetir>Ver de nuevo</button>`;
+// Columna de la cuenta para una muestra de 'gramos' g de la fórmula f (todo sale del motor).
+function col(f, gramos, conN){ const r = MM.moles(f, { gramos }); return { f, m:gramos, M:r.M, n:r.n, N:conN ? r.moleculas : null }; }
+// Lentes para comparar dos muestras con la misma porción: cada figura, p mol de partículas.
+function lentesPara(fs, ns, max){
+  const p = porcion(ns, max || 24), cuentas = ns.map(n => Math.round(n/p)), exactas = ns.every((n, k) => Math.abs(n/p - cuentas[k]) < 0.02);
+  return { p, exactas, lentes:fs.map((f, k) => ({ figs:[{ f, n:cuentas[k] }], vacio: cuentas[k] === 0 ? 'menos de una figura' : '' })) };
+}
+const textoPorcion = (p, f) => `${fmtMol(p)} mol de ${particula(f)} (${sci(p*MM.NA)} ${particula(f)})`;
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso =================
+   Problemas de docs/investigacion/estequiometria-ideas-erroneas.md ("Mol y partículas" y "Composición y fórmula
+   empírica"): 1 mol de O₂ contra 1 mol de H₂O, 10 átomos de Mg contra átomos de C, 75 % de C y 25 % de H, y la glucosa. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'm1', 'ley1', 'cnt1');
+const S = { step:0, max:0, pred:{} };
+// La fuente queda escrita aquí para quien lea el código; la medición guarda solo la categoría.
+const RES = (cat, fuente) => cat;
+const MG10 = MM.igualarMasa('Mg', 10, 'C'), EMP = MM.empirica({ C:75, H:25 }), GLU = MM.molecular('CH2O', 180);
+
+const P0 = { id:'mol-paso2', ok:'c', opts:[
+  ['a', `En el ${Fh('O2')}: pesa más`, 'ES3-mol-es-masa', RES('documentado', 'Dahsah y otros 2006: 33 % de 97 razonó bien')],
+  ['b', `En el ${Fh('H2O')}: cada molécula tiene 3 átomos`, 'ES6-moleculas-o-atomos', RES('documentado', 'Dahsah y otros 2006; sin porcentaje')],
+  ['c', 'Igual en los dos: los dos son 1 mol'],
+  ['d', 'No se sabe: el agua no ocupa 22,4 L', 'ES5-22-L-para-todo', RES('documentado', 'Dahsah y otros 2006: 11 % de 97')]],
+  fb:{ c:'¡Bien! Un mol es siempre el mismo número de partículas: 6,02 × 10²³. Mira la lupa: los dos montones tienen el mismo número de figuras, aunque la balanza se incline.',
+    a:'Elegiste la 1. Que pese más no quiere decir que tenga más moléculas: cada molécula de O₂ pesa más que una de H₂O. Un mol cuenta partículas, no mide gramos. Según Dahsah y otros (2006), solo el 33 % de 97 escolares razonó bien esta pregunta. La correcta está marcada.',
+    b:'Elegiste la 2. El H₂O tiene más átomos, pero no más moléculas: 1 mol de cada uno tiene 6,02 × 10²³ moléculas. Confundir moléculas con átomos es una idea documentada (Dahsah y otros, 2006), sin porcentaje. La correcta está marcada.',
+    d:'Elegiste la 4. 22,4 L es el volumen de 1 mol de gas en condiciones normales, pero el mol no es un volumen: cuenta partículas, y eso no depende de si es líquido o gas. Según Dahsah y otros (2006), el 11 % de 97 escolares creía que todo mol ocupa 22,4 L. La correcta está marcada.' } };
+const P1 = { id:'mol-paso4', ok:'c', opts:[
+  ['a', '10', 'ES4-misma-cantidad', RES('documentado', 'León Vega y López González 2020: 13 de 28')],
+  ['b', '5', 'ES4-al-reves', RES('documentado', 'León Vega y López González 2020: 10 de 28')],
+  ['c', '20'],
+  ['d', '2', 'divide-masas-atomicas', RES('hipotesis', 'hipótesis nuestra')]],
+  fb:{ c:'¡Bien! Cada átomo de C pesa la mitad que uno de Mg: hacen falta el doble de átomos, 20, para la misma masa. Mira cómo caen al platillo.',
+    a:'Elegiste la 1. A igual masa no hay igual número de átomos: los de C pesan la mitad, así que hacen falta más. Según León Vega y López González (2020), 13 de 28 escolares eligieron "la misma cantidad" en una pregunta parecida. La correcta está marcada.',
+    b:'Elegiste la 2. Es al revés: el átomo más liviano necesita más compañeros para pesar lo mismo, no menos. Según León Vega y López González (2020), 10 de 28 escolares respondieron así en una pregunta parecida. La correcta está marcada.',
+    d:'Elegiste la 4. 2 es cuántas veces pesa un Mg más que un C, no cuántos átomos de C hacen falta. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.' } };
+const P2 = { id:'mol-paso6', ok:'b', opts:[
+  ['a', Fh('C3H'), 'ES16-razon-de-masas', RES('documentado', 'Christianto y otros 2025: entre 16 % y 25 % de 32')],
+  ['b', Fh('CH4')],
+  ['c', Fh('CH3'), 'redondea-mal-CH3', RES('hipotesis', 'hipótesis nuestra')],
+  ['d', Fh('C2H8'), 'no-simplifica-C2H8', RES('hipotesis', 'hipótesis nuestra')]],
+  fb:{ b:'¡Bien! Hay que comparar moles, no gramos: 75 g de C son 6,25 mol y 25 g de H son 25 mol, de 1 a 4. Mira la lupa: las porciones se juntan en grupos CH₄.',
+    a:'Elegiste la 1. 75 a 25 es la razón de las masas, no la de los átomos: un átomo de C pesa 12 veces más que uno de H. Antes de comparar hay que pasar a moles. Según Christianto y otros (2025), entre el 16 % y el 25 % de 32 escolares, según la pregunta, eligió esta idea con confianza alta. La correcta está marcada.',
+    c:'Elegiste la 3. Con los moles, la razón sale exacta: 25 entre 6,25 es 4, no 3. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.',
+    d:'Elegiste la 4. C₂H₈ tiene la misma proporción que CH₄, pero la fórmula empírica es la más simple: se divide entre 2. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.' } };
+const P3 = { id:'mol-paso8', ok:'b', opts:[
+  ['a', Fh('CH2O'), 'ES17-empirica-es-molecular', RES('documentado', 'Christianto y otros 2025: 16 % de 32')],
+  ['b', Fh('C6H12O6')],
+  ['c', Fh(`C${fmt(GLU.porAtomos, 0)}H${fmt(2*GLU.porAtomos, 0)}O${fmt(GLU.porAtomos, 0)}`), 'divide-entre-atomos', RES('hipotesis', 'hipótesis nuestra')],
+  ['d', Fh('C3H6O3'), 'mitad-de-k', RES('hipotesis', 'hipótesis nuestra')]],
+  fb:{ b:'¡Bien! CH₂O pesa 30 g/mol, y 180 entre 30 es 6: la molécula tiene 6 veces la fórmula empírica. Mira la balanza: 6 mol de CH₂O pesan lo mismo que 1 mol de glucosa.',
+    a:'Elegiste la 1. CH₂O es la proporción más simple, pero pesa 30 g/mol y la glucosa pesa 180: la molécula es 6 veces más grande. La empírica y la molecular coinciden solo a veces. Según Christianto y otros (2025), el 16 % de 32 escolares eligió esta idea con confianza alta. La correcta está marcada.',
+    c:`Elegiste la 3. Salió de dividir 180 entre los 4 átomos de CH₂O (da 45). Hay que dividir entre la masa de la fórmula empírica, 30 g/mol. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
+    d:'Elegiste la 4. C₃H₆O₃ pesa 90 g/mol, la mitad de 180. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.' } };
+
+// ----- Vistas -----
+const NUM = 10; // en los pasos 2 y 3, cada figura es 0,1 mol de moléculas
+const vMol = r => ({
+  bal:{ izq:[{ f:'O2', m:32 }], der:[{ f:'H2O', m:18 }], u:'g' },
+  lupa: r ? { lentes:[{ figs:[{ f:'O2', n:NUM }] }, { figs:[{ f:'H2O', n:NUM }] }], pie:`Cada figura es ${textoPorcion(0.1, 'O2')}. En cada lupa hay ${NUM}.`, desc:`${NUM} figuras de O₂ y ${NUM} de H₂O.` }
+    : { tapa:r === false ? 'Responde para ver la lupa' : 'La lupa se abre en el paso 3' },
+  cuenta:{ cols:[{ ...col('O2', 32, r), phN:r === false ? 'moléculas: responde primero' : 'moléculas: en el paso 3' }, { ...col('H2O', 18, r), phN:r === false ? 'moléculas: responde primero' : 'moléculas: en el paso 3' }] },
+  vars:['masa', 'Mm', 'mol', ...(r ? ['part'] : [])] });
+// Pasos 4 y 5: 10 átomos de Mg contra átomos de C, en u. Aquí cada figura es un átomo de verdad.
+const vMg = (nC, r) => ({
+  bal:{ izq:[{ f:'Mg', m:24, tipo:'atomos', n:10, ocultaM:!r }], der: nC ? [{ f:'C', m:12, tipo:'atomos', n:nC }] : [], u:'u', vacio:{ der:'átomos de C: ?' } },
+  lupa:{ lentes:[{ figs:[{ f:'Mg', n:10 }] }, { figs:[{ f:'C', n:nC }], vacio:r ? '' : 'todavía nada' }], pie:'Aquí cada figura es un átomo de verdad, no una porción: 1 átomo de Mg pesa 24 u y 1 átomo de C, 12 u.', desc:`10 átomos de Mg y ${nC} de C.` },
+  cuenta:{ lineas: r ? [[['10 × 24 u = ', 'ink'], [`${fmt(10*24, 0)} u`, 'masa', 800], ['   en el platillo de Mg', 'muted']],
+      [[`${nC} × 12 u = `, 'ink'], [`${fmt(nC*12, 0)} u`, 'masa', 800], ['   en el platillo de C', 'muted']]]
+    : [[['1 átomo de ', 'ink'], ...pzF('Mg'), [': ', 'ink'], ['24 u', 'masa', 800], ['    1 átomo de ', 'ink'], ...pzF('C'), [': ', 'ink'], ['12 u', 'masa', 800]], [['¿Cuántos átomos de C equilibran la balanza?', 'muted']]],
+    leer: r ? `10 por 24 u son 240 u; ${nC} por 12 u son ${nC*12} u.` : '' },
+  vars:['masa'] });
+// Pasos 6 y 7: 100 g de un gas con 75 % de C y 25 % de H. Porciones de 1,25 mol de átomos.
+const POR = 1.25, nCp = Math.round(EMP.moles.C/POR), nHp = Math.round(EMP.moles.H/POR);
+const vComp = (r, p) => ({
+  bal:{ izq:[{ f:'C', m:75, etq:[['átomos de ', 'ink'], ...pzF('C')] }], der:[{ f:'H', m:25, etq:[['átomos de ', 'ink'], ...pzF('H')] }], u:'g' },
+  lupa: r ? { agrupar:{ partes:[{ e:'C', n:nCp }, { e:'H', n:nHp }], grupo:EMP.formula, k:nCp, p }, pie:`Cada punto es ${fmt(POR, 2)} mol de átomos: de C los grises, de H los turquesa. ${p > 0.98 ? `Se juntan en ${nCp} grupos ${sub(EMP.formula)}.` : ''}`, desc:`${nCp} porciones de C y ${nHp} de H${p > 0.98 ? `, juntas en ${nCp} grupos CH₄` : ''}.` }
+    : { tapa:'Responde para ver la lupa' },
+  cuenta:{ lineas: r ? [
+      [...pzF('C'), [': ', 'ink'], ['75 g', 'masa', 800], [' ÷ ', 'ink'], ['12 g/mol', 'Mm', 800], [' = ', 'ink'], [`${fmt(EMP.moles.C, 2)} mol`, 'mol', 800], [` → ÷ ${fmt(EMP.moles.C, 2)} = ${fmt(EMP.razon.C, 2)}`, 'ink']],
+      [...pzF('H'), [': ', 'ink'], ['25 g', 'masa', 800], [' ÷ ', 'ink'], ['1 g/mol', 'Mm', 800], [' = ', 'ink'], [`${fmt(EMP.moles.H, 2)} mol`, 'mol', 800], [` → ÷ ${fmt(EMP.moles.C, 2)} = ${fmt(EMP.razon.H, 2)}`, 'ink']],
+      [['Fórmula empírica: ', 'ink'], ...pzF(EMP.formula)]]
+    : [[...pzF('C'), [': ', 'ink'], ['75 g', 'masa', 800], ['  (masa atómica 12)', 'muted'], ['     ', 'ink'], ...pzF('H'), [': ', 'ink'], ['25 g', 'masa', 800], ['  (masa atómica 1)', 'muted']], [['¿Cuál es la fórmula empírica?', 'muted']]],
+    leer: r ? `Carbono: 75 g entre 12 g/mol son ${fmt(EMP.moles.C, 2)} mol. Hidrógeno: 25 g entre 1 son 25 mol. Divididos entre ${fmt(EMP.moles.C, 2)}: 1 y 4. Fórmula empírica CH4.` : '' },
+  vars: r ? ['masa', 'Mm', 'mol'] : ['masa'] });
+// Paso 8: la glucosa (180 g/mol) contra moles de CH₂O que caen al otro platillo.
+const vGlu = (r, k) => ({
+  bal:{ izq:[{ f:'C6H12O6', m:180, etq:[['1 mol de glucosa', 'ink']], nombre:'glucosa' }], der: k ? [{ f:'CH2O', m:GLU.Mempirica, tipo:'bloques', n:k, etq:[[`${k} mol`, 'mol', 800], [' de ', 'ink'], ...pzF('CH2O')] }] : [], u:'g', vacio:{ der:'mol de CH₂O: ?' } },
+  lupa: r && k === GLU.k ? { lentes:[{ figs:[{ f:'C6H12O6', n:1 }] }, { figs:[{ f:'CH2O', n:GLU.k }] }], pie:`Cada figura es 1 mol de moléculas de glucosa (izquierda) o 1 mol de grupos CH₂O (derecha). Los mismos átomos: la glucosa son 6 grupos CH₂O.`, desc:'Una molécula de glucosa, dibujada como 6 grupos CH2O, y 6 grupos CH2O sueltos.' }
+    : { tapa: r ? 'Mira la balanza' : 'Responde para ver la lupa' },
+  cuenta:{ lineas: r ? [[...pzF('CH2O'), [': 12 + 2 × 1 + 16 = ', 'ink'], [`${fmt(GLU.Mempirica, 0)} g/mol`, 'Mm', 800]],
+      [['k = ', 'ink'], ['180', 'Mm', 800], [' ÷ ', 'ink'], ['30', 'Mm', 800], [` = ${GLU.k}`, 'ink', 800], ['   →   ', 'ink'], ...pzF(GLU.formula)]]
+    : [[['Fórmula empírica: ', 'ink'], ...pzF('CH2O'), ['     ', 'ink'], ['M = 180 g/mol', 'Mm', 800]], [['¿Cuál es la fórmula molecular?', 'muted']]],
+    leer: r ? 'CH2O pesa 30 g/mol; 180 entre 30 es 6; la fórmula molecular es C6H12O6.' : '' },
+  vars: r ? ['masa', 'Mm'] : ['masa', 'Mm'] });
+
+const steps = [
+ { k:'Paso 1', t:'El problema', vista:() => vMol(undefined),
+   body:() => `<p class="problem">En un platillo hay 1 mol de ${Fh('O2')}, que pesa ${m_('32 g')}. En el otro, 1 mol de ${Fh('H2O')}, que pesa ${m_('18 g')}. ¿Dónde hay más moléculas?</p>
+   <p>El mol sirve para contar partículas pesando. Es un paquete, como la docena: una docena son 12 cosas y un mol son ${N_(NA_TXT)} partículas. Son tantas que no se cuentan de una en una: se pesan.</p>
+   <p>Arriba, la balanza muestra lo que se pesa (la ${m_('masa m')}). Al centro, la lupa mostrará las partículas, pero todavía está tapada. Abajo está la cuenta: la ${M_('masa molar M')}, que es cuánto pesa 1 mol, y los ${n_('moles n')}.</p>
+   <p class="hint">Cada elemento tiene su color en el texto, en la lupa y en la cuenta: ${Fh('O')} el oxígeno y ${Fh('H')} el hidrógeno. Toca un color del texto para resaltarlo en el dibujo.</p>` },
+ { k:'Paso 2', t:'Antes de mirar, predice', gate:P0, vista:r => vMol(r ? true : false),
+   body:() => `<p>1 mol de ${Fh('O2')} (${m_('32 g')}) y 1 mol de ${Fh('H2O')} (${m_('18 g')}). ¿Dónde hay más moléculas?</p>${opcionesHTML(P0.opts, 'fb')}
+   <p class="hint" id="tras" hidden>Ahora la lupa está abierta. Debajo del dibujo puedes cambiar la cuenta entre moléculas y átomos.</p>` },
+ { k:'Paso 3', t:'Lo mismo de moléculas, distinto peso', vista:() => vMol(true),
+   body:() => `<p>En la lupa hay el mismo número de figuras a cada lado: 1 mol de cualquier sustancia tiene ${N_(NA_TXT)} partículas. La balanza se inclina hacia el ${Fh('O2')} porque cada molécula de ${Fh('O2')} pesa 32 u y cada una de ${Fh('H2O')}, 18 u.</p>
+   <div class="eqs">
+     <div class="eq"><span class="ex">${n_('n')} = ${fr(m_('m'), M_('M'))}: &nbsp; ${fr(m_('32 g'), M_('32 g/mol'))} = ${n_('1 mol')} de ${Fh('O2')} &nbsp; y &nbsp; ${fr(m_('18 g'), M_('18 g/mol'))} = ${n_('1 mol')} de ${Fh('H2O')}</span></div>
+     <div class="eq"><span class="ex">${N_('N')} = ${n_('n')} × ${N_('Nₐ')} = ${n_('1')} × ${N_(NA_TXT)} moléculas, en los dos</span><span class="note">Nₐ = 6,02 × 10²³ por mol es el número de Avogadro: cuántas partículas hay en un paquete.</span></div>
+   </div>
+   <p>Ahora cambia la cuenta a <b>átomos</b> (debajo del dibujo). Cada molécula de ${Fh('H2O')} tiene 3 átomos y cada una de ${Fh('O2')}, 2. Con las mismas moléculas, el agua tiene más átomos: ${N_(sci(3*MM.NA))} contra ${N_(sci(2*MM.NA))}. Por eso siempre hay que decir qué se cuenta: moléculas de ${Fh('H2O')} o átomos de ${Fh('H')}.</p>
+   <p class="fuente">Según Dahsah y otros (2006), solo el 33 % de 97 escolares razonó bien que 1 mol de O₂ y 1 mol de H₂O tienen el mismo número de moléculas. Confundir moléculas con átomos está documentado en el mismo estudio, sin porcentaje. Que todo mol ocupa 22,4 L lo sostuvo el 11 % de 97.</p>` },
+ { k:'Paso 4', t:'Átomos que pesan distinto: predice', gate:P1, vista:r => vMg(r ? MG10.valor : 0, !!r),
+   body:() => `<p>Ahora no hay moles: en un platillo hay 10 átomos sueltos de ${Fh('Mg')}. Un átomo de ${Fh('Mg')} pesa ${m_('24 u')} y uno de ${Fh('C')}, ${m_('12 u')} (u es la unidad de masa atómica). ¿Cuántos átomos de ${Fh('C')} pesan lo mismo que los 10 de ${Fh('Mg')}?</p>${opcionesHTML(P1.opts, 'fb')}` },
+ { k:'Paso 5', t:'Del átomo al mol', vista:() => vMg(MG10.valor, true),
+   body:() => `<p>Los átomos de ${Fh('C')} cayeron uno a uno hasta que la balanza quedó pareja: con ${MG10.valor}. Como cada uno pesa la mitad, hacen falta el doble.</p>
+   <div class="eqs">
+     <div class="eq"><span class="ex">10 × ${m_('24 u')} = ${m_('240 u')} = ${MG10.valor} × ${m_('12 u')}</span></div>
+   </div>
+   <p>El puente con los gramos: si en vez de 1 átomo se juntan ${N_(NA_TXT)}, la masa en u pasa a ser la misma cifra en gramos. ${N_(NA_TXT)} átomos de ${Fh('C')} pesan ${m_('12 g')}, y ${N_(NA_TXT)} átomos de ${Fh('Mg')}, ${m_('24 g')}. Por eso la masa molar tiene la misma cifra: ${M_('12 g/mol')} y ${M_('24 g/mol')}.</p>
+   <div class="eqs">
+     <div class="eq"><span class="ex">1 átomo de ${Fh('C')}: ${m_('12 u')} ≈ ${m_(sci(MM.masaParticula('C')) + ' g')}</span><span class="note">Es la masa molar entre Nₐ: 12 g/mol ÷ 6,02 × 10²³. Un átomo solo no se nota en ninguna balanza: hay que juntar 6,02 × 10²³ para tener 12 g.</span></div>
+     <div class="eq"><span class="ex">${N_(NA_TXT)} átomos de ${Fh('C')} = ${n_('1 mol')} → ${m_('12 g')}</span></div>
+   </div>
+   <p>El mol convierte las u en gramos. "Un átomo de carbono pesa 12 g" es un error: pesa 12 u; los 12 g son de un mol de átomos.</p>
+   <div class="nav"><span></span>${otraVez}</div>
+   <p class="fuente">Según Dahsah y otros (2006), solo el 10 % de 97 escolares razonó bien qué es la masa atómica. Que a igual masa hay igual número de átomos (13 de 28) y la razón al revés (10 de 28) salen de León Vega y López González (2020), en una pregunta parecida.</p>` },
+ { k:'Paso 6', t:'La composición: predice', gate:P2, vista:r => vComp(!!r, r ? 1 : 0),
+   body:() => `<p class="problem">Un gas combustible tiene 75 % de ${Fh('C')} y 25 % de ${Fh('H')} en masa. ¿Cuál es su fórmula empírica?</p>
+   <p>Se toma una muestra de 100 g: la balanza muestra ${m_('75 g')} de ${Fh('C')} y ${m_('25 g')} de ${Fh('H')}. La fórmula empírica es la proporción más simple de átomos.</p>${opcionesHTML(P2.opts, 'fb')}` },
+ { k:'Paso 7', t:'Moles, no gramos', vista:() => vComp(true, 1),
+   body:() => { const cm = MM.composicion(EMP.formula);
+     return `<p>La lupa convierte cada montón en porciones iguales de moles: cada punto es ${n_(fmt(POR, 2) + ' mol')} de átomos. Los ${m_('75 g')} de ${Fh('C')} son ${nCp} puntos y los ${m_('25 g')} de ${Fh('H')}, ${nHp}. Al juntarlos salen ${nCp} grupos de 1 ${Fh('C')} y 4 ${Fh('H')}.</p>
+   <div class="eqs">
+     <div class="eq"><span class="ex">1. Moles: &nbsp;${fr(m_('75 g'), M_('12 g/mol'))} = ${n_(fmt(EMP.moles.C, 2) + ' mol')} de ${Fh('C')} &nbsp; y &nbsp; ${fr(m_('25 g'), M_('1 g/mol'))} = ${n_(fmt(EMP.moles.H, 2) + ' mol')} de ${Fh('H')}</span></div>
+     <div class="eq"><span class="ex">2. Entre el menor: &nbsp;${fr(n_(fmt(EMP.moles.C, 2)), n_(fmt(EMP.moles.C, 2)))} = ${fmt(EMP.razon.C, 2)} &nbsp; y &nbsp; ${fr(n_(fmt(EMP.moles.H, 2)), n_(fmt(EMP.moles.C, 2)))} = ${fmt(EMP.razon.H, 2)}</span></div>
+     <div class="eq"><span class="ex">3. Fórmula empírica: ${Fh(EMP.formula)}</span><span class="note">Si la división diera 1,5 o 2,5, se multiplicaría todo por 2 (en "¿Qué pasa si…?" hay un caso).</span></div>
+   </div>
+   <p>De vuelta: ${Fh('CH4')} pesa ${M_(fmt(cm.M, 0) + ' g/mol')}, y su carbono, 12. El porcentaje de C es ${fr('12', fmt(cm.M, 0))} × 100 = ${fmt(cm.porcentajes.C, 1)} %: el dato del problema.</p>
+   <div class="nav"><span></span>${otraVez}</div>
+   <p class="fuente">Usar la razón de masas como fórmula (C₃H): según Christianto y otros (2025), entre el 16 % y el 25 % de 32 escolares, según la pregunta, eligió esta idea con confianza alta. CH₃ y C₂H₈ son hipótesis nuestras.</p>`; } },
+ { k:'Paso 8', t:'Empírica y molecular: predice', gate:P3, vista:r => vGlu(!!r, r ? GLU.k : 0),
+   body:() => `<p class="problem">La glucosa tiene fórmula empírica ${Fh('CH2O')} y masa molar ${M_('180 g/mol')}. ¿Cuál es su fórmula molecular?</p>
+   <p>En la balanza, 1 mol de glucosa (${m_('180 g')}). El otro platillo espera.</p>${opcionesHTML(P3.opts, 'fb')}<div id="tras8" class="body"></div>` },
+ { k:'Paso 9', t:'Ahora explora tú', explora:true, vista:() => vistaExp(),
+   body:() => `<div class="ctrls">
+     <label class="campo" for="xA">Sustancia del platillo izquierdo<select id="xA">${['H2O', 'CO2', 'CH4', 'CaCO3', 'H2SO4', 'NH3', 'Fe2O3', 'C6H12O6'].map(f => `<option value="${f}">${sub(f)}</option>`).join('')}</select></label>
+     <div class="slider"><label for="mA"><span>Masa (${m_('m')})</span><output id="mA-o"></output></label><input id="mA" class="r-masa" type="range" min="1" max="200" step="1" value="18"></div>
+     <label class="campo" for="xB">Sustancia del platillo derecho<select id="xB">${['H2', 'O2', 'H2O'].map(f => `<option value="${f}">${sub(f)}</option>`).join('')}</select></label>
+     <div class="slider"><label for="mB"><span>Masa (${m_('m')})</span><output id="mB-o"></output></label><input id="mB" class="r-masa" type="range" min="1" max="400" step="1" value="32"></div>
+   </div>
+   <div class="botones" role="group" aria-label="Comparar"><button type="button" class="btn" id="igG">Mismos gramos</button><button type="button" class="btn" id="igN">Mismos moles</button><button type="button" class="btn" id="reset">Volver a empezar</button></div>
+   <div class="lect" id="live" aria-live="off"></div>
+   <p class="hint">Pista: con "mismos gramos", mira cuál lupa se llena más. Con "mismos moles", las lupas quedan iguales y la balanza se inclina. Cambia la cuenta a átomos para ver cuántos hay en total.</p>` },
+];
+
+// ----- Explorador -----
+const X = { A:'H2O', mA:18, B:'O2', mB:32 };
+function vistaExp(){
+  const a = MM.moles(X.A, { gramos:X.mA }), b = MM.moles(X.B, { gramos:X.mB });
+  const L = lentesPara([X.A, X.B], [a.n, b.n], 24);
+  return { bal:{ izq:[{ f:X.A, m:X.mA }], der:[{ f:X.B, m:X.mB }], u:'g' },
+    lupa:{ lentes:L.lentes, pie:`Cada figura es ${fmtMol(L.p)} mol de partículas (${sci(L.p*MM.NA)})${L.exactas ? '' : '; las cuentas están redondeadas'}.`, desc:`${L.lentes[0].figs[0].n} figuras de ${sub(X.A)} y ${L.lentes[1].figs[0].n} de ${sub(X.B)}.` },
+    cuenta:{ cols:[col(X.A, X.mA, true), col(X.B, X.mB, true)] }, vars:['masa', 'Mm', 'mol', 'part', 'pct'] };
+}
+function explorar(){
+  const vivo = () => {
+    $('mA-o').textContent = `${fmt(X.mA, 1)} g`; $('mB-o').textContent = `${fmt(X.mB, 1)} g`;
+    E.vista = vistaExp(); E.dibujar(); pedir();
+    const fila = f => { const r = MM.moles(f, { gramos: f === X.A ? X.mA : X.mB });
+      return `<div class="fila"><b>${Fh(f)}</b><span>${n_(fmtMol(r.n) + ' mol')}</span><span>${N_(sci(r.moleculas))} ${particula(f)}</span><span>${N_(sci(r.atomos))} átomos</span></div>`; };
+    const cp = MM.composicion(X.A).porcentajes;
+    $('live').innerHTML = fila(X.A) + fila(X.B) + `<div>Composición de ${Fh(X.A)} en masa:</div><div class="barra" role="img" aria-label="Composición de ${sub(X.A)}: ${Object.entries(cp).map(([e, p]) => `${NOMBRE[e]} ${fmt(p, 1)} %`).join(', ')}">${Object.entries(cp).map(([e, p]) => `<span style="width:${p}%; background:var(--e-${e})"></span>`).join('')}</div>
+      <div class="barra-rot">${Object.entries(cp).map(([e, p]) => `<span>${Fh(e)} ${fmt(p, 1)} %</span>`).join('')}</div>`;
+  };
+  $('xA').value = X.A; $('xB').value = X.B; $('mA').value = X.mA; $('mB').value = Math.round(X.mB);
+  $('xA').onchange = () => { X.A = $('xA').value; vivo(); E.describir(true); };
+  $('xB').onchange = () => { X.B = $('xB').value; vivo(); E.describir(true); };
+  $('mA').oninput = () => { X.mA = +$('mA').value; vivo(); };
+  $('mB').oninput = () => { X.mB = +$('mB').value; vivo(); };
+  $('mA').onchange = $('mB').onchange = () => E.describir(true);
+  $('igG').onclick = () => { X.mB = X.mA; $('mB').value = Math.round(X.mB); vivo(); E.describir(true); };
+  $('igN').onclick = () => { const n = MM.moles(X.A, { gramos:X.mA }).n, M = MM.masaMolar(X.B).valor;
+    // Mismos moles exactos; si no entran en el deslizador de la derecha, se achica el de la izquierda.
+    if (n*M > 400){ X.mA = Math.floor(400/M*MM.masaMolar(X.A).valor); $('mA').value = X.mA; }
+    X.mB = MM.moles(X.A, { gramos:X.mA }).n*M; $('mB').value = Math.round(X.mB); vivo(); E.describir(true); };
+  $('reset').onclick = () => { Object.assign(X, { A:'H2O', mA:18, B:'O2', mB:32 }); $('xA').value = X.A; $('xB').value = X.B; $('mA').value = 18; $('mB').value = 32; vivo(); E.describir(true); };
+  vivo();
+}
+
+// ----- Navegación -----
+const dots = $('dots');
+steps.forEach((s, n) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = n + 1; b.addEventListener('click', () => go(n)); li.appendChild(b); dots.appendChild(li);
+});
+// Lo que pasa después de responder (o al pedir "Ver de nuevo"): caen los átomos de C, se agrupan las porciones, caen los CH₂O.
+function mostrar(n){
+  cortar(E);
+  if (n === 3 || n === 4){
+    E.vista = vMg(0, true); E.dibujar();
+    animar(E, MG10.valor*0.11, f => { const k = Math.round(f*MG10.valor); if (k !== (E.vista.bal.der[0] || { n:0 }).n){ E.vista = vMg(k, true); } }, () => { E.vista = vMg(MG10.valor, true); E.describir(true); }, 0.25);
+  } else if (n === 5 || n === 6){
+    E.vista = vComp(true, 0); E.dibujar();
+    animar(E, 1.4, f => { E.vista = vComp(true, f); }, () => { E.vista = vComp(true, 1); E.describir(true); }, 0.8);
+  } else if (n === 7){
+    E.vista = vGlu(true, 0); E.dibujar();
+    animar(E, GLU.k*0.35, f => { const k = Math.round(f*GLU.k); E.vista = vGlu(true, k); }, () => { E.vista = vGlu(true, GLU.k); E.describir(true); }, 0.25);
+  } else E.vista = steps[n].vista(true);
+  pedir();
+}
+function enlazarRepetir(){ const rep = $('stepBody').querySelector('[data-repetir]'); if (rep) rep.onclick = () => { mostrar(S.step); E.describir(true); }; }
+function go(n){
+  if (n < 0 || n >= steps.length || n > S.max) return;
+  const s = steps[n], previo = S.step; S.step = n; cortar(E);
+  const r = s.gate ? !!S.pred[s.gate.id] : true;
+  E.vista = s.vista(s.gate ? (r || null) : undefined);
+  // Pasos que muestran una animación: si se llega desde la predicción anterior, la animación ya corrió.
+  if ((n === 4 && previo === 3) || (n === 6 && previo === 5)) E.vista = s.vista();
+  else if ((n === 4 || n === 6) && previo !== n - 1) mostrar(n);
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  enlazarRepetir(); pintarDots();
+  if (s.gate) prediccion(s);
+  if (s.explora) explorar();
+  nav(); E.dibujar(); pedir(); E.describir(true);
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0;
+  $('next').disabled = S.step === steps.length - 1 || (s.gate && !S.pred[s.gate.id]);
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : `Ir al ${steps[k].k.toLowerCase()}: ${steps[k].t}`);
+    if (k > S.max) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled');
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(n){ if (n > S.max) S.max = n; }
+function trasP3(){ const el = $('tras8'); if (!el || !S.pred[P3.id]) return; const a = MM.composicion('CH2O').porcentajes, b = MM.composicion(GLU.formula).porcentajes;
+  el.innerHTML = `<div class="eqs"><div class="eq"><span class="ex">k = ${fr(M_('180 g/mol'), M_(fmt(GLU.Mempirica, 0) + ' g/mol'))} = ${GLU.k} &nbsp;→&nbsp; ${Fh('CH2O')} × ${GLU.k} = ${Fh(GLU.formula)}</span><span class="note">CH₂O pesa 12 + 2 × 1 + 16 = 30 g/mol. Se divide la masa molar entre la masa de la fórmula empírica, no entre su número de átomos.</span></div></div>
+    <div class="scroll"><table class="tabla"><thead><tr><th>en masa</th><th>${Fh('C')}</th><th>${Fh('H')}</th><th>${Fh('O')}</th></tr></thead><tbody>
+      <tr><td>${Fh('CH2O')}</td><td>${fmt(a.C, 1)} %</td><td>${fmt(a.H, 1)} %</td><td>${fmt(a.O, 1)} %</td></tr>
+      <tr><td>${Fh(GLU.formula)}</td><td>${fmt(b.C, 1)} %</td><td>${fmt(b.H, 1)} %</td><td>${fmt(b.O, 1)} %</td></tr></tbody></table></div>
+    <p>Las dos fórmulas tienen la misma composición: por los porcentajes solo se sabe la empírica. Para la molecular hace falta la masa molar.</p>
+    <div class="nav"><span></span>${otraVez}</div>
+    <p class="fuente">Creer que la fórmula empírica es la de la molécula: según Christianto y otros (2025), el 16 % de 32 escolares eligió esta idea con confianza alta. Dividir entre el número de átomos (C₄₅H₉₀O₄₅) y C₃H₆O₃ son hipótesis nuestras.</p>`;
+  enlazarRepetir(); }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    const tras = $('tras'); if (tras) tras.hidden = false;
+    if (P === P3) trasP3();
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id]) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots(); nav();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    $('next').focus({ preventScroll:true });
+    // En el celular, el dibujo queda arriba de la pantalla: se lleva a la vista antes de mostrar lo que pasa.
+    const paso = S.step, chico = innerWidth < 900;
+    if (chico) $('cv').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+    esperar(chico ? 380 : 0, () => { if (S.step !== paso) return; mostrar(paso); E.dibujar(); E.describir(true); });
+  }));
+  // Ya respondida: se muestra directo lo que pasa.
+  if (S.pred[P.id]){ E.vista = s.vista(true); }
+  pintar();
+}
+$('next').addEventListener('click', () => { const s = steps[S.step]; if (s.gate && !S.pred[s.gate.id]) return; desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+alRedibujarTema(() => E.dibujar());
+addEventListener('modo', () => { E.resize(); E.dibujar(); pedir(); });
+go(0);
+})();
+</script>
+
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Preguntas de docs/investigacion/estequiometria-ideas-erroneas.md (ES3, ES4, ES5, ES16, ES18 y la tabla de lo que no
+   tiene respaldo). Cada una arranca con la lupa tapada; se abre al responder. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'm2', 'ley2', 'cnt2');
+const RES = (cat, fuente) => cat;
+const H2 = MM.moles('H2', { gramos:1 }), O2 = MM.moles('O2', { gramos:1 }), FE = MM.empirica({ Fe:70, O:30 });
+const CAC = MM.composicion('CaCO3'), PROUST = MM.masasElementos('H2O', 9), VOL = MM.volumen('H2O', { gramos:18, estado:'l', densidad:1 });
+const sinSubO = Math.round(CAC.sinSubindices.O);
+const POR_FE = 0.625, nFe = Math.round(FE.moles.Fe/POR_FE), nO = Math.round(FE.moles.O/POR_FE);
+const EXPS = [
+  { id:'mismos-gramos', corto:'Mismos gramos',
+    q:`En un platillo hay ${m_('1 g')} de ${Fh('H2')} y en el otro ${m_('1 g')} de ${Fh('O2')}. La balanza está pareja. ¿Dónde hay más moléculas?`,
+    opts:[['a', 'Igual: 1 a 1', 'ES4-igual-masa-igual-numero', RES('documentado', 'León Vega y López González 2020: 13 de 28, ítem equivalente')],
+          ['b', `En el ${Fh('O2')}: 16 veces más`, 'ES3-mas-pesado-mas-moleculas', RES('documentado', 'Dahsah y otros 2006')],
+          ['c', `En el ${Fh('H2')}: 16 veces más`],
+          ['d', `En el ${Fh('H2')}: 2 veces más`, 'H2-solo-el-doble', RES('hipotesis', 'hipótesis nuestra')]],
+    ok:'c',
+    fb:{ a:'A igual masa no hay igual número: cada molécula de H₂ pesa 2 u y cada una de O₂, 32 u. Según León Vega y López González (2020), 13 de 28 escolares eligieron "la misma cantidad" en una pregunta parecida.',
+      b:'Es al revés: como cada molécula de O₂ pesa más, en 1 g caben menos. Confundir la masa con la cantidad de partículas es una idea documentada (Dahsah y otros, 2006).',
+      d:'El H₂ tiene más, pero no solo el doble: 32 entre 2 es 16. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    antes:() => ({ bal:{ izq:[{ f:'H2', m:1 }], der:[{ f:'O2', m:1 }], u:'g' }, lupa:{ tapa:'Responde para ver la lupa' },
+      cuenta:{ cols:[{ f:'H2', m:1, M:2, n:null, N:null }, { f:'O2', m:1, M:32, n:null, N:null }] }, vars:['masa', 'Mm'] }),
+    despues:() => ({ bal:{ izq:[{ f:'H2', m:1 }], der:[{ f:'O2', m:1 }], u:'g' },
+      lupa:{ lentes:[{ figs:[{ f:'H2', n:16 }] }, { figs:[{ f:'O2', n:1 }] }], pie:`Cada figura es 1/32 mol de moléculas (${fmt(1/32, 5)} mol). Hay 16 de H₂ y 1 de O₂.`, desc:'16 figuras de H2 y 1 de O2.' },
+      cuenta:{ cols:[col('H2', 1, true), col('O2', 1, true)] }, vars:['masa', 'Mm', 'mol', 'part'] }),
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">${fr(m_('1 g'), M_('2 g/mol'))} = ${n_(fmt(H2.n, 2) + ' mol')} de ${Fh('H2')} &nbsp; y &nbsp; ${fr(m_('1 g'), M_('32 g/mol'))} = ${n_(fmt(O2.n, 5) + ' mol')} de ${Fh('O2')}</span></div>
+      <div class="eq"><span class="ex">${fr(n_(fmt(H2.n, 2)), n_(fmt(O2.n, 5)))} = ${fmt(H2.n/O2.n, 0)}</span><span class="note">Con los mismos gramos, la sustancia más liviana tiene más moléculas: tantas veces más como pesa menos.</span></div></div>
+      <p>La balanza no cuenta: solo pesa. Para comparar partículas hay que pasar a moles.</p>
+      <p class="fuente">Igual masa, igual número: según León Vega y López González (2020), 13 de 28 escolares en una pregunta parecida. Más pesado, más moléculas: documentado en Dahsah y otros (2006). "2 veces más" es una hipótesis nuestra.</p>` },
+  { id:'razon-no-entera', corto:'Una razón que no sale entera',
+    q:`Un óxido de hierro tiene 70 % de ${Fh('Fe')} y 30 % de ${Fh('O')} en masa (${Fh('Fe')} = 56, ${Fh('O')} = 16). ¿Cuál es su fórmula empírica?`,
+    opts:[['a', Fh(FE.redondeando), 'redondea-1-5', RES('hipotesis', 'tabla de lo que no tiene respaldo')],
+          ['b', Fh('Fe7O3'), 'ES16-razon-de-masas-Fe', RES('documentado', 'Christianto y otros 2025')],
+          ['c', Fh(FE.formula)],
+          ['d', Fh('FeO'), 'redondea-a-1', RES('hipotesis', 'hipótesis nuestra')]],
+    ok:'c',
+    fb:{ a:'Salió de redondear 1,5 a 2. Una razón de 1,5 no se redondea: se multiplica todo por 2. Es una hipótesis nuestra, sin estudio que la mida.',
+      b:'70 a 30 es la razón de las masas, no la de los átomos. Según Christianto y otros (2025), usar la razón de masas es una idea documentada en escolares.',
+      d:'Salió de redondear 1,5 a 1. Una razón de 1,5 no se redondea: se multiplica todo por 2. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    antes:() => ({ bal:{ izq:[{ f:'Fe', m:70, etq:[['átomos de ', 'ink'], ...pzF('Fe')] }], der:[{ f:'O', m:30, etq:[['átomos de ', 'ink'], ...pzF('O')] }], u:'g' }, lupa:{ tapa:'Responde para ver la lupa' },
+      cuenta:{ lineas:[[['En 100 g: ', 'ink'], ...pzF('Fe'), [' ', 'ink'], ['70 g', 'masa', 800], ['  y  ', 'ink'], ...pzF('O'), [' ', 'ink'], ['30 g', 'masa', 800]], [['¿Cuál es la fórmula empírica?', 'muted']]] }, vars:['masa'] }),
+    despues:(p) => ({ bal:{ izq:[{ f:'Fe', m:70, etq:[['átomos de ', 'ink'], ...pzF('Fe')] }], der:[{ f:'O', m:30, etq:[['átomos de ', 'ink'], ...pzF('O')] }], u:'g' },
+      lupa:{ agrupar:{ partes:[{ e:'Fe', n:nFe }, { e:'O', n:nO }], grupo:FE.formula, k:1, p }, pie:`Cada punto es ${fmt(POR_FE, 3)} mol de átomos: ${nFe} de Fe y ${nO} de O, en razón ${nFe}:${nO}.`, desc:`${nFe} porciones de Fe y ${nO} de O, que forman un grupo Fe2O3.` },
+      cuenta:{ lineas:[
+        [...pzF('Fe'), [': ', 'ink'], ['70 g', 'masa', 800], [' ÷ ', 'ink'], ['56 g/mol', 'Mm', 800], [' = ', 'ink'], [`${fmt(FE.moles.Fe, 3)} mol`, 'mol', 800], [` → ${fmt(FE.razon.Fe, 2)} → × 2 = ${FE.subindices.Fe}`, 'ink']],
+        [...pzF('O'), [': ', 'ink'], ['30 g', 'masa', 800], [' ÷ ', 'ink'], ['16 g/mol', 'Mm', 800], [' = ', 'ink'], [`${fmt(FE.moles.O, 3)} mol`, 'mol', 800], [` → ${fmt(FE.razon.O, 2)} → × 2 = ${FE.subindices.O}`, 'ink']],
+        [['Fórmula empírica: ', 'ink'], ...pzF(FE.formula)]], leer:'Fe: 1,25 mol; O: 1,875 mol; razón 1 a 1,5; por 2: 2 a 3; Fe2O3.' }, vars:['masa', 'Mm', 'mol'] }),
+    anima:true,
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">${fr(m_('70 g'), M_('56 g/mol'))} = ${n_(fmt(FE.moles.Fe, 3) + ' mol')} de ${Fh('Fe')} &nbsp; y &nbsp; ${fr(m_('30 g'), M_('16 g/mol'))} = ${n_(fmt(FE.moles.O, 3) + ' mol')} de ${Fh('O')}</span></div>
+      <div class="eq"><span class="ex">Entre el menor: ${fmt(FE.razon.Fe, 2)} y ${fmt(FE.razon.O, 2)} &nbsp;→&nbsp; × 2: ${FE.subindices.Fe} y ${FE.subindices.O} &nbsp;→&nbsp; ${Fh(FE.formula)}</span><span class="note">No existe media porción de átomos en una fórmula: si sale 1,5, se multiplica todo por 2; si sale 1,33, por 3.</span></div></div>
+      <p>En la lupa, cada punto es ${n_(fmt(POR_FE, 3) + ' mol')} de átomos: ${nFe} de ${Fh('Fe')} y ${nO} de ${Fh('O')}. Con porciones del doble (${fmt(2*POR_FE, 2)} mol) habría 1 de Fe y una y media de O: por eso se multiplica por 2.</p>
+      <p class="fuente">Usar la razón de masas (Fe₇O₃) es la idea documentada ES16 (Christianto y otros, 2025). Redondear 1,5 en vez de multiplicar está en nuestra lista de errores sin respaldo: FeO₂ y FeO son hipótesis nuestras.</p>` },
+  { id:'oxigeno-caco3', corto:'El oxígeno del CaCO₃',
+    q:`¿Qué porcentaje de la masa del ${Fh('CaCO3')} es oxígeno? (${Fh('Ca')} = 40, ${Fh('C')} = 12, ${Fh('O')} = 16)`,
+    opts:[['a', `${fmt(CAC.porcentajes.O, 0)} %`],
+          ['b', `${sinSubO} %`, 'ES18-sin-subindice', RES('documentado', 'Christianto y otros 2025: 19 % de 32')],
+          ['c', '60 %', 'cuenta-atomos-3-de-5', RES('hipotesis', 'hipótesis nuestra')],
+          ['d', '16 %', 'masa-atomica-como-porcentaje', RES('hipotesis', 'hipótesis nuestra')]],
+    ok:'a',
+    fb:{ b:`Salió de sumar un solo O: 16 entre 40 + 12 + 16 = 68 da ${sinSubO} %. Cada masa atómica va por su subíndice: el O cuenta 3 veces. Según Christianto y otros (2025), el 19 % de 32 escolares olvidó el subíndice, con confianza alta.`,
+      c:'3 de los 5 átomos son O, pero no pesan lo mismo que el Ca: el porcentaje en masa no es el de átomos. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      d:'16 es la masa atómica del O, no su porcentaje. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    antes:() => ({ bal:{ izq:[{ f:'CaCO3', m:100 }], der:[{ f:'pesa', tipo:'pesa', m:100, etq:[['pesa de ', 'muted'], ['100 g', 'masa', 800]] }], u:'g' }, lupa:{ tapa:'Responde para ver la lupa' },
+      cuenta:{ lineas:[[['M de ', 'ink'], ...pzF('CaCO3'), [' = ', 'ink'], ['100 g/mol', 'Mm', 800], ['  ·  muestra: ', 'ink'], ['100 g', 'masa', 800]], [['¿Qué parte de la masa es oxígeno?', 'muted']]] }, vars:['masa', 'Mm'] }),
+    despues:() => ({ bal:{ izq:[{ f:'Ca', m:40 }, { f:'C', m:12 }, { f:'O', m:48 }], der:[{ f:'pesa', tipo:'pesa', m:100, etq:[['pesa de ', 'muted'], ['100 g', 'masa', 800]] }], u:'g' },
+      lupa:{ unidad:'CaCO3', pie:'Una unidad fórmula de CaCO₃, con la masa de cada átomo en u (el C del centro pesa 12 u). En 100 g hay 6,02 × 10²³ de estas.', desc:'Una unidad fórmula de CaCO3: Ca 40 u, C 12 u y tres O de 16 u.' },
+      cuenta:{ lineas:[[...pzF('Ca'), [' 40 + ', 'ink'], ...pzF('C'), [' 12 + ', 'ink'], ...pzF('O'), [' 3 × 16 = ', 'ink'], ['100 g/mol', 'Mm', 800]],
+        [['% de ', 'ink'], ...pzF('O'), [` = 48 ÷ 100 × 100 = ${fmt(CAC.porcentajes.O, 0)} %`, 'ink', 800]]], leer:'Ca 40, C 12, tres O 48: 100 g por mol; el oxígeno es el 48 %.' }, vars:['masa', 'Mm', 'pct'] }),
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">${M_('M')} = 40 + 12 + 3 × 16 = ${M_(fmt(CAC.M, 0) + ' g/mol')}</span></div>
+      <div class="eq"><span class="ex">% ${Fh('O')} = ${fr('3 × 16', M_(fmt(CAC.M, 0)))} × 100 = ${fmt(CAC.porcentajes.O, 0)} %</span><span class="note">En la balanza, los 100 g de CaCO₃ se separan en 40 g de Ca, 12 g de C y 48 g de O: siempre en esa proporción.</span></div></div>
+      <p class="fuente">Olvidar el subíndice (${sinSubO} %): según Christianto y otros (2025), el 19 % de 32 escolares, con confianza alta. 60 % y 16 % son hipótesis nuestras.</p>` },
+  { id:'proust-agua', corto:'Proust en el agua',
+    q:`En ${m_('9 g')} de ${Fh('H2O')}, ¿cuántos gramos son de hidrógeno? (${Fh('H')} = 1, ${Fh('O')} = 16)`,
+    opts:[['a', '6 g', 'proust-subindices-2-a-1', RES('hipotesis', 'tabla de lo que no tiene respaldo')],
+          ['b', '4,5 g', 'proust-mitad-y-mitad', RES('hipotesis', 'tabla de lo que no tiene respaldo')],
+          ['c', `${fmt(PROUST.H, 1)} g`],
+          ['d', '2 g', 'proust-subindice-como-gramos', RES('hipotesis', 'hipótesis nuestra')]],
+    ok:'c',
+    fb:{ a:'Salió de repartir 9 g en 2 a 1, como los subíndices. Pero los subíndices cuentan átomos, no gramos: el O pesa 16 veces más que el H. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      b:'Los elementos de un compuesto no están en igual masa. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      d:'2 es el número de átomos de H en cada molécula, no los gramos. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    antes:() => ({ bal:{ izq:[{ f:'H2O', m:9 }], der:[{ f:'pesa', tipo:'pesa', m:9, etq:[['pesa de ', 'muted'], ['9 g', 'masa', 800]] }], u:'g' }, lupa:{ tapa:'Responde para ver la lupa' },
+      cuenta:{ lineas:[[['Muestra: ', 'ink'], ['9 g', 'masa', 800], [' de ', 'ink'], ...pzF('H2O')], [['¿Cuántos gramos son de hidrógeno?', 'muted']]] }, vars:['masa'] }),
+    despues:() => ({ bal:{ izq:[{ f:'H', m:PROUST.H }, { f:'O', m:PROUST.O }], der:[{ f:'pesa', tipo:'pesa', m:9, etq:[['pesa de ', 'muted'], ['9 g', 'masa', 800]] }], u:'g' },
+      lupa:{ lentes:[{ figs:[{ f:'H2O', n:10 }] }], pie:'Cada figura es 0,05 mol de moléculas de H₂O. En cada una, el O pesa 16 u y los dos H, 2 u: 8 a 1 en masa.', desc:'10 figuras de H2O.' },
+      cuenta:{ lineas:[[...pzF('H2O'), [': 2 × 1 + 16 = ', 'ink'], ['18 g/mol', 'Mm', 800], ['  →  ', 'ink'], ['9 g', 'masa', 800], [' = ', 'ink'], ['0,5 mol', 'mol', 800]],
+        [['de ', 'ink'], ...pzF('H'), [': 9 × 2 ÷ 18 = ', 'ink'], [`${fmt(PROUST.H, 1)} g`, 'masa', 800], ['   de ', 'ink'], ...pzF('O'), [': 9 × 16 ÷ 18 = ', 'ink'], [`${fmt(PROUST.O, 1)} g`, 'masa', 800]]], leer:'9 g de agua son 0,5 mol: 1 g de hidrógeno y 8 g de oxígeno.' }, vars:['masa', 'Mm', 'mol'] }),
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">${fr(m_('9 g'), M_('18 g/mol'))} = ${n_('0,5 mol')} de ${Fh('H2O')} &nbsp;→&nbsp; ${n_('1 mol')} de átomos de ${Fh('H')} = ${m_(fmt(PROUST.H, 1) + ' g')}</span></div>
+      <div class="eq"><span class="ex">${Fh('H')} : ${Fh('O')} = 2 : 16 = 1 : 8 en masa</span><span class="note">Ley de Proust: un compuesto tiene siempre la misma proporción en masa. En 18 g de agua hay 2 g de H; en 9 g, 1 g.</span></div></div>
+      <p class="fuente">Repartir la masa como los subíndices (6 g) o en partes iguales (4,5 g) están en nuestra lista de errores sin respaldo; 2 g también es una hipótesis nuestra.</p>` },
+  { id:'mol-de-liquido', corto:'Un mol de agua líquida',
+    q:`¿Qué volumen ocupan ${m_('18 g')} (${n_('1 mol')}) de ${Fh('H2O')} líquida? La densidad del agua es 1 g/mL.`,
+    opts:[['a', '22,4 L', 'ES5-22-L-liquido', RES('documentado', 'Dahsah y otros 2006: 11 % de 97')],
+          ['b', `${fmt(VOL.mililitros, 0)} mL`],
+          ['c', '18 L', 'confunde-mL-con-L', RES('hipotesis', 'hipótesis nuestra')],
+          ['d', '1 L', 'un-mol-un-litro', RES('hipotesis', 'hipótesis nuestra')]],
+    ok:'b',
+    fb:{ a:'22,4 L es lo que ocupa 1 mol de gas en condiciones normales. El agua líquida ocupa lo que dice su densidad: 18 g en 1 g/mL son 18 mL. Según Dahsah y otros (2006), el 11 % de 97 escolares creía que todo mol ocupa 22,4 L.',
+      c:'Con 1 g/mL, 18 g son 18 mL, mil veces menos que 18 L. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      d:'El mol no dice el volumen: depende de la sustancia y de si es sólido, líquido o gas. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    antes:() => ({ bal:{ izq:[{ f:'H2O', m:18, etq:[['agua líquida', 'ink']], nombre:'agua líquida' }], der:[{ f:'pesa', tipo:'pesa', m:18, etq:[['pesa de ', 'muted'], ['18 g', 'masa', 800]] }], u:'g' }, lupa:{ tapa:'Responde para ver el volumen' },
+      cuenta:{ lineas:[[...pzF('H2O'), [' líquida: ', 'ink'], ['18 g', 'masa', 800], [' = ', 'ink'], ['1 mol', 'mol', 800], ['   densidad 1 g/mL', 'muted']], [['¿Qué volumen ocupa?', 'muted']]] }, vars:['masa', 'mol'] }),
+    despues:() => ({ bal:{ izq:[{ f:'H2O', m:18, etq:[['agua líquida', 'ink']], nombre:'agua líquida' }], der:[{ f:'pesa', tipo:'pesa', m:18, etq:[['pesa de ', 'muted'], ['18 g', 'masa', 800]] }], u:'g' },
+      lupa:{ escala:true, pie:'A escala: 18 mL de agua líquida junto a 22,4 L, lo que ocupa 1 mol de un gas en condiciones normales.', desc:'Un vaso pequeño con 18 mL junto a una caja de 22,4 L, a la misma escala.' },
+      cuenta:{ lineas:[[['V = ', 'ink'], ['18 g', 'masa', 800], [' ÷ 1 g/mL = ', 'ink'], [`${fmt(VOL.mililitros, 0)} mL`, 'ink', 800]], [[`22,4 L es ${fmt(VOL.con224/VOL.litros, 0)} veces más: solo vale para gases`, 'muted']]], leer:'18 g entre 1 g por mL son 18 mL.' }, vars:['masa', 'mol'] }),
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">V = ${fr(m_('18 g'), '1 g/mL')} = ${fmt(VOL.mililitros, 0)} mL</span><span class="note">Para un líquido o un sólido, el volumen sale de la densidad. 22,4 L/mol solo vale para gases en condiciones normales (1 atm y 0 °C).</span></div></div>
+      <p>1 mol de agua líquida cabe en una cuchara grande: unas ${fmt(VOL.con224/VOL.litros, 0)} veces menos que la caja de 22,4 L.</p>
+      <p class="fuente">Que todo mol ocupa 22,4 L: según Dahsah y otros (2006), el 11 % de 97 escolares lo sostuvo. 18 L y 1 L son hipótesis nuestras.</p>` },
+];
+const S = { k:0, pred:{}, t0:Date.now() };
+// Regla de Gerson: un experimento se abre solo si todos los anteriores ya tienen respuesta. Los respondidos se
+// pueden volver a abrir.
+const abierto = k => EXPS.slice(0, k).every(x => S.pred[x.id]);
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => abierto(k)
+    ? `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}. ${x.corto}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function despues(x, k){
+  cortar(E);
+  if (x.anima){ E.vista = x.despues(0); E.dibujar(); animar(E, 1.3, f => { E.vista = x.despues(f); }, () => { E.vista = x.despues(1); E.describir(true); }, 0.7); }
+  else E.vista = x.despues();
+  E.dibujar(); pedir();
+}
+function ir(k){
+  if (!abierto(k)) return;
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k];
+  cortar(E); E.vista = x.antes();
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const explicar = () => {
+    if (S.k !== k || !S.pred[x.id]) return;
+    $('res2').innerHTML = x.exp() + `<div class="nav">${x.anima ? otraVez : '<span></span>'}${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    const rep = $('res2').querySelector('[data-repetir]'); if (rep) rep.onclick = () => { despues(x, k); E.describir(true); };
+  };
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la lupa y la cuenta para ver por qué.' : `Elegiste la ${'abcd'.indexOf(p) + 1}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    explicar();
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar(); botones();
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+    const chico = innerWidth < 900;
+    if (chico) $('cv2').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+    esperar(chico ? 380 : 0, () => { if (S.k !== k) return; despues(x, k); E.describir(true); });
+  });
+  // Si ya respondió antes, se muestra directo lo que pasa.
+  if (S.pred[x.id]) E.vista = x.anima ? x.despues(1) : x.despues();
+  pintar(); E.dibujar(); pedir(); E.describir(true);
+}
+alRedibujarTema(() => E.dibujar());
+addEventListener('modo', () => { E.resize(); E.dibujar(); pedir(); });
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>
