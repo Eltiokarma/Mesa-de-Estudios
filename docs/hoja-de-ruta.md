@@ -87,12 +87,12 @@ gantt
 
     section Matemática
     Aritmética, porcentajes y proporcionalidad :active, ma4, 2026-11-17, 2026-11-22
-    Trigonometría, circunferencia y razones :ma1, 2026-11-14, 2026-11-22
-    Geometría, triángulos y áreas :ma2, 2026-11-21, 2026-11-29
-    Álgebra, funciones y gráficas :ma3, 2026-11-28, 2026-12-05
+    Trigonometría, circunferencia y razones :active, ma1, 2026-11-14, 2026-11-22
+    Geometría, triángulos y áreas :active, ma2, 2026-11-21, 2026-11-29
+    Álgebra, funciones y gráficas :active, ma3, 2026-11-28, 2026-12-05
 
     section Razonamiento
-    Razonamiento matemático, sucesiones, conteo y planteo :ra1, 2026-11-20, 2026-11-28
+    Razonamiento matemático, sucesiones, conteo y planteo :active, ra1, 2026-11-20, 2026-11-28
     Razonamiento verbal, textos propios con preguntas :ra2, 2026-11-20, 2026-12-03
 
     section Lanzamiento en el colegio

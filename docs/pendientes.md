@@ -51,9 +51,9 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 
 | Id | Módulo | Informe de ideas erróneas | Nota |
 | --- | --- | --- | --- |
-| ma1 a ma3 | Trigonometría, geometría, funciones | Sin informe todavía | Hay que investigar las ideas erróneas antes de construir |
-| ma4 | Aritmética | Sin informe | Porcentajes sucesivos ya existe; los errores son hipótesis |
-| ra1 | Razonamiento matemático | Sin informe | Formato predicciones |
+| ma1 a ma3 | Trigonometría, geometría, funciones | Informes del 6 nov: `trigonometria-`, `geometria-` y `algebra-funciones-ideas-erroneas.md` | Cifras de resúmenes, por verificar con los PDF (`fuentes/por-conseguir.md`); cada informe trae 3 escenas y casos |
+| ma4 | Aritmética | `aritmetica-razonamiento-ideas-erroneas.md` | Porcentajes sucesivos ya existe; suma-descuentos y se-compensan ya tienen respaldo (AR1, AR2) |
+| ra1 | Razonamiento matemático | Mismo informe (RM1 a RM6, casi todo hipótesis) | Formato predicciones |
 | ra2 y pl4 | Razonamiento verbal y formato lectura | Sin informe | Textos propios; el formato lectura todavía no existe |
 
 ### 2. Detalles de las plantillas ya hechas

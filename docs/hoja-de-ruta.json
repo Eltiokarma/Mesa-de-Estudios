@@ -300,7 +300,7 @@
       "depende_de": [
         "pl3"
       ],
-      "notas": "plantillas/porcentajes-sucesivos (predicciones, errores como hipótesis). Falta: proporcionalidad y problemas de papel"
+      "notas": "plantillas/porcentajes-sucesivos (predicciones). Informe aritmetica-razonamiento-ideas-erroneas.md: AR1 y AR2 documentados. Falta: proporcionalidad y problemas de papel"
     },
     {
       "id": "ma1",
@@ -308,11 +308,11 @@
       "nombre": "Trigonometría, circunferencia y razones",
       "inicio": "2026-11-14",
       "fin": "2026-11-21",
-      "estado": "pendiente",
-      "progreso": 0,
+      "estado": "en_curso",
+      "progreso": 10,
       "critico": false,
       "depende_de": [],
-      "notas": ""
+      "notas": "Informe docs/investigacion/trigonometria-ideas-erroneas.md (TR1-TR25, cifras por verificar). Falta construir"
     },
     {
       "id": "ma2",
@@ -320,11 +320,11 @@
       "nombre": "Geometría, triángulos y áreas",
       "inicio": "2026-11-21",
       "fin": "2026-11-28",
-      "estado": "pendiente",
-      "progreso": 0,
+      "estado": "en_curso",
+      "progreso": 10,
       "critico": false,
       "depende_de": [],
-      "notas": ""
+      "notas": "Informe docs/investigacion/geometria-ideas-erroneas.md (GE1-GE23, cifras por verificar). Falta construir"
     },
     {
       "id": "ma3",
@@ -332,11 +332,11 @@
       "nombre": "Álgebra, funciones y gráficas",
       "inicio": "2026-11-28",
       "fin": "2026-12-04",
-      "estado": "pendiente",
-      "progreso": 0,
+      "estado": "en_curso",
+      "progreso": 10,
       "critico": false,
       "depende_de": [],
-      "notas": ""
+      "notas": "Informe docs/investigacion/algebra-funciones-ideas-erroneas.md (AL1-AL33, cifras por verificar). Falta construir"
     },
     {
       "id": "ra1",
@@ -344,13 +344,13 @@
       "nombre": "Razonamiento matemático, sucesiones, conteo y planteo",
       "inicio": "2026-11-20",
       "fin": "2026-11-27",
-      "estado": "pendiente",
-      "progreso": 0,
+      "estado": "en_curso",
+      "progreso": 10,
       "critico": false,
       "depende_de": [
         "pl3"
       ],
-      "notas": ""
+      "notas": "Informe aritmetica-razonamiento-ideas-erroneas.md (RM1-RM6, casi todo hipótesis). Formato predicciones"
     },
     {
       "id": "ra2",
