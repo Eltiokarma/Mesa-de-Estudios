@@ -310,15 +310,14 @@ details[open] summary{margin-bottom:8px}
 .solo-celular{display:inline-flex}
 .lec-leido .btn{margin-top:10px}
 
-/* Celular: sin la barra de abajo (el texto necesita el espacio; se vuelve con ‹). */
+/* Celular: la barra de abajo se queda (decisión de Gerson, 6 nov 2026); lo fijo de la lectura va encima de ella. */
 @media (max-width:899px){
-  body[data-ruta="lectura"] #nav{display:none!important}
-  body[data-ruta="lectura"] #app{padding-bottom:calc(24px + env(safe-area-inset-bottom))}
   /* Marcar una oración: la consigna arriba, el texto entero y "Confirmar" fijo abajo. */
   .fase-marcar .lec-panel{order:-1}
   .fase-marcar .alts-bloqueadas{display:none}
-  .fase-marcar .lec-confirmar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--card);box-shadow:0 -6px 20px rgba(92,52,110,.14);padding:10px 16px calc(10px + env(safe-area-inset-bottom))}
-  .fase-marcar .lec-cols{padding-bottom:76px}
+  body[data-ruta="lectura"] #nav{z-index:40}
+  .fase-marcar .lec-confirmar{position:fixed;left:0;right:0;bottom:0;z-index:30;border-radius:16px 16px 0 0;background:var(--card);box-shadow:0 -6px 20px rgba(92,52,110,.14);padding:10px 16px calc(96px + max(12px,env(safe-area-inset-bottom)))}
+  .fase-marcar .lec-cols{padding-bottom:170px}
   /* Preguntas: el texto queda plegado en una franja fija arriba y se relee en una hoja que sube. */
   .fase-preg .lec-franja{display:flex;position:sticky;top:0;z-index:20;width:calc(100% + 32px);margin:12px -16px 0;height:56px;align-items:center;justify-content:space-between;gap:10px;padding:0 16px;border:0;border-bottom:1px solid var(--line);background:var(--card);box-shadow:0 4px 14px rgba(92,52,110,.08);font-size:15px;text-align:left}
   .fase-preg .lec-franja b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
