@@ -141,6 +141,24 @@ En esta sesión no se pudo abrir ningún PDF; las cifras del informe vienen de r
 | [ ] | B | Informes de la Evaluación Censal de Estudiantes (Minedu, 2.º de secundaria) e ítems liberados de PISA para el Perú | Porcentajes por opción con alumnos peruanos en ítems de proporción y porcentaje |
 | [ ] | C | Stacey (1989), ESM 20; Cerdán (2010), PNA 4(3) | Objeto entero en sucesiones (RM2) y catálogo español de errores de traducción (RM1) |
 
+### Geometría (informe del 6 de noviembre de 2026)
+
+En esta sesión no se pudo abrir ningún PDF; las cifras del informe vienen de resúmenes del buscador. Ver `docs/investigacion/geometria-ideas-erroneas.md`.
+
+| ✓ | Prioridad | Referencia | Para qué |
+| --- | --- | --- | --- |
+| [ ] | A | De Bock, Van Dooren, Janssens y Verschaffel (2002), ESM 50 (copia en fisme.science.uu.nl); Van Dooren y otros (2008), *The linear imperative*, JRME 39(3) | Confirmar "más del 90 % y del 80 % responde 24 horas" y sacar los porcentajes de volumen (GE1 a GE3) |
+| [ ] | A | Gutiérrez y Jaime (1999), J. Math. Teacher Education 2 (PDF en la página de Ángel Gutiérrez, uv.es) | Porcentajes de error al dibujar alturas en triángulos no prototípicos (GE7) |
+| [ ] | A | Informes para docentes de la ECE 2016, 2018 y 2019, 2.º de secundaria (UMC del Minedu) | Porcentajes por opción en ítems peruanos de área, perímetro y figuras (GE4, GE5) |
+| [ ] | A | D'Amore y Fandiño Pinilla (2007), Relime 10(1) (SciELO México) | Cifras de "más perímetro, más área" (GE5) |
+| [ ] | B | Hershkowitz (1989), Focus on Learning Problems in Mathematics 11(1); Vinner y Hershkowitz (1980, 1983) | Fuente original del "menos del 30 %" y del efecto prototipo (GE7 a GE9) |
+| [ ] | B | Ben-Chaim, Lappan y Houang (1985), ESM 16(4) | Porcentaje de cada tipo de error al contar cubitos (GE13) |
+| [ ] | B | Informe de benchmarking de TIMSS 1999 y los ítems liberados de TIMSS 2011 (NCES) | Confirmar el 29 % del ítem de triángulos que cubren el rectángulo y buscar ítems de volumen y circunferencia (GE4, GE19, GE20) |
+| [ ] | B | Aravena, Gutiérrez y Jaime (2016), Enseñanza de las Ciencias 34(1); Espinoza-Vergara y otros (2020), Enseñanza de las Ciencias 38(1) | Niveles de Van Hiele en Chile y uso del ángulo inscrito (GE10, GE12) |
+| [ ] | B | Sánchez Sánchez (2016), tesis de la BUAP, y Sánchez y Caballero Juárez (repositorio Funes) | Ilusión de linealidad en alumnos mexicanos, en español (GE1, GE2) |
+| [ ] | C | Modestou y Gagatsis (2007), Educational Psychology 27(1); Kospentaris, Spyrou y Lappas (2011), ESM 77 | Porcentajes por ítem de linealidad y de conservación del área (GE3, GE6) |
+| [ ] | C | Clements y Battista (1992), capítulo "Geometry and spatial reasoning" del *Handbook* de Grouws (NCTM); Usiskin (1982), informe CDASSG | Marco general y niveles de Van Hiele en unos 2700 alumnos |
+
 ## 3. Libros de consulta
 
 Para diseñar plantillas y escribir problemas propios, no para copiar (ver "Uso de fuentes y derechos" en `docs/fundacional.md`).
