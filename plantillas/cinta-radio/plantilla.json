@@ -1,0 +1,16 @@
+{
+  "id": "cinta-radio",
+  "titulo": "La cinta del radio: radianes, arco y sector",
+  "formato": "escena",
+  "unidades": [
+    "trigonometria.angulo-trigonometrico",
+    "trigonometria.longitud-de-arco-y-sector"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}
