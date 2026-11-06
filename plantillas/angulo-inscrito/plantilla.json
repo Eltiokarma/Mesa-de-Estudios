@@ -1,0 +1,16 @@
+{
+  "id": "angulo-inscrito",
+  "titulo": "El ángulo que no cambia: ángulos en la circunferencia",
+  "formato": "escena",
+  "unidades": [
+    "geometria.circunferencia",
+    "geometria.longitud-y-areas-circulares"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}

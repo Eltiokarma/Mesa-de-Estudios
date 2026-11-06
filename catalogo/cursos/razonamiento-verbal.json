@@ -22,7 +22,7 @@
       "potencial_visual": "bajo",
       "grado": 3,
       "plantillas": [],
-      "investigacion": null
+      "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
     {
       "id": "razonamiento-verbal.sentido-contextual",
@@ -38,7 +38,7 @@
       "potencial_visual": "bajo",
       "grado": 3,
       "plantillas": [],
-      "investigacion": null
+      "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
     {
       "id": "razonamiento-verbal.conectores",
@@ -48,7 +48,7 @@
       "potencial_visual": "bajo",
       "grado": 3,
       "plantillas": [],
-      "investigacion": null
+      "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
     {
       "id": "razonamiento-verbal.eliminacion-de-oraciones",
@@ -58,7 +58,7 @@
       "potencial_visual": "bajo",
       "grado": 3,
       "plantillas": [],
-      "investigacion": null
+      "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
     {
       "id": "razonamiento-verbal.plan-de-redaccion",
@@ -73,7 +73,7 @@
       "potencial_visual": "medio",
       "grado": 3,
       "plantillas": [],
-      "investigacion": null
+      "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
     {
       "id": "razonamiento-verbal.cohesion-y-coherencia",
@@ -89,7 +89,7 @@
       "potencial_visual": "bajo",
       "grado": 3,
       "plantillas": [],
-      "investigacion": null
+      "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
     {
       "id": "razonamiento-verbal.tipologia-textual",
@@ -121,7 +121,7 @@
       "potencial_visual": "medio",
       "grado": 3,
       "plantillas": [],
-      "investigacion": null
+      "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
     {
       "id": "razonamiento-verbal.resumen-y-sintesis",
@@ -156,7 +156,7 @@
       "potencial_visual": "bajo",
       "grado": 3,
       "plantillas": [],
-      "investigacion": null
+      "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
     {
       "id": "razonamiento-verbal.compatibilidad",
@@ -170,7 +170,7 @@
       "potencial_visual": "bajo",
       "grado": 3,
       "plantillas": [],
-      "investigacion": null
+      "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
     {
       "id": "razonamiento-verbal.extrapolacion",
@@ -180,7 +180,7 @@
       "potencial_visual": "bajo",
       "grado": 3,
       "plantillas": [],
-      "investigacion": null
+      "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
     {
       "id": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
@@ -195,7 +195,7 @@
       "potencial_visual": "bajo",
       "grado": 3,
       "plantillas": [],
-      "investigacion": null
+      "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
     {
       "id": "razonamiento-verbal.texto-y-contexto",
@@ -205,7 +205,7 @@
       "potencial_visual": "bajo",
       "grado": 3,
       "plantillas": [],
-      "investigacion": null
+      "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
     {
       "id": "razonamiento-verbal.textos-filosoficos-y-cientificos",

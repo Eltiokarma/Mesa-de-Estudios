@@ -1,0 +1,137 @@
+{
+  "titulo": "El ángulo que no cambia: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Dibuja siempre la circunferencia y marca el arco que queda entre los lados del ángulo. Si el vértice está en el centro, el ángulo mide lo mismo que su arco; si está en la circunferencia (inscrito o entre tangente y cuerda), la mitad; si está dentro, la semisuma de los dos arcos; si está fuera, la semidiferencia. Para la longitud de arco y el área del sector, usa la fracción θ/360 y fíjate si te dan el radio o el diámetro.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "En una circunferencia de centro O, el ángulo central AOB mide 136°. El punto P está en el arco mayor AB. ¿Cuánto mide el ángulo APB?",
+      "respuesta": "68°.",
+      "pasos": [
+        "El arco AB que abarca el ángulo APB (el que no contiene a P) mide lo mismo que el ángulo central: 136°.",
+        "El ángulo inscrito mide la mitad de su arco: 136° / 2 = 68°.",
+        "No es 136° (eso es el central) ni 272° (el doble). Y da 68° en cualquier punto P del arco mayor."
+      ],
+      "verificar": [ { "fn": "inscrito", "args": [0, 136, 250], "espera": { "angulo": 68, "porCoordenadas": 68, "pEnArco": "mayor" } },
+                     { "fn": "inscrito", "args": [0, 136, 160], "espera": { "angulo": 68, "porCoordenadas": 68 } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Los puntos A y B dividen una circunferencia en dos arcos; el menor mide 80°. El punto P está en el arco menor, entre A y B. ¿Cuánto mide el ángulo APB?",
+      "respuesta": "140°.",
+      "pasos": [
+        "El ángulo APB abarca el arco que no contiene a P. Como P está en el arco menor, abarca el mayor: 360° − 80° = 280°.",
+        "Ángulo APB = 280° / 2 = 140°.",
+        "Otra forma: si P estuviera en el arco mayor, el ángulo mediría 80° / 2 = 40°. Los dos ángulos son opuestos en un cuadrilátero inscrito, así que suman 180°: 180° − 40° = 140°. La respuesta no es 40°."
+      ],
+      "verificar": [ { "fn": "inscrito", "args": [0, 80, 40], "espera": { "angulo": 140, "porCoordenadas": 140, "arcoAbarcado": 280, "pEnArco": "menor" } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "El triángulo ABC está inscrito en una circunferencia y su lado AB es un diámetro. Si el ángulo en A mide 35°, ¿cuánto miden los ángulos en C y en B?",
+      "respuesta": "El ángulo en C mide 90° y el ángulo en B, 55°.",
+      "pasos": [
+        "El ángulo en C es inscrito y abarca una semicircunferencia (el arco de 180° que corta el diámetro AB). Mide 180° / 2 = 90°.",
+        "Los ángulos del triángulo suman 180°: el ángulo en B mide 180° − 90° − 35° = 55°.",
+        "Con arcos: el ángulo en A abarca el arco BC, que mide 70°; el ángulo en B abarca el arco AC, que mide 180° − 70° = 110°, y 110° / 2 = 55°."
+      ],
+      "verificar": [ { "fn": "inscrito", "args": [180, 0, 70], "espera": { "angulo": 90, "porCoordenadas": 90, "recto": true } },
+                     { "fn": "inscrito", "args": [70, 0, 180], "espera": { "angulo": 35, "porCoordenadas": 35 } },
+                     { "fn": "inscrito", "args": [180, 70, 0], "espera": { "angulo": 55, "porCoordenadas": 55 } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "El cuadrilátero ABCD está inscrito en una circunferencia. Sus ángulos opuestos en A y en C miden 3x + 10° y 2x + 20°. Halla x y los dos ángulos.",
+      "respuesta": "x = 30; el ángulo en A mide 100° y el ángulo en C, 80°.",
+      "pasos": [
+        "En un cuadrilátero inscrito, los ángulos opuestos suman 180°: cada uno abarca uno de los dos arcos que dejan los otros dos vértices, y esos arcos suman 360°.",
+        "(3x + 10) + (2x + 20) = 180, así que 5x = 150 y x = 30.",
+        "Ángulo en A = 3 · 30 + 10 = 100°; ángulo en C = 2 · 30 + 20 = 80°. Comprobación: 100° + 80° = 180°.",
+        "Ojo: no son iguales, como en un paralelogramo. Si los igualas, 3x + 10 = 2x + 20 da x = 10 y dos ángulos de 40°, que no suman 180°."
+      ],
+      "verificar": [ { "fn": "cuadrilatero", "args": [[90, 150, 240, 350]], "espera": { "angulos": [100, 105, 80, 75], "opuestos": [180, 180] } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Por el punto A de una circunferencia pasa una recta tangente. La cuerda AB y la tangente forman un ángulo que abarca un arco AB de 112°. ¿Cuánto mide ese ángulo? ¿Y el que forman del otro lado de la cuerda?",
+      "respuesta": "56° y 124°.",
+      "pasos": [
+        "El ángulo entre una tangente y una cuerda (semiinscrito) mide la mitad del arco que abarca: 112° / 2 = 56°.",
+        "Del otro lado de la cuerda abarca el resto de la circunferencia, 360° − 112° = 248°, y mide 248° / 2 = 124°. Los dos suman 180° porque están sobre la misma recta.",
+        "No es 90°: la tangente es perpendicular al radio OA, no a la cuerda."
+      ],
+      "verificar": [ { "fn": "semiinscrito", "args": [0, 112], "espera": { "angulo": 56, "haciaMenor": 56, "haciaMayor": 124 } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Dos cuerdas se cortan en un punto Q dentro de una circunferencia. Uno de los ángulos que forman abarca un arco de 96°, y el ángulo opuesto por el vértice abarca un arco de 44°. ¿Cuánto mide ese ángulo? ¿Cuánto miden los otros dos ángulos en Q?",
+      "respuesta": "70°; los otros dos miden 110° cada uno.",
+      "pasos": [
+        "Con el vértice dentro, el ángulo mide la semisuma de los dos arcos: (96° + 44°) / 2 = 70°.",
+        "El opuesto por el vértice también mide 70°. Los otros dos son suplementarios: 180° − 70° = 110°.",
+        "Comprobación: los otros dos ángulos abarcan los arcos que faltan, que suman 360° − 96° − 44° = 220°, y 220° / 2 = 110°.",
+        "Si restas los arcos, como cuando el vértice está fuera, sale 26°: es el error de usar la fórmula equivocada."
+      ],
+      "verificar": [ { "fn": "interior", "args": [96, 44], "espera": { "angulo": 70, "errores.resta": 26 } },
+                     { "fn": "interiorConArcos", "args": [96, 44, 1, 30], "espera": { "angulo": 70, "porArcos": 70, "tipo": "interior" } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Desde un punto Q, fuera de una circunferencia, se trazan dos secantes. Entre ellas quedan dos arcos: el lejano mide 150° y el cercano, 50°. ¿Cuánto mide el ángulo en Q?",
+      "respuesta": "50°.",
+      "pasos": [
+        "Con el vértice fuera, el ángulo mide la semidiferencia de los arcos: (150° − 50°) / 2 = 50°.",
+        "Sale 100° por dos caminos equivocados: si no divides entre 2 (150° − 50°) o si sumas los arcos, (150° + 50°) / 2, que es la fórmula del vértice dentro.",
+        "Que el ángulo mida lo mismo que el arco cercano es una coincidencia de estos números."
+      ],
+      "verificar": [ { "fn": "exterior", "args": [150, 50], "espera": { "angulo": 50, "errores.sinDividir": 100, "errores.suma": 100 } },
+                     { "fn": "exteriorConArcos", "args": [150, 50, 1, 90], "espera": { "angulo": 50, "porArcos": 50, "subtipo": "dos secantes" } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Desde un punto Q se trazan las dos tangentes a una circunferencia, que la tocan en A y en B. El ángulo AQB mide 50°. ¿Cuánto miden los dos arcos AB?",
+      "respuesta": "El arco cercano a Q mide 130° y el lejano, 230°.",
+      "pasos": [
+        "Llama x al arco cercano. El lejano es el resto: 360° − x.",
+        "El ángulo exterior es la semidiferencia: ((360° − x) − x) / 2 = 180° − x = 50°, así que x = 130°.",
+        "El lejano mide 360° − 130° = 230°. Comprobación: (230° − 130°) / 2 = 50°.",
+        "Otra forma: los radios OA y OB son perpendiculares a las tangentes, así que en el cuadrilátero QAOB el ángulo central AOB mide 360° − 90° − 90° − 50° = 130°."
+      ],
+      "verificar": [ { "fn": "dosTangentes", "args": [130], "espera": { "angulo": 50, "lejano": 230 } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "básico",
+      "enunciado": "Una pizza circular tiene 9 cm de radio y se corta una porción en forma de sector de 80°. ¿Cuánto mide el borde curvo de la porción y cuál es su área? Deja π en la respuesta.",
+      "respuesta": "El borde curvo mide 4π cm (unos 12,6 cm) y el área es 18π cm² (unos 56,5 cm²).",
+      "pasos": [
+        "La porción es 80/360 = 2/9 de la pizza.",
+        "Borde curvo (longitud ℓ del arco): 2/9 de la longitud de la circunferencia, 2/9 · 2π · 9 = 4π cm.",
+        "Área del sector: 2/9 del círculo, 2/9 · π · 9² = 2/9 · 81π = 18π cm².",
+        "Cuidado: 2πr es una longitud (en cm) y πr² es un área (en cm²); no se intercambian."
+      ],
+      "verificar": [ { "fn": "longitudArco", "args": [80, 9], "espera": { "pi": 4 } },
+                     { "fn": "sector", "args": [80, 9], "espera": { "pi": 18 } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "intermedio",
+      "enunciado": "Una pista circular tiene 20 m de diámetro. Un corredor recorre por el borde un arco de 72°. ¿Cuántos metros recorre? Deja π en la respuesta.",
+      "respuesta": "4π m (unos 12,6 m).",
+      "pasos": [
+        "El dato es el diámetro: el radio es 20 / 2 = 10 m.",
+        "72° es 72/360 = 1/5 de la vuelta. La vuelta completa mide 2π · 10 = 20π m.",
+        "La longitud del arco es 1/5 · 20π = 4π m.",
+        "Si usas 20 como radio, sale 8π m: el doble. Fíjate siempre si te dan el radio o el diámetro."
+      ],
+      "verificar": [ { "fn": "longitudArco", "args": [72, 10], "espera": { "pi": 4, "circunferencia.pi": 20, "errores.conDiametro": 8 } } ]
+    }
+  ]
+}

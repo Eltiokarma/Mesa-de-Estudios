@@ -1,0 +1,1180 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La cinta del radio: radianes, arco y sector</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde del triángulo que se estira.
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
+   ángulo θ fucsia (también S, C y R, que son el mismo ángulo en tres sistemas, y el número de cintas, que es θ en
+   radianes), radio r azul (y la cinta, que mide un radio), arco L naranja (y la huella que deja la rueda, que es el
+   arco que tocó el piso), área A oliva y número de vueltas n turquesa.
+   Elegidos con CIEDE2000: ΔE00 ≥ 27 entre cualquier par, en claro y en oscuro, y contraste AA sobre el papel, la
+   tarjeta y su chip (.v, fondo al 8 %). */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-th:#a10fbf; --c-r:#1f5fbf; --c-L:#a05200; --c-A:#5f6f00; --c-n:#0f766e;
+  --relleno:.14;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-th:#cf6bfa; --c-r:#7cb0ff; --c-L:#f0a04a; --c-A:#c8dc3c; --c-n:#5ed9c8;
+  --relleno:.17; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-th:#cf6bfa; --c-r:#7cb0ff; --c-L:#f0a04a; --c-A:#c8dc3c; --c-n:#5ed9c8;
+  --relleno:.17; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+/* Celular con una predicción pendiente: el dibujo más bajo y pegado arriba, para que se vea mientras se elige. */
+@media (max-width:899px){
+  .mode.pendiente .bench{position:sticky; top:0; z-index:1; padding:6px; gap:4px; background:var(--card); border-radius:0 0 20px 20px}
+  .mode.pendiente .legend{display:none}
+  .mode.pendiente .lecturas{gap:4px}
+  .mode.pendiente .lectura{padding:2px 8px}
+}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+.lienzo:focus-within{outline:3px solid var(--ink); outline-offset:2px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+.legend i.sq{width:12px; height:12px; border-radius:3px; opacity:.55}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-th{color:var(--c-th); background:color-mix(in srgb, var(--c-th) 8%, transparent)}
+.v-r{color:var(--c-r); background:color-mix(in srgb, var(--c-r) 8%, transparent)}
+.v-L{color:var(--c-L); background:color-mix(in srgb, var(--c-L) 8%, transparent)}
+.v-A{color:var(--c-A); background:color-mix(in srgb, var(--c-A) 8%, transparent)}
+.v-n{color:var(--c-n); background:color-mix(in srgb, var(--c-n) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.02rem; font-variant-numeric:tabular-nums}
+.eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.5em; white-space:normal}
+.frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1.15}
+.frac > span:first-child{border-bottom:1.5px solid currentColor; padding:0 .25em}
+.frac > span:last-child{padding:0 .25em}
+.answer{font-weight:700; padding:12px 16px; border-radius:16px; background:var(--paper); border:2px solid var(--ink); max-width:66ch}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.seg button i{display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px; vertical-align:0}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.acciones{display:flex; flex-wrap:wrap; gap:8px}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+/* Lecturas en vivo, cada una con el color de su variable */
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:8px}
+.lecturas:empty{display:none}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura b{display:block; color:var(--k); font:800 .95rem var(--mono); font-variant-numeric:tabular-nums; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.lectura span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.25fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Trigonometría · Ángulo, arco y sector · Problemas tipo admisión</p>
+      <h1>La cinta del radio</h1>
+      <p class="sub">Un radián es el ángulo que abarca un arco del largo del radio. Corta una cinta del largo del radio, dóblala sobre la circunferencia y cuenta cuántas caben.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Circunferencia con un ángulo central arrastrable">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Circunferencia con un ángulo central. El punto P se arrastra para abrir el ángulo y el punto Q para cambiar el radio"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos con arcos y ruedas">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/cinta-radio">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'cinta-radio', unidad: 'trigonometria.longitud-de-arco-y-sector', version: '0.1.0' };
+// Cada predicción lleva su unidad: las del radián y los sistemas van a trigonometria.angulo-trigonometrico.
+const UNIDAD_ANGULO = 'trigonometria.angulo-trigonometrico';
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0, unidad){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: unidad || PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la matemática (conversiones, arco, área, cintas, la cinta que se dobla, la rueda que rueda, la moneda,
+   la faja y la bicicleta) sale de MotorCinta (motor.js); aquí solo se pinta, se arrastra y se anima. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MT = MotorCinta, PI = Math.PI;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+// Coma decimal y signo menos tipográfico.
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 1 : d), r = Math.round(n*p)/p + 0;
+  const [e, f] = String(Math.abs(r)).split('.');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+// Un coeficiente de π escrito corto (π/3, 2π) si es una fracción sencilla; si no, null.
+const piCorto = c => (MT.fraccion(c, 12) ? MT.textoPi(c) : null);
+// Grados, minutos y segundos (redondeados al segundo) y su versión centesimal.
+function gms(x, sistema){
+  const base = sistema === 'cent' ? 100 : 60, p = (sistema === 'cent' ? MT.centesimal : MT.sexagesimal)(Math.round(x*base*base)/(base*base));
+  // sin ceros de más: 75°, 75°30', 57°17'45"
+  const seg = Math.round(p.segundos), u = sistema === 'cent' ? ['ᵍ', 'ᵐ', 'ˢ'] : ['°', "'", '"'];
+  return `${p.grados}${u[0]}` + (p.minutos || seg ? `${p.minutos}${u[1]}` : '') + (seg ? `${seg}${u[2]}` : '');
+}
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const fr = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+function tween(dur, paso, fin, lineal){
+  if (RM || !dur){ paso(1); if (fin) setTimeout(fin, 0); return; }
+  const t0 = performance.now();
+  const tick = now => { const f = Math.min(1, (now - t0)/dur); paso(lineal ? f : suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
+  requestAnimationFrame(tick);
+}
+const th_ = t => V('th', t), r_ = t => V('r', t), L_ = t => V('L', t), A_ = t => V('A', t), n_ = t => V('n', t);
+const rad = g => g*PI/180;
+
+function colores(){
+  const g = n => css(n);
+  return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
+    th:g('--c-th'), r:g('--c-r'), L:g('--c-L'), A:g('--c-A'), n:g('--c-n'),
+    relleno:Number(g('--relleno')) || .14, mono:g('--mono'), font:g('--font') };
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, p, q){ ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke(); }
+// Texto con un fondo del color del papel detrás, para que se lea sobre las líneas.
+function rotulo(ctx, c, x, y, t, color, align, peso, tam){
+  ctx.font = `${peso || 700} ${tam || 13}px ${c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+  ctx.fillStyle = color; ctx.fillText(t, x, y);
+  return { x0: x0 - 3, x1: x0 + w + 3, y0: y - 9, y1: y + 9 };
+}
+// Resaltar en el dibujo la variable que se toca en el texto (regla 4).
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+/* Lecturas: cada una es [color, nombre, valor]. La descripción para lectores de pantalla dice solo lo que ellas dicen. */
+const LEC = {
+  th: E => ['th', 'Ángulo θ', `${fmt(E.th*180/PI, Math.abs(E.th*180/PI - Math.round(E.th*180/PI)) < 1e-6 ? 0 : 1)}°`],
+  cintas: E => { const p = piCorto(E.th/PI); return ['th', 'Cintas (rad)', p && E.th > 0 ? `${p} ≈ ${fmt(E.th, 2)}` : fmt(E.th, 2)]; },
+  r: E => ['r', 'Radio r', `${fmt(E.r, 1)} cm`],
+  L: E => { const s = MT.sector({ theta: Math.max(E.th, 1e-9), r: E.r }), p = piCorto(E.th/PI) && piCorto(s.Lpi); return ['L', 'Arco L', `${p ? p + ' ≈ ' : ''}${fmt(s.L, 2)} cm`]; },
+  A: E => { const s = MT.sector({ theta: Math.max(E.th, 1e-9), r: E.r }), p = piCorto(E.th/PI) && piCorto(s.Api); return ['A', 'Área A', `${p ? p + ' ≈ ' : ''}${fmt(s.A, 2)} cm²`]; },
+  S: E => ['th', 'S (sexagesimal)', gms(MT.convertir({ R: E.th }).S, 'sex')],
+  C: E => ['th', 'C (centesimal)', gms(MT.convertir({ R: E.th }).C, 'cent')],
+  R: E => { const p = piCorto(E.th/PI); return ['th', 'R (radianes)', p && E.th > 0 ? `${p} ≈ ${fmt(E.th, 3)}` : fmt(E.th, 3)]; },
+  meta: E => ['L', 'Hasta la meta', `${MT.textoPi(E.rueda.meta/PI) || fmt(E.rueda.meta, 1)} cm`],
+  huella: E => ['L', 'Huella L', `${fmt(E.rueda.d, E.rueda.d < 100 ? 2 : 0)} cm`],
+  n: E => ['n', 'Vueltas n', fmt(MT.rodar(E.rueda.r, E.rueda.d).vueltas, 2)],
+  rr: E => ['r', 'Radio r', `${fmt(E.rueda.r, 1)} cm`],
+};
+
+/* ================= La escena =================
+   Modos: 'circulo' (ángulo central, arco, sector y cintas), 'rueda' (la rueda que rueda por el piso, con una vista
+   de cerca y el mapa del recorrido debajo), 'faja', 'bici' y 'moneda' (los de «¿Qué pasa si…?»). Coordenadas del
+   mundo en centímetros; una "caja" del mundo se ajusta al lienzo. */
+const VER0 = { arco:true, sector:true, cintas:false, radios:true, rebanadas:false };
+function crearEscena(cv, idDesc, idLect, idLey){
+  const E = { modo:'circulo', th:0, r:4, rMax:6, caja:null, ver:{ ...VER0 }, arr:{ th:false, r:false }, prog:1, f:null, fantasma:null,
+    rot:{}, lect:[], ley:null, hl:null, alCambiar:null, ocupado:false, tok:0, anim:false,
+    rueda:{ r:30, d:0, meta:180*PI, ticks:false, mapa:true }, faja:null, bici:null, moneda:null };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, arrastrando = null, sobre = null;
+  const cajaDe = () => E.caja || { x0:-(E.rMax + 1.4), x1:E.rMax + 1.4, y0:-(E.rMax + 1.4), y1:E.rMax + 1.4 };
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    let h;
+    if (E.compacto && innerWidth < 900) h = Math.round(clamp(w*0.62, 220, 260));
+    else if (E.modo === 'rueda') h = w >= 560 ? 330 : 270;
+    else { const c = cajaDe(), asp = (c.y1 - c.y0)/(c.x1 - c.x0); h = Math.round(w >= 560 ? clamp(w*asp*0.86, 320, 470) : clamp((w - 24)*asp + 24, 250, 400)); }
+    const dpr = window.devicePixelRatio || 1;
+    if (w === W && h === H) { E.dibujar(); return; }
+    W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  alRedibujarTema(() => E.dibujar());
+
+  E.config = o => {
+    E.tok++; E.anim = false;   // una animación vieja no sigue moviendo el dibujo nuevo
+    Object.assign(E, { modo:'circulo', th:0, r:4, rMax:6, caja:null, arr:{ th:false, r:false }, prog:1, f:null, fantasma:null, rot:{},
+      lect:[], ley:null, alCambiar:null, faja:null, bici:null, moneda:null }, o);
+    E.ver = Object.assign({ ...VER0 }, o.ver);
+    E.arr = Object.assign({ th:false, r:false }, o.arr);
+    E.rueda = Object.assign({ r:30, d:0, meta:180*PI, ticks:false, mapa:true }, o.rueda);
+    cv.tabIndex = (E.arr.th || E.arr.r) ? 0 : -1;
+    resize(); E.leyenda(); E.dibujar(); E.avisar();
+  };
+  // Con una predicción pendiente en el celular, el dibujo se achica y queda pegado arriba (sticky) para verse al elegir.
+  E.compactar = on => { on = !!on; cv.closest('.mode').classList.toggle('pendiente', on); if (on === !!E.compacto) return; E.compacto = on; W = 0; resize(); };
+  E.permitir = (th, r) => { E.arr = { th:!!th, r:!!r }; cv.tabIndex = (th || r) ? 0 : -1; E.dibujar(); };
+
+  // ----- del mundo a la pantalla -----
+  function escala(){
+    const c = cajaDe(), pad = 10;
+    const k = Math.min((W - 2*pad)/(c.x1 - c.x0), (H - 2*pad)/(c.y1 - c.y0));
+    return { k, ox: W/2 - k*(c.x0 + c.x1)/2, oy: H/2 + k*(c.y0 + c.y1)/2 };
+  }
+  const aP = (P, s) => ({ x: s.ox + s.k*P.x, y: s.oy - s.k*P.y });
+  const grosor = (k, base) => (E.hl === k ? base + 2.5 : base);
+  // Arco en ángulos matemáticos (antihorario, y hacia arriba) dibujado en el lienzo (y hacia abajo).
+  function arcoM(cx, cy, R, a1, a2){ ctx.beginPath(); ctx.arc(cx, cy, R, -a1, -a2, a2 > a1); }
+  const enAng = (O, R, a) => ({ x: O.x + R*Math.cos(a), y: O.y - R*Math.sin(a) });
+
+  // ----- el círculo -----
+  function dibCirculo(c, s){
+    const O = aP({ x:0, y:0 }, s), R = E.r*s.k, th = E.th, rot = E.rot;
+    const P = enAng(O, R, th), Q = enAng(O, R, 0);
+    // circunferencia
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.arc(O.x, O.y, R, 0, 2*PI); ctx.stroke(); ctx.restore();
+    // el dibujo de antes (al duplicar el radio), a trazos
+    if (E.fantasma){
+      const Rf = E.fantasma*s.k;
+      ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.6; ctx.setLineDash([5, 5]);
+      ctx.beginPath(); ctx.arc(O.x, O.y, Rf, 0, 2*PI); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(O.x, O.y); ctx.lineTo(O.x + Rf, O.y); ctx.arc(O.x, O.y, Rf, 0, -th, true); ctx.closePath(); ctx.stroke(); ctx.restore();
+      // las cintas de antes (del largo del radio viejo), a trazos: caben las mismas
+      if (E.ver.cintas && th > 1e-6) for (const t of MT.cintas(th).tramos){
+        ctx.save(); ctx.strokeStyle = c.r; ctx.globalAlpha = .7; ctx.lineWidth = 4; ctx.setLineDash([4, 4]); arcoM(O.x, O.y, Rf + 7, t.desde, t.hasta); ctx.stroke(); ctx.restore();
+        ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; linea(ctx, enAng(O, Rf + 2, t.hasta), enAng(O, Rf + 12, t.hasta)); ctx.restore();
+      }
+    }
+    // sector
+    if (E.ver.sector && th > 1e-6){
+      ctx.save(); ctx.fillStyle = c.A; ctx.globalAlpha = E.hl === 'A' ? c.relleno*2.2 : c.relleno;
+      ctx.beginPath(); ctx.moveTo(O.x, O.y); ctx.arc(O.x, O.y, R, 0, -Math.min(th, 2*PI - 1e-6), true); ctx.closePath(); ctx.fill(); ctx.restore();
+      if (E.ver.rebanadas){
+        // rebanadas finas: cada una es casi un triángulo de altura r
+        const n = 10;
+        ctx.save(); ctx.strokeStyle = c.A; ctx.lineWidth = 1.2; ctx.globalAlpha = .9;
+        for (let j = 1; j < n; j++) linea(ctx, O, enAng(O, R, th*j/n));
+        ctx.restore();
+      }
+    }
+    // radios OQ y OP
+    if (E.ver.radios){
+      ctx.save(); ctx.strokeStyle = c.r; ctx.lineWidth = grosor('r', 3.2); ctx.lineCap = 'round';
+      linea(ctx, O, Q); if (th > 1e-6 && th < 2*PI - 1e-6) linea(ctx, O, P); ctx.restore();
+    }
+    // arco L
+    if (E.ver.arco && th > 1e-6){
+      ctx.save(); ctx.strokeStyle = c.L; ctx.lineWidth = grosor('L', 5); ctx.lineCap = 'butt';
+      arcoM(O.x, O.y, R, 0, th); ctx.stroke(); ctx.restore();
+    }
+    // ángulo θ junto al centro
+    if (th > 1e-6){
+      const ra = clamp(R*0.22, 16, 26);
+      ctx.save(); ctx.strokeStyle = c.th; ctx.lineWidth = grosor('th', 2.4); arcoM(O.x, O.y, ra, 0, th); ctx.stroke(); ctx.restore();
+    }
+    // cintas sobre el arco, por fuera
+    let ocup = [];
+    if (E.ver.cintas && th > 1e-6){
+      const C = MT.cintas(th*E.prog), Rc = R + 9;
+      C.tramos.forEach((t, j) => {
+        ctx.save(); ctx.strokeStyle = c.r; ctx.lineWidth = 6; ctx.lineCap = 'butt';
+        ctx.globalAlpha = j % 2 ? .55 : 1;
+        if (!t.completa) ctx.setLineDash([5, 3]);
+        arcoM(O.x, O.y, Rc, t.desde, t.hasta); ctx.stroke(); ctx.restore();
+      });
+      // separaciones entre cintas
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6;
+      const bordes = [0, ...C.tramos.map(t => t.hasta)];
+      for (const a of bordes) linea(ctx, enAng(O, R + 3, a), enAng(O, R + 15, a));
+      ctx.restore();
+      // números de cada cinta (la última, si está incompleta y se ve, con su fracción)
+      for (const t of C.tramos){
+        const m = (t.desde + t.hasta)/2, p = enAng(O, R + 25, m);
+        if (t.completa) ocup.push(rotulo(ctx, c, p.x, p.y, String(t.k), c.th, 'center', 800, 12));
+        else if (t.hasta - t.desde >= 0.2) ocup.push(rotulo(ctx, c, p.x, p.y, fmt(t.hasta - t.desde, 1), c.th, 'center', 700, 11));
+      }
+    }
+    // la cinta que se dobla (paso 2)
+    if (E.f !== null){
+      const d = MT.cintaDoblada(E.r, E.f, 0, 40), pts = d.puntos.map(q => aP(q, s));
+      ctx.save(); ctx.strokeStyle = c.r; ctx.lineWidth = grosor('r', 7); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      ctx.beginPath(); pts.forEach((q, j) => j ? ctx.lineTo(q.x, q.y) : ctx.moveTo(q.x, q.y)); ctx.stroke(); ctx.restore();
+      const fin = pts[pts.length - 1];
+      ctx.save(); ctx.fillStyle = c.ink; ctx.beginPath(); ctx.arc(fin.x, fin.y, 3.5, 0, 7); ctx.fill(); ctx.restore();
+      if (E.f < 0.02){ const y = (Q.y + fin.y)/2, der = Q.x + 14 + 70 < W; ocup.push(rotulo(ctx, c, der ? Q.x + 14 : Q.x - 14, y, 'cinta = r', c.r, der ? 'left' : 'right', 800, 13)); }
+    }
+    // rótulos: r bajo el radio OQ, θ junto al centro, L junto al arco, A dentro del sector
+    const pr = { x: O.x + R*0.5, y: O.y + 14 };
+    if (rot.r !== null) rotulo(ctx, c, pr.x, pr.y, rot.r || `r = ${fmt(E.r, 1)} cm`, c.r, 'center', 800, 13);
+    if (th > 1e-6){
+      const ra = clamp(R*0.22, 16, 26);
+      const mid = th/2, pt = enAng(O, ra + 22, mid);
+      if (rot.th !== null) rotulo(ctx, c, pt.x, pt.y, rot.th || 'θ', c.th, 'center', 800, 13);
+      if (rot.L !== null && E.ver.arco && R > 70){
+        const pl = enAng(O, E.ver.cintas ? R - 16 : R + 20, mid);
+        rotulo(ctx, c, pl.x, pl.y, rot.L || 'L', c.L, 'center', 800, 13);
+      }
+      if (rot.A && E.ver.sector && R > 90){ const pa = enAng(O, R*0.62, mid); rotulo(ctx, c, pa.x, pa.y, rot.A, c.A, 'center', 800, 13); }
+    }
+    // centro y puntos
+    ctx.fillStyle = c.ink; ctx.beginPath(); ctx.arc(O.x, O.y, 3.5, 0, 7); ctx.fill();
+    rotulo(ctx, c, O.x - 12, O.y + 12, 'O', c.ink, 'center', 800, 13);
+    // Q: manija del radio (cuadrada) o punto fijo
+    if (E.arr.r){
+      ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = (arrastrando === 'r' || sobre === 'r') ? .18 : .09; ctx.beginPath(); ctx.arc(Q.x, Q.y, 20, 0, 7); ctx.fill(); ctx.restore();
+      ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = c.ink; ctx.lineWidth = 2.4; ctx.beginPath(); ctx.rect(Q.x - 7, Q.y - 7, 14, 14); ctx.fill(); ctx.stroke(); ctx.restore();
+    } else { ctx.fillStyle = c.ink; ctx.beginPath(); ctx.arc(Q.x, Q.y, 4, 0, 7); ctx.fill(); }
+    rotulo(ctx, c, Q.x + 15, Q.y - 13, 'Q', c.ink, 'center', 800, 13);
+    if (th > 1e-6 || E.arr.th){
+      if (E.arr.th){
+        ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = (arrastrando === 'th' || sobre === 'th') ? .18 : .09; ctx.beginPath(); ctx.arc(P.x, P.y, 20, 0, 7); ctx.fill(); ctx.restore();
+        ctx.fillStyle = c.card; ctx.strokeStyle = c.ink; ctx.lineWidth = 2.6; ctx.beginPath(); ctx.arc(P.x, P.y, 9, 0, 7); ctx.fill(); ctx.stroke();
+      } else { ctx.fillStyle = c.ink; ctx.beginPath(); ctx.arc(P.x, P.y, 4, 0, 7); ctx.fill(); }
+      if (th > 0.12 && th < 2*PI - 0.12){
+        const u = { x: Math.cos(th), y: -Math.sin(th) }, d = E.ver.cintas ? 42 : 22;
+        rotulo(ctx, c, P.x + u.x*d, P.y + u.y*d, 'P', c.ink, 'center', 800, 13);
+      }
+    }
+  }
+
+  // ----- la rueda que rueda: vista de cerca arriba, mapa del recorrido abajo -----
+  function dibRueda(c){
+    const R0 = E.rueda, rr = R0.r, d = R0.d, est = MT.rodar(rr, d);
+    const Hm = R0.mapa ? 62 : 0, Ht = H - Hm;
+    const Rpx = clamp(Ht*0.28, 40, 88), k = Rpx/rr, piso = Ht - 46;
+    const cx = clamp(W*0.42, Rpx + 30, W - Rpx - 30);
+    const X = x => cx + (x - d)*k;
+    // piso
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, { x:0, y:piso }, { x:W, y:piso }); ctx.restore();
+    // huella L
+    if (d > 0){ ctx.save(); ctx.strokeStyle = c.L; ctx.lineWidth = grosor('L', 6); ctx.lineCap = 'butt'; linea(ctx, { x:X(0), y:piso + 3 }, { x:X(d), y:piso + 3 }); ctx.restore(); }
+    // marcas de cada vuelta (solo después de responder)
+    if (R0.ticks){
+      const per = 2*PI*rr;
+      for (let j = 1; j*per <= d + 1e-6; j++){
+        const x = X(j*per); if (x < -20 || x > W + 20) continue;
+        ctx.save(); ctx.strokeStyle = c.n; ctx.lineWidth = 2.4; linea(ctx, { x, y:piso - 8 }, { x, y:piso + 12 }); ctx.restore();
+        rotulo(ctx, c, x + 9, piso + 17, `${j}`, c.n, 'left', 800, 12);
+      }
+    }
+    // salida y meta: una raya en el piso con su nombre debajo (la rueda no las tapa)
+    const marca = (x, t, col) => {
+      ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = 3; linea(ctx, { x, y:piso - 6 }, { x, y:piso + 28 }); ctx.restore();
+      rotulo(ctx, c, x, piso + 37, t, c.ink, 'center', 700, 12);
+    };
+    marca(X(0), 'salida', c.muted);
+    if (R0.meta) marca(X(R0.meta), 'meta', c.L);
+    // la rueda
+    const C = { x: cx, y: piso - Rpx };
+    ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = c.ink; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(C.x, C.y, Rpx, 0, 2*PI); ctx.fill(); ctx.stroke(); ctx.restore();
+    // rayos que giran con la rueda
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.4;
+    for (let j = 0; j < 6; j++){ const a = -PI/2 - est.giro + j*PI/3 + PI/6; linea(ctx, C, enAng(C, Rpx - 3, a)); }
+    ctx.restore();
+    // el arco de la llanta que ya tocó el piso (mismo largo que la huella)
+    if (d > 0){
+      const g = Math.min(est.giro, 2*PI);
+      ctx.save(); ctx.strokeStyle = c.L; ctx.lineWidth = grosor('L', 5); arcoM(C.x, C.y, Rpx, -PI/2 - g, -PI/2); ctx.stroke(); ctx.restore();
+    }
+    // radio hacia la marca (la marca empezó tocando el piso)
+    const M = { x: cx + (est.marca.x - d)*k, y: piso - est.marca.y*k };
+    ctx.save(); ctx.strokeStyle = c.r; ctx.lineWidth = grosor('r', 3); ctx.lineCap = 'round'; linea(ctx, C, M); ctx.restore();
+    ctx.save(); ctx.fillStyle = c.ink; ctx.strokeStyle = c.paper; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(M.x, M.y, 5.5, 0, 7); ctx.fill(); ctx.stroke(); ctx.restore();
+    ctx.fillStyle = c.ink; ctx.beginPath(); ctx.arc(C.x, C.y, 3, 0, 7); ctx.fill();
+    rotulo(ctx, c, C.x - Rpx - 8, C.y - Rpx + 6, `r = ${fmt(rr, 1)} cm`, c.r, 'right', 800, 13);
+    // mapa de todo el recorrido
+    if (R0.mapa){
+      const y = H - 26, x0 = 22, total = (R0.meta || d) + 2*rr, km = (W - 2*x0)/total, Xm = x => x0 + (x + rr)*km;
+      ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.5; linea(ctx, { x:x0, y }, { x:W - x0, y }); ctx.restore();
+      if (d > 0){ ctx.save(); ctx.strokeStyle = c.L; ctx.lineWidth = 4; linea(ctx, { x:Xm(0), y }, { x:Xm(d), y }); ctx.restore(); }
+      if (R0.ticks){ const per = 2*PI*rr; ctx.save(); ctx.strokeStyle = c.n; ctx.lineWidth = 2; for (let j = 1; j*per <= d + 1e-6; j++) linea(ctx, { x:Xm(j*per), y:y - 6 }, { x:Xm(j*per), y:y + 6 }); ctx.restore(); }
+      for (const [x, col] of [[0, c.muted], [R0.meta, c.L]]) if (x !== null && x !== undefined){ ctx.save(); ctx.fillStyle = col; ctx.fillRect(Xm(x) - 1.5, y - 12, 3, 12); ctx.restore(); }
+      const rm = clamp(rr*km, 3, 9); ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.fillStyle = c.card; ctx.beginPath(); ctx.arc(Xm(d), y - rm, rm, 0, 7); ctx.fill(); ctx.stroke(); ctx.restore();
+      ctx.fillStyle = c.muted; ctx.font = `600 11px ${c.font}`; ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillText('todo el recorrido', x0, y + 6);
+    }
+  }
+
+  // ----- dos ruedas con faja (o en el mismo eje) -----
+  function rueda(C, Rp, giro, col, rotuloR, c){
+    ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = c.ink; ctx.lineWidth = 2.4; ctx.beginPath(); ctx.arc(C.x, C.y, Rp, 0, 2*PI); ctx.fill(); ctx.stroke(); ctx.restore();
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2;
+    for (let j = 1; j < 4; j++) linea(ctx, C, enAng(C, Rp - 2, giro + j*PI/2));
+    ctx.restore();
+    const M = enAng(C, Rp, giro);
+    ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = grosor('r', 3); ctx.lineCap = 'round'; linea(ctx, C, M); ctx.restore();
+    ctx.save(); ctx.fillStyle = c.ink; ctx.strokeStyle = c.paper; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(M.x, M.y, 4.5, 0, 7); ctx.fill(); ctx.stroke(); ctx.restore();
+    ctx.fillStyle = c.ink; ctx.beginPath(); ctx.arc(C.x, C.y, 3, 0, 7); ctx.fill();
+    if (rotuloR) rotulo(ctx, c, C.x, C.y + Rp + 16, rotuloR, c.r, 'center', 800, 13);
+  }
+  // La faja (o la cadena) va en el color del arco L: lo que avanza sobre una rueda es el arco que recorre la otra.
+  // sentido +1: las rayas avanzan en el sentido del camino (de la rueda 1 a la 2 por el primer tramo); −1, al revés.
+  function faja(c1, r1, c2, r2, avance, c, s, cruzada, sentido){
+    const P1 = aP(c1, s), P2 = aP(c2, s), R1 = r1*s.k, R2 = r2*s.k;
+    ctx.save(); ctx.strokeStyle = c.L; ctx.lineWidth = grosor('L', 3); ctx.setLineDash([9, 7]); ctx.lineDashOffset = -(sentido || 1)*avance*s.k;
+    ctx.beginPath();
+    if (!cruzada){
+      // tramos rectos (del motor) y las partes que abrazan cada rueda
+      const T = MT.tangentesExternas(c1, r1, c2, r2), a = T[0].angulo, b = T[1].angulo;
+      const A1 = aP(T[0].p1, s), A2 = aP(T[0].p2, s), B1 = aP(T[1].p1, s);
+      ctx.moveTo(A1.x, A1.y); ctx.lineTo(A2.x, A2.y);
+      ctx.arc(P2.x, P2.y, R2, -a, -b, false);
+      ctx.lineTo(B1.x, B1.y);
+      ctx.arc(P1.x, P1.y, R1, -b, -a - 2*PI, false);
+    } else {
+      // cruzada: sale de la rueda 1 por el primer tramo, abraza la 2 por el otro lado y vuelve cruzándose
+      const T = MT.tangentesInternas(c1, r1, c2, r2), a = T[0].angulo, b = T[1].angulo;
+      const A1 = aP(T[0].p1, s), A2 = aP(T[0].p2, s), B2 = aP(T[1].p2, s), B1 = aP(T[1].p1, s);
+      ctx.moveTo(A1.x, A1.y); ctx.lineTo(A2.x, A2.y);
+      ctx.arc(P2.x, P2.y, R2, -(a + PI), -(b + 3*PI), true);
+      ctx.lineTo(B1.x, B1.y);
+      ctx.arc(P1.x, P1.y, R1, -b, -a + 2*PI, false);
+    }
+    ctx.stroke(); ctx.restore();
+  }
+  function dibFaja(c, s){
+    const F = E.faja, union = F.cruzada ? 'cruzada' : 'faja', t = MT.transmision({ r1:F.r1, r2:F.r2, union, n1:F.n1 });
+    // la rueda 1 gira en sentido horario; la 2, igual con faja abierta y al revés con faja cruzada (lo dice el motor)
+    const C1 = aP(F.c1, s);
+    rueda(C1, F.r1*s.k, PI/2 - t.theta1, c.r, '', c);
+    rueda(aP(F.c2, s), F.r2*s.k, PI/2 + (t.mismoSentido ? -1 : 1)*t.theta2, c.r, `r₂ = ${fmt(F.r2, 0)} cm`, c);
+    faja(F.c1, F.r1, F.c2, F.r2, t.L1, c, s, F.cruzada);   // encima de las ruedas: abraza su borde
+    // el rótulo de r₁ a la izquierda de su rueda, lejos de la faja
+    rotulo(ctx, c, C1.x - F.r1*s.k - 10, C1.y, `r₁ = ${fmt(F.r1, 0)} cm`, c.r, 'right', 800, 13);
+  }
+  function dibBici(c, s){
+    const B = E.bici, b = MT.bicicleta({ plato:B.plato, pinon:B.pinon, rueda:B.rueda, vueltasPedal:Math.max(B.n, 1e-9) });
+    // la bicicleta mira a la izquierda: al pedalear hacia adelante, plato y rueda giran en sentido antihorario
+    const giroPlato = 2*PI*B.n, giroRueda = 2*PI*(B.n > 0 ? b.vueltasRueda : 0);
+    const Cp = aP(B.cPlato, s), Cr = aP(B.cRueda, s);
+    // cuadro de la bicicleta (decorado, en gris)
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 3; ctx.lineCap = 'round';
+    const asiento = aP({ x:B.cPlato.x - 6, y:30 }, s);
+    linea(ctx, Cp, Cr); linea(ctx, Cp, asiento); linea(ctx, asiento, Cr); ctx.restore();
+    // rueda trasera
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(Cr.x, Cr.y, B.rueda*s.k, 0, 2*PI); ctx.stroke(); ctx.restore();
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1; for (let j = 0; j < 12; j++) linea(ctx, Cr, enAng(Cr, B.rueda*s.k - 2, giroRueda + j*PI/6)); ctx.restore();
+    const Mv = enAng(Cr, B.rueda*s.k, PI/2 + giroRueda);
+    ctx.save(); ctx.strokeStyle = c.r; ctx.lineWidth = grosor('r', 3); linea(ctx, Cr, Mv); ctx.restore();
+    ctx.save(); ctx.fillStyle = c.ink; ctx.strokeStyle = c.paper; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(Mv.x, Mv.y, 5, 0, 7); ctx.fill(); ctx.stroke(); ctx.restore();
+    // cadena entre plato y piñón
+    rueda(Cp, B.plato*s.k, PI/2 + giroPlato, c.r, '', c);
+    rueda(Cr, B.pinon*s.k, PI/2 + giroRueda, c.r, '', c);
+    faja(B.cPlato, B.plato, B.cRueda, B.pinon, B.n*2*PI*B.plato, c, s, false, -1);
+    // pedal
+    const pe = enAng(Cp, B.plato*s.k + 14, -PI/2 + giroPlato);
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 4; ctx.lineCap = 'round'; linea(ctx, Cp, pe); ctx.fillStyle = c.ink; ctx.fillRect(pe.x - 9, pe.y - 3, 18, 6); ctx.restore();
+    rotulo(ctx, c, Cp.x, Cp.y + B.plato*s.k + 30, `plato: ${fmt(B.plato, 0)} cm`, c.r, 'center', 800, 12);
+    rotulo(ctx, c, Cr.x, Cr.y + B.pinon*s.k + 14, `piñón: ${fmt(B.pinon, 0)} cm`, c.r, 'center', 800, 12);
+    rotulo(ctx, c, Cr.x, Cr.y - B.rueda*s.k - 12, `rueda: ${fmt(B.rueda, 0)} cm`, c.r, 'center', 800, 12);
+    rotulo(ctx, c, Cp.x - B.plato*s.k - 4, Cp.y - B.plato*s.k - 18, '← adelante', c.muted, 'left', 700, 12);
+  }
+  function dibMoneda(c, s){
+    const M = E.moneda, dentro = M.lado === 'dentro', est = MT.alrededor({ fijo:M.fijo, r:M.r, lado:M.lado || 'fuera', phi:M.phi }), O = aP({ x:0, y:0 }, s);
+    // camino del centro, a trazos
+    if (M.camino){ ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.4; ctx.setLineDash([4, 5]); ctx.beginPath(); ctx.arc(O.x, O.y, (dentro ? M.fijo - M.r : M.fijo + M.r)*s.k, 0, 2*PI); ctx.stroke(); ctx.restore(); }
+    if (dentro){
+      // aro fijo: la moneda rueda por su borde de adentro
+      ctx.save(); ctx.fillStyle = c.grid; ctx.beginPath(); ctx.arc(O.x, O.y, (M.fijo + 0.45)*s.k, 0, 2*PI); ctx.arc(O.x, O.y, M.fijo*s.k, 0, 2*PI, true); ctx.fill();
+      ctx.strokeStyle = c.ink; ctx.lineWidth = 2.4; ctx.beginPath(); ctx.arc(O.x, O.y, M.fijo*s.k, 0, 2*PI); ctx.stroke(); ctx.restore();
+      rotulo(ctx, c, O.x, O.y + (M.fijo + 0.45)*s.k + 14, `aro fijo: ${fmt(M.fijo, 0)}r`, c.r, 'center', 800, 13);
+    } else {
+      ctx.save(); ctx.fillStyle = c.grid; ctx.strokeStyle = c.ink; ctx.lineWidth = 2.4; ctx.beginPath(); ctx.arc(O.x, O.y, M.fijo*s.k, 0, 2*PI); ctx.fill(); ctx.stroke(); ctx.restore();
+      rotulo(ctx, c, O.x, O.y, `disco fijo: ${fmt(M.fijo, 0)}r`, c.r, 'center', 800, 13);
+    }
+    // la moneda, con una flecha que empezó apuntando hacia afuera
+    const C = aP(est.centro, s), Rp = M.r*s.k;
+    ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = c.ink; ctx.lineWidth = 2.4; ctx.beginPath(); ctx.arc(C.x, C.y, Rp, 0, 2*PI); ctx.fill(); ctx.stroke(); ctx.restore();
+    const a = est.giro, punta = enAng(C, Rp - 4, a), cola = enAng(C, Rp*0.55, a + PI);
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.fillStyle = c.ink; ctx.lineWidth = 2.6; linea(ctx, cola, punta);
+    const ala = (g) => enAng(punta, 8, a + PI + g);
+    ctx.beginPath(); ctx.moveTo(punta.x, punta.y); const a1 = ala(.5), a2 = ala(-.5); ctx.lineTo(a1.x, a1.y); ctx.lineTo(a2.x, a2.y); ctx.closePath(); ctx.fill(); ctx.restore();
+    const rr = enAng(C, Rp, a + PI/2);
+    ctx.save(); ctx.strokeStyle = c.r; ctx.lineWidth = grosor('r', 2.6); linea(ctx, C, rr); ctx.restore();
+    if (M.phi < 0.05) rotulo(ctx, c, C.x + Rp + 18, C.y, 'r', c.r, 'center', 800, 13);
+  }
+
+  E.dibujar = () => {
+    if (!W) return;
+    const c = colores(), s = escala();
+    ctx.clearRect(0, 0, W, H); ctx.fillStyle = c.paper; ctx.fillRect(0, 0, W, H);
+    if (E.modo === 'rueda') dibRueda(c);
+    else if (E.modo === 'faja') dibFaja(c, s);
+    else if (E.modo === 'bici') dibBici(c, s);
+    else if (E.modo === 'moneda') dibMoneda(c, s);
+    else dibCirculo(c, s);
+  };
+  E.leyenda = () => {
+    if (!idLey) return;
+    const it = (k, t, sq) => `<span><i class="${sq ? 'sq' : ''}" style="background:var(--c-${k})"></i>${t}</span>`;
+    let l = E.ley;
+    if (!l){
+      if (E.modo === 'circulo'){
+        l = [['th', 'θ · ángulo central'], ['r', E.ver.cintas || E.f !== null ? 'r · radio (y la cinta)' : 'r · radio']];
+        if (E.ver.arco) l.push(['L', 'L · arco']);
+        if (E.ver.sector) l.push(['A', 'A · área del sector', true]);
+      } else if (E.modo === 'rueda') l = [['r', 'r · radio'], ['L', 'L · huella = arco que tocó el piso']].concat(E.rueda.ticks ? [['n', 'una marca por vuelta']] : []);
+      else if (E.modo === 'faja') l = [['r', 'r₁ y r₂ · radios'], ['L', E.faja && E.faja.cruzada ? 'faja cruzada: el mismo arco en las dos' : 'faja: el mismo arco en las dos']];
+      else if (E.modo === 'bici') l = [['r', 'radios'], ['L', 'cadena: el mismo arco en plato y piñón']];
+      else l = [['r', 'r · radio']];
+    }
+    document.getElementById(idLey).innerHTML = l.map(([k, t, sq]) => it(k, t, sq)).join('') + (E.fantasma ? '<span>- - - antes</span>' : '');
+  };
+  // Lecturas y descripción para lectores de pantalla (dicen lo mismo; antes de responder no adelantan la respuesta).
+  E.avisar = () => {
+    const filas = E.lect.map(k => (typeof k === 'function' ? k(E) : LEC[k](E)));
+    if (idLect) document.getElementById(idLect).innerHTML = filas.map(([k, t, v]) => `<div class="lectura" style="--k:var(--c-${k})"><span>${t}</span><b>${v}</b></div>`).join('');
+    if (idDesc){
+      const base = { circulo:'Circunferencia de centro O con un ángulo central QOP.', rueda:'Una rueda sobre el piso, con la huella que deja.', faja:'Dos ruedas unidas por una faja.', bici:'Plato, cadena, piñón y rueda trasera de una bicicleta.', moneda:'Una moneda junto a un disco fijo.' }[E.modo];
+      document.getElementById(idDesc).textContent = [base, ...filas.map(([, t, v]) => `${t}: ${v}.`)].join(' ');
+    }
+    if (E.alCambiar) E.alCambiar();
+  };
+  E.animar = (de, a, dur, paso, fin, lineal) => {
+    const tok = ++E.tok; E.anim = true;
+    tween(dur, f => { if (tok !== E.tok) return; paso(de + (a - de)*f); E.dibujar(); E.avisar(); },
+      () => { if (tok !== E.tok) return; E.anim = false; if (fin) fin(); }, lineal);
+  };
+
+  // ----- arrastrar P (el ángulo) y Q (el radio): táctil, ratón y teclado -----
+  const local = e => { const r = cv.getBoundingClientRect(); return { x:e.clientX - r.left, y:e.clientY - r.top }; };
+  function manijas(){
+    const s = escala(), O = aP({ x:0, y:0 }, s), R = E.r*s.k;
+    return { O, s, P: enAng(O, R, E.th), Q: enAng(O, R, 0) };
+  }
+  // Con el dedo, el dibujo deja desplazar la página (touch-action: pan-y); solo un toque que empieza cerca de P o
+  // de Q (radio de 40 px) se queda con el gesto. Con ratón, radio de 32 px.
+  function cual(p, radio){
+    if (E.modo !== 'circulo' || E.ocupado) return null;
+    const m = manijas(), dP = E.arr.th ? Math.hypot(p.x - m.P.x, p.y - m.P.y) : Infinity, dQ = E.arr.r ? Math.hypot(p.x - m.Q.x, p.y - m.Q.y) : Infinity;
+    if (Math.min(dP, dQ) >= radio) return null;
+    return dP <= dQ ? 'th' : 'r';
+  }
+  function ponerTh(t){
+    // los radianes enteros "imantan" (es fácil dejar justo 1, 2 o 3 cintas); si no, al grado entero
+    let g = Math.round(t*180/PI);
+    const n = Math.round(t); if (n >= 1 && Math.abs(t - n) < 0.012) t = n; else t = rad(g);
+    t = clamp(t, 0, 2*PI);
+    if (Math.abs(t - E.th) < 1e-12) return;
+    E.th = t; E.dibujar(); E.avisar();
+  }
+  function ponerR(r){
+    r = clamp(Math.round(r*2)/2, 1.5, E.rMax);
+    if (r === E.r) return;
+    E.r = r; E.dibujar(); E.avisar();
+  }
+  cv.addEventListener('touchstart', e => {
+    if (e.touches.length !== 1) return;
+    const r = cv.getBoundingClientRect(), t = e.touches[0];
+    if (cual({ x:t.clientX - r.left, y:t.clientY - r.top }, 40)) e.preventDefault();
+  }, { passive:false });
+  cv.addEventListener('pointerdown', e => {
+    const p = local(e), k = cual(p, e.pointerType === 'mouse' ? 32 : 40); if (!k) return;
+    arrastrando = k; cv.setPointerCapture(e.pointerId); e.preventDefault(); cv.focus({ preventScroll:true }); E.dibujar();
+  }, { passive:false });
+  cv.addEventListener('pointermove', e => {
+    const p = local(e);
+    if (arrastrando){
+      const m = manijas(), dx = p.x - m.O.x, dy = m.O.y - p.y;
+      if (arrastrando === 'th'){
+        let a = Math.atan2(dy, dx); if (a < 0) a += 2*PI;
+        // la vuelta no salta de 359° a 0°: se queda con el ángulo más cercano al anterior, entre 0 y 2π
+        const cand = [a - 2*PI, a, a + 2*PI].reduce((x, y) => Math.abs(y - E.th) < Math.abs(x - E.th) ? y : x);
+        ponerTh(cand);
+      } else ponerR(Math.hypot(dx, dy)/m.s.k);
+      return;
+    }
+    const sv = cual(p, 32);
+    if (sv !== sobre){ sobre = sv; cv.style.cursor = sv ? 'grab' : ''; E.dibujar(); }
+  });
+  const soltar = () => { if (arrastrando){ arrastrando = null; E.dibujar(); } };
+  cv.addEventListener('pointerup', soltar); cv.addEventListener('pointercancel', soltar);
+  cv.addEventListener('keydown', e => {
+    if (E.modo !== 'circulo' || E.ocupado) return;
+    const paso = e.shiftKey ? 1 : 5;
+    if (E.arr.th && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')){
+      e.preventDefault();
+      const g = Math.round(E.th*180/PI) + (e.key === 'ArrowRight' ? paso : -paso);
+      E.th = rad(clamp(g, 0, 360)); E.dibujar(); E.avisar();
+    } else if (E.arr.r && (e.key === 'ArrowUp' || e.key === 'ArrowDown')){
+      e.preventDefault(); ponerR(E.r + (e.key === 'ArrowUp' ? .5 : -.5));
+    }
+  });
+  return E;
+}
+
+// Opciones de predicción (las mismas en los dos modos)
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1');
+const S = { step:0, max:0, pred:{}, ocupado:false, x:null };
+
+// Números de la escena: todos salen del motor
+const UN_RAD = MT.convertir({ R:1 });
+const S60 = MT.sector({ r:6, theta:60, unidad:'sex' });
+const DOBLE = MT.escalarRadio({ r:3, theta:120, unidad:'sex' }, 2);
+const VUELTA = MT.convertir({ S:360 });
+const RUEDA = { r:30, meta:180*PI }, V7 = MT.vueltas({ d:RUEDA.meta, r:RUEDA.r });
+
+const P_RAD = { id:'cinta-radio-paso2', unidad:UNIDAD_ANGULO, ok:'b', opts:[
+  ['a','1°: un radián es un grado','TR3-radian-como-grado','parcial'],
+  ['b',`Unos ${fmt(UN_RAD.S, 1)}°`],
+  ['c','60°: la sexta parte de la vuelta','TR2-radian-60','hipotesis'],
+  ['d','180°: un radián es π','TR1-pi-rad-igual-1-rad','parcial']],
+  fb:{ b:`¡Bien! La cinta doblada abarca un radián: 180°/π, unos ${fmt(UN_RAD.S, 1)}°.`,
+    a:`Elegiste la A. Un grado es un ángulo muy chico (1/360 de la vuelta); una cinta del largo del radio cubre mucho más. Un radián mide 180°/π, unos ${fmt(UN_RAD.S, 1)}°. La correcta está marcada.`,
+    c:`Elegiste la C. Casi: a 60°, la cuerda (el segmento recto de Q a P) mide un radio, como en el hexágono. Pero el arco es más largo que la cuerda, así que la cinta doblada llega antes: a unos ${fmt(UN_RAD.S, 1)}°. La correcta está marcada.`,
+    d:`Elegiste la D. 180° son π radianes: unas 3,14 cintas, media vuelta. Una sola cinta abarca 180°/π, unos ${fmt(UN_RAD.S, 1)}°. La correcta está marcada.` } };
+const P_ARCO = { id:'cinta-radio-paso3', ok:'c', opts:[
+  ['a',`${fmt(S60.errores.arcoConGrados, 0)} cm`,'TR4-arco-con-grados','hipotesis'],
+  ['b',`${fmt(S60.errores.arcoIgualRadio, 0)} cm: el arco de 60° mide un radio`,'TR2-arco-igual-radio','hipotesis'],
+  ['c',`2π cm, unos ${fmt(S60.L, 2)} cm`],
+  ['d',`π/3 cm, unos ${fmt(S60.errores.arcoSinRadio, 2)} cm`,'arco-sin-radio','hipotesis']],
+  fb:{ c:'¡Bien! 60° son π/3 rad, y el arco mide θ·r = (π/3)·6 = 2π cm: un poco más de una cinta.',
+    a:'Elegiste la A. Esa cuenta usa 60 (los grados) en L = θ·r. La fórmula pide θ en radianes: 60° = π/3 rad. Con 60, el arco mediría 3,6 metros en una rueda de 6 cm. La correcta está marcada.',
+    b:'Elegiste la B. El arco de un radio corresponde a 1 rad, unos 57,3°, no a 60°. A 60° el arco es un poco más largo: 2π ≈ 6,28 cm. La correcta está marcada.',
+    d:'Elegiste la D. π/3 es el ángulo en radianes: cuántos radios caben en el arco. Falta multiplicar por el radio: L = (π/3)·6 = 2π cm. La correcta está marcada.' } };
+const P_DOBLE = { id:'cinta-radio-paso4', ok:'b', opts:[
+  ['a',`El doble: unas ${fmt(DOBLE.errores.cintasProporcionales, 1)}`,'TR6-angulo-depende-del-lado','parcial'],
+  ['b',`Las mismas: unas ${fmt(DOBLE.cintasAntes, 1)}`],
+  ['c',`La mitad: unas ${fmt(DOBLE.errores.cintasInversas, 1)}`,'TR2-radian-depende-del-radio','hipotesis'],
+  ['d','Depende de cuánto valga π','TR1-pi-como-angulo','parcial']],
+  fb:{ b:'¡Bien! El arco se duplica, pero la cinta también: caben las mismas. El radián no depende del tamaño de la circunferencia.',
+    a:'Elegiste la A. El arco sí se duplica, pero cada cinta también se duplica, porque se corta del largo del nuevo radio. Caben las mismas. La correcta está marcada.',
+    c:'Elegiste la C. El ángulo no se "reparte": es el mismo. El arco y la cinta crecen juntos, así que caben las mismas cintas. La correcta está marcada.',
+    d:'Elegiste la D. π es un número fijo, unos 3,14; no cambia con el dibujo. El arco y la cinta se duplican juntos: caben las mismas cintas. La correcta está marcada.' } };
+const P_AREA = { id:'cinta-radio-paso5', ok:'d', opts:[
+  ['a',`${MT.textoPi(S60.errores.areaSinMitad/PI)} cm²`,'area-sin-mitad','hipotesis'],
+  ['b',`${fmt(S60.errores.areaConGrados, 0)} cm²`,'TR4-area-con-grados','hipotesis'],
+  ['c',`${MT.textoPi(S60.errores.areaIgualArco/PI)} cm²: lo mismo que el arco`,'area-igual-arco','hipotesis'],
+  ['d',`${MT.textoPi(S60.Api)} cm², unos ${fmt(S60.A, 1)} cm²`]],
+  fb:{ d:'¡Bien! A = θ·r²/2 = (π/3)·36/2 = 6π cm². También A = L·r/2 = 2π·6/2.',
+    a:'Elegiste la A. θ·r² = 12π es el doble del sector: falta dividir entre 2. Cada rebanada del sector es casi un triángulo, y el área de un triángulo lleva el ½. La correcta está marcada.',
+    b:'Elegiste la B. Esa cuenta usa 60 (los grados) en vez de π/3. Con θ en radianes, A = (π/3)·36/2 = 6π cm². La correcta está marcada.',
+    c:'Elegiste la C. 2π cm es el largo del arco, una longitud; el área se mide en cm² y depende también del radio: A = L·r/2 = 6π cm². La correcta está marcada.' } };
+const P_VUELTA = { id:'cinta-radio-paso6', unidad:UNIDAD_ANGULO, ok:'d', opts:[
+  ['a','1: la vuelta entera es un radián','TR5-vuelta-un-radian','parcial'],
+  ['b','360','TR3-grados-como-radianes','hipotesis'],
+  ['c','π, unas 3,14','TR1-pi-es-la-vuelta','hipotesis'],
+  ['d',`2π, unas ${fmt(VUELTA.R, 2)}`]],
+  fb:{ d:'¡Bien! Caben 6 cintas enteras y un pedacito: 2π ≈ 6,28. Una vuelta mide 2π rad.',
+    a:'Elegiste la A. Un radián es solo el pedazo de una cinta; la vuelta entera tiene más de seis. La correcta está marcada.',
+    b:'Elegiste la B. 360 son los grados de la vuelta. Las cintas son mucho más largas que un grado: caben unas 6,28. La correcta está marcada.',
+    c:'Elegiste la C. π cintas (unas 3,14) cubren media vuelta, 180°. La vuelta entera tiene el doble: 2π ≈ 6,28. La correcta está marcada.' } };
+const P_RUEDA = { id:'cinta-radio-paso7', ok:'b', opts:[
+  ['a',`6π, unas ${fmt(V7.errores.sinDosPi, 1)}`,'vueltas-sin-2pi','hipotesis'],
+  ['b',`${fmt(V7.n, 0)}`],
+  ['c',`${fmt(V7.errores.conPiR, 0)}`,'vueltas-perimetro-pi-r','hipotesis'],
+  ['d',`${fmt(V7.errores.conDiametro, 1)}`,'vueltas-con-diametro','hipotesis']],
+  fb:{ b:'¡Bien! En cada vuelta la rueda avanza su perímetro, 2π·30 = 60π cm. 180π / 60π = 3 vueltas.',
+    a:'Elegiste la A. 180π / 30 = 6π es el ángulo que giró la rueda en radianes (cintas), no las vueltas: cada vuelta tiene 2π rad. La correcta está marcada.',
+    c:'Elegiste la C. Esa cuenta toma el perímetro como π·30. El perímetro de la rueda es 2π·30 = 60π cm, así que da 3 vueltas. La correcta está marcada.',
+    d:'Elegiste la D. Esa cuenta pone el diámetro (60 cm) en lugar del radio en 2πr. El perímetro es 2π·30 = 60π cm: 3 vueltas. La correcta está marcada.' } };
+
+// Ecuaciones en vivo
+function vivoArco(){
+  const d = $('vivo'); if (!d) return;
+  const s = MT.sector({ theta:Math.max(E.th, 1e-9), r:E.r });
+  d.innerHTML = `<div class="eq">${L_('L')} = ${th_('θ')} · ${r_('r')} = ${th_(fmt(E.th, 2))} · ${r_(fmt(E.r, 1))} = ${L_(fmt(s.L, 2) + ' cm')}</div>
+    <div class="eq">${A_('A')} = ${fr(`${th_('θ')} · ${r_('r')}²`, '2')} = ${fr(`${L_('L')} · ${r_('r')}`, '2')} = ${A_(fmt(s.A, 2) + ' cm²')}<span class="note">θ en radianes: ${th_(fmt(E.th, 2))} cintas</span></div>`;
+}
+function vivoSCR(){
+  const d = $('vivoSCR'); if (!d) return;
+  const k = MT.convertir({ R:E.th }), p = piCorto(E.th/PI);
+  d.innerHTML = `<div class="eq">${fr(th_('S'), '180')} = ${fr(th_('C'), '200')} = ${fr(th_('R'), 'π')}</div>
+    <div class="eq">${fr(th_(fmt(k.S, 1)), '180')} = ${fr(th_(fmt(k.C, 1)), '200')} = ${fr(th_(p ? p : fmt(k.R, 3)), 'π')} = ${fmt(k.k, 3)}<span class="note">el mismo ángulo en tres sistemas</span></div>`;
+}
+function cfgCirculo(o){ E.config(Object.assign({ modo:'circulo' }, o)); }
+
+const steps = [
+ { k:'Paso 1', t:'El ángulo central', prep:() => cfgCirculo({ th:rad(50), r:4, arr:{ th:true, r:true }, lect:['th','r'], rot:{ L:'L', th:'θ' } }),
+   body:() => `<p class="problem">Arrastra el punto P (el círculo grande) para abrir el ángulo. Arrastra Q (el cuadrado) para cambiar el radio.</p>
+   <p>El ángulo central ${th_('θ')} tiene su vértice en el centro O. Sus lados son dos radios ${r_('r')}. El pedazo de circunferencia entre Q y P es el arco ${L_('L')}, y la región pintada es el sector circular, de área ${A_('A')}.</p>
+   <p>Mueve P y Q. Mira qué cambia cuando solo cambias el ángulo y qué cambia cuando solo cambias el radio.</p>
+   <p class="hint">Con teclado: toca el dibujo; las flechas ← y → abren o cierran el ángulo (con Mayúsculas, de grado en grado) y ↑ y ↓ cambian el radio.</p>` },
+ { k:'Paso 2', t:'Predice: una cinta del largo del radio', gate:P_RAD,
+   prep:() => { const ya = !!S.pred[P_RAD.id];
+     cfgCirculo({ th: ya ? 1 : 0, r:4, rMax:4.6, f: ya ? null : 0, ver:{ cintas:ya, sector:true }, lect: ya ? ['r','th','cintas'] : ['r'],
+       rot:{ th: ya ? `1 rad ≈ ${fmt(UN_RAD.S, 1)}°` : 'θ', L:null } }); },
+   anima:fin => {
+     E.animar(0, 1, 1600, f => { E.f = f; E.th = f; }, () => { E.f = null; E.ver.cintas = true; E.rot.th = `1 rad ≈ ${fmt(UN_RAD.S, 1)}°`; E.lect = ['r','th','cintas']; E.leyenda(); E.dibujar(); E.avisar(); fin(); });
+   },
+   body:() => `<p>Se corta una ${r_('cinta')} que mide lo mismo que el radio ${r_('r')}: es la cinta azul, parada en Q. Si se dobla sobre la circunferencia desde Q, ¿qué ángulo central ${th_('θ')} abarca?</p>${opcionesHTML(P_RAD.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <p>Ese ángulo es <b>un radián</b>: el ángulo central cuyo arco ${L_('L')} mide lo mismo que el radio ${r_('r')}. Media vuelta (180°) tiene π cintas, unas 3,14; por eso una sola cinta abarca 180°/π.</p>
+   <div class="eqs"><div class="eq">${th_('1 rad')} = ${fr('180°', 'π')} ≈ ${th_(fmt(UN_RAD.S, 4) + '°')} ≈ ${th_(gms(UN_RAD.S, 'sex'))}</div></div>
+   <p class="aviso">π no es "180": π es un número, unos 3,14. Lo que mide 180° es un ángulo de π radianes, es decir, π cintas.</p>
+   <p class="fuente">El radián casi nunca se entiende como arco entre radio: según el resumen de su estudio, cerca de 9 de cada 10 de 93 futuros profesores de matemática turcos lo definió mal (Tuna, 2013), y en otra muestra de futuros profesores nadie lo definió como razón de dos longitudes, aunque todos convertían bien (Fi, 2003, citado por otros autores). Ver π solo como "180" y no como un número está descrito, sin porcentajes, en 42 futuros profesores (Akkoç, 2008); en un trabajo de estudiante con 60 universitarios (sin revisión por pares), cerca de 3 de cada 10 escribió que π rad = 1 rad (Williams, sin fecha). La opción "1°" se apoya en lo que describe Akkoç (2008), sin porcentajes: la idea de radián dominada por la de grado. La opción "60°" es hipótesis nuestra. Medir el ángulo con arcos es la idea de Moore (2013).</p></div>` },
+ { k:'Paso 3', t:'Predice: el arco de 60°', gate:P_ARCO,
+   prep:() => { const ya = !!S.pred[P_ARCO.id];
+     cfgCirculo({ th:rad(60), r:6, ver:{ cintas:ya, sector:false }, lect: ya ? ['th','r','cintas','L'] : ['th','r'], rot:{ th:'60°', L: ya ? 'L = 2π' : 'L = ?' } }); },
+   anima:fin => { E.ver.cintas = true; E.rot.L = 'L = 2π'; E.leyenda(); E.animar(0, 1, 1000, f => { E.prog = f; }, () => { E.lect = ['th','r','cintas','L']; E.avisar(); fin(); }); },
+   body:() => `<p>Una rueda tiene radio ${r_('r = 6 cm')}. ¿Cuánto mide el arco ${L_('L')} de un ángulo central ${th_('θ = 60°')}?</p>${opcionesHTML(P_ARCO.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${th_('θ')} = ${th_('60')} · ${fr('π', '180')} = ${th_('π/3 rad')}<span class="note">primero, a radianes</span></div>
+     <div class="eq">${L_('L')} = ${th_('θ')} · ${r_('r')} = ${th_('π/3')} · ${r_('6')} = ${L_('2π cm')} ≈ ${L_(fmt(S60.L, 2) + ' cm')}</div></div>
+   <p>En el arco caben ${th_(fmt(S60.cintas, 2))} cintas: un poco más de un radio. Por eso ${L_('L')} es un poco más que 6 cm. Así se lee L = θ·r: ${th_('θ')} dice cuántas cintas caben y ${r_('r')} cuánto mide cada una.</p>
+   <p class="aviso">En L = θ·r el ángulo va en radianes. Con 60 en lugar de π/3 salen 360 cm: un arco de 3,6 m en una rueda de 6 cm.</p>
+   <p class="fuente">Que se usen grados en L = θ·r es una hipótesis nuestra: no encontramos estudios que lo midan. Sale de no ver el radián como razón (Tuna, 2013) y de que los grados se cuelan donde solo valen radianes: en una encuesta a 769 universitarios de ciencias, cerca del 70 % creyó que las derivadas del seno valen igual en grados que en radianes (Ben-Zion y otros, 2025).</p></div>` },
+ { k:'Paso 4', t:'Predice: el radio se duplica', gate:P_DOBLE,
+   prep:() => { const ya = !!S.pred[P_DOBLE.id];
+     cfgCirculo({ th:rad(120), r: ya ? 6 : 3, fantasma: ya ? 3 : null, ver:{ cintas:true, sector:false }, lect:['th','r','cintas','L'], rot:{ th:'120°', L:'L' } }); },
+   anima:fin => { E.fantasma = 3; E.leyenda(); E.animar(3, 6, 1500, r => { E.r = r; }, fin); },
+   body:() => `<p>Con ${r_('r = 3 cm')} y ${th_('θ = 120°')}, en el arco caben unas ${th_(fmt(DOBLE.cintasAntes, 1))} cintas. Ahora el radio se duplica a ${r_('6 cm')} y el ángulo no cambia. Cada ${r_('cinta')} mide lo mismo que el radio. ¿Cuántas cintas caben ahora en el arco?</p>${opcionesHTML(P_DOBLE.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">Antes: ${L_('L')} = ${th_('2π/3')} · ${r_('3')} = ${L_('2π')}</div>
+     <div class="eq">cintas = ${fr(L_('2π'), r_('3'))} = ${th_('2π/3')} ≈ ${th_(fmt(DOBLE.cintasAntes, 2))}</div>
+     <div class="eq">Después: ${L_('L')} = ${th_('2π/3')} · ${r_('6')} = ${L_('4π')}</div>
+     <div class="eq">cintas = ${fr(L_('4π'), r_('6'))} = ${th_('2π/3')} ≈ ${th_(fmt(DOBLE.cintasDespues, 2))}</div></div>
+   <p>El arco ${L_('L')} se duplicó, pero la ${r_('cinta')} también: el número de cintas, que es ${th_('θ')} en radianes, no cambió. Un radián es una <b>razón</b>, arco entre radio; por eso no depende del tamaño del dibujo, igual que los grados.</p>
+   <p class="fuente">Creer que un ángulo dibujado con lados más largos es más grande está descrito en alumnos de secundaria de Quebec, sin porcentajes (De Kee, Mura y Dionne, 1996, citado en una presentación). La opción de π sale de ver π como un ángulo y no como un número (Akkoç, 2008, con 42 futuros profesores, sin porcentajes). La opción "la mitad" es una hipótesis nuestra.</p></div>` },
+ { k:'Paso 5', t:'Predice: el área del sector', gate:P_AREA,
+   prep:() => { const ya = !!S.pred[P_AREA.id];
+     cfgCirculo({ th:rad(60), r:6, ver:{ cintas:false, sector:true, rebanadas:ya }, lect: ya ? ['th','r','L','A'] : ['th','r','L'], rot:{ th:'60°', L:'L = 2π', A: ya ? 'A = 6π' : 'A = ?' } }); },
+   anima:fin => { E.ver.rebanadas = true; E.rot.A = 'A = 6π'; E.lect = ['th','r','L','A']; E.dibujar(); E.avisar(); esperar(300, fin); },
+   body:() => `<p>En la rueda de radio ${r_('r = 6 cm')}, el sector de ${th_('60°')} tiene un arco ${L_('L = 2π cm')}. ¿Cuál es su área ${A_('A')}?</p>${opcionesHTML(P_AREA.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${A_('A')} = ${fr(`${th_('θ')} · ${r_('r')}²`, '2')} = ${fr(`${th_('π/3')} · ${r_('6')}²`, '2')} = ${A_('6π cm²')} ≈ ${A_(fmt(S60.A, 1) + ' cm²')}</div>
+     <div class="eq">${A_('A')} = ${fr(`${L_('L')} · ${r_('r')}`, '2')} = ${fr(`${L_('2π')} · ${r_('6')}`, '2')} = ${A_('6π cm²')}<span class="note">la misma cuenta</span></div></div>
+   <p>Si el sector se corta en rebanadas muy finas (las líneas del dibujo), cada una es casi un triángulo de altura ${r_('r')}. Sus bases, juntas, forman el arco ${L_('L')}. Por eso el sector tiene el área de un triángulo de base ${L_('L')} y altura ${r_('r')}: ${A_('A')} = ${L_('L')}·${r_('r')}/2.</p>
+   <p class="fuente">No encontramos estudios que midan los errores en el área del sector. Olvidar el ½, usar grados o confundir el área con el arco son hipótesis nuestras; el lanzamiento en el colegio dirá si aparecen.</p></div>` },
+ { k:'Paso 6', t:'Predice: una vuelta completa', gate:P_VUELTA,
+   prep:() => { const ya = !!S.pred[P_VUELTA.id];
+     cfgCirculo({ th: ya ? (S.th6 !== undefined ? S.th6 : 2*PI) : 0, r:4, rMax:4.6, arr:{ th:ya }, ver:{ cintas:true, sector:false }, lect: ya ? ['th','cintas','r'] : ['r'],
+       rot:{ th:'θ', L:null }, alCambiar: ya ? () => { vivoSCR(); S.th6 = E.th; } : null }); },
+   anima:fin => { E.animar(0, 2*PI, RM ? 0 : 2600, t => { E.th = t; }, () => { E.lect = ['th','cintas','r']; E.alCambiar = () => { vivoSCR(); S.th6 = E.th; }; E.permitir(true, false); E.avisar(); fin(); }, true); },
+   body:() => `<p>Si se siguen pegando ${r_('cintas')} del largo del radio, una tras otra, alrededor de toda la circunferencia, ¿cuántas caben en la vuelta completa? Ese número es la vuelta medida en radianes.</p>${opcionesHTML(P_VUELTA.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <p>Caben 6 cintas enteras y un pedazo de 0,28: 2π ≈ ${fmt(VUELTA.R, 2)}. Por eso ${th_('360°')} = ${th_('2π rad')} y ${th_('180°')} = ${th_('π rad')}. En el sistema centesimal, la vuelta mide ${th_('400ᵍ')}. El mismo ángulo en los tres sistemas cumple:</p>
+   <div class="eqs" id="vivoSCR"></div>
+   <p>Arrastra P y mira las tres medidas del mismo ángulo: ${th_('S')} en grados sexagesimales, ${th_('C')} en centesimales y ${th_('R')} en radianes.</p>
+   <p class="fuente">En un trabajo de estudiante (sin revisión por pares) con 60 universitarios de Georgia College, unos 4 de los 60 dijeron que la vuelta entera mide un radián, y cerca de 3 de cada 10 que π rad = 1 rad (Williams, sin fecha). Las opciones "360" y "π" son hipótesis nuestras, cercanas a esas ideas.</p></div>` },
+ { k:'Paso 7', t:'Predice: la rueda que rueda', gate:P_RUEDA,
+   prep:() => { const ya = !!S.pred[P_RUEDA.id];
+     E.config({ modo:'rueda', rueda:{ r:RUEDA.r, meta:RUEDA.meta, d: ya ? RUEDA.meta : 0, ticks:ya }, lect: ya ? ['rr','meta','huella','n'] : ['rr','meta'] }); },
+   anima:fin => { E.rueda.ticks = true; E.lect = ['rr','meta','huella','n']; E.leyenda(); E.animar(0, RUEDA.meta, 4200, d => { E.rueda.d = d; }, fin, true); },
+   body:() => `<p>Una rueda de radio ${r_('r = 30 cm')} rueda sin resbalar y avanza ${L_('180π cm')} (unos 5,65 m), de la salida a la meta. ¿Cuántas vueltas ${n_('n')} da?</p>${opcionesHTML(P_RUEDA.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">En cada vuelta avanza su perímetro: 2π · ${r_('30')} = 60π cm</div>
+     <div class="eq">${n_('n')} = ${fr(L_('180π'), `2π · ${r_('30')}`)} = ${fr('180π', '60π')} = ${n_(fmt(V7.n, 0))}</div></div>
+   <p>Mira la marca negra de la llanta: toca el piso al final de cada vuelta. La huella ${L_('L')} que queda en el piso mide lo mismo que el arco de la llanta que lo tocó. Dividir 180π entre 30 da 6π ≈ 18,8: es el ángulo que giró la rueda en radianes (cintas), no las vueltas, porque cada vuelta tiene 2π radianes.</p>
+   <p class="fuente">No encontramos estudios sobre el número de vueltas. Las opciones incorrectas son hipótesis nuestras.</p></div>` },
+ { k:'Paso 8', t:'Ahora explora tú', explora:true,
+   prep:() => { const x = S.x || { th:rad(75), r:4, ver:{ cintas:true, sector:true }, scr:false };
+     cfgCirculo({ th:x.th, r:x.r, arr:{ th:true, r:true }, ver:x.ver, lect: ['th','cintas','r','L','A'].concat(x.scr ? ['S','C','R'] : []), rot:{ th:'θ', L:'L' } }); },
+   body:() => `<p>Arrastra P y Q, y prende lo que quieras ver. Las medidas salen del motor en cada posición. Prueba dejar el ángulo en 1, 2 o 3 cintas: el punto P se "pega" justo ahí.</p>
+   <div class="seg" role="group" aria-label="Qué se ve">${[['cintas','Cintas','r'],['sector','Sector','A'],['scr','S, C y R','th']]
+     .map(([k, t, col]) => `<button type="button" data-ver="${k}" aria-pressed="${k === 'scr' ? !!(S.x && S.x.scr) : !!E.ver[k]}"><i style="background:var(--c-${col})"></i>${t}</button>`).join('')}</div>
+   <div class="acciones"><button type="button" class="btn" id="x-rodar">Rodar este arco</button><button type="button" class="btn" id="x-reset">Volver a empezar</button></div>
+   <div class="eqs" id="vivo"></div>
+   <p id="x-msg" class="hint" aria-live="polite"></p>` },
+];
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; b.setAttribute('aria-label', `Ir al ${s.k.toLowerCase()}: ${s.t}`);
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  if (s.prep) s.prep();
+  pintarDots();
+  E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.gate) prediccion(s);
+  if (s.explora) explorar();
+  if (s.gate && S.pred[s.gate.id] && E.alCambiar) E.alCambiar();
+  nav();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+  E.ocupado = S.ocupado;
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){ if (k > S.max) S.max = k; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0, P.unidad);
+    S.ocupado = true; nav();
+    E.compactar(false);
+    $('next').focus({ preventScroll:true });
+    // En el celular, el dibujo queda arriba de la pantalla: se lleva a la vista antes de animar.
+    const paso = S.step, chico = innerWidth < 900;
+    if (chico) $('cv').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+    esperar(chico ? 380 : 0, () => {
+      if (S.step !== paso) { S.ocupado = false; nav(); return; }
+      s.anima(() => { S.ocupado = false; E.avisar(); nav(); });
+    });
+  }));
+  pintar();
+}
+
+// ----- explorador -----
+function guardarX(scr){ S.x = { th:E.th, r:E.r, ver:{ ...E.ver }, scr: scr !== undefined ? scr : !!(S.x && S.x.scr) }; }
+function explorar(){
+  const body = $('stepBody');
+  E.alCambiar = () => { if (E.modo === 'circulo'){ vivoArco(); guardarX(); } };
+  body.querySelectorAll('[data-ver]').forEach(b => b.onclick = () => {
+    if (E.modo !== 'circulo' || E.ocupado) return;
+    const k = b.dataset.ver;
+    if (k === 'scr'){
+      const on = !(S.x && S.x.scr); guardarX(on); b.setAttribute('aria-pressed', String(on));
+      E.lect = ['th','cintas','r','L','A'].concat(on ? ['S','C','R'] : []); E.avisar();
+      $('x-msg').textContent = on ? 'S, C y R son el mismo ángulo en grados sexagesimales, centesimales y radianes: S/180 = C/200 = R/π. En el sexagesimal, 1° = 60\' y 1\' = 60"; en el centesimal, 1ᵍ = 100ᵐ y 1ᵐ = 100ˢ. Ojo: R mayúscula es el ángulo en radianes y r minúscula es el radio. En muchos libros el área del sector se escribe S; aquí usamos A para no confundirla con los grados sexagesimales.' : '';
+      return;
+    }
+    const on = !E.ver[k]; E.ver[k] = on; b.setAttribute('aria-pressed', String(on)); E.leyenda(); E.dibujar(); guardarX();
+    $('x-msg').textContent = on ? { cintas:'Cada cinta mide lo mismo que el radio. El número de cintas es el ángulo en radianes: θ = L/r.', sector:'El área del sector es A = θ·r²/2 = L·r/2, con θ en radianes.' }[k] : '';
+  });
+  const rodar = $('x-rodar');
+  rodar.onclick = () => {
+    if (E.ocupado) return;
+    if (E.modo === 'rueda'){ go(S.step); return; }
+    if (E.th < 0.05){ $('x-msg').textContent = 'Abre un poco el ángulo antes de rodar.'; return; }
+    const th = E.th, r = E.r, L = th*r;
+    guardarX();
+    E.config({ modo:'rueda', rueda:{ r, meta:L, d:0, ticks:true }, lect:['rr', E2 => ['L', 'Arco L', `${fmt(L, 2)} cm`], 'huella', 'n'] });
+    E.ocupado = true; S.ocupado = true; nav(); rodar.textContent = 'Volver al círculo';
+    E.animar(0, L, clamp(700*th, 900, 4200), d => { E.rueda.d = d; }, () => {
+      E.ocupado = false; S.ocupado = false; nav();
+      $('x-msg').textContent = `La rueda de radio ${fmt(r, 1)} cm rodó el arco: dejó una huella de ${fmt(L, 2)} cm y giró ${fmt(th, 2)} rad, es decir, ${fmt(th/(2*PI), 2)} vueltas.`;
+    }, true);
+  };
+  $('x-reset').onclick = () => { if (E.ocupado) return; S.x = null; go(S.step); };
+  E.avisar();
+}
+
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Experimentos de docs/investigacion/trigonometria-ideas-erroneas.md: el radio que se duplica (arco y área),
+   2 rad sin π (TR1), la faja, la bicicleta y la moneda que rueda alrededor de otra. La escena cambia recién
+   después de responder. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2');
+const D90 = MT.escalarRadio({ r:3, theta:90, unidad:'sex' }, 2);
+const DOS = MT.convertir({ R:2 });
+const FAJA = { r1:2, r2:6, n1:3, c1:{ x:0, y:0 }, c2:{ x:11, y:0 } }, TF = MT.transmision({ r1:FAJA.r1, r2:FAJA.r2, union:'faja', n1:FAJA.n1 });
+const BICI = { plato:10, pinon:4, rueda:35, cPlato:{ x:0, y:0 }, cRueda:{ x:52, y:0 } }, TB = MT.bicicleta(BICI);
+const vueltasRueda = n => (n > 0 ? MT.bicicleta({ ...BICI, vueltasPedal:n }).vueltasRueda : 0);
+const MON = { fijo:3, r:1 }, TM = MT.alrededor({ fijo:MON.fijo, r:MON.r, lado:'fuera' });
+const piTxt = c => MT.textoPi(c) || fmt(c*PI, 2);
+
+const EXPS = [
+  { id:'radio-doble', corto:'Radio doble',
+    q:`Un sector de ${th_('90°')} tiene radio ${r_('3 cm')}. Si el radio se duplica a ${r_('6 cm')} y el ángulo no cambia, ¿qué pasa con el arco ${L_('L')} y con el área ${A_('A')}?`,
+    opts:[['a','Los dos se duplican','GE1-area-como-lado','documentado'],
+          ['b','Nada cambia: el ángulo es el mismo','arco-depende-solo-del-angulo','hipotesis'],
+          ['c','El arco se duplica y el área se cuadruplica'],
+          ['d','El arco no cambia y el área se duplica','arco-igual-area-doble','hipotesis']],
+    ok:'c',
+    fb:{ a:'El arco sí va por 2, pero el área depende de r²: (2r)² = 4r². El área va por 4.', b:'El ángulo (las cintas) no cambia, pero cada cinta mide el doble: el arco se duplica y el área, que depende de r², se cuadruplica.', d:'El arco cambia: L = θ·r, y r se duplicó. El área va por 4, porque depende de r².' },
+    antes:ya => E.config({ modo:'circulo', th:rad(90), r: ya ? 6 : 3, fantasma: ya ? 3 : null, ver:{ sector:true }, lect:['th','r','L','A'], rot:{ th:'90°', L:'L', A:'A' } }),
+    despues:() => { E.fantasma = 3; E.leyenda(); E.animar(3, 6, 1400, r => { E.r = r; }); },
+    exp:() => `<div class="eqs"><div class="eq">${L_('L')}: ${L_(piTxt(D90.antes.Lpi))} → ${L_(piTxt(D90.despues.Lpi))}<span class="note">por ${fmt(D90.razonL, 0)}</span></div>
+      <div class="eq">${A_('A')}: ${A_(piTxt(D90.antes.Api))} → ${A_(piTxt(D90.despues.Api))}<span class="note">por ${fmt(D90.razonA, 0)}</span></div></div>
+      <p>El sector grande es una ampliación del chico con razón 2: las longitudes van por 2 y las áreas por 2² = 4. El área del sector nuevo equivale a la de cuatro sectores como el de antes. Las cintas, que son ${th_('θ')} en radianes, no cambian.</p>
+      <p class="fuente">Creer que el área crece igual que el radio es el error de semejanza mejor documentado: en Bélgica, más del 80 % de alumnos de 16 años respondió así en un problema de áreas de figuras semejantes (De Bock y otros, según resúmenes; ver el informe de geometría). Las otras dos opciones son hipótesis nuestras.</p>` },
+  { id:'dos-radianes', corto:'2 rad, sin π', unidad:UNIDAD_ANGULO,
+    q:`Un ángulo mide ${th_('2 rad')}, así, sin π. ¿Cuántos grados sexagesimales mide?`,
+    opts:[['a','360°: 2 rad es la vuelta entera','TR1-lee-2-como-2pi','parcial'],
+          ['b',`Unos ${fmt(DOS.S, 1)}°`],
+          ['c','2°','TR3-radian-como-grado','parcial'],
+          ['d',`Unos ${fmt(DOS.errores.factorInvertido, 3)}°`,'factor-invertido','hipotesis']],
+    ok:'b',
+    fb:{ a:'Eso sería 2π rad. Aquí no hay π: son 2 cintas, un poco menos de un tercio de la vuelta (114,6° frente a 120°).', c:'Un radián es mucho más que un grado: unos 57,3°. Dos radianes son unos 114,6°.', d:'Esa cuenta multiplica por π/180, que sirve para ir de grados a radianes. De radianes a grados se multiplica por 180/π.' },
+    antes:ya => E.config({ modo:'circulo', th: ya ? 2 : 0, r:4, rMax:4.6, ver:{ cintas:ya, sector:true }, lect: ya ? ['th','cintas','r'] : ['r'], rot:{ th: ya ? `2 rad ≈ ${fmt(DOS.S, 1)}°` : 'θ', L:null } }),
+    despues:() => { E.ver.cintas = true; E.lect = ['th','cintas','r']; E.animar(0, 2, 1600, t => { E.th = t; }, () => { E.rot.th = `2 rad ≈ ${fmt(DOS.S, 1)}°`; E.dibujar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">${th_('S')} = ${th_('2')} · ${fr('180', 'π')} = ${fr('360', 'π')} ≈ ${th_(fmt(DOS.S, 2) + '°')} ≈ ${th_(gms(DOS.S, 'sex'))}</div></div>
+      <p>Cuando un ángulo en radianes no trae π, el número es la cantidad de cintas: 2 rad son dos radios de arco. π solo aparece si el ángulo es una fracción de media vuelta. Con la calculadora pasa lo mismo: en modo DEG lee el número como grados y en modo RAD como radianes; el mismo "2" son dos ángulos muy distintos.</p>
+      <p class="fuente">Leer π solo como 180° y no como un número está descrito en 42 futuros profesores turcos (Akkoç, 2008). Que los grados se cuelen donde van radianes también: en una encuesta a 769 universitarios de ciencias, cerca del 70 % creyó que las derivadas del seno valen igual en grados que en radianes (Ben-Zion y otros, 2025). La opción del factor al revés es una hipótesis nuestra.</p>` },
+  { id:'faja', corto:'Dos ruedas y una faja',
+    q:`Una faja une una rueda de radio ${r_('2 cm')} con otra de ${r_('6 cm')}, sin resbalar. Si la chica da ${n_('3 vueltas')}, ¿cuántas vueltas da la grande?`,
+    opts:[['a','3: las dos dan las mismas vueltas','faja-mismas-vueltas','hipotesis'],
+          ['b','9: la grande da más vueltas porque es más grande','RM5-mas-grande-mas-vueltas','hipotesis'],
+          ['c',`${fmt(TF.n2, 0)}`],
+          ['d','Depende del largo de la faja','faja-depende-del-largo','hipotesis']],
+    ok:'c',
+    fb:{ a:'Las dos llevan la faja a la misma rapidez, pero la grande necesita más faja por vuelta: da menos vueltas.', b:'Es al revés: la rueda grande necesita más faja por vuelta, así que da menos vueltas.', d:'El largo de la faja no importa: lo que pasa por el borde de una pasa por el borde de la otra. Los arcos son iguales.' },
+    antes:() => { E.config({ modo:'faja', caja:{ x0:-6.5, x1:18, y0:-8, y1:8 }, faja:{ ...FAJA, n1:0 }, lect:[x => ['n', 'Vueltas de la chica', fmt(x.faja.n1, 2)]] }); },
+    despues:() => { E.lect = [x => ['n', 'Vueltas de la chica', fmt(x.faja.n1, 2)], x => ['n', 'Vueltas de la grande', fmt(MT.transmision({ r1:FAJA.r1, r2:FAJA.r2, n1:x.faja.n1 }).n2, 2)]];
+      E.animar(0, FAJA.n1, 4000, n => { E.faja.n1 = n; }, null, true); },
+    extra:() => { E.faja.cruzada = !E.faja.cruzada; E.faja.n1 = 0; E.leyenda();
+      const T = MT.transmision({ r1:FAJA.r1, r2:FAJA.r2, union: E.faja.cruzada ? 'cruzada' : 'faja', n1:FAJA.n1 });
+      $('extra2').textContent = E.faja.cruzada ? 'Volver a la faja abierta' : '¿Y si la faja se cruza?';
+      $('extra2msg').textContent = E.faja.cruzada ? `Con la faja cruzada, la grande da igual ${fmt(T.n2, 0)} vuelta, porque los bordes siguen recorriendo el mismo arco; lo que cambia es el sentido: gira al revés que la chica.` : 'Con la faja abierta, las dos giran en el mismo sentido.';
+      E.animar(0, FAJA.n1, 4000, n => { E.faja.n1 = n; }, null, true); },
+    exp:() => `<div class="eqs"><div class="eq">${n_('3')} · 2π · ${r_('2')} = ${n_('n')} · 2π · ${r_('6')} → ${n_('n')} = ${fr(`${n_('3')} · ${r_('2')}`, r_('6'))} = ${n_(fmt(TF.n2, 0))}</div></div>
+      <p>Lo que la faja avanza sobre la rueda chica es lo mismo que avanza sobre la grande: los dos bordes recorren el mismo arco, ${L_('12π cm')}. Como la grande tiene el triple de radio, da la tercera parte de vueltas. En cambio, dos ruedas pegadas al mismo eje giran el mismo ángulo y recorren arcos distintos.</p>
+      <div class="acciones"><button type="button" class="btn" id="extra2">¿Y si la faja se cruza?</button></div><p class="hint" id="extra2msg" aria-live="polite"></p>
+      <p class="fuente">No encontramos estudios sobre ruedas y fajas. Las opciones incorrectas son hipótesis nuestras; la de "la grande da más vueltas" es la misma idea que el informe de razonamiento matemático anota para los engranajes (RM5, sin datos).</p>` },
+  { id:'bicicleta', corto:'La bicicleta',
+    q:`En una bicicleta, el plato de los pedales tiene radio ${r_('10 cm')} y la cadena lo une a un piñón de ${r_('4 cm')}, que está en el mismo eje que la rueda trasera, de ${r_('35 cm')}. Por cada vuelta del pedal, ¿cuántas vueltas da la rueda trasera?`,
+    opts:[['a','1: la misma vuelta que el pedal','bici-mismas-vueltas','hipotesis'],
+          ['b',`${fmt(TB.errores.invertido, 1)}`,'bici-invertido','hipotesis'],
+          ['c',`${fmt(TB.vueltasRueda, 1)}`],
+          ['d',`2/7, unas ${fmt(TB.errores.ejeComoFaja, 2)}: la rueda es más grande que el piñón y da menos`,'bici-faja-en-el-eje','hipotesis']],
+    ok:'c',
+    fb:{ a:'El pedal y la rueda no están en el mismo eje: entre ellos hay una cadena que pasa de una rueda grande (el plato) a una chica (el piñón).', b:'Esa cuenta divide al revés: 4/10. El piñón es más chico que el plato, así que da más vueltas: 10/4 = 2,5.', d:'El piñón y la rueda están en el mismo eje: giran juntos, el mismo ángulo. No hay faja entre ellos.' },
+    antes:() => E.config({ modo:'bici', caja:{ x0:-18, x1:90, y0:-41, y1:41 }, bici:{ ...BICI, n:0 }, lect:[x => ['n', 'Vueltas del pedal', fmt(x.bici.n, 2)]] }),
+    despues:() => { E.lect = [x => ['n', 'Vueltas del pedal', fmt(x.bici.n, 2)], x => ['n', 'Vueltas de la rueda', fmt(vueltasRueda(x.bici.n), 2)]];
+      E.animar(0, 1, 4000, n => { E.bici.n = n; }, null, true); },
+    exp:() => `<div class="eqs"><div class="eq">Cadena: ${n_('1')} · ${r_('10')} = ${n_('n')} · ${r_('4')} → ${n_('n')} = ${n_(fmt(TB.vueltasPinon, 1))} vueltas del piñón</div>
+      <div class="eq">Mismo eje: la rueda da ${n_(fmt(TB.vueltasRueda, 1))} vueltas</div>
+      <div class="eq">Avance: ${n_(fmt(TB.vueltasRueda, 1))} · 2π · ${r_('35')} = ${L_(fmt(TB.avancePi, 0) + 'π cm')} ≈ ${L_(fmt(TB.avance/100, 1) + ' m')}</div></div>
+      <p>Hay dos reglas en la misma bicicleta. Entre el plato y el piñón, la cadena: mismo arco, así que el piñón, más chico, da más vueltas. Entre el piñón y la rueda, el eje: mismo ángulo, así que dan las mismas vueltas. Por eso un piñón más chico hace que la bicicleta avance más por cada pedaleo.</p>
+      <p class="fuente">No encontramos estudios sobre este problema. Las opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'moneda', corto:'La moneda que rueda',
+    q:`Una moneda de radio ${r_('r')} rueda sin resbalar por fuera de un disco fijo de radio ${r_('3r')}, hasta volver al punto de partida. ¿Cuántas vueltas ${n_('n')} da la moneda sobre sí misma?`,
+    opts:[['a',`${fmt(TM.errores.soloArco, 0)}: el borde del disco mide tres veces el de la moneda`,'moneda-solo-arco','hipotesis'],
+          ['b',`${fmt(TM.vueltas, 0)}`],
+          ['c',`${fmt(TM.errores.conDiametros, 0)}`,'moneda-diametros','hipotesis'],
+          ['d',`${fmt(TM.errores.ladoContrario, 0)}`,'moneda-por-dentro','hipotesis']],
+    ok:'b',
+    fb:{ a:'Ese es el arco que toca, pero además la moneda da una vuelta entera al dar la vuelta alrededor del disco. Lo que cuenta es el camino de su centro: 2π·4r.', c:'Esa cuenta usa diámetros en un lado y radios en el otro. El centro de la moneda recorre 2π·4r, y cada vuelta avanza 2πr: 4 vueltas.', d:'Ese es el resultado si rueda por dentro de un aro de radio 3r: el centro recorre 2π·2r. Por fuera, el centro recorre 2π·4r: 4 vueltas.' },
+    antes:() => E.config({ modo:'moneda', caja:{ x0:-5.4, x1:5.4, y0:-5.4, y1:5.4 }, moneda:{ ...MON, phi:0, camino:false }, lect:[] }),
+    despues:() => { E.moneda.camino = true; E.lect = [x => ['n', 'Vueltas de la moneda', fmt(MT.alrededor({ fijo:MON.fijo, r:MON.r, lado:x.moneda.lado || 'fuera', phi:x.moneda.phi }).vueltasHasta, 2)]];
+      E.animar(0, 2*PI, 6000, p => { E.moneda.phi = p; }, null, true); },
+    extra:() => { const dentro = E.moneda.lado !== 'dentro'; E.moneda.lado = dentro ? 'dentro' : 'fuera'; E.moneda.phi = 0; E.moneda.camino = true;
+      const T = MT.alrededor({ fijo:MON.fijo, r:MON.r, lado:E.moneda.lado });
+      $('extra2').textContent = dentro ? '¿Y por fuera?' : '¿Y por dentro?';
+      $('extra2msg').textContent = dentro ? `Por dentro, el centro de la moneda recorre 2π·2r = 4πr: ${fmt(T.vueltas, 0)} vueltas, y gira al revés que su camino.` : `Por fuera, el centro recorre 2π·4r = 8πr: ${fmt(T.vueltas, 0)} vueltas.`;
+      E.animar(0, 2*PI, 6000, p => { E.moneda.phi = p; }, null, true); },
+    exp:() => `<div class="eqs"><div class="eq">El centro recorre 2π · (${r_('3r')} + ${r_('r')}) = 8π${r_('r')}</div>
+      <div class="eq">${n_('n')} = ${fr(`8π${r_('r')}`, `2π${r_('r')}`)} = ${n_(fmt(TM.vueltas, 0))}</div></div>
+      <p>Mira la flecha: da cuatro vueltas completas, una más de las que diría el arco del disco. La vuelta extra la da por ir alrededor del disco, igual que la Luna, que muestra siempre la misma cara y aun así gira una vez sobre sí misma por cada vuelta a la Tierra. Por dentro de un aro de radio 3r daría ${fmt(MT.alrededor({ fijo:3, r:1, lado:'dentro' }).vueltas, 0)}: una menos que las ${fmt(TM.errores.soloArco, 0)} que diría el arco.</p>
+      <div class="acciones"><button type="button" class="btn" id="extra2">¿Y por dentro?</button></div><p class="hint" id="extra2msg" aria-live="polite"></p>
+      <p class="fuente">El informe propone este problema como predicción, pero no encontramos estudios con datos. Las tres opciones incorrectas son hipótesis nuestras.</p>` },
+];
+const S = { k:0, pred:{}, t0:Date.now() };
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  x.antes(ya);
+  E.compactar(!ya);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    const ex = $('extra2'); if (ex && x.extra) ex.onclick = () => { if (E.anim) return; const chico = innerWidth < 900; if (chico) $('cv2').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' }); esperar(chico ? 380 : 0, () => { if (S.k === k) x.extra(); }); };
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    $('otra2').onclick = () => { if (E.anim) return; x.antes(false); const ex = $('extra2'); if (ex){ ex.textContent = x.id === 'faja' ? '¿Y si la faja se cruza?' : '¿Y por dentro?'; $('extra2msg').textContent = ''; } const chico = innerWidth < 900; if (chico) $('cv2').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' }); esperar(chico ? 380 : 0, () => { if (S.k === k) x.despues(); }); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar();
+    E.compactar(false);
+    const chico = innerWidth < 900;
+    if (chico) $('cv2').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+    esperar(chico ? 380 : 0, () => { if (S.k !== k) return; x.despues(); E.leyenda(); E.dibujar(); E.avisar(); });
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0, x.unidad);
+  });
+  // Si ya se respondió, mostrar el estado final sin animar
+  if (ya){
+    if (x.id === 'faja'){ E.faja.n1 = FAJA.n1; E.lect = [z => ['n', 'Vueltas de la chica', fmt(z.faja.n1, 2)], z => ['n', 'Vueltas de la grande', fmt(MT.transmision({ r1:FAJA.r1, r2:FAJA.r2, n1:z.faja.n1 }).n2, 2)]]; }
+    if (x.id === 'bicicleta'){ E.bici.n = 1; E.lect = [z => ['n', 'Vueltas del pedal', fmt(z.bici.n, 2)], z => ['n', 'Vueltas de la rueda', fmt(vueltasRueda(z.bici.n), 2)]]; }
+    if (x.id === 'moneda'){ E.moneda.phi = 2*PI; E.moneda.camino = true; E.lect = [z => ['n', 'Vueltas de la moneda', fmt(MT.alrededor({ fijo:MON.fijo, r:MON.r, lado:z.moneda.lado || 'fuera', phi:z.moneda.phi }).vueltasHasta, 2)]]; }
+    E.dibujar(); E.avisar();
+  }
+  pintar();
+}
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

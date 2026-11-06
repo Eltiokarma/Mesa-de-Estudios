@@ -1,0 +1,108 @@
+{
+  "plantilla": "cinta-radio",
+  "unidades": "Longitudes en las unidades del problema (cm, m). Ángulos: S en grados sexagesimales, C en centesimales, R en radianes; los campos ...Pi son el coeficiente de π (Lpi = 2 quiere decir L = 2π). 'unidad' puede ser 'rad', 'pi' (coeficiente de π), 'sex', 'cent' o 'vueltas'.",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.arcoConGrados, sexagesimal.minutos); los números se comparan con la tolerancia y los textos (textoR, thetaTexto) exactos. 'tambien' son llamadas extra del mismo caso.",
+  "verificacion": "Verificado por un subagente independiente (6 nov 2026) sin leer motor.js ni este archivo: cada valor se recalculó en Python con fracciones exactas y π como coeficiente; la cicloide, la cinta doblada (poligonal de 4000 tramos) y las tangentes de la faja por un método geométrico aparte. Todo coincide con tolerancia 1e-9. Cuatro diferencias de convención, no de cálculo: textoR null para 1 rad (no es múltiplo racional de π), el signo negativo del giro por dentro, el área lineal dada como valor y no como coeficiente, y el error mismoArco del eje en vueltas (0,1) y no en radianes.",
+  "tolerancia": 1e-9,
+  "casos": [
+    { "nombre": "Informe, caso 1 y predicción del paso 3: r = 6 cm y θ = 60° → L = θ·r = (π/3)·6 = 2π cm (TR4, con grados: 60·6 = 360; arco igual al radio: 6; sin el radio: π/3)",
+      "fn": "sector", "args": [{ "r": 6, "theta": 60, "unidad": "sex" }],
+      "espera": { "theta": 1.0471975511965976, "thetaPi": 0.3333333333333333, "thetaTexto": "π/3", "grados": 60, "L": 6.283185307179586, "Lpi": 2,
+                  "cintas": 1.0471975511965976, "errores.arcoConGrados": 360, "errores.arcoIgualRadio": 6, "errores.arcoSinRadio": 1.0471975511965976,
+                  "errores.arcoConDiametro": 12.566370614359172 } },
+
+    { "nombre": "Informe, caso 2 y predicción del paso 5: el sector de r = 6 cm y 60° tiene A = θr²/2 = 6π cm², lo mismo que L·r/2 = 2π·6/2 (sin el ½: 12π; con grados: 60·36/2 = 1080; confunde con el arco: 2π)",
+      "fn": "sector", "args": [{ "r": 6, "theta": 60, "unidad": "sex" }],
+      "espera": { "A": 18.84955592153876, "Api": 6, "ALr": 18.84955592153876, "perimetro": 18.283185307179586,
+                  "errores.areaSinMitad": 37.69911184307752, "errores.areaConGrados": 1080, "errores.areaIgualArco": 6.283185307179586 } },
+
+    { "nombre": "Informe, caso 3: π/12 rad = 15° y 2 rad = 360/π ≈ 114,59° (TR1: leer 2 rad como 2π da 360°; 2 rad = 2° es el otro error)",
+      "fn": "convertir", "args": [{ "Rpi": 0.08333333333333333 }],
+      "espera": { "S": 15, "C": 16.666666666666668, "R": 0.2617993877991494, "textoR": "π/12" },
+      "tambien": [ { "args": [{ "R": 2 }], "espera": { "S": 114.59155902616465, "C": 127.32395447351627, "Rpi": 0.6366197723675814,
+                     "errores.leePiEnR": 360, "errores.radianComoGrado": 2, "sexagesimal.grados": 114, "sexagesimal.minutos": 35 } } ] },
+
+    { "nombre": "Informe, caso 4: 40ᵍ = 36° = π/5 rad (leerlo como 40° es el error; con el factor al revés sale 400/9 ≈ 44,4°)",
+      "fn": "convertir", "args": [{ "C": 40 }],
+      "espera": { "S": 36, "Rpi": 0.2, "R": 0.6283185307179586, "textoR": "π/5", "k": 0.2,
+                  "errores.comoSexagesimal": 40, "errores.factorInvertido": 44.44444444444444 } },
+
+    { "nombre": "Un radián: 1 rad = 180/π ≈ 57,2958° ≈ 57°17'45\" (no es 1° ni 60°); en centesimales, 200/π ≈ 63,66ᵍ",
+      "fn": "convertir", "args": [{ "R": 1 }],
+      "espera": { "S": 57.29577951308232, "C": 63.66197723675813, "Rpi": 0.3183098861837907, "textoR": null,
+                  "sexagesimal.grados": 57, "sexagesimal.minutos": 17, "sexagesimal.segundos": 44.80624709636322, "errores.radianComoGrado": 1, "errores.leePiEnR": 180 } },
+
+    { "nombre": "Una vuelta: 360° = 400ᵍ = 2π rad (TR5: no es 1 rad; TR3: no son 360 rad)",
+      "fn": "convertir", "args": [{ "S": 360 }],
+      "espera": { "C": 400, "R": 6.283185307179586, "Rpi": 2, "textoR": "2π", "vueltas": 1, "errores.gradosComoRadianes": 360, "errores.radianesSinPi": 2 } },
+
+    { "nombre": "Minutos y segundos: 27°30' = 27,5° (no 27,3°) y 27ᵍ50ᵐ = 27,5ᵍ = 24,75° = 24°45'",
+      "fn": "desdeSexagesimal", "args": [27, 30, 0],
+      "espera": { "S": 27.5, "C": 30.555555555555557, "errores.comoDecimal": 27.3 },
+      "tambien": [ { "fn": "desdeCentesimal", "args": [27, 50, 0], "espera": { "C": 27.5, "S": 24.75, "sexagesimal.grados": 24, "sexagesimal.minutos": 45, "sexagesimal.segundos": 0, "errores.minutosDeSesenta": 27.833333333333332 } },
+                   { "fn": "sexagesimal", "args": [12.3456], "espera": { "grados": 12, "minutos": 20, "segundos": 44.16 } },
+                   { "fn": "centesimal", "args": [12.3456], "espera": { "grados": 12, "minutos": 34, "segundos": 56 } } ] },
+
+    { "nombre": "Ecuación de sistemas: C − S = 2 → 20k = 2, k = 1/10: S = 18, C = 20, R = π/10 (el error es dar k = 0,1 como respuesta)",
+      "fn": "resolverSCR", "args": [{ "C": 1, "S": -1 }, 2],
+      "espera": { "k": 0.1, "S": 18, "C": 20, "R": 0.3141592653589793, "textoR": "π/10", "errores.kComoRespuesta": 0.1 },
+      "tambien": [ { "args": [{ "S": 2, "C": -1 }, 32], "espera": { "k": 0.2, "S": 36, "C": 40, "textoR": "π/5" } },
+                   { "args": [{ "S": 1, "C": 1, "Rpi": 20 }, 400], "espera": { "k": 1, "S": 180, "C": 200, "textoR": "π" } } ] },
+
+    { "nombre": "Las cintas (TR2): θ = 2,3 rad son 2 cintas enteras y 0,3 de otra; la cinta mide lo mismo doblada sobre el arco que recta",
+      "fn": "cintas", "args": [2.3],
+      "espera": { "total": 2.3, "enteras": 2, "resto": 0.3, "tramos.0.desde": 0, "tramos.1.hasta": 2, "tramos.2.completa": false, "tramos.2.hasta": 2.3 },
+      "tambien": [ { "fn": "cintaDoblada", "args": [3, 0.5, 0, 4000], "espera": { "enArco": 1.5, "recto": 1.5 } },
+                   { "fn": "cintas", "args": [3], "espera": { "enteras": 3, "resto": 0 } } ] },
+
+    { "nombre": "Predicción del paso 4 (TR2, TR6): con el mismo ángulo de 120°, el radio pasa de 3 a 6: las cintas siguen en 2π/3 ≈ 2,09; el arco se duplica (2π → 4π) y el área se cuadruplica (3π → 12π). Las cintas por 2 serían 4π/3; entre 2, π/3",
+      "fn": "escalarRadio", "args": [{ "r": 3, "theta": 120, "unidad": "sex" }, 2],
+      "espera": { "cintasAntes": 2.0943951023931957, "cintasDespues": 2.0943951023931957, "razonL": 2, "razonA": 4,
+                  "antes.Lpi": 2, "despues.Lpi": 4, "antes.Api": 3, "despues.Api": 12,
+                  "errores.cintasProporcionales": 4.1887902047863905, "errores.cintasInversas": 1.0471975511965976, "errores.areaLineal": 18.84955592153876 } },
+
+    { "nombre": "Sector desde dos datos cualesquiera: L = 10 y r = 4 → θ = 2,5 rad y A = 20; A = 6π y θ = π/3 → r = 6; L = 2π y A = 6π → r = 6",
+      "fn": "sector", "args": [{ "L": 10, "r": 4 }],
+      "espera": { "theta": 2.5, "A": 20, "cintas": 2.5, "grados": 143.2394487827058 },
+      "tambien": [ { "args": [{ "A": 18.84955592153876, "theta": 0.3333333333333333, "unidad": "pi" }], "espera": { "r": 6, "Lpi": 2 } },
+                   { "args": [{ "L": 6.283185307179586, "A": 18.84955592153876 }], "espera": { "r": 6, "thetaTexto": "π/3" } },
+                   { "args": [{ "r": 2, "A": 3 }], "espera": { "theta": 1.5, "L": 3 } } ] },
+
+    { "nombre": "Trapecio circular: radios 4 y 6, θ = π/4 → arcos π y 3π/2, h = 2, A = (π + 3π/2)/2 · 2 = 5π/2 (sector grande menos chico: π/4·(36 − 16)/2, lo mismo). Sin el ½: 5π; con (6 − 4)²: π/2",
+      "fn": "trapecio", "args": [{ "r1": 4, "r2": 6, "theta": 0.25, "unidad": "pi" }],
+      "espera": { "L1": 3.141592653589793, "L2": 4.71238898038469, "h": 2, "Api": 2.5, "Asectores": 7.853981633974483,
+                  "errores.sinMitad": 15.707963267948966, "errores.conCuadradoDeLaResta": 1.5707963267948966, "errores.soloSectorGrande": 14.137166941154069 },
+      "tambien": [ { "args": [{ "L1": 3, "L2": 5, "h": 2 }], "espera": { "A": 8, "theta": 1, "r1": 3, "r2": 5 } } ] },
+
+    { "nombre": "Informe, caso 5: una rueda de r = 1/4 m que recorre 10π m da 10π/(2π·¼) = 20 vueltas (d/r = 40π son radianes, no vueltas; con πr: 40; con el diámetro: 10)",
+      "fn": "vueltas", "args": [{ "d": 31.41592653589793, "r": 0.25 }],
+      "espera": { "n": 20, "giro": 125.66370614359172, "errores.sinDosPi": 125.66370614359172, "errores.conPiR": 40, "errores.conDiametro": 10 },
+      "tambien": [ { "args": [{ "n": 3, "r": 30 }], "espera": { "dPi": 180 } }, { "args": [{ "d": 5.654866776461628, "n": 3 }], "espera": { "r": 0.3 } } ] },
+
+    { "nombre": "Predicción del paso 7: rueda de r = 30 cm que avanza 180π cm → 3 vueltas (d/r = 6π ≈ 18,85; con πr: 6; con el diámetro: 1,5). Al rodar, la marca de la llanta vuelve al piso tras cada vuelta",
+      "fn": "vueltas", "args": [{ "d": 565.4866776461628, "r": 30 }],
+      "espera": { "n": 3, "errores.sinDosPi": 18.84955592153876, "errores.conPiR": 6, "errores.conDiametro": 1.5 },
+      "tambien": [ { "fn": "rodar", "args": [30, 188.49555921538757], "espera": { "vueltas": 1, "marca.x": 188.49555921538757, "marca.y": 0, "centro.y": 30 } },
+                   { "fn": "rodar", "args": [30, 94.24777960769379], "espera": { "marca.x": 94.24777960769379, "marca.y": 60, "giro": 3.141592653589793 } } ] },
+
+    { "nombre": "Informe, caso 5 y «¿qué pasa si…?» 5: una moneda de radio r rueda alrededor de un disco de radio 3r: 4 vueltas por fuera (el centro recorre 2π·4r) y 2 por dentro (3 si se cuenta solo el arco; 6 con diámetros)",
+      "fn": "alrededor", "args": [{ "fijo": 3, "r": 1, "lado": "fuera" }],
+      "espera": { "vueltas": 4, "recorridoCentroPi": 8, "errores.soloArco": 3, "errores.conDiametros": 6, "errores.ladoContrario": 2, "giro": 25.132741228718345 },
+      "tambien": [ { "args": [{ "fijo": 3, "r": 1, "lado": "dentro" }], "espera": { "vueltas": 2, "recorridoCentroPi": 4, "giro": -12.566370614359172, "errores.ladoContrario": 4 } },
+                   { "args": [{ "fijo": 3, "r": 1, "phi": 1.5707963267948966 }], "espera": { "centro.x": 0, "centro.y": 4, "vueltasHasta": 1 } } ] },
+
+    { "nombre": "«¿Qué pasa si…?» 3: ruedas de radios 2 y 6 unidas por una faja; la chica da 3 vueltas → la grande da 1 (mismo arco: 3·2 = 1·6). Mismas vueltas: 3; proporcional al radio: 9",
+      "fn": "transmision", "args": [{ "r1": 2, "r2": 6, "union": "faja", "n1": 3 }],
+      "espera": { "n2": 1, "L1": 37.69911184307752, "L2": 37.69911184307752, "mismoSentido": true, "errores.mismoAngulo": 3, "errores.proporcional": 9 },
+      "tambien": [ { "args": [{ "r1": 3, "r2": 5, "union": "engranaje", "n1": 5 }], "espera": { "n2": 3, "mismoSentido": false } },
+                   { "args": [{ "r1": 2, "r2": 10, "union": "eje", "theta1": 1, "unidad": "pi" }], "espera": { "theta2": 3.141592653589793, "L1": 6.283185307179586, "L2": 31.41592653589793, "mismoSentido": true, "errores.mismoArco": 0.6283185307179586 } } ] },
+
+    { "nombre": "«¿Qué pasa si…?» 4: bicicleta con plato de radio 10 cm, piñón de 4 cm y rueda de 35 cm: una vuelta del pedal da 2,5 vueltas del piñón y de la rueda, y la bicicleta avanza 2,5·2π·35 = 175π cm ≈ 5,5 m (mismas vueltas: 1; al revés: 0,4; faja entre piñón y rueda: 2/7)",
+      "fn": "bicicleta", "args": [{ "plato": 10, "pinon": 4, "rueda": 35 }],
+      "espera": { "vueltasPinon": 2.5, "vueltasRueda": 2.5, "avancePi": 175, "avance": 549.7787143782138, "errores.mismasVueltas": 1, "errores.invertido": 0.4, "errores.ejeComoFaja": 0.2857142857142857 } },
+
+    { "nombre": "Faja abierta entre ruedas de radios 2 y 1 con centros a 10: los tramos rectos tocan cada rueda en perpendicular a su radio y miden √(10² − 1²) = √99",
+      "fn": "tangentesExternas", "args": [{ "x": 0, "y": 0 }, 2, { "x": 10, "y": 0 }, 1],
+      "espera": { "0.p1.x": 0.2, "0.p1.y": 1.98997487421324, "0.p2.x": 10.1, "0.p2.y": 0.99498743710662, "1.p1.y": -1.98997487421324 } }
+  ]
+}

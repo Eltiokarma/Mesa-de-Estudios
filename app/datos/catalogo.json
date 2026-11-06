@@ -161,7 +161,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "dinamica"
+     ]
     },
     {
      "id": "fisica.gravitacion",
@@ -958,7 +960,9 @@
      },
      "potencial_visual": "medio",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "equilibrio-quimico"
+     ]
     },
     {
      "id": "quimica.acidos-y-bases",
@@ -1304,7 +1308,9 @@
      },
      "potencial_visual": "medio",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "grafica-perillas"
+     ]
     },
     {
      "id": "algebra.valor-absoluto-y-radicales",
@@ -1331,7 +1337,9 @@
      },
      "potencial_visual": "medio",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "grafica-perillas"
+     ]
     },
     {
      "id": "algebra.polinomios",
@@ -1468,7 +1476,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "grafica-perillas"
+     ]
     },
     {
      "id": "algebra.tipos-de-funciones-e-inversa",
@@ -1495,7 +1505,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "grafica-perillas"
+     ]
     },
     {
      "id": "algebra.exponenciales-y-logaritmos",
@@ -2349,7 +2361,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "angulo-inscrito"
+     ]
     },
     {
      "id": "geometria.proporcionalidad-y-semejanza",
@@ -2540,7 +2554,8 @@
      "potencial_visual": "alto",
      "grado": 4,
      "plantillas": [
-      "ampliadora"
+      "ampliadora",
+      "angulo-inscrito"
      ]
     },
     {
@@ -2740,7 +2755,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "cinta-radio"
+     ]
     },
     {
      "id": "trigonometria.longitud-de-arco-y-sector",
@@ -2765,7 +2782,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "cinta-radio"
+     ]
     },
     {
      "id": "trigonometria.razones-trigonometricas-agudas",
@@ -4048,6 +4067,24 @@
     "/plantillas/ampliadora/papel.json"
    ]
   },
+  "angulo-inscrito": {
+   "id": "angulo-inscrito",
+   "titulo": "El ángulo que no cambia: ángulos en la circunferencia",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.circunferencia",
+    "geometria.longitud-y-areas-circulares"
+   ],
+   "url": "/plantillas/angulo-inscrito/index.html",
+   "papel": "/plantillas/angulo-inscrito/papel.json",
+   "archivos": [
+    "/plantillas/angulo-inscrito/index.html",
+    "/plantillas/angulo-inscrito/motor.js",
+    "/plantillas/angulo-inscrito/papel.json"
+   ]
+  },
   "calorimetria": {
    "id": "calorimetria",
    "titulo": "Calorimetría",
@@ -4082,6 +4119,24 @@
     "/plantillas/celda-galvanica/papel.json"
    ]
   },
+  "cinta-radio": {
+   "id": "cinta-radio",
+   "titulo": "La cinta del radio: radianes, arco y sector",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "trigonometria.angulo-trigonometrico",
+    "trigonometria.longitud-de-arco-y-sector"
+   ],
+   "url": "/plantillas/cinta-radio/index.html",
+   "papel": "/plantillas/cinta-radio/papel.json",
+   "archivos": [
+    "/plantillas/cinta-radio/index.html",
+    "/plantillas/cinta-radio/motor.js",
+    "/plantillas/cinta-radio/papel.json"
+   ]
+  },
   "circuitos-cc": {
    "id": "circuitos-cc",
    "titulo": "Circuitos",
@@ -4099,6 +4154,23 @@
     "/plantillas/circuitos-cc/papel.json"
    ]
   },
+  "dinamica": {
+   "id": "dinamica",
+   "titulo": "Dinámica: fuerzas, plano inclinado y poleas",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.dinamica"
+   ],
+   "url": "/plantillas/dinamica/index.html",
+   "papel": "/plantillas/dinamica/papel.json",
+   "archivos": [
+    "/plantillas/dinamica/index.html",
+    "/plantillas/dinamica/motor.js",
+    "/plantillas/dinamica/papel.json"
+   ]
+  },
   "energia": {
    "id": "energia",
    "titulo": "Trabajo y energía",
@@ -4114,6 +4186,23 @@
     "/plantillas/energia/index.html",
     "/plantillas/energia/motor.js",
     "/plantillas/energia/papel.json"
+   ]
+  },
+  "equilibrio-quimico": {
+   "id": "equilibrio-quimico",
+   "titulo": "Equilibrio químico",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.equilibrio-quimico"
+   ],
+   "url": "/plantillas/equilibrio-quimico/index.html",
+   "papel": "/plantillas/equilibrio-quimico/papel.json",
+   "archivos": [
+    "/plantillas/equilibrio-quimico/index.html",
+    "/plantillas/equilibrio-quimico/motor.js",
+    "/plantillas/equilibrio-quimico/papel.json"
    ]
   },
   "estequiometria-limitante": {
@@ -4146,6 +4235,26 @@
     "/plantillas/gases/index.html",
     "/plantillas/gases/motor.js",
     "/plantillas/gases/papel.json"
+   ]
+  },
+  "grafica-perillas": {
+   "id": "grafica-perillas",
+   "titulo": "La gráfica con perillas: funciones y sus transformaciones",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "algebra.funciones",
+    "algebra.tipos-de-funciones-e-inversa",
+    "algebra.inecuaciones",
+    "algebra.valor-absoluto-y-radicales"
+   ],
+   "url": "/plantillas/grafica-perillas/index.html",
+   "papel": "/plantillas/grafica-perillas/papel.json",
+   "archivos": [
+    "/plantillas/grafica-perillas/index.html",
+    "/plantillas/grafica-perillas/motor.js",
+    "/plantillas/grafica-perillas/papel.json"
    ]
   },
   "limitante-particulas": {

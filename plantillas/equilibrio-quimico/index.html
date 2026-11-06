@@ -1,0 +1,982 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Equilibrio químico</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md).
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4).
+
+   Colores de esta escena (claro / oscuro). Revisados con CIEDE2000 y contraste WCAG sobre --paper y --card:
+     A (círculo)        azul      #1f5fbf / #7cb0ff   (y [A], su concentración)
+     B (triángulo)      naranja   #a05200 / #f0a04a   (y [B])
+     X (círculo chico)  índigo    #3328c4 / #9f9bff   (y [X]; solo en 2 X ⇌ Y)
+     Y (pareja)         siena     #773922 / #d9a68c   (y [Y]; solo en 2 X ⇌ Y)
+     Q (cociente)       fucsia    #b0179a / #fc72ea
+     K (constante)      turquesa  #0f766e / #5ed9c8
+     T (temperatura)    rojo      #c0364a / #f17384   (el de docs/diseno.md)
+     V (volumen)        verde     #4f7a17 / #a3d65e   (el de docs/diseno.md)
+   Grupos que salen a la vez: {A, B, Q, K, T, tinta} en el paso a paso y {X, Y, Q, K, V, tinta} o {A, B, Q, K, V, tinta}
+   en "¿Qué pasa si…?". ΔE00 mínimo entre los que salen juntos: 22,0 en claro (X–Q) y 21,5 en oscuro (Q–T).
+   A y X, y B e Y, nunca salen juntos, pero igual se separan: ΔE00 ≥ 15,2 en claro y ≥ 12,1 en oscuro.
+   Contraste mínimo: 4,78 en claro (V) y 5,50 en oscuro (T); todos pasan AA (4,5).
+   Rapidez directa e inversa: van en tinta, la directa con línea continua y la inversa a trazos, y siempre con su
+   rótulo (A → B, B → A). Con colores propios serían diez colores: probamos y no hay forma de que todos queden a
+   ΔE00 ≥ 20 entre sí y de la tinta con contraste AA (docs/diseno.md: once es casi el límite). Pintarlas con el color
+   de la especie que se forma haría que el naranja nombrara a la vez B y la rapidez directa: tampoco. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
+  --detras:#f6ece4; --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-A:#1f5fbf; --c-B:#a05200; --c-X:#3328c4; --c-Y:#773922; --c-Q:#b0179a; --c-K:#0f766e; --c-T:#c0364a; --c-V:#4f7a17;
+  --vidrio:#8e97a8;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-A:#7cb0ff; --c-B:#f0a04a; --c-X:#9f9bff; --c-Y:#d9a68c; --c-Q:#fc72ea; --c-K:#5ed9c8; --c-T:#f17384; --c-V:#a3d65e;
+  --vidrio:#5e5670; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-A:#7cb0ff; --c-B:#f0a04a; --c-X:#9f9bff; --c-Y:#d9a68c; --c-Q:#fc72ea; --c-K:#5ed9c8; --c-T:#f17384; --c-V:#a3d65e;
+  --vidrio:#5e5670; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+/* Nada se arrastra en esta escena: el dedo siempre desplaza la página sobre el dibujo. */
+canvas{display:block; width:100%; touch-action:pan-y; -webkit-user-select:none; user-select:none}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+.legend svg{flex:none}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px; white-space:nowrap}
+.v-A{color:var(--c-A); background:color-mix(in srgb, var(--c-A) 12%, transparent)}
+.v-B{color:var(--c-B); background:color-mix(in srgb, var(--c-B) 12%, transparent)}
+.v-X{color:var(--c-X); background:color-mix(in srgb, var(--c-X) 12%, transparent)}
+.v-Y{color:var(--c-Y); background:color-mix(in srgb, var(--c-Y) 12%, transparent)}
+.v-Q{color:var(--c-Q); background:color-mix(in srgb, var(--c-Q) 12%, transparent)}
+.v-K{color:var(--c-K); background:color-mix(in srgb, var(--c-K) 12%, transparent)}
+.v-T{color:var(--c-T); background:color-mix(in srgb, var(--c-T) 12%, transparent)}
+.v-V{color:var(--c-V); background:color-mix(in srgb, var(--c-V) 12%, transparent)}
+.v.hl{background:color-mix(in srgb, currentColor 26%, transparent)}
+input.r-T{accent-color:var(--c-T)}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.05rem; white-space:nowrap; font-variant-numeric:tabular-nums}
+.eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); white-space:normal; flex-basis:100%}
+.eq{min-width:0}
+.frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1.15}
+.frac > span:first-child{border-bottom:1.5px solid currentColor; padding:0 .25em}
+.frac > span:last-child{padding:0 .25em}
+.answer{font-weight:700; padding:12px 16px; border-radius:16px; background:var(--paper); border:2px solid var(--c-K); max-width:66ch}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+.tabla{border-collapse:collapse; font-family:var(--mono); font-size:.98rem; font-variant-numeric:tabular-nums}
+.tabla th, .tabla td{padding:4px 12px; border-bottom:1px solid var(--line); text-align:center; white-space:nowrap}
+.tabla th:first-child, .tabla td:first-child{text-align:left; font-family:var(--font); color:var(--muted); font-weight:700; font-size:.88rem}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.ctrls{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap:12px; align-items:end}
+.slider{display:grid; gap:4px}
+.slider label{font-weight:700; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.slider output{font-family:var(--mono); color:var(--muted)}
+input[type=range]{width:100%; accent-color:var(--ink); min-height:28px}
+.botones{display:flex; flex-wrap:wrap; gap:6px}
+.botones .btn{padding:9px 14px; min-width:64px}
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:999px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.exps{border-radius:20px}
+.lect{font-family:var(--mono); font-size:.95rem; font-variant-numeric:tabular-nums; display:flex; flex-wrap:wrap; gap:4px 16px}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+.check{display:inline-flex; align-items:center; gap:8px; font-weight:700; font-size:.92rem; cursor:pointer; min-height:44px}
+.check input{width:20px; height:20px; accent-color:var(--ink)}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.4fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Química · Equilibrio químico · Problemas tipo admisión</p>
+      <h1>Equilibrio químico: ¿qué pasa adentro de la caja?</h1>
+      <p class="sub">Una caja con dos sustancias que reaccionan entre sí. Mira, predice y compara Q con K.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Caja con porciones de A y B, barras de cantidad y gráficas">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Una caja de 1 litro con porciones de A (círculos) y de B (triángulos); debajo, barras con la cantidad de cada una; al lado, contadores de cambios, la comparación de Q con K y una gráfica en el tiempo"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="legend" id="ley1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos con el equilibrio">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Una caja con porciones de las dos sustancias de la reacción, sus barras de cantidad y, al responder, contadores, la comparación de Q con K y una gráfica"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="legend" id="ley2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg exps" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/equilibrio-quimico">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'equilibrio-quimico', unidad: 'quimica.equilibrio-quimico', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la química sale de MotorEquilibrio (motor.js): la caja de partículas, las rapideces, Q, K y el sentido.
+   Aquí solo se pinta. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const ME = MotorEquilibrio;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+// Coma decimal y signo menos tipográfico.
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 1 : d), r = Math.round(n*p)/p + 0;
+  const [e, f] = String(Math.abs(r)).split('.');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+// K y Q como en los libros: 1/8 en vez de 0,125 cuando el inverso es entero.
+function fmtK(k){
+  if (k === Infinity) return '∞';
+  if (!(k > 0)) return '0';
+  if (k < 1){ const inv = 1/k; if (Math.abs(inv - Math.round(inv)) < 1e-6) return `1/${Math.round(inv)}`; }
+  return fmt(k, k < 1 ? 3 : 2);
+}
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const fr = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
+// Avanza la caja t segundos sin dibujar (para que llegue al equilibrio dinámico antes de mostrarla).
+function adelantar(sim, t){ for (let k = 0; k < Math.round(t/0.05); k++) sim.paso(0.05); }
+
+function colores(){
+  const g = n => css(n);
+  return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
+    A:g('--c-A'), B:g('--c-B'), X:g('--c-X'), Y:g('--c-Y'), Q:g('--c-Q'), K:g('--c-K'), T:g('--c-T'), V:g('--c-V'),
+    metal:g('--vidrio'), mono:g('--mono'), font:g('--font') };
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, x1, y1, x2, y2){ ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
+function rr(ctx, x, y, w, h, r){ ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h); }
+function rotulo(ctx, c, x, y, t, color, align, peso, tam){
+  ctx.font = `${peso || 700} ${tam || 12}px ${c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+  ctx.fillStyle = color; ctx.fillText(t, x, y);
+}
+function pasoBonito(rango, n){
+  const crudo = rango/n, p = Math.pow(10, Math.floor(Math.log10(crudo))), r = crudo/p;
+  return (r < 1.5 ? 1 : r < 3 ? 2 : r < 7 ? 5 : 10)*p;
+}
+
+// Figura de una porción. Rol 'A' = reactivo, 'B' = producto. En A ⇌ B: A círculo, B triángulo.
+// En 2 X ⇌ Y: X círculo pequeño, Y dos círculos unidos (una porción de Y se forma con dos de X).
+function figura(ctx, c, tipo, rol, x, y, R){
+  if (tipo === 'AB'){
+    ctx.fillStyle = rol === 'A' ? c.A : c.B; ctx.beginPath();
+    if (rol === 'A') ctx.arc(x, y, R, 0, Math.PI*2);
+    else { const r = R*1.25; ctx.moveTo(x, y - r); ctx.lineTo(x + r*0.95, y + r*0.62); ctx.lineTo(x - r*0.95, y + r*0.62); ctx.closePath(); }
+    ctx.fill();
+  } else {
+    if (rol === 'A'){ ctx.fillStyle = c.X; ctx.beginPath(); ctx.arc(x, y, R*0.72, 0, Math.PI*2); ctx.fill(); }
+    else {
+      ctx.fillStyle = c.Y; const r = R*0.72, d = r*0.85;
+      ctx.beginPath(); ctx.arc(x - d, y, r, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(x + d, y, r, 0, Math.PI*2); ctx.fill();
+      ctx.strokeStyle = c.Y; ctx.lineWidth = r*0.9; linea(ctx, x - d, y, x + d, y);
+    }
+  }
+}
+function nombre(tipo, rol){ return tipo === 'AB' ? rol : (rol === 'A' ? 'X' : 'Y'); }
+
+/* ----- La escena: caja, barras, contadores, Q contra K, termómetro y gráfica -----
+   E.vista dice qué se ve. Antes de responder una predicción la caja queda congelada y sin contadores, Q, K nuevo
+   ni gráfica: nada regala la respuesta. */
+const ESCENAS = [];
+function crearEscena(cv, idDesc, modoId, conTermo, idLey){
+  const E = { sim:null, vista:{}, extra:null, Vdib:1, hl:null, casa:new WeakMap(), ultDesc:0, modoId };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, Lz = null;
+  function layout(w){
+    if (w >= 560){
+      const h = Math.round(clamp(w*0.66, 390, 470)), wL = Math.round(w*0.5);
+      const box = { x:14, y:44, w:wL - 14 - (conTermo ? 44 : 0), h:h - 44 - 96 };
+      const xr = wL + 24, wr = w - xr - 14;
+      return { H:h, eq:{ x:14, y:22 }, box, bars:{ x:14, y:box.y + box.h + 16, w:wL - 14 }, termo:{ x:box.x + box.w + 24, y:box.y + 22, h:box.h - 56 },
+        cont:{ x:xr, y:14, w:wr }, qk:{ x:xr, y:88, w:wr }, graf:{ x:xr + 30, y:186, w:wr - 34, h:h - 186 - 30 } };
+    }
+    let y = 34;
+    const box = { x:12, y, w:w - 24 - (conTermo ? 44 : 0), h:200 }; y += box.h + 14;
+    const bars = { x:12, y, w:w - 24 }; y += 70;
+    const cont = { x:12, y, w:w - 24 }; y += 66;
+    const graf = { x:40, y:y + 18, w:w - 40 - 14, h:130 }; y += 130 + 50;
+    const qk = { x:12, y, w:w - 24 }; y += 80;
+    return { H:y, eq:{ x:12, y:18 }, box, bars, cont, graf, qk, termo:{ x:box.x + box.w + 24, y:box.y + 22, h:box.h - 56 } };
+  }
+  E.resize = () => {
+    const w = cv.clientWidth; if (!w) return;
+    Lz = layout(w); const h = Lz.H, dpr = window.devicePixelRatio || 1;
+    if (w !== W || h !== H){ W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); ctx.setTransform(dpr,0,0,dpr,0,0); }
+    E.dibujar();
+  };
+  new ResizeObserver(E.resize).observe(cv);
+
+  function ecuacion(c, p){
+    const s = E.sim, v = E.vista; let x = p.x;
+    ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
+    const pieza = (t, col, peso, tam) => { ctx.font = `${peso || 800} ${tam || 16}px ${c.mono}`; ctx.fillStyle = col; ctx.fillText(t, x, p.y); x += ctx.measureText(t).width; };
+    if (s.tipo === 'AB'){ pieza('A', c.A); pieza(' ⇌ ', c.ink, 700); pieza('B', c.B); }
+    else { pieza('2 X', c.X); pieza(' ⇌ ', c.ink, 700); pieza('Y', c.Y); }
+    if (v.K){ x += 14; pieza('Kc = ', c.K, 700, 13); pieza(fmtK(s.K()), c.K, 800, 13); }
+    if (v.cat){ x += 12; pieza('· catalizador', c.ink, 700, 12); }
+  }
+  function caja(c, b){
+    const s = E.sim, v = E.vista, w = b.w*(v.embolo ? E.Vdib : 1);
+    ctx.save();
+    rr(ctx, b.x, b.y, w, b.h, 12); ctx.fillStyle = c.paper; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = c.metal; ctx.stroke();
+    ctx.beginPath(); rr(ctx, b.x + 2, b.y + 2, w - 4, b.h - 4, 10); ctx.clip();
+    if (!v.lupa){
+      // De lejos no se distinguen las porciones: solo se mide cuánto hay (las barras).
+      ctx.fillStyle = c.grid; ctx.fillRect(b.x, b.y, w, b.h);
+      ctx.strokeStyle = c.line; ctx.lineWidth = 1.5;
+      for (let k = -b.h; k < w; k += 12) linea(ctx, b.x + k, b.y + b.h, b.x + k + b.h, b.y);
+      ctx.restore();
+      rotulo(ctx, c, b.x + w/2, b.y + b.h/2 - 11, 'Vista de lejos', c.ink, 'center', 800, 13);
+      rotulo(ctx, c, b.x + w/2, b.y + b.h/2 + 11, 'solo se mide cuánto hay', c.muted, 'center', 700, 12);
+      return;
+    }
+    const R = clamp(Math.min(w, b.h)/22, 5, 9), corre = !v.congelada;
+    for (const p of s.parts){
+      // Con movimiento reducido, cada porción se queda en su lugar: solo cambia de forma.
+      let q = p; if (RM){ q = E.casa.get(p); if (!q){ q = { x:Math.random(), y:Math.random() }; E.casa.set(p, q); } }
+      const px = b.x + 10 + q.x*(w - 20), py = b.y + 10 + q.y*(b.h - 20);
+      const edad = s.t - p.cambio;
+      if (corre && edad >= 0 && edad < (RM ? 0.4 : 0.7)){
+        const col = p.tipo === 'A' ? (s.tipo === 'AB' ? c.A : c.X) : (s.tipo === 'AB' ? c.B : c.Y);
+        if (RM){ ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(px, py, R*1.75, 0, Math.PI*2); ctx.stroke(); }
+        else { ctx.globalAlpha = 0.45*(1 - edad/0.7); ctx.fillStyle = col; ctx.beginPath(); ctx.arc(px, py, R*(1.6 + edad*1.6), 0, Math.PI*2); ctx.fill(); ctx.globalAlpha = 1; }
+      }
+      figura(ctx, c, s.tipo, p.tipo, px, py, R);
+    }
+    ctx.restore();
+    if (v.embolo){
+      ctx.fillStyle = c.metal; ctx.fillRect(b.x + w - 3, b.y - 6, 9, b.h + 12);
+      if (b.w - w > 8) ctx.fillRect(b.x + w + 6, b.y + b.h/2 - 4, b.w - w - 6, 8);
+      ctx.font = `800 12px ${c.font}`; ctx.fillStyle = c.V; ctx.textAlign = 'right'; ctx.textBaseline = 'top'; ctx.fillText(`V = ${fmt(s.V, 1)} L`, b.x + b.w, b.y + b.h + 16);
+    } else { ctx.font = `700 11px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'right'; ctx.textBaseline = 'top'; ctx.fillText(`caja de ${fmt(s.V, 1)} L`, b.x + b.w, b.y + b.h + 16); }
+    if (v.congelada && v.lupa && v.aviso){ ctx.font = `800 12px ${c.font}`; ctx.fillStyle = c.ink; ctx.textAlign = 'right'; ctx.textBaseline = 'bottom'; ctx.fillText(v.aviso, b.x + b.w, b.y - 6); }
+  }
+  function barras(c, b){
+    const s = E.sim, v = E.vista, n = s.cuenta(), max = Math.max(20, ...Object.values(n));
+    ctx.font = `700 11px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+    ctx.fillText('Lo que se mide (porciones)', b.x, b.y);
+    const der = v.conc ? 112 : 34, x0 = b.x + 34, x1 = b.x + b.w - der;
+    ['A', 'B'].forEach((rol, k) => {
+      const nom = nombre(s.tipo, rol), col = c[nom], y = b.y + 18 + k*25, cnt = n[nom];
+      figura(ctx, c, s.tipo, rol, b.x + 9, y + 9, 6);
+      ctx.font = `800 13px ${c.mono}`; ctx.fillStyle = col; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText(nom, b.x + 19, y + 9);
+      ctx.fillStyle = c.grid; rr(ctx, x0, y + 1, x1 - x0, 16, 5); ctx.fill();
+      ctx.fillStyle = col; rr(ctx, x0, y + 1, Math.max(2, (x1 - x0)*cnt/max), 16, 5); ctx.fill();
+      if (E.hl === nom){ ctx.strokeStyle = c.ink; ctx.lineWidth = 2; rr(ctx, x0, y + 1, x1 - x0, 16, 5); ctx.stroke(); }
+      ctx.font = `800 13px ${c.mono}`; ctx.fillStyle = col; ctx.textAlign = 'left'; ctx.fillText(String(cnt), x1 + 6, y + 9);
+      if (v.conc){ ctx.font = `700 12px ${c.mono}`; ctx.fillText(`[${nom}] = ${fmt(cnt/s.V, 1)}/L`, x1 + 30, y + 9); }
+    });
+  }
+  function placeholder(c, b, h, t){
+    ctx.save(); ctx.setLineDash([4, 4]); ctx.strokeStyle = c.line; ctx.lineWidth = 1.5; rr(ctx, b.x, b.y, b.w, h, 10); ctx.stroke(); ctx.restore();
+    ctx.font = `700 12px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(t, b.x + b.w/2, b.y + h/2);
+  }
+  function contadores(c, b){
+    const s = E.sim, v = E.vista;
+    if (!v.contadores){ placeholder(c, b, 54, v.ph || 'Los contadores aparecen al mirar adentro'); return; }
+    const k = s.cambios(), a = nombre(s.tipo, 'A'), bb = nombre(s.tipo, 'B'), ca = s.tipo === 'AB' ? 'A' : '2 X';
+    ctx.font = `700 11px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+    ctx.fillText('Cambios en el último segundo', b.x, b.y);
+    [[`${ca} → ${bb}`, k.directa, false], [`${bb} → ${ca}`, k.inversa, true]].forEach(([t, n, trazos], j) => {
+      const y = b.y + 26 + j*22;
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2.5; if (trazos) ctx.setLineDash([5, 4]); linea(ctx, b.x, y, b.x + 22, y); ctx.restore();
+      ctx.font = `800 13px ${c.mono}`; ctx.fillStyle = c.ink; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText(t, b.x + 30, y);
+      ctx.textAlign = 'right'; ctx.font = `800 15px ${c.mono}`; ctx.fillText(String(n), b.x + b.w - 4, y);
+    });
+  }
+  function medidor(c, b){
+    const s = E.sim, v = E.vista;
+    if (!v.qk){ if (v.phQK) placeholder(c, b, 54, v.phQK); return; }
+    const Q = s.Q(), K = s.K(), lo = Math.log(1/50), hi = Math.log(50), x0 = b.x + 10, x1 = b.x + b.w - 10, y = b.y + 36;
+    const X = val => x0 + (clamp(Math.log(val), lo, hi) - lo)/(hi - lo)*(x1 - x0);
+    ctx.font = `700 11px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+    ctx.fillText('Q contra K', b.x, b.y);
+    ctx.font = `800 11px ${c.font}`; ctx.fillStyle = c.ink; ctx.textAlign = 'right'; ctx.fillText(sentidoTexto(s), b.x + b.w, b.y);
+    ctx.strokeStyle = c.muted; ctx.lineWidth = 1.4; linea(ctx, x0, y, x1, y);
+    ctx.font = `600 10px ${c.mono}`; ctx.fillStyle = c.muted; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    for (const t of [0.1, 1, 10]){ linea(ctx, X(t), y - 3, X(t), y + 3); ctx.fillText(fmt(t, 1), X(t), y + 29); }
+    // K: raya vertical; Q: triángulo. Escala logarítmica, de 1/50 a 50.
+    ctx.strokeStyle = c.K; ctx.lineWidth = E.hl === 'K' ? 5 : 3; linea(ctx, X(K), y - 11, X(K), y + 11);
+    ctx.font = `800 11px ${c.mono}`; ctx.fillStyle = c.K; ctx.textBaseline = 'bottom';
+    const xk = clamp(X(K), x0 + 22, x1 - 22); ctx.fillText(`K = ${fmtK(K)}`, xk, y - 12);
+    const xq = X(Q === Infinity ? 1e9 : Q === 0 ? 1e-9 : Q), r = E.hl === 'Q' ? 8 : 6;
+    ctx.fillStyle = c.Q; ctx.beginPath(); ctx.moveTo(xq, y - r); ctx.lineTo(xq + r*0.75, y); ctx.lineTo(xq, y + r); ctx.lineTo(xq - r*0.75, y); ctx.closePath(); ctx.fill();
+    const tq = Q === Infinity ? 'Q muy grande' : `Q = ${fmtK(Q)}`;
+    ctx.font = `800 11px ${c.mono}`; ctx.textBaseline = 'top'; ctx.textAlign = 'center';
+    ctx.save(); const wq = ctx.measureText(tq).width, xt = clamp(xq, x0 + wq/2, x1 - wq/2);
+    ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(xt - wq/2 - 3, y + 11, wq + 6, 14); ctx.restore();
+    ctx.fillStyle = c.Q; ctx.fillText(tq, xt, y + 12);
+  }
+  function termometro(c, t){
+    const s = E.sim; if (!E.vista.termo) return;
+    const x = t.x, y = t.y, h = t.h;
+    ctx.save();
+    rr(ctx, x - 4, y, 8, h, 4); ctx.fillStyle = c.card; ctx.fill(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.3; ctx.stroke();
+    ctx.beginPath(); ctx.arc(x, y + h + 5, 8, 0, Math.PI*2); ctx.fillStyle = c.T; ctx.fill();
+    const f = clamp((s.T - 200)/300, 0, 1); ctx.fillStyle = c.T; ctx.fillRect(x - 2, y + h - f*(h - 4), 4, f*(h - 4) + 2);
+    ctx.font = `800 12px ${c.mono}`; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom'; ctx.fillStyle = c.T;
+    ctx.fillText(`${fmt(s.T, 0)} K`, x, y - 5);
+    ctx.restore();
+  }
+  function grafica(c, b){
+    const s = E.sim, v = E.vista;
+    if (!v.graf){ placeholder(c, { x:b.x - 28, y:b.y - 4, w:b.w + 28 }, b.h + 24, v.phGraf || 'La gráfica aparece al mirar adentro'); return; }
+    const VENT = 12, hist = s.historial, tEnd = Math.max(s.t, VENT), t0 = tEnd - VENT;
+    let series;
+    if (v.graf === 'cat'){
+      const e = E.extra;
+      series = [{ pts:e.con.map(h => [h.t, h.b]), col:c.B, t:'[B]' }, { pts:e.sin.map(h => [h.t, h.b]), col:c.B, fina:true, t:'' },
+                { pts:e.con.map(h => [h.t, h.a]), col:c.A, t:'[A]' }, { pts:e.sin.map(h => [h.t, h.a]), col:c.A, fina:true, t:'' }];
+    } else if (v.graf === 'rap'){
+      const ca = s.tipo === 'AB' ? 'A' : '2 X', cb = nombre(s.tipo, 'B');
+      series = [{ pts:hist.map(h => [h.t, h.directa]), col:c.ink, t:`${ca} → ${cb}` }, { pts:hist.map(h => [h.t, h.inversa]), col:c.ink, trazos:true, t:`${cb} → ${ca}` }];
+    } else {
+      const a = nombre(s.tipo, 'A'), bb = nombre(s.tipo, 'B');
+      series = [{ pts:hist.map(h => [h.t, h.a]), col:c[a], t:`[${a}]` }, { pts:hist.map(h => [h.t, h.b]), col:c[bb], t:`[${bb}]` }];
+    }
+    const x0 = v.graf === 'cat' ? 0 : t0, x1 = v.graf === 'cat' ? 8 : tEnd;
+    let ymax = 1;
+    for (const se of series) for (const [t, y] of se.pts) if (t >= x0 - 0.2 && t <= x1 + 0.2 && y > ymax) ymax = y;
+    const py = pasoBonito(ymax*1.1, 4), y1 = Math.ceil(ymax*1.12/py)*py;
+    const X = t => b.x + (t - x0)/(x1 - x0)*b.w, Y = y => b.y + b.h - y/y1*b.h;
+    ctx.save();
+    ctx.fillStyle = c.paper; ctx.fillRect(b.x, b.y, b.w, b.h);
+    ctx.strokeStyle = c.grid; ctx.lineWidth = 1; ctx.font = `600 10px ${c.mono}`; ctx.fillStyle = c.muted; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    for (let y = 0; y <= y1 + 1e-9; y += py){ linea(ctx, b.x, Y(y), b.x + b.w, Y(y)); ctx.fillText(fmt(y, py < 1 ? 1 : 0), b.x - 5, Y(y)); }
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    for (let t = Math.ceil(x0/2)*2; t <= x1 + 1e-9; t += 2){ linea(ctx, X(t), b.y, X(t), b.y + b.h); ctx.fillText(`${fmt(t, 0)}`, clamp(X(t), b.x + 6, b.x + b.w - 6), b.y + b.h + 4); }
+    // Marcas de los cambios hechos a mano (una por tipo cada 3 s, para no llenar la gráfica al mover un deslizador).
+    if (v.graf !== 'cat'){
+      const vistas = {}; let xPrev = -1e9, fila = 0;
+      ctx.setLineDash([3, 3]); ctx.strokeStyle = c.muted; ctx.fillStyle = c.muted; ctx.font = `700 10px ${c.font}`; ctx.textBaseline = 'top'; ctx.textAlign = 'left';
+      for (const m of s.marcas){
+        const tipo = m.que;
+        if (m.t < x0 || m.t > x1 || (vistas[tipo] !== undefined && m.t - vistas[tipo] < 3)) continue;
+        vistas[tipo] = m.t;
+        linea(ctx, X(m.t), b.y, X(m.t), b.y + b.h);
+        const txt = { V:'cambia V', T:'cambia T', cat:'catalizador' }[m.que] || m.que;
+        fila = X(m.t) - xPrev < 70 ? fila + 1 : 0; xPrev = X(m.t);
+        if (fila < 4) ctx.fillText(txt, Math.min(X(m.t) + 3, b.x + b.w - ctx.measureText(txt).width - 2), b.y + 2 + fila*12);
+      }
+      ctx.setLineDash([]);
+    }
+    ctx.beginPath(); ctx.rect(b.x, b.y - 2, b.w, b.h + 4); ctx.clip();
+    for (const se of series){
+      ctx.strokeStyle = se.col; ctx.lineWidth = se.fina ? 1.5 : 2.8; ctx.globalAlpha = se.fina ? .5 : 1; ctx.setLineDash(se.trazos ? [6, 4] : []); ctx.beginPath(); let i = 0;
+      for (const [t, y] of se.pts){ if (t < x0 - 0.2) continue; if (i++) ctx.lineTo(X(t), Y(y)); else ctx.moveTo(X(t), Y(y)); }
+      ctx.stroke(); ctx.globalAlpha = 1;
+    }
+    ctx.restore();
+    ctx.strokeStyle = c.muted; ctx.lineWidth = 1.4; linea(ctx, b.x, b.y + b.h, b.x + b.w, b.y + b.h); linea(ctx, b.x, b.y, b.x, b.y + b.h);
+    // Rótulos de cada línea, a la izquierda del final, sin taparse entre sí.
+    const fines = series.map(se => { const u = se.pts[se.pts.length - 1]; return u ? { se, y:Y(u[1]) } : null; }).filter(Boolean)
+      .filter(f => f.se.t).sort((a, b) => a.y - b.y);
+    let prev = -1e9;
+    for (const f of fines){ const y = Math.max(f.y - 10, prev + 15); prev = y; rotulo(ctx, c, b.x + b.w - 4, clamp(y, b.y + 8, b.y + b.h - 8), f.se.t, f.se.col, 'right', 800, 11); }
+    ctx.font = `700 10px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'left'; ctx.textBaseline = 'bottom';
+    ctx.fillText(v.graf === 'rap' ? 'cambios por segundo' : v.graf === 'cat' ? 'por litro · gruesa: con catalizador · fina: sin' : 'porciones por litro', b.x - 26, b.y - 3);
+    ctx.textAlign = 'right'; ctx.textBaseline = 'top'; ctx.fillText('t (s)', b.x + b.w, b.y + b.h + 15);
+  }
+  E.dibujar = () => {
+    if (!W || !E.sim || !Lz) return;
+    const c = colores(); ctx.clearRect(0, 0, W, H);
+    ecuacion(c, Lz.eq); caja(c, Lz.box); termometro(c, Lz.termo); barras(c, Lz.bars);
+    contadores(c, Lz.cont); medidor(c, Lz.qk); grafica(c, Lz.graf);
+    const ley = leyendaHTML(E.sim, E.vista), el = document.getElementById(idLey);
+    if (el && el.dataset.k !== ley){ el.dataset.k = ley; el.innerHTML = ley; }
+  };
+  // Descripción para lector de pantalla: solo lo que ya se puede saber.
+  E.describir = (forzar) => {
+    const now = performance.now(); if (!forzar && now - E.ultDesc < 3000) return; E.ultDesc = now;
+    const s = E.sim, v = E.vista; if (!s) return;
+    const n = s.cuenta(), a = nombre(s.tipo, 'A'), b = nombre(s.tipo, 'B');
+    let t;
+    if (!v.lupa) t = `Caja de ${fmt(s.V, 1)} L vista de lejos: ${n[a]} porciones de ${a} y ${n[b]} de ${b}. Las cantidades no cambian.`;
+    else if (v.congelada) t = `Caja detenida en este instante: ${n[a]} porciones de ${a} y ${n[b]} de ${b}${v.K ? `; Kc = ${fmtK(s.K())}` : ''}${v.termo ? `, a ${fmt(s.T, 0)} K` : ''}.`;
+    else {
+      const k = s.cambios();
+      t = `Hay ${n[a]} porciones de ${a} y ${n[b]} de ${b}${v.embolo ? ` en ${fmt(s.V, 1)} L` : ''}. En el último segundo, ${k.directa} cambios de ${a} a ${b} y ${k.inversa} de ${b} a ${a}.`;
+      if (v.qk) t += ` Q = ${fmtK(s.Q())}, K = ${fmtK(s.K())}: ${sentidoTexto(s)}.`;
+      if (v.termo) t += ` Temperatura: ${fmt(s.T, 0)} K.`;
+    }
+    const el = document.getElementById(idDesc); if (el.textContent !== t) el.textContent = t;
+  };
+  return E;
+}
+// Leyenda con solo lo que se ve en ese momento.
+function leyendaHTML(s, v){
+  const sv = (w, body) => `<svg width="${w}" height="14" aria-hidden="true">${body}</svg>`, it = [];
+  if (s.tipo === 'AB'){
+    it.push(`<span>${sv(14, '<circle cx="7" cy="7" r="5.5" fill="var(--c-A)"/>')}A · cada círculo, una porción</span>`);
+    it.push(`<span>${sv(14, '<path d="M7 1.5 L13 12.5 L1 12.5 Z" fill="var(--c-B)"/>')}B · cada triángulo, una porción</span>`);
+  } else {
+    it.push(`<span>${sv(14, '<circle cx="7" cy="7" r="4" fill="var(--c-X)"/>')}X · cada círculo pequeño, una porción</span>`);
+    it.push(`<span>${sv(22, '<circle cx="7" cy="7" r="4" fill="var(--c-Y)"/><circle cx="14" cy="7" r="4" fill="var(--c-Y)"/>')}Y · cada pareja, una porción de Y (no una molécula)</span>`);
+  }
+  if (v.qk) it.push(`<span>${sv(14, '<path d="M7 1 L12 7 L7 13 L2 7 Z" fill="var(--c-Q)"/>')}Q · cociente</span>`);
+  if (v.K || v.qk) it.push(`<span><i style="background:var(--c-K)"></i>K · constante</span>`);
+  if (v.termo) it.push(`<span><i style="background:var(--c-T)"></i>T · temperatura</span>`);
+  if (v.embolo) it.push(`<span><i style="background:var(--c-V)"></i>V · volumen</span>`);
+  if (v.contadores || v.graf === 'rap'){ const a = s.tipo === 'AB' ? 'A' : '2 X', b = s.tipo === 'AB' ? 'B' : 'Y'; it.push(`<span>línea continua: ${a} → ${b} · a trazos: ${b} → ${a}</span>`); }
+  if (v.graf === 'cat') it.push(`<span>gráfica: línea gruesa, con catalizador · fina y clara, sin</span>`);
+  return it.join('');
+}
+// "Q < K: avanza hacia B", con la cuenta exacta del motor. Como las porciones son enteras, a veces Q no puede
+// igualar a K: si ya están en el entero más cercano al equilibrio, se dice que está en equilibrio.
+function sentidoTexto(s){
+  const a = nombre(s.tipo, 'A'), b = nombre(s.tipo, 'B'), Q = s.Q(), K = s.K(), n = s.cuenta();
+  const sen = ME.sentido(Q, K);
+  if (sen === 'equilibrio') return 'Q = K: en equilibrio';
+  try { const eq = s.equilibrio(); if (Math.round(eq[b]) === n[b] && Math.round(eq[a]) === n[a]) return 'Q ≈ K: en equilibrio'; } catch (e) { return 'no hay nada que reaccione'; }
+  return sen === 'directa' ? `Q < K: avanza hacia ${b}` : `Q > K: avanza hacia ${a}`;
+}
+// Resaltar en el dibujo la variable que se toca en el texto (regla 4).
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+// Un solo bucle: avanza la caja que está a la vista (si no está congelada) y la dibuja.
+// Con movimiento reducido la química sigue (los contadores cuentan), pero las porciones no se desplazan.
+(function(){
+  let ultimo = performance.now();
+  const tick = now => {
+    const dt = Math.min(0.05, (now - ultimo)/1000); ultimo = now;
+    for (const E of ESCENAS){
+      if (document.getElementById(E.modoId).hidden || !E.sim) continue;
+      if (E.anima) E.anima(dt);
+      if (!E.vista.congelada && dt > 0) E.sim.paso(dt);
+      E.dibujar(); E.describir();
+    }
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+})();
+// Cambio gradual (temperatura, volumen dibujado). Con movimiento reducido, de una vez.
+function gradual(E, dur, paso, fin){
+  if (RM){ paso(1); E.anima = null; if (fin) fin(); return; }
+  let t = 0;
+  E.anima = dt => { t += dt; const f = Math.min(1, t/dur); paso(f); if (f >= 1){ E.anima = null; if (fin) fin(); } };
+}
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}" aria-label="Opción ${'abcd'.indexOf(k) + 1}: ${t}"><span class="l">${'abcd'.indexOf(k) + 1}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+const otraVez = `<button type="button" class="btn" data-repetir>Ver de nuevo</button>`;
+const segGraf = (sel) => `<div class="seg" role="group" aria-label="Qué muestra la gráfica"><button type="button" data-graf="conc" aria-pressed="${sel === 'conc'}">Cantidades</button><button type="button" data-graf="rap" aria-pressed="${sel === 'rap'}">Rapideces</button></div>`;
+function enlazarSeg(raiz, E, alElegir){
+  raiz.querySelectorAll('[data-graf]').forEach(b => b.onclick = () => {
+    E.vista.graf = b.dataset.graf; raiz.querySelectorAll('[data-graf]').forEach(y => y.setAttribute('aria-pressed', String(y === b)));
+    if (alElegir) alElegir(b.dataset.graf); E.dibujar();
+  });
+}
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso =================
+   Problema guiado de docs/investigacion/equilibrio-acidos-electroquimica-ideas-erroneas.md: A ⇌ B en una caja de 1 L,
+   300 K, Kc = 4, la directa libera calor. 2 A y 8 B en equilibrio; se agregan 10 A. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'm1', true, 'ley1');
+const SEM = 7;
+const S = { step:0, max:0, pred:{}, graf:{}, ocupado:false };
+const base = (nA, nB) => { const s = ME.caja({ tipo:'AB', nA, nB, T:300, semilla:SEM }); adelantar(s, 4); return s; };
+const agregado = () => { const s = base(2, 8); s.agregar('A', 10); return s; };
+const caliente = () => { const s = base(4, 16); s.temperatura(400); return s; };
+const A_ = t => V('A', t), B_ = t => V('B', t), Q_ = t => V('Q', t), K_ = t => V('K', t), T_ = t => V('T', t);
+// El texto de la fuente queda aquí para quien lea el código; la medición guarda solo la categoría, como las demás escenas.
+const RES = (doc, txt) => doc;
+
+const P0 = { id:'equilibrio-quimico-paso2', ok:'c', opts:[
+  ['a','Ya no reacciona nada: la reacción terminó.','EQ3', RES('documentado','Riddle y Lo-Fan-Hin 2023: 6 % de 63 y 13 % de 16')],
+  ['b','Va y viene: un rato casi todo pasa a B y otro rato vuelve a A.','EQ2', RES('documentado','Bilgin y otros 2003, ítem 5: 51 % de 216')],
+  ['c','Sigue cambiando: tantas de A a B como de B a A.'],
+  ['d','Sigue cambiando, pero más de A a B que de B a A.','EQ4', RES('documentado','Bilgin y otros 2003, ítem 7: 40 % de 216')]],
+  fb:{ c:'¡Bien! Las porciones siguen cambiando en los dos sentidos, tantas de ida como de vuelta: por eso las cantidades no se mueven. Mira los contadores.',
+    a:'Elegiste la 1. La reacción no se detiene: mira los contadores, siguen cambiando porciones en los dos sentidos. Según Riddle y Lo-Fan-Hin (2023), el 6 % de 63 estudiantes de secundaria y el 13 % de 16 de último año creen que en el equilibrio la reacción terminó. La correcta está marcada.',
+    b:'Elegiste la 2. No va y viene: las dos reacciones ocurren a la vez, todo el tiempo, y por eso las cantidades no se mueven. Según Bilgin y otros (2003), el 51 % de 216 estudiantes piensa en ese vaivén. La correcta está marcada.',
+    d:'Elegiste la 4. Si pasaran más porciones de A a B que de B a A, el número de B subiría, y no sube. Según Bilgin y otros (2003), el 40 % de 216 cree que en el equilibrio las dos rapideces no son iguales. La correcta está marcada.' } };
+const P1 = { id:'equilibrio-quimico-paso4', ok:'d', opts:[
+  ['a','12 A y 8 B: no pasa nada, ya estaba en equilibrio','EQ3', RES('documentado','Riddle y Lo-Fan-Hin 2023: 6 % de 63 y 13 % de 16')],
+  ['b','2 A y 18 B: se gasta todo lo agregado','EQ6', RES('parcial','Bilgin y otros 2003, ítem 11 (parcial): 53 % de 216 cree que las rapideces vuelven a las iniciales')],
+  ['c','10 A y 10 B: quedan iguales','EQ1', RES('documentado','Bilgin y otros 2003: 36 % de 216; Riddle y Lo-Fan-Hin 2023: 48 % de 63')],
+  ['d','4 A y 16 B: parte de lo agregado pasa a B']],
+  fb:{ d:'¡Bien! Quedan 4 A y 16 B: [B]/[A] vuelve a ser 4. Mira cómo llega la caja; en el paso 6 está la cuenta.',
+    a:'Elegiste la 1. Al agregar A, el equilibrio se rompe: la reacción directa se acelera y parte del A pasa a B. Según Riddle y Lo-Fan-Hin (2023), el 6 % de 63 y el 13 % de 16 creen que en el equilibrio la reacción terminó. La correcta está marcada.',
+    b:'Elegiste la 2. No se gasta todo lo agregado: solo 8 de las 10 porciones pasan a B, y el sistema llega a un equilibrio nuevo, no al de antes. Según Bilgin y otros (2003, ítem 11), el 53 % de 216 cree que las rapideces vuelven a las de antes; que las cantidades vuelvan es una extensión nuestra. La correcta está marcada.',
+    c:'Elegiste la 3. En el equilibrio las cantidades quedan constantes, no iguales: su relación la fija K. Según Bilgin y otros (2003), el 36 % de 216 cree que quedan iguales; según Riddle y Lo-Fan-Hin (2023), el 48 % de 63. La correcta está marcada.' } };
+const P2 = { id:'equilibrio-quimico-paso7', ok:'c', opts:[
+  ['a','No cambia: K es constante','EQ9', RES('documentado','Bilgin y otros 2003, ítem 19: 44 % de 216')],
+  ['b','Sube: con más temperatura todo reacciona más','EQ8', RES('documentado','Bilgin y otros 2003, ítem 18: 22 % de 216')],
+  ['c','Baja: se favorece la reacción que absorbe calor'],
+  ['d','Depende: de cuánto A y B haya en la caja','EQ10', RES('documentado','Tagle Barrios 2024 (UNAM), sin porcentaje')]],
+  fb:{ c:'¡Bien! La directa libera calor; al calentar se favorece la inversa, que lo absorbe. K baja.',
+    a:'Elegiste la 1. K es constante solo mientras no cambie la temperatura. Según Bilgin y otros (2003), el 44 % de 216 cree que K no cambia al calentar. La correcta está marcada.',
+    b:'Elegiste la 2. Al calentar, las dos reacciones se aceleran, pero la inversa (la que absorbe calor) se acelera más, y K baja. Según Bilgin y otros (2003), el 22 % de 216 cree que K sube. La correcta está marcada.',
+    d:'Elegiste la 4. K no depende de cuánto A y B haya: solo de la temperatura. Esta idea aparece en estudiantes de la UNAM (Tagle Barrios, 2024), sin porcentaje. La correcta está marcada.' } };
+
+// Vistas: qué se ve en cada paso. 'r' = ya respondió la predicción del paso.
+const VISTA = {
+  lejos:   () => ({ lupa:false, congelada:true, contadores:false, graf:null, qk:false, K:false, termo:false, ph:'Los contadores aparecen al mirar adentro', phGraf:'La gráfica aparece al mirar adentro' }),
+  adentro: (g) => ({ lupa:true, congelada:false, contadores:true, graf:g || 'conc', qk:false, K:true, termo:false, phQK:'Q y K se comparan en el paso 6' }),
+};
+const steps = [
+ { k:'Paso 1', t:'El problema', arma:() => base(2, 8), vista:() => VISTA.lejos(),
+   body:() => `<p class="problem">En una caja de 1 L hay ${A_('A')} y ${B_('B')} en equilibrio: ${A_('2 porciones de A')} y ${B_('8 de B')} (A ⇌ B). Se agregan ${A_('10 porciones de A')} de golpe. Cuando vuelva al equilibrio, ¿cuánto habrá de cada uno?</p>
+   <p>En el dibujo, cada círculo será una porción de ${A_('A')} y cada triángulo, una porción de ${B_('B')}. Una porción es una cantidad fija de sustancia (por ejemplo, un mol): no es una molécula.</p>
+   <p>Por ahora ves la caja de lejos, como en el laboratorio: solo se mide cuánto hay de cada uno (las barras). En el equilibrio, esas cantidades no cambian.</p>` },
+ { k:'Paso 2', t:'Antes de mirar adentro, predice', gate:P0, arma:() => base(2, 8),
+   vista:r => r ? VISTA.adentro() : { ...VISTA.lejos(), ph:'Responde para ver los contadores', phGraf:'Responde para ver la gráfica' },
+   body:() => `<p>La caja está en equilibrio: el número de ${A_('A')} y de ${B_('B')} no cambia. ¿Qué pasa adentro?</p>${opcionesHTML(P0.opts, 'fb')}
+   <p class="hint" id="tras" hidden>Ahora la caja se ve con lupa. Cada porción que acaba de cambiar se marca un instante${RM ? ' con un borde' : ' con un halo'}. Los contadores dicen cuántas cambiaron en el último segundo, en cada sentido.</p>` },
+ { k:'Paso 3', t:'Adentro de la caja en equilibrio', arma:() => base(2, 8), vista:() => VISTA.adentro(),
+   body:() => `<p>Los dos contadores marcan lo mismo y ninguno marca cero: cada segundo, unas porciones de ${A_('A')} pasan a ${B_('B')} y otras tantas de ${B_('B')} pasan a ${A_('A')}. Por eso nada cambia a la vista: es un equilibrio dinámico.</p>
+   <div class="eqs">
+     <div class="eq">rapidez directa (A → B)</div>
+     <div class="eq">= rapidez inversa (B → A)</div>
+     <div class="eq">${K_('Kc')} = ${fr(B_('[B]'), A_('[A]'))} = ${fr(B_('8'), A_('2'))} = ${K_('4')}<span class="note">[A] es la concentración de A: porciones por litro. La caja es de 1 L, así que es el mismo número.</span></div>
+   </div>
+   <p>Las concentraciones quedan constantes, no iguales: hay 4 veces más ${B_('B')} que ${A_('A')}. Esa razón es la constante de equilibrio, ${K_('Kc')}.</p>
+   <p class="fuente">Según Bilgin y otros (2003), el 36 % de 216 estudiantes cree que en el equilibrio las concentraciones son iguales; el 51 %, que la reacción va y viene.</p>` },
+ { k:'Paso 4', t:'Se agregan 10 de A: predice', gate:P1, arma:agregado,
+   vista:r => r ? VISTA.adentro() : { lupa:true, congelada:true, contadores:false, graf:null, qk:false, K:false, aviso:'detenida en el instante en que entran', ph:'Responde para ver los contadores', phGraf:'Responde para ver la gráfica' },
+   body:() => `<p>Se agregan ${A_('10 porciones de A')} de golpe. En este instante hay ${A_('12 de A')} y ${B_('8 de B')}: la caja está detenida en ese instante. Cuando vuelva al equilibrio, ¿cuánto habrá de cada uno?</p>${opcionesHTML(P1.opts, 'fb')}` },
+ { k:'Paso 5', t:'Lo que pasa adentro', arma:agregado, vista:() => VISTA.adentro(S.graf[4] || 'rap'), graf:true,
+   body:() => `<p>En el instante en que entran las 10 porciones, solo sube la rapidez directa: hay más ${A_('A')} que puede pasar a ${B_('B')}, y salta de 2 a unos 12 cambios por segundo. La inversa sigue en 2, porque todavía hay las mismas 8 porciones de ${B_('B')}.</p>
+   <p>Mientras la directa gane, ${A_('A')} baja y ${B_('B')} sube; la directa se frena y la inversa se acelera, hasta que vuelven a ser iguales: 4 cambios por segundo cada una, más que antes. Quedan ${A_('4 A')} y ${B_('16 B')}.</p>
+   <div class="nav">${segGraf(S.graf[4] || 'rap')}${otraVez}</div>
+   <p class="fuente">Según Bilgin y otros (2003), el 49 % de 216 estudiantes cree que al agregar un reactivo la reacción inversa se frena al instante, y el 53 %, que las rapideces vuelven a las de antes.</p>` },
+ { k:'Paso 6', t:'La cuenta: Q contra K', arma:agregado, vista:() => ({ ...VISTA.adentro(), qk:true }),
+   body:() => `<p>Justo después de agregar, el cociente de reacción ${Q_('Q')} se calcula igual que K, pero con lo que hay en ese instante:</p>
+   <div class="eqs">
+     <div class="eq">${Q_('Q')} = ${fr(B_('[B]'), A_('[A]'))} = ${fr(B_('8'), A_('12'))} = ${Q_('2/3')}</div>
+     <div class="eq">${Q_('Q')} &lt; ${K_('Kc')} = ${K_('4')} → avanza la directa, hacia ${B_('B')}</div>
+   </div>
+   <table class="tabla"><thead><tr><th></th><th>${A_('A')}</th><th>${B_('B')}</th></tr></thead><tbody>
+     <tr><td>al agregar</td><td>12</td><td>8</td></tr><tr><td>cambia</td><td>− x</td><td>+ x</td></tr><tr><td>equilibrio</td><td>12 − x</td><td>8 + x</td></tr></tbody></table>
+   <div class="eqs">
+     <div class="eq">${fr(B_('8 + x'), A_('12 − x'))} = ${K_('4')}</div>
+     <div class="eq">8 + x = 48 − 4x</div>
+     <div class="eq">5x = 40 → x = 8</div>
+   </div>
+   <p class="answer">Respuesta: quedan 4 porciones de A y 16 de B.</p>
+   <div class="nav"><span></span>${otraVez}</div>
+   <p>De las 10 porciones agregadas, solo 8 pasan a ${B_('B')}: las otras 2 se quedan como ${A_('A')}. En el dibujo, el rombo de ${Q_('Q')} se acerca a la raya de ${K_('K')} hasta llegar.</p>
+   <p class="aviso">Comparar Q con K funciona siempre; la regla de Le Chatelier memorizada a veces falla (Quílez, 2017).</p>` },
+ { k:'Paso 7', t:'Al calentar: predice', gate:P2, arma:() => base(4, 16),
+   vista:r => ({ lupa:true, congelada:!r, contadores:!!r, graf:r ? 'rap' : null, qk:!!r, K:true, termo:true, aviso:r ? '' : 'detenida a 300 K', ph:'Responde para ver los contadores', phGraf:'Responde para ver la gráfica', phQK:r ? '' : 'Responde para ver Q y K' }),
+   body:() => `<p>La caja quedó en equilibrio con ${A_('4 A')} y ${B_('16 B')}, a ${T_('300 K')}. La reacción directa (A → B) libera calor. Se calienta la caja de ${T_('300 K')} a ${T_('400 K')}. ¿Qué pasa con ${K_('K')}?</p>${opcionesHTML(P2.opts, 'fb')}` },
+ { k:'Paso 8', t:'Al calentar: lo que pasa', arma:caliente, vista:() => ({ ...VISTA.adentro(S.graf[7] || 'rap'), qk:true, termo:true }), graf:true,
+   body:() => `<p>Al calentar, las dos reacciones se aceleran, pero la inversa (la que absorbe calor) se acelera más. Mientras la inversa gane, ${B_('B')} pasa a ${A_('A')}.</p>
+   <div class="eqs">
+     <div class="eq">${K_('Kc')} a ${T_('400 K')} = ${K_('3/2')} = ${K_('1,5')}</div>
+     <div class="eq">${fr(B_('[B]'), A_('[A]'))} = ${fr(B_('12'), A_('8'))} = ${K_('1,5')}<span class="note">Quedan 8 A y 12 B</span></div>
+   </div>
+   <p>${K_('K')} bajó de 4 a 1,5. La temperatura es lo único que cambia K: agregar o quitar sustancia, o cambiar el volumen, no la cambia.</p>
+   <div class="nav">${segGraf(S.graf[7] || 'rap')}${otraVez}</div>
+   <p class="fuente">Según Bilgin y otros (2003), el 51 % de 216 estudiantes cree que al calentar una reacción que libera calor la directa se hace más rápida que la inversa.</p>
+   <p class="hint">En la escena, K a 400 K sale de una ecuación (van 't Hoff) con un calor de reacción elegido para que los números salgan redondos.</p>` },
+ { k:'Paso 9', t:'Ahora explora tú', explora:true, graf:true, arma:() => base(2, 8), vista:() => ({ ...VISTA.adentro(S.graf[8] || 'conc'), qk:true, termo:true }),
+   body:() => `<div class="ctrls">
+     <div class="botones" role="group" aria-label="Agregar o quitar porciones">
+       <button type="button" class="btn" data-acc="+A" aria-label="Agregar 2 porciones de A">+2 <b style="color:var(--c-A)">A</b></button>
+       <button type="button" class="btn" data-acc="-A" aria-label="Quitar 2 porciones de A">−2 <b style="color:var(--c-A)">A</b></button>
+       <button type="button" class="btn" data-acc="+B" aria-label="Agregar 2 porciones de B">+2 <b style="color:var(--c-B)">B</b></button>
+       <button type="button" class="btn" data-acc="-B" aria-label="Quitar 2 porciones de B">−2 <b style="color:var(--c-B)">B</b></button>
+     </div>
+     <div class="slider"><label for="et"><span>Temperatura (${T_('T')})</span><output id="et-o"></output></label><input id="et" class="r-T" type="range" min="250" max="450" step="10" value="300"></div>
+   </div>
+   <label class="check"><input type="checkbox" id="cat"> Con catalizador</label>
+   ${segGraf(S.graf[8] || 'conc')}
+   <div class="lect" id="live"></div>
+   <div class="nav"><span></span><button type="button" class="btn" id="reset">Volver a empezar</button></div>
+   <p class="hint">Pista: el sistema siempre corre hacia donde ${Q_('Q')} se acerca a ${K_('K')}. Solo la temperatura mueve la raya de K.</p>` },
+];
+const dots = $('dots');
+steps.forEach((s, n) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = n + 1; b.setAttribute('aria-label', `Ir al ${s.k.toLowerCase()}: ${s.t}`);
+  b.addEventListener('click', () => go(n)); li.appendChild(b); dots.appendChild(li);
+});
+function go(n){
+  if (n < 0 || n >= steps.length || n > S.max) return;
+  const s = steps[n]; S.step = n; S.ocupado = false; E.anima = null;
+  const r = s.gate ? !!S.pred[s.gate.id] : true;
+  E.sim = s.arma(); E.vista = s.vista(r); E.casa = new WeakMap();
+  if (s.gate && r && s.gate === P2){ E.sim.temperatura(400); }
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  if (s.graf) enlazarSeg($('stepBody'), E, g => { S.graf[n] = g; });
+  const rep = $('stepBody').querySelector('[data-repetir]');
+  if (rep) rep.onclick = () => { E.sim = s.arma(); E.casa = new WeakMap(); E.dibujar(); E.describir(true); };
+  pintarDots();
+  if (s.gate) prediccion(s);
+  if (s.explora) explorar();
+  nav(); E.dibujar(); E.describir(true);
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0;
+  $('next').disabled = S.step === steps.length - 1 || (s.gate && !S.pred[s.gate.id]);
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : `Ir al ${steps[k].k.toLowerCase()}: ${steps[k].t}`);
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(n){ if (n > S.max) S.max = n; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    const tras = $('tras'); if (tras) tras.hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id]) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots(); nav();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    $('next').focus({ preventScroll:true });
+    // En el celular, el dibujo queda arriba de la pantalla: se lleva a la vista antes de que la caja corra.
+    const paso = S.step, chico = innerWidth < 900;
+    if (chico) $('cv').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+    esperar(chico ? 380 : 0, () => {
+      if (S.step !== paso) return;
+      E.vista = s.vista(true); E.casa = new WeakMap();
+      if (P === P2){ const T0 = E.sim.T; gradual(E, 1.6, f => E.sim.temperatura(T0 + (400 - T0)*f)); }
+      E.dibujar(); E.describir(true); setTimeout(() => E.describir(true), 1200);
+    });
+  }));
+  pintar();
+}
+function explorar(){
+  const body = $('stepBody');
+  const vivo = () => {
+    const s = E.sim, n = s.cuenta();
+    $('et-o').textContent = `${fmt(s.T, 0)} K`;
+    const C = (k, t) => `<b style="color:var(--c-${k})">${t}</b>`;
+    $('live').innerHTML = `<span>${C('A', 'A')}: ${n.A}</span><span>${C('B', 'B')}: ${n.B}</span><span>${C('Q', 'Q')} = ${fmtK(s.Q())}</span><span>${C('K', 'K')} = ${fmtK(s.K())}</span><span>${sentidoTexto(s)}</span>`;
+    body.querySelectorAll('[data-acc]').forEach(b => { const [sg, t] = [b.dataset.acc[0], b.dataset.acc[1]]; b.disabled = sg === '-' ? n[t] < 2 : n[t] >= 40; });
+  };
+  body.querySelectorAll('[data-acc]').forEach(b => b.onclick = () => {
+    const sg = b.dataset.acc[0], t = b.dataset.acc[1];
+    if (sg === '+') E.sim.agregar(t, 2); else E.sim.quitar(t, 2);
+    vivo(); E.describir(true);
+  });
+  $('et').oninput = () => { E.sim.temperatura(+$('et').value); vivo(); };
+  $('cat').onchange = () => { E.sim.catalizador($('cat').checked); E.vista.cat = $('cat').checked; vivo(); };
+  $('reset').onclick = () => { E.sim = base(2, 8); E.casa = new WeakMap(); $('et').value = 300; $('cat').checked = false; E.vista.cat = false; vivo(); E.describir(true); };
+  clearInterval(S.vivo); S.vivo = setInterval(() => { if (S.step === 8 && !$('m1').hidden && $('live')) vivo(); else clearInterval(S.vivo); }, 300);
+  vivo();
+}
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+alRedibujarTema(() => E.dibujar());
+addEventListener('modo', () => { E.resize(); if (S.step === 8) explorar(); });
+go(0);
+})();
+</script>
+
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Preguntas del mismo informe (EQ3, EQ10, EQ11, EQ12, EQ14). Cada una arranca desde su equilibrio dinámico,
+   congelado; la caja cambia y corre recién después de responder. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'm2', false, 'ley2');
+const A_ = t => V('A', t), B_ = t => V('B', t), X_ = t => V('X', t), Y_ = t => V('Y', t), Q_ = t => V('Q', t), K_ = t => V('K', t), V_ = t => V('V', t);
+const RES = (doc, txt) => doc;
+const AB = (nA, nB, sem) => { const s = ME.caja({ tipo:'AB', nA, nB, T:300, semilla:sem }); adelantar(s, 4); return s; };
+const antes = (extra) => ({ lupa:true, congelada:true, contadores:false, graf:null, qk:false, K:true, ph:'Responde para ver los contadores', phGraf:'Responde para ver la gráfica', phQK:'Responde para ver Q y K', ...extra });
+const despues = (extra) => ({ lupa:true, congelada:false, contadores:true, graf:'conc', qk:true, K:true, ...extra });
+// Las dos curvas del catalizador: la misma caja desde 12 A y 8 B, con y sin catalizador (el motor, 8 s cada una).
+function curvasCatalizador(){
+  const corre = cat => { const s = ME.caja({ tipo:'AB', nA:12, nB:8, T:300, semilla:3 }); if (cat) s.catalizador(true); adelantar(s, 8); return s.historial; };
+  return { con:corre(true), sin:corre(false) };
+}
+const comprimir = () => { const V0 = E.Vdib; E.sim.volumen(0.5); gradual(E, 0.9, f => { E.Vdib = V0 + (0.5 - V0)*f; }); };
+const EXPS = [
+  { id:'catalizador', corto:'Un catalizador', tipo:'AB',
+    q:`En una caja de 1 L hay ${A_('4 porciones de A')} y ${B_('16 de B')} en equilibrio (A ⇌ B, ${K_('Kc = 4')}). Se agrega un catalizador. ¿Qué pasa?`,
+    opts:[['a','Se forma más B: el catalizador da más producto','EQ12-rendimiento', RES('documentado','Riddle y Lo-Fan-Hin 2023: 40 % de 63')],
+          ['b','K cambia: el catalizador mueve el equilibrio','EQ12-cambia-K', RES('documentado','Bilgin y otros 2003, ítem 29: 25 % de 216')],
+          ['c','Nada en las cantidades: las dos rapideces suben igual'],
+          ['d','Se acelera solo la directa: se forma más B','EQ12-solo-directa', RES('documentado','Bilgin y otros 2003, ítem 28: 40 % de 216 cree que acelera una u otra según cuál favorezca')]],
+    ok:'c',
+    fb:{ a:'Un catalizador no da más producto: acelera las dos reacciones por igual. Según Riddle y Lo-Fan-Hin (2023), el 40 % de 63 estudiantes cree que sí aumenta el rendimiento.',
+      b:'K no cambia con un catalizador: solo con la temperatura. Según Bilgin y otros (2003, ítems 27 a 29), el 25 % de 216 cree que sí cambia.',
+      d:'Acelera las dos por igual. Según Bilgin y otros (2003, ítems 27 a 29), el 40 % de 216 cree que acelera una u otra, según cuál favorezca.' },
+    arma:() => AB(4, 16, 5), vAntes:() => antes(),
+    alResponder:() => { E.sim.catalizador(true); E.extra = curvasCatalizador(); E.vista = despues({ cat:true, graf:'cat' }); },
+    exp:() => `<p>Con el catalizador, los dos contadores se triplican: de unos 4 a unos 12 cambios por segundo en cada sentido. Las cantidades no se mueven: siguen ${A_('4 A')} y ${B_('16 B')}, y ${K_('K')} sigue en 4.</p>
+      <p>La gráfica parte de 12 A y 8 B, como en el paso a paso: con catalizador (línea gruesa) el equilibrio llega antes, pero a la misma altura que sin catalizador (línea fina y clara).</p>
+      <p class="fuente">Según Bilgin y otros (2003, ítems 27 a 29), el 25 % de 216 estudiantes cree que el catalizador cambia K y el 40 %, que acelera una u otra reacción según cuál favorezca. Según Riddle y Lo-Fan-Hin (2023), el 40 % de 63 cree que da más producto.</p>` },
+  { id:'comprimir-2x', corto:'Comprimir 2 X ⇌ Y', tipo:'A2B',
+    q:`Otra reacción: 2 ${X_('X')} ⇌ ${Y_('Y')}, con ${K_('Kc = 1/8')}. Cada círculo pequeño es una porción de ${X_('X')}; cada pareja es una porción de ${Y_('Y')}, no una molécula (dos porciones de X se juntan en una de Y). En una caja de ${V_('1 L')} hay ${X_('8 X')} y ${Y_('8 Y')} en equilibrio. Se reduce el volumen a la mitad. ¿Qué pasa?`,
+    opts:[['a','Nada: quedan 8 X y 8 Y','EQ11-no-afecta', RES('documentado','Riddle y Lo-Fan-Hin 2023: 33 % de 63 y 63 % de 16')],
+          ['b','Más Y: quedan 6 X y 9 Y'],
+          ['c','Más X: quedan 10 X y 7 Y','EQ11-hacia-X', RES('documentado','Bilgin y otros 2003, ítems 20 a 22: en dos preguntas, el 40 % y el 24 % de 216 predicen mal el nuevo equilibrio')],
+          ['d','K sube: la constante cambia con el volumen','EQ10', RES('documentado','Bilgin y otros 2003, ítem 26: 20 % de 216')]],
+    ok:'b',
+    fb:{ a:'El volumen sí importa cuando los dos lados tienen distinto número de porciones de gas. Según Riddle y Lo-Fan-Hin (2023), el 33 % de 63 y el 63 % de 16 creen que el volumen no afecta al equilibrio.',
+      c:'Se forma más Y, no más X: el sistema se corre hacia el lado con menos porciones de gas. Según Bilgin y otros (2003, ítems 20 a 22), en dos preguntas, el 40 % y el 24 % de 216 predicen mal el nuevo equilibrio.',
+      d:'K no cambia al comprimir: solo con la temperatura. Según Bilgin y otros (2003), el 20 % de 216 cree que K sube.' },
+    arma:() => { const s = ME.caja({ tipo:'A2B', nA:8, nB:8, T:300, semilla:9 }); adelantar(s, 4); return s; },
+    vAntes:() => antes({ embolo:true, conc:true }),
+    alResponder:() => { comprimir(); E.vista = despues({ embolo:true, conc:true }); },
+    exp:() => { const Q = ME.cociente('2 X(g) = Y(g)', { X:16, Y:16 }); return `<p>Al comprimir, todas las concentraciones suben al instante: [${X_('X')}] = [${Y_('Y')}] = 8/0,5 = 16 porciones por litro.</p>
+      <div class="eqs"><div class="eq">${Q_('Q')} = ${fr(Y_('[Y]'), X_('[X]') + '²')} = ${fr(Y_('16'), X_('16') + '²')} = ${Q_(fmtK(Q))} &lt; ${K_('Kc')} = ${K_('1/8')}</div></div>
+      <p>Avanza la directa: el sistema se corre hacia el lado con menos porciones de gas (2 X → 1 Y). Quedan ${X_('6 X')} y ${Y_('9 Y')} en ${V_('0,5 L')}: [Y]/[X]² = 18/12² = 1/8.</p>
+      <p class="fuente">Según Bilgin y otros (2003, ítems 20 a 22), en dos preguntas, el 40 % y el 24 % de 216 estudiantes predicen mal el nuevo equilibrio al comprimir; el 20 % cree que K sube. Según Riddle y Lo-Fan-Hin (2023), el 33 % de 63 y el 63 % de 16 creen que el volumen no afecta al equilibrio.</p>`; } },
+  { id:'comprimir-ab', corto:'Comprimir A ⇌ B', tipo:'AB',
+    q:`Volvemos a A ⇌ B (${K_('Kc = 4')}), con ${A_('4 A')} y ${B_('16 B')} en ${V_('1 L')}, en equilibrio. Se reduce el volumen a la mitad. ¿Qué pasa?`,
+    opts:[['a','Se forma más B: el equilibrio se corre hacia B','comprimir-dn0', RES('hipotesis','hipótesis nuestra (sale de EQ11)')],
+          ['b','Se forma más A: el equilibrio se corre hacia A','comprimir-dn0-inv', RES('hipotesis','hipótesis nuestra (sale de EQ11)')],
+          ['c','No se corre: las dos concentraciones se duplican'],
+          ['d','No se corre: las dos concentraciones bajan a la mitad','EQ11', RES('documentado','Bilgin y otros 2003, ítem 20: 27 % de 216')]],
+    ok:'c',
+    fb:{ a:'Con A ⇌ B hay una porción de gas a cada lado: comprimir sube las dos concentraciones por igual y Q no cambia. Es un error que suponemos: aplicar "comprimir corre el equilibrio" donde no corresponde.',
+      b:'Con A ⇌ B hay una porción de gas a cada lado: comprimir sube las dos concentraciones por igual y Q no cambia. Es un error que suponemos: aplicar "comprimir corre el equilibrio" donde no corresponde.',
+      d:'Al comprimir, la misma cantidad queda en menos espacio: las concentraciones suben, no bajan. Según Bilgin y otros (2003), el 27 % de 216 cree que bajan.' },
+    arma:() => AB(4, 16, 13), vAntes:() => antes({ embolo:true, conc:true }),
+    alResponder:() => { comprimir(); E.vista = despues({ embolo:true, conc:true }); },
+    exp:() => `<p>[${A_('A')}] = 4/0,5 = 8 y [${B_('B')}] = 16/0,5 = 32 porciones por litro: las dos se duplican.</p>
+      <div class="eqs"><div class="eq">${Q_('Q')} = ${fr(B_('32'), A_('8'))} = ${Q_(fmtK(ME.cociente('A(g) = B(g)', { A:8, B:32 })))} = ${K_('Kc')}</div></div>
+      <p>Ya está en equilibrio y no se corre. Los contadores siguen iguales entre sí: comprimir solo corre el equilibrio cuando un lado tiene más porciones de gas que el otro.</p>
+      <p class="fuente">Según Bilgin y otros (2003), el 27 % de 216 estudiantes cree que al comprimir las concentraciones bajan. Que A ⇌ B se corra al comprimir es un error que suponemos, sin estudio con porcentaje.</p>` },
+  { id:'quitar-b', corto:'Quitar B', tipo:'AB',
+    q:`En la caja de 1 L hay ${A_('4 A')} y ${B_('16 B')} en equilibrio (${K_('Kc = 4')}). Se sacan ${B_('10 porciones de B')}. ¿Qué pasa?`,
+    opts:[['a','K baja a 1,5: quedan 4 A y 6 B','EQ10', RES('documentado','Tagle Barrios 2024 (UNAM), sin porcentaje')],
+          ['b','Todo el A pasa a B: quedan 0 A y 10 B','consume-todo', RES('hipotesis','hipótesis nuestra')],
+          ['c','Parte del A pasa a B: quedan 2 A y 8 B'],
+          ['d','No pasa nada: quedan 4 A y 6 B','EQ3', RES('documentado','Riddle y Lo-Fan-Hin 2023: 6 % de 63 y 13 % de 16')]],
+    ok:'c',
+    fb:{ a:'K no cambia al quitar sustancia: solo con la temperatura. Esta idea aparece en estudiantes de la UNAM (Tagle Barrios, 2024), sin porcentaje.',
+      b:'No pasa todo: solo lo necesario para que [B]/[A] vuelva a 4. Es un error que suponemos, sin estudio con porcentaje.',
+      d:'Al quitar B se rompe el equilibrio: la inversa se frena y la directa gana un rato. Según Riddle y Lo-Fan-Hin (2023), el 6 % de 63 y el 13 % de 16 creen que en el equilibrio la reacción terminó.' },
+    arma:() => AB(4, 16, 21), vAntes:() => antes(),
+    alResponder:() => { E.sim.quitar('B', 10); E.vista = despues(); },
+    exp:() => `<p>Al sacar 10 porciones de ${B_('B')} quedan ${A_('4 A')} y ${B_('6 B')}:</p>
+      <div class="eqs"><div class="eq">${Q_('Q')} = ${fr(B_('6'), A_('4'))} = ${Q_(fmt(ME.cociente('A(g) = B(g)', { A:4, B:6 }), 2))} &lt; ${K_('Kc')} = ${K_('4')}</div>
+      <div class="eq">${fr(B_('6 + x'), A_('4 − x'))} = ${K_('4')} → x = 2</div></div>
+      <p>Avanza la directa hasta quedar en ${A_('2 A')} y ${B_('8 B')}: el mismo equilibrio del comienzo del paso a paso. K sigue en 4.</p>
+      <p class="fuente">Que K cambie al quitar una sustancia aparece en estudiantes de la UNAM (Tagle Barrios, 2024), sin porcentaje. Que se gaste todo el A es un error que suponemos.</p>` },
+  { id:'agregar-ab', corto:'Agregar A y B a la vez', tipo:'AB',
+    q:`En la caja de 1 L hay ${A_('4 A')} y ${B_('16 B')} en equilibrio (${K_('Kc = 4')}). Se agregan a la vez ${A_('5 porciones de A')} y ${B_('20 de B')}. ¿Hacia dónde se corre?`,
+    opts:[['a','Hacia B: se agregó reactivo','EQ14-hacia-B', RES('documentado','Quílez 2017: la regla se aplica a ciegas; sin porcentaje')],
+          ['b','Hacia A: se agregó más producto que reactivo','EQ14-hacia-A', RES('documentado','Quílez 2017: la regla se aplica a ciegas; sin porcentaje')],
+          ['c','Hacia ningún lado: Q sigue igual a K'],
+          ['d','K sube: hay más de todo','EQ10', RES('documentado','Tagle Barrios 2024 (UNAM), sin porcentaje')]],
+    ok:'c',
+    fb:{ a:'Se agregó reactivo, pero también producto: la regla "se agregó reactivo, se corre hacia los productos" aquí falla. Lo seguro es comparar Q con K. Quílez (2017) describe que la regla se aplica a ciegas, sin porcentaje.',
+      b:'Contar cuánto se agregó de cada uno no basta: lo seguro es comparar Q con K. Quílez (2017) describe que la regla de Le Chatelier se aplica a ciegas, sin porcentaje.',
+      d:'K no cambia al agregar sustancia: solo con la temperatura. Esta idea aparece en estudiantes de la UNAM (Tagle Barrios, 2024), sin porcentaje.' },
+    arma:() => AB(4, 16, 27), vAntes:() => antes(),
+    alResponder:() => { E.sim.agregar('A', 5); E.sim.agregar('B', 20); E.vista = despues(); },
+    exp:() => `<p>Quedan ${A_('9 A')} y ${B_('36 B')}:</p>
+      <div class="eqs"><div class="eq">${Q_('Q')} = ${fr(B_('36'), A_('9'))} = ${Q_(fmtK(ME.cociente('A(g) = B(g)', { A:9, B:36 })))} = ${K_('Kc')}</div></div>
+      <p>Ya está en equilibrio: no se corre hacia ningún lado. Las cantidades no se mueven, aunque los contadores suben, porque hay más porciones que pueden cambiar.</p>
+      <p class="fuente">Quílez (2017) describe que alumnos y profesores aplican la regla de Le Chatelier "de forma ciega y mecánica"; no da porcentaje. Comparar Q con K no falla.</p>` },
+];
+const S = { k:0, pred:{}, t0:Date.now() };
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k];
+  E.anima = null; E.Vdib = 1; E.extra = null; E.casa = new WeakMap();
+  E.sim = x.arma(); E.vista = x.vAntes();
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la caja para ver por qué.' : `Elegiste la ${'abcd'.indexOf(p) + 1}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar();
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+    const chico = innerWidth < 900;
+    if (chico) $('cv2').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+    esperar(chico ? 380 : 0, () => { if (S.k !== k) return; x.alResponder(); E.casa = new WeakMap(); E.dibujar(); E.describir(true); setTimeout(() => E.describir(true), 1200); });
+  });
+  // Si ya respondió antes, se muestra directo lo que pasa.
+  if (S.pred[x.id]){ x.alResponder(); if (E.anima){ const f = E.anima; E.anima = null; f(99); } }
+  pintar(); E.dibujar(); E.describir(true);
+}
+alRedibujarTema(() => E.dibujar());
+addEventListener('modo', () => E.resize());
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>
