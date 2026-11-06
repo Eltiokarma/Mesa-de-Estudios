@@ -190,6 +190,12 @@ function sinChoques(R, que, igual) {
   assert.ok(R.errores && Array.isArray(R.coinciden), `${que}: faltan errores o coinciden`);
   for (const [k, e] of Object.entries(R.errores)) assert.ok(!igual(e), `${que}: el error ${k} da lo mismo que la correcta`);
   for (const k of R.coinciden) assert.ok(!(k in R.errores), `${que}: ${k} está en los dos lados`);
+  // dos errores nunca dan lo mismo entre sí (serían dos alternativas iguales): el segundo va a 'repetidos'
+  const clave = e => (typeof e !== 'object' ? String(e) : e.punto ? e.punto.map(x => x.toFixed(9)).join(';') : e.valor.toFixed(9));
+  const vistos = new Map();
+  for (const [k, e] of Object.entries(R.errores)) { const c = clave(e); assert.ok(!vistos.has(c), `${que}: ${k} y ${vistos.get(c)} dan lo mismo`); vistos.set(c, k); }
+  for (const [k, otro] of Object.entries(R.repetidos || {})) assert.ok(otro in R.errores && !(k in R.errores), `${que}: repetido ${k}`);
+  for (const k of R.noAplica || []) assert.ok(!(k in R.errores) && !R.coinciden.includes(k), `${que}: ${k} no aplica`);
 }
 const porValor = R => e => R.valor !== null && casi(e.valor, R.valor);
 const porPunto = R => e => casi(e.punto[0], R.punto[0]) && casi(e.punto[1], R.punto[1]);
@@ -212,12 +218,38 @@ test('ningún error típico coincide con la respuesta correcta; los que coincide
     const Z = motor.area({ vertices: [pto(), pto(), pto()] }); if (Z.valor > 0) sinChoques(Z, 'área', porValor(Z));
     const L2 = [G.A, G.B, ent(-9, 9)]; if (L2[2] !== G.C) { const DQ = motor.distanciaParalelas({ L1: [G.A, G.B, G.C], L2: [3 * L2[0], 3 * L2[1], 3 * L2[2]] }); sinChoques(DQ, 'paralelas', porValor(DQ)); }
     const Po = motor.posicion({ L1: [G.A, G.B, G.C], L2: [ent(-4, 4) || 1, ent(-4, 4), ent(-4, 4)] }); sinChoques(Po, 'posición', e => e === Po.relacion);
+    const C3 = [pto(), pto(), pto()], G3 = motor.baricentro({ A:C3[0], B:C3[1], C:C3[2] }); sinChoques(G3, 'baricentro', porPunto(G3));
+    const CG = motor.circunferenciaGeneral({ D: ent(-8, 8), E: ent(-8, 8), F: ent(-20, 20) });
+    if (CG.tipo !== 'vacia') sinChoques(CG, 'circunferencia', e => (e.punto ? casi(e.punto[0], CG.centro[0]) && casi(e.punto[1], CG.centro[1]) : casi(e.valor, CG.r)));
     const m2 = ent(-6, 6), m3 = ent(-6, 6); if (Math.abs(m2) !== Math.abs(m3)) { const E2 = motor.masEmpinada({ m1: m2, m2: m3 }); sinChoques(E2, 'más empinada', e => e === E2.cual); }
   }
   for (let k = 0; k < 300; k++) {
     const V = [[0, 0], [ent(2, 8), ent(-2, 1)], [ent(3, 9), ent(3, 8)], [ent(-2, 2), ent(3, 8)]];
     const O = motor.ordenCruzado({ vertices: V }); sinChoques(O, 'orden cruzado', porValor(O));
   }
+});
+
+test('circunferencia desde la forma general: el centro y el radio vuelven a dar la ecuación; punto y vacía según D² + E² − 4F', () => {
+  for (let k = 0; k < N; k++) {
+    const h = ent(-6, 6), kk = ent(-6, 6), r2 = ent(-5, 30);
+    const D = -2 * h, E = -2 * kk, F = h * h + kk * kk - r2, C = motor.circunferenciaGeneral({ D, E, F });
+    cerca(C.centro, [h, kk], 'centro'); cerca(C.r2, r2, 'r²');
+    assert.equal(C.tipo, r2 > 0 ? 'circunferencia' : r2 === 0 ? 'punto' : 'vacia');
+    if (r2 >= 0) { cerca(C.r * C.r, r2, 'r'); cerca(valorTexto(C.rTexto), C.r, 'texto de r'); }
+    if (r2 > 0) { const O = motor.circunferencia({ centro: [h, kk], r2 }); cerca([O.D, O.E, O.F], [D, E, F], 'ida y vuelta'); }
+  }
+});
+test('baricentro: es el promedio y está a 2/3 de cada vértice hacia el punto medio del lado opuesto', () => {
+  for (let k = 0; k < N; k++) {
+    const A = pto(), B = pto(), C = pto(), G = motor.baricentro({ A, B, C }).punto, M = motor.puntoMedio({ A: B, B: C }).punto;
+    cerca(G, [A[0] + 2 / 3 * (M[0] - A[0]), A[1] + 2 / 3 * (M[1] - A[1])], 'G');
+  }
+});
+test('lo que no aplica y lo repetido: Δx/Δy con Δy = 0; con m₁ = ±1, invertir y copiar dan lo mismo', () => {
+  assert.deepEqual(motor.pendiente({ A: [-1, 2], B: [5, 2] }).noAplica, ['invertida']);
+  const T = motor.perpendicular({ m: 1 });
+  assert.deepEqual(T.repetidos, { igual: 'inversa' }); assert.ok(!('igual' in T.errores));
+  assert.deepEqual(motor.perpendicular({ m: -1 }).repetidos, { igual: 'inversa' });
 });
 
 // 3. Errores de entrada
@@ -234,6 +266,7 @@ test('entradas inválidas', () => {
   assert.throws(() => motor.masEmpinada({ m1: 2, m2: -2 }), /misma inclinación/);
   assert.throws(() => motor.circunferencia({ centro: [0, 0], r2: -4 }), /mayor que cero/);
   assert.throws(() => motor.distancia({ A: [Math.PI, 0], B: [0, 0] }), /fracción exacta/);
+  assert.throws(() => motor.circunferenciaGeneral({ D: 'dos', E: 0, F: 0 }), /número/);
 });
 
 // 4. papel.json

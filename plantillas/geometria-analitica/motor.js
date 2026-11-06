@@ -24,6 +24,11 @@
  *   ordenCruzado({ vertices, orden })   qué da el zapatito si los vértices se recorren en otro orden (el lazo)
  *   masEmpinada({ m1, m2 })             cuál de dos rectas está más inclinada: la de mayor |m|
  *   circunferencia({ centro, r2 } | { A, B })   (x − h)² + (y − k)² = r² (la de diámetro AB, si se dan A y B)
+ *   circunferenciaGeneral({ D, E, F })  de x² + y² + Dx + Ey + F = 0 a centro y radio; punto o vacía según D² + E² − 4F
+ *   baricentro({ A, B, C })             el promedio de los tres vértices
+ *
+ * Además de 'errores' y 'coinciden', cada resultado trae 'noAplica' (errores que con esos números no tienen sentido,
+ * como dividir entre una Δy que vale 0) y 'repetidos' (un error que da lo mismo que otro se quita: { igual: 'inversa' }).
  *
  * Cada resultado que es la respuesta de una predicción trae 'errores': lo que da cada error típico.
  * Respaldos (docs/investigacion/): G2 de cinemática (pendiente como cociente de un solo punto, Beichner 1994),
@@ -74,6 +79,7 @@
 
   // ---------- Raíces: c·√s, con c fracción y s entero sin cuadrados ----------
   function sacarCuadrados(k) {
+    if (k === 0) return { a: 0, s: 1 };
     let a = 1, s = k;
     for (let p = 2; p * p <= s; p++) while (s % (p * p) === 0) { s /= p * p; a *= p; }
     return { a, s };
@@ -110,14 +116,24 @@
   const mismoPunto = (P, Q) => fIgual(P[0], Q[0]) && fIgual(P[1], Q[1]);
   const pt = P => ({ punto: numP(P), texto: txP(P) });
 
-  // Quita los errores que coinciden con la respuesta (o que no existen) y los anota en 'coinciden'.
+  // Reparte los errores: los que coinciden con la respuesta van a 'coinciden'; los que no tienen sentido con esos
+  // números (por ejemplo, dividir entre una Δy que es 0) van a 'noAplica'; y si dos errores dan lo mismo entre sí,
+  // queda solo el primero y el otro va a 'repetidos' ({ igual: 'inversa' }), para que no salgan dos alternativas iguales.
+  const mismoValor = (a, b) => {
+    if (typeof a !== 'object' || typeof b !== 'object') return a === b;
+    if (a.punto && b.punto) return casi(a.punto[0], b.punto[0]) && casi(a.punto[1], b.punto[1]);
+    if (a.valor !== undefined && b.valor !== undefined && !a.punto && !b.punto) return casi(a.valor, b.valor);
+    return false;
+  };
   function apartar(errores, esIgual) {
-    const r = {}, coinciden = [];
+    const r = {}, coinciden = [], noAplica = [], repetidos = {};
     for (const [k, v] of Object.entries(errores)) {
-      if (v === null || v === undefined) continue;
-      if (esIgual(v)) coinciden.push(k); else r[k] = v;
+      if (v === null || v === undefined) { noAplica.push(k); continue; }
+      if (esIgual(v, k)) { coinciden.push(k); continue; }
+      const antes = Object.keys(r).find(q => mismoValor(r[q], v));
+      if (antes) repetidos[k] = antes; else r[k] = v;
     }
-    return { errores: r, coinciden };
+    return { errores: r, coinciden, noAplica, repetidos };
   }
   const casi = (a, b) => Math.abs(a - b) <= 1e-9 * Math.max(1, Math.abs(a), Math.abs(b));
 
@@ -132,12 +148,12 @@
     const e = {
       sinRaiz: deF(d2),                                         // se queda en Δx² + Δy² (hipótesis)
       sumaCatetos: deF(fSum(fAbs(dx), fAbs(dy))),               // el camino por la rejilla: |Δx| + |Δy| (hipótesis)
-      restaCuadrados: fCero(dx) || fCero(dy) ? null : radical(rd.c, rd.s),   // resta los cuadrados (GE11, parcial)
+      restaCuadrados: radical(rd.c, rd.s),                     // resta los cuadrados (hipótesis; cabe en GE11)
       sumaEnVezDeResta: radical(rs.c, rs.s),                    // suma las coordenadas en vez de restarlas (hipótesis)
     };
-    const { errores, coinciden } = apartar(e, v => casi(v.valor, d.valor));
+    const { errores, coinciden, noAplica, repetidos } = apartar(e, v => casi(v.valor, d.valor));
     return { dx: fNum(dx), dy: fNum(dy), dx2: fNum(dx2), dy2: fNum(dy2), d2: fNum(d2), valor: d.valor, texto: d.texto,
-      exacta: r.s === 1, recto: numP([B[0], A[1]]), errores, coinciden };
+      exacta: r.s === 1, recto: numP([B[0], A[1]]), errores, coinciden, noAplica, repetidos };
   }
 
   // ---------- Punto medio y punto que divide un segmento ----------
@@ -149,8 +165,8 @@
       sinDividir: pt([fSum(A[0], B[0]), fSum(A[1], B[1])]),                         // suma sin dividir entre 2 (hipótesis)
       cruzaCoordenadas: pt([M[1], M[0]]),                                            // (y; x) (hipótesis)
     };
-    const { errores, coinciden } = apartar(e, v => casi(v.punto[0], fNum(M[0])) && casi(v.punto[1], fNum(M[1])));
-    return { x: fNum(M[0]), y: fNum(M[1]), punto: numP(M), texto: txP(M), errores, coinciden };
+    const { errores, coinciden, noAplica, repetidos } = apartar(e, v => casi(v.punto[0], fNum(M[0])) && casi(v.punto[1], fNum(M[1])));
+    return { x: fNum(M[0]), y: fNum(M[1]), punto: numP(M), texto: txP(M), errores, coinciden, noAplica, repetidos };
   }
   // AP : PB = m : n  ⇒  P = (n·A + m·B)/(m + n) = A + (m/(m + n))·(B − A)
   function divide(o) {
@@ -166,8 +182,21 @@
       comoFraccion: pt([en(kf, A[0], B[0]), en(kf, A[1], B[1])]),                    // toma m : n como la fracción m/n de AB (hipótesis)
       sinDividir: pt([fSum(fMul(n, A[0]), fMul(m, B[0])), fSum(fMul(n, A[1]), fMul(m, B[1]))]),   // olvida dividir entre m + n (hipótesis)
     };
-    const { errores, coinciden } = apartar(e, v => casi(v.punto[0], fNum(P[0])) && casi(v.punto[1], fNum(P[1])));
-    return { x: fNum(P[0]), y: fNum(P[1]), punto: numP(P), texto: txP(P), fraccion: txF(k), k: fNum(k), errores, coinciden };
+    const { errores, coinciden, noAplica, repetidos } = apartar(e, v => casi(v.punto[0], fNum(P[0])) && casi(v.punto[1], fNum(P[1])));
+    return { x: fNum(P[0]), y: fNum(P[1]), punto: numP(P), texto: txP(P), fraccion: txF(k), k: fNum(k), errores, coinciden, noAplica, repetidos };
+  }
+
+  // Baricentro del triángulo: el promedio de los tres vértices
+  function baricentro(o) {
+    const A = punto(o.A, 'A'), B = punto(o.B, 'B'), C = punto(o.C, 'C');
+    const sx = fSum(fSum(A[0], B[0]), C[0]), sy = fSum(fSum(A[1], B[1]), C[1]);
+    const G = [fDiv(sx, F(3)), fDiv(sy, F(3))];
+    const e = {
+      sinDividir: pt([sx, sy]),                                   // suma sin dividir entre 3 (hipótesis)
+      entreDos: pt([fDiv(sx, F(2)), fDiv(sy, F(2))]),             // divide entre 2, como el punto medio (hipótesis)
+    };
+    const { errores, coinciden, noAplica, repetidos } = apartar(e, v => casi(v.punto[0], fNum(G[0])) && casi(v.punto[1], fNum(G[1])));
+    return { x: fNum(G[0]), y: fNum(G[1]), punto: numP(G), texto: txP(G), errores, coinciden, noAplica, repetidos };
   }
 
   // ---------- Pendiente ----------
@@ -182,8 +211,8 @@
     const { dx, dy, m } = pendienteF(A, B);
     const base = { dx: fNum(dx), dy: fNum(dy), subida: fNum(dy), avance: fNum(dx) };
     if (m === null) {
-      const { errores, coinciden } = apartar({ cero: deF(F(0)), subida: deF(dy) }, () => false);
-      return Object.assign(base, { vertical: true, valor: null, texto: 'no existe', tipo: 'vertical', angulo: 90, errores, coinciden });
+      const { errores, coinciden, noAplica, repetidos } = apartar({ cero: deF(F(0)), subida: deF(dy) }, () => false);
+      return Object.assign(base, { vertical: true, valor: null, texto: 'no existe', tipo: 'vertical', angulo: 90, errores, coinciden, noAplica, repetidos });
     }
     const v = fNum(m), ang = v >= 0 ? grados(Math.atan(v)) : grados(Math.PI + Math.atan(v));
     const e = {
@@ -191,9 +220,9 @@
       ordenCruzado: deF(fNeg(m)),                                                    // (y₂ − y₁)/(x₁ − x₂) (hipótesis; mecanismo AL25)
       unPunto: fCero(B[0]) ? null : deF(fDiv(B[1], B[0])),                           // y/x de un solo punto, como si pasara por el origen (G2)
     };
-    const { errores, coinciden } = apartar(e, w => casi(w.valor, v));
+    const { errores, coinciden, noAplica, repetidos } = apartar(e, w => casi(w.valor, v));
     return Object.assign(base, { vertical: false, valor: v, texto: txF(m), tipo: v > 0 ? 'creciente' : v < 0 ? 'decreciente' : 'horizontal',
-      angulo: ang, errores, coinciden });
+      angulo: ang, errores, coinciden, noAplica, repetidos });
   }
 
   // ---------- La recta y sus tres formas ----------
@@ -268,10 +297,10 @@
         interceptoX: fCero(m) ? null : deF(fDiv(fNeg(R._b), m)),     // toma el corte con el eje x como b
         bEsY1: deF(P[1]),                                             // b = y₁, la y del punto dado
       };
-      const { errores, coinciden } = apartar(e, v => casi(v.valor, R.b));
-      return Object.assign(publica(R), { errores, coinciden });
+      const { errores, coinciden, noAplica, repetidos } = apartar(e, v => casi(v.valor, R.b));
+      return Object.assign(publica(R), { errores, coinciden, noAplica, repetidos });
     }
-    return Object.assign(publica(R), { errores: {}, coinciden: [] });
+    return Object.assign(publica(R), { errores: {}, coinciden: [], noAplica: [], repetidos: {} });
   }
   function leerGeneral(L, que) {
     if (!Array.isArray(L) || L.length !== 3) throw new Error(`${que} debe ser una recta [A, B, C] de Ax + By + C = 0`);
@@ -314,9 +343,9 @@
       return fIgual(fMul(a, b), F(-1)) ? 'perpendiculares' : 'secantes';
     })();
     const opuestas = m1 && m2 && !fCero(m1) && fIgual(m2, fNeg(m1)) ? 'perpendiculares' : null;
-    const { errores, coinciden } = apartar({ coeficienteX: relX, opuestas }, v2 => v2 === rel);
+    const { errores, coinciden, noAplica, repetidos } = apartar({ coeficienteX: relX, opuestas }, v2 => v2 === rel);
     return { relacion: rel, m1: m1 && fNum(m1), m2: m2 && fNum(m2), m1Texto: m1 ? txF(m1) : 'no existe', m2Texto: m2 ? txF(m2) : 'no existe',
-      producto: m1 && m2 ? fNum(fMul(m1, m2)) : null, angulo, interseccion, interseccionTexto: interseccion ? txP(interseccion.map(aF)) : null, errores, coinciden };
+      producto: m1 && m2 ? fNum(fMul(m1, m2)) : null, angulo, interseccion, interseccionTexto: interseccion ? txP(interseccion.map(aF)) : null, errores, coinciden, noAplica, repetidos };
   }
 
   // ---------- Perpendicular y paralela ----------
@@ -337,9 +366,9 @@
       inversa: deF(fDiv(F(1), m1)),          // m₂ = 1/m₁, sin el signo (hipótesis)
       igual: deF(m1),                         // la misma pendiente: eso es paralela (hipótesis)
     };
-    const { errores, coinciden } = apartar(e, v => val !== null && casi(v.valor, val));
+    const { errores, coinciden, noAplica, repetidos } = apartar(e, v => val !== null && casi(v.valor, val));
     const r = { m1: m1 === null ? null : fNum(m1), valor: val, texto: m2 === null ? 'no existe' : txF(m2), vertical: m2 === null,
-      producto: m1 && m2 ? fNum(fMul(m1, m2)) : null, errores, coinciden };
+      producto: m1 && m2 ? fNum(fMul(m1, m2)) : null, errores, coinciden, noAplica, repetidos };
     if (P) r.recta = publica(construirRecta(P, m2));
     return r;
   }
@@ -364,9 +393,9 @@
       sinDenominador: deF(fAbs(N)),                                  // no divide (hipótesis)
       sinC: entreRaiz(fAbs(sinC), S),                                // olvida C (hipótesis)
     };
-    const { errores, coinciden } = apartar(e, v => casi(v.valor, d.valor));
+    const { errores, coinciden, noAplica, repetidos } = apartar(e, v => casi(v.valor, d.valor));
     return { N: fNum(N), S: fNum(S), raizS: radical(raizF(S).c, raizF(S).s).texto, valor: d.valor, texto: d.texto, pie: numP(H), pieTexto: txP(H),
-      lado: N.n > 0 ? 1 : N.n < 0 ? -1 : 0, errores, coinciden };
+      lado: N.n > 0 ? 1 : N.n < 0 ? -1 : 0, errores, coinciden, noAplica, repetidos };
   }
   function distanciaParalelas(o) {
     const L1 = leerGeneral(o.L1, 'L1'), L2 = leerGeneral(o.L2, 'L2');
@@ -382,8 +411,8 @@
       otraRaiz: entreRaiz(fAbs(fRes(L1[2], L2[2])), S2),            // ídem, con la raíz de la otra recta (hipótesis)
       sumaC: entreRaiz(fAbs(fSum(L1[2], C2)), S1),                  // suma las C en vez de restarlas (hipótesis)
     };
-    const { errores, coinciden } = apartar(e, v => casi(v.valor, d.valor));
-    return { valor: d.valor, texto: d.texto, C2: fNum(C2), C2Texto: txF(C2), igualada: { A: fNum(L1[0]), B: fNum(L1[1]), C: fNum(C2) }, errores, coinciden };
+    const { errores, coinciden, noAplica, repetidos } = apartar(e, v => casi(v.valor, d.valor));
+    return { valor: d.valor, texto: d.texto, C2: fNum(C2), C2Texto: txF(C2), igualada: { A: fNum(L1[0]), B: fNum(L1[1]), C: fNum(C2) }, errores, coinciden, noAplica, repetidos };
   }
 
   // ---------- Área por coordenadas: el «zapatito» ----------
@@ -421,10 +450,10 @@
       sinAbs: deF(fDiv(Z.det, F(2))),                                // olvida el valor absoluto: área negativa (hipótesis)
       sumaProductos: deF(fDiv(fSum(Z.sb, Z.ss), F(2))),              // suma las dos diagonales en vez de restarlas (hipótesis)
     };
-    const { errores, coinciden } = apartar(e, v => casi(v.valor, fNum(A)));
+    const { errores, coinciden, noAplica, repetidos } = apartar(e, v => casi(v.valor, fNum(A)));
     return { n: V.length, bajada: Z.bajada.map(fNum), subida: Z.subida.map(fNum), sumaBajada: fNum(Z.sb), sumaSubida: fNum(Z.ss),
       det: fNum(Z.det), valor: fNum(A), texto: txF(A), sentido: Z.det.n > 0 ? 'antihorario' : Z.det.n < 0 ? 'horario' : 'degenerado',
-      simple: simple(V), errores, coinciden };
+      simple: simple(V), errores, coinciden, noAplica, repetidos };
   }
   // Recorrer los vértices en otro orden (por ejemplo A, C, B, D): si el camino se cruza, el zapatito da la diferencia de
   // los dos lazos, no el área. 'orden' son los índices de los vértices en el nuevo recorrido.
@@ -456,8 +485,8 @@
       sinAbs: deF(fDiv(Z.det, F(2))),                                                  // se queda con el signo (hipótesis)
       seAnula: deF(F(0)),                                                              // «si el camino se cruza, todo se anula» (hipótesis)
     };
-    const { errores, coinciden } = apartar(e, v => casi(v.valor, fNum(valor)));
-    return { area: bien.valor, valor: fNum(valor), texto: txF(valor), det: fNum(Z.det), simple: simple(W), lazos, errores, coinciden };
+    const { errores, coinciden, noAplica, repetidos } = apartar(e, v => casi(v.valor, fNum(valor)));
+    return { area: bien.valor, valor: fNum(valor), texto: txF(valor), det: fNum(Z.det), simple: simple(W), lazos, errores, coinciden, noAplica, repetidos };
   }
 
   // ---------- Inclinación ----------
@@ -468,9 +497,9 @@
     const cual = fNum(a1) > fNum(a2) ? 1 : 2;
     const conSigno = fNum(m1) > fNum(m2) ? 1 : 2;     // compara m con su signo (hipótesis)
     const ang = m => grados(Math.atan(Math.abs(fNum(m))));
-    const { errores, coinciden } = apartar({ conSigno }, v => v === cual);
+    const { errores, coinciden, noAplica, repetidos } = apartar({ conSigno }, v => v === cual);
     return { cual, angulo1: ang(m1), angulo2: ang(m2), inclinacion1: fNum(m1) >= 0 ? grados(Math.atan(fNum(m1))) : grados(Math.PI + Math.atan(fNum(m1))),
-      inclinacion2: fNum(m2) >= 0 ? grados(Math.atan(fNum(m2))) : grados(Math.PI + Math.atan(fNum(m2))), errores, coinciden };
+      inclinacion2: fNum(m2) >= 0 ? grados(Math.atan(fNum(m2))) : grados(Math.PI + Math.atan(fNum(m2))), errores, coinciden, noAplica, repetidos };
   }
 
   // ---------- Circunferencia ----------
@@ -496,7 +525,28 @@
       ecuacion: `${cuad('x', Cc[0])} + ${cuad('y', Cc[1])} = ${txF(r2)}`, general: partes.join('') + ' = 0', D: fNum(D), E: fNum(E), F: fNum(Fc) };
   }
 
-  return { distancia, puntoMedio, divide, pendiente, recta, rectaGeneral, posicion, perpendicular, paralela,
+  // x² + y² + Dx + Ey + F = 0  →  centro (−D/2; −E/2) y r² = (D² + E² − 4F)/4.
+  // Si D² + E² − 4F > 0 es una circunferencia; si es 0, un punto; si es negativo, no hay puntos reales.
+  function circunferenciaGeneral(o) {
+    const D = aF(o.D, 'D'), E = aF(o.E, 'E'), Fc = aF(o.F, 'F');
+    const C = [fDiv(fNeg(D), F(2)), fDiv(fNeg(E), F(2))];
+    const disc = fRes(fSum(fMul(D, D), fMul(E, E)), fMul(F(4), Fc)), r2 = fDiv(disc, F(4));
+    const tipo = disc.n > 0 ? 'circunferencia' : disc.n === 0 ? 'punto' : 'vacia';
+    const base = { centro: numP(C), centroTexto: txP(C), discriminante: fNum(disc), r2: fNum(r2), tipo };
+    if (tipo === 'vacia') return Object.assign(base, { r: null, rTexto: null, errores: {}, coinciden: [], noAplica: [], repetidos: {} });
+    const rr = raizF(r2), r = radical(rr.c, rr.s);
+    const r2sinF = fDiv(fSum(fMul(D, D), fMul(E, E)), F(4)), rs = raizF(r2sinF);
+    const e = {
+      signoCentro: pt([fDiv(D, F(2)), fDiv(E, F(2))]),           // centro (D/2; E/2), con el signo cambiado (hipótesis)
+      rCuadrado: deF(r2),                                         // da r² como si fuera r (hipótesis)
+      sinF: radical(rs.c, rs.s),                                  // olvida pasar F: r² = h² + k² (hipótesis)
+    };
+    const igual = (v, k) => (k === 'signoCentro' ? casi(v.punto[0], fNum(C[0])) && casi(v.punto[1], fNum(C[1])) : casi(v.valor, r.valor));
+    const { errores, coinciden, noAplica, repetidos } = apartar(e, igual);
+    return Object.assign(base, { r: r.valor, rTexto: r.texto, errores, coinciden, noAplica, repetidos });
+  }
+
+  return { baricentro, circunferenciaGeneral, distancia, puntoMedio, divide, pendiente, recta, rectaGeneral, posicion, perpendicular, paralela,
     distanciaPuntoRecta, distanciaParalelas, area, ordenCruzado, masEmpinada, circunferencia,
     textoFraccion: x => txF(aF(x)), textoPunto: P => txP(punto(P, 'el punto')) };
 });

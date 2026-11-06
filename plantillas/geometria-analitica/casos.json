@@ -2,25 +2,26 @@
   "plantilla": "geometria-analitica",
   "unidades": "Coordenadas sin unidad (u) y áreas en u². Los puntos van como [x, y] y se escriben (x; y), con punto y coma, porque la coma es decimal. Las rectas en forma general Ax + By + C = 0 van como [A, B, C]. Las raíces quedan simplificadas (√20 = 2√5) y racionalizadas (5/√5 = √5). Fracciones con barra (5/3) y menos tipográfico (−).",
   "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.sinRaiz.valor); las listas se comparan completas; los textos se comparan exactos. 'tambien' trae otras llamadas que comprueban lo mismo (con su propia 'fn' si cambia). Un error que con esos números da lo mismo que la respuesta correcta no va en 'errores' sino en 'coinciden'. AP : PB = m : n se pasa como { m, n }.",
-  "verificacion": "Calculados a mano por el constructor (6 nov 2026), con fracciones, antes de correr el motor. Pendiente de la verificación independiente.",
+  "verificacion": "Calculados a mano por el constructor (6 nov 2026), con fracciones, antes de correr el motor. Verificados por un agente independiente (20/20 casos y 10/10 problemas de papel). Después de la verificación, por la revisión, se cambiaron los puntos de la predicción del punto que divide (A(−4; 7), B(5; −2)), se agregaron noAplica y repetidos, y se agregaron a mano: baricentro, rectas generales con A < 0, C = 0 y horizontal, perpendicular a una vertical, distancia 0, paralelas con factor negativo, tres puntos colineales y circunferencia desde la forma general (en lugar del caso de la recta más empinada, que pasó a 'tambien'). Estos agregados no tienen verificación independiente.",
   "tolerancia": 1e-9,
   "casos": [
-    { "nombre": "Paso a paso, predicción 1: d(A, B) con A(−2; 1) y B(4; 9). Δx = 6, Δy = 8, d = √(36 + 64) = 10. Quedarse en d² da 100; el camino por la rejilla, 6 + 8 = 14; restar los cuadrados (GE11), √28 = 2√7; sumar las coordenadas, √(2² + 10²) = 2√26",
+    { "nombre": "Paso a paso, predicción 1: d(A, B) con A(−2; 1) y B(4; 9). Δx = 6, Δy = 8, d = √(36 + 64) = 10. Quedarse en d² da 100; el camino por la rejilla, 6 + 8 = 14; restar los cuadrados (cabe en GE11; hipótesis), √28 = 2√7; sumar las coordenadas, √(2² + 10²) = 2√26",
       "fn": "distancia", "args": [{ "A": [-2, 1], "B": [4, 9] }],
       "espera": { "dx": 6, "dy": 8, "d2": 100, "valor": 10, "texto": "10", "exacta": true, "recto": [4, 1], "errores.sinRaiz.valor": 100, "errores.sumaCatetos.valor": 14, "errores.restaCuadrados.texto": "2√7", "errores.sumaEnVezDeResta.texto": "2√26", "coinciden": [] },
       "tambien": [ { "args": [{ "A": [1, 2], "B": [3, 6] }], "espera": { "d2": 20, "texto": "2√5", "valor": 4.47213595499958, "exacta": false, "errores.restaCuadrados.texto": "2√3", "errores.sumaCatetos.valor": 6, "errores.sumaEnVezDeResta.texto": "4√5" } } ] },
 
-    { "nombre": "Distancia sobre una vertical: A(3; −2), B(3; 5) da 7. Ahí el camino por la rejilla también da 7, así que ese error va en 'coinciden'; restar cuadrados no tiene sentido (un cateto es 0) y no aparece",
+    { "nombre": "Distancia sobre una vertical: A(3; −2), B(3; 5) da 7. Ahí el camino por la rejilla también da 7 y restar los cuadrados da √49 = 7: los dos van en 'coinciden'",
       "fn": "distancia", "args": [{ "A": [3, -2], "B": [3, 5] }],
-      "espera": { "dx": 0, "dy": 7, "valor": 7, "texto": "7", "errores.sinRaiz.valor": 49, "errores.sumaEnVezDeResta.texto": "3√5", "coinciden": ["sumaCatetos"] } },
+      "espera": { "dx": 0, "dy": 7, "valor": 7, "texto": "7", "errores.sinRaiz.valor": 49, "errores.sumaEnVezDeResta.texto": "3√5", "coinciden": ["sumaCatetos", "restaCuadrados"] } },
 
     { "nombre": "¿Qué pasa si…? Punto medio con negativos: A(−5; 2), B(3; −6) da M(−1; −2). La mitad de Δx y Δy da (4; −4); sumar sin dividir, (−2; −4); cruzar las coordenadas, (−2; −1)",
       "fn": "puntoMedio", "args": [{ "A": [-5, 2], "B": [3, -6] }],
-      "espera": { "x": -1, "y": -2, "texto": "(−1; −2)", "errores.semiResta.texto": "(4; −4)", "errores.sinDividir.texto": "(−2; −4)", "errores.cruzaCoordenadas.texto": "(−2; −1)", "coinciden": [] } },
+      "espera": { "x": -1, "y": -2, "texto": "(−1; −2)", "errores.semiResta.texto": "(4; −4)", "errores.sinDividir.texto": "(−2; −4)", "errores.cruzaCoordenadas.texto": "(−2; −1)", "coinciden": [] },
+      "tambien": [ { "fn": "baricentro", "args": [{ "A": [1, 1], "B": [3, 5], "C": [6, 2] }], "espera": { "texto": "(10/3; 8/3)", "errores.sinDividir.texto": "(10; 8)", "errores.entreDos.texto": "(5; 4)", "coinciden": [] } } ] },
 
-    { "nombre": "Paso a paso, predicción 2: P en AB con AP : PB = 1 : 2, A(−3; 6), B(6; −3). P está a 1/3 del camino desde A: (0; 3). Pesos cruzados dan (3; 0); tomar 1 : 2 como la mitad, (3/2; 3/2); olvidar dividir entre 3, (0; 9)",
-      "fn": "divide", "args": [{ "A": [-3, 6], "B": [6, -3], "m": 1, "n": 2 }],
-      "espera": { "x": 0, "y": 3, "texto": "(0; 3)", "fraccion": "1/3", "errores.alReves.texto": "(3; 0)", "errores.comoFraccion.texto": "(3/2; 3/2)", "errores.sinDividir.texto": "(0; 9)", "coinciden": [] } },
+    { "nombre": "Paso a paso, predicción 2: P en AB con AP : PB = 1 : 2, A(−4; 7), B(5; −2). P está a 1/3 del camino desde A: (−4 + 3; 7 − 3) = (−1; 4). Pesos cruzados (2/3 del camino) dan (2; 1); tomar 1 : 2 como la mitad, (1/2; 5/2); olvidar dividir entre 3, 2A + B = (−3; 12). Ninguna cae sobre un eje",
+      "fn": "divide", "args": [{ "A": [-4, 7], "B": [5, -2], "m": 1, "n": 2 }],
+      "espera": { "x": -1, "y": 4, "texto": "(−1; 4)", "fraccion": "1/3", "errores.alReves.texto": "(2; 1)", "errores.comoFraccion.texto": "(1/2; 5/2)", "errores.sinDividir.texto": "(−3; 12)", "coinciden": [] } },
 
     { "nombre": "Con 1 : 1 el punto que divide es el punto medio: A(2; 4), B(8; 0) da (5; 2). Ahí los pesos cruzados dan lo mismo y van en 'coinciden'; tomar 1 : 1 como la fracción 1 lleva hasta B",
       "fn": "divide", "args": [{ "A": [2, 4], "B": [8, 0], "m": 1, "n": 1 }],
@@ -37,13 +38,14 @@
 
     { "nombre": "Pendiente negativa: A(−2; 4), B(4; 1) da m = −3/6 = −1/2 (la recta baja); su ángulo de inclinación es 180° − 26,57° = 153,43°. Δx/Δy da −2; el orden cruzado, 1/2; y/x de B, 1/4",
       "fn": "pendiente", "args": [{ "A": [-2, 4], "B": [4, 1] }],
-      "espera": { "valor": -0.5, "texto": "−1/2", "tipo": "decreciente", "angulo": 153.43494882292202, "errores.invertida.valor": -2, "errores.ordenCruzado.texto": "1/2", "errores.unPunto.texto": "1/4" } },
+      "espera": { "valor": -0.5, "texto": "−1/2", "tipo": "decreciente", "angulo": 153.43494882292202, "errores.invertida.valor": -2, "errores.ordenCruzado.texto": "1/2", "errores.unPunto.texto": "1/4" },
+      "tambien": [ { "fn": "masEmpinada", "args": [{ "m1": 3, "m2": -5 }], "espera": { "cual": 2, "angulo1": 71.56505117707799, "angulo2": 78.69006752597979, "inclinacion2": 101.30993247402021, "errores.conSigno": 1, "coinciden": [] } } ] },
 
-    { "nombre": "¿Qué pasa si…? La recta vertical por A(3; 1) y B(3; 6): Δx = 0, la pendiente no existe y la recta es x = 3 (x − 3 = 0). La horizontal por (−1; 2) y (5; 2) tiene m = 0; ahí cambiar el orden da lo mismo (−0 = 0)",
+    { "nombre": "¿Qué pasa si…? La recta vertical por A(3; 1) y B(3; 6): Δx = 0, la pendiente no existe y la recta es x = 3 (x − 3 = 0). La horizontal por (−1; 2) y (5; 2) tiene m = 0; ahí cambiar el orden da lo mismo (−0 = 0) y Δx/Δy no se puede calcular (Δy = 0): va en 'noAplica'. ¿Más inclinada, m = 3 o m = −5? La de −5 (78,69° contra 71,57°): va como 'tambien' del caso de pendiente negativa",
       "fn": "pendiente", "args": [{ "A": [3, 1], "B": [3, 6] }],
       "espera": { "vertical": true, "texto": "no existe", "valor": null, "tipo": "vertical", "angulo": 90, "errores.cero.valor": 0 },
       "tambien": [ { "fn": "recta", "args": [{ "A": [3, 1], "B": [3, 6] }], "espera": { "vertical": true, "texto": "x = 3", "general.texto": "x − 3 = 0", "interceptoX": 3 } },
-                   { "args": [{ "A": [-1, 2], "B": [5, 2] }], "espera": { "valor": 0, "tipo": "horizontal", "angulo": 0, "errores.unPunto.texto": "2/5", "coinciden": ["ordenCruzado"] } } ] },
+                   { "args": [{ "A": [-1, 2], "B": [5, 2] }], "espera": { "valor": 0, "tipo": "horizontal", "angulo": 0, "errores.unPunto.texto": "2/5", "coinciden": ["ordenCruzado"], "noAplica": ["invertida"] } } ] },
 
     { "nombre": "Paso a paso, predicción 4: recta por P(2; 1) con m = 3. b = 1 − 3 · 2 = −5: y = 3x − 5, y − 1 = 3(x − 2), 3x − y − 5 = 0. Sumar m·x₁ da 7; tomar el corte con el eje x, 5/3; tomar la y del punto, 1",
       "fn": "recta", "args": [{ "P": [2, 1], "m": 3 }],
@@ -52,7 +54,10 @@
     { "nombre": "Papel p5: recta por A(−2; 3) y B(4; −1). m = −4/6 = −2/3, b = 3 − (−2/3)(−2) = 5/3; por 3: 2x + 3y − 5 = 0. Corta los ejes en x = 5/2 e y = 5/3. Desde la general [4, −2, 6] sale 2x − y + 3 = 0, y = 2x + 3",
       "fn": "recta", "args": [{ "A": [-2, 3], "B": [4, -1] }],
       "espera": { "mTexto": "−2/3", "bTexto": "5/3", "texto": "y = −(2/3)x + 5/3", "puntoPendiente": "y − 3 = −(2/3)(x + 2)", "general.texto": "2x + 3y − 5 = 0", "interceptoX": 2.5 },
-      "tambien": [ { "fn": "rectaGeneral", "args": [[4, -2, 6]], "espera": { "m": 2, "b": 3, "texto": "y = 2x + 3", "general.texto": "2x − y + 3 = 0" } } ] },
+      "tambien": [ { "fn": "rectaGeneral", "args": [[4, -2, 6]], "espera": { "m": 2, "b": 3, "texto": "y = 2x + 3", "general.texto": "2x − y + 3 = 0" } },
+                   { "fn": "rectaGeneral", "args": [[-6, 9, 3]], "espera": { "general.texto": "2x − 3y − 1 = 0", "mTexto": "2/3", "bTexto": "−1/3", "texto": "y = (2/3)x − 1/3" } },
+                   { "fn": "rectaGeneral", "args": [[2, -4, 0]], "espera": { "general.texto": "x − 2y = 0", "mTexto": "1/2", "b": 0, "texto": "y = (1/2)x" } },
+                   { "fn": "rectaGeneral", "args": [[0, 2, -6]], "espera": { "general.texto": "y − 3 = 0", "m": 0, "b": 3, "texto": "y = 3", "interceptoX": null } } ] },
 
     { "nombre": "¿Qué pasa si…? La V: y = 2x + 1 e y = −2x + 5 tienen pendientes opuestas pero NO son perpendiculares: se cortan en (1; 3) con un ángulo de 53,13° (cos = 3/5), y m₁·m₂ = −4. Creer que m₂ = −m₁ basta da «perpendiculares»",
       "fn": "posicion", "args": [{ "L1": [2, -1, 1], "L2": [2, 1, -5] }],
@@ -67,12 +72,14 @@
     { "nombre": "Paso a paso, predicción 5: la perpendicular a una recta de pendiente 2/3, por P(3; −1). m₂ = −1/(2/3) = −3/2; recta 3x + 2y − 7 = 0. Solo cambiar el signo da −2/3; solo invertir, 3/2; la misma, 2/3",
       "fn": "perpendicular", "args": [{ "m": 0.6666666666666666 }, [3, -1]],
       "espera": { "valor": -1.5, "texto": "−3/2", "producto": -1, "errores.opuesta.texto": "−2/3", "errores.inversa.texto": "3/2", "errores.igual.texto": "2/3", "coinciden": [], "recta.general.texto": "3x + 2y − 7 = 0", "recta.puntoPendiente": "y + 1 = −(3/2)(x − 3)", "recta.b": 3.5 },
-      "tambien": [ { "args": [{ "m": 1 }], "espera": { "valor": -1, "coinciden": ["opuesta"], "errores.inversa.valor": 1 } },
+      "tambien": [ { "args": [{ "m": 1 }], "espera": { "valor": -1, "coinciden": ["opuesta"], "errores.inversa.valor": 1, "repetidos.igual": "inversa" } },
+                   { "args": [{ "L": [1, 0, -3] }, [2, 5]], "espera": { "valor": 0, "texto": "0", "producto": null, "noAplica": ["igual"], "recta.texto": "y = 5", "recta.general.texto": "y − 5 = 0" } },
                    { "args": [{ "m": 0 }, [2, 5]], "espera": { "vertical": true, "texto": "no existe", "recta.texto": "x = 2" } } ] },
 
     { "nombre": "Paso a paso, predicción 6: distancia de P(−2; −3) a 3x + 4y + 8 = 0. Ax₀ + By₀ + C = −6 − 12 + 8 = −10; √(9 + 16) = 5; d = |−10|/5 = 2. Sin valor absoluto, −2; sin la raíz, 10/25 = 2/5; sin dividir, 10; sin C, 18/5. El pie de la perpendicular es (−4/5; −7/5)",
       "fn": "distanciaPuntoRecta", "args": [{ "P": [-2, -3], "L": [3, 4, 8] }],
-      "espera": { "N": -10, "S": 25, "valor": 2, "texto": "2", "pie": [-0.8, -1.4], "pieTexto": "(−4/5; −7/5)", "lado": -1, "errores.sinAbs.valor": -2, "errores.sinRaiz.texto": "2/5", "errores.sinDenominador.valor": 10, "errores.sinC.texto": "18/5", "coinciden": [] } },
+      "espera": { "N": -10, "S": 25, "valor": 2, "texto": "2", "pie": [-0.8, -1.4], "pieTexto": "(−4/5; −7/5)", "lado": -1, "errores.sinAbs.valor": -2, "errores.sinRaiz.texto": "2/5", "errores.sinDenominador.valor": 10, "errores.sinC.texto": "18/5", "coinciden": [] },
+      "tambien": [ { "args": [{ "P": [2, -1], "L": [3, 4, -2] }], "espera": { "N": 0, "valor": 0, "texto": "0", "pie": [2, -1], "lado": 0, "errores.sinC.texto": "2/5", "coinciden": ["sinAbs", "sinRaiz", "sinDenominador"] } } ] },
 
     { "nombre": "Papel p8: distancia de P(4; 1) a x − 2y + 3 = 0: |4 − 2 + 3|/√5 = 5/√5 = √5, con el pie en (3; 3). Sin C da 2/√5 = 2√5/5; sin la raíz, 1. Como Ax₀ + By₀ + C es positivo, olvidar el valor absoluto no cambia nada: va en 'coinciden'",
       "fn": "distanciaPuntoRecta", "args": [{ "P": [4, 1], "L": [1, -2, 3] }],
@@ -80,20 +87,24 @@
 
     { "nombre": "¿Qué pasa si…? Distancia entre 3x + 4y − 2 = 0 y 6x + 8y + 11 = 0: la segunda, dividida entre 2, es 3x + 4y + 11/2 = 0; d = |−2 − 11/2|/5 = 3/2. Restar las C sin igualar da 13/5; con la raíz de la otra, 13/10; sumarlas, 7/10",
       "fn": "distanciaParalelas", "args": [{ "L1": [3, 4, -2], "L2": [6, 8, 11] }],
-      "espera": { "valor": 1.5, "texto": "3/2", "C2Texto": "11/2", "errores.sinIgualar.texto": "13/5", "errores.otraRaiz.texto": "13/10", "errores.sumaC.texto": "7/10", "coinciden": [] } },
+      "espera": { "valor": 1.5, "texto": "3/2", "C2Texto": "11/2", "errores.sinIgualar.texto": "13/5", "errores.otraRaiz.texto": "13/10", "errores.sumaC.texto": "7/10", "coinciden": [] },
+      "tambien": [ { "args": [{ "L1": [3, 4, -2], "L2": [-6, -8, -11] }], "espera": { "valor": 1.5, "texto": "3/2", "C2Texto": "11/2" } } ] },
 
     { "nombre": "Paso a paso, predicción 7: el zapatito con (1; 1), (3; 5), (6; 2) en ese orden (horario). Bajan 5 + 6 + 6 = 17, suben 3 + 30 + 2 = 35; det = −18; área 9. Sin la mitad, 18; sin valor absoluto, −9; sumando las dos columnas, 26",
       "fn": "area", "args": [{ "vertices": [[1, 1], [3, 5], [6, 2]] }],
       "espera": { "bajada": [5, 6, 6], "subida": [3, 30, 2], "sumaBajada": 17, "sumaSubida": 35, "det": -18, "valor": 9, "sentido": "horario", "simple": true, "errores.sinMitad.valor": 18, "errores.sinAbs.valor": -9, "errores.sumaProductos.valor": 26, "coinciden": [] },
-      "tambien": [ { "args": [{ "vertices": [[1, 1], [6, 2], [3, 5]] }], "espera": { "det": 18, "valor": 9, "sentido": "antihorario", "coinciden": ["sinAbs"] } } ] },
+      "tambien": [ { "args": [{ "vertices": [[1, 1], [6, 2], [3, 5]] }], "espera": { "det": 18, "valor": 9, "sentido": "antihorario", "coinciden": ["sinAbs"] } },
+                   { "args": [{ "vertices": [[0, 0], [2, 1], [4, 2]] }], "espera": { "sumaBajada": 4, "sumaSubida": 4, "det": 0, "valor": 0, "sentido": "degenerado", "errores.sumaProductos.valor": 4, "coinciden": ["sinMitad", "sinAbs"] } } ] },
 
     { "nombre": "¿Qué pasa si…? Cuadrilátero A(0; 0), B(4; 0), C(6; 4), D(1; 6) de área 24 (52 − 4 = 48). En el orden A, C, B, D el camino se cruza en (3; 2): el zapatito da 24 − 16 = 8, o sea 4, que es 8 − 4, la resta de los dos lazos. Creer que el orden no importa da 24; sin la mitad, 8; que todo se anula, 0",
       "fn": "ordenCruzado", "args": [{ "vertices": [[0, 0], [4, 0], [6, 4], [1, 6]], "orden": [0, 2, 1, 3] }],
       "espera": { "area": 24, "det": 8, "valor": 4, "texto": "4", "simple": false, "lazos.cruce": [3, 2], "lazos.uno.area": -4, "lazos.otro.area": 8, "errores.ordenNoImporta.valor": 24, "errores.sinMitad.valor": 8, "errores.seAnula.valor": 0, "coinciden": ["sinAbs"] },
       "tambien": [ { "fn": "area", "args": [{ "vertices": [[0, 0], [4, 0], [6, 4], [1, 6]] }], "espera": { "sumaBajada": 52, "sumaSubida": 4, "valor": 24, "simple": true } } ] },
 
-    { "nombre": "¿Qué pasa si…? ¿Cuál está más inclinada, m = 3 o m = −5? La de m = −5: |−5| > 3 (78,69° contra 71,57° con la horizontal; su inclinación es 101,31°). Comparar con el signo elige la de m = 3",
-      "fn": "masEmpinada", "args": [{ "m1": 3, "m2": -5 }],
-      "espera": { "cual": 2, "angulo1": 71.56505117707799, "angulo2": 78.69006752597979, "inclinacion2": 101.30993247402021, "errores.conSigno": 1, "coinciden": [] } }
+    { "nombre": "Papel p10 al revés: x² + y² − 4x + 4y − 17 = 0 tiene centro (−D/2; −E/2) = (2; −2) y r² = (16 + 16 + 68)/4 = 25, r = 5. El centro con el signo cambiado da (−2; 2); dar r² como r, 25; olvidar F, √8 = 2√2. Con D² + E² − 4F = 0 es un punto; si es negativo, no hay puntos",
+      "fn": "circunferenciaGeneral", "args": [{ "D": -4, "E": 4, "F": -17 }],
+      "espera": { "centroTexto": "(2; −2)", "discriminante": 100, "r2": 25, "r": 5, "tipo": "circunferencia", "errores.signoCentro.texto": "(−2; 2)", "errores.rCuadrado.valor": 25, "errores.sinF.texto": "2√2", "coinciden": [] },
+      "tambien": [ { "args": [{ "D": -2, "E": 4, "F": 5 }], "espera": { "tipo": "punto", "centroTexto": "(1; −2)", "discriminante": 0, "r": 0, "rTexto": "0", "coinciden": ["rCuadrado"] } },
+                   { "args": [{ "D": 2, "E": 0, "F": 5 }], "espera": { "tipo": "vacia", "discriminante": -16, "r": null } } ] }
   ]
 }

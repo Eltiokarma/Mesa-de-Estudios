@@ -319,7 +319,7 @@ function crearPlano(cv, idDesc, idLect, idLey){
 
   E.config = o => {
     E.tok++; E.anim = false;
-    Object.assign(E, { mover:[], activo:null, pintar:null, lect:[], ley:[], desc:null, alCambiar:null, valido:null, fijos:false }, o);
+    Object.assign(E, { mover:[], activo:null, pintar:null, lect:[], ley:[], desc:null, alCambiar:null, valido:null, fijos:false, referencial:false }, o);
     E.pts = Object.assign({}, o.pts || {});
     for (const k in E.pts) E.pts[k] = E.pts[k].slice();
     E.activo = E.mover[0] || null;
@@ -378,7 +378,7 @@ function crearPlano(cv, idDesc, idLect, idLey){
       ctx.moveTo(X(C[0]) + u, Y(C[1])); ctx.lineTo(X(C[0]) + u, Y(C[1]) - v); ctx.lineTo(X(C[0]), Y(C[1]) - v); ctx.stroke(); ctx.restore();
     }
     if (o.rotulos !== false){
-      const abajo = dy >= 0 ? 15 : -15;
+      const abajo = (dy >= 0 ? 15 : -15)*(A[1] === 0 ? -1 : 1);
       if (fx >= 1 && dx !== 0) rotulo(c, X((A[0] + B[0])/2), Y(A[1]) + abajo, `${o.nx || 'Δx'} = ${num(dx)}`, c.dx);
       if (fy >= 1 && dy !== 0) rotulo(c, X(B[0]) + (dx >= 0 ? 10 : -10), Y((A[1] + B[1])/2), `${o.ny || 'Δy'} = ${num(dy)}`, c.dy, dx >= 0 ? 'left' : 'right');
     }
@@ -410,6 +410,16 @@ function crearPlano(cv, idDesc, idLect, idLey){
   function cuadricula(c){
     const [wx0, wy1] = mundo(0, 0), [wx1, wy0] = mundo(W, H);
     const paso = s >= 24 ? 1 : s >= 12 ? 2 : 5;
+    // Antes de responder, algunas predicciones van sin cuadrícula ni números en los ejes («figura referencial»),
+    // para que no se pueda contar o medir la respuesta en el dibujo.
+    if (E.referencial){
+      ctx.save(); ctx.strokeStyle = c.eje; ctx.lineWidth = 1.6;
+      ctx.beginPath(); ctx.moveTo(0, Y(0)); ctx.lineTo(W, Y(0)); ctx.moveTo(X(0), 0); ctx.lineTo(X(0), H); ctx.stroke();
+      ctx.fillStyle = c.muted; ctx.font = `700 12px ${c.font}`; ctx.textBaseline = 'top';
+      ctx.textAlign = 'right'; ctx.fillText('x', W - 6, clamp(Y(0) - 18, 2, H - 16)); ctx.textAlign = 'left'; ctx.fillText('y', clamp(X(0) + 6, 4, W - 12), 4);
+      ctx.textAlign = 'right'; ctx.textBaseline = 'bottom'; ctx.font = `600 12px ${c.font}`; ctx.fillText('Figura referencial', W - 8, H - 6);
+      ctx.restore(); return;
+    }
     ctx.save(); ctx.strokeStyle = c.grid; ctx.lineWidth = 1;
     for (let x = Math.ceil(wx0); x <= wx1; x++){ ctx.beginPath(); ctx.moveTo(X(x), 0); ctx.lineTo(X(x), H); ctx.stroke(); }
     for (let y = Math.ceil(wy0); y <= wy1; y++){ ctx.beginPath(); ctx.moveTo(0, Y(y)); ctx.lineTo(W, Y(y)); ctx.stroke(); }
@@ -534,7 +544,7 @@ const S = { step:0, max:0, pred:{}, ocupado:false, expl2:null, expl5:null };
 
 // Números de la escena: todos salen del motor
 const D1 = MA.distancia({ A:[-2, 1], B:[4, 9] });
-const DV = MA.divide({ A:[-3, 6], B:[6, -3], m:1, n:2 });
+const DV = MA.divide({ A:[-4, 7], B:[5, -2], m:1, n:2 });
 const PE = MA.pendiente({ A:[1, 5], B:[4, 11] });
 const RQ = MA.recta({ P:[2, 1], m:3 });
 const PP = MA.perpendicular({ m:2/3 }, [3, 3]);
@@ -542,31 +552,31 @@ const DR = MA.distanciaPuntoRecta({ P:[-2, -3], L:[3, 4, 8] });
 const TRI = [[1, 1], [3, 5], [6, 2]], AR = MA.area({ vertices: TRI });
 const u = t => `${t} u`, u2 = t => `${t} u²`;
 
-const P1 = { id:'geometria-analitica-paso1', ok:'c', opts:[
+const P1 = { id:'geometria-analitica-paso1', ok:'b', opts:[
   ['a', u(D1.errores.sumaCatetos.texto), 'distancia-suma-catetos', 'hipotesis'],
-  ['b', u(D1.errores.restaCuadrados.texto), 'GE11-resta-cuadrados', 'parcial'],
-  ['c', u(D1.texto)],
-  ['d', u(D1.errores.sinRaiz.texto), 'distancia-sin-raiz', 'hipotesis']],
-  fb:{ c:'¡Bien! Δx = 6 y Δy = 8 son los catetos de un triángulo rectángulo y AB es su hipotenusa: √(36 + 64) = √100 = 10.',
+  ['b', u(D1.texto)],
+  ['c', u(D1.errores.sinRaiz.texto), 'distancia-sin-raiz', 'hipotesis'],
+  ['d', u(D1.errores.restaCuadrados.texto), 'GE11-resta-cuadrados', 'hipotesis']],
+  fb:{ b:'¡Bien! Δx = 6 y Δy = 8 son los catetos de un triángulo rectángulo y AB es su hipotenusa: √(36 + 64) = √100 = 10.',
     a:'Elegiste la A. 6 + 8 = 14 es el camino por la cuadrícula: 6 a la derecha y 8 hacia arriba. El segmento AB va en diagonal, por el atajo, y el atajo es más corto: es la hipotenusa. La correcta está marcada.',
-    b:'Elegiste la B. √(64 − 36) resta los cuadrados de los catetos. Cuando lo que se busca es la hipotenusa, Pitágoras los suma, y AB es la hipotenusa. La correcta está marcada.',
-    d:'Elegiste la D. 6² + 8² = 100 es d², el cuadrado de la distancia. Falta sacar la raíz: √100 = 10. La correcta está marcada.' } };
-const P2 = { id:'geometria-analitica-paso3', ok:'c', opts:[
+    c:'Elegiste la C. 6² + 8² = 100 es d², el cuadrado de la distancia. Falta sacar la raíz: √100 = 10. La correcta está marcada.',
+    d:'Elegiste la D. √(64 − 36) resta los cuadrados de los catetos. Cuando lo que se busca es la hipotenusa, Pitágoras los suma, y AB es la hipotenusa. La correcta está marcada.' } };
+const P2 = { id:'geometria-analitica-paso3', ok:'d', opts:[
   ['a', DV.errores.comoFraccion.texto, 'razon-como-fraccion', 'hipotesis'],
   ['b', DV.errores.alReves.texto, 'razon-pesos-cruzados', 'hipotesis'],
-  ['c', DV.texto],
-  ['d', DV.errores.sinDividir.texto, 'razon-sin-dividir', 'hipotesis']],
-  fb:{ c:'¡Bien! AP : PB = 1 : 2 parte AB en 3 partes iguales y P queda a 1 parte de A: P = A + (1/3)(B − A) = (−3 + 3; 6 − 3) = (0; 3).',
+  ['c', DV.errores.sinDividir.texto, 'razon-sin-dividir', 'hipotesis'],
+  ['d', DV.texto]],
+  fb:{ d:'¡Bien! AP : PB = 1 : 2 parte AB en 3 partes iguales y P queda a 1 parte de A: P = A + (1/3)(B − A) = (−4 + 3; 7 − 3) = (−1; 4).',
     a:'Elegiste la A. Así P quedaría en el punto medio, como si 1 : 2 fuera 1/2. Pero 1 : 2 dice que AP es la mitad de PB: AB tiene 1 + 2 = 3 partes y AP es 1 de ellas, o sea 1/3 de AB. La correcta está marcada.',
-    b:'Elegiste la B. (3; 0) está a 2 partes de A y a 1 de B: es el punto con AP : PB = 2 : 1, al revés. En la fórmula, cada extremo se multiplica por el número del otro lado: P = (2A + 1B)/3. La correcta está marcada.',
-    d:'Elegiste la D. 2A + 1B = (0; 9) es la suma con pesos, pero falta dividir entre 1 + 2 = 3. Sin dividir, el punto ni siquiera cae en el segmento. La correcta está marcada.' } };
-const P3 = { id:'geometria-analitica-paso4', ok:'b', opts:[
-  ['a', PE.errores.unPunto.texto, 'G2-pendiente-de-un-punto', 'parcial'],
-  ['b', PE.texto],
+    b:'Elegiste la B. (2; 1) está a 2 partes de A y a 1 de B: es el punto con AP : PB = 2 : 1, al revés. En la fórmula, cada extremo se multiplica por el número del otro lado: P = (2A + 1B)/3. La correcta está marcada.',
+    c:'Elegiste la C. 2A + 1B = (−3; 12) es la suma con pesos, pero falta dividir entre 1 + 2 = 3. Sin dividir, el punto ni siquiera cae en el segmento. La correcta está marcada.' } };
+const P3 = { id:'geometria-analitica-paso4', ok:'a', opts:[
+  ['a', PE.texto],
+  ['b', PE.errores.unPunto.texto, 'G2-pendiente-de-un-punto', 'parcial'],
   ['c', PE.errores.invertida.texto, 'pendiente-invertida', 'hipotesis'],
   ['d', PE.errores.ordenCruzado.texto, 'pendiente-orden-cruzado', 'hipotesis']],
-  fb:{ b:'¡Bien! De A a B se avanza 4 − 1 = 3 y se sube 11 − 5 = 6: m = 6/3 = 2. Por cada paso a la derecha, la recta sube 2.',
-    a:'Elegiste la A. 11/4 divide la altura de B entre su x, como si la recta saliera del origen. Esta recta no pasa por (0; 0): la pendiente se mide entre dos puntos de la recta, con lo que sube y lo que avanza. La correcta está marcada.',
+  fb:{ a:'¡Bien! De A a B se avanza 4 − 1 = 3 y se sube 11 − 5 = 6: m = 6/3 = 2. Por cada paso a la derecha, la recta sube 2.',
+    b:'Elegiste la B. 11/4 divide la altura de B entre su x, como si la recta saliera del origen. Esta recta no pasa por (0; 0): la pendiente se mide entre dos puntos de la recta, con lo que sube y lo que avanza. La correcta está marcada.',
     c:'Elegiste la C. 3/6 divide lo que avanza entre lo que sube: está al revés. La pendiente es subida entre avance, Δy/Δx. La correcta está marcada.',
     d:'Elegiste la D. −2 sale de restar arriba B − A y abajo A − B. Hay que restar en el mismo orden arriba y abajo; si no, el signo sale cambiado. Esta recta sube: su pendiente es positiva. La correcta está marcada.' } };
 const P4 = { id:'geometria-analitica-paso6', ok:'c', opts:[
@@ -578,33 +588,33 @@ const P4 = { id:'geometria-analitica-paso6', ok:'c', opts:[
     a:'Elegiste la A. 1 + 3 · 2 = 7 es la altura en x = 4, dos pasos a la derecha de Q. Para llegar al eje y hay que ir a la izquierda, y por ese lado la recta baja: b = 1 − 3 · 2 = −5. La correcta está marcada.',
     b:'Elegiste la B. 5/3 es donde la recta corta al eje x (ahí y = 0). En y = mx + b, b es el corte con el eje y (ahí x = 0). La correcta está marcada.',
     d:'Elegiste la D. 1 es la y de Q, pero Q está en x = 2, no sobre el eje y. b es la altura de la recta en x = 0. La correcta está marcada.' } };
-const P5 = { id:'geometria-analitica-paso7', ok:'c', opts:[
+const P5 = { id:'geometria-analitica-paso7', ok:'b', opts:[
   ['a', PP.errores.opuesta.texto, 'perpendicular-solo-signo', 'hipotesis'],
-  ['b', PP.errores.inversa.texto, 'perpendicular-solo-inversa', 'hipotesis'],
-  ['c', PP.texto],
+  ['b', PP.texto],
+  ['c', PP.errores.inversa.texto, 'perpendicular-solo-inversa', 'hipotesis'],
   ['d', PP.errores.igual.texto, 'perpendicular-misma-pendiente', 'hipotesis']],
-  fb:{ c:'¡Bien! Al girar 90° el triángulo de la pendiente, los catetos se intercambian y uno cambia de sentido: 2/3 se vuelve −3/2. Y (2/3)·(−3/2) = −1.',
+  fb:{ b:'¡Bien! Al girar 90° el triángulo de la pendiente, los catetos se intercambian y uno cambia de sentido: 2/3 se vuelve −3/2. Y (2/3)·(−3/2) = −1.',
     a:'Elegiste la A. Cambiar solo el signo da una recta que baja con la misma inclinación: forma una V con L₁, pero no un ángulo recto. Hay que invertir y además cambiar el signo. La correcta está marcada.',
-    b:'Elegiste la B. Invertir sin cambiar el signo da otra recta que también sube, y dos rectas que suben no pueden formar 90°. La correcta está marcada.',
+    c:'Elegiste la C. Invertir sin cambiar el signo da otra recta que también sube, y dos rectas que suben no pueden formar 90°. La correcta está marcada.',
     d:'Elegiste la D. Con la misma pendiente, la recta es paralela a L₁: nunca se cortan. La correcta está marcada.' } };
-const P6 = { id:'geometria-analitica-paso8', ok:'c', opts:[
+const P6 = { id:'geometria-analitica-paso8', ok:'d', opts:[
   ['a', u(DR.errores.sinAbs.texto), 'distancia-recta-sin-valor-absoluto', 'hipotesis'],
   ['b', u(DR.errores.sinRaiz.texto), 'distancia-recta-sin-raiz', 'hipotesis'],
-  ['c', u(DR.texto)],
-  ['d', u(DR.errores.sinDenominador.texto), 'distancia-recta-sin-denominador', 'hipotesis']],
-  fb:{ c:'¡Bien! |3·(−2) + 4·(−3) + 8| = |−10| = 10, y √(3² + 4²) = 5: la distancia es 10/5 = 2.',
+  ['c', u(DR.errores.sinC.texto), 'distancia-recta-sin-c', 'hipotesis'],
+  ['d', u(DR.texto)]],
+  fb:{ d:'¡Bien! |3·(−2) + 4·(−3) + 8| = |−10| = 10, y √(3² + 4²) = 5: la distancia es 10/5 = 2.',
     a:'Elegiste la A. −10/5 = −2 olvida el valor absoluto. Una distancia nunca es negativa; el signo menos solo dice de qué lado de la recta está R. La correcta está marcada.',
     b:'Elegiste la B. 10/25 divide entre A² + B² = 25, sin la raíz. El denominador es √(A² + B²) = √25 = 5. La correcta está marcada.',
-    d:'Elegiste la D. 10 es |Ax₀ + By₀ + C|, pero falta dividir entre √(A² + B²) = 5. La correcta está marcada.' } };
-const P7 = { id:'geometria-analitica-paso9', ok:'d', opts:[
-  ['a', u2(AR.errores.sinAbs.texto), 'area-sin-valor-absoluto', 'hipotesis'],
-  ['b', u2(AR.errores.sumaProductos.texto), 'area-suma-productos', 'hipotesis'],
-  ['c', u2(AR.errores.sinMitad.texto), 'area-sin-mitad', 'hipotesis'],
-  ['d', u2(AR.texto)]],
-  fb:{ d:'¡Bien! Bajan 17 y suben 35: |17 − 35|/2 = 18/2 = 9.',
-    a:'Elegiste la A. (17 − 35)/2 = −9 se queda con el signo. El menos solo dice que los vértices se recorrieron en sentido horario; el área es |−18|/2 = 9. La correcta está marcada.',
-    b:'Elegiste la B. (17 + 35)/2 suma las dos columnas. Los productos que suben se restan de los que bajan. La correcta está marcada.',
-    c:'Elegiste la C. |17 − 35| = 18 es el doble del área: falta el 1/2 de la fórmula. La correcta está marcada.' } };
+    c:'Elegiste la C. 18/5 deja fuera el + 8 de la recta: |3·(−2) + 4·(−3)| = 18. En |Ax₀ + By₀ + C| entra también C. La correcta está marcada.' } };
+const P7 = { id:'geometria-analitica-paso9', ok:'a', opts:[
+  ['a', u2(AR.texto)],
+  ['b', u2(AR.errores.sinAbs.texto), 'area-sin-valor-absoluto', 'hipotesis'],
+  ['c', u2(AR.errores.sumaProductos.texto), 'area-suma-productos', 'hipotesis'],
+  ['d', u2(AR.errores.sinMitad.texto), 'area-sin-mitad', 'hipotesis']],
+  fb:{ a:'¡Bien! Bajan 17 y suben 35: |17 − 35|/2 = 18/2 = 9.',
+    b:'Elegiste la B. (17 − 35)/2 = −9 se queda con el signo. El menos solo dice que los vértices se recorrieron en sentido horario; el área es |−18|/2 = 9. La correcta está marcada.',
+    c:'Elegiste la C. (17 + 35)/2 suma las dos columnas. Los productos que suben se restan de los que bajan. La correcta está marcada.',
+    d:'Elegiste la D. |17 − 35| = 18 es el doble del área: falta el 1/2 de la fórmula. La correcta está marcada.' } };
 
 // ----- dibujos de cada paso -----
 const dibAB = (D, A, B, f, o) => {   // segmento AB, con el triángulo y la distancia cuando f > 0
@@ -625,24 +635,42 @@ function vivo2(){
   el.innerHTML = `<div class="eq">${D_('d')} = √(${X_(par(R.dx))}² + ${Y_(par(R.dy))}²) = √${fmt(R.d2, 0)} = ${D_(R.texto)}${R.exacta ? '' : ` ≈ ${fmt(R.valor)}`}</div>
     <div class="eq">${P_('M')} = (${fr(`${par(A[0])} + ${par(B[0])}`, '2')}; ${fr(`${par(A[1])} + ${par(B[1])}`, '2')}) = ${P_(M.texto)}</div>`;
 }
+// Las formas de la recta con m y b en su color (regla 4). P es el punto de la punto-pendiente.
+function menosH(letra, v){ return v === 0 ? letra : `${letra} ${v > 0 ? '−' : '+'} ${num(Math.abs(v))}`; }
+function coefH(m){   // el coeficiente tal como se escribe: '', '−', '3', '(2/3)', '−(2/3)'
+  const a = Math.abs(m), t = a === 1 ? '' : (Number.isInteger(a) ? num(a) : `(${num(a)})`);
+  return (m < 0 ? '−' : '') + t;
+}
+function ppHTML(P, m){
+  if (m === 0) return `<span class="fx">${menosH('y', P[1])} = ${L_('0')}</span>`;
+  const c = coefH(m), cc = c ? L_(c) : '';
+  const der = P[0] === 0 ? `${cc}x` : c ? `${cc}(${menosH('x', P[0])})` : menosH('x', P[0]);
+  return `<span class="fx">${menosH('y', P[1])} = ${der}</span>`;
+}
+function piHTML(m, b, sinY){
+  const y = sinY ? '' : 'y = ';
+  if (m === 0) return `<span class="fx">${y}${B_(num(b))}</span>`;
+  const c = coefH(m);
+  return `<span class="fx">${y}${c ? L_(c) : ''}x${b === 0 ? '' : ` ${b < 0 ? '−' : '+'} ${B_(num(Math.abs(b)))}`}</span>`;
+}
 function vivo5(){
   const el = $('vivo5'); if (!el) return;
-  const { A, B } = E.pts, Pd = MA.pendiente({ A, B }), R = MA.recta({ A, B });
+  const A = E.pts['P₁'], B = E.pts['P₂'], Pd = MA.pendiente({ A, B }), R = MA.recta({ A, B });
   if (Pd.vertical){ el.innerHTML = `<div class="eq">${L_('m')} = ${fr(Y_(num(Pd.dy)), X_('0'))}: no existe (no se divide entre cero)</div>
-    <div class="eq">${L_('L')}: ${R.texto}<span class="note">recta vertical; en forma general, ${R.general.texto}</span></div>`; return; }
+    <div class="eq">${L_('L')}: <span class="fx">${R.texto}</span><span class="note">recta vertical; en forma general, ${R.general.texto}</span></div>`; return; }
   el.innerHTML = `<div class="eq">${L_('m')} = ${fr(Y_(num(Pd.dy)), X_(num(Pd.dx)))} = ${L_(Pd.texto)}<span class="note">${{ creciente:'sube: m > 0', decreciente:'baja: m < 0', horizontal:'horizontal: m = 0' }[Pd.tipo]}</span></div>
-    <div class="eq">punto-pendiente: ${R.puntoPendiente}</div>
-    <div class="eq">pendiente-intercepto: ${R.pendienteIntercepto}<span class="note">${L_('m')} = ${L_(R.mTexto)}, ${B_('b')} = ${B_(R.bTexto)}</span></div>
-    <div class="eq">general: ${R.general.texto}</div>`;
+    <div class="eq">punto-pendiente (con P₁): ${ppHTML(A, R.m)}</div>
+    <div class="eq">pendiente-intercepto: ${piHTML(R.m, R.b)}<span class="note">${L_('m')} = ${L_(R.mTexto)}, ${B_('b')} = ${B_(R.bTexto)}</span></div>
+    <div class="eq">general: <span class="fx">${R.general.texto}</span></div>`;
 }
 
 const steps = [
  { k:'Paso 1', t:'Predice: la distancia entre A y B', gate:P1,
    prep:() => { const ya = !!S.pred[P1.id];
-     E.config({ vista:{ x0:-4, x1:7, y0:-1, y1:10 }, pts:{ A:[-2, 1], B:[4, 9] }, pintar:(D, p) => dibAB(D, p.A, p.B, ya ? 2 : 0),
+     E.config({ vista:{ x0:-4, x1:7, y0:-1, y1:10 }, referencial:!ya, pts:{ A:[-2, 1], B:[4, 9] }, pintar:(D, p) => dibAB(D, p.A, p.B, ya ? 2 : 0),
        ley: ya ? [['dx', 'avance Δx'], ['dy', 'subida Δy'], ['d', 'distancia d']] : [['ink', 'segmento AB']],
        lect: ya ? lectAB : [], desc:'Plano cartesiano con los puntos A(−2; 1) y B(4; 9) unidos por un segmento.' }); },
-   anima:fin => { let f = 0; E.pintar = (D, p) => dibAB(D, p.A, p.B, f); E.ley = [['dx', 'avance Δx'], ['dy', 'subida Δy'], ['d', 'distancia d']]; E.leyenda();
+   anima:fin => { let f = 0; E.referencial = false; E.pintar = (D, p) => dibAB(D, p.A, p.B, f); E.ley = [['dx', 'avance Δx'], ['dy', 'subida Δy'], ['d', 'distancia d']]; E.leyenda();
      E.animar(RM ? 0 : 2600, x => { f = 2*x; }, () => { E.lect = lectAB; E.avisar(); fin(); }); },
    body:() => `<p class="problem">En el plano están los puntos A(−2; 1) y B(4; 9).</p>
    <p>¿Cuánto mide el segmento AB, es decir, la distancia ${D_('d(A, B)')}?</p>${opcionesHTML(P1.opts, 'fb')}
@@ -650,7 +678,7 @@ const steps = [
      <div class="eq">${X_('Δx')} = 4 − (−2) = ${X_('6')}; ${Y_('Δy')} = 9 − 1 = ${Y_('8')}</div>
      <div class="eq">${D_('d(A, B)')} = √(${X_('Δx')}² + ${Y_('Δy')}²) = √(${X_('6')}² + ${Y_('8')}²) = √100 = ${D_('10')}</div></div>
    <p>Debajo de cada segmento inclinado hay un triángulo rectángulo con los catetos en las direcciones de los ejes: el ${X_('avance Δx')} y la ${Y_('subida Δy')}. El segmento es la hipotenusa, y Pitágoras da su largo. Como los catetos se elevan al cuadrado, da lo mismo restar B − A o A − B.</p>
-   <p class="fuente">Restar los cuadrados en vez de sumarlos es una forma de «Pitágoras mal aplicado»: según el informe de geometría (GE11), un estudio con alumnos de 10.° grado lo describe entre los errores comunes, sin porcentajes (respaldo parcial). Sumar los catetos y olvidar la raíz son hipótesis nuestras.</p></div>` },
+   <p class="fuente">Restar los cuadrados cabe en GE11 del informe de geometría («Pitágoras mal aplicado», por ejemplo tomar la hipotenusa como cateto), pero el estudio citado ahí no da porcentajes ni describe esta forma: la tratamos como hipótesis nuestra. Sumar los catetos y olvidar la raíz también son hipótesis nuestras.</p></div>` },
  { k:'Paso 2', t:'Arrastra A y B', explora:true,
    prep:() => { const p = S.expl2 || { A:[-2, 1], B:[4, 9] };
      E.config({ vista:{ x0:-6, x1:7, y0:-4, y1:10 }, pts:p, mover:['A', 'B'],
@@ -666,19 +694,19 @@ const steps = [
    <p class="hint">Con teclado: toca el dibujo; las flechas mueven el punto marcado y Enter cambia de punto.</p>` },
  { k:'Paso 3', t:'Predice: el punto que divide AB', gate:P2,
    prep:() => { const ya = !!S.pred[P2.id];
-     E.config({ vista:{ x0:-5, x1:8, y0:-5, y1:8 }, pts:{ A:[-3, 6], B:[6, -3] }, mover: ya ? ['A', 'B'] : [],
+     E.config({ vista:{ x0:-6, x1:7, y0:-4, y1:9 }, pts:{ A:[-4, 7], B:[5, -2] }, mover: ya ? ['A', 'B'] : [],
        pintar:(D, p) => dibDivide(D, p, ya ? 1 : 0),
        ley: ya ? [['ink', 'segmento AB en 3 partes'], ['P', 'punto P', 'pt']] : [['ink', 'segmento AB']],
        lect: ya ? [E => ['P', 'P con AP : PB = 1 : 2', MA.divide({ A:E.pts.A, B:E.pts.B, m:1, n:2 }).texto]] : [],
-       desc: ya ? (E => `El segmento de A${tp(E.pts.A)} a B${tp(E.pts.B)} partido en 3 partes iguales; P está a una parte de A.`) : 'El segmento de A(−3; 6) a B(6; −3).' }); },
+       desc: ya ? (E => `El segmento de A${tp(E.pts.A)} a B${tp(E.pts.B)} partido en 3 partes iguales; P está a una parte de A.`) : 'El segmento de A(−4; 7) a B(5; −2).' }); },
    anima:fin => { let f = 0; E.pintar = (D, p) => dibDivide(D, p, f); E.ley = [['ink', 'segmento AB en 3 partes'], ['P', 'punto P', 'pt']]; E.leyenda();
      E.animar(RM ? 0 : 2200, x => { f = x; }, () => { E.mover = ['A', 'B']; E.activo = 'A'; $('cv').tabIndex = 0;
        E.lect = [E => ['P', 'P con AP : PB = 1 : 2', MA.divide({ A:E.pts.A, B:E.pts.B, m:1, n:2 }).texto]]; E.dibujar(); E.avisar(); fin(); }); },
-   body:() => `<p class="problem">El punto ${P_('P')} está en el segmento que va de A(−3; 6) a B(6; −3), y cumple AP : PB = 1 : 2.</p>
+   body:() => `<p class="problem">El punto ${P_('P')} está en el segmento que va de A(−4; 7) a B(5; −2), y cumple AP : PB = 1 : 2.</p>
    <p>¿Cuáles son las coordenadas de ${P_('P')}?</p>${opcionesHTML(P2.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
      <div class="eq">${P_('P')} = ${fr('n·A + m·B', 'm + n')} = ${fr('2·A + 1·B', '3')}</div>
-     <div class="eq">x = ${fr('2·(−3) + 1·6', '3')} = 0; y = ${fr('2·6 + 1·(−3)', '3')} = 3 → ${P_(DV.texto)}</div></div>
+     <div class="eq">x = ${fr('2·(−4) + 1·5', '3')} = −1; y = ${fr('2·7 + 1·(−2)', '3')} = 4 → ${P_(DV.texto)}</div></div>
    <p>La razón 1 : 2 parte el segmento en 1 + 2 = 3 partes iguales, y ${P_('P')} queda a 1 parte de A: P = A + (1/3)(B − A). En la fórmula, cada extremo lleva el número del otro lado: A, que está más cerca, pesa más. Con 1 : 1 sale el punto medio.</p>
    <p>Ahora puedes arrastrar A y B: ${P_('P')} siempre queda a un tercio del camino.</p>
    <p class="fuente">No encontramos estudios con cifras sobre estos errores; las tres opciones incorrectas son hipótesis nuestras.</p></div>` },
@@ -695,24 +723,25 @@ const steps = [
    <div id="tras" class="body" hidden><div class="eqs">
      <div class="eq">${L_('m')} = ${fr(Y_('Δy'), X_('Δx'))} = ${fr('11 − 5', '4 − 1')} = ${fr(Y_('6'), X_('3'))} = ${L_('2')}</div></div>
    <p>La pendiente es lo que la recta sube por cada paso a la derecha: aquí, 2 por paso (la escalerita). Se mide entre dos puntos de la recta. La recta gris a trazos sí sale del origen y llega a B: su pendiente es 11/4, pero es otra recta.</p>
-   <p class="fuente">Dividir la altura de un punto entre su x, como si la recta pasara por el origen, es la confusión de pendiente con altura que Beichner (1994) midió en gráficas de movimiento: según el resumen del informe de cinemática (G2), cuando la recta pasa por el origen el 73 % calcula bien la pendiente, y cuando no pasa, solo entre el 21 % y el 25 %. Aquí es una recta del plano, no una gráfica de movimiento: respaldo parcial. Invertir la división y restar en orden cruzado son hipótesis nuestras (la segunda sale del mismo mecanismo, AL25 en el informe de álgebra).</p></div>` },
+   <p class="fuente">Dividir la altura de un punto entre su x, como si la recta pasara por el origen, es la confusión de pendiente con altura que Beichner (1994) midió en gráficas de movimiento: según el resumen del informe de cinemática (G2), cuando la recta pasa por el origen el 73 % calcula bien la pendiente, y cuando no pasa, solo entre el 21 % y el 25 %. Aquí es una recta del plano, no una gráfica de movimiento: respaldo parcial. Invertir la división es hipótesis nuestra. Restar en orden cruzado también: el informe de álgebra la anota junto a AL25, sin dato.</p></div>` },
  { k:'Paso 5', t:'La pendiente y la ecuación de la recta', explora:true,
-   prep:() => { const p = S.expl5 || { A:[-2, -1], B:[2, 5] };
-     E.config({ vista:{ x0:-6, x1:6, y0:-6, y1:8 }, pts:p, mover:['A', 'B'],
-       pintar:(D, q) => { const G = general(q.A, q.B), R = MA.recta({ A:q.A, B:q.B });
-         D.recta(G, D.c.L, D.g('L', 2.5)); D.triangulo(D.c, q.A, q.B);
-         if (!R.vertical){ D.pt([0, R.b], '', D.c.b, { r:6 }); const enEje = [q.A, q.B].some(P => P[0] === 0 && P[1] === R.b);
+   prep:() => { const p = S.expl5 || { 'P₁':[-2, -1], 'P₂':[2, 5] };
+     const pp = E => [E.pts['P₁'], E.pts['P₂']];
+     E.config({ vista:{ x0:-6, x1:6, y0:-6, y1:8 }, pts:p, mover:['P₁', 'P₂'],
+       pintar:(D, q) => { const A = q['P₁'], B = q['P₂'], G = general(A, B), R = MA.recta({ A, B });
+         D.recta(G, D.c.L, D.g('L', 2.5)); D.triangulo(D.c, A, B);
+         if (!R.vertical){ D.pt([0, R.b], '', D.c.b, { r:6 }); const enEje = [A, B].some(P => P[0] === 0 && P[1] === R.b);
            D.rotuloPx(D.X(0) + (R.m > 0 ? -10 : 10), D.Y(R.b) + (enEje ? 18 : 0), `b = ${R.bTexto}`, D.c.b, R.m > 0 ? 'right' : 'left'); }
-         D.pt(q.A, 'A', null, { clave:'A', dx:-10 }); D.pt(q.B, 'B', null, { clave:'B' }); },
+         D.pt(A, 'P₁', null, { clave:'P₁', dx:-10 }); D.pt(B, 'P₂', null, { clave:'P₂' }); },
        ley:[['L', 'recta L y su pendiente m'], ['dx', 'avance Δx'], ['dy', 'subida Δy'], ['b', 'corte con el eje y, b', 'pt']],
-       lect:[E => ['dx', 'avance Δx', num(MA.pendiente({ A:E.pts.A, B:E.pts.B }).dx)], E => ['dy', 'subida Δy', num(MA.pendiente({ A:E.pts.A, B:E.pts.B }).dy)],
-         E => ['L', 'pendiente m', MA.pendiente({ A:E.pts.A, B:E.pts.B }).texto], E => { const R = MA.recta({ A:E.pts.A, B:E.pts.B }); return ['b', 'corte b', R.vertical ? '—' : R.bTexto]; }],
-       desc:E => `La recta L por A${tp(E.pts.A)} y B${tp(E.pts.B)}: ${MA.recta({ A:E.pts.A, B:E.pts.B }).texto}.`,
+       lect:[E => { const [A, B] = pp(E); return ['dx', 'avance Δx', num(MA.pendiente({ A, B }).dx)]; }, E => { const [A, B] = pp(E); return ['dy', 'subida Δy', num(MA.pendiente({ A, B }).dy)]; },
+         E => { const [A, B] = pp(E); return ['L', 'pendiente m', MA.pendiente({ A, B }).texto]; }, E => { const [A, B] = pp(E), R = MA.recta({ A, B }); return ['b', 'corte b', R.vertical ? '—' : R.bTexto]; }],
+       desc:E => { const [A, B] = pp(E); return `La recta L por P₁${tp(A)} y P₂${tp(B)}: ${MA.recta({ A, B }).texto}.`; },
        alCambiar:() => { S.expl5 = E.pts; vivo5(); } }); },
-   body:() => `<p class="problem">Arrastra A o B y mira la ${L_('pendiente m')}: la ${Y_('subida')} entre el ${X_('avance')}. Busca una recta que suba, una que baje, una horizontal y una vertical.</p>
+   body:() => `<p class="problem">Arrastra P₁ o P₂ y mira la ${L_('pendiente m')}: la ${Y_('subida')} entre el ${X_('avance')}. Busca una recta que suba, una que baje, una horizontal y una vertical.</p>
    <div class="eqs" id="vivo5"></div>
    <p>Si sube, ${L_('m')} es positiva; si baja, negativa; si es horizontal, ${L_('m')} = 0. Si es vertical, ${X_('Δx')} = 0 y no se puede dividir: la recta vertical <b>no tiene pendiente</b>, pero sí ecuación, x = k.</p>
-   <p>La misma recta se escribe de tres maneras. <b>Punto-pendiente</b>, y − y₁ = ${L_('m')}(x − x₁), sale directo de un punto y la pendiente. <b>Pendiente-intercepto</b>, y = ${L_('m')}x + ${B_('b')}, muestra dónde corta al eje y: en ${B_('b')}. <b>General</b>, Ax + By + C = 0, con enteros y A positivo, es la que suelen dar las alternativas del examen; de ella, ${L_('m')} = −A/B.</p>
+   <p>La misma recta se escribe de tres maneras. <b>Punto-pendiente</b>, y − y₁ = ${L_('m')}(x − x₁), sale directo de un punto P₁(x₁; y₁) y la pendiente. <b>Pendiente-intercepto</b>, y = ${L_('m')}x + ${B_('b')}, muestra dónde corta al eje y: en ${B_('b')}. <b>General</b>, Ax + By + C = 0, con enteros y A positivo, es la que suelen dar las alternativas del examen; de ella, ${L_('m')} = −A/B.</p>
    <p class="hint">Con teclado: toca el dibujo; las flechas mueven el punto marcado y Enter cambia de punto.</p>` },
  { k:'Paso 6', t:'Predice: el corte con el eje y', gate:P4,
    prep:() => { const ya = !!S.pred[P4.id];
@@ -725,33 +754,33 @@ const steps = [
    body:() => `<p class="problem">La recta ${L_('L')} pasa por el punto Q(2; 1) y tiene pendiente ${L_('m = 3')}. En el dibujo se ve solo un tramo.</p>
    <p>Si se escribe como y = ${L_('m')}x + ${B_('b')}, ¿cuánto vale ${B_('b')}?</p>${opcionesHTML(P4.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
-     <div class="eq">punto-pendiente: ${RQ.puntoPendiente}</div>
-     <div class="eq">pendiente-intercepto: y = ${L_('3')}x − 6 + 1 = ${L_('3')}x ${B_('− 5')}</div>
-     <div class="eq">general: ${RQ.general.texto}</div></div>
+     <div class="eq">punto-pendiente: ${ppHTML([2, 1], 3)}</div>
+     <div class="eq">pendiente-intercepto: <span class="fx">y = ${L_('3')}x − 6 + 1</span> = ${piHTML(RQ.m, RQ.b, true)}</div>
+     <div class="eq">general: <span class="fx">${RQ.general.texto}</span></div></div>
    <p>En el dibujo, desde Q se camina hacia el eje y: 2 pasos a la izquierda, y en cada uno la recta baja 3. Se llega a ${B_('b = −5')}. Las tres ecuaciones son la misma recta: de la punto-pendiente se despeja y para la segunda, y se pasa todo a un lado para la general.</p>
    <p class="fuente">No encontramos estudios con cifras sobre estos errores; las tres opciones incorrectas son hipótesis nuestras.</p></div>` },
  { k:'Paso 7', t:'Predice: la pendiente perpendicular', gate:P5,
    prep:() => { const ya = !!S.pred[P5.id];
-     E.config({ vista:{ x0:-3, x1:8, y0:-2, y1:7 }, pts:{ A:[0, 1], T:[3, 3] }, mover: ya ? ['A'] : [], fijos:true,
+     E.config({ vista:{ x0:-3, x1:8, y0:-2, y1:7 }, pts:{ U:[0, 1], T:[3, 3] }, mover: ya ? ['U'] : [], fijos:true,
        pintar:(D, p) => dibPerp(D, p, ya ? 1 : 0, ya),
        ley: ya ? [['L', 'L₁ y m₁'], ['L2', 'L₂ y m₂'], ['dx', 'avance'], ['dy', 'subida']] : [['L', 'L₁ y m₁'], ['dx', 'avance'], ['dy', 'subida']],
        lect: ya ? lectPerp : [() => ['L', 'pendiente m₁', '2/3']],
-       desc: ya ? (E => `L₁ pasa por A${tp(E.pts.A)} y T(3; 3); L₂ es perpendicular a L₁ en T.`) : 'La recta L₁, que pasa por (0; 1) y T(3; 3), con su triángulo de pendiente: avanza 3 y sube 2.' }); },
+       desc: ya ? (E => `L₁ pasa por U${tp(E.pts.U)} y T(3; 3); L₂ es perpendicular a L₁ en T.`) : 'La recta L₁, que pasa por U(0; 1) y T(3; 3), con su triángulo de pendiente: avanza 3 y sube 2.' }); },
    anima:fin => { let f = 0; E.pintar = (D, p) => dibPerp(D, p, f, false); E.ley = [['L', 'L₁ y m₁'], ['L2', 'L₂ y m₂'], ['dx', 'avance'], ['dy', 'subida']]; E.leyenda();
-     E.animar(RM ? 0 : 3000, x => { f = x; }, () => { E.mover = ['A']; E.activo = 'A'; $('cv').tabIndex = 0; E.pintar = (D, p) => dibPerp(D, p, 1, true); E.lect = lectPerp; E.dibujar(); E.avisar(); fin(); }); },
-   body:() => `<p class="problem">La recta ${L_('L₁')} pasa por (0; 1) y T(3; 3): avanza 3 y sube 2, así que ${L_('m₁ = 2/3')}. Se quiere trazar por T una recta ${L2_('L₂')} perpendicular a ${L_('L₁')}.</p>
+     E.animar(RM ? 0 : 3000, x => { f = x; }, () => { E.mover = ['U']; E.activo = 'U'; $('cv').tabIndex = 0; E.pintar = (D, p) => dibPerp(D, p, 1, true); E.lect = lectPerp; E.dibujar(); E.avisar(); fin(); }); },
+   body:() => `<p class="problem">La recta ${L_('L₁')} pasa por U(0; 1) y T(3; 3): avanza 3 y sube 2, así que ${L_('m₁ = 2/3')}. Se quiere trazar por T una recta ${L2_('L₂')} perpendicular a ${L_('L₁')}.</p>
    <p>¿Cuál es la pendiente ${L2_('m₂')} de ${L2_('L₂')}?</p>${opcionesHTML(P5.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
      <div class="eq">${L_('m₁')} · ${L2_('m₂')} = −1 → ${L2_('m₂')} = ${fr('−1', L_('2/3'))} = ${L2_('−3/2')}</div></div>
    <p>Al girar el triángulo de la pendiente un cuarto de vuelta alrededor de T, el ${X_('avance 3')} se vuelve una bajada de 3 y la ${Y_('subida 2')} se vuelve un avance de 2: ${L2_('m₂')} = −3/2. Los catetos se intercambian (se invierte la fracción) y uno cambia de sentido (cambia el signo). Por eso el producto de las pendientes es −1.</p>
-   <p>Paralelas, en cambio, tienen la misma pendiente: ${L_('m₁')} = ${L2_('m₂')}. Ahora puedes arrastrar el punto de ${L_('L₁')}: ${L2_('L₂')} la sigue y el producto sigue siendo −1 (salvo si una es horizontal y la otra vertical, que no tiene pendiente).</p>
+   <p>Paralelas, en cambio, tienen la misma pendiente: ${L_('m₁')} = ${L2_('m₂')}. Ahora puedes arrastrar el punto U de ${L_('L₁')}: ${L2_('L₂')} la sigue y el producto sigue siendo −1 (salvo si una es horizontal y la otra vertical, que no tiene pendiente).</p>
    <p class="fuente">No encontramos estudios con cifras sobre estos errores; las tres opciones incorrectas son hipótesis nuestras.</p></div>` },
  { k:'Paso 8', t:'Predice: la distancia de un punto a una recta', gate:P6,
    prep:() => { const ya = !!S.pred[P6.id];
-     E.config({ vista:{ x0:-7, x1:4, y0:-6, y1:3 }, pts:{ R:[-2, -3] }, mover: ya ? ['R'] : [], pintar:(D, p) => dibDistR(D, p, ya ? 1 : 0),
+     E.config({ vista:{ x0:-7, x1:4, y0:-6, y1:3 }, referencial:!ya, pts:{ R:[-2, -3] }, mover: ya ? ['R'] : [], pintar:(D, p) => dibDistR(D, p, ya ? 1 : 0),
        ley: ya ? [['L', 'L: 3x + 4y + 8 = 0'], ['d', 'distancia d (perpendicular)'], ['muted', 'otro camino, más largo']] : [['L', 'L: 3x + 4y + 8 = 0']],
        lect: ya ? lectDistR : [], desc: ya ? (E => `La recta L y el punto R${tp(E.pts.R)} con su perpendicular.`) : 'La recta L: 3x + 4y + 8 = 0 y el punto R(−2; −3).' }); },
-   anima:fin => { let f = 0; E.pintar = (D, p) => dibDistR(D, p, f); E.ley = [['L', 'L: 3x + 4y + 8 = 0'], ['d', 'distancia d (perpendicular)'], ['muted', 'otro camino, más largo']]; E.leyenda();
+   anima:fin => { let f = 0; E.referencial = false; E.pintar = (D, p) => dibDistR(D, p, f); E.ley = [['L', 'L: 3x + 4y + 8 = 0'], ['d', 'distancia d (perpendicular)'], ['muted', 'otro camino, más largo']]; E.leyenda();
      E.animar(RM ? 0 : 2200, x => { f = x; }, () => { E.mover = ['R']; E.activo = 'R'; $('cv').tabIndex = 0; E.lect = lectDistR; E.dibujar(); E.avisar(); fin(); }); },
    body:() => `<p class="problem">La recta ${L_('L')}: 3x + 4y + 8 = 0 y el punto R(−2; −3).</p>
    <p>¿Cuál es la distancia ${D_('d(R, L)')} del punto a la recta?</p>${opcionesHTML(P6.opts, 'fb')}
@@ -762,12 +791,12 @@ const steps = [
    <p class="fuente">No encontramos estudios con cifras sobre estos errores; las tres opciones incorrectas son hipótesis nuestras.</p></div>` },
  { k:'Paso 9', t:'Predice: el área por coordenadas', gate:P7,
    prep:() => { const ya = !!S.pred[P7.id];
-     E.config({ vista:{ x0:-1, x1:8, y0:-1, y1:7 }, pts:{ A:TRI[0], B:TRI[1], C:TRI[2] }, mover: ya ? ['A', 'B', 'C'] : [],
+     E.config({ vista:{ x0:-1, x1:8, y0:-1, y1:7 }, referencial:!ya, pts:{ A:TRI[0], B:TRI[1], C:TRI[2] }, mover: ya ? ['A', 'B', 'C'] : [],
        pintar:(D, p) => dibArea(D, p, ya ? 1 : 0),
        ley: ya ? [['S', 'área S', 'sq'], ['ink', 'orden del recorrido']] : [['ink', 'triángulo ABC']],
        lect: ya ? lectArea : [], desc: ya ? (E => `El triángulo A${tp(E.pts.A)}, B${tp(E.pts.B)}, C${tp(E.pts.C)}, recorrido en ese orden.`) : 'El triángulo de vértices A(1; 1), B(3; 5) y C(6; 2).',
        alCambiar: ya ? vivo9 : null }); },
-   anima:fin => { let f = 0; E.pintar = (D, p) => dibArea(D, p, f); E.ley = [['S', 'área S', 'sq'], ['ink', 'orden del recorrido']]; E.leyenda();
+   anima:fin => { let f = 0; E.referencial = false; E.pintar = (D, p) => dibArea(D, p, f); E.ley = [['S', 'área S', 'sq'], ['ink', 'orden del recorrido']]; E.leyenda();
      E.animar(RM ? 0 : 2000, x => { f = x; }, () => { E.mover = ['A', 'B', 'C']; E.activo = 'A'; $('cv').tabIndex = 0; E.lect = lectArea; E.alCambiar = vivo9; E.dibujar(); E.avisar(); fin(); }); },
    body:() => `<p class="problem">Un triángulo tiene vértices A(1; 1), B(3; 5) y C(6; 2), en ese orden. Se calcula su ${S_('área S')} con el «zapatito»: se escriben las coordenadas en columna, se repite el primer vértice al final y se cruzan los productos.</p>
    ${tablaZap(TRI, ['A', 'B', 'C'])}
@@ -810,19 +839,20 @@ function dibCorte(D, p, f){
   if (f <= 0){
     D.linea([Q[0] - .5, Q[1] - 1.5], [Q[0] + 1.3, Q[1] + 3.9], D.c.L, D.g('L', 2.5));
     D.linea(Q, [Q[0] + 1, Q[1]], D.c.dx, 2.5); D.linea([Q[0] + 1, Q[1]], [Q[0] + 1, Q[1] + 3], D.c.dy, 2.5);
-    D.rotulo(Q[0] + .5, Q[1] - .45, '1', D.c.dx); D.rotulo(Q[0] + 1.3, Q[1] + 1.5, '3', D.c.dy, 'left');
+    D.rotuloPx(D.X(Q[0] + .5), D.Y(Q[1]) + 13, '1', D.c.dx); D.rotulo(Q[0] + 1.2, Q[1] + 1.5, '3', D.c.dy, 'left');
   } else {
     D.recta(G, D.c.L, D.g('L', 2.5));
     for (let j = 0; j < 2; j++){ const t = clamp(f*2 - j, 0, 1); if (t <= 0) continue; const a = [Q[0] - j, Q[1] - 3*j];
-      D.linea(a, [a[0] - t, a[1]], D.c.dx, 2.5); if (t >= 1) D.linea([a[0] - 1, a[1]], [a[0] - 1, a[1] - 3], D.c.dy, 2.5); }
-    if (f >= 1){ D.pt([0, -5], '', D.c.b, { r:7 }); D.rotuloPx(D.X(0) - 10, D.Y(-5), 'b = −5', D.c.b, 'right'); D.rotulo(-.6, -1.2, '−3', D.c.dy, 'right'); D.rotulo(.5, 1.45, '−1', D.c.dx); }
+      D.linea(a, [a[0] - t, a[1]], D.c.dx, 2.5); if (t >= 1) D.linea([a[0] - 1, a[1]], [a[0] - 1, a[1] - 3], D.c.dy, 2.5);
+      if (t >= 1 && j === 0){ D.rotuloPx(D.X(a[0] - .5), D.Y(a[1]) - 12, '−1', D.c.dx); D.rotuloPx(D.X(a[0] - 1) - 8, D.Y(a[1] - 1.5), '−3', D.c.dy, 'right'); } }
+    if (f >= 1){ D.pt([0, -5], '', D.c.b, { r:7 }); D.rotuloPx(D.X(0) + 12, D.Y(-5) + 14, 'b = −5', D.c.b, 'left'); }
   }
-  D.pt(Q, 'Q', null, { dx:10, dy:12 });
+  D.pt(Q, 'Q', null, { dx:10, dy:-14 });
 }
 // Gira el punto P alrededor de T un ángulo a (radianes, antihorario)
 const girar = (P, T, a) => [T[0] + (P[0] - T[0])*Math.cos(a) - (P[1] - T[1])*Math.sin(a), T[1] + (P[0] - T[0])*Math.sin(a) + (P[1] - T[1])*Math.cos(a)];
 function dibPerp(D, p, f, final){
-  const { A, T } = p, C = [T[0], A[1]];
+  const A = p.U, T = p.T, C = [T[0], A[1]];
   D.recta(general(A, T), D.c.L, D.g('L', 2.5));
   const ang = f*Math.PI/2;
   if (f < 1 || !final){
@@ -841,15 +871,15 @@ function dibPerp(D, p, f, final){
     const un = (P, Q) => { const w = [Q[0] - P[0], Q[1] - P[1]], n = Math.hypot(...w); return [w[0]/n, w[1]/n]; };
     D.anguloRecto(D.c, T, un(T, A), un(T, B2), D.c.ink);
     const m1 = MA.pendiente({ A, B:T }), m2 = MA.pendiente({ A:T, B:B2 });
-    D.rotuloPx(D.X(T[0]) + 14, D.Y(T[1]) - 34, `m₁ = ${m1.texto}`, D.c.L, 'left'); D.rotuloPx(D.X(T[0]) + 14, D.Y(T[1]) - 16, `m₂ = ${m2.texto}`, D.c.L2, 'left');
+    D.rotuloPx(D.W - 10, 16, `m₁ = ${m1.texto}`, D.c.L, 'right'); D.rotuloPx(D.W - 10, 36, `m₂ = ${m2.texto}`, D.c.L2, 'right');
   } else if (f >= 1){
-    D.rotuloPx(D.X(T[0]) + 14, D.Y(T[1]) - 16, 'm₂ = −3/2', D.c.L2, 'left');
+    D.rotuloPx(D.W - 10, 36, 'm₂ = −3/2', D.c.L2, 'right');
   }
-  D.pt(A, '', null, { clave:'A' }); D.pt(T, 'T', null, { dx:-12, dy:-14 });
+  D.pt(A, 'U', null, { clave:'U', dx:-10, dy:-14 }); D.pt(T, 'T', null, { dx:-12, dy:-14 });
 }
-const lectPerp = [E => ['L', 'pendiente m₁', MA.pendiente({ A:E.pts.A, B:E.pts.T }).texto],
-  E => { const B2 = girar(E.pts.A, E.pts.T, Math.PI/2).map(Math.round); return ['L2', 'pendiente m₂', MA.pendiente({ A:E.pts.T, B:B2 }).texto]; },
-  E => { const R = MA.perpendicular({ m: MA.pendiente({ A:E.pts.A, B:E.pts.T }).valor }); return ['ink', 'm₁ · m₂', R.producto === null ? 'sin producto' : num(R.producto)]; }];
+const lectPerp = [E => ['L', 'pendiente m₁', MA.pendiente({ A:E.pts.U, B:E.pts.T }).texto],
+  E => { const B2 = girar(E.pts.U, E.pts.T, Math.PI/2).map(Math.round); return ['L2', 'pendiente m₂', MA.pendiente({ A:E.pts.T, B:B2 }).texto]; },
+  E => { const R = MA.perpendicular({ m: MA.pendiente({ A:E.pts.U, B:E.pts.T }).valor }); return ['ink', 'm₁ · m₂', R.producto === null ? 'sin producto' : num(R.producto)]; }];
 const LDR = [3, 4, 8];
 function dibDistR(D, p, f){
   const R = p.R, DD = MA.distanciaPuntoRecta({ P:R, L:LDR });
@@ -951,7 +981,7 @@ function prediccion(s){
   pintar();
 }
 
-$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('next').addEventListener('click', () => { if ($('next').disabled) return; desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
 })();
@@ -973,11 +1003,11 @@ const EMP = MA.masEmpinada({ m1:3, m2:-5 });
 const u = t => `${t} u`, u2 = t => `${t} u²`;
 
 function dibVertical(D, f){
-  const A = [3, 1], B = [3, 6];
+  const A = [3, 1], B = [3, 6];   // P₁ y P₂
   if (f > 0){ D.recta([1, 0, -3], D.c.L, D.g('L', 2.5));
     const y = lerp(-1, 8, f); D.pt([3, y], '', D.c.L, { r:4.5 }); D.rotuloPx(D.X(3) + 10, D.Y(y), `x = 3, y = ${fmt(y, 1)}`, D.c.L, 'left', 12); }
   else D.linea(A, B, D.c.ink, 1.6);
-  D.pt(A, 'A', null, { dx:-10, dy:12 }); D.pt(B, 'B', null, { dx:-10 });
+  D.pt(A, 'P₁', null, { dx:-10, dy:12 }); D.pt(B, 'P₂', null, { dx:-10 });
 }
 function dibMedio(D, f){
   const A = [-5, 2], B = [3, -6], M = MED.punto, Hm = [(B[0] - A[0])/2, (B[1] - A[1])/2];
@@ -1031,30 +1061,31 @@ function dibEmpinada(D, f){
   if (f <= 0){ D.rotuloPx(D.W/2, 22, 'Las rectas aparecen al responder', D.c.muted, 'center', 13, 600); return; }
   D.recta([3, -1, 0], D.c.L, D.g('L', 2.5)); D.recta([5, 1, 0], D.c.L2, D.g('L2', 2.5));
   if (f >= .5){
-    D.linea([0, 0], [1, 0], D.c.dx, 3); D.linea([1, 0], [1, 3], D.c.dy, 3); D.rotulo(1.15, 1.5, 'sube 3', D.c.dy, 'left', 12);
-    D.linea([0, 0], [-1, 0], D.c.dx, 3); D.linea([-1, 0], [-1, 5], D.c.dy, 3); D.rotulo(-1.15, 2.5, 'baja 5 por paso', D.c.dy, 'right', 12);
-    D.rotulo(.5, -.6, '1 paso', D.c.dx, 'left', 12);
-    D.rotulo(1.6, 4.4, `m₁ = 3 (${fmt(EMP.angulo1, 1)}°)`, D.c.L, 'left', 12); D.rotulo(-1.25, 5.6, `m₂ = −5 (${fmt(EMP.angulo2, 1)}°)`, D.c.L2, 'right', 12);
+    // un paso a la derecha desde el origen: L₁ sube 3 y L₂ baja 5
+    D.linea([0, 0], [1, 0], D.c.dx, 3); D.linea([1, 0], [1, 3], D.c.dy, 3); D.linea([1, 0], [1, -5], D.c.dy, 3);
+    D.rotulo(1.15, 1.5, 'sube 3', D.c.dy, 'left', 12); D.rotulo(1.15, -2.5, 'baja 5', D.c.dy, 'left', 12);
+    D.rotuloPx(D.X(.5), D.Y(0) - 12, '1 paso', D.c.dx, 'center', 12);
+    D.rotulo(1.6, 4.4, `m₁ = 3 (${fmt(EMP.angulo1, 1)}°)`, D.c.L, 'left', 12); D.rotulo(.7, -5.6, `m₂ = −5 (${fmt(EMP.angulo2, 1)}°)`, D.c.L2, 'right', 12);
   }
 }
 
 const EXPS = [
   { id:'vertical', corto:'Dos puntos con la misma x',
-    q:`Una recta pasa por A(3; 1) y B(3; 6). ¿Cuál es su ecuación?`,
-    opts:[['a', 'y = 3', 'vertical-cambia-los-ejes', 'hipotesis'], ['b', VER.texto], ['c', 'y = 1', 'vertical-con-pendiente-cero', 'hipotesis'], ['d', 'No tiene ecuación', 'sin-pendiente-sin-ecuacion', 'hipotesis']],
-    ok:'b',
+    q:`Una recta pasa por P₁(3; 1) y P₂(3; 6). ¿Cuál es su ecuación?`,
+    opts:[['a', 'y = 3', 'vertical-cambia-los-ejes', 'hipotesis'], ['b', 'y = 1', 'vertical-con-pendiente-cero', 'hipotesis'], ['c', VER.texto], ['d', 'No tiene ecuación', 'sin-pendiente-sin-ecuacion', 'hipotesis']],
+    ok:'c',
     fb:{ a:'y = 3 es una recta horizontal: todos sus puntos tienen y = 3. Aquí lo que se repite es la x de los dos puntos.',
-      c:'y = 1 es la horizontal que pasa por A. Esta recta no tiene pendiente cero: no tiene pendiente, porque Δx = 0 y no se puede dividir entre cero.',
+      b:'y = 1 es la horizontal que pasa por P₁. Esta recta no tiene pendiente cero: no tiene pendiente, porque Δx = 0 y no se puede dividir entre cero.',
       d:'No tiene pendiente, pero sí ecuación: todos sus puntos, y solo ellos, cumplen x = 3.' },
-    vista:{ x0:-2, x1:7, y0:-1, y1:8 }, dib:dibVertical, dur:3000, ley:[['L', 'la recta']], ley0:[['ink', 'segmento AB']], desc:'Los puntos A(3; 1) y B(3; 6).',
+    vista:{ x0:-2, x1:7, y0:-1, y1:8 }, dib:dibVertical, dur:3000, ley:[['L', 'la recta']], ley0:[['ink', 'segmento P₁P₂']], desc:'Los puntos P₁(3; 1) y P₂(3; 6).',
     exp:() => `<div class="eqs"><div class="eq">m = ${fr(Y_('6 − 1'), X_('3 − 3'))} = ${fr(Y_('5'), X_('0'))} → no existe</div><div class="eq">${L_('L')}: ${VER.texto}<span class="note">en forma general, ${VER.general.texto} (B = 0)</span></div></div>
       <p>El punto azul recorre la recta: su y cambia, pero su x siempre es 3. Una recta vertical no tiene pendiente (sería dividir entre cero), pero su ecuación es x = k. En la forma general Ax + By + C = 0, es la que tiene B = 0.</p>
       <p class="fuente">No encontramos estudios con cifras sobre este caso; las opciones incorrectas son hipótesis nuestras.</p>` },
   { id:'medio-negativos', corto:'Punto medio con negativos',
     q:`El segmento AB va de A(−5; 2) a B(3; −6). ¿Cuál es su punto medio ${P_('M')}?`,
-    opts:[['a', MED.errores.semiResta.texto, 'medio-mitad-de-la-resta', 'hipotesis'], ['b', MED.texto], ['c', MED.errores.sinDividir.texto, 'medio-sin-dividir', 'hipotesis'], ['d', MED.errores.cruzaCoordenadas.texto, 'medio-coordenadas-cruzadas', 'hipotesis']],
-    ok:'b',
-    fb:{ a:'(4; −4) es la mitad de Δx y de Δy: dice cuánto hay que moverse desde A, no adónde se llega. Desde A(−5; 2): −5 + 4 = −1 y 2 − 4 = −2.',
+    opts:[['a', MED.texto], ['b', MED.errores.semiResta.texto, 'medio-mitad-de-la-resta', 'hipotesis'], ['c', MED.errores.sinDividir.texto, 'medio-sin-dividir', 'hipotesis'], ['d', MED.errores.cruzaCoordenadas.texto, 'medio-coordenadas-cruzadas', 'hipotesis']],
+    ok:'a',
+    fb:{ b:'(4; −4) es la mitad de Δx y de Δy: dice cuánto hay que moverse desde A, no adónde se llega. Desde A(−5; 2): −5 + 4 = −1 y 2 − 4 = −2.',
       c:'(−2; −4) es la suma de las coordenadas sin dividir entre 2. El punto medio es el promedio.',
       d:'(−2; −1) tiene las coordenadas cruzadas: en (x; y), la primera es la x.' },
     vista:{ x0:-7, x1:6, y0:-8, y1:4 }, dib:dibMedio, dur:2400, ley:[['ink', 'segmento AB'], ['P', 'punto medio M y el viaje desde A'], ['muted', 'la mitad de la resta, desde el origen']], ley0:[['ink', 'segmento AB']], desc:'El segmento de A(−5; 2) a B(3; −6).',
@@ -1063,11 +1094,12 @@ const EXPS = [
       <p class="fuente">No encontramos estudios con cifras sobre estos errores; las opciones incorrectas son hipótesis nuestras.</p>` },
   { id:'la-v', corto:'Pendientes opuestas',
     q:`Las rectas ${L_('L₁: y = 2x + 1')} y ${L2_('L₂: y = −2x + 5')} tienen pendientes ${L_('2')} y ${L2_('−2')}. ¿Son perpendiculares?`,
-    opts:[['a', 'Sí: sus pendientes son opuestas', 'perpendicular-pendiente-opuesta', 'hipotesis'], ['b', 'No: se cortan en un ángulo de unos 53°'], ['c', 'No: son paralelas', 'paralelas-mismo-numero', 'hipotesis'], ['d', 'Sí: toda pareja que se corta lo es', 'cortarse-es-perpendicular', 'hipotesis']],
-    ok:'b',
+    opts:[['a', 'Sí: forman 90°, porque sus pendientes son opuestas', 'perpendicular-pendiente-opuesta', 'hipotesis'], ['b', 'No: forman 0°, porque son paralelas', 'paralelas-mismo-numero', 'hipotesis'],
+          ['c', 'No: forman unos 63°, el ángulo de L₁ con el eje x', 'angulo-de-inclinacion-como-angulo-entre-rectas', 'hipotesis'], ['d', 'No: forman unos 53°, porque m₁ · m₂ = −4']],
+    ok:'d',
     fb:{ a:'Opuestas no basta: forman una V simétrica, y el ángulo recto solo sale si m₁ · m₂ = −1. Aquí 2 · (−2) = −4.',
-      c:'Paralelas tendrían la misma pendiente, 2 y 2. Con 2 y −2 se cortan, en (1; 3).',
-      d:'Cortarse no basta: perpendiculares son las que se cortan en ángulo recto, y aquí el ángulo es de unos 53°.' },
+      b:'Paralelas tendrían la misma pendiente, 2 y 2. Con 2 y −2 se cortan, en (1; 3).',
+      c:'63,4° es el ángulo de L₁ con el eje x (tan θ = 2). El ángulo entre las dos rectas usa las dos pendientes: tan θ = |m₂ − m₁|/|1 + m₁·m₂| = 4/3, unos 53°.' },
     vista:{ x0:-3, x1:5, y0:-2, y1:8 }, dib:dibV, dur:2200, ley:[['L', 'L₁'], ['L2', 'L₂'], ['muted', 'perpendicular a L₁']], desc:'Plano vacío: las rectas aparecen al responder.',
     exp:() => `<div class="eqs"><div class="eq">${L_('m₁')} · ${L2_('m₂')} = ${L_('2')} · ${L2_('(−2)')} = −4 ≠ −1</div><div class="eq">tan θ = ${fr(`|${L2_('m₂')} − ${L_('m₁')}|`, `|1 + ${L_('m₁')}·${L2_('m₂')}|`)} = ${fr('4', '3')} → θ ≈ ${fmt(VV.angulo, 2)}°</div></div>
       <p>La recta gris a trazos es la perpendicular de verdad a ${L_('L₁')} en (1; 3): tiene pendiente −1/2, la inversa de 2 con el signo cambiado. Las pendientes opuestas solo dan 90° cuando son 1 y −1, porque ahí invertir no cambia nada.</p>
@@ -1085,10 +1117,10 @@ const EXPS = [
       <p class="fuente">No encontramos estudios con cifras sobre estos errores; las opciones incorrectas son hipótesis nuestras.</p>` },
   { id:'orden-cruzado', corto:'Vértices en desorden',
     q:`El cuadrilátero A(0; 0), B(4; 0), C(6; 4), D(1; 6) tiene un ${S_('área de 24 u²')}. Si en el zapatito se copian los vértices en el orden A, C, B, D, ¿qué da |det|/2?`,
-    opts:[['a', u2(OC.errores.ordenNoImporta.texto), 'zapatito-orden-no-importa', 'hipotesis'], ['b', u2(OC.texto)], ['c', u2(OC.errores.sinMitad.texto), 'zapatito-sin-mitad', 'hipotesis'], ['d', u2(OC.errores.seAnula.texto), 'zapatito-se-anula', 'hipotesis']],
-    ok:'b',
+    opts:[['a', u2(OC.errores.ordenNoImporta.texto), 'zapatito-orden-no-importa', 'hipotesis'], ['b', u2(OC.errores.sinMitad.texto), 'zapatito-sin-mitad', 'hipotesis'], ['c', u2(OC.texto)], ['d', u2(OC.errores.seAnula.texto), 'zapatito-se-anula', 'hipotesis']],
+    ok:'c',
     fb:{ a:'El valor absoluto arregla el sentido del recorrido, pero no un camino que se cruza. A → C → B → D cruza su propio camino, y el zapatito resta un lazo del otro.',
-      c:'8 es |det|: falta dividir entre 2. Y aun así no es el área: el camino se cruza.',
+      b:'8 es |det|: falta dividir entre 2. Y aun así no es el área: el camino se cruza.',
       d:'No se anula del todo: los dos lazos tienen áreas distintas, 8 y 4, y el zapatito las resta: 8 − 4 = 4.' },
     vista:{ x0:-1, x1:7, y0:-1, y1:7 }, dib:dibCruzado, dur:3200, ley:[['S', 'lazo que suma', 'sq'], ['ink', 'lazo que resta (rayado)']], ley0:[['S', 'área del cuadrilátero', 'sq']], desc:'El cuadrilátero ABCD con su área de 24 u².',
     exp:() => `<div class="eqs"><div class="eq">orden A, C, B, D: ↘ 0 + 0 + 24 + 0 = 24; ↗ 0 + 16 + 0 + 0 = 16</div><div class="eq">|24 − 16|/2 = ${fmt(OC.valor, 0)} u² = 8 − 4<span class="note">un lazo suma y el otro resta</span></div></div>
@@ -1096,12 +1128,12 @@ const EXPS = [
       <p class="fuente">No encontramos estudios con cifras sobre este error; las opciones incorrectas son hipótesis nuestras.</p>` },
   { id:'empinada', corto:'¿Cuál está más inclinada?',
     q:`Una recta tiene pendiente ${L_('m₁ = 3')} y otra, ${L2_('m₂ = −5')}. Las dos pasan por el origen. ¿Cuál está más inclinada?`,
-    opts:[['a', 'La de m = 3, porque 3 es mayor que −5', 'inclinacion-con-signo', 'hipotesis'], ['b', 'La de m = −5, porque |−5| es mayor que 3'], ['c', 'La de m = 3, porque sube y la otra baja', 'inclinacion-sube-mas', 'hipotesis'], ['d', 'Ninguna: si una baja, no se comparan', 'inclinacion-no-se-compara', 'hipotesis']],
-    ok:'b',
-    fb:{ a:'Mayor pendiente no es mayor inclinación: el signo dice si sube o baja, y lo empinada lo dice |m|. Por cada paso, una sube 3 y la otra baja 5.',
+    opts:[['a', 'La de m = −5, porque <span class="fx">|−5|</span> es mayor que 3'], ['b', 'La de m = 3, porque 3 es mayor que −5', 'inclinacion-con-signo', 'hipotesis'], ['c', 'La de m = 3, porque sube y la otra baja', 'inclinacion-sube-mas', 'hipotesis'], ['d', 'Ninguna: si una baja, no se comparan', 'inclinacion-no-se-compara', 'hipotesis']],
+    ok:'a',
+    fb:{ b:'Mayor pendiente no es mayor inclinación: el signo dice si sube o baja, y lo empinada lo dice |m|. Por cada paso, una sube 3 y la otra baja 5.',
       c:'Subir o bajar lo dice el signo; lo empinada es cuánto cambia por cada paso: 3 contra 5.',
       d:'Sí se comparan: con la horizontal, una forma 71,57° y la otra 78,69°.' },
-    vista:{ x0:-3, x1:3, y0:-5, y1:7 }, dib:dibEmpinada, dur:2200, ley:[['L', 'm₁ = 3'], ['L2', 'm₂ = −5'], ['dx', 'un paso'], ['dy', 'lo que cambia']], desc:'Plano vacío: las rectas aparecen al responder.',
+    vista:{ x0:-3, x1:3, y0:-6, y1:7 }, dib:dibEmpinada, dur:2200, ley:[['L', 'm₁ = 3'], ['L2', 'm₂ = −5'], ['dx', 'un paso'], ['dy', 'lo que cambia']], desc:'Plano vacío: las rectas aparecen al responder.',
     exp:() => `<div class="eqs"><div class="eq">|${L_('m₁')}| = 3 &lt; |${L2_('m₂')}| = 5</div></div>
       <p>Por cada paso a la derecha, ${L_('L₁')} sube 3 y ${L2_('L₂')} baja 5: la segunda cambia más. El ángulo con la horizontal es ${fmt(EMP.angulo1, 2)}° contra ${fmt(EMP.angulo2, 2)}°. El ángulo de inclinación de ${L2_('L₂')}, medido desde el eje x positivo, es ${fmt(EMP.inclinacion2, 2)}°, porque baja.</p>
       <p class="fuente">No encontramos estudios con cifras sobre este caso; las opciones incorrectas son hipótesis nuestras.</p>` },
