@@ -199,8 +199,8 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
       <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
       <p class="sr" id="desc2" aria-live="polite"></p>
       <div class="legend">
-        <span><i style="background:var(--c-x)"></i>x · posición</span>
-        <span><i style="background:var(--c-v)"></i>v · velocidad</span>
+        <span><i style="background:var(--c-x)"></i>x · posición (y el área bajo v-t)</span>
+        <span><i style="background:var(--c-v)"></i>v · velocidad (y el área bajo a-t)</span>
         <span><i style="background:var(--c-a)"></i>a · aceleración</span>
         <span><i style="background:var(--c-t)"></i>t · tiempo</span>
       </div>
@@ -435,8 +435,8 @@ function vista(L, c, P){
     if (P.pendiente && P.pendiente.g === g && ver(g)){
       const p = P.pendiente, m = ms[p.m || 0].mov, f = t => g === 'x' ? m.x(t) : m.v(t);
       const xa = ej.X(p.t1), xb = ej.X(p.t2), ya = ej.Y(f(p.t1)), yb2 = ej.Y(f(p.t2)), colD = g === 'x' ? c.v : c.a;
-      ctx.save(); ctx.strokeStyle = colD; ctx.lineWidth = 2; ctx.setLineDash([5, 3]);
-      linea(ctx, xa, ya, xb, ya); linea(ctx, xb, ya, xb, yb2); ctx.restore();
+      ctx.save(); ctx.lineWidth = 2; ctx.setLineDash([5, 3]);
+      ctx.strokeStyle = c.t; linea(ctx, xa, ya, xb, ya); ctx.strokeStyle = c[g]; linea(ctx, xb, ya, xb, yb2); ctx.restore();
       rotulo(ctx, c, (xa + xb)/2, ya + 11, `Δt = ${fmt(p.t2 - p.t1)} s`, c.t, 'center', 800);
       { const fuera = xb + 70 > b.x + b.w; rotulo(ctx, c, fuera ? xb - 6 : xb + 6, (ya + yb2)/2, `Δ${g} = ${fmt(f(p.t2) - f(p.t1))}`, c[g], fuera ? 'right' : 'left', 800); }
       if (p.texto) rotulo(ctx, c, xa + 6, yb2 - 4, p.texto, colD, 'left', 800);
@@ -444,7 +444,7 @@ function vista(L, c, P){
     for (const mk of (P.marcas || []).filter(q => q.g === g)){
       ctx.save(); ctx.strokeStyle = c.t; ctx.setLineDash([3, 3]); ctx.lineWidth = 1.4; linea(ctx, ej.X(mk.t), b.y, ej.X(mk.t), b.y + b.h); ctx.restore();
       const fuera = ej.X(mk.t) + 110 > b.x + b.w;
-      rotulo(ctx, c, ej.X(mk.t) + (fuera ? -4 : 4), b.y + 12, mk.texto, c.t, fuera ? 'right' : 'left', 800);
+      rotulo(ctx, c, ej.X(mk.t) + (fuera ? -4 : 4), b.y + 12, mk.texto, c[mk.col] || c.t, fuera ? 'right' : 'left', 800);
     }
     // Cursor de tiempo
     if (tt > 0 && tt < P.tmax){ ctx.save(); ctx.strokeStyle = c.t; ctx.globalAlpha = .45; ctx.lineWidth = 1; linea(ctx, ej.X(tt), b.y, ej.X(tt), b.y + b.h); ctx.restore(); }
@@ -453,7 +453,7 @@ function vista(L, c, P){
 const altoVista = n => W => W >= 560 ? clamp(W*0.66, 380, 520) : 500 + (n - 3)*120;
 // Opciones con dibujitos de gráficas (SVG en línea), para predecir la forma.
 function bosquejo(tipo){
-  const d = { recta:'M6 34 L54 8', curva:'M6 34 Q38 32 54 6', horizontal:'M6 20 L54 20', cerro:'M6 34 Q30 -6 54 34', baja:'M6 8 L54 34', cero:'M6 34 L54 34' }[tipo];
+  const d = { recta:'M6 34 L54 8', curva:'M6 34 Q30 28 54 6', horizontal:'M6 20 L54 20', cerro:'M6 34 Q30 -6 54 34', baja:'M6 8 L54 34', cero:'M6 34 L54 34' }[tipo];
   return `<svg width="60" height="40" viewBox="0 0 60 40" aria-hidden="true" style="flex:none"><path d="M4 2 V36 H58" fill="none" stroke="currentColor" stroke-opacity=".45" stroke-width="1.4"/><path d="${d}" fill="none" stroke="var(--c-x)" stroke-width="3" stroke-linecap="round"/></svg>`;
 }
 </script>
@@ -498,11 +498,11 @@ function animar(t0, t1, listo){
 }
 const P1 = { id:'mruv-paso2', ok:'b',
   opts:[['a','Una recta que sube','recta','G3-xt-como-vt','documentado'], ['b','Una curva que sube cada vez más empinada','curva',null,''],
-        ['c','Una recta horizontal','horizontal','G3-aceleracion-constante-posicion-constante','documentado'], ['d','Una cuesta, como el camino','cerro','G1-grafica-como-foto','documentado']],
-  fb:{ b:'¡Bien! Cada segundo avanza más que el anterior, así que la posición sube cada vez más rápido: una curva (media parábola).',
+        ['c','Una recta horizontal','horizontal','G3-aceleracion-constante-posicion-constante','documentado'], ['d','Una loma: sube y después baja','cerro','G1-grafica-como-foto','documentado']],
+  fb:{ b:'¡Bien! Cada segundo avanza más que el anterior, así que la posición sube cada vez más rápido: una curva (un trozo de parábola).',
        a:'Elegiste la A. Una recta en x-t sería avanzar lo mismo cada segundo (velocidad constante). Aquí la velocidad crece: es la gráfica v-t la que sale recta. La correcta está marcada.',
        c:'Elegiste la C. Una recta horizontal en x-t quiere decir que no se mueve. Lo que es constante aquí es la aceleración, no la posición. La correcta está marcada.',
-       d:'Elegiste la D. La gráfica no es un dibujo del camino: el eje vertical es la posición, no la altura. La correcta está marcada.' } };
+       d:'Elegiste la D. La gráfica no es un dibujo del camino: la pista es plana y el eje vertical es la posición, no la altura. La combi siempre avanza, así que su posición nunca baja. La correcta está marcada.' } };
 const P2 = { id:'mruv-paso6', ok:'b',
   opts:[['a','Cuando se cruzan, a los 6 s',null,'K1-misma-posicion-misma-velocidad','documentado'], ['b','A los 3 s',null,null,''],
         ['c','Nunca: la combi va más lenta hasta que lo alcanza',null,'nunca-igual-velocidad','hipotesis'], ['d','Al inicio, porque salen juntos del paradero',null,'K1-misma-posicion-misma-velocidad','documentado']],
@@ -532,16 +532,16 @@ const steps = [
      <div class="eq">Δ${V('x','x')} = área = ${fr('(' + V('v','4') + ' + ' + V('v','14') + ')', '2')}·${V('t','5')} = ${V('x','45 m')}<span class="note">Un trapecio</span></div>
      <div class="eq">${V('x','x')} = ${V('v','v₀')}·${V('t','t')} + ½·${V('a','a')}·${V('t','t')}² = 4·5 + ½·2·25 = ${V('x','45 m')}<span class="note">La fórmula dice lo mismo</span></div>
    </div>
-   <p>La zona sombreada bajo la recta de ${V('v','velocidad')} mide, en metros, lo que avanzó la combi. Por eso la gráfica de ${V('x','x')} llega a 45 m a los 5 s.</p>
-   <p class="aviso">Si usas d = v·t con la velocidad final te sale 70 m, y con la inicial, 20 m: ninguna es la velocidad que tuvo todo el tiempo. Sacar algo del área de una gráfica es lo más difícil del test de Beichner (1994): solo el 23 % lo logró con una gráfica a-t.</p>` },
+   <p>La zona sombreada bajo la recta de ${V('v','velocidad')} está en azul, el color de ${V('x','x')}, porque mide en metros lo que avanzó la combi. Por eso la gráfica de ${V('x','x')} llega a 45 m a los 5 s.</p>
+   <p class="aviso">Si usas d = v·t con la velocidad final te sale 70 m, y con la inicial, 20 m: ninguna es la velocidad que tuvo todo el tiempo. El objetivo más difícil del test de Beichner (1994) fue sacar el cambio de velocidad del área de una gráfica a-t: solo el 23 % lo logró.</p>` },
  { k:'Paso 6', t:'Llega un mototaxi: predice', dos:true, ver:[], gate:P2,
    body:() => `<p>Justo cuando la combi pasa por el paradero a 4 m/s, un mototaxi pasa por el mismo lugar a ${V('v','10 m/s')} constantes. La combi sigue acelerando a 2 m/s². ¿En qué momento van <b>igual de rápido</b>?</p>${opciones(P2)}` },
  { k:'Paso 7', t:'Igual de rápido no es estar juntos', dos:true, anim:[0, 8], extra:() => ({ marcas:[{ g:'v', t:3, texto:'igual v (3 s)' }, { g:'x', t:6, texto:'se cruzan (6 s)' }] }),
    body:() => `<div class="eqs">
      <div class="eq">Igual ${V('v','v')}: 4 + 2${V('t','t')} = 10 → ${V('t','t = 3 s')}<span class="note">Se cortan las rectas de v-t</span></div>
-     <div class="eq">Mismo ${V('x','x')}: 4${V('t','t')} + ${V('t','t')}² = 10${V('t','t')} → ${V('t','t = 6 s')}<span class="note">Se cortan las curvas de x-t</span></div>
+     <div class="eq">Mismo ${V('x','x')}: 4${V('t','t')} + ${V('t','t')}² = 10${V('t','t')} → ${V('t','t = 0')} o ${V('t','t = 6 s')}<span class="note">Se cortan las curvas de x-t</span></div>
    </div>
-   <p>A los 3 s van igual de rápido, pero el mototaxi va 9 m adelante (30 m contra 21 m). La combi lo alcanza recién a los 6 s, y en ese momento va mucho más rápido: 16 m/s contra 10 m/s. ${S.pred['mruv-paso6'] === 'b' ? 'Tu predicción era correcta.' : ''}</p>
+   <p>A los 3 s van igual de rápido, pero el mototaxi va 9 m adelante (30 m contra 21 m). La combi no lo alcanza hasta los 6 s, y en ese momento va mucho más rápido: 16 m/s contra 10 m/s. ${S.pred['mruv-paso6'] === 'b' ? 'Tu predicción era correcta.' : ''}</p>
    <p class="fuente">Confundir "estar en el mismo lugar" con "ir igual de rápido" es una idea documentada en universitarios de cursos introductorios (Trowbridge y McDermott, 1980).</p>` },
  { k:'Paso 8', t:'La respuesta', fin:true,
    body:() => `<p class="answer">Respuesta: a los 5 s la combi va a 14 m/s y avanzó 45 m.</p>
@@ -558,7 +558,7 @@ const steps = [
      <label class="check"><input type="checkbox" id="so" ${S.otro ? 'checked' : ''}> Con mototaxi</label>
    </div>
    <div id="live" class="body"></div>
-   <p class="hint">Prueba una aceleración negativa: con "se detiene", la combi frena y se queda quieta; sin esa casilla, las ecuaciones la hacen retroceder, como una piedra que sube y vuelve a bajar.</p>` },
+   <p class="hint">Prueba una aceleración negativa: con la casilla "al frenar se detiene", la combi frena y se queda quieta; sin esa casilla, las ecuaciones la hacen retroceder, como una piedra que sube y vuelve a bajar.</p>` },
 ];
 const dots = $('dots');
 steps.forEach((s, n) => {
@@ -625,8 +625,16 @@ function vivo(){
   if (m.tParada !== null && m.tParada < 10) txt += `<div class="eq"><span class="note" style="margin:0">Se detiene a los ${fmt(m.tParada, 2)} s, en x = ${fmt(m.x(m.tParada), 1)} m, y ahí se queda.</span></div>`;
   txt += '</div>';
   if (S.otro){
-    const B = { v0:S.vB }, cr = M.cruces(A, B, 10).filter(t => t > 1e-9), iv = M.igualVelocidad(A, B, 10);
-    txt += `<div class="chips"><span class="chip">${cr.length ? 'Se cruzan a los ' + cr.map(t => fmt(t, 2)).join(' y ') + ' s' : 'No se cruzan en 10 s'}</span><span class="chip">${iv.length ? 'Igual velocidad a los ' + iv.map(t => fmt(t, 2)).join(' y ') + ' s' : 'Nunca van igual de rápido en 10 s'}</span></div>`;
+    const B = { v0:S.vB }, mB = M.movil(B), muestras = [...Array(41).keys()].map(k => k/4);
+    const igualSiempre = (f, desde) => muestras.filter(t => t >= desde).every(t => Math.abs(f(t)) < 1e-9);
+    let chips;
+    if (igualSiempre(t => m.x(t) - mB.x(t), 0)) chips = '<span class="chip">Van juntos y a la misma velocidad todo el tiempo</span>';
+    else {
+      const cr = M.cruces(A, B, 10).filter(t => t > 1e-9), iv = M.igualVelocidad(A, B, 10);
+      const ivTxt = iv.length ? iv.map(t => igualSiempre(s => m.v(s) - mB.v(s), t) ? `desde ${fmt(t, 2)} s${Math.abs(mB.v(10)) < 1e-9 ? ' (los dos quietos)' : ''}` : `a los ${fmt(t, 2)} s`).join(' y ') : '';
+      chips = `<span class="chip">${cr.length ? 'Se cruzan a los ' + cr.map(t => fmt(t, 2)).join(' y ') + ' s' : 'No se cruzan en 10 s'}</span><span class="chip">${iv.length ? 'Igual velocidad ' + ivTxt : 'Nunca van igual de rápido en 10 s'}</span>`;
+    }
+    txt += `<div class="chips">${chips}</div>`;
   }
   $('live').innerHTML = txt;
   draw();
@@ -675,15 +683,16 @@ const EXPS = [
     q:`Lanzas una moneda hacia arriba con ${V('v','30 m/s')}. Sube, se detiene un instante y baja. En el punto más alto, ¿cuánto vale su ${V('a','aceleración')}?`,
     opts:[['a','Cero, porque ahí está quieta','C1-aceleracion-cero-en-la-cima','documentado'],
           ['b','10 m/s² hacia abajo',null],
-          ['c','10 m/s² hacia arriba, porque venía subiendo','aceleracion-hacia-arriba','hipotesis'],
-          ['d','Depende de cuánto pesa la moneda','C2-depende-de-la-masa','hipotesis']],
+          ['c','10 m/s² hacia arriba, porque venía subiendo','K3-aceleracion-en-sentido-del-movimiento','documentado'],
+          ['d','Depende de cuánto pesa la moneda','C2-depende-de-la-masa','documentado']],
     ok:'b',
     antes:() => Object.assign(E, { cfg:{ moviles:[{ o:{ v0:30, a:-10 }, tipo:'bola' }], tmax:6, graficas:['x','v','a'], rango:{ x:[0, 50], v:[-32, 32], a:[-12, 4] }, pista:'v', ver:['x'] }, t:0, T:6 }),
-    despues:() => { E.cfg.ver = true; E.cfg.marcas = [{ g:'v', t:3, texto:'cima: v = 0' }, { g:'a', t:3, texto:'cima: a = −10' }]; correr(0, 6); },
+    despues:() => { E.cfg.ver = true; E.cfg.marcas = [{ g:'v', t:3, texto:'cima: v = 0', col:'v' }, { g:'a', t:3, texto:'cima: a = −10', col:'a' }]; correr(0, 6); },
     ctrl:() => tiempo(),
     exp:`<p>La gráfica de ${V('a','a')} es una recta horizontal en −10 todo el tiempo: al subir, en la cima y al bajar. En la cima la velocidad es cero, pero <b>está cambiando</b>: un instante antes subía y un instante después baja. Eso es aceleración.</p>
-      <p>Si la aceleración fuera cero en la cima, la moneda se quedaría flotando ahí arriba. La pendiente de la recta de v-t es la misma en todo el vuelo.</p>
-      <p class="fuente">Después de un curso tradicional, solo el 5 % de 240 universitarios de Oregon respondió bien las preguntas de la moneda lanzada hacia arriba. Con demostraciones en las que primero predecían, más del 90 % (Thornton y Sokoloff, 1998).</p>` },
+      <p>Si la aceleración fuera cero en la cima, la moneda se quedaría flotando ahí arriba. La pendiente de la recta de v-t es la misma en todo el vuelo. El signo menos dice que apunta hacia abajo: tomamos positivo hacia arriba.</p>
+      <p>Tampoco depende de la masa: sin aire, una moneda y una piedra tienen la misma aceleración, 10 m/s² hacia abajo.</p>
+      <p class="fuente">Después de un curso tradicional, solo el 5 % de 240 universitarios de Oregon respondió bien las preguntas de la moneda lanzada hacia arriba (preguntaban por la fuerza sobre la moneda, que aquí equivale a su aceleración). Con demostraciones en las que primero predecían, más del 90 % (Thornton y Sokoloff, 1998).</p>` },
   { id:'formas', corto:'De v-t a a-t',
     q:`La gráfica ${V('v','v-t')} de un móvil es una recta que sube, de 2 m/s a 11 m/s en 6 s. ¿Cómo es su gráfica ${V('a','a-t')}?`,
     opts:[['a','Una recta que sube, igual que la de v','G3-graficas-iguales','documentado','recta'],
@@ -696,45 +705,45 @@ const EXPS = [
     ctrl:() => tiempo(),
     exp:`<p>Cada gráfica es la pendiente de la anterior. La recta de v-t sube 1,5 m/s cada segundo, siempre igual: su pendiente es constante, así que la gráfica de ${V('a','a')} es una recta horizontal en 1,5 m/s².</p>
       <p>Y la gráfica de ${V('x','x')} no es una recta: es una curva, porque la pendiente de x-t (la velocidad) va creciendo. Tres gráficas, tres formas distintas.</p>
-      <p class="fuente">Alrededor del 25 % de 524 alumnos ya instruidos dibuja las tres gráficas con la misma forma, cambiando solo la etiqueta del eje (Beichner, 1994).</p>` },
+      <p class="fuente">Alrededor del 25 % de los 524 alumnos ya instruidos que rindieron el test elige una gráfica con la misma forma, como si bastara cambiar la etiqueta del eje (Beichner, 1994).</p>` },
   { id:'pendiente', corto:'Leo la pendiente',
     q:`La gráfica ${V('x','x-t')} de un mototaxi es una recta que pasa por (0 s; 10 m) y por (4 s; 30 m). ¿Qué ${V('v','velocidad')} lleva?`,
     opts:[['a','7,5 m/s, que es 30 entre 4','G2-altura-entre-tiempo','documentado'],
           ['b','5 m/s',null],
           ['c','30 m/s, la altura de la recta','G2-pendiente-es-altura','documentado'],
-          ['d','10 m/s, donde la recta corta el eje','lee-el-corte','hipotesis']],
+          ['d','10 m/s, donde la recta corta el eje','G2-lee-el-eje','documentado']],
     ok:'b',
     antes:() => Object.assign(E, { cfg:{ moviles:[{ o:{ x0:10, v0:5 }, tipo:'moto' }], tmax:4, graficas:['x','v'], rango:{ x:[0, 35], v:[0, 8] }, pista:'h', ver:['x'] }, t:4, T:4 }),
     despues:() => { E.cfg.ver = true; E.cfg.pendiente = { g:'x', t1:0, t2:4, texto:'pendiente = 20/4 = 5' }; correr(0, 4); },
     ctrl:() => tiempo(),
-    exp:`<p>La velocidad es la pendiente: cuánto cambia ${V('x','x')} entre cuánto cambia ${V('t','t')}. De 10 m a 30 m hay 20 m, en 4 s: 20/4 = 5 m/s. El mototaxi no salió del paradero: ya estaba a 10 m.</p>
-      <p>Dividir 30 entre 4 sería correcto solo si la recta pasara por el origen. La altura de la recta (30 m) es la posición, no la velocidad.</p>
+    exp:`<p>La velocidad es la pendiente: cuánto cambia ${V('x','x')} entre cuánto cambia ${V('t','t')}. De 10 m a 30 m hay 20 m, en 4 s: 20/4 = 5 m/s. El mototaxi no partió del paradero: en t = 0 ya estaba a 10 m de él.</p>
+      <p>Dividir 30 entre 4 sería correcto solo si la recta pasara por el origen. La altura del punto (30 m) es la posición a los 4 s, no la velocidad.</p>
       <p class="fuente">Si la recta pasa por el origen, el 73 % calcula bien la pendiente; si no pasa, solo entre el 21 % y el 25 %. Alrededor de 1 de cada 4 confunde la pendiente con la altura (Beichner, 1994).</p>` },
   { id:'area-a', corto:'El área de a-t',
     q:`La gráfica ${V('a','a-t')} de un móvil es una recta horizontal en 3 m/s², de 0 s a 4 s. ¿Cuánto cambió su ${V('v','velocidad')} en esos 4 s?`,
     opts:[['a','12 m/s',null],
-          ['b','0,75 m/s, que es 3 entre 4','G4-pendiente-en-vez-de-area','documentado'],
+          ['b','0,75 m/s, que es 3 entre 4','G2-altura-entre-tiempo','documentado'],
           ['c','3 m/s, lo que marca la gráfica','G4-lee-el-eje','documentado'],
           ['d','No se puede saber sin la velocidad inicial','falta-v0','hipotesis']],
     ok:'a',
     antes:() => Object.assign(E, { cfg:{ moviles:[{ o:{ v0:2, a:3 }, tipo:'combi' }], tmax:4, graficas:['a','v'], rango:{ a:[0, 4], v:[0, 16], x:[0, 35] }, pista:'h', ver:['a'] }, t:4, T:4 }),
-    despues:() => { E.cfg.ver = true; E.cfg.sombra = { g:'a', t1:0, t2:4, todo:true, texto:'área = 3·4 = 12 m/s' }; E.cfg.marcas = [{ g:'v', t:4, texto:'de 2 a 14 m/s' }]; correr(0, 4); },
+    despues:() => { E.cfg.ver = true; E.cfg.sombra = { g:'a', t1:0, t2:4, todo:true, texto:'área = 3·4 = 12 m/s' }; E.cfg.marcas = [{ g:'v', t:4, texto:'de 2 a 14 m/s', col:'v' }]; correr(0, 4); },
     ctrl:() => tiempo(),
-    exp:`<p>El área bajo la gráfica a-t es el cambio de velocidad: 3 m/s² × 4 s = 12 m/s. Aquí el móvil iba a 2 m/s y termina a 14 m/s.</p>
+    exp:`<p>El área bajo la gráfica a-t es el cambio de velocidad: 3 m/s² × 4 s = ${V('v','12 m/s')}. Por eso está pintada en rojo, el color de ${V('v','v')}. Aquí el móvil iba a 2 m/s y termina a 14 m/s.</p>
       <p>No hace falta la velocidad inicial para el <b>cambio</b>; sí para la velocidad final. Y la pendiente de a-t (que aquí es cero) diría cómo cambia la aceleración, no la velocidad.</p>
-      <p class="fuente">Fue el objetivo más difícil del test de Beichner (1994): solo el 23 % de 524 alumnos sacó el cambio de velocidad del área de una gráfica a-t. Calcular la pendiente o leer el eje fueron los errores más comunes.</p>` },
+      <p class="fuente">Fue el objetivo más difícil del test de Beichner (1994): solo el 23 % de 524 alumnos sacó el cambio de velocidad del área de una gráfica a-t. Los errores típicos son calcular la pendiente o leer el valor del eje.</p>` },
   { id:'enesimo', corto:'El quinto segundo',
-    q:`La combi del paso a paso sale con ${V('v','4 m/s')} y acelera a ${V('a','2 m/s²')}. ¿Cuánto avanza <b>durante</b> el quinto segundo (de t = 4 s a t = 5 s)?`,
+    q:`La combi del paso a paso sale con ${V('v','4 m/s')} y acelera a ${V('a','2 m/s²')}. ¿Cuánto avanza <b>durante</b> el quinto segundo?`,
     opts:[['a','45 m','confunde-en-n-segundos','hipotesis'],
           ['b','13 m',null],
           ['c','14 m, lo que marca su velocidad a los 5 s','v-final-como-distancia','hipotesis'],
           ['d','9 m, el promedio de 45 m en 5 s','promedio-del-total','hipotesis']],
     ok:'b',
     antes:() => Object.assign(E, { cfg:{ moviles:[{ o:{ v0:4, a:2 }, tipo:'combi' }], tmax:5, graficas:['x','v'], rango:{ x:[0, 50], v:[0, 15] }, pista:'h', ver:[] }, t:0, T:5 }),
-    despues:() => { E.cfg.ver = true; E.cfg.sombra = { g:'v', t1:4, t2:5, todo:true, texto:'13 m' }; E.cfg.marcas = [{ g:'x', t:4, texto:'32 m' }, { g:'x', t:5, texto:'45 m' }]; correr(0, 5); },
+    despues:() => { E.cfg.ver = true; E.cfg.sombra = { g:'v', t1:4, t2:5, todo:true, texto:'13 m' }; E.cfg.marcas = [{ g:'x', t:4, texto:'32 m', col:'x' }, { g:'x', t:5, texto:'45 m', col:'x' }]; correr(0, 5); },
     ctrl:() => tiempo(),
-    exp:`<p>En 5 s avanza 45 m y en 4 s, 32 m: durante el quinto segundo avanza 45 − 32 = 13 m. En la gráfica v-t es la franja sombreada entre 4 s y 5 s, un trapecio de alturas 12 y 14: (12 + 14)/2 = 13.</p>
-      <p>"En el quinto segundo" es un segundo solo; "en cinco segundos" son los cinco. La fórmula de las academias, d = v₀ + a(n − ½), es esa misma franja: la velocidad a los 4,5 s por un segundo.</p>
+    exp:`<p>En 5 s avanza 45 m y en 4 s, 32 m: durante el quinto segundo avanza 45 − 32 = 13 m. En la gráfica v-t es la franja sombreada entre 4 s y 5 s, un trapecio de alturas 12 y 14 y ancho 1 s: (12 + 14)/2 · 1 = 13 m.</p>
+      <p>"En el quinto segundo" es un segundo solo; "en cinco segundos" son los cinco. La fórmula de las academias, dₙ = [v₀ + a(n − ½)]·(1 s), es esa misma franja: la velocidad a los 4,5 s por un segundo.</p>
       <p class="fuente">Es una pregunta típica de academia sin estudios con porcentaje: las opciones incorrectas son errores que suponemos.</p>` },
 ];
 const S = { k:0, pred:{}, t0:Date.now() };
