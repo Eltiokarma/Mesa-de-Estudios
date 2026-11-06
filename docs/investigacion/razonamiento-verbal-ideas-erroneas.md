@@ -84,6 +84,7 @@ Los ejemplos son propios, escritos para este informe.
 | --- | --- | --- | --- | --- | --- |
 | RV13 | **Se confunde el propósito con la forma del texto**: "contar una historia" cuando la anécdota es un medio para informar o convencer. | Texto que empieza con la historia de un pescador del Titicaca para explicar la contaminación; distractor: "narrar la vida de un pescador". | En un ítem de propósito de la ECE 2007, más de la tercera parte eligió "contarnos una historia". Es primaria, y la cifra se vio en un solo fragmento. | Parcial (por verificar; primaria) | UMC (2007), *Guía de análisis* |
 | RV14 | **Se omite el punto de vista del autor**: se describe el tema sin la postura (informar cuando el texto critica o defiende). | Texto que defiende la papa nativa frente a la importada; distractor: "describir las variedades de papa". | Los distractores que omiten el punto de vista del autor atrajeron solo a los lectores de nivel bajo. | Parcial (por verificar) | Terao e Ishii (2020) |
+| RV33 | **Se atribuye al autor una postura que no toma**: un texto que explica se lee como si quisiera convencer, o se le atribuye una preferencia que no expresa. | Texto que explica cómo se hace el chuño; distractor: "convencer de que el chuño es mejor que la papa fresca". | Sin estudio encontrado. Es el error contrario a RV14. | Hipótesis (ligada a RV7) | — |
 
 ### Analogías
 
@@ -147,6 +148,7 @@ Errores que suponemos en los ítems de academia, sin estudio que los mida. Cada 
 | Plan por cronología superficial (RV29) | Sin dato; el único estudio apunta en contra |
 | Eliminar lo pertinente (RV30) | RV5 (eco literal) |
 | Redundancia por paráfrasis (RV32) | Sin dato |
+| Postura que el autor no toma (RV33) | RV7 (inferencia no autorizada) |
 | Definiciones: elegir un rasgo accidental como diferencia específica | Sin dato (unidad `definiciones`) |
 | Textos discontinuos: leer el título del gráfico y no los ejes | Sin dato en esta revisión (unidad `textos-discontinuos`) |
 | Lectura en inglés: traducir palabra por palabra los falsos amigos | Sin dato en esta revisión (unidad `lectura-en-ingles`) |
@@ -167,7 +169,7 @@ El diseño detallado va en la pieza 2 de la rutina (`docs/formato-lectura.md`). 
 | Inferencia | RV5 (eco literal), RV6 (literal), RV7 (no autorizada), RV8 (saber del mundo) |
 | Compatibilidad e incompatibilidad | RV5, RV8, RV9, RV10 o RV11 |
 | Extrapolación | RV12, RV7, RV8 |
-| Intención del autor | RV13 (forma por propósito), RV14 (sin postura), RV2 |
+| Intención del autor | RV13 (forma por propósito), RV14 (sin postura), RV33 (postura que no toma), RV2 |
 | Analogías | RV15 (asociación con C), RV16 (invertida), RV17 (mismo campo) |
 | Sinónimo o antónimo en contexto | RV18 (sentido frecuente), RV19 (mismo campo), RV20 (parónimo), RV21 |
 | Conectores y oraciones incompletas | RV24 (causal por contracausal), RV25 (concesivo), RV26 (aditivo), RV23 |
