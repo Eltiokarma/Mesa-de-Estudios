@@ -8,7 +8,7 @@
 npm test
 ```
 
-Deben pasar 985 pruebas.
+Deben pasar 1036 pruebas.
 
 ```bash
 npm run dev
@@ -60,6 +60,9 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 | ra2 y pl4 | Razonamiento verbal y formato lectura | `razonamiento-verbal-ideas-erroneas.md` (RV1 a RV32, ninguno documentado; hecho por la rutina) | La rutina sigue con el diseño del formato lectura, 30 textos propios y la guía docente |
 
 ### 2. Detalles de las plantillas ya hechas
+
+- **Tiro parabólico y circular** (`plantillas/tiro-parabolico/`, rutina de física, 6 nov 2026): dos movimientos con sombras sobre los ejes y estroboscopio, MCU, MCUV y transmisión; 17 casos verificados aparte; 10 de papel; 3 predicciones y 6 «¿qué pasa si…?» (Prescott y Mitchelmore 2005, Thornton y Sokoloff 1998). Falta en la escena: MCUV, transmisión, encuentros en la circunferencia e impacto contra una pared (están en el motor y el papel).
+- **Formato lectura y banco de razonamiento verbal** (rutina verbal, 6 nov 2026): diseño en `docs/formato-lectura.md` (paso previo antes de las alternativas, seis tipos, evento propio `previo`) y los primeros 6 textos propios en `contenido/razonamiento-verbal/` con su validador. Falta implementar el formato en `nucleo/` y `app/` (pl4) y llegar a 30 textos.
 
 - **Cinética** (`plantillas/cinetica/`, rutina de química, 6 nov 2026): caja de discos con teoría de colisiones (energía y orientación), temperatura, catalizador y perfil de energía. Informe `docs/investigacion/cinetica-ideas-erroneas.md` (CI1 a CI13) con cifras sin verificar por el bloqueo de red: la escena no muestra porcentajes de cinética. La fracción contada queda unos pocos por ciento bajo la teoría. Falta en la escena: orden ≠ coeficiente y vida media.
 

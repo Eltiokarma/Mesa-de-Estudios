@@ -105,7 +105,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "tiro-parabolico"
+     ]
     },
     {
      "id": "fisica.estatica",
@@ -4461,6 +4463,23 @@
     "/plantillas/soluciones/index.html",
     "/plantillas/soluciones/motor.js",
     "/plantillas/soluciones/papel.json"
+   ]
+  },
+  "tiro-parabolico": {
+   "id": "tiro-parabolico",
+   "titulo": "Tiro parabólico y movimiento circular",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.movimiento-parabolico-y-circular"
+   ],
+   "url": "/plantillas/tiro-parabolico/index.html",
+   "papel": "/plantillas/tiro-parabolico/papel.json",
+   "archivos": [
+    "/plantillas/tiro-parabolico/index.html",
+    "/plantillas/tiro-parabolico/motor.js",
+    "/plantillas/tiro-parabolico/papel.json"
    ]
   },
   "triangulo-estira": {
