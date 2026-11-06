@@ -122,7 +122,7 @@
   const mismoValor = (a, b) => {
     if (typeof a !== 'object' || typeof b !== 'object') return a === b;
     if (a.punto && b.punto) return casi(a.punto[0], b.punto[0]) && casi(a.punto[1], b.punto[1]);
-    if (a.valor !== undefined && b.valor !== undefined && !a.punto && !b.punto) return casi(a.valor, b.valor);
+    if (a.valor !== undefined && b.valor !== undefined && !a.punto && !b.punto) return a.valor === null || b.valor === null ? a.valor === b.valor : casi(a.valor, b.valor);
     return false;
   };
   function apartar(errores, esIgual) {
@@ -361,12 +361,15 @@
     else if (fCero(m1)) m2 = null;
     else m2 = fDiv(F(-1), m1);
     const val = m2 === null ? null : fNum(m2);
-    const e = m1 === null ? { igual: null } : fCero(m1) ? { cero: deF(F(0)) } : {
+    // Si L es vertical, la perpendicular es horizontal (m₂ = 0). Errores: otra vertical (la misma pendiente, «no existe»);
+    // cambiar el signo de algo que no existe da lo mismo (va a 'repetidos'); invertir no se puede (va a 'noAplica').
+    const vert = () => Object.assign({ valor: null, texto: 'no existe' }, P ? { recta: `x = ${txF(P[0])}` } : {});
+    const e = m1 === null ? { igual: vert(), opuesta: vert(), inversa: null } : fCero(m1) ? { cero: deF(F(0)) } : {
       opuesta: deF(fNeg(m1)),                 // m₂ = −m₁ (hipótesis)
       inversa: deF(fDiv(F(1), m1)),          // m₂ = 1/m₁, sin el signo (hipótesis)
       igual: deF(m1),                         // la misma pendiente: eso es paralela (hipótesis)
     };
-    const { errores, coinciden, noAplica, repetidos } = apartar(e, v => val !== null && casi(v.valor, val));
+    const { errores, coinciden, noAplica, repetidos } = apartar(e, v => val !== null && v.valor !== null && casi(v.valor, val));
     const r = { m1: m1 === null ? null : fNum(m1), valor: val, texto: m2 === null ? 'no existe' : txF(m2), vertical: m2 === null,
       producto: m1 && m2 ? fNum(fMul(m1, m2)) : null, errores, coinciden, noAplica, repetidos };
     if (P) r.recta = publica(construirRecta(P, m2));

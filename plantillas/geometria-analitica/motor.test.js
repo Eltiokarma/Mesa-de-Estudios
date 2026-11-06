@@ -191,13 +191,13 @@ function sinChoques(R, que, igual) {
   for (const [k, e] of Object.entries(R.errores)) assert.ok(!igual(e), `${que}: el error ${k} da lo mismo que la correcta`);
   for (const k of R.coinciden) assert.ok(!(k in R.errores), `${que}: ${k} está en los dos lados`);
   // dos errores nunca dan lo mismo entre sí (serían dos alternativas iguales): el segundo va a 'repetidos'
-  const clave = e => (typeof e !== 'object' ? String(e) : e.punto ? e.punto.map(x => x.toFixed(9)).join(';') : e.valor.toFixed(9));
+  const clave = e => (typeof e !== 'object' ? String(e) : e.punto ? e.punto.map(x => x.toFixed(9)).join(';') : e.valor === null ? 'null' : e.valor.toFixed(9));
   const vistos = new Map();
   for (const [k, e] of Object.entries(R.errores)) { const c = clave(e); assert.ok(!vistos.has(c), `${que}: ${k} y ${vistos.get(c)} dan lo mismo`); vistos.set(c, k); }
   for (const [k, otro] of Object.entries(R.repetidos || {})) assert.ok(otro in R.errores && !(k in R.errores), `${que}: repetido ${k}`);
   for (const k of R.noAplica || []) assert.ok(!(k in R.errores) && !R.coinciden.includes(k), `${que}: ${k} no aplica`);
 }
-const porValor = R => e => R.valor !== null && casi(e.valor, R.valor);
+const porValor = R => e => R.valor !== null && e.valor !== null && casi(e.valor, R.valor);
 const porPunto = R => e => casi(e.punto[0], R.punto[0]) && casi(e.punto[1], R.punto[1]);
 test('ningún error típico coincide con la respuesta correcta; los que coinciden se apartan', () => {
   for (let k = 0; k < N; k++) {

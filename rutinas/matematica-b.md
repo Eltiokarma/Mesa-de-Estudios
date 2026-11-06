@@ -92,3 +92,81 @@ Sesión paralela a la conversación principal, en la rama `rutina/matematica-b`.
 3. En el informe de geometría, GE13 dice «Documentado», pero la cifra es de éxito global: conviene bajarlo a «Parcial», como ya lo usan la ampliadora y los sólidos. La opción de caras visibles usa `GE13-cuenta-caras-visibles`, otro subtipo que la ampliadora no tiene.
 4. Para `docs/pendientes.md` y CLAUDE.md: «Sólidos (6 nov 2026): `plantillas/solidos/` (desarrollo plano animado de prisma, pirámide, cilindro y cono; apotema y generatriz contra la altura; tres pirámides llenan la caja; Arquímedes; cubitos ocultos, cubo pintado y Euler; 19 casos verificados aparte; 10 de papel)».
 5. Banco de entrada y salida de geometría: sumar ítems de sólidos cuando entre al catálogo (la prueba avisa).
+
+## 6 nov 2026 · El plano con imán (`plantillas/geometria-analitica/`)
+
+**Qué hice.**
+
+- **`motor.js`** (UMD, fracciones exactas, raíces simplificadas, puntos escritos (x; y)):
+  - funciones de puntos y rectas: `distancia`, `puntoMedio`, `divide` (AP : PB = m : n), `pendiente`, `recta` en sus tres formas, `rectaGeneral` (enteros primos entre sí, A > 0), `posicion`, `perpendicular` y `paralela`;
+  - distancias y áreas: `distanciaPuntoRecta` (con el pie), `distanciaParalelas`, `area` (zapatito) y `ordenCruzado` (los dos lazos);
+  - además, `masEmpinada`, `baricentro`, `circunferencia` y `circunferenciaGeneral` (circunferencia, punto o vacía).
+
+  Cada resultado trae `errores`, `coinciden` (errores que dan lo mismo que la respuesta), `repetidos` (dos errores iguales entre sí) y `noAplica`.
+- **`casos.json`:** 20 casos con sus «tambien».
+- **`motor.test.js`:** 43 pruebas. Hay propiedades con 400 puntos al azar: Pitágoras, AP/PB, m₁·m₂ = −1, el pie sobre la recta y el área como base × altura / 2. También se prueba que ningún error coincide con la respuesta ni con otro error, la validación de entrada y el papel.
+- **`papel.json`:** 10 problemas propios: perímetro, extremo dado el punto medio, razón 2 : 3, pendiente y ángulo, ecuación general, perpendicular, el valor de k, punto a recta, área de un cuadrilátero y circunferencia de diámetro AB.
+- **`index.html`, paso a paso** (9 pasos, 7 predicciones):
+  1. distancia;
+  2. exploración con puntos que se arrastran con imán;
+  3. punto que divide 1 : 2;
+  4. pendiente: el error y/x de un solo punto es G2, parcial (la cifra es de gráficas de movimiento);
+  5. exploración de las tres formas, con P₁ y P₂;
+  6. b de la recta;
+  7. la pendiente perpendicular, con el triángulo que gira 90°;
+  8. distancia de un punto a una recta;
+  9. área por zapatito en sentido horario.
+
+  En los pasos 1, 8 y 9, antes de responder la figura se dibuja «referencial», sin cuadrícula, para que no se pueda contar la respuesta.
+- **`index.html`, «¿qué pasa si…?»** (6 experimentos): la recta vertical, el punto medio con negativos, la V de pendientes 2 y −2, la distancia entre paralelas que hay que igualar primero, el zapatito en orden cruzado y cuál recta está más inclinada.
+
+**Pruebas.** `npm test`: 1433 en total, 1431 pasan y fallan solo las 2 del catálogo, que se esperaba. Playwright revisó cinco configuraciones (1366 y 390, claro y oscuro, con movimiento reducido): sin errores ni desbordes; las pastillas están bloqueadas y el dibujo queda fijo arriba en el celular.
+
+**Subagentes.**
+
+- **Verificador independiente** (no leyó el motor). Usó fracciones y un segundo método en cada caso: A + t(B − A), producto punto, arccos de las normales, Cramer y producto cruz.
+  - Primera pasada: 20 de 20 casos y 10 de 10 de papel, sin ninguna discrepancia.
+  - Pidió tres cosas, ya aplicadas:
+    - el caso vertical, donde restar cuadrados da lo mismo que la respuesta, va en `coinciden`;
+    - con m = ±1, dos errores salían iguales entre sí: ahora van en `repetidos`;
+    - con Δy = 0, Δx/Δy no existe: ahora va en `noAplica`.
+  - Segunda pasada, sobre los casos nuevos (rectas generales con A < 0, con C = 0 y horizontal; distancia 0; paralelas con factor negativo; colineales; baricentro; circunferencia general, punto y vacía): todo OK.
+  - Solo se ajustó la perpendicular a una recta vertical: «igual», que da otra recta vertical, quedó como distractor.
+- **Revisor de contenido.** Apliqué todo:
+  - **Grave:** A y B eran a la vez los puntos y los coeficientes de Ax + By + C = 0, y además chocaban con b. Ahora los puntos son P₁ y P₂.
+  - **Medio:**
+    - La cuadrícula dejaba contar la respuesta en los pasos 1, 8 y 9: ahora la figura es referencial hasta responder.
+    - La opción correcta caía siempre en la misma letra: ahora está repartida.
+    - La cita de GE11 decía más de lo que trae el informe: ahora es hipótesis.
+    - La frase de AL25 estaba mal armada.
+    - m y b no tenían color dentro de las ecuaciones.
+    - La escalera de m = −5 se dibujaba subiendo.
+    - En el experimento 3, solo la correcta llevaba ángulo.
+  - **Menor:** rótulos encimados, el punto móvil sin nombre (ahora U), ecuaciones cortadas en el celular y un guardián en «Siguiente».
+
+**Colores** (claro / oscuro): Δx #a05200 / #f0a04a; Δy #466d14 / #a3d65e; d #a10fbf / #cf6bfa; P y M #0f766e / #5ed9c8; L₁ y m₁ #1f5fbf / #7cb0ff; L₂ y m₂ #c0364a / #f17384; b #77032c / #ffa8b8; área S #7d6a00 / #e3c84a.
+
+- **ΔE00 entre los que salen juntos:** mínimo 22,6 en claro y 20,4 en oscuro.
+- **Pares cercanos que nunca comparten dibujo:** S y Δy (17), L₂ y b (12,6 en oscuro).
+- **Contraste:** AA en los dos modos.
+
+**Pendiente.**
+
+- Lo que no cubre, por orden de lo más preguntado:
+  - circunferencia en la escena (solo está en el papel y en el motor), parábola y elipse;
+  - mediatriz y forma simétrica x/a + y/b = 1;
+  - tangente a una circunferencia;
+  - simétrico de un punto respecto de una recta;
+  - ángulo «de L₁ a L₂»;
+  - división externa.
+- Casi todos los distractores son hipótesis nuestras, porque no hay informe de ideas erróneas de analítica.
+- En el paso 5, «b = 5» roza los números del eje cuando P₂ cae sobre él.
+
+**Pedidos para la integración.**
+
+1. En `catalogo/cursos/geometria.json`, unidad `geometria.geometria-analitica`: `"plantillas": ["geometria-analitica"]`. Hoy tiene `investigacion: null`. Después, `npm run catalogo`.
+2. En el catálogo, agregar «Área por coordenadas» a los temas de esa unidad, o dejar anotado que la escena lo trae aunque el catálogo no lo liste.
+3. `algebra.funciones` podría enlazarse también. No lo puse porque ya la cubre la gráfica con perillas.
+4. En `docs/diseno.md`, un párrafo «Variables del plano con imán» con la tabla de colores de arriba.
+5. Para `docs/pendientes.md` y CLAUDE.md: «Plano con imán (6 nov 2026): `plantillas/geometria-analitica/` (distancia, punto que divide, pendiente, las tres formas de la recta, paralelas y perpendiculares, punto a recta y zapatito; 20 casos verificados aparte; 10 de papel). Falta un informe de ideas erróneas de analítica y la escena de cónicas».
+6. Banco de entrada y salida de geometría: sumar ítems cuando entre al catálogo.
