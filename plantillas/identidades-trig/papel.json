@@ -45,14 +45,14 @@
     {
       "id": "p4",
       "nivel": "intermedio",
-      "enunciado": "Calcula cos 15° usando 15° = 45° − 30°.",
-      "respuesta": "cos 15° = (√6 + √2)/4 ≈ 0,97.",
+      "enunciado": "Calcula cos 75° usando 75° = 45° + 30°.",
+      "respuesta": "cos 75° = (√6 − √2)/4 ≈ 0,26.",
       "pasos": [
-        "cos(a − b) = cos a cos b + sen a sen b: con la resta, el signo del medio es +.",
-        "cos 45° cos 30° + sen 45° sen 30° = (√2/2)(√3/2) + (√2/2)(1/2) = √6/4 + √2/4.",
-        "Resultado: (√6 + √2)/4. No es cos 45° − cos 30°, que da un número negativo: el coseno de un ángulo agudo es positivo."
+        "cos(a + b) = cos a cos b − sen a sen b: con la suma, el signo del medio es −.",
+        "cos 45° cos 30° − sen 45° sen 30° = (√2/2)(√3/2) − (√2/2)(1/2) = √6/4 − √2/4.",
+        "Resultado: (√6 − √2)/4. No es cos 45° + cos 30°, que pasa de 1: un coseno nunca pasa de 1."
       ],
-      "verificar": [ { "fn": "suma", "args": [{ "a": 45, "b": 30, "op": "−", "fn": "cos" }], "espera": { "texto": "(√6 + √2)/4", "errores.lineal.texto": "(−√3 + √2)/2" } } ]
+      "verificar": [ { "fn": "suma", "args": [{ "a": 45, "b": 30, "fn": "cos" }], "espera": { "texto": "(√6 − √2)/4", "errores.lineal.texto": "(√3 + √2)/2" } } ]
     },
     {
       "id": "p5",
@@ -106,15 +106,15 @@
     {
       "id": "p9",
       "nivel": "avanzado",
-      "enunciado": "Si cos x = −7/25 y 180° < x < 270°, calcula sen(x/2) y cos(x/2).",
-      "respuesta": "sen(x/2) = 4/5 y cos(x/2) = −3/5.",
+      "enunciado": "Si cos x = −119/169 y 180° < x < 270°, calcula sen(x/2) y cos(x/2).",
+      "respuesta": "sen(x/2) = 12/13 y cos(x/2) = −5/13.",
       "pasos": [
         "Primero el cuadrante de x/2: si 180° < x < 270°, entonces 90° < x/2 < 135°, en el segundo cuadrante. Ahí el seno es positivo y el coseno negativo.",
-        "sen(x/2) = +√((1 − cos x)/2) = √((32/25)/2) = √(16/25) = 4/5.",
-        "cos(x/2) = −√((1 + cos x)/2) = −√((18/25)/2) = −√(9/25) = −3/5.",
-        "El signo no sale de x (tercer cuadrante, donde los dos son negativos), sino de x/2."
+        "sen(x/2) = +√((1 − cos x)/2) = √((288/169)/2) = √(144/169) = 12/13.",
+        "cos(x/2) = −√((1 + cos x)/2) = −√((50/169)/2) = −√(25/169) = −5/13.",
+        "El signo no sale de x (tercer cuadrante, donde los dos son negativos), sino de x/2. Control: (12/13)² + (5/13)² = 1."
       ],
-      "verificar": [ { "fn": "mitad", "args": [{ "cos": "-7/25", "desde": 180, "hasta": 270 }], "espera": { "texto": "−3/5", "senMitad.texto": "4/5", "cuadranteMitad": 2, "errores.signo.texto": "3/5" } } ]
+      "verificar": [ { "fn": "mitad", "args": [{ "cos": "-119/169", "desde": 180, "hasta": 270 }], "espera": { "texto": "−5/13", "senMitad.texto": "12/13", "cuadranteMitad": 2, "errores.signo.texto": "5/13" } } ]
     },
     {
       "id": "p10",

@@ -9,18 +9,19 @@
    Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4). Con un solo ángulo x, como
    en circunferencia-trig: x fucsia, sen x rojo y cos x azul (y sus cuadrados sen²x y cos²x, que son áreas sobre esos
    lados). Cada ángulo que sale de x tiene su color, para su arco, su punto y su altura: 2x verde, x/2 naranja y
-   3x marrón rojizo. Con dos ángulos: a mostaza, b petróleo y a + b granate. Lados sin razón, el radio 1, la
-   cuadrícula y los totales van en tinta o en gris.
-   Elegidos con CIEDE2000: entre los que salen juntos, ΔE00 mínimo 21,5 en claro (sen–3x) y 25,4 en oscuro; entre
-   cualquier par de la escena, 16,0 (x/2–3x y a+b–3x, que nunca salen juntos). Contraste AA sobre el papel, la
-   tarjeta y su chip (.v, fondo al 8 %): el más bajo es b en oscuro, 4,50. El rojo del seno se parece al rojo de los
-   avisos: el aviso siempre va con texto. */
+   3x marrón (en oscuro, rojo anaranjado). sen(x/2) va en tinta para que el naranja nombre solo a x/2 y su coseno.
+   Con dos ángulos: a mostaza, b petróleo y a + b granate (las piezas del rectángulo, en tinta). Lados sin razón, el
+   radio 1, la cuadrícula y los totales van en tinta o en gris.
+   Elegidos con CIEDE2000: entre los que salen juntos, ΔE00 mínimo 25,9 en claro (sen–x/2) y 21,6 en oscuro
+   (sen–3x); 3x y x/2 quedan a 25,1 y 21,6. Entre cualquier par de la escena, 16,8 (sen–a+b en oscuro, que nunca
+   salen juntos). Contraste AA sobre el papel, la tarjeta y su chip (.v, fondo al 8 %): el más bajo es b en oscuro,
+   4,50. El rojo del seno (y en oscuro el de 3x) se parece al de los avisos: el aviso siempre va con texto. */
 [hidden]{display:none!important}
 :root{
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
   --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
   --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
-  --c-x:#a10fbf; --c-sen:#c0364a; --c-cos:#1f5fbf; --c-d:#466d14; --c-m:#a05200; --c-t:#6b260f;
+  --c-x:#a10fbf; --c-sen:#c0364a; --c-cos:#1f5fbf; --c-d:#466d14; --c-m:#a05200; --c-t:#3d1c00;
   --c-a:#7d6a00; --c-b:#005c6c; --c-s:#77032c;
   --relleno:.16;
   --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
@@ -31,14 +32,14 @@
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-x:#cf6bfa; --c-sen:#f17384; --c-cos:#7cb0ff; --c-d:#a3d65e; --c-m:#f0a04a; --c-t:#ff6600;
+  --c-x:#cf6bfa; --c-sen:#f17384; --c-cos:#7cb0ff; --c-d:#a3d65e; --c-m:#f0a04a; --c-t:#ff4f14;
   --c-a:#e3c84a; --c-b:#009ca4; --c-s:#fdb4ce;
   --relleno:.2; color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-x:#cf6bfa; --c-sen:#f17384; --c-cos:#7cb0ff; --c-d:#a3d65e; --c-m:#f0a04a; --c-t:#ff6600;
+  --c-x:#cf6bfa; --c-sen:#f17384; --c-cos:#7cb0ff; --c-d:#a3d65e; --c-m:#f0a04a; --c-t:#ff4f14;
   --c-a:#e3c84a; --c-b:#009ca4; --c-s:#fdb4ce;
   --relleno:.2; color-scheme:dark }
 
@@ -371,15 +372,18 @@ function crearEscena(cv, idDesc, idLect, idLey){
     if (T.caja) return T.caja;
     if (T.arrastre) return { x0:-1.05, x1:1.5, y0:-1.08, y1:1.5 };
     const s = T.s, c = T.c;
+    if (T.cuad === 0 && !T.crece) return { x0:-.2, x1:c + .62, y0:-.22, y1:s + .14 };   // sin cuadrados: el triángulo de cerca
     return { x0:-s - .12, x1:c + s + .12, y0:-c - .12, y1:s + c + .1 };
   }
   function cajaPl(){
     const P = E.pl, B = Object.assign({}, P.caja);
-    if (P.barras){ const nb = P.barras.lista.length; B.xb0 = B.x1 + .22; B.x1 = B.xb0 + nb*.62 + .05;
+    if (P.barras){ const nb = P.barras.lista.length; B.xb0 = B.x1 + .22; B.x1 = B.xb0 + nb*paso() + .05;
       const alto = Math.max(1.12, ...P.barras.lista.map(b => b.piezas.reduce((s, q) => s + Math.max(0, q.v), 0) + .2));
       B.y1 = Math.max(B.y1, alto); }
     return B;
   }
+  const paso = () => ((cv.clientWidth || W) < 420 ? .9 : .62);   // separación de las barras: más ancha en el celular
+  E.angosto = () => (cv.clientWidth || W) < 520;
   const caja = () => (E.modo === 'tri' && E.tri ? cajaTri() : E.modo === 'plano' && E.pl ? cajaPl() : { x0:0, x1:1, y0:0, y1:1 });
   function escala(){
     const B = caja(), pad = 14;
@@ -517,7 +521,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
       ctx.save(); ctx.setLineDash([5, 5]); ctx.strokeStyle = c.muted; linea(ctx, { x:base.x, y:uno }, { x:fin.x, y:uno }); ctx.restore();
       rotulo(ctx, c, base.x - 4, uno, '1', c.muted, 'right', 700, 11);
       Bb.lista.forEach((b, j) => {
-        const x0 = B.xb0 + j*.62 + .08, w = .42; let y = 0;
+        const x0 = B.xb0 + j*paso() + .08 + (paso() - .62)/2, w = .42; let y = 0;
         for (const q of b.piezas){
           const h = q.v*(Bb.f === undefined ? 1 : Bb.f), p0 = e.P({ x:x0, y }), p1 = e.P({ x:x0 + w, y:y + h });
           ctx.save(); ctx.fillStyle = col(c, q.color); ctx.globalAlpha = q.hueco ? .0 : (E.hl === q.color ? 1 : .85);
@@ -607,7 +611,8 @@ function crearEscena(cv, idDesc, idLect, idLey){
     for (const m of manijas()){ const d = Math.hypot(p.x - m.p.x, p.y - m.p.y); if (d < dm){ dm = d; mejor = m.id; } } return mejor; }
   function ponerAngulo(id, g){
     if (E.modo === 'tri'){ const T = E.tri, v = clamp(Math.round(g), T.min || 10, T.max || 80); if (v === T.g) return;
-      T.g = v; const P = MI.punto(v); T.s = P.y; T.c = P.x; T.n = [37, 53].includes(v) ? 5 : 0; if (T.alMover) T.alMover(T); E.dibujar(); E.avisar(); return; }
+      // al arrastrar, los valores de verdad (sin la convención de academia) y sin cuadrícula
+      T.g = v; const P = MI.cadena({ a:v, b:0 }); T.s = P.sena; T.c = P.cosa; T.n = 0; T.academia = false; if (T.alMover) T.alMover(T); E.dibujar(); E.avisar(); return; }
     const M = E.pl.manijas.find(m => m.id === id); if (!M) return;
     const v = clamp(Math.round(g), M.min, M.max); if (v === M.g) return;
     M.g = v; if (E.pl.rehacer) E.pl.rehacer(E.pl); E.dibujar(); E.avisar();
@@ -653,7 +658,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
 (function(){
 const $ = id => document.getElementById(id);
 const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1');
-const S = { step:0, max:0, pred:{}, ocupado:false, x1:37, a:45, b:30, x6:37 };
+const S = { step:0, max:0, pred:{}, ocupado:false, x1:50, a:45, b:30, x6:37 };
 
 // Todo lo que se pregunta sale del motor, con sus errores típicos
 const C30 = MI.cuadrado({ fn:'sen', g:30 });
@@ -739,12 +744,12 @@ const altEx = (P, color, o) => Object.assign({ p:{ x:P.x, y:0 }, q:P, color, anc
 const CAJA1 = { x0:-.35, x1:1.12, y0:-.18, y1:1.12 };   // primer cuadrante, de cerca
 const CAJA_SEMI = { x0:-1.12, x1:1.12, y0:-.15, y1:1.12 };   // la mitad de arriba (a + b llega a 170°)
 
-// Paso 1: el triángulo que se arrastra
+// Paso 1: el triángulo que se arrastra (valores de verdad) y, aparte, el «37°» de academia
 function config1(){
-  const g = S.x1, P = MI.punto(g);
-  E.config({ modo:'tri', tri:{ s:P.y, c:P.x, g, arrastre:true, cuad:1, n:[37, 53].includes(g) ? 5 : 0, cuentas:true, ang:`x = ${g}°`,
-    alMover:T => { S.x1 = T.g; T.ang = `x = ${T.g}°`; } },
-    lect:[() => ['x', 'x', `${E.tri.g}°`], () => ['sen', 'sen x', fmt(E.tri.s, 3)], () => ['cos', 'cos x', fmt(E.tri.c, 3)],
+  const g = S.x1, P = MI.cadena({ a:g, b:0 });
+  E.config({ modo:'tri', tri:{ s:P.sena, c:P.cosa, g, arrastre:true, cuad:1, n:0, cuentas:true, ang:`x = ${g}°`,
+    alMover:T => { S.x1 = T.g; T.ang = `x = ${T.g}°`; pintarAcad(); } },
+    lect:[() => ['x', 'x', E.tri.academia ? '≈ 36,87°' : `${E.tri.g}°`], () => ['sen', 'sen x', E.tri.academia ? '3/5' : fmt(E.tri.s, 3)], () => ['cos', 'cos x', E.tri.academia ? '4/5' : fmt(E.tri.c, 3)],
       () => ['ink', 'sen²x + cos²x', fmt(E.tri.s*E.tri.s + E.tri.c*E.tri.c, 3)]],
     desc:'Un triángulo rectángulo de hipotenusa 1 con un cuadrado sobre cada lado; el vértice de arriba se arrastra por un arco de radio 1.' });
 }
@@ -754,6 +759,15 @@ function config2(r){
     etq:{ op:[['sen 30°', 'sen']], ady:[['cos 30°', 'cos']], hip:[['1', 'ink']] } },
     lect: r ? lect2() : [] });
 }
+// El triángulo 3-4-5: x ≈ 36,87°, que las academias redondean a 37°. Es el único que pone la cuadrícula de quintos.
+function academia1(){
+  const T = E.tri; if (!T || E.ocupado || E.anim) return;
+  const A = MI.pitagorica({ sen:'3/5' });
+  Object.assign(T, { g:Math.atan2(3, 4)/GR, s:.6, c:A.valor, n:A.celdas.lado, academia:true, ang:'x ≈ 36,87°' });
+  E.dibujar(); E.avisar(); pintarAcad();
+}
+function pintarAcad(){ const m = document.getElementById('acad-msg'); if (!m || !E.tri) return;
+  m.textContent = E.tri.academia ? 'El de academia (x ≈ 36,87°, que se redondea a 37°) tiene sen x = 3/5 exacto: sus lados caben en quintos y los cuadrados se pueden contar.' : 'Valores de verdad, redondeados a tres cifras.'; }
 const lect2 = () => [() => ['sen', 'sen 30°', r30.texto], () => ['sen', 'sen²30° = (sen 30°)²', C30.texto], () => ['ink', 'sen(30²) = sen 900°', C30.errores.delCuadrado.texto]];
 // Paso 3: sen x = 3/5
 function config3(r){
@@ -761,10 +775,10 @@ function config3(r){
     etq:{ op:[['sen x = 3/5', 'sen']], ady:[[r ? `cos x = ${PI3.texto}` : 'cos x = ?', 'cos']], hip:[['1', 'ink']] } },
     lect: r ? lect3() : [] });
 }
-const lect3 = () => [() => ['ink', 'cuadritos sobre la hipotenusa', String(PI3.celdas.total)], () => ['sen', 'de sen²x', String(PI3.celdas.sen)], () => ['cos', 'de cos²x', `${PI3.celdas.cos} = ${PI3.ladoEnCeldas} × ${PI3.ladoEnCeldas}`]];
+const lect3 = () => [() => ['ink', 'cuadritos sobre la hipotenusa', String(PI3.celdas.total)], () => ['sen', 'de sen²x', String(PI3.celdas.sen)], () => ['cos', 'de cos²x', String(PI3.celdas.cos)]];
 // Pasos 4 y 5: dos ángulos, primero cada uno desde el eje x; después b se encadena detrás de a.
 function sueltos(a, b, ta, tb){
-  return { arcos:[arco(0, a, 'a', .2, ta), arco(0, b, 'b', .34, tb)], rayos:[rayo(a, 'a'), rayo(b, 'b')] };
+  return { arcos:[arco(0, a, 'a', .2, null), arco(0, b, 'b', .42, null)], rayos:[rayo(a, 'a', ta), rayo(b, 'b', tb, { dy:16 })] };
 }
 // La cadena del paso 4: a desde el eje x, b detrás de a (con giro rot: 0 = suelto, 1 = encadenado), alturas y barras.
 function cadena4(L, rot, conBarras){
@@ -798,12 +812,16 @@ function rect5(L, etapa, conCos){
   L.rayos = [rayo(g37, 'a'), rayo(lerp(0, g37, f(0)) + 16, f(0) >= 1 ? 's' : 'b', f(0) >= 1 && f(1) <= 0 ? 'a + b' : null)];
   L.polis = [{ pts:[O, Q, P], color:'b', ancho:2.4, relleno:.08, f:f(1) }, { pts:[O, R, Q], color:'a', ancho:2.4, relleno:.08, f:f(2) }, { pts:[Q, Sq, P], color:'a', ancho:2.4, relleno:.08, f:f(3), dash:true }];
   L.rectos = [{ en:Q, d1:O, d2:P, f:f(1) }, { en:R, d1:O, d2:Q, f:f(2) }, { en:Sq, d1:Q, d2:P, f:f(3) }];
-  const t1 = [['sen a', 'a'], [' · ', 'ink'], ['cos b', 'b'], [` = ${pz.senAcosB.texto}`, 'ink']], t2 = [['cos a', 'a'], [' · ', 'ink'], ['sen b', 'b'], [` = ${pz.cosAsenB.texto}`, 'ink']];
+  const corto = E.angosto();   // en el celular, solo los números en el lienzo (los nombres están en las lecturas)
+  const t1 = corto ? [[pz.senAcosB.texto, 'ink']] : [['sen a', 'a'], [' · ', 'ink'], ['cos b', 'b'], [` = ${pz.senAcosB.texto}`, 'ink']];
+  const t2 = corto ? [[pz.cosAsenB.texto, 'ink']] : [['cos a', 'a'], [' · ', 'ink'], ['sen b', 'b'], [` = ${pz.cosAsenB.texto}`, 'ink']];
   L.segs = [
     { p:O, q:Q, color:'b', ancho:1, texto:[['cos b', 'b']], dx:12, dy:-12, f:f(1) },
     { p:Q, q:P, color:'b', ancho:1, texto:[['sen b', 'b']], dx:-26, dy:-2, f:f(1) },
-    { p:R, q:Q, color:'s', ancho:5, texto:t1, align:'left', dx:10, f:f(4) },
-    { p:Q, q:Sq, color:'s', ancho:5, texto:t2, align:'left', dx:10, f:f(4) },
+    // la suma (granate) por fuera y cada pieza (tinta) encima: la altura de P
+    { p:R, q:Sq, color:'s', ancho:9, f:f(4) },
+    { p:R, q:Q, color:'ink', ancho:3, texto:t1, align:'left', dx:12, f:f(4) },
+    { p:Q, q:Sq, color:'ink', ancho:3, texto:t2, align:'left', dx:12, f:f(4) },
     { p:P, q:Sq, color:'s', ancho:1.5, dash:true, f:f(4) }];
   if (conCos) L.segs.push(
     { p:{ x:0, y:-.05 }, q:{ x:R.x, y:-.05 }, color:'a', ancho:4, texto:[['cos a', 'a'], [' · ', 'ink'], ['cos b', 'b'], [` = ${pz.cosAcosB.texto}`, 'ink']], dy:13, f:f(5) },
@@ -811,7 +829,7 @@ function rect5(L, etapa, conCos){
     { p:{ x:0, y:-.12 }, q:{ x:P.x, y:-.12 }, color:'s', ancho:4, texto:[['cos(a + b)', 's'], [` = ${pzC.texto}`, 'ink']], dy:13, f:f(6) });
   L.puntos = [{ p:O, color:'ink', texto:'O', dx:-14, dy:10 }, { p:P, color:'ink', r:0, texto:'P', dx:-16, dy:-2, f:f(1) }, { p:Q, color:'ink', texto:'Q', dx:8, dy:10, f:f(1) }, { p:R, color:'ink', texto:'R', dx:6, dy:12, f:f(2) }, { p:Sq, color:'ink', texto:'S', dx:-14, dy:-10, f:f(3) }];
 }
-const lect5 = () => [() => ['s', 'sen a · cos b', S53.piezas.senAcosB.texto], () => ['s', 'cos a · sen b', S53.piezas.cosAsenB.texto], () => ['s', 'sen(37° + 16°)', `100/125 = ${S53.texto}`]];
+const lect5 = () => [() => ['ink', 'sen a · cos b', S53.piezas.senAcosB.texto], () => ['ink', 'cos a · sen b', S53.piezas.cosAsenB.texto], () => ['s', 'sen 53°', S53.texto]];
 function config5(r){
   if (!r){ E.config({ modo:'plano', pl:Object.assign({ caja:CAJA1 }, sueltos(37, 16, 'a = 37°', 'b = 16°')), lect:[], ley:LEY_AB0,
     desc:'La circunferencia de radio 1 con dos ángulos medidos desde el eje x: a de 37° y b de 16°.' }); return; }
@@ -842,13 +860,13 @@ function config6(r, exacto){
     desc:'El ángulo x se arrastra y el ángulo 2x lo sigue; a la derecha, dos veces la altura de x contra la altura de 2x.' });
 }
 const lect6x = () => [() => ['sen', 'sen x', '3/5'], () => ['sen', '2 sen x', D37.senDoble.errores.lineal.texto], () => ['d', 'sen 2x = sen 74°', D37.senDoble.texto]];
-const lect6 = () => [() => ['x', 'x', `${E.pl.estado.x}°`], () => ['sen', '2 sen x', fmt(2*MI.cadena({ a:E.pl.estado.x, b:0 }).sena, 3)], () => ['d', 'sen 2x', fmt(MI.cadena({ a:E.pl.estado.x, b:E.pl.estado.x }).senSuma, 3)]];
+const lect6 = () => [() => ['x', 'x (de verdad)', `${E.pl.estado.x}°`], () => ['sen', '2 sen x', '≈ ' + fmt(2*MI.cadena({ a:E.pl.estado.x, b:0 }).sena, 3)], () => ['d', 'sen 2x', '≈ ' + fmt(MI.cadena({ a:E.pl.estado.x, b:E.pl.estado.x }).senSuma, 3)]];
 // Paso 7: sen x = 1/3 y los nueve cuadritos
 function config7(r){
   if (!r){ E.config({ modo:'tri', tri:{ s:1/3, c:D13.cos.valor, ang:'x', etq:{ op:[['sen x = 1/3', 'sen']], ady:[['cos x', 'cos']], hip:[['1', 'ink']] } }, lect:[] }); return; }
   E.config({ modo:'celdas', cel:{ n:D13.celdas.lado, rojas:D13.celdas.sen2, f:1, cancela:1 }, lect:lect7() });
 }
-const lect7 = () => [() => ['sen', 'sen²x', `${D13.celdas.sen2}/9`], () => ['cos', 'cos²x', `${D13.celdas.cos2}/9`], () => ['ink', 'cos 2x = cos²x − sen²x', D13.cosDoble.texto]];
+const lect7 = () => [() => ['sen', 'sen²x', `${D13.celdas.sen2}/9`], () => ['cos', 'cos²x', `${D13.celdas.cos2}/9`], () => ['ink', 'cos 2x', D13.cosDoble.texto]];
 // Paso 8: la mitad
 function mitad8(L, f){
   const P = MI.punto(74), M = MI.punto(37), gM = lerp(74, 37, f);
@@ -865,7 +883,7 @@ function config8(r){
   E.config({ modo:'plano', pl:{ caja:CAJA1, estado:{ f: r ? 1 : 0 }, rehacer:L => mitad8(L, L.estado.f) }, lect: r ? lect8() : [], ley: r ? [['x', 'x', 'linea'], ['cos', 'cos x', 'linea'], ['cos', '(cos x)/2', 'trazos'], ['m', 'x/2 y su coseno', 'linea']] : [['x', 'x', 'linea'], ['cos', 'cos x', 'linea']],
     desc: r ? 'El ángulo x y su mitad en la circunferencia de radio 1, con el coseno de cada uno sobre el eje x.' : 'La circunferencia de radio 1 con el ángulo x y su coseno sobre el eje x.' });
 }
-const lect8 = () => [() => ['cos', 'cos x', '7/25'], () => ['m', 'cos(x/2)', M74.texto], () => ['m', 'sen(x/2)', M74.senMitad.texto]];
+const lect8 = () => [() => ['cos', 'cos x', '7/25'], () => ['m', 'cos(x/2)', M74.texto], () => ['ink', 'sen(x/2)', M74.senMitad.texto]];
 
 const steps = [
  { k:'Paso 1', t:'Un triángulo de hipotenusa 1',
@@ -873,20 +891,23 @@ const steps = [
    body:() => `<p class="problem">Este triángulo rectángulo tiene hipotenusa 1, como el radio de la circunferencia trigonométrica. Arrastra el vértice de arriba (o usa ← y → en el dibujo) y mira sus lados: el cateto vertical es ${sen_('sen x')} y el horizontal, ${cos_('cos x')}.</p>
    <p>Sobre cada lado hay un cuadrado. Por Pitágoras, los dos cuadrados de los catetos juntos tienen la misma área que el de la hipotenusa, que es 1 · 1 = 1:</p>
    <div class="eqs"><div class="eq">${sen_('sen²x')} + ${cos_('cos²x')} = 1</div></div>
-   <p>Lleva ${x_('x')} a 37°: los lados caben justo en una cuadrícula de quintos y los cuadrados se pueden contar.</p>
-   <p class="hint">Con teclado: toca el dibujo y usa ← y →.</p>` },
+   <p>Con casi cualquier ángulo, sen x y cos x tienen infinitas cifras. Hay un triángulo especial, el de lados 3, 4 y 5, que las academias llaman «de 37°».</p>
+   <div class="pasos"><button type="button" class="btn" id="acad">«37°» de academia</button></div>
+   <p class="hint" id="acad-msg">Valores de verdad, redondeados a tres cifras.</p>
+   <p class="hint">Con teclado: toca el dibujo y usa ← y →.</p>`,
+   entrar:() => { const b = $('acad'); if (b) b.onclick = academia1; pintarAcad(); } },
  { k:'Paso 2', t:'Predice: un seno al cuadrado', gate:P2,
    prep:() => config2(!!S.pred[P2.id]),
-   anima:fin => { E.tri.n = 2; E.animar(0, 1, 1200, v => { E.tri.cuad = v; }, () => { E.lect = lect2(); E.desc = 'El triángulo de 30° con un cuadrado sobre cada lado; el de la hipotenusa partido en 4 cuadritos.'; E.avisar(); fin(); }); },
+   anima:fin => { E.tri.n = 2; E.tri.crece = true; E.redimensionar(); E.animar(0, 1, 1200, v => { E.tri.cuad = v; }, () => { E.lect = lect2(); E.desc = 'El triángulo de 30° con un cuadrado sobre cada lado; el de la hipotenusa partido en 4 cuadritos.'; E.avisar(); fin(); }); },
    body:() => `<p class="problem">En el triángulo de 30°, ${sen_('sen 30°')} = 1/2. ¿Cuánto vale ${sen_('sen²30°')}?</p>${opcionesHTML(P2.opts, 'fb')}
    <div id="tras" class="body" hidden>
    <div class="eqs"><div class="eq">${sen_('sen²30°')} = (${sen_('sen 30°')})² = (1/2)² = ${sen_(C30.texto)}</div>
    <div class="eq">sen(30°²) = sen 900° = sen 180° = ${C30.errores.delCuadrado.texto}<span class="note">otra cosa: el 2 en el ángulo</span></div></div>
-   <p>El 2 escrito junto a «sen» eleva el seno, no el ángulo: sen²x es una forma corta de (sen x)². En el dibujo, ${sen_('sen²30°')} es el área del cuadrado rojo: cabe una vez en un cuarto del cuadrado de la hipotenusa.</p>
+   <p>El 2 escrito junto a «sen» eleva el seno, no el ángulo: sen²x es una forma corta de (sen x)². En el dibujo, ${sen_('sen²30°')} es el área del cuadrado rojo: ocupa uno de los cuatro cuadritos del cuadrado de la hipotenusa.</p>
    <p class="fuente">El informe no encontró un estudio con cifras sobre leer sen²x como sen(x²); Gür (2009, según su resumen) registra errores de «orden de operaciones» sin detallar (TR17, hipótesis). Las otras dos opciones son hipótesis nuestras.</p></div>` },
  { k:'Paso 3', t:'Predice: el coseno que falta', gate:P3,
    prep:() => config3(!!S.pred[P3.id]),
-   anima:fin => { E.tri.etq.ady = [[`cos x = ${PI3.texto}`, 'cos']]; E.animar(0, 1, 1400, v => { E.tri.cuad = v; }, () => { E.lect = lect3(); E.desc = 'El triángulo de sen x = 3/5 con sus tres cuadrados partidos en cuadritos de 1/25.'; E.avisar(); fin(); }); },
+   anima:fin => { E.tri.etq.ady = [[`cos x = ${PI3.texto}`, 'cos']]; E.tri.crece = true; E.redimensionar(); E.animar(0, 1, 1400, v => { E.tri.cuad = v; }, () => { E.lect = lect3(); E.desc = 'El triángulo de sen x = 3/5 con sus tres cuadrados partidos en cuadritos de 1/25.'; E.avisar(); fin(); }); },
    body:() => `<p class="problem">En un triángulo rectángulo de hipotenusa 1, el ángulo ${x_('x')} es agudo y ${sen_('sen x')} = 3/5. ¿Cuánto vale ${cos_('cos x')}?</p>${opcionesHTML(P3.opts, 'fb')}
    <div id="tras" class="body" hidden>
    <div class="eqs"><div class="eq">${cos_('cos²x')} = 1 − ${sen_('sen²x')} = 25/25 − 9/25 = ${cos_('16/25')}</div>
@@ -906,7 +927,7 @@ const steps = [
    <div class="eq">sen 75° = (√2/2)(√3/2) + (√2/2)(1/2) = √6/4 + √2/4 = ${s_(S75.texto)} ≈ ${fmt(S75.valor)}</div>
    <div class="eq">sen 45° + sen 30° = ${S75.errores.lineal.texto} ≈ ${fmt(S75.errores.lineal.valor)}<span class="note">pasa de 1: no es la altura de ningún punto</span></div></div>
    <p>El ángulo ${b_('b')} se puso a continuación de ${a_('a')}: el punto de ${s_('a + b')} está más arriba, pero su altura no es la suma de las dos alturas. A la derecha, la barra de ${a_('sen a')} + ${b_('sen b')} pasa la línea del radio.</p>
-   <p>Arrastra el punto de ${a_('a')} o el de ${s_('a + b')} (o usa ← → y ↑ ↓ en el dibujo): la suma de las alturas siempre gana.</p>
+   <p>Arrastra el punto de ${a_('a')} o el de ${s_('a + b')} (o usa ← → y ↑ ↓ en el dibujo): la suma de las alturas siempre gana. Aquí los valores son los de verdad, no los de academia.</p>
    ${fuenteTR16} Las otras dos opciones son hipótesis nuestras.</p></div>` },
  { k:'Paso 5', t:'Predice: dos triángulos apilados', gate:P5,
    prep:() => config5(!!S.pred[P5.id]),
@@ -916,26 +937,27 @@ const steps = [
    <div id="tras" class="body" hidden>
    <div class="eqs"><div class="eq">sen(${a_('37°')} + ${b_('16°')}) = ${a_('sen 37°')} ${b_('cos 16°')} + ${a_('cos 37°')} ${b_('sen 16°')}</div>
    <div class="eq">= (3/5)(24/25) + (4/5)(7/25) = ${S53.piezas.senAcosB.texto} + ${S53.piezas.cosAsenB.texto} = ${s_(S53.texto)}</div></div>
-   <p>Así sale la fórmula. El radio OP, hasta el punto P de ${s_('a + b')}, mide 1. El triángulo ${b_('OQP')} tiene el ángulo ${b_('b')} en O: sus catetos miden ${b_('cos b')} (sobre el rayo de ${a_('a')}) y ${b_('sen b')}. El triángulo ${a_('ORQ')} tiene el ángulo ${a_('a')} y su hipotenusa es ${b_('cos b')}: su altura es ${a_('sen a')} · ${b_('cos b')}. El triángulo ${a_('QSP')}, a trazos, también tiene el ángulo ${a_('a')} (en Q) y su hipotenusa es ${b_('sen b')}: su cateto vertical es ${a_('cos a')} · ${b_('sen b')}. Las dos piezas granates, una sobre otra, son la altura de P.</p>
+   <p>Así sale la fórmula. El radio OP, hasta el punto P de ${s_('a + b')}, mide 1. El triángulo ${b_('OQP')} tiene el ángulo ${b_('b')} en O: sus catetos miden ${b_('cos b')} (sobre el rayo de ${a_('a')}) y ${b_('sen b')}. El triángulo ${a_('ORQ')} tiene el ángulo ${a_('a')} y su hipotenusa es ${b_('cos b')}: su altura es ${a_('sen a')} · ${b_('cos b')}. El triángulo ${a_('QSP')}, a trazos, también tiene el ángulo ${a_('a')} (en Q) y su hipotenusa es ${b_('sen b')}: su cateto vertical es ${a_('cos a')} · ${b_('sen b')}. Las dos piezas (en tinta), una sobre otra, forman la altura de P (el borde granate).</p>
    <p>Con la resta, el triángulo de ${b_('b')} queda del otro lado del rayo de ${a_('a')} y la pieza de arriba se resta: sen(a − b) = sen a cos b − cos a sen b.</p>
    ${fuenteTR16} Confundir la fórmula del seno con la del coseno y restar en lugar de sumar son hipótesis nuestras.</p></div>` },
  { k:'Paso 6', t:'Predice: el doble de un ángulo', gate:P6,
-   prep:() => config6(!!S.pred[P6.id]),
+   prep:() => config6(!!S.pred[P6.id], true),
    anima:fin => { const P = MI.punto(37), Q = MI.punto(74);
      E.config({ modo:'plano', pl:{ caja:CAJA1, arcos:[arco(0, 37, 'x', .2, 'x'), arco(0, 37, 'd', .34, null)], rayos:[rayo(37, 'x', 'x'), rayo(37, 'd', null)], segs:[altEx(P, 'sen')],
        barras:{ f:0, lista:[{ etiqueta:[['2 sen x', 'sen']], piezas:[{ v:P.y, color:'sen' }, { v:P.y, color:'sen' }], texto:D37.senDoble.errores.lineal.texto }, { etiqueta:[['sen 2x', 'd']], piezas:[{ v:Q.y, color:'d' }], texto:D37.senDoble.texto }] } }, lect:[] });
      const L = E.pl;
      E.cadena([n => E.animar(37, 74, 1500, v => { L.arcos[1].a = v; L.rayos[1].g = v; }, n), n => { L.segs.push(altEx(Q, 'd')); L.arcos[1].texto = '2x'; L.rayos[1].texto = '2x'; E.animar(0, 1, 1200, v => { L.barras.f = v; }, n); }],
        () => { config6(true, true); fin(); }); },
-   body:() => `<p class="problem">El ángulo ${x_('x')} es agudo y ${sen_('sen x')} = 3/5 (es el de 37°). ¿Cuánto vale sen 2${x_('x')}?</p>${opcionesHTML(P6.opts, 'fb')}
+   body:() => `<p class="problem">El ángulo ${x_('x')} es agudo y ${sen_('sen x')} = 3/5 (es el de 37° de academia). ¿Cuánto vale sen 2${x_('x')}?</p>${opcionesHTML(P6.opts, 'fb')}
    <div id="tras" class="body" hidden>
    <div class="eqs"><div class="eq">sen 2x = sen(x + x) = sen x cos x + cos x sen x = 2 ${sen_('sen x')} ${cos_('cos x')}</div>
    <div class="eq">sen 2x = 2 (3/5)(4/5) = ${d_(D37.senDoble.texto)}<span class="note">la altura de 74°</span></div>
    <div class="eq">cos 2x = ${cos_('cos²x')} − ${sen_('sen²x')} = 16/25 − 9/25 = ${D37.cosDoble.texto};  tan 2x = 2 tan x / (1 − tan²x) = ${D37.tanDoble.texto}</div></div>
    <p>El ángulo doble es una suma de dos ángulos iguales: la fórmula de sen(a + b) con a = b = x. Duplicar el arco lleva el punto más arriba, pero su altura no se duplica: a la derecha, dos veces la altura de ${x_('x')} pasa la línea del radio.</p>
-   <p>Ahora arrastra el punto de ${x_('x')} (o usa ← y → en el dibujo): el de ${d_('2x')} lo sigue.</p>
+   <p>Con el botón, el punto de ${x_('x')} se puede arrastrar (o mover con ← y → en el dibujo) y el de ${d_('2x')} lo sigue. Ahí los valores son los de verdad: con x = 37° de verdad, sen 2x ≈ 0,961; la academia usa 24/25 = 0,96.</p>
+   <div class="pasos"><button type="button" class="btn" id="arr6">Arrastrar x (valores de verdad)</button></div>
    ${fuenteTR16} Las otras dos opciones son hipótesis nuestras.</p></div>`,
-   entrar:() => { if (S.pred[P6.id]) config6(true, false); } },
+   entrar:() => { const b = $('arr6'); if (b) b.onclick = () => { if (!S.ocupado && !E.anim) config6(true, false); }; } },
  { k:'Paso 7', t:'Predice: el coseno del doble', gate:P7,
    prep:() => config7(!!S.pred[P7.id]),
    anima:fin => { E.config({ modo:'celdas', cel:{ n:3, rojas:D13.celdas.sen2, f:0, cancela:0 }, lect:[] });
@@ -955,8 +977,8 @@ const steps = [
    body:() => `<p class="problem">El ángulo ${x_('x')} es agudo y ${cos_('cos x')} = 7/25. ¿Cuánto vale cos(${m_('x/2')})?</p>${opcionesHTML(P8.opts, 'fb')}
    <div id="tras" class="body" hidden>
    <div class="eqs"><div class="eq">cos(${m_('x/2')}) = ±√((1 + ${cos_('cos x')})/2) = ±√((32/25)/2) = ±√(16/25)</div>
-   <div class="eq">${m_('x/2')} es agudo  ⟹  cos(${m_('x/2')}) = ${m_(M74.texto)};  sen(${m_('x/2')}) = √((1 − 7/25)/2) = ${m_(M74.senMitad.texto)}</div></div>
-   <p>Sale de cos 2u = 2 cos²u − 1 con u = x/2: cos x = 2 cos²(x/2) − 1, y se despeja. El ± no es «los dos»: es «uno de los dos», y lo elige el cuadrante de ${m_('x/2')}. Aquí ${x_('x')} es el ángulo de 74° y ${m_('x/2')}, el de 37°.</p>
+   <div class="eq">${m_('x/2')} es agudo  ⟹  cos(${m_('x/2')}) = ${m_(M74.texto)};  sen(${m_('x/2')}) = √((1 − 7/25)/2) = ${M74.senMitad.texto}</div></div>
+   <p>Sale de cos 2u = 2 cos²u − 1 con u = x/2: cos x = 2 cos²(x/2) − 1, y se despeja. El ± no es «los dos»: es «uno de los dos», y lo elige el cuadrante de ${m_('x/2')}. Aquí ${x_('x')} es el ángulo de 74° de academia y ${m_('x/2')}, el de 37° de academia.</p>
    <p>Partir el ángulo por la mitad acerca el punto al eje x: su coseno <b>crece</b> (de 7/25 a 4/5). La mitad del coseno (azul, a trazos, bajo el eje) va en la dirección contraria.</p>
    ${fuenteTR16} Olvidar la raíz y usar la fórmula del seno son hipótesis nuestras.</p></div>` },
 ];
@@ -1051,22 +1073,25 @@ const arco = (de, a, color, r, texto, o) => Object.assign({ de, a, color, r: r |
 const rayo = (g, color, texto, o) => Object.assign({ g, color, texto }, o || {});
 const altEx = (P, color, o) => Object.assign({ p:{ x:P.x, y:0 }, q:P, color, ancho:4 }, o || {});
 const CAJA1 = { x0:-.35, x1:1.12, y0:-.18, y1:1.12 };
-const fTR16 = `Escribir la fórmula como si la razón fuera lineal es TR16 del informe (Gür, 2009, y Matz, 1982, citados por terceros y según resúmenes; respaldo parcial, sin porcentaje).`;
+const fTR16 = `La opción «lineal» es una extensión nuestra de TR16: el informe describe la linealidad para sen(a + b), sen 2x y cos(x/2) (Gür, 2009, y Matz, 1982, citados por terceros y según resúmenes; respaldo parcial, sin porcentaje), no para este caso, así que aquí queda como hipótesis.`;
 
 // Exp. 3: el rectángulo del coseno (mismo dibujo que el paso 5, con las piezas horizontales).
 function rect(L, etapa){
   const ca = D3s.cosa.valor, sa = D3s.sena.valor, cb = D3s.cosb.valor, sb = D3s.senb.valor;
   const O = { x:0, y:0 }, Q = { x:ca*cb, y:sa*cb }, P = { x:ca*cb - sa*sb, y:sa*cb + ca*sb }, R = { x:Q.x, y:0 }, Sq = { x:Q.x, y:P.y };
-  const f = k => clamp(etapa - k, 0, 1), pz = D3s.piezas;
+  const f = k => clamp(etapa - k, 0, 1), pz = D3s.piezas, corto = E.angosto();
+  const t1 = corto ? [[pz.cosAcosB.texto, 'ink']] : [['cos a', 'a'], [' · ', 'ink'], ['cos b', 'b'], [` = ${pz.cosAcosB.texto}`, 'ink']];
+  const t2 = corto ? [[pz.senAsenB.texto, 'ink']] : [['sen a', 'a'], [' · ', 'ink'], ['sen b', 'b'], [` = ${pz.senAsenB.texto}`, 'ink']];
   L.arcos = [arco(0, 37, 'a', .2, 'a'), arco(37, 53, 'b', .34, 'b'), { centro:Q, de:90, a:90 + 37, r:.09, color:'a', flecha:false, f:f(1) }];
-  L.rayos = [rayo(37, 'a'), rayo(53, 's', 'a + b')];
+  L.rayos = [rayo(37, 'a'), rayo(53, 's')];
+  L.puntos = [{ p:O, color:'ink', texto:'O', dx:-14, dy:10 }, { p:P, color:'ink', r:0, texto:'P', dx:-16, dy:-2 }];
   L.polis = [{ pts:[O, Q, P], color:'b', ancho:2.2, relleno:.06, f:f(0) }, { pts:[O, R, Q], color:'a', ancho:2.2, relleno:.06, f:f(0) }, { pts:[Q, Sq, P], color:'a', ancho:2.2, relleno:.06, f:f(1), dash:true }];
   L.rectos = [{ en:Q, d1:O, d2:P, f:f(0) }, { en:R, d1:O, d2:Q, f:f(0) }, { en:Sq, d1:Q, d2:P, f:f(1) }];
   L.segs = [
-    { p:{ x:0, y:-.05 }, q:{ x:R.x, y:-.05 }, color:'a', ancho:4, texto:[['cos a', 'a'], [' · ', 'ink'], ['cos b', 'b'], [` = ${pz.cosAcosB.texto}`, 'ink']], dy:13, f:f(1) },
-    { p:{ x:P.x, y:P.y + .06 }, q:{ x:Sq.x, y:P.y + .06 }, color:'a', ancho:4, texto:[['sen a', 'a'], [' · ', 'ink'], ['sen b', 'b'], [` = ${pz.senAsenB.texto}`, 'ink']], dy:-13, dx:20, f:f(2) },
-    { p:{ x:0, y:-.13 }, q:{ x:P.x*f(3), y:-.13 }, color:'s', ancho:5, texto: f(3) >= 1 ? [['cos(a + b)', 's'], [` = ${D3.texto}`, 'ink']] : null, dy:13, f: f(3) > 0 ? 1 : 0 },
-    { p:P, q:{ x:P.x, y:-.13 }, color:'muted', ancho:1.2, dash:true, f:f(3) }];
+    { p:{ x:0, y:-.05 }, q:{ x:R.x, y:-.05 }, color:'ink', ancho:3, texto:t1, dy:13, f:f(1) },
+    { p:{ x:P.x, y:P.y + .06 }, q:{ x:Sq.x, y:P.y + .06 }, color:'ink', ancho:3, texto:t2, dy:-13, dx:20, f:f(2) },
+    { p:{ x:0, y:-.2 }, q:{ x:P.x*f(3), y:-.2 }, color:'s', ancho:5, texto: f(3) >= 1 ? [['cos(a + b)', 's'], [` = ${D3.texto}`, 'ink']] : null, dy:15, f: f(3) > 0 ? 1 : 0 },
+    { p:P, q:{ x:P.x, y:-.2 }, color:'muted', ancho:1.2, dash:true, f:f(3) }];
 }
 // Exp. 4: la cuadrícula. a: 2 a la derecha y 1 arriba; b: 3 pasos por el rayo de a y 1 de costado.
 function red(L, etapa){
@@ -1114,7 +1139,7 @@ function tripleX(L, f){
 }
 
 const EXPS = [
-  { id:'tangente-y-secante', corto:'1 + tan²x', unidad:'trigonometria.identidades-fundamentales',
+  { id:'tangente-y-secante', corto:'sec x desde tan x', unidad:'trigonometria.identidades-fundamentales',
     q:`El ángulo ${x_('x')} es agudo y tan x = 3/4. ¿Cuánto vale sec x?`,
     opts:[['a', D1.errores.lineal.texto, 'ID1-pitagorica-sin-cuadrados', 'hipotesis'],
           ['b', D1.errores.sinRaiz.texto, 'ID2-olvida-la-raiz', 'hipotesis'],
@@ -1126,14 +1151,14 @@ const EXPS = [
          d:'4/5 es cos x, la recíproca de sec x. Una secante de un ángulo agudo nunca es menor que 1.' },
     antes:ya => E.config({ modo:'tri', tri:{ variante:'tan', s:.75, c:1, ang:'x', cuad: ya ? 1 : 0, n:4, cuentas:true,
       etq:{ op:[['tan x = 3/4', 'ink']], ady:[['1', 'ink']], hip:[[ya ? `sec x = ${D1.texto}` : 'sec x = ?', 'ink']] } }, lect: ya ? lect1() : [] }),
-    despues:() => { E.animar(0, 1, 1400, v => { E.tri.cuad = v; }, () => { E.tri.etq.hip = [[`sec x = ${D1.texto}`, 'ink']]; E.lect = lect1(); E.dibujar(); E.avisar(); }); },
+    despues:() => { E.tri.crece = true; E.redimensionar(); E.animar(0, 1, 1400, v => { E.tri.cuad = v; }, () => { E.tri.etq.hip = [[`sec x = ${D1.texto}`, 'ink']]; E.lect = lect1(); E.dibujar(); E.avisar(); }); },
     exp:() => `<div class="eqs"><div class="eq">${sen_('sen²x')} + ${cos_('cos²x')} = 1  ⟹  (dividiendo entre ${cos_('cos²x')})  tan²x + 1 = sec²x</div>
       <div class="eq">sec²x = 1 + 9/16 = 25/16  ⟹  sec x = ${D1.texto}</div></div>
       <p>Si se divide cada lado del triángulo de hipotenusa 1 entre cos x, sale este otro triángulo: catetos 1 y tan x, hipotenusa sec x. Con cuadritos de 1/4: 16 + 9 = 25, un cuadrado de 5 × 5, así que sec x = 5/4. Con el seno pasa lo mismo: 1 + cot²x = csc²x.</p>
       <p class="fuente">No encontramos estudios con cifras sobre estos errores; las tres opciones incorrectas son hipótesis nuestras.</p>` },
   { id:'seno-de-una-resta', corto:'sen(53° − 37°)', unidad:'trigonometria.arcos-compuestos',
     q:`Con la convención de academia (sen 37° = 3/5 y sen 53° = 4/5), ¿cuánto vale sen(${a_('53°')} − ${b_('37°')})?`,
-    opts:[['a', D2.errores.lineal.texto, 'TR16-seno-de-la-resta-lineal', 'parcial'],
+    opts:[['a', D2.errores.lineal.texto, 'TR16-seno-de-la-resta-lineal', 'hipotesis'],
           ['b', D2.texto],
           ['c', D2.errores.signo.texto, 'ID4-signo-cambiado', 'hipotesis'],
           ['d', D2.errores.formulaCoseno.texto, 'ID5-formula-del-coseno', 'hipotesis']],
@@ -1141,7 +1166,7 @@ const EXPS = [
     fb:{ a:'1/5 = 4/5 − 3/5 resta las alturas. La altura del punto de 16° no es esa resta.',
          c:'1 sale de sen a cos b + cos a sen b, que es sen(53° + 37°) = sen 90°. En la resta el signo del medio es −.',
          d:'24/25 sale de cos a cos b + sen a sen b: es cos(53° − 37°) = cos 16°, la abscisa del punto, no su altura.' },
-    antes:ya => { if (ya) return finResta(); E.config({ modo:'plano', pl:{ caja:CAJA1, arcos:[arco(0, 53, 'a', .2, 'a = 53°'), arco(0, 37, 'b', .34, 'b = 37°')], rayos:[rayo(53, 'a'), rayo(37, 'b')] }, lect:[], ley:LEY_AB0,
+    antes:ya => { if (ya) return finResta(); E.config({ modo:'plano', pl:{ caja:CAJA1, arcos:[arco(0, 53, 'a', .2, null), arco(0, 37, 'b', .42, null)], rayos:[rayo(53, 'a', 'a = 53°'), rayo(37, 'b', 'b = 37°', { dy:16 })] }, lect:[], ley:LEY_AB0,
       desc:'La circunferencia de radio 1 con dos ángulos medidos desde el eje x: a de 53° y b de 37°.' }); },
     despues:() => { const L = E.pl; L.arcos[1] = arco(53, 53, 'b', .34, 'b'); L.rayos[1] = rayo(53, 'b');
       E.animar(0, 1, 1600, v => { L.arcos[1].a = 53 - 37*v; L.rayos[1].g = 53 - 37*v; }, () => finResta(true)); },
@@ -1152,16 +1177,16 @@ const EXPS = [
   { id:'coseno-de-una-suma', corto:'cos(37° + 16°)', unidad:'trigonometria.arcos-compuestos',
     q:`Con la convención de academia (sen 37° = 3/5 y sen 16° = 7/25), ¿cuánto vale cos(${a_('37°')} + ${b_('16°')})?`,
     opts:[['a', D3.errores.signo.texto, 'ID4-signo-cambiado', 'hipotesis'],
-          ['b', D3.errores.lineal.texto, 'TR16-coseno-de-la-suma-lineal', 'parcial'],
+          ['b', D3.errores.lineal.texto, 'TR16-coseno-de-la-suma-lineal', 'hipotesis'],
           ['c', D3.errores.formulaSeno.texto, 'ID5-formula-del-seno', 'hipotesis'],
           ['d', D3.texto]],
     ok:'d',
     fb:{ a:'117/125 sale de cos a cos b + sen a sen b, que es cos(37° − 16°). En la suma, el signo del medio es −.',
          b:'44/25 = 4/5 + 24/25 suma los cosenos, y pasa de 1: no es la abscisa de ningún punto de la circunferencia.',
          c:'4/5 sale de sen a cos b + cos a sen b: es sen 53°, la altura del punto, no su abscisa.' },
-    antes:ya => { if (ya) return finCos(); E.config({ modo:'plano', pl:{ caja:CAJA1, arcos:[arco(0, 37, 'a', .2, 'a = 37°'), arco(0, 16, 'b', .34, 'b = 16°')], rayos:[rayo(37, 'a'), rayo(16, 'b')] }, lect:[], ley:LEY_AB0,
+    antes:ya => { if (ya) return finCos(); E.config({ modo:'plano', pl:{ caja:CAJA1, arcos:[arco(0, 37, 'a', .2, null), arco(0, 16, 'b', .42, null)], rayos:[rayo(37, 'a', 'a = 37°'), rayo(16, 'b', 'b = 16°', { dy:16 })] }, lect:[], ley:LEY_AB0,
       desc:'La circunferencia de radio 1 con dos ángulos medidos desde el eje x: a de 37° y b de 16°.' }); },
-    despues:() => { E.config({ modo:'plano', pl:{ caja:{ x0:-.1, x1:1.5, y0:-.26, y1:1.06 }, estado:{ e:0 }, rehacer:L => rect(L, L.estado.e) }, lect:[], ley:LEY_AB });
+    despues:() => { E.config({ modo:'plano', pl:{ caja:{ x0:-.1, x1:1.5, y0:-.36, y1:1.06 }, estado:{ e:0 }, rehacer:L => rect(L, L.estado.e) }, lect:[], ley:LEY_AB });
       const L = E.pl; E.animar(0, 4, RM ? 0 : 4200, v => { L.estado.e = v; rect(L, v); }, () => finCos(), true); },
     exp:() => `<div class="eqs"><div class="eq">cos(${a_('a')} + ${b_('b')}) = ${a_('cos a')} ${b_('cos b')} − ${a_('sen a')} ${b_('sen b')}</div>
       <div class="eq">= (4/5)(24/25) − (3/5)(7/25) = ${D3s.piezas.cosAcosB.texto} − ${D3s.piezas.senAsenB.texto} = ${s_(D3.texto)} = cos 53°</div></div>
@@ -1169,7 +1194,7 @@ const EXPS = [
       <p class="fuente">${fTR16} Cambiar el signo y usar la fórmula del seno son hipótesis nuestras.</p>` },
   { id:'tangente-de-una-suma', corto:'tan(a + b) en la cuadrícula', unidad:'trigonometria.arcos-compuestos',
     q:`tan ${a_('a')} = 1/2 y tan ${b_('b')} = 1/3, con los dos ángulos agudos. ¿Cuánto vale tan(${a_('a')} + ${b_('b')})?`,
-    opts:[['a', D4.errores.lineal.texto, 'TR16-tangente-de-la-suma-lineal', 'parcial'],
+    opts:[['a', D4.errores.lineal.texto, 'TR16-tangente-de-la-suma-lineal', 'hipotesis'],
           ['b', D4.errores.signo.texto, 'ID11-signo-del-denominador', 'hipotesis'],
           ['c', D4.errores.producto.texto, 'ID6-producto-de-tangentes', 'hipotesis'],
           ['d', D4.texto]],
@@ -1181,7 +1206,7 @@ const EXPS = [
       ley: ya ? LEY_AB.slice(0, 2).concat([['s', 'a + b', 'linea']]) : LEY_AB0, lect: ya ? lect4() : [], desc: ya ? 'Una cuadrícula con el rayo de a y, encima, el ángulo b dado con 3 pasos por el rayo de a y 1 de costado; se llega a (5; 5).' : 'Una cuadrícula con dos rayos desde el origen: el de a sube 1 cada 2 y el de b sube 1 cada 3.' }); },
     despues:() => { const L = E.pl; E.ley = LEY_AB0.concat([['s', 'a + b', 'linea']]); E.animar(0, 3, RM ? 0 : 3600, v => { L.estado.e = v; red(L, v); }, () => { E.lect = lect4(); E.desc = 'Una cuadrícula con el rayo de a y, encima, el ángulo b dado con 3 pasos por el rayo de a y 1 de costado; se llega a (5; 5).'; E.dibujar(); E.avisar(); }, true); },
     exp:() => `<div class="eqs"><div class="eq">tan(${a_('a')} + ${b_('b')}) = (tan a + tan b)/(1 − tan a · tan b) = (5/6)/(1 − 1/6) = (5/6)/(5/6) = ${s_(D4.texto)}</div></div>
-      <p>En la cuadrícula: el rayo de ${a_('a')} sube 1 cada 2 (tan a = 1/2). Para poner ${b_('b')} encima, se avanzan 3 pasos por el rayo de ${a_('a')} y se sube 1 paso de costado (tan b = 1/3). Se llega a (5; 5): 5 a la derecha y 5 arriba, así que tan(a + b) = 1 y a + b = ${D4.angulo}°.</p>
+      <p>En la cuadrícula: el rayo de ${a_('a')} sube 1 cada 2 (tan a = 1/2). Un «paso» es el segmento (2; 1), de largo √5, y un paso «de costado» es (−1; 2), del mismo largo y perpendicular. Para poner ${b_('b')} encima, se avanzan 3 pasos por el rayo de ${a_('a')} y se da 1 paso de costado (tan b = 1/3). Se llega a (5; 5): 5 a la derecha y 5 arriba, así que tan(a + b) = 1 y a + b = ${D4.angulo}°.</p>
       <p class="fuente">${fTR16} El signo del denominador y el producto son hipótesis nuestras.</p>` },
   { id:'mitad-en-otro-cuadrante', corto:'cos(x/2) con 270° < x < 360°', unidad:'trigonometria.arcos-multiples',
     q:`cos ${x_('x')} = 7/25 y 270° &lt; ${x_('x')} &lt; 360°. ¿Cuánto vale cos(${m_('x/2')})?`,
@@ -1201,9 +1226,9 @@ const EXPS = [
       <p>El número de adentro es el mismo que en el paso 8; lo que cambia es dónde cae ${m_('x/2')}. Primero se parte el intervalo de ${x_('x')} y después se mira el signo en ese cuadrante (la zona sombreada): en el segundo, el coseno es negativo y el seno positivo (sen(x/2) = ${D5.senMitad.texto}).</p>
       <p class="fuente">Olvidar el signo del cuadrante es TR12 del informe: quien piensa el seno o el coseno como una distancia falla justo en los cuadrantes donde son negativos (Brown, 2005, citado por terceros; respaldo parcial, sin porcentaje). Las otras dos opciones son hipótesis nuestras.</p>` },
   { id:'angulo-triple', corto:'sen 3x', unidad:'trigonometria.arcos-multiples',
-    q:`${sen_('sen x')} = 1/3. ¿Cuánto vale sen 3${x_('x')}?`,
+    q:`El ángulo ${x_('x')} es agudo y ${sen_('sen x')} = 1/3. ¿Cuánto vale sen 3${x_('x')}?`,
     opts:[['a', D6.texto],
-          ['b', D6.errores.lineal.texto, 'TR16-triple-lineal', 'parcial'],
+          ['b', D6.errores.lineal.texto, 'TR16-triple-lineal', 'hipotesis'],
           ['c', D6.errores.signo.texto, 'ID12-signo-del-triple', 'hipotesis'],
           ['d', D6.errores.sinCubo.texto, 'ID13-olvida-el-cubo', 'hipotesis']],
     ok:'a',
@@ -1227,13 +1252,13 @@ function finResta(){
     desc:'El ángulo a de 53° y, girando hacia atrás, b de 37°: se llega a 16°. A la derecha, la altura de a menos la de b contra la altura de a − b.' });
 }
 function finCos(){
-  E.config({ modo:'plano', pl:{ caja:{ x0:-.1, x1:1.5, y0:-.26, y1:1.06 }, estado:{ e:4 }, rehacer:L => rect(L, 4) }, ley:LEY_AB,
-    lect:[() => ['a', 'cos a · cos b', D3s.piezas.cosAcosB.texto], () => ['a', 'sen a · sen b', D3s.piezas.senAsenB.texto], () => ['s', 'cos(37° + 16°)', D3.texto]],
+  E.config({ modo:'plano', pl:{ caja:{ x0:-.1, x1:1.5, y0:-.36, y1:1.06 }, estado:{ e:4 }, rehacer:L => rect(L, 4) }, ley:LEY_AB,
+    lect:[() => ['ink', 'cos a · cos b', D3s.piezas.cosAcosB.texto], () => ['ink', 'sen a · sen b', D3s.piezas.senAsenB.texto], () => ['s', 'cos 53°', D3.texto]],
     desc:'Dos triángulos apilados: la abscisa del punto de a + b es lo que avanza el de abajo menos lo que retrocede el de arriba.' });
 }
-const lect1 = () => [() => ['ink', 'cuadritos del cateto 1', String(D1.celdas.cateto)], () => ['ink', 'de tan²x', String(D1.celdas.tan)], () => ['ink', 'de sec²x', `${D1.celdas.sec} = 5 × 5`]];
-const lect4 = () => [() => ['a', 'tan a', '1/2'], () => ['b', 'tan b', '1/3'], () => ['s', 'tan(a + b)', `5/5 = ${D4.texto}`]];
-const lect5 = () => [() => ['m', 'x/2 entre', '135° y 180°'], () => ['m', 'cos(x/2)', D5.texto], () => ['m', 'sen(x/2)', D5.senMitad.texto]];
+const lect1 = () => [() => ['ink', 'cuadritos del cateto 1', String(D1.celdas.cateto)], () => ['ink', 'de tan²x', String(D1.celdas.tan)], () => ['ink', 'de sec²x', String(D1.celdas.sec)]];
+const lect4 = () => [() => ['a', 'tan a', '1/2'], () => ['b', 'tan b', '1/3'], () => ['s', 'tan(a + b)', D4.texto]];
+const lect5 = () => [() => ['m', 'x/2', '135°–180°'], () => ['m', 'cos(x/2)', D5.texto], () => ['ink', 'sen(x/2)', D5.senMitad.texto]];
 const lect6 = () => [() => ['sen', '3 sen x', D6.errores.lineal.texto], () => ['t', 'sen 3x', D6.texto], () => ['x', 'x', `≈ ${fmt(D6.x, 1)}°`]];
 
 const S = { k:0, pred:{}, t0:Date.now() };

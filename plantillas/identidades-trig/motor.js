@@ -140,6 +140,9 @@
     const L = A.reduce((l, t) => l * t.d / mcd(l, t.d), 1);
     // los radicales primero (de mayor a menor) y el entero al final: (√6 + √2)/4, (√2 + 1)/2
     const orden = A.filter(t => t.r !== 1).concat(A.filter(t => t.r === 1));
+    // si hay algún término positivo, va primero: (√2 − √3)/2, (1 − √3)/2
+    const kp = orden.findIndex(t => t.n > 0);
+    if (kp > 0) orden.unshift(orden.splice(kp, 1)[0]);
     let s = '';
     orden.forEach((t, i) => {
       const n = t.n * L / t.d, m = Math.abs(n);
@@ -149,7 +152,12 @@
   }
   // Un exacto «público»: { valor, texto, terminos }
   const pub = A => (A === null ? null : { valor: exValor(A), texto: exTexto(A), terminos: A.map(t => ({ ...t })) });
-  function exDe(t) {   // de una fracción de entrada
+  // De una entrada: fracción ('3/5', '-3/5') o un radical de un solo término ('√2/2', '-√3/2', '2√2/3').
+  function exDe(t) {
+    if (typeof t === 'string') {
+      const m = t.trim().replace('−', '-').match(/^(-?)(\d*)√(\d+)(?:\/(\d+))?$/);
+      if (m) return ex((m[1] ? -1 : 1) * (m[2] ? Number(m[2]) : 1), m[4] ? Number(m[4]) : 1, Number(m[3]));
+    }
     return exF(fraccion(t));
   }
 
@@ -240,23 +248,26 @@
     o = o || {};
     const dado = o.sen !== undefined ? 'sen' : o.cos !== undefined ? 'cos' : null;
     if (!dado || (o.sen !== undefined && o.cos !== undefined)) throw new Error('da sen o cos (uno solo)');
-    const f = fraccion(o[dado]);
-    if (Math.abs(f.n) > f.d) throw new Error(`${dado} x debe estar entre −1 y 1`);
+    const D = exDe(o[dado]), vd = exValor(D);
+    if (Math.abs(vd) > 1 + 1e-12) throw new Error(`${dado} x debe estar entre −1 y 1`);
     const c = cuadranteValido(o.cuadrante), pide = dado === 'sen' ? 'cos' : 'sen';
     const s = SIGNOS[pide][c], sd = SIGNOS[dado][c];
-    if (f.n !== 0 && Math.sign(f.n) !== sd) throw new Error(`en el cuadrante ${c}, ${dado} x tiene signo ${sd > 0 ? '+' : '−'}`);
-    const resto = fr(f.d * f.d - f.n * f.n, f.d * f.d);
+    if (vd !== 0 && Math.sign(vd) !== sd) throw new Error(`en el cuadrante ${c}, ${dado} x tiene signo ${sd > 0 ? '+' : '−'}`);
+    const d2 = exRacional(exProd(D, D));
+    if (!d2) throw new Error(`${dado} x debe ser una fracción o un radical de un solo término`);
+    const resto = fr(d2.d - d2.n, d2.d);
     const A = exEsc(exRaiz(resto), fr(s, 1)), v = exValor(A);
+    const absD = vd < 0 ? exNeg(D) : D;
     const E = errores(v, [
-      ['lineal', 'ID1', exF(fr(s * (f.d - Math.abs(f.n)), f.d))],                      // cos x = 1 − sen x
-      ['sinRaiz', 'ID2', exF(fr(s * resto.n, resto.d))],                               // cos x = 1 − sen²x
-      ['reciproca', 'ID3', f.n === 0 ? null : exF(fr(f.d, f.n))]                       // cos x = 1/sen x
+      ['lineal', 'ID1', exEsc(exResta(ex(1), absD), fr(s, 1))],     // cos x = 1 − sen x
+      ['sinRaiz', 'ID2', exF(fr(s * resto.n, resto.d))],            // cos x = 1 − sen²x
+      ['reciproca', 'ID3', vd === 0 ? null : exDiv(ex(1), D)]       // cos x = 1/sen x
     ]);
-    const racional = exRacional(A);
+    const f = exRacional(D), racional = exRacional(A);
     return Object.assign(pub(A), { dado, pide, cuadrante: c, signo: s, cuadrado: pub(exF(resto)),
-      celdas: { lado: f.d, total: f.d * f.d, [dado]: f.n * f.n, [pide]: f.d * f.d - f.n * f.n },
-      ladoEnCeldas: racional ? Math.abs(racional.n) * f.d / racional.d : null,
-      tan: pub(dado === 'sen' ? exDiv(exDe(o.sen), A) : exDiv(A, exDe(o.cos))) }, E);
+      celdas: f ? { lado: f.d, total: f.d * f.d, [dado]: f.n * f.n, [pide]: f.d * f.d - f.n * f.n } : null,
+      ladoEnCeldas: f && racional ? Math.abs(racional.n) * f.d / racional.d : null,
+      tan: pub(dado === 'sen' ? exDiv(D, A) : exDiv(A, D)) }, E);
   }
   // 1 + tan²x = sec²x: el triángulo de hipotenusa 1 dividido entre cos x tiene catetos 1 y tan x, e hipotenusa sec x.
   function secDesdeTan(o) {
@@ -333,7 +344,11 @@
     const num = fr(ta.n * tb.d + (mas ? 1 : -1) * tb.n * ta.d, ta.d * tb.d);
     const prod = fr(ta.n * tb.n, ta.d * tb.d);
     const den = fr(prod.d + (mas ? -1 : 1) * prod.n, prod.d);
-    if (den.n === 0) throw new Error('tan(a ± b) no existe: el ángulo es de 90°');
+    // direcciones en la cuadrícula (con b > 0 hacia la izquierda de a; con '−' hacia la derecha)
+    const va = [ta.d, ta.n], vb = [tb.d, mas ? tb.n : -tb.n];
+    const vs = [va[0] * vb[0] - va[1] * vb[1], va[0] * vb[1] + va[1] * vb[0]];
+    const ang = Math.atan2(vs[1], vs[0]) / GR, angulo = Math.abs(ang - Math.round(ang)) < 1e-9 ? Math.round(ang) : ang;
+    if (den.n === 0) return { valor: null, texto: 'no existe', existe: false, angulo, direccion: vs, errores: {}, coinciden: [] };   // a ± b = ±90°
     const R = fr(num.n * den.d, num.d * den.n), v = R.n / R.d;
     const denMal = fr(prod.d + (mas ? 1 : -1) * prod.n, prod.d);
     const E = errores(v, [
@@ -341,12 +356,8 @@
       ['signo', 'ID11', denMal.n === 0 ? null : exF(fr(num.n * denMal.d, num.d * denMal.n))],
       ['producto', 'ID6', exF(prod)]
     ]);
-    // direcciones en la cuadrícula (con b > 0 hacia la izquierda de a; con '−' hacia la derecha)
-    const va = [ta.d, ta.n], vb = [tb.d, mas ? tb.n : -tb.n];
-    const vs = [va[0] * vb[0] - va[1] * vb[1], va[0] * vb[1] + va[1] * vb[0]];
-    const ang = Math.atan2(vs[1], vs[0]) / GR;
-    return Object.assign(pub(exF(R)), { ta: pub(exF(ta)), tb: pub(exF(tb)), op: mas ? '+' : '−', numerador: pub(exF(num)), denominador: pub(exF(den)),
-      direccionA: va, direccionB: vb, direccion: vs, angulo: Math.abs(ang - Math.round(ang)) < 1e-9 ? Math.round(ang) : ang,
+    return Object.assign(pub(exF(R)), { existe: true, ta: pub(exF(ta)), tb: pub(exF(tb)), op: mas ? '+' : '−', numerador: pub(exF(num)), denominador: pub(exF(den)),
+      direccionA: va, direccionB: vb, direccion: vs, angulo,
       // vs = m·(dirección de a) + n·(perpendicular de a): los pasos que se dan en la cuadrícula
       pasos: { largo: vb[0], alto: vb[1] } }, E);
   }
@@ -371,7 +382,7 @@
     const s2 = exProd(S, S), c2 = exProd(C, C);
     const sen2 = exEsc(exProd(S, C), fr(2, 1));
     const f1 = exResta(c2, s2), f2 = exResta(ex(1), exEsc(s2, fr(2, 1))), f3 = exResta(exEsc(c2, fr(2, 1)), ex(1));
-    const tan2 = f1.length === 0 ? null : exDiv(sen2, f1);   // null si cos 2x = 0 o no es de un solo término
+    const tan2 = f1.length === 0 ? { valor: null, texto: 'no existe', existe: false } : pub(exDiv(sen2, f1));   // null si cos 2x no es de un solo término
     const vs = exValor(sen2), vc = exValor(f1);
     const Es = errores(vs, [
       ['lineal', 'TR16', exEsc(S, fr(2, 1))],              // sen 2x = 2 sen x
@@ -388,7 +399,7 @@
     return { cuadrante: P.cuadrante, sen: pub(S), cos: pub(C), sen2: pub(s2), cos2: pub(c2),
       senDoble: Object.assign(pub(sen2), Es),
       cosDoble: Object.assign(pub(f1), { formas: [pub(f1), pub(f2), pub(f3)] }, Ec),
-      tanDoble: tan2 ? pub(tan2) : null, celdas: cel };
+      tanDoble: tan2, celdas: cel };
   }
   // cos(x/2) = ±√((1 + cos x)/2), sen(x/2) = ±√((1 − cos x)/2); el signo lo da el cuadrante de x/2.
   // x está en ⟨desde; hasta⟩ (grados); x/2 tiene que caer en un solo cuadrante.
@@ -400,7 +411,7 @@
     if (!(hasta > desde)) throw new Error('hasta debe ser mayor que desde');
     const m0 = desde / 2, m1 = hasta / 2;
     const q = cuadranteDe((m0 + m1) / 2);
-    if (q === 0 || Math.floor(normalizar(m0 + 1e-9) / 90) !== Math.floor(normalizar(m1 - 1e-9) / 90) || m1 - m0 > 90) throw new Error('x/2 tiene que caer en un solo cuadrante');
+    if (q === 0 || m1 - m0 > 90 || cuadranteDe(m0 + 1e-6) !== q || cuadranteDe(m1 - 1e-6) !== q) throw new Error('x/2 tiene que caer en un solo cuadrante');
     // cos x tiene que ser posible en ⟨desde; hasta⟩
     const qx0 = cuadranteDe((desde + hasta) / 2);
     if (hasta - desde <= 90 && c.n !== 0 && qx0 && Math.sign(c.n) !== SIGNOS.cos[qx0]) throw new Error(`con x en ⟨${desde}°; ${hasta}°⟩, cos x no puede tener ese signo`);
@@ -421,16 +432,16 @@
   // sen 3x = 3 sen x − 4 sen³x
   function triple(o) {
     o = o || {};
-    const s = fraccion(o.sen);
-    if (Math.abs(s.n) > s.d) throw new Error('sen x debe estar entre −1 y 1');
-    const S = exF(s), S3 = exProd(S, exProd(S, S));
+    const S = exDe(o.sen), vs = exValor(S);
+    if (Math.abs(vs) > 1 + 1e-12) throw new Error('sen x debe estar entre −1 y 1');
+    const S3 = exProd(S, exProd(S, S));
     const R = exResta(exEsc(S, fr(3, 1)), exEsc(S3, fr(4, 1))), v = exValor(R);
     const E = errores(v, [
       ['lineal', 'TR16', exEsc(S, fr(3, 1))],                               // 3 sen x
       ['signo', 'ID12', exSuma(exEsc(S, fr(3, 1)), exEsc(S3, fr(4, 1)))],   // 3 sen x + 4 sen³x
       ['sinCubo', 'ID13', exResta(exEsc(S, fr(3, 1)), exEsc(S, fr(4, 1)))]  // 3 sen x − 4 sen x
     ]);
-    return Object.assign(pub(R), { sen: pub(S), sen3: pub(S3), x: Math.asin(s.n / s.d) / GR }, E);
+    return Object.assign(pub(R), { sen: pub(S), sen3: pub(S3), x: Math.asin(vs) / GR }, E);
   }
 
   // ---------- ¿Son iguales dos expresiones? ----------

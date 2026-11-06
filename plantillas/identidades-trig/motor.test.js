@@ -183,7 +183,7 @@ test('ningún error típico coincide con la respuesta correcta (casos y barrido)
     revisar(motor.suma({ a: elegir(NOTABLES), b: elegir(NOTABLES), fn: elegir(['sen', 'cos']), op: elegir(['+', '−']) }), 'suma');
     revisar(motor.suma({ a: ent(1, 89) + .5, b: ent(1, 89), fn: elegir(['sen', 'cos']) }), 'suma numérica');
     const ta = `${ent(1, 9)}/${ent(1, 9)}`, tb = `${ent(1, 9)}/${ent(1, 9)}`;
-    if (!casi(fval(ta) * fval(tb), 1)) revisar(motor.sumaTan({ ta, tb }), `tan(${ta} + ${tb})`);
+    revisar(motor.sumaTan({ ta, tb }), `tan(${ta} + ${tb})`);
     revisar(motor.doble({ sen: fraccionAzar(c <= 2 ? 1 : -1), cuadrante: c }), 'doble');
     const R = elegir([[0, 90, 1], [90, 180, -1], [180, 270, -1], [270, 360, 1]]), cf = fraccionAzar(R[2]);
     if (fval(cf) !== 0) revisar(motor.mitad({ cos: cf, desde: R[0], hasta: R[1] }), `mitad ${cf}`);
@@ -241,7 +241,9 @@ test('entradas inválidas', () => {
   assert.throws(() => motor.cuadrado({ fn: 'tan', g: 30 }), /sen o cos/);
   assert.throws(() => motor.suma({ a: 30, b: 45, fn: 'tan' }), /sumaTan/);
   assert.throws(() => motor.suma({ a: 30, b: 45, op: '*' }), /op/);
-  assert.throws(() => motor.sumaTan({ ta: '2', tb: '1/2' }), /no existe/);
+  assert.equal(motor.sumaTan({ ta: '2', tb: '1/2' }).existe, false);
+  assert.throws(() => motor.pitagorica({ sen: '5/4' }), /entre −1 y 1/);
+  assert.throws(() => motor.pitagorica({ sen: '√2/2 + 1' }), /fracción/);
   assert.throws(() => motor.mitad({ cos: '7/25', desde: 0, hasta: 360 }), /un solo cuadrante/);
   assert.throws(() => motor.mitad({ cos: '-7/25', desde: 0, hasta: 90 }), /signo/);
   assert.throws(() => motor.mitad({ cos: '7/25', desde: 90, hasta: 0 }), /mayor/);
