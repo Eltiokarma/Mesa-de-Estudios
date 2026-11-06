@@ -297,7 +297,7 @@
       "universidades": {"uni": {"semanas": [18, 19, 20]}},
       "potencial_visual": "medio",
       "grado": 5,
-      "plantillas": [],
+      "plantillas": ["sucesiones"],
       "investigacion": null
     },
     {

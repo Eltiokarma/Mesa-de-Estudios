@@ -85,7 +85,7 @@
       "universidades": {"unmsm": {"temas": [7]}},
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["sucesiones"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {

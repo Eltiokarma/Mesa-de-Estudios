@@ -1,0 +1,104 @@
+{
+  "plantilla": "sucesiones",
+  "unidades": "Cantidades sin unidad: términos, fichas, palitos, capas, apretones y regiones. n es la posición del término (el número de figura), desde 1. Las coordenadas de las piezas van en lados de palito o de ficha; los ángulos de cuerdas(), en grados.",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.objetoEntero, formula.b); 'valor' es el resultado si es un número suelto; las listas se comparan completas y los textos exactos. 'tambien' son llamadas extra del mismo caso. Un error que no aparece en 'errores' es porque en ese caso daría la respuesta correcta.",
+  "verificacion": "Verificado por un subagente independiente (6 nov 2026) sin leer el motor: figuras construidas como conjuntos de segmentos o celdas y contadas sin fórmulas; sumas por enumeración con Fraction; segundo orden por sistema exacto; regiones del círculo por intersecciones reales de cuerdas (con el hexágono regular salen 30 por la concurrencia). Los 18 casos coincidieron. Tras la verificación: el caso 15 lleva una tercera fila (3, 2 → 7) porque con dos filas también cumplían a² + b y b² − a; el caso 11 suma el error ignoraCruces = 21 y el caso 5 pasa a gauss(6) = 21, recalculados al integrar.",
+  "tolerancia": 1e-9,
+  "casos": [
+    { "nombre": "Predicción del paso 1 (RM2): la torre n tiene 3 columnas de n fichas y 2 almenas; la torre 10 tiene 32 fichas → la 20 tiene 62 (objeto entero: 64; la diferencia como término: 60; sumar 10: 42)",
+      "fn": "desdeOtroTermino", "args": [{ "a1": 5, "r": 3, "m": 10, "n": 20 }],
+      "espera": { "an": 62, "am": 32, "sobranFijos": 2, "errores.objetoEntero": 64, "errores.diferenciaComoTermino": 60, "errores.aditiva": 42 },
+      "tambien": [ { "fn": "figura", "args": ["torre", 10], "espera": { "cantidad": 32, "porFormula": 32, "nuevos": 3, "formula.b": 3, "formula.c": 2 } },
+                   { "fn": "figura", "args": ["torre", 20], "espera": { "cantidad": 62, "errores.objetoEntero": 64, "errores.diferenciaComoTermino": 60 } } ] },
+
+    { "nombre": "Predicción del paso 3: cuadrados en fila con palitos; la figura 3 tiene 10 palitos, 3 nuevos y 2 compartidos; la fórmula es 3n + 1 (en la figura 10: 31; 4n, contando dos veces los compartidos: 40; 3n: 30; 3n + 4: 34)",
+      "fn": "figura", "args": ["cuadrados", 3],
+      "espera": { "cantidad": 10, "nuevos": 3, "compartidos": 2, "celdas": 3, "formula.a": 0, "formula.b": 3, "formula.c": 1 },
+      "tambien": [ { "args": ["cuadrados", 10], "espera": { "cantidad": 31, "compartidos": 9, "errores.cuentaDoble": 40, "errores.diferenciaComoTermino": 30, "errores.nEnVezDeNmenos1": 34 } },
+                   { "args": ["cuadrados", 1], "espera": { "cantidad": 4, "nuevos": 4, "compartidos": 0 } } ] },
+
+    { "nombre": "Predicción del paso 5: el término 50 de 7, 11, 15, … es 203 (n en vez de n − 1: 207; la diferencia como término, 4 · 50: 200; el objeto entero, 7 · 50: 350); fórmula 4n + 3",
+      "fn": "aritmetica", "args": [{ "a1": 7, "r": 4, "n": 50 }],
+      "espera": { "an": 203, "saltos": 49, "formula.b": 4, "formula.c": 3, "errores.nEnVezDeNmenos1": 207, "errores.diferenciaComoTermino": 200, "errores.objetoEntero": 350 },
+      "tambien": [ { "fn": "cantidadTerminos", "args": [{ "a1": 7, "r": 4, "an": 203 }], "espera": { "n": 50, "saltos": 49, "errores.sinMasUno": 49 } } ] },
+
+    { "nombre": "Predicción del paso 6: 1 + 2 + … + 100 = 5050 (sin dividir entre 2: 10 100; 100²/2: 5000; 100 · 99/2: 4950)",
+      "fn": "gauss", "args": [100],
+      "espera": { "S": 5050, "filas": 100, "columnas": 101, "area": 10100, "errores.sinDividir": 10100, "errores.nCuadradoMedio": 5000, "errores.nMenosUno": 4950 },
+      "tambien": [ { "fn": "sumaNotable", "args": ["naturales", 100], "espera": { "S": 5050, "ultimo": 100 } },
+                   { "fn": "sumaAritmetica", "args": [{ "a1": 1, "r": 1, "n": 100 }], "espera": { "S": 5050, "an": 100, "rectangulo.lados": [100, 101] } } ] },
+
+    { "nombre": "Escalera del paso 6: 1 + 2 + … + 6 = 21; con su copia girada forma un rectángulo de 6 filas y 7 columnas",
+      "fn": "gauss", "args": [6],
+      "espera": { "S": 21, "filas": 6, "columnas": 7, "area": 42, "escalera": [1, 2, 3, 4, 5, 6], "copia": [6, 5, 4, 3, 2, 1] } },
+
+    { "nombre": "Predicción del paso 7: cuadrículas de palitos 4, 12, 24, 40, …; segunda diferencia 4, fórmula 2n² + 2n; la figura 10 tiene 220 (lineal con la primera diferencia: 76; con la última: 136; objeto entero: 120; 4 por cuadrito: 400)",
+      "fn": "segundoOrden", "args": [{ "terminos": [4, 12, 24, 40], "k": 10 }],
+      "espera": { "a": 2, "b": 2, "c": 0, "d1": [8, 12, 16], "d2": [4, 4], "ak": 220, "errores.comoLineal": 76, "errores.comoLinealUltima": 136, "errores.objetoEntero": 120 },
+      "tambien": [ { "fn": "figura", "args": ["cuadricula", 10], "espera": { "cantidad": 220, "porFormula": 220, "nuevos": 40, "celdas": 100, "errores.cuentaDoble": 400 } },
+                   { "fn": "tablaFigura", "args": ["cuadricula", 4], "espera": { "valor": [[1, 4], [2, 12], [3, 24], [4, 40]] } },
+                   { "fn": "diferencias", "args": [[4, 12, 24, 40, 60]], "espera": { "orden": 2, "constante": 4 } } ] },
+
+    { "nombre": "¿Qué pasa si…? 1: una hoja doblada 10 veces tiene 2¹⁰ = 1024 capas (de 2 en 2: 20; 10²: 100; objeto entero, 2 · 32: 64; un doblez menos: 512)",
+      "fn": "dobleces", "args": [10],
+      "espera": { "capas": 1024, "serie": [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024], "errores.comoAritmetica": 20, "errores.potenciaAlReves": 100, "errores.objetoEntero": 64, "errores.unDoblezMenos": 512 },
+      "tambien": [ { "fn": "geometrica", "args": [{ "a1": 1, "q": 2, "n": 11 }], "espera": { "an": 1024 } } ] },
+
+    { "nombre": "¿Qué pasa si…? 2: 1/2 + 1/4 + 1/8 + … = 1 (con 1 como primer término: 2; los dos primeros: 3/4); 12 piezas suman 4095/4096",
+      "fn": "sumaInfinita", "args": [{ "a1": 0.5, "q": 0.5 }],
+      "espera": { "S": 1, "texto": "1", "errores.primerTerminoUno": 2, "errores.dosPrimeros": 0.75 },
+      "tambien": [ { "fn": "mitades", "args": [12], "espera": { "suma": 0.999755859375, "falta": 0.000244140625 } },
+                   { "fn": "mitades", "args": [3], "espera": { "suma": 0.875, "resto.x": 0.75, "resto.y": 0.5, "resto.w": 0.25, "resto.h": 0.5 } } ] },
+
+    { "nombre": "¿Qué pasa si…? 3: triángulo de lado 10 hecho de triangulitos de palitos: 3 · 55 = 165 palitos (los 100 triangulitos por 3: 300; lineal con la primera diferencia, 3 + 9 · 6: 57; objeto entero, 2 · 45: 90)",
+      "fn": "figura", "args": ["triangulo-palitos", 10],
+      "espera": { "cantidad": 165, "porFormula": 165, "celdas": 100, "nuevos": 30, "errores.cuentaDoble": 300, "errores.comoLineal": 57, "errores.objetoEntero": 90 },
+      "tambien": [ { "fn": "tablaFigura", "args": ["triangulo-palitos", 3], "espera": { "valor": [[1, 3], [2, 9], [3, 18]] } } ] },
+
+    { "nombre": "¿Qué pasa si…? 4: 10 personas se dan la mano: 9 + 8 + … + 1 = 45 apretones (cada apretón contado dos veces: 90; 10²: 100; 10 · 11/2: 55)",
+      "fn": "apretones", "args": [10],
+      "espera": { "total": 45, "porPersona": 9, "nuevos": [9, 8, 7, 6, 5, 4, 3, 2, 1], "errores.cuentaDoble": 90, "errores.nCuadrado": 100, "errores.conUnoMismo": 55 } },
+
+    { "nombre": "¿Qué pasa si…? 5: regiones con 1 a 6 puntos en la circunferencia: 1, 2, 4, 8, 16 y 31 (no 32; sumar 8 otra vez: 24; objeto entero, 2 · 4: 8; una región por cuerda nueva sin contar los cruces, 16 + 5: 21); con los puntos de la escena no pasan tres cuerdas por un punto",
+      "fn": "regionesCirculo", "args": [6],
+      "espera": { "regiones": 31, "cuerdas": 15, "cruces": 15, "serie": [1, 2, 4, 8, 16, 31], "errores.geometrica": 32, "errores.mismoAumento": 24, "errores.objetoEntero": 8, "errores.ignoraCruces": 21 },
+      "tambien": [ { "fn": "cuerdas", "args": [[165, 30, 105, 230, 280, 340]], "espera": { "regiones": 31, "generales": true } },
+                   { "fn": "cuerdas", "args": [[0, 60, 120, 180, 240, 300]], "espera": { "regiones": 30, "generales": false } } ] },
+
+    { "nombre": "Progresión geométrica 3, 6, 12, …: el término 6 es 96 (q⁶: 192; como aritmética de 3 en 3: 18; objeto entero, 2 · 12: 24); la suma de los 6 primeros es 189",
+      "fn": "geometrica", "args": [{ "a1": 3, "q": 2, "n": 6 }],
+      "espera": { "an": 96, "terminos": [3, 6, 12, 24, 48, 96], "errores.nEnVezDeNmenos1": 192, "errores.comoAritmetica": 18, "errores.objetoEntero": 24 },
+      "tambien": [ { "fn": "sumaGeometrica", "args": [{ "a1": 3, "q": 2, "n": 6 }], "espera": { "S": 189, "an": 96, "errores.ultimoTermino": 96 } } ] },
+
+    { "nombre": "Triángulos en fila con palitos: la figura 5 tiene 11 palitos (2n + 1); cada triángulo nuevo agrega 2",
+      "fn": "figura", "args": ["triangulos", 5],
+      "espera": { "cantidad": 11, "nuevos": 2, "compartidos": 4, "formula.b": 2, "formula.c": 1, "errores.cuentaDoble": 15, "errores.diferenciaComoTermino": 10 } },
+
+    { "nombre": "Suma de impares 1 + 3 + … + 39: son 20 términos y suman 400 (con 39 como n: 1521; 19 términos: 361)",
+      "fn": "sumaHasta", "args": [{ "tipo": "impares", "ultimo": 39 }],
+      "espera": { "n": 20, "S": 400, "errores.ultimoComoN": 1521, "errores.unTerminoMenos": 361 } },
+
+    { "nombre": "Sumas notables hasta 10: cuadrados 385 (el cuadrado de la suma: 3025), cubos 3025, pares 2 + 4 + … + 20 = 110",
+      "fn": "sumaNotable", "args": ["cuadrados", 10],
+      "espera": { "S": 385, "errores.cuadradoDeLaSuma": 3025 },
+      "tambien": [ { "args": ["cubos", 10], "espera": { "S": 3025, "errores.sinCuadrado": 55 } },
+                   { "args": ["pares", 10], "espera": { "S": 110, "ultimo": 20, "errores.comoNaturales": 55 } } ] },
+
+    { "nombre": "Analogía numérica 2 (7) 3; 4 (21) 5; 3 (7) 2; 6 ( ) 1 → a · b + 1 = 7. La tercera fila descarta a² + b (daría 11) y b² − a (daría 1), que también cumplen las dos primeras (2a + b, que solo cumple la primera fila: 13)",
+      "fn": "regla", "args": [[[2, 3, 7], [4, 5, 21], [3, 2, 7], [6, 1, null]]],
+      "espera": { "regla": "productoMasUno", "valor": 7, "reglaPrimeraFila": "dobleDelPrimeroMasSegundo", "errores.primeraFila": 13 } },
+
+    { "nombre": "Qué sigue: 2, 5, 10, 17 → 26 (segundo orden; repetir la última diferencia: 24); 3, 6, 12, 24 → 48; 1, 1, 2, 3, 5 → 8",
+      "fn": "siguiente", "args": [[2, 5, 10, 17]],
+      "espera": { "tipo": "orden-2", "siguiente": 26, "errores.comoAritmetica": 24 },
+      "tambien": [ { "args": [[3, 6, 12, 24]], "espera": { "tipo": "geometrica", "siguiente": 48, "q": 2, "errores.comoAritmetica": 36 } },
+                   { "args": [[1, 1, 2, 3, 5]], "espera": { "tipo": "fibonacci", "siguiente": 8 } },
+                   { "args": [[7, 11, 15]], "espera": { "tipo": "aritmetica", "siguiente": 19, "r": 4 } } ] },
+
+    { "nombre": "Fichas en triángulo (n(n + 1)/2) y en cuadrado (n²): la figura 10 tiene 55 y 100; el cuadrado 5 agrega una L de 9 fichas, el quinto impar",
+      "fn": "figura", "args": ["triangular", 10],
+      "espera": { "cantidad": 55, "nuevos": 10, "errores.cuadradoMedio": 50, "errores.comoLineal": 19, "errores.objetoEntero": 30 },
+      "tambien": [ { "args": ["cuadrado-fichas", 5], "espera": { "cantidad": 25, "nuevos": 9 } },
+                   { "args": ["cuadrado-fichas", 10], "espera": { "cantidad": 100, "errores.objetoEntero": 50 } } ] }
+  ]
+}

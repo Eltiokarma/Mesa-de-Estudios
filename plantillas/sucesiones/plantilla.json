@@ -1,0 +1,16 @@
+{
+  "id": "sucesiones",
+  "titulo": "La torre de fichas: sucesiones, patrones y series",
+  "formato": "escena",
+  "unidades": [
+    "razonamiento-matematico.razonamiento-inductivo",
+    "algebra.sucesiones-y-series"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}

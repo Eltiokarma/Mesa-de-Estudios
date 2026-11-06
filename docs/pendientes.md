@@ -8,7 +8,7 @@
 npm test
 ```
 
-Deben pasar 1180 pruebas.
+Deben pasar 1219 pruebas.
 
 ```bash
 npm run dev
@@ -56,7 +56,7 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 | ma3 | Álgebra | Hechas: `grafica-perillas` y `traductor-enunciados` (letras, ecuaciones, sistemas, edades y móviles) | Sigue el cuadrado que crece (productos notables); faltan polinomios, logaritmos y sucesiones |
 | ma1 a ma3 | Trigonometría, geometría, funciones | Informes del 6 nov: `trigonometria-`, `geometria-` y `algebra-funciones-ideas-erroneas.md` | Cifras de resúmenes, por verificar con los PDF (`fuentes/por-conseguir.md`); cada informe trae 3 escenas y casos |
 | ma4 | Aritmética | Hechas: `porcentajes-sucesivos` (predicciones), `regla-de-tres` y `probabilidad-dados` | Faltan fracciones y decimales, MCD y MCM, promedios e interés |
-| ra1 | Razonamiento matemático | Hechas: `probabilidad-dados` (conteo y probabilidad) y `regla-de-tres` (engranajes) | Faltan sucesiones, planteo de ecuaciones, edades y móviles, orden de información y verdades y mentiras |
+| ra1 | Razonamiento matemático | Hechas: `probabilidad-dados`, `regla-de-tres` (engranajes), `traductor-enunciados` (planteo) y `sucesiones` (patrones con palitos, Gauss, series) | Faltan sucesiones, planteo de ecuaciones, edades y móviles, orden de información y verdades y mentiras |
 | ra2 y pl4 | Razonamiento verbal y formato lectura | `razonamiento-verbal-ideas-erroneas.md` (RV1 a RV34, ninguno documentado; hecho por la rutina) | Formato lectura hecho en la app (pl4, 6 nov); la rutina sigue con los 30 textos, los de entrada y salida, los ejercicios sueltos y la guía docente |
 
 ### 2. Detalles de las plantillas ya hechas

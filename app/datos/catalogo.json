@@ -1679,7 +1679,9 @@
      },
      "potencial_visual": "medio",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "sucesiones"
+     ]
     },
     {
      "id": "algebra.binomio-de-newton",
@@ -3400,7 +3402,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "sucesiones"
+     ]
     },
     {
      "id": "razonamiento-matematico.juegos-recreativos",
@@ -4557,6 +4561,24 @@
     "/plantillas/soluciones/index.html",
     "/plantillas/soluciones/motor.js",
     "/plantillas/soluciones/papel.json"
+   ]
+  },
+  "sucesiones": {
+   "id": "sucesiones",
+   "titulo": "La torre de fichas: sucesiones, patrones y series",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.razonamiento-inductivo",
+    "algebra.sucesiones-y-series"
+   ],
+   "url": "/plantillas/sucesiones/index.html",
+   "papel": "/plantillas/sucesiones/papel.json",
+   "archivos": [
+    "/plantillas/sucesiones/index.html",
+    "/plantillas/sucesiones/motor.js",
+    "/plantillas/sucesiones/papel.json"
    ]
   },
   "tiro-parabolico": {

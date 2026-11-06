@@ -1,0 +1,130 @@
+{
+  "titulo": "La torre de fichas: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Antes de usar una fórmula, escribe los primeros términos en una tabla con su posición n y calcula las diferencias: si la primera diferencia es constante, la sucesión es aritmética (tₙ = t₁ + (n − 1)·r); si la constante aparece en la segunda diferencia, es cuadrática (tₙ = an² + bn + c); si lo constante es el cociente, es geométrica (tₙ = t₁·qⁿ⁻¹). Cuidado con dos trampas: la figura 20 no es el doble de la figura 10, y de t₁ a tₙ hay n − 1 saltos, no n.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "En la sucesión 5, 9, 13, 17, …, halla el término general tₙ y el término de lugar 40.",
+      "respuesta": "tₙ = 4n + 1; el término 40 es 161.",
+      "pasos": [
+        "La diferencia entre términos seguidos es siempre 4: es una progresión aritmética con t₁ = 5 y razón r = 4.",
+        "De t₁ a t₄₀ hay 39 saltos de 4: t₄₀ = 5 + 39 · 4 = 161.",
+        "En general, tₙ = 5 + (n − 1) · 4 = 4n + 1. El 4 es lo que se agrega en cada paso y el 1 es el «término cero» (5 − 4). Control: con n = 2 sale 9."
+      ],
+      "verificar": [ { "fn": "aritmetica", "args": [{ "a1": 5, "r": 4, "n": 40 }], "espera": { "an": 161, "formula.b": 4, "formula.c": 1, "errores.nEnVezDeNmenos1": 165 } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "¿Cuántos términos tiene la sucesión 8, 15, 22, 29, …, 218?",
+      "respuesta": "31 términos.",
+      "pasos": [
+        "La razón es 7. Del primer término (8) al último (218) hay una distancia de 218 − 8 = 210.",
+        "Con saltos de 7, son 210/7 = 30 saltos.",
+        "Treinta saltos unen 31 términos (como 30 espacios entre 31 postes): n = 30 + 1 = 31. Responder 30 es olvidar el primer término."
+      ],
+      "verificar": [ { "fn": "cantidadTerminos", "args": [{ "a1": 8, "r": 7, "an": 218 }], "espera": { "n": 31, "saltos": 30, "errores.sinMasUno": 30 } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Con palitos de fósforo se arma una fila de triángulos, uno con la punta hacia arriba y el siguiente con la punta hacia abajo, uno al lado del otro. Un triángulo usa 3 palitos; dos triángulos, 5; tres triángulos, 7. ¿Cuántos palitos hacen falta para 25 triángulos?",
+      "respuesta": "51 palitos.",
+      "pasos": [
+        "Cada triángulo nuevo comparte un palito con el anterior, así que solo agrega 2: la sucesión es 3, 5, 7, … con razón 2.",
+        "La fórmula es tₙ = 3 + (n − 1) · 2 = 2n + 1: un palito inicial y 2 por cada triángulo.",
+        "Con n = 25: 2 · 25 + 1 = 51. Contar 3 palitos por triángulo (75) cuenta dos veces los compartidos; y tampoco sirve juntar la figura 12 y la 13 (25 + 27 = 52): cada copia repite el palito inicial."
+      ],
+      "verificar": [ { "fn": "figura", "args": ["triangulos", 25], "espera": { "cantidad": 51, "errores.cuentaDoble": 75, "formula.b": 2, "formula.c": 1 } },
+                     { "fn": "figura", "args": ["triangulos", 12], "espera": { "cantidad": 25 } }, { "fn": "figura", "args": ["triangulos", 13], "espera": { "cantidad": 27 } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Halla la suma de los 20 primeros términos de 3, 7, 11, 15, …",
+      "respuesta": "820.",
+      "pasos": [
+        "Es aritmética con t₁ = 3 y r = 4. El término 20 es 3 + 19 · 4 = 79.",
+        "Como en la escalera de Gauss, el primero más el último, el segundo más el penúltimo, etc., dan siempre 3 + 79 = 82. Hay 20 términos, o sea 10 parejas.",
+        "S = (3 + 79) · 20/2 = 820. Sin dividir entre 2 saldría 1640: eso es la suma de la escalera y de su copia."
+      ],
+      "verificar": [ { "fn": "sumaAritmetica", "args": [{ "a1": 3, "r": 4, "n": 20 }], "espera": { "S": 820, "an": 79, "errores.sinDividir": 1640 } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "En la sucesión 3, 8, 15, 24, …, halla el término de lugar 20.",
+      "respuesta": "t₂₀ = 440, con tₙ = n² + 2n.",
+      "pasos": [
+        "Primeras diferencias: 5, 7, 9. No son constantes. Segundas diferencias: 2, 2. Es una sucesión de segundo orden: tₙ = an² + bn + c.",
+        "a es la mitad de la segunda diferencia: a = 1. La primera diferencia (5) es 3a + b, así que b = 5 − 3 = 2. El primer término (3) es a + b + c, así que c = 3 − 1 − 2 = 0.",
+        "tₙ = n² + 2n y t₂₀ = 400 + 40 = 440. Control: t₄ = 16 + 8 = 24. Si se sigue sumando 9 desde el 24, como si fuera lineal, sale 168: muy lejos."
+      ],
+      "verificar": [ { "fn": "segundoOrden", "args": [{ "terminos": [3, 8, 15, 24], "k": 20 }], "espera": { "a": 1, "b": 2, "c": 0, "ak": 440, "errores.comoLinealUltima": 168 } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "En la progresión 2, 6, 18, 54, …, halla el séptimo término y la suma de los siete primeros.",
+      "respuesta": "El séptimo término es 1458 y la suma es 2186.",
+      "pasos": [
+        "Cada término es el anterior por 3: es geométrica con t₁ = 2 y razón q = 3.",
+        "De t₁ a t₇ hay 6 multiplicaciones por 3: t₇ = 2 · 3⁶ = 2 · 729 = 1458.",
+        "S₇ = t₁(q⁷ − 1)/(q − 1) = 2(2187 − 1)/2 = 2186. Control: 2 + 6 + 18 + 54 + 162 + 486 + 1458 = 2186."
+      ],
+      "verificar": [ { "fn": "geometrica", "args": [{ "a1": 2, "q": 3, "n": 7 }], "espera": { "an": 1458, "errores.nEnVezDeNmenos1": 4374 } },
+                     { "fn": "sumaGeometrica", "args": [{ "a1": 2, "q": 3, "n": 7 }], "espera": { "S": 2186 } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Calcula la suma infinita 6 + 2 + 2/3 + 2/9 + …",
+      "respuesta": "9.",
+      "pasos": [
+        "Cada término es el anterior entre 3: es geométrica con t₁ = 6 y razón q = 1/3. Como la razón está entre −1 y 1, la suma infinita existe.",
+        "S = t₁/(1 − q) = 6/(1 − 1/3) = 6/(2/3) = 9.",
+        "Las sumas parciales (6; 8; 8,67; 8,89; …) se acercan cada vez más a 9. Usar 1 en vez del primer término daría 1,5."
+      ],
+      "verificar": [ { "fn": "sumaInfinita", "args": [{ "a1": 6, "q": 0.3333333333333333 }], "espera": { "S": 9, "errores.primerTerminoUno": 1.5 } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Calcula S₁ = 1² + 2² + 3² + … + 12² y S₂ = 1 + 3 + 5 + … + 49. ¿Cuánto vale S₁ − S₂?",
+      "respuesta": "S₁ = 650, S₂ = 625 y S₁ − S₂ = 25.",
+      "pasos": [
+        "Suma de cuadrados: n(n + 1)(2n + 1)/6 con n = 12: 12 · 13 · 25/6 = 650.",
+        "En S₂, primero cuenta los términos: los impares hasta 49 son (49 + 1)/2 = 25. La suma de los n primeros impares es n², así que S₂ = 25² = 625.",
+        "S₁ − S₂ = 650 − 625 = 25. Tomar n = 49 en S₂ (49²) es el error de no contar los términos."
+      ],
+      "verificar": [ { "fn": "sumaNotable", "args": ["cuadrados", 12], "espera": { "S": 650 } },
+                     { "fn": "sumaHasta", "args": [{ "tipo": "impares", "ultimo": 49 }], "espera": { "n": 25, "S": 625, "errores.ultimoComoN": 2401 } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "básico",
+      "enunciado": "Halla el número que falta en la analogía numérica: 5 (34) 3; 4 (25) 3; 6 ( ) 1.",
+      "respuesta": "El número que falta es 37.",
+      "pasos": [
+        "Busca una sola regla que cumplan las dos filas completas. Sumar no sirve: 5 + 3 = 8. Multiplicar tampoco: 5 · 3 = 15.",
+        "Con los cuadrados: 5² + 3² = 25 + 9 = 34 y 4² + 3² = 16 + 9 = 25. La regla se cumple en las dos filas.",
+        "En la tercera: 6² + 1² = 36 + 1 = 37. Una regla que solo funciona con la primera fila no vale: hay que comprobarla en todas."
+      ],
+      "verificar": [ { "fn": "regla", "args": [[[5, 3, 34], [4, 3, 25], [6, 1, null]]], "espera": { "valor": 37, "regla": "sumaDeCuadrados" } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "En un campeonato de 12 equipos, cada equipo juega una sola vez contra cada uno de los otros. ¿Cuántos partidos se juegan?",
+      "respuesta": "66 partidos.",
+      "pasos": [
+        "El primer equipo juega contra los otros 11. El segundo ya jugó con el primero: le quedan 10 partidos nuevos. El tercero, 9, y así hasta el penúltimo, con 1.",
+        "Total: 11 + 10 + … + 1 = 11 · 12/2 = 66. Es lo mismo que 12 · 11/2: cada equipo juega 11 partidos y cada partido tiene 2 equipos.",
+        "12 · 11 = 132 cuenta cada partido dos veces (el 1 contra el 2 y el 2 contra el 1). Con 6 equipos son 15 partidos: el doble de equipos no da el doble de partidos."
+      ],
+      "verificar": [ { "fn": "apretones", "args": [12], "espera": { "total": 66, "errores.cuentaDoble": 132 } },
+                     { "fn": "apretones", "args": [6], "espera": { "total": 15 } } ]
+    }
+  ]
+}
