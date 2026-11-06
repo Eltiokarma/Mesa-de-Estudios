@@ -212,13 +212,13 @@
       "id": "fi4",
       "seccion": "Física",
       "nombre": "Trabajo, energía y potencia",
-      "inicio": "2026-11-26",
+      "inicio": "2026-11-06",
       "fin": "2026-12-02",
-      "estado": "pendiente",
-      "progreso": 0,
+      "estado": "en_curso",
+      "progreso": 80,
       "critico": false,
       "depende_de": [],
-      "notas": ""
+      "notas": "Hecho: motor (rampas recta, curva y con loma; resorte con tramo de roce; trabajo por fuerza en piso y plano; área F–x; potencia y eficiencia; lanzamientos), 17 casos verificados aparte, 39 pruebas, papel (10), paso a paso (rampa y resorte con barras de energía y el sistema marcado) y qué pasa si (5: forma de la rampa, W5, W2, grúa, W10). Falta: fuerza variable en la escena (gráfica F–x arrastrable) y el pase con alumnos."
     },
     {
       "id": "fi6",

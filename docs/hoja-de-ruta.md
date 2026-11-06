@@ -76,7 +76,7 @@ gantt
     Espejos esféricos (reusa el motor de lentes) :active, fi5, 2026-11-05, 2026-11-20
     Circuitos de corriente continua :active, fi2, 2026-11-05, 2026-11-21
     Calorimetría y cambios de fase :active, fi3, 2026-11-05, 2026-11-27
-    Trabajo, energía y potencia :fi4, 2026-11-26, 2026-12-03
+    Trabajo, energía y potencia :active, fi4, 2026-11-06, 2026-12-03
     MRUV y gráficas :fi6, 2026-12-01, 2026-12-08
 
     section Química

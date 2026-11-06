@@ -8,7 +8,7 @@
 npm test
 ```
 
-Deben pasar 169 pruebas.
+Deben pasar 208 pruebas.
 
 ```bash
 npm run dev
@@ -35,7 +35,7 @@ Si hay que hacer OCR, instala tesseract en español: `apt-get install -y tessera
 | Catálogo | 8 cursos y 151 unidades, con su universidad (UNI, San Marcos) y su grado (3.º, 4.º o 5.º, estimado) |
 | App (PWA) | Bienvenida, inicio, cursos, práctica, lápiz y papel, progreso y perfil. Funciona sin conexión y en celular y computadora (menú lateral desde 900 px, atajos de teclado). Diseño acogedor con ilustraciones SVG propias |
 | Medición | Pruebas de entrada y salida y registro anónimo de cada predicción, también desde las escenas. Se exporta a CSV o JSON desde Perfil; `herramientas/analizar-medicion.js` junta los archivos |
-| Plantillas de escena | Banco Óptico (lentes), espejos esféricos, circuitos de corriente continua y calorimetría con cambios de fase. Cada una con motor, casos verificados con fracciones, paso a paso con predicción, "¿qué pasa si…?" y 9 problemas de papel |
+| Plantillas de escena | Banco Óptico (lentes), espejos esféricos, circuitos de corriente continua, calorimetría con cambios de fase y trabajo y energía (rampa con resorte). Cada una con motor, casos verificados con fracciones, paso a paso con predicción, "¿qué pasa si…?" y 9 problemas de papel |
 | Plantillas de predicciones | Reactivo limitante (química) y aumentos y descuentos sucesivos (aritmética), con generador por semilla |
 
 ## Pendientes, en orden de prioridad
@@ -51,8 +51,7 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 
 | Id | Módulo | Informe de ideas erróneas | Nota |
 | --- | --- | --- | --- |
-| fi4 | Trabajo, energía y potencia | `estatica-energia-ideas-erroneas.md` | Siguiente. Con calorimetría y circuitos cubre el 28 % de la física de San Marcos |
-| fi6 | MRUV y gráficas | `cinematica-ideas-erroneas.md` | Datos fuertes (Beichner 1994) |
+| fi6 | MRUV y gráficas | `cinematica-ideas-erroneas.md` | Siguiente. Datos fuertes (Beichner 1994) |
 | qu1 | Reactivo limitante con partículas (escena) | `estequiometria-ideas-erroneas.md` | Ya existe el módulo de predicciones; falta la escena con partículas |
 | qu2 a qu4 | Gases y soluciones, pH, redox | Los de química | |
 | ma1 a ma3 | Trigonometría, geometría, funciones | Sin informe todavía | Hay que investigar las ideas erróneas antes de construir |
@@ -76,6 +75,10 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
   - La unidad también pide dilatación y transferencia de calor (conducción, convección, radiación); la escena no las cubre todavía.
   - El punto de ebullición según la altitud y lo que "siente" la mano son modelos aproximados (atmósfera estándar con Antoine; efusividades de tabla). Sirven para comparar, no para medir.
   - El vapor de la olla destapada se va: en "Sigo calentando" la animación termina a los 300 s, mientras todavía hierve.
+- **Energía** (`plantillas/energia/`, hecha el 6 nov 2026):
+  - Falta en la escena la fuerza variable: una gráfica F–x que se arrastra y pinta el área (el motor ya la calcula con `trabajoArea`, y está en los problemas de papel).
+  - Las opciones incorrectas de "Cambio la rampa" y de la grúa son hipótesis; las demás salen del test EMCS.
+  - La pregunta del paso 6 (doble altura, √2) tiene respaldo solo parcial (Brundage y otros, 2023).
 - **Todas:** el estado es `borrador`. Pasan a `probada` con los datos del colegio.
 
 ### 3. Plataforma
