@@ -22,6 +22,8 @@
  *   cambioVariable({ base, b, c })          (base²)ˣ + b · baseˣ + c = 0 con u = baseˣ
  *   ecuacionLog({ base, p, q, valor })      log(x + p) + log(x + q) = valor, con la verificación del dominio
  *   inecuacionExp({ base, cota, sentido })  baseˣ > cota o baseˣ < cota: se invierte si la base está entre 0 y 1
+ *   inecuacionLog({ base, p, cota, sentido })  log_base(x + p) > cota (u otro sentido), con el dominio x + p > 0
+ *   igualdadLog({ base, p, q })             log(x + p) = log(x + q): sin solución si p ≠ q
  *   crecimiento({ N0, factor, t, ref })     N = N0 · factorᵗ, contra t² y otros errores (AL33)
  *   decaimiento({ N0, vidaMedia, t })       N = N0 · (1/2)^(t / vidaMedia)
  *   compararCrecimiento({ base, grado, hasta })  desde qué n entero baseⁿ le gana para siempre a nᵍʳᵃᵈᵒ (AL33)
@@ -436,6 +438,33 @@
     }, e => e.texto === r.texto);
   }
 
+  // log_b(x + p) (sentido) cota. El argumento debe ser positivo (x > −p) y log_b(x + p) (sentido) cota equivale a
+  // x + p (sentido) b^cota si b > 1, o al sentido contrario si 0 < b < 1. El resultado junta las dos condiciones.
+  function inecuacionLog(o) {
+    o = o || {};
+    const b = base(o.base), s = o.sentido;
+    if (!CONTRA[s]) throw new Error('el sentido debe ser <, >, ≤ o ≥');
+    const P = vNum(o.p), K = potenciaV(o.base, o.cota);
+    const L = K.f && P.f ? val(fNum(fRes(K.f, P.f)), fRes(K.f, P.f)) : val(K.valor - P.valor, null);
+    const mp = P.f ? val(-P.valor, F(-P.f.n, P.f.d)) : val(-P.valor, null);
+    const conDominio = sg => (sg === '<' || sg === '≤') ? `${tx(mp)} < x ${sg} ${tx(L)}` : `x ${sg} ${tx(L)}`;
+    const sentido = b > 1 ? s : CONTRA[s];
+    const r = { base: b, dominio: { desde: mp.valor, texto: `x > ${tx(mp)}` }, borde: L.valor, sentido, invierte: b < 1, texto: conDominio(sentido) };
+    r.valor = r.texto;
+    return conErrores(r, {
+      sentidoContrario: { texto: conDominio(CONTRA[sentido]), id: 'EL6', regla: b < 1 ? 'con base entre 0 y 1 no invierte la desigualdad' : 'invierte la desigualdad sin motivo' },
+      sinDominio: { texto: `x ${sentido} ${tx(L)}`, id: 'EL5', regla: 'olvida que el argumento debe ser positivo' },
+    }, e => e.texto === r.texto);
+  }
+  // log(x + p) = log(x + q): con la misma base, los argumentos tienen que ser iguales; si p ≠ q, nunca lo son.
+  function igualdadLog(o) {
+    o = o || {};
+    const b = base(o.base), p = num(o.p, 'p'), q = num(o.q, 'q'), desde = Math.max(-p, -q);
+    const sol = casi(p, q) ? 'todos' : [];
+    return { base: b, soluciones: sol, valor: sol === 'todos' ? null : [], dominio: { desde, texto: `x > ${txNum(desde)}` },
+      texto: sol === 'todos' ? `todo x > ${txNum(desde)}` : 'sin solución', errores: {}, coinciden: [] };
+  }
+
   // ---------- Crecimiento y decaimiento ----------
   function crecimiento(o) {
     o = o || {};
@@ -507,7 +536,7 @@
   return {
     potencia, log, regla, grafica, inversa,
     logProducto, logSuma, cocienteLogs, logPotencia, potenciaDesplazada, sumaLogs,
-    ecuacionBases, cambioVariable, ecuacionLog, inecuacionExp,
+    ecuacionBases, cambioVariable, ecuacionLog, inecuacionExp, inecuacionLog, igualdadLog,
     crecimiento, decaimiento, compararCrecimiento, curvaPotencia,
     texto: txNum, _F: F, _txF: txF,
   };

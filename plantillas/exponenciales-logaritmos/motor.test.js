@@ -122,6 +122,16 @@ test('inecuaciones: el conjunto que da el motor cumple la desigualdad en puntos 
     }
   }
 });
+test('inecuación logarítmica: el conjunto cumple la desigualdad y el dominio en puntos de prueba', () => {
+  for (let k = 0; k < N; k++) {
+    const b = elegir(BASES), p = ent(-4, 4), c = ent(-2, 3), s = elegir(['<', '>', '≤', '≥']);
+    const I = motor.inecuacionLog({ base: b, p, cota: c, sentido: s });
+    const lb = x => Math.log(x + p) / Math.log(bnum(b));
+    const cumple = x => { if (x + p <= 0) return false; const L = lb(x); return s === '<' ? L < c - 1e-12 : s === '>' ? L > c + 1e-12 : s === '≤' ? L <= c + 1e-12 : L >= c - 1e-12; };
+    const dentro = x => x > I.dominio.desde && (I.sentido === '<' ? x < I.borde : I.sentido === '>' ? x > I.borde : I.sentido === '≤' ? x <= I.borde : x >= I.borde);
+    for (const x of [I.dominio.desde - 0.5, I.dominio.desde + 1e-3, (I.dominio.desde + I.borde) / 2, I.borde - 0.3, I.borde + 0.3, I.borde + 5]) assert.equal(dentro(x), cumple(x), `log_${b}(x + ${p}) ${s} ${c}: x = ${x}`);
+  }
+});
 test('crecimiento y decaimiento: cada periodo multiplica por el mismo factor', () => {
   for (let k = 0; k < N; k++) {
     const N0 = ent(1, 50), f = ent(2, 4), t = ent(0, 8), C = motor.crecimiento({ N0, factor: f, t });
@@ -175,6 +185,7 @@ test('ningún error típico coincide con la respuesta correcta (casos y barrido)
     sinChoques(motor.cambioVariable({ base: g, b: -(r1 + r2), c: r1 * r2 }), 'cambio de variable');
     sinChoques(motor.ecuacionLog({ base: elegir([2, 3, 10]), p: ent(-5, 5), q: ent(-5, 5), valor: ent(1, 3) }), 'ecuación logarítmica');
     sinChoques(motor.inecuacionExp({ base: elegir(BASES), cota: motor.potencia({ base: 2, exp: ent(-3, 3) }).exacto, sentido: elegir(['<', '>', '≤', '≥']) }), 'inecuación');
+    sinChoques(motor.inecuacionLog({ base: elegir(BASES), p: ent(-4, 4), cota: ent(-3, 3), sentido: elegir(['<', '>', '≤', '≥']) }), 'inecuación logarítmica');
     sinChoques(motor.crecimiento({ N0: ent(1, 20), factor: ent(2, 4), t: ent(0, 10), ref: ent(1, 5) }), 'crecimiento');
     sinChoques(motor.decaimiento({ N0: ent(1, 50) * 16, vidaMedia: ent(1, 10), t: ent(0, 40) }), 'decaimiento');
     sinChoques(motor.compararCrecimiento({ base: ent(2, 4), grado: ent(1, 4) }), 'comparar');
@@ -195,7 +206,7 @@ const ESCENA = {
   'log-del-cuadrado': () => { const r = motor.logPotencia({ base: 2, logA: 3, n: 2 }); return [r.texto, r.errores.cuadradoDelLog.texto, r.errores.sumaN.texto, r.errores.numero.texto]; },
   'log-de-uno': () => { const r = motor.sumaLogs({ base: 5, args: [1, 5] }); return [r.texto, r.errores.numero.texto, r.errores.logUnoEsUno.texto, r.errores.logBaseCero.texto]; },
   'base-menor-que-uno': () => { const r = motor.inecuacionExp({ base: '1/2', cota: '1/8', sentido: '>' }); return [r.texto, r.errores.sentidoContrario.texto, r.errores.signoPerdido.texto, r.errores.bordeOpuesto.texto]; },
-  'vida-media': () => { const r = motor.decaimiento({ N0: 80, vidaMedia: 5, t: 15 }); return [r.valor, r.errores.lineal.valor, r.errores.unaMenos.valor, r.errores.divide.valor].map(v => motor.texto(v, 1)); },
+  'vida-media': () => { const r = motor.decaimiento({ N0: 96, vidaMedia: 5, t: 15 }); return [r.valor, r.errores.lineal.valor, r.errores.unaMenos.valor, r.errores.divide.valor].map(v => motor.texto(v, 1)); },
   'potencia-contra-cuadrado': () => { const r = motor.compararCrecimiento({ base: 2, grado: 2 }); return [r.texto, r.errores.ultimoEmpate.texto, r.errores.primerEmpate.texto, r.errores.nunca.texto]; },
 };
 test('las predicciones de la escena: respuesta del motor, opciones distintas y de la misma forma', () => {
@@ -216,6 +227,8 @@ test('las predicciones de la escena: respuesta del motor, opciones distintas y d
 test('entradas inválidas', () => {
   assert.throws(() => motor.log({ base: 1, N: 5 }), /no puede ser 1/);
   assert.throws(() => motor.log({ base: -2, N: 5 }), /mayor que cero/);
+  assert.throws(() => motor.log({ base: 0, N: 5 }), /mayor que cero/);
+  assert.throws(() => motor.inecuacionLog({ base: 2, p: 0, cota: 1, sentido: '=' }), /sentido/);
   assert.throws(() => motor.log({ base: 2, N: 0 }), /mayores que cero/);
   assert.throws(() => motor.log({ base: 2, N: -8 }), /mayores que cero/);
   assert.throws(() => motor.log({ base: 'dos', N: 8 }), /fracción/);

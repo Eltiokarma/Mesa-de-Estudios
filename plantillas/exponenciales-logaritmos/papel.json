@@ -101,9 +101,9 @@
       "pasos": [
         "En 8 horas hay 8/2 = 4 periodos de 2 horas. En cada periodo la cantidad se multiplica por 3.",
         "N = 200 · 3⁴ = 200 · 81 = 16 200.",
-        "No es 200 · 3 · 4 = 2400: eso suma lo mismo en cada periodo. Lo que se repite es el factor, no el aumento."
+        "No es 200 + 4 · 400 = 1800: eso suma siempre lo del primer periodo (de 200 a 600 se suman 400). Tampoco es 200 · 3 · 4 = 2400, que multiplica el factor por el número de periodos. Lo que se repite es la multiplicación por 3: 200 · 3 · 3 · 3 · 3."
       ],
-      "verificar": [ { "fn": "crecimiento", "args": [{ "N0": 200, "factor": 3, "t": 4 }], "espera": { "valor": 16200, "serie": [200, 600, 1800, 5400, 16200] } } ]
+      "verificar": [ { "fn": "crecimiento", "args": [{ "N0": 200, "factor": 3, "t": 4 }], "espera": { "valor": 16200, "serie": [200, 600, 1800, 5400, 16200], "errores.lineal.valor": 1800 } } ]
     },
     {
       "id": "p9",

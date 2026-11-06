@@ -96,6 +96,7 @@ sup .v, sub .v{padding:0 1px}
 
 .eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
 .eq{font-family:var(--mono); font-size:1.02rem; line-height:1.9; font-variant-numeric:tabular-nums}
+.eq .tramo{white-space:nowrap}
 .eq .note{display:inline-block; font-family:var(--font); font-size:.84rem; line-height:1.3; color:var(--muted); margin-left:.5em; white-space:normal}
 .aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
 
@@ -259,6 +260,10 @@ function tween(dur, paso, fin, lineal){
   requestAnimationFrame(tick);
 }
 const sinSolo = t => t.replace(/^solo /, '');
+// En el celular, una ecuación larga se parte solo entre tramos (después de ⟹ o de ;), nunca a media expresión.
+function tramos(raiz){ raiz.querySelectorAll('.eq').forEach(q => { if (q.dataset.tr) return; q.dataset.tr = '1';
+  const nota = q.querySelector('.note'), html = nota ? q.innerHTML.replace(nota.outerHTML, '') : q.innerHTML;
+  q.innerHTML = html.split(/(⟹|;)/).reduce((a, p, i, l) => (i % 2 ? a : a + `<span class="tramo">${p}${l[i + 1] || ''}</span> `), '') + (nota ? nota.outerHTML : ''); }); }
 const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span class="m">${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
 
 function colores(){
@@ -354,8 +359,13 @@ function crearEscena(cv, idDesc, idLect, idLey){
   // ----- la escalera (regla) -----
   function geoRegla(){
     const R = E.regla, l = 34, r = 22, n = R.hasta - R.desde, paso = (W - l - r)/n;
-    const y0 = Math.round(H*0.56);
-    return { X: k => l + (k - R.desde)*paso, paso, y0, h1: Math.min(paso*0.42, 30), l, r };
+    const h1 = Math.min(paso*0.42, 30);
+    // lo que necesitan arriba los arcos y las marcas; si no hay nada alto, la recta sube y no queda papel vacío
+    let arriba = h1 + 24;
+    for (const A of R.arcos) arriba = Math.max(arriba, (A.nivel === 2 ? h1 + 26 + Math.min(18, (A.a - A.de)*6) : A.nivel === 3 ? h1 + 52 : h1) + 22);
+    for (const m of R.marcas) if (!m.abajo) arriba = Math.max(arriba, (m.alto || 30) + 22);
+    const y0 = Math.round(clamp((H - 75 + arriba)/2, arriba + 8, H - 78));   // el contenido, centrado en el alto
+    return { X: k => l + (k - R.desde)*paso, paso, y0, h1, l, r };
   }
   // Un arco de a hasta b sobre la recta (o debajo si nivel < 0), dibujado hasta la fracción f.
   function arco(c, g, de, a, alt, color, ancho, f, dash, texto, flecha){
@@ -406,8 +416,9 @@ function crearEscena(cv, idDesc, idLect, idLey){
     for (const m of R.marcas){
       const x = g.X(m.pos), col = c[m.color] || m.color;
       ctx.save(); ctx.globalAlpha = m.f === undefined ? 1 : m.f;
-      ctx.strokeStyle = col; ctx.lineWidth = 2.5; ctx.setLineDash(m.dash ? [4, 3] : []); linea(ctx, { x, y:g.y0 - (m.alto || 30) }, { x, y:g.y0 + 8 }); ctx.setLineDash([]);
-      rotulo(ctx, c, x, g.y0 - (m.alto || 30) - 10, m.texto, col, 'center', 800, 13);
+      ctx.strokeStyle = col; ctx.lineWidth = 2.5; ctx.setLineDash(m.dash ? [4, 3] : []);
+      if (m.abajo){ linea(ctx, { x, y:g.y0 - 8 }, { x, y:g.y0 + 34 }); ctx.setLineDash([]); rotulo(ctx, c, x, g.y0 + 44, m.texto, col, 'center', 800, 13); }
+      else { linea(ctx, { x, y:g.y0 - (m.alto || 30) }, { x, y:g.y0 + 8 }); ctx.setLineDash([]); rotulo(ctx, c, x, g.y0 - (m.alto || 30) - 10, m.texto, col, 'center', 800, 13); }
       if (m.tachar){ ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, { x:x - 7, y:g.y0 - 7 }, { x:x + 7, y:g.y0 + 7 }); linea(ctx, { x:x + 7, y:g.y0 - 7 }, { x:x - 7, y:g.y0 + 7 }); }
       ctx.restore();
     }
@@ -483,7 +494,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
     const xEje = clamp(g.X(0), g.x0, g.x1);
     for (let y = Math.ceil(G.yr[0]/py)*py; y <= G.yr[1]; y += py) if (y !== 0) ctx.fillText(fmt(y, 2), Math.max(xEje - 4, 26), g.Y(y));
     for (const h of G.horiz) if (h.texto) rotulo(ctx, c, g.x1 - 4, g.Y(h.y) - 11, h.texto, c.ink, 'right', 700, 12);
-    for (const C of G.curvas) if (C.etiqueta && (C.alfa === undefined || C.alfa > .5)) rotulo(ctx, c, g.X(C.etiqueta[0]), g.Y(C.etiqueta[1]), C.etiqueta[2], c[C.color] || C.color, C.etiqueta[3] || 'left', 800, 13);
+    for (const C of G.curvas) if (C.etiqueta && (C.alfa === undefined || C.alfa > .5) && (C.hasta === undefined || C.etiqueta[0] <= C.hasta + .05)) rotulo(ctx, c, g.X(C.etiqueta[0]), g.Y(C.etiqueta[1]), C.etiqueta[2], c[C.color] || C.color, C.etiqueta[3] || 'left', 800, 13);
     if (G.reflejo && G.reflejo.f >= 1 && G.reflejo.etiqueta) rotulo(ctx, c, g.X(G.reflejo.etiqueta[0]), g.Y(G.reflejo.etiqueta[1]), G.reflejo.etiqueta[2], c.x, G.reflejo.etiqueta[3] || 'left', 800, 13);
     if (G.yx && G.yx === true) rotulo(ctx, c, g.X(Math.min(G.xr[1], G.yr[1]) - .3), g.Y(Math.min(G.xr[1], G.yr[1]) - .3) + 12, 'y = x', c.muted, 'right', 700, 12);
     // puntos
@@ -574,10 +585,11 @@ function crearEscena(cv, idDesc, idLect, idLey){
     for (const C of Rr.cand){
       if (!(C.f > 0)) continue;
       const x = X(C.x), y = lerp(10, y0, C.f);
-      ctx.fillStyle = c.ink; ctx.beginPath(); ctx.arc(x, y, 7, 0, 7); ctx.fill();
+      ctx.fillStyle = c.N; ctx.beginPath(); ctx.arc(x, y, 7, 0, 7); ctx.fill();
       if (C.f >= 1 && C.veredicto){
         if (!C.ok){ ctx.strokeStyle = c.warn; ctx.lineWidth = 3; linea(ctx, { x:x - 11, y:y - 11 }, { x:x + 11, y:y + 11 }); linea(ctx, { x:x + 11, y:y - 11 }, { x:x - 11, y:y + 11 }); }
-        rotulo(ctx, c, x, y - 22, C.texto, C.ok ? c.ink : c.warn, 'center', 800, 12);
+        ctx.font = `800 12px ${c.font}`; const w = ctx.measureText(C.texto).width;
+        rotulo(ctx, c, clamp(x, w/2 + 6, W - w/2 - 6), y - 22, C.texto, C.ok ? c.N : c.warn, 'center', 800, 12);
       }
     }
   }
@@ -600,7 +612,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
       else if (E.modo === 'grafica') l = [['N', 'y = bˣ', 'linea'], ['x', 'y = log_b x', 'linea'], ['muted', 'y = x', 'trazos']];
       else if (E.modo === 'cultivo') l = [['N', 'bacterias (un cuadrito, una)'], ['t', 'horas t']].concat(E.cul && E.cul.cuad ? [['q', 't² (misma escala)']] : []);
       else if (E.modo === 'decae') l = [['N', 'gramos que quedan (un cuadrito, 1 g)'], ['t', 'tiempo t']];
-      else l = [['N', 'donde existe cada logaritmo'], ['ink', 'raíces que salen al resolver']];
+      else l = [['N', 'azul: números de la escalera (argumentos, x)'], ['x', 'fucsia: saltos (exponente o logaritmo)']];
     }
     document.getElementById(idLey).innerHTML = l.map(([k, t, tipo]) => it(k, t, tipo)).join('');
   };
@@ -609,7 +621,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
     const filas = E.lect.map(k => k(E));
     if (idLect) document.getElementById(idLect).innerHTML = filas.map(([k, t, v]) => `<div class="lectura" style="--k:var(${k === 'ink' ? '--ink' : '--c-' + k})"><span>${t}</span><b>${v}</b></div>`).join('');
     if (idDesc && !E.anim){
-      const base = { regla:'Una escalera de saltos sobre una recta: en cada marca va una potencia de la base y debajo, el número de saltos.',
+      const base = { regla: 'Una escalera de saltos sobre una recta: en cada marca va una potencia de la base' + (E.regla && E.regla.exps ? ' y debajo, el número de saltos.' : '.'),
         grafica:'Un plano cartesiano con curvas.', cultivo:'Columnas de cuadritos: las bacterias de cada hora.',
         decae:'Una cuadrícula de cuadritos: los gramos que quedan.', recta:'Una recta numérica.' }[E.modo];
       document.getElementById(idDesc).textContent = [E.desc || base, ...filas.map(([, t, v]) => `${t}: ${v}.`)].join(' ');
@@ -743,20 +755,20 @@ const P6 = { id:'exponenciales-logaritmos-paso6', ok:'b', opts:[
   ['d', xTx(EB.errores.potenciaComoSuma.texto), 'EL7-potencia-de-potencia-suma', 'hipotesis']],
   fb:{ b:`¡Bien! 4 = 2², así que 4^(x + 1) = 2^(2x + 2). Con la misma base, 2x + 2 = 3x y x = 2.`,
     a:`Elegiste la A. x + 1 = 3x iguala los exponentes de dos bases distintas. Con x = 1/2: 4^(3/2) = ${EB_chk.i.texto}, pero 2^(3/2) ≈ ${EB_chk.d.texto}. La correcta está marcada.`,
-    c:`Elegiste la C. Esa cuenta usa 4^(x + 1) = 2 · 2^(x + 1) = 2^(x + 2). Pero un salto de ×4 son dos saltos de ×2 en cada salto, no uno de más. La correcta está marcada.`,
+    c:`Elegiste la C. Esa cuenta usa 4^(x + 1) = 2 · 2^(x + 1) = 2^(x + 2). Pero cada salto de ×4 son dos de ×2: se duplican todos los saltos, no se agrega uno. La correcta está marcada.`,
     d:`Elegiste la D. Esa cuenta usa (2²)^(x + 1) = 2^(2 + x + 1). En una potencia de potencia los exponentes se multiplican: 2^(2x + 2). La correcta está marcada.` } };
 const P7 = { id:'exponenciales-logaritmos-paso7', ok:'b', opts:[
-  ['a', CV.errores.seQuedaEnU.texto, 'EL3-se-queda-en-u', 'hipotesis'],
-  ['b', CV.texto],
-  ['c', CV.errores.descartaUno.texto, 'EL4-descarta-potencia-igual-a-uno', 'hipotesis']],
+  ['a', xTx(CV.errores.seQuedaEnU.texto), 'EL3-se-queda-en-u', 'hipotesis'],
+  ['b', xTx(CV.texto)],
+  ['c', xTx(CV.errores.descartaUno.texto), 'EL4-descarta-potencia-igual-a-uno', 'hipotesis']],
   fb:{ b:`¡Bien! u = 2ˣ vale 1 o 2. En la escalera, 1 está en el salto 0 y 2 en el salto 1.`,
     a:`Elegiste la A. 1 y 2 son los valores de u = 2ˣ, los números de la escalera. Falta volver a x: cuántos saltos hay hasta cada uno. La correcta está marcada.`,
     c:`Elegiste la C. 2ˣ = 1 sí tiene solución: x = 0, cero saltos. Todo número distinto de 0 elevado a 0 da 1. La correcta está marcada.` } };
 const P8b = { id:'exponenciales-logaritmos-paso8', ok:'c', opts:[
-  ['a', EL.errores.sumaArgumentos.texto, 'AL10-log-de-la-suma-de-argumentos', 'parcial'],
-  ['b', EL.errores.sinVerificar.texto, 'EL5-no-descarta-la-raiz-extrana', 'hipotesis'],
-  ['c', EL.texto],
-  ['d', EL.errores.sinElevar.texto, 'EL14-no-eleva-la-base', 'hipotesis']],
+  ['a', xTx(EL.errores.sumaArgumentos.texto), 'AL10-log-de-la-suma-de-argumentos', 'parcial'],
+  ['b', xTx(EL.errores.sinVerificar.texto), 'EL5-no-descarta-la-raiz-extrana', 'hipotesis'],
+  ['c', xTx(EL.texto)],
+  ['d', xTx(EL.errores.sinElevar.texto), 'EL14-no-eleva-la-base', 'hipotesis']],
   fb:{ c:`¡Bien! x(x − 2) = 8 da x = 4 o x = −2, pero con −2 los argumentos salen negativos: solo queda 4.`,
     a:`Elegiste la A. Esa cuenta junta log₂ x + log₂(x − 2) en log₂(2x − 2). La suma de logaritmos es el logaritmo del producto, x(x − 2), no de la suma. La correcta está marcada.`,
     b:`Elegiste la B. x = −2 sale de la ecuación x(x − 2) = 8, pero log₂(−2) no existe: no hay número de saltos de ×2 que lleve de 1 a un negativo. Hay que descartarla. La correcta está marcada.`,
@@ -819,12 +831,12 @@ const steps = [
    <p class="aviso">La suma de logaritmos es el logaritmo del producto. El logaritmo de una suma no se separa: log(a + b) no es log a + log b.</p>
    ${fuenteAL10}</div>` },
  { k:'Paso 4', t:'Predice: un logaritmo entre otro', gate:P4,
-   prep:() => { const r = !!S.pred[P4.id]; E.config({ modo:'regla', regla:{ base:2, desde:0, hasta:6, etiquetas: r ? 'todas' : [0, 3, 6], exps: r ? true : false,
+   prep:() => { const r = !!S.pred[P4.id]; E.config({ modo:'regla', regla:{ base:2, desde:0, hasta:6, exps: r ? true : false,
      arcos: r ? [{ de:0, a:3, color:'b', nivel:2, texto:'×8' }, { de:3, a:6, color:'b', nivel:2, texto:'×8' }] : [] },
      lect: r ? [() => ['x', 'saltos de ×2 hasta 64', fmt(C64.logA, 0)], () => ['x', 'saltos de ×8 hasta 64', C64.texto]] : [] }); },
    anima:fin => { const R = E.regla; R.exps = true; R.arcos = [{ de:0, a:3, color:'b', nivel:2, texto:'×8', f:0 }, { de:3, a:6, color:'b', nivel:2, texto:'×8', f:0 }];
      E.animar(0, 2, 2000, v => { R.arcos[0].f = clamp(v, 0, 1); R.arcos[1].f = clamp(v - 1, 0, 1); }, () => { R.etiquetas = 'todas'; E.lect = [() => ['x', 'saltos de ×2 hasta 64', fmt(C64.logA, 0)], () => ['x', 'saltos de ×8 hasta 64', C64.texto]]; E.dibujar(); E.avisar(); fin(); }); },
-   body:() => `<p class="problem">¿Cuánto vale log₂ ${N_('64')} / log₂ ${N_('8')}?</p>${opcionesHTML(P4.opts, 'fb')}
+   body:() => `<p class="problem">log₂ ${N_('64')} = ${x_('6')} y log₂ ${N_('8')} = ${x_('3')}. ¿Cuánto vale log₂ ${N_('64')} / log₂ ${N_('8')}?</p>${opcionesHTML(P4.opts, 'fb')}
    <div id="tras" class="body" hidden>
    <div class="eqs"><div class="eq">log₂ ${N_('64')} / log₂ ${N_('8')} = ${x_('6')}/${x_('3')} = ${x_(C64.texto)} = log<sub>${b_('8')}</sub> ${N_('64')}</div>
    <div class="eq">log₂(${N_('64')}/${N_('8')}) = log₂ ${N_('64')} − log₂ ${N_('8')} = ${x_('6')} − ${x_('3')} = ${x_(C64.errores.logDelCociente.texto)}<span class="note">esto es otra cosa: el logaritmo de una división</span></div></div>
@@ -835,11 +847,11 @@ const steps = [
      const r = !!S.pred[P5.id];
      if (r) return config5(true);
      const G = curvasDe(2, -6, 3.2);
-     E.config({ modo:'grafica', graf:{ base:2, xr:[-2, 9], yr:[-2, 9], igual:true, curvas:[{ pts:G.exp, color:'N', etiqueta:[1.2, 4.6, 'y = 2ˣ'] }], P:{ x:3, y:8 } }, lect:[] });
+     E.config({ modo:'grafica', graf:{ base:2, xr:[-2, 9.5], yr:[-2, 9.5], igual:true, curvas:[{ pts:G.exp, color:'N', etiqueta:[1.2, 4.6, 'y = 2ˣ'] }], P:{ x:3, y:8 } }, lect:[] });
    },
    anima:fin => { const G = curvasDe(2, -6, 3.2), Gr = E.graf; Gr.yx = 0; Gr.reflejo = { f:0, pts:G.exp, etiqueta:[6.2, 3.4, 'y = log₂ x'] }; Gr.P.reflejar = true;
      E.cadena([n => E.animar(0, 1, 600, v => { Gr.yx = v; }, n), n => E.animar(0, 1, 2200, v => { Gr.reflejo.f = v; }, n)], () => { Gr.yx = true; config5(true); fin(); }); },
-   body:() => `<p class="problem">La curva ${N_('azul')} es y = 2<sup>x</sup>: pasa por (${x_('3')}; ${N_('8')}). La función y = log₂ x es su <b>inversa</b>. ¿Por qué punto pasa la gráfica de y = log₂ x?</p>${opcionesHTML(P5.opts, 'fb')}
+   body:() => `<p class="problem">La curva ${N_('azul')}, rotulada «y = 2ˣ» en el dibujo, es y = 2<sup>x</sup>: pasa por (${x_('3')}; ${N_('8')}). La función y = log₂ x es su <b>inversa</b>. ¿Por qué punto pasa la gráfica de y = log₂ x?</p>${opcionesHTML(P5.opts, 'fb')}
    <div id="tras" class="body" hidden>
    <div class="eqs"><div class="eq">${b_('2')}${x_('³')} = ${N_('8')}  ⟺  log₂ ${N_('8')} = ${x_('3')}</div></div>
    <p>Si 2 elevado a ${x_('3')} da ${N_('8')}, el logaritmo de ${N_('8')} devuelve el ${x_('3')}: la inversa cambia la entrada por la salida. Por eso su gráfica es el <b>reflejo</b> de la de 2ˣ en la recta y = x: cada punto (a; b) pasa a (b; a). La curva de y = log₂ x va en fucsia porque su altura es un exponente.</p>
@@ -847,11 +859,11 @@ const steps = [
    <div class="pasos">${control('base', 'b', txBase(S.base), 'b')}</div>
    <p class="hint" id="base-msg"></p>
    <p>bˣ es siempre positiva: su gráfica nunca toca el eje x y su rango es ⟨0; +∞⟩. Por eso log<sub>b</sub> x solo existe para x &gt; 0. Las dos pasan por un punto fijo: b⁰ = 1 y log<sub>b</sub> 1 = 0.</p>
-   <p class="fuente">Leer f⁻¹ como 1/f se describe como una barrera en estudios de razonamiento reversible, sin porcentaje (informe de álgebra y funciones, AL29). Confundir el reflejo en y = x con el reflejo en un eje es hipótesis nuestra.</p></div>`,
+   <p class="fuente">Leer f⁻¹ como 1/f se describe como una barrera en estudios de razonamiento reversible, sin porcentaje (arXiv 2509.19357, 2025, según resúmenes; AL29 del informe de álgebra y funciones). Confundir el reflejo en y = x con el reflejo en un eje es hipótesis nuestra.</p></div>`,
    entrar:() => { if (S.pred[P5.id]) { enlazar('base', d => { const i = clamp(BASES.indexOf(S.base) + d, 0, BASES.length - 1); S.base = BASES[i]; config5(false); }); pintarBase(); } } },
  { k:'Paso 6', t:'Predice: dos bases distintas', gate:P6,
    prep:() => { const r = !!S.pred[P6.id]; E.config({ modo:'regla', regla:{ base:2, desde:0, hasta:6, exps: r ? true : false,
-     arcos: r ? arcos6(1) : arcos6(0).slice(0, 3), marcas: r ? [{ pos:6, texto:'4³ = 2⁶', color:'N', alto:70 }] : [] }, lect: r ? lect6() : [] }); },
+     arcos: r ? arcos6(1) : [{ de:0, a:2, color:'b', nivel:2, texto:'×4 = dos saltos de ×2', f:1, ancho:2.2 }], marcas: r ? [{ pos:6, texto:'4³ = 2⁶', color:'N', alto:70 }] : [] }, lect: r ? lect6() : [] }); },
    anima:fin => { const R = E.regla; R.exps = true; R.arcos = arcos6(0);
      E.cadena([n => E.animar(0, 3, 1800, v => { for (let i = 0; i < 3; i++) R.arcos[3 + i].f = clamp(v - i, 0, 1); }, n, true),
        n => E.animar(0, 6, 2400, v => { for (let i = 0; i < 6; i++) R.arcos[6 + i].f = clamp(v - i, 0, 1); }, n, true)],
@@ -881,11 +893,11 @@ const steps = [
        () => { E.recta.cand.forEach(C => { C.veredicto = true; }); E.lect = lect8(); E.dibujar(); E.avisar(); fin(); }); },
    body:() => `<p class="problem">Resuelve log₂ ${N_('x')} + log₂(${N_('x − 2')}) = ${x_('3')}.</p>${opcionesHTML(P8b.opts, 'fb')}
    <div id="tras" class="body" hidden>
-   <div class="eqs"><div class="eq">log₂[${N_('x')}(${N_('x − 2')})] = ${x_('3')}  ⟹  x(x − 2) = ${b_('2')}${x_('³')} = ${N_(n0(EL.producto))}</div>
-   <div class="eq">x² − 2x − 8 = 0  ⟹  x = 4 o x = −2</div>
-   <div class="eq">x = −2: log₂(−2) no existe<span class="note">se descarta</span></div>
-   <div class="eq">x = 4: log₂ 4 + log₂ 2 = 2 + 1 = 3<span class="note">cumple</span></div></div>
-   <p>Antes de resolver, mira dónde existe cada logaritmo: log₂ ${N_('x')} necesita ${N_('x')} &gt; 0, y log₂(${N_('x − 2')}) necesita ${N_('x − 2')} &gt; 0, o sea x &gt; 2. Las dos a la vez: x &gt; 2. Al juntar los logaritmos en uno solo, la ecuación x(x − 2) = 8 acepta también x = −2, donde x y x − 2 son negativos a la vez (su producto sí es positivo). Por eso cada raíz se prueba en la ecuación de partida.</p>
+   <div class="eqs"><div class="eq">log₂[${N_('x')}(${N_('x − 2')})] = ${x_('3')}  ⟹  ${N_('x')}(${N_('x − 2')}) = ${b_('2')}${x_('³')} = ${N_(n0(EL.producto))}</div>
+   <div class="eq">${N_('x')}² − 2${N_('x')} − 8 = 0  ⟹  ${N_('x = 4')} o ${N_('x = −2')}</div>
+   <div class="eq">${N_('x = −2')}: log₂(−2) no existe<span class="note">se descarta</span></div>
+   <div class="eq">${N_('x = 4')}: log₂ 4 + log₂ 2 = ${x_('2')} + ${x_('1')} = ${x_('3')}<span class="note">cumple</span></div></div>
+   <p>Aquí ${N_('x')} va en azul porque es un número de la escalera (el argumento del logaritmo); el ${x_('3')}, en fucsia, es un número de saltos. Antes de resolver, mira dónde existe cada logaritmo: log₂ ${N_('x')} necesita ${N_('x')} &gt; 0, y log₂(${N_('x − 2')}) necesita ${N_('x − 2')} &gt; 0, o sea ${N_('x')} &gt; 2. Las dos a la vez: ${N_('x')} &gt; 2. Al juntar los logaritmos en uno solo, la ecuación ${N_('x')}(${N_('x − 2')}) = 8 acepta también ${N_('x = −2')}, donde ${N_('x')} y ${N_('x − 2')} son negativos a la vez (su producto sí es positivo). Por eso cada raíz se prueba en la ecuación de partida.</p>
    ${fuenteAL10.replace('Las demás opciones son hipótesis nuestras.', 'No descartar la raíz que hace negativo un argumento y olvidar elevar la base son hipótesis nuestras.')}</div>` },
  { k:'Paso 9', t:'Predice: un cultivo que se duplica', gate:P9,
    prep:() => { const r = !!S.pred[P9.id]; E.config({ modo:'cultivo', cul:{ serie:CU.serie, cuad: r ? CU.cuadratica : null, k: r ? 6 : 3, fCuad: r ? 1 : 0, conteos: r ? 7 : 4 }, lect: r ? lect9() : [] }); },
@@ -913,16 +925,16 @@ function lect7(){ return CV.u.map((u, i) => () => ['x', `2ˣ = ${CV.uTexto[i]}`,
 function recta8(f){
   return { xr:[-4, 7], dominio:EL.dominio.desde, fDom: f >= 1 ? 1 : 0,
     franjas:[{ desde:0, texto:'log₂ x existe: x > 0' }, { desde:2, texto:'log₂(x − 2) existe: x > 2' }],
-    cand: EL.candidatas.map(x => ({ x, f, veredicto: f >= 1, ok: EL.soluciones.includes(x), texto: EL.soluciones.includes(x) ? `x = ${fmt(x, 0)} cumple` : `x = ${fmt(x, 0)}: log₂(${fmt(x, 0)}) no existe` })) };
+    cand: EL.candidatas.map(x => ({ x, f, veredicto: f >= 1, ok: EL.soluciones.includes(x), texto: EL.soluciones.includes(x) ? `x = ${fmt(x, 0)} cumple` : `log₂(${fmt(x, 0)}) no existe` })) };
 }
-function lect8(){ return [() => ['N', 'dominio', EL.dominio.texto], () => ['ink', 'raíces de x(x − 2) = 8', EL.candidatas.map(x => fmt(x, 0)).join(' y ')], () => ['ink', 'solución', fmt(EL.soluciones[0], 0)]]; }
+function lect8(){ return [() => ['N', 'dominio', EL.dominio.texto], () => ['N', 'candidatas', EL.candidatas.map(x => fmt(x, 0)).join(' y ')], () => ['N', 'solución', fmt(EL.soluciones[0], 0)]]; }
 function lect9(){ return [() => ['N', 'bacterias a las 6 h', CU.texto], () => ['q', 't² con t = 6', CU.errores.cuadratico.texto]]; }
 // Paso 5 después de responder: la base es una perilla y el punto P se arrastra sobre y = bˣ
 function config5(primera){
   const b = S.base, nb = numBase(b), G = curvasDe(b, -8, 8);
   const rangoX = nb > 1 ? [-2, Math.log(8.6)/Math.log(nb)] : [Math.log(8.6)/Math.log(nb), 2];
   const Px = clamp(S.Px, Math.max(-2, rangoX[0]), Math.min(8, rangoX[1]));
-  E.config({ modo:'grafica', graf:{ base:b, xr:[-2, 9], yr:[-2, 9], igual:true, yx:true,
+  E.config({ modo:'grafica', graf:{ base:b, xr:[-2, 9.5], yr:[-2, 9.5], igual:true, yx:true,
     curvas:[{ pts:G.exp, color:'N', etiqueta:etiquetaExp(b) }, { pts:G.log, color:'x', etiqueta:etiquetaLog(b) }],
     P:{ x:Px, y:ME.potencia({ base:b, exp:Px }).valor, arrastre:true, min:Math.max(-2, rangoX[0]), max:Math.min(8, rangoX[1]), reflejar:true },
     reflejo:{ f:1, pts:[] } },
@@ -966,6 +978,7 @@ function go(k){
   $('stepK').textContent = `${s.k} de ${steps.length}`;
   $('stepT').textContent = s.t;
   $('stepBody').innerHTML = s.body();
+  tramos($('stepBody'));
   if (s.prep) s.prep();
   pintarDots();
   E.compactar(s.gate && !S.pred[s.gate.id]);
@@ -1037,12 +1050,12 @@ const D1 = ME.potenciaDesplazada({ base:2, valor:5, k:1 });
 const D2 = ME.logPotencia({ base:2, logA:3, n:2 });
 const D3 = ME.sumaLogs({ base:5, args:[1, 5] });
 const D4 = ME.inecuacionExp({ base:'1/2', cota:'1/8', sentido:'>' });
-const D5 = ME.decaimiento({ N0:80, vidaMedia:5, t:15 });
+const D5 = ME.decaimiento({ N0:96, vidaMedia:5, t:15 });
 const D6 = ME.compararCrecimiento({ base:2, grado:2, hasta:6 });
 const pos = N => ME.log({ base:2, N }).valor;
 
 const EXPS = [
-  { id:'un-salto-mas', corto:'Un salto más',
+  { id:'un-salto-mas', corto:'Sumar 1 al exponente',
     q:`Si ${b_('2')}<sup>${x_('x')}</sup> = ${N_('5')}, ¿cuánto vale ${b_('2')}<sup>${x_('x')} + 1</sup>?`,
     opts:[['a', D1.errores.reparte.texto, 'AL11-exponente-se-reparte', 'hipotesis'],
           ['b', D1.texto],
@@ -1053,10 +1066,10 @@ const EXPS = [
          c:'5 + 1 = 6 suma el 1 al resultado. El 1 está en el exponente: es un salto más, y cada salto multiplica por 2.',
          d:'5² = 25 eleva el resultado al cuadrado: eso sería 2²ˣ, el doble de saltos. Aquí es un solo salto más.' },
     antes:ya => E.config({ modo:'regla', regla:{ base:2, desde:0, hasta:5, exps:false, etiquetas:[0, 1, 2, 3, 4, 5],
-      marcas:[{ pos:pos(5), texto:'5', color:'N', alto:36 }].concat(ya ? [{ pos:pos(10), texto:'10', color:'N', alto:36 }, { pos:pos(7), texto:'5 + 2', color:'muted', alto:28, dash:true }] : []),
+      marcas:[{ pos:pos(5), texto:'5', color:'N', alto:36 }].concat(ya ? [{ pos:pos(10), texto:'10', color:'N', alto:36 }, { pos:pos(7), texto:'5 + 2 = 7', color:'muted', abajo:true, dash:true }] : []),
       arcos: ya ? [{ de:pos(5), a:pos(10), color:'b', nivel:2, texto:'×2' }] : [] }, lect: ya ? [() => ['N', '2ˣ', '5'], () => ['N', '2ˣ⁺¹ = 5 · 2', D1.texto]] : [() => ['N', '2ˣ', '5']] }),
     despues:() => { const R = E.regla; R.arcos = [{ de:pos(5), a:pos(10), color:'b', nivel:2, texto:'×2', f:0 }];
-      E.animar(0, 1, 1400, v => { R.arcos[0].f = v; }, () => { R.marcas.push({ pos:pos(10), texto:'10', color:'N', alto:36 }, { pos:pos(7), texto:'5 + 2', color:'muted', alto:28, dash:true });
+      E.animar(0, 1, 1400, v => { R.arcos[0].f = v; }, () => { R.marcas.push({ pos:pos(10), texto:'10', color:'N', alto:36 }, { pos:pos(7), texto:'5 + 2 = 7', color:'muted', abajo:true, dash:true });
         E.lect = [() => ['N', '2ˣ', '5'], () => ['N', '2ˣ⁺¹ = 5 · 2', D1.texto]]; E.dibujar(); E.avisar(); }); },
     exp:() => `<div class="eqs"><div class="eq">${b_('2')}<sup>${x_('x')} + 1</sup> = ${b_('2')}<sup>${x_('x')}</sup> · ${b_('2')} = ${N_('5')} · ${b_('2')} = ${N_(D1.texto)}</div>
       <div class="eq">${b_('2')}<sup>${x_('x')}</sup> + ${b_('2')} = ${N_('7')}<span class="note">no es lo mismo</span></div></div>
@@ -1122,21 +1135,21 @@ const EXPS = [
       <p>Con base entre 0 y 1, la curva <b>baja</b>: a la izquierda del 3 está por encima de 1/8 (la franja fucsia), y a la derecha, por debajo. Con base mayor que 1 la curva sube y la desigualdad se queda como está: 2ˣ &gt; 8 da x &gt; 3.</p>
       <p class="fuente">No encontramos estudios con cifras sobre inecuaciones exponenciales con base menor que 1; las tres opciones incorrectas son hipótesis nuestras.</p>` },
   { id:'vida-media', corto:'Vida media',
-    q:`Una muestra de ${N_('80 g')} de una sustancia radiactiva tiene una vida media de 5 años: cada 5 años queda la mitad. ¿Cuánto queda a los ${t_('15 años')}?`,
+    q:`Una muestra de ${N_('96 g')} de una sustancia radiactiva tiene una vida media de 5 años: cada 5 años queda la mitad. ¿Cuánto queda a los ${t_('15 años')}?`,
     opts:[['a', `${fmt(D5.errores.lineal.valor, 0)} g`, 'EL11-decaimiento-lineal', 'hipotesis'],
           ['b', `${fmt(D5.errores.unaMenos.valor, 0)} g`, 'EL10-una-vida-media-de-menos', 'hipotesis'],
           ['c', `${fmt(D5.valor, 0)} g`],
-          ['d', `${fmt(D5.errores.divide.valor, 1)} g`, 'EL12-divide-entre-las-vidas-medias', 'hipotesis']],
+          ['d', `${fmt(D5.errores.divide.valor, 0)} g`, 'EL12-divide-entre-las-vidas-medias', 'hipotesis']],
     ok:'c',
-    fb:{ a:'0 g sale de quitar 40 g cada 5 años. Pero no se pierde siempre lo mismo: se pierde la mitad de lo que queda.',
-         b:'20 g es lo que queda a los 10 años: dos vidas medias. A los 15 años son tres.',
-         d:'80/3 divide entre las tres vidas medias. Pero en cada una no se reparte: se divide entre 2, tres veces.' },
-    antes:ya => E.config({ modo:'decae', dec:{ N0:80, vidaMedia:5, serie:D5.serie, k: ya ? 3 : 0 }, lect: ya ? [() => ['N', 'a los 15 años', `${D5.texto} g`]] : [] }),
-    despues:() => { E.config({ modo:'decae', dec:{ N0:80, vidaMedia:5, serie:D5.serie, k:0 } });
+    fb:{ a:'0 g sale de quitar 48 g cada 5 años. Pero no se pierde siempre lo mismo: se pierde la mitad de lo que queda.',
+         b:'24 g es lo que queda a los 10 años: dos vidas medias. A los 15 años son tres.',
+         d:'96/3 = 32 reparte entre las tres vidas medias. Pero en cada una no se reparte: se divide entre 2, tres veces.' },
+    antes:ya => E.config({ modo:'decae', dec:{ N0:96, cols:12, vidaMedia:5, serie:D5.serie, k: ya ? 3 : 0 }, lect: ya ? [() => ['N', 'a los 15 años', `${D5.texto} g`]] : [] }),
+    despues:() => { E.config({ modo:'decae', dec:{ N0:96, cols:12, vidaMedia:5, serie:D5.serie, k:0 } });
       E.animar(0, 3, RM ? 0 : 4200, v => { E.dec.k = v; }, () => { E.dec.k = 3; E.lect = [() => ['N', 'a los 15 años', `${D5.texto} g`]]; E.dibujar(); E.avisar(); }, true); },
-    exp:() => `<div class="eqs"><div class="eq">${N_('N')} = ${N_('80')} · (${b_('1/2')})<sup>${t_('t')}/5</sup>  ⟹  ${N_('80')} · (${b_('1/2')})³ = ${N_(D5.texto + ' g')}</div>
+    exp:() => `<div class="eqs"><div class="eq">${N_('N')} = ${N_('96')} · (${b_('1/2')})<sup>${t_('t')}/5</sup>  ⟹  ${N_('96')} · (${b_('1/2')})³ = ${N_(D5.texto + ' g')}</div>
       <div class="eq">${D5.serie.map(v => N_(fmt(v, 0))).join(' → ')}</div></div>
-      <p>Es un <b>decaimiento</b> exponencial: el factor por periodo es ${b_('1/2')}. Cada vida media se pierde la mitad de lo que hay, así que la cantidad nunca llega a cero: a los 20 años quedarían 5 g, y a los 25, 2,5 g.</p>
+      <p>Es un <b>decaimiento</b> exponencial: el factor por periodo es ${b_('1/2')}. Cada vida media se pierde la mitad de lo que hay, así que la cantidad nunca llega a cero: a los 20 años quedarían 6 g, y a los 25, 3 g.</p>
       <p class="fuente">No encontramos estudios con cifras sobre la vida media en postulantes; las opciones incorrectas son hipótesis nuestras.</p>` },
   { id:'potencia-contra-cuadrado', corto:'2ˣ contra x²',
     q:`Con ${x_('x = 3')}: ${N_('2³ = 8')} y ${q_('3² = 9')}, así que x² va ganando. ¿Desde qué valor entero de ${x_('x')} gana ${N_('2ˣ')} para siempre?`,
@@ -1146,15 +1159,15 @@ const EXPS = [
           ['d', D6.texto]],
     ok:'d',
     fb:{ a:'Con x = 4 empatan: 2⁴ = 16 = 4². Ganar empieza en el siguiente: 2⁵ = 32 y 5² = 25.',
-         b:'Con x = 2 empatan (4 = 4), pero con x = 3 vuelve a ganar x²: 9 contra 8.',
+         b:'Con x = 2 empatan (4 = 4), pero con x = 3 gana x²: 9 contra 8.',
          c:'x² le gana un rato, pero 2ˣ se duplica en cada paso y x² no: con x = 10, 1024 contra 100.' },
     antes:ya => { const G = curvasDe(2, -1, 7), Q = ME.curvaPotencia({ grado:2, desde:0, hasta:7, n:140 }).pts;
       E.config({ modo:'grafica', graf:{ base:2, xr:[0, 6.6], yr:[0, 70],
-        curvas:[{ pts:G.exp, color:'N', hasta: ya ? 7 : 3, etiqueta:[6.4, 66, 'y = 2ˣ', 'right'] }, { pts:Q, color:'q', hasta: ya ? 7 : 3, etiqueta:[6.4, 40, 'y = x²', 'right'] }],
+        curvas:[{ pts:G.exp, color:'N', hasta: ya ? 7 : 3, etiqueta: ya ? [6.4, 66, 'y = 2ˣ', 'right'] : [3, 1, 'y = 2ˣ', 'left'] }, { pts:Q, color:'q', hasta: ya ? 7 : 3, etiqueta: ya ? [6.4, 40, 'y = x²', 'right'] : [3, 17, 'y = x²', 'left'] }],
         puntos: ya ? D6.empates.map(n => ({ x:n, y:Math.pow(2, n), color:'ink', texto:`empate en ${n}`, lado:'izq' })) : [] },
         ley:[['N', 'y = 2ˣ', 'linea'], ['q', 'y = x²', 'linea']],
         lect: ya ? lect6() : [() => ['N', '2³', '8'], () => ['q', '3²', '9']] }); },
-    despues:() => { const Gr = E.graf;
+    despues:() => { const Gr = E.graf; Gr.curvas[0].etiqueta = [6.4, 66, 'y = 2ˣ', 'right']; Gr.curvas[1].etiqueta = [6.4, 40, 'y = x²', 'right'];
       E.animar(3, 6.6, 2400, v => { Gr.curvas.forEach(C => { C.hasta = v; }); }, () => { Gr.puntos = D6.empates.map(n => ({ x:n, y:Math.pow(2, n), color:'ink', texto:`empate en ${n}`, lado:'izq' })); E.lect = lect6(); E.dibujar(); E.avisar(); }, true); },
     exp:() => `<div class="eqs"><div class="eq">${D6.tabla.map(([n, e, p]) => `${x_(n)}: ${N_(n0(e))} / ${q_(n0(p))}`).join('   ')}</div></div>
       <p>Empatan en x = 2 y x = 4; desde ${x_('x = 5')}, ${N_('2ˣ')} gana para siempre. La razón está en cómo crece cada una: ${N_('2ˣ')} se <b>multiplica</b> por 2 en cada paso, mientras que ${q_('x²')} solo suma 2x + 1 (de 25 a 36 suma 11). Al principio sumar 11 es más que duplicar 8, pero duplicar 32 ya es sumar 32.</p>
@@ -1189,6 +1202,7 @@ function ir(k){
     fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + `<div class="nav"><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    tramos($('res2'));
     const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
     $('otra2').onclick = () => { E.parar(); x.antes(false); alDibujo($('cv2'), () => S.k === k, () => { x.despues(); E.leyenda(); }); };
   };
