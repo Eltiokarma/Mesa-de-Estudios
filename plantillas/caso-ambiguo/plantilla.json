@@ -1,0 +1,16 @@
+{
+  "id": "caso-ambiguo",
+  "titulo": "El compás del caso ambiguo: ley de senos y de cosenos",
+  "formato": "escena",
+  "unidades": [
+    "trigonometria.triangulos-oblicuangulos",
+    "trigonometria.areas-y-lineas-notables"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}

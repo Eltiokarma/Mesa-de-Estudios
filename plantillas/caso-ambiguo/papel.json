@@ -1,0 +1,130 @@
+{
+  "titulo": "El compás del caso ambiguo: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. En el triángulo ABC, el lado a es el opuesto al ángulo A, b el opuesto a B y c el opuesto a C. Ley de senos: a/sen A = b/sen B = c/sen C = 2R, donde R es el radio de la circunferencia circunscrita. Ley de cosenos: a² = b² + c² − 2bc·cos A; si A es obtuso, cos A es negativo y el término se suma. Si te dan dos lados y el ángulo opuesto a uno de ellos (LLA), compara el lado opuesto con la altura h = b·sen A: puede haber cero, uno o dos triángulos. Área: S = b·c·sen A / 2, o Herón con el semiperímetro p. Ángulos de academia: sen 37° = 3/5 y sen 53° = 4/5.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Dos lados de un triángulo miden 3 cm y 8 cm, y el ángulo entre ellos mide 60°. ¿Cuánto mide el tercer lado?",
+      "respuesta": "7 cm.",
+      "pasos": [
+        "El ángulo dado está entre los dos lados: es el caso LAL y va la ley de cosenos. Llamamos b = 3, c = 8 y A = 60°; el lado que falta es a, el opuesto a A.",
+        "a² = b² + c² − 2bc·cos A = 9 + 64 − 2 · 3 · 8 · (1/2) = 73 − 24 = 49.",
+        "a = 7 cm. Control: si el ángulo fuera recto, a² sería 73 (Pitágoras); con 60°, más cerrado, el lado opuesto sale más corto: 49 < 73."
+      ],
+      "verificar": [ { "fn": "leyCosenos", "args": [{ "b": 3, "c": 8, "A": 60 }], "espera": { "a": 7, "a2": 49, "pitagoras": 73 } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Los lados de un triángulo miden 5, 7 y 8. ¿Cuánto mide el ángulo opuesto al lado de 7?",
+      "respuesta": "60°.",
+      "pasos": [
+        "Con los tres lados (LLL) se despeja el coseno de la ley de cosenos. Sea A el ángulo opuesto a a = 7, con b = 5 y c = 8.",
+        "cos A = (b² + c² − a²)/(2bc) = (25 + 64 − 49)/80 = 40/80 = 1/2.",
+        "A = 60°. Ojo: el triángulo no es rectángulo (25 + 49 no da 64), así que no vale decir sen A = 7/8 ni 5/8."
+      ],
+      "verificar": [ { "fn": "anguloLLL", "args": [{ "a": 7, "b": 5, "c": 8 }], "espera": { "A": 60, "cosA": 0.5 } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Dos caminos rectos salen de un mismo punto formando un ángulo de 120°. Una persona camina 6 km por uno y otra 10 km por el otro. ¿A qué distancia en línea recta quedan una de la otra?",
+      "respuesta": "14 km.",
+      "pasos": [
+        "Es un triángulo con dos lados, 6 y 10, y el ángulo de 120° entre ellos: ley de cosenos.",
+        "cos 120° = −1/2, negativo. Entonces −2 · 6 · 10 · (−1/2) = +60: el término se suma.",
+        "d² = 36 + 100 + 60 = 196, así que d = 14 km. Si se restara (como con 60°) saldría √76, unos 8,7 km: menos que con un ángulo recto (√136, unos 11,7 km), y eso no puede ser, porque con 120° los caminos se separan más."
+      ],
+      "verificar": [ { "fn": "leyCosenos", "args": [{ "b": 6, "c": 10, "A": 120 }], "espera": { "a": 14, "a2": 196, "signo": "suma", "errores.signoCambiado.a2": 76, "errores.sinTermino.a2": 136 } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "básico",
+      "enunciado": "En un triángulo ABC, a = 12, A = 30° y B = 53°. ¿Cuánto mide b?",
+      "respuesta": "b = 19,2.",
+      "pasos": [
+        "Conocemos un lado y su ángulo opuesto (a y A), y otro ángulo: ley de senos.",
+        "a/sen A = b/sen B, es decir, 12/(1/2) = b/(4/5).",
+        "b = 24 · 4/5 = 96/5 = 19,2. De paso, 12/(1/2) = 24 = 2R: la circunferencia circunscrita tiene radio 12."
+      ],
+      "verificar": [ { "fn": "resolver", "args": [{ "a": 12, "A": 30, "B": 53.13010235415598 }], "espera": { "caso": "AAL", "soluciones.0.b": 19.2, "soluciones.0.R": 12 } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Un triángulo está inscrito en una circunferencia. Uno de sus lados mide 6 cm y el ángulo opuesto a ese lado mide 45°. ¿Cuál es el radio de la circunferencia?",
+      "respuesta": "3√2 cm, unos 4,24 cm.",
+      "pasos": [
+        "La ley de senos completa dice a/sen A = 2R, donde R es el radio de la circunferencia circunscrita.",
+        "6/sen 45° = 6/(√2/2) = 12/√2 = 6√2. Eso es el diámetro 2R, no el radio.",
+        "R = 3√2 cm, unos 4,24 cm."
+      ],
+      "verificar": [ { "fn": "leySenos", "args": [{ "a": 6, "A": 45 }], "espera": { "R": 4.242640687119285, "diametro": 8.48528137423857 } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "En un triángulo ABC se sabe que A = 30°, b = 12 y a = 7. ¿Cuántos triángulos cumplen esos datos y cuánto puede medir el ángulo B?",
+      "respuesta": "Dos triángulos: sen B = 6/7, con B ≈ 59,0° o B ≈ 121,0°.",
+      "pasos": [
+        "Los datos son dos lados y el ángulo opuesto a uno de ellos (LLA): primero se cuenta. La altura desde C es h = b·sen A = 12 · 1/2 = 6.",
+        "a = 7 está entre h = 6 y b = 12: el lado a, como un compás con centro en C, corta la base en dos puntos. Hay dos triángulos.",
+        "Ley de senos: sen B = b·sen A / a = 12 · (1/2)/7 = 6/7. B ≈ 59,0° (el que da la calculadora) o B ≈ 180° − 59,0° = 121,0°. Los dos sirven, porque 30° + 121,0° es menos de 180°.",
+        "Los lados c que resultan son 6√3 + √13 ≈ 14,00 y 6√3 − √13 ≈ 6,79."
+      ],
+      "verificar": [ { "fn": "casoAmbiguo", "args": [{ "A": 30, "b": 12, "a": 7 }], "espera": { "n": 2, "h": 6, "B": [58.99728086612601, 121.002719133874], "c": [13.997856120877254, 6.786753569949273] } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "¿Existe un triángulo con A = 53°, b = 10 y a = 7?",
+      "respuesta": "No: la altura desde C mide 8 y el lado a = 7 no alcanza la base.",
+      "pasos": [
+        "Es un caso LLA. La altura desde C sobre la recta AB mide h = b·sen A = 10 · 4/5 = 8.",
+        "El lado a, que sale de C, mide 7: menos que la distancia de C a la recta. No la toca, así que no hay triángulo.",
+        "Con la ley de senos se ve igual: sen B = 10 · (4/5)/7 = 8/7, y ningún seno pasa de 1."
+      ],
+      "verificar": [ { "fn": "casoAmbiguo", "args": [{ "A": 53.13010235415598, "b": 10, "a": 7 }], "espera": { "n": 0, "h": 8, "senB": 1.1428571428571428, "situacion": "no-alcanza" } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "En un triángulo ABC, A = 45°, b = 6 y a = 8. ¿Cuántos triángulos hay? Halla B.",
+      "respuesta": "Uno solo, con sen B = 3√2/8, es decir, B ≈ 32,0°.",
+      "pasos": [
+        "Caso LLA: h = b·sen A = 6 · √2/2 = 3√2, unos 4,24. Como a = 8 es mayor que b = 6, el compás corta la base una vez delante de A y otra vez detrás de A.",
+        "El corte de detrás no forma un triángulo con el ángulo de 45° en A. Hay un solo triángulo.",
+        "sen B = b·sen A / a = 6 · (√2/2)/8 = 3√2/8 ≈ 0,53, así que B ≈ 32,0°. El suplemento, 148,0°, no sirve: 45° + 148,0° pasa de 180°."
+      ],
+      "verificar": [ { "fn": "casoAmbiguo", "args": [{ "A": 45, "b": 6, "a": 8 }], "espera": { "n": 1, "situacion": "uno", "B": [32.027760113815], "cortes.1.valido": false } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "básico",
+      "enunciado": "Un terreno triangular tiene dos lados de 8 m y 5 m que forman un ángulo de 150°. ¿Cuál es su área?",
+      "respuesta": "10 m².",
+      "pasos": [
+        "Con dos lados y el ángulo entre ellos: S = b·c·sen A / 2.",
+        "sen 150° = sen 30° = 1/2. El seno de un ángulo obtuso es positivo; el que es negativo es su coseno.",
+        "S = 8 · 5 · (1/2)/2 = 10 m²."
+      ],
+      "verificar": [ { "fn": "areaLAL", "args": [{ "b": 8, "c": 5, "A": 150 }], "espera": { "S": 10, "errores.sinMitad": 20 } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Los lados de un triángulo miden 13, 14 y 15. Halla su área y el radio R de su circunferencia circunscrita.",
+      "respuesta": "Área 84; R = 65/8 = 8,125.",
+      "pasos": [
+        "Semiperímetro: p = (13 + 14 + 15)/2 = 21.",
+        "Herón: S = √(p(p − 13)(p − 14)(p − 15)) = √(21 · 8 · 7 · 6) = √7056 = 84.",
+        "Con S = abc/(4R), que sale de S = b·c·sen A/2 y de sen A = a/(2R): R = 13 · 14 · 15/(4 · 84) = 2730/336 = 65/8 = 8,125."
+      ],
+      "verificar": [
+        { "fn": "heron", "args": [13, 14, 15], "espera": { "p": 21, "S": 84 } },
+        { "fn": "triangulo", "args": [13, 14, 15], "espera": { "area": 84, "R": 8.125 } }
+      ]
+    }
+  ]
+}
