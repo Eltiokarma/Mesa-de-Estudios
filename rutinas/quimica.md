@@ -174,7 +174,7 @@ Cada ejecución construye una plantilla de escena de química nueva, en la rama 
 **Subagentes.**
 - **Verificador:** sin leer el motor, recalculó con `Fraction` 24 resultados (15 casos y 9 de papel), con cada empírica comprobada de vuelta. Coinciden todos.
 - **Constructor:** hizo la escena y la probó con Playwright en 6 combinaciones.
-- **Revisor:** rehízo a mano los cálculos y lo probó con Playwright. Encontró lo siguiente (las correcciones de la escena están EN CURSO; este reporte se cierra al terminar):
+- **Revisor:** rehízo a mano los cálculos y lo probó con Playwright. Encontró lo siguiente, y ya está todo corregido (el constructor volvió a probar 6 combinaciones con Playwright: 0 errores, sin desbordes y la balanza entera en 1366):
   - la unidad delataba la correcta en el experimento 5;
   - porciones y moléculas se mezclaban;
   - la glucosa se dibujaba como anillo de CH₂O, y además se reconocía de memoria; ahora es un compuesto sin nombre con M = 150;

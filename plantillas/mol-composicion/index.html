@@ -23,7 +23,7 @@
        m  masa (g o u)            siena     #773922 / #e0a07a   (la de limitante-particulas)
        n  moles                   mostaza   #7d6a00 / #e3c84a   (la de limitante-particulas)
        M  masa molar (g/mol)      fucsia    #c400ad / #ff2ed8   (nuevo)
-       N  número de partículas    verde     #0a8200 / #2da500   (nuevo)
+       partículas (cuántas hay) verde   #0a8200 / #2da500   (nuevo; sin letra: N es solo el nitrógeno)
        %  porcentaje en masa      tinta: cada tramo de la barra lleva el color de su elemento y el número va en tinta.
    Qué sale junto: todas las variables con todos los elementos del explorador (H, C, O, N, Ca, S, Fe; la segunda
    sustancia del explorador es siempre H₂, O₂ o H₂O); Mg solo con C; Fe nunca con N, S, Ca ni C; S nunca con N, Fe ni C.
@@ -266,6 +266,7 @@ function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
    Tres niveles a la vez (Johnstone): arriba la balanza (lo que se pesa), al centro la lupa (las partículas o las
    porciones) y abajo la cuenta (los símbolos), con los mismos colores. */
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const TMAX = 0.16; // inclinación máxima de la balanza (rad)
 const MM = MotorMol;
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 // Coma decimal, espacio de miles (desde 5 cifras) y signo menos tipográfico.
@@ -359,10 +360,7 @@ const PLANTILLAS = {
   Fe2O3:[['Fe',-1.95,.45],['Fe',1.95,.45],['O',-3.9,-.45],['O',0,-.45],['O',3.9,-.45]],
   CH2O:[['H',-.95,.82],['H',.95,.82],['O',0,-1.45],['C',0,0]],
 };
-// La glucosa se dibuja como 6 grupos CH₂O en anillo: es la misma fórmula empírica, 6 veces.
-(function(){ const g = []; for (let k = 0; k < 6; k++){ const a = -Math.PI/2 + k*Math.PI/3, cx = 3.1*Math.cos(a), cy = 3.1*Math.sin(a);
-  for (const [e, x, y] of PLANTILLAS.CH2O){ const rx = x*Math.cos(a + Math.PI/2) - y*Math.sin(a + Math.PI/2), ry = x*Math.sin(a + Math.PI/2) + y*Math.cos(a + Math.PI/2); g.push([e, cx + rx*0.8, cy + ry*0.8, 0.8]); } }
-  PLANTILLAS.C6H12O6 = g; })();
+// Las moléculas grandes (C₆H₁₂O₆, C₅H₁₀O₅) se dibujan como un racimo genérico: sus átomos en espiral.
 function plantilla(f){
   if (PLANTILLAS[f]) return PLANTILLAS[f];
   if (esElemento(f)) return [[f, 0, 0]];
@@ -424,8 +422,13 @@ function crearEscena(cv, idDesc, modoId, idLey, idCnt){
   const llave = w => { const v = E.vista; return `${w}|${v.bal ? 1 : 0}|${JSON.stringify(v.lupa ? Object.keys(v.lupa) : [])}|${v.lupa && v.lupa.lentes ? v.lupa.lentes.length : 0}|${v.lupa && v.lupa.pie}|${v.cuenta ? (v.cuenta.cols ? 'c' : v.cuenta.lineas.length) : 0}`; };
   function layout(w){
     const v = E.vista, chico = w < 560, L = {};
+    // Separación de los platillos: en dos lupas, cada platillo queda sobre su lupa.
+    const rL = Math.min((w - 52)/4, 92);
+    L.sep = chico ? Math.max(rL + 12, w*0.24) : Math.min(w*0.29, 210);
+    L.pw = Math.min(L.sep*1.7, chico ? w/2 - 14 : 150);
     let y = 8;
-    if (v.bal){ const h = chico ? 176 : 188; L.bal = { y, h, cx:w/2 }; y += h + 4; }
+    // Lo que sube y baja un extremo del brazo con la inclinación máxima: la balanza nunca se sale del dibujo.
+    if (v.bal){ const sube = L.sep*Math.sin(TMAX), h = 16 + 2*sube + 58 + 44; L.bal = { y, h, cx:w/2, py:y + 16 + sube }; y += h + 4; }
     if (v.lupa){
       const dos = !!(v.lupa.lentes && v.lupa.lentes.length === 2) || !!v.lupa.tapa;
       const r = dos ? Math.min((w - 52)/4, 92) : Math.min(w/2 - 28, chico ? 112 : 124);
@@ -440,10 +443,6 @@ function crearEscena(cv, idDesc, modoId, idLey, idCnt){
       L.cuenta = { y, h }; y += h;
     }
     L.H = y + 8;
-    // Separación de los platillos: en dos lupas, cada platillo queda sobre su lupa.
-    const rL = Math.min((w - 52)/4, 92);
-    L.sep = chico ? Math.max(rL + 12, w*0.24) : Math.min(w*0.29, 210);
-    L.pw = Math.min(L.sep*1.7, chico ? w/2 - 14 : 150);
     return L;
   }
   E.resize = () => {
@@ -454,11 +453,11 @@ function crearEscena(cv, idDesc, modoId, idLey, idCnt){
   new ResizeObserver(() => { E.resize(); E.dibujar(); }).observe(cv);
 
   const masaPlato = lista => (lista || []).reduce((s, q) => s + (q.tipo === 'atomos' || q.tipo === 'bloques' ? q.n*q.m : q.m), 0);
-  E.objetivo = () => { const v = E.vista; if (!v.bal) return 0; const a = masaPlato(v.bal.izq), b = masaPlato(v.bal.der); return a + b > 0 ? clamp(0.55*(a - b)/(a + b), -0.24, 0.24) : 0; };
+  E.objetivo = () => { const v = E.vista; if (!v.bal) return 0; const a = masaPlato(v.bal.izq), b = masaPlato(v.bal.der); return a + b > 0 ? clamp(0.4*(a - b)/(a + b), -TMAX, TMAX) : 0; };
 
   // ----- Balanza de dos platillos: la inclinación sale de las masas (E.theta se acerca a E.objetivo()). -----
   function balanza(c, B){
-    const v = E.vista, cx = B.cx, py = B.y + 30, Lb = Lz.sep, th = E.theta, pw = Lz.pw, colg = 58;
+    const v = E.vista, cx = B.cx, py = B.py, Lb = Lz.sep, th = E.theta, pw = Lz.pw, colg = 58;
     const extremo = s => [cx + s*Lb*Math.cos(th), py - s*Lb*Math.sin(th)];
     ctx.save();
     // Pie y columna.
@@ -624,7 +623,7 @@ function crearEscena(cv, idDesc, modoId, idLey, idCnt){
     ctx.fillText(`caja de ${fmt(Math.cbrt(22400), 1)} cm de lado`, x0 + lado/2, yb - lado/2 + 9);
     // El vaso: un cilindro de 3 cm de diámetro con 18 mL de agua (2,5 cm de alto), a la misma escala.
     const dV = 3*pxcm, hA = 18/(Math.PI*1.5*1.5)*pxcm, hV = hA*1.5, xv = x0 + lado + Math.max(26, W*0.07);
-    ctx.fillStyle = c.el.H; ctx.globalAlpha = .35; ctx.fillRect(xv, yb - hA, dV, hA); ctx.globalAlpha = 1;
+    ctx.fillStyle = c.vidrio; ctx.globalAlpha = .6; ctx.fillRect(xv, yb - hA, dV, hA); ctx.globalAlpha = 1;
     ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(xv, yb - hV); ctx.lineTo(xv, yb); ctx.lineTo(xv + dV, yb); ctx.lineTo(xv + dV, yb - hV); ctx.stroke();
     ctx.strokeStyle = c.muted; ctx.lineWidth = 1; linea(ctx, x0 - 10, yb, xv + dV + 30, yb);
     ctx.fillStyle = c.ink; ctx.font = `800 12px ${c.font}`; ctx.textAlign = 'left'; ctx.fillText('18 mL', xv + dV + 6, yb - hA - 12);
@@ -648,8 +647,9 @@ function crearEscena(cv, idDesc, modoId, idLey, idCnt){
         if (q.N === null || q.N === undefined) { fila([[q.phN || 'partículas: responde primero', 'muted', 700]], 12); fila([['', 'ink']]); }
         else {
           const atomos = E.contar === 'atomos' && !esElemento(q.f), N = atomos ? q.N*MM.totalAtomos(q.f) : q.N;
-          fila([[`N = ${sci(N)}`, 'part', 800]]);
-          fila([[`${atomos ? 'átomos' : particula(q.f)} de `, 'muted', 700], ...pzF(q.f, 700)], 12);
+          // El número de partículas no lleva letra: N es el nitrógeno.
+          fila([[sci(N), 'part', 800]]);
+          fila([[`${atomos ? 'átomos' : particula(q.f)} de `, 'part', 800], ...pzF(q.f, 800)], 12);
         }
       });
     } else {
@@ -683,7 +683,7 @@ function crearEscena(cv, idDesc, modoId, idLey, idCnt){
     const v = E.vista, partes = [];
     const desc = lista => lista.length ? lista.map(q => q.tipo === 'pesa' ? `una pesa de ${fmt(q.m, 2)} g` : q.tipo === 'atomos' ? `${q.n} átomos de ${q.f}${q.ocultaM ? '' : ` (${fmt(q.n*q.m, 2)} u)`}` : q.tipo === 'bloques' ? `${q.n} mol de ${q.f} (${fmt(q.n*q.m, 2)} g)` : `${q.ocultaM ? '' : fmt(q.m, 2) + ' g de '}${q.nombre || sub(q.f)}`).join(', ') : 'nada';
     if (v.bal){ const t = E.objetivo(); partes.push(`Balanza: a la izquierda, ${desc(v.bal.izq)}; a la derecha, ${desc(v.bal.der)}. ${Math.abs(t) < 0.005 ? 'Está equilibrada.' : t > 0 ? 'Baja el platillo izquierdo.' : 'Baja el platillo derecho.'}`); }
-    if (v.lupa) partes.push(v.lupa.tapa ? `La lupa está tapada: ${v.lupa.tapa}.` : `Lupa: ${v.lupa.desc || ''} ${v.lupa.pie || ''}`);
+    if (v.lupa) partes.push(v.lupa.tapa ? `Lupa tapada: ${v.lupa.tapa}.` : `Lupa: ${v.lupa.desc || ''} ${v.lupa.pie || ''}`);
     if (v.cuenta && v.cuenta.cols) for (const q of v.cuenta.cols) if (q.n !== undefined && q.n !== null){
       const atomos = E.contar === 'atomos' && !esElemento(q.f);
       partes.push(`${sub(q.f)}: ${fmt(q.m, 2)} g, ${fmtMol(q.n)} mol${q.N ? `, ${sci(atomos ? q.N*MM.totalAtomos(q.f) : q.N)} ${atomos ? 'átomos' : particula(q.f)}` : ''}.`);
@@ -709,7 +709,7 @@ function leyendaHTML(v){
   if (vars.includes('masa')) it.push(`<span><i style="background:var(--c-masa)"></i>m · masa${v.bal && v.bal.u === 'u' ? ' (en u)' : ''}</span>`);
   if (vars.includes('Mm')) it.push(`<span><i style="background:var(--c-Mm)"></i>M · masa molar</span>`);
   if (vars.includes('mol')) it.push(`<span><i style="background:var(--c-mol)"></i>n · moles</span>`);
-  if (vars.includes('part')) it.push(`<span><i style="background:var(--c-part)"></i>N · número de partículas</span>`);
+  if (vars.includes('part')) it.push(`<span><i style="background:var(--c-part)"></i>partículas (cuántas hay)</span>`);
   if (vars.includes('pct')) it.push(`<span><i style="background:var(--ink)"></i>% · porcentaje en masa, en tinta</span>`);
   return it.join('');
 }
@@ -740,7 +740,7 @@ function animar(E, dur, paso, fin, retraso){
   E.anims.push(a); pedir();
 }
 function cortar(E){ E.anims = []; }
-const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}" aria-label="Opción ${'abcd'.indexOf(k) + 1}: ${t.replace(/<[^>]+>/g, '')}"><span class="l">${'abcd'.indexOf(k) + 1}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}" aria-label="Opción ${'abcd'.indexOf(k) + 1}: ${t.replace(/<[^>]+>/g, '')}"><span class="l">${'abcd'.indexOf(k) + 1}</span><span>${t.replace(/ tabindex="0"/g, '')}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
 const otraVez = `<button type="button" class="btn" data-repetir>Ver de nuevo</button>`;
 // Columna de la cuenta para una muestra de 'gramos' g de la fórmula f (todo sale del motor).
 function col(f, gramos, conN){ const r = MM.moles(f, { gramos }); return { f, m:gramos, M:r.M, n:r.n, N:conN ? r.moleculas : null }; }
@@ -749,20 +749,22 @@ function lentesPara(fs, ns, max){
   const p = porcion(ns, max || 24), cuentas = ns.map(n => Math.round(n/p)), exactas = ns.every((n, k) => Math.abs(n/p - cuentas[k]) < 0.02);
   return { p, exactas, lentes:fs.map((f, k) => ({ figs:[{ f, n:cuentas[k] }], vacio: cuentas[k] === 0 ? 'menos de una figura' : '' })) };
 }
-const textoPorcion = (p, f) => `${fmtMol(p)} mol de ${particula(f)} (${sci(p*MM.NA)} ${particula(f)})`;
+const textoPorcion = (p, f) => `una porción de ${fmtMol(p)} mol de ${particula(f)} (${sci(p*MM.NA)} ${particula(f)})`;
 </script>
 
 <script>
 /* ================= MODO 1: paso a paso =================
    Problemas de docs/investigacion/estequiometria-ideas-erroneas.md ("Mol y partículas" y "Composición y fórmula
-   empírica"): 1 mol de O₂ contra 1 mol de H₂O, 10 átomos de Mg contra átomos de C, 75 % de C y 25 % de H, y la glucosa. */
+   empírica"): 1 mol de O₂ contra 1 mol de H₂O, 10 átomos de Mg contra átomos de C, 75 % de C y 25 % de H, y un compuesto de fórmula empírica CH₂O y masa molar 150 g/mol. */
 (function(){
 const $ = id => document.getElementById(id);
 const E = crearEscena($('cv'), 'desc1', 'm1', 'ley1', 'cnt1');
 const S = { step:0, max:0, pred:{} };
 // La fuente queda escrita aquí para quien lea el código; la medición guarda solo la categoría.
 const RES = (cat, fuente) => cat;
-const MG10 = MM.igualarMasa('Mg', 10, 'C'), EMP = MM.empirica({ C:75, H:25 }), GLU = MM.molecular('CH2O', 180);
+const MG10 = MM.igualarMasa('Mg', 10, 'C'), EMP = MM.empirica({ C:75, H:25 }), MMOL = 150, GLU = MM.molecular('CH2O', MMOL);
+// Distractor de 'multiplicar solo el C' (hipótesis): k carbonos con los H y el O de la empírica.
+const SOLO_C = `C${GLU.k}H2O`, MITAD = MM.molecular('CH2O', 90).formula;
 
 const P0 = { id:'mol-paso2', ok:'c', opts:[
   ['a', `En el ${Fh('O2')}: pesa más`, 'ES3-mol-es-masa', RES('documentado', 'Dahsah y otros 2006: 33 % de 97 razonó bien')],
@@ -793,21 +795,21 @@ const P2 = { id:'mol-paso6', ok:'b', opts:[
     d:'Elegiste la 4. C₂H₈ tiene la misma proporción que CH₄, pero la fórmula empírica es la más simple: se divide entre 2. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.' } };
 const P3 = { id:'mol-paso8', ok:'b', opts:[
   ['a', Fh('CH2O'), 'ES17-empirica-es-molecular', RES('documentado', 'Christianto y otros 2025: 16 % de 32')],
-  ['b', Fh('C6H12O6')],
-  ['c', Fh(`C${fmt(GLU.porAtomos, 0)}H${fmt(2*GLU.porAtomos, 0)}O${fmt(GLU.porAtomos, 0)}`), 'divide-entre-atomos', RES('hipotesis', 'hipótesis nuestra')],
-  ['d', Fh('C3H6O3'), 'mitad-de-k', RES('hipotesis', 'hipótesis nuestra')]],
-  fb:{ b:'¡Bien! CH₂O pesa 30 g/mol, y 180 entre 30 es 6: la molécula tiene 6 veces la fórmula empírica. Mira la balanza: 6 mol de CH₂O pesan lo mismo que 1 mol de glucosa.',
-    a:'Elegiste la 1. CH₂O es la proporción más simple, pero pesa 30 g/mol y la glucosa pesa 180: la molécula es 6 veces más grande. La empírica y la molecular coinciden solo a veces. Según Christianto y otros (2025), el 16 % de 32 escolares eligió esta idea con confianza alta. La correcta está marcada.',
-    c:`Elegiste la 3. Salió de dividir 180 entre los 4 átomos de CH₂O (da 45). Hay que dividir entre la masa de la fórmula empírica, 30 g/mol. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
-    d:'Elegiste la 4. C₃H₆O₃ pesa 90 g/mol, la mitad de 180. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.' } };
+  ['b', Fh(GLU.formula)],
+  ['c', Fh(SOLO_C), 'multiplica-solo-el-C', RES('hipotesis', 'hipótesis nuestra')],
+  ['d', Fh(MITAD), 'k-equivocado', RES('hipotesis', 'hipótesis nuestra')]],
+  fb:{ b:`¡Bien! CH₂O pesa 30 g/mol, y ${MMOL} entre 30 es ${GLU.k}: la molécula tiene ${GLU.k} veces la fórmula empírica. Mira la balanza: ${GLU.k} mol de CH₂O pesan lo mismo que 1 mol del compuesto.`,
+    a:`Elegiste la 1. CH₂O es la proporción más simple, pero pesa 30 g/mol y el compuesto pesa ${MMOL}: la molécula es ${GLU.k} veces más grande. La empírica y la molecular coinciden solo a veces. Según Christianto y otros (2025), el 16 % de 32 escolares eligió esta idea con confianza alta. La correcta está marcada.`,
+    c:`Elegiste la 3. Se multiplicó solo el carbono. Al multiplicar la fórmula empírica por ${GLU.k}, se multiplica cada subíndice: el del C, el del H y el del O. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
+    d:`Elegiste la 4. ${sub(MITAD)} pesa 90 g/mol, no ${MMOL}. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.` } };
 
 // ----- Vistas -----
 const NUM = 10; // en los pasos 2 y 3, cada figura es 0,1 mol de moléculas
 const vMol = r => ({
   bal:{ izq:[{ f:'O2', m:32 }], der:[{ f:'H2O', m:18 }], u:'g' },
   lupa: r ? { lentes:[{ figs:[{ f:'O2', n:NUM }] }, { figs:[{ f:'H2O', n:NUM }] }], pie:`Cada figura es ${textoPorcion(0.1, 'O2')}. En cada lupa hay ${NUM}.`, desc:`${NUM} figuras de O₂ y ${NUM} de H₂O.` }
-    : { tapa:r === false ? 'Responde para ver la lupa' : 'La lupa se abre en el paso 3' },
-  cuenta:{ cols:[{ ...col('O2', 32, r), phN:r === false ? 'moléculas: responde primero' : 'moléculas: en el paso 3' }, { ...col('H2O', 18, r), phN:r === false ? 'moléculas: responde primero' : 'moléculas: en el paso 3' }] },
+    : { tapa:r === false ? 'Responde para ver la lupa' : 'Responde en el paso 2 para verla' },
+  cuenta:{ cols:[{ ...col('O2', 32, r), phN:r === false ? 'moléculas: responde primero' : 'moléculas: responde en el paso 2' }, { ...col('H2O', 18, r), phN:r === false ? 'moléculas: responde primero' : 'moléculas: responde en el paso 2' }] },
   vars:['masa', 'Mm', 'mol', ...(r ? ['part'] : [])] });
 // Pasos 4 y 5: 10 átomos de Mg contra átomos de C, en u. Aquí cada figura es un átomo de verdad.
 const vMg = (nC, r) => ({
@@ -818,11 +820,11 @@ const vMg = (nC, r) => ({
     : [[['1 átomo de ', 'ink'], ...pzF('Mg'), [': ', 'ink'], ['24 u', 'masa', 800], ['    1 átomo de ', 'ink'], ...pzF('C'), [': ', 'ink'], ['12 u', 'masa', 800]], [['¿Cuántos átomos de C equilibran la balanza?', 'muted']]],
     leer: r ? `10 por 24 u son 240 u; ${nC} por 12 u son ${nC*12} u.` : '' },
   vars:['masa'] });
-// Pasos 6 y 7: 100 g de un gas con 75 % de C y 25 % de H. Porciones de 1,25 mol de átomos.
+// Pasos 6 y 7: 100 g de un compuesto con 75 % de C y 25 % de H. Porciones de 1,25 mol de átomos.
 const POR = 1.25, nCp = Math.round(EMP.moles.C/POR), nHp = Math.round(EMP.moles.H/POR);
 const vComp = (r, p) => ({
-  bal:{ izq:[{ f:'C', m:75, etq:[['átomos de ', 'ink'], ...pzF('C')] }], der:[{ f:'H', m:25, etq:[['átomos de ', 'ink'], ...pzF('H')] }], u:'g' },
-  lupa: r ? { agrupar:{ partes:[{ e:'C', n:nCp }, { e:'H', n:nHp }], grupo:EMP.formula, k:nCp, p }, pie:`Cada punto es ${fmt(POR, 2)} mol de átomos: de C los grises, de H los turquesa. ${p > 0.98 ? `Se juntan en ${nCp} grupos ${sub(EMP.formula)}.` : ''}`, desc:`${nCp} porciones de C y ${nHp} de H${p > 0.98 ? `, juntas en ${nCp} grupos CH₄` : ''}.` }
+  bal:{ izq:[{ f:'C', m:75, etq:[...pzF('C'), [' en la muestra', 'ink']] }], der:[{ f:'H', m:25, etq:[...pzF('H'), [' en la muestra', 'ink']] }], u:'g' },
+  lupa: r ? { agrupar:{ partes:[{ e:'C', n:nCp }, { e:'H', n:nHp }], grupo:EMP.formula, k:nCp, p }, pie:`Cada punto es una porción de ${fmt(POR, 2)} mol de átomos: de C los grises, de H los turquesa. ${p > 0.98 ? `Se juntan en ${nCp} grupos ${sub(EMP.formula)}.` : ''}`, desc:`${nCp} porciones de C y ${nHp} de H${p > 0.98 ? `, juntas en ${nCp} grupos CH₄` : ''}.` }
     : { tapa:'Responde para ver la lupa' },
   cuenta:{ lineas: r ? [
       [...pzF('C'), [': ', 'ink'], ['75 g', 'masa', 800], [' ÷ ', 'ink'], ['12 g/mol', 'Mm', 800], [' = ', 'ink'], [`${fmt(EMP.moles.C, 2)} mol`, 'mol', 800], [` → ÷ ${fmt(EMP.moles.C, 2)} = ${fmt(EMP.razon.C, 2)}`, 'ink']],
@@ -831,16 +833,16 @@ const vComp = (r, p) => ({
     : [[...pzF('C'), [': ', 'ink'], ['75 g', 'masa', 800], ['  (masa atómica 12)', 'muted'], ['     ', 'ink'], ...pzF('H'), [': ', 'ink'], ['25 g', 'masa', 800], ['  (masa atómica 1)', 'muted']], [['¿Cuál es la fórmula empírica?', 'muted']]],
     leer: r ? `Carbono: 75 g entre 12 g/mol son ${fmt(EMP.moles.C, 2)} mol. Hidrógeno: 25 g entre 1 son 25 mol. Divididos entre ${fmt(EMP.moles.C, 2)}: 1 y 4. Fórmula empírica CH4.` : '' },
   vars: r ? ['masa', 'Mm', 'mol'] : ['masa'] });
-// Paso 8: la glucosa (180 g/mol) contra moles de CH₂O que caen al otro platillo.
+// Paso 8: un compuesto sin nombre (150 g/mol) contra moles de CH₂O que caen al otro platillo.
 const vGlu = (r, k) => ({
-  bal:{ izq:[{ f:'C6H12O6', m:180, etq:[['1 mol de glucosa', 'ink']], nombre:'glucosa' }], der: k ? [{ f:'CH2O', m:GLU.Mempirica, tipo:'bloques', n:k, etq:[[`${k} mol`, 'mol', 800], [' de ', 'ink'], ...pzF('CH2O')] }] : [], u:'g', vacio:{ der:'mol de CH₂O: ?' } },
-  lupa: r && k === GLU.k ? { lentes:[{ figs:[{ f:'C6H12O6', n:1 }] }, { figs:[{ f:'CH2O', n:GLU.k }] }], pie:`Cada figura es 1 mol de moléculas de glucosa (izquierda) o 1 mol de grupos CH₂O (derecha). Los mismos átomos: la glucosa son 6 grupos CH₂O.`, desc:'Una molécula de glucosa, dibujada como 6 grupos CH2O, y 6 grupos CH2O sueltos.' }
+  bal:{ izq:[{ f:GLU.formula, m:MMOL, etq:[['1 mol del compuesto', 'ink']], nombre:'el compuesto' }], der: k ? [{ f:'CH2O', m:GLU.Mempirica, tipo:'bloques', n:k, etq:[[`${k} mol`, 'mol', 800], [' de ', 'ink'], ...pzF('CH2O')] }] : [], u:'g', vacio:{ der:'mol de CH₂O: ?' } },
+  lupa: r && k === GLU.k ? { lentes:[{ figs:[{ f:GLU.formula, n:1 }] }, { figs:[{ f:'CH2O', n:GLU.k }] }], pie:`Cada figura es una porción de 1 mol: de moléculas del compuesto (izquierda) o de grupos CH₂O (derecha). El compuesto tiene los mismos átomos que ${GLU.k} CH₂O.`, desc:`Una porción de 1 mol de moléculas del compuesto y ${GLU.k} porciones de 1 mol de grupos CH2O: los mismos átomos.` }
     : { tapa: r ? 'Mira la balanza' : 'Responde para ver la lupa' },
   cuenta:{ lineas: r ? [[...pzF('CH2O'), [': 12 + 2 × 1 + 16 = ', 'ink'], [`${fmt(GLU.Mempirica, 0)} g/mol`, 'Mm', 800]],
-      [['k = ', 'ink'], ['180', 'Mm', 800], [' ÷ ', 'ink'], ['30', 'Mm', 800], [` = ${GLU.k}`, 'ink', 800], ['   →   ', 'ink'], ...pzF(GLU.formula)]]
-    : [[['Fórmula empírica: ', 'ink'], ...pzF('CH2O'), ['     ', 'ink'], ['M = 180 g/mol', 'Mm', 800]], [['¿Cuál es la fórmula molecular?', 'muted']]],
-    leer: r ? 'CH2O pesa 30 g/mol; 180 entre 30 es 6; la fórmula molecular es C6H12O6.' : '' },
-  vars: r ? ['masa', 'Mm'] : ['masa', 'Mm'] });
+      [['k = ', 'ink'], [String(MMOL), 'Mm', 800], [' ÷ ', 'ink'], ['30', 'Mm', 800], [` = ${GLU.k}`, 'ink', 800], ['   →   ', 'ink'], ...pzF(GLU.formula)]]
+    : [[['Fórmula empírica: ', 'ink'], ...pzF('CH2O'), ['     ', 'ink'], [`M = ${MMOL} g/mol`, 'Mm', 800]], [['¿Cuál es la fórmula molecular?', 'muted']]],
+    leer: r ? `CH2O pesa 30 g/mol; ${MMOL} entre 30 es ${GLU.k}; la fórmula molecular es ${GLU.formula}.` : '' },
+  vars:['masa', 'Mm'] });
 
 const steps = [
  { k:'Paso 1', t:'El problema', vista:() => vMol(undefined),
@@ -855,7 +857,7 @@ const steps = [
    body:() => `<p>En la lupa hay el mismo número de figuras a cada lado: 1 mol de cualquier sustancia tiene ${N_(NA_TXT)} partículas. La balanza se inclina hacia el ${Fh('O2')} porque cada molécula de ${Fh('O2')} pesa 32 u y cada una de ${Fh('H2O')}, 18 u.</p>
    <div class="eqs">
      <div class="eq"><span class="ex">${n_('n')} = ${fr(m_('m'), M_('M'))}: &nbsp; ${fr(m_('32 g'), M_('32 g/mol'))} = ${n_('1 mol')} de ${Fh('O2')} &nbsp; y &nbsp; ${fr(m_('18 g'), M_('18 g/mol'))} = ${n_('1 mol')} de ${Fh('H2O')}</span></div>
-     <div class="eq"><span class="ex">${N_('N')} = ${n_('n')} × ${N_('Nₐ')} = ${n_('1')} × ${N_(NA_TXT)} moléculas, en los dos</span><span class="note">Nₐ = 6,02 × 10²³ por mol es el número de Avogadro: cuántas partículas hay en un paquete.</span></div>
+     <div class="eq"><span class="ex">${N_('partículas')} = ${n_('n')} × 6,02 × 10²³ = ${n_('1')} × 6,02 × 10²³ = ${N_(NA_TXT + ' moléculas')}, en los dos</span><span class="note">6,02 × 10²³ por mol es el número de Avogadro (Nₐ): cuántas partículas hay en un paquete.</span></div>
    </div>
    <p>Ahora cambia la cuenta a <b>átomos</b> (debajo del dibujo). Cada molécula de ${Fh('H2O')} tiene 3 átomos y cada una de ${Fh('O2')}, 2. Con las mismas moléculas, el agua tiene más átomos: ${N_(sci(3*MM.NA))} contra ${N_(sci(2*MM.NA))}. Por eso siempre hay que decir qué se cuenta: moléculas de ${Fh('H2O')} o átomos de ${Fh('H')}.</p>
    <p class="fuente">Según Dahsah y otros (2006), solo el 33 % de 97 escolares razonó bien que 1 mol de O₂ y 1 mol de H₂O tienen el mismo número de moléculas. Confundir moléculas con átomos está documentado en el mismo estudio, sin porcentaje. Que todo mol ocupa 22,4 L lo sostuvo el 11 % de 97.</p>` },
@@ -868,29 +870,33 @@ const steps = [
    </div>
    <p>El puente con los gramos: si en vez de 1 átomo se juntan ${N_(NA_TXT)}, la masa en u pasa a ser la misma cifra en gramos. ${N_(NA_TXT)} átomos de ${Fh('C')} pesan ${m_('12 g')}, y ${N_(NA_TXT)} átomos de ${Fh('Mg')}, ${m_('24 g')}. Por eso la masa molar tiene la misma cifra: ${M_('12 g/mol')} y ${M_('24 g/mol')}.</p>
    <div class="eqs">
-     <div class="eq"><span class="ex">1 átomo de ${Fh('C')}: ${m_('12 u')} ≈ ${m_(sci(MM.masaParticula('C')) + ' g')}</span><span class="note">Es la masa molar entre Nₐ: 12 g/mol ÷ 6,02 × 10²³. Un átomo solo no se nota en ninguna balanza: hay que juntar 6,02 × 10²³ para tener 12 g.</span></div>
+     <div class="eq"><span class="ex">1 átomo de ${Fh('C')}: ${m_('12 u')} ≈ ${m_(sci(MM.masaParticula('C')) + ' g')}</span><span class="note">Es la masa molar entre 6,02 × 10²³: 12 g/mol ÷ 6,02 × 10²³. Un átomo solo no se nota en ninguna balanza: hay que juntar 6,02 × 10²³ para tener 12 g.</span></div>
      <div class="eq"><span class="ex">${N_(NA_TXT)} átomos de ${Fh('C')} = ${n_('1 mol')} → ${m_('12 g')}</span></div>
    </div>
    <p>El mol convierte las u en gramos. "Un átomo de carbono pesa 12 g" es un error: pesa 12 u; los 12 g son de un mol de átomos.</p>
    <div class="nav"><span></span>${otraVez}</div>
    <p class="fuente">Según Dahsah y otros (2006), solo el 10 % de 97 escolares razonó bien qué es la masa atómica. Que a igual masa hay igual número de átomos (13 de 28) y la razón al revés (10 de 28) salen de León Vega y López González (2020), en una pregunta parecida.</p>` },
  { k:'Paso 6', t:'La composición: predice', gate:P2, vista:r => vComp(!!r, r ? 1 : 0),
-   body:() => `<p class="problem">Un gas combustible tiene 75 % de ${Fh('C')} y 25 % de ${Fh('H')} en masa. ¿Cuál es su fórmula empírica?</p>
+   body:() => `<p class="problem">Un compuesto tiene 75 % de ${Fh('C')} y 25 % de ${Fh('H')} en masa. ¿Cuál es su fórmula empírica?</p>
    <p>Se toma una muestra de 100 g: la balanza muestra ${m_('75 g')} de ${Fh('C')} y ${m_('25 g')} de ${Fh('H')}. La fórmula empírica es la proporción más simple de átomos.</p>${opcionesHTML(P2.opts, 'fb')}` },
  { k:'Paso 7', t:'Moles, no gramos', vista:() => vComp(true, 1),
    body:() => { const cm = MM.composicion(EMP.formula);
      return `<p>La lupa convierte cada montón en porciones iguales de moles: cada punto es ${n_(fmt(POR, 2) + ' mol')} de átomos. Los ${m_('75 g')} de ${Fh('C')} son ${nCp} puntos y los ${m_('25 g')} de ${Fh('H')}, ${nHp}. Al juntarlos salen ${nCp} grupos de 1 ${Fh('C')} y 4 ${Fh('H')}.</p>
    <div class="eqs">
-     <div class="eq"><span class="ex">1. Moles: &nbsp;${fr(m_('75 g'), M_('12 g/mol'))} = ${n_(fmt(EMP.moles.C, 2) + ' mol')} de ${Fh('C')} &nbsp; y &nbsp; ${fr(m_('25 g'), M_('1 g/mol'))} = ${n_(fmt(EMP.moles.H, 2) + ' mol')} de ${Fh('H')}</span></div>
-     <div class="eq"><span class="ex">2. Entre el menor: &nbsp;${fr(n_(fmt(EMP.moles.C, 2)), n_(fmt(EMP.moles.C, 2)))} = ${fmt(EMP.razon.C, 2)} &nbsp; y &nbsp; ${fr(n_(fmt(EMP.moles.H, 2)), n_(fmt(EMP.moles.C, 2)))} = ${fmt(EMP.razon.H, 2)}</span></div>
+     <div class="eq"><span class="ex">1. Moles:</span></div>
+     <div class="eq"><span class="ex">${Fh('C')}: ${fr(m_('75 g'), M_('12 g/mol'))} = ${n_(fmt(EMP.moles.C, 2) + ' mol')}</span></div>
+     <div class="eq"><span class="ex">${Fh('H')}: ${fr(m_('25 g'), M_('1 g/mol'))} = ${n_(fmt(EMP.moles.H, 2) + ' mol')}</span></div>
+     <div class="eq"><span class="ex">2. Entre el menor:</span></div>
+     <div class="eq"><span class="ex">${Fh('C')}: ${fr(n_(fmt(EMP.moles.C, 2)), n_(fmt(EMP.moles.C, 2)))} = ${fmt(EMP.razon.C, 2)}</span></div>
+     <div class="eq"><span class="ex">${Fh('H')}: ${fr(n_(fmt(EMP.moles.H, 2)), n_(fmt(EMP.moles.C, 2)))} = ${fmt(EMP.razon.H, 2)}</span></div>
      <div class="eq"><span class="ex">3. Fórmula empírica: ${Fh(EMP.formula)}</span><span class="note">Si la división diera 1,5 o 2,5, se multiplicaría todo por 2 (en "¿Qué pasa si…?" hay un caso).</span></div>
    </div>
    <p>De vuelta: ${Fh('CH4')} pesa ${M_(fmt(cm.M, 0) + ' g/mol')}, y su carbono, 12. El porcentaje de C es ${fr('12', fmt(cm.M, 0))} × 100 = ${fmt(cm.porcentajes.C, 1)} %: el dato del problema.</p>
    <div class="nav"><span></span>${otraVez}</div>
    <p class="fuente">Usar la razón de masas como fórmula (C₃H): según Christianto y otros (2025), entre el 16 % y el 25 % de 32 escolares, según la pregunta, eligió esta idea con confianza alta. CH₃ y C₂H₈ son hipótesis nuestras.</p>`; } },
  { k:'Paso 8', t:'Empírica y molecular: predice', gate:P3, vista:r => vGlu(!!r, r ? GLU.k : 0),
-   body:() => `<p class="problem">La glucosa tiene fórmula empírica ${Fh('CH2O')} y masa molar ${M_('180 g/mol')}. ¿Cuál es su fórmula molecular?</p>
-   <p>En la balanza, 1 mol de glucosa (${m_('180 g')}). El otro platillo espera.</p>${opcionesHTML(P3.opts, 'fb')}<div id="tras8" class="body"></div>` },
+   body:() => `<p class="problem">Un compuesto tiene fórmula empírica ${Fh('CH2O')} y masa molar ${M_(MMOL + ' g/mol')}. ¿Cuál es su fórmula molecular?</p>
+   <p>En la balanza, 1 mol del compuesto (${m_(MMOL + ' g')}). El otro platillo espera.</p>${opcionesHTML(P3.opts, 'fb')}<div id="tras8" class="body"></div>` },
  { k:'Paso 9', t:'Ahora explora tú', explora:true, vista:() => vistaExp(),
    body:() => `<div class="ctrls">
      <label class="campo" for="xA">Sustancia del platillo izquierdo<select id="xA">${['H2O', 'CO2', 'CH4', 'CaCO3', 'H2SO4', 'NH3', 'Fe2O3', 'C6H12O6'].map(f => `<option value="${f}">${sub(f)}</option>`).join('')}</select></label>
@@ -909,12 +915,12 @@ function vistaExp(){
   const a = MM.moles(X.A, { gramos:X.mA }), b = MM.moles(X.B, { gramos:X.mB });
   const L = lentesPara([X.A, X.B], [a.n, b.n], 24);
   return { bal:{ izq:[{ f:X.A, m:X.mA }], der:[{ f:X.B, m:X.mB }], u:'g' },
-    lupa:{ lentes:L.lentes, pie:`Cada figura es ${fmtMol(L.p)} mol de partículas (${sci(L.p*MM.NA)})${L.exactas ? '' : '; las cuentas están redondeadas'}.`, desc:`${L.lentes[0].figs[0].n} figuras de ${sub(X.A)} y ${L.lentes[1].figs[0].n} de ${sub(X.B)}.` },
+    lupa:{ lentes:L.lentes, pie:`Cada figura es una porción de ${fmtMol(L.p)} mol (${sci(L.p*MM.NA)} ${particula(X.A) === particula(X.B) ? particula(X.A) : particula(X.A) + ' o ' + particula(X.B)})${L.exactas ? '' : '; las cuentas están redondeadas'}.`, desc:`${L.lentes[0].figs[0].n} figuras de ${sub(X.A)} y ${L.lentes[1].figs[0].n} de ${sub(X.B)}.` },
     cuenta:{ cols:[col(X.A, X.mA, true), col(X.B, X.mB, true)] }, vars:['masa', 'Mm', 'mol', 'part', 'pct'] };
 }
 function explorar(){
   const vivo = () => {
-    $('mA-o').textContent = `${fmt(X.mA, 1)} g`; $('mB-o').textContent = `${fmt(X.mB, 1)} g`;
+    $('mA-o').textContent = `${fmt(X.mA, 2)} g`; $('mB-o').textContent = `${fmt(X.mB, 2)} g`;
     E.vista = vistaExp(); E.dibujar(); pedir();
     const fila = f => { const r = MM.moles(f, { gramos: f === X.A ? X.mA : X.mB });
       return `<div class="fila"><b>${Fh(f)}</b><span>${n_(fmtMol(r.n) + ' mol')}</span><span>${N_(sci(r.moleculas))} ${particula(f)}</span><span>${N_(sci(r.atomos))} átomos</span></div>`; };
@@ -991,13 +997,13 @@ function pintarDots(){
 }
 function desbloquear(n){ if (n > S.max) S.max = n; }
 function trasP3(){ const el = $('tras8'); if (!el || !S.pred[P3.id]) return; const a = MM.composicion('CH2O').porcentajes, b = MM.composicion(GLU.formula).porcentajes;
-  el.innerHTML = `<div class="eqs"><div class="eq"><span class="ex">k = ${fr(M_('180 g/mol'), M_(fmt(GLU.Mempirica, 0) + ' g/mol'))} = ${GLU.k} &nbsp;→&nbsp; ${Fh('CH2O')} × ${GLU.k} = ${Fh(GLU.formula)}</span><span class="note">CH₂O pesa 12 + 2 × 1 + 16 = 30 g/mol. Se divide la masa molar entre la masa de la fórmula empírica, no entre su número de átomos.</span></div></div>
+  el.innerHTML = `<div class="eqs"><div class="eq"><span class="ex">k = ${fr(M_(MMOL + ' g/mol'), M_(fmt(GLU.Mempirica, 0) + ' g/mol'))} = ${GLU.k} &nbsp;→&nbsp; ${Fh('CH2O')} × ${GLU.k} = ${Fh(GLU.formula)}</span><span class="note">CH₂O pesa 12 + 2 × 1 + 16 = 30 g/mol. Se divide la masa molar entre la masa de la fórmula empírica, no entre su número de átomos.</span></div></div>
     <div class="scroll"><table class="tabla"><thead><tr><th>en masa</th><th>${Fh('C')}</th><th>${Fh('H')}</th><th>${Fh('O')}</th></tr></thead><tbody>
       <tr><td>${Fh('CH2O')}</td><td>${fmt(a.C, 1)} %</td><td>${fmt(a.H, 1)} %</td><td>${fmt(a.O, 1)} %</td></tr>
       <tr><td>${Fh(GLU.formula)}</td><td>${fmt(b.C, 1)} %</td><td>${fmt(b.H, 1)} %</td><td>${fmt(b.O, 1)} %</td></tr></tbody></table></div>
     <p>Las dos fórmulas tienen la misma composición: por los porcentajes solo se sabe la empírica. Para la molecular hace falta la masa molar.</p>
     <div class="nav"><span></span>${otraVez}</div>
-    <p class="fuente">Creer que la fórmula empírica es la de la molécula: según Christianto y otros (2025), el 16 % de 32 escolares eligió esta idea con confianza alta. Dividir entre el número de átomos (C₄₅H₉₀O₄₅) y C₃H₆O₃ son hipótesis nuestras.</p>`;
+    <p class="fuente">Creer que la fórmula empírica es la de la molécula: según Christianto y otros (2025), el 16 % de 32 escolares eligió esta idea con confianza alta. Multiplicar solo el carbono (${sub(SOLO_C)}) y ${sub(MITAD)} son hipótesis nuestras.</p>`;
   enlazarRepetir(); }
 function prediccion(s){
   const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
@@ -1048,45 +1054,45 @@ const EXPS = [
   { id:'mismos-gramos', corto:'Mismos gramos',
     q:`En un platillo hay ${m_('1 g')} de ${Fh('H2')} y en el otro ${m_('1 g')} de ${Fh('O2')}. La balanza está pareja. ¿Dónde hay más moléculas?`,
     opts:[['a', 'Igual: 1 a 1', 'ES4-igual-masa-igual-numero', RES('documentado', 'León Vega y López González 2020: 13 de 28, ítem equivalente')],
-          ['b', `En el ${Fh('O2')}: 16 veces más`, 'ES3-mas-pesado-mas-moleculas', RES('documentado', 'Dahsah y otros 2006')],
+          ['b', `En el ${Fh('O2')}: 16 veces más`, 'mas-pesado-mas-moleculas', RES('hipotesis', 'hipótesis nuestra, cercana a ES3 y ES4')],
           ['c', `En el ${Fh('H2')}: 16 veces más`],
           ['d', `En el ${Fh('H2')}: 2 veces más`, 'H2-solo-el-doble', RES('hipotesis', 'hipótesis nuestra')]],
     ok:'c',
     fb:{ a:'A igual masa no hay igual número: cada molécula de H₂ pesa 2 u y cada una de O₂, 32 u. Según León Vega y López González (2020), 13 de 28 escolares eligieron "la misma cantidad" en una pregunta parecida.',
-      b:'Es al revés: como cada molécula de O₂ pesa más, en 1 g caben menos. Confundir la masa con la cantidad de partículas es una idea documentada (Dahsah y otros, 2006).',
+      b:'Es al revés: como cada molécula de O₂ pesa más, en 1 g caben menos. Esta opción es una hipótesis nuestra, cercana a ideas documentadas que confunden la masa con la cantidad de partículas (ES3 y ES4), pero sin estudio que mida esta pregunta.',
       d:'El H₂ tiene más, pero no solo el doble: 32 entre 2 es 16. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
     antes:() => ({ bal:{ izq:[{ f:'H2', m:1 }], der:[{ f:'O2', m:1 }], u:'g' }, lupa:{ tapa:'Responde para ver la lupa' },
       cuenta:{ cols:[{ f:'H2', m:1, M:2, n:null, N:null }, { f:'O2', m:1, M:32, n:null, N:null }] }, vars:['masa', 'Mm'] }),
     despues:() => ({ bal:{ izq:[{ f:'H2', m:1 }], der:[{ f:'O2', m:1 }], u:'g' },
-      lupa:{ lentes:[{ figs:[{ f:'H2', n:16 }] }, { figs:[{ f:'O2', n:1 }] }], pie:`Cada figura es 1/32 mol de moléculas (${fmt(1/32, 5)} mol). Hay 16 de H₂ y 1 de O₂.`, desc:'16 figuras de H2 y 1 de O2.' },
+      lupa:{ lentes:[{ figs:[{ f:'H2', n:16 }] }, { figs:[{ f:'O2', n:1 }] }], pie:`Cada figura es una porción de 1/32 mol de moléculas (${fmt(1/32, 5)} mol; ${sci(MM.NA/32)} moléculas). Hay 16 de H₂ y 1 de O₂.`, desc:'16 figuras de H2 y 1 de O2.' },
       cuenta:{ cols:[col('H2', 1, true), col('O2', 1, true)] }, vars:['masa', 'Mm', 'mol', 'part'] }),
     exp:() => `<div class="eqs"><div class="eq"><span class="ex">${fr(m_('1 g'), M_('2 g/mol'))} = ${n_(fmt(H2.n, 2) + ' mol')} de ${Fh('H2')} &nbsp; y &nbsp; ${fr(m_('1 g'), M_('32 g/mol'))} = ${n_(fmt(O2.n, 5) + ' mol')} de ${Fh('O2')}</span></div>
       <div class="eq"><span class="ex">${fr(n_(fmt(H2.n, 2)), n_(fmt(O2.n, 5)))} = ${fmt(H2.n/O2.n, 0)}</span><span class="note">Con los mismos gramos, la sustancia más liviana tiene más moléculas: tantas veces más como pesa menos.</span></div></div>
       <p>La balanza no cuenta: solo pesa. Para comparar partículas hay que pasar a moles.</p>
-      <p class="fuente">Igual masa, igual número: según León Vega y López González (2020), 13 de 28 escolares en una pregunta parecida. Más pesado, más moléculas: documentado en Dahsah y otros (2006). "2 veces más" es una hipótesis nuestra.</p>` },
+      <p class="fuente">Igual masa, igual número: según León Vega y López González (2020), 13 de 28 escolares en una pregunta parecida. Más pesado, más moléculas: hipótesis nuestra, cercana a ES3 y ES4. "2 veces más" es una hipótesis nuestra.</p>` },
   { id:'razon-no-entera', corto:'Una razón que no sale entera',
     q:`Un óxido de hierro tiene 70 % de ${Fh('Fe')} y 30 % de ${Fh('O')} en masa (${Fh('Fe')} = 56, ${Fh('O')} = 16). ¿Cuál es su fórmula empírica?`,
     opts:[['a', Fh(FE.redondeando), 'redondea-1-5', RES('hipotesis', 'tabla de lo que no tiene respaldo')],
-          ['b', Fh('Fe7O3'), 'ES16-razon-de-masas-Fe', RES('documentado', 'Christianto y otros 2025')],
+          ['b', Fh(FE.porMasas), 'ES16-razon-de-masas-Fe', RES('documentado', 'Christianto y otros 2025')],
           ['c', Fh(FE.formula)],
           ['d', Fh('FeO'), 'redondea-a-1', RES('hipotesis', 'hipótesis nuestra')]],
     ok:'c',
     fb:{ a:'Salió de redondear 1,5 a 2. Una razón de 1,5 no se redondea: se multiplica todo por 2. Es una hipótesis nuestra, sin estudio que la mida.',
       b:'70 a 30 es la razón de las masas, no la de los átomos. Según Christianto y otros (2025), usar la razón de masas es una idea documentada en escolares.',
       d:'Salió de redondear 1,5 a 1. Una razón de 1,5 no se redondea: se multiplica todo por 2. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
-    antes:() => ({ bal:{ izq:[{ f:'Fe', m:70, etq:[['átomos de ', 'ink'], ...pzF('Fe')] }], der:[{ f:'O', m:30, etq:[['átomos de ', 'ink'], ...pzF('O')] }], u:'g' }, lupa:{ tapa:'Responde para ver la lupa' },
+    antes:() => ({ bal:{ izq:[{ f:'Fe', m:70, etq:[...pzF('Fe'), [' en la muestra', 'ink']] }], der:[{ f:'O', m:30, etq:[...pzF('O'), [' en la muestra', 'ink']] }], u:'g' }, lupa:{ tapa:'Responde para ver la lupa' },
       cuenta:{ lineas:[[['En 100 g: ', 'ink'], ...pzF('Fe'), [' ', 'ink'], ['70 g', 'masa', 800], ['  y  ', 'ink'], ...pzF('O'), [' ', 'ink'], ['30 g', 'masa', 800]], [['¿Cuál es la fórmula empírica?', 'muted']]] }, vars:['masa'] }),
-    despues:(p) => ({ bal:{ izq:[{ f:'Fe', m:70, etq:[['átomos de ', 'ink'], ...pzF('Fe')] }], der:[{ f:'O', m:30, etq:[['átomos de ', 'ink'], ...pzF('O')] }], u:'g' },
-      lupa:{ agrupar:{ partes:[{ e:'Fe', n:nFe }, { e:'O', n:nO }], grupo:FE.formula, k:1, p }, pie:`Cada punto es ${fmt(POR_FE, 3)} mol de átomos: ${nFe} de Fe y ${nO} de O, en razón ${nFe}:${nO}.`, desc:`${nFe} porciones de Fe y ${nO} de O, que forman un grupo Fe2O3.` },
+    despues:(p) => ({ bal:{ izq:[{ f:'Fe', m:70, etq:[...pzF('Fe'), [' en la muestra', 'ink']] }], der:[{ f:'O', m:30, etq:[...pzF('O'), [' en la muestra', 'ink']] }], u:'g' },
+      lupa:{ agrupar:{ partes:[{ e:'Fe', n:nFe }, { e:'O', n:nO }], grupo:FE.formula, k:1, p }, pie:`Cada punto es una porción de ${fmt(POR_FE, 3)} mol de átomos: ${nFe} de Fe y ${nO} de O, en razón ${nFe}:${nO}.`, desc:`${nFe} porciones de Fe y ${nO} de O, que forman un grupo Fe2O3.` },
       cuenta:{ lineas:[
         [...pzF('Fe'), [': ', 'ink'], ['70 g', 'masa', 800], [' ÷ ', 'ink'], ['56 g/mol', 'Mm', 800], [' = ', 'ink'], [`${fmt(FE.moles.Fe, 3)} mol`, 'mol', 800], [` → ${fmt(FE.razon.Fe, 2)} → × 2 = ${FE.subindices.Fe}`, 'ink']],
         [...pzF('O'), [': ', 'ink'], ['30 g', 'masa', 800], [' ÷ ', 'ink'], ['16 g/mol', 'Mm', 800], [' = ', 'ink'], [`${fmt(FE.moles.O, 3)} mol`, 'mol', 800], [` → ${fmt(FE.razon.O, 2)} → × 2 = ${FE.subindices.O}`, 'ink']],
         [['Fórmula empírica: ', 'ink'], ...pzF(FE.formula)]], leer:'Fe: 1,25 mol; O: 1,875 mol; razón 1 a 1,5; por 2: 2 a 3; Fe2O3.' }, vars:['masa', 'Mm', 'mol'] }),
     anima:true,
     exp:() => `<div class="eqs"><div class="eq"><span class="ex">${fr(m_('70 g'), M_('56 g/mol'))} = ${n_(fmt(FE.moles.Fe, 3) + ' mol')} de ${Fh('Fe')} &nbsp; y &nbsp; ${fr(m_('30 g'), M_('16 g/mol'))} = ${n_(fmt(FE.moles.O, 3) + ' mol')} de ${Fh('O')}</span></div>
-      <div class="eq"><span class="ex">Entre el menor: ${fmt(FE.razon.Fe, 2)} y ${fmt(FE.razon.O, 2)} &nbsp;→&nbsp; × 2: ${FE.subindices.Fe} y ${FE.subindices.O} &nbsp;→&nbsp; ${Fh(FE.formula)}</span><span class="note">No existe media porción de átomos en una fórmula: si sale 1,5, se multiplica todo por 2; si sale 1,33, por 3.</span></div></div>
+      <div class="eq"><span class="ex">Entre el menor: ${fmt(FE.razon.Fe, 2)} y ${fmt(FE.razon.O, 2)} &nbsp;→&nbsp; × 2: ${FE.subindices.Fe} y ${FE.subindices.O} &nbsp;→&nbsp; ${Fh(FE.formula)}</span><span class="note">No existe medio átomo en una fórmula: si sale 1,5, se multiplica todo por 2; si sale 1,33, por 3.</span></div></div>
       <p>En la lupa, cada punto es ${n_(fmt(POR_FE, 3) + ' mol')} de átomos: ${nFe} de ${Fh('Fe')} y ${nO} de ${Fh('O')}. Con porciones del doble (${fmt(2*POR_FE, 2)} mol) habría 1 de Fe y una y media de O: por eso se multiplica por 2.</p>
-      <p class="fuente">Usar la razón de masas (Fe₇O₃) es la idea documentada ES16 (Christianto y otros, 2025). Redondear 1,5 en vez de multiplicar está en nuestra lista de errores sin respaldo: FeO₂ y FeO son hipótesis nuestras.</p>` },
+      <p class="fuente">Usar la razón de masas (${sub(FE.porMasas)}) es la idea documentada ES16 (Christianto y otros, 2025). Redondear 1,5 en vez de multiplicar está en nuestra lista de errores sin respaldo: FeO₂ y FeO son hipótesis nuestras.</p>` },
   { id:'oxigeno-caco3', corto:'El oxígeno del CaCO₃',
     q:`¿Qué porcentaje de la masa del ${Fh('CaCO3')} es oxígeno? (${Fh('Ca')} = 40, ${Fh('C')} = 12, ${Fh('O')} = 16)`,
     opts:[['a', `${fmt(CAC.porcentajes.O, 0)} %`],
@@ -1119,7 +1125,7 @@ const EXPS = [
     antes:() => ({ bal:{ izq:[{ f:'H2O', m:9 }], der:[{ f:'pesa', tipo:'pesa', m:9, etq:[['pesa de ', 'muted'], ['9 g', 'masa', 800]] }], u:'g' }, lupa:{ tapa:'Responde para ver la lupa' },
       cuenta:{ lineas:[[['Muestra: ', 'ink'], ['9 g', 'masa', 800], [' de ', 'ink'], ...pzF('H2O')], [['¿Cuántos gramos son de hidrógeno?', 'muted']]] }, vars:['masa'] }),
     despues:() => ({ bal:{ izq:[{ f:'H', m:PROUST.H }, { f:'O', m:PROUST.O }], der:[{ f:'pesa', tipo:'pesa', m:9, etq:[['pesa de ', 'muted'], ['9 g', 'masa', 800]] }], u:'g' },
-      lupa:{ lentes:[{ figs:[{ f:'H2O', n:10 }] }], pie:'Cada figura es 0,05 mol de moléculas de H₂O. En cada una, el O pesa 16 u y los dos H, 2 u: 8 a 1 en masa.', desc:'10 figuras de H2O.' },
+      lupa:{ lentes:[{ figs:[{ f:'H2O', n:10 }] }], pie:'Cada figura es una porción de 0,05 mol de H₂O (0,9 g). En cada molécula, el O pesa 16 u y los dos H, 2 u: 8 a 1 en masa.', desc:'10 figuras de H2O.' },
       cuenta:{ lineas:[[...pzF('H2O'), [': 2 × 1 + 16 = ', 'ink'], ['18 g/mol', 'Mm', 800], ['  →  ', 'ink'], ['9 g', 'masa', 800], [' = ', 'ink'], ['0,5 mol', 'mol', 800]],
         [['de ', 'ink'], ...pzF('H'), [': 9 × 2 ÷ 18 = ', 'ink'], [`${fmt(PROUST.H, 1)} g`, 'masa', 800], ['   de ', 'ink'], ...pzF('O'), [': 9 × 16 ÷ 18 = ', 'ink'], [`${fmt(PROUST.O, 1)} g`, 'masa', 800]]], leer:'9 g de agua son 0,5 mol: 1 g de hidrógeno y 8 g de oxígeno.' }, vars:['masa', 'Mm', 'mol'] }),
     exp:() => `<div class="eqs"><div class="eq"><span class="ex">${fr(m_('9 g'), M_('18 g/mol'))} = ${n_('0,5 mol')} de ${Fh('H2O')} &nbsp;→&nbsp; ${n_('1 mol')} de átomos de ${Fh('H')} = ${m_(fmt(PROUST.H, 1) + ' g')}</span></div>
@@ -1128,20 +1134,20 @@ const EXPS = [
   { id:'mol-de-liquido', corto:'Un mol de agua líquida',
     q:`¿Qué volumen ocupan ${m_('18 g')} (${n_('1 mol')}) de ${Fh('H2O')} líquida? La densidad del agua es 1 g/mL.`,
     opts:[['a', '22,4 L', 'ES5-22-L-liquido', RES('documentado', 'Dahsah y otros 2006: 11 % de 97')],
-          ['b', `${fmt(VOL.mililitros, 0)} mL`],
+          ['b', `${fmt(VOL.litros, 3)} L`],
           ['c', '18 L', 'confunde-mL-con-L', RES('hipotesis', 'hipótesis nuestra')],
           ['d', '1 L', 'un-mol-un-litro', RES('hipotesis', 'hipótesis nuestra')]],
     ok:'b',
-    fb:{ a:'22,4 L es lo que ocupa 1 mol de gas en condiciones normales. El agua líquida ocupa lo que dice su densidad: 18 g en 1 g/mL son 18 mL. Según Dahsah y otros (2006), el 11 % de 97 escolares creía que todo mol ocupa 22,4 L.',
-      c:'Con 1 g/mL, 18 g son 18 mL, mil veces menos que 18 L. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+    fb:{ a:'22,4 L es lo que ocupa 1 mol de gas en condiciones normales. El agua líquida ocupa lo que dice su densidad: 18 g en 1 g/mL son 18 mL, es decir, 0,018 L. Según Dahsah y otros (2006), el 11 % de 97 escolares creía que todo mol ocupa 22,4 L.',
+      c:'Con 1 g/mL, 18 g son 18 mL (0,018 L), mil veces menos que 18 L. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
       d:'El mol no dice el volumen: depende de la sustancia y de si es sólido, líquido o gas. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
     antes:() => ({ bal:{ izq:[{ f:'H2O', m:18, etq:[['agua líquida', 'ink']], nombre:'agua líquida' }], der:[{ f:'pesa', tipo:'pesa', m:18, etq:[['pesa de ', 'muted'], ['18 g', 'masa', 800]] }], u:'g' }, lupa:{ tapa:'Responde para ver el volumen' },
       cuenta:{ lineas:[[...pzF('H2O'), [' líquida: ', 'ink'], ['18 g', 'masa', 800], [' = ', 'ink'], ['1 mol', 'mol', 800], ['   densidad 1 g/mL', 'muted']], [['¿Qué volumen ocupa?', 'muted']]] }, vars:['masa', 'mol'] }),
     despues:() => ({ bal:{ izq:[{ f:'H2O', m:18, etq:[['agua líquida', 'ink']], nombre:'agua líquida' }], der:[{ f:'pesa', tipo:'pesa', m:18, etq:[['pesa de ', 'muted'], ['18 g', 'masa', 800]] }], u:'g' },
       lupa:{ escala:true, pie:'A escala: 18 mL de agua líquida junto a 22,4 L, lo que ocupa 1 mol de un gas en condiciones normales.', desc:'Un vaso pequeño con 18 mL junto a una caja de 22,4 L, a la misma escala.' },
       cuenta:{ lineas:[[['V = ', 'ink'], ['18 g', 'masa', 800], [' ÷ 1 g/mL = ', 'ink'], [`${fmt(VOL.mililitros, 0)} mL`, 'ink', 800]], [[`22,4 L es ${fmt(VOL.con224/VOL.litros, 0)} veces más: solo vale para gases`, 'muted']]], leer:'18 g entre 1 g por mL son 18 mL.' }, vars:['masa', 'mol'] }),
-    exp:() => `<div class="eqs"><div class="eq"><span class="ex">V = ${fr(m_('18 g'), '1 g/mL')} = ${fmt(VOL.mililitros, 0)} mL</span><span class="note">Para un líquido o un sólido, el volumen sale de la densidad. 22,4 L/mol solo vale para gases en condiciones normales (1 atm y 0 °C).</span></div></div>
-      <p>1 mol de agua líquida cabe en una cuchara grande: unas ${fmt(VOL.con224/VOL.litros, 0)} veces menos que la caja de 22,4 L.</p>
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">V = ${fr(m_('18 g'), '1 g/mL')} = ${fmt(VOL.mililitros, 0)} mL = ${fmt(VOL.litros, 3)} L</span><span class="note">Para un líquido o un sólido, el volumen sale de la densidad. 22,4 L/mol solo vale para gases en condiciones normales (1 atm y 0 °C).</span></div></div>
+      <p>1 mol de agua líquida cabe en una cuchara grande: unas 1200 veces menos que la caja de 22,4 L.</p>
       <p class="fuente">Que todo mol ocupa 22,4 L: según Dahsah y otros (2006), el 11 % de 97 escolares lo sostuvo. 18 L y 1 L son hipótesis nuestras.</p>` },
 ];
 const S = { k:0, pred:{}, t0:Date.now() };
