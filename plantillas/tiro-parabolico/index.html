@@ -184,7 +184,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
       <ol class="dots" id="dots"></ol>
       <div aria-live="polite">
         <p class="step-k" id="stepK"></p>
-        <h2 class="step-t" id="stepT"></h2>
+        <h2 class="step-t" id="stepT" tabindex="-1"></h2>
       </div>
       <div id="stepBody" class="body"></div>
       <div class="nav">
@@ -205,7 +205,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
       <div class="seg exps" id="exps" role="group" aria-label="Experimentos (se abren en orden: responde uno para pasar al siguiente)"></div>
       <div aria-live="polite">
         <p class="step-k" id="k2"></p>
-        <h2 class="step-t" id="t2"></h2>
+        <h2 class="step-t" id="t2" tabindex="-1"></h2>
       </div>
       <div id="body2" class="body"></div>
     </section>
@@ -315,14 +315,14 @@ function pasoBonito(rango, n){
 // (sin pasarse del alto normal ni bajar de 230 px), para que una trayectoria baja no deje el lienzo vacío.
 function altoCampo(W, P){
   const s = (W - 58)/(P.Xmax - (P.xmin || 0));
-  return Math.round(clamp(46 + P.Ymax*s + 24, 230, altoLienzo(W)));
+  return Math.round(clamp(64 + P.Ymax*s + 24, 230, altoLienzo(W)));
 }
 /* ---------- Campo de tiro ----------
    P = { tiros:[{ o, nombre, trazos }], t, xmin, Xmax, Ymax, ver:{ tray:'toda'|'hasta'|null, estrobo, sombras, vx, vy, v, a, comp0,
          cima, alcance, alturas, avion, gTodos }, canon, plataforma, crece, hl }
    Escala: la misma en los dos ejes, para que la trayectoria, el ángulo del cañón y las flechas de velocidad coincidan. */
 function marco(W, H, P){
-  const ml = 42, mr = 16, mt = 16, mb = 30, xmin = P.xmin || 0;
+  const ml = 42, mr = 16, mt = 16, mb = 48, xmin = P.xmin || 0;
   const sc = Math.min((W - ml - mr)/(P.Xmax - xmin), (H - mt - mb)/P.Ymax);
   const X = x => ml + (x - xmin)*sc, Y = y => H - mb - y*sc;
   return { X, Y, sx:sc, sy:sc, ml, mb, mt, xmin };
@@ -338,7 +338,7 @@ function vistaTiro(L, c, P){
   ctx.textAlign = 'center'; ctx.textBaseline = 'top';
   for (let x = 0; x <= P.Xmax + 1e-9; x += px){ linea(ctx, X(x), Y(0), X(x), m.mt); ctx.fillText(fmt(x, 0), X(x), Y(0) + 13); }
   ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
-  for (let y = py; y <= P.Ymax + 1e-9; y += py){ linea(ctx, X(0), Y(y), W - 16, Y(y)); ctx.fillText(fmt(y, 0), X(0) - 6, Y(y)); }
+  for (let y = py; y <= P.Ymax + 1e-9; y += py) linea(ctx, X(0), Y(y), W - 16, Y(y));
   ctx.restore();
   ctx.fillStyle = c.suelo; ctx.globalAlpha = .55; ctx.fillRect(4, Y(0), W - 8, 10); ctx.globalAlpha = 1;
   ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; linea(ctx, 4, Y(0), W - 4, Y(0)); linea(ctx, X(0), Y(0), X(0), m.mt);
@@ -350,11 +350,19 @@ function vistaTiro(L, c, P){
     ctx.fillStyle = c.bloque; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4;
     rr(ctx, X(0) - 26, Y(y0), 26, Y(0) - Y(y0), 3); ctx.fill(); ctx.stroke();
   }
+  // Números del eje vertical, encima de la plataforma y con fondo, para que se lean
+  ctx.save(); ctx.font = `600 10px ${c.mono}`; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+  for (let y = py; y <= P.Ymax + 1e-9; y += py){
+    const t = fmt(y, 0), w = ctx.measureText(t).width;
+    ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(X(0) - 8 - w, Y(y) - 6, w + 4, 12); ctx.globalAlpha = 1;
+    ctx.fillStyle = c.muted; ctx.fillText(t, X(0) - 6, Y(y));
+  }
+  ctx.restore();
   const tCl = q => clamp(P.t, 0, q.p.tVuelo);
   // Trayectorias
   ps.forEach((q, j) => {
-    if (!ver.tray) return;
-    const tf = ver.tray === 'toda' ? q.p.tVuelo : tCl(q);
+    if (!ver.tray && !q.fantasma) return;
+    const tf = ver.tray === 'toda' || q.fantasma ? q.p.tVuelo : tCl(q);
     ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.8; ctx.setLineDash(q.trazos ? [7, 5] : [2, 4]); ctx.beginPath();
     for (let k = 0; k <= 100; k++){ const e = q.p.estado(tf*k/100); k ? ctx.lineTo(X(e.x), Y(e.y)) : ctx.moveTo(X(e.x), Y(e.y)); }
     ctx.stroke(); ctx.restore();
@@ -363,6 +371,7 @@ function vistaTiro(L, c, P){
   if (ver.estrobo){
     const dt = ver.estrobo;
     ps.forEach((q, j) => {
+      if (q.fantasma) return;
       for (let t = 0; t <= tCl(q) + 1e-9; t += dt){
         const e = q.p.estado(t);
         ctx.save(); ctx.globalAlpha = .32; ctx.beginPath(); ctx.arc(X(e.x), Y(e.y), 5, 0, Math.PI*2); ctx.fillStyle = c.ink; ctx.fill(); ctx.restore();
@@ -401,12 +410,13 @@ function vistaTiro(L, c, P){
   }
   // Proyectiles
   ps.forEach((q, j) => {
+    if (q.fantasma) return;
     const e = q.p.estado(tCl(q));
     ctx.beginPath(); ctx.arc(X(e.x), Y(e.y), 7, 0, Math.PI*2); ctx.fillStyle = j ? c.card : c.bloque; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.8; ctx.stroke();
     if (q.nombre) rotulo(ctx, c, X(e.x) + (j ? 12 : -12), Y(e.y) - 14, q.nombre, c.ink, j ? 'left' : 'right', 700, W);
   });
   // Vectores sobre el primero (o sobre todos con gTodos)
-  const q = ps[0], e = q.p.estado(tCl(q)), bx = X(e.x), by = Y(e.y);
+  const q = ps[0], e = q.p.estado(tCl(q)), bx = X(e.x), by = Y(e.y), enSuelo = P.t > 0 && e.y < 1e-6;
   const vref = Math.max(...ps.map(r => Math.max(r.p.v0, r.p.vFinal.modulo)), 10), kv = Math.min(W, H)*0.2/vref, cr = P.crece === undefined ? 1 : P.crece;
   const lista = [];
   const sh = (o, k) => o === 'nueva' ? cr : 1;
@@ -417,23 +427,23 @@ function vistaTiro(L, c, P){
     lista.push({ x:x0, y:y0p, dx:q.p.vx*kv, dy:-q.p.vy*kv, col:c.v, txt:`v₀ = ${N1(q.p.v0)} m/s`, oy:-10, hl:P.hl === 'v' });
   }
   if (ver.vx) lista.push({ x:bx, y:by, dx:e.vx*kv*sh(ver.vx), dy:0, col:c.vx, txt:`vx = ${N1(e.vx)} m/s`, oy:12, al:'left', hl:P.hl === 'vx' });
-  if (ver.vy && Math.abs(e.vy) > 0.05) lista.push({ x:bx, y:by, dx:0, dy:-e.vy*kv*sh(ver.vy), col:c.vy, txt:`vy = ${N1(e.vy)} m/s`, al:'right', ox:-6, hl:P.hl === 'vy' });
+  if (ver.vy && Math.abs(e.vy) > 0.05 && !enSuelo) lista.push({ x:bx, y:by, dx:0, dy:-e.vy*kv*sh(ver.vy), col:c.vy, txt:`vy = ${N1(e.vy)} m/s`, al:'right', ox:-6, hl:P.hl === 'vy' });
   if (ver.v) lista.push({ x:bx, y:by, dx:e.vx*kv*sh(ver.v), dy:-e.vy*kv*sh(ver.v), col:c.v, txt:`v = ${N1(e.v)} m/s`, oy:-10, hl:P.hl === 'v' });
   const ka = Math.min(W, H)*0.11/10;
   if (ver.gTodos && ver.estrobo){
     for (let t = 0; t <= tCl(q) + 1e-9; t += ver.estrobo){ const s = q.p.estado(t); flecha(ctx, X(s.x), Y(s.y) + 7, X(s.x), Y(s.y) + 7 + 10*ka*sh(ver.gTodos), c.a, 2); }
   }
-  if (ver.a) lista.push({ x:bx, y:by + 8, dx:0, dy:10*ka*sh(ver.a), col:c.a, txt:'a = g = 10 m/s²', al:'left', ox:6, oy:-4, hl:P.hl === 'a' });
+  if (ver.a && !enSuelo) lista.push({ x:bx, y:by + 8, dx:0, dy:10*ka*sh(ver.a), col:c.a, txt:'a = g = 10 m/s²', al:'left', ox:6, oy:-4, hl:P.hl === 'a' });
   lista.forEach(f => vector(ctx, c, f, W, H));
   // Marcas: altura máxima y alcance
-  if (ver.cima && q.p.vy > 0){
+  if (ver.cima && q.p.vy > 0 && (q.p.H - q.p.y0)*m.sy > 20){
     const xc = X(q.p.x0 + q.p.vx*q.p.tSubida), yc = Y(q.p.H);
     ctx.save(); ctx.strokeStyle = c.ink; ctx.globalAlpha = .5; ctx.setLineDash([4, 4]); linea(ctx, xc, yc, xc, Y(0)); ctx.restore();
     rotulo(ctx, c, xc + 6, (yc + Y(0))/2, `H = ${N1(q.p.H)} m`, c.ink, 'left', 800, W);
   }
-  if (ver.alcance){
-    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; linea(ctx, X(q.p.x0), Y(0) + 24, X(q.p.x0 + q.p.alcance), Y(0) + 24); ctx.restore();
-    rotulo(ctx, c, (X(q.p.x0) + X(q.p.x0 + q.p.alcance))/2, Y(0) + 24, `alcance ${N1(q.p.alcance)} m`, c.ink, 'center', 800, W);
+  if (ver.alcance && q.p.alcance*m.sx > 40){
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; linea(ctx, X(q.p.x0), Y(0) + 36, X(q.p.x0 + q.p.alcance), Y(0) + 36); ctx.restore();
+    rotulo(ctx, c, (X(q.p.x0) + X(q.p.x0 + q.p.alcance))/2, Y(0) + 36, `alcance ${N1(q.p.alcance)} m`, c.ink, 'center', 800, W);
   }
   return m;
 }
@@ -475,7 +485,7 @@ function vistaCirculo(L, c, P){
   if (ver.w){
     const sg = Math.sign(P.omega) || 1, a0 = -0.3, a1 = a0 - sg*1.4;
     ctx.save(); ctx.strokeStyle = c.w; ctx.lineWidth = 2.4; ctx.beginPath(); ctx.arc(cx, cy, 26, a0, a1, sg > 0); ctx.stroke();
-    const ex = cx + 26*Math.cos(a1), ey = cy + 26*Math.sin(a1); flecha(ctx, ex + 6*sg*Math.sin(a1), ey - 6*sg*Math.cos(a1), ex, ey, c.w, 2.4); ctx.restore();
+    const a2 = a1 + sg*0.55, ex = cx + 26*Math.cos(a1), ey = cy + 26*Math.sin(a1); flecha(ctx, cx + 26*Math.cos(a2), cy + 26*Math.sin(a2), ex, ey, c.w, 2.4); ctx.restore();
     rotulo(ctx, c, cx + 30, cy + 26, `ω = ${fmt(Math.abs(P.omega), 2)} rad/s`, c.w, 'left', 800, W);
   }
   lista.forEach(f => vector(ctx, c, f, W, H));
@@ -555,7 +565,7 @@ const steps = [
      </div>
      <p>El cañón dispara en diagonal, pero la ${V('v','velocidad')} se puede partir en dos: la ${V('vx','horizontal')} (con el coseno, la del cateto pegado al ángulo) y la ${V('vy','vertical')} (con el seno). Desde aquí, son dos problemas: uno horizontal sin aceleración y otro vertical, como un lanzamiento hacia arriba a 30 m/s.</p>`,
    desc:() => 'La velocidad de 50 metros por segundo se parte en 40 horizontales y 30 verticales.' },
- { k:'Paso 4', t:'¿Qué velocidad lleva arriba?', gate:P2, ley:['vx','vy','v'],
+ { k:'Paso 4', t:'¿Qué velocidad lleva arriba?', gate:P2, ley:['vx','vy','v'], leyDespues:['vx','vy'],
    cfg:() => ({ tiros:[{ o:CANON }], t:S.pred[P2.id] ? S.t : 0, xmin:-8, Xmax:260, Ymax:60, canon:true,
      ver: S.pred[P2.id] ? { tray:'hasta', estrobo:0.5, vx:true, vy:true } : { comp0:true } }),
    body:() => `<p>Sube, llega a lo más alto y baja. En el punto más alto, ¿cuánto vale su ${V('v','velocidad')}?</p>${opcionesHTML(P2.opts, 'fb')}<div id="res" class="body"></div>`,
@@ -583,13 +593,13 @@ const steps = [
      <p><button type="button" class="btn" id="otra">Disparar otra vez</button></p>
      ${fuente('Según Prescott y Mitchelmore (2005), si un proyectil avanzó 10 m en el primer segundo, el 60 % de las alumnas dijo que en el segundo siguiente avanza menos.')}`,
    desc:() => 'El proyectil vuela 6 segundos y cae a 240 metros. Su sombra en el suelo avanza 40 metros cada segundo.' },
- { k:'Paso 7', t:'La respuesta', ley:['vx','vy','a'],
+ { k:'Paso 7', t:'La respuesta', ley:['vx','vy'],
    cfg:() => ({ tiros:[{ o:CANON }], t:6, xmin:-8, Xmax:260, Ymax:60, canon:true, ver:{ tray:'toda', estrobo:1, sombras:true, cima:true, alcance:true } }),
    body:() => `<p class="answer">Respuesta: está 6 s en el aire, sube hasta 45 m y cae a 240 m del cañón.</p>
      <p>La receta del examen: parte la velocidad en ${V('vx','vx')} = v₀·cos θ y ${V('vy','v₀y')} = v₀·sen θ; lo vertical es un lanzamiento vertical (o una caída, si sale en horizontal) con ${V('a','a = g = 10 m/s²')} hacia abajo; lo horizontal, velocidad constante. El ${V('t','tiempo')} es el mismo para los dos.</p>`,
    desc:() => 'Respuesta: 6 segundos en el aire, 45 metros de altura máxima, 240 metros de alcance.' },
- { k:'Paso 8', t:'Ahora explora tú', explora:true, ley:['vx','vy','v','a'],
-   cfg:() => ({ tiros: S.previo ? [{ o:datos() }, { o:S.previo, trazos:true }] : [{ o:datos() }], t:S.t, xmin:-10, Xmax:Math.max(80, ...[datos(), S.previo].filter(Boolean).map(o => M.proyectil(o).alcance*1.08)),
+ { k:'Paso 8', t:'Ahora explora tú', explora:true, ley:['vx','vy','a'],
+   cfg:() => ({ tiros: S.previo ? [{ o:datos() }, { o:S.previo, trazos:true, fantasma:true }] : [{ o:datos() }], t:S.t, xmin:-10, Xmax:Math.max(80, ...[datos(), S.previo].filter(Boolean).map(o => M.proyectil(o).alcance*1.08)),
      Ymax:Math.max(30, ...[datos(), S.previo].filter(Boolean).map(o => M.proyectil(o).H*1.15)), canon:true, plataforma:true, asa:true, sobreAsa:S.sobreAsa || S.arrastrando,
      ver:{ tray:'hasta', estrobo:0.5, sombras:true, vx:true, vy:true, a:true, cima:true, alcance:S.t >= M.proyectil(datos()).tVuelo - 1e-6 } }),
    body:() => `<div class="ctrls">
@@ -613,7 +623,7 @@ function draw(){
 }
 function resumen(){
   const p = M.proyectil(datos());
-  return `Disparo a ${S.v0} metros por segundo y ${S.ang} grados desde ${S.y0} metros: altura máxima ${N1(p.H)} metros, ${fmt(p.tVuelo, 2)} segundos en el aire, alcance ${N1(p.alcance)} metros.`;
+  return `Disparo a ${S.v0} metros por segundo y ${S.ang} ${S.ang === 1 ? 'grado' : 'grados'} desde ${S.y0} metros: altura máxima ${N1(p.H)} metros, ${fmt(p.tVuelo, 2)} segundos en el aire, alcance ${N1(p.alcance)} metros.`;
 }
 function vuela(desde, hasta, listo){
   parar(); S.t = desde;
@@ -683,7 +693,7 @@ function prediccion(s){
     if (ch) cv.scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
     esperar(ch ? 380 : 0, () => {
       if (S.step !== paso){ S.ocupado = false; nav(); return; }
-      const fin = () => { S.ocupado = false; nav(); draw(); $('next').focus({ preventScroll:true }); };
+      const fin = () => { S.ocupado = false; nav(); draw(); if (!RM) $('next').focus({ preventScroll:true }); };
       if (an.crece) parar = animarValor(500, f => { S.crece = f; draw(); }, () => vuela(an.desde || 0, an.hasta, fin));
       else vuela(an.desde || 0, an.hasta, fin);
     });
@@ -702,8 +712,11 @@ function explorar(){
   S.t = M.proyectil(datos()).tVuelo; vivo();
 }
 function disparar(){
-  const p = M.proyectil(datos());
-  vuela(0, p.tVuelo, () => { S.previo = datos(); });
+  // El disparo anterior queda a trazos, para comparar (se guarda al empezar el nuevo).
+  const p = M.proyectil(datos()), ahora = JSON.stringify(datos());
+  if (S.ultimo && S.ultimo !== ahora) S.previo = JSON.parse(S.ultimo);
+  S.ultimo = ahora;
+  vuela(0, p.tVuelo);
 }
 function vivo(){
   $('e-v0-o').textContent = `${S.v0} m/s`; $('e-ang-o').textContent = `${S.ang}°`; $('e-y0-o').textContent = `${S.y0} m`;
@@ -714,6 +727,8 @@ function vivo(){
       <div class="eq">subida ${fmt(p.tSubida, 2)} s · altura máxima ${fmt(p.H, 1)} m</div>
       <div class="eq">${V('t','en el aire')} ${fmt(p.tVuelo, 2)} s · alcance ${fmt(p.alcance, 1)} m</div>
     </div>`;
+  // Se rehace en cada movimiento del deslizador: sus datos de color no son paradas del tabulador.
+  $('live').querySelectorAll('.v').forEach(e => e.removeAttribute('tabindex'));
   draw();
 }
 const local = e => { const r = cv.getBoundingClientRect(); return { x:e.clientX - r.left, y:e.clientY - r.top }; };
@@ -747,7 +762,7 @@ cv.addEventListener('keydown', e => {
   e.preventDefault(); parar(); S.ang = clamp(S.ang + d, S.y0 > 0 ? 0 : 1, 90); S.t = M.proyectil(datos()).tVuelo; vivo();
 });
 
-$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); $('stepT').focus({ preventScroll:true }); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 function marcar(k){
   S.hl = k;
@@ -759,7 +774,7 @@ document.addEventListener('pointerout', e => { const t = e.target.closest && e.t
 document.addEventListener('focusin', e => { const t = e.target.closest && e.target.closest('#m1 [data-var]'); if (t) marcar(t.dataset.var); });
 document.addEventListener('focusout', e => { if (e.target.closest && e.target.closest('#m1 [data-var]')) marcar(null); });
 alRedibujarTema(draw);
-addEventListener('modo', () => { if ($('m1').hidden) parar(); else L.resize(); });
+addEventListener('modo', () => { if ($('m1').hidden){ parar(); S.ocupado = false; } else go(S.step); });
 L.resize(); go(0);
 })();
 </script>
@@ -822,8 +837,8 @@ const EXPS = [
           ['c','Llegan al mismo lugar',null],
           ['d','Depende de cuánto pese cada uno','C2-depende-de-la-masa','documentado']],
     ok:'c',
-    antes:() => Object.assign(E, { ang:37, cfg:{ tiros:[{ o:{ v0:50, angulo:37 }, nombre:'37°' }, { o:{ v0:50, angulo:53 }, nombre:'53°', trazos:true }], xmin:-8, Xmax:260, Ymax:90, canon:true, ver:{} }, t:0, T:8 }),
-    despues:() => { E.cfg.ver = { tray:'hasta', estrobo:1 }; correr(); },
+    antes:() => Object.assign(E, { ang:37, cfg:{ tiros:[{ o:{ v0:50, angulo:37 } }, { o:{ v0:50, angulo:53 }, trazos:true }], xmin:-8, Xmax:260, Ymax:90, canon:true, ver:{} }, t:0, T:8 }),
+    despues:() => { E.cfg.ver = { tray:'hasta', estrobo:1 }; E.cfg.tiros[0].nombre = `${E.ang}°`; E.cfg.tiros[1].nombre = `${90 - E.ang}°`; correr(); },
     ctrl:() => `<div class="slider"><label for="q-ang"><span>Ángulo del primero (el otro es su complemento)</span><output id="q-ang-o"></output></label><input id="q-ang" type="range" min="10" max="45" step="1" value="${E.ang}"></div><div class="chips" id="chips2"></div>`,
     vivo:() => {
       const a = M.proyectil({ v0:50, angulo:E.ang }), b = M.proyectil({ v0:50, angulo:90 - E.ang });
@@ -841,7 +856,7 @@ const EXPS = [
           ['c','En línea recta hacia afuera, alejándose del centro','sale-hacia-afuera','hipotesis'],
           ['d','En línea recta, en diagonal entre la tangente y la dirección hacia afuera','entre-tangente-y-radio','hipotesis']],
     ok:'b',
-    antes:() => Object.assign(E, { circ:{ r:1.5, omega:3, theta:0, ver:{ w:true } }, t:0, T:0.5 }),
+    antes:() => Object.assign(E, { circ:{ r:1.5, omega:3, theta:0, ver:{ w:true } }, t:0, T:0.3 }),
     despues:() => { E.circ.ver = { v:true, w:true }; E.circ.suelto = { theta0:0, t:0 }; correr(); },
     ctrl:() => `<p><button type="button" class="btn" id="repetir">Otra vez</button></p>`,
     vivo:() => {},
@@ -879,8 +894,8 @@ function correr(){
     parar = animarValor(RM ? 0 : 1600, f => { E.circ.suelto.t = E.T*f; draw(); });
   } else if (EXPS[S.k].id === 'rotonda'){
     if (RM){ draw(); return; }
-    let id, ini = performance.now(), th0 = E.circ.theta;
-    const tick = now => { E.circ.theta = th0 + (now - ini)/1000*E.circ.omega*180/Math.PI; draw(); id = requestAnimationFrame(tick); };
+    let id, antes = performance.now();
+    const tick = now => { E.circ.theta += (now - antes)/1000*E.circ.omega*180/Math.PI; antes = now; draw(); id = requestAnimationFrame(tick); };
     id = requestAnimationFrame(tick); parar = () => cancelAnimationFrame(id);
   } else {
     const desde = E.desde || 0;
@@ -939,7 +954,7 @@ function ir(k){
     $('res2').innerHTML = x.ctrl() + x.exp + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
     $('res2').querySelectorAll('input').forEach(inp => inp.addEventListener('input', () => { if (x.id !== 'rotonda') parar(); x.alCambiar(); x.vivo(); draw(); }));
     const rep = $('repetir'); if (rep) rep.onclick = () => { if (E.circ && E.circ.suelto) E.circ.suelto.t = 0; E.t = 0; correr(); };
-    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); $('t2').focus({ preventScroll:true }); };
     sinParada($('res2')); x.vivo();
   };
   btns.forEach(b => b.onclick = () => {
@@ -951,7 +966,7 @@ function ir(k){
     $('fb2').focus({ preventScroll:true });
     const ch = chico();
     if (ch) cv.scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
-    esperar(ch ? 380 : 0, () => { if (S.k !== k) return; E.t = 0; x.despues(); draw(); });
+    esperar(ch ? 380 : 0, () => { if (S.k !== k || $('m2').hidden) return; E.t = 0; x.despues(); draw(); });
   });
   pintar(); draw();
 }
