@@ -1,0 +1,18 @@
+{
+  "id": "orden-informacion",
+  "titulo": "El tablero de las pistas: orden de información y verdades y mentiras",
+  "formato": "escena",
+  "unidades": [
+    "razonamiento-matematico.ordenamiento-de-informacion",
+    "razonamiento-matematico.verdades-y-mentiras",
+    "razonamiento-matematico.certezas",
+    "razonamiento-matematico.razonamiento-deductivo"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}

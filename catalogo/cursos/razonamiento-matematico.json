@@ -16,7 +16,7 @@
       "universidades": {"unmsm": {"temas": [1, 2, 18]}},
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["orden-informacion"],
       "investigacion": null
     },
     {
@@ -41,7 +41,7 @@
       "universidades": {"unmsm": {"temas": [3]}},
       "potencial_visual": "alto",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["orden-informacion"],
       "investigacion": null
     },
     {
@@ -55,7 +55,7 @@
       "universidades": {"unmsm": {"temas": [4]}},
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["orden-informacion"],
       "investigacion": null
     },
     {
@@ -121,7 +121,7 @@
       "universidades": {"unmsm": {"temas": [9]}},
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["orden-informacion"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
