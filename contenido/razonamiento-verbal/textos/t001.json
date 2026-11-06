@@ -1,0 +1,213 @@
+{
+  "id": "t001",
+  "version": 1,
+  "titulo": "El frío que conserva",
+  "tema": "Perú andino · tecnología tradicional",
+  "grado": 3,
+  "dificultad": 1,
+  "tipo_texto": "expositivo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "contraste",
+        "t": "En las punas del sur andino, las heladas de junio pueden arruinar una chacra de papa en una sola noche."
+      },
+      {
+        "id": "o2",
+        "rol": "principal",
+        "t": "Sin embargo, las familias aymaras y quechuas convirtieron ese mismo frío en una herramienta."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "Desde hace siglos, extienden las papas sobre el pasto para que se congelen de noche y se descongelen con el sol del día."
+      },
+      {
+        "id": "o4",
+        "rol": "detalle",
+        "t": "Cada ciclo de congelar y descongelar rompe las células del tubérculo, y el agua sale con más facilidad."
+      },
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "Después, pisan las papas para exprimirles el agua que les queda y las dejan secar al sol."
+      }
+    ],
+    [
+      {
+        "id": "o6",
+        "rol": "detalle",
+        "t": "El resultado es el chuño negro, un alimento liviano que puede guardarse varios años sin echarse a perder."
+      },
+      {
+        "id": "o7",
+        "rol": "detalle",
+        "t": "Como ha perdido casi toda su agua, pesa mucho menos que la papa fresca y se lleva con facilidad en viajes largos."
+      },
+      {
+        "id": "o8",
+        "rol": "detalle",
+        "t": "Por eso, en los años de mala cosecha, el chuño guardado ha servido como reserva contra el hambre."
+      },
+      {
+        "id": "o9",
+        "rol": "principal",
+        "t": "Así, la misma helada que amenaza la chacra se vuelve, en manos de estas familias, la forma de conservar la papa como chuño."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que mejor resume todo el texto.",
+        "aceptadas": [
+          "o2",
+          "o9"
+        ],
+        "ninguna": "RV3",
+        "codigos": {
+          "o1": "RV4"
+        },
+        "explicacion": "La oración 2 anuncia la idea y la 9 la completa: el mismo frío que amenaza la chacra sirve para conservar la papa. Las demás cuentan cómo se hace o qué se logra.",
+        "explicaciones": {
+          "o1": "La primera oración presenta el problema, pero el texto va más allá: dice cómo ese problema se vuelve útil."
+        }
+      },
+      "enunciado": "¿Cuál es la idea principal del texto?",
+      "alternativas": [
+        {
+          "t": "Las comunidades andinas aprovechan la helada, que daña los cultivos, para conservar la papa como chuño.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o9"
+          ],
+          "explicacion": "Junta las dos partes del texto: la helada como amenaza para la chacra y como medio para conservar la papa."
+        },
+        {
+          "t": "Después de congelarlas durante varias noches, las familias pisan las papas para sacarles el agua que les queda.",
+          "codigo": "RV1",
+          "origen": "o5",
+          "explicacion": "Es verdad, pero es un paso del procedimiento. El texto lo cuenta para explicar algo más amplio."
+        },
+        {
+          "t": "La agricultura de las punas andinas depende de las heladas y del clima.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto no habla de toda la agricultura, sino de la helada y de la papa."
+        },
+        {
+          "t": "Las heladas de junio pueden arruinar en una sola noche una chacra de papa.",
+          "codigo": "RV3",
+          "origen": "o1",
+          "explicacion": "Se queda con la mitad del texto. Falta lo principal: que ese mismo frío sirve para conservar."
+        },
+        {
+          "t": "El chuño también se prepara en el altiplano de Bolivia y en el norte de Chile.",
+          "codigo": "RV8",
+          "explicacion": "Puede ser cierto, pero el texto no lo dice. La idea principal sale de lo que se leyó, no de lo que se sabe por otro lado."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.sentido-contextual",
+      "enunciado": "En el texto, la palabra HERRAMIENTA significa",
+      "alternativas": [
+        {
+          "t": "un recurso que se aprovecha.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o3"
+          ],
+          "explicacion": "El frío no es un objeto: es algo que las familias usan a su favor para conservar la papa."
+        },
+        {
+          "t": "un instrumento para labrar la tierra.",
+          "codigo": "RV18",
+          "origen": "o2",
+          "explicacion": "Es el sentido más común de la palabra, pero aquí no se habla de un objeto, sino del frío."
+        },
+        {
+          "t": "un oficio que se aprende.",
+          "codigo": "RV19",
+          "explicacion": "\"Oficio\" es del mismo campo que \"herramienta\" (el trabajo), pero no significa lo mismo, y el texto no habla de un oficio."
+        },
+        {
+          "t": "un frío que arruina la chacra.",
+          "codigo": "RV5",
+          "origen": "o1",
+          "explicacion": "Repite palabras de la primera oración, pero el \"Sin embargo\" de la oración 2 dice lo contrario: ese frío ahora se usa a favor."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "intencion",
+      "unidad": "razonamiento-verbal.inferencias",
+      "previo": {
+        "tipo": "proposito",
+        "pide": "Antes de ver las alternativas: ¿qué busca sobre todo el autor?",
+        "aceptada": "explicar",
+        "codigos": {
+          "convencer": "RV33",
+          "narrar": "RV13"
+        },
+        "explicacion": "El texto cuenta cómo se hace el chuño y para qué sirve, sin defender una postura ni contar una historia."
+      },
+      "enunciado": "¿Cuál es la intención principal del autor?",
+      "alternativas": [
+        {
+          "t": "Explicar cómo las familias andinas aprovechan la helada para conservar la papa.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o9"
+          ],
+          "explicacion": "El texto expone un procedimiento y su resultado, sin tomar partido: explica."
+        },
+        {
+          "t": "Narrar la vida diaria de las familias aymaras y quechuas.",
+          "codigo": "RV13",
+          "explicacion": "El texto no cuenta una historia ni sigue a personas: describe un procedimiento."
+        },
+        {
+          "t": "Describir el chuño negro: cuánto pesa, cuánto tiempo dura y por qué se lleva con facilidad en los viajes.",
+          "codigo": "RV3",
+          "origen": "o6",
+          "explicacion": "El chuño aparece, pero el texto lo usa para mostrar cómo la helada pasa de amenaza a recurso, y eso esta alternativa lo deja fuera."
+        },
+        {
+          "t": "Convencer al lector de que el chuño es mejor que la papa fresca.",
+          "codigo": "RV33",
+          "explicacion": "El texto no dice cuál es mejor ni intenta convencer: solo dice que el chuño pesa menos que la papa fresca y que se guarda varios años."
+        },
+        {
+          "t": "Informar sobre el clima de las punas del sur andino.",
+          "codigo": "RV2",
+          "origen": "o1",
+          "explicacion": "El clima es el punto de partida, pero el texto trata de cómo se aprovecha la helada, no del clima en general."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-06",
+  "hechos": [
+    {
+      "afirmacion": "El chuño negro se hace congelando la papa de noche, descongelándola de día, pisándola y secándola al sol.",
+      "fuente": "Conocimiento etnográfico ampliamente descrito (p. ej., entradas de enciclopedias sobre el chuño); por confirmar con una fuente académica."
+    },
+    {
+      "afirmacion": "El chuño se conserva varios años.",
+      "fuente": "Misma fuente; las descripciones hablan de años e incluso de más de una década."
+    }
+  ],
+  "revision": null
+}

@@ -1,0 +1,239 @@
+{
+  "id": "t006",
+  "version": 1,
+  "titulo": "El rojo que vino de la tuna",
+  "tema": "Ciencia e historia · tintes naturales",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "expositivo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "Sobre las pencas de la tuna vive un insecto pequeño y blanquecino, la cochinilla."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "Si se aplasta una hembra, deja una mancha de un rojo intenso, que se debe a una sustancia llamada ácido carmínico."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "Mucho antes de los incas, los tejedores de los Andes ya la usaban para teñir mantos de colores firmes."
+      }
+    ],
+    [
+      {
+        "id": "o4",
+        "rol": "detalle",
+        "t": "Después de la conquista, el tinte de cochinilla viajó a Europa y se volvió una de las mercancías más valiosas que salían de América."
+      },
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "Su suerte cambió en el siglo XIX, cuando los químicos aprendieron a fabricar colorantes artificiales, más baratos y fáciles de producir."
+      },
+      {
+        "id": "o6",
+        "rol": "contraste",
+        "t": "Durante décadas, la cochinilla pareció condenada a desaparecer del comercio."
+      }
+    ],
+    [
+      {
+        "id": "o7",
+        "rol": "detalle",
+        "t": "Sin embargo, en el siglo XX se descubrió que algunos colorantes artificiales usados en alimentos podían dañar la salud, y varios fueron prohibidos."
+      },
+      {
+        "id": "o8",
+        "rol": "detalle",
+        "t": "Entonces la industria volvió a buscar el rojo natural para yogures, embutidos y cosméticos."
+      },
+      {
+        "id": "o9",
+        "rol": "principal",
+        "t": "Hoy el Perú es uno de los principales productores de cochinilla del mundo: un insecto que parecía cosa del pasado recuperó su valor cuando cambió lo que la gente esperaba de sus alimentos."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que mejor resume todo el texto.",
+        "aceptadas": [
+          "o9"
+        ],
+        "ninguna": "RV3",
+        "codigos": {
+          "o1": "RV4"
+        },
+        "explicacion": "La oración 9 junta la historia entera: la cochinilla parecía cosa del pasado y recuperó su valor. Las demás cuentan cada etapa.",
+        "explicaciones": {
+          "o6": "Esa oración cuenta solo el momento en que la cochinilla parecía perdida; el texto sigue y cuenta cómo se recuperó."
+        }
+      },
+      "enunciado": "¿Cuál es la idea principal del texto?",
+      "alternativas": [
+        {
+          "t": "La cochinilla perdió valor frente a los colorantes artificiales y lo recuperó cuando se buscaron tintes naturales.",
+          "correcta": true,
+          "evidencia": [
+            "o6",
+            "o9"
+          ],
+          "explicacion": "Resume las etapas del texto en una sola idea: caída frente a lo artificial y regreso cuando cambió lo que se buscaba."
+        },
+        {
+          "t": "Al aplastar una hembra de cochinilla queda una mancha de un rojo intenso, que se debe al ácido carmínico que contiene.",
+          "codigo": "RV1",
+          "origen": "o2",
+          "explicacion": "Es un detalle de la cochinilla. El texto cuenta su historia, no solo cómo produce el color."
+        },
+        {
+          "t": "Los tintes han sido importantes en la historia de la humanidad.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto habla de un tinte, la cochinilla, y de lo que le pasó."
+        },
+        {
+          "t": "En el siglo XIX, los colorantes artificiales desplazaron a la cochinilla del comercio.",
+          "codigo": "RV3",
+          "origen": "o5",
+          "explicacion": "Es una etapa del texto, pero deja fuera el final: la cochinilla recuperó su valor."
+        },
+        {
+          "t": "Los productos naturales son siempre mejores que los artificiales.",
+          "codigo": "RV33",
+          "origen": "o7",
+          "explicacion": "El texto no defiende esa idea: dice que \"algunos\" colorantes artificiales podían dañar la salud, no que todo lo natural sea mejor."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.inferencias",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
+        "sonda": "Los pueblos de los Andes conocían el tinte de cochinilla antes que los europeos.",
+        "clase": "se-deduce",
+        "codigos": {
+          "lo-dice": "RV6",
+          "no-se-sabe": "RV34",
+          "lo-contradice": null
+        },
+        "explicacion": "El texto no lo dice así, pero se deduce: los tejedores andinos la usaban antes de los incas (oración 3) y llegó a Europa después de la conquista (oración 4)."
+      },
+      "enunciado": "Se infiere del texto que el valor comercial de la cochinilla dependió, sobre todo, de",
+      "alternativas": [
+        {
+          "t": "la competencia con los colorantes artificiales y de lo que la gente esperaba de ellos.",
+          "correcta": true,
+          "evidencia": [
+            "o5",
+            "o7",
+            "o9"
+          ],
+          "explicacion": "Perdió valor cuando aparecieron colorantes artificiales más baratos (oración 5) y lo recuperó cuando algunos resultaron dañinos (oraciones 7 a 9)."
+        },
+        {
+          "t": "el ácido carmínico, que deja una mancha de un rojo intenso.",
+          "codigo": "RV5",
+          "origen": "o2",
+          "explicacion": "Repite palabras de la oración 2, pero el ácido carmínico estuvo siempre: no explica por qué el valor bajó y subió."
+        },
+        {
+          "t": "la cantidad de tunas que se cultivaban en los Andes.",
+          "codigo": "RV8",
+          "explicacion": "El texto no dice nada sobre cuántas tunas se cultivaban; es una suposición de fuera del texto."
+        },
+        {
+          "t": "la decisión de los incas de venderla a Europa.",
+          "codigo": "RV9",
+          "origen": "o4",
+          "explicacion": "Choca con el texto aunque no lo diga con esas palabras: la cochinilla llegó a Europa después de la conquista, no por decisión de los incas."
+        },
+        {
+          "t": "la belleza de su color, que siempre fue lo único que importó.",
+          "codigo": "RV11",
+          "explicacion": "El texto muestra que importaron también el precio y la salud; \"siempre\" y \"lo único\" no salen del texto."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "conector",
+      "unidad": "razonamiento-verbal.conectores",
+      "previo": {
+        "tipo": "relacion",
+        "pide": "Antes de ver las alternativas: ¿qué relación hay entre la oración 6 y la oración 7?",
+        "aceptada": "oposicion",
+        "codigos": {
+          "suma": "RV26",
+          "causa": "RV24"
+        },
+        "explicacion": "La oración 6 dice que la cochinilla parecía condenada a desaparecer; la 7, con \"Sin embargo\", cuenta lo que cambió esa situación. Se oponen."
+      },
+      "enunciado": "En la oración 7, el conector SIN EMBARGO indica que lo que sigue",
+      "alternativas": [
+        {
+          "t": "va en contra de lo que se esperaba según la oración anterior.",
+          "correcta": true,
+          "evidencia": [
+            "o6",
+            "o7"
+          ],
+          "explicacion": "Si la cochinilla parecía condenada a desaparecer (oración 6), el \"Sin embargo\" anuncia un giro: algo que cambió ese destino."
+        },
+        {
+          "t": "es una consecuencia de que la cochinilla casi desapareciera.",
+          "codigo": "RV24",
+          "explicacion": "Se lee como causa y efecto lo que es una oposición: que la cochinilla casi desapareciera no causó que se prohibieran los colorantes."
+        },
+        {
+          "t": "agrega otra razón por la que la cochinilla dejó de venderse.",
+          "codigo": "RV26",
+          "explicacion": "No es una suma: la oración 7 cuenta lo que hizo que la cochinilla volviera a venderse, no otra razón para su caída."
+        },
+        {
+          "t": "repite que los colorantes artificiales eran más baratos.",
+          "codigo": "RV5",
+          "origen": "o5",
+          "explicacion": "Eso lo dice la oración 5. La 7 trae algo nuevo: que algunos colorantes artificiales podían dañar la salud."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-06",
+  "hechos": [
+    {
+      "afirmacion": "El color de la cochinilla (Dactylopius coccus) se debe al ácido carmínico de las hembras.",
+      "fuente": "Literatura de química de colorantes (p. ej., Dapson, 2007, Biotechnic & Histochemistry, sobre el carmín)."
+    },
+    {
+      "afirmacion": "Hay textiles andinos preincaicos teñidos con cochinilla (p. ej., de Paracas y Nasca).",
+      "fuente": "Estudios de análisis de colorantes en textiles prehispánicos (p. ej., Wouters y Rosario-Chirinos, 1992, Journal of the American Institute for Conservation)."
+    },
+    {
+      "afirmacion": "La cochinilla fue una de las exportaciones más valiosas de la América colonial y perdió mercado con los colorantes sintéticos del siglo XIX.",
+      "fuente": "Greenfield, A. B. (2005). A perfect red. HarperCollins."
+    },
+    {
+      "afirmacion": "Algunos colorantes sintéticos para alimentos fueron prohibidos en el siglo XX por riesgos para la salud (p. ej., el rojo n.º 2 en EE. UU., 1976).",
+      "fuente": "FDA, historia de los aditivos de color."
+    },
+    {
+      "afirmacion": "El Perú es uno de los principales productores mundiales de cochinilla.",
+      "fuente": "Fuentes del sector agrario peruano (Minagri, Promperú); por citar."
+    }
+  ],
+  "revision": null
+}

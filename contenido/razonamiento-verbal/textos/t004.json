@@ -1,0 +1,216 @@
+{
+  "id": "t004",
+  "version": 1,
+  "titulo": "Cuerdas que guardan cuentas",
+  "tema": "Historia · el Tahuantinsuyo",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "argumentativo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "Los incas no usaron la escritura alfabética, pero llevaron registros con los quipus: cuerdas de algodón o de lana de las que cuelgan otras cuerdas con nudos."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "Desde comienzos del siglo XX se sabe que muchos quipus guardan números: la clase de nudo y su posición en la cuerda indican unidades, decenas y centenas, como en nuestro sistema decimal."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "Los especialistas que los hacían y los leían, los quipucamayos, registraban así tributos, cosechas o cantidades de personas."
+      }
+    ],
+    [
+      {
+        "id": "o4",
+        "rol": "apoyo",
+        "t": "La discusión empieza con otra pregunta: ¿guardaban los quipus solo cantidades, o también nombres e historias?"
+      },
+      {
+        "id": "o5",
+        "rol": "cita",
+        "t": "Algunos investigadores sostienen que sí, porque los cronistas españoles contaron que los quipucamayos leían en ellos genealogías y relatos."
+      },
+      {
+        "id": "o6",
+        "rol": "cita",
+        "t": "Otros responden que esos relatos pudieron estar en la memoria del quipucamayo, y que el quipu solo le servía de ayuda para recordar, como una lista de puntos."
+      }
+    ],
+    [
+      {
+        "id": "o7",
+        "rol": "apoyo",
+        "t": "Ninguna de las dos posturas está demostrada, porque todavía no se ha podido leer con seguridad un quipu que no sea numérico."
+      },
+      {
+        "id": "o8",
+        "rol": "principal",
+        "t": "Lo que sí está claro es que la falta de letras no significa falta de registros: los incas administraron un Estado enorme con cuerdas y nudos."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que mejor resume la conclusión del autor.",
+        "aceptadas": [
+          "o8"
+        ],
+        "ninguna": "RV3",
+        "codigos": {
+          "o1": "RV4",
+          "o5": "RV33",
+          "o6": "RV33"
+        },
+        "explicacion": "La oración 8 es la conclusión del autor: por encima del debate, los quipus fueron un sistema de registro eficaz.",
+        "explicaciones": {
+          "o5": "Es la postura de \"algunos investigadores\", no la del autor.",
+          "o6": "Es la postura de \"otros\" investigadores, no la del autor.",
+          "o4": "Plantea la pregunta del debate, pero no la conclusión."
+        }
+      },
+      "enunciado": "¿Cuál es la idea principal del texto?",
+      "alternativas": [
+        {
+          "t": "Aunque se discute si los quipus guardaban relatos, es claro que fueron un sistema de registro eficaz.",
+          "correcta": true,
+          "evidencia": [
+            "o7",
+            "o8"
+          ],
+          "explicacion": "Junta el debate (oraciones 4 a 7) con la conclusión del autor (oración 8)."
+        },
+        {
+          "t": "La clase de nudo y su posición en la cuerda indicaban si se trataba de unidades, decenas o centenas.",
+          "codigo": "RV1",
+          "origen": "o2",
+          "explicacion": "Es un detalle sobre cómo se anotaban los números. El texto lo usa como punto de partida."
+        },
+        {
+          "t": "Las culturas antiguas desarrollaron muchas formas de registrar información.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto habla de los quipus incas y del debate sobre lo que guardaban."
+        },
+        {
+          "t": "Los investigadores no se ponen de acuerdo sobre lo que guardaban los quipus.",
+          "codigo": "RV3",
+          "origen": "o7",
+          "explicacion": "Es una parte del texto, pero deja fuera la conclusión del autor (oración 8)."
+        },
+        {
+          "t": "Los quipus eran una escritura tan completa como la alfabética.",
+          "codigo": "RV33",
+          "explicacion": "El autor no toma esa postura: dice que ninguna de las dos está demostrada."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "compatibilidad",
+      "unidad": "razonamiento-verbal.compatibilidad",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
+        "sonda": "El autor cree que los quipus guardaban relatos.",
+        "clase": "no-se-sabe",
+        "codigos": {
+          "lo-dice": "RV33",
+          "se-deduce": "RV7",
+          "lo-contradice": null
+        },
+        "explicacion": "El texto presenta esa postura como de \"algunos investigadores\", y el autor dice que no está demostrada. No sabemos qué cree él."
+      },
+      "enunciado": "Es compatible con el texto afirmar que",
+      "alternativas": [
+        {
+          "t": "los investigadores de las dos posturas aceptan que muchos quipus registraban cantidades.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o4"
+          ],
+          "explicacion": "Que muchos quipus guardan números \"se sabe\" desde el siglo XX (oración 2); el debate es si \"también\" guardaban historias (oración 4)."
+        },
+        {
+          "t": "los quipucamayos leían en los quipus genealogías y relatos, como está comprobado.",
+          "codigo": "RV5",
+          "origen": "o5",
+          "explicacion": "Repite palabras de la oración 5, pero le agrega \"está comprobado\", y la oración 7 dice que ninguna postura está demostrada."
+        },
+        {
+          "t": "los cronistas españoles inventaron lo que contaron sobre los quipus.",
+          "codigo": "RV7",
+          "origen": "o6",
+          "explicacion": "El texto no dice que los cronistas inventaran nada; la segunda postura solo explica sus relatos de otra manera."
+        },
+        {
+          "t": "ningún quipu podrá ser leído jamás.",
+          "codigo": "RV11",
+          "origen": "o7",
+          "explicacion": "El texto dice que \"todavía no\" se ha podido leer uno que no sea numérico, no que nunca se podrá."
+        },
+        {
+          "t": "los quipus todavía se usan en algunas comunidades andinas.",
+          "codigo": "RV8",
+          "explicacion": "Puede ser cierto, pero el texto no dice nada sobre el uso actual de los quipus."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.extrapolacion",
+      "enunciado": "Si se encontrara un quipu en el que pudieran leerse con seguridad nombres de personas, ese hallazgo",
+      "alternativas": [
+        {
+          "t": "apoyaría a quienes sostienen que los quipus también guardaban nombres e historias.",
+          "correcta": true,
+          "evidencia": [
+            "o5",
+            "o7"
+          ],
+          "explicacion": "Es justo lo que falta, según la oración 7, para decidir el debate a favor de la primera postura."
+        },
+        {
+          "t": "confirmaría que los quipus usaban un sistema decimal.",
+          "codigo": "RV12",
+          "origen": "o2",
+          "explicacion": "Eso ya se sabe desde el siglo XX (oración 2); el hallazgo no tiene que ver con los números."
+        },
+        {
+          "t": "demostraría que todos los quipus guardaban historias.",
+          "codigo": "RV11",
+          "explicacion": "Un solo quipu con nombres no prueba nada sobre \"todos\" los quipus."
+        },
+        {
+          "t": "probaría que los incas tenían escritura alfabética.",
+          "codigo": "RV7",
+          "origen": "o1",
+          "explicacion": "Leer nombres en un quipu no significa que fuera un alfabeto; además, la oración 1 dice que los incas no usaron la escritura alfabética."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-06",
+  "hechos": [
+    {
+      "afirmacion": "Los quipus registran números en un sistema decimal según el tipo y la posición de los nudos; se sabe desde comienzos del siglo XX.",
+      "fuente": "Locke, L. L. (1912). The ancient quipu, a Peruvian knot record. American Anthropologist 14(2); Ascher y Ascher (1981), Code of the quipu."
+    },
+    {
+      "afirmacion": "Hay un debate sobre si los quipus registraban también información no numérica, y no hay una lectura aceptada de un quipu narrativo.",
+      "fuente": "Urton, G. (2003). Signs of the Inka khipu. University of Texas Press; Hyland, S. (2017), Current Anthropology, propone una lectura parcial de nombres que no es aceptada por todos."
+    }
+  ],
+  "revision": null
+}

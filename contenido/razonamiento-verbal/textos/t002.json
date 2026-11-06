@@ -1,0 +1,247 @@
+{
+  "id": "t002",
+  "version": 1,
+  "titulo": "El puente que se teje cada año",
+  "tema": "Perú andino · patrimonio",
+  "grado": 3,
+  "dificultad": 1,
+  "tipo_texto": "argumentativo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "Sobre el río Apurímac, en la provincia cusqueña de Canas, cuelga un puente hecho de paja."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "Es el Q'eswachaka, y lo rehacen cada año las comunidades vecinas con sogas trenzadas de q'oya, un pasto de la puna."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "Durante pocos días, cientos de comuneros tuercen la paja en cordeles delgados, unen los cordeles en sogas gruesas y tienden las sogas de una orilla a la otra."
+      },
+      {
+        "id": "o4",
+        "rol": "detalle",
+        "t": "Cuando el puente nuevo está listo, el viejo se desata y cae al río."
+      }
+    ],
+    [
+      {
+        "id": "o5",
+        "rol": "contraste",
+        "t": "Podría pensarse que es una pérdida de trabajo construir cada año algo que dura tan poco."
+      },
+      {
+        "id": "o6",
+        "rol": "principal",
+        "t": "Sin embargo, esa renovación es justamente lo que mantiene vivo el puente: como la paja se pudre, el saber para trenzarla solo sobrevive si se practica una y otra vez."
+      },
+      {
+        "id": "o7",
+        "rol": "apoyo",
+        "t": "Los mayores enseñan a los jóvenes mientras trabajan, y cada familia aporta su parte de sogas."
+      },
+      {
+        "id": "o8",
+        "rol": "principal",
+        "t": "Así, el puente no se conserva como un objeto guardado en un museo, sino como una costumbre que se repite."
+      },
+      {
+        "id": "o9",
+        "rol": "detalle",
+        "t": "En 2013, la Unesco reconoció como patrimonio cultural inmaterial de la humanidad los conocimientos y el trabajo con que se renueva cada año."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que mejor resume la idea del autor.",
+        "aceptadas": [
+          "o6",
+          "o8"
+        ],
+        "ninguna": "RV3",
+        "codigos": {
+          "o1": "RV4",
+          "o5": "RV3"
+        },
+        "explicacion": "La oración 6 dice la idea del autor (la renovación mantiene vivo el saber) y la 8 la repite con otras palabras. El primer párrafo solo describe el puente.",
+        "explicaciones": {
+          "o5": "Esa oración presenta una opinión que el autor va a rechazar: es lo que el \"Sin embargo\" de la oración 6 contradice."
+        }
+      },
+      "enunciado": "¿Cuál es la idea principal del texto?",
+      "alternativas": [
+        {
+          "t": "Renovar cada año el Q'eswachaka es lo que mantiene vivo el saber para construirlo.",
+          "correcta": true,
+          "evidencia": [
+            "o6",
+            "o8"
+          ],
+          "explicacion": "Es la tesis del autor: el puente se conserva porque se rehace, ya que el saber solo sobrevive si se practica."
+        },
+        {
+          "t": "Cada año, cientos de comuneros tuercen la paja de la puna en cordeles y los unen en sogas gruesas.",
+          "codigo": "RV1",
+          "origen": "o3",
+          "explicacion": "Es un detalle del trabajo. El autor lo cuenta para llegar a otra idea: por qué conviene rehacer el puente."
+        },
+        {
+          "t": "Las comunidades andinas conservan muchas tradiciones antiguas en todo el Perú.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto habla de un puente y de por qué se renueva, no de todas las tradiciones."
+        },
+        {
+          "t": "El puente de paja dura poco porque la paja se pudre con el tiempo.",
+          "codigo": "RV3",
+          "origen": "o6",
+          "explicacion": "Es una parte de la oración 6, pero deja fuera lo que el autor quiere mostrar: que esa renovación mantiene vivo el saber."
+        },
+        {
+          "t": "El Q'eswachaka es el último puente inca que todavía se usa en los Andes.",
+          "codigo": "RV8",
+          "explicacion": "Es algo que se dice a menudo, pero el texto no lo menciona. La idea principal sale de lo que se leyó."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.inferencias",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
+        "sonda": "Si un año no se renovara el puente, el saber para hacerlo podría empezar a perderse.",
+        "clase": "se-deduce",
+        "codigos": {
+          "lo-dice": "RV6",
+          "no-se-sabe": "RV34",
+          "lo-contradice": null
+        },
+        "explicacion": "El texto no lo dice con esas palabras, pero se deduce de la oración 6: si el saber solo sobrevive cuando se practica, dejar de practicarlo lo pone en riesgo."
+      },
+      "enunciado": "Se infiere del texto que la renovación anual del puente",
+      "alternativas": [
+        {
+          "t": "permite que los jóvenes aprendan una técnica que, sin práctica, se olvidaría.",
+          "correcta": true,
+          "evidencia": [
+            "o6",
+            "o7"
+          ],
+          "explicacion": "Une dos ideas del texto: el saber sobrevive solo si se practica (oración 6) y los mayores enseñan a los jóvenes mientras trabajan (oración 7)."
+        },
+        {
+          "t": "se hace con sogas trenzadas de q'oya, un pasto que crece en la puna.",
+          "codigo": "RV6",
+          "origen": "o2",
+          "explicacion": "Eso lo dice el texto tal cual (oración 2): no es una inferencia."
+        },
+        {
+          "t": "es la única forma de conservar cualquier tradición de los Andes.",
+          "codigo": "RV7",
+          "explicacion": "El texto habla de este puente. Pasar a \"cualquier tradición\" y a \"la única forma\" va mucho más allá de lo que afirma."
+        },
+        {
+          "t": "ocurre porque la paja se pudre y el río se lleva los puentes viejos cada invierno.",
+          "codigo": "RV5",
+          "origen": "o4",
+          "explicacion": "Mezcla palabras del texto (\"se pudre\", \"río\", \"viejo\") con una relación que el texto no establece: el río no es la causa de la renovación."
+        },
+        {
+          "t": "hace que todos los jóvenes de Canas sepan construir puentes de paja.",
+          "codigo": "RV11",
+          "explicacion": "El texto dice que los mayores enseñan a los jóvenes, no que todos aprendan. \"Todos\" es más de lo que afirma."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.sentido-contextual",
+      "enunciado": "En el texto, la palabra PÉRDIDA (en \"una pérdida de trabajo\") significa",
+      "alternativas": [
+        {
+          "t": "un desperdicio.",
+          "correcta": true,
+          "evidencia": [
+            "o5"
+          ],
+          "explicacion": "La oración dice que podría parecer un trabajo hecho en vano, porque lo construido dura poco: un desperdicio."
+        },
+        {
+          "t": "un extravío.",
+          "codigo": "RV18",
+          "explicacion": "Es el sentido más común de \"pérdida\" (perder algo y no encontrarlo), pero aquí no se pierde ningún objeto."
+        },
+        {
+          "t": "un daño.",
+          "codigo": "RV19",
+          "explicacion": "\"Daño\" está cerca en el sentido, pero no es lo mismo: la oración no dice que el trabajo dañe algo, sino que se gasta en vano."
+        },
+        {
+          "t": "una costumbre que dura poco.",
+          "codigo": "RV5",
+          "origen": "o5",
+          "explicacion": "Repite palabras de la misma oración (\"dura tan poco\") y de la 8 (\"costumbre\"), pero no dice qué significa \"pérdida\"."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.extrapolacion",
+      "enunciado": "Si la paja con que se hace el puente no se pudriera nunca, según la lógica del texto,",
+      "alternativas": [
+        {
+          "t": "habría menos ocasiones de practicar y enseñar el trenzado.",
+          "correcta": true,
+          "evidencia": [
+            "o6",
+            "o7"
+          ],
+          "explicacion": "El texto dice que el saber sobrevive porque la paja se pudre y obliga a rehacer el puente. Sin esa obligación, se practicaría menos."
+        },
+        {
+          "t": "el puente seguiría hecho con sogas trenzadas de q'oya.",
+          "codigo": "RV12",
+          "origen": "o2",
+          "explicacion": "Eso repite lo que el texto ya dice; no saca ninguna consecuencia del cambio que plantea la pregunta."
+        },
+        {
+          "t": "las comunidades lo reemplazarían por un puente de acero.",
+          "codigo": "RV8",
+          "explicacion": "El texto no da ninguna base para eso: es una suposición que sale de lo que uno imagina, no de la lógica del texto."
+        },
+        {
+          "t": "nadie volvería a cruzar el río Apurímac por ese lugar.",
+          "codigo": "RV11",
+          "explicacion": "Es una consecuencia exagerada y absoluta que no sale del texto: el puente seguiría ahí."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-06",
+  "hechos": [
+    {
+      "afirmacion": "El Q'eswachaka cruza el río Apurímac en la provincia de Canas (Cusco) y se renueva cada año con sogas de q'oya.",
+      "fuente": "Unesco, Lista representativa del patrimonio cultural inmaterial (2013): \"Conocimientos, técnicas y rituales vinculados a la renovación anual del puente Q'eswachaka\"."
+    },
+    {
+      "afirmacion": "El puente viejo se desata y cae al río; la renovación dura pocos días.",
+      "fuente": "Misma ficha de la Unesco y crónicas de prensa sobre la renovación; por confirmar."
+    }
+  ],
+  "revision": null
+}

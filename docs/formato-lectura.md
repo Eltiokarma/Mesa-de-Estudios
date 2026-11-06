@@ -2,7 +2,7 @@
 
 6 de noviembre de 2026 · Propuesta de diseño para la tarea pl4 de la hoja de ruta
 
-Es el tercer formato de `docs/arquitectura.md`, junto a "escena" y "predicciones", y sirve para razonamiento verbal: textos con preguntas, donde cada alternativa incorrecta es un error con nombre. Los errores salen de `docs/investigacion/razonamiento-verbal-ideas-erroneas.md` (códigos RV1 a RV33).
+Es el tercer formato de `docs/arquitectura.md`, junto a "escena" y "predicciones", y sirve para razonamiento verbal: textos con preguntas, donde cada alternativa incorrecta es un error con nombre. Los errores salen de `docs/investigacion/razonamiento-verbal-ideas-erroneas.md` (códigos RV1 a RV34).
 
 **Es una propuesta.** No toca `nucleo/`, `app/` ni `catalogo/`: eso lo implementa la conversación principal (pedidos en la sección 8). Lo que sí queda fijo desde ahora es el **formato JSON del banco** (sección 5), porque los textos de `contenido/razonamiento-verbal/` se escriben con él.
 
@@ -277,7 +277,7 @@ Ejemplo completo, propio. Muestra el formato; si pasa la revisión de la pieza 3
 | `previo.tipo` | Campos | Cómo se califica |
 | --- | --- | --- |
 | `marcar-oracion` | `pide`, `aceptadas` (una o más oraciones), `ninguna` (solo en idea principal: el código si el alumno toca "Ninguna la dice completa", o `"correcta"` si la idea es implícita), `codigos` (código por oración), `explicacion`, `explicaciones` (opcional, por oración) | Correcta si la oración está en `aceptadas`. **En idea principal**, `aceptadas` son justo las oraciones con rol `principal`, y el código de las demás sale, en este orden: de `codigos`; RV4 si es la primera oración del texto (`o1`); y si no, del rol: `detalle`, `ejemplo` y `cita` → RV1; `general` → RV2; `apoyo` y `contraste` → RV3. **En eliminación**, no hay roles: `codigos` es obligatorio para cada oración no aceptada (RV30, RV31 o RV32). |
-| `clasificar` | `pide`, `sonda` (la afirmación), `clase` (`lo-dice`, `se-deduce`, `no-se-sabe` o `lo-contradice`), `codigos` (un código por cada una de las otras tres clases), `explicacion` | Correcta si coincide con `clase`. Si no, el código de esa clase. |
+| `clasificar` | `pide`, `sonda` (la afirmación), `clase` (`lo-dice`, `se-deduce`, `no-se-sabe` o `lo-contradice`), `codigos` (un código o `null` por cada una de las otras tres clases; "no se sabe" ante algo que se deduce es RV34), `explicacion` | Correcta si coincide con `clase`. Si no, el código de esa clase. |
 | `relacion` | `pide`, `aceptada` (por ahora, siempre `oposicion`), `codigos` (`{ "suma": "RV26", "causa": "RV24" }`), `explicacion` | Igual |
 | `relacion-analogia` | `pide`, `aceptada` (`a-produce-b`, `b-produce-a`, `a-parte-de-b`, `b-parte-de-a`, `a-usa-b`, `b-usa-a`, `a-tipo-de-b`, `b-tipo-de-a`, `a-causa-b`, `b-causa-a`, `sinonimos`, `contrarios`), `explicacion` | Correcta si coincide. Si no, el código lo fija la regla, sin tabla: la inversa de la aceptada → RV16; cualquier otra → RV17. |
 | `proposito` | `pide`, `aceptada` (`explicar`, `convencer` o `narrar`), `codigos`, `explicacion` | Igual |
@@ -305,7 +305,7 @@ El banco de la pieza 3 empieza por los textos. Los ejercicios sueltos vienen des
 
 1. Cada texto tiene de **150 a 350 palabras** y de **3 a 5 preguntas**. Cada pregunta tiene **4 o 5 alternativas**. La UNI usa 5 (A–E); se aceptan 4 para no forzar un distractor malo.
 2. **Una sola alternativa con `correcta: true`**, con al menos una oración en `evidencia`.
-3. Cada incorrecta tiene un `codigo` que existe en `codigos.json` y una `explicacion` no vacía. Lo mismo para cada código de `previo`.
+3. Cada incorrecta tiene un `codigo` que existe en `codigos.json` y una `explicacion` no vacía. En `previo`, cada respuesta incorrecta lleva un código que existe o `null` cuando el informe no tiene un error para esa respuesta (por ejemplo, decir "lo contradice" ante algo que se deduce); con `null` se registra el error sin código.
 4. **Dos incorrectas de la misma pregunta no llevan el mismo código**, para que la medición distinga un error del otro.
 5. `evidencia`, `origen` y `aceptadas` apuntan a oraciones que existen en el texto. Los `id` de oración no se repiten.
 6. Cada `unidad` existe en `catalogo/cursos/razonamiento-verbal.json`.
