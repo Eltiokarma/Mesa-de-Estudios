@@ -128,18 +128,18 @@
       "previo": {
         "tipo": "clasificar",
         "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
-        "sonda": "Los jóvenes de Canas aprenden a trenzar la q'oya en la escuela.",
+        "sonda": "Los comuneros también usan la q'oya para techar sus casas.",
         "clase": "no-se-sabe",
         "codigos": {
           "lo-dice": "RV5",
           "se-deduce": "RV7",
           "lo-contradice": null
         },
-        "explicacion": "El texto dice que los mayores enseñan a los jóvenes mientras trabajan en el puente (oración 7). No dice nada sobre la escuela: no se puede saber.",
+        "explicacion": "El texto solo habla de la q'oya como material del puente (oración 2). No dice si se usa para otra cosa: no se puede saber.",
         "explicaciones": {
-          "lo-dice": "El texto habla de jóvenes que aprenden, pero no de la escuela: dice que aprenden de los mayores mientras trabajan (oración 7).",
-          "se-deduce": "Que aprendan mientras trabajan no permite concluir nada sobre la escuela: eso va más allá del texto.",
-          "lo-contradice": "El texto no dice que no aprendan en la escuela; solo dice que aprenden de los mayores mientras trabajan. Que aprendan de una forma no excluye la otra."
+          "lo-dice": "El texto nombra la q'oya, pero solo como material del puente; nunca habla de techos.",
+          "se-deduce": "Que la q'oya sirva para el puente no permite concluir que sirva también para techar: eso va más allá del texto.",
+          "lo-contradice": "El texto no dice para qué más se usa la q'oya; solo habla del puente. No dice nada en contra de esa idea."
         }
       },
       "enunciado": "Se infiere del texto que la renovación anual del puente",
@@ -258,6 +258,6 @@
     "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
     "fecha": "2026-11-06",
     "veredicto": "aprobado",
-    "notas": "A ciegas: 6 de 6. Cambios: distractor de extrapolación que era defendible (RV12 reescrito), \"un daño\" (es un sentido de \"pérdida\" en el diccionario) cambiado por \"una disminución\", causa del río corregida, explicación de la correcta de p4 y hechos confirmados (Unesco 2013, 3 o 4 días en junio)."
+    "notas": "A ciegas: 6 de 6. Cambios: distractor de extrapolación que era defendible (RV12 reescrito), \"un daño\" (es un sentido de \"pérdida\" en el diccionario) cambiado por \"una disminución\", causa del río corregida, explicación de la correcta de p4 y hechos confirmados (Unesco 2013, 3 o 4 días en junio). Segunda ronda (pedidos de la integración): explicaciones en todo paso previo, versión 2 y revisión a ciegas de los cambios (coincidió con todas las claves). Sonda nueva («techar con q'oya», no se sabe); o5 «pérdida de tiempo y de esfuerzo»; RV7 en vez de RV11 en p4."
   }
 }

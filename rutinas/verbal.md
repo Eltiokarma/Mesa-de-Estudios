@@ -139,3 +139,40 @@ Cada texto lleva en `revision` sus notas, con lo que se cambió.
 **Pedidos para la integración** (además de los de la sección 8 del diseño):
 - Mostrar en pantalla el número de cada oración (ya está en el diseño, sección 2), porque las explicaciones las citan por número.
 - Cuando entre `catalogo.test.js` con el formato lectura, `banco.test.js` ya está en `contenido/razonamiento-verbal/` y corre con `npm test`.
+
+---
+
+## 6 nov 2026 · Pieza 3, correcciones de la integración y pareja de entrada y salida
+
+**Qué hice.** Apliqué los 8 pedidos que mandó la conversación principal después de su revisión del banco:
+
+1. **Explicaciones del paso previo para cada respuesta incorrecta.** Ahora `banco.test.js` lo exige: en "marcar oración", una por cada oración no aceptada y otra para "ninguna"; en los demás tipos, una por cada opción con código.
+2. **Conectores sin la respuesta a la vista.** En t003 (oración 6) y t006 (oración 7) saqué el conector del texto. La pregunta ahora es "¿qué conector podría ir al comienzo?", con "Sin embargo"/"No obstante", "Por eso" (RV24), "Además" (RV26) y "Dicho de otro modo" (**RV35**, código nuevo en el informe, hipótesis: conector de otra clase elegido por descarte).
+3. **Sondas nuevas** que no anticipan la correcta: en t002, "techar con q'oya"; en t006, "el Perú produce mucha cochinilla porque hay más tunas". Las dos son "no se sabe". La sonda que propuso la principal para t002 ("los jóvenes aprenden en la escuela") el revisor la encontró defendible como "lo contradice", así que la cambié.
+4. **Intención antes que idea principal** en t001, t003 y t005. La correcta de intención se reescribió para que no regale la idea principal.
+5. **t004:** distractor nuevo sobre la segunda postura. Uso "conocieran" y no "recitaran", porque esa palabra no está en el texto.
+6. **t005:** "un obstáculo para progresar" pasa a RV10.
+7. **Correcciones menores:** "aimaras"; t002 o5; RV7 en t002 p4; t006 o3; la explicación del previo de t001; RV1 más corto en t001 y t006; enunciado de t005 p3 como pregunta.
+8. **La pareja de entrada y salida:** t000a ("Islas que flotan", los uros) y t000b ("Escalones para sembrar", los andenes). Son formas paralelas: la misma estructura oración por oración, 3 preguntas en el mismo orden (idea principal, inferencia y sentido contextual), los mismos códigos RV en los distractores, sin paso previo y con 162 y 163 palabras. Están en `indice.json` como `entrada` y `salida`. `banco.test.js` comprueba ahora que la pareja sea paralela (mismos tipos y mismos códigos, pregunta por pregunta).
+
+Todos los textos pasaron a `version: 2`, para que la medición no mezcle los datos de antes y después.
+
+**Pruebas:** el validador del banco da 12 de 12. **`npm test` da 1048 de 1053: fallan 5 pruebas fuera de mi alcance**, y las dos causas las piden los mismos pedidos:
+- `app/app.test.js`: "app/datos/catalogo.json está al día". El catálogo generado quedó viejo porque cambió el banco. Se arregla con `npm run catalogo`, que escribe en `app/`.
+- `nucleo/lectura.test.js`, 4 pruebas. Dan por hecho que `TEXTOS[0].preguntas[0]` tiene un paso previo de marcar oración, pero ahora el primer texto en orden es `t000a` (sin paso previo, como pide el diseño) y la primera pregunta de t001 es la de intención (pedido 4). Lo comprobé: sacando t000a y t000b, siguen fallando 3, por el cambio de orden. La corrección es que esas pruebas busquen la primera pregunta con `previo.tipo === 'marcar-oracion'` entre los textos del índice, no `TEXTOS[0].preguntas[0]`.
+
+**Subagentes:**
+- **Revisor de la pareja de entrada y salida, a ciegas:** 6 de 6. Encontró tres desequilibrios entre las formas, todos corregidos:
+  - en p2, la forma B era más directa;
+  - en el RV7 de B, "al año siguiente" sonaba casi razonable;
+  - en p3, la correcta de B era una paráfrasis más fácil.
+  También corrigió la frecuencia con que se renueva la totora (varias veces al año, no cada pocas semanas). No le hice caso en una cosa: pedía poner "la isla se va hundiendo" en el texto, pero eso dejaba literal la respuesta de inferencia. Puse "la isla va bajando".
+- **Revisor de los cambios en t001 a t006, a ciegas:** coincidió con todas las claves. Encontró las dos sondas discutibles de arriba, que la intención todavía regalaba la idea principal en t001, t003 y t005, una cita mal hecha en t003 y la palabra "recitaran" en t004. Todo corregido.
+
+**Pendiente:**
+- 22 textos de práctica más (hay 6 de práctica y la pareja de pruebas; la meta es 30 de práctica).
+- Lo que ya estaba anotado: incompatibilidad con código propio, grado 5 y dificultad 3, textos narrativos y temas de la costa y la Amazonía.
+
+**Pedidos para la integración:**
+- Correr `npm run catalogo`.
+- Ajustar las 4 pruebas de `nucleo/lectura.test.js` como dice arriba.

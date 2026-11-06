@@ -76,13 +76,13 @@
       "enunciado": "¿Cuál es la intención principal del autor?",
       "alternativas": [
         {
-          "t": "Persuadir a los padres de que enseñar su lengua a los hijos no los perjudica.",
+          "t": "Persuadir a los padres de que cambien una decisión sobre la crianza de sus hijos.",
           "correcta": true,
           "evidencia": [
-            "o3",
-            "o7"
+            "o2",
+            "o3"
           ],
-          "explicacion": "El autor responde a un temor de los padres y les da razones para transmitir su lengua."
+          "explicacion": "El autor responde al temor de los padres que dejan de enseñar su lengua (oraciones 2 y 3) y les da razones para no hacerlo."
         },
         {
           "t": "Explicar cómo aprende un niño una segunda lengua en el colegio y en su casa.",
@@ -258,6 +258,6 @@
     "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
     "fecha": "2026-11-06",
     "veredicto": "aprobado",
-    "notas": "A ciegas: 6 de 6. Cambios: código RV33 en \"Criticar…\", afirmaciones sobre bilingüismo suavizadas (\"no se queda a medias\", \"muchos problemas\"), fuente de Cummins (2000) y concordancia de p3 con \"se refiere a\"."
+    "notas": "A ciegas: 6 de 6. Cambios: código RV33 en \"Criticar…\", afirmaciones sobre bilingüismo suavizadas (\"no se queda a medias\", \"muchos problemas\"), fuente de Cummins (2000) y concordancia de p3 con \"se refiere a\". Segunda ronda (pedidos de la integración): explicaciones en todo paso previo, versión 2 y revisión a ciegas de los cambios (coincidió con todas las claves). Intención antes y sin regalar la tesis; RV10 en «un obstáculo»; enunciado de p3 como pregunta."
   }
 }

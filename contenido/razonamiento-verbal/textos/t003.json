@@ -67,13 +67,13 @@
       "enunciado": "¿Cuál es la intención principal del autor?",
       "alternativas": [
         {
-          "t": "Advertir que el aumento de agua en los ríos que nacen de glaciares puede ser una señal de alarma y no una buena noticia.",
+          "t": "Advertir sobre un riesgo para el agua de los valles que dependen de glaciares.",
           "correcta": true,
           "evidencia": [
             "o8",
             "o9"
           ],
-          "explicacion": "El autor no solo explica: concluye que hay que prepararse, y presenta el aumento de agua como una señal de que el depósito se vacía."
+          "explicacion": "El autor no solo explica cómo funciona el glaciar: cierra con una advertencia y pide prepararse (oraciones 8 y 9)."
         },
         {
           "t": "Contar cómo cambió la vida de los pobladores del valle del Santa en los últimos años.",
@@ -108,7 +108,7 @@
         "codigos": {
           "o1": "RV4"
         },
-        "explicacion": "La oración 6 dice por qué el aumento de agua engaña y la 8 lo resume como conclusión. Las demás explican cómo funciona el glaciar (1 a 4), cuentan lo que parece a primera vista (5), dicen lo que pasa después (7) o proponen qué hacer (9).",
+        "explicacion": "La oración 6 dice por qué el aumento de agua engaña y la 8 lo resume como conclusión. Las demás explican cómo funciona el glaciar (1 a 3), dicen que pierde hielo (4), cuentan lo que parece a primera vista (5), dicen lo que pasa después (7) o proponen qué hacer (9).",
         "explicaciones": {
           "o1": "La primera oración presenta el glaciar como depósito: es el punto de partida, no la idea del autor.",
           "o2": "Explica cómo se llena y se vacía el depósito: es un detalle.",
@@ -275,6 +275,6 @@
     "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
     "fecha": "2026-11-06",
     "veredicto": "aprobado",
-    "notas": "A ciegas: 7 de 7. Cambios: en el Santa la baja del caudal de estiaje ya ocurre (Baraer y otros, 2012), la clave de p4 deja de ser absoluta (\"puede ser una señal\"), distractor de p3 que era compatible reescrito y fuentes de los hechos."
+    "notas": "A ciegas: 7 de 7. Cambios: en el Santa la baja del caudal de estiaje ya ocurre (Baraer y otros, 2012), la clave de p4 deja de ser absoluta (\"puede ser una señal\"), distractor de p3 que era compatible reescrito y fuentes de los hechos. Segunda ronda (pedidos de la integración): explicaciones en todo paso previo, versión 2 y revisión a ciegas de los cambios (coincidió con todas las claves). Sin el \"Pero\" explícito: la pregunta es qué conector podría ir en la oración 6 (RV35 nuevo); intención antes y sin regalar la idea."
   }
 }

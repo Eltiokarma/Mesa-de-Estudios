@@ -5,7 +5,12 @@
   "tipo_texto": "expositivo",
   "origen": "propio",
   "fecha": "2026-11-06",
-  "revision": null,
+  "revision": {
+    "por": "subagente (resolución a ciegas, paralelismo entre formas y verificación de hechos con búsqueda web)",
+    "fecha": "2026-11-06",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: 6 de 6 entre las dos formas. Cambios: se igualó la dificultad de p2 (A: «la isla va bajando»; B: «al mes siguiente») y de p3 (B: «algo indispensable»), la frecuencia de renovación de la totora (varias veces al año) y la evidencia de p1."
+  },
   "id": "t000b",
   "titulo": "Escalones para sembrar",
   "tema": "Perú andino · agricultura en laderas",
@@ -68,6 +73,7 @@
           "t": "Los andenes hacen posible sembrar en las laderas, siempre que se reparen sus muros.",
           "correcta": true,
           "evidencia": [
+            "o4",
             "o5",
             "o8"
           ],
@@ -113,9 +119,9 @@
           "explicacion": "La oración 4 dice que, cuando un muro cae, la lluvia se lleva la tierra; las reparaciones (oración 5) lo evitan. Sin ellas, los andenes perderían su tierra."
         },
         {
-          "t": "las comunidades tendrían que dejar la sierra al año siguiente.",
+          "t": "las comunidades tendrían que dejar la sierra al mes siguiente.",
           "codigo": "RV7",
-          "explicacion": "El texto dice que la lluvia \"empieza\" a llevarse la tierra; dejar la sierra al año siguiente va mucho más allá de lo que se puede concluir."
+          "explicacion": "El texto dice que la lluvia \"empieza\" a llevarse la tierra; dejar la sierra al mes siguiente va mucho más allá de lo que se puede concluir."
         },
         {
           "t": "las piedras dejarían de guardar calor y la helada se llevaría la tierra.",
@@ -143,12 +149,12 @@
       "enunciado": "En la oración 8, la palabra CLAVE significa",
       "alternativas": [
         {
-          "t": "lo que lo hace posible.",
+          "t": "algo indispensable.",
           "correcta": true,
           "evidencia": [
             "o8"
           ],
-          "explicacion": "La oración dice que, sin andenes, no se podría sembrar en la pendiente: el andén es lo que lo hace posible."
+          "explicacion": "La oración dice que, sin andenes, no se podría sembrar en la pendiente: el andén es indispensable."
         },
         {
           "t": "una contraseña.",
@@ -171,16 +177,16 @@
   ],
   "hechos": [
     {
-      "afirmacion": "Los andenes son terrazas con muros de piedra que retienen el suelo y reducen la erosión en las laderas.",
-      "fuente": "Literatura sobre andenería (p. ej., Denevan, W. M. (2001). Cultivated landscapes of native Amazonia and the Andes. Oxford University Press); Minagri, programas de recuperación de andenes."
+      "afirmacion": "Los andenes son terrazas con muros de piedra que retienen el suelo y reducen la erosión; el valle del Colca es una de las zonas más conocidas por sus andenes.",
+      "fuente": "Denevan, W. M. (2001). Cultivated landscapes of native Amazonia and the Andes. Oxford University Press; Wikipedia, \"Andén\"."
     },
     {
       "afirmacion": "Los muros de piedra guardan calor de día y lo devuelven de noche, lo que ayuda a proteger del frío.",
-      "fuente": "Descripción frecuente del microclima de los andenes; por confirmar con un estudio concreto."
+      "fuente": "Descripción frecuente, citada a partir de Denevan (2001) en estudios sobre agricultores andinos; sin mediciones encontradas, por confirmar."
     },
     {
       "afirmacion": "Hay programas de recuperación de andenes abandonados en el Perú.",
-      "fuente": "Minagri y Agro Rural, proyectos de recuperación de andenes; por citar."
+      "fuente": "Minagri y BID, proyecto de recuperación de andenes (2014); experiencias en Cusco desde los años 70."
     }
   ]
 }

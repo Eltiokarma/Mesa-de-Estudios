@@ -132,7 +132,7 @@
       "previo": {
         "tipo": "clasificar",
         "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
-        "sonda": "La cochinilla se cría sobre todo en el Perú porque allí crecen más tunas que en otros países.",
+        "sonda": "El Perú produce mucha cochinilla porque allí crecen más tunas que en otros países.",
         "clase": "no-se-sabe",
         "codigos": {
           "lo-dice": "RV5",
@@ -141,7 +141,7 @@
         },
         "explicacion": "El texto dice que el Perú es uno de los principales productores (oración 9), pero no da ninguna razón para eso ni habla de cuántas tunas hay. No se puede saber.",
         "explicaciones": {
-          "lo-dice": "El texto nombra al Perú y a la tuna, pero nunca dice que haya más tunas allí ni que esa sea la razón.",
+          "lo-dice": "El texto dice que el Perú es uno de los principales productores (oración 9), pero nunca da la razón ni habla de cuántas tunas hay.",
           "se-deduce": "Que el Perú sea un gran productor no permite concluir por qué lo es: esa razón va más allá del texto.",
           "lo-contradice": "El texto no dice nada en contra de esa idea; simplemente no la menciona."
         }
@@ -194,7 +194,7 @@
           "suma": "RV26",
           "causa": "RV24"
         },
-        "explicacion": "La oración 6 dice que la cochinilla parecía condenada a desaparecer, y la 7 cuenta lo que cambió ese destino. Se oponen.",
+        "explicacion": "La oración 6 dice que la cochinilla parecía condenada a desaparecer, y la 7 empieza a contar lo que cambió ese destino (se completa en la 8). Se oponen.",
         "explicaciones": {
           "suma": "La oración 7 no agrega otra razón para que la cochinilla desapareciera: cuenta lo que la salvó.",
           "causa": "La oración 7 no es una consecuencia de la 6: que la cochinilla casi desapareciera no hizo que se prohibieran los colorantes."
@@ -257,6 +257,6 @@
     "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
     "fecha": "2026-11-06",
     "veredicto": "aprobado",
-    "notas": "A ciegas: 6 de 6. Cambios: enunciado de p2 sobre los cambios del valor (el ácido carmínico ya no es defendible), paso previo de p2 alineado con la pregunta, evidencia de p1 y hecho de Paracas corregido (la cochinilla abunda desde Wari; en Paracas es rara)."
+    "notas": "A ciegas: 6 de 6. Cambios: enunciado de p2 sobre los cambios del valor (el ácido carmínico ya no es defendible), paso previo de p2 alineado con la pregunta, evidencia de p1 y hecho de Paracas corregido (la cochinilla abunda desde Wari; en Paracas es rara). Segunda ronda (pedidos de la integración): explicaciones en todo paso previo, versión 2 y revisión a ciegas de los cambios (coincidió con todas las claves). Sin el \"Sin embargo\" explícito en o7; sonda nueva sobre las tunas; RV1 más corto."
   }
 }

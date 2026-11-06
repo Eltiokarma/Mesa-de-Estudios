@@ -157,10 +157,10 @@
           "explicacion": "Repite palabras de la oración 5, pero le agrega \"está comprobado\", y la oración 7 dice que ninguna postura está demostrada."
         },
         {
-          "t": "la segunda postura niega que los quipucamayos recitaran genealogías y relatos.",
+          "t": "la segunda postura niega que los quipucamayos conocieran genealogías y relatos.",
           "codigo": "RV7",
           "origen": "o6",
-          "explicacion": "La segunda postura no niega los relatos: dice que pudieron estar en la memoria del quipucamayo y que el quipu solo lo ayudaba a recordar (oración 6)."
+          "explicacion": "La segunda postura no niega que conocieran los relatos: dice que los guardaban en la memoria y que el quipu solo los ayudaba a recordar (oración 6)."
         },
         {
           "t": "ningún quipu podrá ser leído jamás.",
@@ -226,6 +226,6 @@
     "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
     "fecha": "2026-11-06",
     "veredicto": "aprobado",
-    "notas": "A ciegas: 5 de 5. Cambios: \"administraron un Estado con cuerdas\" exageraba (ahora \"llevaron las cuentas\"), distractor RV8 de p2 que era cierto y no chocaba con el texto reescrito, explicación de RV11 corregida."
+    "notas": "A ciegas: 5 de 5. Cambios: \"administraron un Estado con cuerdas\" exageraba (ahora \"llevaron las cuentas\"), distractor RV8 de p2 que era cierto y no chocaba con el texto reescrito, explicación de RV11 corregida. Segunda ronda (pedidos de la integración): explicaciones en todo paso previo, versión 2 y revisión a ciegas de los cambios (coincidió con todas las claves). Distractor de p2 sobre la segunda postura reescrito (el de los cronistas era defendible)."
   }
 }

@@ -79,13 +79,14 @@
       "enunciado": "¿Cuál es la intención principal del autor?",
       "alternativas": [
         {
-          "t": "Explicar cómo las familias andinas aprovechan la helada para conservar la papa.",
+          "t": "Explicar un procedimiento tradicional andino y para qué sirve.",
           "correcta": true,
           "evidencia": [
-            "o2",
-            "o9"
+            "o3",
+            "o5",
+            "o8"
           ],
-          "explicacion": "El texto expone un procedimiento y su resultado, sin tomar partido: explica."
+          "explicacion": "El texto expone un procedimiento (oraciones 3 a 5) y su resultado (6 a 8), sin tomar partido: explica."
         },
         {
           "t": "Narrar la vida diaria de las familias aimaras y quechuas.",
@@ -96,7 +97,7 @@
           "t": "Describir el chuño negro: cuánto pesa, cuánto tiempo dura y por qué se lleva con facilidad en los viajes.",
           "codigo": "RV3",
           "origen": "o6",
-          "explicacion": "El chuño aparece, pero el texto lo usa para mostrar cómo la helada pasa de amenaza a recurso, y eso esta alternativa lo deja fuera."
+          "explicacion": "El chuño aparece, pero el texto no se queda en describirlo: explica todo el procedimiento y su sentido."
         },
         {
           "t": "Convencer al lector de que el chuño es mejor que la papa fresca.",
@@ -228,6 +229,6 @@
     "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
     "fecha": "2026-11-06",
     "veredicto": "aprobado",
-    "notas": "A ciegas: 5 de 5 (3 preguntas y 2 pasos previos). Cambios: las heladas que arruinan la papa son las de fuera de temporada (las de junio sirven para el chuño, con la papa ya cosechada); hechos y fuentes del proceso del chuño negro."
+    "notas": "A ciegas: 5 de 5 (3 preguntas y 2 pasos previos). Cambios: las heladas que arruinan la papa son las de fuera de temporada (las de junio sirven para el chuño, con la papa ya cosechada); hechos y fuentes del proceso del chuño negro. Segunda ronda (pedidos de la integración): explicaciones en todo paso previo, versión 2 y revisión a ciegas de los cambios (coincidió con todas las claves). Intención antes que idea principal, con una correcta que ya no regala la idea; RV1 más corto."
   }
 }
