@@ -1,0 +1,15 @@
+{
+  "id": "mol-composicion",
+  "titulo": "Mol, masa molar y composición",
+  "formato": "escena",
+  "unidades": [
+    "quimica.mol-y-composicion"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}
