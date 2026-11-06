@@ -1,0 +1,1154 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El taller y la pared: proporcionalidad directa e inversa</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de la cinta del radio.
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
+   obreros O azul, días D naranja, trabajo W oliva (el área del rectángulo: obrero-días u horas-hombre; la obra es el muro),
+   horas diarias h fucsia, botones turquesa, clips vino, soles S mostaza, dientes z índigo, vueltas n siena y edad
+   verde oscuro. La razón k y los índices del reparto van en tinta.
+   Elegidos con CIEDE2000; mínimos reales entre los que salen juntos (claro / oscuro): taller O, D, W y h 27,1 / 29,3;
+   tira (botones y clips) 49,9 / 55,2; engranajes (z y n) 41,4 / 36,5; edad y clips 65,5 / 79,2. Los soles salen solos.
+   Pares parecidos que nunca salen juntos: trabajo y soles (10,9 / 11,6), trabajo y edad (14,8 / 17,6), días y vueltas
+   (15,2 / 13,7). Contraste AA sobre el papel, la tarjeta y su chip (.v, fondo al 8 %), en claro y en oscuro. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-O:#1f5fbf; --c-D:#a05200; --c-W:#5f6f00; --c-h:#a10fbf; --c-B:#0f766e; --c-C:#a5125c; --c-S:#7d6a00; --c-z:#3328c4; --c-n:#773922; --c-a:#255c1f;
+  --relleno:.14;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-O:#7cb0ff; --c-D:#f0a04a; --c-W:#c8dc3c; --c-h:#cf6bfa; --c-B:#5ed9c8; --c-C:#ff7fb8; --c-S:#e3c84a; --c-z:#9f9bff; --c-n:#d9a68c; --c-a:#5fe06a;
+  --relleno:.17; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-O:#7cb0ff; --c-D:#f0a04a; --c-W:#c8dc3c; --c-h:#cf6bfa; --c-B:#5ed9c8; --c-C:#ff7fb8; --c-S:#e3c84a; --c-z:#9f9bff; --c-n:#d9a68c; --c-a:#5fe06a;
+  --relleno:.17; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+/* Celular con una predicción pendiente: el dibujo más bajo y pegado arriba, para que se vea mientras se elige. */
+@media (max-width:899px){
+  .mode.pendiente .bench{position:sticky; top:0; z-index:1; padding:6px; gap:4px; background:var(--card); border-radius:0 0 20px 20px}
+  .mode.pendiente .legend{display:none}
+  .mode.pendiente .lecturas{gap:4px}
+  .mode.pendiente .lectura{padding:2px 8px}
+}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+.lienzo:has(canvas:focus-visible){outline:3px solid var(--ink); outline-offset:2px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+.legend i.sq{width:12px; height:12px; border-radius:3px; opacity:.55}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-O{color:var(--c-O); background:color-mix(in srgb, var(--c-O) 8%, transparent)}
+.v-D{color:var(--c-D); background:color-mix(in srgb, var(--c-D) 8%, transparent)}
+.v-W{color:var(--c-W); background:color-mix(in srgb, var(--c-W) 8%, transparent)}
+.v-h{color:var(--c-h); background:color-mix(in srgb, var(--c-h) 8%, transparent)}
+.v-B{color:var(--c-B); background:color-mix(in srgb, var(--c-B) 8%, transparent)}
+.v-C{color:var(--c-C); background:color-mix(in srgb, var(--c-C) 8%, transparent)}
+.v-S{color:var(--c-S); background:color-mix(in srgb, var(--c-S) 8%, transparent)}
+.v-z{color:var(--c-z); background:color-mix(in srgb, var(--c-z) 8%, transparent)}
+.v-n{color:var(--c-n); background:color-mix(in srgb, var(--c-n) 8%, transparent)}
+.v-a{color:var(--c-a); background:color-mix(in srgb, var(--c-a) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.02rem; font-variant-numeric:tabular-nums}
+.eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.5em; white-space:normal}
+.frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1.15}
+.frac > span:first-child{border-bottom:1.5px solid currentColor; padding:0 .25em}
+.frac > span:last-child{padding:0 .25em}
+.answer{font-weight:700; padding:12px 16px; border-radius:16px; background:var(--paper); border:2px solid var(--ink); max-width:66ch}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.seg button:disabled{opacity:.45; cursor:not-allowed}
+.seg button i{display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px; vertical-align:0}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.acciones{display:flex; flex-wrap:wrap; gap:8px}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+/* Lecturas en vivo, cada una con el color de su variable */
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:8px}
+.lecturas:empty{display:none}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura b{display:block; color:var(--k); font:800 .95rem var(--mono); font-variant-numeric:tabular-nums; overflow-wrap:anywhere}
+.lectura span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.25fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+.tabla{border-collapse:collapse; font-variant-numeric:tabular-nums; font-size:.95rem; background:var(--paper); border-radius:12px; overflow:hidden}
+.tabla th,.tabla td{padding:5px 12px; border-bottom:1px solid var(--line); text-align:right}
+.tabla th{font-size:.82rem; color:var(--muted); font-weight:700}
+.tabla-wrap{overflow-x:auto}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Aritmética · Razones, proporciones y regla de tres · Problemas tipo admisión</p>
+      <h1>El taller y la pared</h1>
+      <p class="sub">Dos magnitudes son proporcionales cuando una cambia en la misma razón que la otra. Mide con botones y clips, arma el rectángulo del trabajo y descubre qué se queda fijo: el cociente o el producto.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo de la escena: la tira de botones y clips, el rectángulo del trabajo o el reparto">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Dibujo de la escena"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos con magnitudes proporcionales">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/regla-de-tres">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'regla-de-tres', unidad: 'aritmetica.magnitudes-proporcionales', version: '0.1.0' };
+const UNIDAD_RAZONES = 'aritmetica.razones-y-proporciones', UNIDAD_RUEDAS = 'razonamiento-matematico.ruedas-poleas-engranajes';
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0, unidad){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: unidad || PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la matemática (razones, regla de tres, la obra, el reparto, los engranajes y la curva de crecimiento) sale
+   de MotorTres (motor.js); aquí solo se pinta, se arrastra y se anima. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MT = MotorTres, PI = Math.PI;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+// Coma decimal, espacio de miles y signo menos tipográfico.
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 1 : d), r = Math.round(n*p)/p + 0;
+  let [e, f] = String(Math.abs(r)).split('.');
+  if (e.length > 4) e = e.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const fr = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+function tween(dur, paso, fin, lineal){
+  if (RM || !dur){ paso(1); if (fin) setTimeout(fin, 0); return; }
+  const t0 = performance.now();
+  const tick = now => { const f = Math.min(1, (now - t0)/dur); paso(lineal ? f : suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
+  requestAnimationFrame(tick);
+}
+const O_ = t => V('O', t), D_ = t => V('D', t), W_ = t => V('W', t), h_ = t => V('h', t), B_ = t => V('B', t), C_ = t => V('C', t),
+  S_ = t => V('S', t), z_ = t => V('z', t), n_ = t => V('n', t), a_ = t => V('a', t);
+const lerp = (a, b, f) => a + (b - a)*f;
+
+function colores(){
+  const g = n => css(n);
+  const c = { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
+    relleno:Number(g('--relleno')) || .14, mono:g('--mono'), font:g('--font') };
+  for (const k of 'ODWhBCSzna') c[k] = g('--c-' + k);
+  return c;
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, p, q){ ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke(); }
+// Texto con un fondo del color del papel detrás, para que se lea sobre las líneas.
+function rotulo(ctx, c, x, y, t, color, align, peso, tam){
+  ctx.font = `${peso || 700} ${tam || 13}px ${c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+  ctx.fillStyle = color; ctx.fillText(t, x, y);
+  return w;
+}
+function redondeado(ctx, x, y, w, h, r){ ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+// Resaltar en el dibujo la variable que se toca en el texto (regla 4).
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+/* Lecturas: cada una es [color, nombre, valor]. La descripción para lectores de pantalla dice solo lo que ellas dicen. */
+const TIRA0 = { bajoB:4, bajoC:6 };
+const clipsDe = b => MT.srAlto({ bajoBotones:TIRA0.bajoB, bajoClips:TIRA0.bajoC, altoBotones:b }).clips;
+const diasDe = T => T.Y/(T.h || 1);
+const LEC = {
+  bajoB: E => ['B', 'Sr. Bajo, en botones', fmt(TIRA0.bajoB, 0)],
+  bajoC: E => ['C', 'Sr. Bajo, en clips', fmt(TIRA0.bajoC, 0)],
+  altoB: E => ['B', 'Sr. Alto, en botones', fmt(E.tira.altoB, 1)],
+  altoC: E => ['C', 'Sr. Alto, en clips', fmt(clipsDe(E.tira.altoB), 2)],
+  k: E => ['ink', 'k = clips ÷ botones', MT.textoFraccion(clipsDe(E.tira.altoB)/E.tira.altoB) || fmt(clipsDe(E.tira.altoB)/E.tira.altoB, 2)],
+  dif: E => ['ink', 'clips − botones', fmt(clipsDe(E.tira.altoB) - E.tira.altoB, 2)],
+  O: E => ['O', 'Obreros O', fmt(E.taller.O, 2)],
+  D: E => ['D', 'Días D', fmt(diasDe(E.taller), 2)],
+  h: E => ['h', 'Horas diarias h', fmt(E.taller.h, 1)],
+  W: E => ['W', E.taller.h ? 'Trabajo (horas-hombre)' : 'Trabajo (obrero-días)', fmt(E.taller.O*E.taller.Y, 0)],
+  total: E => ['S', 'Total a repartir', `S/ ${fmt(E.rep.total, 0)}`],
+  partes: E => ['S', 'Partes', partesDe(E.rep).map(p => fmt(p, 0)).join(' · ')],
+};
+const partesDe = R => MT.reparto(R.tipo === 'inverso' ? { total:R.total, inverso:R.indices } : { total:R.total, directo:R.indices }).partes;
+
+/* ================= La escena =================
+   Modos: 'tira' (Sr. Bajo y Sr. Alto medidos con botones y clips), 'taller' (el rectángulo obreros × días, cuya área es
+   la obra), 'reparto' (una barra de soles que se parte), 'engranajes' y 'edad' (los de «¿Qué pasa si…?»).
+   Con 'graf', al lado o debajo se dibuja la gráfica punto a punto. */
+function crearEscena(cv, idDesc, idLect, idLey){
+  const E = { modo:'tira', graf:false, lect:[], ley:null, hl:null, alCambiar:null, ocupado:false, tok:0, anim:false, compacto:false,
+    tira:null, taller:null, rep:null, eng:null, edad:null };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, arrastrando = false, sobre = false;
+  const chico = () => innerWidth < 900;
+  function alto(w){
+    if (E.compacto && chico()) return Math.round(clamp(w*0.62, 220, 245));
+    if (E.modo === 'edad') return w >= 560 ? 340 : 290;
+    if (E.graf) return w >= 640 ? 380 : 270 + 220;
+    if (E.modo === 'engranajes') return w >= 560 ? 330 : 270;
+    return w >= 560 ? 340 : 280;
+  }
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    const h = alto(w), dpr = window.devicePixelRatio || 1;
+    if (w === W && h === H) { E.dibujar(); return; }
+    W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  alRedibujarTema(() => E.dibujar());
+  function regiones(){
+    if (E.modo === 'edad') return { graf:{ x:0, y:0, w:W, h:H } };
+    if (!E.graf || (E.compacto && chico())) return { dib:{ x:0, y:0, w:W, h:H } };
+    if (W >= 640){ const a = Math.round(W*0.56); return { dib:{ x:0, y:0, w:a, h:H }, graf:{ x:a, y:0, w:W - a, h:H } }; }
+    return { dib:{ x:0, y:0, w:W, h:270 }, graf:{ x:0, y:270, w:W, h:H - 270 } };
+  }
+
+  E.config = o => {
+    E.tok++; E.anim = false;   // una animación vieja no sigue moviendo el dibujo nuevo
+    Object.assign(E, { modo:'tira', graf:false, lect:[], ley:null, alCambiar:null, tira:null, taller:null, rep:null, eng:null, edad:null }, o);
+    if (E.tira) E.tira = Object.assign({ altoB:6, clipsAlto:0, verAlto:true, drag:false, puntos:[], linea:false, maxB:7, pregunta:true }, E.tira);
+    if (E.taller) E.taller = Object.assign({ O:6, Y:10, h:null, Omax:16, Ymax:11, fant:null, marca:null, copias:null, drag:false, Omin:3, puntos:[], hip:false, rotObra:'obra', gxmax:20, gymax:20 }, E.taller);
+    if (E.rep) E.rep = Object.assign({ total:1980, indices:[2, 3, 6], tipo:'inverso', prog:0, de:null }, E.rep);
+    if (E.eng) E.eng = Object.assign({ dientes:[20, 50], giro:0, sentidos:false }, E.eng);
+    if (E.edad) E.edad = Object.assign({ despues:false }, E.edad);
+    cv.tabIndex = arrastrable() ? 0 : -1;
+    W = 0; resize(); E.leyenda(); E.dibujar(); E.avisar();
+  };
+  const arrastrable = () => (E.modo === 'tira' && E.tira && E.tira.drag) || (E.modo === 'taller' && E.taller && E.taller.drag);
+  // Con una predicción pendiente en el celular, el dibujo se achica y queda pegado arriba (sticky) para verse al elegir.
+  E.compactar = on => { on = !!on; cv.closest('.mode').classList.toggle('pendiente', on); if (on === E.compacto) return; E.compacto = on; W = 0; resize(); };
+  E.permitir = on => { if (E.tira) E.tira.drag = on; if (E.taller) E.taller.drag = on; cv.tabIndex = on ? 0 : -1; E.dibujar(); };
+  const grosor = (k, base) => (E.hl === k ? base + 2.5 : base);
+
+  // ----- la gráfica -----
+  function grafica(c, R, g){
+    const L = R.x + 40, Rr = R.x + R.w - 14, T = R.y + 26, B = R.y + R.h - 30;
+    const X = x => L + (Rr - L)*x/g.xmax, Y = y => B - (B - T)*y/g.ymax;
+    ctx.save(); ctx.strokeStyle = c.grid; ctx.lineWidth = 1;
+    for (let x = g.xpaso; x <= g.xmax + 1e-9; x += g.xpaso) linea(ctx, { x:X(x), y:T }, { x:X(x), y:B });
+    for (let y = g.ypaso; y <= g.ymax + 1e-9; y += g.ypaso) linea(ctx, { x:L, y:Y(y) }, { x:Rr, y:Y(y) });
+    ctx.restore();
+    if (g.rect){ ctx.save(); ctx.fillStyle = c.W; ctx.globalAlpha = c.relleno*1.6; ctx.fillRect(L, Y(Math.min(g.rect.y, g.ymax)), X(g.rect.x) - L, B - Y(Math.min(g.rect.y, g.ymax))); ctx.restore(); }
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; linea(ctx, { x:L, y:T - 8 }, { x:L, y:B }); linea(ctx, { x:L, y:B }, { x:Rr + 6, y:B }); ctx.restore();
+    ctx.fillStyle = c.muted; ctx.font = `600 11px ${c.font}`; ctx.textBaseline = 'top'; ctx.textAlign = 'center';
+    for (let x = g.xpaso*(g.xet || 1); x <= g.xmax + 1e-9; x += g.xpaso*(g.xet || 1)) ctx.fillText(fmt(x, 0), X(x), B + 4);
+    ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    for (let y = g.ypaso*(g.yet || 1); y <= g.ymax + 1e-9; y += g.ypaso*(g.yet || 1)) ctx.fillText(fmt(y, 0), L - 5, Y(y));
+    ctx.textAlign = 'right'; ctx.fillText('0', L - 5, B + 6);
+    ctx.save(); ctx.beginPath(); ctx.rect(L, T - 10, Rr - L + 8, B - T + 10); ctx.clip();
+    for (const cu of g.curvas || []){
+      ctx.save(); ctx.strokeStyle = cu.color; ctx.lineWidth = cu.ancho || 2.4; if (cu.dash) ctx.setLineDash(cu.dash);
+      ctx.beginPath(); cu.pts.forEach((p, j) => j ? ctx.lineTo(X(p.x), Y(p.y)) : ctx.moveTo(X(p.x), Y(p.y))); ctx.stroke(); ctx.restore();
+    }
+    ctx.restore();
+    for (const p of g.puntos || []){
+      if (p.y > g.ymax || p.x > g.xmax) continue;
+      ctx.save(); ctx.lineWidth = 2.2; ctx.strokeStyle = p.color || c.ink; ctx.fillStyle = p.hueco ? c.paper : (p.color || c.ink);
+      ctx.beginPath(); ctx.arc(X(p.x), Y(p.y), p.r || 4.5, 0, 7); ctx.fill(); ctx.stroke(); ctx.restore();
+    }
+    for (const e of g.etiquetas || []) if (e.y <= g.ymax) rotulo(ctx, c, X(e.x) + (e.dx || 0), Y(e.y) + (e.dy || 0), e.t, e.color || c.ink, e.align || 'left', 700, 12);
+    rotulo(ctx, c, Rr, B - 12, g.xt, c[g.xk], 'right', 800, 12);
+    rotulo(ctx, c, L + 6, R.y + 12, g.yt, c[g.yk], 'left', 800, 12);
+    return { X, Y };
+  }
+
+  // ----- la tira: Sr. Bajo y Sr. Alto, medidos con botones y con clips -----
+  function figura(c, x, base, alto, ancho){
+    const r = Math.min(alto*0.12, ancho*0.42), cuello = base - alto + 2*r;
+    ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = c.ink; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(x, base - alto + r, r, 0, 7); ctx.fill(); ctx.stroke();
+    redondeado(ctx, x - ancho/2, cuello + 2, ancho, base - cuello - 2, Math.min(8, ancho/3)); ctx.fill(); ctx.stroke();
+    ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; linea(ctx, { x, y:cuello + (base - cuello)*0.55 }, { x, y:base - 1 });
+    ctx.restore();
+  }
+  function columnaBotones(c, x, base, u, n){
+    for (let j = 0; j < Math.ceil(n - 1e-9); j++){
+      const parte = Math.min(1, n - j), y = base - (j + .5)*u;
+      ctx.save(); ctx.beginPath(); ctx.rect(x - u/2, base - (j + parte)*u, u, parte*u); ctx.clip();
+      ctx.fillStyle = c.B; ctx.globalAlpha = .22; ctx.beginPath(); ctx.arc(x, y, u*.44, 0, 7); ctx.fill(); ctx.globalAlpha = 1;
+      ctx.strokeStyle = c.B; ctx.lineWidth = grosor('B', 2); ctx.beginPath(); ctx.arc(x, y, u*.44, 0, 7); ctx.stroke();
+      ctx.fillStyle = c.B; for (const [dx, dy] of [[-1,-1],[1,-1],[-1,1],[1,1]]) { ctx.beginPath(); ctx.arc(x + dx*u*.1, y + dy*u*.1, Math.max(1.2, u*.05), 0, 7); ctx.fill(); }
+      ctx.restore();
+    }
+  }
+  function columnaClips(c, x, base, uc, n, ancho){
+    for (let j = 0; j < Math.ceil(n - 1e-9); j++){
+      const parte = Math.min(1, n - j), y0 = base - (j + 1)*uc;
+      ctx.save(); ctx.beginPath(); ctx.rect(x - ancho, base - (j + parte)*uc, 2*ancho, parte*uc); ctx.clip();
+      ctx.strokeStyle = c.C; ctx.lineWidth = grosor('C', 2);
+      // un clip parado: dos lazos alargados, uno dentro del otro
+      redondeado(ctx, x - ancho/2, y0 + 1.5, ancho, uc - 3, ancho/2 - .5); ctx.stroke();
+      ctx.lineWidth = 1.3; redondeado(ctx, x - ancho/2 + 2.5, y0 + 1.5 + uc*.22, ancho - 5, uc*.62, Math.max(1, ancho/2 - 3)); ctx.stroke();
+      ctx.restore();
+    }
+  }
+  function manijaTira(R){
+    const T = E.tira, g = geoTira(R);
+    return { x: g.x2, y: g.base - T.altoB*g.u, g };
+  }
+  function geoTira(R){
+    const T = E.tira, base = R.y + R.h - 28, u = Math.min((R.h - 58)/T.maxB, R.w/8.2);
+    const grupo = 3.4*u, hueco = (R.w - 2*grupo)/3;
+    return { base, u, uc: u*TIRA0.bajoB/TIRA0.bajoC, x1: R.x + hueco + 0.45*u, x2: R.x + 2*hueco + grupo + 0.45*u };
+  }
+  function dibTira(c, R){
+    const T = E.tira, g = geoTira(R), { base, u, uc } = g;
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, { x:R.x + 8, y:base }, { x:R.x + R.w - 8, y:base }); ctx.restore();
+    const grupo = (x, b, clips, nombre, pregunta) => {
+      figura(c, x, base, b*u, u*.8);
+      columnaBotones(c, x + 1.15*u, base, u, b);
+      if (clips !== null) columnaClips(c, x + 2.35*u, base, uc, clips, Math.max(7, uc*.34));
+      rotulo(ctx, c, x, base + 14, nombre, c.ink, 'center', 800, 12);
+      rotulo(ctx, c, x + 1.15*u, base - b*u - 12, fmt(b, Number.isInteger(b) ? 0 : 1), c.B, 'center', 800, 13);
+      if (pregunta) rotulo(ctx, c, x + 2.35*u, base - b*u - 12, '?', c.C, 'center', 800, 14);
+      else if (clips !== null && clips > 0) rotulo(ctx, c, x + 2.35*u, base - clips*uc - 12, fmt(clips, 2), c.C, 'center', 800, 13);
+    };
+    grupo(g.x1, TIRA0.bajoB, TIRA0.bajoC, 'Sr. Bajo', false);
+    if (T.verAlto) grupo(g.x2, T.altoB, T.pregunta ? null : T.clipsAlto, 'Sr. Alto', T.pregunta);
+    if (T.drag){
+      const m = manijaTira(R);
+      ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = (arrastrando || sobre) ? .18 : .09; ctx.beginPath(); ctx.arc(m.x, m.y, 20, 0, 7); ctx.fill(); ctx.restore();
+      ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = c.ink; ctx.lineWidth = 2.4; ctx.beginPath(); ctx.arc(m.x, m.y, 8, 0, 7); ctx.fill(); ctx.stroke();
+      ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; linea(ctx, { x:m.x - 4, y:m.y - 1 }, { x:m.x, y:m.y - 5 }); linea(ctx, { x:m.x, y:m.y - 5 }, { x:m.x + 4, y:m.y - 1 }); ctx.restore();
+    }
+  }
+  function grafTira(c, R){
+    const T = E.tira, k = TIRA0.bajoC/TIRA0.bajoB;
+    const pts = [{ x:TIRA0.bajoB, y:TIRA0.bajoC, color:c.ink }].concat(T.puntos.map(([b, cl]) => ({ x:b, y:cl, color:c.ink, r:3.5 })));
+    if (!T.pregunta && T.verAlto) pts.push({ x:T.altoB, y:clipsDe(T.altoB), color:c.ink, r:6, hueco:true });
+    grafica(c, R, { xmax:8, ymax:12, xpaso:1, ypaso:1, xet:2, yet:2, xk:'B', xt:'botones →', yk:'C', yt:'↑ clips',
+      curvas: T.linea ? [{ pts: MT.curva('directa', k, 0, 8, 2), color:c.ink, ancho:1.6, dash:[6, 4] }] : [],
+      puntos: pts, etiquetas: T.linea ? [{ x:8, y:7.5, t:'k = 3/2', align:'right', dy:0 }] : [] });
+  }
+
+  // ----- el taller: el rectángulo obreros × días (o × horas), cuya área es la obra -----
+  function geoTaller(R){
+    const T = E.taller, L = R.x + 22, B = R.y + R.h - 34, top = R.y + 30, der = R.x + R.w - (T.h ? 84 : 16);
+    let sx = (der - L)/T.Omax, sy = (B - top)/T.Ymax;
+    if (!T.h){ const s = Math.min(sx, sy); sx = sy = s; }
+    return { L, B, sx, sy };
+  }
+  function manijaTaller(R){ const T = E.taller, g = geoTaller(R); return { x: g.L + T.O*g.sx, y: g.B - Math.min(T.Y, T.Ymax)*g.sy/2, g }; }
+  function dibTaller(c, R){
+    const T = E.taller, g = geoTaller(R), { L, B, sx, sy } = g, Yv = Math.min(T.Y, T.Ymax);
+    const x1 = L + T.O*sx, y1 = B - Yv*sy;
+    // relleno: la obra
+    ctx.save(); ctx.fillStyle = c.W; ctx.globalAlpha = E.hl === 'W' ? c.relleno*2.4 : c.relleno*1.4; ctx.fillRect(L, y1, x1 - L, B - y1); ctx.restore();
+    // casilleros: un obrero por columna, un día por fila (cada fila mide h horas si hay horas diarias)
+    ctx.save(); ctx.strokeStyle = c.W; ctx.globalAlpha = .45; ctx.lineWidth = 1;
+    for (let j = 1; j < T.O - 1e-9; j++) linea(ctx, { x:L + j*sx, y:B }, { x:L + j*sx, y:y1 });
+    const fila = T.h || 1;
+    for (let y = fila; y < Yv - 1e-9; y += fila) linea(ctx, { x:L, y:B - y*sy }, { x:x1, y:B - y*sy });
+    ctx.restore();
+    if (T.h){ ctx.save(); ctx.strokeStyle = c.h; ctx.lineWidth = 1.6; ctx.globalAlpha = .9; for (let y = fila; y < Yv - 1e-9; y += fila) linea(ctx, { x:x1 - 6, y:B - y*sy }, { x:x1 + 6, y:B - y*sy }); ctx.restore(); }
+    ctx.save(); ctx.strokeStyle = c.W; ctx.lineWidth = grosor('W', 2); ctx.strokeRect(L, y1, x1 - L, B - y1); ctx.restore();
+    // los lados: abajo los obreros, a la izquierda los días
+    ctx.save(); ctx.lineCap = 'round'; ctx.strokeStyle = c.O; ctx.lineWidth = grosor('O', 5); linea(ctx, { x:L, y:B + 4 }, { x:x1, y:B + 4 });
+    ctx.strokeStyle = c.D; ctx.lineWidth = grosor('D', 5); linea(ctx, { x:L - 4, y:B }, { x:L - 4, y:y1 }); ctx.restore();
+    if (T.h && Yv >= T.h){
+      ctx.save(); ctx.strokeStyle = c.h; ctx.lineWidth = grosor('h', 3); linea(ctx, { x:x1 + 9, y:B }, { x:x1 + 9, y:B - T.h*sy }); ctx.restore();
+      rotulo(ctx, c, x1 + 14, B - T.h*sy/2, `h = ${fmt(T.h, 1)} h`, c.h, 'left', 800, 12);
+    }
+    // fantasma (el rectángulo de antes) y marca
+    if (T.fant){ ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.6; ctx.setLineDash([5, 4]); ctx.strokeRect(L, B - Math.min(T.fant.Y, T.Ymax)*sy, T.fant.O*sx, Math.min(T.fant.Y, T.Ymax)*sy); ctx.restore(); }
+    if (T.copias){ ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.setLineDash([3, 3]); linea(ctx, { x:L + T.copias.O*sx, y:B }, { x:L + T.copias.O*sx, y:y1 }); linea(ctx, { x:L, y:B - T.copias.Y*sy }, { x:x1, y:B - T.copias.Y*sy }); ctx.restore(); }
+    if (T.marca){
+      const ym = B - T.marca.y*sy;
+      ctx.save(); ctx.strokeStyle = c.D; ctx.lineWidth = 2; ctx.setLineDash([6, 4]); linea(ctx, { x:L - 4, y:ym }, { x:R.x + R.w - 12, y:ym }); ctx.restore();
+      rotulo(ctx, c, R.x + R.w - 14, ym - 11, T.marca.t, c.D, 'right', 800, 12);
+    }
+    // rótulos
+    const dias = diasDe(T), entero = x => Math.abs(x - Math.round(x)) < 1e-6;
+    rotulo(ctx, c, (L + x1)/2, B + 18, `${fmt(T.O, 2)} obreros`, c.O, 'center', 800, 13);
+    rotulo(ctx, c, L - 2, y1 - 14, `${fmt(dias, 2)} días`, c.D, 'left', 800, 13);
+    if (T.rotObra && B - y1 > 26){
+      ctx.font = `800 13px ${c.font}`;
+      const w = ctx.measureText(T.rotObra).width, cx = T.drag ? Math.min((L + x1)/2, x1 - 30 - w/2) : (L + x1)/2;
+      if (cx - w/2 >= L + 3) rotulo(ctx, c, cx, (B + y1)/2, T.rotObra, c.W, 'center', 800, 13);
+    }
+    if (T.drag){
+      const m = manijaTaller(R);
+      ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = (arrastrando || sobre) ? .18 : .09; ctx.beginPath(); ctx.arc(m.x, m.y, 20, 0, 7); ctx.fill(); ctx.restore();
+      ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = c.ink; ctx.lineWidth = 2.4; ctx.beginPath(); ctx.rect(m.x - 7, m.y - 7, 14, 14); ctx.fill(); ctx.stroke();
+      ctx.lineWidth = 1.4; linea(ctx, { x:m.x - 3, y:m.y - 3 }, { x:m.x - 3, y:m.y + 3 }); linea(ctx, { x:m.x + 3, y:m.y - 3 }, { x:m.x + 3, y:m.y + 3 }); ctx.restore();
+    }
+  }
+  function grafTaller(c, R){
+    const T = E.taller, w = T.O*T.Y, dias = diasDe(T);
+    const pts = T.puntos.map(([o, d]) => ({ x:o, y:d, color:c.ink, r:3.5 }));
+    pts.push({ x:T.O, y:dias, color:c.ink, r:6, hueco:true });
+    grafica(c, R, { xmax:T.gxmax, ymax:T.gymax, xpaso:1, ypaso:1, xet:5, yet:5, xk:'O', xt:'obreros →', yk:'D', yt:'↑ días',
+      rect:{ x:T.O, y:dias },
+      curvas: T.hip ? [{ pts: MT.curva('inversa', w, w/T.gymax, T.gxmax, 120), color:c.ink, ancho:1.6, dash:[6, 4] }] : [],
+      puntos: pts });
+  }
+
+  // ----- el reparto: una barra de soles que se parte -----
+  function dibReparto(c, R){
+    const P = E.rep, n = P.indices.length, x0 = R.x + 22, x1 = R.x + R.w - 22, y = R.y + R.h*0.36, alto = 46;
+    const fin = partesDe(P), ini = P.de || P.indices.map(() => P.total/n);
+    const partes = fin.map((p, j) => lerp(ini[j], p, P.prog));
+    const fx = v => x0 + (x1 - x0)*v/P.total;
+    ctx.save(); ctx.fillStyle = c.S; ctx.globalAlpha = c.relleno*1.6; ctx.fillRect(x0, y, x1 - x0, alto); ctx.restore();
+    ctx.save(); ctx.strokeStyle = c.S; ctx.lineWidth = grosor('S', 2.4); ctx.strokeRect(x0, y, x1 - x0, alto); ctx.restore();
+    rotulo(ctx, c, (x0 + x1)/2, y - 16, `S/ ${fmt(P.total, 0)}`, c.S, 'center', 800, 14);
+    const partido = P.prog > 0 || P.de;
+    let acc = 0; const centros = [];
+    partes.forEach((p, j) => {
+      const a = fx(acc), b = fx(acc + p); acc += p; centros.push((a + b)/2);
+      if (partido && j < n - 1){ ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2.4; ctx.globalAlpha = P.de ? 1 : P.prog; linea(ctx, { x:b, y:y - 4 }, { x:b, y:y + alto + 4 }); ctx.restore(); }
+      if (partido && (P.prog >= 1 || P.de) && b - a > 34) rotulo(ctx, c, (a + b)/2, y + alto/2, fmt(p, 0), c.S, 'center', 800, b - a > 56 ? 13 : 11);
+    });
+    // las personas, cada una con su índice (en tinta)
+    const xs = partido ? centros : P.indices.map((_, j) => x0 + (x1 - x0)*(j + .5)/n);
+    xs.forEach((x, j) => {
+      const yb = y + alto + 30;
+      ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x, yb, 8, 0, 7); ctx.fill(); ctx.stroke();
+      redondeado(ctx, x - 11, yb + 10, 22, 22, 7); ctx.fill(); ctx.stroke(); ctx.restore();
+      rotulo(ctx, c, x, yb + 46, `índice ${P.indices[j]}`, c.ink, 'center', 800, 12);
+    });
+    if (partido && P.prog >= 1) rotulo(ctx, c, (x0 + x1)/2, R.y + R.h - 14, P.tipo === 'inverso' ? 'reparto inverso: al índice más chico le toca más' : 'reparto directo: al índice más grande le toca más', c.muted, 'center', 700, 12);
+  }
+
+  // ----- engranajes en fila -----
+  function engranaje(c, C, z, m, ang, marca){
+    const rp = m*z/2, ra = rp + m*0.9, rf = rp - m*1.1, paso = 2*PI/z;
+    ctx.save(); ctx.beginPath();
+    for (let j = 0; j < z; j++){
+      const a = ang + j*paso, pts = [[rf, a - paso*.5], [rf, a - paso*.28], [ra, a - paso*.16], [ra, a + paso*.16], [rf, a + paso*.28]];
+      pts.forEach(([r, t], i) => { const x = C.x + r*Math.cos(t), y = C.y - r*Math.sin(t); if (j === 0 && i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y); });
+    }
+    ctx.closePath(); ctx.fillStyle = c.card; ctx.fill(); ctx.strokeStyle = c.z; ctx.lineWidth = grosor('z', 2); ctx.stroke(); ctx.restore();
+    // un rayo marcado para contar vueltas
+    ctx.save(); ctx.strokeStyle = c.n; ctx.lineWidth = grosor('n', 3.2); ctx.lineCap = 'round';
+    linea(ctx, C, { x: C.x + rf*.85*Math.cos(marca + PI/2), y: C.y - rf*.85*Math.sin(marca + PI/2) }); ctx.restore();
+    ctx.fillStyle = c.ink; ctx.beginPath(); ctx.arc(C.x, C.y, 3.5, 0, 7); ctx.fill();
+  }
+  function flechaGiro(c, C, r, horario){
+    const a0 = PI*0.15, a1 = PI*0.85;            // arco por arriba del centro (ángulos matemáticos)
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.fillStyle = c.ink; ctx.lineWidth = 2.4;
+    ctx.beginPath(); ctx.arc(C.x, C.y, r, -a1, -a0, false); ctx.stroke();
+    // la punta: en el extremo derecho si es horario, en el izquierdo si es antihorario
+    const a = horario ? a0 : a1, P = { x: C.x + r*Math.cos(a), y: C.y - r*Math.sin(a) };
+    const t = horario ? { x: Math.sin(a), y: Math.cos(a) } : { x: -Math.sin(a), y: -Math.cos(a) };   // tangente en el sentido del giro
+    const n = { x: -t.y, y: t.x }, L = 8;
+    ctx.beginPath(); ctx.moveTo(P.x + t.x*L*.6, P.y + t.y*L*.6); ctx.lineTo(P.x - t.x*L*.6 + n.x*L*.6, P.y - t.y*L*.6 + n.y*L*.6); ctx.lineTo(P.x - t.x*L*.6 - n.x*L*.6, P.y - t.y*L*.6 - n.y*L*.6); ctx.closePath(); ctx.fill();
+    ctx.restore();
+  }
+  function dibEngranajes(c, R){
+    const G = E.eng, z = G.dientes, total = z.reduce((s, x) => s + x, 0);
+    const m = Math.min((R.w - 30)/(total + 2*z.length*0.9 + 2), (R.h - 70)/(Math.max(...z) + 2));
+    const cy = R.y + (R.h - 30)/2 + 4;
+    let x = R.x + (R.w - m*total)/2;
+    const giros = MT.girosEngranajes(z, G.giro);
+    // fase: cada rueda deja un hueco donde la anterior tiene un diente
+    const fases = [0];
+    for (let j = 1; j < z.length; j++){
+      const f0 = (((0 - fases[j - 1])*z[j - 1]/(2*PI)) % 1 + 1) % 1;
+      fases.push(PI - (0.5 - f0)*2*PI/z[j]);
+    }
+    z.forEach((zi, j) => {
+      const rp = m*zi/2, C = { x: x + rp, y: cy };
+      engranaje(c, C, zi, m, fases[j] - 2*PI*giros[j], -2*PI*giros[j]);
+      // después de responder: una flecha curva con el sentido de giro (la rueda 1 gira en sentido horario)
+      if (G.sentidos) flechaGiro(c, C, Math.max(12, m*zi/2*0.55), j % 2 === 0);
+      rotulo(ctx, c, C.x, cy + rp + m + 16, `${zi} dientes`, c.z, 'center', 800, 12);
+      rotulo(ctx, c, C.x, cy - rp - m - 12, `rueda ${j + 1}`, c.ink, 'center', 800, 12);
+      x += 2*rp;
+    });
+  }
+
+  // ----- edad y estatura -----
+  function grafEdad(c, R){
+    const A = E.edad, clip = 5, p5 = MT.estatura({ a1:5, a2:10, clip });
+    const pts = [{ x:5, y:p5.e1, color:c.ink }];
+    const curvas = [], et = [];
+    if (A.despues){
+      const cur = []; for (let e = 0; e <= 12.001; e += 0.25) cur.push({ x:e, y:MT.crecimiento(e)/clip });
+      curvas.push({ pts:cur, color:c.C, ancho:3 });
+      curvas.push({ pts:[{ x:0, y:0 }, { x:12, y:p5.e1/5*12 }], color:c.muted, ancho:1.6, dash:[6, 4] });
+      pts.push({ x:10, y:p5.errores.proporcional, color:c.muted, hueco:true }, { x:10, y:p5.e2, color:c.ink, r:6 }, { x:0, y:p5.alNacer, color:c.ink, r:3.5 });
+      et.push({ x:10, y:p5.errores.proporcional, t:'si fuera proporcional', align:'right', dx:-10, color:c.muted },
+        { x:10, y:p5.e2, t:fmt(p5.e2, 1), align:'left', dx:4, dy:18 }, { x:0, y:p5.alNacer, t:'al nacer', align:'left', dx:10, dy:14 });
+    } else {
+      curvas.push({ pts:[{ x:10, y:0 }, { x:10, y:50 }], color:c.a, ancho:1.4, dash:[3, 4] });
+      et.push({ x:10, y:46, t:'¿a los 10?', align:'right', dx:-6, color:c.a });
+    }
+    et.push(A.despues ? { x:5, y:p5.e1, t:'22 clips a los 5 años', align:'left', dx:6, dy:18 } : { x:5, y:p5.e1, t:'22 clips a los 5 años', align:'left', dx:9, dy:-12 });
+    grafica(c, R, { xmax:12, ymax:50, xpaso:1, ypaso:5, xet:2, yet:2, xk:'a', xt:'edad (años) →', yk:'C', yt:'↑ estatura (clips de 5 cm)', curvas, puntos:pts, etiquetas:et });
+  }
+
+  E.dibujar = () => {
+    if (!W) return;
+    const c = colores(), R = regiones();
+    ctx.clearRect(0, 0, W, H); ctx.fillStyle = c.paper; ctx.fillRect(0, 0, W, H);
+    if (R.dib && R.graf){
+      ctx.save(); ctx.strokeStyle = c.line; ctx.lineWidth = 1.5;
+      if (R.graf.x > 0) linea(ctx, { x:R.graf.x, y:12 }, { x:R.graf.x, y:H - 12 }); else linea(ctx, { x:12, y:R.graf.y }, { x:W - 12, y:R.graf.y });
+      ctx.restore();
+    }
+    if (E.modo === 'tira'){ dibTira(c, R.dib); if (R.graf) grafTira(c, R.graf); }
+    else if (E.modo === 'taller'){ dibTaller(c, R.dib); if (R.graf) grafTaller(c, R.graf); }
+    else if (E.modo === 'reparto') dibReparto(c, R.dib);
+    else if (E.modo === 'engranajes') dibEngranajes(c, R.dib);
+    else if (E.modo === 'edad') grafEdad(c, R.graf);
+  };
+  E.leyenda = () => {
+    if (!idLey) return;
+    const it = (k, t, sq) => `<span><i class="${sq ? 'sq' : ''}" style="background:var(--c-${k})"></i>${t}</span>`;
+    let l = E.ley;
+    if (!l){
+      if (E.modo === 'tira') l = [['B', 'botones'], ['C', 'clips']];
+      else if (E.modo === 'taller') l = [['O', 'O · obreros'], ['D', 'D · días']].concat(E.taller && E.taller.h ? [['h', 'h · horas diarias']] : []).concat([['W', E.taller && E.taller.h ? 'trabajo · horas-hombre' : 'trabajo · obreros × días', true]]);
+      else if (E.modo === 'reparto') l = [['S', 'soles']];
+      else if (E.modo === 'engranajes') l = [['z', 'dientes'], ['n', 'rayo que cuenta las vueltas']];
+      else l = [['a', 'edad'], ['C', 'estatura en clips']];
+    }
+    document.getElementById(idLey).innerHTML = l.map(([k, t, sq]) => it(k, t, sq)).join('') +
+      ((E.taller && (E.taller.fant)) ? '<span>- - - antes</span>' : '');
+  };
+  // Lecturas y descripción para lectores de pantalla (dicen lo mismo; antes de responder no adelantan la respuesta).
+  E.avisar = () => {
+    const filas = E.lect.map(k => (typeof k === 'function' ? k(E) : LEC[k](E)));
+    if (idLect) document.getElementById(idLect).innerHTML = filas.map(([k, t, v]) => `<div class="lectura" style="--k:var(${k === 'ink' ? '--ink' : '--c-' + k})"><span>${t}</span><b>${v}</b></div>`).join('');
+    if (idDesc && !E.anim){
+      const base = { tira:'El Sr. Bajo y el Sr. Alto, medidos con botones y con clips.', taller:'Un rectángulo de casilleros: obreros a lo ancho y días a lo alto; su área es el trabajo.', reparto:'Una barra de soles que se reparte entre tres personas.', engranajes:'Ruedas dentadas en fila que engranan.', edad:'Gráfica de la estatura de Lía según su edad.' }[E.modo];
+      document.getElementById(idDesc).textContent = [base, ...filas.map(([, t, v]) => `${t}: ${v}.`)].join(' ');
+    }
+    if (E.alCambiar) E.alCambiar();
+  };
+  E.animar = (de, a, dur, paso, fin, lineal) => {
+    const tok = ++E.tok; E.anim = true;
+    tween(dur, f => { if (tok !== E.tok) return; paso(de + (a - de)*f); E.dibujar(); E.avisar(); },
+      () => { if (tok !== E.tok) return; E.anim = false; E.avisar(); if (fin) fin(); }, lineal);
+  };
+  // Corta la animación en curso (para pasar a otra cosa sin esperar).
+  E.parar = () => { E.tok++; E.anim = false; };
+
+  // ----- arrastrar: la cabeza del Sr. Alto o el lado derecho del rectángulo (táctil, ratón y teclado) -----
+  const local = e => { const r = cv.getBoundingClientRect(); return { x:e.clientX - r.left, y:e.clientY - r.top }; };
+  function manija(){
+    const R = regiones().dib; if (!R) return null;
+    if (E.modo === 'tira' && E.tira && E.tira.drag) return manijaTira(R);
+    if (E.modo === 'taller' && E.taller && E.taller.drag) return manijaTaller(R);
+    return null;
+  }
+  // Con el dedo, el dibujo deja desplazar la página (touch-action: pan-y); solo un toque que empieza cerca de la
+  // manija (radio de 40 px) se queda con el gesto. Con ratón, radio de 32 px.
+  function cerca(p, radio){ if (E.ocupado || E.anim) return false; const m = manija(); return !!m && Math.hypot(p.x - m.x, p.y - m.y) < radio; }
+  function ponerAlto(b){ const T = E.tira; b = clamp(Math.round(b*2)/2, 1, T.maxB - .5); if (b === T.altoB) return; T.altoB = b; T.clipsAlto = clipsDe(b); E.dibujar(); E.avisar(); }
+  function ponerObreros(o){
+    const T = E.taller; o = clamp(Math.round(o), T.Omin, T.Omax); if (o === T.O) return;
+    const w = T.O*T.Y; T.O = o; T.Y = w/o; E.dibujar(); E.avisar();
+  }
+  cv.addEventListener('touchstart', e => {
+    if (e.touches.length !== 1) return;
+    const r = cv.getBoundingClientRect(), t = e.touches[0];
+    if (cerca({ x:t.clientX - r.left, y:t.clientY - r.top }, 40)) e.preventDefault();
+  }, { passive:false });
+  cv.addEventListener('pointerdown', e => {
+    const p = local(e); if (!cerca(p, e.pointerType === 'mouse' ? 32 : 40)) return;
+    arrastrando = true; cv.setPointerCapture(e.pointerId); e.preventDefault(); cv.focus({ preventScroll:true }); E.dibujar();
+  }, { passive:false });
+  cv.addEventListener('pointermove', e => {
+    const p = local(e);
+    if (arrastrando){
+      const m = manija(); if (!m) return;
+      if (E.modo === 'tira') ponerAlto((m.g.base - p.y)/m.g.u);
+      else ponerObreros((p.x - m.g.L)/m.g.sx);
+      return;
+    }
+    const sv = cerca(p, 32);
+    if (sv !== sobre){ sobre = sv; cv.style.cursor = sv ? 'grab' : ''; E.dibujar(); }
+  });
+  const soltar = () => { if (arrastrando){ arrastrando = false; E.dibujar(); } };
+  cv.addEventListener('pointerup', soltar); cv.addEventListener('pointercancel', soltar);
+  cv.addEventListener('keydown', e => {
+    if (E.ocupado || E.anim || !arrastrable()) return;
+    if (E.modo === 'tira' && (e.key === 'ArrowUp' || e.key === 'ArrowDown')){ e.preventDefault(); ponerAlto(E.tira.altoB + (e.key === 'ArrowUp' ? .5 : -.5)); }
+    if (E.modo === 'taller' && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')){ e.preventDefault(); ponerObreros(E.taller.O + (e.key === 'ArrowRight' ? 1 : -1)); }
+  });
+  return E;
+}
+
+// Opciones de predicción (las mismas en los dos modos)
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+const tablaHTML = (cab, filas) => `<div class="tabla-wrap"><table class="tabla"><thead><tr>${cab.map(h => `<th scope="col">${h}</th>`).join('')}</tr></thead><tbody>${filas.map(f => `<tr>${f.map(x => `<td>${x}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+// En el celular, el dibujo se lleva arriba de la pantalla antes de animar; si el alumno cambió de paso, no se anima.
+function alDibujo(cv, sigue, fn){
+  const chico = innerWidth < 900;
+  if (chico) cv.scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+  esperar(chico ? 380 : 0, () => { if (sigue()) fn(); });
+}
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1');
+const S = { step:0, max:0, pred:{}, ocupado:false, x:null };
+
+// Números de la escena: todos salen del motor
+const ALTO = MT.srAlto({ bajoBotones:4, bajoClips:6, altoBotones:6 });
+const INV = MT.reglaDeTres({ tipo:'inversa', a1:6, b1:10, a2:15 });
+const ANTES = MT.reglaDeTres({ tipo:'inversa', a1:9, b1:12, a2:6 });       // 12 obreros en 9 días; listo en 6 días
+const COMP = MT.trabajo({ obreros:4, dias:12, horas:6 }, { obreros:8, horas:4, dias:null });
+const COMP1 = MT.trabajo({ obreros:4, dias:12, horas:6 }, { obreros:8, horas:6, dias:null });
+const REP = MT.reparto({ total:1980, inverso:[2, 3, 6] });
+
+const P_ALTO = { id:'regla-de-tres-paso1', unidad:UNIDAD_RAZONES, ok:'a', opts:[
+  ['a', `${fmt(ALTO.clips, 0)} clips`],
+  ['b', `${fmt(ALTO.errores.aditiva, 0)} clips`, 'AR6-aditiva', 'parcial'],
+  ['c', `${fmt(ALTO.errores.invierteRazon, 0)} clips`, 'invierte-la-razon', 'hipotesis'],
+  ['d', `${fmt(ALTO.errores.doble, 0)} clips`, 'AR7-dobla', 'hipotesis']],
+  fb:{ a:'¡Bien! Cada 2 botones del Sr. Bajo valen 3 clips. El Sr. Alto mide 3 veces 2 botones, así que mide 3 veces 3 clips: 9.',
+    b:'Elegiste la B. Así se conserva la diferencia (2 clips más que botones), pero un clip es más corto que un botón: lo que se mantiene es la razón, 6 clips por cada 4 botones. Mira cómo se apilan los clips. La correcta está marcada.',
+    c:'Elegiste la C. Esa cuenta usa la razón al revés (4 por cada 6). Como un clip es más corto que un botón, siempre hacen falta más clips que botones: 9. La correcta está marcada.',
+    d:'Elegiste la D. El doble valdría si cada botón midiera dos clips, pero 4 botones son 6 clips: cada botón mide un clip y medio. 6 · 1,5 = 9. La correcta está marcada.' } };
+const P_INV = { id:'regla-de-tres-paso3', ok:'b', opts:[
+  ['a', `${fmt(INV.errores.comoDirecta, 0)} días`, 'AR8-inversa-como-directa', 'hipotesis'],
+  ['b', `${fmt(INV.b2, 0)} días`],
+  ['c', `${fmt(INV.errores.aditiva, 0)} día`, 'AR6-resta-lo-que-aumenta', 'hipotesis'],
+  ['d', `${fmt(INV.errores.sinCambio, 0)} días`, 'no-cambia', 'hipotesis']],
+  fb:{ b:'¡Bien! El muro necesita 6 × 10 = 60 obrero-días de trabajo. Entre 15 obreros: 60/15 = 4 días.',
+    a:'Elegiste la A. Esa es la regla de tres directa: 10 · 15/6. Pero con más obreros el muro se termina antes, no después. La correcta está marcada.',
+    c:'Elegiste la C. Restar lo que aumentó no sirve: la relación es de multiplicar. Con 15 obreros, que son 2,5 veces 6, los días se dividen entre 2,5. La correcta está marcada.',
+    d:'Elegiste la D. El muro es el mismo, pero se reparte entre más obreros: cada uno hace menos y se termina antes. La correcta está marcada.' } };
+const P_ANTES = { id:'regla-de-tres-paso5', ok:'c', opts:[
+  ['a', `${fmt(ANTES.errores.comoDirecta, 0)} obreros`, 'AR8-inversa-como-directa', 'hipotesis'],
+  ['b', `${fmt(ANTES.errores.aditiva, 0)} obreros`, 'AR6-suma-lo-que-baja', 'hipotesis'],
+  ['c', `${fmt(ANTES.b2, 0)} obreros`],
+  ['d', `${fmt(ANTES.errores.sinCambio, 0)} obreros`, 'no-cambia', 'hipotesis']],
+  fb:{ c:'¡Bien! La obra necesita 12 × 9 = 108 obrero-días de trabajo. En 6 días: 108/6 = 18 obreros.',
+    a:'Elegiste la A. Suena bien («menos días, menos de todo»), pero para acabar antes hace falta más gente, no menos. Es inversa. La correcta está marcada.',
+    b:'Elegiste la B. Son 3 días menos, pero sumar 3 obreros no conserva nada. Lo que no cambia es el producto obreros × días: 12 × 9 = 18 × 6. La correcta está marcada.',
+    d:'Elegiste la D. El problema dice que trabajan igual: con el mismo ritmo, los mismos obreros tardan los mismos 9 días. La correcta está marcada.' } };
+const P_COMP = { id:'regla-de-tres-paso6', ok:'c', opts:[
+  ['a', `${fmt(COMP.errores.olvidaHoras, 0)} días`, 'AR9-olvida-horas', 'hipotesis'],
+  ['b', `${fmt(COMP.errores.horasDirectas, 0)} días`, 'AR9-horas-como-directa', 'hipotesis'],
+  ['c', `${fmt(COMP.valor, 0)} días`],
+  ['d', `${fmt(COMP.errores.todoDirecta, 0)} días`, 'AR8-todo-directo', 'hipotesis']],
+  fb:{ c:'¡Bien! La zanja necesita 4 · 6 · 12 = 288 horas-hombre. Con 8 obreros de 4 horas diarias salen 32 horas-hombre por día: 288/32 = 9 días.',
+    a:'Elegiste la A. Esa cuenta solo mira a los obreros (el doble, la mitad de días) y se olvida de que ahora trabajan menos horas cada día. La correcta está marcada.',
+    b:'Elegiste la B. Esa cuenta trata las horas diarias como directas: menos horas, menos días. Es al revés: si trabajan menos horas cada día, necesitan más días. La correcta está marcada.',
+    d:'Elegiste la D. Esa cuenta multiplica todo derecho, como si fuera directa. Más obreros dan menos días y menos horas diarias dan más días. La correcta está marcada.' } };
+const P_REP = { id:'regla-de-tres-paso7', ok:'c', opts:[
+  ['a', `S/ ${fmt(REP.errores.comoDirecto[2], 0)}`, 'AR10-inverso-como-directo', 'hipotesis'],
+  ['b', `S/ ${fmt(REP.errores.iguales[2], 0)}`, 'reparto-en-partes-iguales', 'hipotesis'],
+  ['c', `S/ ${fmt(REP.partes[2], 0)}`],
+  ['d', `S/ ${fmt(REP.partes[0], 0)}`, 'toma-la-parte-del-mayor', 'hipotesis']],
+  fb:{ c:'¡Bien! Inverso a 2, 3 y 6 es directo a 1/2, 1/3 y 1/6; por 6, a 3, 2 y 1. Son 6 partes de S/ 330: al del 6 le toca 1 parte.',
+    a:'Elegiste la A. Así se reparte en forma directa: al de más tardanzas le tocaría más. En el reparto inverso, al índice más grande le toca menos. La correcta está marcada.',
+    b:'Elegiste la B. En partes iguales, las tardanzas no cuentan para nada. El reparto inverso premia al que tuvo menos. La correcta está marcada.',
+    d:'Elegiste la D. S/ 990 es lo que recibe el de 2 tardanzas, el que tuvo menos. Al de 6 le toca la parte más chica. La correcta está marcada.' } };
+
+// Ecuaciones en vivo
+function vivoTira(){
+  const d = $('vivoT'); if (!d) return;
+  const b = E.tira.altoB, cl = clipsDe(b);
+  d.innerHTML = `<div class="eq">${fr(C_('6'), B_('4'))} = ${fr(C_(fmt(cl, 2)), B_(fmt(b, 1)))} = ${fr('3', '2')} = k<span class="note">el cociente no cambia: directa</span></div>
+    <div class="eq">${C_('6')} − ${B_('4')} = 2, pero ${C_(fmt(cl, 2))} − ${B_(fmt(b, 1))} = ${fmt(cl - b, 2)}<span class="note">la diferencia sí cambia</span></div>`;
+}
+function vivoTaller(){
+  const d = $('vivoW'); if (!d) return;
+  const T = E.taller;
+  d.innerHTML = `<div class="eq">${O_(fmt(T.O, 0))} · ${D_(fmt(T.Y, 2))} = ${W_(fmt(T.O*T.Y, 0))}<span class="note">el producto, el trabajo, no cambia: inversa</span></div>
+    <div class="eq">${D_('D')} = ${fr(W_('60'), O_(fmt(T.O, 0)))} = ${D_(fmt(T.Y, 2))} días</div>`;
+}
+const cfgTira = o => E.config(Object.assign({ modo:'tira' }, o));
+const cfgTaller = o => E.config(Object.assign({ modo:'taller' }, o));
+
+const steps = [
+ { k:'Paso 1', t:'Predice: el Sr. Alto', gate:P_ALTO,
+   prep:() => { const ya = !!S.pred[P_ALTO.id];
+     cfgTira({ tira:{ altoB:6, pregunta:!ya, clipsAlto: ya ? 9 : 0 }, lect: ya ? ['bajoB','bajoC','altoB','altoC'] : ['bajoB','bajoC','altoB'] }); },
+   anima:fin => { E.tira.pregunta = false; E.animar(0, ALTO.clips, RM ? 0 : 1800, n => { E.tira.clipsAlto = n; }, () => { E.lect = ['bajoB','bajoC','altoB','altoC']; E.avisar(); fin(); }, true); },
+   body:() => `<p class="problem">El Sr. Bajo, un muñeco de papel, mide ${B_('4 botones')} de alto. Medido con clips, mide ${C_('6 clips')}. Su amigo, el Sr. Alto, mide ${B_('6 botones')}.</p>
+   <p>¿Cuántos ${C_('clips')} mide el Sr. Alto?</p>${opcionesHTML(P_ALTO.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   ${tablaHTML(['', B_('botones'), C_('clips'), 'clips ÷ botones', 'clips − botones'], [['Sr. Bajo', B_('4'), C_('6'), '3/2', '2'], ['Sr. Alto', B_('6'), C_(fmt(ALTO.clips, 0)), '3/2', '3']])}
+   <p>Lo que se mantiene no es la diferencia, sino la <b>razón</b>: siempre hay 3 ${C_('clips')} por cada 2 ${B_('botones')}. La razón geométrica es un cociente, ${fr(C_('6'), B_('4'))} = 3/2; la razón aritmética es una resta, 6 − 4 = 2. Cuando el problema dice «en la razón de», se refiere al cociente.</p>
+   <p class="fuente">Este es el problema del Sr. Bajo y el Sr. Alto (Karplus, Karplus y Wollman, 1974), con números de la versión clásica. Según los resúmenes que revisamos, la mayoría de los que fallan responde 8: conservan la diferencia. En el estudio inglés CSMS, con unos 767 alumnos de 14 años, hasta el 40 % dio la respuesta aditiva en un ítem de razones (Hart, 1981, citado en actas del PME); son cifras de resúmenes, por confirmar en el original. Las opciones 4 y 12 son hipótesis nuestras.</p></div>` },
+ { k:'Paso 2', t:'La razón que no cambia', explora:'tira',
+   prep:() => { cfgTira({ graf:true, tira:{ altoB:6, pregunta:false, clipsAlto:9, drag:true, linea:false, maxB:8, puntos:[[6, 9]] }, lect:['altoB','altoC','k','dif'],
+     alCambiar:() => { const T = E.tira; if (!T.puntos.some(p => p[0] === T.altoB)) T.puntos.push([T.altoB, clipsDe(T.altoB)]); if (T.puntos.length >= 3) T.linea = true; vivoTira(); } }); },
+   body:() => `<p class="problem">Arrastra la cabeza del Sr. Alto (el círculo con la flecha) para hacerlo más alto o más bajo. Cada altura se mide con ${B_('botones')} y con ${C_('clips')}, y queda como un punto en la gráfica.</p>
+   <div class="eqs" id="vivoT"></div>
+   <p>Si la altura en ${B_('botones')} se duplica, la altura en ${C_('clips')} también se duplica; si se triplica, se triplica. Dos magnitudes así son <b>directamente proporcionales</b>: su cociente es una constante, ${fr(C_('clips'), B_('botones'))} = k. Sus puntos caen en una recta que pasa por el origen: con 0 botones de alto, 0 clips.</p>
+   <p>Con dos razones iguales se arma una <b>proporción</b>: ${fr(C_('6'), B_('4'))} = ${fr(C_('9'), B_('6'))}. Si falta un término, se llama cuarta proporcional: x = 6 · 6/4 = 9. Y en una serie de razones iguales, la suma de antecedentes entre la suma de consecuentes da la misma razón: (6 + 9)/(4 + 6) = 3/2.</p>
+   <p class="hint">Con teclado: toca el dibujo; las flechas ↑ y ↓ cambian la altura de medio en medio botón.</p>` },
+ { k:'Paso 3', t:'Predice: más obreros', gate:P_INV,
+   prep:() => { const ya = !!S.pred[P_INV.id];
+     cfgTaller({ taller:{ O: ya ? 15 : 6, Y: ya ? 4 : 10, Omax:16, Ymax:11, fant: ya ? { O:6, Y:10 } : null, rotObra: ya ? '60 obrero-días' : 'muro' }, lect: ya ? ['O','D','W'] : ['O','D'] }); },
+   anima:fin => { E.taller.fant = { O:6, Y:10 }; E.leyenda(); E.animar(6, 15, 1700, o => { E.taller.O = o; E.taller.Y = 60/o; }, () => { E.taller.O = 15; E.taller.Y = 4; E.taller.rotObra = '60 obrero-días'; E.lect = ['O','D','W']; E.avisar(); E.dibujar(); fin(); }); },
+   body:() => `<p class="problem">${O_('Seis obreros')} construyen un muro en ${D_('10 días')}. Cada casillero del dibujo es el trabajo de un obrero en un día.</p>
+   <p>Si ${O_('15 obreros')} que trabajan al mismo ritmo construyen el mismo muro, ¿en cuántos ${D_('días')} lo terminan?</p>${opcionesHTML(P_INV.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${W_('trabajo')} = ${O_('6')} · ${D_('10')} = ${W_('60')} obrero-días<span class="note">en las academias, «hombres-día»</span></div>
+     <div class="eq">${D_('D')} = ${fr(W_('60'), O_('15'))} = ${D_(fmt(INV.b2, 0))} días<span class="note">o: 10 · 6/15</span></div></div>
+   <p>El muro (la obra) es el mismo, así que el área del rectángulo, el ${W_('trabajo')}, no cambia. Si el rectángulo se ensancha (más ${O_('obreros')}), tiene que bajar (menos ${D_('días')}). Cuando una magnitud se multiplica por 2,5, la otra se divide entre 2,5.</p>
+   <p class="aviso">Antes de multiplicar en cruz, pregúntate: si hay más obreros, ¿se tarda más o menos? Si es menos, es inversa.</p>
+   <p class="fuente">No encontramos estudios con cifras sobre la regla de tres inversa resuelta como directa. Las opciones incorrectas son hipótesis nuestras, ligadas a la ilusión de linealidad (aplicar la proporción directa donde no va), que sí está estudiada (Van Dooren y otros, 2005; De Bock y otros, 2007).</p></div>` },
+ { k:'Paso 4', t:'El producto que no cambia', explora:'taller',
+   prep:() => { cfgTaller({ graf:true, taller:{ O:6, Y:10, Omax:20, Ymax:20, Omin:3, drag:true, hip:false, rotObra:'60 obrero-días', puntos:[[6, 10], [15, 4]], gxmax:20, gymax:20 }, lect:['O','D','W'],
+     alCambiar:() => { const T = E.taller; if (!T.puntos.some(p => p[0] === T.O)) T.puntos.push([T.O, T.Y]); if (T.puntos.length >= 4) T.hip = true; vivoTaller(); } }); },
+   body:() => `<p class="problem">Arrastra el lado derecho del rectángulo (el cuadrado) para cambiar el número de ${O_('obreros')}. El muro es el mismo, así que el ${W_('trabajo')} queda fijo y los ${D_('días')} se ajustan.</p>
+   <div class="eqs" id="vivoW"></div>
+   <p>Si los ${O_('obreros')} se duplican, los ${D_('días')} se reducen a la mitad. Dos magnitudes así son <b>inversamente proporcionales</b>: su producto es una constante. En la gráfica, sus puntos no forman una recta sino una curva, una hipérbola: el rectángulo pintado bajo cada punto tiene siempre la misma área, el ${W_('trabajo')}.</p>
+   ${tablaHTML(['', 'Directa', 'Inversa'], [['Qué no cambia', 'el cociente y/x', 'el producto x · y'], ['Si x va por 2', 'y va por 2', 'y va entre 2'], ['Gráfica', 'recta por el origen', 'hipérbola']])}
+   <p>Prueba con 7 obreros: salen 60/7 ≈ 8,57 días. La fila de arriba queda a medias: no todos los números quedan enteros.</p>
+   <p class="hint">Con teclado: toca el dibujo; las flechas ← y → quitan o ponen un obrero.</p>` },
+ { k:'Paso 5', t:'Predice: terminar antes', gate:P_ANTES,
+   prep:() => { const ya = !!S.pred[P_ANTES.id];
+     cfgTaller({ taller:{ O: ya ? 18 : 12, Y: ya ? 6 : 9, Omax:20, Ymax:10, fant: ya ? { O:12, Y:9 } : null, marca:{ y:6, t:'6 días' }, rotObra: ya ? '108 obrero-días' : 'obra' }, lect: ya ? ['O','D','W'] : ['O','D'] }); },
+   anima:fin => { E.taller.fant = { O:12, Y:9 }; E.leyenda(); E.animar(9, 6, 1600, y => { E.taller.Y = y; E.taller.O = 108/y; }, () => { E.taller.O = 18; E.taller.Y = 6; E.taller.rotObra = '108 obrero-días'; E.lect = ['O','D','W']; E.avisar(); E.dibujar(); fin(); }); },
+   body:() => `<p class="problem">En otra obra, ${O_('12 obreros')} terminan en ${D_('9 días')}. El dueño quiere que esté lista en ${D_('6 días')}.</p>
+   <p>Si todos trabajan al mismo ritmo, ¿cuántos ${O_('obreros')} hacen falta?</p>${opcionesHTML(P_ANTES.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${O_('12')} · ${D_('9')} = ${W_('108')} = ${O_('x')} · ${D_('6')}</div>
+     <div class="eq">${O_('x')} = ${fr(W_('108'), D_('6'))} = ${O_(fmt(ANTES.b2, 0))} obreros</div></div>
+   <p>Aquí la incógnita son los ${O_('obreros')}, y la frase «menos días» invita a pensar «menos obreros». Pero el rectángulo tiene que bajar hasta la línea de ${D_('6 días')} sin perder área: se ensancha. Los días bajan de 9 a 6 (por 2/3) y los obreros suben de 12 a 18 (por 3/2).</p>
+   <p class="fuente">Las opciones incorrectas son hipótesis nuestras: no encontramos estudios que midan este caso.</p></div>` },
+ { k:'Paso 6', t:'Predice: menos horas cada día', gate:P_COMP,
+   prep:() => { const ya = !!S.pred[P_COMP.id];
+     cfgTaller({ taller:{ O: ya ? 8 : 4, Y: ya ? 36 : 72, h: ya ? 4 : 6, Omax:9, Ymax:76, Omin:1, rotObra: ya ? '288 horas-hombre' : 'zanja' }, lect: ya ? ['O','h','D','W'] : ['O','h','D'] }); },
+   anima:fin => {
+     E.animar(4, 8, 1400, o => { E.taller.O = o; E.taller.Y = 288/o; }, () => {
+       E.taller.O = 8; E.taller.Y = 36; $('fase6').textContent = `Primero, el doble de obreros con las mismas 6 horas: ${fmt(COMP1.valor, 0)} días.`;
+       esperar(700, () => E.animar(6, 4, 1500, h => { E.taller.h = h; }, () => { E.taller.h = 4; E.taller.rotObra = '288 horas-hombre'; E.lect = ['O','h','D','W']; E.avisar(); E.dibujar();
+         $('fase6').textContent = `Después, 4 horas en vez de 6: cada día rinde menos, así que hacen falta más días: ${fmt(COMP.valor, 0)}.`; fin(); }));
+     }); },
+   body:() => `<p class="problem">${O_('Cuatro obreros')}, trabajando ${h_('6 horas diarias')}, cavan una zanja en ${D_('12 días')}. Cada fila del dibujo es un día y mide tantas horas como se trabaja ese día.</p>
+   <p>¿En cuántos ${D_('días')} cavarían la misma zanja ${O_('8 obreros')} igual de eficientes, trabajando ${h_('4 horas diarias')}?</p>${opcionesHTML(P_COMP.opts, 'fb')}
+   <div id="tras" class="body" hidden><p class="hint" id="fase6" aria-live="polite"></p><div class="eqs">
+     <div class="eq">${W_('trabajo')} = ${O_('4')} · ${h_('6')} · ${D_('12')} = ${W_('288')} horas-hombre</div>
+     <div class="eq">${D_('D')} = ${fr(W_('288'), `${O_('8')} · ${h_('4')}`)} = ${D_(fmt(COMP.valor, 0))} días<span class="note">o: 12 · ${fr('4', '8')} · ${fr('6', '4')}</span></div></div>
+   <p>Para clasificar cada magnitud, se compara con la incógnita dejando fijas las demás. Más ${O_('obreros')}: menos ${D_('días')} (inversa). Más ${h_('horas diarias')}: menos ${D_('días')} (también inversa). Las dos razones van al revés: 4/8 y 6/4.</p>
+   <p>En el método de los signos se escriben los datos en dos filas: arriba el caso conocido y abajo el que se pregunta, con la ${D_('x')} debajo de su valor conocido. Ese valor (${D_('12')}) lleva +. Cada magnitud se compara con la incógnita: si es inversa, lleva + arriba y − abajo; si es directa, al revés. La ${D_('x')} es el producto de los + entre el producto de los −: ${D_('x')} = ${fr(`${D_('12')} · ${O_('4')} · ${h_('6')}`, `${O_('8')} · ${h_('4')}`)} = ${fmt(COMP.valor, 0)}.</p>
+   <p class="fuente">No encontramos estudios con cifras sobre la regla de tres compuesta. Clasificar mal las horas diarias, olvidarlas o tratar todo como directo son hipótesis nuestras.</p></div>` },
+ { k:'Paso 7', t:'Predice: el reparto inverso', gate:P_REP,
+   prep:() => { const ya = !!S.pred[P_REP.id];
+     E.config({ modo:'reparto', rep:{ total:1980, indices:[2, 3, 6], tipo:'inverso', prog: ya ? 1 : 0 }, lect: ya ? ['total','partes'] : ['total'] }); },
+   anima:fin => { E.animar(0, 1, 1500, p => { E.rep.prog = p; }, () => { E.lect = ['total','partes']; E.avisar(); fin(); }); },
+   body:() => `<p class="problem">Un premio de ${S_('S/ 1980')} se reparte entre tres trabajadores en forma <b>inversamente proporcional</b> a sus tardanzas del mes: 2, 3 y 6.</p>
+   <p>¿Cuántos ${S_('soles')} recibe el que tuvo 6 tardanzas?</p>${opcionesHTML(P_REP.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">inverso a 2, 3 y 6 = directo a ${fr('1', '2')}, ${fr('1', '3')} y ${fr('1', '6')} = directo a 3, 2 y 1<span class="note">por 6, el MCM</span></div>
+     <div class="eq">una parte = ${fr(S_('1980'), '3 + 2 + 1')} = ${S_(fmt(REP.kEnteros, 0))}</div>
+     <div class="eq">${S_(fmt(REP.partes[0], 0))}, ${S_(fmt(REP.partes[1], 0))} y ${S_(fmt(REP.partes[2], 0))}</div></div>
+   <p>En un reparto <b>directo</b>, a más índice, más dinero: cada parte entre su índice da lo mismo. En uno <b>inverso</b>, a más índice, menos dinero: cada parte por su índice da lo mismo (990 · 2 = 660 · 3 = 330 · 6 = 1980; aquí da 1980, igual que el total, solo porque 1/2 + 1/3 + 1/6 = 1; en general no coincide). Es la misma idea del rectángulo: un producto que no cambia.</p>
+   <p class="fuente">No encontramos estudios con cifras sobre el reparto inverso. Que se haga como directo es una hipótesis nuestra, ligada a la ilusión de linealidad; las otras opciones también son hipótesis.</p></div>` },
+ { k:'Paso 8', t:'Ahora explora tú', explora:'libre',
+   prep:() => explorarPrep(),
+   body:() => `<p>Elige qué mirar. En la tira y en el taller, arrastra la manija; en el reparto, cambia de directo a inverso. Todas las cuentas salen del motor.</p>
+   <div class="seg" role="group" aria-label="Qué mirar">${[['tira','La tira'],['taller','El taller'],['reparto','El reparto']].map(([k, t]) => `<button type="button" data-x="${k}" aria-pressed="${(S.x || 'tira') === k}">${t}</button>`).join('')}</div>
+   <div class="seg" role="group" aria-label="Tipo de reparto" id="x-tipo" ${(S.x || 'tira') === 'reparto' ? '' : 'hidden'}>${[['directo','Directo'],['inverso','Inverso']].map(([k, t]) => `<button type="button" data-tipo="${k}" aria-pressed="${k === 'inverso'}">${t}</button>`).join('')}</div>
+   <div class="eqs" id="vivoX"></div>
+   <p id="x-msg" class="hint" aria-live="polite"></p>` },
+];
+
+function explorarPrep(){
+  const m = S.x || 'tira';
+  if (m === 'tira') cfgTira({ graf:true, tira:{ altoB:6, pregunta:false, clipsAlto:9, drag:true, linea:true, maxB:8, puntos:[] }, lect:['altoB','altoC','k','dif'], alCambiar:vivoX });
+  else if (m === 'taller') cfgTaller({ graf:true, taller:{ O:6, Y:10, Omax:20, Ymax:20, Omin:3, drag:true, hip:true, rotObra:'60 obrero-días', puntos:[] }, lect:['O','D','W'], alCambiar:vivoX });
+  else E.config({ modo:'reparto', rep:{ total:1980, indices:[2, 3, 6], tipo:'inverso', prog:1 }, lect:['total','partes'], alCambiar:vivoX });
+}
+function vivoX(){
+  const d = $('vivoX'); if (!d) return;
+  if (E.modo === 'tira'){ const b = E.tira.altoB, cl = clipsDe(b); d.innerHTML = `<div class="eq">${fr(C_(fmt(cl, 2)), B_(fmt(b, 1)))} = ${fr('3', '2')}<span class="note">directa: el cociente no cambia</span></div>`; }
+  else if (E.modo === 'taller'){ const T = E.taller; d.innerHTML = `<div class="eq">${O_(fmt(T.O, 0))} · ${D_(fmt(T.Y, 2))} = ${W_('60')}<span class="note">inversa: el producto no cambia</span></div>`; }
+  else { const P = E.rep, p = partesDe(P); d.innerHTML = `<div class="eq">${p.map((x, j) => P.tipo === 'inverso' ? `${S_(fmt(x, 0))} · ${P.indices[j]}` : `${fr(S_(fmt(x, 0)), P.indices[j])}`).join(' = ')} = ${fmt(P.tipo === 'inverso' ? p[0]*P.indices[0] : p[0]/P.indices[0], 0)}<span class="note">${P.tipo === 'inverso' ? 'inverso: parte × índice no cambia (da 1980, igual que el total, solo porque 1/2 + 1/3 + 1/6 = 1; en general no coincide)' : 'directo: parte ÷ índice no cambia'}</span></div>`; }
+}
+function explorar(){
+  const body = $('stepBody');
+  body.querySelectorAll('[data-x]').forEach(b => b.onclick = () => {
+    if (E.anim) return;
+    S.x = b.dataset.x; body.querySelectorAll('[data-x]').forEach(q => q.setAttribute('aria-pressed', String(q === b)));
+    $('x-tipo').hidden = S.x !== 'reparto'; $('x-msg').textContent = '';
+    body.querySelectorAll('[data-tipo]').forEach(q => q.setAttribute('aria-pressed', String(q.dataset.tipo === 'inverso')));
+    explorarPrep(); vivoX();
+  });
+  body.querySelectorAll('[data-tipo]').forEach(b => b.onclick = () => {
+    if (E.modo !== 'reparto' || E.anim || E.rep.tipo === b.dataset.tipo) return;
+    body.querySelectorAll('[data-tipo]').forEach(q => q.setAttribute('aria-pressed', String(q === b)));
+    E.rep.de = partesDe(E.rep); E.rep.tipo = b.dataset.tipo; E.rep.prog = 0; vivoX();
+    $('x-msg').textContent = b.dataset.tipo === 'directo' ? 'Directo: al índice 6 le toca más (S/ 1080).' : 'Inverso: al índice 6 le toca menos (S/ 330).';
+    E.animar(0, 1, 1200, p => { E.rep.prog = p; }, () => { E.rep.de = null; E.dibujar(); });
+  });
+  vivoX();
+}
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; b.dataset.label = `Ir al ${s.k.toLowerCase()}: ${s.t}`;
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  if (s.prep) s.prep();
+  pintarDots();
+  E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.gate) prediccion(s);
+  if (s.explora === 'libre') explorar();
+  if (E.alCambiar) E.alCambiar();
+  nav();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+  E.ocupado = S.ocupado;
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    // un paso bloqueado no delata su título
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : b.dataset.label);
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){ if (k > S.max) S.max = k; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0, P.unidad);
+    S.ocupado = true; nav();
+    E.compactar(false);
+    $('next').focus({ preventScroll:true });
+    const paso = S.step;
+    alDibujo($('cv'), () => true, () => {
+      if (S.step !== paso) { S.ocupado = false; nav(); return; }
+      s.anima(() => { S.ocupado = false; E.avisar(); nav(); });
+    });
+  }));
+  pintar();
+}
+
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Experimentos del informe (docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md): duplicar obreros y días,
+   medio muro, engranajes (RM5), edad y estatura (AR7) y tres engranajes en fila. La escena cambia recién después de
+   responder. Un experimento se abre solo si los anteriores ya tienen respuesta. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2');
+const DUP = MT.trabajo({ obreros:6, dias:10 }, { obreros:12, dias:20, obra:null });
+const MED = MT.trabajo({ obreros:6, dias:10 }, { obreros:6, obra:0.5, dias:null });
+const ENG = MT.engranajes({ dientes:[20, 50], vueltas1:10 });
+const ENG3 = MT.engranajes({ dientes:[20, 35, 50], vueltas1:10 });
+const LIA = MT.estatura({ a1:5, a2:10, clip:5 });
+// Vueltas de la rueda j; al terminar, como fracción si no es entera y con el sentido de giro.
+const vueltasLec = (E, j, nombre) => {
+  const v = Math.abs(MT.girosEngranajes(E.eng.dientes, E.eng.giro)[j]);
+  if (!E.eng.sentidos || E.anim) return ['n', nombre, fmt(v, 1)];
+  const f = MT.textoFraccion(v), ent = Math.abs(v - Math.round(v)) < 1e-9;
+  return ['n', nombre, `${ent ? fmt(v, 0) : `${f} ≈ ${fmt(v, 1)}`} vueltas, ${j % 2 ? 'antihorario' : 'horario'}`];
+};
+
+const EXPS = [
+  { id:'duplicar', corto:'Doble y doble',
+    q:`${O_('Seis obreros')} construyen un muro en ${D_('10 días')}. ¿Cuántos muros iguales construyen ${O_('12 obreros')} en ${D_('20 días')}?`,
+    opts:[['a', '1 muro', 'se-compensan', 'hipotesis'],
+          ['b', '2 muros', 'duplica-una-vez', 'hipotesis'],
+          ['c', `${fmt(DUP.valor, 0)} muros`]],
+    ok:'c',
+    fb:{ a:'El doble de obreros no compensa el doble de días: más obreros hacen más muro, y más días también. Las dos magnitudes son directas con la obra.', b:'Con el doble de obreros, en los mismos 10 días, ya salen 2 muros. Con el doble de días, ese resultado se duplica otra vez.' },
+    antes:ya => E.config({ modo:'taller', taller:{ O: ya ? 12 : 6, Y: ya ? 20 : 10, Omax:13, Ymax:21, fant: ya ? { O:6, Y:10 } : null, copias: ya ? { O:6, Y:10 } : null, rotObra:'1 muro' }, lect:['O','D'] }),
+    despues:() => { const T = E.taller; T.fant = { O:6, Y:10 }; T.rotObra = null; E.leyenda();
+      E.animar(0, 1, 1700, f => { T.O = 6 + 6*f; T.Y = 10 + 10*f; }, () => { T.copias = { O:6, Y:10 }; T.rotObra = '4 muros'; E.dibujar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">${W_('trabajo')} = ${O_('12')} · ${D_('20')} = ${W_('240')} obrero-días = 4 · ${W_('60')}</div></div>
+      <p>El rectángulo nuevo es el doble de ancho y el doble de alto: caben 4 rectángulos como el primero. Es lo mismo que pasa con las áreas de figuras semejantes: si los dos lados se duplican, el área va por 2 · 2 = 4.</p>
+      <p class="fuente">No encontramos estudios con cifras sobre este problema. Las dos opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'mitad', corto:'Medio muro',
+    q:`Los mismos ${O_('seis obreros')} que hacen un muro en ${D_('10 días')} ahora tienen que hacer solo medio muro. ¿Cuántos ${D_('días')} tardan?`,
+    opts:[['a', `${fmt(MED.errores.obraInversa, 0)} días`, 'obra-como-inversa', 'hipotesis'],
+          ['b', `${fmt(MED.valor, 0)} días`],
+          ['c', `${fmt(MED.errores.sinCambio, 0)} días`, 'no-cambia', 'hipotesis']],
+    ok:'b',
+    fb:{ a:'Esa cuenta trata la obra como inversa. Con menos muro por hacer, se tarda menos: la obra y los días son directos.', c:'Los obreros son los mismos, pero la obra es la mitad: el rectángulo tiene el mismo ancho y la mitad de área.' },
+    antes:ya => E.config({ modo:'taller', taller:{ O:6, Y: ya ? 5 : 10, Omax:8, Ymax:11, fant: ya ? { O:6, Y:10 } : null, rotObra: ya ? 'medio muro' : '1 muro' }, lect:['O','D'] }),
+    despues:() => { const T = E.taller; T.fant = { O:6, Y:10 }; T.rotObra = null; E.leyenda(); E.animar(10, 5, 1400, y => { T.Y = y; }, () => { T.rotObra = 'medio muro'; E.dibujar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">${D_('D')} = ${fr(`${W_('30')}`, O_('6'))} = ${D_(fmt(MED.valor, 0))} días</div></div>
+      <p>Los ${D_('días')} son <b>inversos</b> a los ${O_('obreros')} y <b>directos</b> a la obra (medio muro necesita la mitad del ${W_('trabajo')}). Una misma magnitud puede ser inversa con una y directa con otra: por eso, en la regla de tres compuesta, cada magnitud se compara con la incógnita por separado.</p>
+      <p class="fuente">Las opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'engranajes', corto:'Dos engranajes', unidad:UNIDAD_RUEDAS,
+    q:`La rueda dentada 1 tiene ${z_('20 dientes')} y engrana con la rueda 2, de ${z_('50 dientes')}. Si la rueda 1 da ${n_('10 vueltas')}, ¿cuántas ${n_('vueltas')} da la rueda 2?`,
+    opts:[['a', `${fmt(ENG.errores.directa, 0)}`, 'RM5-mas-dientes-mas-vueltas', 'hipotesis'],
+          ['b', `${fmt(ENG.vueltas[1], 0)}`],
+          ['c', `${fmt(ENG.errores.aditiva, 0)}`, 'aditiva', 'hipotesis'],
+          ['d', `${fmt(ENG.errores.iguales, 0)}`, 'mismas-vueltas', 'hipotesis']],
+    ok:'b',
+    fb:{ a:'Es al revés: la rueda con más dientes necesita que pasen más dientes para dar una vuelta, así que da menos vueltas.', c:'Sumar los dientes de más no tiene sentido: dientes y vueltas se relacionan multiplicando, no sumando.', d:'Giran juntas, pero no al mismo ritmo: por el punto donde se tocan pasan los mismos dientes, y la grande tiene más dientes por vuelta.' },
+    antes:() => E.config({ modo:'engranajes', eng:{ dientes:[20, 50], giro:0 }, lect:[x => vueltasLec(x, 0, 'Rueda 1')] }),
+    despues:() => { E.eng.sentidos = true; E.lect = [x => vueltasLec(x, 0, 'Rueda 1'), x => vueltasLec(x, 1, 'Rueda 2')]; E.animar(0, 10, 9000, g => { E.eng.giro = g; }, null, true); },
+    exp:() => `<div class="eqs"><div class="eq">${z_('20')} · ${n_('10')} = ${fmt(ENG.dientesQuePasan, 0)} = ${z_('50')} · ${n_('n')} → ${n_('n')} = ${n_(fmt(ENG.vueltas[1], 0))}</div></div>
+      <p>Por el punto donde se tocan pasan los mismos dientes en las dos ruedas: ${fmt(ENG.dientesQuePasan, 0)}. Dientes y vueltas son <b>inversamente proporcionales</b>: el producto ${z_('z')} · ${n_('n')} no cambia, como obreros × días. Además, dos ruedas que engranan giran en sentidos contrarios.</p>
+      <p class="fuente">No encontramos estudios con cifras sobre engranajes. «Más dientes, más vueltas» es una hipótesis nuestra, ligada a la regla de tres inversa resuelta como directa; las otras opciones también son hipótesis.</p>` },
+  { id:'edad', corto:'Edad y estatura',
+    q:`A los ${a_('5 años')}, Lía medía ${C_('22 clips')} (clips grandes, de 5 cm cada uno). ¿Cuánto medirá a los ${a_('10 años')}?`,
+    opts:[['a', `${fmt(LIA.errores.proporcional, 0)} clips: el doble de edad, el doble de estatura`, 'AR7-ilusion-de-linealidad', 'parcial'],
+          ['b', `Unos ${fmt(LIA.e2, 0)} clips: sigue creciendo, pero no al doble`],
+          ['c', '22 clips: a esa edad ya no se crece', 'deja-de-crecer', 'hipotesis'],
+          ['d', `${fmt(LIA.errores.mismoAumento, 0)} clips: crece lo mismo que de 0 a 5 años`, 'crece-lo-mismo-cada-5-anos', 'hipotesis']],
+    ok:'b',
+    fb:{ a:'Si fuera proporcional, al nacer Lía mediría 0 clips, y a los 20 años, 88 clips (4,4 m). La estatura crece con la edad, pero no en la misma razón.', c:'Entre los 5 y los 10 años los niños siguen creciendo, solo que cada año un poco menos que de bebés.', d:`De 0 a 5 años Lía creció ${fmt(LIA.e1 - LIA.alNacer, 0)} clips, pero de bebé se crece mucho más rápido que en la niñez: de 5 a 10 años crece menos.` },
+    antes:ya => E.config({ modo:'edad', edad:{ despues:!!ya }, lect: ya ? [() => ['C', 'A los 10 años', `unos ${fmt(LIA.e2, 0)} clips`]] : [] }),
+    despues:() => { E.edad.despues = true; E.lect = [() => ['C', 'A los 10 años', `unos ${fmt(LIA.e2, 0)} clips`]]; E.leyenda(); E.dibujar(); E.avisar(); },
+    exp:() => `<p>La curva de ${C_('estatura')} no es una recta que pase por el origen: al nacer, Lía ya medía unos ${C_(fmt(LIA.alNacer, 0) + ' clips')}, y en la niñez crece cada año un poco menos que de bebé (hasta el estirón de la pubertad). El cociente ${fr(C_('estatura'), a_('edad'))} no es constante (22/5 = 4,4, pero ${fmt(LIA.e2, 1)}/10 ≈ ${fmt(LIA.e2/10, 1)}). A los 10 años mide unos ${C_(fmt(LIA.e2, 0) + ' clips')}. No toda magnitud que crece con otra es proporcional: antes de una regla de tres, hay que probar si el cociente o el producto se mantienen.</p>
+      <p class="hint">Las estaturas son aproximadas, hechas por nosotros para mostrar la forma de la curva; se parecen a los promedios, pero no salen de una tabla. Cada niña crece distinto.</p>
+      <p class="fuente">Aplicar la proporción donde no va está estudiado: en Bélgica, en un problema aditivo (que no es proporcional), las respuestas proporcionales equivocadas suben de cerca del 10 % en 3.er grado a más del 50 % en 6.º (Van Dooren y otros, 2005, según resúmenes; por confirmar en el original). Ese estudio no usó este problema; las opciones C y D son hipótesis nuestras.</p>` },
+  { id:'tres-engranajes', corto:'Tres engranajes', unidad:UNIDAD_RUEDAS,
+    q:`Tres ruedas dentadas en fila: la 1 tiene ${z_('20 dientes')}, la 2 tiene ${z_('35')} y la 3 tiene ${z_('50')}. La 1 engrana con la 2 y la 2 con la 3. Si la rueda 1 da ${n_('10 vueltas')}, ¿cuántas da la rueda 3, y hacia dónde gira?`,
+    opts:[['a', `${fmt(ENG3.vueltas[2], 0)}, en el mismo sentido que la rueda 1`],
+          ['b', `${fmt(ENG3.vueltas[2], 0)}, en sentido contrario a la rueda 1`, 'sentido-contrario', 'hipotesis'],
+          ['c', `${fmt(ENG3.errores.soloElAnterior, 0)}, en sentido contrario a la rueda 1`, 'solo-la-del-medio', 'hipotesis'],
+          ['d', `${fmt(ENG3.errores.directa, 0)}, en el mismo sentido que la rueda 1`, 'RM5-mas-dientes-mas-vueltas', 'hipotesis']],
+    ok:'a',
+    fb:{ b:'Cada contacto invierte el sentido. Con dos contactos (1 con 2 y 2 con 3), el sentido se invierte dos veces: la 3 gira igual que la 1.', c:'Esa cuenta usa los 35 dientes como si la rueda 2 diera 10 vueltas. Por todos los contactos pasan los mismos 200 dientes: la rueda del medio no cambia el resultado.', d:'Más dientes es menos vueltas, no más: 20 · 10 = 50 · n.' },
+    antes:() => E.config({ modo:'engranajes', eng:{ dientes:[20, 35, 50], giro:0 }, lect:[x => vueltasLec(x, 0, 'Rueda 1')] }),
+    despues:() => { E.eng.sentidos = true; E.lect = [x => vueltasLec(x, 0, 'Rueda 1'), x => vueltasLec(x, 1, 'Rueda 2'), x => vueltasLec(x, 2, 'Rueda 3')]; E.animar(0, 10, 10000, g => { E.eng.giro = g; }, null, true); },
+    exp:() => `<div class="eqs"><div class="eq">${z_('20')} · ${n_('10')} = ${z_('35')} · ${n_('n₂')} = ${z_('50')} · ${n_('n₃')} = ${fmt(ENG3.dientesQuePasan, 0)}</div>
+      <div class="eq">${n_('n₃')} = ${fr('200', z_('50'))} = ${n_(fmt(ENG3.vueltas[2], 0))}<span class="note">la rueda del medio no cambia el resultado</span></div></div>
+      <p>La rueda del medio, a veces llamada «rueda loca», da ${n_(fmt(ENG3.vueltas[1], 1))} vueltas y cambia el sentido, pero no cambia las vueltas de la última: por cada contacto pasan los mismos ${fmt(ENG3.dientesQuePasan, 0)} dientes. Con un número par de contactos, la última gira igual que la primera.</p>
+      <p class="fuente">No encontramos estudios con cifras sobre engranajes en fila. Las opciones incorrectas son hipótesis nuestras.</p>` },
+];
+const S = { k:0, pred:{}, t0:Date.now() };
+// Un experimento se abre solo si todos los anteriores ya tienen respuesta; los respondidos se revisitan libremente.
+const abierto = k => EXPS.slice(0, k).every(x => !!S.pred[x.id]);
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => abierto(k)
+    ? `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  if (k < 0 || k >= EXPS.length || !abierto(k)) return;
+  E.parar();
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  x.antes(ya);
+  E.compactar(!ya);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    $('otra2').onclick = () => { E.parar(); x.antes(false); alDibujo($('cv2'), () => S.k === k, () => { x.despues(); E.avisar(); }); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar(); botones();
+    E.compactar(false);
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0, x.unidad);
+    alDibujo($('cv2'), () => S.k === k, () => { x.despues(); E.leyenda(); E.dibujar(); E.avisar(); });
+  });
+  // Si ya se respondió, mostrar el estado final sin animar
+  if (ya){
+    if (x.id === 'engranajes'){ E.eng.giro = 10; E.eng.sentidos = true; E.lect = [z => vueltasLec(z, 0, 'Rueda 1'), z => vueltasLec(z, 1, 'Rueda 2')]; }
+    if (x.id === 'tres-engranajes'){ E.eng.giro = 10; E.eng.sentidos = true; E.lect = [z => vueltasLec(z, 0, 'Rueda 1'), z => vueltasLec(z, 1, 'Rueda 2'), z => vueltasLec(z, 2, 'Rueda 3')]; }
+    E.dibujar(); E.avisar();
+  }
+  pintar();
+}
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

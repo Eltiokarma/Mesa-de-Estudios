@@ -8,7 +8,7 @@
 npm test
 ```
 
-Deben pasar 828 pruebas.
+Deben pasar 869 pruebas.
 
 ```bash
 npm run dev

@@ -1,0 +1,128 @@
+{
+  "titulo": "El taller y la pared: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Antes de hacer la cuenta, pregúntate por cada magnitud: si una aumenta, ¿la otra aumenta en la misma razón (directa: el cociente no cambia) o disminuye en la misma razón (inversa: el producto no cambia)? Si ninguna de las dos cosas pasa, no es una regla de tres. En los problemas de obras se cumple (obreros × días × horas diarias × eficiencia)/(obra × dificultad) = constante. La obra es lo que se hace (un muro, metros de zanja); el numerador es el trabajo en horas-hombre.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Dos números están en la razón de 5 a 3 y se diferencian en 18. ¿Cuál es el mayor?",
+      "respuesta": "45 (los números son 45 y 27).",
+      "pasos": [
+        "«En la razón de 5 a 3» quiere decir que el mayor es 5 partes iguales y el menor, 3 partes iguales: 5k y 3k.",
+        "La diferencia es 5k − 3k = 2k = 18, así que cada parte vale k = 9.",
+        "El mayor es 5 · 9 = 45 y el menor 3 · 9 = 27. Control: 45/27 = 5/3 y 45 − 27 = 18. Ojo: la razón es 5/3, no la diferencia 5 − 3 = 2."
+      ],
+      "verificar": [ { "fn": "razon", "args": [45, 27], "espera": { "aritmetica": 18, "geometrica": 1.6666666666666667, "texto": "5/3" } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Se cumple que a/3 = b/4 = c/5 y que a + b + c = 72. Halla a, b y c.",
+      "respuesta": "a = 18, b = 24 y c = 30.",
+      "pasos": [
+        "Llama k al valor común de las tres razones: a = 3k, b = 4k y c = 5k.",
+        "Propiedad de la serie de razones iguales: (a + b + c)/(3 + 4 + 5) = k, es decir, 72/12 = 6.",
+        "a = 3 · 6 = 18, b = 4 · 6 = 24 y c = 5 · 6 = 30. Control: 18 + 24 + 30 = 72."
+      ],
+      "verificar": [ { "fn": "serieRazones", "args": [{ "consecuentes": [3, 4, 5], "sumaAntecedentes": 72 }], "espera": { "k": 6, "antecedentes": [18, 24, 30] } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Halla la media proporcional de 8 y 18, y la tercera proporcional de 8 y 12.",
+      "respuesta": "La media proporcional es 12; la tercera proporcional es 18.",
+      "pasos": [
+        "Media proporcional: el número m de la proporción continua 8/m = m/18. Entonces m² = 8 · 18 = 144 y m = 12.",
+        "No es el promedio (8 + 18)/2 = 13: eso es la media aritmética. La proporción pide multiplicar, no sumar.",
+        "Tercera proporcional de 8 y 12: el número t de 8/12 = 12/t. Entonces t = 12 · 12/8 = 18."
+      ],
+      "verificar": [ { "fn": "mediaProporcional", "args": [8, 18], "espera": { "b": 12, "errores.promedio": 13 } },
+                     { "fn": "terceraProporcional", "args": [8, 12], "espera": { "x": 18 } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "básico",
+      "enunciado": "Con 3 kg de harina una panadería hace 40 panes. ¿Cuántos panes iguales hace con 7,5 kg?",
+      "respuesta": "100 panes.",
+      "pasos": [
+        "Más harina, más panes, en la misma razón: es directa. El cociente panes/kilos no cambia: 40/3.",
+        "Panes = 40 · 7,5/3 = 40 · 2,5 = 100.",
+        "Control aditivo, que no sirve: «4,5 kg más, 4,5 panes más» daría 44,5. Lo que se mantiene es la razón, no la diferencia."
+      ],
+      "verificar": [ { "fn": "reglaDeTres", "args": [{ "tipo": "directa", "a1": 3, "b1": 40, "a2": 7.5 }], "espera": { "b2": 100, "errores.aditiva": 44.5 } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "básico",
+      "enunciado": "Nueve pintores terminan de pintar un colegio en 16 días. ¿En cuántos días lo terminarían 12 pintores del mismo ritmo?",
+      "respuesta": "12 días.",
+      "pasos": [
+        "Más pintores, menos días: es inversa. El producto pintores × días no cambia: 9 · 16 = 144 días de trabajo de un pintor.",
+        "Días = 144/12 = 12.",
+        "Si multiplicas en cruz como si fuera directa, sale 16 · 12/9 ≈ 21,3 días: más días con más gente. Esa respuesta no tiene sentido."
+      ],
+      "verificar": [ { "fn": "reglaDeTres", "args": [{ "tipo": "inversa", "a1": 9, "b1": 16, "a2": 12 }], "espera": { "b2": 12, "constante": 144 } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Veinte obreros pueden hacer una obra en 30 días. Después de trabajar 10 días se retiran 4 obreros. ¿En cuántos días, en total, se termina la obra?",
+      "respuesta": "En 35 días.",
+      "pasos": [
+        "La obra entera necesita 20 · 30 = 600 obrero-días de trabajo (en las academias, «hombres-día»). En los primeros 10 días se hacen 20 · 10 = 200.",
+        "Faltan 600 − 200 = 400 obrero-días, y ahora quedan 16 obreros: 400/16 = 25 días más.",
+        "Total: 10 + 25 = 35 días. Lo que no cambia es el rectángulo de lo que falta: 20 obreros × 20 días = 16 obreros × 25 días."
+      ],
+      "verificar": [ { "fn": "rectangulo", "args": [400, 16], "espera": { "dias": 25 } },
+                     { "fn": "trabajo", "args": [{ "obreros": 20, "dias": 20 }, { "obreros": 16, "dias": null }], "espera": { "valor": 25 } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Quince obreros, trabajando 8 horas diarias, cavan 300 m de zanja en 24 días. ¿Cuántos días necesitan 20 obreros, trabajando 6 horas diarias, para cavar 450 m de la misma zanja?",
+      "respuesta": "36 días.",
+      "pasos": [
+        "Clasifica cada magnitud frente a los días, una por una y con las demás fijas. Más obreros: menos días (inversa). Más horas diarias: menos días (inversa). Más metros: más días (directa).",
+        "Días = 24 · (15/20) · (8/6) · (450/300). Las inversas van con la razón al revés y la directa, derecha.",
+        "24 · 0,75 = 18; 18 · 8/6 = 24; 24 · 1,5 = 36 días. Control: 15 · 8 · 24/300 = 9,6 horas-hombre por metro, y 20 · 6 · 36/450 = 9,6 también."
+      ],
+      "verificar": [ { "fn": "trabajo", "args": [{ "obreros": 15, "dias": 24, "horas": 8, "obra": 300 }, { "obreros": 20, "horas": 6, "obra": 450, "dias": null }], "espera": { "valor": 36 } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Reparte 2700 soles en forma inversamente proporcional a 4, 6 y 3. ¿Cuánto recibe cada uno?",
+      "respuesta": "900, 600 y 1200 soles.",
+      "pasos": [
+        "Inversamente proporcional a 4, 6 y 3 es lo mismo que directamente proporcional a 1/4, 1/6 y 1/3.",
+        "Para quitar las fracciones se multiplica por 12 (el MCM de 4, 6 y 3): las partes son proporcionales a 3, 2 y 4, que suman 9.",
+        "Cada parte de las 9 vale 2700/9 = 300: 3 · 300 = 900, 2 · 300 = 600 y 4 · 300 = 1200. El del índice más chico (3) recibe más."
+      ],
+      "verificar": [ { "fn": "reparto", "args": [{ "total": 2700, "inverso": [4, 6, 3] }], "espera": { "partes": [900, 600, 1200], "enteros": [3, 2, 4] } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Se reparten 1500 soles entre dos socios en forma directamente proporcional a los meses que trabajaron (3 y 5) e inversamente proporcional a sus faltas (2 y 5). ¿Cuánto recibe cada uno?",
+      "respuesta": "900 y 600 soles.",
+      "pasos": [
+        "En un reparto compuesto, cada parte es proporcional al índice directo dividido entre el inverso: 3/2 y 5/5 = 1.",
+        "Multiplicando por 2: las partes son proporcionales a 3 y 2, que suman 5. Cada parte vale 1500/5 = 300.",
+        "El primero recibe 3 · 300 = 900 y el segundo 2 · 300 = 600. Trabajó menos meses, pero faltó mucho menos."
+      ],
+      "verificar": [ { "fn": "reparto", "args": [{ "total": 1500, "directo": [3, 5], "inverso": [2, 5] }], "espera": { "partes": [900, 600], "enteros": [3, 2] } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "intermedio",
+      "enunciado": "Un engranaje de 36 dientes engrana con otro de 24 dientes. Si el grande da 40 vueltas por minuto, ¿cuántas vueltas por minuto da el chico, y en qué sentido gira?",
+      "respuesta": "60 vueltas por minuto, en sentido contrario al grande.",
+      "pasos": [
+        "Por el punto donde se tocan pasan los mismos dientes: 36 · 40 = 1440 dientes por minuto en los dos.",
+        "El chico da 1440/24 = 60 vueltas. Más dientes, menos vueltas: dientes y vueltas son inversamente proporcionales.",
+        "Dos engranajes que se tocan giran en sentidos contrarios."
+      ],
+      "verificar": [ { "fn": "engranajes", "args": [{ "dientes": [36, 24], "vueltas1": 40 }], "espera": { "vueltas": [40, 60], "dientesQuePasan": 1440, "mismoSentidoQueElPrimero": false } } ]
+    }
+  ]
+}

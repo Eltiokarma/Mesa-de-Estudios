@@ -1776,7 +1776,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "regla-de-tres"
+     ]
     },
     {
      "id": "aritmetica.magnitudes-proporcionales",
@@ -1803,7 +1805,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "regla-de-tres"
+     ]
     },
     {
      "id": "aritmetica.porcentajes",
@@ -3466,7 +3470,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "regla-de-tres"
+     ]
     },
     {
      "id": "razonamiento-matematico.maximos-y-minimos",
@@ -4357,6 +4363,25 @@
    "papel": null,
    "archivos": [
     "/plantillas/porcentajes-sucesivos/generador.js"
+   ]
+  },
+  "regla-de-tres": {
+   "id": "regla-de-tres",
+   "titulo": "El taller y la pared: proporcionalidad directa e inversa",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "aritmetica.razones-y-proporciones",
+    "aritmetica.magnitudes-proporcionales",
+    "razonamiento-matematico.ruedas-poleas-engranajes"
+   ],
+   "url": "/plantillas/regla-de-tres/index.html",
+   "papel": "/plantillas/regla-de-tres/papel.json",
+   "archivos": [
+    "/plantillas/regla-de-tres/index.html",
+    "/plantillas/regla-de-tres/motor.js",
+    "/plantillas/regla-de-tres/papel.json"
    ]
   },
   "soluciones": {

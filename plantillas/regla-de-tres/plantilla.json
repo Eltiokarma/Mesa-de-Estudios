@@ -1,0 +1,17 @@
+{
+  "id": "regla-de-tres",
+  "titulo": "El taller y la pared: proporcionalidad directa e inversa",
+  "formato": "escena",
+  "unidades": [
+    "aritmetica.razones-y-proporciones",
+    "aritmetica.magnitudes-proporcionales",
+    "razonamiento-matematico.ruedas-poleas-engranajes"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}

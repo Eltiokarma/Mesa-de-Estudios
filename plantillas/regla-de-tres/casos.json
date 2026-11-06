@@ -1,0 +1,94 @@
+{
+  "plantilla": "regla-de-tres",
+  "unidades": "Cantidades sin unidad fija: obreros, días, horas diarias, botones, clips, soles, dientes y vueltas, como en el problema. La estatura de crecimiento() va en cm; la de estatura() en clips del largo 'clip' (cm).",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.comoDirecta); 'valor' es el resultado si es un número suelto; las listas se comparan completas y los textos exactos. 'tambien' son llamadas extra del mismo caso.",
+  "verificacion": "Verificado por un subagente independiente (6 nov 2026) con aritmética exacta en Python (fractions), sin leer el código del motor. Las reglas de tres simples y compuestas se recalcularon por reducción a la unidad (obra por obrero-hora con eficiencia y dificultad), no por proporciones; los repartos con MCM y MCD; los engranajes con z·n constante y sentido alterno. Los 19 casos coinciden. La estatura (caso 15) sale de un modelo de crecimiento propio y solo se contrastó con tablas de referencia (unos 110 cm a los 5 años y 138 a los 10 en niñas).",
+  "tolerancia": 1e-9,
+  "casos": [
+    { "nombre": "Informe, caso Sr. Alto y predicción del paso 1: el Sr. Bajo mide 4 botones o 6 clips; el Sr. Alto, 6 botones → 9 clips (AR6, aditiva: 8; invierte la razón: 4; dobla: 12)",
+      "fn": "srAlto", "args": [{ "bajoBotones": 4, "bajoClips": 6, "altoBotones": 6 }],
+      "espera": { "clips": 9, "k": 1.5, "kTexto": "3/2", "diferencia": 2, "errores.aditiva": 8, "errores.invierteRazon": 4, "errores.doble": 12 } },
+
+    { "nombre": "Predicción del paso 3: 6 obreros en 10 días; con 15 obreros, 4 días (AR8, como directa: 25; resta lo que aumentó: 1; no cambia: 10)",
+      "fn": "reglaDeTres", "args": [{ "tipo": "inversa", "a1": 6, "b1": 10, "a2": 15 }],
+      "espera": { "b2": 4, "constante": 60, "errores.comoDirecta": 25, "errores.aditiva": 1, "errores.sinCambio": 10 } },
+
+    { "nombre": "Informe, regla de tres inversa: 12 obreros en 15 días; con 20 obreros, 9 días (AR8: 25; resta 8 días: 7)",
+      "fn": "reglaDeTres", "args": [{ "tipo": "inversa", "a1": 12, "b1": 15, "a2": 20 }],
+      "espera": { "b2": 9, "errores.comoDirecta": 25, "errores.aditiva": 7, "errores.sinCambio": 15 } },
+
+    { "nombre": "Predicción del paso 5 (parece directa): 6 obreros en 10 días; para terminar en 5 días hacen falta 12 obreros (como directa: 3; suma los días que se quitan: 11)",
+      "fn": "reglaDeTres", "args": [{ "tipo": "inversa", "a1": 10, "b1": 6, "a2": 5 }],
+      "espera": { "b2": 12, "errores.comoDirecta": 3, "errores.aditiva": 11, "errores.sinCambio": 6 } },
+
+    { "nombre": "Regla de tres directa: 4 botones son 6 clips; 7 botones son 10,5 clips (como inversa: 24/7; aditiva: 9)",
+      "fn": "reglaDeTres", "args": [{ "tipo": "directa", "a1": 4, "b1": 6, "a2": 7 }],
+      "espera": { "b2": 10.5, "constante": 1.5, "errores.comoInversa": 3.4285714285714284, "errores.aditiva": 9 } },
+
+    { "nombre": "Predicción del paso 6 (compuesta, AR9): 4 obreros, 6 h/día, 12 días; con 8 obreros y 4 h/día → 9 días (olvida las horas: 6; horas como directas: 4; todo directo: 16)",
+      "fn": "trabajo", "args": [{ "obreros": 4, "dias": 12, "horas": 6 }, { "obreros": 8, "horas": 4, "dias": null }],
+      "espera": { "dato": "dias", "valor": 9, "constante": 288, "errores.olvidaHoras": 6, "errores.horasDirectas": 4, "errores.todoDirecta": 16 },
+      "tambien": [ { "fn": "compuesta", "args": [{ "incognita": { "nombre": "dias", "antes": 12 }, "magnitudes": [
+          { "nombre": "obreros", "antes": 4, "despues": 8, "relacion": "inversa" }, { "nombre": "horas", "antes": 6, "despues": 4, "relacion": "inversa" } ] }],
+        "espera": { "valor": 9, "errores.olvida-horas": 6, "errores.invierte-horas": 4, "errores.todoDirecta": 16 } } ] },
+
+    { "nombre": "Informe, regla de tres compuesta: 8 obreros, 6 h/día, 10 días; con 12 obreros y 5 h/día → 8 días",
+      "fn": "trabajo", "args": [{ "obreros": 8, "dias": 10, "horas": 6 }, { "obreros": 12, "horas": 5, "dias": null }],
+      "espera": { "valor": 8, "constante": 480 } },
+
+    { "nombre": "Compuesta con obra, eficiencia y dificultad: 10 obreros de eficiencia 1 hacen 2 muros en 18 días; ¿cuántos obreros de eficiencia 3/2 hacen 3 muros el doble de difíciles en 15 días? → 24",
+      "fn": "trabajo", "args": [{ "obreros": 10, "dias": 18, "obra": 2 }, { "obreros": null, "dias": 15, "eficiencia": 1.5, "obra": 3, "dificultad": 2 }],
+      "espera": { "dato": "obreros", "valor": 24 } },
+
+    { "nombre": "¿Qué pasa si…? 1: duplicar obreros y días; 6 obreros hacen 1 muro en 10 días → 12 obreros en 20 días hacen 4 muros (se compensan: 1; solo uno: 2)",
+      "fn": "trabajo", "args": [{ "obreros": 6, "dias": 10 }, { "obreros": 12, "dias": 20, "obra": null }],
+      "espera": { "valor": 4, "errores.sinCambio": 1, "errores.soloUno": 2 } },
+
+    { "nombre": "¿Qué pasa si…? 2: medio muro con los mismos 6 obreros → 5 días (la obra como inversa: 20; no cambia: 10)",
+      "fn": "trabajo", "args": [{ "obreros": 6, "dias": 10 }, { "obreros": 6, "obra": 0.5, "dias": null }],
+      "espera": { "valor": 5, "errores.obraInversa": 20, "errores.sinCambio": 10 } },
+
+    { "nombre": "Predicción del paso 7 e informe (AR10): S/ 1980 en forma inversa a 2, 3 y 6 → 990, 660 y 330 (como directo: 360, 540 y 1080; iguales: 660)",
+      "fn": "reparto", "args": [{ "total": 1980, "inverso": [2, 3, 6] }],
+      "espera": { "partes": [990, 660, 330], "enteros": [3, 2, 1], "kEnteros": 330, "errores.comoDirecto": [360, 540, 1080], "errores.iguales": [660, 660, 660] } },
+
+    { "nombre": "Reparto compuesto: S/ 3400 en forma directa a 2 y 3 e inversa a 3 y 4 → proporcional a 8 y 9: 1600 y 1800",
+      "fn": "reparto", "args": [{ "total": 3400, "directo": [2, 3], "inverso": [3, 4] }],
+      "espera": { "partes": [1600, 1800], "enteros": [8, 9], "kEnteros": 200 } },
+
+    { "nombre": "¿Qué pasa si…? 3 e informe (RM5): A de 20 dientes da 10 vueltas y engrana con B de 50 → 4 vueltas en sentido contrario (directa: 25; aditiva: 40; iguales: 10)",
+      "fn": "engranajes", "args": [{ "dientes": [20, 50], "vueltas1": 10 }],
+      "espera": { "vueltas": [10, 4], "sentido": [1, -1], "dientesQuePasan": 200, "mismoSentidoQueElPrimero": false,
+                  "errores.directa": 25, "errores.aditiva": 40, "errores.iguales": 10 } },
+
+    { "nombre": "¿Qué pasa si…? 5: tres engranajes en fila de 20, 35 y 50 dientes; la primera da 10 vueltas → la tercera 4, en el mismo sentido (solo mira la del medio: 7)",
+      "fn": "engranajes", "args": [{ "dientes": [20, 35, 50], "vueltas1": 10 }],
+      "espera": { "vueltas": [10, 5.714285714285714, 4], "sentido": [1, -1, 1], "mismoSentidoQueElPrimero": true, "errores.soloElAnterior": 7, "errores.directa": 25 } },
+
+    { "nombre": "La prueba de la tabla: 4→6, 6→9, 8→12 es directa con k = 3/2 (la diferencia no se mantiene); 6→10, 15→4 es inversa con producto 60",
+      "fn": "relacion", "args": [[[4, 6], [6, 9], [8, 12]]],
+      "espera": { "tipo": "directa", "k": 1.5, "cocientes": [1.5, 1.5, 1.5], "diferencias": [2, 3, 4], "diferenciaFija": false },
+      "tambien": [ { "args": [[[6, 10], [15, 4], [12, 5]]], "espera": { "tipo": "inversa", "producto": 60, "productos": [60, 60, 60] } },
+                   { "args": [[[1, 3], [2, 4], [3, 5]]], "espera": { "tipo": "ninguna", "diferenciaFija": true } } ] },
+
+    { "nombre": "¿Qué pasa si…? 4: Lía mide 22 clips de 5 cm a los 5 años; a los 10 mide 27,6, no 44 (AR7); la estatura no es proporcional a la edad",
+      "fn": "estatura", "args": [{ "a1": 5, "a2": 10, "clip": 5 }],
+      "espera": { "e1": 22, "e2": 27.6, "tipo": "ninguna", "alNacer": 10, "errores.proporcional": 44, "errores.sinCambio": 22 } },
+
+    { "nombre": "Proporciones: cuarta proporcional de 4, 6 y 6 es 9 (aditiva: 8); media proporcional de 4 y 9 es 6 (promedio: 6,5); tercera proporcional de 4 y 6 es 9",
+      "fn": "cuartaProporcional", "args": [4, 6, 6],
+      "espera": { "x": 9, "errores.aditiva": 8, "errores.invertida": 4 },
+      "tambien": [ { "fn": "mediaProporcional", "args": [4, 9], "espera": { "b": 6, "errores.promedio": 6.5 } },
+                   { "fn": "terceraProporcional", "args": [4, 6], "espera": { "x": 9 } },
+                   { "fn": "razon", "args": [6, 4], "espera": { "aritmetica": 2, "geometrica": 1.5, "texto": "3/2" } } ] },
+
+    { "nombre": "Serie de razones iguales: a/2 = b/3 = c/5 con a + b + c = 40 → k = 4 y 8, 12, 20; con a·b = 54 y consecuentes 2 y 3 → k = 3",
+      "fn": "serieRazones", "args": [{ "consecuentes": [2, 3, 5], "sumaAntecedentes": 40 }],
+      "espera": { "k": 4, "antecedentes": [8, 12, 20], "razonDeSumas": 4 },
+      "tambien": [ { "args": [{ "consecuentes": [2, 3], "productoAntecedentes": 54 }], "espera": { "k": 3, "antecedentes": [6, 9] } } ] },
+
+    { "nombre": "El rectángulo de la obra: 60 obrero-días con 7 obreros son 60/7 días: 8 filas enteras y 4/7 de otra",
+      "fn": "rectangulo", "args": [60, 7],
+      "espera": { "dias": 8.571428571428571, "filasEnteras": 8, "resto": 0.5714285714285714, "area": 60 } }
+  ]
+}
