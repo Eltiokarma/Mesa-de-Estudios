@@ -51,7 +51,8 @@ El modo oscuro redefine todos los tokens. Se sigue al sistema o se fija en Perfi
 | Variable | `.var.c-*` | Un dato del enunciado con su color |
 | Aviso | `.aviso` | Una sola línea en rosa bombón para motivar o para ofrecer el siguiente paso |
 | Texto de lectura | `.lec-cuerpo`, `.o.pinta-ev` / `.pinta-di` / `.pinta-idea` | Formato lectura (`app/lectura.js`): 18 px, interlineado 1,6, 65 caracteres. Pintura como `.var`: tinta, subrayado de 3 px y fondo del 12 % de `--c-i` (evidencia), `--c-o` (distractor) o `--c-d` (idea); con `.marca` del mismo color en la explicación |
-| Opción del paso previo | `.opc`, `.marcable`, `.tarjeta` | Elegir antes de ver las alternativas; la elegida lleva borde `--c-d`. Mínimo 44 px de alto |
+| Opción del paso previo | `.opc`, `.marcable`, `.tarjeta` | Elegir antes de ver las alternativas; la elegida lleva borde y fondo de marca (`--brand`, `--brand-soft`): es un estado, no una variable, así que no usa el verde de idea. Mínimo 44 px de alto (también los botones ↑↓ de las tarjetas) |
+| Evidencia y distractor en la misma oración | `.o.pinta-ev.pinta-di` | Pasa en 11 de las 21 preguntas del banco: la oración que prueba la correcta es también de donde sale lo que eligió el alumno. Se pinta como evidencia (fondo y subrayado turquesa) y el origen lleva un contorno naranja a trazos (`outline: 2px dashed var(--c-o)`), porque mezclar los dos fondos daba un color casi igual al del distractor solo (ΔE00 de 1,1 en claro). La explicación lo dice en palabras: «La oración N prueba la correcta, y de ella misma sale lo que elegiste: leíste bien la oración, pero sacaste otra conclusión.» |
 | Hoja del texto | `.lec-texto` en `.fase-preg` | Celular: sube desde abajo al 85 % con la franja fija de 56 px; se cierra deslizando. Desde 900 px es la columna izquierda |
 
 ## Dos pantallas: celular y laboratorio de cómputo

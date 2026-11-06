@@ -247,12 +247,17 @@ details[open] summary{margin-bottom:8px}
 .lec-franja{display:none}
 .lec-velo{position:fixed;inset:0;background:rgba(29,22,38,.45);z-index:40}
 .lec-velo[hidden]{display:none}
-.lector{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.lector{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;margin:-1px;padding:0;border:0}
+.preg:focus{outline:none}
+.preg:focus-visible{outline:3px solid var(--brand);outline-offset:4px;border-radius:6px}
+#lecExtra .ninguna{margin-top:4px}
+#lecExtra:empty{display:none}
 .o.pinta-ev,.o.pinta-di,.o.pinta-idea{text-decoration:underline 3px;text-underline-offset:4px;-webkit-box-decoration-break:clone;box-decoration-break:clone;border-radius:4px;padding:0 2px}
 .o.pinta-ev{text-decoration-color:var(--c-i);background:color-mix(in srgb,var(--c-i) 12%,transparent)}
 .o.pinta-di{text-decoration-color:var(--c-o);background:color-mix(in srgb,var(--c-o) 12%,transparent)}
-/* Si la oración de donde sale el distractor también prueba la correcta: fondo naranja y subrayado turquesa. */
-.o.pinta-ev.pinta-di{text-decoration-color:var(--c-i);background:color-mix(in srgb,var(--c-o) 14%,transparent)}
+/* Si la oración de donde sale el distractor también prueba la correcta: se pinta como evidencia y el origen
+   lleva un contorno naranja a trazos (así no se confunde con un distractor solo). */
+.o.pinta-ev.pinta-di{background:color-mix(in srgb,var(--c-i) 12%,transparent);text-decoration-color:var(--c-i);outline:2px dashed var(--c-o);outline-offset:2px}
 .o.pinta-idea{text-decoration-color:var(--c-d);background:color-mix(in srgb,var(--c-d) 12%,transparent)}
 .marca{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
 .marca.ev{background:var(--c-i)}.marca.di{background:var(--c-o)}.marca.idea{background:var(--c-d)}
@@ -263,7 +268,8 @@ details[open] summary{margin-bottom:8px}
 .lec-par.marcar .lec-np{margin-bottom:-4px}
 .marcable{display:block;width:100%;text-align:left;font:inherit;line-height:1.5;background:var(--bg);border:2px solid var(--line);border-radius:14px;padding:10px 12px;min-height:44px}
 .marcable:not(.sel):hover{border-color:var(--brand-2)}
-.marcable.sel,.opc.sel{border-color:var(--c-d);background:color-mix(in srgb,var(--c-d) 12%,var(--card));box-shadow:0 0 0 1px var(--c-d)}
+/* La selección es un estado (color de marca), no la "idea" verde, que solo se usa al corregir. */
+.marcable.sel,.opc.sel{border-color:var(--brand);background:var(--brand-soft);box-shadow:0 0 0 1px var(--brand)}
 .marcar-ej .marcable{margin-bottom:8px}
 .previo{display:grid;gap:10px}
 .previo .pide{font-weight:700;font-size:17px;margin:0}
@@ -297,7 +303,7 @@ details[open] summary{margin-bottom:8px}
 .tarjeta .asa-t{cursor:grab;touch-action:none;font-size:22px;color:var(--muted);padding:6px 8px;line-height:1}
 .tarjeta .tx{flex:1;min-width:0}
 .tarjeta .mover{display:flex;flex-direction:column;gap:4px}
-.tarjeta .mover button{width:36px;height:32px;border-radius:10px;border:1.5px solid var(--line);background:var(--card);font-weight:800}
+.tarjeta .mover button{width:44px;height:44px;border-radius:10px;border:1.5px solid var(--line);background:var(--card);font-weight:800}
 .tarjeta .mover button:disabled{opacity:.35;cursor:default}
 .tarjeta.tomada,.tarjeta.arrastrando{border-color:var(--brand);box-shadow:var(--shadow);background:var(--brand-soft)}
 .tarjeta.arrastrando{position:relative;z-index:2}

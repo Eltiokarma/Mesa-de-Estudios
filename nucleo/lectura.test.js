@@ -28,12 +28,12 @@ const ANALOGIA = { id: 'e901', version: 1, tipo: 'analogia', unidad: 'razonamien
     { t: 'miel : abeja', codigo: 'RV16', explicacion: 'Al revés.' },
     { t: 'flor : abeja', codigo: 'RV17', explicacion: 'Otra relación.' }] };
 const PLAN = { id: 'e902', version: 2, tipo: 'plan-de-redaccion', unidad: 'razonamiento-verbal.plan-de-redaccion',
-  cuerpo: { oraciones: [{ n: 'I', t: 'La Candelaria se celebra en Puno.' }, { n: 'II', t: 'Esta celebración dura semanas.', retoma: 'I' },
+  cuerpo: { oraciones: [{ n: 'I', t: 'Esta celebración dura semanas.', retoma: 'II' }, { n: 'II', t: 'La Candelaria se celebra en Puno.' },
     { n: 'III', t: 'Participan miles de danzantes.' }] },
-  previo: { tipo: 'ordenar', pide: 'Ordena.', aceptada: ['I', 'II', 'III'], explicacion: 'Primero se presenta, luego se retoma.' },
+  previo: { tipo: 'ordenar', pide: 'Ordena.', aceptada: ['II', 'I', 'III'], explicacion: 'Primero se presenta, luego se retoma.' },
   enunciado: 'Elige el orden correcto.', alternativas: [
-    { t: 'I – II – III', correcta: true, evidencia: [], explicacion: 'Bien.' },
-    { t: 'II – I – III', codigo: 'RV28', explicacion: 'Retoma antes.' },
+    { t: 'II – I – III', correcta: true, evidencia: [], explicacion: 'Bien.' },
+    { t: 'I – II – III', codigo: 'RV28', explicacion: 'Retoma antes.' },
     { t: 'III – I – II', codigo: 'RV29', explicacion: 'Otro orden.' }] };
 const ELIM = { id: 'e903', version: 1, tipo: 'eliminacion', unidad: 'razonamiento-verbal.eliminacion-de-oraciones',
   cuerpo: { oraciones: [{ n: 'I', t: 'La totora crece en el lago.' }, { n: 'II', t: 'Con ella se hacen balsas.' }, { n: 'III', t: 'La trucha se pesca en el lago.' }] },
@@ -112,9 +112,12 @@ test('analogía, plan de redacción y eliminación se califican con sus reglas',
   assert.equal(L.calificarPrevio(pa, 'sinonimos', ANALOGIA).error, 'RV17');
   assert.equal(L.etiquetaPrevio(pa, 'b-produce-a', ANALOGIA), 'LECHE produce VACA');
   const pp = PLAN.previo;
-  assert.deepEqual(L.calificarPrevio(pp, ['I', 'II', 'III'], PLAN), { correcta: true, error: null, opcion: 'I-II-III' });
-  assert.equal(L.calificarPrevio(pp, ['II', 'I', 'III'], PLAN).error, 'RV28'); // "Esta celebración" antes de nombrarla
-  assert.equal(L.calificarPrevio(pp, 'I-III-II', PLAN).error, 'RV29');
+  assert.deepEqual(L.calificarPrevio(pp, ['II', 'I', 'III'], PLAN), { correcta: true, error: null, opcion: 'II-I-III' });
+  assert.equal(L.calificarPrevio(pp, ['I', 'II', 'III'], PLAN).error, 'RV28'); // "Esta celebración" antes de nombrarla
+  assert.equal(L.calificarPrevio(pp, 'II-III-I', PLAN).error, 'RV29');
+  // El orden aceptado no puede ser el presentado (bastaría confirmar sin mover nada).
+  const mal = structuredClone(PLAN); mal.previo.aceptada = ['I', 'II', 'III'];
+  assert.match(L.validar(mal).join(), /mismo en que se presentan/);
   const pe = ELIM.previo;
   assert.equal(L.calificarPrevio(pe, 'III', ELIM).correcta, true);
   assert.equal(L.calificarPrevio(pe, 'I', ELIM).error, 'RV30'); // sin la regla de RV4
@@ -211,4 +214,81 @@ test('los eventos tienen la forma del diseño (sección 6)', () => {
   const sinCodigo = L.ev.previo({ modulo: 'm', pregunta: q, resultado: { opcion: 'x', correcta: false, error: null }, codigos: CODIGOS, ms: 1 });
   assert.equal(sinCodigo.error, '');
   assert.equal(sinCodigo.respaldo, '');
+});
+
+test('repetir un texto cambia el barajado (semilla con el intento)', () => {
+  const t = TEXTOS[0];
+  assert.deepEqual(L.preparar(t, 'a1', 1), L.preparar(t, 'a1', 1));
+  let distinto = 0;
+  for (let i = 2; i < 8; i++) if (JSON.stringify(L.preparar(t, 'a1', i).preguntas.map(q => q.alternativas.map(a => a.pos))) !== JSON.stringify(L.preparar(t, 'a1', 1).preguntas.map(q => q.alternativas.map(a => a.pos)))) distinto++;
+  assert.ok(distinto > 0);
+  const q = L.preparar(t, 'a1', 3).preguntas[0];
+  const r = L.calificar(q, q.alternativas[0].letra);
+  assert.equal(L.ev.respuesta({ modulo: 'm', pregunta: q, resultado: r, ms: 1, intento: 3 }).intento, 3);
+  assert.equal(L.ev.previo({ modulo: 'm', pregunta: q, resultado: { opcion: 'o1', correcta: false, error: 'RV4' }, ms: 1, intento: 2 }).intento, 2);
+  assert.equal(L.ev.lectura({ modulo: 'm', unidad: 'u', item: t, ms: 1, intento: 2 }).intento, 2);
+});
+
+test('el paso previo no usa la frase del código cuando no describe la respuesta', () => {
+  const t = TEXTOS.find(x => x.preguntas.some(q => q.previo && q.previo.tipo === 'marcar-oracion' && q.previo.ninguna && q.previo.ninguna !== 'correcta'));
+  const p = t.preguntas.find(q => q.previo && q.previo.tipo === 'marcar-oracion').previo;
+  const c = L.correccionPrevio(p, L.calificarPrevio(p, 'ninguna', t), t, FRASES);
+  if (!(p.explicaciones || {}).ninguna) { assert.equal(c.neutra, true); assert.equal(c.porQue, ''); }
+  // Clasificar: ante "lo dice" la frase de RV6 dice lo contrario; con otra respuesta sí se usa.
+  const sinte = { tipo: 'clasificar', pide: 'x', sonda: 's', clase: 'se-deduce', codigos: { 'lo-dice': 'RV6', 'no-se-sabe': 'RV34', 'lo-contradice': null }, explicacion: 'Se deduce de la oración 6.' };
+  const c1 = L.correccionPrevio(sinte, L.calificarPrevio(sinte, 'lo-dice', t), t, FRASES);
+  assert.deepEqual([c1.neutra, c1.porQue], [true, '']);
+  const c2 = L.correccionPrevio(sinte, L.calificarPrevio(sinte, 'no-se-sabe', t), t, FRASES);
+  assert.deepEqual([c2.neutra, c2.porQue], [false, FRASES.RV34]);
+  const c3 = L.correccionPrevio(sinte, L.calificarPrevio(sinte, 'lo-contradice', t), t, FRASES);
+  assert.equal(c3.neutra, true, 'sin código ni explicación: frase neutra');
+  assert.ok(L.avisos({ ...t, preguntas: [{ ...t.preguntas[0], previo: sinte }] }, FRASES).some(a => a.opcion === 'lo-dice' && a.neutra));
+});
+
+test('avisos del banco: respuestas incorrectas del paso previo sin explicación propia', t => {
+  const todos = TEXTOS.flatMap(x => L.avisos(x, FRASES));
+  const neutras = todos.filter(a => a.neutra);
+  // No es un error (el banco es de la rutina verbal): se avisa en la salida de las pruebas.
+  t.diagnostic(`${todos.length} respuestas incorrectas de pasos previos sin explicación propia; ${neutras.length} quedan con la frase neutra: ${neutras.map(a => `${a.item}.${a.pregunta}:${a.opcion}`).join(', ') || 'ninguna'}`);
+  for (const a of todos) assert.ok(a.item && a.pregunta && a.opcion);
+});
+
+test('pruebas de entrada y salida: orden AB o BA y eventos que resumirCursos entiende', () => {
+  const M = require('./medicion.js');
+  // Banco de muestra (no está en contenido/): dos textos paralelos, A y B.
+  const A = structuredClone(TEXTOS[0]); A.id = 't900a'; for (const q of A.preguntas) delete q.previo;
+  const B = structuredClone(TEXTOS[1]); B.id = 't900b'; B.preguntas = B.preguntas.slice(0, A.preguntas.length); for (const q of B.preguntas) delete q.previo;
+  const indice = { entrada: 't900a', salida: 't900b', textos: [], ejercicios: [] };
+  const items = { t900a: A, t900b: B };
+  const ordenes = new Set();
+  for (let i = 0; i < 40; i++) {
+    const e = L.formaPrueba(indice, 'al' + i, 'entrada', 'razonamiento-verbal'), s = L.formaPrueba(indice, 'al' + i, 'salida', 'razonamiento-verbal');
+    assert.notEqual(e.id, s.id); assert.equal(e.orden, s.orden); ordenes.add(e.orden);
+  }
+  assert.deepEqual([...ordenes].sort(), ['AB', 'BA']);
+  assert.deepEqual(L.formaPrueba({ entrada: 't900a', salida: null }, 'x', 'entrada', 'c'), { orden: 'AB', forma: 'A', id: 't900a' });
+  // Dos alumnos: uno falla todo en la entrada y acierta todo en la salida; el otro acierta la mitad y luego todo.
+  const ev = [];
+  const hacer = (alumno, fase, elegir) => {
+    const f = L.formaPrueba(indice, alumno, fase, 'razonamiento-verbal');
+    const it = L.preparar(items[f.id], `prueba-${f.forma}`);
+    const rs = it.preguntas.map((q, k) => {
+      const r = L.calificar(q, elegir(q, k).letra);
+      ev.push({ alumno, t: `${alumno}${fase}${k}`, ...L.ev.item({ fase, curso: 'razonamiento-verbal', modulo: 'lectura-verbal', forma: f.forma, orden: f.orden, pregunta: q, resultado: r, codigos: CODIGOS, ms: 5 }) });
+      return r;
+    });
+    ev.push({ alumno, t: `${alumno}${fase}z`, ...L.ev.prueba({ fase, curso: 'razonamiento-verbal', forma: f.forma, orden: f.orden, modulo: 'lectura-verbal', unidad: 'u', item: it, resultados: rs, ms: 9 }) });
+  };
+  const bien = q => q.alternativas.find(a => a.correcta), mal = q => q.alternativas.find(a => !a.correcta);
+  hacer('a1', 'entrada', mal); hacer('a1', 'salida', bien);
+  hacer('a2', 'entrada', (q, k) => (k % 2 ? mal(q) : bien(q))); hacer('a2', 'salida', bien);
+  const item = ev.find(e => e.tipo === 'item');
+  assert.equal(item.banco, 'lectura'); assert.equal(item.plantilla, 'lectura-verbal'); assert.match(item.opcion, /^[1-5]$/);
+  const [r] = M.resumirCursos(ev);
+  assert.equal(r.curso, 'razonamiento-verbal');
+  assert.equal(r.pareados, 2);
+  assert.equal(r.salidaPareados, 1);
+  assert.equal(r.hake, 1, 'de lo que faltaba, se ganó todo');
+  assert.ok(r.errores.length > 0 && r.errores.every(e => /^RV\d+$/.test(e.id) && e.despues === 0 && e.antes >= 1));
+  assert.deepEqual(r.plantillas.map(p => p.id), ['lectura-verbal']);
 });

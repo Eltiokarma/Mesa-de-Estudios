@@ -67,7 +67,7 @@ async function vista(ctx, id, unidad) {
     if (modo === 'marcar') {
       return `<button type="button" class="${cl.join(' ')} marcable${sel === o.id ? ' sel' : ''}" data-o="${esc(o.id)}" aria-pressed="${sel === o.id}"><span class="lector">Oración ${esc(o.n)}: </span>${n}${esc(o.t)}</button>`;
     }
-    return `<span class="${cl.join(' ')}" data-o="${esc(o.id)}">${n}${esc(o.t)}</span>`;
+    return `<span class="${cl.join(' ')}" data-o="${esc(o.id)}"><span class="lector">Oración ${esc(o.n)}. </span>${n}${esc(o.t)}</span>`;
   }
   function textoHTML(it, modo, pint, sel) {
     const ors = L().oraciones(it);
@@ -94,20 +94,23 @@ async function vista(ctx, id, unidad) {
   function armar(it, sub, etiqueta) {
     const conTexto = !it.ejercicio;
     $app.innerHTML = `<div class="lectura ${conTexto ? 'fase-leer' : 'sin-texto'}">
+      <p class="lector" aria-live="polite" id="lecVivo"></p>
       <header class="lec-cab">${volver}<p class="sub">${subCurso}</p><h1>${esc(it.titulo)}</h1><p class="sub">${sub}</p>
         ${etiqueta ? `<p class="etq-p lec-etq">${esc(etiqueta)}</p>` : ''}</header>
       ${conTexto ? `<button type="button" class="lec-franja" aria-expanded="false" aria-controls="lecTexto"><b>${esc(it.titulo)}</b><span>Ver texto ▾</span></button>` : ''}
       <div class="lec-cols">
         ${conTexto ? `<aside class="lec-texto" id="lecTexto" aria-label="Texto: ${esc(it.titulo)}">
           <div class="lec-hoja-barra"><span class="asa" aria-hidden="true"></span><button type="button" class="btn borde" id="cerrarHoja">Volver a la pregunta</button></div>
-          <div class="lec-cuerpo" id="lecCuerpo">${textoHTML(it)}</div></aside>` : ''}
-        <section class="lec-panel" id="lecPanel" aria-live="polite"></section>
+          <div class="lec-cuerpo" id="lecCuerpo">${textoHTML(it)}</div><div id="lecExtra"></div></aside>` : ''}
+        <section class="lec-panel" id="lecPanel"></section>
       </div>
       <div class="lec-velo" hidden></div></div>`;
     const raiz = $app.querySelector('.lectura');
     if (conTexto) hoja(raiz);
     return raiz;
   }
+  // Región viva chica: solo "Pregunta n de m" y el veredicto (no todo el panel).
+  const vivo = t => { const v = document.getElementById('lecVivo'); if (v) v.textContent = t; };
   const fase = (raiz, f) => { raiz.classList.remove('fase-leer', 'fase-marcar', 'fase-preg'); raiz.classList.add(f); };
   const pintar = (it, pint, modo, sel) => { const c = document.getElementById('lecCuerpo'); if (c) c.innerHTML = textoHTML(it, modo, pint, sel); };
 
@@ -117,11 +120,14 @@ async function vista(ctx, id, unidad) {
     const abrir = () => {
       raiz.classList.add('hoja-abierta'); velo.hidden = false; franja.setAttribute('aria-expanded', 'true');
       document.body.style.overflow = 'hidden'; aside.setAttribute('role', 'dialog'); aside.setAttribute('aria-modal', 'true');
+      // Con la hoja abierta, el resto queda inerte: Tab no sale del texto (ni llega a las alternativas).
+      for (const x of raiz.querySelectorAll('.lec-cab, .lec-panel, .lec-franja')) x.inert = true;
       setTimeout(() => document.getElementById('cerrarHoja').focus(), 30);
     };
     const cerrar = () => {
       if (!raiz.classList.contains('hoja-abierta')) return;
       raiz.classList.remove('hoja-abierta'); velo.hidden = true; franja.setAttribute('aria-expanded', 'false');
+      for (const x of raiz.querySelectorAll('.lec-cab, .lec-panel, .lec-franja')) x.inert = false;
       document.body.style.overflow = ''; aside.removeAttribute('role'); aside.removeAttribute('aria-modal'); aside.style.transform = '';
       franja.focus({ preventScroll: true });
     };
@@ -146,9 +152,10 @@ async function vista(ctx, id, unidad) {
       const bloqueo = `<div class="alts-bloqueadas" role="note"><span aria-hidden="true">🔒</span> Las alternativas se abren cuando respondas este paso.</div>`;
       const confirmar = `<div class="lec-confirmar"><span class="sub" id="selTxt">Elige una respuesta.</span><button type="button" class="btn morado" id="confirmarPrevio" disabled>Confirmar</button></div>`;
       let cuerpo = '';
+      const ningunaHTML = p.ninguna ? `<button type="button" class="opc ninguna" id="ninguna" aria-pressed="false">Ninguna la dice completa</button>` : '';
       if (p.tipo === 'marcar-oracion') {
-        cuerpo = (it.ejercicio ? `<div class="lec-cuerpo marcar-ej" id="marcarEj"></div>` : `<p class="sub solo-celular">Toca una oración del texto.</p>`)
-          + (p.ninguna ? `<button type="button" class="opc ninguna" id="ninguna" aria-pressed="false">Ninguna la dice completa</button>` : '');
+        // En un texto, "Ninguna" va debajo de la última oración (en el celular, después de leerlas todas).
+        cuerpo = it.ejercicio ? `<div class="lec-cuerpo marcar-ej" id="marcarEj"></div>${ningunaHTML}` : `<p class="sub solo-celular">Toca una oración del texto.</p>`;
       } else if (p.tipo === 'ordenar') {
         cuerpo = `<ol class="tarjetas" id="tarjetas" aria-label="Oraciones para ordenar"></ol>
           <p class="solo-teclado">Con teclado: <kbd>Espacio</kbd> toma una tarjeta, <kbd>↑</kbd> <kbd>↓</kbd> la mueven y <kbd>Espacio</kbd> la suelta.</p>`;
@@ -168,7 +175,7 @@ async function vista(ctx, id, unidad) {
         <div class="card previo">
           <div class="etq-p">Antes de ver las alternativas</div>
           ${it.ejercicio && p.tipo !== 'ordenar' && p.tipo !== 'marcar-oracion' ? cuerpoEjercicioHTML(it) : ''}
-          <p class="pide">${esc(p.pide)}</p>
+          <p class="pide">${esc(pide(p.pide))}</p>
           ${cuerpo}
           ${confirmar}
         </div>${bloqueo}`;
@@ -179,7 +186,7 @@ async function vista(ctx, id, unidad) {
       bConf.onclick = fin;
 
       if (p.tipo === 'marcar-oracion') {
-        if (enTexto) fase(raiz, 'fase-marcar');
+        if (enTexto) { fase(raiz, 'fase-marcar'); document.getElementById('lecExtra').innerHTML = ningunaHTML; }
         const cont = enTexto ? document.getElementById('lecCuerpo') : document.getElementById('marcarEj');
         cont.innerHTML = textoHTML(it, 'marcar', null, null);
         const ids = L().oraciones(it).map(o => o.id);
@@ -231,12 +238,14 @@ async function vista(ctx, id, unidad) {
   }
 
   // Plan de redacción: tarjetas que se arrastran (dedo o ratón), con botones para subir y bajar y con teclado.
+  // "Confirmar" se habilita recién cuando el alumno movió alguna tarjeta (el orden presentado nunca es el aceptado).
   function ordenar(it, p, marcarSel, fin) {
     const ol = document.getElementById('tarjetas');
     let orden = (it.cuerpo.oraciones || []).map(o => o.n);
+    const inicial = orden.join('-');
     let tomada = null;
     const txt = n => (it.cuerpo.oraciones.find(o => o.n === n) || {}).t || '';
-    const anunciar = () => marcarSel(orden.slice(), orden.join(' – '));
+    const anunciar = () => { if (orden.join('-') !== inicial) marcarSel(orden.slice(), orden.join(' – ')); else { marcarSel(null); document.getElementById('selTxt').textContent = 'Mueve las tarjetas hasta el orden que creas.'; } };
     const dibujar = foco => {
       ol.innerHTML = orden.map((n, k) => `<li class="tarjeta${tomada === n ? ' tomada' : ''}" data-n="${esc(n)}" tabindex="0" aria-label="${esc(n)}, lugar ${k + 1} de ${orden.length}${tomada === n ? ', tomada' : ''}">
         <span class="asa-t" aria-hidden="true">⠿</span><b>${esc(n)}</b><span class="tx">${esc(txt(n))}</span>
@@ -290,8 +299,10 @@ async function vista(ctx, id, unidad) {
     actual = { tipo: 'ordenar', confirmar: fin };
   }
 
+  // La etiqueta de la tarjeta ya dice "Antes de ver las alternativas": no se repite en la consigna.
+  const pide = t => { const x = String(t).replace(/^antes de ver las alternativas\s*[,:]?\s*/i, ''); return x.charAt(0).toUpperCase() + x.slice(1); };
   const etqPregunta = q => `<div class="etq-p">${q.numero ? `Pregunta ${q.numero} de ${q.total}` : 'Pregunta'}</div>`;
-  const altsHTML = q => `<p class="preg">${esc(q.enunciado)}</p>
+  const altsHTML = q => `<p class="preg" tabindex="-1">${esc(q.enunciado)}</p>
     <div class="alts lec-alts" role="group" aria-label="Alternativas">${q.alternativas.map(a =>
       `<button type="button" class="alt" data-letra="${a.letra}"><span class="letra">${a.letra}</span><span>${esc(a.t)}</span></button>`).join('')}</div>
     <p class="solo-teclado">Con teclado: <kbd>A</kbd>–<kbd>${q.alternativas[q.alternativas.length - 1].letra}</kbd> o <kbd>1</kbd>–<kbd>${q.alternativas.length}</kbd> para elegir, <kbd>Enter</kbd> para seguir.</p>`;
@@ -320,10 +331,13 @@ async function vista(ctx, id, unidad) {
   }
 
   // ---------- Pruebas de entrada y salida: texto fijo, sin paso previo ni corrección ----------
+  // Con entrada y salida en el índice, el orden AB o BA sale de nucleo/pruebas.js (como en las pruebas por curso).
+  const CURSO = 'razonamiento-verbal';
   async function prueba(faseP) {
-    const it0 = b.items[b.indice[faseP]];
+    const { orden, forma, id: idTexto } = L().formaPrueba(b.indice, est.alumno, faseP, CURSO);
+    const it0 = b.items[idTexto];
     if (!it0) return faseP === 'entrada' ? practica() : resultado();
-    const it = L().preparar(it0, faseP);
+    const it = L().preparar(it0, `prueba-${forma}`);
     const raiz = armar(it, faseP === 'entrada'
       ? 'Antes de empezar: un texto con preguntas para saber de dónde partes. No cuenta para nada; responde lo que creas.'
       : 'Prueba final: un texto parecido al del inicio, para ver cuánto avanzaste.', faseP === 'entrada' ? 'Prueba de entrada' : 'Prueba de salida');
@@ -335,74 +349,128 @@ async function vista(ctx, id, unidad) {
     for (const [k, q0] of it.preguntas.entries()) {
       const q = { ...q0, numero: k + 1, total: it.preguntas.length };
       document.getElementById('lecPanel').innerHTML = `<div class="card practica">${etqPregunta(q)}${altsHTML(q)}</div>`;
+      vivo(`Pregunta ${q.numero} de ${q.total}`);
       window.scrollTo(0, 0);
-      const { letra } = await esperarAlternativa(q);
-      resultados.push(L().calificar(q, letra));
+      const { letra, ms: msq } = await esperarAlternativa(q);
+      const r = L().calificar(q, letra);
+      resultados.push(r);
+      registrar(L().ev.item({ fase: faseP, curso: CURSO, modulo: id, forma, orden, pregunta: q, resultado: r, codigos: b.codigos, ms: msq }));
     }
-    st[faseP] = { aciertos: resultados.filter(r => r.correcta).length, total: resultados.length }; guardar();
-    registrar(L().ev.prueba({ fase: faseP, modulo: id, unidad: it.preguntas[0].unidad, item: it, resultados, ms: Date.now() - t0 }));
+    st[faseP] = { aciertos: resultados.filter(r => r.correcta).length, total: resultados.length, forma }; guardar();
+    registrar(L().ev.prueba({ fase: faseP, curso: CURSO, forma, orden, modulo: id, unidad: it.preguntas[0].unidad, item: it, resultados, ms: Date.now() - t0 }));
     return faseP === 'entrada' ? practica() : resultado();
   }
 
   // ---------- Práctica ----------
+  // st.enCurso guarda el texto a medio hacer: si el alumno se va y vuelve, sigue en la pregunta donde quedó
+  // (no se registra otra vez desde p1). st.intentos cuenta cuántas veces empezó cada texto: va en los eventos
+  // y en la semilla del barajado, así al repetir un texto cambia el orden de las alternativas.
   async function practica() {
     const lista = L().lista(b.indice, b.items, unidadAbierta);
     if (!lista.length) { $app.innerHTML = `${volver}<p class="vacio">Todavía no hay textos para esta unidad.</p>`; return; }
-    const it0 = L().siguiente(lista, st.hechos);
-    const it = L().preparar(it0, est.alumno);
+    st.intentos = st.intentos || {};
+    let ec = st.enCurso && lista.find(x => x.id === st.enCurso.id) ? st.enCurso : null;
+    if (!ec) {
+      const it0 = L().siguiente(lista, st.hechos);
+      const intento = (st.intentos[it0.id] || 0) + 1;
+      st.intentos[it0.id] = intento;
+      ec = st.enCurso = { id: it0.id, intento, k: 0, leido: false, bien: 0, resp: [] };
+      guardar();
+    }
+    const intento = ec.intento;
+    const it = L().preparar(lista.find(x => x.id === ec.id), est.alumno, intento);
+    // Explicaciones después de cada pregunta (por defecto) o todas al final del texto: "explicar": "al-final"
+    // en el texto o en el índice.
+    const alFinal = (it.explicar || b.indice.explicar) === 'al-final';
     const nTexto = b.indice.textos.indexOf(it.id) + 1;
-    const sub = it.ejercicio ? `${esc(L().NOMBRE_EJERCICIO[it.preguntas[0].tipo] || 'Ejercicio')}` : `Texto ${nTexto} · ${it.preguntas.length} preguntas`;
+    const sub = it.ejercicio ? `Ejercicio suelto · ${esc(L().NOMBRE_EJERCICIO[it.preguntas[0].tipo] || '')}`.replace(/ · $/, '')
+      : `Texto ${nTexto} · ${it.preguntas.length} preguntas${ec.k ? ` · sigues en la pregunta ${ec.k + 1}` : ''}`;
     const raiz = armar(it, sub);
     if (!it.ejercicio) {
       const ms = await leer(it, raiz);
-      registrar(L().ev.lectura({ modulo: id, unidad: unidadAbierta || it.preguntas[0].unidad, item: it, ms }));
+      if (!ec.leido) { registrar(L().ev.lectura({ modulo: id, unidad: unidadAbierta || it.preguntas[0].unidad, item: it, ms, intento })); ec.leido = true; guardar(); }
     }
-    let bien = 0;
-    for (const [k, q0] of it.preguntas.entries()) {
-      const q = { ...q0, numero: it.ejercicio ? 0 : k + 1, total: it.preguntas.length };
+    const preg = k => ({ ...it.preguntas[k], numero: it.ejercicio ? 0 : k + 1, total: it.preguntas.length });
+    for (let k = ec.k; k < it.preguntas.length; k++) {
+      const q = preg(k);
       const panel = document.getElementById('lecPanel');
       if (!it.ejercicio) { fase(raiz, 'fase-preg'); pintar(it, null); }
+      vivo(q.numero ? `Pregunta ${q.numero} de ${q.total}` : '');
       window.scrollTo(0, 0);
       let rPrevio = null;
       if (q.previo) {
         const { respuesta, ms } = await pasoPrevio(it, q, raiz, panel);
         rPrevio = L().calificarPrevio(q.previo, respuesta, it);
-        registrar(L().ev.previo({ modulo: id, pregunta: q, resultado: rPrevio, codigos: b.codigos, ms }));
+        registrar(L().ev.previo({ modulo: id, pregunta: q, resultado: rPrevio, codigos: b.codigos, ms, intento }));
         st.previos++; if (rPrevio.correcta) st.previosBien++; guardar();
+        const extra = document.getElementById('lecExtra'); if (extra) extra.innerHTML = '';
         if (!it.ejercicio) { fase(raiz, 'fase-preg'); pintar(it, null); }
       }
       // El paso previo no se corrige todavía: se guarda y se abren las alternativas.
       panel.innerHTML = `${etqPregunta(q)}
-        ${rPrevio ? `<div class="previo-hecho"><span class="etq-p">Tu paso previo</span> ${esc(L().etiquetaPrevio(q.previo, rPrevio.opcion, it))}. Lo revisamos después de que elijas.</div>` : ''}
+        ${rPrevio ? `<div class="previo-hecho"><span class="etq-p">Tu paso previo</span> ${esc(L().etiquetaPrevio(q.previo, rPrevio.opcion, it))}. Lo revisamos ${alFinal ? 'al final del texto' : 'después de que elijas'}.</div>` : ''}
         <div class="card practica">${it.ejercicio ? cuerpoEjercicioHTML(it) : ''}${altsHTML(q)}<div id="retro"></div></div>`;
+      // Al abrir las alternativas, el foco va a la pregunta (el lector la lee y Tab sigue a las alternativas).
+      if (rPrevio) { const pr = panel.querySelector('.preg'); if (pr) pr.focus({ preventScroll: true }); }
       const { letra, ms } = await esperarAlternativa(q);
       const r = L().calificar(q, letra);
-      registrar(L().ev.respuesta({ modulo: id, pregunta: q, resultado: r, codigos: b.codigos, ms }));
-      st.preguntas++; if (r.correcta) { st.aciertos++; bien++; }
+      registrar(L().ev.respuesta({ modulo: id, pregunta: q, resultado: r, codigos: b.codigos, ms, intento }));
+      st.preguntas++; if (r.correcta) { st.aciertos++; ec.bien++; }
+      ec.resp[k] = { letra, previo: rPrevio ? rPrevio.opcion : null };
+      ec.k = k + 1;
       est.vistas[q.unidad] = est.vistas[q.unidad] || new Date().toLocaleDateString('en-CA');
       guardar(); marcarDia();
-      panel.querySelectorAll('.lec-alts .alt').forEach(x => {
-        if (x.dataset.letra === r.clave.letra) x.classList.add('ok'); else if (x.dataset.letra === letra) x.classList.add('mal');
-      });
-      const pint = L().pintura(q, letra);
-      if (!it.ejercicio) pintar(it, pint);
-      await explicar(it, q, r, rPrevio, k === it.preguntas.length - 1);
+      if (alFinal) continue;
+      await corregir(it, q, r, rPrevio, k === it.preguntas.length - 1);
     }
-    st.hechos[it.id] = (st.hechos[it.id] || 0) + 1; st.textos++; guardar();
+    if (alFinal) {
+      // Todas las explicaciones al final, una por pregunta, con su texto pintado.
+      for (let k = 0; k < it.preguntas.length; k++) {
+        const x = ec.resp[k]; if (!x) continue;
+        const q = preg(k);
+        const r = L().calificar(q, x.letra);
+        const rPrevio = q.previo && x.previo !== null ? L().calificarPrevio(q.previo, q.previo.tipo === 'ordenar' ? String(x.previo).split('-') : x.previo, it) : null;
+        if (!it.ejercicio) { fase(raiz, 'fase-preg'); }
+        document.getElementById('lecPanel').innerHTML = `<div class="etq-p">Revisión · ${q.numero ? `Pregunta ${q.numero} de ${q.total}` : 'Pregunta'}</div>
+          <div class="card practica">${it.ejercicio ? cuerpoEjercicioHTML(it) : ''}${altsHTML(q)}<div id="retro"></div></div>`;
+        document.querySelectorAll('.lec-alts .alt').forEach(bt => { bt.disabled = true; });
+        window.scrollTo(0, 0);
+        await corregir(it, q, r, rPrevio, k === it.preguntas.length - 1);
+      }
+    }
+    const bien = ec.bien;
+    st.hechos[it.id] = (st.hechos[it.id] || 0) + 1; st.textos++; st.enCurso = null; guardar();
     terminado(it, bien);
+  }
+
+  // Marca la correcta y la elegida, pinta el texto y muestra la explicación.
+  function corregir(it, q, r, rPrevio, ultima) {
+    document.querySelectorAll('.lec-alts .alt').forEach(x => {
+      if (x.dataset.letra === r.clave.letra) x.classList.add('ok'); else if (x.dataset.letra === r.letra) x.classList.add('mal');
+    });
+    if (!it.ejercicio) pintar(it, L().pintura(q, r.letra));
+    return explicar(it, q, r, rPrevio, ultima);
   }
 
   function explicar(it, q, r, rPrevio, ultima) {
     return new Promise(listo => {
       const a = r.alternativa, c = r.clave;
       const marca = rol => `<span class="marca ${rol}" aria-hidden="true"></span>`;
+      const veredicto = r.correcta ? `¡Bien! Es la ${c.letra}.` : `Elegiste la ${a.letra}. La correcta es la ${c.letra}: ${c.t}`;
+      vivo(veredicto);
+      const mixto = !r.correcta && a.origen && (c.evidencia || []).includes(a.origen);
+      const fraseAlt = !r.correcta ? b.frases[a.codigo] || '' : '';
       let h = `<div class="retro ${r.correcta ? 'bien' : 'malo'}">
         ${r.correcta && window.Ilus ? Ilus.gato('class="retro-gato"') : ''}
-        <b>${r.correcta ? `¡Bien! Es la ${c.letra}. ${PREMIOS[st.preguntas % PREMIOS.length]}` : `Elegiste la ${a.letra}. La correcta es la ${c.letra}: ${esc(c.t)}`}</b></div>
+        <b>${r.correcta ? `${esc(veredicto)} ${PREMIOS[st.preguntas % PREMIOS.length]}` : esc(veredicto)}</b></div>
         <div class="expl">`;
       if (!r.correcta) {
-        h += `<p>${a.origen ? marca('di') : ''}${esc(a.explicacion)}</p>${b.frases[a.codigo] ? `<p class="frase">${esc(b.frases[a.codigo])}</p>` : ''}`;
-        if (a.origen && !it.ejercicio) h += `<p class="sub">${marca('di')}De aquí sale lo que elegiste:</p>${citaHTML(it, [a.origen], 'pinta-di')}`;
+        h += `<p>${a.origen ? marca('di') : ''}${esc(a.explicacion)}</p>${fraseAlt ? `<p class="frase">${esc(fraseAlt)}</p>` : ''}`;
+        if (a.origen && !it.ejercicio) {
+          h += mixto
+            ? `<p class="sub">${marca('di')}La oración ${esc(L().numero(it, a.origen))} prueba la correcta, y de ella misma sale lo que elegiste: leíste bien la oración, pero sacaste otra conclusión.</p>${citaHTML(it, [a.origen], 'pinta-ev pinta-di')}`
+            : `<p class="sub">${marca('di')}De aquí sale lo que elegiste:</p>${citaHTML(it, [a.origen], 'pinta-di')}`;
+        }
       }
       h += `<p>${marca('ev')}${r.correcta ? '' : '<b>La correcta:</b> '}${esc(c.explicacion)}</p>`;
       if (!it.ejercicio && (c.evidencia || []).length) h += `<p class="sub">${marca('ev')}Lo prueba el texto:</p>${citaHTML(it, c.evidencia, 'pinta-ev')}`;
@@ -411,11 +479,12 @@ async function vista(ctx, id, unidad) {
         const marcar = q.previo.tipo === 'marcar-oracion';
         const cita = x => (marcar && x !== 'Ninguna la dice completa' ? x : `«${x}»`);
         const verbo = marcar ? 'marcaste' : q.previo.tipo === 'ordenar' ? 'ordenaste así:' : 'elegiste';
+        const conIdea = cp.idea.length && !it.ejercicio;
         h += `<div class="corr-previo ${cp.correcta ? 'bien' : 'malo'}"><div class="etq-p">Tu paso previo</div>
           <p><b>Antes ${verbo} ${esc(cita(cp.eligio))}.</b> ${cp.correcta ? '<span class="ok-t">Bien.</span>' : `<span class="mal-t">Se esperaba ${esc(marcar ? cp.aceptada : cita(cp.aceptada))}.</span>`}</p>
-          ${cp.porQue ? `<p>${esc(cp.porQue)}</p>` : ''}
-          <p>${cp.idea.length && !it.ejercicio ? marca('idea') : ''}${esc(cp.explicacion)}</p>
-          ${cp.idea.length && !it.ejercicio ? citaHTML(it, cp.idea, 'pinta-idea') : ''}</div>`;
+          ${cp.porQue && cp.porQue !== fraseAlt ? `<p>${esc(cp.porQue)}</p>` : ''}
+          <p>${conIdea ? marca('idea') : ''}${cp.neutra ? `La respuesta aceptada es ${esc(marcar ? cp.aceptada : cita(cp.aceptada))} porque ${esc(minuscula(cp.explicacion))}` : esc(cp.explicacion)}</p>
+          ${conIdea ? citaHTML(it, cp.idea, 'pinta-idea') : ''}</div>`;
       }
       if (!it.ejercicio) h += `<button type="button" class="btn borde solo-celular" id="verTexto">Ver los colores en el texto</button>`;
       h += `<details class="demas"><summary>Ver las demás alternativas</summary><ul>${q.alternativas.filter(x => x !== a && x !== c).map(x =>
@@ -430,9 +499,10 @@ async function vista(ctx, id, unidad) {
       retro.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   }
+  const minuscula = t => { const x = String(t || ''); return x.charAt(0).toLowerCase() + x.slice(1); };
 
   function terminado(it, bien) {
-    const salidaLista = b.indice.salida && b.items[b.indice.salida] && st.entrada && !st.salida && st.textos >= MIN_SALIDA;
+    const salidaLista = b.indice.salida && b.items[L().formaPrueba(b.indice, est.alumno, 'salida', 'razonamiento-verbal').id] && st.entrada && !st.salida && st.textos >= MIN_SALIDA;
     $app.innerHTML = `${volver}<p class="sub">${subCurso}</p><h1>${esc(it.titulo)}</h1>
       <div class="card resultado" style="margin-top:16px">
         ${window.Ilus ? Ilus.taza('class="resultado-taza"') : ''}
@@ -459,7 +529,7 @@ async function vista(ctx, id, unidad) {
     actual = { tipo: 'fin', seguir: () => document.getElementById('seguir').click() };
   }
 
-  if (b.indice.entrada && b.items[b.indice.entrada] && !st.entrada) prueba('entrada');
+  if (b.indice.entrada && b.items[L().formaPrueba(b.indice, est.alumno, 'entrada', 'razonamiento-verbal').id] && !st.entrada) prueba('entrada');
   else practica();
 }
 

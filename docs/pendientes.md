@@ -8,7 +8,7 @@
 npm test
 ```
 
-Deben pasar 1087 pruebas.
+Deben pasar 1093 pruebas.
 
 ```bash
 npm run dev
@@ -68,7 +68,8 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
   - Llegar a 30 textos y escribir los de entrada y salida (`indice.entrada` y `salida` siguen en `null`: hoy la práctica empieza sin prueba de entrada). El código de las pruebas ya está.
   - Ejercicios sueltos (analogías, plan de redacción, eliminación, término excluido, oraciones incompletas): la app y el núcleo ya los muestran y califican (probados con ejercicios de muestra); falta escribirlos y las unidades de término excluido y oraciones incompletas en el catálogo. Al agregar un texto o ejercicio con una unidad nueva, sumarla a `plantillas/lectura-verbal/plantilla.json` y nombrar el módulo en la unidad (la prueba avisa); luego `npm run catalogo`.
   - Lápiz y papel (regla 6): falta `herramientas/papel-lectura.js` y que `vPapel` acepte enunciados de varios párrafos (sección 7.6 del diseño). Por eso la ficha sigue en `borrador` con `papel: null`.
-  - **Para Gerson:** en el celular, la lectura esconde la barra de abajo (se vuelve con ‹) para dar espacio al texto y a la hoja; ¿de acuerdo? Los colores evidencia, distractor e idea reusan `--c-i`, `--c-o` y `--c-d` como propone el diseño; falta medir su distancia y el contraste del caso mixto (evidencia y distractor en la misma oración) en `docs/diseno.md`.
+  - Revisión independiente del 6 nov aplicada en el código: pruebas de entrada y salida con orden A→B o B→A y eventos `item` (Hake y errores RV antes y después), corrección neutra del paso previo cuando la frase del código no aplica (con aviso en las pruebas), oración mixta evidencia y distractor con contorno, opción `"explicar": "al-final"`, `intento` y retomar un texto a medias, hoja con lo demás `inert`, selección en color de marca, tarjetas que piden mover algo antes de confirmar. Lo de contenido (sondas, distractores, explicaciones de los previos, orden de preguntas, textos t000a y t000b) quedó para la rutina verbal; hoy 59 respuestas incorrectas de pasos previos no tienen explicación propia (14 caen en la frase neutra; ver el diagnóstico de `nucleo/lectura.test.js`).
+  - **Para Gerson:** en el celular, la lectura esconde la barra de abajo (se vuelve con ‹) para dar espacio al texto y a la hoja; ¿de acuerdo? Los colores evidencia, distractor e idea reusan `--c-i`, `--c-o` y `--c-d`; la revisión midió contraste AA y ΔE00 ≥ 25 entre las tintas, pero naranja y verde se acercan con protanopía o deuteranopía (ΔE00 3,6 a 9,5): por eso cada color va siempre con su marquita y una frase.
 
 - **Cinética** (`plantillas/cinetica/`, rutina de química, 6 nov 2026): caja de discos con teoría de colisiones (energía y orientación), temperatura, catalizador y perfil de energía. Informe `docs/investigacion/cinetica-ideas-erroneas.md` (CI1 a CI13) con cifras sin verificar por el bloqueo de red: la escena no muestra porcentajes de cinética. La fracción contada queda unos pocos por ciento bajo la teoría. Falta en la escena: orden ≠ coeficiente y vida media.
 

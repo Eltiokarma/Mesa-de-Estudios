@@ -52,7 +52,7 @@ fuentes/libros/                libros y manuales de consulta
 
 **Sesión nueva: lee `docs/pendientes.md`.** Ahí está qué hay hecho, cómo arrancar y los pendientes en orden de prioridad.
 
-- Plantillas: Banco Óptico, espejos esféricos, circuitos, calorimetría, energía, MRUV, reactivo limitante con partículas, gases, soluciones, pH, celda galvánica, la ampliadora, el triángulo que se estira, el ángulo inscrito, la cinta del radio, la gráfica con perillas, dinámica, equilibrio químico, cinética, la regla de tres, la circunferencia trigonométrica, los dos dados, tiro parabólico y mol y composición (escenas); reactivo limitante y porcentajes sucesivos (predicciones). `npm test`: 1087 pruebas en verde.
+- Plantillas: Banco Óptico, espejos esféricos, circuitos, calorimetría, energía, MRUV, reactivo limitante con partículas, gases, soluciones, pH, celda galvánica, la ampliadora, el triángulo que se estira, el ángulo inscrito, la cinta del radio, la gráfica con perillas, dinámica, equilibrio químico, cinética, la regla de tres, la circunferencia trigonométrica, los dos dados, tiro parabólico y mol y composición (escenas); reactivo limitante y porcentajes sucesivos (predicciones). `npm test`: 1093 pruebas en verde.
 - App PWA con medición anónima, lápiz y papel, celular y laboratorio de cómputo, y diseño acogedor (`docs/diseno.md`).
 - Lanzamiento: un colegio, 3.º a 5.º de secundaria, diciembre de 2026 (fecha por confirmar).
 
