@@ -124,15 +124,17 @@
         ],
         "ninguna": "RV3",
         "codigos": {
-          "o1": "RV4"
+          "o1": "RV4",
+          "o4": "RV3",
+          "o5": "RV3"
         },
         "explicacion": "La oración 8 dice la tesis en general y la 9 la repite con la imagen del salero.",
         "explicaciones": {
           "o1": "La primera oración presenta el problema, el bocio: es el punto de partida.",
           "o2": "Explica por qué el yodo es importante: es información de base.",
           "o3": "Explica por qué faltaba yodo en esas zonas: es parte del caso.",
-          "o4": "Cuenta qué solución se eligió: es parte del caso, no lo que el autor saca de él.",
-          "o5": "Cuenta el resultado: es parte del caso.",
+          "o4": "Cuenta la solución que se eligió, pero no lo que el autor concluye de ella.",
+          "o5": "Cuenta el resultado del caso, pero deja fuera lo que el autor saca de él: la idea que vale para otras medidas.",
           "o6": "Presenta una objeción que el autor va a responder.",
           "o7": "Responde a la objeción; es un argumento, no la tesis.",
           "ninguna": "Las oraciones 8 y 9 sí la dicen: una medida sencilla que llega a todos puede ser muy eficaz."
@@ -167,10 +169,10 @@
           "explicacion": "Es el caso, pero no la tesis: deja fuera lo que el autor saca de él, que vale para otras medidas."
         },
         {
-          "t": "Hay que comer más sal para tener suficiente yodo.",
-          "codigo": "RV33",
+          "t": "Para tener suficiente yodo basta con comer menos sal.",
+          "codigo": "RV5",
           "origen": "o7",
-          "explicacion": "El autor dice lo contrario: no se trata de comer más sal, sino de que la poca que se coma esté yodada (oración 7)."
+          "explicacion": "Mezcla las oraciones 6 y 7: comer menos sal no da yodo; lo que importa es que la poca sal que se coma esté yodada."
         }
       ]
     },
@@ -257,10 +259,10 @@
           "explicacion": "Está cerca (algo que no se ve), pero no es lo mismo: la sal yodada no era un secreto."
         },
         {
-          "t": "que es costoso y espectacular.",
+          "t": "que dura mucho tiempo.",
           "codigo": "RV5",
-          "origen": "o8",
-          "explicacion": "Repite palabras de la oración 8, pero es lo contrario: la oración 8 dice que la medida no necesita ser costosa ni espectacular."
+          "origen": "o9",
+          "explicacion": "La oración 9 dice \"durante años\", pero eso es cuánto duró; \"silencioso\" dice cómo se hizo: sin que se notara."
         }
       ]
     },
@@ -289,9 +291,9 @@
           "explicacion": "Es una consecuencia exagerada: algunas familias sí lo agregarían; el texto solo permite decir que muchas no."
         },
         {
-          "t": "el Estado habría ahorrado el dinero de los controles a la sal.",
-          "codigo": "RV7",
-          "explicacion": "El texto no habla de ese ahorro; es una conclusión que va más allá de lo que dice."
+          "t": "la medida habría funcionado mejor, porque cada familia cuidaría su propio yodo.",
+          "codigo": "RV8",
+          "explicacion": "Es una idea común, pero el texto dice lo contrario: la medida funcionó justamente porque nadie tenía que acordarse de ella (oración 8)."
         }
       ]
     }
@@ -308,5 +310,10 @@
       "fuente": "Pretell, E. A. y otros (2004). Elimination of iodine deficiency disorders from Peru through salt iodization. IDD Newsletter / Thyroid; Minsa, programa de eliminación de los desórdenes por deficiencia de yodo."
     }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-06",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: 8 de 8. Cambios: distractor de extrapolación que era defendible (el ahorro en controles) reemplazado; dos distractores demasiado fáciles cambiados por otros más cercanos; códigos del previo de tesis coherentes con las alternativas. Una segunda verificación de los ítems cambiados confirmó claves únicas; se ajustaron cuatro explicaciones y un enunciado."
+  }
 }

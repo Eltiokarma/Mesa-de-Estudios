@@ -99,7 +99,7 @@
           "ninguna": "Las oraciones 10 y 11 sí lo dicen: la verdad se defiende mostrándola con algo que todos conocen."
         }
       },
-      "enunciado": "¿Cuál es el tema central del relato?",
+      "enunciado": "¿Cuál es la idea central del relato?",
       "alternativas": [
         {
           "t": "Una prueba que todos pueden comprobar convence más que una discusión.",
@@ -158,24 +158,24 @@
       "enunciado": "Se infiere del relato que la abuela usó el paquete de azúcar porque",
       "alternativas": [
         {
-          "t": "su peso estaba marcado de fábrica y nadie podía discutirlo.",
+          "t": "era de la señora y su peso venía marcado de fábrica, así que nadie podía discutirlo.",
           "correcta": true,
           "evidencia": [
             "o6",
             "o10"
           ],
-          "explicacion": "La oración 6 dice que era de un kilo y estaba cerrado de fábrica, y la 10, que la balanza tenía que pesar \"algo que todos conocen\"."
+          "explicacion": "La oración 6 dice que el paquete era de la señora, de un kilo y cerrado de fábrica, y la 10, que la balanza tenía que pesar \"algo que todos conocen\". Nadie podía decir que la abuela hubiera hecho trampa con él."
         },
         {
-          "t": "la señora lo llevaba en su bolsa.",
-          "codigo": "RV6",
+          "t": "la señora se lo había ofrecido para probar la balanza.",
+          "codigo": "RV9",
           "origen": "o6",
-          "explicacion": "Eso lo dice el relato tal cual (oración 6), pero no explica por qué lo usó: explica de dónde lo sacó."
+          "explicacion": "Choca con el relato: fue la abuela quien le pidió el paquete a la señora (oración 6), no la señora quien lo ofreció."
         },
         {
           "t": "quería venderle también azúcar a la señora.",
           "codigo": "RV7",
-          "explicacion": "Nada en el relato apoya eso: la abuela vende quinua y usó el azúcar para probar la balanza."
+          "explicacion": "Nada en el relato apoya eso, y además choca con él: el azúcar era de la señora (oración 6), y la abuela vende quinua."
         },
         {
           "t": "el azúcar pesa más que la quinua y llena más rápido el plato.",
@@ -226,7 +226,7 @@
         "aceptada": "narrar",
         "codigos": {
           "explicar": null,
-          "convencer": null
+          "convencer": "RV33"
         },
         "explicacion": "El texto cuenta una historia con personajes, diálogo y un final: narra.",
         "explicaciones": {
@@ -265,5 +265,10 @@
   "origen": "propio",
   "fecha": "2026-11-06",
   "hechos": [],
-  "revision": null
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-06",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: 7 de 7. Cambios: la correcta de p2 incluye que el paquete era de la señora (el distractor RV6 era defendible y se reemplazó por uno que choca con el relato, RV9); \"idea central\" en vez de \"tema\"; previo de propósito con RV33 en \"convencer\". Una segunda verificación de los ítems cambiados confirmó claves únicas; se ajustaron cuatro explicaciones y un enunciado."
+  }
 }

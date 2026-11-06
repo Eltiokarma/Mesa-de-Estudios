@@ -84,7 +84,7 @@
       "enunciado": "¿Cuál es la idea principal del texto?",
       "alternativas": [
         {
-          "t": "En la altura la comida tarda más porque el agua hierve más fría, y eso no se arregla con más fuego.",
+          "t": "En la altura la comida tarda más porque el agua hierve a menor temperatura, y eso no se arregla con más fuego.",
           "correcta": true,
           "evidencia": [
             "o4",
@@ -134,7 +134,7 @@
           "t": "A los más de 3800 metros de altura a los que está Juliaca.",
           "codigo": "RV27",
           "origen": "o1",
-          "explicacion": "Es lo último que se nombra antes de \"esto\", pero la altura no \"ocurre\": lo que ocurre, y la oración 2 explica, es que el agua hierva más fría."
+          "explicacion": "Es un dato que aparece cerca de \"esto\", en la oración anterior, pero la altura no \"ocurre\": lo que ocurre, y la oración 2 explica, es que el agua hierva a menor temperatura."
         },
         {
           "t": "A que el agua se convierte en vapor cuando se calienta.",
@@ -143,9 +143,9 @@
           "explicacion": "Repite palabras de la misma oración 2, pero eso no es lo que \"esto\" retoma: retoma lo dicho en la oración 1."
         },
         {
-          "t": "A que la comida tarda más en cocinarse en la altura.",
-          "codigo": "RV7",
-          "explicacion": "Eso viene después, en la oración 5. \"Esto\" se refiere a lo que se dijo antes, no a algo que el texto todavía no cuenta."
+          "t": "A que en Juliaca hace más frío que en Lima.",
+          "codigo": "RV8",
+          "explicacion": "Puede ser cierto, pero el texto no habla del frío de Juliaca: \"esto\" retoma lo de la oración 1, la temperatura a la que hierve el agua."
         }
       ]
     },
@@ -217,7 +217,7 @@
         {
           "t": "explica.",
           "codigo": "RV19",
-          "explicacion": "Está en el mismo campo que \"problema\", pero no significa lo mismo: subir el fuego no explica nada, simplemente no lo resuelve."
+          "explicacion": "Se puede explicar un problema, pero explicarlo no es resolverlo: subir el fuego no resuelve nada."
         },
         {
           "t": "calienta más.",
@@ -240,5 +240,10 @@
       "fuente": "Física de los cambios de fase (cualquier texto de física general, p. ej., Hewitt, Física conceptual, cap. sobre cambio de fase)."
     }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-06",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: 6 de 6. Cambios: \"hierve más fría\" por \"a menor temperatura\"; distractor de referente que era una inferencia hacia adelante cambiado por uno de saber del mundo (RV8); explicaciones del referente y de \"explica\" corregidas. Una segunda verificación de los ítems cambiados confirmó claves únicas; se ajustaron cuatro explicaciones y un enunciado."
+  }
 }

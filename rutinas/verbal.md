@@ -4,7 +4,7 @@ Cada ejecución hace la primera pieza que falte:
 
 1. [x] Informe `docs/investigacion/razonamiento-verbal-ideas-erroneas.md`
 2. [x] Diseño del formato lectura, `docs/formato-lectura.md`
-3. [ ] Banco de textos propios en `contenido/razonamiento-verbal/` (6 de 30)
+3. [ ] Banco de textos propios en `contenido/razonamiento-verbal/` (12 de 30, más la pareja de entrada y salida)
 4. [ ] Guía para profesores, `docs/guia-profesores.md`
 
 ---
@@ -176,3 +176,49 @@ Todos los textos pasaron a `version: 2`, para que la medición no mezcle los dat
 **Pedidos para la integración:**
 - Correr `npm run catalogo`.
 - Ajustar las 4 pruebas de `nucleo/lectura.test.js` como dice arriba.
+
+---
+
+## 6 nov 2026 (ejecución de la tarde) · Pieza 3, segunda tanda: t007 a t012
+
+**Estado al empezar.** La ejecución anterior quedó completa y revisada. La principal todavía no había integrado mis dos últimos commits (t000a, t000b y las correcciones), así que las 5 pruebas de fuera de mi alcance siguen fallando por lo mismo de antes (ver la entrada anterior).
+
+**Qué hice.** Seis textos de práctica nuevos, elegidos para cubrir lo que faltaba:
+
+| Texto | Tema | Tipo, grado y dificultad | Preguntas |
+| --- | --- | --- | --- |
+| t007 El fruto que necesita al bosque | Castaña, abejas y orquídeas (Amazonía) | argumentativo, 4.º, 2 | idea principal, inferencia, **incompatibilidad**, extrapolación |
+| t008 Hervir no es lo mismo que cocinar | Hervir en Juliaca y la olla a presión | expositivo, 3.º, 1 | idea principal, referente, conector, sentido contextual |
+| t009 La riqueza que salía de las islas | La época del guano y la «prosperidad falaz» | argumentativo, **5.º, 3 (tipo UNI)** | intención, tesis, compatibilidad dialéctica, sentido contextual (falaz/fugaz), extrapolación |
+| t010 La balanza de la feria | Relato en la feria de Juliaca | **narrativo**, 3.º, 1 | idea central, inferencia, sentido contextual, intención |
+| t011 El desierto junto al mar | Corriente de Humboldt, garúa y lomas (costa) | expositivo, 4.º, 2 | idea principal, inferencia, **incompatibilidad**, extrapolación |
+| t012 Una pizca en el salero | Sal yodada y bocio | argumentativo, **5.º, 3 (tipo UNI)** | intención, tesis, compatibilidad, sentido contextual, extrapolación |
+
+Son 26 preguntas y 16 pasos previos, todos con su explicación para cada respuesta incorrecta.
+
+Para las preguntas de incompatibilidad agregué **RV36** al informe (hipótesis): "se marca como incompatible lo que el texto solo no menciona". Con eso, los distractores de esas preguntas son RV10 (una frase compatible con un "no"), RV36 (algo no mencionado) y RV8 (algo compatible que va contra lo que se cree). `codigos.json` se regeneró con `herramientas/codigos-verbal.js` y ahora tiene 36 códigos; `frases.json` también tiene RV36.
+
+**Pruebas:**
+- `banco.test.js` da 18 de 18, y `nucleo/lectura.js` (`validar`) acepta los seis textos.
+- `npm test` da 1393 de 1398. Las 5 que fallan son las mismas de antes y no dependen de esta tanda.
+
+**Subagentes:**
+- **Tres revisores a ciegas**, dos textos cada uno. Coincidieron con la clave en los 26 ítems y en los 16 pasos previos. Lo que encontraron, ya corregido:
+  - **t009:** la sonda "el autor cree que la abolición no tuvo importancia" no era indiscutible y se cambió por otra sobre la venta estatal del guano. Además, tres distractores se descartaban enseguida, así que el texto no llegaba a dificultad alta; se reemplazaron por otros más cercanos.
+  - **t010:** el distractor "la señora lo llevaba en su bolsa" era defendible (que el paquete fuera suyo es parte de la razón). La correcta ahora lo incluye, y el distractor cambió por uno que choca con el relato.
+  - **t012:** "el Estado habría ahorrado en controles" era defendible y se reemplazó. Dos distractores eran demasiado fáciles.
+  - **t007:** las plantaciones no producen poco solo por la polinización (también influyen el suelo y el manejo); quedó "entre otras razones".
+  - **t008:** "hierve más fría" pasó a "hierve a menor temperatura". Un distractor de referente no tenía código que lo describiera y cambió por uno de saber del mundo.
+- **Una cuarta verificación** de los cambios: claves únicas. Ajusté cuatro explicaciones, un enunciado ("idea central" en vez de "tema") y un código. En dos casos no cambié el código que proponía, porque quedaba repetido en la misma pregunta; en su lugar corregí la explicación.
+
+Los 12 textos de práctica ya están en el índice.
+
+**Pendiente:**
+- 18 textos de práctica más para llegar a 30, en tres tandas.
+- Faltan más textos narrativos, temas de historia antigua o contemporánea fuera del sur andino y algún texto discontinuo (tabla o gráfico), cuando el formato lo admita.
+- En t008, el error de "tomar como referente algo que viene después" no tiene código en el informe. Si vuelve a aparecer, propongo uno.
+
+**Pedidos para la integración** (siguen los de la entrada anterior):
+- Integrar `rutina/verbal`.
+- Correr `npm run catalogo`.
+- Ajustar las 4 pruebas de `nucleo/lectura.test.js` que dan por hecho que `TEXTOS[0].preguntas[0]` tiene un paso previo de marcar oración.

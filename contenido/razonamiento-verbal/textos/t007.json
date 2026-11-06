@@ -45,7 +45,7 @@
       {
         "id": "o7",
         "rol": "detalle",
-        "t": "Por eso, los castaños sembrados lejos del bosque suelen producir muy poco."
+        "t": "Por eso, entre otras razones, los castaños sembrados lejos del bosque suelen producir muy poco."
       },
       {
         "id": "o8",
@@ -185,7 +185,7 @@
       "enunciado": "Es incompatible con el texto afirmar que",
       "alternativas": [
         {
-          "t": "las plantaciones de castaño en filas producen tanto como los castaños del bosque.",
+          "t": "los castaños sembrados en filas lejos del bosque producen tanto como los del bosque.",
           "correcta": true,
           "evidencia": [
             "o7"
@@ -256,5 +256,10 @@
       "fuente": "Serfor y Minam, información sobre la castaña en Madre de Dios; por citar el documento concreto."
     }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-06",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: 6 de 6 (4 preguntas y 2 pasos previos). Cambios: la poca producción de las plantaciones no se debe solo a la polinización (\"entre otras razones\"); clave de incompatibilidad precisada (sembrados en filas lejos del bosque). Una segunda verificación de los ítems cambiados confirmó claves únicas; se ajustaron cuatro explicaciones y un enunciado."
+  }
 }

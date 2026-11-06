@@ -89,9 +89,9 @@
           "explicacion": "El autor cuenta la época del guano y la juzga: termina con \"la lección de fondo se mantiene\". Busca convencer, apoyado en un caso histórico."
         },
         {
-          "t": "Narrar en orden los gobiernos que tuvo el Perú durante el siglo XIX.",
+          "t": "Contar lo que ocurrió en el Perú durante la época del guano.",
           "codigo": "RV13",
-          "explicacion": "El texto no sigue una lista de gobiernos: usa un episodio para sacar una conclusión."
+          "explicacion": "El texto sí cuenta esa época, pero lo hace para sacar una lección (oración 9): contar es el medio, no el fin."
         },
         {
           "t": "Describir cómo se formaron las capas de guano en las islas frente a la costa peruana.",
@@ -167,9 +167,10 @@
           "explicacion": "Es una parte del texto, pero deja fuera el juicio del autor: que esa riqueza no se preparó para durar."
         },
         {
-          "t": "La Guerra del Pacífico empezó por la disputa del salitre.",
-          "codigo": "RV8",
-          "explicacion": "Es un tema de historia que se suele relacionar con el salitre, pero el texto no habla de la guerra."
+          "t": "Los historiadores no se ponen de acuerdo sobre si la época del guano fue buena o mala.",
+          "codigo": "RV14",
+          "origen": "o8",
+          "explicacion": "Describe el debate de las oraciones 5 y 8, pero deja fuera la postura del autor: \"aun así, la lección de fondo se mantiene\"."
         }
       ]
     },
@@ -180,18 +181,18 @@
       "previo": {
         "tipo": "clasificar",
         "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
-        "sonda": "El autor cree que la abolición de la esclavitud no tuvo ninguna importancia.",
+        "sonda": "Según el texto, el Estado peruano dejó la venta del guano en manos privadas.",
         "clase": "lo-contradice",
         "codigos": {
-          "lo-dice": "RV10",
+          "lo-dice": "RV5",
           "se-deduce": "RV7",
-          "no-se-sabe": "RV36"
+          "no-se-sabe": "RV9"
         },
-        "explicacion": "El autor dice \"aun así\" después de reconocer, con los otros historiadores, que la abolición fue un cambio real (oraciones 8 y 9). La afirmación choca con eso.",
+        "explicacion": "La oración 3 dice que el Estado peruano \"se reservó su venta\": la afirmación dice lo contrario.",
         "explicaciones": {
-          "lo-dice": "El texto no dice eso en ningún lugar; al contrario, recuerda que la abolición fue \"un cambio real\" (oración 8).",
-          "se-deduce": "Que el autor critique la época del guano no permite concluir que desprecie la abolición; el \"aun así\" de la oración 9 muestra que acepta el matiz.",
-          "no-se-sabe": "Sí se puede saber: el autor no rechaza el matiz de la oración 8 (\"aun así\" lo acepta y sigue), así que la afirmación choca con el texto."
+          "lo-dice": "El texto dice lo opuesto: la oración 3 dice que el Estado \"se reservó\" la venta, es decir, que la guardó para sí.",
+          "se-deduce": "Nada en el texto permite concluir que la venta quedara en manos privadas; la oración 3 dice que la manejó el Estado.",
+          "no-se-sabe": "Sí se puede saber: la oración 3 lo dice, y dice lo contrario de la afirmación."
         }
       },
       "enunciado": "Es compatible con el texto afirmar que los historiadores que matizan el juicio de Basadre",
@@ -242,7 +243,7 @@
         {
           "t": "fugaz.",
           "codigo": "RV20",
-          "explicacion": "Se parece en la forma (\"falaz\", \"fugaz\"), pero \"fugaz\" significa que dura poco, y \"falaz\", que engaña."
+          "explicacion": "El texto dice de forma indirecta que esa riqueza fue pasajera (oración 9), pero \"falaz\" nombra otra cosa: que engañaba, que hizo confundir lo pasajero con lo duradero. \"Fugaz\" solo se le parece en la forma."
         },
         {
           "t": "abundante.",
@@ -278,14 +279,14 @@
           "explicacion": "Cambia la condición, pero deja igual la consecuencia: si se preparaba el reemplazo, ya no se dependía de que el guano durara."
         },
         {
-          "t": "el Perú sería hoy el país más rico de América.",
-          "codigo": "RV11",
-          "explicacion": "Es una consecuencia exagerada que no sale del texto: el texto habla de evitar una crisis, no de ser el más rico."
+          "t": "el guano de las islas no se habría agotado.",
+          "codigo": "RV7",
+          "explicacion": "Invertir el dinero no detiene el agotamiento: el guano se acababa igual. Lo que cambia, según el texto, es lo que pasa cuando se acaba."
         },
         {
           "t": "nunca habría existido la Guerra del Pacífico.",
-          "codigo": "RV7",
-          "explicacion": "El texto no habla de la guerra; sacar esa conclusión va mucho más allá de lo que dice."
+          "codigo": "RV8",
+          "explicacion": "El texto no habla de la guerra; esa idea viene de lo que se sabe de historia, no de lo que se leyó."
         }
       ]
     }
@@ -306,5 +307,10 @@
       "fuente": "Cushman, G. T. (2013). Guano and the opening of the Pacific world. Cambridge University Press."
     }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-06",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: 7 de 7. Cambios: sonda del previo que no era indiscutible (la abolición) cambiada por una sobre la venta estatal del guano; distractores que se descartaban enseguida reemplazados por otros más cercanos para que el texto tenga de verdad dificultad alta; códigos de la guerra (RV8) y del previo ajustados. Una segunda verificación de los ítems cambiados confirmó claves únicas; se ajustaron cuatro explicaciones y un enunciado."
+  }
 }
