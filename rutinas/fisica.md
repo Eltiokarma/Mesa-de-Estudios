@@ -2,6 +2,113 @@
 
 Cada ejecución construye una plantilla de escena de física, completa y revisada, en la rama `rutina/fisica`. La conversación principal la integra (catálogo, diseño, pendientes). Orden de la lista: dinámica, tiro parabólico, estática, choques, fluidos, MAS, electrostática, ondas, termodinámica, magnetismo e inducción.
 
+## Reglas vigentes para las próximas plantillas
+
+- **Pastillas de «¿Qué pasa si…?» bloqueadas** (decisión de Gerson, 6 nov 2026, recibida de la conversación principal). Se puede ir a un experimento solo si todos los anteriores ya tienen respuesta. Los respondidos se revisitan libremente. Los bloqueados llevan `disabled`, `aria-disabled` y aria-label «Experimento N, bloqueado», igual que los puntos del paso a paso. También se cierran las otras vías de salto, como el hash o el teclado. La pestaña entre modos no se bloquea. En `dinamica/` lo arregla la conversación principal: no tocarla.
+- Dinámica ya está integrada en `claude/awesome-wozniak-5etl1n` (catálogo, diseño, pendientes y el pedido del informe). Tiro parabólico quedó hecho el 6 nov (abajo). La próxima ejecución sigue con **estática (equilibrio y torque)**.
+
+## 6 nov 2026 · Tiro parabólico y movimiento circular (`plantillas/tiro-parabolico/`)
+
+Antes de empezar revisé que ninguna rama del repo tuviera algo de tiro parabólico: nadie lo estaba tocando.
+
+**Qué hice.**
+
+- **`motor.js`** (UMD, sin DOM) cubre:
+  - `proyectil`: oblicuo, horizontal, desde una altura y hacia abajo; da tiempos, altura máxima, alcance, velocidad al llegar, `estado(t)` y `cuando(h)`;
+  - `alcanceMaximo`, `mcu` y `mcuv` (con frenado: tParada y vueltas hasta parar);
+  - `transmision`: por faja, misma v; en el mismo eje, misma ω;
+  - `soltarDelCirculo`: sigue tangente.
+
+  Usa los ángulos de academia, como en dinámica. Cada resultado trae `errores` con los números de las ideas erróneas.
+- **`casos.json`**: 17 casos y sus «tambien» (143 claves). Incluye las dos filas de tiro de «Casos de prueba propuestos» del informe de cinemática.
+- **`motor.test.js`**: 42 pruebas.
+  - Coherencia: la velocidad es la derivada de la posición, la trayectoria es la parábola y(x) y la rapidez final cuadra con la energía.
+  - Lo que enseña la escena: P1 y P2 (el tiempo de caída no depende de vx), P3 (avance horizontal igual cada segundo), C1 (a = −g en la cima), ángulos complementarios, 45°, la masa que no entra, ac = v²/r hacia el centro, D9 (tangente al soltarse), el MCUV con frenado y la transmisión.
+  - Además: errores de entrada y papel.
+- **`papel.json`**: 10 problemas propios: poleas con faja y eje, mirador, 53°, la patada, complementarios, la avioneta, la rueda de bicicleta, la rotonda, la azotea y el disco que acelera.
+- **`index.html`**:
+  - **Paso a paso** (8 pasos): el cañón a 50 m/s y 37°. Tiene tres predicciones que bloquean:
+    - las dos esferas desde 80 m (P1, P2 y C2), con fotos cada 0,5 s y líneas naranjas de igual instante;
+    - la velocidad en la cima, con opciones hipotéticas;
+    - la aceleración en la cima (C1 y K3).
+
+    Después vienen el alcance, con las sombras sobre los ejes (P3), la respuesta y un explorador. En el explorador se mueven v₀, el ángulo y la altura, se arrastra la boca del cañón o se usan las flechas del teclado, y el disparo anterior queda a trazos.
+  - **¿Qué pasa si…?** (6): dos pelotas a 15 y 30 m/s (P2), segundo a segundo (P3), el paquete de la avioneta (P4), 37° o 53°, la cuerda que se rompe (D9) y la rotonda (aceleración centrípeta).
+  - **Pastillas bloqueadas** según la regla nueva:
+    - un experimento se abre solo si los anteriores tienen respuesta;
+    - las bloqueadas llevan `disabled`, `aria-disabled` y «Experimento N, bloqueado»;
+    - `ir()` vuelve a comprobarlo, así que tampoco se saltan desde la consola.
+
+    Los puntos del paso a paso dicen «Paso N, bloqueado».
+  - **Escala** igual en los dos ejes: la parábola, el cañón y las flechas coinciden. El lienzo toma el alto que pide cada escena, para que el celular no quede con espacio vacío.
+- **`plantilla.json`**: unidad `fisica.movimiento-parabolico-y-circular`, versión 0.1.0, borrador.
+
+**Pruebas.** `npm test` (después de traer la rama principal): 802 pasan y solo fallan las 2 esperadas del catálogo.
+
+**Subagentes.**
+
+- **Verificación independiente** (sin leer el motor). Recalculó todo con fracciones y un segundo camino en cada caso: energía, simetría, v0²·sen 2θ/g, ω²r y el área bajo ω-t. No hubo discrepancias. Pidió casos de borde: raíz negativa en `cuando`, h = 0, giro horario a 37°, 53° y 16°. También pidió MCUV frenando y transmisión, «lo más preguntado que faltaba». Los agregué y los volvió a verificar.
+- **Revisión de contenido.** Apliqué casi todo. Lo grave:
+  - **La escala vertical ampliada** hacía que la parábola saliera a unos 61° mientras el cañón apuntaba a 37°. Ahora la escala es igual en los dos ejes.
+  - **«vy» nombraba dos cosas.** Ahora v₀y es la vertical inicial y vy la del momento, en la escena y en el papel.
+  - **«cae en picada» estaba como P5,** pero es P3. P5 es «sigue recto y luego cae».
+
+  Lo medio:
+  - **Códigos:** D9 «hacia afuera» pasó a hipótesis. «La aceleración apunta hacia donde se mueve» quedó como K3 documentado (Trowbridge y McDermott, 1981).
+  - **Citas:** el 5 % de Thornton y Sokoloff ahora dice «en las tres posiciones».
+  - **Pistas antes de predecir:** «Segundo a segundo» mostraba vx antes de responder; ya no.
+  - **Precisión física:**
+    - «alcance máximo a 45°» ahora va con condiciones;
+    - la avioneta ya no deja ambigua la opción A;
+    - «desde el reposo» pasó a «sin velocidad vertical al salir»;
+    - «T» de vuelo pasó a «t de vuelo»;
+    - ac en el círculo.
+  - **Papel:** p6 y p8 tenían los mismos números que la escena; los cambié.
+
+  Lo menor: «balas» a 15 m/s pasaron a pelotas, se marca cuándo un auto patinaría, y «rotonda (óvalo)».
+- **Prueba en el navegador** (1366 y 390, claro y oscuro, con y sin movimiento reducido). Salió bien:
+  - no hubo errores;
+  - el bloqueo de predicciones, puntos y pastillas no se pudo saltar ni con clic forzado ni desde la consola;
+  - la regla de los 380 ms en el celular se cumple;
+  - aria-live cambia una vez por animación.
+
+  Arreglé:
+  - «Siguiente» quedaba trabado si se cambiaba de pestaña a mitad de una animación;
+  - en el punto de llegada, las flechas de vy y a salían del lienzo y los rótulos se encimaban;
+  - la plataforma tapaba los números del eje vertical;
+  - el disparo anterior quedaba cortado y con una bola flotando;
+  - la rotonda seguía animando escondida;
+  - con movimiento reducido no se leía la retroalimentación;
+  - el foco se perdía al avanzar;
+  - la piedra salía del lienzo;
+  - la punta de ω no se veía;
+  - las leyendas no coincidían con el dibujo.
+
+**Colores** (para `docs/diseno.md`). Variables de tiro parabólico (`plantillas/tiro-parabolico/`):
+
+| Variable | Color | Claro | Oscuro |
+| --- | --- | --- | --- |
+| vx `--c-vx` (y su sombra en el suelo) | azul | #1f5fbf | #7cb0ff |
+| vy y v₀y `--c-vy` (y su sombra en el eje vertical) | rojo | #c0364a | #f17384 |
+| v y v₀ `--c-v` | morado | #8a2aa8 | #ec62e6 |
+| aceleración a `--c-a` (g en el tiro, ac en el círculo) | verde | #4f7a17 | #a3d65e |
+| tiempo t `--c-t` (y las líneas de igual instante) | naranja | #b85a06 | #f0a04a |
+| ω `--c-w` | turquesa | #0f766e | #5ed9c8 |
+
+- Posiciones, alturas, radios y ángulos van en tinta. Las trayectorias van en gris a trazos.
+- ΔE00 mínimo: 24,4 en claro y 22,7 en oscuro. Todos pasan AA, aunque el naranja en claro queda al límite (4,39) en texto de 11 a 12 px.
+
+**Pedidos para la integración.**
+1. En `catalogo/cursos/fisica.json`, unidad `fisica.movimiento-parabolico-y-circular`, agregar `"plantillas": ["tiro-parabolico"]`. Luego `npm run catalogo`.
+2. En `docs/diseno.md`, el párrafo de colores de arriba.
+3. En `docs/pendientes.md` y en `CLAUDE.md`: «Tiro parabólico y circular (`plantillas/tiro-parabolico/`, 6 nov 2026): dos movimientos con sombras sobre los ejes y estroboscopio, MCU, MCUV y transmisión; 17 casos verificados aparte; 10 problemas de papel; 3 predicciones y 6 «¿qué pasa si…?» con los datos de Prescott y Mitchelmore (2005) y Thornton y Sokoloff (1998)». Subir también el conteo de pruebas.
+4. En el informe de cinemática (no es de mi alcance), aclarar en P3 y P5 que «cae en picada» es P3. Además, la pregunta del 60 % (P3) usó 10 m en el primer segundo, y la escena usa 15 m.
+
+**Pendiente.**
+- **En la escena:** MCUV, transmisión, encuentros en la circunferencia e impacto contra una pared (y en x). El motor ya cubre MCUV y transmisión, y están en el papel.
+- **Opciones de cálculo:** las opciones incorrectas de la velocidad en la cima, de 37° o 53° y de la honda (opciones C y D) son hipótesis.
+- **Explorador:** con ángulos extremos (1° o 90°) la escena queda pequeña dentro del lienzo, por la escala igual. Es aceptable, pero mejorable.
+
 ## 6 nov 2026 · Dinámica (`plantillas/dinamica/`)
 
 **Qué hice.** Plantilla de escena "Fuerzas, plano inclinado y poleas", la primera de la lista.
