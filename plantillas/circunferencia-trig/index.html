@@ -1,0 +1,1257 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La circunferencia que se desenrolla: seno, coseno y sus gráficas</title>
+<style>
+/* Cáscara acogedora (docs/diseno.md), del molde de la cinta del radio. Dentro del dibujo y de las ecuaciones solo
+   mandan los colores de las variables (regla 4): el ángulo θ (y x en la gráfica, que es el mismo ángulo) fucsia,
+   el seno rojo, el coseno azul, la tangente verde, la amplitud A naranja y B (el número que multiplica a x) turquesa.
+   Los lados del triángulo, el radio, el periodo y las rectas y = k van en tinta: son longitudes o marcas, no razones.
+   Elegidos con CIEDE2000: ΔE00 ≥ 23,6 entre cualquier par en claro y ≥ 25,3 en oscuro, y contraste AA sobre el
+   papel, la tarjeta y su chip (.v, fondo al 8 %). El rojo del seno se parece al rojo de los avisos: el aviso siempre
+   va con texto. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-th:#a10fbf; --c-sen:#c0364a; --c-cos:#1f5fbf; --c-tan:#466d14; --c-A:#a05200; --c-B:#0f766e; --c-ink:var(--ink);
+  --relleno:.12;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-th:#cf6bfa; --c-sen:#f17384; --c-cos:#7cb0ff; --c-tan:#a3d65e; --c-A:#f0a04a; --c-B:#5ed9c8;
+  --relleno:.15; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-th:#cf6bfa; --c-sen:#f17384; --c-cos:#7cb0ff; --c-tan:#a3d65e; --c-A:#f0a04a; --c-B:#5ed9c8;
+  --relleno:.15; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+/* Celular con una predicción pendiente: el dibujo más bajo y pegado arriba, para que se vea mientras se elige. */
+@media (max-width:899px){
+  .mode.pendiente .bench{position:sticky; top:0; z-index:1; padding:6px; gap:4px; background:var(--card); border-radius:0 0 20px 20px}
+  .mode.pendiente .legend, .mode.pendiente .perillas{display:none}
+  .mode.pendiente .lecturas{gap:4px}
+  .mode.pendiente .lectura{padding:2px 8px}
+}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+.lienzo:focus-within{outline:3px solid var(--ink); outline-offset:2px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:16px; height:0; border-top:4px solid; display:inline-block}
+.legend i.trazos{border-top-width:2px; border-top-style:dashed}
+
+.perillas{display:grid; gap:6px; padding:2px 6px}
+.perillas:empty{display:none}
+.perilla{display:grid; grid-template-columns:minmax(0, auto) 1fr 3.2em; align-items:center; gap:10px; font-size:.9rem}
+.perilla input{width:100%; accent-color:var(--k); min-height:32px; margin:0}
+.perilla output{font:800 1rem var(--mono); color:var(--k); text-align:right; font-variant-numeric:tabular-nums}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px; white-space:nowrap}
+.v-th{color:var(--c-th); background:color-mix(in srgb, var(--c-th) 8%, transparent)}
+.v-sen{color:var(--c-sen); background:color-mix(in srgb, var(--c-sen) 8%, transparent)}
+.v-cos{color:var(--c-cos); background:color-mix(in srgb, var(--c-cos) 8%, transparent)}
+.v-tan{color:var(--c-tan); background:color-mix(in srgb, var(--c-tan) 8%, transparent)}
+.v-A{color:var(--c-A); background:color-mix(in srgb, var(--c-A) 8%, transparent)}
+.v-B{color:var(--c-B); background:color-mix(in srgb, var(--c-B) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.02rem; font-variant-numeric:tabular-nums}
+.eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.5em; white-space:normal}
+.frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1.15}
+.frac > span:first-child{border-bottom:1.5px solid currentColor; padding:0 .25em}
+.frac > span:last-child{padding:0 .25em}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+table.signos{border-collapse:collapse; font-size:.92rem}
+table.signos th, table.signos td{border:1px solid var(--line); padding:4px 10px; text-align:center}
+table.signos th{color:var(--muted); font-weight:700}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.seg button:disabled{opacity:.45; cursor:not-allowed}
+.seg button i{display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px; vertical-align:0}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.acciones{display:flex; flex-wrap:wrap; gap:8px}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, a:focus-visible, input:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(132px, 1fr)); gap:8px}
+.lecturas:empty{display:none}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura b{display:block; color:var(--k); font:800 .95rem var(--mono); font-variant-numeric:tabular-nums; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.lectura span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.25fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Trigonometría · Razones, circunferencia y gráficas · Problemas tipo admisión</p>
+      <h1>La circunferencia que se desenrolla</h1>
+      <p class="sub">El seno es una razón, no un largo. En la circunferencia de radio 1 se vuelve la altura del punto, con su signo; y al girar el punto, esa altura dibuja la gráfica.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Triángulo, circunferencia trigonométrica y gráfica">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Dibujo de la escena"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="perillas" id="per1"></div>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos con la circunferencia y la gráfica">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="perillas" id="per2"></div>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/circunferencia-trig">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'circunferencia-trig', unidad: 'trigonometria.circunferencia-trigonometrica', version: '0.1.0' };
+const U = { agudas:'trigonometria.razones-trigonometricas-agudas', normal:'trigonometria.angulos-en-posicion-normal',
+  reduccion:'trigonometria.reduccion-al-primer-cuadrante', circ:'trigonometria.circunferencia-trigonometrica',
+  funciones:'trigonometria.funciones-trigonometricas', ecuaciones:'trigonometria.ecuaciones-trigonometricas' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0, unidad){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: unidad || PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la matemática (razones, notables, el punto de la circunferencia, signos, reducción, la función
+   A·sen(Bx), sus máximos y ceros, y las ecuaciones) sale de MotorCircTrig (motor.js); aquí solo se pinta,
+   se arrastra y se anima. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MC = MotorCircTrig, PI = Math.PI, GR = PI/180;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 1 : d), r = Math.round(n*p)/p + 0;
+  const [e, f] = String(Math.abs(r)).split('.');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+// Una fracción sencilla (3/5, 6/5) o el decimal.
+const frac = (x, d) => { const f = MC.fraccion(x, 100); return f ? (f.den === 1 ? fmt(f.num, 0) : `${f.num < 0 ? '−' : ''}${Math.abs(f.num)}/${f.den}`) : fmt(x, d === undefined ? 2 : d); };
+const grados = g => `${fmt(g, Math.abs(g - Math.round(g)) < 1e-6 ? 0 : 1)}°`;
+// sen 30°, pero sen(−40°): el ángulo negativo va entre paréntesis
+const de = (fn, g) => (g < 0 ? `${fn}(${grados(g)})` : `${fn} ${grados(g)}`);
+const radTxt = g => MC.textoPi(g/180);
+// Valor de una razón: exacto si el ángulo es notable (con su decimal), si no el decimal.
+function razonTxt(fn, g, d){
+  const e = MC.exacto(fn, g), v = MC.valor(fn, g);
+  if (v === null) return 'no definida';
+  if (e && e.texto && /√/.test(e.texto)) return `${e.texto} ≈ ${fmt(v, d || 2)}`;
+  if (e && e.texto && /\//.test(e.texto)) return `${e.texto} = ${fmt(v, d || 2)}`;
+  return e && e.texto ? e.texto : fmt(v, d || 2);
+}
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const fr = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+function tween(dur, paso, fin, lineal){
+  if (RM || !dur){ paso(1); if (fin) setTimeout(fin, 0); return; }
+  const t0 = performance.now();
+  const tick = now => { const f = Math.min(1, (now - t0)/dur); paso(lineal ? f : suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
+  requestAnimationFrame(tick);
+}
+const th_ = t => V('th', t), sen_ = t => V('sen', t), cos_ = t => V('cos', t), tan_ = t => V('tan', t), A_ = t => V('A', t), B_ = t => V('B', t);
+
+function colores(){
+  const g = n => css(n);
+  return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
+    th:g('--c-th'), sen:g('--c-sen'), cos:g('--c-cos'), tan:g('--c-tan'), A:g('--c-A'), B:g('--c-B'),
+    relleno:Number(g('--relleno')) || .12, font:g('--font') };
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, p, q){ ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke(); }
+function rotulo(ctx, c, x, y, t, color, align, peso, tam){
+  ctx.font = `${peso || 700} ${tam || 13}px ${c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+  ctx.fillStyle = color; ctx.fillText(t, x, y);
+  return { x0: x0 - 3, x1: x0 + w + 3, y0: y - 9, y1: y + 9 };
+}
+function flecha(ctx, p, q, col, w){
+  const a = Math.atan2(q.y - p.y, q.x - p.x);
+  ctx.save(); ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = w || 2; linea(ctx, p, q);
+  ctx.beginPath(); ctx.moveTo(q.x, q.y); ctx.lineTo(q.x - 9*Math.cos(a - .4), q.y - 9*Math.sin(a - .4)); ctx.lineTo(q.x - 9*Math.cos(a + .4), q.y - 9*Math.sin(a + .4)); ctx.closePath(); ctx.fill(); ctx.restore();
+}
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+/* Lecturas: [color, nombre, valor]. La descripción para lectores de pantalla dice solo lo que ellas dicen. */
+const ROMANO = ['', 'I', 'II', 'III', 'IV'];
+const LEC = {
+  th: E => ['th', 'Ángulo θ', grados(E.g)],
+  sen: E => ['sen', de('sen', E.g), razonTxt('sen', E.g)],
+  cos: E => ['cos', de('cos', E.g), razonTxt('cos', E.g)],
+  tan: E => ['tan', de('tan', E.g), razonTxt('tan', E.g)],
+  cuad: E => { const p = MC.punto(E.g); return ['ink', 'Dónde está P', p.cuadrante ? `cuadrante ${ROMANO[p.cuadrante]}` : 'sobre un eje']; },
+  op: E => ['ink', 'Cateto opuesto', E.tri.notable ? E.tri.etq.op : fmt(E.tri.op*E.tri.k, 1)],
+  ady: E => ['ink', 'Cateto adyacente', E.tri.notable ? E.tri.etq.ady : fmt(E.tri.ady*E.tri.k, 1)],
+  hip: E => ['ink', 'Hipotenusa', E.tri.notable ? E.tri.etq.hip : fmt(MC.razones({ opuesto:E.tri.op*E.tri.k, adyacente:E.tri.ady*E.tri.k }).hipotenusa, 1)],
+  tsen: E => ['sen', 'sen θ', triRazon(E, 'sen')],
+  tcos: E => ['cos', 'cos θ', triRazon(E, 'cos')],
+  ttan: E => ['tan', 'tan θ', triRazon(E, 'tan')],
+  x: E => { const g = E.x/GR, p = MC.textoPi(Math.round(g)/180); return ['th', 'Ángulo x', `${grados(Math.round(g))}${p && MC.fraccion(Math.round(g)/180, 12) ? ' = ' + p : ''}`]; },
+  y: E => { const v = MC.evaluar(ficha(E), E.x); return ['sen', `y = ${formulaTxt(E)}`, fmt(v, 2)]; },
+  A: E => ['A', 'Amplitud |A|', fmt(ficha(E).amplitud, 1)],
+  B: E => ['B', 'B', fmt(E.f.B, 1)],
+  per0: E => ['ink', 'Periodo de sen x', MC.senoidal({ fn:'sen' }).periodoTexto],
+  per: E => ['ink', 'Periodo 2π/|B|', ficha(E).periodoTexto || fmt(ficha(E).periodo, 2)],
+};
+function triRazon(E, fn){
+  if (E.tri.notable){ const n = MC.notable(E.tri.notable); return `${n.textos[fn]}${/√|\//.test(n.textos[fn]) ? ' ≈ ' + fmt(n[fn], 2) : ''}`; }
+  const r = MC.razones({ opuesto:E.tri.op*E.tri.k, adyacente:E.tri.ady*E.tri.k });
+  return `${frac(r[fn])}${MC.fraccion(r[fn], 100) && MC.fraccion(r[fn], 100).den > 1 ? ' = ' + fmt(r[fn], 2) : ''}`;
+}
+const ficha = E => MC.senoidal({ fn:'sen', A: Math.abs(E.f.A) < 1e-3 ? 1e-3 : E.f.A, B:E.f.B });
+function formulaTxt(E){
+  const A = E.f.A, B = E.f.B;
+  const a = Math.abs(A - 1) < 1e-9 ? '' : Math.abs(A + 1) < 1e-9 ? '−' : fmt(A, 1) + ' ';
+  const b = Math.abs(B - 1) < 1e-9 ? '' : fmt(B, 1);
+  return `${a}sen ${b}x`;
+}
+
+/* ================= La escena =================
+   Modos: 'triangulo' (el triángulo rectángulo que se agranda, con las barras de sus razones), 'circulo' (la
+   circunferencia de radio 1 con el punto P, sus líneas seno, coseno y tangente) y 'desenrolla' (la circunferencia a
+   la izquierda y la gráfica de y = A·sen(Bx) a la derecha, a la misma escala vertical). */
+const PER = { A:{ min:-3, max:3, paso:.5, t:'A · amplitud (con signo)' }, B:{ min:.5, max:4, paso:.5, t:'B · número que multiplica a x' } };
+const DEF = () => ({ modo:'circulo', g:30, rango:[-720, 720], arr:{ P:false, tri:false, G:false },
+  ver:{ seg:true, tan:false, cuad:true, signos:false, ref:false, suma:null, base:false, cosAcad:false },
+  fantasmas:[], tri:{ op:3, ady:4, k:1, kMax:2, notable:null, etq:null },
+  f:{ A:1, B:1 }, x:0, tope:0, vivo:true, completa:false, recta:null, sols:[], periodo:false, amp:false, yMax:1.35,
+  lect:[], rot:{}, perillas:[], alCambiar:null, caja:null, hl:null });
+function crearEscena(cv, idDesc, idLect, idLey, idPer){
+  const E = Object.assign(DEF(), { ocupado:false, tok:0, anim:false, compacto:false });
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, arrastrando = null, sobre = null;
+
+  // ----- perillas -----
+  const cajaPer = document.getElementById(idPer);
+  cajaPer.innerHTML = ['A','B'].map(p => `<label class="perilla" data-p="${p}" style="--k:var(--c-${p})" hidden>
+    <span>${V(p, p)} <span class="hint">${PER[p].t.split(' · ')[1]}</span></span>
+    <input type="range" min="${PER[p].min}" max="${PER[p].max}" step="${PER[p].paso}" aria-label="Perilla ${p}: ${PER[p].t.split(' · ')[1]}">
+    <output></output></label>`).join('');
+  function pintarPerillas(){
+    cajaPer.querySelectorAll('.perilla').forEach(l => {
+      const p = l.dataset.p, on = E.perillas.includes(p) && E.modo === 'desenrolla';
+      l.hidden = !on; if (!on) return;
+      const inp = l.querySelector('input');
+      inp.value = E.f[p]; l.querySelector('output').textContent = fmt(E.f[p], 1);
+      inp.disabled = !!E.ocupado;
+    });
+  }
+  cajaPer.addEventListener('input', e => {
+    const l = e.target.closest('.perilla'); if (!l || E.ocupado) return;
+    const p = l.dataset.p; let v = Number(e.target.value);
+    if (p === 'A' && v === 0) v = E.f.A > 0 ? -.5 : .5;   // A = 0 aplastaría la gráfica
+    E.f = { ...E.f, [p]:v }; if (p === 'A'){ const y = Math.max(1, Math.abs(v)) + .35; if (y !== E.yMax){ E.yMax = y; W = 0; resize(); } } pintarPerillas(); E.dibujar(); E.avisar();
+  });
+
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    let h;
+    if (E.compacto && innerWidth < 900) h = 240;
+    else if (E.modo === 'triangulo') h = w >= 560 ? 330 : 260;
+    else if (E.modo === 'desenrolla'){
+      // alto para que la circunferencia de radio 1 tenga unos 70 px (80 en pantalla grande), aunque |A| > 1
+      const kw = (w - 36)/(2.15 + 2*PI*.4), kq = Math.min(w >= 560 ? 80 : 70, kw);
+      h = Math.round(clamp((E.periodo ? 36 : 12) + 40 + 2*E.yMax*kq, 260, w >= 560 ? 520 : 470));
+    }
+    else { const c = cajaDe(), asp = (c.y1 - c.y0)/(c.x1 - c.x0); h = Math.round(w >= 560 ? clamp(w*asp*.82, 320, 450) : clamp(w*asp, 260, 380)); }
+    if (innerWidth >= 900) h = Math.max(260, Math.min(h, innerHeight - 220 - (E.perillas.length && E.modo === 'desenrolla' ? 90 : 0)));
+    const dpr = window.devicePixelRatio || 1;
+    if (w === W && h === H) { E.dibujar(); return; }
+    W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  alRedibujarTema(() => E.dibujar());
+  const cajaDe = () => E.caja || { x0:-1.45, x1:E.ver.tan ? 1.8 : 1.45, y0:-1.4, y1:1.4 };
+
+  E.config = o => {
+    E.tok++; E.anim = false;
+    const d = DEF(), hl = E.hl;
+    Object.assign(E, d, o, { ver:Object.assign(d.ver, o.ver), arr:Object.assign(d.arr, o.arr), tri:Object.assign(d.tri, o.tri),
+      f:Object.assign(d.f, o.f), rot:Object.assign(d.rot, o.rot), hl });
+    if (E.tri.notable) E.tri = Object.assign(E.tri, triNotable(E.tri.notable));
+    cv.tabIndex = (E.arr.P || E.arr.tri || E.arr.G) ? 0 : -1;
+    W = 0; resize(); pintarPerillas(); E.leyenda(); E.dibujar(); E.avisar();
+  };
+  E.compactar = on => { on = !!on; cv.closest('.mode').classList.toggle('pendiente', on); if (on === E.compacto) return; E.compacto = on; W = 0; resize(); };
+  E.permitir = o => { Object.assign(E.arr, o); cv.tabIndex = (E.arr.P || E.arr.tri || E.arr.G) ? 0 : -1; E.dibujar(); };
+  E.ponerPerillas = l => { E.perillas = l; W = 0; resize(); pintarPerillas(); };
+  E.ocupar = on => { E.ocupado = on; pintarPerillas(); };
+  E.redimensionar = () => { W = 0; resize(); };
+
+  // ----- el triángulo -----
+  function triGeo(){
+    const T = E.tri, barW = W >= 520 ? 170 : 84, areaW = W - barW;
+    const s = Math.min((areaW - 24 - (W >= 520 ? 84 : 48))/(T.ady*T.kMax), (H - 54)/(T.op*T.kMax));
+    const O = { x:24, y:H - 30 }, R = { x:O.x + T.ady*T.k*s, y:O.y }, P = { x:R.x, y:O.y - T.op*T.k*s };
+    return { O, R, P, s, barW };
+  }
+  function dibTriangulo(c){
+    const T = E.tri, G = triGeo(), { O, R, P } = G, th = Math.atan2(T.op, T.ady);
+    ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = .05; ctx.beginPath(); ctx.moveTo(O.x, O.y); ctx.lineTo(R.x, R.y); ctx.lineTo(P.x, P.y); ctx.closePath(); ctx.fill(); ctx.restore();
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 3; ctx.lineJoin = 'round';
+    ctx.beginPath(); ctx.moveTo(O.x, O.y); ctx.lineTo(R.x, R.y); ctx.lineTo(P.x, P.y); ctx.closePath(); ctx.stroke(); ctx.restore();
+    const q = 11; ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; ctx.strokeRect(R.x - q, R.y - q, q, q); ctx.restore();
+    // ángulo θ
+    ctx.save(); ctx.strokeStyle = c.th; ctx.lineWidth = E.hl === 'th' ? 5 : 2.6; ctx.beginPath(); ctx.arc(O.x, O.y, 28, 0, -th, true); ctx.stroke(); ctx.restore();
+    rotulo(ctx, c, O.x + 42*Math.cos(th/2), O.y - 42*Math.sin(th/2), 'θ', c.th, 'center', 800, 14);
+    const et = T.notable ? T.etq : { op:fmt(T.op*T.k, 1), ady:fmt(T.ady*T.k, 1), hip:fmt(Math.hypot(T.op, T.ady)*T.k, 1) };
+    // en el celular, rótulos cortos de academia: C.O., C.A. y H
+    const corto = W < 520, nom = corto ? ['C.O.', 'C.A.', 'H'] : ['opuesto', 'adyacente', 'hipotenusa'];
+    rotulo(ctx, c, R.x + 8, (R.y + P.y)/2, `${nom[0]} ${et.op}`, c.ink, 'left', 700, 12);
+    rotulo(ctx, c, (O.x + R.x)/2, O.y + 16, `${nom[1]} ${et.ady}`, c.ink, 'center', 700, 12);
+    // la hipotenusa: arriba a la izquierda de su punto medio, sin cruzar la línea (el texto termina antes de ella)
+    const m = { x:(O.x + P.x)/2, y:(O.y + P.y)/2 }, n = { x:-Math.sin(th), y:-Math.cos(th) };
+    ctx.font = `700 12px ${c.font}`;
+    const th2 = `${nom[2]} ${et.hip}`, wh = ctx.measureText(th2).width;
+    let hx = m.x + n.x*14, hy = m.y + n.y*14 - 4;
+    if (hx - wh < 6){ const d = 6 + wh - hx; hx += d; hy -= d*Math.tan(th) + 2; }
+    rotulo(ctx, c, hx, Math.max(12, hy), th2, c.ink, 'right', 700, 12);
+    if (E.arr.tri){
+      ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = (arrastrando || sobre) ? .18 : .09; ctx.beginPath(); ctx.arc(P.x, P.y, 20, 0, 7); ctx.fill(); ctx.restore();
+      ctx.fillStyle = c.card; ctx.strokeStyle = c.ink; ctx.lineWidth = 2.6; ctx.beginPath(); ctx.arc(P.x, P.y, 9, 0, 7); ctx.fill(); ctx.stroke();
+    } else { ctx.fillStyle = c.ink; ctx.beginPath(); ctx.arc(P.x, P.y, 4, 0, 7); ctx.fill(); }
+    // barras de las razones: no cambian al agrandar el triángulo
+    const x0 = W - G.barW + 6, base = H - 30, alto = H - 78, u = alto/1.4;
+    const vals = T.notable ? MC.notable(T.notable) : MC.razones({ opuesto:T.op, adyacente:T.ady });
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1; linea(ctx, { x:x0 - 4, y:base }, { x:W - 6, y:base });
+    ctx.setLineDash([4, 4]); linea(ctx, { x:x0 - 4, y:base - u }, { x:W - 6, y:base - u }); ctx.restore();
+    rotulo(ctx, c, x0 - 2, base - u - 11, '1', c.muted, 'left', 700, 11);
+    const bw = (G.barW - 20)/3;
+    [['sen', 'sen θ'], ['cos', 'cos θ'], ['tan', 'tan θ']].forEach(([k, t], j) => {
+      const v = vals[k], hv = Math.min(v, 1.4)*u, bx = x0 + j*bw + 3;
+      ctx.save(); ctx.fillStyle = c[k]; ctx.globalAlpha = E.hl === k ? 1 : .85; ctx.fillRect(bx, base - hv, bw - 8, hv); ctx.restore();
+      if (v > 1.4) rotulo(ctx, c, bx + (bw - 8)/2, base - hv + 9, '↑', c.card, 'center', 800, 12);
+      rotulo(ctx, c, bx + (bw - 8)/2, base + 13, W >= 520 ? t : k, c[k], 'center', 800, W >= 520 ? 12 : 11);
+    });
+  }
+
+  // ----- la circunferencia -----
+  function escala(){
+    const c = cajaDe(), pad = 12;
+    const k = Math.min((W - 2*pad)/(c.x1 - c.x0), (H - 2*pad)/(c.y1 - c.y0));
+    return { k, ox: W/2 - k*(c.x0 + c.x1)/2, oy: H/2 + k*(c.y0 + c.y1)/2 };
+  }
+  const aP = (P, s) => ({ x: s.ox + s.k*P.x, y: s.oy - s.k*P.y });
+  // Arco del ángulo (en grados, con signo): una espiral que se abre un poco en cada vuelta.
+  function arcoAngulo(O, r0, g, col, ancho, plano){
+    if (plano) g = ((g % 360) + 360) % 360;
+    if (Math.abs(g) < .5) return null;
+    const n = Math.max(12, Math.ceil(Math.abs(g)/4)), pts = [];
+    for (let j = 0; j <= n; j++){ const t = g*j/n, r = r0 + 7*Math.abs(t)/360; pts.push({ x:O.x + r*Math.cos(t*GR), y:O.y - r*Math.sin(t*GR) }); }
+    ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = ancho; ctx.beginPath(); pts.forEach((p, j) => j ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)); ctx.stroke(); ctx.restore();
+    const a = pts[n], b = pts[n - 1], ang = Math.atan2(a.y - b.y, a.x - b.x);
+    ctx.save(); ctx.fillStyle = col; ctx.beginPath(); ctx.moveTo(a.x + 2*Math.cos(ang), a.y + 2*Math.sin(ang)); ctx.lineTo(a.x - 8*Math.cos(ang - .5), a.y - 8*Math.sin(ang - .5)); ctx.lineTo(a.x - 8*Math.cos(ang + .5), a.y - 8*Math.sin(ang + .5)); ctx.closePath(); ctx.fill(); ctx.restore();
+    const m = g/2, rm = r0 + 7*Math.abs(m)/360 + 14;
+    return { x:O.x + rm*Math.cos(m*GR), y:O.y - rm*Math.sin(m*GR) };
+  }
+  function ejes(c, O, R, x0, x1, y0, y1){
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2;
+    linea(ctx, { x:x0, y:O.y }, { x:x1, y:O.y }); linea(ctx, { x:O.x, y:y0 }, { x:O.x, y:y1 });
+    ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(O.x, O.y, R, 0, 2*PI); ctx.stroke(); ctx.restore();
+  }
+  // Líneas seno y coseno de un ángulo g, desde el centro O con radio R (px). tenue: para los puntos de comparación.
+  function lineasDe(c, O, R, g, tenue){
+    const p = MC.punto(g), P = { x:O.x + R*p.x, y:O.y - R*p.y }, pie = { x:P.x, y:O.y };
+    ctx.save(); ctx.lineCap = 'butt'; if (tenue){ ctx.setLineDash([5, 4]); ctx.globalAlpha = .75; }
+    if (E.ver.seg){
+      ctx.strokeStyle = c.cos; ctx.lineWidth = tenue ? 2.4 : (E.hl === 'cos' ? 7 : 5); if (Math.abs(p.x) > 1e-9) linea(ctx, O, pie);
+      ctx.strokeStyle = c.sen; ctx.lineWidth = tenue ? 2.4 : (E.hl === 'sen' ? 7 : 5); if (Math.abs(p.y) > 1e-9) linea(ctx, pie, P);
+    }
+    ctx.strokeStyle = c.ink; ctx.lineWidth = tenue ? 1.4 : 2.2; linea(ctx, O, P);
+    ctx.restore();
+    // la línea coseno de la academia: a la altura de P, del eje y hasta P (mide lo mismo, con el mismo signo)
+    if (!tenue && E.ver.cosAcad && Math.abs(p.x) > 1e-9){ ctx.save(); ctx.strokeStyle = c.cos; ctx.lineWidth = 2.6; ctx.setLineDash([6, 4]); linea(ctx, { x:O.x, y:P.y }, P); ctx.restore(); }
+    return { p, P, pie };
+  }
+  function dibCirculo(c, s){
+    const O = aP({ x:0, y:0 }, s), R = s.k, cj = cajaDe();
+    const p = MC.punto(E.g);
+    // cuadrante donde está P (sombra neutra) y nombres de los cuadrantes
+    if (E.ver.cuad && p.cuadrante){
+      const q = p.cuadrante, sx = q === 1 || q === 4 ? 1 : -1, sy = q <= 2 ? 1 : -1;
+      ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = .045; ctx.beginPath(); ctx.moveTo(O.x, O.y); ctx.arc(O.x, O.y, R, -(q - 1)*PI/2, -q*PI/2, true); ctx.closePath(); ctx.fill(); ctx.restore();
+      void sx; void sy;
+    }
+    ejes(c, O, R, aP({ x:cj.x0, y:0 }, s).x + 2, aP({ x:cj.x1, y:0 }, s).x - 2, aP({ x:0, y:cj.y1 }, s).y + 2, aP({ x:0, y:cj.y0 }, s).y - 2);
+    const nq = [[.98, 1.2, 'I'], [-.98, 1.2, 'II'], [-.98, -1.2, 'III'], [.98, -1.2, 'IV']];
+    for (const [x, y, t] of nq){ const q = aP({ x, y }, s); rotulo(ctx, c, q.x, q.y, t, c.muted, 'center', 800, 12); }
+    if (E.ver.signos){
+      const tx = { I:'todas +', II:'sen +', III:'tan +', IV:'cos +' };
+      for (const [x, y, t] of nq){ const q = aP({ x, y: y - Math.sign(y)*.2 }, s); rotulo(ctx, c, q.x, q.y, tx[t], c.muted, 'center', 600, 11); }
+    }
+    // «O» del lado contrario al arco del ángulo, para que la flecha de θ no lo tape
+    const dO = (Math.abs(E.g) < 1 ? 225 : (((E.g % 360) + 360) % 360)/2 + 180)*GR;
+    rotulo(ctx, c, O.x + 13*Math.cos(dO), O.y - 13*Math.sin(dO), 'O', c.ink, 'center', 800, 11);
+    const uno = aP({ x:1, y:0 }, s); rotulo(ctx, c, uno.x + 8, O.y + 11, '1', c.muted, 'left', 700, 11);
+    // tangente: sobre la recta x = 1
+    if (E.ver.tan){
+      const top = aP({ x:1, y:cj.y1 }, s), bot = aP({ x:1, y:cj.y0 }, s);
+      ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; ctx.setLineDash([3, 4]); linea(ctx, top, bot); ctx.restore();
+      if (p.tan !== null){
+        const yt = clamp(p.tan, cj.y0 - .2, cj.y1 + .2), T = aP({ x:1, y:yt }, s);
+        // la recta OP prolongada hasta la recta x = 1 (por el lado de P o por el opuesto)
+        const L = aP({ x:1, y:clamp(p.tan, -50, 50) }, s);
+        ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.2; ctx.setLineDash([6, 5]); ctx.beginPath(); ctx.rect(0, 0, W, H); ctx.clip(); linea(ctx, O, L); ctx.restore();
+        ctx.save(); ctx.strokeStyle = c.tan; ctx.lineWidth = E.hl === 'tan' ? 7 : 5; linea(ctx, uno, T); ctx.restore();
+        if (Math.abs(p.tan) > cj.y1) rotulo(ctx, c, T.x - 6, p.tan > 0 ? 14 : H - 14, p.tan > 0 ? '↑ sigue' : '↓ sigue', c.tan, 'right', 800, 12);
+        else if (E.rot.tan !== null) rotulo(ctx, c, T.x + 8, (T.y + uno.y)/2, E.rot.tan || 'tan θ', c.tan, 'left', 800, 13);
+      } else rotulo(ctx, c, uno.x + 6, aP({ x:0, y:1.6 }, s).y, 'sin corte', c.tan, 'left', 800, 12);
+    }
+    for (const f of E.fantasmas){
+      const r = lineasDe(c, O, R, f.g, true);
+      ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.arc(r.P.x, r.P.y, 4.5, 0, 7); ctx.fill(); ctx.stroke(); ctx.restore();
+      if (f.rot){ const d = r.p.x >= 0 ? 1 : -1; rotulo(ctx, c, r.P.x + d*12, r.P.y + (r.p.y >= 0 ? -10 : 10), f.rot, f.col ? c[f.col] : c.ink, d > 0 ? 'left' : 'right', 800, 12); }
+      if (f.horiz){ ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; ctx.setLineDash([2, 4]); linea(ctx, { x:O.x - R*1.1, y:r.P.y }, { x:O.x + R*1.1, y:r.P.y }); ctx.restore(); }
+    }
+    const r = lineasDe(c, O, R, E.g, false), P = r.P;
+    // ángulo θ (espiral si pasa de una vuelta; hacia el otro lado si es negativo)
+    const pt = arcoAngulo(O, clamp(R*.24, 26, 32), E.g, c.th, E.hl === 'th' ? 4.5 : 2.4);
+    if (pt && E.rot.th !== null) rotulo(ctx, c, pt.x, pt.y, E.rot.th || 'θ', c.th, 'center', 800, 13);
+    // ángulo de referencia (en tinta: es otro ángulo)
+    if (E.ver.ref && p.cuadrante && p.cuadrante > 1){
+      const a0 = p.cuadrante === 2 || p.cuadrante === 3 ? 180 : 360, a1 = p.reducido;
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.8; ctx.beginPath(); ctx.arc(O.x, O.y, R*.42, -a0*GR, -a1*GR, a1 > a0); ctx.stroke(); ctx.restore();
+      const m = (a0 + a1)/2, q = { x:O.x + (R*.42 + 16)*Math.cos(m*GR), y:O.y - (R*.42 + 16)*Math.sin(m*GR) };
+      rotulo(ctx, c, q.x, q.y, `${grados(p.referencia)}`, c.ink, 'center', 800, 12);
+    }
+    // rótulos del seno y del coseno
+    if (E.ver.seg){
+      const lado = (p.x > 1e-9 ? 1 : -1)*(E.rot.senLado || 1);
+      if (E.rot.sen !== null && Math.abs(p.y) > .12) rotulo(ctx, c, P.x + lado*10, (P.y + r.pie.y)/2, E.rot.sen || 'sen θ', c.sen, lado > 0 ? 'left' : 'right', 800, 13);
+      if (E.rot.cos !== null && Math.abs(p.x) > .2) rotulo(ctx, c, (O.x + r.pie.x)/2, O.y + (p.y >= 0 ? 14 : -14), E.rot.cos || 'cos θ', c.cos, 'center', 800, 13);
+    }
+    // seno de a + seno de b, apilados al lado
+    if (E.ver.suma){
+      const S = E.ver.suma, bx = aP({ x:1.45, y:0 }, s).x;
+      ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; ctx.setLineDash([4, 4]); linea(ctx, { x:O.x, y:O.y - R }, { x:bx + 22, y:O.y - R }); ctx.restore();
+      rotulo(ctx, c, bx - 12, O.y - R - 9, '1', c.muted, 'right', 800, 12);
+      let y = 0;
+      S.partes.forEach((g, j) => {
+        const v = MC.valor('sen', g)*S.prog[j]; if (v <= 0) return;
+        ctx.save(); ctx.strokeStyle = c.sen; ctx.lineWidth = 7; ctx.globalAlpha = j ? .6 : 1; linea(ctx, { x:bx, y:O.y - y*R }, { x:bx, y:O.y - (y + v)*R }); ctx.restore();
+        ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; linea(ctx, { x:bx - 6, y:O.y - y*R }, { x:bx + 6, y:O.y - y*R }); ctx.restore();
+        if (S.prog[j] >= 1) rotulo(ctx, c, bx + 10, O.y - (y + v/2)*R, `sen ${S.partes[j]}°`, c.sen, 'left', 800, 12);
+        y += v;
+      });
+      if (S.prog[1] >= 1) rotulo(ctx, c, bx + 10, O.y - y*R - 4, S.rot, c.sen, 'left', 800, 12);
+    }
+    // P
+    if (E.arr.P){
+      ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = (arrastrando === 'P' || sobre === 'P') ? .18 : .09; ctx.beginPath(); ctx.arc(P.x, P.y, 20, 0, 7); ctx.fill(); ctx.restore();
+      ctx.fillStyle = c.card; ctx.strokeStyle = c.ink; ctx.lineWidth = 2.6; ctx.beginPath(); ctx.arc(P.x, P.y, 9, 0, 7); ctx.fill(); ctx.stroke();
+    } else { ctx.fillStyle = c.ink; ctx.beginPath(); ctx.arc(P.x, P.y, 5, 0, 7); ctx.fill(); }
+    const u = { x:Math.cos(E.g*GR), y:-Math.sin(E.g*GR) };
+    rotulo(ctx, c, P.x + u.x*22, P.y + u.y*22, 'P', c.ink, 'center', 800, 13);
+  }
+
+  // ----- la circunferencia y la gráfica, a la misma escala vertical -----
+  function geoD(){
+    const ym = E.yMax, padT = E.periodo ? 36 : 12, padB = 40, padL = 6, gap = 12, padR = 18;
+    const k0 = (H - padT - padB)/(2*ym);
+    const k = Math.min(k0, (W - padL - gap - padR)/(2.15 + 2*PI*.4));
+    const cxw = 2.15*k, gx0 = padL + cxw + gap, sx = (W - gx0 - padR)/(2*PI);
+    const cy = padT + (H - padT - padB)/2, cx = padL + 1.07*k;
+    return { k, sx, gx0, cx, cy, ym, k0 };
+  }
+  function dibDesenrolla(c){
+    const G = geoD(), { k, sx, gx0, cx, cy } = G, O = { x:cx, y:cy };
+    const f = ficha(E), u = E.f.B*E.x/GR;   // ángulo de P en grados: B·x
+    const Y = y => cy - y*k, X = x => gx0 + x*sx;
+    // la circunferencia
+    ejes(c, O, k, cx - 1.07*k, cx + 1.07*k, Math.max(4, cy - 1.2*k), Math.min(H - 4, cy + 1.2*k));
+    // ejes de la gráfica
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; linea(ctx, { x:gx0, y:Y(0) }, { x:X(2*PI) + 10, y:Y(0) });
+    linea(ctx, { x:gx0, y:Y(G.ym) + 2 }, { x:gx0, y:Y(-G.ym) - 2 });
+    ctx.strokeStyle = c.grid; ctx.setLineDash([3, 4]);
+    for (const yv of [1, -1].concat(Math.abs(E.f.A) > 1.01 ? [Math.abs(E.f.A), -Math.abs(E.f.A)] : [])) if (Math.abs(yv) <= G.ym) linea(ctx, { x:gx0, y:Y(yv) }, { x:X(2*PI), y:Y(yv) });
+    ctx.restore();
+    const marcas = [1, -1].concat(Math.abs(E.f.A) > 1.01 ? [Math.abs(E.f.A), -Math.abs(E.f.A)] : []);
+    for (const yv of marcas) if (Math.abs(yv) <= G.ym) rotulo(ctx, c, gx0 - 4, Y(yv), fmt(yv, 1), c.muted, 'right', 700, 10);
+    const chico = sx*PI/2 < 46;
+    for (let j = 1; j <= 4; j++){
+      const x = X(j*PI/2);
+      ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; linea(ctx, { x, y:Y(0) - 4 }, { x, y:Y(0) + 4 }); ctx.restore();
+      ctx.fillStyle = c.muted; ctx.font = `700 11px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+      ctx.fillText(['π/2', 'π', '3π/2', '2π'][j - 1], x, H - 34);
+      if (!chico || j % 2 === 0) ctx.fillText(`${90*j}°`, x, H - 19);
+    }
+    // la recta y = k, en la circunferencia y en la gráfica
+    if (E.recta !== null && E.recta !== undefined){
+      const yk = Y(E.recta);
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.setLineDash([7, 5]); linea(ctx, { x:cx - 1.07*k, y:yk }, { x:X(2*PI) + 8, y:yk }); ctx.restore();
+      rotulo(ctx, c, X(2*PI) + 4, yk - 12, `y = ${E.rectaTxt || fmt(E.recta, 1)}`, c.ink, 'right', 800, 12);
+    }
+    // la curva base sen x (tenue), si la amplitud o B no son 1
+    if (E.ver.base){
+      const pts = MC.muestrear({ fn:'sen' }, 0, 2*PI, 160);
+      ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.4; ctx.setLineDash([5, 4]); ctx.beginPath();
+      pts.forEach((p, j) => j ? ctx.lineTo(X(p.x), Y(p.y)) : ctx.moveTo(X(p.x), Y(p.y))); ctx.stroke(); ctx.restore();
+    }
+    // la curva: completa (tenue) y la parte ya "desenrollada"
+    if (E.completa){
+      const pts = MC.muestrear(f, 0, 2*PI, 240);
+      ctx.save(); ctx.strokeStyle = c.sen; ctx.lineWidth = 2; ctx.globalAlpha = .4; ctx.beginPath();
+      pts.forEach((p, j) => j ? ctx.lineTo(X(p.x), Y(p.y)) : ctx.moveTo(X(p.x), Y(p.y))); ctx.stroke(); ctx.restore();
+    }
+    if (E.tope > 1e-6){
+      const pts = MC.muestrear(f, 0, Math.min(E.tope, 2*PI), Math.max(8, Math.ceil(240*E.tope/(2*PI))));
+      ctx.save(); ctx.strokeStyle = c.sen; ctx.lineWidth = E.hl === 'sen' ? 5 : 3.2; ctx.lineJoin = 'round'; ctx.beginPath();
+      pts.forEach((p, j) => j ? ctx.lineTo(X(p.x), Y(p.y)) : ctx.moveTo(X(p.x), Y(p.y))); ctx.stroke(); ctx.restore();
+    }
+    // periodo y amplitud
+    if (E.periodo){
+      const T = f.periodo, yb = 28;
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6;
+      linea(ctx, { x:X(0), y:yb }, { x:X(Math.min(T, 2*PI)), y:yb }); linea(ctx, { x:X(0), y:yb - 5 }, { x:X(0), y:yb + 5 });
+      if (T <= 2*PI + 1e-9) linea(ctx, { x:X(T), y:yb - 5 }, { x:X(T), y:yb + 5 });
+      ctx.restore();
+      rotulo(ctx, c, Math.max(X(Math.min(T, 2*PI)/2), gx0 + 50), yb - 15, `periodo = ${f.periodoTexto || fmt(T, 2)}`, c.ink, 'center', 800, 12);
+    }
+    if (E.amp){
+      // con A > 0, en el primer máximo hacia arriba; con A < 0, en el primer mínimo hacia abajo
+      const ex = MC.extremos(f, 0, 2*PI), xm = E.f.A > 0 ? ex.maximos[0] : ex.minimos[0], yt = E.f.A > 0 ? f.maximo : f.minimo;
+      if (xm !== undefined){
+        flecha(ctx, { x:X(xm), y:Y(0) }, { x:X(xm), y:Y(yt) + (yt > 0 ? 2 : -2) }, c.A, E.hl === 'A' ? 4 : 2.4);
+        // el rótulo, fuera de la onda: más allá de la punta de la flecha
+        rotulo(ctx, c, clamp(X(xm), gx0 + 44, W - 44), Y(yt) + (yt > 0 ? -12 : 12), `amplitud ${fmt(f.amplitud, 1)}`, c.A, 'center', 800, 12);
+      }
+    }
+    // soluciones marcadas
+    for (const sv of E.sols){
+      const xs = sv.g*GR, ys = MC.evaluar(f, xs);
+      ctx.save(); ctx.strokeStyle = c.th; ctx.lineWidth = 1.4; ctx.setLineDash([3, 3]); linea(ctx, { x:X(xs), y:Y(ys) }, { x:X(xs), y:Y(0) }); ctx.restore();
+      ctx.save(); ctx.fillStyle = c.th; ctx.beginPath(); ctx.arc(X(xs), Y(0), 5, 0, 7); ctx.fill(); ctx.restore();
+      rotulo(ctx, c, X(xs), Y(0) + 13, sv.rot, c.th, 'center', 800, 12);
+      const Q = { x:cx + k*Math.cos(sv.g*GR), y:cy - k*Math.sin(sv.g*GR) };
+      ctx.save(); ctx.fillStyle = c.th; ctx.beginPath(); ctx.arc(Q.x, Q.y, 5, 0, 7); ctx.fill(); ctx.restore();
+    }
+    // P en la circunferencia, su seno y su ángulo B·x
+    const r = lineasDe(c, O, k, u, false), P = r.P;
+    const pa = arcoAngulo(O, clamp(k*.3, 10, 20), u, c.th, E.hl === 'th' ? 4 : 2.2, true);
+    const bx = Math.abs(E.f.B - 1) < 1e-9 ? 'x' : `${fmt(E.f.B, 1)}x`;
+    if (pa && k > 40 && (((u % 360) + 360) % 360) > 25) rotulo(ctx, c, pa.x, pa.y, bx, c.th, 'center', 800, 12);
+    // el ángulo x sobre el eje de la gráfica
+    if (E.x > 1e-6){ ctx.save(); ctx.strokeStyle = c.th; ctx.lineWidth = E.hl === 'th' ? 6 : 4; linea(ctx, { x:X(0), y:Y(0) }, { x:X(E.x), y:Y(0) }); ctx.restore();
+      // las marcas de π/2, π, 3π/2 y 2π quedan encima, para que se sigan viendo
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; for (let j = 1; j <= 4; j++) if (j*PI/2 <= E.x + 1e-9) linea(ctx, { x:X(j*PI/2), y:Y(0) - 6 }, { x:X(j*PI/2), y:Y(0) + 6 }); ctx.restore(); }
+    // el punto de la gráfica y la línea que lo une con P
+    const yv = MC.evaluar(f, E.x), Gp = { x:X(E.x), y:Y(yv) }, Gu = { x:Gp.x, y:Y(MC.valor('sen', u)) };
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.3; ctx.setLineDash([4, 4]); linea(ctx, P, Gu); ctx.restore();
+    if (Math.abs(E.f.A - 1) > 1e-9 && Math.abs(Gu.y - Gp.y) > 6) flecha(ctx, Gu, Gp, c.A, 2.2);
+    ctx.save(); ctx.strokeStyle = c.sen; ctx.lineWidth = 3; ctx.globalAlpha = .9; if (Math.abs(yv) > 1e-6) linea(ctx, { x:Gp.x, y:Y(0) }, Gp); ctx.restore();
+    const handle = (Q, on, key) => {
+      if (on){
+        ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = (arrastrando === key || sobre === key) ? .18 : .09; ctx.beginPath(); ctx.arc(Q.x, Q.y, 12, 0, 7); ctx.fill(); ctx.restore();
+        ctx.fillStyle = c.card; ctx.strokeStyle = c.ink; ctx.lineWidth = 2.4; ctx.beginPath(); ctx.arc(Q.x, Q.y, 7, 0, 7); ctx.fill(); ctx.stroke();
+      } else { ctx.fillStyle = c.ink; ctx.beginPath(); ctx.arc(Q.x, Q.y, 4.5, 0, 7); ctx.fill(); }
+    };
+    handle(P, E.arr.P, 'P'); handle(Gp, E.arr.G, 'G');
+    const uu = { x:Math.cos(u*GR), y:-Math.sin(u*GR) };
+    // «P» por fuera del punto, sin pisar el eje de la gráfica
+    const pl = { x:P.x + uu.x*26, y:P.y + uu.y*26 };
+    if (pl.x > cx + 1.07*k - 4) { pl.x = P.x - 4; pl.y = P.y - 22; }
+    rotulo(ctx, c, pl.x, pl.y, 'P', c.ink, 'center', 800, 12);
+    if (E.rot.sen) rotulo(ctx, c, P.x + 10, (P.y + r.pie.y)/2, E.rot.sen, c.sen, 'left', 800, 12);
+  }
+
+  E.dibujar = () => {
+    if (!W) return;
+    const c = colores();
+    ctx.clearRect(0, 0, W, H); ctx.fillStyle = c.paper; ctx.fillRect(0, 0, W, H);
+    if (E.modo === 'triangulo') dibTriangulo(c);
+    else if (E.modo === 'desenrolla') dibDesenrolla(c);
+    else dibCirculo(c, escala());
+  };
+  E.leyenda = () => {
+    const it = (k, t, tr) => `<span><i class="${tr ? 'trazos' : ''}" style="border-color:var(--c-${k})"></i>${t}</span>`;
+    let l;
+    if (E.modo === 'triangulo') l = [['th', 'θ · ángulo agudo'], ['ink', 'lados (crecen con el triángulo)'], ['sen', 'sen θ'], ['cos', 'cos θ'], ['tan', 'tan θ']];
+    else if (E.modo === 'circulo'){ l = [['th', 'θ · ángulo'], ['sen', 'sen θ · altura de P, con signo'], ['cos', 'cos θ · abscisa de P, con signo']]; if (E.ver.cosAcad) l.push(['cos', 'línea coseno de academia', true]); if (E.ver.tan) l.push(['tan', 'tan θ · sobre la recta x = 1']); if (E.fantasmas.length) l.push(['ink', 'comparación', true]); }
+    else { l = [['th', 'x · el ángulo, en el eje'], ['sen', `y = ${formulaTxt(E)}`]]; if (Math.abs(E.f.A - 1) > 1e-9 || E.amp) l.push(['A', 'A · estira la onda']); if (E.perillas.includes('B')) l.push(['B', 'B · comprime la onda']); if (E.ver.base) l.push(['ink', 'sen x, para comparar', true]); }
+    document.getElementById(idLey).innerHTML = l.map(([k, t, tr]) => it(k, t, tr)).join('');
+  };
+  E.avisar = () => {
+    const filas = E.lect.map(k => (typeof k === 'function' ? k(E) : LEC[k](E)));
+    document.getElementById(idLect).innerHTML = filas.map(([k, t, v]) => `<div class="lectura" style="--k:var(--c-${k})"><span>${t}</span><b>${v}</b></div>`).join('');
+    const base = { triangulo:'Un triángulo rectángulo con el ángulo θ y barras con sus razones.', circulo:'La circunferencia de radio 1 con el punto P, su seno y su coseno.', desenrolla:'La circunferencia de radio 1 y, a su derecha, la gráfica que dibuja la altura del punto.' }[E.modo];
+    document.getElementById(idDesc).textContent = [base, ...filas.map(([, t, v]) => `${t}: ${v}.`)].join(' ');
+    if (E.alCambiar) E.alCambiar();
+  };
+  E.animar = (de, a, dur, paso, fin, lineal) => {
+    const tok = ++E.tok; E.anim = true;
+    tween(dur, f => { if (tok !== E.tok) return; paso(de + (a - de)*f); E.dibujar(); E.avisar(); },
+      () => { if (tok !== E.tok) return; E.anim = false; if (fin) fin(); }, lineal);
+  };
+
+  // ----- arrastrar P, G y el vértice del triángulo: táctil, ratón y teclado -----
+  const local = e => { const r = cv.getBoundingClientRect(); return { x:e.clientX - r.left, y:e.clientY - r.top }; };
+  function manijas(){
+    if (E.modo === 'triangulo') return { tri: triGeo().P };
+    if (E.modo === 'circulo'){ const s = escala(), O = aP({ x:0, y:0 }, s); return { O, R:s.k, P:{ x:O.x + s.k*Math.cos(E.g*GR), y:O.y - s.k*Math.sin(E.g*GR) } }; }
+    const G = geoD(), u = E.f.B*E.x, O = { x:G.cx, y:G.cy };
+    return { O, R:G.k, G:G, P:{ x:O.x + G.k*Math.cos(u), y:O.y - G.k*Math.sin(u) }, Gp:{ x:G.gx0 + E.x*G.sx, y:G.cy - MC.evaluar(ficha(E), E.x)*G.k } };
+  }
+  function cual(p, radio){
+    if (E.ocupado) return null;
+    const m = manijas(), d = (q, on) => (on && q ? Math.hypot(p.x - q.x, p.y - q.y) : Infinity);
+    const c = [['tri', d(m.tri, E.arr.tri)], ['P', d(m.P, E.arr.P)], ['G', d(m.Gp, E.arr.G)]].sort((a, b) => a[1] - b[1])[0];
+    return c[1] < radio ? c[0] : null;
+  }
+  // grados enteros; se "imanta" a los múltiplos de 30° y de 45°
+  function iman(g){ for (const m of [30, 45]){ const n = Math.round(g/m)*m; if (Math.abs(g - n) < 2) return n; } return Math.round(g); }
+  function ponerG(g){ g = clamp(iman(g), E.rango[0], E.rango[1]); if (g === E.g) return; E.g = g; E.dibujar(); E.avisar(); }
+  function ponerX(x){ let g = clamp(iman(x/GR), 0, 360); x = g*GR; if (Math.abs(x - E.x) < 1e-12) return; E.x = x; if (E.vivo) E.tope = Math.max(E.tope, x); E.dibujar(); E.avisar(); }
+  function ponerK(kk){ kk = clamp(Math.round(kk*4)/4, .5, E.tri.kMax); if (kk === E.tri.k) return; E.tri.k = kk; E.dibujar(); E.avisar(); }
+  cv.addEventListener('touchstart', e => {
+    if (e.touches.length !== 1) return;
+    const r = cv.getBoundingClientRect(), t = e.touches[0];
+    if (cual({ x:t.clientX - r.left, y:t.clientY - r.top }, 40)) e.preventDefault();
+  }, { passive:false });
+  cv.addEventListener('pointerdown', e => {
+    const p = local(e), k = cual(p, e.pointerType === 'mouse' ? 30 : 40); if (!k) return;
+    arrastrando = k; cv.setPointerCapture(e.pointerId); e.preventDefault(); cv.focus({ preventScroll:true }); E.dibujar();
+  }, { passive:false });
+  cv.addEventListener('pointermove', e => {
+    const p = local(e);
+    if (arrastrando){
+      const m = manijas();
+      if (arrastrando === 'tri'){
+        const T = E.tri, G = triGeo(), L = Math.hypot(T.ady, T.op), d = ((p.x - G.O.x)*T.ady + (G.O.y - p.y)*T.op)/L;
+        ponerK(d/(L*G.s));
+      } else if (arrastrando === 'G'){ ponerX((p.x - m.G.gx0)/m.G.sx); }
+      else {
+        let a = Math.atan2(m.O.y - p.y, p.x - m.O.x)/GR;
+        const cur = E.modo === 'circulo' ? E.g : E.f.B*E.x/GR;
+        const cand = [a - 720, a - 360, a, a + 360, a + 720].reduce((x, y) => Math.abs(y - cur) < Math.abs(x - cur) ? y : x);
+        if (E.modo === 'circulo') ponerG(cand); else ponerX(cand*GR/E.f.B);
+      }
+      return;
+    }
+    const sv = cual(p, 30);
+    if (sv !== sobre){ sobre = sv; cv.style.cursor = sv ? 'grab' : ''; E.dibujar(); }
+  });
+  const soltar = () => { if (arrastrando){ arrastrando = null; E.dibujar(); } };
+  cv.addEventListener('pointerup', soltar); cv.addEventListener('pointercancel', soltar);
+  cv.addEventListener('keydown', e => {
+    if (E.ocupado) return;
+    const paso = e.shiftKey ? 1 : 5, dir = { ArrowRight:1, ArrowUp:1, ArrowLeft:-1, ArrowDown:-1 }[e.key];
+    if (!dir) return;
+    if (E.modo === 'triangulo' && E.arr.tri){ e.preventDefault(); ponerK(E.tri.k + dir*.25); }
+    else if (E.modo === 'circulo' && E.arr.P){ e.preventDefault(); const g = clamp(Math.round(E.g) + dir*paso, E.rango[0], E.rango[1]); if (g !== E.g){ E.g = g; E.dibujar(); E.avisar(); } }
+    else if (E.modo === 'desenrolla' && (E.arr.P || E.arr.G)){ e.preventDefault(); const g = clamp(Math.round(E.x/GR) + dir*paso, 0, 360); E.x = g*GR; if (E.vivo) E.tope = Math.max(E.tope, E.x); E.dibujar(); E.avisar(); }
+  });
+  return E;
+}
+// Lados de un triángulo notable, en k (para el dibujo, k = 1 da su forma).
+function triNotable(a){
+  const n = MC.notable(a), L = n.lados, esc = 5/L.hipotenusa.valor;
+  return { notable:a, op:L.opuesto.valor*esc, ady:L.adyacente.valor*esc, k:1, kMax:1.15, etq:{ op:L.opuesto.texto, ady:L.adyacente.texto, hip:L.hipotenusa.texto } };
+}
+// Celular: el lienzo queda fijo arriba mientras hay una predicción pendiente. Si tapa el comienzo de la pregunta,
+// se baja la página lo justo para que la pregunta quede visible debajo del lienzo.
+function verPregunta(caja){
+  if (innerWidth >= 900) return;
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    const op = caja.querySelector('.opts'), q = op && op.previousElementSibling, bench = caja.closest('.mode').querySelector('.bench');
+    if (!q || !bench) return;
+    const tope = bench.getBoundingClientRect().bottom, r = q.getBoundingClientRect();
+    if (r.top < tope + 6 && bench.getBoundingClientRect().top <= 1) scrollBy({ top: r.top - tope - 10, behavior:'auto' });
+  }));
+}
+// Celular: llevar el lienzo a la vista antes de animar.
+function alLienzo(cv, fn){
+  const chico = innerWidth < 900;
+  if (chico) cv.scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+  esperar(chico ? 380 : 0, fn);
+}
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+const tablaSignos = () => `<table class="signos"><tr><th></th><th>I</th><th>II</th><th>III</th><th>IV</th></tr>
+  ${['sen','cos','tan'].map(fn => `<tr><th>${V(fn, fn)}</th>${[45, 135, 225, 315].map(g => `<td>${MC.punto(g).signos[fn] > 0 ? '+' : '−'}</td>`).join('')}</tr>`).join('')}</table>`;
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1', 'per1');
+const S = { step:0, max:0, pred:{}, ocupado:false, x:null };
+
+// Números de la escena: todos salen del motor
+const ESC = MC.escalar({ opuesto:3, adyacente:4 }, 2);
+const R210 = MC.reducir('sen', 210);
+const SU = MC.suma(30, 60);
+const F23 = MC.senoidal({ fn:'sen', A:2, B:3 });
+const EQ = MC.ecuacion({ fn:'sen', k:.5 }), EQR = MC.ecuacion({ fn:'sen', k:.5, unidad:'rad' });
+const n37 = MC.notable(37);
+
+const P_TRI = { id:'circunferencia-trig-paso1', unidad:U.agudas, ok:'b', opts:[
+  ['a',`Se duplica: 2 · 3/5 = ${frac(ESC.errores.senoPorK)}`,'TR8-seno-crece-con-el-triangulo','parcial'],
+  ['b',`Sigue igual: 6/10 = ${frac(ESC.senDespues)}`],
+  ['c',`Pasa a ${fmt(ESC.errores.senoComoLongitud, 0)}: es el nuevo cateto opuesto`,'TR7-seno-es-longitud','parcial'],
+  ['d','Baja: la hipotenusa crece más que el cateto','TR8-seno-baja','hipotesis']],
+  fb:{ b:`¡Bien! El cateto y la hipotenusa se duplican juntos: 6/10 = 3/5. El seno es una razón y no depende del tamaño.`,
+    a:`Elegiste la A. El cateto opuesto sí se duplica, pero la hipotenusa también: 6/10 = 3/5. Además, ${frac(ESC.errores.senoPorK)} es mayor que 1, y ningún seno pasa de 1. La correcta está marcada.`,
+    c:'Elegiste la C. 6 es el largo del cateto, no el seno. El seno es el cateto dividido entre la hipotenusa: 6/10 = 3/5. La correcta está marcada.',
+    d:'Elegiste la D. Los tres lados se multiplican por el mismo número, 2: ninguno crece más que otro. El cociente queda igual, 6/10 = 3/5. La correcta está marcada.' } };
+const P_210 = { id:'circunferencia-trig-paso3', unidad:U.reduccion, ok:'a', opts:[
+  ['a',R210.texto],
+  ['b',R210.erroresTexto.sinSigno,'TR12-seno-sin-signo','parcial'],
+  ['c',R210.erroresTexto.otraCoordenada,'TR11-toma-la-abscisa','parcial'],
+  ['d',R210.erroresTexto.otraCoordenadaSinSigno,'TR11-TR12-abscisa-sin-signo','parcial']],
+  fb:{ a:'¡Bien! P queda en el tercer cuadrante, por debajo del eje x: su altura es la de 30°, pero hacia abajo. sen 210° = −1/2.',
+    b:'Elegiste la B. El tamaño es el de sen 30°, pero P quedó por debajo del eje x: el seno es la altura con su signo, y ahí es negativa. La correcta está marcada.',
+    c:'Elegiste la C. −√3/2 es la abscisa de P, es decir, cos 210°. El seno es la altura (la línea roja), no la distancia horizontal. La correcta está marcada.',
+    d:'Elegiste la D. √3/2 es el largo de la abscisa sin signo: cruza el seno con el coseno y además olvida el signo. El seno es la altura de P, −1/2. La correcta está marcada.' } };
+const P_SUMA = { id:'circunferencia-trig-paso4', unidad:U.circ, ok:'a', opts:[
+  ['a',`No: la suma pasa de 1 y sen 90° = ${SU.textoDeLaSuma}`],
+  ['b','Sí: los dos valen 1','TR16-linealidad','parcial'],
+  ['c',`Sí: los dos valen unos ${fmt(SU.errores.lineal, 2)}`,'TR16-suma-igual','hipotesis'],
+  ['d','No se sabe: hace falta calculadora','TR13-sin-estimar','parcial']],
+  fb:{ a:`¡Bien! La suma de las dos alturas, unos ${fmt(SU.sumaDe, 2)}, pasa de 1: ya no puede ser el seno de nada. sen 90° = 1.`,
+    b:`Elegiste la B. sen 90° sí es 1, pero sen 30° + sen 60° = 1/2 + √3/2 ≈ ${fmt(SU.sumaDe, 2)}. El seno de una suma no es la suma de los senos. La correcta está marcada.`,
+    c:`Elegiste la C. Un seno nunca pasa de 1, porque es la altura de un punto de una circunferencia de radio 1. sen 90° = 1 y la suma es ${fmt(SU.sumaDe, 2)}: no son iguales. La correcta está marcada.`,
+    d:`Elegiste la D. Con la circunferencia se ve sin calculadora: sen 90° es la altura del punto más alto, 1, y las dos alturas juntas pasan de 1. La correcta está marcada.` } };
+const P_PER = { id:'circunferencia-trig-paso6', unidad:U.funciones, ok:'b', opts:[
+  ['a',`${MC.textoPi(F23.errores.periodoPorB/PI)}`,'TR18-periodo-por-B','hipotesis'],
+  ['b',`${F23.periodoTexto}`],
+  ['c',`${fmt(F23.errores.periodoIgualB, 0)}`,'TR18-periodo-igual-B','hipotesis'],
+  ['d',`${MC.textoPi(F23.errores.periodoConAmplitud/PI)}`,'periodo-con-amplitud','hipotesis']],
+  fb:{ b:'¡Bien! Con 3x, el punto P da tres vueltas mientras x avanza 2π: la onda se repite cada 2π/3. El 2 la estira hacia arriba y hacia abajo, pero no cambia el periodo.',
+    a:'Elegiste la A. Esa cuenta multiplica 2π por 3. El 3 hace que P gire el triple de rápido, así que la onda se repite antes, no después: 2π/3. La correcta está marcada.',
+    c:'Elegiste la C. 3 es el número que multiplica a x, no el periodo. El periodo es 2π dividido entre ese número: 2π/3. La correcta está marcada.',
+    d:'Elegiste la D. Esa cuenta usa el 2, que es la amplitud: estira la onda hacia arriba y hacia abajo, pero no la alarga. El periodo sale del 3: 2π/3. La correcta está marcada.' } };
+const P_SOL = { id:'circunferencia-trig-paso7', unidad:U.ecuaciones, ok:'b', opts:[
+  ['a',`${EQ.errores.cantidadSoloPrincipal}: x = ${grados(EQ.errores.soloPrincipal[0])}`,'TR22-una-solucion','hipotesis'],
+  ['b',`${EQ.cantidad}: x = ${EQ.soluciones.map(grados).join(' y x = ')}`],
+  ['c',`${EQ.errores.unaPorCuadrante.length}: una en cada cuadrante`,'una-por-cuadrante','hipotesis'],
+  ['d','Infinitas: una en cada vuelta','confunde-con-la-general','hipotesis']],
+  fb:{ b:'¡Bien! La recta y = 1/2 corta la circunferencia en dos puntos: 30° y 150°. En una vuelta, la onda la cruza dos veces.',
+    a:'Elegiste la A. 30° es la que da la calculadora o la tabla, pero hay otro punto de la circunferencia a la misma altura: 150°, en el segundo cuadrante. La correcta está marcada.',
+    c:'Elegiste la C. En el tercer y el cuarto cuadrante el seno es negativo: ahí P está por debajo del eje x y no puede tener altura 1/2. Solo quedan 30° y 150°. La correcta está marcada.',
+    d:'Elegiste la D. Si x puede dar muchas vueltas, sí hay infinitas; pero en una sola vuelta, [0°, 360°⟩, hay solo dos: 30° y 150°. La correcta está marcada.' } };
+
+function vivo(){
+  const d = $('vivo'); if (!d) return;
+  if (E.modo === 'triangulo'){
+    const T = E.tri, et = T.notable ? T.etq : { op:fmt(T.op*T.k, 1), ady:fmt(T.ady*T.k, 1), hip:fmt(Math.hypot(T.op, T.ady)*T.k, 1) };
+    d.innerHTML = `<div class="eq">${sen_('sen θ')} = ${fr(et.op, et.hip)} = ${sen_(triRazon(E, 'sen'))}</div>
+      <div class="eq">${cos_('cos θ')} = ${fr(et.ady, et.hip)} = ${cos_(triRazon(E, 'cos'))}</div>
+      <div class="eq">${tan_('tan θ')} = ${fr(et.op, et.ady)} = ${tan_(triRazon(E, 'tan'))}</div>`;
+  } else if (E.modo === 'circulo'){
+    const p = MC.punto(E.g), r = MC.reducir('sen', E.g), rc = MC.reducir('cos', E.g);
+    d.innerHTML = `<div class="eq">P = (${cos_(razonTxt('cos', E.g))}; ${sen_(razonTxt('sen', E.g))})<span class="note">${p.cuadrante ? 'cuadrante ' + ROMANO[p.cuadrante] : 'sobre un eje'}${p.vueltas ? `; coterminal con ${p.reducido}°` : ''}</span></div>
+      ${r.forma180 ? `<div class="eq">${sen_('sen ' + grados(p.reducido))} = ${r.signo < 0 ? '−' : ''}${sen_('sen ' + grados(r.referencia))}<span class="note">${rc.forma180 ? `y ${cos_('cos ' + grados(p.reducido))} = ${rc.signo < 0 ? '−' : ''}${cos_('cos ' + grados(rc.referencia))}` : ''}</span></div>` : ''}
+      <div class="eq">${sen_('sen²θ')} + ${cos_('cos²θ')} = ${fmt(p.identidad, 3)}</div>`;
+  } else {
+    const f = ficha(E), ex = MC.extremos(f, 0, 2*PI);
+    d.innerHTML = `<div class="eq">y = ${A_(fmt(E.f.A, 1))} · sen(${B_(fmt(E.f.B, 1))}x)</div>
+      <div class="eq">amplitud = |${A_(fmt(E.f.A, 1))}| = ${A_(fmt(f.amplitud, 1))}<span class="note">la onda va de ${fmt(f.minimo, 1)} a ${fmt(f.maximo, 1)}</span></div>
+      <div class="eq">periodo = ${fr('2π', `|${B_(fmt(E.f.B, 1))}|`)} = ${f.periodoTexto || fmt(f.periodo, 2)}<span class="note">${ex.maximos.length} ${ex.maximos.length === 1 ? 'máximo' : 'máximos'} en [0, 2π]</span></div>`;
+  }
+}
+
+const steps = [
+ { k:'Paso 1', t:'Predice: el triángulo que crece', gate:P_TRI,
+   prep:() => { const ya = !!S.pred[P_TRI.id];
+     E.config({ modo:'triangulo', tri:{ op:3, ady:4, k: ya ? 2 : 1, kMax:2 }, arr:{ tri:ya }, lect:['op','ady','hip','tsen'].concat(ya ? ['tcos','ttan'] : []), alCambiar: ya ? vivo : null }); },
+   anima:fin => E.animar(1, 2, 1600, k => { E.tri.k = k; }, () => { E.lect = ['op','ady','hip','tsen','tcos','ttan']; E.alCambiar = vivo; E.permitir({ tri:true }); E.avisar(); fin(); }),
+   body:() => `<p>En un triángulo rectángulo, el ángulo agudo ${th_('θ')} tiene un cateto opuesto (el de enfrente), un cateto adyacente (el de al lado) y la hipotenusa. Sus razones son cocientes de dos lados:</p>
+   <div class="eqs"><div class="eq">${sen_('sen θ')} = ${fr('opuesto', 'hipotenusa')}</div><div class="eq">${cos_('cos θ')} = ${fr('adyacente', 'hipotenusa')}</div><div class="eq">${tan_('tan θ')} = ${fr('opuesto', 'adyacente')}</div></div>
+   <p class="problem">Con catetos 3 y 4 y la hipotenusa 5, ${sen_('sen θ')} = 3/5. Si todos los lados se multiplican por 2 (6, 8 y 10) y los ángulos no cambian, ¿qué pasa con ${sen_('sen θ')}?</p>${opcionesHTML(P_TRI.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <p>Los lados del triángulo crecieron, pero la barra roja de ${sen_('sen θ')} no se movió: 3/5 = 6/10. Arrastra el vértice de arriba para agrandar o achicar el triángulo: las tres razones se quedan quietas. Todos los triángulos con el mismo ángulo ${th_('θ')} son semejantes, y por eso la razón depende solo del ángulo.</p>
+   <div class="eqs" id="vivo"></div>
+   <p>En la academia se usan <b>triángulos notables</b>, con sus lados en función de un número k. Elige uno:</p>
+   <div class="seg" role="group" aria-label="Triángulos notables" id="notables">${['3-4-5', 30, 45, 60, 37, 53, 16, 74].map(a => `<button type="button" data-a="${a}" aria-pressed="${a === '3-4-5'}">${a === '3-4-5' ? '3, 4, 5' : a + '°'}</button>`).join('')}</div>
+   <p class="hint" id="not-msg" aria-live="polite"></p>
+   <p class="fuente">Pensar el seno como una longitud y no como un cociente fue la concepción más frecuente en un estudio con alumnos de bachillerato en España: un 56 %, según una cifra que solo vimos citada en un trabajo posterior de los mismos autores, sin saber aún a qué muestra corresponde (Martín-Fernández, Ruiz-Hidalgo y Rico, 2014 y 2016). Que la razón crezca con el triángulo está descrito, sin porcentajes, en alumnos de secundaria de Quebec (De Kee, Mura y Dionne, 1996, citado en una presentación). La opción "baja" es una hipótesis nuestra.</p></div>` },
+ { k:'Paso 2', t:'La circunferencia de radio 1',
+   prep:() => E.config({ modo:'circulo', g:40, rango:[0, 90], arr:{ P:true }, ver:{ cosAcad:true }, lect:['th','cos','sen'] }),
+   body:() => `<p class="problem">Arrastra el punto P sobre la circunferencia (en este paso, solo en el primer cuadrante).</p>
+   <p>Esta es la <b>circunferencia trigonométrica</b> (C.T.): radio 1 y centro en el origen O. El ángulo ${th_('θ')} está en <b>posición normal</b>: vértice en O, lado inicial sobre el semieje x positivo y giro antihorario. El lado final, OP, dice en qué cuadrante está (θ ∈ IC, IIC…).</p>
+   <p>Mira el triángulo que forman O, P y el pie de P en el eje x: su hipotenusa es el radio, que mide 1.</p>
+   <div class="eqs"><div class="eq">${sen_('sen θ')} = ${fr('opuesto', '1')} = altura, u ordenada, de P</div><div class="eq">${cos_('cos θ')} = ${fr('adyacente', '1')} = abscisa de P</div></div>
+   <p>Por eso el punto es P = (${cos_('cos θ')}; ${sen_('sen θ')}). En el dibujo, la línea coseno va sobre el eje x; en la academia se dibuja a la altura de P, desde el eje y hasta P (la línea azul a trazos): mide lo mismo y tiene el mismo signo. Con hipotenusa 1, el seno <b>sí</b> se puede ver como un largo: la altura del punto. Y como P no sale de la circunferencia, ningún seno ni coseno pasa de 1.</p>
+   <p class="hint">Con teclado: toca el dibujo; las flechas mueven P de 5° en 5° (con Mayúsculas, de 1° en 1°).</p>` },
+ { k:'Paso 3', t:'Predice: sen 210°', gate:P_210,
+   prep:() => { const ya = !!S.pred[P_210.id];
+     E.config({ modo:'circulo', g: ya ? 210 : 30, rango:[-720, 720], arr:{ P:ya }, fantasmas: ya ? [{ g:30, rot:'30°' }] : [], ver:{ ref:ya, signos:ya },
+       rot:{ sen: ya ? undefined : 'sen 30° = 1/2' }, lect: ya ? ['th','cuad','sen','cos'] : ['th','sen'], alCambiar: ya ? vivo : null }); },
+   anima:fin => { E.fantasmas = [{ g:30, rot:'30°' }]; E.rot.sen = undefined; E.leyenda(); E.animar(30, 210, 2200, g => { E.g = g; }, () => { E.ver.ref = true; E.ver.signos = true; E.lect = ['th','cuad','sen','cos']; E.alCambiar = vivo; E.permitir({ P:true }); E.avisar(); fin(); }); },
+   body:() => `<p>En el dibujo, P está en ${th_('30°')} y su altura es ${sen_('sen 30° = 1/2')}. Si P sigue girando media vuelta más, hasta ${th_('210°')}, ¿cuánto vale ${sen_('sen 210°')}?</p>${opcionesHTML(P_210.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <p>A 210° el punto quedó al otro lado del centro: su altura mide lo mismo que la de 30°, pero hacia abajo. El ángulo de 30° que se forma con el eje x se llama <b>ángulo de referencia</b> (en tinta, en el dibujo).</p>
+   <div class="eqs"><div class="eq">${sen_('sen 210°')} = sen(180° + 30°) = −${sen_('sen 30°')} = ${sen_(R210.texto)}<span class="note">con 180° o 360°, la razón no cambia</span></div>
+   <div class="eq">${sen_('sen 210°')} = sen(270° − 60°) = −${cos_('cos 60°')} = ${sen_(R210.texto)}<span class="note">con 90° o 270°, cambia a su co-razón</span></div></div>
+   <p>La regla de la academia: R.T.(180° ± α) = ± R.T.(α) y R.T.(360° − α) = ± R.T.(α); R.T.(90° ± α) = ± CO-R.T.(α) y R.T.(270° ± α) = ± CO-R.T.(α). El signo es el de la R.T. original en su cuadrante: aquí, el del seno en el IIIC.</p>
+   <p>El signo lo pone el cuadrante. El seno es positivo arriba del eje x (cuadrantes I y II) y el coseno a la derecha del eje y (I y IV):</p>${tablaSignos()}
+   <p>Arrastra P por toda la vuelta, y sigue de largo: a 390° vuelve al mismo lugar que 30° (son <b>coterminales</b>), y si giras al revés del 0° el ángulo es negativo.</p>
+   <div class="eqs" id="vivo"></div>
+   <p class="fuente">Pensar el seno como una distancia sin signo, y fallar justamente en sen 210°, está descrito en estudiantes de secundaria y universidad de Estados Unidos, sin porcentajes (Brown, 2005, citado por otros autores). Medir el seno en el eje horizontal, cruzándolo con el coseno, aparece en un trabajo de estudiante sin revisión por pares (Williams, sin fecha). Las cifras se confirmarán con los datos del colegio.</p></div>` },
+ { k:'Paso 4', t:'Predice: ¿el seno de una suma?', gate:P_SUMA,
+   prep:() => { const ya = !!S.pred[P_SUMA.id];
+     E.config({ modo:'circulo', g: ya ? 90 : 60, caja:{ x0:-1.3, x1:2.35, y0:-.35, y1:1.6 }, ver:{ cuad:false, suma: ya ? { partes:[30, 60], prog:[1, 1], rot:`≈ ${fmt(SU.sumaDe, 2)}` } : null },
+       fantasmas: ya ? [{ g:30, rot:'30°' }, { g:60, rot:'60°' }] : [{ g:30, rot:'sen 30° = 1/2', col:'sen' }],
+       rot:{ sen: ya ? 'sen 90° = 1' : 'sen 60° ≈ 0,87', senLado: ya ? 1 : -1, cos:null, th: ya ? '90°' : '60°' }, lect:[] }); },
+   anima:fin => {
+     E.fantasmas = [{ g:30, rot:'30°' }, { g:60, rot:'60°' }]; E.rot.sen = null; E.rot.th = null;
+     E.ver.suma = { partes:[30, 60], prog:[0, 0], rot:`≈ ${fmt(SU.sumaDe, 2)}` };
+     E.animar(0, 1, 900, f => { E.ver.suma.prog[0] = f; }, () => E.animar(0, 1, 900, f => { E.ver.suma.prog[1] = f; }, () =>
+       E.animar(60, 90, 900, g => { E.g = g; }, () => { E.rot.sen = 'sen 90° = 1'; E.rot.senLado = 1; E.rot.th = '90°'; E.dibujar(); fin(); })));
+   },
+   body:() => `<p>${sen_('sen 30° = 1/2')} y ${sen_('sen 60° = √3/2')}, unos 0,87: son las alturas de los dos puntos del dibujo. Como 30° + 60° = 90°, ¿será ${sen_('sen(30° + 60°)')} igual a ${sen_('sen 30° + sen 60°')}?</p>${opcionesHTML(P_SUMA.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <p>Al apilar las dos alturas (a la derecha del dibujo), la torre pasa la línea de 1: más alto que cualquier punto de la circunferencia. En cambio, el punto de 90° está arriba del todo y su altura es justo 1.</p>
+   <div class="eqs"><div class="eq">${sen_('sen 30°')} + ${sen_('sen 60°')} = 1/2 + √3/2 = ${SU.textoSumaDe} ≈ ${fmt(SU.sumaDe, 3)}</div>
+   <div class="eq">${sen_('sen(30° + 60°)')} = ${sen_('sen 30°')}·${cos_('cos 60°')} + ${cos_('cos 30°')}·${sen_('sen 60°')} = 1/4 + 3/4 = ${SU.textoDeLaSuma}<span class="note">la fórmula de verdad</span></div></div>
+   <p class="aviso">El seno no es lineal: sen(a + b) no es sen a + sen b, y sen 2x no es 2 sen x. Si al sumar dos senos sale más de 1, la cuenta te está avisando.</p>
+   <p class="fuente">No encontramos estudios con porcentajes sobre esta idea. Un estudio turco con 140 alumnos registra el "uso impropio de fórmulas" sin detallar cuáles (Gür, 2009), y la extrapolación lineal está descrita en álgebra (Matz, 1982, citado por otros autores). Que sin la circunferencia no se pueda estimar un seno lo describe Weber (2005) comparando dos cursos universitarios. La opción "los dos valen 1,37" es una hipótesis nuestra.</p></div>` },
+ { k:'Paso 5', t:'La gráfica que se desenrolla',
+   prep:() => { const x = S.d5 !== undefined ? S.d5 : 0; E.config({ modo:'desenrolla', x, tope: S.t5 || x, arr:{ P:true, G:true }, lect:['x','y'], alCambiar:() => { S.d5 = E.x; S.t5 = E.tope; } }); },
+   body:() => `<p class="problem">Arrastra P en la circunferencia (o el punto de la gráfica) y mira cómo se dibuja la onda. O toca «Dar una vuelta».</p>
+   <p>En el eje horizontal va el ángulo ${th_('x')}, en radianes: 2π es una vuelta (360°). Cada altura de P se lleva a la derecha por la línea punteada y queda como un punto de la gráfica: es la misma ${sen_('altura')}, a la misma escala. Por eso la onda nunca sube de 1 ni baja de −1.</p>
+   <p>Fíjate: ${sen_('sen 90° = 1')} es la altura del punto más alto de la circunferencia y también el punto más alto de la onda, en x = π/2. Cuando P pasa por debajo del eje x, la onda también.</p>
+   <div class="acciones"><button type="button" class="btn" id="vuelta">Dar una vuelta</button><button type="button" class="btn" id="borrar">Borrar la onda</button></div>` },
+ { k:'Paso 6', t:'Predice: el periodo de 2 sen 3x', gate:P_PER,
+   prep:() => { const ya = !!S.pred[P_PER.id];
+     E.config({ modo:'desenrolla', x: ya ? 2*PI : 0, tope:2*PI, yMax: ya ? 2.35 : 1.35, f: ya ? { A:2, B:3 } : { A:1, B:1 }, periodo:true, amp:ya, ver:{ base:ya },
+       arr:{ P:ya, G:ya }, perillas: ya ? ['A','B'] : [], lect: ya ? ['A','B','per','x'] : ['per0'], alCambiar: ya ? vivo : null }); },
+   anima:fin => {
+     E.ver.base = true; E.leyenda();
+     E.animar(1.35, 2.35, 700, y => { E.yMax = y; E.redimensionar(); }, () =>
+       E.animar(1, 2, 900, a => { E.f.A = a; }, () => { E.amp = true;
+         E.animar(1, 3, 1100, b => { E.f.B = b; }, () => { E.leyenda(); E.tope = 0;
+           E.animar(0, 2*PI, 3400, x => { E.x = x; E.tope = x; }, () => { E.lect = ['A','B','per','x']; E.alCambiar = vivo; E.permitir({ P:true, G:true }); E.ponerPerillas(['A','B']); E.avisar(); fin(); }, true); }); }));
+   },
+   body:() => `<p>La gráfica de y = sen x se repite cada 2π: ese es su <b>periodo</b>. Ahora mira y = ${A_('2')} sen ${B_('3')}x. ¿Cada cuánto se repite su onda?</p>${opcionesHTML(P_PER.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <p>Con ${B_('3')}x, el punto P gira el triple de rápido: da tres vueltas mientras x va de 0 a 2π, y la onda se repite tres veces. El ${A_('2')} estira la onda hacia arriba y hacia abajo (la flecha naranja) sin alargarla.</p>
+   <div class="eqs" id="vivo"></div>
+   <p>Mueve las perillas ${A_('A')} y ${B_('B')}. Con A negativo, la onda se refleja: empieza bajando.</p>
+   <p class="fuente">No encontramos estudios con datos sobre el periodo de sen(Bx); guías docentes llaman "muy común" a poner 2πB o B. Las tres opciones incorrectas son hipótesis nuestras, y el lanzamiento en el colegio dirá cuánto aparecen.</p></div>` },
+ { k:'Paso 7', t:'Predice: sen x = 1/2 en una vuelta', gate:P_SOL,
+   prep:() => { const ya = !!S.pred[P_SOL.id];
+     E.config({ modo:'desenrolla', x: ya ? 2*PI : PI/6, tope: ya ? 2*PI : PI/6, recta: ya ? .5 : null, rectaTxt:'1/2', sols: ya ? EQ.soluciones.map((g, j) => ({ g, rot:grados(g) })) : [],
+       rot:{ sen: ya ? null : 'sen 30° = 1/2' }, arr:{ P:ya, G:ya }, lect: ya ? ['x','y'] : ['x'] }); },
+   anima:fin => {
+     E.recta = .5; E.rot.sen = null; E.sols = [{ g:30, rot:'30°' }];
+     E.animar(PI/6, 2*PI, 3600, x => { E.x = x; E.tope = x; if (x >= 150*GR - 1e-9 && E.sols.length < 2) E.sols.push({ g:150, rot:'150°' }); },
+       () => { E.sols = EQ.soluciones.map(g => ({ g, rot:grados(g) })); E.lect = ['x','y']; E.permitir({ P:true, G:true }); E.avisar(); fin(); }, true);
+   },
+   body:() => `<p>${sen_('sen 30° = 1/2')}: P está a altura 1/2. ¿Cuántas soluciones tiene la ecuación ${sen_('sen x = 1/2')} con ${th_('x')} en [0°, 360°⟩, es decir, en una vuelta?</p>${opcionesHTML(P_SOL.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <p>La recta y = 1/2 corta la circunferencia en dos puntos, uno a cada lado del eje y, y la onda en dos lugares. Son ${th_('30°')} y ${th_('150° = 180° − 30°')}.</p>
+   <div class="eqs"><div class="eq">x = ${th_(EQ.soluciones.map(grados).join(' o '))} = ${th_(EQR.textosPi.join(' o '))}</div>
+   <div class="eq">${EQ.general.forma}<span class="note">la solución general, con n entero: todas las vueltas</span></div></div>
+   <p class="aviso">La calculadora da un solo ángulo (30°). Las demás soluciones hay que buscarlas en la circunferencia: ¿qué otros puntos tienen la misma altura?</p>
+   <p class="fuente">Que se quede una sola solución, la de la calculadora, no tiene estudios con datos que encontráramos: es una hipótesis nuestra, igual que las otras dos opciones. Un estudio chileno con 60 estudiantes de ingeniería describe, sin porcentajes, que al resolver ecuaciones trigonométricas no se verifican las soluciones (Castro y Cárcamo).</p></div>` },
+ { k:'Paso 8', t:'Ahora explora tú', explora:true,
+   prep:() => { const x = S.x || { vista:'circulo' }; ponerVista(x.vista, true); },
+   body:() => `<p>Elige qué ver y arrastra. Todo lo que se mide sale del motor en cada posición.</p>
+   <div class="seg" role="group" aria-label="Vista">${[['triangulo','Triángulo'],['circulo','Circunferencia'],['desenrolla','Gráfica']].map(([k, t]) => `<button type="button" data-vista="${k}" aria-pressed="false">${t}</button>`).join('')}</div>
+   <div class="seg" role="group" aria-label="Qué se ve en la circunferencia" id="x-ver">${[['tan','Tangente','tan'],['cosAcad','Línea coseno de academia','cos'],['signos','Signos','ink'],['ref','Ángulo de referencia','ink']].map(([k, t, c]) => `<button type="button" data-ver="${k}" aria-pressed="false"><i style="background:var(--c-${c})"></i>${t}</button>`).join('')}</div>
+   <div class="acciones" id="x-acc"><button type="button" class="btn" id="vuelta">Dar una vuelta</button></div>
+   <div class="eqs" id="vivo"></div>
+   <p id="x-msg" class="hint" aria-live="polite"></p>` },
+];
+
+// ----- explorador -----
+function ponerVista(v, nueva){
+  const X = S.x = Object.assign({ vista:'circulo', g:135, ver:{ tan:false, signos:false, ref:false, cosAcad:false }, f:{ A:1, B:1 }, x:PI/2, k:1.5, notable:null }, S.x || {}, { vista:v });
+  const guardar = () => { if (E.modo === 'circulo'){ X.g = E.g; } else if (E.modo === 'desenrolla'){ X.f = { ...E.f }; X.x = E.x; } else X.k = E.tri.k; vivo(); };
+  if (v === 'triangulo') E.config({ modo:'triangulo', tri: X.notable ? Object.assign(triNotable(X.notable), { k:1, kMax:1.15 }) : { op:3, ady:4, k:X.k, kMax:2 }, arr:{ tri:true }, lect:['op','ady','hip','tsen','tcos','ttan'], alCambiar:guardar });
+  else if (v === 'circulo') E.config({ modo:'circulo', g:X.g, caja: X.ver.tan ? { x0:-1.45, x1:1.8, y0:-1.9, y1:1.9 } : null, ver:{ ...X.ver }, arr:{ P:true }, lect:['th','cuad','sen','cos'].concat(X.ver.tan ? ['tan'] : []), alCambiar:guardar });
+  else E.config({ modo:'desenrolla', f:{ ...X.f }, yMax:Math.max(1, Math.abs(X.f.A)) + .35, x:X.x, tope:2*PI, completa:false, ver:{ base:true }, amp:true, periodo:true, arr:{ P:true, G:true }, perillas:['A','B'], lect:['x','y','A','per'], alCambiar:guardar });
+  const body = $('stepBody');
+  body.querySelectorAll('[data-vista]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.vista === v)));
+  $('x-ver').hidden = v !== 'circulo'; $('x-acc').hidden = v !== 'desenrolla';
+  body.querySelectorAll('[data-ver]').forEach(b => b.setAttribute('aria-pressed', String(!!X.ver[b.dataset.ver])));
+  if (!nueva) $('x-msg').textContent = { triangulo:'Arrastra el vértice de arriba: los lados cambian y las razones no.', circulo:'Arrastra P por toda la vuelta, y más: el ángulo puede pasar de 360° o ser negativo.', desenrolla:'Mueve las perillas: A estira la onda y B la comprime. El periodo es 2π/|B|.' }[v];
+  vivo();
+}
+function explorar(){
+  const body = $('stepBody');
+  body.querySelectorAll('[data-vista]').forEach(b => b.onclick = () => { if (E.ocupado) return; ponerVista(b.dataset.vista); if (innerWidth < 900) $('cv').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' }); });
+  body.querySelectorAll('[data-ver]').forEach(b => b.onclick = () => {
+    if (E.ocupado || E.modo !== 'circulo') return;
+    const k = b.dataset.ver; S.x.ver[k] = !S.x.ver[k]; S.x.g = E.g; ponerVista('circulo', true);
+    $('x-msg').textContent = S.x.ver[k] ? { cosAcad:'En la academia, la línea coseno se dibuja a la altura de P, desde el eje y hasta P: mide lo mismo y tiene el mismo signo que el segmento sobre el eje x.', tan:'La tangente es el segmento verde sobre la recta x = 1, desde el eje x hasta donde la corta la recta OP. A 90° y a 270° no hay corte: ahí la tangente no está definida.', signos:'Lo que es positivo en cada cuadrante: en el I, todas; en el II, el seno; en el III, la tangente; en el IV, el coseno.', ref:'El ángulo de referencia es el ángulo agudo entre OP y el eje x: las razones valen lo mismo que las de ese ángulo, con el signo del cuadrante.' }[k] : '';
+  });
+  $('vuelta').onclick = () => { if (E.ocupado || E.modo !== 'desenrolla') return; S.ocupado = true; nav(); const paso = S.step;
+    alLienzo($('cv'), () => { if (S.step !== paso || E.modo !== 'desenrolla'){ S.ocupado = false; nav(); return; }
+      E.animar(0, 2*PI, RM ? 0 : 4000, x => { E.x = x; }, () => { S.ocupado = false; nav(); vivo(); }, true); }); };
+  ponerVista(S.x.vista, true);
+}
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; b.setAttribute('aria-label', `Ir al ${s.k.toLowerCase()}: ${s.t}`);
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.prep) s.prep();
+  pintarDots();
+  if (s.gate) prediccion(s);
+  if (s.gate && !S.pred[s.gate.id]) verPregunta($('stepBody'));
+  if (s.explora) explorar();
+  if (k === 4) dibujar5();
+  if (s.gate && S.pred[s.gate.id]){ if (k === 0) notables(); vivo(); }
+  nav();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+  E.ocupar(S.ocupado);
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){ if (k > S.max) S.max = k; }
+// Paso 5: dar una vuelta
+function dibujar5(){
+  $('vuelta').onclick = () => { if (E.ocupado) return; S.ocupado = true; nav(); const paso = S.step;
+    alLienzo($('cv'), () => { if (S.step !== paso){ S.ocupado = false; nav(); return; }
+      E.animar(0, 2*PI, RM ? 0 : 4000, x => { E.x = x; E.tope = Math.max(E.tope, x); }, () => { S.ocupado = false; nav(); }, true); }); };
+  $('borrar').onclick = () => { if (E.ocupado) return; E.tope = E.x; S.t5 = E.x; E.dibujar(); };
+}
+// Paso 1: los triángulos notables
+function notables(){
+  const box = $('notables'); if (!box) return;
+  box.querySelectorAll('button').forEach(b => b.onclick = () => {
+    if (E.ocupado) return;
+    const a = b.dataset.a;
+    box.querySelectorAll('button').forEach(z => z.setAttribute('aria-pressed', String(z === b)));
+    if (a === '3-4-5'){ E.tri = Object.assign({}, E.tri, { op:3, ady:4, k:1, kMax:2, notable:null, etq:null }); $('not-msg').textContent = ''; }
+    else { const n = MC.notable(+a); E.tri = Object.assign({}, E.tri, triNotable(+a));
+      $('not-msg').textContent = `${a}°: opuesto ${n.lados.opuesto.texto}, adyacente ${n.lados.adyacente.texto}, hipotenusa ${n.lados.hipotenusa.texto}. sen ${a}° = ${n.textos.sen}, cos ${a}° = ${n.textos.cos}, tan ${a}° = ${n.textos.tan}.` + (n.aproximado ? ` Es un triángulo aproximado: el ángulo de verdad mide unos ${fmt(n.anguloReal, 2)}°.` : ''); }
+    E.redimensionar(); E.avisar(); vivo();
+  });
+}
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0, P.unidad);
+    S.ocupado = true; nav();
+    E.compactar(false);
+    $('next').focus({ preventScroll:true });
+    const paso = S.step, chico = innerWidth < 900;
+    if (chico) $('cv').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+    esperar(chico ? 380 : 0, () => {
+      if (S.step !== paso) { S.ocupado = false; nav(); return; }
+      s.anima(() => { S.ocupado = false; if (paso === 0) notables(); vivo(); E.avisar(); nav(); });
+    });
+  }));
+  pintar();
+}
+
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Experimentos de docs/investigacion/trigonometria-ideas-erroneas.md: el ángulo negativo (TR15), el
+   suplementario (TR14), la tangente de 90°, la amplitud negativa y sen x = 2. La escena cambia recién después de
+   responder, y cada experimento se abre solo si los anteriores ya tienen respuesta. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2', 'per2');
+const S150 = MC.reducir('sen', 150), T90 = MC.reducir('tan', 90), EQ2 = MC.ecuacion({ fn:'sen', k:2 });
+const F2 = MC.senoidal({ fn:'sen', A:-2 });
+const lecNeg = [z => ['sen', 'sen 40°', razonTxt('sen', 40)], z => ['sen', de('sen', z.g), razonTxt('sen', z.g)], z => ['cos', 'cos 40°', razonTxt('cos', 40)], z => ['cos', de('cos', z.g), razonTxt('cos', z.g)]];
+
+const EXPS = [
+  { id:'negativo', corto:'Ángulo negativo', unidad:U.reduccion,
+    q:`El punto P está en ${th_('40°')}. Si en vez de girar hacia arriba gira lo mismo hacia abajo, hasta ${th_('−40°')}, ¿qué pasa con su ${sen_('seno')} y su ${cos_('coseno')}?`,
+    opts:[['a','El seno cambia de signo y el coseno no'],
+          ['b','Los dos cambian de signo','negativo-cambia-todo','hipotesis'],
+          ['c','Ninguno de los dos cambia','TR15-negativo-sin-signo','hipotesis'],
+          ['d','El coseno cambia de signo y el seno no','TR11-cruza-seno-coseno','parcial']],
+    ok:'a',
+    fb:{ b:'El punto se refleja en el eje x: baja, pero no se va a la izquierda. Su abscisa (el coseno) no cambia.', c:'El punto quedó debajo del eje x: su altura es la misma, pero negativa. sen(−40°) = −sen 40°.', d:'Es al revés: al reflejarse en el eje x, cambia la altura (el seno) y la abscisa (el coseno) queda igual.' },
+    antes:ya => E.config({ modo:'circulo', g: ya ? -40 : 40, fantasmas: ya ? [{ g:40, rot:'40°' }] : [], lect: ya ? lecNeg : ['th'] }),
+    despues:() => { E.fantasmas = [{ g:40, rot:'40°' }]; E.leyenda(); E.animar(40, -40, 1800, g => { E.g = g; }, () => { E.lect = lecNeg; E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">${sen_('sen(−40°)')} = −${sen_('sen 40°')}<span class="note">la altura cambia de signo</span></div><div class="eq">${cos_('cos(−40°)')} = ${cos_('cos 40°')}<span class="note">la abscisa queda igual</span></div></div>
+      <p>Girar −40° es reflejar el punto de 40° en el eje x. Por eso el seno es una función <b>impar</b> y el coseno una función <b>par</b>. −40° también es coterminal con 320°, en el cuarto cuadrante, donde solo el coseno es positivo.</p>
+      <p class="fuente">Olvidar el signo en los ángulos negativos es una hipótesis de aula que no encontramos medida. Cruzar el seno con el coseno aparece en un trabajo de estudiante sin revisión por pares (Williams, sin fecha). La opción "los dos cambian" es hipótesis nuestra.</p>` },
+  { id:'suplemento', corto:'sen 150°', unidad:U.reduccion,
+    q:`${sen_('sen 30° = 1/2')}. ¿Cuánto vale ${sen_('sen 150°')}?`,
+    opts:[['a',`${S150.texto}: lo mismo que sen 30°`],
+          ['b',`−${S150.texto}: en el segundo cuadrante el seno es negativo`,'signo-segundo-cuadrante','hipotesis'],
+          ['c',`${S150.erroresTexto.cambiaRazon180}: sen(180° − 30°) = cos 30°`,'TR14-cambia-de-razon','hipotesis'],
+          ['d',`${frac(S150.errores.proporcional)}: cinco veces sen 30°, porque 150° = 5 · 30°`,'TR10-proporcional-al-angulo','parcial']],
+    ok:'a',
+    fb:{ b:'En el segundo cuadrante P está arriba del eje x: el seno es positivo. Lo negativo ahí es el coseno.', c:'Con 180° la razón no cambia: sen(180° − 30°) = sen 30°. Solo con 90° o 270° se pasa a la co-razón.', d:'El seno no crece con el ángulo: es la altura de un punto de la circunferencia y nunca pasa de 1. 5/2 es imposible.' },
+    antes:ya => E.config({ modo:'circulo', g: ya ? 150 : 30, fantasmas: ya ? [{ g:30, rot:'30°', horiz:true }] : [], rot:{ sen: ya ? undefined : 'sen 30° = 1/2' }, lect: ya ? ['th','sen','cos'] : ['th'] }),
+    despues:() => { E.fantasmas = [{ g:30, rot:'30°', horiz:true }]; E.rot.sen = undefined; E.leyenda(); E.animar(30, 150, 1800, g => { E.g = g; }, () => { E.lect = ['th','sen','cos']; E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">${S150.forma180.texto} = ${sen_(S150.texto)}</div><div class="eq">${S150.forma90.texto} = ${sen_(S150.texto)}<span class="note">con 90°, a la co-razón</span></div></div>
+      <p>Los puntos de 30° y 150° están a la misma altura (la línea punteada), reflejados en el eje y: los ángulos suplementarios tienen el mismo seno, y cosenos opuestos.</p>
+      <p class="fuente">Cambiar de razón cuando no corresponde es una hipótesis de aula sin estudios que encontráramos. Que la razón crezca con el ángulo está descrito como antecedente, sin porcentajes (Torres-Corrales y Montiel-Espinosa, 2021).</p>` },
+  { id:'tangente-90', corto:'tan 90°', unidad:U.circ,
+    q:`Con P en ${th_('45°')}, la recta OP corta la recta x = 1 a altura 1: ${tan_('tan 45° = 1')}. ¿Cuánto vale ${tan_('tan 90°')}?`,
+    opts:[['a','No está definida: no hay corte con x = 1'],
+          ['b',`${fmt(T90.errores.invertida, 0)}: es cos 90° entre sen 90°`,'tan-invertida','hipotesis'],
+          ['c',`${fmt(T90.errores.comoSeno, 0)}: igual que sen 90°`,'tan-como-seno','hipotesis'],
+          ['d',`${fmt(T90.errores.proporcional, 0)}: el doble de tan 45°`,'TR10-proporcional-al-angulo','parcial']],
+    ok:'a',
+    fb:{ b:'La tangente es sen/cos, no cos/sen. Con cos 90° = 0 abajo, la división no se puede hacer: no está definida.', c:'A 90° la recta OP es vertical, igual que la recta x = 1: nunca se cortan. No hay altura que medir.', d:'La tangente no crece igual que el ángulo: a 60° ya vale √3 ≈ 1,73, y cerca de 90° se dispara.' },
+    antes:ya => E.config({ modo:'circulo', g: ya ? 90 : 45, ver:{ tan:true, cuad:false }, caja:{ x0:-1.3, x1:1.8, y0:-1.4, y1:1.9 }, rot:{ tan: ya ? null : 'tan 45° = 1' }, lect: ya ? ['th','tan'] : ['th'] }),
+    despues:() => { E.rot.tan = null; E.lect = ['th','tan'];
+      E.animar(45, 89, 2600, g => { E.g = Math.round(g); }, () => esperar(500, () => { if (E.modo === 'circulo') { E.g = 90; E.dibujar(); E.avisar(); } })); },
+    exp:() => `<div class="eqs"><div class="eq">${tan_('tan θ')} = ${fr(sen_('sen θ'), cos_('cos θ'))} → ${tan_('tan 90°')} = ${fr('1', '0')}<span class="note">no se puede dividir entre 0</span></div></div>
+      <p>Mientras P se acerca a 90°, la recta OP se empina y corta la recta x = 1 cada vez más arriba: tan 80° ≈ ${fmt(MC.valor('tan', 80), 1)} y tan 89° ≈ ${fmt(MC.valor('tan', 89), 1)}. Justo en 90° la recta OP queda paralela: no hay corte. Lo mismo pasa en 270°. Por eso la gráfica de la tangente tiene asíntotas verticales en x = π/2 y x = 3π/2.</p>
+      <p class="fuente">No encontramos estudios sobre la tangente de 90°. Las opciones b y c son hipótesis nuestras; la d sale de la idea de que la razón crece con el ángulo, descrita sin porcentajes (Torres-Corrales y Montiel-Espinosa, 2021).</p>` },
+  { id:'amplitud-negativa', corto:'Amplitud negativa', unidad:U.funciones,
+    q:`Así se ve y = ${A_('2')} sen x. ¿Cómo es y = ${A_('−2')} sen x?`,
+    opts:[['a','Amplitud 2, y la onda se refleja en el eje x: empieza bajando'],
+          ['b','Amplitud −2, y la onda es la misma que la de 2 sen x','amplitud-con-signo','hipotesis'],
+          ['c','Amplitud 2, y la onda es la misma que la de 2 sen x: el signo no cambia nada','signo-no-cambia','hipotesis'],
+          ['d','Amplitud −2: la onda baja 2 unidades sin cambiar de forma','TR19-amplitud-como-desplazamiento','hipotesis']],
+    ok:'a',
+    fb:{ b:'La amplitud es una distancia, desde la línea media hasta el máximo: siempre positiva, |−2| = 2. Y el signo sí cambia la onda: la da vuelta.', c:'El signo multiplica cada altura: donde 2 sen x vale 2, −2 sen x vale −2. La onda queda reflejada.', d:'Bajar la onda es sumar un número afuera, como en 2 sen x − 2. El −2 que multiplica refleja la onda y su amplitud sigue siendo 2.' },
+    antes:ya => E.config({ modo:'desenrolla', f:{ A: ya ? -2 : 2, B:1 }, yMax:2.35, x: ya ? 2*PI : 0, tope:2*PI, amp:true, ver:{ base:true }, arr:{ P:ya, G:ya }, lect: ya ? ['A','x','y'] : [] }),
+    despues:() => { E.animar(0, 1, 2200, t => { E.f.A = 2*Math.cos(PI*t); }, () => { E.f.A = -2; E.leyenda(); E.tope = 0;
+      E.animar(0, 2*PI, 3000, x => { E.x = x; E.tope = x; }, () => { E.lect = ['A','x','y']; E.permitir({ P:true, G:true }); E.avisar(); }, true); }); },
+    exp:() => `<div class="eqs"><div class="eq">y = ${A_('−2')} sen x<span class="note">amplitud |${A_('−2')}| = ${A_(fmt(F2.amplitud, 0))}; va de ${fmt(F2.minimo, 0)} a ${fmt(F2.maximo, 0)}</span></div></div>
+      <p>Cada altura del punto se multiplica por −2: lo que estaba arriba queda abajo. La flecha naranja muestra el estirón, ahora hacia abajo. Su primer mínimo está en x = π/2, donde antes estaba el máximo.</p>
+      <p class="fuente">No encontramos estudios sobre la amplitud negativa ni sobre confundir la amplitud con el desplazamiento vertical. Las tres opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'seno-dos', corto:'sen x = 2', unidad:U.ecuaciones,
+    q:`${sen_('sen 30° = 1/2')}. ¿Cuántas soluciones tiene ${sen_('sen x = 2')} en [0°, 360°⟩?`,
+    opts:[['a','Ninguna'],
+          ['b',`${EQ2.errores.cantidadComoUnMedio === 2 ? 'Dos' : EQ2.errores.cantidadComoUnMedio}, como en sen x = 1/2`,'resuelve-como-un-medio','hipotesis'],
+          ['c',`Una, en x = ${grados(EQ2.errores.proporcional)}`,'TR10-proporcional-al-angulo','parcial'],
+          ['d','Infinitas, una por vuelta','confunde-con-la-general','hipotesis']],
+    ok:'a',
+    fb:{ b:'Ningún punto de la circunferencia de radio 1 está a altura 2: la recta y = 2 pasa por encima sin tocarla.', c:'Esa cuenta supone que el seno crece con el ángulo (sen 90° = 1, entonces sen 180° = 2). Pero sen 180° = 0, y ningún seno pasa de 1.', d:'Infinitas vueltas no ayudan: en ninguna el punto sube más de 1.' },
+    antes:ya => E.config({ modo:'desenrolla', yMax:2.35, x: ya ? 2*PI : PI/6, tope: ya ? 2*PI : PI/6, recta: ya ? 2 : null, rectaTxt:'2', rot:{ sen: ya ? null : 'sen 30° = 1/2' }, arr:{ P:ya, G:ya }, lect: ya ? ['x','y'] : [] }),
+    despues:() => { E.recta = 2; E.rot.sen = null; E.animar(PI/6, 2*PI, 3000, x => { E.x = x; E.tope = x; }, () => { E.lect = ['x','y']; E.permitir({ P:true, G:true }); E.avisar(); }, true); },
+    exp:() => `<div class="eqs"><div class="eq">−1 ≤ ${sen_('sen x')} ≤ 1<span class="note">para todo x</span></div></div>
+      <p>La recta y = 2 queda por encima de la circunferencia y de toda la onda: no las corta nunca. Antes de resolver sen x = k o cos x = k, se mira si k está entre −1 y 1. La calculadora, con arcsen 2, da error por lo mismo.</p>
+      <p class="fuente">No encontramos estudios sobre ecuaciones sin solución. Las opciones b y d son hipótesis nuestras; la c sale de la idea de que la razón crece con el ángulo, descrita sin porcentajes (Torres-Corrales y Montiel-Espinosa, 2021).</p>` },
+];
+const S = { k:0, pred:{}, t0:Date.now() };
+// Pastillas: la k solo se abre si todos los experimentos anteriores ya tienen respuesta; las respondidas se
+// revisitan libres (la misma regla que los puntos del paso a paso). Las bloqueadas no muestran su título.
+function primeraLibre(){ const j = EXPS.findIndex(x => !S.pred[x.id]); return j < 0 ? EXPS.length - 1 : j; }
+function botones(){
+  const libre = primeraLibre();
+  $('exps').innerHTML = EXPS.map((x, k) => k > libre
+    ? `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}</button>`
+    : `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
+  $('exps').querySelectorAll('button:not([disabled])').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  if (k > primeraLibre()) return;
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  E.compactar(!ya);
+  x.antes(ya);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  if (!ya) verPregunta($('body2'));
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    $('otra2').onclick = () => { if (E.anim) return; x.antes(false); const chico = innerWidth < 900; if (chico) $('cv2').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' }); esperar(chico ? 380 : 0, () => { if (S.k === k) x.despues(); }); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar(); botones();
+    E.compactar(false);
+    const chico = innerWidth < 900;
+    if (chico) $('cv2').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+    esperar(chico ? 380 : 0, () => { if (S.k !== k) return; x.despues(); E.leyenda(); E.dibujar(); E.avisar(); });
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0, x.unidad);
+  });
+  pintar();
+}
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

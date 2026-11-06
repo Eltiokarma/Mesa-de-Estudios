@@ -1,0 +1,21 @@
+{
+  "id": "circunferencia-trig",
+  "titulo": "La circunferencia que se desenrolla: seno, coseno y sus gráficas",
+  "formato": "escena",
+  "unidades": [
+    "trigonometria.razones-trigonometricas-agudas",
+    "trigonometria.triangulos-rectangulos",
+    "trigonometria.angulos-en-posicion-normal",
+    "trigonometria.reduccion-al-primer-cuadrante",
+    "trigonometria.circunferencia-trigonometrica",
+    "trigonometria.funciones-trigonometricas",
+    "trigonometria.ecuaciones-trigonometricas"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}

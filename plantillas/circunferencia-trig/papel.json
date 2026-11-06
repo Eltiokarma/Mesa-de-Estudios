@@ -1,0 +1,133 @@
+{
+  "titulo": "La circunferencia que se desenrolla: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Recuerda: en el triángulo rectángulo, sen θ = opuesto/hipotenusa, cos θ = adyacente/hipotenusa y tan θ = opuesto/adyacente; son razones, así que no cambian si el triángulo se agranda. En la circunferencia trigonométrica (C.T.: radio 1 y centro en el origen), el punto del ángulo θ es P = (cos θ; sen θ): el coseno es la abscisa y el seno la ordenada (la altura) de P, cada uno con su signo. Reducción al primer cuadrante: R.T.(180° ± α) = ± R.T.(α) y R.T.(360° − α) = ± R.T.(α); R.T.(90° ± α) = ± CO-R.T.(α) y R.T.(270° ± α) = ± CO-R.T.(α); el signo es el de la R.T. original en su cuadrante. En y = A·sen(Bx), la amplitud es |A| y el periodo 2π/|B|. Convención de academia: sen 37° = 3/5 y sen 53° = 4/5.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "En un triángulo rectángulo, los catetos miden 5 cm y 12 cm. Si θ es el ángulo agudo opuesto al cateto de 5 cm, calcula sen θ, cos θ y tan θ.",
+      "respuesta": "sen θ = 5/13, cos θ = 12/13 y tan θ = 5/12.",
+      "pasos": [
+        "Primero la hipotenusa, con Pitágoras: √(5² + 12²) = √169 = 13 cm.",
+        "sen θ = opuesto/hipotenusa = 5/13 y cos θ = adyacente/hipotenusa = 12/13.",
+        "tan θ = opuesto/adyacente = 5/12. Ojo: sen θ no es 5; es el cociente 5/13, un número sin unidades y menor que 1."
+      ],
+      "verificar": [ { "fn": "razones", "args": [{ "opuesto": 5, "adyacente": 12 }], "espera": { "hipotenusa": 13, "textos.sen": "5/13", "textos.cos": "12/13", "textos.tan": "5/12" } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Un triángulo rectángulo tiene catetos de 8 cm y 15 cm. Se dibuja otro con los mismos ángulos, pero con todos sus lados multiplicados por 3. ¿Cuánto vale el seno del ángulo opuesto al cateto menor en el triángulo grande?",
+      "respuesta": "8/17, lo mismo que en el triángulo chico.",
+      "pasos": [
+        "En el chico, la hipotenusa es √(64 + 225) = 17 y el seno es 8/17.",
+        "En el grande, los lados son 24, 45 y 51: el seno es 24/51 = 8/17.",
+        "El cateto y la hipotenusa crecen juntos, por 3, así que su cociente no cambia. No se triplica: un seno de 24/17 sería mayor que 1, imposible."
+      ],
+      "verificar": [ { "fn": "escalar", "args": [{ "opuesto": 8, "adyacente": 15 }, 3], "espera": { "senAntes": 0.47058823529411764, "senDespues": 0.47058823529411764, "despues.hipotenusa": 51, "errores.senoPorK": 1.411764705882353 } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Desde un punto del suelo, a 32 m de la base de un edificio, se ve la azotea con un ángulo de elevación de 37°. ¿Qué altura tiene el edificio? Usa la convención del triángulo de 37° y 53°.",
+      "respuesta": "24 m.",
+      "pasos": [
+        "La altura es el cateto opuesto a 37° y la distancia de 32 m es el cateto adyacente: la razón que los une es la tangente.",
+        "tan 37° = 3/4, así que altura = 32 · 3/4 = 24 m.",
+        "Con el seno saldría 32 · 3/5 ≈ 19,2 m: el error de elegir mal la razón. La distancia de 32 m no es la hipotenusa."
+      ],
+      "verificar": [ { "fn": "resolverRectangulo", "args": [{ "angulo": 37, "lado": 32, "cual": "adyacente" }], "espera": { "opuesto": 24, "hipotenusa": 40, "errores.opuestoConSeno": 19.2 } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "básico",
+      "enunciado": "Calcula E = sen 30° + tan 45° + cos 60° · sec 60°.",
+      "respuesta": "E = 5/2.",
+      "pasos": [
+        "Con los notables: sen 30° = 1/2 y tan 45° = 1.",
+        "cos 60° = 1/2 y sec 60° = 2 (son recíprocas): su producto es 1.",
+        "E = 1/2 + 1 + 1 = 5/2."
+      ],
+      "verificar": [ { "fn": "notable", "args": [30], "espera": { "textos.sen": "1/2" } }, { "fn": "notable", "args": [45], "espera": { "textos.tan": "1" } },
+                     { "fn": "notable", "args": [60], "espera": { "textos.cos": "1/2", "textos.sec": "2" } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Reduce al primer cuadrante y calcula: sen 240°, cos 135° y tan 330°.",
+      "respuesta": "sen 240° = −√3/2, cos 135° = −√2/2 y tan 330° = −√3/3.",
+      "pasos": [
+        "240° = 180° + 60° está en el tercer cuadrante, donde el seno es negativo: sen 240° = −sen 60° = −√3/2.",
+        "135° = 180° − 45° está en el segundo cuadrante, donde el coseno es negativo: cos 135° = −cos 45° = −√2/2.",
+        "330° = 360° − 30° está en el cuarto cuadrante, donde la tangente es negativa: tan 330° = −tan 30° = −√3/3.",
+        "Con 180° y 360° la razón no cambia; solo se decide el signo mirando el cuadrante."
+      ],
+      "verificar": [ { "fn": "reducir", "args": ["sen", 240], "espera": { "texto": "−√3/2", "cuadrante": 3 } }, { "fn": "reducir", "args": ["cos", 135], "espera": { "texto": "−√2/2" } },
+                     { "fn": "reducir", "args": ["tan", 330], "espera": { "texto": "−√3/3" } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Calcula M = cos(−60°) + sen 750° − sen(−30°).",
+      "respuesta": "M = 3/2.",
+      "pasos": [
+        "El coseno no cambia con el signo del ángulo (el punto se refleja en el eje x y su abscisa queda igual): cos(−60°) = cos 60° = 1/2.",
+        "750° = 2 · 360° + 30°: es coterminal con 30°, así que sen 750° = 1/2.",
+        "El seno sí cambia de signo: sen(−30°) = −1/2, y restarlo suma 1/2.",
+        "M = 1/2 + 1/2 + 1/2 = 3/2."
+      ],
+      "verificar": [ { "fn": "reducir", "args": ["cos", -60], "espera": { "texto": "1/2" } }, { "fn": "reducir", "args": ["sen", 750], "espera": { "texto": "1/2", "vueltas": 2 } },
+                     { "fn": "reducir", "args": ["sen", -30], "espera": { "texto": "−1/2" } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Para la función y = 4 sen 3x + 1, halla la amplitud, el periodo, el valor máximo y el valor mínimo.",
+      "respuesta": "Amplitud 4, periodo 2π/3, máximo 5 y mínimo −3.",
+      "pasos": [
+        "La amplitud es el valor absoluto del número que multiplica al seno: |4| = 4. Se mide desde la línea media y = 1, no desde el eje x.",
+        "El periodo es 2π dividido entre el número que acompaña a x: 2π/3. Caben 3 ondas completas en cada 2π.",
+        "El seno va de −1 a 1, así que 4 sen 3x va de −4 a 4 y, al sumar 1, y va de −3 a 5."
+      ],
+      "verificar": [ { "fn": "senoidal", "args": [{ "fn": "sen", "A": 4, "B": 3, "D": 1 }], "espera": { "amplitud": 4, "periodoTexto": "2π/3", "maximo": 5, "minimo": -3 } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Resuelve cos x = −1/2 para x en [0°, 360°⟩ y escribe la solución general.",
+      "respuesta": "x = 120° y x = 240°; en general, x = 360°·n ± 120°, con n entero.",
+      "pasos": [
+        "El coseno es la abscisa: buscamos los puntos de la circunferencia con abscisa −1/2. La recta vertical de abscisa −1/2 corta la circunferencia en dos puntos, en el segundo y en el tercer cuadrante.",
+        "El ángulo de referencia es 60°, porque cos 60° = 1/2: los ángulos son 180° − 60° = 120° y 180° + 60° = 240°.",
+        "Cada vuelta se repiten: x = 360°·n ± 120°."
+      ],
+      "verificar": [ { "fn": "ecuacion", "args": [{ "fn": "cos", "k": -0.5 }], "espera": { "soluciones": [120, 240], "general.forma": "x = 360°·n ± 120°" } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Resuelve 2 sen x cos x = sen x para x en [0, 2π⟩.",
+      "respuesta": "x = 0, π/3, π y 5π/3.",
+      "pasos": [
+        "No se divide entre sen x: se pierden las soluciones donde sen x = 0. Se pasa todo a un lado y se factoriza: sen x · (2 cos x − 1) = 0.",
+        "Primer factor: sen x = 0 → x = 0 o x = π.",
+        "Segundo factor: cos x = 1/2 → x = π/3 o x = 5π/3.",
+        "Son cuatro soluciones. Si se hubiera dividido entre sen x, solo quedarían π/3 y 5π/3."
+      ],
+      "verificar": [ { "fn": "ecuacionFactorizada", "args": [[{ "fn": "sen", "k": 0 }, { "fn": "cos", "k": 0.5 }], 0, 6.283185307179586, "rad"],
+                       "espera": { "cantidad": 4, "enPi": [0, 0.3333333333333333, 1, 1.6666666666666667], "errores.cantidadDividiendo": 2 } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Un compañero dice: «sen 45° + sen 45° = sen 90°». Comprueba si tiene razón.",
+      "respuesta": "No: sen 45° + sen 45° = √2 ≈ 1,41, pero sen 90° = 1.",
+      "pasos": [
+        "sen 45° = √2/2, así que la suma es 2 · √2/2 = √2 ≈ 1,41.",
+        "sen 90° = 1. Además, ningún seno pasa de 1: la suma ya no puede ser un seno.",
+        "El seno no es lineal: sen(a + b) = sen a · cos b + cos a · sen b, que con a = b = 45° da 1/2 + 1/2 = 1."
+      ],
+      "verificar": [ { "fn": "suma", "args": [45, 45], "espera": { "deLaSuma": 1, "sumaDe": 1.4142135623730951, "formula": 1, "iguales": false, "textoSumaDe": "√2" } } ]
+    }
+  ]
+}
