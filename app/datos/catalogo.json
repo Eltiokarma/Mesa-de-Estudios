@@ -766,7 +766,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "mol-composicion"
+     ]
     },
     {
      "id": "quimica.reacciones-y-balance",
@@ -4389,6 +4391,23 @@
     "/plantillas/limitante-particulas/index.html",
     "/plantillas/limitante-particulas/motor.js",
     "/plantillas/limitante-particulas/papel.json"
+   ]
+  },
+  "mol-composicion": {
+   "id": "mol-composicion",
+   "titulo": "Mol, masa molar y composición",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.mol-y-composicion"
+   ],
+   "url": "/plantillas/mol-composicion/index.html",
+   "papel": "/plantillas/mol-composicion/papel.json",
+   "archivos": [
+    "/plantillas/mol-composicion/index.html",
+    "/plantillas/mol-composicion/motor.js",
+    "/plantillas/mol-composicion/papel.json"
    ]
   },
   "mruv": {
