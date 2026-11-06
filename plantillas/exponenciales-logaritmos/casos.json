@@ -1,0 +1,108 @@
+{
+  "plantilla": "exponenciales-logaritmos",
+  "unidades": "Cantidades sin unidad salvo donde se dice: bacterias en crecimiento, gramos y años en el decaimiento. La base es siempre positiva y distinta de 1; las fracciones se escriben como texto '1/2'. 'valor' es el resultado si es un número; en ecuaciones, 'soluciones' es la lista ordenada y 'texto' la respuesta escrita ('solo x = 4', 'x = 0 y x = 1').",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.sumaDeLogs.valor); las listas se comparan completas y los textos exactos. 'tambien' son llamadas extra del mismo caso. Un error que no aparece en 'errores' es porque en ese caso daría la respuesta correcta.",
+  "verificacion": "Pendiente: lo verifica un subagente independiente sin leer el motor.",
+  "tolerancia": 1e-9,
+  "casos": [
+    { "nombre": "La escalera del 2: log₂ 32 = 5 (cinco saltos de ×2 desde 1); 2⁻² = 1/4 está dos saltos a la izquierda",
+      "fn": "log", "args": [{ "base": 2, "N": 32 }],
+      "espera": { "valor": 5, "exacto": "5", "entero": true },
+      "tambien": [ { "fn": "potencia", "args": [{ "base": 2, "exp": -2 }], "espera": { "valor": 0.25, "texto": "1/4" } },
+                   { "fn": "log", "args": [{ "base": 2, "N": 5 }], "espera": { "valor": 2.321928094887362, "texto": "2,32", "entero": false } } ] },
+
+    { "nombre": "Logaritmos exactos no enteros y con base fraccionaria: log₆₄ 8 = 1/2, log₁/₂ (1/8) = 3, log₉ 27 = 3/2",
+      "fn": "log", "args": [{ "base": 64, "N": 8 }],
+      "espera": { "valor": 0.5, "exacto": "1/2" },
+      "tambien": [ { "args": [{ "base": "1/2", "N": "1/8" }], "espera": { "valor": 3, "exacto": "3" } },
+                   { "args": [{ "base": 9, "N": 27 }], "espera": { "valor": 1.5, "exacto": "3/2" } },
+                   { "args": [{ "base": 10, "N": "1/1000" }], "espera": { "valor": -3, "exacto": "−3" } } ] },
+
+    { "nombre": "Predicción del paso 2: log₂(8 · 4) = 5 (AL10 producto de logaritmos: 3 · 2 = 6; EL2 (log₂ 8) · 4 = 12; EL1 el número: 32)",
+      "fn": "logProducto", "args": [{ "base": 2, "a": 8, "b": 4 }],
+      "espera": { "valor": 5, "logA": 3, "logB": 2, "producto": 32, "errores.productoDeLogs.valor": 6, "errores.precedencia.valor": 12, "errores.numero.valor": 32 } },
+
+    { "nombre": "Predicción del paso 3: log₂(8 + 8) = 4 (AL10 suma de logaritmos: 6; AL10 producto: 9; EL1 el número: 16); log₂ 8 + log₂ 8 cae en 64",
+      "fn": "logSuma", "args": [{ "base": 2, "a": 8, "b": 8 }],
+      "espera": { "valor": 4, "suma": 16, "sumaDeLogsEs": 64, "errores.sumaDeLogs.valor": 6, "errores.productoDeLogs.valor": 9, "errores.numero.valor": 16 } },
+
+    { "nombre": "Predicción del paso 4: log₂ 64 / log₂ 8 = 2 = log₈ 64 (AL31 log(64/8): 3; AL31 invertido log₆₄ 8: 1/2; EL24 64/8 = 8)",
+      "fn": "cocienteLogs", "args": [{ "base": 2, "a": 64, "b": 8 }],
+      "espera": { "valor": 2, "cambioDeBase": 2, "logA": 6, "logB": 3, "errores.logDelCociente.valor": 3, "errores.invertido.valor": 0.5, "errores.invertido.texto": "1/2", "errores.cociente.valor": 8 },
+      "tambien": [ { "args": [{ "base": 10, "a": 64, "b": 8 }], "espera": { "valor": 2 } } ] },
+
+    { "nombre": "Predicción del paso 5: y = 2ˣ pasa por (3; 8), así que y = log₂ x pasa por (8; 3) (AL29 1/f: (3; 1/8); EL17 eje y: (−3; 8); EL18 eje x: (3; −8))",
+      "fn": "inversa", "args": [{ "base": 2, "x": 3 }],
+      "espera": { "texto": "(8; 3)", "reflejo": [8, 3], "errores.reciproco.texto": "(3; 1/8)", "errores.reflejoY.texto": "(−3; 8)", "errores.reflejoX.texto": "(3; −8)" },
+      "tambien": [ { "args": [{ "base": "1/2", "x": -2 }], "espera": { "texto": "(4; −2)", "errores.reciproco.texto": "(−2; 1/4)" } } ] },
+
+    { "nombre": "La gráfica: base 2 creciente y base 1/3 decreciente; las dos pasan por (0; 1) y su reflejo por (1; 0)",
+      "fn": "grafica", "args": [{ "base": 2, "desde": -2, "hasta": 3, "n": 5 }],
+      "espera": { "monotonia": "creciente", "exp": [[-2, 0.25], [-1, 0.5], [0, 1], [1, 2], [2, 4], [3, 8]], "log": [[0.25, -2], [0.5, -1], [1, 0], [2, 1], [4, 2], [8, 3]], "fijoExp": [0, 1], "fijoLog": [1, 0], "rangoExp": "⟨0; +∞⟩", "dominioLog": "⟨0; +∞⟩" },
+      "tambien": [ { "args": [{ "base": "1/3", "desde": -1, "hasta": 2, "n": 3 }], "espera": { "monotonia": "decreciente", "exp": [[-1, 3], [0, 1], [1, 0.3333333333333333], [2, 0.1111111111111111]] } } ] },
+
+    { "nombre": "Predicción del paso 6: 4^(x + 1) = 2^(3x) → 2^(2x + 2) = 2^(3x) → x = 2 (AL32 iguala exponentes: 1/2; EL7 potencia de potencia como suma: 3/2; EL8 4ⁿ = 2 · 2ⁿ: 1)",
+      "fn": "ecuacionBases", "args": [{ "b1": 4, "e1": [1, 1], "b2": 2, "e2": [3, 0] }],
+      "espera": { "valor": 2, "texto": "solo x = 2", "comun": 2, "expIzq": "2x + 2", "expDer": "3x", "comprobacion.izquierda": 64, "comprobacion.derecha": 64,
+        "errores.igualaExponentes.valor": 0.5, "errores.potenciaComoSuma.valor": 1.5, "errores.porBase.valor": 1 } },
+
+    { "nombre": "4ˣ = 2^(x + 3): x = 3; igualar exponentes (AL32) deja x = x + 3, sin solución; 9ˣ = 27^(x − 1): x = 3",
+      "fn": "ecuacionBases", "args": [{ "b1": 4, "e1": [1, 0], "b2": 2, "e2": [1, 3] }],
+      "espera": { "valor": 3, "texto": "solo x = 3", "errores.igualaExponentes.texto": "sin solución" },
+      "tambien": [ { "args": [{ "b1": 9, "e1": [1, 0], "b2": 27, "e2": [1, -1] }], "espera": { "valor": 3, "comun": 3, "expIzq": "2x", "expDer": "3x − 3" } } ] },
+
+    { "nombre": "Predicción del paso 7: 4ˣ − 3 · 2ˣ + 2 = 0 con u = 2ˣ: u = 1 y u = 2, así que x = 0 y x = 1 (EL3 se queda en u: 1 y 2; EL4 descarta 2ˣ = 1: solo 1)",
+      "fn": "cambioVariable", "args": [{ "base": 2, "b": -3, "c": 2 }],
+      "espera": { "u": [1, 2], "soluciones": [0, 1], "texto": "x = 0 y x = 1", "errores.seQuedaEnU.texto": "x = 1 y x = 2", "errores.descartaUno.texto": "solo x = 1" } },
+
+    { "nombre": "9ˣ − 6 · 3ˣ − 27 = 0: u = 9 o u = −3; la negativa se descarta porque 3ˣ > 0: solo x = 2",
+      "fn": "cambioVariable", "args": [{ "base": 3, "b": -6, "c": -27 }],
+      "espera": { "u": [-3, 9], "descartadas": [-3], "soluciones": [2], "texto": "solo x = 2", "errores.seQuedaEnU.texto": "x = −3 y x = 9" } },
+
+    { "nombre": "Predicción del paso 8: log₂ x + log₂(x − 2) = 3 → x(x − 2) = 8 → x = 4 o x = −2; −2 hace negativos los argumentos (EL5: las dos; AL10 log(2x − 2) = 3: 5; EL14 sin elevar: 3)",
+      "fn": "ecuacionLog", "args": [{ "base": 2, "p": 0, "q": -2, "valor": 3 }],
+      "espera": { "producto": 8, "candidatas": [-2, 4], "extranas": [-2], "soluciones": [4], "texto": "solo x = 4", "dominio.desde": 2, "argumentos": [[-2, -4], [4, 2]],
+        "errores.sinVerificar.texto": "x = −2 y x = 4", "errores.sumaArgumentos.texto": "solo x = 5", "errores.sinElevar.texto": "solo x = 3" } },
+
+    { "nombre": "log x + log(x + 3) = 1 (base 10): x(x + 3) = 10, x = 2 o x = −5; solo x = 2",
+      "fn": "ecuacionLog", "args": [{ "base": 10, "p": 0, "q": 3, "valor": 1 }],
+      "espera": { "candidatas": [-5, 2], "soluciones": [2], "dominio.desde": 0, "errores.sumaArgumentos.valor": [3.5] } },
+
+    { "nombre": "Qué pasa si 4: (1/2)ˣ > 1/8 → x < 3, la desigualdad se invierte (EL6 sin invertir: x > 3; EL15: x > −3; EL25: x < −3); con base 3: 3ˣ ≤ 81 → x ≤ 4",
+      "fn": "inecuacionExp", "args": [{ "base": "1/2", "cota": "1/8", "sentido": ">" }],
+      "espera": { "texto": "x < 3", "invierte": true, "borde": 3, "errores.sentidoContrario.texto": "x > 3", "errores.signoPerdido.texto": "x > −3", "errores.bordeOpuesto.texto": "x < −3" },
+      "tambien": [ { "args": [{ "base": 3, "cota": 81, "sentido": "≤" }], "espera": { "texto": "x ≤ 4", "invierte": false } } ] },
+
+    { "nombre": "Predicción del paso 9: 1 bacteria que se duplica cada hora; a las 6 h hay 64 (AL33 t²: 36; EL10 un periodo de menos: 32; EL9 regla de tres desde las 3 h: 16)",
+      "fn": "crecimiento", "args": [{ "N0": 1, "factor": 2, "t": 6, "ref": 3 }],
+      "espera": { "valor": 64, "serie": [1, 2, 4, 8, 16, 32, 64], "cuadratica": [0, 1, 4, 9, 16, 25, 36], "errores.cuadratico.valor": 36, "errores.unPeriodoMenos.valor": 32, "errores.proporcional.valor": 16, "errores.lineal.valor": 7 },
+      "tambien": [ { "args": [{ "N0": 500, "factor": 3, "t": 4 }], "espera": { "valor": 40500 } } ] },
+
+    { "nombre": "Qué pasa si 5: 80 g con vida media de 5 años; a los 15 años quedan 10 g (EL11 lineal: 0; EL10 una de menos: 20; EL12 divide entre 3: 80/3)",
+      "fn": "decaimiento", "args": [{ "N0": 80, "vidaMedia": 5, "t": 15 }],
+      "espera": { "valor": 10, "periodos": 3, "serie": [80, 40, 20, 10], "errores.lineal.valor": 0, "errores.unaMenos.valor": 20, "errores.divide.valor": 26.666666666666668 },
+      "tambien": [ { "args": [{ "N0": 64, "vidaMedia": 8, "t": 12 }], "espera": { "valor": 22.627416997969522, "periodos": 1.5 } } ] },
+
+    { "nombre": "Qué pasa si 6: 2ˣ y x² empatan en x = 2 y x = 4; desde x = 5, 2ˣ gana para siempre (EL16: 4; EL22: 2; AL33 nunca)",
+      "fn": "compararCrecimiento", "args": [{ "base": 2, "grado": 2, "hasta": 6 }],
+      "espera": { "desde": 5, "empates": [2, 4], "tabla": [[0, 1, 0], [1, 2, 1], [2, 4, 4], [3, 8, 9], [4, 16, 16], [5, 32, 25], [6, 64, 36]], "errores.ultimoEmpate.valor": 4, "errores.primerEmpate.valor": 2, "errores.nunca.texto": "ningún x" },
+      "tambien": [ { "args": [{ "base": 2, "grado": 3, "hasta": 12 }], "espera": { "desde": 10, "empates": [] } } ] },
+
+    { "nombre": "Qué pasa si 1: si 2ˣ = 5, 2^(x + 1) = 10 (AL11 reparte: 5 + 2 = 7; EL19 suma 1: 6; EL20 eleva: 25)",
+      "fn": "potenciaDesplazada", "args": [{ "base": 2, "valor": 5, "k": 1 }],
+      "espera": { "valor": 10, "x": 2.321928094887362, "errores.reparte.valor": 7, "errores.sumaK.valor": 6, "errores.eleva.valor": 25 } },
+
+    { "nombre": "Qué pasa si 2: si log₂ a = 3, log₂(a²) = 6 (AL31 (log a)²: 9; EL23 log a + 2: 5; EL1 el número a² = 64)",
+      "fn": "logPotencia", "args": [{ "base": 2, "logA": 3, "n": 2 }],
+      "espera": { "valor": 6, "a": 8, "an": 64, "errores.cuadradoDelLog.valor": 9, "errores.sumaN.valor": 5, "errores.numero.valor": 64 } },
+
+    { "nombre": "Qué pasa si 3: log₅ 1 + log₅ 5 = 0 + 1 = 1 (EL1 suma los números: 6; EL13 log 1 = 1: 2; EL21 log₅ 5 = 0: 0)",
+      "fn": "sumaLogs", "args": [{ "base": 5, "args": [1, 5] }],
+      "espera": { "valor": 1, "logs": [0, 1], "errores.numero.valor": 6, "errores.logUnoEsUno.valor": 2, "errores.logBaseCero.valor": 0 } },
+
+    { "nombre": "La regla del paso 1 y del paso 6: la escalera del 2 de −2 a 6 y la del 4 de 0 a 3 (cada salto de ×4 son dos de ×2)",
+      "fn": "regla", "args": [{ "base": 2, "desde": -2, "hasta": 6 }],
+      "espera": { "factor": "2", "marcas": [{ "k": -2, "valor": 0.25, "texto": "1/4" }, { "k": -1, "valor": 0.5, "texto": "1/2" }, { "k": 0, "valor": 1, "texto": "1" }, { "k": 1, "valor": 2, "texto": "2" }, { "k": 2, "valor": 4, "texto": "4" }, { "k": 3, "valor": 8, "texto": "8" }, { "k": 4, "valor": 16, "texto": "16" }, { "k": 5, "valor": 32, "texto": "32" }, { "k": 6, "valor": 64, "texto": "64" }] },
+      "tambien": [ { "args": [{ "base": 4, "desde": 0, "hasta": 3 }], "espera": { "marcas": [{ "k": 0, "valor": 1, "texto": "1" }, { "k": 1, "valor": 4, "texto": "4" }, { "k": 2, "valor": 16, "texto": "16" }, { "k": 3, "valor": 64, "texto": "64" }] } } ] }
+  ]
+}

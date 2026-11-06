@@ -1,0 +1,1226 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La escalera de la base: exponenciales y logaritmos</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de cuadrado-crece.
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
+   la base b (y el factor de cada salto o periodo) naranja, el exponente x (que es el logaritmo, el número de saltos)
+   fucsia, la potencia N = bˣ (el número al que se llega, también u = 2ˣ y la cantidad de bacterias o de gramos) azul,
+   el tiempo t verde y t² turquesa. La curva y = bˣ va en azul porque su altura es una potencia, y y = log_b x en
+   fucsia porque su altura es un exponente. La recta y = x, los ejes y los totales van en tinta o en gris.
+   Elegidos con CIEDE2000: ΔE00 mínimo 23,6 en claro (t–t²) y 25,3 en oscuro, y contraste AA sobre el papel y sobre
+   su chip (.v, fondo al 8 %): el más bajo es t² en claro, 4,63. El naranja de b queda a ΔE00 21,9 del rojo de los avisos. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-b:#a05200; --c-x:#a10fbf; --c-N:#1f5fbf; --c-t:#466d14; --c-q:#0f766e;
+  --relleno:.16;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-b:#f0a04a; --c-x:#cf6bfa; --c-N:#7cb0ff; --c-t:#a3d65e; --c-q:#5ed9c8;
+  --relleno:.2; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-b:#f0a04a; --c-x:#cf6bfa; --c-N:#7cb0ff; --c-t:#a3d65e; --c-q:#5ed9c8;
+  --relleno:.2; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+/* Celular con una predicción pendiente: el dibujo más bajo y pegado arriba, para que se vea mientras se elige. */
+@media (max-width:899px){
+  .mode.pendiente .bench{position:sticky; top:0; z-index:1; padding:6px; gap:4px; background:var(--card); border-radius:0 0 20px 20px}
+  .mode.pendiente .legend{display:none}
+  .mode.pendiente .lecturas{gap:4px}
+  .mode.pendiente .lectura{padding:2px 8px}
+}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+.lienzo:focus-within{outline:3px solid var(--ink); outline-offset:2px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:12px; height:12px; border-radius:3px; display:inline-block; border:2px solid; opacity:.9}
+.legend i.linea{width:16px; height:0; border-width:3px 0 0; border-radius:0}
+.legend i.trazos{width:16px; height:0; border-width:2px 0 0; border-style:dashed; border-radius:0}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-b{color:var(--c-b); background:color-mix(in srgb, var(--c-b) 8%, transparent)}
+.v-x{color:var(--c-x); background:color-mix(in srgb, var(--c-x) 8%, transparent)}
+.v-N{color:var(--c-N); background:color-mix(in srgb, var(--c-N) 8%, transparent)}
+.v-t{color:var(--c-t); background:color-mix(in srgb, var(--c-t) 8%, transparent)}
+.v-q{color:var(--c-q); background:color-mix(in srgb, var(--c-q) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+sup .v, sub .v{padding:0 1px}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{font-family:var(--mono); font-size:1.02rem; line-height:1.9; font-variant-numeric:tabular-nums}
+.eq .note{display:inline-block; font-family:var(--font); font-size:.84rem; line-height:1.3; color:var(--muted); margin-left:.5em; white-space:normal}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt .m{font-family:var(--mono); font-variant-numeric:tabular-nums}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+
+.pasos{display:flex; flex-wrap:wrap; gap:8px 14px; align-items:center}
+.paso{display:inline-flex; align-items:center; gap:6px; font-weight:800}
+.paso button{width:44px; height:44px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); font:800 1.2rem var(--font); cursor:pointer}
+.paso button:disabled{opacity:.4; cursor:not-allowed}
+.paso output{min-width:3.2em; text-align:center; font-family:var(--mono); font-variant-numeric:tabular-nums}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+/* Lecturas en vivo, cada una con el color de su variable */
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(96px, 1fr)); gap:8px}
+.lecturas:empty{display:none}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura b{display:block; color:var(--k); font:800 1.02rem var(--mono); font-variant-numeric:tabular-nums; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.lectura span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.3fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Álgebra · Exponenciales y logaritmos · Problemas tipo admisión</p>
+      <h1>La escalera de la base</h1>
+      <p class="sub">Cada salto multiplica por la base; el logaritmo cuenta los saltos. Mira qué reglas salen de ahí y cuáles solo lo parecen.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo de la escena">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Dibujo de la escena"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Dibujo del experimento">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/exponenciales-logaritmos">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'exponenciales-logaritmos', unidad: 'algebra.exponenciales-y-logaritmos', version: '0.1.0' };
+const U_INV = 'algebra.tipos-de-funciones-e-inversa';
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0, unidad){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: unidad || PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la matemática (potencias, logaritmos, las marcas de la escalera, los puntos de las curvas, las ecuaciones con
+   sus raíces extrañas, el crecimiento, el decaimiento y los errores típicos) sale de MotorExpLog (motor.js);
+   aquí solo se pinta, se arrastra y se anima. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const ME = MotorExpLog;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+// Coma decimal, espacio de miles (desde 5 cifras) y signo menos tipográfico.
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 2 : d), r = Math.round(n*p)/p + 0;
+  let [e, f] = String(Math.abs(r)).split('.');
+  if (e.length > 4) e = e.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const b_ = t => V('b', t), x_ = t => V('x', t), N_ = t => V('N', t), t_ = t => V('t', t), q_ = t => V('q', t);
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+const lerp = (a, b, f) => a + (b - a)*f;
+function tween(dur, paso, fin, lineal){
+  if (RM || !dur){ paso(1); if (fin) setTimeout(fin, 0); return; }
+  const t0 = performance.now();
+  const tick = now => { const f = Math.min(1, (now - t0)/dur); paso(lineal ? f : suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
+  requestAnimationFrame(tick);
+}
+const sinSolo = t => t.replace(/^solo /, '');
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span class="m">${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+
+function colores(){
+  const g = n => css(n);
+  const c = { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'), warn:g('--warn'), ok:g('--ok'),
+    relleno:Number(g('--relleno')) || .16, mono:g('--mono'), font:g('--font') };
+  for (const k of ['b', 'x', 'N', 't', 'q']) c[k] = g('--c-' + k);
+  return c;
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, p, q){ ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke(); }
+// Texto con un fondo del color del papel detrás, para que se lea sobre las líneas.
+function rotulo(ctx, c, x, y, t, color, align, peso, tam){
+  ctx.font = `${peso || 700} ${tam || 13}px ${c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+  ctx.fillStyle = color; ctx.fillText(t, x, y);
+  return w;
+}
+// Resaltar en el dibujo la variable que se toca en el texto (regla 4).
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+// En el celular, el dibujo se lleva arriba de la pantalla antes de animar; si el alumno cambió de paso, no se anima.
+function alDibujo(cv, sigue, fn){
+  const chico = innerWidth < 900;
+  if (chico) cv.scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+  esperar(chico ? 380 : 0, () => { if (sigue()) fn(); });
+}
+// Superíndices para los rótulos del lienzo
+const SUP = { '0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹','−':'⁻','-':'⁻','x':'ˣ','t':'ᵗ' };
+const sup = t => String(t).split('').map(ch => SUP[ch] || ch).join('');
+// Un orden fijo «al azar» para los cuadritos que decaen (solo para el dibujo).
+function ordenFijo(n, sem){ const o = [...Array(n).keys()]; let s = sem >>> 0; for (let i = n - 1; i > 0; i--){ s = (Math.imul(s, 1664525) + 1013904223) >>> 0; const j = s % (i + 1); [o[i], o[j]] = [o[j], o[i]]; } const r = new Array(n); o.forEach((c, k) => { r[c] = k; }); return r; }
+
+/* ================= La escena =================
+   Modos:
+     regla    la escalera de la base: marcas a la misma distancia, en la marca k va bᵏ; cada salto multiplica por b.
+              Arcos que se pintan de a poco, marcas sueltas (5, 10, 7…) en su logaritmo y un marcador que se arrastra.
+     grafica  plano cartesiano con curvas que da el motor, la recta y = x, una franja de solución y un punto que se
+              arrastra sobre y = bˣ y se refleja.
+     cultivo  columnas de cuadritos (cada uno, una bacteria) por hora, con una barra fina de t² al lado.
+     decae    una cuadrícula de N₀ cuadritos (gramos) que pierde la mitad en cada vida media.
+     recta    la recta numérica de una ecuación logarítmica: dónde existe cada logaritmo y las raíces candidatas. */
+function crearEscena(cv, idDesc, idLect, idLey){
+  const E = { modo:'regla', lect:[], ley:null, hl:null, alCambiar:null, ocupado:false, tok:0, cad:0, anim:false, compacto:false,
+    regla:null, graf:null, cul:null, dec:null, recta:null };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, arrastrando = false, sobre = false;
+  const chico = () => innerWidth < 900;
+  function alto(w){
+    if (E.compacto && chico()) return Math.round(clamp(w*0.62, 220, 245));
+    const g = innerWidth >= 900 ? Math.max(300, Math.min(520, innerHeight - 230)) : 420;
+    if (E.modo === 'regla') return w >= 560 ? 250 : 220;
+    if (E.modo === 'recta') return w >= 560 ? 230 : 210;
+    if (E.modo === 'grafica') return Math.min(g, w >= 560 ? 420 : Math.round(w*0.95));
+    if (E.modo === 'decae') return w >= 560 ? 330 : 280;
+    return w >= 560 ? Math.min(g, 380) : 300;
+  }
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    const h = alto(w), dpr = window.devicePixelRatio || 1;
+    if (w === W && h === H) { E.dibujar(); return; }
+    W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  alRedibujarTema(() => E.dibujar());
+
+  E.config = o => {
+    E.tok++; E.cad++; E.anim = false;   // una animación vieja no sigue moviendo el dibujo nuevo
+    Object.assign(E, { modo:'regla', lect:[], ley:null, alCambiar:null, regla:null, graf:null, cul:null, dec:null, recta:null }, o);
+    if (E.regla) E.regla = Object.assign({ base:2, desde:0, hasta:6, etiquetas:'todas', exps:true, arcos:[], marcas:[], ptr:null, arrastre:false, saltosBase:true }, E.regla);
+    if (E.graf) E.graf = Object.assign({ xr:[-3, 5], yr:[-1, 8], igual:false, curvas:[], puntos:[], yx:false, horiz:[], sombra:null, P:null, reflejo:null }, E.graf);
+    if (E.cul) E.cul = Object.assign({ k:6, fCuad:0, conteos:7 }, E.cul);
+    if (E.dec) E.dec = Object.assign({ k:0, orden:ordenFijo(E.dec.N0, 7) }, E.dec);
+    if (E.recta) E.recta = Object.assign({ xr:[-4, 7], franjas:[], cand:[], fDom:0 }, E.recta);
+    cv.tabIndex = arrastrable() ? 0 : -1;
+    W = 0; resize(); E.leyenda(); E.dibujar(); E.avisar();
+  };
+  const arrastrable = () => (E.modo === 'regla' && E.regla && E.regla.arrastre) || (E.modo === 'grafica' && E.graf && E.graf.P && E.graf.P.arrastre);
+  // Con una predicción pendiente en el celular, el dibujo se achica y queda pegado arriba (sticky) para verse al elegir.
+  E.compactar = on => { on = !!on; cv.closest('.mode').classList.toggle('pendiente', on); if (on === E.compacto) return; E.compacto = on; W = 0; resize(); };
+  const grosor = (k, base) => (E.hl === k ? base + 2.5 : base);
+
+  // ----- la escalera (regla) -----
+  function geoRegla(){
+    const R = E.regla, l = 34, r = 22, n = R.hasta - R.desde, paso = (W - l - r)/n;
+    const y0 = Math.round(H*0.56);
+    return { X: k => l + (k - R.desde)*paso, paso, y0, h1: Math.min(paso*0.42, 30), l, r };
+  }
+  // Un arco de a hasta b sobre la recta (o debajo si nivel < 0), dibujado hasta la fracción f.
+  function arco(c, g, de, a, alt, color, ancho, f, dash, texto, flecha){
+    const x1 = g.X(de), x2 = g.X(a), m = (x1 + x2)/2, y = g.y0 - 3;
+    const P = t => { const u = 1 - t; return { x: u*u*x1 + 2*u*t*m + t*t*x2, y: u*u*y + 2*u*t*(y - 2*alt) + t*t*y }; };
+    ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = ancho; ctx.setLineDash(dash ? [5, 4] : []); ctx.lineCap = 'round';
+    ctx.beginPath(); const N = 30, hasta = Math.max(0, Math.min(1, f));
+    for (let i = 0; i <= N*hasta; i++){ const p = P(i/N); if (i === 0) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y); }
+    const pf = P(hasta); ctx.lineTo(pf.x, pf.y); ctx.stroke(); ctx.setLineDash([]);
+    if (flecha && hasta > 0.05){
+      const q = P(Math.max(0, hasta - 0.04)), ang = Math.atan2(pf.y - q.y, pf.x - q.x), s = 6 + ancho;
+      ctx.fillStyle = color; ctx.beginPath(); ctx.moveTo(pf.x, pf.y);
+      ctx.lineTo(pf.x - s*Math.cos(ang - .45), pf.y - s*Math.sin(ang - .45)); ctx.lineTo(pf.x - s*Math.cos(ang + .45), pf.y - s*Math.sin(ang + .45)); ctx.fill();
+    }
+    ctx.restore();
+    if (texto && hasta >= 1) rotulo(ctx, colores(), m, y - alt - 8, texto, color, 'center', 800, 12);
+  }
+  function dibRegla(c){
+    const R = E.regla, g = geoRegla(), M = ME.regla({ base:R.base, desde:R.desde, hasta:R.hasta }).marcas;
+    const visible = k => R.etiquetas === 'todas' || R.etiquetas.includes(k);
+    const expVisible = k => R.exps === true || (Array.isArray(R.exps) && R.exps.includes(k));
+    // la recta
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, { x:g.X(R.desde) - 10, y:g.y0 }, { x:g.X(R.hasta) + 10, y:g.y0 });
+    // los saltos de la escalera: cada uno multiplica por la base
+    if (R.saltosBase) for (let k = R.desde; k < R.hasta; k++){
+      // el «×b» de cada salto, salvo debajo de un arco resaltado (para que no se monten los rótulos)
+      const tapado = R.arcos.some(A => A.de <= k + .01 && A.a >= k + .99 && (A.f === undefined || A.f > 0));
+      const conTexto = !tapado && (g.paso >= 36 || k === R.desde);
+      arco(c, g, k, k + 1, g.h1, c.b, grosor('b', 1.3), 1, false, null, true);
+      if (conTexto){ ctx.save(); ctx.globalAlpha = .85; rotulo(ctx, c, (g.X(k) + g.X(k + 1))/2, g.y0 - g.h1 - 10, `×${R.factorTexto || ME.regla({ base:R.base, desde:0, hasta:1 }).factor}`, c.b, 'center', 700, 11); ctx.restore(); }
+    }
+    // arcos resaltados
+    for (const A of R.arcos){
+      const alt = A.nivel === 2 ? g.h1 + 26 + Math.min(18, (A.a - A.de)*6) : A.nivel === 3 ? g.h1 + 52 : g.h1;
+      arco(c, g, A.de, A.a, alt, c[A.color] || A.color, grosor(A.color, A.ancho || 3.2), A.f === undefined ? 1 : A.f, A.dash, A.texto, true);
+    }
+    // marcas, potencias (azul) y exponentes (fucsia)
+    for (const m of M){
+      const x = g.X(m.k);
+      ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, { x, y:g.y0 - 6 }, { x, y:g.y0 + 6 });
+      if (visible(m.k)) rotulo(ctx, c, x, g.y0 + 20, m.texto, c.N, 'center', E.hl === 'N' ? 900 : 800, g.paso < 34 ? 11 : 14);
+      else rotulo(ctx, c, x, g.y0 + 20, '·', c.muted, 'center', 700, 14);
+      if (expVisible(m.k)) rotulo(ctx, c, x, g.y0 + 44, (m.k < 0 ? '−' + (-m.k) : String(m.k)), c.x, 'center', E.hl === 'x' ? 900 : 800, 13);
+    }
+    rotulo(ctx, c, 6, g.y0 + 20, 'N', c.N, 'left', 800, 13);
+    if (R.exps) rotulo(ctx, c, 6, g.y0 + 44, 'x', c.x, 'left', 800, 13);
+    // marcas sueltas en su logaritmo (5, 10, 7…), con el rótulo arriba
+    for (const m of R.marcas){
+      const x = g.X(m.pos), col = c[m.color] || m.color;
+      ctx.save(); ctx.globalAlpha = m.f === undefined ? 1 : m.f;
+      ctx.strokeStyle = col; ctx.lineWidth = 2.5; ctx.setLineDash(m.dash ? [4, 3] : []); linea(ctx, { x, y:g.y0 - (m.alto || 30) }, { x, y:g.y0 + 8 }); ctx.setLineDash([]);
+      rotulo(ctx, c, x, g.y0 - (m.alto || 30) - 10, m.texto, col, 'center', 800, 13);
+      if (m.tachar){ ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, { x:x - 7, y:g.y0 - 7 }, { x:x + 7, y:g.y0 + 7 }); linea(ctx, { x:x + 7, y:g.y0 - 7 }, { x:x - 7, y:g.y0 + 7 }); }
+      ctx.restore();
+    }
+    // el marcador que se arrastra: está en el salto x y señala la potencia
+    if (R.ptr !== null){
+      const x = g.X(R.ptr), y = g.y0 + 60;
+      ctx.fillStyle = c.x; ctx.beginPath(); ctx.moveTo(x, y - 9); ctx.lineTo(x - 11, y + 9); ctx.lineTo(x + 11, y + 9); ctx.closePath(); ctx.fill();
+      if (arrastrando || sobre){ ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.stroke(); }
+      ctx.strokeStyle = c.x; ctx.lineWidth = 2; ctx.setLineDash([3, 3]); linea(ctx, { x, y:y - 10 }, { x, y:g.y0 + 30 }); ctx.setLineDash([]);
+    }
+  }
+
+  // ----- la gráfica -----
+  function geoGraf(){
+    const G = E.graf, l = 30, r = 14, t = 14, b = 26;
+    let sx = (W - l - r)/(G.xr[1] - G.xr[0]), sy = (H - t - b)/(G.yr[1] - G.yr[0]), ox = l, oy = t;
+    if (G.igual){ const s = Math.min(sx, sy); ox = l + (W - l - r - s*(G.xr[1] - G.xr[0]))/2; oy = t + (H - t - b - s*(G.yr[1] - G.yr[0]))/2; sx = sy = s; }
+    return { X: x => ox + (x - G.xr[0])*sx, Y: y => oy + (G.yr[1] - y)*sy, wx: px => G.xr[0] + (px - ox)/sx, sx, sy, ox, oy,
+      x0: ox, x1: ox + sx*(G.xr[1] - G.xr[0]), y0: oy, y1: oy + sy*(G.yr[1] - G.yr[0]) };
+  }
+  const pasoEje = s => [1, 2, 5, 10, 20, 50, 100].find(p => p*s >= 26) || 200;
+  function polilinea(g, pts, hasta, mapa){
+    const G = E.graf; let abierto = false;
+    ctx.beginPath();
+    for (const p0 of pts){
+      const p = mapa ? mapa(p0) : p0;
+      if (hasta !== undefined && p0[0] > hasta) break;
+      const dentro = p[1] >= G.yr[0] - (G.yr[1] - G.yr[0]) && p[1] <= G.yr[1] + (G.yr[1] - G.yr[0]) && p[0] >= G.xr[0] - 2 && p[0] <= G.xr[1] + 2;
+      if (!dentro){ abierto = false; continue; }
+      if (!abierto){ ctx.moveTo(g.X(p[0]), g.Y(p[1])); abierto = true; } else ctx.lineTo(g.X(p[0]), g.Y(p[1]));
+    }
+    ctx.stroke();
+  }
+  function dibGrafica(c){
+    const G = E.graf, g = geoGraf();
+    ctx.save(); ctx.beginPath(); ctx.rect(g.x0, g.y0, g.x1 - g.x0, g.y1 - g.y0); ctx.clip();
+    // cuadrícula
+    const px = pasoEje(g.sx), py = pasoEje(g.sy);
+    ctx.strokeStyle = c.grid; ctx.lineWidth = 1;
+    for (let x = Math.ceil(G.xr[0]/px)*px; x <= G.xr[1]; x += px) linea(ctx, { x:g.X(x), y:g.y0 }, { x:g.X(x), y:g.y1 });
+    for (let y = Math.ceil(G.yr[0]/py)*py; y <= G.yr[1]; y += py) linea(ctx, { x:g.x0, y:g.Y(y) }, { x:g.x1, y:g.Y(y) });
+    // franja de la solución (sobre el eje x, en el color del exponente)
+    if (G.sombra){
+      const a = Math.max(G.xr[0], G.sombra.x0), b = Math.min(G.xr[1], G.sombra.x1);
+      ctx.save(); ctx.globalAlpha = c.relleno*(G.sombra.f === undefined ? 1 : G.sombra.f); ctx.fillStyle = c.x; ctx.fillRect(g.X(a), g.y0, g.X(b) - g.X(a), g.y1 - g.y0); ctx.restore();
+    }
+    // recta y = x
+    if (G.yx){ ctx.save(); ctx.globalAlpha = G.yx === true ? 1 : G.yx; ctx.strokeStyle = c.muted; ctx.lineWidth = 1.5; ctx.setLineDash([6, 5]);
+      const lo = Math.max(G.xr[0], G.yr[0]), hi = Math.min(G.xr[1], G.yr[1]); linea(ctx, { x:g.X(lo), y:g.Y(lo) }, { x:g.X(hi), y:g.Y(hi) }); ctx.setLineDash([]); ctx.restore(); }
+    // rectas horizontales
+    for (const h of G.horiz){ ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; ctx.setLineDash([4, 4]); linea(ctx, { x:g.x0, y:g.Y(h.y) }, { x:g.x1, y:g.Y(h.y) }); ctx.setLineDash([]); }
+    // curvas
+    for (const C of G.curvas){
+      ctx.save(); ctx.globalAlpha = C.alfa === undefined ? 1 : C.alfa;
+      ctx.strokeStyle = c[C.color] || C.color; ctx.lineWidth = grosor(C.color, C.ancho || 3); ctx.setLineDash(C.dash ? [7, 5] : []); ctx.lineJoin = 'round';
+      polilinea(g, C.pts, C.hasta); ctx.restore();
+    }
+    // el reflejo: cada punto (a; b) va hacia (b; a)
+    if (G.reflejo && G.reflejo.f > 0){
+      const f = G.reflejo.f;
+      ctx.strokeStyle = c.x; ctx.lineWidth = grosor('x', 3); ctx.setLineDash(f < 1 ? [6, 4] : []);
+      polilinea(g, G.reflejo.pts, undefined, p => [lerp(p[0], p[1], f), lerp(p[1], p[0], f)]); ctx.setLineDash([]);
+    }
+    ctx.restore();
+    // ejes
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5;
+    if (G.yr[0] <= 0 && G.yr[1] >= 0) linea(ctx, { x:g.x0, y:g.Y(0) }, { x:g.x1, y:g.Y(0) });
+    if (G.xr[0] <= 0 && G.xr[1] >= 0) linea(ctx, { x:g.X(0), y:g.y0 }, { x:g.X(0), y:g.y1 });
+    ctx.fillStyle = c.muted; ctx.font = `600 11px ${c.font}`; ctx.textBaseline = 'top'; ctx.textAlign = 'center';
+    const yEje = clamp(g.Y(0), g.y0, g.y1);
+    for (let x = Math.ceil(G.xr[0]/px)*px; x <= G.xr[1]; x += px) if (x !== 0) ctx.fillText(fmt(x, 2), g.X(x), Math.min(yEje + 4, g.y1 + 4));
+    ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    const xEje = clamp(g.X(0), g.x0, g.x1);
+    for (let y = Math.ceil(G.yr[0]/py)*py; y <= G.yr[1]; y += py) if (y !== 0) ctx.fillText(fmt(y, 2), Math.max(xEje - 4, 26), g.Y(y));
+    for (const h of G.horiz) if (h.texto) rotulo(ctx, c, g.x1 - 4, g.Y(h.y) - 11, h.texto, c.ink, 'right', 700, 12);
+    for (const C of G.curvas) if (C.etiqueta && (C.alfa === undefined || C.alfa > .5)) rotulo(ctx, c, g.X(C.etiqueta[0]), g.Y(C.etiqueta[1]), C.etiqueta[2], c[C.color] || C.color, C.etiqueta[3] || 'left', 800, 13);
+    if (G.reflejo && G.reflejo.f >= 1 && G.reflejo.etiqueta) rotulo(ctx, c, g.X(G.reflejo.etiqueta[0]), g.Y(G.reflejo.etiqueta[1]), G.reflejo.etiqueta[2], c.x, G.reflejo.etiqueta[3] || 'left', 800, 13);
+    if (G.yx && G.yx === true) rotulo(ctx, c, g.X(Math.min(G.xr[1], G.yr[1]) - .3), g.Y(Math.min(G.xr[1], G.yr[1]) - .3) + 12, 'y = x', c.muted, 'right', 700, 12);
+    // puntos
+    const pinta = (x, y, col, t, lado) => {
+      if (y < G.yr[0] - .01 || y > G.yr[1] + .01 || x < G.xr[0] - .01 || x > G.xr[1] + .01) return;
+      const X = g.X(x), Y = g.Y(y);
+      ctx.fillStyle = col; ctx.strokeStyle = c.paper; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(X, Y, 6, 0, 7); ctx.fill(); ctx.stroke();
+      if (t) rotulo(ctx, c, X + (lado === 'izq' ? -10 : 10), Y - 14, t, c.ink, lado === 'izq' ? 'right' : 'left', 800, 13);
+    };
+    for (const p of G.puntos) pinta(p.x, p.y, c[p.color] || p.color, p.texto, p.lado);
+    if (G.P){
+      const P = G.P, f = G.reflejo ? G.reflejo.f : 0;
+      if (G.reflejo && P.reflejar && f > 0) pinta(lerp(P.x, P.y, f), lerp(P.y, P.x, f), c.x, f >= 1 ? `(${fmt(P.y)}; ${fmt(P.x)})` : '', P.y > G.yr[1]*.7 ? 'izq' : 'der');
+      pinta(P.x, P.y, c.N, P.sinTexto ? '' : `(${fmt(P.x)}; ${fmt(P.y)})`, P.x > (G.xr[0] + G.xr[1])/2 ? 'izq' : 'der');
+      if (P.arrastre && (arrastrando || sobre)){ ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(g.X(P.x), g.Y(P.y), 11, 0, 7); ctx.stroke(); }
+    }
+  }
+
+  // ----- el cultivo: columnas de cuadritos -----
+  function dibCultivo(c){
+    const C = E.cul, T = C.serie.length - 1, ancho = 4, filasMax = Math.ceil(Math.max(...C.serie)/ancho);
+    const grupo = ancho + (C.cuad ? 1.6 : 0) + 1.4;
+    const s = Math.max(3, Math.min((W - 24)/((T + 1)*grupo), (H - 64)/filasMax, 18));
+    const ox = (W - (T + 1)*grupo*s)/2 + .7*s, base = H - 30;
+    for (let t = 0; t <= T; t++){
+      const x0 = ox + t*grupo*s, n = C.serie[t], visible = clamp(C.k - t + 1, 0, 1);
+      // la columna de bacterias
+      if (visible > 0){
+        ctx.save(); ctx.globalAlpha = visible;
+        for (let i = 0; i < n; i++){
+          const col = i % ancho, fila = Math.floor(i/ancho), x = x0 + col*s, y = base - (fila + 1)*s;
+          ctx.fillStyle = c.N; ctx.globalAlpha = visible*(E.hl === 'N' ? .55 : .32); ctx.fillRect(x + .6, y + .6, s - 1.2, s - 1.2);
+          ctx.globalAlpha = visible; ctx.strokeStyle = c.N; ctx.lineWidth = s > 8 ? 1.2 : .8; ctx.strokeRect(x + .6, y + .6, s - 1.2, s - 1.2);
+        }
+        ctx.restore();
+        if (t < C.conteos && visible >= 1) rotulo(ctx, c, x0 + ancho*s/2, base - Math.ceil(n/ancho)*s - 11, fmt(n, 0), c.N, 'center', 800, 13);
+      } else {
+        ctx.strokeStyle = c.line; ctx.lineWidth = 1.5; ctx.setLineDash([3, 3]); ctx.strokeRect(x0, base - 2*s, ancho*s, 2*s); ctx.setLineDash([]);
+        rotulo(ctx, c, x0 + ancho*s/2, base - 2*s - 11, '?', c.muted, 'center', 800, 13);
+      }
+      // la barra fina de t²: su alto es t²/4 filas, el mismo que tendría una columna de t² cuadritos
+      if (C.cuad && C.fCuad > 0){
+        const h = C.cuad[t]/ancho*s*C.fCuad, x = x0 + (ancho + .4)*s;
+        ctx.fillStyle = c.q; ctx.globalAlpha = E.hl === 'q' ? .9 : .7; ctx.fillRect(x, base - h, 1.1*s, h); ctx.globalAlpha = 1;
+        if (C.fCuad >= 1 && C.cuad[t] > 0 && t >= T - 2) rotulo(ctx, c, x + .55*s, base - h - 11, fmt(C.cuad[t], 0), c.q, 'center', 800, 12);
+      }
+      rotulo(ctx, c, x0 + ancho*s/2, base + 14, `${t} h`, c.t, 'center', E.hl === 't' ? 900 : 800, 12);
+    }
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; linea(ctx, { x:12, y:base }, { x:W - 12, y:base });
+  }
+
+  // ----- el decaimiento: cuadrícula que pierde la mitad -----
+  function dibDecae(c){
+    const D = E.dec, cols = D.cols || 10, filas = Math.ceil(D.N0/cols);
+    const s = Math.min((W - 40)/cols, (H - 50)/filas, 30), ox = (W - cols*s)/2, oy = 12 + (H - 50 - filas*s)/2;
+    const k0 = Math.floor(D.k + 1e-9), fr = D.k - k0, n0 = D.serie[Math.min(k0, D.serie.length - 1)], n1 = D.serie[Math.min(k0 + 1, D.serie.length - 1)];
+    for (let i = 0; i < D.N0; i++){
+      const r = D.orden[i], x = ox + (i % cols)*s, y = oy + Math.floor(i/cols)*s;
+      const vivo = r < n1 ? 1 : r < n0 ? 1 - fr : 0;
+      ctx.strokeStyle = c.line; ctx.lineWidth = 1; ctx.strokeRect(x + 1, y + 1, s - 2, s - 2);
+      if (vivo > 0){ ctx.save(); ctx.globalAlpha = vivo*(E.hl === 'N' ? .6 : .34); ctx.fillStyle = c.N; ctx.fillRect(x + 1.5, y + 1.5, s - 3, s - 3);
+        ctx.globalAlpha = vivo; ctx.strokeStyle = c.N; ctx.lineWidth = 1.3; ctx.strokeRect(x + 1.5, y + 1.5, s - 3, s - 3); ctx.restore(); }
+    }
+    const tiempo = Math.min(k0 + (fr > .5 ? 1 : 0), D.serie.length - 1);
+    rotulo(ctx, c, W/2 - 8, H - 18, `t = ${fmt(tiempo*D.vidaMedia, 0)} años`, c.t, 'right', 800, 14);
+    rotulo(ctx, c, W/2 + 8, H - 18, `quedan ${fmt(D.serie[tiempo], 0)} g`, c.N, 'left', 800, 14);
+  }
+
+  // ----- la recta numérica de la ecuación logarítmica -----
+  function dibRecta(c){
+    const Rr = E.recta, l = 18, r = 18, s = (W - l - r)/(Rr.xr[1] - Rr.xr[0]), X = x => l + (x - Rr.xr[0])*s, y0 = H - 46;
+    // dónde existe cada logaritmo: una franja por argumento
+    Rr.franjas.forEach((F, j) => {
+      const f = clamp(Rr.fDom*Rr.franjas.length - j, 0, 1); if (f <= 0) return;
+      const y = 30 + j*34, a = X(F.desde);
+      ctx.save(); ctx.globalAlpha = f; ctx.strokeStyle = c.N; ctx.lineWidth = 5; ctx.lineCap = 'round'; linea(ctx, { x:a, y }, { x:X(Rr.xr[1]) - 2, y });
+      ctx.fillStyle = c.paper; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(a, y, 6, 0, 7); ctx.fill(); ctx.stroke();
+      ctx.restore();
+      if (f >= 1) rotulo(ctx, c, X(Rr.xr[1]) - 4, y - 14, F.texto, c.N, 'right', 800, 12);
+      ctx.save(); ctx.globalAlpha = .5*f; ctx.strokeStyle = c.N; ctx.setLineDash([3, 4]); ctx.lineWidth = 1; linea(ctx, { x:a, y:y + 6 }, { x:a, y:y0 }); ctx.restore();
+    });
+    // la parte donde existen los dos: el dominio
+    if (Rr.dominio !== undefined && Rr.fDom >= 1){ ctx.save(); ctx.globalAlpha = c.relleno; ctx.fillStyle = c.N; ctx.fillRect(X(Rr.dominio), y0 - 10, X(Rr.xr[1]) - X(Rr.dominio), 20); ctx.restore(); }
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, { x:l - 6, y:y0 }, { x:W - r + 6, y:y0 });
+    ctx.fillStyle = c.muted; ctx.font = `600 12px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    for (let x = Math.ceil(Rr.xr[0]); x <= Rr.xr[1]; x++){ ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; linea(ctx, { x:X(x), y:y0 - 5 }, { x:X(x), y:y0 + 5 }); ctx.fillText(fmt(x, 0), X(x), y0 + 8); }
+    // las raíces candidatas
+    for (const C of Rr.cand){
+      if (!(C.f > 0)) continue;
+      const x = X(C.x), y = lerp(10, y0, C.f);
+      ctx.fillStyle = c.ink; ctx.beginPath(); ctx.arc(x, y, 7, 0, 7); ctx.fill();
+      if (C.f >= 1 && C.veredicto){
+        if (!C.ok){ ctx.strokeStyle = c.warn; ctx.lineWidth = 3; linea(ctx, { x:x - 11, y:y - 11 }, { x:x + 11, y:y + 11 }); linea(ctx, { x:x + 11, y:y - 11 }, { x:x - 11, y:y + 11 }); }
+        rotulo(ctx, c, x, y - 22, C.texto, C.ok ? c.ink : c.warn, 'center', 800, 12);
+      }
+    }
+  }
+
+  E.dibujar = () => {
+    if (!W) return;
+    const c = colores();
+    ctx.clearRect(0, 0, W, H);
+    if (E.modo === 'regla' && E.regla) dibRegla(c);
+    else if (E.modo === 'grafica' && E.graf) dibGrafica(c);
+    else if (E.modo === 'cultivo' && E.cul) dibCultivo(c);
+    else if (E.modo === 'decae' && E.dec) dibDecae(c);
+    else if (E.modo === 'recta' && E.recta) dibRecta(c);
+  };
+  const it = (k, t, tipo) => `<span><i class="${tipo || ''}" style="border-color:var(${k === 'ink' ? '--ink' : k === 'muted' ? '--muted' : '--c-' + k});${tipo ? '' : `background:color-mix(in srgb, var(--c-${k}) 30%, transparent)`}"></i>${t}</span>`;
+  E.leyenda = () => {
+    let l = E.ley;
+    if (!l){
+      if (E.modo === 'regla') l = [['b', `cada salto: ×${E.regla ? ME.regla({ base:E.regla.base, desde:0, hasta:1 }).factor : 'b'}`, 'linea'], ['N', 'N: el número al que se llega'], ['x', 'x: los saltos (el logaritmo)']];
+      else if (E.modo === 'grafica') l = [['N', 'y = bˣ', 'linea'], ['x', 'y = log_b x', 'linea'], ['muted', 'y = x', 'trazos']];
+      else if (E.modo === 'cultivo') l = [['N', 'bacterias (un cuadrito, una)'], ['t', 'horas t']].concat(E.cul && E.cul.cuad ? [['q', 't² (misma escala)']] : []);
+      else if (E.modo === 'decae') l = [['N', 'gramos que quedan (un cuadrito, 1 g)'], ['t', 'tiempo t']];
+      else l = [['N', 'donde existe cada logaritmo'], ['ink', 'raíces que salen al resolver']];
+    }
+    document.getElementById(idLey).innerHTML = l.map(([k, t, tipo]) => it(k, t, tipo)).join('');
+  };
+  // Lecturas y descripción para lectores de pantalla (dicen lo mismo; antes de responder no adelantan la respuesta).
+  E.avisar = () => {
+    const filas = E.lect.map(k => k(E));
+    if (idLect) document.getElementById(idLect).innerHTML = filas.map(([k, t, v]) => `<div class="lectura" style="--k:var(${k === 'ink' ? '--ink' : '--c-' + k})"><span>${t}</span><b>${v}</b></div>`).join('');
+    if (idDesc && !E.anim){
+      const base = { regla:'Una escalera de saltos sobre una recta: en cada marca va una potencia de la base y debajo, el número de saltos.',
+        grafica:'Un plano cartesiano con curvas.', cultivo:'Columnas de cuadritos: las bacterias de cada hora.',
+        decae:'Una cuadrícula de cuadritos: los gramos que quedan.', recta:'Una recta numérica.' }[E.modo];
+      document.getElementById(idDesc).textContent = [E.desc || base, ...filas.map(([, t, v]) => `${t}: ${v}.`)].join(' ');
+    }
+    if (E.alCambiar) E.alCambiar();
+  };
+  E.animar = (de, a, dur, paso, fin, lineal) => {
+    const tok = ++E.tok; E.anim = true;
+    tween(dur, f => { if (tok !== E.tok) return; paso(de + (a - de)*f); E.dibujar(); },
+      () => { if (tok !== E.tok) return; E.anim = false; E.avisar(); if (fin) fin(); }, lineal);
+  };
+  // Varias animaciones en fila
+  // (E.parar o un E.config nuevo cortan la cadena)
+  E.cadena = (fs, fin) => { const id = ++E.cad; let i = 0; const sig = () => { if (id !== E.cad) return; if (i >= fs.length){ if (fin) fin(); return; } fs[i++](sig); }; sig(); };
+  E.parar = () => { E.tok++; E.cad++; E.anim = false; };
+
+  // ----- arrastrar: el marcador de la escalera o el punto P de la gráfica (táctil, ratón y teclado) -----
+  const local = e => { const r = cv.getBoundingClientRect(); return { x:e.clientX - r.left, y:e.clientY - r.top }; };
+  function manija(){
+    if (!arrastrable()) return null;
+    if (E.modo === 'regla'){ const g = geoRegla(); return { x:g.X(E.regla.ptr), y:g.y0 + 60 }; }
+    const g = geoGraf(); return { x:g.X(E.graf.P.x), y:g.Y(E.graf.P.y) };
+  }
+  // Con el dedo, el dibujo deja desplazar la página (touch-action: pan-y); solo un toque que empieza cerca de la
+  // manija (radio de 40 px) se queda con el gesto. Con ratón, radio de 32 px.
+  function cerca(p, radio){ if (E.ocupado || E.anim) return false; const m = manija(); return !!m && Math.hypot(p.x - m.x, p.y - m.y) < radio; }
+  function mover(p){
+    if (E.modo === 'regla'){
+      const R = E.regla, g = geoRegla(), k = clamp(Math.round(R.desde + (p.x - g.l)/g.paso), R.min === undefined ? R.desde : R.min, R.max === undefined ? R.hasta : R.max);
+      if (k !== R.ptr){ R.ptr = k; E.dibujar(); E.avisar(); }
+    } else {
+      const P = E.graf.P, g = geoGraf(), x = clamp(Math.round(g.wx(p.x)*4)/4, P.min, P.max);
+      if (x !== P.x){ P.x = x; P.y = ME.potencia({ base:E.graf.base, exp:x }).valor; E.dibujar(); E.avisar(); }
+    }
+  }
+  E.ponerPtr = k => { if (E.modo === 'regla') mover({ x:geoRegla().X(k) }); else mover({ x:geoGraf().X(k) }); };
+  cv.addEventListener('touchstart', e => {
+    if (e.touches.length !== 1) return;
+    const r = cv.getBoundingClientRect(), t = e.touches[0];
+    if (cerca({ x:t.clientX - r.left, y:t.clientY - r.top }, 40)) e.preventDefault();
+  }, { passive:false });
+  cv.addEventListener('pointerdown', e => {
+    const p = local(e); if (!cerca(p, e.pointerType === 'mouse' ? 32 : 40)) return;
+    arrastrando = true; cv.setPointerCapture(e.pointerId); e.preventDefault(); cv.focus({ preventScroll:true }); E.dibujar();
+  }, { passive:false });
+  cv.addEventListener('pointermove', e => {
+    const p = local(e);
+    if (arrastrando){ if (arrastrable()) mover(p); return; }
+    const sv = cerca(p, 32);
+    if (sv !== sobre){ sobre = sv; cv.style.cursor = sv ? 'grab' : ''; E.dibujar(); }
+  });
+  const soltar = () => { if (arrastrando){ arrastrando = false; E.dibujar(); } };
+  cv.addEventListener('pointerup', soltar); cv.addEventListener('pointercancel', soltar);
+  cv.addEventListener('keydown', e => {
+    if (E.ocupado || E.anim || !arrastrable()) return;
+    const mas = ['ArrowRight', 'ArrowUp'].includes(e.key), menos = ['ArrowLeft', 'ArrowDown'].includes(e.key);
+    if (!mas && !menos) return;
+    e.preventDefault();
+    if (E.modo === 'regla') E.ponerPtr(E.regla.ptr + (mas ? 1 : -1));
+    else { const P = E.graf.P, x = clamp(P.x + (mas ? .25 : -.25), P.min, P.max); P.x = x; P.y = ME.potencia({ base:E.graf.base, exp:x }).valor; E.dibujar(); E.avisar(); }
+  });
+  return E;
+}
+// Una curva y = bˣ y su reflejo y = log_b x, del motor (en un rango de x que cubre lo que se ve).
+function curvasDe(base, x0, x1){ return ME.grafica({ base, desde:x0, hasta:x1, n:240 }); }
+const BASES = ['1/4', '1/3', '1/2', '2/3', '3/2', '2', '3', '4'];
+const numBase = b => (String(b).includes('/') ? Number(b.split('/')[0])/Number(b.split('/')[1]) : Number(b));
+const txBase = b => String(b);
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1');
+const S = { step:0, max:0, pred:{}, ocupado:false, x1:3, base:'2', Px:2 };
+const n0 = v => fmt(v, 0);
+
+// Todo lo que se pregunta sale del motor, con sus errores típicos
+const P8 = ME.logProducto({ base:2, a:8, b:4 });
+const S8 = ME.logSuma({ base:2, a:8, b:8 });
+const C64 = ME.cocienteLogs({ base:2, a:64, b:8 });
+const INV = ME.inversa({ base:2, x:3 });
+const EB = ME.ecuacionBases({ b1:4, e1:[1, 1], b2:2, e2:[3, 0] });
+const EB_chk = { i:ME.potencia({ base:4, exp:'3/2' }), d:ME.potencia({ base:2, exp:'3/2' }) };   // con x = 1/2 (AL32)
+const CV = ME.cambioVariable({ base:2, b:-3, c:2 });
+const EL = ME.ecuacionLog({ base:2, p:0, q:-2, valor:3 });
+const CU = ME.crecimiento({ N0:1, factor:2, t:6, ref:3 });
+const xTx = s => sinSolo(s);
+
+const P2 = { id:'exponenciales-logaritmos-paso2', ok:'c', opts:[
+  ['a', P8.errores.productoDeLogs.texto, 'AL10-log-producto-de-logs', 'parcial'],
+  ['b', P8.errores.numero.texto, 'EL1-log-da-el-numero', 'hipotesis'],
+  ['c', P8.texto],
+  ['d', P8.errores.precedencia.texto, 'EL2-log-solo-del-primer-factor', 'hipotesis']],
+  fb:{ c:`¡Bien! Multiplicar por 8 son 3 saltos y multiplicar por 4 son 2 más: 5 saltos, y se llega a ${n0(P8.producto)}.`,
+    a:`Elegiste la A. 3 · 2 = ${P8.errores.productoDeLogs.texto} multiplica los saltos. Pero los saltos de 8 y los de 4 se dan uno tras otro: se suman. La correcta está marcada.`,
+    b:`Elegiste la B. 8 · 4 = ${P8.errores.numero.texto} es el número al que se llega; el logaritmo es cuántos saltos hay hasta él. La correcta está marcada.`,
+    d:`Elegiste la D. (log₂ 8) · 4 = ${P8.errores.precedencia.texto} toma el logaritmo solo del 8. El paréntesis dice que es el logaritmo del producto entero, 8 · 4. La correcta está marcada.` } };
+const P3 = { id:'exponenciales-logaritmos-paso3', ok:'b', opts:[
+  ['a', S8.errores.sumaDeLogs.texto, 'AL10-log-de-la-suma', 'parcial'],
+  ['b', S8.texto],
+  ['c', S8.errores.numero.texto, 'EL1-log-da-el-numero', 'hipotesis'],
+  ['d', S8.errores.productoDeLogs.texto, 'AL10-log-de-la-suma-como-producto', 'parcial']],
+  fb:{ b:`¡Bien! 8 + 8 = ${n0(S8.suma)}, y 16 está a 4 saltos. Sumar 8 + 8 es duplicar el 8: un solo salto más.`,
+    a:`Elegiste la A. 3 + 3 = ${S8.errores.sumaDeLogs.texto} saltos llevan a ${n0(S8.sumaDeLogsEs)}, que es 8 · 8, no 8 + 8. La correcta está marcada.`,
+    c:`Elegiste la C. ${S8.errores.numero.texto} es el número 8 + 8; su logaritmo es cuántos saltos hay hasta él. La correcta está marcada.`,
+    d:`Elegiste la D. 3 · 3 = ${S8.errores.productoDeLogs.texto} multiplica los logaritmos, y 9 saltos llevan a 512. La correcta está marcada.` } };
+const P4 = { id:'exponenciales-logaritmos-paso4', ok:'b', opts:[
+  ['a', C64.errores.logDelCociente.texto, 'AL31-log-del-cociente', 'parcial'],
+  ['b', C64.texto],
+  ['c', C64.errores.invertido.texto, 'AL31-base-y-argumento-invertidos', 'parcial'],
+  ['d', C64.errores.cociente.texto, 'EL24-divide-los-numeros', 'hipotesis']],
+  fb:{ b:`¡Bien! Hasta 64 hay 6 saltos de ×2; de 3 en 3, son 2 saltos de ×8.`,
+    a:`Elegiste la A. ${C64.errores.logDelCociente.texto} es log₂(64/8) = log₂ 8. Ese es el logaritmo de una división, que se calcula con una resta: 6 − 3. Aquí se dividen los logaritmos: 6/3. La correcta está marcada.`,
+    c:`Elegiste la C. 3/6 = ${C64.errores.invertido.texto} es el cociente al revés: sería log₆₄ 8, cuántos saltos de ×64 hay hasta 8. La correcta está marcada.`,
+    d:`Elegiste la D. 64/8 = ${C64.errores.cociente.texto} divide los números, no los logaritmos. La correcta está marcada.` } };
+const P5 = { id:'exponenciales-logaritmos-paso5', ok:'c', unidad:U_INV, opts:[
+  ['a', INV.errores.reciproco.texto, 'AL29-inversa-como-reciproco', 'parcial'],
+  ['b', INV.errores.reflejoY.texto, 'EL17-reflejo-en-eje-y', 'hipotesis'],
+  ['c', INV.texto],
+  ['d', INV.errores.reflejoX.texto, 'EL18-reflejo-en-eje-x', 'hipotesis']],
+  fb:{ c:`¡Bien! 2³ = 8 y, al revés, log₂ 8 = 3: la inversa cambia la entrada por la salida.`,
+    a:`Elegiste la A. 1/8 es 1/2³: el «−1» de f⁻¹ no es un exponente. La inversa devuelve el 3 cuando se le da el 8. La correcta está marcada.`,
+    b:`Elegiste la B. (−3; 8) es el reflejo en el eje y: es la gráfica de 2⁻ˣ, no la del logaritmo. La correcta está marcada.`,
+    d:`Elegiste la D. (3; −8) es el reflejo en el eje x: es la gráfica de −2ˣ, no la del logaritmo. La correcta está marcada.` } };
+const P6 = { id:'exponenciales-logaritmos-paso6', ok:'b', opts:[
+  ['a', xTx(EB.errores.igualaExponentes.texto), 'AL32-iguala-exponentes-con-bases-distintas', 'hipotesis'],
+  ['b', xTx(EB.texto)],
+  ['c', xTx(EB.errores.porBase.texto), 'EL8-cuatro-a-la-n-como-dos-por-dos-a-la-n', 'hipotesis'],
+  ['d', xTx(EB.errores.potenciaComoSuma.texto), 'EL7-potencia-de-potencia-suma', 'hipotesis']],
+  fb:{ b:`¡Bien! 4 = 2², así que 4^(x + 1) = 2^(2x + 2). Con la misma base, 2x + 2 = 3x y x = 2.`,
+    a:`Elegiste la A. x + 1 = 3x iguala los exponentes de dos bases distintas. Con x = 1/2: 4^(3/2) = ${EB_chk.i.texto}, pero 2^(3/2) ≈ ${EB_chk.d.texto}. La correcta está marcada.`,
+    c:`Elegiste la C. Esa cuenta usa 4^(x + 1) = 2 · 2^(x + 1) = 2^(x + 2). Pero un salto de ×4 son dos saltos de ×2 en cada salto, no uno de más. La correcta está marcada.`,
+    d:`Elegiste la D. Esa cuenta usa (2²)^(x + 1) = 2^(2 + x + 1). En una potencia de potencia los exponentes se multiplican: 2^(2x + 2). La correcta está marcada.` } };
+const P7 = { id:'exponenciales-logaritmos-paso7', ok:'b', opts:[
+  ['a', CV.errores.seQuedaEnU.texto, 'EL3-se-queda-en-u', 'hipotesis'],
+  ['b', CV.texto],
+  ['c', CV.errores.descartaUno.texto, 'EL4-descarta-potencia-igual-a-uno', 'hipotesis']],
+  fb:{ b:`¡Bien! u = 2ˣ vale 1 o 2. En la escalera, 1 está en el salto 0 y 2 en el salto 1.`,
+    a:`Elegiste la A. 1 y 2 son los valores de u = 2ˣ, los números de la escalera. Falta volver a x: cuántos saltos hay hasta cada uno. La correcta está marcada.`,
+    c:`Elegiste la C. 2ˣ = 1 sí tiene solución: x = 0, cero saltos. Todo número distinto de 0 elevado a 0 da 1. La correcta está marcada.` } };
+const P8b = { id:'exponenciales-logaritmos-paso8', ok:'c', opts:[
+  ['a', EL.errores.sumaArgumentos.texto, 'AL10-log-de-la-suma-de-argumentos', 'parcial'],
+  ['b', EL.errores.sinVerificar.texto, 'EL5-no-descarta-la-raiz-extrana', 'hipotesis'],
+  ['c', EL.texto],
+  ['d', EL.errores.sinElevar.texto, 'EL14-no-eleva-la-base', 'hipotesis']],
+  fb:{ c:`¡Bien! x(x − 2) = 8 da x = 4 o x = −2, pero con −2 los argumentos salen negativos: solo queda 4.`,
+    a:`Elegiste la A. Esa cuenta junta log₂ x + log₂(x − 2) en log₂(2x − 2). La suma de logaritmos es el logaritmo del producto, x(x − 2), no de la suma. La correcta está marcada.`,
+    b:`Elegiste la B. x = −2 sale de la ecuación x(x − 2) = 8, pero log₂(−2) no existe: no hay número de saltos de ×2 que lleve de 1 a un negativo. Hay que descartarla. La correcta está marcada.`,
+    d:`Elegiste la D. Esa cuenta usa x(x − 2) = 3. Pero el 3 es un logaritmo, el número de saltos: el producto vale 2³ = 8. La correcta está marcada.` } };
+const P9 = { id:'exponenciales-logaritmos-paso9', ok:'c', opts:[
+  ['a', CU.errores.cuadratico.texto, 'AL33-exponencial-como-cuadrado', 'hipotesis'],
+  ['b', CU.errores.unPeriodoMenos.texto, 'EL10-un-periodo-de-menos', 'hipotesis'],
+  ['c', CU.texto],
+  ['d', CU.errores.proporcional.texto, 'EL9-regla-de-tres-en-crecimiento', 'hipotesis']],
+  fb:{ c:`¡Bien! Cada hora se multiplica por 2: 8, 16, 32, 64. Seis duplicaciones desde 1.`,
+    a:`Elegiste la A. 6² = ${CU.errores.cuadratico.texto} es t², que crece de otra manera. El cultivo no suma: se multiplica por 2 cada hora, y eso es 2⁶. La correcta está marcada.`,
+    b:`Elegiste la B. ${CU.errores.unPeriodoMenos.texto} es 2⁵: son las 5 h. De la hora 0 a la hora 6 hay 6 duplicaciones. La correcta está marcada.`,
+    d:`Elegiste la D. ${CU.errores.proporcional.texto} es una regla de tres: el doble del tiempo, el doble de bacterias. Pero de 3 h a 6 h hay 3 duplicaciones más: 8 · 2 · 2 · 2. La correcta está marcada.` } };
+
+const fuenteAL10 = `<p class="fuente">Escribir log(a + b) = log a + log b o log(ab) = log a · log b aparece descrito en Singapur, en estudios con 89 y 81 escolares, como una sobregeneralización de las reglas y no como falta de conocimiento (Chua y Wood, 2005; Ganesan y Dindyal, 2014, según resúmenes); no dan el porcentaje del ítem. Las demás opciones son hipótesis nuestras.</p>`;
+
+// Botones + y − (con su lectura) para el marcador o para la base
+function control(id, nombre, valor, k){ return `<span class="paso">${V(k, nombre)} <button type="button" data-c="${id}" data-d="-1" aria-label="Disminuir ${nombre}">−</button><output id="o-${id}" aria-live="off">${valor}</output><button type="button" data-c="${id}" data-d="1" aria-label="Aumentar ${nombre}">+</button></span>`; }
+
+// Lecturas de la escalera
+const lectSaltos = () => [() => ['x', 'saltos x', fmt(E.regla.ptr, 0)], () => ['N', `N = ${E.regla.base}ˣ`, ME.potencia({ base:E.regla.base, exp:E.regla.ptr }).texto],
+  () => ['x', `log₂ N`, fmt(ME.log({ base:2, N:ME.potencia({ base:2, exp:E.regla.ptr }).exacto }).valor, 0)]];
+const arcosHasta = (de, a, color, nivel, texto, f) => { const r = []; for (let k = de; k < a; k++) r.push({ de:k, a:k + 1, color, nivel:nivel || 1, f: f === undefined ? 1 : f, texto: k === de ? texto : null }); return r; };
+
+const steps = [
+ { k:'Paso 1', t:'Saltos que multiplican',
+   prep:() => E.config({ modo:'regla', regla:{ base:2, desde:-2, hasta:6, ptr:S.x1, arrastre:true }, lect:lectSaltos(), alCambiar:pintar1 }),
+   body:() => `<p class="problem">En esta escalera, cada salto hacia la derecha multiplica por ${b_('2')}. Se empieza en ${N_('1')}. Arrastra el triángulo (o usa los botones) y mira a qué número ${N_('N')} llegas con ${x_('x')} saltos.</p>
+   <div class="pasos">${control('x1', 'x', fmt(S.x1, 0), 'x')}</div>
+   <p>Con ${x_('x')} saltos se llega a ${N_('N')} = ${b_('2')}<sup>${x_('x')}</sup>. Al revés, el <b>logaritmo</b> cuenta los saltos: log<sub>${b_('2')}</sub> ${N_('N')} = ${x_('x')}. Por ejemplo, log₂ ${N_('8')} = ${x_('3')}, porque 2 · 2 · 2 = 8.</p>
+   <p>Hacia la izquierda, cada salto divide entre 2: 2⁻¹ = 1/2 y 2⁻² = 1/4. Y sin dar ningún salto te quedas en 1: 2⁰ = 1, así que log₂ 1 = 0.</p>
+   <p class="hint">Con teclado: toca el dibujo y usa ← y →.</p>`,
+   entrar:() => enlazar('x1', d => E.ponerPtr(clamp(E.regla.ptr + d, -2, 6))) },
+ { k:'Paso 2', t:'Predice: el logaritmo de un producto', gate:P2,
+   prep:() => { const r = !!S.pred[P2.id]; E.config({ modo:'regla', regla:{ base:2, desde:0, hasta:6, etiquetas: r ? 'todas' : [0, 2, 3], exps: r ? true : [0, 2, 3],
+     arcos: r ? arcos2(1) : [] }, lect: r ? [() => ['N', '8 · 4', n0(P8.producto)], () => ['x', 'saltos', P8.texto]] : [] }); },
+   anima:fin => { const R = E.regla; R.etiquetas = [0, 2, 3]; R.exps = [0, 2, 3]; R.arcos = arcos2(0);
+     E.animar(0, 2, 2600, v => { R.arcos.forEach((A, i) => { A.f = clamp(v - i, 0, 1); }); }, () => { R.etiquetas = 'todas'; R.exps = true; E.lect = [() => ['N', '8 · 4', n0(P8.producto)], () => ['x', 'saltos', P8.texto]]; E.dibujar(); E.avisar(); fin(); }, true); },
+   body:() => `<p class="problem">log₂ ${N_('8')} = ${x_('3')} y log₂ ${N_('4')} = ${x_('2')}. ¿Cuánto vale log₂(${N_('8')} · ${N_('4')})?</p>${opcionesHTML(P2.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">log₂(${N_('8')} · ${N_('4')}) = log₂ ${N_('8')} + log₂ ${N_('4')} = ${x_('3')} + ${x_('2')} = ${x_(P8.texto)}</div>
+   <div class="eq">Comprobación: ${b_('2')}${x_('⁵')} = ${N_(n0(P8.producto))} = ${N_('8')} · ${N_('4')}</div></div>
+   <p>Multiplicar por ${N_('8')} son ${x_('3')} saltos; multiplicar después por ${N_('4')} son ${x_('2')} saltos más. En total, ${x_('5')} saltos: se llega a ${N_('32')}. Por eso el logaritmo de un producto es la <b>suma</b> de los logaritmos: log(ab) = log a + log b.</p>
+   ${fuenteAL10}</div>` },
+ { k:'Paso 3', t:'Predice: el logaritmo de una suma', gate:P3,
+   prep:() => { const r = !!S.pred[P3.id]; E.config({ modo:'regla', regla:{ base:2, desde:0, hasta:6, etiquetas: r ? 'todas' : [0, 3], exps: r ? true : [0, 3],
+     arcos: r ? arcos3(1) : [] },
+     lect: r ? [() => ['N', '8 + 8', n0(S8.suma)], () => ['x', 'log₂(8 + 8)', S8.texto], () => ['x', 'log₂ 8 + log₂ 8', S8.errores.sumaDeLogs.texto]] : [] }); },
+   anima:fin => { const R = E.regla;
+     R.arcos = arcos3(0); R.arcos[0].f = 1;
+     E.dibujar();
+     E.cadena([n => E.animar(0, 1, 1000, v => { R.arcos[1].f = v; }, () => { R.etiquetas = [0, 3, 4]; R.exps = [0, 3, 4]; esperar(500, n); }),
+       n => E.animar(0, 1, 1800, v => { R.arcos[2].f = v; }, n)],
+       () => { R.etiquetas = 'todas'; R.exps = true; E.lect = [() => ['N', '8 + 8', n0(S8.suma)], () => ['x', 'log₂(8 + 8)', S8.texto], () => ['x', 'log₂ 8 + log₂ 8', S8.errores.sumaDeLogs.texto]]; E.dibujar(); E.avisar(); fin(); }); },
+   body:() => `<p class="problem">¿Cuánto vale log₂(${N_('8')} + ${N_('8')})?</p>${opcionesHTML(P3.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">log₂(${N_('8')} + ${N_('8')}) = log₂ ${N_('16')} = ${x_(S8.texto)}</div>
+   <div class="eq">log₂ ${N_('8')} + log₂ ${N_('8')} = ${x_('6')} = log₂ ${N_('64')}<span class="note">es el logaritmo de 8 · 8, no de 8 + 8</span></div></div>
+   <p>${N_('8')} + ${N_('8')} es el doble de ${N_('8')}: <b>un solo salto</b> más, hasta ${N_('16')}. En cambio, dar los ${x_('3')} saltos del 8 dos veces (la línea a trazos) es multiplicar por 8 dos veces: se llega a ${N_('64')}.</p>
+   <p class="aviso">La suma de logaritmos es el logaritmo del producto. El logaritmo de una suma no se separa: log(a + b) no es log a + log b.</p>
+   ${fuenteAL10}</div>` },
+ { k:'Paso 4', t:'Predice: un logaritmo entre otro', gate:P4,
+   prep:() => { const r = !!S.pred[P4.id]; E.config({ modo:'regla', regla:{ base:2, desde:0, hasta:6, etiquetas: r ? 'todas' : [0, 3, 6], exps: r ? true : false,
+     arcos: r ? [{ de:0, a:3, color:'b', nivel:2, texto:'×8' }, { de:3, a:6, color:'b', nivel:2, texto:'×8' }] : [] },
+     lect: r ? [() => ['x', 'saltos de ×2 hasta 64', fmt(C64.logA, 0)], () => ['x', 'saltos de ×8 hasta 64', C64.texto]] : [] }); },
+   anima:fin => { const R = E.regla; R.exps = true; R.arcos = [{ de:0, a:3, color:'b', nivel:2, texto:'×8', f:0 }, { de:3, a:6, color:'b', nivel:2, texto:'×8', f:0 }];
+     E.animar(0, 2, 2000, v => { R.arcos[0].f = clamp(v, 0, 1); R.arcos[1].f = clamp(v - 1, 0, 1); }, () => { R.etiquetas = 'todas'; E.lect = [() => ['x', 'saltos de ×2 hasta 64', fmt(C64.logA, 0)], () => ['x', 'saltos de ×8 hasta 64', C64.texto]]; E.dibujar(); E.avisar(); fin(); }); },
+   body:() => `<p class="problem">¿Cuánto vale log₂ ${N_('64')} / log₂ ${N_('8')}?</p>${opcionesHTML(P4.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">log₂ ${N_('64')} / log₂ ${N_('8')} = ${x_('6')}/${x_('3')} = ${x_(C64.texto)} = log<sub>${b_('8')}</sub> ${N_('64')}</div>
+   <div class="eq">log₂(${N_('64')}/${N_('8')}) = log₂ ${N_('64')} − log₂ ${N_('8')} = ${x_('6')} − ${x_('3')} = ${x_(C64.errores.logDelCociente.texto)}<span class="note">esto es otra cosa: el logaritmo de una división</span></div></div>
+   <p>Hasta ${N_('64')} hay ${x_('6')} saltos de ×2. Si se juntan de 3 en 3, cada grupo es un salto de ${b_('×8')}: caben ${x_('2')}. Ese cociente es el <b>cambio de base</b>: log<sub>b</sub> N = log N / log b, con logaritmos en cualquier base. Y ${C64.errores.invertido.texto} sería log₆₄ 8: la base y el argumento al revés.</p>
+   <p class="fuente">Confundir log a / log b con log(a/b) y cambiar la base por el argumento son sobregeneralizaciones descritas junto a las de log(a + b) (Chua y Wood, 2005, según resúmenes), sin porcentaje del ítem. La opción 8 es hipótesis nuestra.</p></div>` },
+ { k:'Paso 5', t:'Predice: la gráfica del logaritmo', gate:P5,
+   prep:() => {
+     const r = !!S.pred[P5.id];
+     if (r) return config5(true);
+     const G = curvasDe(2, -6, 3.2);
+     E.config({ modo:'grafica', graf:{ base:2, xr:[-2, 9], yr:[-2, 9], igual:true, curvas:[{ pts:G.exp, color:'N', etiqueta:[1.2, 4.6, 'y = 2ˣ'] }], P:{ x:3, y:8 } }, lect:[] });
+   },
+   anima:fin => { const G = curvasDe(2, -6, 3.2), Gr = E.graf; Gr.yx = 0; Gr.reflejo = { f:0, pts:G.exp, etiqueta:[6.2, 3.4, 'y = log₂ x'] }; Gr.P.reflejar = true;
+     E.cadena([n => E.animar(0, 1, 600, v => { Gr.yx = v; }, n), n => E.animar(0, 1, 2200, v => { Gr.reflejo.f = v; }, n)], () => { Gr.yx = true; config5(true); fin(); }); },
+   body:() => `<p class="problem">La curva ${N_('azul')} es y = 2<sup>x</sup>: pasa por (${x_('3')}; ${N_('8')}). La función y = log₂ x es su <b>inversa</b>. ¿Por qué punto pasa la gráfica de y = log₂ x?</p>${opcionesHTML(P5.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${b_('2')}${x_('³')} = ${N_('8')}  ⟺  log₂ ${N_('8')} = ${x_('3')}</div></div>
+   <p>Si 2 elevado a ${x_('3')} da ${N_('8')}, el logaritmo de ${N_('8')} devuelve el ${x_('3')}: la inversa cambia la entrada por la salida. Por eso su gráfica es el <b>reflejo</b> de la de 2ˣ en la recta y = x: cada punto (a; b) pasa a (b; a). La curva de y = log₂ x va en fucsia porque su altura es un exponente.</p>
+   <p>Ahora cambia la base ${b_('b')} y arrastra el punto (o usa ← y → en el dibujo).</p>
+   <div class="pasos">${control('base', 'b', txBase(S.base), 'b')}</div>
+   <p class="hint" id="base-msg"></p>
+   <p>bˣ es siempre positiva: su gráfica nunca toca el eje x y su rango es ⟨0; +∞⟩. Por eso log<sub>b</sub> x solo existe para x &gt; 0. Las dos pasan por un punto fijo: b⁰ = 1 y log<sub>b</sub> 1 = 0.</p>
+   <p class="fuente">Leer f⁻¹ como 1/f se describe como una barrera en estudios de razonamiento reversible, sin porcentaje (informe de álgebra y funciones, AL29). Confundir el reflejo en y = x con el reflejo en un eje es hipótesis nuestra.</p></div>`,
+   entrar:() => { if (S.pred[P5.id]) { enlazar('base', d => { const i = clamp(BASES.indexOf(S.base) + d, 0, BASES.length - 1); S.base = BASES[i]; config5(false); }); pintarBase(); } } },
+ { k:'Paso 6', t:'Predice: dos bases distintas', gate:P6,
+   prep:() => { const r = !!S.pred[P6.id]; E.config({ modo:'regla', regla:{ base:2, desde:0, hasta:6, exps: r ? true : false,
+     arcos: r ? arcos6(1) : arcos6(0).slice(0, 3), marcas: r ? [{ pos:6, texto:'4³ = 2⁶', color:'N', alto:70 }] : [] }, lect: r ? lect6() : [] }); },
+   anima:fin => { const R = E.regla; R.exps = true; R.arcos = arcos6(0);
+     E.cadena([n => E.animar(0, 3, 1800, v => { for (let i = 0; i < 3; i++) R.arcos[3 + i].f = clamp(v - i, 0, 1); }, n, true),
+       n => E.animar(0, 6, 2400, v => { for (let i = 0; i < 6; i++) R.arcos[6 + i].f = clamp(v - i, 0, 1); }, n, true)],
+       () => { R.marcas = [{ pos:6, texto:'4³ = 2⁶', color:'N', alto:70 }]; E.lect = lect6(); E.dibujar(); E.avisar(); fin(); }); },
+   body:() => `<p class="problem">Resuelve ${b_('4')}<sup>${x_('x')} + 1</sup> = ${b_('2')}<sup>3${x_('x')}</sup>.</p>${opcionesHTML(P6.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${b_('4')}<sup>${x_('x')} + 1</sup> = (${b_('2')}²)<sup>${x_('x')} + 1</sup> = ${b_('2')}<sup>${EB.expIzq}</sup></div>
+   <div class="eq">${b_('2')}<sup>${EB.expIzq}</sup> = ${b_('2')}<sup>${EB.expDer}</sup>  ⟹  ${EB.expIzq} = ${EB.expDer}  ⟹  ${x_('x')} = ${x_(fmt(EB.valor, 0))}</div>
+   <div class="eq">Comprobación: ${b_('4')}³ = ${N_(n0(EB.comprobacion.izquierda))} = ${b_('2')}⁶</div></div>
+   <p>Un salto de ${b_('×4')} son dos saltos de ${b_('×2')}. Con ${x_('x = 2')}, arriba se dan ${x_('x')} + 1 = 3 saltos de ×4 y abajo, 3${x_('x')} = 6 saltos de ×2: los dos llegan a ${N_('64')}. Los exponentes se igualan solo cuando las bases son la misma.</p>
+   <p class="fuente">Igualar los exponentes con bases distintas no lo encontramos medido (AL32, hipótesis del informe). Las otras dos opciones son hipótesis nuestras.</p></div>` },
+ { k:'Paso 7', t:'Predice: un cambio de variable', gate:P7,
+   prep:() => { const r = !!S.pred[P7.id]; E.config({ modo:'regla', regla:{ base:2, desde:-1, hasta:4, exps: r ? true : false, marcas: r ? marcas7(1) : [] }, lect: r ? lect7() : [] }); },
+   anima:fin => { const R = E.regla; R.marcas = marcas7(0);
+     E.animar(0, 1, 1200, v => { R.marcas.forEach(m => { m.f = v; }); }, () => { R.exps = true; E.lect = lect7(); E.dibujar(); E.avisar(); fin(); }); },
+   body:() => `<p class="problem">Resuelve ${b_('4')}<sup>${x_('x')}</sup> − 3 · ${b_('2')}<sup>${x_('x')}</sup> + 2 = 0.</p>${opcionesHTML(P7.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${b_('4')}<sup>${x_('x')}</sup> = (${b_('2')}<sup>${x_('x')}</sup>)². Con ${N_('u')} = ${b_('2')}<sup>${x_('x')}</sup>: ${N_('u')}² − 3${N_('u')} + 2 = 0</div>
+   <div class="eq">(${N_('u')} − 1)(${N_('u')} − 2) = 0  ⟹  ${N_('u = 1')} o ${N_('u = 2')}</div>
+   <div class="eq">${b_('2')}<sup>${x_('x')}</sup> = 1 ⟹ ${x_('x = 0')};  ${b_('2')}<sup>${x_('x')}</sup> = 2 ⟹ ${x_('x = 1')}</div></div>
+   <p>Los valores de ${N_('u')} son números de la escalera; las soluciones son los saltos: ${N_('1')} está en el salto ${x_('0')} y ${N_('2')} en el salto ${x_('1')}. Si ${N_('u')} hubiera salido negativa, se descartaría: 2ˣ nunca es negativa.</p>
+   <p class="fuente">No encontramos estudios con cifras sobre el cambio de variable en ecuaciones exponenciales; las dos opciones incorrectas son hipótesis nuestras.</p></div>` },
+ { k:'Paso 8', t:'Predice: una ecuación con logaritmos', gate:P8b,
+   prep:() => { const r = !!S.pred[P8b.id]; E.config({ modo:'recta', recta: r ? recta8(1) : { franjas:[], cand:[] }, ley: r ? null : [['ink', 'la recta numérica']], lect: r ? lect8() : [] }); },
+   anima:fin => { E.recta = Object.assign(E.recta, recta8(0)); E.ley = null; E.leyenda();
+     E.cadena([n => E.animar(0, 1, 1600, v => { E.recta.fDom = v; }, n), n => E.animar(0, 1, 1000, v => { E.recta.cand.forEach(C => { C.f = v; }); }, n)],
+       () => { E.recta.cand.forEach(C => { C.veredicto = true; }); E.lect = lect8(); E.dibujar(); E.avisar(); fin(); }); },
+   body:() => `<p class="problem">Resuelve log₂ ${N_('x')} + log₂(${N_('x − 2')}) = ${x_('3')}.</p>${opcionesHTML(P8b.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">log₂[${N_('x')}(${N_('x − 2')})] = ${x_('3')}  ⟹  x(x − 2) = ${b_('2')}${x_('³')} = ${N_(n0(EL.producto))}</div>
+   <div class="eq">x² − 2x − 8 = 0  ⟹  x = 4 o x = −2</div>
+   <div class="eq">x = −2: log₂(−2) no existe<span class="note">se descarta</span></div>
+   <div class="eq">x = 4: log₂ 4 + log₂ 2 = 2 + 1 = 3<span class="note">cumple</span></div></div>
+   <p>Antes de resolver, mira dónde existe cada logaritmo: log₂ ${N_('x')} necesita ${N_('x')} &gt; 0, y log₂(${N_('x − 2')}) necesita ${N_('x − 2')} &gt; 0, o sea x &gt; 2. Las dos a la vez: x &gt; 2. Al juntar los logaritmos en uno solo, la ecuación x(x − 2) = 8 acepta también x = −2, donde x y x − 2 son negativos a la vez (su producto sí es positivo). Por eso cada raíz se prueba en la ecuación de partida.</p>
+   ${fuenteAL10.replace('Las demás opciones son hipótesis nuestras.', 'No descartar la raíz que hace negativo un argumento y olvidar elevar la base son hipótesis nuestras.')}</div>` },
+ { k:'Paso 9', t:'Predice: un cultivo que se duplica', gate:P9,
+   prep:() => { const r = !!S.pred[P9.id]; E.config({ modo:'cultivo', cul:{ serie:CU.serie, cuad: r ? CU.cuadratica : null, k: r ? 6 : 3, fCuad: r ? 1 : 0, conteos: r ? 7 : 4 }, lect: r ? lect9() : [] }); },
+   anima:fin => { const C = E.cul; C.cuad = CU.cuadratica; E.leyenda();
+     E.cadena([n => E.animar(3, 6, 2400, v => { C.k = v; C.conteos = Math.floor(v + 1e-9) + 1; }, n, true), n => E.animar(0, 1, 1200, v => { C.fCuad = v; }, n)],
+       () => { C.conteos = 7; E.lect = lect9(); E.dibujar(); E.avisar(); fin(); }); },
+   body:() => `<p class="problem">Un cultivo empieza con ${N_('1 bacteria')} y cada hora se duplica: a las ${t_('3 h')} hay ${N_('8')}. ¿Cuántas habrá a las ${t_('6 h')}?</p>${opcionesHTML(P9.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${N_('N')} = ${b_('2')}<sup>${t_('t')}</sup>  ⟹  ${b_('2')}<sup>${t_('6')}</sup> = ${N_(CU.texto)}</div>
+   <div class="eq">${q_('t²')} = ${q_('36')}<span class="note">la barra turquesa: crece, pero de otra manera</span></div></div>
+   <p>Cada hora se multiplica por el mismo <b>factor</b>, ${b_('2')}: 1, 2, 4, 8, 16, 32, 64. Eso es crecer exponencialmente. Las barras turquesas son ${q_('t²')}: al principio van parejas (en t = 2 y t = 4 empatan), pero después la exponencial se escapa. Duplicar el tiempo no duplica la cantidad: de ${t_('3 h')} a ${t_('6 h')} se multiplica por 2³ = 8.</p>
+   <p class="fuente">Confundir 2ˣ con x² o pensar el crecimiento exponencial sin un factor constante no lo encontramos medido (AL33, hipótesis del informe). Contar un periodo de menos y la regla de tres son hipótesis nuestras.</p></div>` },
+];
+
+// ----- piezas de los pasos -----
+// Paso 2: ×8 son 3 saltos y ×4 son 2 más. Paso 3: 8 + 8 es un salto más; 8 · 8, tres más (a trazos).
+function arcos2(f){ return [{ de:0, a:3, color:'b', nivel:2, texto:'×8: 3 saltos', f }, { de:3, a:5, color:'b', nivel:3, texto:'×4: 2 saltos', f }]; }
+function arcos3(f){ return [{ de:0, a:3, color:'b', nivel:2, texto:'×8', f }, { de:3, a:4, color:'b', nivel:3, texto:'+ 8 es ×2', f }, { de:3, a:6, color:'b', nivel:2, texto:'otra vez ×8', dash:true, f }]; }
+// Paso 6: los saltos de ×4 (dos de ×2 cada uno); después se cuentan los x + 1 = 3 de ×4 y los 3x = 6 de ×2.
+function arcos6(f){ return [0, 2, 4].map(k => ({ de:k, a:k + 2, color:'b', nivel:2, texto:'×4', f:1, ancho:2.2 }))
+  .concat([0, 2, 4].map(k => ({ de:k, a:k + 2, color:'x', nivel:3, texto: k === 0 ? 'x + 1 = 3 saltos de ×4' : null, f })), arcosHasta(0, 6, 'x', 1, null, f)); }
+function lect6(){ return [() => ['x', 'saltos de ×4 (x + 1)', '3'], () => ['x', 'saltos de ×2 (3x)', '6'], () => ['N', 'los dos llegan a', n0(EB.comprobacion.izquierda)]]; }
+function marcas7(f){ return CV.u.map((u, i) => ({ pos:ME.log({ base:2, N:u }).valor, texto:`u = ${CV.uTexto[i]}`, color:'N', alto: 34 + 22*i, f })); }
+function lect7(){ return CV.u.map((u, i) => () => ['x', `2ˣ = ${CV.uTexto[i]}`, `x = ${fmt(CV.soluciones[i], 0)}`]); }
+function recta8(f){
+  return { xr:[-4, 7], dominio:EL.dominio.desde, fDom: f >= 1 ? 1 : 0,
+    franjas:[{ desde:0, texto:'log₂ x existe: x > 0' }, { desde:2, texto:'log₂(x − 2) existe: x > 2' }],
+    cand: EL.candidatas.map(x => ({ x, f, veredicto: f >= 1, ok: EL.soluciones.includes(x), texto: EL.soluciones.includes(x) ? `x = ${fmt(x, 0)} cumple` : `x = ${fmt(x, 0)}: log₂(${fmt(x, 0)}) no existe` })) };
+}
+function lect8(){ return [() => ['N', 'dominio', EL.dominio.texto], () => ['ink', 'raíces de x(x − 2) = 8', EL.candidatas.map(x => fmt(x, 0)).join(' y ')], () => ['ink', 'solución', fmt(EL.soluciones[0], 0)]]; }
+function lect9(){ return [() => ['N', 'bacterias a las 6 h', CU.texto], () => ['q', 't² con t = 6', CU.errores.cuadratico.texto]]; }
+// Paso 5 después de responder: la base es una perilla y el punto P se arrastra sobre y = bˣ
+function config5(primera){
+  const b = S.base, nb = numBase(b), G = curvasDe(b, -8, 8);
+  const rangoX = nb > 1 ? [-2, Math.log(8.6)/Math.log(nb)] : [Math.log(8.6)/Math.log(nb), 2];
+  const Px = clamp(S.Px, Math.max(-2, rangoX[0]), Math.min(8, rangoX[1]));
+  E.config({ modo:'grafica', graf:{ base:b, xr:[-2, 9], yr:[-2, 9], igual:true, yx:true,
+    curvas:[{ pts:G.exp, color:'N', etiqueta:etiquetaExp(b) }, { pts:G.log, color:'x', etiqueta:etiquetaLog(b) }],
+    P:{ x:Px, y:ME.potencia({ base:b, exp:Px }).valor, arrastre:true, min:Math.max(-2, rangoX[0]), max:Math.min(8, rangoX[1]), reflejar:true },
+    reflejo:{ f:1, pts:[] } },
+    lect:[() => ['b', 'base b', b], () => ['N', 'P en y = bˣ', `(${fmt(E.graf.P.x)}; ${fmt(E.graf.P.y)})`], () => ['x', 'su reflejo', `(${fmt(E.graf.P.y)}; ${fmt(E.graf.P.x)})`]],
+    alCambiar:() => { S.Px = E.graf.P.x; } });
+  if (!primera) pintarBase();
+}
+// Dónde va el nombre de cada curva: cerca de la curva y dentro del dibujo
+const subs = t => String(t).split('').map(ch => ({ '0':'₀','1':'₁','2':'₂','3':'₃','4':'₄','5':'₅','6':'₆','7':'₇','8':'₈','9':'₉' }[ch] || ch)).join('');
+function etiquetaExp(b){
+  const nb = numBase(b), xe = clamp(ME.log({ base:b, N:6 }).valor, -1.9, 7), ye = ME.potencia({ base:b, exp:xe }).valor;
+  return nb > 1 ? [xe - .25, ye, `y = ${b}ˣ`, 'right'] : [xe + .35, ye, `y = (${b})ˣ`, 'left'];
+}
+function etiquetaLog(b){
+  const nb = numBase(b), y = clamp(ME.log({ base:b, N:6 }).valor, -1.7, 8.4);
+  return [6.1, nb > 1 ? Math.max(-1.6, y - .8) : Math.min(8.4, y + .8), `y = log${subs(b)} x`, 'left'];
+}
+function pintarBase(){
+  const o = $('o-base'); if (!o) return;
+  o.textContent = S.base;
+  const i = BASES.indexOf(S.base);
+  $('stepBody').querySelector('[data-c="base"][data-d="-1"]').disabled = i <= 0;
+  $('stepBody').querySelector('[data-c="base"][data-d="1"]').disabled = i >= BASES.length - 1;
+  const M = ME.grafica({ base:S.base, desde:0, hasta:1, n:1 });
+  $('base-msg').textContent = numBase(S.base) > 1 ? `Con b = ${S.base}, mayor que 1, las dos curvas son ${M.monotonia}s.` : `Con b = ${S.base}, entre 0 y 1, las dos curvas son ${M.monotonia}s.`;
+}
+function pintar1(){ const o = $('o-x1'); if (!o || !E.regla) return; S.x1 = E.regla.ptr; o.textContent = fmt(E.regla.ptr, 0);
+  $('stepBody').querySelector('[data-c="x1"][data-d="-1"]').disabled = E.regla.ptr <= -2; $('stepBody').querySelector('[data-c="x1"][data-d="1"]').disabled = E.regla.ptr >= 6; }
+function enlazar(id, fn){ $('stepBody').querySelectorAll(`[data-c="${id}"]`).forEach(b => b.onclick = () => { if (E.ocupado || S.ocupado || E.anim) return; fn(Number(b.dataset.d)); }); if (id === 'x1') pintar1(); }
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; b.dataset.label = `Ir al ${s.k.toLowerCase()}: ${s.t}`;
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  E.parar();
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  if (s.prep) s.prep();
+  pintarDots();
+  E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.gate) prediccion(s);
+  if (s.entrar) s.entrar();
+  nav();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+  E.ocupado = S.ocupado;
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    // un paso bloqueado no delata su título
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : b.dataset.label);
+    if (k > S.max) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled');
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+// Se puede pasar al siguiente solo si el paso actual no tiene una predicción pendiente.
+function desbloquear(k){ const s = steps[S.step]; if (s.gate && !S.pred[s.gate.id]) return; if (k > S.max) S.max = k; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0, P.unidad);
+    S.ocupado = true; nav();
+    E.compactar(false);
+    $('next').focus({ preventScroll:true });
+    const paso = S.step;
+    alDibujo($('cv'), () => true, () => {
+      if (S.step !== paso) { S.ocupado = false; nav(); return; }
+      s.anima(() => { S.ocupado = false; E.avisar(); nav(); if (s.entrar) s.entrar(); });
+    });
+  }));
+  pintar();
+}
+
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Experimentos del catálogo de docs/investigacion/algebra-funciones-ideas-erroneas.md: el exponente que se reparte
+   (AL11), el logaritmo de un cuadrado (AL31), log 1 y log b, una base entre 0 y 1 en una inecuación, la vida media y
+   2ˣ contra x² (AL33). La escena cambia recién después de responder. Un experimento se abre solo si los anteriores
+   ya tienen respuesta. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2');
+const n0 = v => fmt(v, 0);
+const D1 = ME.potenciaDesplazada({ base:2, valor:5, k:1 });
+const D2 = ME.logPotencia({ base:2, logA:3, n:2 });
+const D3 = ME.sumaLogs({ base:5, args:[1, 5] });
+const D4 = ME.inecuacionExp({ base:'1/2', cota:'1/8', sentido:'>' });
+const D5 = ME.decaimiento({ N0:80, vidaMedia:5, t:15 });
+const D6 = ME.compararCrecimiento({ base:2, grado:2, hasta:6 });
+const pos = N => ME.log({ base:2, N }).valor;
+
+const EXPS = [
+  { id:'un-salto-mas', corto:'Un salto más',
+    q:`Si ${b_('2')}<sup>${x_('x')}</sup> = ${N_('5')}, ¿cuánto vale ${b_('2')}<sup>${x_('x')} + 1</sup>?`,
+    opts:[['a', D1.errores.reparte.texto, 'AL11-exponente-se-reparte', 'hipotesis'],
+          ['b', D1.texto],
+          ['c', D1.errores.sumaK.texto, 'EL19-suma-uno-al-resultado', 'hipotesis'],
+          ['d', D1.errores.eleva.texto, 'EL20-eleva-el-resultado', 'hipotesis']],
+    ok:'b',
+    fb:{ a:'5 + 2 = 7 reparte el exponente: 2ˣ⁺¹ = 2ˣ + 2¹. Pero sumar 1 al exponente es dar un salto más: multiplicar por 2.',
+         c:'5 + 1 = 6 suma el 1 al resultado. El 1 está en el exponente: es un salto más, y cada salto multiplica por 2.',
+         d:'5² = 25 eleva el resultado al cuadrado: eso sería 2²ˣ, el doble de saltos. Aquí es un solo salto más.' },
+    antes:ya => E.config({ modo:'regla', regla:{ base:2, desde:0, hasta:5, exps:false, etiquetas:[0, 1, 2, 3, 4, 5],
+      marcas:[{ pos:pos(5), texto:'5', color:'N', alto:36 }].concat(ya ? [{ pos:pos(10), texto:'10', color:'N', alto:36 }, { pos:pos(7), texto:'5 + 2', color:'muted', alto:28, dash:true }] : []),
+      arcos: ya ? [{ de:pos(5), a:pos(10), color:'b', nivel:2, texto:'×2' }] : [] }, lect: ya ? [() => ['N', '2ˣ', '5'], () => ['N', '2ˣ⁺¹ = 5 · 2', D1.texto]] : [() => ['N', '2ˣ', '5']] }),
+    despues:() => { const R = E.regla; R.arcos = [{ de:pos(5), a:pos(10), color:'b', nivel:2, texto:'×2', f:0 }];
+      E.animar(0, 1, 1400, v => { R.arcos[0].f = v; }, () => { R.marcas.push({ pos:pos(10), texto:'10', color:'N', alto:36 }, { pos:pos(7), texto:'5 + 2', color:'muted', alto:28, dash:true });
+        E.lect = [() => ['N', '2ˣ', '5'], () => ['N', '2ˣ⁺¹ = 5 · 2', D1.texto]]; E.dibujar(); E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">${b_('2')}<sup>${x_('x')} + 1</sup> = ${b_('2')}<sup>${x_('x')}</sup> · ${b_('2')} = ${N_('5')} · ${b_('2')} = ${N_(D1.texto)}</div>
+      <div class="eq">${b_('2')}<sup>${x_('x')}</sup> + ${b_('2')} = ${N_('7')}<span class="note">no es lo mismo</span></div></div>
+      <p>El 5 no es una potencia entera de 2: está entre el 4 y el 8, a unos ${fmt(D1.x, 2)} saltos (eso es log₂ 5). Un salto más lo multiplica por 2 y lo lleva a ${N_('10')}. El 7 (5 + 2) queda a trazos, a menos de un salto: sumar no es saltar.</p>
+      <p class="fuente">Repartir el exponente sobre una suma (2ˣ⁺¹ = 2ˣ + 2) es el mismo patrón de linealidad que (a + b)² = a² + b² (Matz, 1982); no encontramos un dato propio (AL11, hipótesis del informe). Las otras opciones son hipótesis nuestras.</p>` },
+  { id:'log-del-cuadrado', corto:'El logaritmo de un cuadrado',
+    q:`Si log₂ ${N_('a')} = ${x_('3')}, ¿cuánto vale log₂(${N_('a')}²)?`,
+    opts:[['a', D2.errores.cuadradoDelLog.texto, 'AL31-log-del-cuadrado-como-cuadrado-del-log', 'parcial'],
+          ['b', D2.errores.sumaN.texto, 'EL23-log-mas-el-exponente', 'hipotesis'],
+          ['c', D2.errores.numero.texto, 'EL1-log-da-el-numero', 'hipotesis'],
+          ['d', D2.texto]],
+    ok:'d',
+    fb:{ a:'3² = 9 eleva el logaritmo al cuadrado. Pero a² = a · a: son los 3 saltos de a, dos veces. Se suman: 3 + 3.',
+         b:'3 + 2 = 5 suma el exponente 2 al logaritmo. El 2 dice cuántas veces se multiplica a, y cada a son 3 saltos.',
+         c:'64 es el número a² (a = 8); su logaritmo es cuántos saltos hay hasta él.' },
+    antes:ya => E.config({ modo:'regla', regla:{ base:2, desde:0, hasta:6, exps: ya ? true : false, etiquetas: ya ? 'todas' : [0],
+      marcas:[{ pos:3, texto:'a', color:'N', alto:60 }], arcos: ya ? [{ de:0, a:3, color:'x', nivel:2, texto:'a' }, { de:3, a:6, color:'x', nivel:2, texto:'otra a' }] : [] },
+      lect: ya ? [() => ['N', 'a² = a · a', n0(D2.an)], () => ['x', 'log₂(a²)', D2.texto]] : [() => ['x', 'log₂ a', '3']] }),
+    despues:() => { const R = E.regla; R.arcos = [{ de:0, a:3, color:'x', nivel:2, texto:'a', f:0 }, { de:3, a:6, color:'x', nivel:2, texto:'otra a', f:0 }];
+      E.animar(0, 2, 2200, v => { R.arcos[0].f = clamp(v, 0, 1); R.arcos[1].f = clamp(v - 1, 0, 1); }, () => { R.etiquetas = 'todas'; R.exps = true; E.lect = [() => ['N', 'a² = a · a', n0(D2.an)], () => ['x', 'log₂(a²)', D2.texto]]; E.dibujar(); E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">log₂(${N_('a')}²) = log₂(${N_('a')} · ${N_('a')}) = ${x_('3')} + ${x_('3')} = 2 · ${x_('3')} = ${x_(D2.texto)}</div>
+      <div class="eq">(log₂ ${N_('a')})² = ${x_('3')}² = ${x_('9')}<span class="note">otra cosa</span></div></div>
+      <p>${N_('a')} está a ${x_('3')} saltos (a = 8). Multiplicar por ${N_('a')} otra vez son 3 saltos más: se llega a ${N_('64')}, a ${x_('6')} saltos. Por eso log(aⁿ) = n · log a: el exponente sale adelante multiplicando.</p>
+      <p class="fuente">Escribir log(a²) = (log a)² aparece entre las sobregeneralizaciones de logaritmos descritas por Chua y Wood (2005, según resúmenes), sin porcentaje. Las otras opciones son hipótesis nuestras.</p>` },
+  { id:'log-de-uno', corto:'log₅ 1 + log₅ 5',
+    q:`¿Cuánto vale log₅ ${N_('1')} + log₅ ${N_('5')}?`,
+    opts:[['a', D3.errores.numero.texto, 'EL1-log-da-el-numero', 'hipotesis'],
+          ['b', D3.errores.logUnoEsUno.texto, 'EL13-log-de-uno-es-uno', 'hipotesis'],
+          ['c', D3.texto],
+          ['d', D3.errores.logBaseCero.texto, 'EL21-log-de-la-base-es-cero', 'hipotesis']],
+    ok:'c',
+    fb:{ a:'1 + 5 = 6 suma los números. El logaritmo de cada uno es cuántos saltos de ×5 hay hasta él.',
+         b:'Esa cuenta usa log₅ 1 = 1. Pero para llegar a 1 no hace falta ningún salto: 5⁰ = 1, así que log₅ 1 = 0.',
+         d:'Esa cuenta usa log₅ 5 = 0. Pero de 1 a 5 hay un salto de ×5: log₅ 5 = 1.' },
+    antes:ya => E.config({ modo:'regla', regla:{ base:5, desde:-1, hasta:3, exps: ya ? true : false,
+      arcos: ya ? [{ de:0, a:1, color:'x', nivel:2, texto:'un salto' }] : [], marcas: ya ? [{ pos:0, texto:'ningún salto', color:'x', alto:36 }] : [] },
+      lect: ya ? [() => ['x', 'log₅ 1', '0'], () => ['x', 'log₅ 5', '1'], () => ['x', 'suma', D3.texto]] : [] }),
+    despues:() => { const R = E.regla; R.exps = [0]; R.marcas = [{ pos:0, texto:'ningún salto', color:'x', alto:36, f:0 }]; R.arcos = [{ de:0, a:1, color:'x', nivel:2, texto:'un salto', f:0 }];
+      E.cadena([n => E.animar(0, 1, 800, v => { R.marcas[0].f = v; }, n), n => E.animar(0, 1, 1200, v => { R.arcos[0].f = v; }, n)],
+        () => { R.exps = true; E.lect = [() => ['x', 'log₅ 1', '0'], () => ['x', 'log₅ 5', '1'], () => ['x', 'suma', D3.texto]]; E.dibujar(); E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">log₅ ${N_('1')} + log₅ ${N_('5')} = ${x_('0')} + ${x_('1')} = ${x_(D3.texto)}</div></div>
+      <p>En cualquier base: log<sub>b</sub> 1 = 0, porque b⁰ = 1 (te quedas donde empezaste), y log<sub>b</sub> b = 1, porque b¹ = b (un salto). En la escalera del ${b_('5')}, cada salto multiplica por 5.</p>
+      <p class="fuente">No encontramos estudios con cifras sobre estas dos propiedades; las tres opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'base-menor-que-uno', corto:'Base entre 0 y 1', unidad:'algebra.exponenciales-y-logaritmos',
+    q:`Resuelve (${b_('1/2')})<sup>${x_('x')}</sup> &gt; 1/8.`,
+    opts:[['a', D4.errores.sentidoContrario.texto, 'EL6-base-menor-que-uno-sin-invertir', 'hipotesis'],
+          ['b', D4.texto],
+          ['c', D4.errores.signoPerdido.texto, 'EL15-pierde-un-signo', 'hipotesis'],
+          ['d', D4.errores.bordeOpuesto.texto, 'EL25-borde-con-signo-cambiado', 'hipotesis']],
+    ok:'b',
+    fb:{ a:'x > 3 deja la desigualdad como estaba. Con base 1/2, cada salto divide entre 2: más saltos dan un número más chico. Por eso se invierte.',
+         c:'Esa cuenta pasa a (1/2)ˣ = 2⁻ˣ y 1/8 = 2⁻³, pero luego compara x con −3: se pierde el signo de un solo lado.',
+         d:'El borde es 3, porque (1/2)³ = 1/8. Con −3 se obtiene (1/2)⁻³ = 8.' },
+    antes:ya => { const G = curvasDe('1/2', -2, 6);
+      E.config({ modo:'grafica', graf:{ base:'1/2', xr:[-1.5, 5.5], yr:[-0.15, 2.3], horiz:[{ y:1/8, texto:'y = 1/8' }],
+        curvas: ya ? [{ pts:G.exp, color:'N', etiqueta:[-1.3, 2.05, 'y = (1/2)ˣ'] }] : [], sombra: ya ? { x0:-10, x1:D4.borde } : null,
+        puntos: ya ? [{ x:D4.borde, y:1/8, color:'ink', texto:'(3; 1/8)' }] : [] }, ley:[['N', 'y = (1/2)ˣ', 'linea'], ['ink', 'y = 1/8', 'trazos'], ['x', 'los x que cumplen']],
+        lect: ya ? [() => ['x', 'cumplen', D4.texto]] : [] }); },
+    despues:() => { const G = curvasDe('1/2', -2, 6), Gr = E.graf; Gr.curvas = [{ pts:G.exp, color:'N', hasta:-1.5, etiqueta:[-1.3, 2.05, 'y = (1/2)ˣ'] }];
+      E.cadena([n => E.animar(-1.5, 5.6, 2200, v => { Gr.curvas[0].hasta = v; }, n, true), n => { Gr.puntos = [{ x:D4.borde, y:1/8, color:'ink', texto:'(3; 1/8)' }]; Gr.sombra = { x0:-10, x1:D4.borde, f:0 }; E.animar(0, 1, 900, v => { Gr.sombra.f = v; }, n); }],
+        () => { E.lect = [() => ['x', 'cumplen', D4.texto]]; E.dibujar(); E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">(${b_('1/2')})<sup>${x_('x')}</sup> &gt; (${b_('1/2')})${x_('³')}  ⟹  ${x_(D4.texto)}<span class="note">se invierte: la función decrece</span></div></div>
+      <p>Con base entre 0 y 1, la curva <b>baja</b>: a la izquierda del 3 está por encima de 1/8 (la franja fucsia), y a la derecha, por debajo. Con base mayor que 1 la curva sube y la desigualdad se queda como está: 2ˣ &gt; 8 da x &gt; 3.</p>
+      <p class="fuente">No encontramos estudios con cifras sobre inecuaciones exponenciales con base menor que 1; las tres opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'vida-media', corto:'Vida media',
+    q:`Una muestra de ${N_('80 g')} de una sustancia radiactiva tiene una vida media de 5 años: cada 5 años queda la mitad. ¿Cuánto queda a los ${t_('15 años')}?`,
+    opts:[['a', `${fmt(D5.errores.lineal.valor, 0)} g`, 'EL11-decaimiento-lineal', 'hipotesis'],
+          ['b', `${fmt(D5.errores.unaMenos.valor, 0)} g`, 'EL10-una-vida-media-de-menos', 'hipotesis'],
+          ['c', `${fmt(D5.valor, 0)} g`],
+          ['d', `${fmt(D5.errores.divide.valor, 1)} g`, 'EL12-divide-entre-las-vidas-medias', 'hipotesis']],
+    ok:'c',
+    fb:{ a:'0 g sale de quitar 40 g cada 5 años. Pero no se pierde siempre lo mismo: se pierde la mitad de lo que queda.',
+         b:'20 g es lo que queda a los 10 años: dos vidas medias. A los 15 años son tres.',
+         d:'80/3 divide entre las tres vidas medias. Pero en cada una no se reparte: se divide entre 2, tres veces.' },
+    antes:ya => E.config({ modo:'decae', dec:{ N0:80, vidaMedia:5, serie:D5.serie, k: ya ? 3 : 0 }, lect: ya ? [() => ['N', 'a los 15 años', `${D5.texto} g`]] : [] }),
+    despues:() => { E.config({ modo:'decae', dec:{ N0:80, vidaMedia:5, serie:D5.serie, k:0 } });
+      E.animar(0, 3, RM ? 0 : 4200, v => { E.dec.k = v; }, () => { E.dec.k = 3; E.lect = [() => ['N', 'a los 15 años', `${D5.texto} g`]]; E.dibujar(); E.avisar(); }, true); },
+    exp:() => `<div class="eqs"><div class="eq">${N_('N')} = ${N_('80')} · (${b_('1/2')})<sup>${t_('t')}/5</sup>  ⟹  ${N_('80')} · (${b_('1/2')})³ = ${N_(D5.texto + ' g')}</div>
+      <div class="eq">${D5.serie.map(v => N_(fmt(v, 0))).join(' → ')}</div></div>
+      <p>Es un <b>decaimiento</b> exponencial: el factor por periodo es ${b_('1/2')}. Cada vida media se pierde la mitad de lo que hay, así que la cantidad nunca llega a cero: a los 20 años quedarían 5 g, y a los 25, 2,5 g.</p>
+      <p class="fuente">No encontramos estudios con cifras sobre la vida media en postulantes; las opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'potencia-contra-cuadrado', corto:'2ˣ contra x²',
+    q:`Con ${x_('x = 3')}: ${N_('2³ = 8')} y ${q_('3² = 9')}, así que x² va ganando. ¿Desde qué valor entero de ${x_('x')} gana ${N_('2ˣ')} para siempre?`,
+    opts:[['a', D6.errores.ultimoEmpate.texto, 'EL16-confunde-empate-con-ganar', 'hipotesis'],
+          ['b', D6.errores.primerEmpate.texto, 'EL22-toma-el-primer-empate', 'hipotesis'],
+          ['c', D6.errores.nunca.texto, 'AL33-el-cuadrado-crece-mas', 'hipotesis'],
+          ['d', D6.texto]],
+    ok:'d',
+    fb:{ a:'Con x = 4 empatan: 2⁴ = 16 = 4². Ganar empieza en el siguiente: 2⁵ = 32 y 5² = 25.',
+         b:'Con x = 2 empatan (4 = 4), pero con x = 3 vuelve a ganar x²: 9 contra 8.',
+         c:'x² le gana un rato, pero 2ˣ se duplica en cada paso y x² no: con x = 10, 1024 contra 100.' },
+    antes:ya => { const G = curvasDe(2, -1, 7), Q = ME.curvaPotencia({ grado:2, desde:0, hasta:7, n:140 }).pts;
+      E.config({ modo:'grafica', graf:{ base:2, xr:[0, 6.6], yr:[0, 70],
+        curvas:[{ pts:G.exp, color:'N', hasta: ya ? 7 : 3, etiqueta:[6.4, 66, 'y = 2ˣ', 'right'] }, { pts:Q, color:'q', hasta: ya ? 7 : 3, etiqueta:[6.4, 40, 'y = x²', 'right'] }],
+        puntos: ya ? D6.empates.map(n => ({ x:n, y:Math.pow(2, n), color:'ink', texto:`empate en ${n}`, lado:'izq' })) : [] },
+        ley:[['N', 'y = 2ˣ', 'linea'], ['q', 'y = x²', 'linea']],
+        lect: ya ? lect6() : [() => ['N', '2³', '8'], () => ['q', '3²', '9']] }); },
+    despues:() => { const Gr = E.graf;
+      E.animar(3, 6.6, 2400, v => { Gr.curvas.forEach(C => { C.hasta = v; }); }, () => { Gr.puntos = D6.empates.map(n => ({ x:n, y:Math.pow(2, n), color:'ink', texto:`empate en ${n}`, lado:'izq' })); E.lect = lect6(); E.dibujar(); E.avisar(); }, true); },
+    exp:() => `<div class="eqs"><div class="eq">${D6.tabla.map(([n, e, p]) => `${x_(n)}: ${N_(n0(e))} / ${q_(n0(p))}`).join('   ')}</div></div>
+      <p>Empatan en x = 2 y x = 4; desde ${x_('x = 5')}, ${N_('2ˣ')} gana para siempre. La razón está en cómo crece cada una: ${N_('2ˣ')} se <b>multiplica</b> por 2 en cada paso, mientras que ${q_('x²')} solo suma 2x + 1 (de 25 a 36 suma 11). Al principio sumar 11 es más que duplicar 8, pero duplicar 32 ya es sumar 32.</p>
+      <p class="fuente">Confundir el crecimiento exponencial con «crecer mucho» o con x² no lo encontramos medido (AL33, hipótesis del informe). Las opciones de los empates son hipótesis nuestras.</p>` },
+];
+function lect6(){ return [() => ['N', '2ˣ con x = 6', n0(D6.tabla[6][1])], () => ['q', 'x² con x = 6', n0(D6.tabla[6][2])], () => ['x', 'gana desde', D6.texto]]; }
+const S = { k:0, pred:{}, t0:Date.now() };
+// Un experimento se abre solo si todos los anteriores ya tienen respuesta; los respondidos se revisitan libremente.
+const abierto = k => EXPS.slice(0, k).every(x => !!S.pred[x.id]);
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => abierto(k)
+    ? `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  if (k < 0 || k >= EXPS.length || !abierto(k)) return;
+  E.parar();
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  x.antes(ya);
+  E.compactar(!ya);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p class="problem">${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + `<div class="nav"><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    $('otra2').onclick = () => { E.parar(); x.antes(false); alDibujo($('cv2'), () => S.k === k, () => { x.despues(); E.leyenda(); }); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar(); botones();
+    E.compactar(false);
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0, x.unidad);
+    alDibujo($('cv2'), () => S.k === k, () => { x.despues(); E.leyenda(); E.dibujar(); });
+  });
+  pintar();
+}
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

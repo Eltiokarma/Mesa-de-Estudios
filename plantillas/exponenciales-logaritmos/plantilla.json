@@ -1,0 +1,16 @@
+{
+  "id": "exponenciales-logaritmos",
+  "titulo": "La escalera de la base: exponenciales y logaritmos",
+  "formato": "escena",
+  "unidades": [
+    "algebra.exponenciales-y-logaritmos",
+    "algebra.tipos-de-funciones-e-inversa"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}
