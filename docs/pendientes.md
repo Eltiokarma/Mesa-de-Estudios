@@ -8,7 +8,7 @@
 npm test
 ```
 
-Deben pasar 1349 pruebas.
+Deben pasar 1389 pruebas.
 
 ```bash
 npm run dev
@@ -56,7 +56,7 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 | ma3 | Álgebra | Hechas: `grafica-perillas`, `traductor-enunciados`, `cuadrado-crece` (productos notables y factorización) y `sucesiones` | Faltan polinomios y división, exponenciales y logaritmos (con escena propia), matrices y complejos |
 | ma1 a ma3 | Trigonometría, geometría, funciones | Informes del 6 nov: `trigonometria-`, `geometria-` y `algebra-funciones-ideas-erroneas.md` | Cifras de resúmenes, por verificar con los PDF (`fuentes/por-conseguir.md`); cada informe trae 3 escenas y casos |
 | ma4 | Aritmética | Hechas: `porcentajes-sucesivos` (predicciones), `regla-de-tres`, `probabilidad-dados`, `sucesiones` y `fracciones` (fracciones, decimales, MCD y MCM, promedios) | Falta interés (la hace la sesión paralela matematica-b); fracciones sin ítems en el banco todavía |
-| ra1 | Razonamiento matemático | Hechas: `probabilidad-dados`, `regla-de-tres` (engranajes), `traductor-enunciados` (planteo) y `sucesiones` (patrones con palitos, Gauss, series) | Faltan sucesiones, planteo de ecuaciones, edades y móviles, orden de información y verdades y mentiras |
+| ra1 | Razonamiento matemático | Hechas: `probabilidad-dados`, `regla-de-tres` (engranajes), `traductor-enunciados` (planteo), `sucesiones` (patrones con palitos, Gauss, series) y `orden-informacion` (orden, verdades y mentiras, certezas) | Faltan sucesiones, planteo de ecuaciones, edades y móviles, orden de información y verdades y mentiras |
 | ra2 y pl4 | Razonamiento verbal y formato lectura | `razonamiento-verbal-ideas-erroneas.md` (RV1 a RV34, ninguno documentado; hecho por la rutina) | Formato lectura hecho en la app (pl4, 6 nov); la rutina sigue con los 30 textos, los de entrada y salida, los ejercicios sueltos y la guía docente |
 
 ### 2. Detalles de las plantillas ya hechas
@@ -111,9 +111,19 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 - **Celda galvánica** (`plantillas/celda-galvanica/`, hecha el 6 nov 2026 por un subagente): puente de KNO₃ con nitratos en los vasos (con Ag⁺, el KCl precipitaría AgCl). No cubre la electrólisis del agua ni Nernst; el explorador dibuja Zn, Fe, Cu y Ag (el motor tiene más metales).
 - **Todas:** el estado es `borrador`. Pasan a `probada` con los datos del colegio.
 
-### Rutinas automáticas (6 nov 2026)
+### Rutinas y sesiones paralelas (6 nov 2026)
 
-Tres conversaciones aparte trabajan solas cada día, cada una en su rama y sin tocar catálogo, app, nucleo ni estos documentos: física (`rutina/fisica`, 2:13 a. m.), química (`rutina/quimica`, 4:37 a. m.) y razonamiento verbal con la guía docente (`rutina/verbal`, 4:41 p. m.). Cada una deja su reporte en `rutinas/<curso>.md` con los pedidos de integración. Integrarlas: leer el reporte, revisar, hacer merge a esta rama, agregar al catálogo, `npm run catalogo`, subir `VERSION` y documentar.
+Cinco conversaciones aparte trabajan solas, cada una en su rama y sin tocar catálogo, app, nucleo ni estos documentos. Cada una deja su reporte en `rutinas/<nombre>.md` con los pedidos de integración:
+
+| Sesión | Rama | Qué hace |
+| --- | --- | --- |
+| Rutina de física (diaria, 2:13 a. m.) | `rutina/fisica` | Una plantilla por ejecución: estática, choques, fluidos, MAS, electrostática, ondas, termodinámica, magnetismo |
+| Rutina de química (diaria, 4:37 a. m.) | `rutina/quimica` | Átomo y tabla, enlace, líquidos y sólidos |
+| Rutina de razonamiento verbal (diaria, 4:41 p. m.) | `rutina/verbal` | Correcciones de los textos, textos de entrada y salida (t000a, t000b), más textos hasta 30, guía para profesores |
+| Paralelo: álgebra y trigonometría (una vez) | `rutina/matematica-a` | Exponenciales y logaritmos, identidades, polinomios, funciones trigonométricas inversas |
+| Paralelo: geometría, aritmética y razonamiento (una vez) | `rutina/matematica-b` | Sólidos, geometría analítica, interés, relojes y calendarios, congruencia |
+
+**Cómo integrar:** `git fetch origin rutina/<nombre>`, leer su reporte, ver qué plantillas están terminadas y revisadas, hacer merge a esta rama (si una plantilla está a medias, merge del commit anterior), agregar al catálogo, `npm run catalogo`, subir `VERSION`, colores en `docs/diseno.md`, rebalancear el banco si el curso llega a 4 plantillas, documentar y `npm test` en verde. El método completo está en `docs/metodo/LEEME.md`.
 
 ### 3. Plataforma
 
