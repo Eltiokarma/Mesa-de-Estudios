@@ -65,6 +65,7 @@ canvas.sin-scroll{touch-action:none}
 .dots button.done{border-color:var(--ink); color:var(--ink)}
 .dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
 .dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
 .step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
   color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
 .step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
@@ -772,9 +773,10 @@ const EXPS = [
       <p class="fuente">La idea de que "si un reactivo no alcanza, no hay reacción" está documentada sin porcentaje (Dahsah y otros, 2006; Gauchon y Méheut, 2007, citado por Raviolo y Lerzo, 2016).</p>` },
 ];
 const S = { k:0, pred:{}, t0:Date.now() };
-function reiniciar(x){ for (const k of Object.keys(E)) delete E[k]; x.antes(); leyenda('leyenda2', E.r || x.r); }
+function reiniciar(x){ S.vez = (S.vez || 0) + 1; for (const k of Object.keys(E)) delete E[k]; x.antes(); leyenda('leyenda2', E.r || x.r); }
 function reaccionarTodo(){
-  const otra = () => { if (!vuelta(E.lista, E.r, () => { E.lista = E.lista.filter(m => !(m.usado && m.alpha <= 0.01)); setTimeout(otra, RM ? 0 : 120); }, draw)) draw(); };
+  const vez = S.vez; // si se cambia de experimento a media animación, la cadena se corta
+  const otra = () => { if (S.vez !== vez) return; if (!vuelta(E.lista, E.r, () => { if (S.vez !== vez) return; E.lista = E.lista.filter(m => !(m.usado && m.alpha <= 0.01)); setTimeout(otra, RM ? 0 : 120); }, draw)) draw(); };
   otra();
 }
 function correr(desde, hasta, clave){
@@ -851,11 +853,18 @@ function draw(){
   }
 }
 function sincronizar(){ draw(); }
+// Pastillas: la k solo se abre si todos los experimentos anteriores ya tienen respuesta;
+// las respondidas se revisitan libres (misma regla que los puntos del paso a paso).
+function primeraLibre(){ const j = EXPS.findIndex(x => !S.pred[x.id]); return j < 0 ? EXPS.length - 1 : j; }
 function botones(){
-  $('exps').innerHTML = EXPS.map((x, k) => `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
+  const libre = primeraLibre();
+  $('exps').innerHTML = EXPS.map((x, k) => k > libre
+    ? `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
   $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
 }
 function ir(k){
+  if (k > primeraLibre()) return;
   cancelAnimationFrame(anim);
   S.k = k; S.t0 = Date.now();
   const x = EXPS[k];
@@ -884,7 +893,7 @@ function ir(k){
   btns.forEach(b => b.onclick = () => {
     if (S.pred[x.id]) return;
     const o = x.opts.find(q => q[0] === b.dataset.k);
-    S.pred[x.id] = o[0]; pintar(); x.despues(); sincronizar();
+    S.pred[x.id] = o[0]; botones(); pintar(); x.despues(); sincronizar();
     registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
   });
   pintar(); draw();

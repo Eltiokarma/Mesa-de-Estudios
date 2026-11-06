@@ -56,6 +56,7 @@ canvas{ display:block; width:100%; touch-action:pan-y }
 .dots button.done{ border-color:var(--ink); color:var(--ink) }
 .dots button.on{ background:var(--ink); border-color:var(--ink); color:var(--card) }
 .dots button:disabled{ opacity:.4; cursor:not-allowed }
+#exps3 button:disabled{ opacity:.4; cursor:not-allowed }
 .step-k{ margin:0; font-size:.75rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted) }
 .step-t{ margin:2px 0 0; font-family:var(--display); font-weight:700; font-size:1.4rem; line-height:1.2; text-wrap:balance }
 .body{ display:grid; gap:12px; min-width:0 }
@@ -1056,12 +1057,19 @@ function vista(c, luz){
   ctx.restore(); ctx.globalAlpha = 1;
 }
 
+// Pastillas: la k solo se abre si todos los experimentos anteriores ya tienen respuesta;
+// las respondidas se revisitan libres (misma regla que los puntos del paso a paso).
+function primeraLibre(){ const j = EXPS.findIndex(x => !S.pred[x.id]); return j < 0 ? EXPS.length - 1 : j; }
 function botones(){
-  $('exps3').innerHTML = EXPS.map((x, k) => `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
+  const libre = primeraLibre();
+  $('exps3').innerHTML = EXPS.map((x, k) => k > libre
+    ? `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
   $('exps3').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
 }
 function reiniciar(){ E.tapa = null; E.pantalla = true; E.xp = IMG.i; E.D = D0; }
 function ir(k){
+  if (k > primeraLibre()) return;
   S.k = k; S.t0 = Date.now(); reiniciar();
   const x = EXPS[k], p = S.pred[x.id];
   if (p) x.aplicar();
@@ -1082,7 +1090,7 @@ function ir(k){
   };
   btns.forEach(b => b.onclick = () => {
     const o = x.opts.find(q => q[0] === b.dataset.k);
-    S.pred[x.id] = o[0]; x.aplicar(); pintar(); draw();
+    S.pred[x.id] = o[0]; botones(); x.aplicar(); pintar(); draw();
     registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
   });
   pintar(); draw();
