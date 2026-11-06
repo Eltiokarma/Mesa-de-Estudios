@@ -3300,7 +3300,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "orden-informacion"
+     ]
     },
     {
      "id": "razonamiento-matematico.trazos-y-perimetros",
@@ -3342,7 +3344,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "orden-informacion"
+     ]
     },
     {
      "id": "razonamiento-matematico.verdades-y-mentiras",
@@ -3361,7 +3365,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "orden-informacion"
+     ]
     },
     {
      "id": "razonamiento-matematico.traslados-y-puntos-cardinales",
@@ -3483,7 +3489,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "orden-informacion"
+     ]
     },
     {
      "id": "razonamiento-matematico.frecuencia-de-sucesos",
@@ -4544,6 +4552,26 @@
     "/plantillas/optica-lente-delgada/index.html",
     "/plantillas/optica-lente-delgada/motor.js",
     "/plantillas/optica-lente-delgada/papel.json"
+   ]
+  },
+  "orden-informacion": {
+   "id": "orden-informacion",
+   "titulo": "El tablero de las pistas: orden de información y verdades y mentiras",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.ordenamiento-de-informacion",
+    "razonamiento-matematico.verdades-y-mentiras",
+    "razonamiento-matematico.certezas",
+    "razonamiento-matematico.razonamiento-deductivo"
+   ],
+   "url": "/plantillas/orden-informacion/index.html",
+   "papel": "/plantillas/orden-informacion/papel.json",
+   "archivos": [
+    "/plantillas/orden-informacion/index.html",
+    "/plantillas/orden-informacion/motor.js",
+    "/plantillas/orden-informacion/papel.json"
    ]
   },
   "poligonos": {
