@@ -848,7 +848,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "gases"
+     ]
     },
     {
      "id": "quimica.liquidos-y-solidos",
@@ -4049,6 +4051,23 @@
    "papel": null,
    "archivos": [
     "/plantillas/estequiometria-limitante/generador.js"
+   ]
+  },
+  "gases": {
+   "id": "gases",
+   "titulo": "Gases",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.gases"
+   ],
+   "url": "/plantillas/gases/index.html",
+   "papel": "/plantillas/gases/papel.json",
+   "archivos": [
+    "/plantillas/gases/index.html",
+    "/plantillas/gases/motor.js",
+    "/plantillas/gases/papel.json"
    ]
   },
   "limitante-particulas": {

@@ -1,0 +1,31 @@
+{
+  "plantilla": "gases",
+  "unidades": "atm, L, mol, K (°C donde se dice), g/L, g/mol",
+  "constantes": "R = 0,082 atm·L/(mol·K); T(K) = T(°C) + 273; 22,4 L/mol en condiciones normales (1 atm y 0 °C).",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' (una lista) y compara 'espera'. Los campos anidados van con punto (gases.O2.P); un número suelto, como 'valor'.",
+  "verificacion": "Los casos de ecuación de estado, densidad, Dalton, Graham, el tanque y la estequiometría son las filas 'Gas' de 'Casos de prueba propuestos' de docs/investigacion/gases-soluciones-ideas-erroneas.md. Todos se recalcularon el 6 de noviembre de 2026 con fracciones exactas en Python (R = 41/500), sin leer el motor ni este archivo, y por otros caminos cuando se pudo: Boyle, Charles y Gay-Lussac por pasos, Gay-Lussac con la presión absoluta en el tanque, Pᵢ = xᵢ·P en Dalton, √(32/2) = 4 exacta en Graham. Ojo: 22,4 L/mol y R = 0,082 no son exactamente coherentes (22,4/273 = 0,08205…), así que cada caso usa una sola constante: R en estado(), densidad() y cambio(); 22,4 en densidadCN(), masaMolarCN() y volumenCN(). Con R, la densidad del O₂ en condiciones normales sale 16000/11193 ≈ 1,4295 g/L; con 22,4, 10/7 ≈ 1,4286 g/L.",
+  "tolerancia": 1e-9,
+  "casos": [
+    { "nombre": "Ecuación de estado: 2 mol a 27 °C (300 K) en 8,2 L dan 6 atm", "fn": "estado", "args": [{ "n": 2, "T": 300, "V": 8.2 }], "espera": { "P": 6 } },
+    { "nombre": "0,5 mol a 27 °C y 1 atm ocupan 12,3 L (no 11,2 L: no son condiciones normales)", "fn": "estado", "args": [{ "n": 0.5, "T": 300, "P": 1 }], "espera": { "V": 12.3 } },
+    { "nombre": "Densidad del O₂ a 0,82 atm y 127 °C: 0,8 g/L", "fn": "densidad", "args": [{ "P": 0.82, "T": 400, "M": "O2" }], "espera": { "valor": 0.8 } },
+    { "nombre": "Densidad del O₂ en condiciones normales con 22,4 L/mol: 10/7 g/L", "fn": "densidadCN", "args": ["O2"], "espera": { "valor": 1.4285714285714286 } },
+    { "nombre": "Masa molar de un gas de 1,25 g/L en condiciones normales: 28 g/mol", "fn": "masaMolarCN", "args": [1.25], "espera": { "valor": 28 } },
+    { "nombre": "Dalton: 16 g de O₂ y 16 g de CH₄ a 3 atm; P(O₂) = 1 atm y P(CH₄) = 2 atm (por masas daría 1,5 y 1,5)",
+      "fn": "dalton", "args": [[{ "gas": "O2", "masa": 16 }, { "gas": "CH4", "masa": 16 }], 3],
+      "espera": { "nTotal": 1.5, "gases.O2.x": 0.3333333333333333, "gases.O2.P": 1, "gases.CH4.P": 2 } },
+    { "nombre": "Graham: H₂ y O₂ en un tubo de 100 cm se encuentran a 80 cm del H₂ (invertido: 20; sin raíz: 1600/17)",
+      "fn": "encuentro", "args": [100, "H2", "O2"], "espera": { "razon": 4, "desde1": 80, "invertido": 20, "sinRaiz": 94.11764705882354 } },
+    { "nombre": "Tanque rígido: el manómetro pasa de 2 atm a 3 atm al calentar de 27 °C a 127 °C",
+      "fn": "tanque", "args": [{ "Pman1": 2, "Patm": 1, "T1C": 27, "T2C": 127 }],
+      "espera": { "P1abs": 3, "P2abs": 4, "Pman2": 3, "conManometrica": 2.6666666666666665, "conCelsiusAbs": 14.11111111111111 } },
+    { "nombre": "8 g de CH₄ en condiciones normales: 0,5 mol dan 11,2 L de CO₂", "fn": "volumenCN", "args": [0.5], "espera": { "valor": 11.2 },
+      "tambien": [{ "args": [1], "espera": { "valor": 22.4 } }] },
+    { "nombre": "Charles con émbolo libre: 2 L de 300 K a 450 K pasan a 3 L", "fn": "cambio", "args": [{ "P": 1, "V": 2, "T": 300 }, { "T": 450 }, "V"], "espera": { "V": 3, "P": 1 } },
+    { "nombre": "Boyle: 6 L a 2 atm comprimidos a 1,5 L pasan a 8 atm", "fn": "cambio", "args": [{ "P": 2, "V": 6, "T": 300 }, { "V": 1.5 }, "P"], "espera": { "P": 8 } },
+    { "nombre": "Gay-Lussac: recipiente rígido a 1 atm de 300 K a 400 K pasa a 4/3 atm", "fn": "cambio", "args": [{ "P": 1, "V": 1, "T": 300 }, { "T": 400 }, "P"], "espera": { "P": 1.3333333333333333 } },
+    { "nombre": "3 atm, 300 K y 4,1 L son 0,5 mol; con el doble de moles, 6 atm", "fn": "estado", "args": [{ "P": 3, "T": 300, "V": 4.1 }], "espera": { "n": 0.5 },
+      "tambien": [{ "fn": "cambio", "args": [{ "P": 3, "V": 4.1, "n": 0.5, "T": 300 }, { "n": 1 }, "P"], "espera": { "P": 6 } }] },
+    { "nombre": "Kelvin: 27 °C son 300 K; 127 °C, 400 K", "fn": "kelvin", "args": [27], "espera": { "valor": 300 }, "tambien": [{ "args": [127], "espera": { "valor": 400 } }] }
+  ]
+}
