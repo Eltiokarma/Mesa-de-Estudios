@@ -1,0 +1,1048 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dinámica: fuerzas, plano inclinado y poleas</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md).
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
+   P peso azul, N normal verde, f roce ámbar, T tensión rojo, F fuerza aplicada fucsia, a aceleración turquesa,
+   C fuerza de contacto entre dos cajas gris.
+   La masa, los ángulos y la resultante ΣF van en tinta (ΣF a trazos). El morado de marca no se usa aquí. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
+  --detras:#f6ece4; --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-P:#1f5fbf; --c-N:#4f7a17; --c-f:#8f5800; --c-T:#c0364a; --c-F:#a10fbf; --c-a:#0f766e; --c-C:#6b6b6b;
+  --suelo:#d9c8bb; --bloque:#f3e3d3;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-P:#7cb0ff; --c-N:#a3d65e; --c-f:#ffc04d; --c-T:#f17384; --c-F:#cf6bfa; --c-a:#5ed9c8; --c-C:#b5b5b5;
+  --suelo:#4a3d55; --bloque:#5a4868; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-P:#7cb0ff; --c-N:#a3d65e; --c-f:#ffc04d; --c-T:#f17384; --c-F:#cf6bfa; --c-a:#5ed9c8; --c-C:#b5b5b5;
+  --suelo:#4a3d55; --bloque:#5a4868; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y; -webkit-user-select:none; user-select:none}
+canvas.arrastrable{cursor:grab}
+canvas.agarrando{cursor:grabbing}
+canvas.sin-scroll{touch-action:none}
+canvas:focus-visible{outline:3px solid var(--ink); outline-offset:-3px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+.map{display:grid; gap:8px; margin:0; padding:0; list-style:none}
+.map li{display:flex; gap:10px; align-items:baseline}
+.map b{font-family:var(--mono); min-width:4.6em; flex:none}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-P{color:var(--c-P); background:color-mix(in srgb, var(--c-P) 12%, transparent)}
+.v-N{color:var(--c-N); background:color-mix(in srgb, var(--c-N) 12%, transparent)}
+.v-f{color:var(--c-f); background:color-mix(in srgb, var(--c-f) 12%, transparent)}
+.v-T{color:var(--c-T); background:color-mix(in srgb, var(--c-T) 12%, transparent)}
+.v-F{color:var(--c-F); background:color-mix(in srgb, var(--c-F) 12%, transparent)}
+.v-a{color:var(--c-a); background:color-mix(in srgb, var(--c-a) 12%, transparent)}
+.v-C{color:var(--c-C); background:color-mix(in srgb, var(--c-C) 12%, transparent)}
+.v-m{color:var(--ink); background:color-mix(in srgb, var(--ink) 9%, transparent)}
+.v.hl{background:color-mix(in srgb, currentColor 26%, transparent)}
+
+.eqs{display:grid; grid-template-columns:minmax(0,1fr); gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.05rem; white-space:nowrap; font-variant-numeric:tabular-nums}
+.eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.5em; white-space:normal}
+.frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1.15}
+.frac > span:first-child{border-bottom:1.5px solid currentColor; padding:0 .25em}
+.frac > span:last-child{padding:0 .25em}
+.answer{font-weight:700; padding:12px 16px; border-radius:16px; background:var(--paper); border:2px solid var(--c-a); max-width:66ch}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.ctrls{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap:12px; align-items:end}
+.slider{display:grid; gap:4px}
+.slider label{font-weight:700; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.slider output{font-family:var(--mono); color:var(--muted)}
+input[type=range]{width:100%; accent-color:var(--ink); min-height:28px}
+input.r-f{accent-color:var(--c-f)} input.r-F{accent-color:var(--c-F)} input.r-a{accent-color:var(--c-a)} input.r-T{accent-color:var(--c-T)}
+.chips{display:flex; flex-wrap:wrap; gap:6px}
+.chip{font-size:.86rem; padding:4px 12px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); font-weight:700}
+.chip.ok{border-color:var(--ok); color:var(--ok)}
+.chip.virt{border-style:dashed}
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:999px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.exps{border-radius:20px}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+.barra{display:grid; gap:6px}
+.fila{display:grid; grid-template-columns:7.2em 1fr; gap:8px; align-items:center; font-size:.86rem; font-weight:700}
+.tiras{display:flex; height:28px; border-radius:8px; overflow:hidden; background:var(--grid)}
+.tira{display:flex; align-items:center; justify-content:center; color:var(--card); font:700 .78rem var(--mono); white-space:nowrap; overflow:hidden; min-width:2px; border-right:2px solid var(--card)}
+.tira:last-child{border-right:0}
+
+.check{display:inline-flex; align-items:center; gap:8px; font-weight:700; font-size:.92rem; cursor:pointer; min-height:44px}
+.check input{width:20px; height:20px; accent-color:var(--ink)}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.4fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Física · Dinámica · Problemas tipo admisión</p>
+      <h1>Fuerzas, plano inclinado y poleas</h1>
+      <p class="sub">Cada fuerza es una flecha con su color y con quién la ejerce. Si nadie la ejerce, no existe.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Rampa con el saco y las fuerzas que actúan sobre él">
+      <div class="lienzo"><canvas id="cv" tabindex="-1" role="img" aria-label="Una rampa inclinada con un saco encima y, cuando corresponde, las flechas de las fuerzas sobre el saco"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="legend" id="ley1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimento elegido, con sus fuerzas">
+      <div class="lienzo"><canvas id="cv2" tabindex="-1" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="legend" id="ley2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg exps" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/dinamica">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'dinamica', unidad: 'fisica.dinamica', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas de dibujo compartidas =================
+   Toda la física sale de MotorDinamica (motor.js); aquí solo se pinta. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+// Coma decimal, espacio de miles (desde 5 cifras) y signo menos tipográfico.
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 1 : d), r = Math.round(n*p)/p + 0;
+  let [e, f] = String(Math.abs(r)).split('.');
+  if (e.length >= 5) e = e.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const fr = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const M = MotorDinamica;
+const chico = () => innerWidth < 900;
+// Escribe en una región aria-live solo si el texto cambia (si no, el lector de pantalla repite en cada cuadro).
+function decir(el, t){ if (el.textContent !== t) el.textContent = t; }
+function esperar(ms, fn){ return ms ? setTimeout(fn, ms) : fn(); }
+
+function crearLienzo(cv, alto, dibujar){
+  const ctx = cv.getContext('2d');
+  const L = { cv, ctx, W:0, H:0 };
+  L.resize = () => {
+    const W = cv.clientWidth; if (!W) return;
+    const H = Math.round(alto(W)), dpr = window.devicePixelRatio || 1;
+    L.W = W; L.H = H; cv.style.height = H + 'px'; cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    dibujar();
+  };
+  new ResizeObserver(L.resize).observe(cv);
+  return L;
+}
+const altoLienzo = W => W >= 560 ? clamp(W*0.64, 340, 470) : clamp(W*0.98, 320, 420);
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, x1, y1, x2, y2){ ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
+function rr(ctx, x, y, w, h, r){ ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h); }
+// Texto con un fondo del color del papel detrás, para que se lea sobre las líneas. No se sale del lienzo.
+function rotulo(ctx, c, x, y, t, color, align, peso, W){
+  ctx.font = `${peso || 700} ${c.chico ? 11 : 12}px ${c.font}`; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(t).width;
+  let x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  if (W) x0 = clamp(x0, 4, W - w - 4);
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+  ctx.fillStyle = color; ctx.textAlign = 'left'; ctx.fillText(t, x0, y);
+}
+function colores(W){
+  const g = n => css(n);
+  return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
+    P:g('--c-P'), N:g('--c-N'), f:g('--c-f'), T:g('--c-T'), F:g('--c-F'), a:g('--c-a'), C:g('--c-C'),
+    suelo:g('--suelo'), bloque:g('--bloque'), mono:g('--mono'), font:g('--font'), chico: W < 480 };
+}
+// Flecha de (x1, y1) a (x2, y2); con trazos si dash.
+function flecha(ctx, x1, y1, x2, y2, color, w, dash){
+  const ang = Math.atan2(y2 - y1, x2 - x1), l = Math.hypot(x2 - x1, y2 - y1); if (l < 2) return;
+  const p = Math.min(9 + w, l*0.6);
+  ctx.save(); ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = w; ctx.lineCap = 'round';
+  if (dash) ctx.setLineDash(dash);
+  linea(ctx, x1, y1, x2 - Math.cos(ang)*p*0.7, y2 - Math.sin(ang)*p*0.7);
+  ctx.setLineDash([]);
+  ctx.beginPath(); ctx.moveTo(x2, y2); ctx.lineTo(x2 - Math.cos(ang - .45)*p, y2 - Math.sin(ang - .45)*p); ctx.lineTo(x2 - Math.cos(ang + .45)*p, y2 - Math.sin(ang + .45)*p);
+  ctx.closePath(); ctx.fill(); ctx.restore();
+}
+/* Una fuerza: { x, y, dx, dy (unitario, en pantalla), F (N), k (px por N), col, txt, oculta, fina, crece (0 a 1), hl }.
+   Oculta: a trazos, de largo fijo y con "?" en el rótulo (la dirección se ve; el tamaño no). */
+function fuerza(ctx, c, f, W, H){
+  const largo = f.oculta ? (f.largoOculto || 46) : f.F*f.k*(f.crece === undefined ? 1 : f.crece);
+  if (largo < 1.5) return;
+  const x2 = f.x + f.dx*largo, y2 = f.y + f.dy*largo, w = f.fina ? 1.8 : (f.hl ? 4.6 : 3.2);
+  flecha(ctx, f.x, f.y, x2, y2, f.col, w, f.oculta || f.fina ? [6, 4] : null);
+  if (!f.txt) return;
+  const al = f.al || (f.dx > 0.35 ? 'left' : f.dx < -0.35 ? 'right' : 'center');
+  const lx = x2 + f.dx*10 + (f.ox || 0), ly = clamp(y2 + f.dy*13 + (f.oy || 0), 12, (H || 999) - 12);
+  rotulo(ctx, c, lx, ly, f.txt, f.col, al, f.fina ? 700 : 800, W);
+}
+function bloque(ctx, c, x, y, w, h, giro, txt){
+  ctx.save(); ctx.translate(x, y); ctx.rotate(giro || 0);
+  ctx.fillStyle = c.bloque; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; rr(ctx, -w/2, -h/2, w, h, 5); ctx.fill(); ctx.stroke();
+  ctx.restore();
+  if (txt){ ctx.fillStyle = c.ink; ctx.font = `800 ${c.chico ? 11 : 12}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(txt, x, y); }
+}
+function suelo(ctx, c, x1, x2, y){
+  ctx.fillStyle = c.suelo; ctx.globalAlpha = .55; ctx.fillRect(x1, y, x2 - x1, 10); ctx.globalAlpha = 1;
+  ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; linea(ctx, x1, y, x2, y);
+}
+const N1 = n => fmt(n, Math.abs(n - Math.round(n)) < 1e-9 ? 0 : 1);
+// Texto del rótulo: "P = 100 N · Tierra". En el celular, el agente va igual (es lo que enseña la escena).
+const rot = (sim, F, quien, oculta) => `${sim} = ${oculta ? '?' : N1(F) + ' N'} · ${quien}`;
+
+/* ---------- Rampa con un bloque ----------
+   P = { r: resultado de M.plano, ang, s (m desde arriba), largo (m), masa (texto), ver: { P, N, f, F, comp, a, suma }
+   (cada uno: 'si' | 'oculta' | 'nueva'), crece, hl, asa (dibuja el asa para arrastrar el ángulo), sobreAsa } */
+function geoRampa(W, H, ang){
+  // Margen arriba para que las flechas del saco (la normal, el roce) quepan cuando está en lo alto.
+  // Con poco ángulo el piso sube un poco, para que la flecha del peso no se salga por abajo.
+  const th = ang*Math.PI/180, B = { x: W - 30, y: H - 30 - Math.min(W, H)*0.2*(1 - Math.min(1, ang/30)) }, arriba = clamp(Math.min(W, H)*0.34, 110, 165);
+  const Wa = W - 100, Ha = H - 30 - arriba;
+  const Lr = th < 1e-3 ? Wa : Math.min(Wa/Math.cos(th), Ha/Math.sin(th));
+  const A = { x: B.x - Lr*Math.cos(th), y: B.y - Lr*Math.sin(th) };
+  return { th, A, B, Lr, d: { x: Math.cos(th), y: Math.sin(th) }, n: { x: Math.sin(th), y: -Math.cos(th) } };
+}
+function vistaPlano(L, c, P){
+  const { ctx, W, H } = L; ctx.clearRect(0, 0, W, H);
+  const g = geoRampa(W, H, P.ang), { A, B, d, n, th } = g;
+  // Rampa y piso
+  suelo(ctx, c, 4, W - 4, B.y);
+  ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.lineTo(A.x, B.y); ctx.closePath();
+  ctx.fillStyle = c.suelo; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.stroke();
+  // Ángulo
+  if (P.ang > 0.5){
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.arc(B.x, B.y, 34, Math.PI, Math.PI + th); ctx.stroke();
+    ctx.fillStyle = c.ink; ctx.font = `800 12px ${c.font}`; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    ctx.fillText(`${fmt(P.ang, 0)}°`, B.x - 40, B.y - 10 - 8*Math.sin(th));
+  }
+  // Bloque
+  const l = clamp(Math.min(W, H)*0.13, 36, 54), pxm = (g.Lr - l*1.5)/P.largo;
+  const s = clamp(l*0.25 + P.s*pxm, 0, g.Lr - l*0.8);
+  const Q = { x: A.x + d.x*(s + l/2), y: A.y + d.y*(s + l/2) }, C = { x: Q.x + n.x*l/2, y: Q.y + n.y*l/2 };
+  bloque(ctx, c, C.x, C.y, l, l, th);
+  // Asa para arrastrar la rampa (arriba)
+  if (P.asa){
+    ctx.save(); ctx.beginPath(); ctx.arc(A.x, A.y, P.sobreAsa ? 11 : 9, 0, Math.PI*2); ctx.fillStyle = c.card; ctx.fill();
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.stroke(); ctx.restore();
+    rotulo(ctx, c, A.x - 14, A.y + 20, 'arrastra para inclinar', c.muted, 'right', 700, W);
+  }
+  const r = P.r, ver = P.ver || {}, k = Math.min(W, H)*0.24/Math.max(r.P, 1);
+  const cr = P.crece === undefined ? 1 : P.crece, hl = P.hl;
+  const lista = [];
+  const es = q => ver[q] === 'si' || ver[q] === 'nueva';
+  const crec = q => ver[q] === 'nueva' ? cr : 1;
+  if (ver.comp && es('P')){
+    lista.push({ x:C.x, y:C.y, dx:d.x, dy:d.y, F:r.Ppar, k, col:c.P, fina:true, crece:ver.comp === 'nueva' ? cr : 1, txt:`${N1(r.Ppar)} N`, oy:-12 });
+    lista.push({ x:C.x, y:C.y, dx:-n.x, dy:-n.y, F:r.Pperp, k, col:c.P, fina:true, crece:ver.comp === 'nueva' ? cr : 1, txt:`${N1(r.Pperp)} N`, ox:-4 });
+  }
+  if (ver.P) lista.push({ x:C.x, y:C.y, dx:0, dy:1, F:r.P, k, col:c.P, hl:hl === 'P', crece:crec('P'), oculta:ver.P === 'oculta', txt:rot('P', r.P, 'Tierra', ver.P === 'oculta') });
+  if (ver.N) lista.push({ x:Q.x, y:Q.y, dx:n.x, dy:n.y, F:r.N, k, col:c.N, hl:hl === 'N', crece:crec('N'), oculta:ver.N === 'oculta', txt:rot('N', r.N, 'rampa', ver.N === 'oculta') });
+  if (ver.F && P.F) lista.push({ x:C.x - d.x*l/2, y:C.y - d.y*l/2, dx:-d.x, dy:-d.y, F:P.F, k, col:c.F, hl:hl === 'F', crece:crec('F'), txt:rot('F', P.F, 'cuerda') , oy:-14 });
+  if (ver.f){
+    const sg = ver.f === 'oculta' ? -1 : Math.sign(r.roce) || -1;
+    const base = { x: Q.x + n.x*3 + d.x*sg*l/2, y: Q.y + n.y*3 + d.y*sg*l/2 };
+    if (ver.f === 'oculta' || r.roceModulo > 1e-9)
+      lista.push({ x:base.x, y:base.y, dx:d.x*sg, dy:d.y*sg, F:r.roceModulo, k, col:c.f, hl:hl === 'f', crece:crec('f'), oculta:ver.f === 'oculta', txt:rot(ver.f === 'oculta' ? 'f' : r.tipoRoce === 'estatico' ? 'fₛ' : 'fₖ', r.roceModulo, 'rampa', ver.f === 'oculta'), oy:sg < 0 ? -12 : 12 });
+  }
+  if (ver.suma && Math.abs(r.resultante) > 1e-9){
+    const o = { x: C.x + n.x*l*0.95 + d.x*l*0.95, y: C.y + n.y*l*0.95 + d.y*l*0.95 }, sg = Math.sign(r.resultante);
+    lista.push({ x:o.x, y:o.y, dx:d.x*sg, dy:d.y*sg, F:Math.abs(r.resultante), k, col:c.ink, fina:true, crece:crec('suma'), txt:`ΣF = ${N1(Math.abs(r.resultante))} N`, al:'left', oy:14 });
+  }
+  if (ver.a && Math.abs(r.a) > 1e-9){
+    const o = { x: C.x + n.x*l*2.2 + d.x*l*0.95, y: C.y + n.y*l*2.2 + d.y*l*0.95 }, sg = Math.sign(r.a);
+    lista.push({ x:o.x, y:o.y, dx:d.x*sg, dy:d.y*sg, F:r.aModulo, k:Math.min(W, H)*0.24/(P.aEscala || 4), col:c.a, hl:hl === 'a', crece:crec('a'), txt:`a = ${N1(r.aModulo)} m/s²`, oy:-12 });
+  }
+  lista.forEach(f => fuerza(ctx, c, f, W, H));
+  // La masa, encima de las flechas, para que se lea.
+  if (P.masa) rotulo(ctx, c, C.x, C.y, P.masa, c.ink, 'center', 800, W);
+  return g;
+}
+
+/* ---------- Máquina de Atwood ---------- */
+function vistaAtwood(L, c, P){
+  const { ctx, W, H } = L; ctx.clearRect(0, 0, W, H);
+  const cx = W/2, cy = 44, R = W < 480 ? 30 : 24, r = P.r;
+  ctx.strokeStyle = c.ink; ctx.lineWidth = 3; linea(ctx, cx - 70, 10, cx + 70, 10); ctx.lineWidth = 1.6; linea(ctx, cx, 10, cx, cy);
+  ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI*2); ctx.fillStyle = c.card; ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.arc(cx, cy, 3, 0, Math.PI*2); ctx.fillStyle = c.ink; ctx.fill();
+  const lado = m => clamp(30 + m*6, 34, 64), l1 = lado(P.m1), l2 = lado(P.m2);
+  const base = H*0.52, pxm = 20, s = clamp(P.s*pxm, -(H*0.12), H*0.12);
+  const y1 = base + s, y2 = base - s, x1 = cx - R, x2 = cx + R;
+  ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; linea(ctx, x1, cy, x1, y1 - l1/2); linea(ctx, x2, cy, x2, y2 - l2/2);
+  ctx.beginPath(); ctx.arc(cx, cy, R, Math.PI, 0); ctx.stroke();
+  bloque(ctx, c, x1, y1, l1, l1, 0, `${fmt(P.m1, 0)} kg`); bloque(ctx, c, x2, y2, l2, l2, 0, `${fmt(P.m2, 0)} kg`);
+  const k = Math.min(W, H)*0.2/Math.max(r.P1, r.P2, 30), ver = P.ver || {}, cr = P.crece === undefined ? 1 : P.crece;
+  const T = ver.T, lista = [];
+  [[x1, y1, l1, r.P1, -1], [x2, y2, l2, r.P2, 1]].forEach(([x, y, l, Pm, lado]) => {
+    const al = lado < 0 ? 'right' : 'left', ox = lado*8;
+    if (T) lista.push({ x, y:y - l/2, dx:0, dy:-1, F:r.T, k, col:c.T, hl:P.hl === 'T', oculta:T === 'oculta', crece:T === 'nueva' ? cr : 1, largoOculto:40, txt:rot('T', r.T, 'cuerda', T === 'oculta'), al, ox, oy:-2 });
+    lista.push({ x, y:y + l/2, dx:0, dy:1, F:Pm, k, col:c.P, hl:P.hl === 'P', txt:rot('P', Pm, 'Tierra'), al, ox, oy:-14 });
+  });
+  if (ver.a && r.aModulo > 1e-9){
+    const ka = Math.min(W, H)*0.24/10, sg = Math.sign(r.a);
+    lista.push({ x:x1 - l1/2 - 30, y:y1 - 10*sg, dx:0, dy:sg, F:r.aModulo, k:ka, col:c.a, crece:ver.a === 'nueva' ? cr : 1, txt:`a = ${N1(r.aModulo)} m/s² (los dos)`, al:'center', oy:6*sg });
+    lista.push({ x:x2 + l2/2 + 30, y:y2 + 10*sg, dx:0, dy:-sg, F:r.aModulo, k:ka, col:c.a, crece:ver.a === 'nueva' ? cr : 1, txt:'', al:'center', oy:-6*sg });
+  }
+  lista.forEach(f => fuerza(ctx, c, f, W, H));
+}
+
+/* ---------- Ascensor con una balanza ---------- */
+function vistaAscensor(L, c, P){
+  const { ctx, W, H } = L; ctx.clearRect(0, 0, W, H);
+  const cw = clamp(W*0.36, 150, 230), ch = H - 64, cx = W/2, top = 24;
+  // Pozo: líneas de pisos que se mueven hacia abajo cuando el ascensor sube.
+  ctx.save(); ctx.strokeStyle = c.line; ctx.lineWidth = 2;
+  const des = ((P.y || 0)*22) % 60;
+  for (let y = -60 + des; y < H; y += 60){ linea(ctx, cx - cw/2 - 30, y, cx - cw/2 - 6, y); linea(ctx, cx + cw/2 + 6, y, cx + cw/2 + 30, y); }
+  ctx.restore();
+  ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; rr(ctx, cx - cw/2, top, cw, ch, 8); ctx.fillStyle = c.paper; ctx.fill(); ctx.stroke();
+  linea(ctx, cx, 0, cx, top);
+  // Balanza
+  const piso = top + ch - 10, bw = 64, bh = 12;
+  ctx.fillStyle = c.bloque; rr(ctx, cx - bw/2, piso - bh, bw, bh, 3); ctx.fill(); ctx.stroke();
+  // Persona (monito), de buen tamaño dentro de la cabina
+  const pie = piso - bh, alto = ch*0.62, cab = pie - alto, rc = alto*0.08;
+  ctx.strokeStyle = c.ink; ctx.lineWidth = 2.4; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.arc(cx, cab + rc, rc, 0, Math.PI*2); ctx.stroke();
+  const cad = pie - alto*0.42;
+  linea(ctx, cx, cab + 2*rc, cx, cad); linea(ctx, cx, cad, cx - alto*0.09, pie); linea(ctx, cx, cad, cx + alto*0.09, pie);
+  linea(ctx, cx, cab + alto*0.26, cx - alto*0.13, cab + alto*0.48); linea(ctx, cx, cab + alto*0.26, cx + alto*0.13, cab + alto*0.48);
+  // Flechas: P desde el centro de la persona hacia abajo, N desde los pies hacia arriba (rótulos a los costados).
+  const k = ch*0.34/P.r.P, lista = [];
+  lista.push({ x:cx + alto*0.2, y:cab + alto*0.45, dx:0, dy:1, F:P.r.P, k, col:c.P, hl:P.hl === 'P', txt:rot('P', P.r.P, 'Tierra'), al:'left', ox:8, oy:-26 });
+  lista.push({ x:cx - alto*0.2, y:pie, dx:0, dy:-1, F:P.r.N, k, col:c.N, hl:P.hl === 'N', oculta:P.verN === 'oculta', crece:P.verN === 'nueva' ? P.crece : 1, largoOculto:50, txt:rot('N', P.r.N, 'balanza', P.verN === 'oculta'), al:'right', ox:-8, oy:26 });
+  if (P.verA && Math.abs(P.a) > 1e-9) lista.push({ x:cx + cw/2 + 22, y:H/2, dx:0, dy:-Math.sign(P.a), F:Math.abs(P.a), k:Math.min(W, H)*0.24/5, col:c.a, txt:`a = ${N1(Math.abs(P.a))} m/s²`, al:'left', ox:-4 });
+  lista.forEach(f => fuerza(ctx, c, f, W, H));
+  // Velocidad en tinta suave (no es una variable de color en esta escena), arriba a la izquierda, fuera de la cabina.
+  const xv = cx - cw/2 - 18;
+  flecha(ctx, xv, top + 90, xv, top + 40, c.muted, 2);
+  rotulo(ctx, c, xv + 4, top + 106, P.vTxt || 'sube', c.muted, 'center', 700, W);
+  // Lo que marca la balanza, al final para que nada lo tape.
+  const lectura = P.verN === 'oculta' ? '? kg' : `${fmt(P.r.lectura, 1)} kg`;
+  rotulo(ctx, c, cx, top + ch + 16, `la balanza marca ${lectura}`, c.ink, 'center', 800, W);
+}
+
+/* ---------- Dos cajas en contacto empujadas por una mano ---------- */
+function vistaContacto(L, c, P){
+  const { ctx, W, H } = L; ctx.clearRect(0, 0, W, H);
+  const y0 = H*0.68, l1 = clamp(H*0.26, 70, 104), l2 = l1*0.62, r = P.r;
+  suelo(ctx, c, 4, W - 4, y0);
+  const pxm = 8, x = 70 + clamp(P.x*pxm, 0, W - 70 - l1 - l2 - 30);
+  const c1 = { x:x + l1/2, y:y0 - l1/2 }, c2 = { x:x + l1 + l2/2, y:y0 - l2/2 };
+  bloque(ctx, c, c1.x, c1.y, l1, l1, 0, `${fmt(P.m1, 0)} kg`); bloque(ctx, c, c2.x, c2.y, l2, l2, 0, `${fmt(P.m2, 0)} kg`);
+  // Mano
+  ctx.save(); ctx.fillStyle = c.bloque; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6;
+  rr(ctx, x - 22, y0 - l1*0.62, 20, 26, 7); ctx.fill(); ctx.stroke(); linea(ctx, x - 22, y0 - l1*0.62 + 13, x - 60, y0 - l1*0.62 + 4); ctx.restore();
+  const k = (W*0.2)/r.contacto12/2.2, kF = Math.min(k, (W*0.22)/P.F), lista = [];
+  lista.push({ x:x - 70, y:y0 - l1*0.2, dx:1, dy:0, F:P.F, k:Math.min(kF, 66/P.F), col:c.F, hl:P.hl === 'F' });
+  rotulo(ctx, c, x - 40, y0 + 22, `F = ${N1(P.F)} N · mano`, c.F, 'center', 800, W);
+  const xc = x + l1;
+  if (P.verC === 'si' || P.verC === 'nueva'){
+    const cr = P.verC === 'nueva' ? P.crece : 1, kc = 4.2;
+    lista.push({ x:xc, y:y0 - l2*0.15, dx:1, dy:0, F:r.contacto12, k:kc, col:c.C, crece:cr, hl:P.hl === 'C' });
+    lista.push({ x:xc, y:y0 - l1*0.85, dx:-1, dy:0, F:r.contacto21, k:kc, col:c.C, crece:cr, hl:P.hl === 'C' });
+    if (cr > 0.99){ rotulo(ctx, c, xc + 8, y0 + 40, `C = ${N1(r.contacto12)} N · grande → pequeña (→)`, c.C, 'center', 800, W);
+      rotulo(ctx, c, xc - 8, y0 - l1 - 14, `C = ${N1(r.contacto21)} N · pequeña → grande (←)`, c.C, 'center', 800, W); }
+  } else rotulo(ctx, c, xc, y0 - l2 - 16, 'C = ?', c.C, 'center', 800, W);
+  if (P.verA && r.a > 1e-9) lista.push({ x:c1.x - 10, y:y0 - l1 - 44, dx:1, dy:0, F:r.a, k:10, col:c.a, txt:`a = ${N1(r.a)} m/s² (las dos)` });
+  lista.forEach(f => fuerza(ctx, c, f, W, H));
+}
+
+/* ---------- Bloque empujado sobre hielo que luego se suelta ---------- */
+function vistaEmpujon(L, c, P){
+  const { ctx, W, H } = L; ctx.clearRect(0, 0, W, H);
+  const y0 = H*0.62, l = 40, e = P.e, x0 = 36, pxm = (W - x0 - l - 24)/52;
+  suelo(ctx, c, 4, W - 4, y0);
+  ctx.font = `700 11px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+  ctx.fillText(P.roce ? 'piso con roce (μ = 0,25)' : 'hielo: sin roce', 8, y0 + 14);
+  // Fotos cada medio segundo (estroboscopio): espacios iguales = velocidad constante.
+  for (let t = 0; t <= P.t + 1e-9; t += 0.5){
+    const xx = x0 + e.x(t)*pxm;
+    ctx.save(); ctx.globalAlpha = .28; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.2; rr(ctx, xx, y0 - l, l, l, 4); ctx.stroke(); ctx.restore();
+    ctx.save(); ctx.fillStyle = c.muted; ctx.font = `600 11px ${c.mono}`; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    if (Math.abs(t - Math.round(t)) < 1e-9 && (t === 0 || xx - (P.ultimo || -99) > 30)){ ctx.fillText(`${fmt(t, 0)} s`, xx + l/2, y0 + 28); P.ultimo = xx; } ctx.restore();
+  }
+  const xb = x0 + e.x(P.t)*pxm, cb = { x:xb + l/2, y:y0 - l/2 };
+  bloque(ctx, c, cb.x, cb.y, l, l, 0, '2 kg');
+  const empuja = P.t < P.dur - 1e-9, k = 4.4, lista = [];
+  if (empuja){
+    ctx.save(); ctx.fillStyle = c.bloque; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; rr(ctx, xb - 18, y0 - l*0.75, 16, 20, 6); ctx.fill(); ctx.stroke(); linea(ctx, xb - 18, y0 - l*0.65, xb - 46, y0 - l*0.8); ctx.restore();
+    lista.push({ x:xb - 4 - 10*k, y:y0 - l - 14, dx:1, dy:0, F:10, k, col:c.F, txt:'F = 10 N · mano', oy:-14 });
+  }
+  if (P.roce && Math.abs(e.v(P.t)) > 1e-9) lista.push({ x:xb + 2, y:y0 + 4, dx:-1, dy:0, F:5, k, col:c.f, txt:'fₖ = 5 N · piso', oy:14 });
+  lista.forEach(f => fuerza(ctx, c, f, W, H));
+}
+
+/* ---------- Bloque jalado con una soga en ángulo ---------- */
+function vistaTiron(L, c, P){
+  const { ctx, W, H } = L; ctx.clearRect(0, 0, W, H);
+  const y0 = H*0.72, l = clamp(H*0.2, 56, 80), r = P.r, cx = W*0.36;
+  suelo(ctx, c, 4, W - 4, y0);
+  const lev = r.despega ? 10 : 0, cb = { x:cx, y:y0 - l/2 - lev };
+  const th = P.ang*Math.PI/180, d = { x:Math.cos(th), y:-Math.sin(th) };
+  // Soga hasta la mano
+  ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; linea(ctx, cb.x + l/2, cb.y, cb.x + l/2 + d.x*170, cb.y + d.y*170);
+  bloque(ctx, c, cb.x, cb.y, l, l, 0);
+  rotulo(ctx, c, cb.x - l/2 - 8, cb.y - l*0.3, '10 kg', c.ink, 'right', 800, W);
+  ctx.save(); ctx.strokeStyle = c.ink; ctx.setLineDash([3, 4]); ctx.globalAlpha = .6; linea(ctx, cb.x + l/2, cb.y, cb.x + l/2 + 90, cb.y); ctx.restore();
+  if (P.ang > 0.5){ ctx.strokeStyle = c.ink; ctx.lineWidth = 1.3; ctx.beginPath(); ctx.arc(cb.x + l/2, cb.y, 48, -th, 0); ctx.stroke();
+    rotulo(ctx, c, cb.x + l/2 + 58, cb.y - 10*Math.sin(th) - 6, `${fmt(P.ang, 0)}°`, c.ink, 'left', 800, W); }
+  const k = Math.min(W, H)*0.3/r.P, lista = [], ax = cb.x + l/2;
+  lista.push({ x:ax, y:cb.y, dx:d.x, dy:d.y, F:P.F, k, col:c.F, hl:P.hl === 'F', txt:rot('F', P.F, 'soga'), oy:-12 });
+  if (P.comp){
+    lista.push({ x:ax, y:cb.y, dx:1, dy:0, F:r.Fx, k, col:c.F, fina:true, txt:`${N1(r.Fx)} N`, oy:12 });
+    if (r.Fy > 1e-9) lista.push({ x:ax, y:cb.y, dx:0, dy:-1, F:r.Fy, k, col:c.F, fina:true, txt:`${N1(r.Fy)} N`, ox:-6 });
+  }
+  lista.push({ x:cb.x - l*0.22, y:cb.y, dx:0, dy:1, F:r.P, k, col:c.P, hl:P.hl === 'P', txt:rot('P', r.P, 'Tierra'), ox:-4 });
+  if (P.verN) lista.push({ x:cb.x + l*0.1, y:y0, dx:0, dy:-1, F:r.N, k, col:c.N, hl:P.hl === 'N', oculta:P.verN === 'oculta', crece:P.verN === 'nueva' ? P.crece : 1, largoOculto:46, txt:rot('N', r.N, 'piso', P.verN === 'oculta'), ox:6, oy:-22 });
+  if (P.verA && r.a > 1e-9) lista.push({ x:cb.x - l/2 - 40, y:cb.y - l/2 - 70, dx:1, dy:0, F:r.a, k:Math.min(W, H)*0.24/10, col:c.a, txt:`a = ${N1(r.a)} m/s²`, oy:-12 });
+  lista.forEach(f => fuerza(ctx, c, f, W, H));
+  if (r.despega) rotulo(ctx, c, cb.x, y0 + 26, 'la soga lo levanta: N = 0', c.ink, 'center', 800, W);
+}
+
+// Leyenda: solo las variables que aparecen en la escena.
+const NOMBRES = { P:'P · peso (la Tierra)', N:'N · normal (la superficie)', f:'f · roce (la superficie)', T:'T · tensión (la cuerda)', F:'F · fuerza aplicada', a:'a · aceleración', C:'C · contacto entre las cajas', suma:'ΣF · resultante (a trazos)' };
+function leyenda(el, claves){
+  el.innerHTML = claves.map(k => `<span><i style="background:${k === 'suma' ? 'var(--ink)' : 'var(--c-' + k + ')'}"></i>${NOMBRES[k]}</span>`).join('');
+}
+function animarValor(dur, paso, listo){
+  if (RM){ paso(1); listo && listo(); return () => {}; }
+  let id, ini = performance.now();
+  const tick = now => { const f = Math.min(1, (now - ini)/dur); paso(f); if (f < 1) id = requestAnimationFrame(tick); else listo && listo(); };
+  id = requestAnimationFrame(tick);
+  return () => cancelAnimationFrame(id);
+}
+const opcionesHTML = (opts, idfb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idfb}"></p>`;
+</script>
+<script>
+/* ================= MODO 1: paso a paso =================
+   Problema guiado de docs/investigacion/dinamica-ideas-erroneas.md: 10 kg en un plano de 37°, μ = 0,5. */
+(function(){
+const $ = id => document.getElementById(id);
+const cv = $('cv');
+const GUIA = { m:10, angulo:37, mus:0.5 };
+const S = { step:0, max:0, pred:{}, hl:null, s:0, crece:1, ocupado:false, explora:false,
+  ang:37, m:10, mus:0.5, muk:0.5, sobreAsa:false, arrastrando:false };
+let parar = () => {};
+const INICIO = 1.6; // en el explorador, el saco empieza a 1,6 m de la punta, lejos del asa
+const L = crearLienzo(cv, altoLienzo, draw);
+const R = () => S.explora ? M.plano({ m:S.m, angulo:S.ang, mus:S.mus, muk:Math.min(S.muk, S.mus) }) : M.plano(GUIA);
+
+const P1 = { id:'dinamica-fuerzas', ok:'b',
+  opts:[['a','Una sola: su peso. La rampa solo está en el camino.','D6-superficie-no-empuja','documentado'],
+        ['b','Tres: su peso, la normal de la rampa y el roce.',null,''],
+        ['c','Cuatro: su peso, la normal, el roce y la fuerza del movimiento, que lo lleva hacia abajo.','D1-fuerza-del-movimiento','documentado'],
+        ['d','Dos: la normal y el roce. El peso no es una fuerza: es lo que el saco «tiende» a hacer.','D8-gravedad-no-es-fuerza','documentado']],
+  fb:{ b:'¡Bien! Tres fuerzas, y cada una tiene quién la ejerce: la Tierra, y la rampa dos veces (empuja hacia afuera y frena a lo largo).',
+       a:'Elegiste la A. La rampa no solo está en el camino: empuja al saco hacia afuera (la normal) y lo frena (el roce). Si no empujara, el saco la atravesaría. La correcta está marcada.',
+       c:'Elegiste la C. Ninguna cosa ejerce una «fuerza del movimiento»: busca quién la haría y no hay nadie. El saco baja porque su peso tira de él y nada lo equilibra a lo largo de la rampa. La correcta está marcada.',
+       d:'Elegiste la D. El peso es una fuerza de verdad: la Tierra tira del saco, esté quieto, cayendo o apoyado. La correcta está marcada.' } };
+const P2 = { id:'dinamica-normal', ok:'b',
+  opts:[['a','100 N, igual al peso','N-igual-mg','hipotesis'], ['b','80 N',null,''],
+        ['c','60 N','sen-cos-cambiados','hipotesis'], ['d','0 N, porque el saco se está moviendo hacia abajo','normal-cero-si-se-mueve','hipotesis']],
+  fb:{ b:'¡Bien! La normal equilibra solo la parte del peso que aprieta la rampa: 100·cos 37° = 80 N.',
+       a:'Elegiste la A. La normal no es el peso al revés: la rampa solo sostiene la parte del peso perpendicular a ella. La correcta está marcada.',
+       c:'Elegiste la C. 60 N es la parte del peso a lo largo de la rampa (con el seno). La perpendicular va con el coseno. La correcta está marcada.',
+       d:'Elegiste la D. Que el saco se mueva a lo largo de la rampa no cambia lo que pasa en la dirección perpendicular: ahí no se hunde ni se despega, así que la rampa sí empuja. La correcta está marcada.' } };
+const P3 = { id:'dinamica-roce', ok:'a',
+  opts:[['a','40 N',null,''], ['b','50 N','roce-con-peso','hipotesis'],
+        ['c','60 N, igual a la parte del peso que lo jala','roce-igual-componente','hipotesis'], ['d','0 N: si ya se mueve, no hay roce','sin-roce-en-movimiento','hipotesis']],
+  fb:{ a:'¡Bien! El roce cinético es μ·N = 0,5·80 = 40 N, con la normal y no con el peso.',
+       b:'Elegiste la B. 0,5·100 usa el peso en lugar de la normal. El roce depende de cuánto se aprietan las superficies, y eso es N = 80 N. La correcta está marcada.',
+       c:'Elegiste la C. Si el roce valiera 60 N, las fuerzas a lo largo de la rampa se cancelarían y el saco no aceleraría. Mientras desliza, el roce vale μ·N. La correcta está marcada.',
+       d:'Elegiste la D. Mientras desliza, el roce sigue actuando: es el cinético, μ·N. La correcta está marcada.' } };
+
+// Qué se dibuja en cada paso. 'antes' es antes de responder; 'despues', después.
+const steps = [
+ { k:'Paso 1', t:'El problema', ver:{},
+   ley:[],
+   body:() => `<p class="problem">Un saco de ${V('m','10 kg')} se suelta sobre una rampa inclinada 37°. El coeficiente de rozamiento entre el saco y la rampa es μ = 0,5. ¿Con qué ${V('a','aceleración')} baja? Usa g = 10 m/s², sen 37° = 3/5 y cos 37° = 4/5.</p>
+   <p>Antes de calcular, hay que saber qué fuerzas actúan sobre el saco. En esta escena cada fuerza es una flecha de un color, y lleva escrito quién la ejerce. Toca o pasa el puntero sobre un dato para ver dónde está.</p>`,
+   desc:() => 'Una rampa de 37° con un saco de 10 kg arriba. Todavía no se dibuja ninguna fuerza.' },
+ { k:'Paso 2', t:'¿Cuántas fuerzas actúan?', gate:P1, ver:{}, despues:{ P:'nueva', N:'oculta', f:'oculta' }, ley:['P','N','f'], leyAntes:[],
+   body:() => `<p>Mientras el saco baja por la rampa, ¿qué fuerzas actúan <b>sobre el saco</b>?</p>${opcionesHTML(P1.opts, 'fb')}<div id="res" class="body"></div>`,
+   exp:() => `<p>El ${V('P','peso')} lo ejerce la Tierra, hacia abajo. La ${V('N','normal')} la ejerce la rampa, perpendicular a ella, hacia afuera. El ${V('f','roce')} también lo ejerce la rampa, a lo largo de ella y contra el movimiento. Por ahora, la normal y el roce tienen «?»: su tamaño es lo que vamos a averiguar.</p>
+     <p>Para cada flecha, pregunta <b>quién</b> la ejerce. Una fuerza sin nadie que la ejerza, como «la fuerza del movimiento», no existe.</p>
+     <p class="fuente">Creer que todo movimiento necesita una fuerza en su dirección es una idea documentada: según Halloun y Hestenes (1985), citados por Mora y Herrera (2009), la tenía alrededor del 65 % de 478 universitarios antes del curso de física, y el 44 % después.</p>`,
+   desc:() => S.pred[P1.id] ? 'Sobre el saco: el peso, de 100 newtons, hacia abajo, que ejerce la Tierra; la normal, perpendicular a la rampa, y el roce, hacia arriba de la rampa, que ejerce la rampa. La normal y el roce todavía no tienen valor.' : 'Una rampa de 37° con un saco de 10 kg. Todavía no se dibuja ninguna fuerza.' },
+ { k:'Paso 3', t:'¿Cuánto vale la normal?', gate:P2, ver:{ P:'si', N:'oculta', f:'oculta' }, despues:{ P:'si', N:'nueva', f:'oculta', comp:'nueva' }, ley:['P','N','f'],
+   body:() => `<p>El ${V('P','peso')} del saco es 10·10 = ${V('P','100 N')}. ¿Cuánto vale la ${V('N','normal')} que le hace la rampa?</p>${opcionesHTML(P2.opts, 'fb')}<div id="res" class="body"></div>`,
+   exp:() => `<div class="eqs">
+       <div class="eq">a lo largo: ${V('P','P')}·sen 37° = 100·${fr('3', '5')} = ${V('P','60 N')}</div>
+       <div class="eq">perpendicular: ${V('P','P')}·cos 37° = 100·${fr('4', '5')} = ${V('P','80 N')}</div>
+       <div class="eq">${V('N','N')} = ${V('P','P')}·cos 37° = ${V('N','80 N')}<span class="note">el saco no se hunde ni se despega</span></div>
+     </div>
+     <p>Las dos flechas finas a trazos son las partes del ${V('P','peso')}: una a lo largo de la rampa y otra que la aprieta. La rampa solo responde a la que la aprieta, así que la ${V('N','normal')} es 80 N, no 100 N.</p>
+     <p class="fuente">Que la normal sea igual al peso, o que se cambien el seno y el coseno, son errores que suponemos: no hay un estudio con porcentaje. Que la superficie «solo está en el camino» sí está documentado: en secundaria, según Minstrell (1982), citado por Mora y Herrera (2009), la mitad de los alumnos lo dijo de una mesa.</p>`,
+   desc:() => S.pred[P2.id] ? 'El peso de 100 newtons se parte en 60 newtons a lo largo de la rampa y 80 newtons perpendiculares a ella. La normal vale 80 newtons. El roce todavía no tiene valor.' : 'Sobre el saco: el peso de 100 newtons hacia abajo, la normal de la rampa y el roce. La normal y el roce todavía no tienen valor.' },
+ { k:'Paso 4', t:'¿Cuánto vale el roce?', gate:P3, ver:{ P:'si', N:'si', f:'oculta', comp:'si' }, despues:{ P:'si', N:'si', f:'nueva', comp:'si' }, ley:['P','N','f'],
+   body:() => `<p>¿Desliza? A lo largo de la rampa lo jala una fuerza de 60 N, y el ${V('f','roce')} estático puede dar como máximo μ·N. Como el saco baja, el roce es cinético, con μ = 0,5. ¿Cuánto vale?</p>${opcionesHTML(P3.opts, 'fb')}<div id="res" class="body"></div>`,
+   exp:() => `<div class="eqs"><div class="eq">${V('f','f')} = μ·${V('N','N')} = 0,5·80 = ${V('f','40 N')}<span class="note">con la normal, no con el peso</span></div></div>
+     <p>Comprueba que sí desliza: 60 N es más que los 40 N que, como máximo, da el roce estático.</p>
+     <p>A lo largo de la rampa quedan dos fuerzas: la parte del ${V('P','peso')} que lo jala hacia abajo (60 N) y el ${V('f','roce')} que lo frena (40 N). No se cancelan: sobran 20 N hacia abajo.</p>
+     <p class="fuente">Usar el peso en vez de la normal para el roce es un error que suponemos, sin estudio con porcentaje.</p>`,
+   desc:() => S.pred[P3.id] ? 'El roce vale 40 newtons, hacia arriba de la rampa. A lo largo de la rampa: 60 newtons hacia abajo contra 40 hacia arriba.' : 'El peso de 100 newtons, con sus partes de 60 y 80 newtons, y la normal de 80 newtons. El roce todavía no tiene valor.' },
+ { k:'Paso 5', t:'La segunda ley: lo que sobra acelera', ver:{ P:'si', N:'si', f:'si', comp:'si', suma:'si', a:'si' }, anima:true, ley:['P','N','f','a','suma'],
+   body:() => `<div class="eqs">
+       <div class="eq">ΣF = ${V('P','60')} − ${V('f','40')} = 20 N<span class="note">hacia abajo de la rampa</span></div>
+       <div class="eq">${V('a','a')} = ${fr('ΣF', V('m','m'))} = ${fr('20 N', V('m','10 kg'))} = ${V('a','2 m/s²')}</div>
+     </div>
+     <p>La flecha a trazos, sin color, es la resultante ΣF: lo que queda al sumar todas las fuerzas. En la dirección perpendicular, la ${V('N','normal')} y la parte del peso se cancelan. A lo largo, sobran 20 N. La ${V('a','aceleración')} apunta igual que la resultante, nunca al revés.</p>
+     <p><button type="button" class="btn" id="otra">Soltar otra vez</button></p><div class="chips" id="chips1"></div>`,
+   desc:() => 'Sobran 20 newtons hacia abajo de la rampa. El saco de 10 kilogramos baja con una aceleración de 2 metros por segundo al cuadrado.' },
+ { k:'Paso 6', t:'La respuesta', ver:{ P:'si', N:'si', f:'si', comp:'si', suma:'si', a:'si' }, fin:true, ley:['P','N','f','a','suma'],
+   body:() => `<p class="answer">Respuesta: el saco baja con una aceleración de 2 m/s².</p>
+     <p>El orden siempre es el mismo: dibuja cada fuerza con quién la ejerce, elige un eje a lo largo del movimiento y otro perpendicular, cancela en el perpendicular y aplica ΣF = m·a en el otro.</p>
+     <p class="fuente">Aprobar el curso no garantiza entender las fuerzas: en la PUCP, según Castillo y otros (2013), los alumnos de Física 1, que ya habían ingresado a la universidad, empezaron con 14,6 de 30 respuestas correctas en el test de conceptos de fuerza (FCI) y terminaron con 18. La segunda ley fue el tema que menos mejoró.</p>`,
+   desc:() => 'Respuesta: baja con 2 metros por segundo al cuadrado.' },
+ { k:'Paso 7', t:'Ahora explora tú', explora:true, ley:['P','N','f','a','suma'],
+   body:() => `<div class="ctrls">
+       <div class="slider"><label for="e-ang"><span>Ángulo de la rampa</span><output id="e-ang-o"></output></label><input id="e-ang" type="range" min="0" max="60" step="1" value="${S.ang}"></div>
+       <div class="slider"><label for="e-m"><span>Masa (${V('m','m')})</span><output id="e-m-o"></output></label><input id="e-m" type="range" min="1" max="50" step="1" value="${S.m}"></div>
+       <div class="slider"><label for="e-mus"><span>μs, roce estático</span><output id="e-mus-o"></output></label><input id="e-mus" class="r-f" type="range" min="0" max="1" step="0.05" value="${S.mus}"></div>
+       <div class="slider"><label for="e-muk"><span>μk, roce cinético</span><output id="e-muk-o"></output></label><input id="e-muk" class="r-f" type="range" min="0" max="1" step="0.05" value="${S.muk}"></div>
+     </div>
+     <p><button type="button" class="btn primary" id="soltar">Soltar el saco</button></p>
+     <div id="live" class="body"></div>
+     <p class="hint">También puedes arrastrar la punta de arriba de la rampa (o enfocar el dibujo y usar las flechas del teclado). Prueba con poco ángulo y mucho μs: el saco no se mueve y el roce estático vale justo lo que hace falta, menos que su máximo. Y cambia la masa: ¿cambia la aceleración?</p>`,
+   desc:() => '' },
+];
+
+function verActual(){
+  const s = steps[S.step];
+  if (S.explora) return { P:'si', N:'si', f:'si', comp:'si', suma:'si', a:'si' };
+  return s.gate && S.pred[s.gate.id] ? s.despues : s.ver;
+}
+function draw(){
+  if (!L.W) return;
+  const c = colores(L.W), r = R();
+  vistaPlano(L, c, { r, ang: S.explora ? S.ang : 37, s:S.s, largo:6, masa:`${fmt(S.explora ? S.m : 10, 0)} kg`, ver:verActual(), crece:S.crece, hl:S.hl,
+    asa:S.explora, sobreAsa:S.sobreAsa || S.arrastrando, aEscala:S.explora ? 10 : 4 });
+  const s = steps[S.step];
+  decir($('desc1'), S.explora ? resumen(r) : s.desc());
+}
+function resumen(r){
+  return `Rampa de ${fmt(S.ang, 0)} grados, saco de ${fmt(S.m, 0)} kilogramos. Normal ${N1(r.N)} newtons. ` +
+    (r.sentido === 'quieto' ? `No se mueve: el roce estático vale ${N1(r.roceModulo)} newtons de un máximo de ${N1(r.fsMax)}.` : `Desliza hacia abajo con ${fmt(r.aModulo, 2)} metros por segundo al cuadrado; roce cinético de ${N1(r.roceModulo)} newtons.`);
+}
+// El saco baja desde arriba: s = ½·a·t² (en metros), hasta el final de la rampa.
+function soltar(listo){
+  parar();
+  const r = R(), s0 = S.explora ? INICIO : 0; S.s = s0; S.crece = 1;
+  if (r.sentido !== 'baja'){ draw(); chips(0, r); listo && listo(); return; }
+  const smax = S.explora ? 4.6 : 3.6, T = Math.sqrt(2*(smax - s0)/r.a);
+  parar = animarValor(Math.min(2600, T*900), f => { const t = T*f; S.s = s0 + r.a*t*t/2; chips(t, r); draw(); }, listo);
+}
+function chips(t, r){
+  const el = $('chips1') || $('live-chips'); if (!el) return;
+  el.innerHTML = r.sentido === 'baja' ? `<span class="chip">t = ${fmt(t, 2)} s</span><span class="chip">v = ${fmt(r.a*t, 1)} m/s</span><span class="chip">recorrió ${fmt(r.a*t*t/2, 2)} m</span>` : '<span class="chip">No se mueve</span>';
+}
+const dots = $('dots');
+steps.forEach((s, n) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = n + 1; b.setAttribute('aria-label', `Ir al ${s.k.toLowerCase()}: ${s.t}`);
+  b.addEventListener('click', () => go(n)); li.appendChild(b); dots.appendChild(li);
+});
+function go(n){
+  if (n < 0 || n >= steps.length || n > S.max) return;
+  parar(); S.ocupado = false;
+  const s = steps[n]; S.step = n; S.hl = null; S.explora = !!s.explora; S.crece = 1;
+  cv.tabIndex = S.explora ? 0 : -1;
+  cv.setAttribute('aria-label', S.explora ? 'Rampa del explorador: con las flechas del teclado cambias el ángulo' : 'Una rampa inclinada con un saco encima y, cuando corresponde, las flechas de las fuerzas sobre el saco');
+  S.s = s.fin ? 3.6 : 0;
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  leyenda($('ley1'), s.gate && !S.pred[s.gate.id] && s.leyAntes ? s.leyAntes : (s.ley || []));
+  pintarDots();
+  if (s.gate) prediccion(s);
+  if (s.anima){ soltar(); $('otra').onclick = () => soltar(); }
+  if (s.explora) explorar();
+  nav(); draw();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0;
+  const falta = s.gate && !S.pred[s.gate.id];
+  $('next').disabled = S.step === steps.length - 1 || falta || S.ocupado;
+  $('next').textContent = falta ? 'Elige una opción' : 'Siguiente';
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(n){ if (n > S.max) S.max = n; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('res').innerHTML = s.exp();
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1);
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    S.ocupado = true; S.crece = 0; pintar(); pintarDots(); nav(); leyenda($('ley1'), s.ley || []);
+    // En el celular, el dibujo queda arriba de la pantalla: se lleva a la vista antes de animar.
+    const paso = S.step, ch = chico();
+    if (ch) cv.scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+    draw();
+    esperar(ch ? 380 : 0, () => {
+      if (S.step !== paso){ S.ocupado = false; nav(); return; }
+      parar = animarValor(600, f => { S.crece = f; draw(); }, () => { S.ocupado = false; nav(); draw(); $('next').focus({ preventScroll:true }); });
+    });
+  }));
+  pintar();
+}
+
+// ----- explorador -----
+function explorar(){
+  const ids = [['e-ang', 'ang'], ['e-m', 'm'], ['e-mus', 'mus'], ['e-muk', 'muk']];
+  ids.forEach(([id, k]) => $(id).addEventListener('input', () => {
+    parar(); S[k] = +$(id).value;
+    if (k === 'mus' && S.muk > S.mus){ S.muk = S.mus; $('e-muk').value = S.muk; }
+    if (k === 'muk' && S.muk > S.mus){ S.mus = S.muk; $('e-mus').value = S.mus; }
+    S.s = INICIO; vivo();
+  }));
+  $('soltar').addEventListener('click', () => soltar());
+  S.s = INICIO; vivo();
+}
+function vivo(){
+  $('e-ang-o').textContent = `${fmt(S.ang, 0)}°`; $('e-m-o').textContent = `${fmt(S.m, 0)} kg`;
+  $('e-mus-o').textContent = fmt(S.mus, 2); $('e-muk-o').textContent = fmt(S.muk, 2);
+  if ($('e-ang').value != S.ang) $('e-ang').value = S.ang;
+  const r = R();
+  const quieto = r.sentido === 'quieto';
+  $('live').innerHTML = `<div class="eqs">
+      <div class="eq">${V('P','P')} = ${N1(r.P)} N</div>
+      <div class="eq"><span class="note" style="margin:0">a lo largo de la rampa ${N1(r.Ppar)} N; perpendicular ${N1(r.Pperp)} N</span></div>
+      <div class="eq">${V('N','N')} = ${N1(r.N)} N<span class="note">${S.ang > 0 ? 'menor que el peso' : 'sin inclinación, igual al peso'}</span></div>
+      <div class="eq">${V('f','f')} = ${N1(r.roceModulo)} N<span class="note">${quieto ? (r.roceModulo > 1e-9 ? `estático: lo que hace falta, de un máximo de μs·N = ${N1(r.fsMax)} N` : 'no hace falta roce') : (r.roceModulo > 1e-9 ? 'cinético: μk·N' : 'sin roce')}</span></div>
+      <div class="eq">${V('a','a')} = ${fmt(r.aModulo, 2)} m/s²<span class="note">${quieto ? 'no se mueve' : 'hacia abajo de la rampa'}</span></div>
+    </div>
+    <div class="chips" id="live-chips"></div>
+    <p class="hint">${quieto && S.mus > 0 ? `Empieza a deslizar desde unos ${fmt(r.anguloLimite, 1)}°, cuando la parte del peso a lo largo de la rampa iguala a μs·N.` : !quieto && S.muk < S.mus ? 'Con μk menor que μs, el saco arranca solo cuando el estático ya no alcanza, y desde ahí lo frena el cinético, que es más pequeño.' : ''}</p>`;
+  draw();
+}
+// Arrastre de la rampa: solo cerca de la punta de arriba (el resto del dibujo deja desplazar la página).
+const local = e => { const r = cv.getBoundingClientRect(); return { x:e.clientX - r.left, y:e.clientY - r.top }; };
+function cercaAsa(p, rad){ const g = geoRampa(L.W, L.H, S.ang); return Math.hypot(p.x - g.A.x, p.y - g.A.y) < rad; }
+function ponerAngulo(p){
+  const g = geoRampa(L.W, L.H, S.ang);
+  const a = Math.round(clamp(Math.atan2(g.B.y - p.y, g.B.x - p.x)*180/Math.PI, 0, 60));
+  if (a !== S.ang){ parar(); S.ang = a; S.s = INICIO; vivo(); }
+}
+cv.addEventListener('touchstart', e => {
+  if (!S.explora || e.touches.length !== 1) return;
+  const r = cv.getBoundingClientRect(), t = e.touches[0];
+  if (cercaAsa({ x:t.clientX - r.left, y:t.clientY - r.top }, 40)) e.preventDefault();
+}, { passive:false });
+cv.addEventListener('pointerdown', e => {
+  if (!S.explora) return;
+  const p = local(e); if (!cercaAsa(p, e.pointerType === 'mouse' ? 26 : 40)) return;
+  S.arrastrando = true; cv.setPointerCapture(e.pointerId); e.preventDefault(); cv.focus({ preventScroll:true }); draw();
+}, { passive:false });
+cv.addEventListener('pointermove', e => {
+  const p = local(e);
+  if (S.arrastrando){ ponerAngulo(p); return; }
+  const s = S.explora && cercaAsa(p, 26);
+  if (s !== S.sobreAsa){ S.sobreAsa = s; cv.style.cursor = s ? 'grab' : ''; draw(); }
+});
+const soltarAsa = () => { if (S.arrastrando){ S.arrastrando = false; draw(); } };
+cv.addEventListener('pointerup', soltarAsa); cv.addEventListener('pointercancel', soltarAsa);
+cv.addEventListener('keydown', e => {
+  if (!S.explora) return;
+  const d = { ArrowUp:1, ArrowRight:1, ArrowDown:-1, ArrowLeft:-1 }[e.key]; if (!d) return;
+  e.preventDefault(); parar(); S.ang = clamp(S.ang + d, 0, 60); S.s = INICIO; vivo();
+});
+
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+function marcar(k){
+  S.hl = k;
+  document.querySelectorAll('#m1 .v').forEach(e => e.classList.toggle('hl', !!k && e.dataset.var === k));
+  draw();
+}
+document.addEventListener('pointerover', e => { const t = e.target.closest && e.target.closest('#m1 [data-var]'); if (t) marcar(t.dataset.var); });
+document.addEventListener('pointerout', e => { const t = e.target.closest && e.target.closest('#m1 [data-var]'); if (t && !t.contains(e.relatedTarget)) marcar(null); });
+document.addEventListener('focusin', e => { const t = e.target.closest && e.target.closest('#m1 [data-var]'); if (t) marcar(t.dataset.var); });
+document.addEventListener('focusout', e => { if (e.target.closest && e.target.closest('#m1 [data-var]')) marcar(null); });
+alRedibujarTema(draw);
+addEventListener('modo', () => L.resize());
+L.resize(); go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Preguntas de docs/investigacion/dinamica-ideas-erroneas.md. La escena cambia recién después de responder.
+   Lo que se dibuja sale de MotorDinamica. */
+(function(){
+const $ = id => document.getElementById(id);
+const cv = $('cv2');
+const L = crearLienzo(cv, altoLienzo, draw);
+let parar = () => {};
+const E = {};
+const fuente = t => `<p class="fuente">${t}</p>`;
+const EXPS = [
+  { id:'quieto', corto:'El saco que no se mueve', ley:['P','N','f'],
+    q:`El mismo saco de 10 kg está ahora en una rampa de 37° más áspera, con μs = 0,8 y μk = 0,5. No se mueve. ¿Cuánto vale el ${V('f','roce')}?`,
+    opts:[['a','64 N, que es μs·N = 0,8·80','roce-estatico-siempre-maximo','hipotesis'], ['b','60 N',null],
+          ['c','0 N: si no se mueve, no hay roce','sin-movimiento-sin-roce','hipotesis'], ['d','40 N, el cinético: μk·N = 0,5·80','roce-cinetico-en-reposo','hipotesis']],
+    ok:'b',
+    antes:() => Object.assign(E, { tipo:'plano', ang:37, mus:0.8, muk:0.5, m:10, ver:{ P:'si', N:'si', f:'oculta' } }),
+    despues:() => { E.ver = { P:'si', N:'si', f:'nueva', comp:'nueva' }; crecer(); },
+    ctrl:() => `<div class="slider"><label for="q-ang"><span>Ángulo de la rampa</span><output id="q-ang-o"></output></label><input id="q-ang" type="range" min="0" max="60" step="1" value="${E.ang}"></div><div class="chips" id="chips2"></div>`,
+    vivo:() => {
+      const r = rPlano(); $('q-ang-o').textContent = `${E.ang}°`;
+      $('chips2').innerHTML = `<span class="chip">roce ${N1(r.roceModulo)} N</span><span class="chip">máximo μs·N = ${N1(r.fsMax)} N</span><span class="chip ${r.sentido === 'quieto' ? '' : 'ok'}">${r.sentido === 'quieto' ? 'no se mueve' : 'desliza: roce cinético μk·N'}</span>`;
+    },
+    alCambiar:() => { E.ang = +$('q-ang').value; },
+    exp:`<p>Como el saco no se mueve, las fuerzas a lo largo de la rampa se cancelan: el ${V('f','roce')} vale justo lo que jala la parte del peso, 100·sen 37° = 60 N. El valor μs·N = 64 N es el <b>máximo</b> que puede dar el roce estático, no lo que da siempre.</p>
+      <p>Mueve el ángulo: el roce crece junto con la parte del peso hasta alcanzar el máximo, que a su vez baja porque la normal baja. Ahí el saco empieza a deslizar, y el roce pasa a ser el cinético, μk·N.</p>
+      ${fuente('Que el roce estático valga siempre μs·N es un error que suponemos: no tiene estudio con porcentaje. Es la cara numérica de ver el roce como algo fijo y no como una fuerza que se ajusta.')}` },
+  { id:'atwood', corto:'Dos bloques y una polea', ley:['P','T','a'],
+    q:`Por una polea ligera y sin roce pasa una cuerda ligera con un bloque de 3 kg en un extremo y uno de 2 kg en el otro. Se sueltan. ¿Cuánto vale la ${V('T','tensión')} de la cuerda?`,
+    opts:[['a','20 N, el peso del bloque liviano','T-igual-mg-liviano','hipotesis'], ['b','30 N, el peso del bloque pesado','T-igual-mg-pesado','hipotesis'],
+          ['c','24 N',null], ['d','50 N, la suma de los dos pesos','T-suma-de-pesos','hipotesis']],
+    ok:'c',
+    antes:() => Object.assign(E, { tipo:'atwood', m1:3, m2:2, s:0, ver:{ T:'oculta' } }),
+    despues:() => { E.ver = { T:'nueva', a:'nueva' }; crecer(() => correr()); },
+    ctrl:() => `<div class="slider"><label for="q-m1"><span>Masa del bloque de la izquierda</span><output id="q-m1-o"></output></label><input id="q-m1" type="range" min="1" max="8" step="1" value="${E.m1}"></div><div class="chips" id="chips2"></div><p><button type="button" class="btn" id="repetir">Soltar otra vez</button></p>`,
+    vivo:() => {
+      const r = M.atwood({ m1:E.m1, m2:E.m2 }); $('q-m1-o').textContent = `${E.m1} kg`;
+      $('chips2').innerHTML = `<span class="chip">a = ${N1(r.aModulo)} m/s²</span><span class="chip">T = ${N1(r.T)} N</span><span class="chip">pesos: ${N1(r.P1)} N y ${N1(r.P2)} N</span>`;
+    },
+    alCambiar:() => { E.m1 = +$('q-m1').value; E.s = 0; },
+    exp:`<div class="eqs"><div class="eq">3 kg (baja): 30 − ${V('T','T')} = 3·${V('a','a')}</div><div class="eq">2 kg (sube): ${V('T','T')} − 20 = 2·${V('a','a')}</div><div class="eq">${V('a','a')} = ${fr('30 − 20', '3 + 2')} = ${V('a','2 m/s²')} → ${V('T','T')} = 20 + 2·2 = ${V('T','24 N')}</div></div>
+      <p>La ${V('T','tensión')} queda entre los dos pesos. Si fuera 20 N, el bloque liviano no aceleraría; si fuera 30 N, el pesado no aceleraría. Pero los dos aceleran: el de 3 kg hacia abajo y el de 2 kg hacia arriba, los dos con 2 m/s².</p>
+      <p>Prueba con masas iguales: no se mueven y la tensión es igual a cada peso. Solo en ese caso.</p>
+      ${fuente('Las opciones incorrectas son errores que suponemos, sin estudio con porcentaje: tomar la tensión igual al peso de uno de los bloques, o a la suma de los dos.')}` },
+  { id:'ascensor', corto:'La balanza en el ascensor', ley:['P','N','a'],
+    q:`Una persona de 60 kg está de pie sobre una balanza dentro de un ascensor que sube a 3 m/s constantes. ¿Cuánto marca la balanza?`,
+    opts:[['a','Más de 60 kg, porque el ascensor sube','normal-mayor-si-sube','hipotesis'], ['b','60 kg',null],
+          ['c','78 kg: hay que sumarle la velocidad a g','suma-velocidad-a-g','hipotesis'], ['d','Menos de 60 kg, porque al moverse se siente más liviana','normal-menor-si-se-mueve','hipotesis']],
+    ok:'b',
+    antes:() => Object.assign(E, { tipo:'ascensor', a:0, verN:'oculta', y:0 }),
+    despues:() => { E.verN = 'nueva'; crecer(() => mover()); },
+    ctrl:() => `<div class="slider"><label for="q-a"><span>Aceleración del ascensor (${V('a','a')}, + hacia arriba)</span><output id="q-a-o"></output></label><input id="q-a" class="r-a" type="range" min="-4" max="4" step="1" value="${E.a}"></div><div class="chips" id="chips2"></div>`,
+    vivo:() => {
+      const r = M.ascensor({ m:60, a:E.a }); $('q-a-o').textContent = `${fmt(E.a, 0)} m/s²`;
+      $('chips2').innerHTML = `<span class="chip">N = ${N1(r.N)} N</span><span class="chip">la balanza marca ${fmt(r.lectura, 0)} kg</span>`;
+    },
+    alCambiar:() => { E.a = +$('q-a').value; E.verA = true; },
+    exp:`<p>A velocidad constante, la aceleración es cero: la ${V('N','normal')} equilibra el ${V('P','peso')} y la balanza marca 600 N, es decir, 60 kg. Da igual que suba, baje o esté quieto. La balanza no ve la velocidad: ve la aceleración. La velocidad del momento no cambia lo que marca.</p>
+      <div class="eqs"><div class="eq">${V('N','N')} − ${V('P','600')} = 60·${V('a','a')}<span class="note">positivo hacia arriba</span></div></div>
+      <p>Mueve la aceleración: si el ascensor acelera hacia arriba con 2 m/s² (al arrancar subiendo o al frenar bajando), N = 720 N y marca 72 kg. Si acelera hacia abajo con 2 m/s², N = 480 N y marca 48 kg.</p>
+      ${fuente('Creer que la normal es mayor porque el ascensor sube es un error que suponemos, sin estudio con porcentaje. Creemos que sale de la idea documentada de que el movimiento necesita una fuerza en su dirección (Halloun y Hestenes, 1985, citados por Mora y Herrera, 2009).')}` },
+  { id:'contacto', corto:'Las dos cajas', ley:['F','C','a'],
+    q:`Empujas con 50 N una caja grande de 8 kg, que a su vez empuja a una caja pequeña de 2 kg que está delante, sobre un piso sin roce. ¿Cuál de las dos cajas empuja más fuerte a la otra?`,
+    opts:[['a','La grande a la pequeña, porque tiene más masa','D10-mas-masa-mas-fuerza','documentado'], ['b','Las dos se empujan igual',null],
+          ['c','La pequeña a la grande, porque la frena','la-de-adelante-empuja-mas','hipotesis'], ['d','Igual, y por eso se anulan: las cajas no aceleran','D11-accion-reaccion-se-anulan','documentado']],
+    ok:'b',
+    antes:() => Object.assign(E, { tipo:'contacto', x:0, verC:'oculta' }),
+    despues:() => { E.verC = 'nueva'; E.verA = true; crecer(() => correr()); },
+    ctrl:() => `<div class="chips" id="chips2"></div><p><button type="button" class="btn" id="repetir">Empujar otra vez</button></p>`,
+    vivo:() => { $('chips2').innerHTML = '<span class="chip">a = 5 m/s², las dos</span><span class="chip">grande → pequeña: C = 10 N</span><span class="chip">pequeña → grande: C = 10 N</span>'; },
+    exp:`<p>Las dos ${V('C','fuerzas de contacto')} son un par de acción y reacción: la caja grande empuja a la pequeña con 10 N y la pequeña empuja a la grande con 10 N hacia atrás. Siempre son iguales, aunque las masas sean distintas.</p>
+      <p>No se anulan porque actúan sobre cajas distintas. Sobre la pequeña, los 10 N son la única fuerza horizontal: 10 = 2·5. Sobre la grande actúan tus 50 N y los 10 N hacia atrás: 50 − 10 = 40 = 8·5. Las dos aceleran con 5 m/s².</p>
+      ${fuente('En choques, según Bao, Hogg y Zollman (2002), entre el 60 % y el 90 % de los alumnos de cinco cursos universitarios de Estados Unidos, según el curso, pensó que el de más masa o el más rápido ejerce más fuerza. Cuando un cuerpo empuja a otro, como aquí, sus respuestas fueron más mezcladas. Creer que acción y reacción se anulan está documentado (Hestenes, Wells y Swackhamer, 1992), sin porcentaje en las fuentes que leímos.')}` },
+  { id:'empujon', corto:'Se acaba el empujón', ley:['F'],
+    q:`Empujas un bloque de 2 kg sobre hielo, sin roce, con 10 N durante 2 s, y lo sueltas. ¿Qué hace el bloque <b>después</b> de que lo sueltas?`,
+    opts:[['a','Va frenando poco a poco: la fuerza del empujón se va gastando','D2-la-fuerza-se-gasta','documentado'], ['b','Sigue con la misma velocidad',null],
+          ['c','Se detiene apenas lo sueltas: sin fuerza no hay movimiento','D1-movimiento-necesita-fuerza','documentado'], ['d','Sigue acelerando un rato más','sigue-acelerando','hipotesis']],
+    ok:'b',
+    antes:() => Object.assign(E, { tipo:'empujon', roce:false, t:2 }),
+    despues:() => { correr(2); },
+    ctrl:() => `<label class="check"><input type="checkbox" id="q-roce" ${E.roce ? 'checked' : ''}> Con roce (μ = 0,25)</label><div class="chips" id="chips2"></div><p><button type="button" class="btn" id="repetir">Empujar otra vez</button></p>`,
+    vivo:() => { const e = emp(); $('chips2').innerHTML = `<span class="chip">t = ${fmt(E.t, 1)} s</span><span class="chip">v = ${fmt(e.v(E.t), 1)} m/s</span>`; },
+    alCambiar:() => { E.roce = $('q-roce').checked; E.t = 0; leyenda($('ley2'), E.roce ? ['F','f'] : ['F']); correr(); },
+    exp:`<p>Mientras lo empujas, la ${V('F','fuerza')} cambia su velocidad: a = 10/2 = 5 m/s², y a los 2 s va a 10 m/s. Al soltarlo, ya ninguna fuerza horizontal actúa sobre él, así que su velocidad ya no cambia: sigue a 10 m/s. Mira las fotos cada medio segundo: después de los 2 s quedan igual de separadas.</p>
+      <p>Activa el roce: ahora sí frena, pero porque el piso ejerce una fuerza, el ${V('f','roce')}, no porque el empujón «se gaste». Un empujón no se guarda dentro del bloque.</p>
+      ${fuente('Es el modelo de «ímpetu», el más común según Halloun y Hestenes (1985), citados por Mora y Herrera (2009): antes del curso, solo el 17 % de 478 universitarios razonaba de forma newtoniana.')}` },
+  { id:'tiron', corto:'El tirón en ángulo', ley:['P','N','F','a'],
+    q:`Jalas un bloque de 10 kg por un piso liso con una soga que forma 37° con la horizontal, con 50 N. ¿Cuánto vale la ${V('N','normal')} del piso?`,
+    opts:[['a','100 N, igual al peso','N-igual-mg','hipotesis'], ['b','70 N',null],
+          ['c','130 N: el peso más la parte vertical de la soga','N-suma-Fy','hipotesis'], ['d','50 N: el peso menos la fuerza de la soga, sin descomponer','resta-sin-descomponer','hipotesis']],
+    ok:'b',
+    antes:() => Object.assign(E, { tipo:'tiron', ang:37, F:50, verN:'oculta', comp:false }),
+    despues:() => { E.verN = 'nueva'; E.comp = true; E.verA = true; crecer(); },
+    ctrl:() => `<div class="slider"><label for="q-ang"><span>Ángulo de la soga</span><output id="q-ang-o"></output></label><input id="q-ang" class="r-F" type="range" min="0" max="80" step="1" value="${E.ang}"></div><div class="chips" id="chips2"></div>`,
+    vivo:() => {
+      const r = M.piso({ m:10, F:E.F, angulo:E.ang }); $('q-ang-o').textContent = `${E.ang}°`;
+      $('chips2').innerHTML = `<span class="chip">N = ${N1(r.N)} N</span><span class="chip">a = ${fmt(r.a, 2)} m/s²</span>${r.despega ? '<span class="chip">se levanta del piso</span>' : ''}`;
+    },
+    alCambiar:() => { E.ang = +$('q-ang').value; },
+    exp:`<div class="eqs"><div class="eq">vertical: ${V('N','N')} + 50·sen 37° = ${V('P','100')} → ${V('N','N')} = 100 − 30 = ${V('N','70 N')}</div><div class="eq">horizontal: 50·cos 37° = 40 N = 10·${V('a','a')} → ${V('a','a')} = ${V('a','4 m/s²')}</div></div>
+      <p>La ${V('F','soga')} jala un poco hacia arriba (30 N), así que ayuda a sostener el bloque y el piso empuja menos. Por eso la normal es 70 N y no 100 N. Con roce, eso importa: el roce sería μ·70, no μ·100.</p>
+      <p>Mueve el ángulo: cuanto más empinada la soga, menor la normal. Con 50 N la soga nunca lo levanta: aun vertical, daría solo 50 N de los 100 que hacen falta.</p>
+      ${fuente('Que la normal sea siempre igual al peso es un error que suponemos, sin estudio con porcentaje. Creemos que sale de una idea documentada: que la superficie «solo está en el camino» y no ejerce una fuerza propia (Minstrell, 1982, citado por Mora y Herrera, 2009).')}` },
+];
+// En este modo los datos de color no resaltan nada en el dibujo: no son paradas del tabulador.
+const sinParada = el => el.querySelectorAll('.v').forEach(e => { e.removeAttribute('tabindex'); e.style.cursor = 'default'; });
+const S = { k:0, pred:{}, t0:Date.now() };
+const rPlano = () => M.plano({ m:E.m, angulo:E.ang, mus:E.mus, muk:E.muk });
+const emp = () => M.empujon({ m:2, F:10, dur:2, muk:E.roce ? 0.25 : 0 });
+function crecer(listo){ parar(); E.crece = 0; parar = animarValor(600, f => { E.crece = f; draw(); }, () => { listo && listo(); draw(); }); }
+// Animación de lo que se mueve en cada experimento.
+function correr(desde0){
+  parar();
+  if (E.tipo === 'atwood'){
+    const r = M.atwood({ m1:E.m1, m2:E.m2 }), T = 1.6;
+    parar = animarValor(T*1000, f => { const t = T*f; E.s = r.a*t*t/2; draw(); });
+  } else if (E.tipo === 'contacto'){
+    const T = 1.8; parar = animarValor(T*1000, f => { const t = T*f; E.x = 5*t*t/2; draw(); });
+  } else if (E.tipo === 'empujon'){
+    const T = 6, desde = desde0 || 0;
+    parar = animarValor(RM ? 0 : (T - desde)*700, f => { E.t = desde + (T - desde)*f; draw(); sincronizar(); });
+  }
+}
+function mover(){ // el ascensor sube a velocidad constante: los pisos pasan hacia abajo
+  parar(); if (RM){ draw(); return; }
+  let id, ini = performance.now();
+  const tick = now => { E.y = (now - ini)/1000*3; draw(); id = requestAnimationFrame(tick); };
+  id = requestAnimationFrame(tick); parar = () => cancelAnimationFrame(id);
+}
+function draw(){
+  if (!L.W || !E.tipo) return;
+  const c = colores(L.W);
+  if (E.tipo === 'plano'){
+    vistaPlano(L, c, { r:rPlano(), ang:E.ang, s:0, largo:6, masa:'10 kg', ver:E.ver, crece:E.crece });
+    decir($('desc2'), S.pred.quieto ? `Rampa de ${E.ang} grados. ${rPlano().sentido === 'quieto' ? 'El saco no se mueve; el roce estático vale ' + N1(rPlano().roceModulo) + ' newtons.' : 'El saco desliza.'}` : 'Rampa de 37 grados con el saco quieto. El peso de 100 newtons y la normal de 80 newtons. El roce todavía no tiene valor.');
+  } else if (E.tipo === 'atwood'){
+    const r = M.atwood({ m1:E.m1, m2:E.m2 });
+    vistaAtwood(L, c, { r, m1:E.m1, m2:E.m2, s:E.s, ver:E.ver, crece:E.crece });
+    decir($('desc2'), S.pred.atwood ? `Bloques de ${E.m1} y ${E.m2} kilogramos. Tensión ${N1(r.T)} newtons, aceleración ${N1(r.aModulo)} metros por segundo al cuadrado.` : 'Una polea con un bloque de 3 kilogramos y otro de 2. Pesos de 30 y 20 newtons. La tensión todavía no tiene valor.');
+  } else if (E.tipo === 'ascensor'){
+    const r = M.ascensor({ m:60, a:E.a });
+    vistaAscensor(L, c, { r, a:E.a, y:E.y, verN:E.verN, crece:E.crece, verA:E.verA, vTxt: E.a === 0 ? 'sube a 3 m/s' : 'ahora sube a 3 m/s' });
+    decir($('desc2'), S.pred.ascensor ? `La balanza marca ${fmt(r.lectura, 0)} kilogramos; la normal es ${N1(r.N)} newtons.` : 'Un ascensor que sube a velocidad constante con una persona de 60 kilogramos sobre una balanza. La lectura todavía no se muestra.');
+  } else if (E.tipo === 'contacto'){
+    const r = M.contacto({ m1:8, m2:2, F:50 });
+    vistaContacto(L, c, { r, m1:8, m2:2, F:50, x:E.x, verC:E.verC, crece:E.crece, verA:E.verA });
+    decir($('desc2'), S.pred.contacto ? 'Las cajas se empujan entre sí con 10 newtons, en sentidos opuestos. Las dos aceleran con 5 metros por segundo al cuadrado.' : 'Una mano empuja con 50 newtons una caja de 8 kilogramos, que tiene delante una de 2 kilogramos. Las fuerzas entre las cajas todavía no se muestran.');
+  } else if (E.tipo === 'empujon'){
+    const e = emp();
+    vistaEmpujon(L, c, { e, t:E.t, dur:2, roce:E.roce });
+    decir($('desc2'), S.pred.empujon ? (E.roce ? `Con roce, el bloque frena después de soltarlo y se detiene a los ${fmt(e.tParada, 0)} segundos.` : `Después de soltarlo, el bloque sigue a ${fmt(e.v(6), 0)} metros por segundo, sin frenar.`) : 'El bloque de 2 kilogramos, empujado durante 2 segundos sobre hielo, justo cuando lo sueltan.');
+  } else if (E.tipo === 'tiron'){
+    const r = M.piso({ m:10, F:E.F, angulo:E.ang });
+    vistaTiron(L, c, { r, ang:E.ang, F:E.F, verN:E.verN, crece:E.crece, comp:E.comp, verA:E.verA });
+    decir($('desc2'), S.pred.tiron ? `Soga a ${E.ang} grados. Normal ${N1(r.N)} newtons.` : 'Un bloque de 10 kilogramos jalado con 50 newtons por una soga a 37 grados. El peso es 100 newtons; la normal todavía no tiene valor.');
+  }
+}
+function sincronizar(){ const x = EXPS[S.k]; if (S.pred[x.id] && $('chips2')) x.vivo(); }
+// Los botones se crean una vez; luego solo cambia aria-pressed (así el foco no se pierde).
+function botones(){
+  if (!$('exps').children.length){
+    $('exps').innerHTML = EXPS.map((x, k) => `<button type="button" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
+    $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+  }
+  [...$('exps').children].forEach((b, k) => b.setAttribute('aria-pressed', String(k === S.k)));
+}
+function reiniciar(x){ for (const k of Object.keys(E)) delete E[k]; x.antes(); }
+function ir(k){
+  parar();
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k];
+  reiniciar(x);
+  if (S.pred[x.id]){ x.despues(); parar(); E.crece = 1; if (E.tipo === 'empujon') E.t = 6; if (E.tipo === 'ascensor') mover(); }
+  botones();
+  leyenda($('ley2'), x.ley);
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  sinParada($('body2'));
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. La correcta está marcada; mira la escena para ver por qué.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.ctrl() + x.exp + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
+    $('res2').querySelectorAll('input').forEach(inp => inp.addEventListener(inp.type === 'checkbox' ? 'change' : 'input', () => { if (E.tipo !== 'empujon' && E.tipo !== 'ascensor') parar(); x.alCambiar(); x.vivo(); draw(); }));
+    const rep = $('repetir'); if (rep) rep.onclick = () => { if (E.tipo === 'atwood') E.s = 0; if (E.tipo === 'empujon') E.t = 0; correr(); };
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    sinParada($('res2')); x.vivo();
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0];
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+    pintar();
+    // El botón elegido queda desactivado: el foco pasa a la respuesta para no perderse.
+    $('fb2').tabIndex = -1; $('fb2').focus({ preventScroll:true });
+    // En el celular, el dibujo sube a la vista y la escena cambia un momento después.
+    const ch = chico();
+    if (ch) cv.scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+    esperar(ch ? 380 : 0, () => { if (S.k !== k) return; x.despues(); draw(); });
+  });
+  pintar(); draw();
+}
+alRedibujarTema(draw);
+addEventListener('modo', () => { if ($('m2').hidden) parar(); else { L.resize(); if (E.tipo === 'ascensor' && S.pred.ascensor) mover(); } });
+L.resize(); ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>
