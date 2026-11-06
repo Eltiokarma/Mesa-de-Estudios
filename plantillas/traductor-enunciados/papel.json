@@ -1,0 +1,170 @@
+{
+  "titulo": "El traductor de enunciados: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Antes de escribir la ecuación, di en voz alta qué número es cada letra («g es el número de gallinas», no «g son las gallinas») y comprueba tu ecuación con un caso que puedas contar. Lo que hagas en un lado de la ecuación, hazlo también en el otro. No dividas entre la incógnita: si puede valer 0, se pierde una solución. Y al final, reemplaza tu respuesta en el enunciado.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "En una granja hay 3 gallinas por cada conejo. Llama g al número de gallinas y c al número de conejos. a) Escribe la ecuación que relaciona g y c. b) Si hay 14 conejos, ¿cuántas gallinas hay?",
+      "respuesta": "a) g = 3c. b) 42 gallinas.",
+      "pasos": [
+        "Piensa en un caso que se pueda contar: con 1 conejo hay 3 gallinas; con 2 conejos, 6 gallinas. El número de gallinas es el triple del número de conejos: g = 3c.",
+        "Comprueba con el caso contado: g = 6 y c = 2 dan 6 = 3 · 2. Verdadera.",
+        "La ecuación 3g = c copia el orden de las palabras («3 gallinas», «un conejo»), pero con g = 6 y c = 2 da 18 = 2: falsa.",
+        "Con c = 14: g = 3 · 14 = 42."
+      ],
+      "verificar": [
+        { "fn": "porCada", "args": [{ "n": 3, "m": 1, "letraN": "g", "letraM": "c", "valorM": 14 }], "espera": { "ecuacion": "g = 3c", "g": 42, "errores.invertida.ecuacion": "3g = c" } },
+        { "fn": "comprobar", "args": ["g = 3c", { "g": 6, "c": 2 }], "espera": { "verdadera": true } },
+        { "fn": "comprobar", "args": ["3g = c", { "g": 6, "c": 2 }], "espera": { "verdadera": false, "izq": 18 } }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Escribe en símbolos y calcula el valor para el número 8: a) el triple de un número, disminuido en 4; b) el triple, de un número disminuido en 4.",
+      "respuesta": "a) 3x − 4, que vale 20. b) 3(x − 4), que vale 12.",
+      "pasos": [
+        "a) Primero se toma el triple del número, 3x, y a ese resultado se le quita 4: 3x − 4. Con x = 8: 3 · 8 − 4 = 20.",
+        "b) La coma después de «el triple» indica que lo que sigue va junto: primero se le quita 4 al número, x − 4, y después se triplica: 3(x − 4). Con x = 8: 3 · (8 − 4) = 12. (Como en las academias, la coma separa lo que va junto: lo que viene después de la coma se calcula primero o se aplica al resultado anterior.)",
+        "«Disminuido en 4» quiere decir «menos 4»: se le quita 4 a lo anterior. Escribir 4 − 3x lo pone al revés."
+      ],
+      "verificar": [
+        { "fn": "traducir", "args": ["el triple de un número, disminuido en 4"], "espera": { "expresion": "3x − 4", "errores.alReves": "4 − 3x" } },
+        { "fn": "traducir", "args": ["el triple, de un número disminuido en 4"], "espera": { "expresion": "3(x − 4)" } },
+        { "fn": "evaluar", "args": ["3x − 4", { "x": 8 }], "espera": { "valor": 20 } },
+        { "fn": "evaluar", "args": ["3(x − 4)", { "x": 8 }], "espera": { "valor": 12 } }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Resuelve 5x − 4 = 2x + 11 y comprueba tu respuesta.",
+      "respuesta": "x = 5.",
+      "pasos": [
+        "Se resta 2x a los dos lados: 3x − 4 = 11. (Es lo mismo que «pasar» el 2x restando.)",
+        "Se suma 4 a los dos lados: 3x = 15.",
+        "Se divide entre 3 los dos lados: x = 5.",
+        "Comprobación: 5 · 5 − 4 = 21 y 2 · 5 + 11 = 21. Si se «pasa» sin cambiar el signo (5x + 2x = 11 − 4) sale x = 1, y 5 · 1 − 4 = 1 no es igual a 2 · 1 + 11 = 13."
+      ],
+      "verificar": [
+        { "fn": "resolver", "args": ["5x − 4 = 2x + 11"], "espera": { "soluciones": [5], "errores.pasarSignoMal": [1], "comprobaciones.0.resultado": "21 = 21" } }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Halla todas las soluciones de 3x² = 12x.",
+      "respuesta": "x = 0 y x = 4.",
+      "pasos": [
+        "No se divide entre x: si x vale 0, se estaría dividiendo entre 0 y esa solución se pierde.",
+        "Se resta 12x a los dos lados: 3x² − 12x = 0.",
+        "Se saca el factor común 3x: 3x(x − 4) = 0.",
+        "Si un producto vale 0, alguno de los factores vale 0: 3x = 0 o x − 4 = 0, así que x = 0 o x = 4.",
+        "Comprobación: con x = 0, los dos lados valen 0; con x = 4, 3 · 16 = 48 y 12 · 4 = 48."
+      ],
+      "verificar": [
+        { "fn": "resolver", "args": ["3x² = 12x"], "espera": { "soluciones": [0, 4], "errores.dividirEntreX": [4] } },
+        { "fn": "balanza", "args": ["3x² = 12x", [{ "op": "dividir", "expr": "x" }]], "espera": { "final.perdidas": [0] } }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Resuelve (x − 2)(x − 6) = 5.",
+      "respuesta": "x = 1 y x = 7.",
+      "pasos": [
+        "Ojo: «si un producto vale 0, uno de los factores vale 0» solo sirve con 0. Que el producto valga 5 no quiere decir que un factor valga 5.",
+        "Se desarrolla el producto: x² − 8x + 12 = 5.",
+        "Se resta 5 a los dos lados: x² − 8x + 7 = 0.",
+        "Se factoriza: (x − 1)(x − 7) = 0, así que x = 1 o x = 7.",
+        "Comprobación: (1 − 2)(1 − 6) = (−1)(−5) = 5 y (7 − 2)(7 − 6) = 5 · 1 = 5. Con la idea equivocada saldría x = 7 o x = 11, y con 11 el producto es 9 · 5 = 45."
+      ],
+      "verificar": [
+        { "fn": "resolver", "args": ["(x − 2)(x − 6) = 5"], "espera": { "soluciones": [1, 7], "errores.cadaFactorIgualK": [7, 11] } },
+        { "fn": "comprobar", "args": ["(x − 2)(x − 6) = 5", { "x": 11 }], "espera": { "izq": 45 } }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Hoy Carmen tiene 40 años. Dentro de 8 años, su edad será el doble de la edad de su sobrina Lía. ¿Cuántos años tiene Lía hoy?",
+      "respuesta": "16 años.",
+      "pasos": [
+        "Llama x a la edad de Lía hoy. Dentro de 8 años, las dos tendrán 8 años más: Carmen, 40 + 8 = 48, y Lía, x + 8.",
+        "La ecuación: 48 = 2(x + 8).",
+        "48 = 2x + 16, así que 2x = 32 y x = 16.",
+        "Comprobación: dentro de 8 años, Carmen tendrá 48 y Lía 24, y 48 = 2 · 24. Si se suma el 8 solo a Carmen sale 24, que es la edad de Lía dentro de 8 años, no la de hoy."
+      ],
+      "verificar": [
+        { "fn": "edades", "args": [{ "conocida": "c", "valor": 40, "incognita": "x", "tiempo": 8, "k": 2 }], "espera": { "x": 16, "entonces.x": 24, "errores.soloConocida": 24, "errores.sinTiempo": 20 } }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "La edad de un padre excede en 26 años a la de su hijo. Dentro de 4 años, la edad del padre será el triple de la del hijo. ¿Qué edad tiene cada uno hoy?",
+      "respuesta": "El padre, 35 años; el hijo, 9.",
+      "pasos": [
+        "Llama x a la edad del padre hoy e y a la del hijo hoy.",
+        "«Excede en 26»: x − y = 26. La diferencia de edades no cambia con el tiempo: dentro de 4 años también será 26.",
+        "Dentro de 4 años: x + 4 = 3(y + 4), o sea, x − 3y = 8. Los 4 años se suman a los dos.",
+        "Se restan las dos ecuaciones: (x − y) − (x − 3y) = 26 − 8, así que 2y = 18 e y = 9. Entonces x = 35.",
+        "Comprobación: 35 − 9 = 26 y, dentro de 4 años, 39 = 3 · 13."
+      ],
+      "verificar": [
+        { "fn": "sistema", "args": ["x − y = 26", "x + 4 = 3(y + 4)"], "espera": { "tipo": "unica", "valores.x": 35, "valores.y": 9 } },
+        { "fn": "lineaEdades", "args": [{ "x": 35, "y": 9 }, [0, 4]], "espera": { "1.diferencia": 26, "1.razon": 3 } }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Dos ciclistas salen a la vez de dos pueblos separados por 90 km, uno hacia el otro, a 20 km/h y a 25 km/h. ¿Después de cuánto tiempo se encuentran y a qué distancia del pueblo del primero?",
+      "respuesta": "A las 2 horas, a 40 km del pueblo del primero.",
+      "pasos": [
+        "Van uno hacia el otro: cada hora, la distancia entre ellos baja 20 + 25 = 45 km.",
+        "Se encuentran cuando entre los dos recorrieron los 90 km: 20t + 25t = 90, 45t = 90, t = 2 horas.",
+        "El primero recorrió 20 · 2 = 40 km y el segundo, 25 · 2 = 50 km; 40 + 50 = 90.",
+        "Restar las rapideces (25 − 20 = 5) daría 18 horas: eso sirve cuando van en el mismo sentido."
+      ],
+      "verificar": [
+        { "fn": "moviles", "args": [{ "distancia": 90, "v1": 20, "v2": 25, "sentido": "opuesto" }], "espera": { "tiempo": 2, "posicion": 40, "errores.restaRapideces": 18 } }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Un bus sale de un terminal a 60 km/h. Dos horas después, por la misma carretera y en el mismo sentido, sale un auto a 90 km/h. ¿Cuánto tarda el auto en alcanzar al bus y a qué distancia del terminal?",
+      "respuesta": "4 horas después de salir el auto, a 360 km del terminal.",
+      "pasos": [
+        "Cuando sale el auto, el bus ya recorrió 60 · 2 = 120 km: esa es la ventaja.",
+        "Van en el mismo sentido: cada hora, el auto descuenta 90 − 60 = 30 km de la ventaja.",
+        "90t = 120 + 60t, así que 30t = 120 y t = 4 horas.",
+        "El auto recorrió 90 · 4 = 360 km. El bus, 120 + 60 · 4 = 360 km: están en el mismo lugar.",
+        "Sumar las rapideces (120/150 = 0,8 horas) es un error: eso sirve cuando van uno hacia el otro."
+      ],
+      "verificar": [
+        { "fn": "moviles", "args": [{ "distancia": 120, "v1": 90, "v2": 60, "sentido": "mismo" }], "espera": { "tiempo": 4, "posicion": 360, "errores.sumaRapideces": 0.8 } }
+      ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Un comerciante mezcla arroz de S/ 4 el kilo con arroz de S/ 6 el kilo para obtener 50 kilos que vende a S/ 4,80 el kilo, sin ganar ni perder. ¿Cuántos kilos usa de cada uno?",
+      "respuesta": "30 kilos del de S/ 4 y 20 kilos del de S/ 6.",
+      "pasos": [
+        "Llama x a los kilos del de S/ 4 e y a los del de S/ 6. Primera ecuación (kilos): x + y = 50.",
+        "Segunda ecuación (soles): lo que cuesta la mezcla es 50 · 4,80 = 240, así que 4x + 6y = 240.",
+        "Se multiplica la primera por 4, en los dos lados: 4x + 4y = 200. Se resta de la segunda: 2y = 40, y = 20.",
+        "Entonces x = 50 − 20 = 30. Comprobación: 4 · 30 + 6 · 20 = 120 + 120 = 240.",
+        "Si la primera se multiplicara por 4 solo en el lado izquierdo (4x + 4y = 50), saldría y = 95, más que los 50 kilos de la mezcla."
+      ],
+      "verificar": [
+        { "fn": "mezcla", "args": [{ "cantidad": 50, "precio1": 4, "precio2": 6, "precioMezcla": 4.8 }], "espera": { "x": 30, "y": 20 } },
+        { "fn": "sistema", "args": ["x + y = 50", "4x + 6y = 240"], "espera": { "valores.x": 30, "valores.y": 20 } },
+        { "fn": "sistema", "args": ["4x + 4y = 50", "4x + 6y = 240"], "espera": { "valores.y": 95 } }
+      ]
+    }
+  ]
+}
