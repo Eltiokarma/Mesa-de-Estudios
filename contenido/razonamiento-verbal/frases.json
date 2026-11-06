@@ -33,5 +33,6 @@
   "RV32": "Esa oración dice lo mismo que otra con distintas palabras: sobra.",
   "RV33": "El autor no toma esa postura en el texto.",
   "RV34": "No hace falta que el texto lo diga con esas palabras: se deduce de lo que dice.",
-  "RV35": "Ese conector no corresponde a la relación entre las dos partes: fíjate si se suman, se oponen o una causa la otra."
+  "RV35": "Ese conector no corresponde a la relación entre las dos partes: fíjate si se suman, se oponen o una causa la otra.",
+  "RV36": "Que el texto no mencione algo no significa que lo contradiga: incompatible es lo que choca con lo que dice."
 }

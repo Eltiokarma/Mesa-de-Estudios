@@ -76,6 +76,7 @@ Los ejemplos son propios, escritos para este informe.
 | RV9 | **No se detecta la incompatibilidad implícita**: solo se ve la contradicción si está dicha con las mismas palabras. | El texto dice que el lago se calentó; la alternativa dice que "sus aguas se mantuvieron frías", sin la palabra "calentó". | Las contradicciones explícitas se detectan más que las implícitas; aun a los 12 años, una proporción "considerable" de textos con contradicciones obvias se juzga comprensible. Sin cifra visible. | Parcial (cualitativo, niños) | Markman (1979) |
 | RV10 | **Se pasa por alto una negación** o un cuantificador ("no", "solo", "ningún"), y se marca como compatible lo incompatible. | Texto: "El quechua no se habla solo en el campo: también se oye en los mercados de Lima." Pregunta: "Es compatible con el texto…". Distractor: "El quechua se habla solo en el campo" (el alumno no ve el "no" y lo marca como compatible). Correcta: "El quechua también se habla en la ciudad". | Sin estudio encontrado. | Hipótesis | — |
 | RV11 | **Términos absolutos**: se acepta una alternativa con "siempre", "nunca", "todos" o "únicamente" cuando el texto dice "a menudo" o "algunos". | "El texto afirma que todos los glaciares peruanos desaparecerán." | Solo en guías de técnica de examen. | Hipótesis | — |
+| RV36 | **En incompatibilidad, se marca como incompatible lo que el texto solo no menciona**: se confunde "el texto no lo dice" con "el texto lo contradice". | Texto sobre la castaña; pregunta "Es incompatible con el texto…"; el alumno marca "las castañas se venden también en Lima", que el texto no menciona pero no contradice. | Sin estudio encontrado. | Hipótesis (ligada a RV9) | — |
 | RV12 | **Extrapolación literal**: ante "si…, entonces…", se responde con lo que el texto ya dice, o se cambia la condición sin cambiar la consecuencia. | "Si el puente de Q'eswachaka no se renovara cada año, …"; distractor: "se seguiría tejiendo con ichu" (repite el texto, no extrapola). | Sin estudio encontrado sobre extrapolación. | Hipótesis (ligada a RV5) | — |
 | RV34 | **Se queda en lo literal**: no acepta lo que se deduce del texto porque no está dicho con esas palabras ("el texto no lo dice"). | El texto dice que la paja del puente se pudre y que el saber solo sobrevive si se practica; ante "si no se renovara, el saber podría perderse", el alumno responde "no se puede saber". | Indirecto: en la UNA Puno, el nivel literal es el más alto y el inferencial queda "en medio". Sin cifra de este error. | Hipótesis (con contexto indirecto) | Valero-Ancco y otros (2024) |
 
@@ -145,6 +146,7 @@ Errores que suponemos en los ítems de academia, sin estudio que los mida. Cada 
 | Inferencia que generaliza de más (RV7) | RV2 (demasiado general) |
 | Negación pasada por alto (RV10) | RV9 (incompatibilidad implícita) |
 | Términos absolutos (RV11) | Sin dato |
+| No dicho tomado por contradicho (RV36) | RV9 (incompatibilidad implícita) |
 | Extrapolación que repite el texto (RV12) | RV5 (eco literal) |
 | Antónimo de otro rasgo (RV21) | RV19 (mismo campo, no sinónimo) |
 | Aditivo por contraste (RV26) | RV24 (contracausal leído como causal) |
@@ -171,7 +173,7 @@ El diseño detallado va en la pieza 2 de la rutina (`docs/formato-lectura.md`). 
 | --- | --- |
 | Idea principal o tema central | RV1 (detalle), RV2 (demasiado general), RV3 (omite una parte) |
 | Inferencia | RV5 (eco literal), RV6 (literal), RV7 (no autorizada), RV8 (saber del mundo) |
-| Compatibilidad e incompatibilidad | RV5, RV8, RV9, RV10 o RV11 |
+| Compatibilidad e incompatibilidad | RV5, RV8, RV9, RV10 o RV11; en incompatibilidad, RV36 |
 | Extrapolación | RV12, RV7, RV8 |
 | Intención del autor | RV13 (forma por propósito), RV14 (sin postura), RV33 (postura que no toma), RV2 |
 | Analogías | RV15 (asociación con C), RV16 (invertida), RV17 (mismo campo) |

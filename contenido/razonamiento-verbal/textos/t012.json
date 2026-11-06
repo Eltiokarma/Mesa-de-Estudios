@@ -1,0 +1,312 @@
+{
+  "id": "t012",
+  "version": 1,
+  "titulo": "Una pizca en el salero",
+  "tema": "Salud pública · el yodo",
+  "grado": 5,
+  "dificultad": 3,
+  "tipo_texto": "argumentativo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "Hasta hace unas décadas, en muchos pueblos de la sierra y de la selva del Perú era común ver personas con bocio, un abultamiento en el cuello causado por la falta de yodo."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "El yodo es indispensable para que la glándula tiroides funcione, y su falta durante el embarazo y la infancia puede dañar el desarrollo del cerebro."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "En esas zonas, el suelo y el agua tienen poco yodo, así que los alimentos locales no alcanzaban a cubrir lo que el cuerpo necesita."
+      }
+    ],
+    [
+      {
+        "id": "o4",
+        "rol": "detalle",
+        "t": "La solución que se eligió fue sencilla: agregar un poco de yodo a la sal de mesa, que casi todos consumen en cantidades parecidas."
+      },
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "Con el tiempo, y con controles para que la sal que se vendía estuviera de verdad yodada, el bocio se volvió mucho menos frecuente en el país."
+      },
+      {
+        "id": "o6",
+        "rol": "contraste",
+        "t": "Hoy se recomienda comer menos sal, y alguien podría pensar que eso contradice aquella campaña."
+      },
+      {
+        "id": "o7",
+        "rol": "apoyo",
+        "t": "No es así: no se trata de comer más sal, sino de que la poca que se coma esté yodada."
+      }
+    ],
+    [
+      {
+        "id": "o8",
+        "rol": "principal",
+        "t": "El caso muestra que una medida de salud pública no necesita ser costosa ni espectacular para ser eficaz: basta con que llegue a todos sin que cada persona tenga que acordarse de ella."
+      },
+      {
+        "id": "o9",
+        "rol": "principal",
+        "t": "Una pizca de yodo en el salero hizo, durante años, el trabajo silencioso que ninguna campaña de consejos habría logrado sola."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "intencion",
+      "unidad": "razonamiento-verbal.inferencias",
+      "previo": {
+        "tipo": "proposito",
+        "pide": "Antes de ver las alternativas: ¿qué busca sobre todo el autor?",
+        "aceptada": "convencer",
+        "codigos": {
+          "explicar": "RV14",
+          "narrar": "RV13"
+        },
+        "explicacion": "El texto explica el caso, pero para sostener una idea general (oración 8): busca convencer.",
+        "explicaciones": {
+          "explicar": "El texto explica qué es el bocio y cómo se enfrentó, pero lo hace para defender una idea sobre las medidas de salud.",
+          "narrar": "El texto cuenta hechos de varias décadas, pero no se queda en contarlos: saca de ellos una conclusión."
+        }
+      },
+      "enunciado": "¿Cuál es la intención principal del autor?",
+      "alternativas": [
+        {
+          "t": "Defender un tipo de medida de salud a partir de un caso del Perú.",
+          "correcta": true,
+          "evidencia": [
+            "o8"
+          ],
+          "explicacion": "El autor cuenta el caso de la sal yodada para sostener una idea general sobre las medidas de salud pública (oración 8): busca convencer."
+        },
+        {
+          "t": "Explicar qué hace el yodo en la glándula tiroides y en el desarrollo del cerebro.",
+          "codigo": "RV14",
+          "origen": "o2",
+          "explicacion": "Eso aparece en la oración 2, pero es solo un dato. Esta alternativa deja fuera la postura del autor."
+        },
+        {
+          "t": "Contar la historia de un pueblo de la sierra afectado por el bocio.",
+          "codigo": "RV13",
+          "explicacion": "El texto no cuenta la historia de un pueblo: presenta un caso para defender una idea."
+        },
+        {
+          "t": "Pedir que se prohíba vender sal sin yodo en el Perú.",
+          "codigo": "RV33",
+          "explicacion": "El autor no pide eso: dice que la medida funcionó porque llegó a todos, no propone una prohibición."
+        },
+        {
+          "t": "Informar sobre las enfermedades más comunes del Perú.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto habla de una sola carencia, la de yodo, y de cómo se enfrentó."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que mejor resume la tesis del autor.",
+        "aceptadas": [
+          "o8",
+          "o9"
+        ],
+        "ninguna": "RV3",
+        "codigos": {
+          "o1": "RV4"
+        },
+        "explicacion": "La oración 8 dice la tesis en general y la 9 la repite con la imagen del salero.",
+        "explicaciones": {
+          "o1": "La primera oración presenta el problema, el bocio: es el punto de partida.",
+          "o2": "Explica por qué el yodo es importante: es información de base.",
+          "o3": "Explica por qué faltaba yodo en esas zonas: es parte del caso.",
+          "o4": "Cuenta qué solución se eligió: es parte del caso, no lo que el autor saca de él.",
+          "o5": "Cuenta el resultado: es parte del caso.",
+          "o6": "Presenta una objeción que el autor va a responder.",
+          "o7": "Responde a la objeción; es un argumento, no la tesis.",
+          "ninguna": "Las oraciones 8 y 9 sí la dicen: una medida sencilla que llega a todos puede ser muy eficaz."
+        }
+      },
+      "enunciado": "¿Cuál es la tesis del autor?",
+      "alternativas": [
+        {
+          "t": "Una medida sencilla que llega a todos sin esfuerzo de cada persona puede resolver un gran problema de salud.",
+          "correcta": true,
+          "evidencia": [
+            "o8",
+            "o9"
+          ],
+          "explicacion": "Es lo que dice la oración 8 y repite la 9 con el ejemplo del salero."
+        },
+        {
+          "t": "El bocio es un abultamiento en el cuello causado por la falta de yodo en lo que se come y se bebe.",
+          "codigo": "RV1",
+          "origen": "o1",
+          "explicacion": "Es un detalle: la definición del bocio. El autor la da para presentar el caso."
+        },
+        {
+          "t": "La salud pública es una responsabilidad de todos los ciudadanos.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general, y además el texto dice casi lo contrario: que la medida funcionó porque nadie tenía que acordarse de ella."
+        },
+        {
+          "t": "Agregar yodo a la sal de mesa hizo que el bocio fuera mucho menos frecuente en el Perú.",
+          "codigo": "RV3",
+          "origen": "o5",
+          "explicacion": "Es el caso, pero no la tesis: deja fuera lo que el autor saca de él, que vale para otras medidas."
+        },
+        {
+          "t": "Hay que comer más sal para tener suficiente yodo.",
+          "codigo": "RV33",
+          "origen": "o7",
+          "explicacion": "El autor dice lo contrario: no se trata de comer más sal, sino de que la poca que se coma esté yodada (oración 7)."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "compatibilidad",
+      "unidad": "razonamiento-verbal.compatibilidad",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
+        "sonda": "La sal yodada cuesta hoy más que la sal sin yodo.",
+        "clase": "no-se-sabe",
+        "codigos": {
+          "lo-dice": "RV5",
+          "se-deduce": "RV7",
+          "lo-contradice": null
+        },
+        "explicacion": "El texto no habla del precio de la sal yodada. No se puede saber.",
+        "explicaciones": {
+          "lo-dice": "El texto habla de la sal yodada, pero nunca de su precio.",
+          "se-deduce": "Que se agregue yodo no permite concluir que la sal cueste más: eso va más allá del texto.",
+          "lo-contradice": "La oración 8 dice que la medida no necesita ser costosa, pero eso habla del costo de la medida, no del precio de la sal en la tienda."
+        }
+      },
+      "enunciado": "Es compatible con el texto afirmar que",
+      "alternativas": [
+        {
+          "t": "la recomendación de comer menos sal no obliga a dejar la sal yodada.",
+          "correcta": true,
+          "evidencia": [
+            "o7"
+          ],
+          "explicacion": "Es lo que dice la oración 7: se puede comer menos sal y que esa poca sal esté yodada."
+        },
+        {
+          "t": "la recomendación actual de comer menos sal contradice la campaña de la sal yodada.",
+          "codigo": "RV10",
+          "origen": "o6",
+          "explicacion": "Es justo lo que la oración 7 niega con \"No es así\"."
+        },
+        {
+          "t": "el bocio desapareció por completo de todos los pueblos del Perú.",
+          "codigo": "RV11",
+          "origen": "o5",
+          "explicacion": "El texto dice que se volvió \"mucho menos frecuente\", no que desapareciera por completo en todas partes."
+        },
+        {
+          "t": "en la sierra, los alimentos locales tenían yodo de sobra.",
+          "codigo": "RV9",
+          "origen": "o3",
+          "explicacion": "Choca con la oración 3: el suelo y el agua tienen poco yodo, y los alimentos no alcanzaban."
+        },
+        {
+          "t": "el yodo es una glándula indispensable para el desarrollo del cerebro.",
+          "codigo": "RV5",
+          "origen": "o2",
+          "explicacion": "Mezcla palabras de la oración 2: el yodo no es una glándula; es lo que la glándula tiroides necesita."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.sentido-contextual",
+      "enunciado": "En la oración 9, la palabra SILENCIOSO significa",
+      "alternativas": [
+        {
+          "t": "que se hace sin llamar la atención.",
+          "correcta": true,
+          "evidencia": [
+            "o8",
+            "o9"
+          ],
+          "explicacion": "La oración 8 dice que la medida funcionó sin que cada persona tuviera que acordarse de ella: su trabajo no se notaba."
+        },
+        {
+          "t": "que no hace ningún ruido.",
+          "codigo": "RV18",
+          "explicacion": "Es el sentido literal de \"silencioso\", pero aquí no se habla de ruido, sino de algo que funciona sin que se note."
+        },
+        {
+          "t": "que se mantiene en secreto.",
+          "codigo": "RV19",
+          "explicacion": "Está cerca (algo que no se ve), pero no es lo mismo: la sal yodada no era un secreto."
+        },
+        {
+          "t": "que es costoso y espectacular.",
+          "codigo": "RV5",
+          "origen": "o8",
+          "explicacion": "Repite palabras de la oración 8, pero es lo contrario: la oración 8 dice que la medida no necesita ser costosa ni espectacular."
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.extrapolacion",
+      "enunciado": "Si en vez de yodar la sal se hubiera pedido a cada familia que comprara yodo y lo agregara por su cuenta, según la lógica del texto,",
+      "alternativas": [
+        {
+          "t": "probablemente muchas personas habrían seguido sin recibir suficiente yodo.",
+          "correcta": true,
+          "evidencia": [
+            "o8"
+          ],
+          "explicacion": "Según la oración 8, la medida funcionó porque llegaba a todos sin que cada persona tuviera que acordarse. Si dependiera de cada familia, muchas no lo harían."
+        },
+        {
+          "t": "el bocio se habría vuelto igual de raro con el tiempo.",
+          "codigo": "RV12",
+          "explicacion": "Cambia la condición, pero deja igual la consecuencia: el texto dice que lo que hizo funcionar la medida es que no dependía de cada persona."
+        },
+        {
+          "t": "nadie en el Perú habría vuelto a consumir yodo nunca.",
+          "codigo": "RV11",
+          "explicacion": "Es una consecuencia exagerada: algunas familias sí lo agregarían; el texto solo permite decir que muchas no."
+        },
+        {
+          "t": "el Estado habría ahorrado el dinero de los controles a la sal.",
+          "codigo": "RV7",
+          "explicacion": "El texto no habla de ese ahorro; es una conclusión que va más allá de lo que dice."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-06",
+  "hechos": [
+    {
+      "afirmacion": "La falta de yodo causa bocio y puede dañar el desarrollo del cerebro en el embarazo y la infancia; los suelos de zonas de montaña suelen ser pobres en yodo.",
+      "fuente": "OMS, Unicef e ICCIDD (2007). Assessment of iodine deficiency disorders and monitoring their elimination."
+    },
+    {
+      "afirmacion": "En el Perú, la yodación de la sal redujo mucho el bocio endémico de la sierra y la selva.",
+      "fuente": "Pretell, E. A. y otros (2004). Elimination of iodine deficiency disorders from Peru through salt iodization. IDD Newsletter / Thyroid; Minsa, programa de eliminación de los desórdenes por deficiencia de yodo."
+    }
+  ],
+  "revision": null
+}
