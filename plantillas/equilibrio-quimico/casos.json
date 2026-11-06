@@ -1,0 +1,441 @@
+{
+  "plantilla": "equilibrio-quimico",
+  "unidades": "mol, L, mol/L, atm, K, J/mol",
+  "constantes": "R = 0,082 atm·L/(mol·K) en Kp = Kc·(RT)^Δn, con Δn solo de gases; R = 8,314 J/(mol·K) en van 't Hoff. Los sólidos y líquidos puros no entran en K.",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (final.moles.A); un número suelto, como 'valor'. 'sentido' es un texto: directa, inversa o equilibrio. El avance xi va en mol de la especie con coeficiente 1 (en 2 SO₂ + O₂, en mol de O₂). El grado es la fracción del reactivo limitante que reaccionó.",
+  "verificacion": "Recalculados el 6 de noviembre de 2026 por un subagente que no leyó el motor ni este archivo: en Python con fractions.Fraction y tablas de inicio, cambio y equilibrio resueltas como polinomio, con cada raíz comprobada de vuelta contra K. Los irracionales: el caso de la compresión del SO₃ es la única raíz real de 2x³ − 5x² + 8x − 1 = 0, de (1 + x)² = 2(1 − x)³, con Newton en Decimal de 40 dígitos; van 't Hoff con exponenciales en Decimal. Los casos de la escena (A ⇌ B y 2 X ⇌ Y) y los de H₂ + I₂, SO₂, N₂O₄ y el HI comprimido son los 'Casos de prueba propuestos' de docs/investigacion/equilibrio-acidos-electroquimica-ideas-erroneas.md.",
+  "tolerancia": 1e-09,
+  "casos": [
+    {
+      "nombre": "Tabla de equilibrio: H₂ + I₂ ⇌ 2 HI con 1 mol de cada reactivo en 1 L y Kc = 64; reacciona 4/5 mol (grado 80 %)",
+      "fn": "equilibrio",
+      "args": [
+        "H2(g) + I2(g) = 2 HI(g)",
+        {
+          "moles": {
+            "H2": 1,
+            "I2": 1
+          },
+          "V": 1,
+          "K": 64
+        }
+      ],
+      "espera": {
+        "xi": 0.8,
+        "conc.H2": 0.2,
+        "conc.I2": 0.2,
+        "conc.HI": 1.6,
+        "grado": 0.8,
+        "sentido": "directa"
+      }
+    },
+    {
+      "nombre": "Kc con concentraciones: 2 SO₂ + O₂ ⇌ 2 SO₃ en 2 L con 2, 1 y 2 mol da 2 (con moles daría 1)",
+      "fn": "constante",
+      "args": [
+        "2 SO2(g) + O2(g) = 2 SO3(g)",
+        {
+          "moles": {
+            "SO2": 2,
+            "O2": 1,
+            "SO3": 2
+          },
+          "V": 2
+        }
+      ],
+      "espera": {
+        "valor": 2,
+        "conMoles": 1,
+        "deltaN": -1
+      }
+    },
+    {
+      "nombre": "Comprimir de 2 L a 1 L con Δn ≠ 0: Q = 1 < Kc = 2, se forma SO₃ (raíz de 2x³ − 5x² + 8x − 1 = 0)",
+      "fn": "perturbar",
+      "args": [
+        "2 SO2(g) + O2(g) = 2 SO3(g)",
+        {
+          "moles": {
+            "SO2": 2,
+            "O2": 1,
+            "SO3": 2
+          },
+          "V": 2,
+          "K": 2
+        },
+        {
+          "V": 1
+        }
+      ],
+      "espera": {
+        "instante.Q": 1,
+        "sentido": "directa",
+        "final.xi": 0.135918399333808,
+        "final.moles.SO2": 1.72816320133238,
+        "final.moles.O2": 0.864081600666192,
+        "final.moles.SO3": 2.27183679866762
+      }
+    },
+    {
+      "nombre": "Comprimir con Δn = 0: H₂ + I₂ ⇌ 2 HI de 1 L a 0,5 L; las concentraciones se duplican y Q = 64 = Kc",
+      "fn": "perturbar",
+      "args": [
+        "H2(g) + I2(g) = 2 HI(g)",
+        {
+          "moles": {
+            "H2": 0.2,
+            "I2": 0.2,
+            "HI": 1.6
+          },
+          "V": 1,
+          "K": 64
+        },
+        {
+          "V": 0.5
+        }
+      ],
+      "espera": {
+        "instante.conc.H2": 0.4,
+        "instante.conc.HI": 3.2,
+        "instante.Q": 64,
+        "sentido": "equilibrio"
+      }
+    },
+    {
+      "nombre": "Escena: A ⇌ B con Kc = 4; a 2 A y 8 B se agregan 10 A; Q = 2/3, pasan 8 y quedan 4 A y 16 B",
+      "fn": "perturbar",
+      "args": [
+        "A(g) = B(g)",
+        {
+          "moles": {
+            "A": 2,
+            "B": 8
+          },
+          "V": 1,
+          "K": 4
+        },
+        {
+          "agregar": {
+            "A": 10
+          }
+        }
+      ],
+      "espera": {
+        "instante.Q": 0.6666666666666666,
+        "sentido": "directa",
+        "final.xi": 8,
+        "final.moles.A": 4,
+        "final.moles.B": 16
+      }
+    },
+    {
+      "nombre": "Kp desde Kc: N₂O₄ ⇌ 2 NO₂, Kc = 1/2 a 500 K; RT = 41 y Kp = 20,5 (con exponente 2: 840,5; dividiendo: 1/82)",
+      "fn": "kp",
+      "args": [
+        "N2O4(g) = 2 NO2(g)",
+        0.5,
+        500
+      ],
+      "espera": {
+        "RT": 41,
+        "deltaN": 1,
+        "valor": 20.5,
+        "soloProductos": 840.5,
+        "dividido": 0.012195121951219513
+      }
+    },
+    {
+      "nombre": "Kc desde Kp: 2 SO₂ + O₂ ⇌ 2 SO₃, Kp = 0,05 a 400 K da Kc = 1,64",
+      "fn": "kc",
+      "args": [
+        "2 SO2(g) + O2(g) = 2 SO3(g)",
+        0.05,
+        400
+      ],
+      "espera": {
+        "valor": 1.64,
+        "deltaN": -1
+      }
+    },
+    {
+      "nombre": "Equilibrio heterogéneo: CaCO₃(s) ⇌ CaO(s) + CO₂(g); Δn = 1 y Kp = Kc·RT = 1,64 a 1000 K",
+      "fn": "kp",
+      "args": [
+        "CaCO3(s) = CaO(s) + CO2(g)",
+        0.02,
+        1000
+      ],
+      "espera": {
+        "deltaN": 1,
+        "valor": 1.64
+      },
+      "tambien": [
+        {
+          "fn": "equilibrio",
+          "args": [
+            "CaCO3(s) = CaO(s) + CO2(g)",
+            {
+              "moles": {
+                "CaCO3": 1
+              },
+              "V": 10,
+              "K": 0.02
+            }
+          ],
+          "espera": {
+            "moles.CO2": 0.2,
+            "conc.CO2": 0.02,
+            "grado": 0.2
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "Grado de disociación: 1 mol de PCl₅ en 1 L con Kc = 1/2 se disocia a la mitad",
+      "fn": "equilibrio",
+      "args": [
+        "PCl5(g) = PCl3(g) + Cl2(g)",
+        {
+          "moles": {
+            "PCl5": 1
+          },
+          "V": 1,
+          "K": 0.5
+        }
+      ],
+      "espera": {
+        "grado": 0.5,
+        "conc.PCl5": 0.5,
+        "conc.PCl3": 0.5,
+        "conc.Cl2": 0.5
+      }
+    },
+    {
+      "nombre": "A presión total fija: N₂O₄ ⇌ 2 NO₂ a 1 atm con Kp = 1/2; α = 1/3 y presiones parciales de 1/2 atm",
+      "fn": "equilibrioP",
+      "args": [
+        "N2O4(g) = 2 NO2(g)",
+        {
+          "moles": {
+            "N2O4": 1
+          },
+          "P": 1,
+          "K": 0.5
+        }
+      ],
+      "espera": {
+        "grado": 0.3333333333333333,
+        "nTotal": 1.3333333333333333,
+        "fracciones.NO2": 0.5,
+        "presiones.N2O4": 0.5,
+        "presiones.NO2": 0.5
+      }
+    },
+    {
+      "nombre": "Operar con ecuaciones: invertir da 1/K; coeficientes por 1/2 dan √K; sumar ecuaciones multiplica las K",
+      "fn": "invertir",
+      "args": [
+        64
+      ],
+      "espera": {
+        "valor": 0.015625
+      },
+      "tambien": [
+        {
+          "fn": "escalar",
+          "args": [
+            64,
+            0.5
+          ],
+          "espera": {
+            "valor": 8
+          }
+        },
+        {
+          "fn": "sumar",
+          "args": [
+            [
+              2,
+              3
+            ]
+          ],
+          "espera": {
+            "valor": 6
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "van 't Hoff: K = 4 a 300 K; al calentar a 400 K baja a 3/2 si libera calor y sube a 32/3 si lo absorbe",
+      "fn": "vantHoff",
+      "args": [
+        4,
+        300,
+        -9785.537291447388,
+        400
+      ],
+      "espera": {
+        "valor": 1.5
+      },
+      "tambien": [
+        {
+          "args": [
+            4,
+            300,
+            9785.537291447388,
+            400
+          ],
+          "espera": {
+            "valor": 10.666666666666666
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "Escena: 2 X ⇌ Y con Kc = 1/8, 8 X y 8 Y; al pasar a 0,5 L, Q = 1/16 y quedan 6 X y 9 Y",
+      "fn": "perturbar",
+      "args": [
+        "2 X(g) = Y(g)",
+        {
+          "moles": {
+            "X": 8,
+            "Y": 8
+          },
+          "V": 1,
+          "K": 0.125
+        },
+        {
+          "V": 0.5
+        }
+      ],
+      "espera": {
+        "instante.Q": 0.0625,
+        "sentido": "directa",
+        "final.moles.X": 6,
+        "final.moles.Y": 9
+      }
+    },
+    {
+      "nombre": "Quitar producto: de 4 A y 16 B se sacan 10 B; Q = 3/2 < 4 y quedan 2 A y 8 B",
+      "fn": "perturbar",
+      "args": [
+        "A(g) = B(g)",
+        {
+          "moles": {
+            "A": 4,
+            "B": 16
+          },
+          "V": 1,
+          "K": 4
+        },
+        {
+          "quitar": {
+            "B": 10
+          }
+        }
+      ],
+      "espera": {
+        "instante.Q": 1.5,
+        "sentido": "directa",
+        "final.moles.A": 2,
+        "final.moles.B": 8
+      }
+    },
+    {
+      "nombre": "Agregar producto: a 4 A y 16 B se agregan 10 B; Q = 13/2 > 4 y quedan 6 A y 24 B",
+      "fn": "perturbar",
+      "args": [
+        "A(g) = B(g)",
+        {
+          "moles": {
+            "A": 4,
+            "B": 16
+          },
+          "V": 1,
+          "K": 4
+        },
+        {
+          "agregar": {
+            "B": 10
+          }
+        }
+      ],
+      "espera": {
+        "instante.Q": 6.5,
+        "sentido": "inversa",
+        "final.xi": -2,
+        "final.moles.A": 6,
+        "final.moles.B": 24
+      }
+    },
+    {
+      "nombre": "Agregar 5 A y 20 B a la vez: Q = 36/9 = 4 = K, no se corre (la regla memorizada se contradice)",
+      "fn": "perturbar",
+      "args": [
+        "A(g) = B(g)",
+        {
+          "moles": {
+            "A": 4,
+            "B": 16
+          },
+          "V": 1,
+          "K": 4
+        },
+        {
+          "agregar": {
+            "A": 5,
+            "B": 20
+          }
+        }
+      ],
+      "espera": {
+        "instante.Q": 4,
+        "sentido": "equilibrio"
+      }
+    },
+    {
+      "nombre": "A ⇌ B a la mitad del volumen: concentraciones 8 y 32, Q = 4 = K, no se corre",
+      "fn": "perturbar",
+      "args": [
+        "A(g) = B(g)",
+        {
+          "moles": {
+            "A": 4,
+            "B": 16
+          },
+          "V": 1,
+          "K": 4
+        },
+        {
+          "V": 0.5
+        }
+      ],
+      "espera": {
+        "instante.conc.A": 8,
+        "instante.conc.B": 32,
+        "instante.Q": 4,
+        "sentido": "equilibrio"
+      }
+    },
+    {
+      "nombre": "Descomposición: 2 HI ⇌ H₂ + I₂ desde 2 mol de HI en 1 L con Kc = 1/64; se descompone el 20 %",
+      "fn": "equilibrio",
+      "args": [
+        "2 HI(g) = H2(g) + I2(g)",
+        {
+          "moles": {
+            "HI": 2
+          },
+          "V": 1,
+          "K": 0.015625
+        }
+      ],
+      "espera": {
+        "moles.HI": 1.6,
+        "moles.H2": 0.2,
+        "moles.I2": 0.2,
+        "grado": 0.2
+      }
+    }
+  ]
+}

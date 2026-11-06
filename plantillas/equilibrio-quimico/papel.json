@@ -1,0 +1,427 @@
+{
+  "titulo": "Equilibrio químico: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Kc va con concentraciones en mol/L, no con moles: divide entre el volumen antes de reemplazar. Cada concentración se eleva a su coeficiente. Los sólidos y los líquidos puros no entran en K. Kp = Kc·(RT)^Δn, con R = 0,082 atm·L/(mol·K), la temperatura en kelvin y Δn = moles de gas de los productos − moles de gas de los reactivos. Para saber hacia dónde avanza una mezcla, compara el cociente Q con K: si Q < K avanza la directa; si Q > K, la inversa. Solo la temperatura cambia el valor de K.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "En un recipiente de 2 L se establece el equilibrio N₂(g) + 3 H₂(g) ⇌ 2 NH₃(g). En el equilibrio hay 2 mol de N₂, 4 mol de H₂ y 4 mol de NH₃. Calcula Kc.",
+      "respuesta": "Kc = 0,5.",
+      "pasos": [
+        "Primero las concentraciones: [N₂] = 2/2 = 1 M, [H₂] = 4/2 = 2 M y [NH₃] = 4/2 = 2 M.",
+        "Cada concentración va elevada a su coeficiente: Kc = [NH₃]² / ([N₂]·[H₂]³) = 2² / (1 · 2³) = 4/8 = 0,5.",
+        "Si usas los moles directamente sale 4²/(2 · 4³) = 1/8: está mal, porque aquí los moles de gas cambian (Δn = −2) y el volumen no se cancela."
+      ],
+      "verificar": [
+        {
+          "fn": "constante",
+          "args": [
+            "N2(g) + 3 H2(g) = 2 NH3(g)",
+            {
+              "moles": {
+                "N2": 2,
+                "H2": 4,
+                "NH3": 4
+              },
+              "V": 2
+            }
+          ],
+          "espera": {
+            "valor": 0.5,
+            "conMoles": 0.125
+          }
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "En un recipiente de 5 L, a 1000 K, se establece el equilibrio C(s) + CO₂(g) ⇌ 2 CO(g). En el equilibrio hay 10 g de carbono, 1 mol de CO₂ y 2 mol de CO. a) Calcula Kc. b) Calcula Kp.",
+      "respuesta": "a) Kc = 0,8. b) Kp = 65,6.",
+      "pasos": [
+        "El carbono es un sólido: no entra en la expresión de K. Los 10 g son un dato que sobra.",
+        "[CO] = 2/5 = 0,4 M y [CO₂] = 1/5 = 0,2 M. Kc = [CO]² / [CO₂] = 0,16/0,2 = 0,8.",
+        "Δn cuenta solo los gases: 2 − 1 = 1 (el carbono no cuenta). RT = 0,082 · 1000 = 82.",
+        "Kp = Kc·(RT)^Δn = 0,8 · 82 = 65,6."
+      ],
+      "verificar": [
+        {
+          "fn": "constante",
+          "args": [
+            "C(s) + CO2(g) = 2 CO(g)",
+            {
+              "moles": {
+                "CO2": 1,
+                "CO": 2
+              },
+              "V": 5
+            }
+          ],
+          "espera": {
+            "valor": 0.8,
+            "deltaN": 1
+          }
+        },
+        {
+          "fn": "kp",
+          "args": [
+            "C(s) + CO2(g) = 2 CO(g)",
+            0.8,
+            1000
+          ],
+          "espera": {
+            "valor": 65.6
+          }
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "En un recipiente de 1 L se colocan 1 mol de CO y 1 mol de vapor de agua. Se establece el equilibrio CO(g) + H₂O(g) ⇌ CO₂(g) + H₂(g), con Kc = 4. ¿Cuántos moles de cada sustancia hay en el equilibrio? ¿Cuál es el grado de reacción?",
+      "respuesta": "1/3 mol de CO y de H₂O; 2/3 mol de CO₂ y de H₂. El grado es 2/3 (cerca de 67 %).",
+      "pasos": [
+        "Tabla: reacciona x mol de CO y x de H₂O, y se forman x de CO₂ y x de H₂. Quedan 1 − x, 1 − x, x y x.",
+        "Kc = x² / (1 − x)² = 4. Saca raíz a los dos lados: x/(1 − x) = 2, así que x = 2 − 2x y x = 2/3.",
+        "Quedan 1/3 mol de CO y de H₂O, y 2/3 mol de CO₂ y de H₂. Comprueba: (2/3)² / (1/3)² = 4.",
+        "El grado es lo que reaccionó sobre lo que había: (2/3)/1 = 2/3. No es 100 %: en el equilibrio quedan reactivos."
+      ],
+      "verificar": [
+        {
+          "fn": "equilibrio",
+          "args": [
+            "CO(g) + H2O(g) = CO2(g) + H2(g)",
+            {
+              "moles": {
+                "CO": 1,
+                "H2O": 1
+              },
+              "V": 1,
+              "K": 4
+            }
+          ],
+          "espera": {
+            "moles.CO": 0.3333333333333333,
+            "moles.CO2": 0.6666666666666666,
+            "grado": 0.6666666666666666
+          }
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "En un recipiente de 2 L se colocan 3 mol de PCl₅, que se disocia según PCl₅(g) ⇌ PCl₃(g) + Cl₂(g). A esa temperatura Kc = 0,25. Halla el grado de disociación y las concentraciones en el equilibrio.",
+      "respuesta": "α = 1/3 (cerca de 33 %). [PCl₅] = 1 M; [PCl₃] = [Cl₂] = 0,5 M.",
+      "pasos": [
+        "Concentración inicial: 3/2 = 1,5 M. Si se disocia una fracción α, quedan 1,5(1 − α) de PCl₅ y se forman 1,5α de PCl₃ y 1,5α de Cl₂.",
+        "Kc = (1,5α)² / (1,5(1 − α)) = 1,5α²/(1 − α) = 0,25. Queda 6α² + α − 1 = 0, es decir (3α − 1)(2α + 1) = 0, y α = 1/3.",
+        "Concentraciones: [PCl₅] = 1,5 · 2/3 = 1 M; [PCl₃] = [Cl₂] = 1,5 · 1/3 = 0,5 M. Comprueba: 0,5 · 0,5 / 1 = 0,25.",
+        "Si trabajas con 3 mol en vez de 1,5 M, la ecuación cambia y α sale mal: K va con concentraciones."
+      ],
+      "verificar": [
+        {
+          "fn": "equilibrio",
+          "args": [
+            "PCl5(g) = PCl3(g) + Cl2(g)",
+            {
+              "moles": {
+                "PCl5": 3
+              },
+              "V": 2,
+              "K": 0.25
+            }
+          ],
+          "espera": {
+            "grado": 0.3333333333333333,
+            "conc.PCl5": 1,
+            "conc.PCl3": 0.5
+          }
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Para N₂(g) + 3 H₂(g) ⇌ 2 NH₃(g), Kc = 0,5 a cierta temperatura. En un recipiente de 1 L hay 1 mol de N₂, 1 mol de H₂ y 2 mol de NH₃. ¿Está en equilibrio? Si no, ¿hacia dónde avanza?",
+      "respuesta": "No está en equilibrio: Q = 4 > Kc = 0,5, así que avanza la reacción inversa (se descompone NH₃).",
+      "pasos": [
+        "Calcula el cociente de reacción con las concentraciones de ese momento: Q = [NH₃]² / ([N₂]·[H₂]³) = 2² / (1 · 1³) = 4.",
+        "Compara: Q = 4 es mayor que Kc = 0,5. Hay demasiado producto para el equilibrio.",
+        "La mezcla avanza hacia los reactivos: parte del NH₃ se descompone en N₂ y H₂ hasta que Q baje a 0,5.",
+        "Las dos reacciones siguen ocurriendo; lo que pasa es que la inversa va más rápido que la directa hasta llegar al equilibrio."
+      ],
+      "verificar": [
+        {
+          "fn": "constante",
+          "args": [
+            "N2(g) + 3 H2(g) = 2 NH3(g)",
+            {
+              "moles": {
+                "N2": 1,
+                "H2": 1,
+                "NH3": 2
+              },
+              "V": 1
+            }
+          ],
+          "espera": {
+            "valor": 4
+          }
+        },
+        {
+          "fn": "sentido",
+          "args": [
+            4,
+            0.5
+          ],
+          "espera": {
+            "valor": "inversa"
+          }
+        }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "En un recipiente de 2 L está en equilibrio 2 SO₂(g) + O₂(g) ⇌ 2 SO₃(g), con 2 mol de SO₂, 1 mol de O₂ y 2 mol de SO₃ (Kc = 2). La reacción directa libera calor. ¿Hacia dónde se desplaza el equilibrio si: a) se reduce el volumen a 1 L; b) se agrega helio sin cambiar el volumen; c) se retira 1 mol de SO₃; d) se agrega un catalizador; e) se calienta?",
+      "respuesta": "a) Hacia el SO₃. b) No se desplaza. c) Hacia el SO₃. d) No se desplaza. e) Hacia el SO₂ y el O₂ (K baja).",
+      "pasos": [
+        "a) A 1 L las concentraciones se duplican: Q = 2²/(2² · 1) = 1, menor que 2. Avanza la directa, hacia el lado con menos moles de gas (3 → 2).",
+        "b) El helio no reacciona y, con el volumen fijo, no cambia ninguna concentración: Q sigue igual a K. Que suba la presión total no basta.",
+        "c) Con 1 mol de SO₃: Q = 0,5²/(1² · 0,5) = 0,5, menor que 2. Avanza la directa y se repone parte del SO₃.",
+        "d) El catalizador acelera por igual las dos reacciones: se llega antes al mismo equilibrio.",
+        "e) Calentar favorece el sentido que absorbe calor, que aquí es el inverso. Es el único cambio que mueve K: K baja."
+      ],
+      "verificar": [
+        {
+          "fn": "perturbar",
+          "args": [
+            "2 SO2(g) + O2(g) = 2 SO3(g)",
+            {
+              "moles": {
+                "SO2": 2,
+                "O2": 1,
+                "SO3": 2
+              },
+              "V": 2,
+              "K": 2
+            },
+            {
+              "V": 1
+            }
+          ],
+          "espera": {
+            "instante.Q": 1,
+            "sentido": "directa"
+          }
+        },
+        {
+          "fn": "perturbar",
+          "args": [
+            "2 SO2(g) + O2(g) = 2 SO3(g)",
+            {
+              "moles": {
+                "SO2": 2,
+                "O2": 1,
+                "SO3": 2
+              },
+              "V": 2,
+              "K": 2
+            },
+            {
+              "inerte": 1
+            }
+          ],
+          "espera": {
+            "instante.Q": 2,
+            "sentido": "equilibrio"
+          }
+        },
+        {
+          "fn": "perturbar",
+          "args": [
+            "2 SO2(g) + O2(g) = 2 SO3(g)",
+            {
+              "moles": {
+                "SO2": 2,
+                "O2": 1,
+                "SO3": 2
+              },
+              "V": 2,
+              "K": 2
+            },
+            {
+              "quitar": {
+                "SO3": 1
+              }
+            }
+          ],
+          "espera": {
+            "instante.Q": 0.5,
+            "sentido": "directa"
+          }
+        },
+        {
+          "fn": "vantHoff",
+          "args": [
+            2,
+            500,
+            -100000,
+            600
+          ],
+          "espera": {
+            "valor": 0.0362921287849265
+          }
+        }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "El N₂O₄ se disocia según N₂O₄(g) ⇌ 2 NO₂(g). A cierta temperatura, Kp = 1. a) Si la presión total en el equilibrio es 0,75 atm, ¿cuál es el grado de disociación? b) A la misma temperatura, ¿cuál es el grado de disociación si la presión total es 3 atm?",
+      "respuesta": "a) α = 0,5 (50 %). b) α = 1/√13, cerca de 0,28 (28 %): al comprimir se disocia menos.",
+      "pasos": [
+        "Parte de 1 mol de N₂O₄. Quedan 1 − α de N₂O₄ y se forman 2α de NO₂: en total 1 + α mol de gas.",
+        "Presiones parciales: P(NO₂) = 2α/(1 + α) · P y P(N₂O₄) = (1 − α)/(1 + α) · P. Entonces Kp = 4α²P / (1 − α²).",
+        "a) Con P = 0,75: 4α² · 0,75 / (1 − α²) = 1, así que 3α² = 1 − α² y α² = 1/4: α = 0,5.",
+        "b) Con P = 3: 12α² = 1 − α², α² = 1/13 y α = 1/√13 ≈ 0,28. Al comprimir, el equilibrio va hacia el lado con menos moles de gas (el N₂O₄), y Kp no cambia."
+      ],
+      "verificar": [
+        {
+          "fn": "equilibrioP",
+          "args": [
+            "N2O4(g) = 2 NO2(g)",
+            {
+              "moles": {
+                "N2O4": 1
+              },
+              "P": 0.75,
+              "K": 1
+            }
+          ],
+          "espera": {
+            "grado": 0.5
+          }
+        },
+        {
+          "fn": "equilibrioP",
+          "args": [
+            "N2O4(g) = 2 NO2(g)",
+            {
+              "moles": {
+                "N2O4": 1
+              },
+              "P": 3,
+              "K": 1
+            }
+          ],
+          "espera": {
+            "grado": 0.277350098112615
+          }
+        }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "En un recipiente de 1 L están en equilibrio 1 mol de H₂, 1 mol de I₂ y 2 mol de HI, según H₂(g) + I₂(g) ⇌ 2 HI(g). Se agregan 4 mol de H₂. ¿Cuántos moles de cada sustancia hay cuando se restablece el equilibrio?",
+      "respuesta": "4,5 mol de H₂, 0,5 mol de I₂ y 3 mol de HI.",
+      "pasos": [
+        "Kc con el equilibrio de partida: 2² / (1 · 1) = 4.",
+        "Justo después de agregar: Q = 2² / (5 · 1) = 0,8, menor que 4. Avanza la directa.",
+        "Tabla: reaccionan x de H₂ y x de I₂, y se forman 2x de HI. (2 + 2x)² / ((5 − x)(1 − x)) = 4. Simplificando, (1 + x)² = (5 − x)(1 − x), es decir 1 + 2x = 5 − 6x, y x = 0,5.",
+        "Quedan 4,5 mol de H₂, 0,5 de I₂ y 3 de HI. No se gasta todo el H₂ agregado: solo 0,5 de los 4 mol. Comprueba: 3² / (4,5 · 0,5) = 4."
+      ],
+      "verificar": [
+        {
+          "fn": "constante",
+          "args": [
+            "H2(g) + I2(g) = 2 HI(g)",
+            {
+              "moles": {
+                "H2": 1,
+                "I2": 1,
+                "HI": 2
+              },
+              "V": 1
+            }
+          ],
+          "espera": {
+            "valor": 4
+          }
+        },
+        {
+          "fn": "perturbar",
+          "args": [
+            "H2(g) + I2(g) = 2 HI(g)",
+            {
+              "moles": {
+                "H2": 1,
+                "I2": 1,
+                "HI": 2
+              },
+              "V": 1,
+              "K": 4
+            },
+            {
+              "agregar": {
+                "H2": 4
+              }
+            }
+          ],
+          "espera": {
+            "instante.Q": 0.8,
+            "sentido": "directa",
+            "final.xi": 0.5,
+            "final.moles.H2": 4.5,
+            "final.moles.I2": 0.5,
+            "final.moles.HI": 3
+          }
+        }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "básico",
+      "enunciado": "Para 2 SO₂(g) + O₂(g) ⇌ 2 SO₃(g), Kc = 4 a cierta temperatura. A la misma temperatura, ¿cuánto vale K para: a) SO₃(g) ⇌ SO₂(g) + ½ O₂(g); b) 4 SO₂(g) + 2 O₂(g) ⇌ 4 SO₃(g)?",
+      "respuesta": "a) 0,5. b) 16.",
+      "pasos": [
+        "a) La ecuación está invertida y con los coeficientes a la mitad. Invertir da 1/K = 1/4; dividir los coeficientes entre 2 da la raíz cuadrada: √(1/4) = 0,5.",
+        "b) Los coeficientes se multiplican por 2: K se eleva al cuadrado, 4² = 16. No se multiplica por 2 (no da 8).",
+        "Compruébalo con la expresión: en b) cada concentración queda con el doble de exponente, así que la expresión completa queda al cuadrado."
+      ],
+      "verificar": [
+        {
+          "fn": "escalar",
+          "args": [
+            0.25,
+            0.5
+          ],
+          "espera": {
+            "valor": 0.5
+          }
+        },
+        {
+          "fn": "invertir",
+          "args": [
+            4
+          ],
+          "espera": {
+            "valor": 0.25
+          }
+        },
+        {
+          "fn": "escalar",
+          "args": [
+            4,
+            2
+          ],
+          "espera": {
+            "valor": 16
+          }
+        }
+      ]
+    }
+  ]
+}
