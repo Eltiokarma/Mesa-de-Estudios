@@ -9,8 +9,10 @@
    Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
    altura h rojo, radio r turquesa, apotema ap verde bosque, generatriz g oliva, área de la base A_B naranja
    (las caras de las bases), área lateral A_L azul (las caras laterales y la superficie curva) y volumen V fucsia
-   (los cubitos, las pirámides de la caja y el agua). Los lados de la base, los ángulos y los conteos van en tinta;
-   la pintura del cubo, en gris.
+   (los cubitos, las pirámides de la caja y el agua). El radio mayor R del vaso va en mostaza: solo sale en el vaso,
+   a ΔE00 ≥ 32 de lo que sale con él (V, r, h, tinta, gris) y AA (5,0:1 claro, 9,9:1 oscuro); queda a ΔE00 ≈ 11 de la g
+   oliva, que nunca sale junto a él. Los lados de la base, los ángulos, los conteos y los largos que
+   son 2πr (la etiqueta, el arco) van en tinta; la pintura del cubo, en gris, y los cubitos sin pintura, en tinta.
    Elegidos con CIEDE2000: ΔE00 ≥ 21,1 entre los siete, en claro y en oscuro, y ≥ 25,9 entre los que salen
    en el mismo dibujo; contraste AA (≥ 5:1) sobre el papel y la tarjeta en los dos temas. La h roja está a ΔE00 ≈ 5
    del rojo de los avisos: el aviso siempre va con texto. */
@@ -19,7 +21,7 @@
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
   --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
   --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
-  --c-h:#c0364a; --c-r:#0f766e; --c-ap:#17451e; --c-g:#5f6f00; --c-AB:#a05200; --c-AL:#1f5fbf; --c-V:#a10fbf; --gris:#716579;
+  --c-h:#c0364a; --c-r:#0f766e; --c-ap:#17451e; --c-g:#5f6f00; --c-AB:#a05200; --c-AL:#1f5fbf; --c-V:#a10fbf; --c-R:#7d6a00; --gris:#716579;
   --relleno:.24;
   --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
   --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
@@ -29,13 +31,13 @@
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-h:#f17384; --c-r:#5ed9c8; --c-ap:#40bf59; --c-g:#c8dc3c; --c-AB:#f0a04a; --c-AL:#7cb0ff; --c-V:#cf6bfa; --gris:#a99cb8;
+  --c-h:#f17384; --c-r:#5ed9c8; --c-ap:#40bf59; --c-g:#c8dc3c; --c-AB:#f0a04a; --c-AL:#7cb0ff; --c-V:#cf6bfa; --c-R:#e3c84a; --gris:#a99cb8;
   --relleno:.28; color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-h:#f17384; --c-r:#5ed9c8; --c-ap:#40bf59; --c-g:#c8dc3c; --c-AB:#f0a04a; --c-AL:#7cb0ff; --c-V:#cf6bfa; --gris:#a99cb8;
+  --c-h:#f17384; --c-r:#5ed9c8; --c-ap:#40bf59; --c-g:#c8dc3c; --c-AB:#f0a04a; --c-AL:#7cb0ff; --c-V:#cf6bfa; --c-R:#e3c84a; --gris:#a99cb8;
   --relleno:.28; color-scheme:dark }
 
 *{box-sizing:border-box}
@@ -70,6 +72,7 @@ canvas:active{cursor:grabbing}
 .legend span{display:inline-flex; align-items:center; gap:6px}
 .legend i{width:12px; height:12px; border-radius:3px; display:inline-block; border:2px solid; opacity:.9}
 .legend i.linea{width:16px; height:0; border-width:3px 0 0; border-radius:0}
+.legend i.trazos{width:16px; height:0; border-width:2px 0 0; border-style:dashed; border-radius:0; background:none!important}
 .giro{margin:0; padding:0 8px; font-size:.8rem; color:var(--muted)}
 
 /* El control para abrir y cerrar el sólido */
@@ -102,6 +105,7 @@ canvas:active{cursor:grabbing}
 .v-AB{color:var(--c-AB); background:color-mix(in srgb, var(--c-AB) 8%, transparent)}
 .v-AL{color:var(--c-AL); background:color-mix(in srgb, var(--c-AL) 8%, transparent)}
 .v-V{color:var(--c-V); background:color-mix(in srgb, var(--c-V) 8%, transparent)}
+.v-R{color:var(--c-R); background:color-mix(in srgb, var(--c-R) 8%, transparent)}
 .v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
 sub{font-size:.7em}
 
@@ -284,7 +288,7 @@ const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `
 function colores(){
   const g = n => css(n);
   return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'), warn:g('--warn'),
-    h:g('--c-h'), r:g('--c-r'), ap:g('--c-ap'), g:g('--c-g'), AB:g('--c-AB'), AL:g('--c-AL'), V:g('--c-V'), gris:g('--gris'),
+    h:g('--c-h'), r:g('--c-r'), ap:g('--c-ap'), g:g('--c-g'), AB:g('--c-AB'), AL:g('--c-AL'), V:g('--c-V'), R:g('--c-R'), gris:g('--gris'),
     relleno:Number(g('--relleno')) || .24, mono:g('--mono'), font:g('--font') };
 }
 // Mezcla dos colores #rrggbb: t del primero y 1 − t del segundo (rellenos opacos para los cubitos).
@@ -585,16 +589,16 @@ const DIBUJOS = {
         const lat = D.caras.filter(x => x.rol === 'lateral').flatMap(x => x.puntos), top = Math.max(...lat.map(p => p[2]));
         const xs = lat.map(p => p[0]), y = lat[0][1];
         const al = (f - .85)/.15;
-        medida(ctx, c, P, [Math.min(...xs), y, top], [Math.max(...xs), y, top], c.r, cf.et.largo, { alfa:al*aM, grosor:fuerte('r'), dy:-14 });
+        medida(ctx, c, P, [Math.min(...xs), y, top], [Math.max(...xs), y, top], c.ink, cf.et.largo, { alfa:al*aM, grosor:2.4, dy:-14 });
       }
       if (m === 'arco' && f > .85){
         const al = (f - .85)/.15, lat = D.caras.filter(x => x.rol === 'lateral');
-        ctx.save(); ctx.globalAlpha = al*aM; ctx.strokeStyle = c.r; ctx.lineWidth = fuerte('r'); ctx.lineCap = 'round'; ctx.beginPath();
+        ctx.save(); ctx.globalAlpha = al*aM; ctx.strokeStyle = c.ink; ctx.lineWidth = 2.4; ctx.lineCap = 'round'; ctx.beginPath();
         // el arco: los bordes de abajo de las tiras, en orden de la cadena
         const n = lat.length, k = Math.floor(n/2);
         for (let j = 0; j < n; j++){ const t = lat[(k + 1 + j) % n].puntos; const p = P(t[0]), q = P(t[1]); if (!j) ctx.moveTo(p[0], p[1]); ctx.lineTo(q[0], q[1]); }
         ctx.stroke(); ctx.restore();
-        if (cf.et.arco){ const t = lat[k].puntos, p = P(t[1]); ctx.save(); ctx.globalAlpha = al*aM; rotulo(ctx, c, p[0] + 10, p[1] - 4, cf.et.arco, c.r, 'left', 800, 13); ctx.restore(); }
+        if (cf.et.arco){ const t = lat[k].puntos, p = P(t[1]); ctx.save(); ctx.globalAlpha = al*aM; rotulo(ctx, c, p[0] + 10, p[1] - 4, cf.et.arco, c.ink, 'left', 800, 13); ctx.restore(); }
         if (cf.et.angulo){ const p = P(M.vertice.p); ctx.save(); ctx.globalAlpha = al*aM; rotulo(ctx, c, p[0], p[1] - 16, cf.et.angulo, c.ink, 'center', 800, 13); ctx.restore(); }
       }
     }
@@ -633,12 +637,13 @@ const DIBUJOS = {
     cubos.sort((p, q) => UT.dot(p.o, V.v) - UT.dot(q.o, V.v));
     for (const q of cubos){
       const dentro = q.caras === 0;
-      const col = dentro ? c.V : c.gris, k = dentro && E.hl === 'V' ? 1.3 : 1;
+      const col = dentro ? c.ink : c.gris, k = 1;
       ctx.save(); if (!dentro) ctx.globalAlpha = 1 - .72*sep;
-      cubito(ctx, c, P, q.o, [mezcla(col, c.paper, .42*k), mezcla(col, c.paper, .3*k), mezcla(col, c.paper, .18*k)]);
+      const t = dentro ? [.72, .58, .44] : [.42, .3, .18];
+      cubito(ctx, c, P, q.o, t.map(x => mezcla(col, c.paper, x*k)));
       ctx.restore();
     }
-    if (sep > .8){ const p = P([0, -n/2, n + .8]); ctx.save(); ctx.globalAlpha = (sep - .8)/.2; rotulo(ctx, c, p[0], 14, `adentro: ${n - 2} × ${n - 2} × ${n - 2}`, c.V, 'center', 800, 13); ctx.restore(); }
+    if (sep > .8){ const p = P([0, -n/2, n + .8]); ctx.save(); ctx.globalAlpha = (sep - .8)/.2; rotulo(ctx, c, p[0], 14, `adentro: ${n - 2} × ${n - 2} × ${n - 2}`, c.ink, 'center', 800, 13); ctx.restore(); }
   },
 
   tres(ctx, c, E){
@@ -722,18 +727,19 @@ const DIBUJOS = {
       ctx.beginPath(); if (parte === 'atras') ctx.ellipse(o[0], o[1], rho*s, rho*s*se, 0, Math.PI, 2*Math.PI); else if (parte === 'frente') ctx.ellipse(o[0], o[1], rho*s, rho*s*se, 0, 0, Math.PI); else ctx.ellipse(o[0], o[1], rho*s, rho*s*se, 0, 0, 2*Math.PI); ctx.stroke(); ctx.restore(); };
     // el tronco (lo que queda: el vaso)
     const b0 = P([0, 0, 0]), b1 = P([0, 0, hc]);
-    ctx.save(); ctx.globalAlpha = (E.prog.lift > 0 ? .3 : .16)*(E.hl === 'V' ? 1.4 : 1); ctx.fillStyle = c.V; ctx.beginPath(); ctx.ellipse(b0[0], b0[1], R*s, R*s*se, 0, 0, Math.PI); ctx.lineTo(b1[0] - rc*s, b1[1]); ctx.ellipse(b1[0], b1[1], rc*s, rc*s*se, 0, Math.PI, 0, true); ctx.closePath(); ctx.fill(); ctx.restore();
-    elipse(0, R, 'atras', c.ink, true); elipse(0, R, 'frente', c.ink); elipse(hc, rc, E.prog.lift > 0 || cf.corte ? 'todo' : 'frente', c.ink, false);
-    if (!(E.prog.lift > 0) && !cf.corte) elipse(hc, rc, 'atras', c.ink, true);
+    ctx.save(); ctx.globalAlpha = .22*(E.hl === 'V' ? 1.4 : 1); ctx.fillStyle = c.V; ctx.beginPath(); ctx.ellipse(b0[0], b0[1], R*s, R*s*se, 0, 0, Math.PI); ctx.lineTo(b1[0] - rc*s, b1[1]); ctx.ellipse(b1[0], b1[1], rc*s, rc*s*se, 0, Math.PI, 0, true); ctx.closePath(); ctx.fill(); ctx.restore();
+    elipse(0, R, 'atras', c.ink, true); elipse(0, R, 'frente', c.ink); elipse(hc, rc, 'todo', c.ink, false);
     ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(b0[0] - R*s, b0[1]); ctx.lineTo(b1[0] - rc*s, b1[1]); ctx.moveTo(b0[0] + R*s, b0[1]); ctx.lineTo(b1[0] + rc*s, b1[1]); ctx.stroke(); ctx.restore();
     // la punta que se quita
     const t0 = P([0, 0, hc + lift]), ap = P([0, 0, H + lift]);
-    ctx.save(); ctx.globalAlpha = .16; ctx.fillStyle = c.gris; ctx.beginPath(); ctx.moveTo(ap[0], ap[1]); ctx.lineTo(t0[0] - rc*s, t0[1]); ctx.ellipse(t0[0], t0[1], rc*s, rc*s*se, 0, Math.PI, 0, true); ctx.closePath(); ctx.fill(); ctx.restore();
-    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.globalAlpha = E.prog.lift > 0 ? .7 : .9; ctx.beginPath(); ctx.moveTo(t0[0] - rc*s, t0[1]); ctx.lineTo(ap[0], ap[1]); ctx.lineTo(t0[0] + rc*s, t0[1]); ctx.stroke(); ctx.restore();
+    const vis = E.prog.punta;
+    if (vis > 0){
+    ctx.save(); ctx.globalAlpha = .16*vis; ctx.fillStyle = c.gris; ctx.beginPath(); ctx.moveTo(ap[0], ap[1]); ctx.lineTo(t0[0] - rc*s, t0[1]); ctx.ellipse(t0[0], t0[1], rc*s, rc*s*se, 0, Math.PI, 0, true); ctx.closePath(); ctx.fill(); ctx.restore();
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.globalAlpha = .7*vis; ctx.setLineDash([5, 4]); ctx.beginPath(); ctx.moveTo(t0[0] - rc*s, t0[1]); ctx.lineTo(ap[0], ap[1]); ctx.lineTo(t0[0] + rc*s, t0[1]); ctx.stroke(); ctx.restore();
+    }
     if (E.prog.lift > 0){ elipse(hc + lift, rc, 'frente', c.ink); elipse(hc + lift, rc, 'atras', c.ink, true); }
-    if (cf.corte && !(E.prog.lift > 0)){ /* la línea del corte ya está */ }
     // medidas
-    medida(ctx, c, P, [0, 0, 0], [R, 0, 0], c.r, `R = ${fmt(R)}`, { dy:-11, grosor:2.4 });
+    medida(ctx, c, P, [0, 0, 0], [R, 0, 0], c.R, `R = ${fmt(R)}`, { dy:-11, grosor:2.4 });
     medida(ctx, c, P, [0, 0, hc], [rc, 0, hc], c.r, `r = ${fmt(rc)}`, { dy:-11, grosor:2.4 });
     medida(ctx, c, P, [-R - .5, 0, 0], [-R - .5, 0, hc], c.h, `h = ${fmt(hc)}`, { dx:-8, align:'right', grosor:2.4 });
     if (E.prog.lift > .5){ const q = P([rc*.4, 0, hc + lift + (H - hc)*.35]); ctx.save(); ctx.globalAlpha = (E.prog.lift - .5)*2; rotulo(ctx, c, q[0] + 26, q[1], cf.etChico, c.gris, 'left', 800, 12); ctx.restore(); }
@@ -757,7 +763,7 @@ function piezasHoja(cf, enrolla){
   const xl = -(gap/2 + L/2) - (A - L)/2, xr = gap/2 + A/2 - (A - L)/2;
   const mk = (rollo, dx, nombre) => { const r = rollo.perimetro/(2*Math.PI);
     return { dx, r, h:rollo.h, nombre, caras:MS.desarrollo('cilindro', { r, h:rollo.h }, 1 - enrolla, { N:40, tapas:false }).caras }; };
-  return [mk(H.bajo, xl, cf.nombres ? cf.nombres[0] : 'A'), mk(H.alto, xr, cf.nombres ? cf.nombres[1] : 'B')];
+  return [mk(H.bajo, xl, cf.nombres ? cf.nombres[0] : 'bajo'), mk(H.alto, xr, cf.nombres ? cf.nombres[1] : 'alto')];
 }
 // Las aristas del prisma en el orden en que se cuentan: la base de abajo, la de arriba y las verticales.
 function ordenAristas(D){
@@ -795,12 +801,12 @@ const DP = { base:{ tipo:'cuadrado', lado:6 }, h:4 }, PI_ = MS.piramide(DP), TR 
 const CI = MS.cilindro({ r:3, h:5 }), CO = MS.cono({ r:3, h:4 }), ES = MS.esfera({ r:3 });
 const S = { step:0, max:0, pred:{}, ocupado:false, x:{ tipo:'cono', b:3, h:4 } };
 
-const fuenteGE13 = `<p class="fuente">En Estados Unidos, menos de la mitad de los alumnos de 5.° a 8.° grado contó bien los cubitos de sólidos dibujados; el error más común fue contar las caras que se ven, y otro, contar solo los cubitos que asoman (Ben-Chaim, Lappan y Houang, 1985, según autores que lo citan). Confundir el volumen con la suma de las caras lo describen profesores en un estudio australiano (<i>Australian Mathematics Teacher</i>, 2018), sin porcentaje.</p>`;
+const fuenteGE13 = `<p class="fuente">Menos de la mitad de los alumnos de 5.° a 8.° grado contó bien los cubitos de sólidos dibujados; el error más común fue contar las caras que se ven, y otro, contar solo los cubitos que asoman (Ben-Chaim, Lappan y Houang, 1985, según autores que lo citan). Confundir el volumen con la suma de las caras lo describen profesores en un estudio australiano (<i>Australian Mathematics Teacher</i>, 2018), sin porcentaje.</p>`;
 const fuenteHip = que => `<p class="fuente">${que} No encontramos estudios con datos: son hipótesis nuestras, tomadas de errores frecuentes en problemas de academia. El lanzamiento en el colegio dirá cuáles aparecen.</p>`;
 
 const P1 = { id:'solidos-cubitos', ok:'c', opts:[
-  ['a', `${n0(BQ.errores.total.carasDibujo)} cubitos`, 'GE13-cuenta-caras-visibles', 'documentado'],
-  ['b', `${n0(BQ.errores.total.visiblesDibujo)} cubitos`, 'GE13-cuenta-cubitos-visibles', 'documentado'],
+  ['a', `${n0(BQ.errores.total.carasDibujo)} cubitos`, 'GE13-cuenta-caras-visibles', 'parcial'],
+  ['b', `${n0(BQ.errores.total.visiblesDibujo)} cubitos`, 'GE13-cuenta-visibles', 'parcial'],
   ['c', `${n0(BQ.total)} cubitos`],
   ['d', `${n0(BQ.errores.total.areaTotal)} cubitos`, 'GE14-volumen-como-area-total', 'parcial']],
   fb:{ c:`¡Bien! Son 4 capas de 3 · 2 = 6 cubitos: ${n0(BQ.total)}. Mira cómo se separan las capas.`,
@@ -918,11 +924,11 @@ const steps = [
  { k:'Paso 4', t:'Predice: el volumen de la pirámide', gate:P3,
    prep:() => { const r = !!S.pred[P3.id]; abrirControl(false);
      E.config({ modo:'tres', a:6, h:4, numeros:true, prog:{ punta:r ? 0 : 1, otras:r ? 1 : 0, sep:r ? 1 : 0, caja:1 }, et:{ lado:'6', h:'h = 4' }, az:24,
-       ley: r ? [['V', 'tres pirámides de 48 u³'], ['ink', 'la caja de 6 × 6 × 4', 'linea']] : [['V', 'la pirámide'], ['ink', 'la caja de igual base y altura', 'linea']],
+       ley: r ? [['V', 'tres pirámides de 48 u³'], ['ink', 'la caja de 6 × 6 × 4', 'trazos']] : [['V', 'la pirámide'], ['ink', 'la caja de igual base y altura', 'trazos']],
        lect: r ? [['ink', 'V caja = 6 · 6 · 4', '144 u³'], ['V', 'cada pirámide', `${n0(PI_.volumen)} u³`]] : [],
        desc:'La misma pirámide, de base 6 por 6 y altura 4, dentro de una caja de igual base y altura dibujada a trazos.' }); },
    anima:fin => E.cadena([n => E.animar('punta', 0, 1300, n), n => esperar(300, n), n => E.animar('otras', 1, 700, n), n => esperar(400, n), n => E.animar('sep', 1, 1500, n)], () => {
-     E.ley = [['V', 'tres pirámides de 48 u³'], ['ink', 'la caja de 6 × 6 × 4', 'linea']]; E.leyenda();
+     E.ley = [['V', 'tres pirámides de 48 u³'], ['ink', 'la caja de 6 × 6 × 4', 'trazos']]; E.leyenda();
      E.lect = [['ink', 'V caja = 6 · 6 · 4', '144 u³'], ['V', 'cada pirámide', `${n0(PI_.volumen)} u³`]]; E.lecturas();
      E.avisar('El vértice se corrió a una esquina de la tapa; con dos pirámides más se llena la caja, y las tres se separan.'); fin(); }),
    body:() => `<p class="problem">¿Cuál es el volumen de la misma pirámide (base 6 × 6 y ${h_('h = 4')})? A su alrededor está la caja de igual base y altura.</p>${opcionesHTML(P3.opts, 'fb')}
@@ -935,15 +941,15 @@ const steps = [
    prep:() => { const r = !!S.pred[P4.id]; abrirControl(r); controlActivo(r);
      E.config({ modo:'solido', tipo:'cilindro', d:{ r:3, h:5 }, N:48, prog:{ f:r ? 1 : 0 }, marcas:['h', 'r', 'largo'], et:{ h:'h = 5', r:'r = 3', largo:`2πr = ${piT(CI.pi.largo)}` }, pad:{ l:30, r:30, t:40, b:30 },
        ley:[['AB', 'A<sub>B</sub> · tapas'], ['AL', 'A<sub>L</sub> · la etiqueta'], ['r', 'radio r', 'linea'], ['h', 'altura h', 'linea']],
-       lect: r ? [['r', 'largo = 2πr', `${piT(CI.pi.largo)} ≈ ${fmt(CI.largo, 1)}`], ['AL', 'A_L = 6π · 5', `${piT(CI.pi.lateral)} cm²`], ['ink', 'A_T = 30π + 2 · 9π', `${piT(CI.pi.total)} cm²`]] : [],
+       lect: r ? [['ink', 'largo = 2πr', `${piT(CI.pi.largo)} ≈ ${fmt(CI.largo, 1)}`], ['AL', 'A_L = 6π · 5', `${piT(CI.pi.lateral)} cm²`], ['ink', 'A_T = 30π + 2 · 9π', `${piT(CI.pi.total)} cm²`]] : [],
        desc:'Una lata cilíndrica de radio 3 y altura 5.' }); },
    anima:fin => E.animar('f', 1, 2200, () => {
-     E.lect = [['r', 'largo = 2πr', `${piT(CI.pi.largo)} ≈ ${fmt(CI.largo, 1)}`], ['AL', 'A_L = 6π · 5', `${piT(CI.pi.lateral)} cm²`], ['ink', 'A_T = 30π + 2 · 9π', `${piT(CI.pi.total)} cm²`]]; E.lecturas();
+     E.lect = [['ink', 'largo = 2πr', `${piT(CI.pi.largo)} ≈ ${fmt(CI.largo, 1)}`], ['AL', 'A_L = 6π · 5', `${piT(CI.pi.lateral)} cm²`], ['ink', 'A_T = 30π + 2 · 9π', `${piT(CI.pi.total)} cm²`]]; E.lecturas();
      abrirControl(true); controlActivo(true);
      E.avisar('La lata abierta: un rectángulo de largo 6π y alto 5, con las dos tapas circulares pegadas arriba y abajo.'); fin(); }),
    body:() => `<p class="problem">Una lata cilíndrica tiene radio ${r_('r = 3 cm')} y altura ${h_('h = 5 cm')}. Su etiqueta la rodea una vez, sin solaparse. Al despegarla queda un rectángulo. ¿Cuánto mide su largo?</p>${opcionesHTML(P4.opts, 'fb')}
    <div id="tras" class="body" hidden>
-   <div class="eqs"><div class="eq">largo = 2π${r_('r')} = 2π · ${r_('3')} = ${r_(piT(CI.pi.largo) + ' cm')} ≈ ${fmt(CI.largo, 1)} cm</div>
+   <div class="eqs"><div class="eq">largo = 2π${r_('r')} = 2π · ${r_('3')} = ${piT(CI.pi.largo)} cm ≈ ${fmt(CI.largo, 1)} cm</div>
    <div class="eq">${AL_(AL)} = 2π${r_('r')} · ${h_('h')} = ${piT(CI.pi.largo)} · ${h_('5')} = ${AL_(piT(CI.pi.lateral) + ' cm²')}</div>
    <div class="eq">${AT} = ${AL_('30π')} + 2 · ${AB_('9π')} = ${piT(CI.pi.total)} cm²<span class="note">las tapas: π${r_('r')}² = 9π cada una</span></div>
    <div class="eq">${VV_('V')} = π${r_('r')}² · ${h_('h')} = 9π · 5 = ${VV_(piT(CI.pi.volumen) + ' cm³')}</div></div>
@@ -1128,29 +1134,29 @@ const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2');
 const n0 = v => fmt(v, 0);
 const HO = MS.hojaEnrollada({ largo:10, ancho:6 });
 const SE = MS.conoDeSector({ g:10, angulo:180 });
-const PN = MS.cuboPintado(5);
+const PN = MS.cuboPintado(6);
 const TC = MS.troncoCono({ R:6, r:3, h:4 });
 const EU = MS.poliedro({ tipo:'prisma', n:6 });
 
 const EXPS = [
   { id:'hoja', corto:'La misma hoja, dos cilindros',
-    q:`Una hoja de 10 cm por 6 cm se enrolla de dos formas, sin tapas: el cilindro A es bajo y ancho (la vuelta mide 10) y el B es alto y delgado (la vuelta mide 6). Los dos tienen la misma ${AL_('área lateral')}, 60 cm². Si se llenan de arena, ¿cuál guarda más?`,
-    opts:[['a', 'Guarda más el A'], ['b', 'Guarda más el B', 'cilindro-alto-guarda-mas', 'hipotesis'], ['c', 'Guardan lo mismo', 'GE14-misma-area-mismo-volumen', 'parcial']],
+    q:`Una hoja de 10 cm por 6 cm se enrolla de dos formas, sin tapas: con la vuelta de 10 queda un cilindro bajo y ancho; con la vuelta de 6, uno alto y delgado. Los dos tienen la misma ${AL_('área lateral')}, 60 cm². Si se llenan de arena, ¿cuál guarda más?`,
+    opts:[['a', 'Guarda más el bajo'], ['b', 'Guarda más el alto', 'cilindro-alto-guarda-mas', 'hipotesis'], ['c', 'Guardan lo mismo', 'misma-area-mismo-volumen', 'hipotesis']],
     ok:'a',
-    fb:{ b:'El B es más alto, pero su radio es mucho menor, y el radio entra al cuadrado en el volumen.', c:'La misma hoja da la misma área lateral, pero no el mismo volumen: el área y el volumen son cosas distintas.' },
-    antes:r => E.config({ modo:'hoja', largo:10, ancho:6, nombres:['A', 'B'], prog:{ enrolla:r ? 1 : 0, arena:r ? 1 : 0 }, pad:{ l:24, r:24, t:24, b:36 },
+    fb:{ b:'El alto es más alto, pero su radio es mucho menor, y el radio entra al cuadrado en el volumen.', c:'La misma hoja da la misma área lateral, pero no el mismo volumen: el área y el volumen son cosas distintas.' },
+    antes:r => E.config({ modo:'hoja', largo:10, ancho:6, nombres:['bajo', 'alto'], prog:{ enrolla:r ? 1 : 0, arena:r ? 1 : 0 }, pad:{ l:24, r:24, t:24, b:36 },
       ley: r ? [['AL', 'A<sub>L</sub> · la hoja'], ['V', 'la arena que cabe']] : [['AL', 'A<sub>L</sub> · la hoja']],
-      lect: r ? [['V', 'V de A = 150/π', `${fmt(HO.bajo.volumen, 1)} cm³`], ['V', 'V de B = 90/π', `${fmt(HO.alto.volumen, 1)} cm³`]] : [],
-      desc:'Dos hojas iguales de 10 por 6: una echada (A) y otra parada (B).' }),
+      lect: r ? [['V', 'V del bajo = 150/π', `${fmt(HO.bajo.volumen, 1)} cm³`], ['V', 'V del alto = 90/π', `${fmt(HO.alto.volumen, 1)} cm³`]] : [],
+      desc:'Dos hojas iguales de 10 por 6: una echada y otra parada.' }),
     despues:fin => E.cadena([n => E.animar('enrolla', 1, 2200, n), n => esperar(300, n), n => E.animar('arena', 1, 1400, n)], () => {
       E.ley = [['AL', 'A<sub>L</sub> · la hoja'], ['V', 'la arena que cabe']]; E.leyenda();
-      E.lect = [['V', 'V de A = 150/π', `${fmt(HO.bajo.volumen, 1)} cm³`], ['V', 'V de B = 90/π', `${fmt(HO.alto.volumen, 1)} cm³`]]; E.lecturas();
-      E.avisar('Las dos hojas enrolladas y llenas de arena: el cilindro A guarda unos 47,7 cm³ y el B, unos 28,6 cm³.'); fin(); }),
-    exp:() => `<div class="eqs"><div class="eq">A: 2π${r_('r')} = 10 → ${r_('r')} = 5/π; ${VV_('V')} = π(5/π)² · ${h_('6')} = 150/π ≈ ${VV_(fmt(HO.bajo.volumen, 1) + ' cm³')}</div>
-      <div class="eq">B: 2π${r_('r')} = 6 → ${r_('r')} = 3/π; ${VV_('V')} = π(3/π)² · ${h_('10')} = 90/π ≈ ${VV_(fmt(HO.alto.volumen, 1) + ' cm³')}</div>
-      <div class="eq">150/90 = 5/3<span class="note">el A guarda 5/3 de lo que guarda el B</span></div></div>
+      E.lect = [['V', 'V del bajo = 150/π', `${fmt(HO.bajo.volumen, 1)} cm³`], ['V', 'V del alto = 90/π', `${fmt(HO.alto.volumen, 1)} cm³`]]; E.lecturas();
+      E.avisar('Las dos hojas enrolladas y llenas de arena: el cilindro bajo guarda unos 47,7 cm³ y el alto, unos 28,6 cm³.'); fin(); }),
+    exp:() => `<div class="eqs"><div class="eq">bajo: 2π${r_('r')} = 10 → ${r_('r')} = 5/π; ${VV_('V')} = π(5/π)² · ${h_('6')} = 150/π ≈ ${VV_(fmt(HO.bajo.volumen, 1) + ' cm³')}</div>
+      <div class="eq">alto: 2π${r_('r')} = 6 → ${r_('r')} = 3/π; ${VV_('V')} = π(3/π)² · ${h_('10')} = 90/π ≈ ${VV_(fmt(HO.alto.volumen, 1) + ' cm³')}</div>
+      <div class="eq">150/90 = 5/3<span class="note">el bajo guarda 5/3 de lo que guarda el alto</span></div></div>
       <p>Las dos tienen la misma ${AL_('área lateral')}: es la misma hoja. Pero el volumen es π${r_('r')}²${h_('h')}: el radio entra <b>al cuadrado</b> y la altura solo una vez. Al pasar la vuelta de 6 a 10, el radio crece 10/6 y el área de la base, (10/6)²; la altura baja solo de 10 a 6. Por eso guarda más el cilindro bajo y ancho.</p>
-      <p class="fuente">Confundir el área con el volumen (GE14) lo describen profesores en un estudio australiano (<i>Australian Mathematics Teacher</i>, 2018), sin porcentaje. Que guarde más el alto es una hipótesis nuestra.</p>` },
+      <p class="fuente">No encontramos estudios con datos para este problema: las dos opciones incorrectas son hipótesis nuestras. «Guardan lo mismo» se parece a creer que dos rectángulos del mismo perímetro tienen la misma área (GE5 del informe de geometría), llevado a tres dimensiones.</p>` },
   { id:'semicirculo', corto:'Un semicírculo hecho cono',
     q:`Con un semicírculo de radio 10 cm se arma la superficie lateral de un cono, sin solapar. ¿Cuánto mide el radio ${r_('r')} de la base del cono?`,
     opts:[['a', `${SE.formas.igualG} cm`, 'radio-del-sector-como-radio-base', 'hipotesis'], ['b', `${SE.formas.conArea} cm`, 'GE19-circunferencia-con-area', 'hipotesis'],
@@ -1173,43 +1179,46 @@ const EXPS = [
       <p>Al enrollar, el radio del semicírculo se vuelve la ${g_('generatriz')} y el arco da la vuelta a la base. Con medio círculo, la base tiene la mitad del radio. En general, ${r_('r')}/${g_('g')} = ángulo/360°.</p>
       <p class="fuente">No encontramos estudios con datos para este error: las tres opciones incorrectas son hipótesis nuestras (la B es GE19, la longitud que se toma por área).</p>` },
   { id:'pintado', corto:'El cubo pintado',
-    q:`Un cubo de 5 × 5 × 5 cubitos se pinta por fuera, en sus seis caras. ¿Cuántos cubitos quedan sin nada de pintura?`,
-    opts:[['a', `${n0(PN.errores.sinPintura.ocultosDibujo)} cubitos`, 'GE13-ocultos-del-dibujo-sin-pintura', 'hipotesis'], ['b', `${n0(PN.errores.sinPintura.esquinas)} cubitos`, 'cuenta-las-esquinas', 'hipotesis'],
-          ['c', `${n0(PN.errores.sinPintura.unaCapa)} cubitos`, 'cuenta-una-capa', 'hipotesis'], ['d', `${n0(PN.sinPintura)} cubitos`]],
+    q:`Un cubo de 6 × 6 × 6 cubitos se pinta por fuera, en sus seis caras. ¿Cuántos cubitos quedan sin nada de pintura?`,
+    // 125 = 5³ tiene dos rutas: quitar una sola capa (de un lado) en vez de una por cada lado, o contar los que no se ven en el
+    // dibujo de tres caras. Las dos van con el mismo código (hipótesis).
+    opts:[['a', `${n0(PN.errores.sinPintura.quitaUnaCapa)} cubitos`, 'pintado-quita-una-capa', 'hipotesis'], ['b', `${n0(PN.errores.sinPintura.unaCara)} cubitos`, 'pintado-cuenta-los-de-una-cara', 'hipotesis'],
+          ['c', `${n0(PN.errores.sinPintura.centroDeUnaCara)} cubitos`, 'centro-de-una-cara', 'hipotesis'], ['d', `${n0(PN.sinPintura)} cubitos`]],
     ok:'d',
-    fb:{ a:'64 son los que no se ven en el dibujo (4 · 4 · 4), pero varios de ellos tienen pintura en las caras de atrás o de abajo, que también se pintaron.',
-         b:'Las 8 esquinas son los cubitos con tres caras pintadas, los que más pintura tienen.',
-         c:'3 · 3 = 9 es el centro de una sola cara. Los que no tocan ninguna cara forman un cubo de 3 · 3 · 3 adentro.' },
-    antes:r => E.config({ modo:'pintado', n:5, prog:{ sep:r ? 1 : 0 }, az:30,
-      ley: r ? [['gris', 'cubitos con pintura'], ['V', 'cubitos sin pintura']] : [['gris', 'el cubo pintado']],
-      lect: r ? [['V', 'sin pintura = 3³', n0(PN.sinPintura)], ['ink', 'con 1 · 2 · 3 caras', `${PN.pintadas[1]} · ${PN.pintadas[2]} · ${PN.pintadas[3]}`]] : [],
-      desc:'Un cubo de 5 por 5 por 5 cubitos, pintado por fuera.' }),
-    despues:fin => { E.ley = [['gris', 'cubitos con pintura'], ['V', 'cubitos sin pintura']]; E.leyenda();
-      E.animar('sep', 1, 2000, () => { E.lect = [['V', 'sin pintura = 3³', n0(PN.sinPintura)], ['ink', 'con 1 · 2 · 3 caras', `${PN.pintadas[1]} · ${PN.pintadas[2]} · ${PN.pintadas[3]}`]]; E.lecturas();
-        E.avisar('La cáscara pintada se aleja y deja ver el cubo de 3 por 3 por 3 de adentro: 27 cubitos sin pintura.'); fin(); }); },
-    exp:() => `<div class="eqs"><div class="eq">sin pintura: (5 − 2)³ = 3³ = ${VV_(n0(PN.sinPintura))}</div>
-      <div class="eq">tres caras: 8 · una cara: 6 · 3² = ${PN.pintadas[1]} · dos caras: 12 · 3 = ${PN.pintadas[2]}</div>
-      <div class="eq">8 + ${PN.pintadas[2]} + ${PN.pintadas[1]} + ${PN.pintadas[0]} = 125 = 5³</div></div>
-      <p>Se pinta toda la piel del cubo, también lo que no se ve en el dibujo. Quitando una capa por cada lado, en cada arista quedan 5 − 2 = 3 cubitos: el cubo de adentro es de 3 · 3 · 3.</p>
-      <p class="fuente">Contar como sólido solo lo que se ve en el dibujo es GE13 (Ben-Chaim, Lappan y Houang, 1985, según autores que lo citan). Su versión para este problema, y las otras dos opciones, son hipótesis nuestras.</p>` },
-  { id:'vaso', corto:'El vaso: un cono sin punta',
-    q:`Un vaso tiene forma de tronco de cono: radio de la boca ${r_('R = 6 cm')}, radio del fondo ${r_('r = 3 cm')} y altura ${h_('h = 4 cm')} (está dibujado al revés, con la boca abajo). ¿Cuánto le cabe?`,
+    fb:{ a:'125 = 5³ quita una sola capa (o cuenta los que no se ven en el dibujo). Pero se pintan las seis caras: hay que quitar una capa por cada lado, y en cada arista quedan 6 − 2 = 4.',
+         b:'96 son los cubitos con una sola cara pintada (6 caras · 4 · 4). Los que no tienen nada de pintura están adentro.',
+         c:'4 · 4 = 16 es el centro de una sola cara. Los que no tocan ninguna cara forman un cubo de 4 · 4 · 4 adentro.' },
+    antes:r => E.config({ modo:'pintado', n:6, prog:{ sep:r ? 1 : 0 }, az:30,
+      ley: r ? [['gris', 'cubitos con pintura'], ['ink', 'cubitos sin pintura']] : [['gris', 'el cubo pintado']],
+      lect: r ? [['ink', 'sin pintura = 4³', n0(PN.sinPintura)], ['ink', 'con 1 · 2 · 3 caras', `${PN.pintadas[1]} · ${PN.pintadas[2]} · ${PN.pintadas[3]}`]] : [],
+      desc:'Un cubo de 6 por 6 por 6 cubitos, pintado por fuera.' }),
+    despues:fin => { E.ley = [['gris', 'cubitos con pintura'], ['ink', 'cubitos sin pintura']]; E.leyenda();
+      E.animar('sep', 1, 2000, () => { E.lect = [['ink', 'sin pintura = 4³', n0(PN.sinPintura)], ['ink', 'con 1 · 2 · 3 caras', `${PN.pintadas[1]} · ${PN.pintadas[2]} · ${PN.pintadas[3]}`]]; E.lecturas();
+        E.avisar('La cáscara pintada se aleja y deja ver el cubo de 4 por 4 por 4 de adentro: 64 cubitos sin pintura.'); fin(); }); },
+    exp:() => `<div class="eqs"><div class="eq">sin pintura: (6 − 2)³ = 4³ = ${n0(PN.sinPintura)}</div>
+      <div class="eq">tres caras: 8 · una cara: 6 · 4² = ${PN.pintadas[1]} · dos caras: 12 · 4 = ${PN.pintadas[2]}</div>
+      <div class="eq">8 + ${PN.pintadas[2]} + ${PN.pintadas[1]} + ${PN.pintadas[0]} = 216 = 6³</div></div>
+      <p>Se pinta toda la piel del cubo, también lo que no se ve en el dibujo. Quitando una capa por cada lado, en cada arista quedan 6 − 2 = 4 cubitos: el cubo de adentro es de 4 · 4 · 4.</p>
+      <p class="fuente">No encontramos estudios con datos para este problema: las tres opciones incorrectas son hipótesis nuestras. La A se parece a GE13 (contar como sólido solo lo que se ve en el dibujo).</p>` },
+  { id:'vaso', corto:'El vaso',
+    q:`Un vaso tiene forma de tronco de cono: radio de la boca ${V_('R', 'R = 6 cm')}, radio del fondo ${r_('r = 3 cm')} y altura ${h_('h = 4 cm')} (está dibujado al revés, con la boca abajo). ¿Cuánto le cabe?`,
     opts:[['a', `${piT(TC.errores.volumen.sinTercio)} cm³`, 'GE20-sin-tercio', 'hipotesis'], ['b', `${piT(TC.pi.volumen)} cm³`],
           ['c', `${piT(TC.errores.volumen.radioPromedio)} cm³`, 'tronco-radio-promedio', 'hipotesis'], ['d', `${piT(TC.errores.volumen.basesPromedio)} cm³`, 'tronco-bases-promedio', 'hipotesis']],
     ok:'b',
     fb:{ a:'252π es la fórmula del tronco sin el 1/3: el mismo olvido que en el cono y la pirámide.',
-         c:'81π usa el radio promedio, 4,5, como si fuera un cilindro. El tronco no crece parejo: abajo es mucho más ancho.',
-         d:'90π promedia las dos bases y multiplica por la altura, como un trapecio. Sirve en el prisma, pero no en un sólido que se angosta.' },
-    antes:r => E.config({ modo:'tronco', R:6, H:8, h:4, corte:true, etChico:`cono chico: ${piT(TC.conoChico.piVolumen)}`, prog:{ lift:r ? 1 : 0 }, el:18, pad:{ l:64, r:40, t:20, b:20 },
-      ley: r ? [['V', 'el vaso (tronco)'], ['gris', 'la punta que se quitó'], ['r', 'radios R y r', 'linea'], ['h', 'altura h', 'linea']] : [['V', 'el vaso (tronco)'], ['r', 'radios R y r', 'linea'], ['h', 'altura h', 'linea']],
+         c:'81π usa el radio promedio, 4,5, como si fuera un cilindro. El radio sí cambia parejo de 3 a 6, pero cada rodaja guarda según el cuadrado de su radio: las rodajas anchas pesan más que las angostas, y el promedio de los radios se queda corto.',
+         d:'90π promedia las dos bases y multiplica por la altura. Eso solo sirve cuando las dos bases son iguales (prisma, cilindro); en el tronco da de más.' },
+    antes:r => E.config({ modo:'tronco', R:6, H:8, h:4, etChico:`cono chico: ${piT(TC.conoChico.piVolumen)}`, prog:{ lift:r ? 1 : 0, punta:r ? 1 : 0 }, el:18, pad:{ l:64, r:40, t:20, b:20 },
+      ley: r ? [['V', 'el vaso (tronco)'], ['gris', 'la punta que se quitó'], ['R', 'radio mayor R', 'linea'], ['r', 'radio menor r', 'linea'], ['h', 'altura h', 'linea']] : [['V', 'el vaso (tronco)'], ['R', 'radio mayor R', 'linea'], ['r', 'radio menor r', 'linea'], ['h', 'altura h', 'linea']],
       lect: r ? [['ink', 'cono grande', `${piT(TC.conoGrande.piVolumen)} cm³`], ['ink', 'cono chico', `${piT(TC.conoChico.piVolumen)} cm³`], ['V', 'el vaso', `${piT(TC.pi.volumen)} cm³`]] : [],
-      desc:'Un cono de radio 6 cortado a la mitad de su altura: abajo queda el tronco de radios 6 y 3 y altura 4.' }),
-    despues:fin => { E.ley = [['V', 'el vaso (tronco)'], ['gris', 'la punta que se quitó'], ['r', 'radios R y r', 'linea'], ['h', 'altura h', 'linea']]; E.leyenda();
-      E.animar('lift', 1, 1600, () => { E.lect = [['ink', 'cono grande', `${piT(TC.conoGrande.piVolumen)} cm³`], ['ink', 'cono chico', `${piT(TC.conoChico.piVolumen)} cm³`], ['V', 'el vaso', `${piT(TC.pi.volumen)} cm³`]]; E.lecturas();
+      desc:'Un vaso con forma de tronco de cono, dibujado con la boca abajo: radios 6 y 3, altura 4.' }),
+    despues:fin => { E.ley = [['V', 'el vaso (tronco)'], ['gris', 'la punta que se quitó'], ['R', 'radio mayor R', 'linea'], ['r', 'radio menor r', 'linea'], ['h', 'altura h', 'linea']]; E.leyenda();
+      E.cadena([n => E.animar('punta', 1, 700, n), n => E.animar('lift', 1, 1600, n)], () => { E.lect = [['ink', 'cono grande', `${piT(TC.conoGrande.piVolumen)} cm³`], ['ink', 'cono chico', `${piT(TC.conoChico.piVolumen)} cm³`], ['V', 'el vaso', `${piT(TC.pi.volumen)} cm³`]]; E.lecturas();
         E.avisar('La punta del cono sube y se separa: el vaso es el cono grande menos el chico, 96π − 12π = 84π.'); fin(); }); },
-    exp:() => `<div class="eqs"><div class="eq">${VV_('V')} = π${h_('h')}(${r_('R')}² + ${r_('r')}² + ${r_('R')}${r_('r')})/3 = π · ${h_('4')} · (36 + 9 + 18)/3 = ${VV_(piT(TC.pi.volumen) + ' cm³')}</div>
+    exp:() => `<div class="eqs"><div class="eq">${VV_('V')} = π${h_('h')}(${V_('R', 'R')}² + ${r_('r')}² + ${V_('R', 'R')}${r_('r')})/3 = π · ${h_('4')} · (36 + 9 + 18)/3 = ${VV_(piT(TC.pi.volumen) + ' cm³')}</div>
       <div class="eq">${VV_('V')} = cono grande − cono chico = π · 36 · 8/3 − π · 9 · 4/3 = 96π − 12π = ${piT(TC.pi.volumen)}</div></div>
       <p>Si se prolongan las paredes del vaso, se completa un cono de altura 8 (la punta de altura 4 es un cono semejante, de la mitad de tamaño). El vaso es lo que queda al quitarle la punta. La fórmula del tronco lleva el mismo 1/3 que el cono.</p>
+      <p>Si el vaso fuera un cilindro, el promedio de las bases sí serviría; aquí el área de cada rodaja crece con el cuadrado del radio.</p>
       <p class="fuente">No encontramos estudios con datos para el tronco: las tres opciones incorrectas son hipótesis nuestras (la A es GE20, el tercio olvidado).</p>` },
   { id:'aristas', corto:'Las aristas del prisma hexagonal',
     q:`Un prisma tiene bases hexagonales (de 6 lados). ¿Cuántas aristas tiene en total?`,
@@ -1226,6 +1235,7 @@ const EXPS = [
     exp:() => `<div class="eqs"><div class="eq">aristas = 6 (abajo) + 6 (arriba) + 6 (verticales) = ${n0(EU.aristas)}</div>
       <div class="eq">Euler: C + V = A + 2 → 8 + 12 = 18 + 2</div>
       <div class="eq">prisma de n lados: C = n + 2, V = 2n, A = 3n · pirámide: C = n + 1, V = n + 1, A = 2n</div></div>
+      <p class="aviso">Ojo con las letras: en el teorema de Euler, C cuenta caras, V cuenta vértices y A cuenta aristas. Aquí V no es el volumen ni A el área.</p>
       <p>El teorema de Euler vale para todo poliedro convexo: caras más vértices es igual a aristas más dos. Sirve para hallar lo que falta cuando no se puede contar en el dibujo.</p>
       <p class="fuente">No encontramos estudios con datos sobre el conteo de aristas: las tres opciones incorrectas son hipótesis nuestras.</p>` },
 ];

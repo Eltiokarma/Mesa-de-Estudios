@@ -261,6 +261,25 @@ test('entradas inválidas', () => {
   assert.throws(() => motor.desarrollo('cono', { r: 2, h: 3 }, 1.5), /de 0 a 1/);
   assert.throws(() => motor.tresPiramides({ a: 2, h: 3, punta: 2 }), /de 0 a 1/);
   assert.throws(() => motor.hojaEnrollada({ largo: 0, ancho: 2 }), /mayor que cero/);
+  // bordes que pidió la verificación
+  assert.throws(() => motor.cono({ r: 5, g: 5 }), /mayor que el radio/);
+  assert.throws(() => motor.piramide({ base: { tipo: 'cuadrado', lado: 6 }, ap: 3 }), /mayor que la apotema de la base/);
+  assert.throws(() => motor.conoDeSector({ g: 5, angulo: 400 }), /menor que 360/);
+  assert.throws(() => motor.conoDeSector({ g: 5, angulo: 0 }), /mayor que cero/);
+  assert.throws(() => motor.bloque(0, 2, 2), /al menos 1/);
+});
+test('bordes: cubo de 2 sin cubitos sin pintura (0, nunca negativo); bloques con una dimensión 1 tienen cubitos con 4 o 5 caras pintadas', () => {
+  const C2 = motor.cuboPintado(2);
+  assert.equal(C2.sinPintura, 0); assert.equal(C2.pintadas[3], 8);
+  const B = motor.bloque(1, 3, 4);
+  assert.equal(B.pintadas[4], 4); assert.equal(B.pintadas[3], 6); assert.equal(B.pintadas[2], 2);
+  const F = motor.bloque(1, 1, 3);
+  assert.equal(F.pintadas[5], 2); assert.equal(F.pintadas[4], 1);
+  assert.equal(motor.bloque(1, 1, 1).pintadas[6], 1);
+  for (let a = 1; a <= 4; a++) for (let b = 1; b <= 4; b++) for (let c = 1; c <= 4; c++) {
+    const X = motor.bloque(a, b, c);
+    assert.equal(Object.entries(X.pintadas).reduce((s, [n, x]) => s + n * x, 0), X.areaTotal, `${a}×${b}×${c}`);
+  }
 });
 
 // 4. papel.json

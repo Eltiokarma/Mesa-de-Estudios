@@ -13,7 +13,25 @@
         "V = A_B · h = 20 · 3 = 60 cm³: caben 3 capas de 20 cubitos de 1 cm. Si sumas las caras (94), calculaste el área, no el volumen."
       ],
       "verificar": [
-        { "fn": "prisma", "args": [{ "base": { "tipo": "rectangulo", "largo": 5, "ancho": 4 }, "h": 3 }], "espera": { "lateral": 54, "total": 94, "volumen": 60, "errores.volumen.comoArea": 94 } }
+        {
+          "fn": "prisma",
+          "args": [
+            {
+              "base": {
+                "tipo": "rectangulo",
+                "largo": 5,
+                "ancho": 4
+              },
+              "h": 3
+            }
+          ],
+          "espera": {
+            "lateral": 54,
+            "total": 94,
+            "volumen": 60,
+            "errores.volumen.comoArea": 94
+          }
+        }
       ]
     },
     {
@@ -28,22 +46,56 @@
         "V = A_B · h / 3 = 100 · 12 / 3 = 400 m³. Sin el tercio saldría 1200 m³: el volumen de la caja de igual base y altura."
       ],
       "verificar": [
-        { "fn": "piramide", "args": [{ "base": { "tipo": "cuadrado", "lado": 10 }, "h": 12 }], "espera": { "ap": 13, "lateral": 260, "total": 360, "volumen": 400, "errores.lateral.conAltura": 240, "errores.volumen.sinTercio": 1200 } }
+        {
+          "fn": "piramide",
+          "args": [
+            {
+              "base": {
+                "tipo": "cuadrado",
+                "lado": 10
+              },
+              "h": 12
+            }
+          ],
+          "espera": {
+            "ap": 13,
+            "lateral": 260,
+            "total": 360,
+            "volumen": 400,
+            "errores.lateral.conAltura": 240,
+            "errores.volumen.sinTercio": 1200
+          }
+        }
       ]
     },
     {
       "id": "p3",
       "nivel": "básico",
-      "enunciado": "Un cono circular recto tiene radio de 6 cm y altura de 8 cm. Calcula su generatriz, su área lateral, su área total, su volumen y el ángulo del sector de su desarrollo.",
-      "respuesta": "g = 10 cm; A_L = 60π cm²; A_T = 96π cm²; V = 96π cm³; el sector mide 216°.",
+      "enunciado": "Un cono circular recto tiene radio de 8 cm y altura de 6 cm. Calcula su generatriz, su área lateral, su área total, su volumen y el ángulo del sector de su desarrollo.",
+      "respuesta": "g = 10 cm; A_L = 80π cm²; A_T = 144π cm²; V = 128π cm³; el sector mide 288°.",
       "pasos": [
-        "g = √(6² + 8²) = 10 cm.",
-        "A_L = π · r · g = π · 6 · 10 = 60π cm². A_T = 60π + π · 6² = 96π cm².",
-        "V = π · r² · h / 3 = π · 36 · 8 / 3 = 96π cm³.",
-        "El sector tiene radio g = 10 y su arco es la circunferencia de la base, 12π. El ángulo es 360° · r/g = 360° · 6/10 = 216°."
+        "g = √(8² + 6²) = 10 cm.",
+        "A_L = π · r · g = π · 8 · 10 = 80π cm². A_T = 80π + π · 8² = 144π cm².",
+        "V = π · r² · h / 3 = π · 64 · 6 / 3 = 128π cm³.",
+        "El sector tiene radio g = 10 y su arco es la circunferencia de la base, 16π. El ángulo es 360° · r/g = 360° · 8/10 = 288°."
       ],
       "verificar": [
-        { "fn": "cono", "args": [{ "r": 6, "h": 8 }], "espera": { "g": 10, "pi.lateral": 60, "pi.total": 96, "pi.volumen": 96, "angulo": 216 } }
+        {
+          "fn": "cono",
+          "args": [
+            {
+              "r": 8,
+              "h": 6
+            }
+          ],
+          "espera": {
+            "g": 10,
+            "pi.lateral": 80,
+            "pi.total": 144,
+            "pi.volumen": 128,
+            "angulo": 288
+          }
+        }
       ]
     },
     {
@@ -57,8 +109,31 @@
         "Su área es la lateral del cilindro: 7π · 10 = 70π cm². Si usas 7 como radio, te sale el doble: 140π cm²."
       ],
       "verificar": [
-        { "fn": "cilindro", "args": [{ "r": 3.5, "h": 10 }], "espera": { "pi.largo": 7, "pi.lateral": 70 } },
-        { "fn": "cilindro", "args": [{ "r": 7, "h": 10 }], "espera": { "pi.lateral": 140 } }
+        {
+          "fn": "cilindro",
+          "args": [
+            {
+              "r": 3.5,
+              "h": 10
+            }
+          ],
+          "espera": {
+            "pi.largo": 7,
+            "pi.lateral": 70
+          }
+        },
+        {
+          "fn": "cilindro",
+          "args": [
+            {
+              "r": 7,
+              "h": 10
+            }
+          ],
+          "espera": {
+            "pi.lateral": 140
+          }
+        }
       ]
     },
     {
@@ -72,7 +147,20 @@
         "h = √(9² − 6²) = √45 = 3√5 cm."
       ],
       "verificar": [
-        { "fn": "conoDeSector", "args": [{ "g": 9, "angulo": 240 }], "espera": { "r": 6, "h": 6.708203932499369, "arcoPi": 12 } }
+        {
+          "fn": "conoDeSector",
+          "args": [
+            {
+              "g": 9,
+              "angulo": 240
+            }
+          ],
+          "espera": {
+            "r": 6,
+            "h": 6.708203932499369,
+            "arcoPi": 12
+          }
+        }
       ]
     },
     {
@@ -86,21 +174,50 @@
         "Área de la esfera: 4π · 10² = 400π cm². Área lateral del cilindro: 2π · 10 · 20 = 400π cm². Son iguales (Arquímedes)."
       ],
       "verificar": [
-        { "fn": "esfera", "args": [{ "r": 10 }], "espera": { "pi.volumen": 1333.3333333333333, "pi.cilVolumen": 2000, "fraccion": 0.6666666666666666, "pi.area": 400, "pi.cilLateral": 400 } }
+        {
+          "fn": "esfera",
+          "args": [
+            {
+              "r": 10
+            }
+          ],
+          "espera": {
+            "pi.volumen": 1333.3333333333333,
+            "pi.cilVolumen": 2000,
+            "fraccion": 0.6666666666666666,
+            "pi.area": 400,
+            "pi.cilLateral": 400
+          }
+        }
       ]
     },
     {
       "id": "p7",
       "nivel": "intermedio",
-      "enunciado": "Un cubo de madera de 6 cm de arista se pinta por fuera y luego se corta en cubitos de 1 cm. ¿Cuántos cubitos tienen exactamente dos caras pintadas? ¿Cuántos no tienen ninguna?",
-      "respuesta": "48 cubitos con dos caras pintadas y 64 sin pintura.",
+      "enunciado": "Un bloque de madera de 5 cm × 4 cm × 3 cm se pinta por fuera y luego se corta en cubitos de 1 cm. ¿Cuántos cubitos tienen exactamente dos caras pintadas? ¿Cuántos no tienen ninguna?",
+      "respuesta": "24 cubitos con dos caras pintadas y 6 sin pintura.",
       "pasos": [
-        "Los de dos caras están en las aristas, sin contar las esquinas: en cada arista hay 6 − 2 = 4, y el cubo tiene 12 aristas: 12 · 4 = 48.",
-        "Los que no tienen pintura forman el cubo de adentro, de 6 − 2 = 4 cubitos por arista: 4³ = 64.",
-        "Comprobación: 8 esquinas (3 caras) + 48 + 96 con una cara (6 · 4²) + 64 = 216 = 6³."
+        "Los de dos caras están en las aristas, sin contar las esquinas. El bloque tiene 4 aristas de cada largo (5, 4 y 3); sin las esquinas quedan 3, 2 y 1 cubitos: 4 · (3 + 2 + 1) = 24.",
+        "Los que no tienen pintura forman el bloque de adentro, de (5 − 2) × (4 − 2) × (3 − 2) = 3 × 2 × 1 = 6.",
+        "Los de una sola cara están en el centro de cada cara: 2 · (3 · 2 + 3 · 1 + 2 · 1) = 22.",
+        "Comprobación: 8 esquinas + 24 + 22 + 6 = 60 = 5 · 4 · 3."
       ],
       "verificar": [
-        { "fn": "cuboPintado", "args": [6], "espera": { "pintadas.2": 48, "sinPintura": 64, "pintadas.1": 96, "pintadas.3": 8, "total": 216 } }
+        {
+          "fn": "bloque",
+          "args": [
+            5,
+            4,
+            3
+          ],
+          "espera": {
+            "pintadas.2": 24,
+            "pintadas.0": 6,
+            "pintadas.1": 22,
+            "pintadas.3": 8,
+            "total": 60
+          }
+        }
       ]
     },
     {
@@ -114,7 +231,23 @@
         "Promediar los radios (3 cm) y usar π · 3² · 6 = 54π da menos de lo que cabe."
       ],
       "verificar": [
-        { "fn": "troncoCono", "args": [{ "R": 4, "r": 2, "h": 6 }], "espera": { "pi.volumen": 56, "conoGrande.h": 12, "conoGrande.piVolumen": 64, "conoChico.piVolumen": 8, "errores.volumen.radioPromedio": 54 } }
+        {
+          "fn": "troncoCono",
+          "args": [
+            {
+              "R": 4,
+              "r": 2,
+              "h": 6
+            }
+          ],
+          "espera": {
+            "pi.volumen": 56,
+            "conoGrande.h": 12,
+            "conoGrande.piVolumen": 64,
+            "conoChico.piVolumen": 8,
+            "errores.volumen.radioPromedio": 54
+          }
+        }
       ]
     },
     {
@@ -128,8 +261,33 @@
         "Comprueba con un poliedro que conozcas: el cubo tiene 6 + 8 = 12 + 2."
       ],
       "verificar": [
-        { "fn": "poliedro", "args": [{ "tipo": "dodecaedro" }], "espera": { "caras": 12, "aristas": 30, "vertices": 20, "cumpleEuler": true } },
-        { "fn": "poliedro", "args": [{ "tipo": "cubo" }], "espera": { "caras": 6, "vertices": 8, "aristas": 12 } }
+        {
+          "fn": "poliedro",
+          "args": [
+            {
+              "tipo": "dodecaedro"
+            }
+          ],
+          "espera": {
+            "caras": 12,
+            "aristas": 30,
+            "vertices": 20,
+            "cumpleEuler": true
+          }
+        },
+        {
+          "fn": "poliedro",
+          "args": [
+            {
+              "tipo": "cubo"
+            }
+          ],
+          "espera": {
+            "caras": 6,
+            "vertices": 8,
+            "aristas": 12
+          }
+        }
       ]
     },
     {
@@ -144,7 +302,22 @@
         "288/192 = 3/2. Guarda más el cilindro bajo y ancho, porque el radio entra al cuadrado."
       ],
       "verificar": [
-        { "fn": "hojaEnrollada", "args": [{ "largo": 12, "ancho": 8 }], "espera": { "lateral": 96, "bajo.sobrePi": 288, "alto.sobrePi": 192, "razon": 1.5, "respuestas.mayor": "bajo" } }
+        {
+          "fn": "hojaEnrollada",
+          "args": [
+            {
+              "largo": 12,
+              "ancho": 8
+            }
+          ],
+          "espera": {
+            "lateral": 96,
+            "bajo.sobrePi": 288,
+            "alto.sobrePi": 192,
+            "razon": 1.5,
+            "respuestas.mayor": "bajo"
+          }
+        }
       ]
     }
   ]

@@ -273,13 +273,16 @@
       carasDibujo: caritas, areaTotal: 2 * caritas, pintadas, cubitos },
       separar({ total }, { total: { carasDibujo: caritas, visiblesDibujo: total - ocultosDibujo, areaTotal: 2 * caritas, sumaAristas: a + b + c } }));
   }
-  // Un cubo de n × n × n cubitos se pinta por fuera: ¿cuántos quedan sin pintura? (n − 2)³, los de adentro.
+  // Un cubo de n × n × n cubitos se pinta por fuera: ¿cuántos quedan sin pintura? (n − 2)³, los de adentro
+  // (con n = 2 no queda ninguno). Errores (hipótesis): quitar una sola capa, (n − 1)³ — que es también lo que no se ve
+  // en un dibujo con tres caras; contar solo el centro de una cara, (n − 2)²; confundir con los de una cara pintada,
+  // 6(n − 2)²; contar los pintados, n³ − (n − 2)³.
   function cuboPintado(n) {
     n = entero(n, 'el número de cubitos por arista', 2);
     const B = bloque(n, n, n);
     const sin = Math.pow(n - 2, 3);
     return Object.assign({ n, total: B.total, pintadas: B.pintadas, sinPintura: sin, ocultosDibujo: B.ocultosDibujo, cubitos: B.cubitos },
-      separar({ sinPintura: sin }, { sinPintura: { ocultosDibujo: B.ocultosDibujo, esquinas: 8, unaCapa: (n - 2) * (n - 2), conPintura: B.total - sin } }));
+      separar({ sinPintura: sin }, { sinPintura: { quitaUnaCapa: Math.pow(n - 1, 3), centroDeUnaCara: (n - 2) * (n - 2), unaCara: 6 * (n - 2) * (n - 2), conPintura: B.total - sin } }));
   }
 
   // ---------- Poliedros y Euler ----------
