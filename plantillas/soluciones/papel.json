@@ -1,0 +1,142 @@
+{
+  "titulo": "Soluciones: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Antes de usar una fórmula, pregúntate qué va en el denominador: la molaridad divide entre los litros de solución; el % en masa, entre los gramos de solución (soluto + solvente); la molalidad, entre los kilogramos de solvente; la fracción molar, entre los moles de todo. Pasa los mL a litros. Al diluir o al sacar una parte, piensa primero en los moles de soluto: n = M·V. Usa H = 1, C = 12, N = 14, O = 16, Na = 23, S = 32 y Cl = 35,5.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Para preparar un suero salino casero se disuelven 9 g de sal (NaCl) en 991 g de agua hervida. ¿Cuál es el porcentaje en masa de NaCl?",
+      "respuesta": "0,9 % en masa.",
+      "pasos": [
+        "Masa de la solución = masa de soluto + masa de solvente = 9 + 991 = 1000 g. La masa se conserva al disolver: la sal no desaparece.",
+        "% en masa = 100 · 9/1000 = 0,9 %.",
+        "Ojo: si divides entre el agua sola (991 g) te sale casi 0,91 %. El denominador es la solución entera, no el solvente."
+      ],
+      "verificar": [ { "fn": "solucion", "args": [{ "soluto": "NaCl", "g": 9, "gSolvente": 991 }], "espera": { "pctMasa": 0.9, "gSolucion": 1000 } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Una botella de lejía tiene 5 % en masa de hipoclorito de sodio (NaClO). ¿Cuántos gramos de NaClO y cuántos gramos de agua hay en 400 g de esa lejía?",
+      "respuesta": "20 g de NaClO y 380 g de agua.",
+      "pasos": [
+        "El 5 % es de la masa de la solución: 5 g de NaClO por cada 100 g de lejía.",
+        "En 400 g de lejía hay 0,05 · 400 = 20 g de NaClO.",
+        "El resto es agua: 400 − 20 = 380 g. No son 400 g de agua: los 400 g ya incluyen al soluto."
+      ],
+      "verificar": [ { "fn": "solucion", "args": [{ "soluto": "NaClO", "g": 20, "gSolvente": 380 }], "espera": { "pctMasa": 5, "gSolucion": 400 } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Se disuelven 4 g de soda cáustica (NaOH) en agua hasta completar 250 mL de solución. ¿Cuál es la molaridad?",
+      "respuesta": "0,4 M.",
+      "pasos": [
+        "Masa molar del NaOH: 23 + 16 + 1 = 40 g/mol. Moles: 4/40 = 0,1 mol.",
+        "Pasa el volumen a litros: 250 mL = 0,25 L.",
+        "M = n/V = 0,1/0,25 = 0,4 mol/L.",
+        "Si divides entre 250 sin pasar a litros te sale 0,0004, pero eso son mol por mililitro, no mol por litro. Y el volumen es el de la solución terminada, no el del agua que se echó."
+      ],
+      "verificar": [ { "fn": "solucion", "args": [{ "soluto": "NaOH", "g": 4, "mL": 250 }], "espera": { "n": 0.1, "M": 0.4 } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Un vinagre tiene 12 g de ácido acético (CH₃COOH) en cada 250 mL. a) ¿Cuál es su molaridad? b) ¿Cuál es su porcentaje masa-volumen (gramos de ácido por cada 100 mL)? c) Para un aliño se toman 50 mL de ese vinagre y se completan con agua hasta 200 mL. ¿Cuál es la nueva molaridad?",
+      "respuesta": "a) 0,8 M. b) 4,8 % m/v. c) 0,2 M.",
+      "pasos": [
+        "a) Masa molar del CH₃COOH: 2·12 + 4·1 + 2·16 = 60 g/mol. Moles: 12/60 = 0,2 mol. M = 0,2/0,25 = 0,8 M.",
+        "b) % m/v = 100 · 12 g / 250 mL = 4,8 %: 4,8 g de ácido en cada 100 mL de vinagre. Se divide entre el volumen de la solución, no entre la masa.",
+        "c) En los 50 mL hay n = 0,8 · 0,050 = 0,04 mol. Al agregar agua, esos moles no cambian: el agua no trae ni se lleva ácido.",
+        "La nueva concentración es 0,04/0,200 = 0,2 M. Es lo mismo que C₁V₁ = C₂V₂: 0,8 · 50 = C₂ · 200.",
+        "El volumen final es 200 mL porque dice \"se completan hasta 200 mL\". No sumes 200 mL de agua a los 50."
+      ],
+      "verificar": [
+        { "fn": "solucion", "args": [{ "soluto": "CH3COOH", "g": 12, "mL": 250 }], "espera": { "M": 0.8 } },
+        { "fn": "solucion", "args": [{ "soluto": "CH3COOH", "g": 12, "mL": 250 }], "espera": { "pctMasaVolumen": 4.8 } },
+        { "fn": "diluir", "args": [0.8, 50, 200], "espera": { "n": 0.04, "M2": 0.2 } }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Se mezclan 100 mL de ácido clorhídrico 3 M con 200 mL de agua. ¿Cuál es la concentración final?",
+      "respuesta": "1 M.",
+      "pasos": [
+        "Moles de HCl: 3 · 0,100 = 0,3 mol. No cambian al agregar agua.",
+        "Aquí 200 mL es el agua, no el volumen final: el volumen final es 100 + 200 = 300 mL.",
+        "C₂ = 0,3/0,300 = 1 M.",
+        "Si usas 200 mL como volumen final te sale 1,5 M. Lee siempre si el problema da el agua o el volumen final (\"se completan hasta\"). Y en el laboratorio el ácido se vierte poco a poco sobre el agua, nunca el agua sobre el ácido concentrado."
+      ],
+      "verificar": [ { "fn": "diluirConAgua", "args": [3, 100, 200], "espera": { "mL2": 300, "M2": 1, "n": 0.3 } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Se mezclan 46 g de alcohol etílico (C₂H₅OH) con 162 g de agua. ¿Cuál es la fracción molar del alcohol?",
+      "respuesta": "0,1.",
+      "pasos": [
+        "Masa molar del C₂H₅OH: 2·12 + 6·1 + 16 = 46 g/mol. Moles de alcohol: 46/46 = 1 mol.",
+        "Moles de agua: 162/18 = 9 mol.",
+        "Fracción molar del alcohol = 1/(1 + 9) = 0,1. La del agua es 0,9: las dos suman 1.",
+        "La fracción molar se calcula con moles, no con gramos. Con gramos saldría 46/208 ≈ 0,22, que es otra cosa (la fracción en masa)."
+      ],
+      "verificar": [ { "fn": "solucion", "args": [{ "soluto": "C2H5OH", "g": 46, "gSolvente": 162 }], "espera": { "n": 1, "nSolvente": 9, "xSoluto": 0.1, "xSolvente": 0.9 } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Para preparar un jarabe se disuelven 90 g de glucosa (C₆H₁₂O₆) en 500 g de agua. ¿Cuál es la molalidad de la solución?",
+      "respuesta": "1 mol/kg (1 molal).",
+      "pasos": [
+        "Masa molar de la glucosa: 6·12 + 12·1 + 6·16 = 180 g/mol. Moles: 90/180 = 0,5 mol.",
+        "La molalidad divide entre los kilogramos de solvente, no de solución: 500 g = 0,5 kg de agua.",
+        "m = 0,5/0,5 = 1 mol/kg.",
+        "Si divides entre la masa de la solución (0,59 kg) te sale unos 0,85 mol/kg. Y no la confundas con la molaridad: para la molaridad haría falta el volumen de la solución, que el problema no da."
+      ],
+      "verificar": [ { "fn": "solucion", "args": [{ "soluto": "C6H12O6", "g": 90, "gSolvente": 500 }], "espera": { "n": 0.5, "molalidad": 1 } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Para salar aceitunas se mezclan 200 mL de salmuera de NaCl 0,5 M con 300 mL de salmuera de NaCl 2 M. ¿Cuál es la concentración de la mezcla?",
+      "respuesta": "1,4 M.",
+      "pasos": [
+        "Moles de la primera: 0,5 · 0,200 = 0,1 mol. Moles de la segunda: 2 · 0,300 = 0,6 mol.",
+        "Se suman los moles (0,7 mol) y se suman los volúmenes (500 mL = 0,5 L).",
+        "M = 0,7/0,5 = 1,4 M. Queda entre 0,5 M y 2 M, y más cerca de 2 M porque de esa hay más volumen.",
+        "El promedio simple, (0,5 + 2)/2 = 1,25 M, solo sirve si los dos volúmenes son iguales. Y sumar las concentraciones (2,5 M) no tiene sentido: la mezcla no puede ser más concentrada que la más concentrada."
+      ],
+      "verificar": [ { "fn": "mezclar", "args": [[[0.5, 200], [2, 300]]], "espera": { "n": 0.7, "mL": 500, "M": 1.4, "errores.promedioSimple": 1.25 } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Se disuelven 9,8 g de ácido sulfúrico (H₂SO₄) en agua hasta completar 200 mL. ¿Cuál es la molaridad y cuál la normalidad de la solución, si el ácido entrega sus dos H⁺?",
+      "respuesta": "0,5 M y 1 N.",
+      "pasos": [
+        "Masa molar del H₂SO₄: 2·1 + 32 + 4·16 = 98 g/mol. Moles: 9,8/98 = 0,1 mol. M = 0,1/0,2 = 0,5 M.",
+        "Cada fórmula de H₂SO₄ entrega 2 H⁺: θ = 2. Equivalentes: 0,1 · 2 = 0,2 eq.",
+        "N = equivalentes/litros = 0,2/0,2 = 1 N. Es lo mismo que N = M·θ = 0,5 · 2.",
+        "La normalidad no es igual a la molaridad (eso solo pasa si θ = 1, como en el HCl) ni se divide entre θ: cuenta los H⁺, y hay el doble de H⁺ que de moléculas."
+      ],
+      "verificar": [ { "fn": "solucion", "args": [{ "soluto": "H2SO4", "g": 9.8, "mL": 200, "theta": 2 }], "espera": { "M": 0.5, "eq": 0.2, "N": 1 } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "En una jarra hay 1 L de refresco con azúcar 0,3 M. Se sirven 250 mL en un vaso. a) ¿Cuál es la concentración en el vaso y cuál la de lo que queda en la jarra? b) ¿Cuántos moles de azúcar hay en el vaso? c) Si al vaso se le agregan 50 mL de agua, ¿cuál es su nueva concentración?",
+      "respuesta": "a) 0,3 M en los dos. b) 0,075 mol. c) 0,25 M.",
+      "pasos": [
+        "a) Al servir, el vaso se lleva soluto y agua en la misma proporción: el vaso y la jarra siguen en 0,3 M. La concentración no depende de cuánto hay.",
+        "No es 0,075 M en el vaso ni sube la concentración de la jarra: lo que cambia es la cantidad de azúcar, no la concentración.",
+        "b) n = M·V = 0,3 · 0,250 = 0,075 mol.",
+        "c) El agua no cambia los moles: 0,075 mol en 250 + 50 = 300 mL. M = 0,075/0,300 = 0,25 M."
+      ],
+      "verificar": [
+        { "fn": "sacar", "args": [0.3, 1000, 250], "espera": { "queda.M": 0.3, "sacado.M": 0.3, "sacado.n": 0.075 } },
+        { "fn": "diluirConAgua", "args": [0.3, 250, 50], "espera": { "M2": 0.25 } }
+      ]
+    }
+  ]
+}

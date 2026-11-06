@@ -1,0 +1,161 @@
+{
+  "titulo": "Gases: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Antes de usar cualquier fórmula, pasa la temperatura a kelvin: T(K) = T(°C) + 273. En PV = nRT y en las leyes de los gases va siempre la presión absoluta: presión absoluta = presión manométrica + presión atmosférica. Usa R = 0,082 atm·L/(mol·K). El dato de 22,4 L/mol solo vale en condiciones normales (1 atm y 0 °C); en otras condiciones usa PV = nRT. Masas molares: H₂ = 2, He = 4, CH₄ = 16, N₂ = 28, O₂ = 32, CO₂ = 44, C₃H₈ = 44 y SO₂ = 64 g/mol. Ojo: el O₂ pesa 32 g/mol, no 16. En una mezcla, cada gas aporta según sus moles, no según sus gramos. En Puno o Juliaca, a unos 3800 m, la presión atmosférica es de unos 0,63 atm.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Un tanque de 41 L contiene 320 g de oxígeno (O₂) a 27 °C. ¿Qué presión tiene el gas dentro del tanque?",
+      "respuesta": "6 atm. En el tanque hay 10 mol de O₂.",
+      "pasos": [
+        "Moles: n = m/M = 320/32 = 10 mol. El O₂ es una molécula de dos átomos: 32 g/mol. Con 16 g/mol te salen 20 mol y el doble de presión.",
+        "Temperatura en kelvin: T = 27 + 273 = 300 K. Con 27 en lugar de 300, la presión sale once veces más chica.",
+        "P = nRT/V = 10 · 0,082 · 300 / 41 = 246/41 = 6 atm.",
+        "No uses 22,4 L/mol: el gas no está en condiciones normales (ni a 1 atm ni a 0 °C)."
+      ],
+      "verificar": [
+        { "fn": "dalton", "args": [[{ "gas": "O2", "masa": 320 }], 1], "espera": { "nTotal": 10 } },
+        { "fn": "kelvin", "args": [27], "espera": { "valor": 300 } },
+        { "fn": "estado", "args": [{ "V": 41, "n": 10, "T": 300 }], "espera": { "P": 6 } }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "En Lima, a nivel del mar (1 atm), se cierra un globo con 6,3 L de helio. Se lleva a Puno, donde la presión atmosférica es de 0,63 atm. Si la temperatura del gas fuera la misma en las dos ciudades, ¿qué volumen tendría el globo en Puno?",
+      "respuesta": "10 L.",
+      "pasos": [
+        "La cantidad de gas y la temperatura no cambian: es la ley de Boyle, P₁V₁ = P₂V₂.",
+        "V₂ = P₁V₁/P₂ = 1 · 6,3 / 0,63 = 10 L.",
+        "Afuera hay menos presión, así que el gas se expande: el volumen debe salir mayor que 6,3 L. Si te sale 3,97 L (6,3 · 0,63), multiplicaste por la razón de presiones al revés.",
+        "Las partículas de helio no crecen en la altura: el globo se agranda porque hay más espacio entre ellas."
+      ],
+      "verificar": [
+        { "fn": "cambio", "args": [{ "P": 1, "V": 6.3 }, { "P": 0.63 }, "V"], "espera": { "V": 10 } }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Un cilindro con un émbolo que se mueve libremente contiene 4 L de aire a 27 °C. Se calienta el cilindro hasta 177 °C. ¿Cuál es el volumen final del aire y qué pasa con su presión?",
+      "respuesta": "El volumen final es 6 L. La presión no cambia: sigue igual a la presión que hace el émbolo desde afuera.",
+      "pasos": [
+        "Con el émbolo libre, la presión del gas es siempre la que lo empuja desde afuera: no cambia. Calentar no siempre sube la presión; aquí lo que cambia es el volumen (ley de Charles).",
+        "Temperaturas en kelvin: T₁ = 27 + 273 = 300 K; T₂ = 177 + 273 = 450 K.",
+        "V₂ = V₁ · T₂/T₁ = 4 · 450/300 = 6 L.",
+        "Si usas °C, te sale 4 · 177/27 ≈ 26,2 L: más de seis veces el volumen inicial, cuando la temperatura absoluta solo subió una vez y media."
+      ],
+      "verificar": [
+        { "fn": "kelvin", "args": [177], "espera": { "valor": 450 } },
+        { "fn": "cambio", "args": [{ "P": 1, "V": 4, "T": 300 }, { "T": 450 }, "V"], "espera": { "V": 6, "P": 1 } }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "En Juliaca, donde la presión atmosférica es de 0,63 atm, un taxista revisa una llanta en la mañana, a 7 °C, y el manómetro marca 1,37 atm. Al mediodía, después de rodar, el aire de la llanta está a 35 °C. Si el volumen de la llanta no cambia, ¿qué marca ahora el manómetro?",
+      "respuesta": "1,57 atm. La presión absoluta pasa de 2 atm a 2,2 atm.",
+      "pasos": [
+        "El manómetro mide cuánto supera la presión de adentro a la de afuera. Presión absoluta inicial: 1,37 + 0,63 = 2 atm. Esa es la que va en la ley de los gases.",
+        "Temperaturas en kelvin: 7 + 273 = 280 K y 35 + 273 = 308 K.",
+        "El volumen es fijo: no se aplica Charles. Cambia la presión (ley de Gay-Lussac): P₂ = 2 · 308/280 = 2,2 atm.",
+        "El manómetro marca 2,2 − 0,63 = 1,57 atm.",
+        "Si usas la presión manométrica en la ley, te sale 1,37 · 308/280 ≈ 1,51 atm. Si usas °C, te sale 2 · 35/7 = 10 atm, una llanta a punto de reventar."
+      ],
+      "verificar": [
+        { "fn": "tanque", "args": [{ "Pman1": 1.37, "Patm": 0.63, "T1C": 7, "T2C": 35 }],
+          "espera": { "P1abs": 2, "P2abs": 2.2, "Pman2": 1.57, "conManometrica": 1.507, "conCelsiusAbs": 10 } }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "a) ¿Cuál es la densidad del CO₂ a 2,46 atm y 27 °C? b) En las mismas condiciones, un gas desconocido tiene una densidad de 3,2 g/L. ¿Cuál es su masa molar y cuál de estos gases puede ser: CH₄, O₂, CO₂ o SO₂?",
+      "respuesta": "a) 4,4 g/L. b) 32 g/mol: es el O₂.",
+      "pasos": [
+        "La densidad de un gas sale de PV = nRT con n = m/M: d = PM/(RT). Temperatura: 27 + 273 = 300 K, así que RT = 0,082 · 300 = 24,6.",
+        "a) d = 2,46 · 44 / 24,6 = 4,4 g/L.",
+        "b) Se despeja la masa molar: M = dRT/P = 3,2 · 24,6 / 2,46 = 32 g/mol.",
+        "32 g/mol es el O₂, la molécula de dos átomos. No es el CH₄: 16 g/mol es la masa de un átomo de oxígeno, no la del gas.",
+        "No uses M = d · 22,4: eso solo vale en condiciones normales, y aquí el gas está a 2,46 atm y 27 °C. Te saldría 71,7 g/mol."
+      ],
+      "verificar": [
+        { "fn": "densidad", "args": [{ "P": 2.46, "M": "CO2", "T": 300 }], "espera": { "valor": 4.4 } },
+        { "fn": "masaMolarDesdeDensidad", "args": [3.2, 2.46, 300], "espera": { "valor": 32 } }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Para una prueba de buceo se prepara en un balón de 8,2 L una mezcla de 8 g de helio y 32 g de oxígeno, a 27 °C. ¿Cuál es la presión total y cuál es la presión parcial de cada gas?",
+      "respuesta": "La presión total es 9 atm. La presión parcial del helio es 6 atm y la del oxígeno, 3 atm.",
+      "pasos": [
+        "Moles: helio, 8/4 = 2 mol; oxígeno, 32/32 = 1 mol. En total, 3 mol.",
+        "Presión total: P = nRT/V = 3 · 0,082 · 300 / 8,2 = 9 atm.",
+        "Fracciones molares: helio, 2/3; oxígeno, 1/3. Presiones parciales: helio, 2/3 · 9 = 6 atm; oxígeno, 1/3 · 9 = 3 atm.",
+        "La presión se reparte por moles, no por gramos. Si repartes por masas, el oxígeno (32 de 40 g) se queda con 7,2 atm, cuando en realidad el helio, con menos gramos, tiene el doble de moléculas.",
+        "Comprueba: 6 + 3 = 9 atm."
+      ],
+      "verificar": [
+        { "fn": "estado", "args": [{ "V": 8.2, "n": 3, "T": 300 }], "espera": { "P": 9 } },
+        { "fn": "dalton", "args": [[{ "gas": "He", "masa": 8 }, { "gas": "O2", "masa": 32 }], 9],
+          "espera": { "nTotal": 3, "gases.He.n": 2, "gases.O2.n": 1, "gases.He.P": 6, "gases.O2.P": 3 } }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Un tubo de vidrio de 60 cm está lleno de aire. Al mismo tiempo, por un extremo se deja entrar metano (CH₄) y por el otro, dióxido de azufre (SO₂), a la misma temperatura. ¿A cuántos centímetros del extremo del metano se encuentran los dos gases?",
+      "respuesta": "A 40 cm del extremo del metano (y a 20 cm del extremo del SO₂).",
+      "pasos": [
+        "Ley de Graham: el gas más liviano avanza más rápido. v(CH₄)/v(SO₂) = √(M(SO₂)/M(CH₄)) = √(64/16) = √4 = 2.",
+        "En el mismo tiempo, el metano recorre el doble que el SO₂. Los 60 cm se reparten 2 a 1: 40 cm el metano y 20 cm el SO₂.",
+        "Si inviertes la razón (el más pesado más rápido), te sale 20 cm desde el metano.",
+        "Si olvidas la raíz y usas 64/16 = 4, te sale 60 · 4/5 = 48 cm."
+      ],
+      "verificar": [
+        { "fn": "graham", "args": ["CH4", "SO2"], "espera": { "valor": 2 } },
+        { "fn": "encuentro", "args": [60, "CH4", "SO2"], "espera": { "razon": 2, "desde1": 40, "desde2": 20, "invertido": 20, "sinRaiz": 48 } }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "En una cocina se queman 22 g de propano de un balón de gas según C₃H₈ + 5O₂ → 3CO₂ + 4H₂O. a) ¿Qué volumen de O₂, medido en condiciones normales, se necesita? b) ¿Qué volumen ocupa el CO₂ formado en condiciones normales? c) ¿Y qué volumen ocupa ese CO₂ a 27 °C y 0,82 atm?",
+      "respuesta": "a) 56 L de O₂. b) 33,6 L de CO₂. c) 45 L de CO₂.",
+      "pasos": [
+        "Moles de propano: 22/44 = 0,5 mol.",
+        "La ecuación dice 1 mol de propano con 5 mol de O₂ y 3 mol de CO₂: se gastan 2,5 mol de O₂ y se forman 1,5 mol de CO₂.",
+        "a) En condiciones normales, 1 mol de gas ocupa 22,4 L: 2,5 · 22,4 = 56 L de O₂.",
+        "b) 1,5 · 22,4 = 33,6 L de CO₂.",
+        "c) A 27 °C y 0,82 atm ya no vale 22,4 L/mol. Con PV = nRT: V = 1,5 · 0,082 · 300 / 0,82 = 45 L. Si dejas 33,6 L, ignoras que el gas está más caliente y a menos presión.",
+        "El agua no se cuenta con 22,4 L/mol: en condiciones normales es líquida."
+      ],
+      "verificar": [
+        { "fn": "dalton", "args": [[{ "gas": "C3H8", "M": 44, "masa": 22 }], 1], "espera": { "nTotal": 0.5 } },
+        { "fn": "volumenCN", "args": [2.5], "espera": { "valor": 56 } },
+        { "fn": "volumenCN", "args": [1.5], "espera": { "valor": 33.6 } },
+        { "fn": "estado", "args": [{ "P": 0.82, "n": 1.5, "T": 300 }], "espera": { "V": 45 } }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Un gas desconocido tiene una densidad de 1,25 g/L en condiciones normales. Se colocan 7 g de ese gas en un recipiente rígido de 4,1 L y se calienta a 127 °C. a) ¿Cuál es la masa molar del gas? b) ¿Qué presión absoluta tiene el gas en el recipiente? c) ¿Qué marcaría un manómetro conectado al recipiente en Puno, donde la presión atmosférica es de 0,63 atm?",
+      "respuesta": "a) 28 g/mol. b) 2 atm. c) 1,37 atm.",
+      "pasos": [
+        "a) En condiciones normales, 1 mol ocupa 22,4 L, así que M = d · 22,4 = 1,25 · 22,4 = 28 g/mol (puede ser N₂).",
+        "b) Moles: 7/28 = 0,25 mol. Temperatura: 127 + 273 = 400 K. P = nRT/V = 0,25 · 0,082 · 400 / 4,1 = 2 atm. Aquí no vale 22,4 L/mol: el gas ya no está en condiciones normales.",
+        "c) El manómetro marca lo que la presión de adentro supera a la de afuera: 2 − 0,63 = 1,37 atm. En Lima, el mismo recipiente marcaría 1 atm.",
+        "El recipiente es rígido: al calentar no cambia su volumen, por eso se usan los 4,1 L tal cual."
+      ],
+      "verificar": [
+        { "fn": "masaMolarCN", "args": [1.25], "espera": { "valor": 28 } },
+        { "fn": "dalton", "args": [[{ "gas": "N2", "masa": 7 }], 1], "espera": { "nTotal": 0.25 } },
+        { "fn": "estado", "args": [{ "V": 4.1, "n": 0.25, "T": 400 }], "espera": { "P": 2 } },
+        { "fn": "manometrica", "args": [2, 0.63], "espera": { "valor": 1.37 } },
+        { "fn": "manometrica", "args": [2, 1], "espera": { "valor": 1 } }
+      ]
+    }
+  ]
+}

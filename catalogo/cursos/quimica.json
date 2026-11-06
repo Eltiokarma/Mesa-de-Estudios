@@ -241,7 +241,8 @@
       "potencial_visual": "alto",
       "grado": 4,
       "plantillas": [
-        "estequiometria-limitante"
+        "estequiometria-limitante",
+        "limitante-particulas"
       ],
       "investigacion": "docs/investigacion/estequiometria-ideas-erroneas.md"
     },
@@ -273,7 +274,7 @@
       },
       "potencial_visual": "alto",
       "grado": 4,
-      "plantillas": [],
+      "plantillas": ["gases"],
       "investigacion": "docs/investigacion/gases-soluciones-ideas-erroneas.md"
     },
     {
@@ -329,7 +330,7 @@
       },
       "potencial_visual": "alto",
       "grado": 4,
-      "plantillas": [],
+      "plantillas": ["soluciones"],
       "investigacion": "docs/investigacion/gases-soluciones-ideas-erroneas.md"
     },
     {
