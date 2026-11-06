@@ -161,7 +161,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "dinamica"
+     ]
     },
     {
      "id": "fisica.gravitacion",
@@ -958,7 +960,9 @@
      },
      "potencial_visual": "medio",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "equilibrio-quimico"
+     ]
     },
     {
      "id": "quimica.acidos-y-bases",
@@ -4150,6 +4154,23 @@
     "/plantillas/circuitos-cc/papel.json"
    ]
   },
+  "dinamica": {
+   "id": "dinamica",
+   "titulo": "Dinámica: fuerzas, plano inclinado y poleas",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.dinamica"
+   ],
+   "url": "/plantillas/dinamica/index.html",
+   "papel": "/plantillas/dinamica/papel.json",
+   "archivos": [
+    "/plantillas/dinamica/index.html",
+    "/plantillas/dinamica/motor.js",
+    "/plantillas/dinamica/papel.json"
+   ]
+  },
   "energia": {
    "id": "energia",
    "titulo": "Trabajo y energía",
@@ -4165,6 +4186,23 @@
     "/plantillas/energia/index.html",
     "/plantillas/energia/motor.js",
     "/plantillas/energia/papel.json"
+   ]
+  },
+  "equilibrio-quimico": {
+   "id": "equilibrio-quimico",
+   "titulo": "Equilibrio químico",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.equilibrio-quimico"
+   ],
+   "url": "/plantillas/equilibrio-quimico/index.html",
+   "papel": "/plantillas/equilibrio-quimico/papel.json",
+   "archivos": [
+    "/plantillas/equilibrio-quimico/index.html",
+    "/plantillas/equilibrio-quimico/motor.js",
+    "/plantillas/equilibrio-quimico/papel.json"
    ]
   },
   "estequiometria-limitante": {

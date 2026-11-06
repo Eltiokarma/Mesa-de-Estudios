@@ -159,6 +159,18 @@ En esta sesión no se pudo abrir ningún PDF; las cifras del informe vienen de r
 | [ ] | C | Modestou y Gagatsis (2007), Educational Psychology 27(1); Kospentaris, Spyrou y Lappas (2011), ESM 77 | Porcentajes por ítem de linealidad y de conservación del área (GE3, GE6) |
 | [ ] | C | Clements y Battista (1992), capítulo "Geometry and spatial reasoning" del *Handbook* de Grouws (NCTM); Usiskin (1982), informe CDASSG | Marco general y niveles de Van Hiele en unos 2700 alumnos |
 
+### Razonamiento verbal (informe del 6 de noviembre de 2026)
+
+La red no dejó abrir los originales; las cifras del informe salen de resúmenes.
+
+- Terao e Ishii (2020), distractores en preguntas de idea principal.
+- Ludewig y otros (2023), inferencias en comprensión lectora.
+- Zunino (2016), comprensión de conectores contracausales en español.
+- Borzone (2005), referentes y cohesión en lectores hispanohablantes.
+- Cain y Nash (2011), conectores y comprensión.
+- NITE, informe e239 (analogías verbales en exámenes de admisión).
+- Informes de la UMC (Minedu) para el docente de secundaria: resultados por tipo de pregunta en lectura.
+
 ## 3. Libros de consulta
 
 Para diseñar plantillas y escribir problemas propios, no para copiar (ver "Uso de fuentes y derechos" en `docs/fundacional.md`).

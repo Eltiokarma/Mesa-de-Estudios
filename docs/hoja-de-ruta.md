@@ -93,7 +93,7 @@ gantt
 
     section Razonamiento
     Razonamiento matemático, sucesiones, conteo y planteo :active, ra1, 2026-11-20, 2026-11-28
-    Razonamiento verbal, textos propios con preguntas :ra2, 2026-11-20, 2026-12-03
+    Razonamiento verbal, textos propios con preguntas :active, ra2, 2026-11-20, 2026-12-03
 
     section Lanzamiento en el colegio
     Pulido visual de la app y las escenas :pl6, 2026-12-01, 2026-12-07

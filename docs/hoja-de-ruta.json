@@ -358,13 +358,13 @@
       "nombre": "Razonamiento verbal, textos propios con preguntas",
       "inicio": "2026-11-20",
       "fin": "2026-12-02",
-      "estado": "pendiente",
-      "progreso": 0,
+      "estado": "en_curso",
+      "progreso": 15,
       "critico": false,
       "depende_de": [
         "pl4"
       ],
-      "notas": ""
+      "notas": "Rutina de razonamiento verbal: informe razonamiento-verbal-ideas-erroneas.md (RV1-RV32). Siguen formato lectura, 30 textos y guía docente"
     },
     {
       "id": "pl6",

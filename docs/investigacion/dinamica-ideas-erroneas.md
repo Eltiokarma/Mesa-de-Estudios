@@ -109,7 +109,7 @@ Predicción: *¿cuánto vale la tensión?*
 | Opción | Error que representa | Respaldo |
 | --- | --- | --- |
 | a) 20 N, el peso del bloque liviano | T = mg (hipótesis) | Sin respaldo |
-| b) 30 N, el peso del bloque pesado | "Gana el más fuerte" (CI1 del FCI) | Documentado como categoría |
+| b) 30 N, el peso del bloque pesado | Hipótesis nuestra, cercana a "gana el más fuerte" (CI1 del FCI); pero CI1 trata de hacia dónde se mueve el sistema, no del valor de la tensión | Hipótesis (corregido el 6 nov 2026 tras la revisión de la plantilla) |
 | c) 24 N | Correcta | — |
 | d) 50 N, la suma de los pesos | Suma todas las fuerzas sin separar los cuerpos | Sin respaldo |
 

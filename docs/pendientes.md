@@ -8,7 +8,7 @@
 npm test
 ```
 
-Deben pasar 671 pruebas.
+Deben pasar 762 pruebas.
 
 ```bash
 npm run dev
@@ -57,9 +57,12 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 | ma1 a ma3 | Trigonometría, geometría, funciones | Informes del 6 nov: `trigonometria-`, `geometria-` y `algebra-funciones-ideas-erroneas.md` | Cifras de resúmenes, por verificar con los PDF (`fuentes/por-conseguir.md`); cada informe trae 3 escenas y casos |
 | ma4 | Aritmética | `aritmetica-razonamiento-ideas-erroneas.md` | Porcentajes sucesivos ya existe; suma-descuentos y se-compensan ya tienen respaldo (AR1, AR2) |
 | ra1 | Razonamiento matemático | Mismo informe (RM1 a RM6, casi todo hipótesis) | Formato predicciones |
-| ra2 y pl4 | Razonamiento verbal y formato lectura | Sin informe | Textos propios; el formato lectura todavía no existe |
+| ra2 y pl4 | Razonamiento verbal y formato lectura | `razonamiento-verbal-ideas-erroneas.md` (RV1 a RV32, ninguno documentado; hecho por la rutina) | La rutina sigue con el diseño del formato lectura, 30 textos propios y la guía docente |
 
 ### 2. Detalles de las plantillas ya hechas
+
+- **Dinámica** (`plantillas/dinamica/`, rutina de física, 6 nov 2026): plano inclinado con roce estático que se ajusta, poleas, ascensor, tercera ley y empujón; 21 casos verificados aparte; 10 de papel; 3 predicciones y 6 «¿qué pasa si…?» (Halloun y Hestenes 1985, Bao y otros 2002, Castillo y otros 2013). Falta: dinámica circular en escena (va con tiro parabólico), tren de bloques, bloque sobre bloque, polea móvil y péndulo en un vagón. Para Gerson: en «¿qué pasa si…?» las pastillas dejan saltar sin responder (como en MRUV).
+- **Equilibrio químico** (`plantillas/equilibrio-quimico/`, rutina de química, 6 nov 2026): A ⇌ B y 2 X ⇌ Y con partículas, Q contra K en vez de la regla de Le Chatelier (Quílez 2017); 18 casos verificados aparte; 9 de papel. Falta el gas inerte a presión constante y Kp en la escena (está en papel). ΔH y Ea de la escena elegidos para números redondos.
 
 - **Banco Óptico:**
   - Pasar la tipografía a la misma de la app (hoy carga Google Fonts, que sin conexión cae a la del sistema).

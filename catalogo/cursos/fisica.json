@@ -89,7 +89,7 @@
       "universidades": {"uni": {"semanas": [5]}, "unmsm": {"temas": [5]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "plantillas": [],
+      "plantillas": ["dinamica"],
       "investigacion": "docs/investigacion/dinamica-ideas-erroneas.md"
     },
     {
