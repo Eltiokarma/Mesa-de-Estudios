@@ -70,11 +70,13 @@ const correr = (c, s) => { for (let i = 0; i < Math.round(s * 60); i++) c.paso(1
 test('teoría de colisiones: la fracción de choques A–B eficaces es p·e^(−Ea/RT)', () => {
   for (const [T, Ea, orientacion] of [[300, 5000, false], [600, 5000, false], [300, 2500, true]]) {
     let ab = 0, ef = 0, teo = 0;
-    for (const semilla of [1, 2, 3]) {
-      const c = correr(motor.caja({ nA: 40, nB: 40, T, Ea, orientacion, reaccionar: false, semilla }), 40);
+    for (const semilla of [1, 2, 3, 4]) {
+      const c = correr(motor.caja({ nA: 40, nB: 40, T, Ea, orientacion, reaccionar: false, semilla }), 2);
+      c.reiniciarCuenta(); correr(c, 30);
       ab += c.cuenta.choquesAB; ef += c.cuenta.eficaces; teo = c.fraccionTeorica();
     }
-    cerca(ef / ab, teo, `T = ${T}, Ea = ${Ea}, orientación ${orientacion}`, 0.15);
+    // Con discos que chocan de verdad y un paso de tiempo finito queda una diferencia de unos pocos por ciento.
+    cerca(ef / ab, teo, `T = ${T}, Ea = ${Ea}, orientación ${orientacion}`, 0.08);
   }
 });
 test('con orientación y sin barrera, dos tercios de los choques A–B están mal orientados', () => {
@@ -100,6 +102,16 @@ test('el doble de A, cerca del doble de choques A–B', () => {
     b += correr(motor.caja({ nA: 40, nB: 20, reaccionar: false, semilla }), 20).cuenta.choquesAB;
   }
   cerca(b / a, 2, 'razón de choques', 0.2);
+});
+test('la caja que reacciona no se enfría: la energía media sigue cerca de R·T', () => {
+  const c = correr(motor.caja({ nA: 30, nB: 30, T: 400, semilla: 3 }), 2);
+  let s = 0; for (let i = 0; i < 40; i++) { correr(c, 0.25); s += c.energiaMedia(); }
+  cerca(s / 40, motor.R * 400, 'E media reaccionando', 0.1);
+  assert.ok(c.contar().C > 5, 'reaccionó');
+});
+test('los discos nacen sin encimarse', () => {
+  const c = motor.caja({ nA: 30, nB: 30, semilla: 9 }), l = c.parts;
+  for (let i = 0; i < l.length; i++) for (let j = i + 1; j < l.length; j++) assert.ok(Math.hypot(l[i].x - l[j].x, l[i].y - l[j].y) >= 2 * c.r - 1e-12);
 });
 test('se conserva la materia: A + C y B + C no cambian; todo sigue dentro de la caja', () => {
   const c = correr(motor.caja({ nA: 25, nB: 20, T: 450, semilla: 8 }), 20), n = c.contar();

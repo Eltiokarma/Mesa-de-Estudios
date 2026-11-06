@@ -171,14 +171,24 @@
     const masa = t => (t === 'A' ? S.MA : t === 'B' ? S.MB : S.MA + S.MB);
     // Velocidad térmica: cada componente con desviación √(RT/M) (M en kg/mol), en m/s.
     const termica = t => { const s = Math.sqrt(R * S.T / (masa(t) / 1000)); return [s * gauss(rnd), s * gauss(rnd)]; };
+    const radio = p => (p.tipo === 'C' ? S.r * 1.4 : S.r);
+    // Un lugar libre al azar: se prueba hasta 60 veces uno que no se encime con nadie (si la caja está muy llena, el último).
+    function libre(rad) {
+      let x, y;
+      for (let k = 0; k < 60; k++) {
+        x = rad + rnd() * (1 - 2 * rad); y = rad + rnd() * (1 - 2 * rad);
+        if (S.parts.every(q => (q.x - x) ** 2 + (q.y - y) ** 2 >= (rad + radio(q)) ** 2)) break;
+      }
+      return [x, y];
+    }
     function nueva(t, x, y) {
       const [vx, vy] = termica(t);
-      return { tipo: t, x: x === undefined ? S.r + rnd() * (1 - 2 * S.r) : x, y: y === undefined ? S.r + rnd() * (1 - 2 * S.r) : y,
+      if (x === undefined) [x, y] = libre(S.r);
+      return { tipo: t, x, y,
         vx, vy, ang: rnd() * 2 * Math.PI, giro: (rnd() - 0.5) * 2, cambio: -9 };
     }
     for (let k = 0; k < noNegativo(o.nA || 0, 'nA'); k++) S.parts.push(nueva('A'));
     for (let k = 0; k < noNegativo(o.nB || 0, 'nB'); k++) S.parts.push(nueva('B'));
-    const radio = p => (p.tipo === 'C' ? S.r * 1.4 : S.r);
     S.EaEfectiva = () => (S.cat === null ? S.Ea : S.cat);
 
     // ¿Reacciona el choque entre a (A) y b (B), con normal n (de a hacia b) y velocidad relativa normal vn > 0?
@@ -199,7 +209,8 @@
 
     S.paso = function (dt) {
       dt = positivo(dt, 'paso');
-      const sub = Math.max(1, Math.ceil(dt / 0.005)), h = dt / sub;
+      // Subpaso que se achica con la rapidez (∝ √T): cada disco avanza poco entre una revisión de choques y la siguiente.
+      const sub = Math.max(1, Math.ceil(dt / (0.0035 * Math.sqrt(300 / S.T)))), h = dt / sub;
       for (let s = 0; s < sub; s++) {
         for (const p of S.parts) {
           p.x += p.vx * ESC * h; p.y += p.vy * ESC * h; p.ang += p.giro * h;
@@ -214,23 +225,37 @@
             const b = S.parts[j]; if (quitar.has(b)) continue;
             const dx = b.x - a.x, dy = b.y - a.y, d2 = dx * dx + dy * dy, rr = radio(a) + radio(b);
             if (d2 >= rr * rr || d2 === 0) continue;
-            const d = Math.sqrt(d2), nx = dx / d, ny = dy / d;
+            // Los discos ya se enciman: se busca el instante de contacto (τ segundos antes), para usar la normal y la
+            // rapidez relativa de ese momento. Si no, los choques se miden tarde y de lado, y salen con menos energía.
+            const wx = (b.vx - a.vx) * ESC, wy = (b.vy - a.vy) * ESC, w2 = wx * wx + wy * wy, dw = dx * wx + dy * wy;
+            if (dw >= 0 || w2 === 0) continue; // no se acercan
+            let tau = (dw + Math.sqrt(dw * dw - w2 * (d2 - rr * rr))) / w2; // dw < 0: retroceder separa
+            tau = Math.min(Math.max(tau, 0), h);
+            const cx = dx + wx * tau, cy = dy + wy * tau, cd = Math.hypot(cx, cy) || rr;
+            const nx = cx / cd, ny = cy / cd;
             const vn = (a.vx - b.vx) * nx + (a.vy - b.vy) * ny; // > 0 si se acercan
             if (vn <= 0) continue;
             S.cuenta.choques++;
             const ab = (a.tipo === 'A' && b.tipo === 'B') || (a.tipo === 'B' && b.tipo === 'A');
             if (ab && decide(a, b, nx, ny, vn) && S.reaccionar) {
-              // Se forma C en el punto medio, con la cantidad de movimiento de los dos.
-              const ma = masa(a.tipo), mb = masa(b.tipo), M = ma + mb;
-              const c = { tipo: 'C', x: (a.x + b.x) / 2, y: (a.y + b.y) / 2, vx: (ma * a.vx + mb * b.vx) / M, vy: (ma * a.vy + mb * b.vy) / M,
+              // Se forma C en el punto medio. Nace con una velocidad térmica (la energía del choque no se pierde:
+              // la reacción libera calor y el termostato de la caja lo saca), así la caja no se enfría al reaccionar.
+              const [vx, vy] = termica('C');
+              const c = { tipo: 'C', x: (a.x + b.x) / 2, y: (a.y + b.y) / 2, vx, vy,
                 ang: a.tipo === 'A' ? a.ang : b.ang, giro: (rnd() - 0.5) * 2, cambio: S.t };
               quitar.add(a); quitar.add(b); nuevas.push(c);
               break;
             }
-            // Choque elástico entre discos.
+            // Choque elástico entre discos: se vuelve al contacto, se cambian las velocidades y se avanza τ otra vez.
             const ma = masa(a.tipo), mb = masa(b.tipo), J = 2 * vn / (ma + mb);
+            a.x -= a.vx * ESC * tau; a.y -= a.vy * ESC * tau; b.x -= b.vx * ESC * tau; b.y -= b.vy * ESC * tau;
             a.vx -= J * mb * nx; a.vy -= J * mb * ny; b.vx += J * ma * nx; b.vy += J * ma * ny;
-            const solape = (rr - d) / 2; a.x -= nx * solape; a.y -= ny * solape; b.x += nx * solape; b.y += ny * solape;
+            a.x += a.vx * ESC * tau; a.y += a.vy * ESC * tau; b.x += b.vx * ESC * tau; b.y += b.vy * ESC * tau;
+            // Si un tercer choque los dejó todavía encimados, se separan a lo largo de la normal (sin tocar las velocidades),
+            // para que no cuenten después choques falsos y suaves.
+            const ex = b.x - a.x, ey = b.y - a.y, e = Math.hypot(ex, ey);
+            if (e < rr && e > 0) { const s2 = (rr - e) / 2; a.x -= ex / e * s2; a.y -= ey / e * s2; b.x += ex / e * s2; b.y += ey / e * s2; }
+            for (const p of [a, b]) { const r = radio(p); p.x = Math.min(1 - r, Math.max(r, p.x)); p.y = Math.min(1 - r, Math.max(r, p.y)); }
           }
         }
         if (quitar.size) { S.parts = S.parts.filter(p => !quitar.has(p)); S.parts.push(...nuevas); }
