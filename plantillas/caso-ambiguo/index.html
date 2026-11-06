@@ -1,0 +1,1236 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El compás del caso ambiguo: ley de senos y de cosenos</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de la cinta del radio.
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
+   ángulo A fucsia, ángulo B verde, lado a (el brazo del compás) naranja, lado b azul, lado c turquesa, altura h roja,
+   radio R de la circunscrita vino y área S caqui (crema en modo oscuro). El término 2bc·cos A no tiene color propio: es el producto de b, c y
+   cos A y se dibuja rayado en tinta.
+   Elegidos con CIEDE2000: ΔE00 ≥ 20 entre los que salen juntos, en claro y en oscuro, y contraste AA sobre el papel, la
+   tarjeta y su chip (.v, fondo al 8 %). */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-Ag:#a10fbf; --c-Bg:#466d14; --c-a:#a05200; --c-b:#1f5fbf; --c-c:#0f766e; --c-h:#c0364a; --c-R:#77032c; --c-S:#5c531f; --c-ink:var(--ink);
+  --relleno:.14;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-Ag:#cf6bfa; --c-Bg:#a3d65e; --c-a:#f0a04a; --c-b:#7cb0ff; --c-c:#5ed9c8; --c-h:#f17384; --c-R:#fdb4ce; --c-S:#fdf2b4;
+  --relleno:.2; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-Ag:#cf6bfa; --c-Bg:#a3d65e; --c-a:#f0a04a; --c-b:#7cb0ff; --c-c:#5ed9c8; --c-h:#f17384; --c-R:#fdb4ce; --c-S:#fdf2b4;
+  --relleno:.2; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+/* Celular con una predicción pendiente: el dibujo más bajo y pegado arriba, para que se vea mientras se elige. */
+@media (max-width:899px){
+  .mode.pendiente .bench{position:sticky; top:0; z-index:1; padding:6px; gap:4px; background:var(--card); border-radius:0 0 20px 20px}
+  .mode.pendiente .legend{display:none}
+  .mode.pendiente .lecturas{gap:4px}
+  .mode.pendiente .lectura{padding:2px 8px}
+}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+.lienzo:focus-within{outline:3px solid var(--ink); outline-offset:2px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+.legend i.sq{width:12px; height:12px; border-radius:3px; opacity:.55}
+.legend i.raya{width:14px; height:10px; border-radius:2px; background:repeating-linear-gradient(45deg, var(--ink) 0 2px, transparent 2px 5px)!important; opacity:.8}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-Ag{color:var(--c-Ag); background:color-mix(in srgb, var(--c-Ag) 8%, transparent)}
+.v-Bg{color:var(--c-Bg); background:color-mix(in srgb, var(--c-Bg) 8%, transparent)}
+.v-a{color:var(--c-a); background:color-mix(in srgb, var(--c-a) 8%, transparent)}
+.v-b{color:var(--c-b); background:color-mix(in srgb, var(--c-b) 8%, transparent)}
+.v-c{color:var(--c-c); background:color-mix(in srgb, var(--c-c) 8%, transparent)}
+.v-h{color:var(--c-h); background:color-mix(in srgb, var(--c-h) 8%, transparent)}
+.v-R{color:var(--c-R); background:color-mix(in srgb, var(--c-R) 8%, transparent)}
+.v-S{color:var(--c-S); background:color-mix(in srgb, var(--c-S) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.02rem; font-variant-numeric:tabular-nums; min-width:0}
+@media (max-width:559px){ .eq{font-size:.95rem; gap:.3em} }
+.eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.5em; white-space:normal}
+.frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1.15}
+.frac > span:first-child{border-bottom:1.5px solid currentColor; padding:0 .25em}
+.frac > span:last-child{padding:0 .25em}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+table.regla{border-collapse:collapse; font-size:.92rem; width:100%; max-width:560px}
+table.regla th, table.regla td{text-align:left; padding:6px 8px; border-bottom:1px solid var(--line); vertical-align:top}
+table.regla th{font-size:.8rem; color:var(--muted); text-transform:uppercase; letter-spacing:.04em}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.acciones{display:flex; flex-wrap:wrap; gap:8px}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+/* Lecturas en vivo, cada una con el color de su variable */
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:8px}
+.lecturas:empty{display:none}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura b{display:block; color:var(--k); font:800 .95rem var(--mono); font-variant-numeric:tabular-nums; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.lectura span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.25fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Trigonometría · Triángulos oblicuángulos · Problemas tipo admisión</p>
+      <h1>El compás del caso ambiguo</h1>
+      <p class="sub">Con dos lados y el ángulo opuesto a uno de ellos, el triángulo se arma con un compás. A veces no sale ninguno, a veces uno y a veces dos. Y la ley de cosenos es Pitágoras con un rectángulo que se resta o se suma.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Triángulo con un compás arrastrable">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Triángulo ABC con el ángulo A sobre la base. El vértice C y la punta del brazo a se arrastran"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos con triángulos oblicuángulos">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/caso-ambiguo">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'caso-ambiguo', unidad: 'trigonometria.triangulos-oblicuangulos', version: '0.1.0' };
+// El experimento del área va a la unidad de áreas.
+const UNIDAD_AREAS = 'trigonometria.areas-y-lineas-notables';
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0, unidad){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: unidad || PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la matemática (la altura, cuántos triángulos, dónde corta el compás, la ley de cosenos y sus términos, la
+   circunscrita y el área) sale de MotorCompas (motor.js); aquí solo se pinta, se arrastra y se anima. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MC = MotorCompas, PI = Math.PI;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+// Coma decimal y signo menos tipográfico.
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 1 : d), r = Math.round(n*p)/p + 0;
+  const [e, f] = String(Math.abs(r)).split('.');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+// Un ángulo dato: su nombre si es notable (37° y 53° de academia incluidos); si no, con un decimal.
+const fmtAng = g => { const n = MC.notable(g); return n ? n.nombre : `${fmt(g, Math.abs(g - Math.round(g)) < 1e-6 ? 0 : 1)}°`; };
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const fr = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+function tween(dur, paso, fin, lineal){
+  if (RM || !dur){ paso(1); if (fin) setTimeout(fin, 0); return; }
+  const t0 = performance.now();
+  const tick = now => { const f = Math.min(1, (now - t0)/dur); paso(lineal ? f : suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
+  requestAnimationFrame(tick);
+}
+const A_ = t => V('Ag', t), B_ = t => V('Bg', t), a_ = t => V('a', t), b_ = t => V('b', t), c_ = t => V('c', t), h_ = t => V('h', t), R_ = t => V('R', t), S_ = t => V('S', t);
+const rad = g => g*PI/180;
+// Ángulos que "imantan" al arrastrar: los notables de academia.
+const IMANES = [30, MC.G37, 45, MC.G53, 60, 90, 120, 180 - MC.G53, 135, 180 - MC.G37, 150];
+function imantar(g){ for (const n of IMANES) if (Math.abs(g - n) < 1.2) return n; return Math.round(g); }
+
+function colores(){
+  const g = n => css(n);
+  return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
+    Ag:g('--c-Ag'), Bg:g('--c-Bg'), a:g('--c-a'), b:g('--c-b'), c:g('--c-c'), h:g('--c-h'), R:g('--c-R'), S:g('--c-S'),
+    relleno:Number(g('--relleno')) || .14, mono:g('--mono'), font:g('--font') };
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, p, q){ ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke(); }
+// Texto con un fondo del color del papel detrás, para que se lea sobre las líneas.
+function rotulo(ctx, c, x, y, t, color, align, peso, tam){
+  ctx.font = `${peso || 700} ${tam || 13}px ${c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+  ctx.fillStyle = color; ctx.fillText(t, x, y);
+  return { x0: x0 - 3, x1: x0 + w + 3, y0: y - 9, y1: y + 9 };
+}
+// Rayado en tinta: el término 2bc·cos A (producto de b, c y cos A, sin color propio).
+function rayado(ctx, c, x, y, w, h){
+  ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip();
+  ctx.strokeStyle = c.ink; ctx.globalAlpha = .75; ctx.lineWidth = 1.4;
+  for (let s = -h; s < w + h; s += 5){ ctx.beginPath(); ctx.moveTo(x + s, y + h); ctx.lineTo(x + s + h, y); ctx.stroke(); }
+  ctx.restore();
+  ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; ctx.strokeRect(x, y, w, h); ctx.restore();
+}
+// Resaltar en el dibujo la variable que se toca en el texto (regla 4).
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+const caso = E => MC.casoAmbiguo({ A:E.A, b:E.b, a:E.a });
+// Dónde queda el brazo al terminar de girar: sobre el último corte que forma triángulo; si no hay, sobre el último corte o hacia abajo.
+function finBrazo(K){ const v = K.cortes.filter(q => q.valido); return v.length ? v[v.length - 1].direccion : K.cortes.length ? Math.min(...K.cortes.map(q => q.direccion)) : -90; }
+const cosenos = E => MC.leyCosenos({ b:E.b, c:E.c, A:E.A });
+const lista = (xs, f) => (xs.length ? xs.map(f).join(' o ') : '—');
+/* Lecturas: cada una es [color, nombre, valor]. La descripción para lectores de pantalla dice solo lo que ellas dicen. */
+const LEC = {
+  A: E => ['Ag', 'Ángulo A', fmtAng(E.A)],
+  b: E => ['b', 'Lado b', fmt(E.b, 1)],
+  a: E => ['a', E.modo === 'compas' ? 'Brazo a' : 'Lado a', fmt(E.a, 1)],
+  c: E => ['c', 'Lado c', fmt(E.c, 1)],
+  h: E => ['h', 'Altura h = b·sen A', fmt(caso(E).h, 2)],
+  n: E => ['ink', 'Triángulos', String(caso(E).n)],
+  B: E => ['Bg', 'Ángulo B', lista(caso(E).B, fmtAng)],
+  cs: E => ['c', 'Lado c', lista(caso(E).c, x => fmt(x, 2))],
+  aCos: E => ['a', 'Lado a', fmt(cosenos(E).a, 2)],
+  a2: E => ['a', 'a²', fmt(cosenos(E).a2, 2)],
+  term: E => ['ink', '2bc·cos A', fmt(cosenos(E).termino, 2)],
+};
+
+/* ================= La escena =================
+   Modos: 'compas' (el ángulo A, el lado b y el brazo a que gira con centro en C), 'cosenos' (b, c y el ángulo A entre
+   ellos, con la tira de áreas: b² + c², el término 2bc·cos A y a²), 'circun' (la circunscrita, con el vértice A que
+   recorre el arco) y 'palitos' (tres lados sueltos, antes de armar el triángulo). Coordenadas del mundo en las
+   unidades del problema; una "caja" del mundo se ajusta a la parte de arriba del lienzo. */
+const COMP0 = { phi:25, dirFija:false, traza:null, circulo:false, vistos:0, h:false, falta:false };
+const COS0 = { oculto:false, barras:false, termino:false, a2:false, proy:false, f:1, meta:null, area:false, h:false };
+const CIRC0 = { t:.5, circulo:false, prog:1, R:false, diametro:false };
+function crearEscena(cv, idDesc, idLect, idLey){
+  const E = { modo:'compas', A:30, b:8, a:5, c:8, aMax:12, bMax:8, cMax:10, caja:null, arr:{}, rot:{}, lect:[], ley:null, hl:null,
+    alCambiar:null, ocupado:false, tok:0, anim:false, compacto:false,
+    comp:{ ...COMP0 }, cos:{ ...COS0 }, circ:{ ...CIRC0 }, palitos:null };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, arrastrando = null, sobre = null;
+  const cajaDe = () => E.caja || { x0:-1.6, x1:12.6, y0:-2, y1:6.6 };
+  const barrasH = () => (E.modo === 'cosenos' && E.cos.barras ? 92 : 0);
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    let h;
+    // alto natural: el de la caja del mundo (sin espacio vacío arriba ni abajo); compacto: no más de 260 px
+    let nat;
+    if (E.modo === 'palitos') nat = w >= 560 ? 300 : 240;
+    else { const c = cajaDe(), asp = (c.y1 - c.y0)/(c.x1 - c.x0); nat = Math.round(clamp((w - 28)*asp + 28 + barrasH(), 170, w >= 560 ? 520 : 440)); }
+    h = E.compacto && innerWidth < 900 ? Math.min(nat, Math.round(clamp(w*0.62, 220, 260))) : nat;
+    const dpr = window.devicePixelRatio || 1;
+    if (w === W && h === H) { E.dibujar(); return; }
+    W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  alRedibujarTema(() => E.dibujar());
+
+  E.config = o => {
+    E.tok++; E.anim = false;   // una animación vieja no sigue moviendo el dibujo nuevo
+    Object.assign(E, { modo:'compas', A:30, b:8, a:5, c:8, aMax:12, bMax:8, cMax:10, caja:null, rot:{}, lect:[], ley:null, alCambiar:null, palitos:null }, o);
+    E.arr = Object.assign({ A:false, a:false, c:false, P:false }, o.arr);
+    E.comp = Object.assign({ ...COMP0 }, o.comp);
+    E.cos = Object.assign({ ...COS0 }, o.cos);
+    E.circ = Object.assign({ ...CIRC0 }, o.circ);
+    cv.tabIndex = Object.values(E.arr).some(Boolean) ? 0 : -1;
+    W = 0; resize(); E.leyenda(); E.dibujar(); E.avisar();
+  };
+  // Con una predicción pendiente en el celular, el dibujo se achica y queda pegado arriba (sticky) para verse al elegir.
+  E.compactar = on => { on = !!on; cv.closest('.mode').classList.toggle('pendiente', on); if (on === !!E.compacto) return; E.compacto = on; W = 0; resize(); };
+  E.permitir = arr => { E.arr = Object.assign({ A:false, a:false, c:false, P:false }, arr); cv.tabIndex = Object.values(E.arr).some(Boolean) ? 0 : -1; E.dibujar(); };
+  E.redimensionar = () => { W = 0; resize(); };
+
+  // ----- del mundo a la pantalla -----
+  function escala(){
+    const c = cajaDe(), pad = 14, Ht = H - barrasH();
+    const k = Math.min((W - 2*pad)/(c.x1 - c.x0), (Ht - 2*pad)/(c.y1 - c.y0));
+    return { k, ox: W/2 - k*(c.x0 + c.x1)/2, oy: Ht/2 + k*(c.y0 + c.y1)/2, Ht };
+  }
+  const aP = (P, s) => ({ x: s.ox + s.k*P.x, y: s.oy - s.k*P.y });
+  const aM = (p, s) => ({ x: (p.x - s.ox)/s.k, y: (s.oy - p.y)/s.k });
+  const grosor = (k, base) => (E.hl === k ? base + 2.5 : base);
+  // Arco en ángulos matemáticos (grados, antihorario) dibujado en el lienzo (y hacia abajo).
+  function arcoG(cx, cy, R, g1, g2){ ctx.beginPath(); ctx.arc(cx, cy, R, -rad(g1), -rad(g2), g2 > g1); }
+  const enAng = (O, R, g) => ({ x: O.x + R*Math.cos(rad(g)), y: O.y - R*Math.sin(rad(g)) });
+  const dirG = (P, Q) => Math.atan2(-(Q.y - P.y), Q.x - P.x)*180/PI;   // dirección de P a Q en pantalla, en grados matemáticos
+  function punto(P, c, r){ ctx.save(); ctx.fillStyle = c.ink; ctx.beginPath(); ctx.arc(P.x, P.y, r || 3.5, 0, 7); ctx.fill(); ctx.restore(); }
+  function manija(P, c, cuadrada, k){
+    ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = (arrastrando === k || sobre === k) ? .18 : .09; ctx.beginPath(); ctx.arc(P.x, P.y, 20, 0, 7); ctx.fill(); ctx.restore();
+    ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = c.ink; ctx.lineWidth = 2.4; ctx.beginPath();
+    if (cuadrada) ctx.rect(P.x - 7, P.y - 7, 14, 14); else ctx.arc(P.x, P.y, 9, 0, 7);
+    ctx.fill(); ctx.stroke(); ctx.restore();
+  }
+  function marcaRecta(P, g1, g2, c){   // cuadrito de ángulo recto en P entre las direcciones g1 y g2
+    const u = enAng({ x:0, y:0 }, 9, g1), v = enAng({ x:0, y:0 }, 9, g2);
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.3; ctx.beginPath();
+    ctx.moveTo(P.x + u.x, P.y + u.y); ctx.lineTo(P.x + u.x + v.x, P.y + u.y + v.y); ctx.lineTo(P.x + v.x, P.y + v.y); ctx.stroke(); ctx.restore();
+  }
+  // Ángulo con su arco y su rótulo en la bisectriz.
+  function anguloEn(P, g1, g2, col, k, texto, c, rArco, rTxt){
+    const ra = rArco || 22;
+    ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = grosor(k, 2.4); arcoG(P.x, P.y, ra, g1, g2); ctx.stroke(); ctx.restore();
+    if (texto){ const m = enAng(P, rTxt || ra + 20, (g1 + g2)/2); rotulo(ctx, c, m.x, m.y, texto, col, 'center', 800, 13); }
+  }
+  function base(c, s, A0){
+    const cj = cajaDe(), izq = aP({ x:cj.x0 - 1, y:0 }, s), der = aP({ x:cj.x1 + 1, y:0 }, s);
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.4; ctx.setLineDash([5, 5]); linea(ctx, izq, A0); ctx.restore();
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.8; linea(ctx, A0, der); ctx.restore();
+  }
+
+  // ----- el compás -----
+  function dibCompas(c, s){
+    const K = caso(E), A0 = aP({ x:0, y:0 }, s), Cp = aP(K.C, s), ka = E.a*s.k, cm = E.comp;
+    base(c, s, A0);
+    const vistos = K.cortes.slice(0, Math.min(cm.vistos, K.cortes.length));
+    // la altura h, del vértice C a la base
+    if (cm.h){
+      const Hp = aP(K.pie, s);
+      ctx.save(); ctx.strokeStyle = c.h; ctx.lineWidth = grosor('h', 2.2); ctx.setLineDash([6, 4]); linea(ctx, Cp, Hp); ctx.restore();
+      marcaRecta(Hp, 90, K.pie.x >= 0 ? 0 : 180, c);
+    }
+    // el círculo del compás (o el trazo que deja al girar)
+    if (cm.circulo){ ctx.save(); ctx.strokeStyle = c.a; ctx.globalAlpha = .7; ctx.lineWidth = 1.4; ctx.setLineDash([3, 4]); ctx.beginPath(); ctx.arc(Cp.x, Cp.y, ka, 0, 2*PI); ctx.stroke(); ctx.restore(); }
+    else if (cm.traza){ ctx.save(); ctx.strokeStyle = c.a; ctx.globalAlpha = .75; ctx.lineWidth = 1.6; ctx.setLineDash([3, 4]); arcoG(Cp.x, Cp.y, ka, cm.traza[0], cm.traza[1]); ctx.stroke(); ctx.restore(); }
+    // triángulos que ya aparecieron: el lado c sobre la base (debajo, uno por fila) y el lado a de C a B
+    const validos = vistos.filter(q => q.valido), dos = K.cortes.filter(q => q.valido).length > 1;
+    validos.forEach((q, j) => {
+      const Bp = aP({ x:q.x, y:0 }, s), y = A0.y + 8 + 9*j;
+      ctx.save(); ctx.strokeStyle = c.c; ctx.lineWidth = grosor('c', 4); ctx.lineCap = 'butt';
+      linea(ctx, { x:A0.x, y }, { x:Bp.x, y }); ctx.restore();
+      ctx.save(); ctx.strokeStyle = c.c; ctx.lineWidth = 1; ctx.globalAlpha = .6; linea(ctx, { x:Bp.x, y:A0.y }, { x:Bp.x, y }); ctx.restore();
+      ctx.save(); ctx.strokeStyle = c.a; ctx.lineWidth = grosor('a', 3.2); ctx.lineCap = 'round'; linea(ctx, Cp, Bp); ctx.restore();
+    });
+    validos.forEach((q, j) => {
+      const Bp = aP({ x:q.x, y:0 }, s), sub = dos ? (j ? '₂' : '₁') : '';
+      anguloEn(Bp, dirG(Bp, Cp), 180, c.Bg, 'Bg', '', c, j ? 13 : 17);
+      const m = j ? enAng(Bp, 26, 88) : enAng(Bp, 32, (dirG(Bp, Cp) + 180)/2);
+      rotulo(ctx, c, m.x, m.y, 'B' + sub, c.Bg, 'center', 800, 13);
+      rotulo(ctx, c, (A0.x + Bp.x)/2, A0.y + 8 + 9*j + (j ? 20 : 12), 'c' + sub, c.c, 'center', 800, 13);
+      punto(Bp, c, 4);
+    });
+    // cortes que caen en A o detrás: no forman triángulo
+    vistos.filter(q => !q.valido).forEach(q => {
+      const Bp = aP({ x:q.x, y:0 }, s);
+      ctx.save(); ctx.strokeStyle = c.muted; ctx.fillStyle = c.paper; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(Bp.x, Bp.y, 5, 0, 7); ctx.fill(); ctx.stroke(); ctx.restore();
+    });
+    const malos = vistos.filter(q => !q.valido);
+    if (malos.length && E.rot.detras !== null){
+      const xs = malos.map(q => aP({ x:q.x, y:0 }, s).x), xm = (Math.min(...xs) + Math.max(...xs))/2;
+      rotulo(ctx, c, xm, A0.y + 16, E.rot.detras || 'detrás de A', c.muted, 'center', 700, 12);
+    }
+    // el lado b, de A a C
+    ctx.save(); ctx.strokeStyle = c.b; ctx.lineWidth = grosor('b', 3.4); ctx.lineCap = 'round'; linea(ctx, A0, Cp); ctx.restore();
+    // el brazo del compás
+    const T = enAng(Cp, ka, cm.phi);
+    ctx.save(); ctx.strokeStyle = c.a; ctx.lineWidth = grosor('a', 4); ctx.lineCap = 'round'; linea(ctx, Cp, T); ctx.restore();
+    // falta para llegar (cuando no alcanza)
+    if (cm.falta && K.n === 0 && K.situacion === 'no-alcanza'){
+      const Hp = aP(K.pie, s);
+      rotulo(ctx, c, Hp.x + 8, (T.y + Hp.y)/2, `falta ${fmt(K.h - E.a, 1)}`, c.h, 'left', 800, 12);
+    }
+    // el ángulo A
+    anguloEn(A0, 0, E.A, c.Ag, 'Ag', E.rot.A === null ? '' : (E.rot.A || `A = ${fmtAng(E.A)}`), c, 24, E.A > 100 ? 40 : 50);
+    // rótulos de b, de a y de h
+    // normal a AC del lado de afuera: arriba a la izquierda si A es agudo; con A obtuso, a la derecha (lejos de h y del brazo)
+    const sg = E.A > 90 ? -1 : 1, nb = { x: -sg*Math.sin(rad(E.A)), y: -sg*Math.cos(rad(E.A)) };
+    const mb = { x:(A0.x + Cp.x)/2 + 16*nb.x, y:(A0.y + Cp.y)/2 + 16*nb.y };
+    if (E.rot.b !== null) rotulo(ctx, c, mb.x, mb.y, E.rot.b || `b = ${fmt(E.b, 1)}`, c.b, 'center', 800, 13);
+    if (E.rot.a !== null){
+      // sobre el primer lado a que ya se dibujó (o sobre el brazo), del lado que no mira hacia A
+      const Q = validos.length ? aP({ x:validos[0].x, y:0 }, s) : T, m = { x:(Cp.x + Q.x)/2, y:(Cp.y + Q.y)/2 };
+      const g = dirG(Cp, Q); let n = { x: -Math.sin(rad(g)), y: -Math.cos(rad(g)) };
+      if (n.x*(m.x - A0.x) + n.y*(m.y - A0.y) < 0) n = { x:-n.x, y:-n.y };
+      rotulo(ctx, c, m.x + 16*n.x, m.y + 16*n.y, E.rot.a || `a = ${fmt(E.a, 1)}`, c.a, 'center', 800, 13);
+    }
+    if (cm.h && E.rot.h !== null){
+      // solo la letra (el valor va en las lecturas): cabe entre la altura y los lados a
+      const Hp = aP(K.pie, s);
+      if (cm.falta) rotulo(ctx, c, Hp.x - 8, (Cp.y + Hp.y)/2, E.rot.h || 'h', c.h, 'right', 800, 13);
+      else rotulo(ctx, c, Hp.x + 8, (Cp.y + Hp.y)/2, E.rot.h || 'h', c.h, 'left', 800, 13);
+    }
+    // puntos
+    punto(A0, c); rotulo(ctx, c, A0.x - 11, A0.y - 11, 'A', c.ink, 'center', 800, 13);
+    if (E.arr.A) manija(Cp, c, false, 'A'); else punto(Cp, c, 4.5);
+    const nC = enAng(Cp, 17, E.A + 90 > 180 ? E.A + 60 : E.A + 90);
+    rotulo(ctx, c, nC.x, nC.y, 'C', c.ink, 'center', 800, 13);
+    if (E.arr.a) manija(T, c, true, 'a'); else punto(T, c, 3.5);
+  }
+
+  // ----- ley de cosenos: el triángulo y la tira de áreas -----
+  function dibCosenos(c, s){
+    const L = cosenos(E), P = L.puntos, A0 = aP(P.A, s), Bp = aP(P.B, s), Cp = aP(P.C, s), Hp = aP(P.H, s), co = E.cos;
+    base(c, s, A0);
+    // área (relleno) y altura del experimento del área
+    if (co.area){
+      ctx.save(); ctx.fillStyle = c.S; ctx.globalAlpha = E.hl === 'S' ? c.relleno*2.4 : c.relleno*1.6; ctx.beginPath(); ctx.moveTo(A0.x, A0.y); ctx.lineTo(Bp.x, Bp.y); ctx.lineTo(Cp.x, Cp.y); ctx.closePath(); ctx.fill(); ctx.restore();
+    }
+    if (co.h){
+      ctx.save(); ctx.strokeStyle = c.h; ctx.lineWidth = grosor('h', 2.2); ctx.setLineDash([6, 4]); linea(ctx, Cp, Hp); ctx.restore();
+      marcaRecta(Hp, 90, P.H.x >= 0 ? 0 : 180, c);
+      if (E.rot.h !== null) rotulo(ctx, c, Hp.x + 8, (Cp.y + Hp.y)/2, E.rot.h || 'h', c.h, 'left', 800, 13);
+    }
+    // la proyección de b sobre la base: b·cos A (cae detrás de A si A es obtuso)
+    if (co.proy && Math.abs(L.proyeccion) > 1e-6){
+      ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; ctx.setLineDash([3, 3]); linea(ctx, Cp, Hp); ctx.restore();
+      const y = A0.y + 7;
+      ctx.save(); ctx.strokeStyle = c.b; ctx.lineWidth = grosor('b', 3); ctx.setLineDash([6, 3]); linea(ctx, { x:A0.x, y }, { x:Hp.x, y }); ctx.restore();
+      // el segmento mide el valor absoluto; con A obtuso, b·cos A es negativo
+      if (E.rot.proy !== null) rotulo(ctx, c, (A0.x + Hp.x)/2, y + 13, L.proyeccion < 0 ? '|b·cos A|' : 'b·cos A', c.b, 'center', 700, 12);
+      marcaRecta(Hp, 90, P.H.x >= 0 ? 0 : 180, c);
+    }
+    // lados
+    ctx.save(); ctx.lineCap = 'round';
+    // antes de responder (oculto), c no muestra su extremo: así el dibujo a escala no regala cuánto mide a
+    if (co.oculto){ ctx.save(); ctx.strokeStyle = c.c; ctx.lineWidth = grosor('c', 3.4); ctx.setLineDash([10, 6]); linea(ctx, A0, { x:W, y:A0.y }); ctx.restore(); }
+    else { ctx.strokeStyle = c.c; ctx.lineWidth = grosor('c', 3.4); linea(ctx, A0, Bp); }
+    ctx.strokeStyle = c.b; ctx.lineWidth = grosor('b', 3.4); linea(ctx, A0, Cp);
+    if (!co.oculto){ ctx.strokeStyle = c.a; ctx.lineWidth = grosor('a', 3.4); linea(ctx, Bp, Cp); }
+    ctx.restore();
+    anguloEn(A0, 0, E.A, c.Ag, 'Ag', E.rot.A === null ? '' : (E.rot.A || `A = ${fmtAng(E.A)}`), c, E.A > 135 ? 15 : 22, E.A > 135 ? 28 : E.A > 100 ? 40 : 46);
+    if (Math.abs(E.A - 90) < 1e-9) marcaRecta(A0, 0, 90, c);
+    // rótulos
+    const nb = { x: -Math.sin(rad(E.A)), y: -Math.cos(rad(E.A)) };
+    if (E.rot.b !== null) rotulo(ctx, c, (A0.x + Cp.x)/2 + 16*nb.x, (A0.y + Cp.y)/2 + 16*nb.y, E.rot.b || `b = ${fmt(E.b, 1)}`, c.b, 'center', 800, 13);
+    if (E.rot.c !== null) rotulo(ctx, c, co.oculto ? A0.x + 50 : (A0.x + Bp.x)/2, A0.y + (co.proy && L.proyeccion > 1e-6 ? 32 : 15), E.rot.c || `c = ${fmt(E.c, 1)}`, c.c, 'center', 800, 13);
+    if (E.rot.a !== null && !co.oculto){
+      const g = dirG(Bp, Cp), n = { x: Math.sin(rad(g)), y: Math.cos(rad(g)) };
+      rotulo(ctx, c, (Bp.x + Cp.x)/2 + 16*n.x, (Bp.y + Cp.y)/2 + 16*n.y, E.rot.a || `a = ${fmt(L.a, 2)}`, c.a, 'center', 800, 13);
+    }
+    if (co.area && E.rot.S){ const G = { x:.2*A0.x + .6*Bp.x + .2*Cp.x, y:.2*A0.y + .6*Bp.y + .2*Cp.y }; rotulo(ctx, c, G.x, G.y - 2, E.rot.S, c.S, 'center', 800, 13); }
+    punto(A0, c); rotulo(ctx, c, A0.x - 11, A0.y - 11, 'A', c.ink, 'center', 800, 13);
+    if (!co.oculto){
+      if (E.arr.c) manija(Bp, c, true, 'c'); else punto(Bp, c);
+      rotulo(ctx, c, Bp.x + 12, Bp.y - 11, 'B', c.ink, 'center', 800, 13);
+    }
+    if (E.arr.A) manija(Cp, c, false, 'A'); else punto(Cp, c);
+    const nC = enAng(Cp, 17, E.A + 90 > 170 ? E.A + 45 : E.A + 90);
+    rotulo(ctx, c, nC.x, nC.y, 'C', c.ink, 'center', 800, 13);
+    if (co.barras) dibBarras(c, s, L);
+  }
+  // La tira de áreas: arriba b² + c² (Pitágoras) con el término 2bc·cos A que se quita o se agrega; abajo a².
+  function dibBarras(c, s, L){
+    const co = E.cos, y0 = s.Ht, x0 = 14, x1 = W - 14, max = Math.pow(E.b + E.c, 2)*1.02, k = (x1 - x0)/max;
+    const y1 = y0 + 16, h1 = 18, y2 = y1 + h1 + 24, X = v => x0 + v*k;
+    ctx.save(); ctx.strokeStyle = c.line; ctx.lineWidth = 1; linea(ctx, { x:8, y:y0 + 2 }, { x:W - 8, y:y0 + 2 }); ctx.restore();
+    const pieza = (v0, v1, y, col, txt) => {
+      ctx.save(); ctx.fillStyle = col; ctx.globalAlpha = .5; ctx.fillRect(X(v0), y, (v1 - v0)*k, h1); ctx.restore();
+      ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = 1.5; ctx.strokeRect(X(v0), y, (v1 - v0)*k, h1); ctx.restore();
+      // el rótulo lleva fondo de papel: se lee igual sobre cualquier relleno (contraste AA en claro y oscuro)
+      if ((v1 - v0)*k > 28) rotulo(ctx, c, (X(v0) + X(v1))/2, y + h1/2, txt, c.ink, 'center', 800, 12);
+    };
+    pieza(0, L.b2, y1, c.b, 'b²');
+    pieza(L.b2, L.pitagoras, y1, c.c, 'c²');
+    // el término: rayado al final de b² + c² (se quita) o a continuación (se agrega)
+    const t = L.rectangulo*co.f;
+    if (co.termino && t > 1e-6){
+      const desde = L.signo === 'resta' ? L.pitagoras - t : L.pitagoras, w = t*k;
+      rayado(ctx, c, X(desde), y1 - 3, w, h1 + 6);
+      const txt = L.signo === 'resta' ? '− 2bc·cos A' : '+ 2bc·|cos A|', xm = X(desde) + w/2;
+      ctx.save(); ctx.font = `800 12px ${c.font}`; const tw = ctx.measureText(txt).width; ctx.restore();
+      // a un lado de la raya de Pitágoras, sin cruzarla: a la derecha si se suma, a la izquierda si se resta
+      const xp0 = X(L.pitagoras), der = L.signo === 'suma' ? xp0 + 5 + tw <= x1 : xp0 - 5 - tw < x0;
+      if (der) rotulo(ctx, c, Math.min(xp0 + 5, x1 - tw), y1 + h1 + 13, txt, c.ink, 'left', 800, 12);
+      else rotulo(ctx, c, Math.max(xp0 - 5, x0 + tw), y1 + h1 + 13, txt, c.ink, 'right', 800, 12);
+    }
+    // Pitágoras: la raya de b² + c²
+    const xp = X(L.pitagoras);
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; ctx.setLineDash([4, 3]); linea(ctx, { x:xp, y:y1 - 8 }, { x:xp, y:y2 + h1 + 4 }); ctx.restore();
+    ctx.save(); ctx.font = `700 11px ${c.font}`; ctx.fillStyle = c.muted; ctx.textBaseline = 'middle';
+    const pt = 'Pitágoras', pw = ctx.measureText(pt).width; ctx.textAlign = L.signo !== 'suma' && xp + 4 + pw < x1 ? 'left' : 'right';
+    ctx.fillText(pt, xp + (ctx.textAlign === 'left' ? 4 : -4), y1 - 8); ctx.restore();
+    // a²
+    if (co.a2){
+      pieza(0, L.a2*co.f, y2, c.a, 'a²');
+    } else { ctx.save(); ctx.font = `800 12px ${c.font}`; ctx.fillStyle = c.a; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText('a² = ?', x0, y2 + h1/2); ctx.restore(); }
+    if (co.meta){
+      const xm = X(co.meta);
+      ctx.save(); ctx.strokeStyle = c.a; ctx.lineWidth = 2.4; linea(ctx, { x:xm, y:y2 - 4 }, { x:xm, y:y2 + h1 + 4 }); ctx.restore();
+      rotulo(ctx, c, xm, y2 + h1 + 12, `${fmt(co.meta, 0)}`, c.a, 'center', 800, 11);
+    }
+  }
+
+  // ----- la circunscrita -----
+  function dibCircun(c, s){
+    const I = MC.inscrito({ a:E.a, A:E.A, t:E.circ.t }), O = aP(I.O, s), Bp = aP(I.B, s), Cp = aP(I.C, s), Pp = aP(I.P, s), Rk = I.R*s.k, ci = E.circ;
+    if (ci.circulo){ ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.arc(O.x, O.y, Rk, -I.arco.desde, -I.arco.desde - ci.prog*2*PI, true); ctx.stroke(); ctx.restore(); }
+    if (ci.diametro){
+      const Q = aP(I.opuesto, s);
+      ctx.save(); ctx.strokeStyle = c.R; ctx.lineWidth = grosor('R', 2); ctx.setLineDash([6, 4]); linea(ctx, Bp, Q); ctx.restore();
+      ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.6; ctx.setLineDash([6, 4]); linea(ctx, Q, Cp); ctx.restore();
+      marcaRecta(Cp, 180, dirG(Cp, Q), c);
+      punto(Q, c, 3.5); rotulo(ctx, c, Q.x + 12, Q.y - 10, "A'", c.ink, 'center', 800, 13);
+      rotulo(ctx, c, (Bp.x + Q.x)/2 + 14, (Bp.y + Q.y)/2 + 4, '2R', c.R, 'left', 800, 13);
+    }
+    ctx.save(); ctx.lineCap = 'round';
+    ctx.strokeStyle = c.c; ctx.lineWidth = grosor('c', 2.6); linea(ctx, Pp, Bp);
+    ctx.strokeStyle = c.b; ctx.lineWidth = grosor('b', 2.6); linea(ctx, Pp, Cp);
+    ctx.strokeStyle = c.a; ctx.lineWidth = grosor('a', 3.8); linea(ctx, Bp, Cp);
+    ctx.restore();
+    if (ci.R){ ctx.save(); ctx.strokeStyle = c.R; ctx.lineWidth = grosor('R', 3); linea(ctx, O, Bp); ctx.restore(); punto(O, c, 3.5); rotulo(ctx, c, O.x + 12, O.y - 10, 'O', c.ink, 'center', 800, 13);
+      if (!ci.diametro){ const m = { x:(O.x + Bp.x)/2 - 12, y:(O.y + Bp.y)/2 }; rotulo(ctx, c, m.x, m.y, 'R', c.R, 'right', 800, 13); } }
+    const g1 = dirG(Pp, Bp), g2 = dirG(Pp, Cp); let d1 = g1, d2 = g2; if (Math.abs(d2 - d1) > 180){ if (d1 < d2) d1 += 360; else d2 += 360; }
+    anguloEn(Pp, Math.min(d1, d2), Math.max(d1, d2), c.Ag, 'Ag', E.rot.A === null ? '' : (E.rot.A || `A = ${fmtAng(E.A)}`), c, 22, 46);
+    rotulo(ctx, c, (Bp.x + Cp.x)/2, Bp.y + 16, E.rot.a || `a = ${fmt(E.a, 1)}`, c.a, 'center', 800, 13);
+    punto(Bp, c); punto(Cp, c);
+    rotulo(ctx, c, Bp.x - 12, Bp.y + 4, 'B', c.ink, 'center', 800, 13); rotulo(ctx, c, Cp.x + 12, Cp.y + 4, 'C', c.ink, 'center', 800, 13);
+    if (E.arr.P) manija(Pp, c, false, 'P'); else punto(Pp, c);
+    const u = { x:Pp.x - O.x, y:Pp.y - O.y }, nu = Math.hypot(u.x, u.y) || 1;
+    rotulo(ctx, c, Pp.x + 16*u.x/nu, Pp.y + 16*u.y/nu, 'A', c.ink, 'center', 800, 13);
+  }
+
+  // ----- tres palitos sueltos (antes de armar el triángulo) -----
+  function dibPalitos(c){
+    const P = E.palitos, max = Math.max(...P.map(p => p.v)), x0 = 24, k = (W - 2*x0 - 60)/max, gap = (H - 40)/P.length;
+    P.forEach((p, j) => {
+      const y = 30 + gap*j + gap/2 - 10;
+      ctx.save(); ctx.strokeStyle = c[p.k]; ctx.lineWidth = grosor(p.k, 8); ctx.lineCap = 'round'; linea(ctx, { x:x0, y }, { x:x0 + p.v*k, y }); ctx.restore();
+      rotulo(ctx, c, x0 + p.v*k + 14, y, `${p.k} = ${fmt(p.v, 0)}`, c[p.k], 'left', 800, 14);
+    });
+  }
+
+  E.dibujar = () => {
+    if (!W) return;
+    const c = colores(), s = escala();
+    ctx.clearRect(0, 0, W, H); ctx.fillStyle = c.paper; ctx.fillRect(0, 0, W, H);
+    if (E.modo === 'cosenos') dibCosenos(c, s);
+    else if (E.modo === 'circun') dibCircun(c, s);
+    else if (E.modo === 'palitos') dibPalitos(c);
+    else dibCompas(c, s);
+  };
+  E.leyenda = () => {
+    if (!idLey) return;
+    const it = (k, t, cl) => `<span><i class="${cl || ''}" style="background:var(--c-${k})"></i>${t}</span>`;
+    let l = E.ley;
+    if (!l){
+      if (E.modo === 'compas'){
+        l = [it('Ag', 'A · ángulo dato'), it('b', 'b · lado AC'), it('a', 'a · brazo del compás')];
+        if (caso(E).cortes.slice(0, E.comp.vistos).some(q => q.valido)) l.push(it('c', 'c · lado AB'), it('Bg', 'B · ángulo en B'));
+        if (E.comp.h) l.push(it('h', 'h · altura desde C'));
+      } else if (E.modo === 'cosenos'){
+        l = [it('Ag', 'A'), it('b', 'b'), it('c', 'c'), it('a', 'a · lado opuesto a A')];
+        if (E.cos.barras) l.push(`<span><i class="raya"></i>2bc·cos A</span>`);
+        if (E.cos.area) l.push(it('S', 'S · área', 'sq'));
+        if (E.cos.h) l.push(it('h', 'h · altura desde C'));
+      } else if (E.modo === 'circun'){
+        l = [it('a', 'a = BC'), it('Ag', 'A · ángulo inscrito')];
+        if (E.circ.R) l.push(it('R', 'R · radio de la circunscrita'));
+      } else l = [];
+    }
+    document.getElementById(idLey).innerHTML = l.join('');
+  };
+  // Lecturas y descripción para lectores de pantalla (dicen lo mismo; antes de responder no adelantan la respuesta).
+  E.avisar = callado => {
+    const filas = E.lect.map(k => (typeof k === 'function' ? k(E) : LEC[k](E)));
+    if (idLect) document.getElementById(idLect).innerHTML = filas.map(([k, t, v]) => `<div class="lectura" style="--k:var(--c-${k})"><span>${t}</span><b>${v}</b></div>`).join('');
+    if (idDesc && !callado){
+      const base0 = { compas:'Ángulo A sobre la base, lado b de A a C y un brazo de largo a que gira con centro en C.', cosenos:'Triángulo con los lados b y c y el ángulo A entre ellos.', circun:'Triángulo inscrito en una circunferencia.', palitos:'Tres lados sueltos.' }[E.modo];
+      document.getElementById(idDesc).textContent = [base0, ...filas.map(([, t, v]) => `${t}: ${v}.`)].join(' ');
+    }
+    if (E.alCambiar) E.alCambiar();
+  };
+  E.animar = (de, a, dur, paso, fin, lineal) => {
+    const tok = ++E.tok; E.anim = true;
+    // durante la animación cambian las lecturas, pero el aria-live habla recién al terminar
+    tween(dur, f => { if (tok !== E.tok) return; paso(de + (a - de)*f); E.dibujar(); E.avisar(true); },
+      () => { if (tok !== E.tok) return; E.anim = false; E.avisar(); if (fin) fin(); }, lineal);
+  };
+  // El brazo gira con centro en C, en sentido horario, desde donde está; los cortes aparecen al tocarlos.
+  E.barrer = (dur, fin) => {
+    const K = caso(E), dirs = K.cortes.map(q => q.direccion), phi0 = E.comp.phi;
+    const fin1 = dirs.length ? Math.min(...dirs) : -155;
+    E.comp.traza = [phi0, phi0]; E.comp.vistos = 0;
+    const cierre = () => { E.comp.circulo = true; E.comp.traza = null; E.comp.h = true; E.comp.vistos = dirs.length; E.comp.phi = finBrazo(K); E.leyenda(); E.dibujar(); E.avisar(); if (fin) fin(); };
+    E.animar(phi0, fin1, dur, phi => {
+      E.comp.phi = phi; E.comp.traza = [phi0, phi];
+      const v = dirs.filter(d => d >= phi - 1e-9).length; if (v !== E.comp.vistos){ E.comp.vistos = v; E.leyenda(); }
+    }, () => {
+      const f2 = finBrazo(K), tok = E.tok;
+      if (dirs.length && Math.abs(f2 - fin1) > 1e-6) esperar(300, () => { if (tok !== E.tok) return; E.animar(fin1, f2, 700, phi => { E.comp.phi = phi; }, cierre); });
+      else if (dirs.length) cierre();
+      else { const tok = E.tok; esperar(250, () => { if (tok !== E.tok) return; E.animar(fin1, -90, 700, phi => { E.comp.phi = phi; }, () => { E.comp.falta = true; cierre(); }); }); }
+    }, true);
+  };
+
+  // ----- arrastrar: táctil, ratón y teclado -----
+  const local = e => { const r = cv.getBoundingClientRect(); return { x:e.clientX - r.left, y:e.clientY - r.top }; };
+  function manijas(){
+    const s = escala(), m = { s };
+    if (E.modo === 'compas'){ const K = caso(E), Cp = aP(K.C, s); m.A = Cp; m.a = enAng(Cp, E.a*s.k, E.comp.phi); m.C = Cp; }
+    else if (E.modo === 'cosenos'){ const P = cosenos(E).puntos; m.A = aP(P.C, s); m.c = aP(P.B, s); }
+    else if (E.modo === 'circun') m.P = aP(MC.inscrito({ a:E.a, A:E.A, t:E.circ.t }).P, s);
+    return m;
+  }
+  // Con el dedo, el dibujo deja desplazar la página (touch-action: pan-y); solo un toque que empieza cerca de una
+  // manija (radio de 40 px) se queda con el gesto. Con ratón, radio de 32 px.
+  function cual(p, radio){
+    if (E.ocupado || E.anim) return null;
+    const m = manijas(); let mejor = null, d0 = radio;
+    for (const k of ['a', 'A', 'c', 'P']) if (E.arr[k] && m[k]){ const d = Math.hypot(p.x - m[k].x, p.y - m[k].y); if (d < d0){ d0 = d; mejor = k; } }
+    return mejor;
+  }
+  const cambiar = () => { E.dibujar(); E.avisar(); };
+  function ponerA(g){ g = clamp(imantar(g), E.modo === 'cosenos' ? 10 : 8, E.modo === 'cosenos' ? 170 : 160); if (Math.abs(g - E.A) < 1e-12) return; E.A = g; cambiar(); }
+  function ponerLargoA(x){
+    const h = caso(E).h; x = clamp(x, .5, E.aMax);
+    if (Math.abs(x - h) < .08) x = h; else if (Math.abs(x - Math.round(x)) < .08) x = Math.round(x); else x = Math.round(x*10)/10;
+    if (Math.abs(x - E.a) < 1e-12) return false; E.a = x; return true;
+  }
+  cv.addEventListener('touchstart', e => {
+    if (e.touches.length !== 1) return;
+    const r = cv.getBoundingClientRect(), t = e.touches[0];
+    if (cual({ x:t.clientX - r.left, y:t.clientY - r.top }, 40)) e.preventDefault();
+  }, { passive:false });
+  cv.addEventListener('pointerdown', e => {
+    const p = local(e), k = cual(p, e.pointerType === 'mouse' ? 32 : 40); if (!k) return;
+    arrastrando = k; cv.setPointerCapture(e.pointerId); e.preventDefault(); cv.focus({ preventScroll:true }); E.dibujar();
+  }, { passive:false });
+  cv.addEventListener('pointermove', e => {
+    const p = local(e);
+    if (arrastrando){
+      const m = manijas(), s = m.s, w = aM(p, s);
+      if (E.modo === 'compas'){
+        if (arrastrando === 'A') ponerA(Math.atan2(w.y, w.x)*180/PI);
+        else {
+          const C = caso(E).C, dx = w.x - C.x, dy = w.y - C.y;
+          const cambio = ponerLargoA(Math.hypot(dx, dy));
+          if (!E.comp.dirFija) E.comp.phi = Math.atan2(dy, dx)*180/PI;
+          if (cambio || !E.comp.dirFija) cambiar();
+        }
+      } else if (E.modo === 'cosenos'){
+        if (arrastrando === 'A'){
+          let g = Math.atan2(w.y, w.x)*180/PI; if (g < 0) g = w.x > 0 ? 10 : 170;
+          const b = clamp(Math.round(Math.hypot(w.x, w.y)*2)/2, 1.5, E.bMax);
+          const g2 = clamp(imantar(g), 10, 170);
+          if (g2 !== E.A || b !== E.b){ E.A = g2; E.b = b; cambiar(); }
+        } else { const cc = clamp(Math.round(w.x*2)/2, 1.5, E.cMax); if (cc !== E.c){ E.c = cc; cambiar(); } }
+      } else if (E.modo === 'circun'){
+        const I = MC.inscrito({ a:E.a, A:E.A, t:E.circ.t }); let phi = Math.atan2(w.y, w.x);
+        while (phi < I.arco.desde) phi += 2*PI; while (phi > I.arco.desde + 2*PI) phi -= 2*PI;
+        const t = clamp((phi - I.arco.desde)/(I.arco.hasta - I.arco.desde), .02, .98);
+        if (Math.abs(t - E.circ.t) > 1e-4){ E.circ.t = t; cambiar(); }
+      }
+      return;
+    }
+    const sv = cual(p, 32);
+    if (sv !== sobre){ sobre = sv; cv.style.cursor = sv ? 'grab' : ''; E.dibujar(); }
+  });
+  const soltar = () => { if (arrastrando){ arrastrando = null; E.dibujar(); } };
+  cv.addEventListener('pointerup', soltar); cv.addEventListener('pointercancel', soltar);
+  cv.addEventListener('keydown', e => {
+    if (E.ocupado || E.anim) return;
+    const paso = e.shiftKey ? 1 : 5, k = e.key;
+    if ((k === 'ArrowRight' || k === 'ArrowLeft') && E.arr.A){
+      e.preventDefault(); const g = Math.round(E.A) + (k === 'ArrowRight' ? paso : -paso);
+      const g2 = Math.abs(g - Math.round(g)) < 1e-9 && IMANES.some(n => Math.abs(n - g) < .5) ? IMANES.find(n => Math.abs(n - g) < .5) : g;
+      const lim = E.modo === 'cosenos' ? [10, 170] : [8, 160]; E.A = clamp(g2, lim[0], lim[1]); cambiar();
+    } else if ((k === 'ArrowRight' || k === 'ArrowLeft') && E.arr.P){
+      e.preventDefault(); E.circ.t = clamp(E.circ.t + (k === 'ArrowRight' ? -.04 : .04), .02, .98); cambiar();
+    } else if ((k === 'ArrowUp' || k === 'ArrowDown') && E.modo === 'compas' && E.arr.a){
+      e.preventDefault(); const d = e.shiftKey ? .1 : .5;
+      E.a = clamp(Math.round((E.a + (k === 'ArrowUp' ? d : -d))*10)/10, .5, E.aMax); cambiar();
+    } else if ((k === 'ArrowUp' || k === 'ArrowDown') && E.modo === 'cosenos' && E.arr.A){
+      e.preventDefault(); E.b = clamp(E.b + (k === 'ArrowUp' ? .5 : -.5), 1.5, E.bMax); cambiar();
+    } else if ((k === '+' || k === '-' || k === '=') && E.modo === 'cosenos' && E.arr.c){
+      e.preventDefault(); E.c = clamp(E.c + (k === '-' ? -.5 : .5), 1.5, E.cMax); cambiar();
+    }
+  });
+  return E;
+}
+
+// Opciones de predicción (las mismas en los dos modos)
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+// Qué dice la regla del caso ambiguo, según lo que clasifica el motor.
+function situacionTexto(K){
+  return {
+    'no-alcanza': `${a_('a')} es menor que ${h_('h')}: el brazo no llega a la base. Ningún triángulo.`,
+    'tangente': `${a_('a')} = ${h_('h')}: el brazo apenas toca la base, al pie de la altura. Un triángulo, rectángulo en B.`,
+    'dos': `${a_('a')} está entre ${h_('h')} y ${b_('b')}: el brazo corta la base dos veces delante de A. Dos triángulos.`,
+    'uno': `${a_('a')} no es menor que ${b_('b')}: el otro corte cae en A o detrás de A, donde el ángulo en A sería 180° − ${A_('A')}. Un solo triángulo.`,
+    'obtuso-no': `${A_('A')} no es agudo y ${a_('a')} no es mayor que ${b_('b')}: los cortes caen detrás de A, o no hay. Ningún triángulo.`,
+    'obtuso-uno': `${A_('A')} no es agudo y ${a_('a')} es mayor que ${b_('b')}: un solo triángulo.`,
+  }[K.situacion];
+}
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1');
+const S = { step:0, max:0, pred:{}, ocupado:false, x:null, xmodo:'compas' };
+
+// Números de la escena: todos salen del motor
+const CJ = { x0:-1.6, x1:12.6, y0:-2.1, y1:9.1 };
+const K5 = MC.casoAmbiguo({ A:30, b:8, a:5 }), K4 = MC.casoAmbiguo({ A:30, b:8, a:4 }), K3 = MC.casoAmbiguo({ A:30, b:8, a:3 });
+const CJC = { x0:-3.6, x1:9.2, y0:-1.9, y1:5.6 };
+const L60 = MC.leyCosenos({ b:5, c:8, A:60 }), L90 = MC.leyCosenos({ b:5, c:8, A:90 }), L120 = MC.leyCosenos({ b:5, c:8, A:120 });
+const n53 = MC.notable(MC.G53);
+
+const P_DOS = { id:'caso-ambiguo-paso2', ok:'a', opts:[
+  ['a','2: uno con B ≈ 53° y otro con B ≈ 127°'],
+  ['b','1: sen B = 4/5 da un solo ángulo, B ≈ 53°','TR23-solo-agudo','hipotesis'],
+  ['c','Ninguno: como a es menor que b, el brazo no llega a la base','a-menor-que-b-no-alcanza','hipotesis'],
+  ['d',`1: el rectángulo en B, con c = √39 ≈ ${fmt(K5.errores.rectanguloEnB.c, 2)}`,'TR25-rectangulo','parcial']],
+  fb:{ a:'¡Bien! El brazo de 5 corta la base dos veces delante de A: hay dos triángulos con los mismos datos.',
+    b:'Elegiste la B. La calculadora (arco seno) da solo el ángulo agudo, 53°. Pero 127° tiene el mismo seno, 4/5, y también cabe: 30° + 127° es menos de 180°. El brazo toca la base en dos puntos. La correcta está marcada.',
+    c:'Elegiste la C. El brazo no tiene que llegar hasta b: tiene que llegar a la base, que está a la distancia h = 4 de C. Como 5 es más que 4, la alcanza, y dos veces. La correcta está marcada.',
+    d:'Elegiste la D. Nada dice que el ángulo en B sea recto: ese triángulo tendría a = 5, b = 8 y c ≈ 6,24, pero su ángulo en A no sería 30°. Con razones de triángulo rectángulo no se resuelve un oblicuángulo. La correcta está marcada.' } };
+const P_TOCA = { id:'caso-ambiguo-paso3', ok:'b', opts:[
+  ['a','2: uno a cada lado del pie de la altura, como con a = 5','TR23-siempre-dos','hipotesis'],
+  ['b','1: el brazo apenas toca la base y el ángulo B es recto'],
+  ['c','Ninguno: si el brazo solo toca la recta, sin cruzarla, no se forma triángulo','tocar-no-es-cortar','hipotesis'],
+  ['d','2: a sigue siendo menor que b, y con a menor que b siempre hay dos','regla-a-menor-b-dos','hipotesis']],
+  fb:{ b:'¡Bien! Con a = h = 4 el brazo cae justo sobre la altura: un solo triángulo, rectángulo en B.',
+    a:'Elegiste la A. Con a = 4 el brazo apenas llega: toca la base en un solo punto, el pie de la altura. Los "dos lados" se juntan en uno. La correcta está marcada.',
+    c:'Elegiste la C. Tocar la base basta: el punto donde toca es el vértice B, y el triángulo existe, con el ángulo recto en B. La correcta está marcada.',
+    d:'Elegiste la D. Ser menor que b no alcanza: también hay que mirar la altura h = 4. Con a = 4 el brazo toca la base en un solo punto. La correcta está marcada.' } };
+const P_NO = { id:'caso-ambiguo-paso4', ok:'c', opts:[
+  ['a','2: como con a = 5, porque a sigue siendo menor que b','regla-a-menor-b-dos','hipotesis'],
+  ['b',`1: el rectángulo en B, con c = √55 ≈ ${fmt(K3.errores.rectanguloEnB.c, 2)}`,'TR25-rectangulo','parcial'],
+  ['c','Ninguno: el brazo es más corto que la altura y no llega a la base'],
+  ['d','1: sen B = 4/3 da un ángulo B agudo','seno-mayor-que-uno','hipotesis']],
+  fb:{ c:'¡Bien! El brazo de 3 no llega a la base, que está a 4 de C. No hay triángulo.',
+    a:'Elegiste la A. Ser menor que b no basta: el brazo tiene que llegar a la base, que está a la distancia h = 4 de C, y 3 no llega. La correcta está marcada.',
+    b:'Elegiste la B. Para ser rectángulo en B, el brazo tendría que medir lo mismo que la altura, 4. Con 3 no llega a la base. La correcta está marcada.',
+    d:'Elegiste la D. Ningún seno pasa de 1. Si la ley de senos da sen B = 4/3, la cuenta está avisando que el triángulo no existe. La correcta está marcada.' } };
+const P_C60 = { id:'caso-ambiguo-paso5', ok:'a', opts:[
+  ['a',`a = ${fmt(L60.a, 0)}`],
+  ['b',`a = √129 ≈ ${fmt(L60.errores.signoCambiado.a, 1)}`,'TR24-signo','hipotesis'],
+  ['c',`a = √89 ≈ ${fmt(L60.errores.sinTermino.a, 1)}`,'TR24-sin-termino','hipotesis'],
+  ['d',`a = ${fmt(L60.errores.sumaLados.a, 0)}`,'suma-de-lados','hipotesis']],
+  fb:{ a:'¡Bien! a² = 25 + 64 − 40 = 49, así que a = 7.',
+    b:'Elegiste la B. Esa cuenta suma el término: 25 + 64 + 40 = 129. En la ley de cosenos va un menos: a² = b² + c² − 2bc·cos A. Con 60° el término se quita. La correcta está marcada.',
+    c:'Elegiste la C. √89 es lo que daría Pitágoras, pero el ángulo no es recto: falta el término 2bc·cos A = 40, que con 60° se resta. La correcta está marcada.',
+    d:'Elegiste la D. Si a midiera b + c = 13, los tres vértices estarían en una línea recta: no habría triángulo. Un lado siempre es menor que la suma de los otros dos. La correcta está marcada.' } };
+const P_C90 = { id:'caso-ambiguo-paso6', ok:'a', opts:[
+  ['a',`Desaparece: queda a² = b² + c² = ${fmt(L90.a2, 0)}, el teorema de Pitágoras`],
+  ['b',`Vale 2bc = 80 y se resta: a² = ${fmt(L90.errores.cosenoComoSeno.a2, 0)}`,'cos90-como-uno','hipotesis'],
+  ['c',`Sigue igual que con 60°: a² = ${fmt(L60.a2, 0)}`,'termino-fijo','hipotesis'],
+  ['d',`Ahora se suma entero: a² = 89 + 80 = ${fmt(L90.errores.sumaLados.a2, 0)}`,'suma-entero','hipotesis']],
+  fb:{ a:'¡Bien! cos 90° = 0: el término vale cero y la ley de cosenos se vuelve Pitágoras.',
+    b:'Elegiste la B. cos 90° vale 0, no 1 (el que vale 1 es sen 90°). El término desaparece y queda Pitágoras. La correcta está marcada.',
+    c:'Elegiste la C. El término depende del ángulo: 2bc·cos A. Al abrir A, cos A baja; en 90° llega a cero. La correcta está marcada.',
+    d:'Elegiste la D. En 90° el término no se suma ni se resta: vale cero, porque cos 90° = 0. Recién al pasar de 90° empieza a sumarse. La correcta está marcada.' } };
+const P_C120 = { id:'caso-ambiguo-paso7', ok:'d', opts:[
+  ['a',`a² = ${fmt(L120.errores.signoCambiado.a2, 0)}: el término 40 se resta, como con 60°`,'TR24-signo','hipotesis'],
+  ['b',`a² = ${fmt(L120.errores.sinTermino.a2, 0)}: con un ángulo obtuso ya no hay término`,'sin-termino-obtuso','hipotesis'],
+  ['c',`a² ≈ ${fmt(L120.errores.conRadianes.a2, 1)}: cos 120 en la calculadora da 0,81`,'calculadora-en-radianes','hipotesis'],
+  ['d',`a² = ${fmt(L120.a2, 0)}: cos 120° = −1/2 y el término se suma`]],
+  fb:{ d:'¡Bien! cos 120° = −1/2, así que −2bc·cos A = +40: a² = 89 + 40 = 129 y a = √129 ≈ 11,4.',
+    a:'Elegiste la A. cos 120° es negativo, −1/2. El "menos" de la fórmula por un coseno negativo da "más": el término se suma. Restar daría un lado más corto que con 90°, y al abrir el ángulo el lado opuesto crece. La correcta está marcada.',
+    b:'Elegiste la B. El término sigue ahí: 2bc·cos 120° = −40. Lo que cambia es el signo: ahora se suma. La correcta está marcada.',
+    c:'Elegiste la C. La calculadora estaba en radianes y leyó 120 como 120 rad. En grados, cos 120° = −1/2. Revisa siempre que diga DEG. La correcta está marcada.' } };
+
+function cfgCompas(o){ E.config(Object.assign({ modo:'compas', A:30, b:8, caja:CJ }, o)); }
+function cfgCos(o){ E.config(Object.assign({ modo:'cosenos', b:5, c:8, caja:CJC }, o)); }
+const FIN_COMP = K => ({ phi: finBrazo(K), circulo:true, vistos:K.cortes.length, h:true, falta:K.n === 0 });
+const LECT_COMP = ['A','b','a','h','n','B','cs'];
+
+// Ecuaciones en vivo
+function vivo(){
+  const d = $('vivo'); if (!d) return;
+  if (E.modo === 'compas'){
+    const K = MC.casoAmbiguo({ A:E.A, b:E.b, a:E.a }), n = MC.notable(E.A), sA = n ? n.sen.texto : fmt(MC.sen(E.A), 3);
+    d.innerHTML = `<div class="eq">${h_('h')} = ${b_('b')} · sen ${A_('A')} = ${b_(fmt(E.b, 1))} · ${sA} = ${h_(fmt(K.h, 2))}</div>
+      <div class="eq">sen ${B_('B')} = ${fr(`${b_('b')} · sen ${A_('A')}`, a_('a'))} = ${fr(h_(fmt(K.h, 2)), a_(fmt(E.a, 1)))} = ${fmt(K.senB, 3)}${K.senB > 1 + 1e-9 ? '<span class="note">pasa de 1: no hay ángulo B</span>' : ''}</div>
+      <p>${situacionTexto(K)}${K.n ? ` ${B_('B')} ≈ ${K.B.map(fmtAng).join(' o ')}.` : ''}</p>`;
+  } else {
+    const L = MC.leyCosenos({ b:E.b, c:E.c, A:E.A }), n = MC.notable(E.A), cA = n ? n.cos.texto : fmt(L.cosA, 3);
+    d.innerHTML = `<div class="eq">${a_('a²')} = ${b_('b²')} + ${c_('c²')} − 2${b_('b')}${c_('c')}·cos ${A_('A')}</div>
+      <div class="eq">${a_('a²')} = ${b_(fmt(E.b, 1) + '²')} + ${c_(fmt(E.c, 1) + '²')} − 2 · ${b_(fmt(E.b, 1))} · ${c_(fmt(E.c, 1))} · (${cA})</div>
+      <div class="eq">${a_('a²')} = ${fmt(L.pitagoras, 2)} ${L.termino >= 0 ? '−' : '+'} ${fmt(Math.abs(L.termino), 2)} = ${a_(fmt(L.a2, 2))}</div>
+      <p>${L.signo === 'resta' ? `${A_('A')} es agudo: cos ${A_('A')} es positivo y el término se resta.` : L.signo === 'suma' ? `${A_('A')} es obtuso: cos ${A_('A')} es negativo y el término se suma.` : `${A_('A')} = 90°: el término vale cero y queda Pitágoras.`} ${a_('a')} ≈ ${a_(fmt(L.a, 2))}.</p>`;
+  }
+}
+
+const steps = [
+ { k:'Paso 1', t:'Dos lados y el ángulo opuesto a uno', prep:() => cfgCompas({ a:6, aMax:6.5, arr:{ A:true, a:true }, comp:{ phi:25, dirFija:true }, lect:['A','b','a'] }),
+   body:() => `<p class="problem">Te dan el ángulo ${A_('A')}, el lado ${b_('b')} y el lado ${a_('a')}, que es el opuesto a ${A_('A')}. Es el caso LLA: dos lados y el ángulo opuesto a uno de ellos.</p>
+   <p>Para dibujar el triángulo: se traza el ángulo ${A_('A')} sobre la base, se mide ${b_('b')} sobre su otro lado y ahí queda el vértice C. El tercer vértice, B, está sobre la base a una distancia ${a_('a')} de C. Por eso se abre un compás de largo ${a_('a')}, con la punta en C, y se mira dónde toca la base.</p>
+   <p>Arrastra C (el círculo) para cambiar el ángulo ${A_('A')} y la punta del brazo (el cuadrado) para cambiar su largo ${a_('a')}. En los pasos que siguen, el brazo va a girar.</p>
+   <p class="hint">Con teclado: toca el dibujo; las flechas ← y → cambian el ángulo (con Mayúsculas, de grado en grado) y ↑ y ↓ el largo del brazo.</p>` },
+ { k:'Paso 2', t:'Predice: ¿cuántos triángulos?', gate:P_DOS,
+   prep:() => { const ya = !!S.pred[P_DOS.id];
+     cfgCompas({ a:5, comp: ya ? FIN_COMP(K5) : { phi:70 }, lect: ya ? LECT_COMP : ['A','b','a'] }); },
+   anima:fin => { E.barrer(2600, () => { E.lect = LECT_COMP; E.avisar(); fin(); }); },
+   body:() => `<p>${A_('A = 30°')}, ${b_('b = 8')} y ${a_('a = 5')}. Si el brazo gira con centro en C hasta tocar la base, ¿cuántos triángulos distintos cumplen estos datos?</p>${opcionesHTML(P_DOS.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs">
+     <div class="eq">${h_('h')} = ${b_('b')} · sen ${A_('A')} = ${b_('8')} · ${fr('1', '2')} = ${h_('4')}<span class="note">la distancia de C a la base</span></div>
+     <div class="eq">sen ${B_('B')} = ${fr(`${b_('b')} · sen ${A_('A')}`, a_('a'))} = ${fr(h_('4'), a_('5'))} = ${fr('4', '5')}</div>
+     <div class="eq">${B_('B₁')} ≈ ${B_(fmt(K5.B[0], 2) + '°')} (53° de academia) y ${B_('B₂')} = 180° − ${B_('B₁')} ≈ ${B_(fmt(K5.B[1], 2) + '°')}</div>
+     <div class="eq">${c_('c₁')} = 4√3 + 3 ≈ ${c_(fmt(K5.c[0], 2))} y ${c_('c₂')} = 4√3 − 3 ≈ ${c_(fmt(K5.c[1], 2))}</div></div>
+   <p>Los dos ángulos tienen el mismo seno: sen 127° = sen 53° = 4/5. La ley de senos no elige entre ellos; el compás sí los muestra a los dos. Se puede porque ${a_('a = 5')} es más que ${h_('h = 4')} (llega a la base) y menos que ${b_('b = 8')} (los dos cortes caen delante de A).</p>
+   <p class="aviso">La calculadora (arco seno) da solo el ángulo agudo. Siempre revisa el suplemento, 180° − B: si ${A_('A')} + (180° − B) es menos de 180°, también hay triángulo.</p>
+   <p class="fuente">No encontramos estudios con datos sobre el caso ambiguo: que se pierda el segundo triángulo lo describen guías para profesores, y aquí es una hipótesis nuestra. Aplicar razones del triángulo rectángulo en triángulos que no lo son aparece, sin porcentajes, como antecedente en un estudio con alumnos mexicanos de primer año de ingeniería (Torres-Corrales y Montiel-Espinosa, 2021). La opción "ninguno, porque a es menor que b" es hipótesis nuestra.</p></div>` },
+ { k:'Paso 3', t:'Predice: el brazo más corto', gate:P_TOCA,
+   prep:() => { const ya = !!S.pred[P_TOCA.id];
+     cfgCompas({ a:4, comp: ya ? FIN_COMP(K4) : { phi:70 }, lect: ya ? LECT_COMP : ['A','b','a'] }); },
+   anima:fin => { E.barrer(2000, () => { E.lect = LECT_COMP; E.avisar(); fin(); }); },
+   body:() => `<p>Con ${A_('A = 30°')} y ${b_('b = 8')}, el brazo ahora mide ${a_('a = 4')}. ¿Cuántos triángulos hay?</p>${opcionesHTML(P_TOCA.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">sen ${B_('B')} = ${fr(h_('4'), a_('4'))} = 1 → ${B_('B = 90°')}<span class="note">el suplemento de 90° es 90°: es el mismo</span></div>
+     <div class="eq">${c_('c')} = ${b_('b')} · cos ${A_('A')} = ${b_('8')} · ${fr('√3', '2')} = 4√3 ≈ ${c_(fmt(K4.c[0], 2))}</div></div>
+   <p>Cuando ${a_('a')} es igual a la altura ${h_('h')}, el brazo cae justo sobre ella. Hay un solo triángulo y es rectángulo en B.</p>
+   <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras: no encontramos estudios que midan este caso.</p></div>` },
+ { k:'Paso 4', t:'Predice: el brazo que no llega', gate:P_NO,
+   prep:() => { const ya = !!S.pred[P_NO.id];
+     cfgCompas({ a:3, comp: ya ? FIN_COMP(K3) : { phi:70 }, lect: ya ? ['A','b','a','h','n'] : ['A','b','a'] }); },
+   anima:fin => { E.barrer(2400, () => { E.lect = ['A','b','a','h','n']; E.avisar(); fin(); }); },
+   body:() => `<p>¿Y si el brazo mide ${a_('a = 3')}, con ${A_('A = 30°')} y ${b_('b = 8')}?</p>${opcionesHTML(P_NO.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">sen ${B_('B')} = ${fr(h_('4'), a_('3'))} = ${fr('4', '3')}<span class="note">pasa de 1: no hay ángulo B</span></div></div>
+   <p>La regla completa, con ${A_('A')} agudo, sale de comparar ${a_('a')} con la altura ${h_('h')} = ${b_('b')}·sen ${A_('A')} y con ${b_('b')}:</p>
+   <table class="regla"><thead><tr><th>Si…</th><th>Triángulos</th></tr></thead><tbody>
+     <tr><td>${a_('a')} &lt; ${h_('h')}</td><td>Ninguno: el brazo no llega</td></tr>
+     <tr><td>${a_('a')} = ${h_('h')}</td><td>Uno, rectángulo en B</td></tr>
+     <tr><td>${h_('h')} &lt; ${a_('a')} &lt; ${b_('b')}</td><td>Dos: B y 180° − B</td></tr>
+     <tr><td>${a_('a')} ≥ ${b_('b')}</td><td>Uno: el otro corte cae en A o detrás</td></tr></tbody></table>
+   <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras; la del triángulo rectángulo se apoya en lo que describen, sin porcentajes, Torres-Corrales y Montiel-Espinosa (2021).</p></div>` },
+ { k:'Paso 5', t:'Predice: la ley de cosenos', gate:P_C60,
+   prep:() => { const ya = !!S.pred[P_C60.id];
+     cfgCos({ A:60, cos:{ barras:true, termino:ya, a2:ya, proy:ya, oculto:!ya }, lect: ya ? ['A','b','c','aCos','a2'] : ['A','b','c'] }); },
+   anima:fin => { Object.assign(E.cos, { termino:true, a2:true, proy:true, oculto:false }); E.rot.a = undefined; E.leyenda(); E.animar(0, 1, 1500, f => { E.cos.f = f; }, () => { E.lect = ['A','b','c','aCos','a2']; E.avisar(); fin(); }); },
+   body:() => `<p>Ahora el ángulo dato está entre los dos lados: ${b_('b = 5')}, ${c_('c = 8')} y ${A_('A = 60°')}. ¿Cuánto mide el tercer lado ${a_('a')}?</p>${opcionesHTML(P_C60.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${a_('a²')} = ${b_('b²')} + ${c_('c²')} − 2${b_('b')}${c_('c')}·cos ${A_('A')}</div>
+     <div class="eq">${a_('a²')} = ${b_('25')} + ${c_('64')} − 2 · ${b_('5')} · ${c_('8')} · ${fr('1', '2')} = 89 − 40 = ${a_('49')} → ${a_('a = 7')}</div></div>
+   <p>Mira la tira de abajo: ${b_('b²')} + ${c_('c²')} = 89 es lo que diría Pitágoras. El triángulo no es rectángulo, así que se corrige con el término 2${b_('b')}${c_('c')}·cos ${A_('A')} = 40, el pedazo rayado. Como ${A_('A')} es más cerrado que un recto, el lado ${a_('a')} queda más corto que la hipotenusa de Pitágoras y el término se resta.</p>
+   <p>El rayado es un rectángulo: 2 · ${c_('c')} · (${b_('b')}·cos ${A_('A')}), dos veces la base por la sombra de ${b_('b')} sobre ella (la línea a trazos).</p>
+   <p class="fuente">Cambiar el signo del término o quitarlo es un error que los profesores reconocen, pero no encontramos estudios que lo midan: las tres opciones incorrectas son hipótesis nuestras.</p></div>` },
+ { k:'Paso 6', t:'Predice: el ángulo recto', gate:P_C90,
+   prep:() => { const ya = !!S.pred[P_C90.id];
+     cfgCos({ A: ya ? 90 : 60, cos:{ barras:true, termino:true, a2:true, proy:true }, lect: ya ? ['A','b','c','aCos','a2','term'] : ['A','b','c'], rot:{ a: ya ? undefined : null } }); },
+   anima:fin => { E.rot.a = undefined; E.animar(60, 90, 1800, g => { E.A = g; }, () => { E.A = 90; E.lect = ['A','b','c','aCos','a2','term']; E.dibujar(); E.avisar(); fin(); }); },
+   body:() => `<p>Ahora el ángulo ${A_('A')} se abre de 60° a ${A_('90°')}; ${b_('b = 5')} y ${c_('c = 8')} no cambian. ¿Qué pasa con el término 2${b_('b')}${c_('c')}·cos ${A_('A')}?</p>${opcionesHTML(P_C90.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${a_('a²')} = ${b_('25')} + ${c_('64')} − 2 · ${b_('5')} · ${c_('8')} · 0 = ${a_('89')} → ${a_('a')} = √89 ≈ ${a_(fmt(L90.a, 2))}</div></div>
+   <p>Al abrir ${A_('A')}, la sombra de ${b_('b')} sobre la base se achica y el rayado también. En 90° la sombra es un punto: cos 90° = 0. La ley de cosenos se vuelve el teorema de Pitágoras, que es un caso particular de ella.</p>
+   <p class="fuente">Las opciones incorrectas son hipótesis nuestras.</p></div>` },
+ { k:'Paso 7', t:'Predice: el ángulo obtuso', gate:P_C120,
+   prep:() => { const ya = !!S.pred[P_C120.id];
+     cfgCos({ A: ya ? 120 : 90, cos:{ barras:true, termino:true, a2:true, proy:true }, lect: ya ? ['A','b','c','aCos','a2','term'] : ['A','b','c'], rot:{ a: ya ? undefined : null } }); },
+   anima:fin => { E.rot.a = undefined; E.animar(90, 120, 1800, g => { E.A = g; }, () => { E.A = 120; E.lect = ['A','b','c','aCos','a2','term']; E.dibujar(); E.avisar(); fin(); }); },
+   body:() => `<p>Seguimos abriendo: ${A_('A = 120°')}, con ${b_('b = 5')} y ${c_('c = 8')}. ¿Cuánto vale ${a_('a²')}?</p>${opcionesHTML(P_C120.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">cos 120° = −cos 60° = −${fr('1', '2')}<span class="note">segundo cuadrante: el coseno es negativo</span></div>
+     <div class="eq">${a_('a²')} = ${b_('25')} + ${c_('64')} − 2 · ${b_('5')} · ${c_('8')} · (−${fr('1', '2')}) = 89 + 40 = ${a_('129')}</div>
+     <div class="eq">${a_('a')} = √129 ≈ ${a_(fmt(L120.a, 2))}</div></div>
+   <p>Ahora la sombra de ${b_('b')} cae detrás de A, fuera de la base: el pie de la perpendicular desde C está en la prolongación. El rayado aparece al otro lado de la raya de Pitágoras y se suma. Con un ángulo obtuso, el lado opuesto es más largo que la hipotenusa que daría Pitágoras.</p>
+   <p class="aviso">La fórmula es la misma siempre: a² = b² + c² − 2bc·cos A. No hay que cambiarle el signo a mano: el signo lo pone cos A.</p>
+   <p class="fuente">Las opciones incorrectas son hipótesis nuestras. La de la calculadora en radianes es cercana a algo que sí está medido: en una encuesta a 769 universitarios de ciencias, cerca del 70 % creyó que las derivadas del seno valen igual en grados que en radianes (Ben-Zion y otros, 2025, según su resumen).</p></div>` },
+ { k:'Paso 8', t:'Ahora explora tú', explora:true,
+   prep:() => cfgExplora(),
+   body:() => `<p>Elige qué mirar y arrastra los puntos. Todo lo que ves sale del motor en cada posición.</p>
+   <div class="seg" role="group" aria-label="Qué se explora">${[['compas','El compás'],['cosenos','Ley de cosenos']]
+     .map(([k, t]) => `<button type="button" data-x="${k}" aria-pressed="${S.xmodo === k}">${t}</button>`).join('')}</div>
+   <p class="hint" id="x-ayuda"></p>
+   <div class="eqs" id="vivo"></div>
+   <div class="acciones"><button type="button" class="btn" id="x-reset">Volver a empezar</button></div>` },
+];
+
+function cfgExplora(){
+  const x = S.x && S.x[S.xmodo];
+  // en el celular (< 560 px) la caja se ciñe al triángulo de partida; lo que salga de ella se recorta
+  const chico = innerWidth < 560;
+  if (S.xmodo === 'compas') E.config({ modo:'compas', A: x ? x.A : 30, b:8, a: x ? x.a : 5, aMax:12, caja: chico ? { x0:-2.2, x1:11.6, y0:-2.2, y1:6.8 } : { x0:-4.6, x1:14, y0:-2.2, y1:8.4 },
+    arr:{ A:true, a:true }, comp:{ phi: x ? x.phi : -60, circulo:true, vistos:9, h:true }, lect:LECT_COMP });
+  else E.config({ modo:'cosenos', A: x ? x.A : 60, b: x ? x.b : 5, c: x ? x.c : 8, bMax:8, cMax:10, caja: chico ? { x0:-4.2, x1:9.6, y0:-2, y1:6.4 } : { x0:-8.4, x1:10.6, y0:-2, y1:8.6 },
+    arr:{ A:true, c:true }, cos:{ barras:true, termino:true, a2:true, proy:true }, lect:['A','b','c','aCos','a2','term'] });
+}
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; b.setAttribute('aria-label', `Ir al ${s.k.toLowerCase()}: ${s.t}`);
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  E.compacto = false; E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.prep) s.prep();
+  pintarDots();
+  if (s.gate) prediccion(s);
+  if (s.explora) explorar();
+  nav();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+  E.ocupado = S.ocupado;
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){ if (k > S.max) S.max = k; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0, P.unidad);
+    S.ocupado = true; nav();
+    E.compactar(false);
+    $('next').focus({ preventScroll:true });
+    // En el celular, el dibujo queda arriba de la pantalla: se lleva a la vista antes de animar.
+    const paso = S.step, chico = innerWidth < 900;
+    if (chico) $('cv').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+    esperar(chico ? 380 : 0, () => {
+      if (S.step !== paso) { S.ocupado = false; nav(); return; }
+      s.anima(() => { S.ocupado = false; E.avisar(); nav(); });
+    });
+  }));
+  pintar();
+}
+
+// ----- explorador -----
+function guardarX(){ S.x = S.x || {}; S.x[S.xmodo] = { A:E.A, a:E.a, b:E.b, c:E.c, phi:E.comp.phi }; }
+function explorar(){
+  const body = $('stepBody');
+  const ayuda = () => { $('x-ayuda').textContent = S.xmodo === 'compas'
+    ? 'Arrastra C (el círculo) para cambiar el ángulo A y la punta del brazo (el cuadrado) para cambiar su largo a y girarlo. Con teclado: ← y → cambian A; ↑ y ↓, el largo a. El largo se "pega" a la altura h para que veas el caso rectángulo.'
+    : 'Arrastra C (el círculo) para cambiar el ángulo A y el lado b, y B (el cuadrado) para cambiar c. Con teclado: ← y → cambian A; ↑ y ↓, el lado b; + y −, el lado c.'; };
+  E.alCambiar = () => { vivo(); guardarX(); };
+  body.querySelectorAll('[data-x]').forEach(b => b.onclick = () => {
+    if (E.ocupado) return;
+    S.xmodo = b.dataset.x; body.querySelectorAll('[data-x]').forEach(q => q.setAttribute('aria-pressed', String(q.dataset.x === S.xmodo)));
+    cfgExplora(); E.alCambiar = () => { vivo(); guardarX(); }; ayuda(); vivo();
+  });
+  $('x-reset').onclick = () => { if (E.ocupado) return; if (S.x) delete S.x[S.xmodo]; cfgExplora(); E.alCambiar = () => { vivo(); guardarX(); }; vivo(); };
+  ayuda(); vivo();
+}
+
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Experimentos de docs/investigacion/trigonometria-ideas-erroneas.md: a mayor que b (una sola solución), el ángulo
+   dato obtuso (cero o una), el triángulo 3-5-7 (120°), el radio de la circunscrita (a/sen A = 2R) y el área con dos
+   lados y el ángulo. La escena cambia recién después de responder. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2');
+const K10 = MC.casoAmbiguo({ A:30, b:8, a:10 });
+const KOB = MC.casoAmbiguo({ A:120, b:8, a:7 });
+const T357 = MC.anguloLLL({ a:7, b:3, c:5 }), L357 = MC.leyCosenos({ b:3, c:5, A:120 });
+const LS = MC.leySenos({ a:5, A:30 });
+const AR = MC.areaLAL({ b:8, c:6, A:150 }), HE = MC.heron(AR.ladoA, 8, 6);
+const FIN_COMP = K => ({ phi: finBrazo(K), circulo:true, vistos:K.cortes.length, h:true });
+const LECT_COMP = ['A','b','a','h','n','B','cs'];
+const CJ1 = { x0:-4.4, x1:17.4, y0:-2.3, y1:8.4 }, CJ2 = { x0:-10.2, x1:6.6, y0:-2.3, y1:10.4 };
+const CJ3 = { x0:-2.6, x1:6.2, y0:-1.5, y1:3.7 }, CJ4 = { x0:-6.6, x1:6.6, y0:-6.6, y1:6.4 }, CJ5 = { x0:-8, x1:7.4, y0:-1.5, y1:4.8 };
+const palitos357 = [{ k:'b', v:3 }, { k:'c', v:5 }, { k:'a', v:7 }];
+
+const EXPS = [
+  { id:'a-mayor', corto:'a mayor que b',
+    q:`Con ${A_('A = 30°')} y ${b_('b = 8')}, el brazo ahora mide ${a_('a = 10')}, más que ${b_('b')}. ¿Cuántos triángulos hay?`,
+    opts:[['a','1: el rectángulo 6-8-10, con c = 6','TR25-rectangulo','parcial'],
+          ['b','1: el otro corte cae detrás de A y ese triángulo no tiene A = 30°'],
+          ['c','Ninguno: a no puede ser mayor que b','a-mayor-que-b-imposible','hipotesis'],
+          ['d',`2: B ≈ ${fmt(K10.B[0], 1)}° y su suplemento, B ≈ ${fmt(180 - K10.B[0], 1)}°`,'TR23-siempre-dos','hipotesis']],
+    ok:'b',
+    fb:{ a:'Un triángulo 6-8-10 es rectángulo, pero con b = 8, c = 6 y a = 10 la hipotenusa sería a y el ángulo recto estaría justo en A: A mediría 90°, no 30°. Aquí nada dice que haya un ángulo recto.',
+      c:'Nada impide que a sea mayor que b: solo quiere decir que el ángulo A es mayor que B. El brazo de 10 llega de sobra a la base; lo que pasa es que solo uno de sus dos cortes queda delante de A.',
+      d:`El suplemento tiene el mismo seno, pero ${fmt(180 - K10.B[0], 1)}° + 30° pasa de 180°: ese triángulo no existe. En el dibujo, ese corte cae detrás de A.` },
+    antes:ya => E.config({ modo:'compas', A:30, b:8, a:10, caja:CJ1, comp: ya ? FIN_COMP(K10) : { phi:25 }, lect: ya ? LECT_COMP : ['A','b','a'] }),
+    despues:() => E.barrer(2600, () => { E.lect = LECT_COMP; E.avisar(); }),
+    exp:() => `<div class="eqs"><div class="eq">sen ${B_('B')} = ${fr(`${b_('8')} · ${fr('1', '2')}`, a_('10'))} = ${fr('2', '5')} → ${B_('B')} ≈ ${B_(fmt(K10.B[0], 1) + '°')}</div>
+      <div class="eq">180° − ${fmt(K10.B[0], 1)}° = ${fmt(180 - K10.B[0], 1)}° y ${A_('30°')} + ${fmt(180 - K10.B[0], 1)}° &gt; 180°<span class="note">no sirve</span></div></div>
+      <p>El brazo corta la recta dos veces, pero el segundo corte cae detrás de A, en la prolongación de la base. Con ese punto, el ángulo del triángulo en A sería 150°, no 30°. Cuando ${a_('a')} es mayor o igual que ${b_('b')}, siempre hay un solo triángulo.</p>
+      <p class="fuente">No encontramos estudios con datos sobre este caso: las opciones incorrectas son hipótesis nuestras; la del triángulo rectángulo se apoya, sin porcentajes, en Torres-Corrales y Montiel-Espinosa (2021).</p>` },
+  { id:'obtuso', corto:'Ángulo obtuso',
+    q:`Ahora el ángulo dato es obtuso: ${A_('A = 120°')}, ${b_('b = 8')} y ${a_('a = 7')}. ¿Cuántos triángulos hay?`,
+    opts:[['a',`2: a está entre la altura, unos ${fmt(KOB.h, 2)}, y b, como en el caso ambiguo`,'regla-aguda-en-obtuso','hipotesis'],
+          ['b',`1: sen B ≈ ${fmt(KOB.senB, 2)} da B ≈ ${fmt(KOB.errores.soloAgudo.B, 1)}°`,'TR23-solo-calculadora','hipotesis'],
+          ['c','Ninguno: con A obtuso, a tendría que ser el lado mayor'],
+          ['d',`1: el rectángulo en B, con c = √15 ≈ ${fmt(KOB.errores.rectanguloEnB.c, 2)}`,'TR25-rectangulo','parcial']],
+    ok:'c',
+    fb:{ a:'La regla de h y b es para A agudo. Con A obtuso, C queda sobre la prolongación de la base, detrás de A; un brazo que no es más largo que b solo corta la recta detrás de A.',
+      b:`La cuenta del seno sale, pero ${fmt(KOB.errores.soloAgudo.B, 1)}° + 120° pasa de 180°. Y el suplemento, más todavía. Ningún triángulo.`,
+      d:'Un triángulo no puede tener un ángulo de 120° y otro de 90°: sumarían más de 180°.' },
+    antes:ya => E.config({ modo:'compas', A:120, b:8, a:7, caja:CJ2, comp: ya ? FIN_COMP(KOB) : { phi:25 }, lect: ya ? ['A','b','a','h','n'] : ['A','b','a'] }),
+    despues:() => E.barrer(2600, () => { E.lect = ['A','b','a','h','n']; E.avisar(); }),
+    exp:() => `<div class="eqs"><div class="eq">${h_('h')} = ${b_('8')} · sen 120° = 4√3 ≈ ${h_(fmt(KOB.h, 2))}<span class="note">${a_('a = 7')} sí llega a la recta…</span></div>
+      <div class="eq">…pero los dos cortes caen detrás de A</div></div>
+      <p>Con un corte detrás de A, el ángulo del triángulo en A sería 180° − 120° = 60°, no 120°. Con ${A_('A')} obtuso, el lado opuesto ${a_('a')} tiene que ser el más largo del triángulo, porque está frente al ángulo mayor. Si ${a_('a')} ≤ ${b_('b')} no hay triángulo; si ${a_('a')} &gt; ${b_('b')}, hay uno solo.</p>
+      <p class="fuente">Las opciones incorrectas son hipótesis nuestras (la del rectángulo, cercana a lo que describen Torres-Corrales y Montiel-Espinosa, 2021).</p>` },
+  { id:'triangulo-357', corto:'El triángulo 3-5-7',
+    q:`Un triángulo tiene lados ${b_('b = 3')}, ${c_('c = 5')} y ${a_('a = 7')}. ¿Cuánto mide su ángulo mayor, ${A_('A')}, el opuesto a ${a_('a')}?`,
+    opts:[['a',`${fmt(T357.errores.signoCambiado, 0)}°: sale cos A = 1/2`,'TR24-signo','hipotesis'],
+          ['b','90°: el ángulo opuesto al lado mayor es recto','TR25-rectangulo','parcial'],
+          ['c',`${fmt(T357.A, 0)}°: sale cos A = −1/2`],
+          ['d',`Unos ${fmt(T357.errores.enRadianes, 2)}°: lo que muestra la calculadora al sacar el arco coseno`,'calculadora-en-radianes','hipotesis']],
+    ok:'c',
+    fb:{ a:'Con el signo bien puesto, cos A = (9 + 25 − 49)/30 = −15/30 = −1/2. El coseno negativo dice que el ángulo es obtuso.',
+      b:'Si fuera recto, 3² + 5² daría 7²; pero 34 no es 49. Como 49 es más, el ángulo es obtuso.',
+      d:`${fmt(T357.errores.enRadianes, 2)} son radianes (2π/3): la calculadora estaba en RAD. En grados, son 120°.` },
+    antes:ya => { if (ya) E.config({ modo:'cosenos', A:120, b:3, c:5, caja:CJ3, cos:{ barras:true, termino:true, a2:true, proy:true, meta:49 }, lect:['A','b','c','aCos','a2'] });
+      else E.config({ modo:'palitos', palitos:palitos357, lect:[] }); },
+    despues:() => { E.config({ modo:'cosenos', A:20, b:3, c:5, caja:CJ3, cos:{ barras:true, termino:true, a2:true, proy:true, meta:49 }, lect:['A','b','c','aCos','a2'] });
+      E.animar(20, 120, 3000, g => { E.A = g; }, () => { E.A = 120; E.dibujar(); E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">cos ${A_('A')} = ${fr(`${b_('3²')} + ${c_('5²')} − ${a_('7²')}`, `2 · ${b_('3')} · ${c_('5')}`)} = ${fr('9 + 25 − 49', '30')} = −${fr('1', '2')} → ${A_('A = 120°')}</div>
+      <div class="eq">${a_('a²')} = ${a_('49')} &gt; ${b_('b²')} + ${c_('c²')} = 34<span class="note">más que Pitágoras: obtuso</span></div></div>
+      <p>El dibujo abrió el ángulo entre los lados de 3 y 5 hasta que el tercer lado midió 7: eso pasa en 120°. La tira lo muestra: ${a_('a²')} llega a 49 cuando el rayado se suma. Comparar ${a_('a²')} con ${b_('b²')} + ${c_('c²')} dice el tipo de ángulo sin calcular nada: igual, recto; menos, agudo; más, obtuso.</p>
+      <p class="fuente">Las opciones incorrectas son hipótesis nuestras; la del ángulo recto se apoya en lo que describen, sin porcentajes, Torres-Corrales y Montiel-Espinosa (2021).</p>` },
+  { id:'circunscrita', corto:'El radio de la circunscrita',
+    q:`Un triángulo tiene ${a_('a = 5')} y ${A_('A = 30°')}, y sus tres vértices están en una circunferencia. ¿Cuánto mide el radio ${R_('R')} de esa circunferencia?`,
+    opts:[['a',`${fmt(LS.errores.diametroComoRadio, 0)}: a/sen A es el radio`,'diametro-como-radio','hipotesis'],
+          ['b',`${fmt(LS.errores.multiplica, 1)}: a·sen A`,'multiplica-por-seno','hipotesis'],
+          ['c','No se puede saber: faltan b y c','faltan-datos','hipotesis'],
+          ['d',`${fmt(LS.R, 0)}: a/sen A es el diámetro`]],
+    ok:'d',
+    fb:{ a:'a/sen A = 10 es el diámetro, 2R. El radio es la mitad: 5.',
+      b:'La ley de senos divide entre el seno: a/sen A = 2R. Multiplicar da 2,5, que no es el radio.',
+      c:'No hacen falta: todos los triángulos con a = 5 y A = 30° caben en la misma circunferencia. Mira cómo se mueve A por el arco y el ángulo no cambia.' },
+    antes:ya => E.config({ modo:'circun', a:5, A:30, caja:CJ4, circ: ya ? { circulo:true, R:true, diametro:true, t:.5 } : { t:.5 }, arr:{ P:ya }, lect: ya ? ['A', 'a', x => ['R', 'Radio R', fmt(LS.R, 1)], x => ['Ag', 'Ángulo en A (medido)', `${fmt(MC.inscrito({ a:5, A:30, t:x.circ.t }).anguloEnP, 1)}°`]] : ['A','a'], rot:{} }),
+    despues:() => {
+      E.circ.circulo = true; E.circ.R = true; E.leyenda();
+      E.lect = ['A', 'a', x => ['R', 'Radio R', fmt(LS.R, 1)], x => ['Ag', 'Ángulo en A (medido)', `${fmt(MC.inscrito({ a:5, A:30, t:x.circ.t }).anguloEnP, 1)}°`]];
+      E.animar(0, 1, 1200, f => { E.circ.prog = f; }, () => {
+        E.animar(.5, .12, 1400, t => { E.circ.t = t; }, () => {
+          E.animar(.12, .86, 2400, t => { E.circ.t = t; }, () => {
+            E.animar(.86, .5, 900, t => { E.circ.t = t; }, () => { E.circ.diametro = true; E.permitir({ P:true }); E.dibujar(); E.avisar(); });
+          });
+        });
+      });
+    },
+    exp:() => `<div class="eqs"><div class="eq">${fr(a_('a'), `sen ${A_('A')}`)} = ${fr(a_('5'), fr('1', '2'))} = 10 = 2${R_('R')} → ${R_('R = 5')}</div></div>
+      <p>La ley de senos completa dice que ${a_('a')}/sen ${A_('A')} es el <b>diámetro</b> de la circunferencia circunscrita. ¿Por qué? Arrastra el vértice A por el arco: el ángulo inscrito no cambia (lo viste con el ángulo inscrito). Si A llega a A', el otro extremo del diámetro que sale de B, el triángulo A'BC es rectángulo en C, porque abarca media circunferencia. Ahí sen ${A_('A')} = ${a_('a')}/2${R_('R')}, con la razón del triángulo rectángulo.</p>
+      <p class="fuente">No encontramos estudios sobre este error. Las opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'area', corto:'El área con un ángulo obtuso', unidad:UNIDAD_AREAS,
+    q:`Dos lados de un triángulo miden ${b_('b = 8')} y ${c_('c = 6')}, y el ángulo entre ellos es ${A_('A = 150°')}. ¿Cuál es su área ${S_('S')}?`,
+    opts:[['a',`S = ${fmt(AR.errores.sinMitad, 0)}`,'area-sin-mitad','hipotesis'],
+          ['b',`S = ${fmt(AR.S, 0)}`],
+          ['c',`S = 12√3 ≈ ${fmt(AR.errores.conCoseno, 1)}`,'area-con-coseno','hipotesis'],
+          ['d',`S = ${fmt(AR.errores.senoNegativo, 0)}`,'seno-de-obtuso-negativo','hipotesis']],
+    ok:'b',
+    fb:{ a:'Falta el ½: S = b·c·sen A / 2. Sin dividir entre 2 sale el área de un paralelogramo, el doble.',
+      c:'Esa cuenta usa el coseno. El área lleva el seno: es la altura de C sobre la base, b·sen A.',
+      d:'sen 150° = sen 30° = 1/2, positivo. El que es negativo en el segundo cuadrante es el coseno. Un área nunca es negativa.' },
+    antes:ya => E.config({ modo:'cosenos', A:150, b:8, c:6, caja:CJ5, cos:{ area:true, h:ya }, rot:{ a:null, A:'150°', S:'S', proy:null }, lect: ya ? ['A','b','c', x => ['h', 'Altura h', fmt(AR.h, 1)], x => ['S', 'Área S', fmt(AR.S, 0)]] : ['A','b','c'] }),
+    despues:() => { E.cos.h = true; E.lect = ['A','b','c', x => ['h', 'Altura h', fmt(AR.h, 1)], x => ['S', 'Área S', fmt(AR.S, 0)]]; E.leyenda();
+      E.animar(0, 1, 900, f => { E.hl = f < .5 ? 'h' : 'S'; }, () => { E.hl = null; E.dibujar(); E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">${S_('S')} = ${fr(`${b_('b')} · ${c_('c')} · sen ${A_('A')}`, '2')} = ${fr(`${b_('8')} · ${c_('6')} · ${fr('1', '2')}`, '2')} = ${S_(fmt(AR.S, 0))}</div>
+      <div class="eq">${h_('h')} = ${b_('8')} · sen 150° = ${h_(fmt(AR.h, 0))}</div>
+      <div class="eq">${S_('S')} = ${fr(`${c_('6')} · ${h_(fmt(AR.h, 0))}`, '2')} = ${S_(fmt(AR.S, 0))}<span class="note">base por altura</span></div>
+      <div class="eq">Herón: ${a_('a')} = √(100 + 48√3) ≈ ${a_(fmt(AR.ladoA, 2))}</div>
+      <div class="eq">p ≈ ${fmt(HE.p, 2)} y ${S_('S')} = √(p(p − a)(p − b)(p − c)) ≈ ${S_(fmt(HE.S, 2))}</div></div>
+      <p>La fórmula es la de siempre, base por altura entre 2: b·sen A es la altura desde C. Con un ángulo obtuso la altura cae fuera, sobre la prolongación de la base (la raya roja), pero mide lo mismo que con 30°: sen 150° = sen 30°.</p>
+      <p class="fuente">No encontramos estudios sobre estos errores: las opciones incorrectas son hipótesis nuestras.</p>` },
+];
+const S = { k:0, pred:{}, t0:Date.now() };
+// Pastillas: la k solo se abre si todos los experimentos anteriores ya tienen respuesta;
+// las respondidas se revisitan libres (misma regla que los puntos del paso a paso).
+function primeraLibre(){ const j = EXPS.findIndex(x => !S.pred[x.id]); return j < 0 ? EXPS.length - 1 : j; }
+function botones(){
+  const libre = primeraLibre();
+  $('exps').innerHTML = EXPS.map((x, k) => k > libre
+    ? `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  if (k > primeraLibre()) return;
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  E.compacto = false; E.compactar(!ya);
+  x.antes(ya);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    $('otra2').onclick = () => { if (E.anim) return; x.antes(false); const chico = innerWidth < 900; if (chico) $('cv2').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' }); esperar(chico ? 380 : 0, () => { if (S.k === k) x.despues(); }); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; botones(); pintar();
+    E.compactar(false);
+    const chico = innerWidth < 900;
+    if (chico) $('cv2').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+    esperar(chico ? 380 : 0, () => { if (S.k !== k) return; x.despues(); E.leyenda(); E.dibujar(); E.avisar(); });
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0, x.unidad);
+  });
+  pintar();
+}
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

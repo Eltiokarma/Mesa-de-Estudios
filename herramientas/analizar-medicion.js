@@ -30,7 +30,9 @@ function informe(eventos) {
   md += '| Módulo | Alumnos | Entrada | Salida | Ganancia (pareados) | Predicciones | Acierto |\n| --- | --- | --- | --- | --- | --- | --- |\n';
   const r = Medicion.resumir(eventos);
   for (const m of r) md += `| ${m.modulo} | ${m.alumnos} | ${pct(m.entrada)} | ${pct(m.salida)} | ${m.ganancia === null ? '—' : `${m.ganancia >= 0 ? '+' : ''}${Math.round(m.ganancia * 100)} pts (${m.pareados})`} | ${m.predicciones} | ${pct(m.acierto)} |\n`;
-  for (const m of r) if (m.errores.length) {
+  // Los módulos de lectura tienen su propia tabla de errores (paso previo y respuesta), en informeLectura.
+  const deLectura = new Set(Medicion.resumirLectura(eventos).map(m => m.modulo));
+  for (const m of r) if (m.errores.length && !deLectura.has(m.modulo)) {
     md += `\n## Errores elegidos en ${m.modulo}\n\n| Error | Veces | Respaldo previo |\n| --- | --- | --- |\n`;
     for (const e of m.errores) md += `| ${e.id} | ${e.n} | ${respaldo[`${m.modulo}|${e.id}`] || '?'} |\n`;
   }

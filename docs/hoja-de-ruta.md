@@ -69,7 +69,7 @@ gantt
     Motor de predicciones generadas (química, aritmética, RM) :active, crit, pl3, 2026-11-06, 2026-11-14
     Medición integrada (entrada y salida, registro anónimo, exportar para el profesor) :active, crit, pl2, 2026-11-10, 2026-11-18
     Nivel por grado (3.º, 4.º, 5.º) en el catálogo :done, pl5, 2026-11-05, 2026-11-06
-    Formato lectura (razonamiento verbal) :pl4, 2026-11-16, 2026-11-20
+    Formato lectura (razonamiento verbal) :active, pl4, 2026-11-16, 2026-11-20
 
     section Física
     Banco Óptico, predicciones qué pasa si y problemas de papel :active, fi1, 2026-11-12, 2026-11-17

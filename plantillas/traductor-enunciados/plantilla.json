@@ -1,0 +1,17 @@
+{
+  "id": "traductor-enunciados",
+  "titulo": "El traductor de enunciados: letras, ecuaciones y planteo",
+  "formato": "escena",
+  "unidades": [
+    "algebra.ecuaciones-lineales-y-cuadraticas",
+    "algebra.sistemas-de-ecuaciones",
+    "razonamiento-matematico.planteo-de-ecuaciones"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}

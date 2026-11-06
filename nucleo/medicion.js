@@ -23,7 +23,10 @@
  *   { tipo: 'previo', modulo, unidad, problema: 't001v1.p1', opcion, correcta, error, respaldo, ms }
  *     el paso previo, antes de ver las alternativas (opcion: la oración, 'ninguna', la clase, la relación o el orden)
  *   { tipo: 'prediccion', …, opcion: '2' }   la alternativa elegida, por su posición en el banco (1 a 5), no por la letra
- *   { tipo: 'prueba', fase, modulo, unidad, problema, aciertos, total, respuestas: '215', ms }  (posiciones en el banco)
+ *   Los tres llevan intento (1 la primera vez que hace ese texto; resumirLectura cuenta solo la primera respuesta).
+ *   Pruebas de entrada y salida del módulo: como las de curso (curso: 'razonamiento-verbal', banco: 'lectura',
+ *   forma A = indice.entrada, B = indice.salida, orden AB o BA), un 'item' por pregunta (item: 't000av1.p1',
+ *   par: 'p1', plantilla: el módulo, opcion: posición en el banco) y una 'prueba' al final con respuestas en posiciones.
  * Todos llevan además: t (fecha ISO), alumno (id anónimo), grado, colegio, version.
  */
 (function (root, fabrica) {
@@ -137,8 +140,10 @@
   // Formato lectura: el paso previo (sin alternativas a la vista) y la respuesta (con alternativas), por
   // módulo, por unidad y por código de error. Comparar las dos columnas de un código dice si el error
   // aparece por sí solo o porque la alternativa lo sugiere. Un error sin código cuenta en "sinCodigo".
-  // Solo entran los módulos con eventos 'previo' o 'lectura' (los de lectura).
+  // Solo entran los módulos con eventos 'previo' o 'lectura' (los de lectura). Si un alumno repite un texto
+  // (campo intento), cuenta solo la primera vez que respondió cada paso previo y cada pregunta.
   function resumirLectura(eventos) {
+    const visto = new Set();
     const por = {};
     const nuevo = () => ({ previos: 0, previosBien: 0, respuestas: 0, respuestasBien: 0 });
     const m = id => (por[id] = por[id] || { modulo: id, alumnos: new Set(), lecturas: [], ...nuevo(), unidades: {}, codigos: {}, sinCodigo: { previo: 0, respuesta: 0 } });
@@ -146,9 +151,17 @@
     for (const e of eventos) {
       if (!deLectura.has(e.modulo)) continue;
       const r = m(e.modulo);
-      if (e.tipo === 'lectura') { r.alumnos.add(e.alumno); if (!e.fase && Number.isFinite(Number(e.ms))) r.lecturas.push(Number(e.ms)); continue; }
+      if (e.tipo === 'lectura') {
+        r.alumnos.add(e.alumno);
+        const k = ['lectura', e.modulo, e.alumno, e.problema].join('|');
+        if (!e.fase && !visto.has(k) && Number.isFinite(Number(e.ms))) { visto.add(k); r.lecturas.push(Number(e.ms)); }
+        continue;
+      }
       if (e.tipo !== 'previo' && e.tipo !== 'prediccion') continue;
       r.alumnos.add(e.alumno);
+      const clave = [e.modulo, e.tipo, e.alumno, e.problema].join('|');
+      if (visto.has(clave)) continue;
+      visto.add(clave);
       const cual = e.tipo === 'previo' ? 'previo' : 'respuesta';
       const u = (r.unidades[e.unidad || '?'] = r.unidades[e.unidad || '?'] || nuevo());
       for (const x of [r, u]) { x[cual + 's']++; if (e.correcta) x[cual + 'sBien']++; }

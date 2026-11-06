@@ -1,0 +1,762 @@
+{
+  "titulo": "El tablero de las pistas: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 3 minutos por problema, como en el examen. Antes de responder, dibuja el tablero (la fila de butacas, la mesa o el cuadro) y anota cada pista en él, empezando por las que fijan un lugar. Tres cuidados: una pista con «no» también quita posibilidades; «a la derecha de» no es lo mismo que «inmediatamente a la derecha de»; y si encuentras un arreglo que cumple todo, pregúntate si hay otro: solo es seguro lo que vale en todos. En las certezas, piensa siempre en la peor suerte.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Ana, Beto, Caro, Dani y Eva se sientan en una fila de 5 butacas, numeradas del 1 al 5 de izquierda a derecha. Caro está inmediatamente a la derecha de Ana; Dani se sienta en un extremo, pero no en la butaca 1; Beto está a la izquierda de Ana; y Eva no se sienta junto a Caro. ¿Quién ocupa la butaca 3? ¿Se puede saber quién ocupa la butaca 1?",
+      "respuesta": "Ana ocupa la butaca 3. No se puede saber quién ocupa la 1: puede ser Beto o Eva.",
+      "pasos": [
+        "Dani está en un extremo que no es la 1: Dani ocupa la 5.",
+        "Ana y Caro van juntas, Ana a la izquierda. Si Ana estuviera en la 1, Beto no podría estar a su izquierda; si estuviera en la 4, Caro caería en la 5, que es de Dani. Quedan Ana en la 2 o en la 3.",
+        "Con Ana en la 2 y Caro en la 3, Beto iría en la 1 y Eva en la 4, junto a Caro: no se puede. Entonces Ana está en la 3 y Caro en la 4.",
+        "Beto y Eva ocupan la 1 y la 2, en cualquier orden: las dos maneras cumplen todas las pistas. La butaca 3 es seguro de Ana; la 1, no se sabe."
+      ],
+      "verificar": [
+        {
+          "fn": "quien",
+          "args": [
+            {
+              "forma": "lineal",
+              "personas": [
+                "Ana",
+                "Beto",
+                "Caro",
+                "Dani",
+                "Eva"
+              ],
+              "pistas": [
+                {
+                  "tipo": "inmDerecha",
+                  "a": "Caro",
+                  "b": "Ana"
+                },
+                {
+                  "tipo": "extremo",
+                  "a": "Dani"
+                },
+                {
+                  "tipo": "izquierda",
+                  "a": "Beto",
+                  "b": "Ana"
+                },
+                {
+                  "tipo": "noJuntos",
+                  "a": "Eva",
+                  "b": "Caro"
+                },
+                {
+                  "tipo": "noLugar",
+                  "a": "Dani",
+                  "k": 1
+                }
+              ]
+            },
+            {
+              "tipo": "lugar",
+              "k": 3
+            }
+          ],
+          "espera": {
+            "respuesta": "Ana",
+            "soluciones": 2
+          }
+        },
+        {
+          "fn": "quien",
+          "args": [
+            {
+              "forma": "lineal",
+              "personas": [
+                "Ana",
+                "Beto",
+                "Caro",
+                "Dani",
+                "Eva"
+              ],
+              "pistas": [
+                {
+                  "tipo": "inmDerecha",
+                  "a": "Caro",
+                  "b": "Ana"
+                },
+                {
+                  "tipo": "extremo",
+                  "a": "Dani"
+                },
+                {
+                  "tipo": "izquierda",
+                  "a": "Beto",
+                  "b": "Ana"
+                },
+                {
+                  "tipo": "noJuntos",
+                  "a": "Eva",
+                  "b": "Caro"
+                },
+                {
+                  "tipo": "noLugar",
+                  "a": "Dani",
+                  "k": 1
+                }
+              ]
+            },
+            {
+              "tipo": "lugar",
+              "k": 1
+            }
+          ],
+          "espera": {
+            "unica": false,
+            "posibles": [
+              "Beto",
+              "Eva"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "En una fila de 6 butacas, numeradas del 1 al 6 de izquierda a derecha, se sientan 5 amigos y queda una butaca vacía. Beto se sienta en la butaca 2 y Ana está a la derecha de Beto. ¿En qué butacas puede estar Ana? ¿Y si la pista dijera «Ana está inmediatamente a la derecha de Beto»?",
+      "respuesta": "Ana puede estar en la 3, la 4, la 5 o la 6. Con «inmediatamente», solo en la 3.",
+      "pasos": [
+        "«A la derecha de Beto» quiere decir en cualquier butaca con un número mayor que el de Beto, junto a él o más lejos.",
+        "Beto está en la 2: a su derecha quedan la 3, la 4, la 5 y la 6. La butaca vacía no cambia nada, porque puede ser cualquiera de las otras.",
+        "«Inmediatamente a la derecha» pide que estén juntos: solo la butaca 3."
+      ],
+      "verificar": [
+        {
+          "fn": "lugaresDe",
+          "args": [
+            {
+              "forma": "lineal",
+              "personas": [
+                "Ana",
+                "Beto",
+                "Caro",
+                "Dani",
+                "Eva"
+              ],
+              "asientos": 6,
+              "pistas": [
+                {
+                  "tipo": "lugar",
+                  "a": "Beto",
+                  "k": 2
+                },
+                {
+                  "tipo": "derecha",
+                  "a": "Ana",
+                  "b": "Beto"
+                }
+              ]
+            },
+            "Ana"
+          ],
+          "espera": {
+            "respuesta": [
+              3,
+              4,
+              5,
+              6
+            ],
+            "errores.inmediata": [
+              3
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Cinco amigos se comparan por estatura (no hay dos que midan lo mismo). Ana mide menos que Beto; Caro mide menos que Ana; Eva mide menos que Beto; y Beto mide menos que Dani. ¿Cuál de estas afirmaciones es necesariamente cierta? I. Dani es quien más mide. II. Caro es quien menos mide. III. Eva mide menos que Ana.",
+      "respuesta": "Solo la I.",
+      "pasos": [
+        "Ordénalos del que menos mide al que más mide, como en una fila. Caro < Ana < Beto < Dani es una cadena de cuatro; Eva solo sabe que está por debajo de Beto.",
+        "Nadie mide más que Dani: Dani es quien más mide en todos los órdenes posibles. La I es segura.",
+        "Eva puede ir antes de Caro, entre Caro y Ana o entre Ana y Beto: hay 3 órdenes posibles. En uno de ellos Eva es quien menos mide, así que la II no es segura; en otro Eva mide más que Ana, así que la III tampoco.",
+        "«Posible» no es «seguro»: una afirmación es necesaria solo si se cumple en todos los órdenes."
+      ],
+      "verificar": [
+        {
+          "fn": "necesario",
+          "args": [
+            {
+              "forma": "lineal",
+              "personas": [
+                "Ana",
+                "Beto",
+                "Caro",
+                "Dani",
+                "Eva"
+              ],
+              "pistas": [
+                {
+                  "tipo": "izquierda",
+                  "a": "Ana",
+                  "b": "Beto"
+                },
+                {
+                  "tipo": "izquierda",
+                  "a": "Caro",
+                  "b": "Ana"
+                },
+                {
+                  "tipo": "izquierda",
+                  "a": "Eva",
+                  "b": "Beto"
+                },
+                {
+                  "tipo": "izquierda",
+                  "a": "Beto",
+                  "b": "Dani"
+                }
+              ]
+            },
+            [
+              {
+                "tipo": "lugar",
+                "a": "Dani",
+                "k": 5
+              },
+              {
+                "tipo": "lugar",
+                "a": "Caro",
+                "k": 1
+              },
+              {
+                "tipo": "izquierda",
+                "a": "Eva",
+                "b": "Ana"
+              }
+            ]
+          ],
+          "espera": {
+            "respuesta": 0,
+            "total": 3,
+            "estados": [
+              "siempre",
+              "aveces",
+              "aveces"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Ana, Beto, Caro, Dani, Eva y Fito se sientan alrededor de una mesa redonda con 6 sillas distribuidas simétricamente, mirando al centro. Ana se sienta frente a Beto; Ana no se sienta junto a Caro; Dani está inmediatamente a la izquierda de Caro; y Eva está inmediatamente a la izquierda de Fito. ¿Quién se sienta inmediatamente a la izquierda de Ana?",
+      "respuesta": "Fito.",
+      "pasos": [
+        "En una mesa redonda no importa en qué silla empieza nadie: pon a Ana en la silla 1 y numera las demás hacia su derecha (2, 3, 4, 5 y 6). Frente a Ana, en la 4, va Beto.",
+        "Quedan dos pares de sillas vecinas libres: la 2 y la 3, y la 5 y la 6. Dani y Caro van juntos (Dani a la izquierda de Caro, es decir, en la silla de número menor), y Eva y Fito también.",
+        "Si Dani y Caro fueran en la 5 y la 6, Caro quedaría en la 6, junto a Ana: no se puede. Entonces Dani va en la 2 y Caro en la 3; Eva en la 5 y Fito en la 6.",
+        "La silla a la izquierda de Ana es la 6: Fito. Con estas pistas hay una sola manera de sentarse, salvo giros."
+      ],
+      "verificar": [
+        {
+          "fn": "quien",
+          "args": [
+            {
+              "forma": "circular",
+              "personas": [
+                "Ana",
+                "Beto",
+                "Caro",
+                "Dani",
+                "Eva",
+                "Fito"
+              ],
+              "pistas": [
+                {
+                  "tipo": "frente",
+                  "a": "Ana",
+                  "b": "Beto"
+                },
+                {
+                  "tipo": "noJuntos",
+                  "a": "Ana",
+                  "b": "Caro"
+                },
+                {
+                  "tipo": "inmIzquierda",
+                  "a": "Dani",
+                  "b": "Caro"
+                },
+                {
+                  "tipo": "inmIzquierda",
+                  "a": "Eva",
+                  "b": "Fito"
+                }
+              ]
+            },
+            {
+              "tipo": "izquierdaDe",
+              "de": "Ana"
+            }
+          ],
+          "espera": {
+            "respuesta": "Fito",
+            "soluciones": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "avanzado",
+      "enunciado": "Seis amigos (Ana, Beto, Caro, Dani, Eva y Fito) se sientan alrededor de una mesa redonda con 6 sillas distribuidas simétricamente, mirando al centro. Ana se sienta frente a Dani; Beto está inmediatamente a la derecha de Ana; Eva se sienta junto a Dani; y Eva no se sienta frente a Beto. ¿Quién está inmediatamente a la derecha de Beto? ¿Se puede saber quién se sienta frente a Beto?",
+      "respuesta": "A la derecha de Beto está Eva. Frente a Beto puede estar Caro o Fito: no se puede saber.",
+      "pasos": [
+        "Numera las sillas 1 a 6 en el sentido de la derecha (antihorario visto desde arriba) y pon a Ana en la 1. Frente a ella, en la 4, va Dani; Beto, a la derecha de Ana, va en la 2.",
+        "Eva va junto a Dani: en la 3 o en la 5. La silla 5 está frente a la 2, que es de Beto, y Eva no puede estar frente a Beto: Eva va en la 3.",
+        "La silla 3 está a la derecha de Beto: es Eva.",
+        "Caro y Fito ocupan la 5 y la 6 en cualquier orden. La 5 está frente a Beto: puede ser cualquiera de los dos."
+      ],
+      "verificar": [
+        {
+          "fn": "quien",
+          "args": [
+            {
+              "forma": "circular",
+              "personas": [
+                "Ana",
+                "Beto",
+                "Caro",
+                "Dani",
+                "Eva",
+                "Fito"
+              ],
+              "pistas": [
+                {
+                  "tipo": "frente",
+                  "a": "Ana",
+                  "b": "Dani"
+                },
+                {
+                  "tipo": "inmDerecha",
+                  "a": "Beto",
+                  "b": "Ana"
+                },
+                {
+                  "tipo": "juntos",
+                  "a": "Eva",
+                  "b": "Dani"
+                },
+                {
+                  "tipo": "noFrente",
+                  "a": "Eva",
+                  "b": "Beto"
+                }
+              ]
+            },
+            {
+              "tipo": "derechaDe",
+              "de": "Beto"
+            }
+          ],
+          "espera": {
+            "respuesta": "Eva",
+            "soluciones": 2
+          }
+        },
+        {
+          "fn": "quien",
+          "args": [
+            {
+              "forma": "circular",
+              "personas": [
+                "Ana",
+                "Beto",
+                "Caro",
+                "Dani",
+                "Eva",
+                "Fito"
+              ],
+              "pistas": [
+                {
+                  "tipo": "frente",
+                  "a": "Ana",
+                  "b": "Dani"
+                },
+                {
+                  "tipo": "inmDerecha",
+                  "a": "Beto",
+                  "b": "Ana"
+                },
+                {
+                  "tipo": "juntos",
+                  "a": "Eva",
+                  "b": "Dani"
+                },
+                {
+                  "tipo": "noFrente",
+                  "a": "Eva",
+                  "b": "Beto"
+                }
+              ]
+            },
+            {
+              "tipo": "frenteA",
+              "de": "Beto"
+            }
+          ],
+          "espera": {
+            "unica": false,
+            "posibles": [
+              "Caro",
+              "Fito"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Ana, Beto y Caro practican cada uno un deporte distinto (fútbol, vóley y básquet) y tienen cada uno una mascota distinta (perro, gato y loro). Ana no tiene gato; quien juega vóley tiene loro; Beto tiene perro; y Caro no juega básquet. ¿Qué deporte practica Beto y qué mascota tiene Caro?",
+      "respuesta": "Beto juega básquet y Caro tiene gato.",
+      "pasos": [
+        "Arma un cuadro con las personas en las filas y los deportes y mascotas en las columnas. Marca ✓ en Beto–perro y ✗ en Ana–gato y en Caro–básquet.",
+        "Beto tiene perro, así que Ana y Caro se reparten el gato y el loro. Ana no tiene gato: Ana tiene loro y Caro tiene gato.",
+        "Quien juega vóley tiene loro, y el loro es de Ana: Ana juega vóley.",
+        "Caro no juega básquet y el vóley ya es de Ana: Caro juega fútbol y Beto, básquet. Cada pista con «no» también sirvió para tachar casillas."
+      ],
+      "verificar": [
+        {
+          "fn": "quien",
+          "args": [
+            {
+              "forma": "cuadro",
+              "personas": [
+                "Ana",
+                "Beto",
+                "Caro"
+              ],
+              "atributos": {
+                "deporte": [
+                  "fútbol",
+                  "vóley",
+                  "básquet"
+                ],
+                "mascota": [
+                  "perro",
+                  "gato",
+                  "loro"
+                ]
+              },
+              "pistas": [
+                {
+                  "tipo": "noEs",
+                  "persona": "Ana",
+                  "atributo": "mascota",
+                  "valor": "gato"
+                },
+                {
+                  "tipo": "mismo",
+                  "atr1": "deporte",
+                  "val1": "vóley",
+                  "atr2": "mascota",
+                  "val2": "loro"
+                },
+                {
+                  "tipo": "es",
+                  "persona": "Beto",
+                  "atributo": "mascota",
+                  "valor": "perro"
+                },
+                {
+                  "tipo": "noEs",
+                  "persona": "Caro",
+                  "atributo": "deporte",
+                  "valor": "básquet"
+                }
+              ]
+            },
+            {
+              "tipo": "valor",
+              "persona": "Beto",
+              "atributo": "deporte"
+            }
+          ],
+          "espera": {
+            "respuesta": "básquet",
+            "soluciones": 1
+          }
+        },
+        {
+          "fn": "quien",
+          "args": [
+            {
+              "forma": "cuadro",
+              "personas": [
+                "Ana",
+                "Beto",
+                "Caro"
+              ],
+              "atributos": {
+                "deporte": [
+                  "fútbol",
+                  "vóley",
+                  "básquet"
+                ],
+                "mascota": [
+                  "perro",
+                  "gato",
+                  "loro"
+                ]
+              },
+              "pistas": [
+                {
+                  "tipo": "noEs",
+                  "persona": "Ana",
+                  "atributo": "mascota",
+                  "valor": "gato"
+                },
+                {
+                  "tipo": "mismo",
+                  "atr1": "deporte",
+                  "val1": "vóley",
+                  "atr2": "mascota",
+                  "val2": "loro"
+                },
+                {
+                  "tipo": "es",
+                  "persona": "Beto",
+                  "atributo": "mascota",
+                  "valor": "perro"
+                },
+                {
+                  "tipo": "noEs",
+                  "persona": "Caro",
+                  "atributo": "deporte",
+                  "valor": "básquet"
+                }
+              ]
+            },
+            {
+              "tipo": "valor",
+              "persona": "Caro",
+              "atributo": "mascota"
+            }
+          ],
+          "espera": {
+            "respuesta": "gato"
+          }
+        }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Alguien se comió el último chocolate de la caja. Ana dice: «Fue Beto». Beto dice: «Fue Dani». Caro dice: «Yo no fui». Dani dice: «Beto miente». Si solo uno de los cuatro dice la verdad, ¿quién se comió el chocolate?",
+      "respuesta": "Caro.",
+      "pasos": [
+        "Las frases de Beto y de Dani se contradicen: si Beto dice la verdad, Dani miente, y si Beto miente, Dani dice la verdad. Uno de los dos es el único que dice la verdad.",
+        "Entonces Ana y Caro mienten. Caro miente al decir «Yo no fui»: fue Caro.",
+        "Comprueba: Ana («Fue Beto») miente; Beto («Fue Dani») miente; Dani («Beto miente») dice la verdad. Solo uno dice la verdad. Cumple.",
+        "Cuidado: el que miente no tiene por qué ser el culpable. Aquí mienten tres y solo una es culpable."
+      ],
+      "verificar": [
+        {
+          "fn": "verdades",
+          "args": [
+            {
+              "personas": [
+                "Ana",
+                "Beto",
+                "Caro",
+                "Dani"
+              ],
+              "frases": [
+                {
+                  "de": "Ana",
+                  "dice": {
+                    "tipo": "culpable",
+                    "x": "Beto"
+                  }
+                },
+                {
+                  "de": "Beto",
+                  "dice": {
+                    "tipo": "culpable",
+                    "x": "Dani"
+                  }
+                },
+                {
+                  "de": "Caro",
+                  "dice": {
+                    "tipo": "noCulpable",
+                    "x": "Caro"
+                  }
+                },
+                {
+                  "de": "Dani",
+                  "dice": {
+                    "tipo": "miente",
+                    "x": "Beto"
+                  }
+                }
+              ],
+              "mienten": {
+                "exactamente": 3
+              }
+            }
+          ],
+          "espera": {
+            "unica": true,
+            "culpable": "Caro",
+            "mentirosos": [
+              "Ana",
+              "Beto",
+              "Caro"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "En una isla, cada habitante siempre dice la verdad o siempre miente. Ana dice: «Beto y yo mentimos». Beto dice: «Ana miente». ¿Quién dice la verdad y quién miente?",
+      "respuesta": "Ana miente y Beto dice la verdad.",
+      "pasos": [
+        "Supón que Ana dice la verdad. Entonces sería cierto que ella miente: imposible. Así que Ana miente.",
+        "Como Ana miente, su frase «Beto y yo mentimos» es falsa: no es cierto que los dos mientan. Ana sí miente, así que Beto dice la verdad.",
+        "Comprueba: Beto dice «Ana miente», y es verdad. Todo encaja."
+      ],
+      "verificar": [
+        {
+          "fn": "verdades",
+          "args": [
+            {
+              "personas": [
+                "Ana",
+                "Beto"
+              ],
+              "culpables": null,
+              "frases": [
+                {
+                  "de": "Ana",
+                  "dice": {
+                    "tipo": "y",
+                    "p": [
+                      {
+                        "tipo": "miente",
+                        "x": "Ana"
+                      },
+                      {
+                        "tipo": "miente",
+                        "x": "Beto"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "de": "Beto",
+                  "dice": {
+                    "tipo": "miente",
+                    "x": "Ana"
+                  }
+                }
+              ],
+              "mienten": "libre"
+            }
+          ],
+          "espera": {
+            "unica": true,
+            "mentirosos": [
+              "Ana"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "básico",
+      "enunciado": "En un cajón oscuro hay 10 medias negras y 6 medias blancas, sueltas. ¿Cuántas hay que sacar, sin ver, para tener con seguridad dos medias del mismo color? ¿Y para tener con seguridad dos medias blancas?",
+      "respuesta": "3 para tener dos del mismo color; 12 para tener dos blancas.",
+      "pasos": [
+        "Para estar seguro, piensa en la peor suerte. Con 2 medias, la mala suerte puede darte una negra y una blanca.",
+        "La tercera media es negra o blanca: repite un color. Con 3 basta, aunque haya muchas medias.",
+        "Para dos blancas, la peor suerte saca primero las 10 negras. Después, dos medias más son blancas a la fuerza: 10 + 2 = 12."
+      ],
+      "verificar": [
+        {
+          "fn": "certeza",
+          "args": [
+            {
+              "urna": {
+                "negra": 10,
+                "blanca": 6
+              },
+              "objetivo": {
+                "tipo": "mismoColor",
+                "k": 2
+              }
+            }
+          ],
+          "espera": {
+            "n": 3,
+            "errores.mejorCaso": 2
+          }
+        },
+        {
+          "fn": "certeza",
+          "args": [
+            {
+              "urna": {
+                "negra": 10,
+                "blanca": 6
+              },
+              "objetivo": {
+                "tipo": "deColor",
+                "color": "blanca",
+                "k": 2
+              }
+            }
+          ],
+          "espera": {
+            "n": 12,
+            "errores.sinMasUno": 11
+          }
+        }
+      ]
+    },
+    {
+      "id": "p10",
+      "nivel": "intermedio",
+      "enunciado": "Hay 5 candados y 5 llaves mezcladas; cada llave abre un solo candado. ¿Cuántos intentos hacen falta, como mínimo, para saber con seguridad qué llave abre cada candado?",
+      "respuesta": "10 intentos.",
+      "pasos": [
+        "Toma el primer candado. En el peor caso, las 4 primeras llaves que pruebas no lo abren; entonces la quinta es la buena sin probarla: 4 intentos.",
+        "Quedan 4 candados y 4 llaves: en el peor caso, 3 intentos. Luego 2, luego 1, y la última llave ya se sabe.",
+        "En total: 4 + 3 + 2 + 1 = 10 intentos."
+      ],
+      "verificar": [
+        {
+          "fn": "llaves",
+          "args": [
+            5
+          ],
+          "espera": {
+            "intentos": 10,
+            "porCandado": [
+              4,
+              3,
+              2,
+              1
+            ],
+            "errores.sinDescontar": 20
+          }
+        }
+      ]
+    }
+  ]
+}

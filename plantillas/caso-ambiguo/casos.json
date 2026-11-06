@@ -1,0 +1,90 @@
+{
+  "plantilla": "caso-ambiguo",
+  "unidades": "Ángulos en grados sexagesimales; longitudes en las unidades del problema. El lado a es BC (opuesto al ángulo A), b es CA y c es AB. 37° y 53° de academia son los ángulos del triángulo 3-4-5 (36,87° y 53,13°): se pasan con su valor real. En casoAmbiguo, A está en el origen, la base va por la parte positiva del eje x y C = b·(cos A, sen A); los cortes son las x donde el brazo de largo a, con centro en C, toca la recta de la base (de mayor a menor), y direccion es el ángulo del brazo medido desde C.",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.signoCambiado.a2, soluciones.0.B, cortes.1.x); 'valor' es el resultado entero cuando la función devuelve un número o un texto. Las listas se comparan completas, los números con la tolerancia y los textos y booleanos exactos. 'tambien' son llamadas extra del mismo caso (con su propia fn si la traen).",
+  "verificacion": "Verificado por un subagente independiente (6 nov 2026) sin leer el motor ni este archivo: LLA resuelto por coordenadas (cortes del círculo de radio a con la recta AB) y contrastado con la ley de senos; cosenos y Herón con fracciones exactas; áreas por la fórmula del cordón; 37° y 53° con su valor real (asin 3/5 y asin 4/5). Los 19 casos coincidieron con tolerancia 1e-9. Tras la verificación se quitó del caso 0 un error típico que daba la respuesta correcta, se corrigió el nombre del caso 15 (ALA) y el caso 13 pasó a b = 8, c = 6, A = 150°, recalculado a mano al integrar: S = 12, h = 4, a² = 100 + 48√3, errores 24, 12√3 y −12.",
+  "tolerancia": 1e-9,
+  "casos": [
+    { "nombre": "Informe, caso 12 y predicción del paso 2: A = 30°, b = 8, a = 5. La altura h = b·sen A = 4 es menor que a y a es menor que b: dos triángulos, con sen B = 4/5, B ≈ 53,13° o 126,87° (53° y 127° de academia) y c = 4√3 + 3 ≈ 9,93 o 4√3 − 3 ≈ 3,93 (TR23: solo el agudo; TR25: rectángulo en B, c = √39)",
+      "fn": "casoAmbiguo", "args": [{"A":30,"b":8,"a":5}],
+      "espera": {"h":4,"senB":0.8,"n":2,"situacion":"dos","C.x":6.928203230275509,"C.y":4,"B":[53.13010235415598,126.86989764584402],"c":[9.928203230275509,3.9282032302755088],"cortes.0.x":9.928203230275509,"cortes.1.x":3.9282032302755088,"cortes.0.valido":true,"cortes.1.valido":true,"soluciones.0.C":96.86989764584402,"soluciones.1.C":23.13010235415598,"soluciones.0.R":5,"soluciones.1.R":5,"errores.soloAgudo.n":1,"errores.soloAgudo.B":53.13010235415598,"errores.rectanguloEnB.c":6.244997998398398,"errores.senoEnRadianes":-1.580850598548579,"errores.senoMayorQueUno":false} },
+
+    { "nombre": "Predicción del paso 3: A = 30°, b = 8, a = 4 = h. El brazo apenas toca la base: un solo triángulo, rectángulo en B, con c = 4√3 ≈ 6,93 (TR23 al revés: B y 180° − B son el mismo 90°)",
+      "fn": "casoAmbiguo", "args": [{"A":30,"b":8,"a":4}],
+      "espera": {"h":4,"senB":1,"n":1,"situacion":"tangente","B":[90],"c":[6.928203230275509],"cortes.0.x":6.928203230275509,"cortes.0.direccion":-90,"soluciones.0.C":60,"soluciones.0.tipo":"rectángulo","soluciones.0.verticeRecto":"B"} },
+
+    { "nombre": "Predicción del paso 4: A = 30°, b = 8, a = 3 < h = 4. El brazo no llega a la base: ningún triángulo; sen B = 4/3 pasaría de 1",
+      "fn": "casoAmbiguo", "args": [{"A":30,"b":8,"a":3}],
+      "espera": {"h":4,"senB":1.3333333333333333,"n":0,"situacion":"no-alcanza","B":[],"c":[],"cortes":[],"soluciones":[],"errores.senoMayorQueUno":true,"errores.siempreDos":null,"errores.soloAgudo":null} },
+
+    { "nombre": "¿Qué pasa si…? 1: A = 30°, b = 8, a = 10 > b. Un solo triángulo: sen B = 2/5, B ≈ 23,58° y c = 4√3 + 2√21 ≈ 16,09; el otro corte cae detrás de A, en x = 4√3 − 2√21 ≈ −2,24, donde el ángulo en A sería 150° (siempreDos daría B ≈ 156,42°, que con A = 30° pasa de 180°)",
+      "fn": "casoAmbiguo", "args": [{"A":30,"b":8,"a":10}],
+      "espera": {"n":1,"situacion":"uno","senB":0.4,"B":[23.578178478201835],"c":[16.09335462018719],"cortes.1.x":-2.236948159636171,"cortes.1.valido":false,"cortes.1.anguloEnA":150,"errores.siempreDos.B":[23.578178478201835,156.42182152179817]} },
+
+    { "nombre": "Borde: a = b = 8 con A = 30°. Isósceles, una sola solución (B = A = 30°, c = 8√3 ≈ 13,86); el segundo corte cae justo en A y no forma triángulo",
+      "fn": "casoAmbiguo", "args": [{"A":30,"b":8,"a":8}],
+      "espera": {"n":1,"situacion":"uno","B":[30],"c":[13.856406460551018],"cortes.1.x":0,"cortes.1.valido":false} },
+
+    { "nombre": "¿Qué pasa si…? 2: A = 120° (obtuso), b = 8, a = 7. Aunque h = 4√3 ≈ 6,93 < a < b, no hay triángulo: con A obtuso, a tiene que ser el lado mayor; los dos cortes (x = −3 y x = −5) caen detrás de A (solo el agudo daría B ≈ 81,79°, que con 120° pasa de 180°)",
+      "fn": "casoAmbiguo", "args": [{"A":120,"b":8,"a":7}],
+      "espera": {"h":6.928203230275509,"n":0,"situacion":"obtuso-no","C.x":-4,"cortes.0.x":-3,"cortes.1.x":-5,"cortes.0.valido":false,"cortes.1.valido":false,"cortes.0.anguloEnA":60,"errores.soloAgudo.B":81.78678929826182} },
+
+    { "nombre": "A = 120°, b = 8, a = 10 > b: un solo triángulo, con sen B = 2√3/5, B ≈ 43,85° y c = 2√13 − 4 ≈ 3,21",
+      "fn": "casoAmbiguo", "args": [{"A":120,"b":8,"a":10}],
+      "espera": {"n":1,"situacion":"obtuso-uno","senB":0.6928203230275509,"B":[43.85377861202206],"c":[3.2111025509279782],"cortes.0.valido":true,"cortes.1.valido":false} },
+
+    { "nombre": "Informe, caso 12 y predicción del paso 5: b = 5, c = 8, A = 60° → a² = 25 + 64 − 2·5·8·(1/2) = 49, a = 7. Pitágoras daría 89; el término 2bc·cos A = 40 se resta (TR24: con el signo cambiado, 129; sin el término, 89; sumando lados, 13; sin el 2, 69; con la calculadora en radianes, 89 − 80·cos(60 rad) ≈ 165,19)",
+      "fn": "leyCosenos", "args": [{"b":5,"c":8,"A":60}],
+      "espera": {"a":7,"a2":49,"b2":25,"c2":64,"pitagoras":89,"termino":40,"rectangulo":40,"signo":"resta","proyeccion":2.5,"puntos.C.x":2.5,"puntos.C.y":4.330127018922193,"errores.signoCambiado.a2":129,"errores.signoCambiado.a":11.357816691600547,"errores.sinTermino.a2":89,"errores.sumaLados.a":13,"errores.sinElDos.a2":69,"errores.conRadianes.a2":165.1930384332125} },
+
+    { "nombre": "Predicción del paso 6: con A = 90° el término desaparece (cos 90° = 0) y la ley de cosenos es Pitágoras: a² = 25 + 64 = 89 (con cos 90° = 1, como si fuera el seno: 89 − 80 = 9)",
+      "fn": "leyCosenos", "args": [{"b":5,"c":8,"A":90}],
+      "espera": {"a2":89,"a":9.433981132056603,"termino":0,"signo":"nada","proyeccion":0,"errores.cosenoComoSeno.a2":9,"errores.sumaLados.a2":169} },
+
+    { "nombre": "Predicción del paso 7: con A = 120°, cos 120° = −1/2 y el término cambia de signo: a² = 89 + 40 = 129, a = √129 ≈ 11,36. La proyección de b cae detrás de A (−2,5). TR24: restar 40 da 49; Pitágoras, 89; la calculadora en radianes, 89 − 80·cos(120 rad) ≈ 23,87",
+      "fn": "leyCosenos", "args": [{"b":5,"c":8,"A":120}],
+      "espera": {"a2":129,"a":11.357816691600547,"termino":-40,"rectangulo":40,"signo":"suma","proyeccion":-2.5,"puntos.H.x":-2.5,"errores.signoCambiado.a2":49,"errores.cosenoSinSigno.a2":49,"errores.sinTermino.a2":89,"errores.conRadianes.a2":23.86552235787505} },
+
+    { "nombre": "¿Qué pasa si…? 3: el triángulo 3-5-7. cos A = (9 + 25 − 49)/30 = −1/2 → el ángulo mayor mide 120° (TR24: con el signo cambiado, 60°; TR25: rectángulo, 90°; la calculadora en radianes da 2,09, que es 2π/3)",
+      "fn": "anguloLLL", "args": [{"a":7,"b":3,"c":5}],
+      "espera": {"A":120,"cosA":-0.5,"cosTexto":"−1/2","comparaPitagoras":"mayor","errores.signoCambiado":60,"errores.rectangulo":90,"errores.enRadianes":2.0943951023931953,"triangulo.area":6.495190528383289,"triangulo.R":4.041451884327381,"triangulo.r":0.8660254037844386,"triangulo.tipo":"obtusángulo","triangulo.verticeObtuso":"A"} },
+
+    { "nombre": "Informe, TR25: el triángulo 5-7-8 no es rectángulo; el ángulo opuesto a 7 mide 60° (cos = (25 + 64 − 49)/80 = 1/2), no \"sen A = 5/8\"",
+      "fn": "anguloLLL", "args": [{"a":7,"b":5,"c":8}],
+      "espera": {"A":60,"cosA":0.5,"cosTexto":"1/2","comparaPitagoras":"menor","triangulo.area":17.32050807568877,"triangulo.R":4.041451884327381} },
+
+    { "nombre": "¿Qué pasa si…? 4: ley de senos con a = 5 y A = 30°: a/sen A = 10 = 2R, así que R = 5 (falta el 2: 10; multiplicar: a·sen A = 2,5). En la circunscrita, el vértice A puede moverse por el arco y el ángulo sigue en 30°",
+      "fn": "leySenos", "args": [{"a":5,"A":30}],
+      "espera": {"senA":0.5,"razon":10,"diametro":10,"R":5,"errores.diametroComoRadio":10,"errores.multiplica":2.5},
+      "tambien": [{"fn":"inscrito","args":[{"a":5,"A":30,"t":0.3}],"espera":{"R":5,"anguloEnP":30,"B.x":-2.5,"B.y":-4.330127018922193,"opuesto.x":2.5,"opuesto.y":4.330127018922193}},{"fn":"inscrito","args":[{"a":5,"A":30,"t":0.85}],"espera":{"anguloEnP":30}}] },
+
+    { "nombre": "¿Qué pasa si…? 5: área con b = 8, c = 6 y A = 150°: S = 8·6·sen 150°/2 = 12. La altura desde C mide 4 y cae fuera, detrás de A; el tercer lado mide √(100 + 48√3) ≈ 13,53 (sin el ½: 24; con el coseno: 12√3 ≈ 20,78; con seno negativo: −12)",
+      "fn": "areaLAL", "args": [{"b":8,"c":6,"A":150}],
+      "espera": {"S":12,"h":4,"pieFuera":true,"ladoA":13.532865135044615,"errores.sinMitad":24,"errores.conCoseno":20.784609690826528,"errores.senoNegativo":-12} },
+
+    { "nombre": "Herón: 3-5-7 da p = 15/2 y S = √(15/2 · 1/2 · 9/2 · 5/2) = 15√3/4 ≈ 6,50, lo mismo que 3·5·sen 120°/2; 13-14-15 da p = 21 y S = 84",
+      "fn": "heron", "args": [3,5,7],
+      "espera": {"p":7.5,"factores":[7.5,4.5,2.5,0.5],"producto":42.1875,"S":6.495190528383289},
+      "tambien": [{"args":[13,14,15],"espera":{"p":21,"producto":7056,"S":84}}] },
+
+    { "nombre": "ALA con ángulos de academia (el lado c entre A y B): c = 10, A = 37°, B = 53° → C = 90°, a = 6 y b = 8 (el 3-4-5 por 2); AAL a = 10, A = 30°, B = 45° → C = 105°, b = 10√2 ≈ 14,14 y c = 5(√6 + √2) ≈ 19,32",
+      "fn": "resolver", "args": [{"c":10,"A":36.86989764584402,"B":53.13010235415598}],
+      "espera": {"caso":"ALA","n":1,"soluciones.0.C":90,"soluciones.0.a":6,"soluciones.0.b":8,"soluciones.0.area":24,"soluciones.0.R":5},
+      "tambien": [{"args":[{"a":10,"A":30,"B":45}],"espera":{"caso":"AAL","soluciones.0.C":105,"soluciones.0.b":14.142135623730951,"soluciones.0.c":19.318516525781362,"soluciones.0.R":10}}] },
+
+    { "nombre": "resolver con LLA y LAL: A = 30°, a = 5, b = 8 da los dos triángulos del caso ambiguo; b = 5, c = 8, A = 60° da a = 7, B ≈ 38,21° y C ≈ 81,79°",
+      "fn": "resolver", "args": [{"A":30,"a":5,"b":8}],
+      "espera": {"caso":"LLA","n":2,"situacion":"dos","h":4,"soluciones.0.B":53.13010235415598,"soluciones.1.B":126.86989764584402,"soluciones.0.c":9.928203230275509,"soluciones.1.c":3.9282032302755088},
+      "tambien": [{"args":[{"b":5,"c":8,"A":60}],"espera":{"caso":"LAL","soluciones.0.a":7,"soluciones.0.B":38.2132107017382,"soluciones.0.C":81.78678929826182,"soluciones.0.area":17.32050807568877}},{"args":[{"a":7,"b":3,"c":5}],"espera":{"caso":"LLL","soluciones.0.A":120}}] },
+
+    { "nombre": "Leyes de proyecciones y de tangentes en el 5-7-8 (A = 60°, opuesto a 7): a = b·cos C + c·cos B = 5·(1/7) + 8·(11/14) = 7; (a − b)/(a + b) = tan((A − B)/2)/tan((A + B)/2) = 1/6",
+      "fn": "proyecciones", "args": [{"a":7,"b":5,"c":8,"A":60,"B":38.2132107017382,"C":81.78678929826182}],
+      "espera": {"a":7,"b":5,"c":8},
+      "tambien": [{"fn":"leyTangentes","args":[{"a":7,"b":5,"A":60,"B":38.2132107017382}],"espera":{"izquierda":0.16666666666666666,"derecha":0.16666666666666666}}] },
+
+    { "nombre": "Ángulos notables de academia: 37° y 53° son los del 3-4-5 (sen 37° = 3/5); 150° tiene sen = 1/2 y cos = −√3/2; √48 = 4√3, √129 no se simplifica",
+      "fn": "notable", "args": [36.86989764584402],
+      "espera": {"nombre":"37°","academia":true,"sen.valor":0.6,"sen.texto":"3/5","cos.texto":"4/5"},
+      "tambien": [{"args":[150],"espera":{"nombre":"150°","sen.valor":0.5,"cos.valor":-0.8660254037844386,"cos.texto":"−√3/2"}},{"args":[143.13010235415598],"espera":{"nombre":"143°","sen.texto":"3/5","cos.texto":"−4/5"}},{"fn":"raizTexto","args":[48],"espera":{"valor":"4√3"}},{"fn":"raizTexto","args":[129],"espera":{"valor":"√129"}}] }
+  ]
+}

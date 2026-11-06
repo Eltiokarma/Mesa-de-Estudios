@@ -165,3 +165,20 @@ test('los eventos de lectura salen en el CSV y en el informe', () => {
   assert.match(informe(lecturaEv), /# Formato lectura: paso previo y respuesta/);
   assert.equal(informeLectura([]), '');
 });
+
+test('resumen de lectura: al repetir un texto cuenta solo el primer intento', () => {
+  const rep = [...lecturaEv,
+    lec('a', 6, { tipo: 'lectura', unidad: U1, problema: 't001v1', ms: 1000, intento: 2 }),
+    lec('a', 7, { tipo: 'previo', unidad: U1, problema: 't001v1.p1', opcion: 'o2', correcta: true, error: '', ms: 1, intento: 2 }),
+    lec('a', 8, { tipo: 'prediccion', unidad: U1, problema: 't001v1.p1', opcion: '1', correcta: true, error: '', ms: 1, intento: 2 })];
+  const [m] = M.resumirLectura(rep);
+  assert.equal(m.previos, 3); assert.equal(m.respuestas, 3); assert.equal(m.textosLeidos, 2);
+  assert.ok(Math.abs(m.aciertoPrevio - 1 / 3) < 1e-12);
+});
+
+test('el informe no repite los errores de lectura en "Errores elegidos"', () => {
+  const md = informe(lecturaEv);
+  assert.doesNotMatch(md, /## Errores elegidos en lectura-verbal/);
+  assert.match(md, /## Errores por código RV en lectura-verbal/);
+  assert.match(informe(datos), /## Errores elegidos en m1/);
+});

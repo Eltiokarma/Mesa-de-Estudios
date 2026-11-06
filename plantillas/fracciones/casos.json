@@ -1,0 +1,117 @@
+{
+  "plantilla": "fracciones",
+  "unidades": "Números sin unidad, salvo donde el problema la trae: centímetros (cintas), minutos (buses), kilómetros y km/h (viaje), horas (tiempos del viaje) y notas vigesimales. Las fracciones van como { n, d } reducidas (el signo en el numerador) o como [n, d] en los argumentos; 'sinSimplificar' y los errores van tal como se escriben, sin reducir.",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.sumaTodo, resultado.n); 'valor' es el resultado si es un número suelto; las listas se comparan completas y los textos exactos. Una fracción esperada se escribe { n, d } y se compara como valor (2/6 = 1/3) salvo en los campos 'sinSimplificar' y 'errores', donde se compara tal cual. 'tambien' son llamadas extra del mismo caso. Un error que no aparece en 'errores' es porque en ese caso daría la respuesta correcta.",
+  "verificacion": "Verificado por un subagente independiente (6 nov 2026) que no leyó el motor ni este archivo: recalculó los 182 campos de los 19 casos con fractions.Fraction, con denominador común y MCM por enumeración de múltiplos, MCD por intersección de divisores, Euclides reimplementado y la generatriz por la regla de los nueves comprobada con una división larga propia. Coinciden los 182; solo cambia la notación de algunos textos.",
+  "tolerancia": 1e-9,
+  "casos": [
+    { "nombre": "Predicción del paso 1 e informe (AR12): 1/2 + 1/3 = 5/6 con denominador común 6 (sumar todo: 2/5; sumar numeradores y multiplicar denominadores: 2/6; multiplicar: 1/6)",
+      "fn": "sumar", "args": [[1, 2], [1, 3]],
+      "espera": { "resultado": { "n": 5, "d": 6 }, "texto": "5/6", "comun": 6, "na": 3, "nb": 2,
+        "errores.sumaTodo": { "n": 2, "d": 5 }, "errores.sumaNumMultDen": { "n": 2, "d": 6 }, "errores.multiplica": { "n": 1, "d": 6 } } },
+
+    { "nombre": "Informe (AR12): 2/3 + 1/4 = 11/12 (sumar todo: 3/7)",
+      "fn": "sumar", "args": [[2, 3], [1, 4]],
+      "espera": { "texto": "11/12", "comun": 12, "na": 8, "nb": 3, "errores.sumaTodo": { "n": 3, "d": 7 } } },
+
+    { "nombre": "Suma con denominador común que no es el producto: 3/4 + 5/6 = 19/12 (común 12, no 24)",
+      "fn": "sumar", "args": [[3, 4], [5, 6]],
+      "espera": { "texto": "19/12", "comun": 12, "na": 9, "nb": 10, "sinSimplificar": { "n": 19, "d": 12 }, "errores.sumaTodo": { "n": 8, "d": 10 } } },
+
+    { "nombre": "Simplificar y comparar: 18/24 = 3/4 (factor 6); 1/3 < 1/2 (el denominador mayor no da la fracción mayor)",
+      "fn": "simplificar", "args": [18, 24],
+      "espera": { "n": 3, "d": 4, "factor": 6, "irreducible": false, "texto": "3/4" },
+      "tambien": [ { "fn": "comparar", "args": [[1, 3], [1, 2]], "espera": { "mayor": "b", "cruzados": [2, 3], "comun.d": 6, "errores.denominadorMayor": "a" } },
+                   { "fn": "restar", "args": [[3, 4], [1, 6]], "espera": { "texto": "7/12", "comun": 12, "errores.restaTodo": { "n": -2, "d": 2 } } } ] },
+
+    { "nombre": "¿Qué pasa si…? 2: 6 ÷ 1/2 = 12 (sin invertir: 3; invertir el dividendo: 1/12; invertir las dos: 1/3)",
+      "fn": "dividir", "args": [6, [1, 2]],
+      "espera": { "texto": "12", "errores.sinInvertir": { "n": 3, "d": 1 }, "errores.invierteDividendo": { "n": 1, "d": 12 }, "errores.invierteAmbos": { "n": 1, "d": 3 } },
+      "tambien": [ { "fn": "dividir", "args": [[3, 4], [2, 5]], "espera": { "texto": "15/8", "errores.sinInvertir": { "n": 3, "d": 10 }, "errores.invierteDividendo": { "n": 8, "d": 15 } } },
+                   { "fn": "multiplicar", "args": [[2, 3], [9, 4]], "espera": { "texto": "3/2", "sinSimplificar": { "n": 18, "d": 12 }, "errores.cruzado": { "n": 8, "d": 27 } } } ] },
+
+    { "nombre": "¿Qué pasa si…? 3: los 2/3 de los 3/4 de una barra = 1/2 (6/12) (sumar: 17/12; sumar todo: 5/7; en cruz: 8/9)",
+      "fn": "fraccionDe", "args": [[[2, 3], [3, 4]]],
+      "espera": { "texto": "1/2", "sinSimplificar": { "n": 6, "d": 12 }, "errores.suma": { "n": 17, "d": 12 }, "errores.sumaTodo": { "n": 5, "d": 7 }, "errores.cruzado": { "n": 8, "d": 9 } },
+      "tambien": [ { "fn": "fraccionDe", "args": [[[3, 5]], 40], "espera": { "texto": "24" } } ] },
+
+    { "nombre": "La parte que falta: se gasta 1/3 y 1/4 del sueldo → queda 5/12 (con AR12 al sumar lo gastado: 5/7); de lo que queda: 1/3 y luego 1/4 de lo que queda → 1/2",
+      "fn": "parteQueFalta", "args": [[[1, 3], [1, 4]]],
+      "espera": { "texto": "5/12", "gastado": { "n": 7, "d": 12 }, "errores.sumaTodo": { "n": 5, "d": 7 }, "errores.loGastado": { "n": 7, "d": 12 } },
+      "tambien": [ { "fn": "deLoQueQueda", "args": [[[1, 3], [1, 4]], 1200], "espera": { "texto": "600", "errores.todoDelTotal": { "n": 500, "d": 1 } } } ] },
+
+    { "nombre": "Predicción del paso 3 e informe (AR11): 0,3 > 0,25; alineados 0,30 y 0,25 (más largo es mayor: 0,25; redondeando a décimos: iguales)",
+      "fn": "compararDecimales", "args": ["0,25", "0,3"],
+      "espera": { "mayor": "b", "alineados": ["0,25", "0,30"], "centesimas": [25, 30], "errores.masLargo": "a", "errores.redondeo": "iguales" },
+      "tambien": [ { "fn": "compararDecimales", "args": ["0,125", "0,2"], "espera": { "mayor": "b", "errores.masLargo": "a" } },
+                   { "fn": "compararDecimales", "args": ["0,4", "0,40"], "espera": { "mayor": "iguales", "errores.masLargo": "b" } } ] },
+
+    { "nombre": "División larga: 1/6 = 0,1(6) mixto (2·3); 5/7 = 0,(714285) puro; 3/8 = 0,375 exacto (2³)",
+      "fn": "decimal", "args": [[1, 6]],
+      "espera": { "entero": 0, "anteperiodo": "1", "periodo": "6", "tipo": "periodico-mixto", "regla": "periodico-mixto", "factoresDen": "2·3", "texto": "0,1(6)" },
+      "tambien": [ { "fn": "decimal", "args": [[5, 7]], "espera": { "periodo": "714285", "tipo": "periodico-puro", "texto": "0,(714285)" } },
+                   { "fn": "decimal", "args": [[3, 8]], "espera": { "anteperiodo": "375", "periodo": "", "tipo": "exacto", "texto": "0,375" } },
+                   { "fn": "decimal", "args": [[1, 3]], "espera": { "texto": "0,(3)", "conPuntos": "0,3333…" } },
+                   { "fn": "cifras", "args": [[1, 6], 4], "espera": { "valor": "0,1666" } } ] },
+
+    { "nombre": "¿Qué pasa si…? 5: 0,1(6) = 15/90 = 1/6 (como exacto: 16/100; como puro: 16/99; sin restar: 16/90)",
+      "fn": "generatriz", "args": ["0,1(6)"],
+      "espera": { "texto": "1/6", "tipo": "periodico-mixto", "sinSimplificar": { "n": 15, "d": 90 },
+        "errores.comoExacto": { "n": 16, "d": 100 }, "errores.comoPuro": { "n": 16, "d": 99 }, "errores.sinRestar": { "n": 16, "d": 90 } } },
+
+    { "nombre": "¿Qué pasa si…? 1: 0,(9) = 9/9 = 1 (como exacto: 9/10; tres cifras: 999/1000; con la regla del mixto: 9/90)",
+      "fn": "generatriz", "args": ["0,(9)"],
+      "espera": { "texto": "1", "tipo": "periodico-puro", "sinSimplificar": { "n": 9, "d": 9 },
+        "errores.comoExacto": { "n": 9, "d": 10 }, "errores.tresVeces": { "n": 999, "d": 1000 }, "errores.comoMixto": { "n": 9, "d": 90 } },
+      "tambien": [ { "fn": "generatriz", "args": ["2,3(45)"], "espera": { "texto": "129/55", "sinSimplificar": { "n": 2322, "d": 990 } } },
+                   { "fn": "generatriz", "args": ["0,375"], "espera": { "texto": "3/8", "tipo": "exacto" } } ] },
+
+    { "nombre": "Predicción del paso 5 (AR13): cintas de 24 y 36 cm en trozos iguales lo más largos posible → 12 cm, 2 + 3 = 5 trozos (MCM: 72; producto: 864; otro divisor común: 6)",
+      "fn": "cintas", "args": [24, 36],
+      "espera": { "trozo": 12, "trozosA": 2, "trozosB": 3, "trozos": 5, "comunes": [1, 2, 3, 4, 6, 12], "errores.mcm": 72, "errores.producto": 864, "errores.otroDivisor": 6 },
+      "tambien": [ { "fn": "cortar", "args": [36, 24], "espera": { "trozos": 1, "sobra": 12, "justo": false } }, { "fn": "cortar", "args": [36, 12], "espera": { "trozos": 3, "sobra": 0, "justo": true } } ] },
+
+    { "nombre": "Predicción del paso 6 e informe (AR13): buses cada 12 y 18 min → vuelven a coincidir a los 36 min (MCD: 6; producto: 216; suma: 30)",
+      "fn": "coinciden", "args": [12, 18],
+      "espera": { "minutos": 36, "vueltasA": 3, "vueltasB": 2, "juntos": [0, 36, 72], "errores.mcd": 6, "errores.producto": 216, "errores.suma": 30 } },
+
+    { "nombre": "MCD y MCM de 12 y 18 por descomposición (2²·3 y 2·3²) y por Euclides",
+      "fn": "mcd", "args": [[12, 18]],
+      "espera": { "valor": 6, "textoFactores": "2·3", "descomposiciones": ["2²·3", "2·3²"], "euclides": [[18, 12, 1, 6], [12, 6, 2, 0]] },
+      "tambien": [ { "fn": "mcm", "args": [[12, 18]], "espera": { "valor": 36, "textoFactores": "2²·3²", "multiplos": [3, 2] } },
+                   { "fn": "mcd", "args": [[84, 120, 180]], "espera": { "valor": 12, "textoFactores": "2²·3" } },
+                   { "fn": "mcm", "args": [[84, 120, 180]], "espera": { "valor": 2520, "textoFactores": "2³·3²·5·7" } },
+                   { "fn": "euclides", "args": [1071, 462], "espera": { "valor": 21, "pasos": [[1071, 462, 2, 147], [462, 147, 3, 21], [147, 21, 7, 0]] } } ] },
+
+    { "nombre": "Predicción del paso 8 e informe (AR14): ida 120 km a 60 km/h y vuelta a 40 km/h → 2 h + 3 h, 240 km en 5 h: 48 km/h (promedio simple: 50; suma: 100; sin el 2: 24)",
+      "fn": "idaVuelta", "args": [120, 60, 40],
+      "espera": { "media": 48, "t1": 2, "t2": 3, "tiempo": 5, "distancia": 240, "pesosTiempo": [0.4, 0.6], "errores.simple": 50, "errores.suma": 100, "errores.sinElDos": 24 },
+      "tambien": [ { "fn": "armonico", "args": [[60, 40]], "espera": { "valor": 48 } },
+                   { "fn": "posicionViaje", "args": [120, 60, 40, 3.5], "espera": { "x": 60, "tramo": "vuelta", "recorrido": 180 } } ] },
+
+    { "nombre": "¿Qué pasa si…? 4 e informe (AR15): 30 alumnos con 14 y 20 alumnos con 16 → 740/50 = 74/5 = 14,8 (promedio de promedios: 15; pesos cruzados: 15,2; el grupo mayor: 14)",
+      "fn": "ponderado", "args": [[14, 16], [30, 20]],
+      "espera": { "media": 14.8, "sumaPesos": 50, "suma": 740, "fraccion": { "n": 74, "d": 5 }, "errores.simple": 15, "errores.pesosCruzados": 15.2, "errores.grupoMayor": 14 },
+      "tambien": [ { "fn": "aritmetico", "args": [[12, 15, 18, 11]], "espera": { "valor": 14 } },
+                   { "fn": "momento", "args": [[14, 16], [30, 20], 15], "espera": { "valor": -10 } },
+                   { "fn": "momento", "args": [[14, 16], [30, 20], 14.8], "espera": { "valor": 0 } } ] },
+
+    { "nombre": "Barras para pintar: 7/4 en barras de 4 trozos son 2 barras (4 y 3 llenos); 1/2 en sextos son 3 trozos",
+      "fn": "partes", "args": [[7, 4]],
+      "espera": { "d": 4, "trozos": 7, "barras": 2, "llenos": [4, 3] },
+      "tambien": [ { "fn": "partes", "args": [[1, 2], 6], "espera": { "d": 6, "trozos": 3, "barras": 1, "llenos": [3] } },
+                   { "fn": "equivalentes", "args": [[2, 3], [2, 4]], "espera": { "0.texto": "4/6", "1.texto": "8/12" } } ] },
+
+    { "nombre": "Paso 2, el cuchillo: 1/2 y 1/3 encajan en 6, 12, 18… trozos (6 es el MCM); con 4 trozos, los tercios no encajan; con 12, 1/2 + 1/3 = 10/12",
+      "fn": "cuchillo", "args": [[[1, 2], [1, 3]], 6],
+      "espera": { "todas": true, "mcm": 6, "suma": { "n": 5, "d": 6 }, "fracciones.0.ampliada": 3, "fracciones.1.ampliada": 2 },
+      "tambien": [ { "fn": "cuchillo", "args": [[[1, 2], [1, 3]], 4], "espera": { "todas": false, "suma": null, "fracciones.0.encaja": true, "fracciones.1.encaja": false, "fracciones.1.coinciden": 0 } },
+                   { "fn": "cuchillo", "args": [[[1, 2], [1, 3]], 12], "espera": { "todas": true, "suma": { "n": 10, "d": 12 } } },
+                   { "fn": "cuchillo", "args": [[[3, 4], [5, 6]], 8], "espera": { "todas": false, "fracciones.1.coinciden": 1, "fracciones.1.cortes": 5 } } ] },
+
+    { "nombre": "Lupa de la recta: 0,25 en el nivel 1 está entre 0,2 y 0,3; en el nivel 2, entre 0,25 y 0,26",
+      "fn": "lupa", "args": [0.25, 1],
+      "espera": { "desde": 0.2, "hasta": 0.3, "ancho": 0.1 },
+      "tambien": [ { "fn": "lupa", "args": [0.25, 2], "espera": { "desde": 0.25, "hasta": 0.26 } } ] }
+  ]
+}

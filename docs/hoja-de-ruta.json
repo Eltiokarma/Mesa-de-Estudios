@@ -154,11 +154,11 @@
       "nombre": "Formato lectura (razonamiento verbal)",
       "inicio": "2026-11-16",
       "fin": "2026-11-19",
-      "estado": "pendiente",
-      "progreso": 0,
+      "estado": "en_curso",
+      "progreso": 80,
       "critico": false,
       "depende_de": [],
-      "notas": ""
+      "notas": "Formato lectura en nucleo/lectura.js y app/lectura.js con paso previo de seis tipos; revisión aplicada. Falta: lápiz y papel del formato y textos de entrada y salida (rutina verbal)"
     },
     {
       "id": "fi1",
@@ -309,10 +309,10 @@
       "inicio": "2026-11-14",
       "fin": "2026-11-21",
       "estado": "en_curso",
-      "progreso": 60,
+      "progreso": 75,
       "critico": false,
       "depende_de": [],
-      "notas": "Hechas: cinta-radio y circunferencia-trig. Falta: caso ambiguo (ley de senos y cosenos)"
+      "notas": "Hechas: cinta-radio, circunferencia-trig y caso-ambiguo. Faltan: identidades, arcos compuestos, funciones inversas"
     },
     {
       "id": "ma2",
@@ -333,10 +333,10 @@
       "inicio": "2026-11-28",
       "fin": "2026-12-04",
       "estado": "en_curso",
-      "progreso": 35,
+      "progreso": 70,
       "critico": false,
       "depende_de": [],
-      "notas": "Informe algebra-funciones-ideas-erroneas.md (AL1-AL33, cifras por verificar). Hecha: plantillas/grafica-perillas (transformaciones, inversa, inecuaciones y valor absoluto). Faltan: traductor de enunciados y cuadrado que crece"
+      "notas": "Hechas: grafica-perillas, traductor-enunciados, cuadrado-crece y sucesiones. Faltan: polinomios, exponenciales y logaritmos, matrices, complejos"
     },
     {
       "id": "ra1",
@@ -345,12 +345,12 @@
       "inicio": "2026-11-20",
       "fin": "2026-11-27",
       "estado": "en_curso",
-      "progreso": 30,
+      "progreso": 55,
       "critico": false,
       "depende_de": [
         "pl3"
       ],
-      "notas": "Hechas: probabilidad-dados y regla-de-tres (engranajes). Faltan: sucesiones, planteo de ecuaciones, edades y móviles, orden de información"
+      "notas": "Hechas: probabilidad-dados, regla-de-tres, traductor-enunciados y sucesiones; banco de entrada y salida. Faltan: orden de información, verdades y mentiras, cronometría"
     },
     {
       "id": "ra2",
@@ -387,7 +387,7 @@
       "inicio": "2026-11-30",
       "fin": "2026-12-07",
       "estado": "en_curso",
-      "progreso": 80,
+      "progreso": 85,
       "critico": false,
       "depende_de": [
         "pl2"

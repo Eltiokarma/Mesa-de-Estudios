@@ -148,4 +148,62 @@ Cada ejecución construye una plantilla de escena de química nueva, en la rama 
 4. `docs/pendientes.md`, sección 2: "**Cinética** (`plantillas/cinetica/`, hecha el 6 nov 2026 por la rutina de química): caja de discos con teoría de colisiones (energía y orientación), temperatura, catalizador y perfil de energía. Cifras de ideas erróneas sin verificar (bloqueo de red); la fracción contada queda unos pocos por ciento bajo la teoría. Falta en la escena: orden ≠ coeficiente, vida media."
 5. `CLAUDE.md`, Estado: sumar "cinética" a la lista de plantillas y una línea en Historia.
 
-**Siguiente en la cola:** `mol-composicion`.
+
+## 6 nov 2026 (tercera ejecución, a pedido de Gerson) · mol-composicion
+
+**Antes de empezar.** Junté `claude/awesome-wozniak-5etl1n` en la rama, sin conflictos. Equilibrio y cinética ya están integrados. A mitad de la ejecución, el constructor se cortó por el límite de uso de 5 horas. Guardé el avance en un commit "en curso" y lo retomé cuando se reinició el límite.
+
+**Qué se hizo.** `plantillas/mol-composicion/` completa, con el informe `docs/investigacion/estequiometria-ideas-erroneas.md` (ES1 a ES7 y ES16 a ES18).
+
+- **`motor.js`** (UMD, sin DOM; `window.MotorMol`). Cubre:
+  - fórmulas con paréntesis e hidratos (`CuSO4·5H2O`);
+  - masa molar, con el error "sin subíndices" (ES18);
+  - moles, moléculas y átomos desde gramos, moléculas o litros en condiciones normales, con el error "fórmula invertida" (ES7);
+  - volumen: 22,4 L solo para gases y masa/densidad para líquidos (ES5);
+  - masa de una partícula;
+  - igualar masas con átomos (ES4);
+  - masa atómica promedio;
+  - composición centesimal y Proust;
+  - fórmula empírica, con los errores "razón de masas" (ES16) y "redondear 1,5";
+  - fórmula molecular e hidratos.
+- **`casos.json`:** 16 casos. **`papel.json`:** 10 problemas. **`motor.test.js`:** 37 pruebas. Las pruebas incluyen la empírica de vuelta desde sus porcentajes para 9 compuestos y los porcentajes que suman 100.
+- **`index.html`.** Los tres niveles de Johnstone a la vez: balanza arriba, lupa con porciones al centro y la cuenta abajo.
+  - **Paso a paso:** 9 pasos con 4 predicciones: mismos moles de O₂ y H₂O (ES3, ES5, ES6), cuántos átomos de C igualan 10 de Mg (ES4), fórmula empírica con 75 % de C (ES16) y empírica contra molecular (ES17).
+  - **¿Qué pasa si…?:** 5 experimentos bloqueados en orden: mismos gramos, la razón 1,5 del Fe₂O₃, el O del CaCO₃ (ES18), Proust en el agua y un mol de agua líquida contra 22,4 L (ES5).
+
+**Subagentes.**
+- **Verificador:** sin leer el motor, recalculó con `Fraction` 24 resultados (15 casos y 9 de papel), con cada empírica comprobada de vuelta. Coinciden todos.
+- **Constructor:** hizo la escena y la probó con Playwright en 6 combinaciones.
+- **Revisor:** rehízo a mano los cálculos y lo probó con Playwright. Encontró lo siguiente, y ya está todo corregido (el constructor volvió a probar 6 combinaciones con Playwright: 0 errores, sin desbordes y la balanza entera en 1366):
+  - la unidad delataba la correcta en el experimento 5;
+  - porciones y moléculas se mezclaban;
+  - la glucosa se dibujaba como anillo de CH₂O, y además se reconocía de memoria; ahora es un compuesto sin nombre con M = 150;
+  - la balanza se cortaba en 1366;
+  - la letra N nombraba al nitrógeno y al número de partículas; ahora "partículas" va sin letra;
+  - una cita estirada (pasó a hipótesis);
+  - el vaso de agua tenía el color del H.
+  
+  En el motor y en papel, corregí yo:
+  - la razón de masas (70/30 → Fe₇O₃);
+  - una tolerancia fija en la empírica;
+  - p8 ya no repite la escena (ahora es Fe₃O₄);
+  - un problema nuevo con 22,4 L contra un líquido (p10).
+
+**Pruebas.** `npm test`: solo las 2 de catálogo en rojo, como se espera.
+
+**Pendiente.**
+- El porcentaje va en tinta, no en un color propio: con M y las partículas ya no quedaba un color a ΔE00 ≥ 20.
+- Pares de colores heredados de limitante por debajo de 20 que salen juntos: C con Ca (15,2 en claro, 12,1 en oscuro; en CaCO₃, cada átomo lleva su letra) y m con O (18,9 en claro). Conviene que la conversación principal los revise en `docs/diseno.md`.
+- Del informe falta la escena de rendimiento y pureza (solo hipótesis); los equivalentes y el redox tampoco están acá.
+
+**Pedidos para la integración.**
+1. `catalogo/cursos/quimica.json`, unidad `quimica.mol-y-composicion`: `"plantillas": ["mol-composicion"]`. Después, `npm run catalogo`.
+2. `docs/diseno.md`, variables de mol y composición (`plantillas/mol-composicion/`):
+   - Elementos como en limitante (H turquesa, C gris oscuro, O rojo, N azul, Ca gris pizarra), más Mg petróleo (#005c6c, oscuro #009ca4), Fe celeste (#0478ac, oscuro #0898d8) y S añil (#3a1fe0, oscuro #9178ff).
+   - Masa m en siena (#773922, oscuro #e0a07a), moles n en mostaza (#7d6a00, oscuro #e3c84a), masa molar M en fucsia (#c400ad, oscuro #ff2ed8) y número de partículas en verde (#0a8200, oscuro #2da500), sin letra porque N es el nitrógeno.
+   - El % en tinta, con cada tramo de la barra en el color de su elemento.
+   - ΔE00 mínimo de los nuevos: 22,3 en claro y 21,2 en oscuro.
+3. `docs/pendientes.md`, sección 2: "**Mol y composición** (`plantillas/mol-composicion/`, rutina de química, 6 nov 2026): balanza, lupa y cuenta a la vez; mol contra masa, átomos en u, fórmula empírica y molecular; 16 casos verificados aparte; 10 de papel. Falta la escena de rendimiento y pureza."
+4. `CLAUDE.md`: sumar "mol y composición" a la lista de plantillas y una línea en Historia.
+
+**Siguiente en la cola:** `atomo-y-tabla`.

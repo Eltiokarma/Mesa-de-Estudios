@@ -176,11 +176,14 @@ const V = {
   'geo-09': d => { const r = motor('angulo-inscrito').longitudArco(d.arco, d.r);
     return { correcta: r.longitud, errores: { 'GE19-diametro-como-radio': r.errores.conDiametro * PI, 'GE19-area-por-longitud': r.errores.areaSector * PI, 'GE19-pi-r': r.errores.mitadDelRadio * PI } }; },
 
+  'geo-10': d => { const r = motor('poligonos').poligono(d.n), e = r.errores.diagonales;
+    return { correcta: r.diagonales, errores: { 'GE23-diagonales-con-lados': e.conLados, 'diagonales-contadas-dos-veces': e.sinDividir, 'diagonales-de-un-vertice': e.soloDesdeUnVertice } }; },
+  'geo-11': d => { const r = motor('poligonos').poligono(d.n), e = r.errores.sumaInteriores;
+    return { correcta: r.sumaInteriores, errores: { 'GE23-suma-180n': e.con180n, 'suma-siempre-360': e.siempre360, 'suma-n-menos-1-triangulos': e.conNmenos1 } }; },
+
   // ---------------- Trigonometría ----------------
   'tri-01': d => { const r = motor('cinta-radio').convertir({ R: d.R });
     return { correcta: r.S, errores: { 'TR1-lee-2-como-2pi': r.errores.leePiEnR, 'TR3-radian-como-grado': r.errores.radianComoGrado, 'factor-invertido': r.errores.factorInvertido } }; },
-  'tri-02': d => { const r = motor('cinta-radio').convertir({ S: d.vueltas * 360 });
-    return { correcta: r.R, errores: { 'TR5-vuelta-un-radian': d.vueltas, 'TR3-grados-como-radianes': r.errores.gradosComoRadianes, 'TR1-pi-es-la-vuelta': d.vueltas * PI } }; },
   'tri-03': d => { const r = motor('cinta-radio').sector({ r: d.r, theta: d.theta, unidad: 'sex' });
     return { correcta: r.L, errores: { 'TR4-arco-con-grados': r.errores.arcoConGrados, 'TR2-arco-igual-radio': r.errores.arcoIgualRadio, 'arco-sin-radio': r.errores.arcoSinRadio } }; },
   'tri-04': d => { const r = motor('cinta-radio').convertir({ S: d.S });
@@ -190,8 +193,6 @@ const V = {
     return { correcta: c(r.razonL, r.razonA), errores: { 'GE1-area-como-lado': c(d.k, d.k), 'arco-depende-solo-del-angulo': c(1, 1), 'arco-igual-area-doble': c(1, d.k) } }; },
   'tri-06': d => { const r = motor('cinta-radio').vueltas({ r: d.r, d: d.dPi * PI });
     return { correcta: r.n, errores: { 'vueltas-sin-2pi': r.errores.sinDosPi, 'vueltas-perimetro-pi-r': r.errores.conPiR, 'vueltas-con-diametro': r.errores.conDiametro } }; },
-  'tri-07': d => { const r = motor('cinta-radio').transmision({ r1: d.r1, r2: d.r2, n1: d.n1, union: 'faja' });
-    return { correcta: r.n2, errores: { 'faja-mismas-vueltas': r.errores.mismoAngulo, 'RM5-mas-grande-mas-vueltas': r.errores.proporcional } }; },
   'tri-08': d => { const r = motor('cinta-radio').bicicleta({ plato: d.plato, pinon: d.pinon, rueda: d.rueda, vueltasPedal: d.pedal });
     return { correcta: r.vueltasRueda, errores: { 'bici-mismas-vueltas': r.errores.mismasVueltas, 'bici-invertido': r.errores.invertido, 'bici-faja-en-el-eje': r.errores.ejeComoFaja } }; },
 
@@ -222,23 +223,72 @@ const V = {
   'ct-02': d => { const r = motor('circunferencia-trig').senoidal({ fn: d.fn, A: d.A, B: d.B, unidad: 'sex' });
     return { correcta: r.periodo, errores: { 'TR18-periodo-por-B': r.errores.periodoPorB, 'TR18-periodo-igual-B': r.errores.periodoIgualB, 'periodo-con-amplitud': r.errores.periodoConAmplitud } }; },
 
+  // ---------------- Aritmética: regla de tres, conteo y probabilidad, sucesiones ----------------
+  'ari-09': d => { const r = motor('regla-de-tres').reglaDeTres({ tipo: 'inversa', a1: d.a1, b1: d.b1, a2: d.a2 });
+    return { correcta: r.b2, errores: { 'AR8-inversa-como-directa': r.errores.comoDirecta, 'AR6-resta-lo-que-aumenta': r.errores.aditiva, 'no-cambia': r.errores.sinCambio } }; },
+  'ari-10': d => { const r = motor('regla-de-tres').trabajo({ obreros: d.o1, horas: d.h1, dias: d.d1 }, { obreros: d.o2, horas: d.h2, dias: null });
+    return { correcta: r.valor, errores: { 'AR9-olvida-horas': r.errores.olvidaHoras, 'AR9-horas-como-directa': r.errores.horasDirectas, 'AR8-todo-directo': r.errores.todoDirecta } }; },
+  'ari-11': d => { const r = motor('probabilidad-dados').probabilidad({ dados: 2 }, { tipo: 'suma', valor: d.suma });
+    return { correcta: r.valor, errores: { 'AR20-sumas-equiprobables': r.errores.sumasEquiprobables.valor, 'AR17-sin-orden': r.errores.sinOrden.valor, 'sin-orden-sobre-36': r.errores.sinOrdenSobreTotal.valor } }; },
+  'ari-12': d => { const r = motor('probabilidad-dados').comite({ n: d.n, k: d.k });
+    return { correcta: r.valor, errores: { 'AR17-variacion-en-vez-de-combinacion': r.errores.variacion, 'AR19-con-repeticion': r.errores.conRepeticion, 'producto-n-por-k': r.errores.producto } }; },
+  'ari-13': d => { const r = motor('sucesiones').aritmetica({ a1: d.a1, r: d.a2 - d.a1, n: d.n });
+    return { correcta: r.an, errores: { 'n-en-vez-de-n-menos-1': r.errores.nEnVezDeNmenos1, 'diferencia-como-termino': r.errores.diferenciaComoTermino, 'objeto-entero-desde-t1': r.errores.objetoEntero } }; },
+  'ari-14': d => { const r = motor('sucesiones').sumaAritmetica({ a1: d.a1, r: d.a2 - d.a1, n: d.n });
+    return { correcta: r.S, errores: { 'gauss-sin-dividir': r.errores.sinDividir, 'ultimo-por-n': r.errores.ultimoPorN, 'n-en-vez-de-n-menos-1': r.errores.nEnVezDeNmenos1 } }; },
+
+  // ---------------- Álgebra: traductor de enunciados (y cuadrado-crece en reserva) ----------------
+  'alg-09': d => { const r = motor('traductor-enunciados').porCada({ n: d.n, m: d.m, valorM: d.valorM, letraN: 'N', letraM: 'M' });
+    return { correcta: r.N, errores: { 'AL1-invertida': r.errores.invertida.valor, 'AL3-por-cada-como-suma': r.errores.suma.valor, 'AR6-diferencia': r.errores.diferencia.valor, 'por-cada-sin-dividir': d.n * d.valorM } }; },
+  'alg-10': d => {
+    // «El k-ple de un número, disminuido en c, es r»: primero k·x, después − c.
+    const T = motor('traductor-enunciados'), sol = ec => T.resolver(ec, 'x').soluciones[0];
+    return { correcta: sol(`${d.k}x − ${d.c} = ${d.r}`), errores: { 'disminuido-agrupado': sol(`${d.k}(x − ${d.c}) = ${d.r}`), 'disminuido-al-reves': sol(`${d.c} − ${d.k}x = ${d.r}`), 'disminuido-como-suma': sol(`${d.k}x + ${d.c} = ${d.r}`) } };
+  },
+  'alg-11': d => { const r = motor('sucesiones').geometrica({ a1: d.a1, q: d.a2 / d.a1, n: d.n });
+    return { correcta: r.an, errores: { 'n-en-vez-de-n-menos-1': r.errores.nEnVezDeNmenos1, 'razon-por-diferencia': r.errores.comoAritmetica, 'RM2-objeto-entero': r.errores.objetoEntero } }; },
+  'alg-12': d => { const r = motor('sucesiones').sumaGeometrica({ a1: d.a1, q: d.a2 / d.a1, n: d.n });
+    return { correcta: r.S, errores: { 'suma-geometrica-ultimo-termino': r.errores.ultimoTermino, 'suma-geometrica-sin-restar-uno': r.errores.sinRestarUno, 'suma-geometrica-como-aritmetica': r.errores.comoAritmetica } }; },
+  'cc-01': d => { const r = motor('cuadrado-crece').binomioCuadradoX({ b: d.b });
+    return { correcta: r.texto, errores: { 'AL8-cuadrado-sin-doble-producto': r.errores.sinDoble.texto, 'cuadrado-un-solo-rectangulo': r.errores.unSoloAB.texto, 'cuadrado-olvida-la-esquina': r.errores.sinB2.texto } }; },
+  'cc-02': d => { const r = motor('cuadrado-crece').raizDeSuma({ p: d.p, q: d.q });
+    return { correcta: r.valor, errores: { 'AL9-raiz-de-suma-como-suma-de-raices': r.errores.sumaDeRaices.valor, 'raiz-olvidada': r.errores.sinRaiz.valor, 'raiz-mezcla-con-producto': r.errores.productoDeRaices.valor } }; },
+
+  // ---------------- Trigonometría: caso ambiguo y leyes de senos y cosenos ----------------
+  'tri-09': d => { const r = motor('caso-ambiguo').casoAmbiguo({ A: d.A, a: d.a, b: d.b }), B = r.soluciones.map(x => Math.round(x.B));
+    if (r.n !== 2) throw new Error('el ítem supone dos triángulos');
+    return { correcta: B.join('|'), errores: { 'TR23-solo-calculadora': String(B[0]), 'a-menor-que-b-no-alcanza': 'ninguno' } }; },
+  'tri-10': d => { const r = motor('caso-ambiguo').leyCosenos({ b: d.b, c: d.c, A: d.A });
+    return { correcta: r.a, errores: { 'TR24-signo': r.errores.signoCambiado.a, 'TR24-sin-termino': r.errores.sinTermino.a, 'suma-de-lados': r.errores.sumaLados.a } }; },
+
+  // ---------------- Razonamiento matemático ----------------
+  'rm-01': d => { const r = motor('traductor-enunciados').moviles({ distancia: d.distancia, v1: d.v1, v2: d.v2, sentido: 'opuesto' });
+    return { correcta: r.tiempo, errores: { 'RM4-resta-en-encuentro': r.errores.restaRapideces, 'promedio-rapideces': r.errores.promedio, 'solo-un-movil': r.errores.soloRapido } }; },
+  'rm-02': d => { const r = motor('traductor-enunciados').edades({ valor: d.valor, tiempo: d.signo * d.anos, k: d.k });
+    return { correcta: r.B, errores: { 'RM3-sin-tiempo': r.errores.sinTiempo, 'RM1-tiempo-a-uno': r.errores.soloConocida, 'RM1-tiempo-solo-incognita': r.errores.soloIncognita } }; },
+  'rm-03': d => {
+    const M = motor('probabilidad-dados'), r = M.siguiente({ caras: d.caras, historia: Array(d.racha).fill(1), valor: 1 });
+    // Pregunta por la misma cara de la racha («misma») o por la otra («otra»): la falacia del jugador apunta al revés en cada caso.
+    const negativa = d.pregunta === 'misma' ? 'menor' : 'mayor', positiva = negativa === 'menor' ? 'mayor' : 'menor';
+    return { correcta: r.texto, errores: { 'AR22-recencia-negativa': negativa, 'recencia-positiva': positiva, 'racha-completa': r.errores.rachaCompleta.texto } };
+  },
+  'rm-04': d => { const r = motor('probabilidad-dados').circular(d.n);
+    return { correcta: r.valor, errores: { 'circular-como-lineal': r.errores.lineal, 'circular-mitad': r.valor / 2 } }; },
+  'rm-05': d => { const r = motor('regla-de-tres').engranajes({ dientes: d.dientes, vueltas1: d.vueltas });
+    return { correcta: r.vueltas[r.vueltas.length - 1], errores: { 'RM5-mas-dientes-mas-vueltas': r.errores.directa, aditiva: r.errores.aditiva, 'mismas-vueltas': r.errores.iguales } }; },
+  'rm-06': d => { const r = motor('regla-de-tres').engranajes({ dientes: d.dientes, vueltas1: d.vueltas });
+    return { correcta: r.vueltas[r.vueltas.length - 1], errores: { 'solo-la-del-medio': r.errores.soloElAnterior, 'RM5-mas-dientes-mas-vueltas': r.errores.directa, 'mismas-vueltas': r.errores.iguales, 'da-la-del-medio': r.vueltas[1] } }; },
+  'rm-07': d => { const S = motor('sucesiones'), r = S.desdeOtroTermino({ a1: d.t1, r: d.t2 - d.t1, m: d.m, n: d.n });
+    if (Math.abs(r.am - d.tm) > 1e-9) throw new Error('el dato de la figura m no cuadra con la sucesión');
+    return { correcta: r.an, errores: { 'RM2-objeto-entero': r.errores.objetoEntero, 'diferencia-como-termino': r.errores.diferenciaComoTermino, aditiva: r.errores.aditiva } }; },
+  'rm-08': d => { const r = motor('sucesiones').segundoOrden({ terminos: d.terminos, k: d.k });
+    return { correcta: r.ak, errores: { 'lineal-en-cuadratica': r.errores.comoLineal, 'repite-la-ultima-diferencia': r.errores.comoLinealUltima, 'RM2-objeto-entero': r.errores.objetoEntero } }; },
+
   // ---------------- Aritmética (cuentas exactas, ver arriba) ----------------
   'ari-01': d => { const f = (1 - d.a / 100) * (1 - d.b / 100);
     return { correcta: d.P * f, errores: { 'suma-descuentos': d.P * (1 - (d.a + d.b) / 100), 'monto-descuento': d.P * (1 - f), 'un-solo-descuento': d.P * (1 - Math.max(d.a, d.b) / 100) } }; },
-  'ari-02': d => { const f = (1 + d.a / 100) * (1 - d.b / 100);
-    return { correcta: d.P * f, errores: { 'se-compensan': d.P * (1 + (d.a - d.b) / 100), 'solo-aumento': d.P * (1 + d.a / 100), 'monto-variacion': Math.abs(d.P - d.P * f) } }; },
-  'ari-03': d => { const c = 100 * (d.despues - d.antes) / d.antes;
-    return { correcta: c, errores: { AR3: 100 * (d.despues - d.antes) / d.despues, 'monto-variacion': d.despues - d.antes, 'lo-que-queda': 100 * d.despues / d.antes } }; },
   'ari-04': d => { const f = (1 + d.a / 100) * (1 - d.a / 100);
     return { correcta: d.P * f, errores: { 'se-compensan': d.P, 'solo-aumento': d.P * (1 + d.a / 100), 'monto-variacion': d.P - d.P * f } }; },
-  'ari-05': d => { const f = (1 + d.a / 100) * (1 + d.b / 100);
-    return { correcta: 100 * (f - 1), errores: { 'suma-descuentos': d.a + d.b, producto: d.a * d.b / 100, 'lo-que-queda': 100 * f } }; },
-  'ari-06': d => { const f = 1 + d.signo * d.a / 100;
-    return { correcta: 100 * Math.abs(1 / f - 1), errores: { AR3: d.a, 'lo-que-queda': 100 / f } }; },
-  'ari-07': d => { const f = 1 + d.i / 100;
-    return { correcta: d.C * f ** d.anos, errores: { AR16: d.C * (1 + d.anos * d.i / 100), 'monto-variacion': d.C * (f ** d.anos - 1), 'solo-aumento': d.C * f } }; },
-  'ari-08': d => { const f = 1 + d.signo * d.a / 100, antes = d.final / f;
-    return { correcta: antes, errores: { AR3: d.final * (1 - d.signo * d.a / 100), 'monto-variacion': Math.abs(d.final - antes) } }; },
 };
 
 module.exports = { verificadores: V, num };

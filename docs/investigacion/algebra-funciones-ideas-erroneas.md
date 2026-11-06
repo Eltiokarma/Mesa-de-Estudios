@@ -163,7 +163,7 @@ Se confirman como en los otros temas: con hojas resueltas de academia y con preg
 | --- | --- | --- |
 | a) Dos: 0 y 5 | Correcta | — |
 | b) Una: 5 | Divide entre x (AL15) | Hipótesis |
-| c) Ninguna, porque x² nunca es 5x | AL5 ("son cosas distintas") | Parcial |
+| c) Ninguna, porque x² nunca es 5x | AL4 ("letras o expresiones distintas, valores distintos"; corregido el 6 nov 2026: AL5 es "multiplicar agranda") | Parcial |
 | d) Infinitas, porque x² = x · x | Lee "=" como identidad (AL6) | Hipótesis |
 
 Al arrastrar "÷ x", la escena pregunta "¿y si x vale 0?" y muestra la balanza con ambos platos vacíos: también está en equilibrio.

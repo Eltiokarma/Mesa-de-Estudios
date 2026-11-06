@@ -1,0 +1,119 @@
+{
+  "plantilla": "traductor-enunciados",
+  "unidades": "Números sin unidad, salvo en edades (años), móviles (km, km/h y horas) y mezclas (kg y soles por kg). Cada letra es una sola variable: 6P es 6 · P y xy es x · y. Las fracciones se escriben con barra (5/2) y el menos tipográfico (−).",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.invertida.ecuacion); las listas se comparan completas; los textos se comparan exactos. 'tambien' trae otras llamadas que comprueban lo mismo (con su propia 'fn' si cambia).",
+  "verificacion": "Verificado por un subagente independiente (6 nov 2026) sin leer el motor (solo su cabecera) ni este archivo, con fracciones exactas en Python. Las ecuaciones se resolvieron probando raíces racionales y con la fórmula general (las irracionales como p ± q√r), el encuentro por Cramer, el sistema por sustitución y la mezcla probando enteros; cada solución se comprobó sustituyendo. Coinciden todos los valores de los 20 casos; solo difieren formas equivalentes de escribir algunas ecuaciones.",
+  "tolerancia": 1e-9,
+  "casos": [
+    { "nombre": "Informe, predicción 1 (Clement, AL1): «hay 6 estudiantes por cada profesor» es S = 6P. Con 15 profesores hay 90 estudiantes. Con 6S = P saldrían 2,5 estudiantes; con S = P + 6, 21 (AL3)",
+      "fn": "porCada", "args": [{ "n": 6, "m": 1, "letraN": "S", "letraM": "P", "valorM": 15 }],
+      "espera": { "ecuacion": "S = 6P", "S": 90, "P": 15, "grupos": 15, "comprobacion.verdadera": true, "errores.invertida.ecuacion": "6S = P", "errores.invertida.valor": 2.5, "errores.suma.ecuacion": "S = P + 6", "errores.suma.valor": 21 } },
+
+    { "nombre": "El aula se sustituye en la ecuación: con 12 estudiantes y 2 profesores, S = 6P da 12 = 6 · 2 (verdadera) y 6S = P da 6 · 12 = 2, o sea 72 ≠ 2",
+      "fn": "comprobar", "args": ["S = 6P", { "S": 12, "P": 2 }],
+      "espera": { "verdadera": true, "izq": 12, "der": 12, "sustituida": "12 = 6 · 2" },
+      "tambien": [ { "args": ["6S = P", { "S": 12, "P": 2 }], "espera": { "verdadera": false, "izq": 72, "der": 2, "sustituida": "6 · 12 = 2", "resultado": "72 ≠ 2" } },
+                   { "args": ["S = 6P", { "S": 13, "P": 2 }], "espera": { "verdadera": false, "diferencia": 1 } } ] },
+
+    { "nombre": "¿Qué pasa si…? 3 profesores por cada 2 aulas: 2P = 3A. Con 4 aulas hay 6 profesores (2 · 6 = 3 · 4). La invertida 3P = 2A da 3 · 6 ≠ 2 · 4; la de la diferencia, P = A + 1, da 5",
+      "fn": "porCada", "args": [{ "n": 3, "m": 2, "letraN": "P", "letraM": "A", "valorM": 4 }],
+      "espera": { "ecuacion": "2P = 3A", "P": 6, "A": 4, "grupos": 2, "comprobacion.sustituida": "2 · 6 = 3 · 4", "errores.invertida.ecuacion": "3P = 2A", "errores.invertida.comprobacion.verdadera": false, "errores.diferencia.ecuacion": "P = A + 1", "errores.diferencia.valor": 5 } },
+
+    { "nombre": "Traductor, plantilla «por cada»: la misma frase escrita da la misma ecuación y sus dos errores",
+      "fn": "traducir", "args": ["hay 6 estudiantes por cada profesor", { "estudiantes": "S", "profesor": "P" }],
+      "espera": { "plantilla": "por-cada", "ecuacion": "S = 6P", "errores.invertida": "6S = P", "errores.suma": "S = P + 6" },
+      "tambien": [ { "args": ["el número de estudiantes es 6 veces el de profesores", { "estudiantes": "S", "profesores": "P" }], "espera": { "plantilla": "veces", "ecuacion": "S = 6P", "errores.invertida": "6S = P" } } ] },
+
+    { "nombre": "Predicción del doble: «el doble de un número, disminuido en 3» es 2x − 3 (con x = 5 vale 7). Agrupado al revés, 2(x − 3), vale 4; «disminuido» al revés, 3 − 2x, vale −7",
+      "fn": "traducir", "args": ["el doble de un número, disminuido en 3"],
+      "espera": { "plantilla": "multiplo-cambio", "expresion": "2x − 3", "errores.agrupado": "2(x − 3)", "errores.alReves": "3 − 2x" },
+      "tambien": [ { "fn": "evaluar", "args": ["2x − 3", { "x": 5 }], "espera": { "valor": 7, "sustituida": "2 · 5 − 3" } },
+                   { "fn": "evaluar", "args": ["2(x − 3)", { "x": 5 }], "espera": { "valor": 4, "sustituida": "2(5 − 3)" } },
+                   { "fn": "evaluar", "args": ["3 − 2x", { "x": 5 }], "espera": { "valor": -7 } },
+                   { "fn": "traducir", "args": ["el doble, de un número disminuido en 3"], "espera": { "expresion": "2(x − 3)", "errores.agrupado": "2x − 3" } } ] },
+
+    { "nombre": "Frase con resultado: «el triple de un número disminuido en 5 es 16» da 3x − 5 = 16, x = 7. Agrupado, 3(x − 5) = 16 da 31/3",
+      "fn": "traducir", "args": ["el triple de un número disminuido en 5 es 16"],
+      "espera": { "ecuacion": "3x − 5 = 16", "errores.agrupado": "3(x − 5) = 16", "errores.alReves": "5 − 3x = 16" },
+      "tambien": [ { "fn": "resolver", "args": ["3x − 5 = 16"], "espera": { "soluciones": [7], "tipo": "unica" } },
+                   { "fn": "resolver", "args": ["3(x − 5) = 16"], "espera": { "soluciones": [10.333333333333334], "solucionesTexto": ["31/3"] } } ] },
+
+    { "nombre": "Informe, predicción 3 (AL15): x² = 5x tiene dos soluciones, 0 y 5. Dividiendo entre x se pierde el 0",
+      "fn": "resolver", "args": ["x² = 5x"],
+      "espera": { "grado": 2, "tipo": "dos", "soluciones": [0, 5], "normalizada": "x² − 5x = 0", "errores.dividirEntreX": [5], "comprobaciones.0.sustituida": "0² = 5 · 0", "comprobaciones.0.verdadera": true },
+      "tambien": [ { "fn": "pesos", "args": ["x² = 5x", { "x": 0 }], "espera": { "izq": 0, "der": 0, "equilibrio": true } },
+                   { "fn": "pesos", "args": ["x² = 5x", { "x": 2 }], "espera": { "izq": 4, "der": 10, "equilibrio": false, "inclinacion": 1 } } ] },
+
+    { "nombre": "La balanza de x² = 5x: dividir entre x en los dos platos deja x = 5 y pierde el 0 (con x = 0 se divide entre 0); restar 5x en los dos platos conserva las dos soluciones",
+      "fn": "balanza", "args": ["x² = 5x", [{ "op": "dividir", "expr": "x" }]],
+      "espera": { "final.texto": "x = 5", "final.soluciones": [5], "final.perdidas": [0], "final.ganadas": [], "final.conserva": false, "final.ceroEn": [0] },
+      "tambien": [ { "args": ["x² = 5x", [{ "op": "restar", "expr": "5x" }]], "espera": { "final.texto": "x² − 5x = 0", "final.soluciones": [0, 5], "final.conserva": true } } ] },
+
+    { "nombre": "Informe, predicción 4 (AL14): (x − 3)(x − 5) = 8 tiene soluciones 1 y 7. Igualar cada factor a 8 da 11 y 13 (que dan 8 · 6 = 48); ignorar el 8 da 3 y 5",
+      "fn": "resolver", "args": ["(x − 3)(x − 5) = 8"],
+      "espera": { "soluciones": [1, 7], "normalizada": "x² − 8x + 7 = 0", "errores.cadaFactorIgualK": [11, 13], "errores.ignoraK": [3, 5], "comprobaciones.0.sustituida": "(1 − 3)(1 − 5) = 8" },
+      "tambien": [ { "fn": "comprobar", "args": ["(x − 3)(x − 5) = 8", { "x": 11 }], "espera": { "verdadera": false, "izq": 48 } },
+                   { "fn": "comprobar", "args": ["(x − 3)(x − 5) = 8", { "x": 7 }], "espera": { "verdadera": true, "sustituida": "(7 − 3)(7 − 5) = 8" } } ] },
+
+    { "nombre": "Restar 8 en un solo plato de (x − 3)(x − 5) = 8 cambia las soluciones (4 ± √17); restarlo en los dos las conserva",
+      "fn": "balanza", "args": ["(x − 3)(x − 5) = 8", [{ "op": "restar", "expr": "8", "lado": "izquierdo" }]],
+      "espera": { "final.texto": "x² − 8x + 7 = 8", "final.solucionesTexto": ["4 − √17", "4 + √17"], "final.perdidas": [1, 7], "final.conserva": false },
+      "tambien": [ { "args": ["(x − 3)(x − 5) = 8", [{ "op": "restar", "expr": "8" }]], "espera": { "final.texto": "x² − 8x + 7 = 0", "final.soluciones": [1, 7], "final.conserva": true } } ] },
+
+    { "nombre": "Informe, transposición (AL16): 3x − 7 = 2x + 5 da x = 12. Pasando sin cambiar el signo (3x + 2x = 5 − 7) sale −2/5",
+      "fn": "resolver", "args": ["3x − 7 = 2x + 5"],
+      "espera": { "soluciones": [12], "errores.pasarSignoMal": [-0.4], "comprobaciones.0.resultado": "29 = 29" } },
+
+    { "nombre": "¿Qué pasa si…? 2(x + 3) = 2x + 6 es una identidad (todo x la cumple); 2(x + 3) = 2x + 5 no tiene solución: el plato izquierdo siempre pesa 1 más",
+      "fn": "resolver", "args": ["2(x + 3) = 2x + 6"],
+      "espera": { "tipo": "identidad", "soluciones": [], "normalizada": "0 = 0" },
+      "tambien": [ { "args": ["2(x + 3) = 2x + 5"], "espera": { "tipo": "ninguna", "normalizada": "1 = 0" } },
+                   { "fn": "pesos", "args": ["2(x + 3) = 2x + 5", { "x": -7 }], "espera": { "diferencia": 1, "equilibrio": false } },
+                   { "fn": "pesos", "args": ["2(x + 3) = 2x + 6", { "x": 4.5 }], "espera": { "izq": 15, "equilibrio": true } } ] },
+
+    { "nombre": "Cuadráticas: x² = 9 da −3 y 3 (solo la positiva es un error); x² − 8x + 15 = 0 da 3 y 5; x² + x + 1 = 0 no tiene soluciones reales (Δ = −3)",
+      "fn": "resolver", "args": ["x² = 9"],
+      "espera": { "soluciones": [-3, 3], "errores.soloPositiva": [3] },
+      "tambien": [ { "args": ["x² − 8x + 15 = 0"], "espera": { "soluciones": [3, 5], "discriminante": 4 } },
+                   { "args": ["x² + x + 1 = 0"], "espera": { "tipo": "sin-reales", "discriminante": -3, "soluciones": [] } },
+                   { "args": ["x² = 2x + 1"], "espera": { "solucionesTexto": ["1 − √2", "1 + √2"] } } ] },
+
+    { "nombre": "Predicción de edades (RM3): hoy Mara tiene 30; hace 4 años su edad era el doble de la de Beto: 30 − 4 = 2(B − 4), B = 17. Sin el tiempo: 15; el tiempo solo a Mara: 13 (la edad de Beto entonces); solo a Beto: 19",
+      "fn": "edades", "args": [{ "conocida": "M", "valor": 30, "incognita": "B", "tiempo": -4, "k": 2 }],
+      "espera": { "B": 17, "ecuacion": "30 − 4 = 2(B − 4)", "entonces.M": 26, "entonces.B": 13, "diferencia": 13, "errores.sinTiempo": 15, "errores.soloConocida": 13, "errores.soloIncognita": 19 },
+      "tambien": [ { "fn": "traducir", "args": ["hace 4 años, la edad de Mara era el doble de la de Beto"], "espera": { "ecuacion": "M − 4 = 2(B − 4)", "errores.sinTiempo": "M = 2B" } },
+                   { "fn": "comprobar", "args": ["M − 4 = 2(B − 4)", { "M": 30, "B": 17 }], "espera": { "verdadera": true, "sustituida": "30 − 4 = 2(17 − 4)" } } ] },
+
+    { "nombre": "Línea de tiempo: la diferencia de edades no cambia (13 años) y la razón sí: el doble hace 4 años, menos después",
+      "fn": "lineaEdades", "args": [{ "M": 30, "B": 17 }, [-4, 0, 9]],
+      "espera": { "0.M": 26, "0.B": 13, "0.diferencia": 13, "0.razon": 2, "1.diferencia": 13, "2.M": 39, "2.B": 26, "2.diferencia": 13, "2.razon": 1.5 } },
+
+    { "nombre": "¿Qué pasa si…? Hoy dos personas suman 40 años: dentro de 5 años sumarán 50 (cada una suma 5). Sumar 5 una sola vez da 45",
+      "fn": "sumaEdades", "args": [{ "suma": 40, "personas": 2, "tiempo": 5 }],
+      "espera": { "valor": 50, "aumento": 10, "errores.unaVez": 45, "errores.sinCambio": 40 },
+      "tambien": [ { "fn": "traducir", "args": ["dentro de 5 años, las edades de Mara y Beto sumarán 50"], "espera": { "ecuacion": "(M + 5) + (B + 5) = 50", "simplificada": "M + B = 40", "errores.unaVez": "M + B + 5 = 50" } } ] },
+
+    { "nombre": "Informe, encuentro (RM4): 300 km, 70 y 50 km/h de frente se encuentran a las 2,5 h, a 175 km del primero. Restando las rapideces: 15 h",
+      "fn": "moviles", "args": [{ "distancia": 300, "v1": 70, "v2": 50, "sentido": "opuesto" }],
+      "espera": { "tiempo": 2.5, "posicion": 175, "recorrido2": 125, "rapidezRelativa": 120, "errores.restaRapideces": 15, "errores.promedio": 5, "errores.soloLento": 6 },
+      "tambien": [ { "fn": "posiciones", "args": [{ "distancia": 300, "v1": 70, "v2": 50, "sentido": "opuesto" }, 2.5], "espera": { "x1": 175, "x2": 175, "separacion": 0 } },
+                   { "fn": "sistema", "args": ["x = 70t", "x = 300 − 50t", ["t", "x"]], "espera": { "tipo": "unica", "valores.t": 2.5, "valores.x": 175 } } ] },
+
+    { "nombre": "Informe, alcance (RM4): 60 km, 70 y 50 km/h en el mismo sentido: lo alcanza a las 3 h (20 km/h de acercamiento). Sumando las rapideces: 0,5 h",
+      "fn": "moviles", "args": [{ "distancia": 60, "v1": 70, "v2": 50, "sentido": "mismo" }],
+      "espera": { "tiempo": 3, "alcanza": true, "rapidezRelativa": 20, "posicion": 210, "errores.sumaRapideces": 0.5, "errores.soloLento": 1.2 },
+      "tambien": [ { "fn": "posiciones", "args": [{ "distancia": 60, "v1": 70, "v2": 50, "sentido": "mismo" }, 3], "espera": { "x1": 210, "x2": 210 } },
+                   { "fn": "moviles", "args": [{ "distancia": 60, "v1": 50, "v2": 70, "sentido": "mismo" }], "espera": { "alcanza": false, "tiempo": null } } ] },
+
+    { "nombre": "Informe, sistema (AL18): 2x + 3y = 12 y x − y = 1 dan (3; 2). Multiplicar la segunda por 3 solo en el lado izquierdo da (13/5; 34/15), que no cumple la segunda",
+      "fn": "sistema", "args": ["2x + 3y = 12", "x − y = 1"],
+      "espera": { "tipo": "unica", "valores.x": 3, "valores.y": 2, "determinante": -5, "errores.multiplicaUnLado.x": 2.6, "errores.multiplicaUnLado.y": 2.2666666666666666, "errores.multiplicaUnLado.cumpleSegunda": false },
+      "tambien": [ { "args": ["4x + 2y = 3", "2x + y = 5"], "espera": { "tipo": "ninguna", "determinante": 0 } },
+                   { "args": ["4x + 2y = 10", "2x + y = 5"], "espera": { "tipo": "infinitas" } } ] },
+
+    { "nombre": "Mezcla: 10 kg a S/ 14 el kg con café de S/ 12 y de S/ 17: 6 kg del de 12 y 4 kg del de 17 (mitad y mitad sería 5 y 5, a S/ 14,50)",
+      "fn": "mezcla", "args": [{ "cantidad": 10, "precio1": 12, "precio2": 17, "precioMezcla": 14 }],
+      "espera": { "x": 6, "y": 4, "sistema": ["x + y = 10", "12x + 17y = 140"], "errores.mitades": 5, "errores.precioPromedio": 14.5 },
+      "tambien": [ { "fn": "comparar", "args": ["2n", "n + 2"], "espera": { "igualesEn": 2, "primeraMayorSi": "n > 2", "segundaMayorSi": "n < 2" } } ] }
+  ]
+}

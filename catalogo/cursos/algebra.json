@@ -51,7 +51,7 @@
       "universidades": {"uni": {"semanas": [2, 7]}, "unmsm": {"temas": [2, 5]}},
       "potencial_visual": "bajo",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["cuadrado-crece"],
       "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
     {
@@ -67,7 +67,7 @@
       "universidades": {"uni": {"semanas": [4]}, "unmsm": {"temas": [3]}},
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["traductor-enunciados"],
       "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
     {
@@ -146,7 +146,7 @@
       "universidades": {"uni": {"semanas": [7]}, "unmsm": {"temas": [8]}},
       "potencial_visual": "bajo",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["cuadrado-crece"],
       "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
     {
@@ -264,7 +264,7 @@
       "universidades": {"uni": {"semanas": [15, 16]}, "unmsm": {"temas": [17]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "plantillas": [],
+      "plantillas": ["traductor-enunciados"],
       "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
     {
@@ -297,7 +297,7 @@
       "universidades": {"uni": {"semanas": [18, 19, 20]}},
       "potencial_visual": "medio",
       "grado": 5,
-      "plantillas": [],
+      "plantillas": ["sucesiones"],
       "investigacion": null
     },
     {

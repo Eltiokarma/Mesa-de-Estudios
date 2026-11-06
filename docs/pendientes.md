@@ -8,7 +8,7 @@
 npm test
 ```
 
-Deben pasar 1050 pruebas.
+Deben pasar 1389 pruebas.
 
 ```bash
 npm run dev
@@ -51,22 +51,25 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 
 | Id | Módulo | Informe de ideas erróneas | Nota |
 | --- | --- | --- | --- |
-| ma2 | Geometría | Hechas: `ampliadora` (semejanza, área y volumen), `triangulo-estira` (líneas notables y área) y `angulo-inscrito` (ángulos en la circunferencia) | Las tres escenas del informe están hechas; faltan polígonos, congruencia, espacio y analítica |
-| ma1 | Trigonometría | Hechas: `cinta-radio` (sistemas de medida, arco, sector, ruedas) y `circunferencia-trig` (razones, C.T., reducción, gráficas y ecuaciones) | Sigue el compás del caso ambiguo (ley de senos y cosenos) |
-| ma3 | Álgebra | Hecha: `grafica-perillas` (transformaciones, inversa, inecuaciones, valor absoluto) | Siguen el traductor de enunciados y el cuadrado que crece |
+| ma2 | Geometría | Hechas: `ampliadora`, `triangulo-estira`, `angulo-inscrito` y `poligonos` | Faltan sólidos, analítica y congruencia (las hace la sesión paralela matematica-b) |
+| ma1 | Trigonometría | Hechas: `cinta-radio`, `circunferencia-trig` y `caso-ambiguo` (ley de senos y cosenos) | Las tres escenas del informe están hechas; faltan identidades, arcos compuestos y funciones inversas |
+| ma3 | Álgebra | Hechas: `grafica-perillas`, `traductor-enunciados`, `cuadrado-crece` (productos notables y factorización) y `sucesiones` | Faltan polinomios y división, exponenciales y logaritmos (con escena propia), matrices y complejos |
 | ma1 a ma3 | Trigonometría, geometría, funciones | Informes del 6 nov: `trigonometria-`, `geometria-` y `algebra-funciones-ideas-erroneas.md` | Cifras de resúmenes, por verificar con los PDF (`fuentes/por-conseguir.md`); cada informe trae 3 escenas y casos |
-| ma4 | Aritmética | Hechas: `porcentajes-sucesivos` (predicciones), `regla-de-tres` y `probabilidad-dados` | Faltan fracciones y decimales, MCD y MCM, promedios e interés |
-| ra1 | Razonamiento matemático | Hechas: `probabilidad-dados` (conteo y probabilidad) y `regla-de-tres` (engranajes) | Faltan sucesiones, planteo de ecuaciones, edades y móviles, orden de información y verdades y mentiras |
+| ma4 | Aritmética | Hechas: `porcentajes-sucesivos` (predicciones), `regla-de-tres`, `probabilidad-dados`, `sucesiones` y `fracciones` (fracciones, decimales, MCD y MCM, promedios) | Falta interés (la hace la sesión paralela matematica-b); fracciones sin ítems en el banco todavía |
+| ra1 | Razonamiento matemático | Hechas: `probabilidad-dados`, `regla-de-tres` (engranajes), `traductor-enunciados` (planteo), `sucesiones` (patrones con palitos, Gauss, series) y `orden-informacion` (orden, verdades y mentiras, certezas) | Faltan sucesiones, planteo de ecuaciones, edades y móviles, orden de información y verdades y mentiras |
 | ra2 y pl4 | Razonamiento verbal y formato lectura | `razonamiento-verbal-ideas-erroneas.md` (RV1 a RV34, ninguno documentado; hecho por la rutina) | Formato lectura hecho en la app (pl4, 6 nov); la rutina sigue con los 30 textos, los de entrada y salida, los ejercicios sueltos y la guía docente |
 
 ### 2. Detalles de las plantillas ya hechas
+
+- **Mol y composición** (`plantillas/mol-composicion/`, rutina de química, 6 nov 2026): balanza, lupa y cuenta a la vez; mol contra masa, átomos en u, fórmula empírica y molecular; 16 casos verificados aparte; 10 de papel. Falta la escena de rendimiento y pureza. Pendiente de color: C–Ca y m–O (heredados de limitante) bajo ΔE00 20.
 
 - **Tiro parabólico y circular** (`plantillas/tiro-parabolico/`, rutina de física, 6 nov 2026): dos movimientos con sombras sobre los ejes y estroboscopio, MCU, MCUV y transmisión; 17 casos verificados aparte; 10 de papel; 3 predicciones y 6 «¿qué pasa si…?» (Prescott y Mitchelmore 2005, Thornton y Sokoloff 1998). Falta en la escena: MCUV, transmisión, encuentros en la circunferencia e impacto contra una pared (están en el motor y el papel).
 - **Formato lectura y banco de razonamiento verbal** (rutina verbal, 6 nov 2026; pl4 implementada el mismo día): diseño en `docs/formato-lectura.md` y los primeros 6 textos en `contenido/razonamiento-verbal/`. Ya está en la app: `nucleo/lectura.js` (con pruebas sobre los textos reales), `app/lectura.js` (los seis tipos de paso previo, que bloquean las alternativas; hoja que sube en el celular y dos columnas en la PC; texto pintado con evidencia, distractor e idea), la ficha `plantillas/lectura-verbal/` en las 8 unidades que tocan los textos, `codigos.json` generado del informe, y la medición (`previo`, `lectura`, posición en el banco, resumen por código RV en `analizar-medicion.js`). Detalle en `docs/arquitectura.md` (sección «Formato lectura»). Falta:
   - Llegar a 30 textos y escribir los de entrada y salida (`indice.entrada` y `salida` siguen en `null`: hoy la práctica empieza sin prueba de entrada). El código de las pruebas ya está.
   - Ejercicios sueltos (analogías, plan de redacción, eliminación, término excluido, oraciones incompletas): la app y el núcleo ya los muestran y califican (probados con ejercicios de muestra); falta escribirlos y las unidades de término excluido y oraciones incompletas en el catálogo. Al agregar un texto o ejercicio con una unidad nueva, sumarla a `plantillas/lectura-verbal/plantilla.json` y nombrar el módulo en la unidad (la prueba avisa); luego `npm run catalogo`.
   - Lápiz y papel (regla 6): falta `herramientas/papel-lectura.js` y que `vPapel` acepte enunciados de varios párrafos (sección 7.6 del diseño). Por eso la ficha sigue en `borrador` con `papel: null`.
-  - **Para Gerson:** en el celular, la lectura esconde la barra de abajo (se vuelve con ‹) para dar espacio al texto y a la hoja; ¿de acuerdo? Los colores evidencia, distractor e idea reusan `--c-i`, `--c-o` y `--c-d` como propone el diseño; falta medir su distancia y el contraste del caso mixto (evidencia y distractor en la misma oración) en `docs/diseno.md`.
+  - Revisión independiente del 6 nov aplicada en el código: pruebas de entrada y salida con orden A→B o B→A y eventos `item` (Hake y errores RV antes y después), corrección neutra del paso previo cuando la frase del código no aplica (con aviso en las pruebas), oración mixta evidencia y distractor con contorno, opción `"explicar": "al-final"`, `intento` y retomar un texto a medias, hoja con lo demás `inert`, selección en color de marca, tarjetas que piden mover algo antes de confirmar. Lo de contenido (sondas, distractores, explicaciones de los previos, orden de preguntas, textos t000a y t000b) quedó para la rutina verbal; hoy 59 respuestas incorrectas de pasos previos no tienen explicación propia (14 caen en la frase neutra; ver el diagnóstico de `nucleo/lectura.test.js`).
+  - **Decidido (Gerson, 6 nov 2026):** en el celular la barra de abajo no desaparece en la lectura. Los colores evidencia, distractor e idea reusan `--c-i`, `--c-o` y `--c-d`; la revisión midió contraste AA y ΔE00 ≥ 25 entre las tintas, pero naranja y verde se acercan con protanopía o deuteranopía (ΔE00 3,6 a 9,5): por eso cada color va siempre con su marquita y una frase.
 
 - **Cinética** (`plantillas/cinetica/`, rutina de química, 6 nov 2026): caja de discos con teoría de colisiones (energía y orientación), temperatura, catalizador y perfil de energía. Informe `docs/investigacion/cinetica-ideas-erroneas.md` (CI1 a CI13) con cifras sin verificar por el bloqueo de red: la escena no muestra porcentajes de cinética. La fracción contada queda unos pocos por ciento bajo la teoría. Falta en la escena: orden ≠ coeficiente y vida media.
 
@@ -108,9 +111,19 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 - **Celda galvánica** (`plantillas/celda-galvanica/`, hecha el 6 nov 2026 por un subagente): puente de KNO₃ con nitratos en los vasos (con Ag⁺, el KCl precipitaría AgCl). No cubre la electrólisis del agua ni Nernst; el explorador dibuja Zn, Fe, Cu y Ag (el motor tiene más metales).
 - **Todas:** el estado es `borrador`. Pasan a `probada` con los datos del colegio.
 
-### Rutinas automáticas (6 nov 2026)
+### Rutinas y sesiones paralelas (6 nov 2026)
 
-Tres conversaciones aparte trabajan solas cada día, cada una en su rama y sin tocar catálogo, app, nucleo ni estos documentos: física (`rutina/fisica`, 2:13 a. m.), química (`rutina/quimica`, 4:37 a. m.) y razonamiento verbal con la guía docente (`rutina/verbal`, 4:41 p. m.). Cada una deja su reporte en `rutinas/<curso>.md` con los pedidos de integración. Integrarlas: leer el reporte, revisar, hacer merge a esta rama, agregar al catálogo, `npm run catalogo`, subir `VERSION` y documentar.
+Cinco conversaciones aparte trabajan solas, cada una en su rama y sin tocar catálogo, app, nucleo ni estos documentos. Cada una deja su reporte en `rutinas/<nombre>.md` con los pedidos de integración:
+
+| Sesión | Rama | Qué hace |
+| --- | --- | --- |
+| Rutina de física (diaria, 2:13 a. m.) | `rutina/fisica` | Una plantilla por ejecución: estática, choques, fluidos, MAS, electrostática, ondas, termodinámica, magnetismo |
+| Rutina de química (diaria, 4:37 a. m.) | `rutina/quimica` | Átomo y tabla, enlace, líquidos y sólidos |
+| Rutina de razonamiento verbal (diaria, 4:41 p. m.) | `rutina/verbal` | Correcciones de los textos, textos de entrada y salida (t000a, t000b), más textos hasta 30, guía para profesores |
+| Paralelo: álgebra y trigonometría (una vez) | `rutina/matematica-a` | Exponenciales y logaritmos, identidades, polinomios, funciones trigonométricas inversas |
+| Paralelo: geometría, aritmética y razonamiento (una vez) | `rutina/matematica-b` | Sólidos, geometría analítica, interés, relojes y calendarios, congruencia |
+
+**Cómo integrar:** `git fetch origin rutina/<nombre>`, leer su reporte, ver qué plantillas están terminadas y revisadas, hacer merge a esta rama (si una plantilla está a medias, merge del commit anterior), agregar al catálogo, `npm run catalogo`, subir `VERSION`, colores en `docs/diseno.md`, rebalancear el banco si el curso llega a 4 plantillas, documentar y `npm test` en verde. El método completo está en `docs/metodo/LEEME.md`.
 
 ### 3. Plataforma
 
@@ -119,14 +132,14 @@ Tres conversaciones aparte trabajan solas cada día, cada una en su rama y sin t
   - Una tipografía redondeada común entre la app y las escenas.
   - Revisar el modo oscuro de las ilustraciones.
   - Llevar a `nucleo/` lo que cada escena repite (la cinta y la gráfica ya dejan el dibujo fijo arriba mientras se elige: `.bench` sticky y lienzo de ~240 px) y las revisiones vuelven a encontrar: en el celular, subir el lienzo al responder (scrollIntoView y animar después) y dejar que el dedo desplace la página sobre el dibujo salvo cerca de lo que se arrastra (touch-action: pan-y). Salió en la celda, la ampliadora y el triángulo.
-- **la1, pruebas de entrada y salida por curso (hecha el 6 nov 2026; revisada el mismo día, banco 1.1.0):** banco en `catalogo/pruebas/` (formato en `docs/arquitectura.md`), dos formas paralelas A y B por curso en orden contrabalanceado, 53 ítems por forma (física 10, química 10, geometría 9, trigonometría 8, álgebra 8, aritmética 8), cada respuesta y cada distractor verificados con el motor de su plantilla. Tras la revisión: ningún ítem repite una predicción de escena ni un problema de generador (prueba automática), la respuesta nunca está escrita en el enunciado, los atajos caen igual en A y B, las opciones tienen la misma forma, química suma cinética y física conservación de la energía. La salida solo la abre el profesor (`?salida=<curso>`), las soluciones también (`?soluciones=<curso>`), y hay «Otro alumno en esta PC» para el laboratorio. Falta:
-  - Razonamiento matemático y verbal: sin banco hasta que tengan módulos. Al agregar una plantilla a un curso, sumar sus ítems (la prueba avisa).
-  - Trigonometría tiene 2 pares de `circunferencia-trig` en `reserva`: cuando esa plantilla entre al catálogo, pasarlos a `pares` (la prueba avisa) y revisar que no pase de 10.
-  - Aritmética: 8 ítems de porcentajes (su único módulo); los marcados con `transferencia` miden ideas que el módulo no practica.
+- **la1, pruebas de entrada y salida por curso (hecha el 6 nov 2026; revisada y ampliada el mismo día):** banco en `catalogo/pruebas/` (formato en `docs/arquitectura.md`), dos formas paralelas A y B por curso en orden contrabalanceado, 65 ítems por forma en siete cursos (física 10, química 10, geometría 9, trigonometría 10, álgebra 10, aritmética 8, razonamiento matemático 8), cada respuesta y cada distractor verificados con el motor de su plantilla. Aritmética y razonamiento matemático llevan 2 pares por cada uno de sus 4 módulos; trigonometría suma la circunferencia y el caso ambiguo; álgebra, el traductor de enunciados (y 2 de `cuadrado-crece` en reserva). Ningún ítem repite una predicción de escena ni un problema de generador (prueba automática), la respuesta nunca está escrita en el enunciado, los atajos caen igual en A y B y las opciones tienen la misma forma. La salida y las soluciones las abre el profesor (`?salida=`, `?soluciones=`) y hay «Otro alumno en esta PC». Falta:
+  - Al agregar una plantilla a un curso, sumar sus ítems (la prueba avisa).
+  - Álgebra tiene 2 pares de `cuadrado-crece` en `reserva`: cuando esa plantilla entre al catálogo, pasarlos a `pares` (la prueba avisa) y bajar dos de la gráfica con perillas para no pasar de 10.
+  - Sin ítems todavía (la prueba avisa): sucesiones en álgebra, tiro parabólico en física, mol y composición en química; razonamiento verbal no tiene banco (formato lectura).
   - La equivalencia de A y B es por diseño (ítems isomorfos); hay que confirmarla con los datos del colegio (columna «Forma A / B»).
   - Los enunciados no usan los colores de variables (una prueba es neutra) ni tienen figuras: todo va en texto.
   - La respuesta en `app/datos/pruebas.json` va mezclada, no cifrada: no es seguridad real.
-  - **Para Gerson:** ¿la entrada debe ser obligatoria (hoy se puede decir «Ahora no», y se registra cuántas unidades del curso ya había abierto)? ¿Revisar la redacción de los 106 ítems con un profesor del colegio? La guía para profesores (la4) debe explicar los enlaces `?salida=` y `?soluciones=` y el botón «Otro alumno en esta PC».
+  - **Decidido (Gerson, 6 nov 2026):** la entrada no es obligatoria mientras estemos en modo prueba (se puede decir «Ahora no» y se registra cuántas unidades del curso ya había abierto); quizá lo sea más adelante. **Para Gerson:** ¿revisar la redacción de los 130 ítems con un profesor del colegio? La guía para profesores (la4) debe explicar los enlaces `?salida=` y `?soluciones=` y el botón «Otro alumno en esta PC».
 - **Planificador por semana del CEPRE y modo examen con tiempo:** estaban en la referencia de interfaz y todavía no existen.
 - **Medición:** por decisión de Gerson (5 nov 2026), solo se exportan archivos. Un servidor (Railway está disponible) queda para después.
 

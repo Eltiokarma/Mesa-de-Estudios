@@ -1,0 +1,1418 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El cuadrado que crece: productos notables y linealidad indebida</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de triangulo-estira.
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
+   a azul, b naranja, el rectángulo ab (y el producto ab) oliva, la incógnita x fucsia, la raíz (la hipotenusa
+   y |x|) turquesa, y en el cubo las piezas a²b granate y ab² verde bosque. Cada pieza del área lleva el color de su
+   término: a² en azul, b² en naranja, ab en oliva, x² en fucsia. Lo que no es variable (el total, los caminos,
+   las marcas de la regla) va en tinta o en gris.
+   Elegidos con CIEDE2000: ΔE00 ≥ 20,9 entre cualquier par, en claro y en oscuro, y contraste AA sobre el papel
+   y sobre su chip (.v, fondo al 8 %). El granate de a²b queda a ΔE00 23,7 (claro) y 20,5 (oscuro) del rojo de los avisos. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-a:#1f5fbf; --c-b:#a05200; --c-ab:#5f6f00; --c-x:#a10fbf; --c-r:#0f766e; --c-a2b:#810349; --c-ab2:#17451e;
+  --relleno:.16;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-a:#7cb0ff; --c-b:#f0a04a; --c-ab:#c8dc3c; --c-x:#cf6bfa; --c-r:#5ed9c8; --c-a2b:#ffadde; --c-ab2:#40bf59;
+  --relleno:.2; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-a:#7cb0ff; --c-b:#f0a04a; --c-ab:#c8dc3c; --c-x:#cf6bfa; --c-r:#5ed9c8; --c-a2b:#ffadde; --c-ab2:#40bf59;
+  --relleno:.2; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+/* Celular con una predicción pendiente: el dibujo más bajo y pegado arriba, para que se vea mientras se elige. */
+@media (max-width:899px){
+  .mode.pendiente .bench{position:sticky; top:0; z-index:1; padding:6px; gap:4px; background:var(--card); border-radius:0 0 20px 20px}
+  .mode.pendiente .legend{display:none}
+  .mode.pendiente .lecturas{gap:4px}
+  .mode.pendiente .lectura{padding:2px 8px}
+}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+.lienzo:focus-within{outline:3px solid var(--ink); outline-offset:2px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:12px; height:12px; border-radius:3px; display:inline-block; border:2px solid; opacity:.9}
+.legend i.linea{width:16px; height:0; border-width:3px 0 0; border-radius:0}
+.legend i.trazos{width:16px; height:0; border-width:2px 0 0; border-style:dashed; border-radius:0}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-a{color:var(--c-a); background:color-mix(in srgb, var(--c-a) 8%, transparent)}
+.v-b{color:var(--c-b); background:color-mix(in srgb, var(--c-b) 8%, transparent)}
+.v-ab{color:var(--c-ab); background:color-mix(in srgb, var(--c-ab) 8%, transparent)}
+.v-x{color:var(--c-x); background:color-mix(in srgb, var(--c-x) 8%, transparent)}
+.v-r{color:var(--c-r); background:color-mix(in srgb, var(--c-r) 8%, transparent)}
+.v-a2b{color:var(--c-a2b); background:color-mix(in srgb, var(--c-a2b) 8%, transparent)}
+.v-ab2{color:var(--c-ab2); background:color-mix(in srgb, var(--c-ab2) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{font-family:var(--mono); font-size:1.02rem; line-height:1.9; font-variant-numeric:tabular-nums}
+.eq .note{display:inline-block; font-family:var(--font); font-size:.84rem; line-height:1.3; color:var(--muted); margin-left:.5em; white-space:normal}
+.answer{font-weight:700; padding:12px 16px; border-radius:16px; background:var(--paper); border:2px solid var(--ink); max-width:66ch}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} .opts.una{grid-template-columns:1fr} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt .m{font-family:var(--mono); font-variant-numeric:tabular-nums}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+
+.pasos{display:flex; flex-wrap:wrap; gap:8px 14px; align-items:center}
+.paso{display:inline-flex; align-items:center; gap:6px; font-weight:800}
+.paso button{width:44px; height:44px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); font:800 1.2rem var(--font); cursor:pointer}
+.paso button:disabled{opacity:.4; cursor:not-allowed}
+.paso output{min-width:3.2em; text-align:center; font-family:var(--mono); font-variant-numeric:tabular-nums}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+/* Lecturas en vivo, cada una con el color de su variable */
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(96px, 1fr)); gap:8px}
+.lecturas:empty{display:none}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura b{display:block; color:var(--k); font:800 1.02rem var(--mono); font-variant-numeric:tabular-nums; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.lectura span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.3fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Álgebra · Productos notables · Problemas tipo admisión</p>
+      <h1>El cuadrado que crece</h1>
+      <p class="sub">Un cuadrado de lado a + b se parte en piezas que se cuentan. Mira qué reglas se cumplen y cuáles solo lo parecen.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo de las piezas">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Dibujo de la escena"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Dibujo del experimento">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/cuadrado-crece">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'cuadrado-crece', unidad: 'algebra.exponentes-y-productos-notables', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la matemática (piezas, áreas, volúmenes, el reacomodo, la hipotenusa, los logaritmos, los errores típicos)
+   sale de MotorCuadrado (motor.js); aquí solo se pinta, se arrastra y se anima. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MC = MotorCuadrado;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+// Coma decimal, espacio de miles y signo menos tipográfico.
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 2 : d), r = Math.round(n*p)/p + 0;
+  let [e, f] = String(Math.abs(r)).split('.');
+  if (e.length > 4) e = e.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const a_ = t => V('a', t), b_ = t => V('b', t), ab_ = t => V('ab', t), x_ = t => V('x', t), r_ = t => V('r', t), a2b_ = t => V('a2b', t), ab2_ = t => V('ab2', t);
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+// Opciones de predicción (las mismas en los dos modos)
+const opcionesHTML = (opts, idFb, cls) => `<div class="opts ${cls || ''}">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span class="m">${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+
+function colores(){
+  const g = n => css(n);
+  return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'), warn:g('--warn'),
+    a:g('--c-a'), b:g('--c-b'), ab:g('--c-ab'), x:g('--c-x'), r:g('--c-r'), a2b:g('--c-a2b'), ab2:g('--c-ab2'),
+    relleno:Number(g('--relleno')) || .16, mono:g('--mono'), font:g('--font') };
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, p, q){ ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke(); }
+// Texto con un fondo del color del papel detrás, para que se lea sobre las líneas.
+function rotulo(ctx, c, x, y, t, color, align, peso, tam){
+  ctx.font = `${peso || 700} ${tam || 13}px ${c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+  ctx.fillStyle = color; ctx.fillText(t, x, y);
+  return { x:x0 - 3, y:y - 9, w:w + 6, h:18 };
+}
+// Resaltar en el dibujo la variable que se toca en el texto (regla 4).
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+/* ================= La escena =================
+   Modos del dibujo:
+     cuadrado    el cuadrado de lado a + b (con crece = 0 es solo el lado; con sep, las piezas se separan)
+     resta       (a − b)² o (x − b)²: el cuadrado grande, dos tiras que se quitan y la esquina que se devuelve
+     diferencia  a² − b² o x² − 9: se corta la esquina y la tira de arriba se gira al costado
+     cubo        (a + b)³ en vista isométrica, entero o en ocho piezas
+     triangulo   los cuadrados de los catetos y el de la hipotenusa
+     potencia    2^(m + n) como grupos de puntos
+     regla       la regla logarítmica
+     abs         la recta numérica con x negativo y el cuadrado de lado |x|
+   Coordenadas del mundo con y hacia arriba; la caja del contenido se ajusta al lienzo con un margen en píxeles. */
+const LIM = { cuadrado:{ a:[0, 6], b:[0, 6] }, resta:{ a:[0, 7], b:[0, 7] }, diferencia:{ a:[2, 8], b:[1, 7] }, cubo:{ a:[0, 4], b:[0, 4] }, triangulo:{ a:[1, 7], b:[1, 7] } };
+const PROG0 = { crece:1, sep:0, quitar:0, resta:3, reac:0, tri:1, pot:1, log:1, abs:1, cortes:1 };
+const VER0 = { split:true, division:true, valores:true, celdas:true, bordes:true, objetivo:false, cuadro:true, camino:false, corte:false, finales:false, marca110:false, total:false };
+function crearEscena(cv, idDesc, idLect, idLey){
+  const E = { modo:'cuadrado', a:3, b:2, sim:null, ver:{ ...VER0 }, prog:{ ...PROG0 }, lect:[], arrastrable:false, cajaFija:null,
+    hl:null, alCambiar:null, gen:0, ocupado:false, compacto:false, extra:{} };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, arrastrando = null, sobre = null, congelada = null, PAD = padDe(E);
+
+  function caja(){
+    if (E.cajaFija) return E.cajaFija;
+    if (congelada) return congelada;   // mientras se arrastra, la escala no cambia
+    return cajaDe(E.modo, E.a, E.b, E);
+  }
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    PAD = padDe(E);
+    const c = caja(), prop = (c.y1 - c.y0)/(c.x1 - c.x0);
+    let h = Math.round((w - PAD.l - PAD.r)*prop + PAD.t + PAD.b);
+    const fino = c.y1 - c.y0 < (c.x1 - c.x0)/3;   // solo un segmento: el lienzo no deja papel vacío
+    if (innerWidth >= 900) h = clamp(h, fino ? 200 : 320, Math.max(320, Math.min(540, innerHeight - 210)));
+    else h = clamp(h, fino ? 170 : 230, 420);
+    if (E.compacto && innerWidth < 900) h = Math.min(h, 240);
+    const dpr = window.devicePixelRatio || 1;
+    if (w === W && h === H) { E.dibujar(); return; }
+    W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  alRedibujarTema(() => E.dibujar());
+
+  E.config = o => {
+    E.gen++;
+    Object.assign(E, { modo:'cuadrado', sim:null, lect:[], arrastrable:false, cajaFija:null, alCambiar:null, ocupado:false, extra:{} }, o);
+    E.ver = Object.assign({ ...VER0 }, o.ver);
+    E.prog = Object.assign({ ...PROG0 }, o.prog);
+    cv.tabIndex = E.arrastrable ? 0 : -1;
+    cv.setAttribute('aria-label', descripcionCorta());
+    W = 0; resize();
+    E.leyenda(); E.dibujar(); E.avisar();
+  };
+  E.compactar = on => { on = !!on; cv.closest('.mode').classList.toggle('pendiente', on); if (on === E.compacto) return; E.compacto = on; W = 0; resize(); };
+  E.recajar = () => { W = 0; resize(); };
+  // Anima un número de E.prog; se corta solo si la escena se reconfigura (contador de generación).
+  E.animar = (k, hasta, dur, fin) => {
+    const gen = E.gen, de = E.prog[k];
+    if (RM || !dur){ E.prog[k] = hasta; E.dibujar(); if (fin) setTimeout(() => { if (E.gen === gen) fin(); }, 0); return; }
+    const t0 = performance.now();
+    const tick = now => {
+      if (E.gen !== gen) return;
+      const f = Math.min(1, (now - t0)/dur); E.prog[k] = de + (hasta - de)*suave(f); E.dibujar();
+      if (f < 1) requestAnimationFrame(tick); else if (fin) fin();
+    };
+    requestAnimationFrame(tick);
+  };
+  // Una cadena de pasos animados: cada uno recibe 'sigue'
+  E.cadena = (pasos, fin) => {
+    const gen = E.gen; let i = 0;
+    const sigue = () => { if (E.gen !== gen) return; if (i >= pasos.length) { if (fin) fin(); return; } pasos[i++](sigue); };
+    sigue();
+  };
+
+  // ----- del mundo a la pantalla -----
+  function escala(){
+    const c = caja();
+    const k = Math.min((W - PAD.l - PAD.r)/(c.x1 - c.x0), (H - PAD.t - PAD.b)/(c.y1 - c.y0));
+    const ox = PAD.l + (W - PAD.l - PAD.r - k*(c.x1 - c.x0))/2 - k*c.x0;
+    const oy = PAD.t + (H - PAD.t - PAD.b - k*(c.y1 - c.y0))/2 + k*c.y1;
+    return { k, ox, oy };
+  }
+  const aP = (P, s) => ({ x: s.ox + s.k*P.x, y: s.oy - s.k*P.y });
+  const aMundo = (px, py, s) => ({ x:(px - s.ox)/s.k, y:(s.oy - py)/s.k });
+
+  // ----- piezas -----
+  // rectángulo del mundo {x, y, w, h} → píxeles
+  function rpx(r, s){ const p = aP({ x:r.x, y:r.y + r.h }, s); return { x:p.x, y:p.y, w:r.w*s.k, h:r.h*s.k }; }
+  function pieza(r, s, col, o){
+    o = o || {};
+    const p = rpx(r, s), c = E.c;
+    if (p.w <= 0 || p.h <= 0) return p;
+    ctx.save();
+    if (o.relleno !== false){ ctx.fillStyle = col; ctx.globalAlpha = (o.alfa === undefined ? c.relleno : o.alfa)*(E.hl && o.var === E.hl ? 1.9 : 1); ctx.fillRect(p.x, p.y, p.w, p.h); }
+    ctx.globalAlpha = o.opac === undefined ? 1 : o.opac;
+    // cuadraditos para contar
+    if (o.celdas && E.ver.celdas && s.k >= 9 && r.w <= 14 && r.h <= 14){
+      ctx.strokeStyle = col; ctx.lineWidth = 1; ctx.globalAlpha = .38*(o.opac === undefined ? 1 : o.opac);
+      for (let i = 1; i < r.w - 1e-9; i++) linea(ctx, { x:p.x + i*s.k, y:p.y }, { x:p.x + i*s.k, y:p.y + p.h });
+      for (let j = 1; j < r.h - 1e-9; j++) linea(ctx, { x:p.x, y:p.y + j*s.k }, { x:p.x + p.w, y:p.y + j*s.k });
+      ctx.globalAlpha = o.opac === undefined ? 1 : o.opac;
+    }
+    if (o.borde !== false){
+      ctx.strokeStyle = col; ctx.lineWidth = (o.ancho || 2) + (E.hl && o.var === E.hl ? 2 : 0);
+      if (o.trazos) ctx.setLineDash(o.trazos);
+      ctx.strokeRect(p.x, p.y, p.w, p.h);
+    }
+    if (o.rayado){
+      ctx.save(); ctx.beginPath(); ctx.rect(p.x, p.y, p.w, p.h); ctx.clip();
+      ctx.strokeStyle = col; ctx.lineWidth = 1.4; ctx.globalAlpha = o.rayado*(o.opac === undefined ? 1 : o.opac); ctx.setLineDash([]);
+      for (let t = -p.h; t < p.w; t += 7) linea(ctx, { x:p.x + t, y:p.y + p.h }, { x:p.x + t + p.h, y:p.y });
+      ctx.restore();
+    }
+    ctx.restore();
+    return p;
+  }
+  // Rótulo de una pieza: adentro si cabe; si no, afuera con una línea guía.
+  function rotPieza(p, t, col, fuera, tam){
+    const c = E.c; ctx.font = `800 ${tam || 13}px ${c.font}`;
+    const w = ctx.measureText(t).width + 8;
+    if (p.w >= w + 4 && p.h >= 22 && !fuera) { ocupar(rotulo(ctx, c, p.x + p.w/2, p.y + p.h/2, t, col, 'center', 800, tam || 13)); return; }
+    const f = fuera || 'derecha';
+    let q;
+    if (f === 'derecha') q = { x:p.x + p.w + 10 + w/2, y:p.y + p.h/2 };
+    else if (f === 'arriba') q = { x:p.x + p.w/2, y:p.y - 14 };
+    else if (f === 'arribaDer') q = { x:p.x + p.w + 8 + w/2, y:p.y - 12 };
+    else q = { x:p.x + p.w/2, y:p.y + p.h + 14 };
+    ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = 1; linea(ctx, { x:p.x + p.w/2, y:p.y + p.h/2 }, q); ctx.restore();
+    ocupar(rotulo(ctx, c, q.x, q.y, t, col, 'center', 800, tam || 13));
+  }
+  let ocupadas = [];
+  const ocupar = r => { ocupadas.push(r); return r; };
+  // Barra de una medida (un lado) con su rótulo: horizontal debajo de y0 o vertical a la izquierda de x0, desplazada 'd' píxeles
+  function barra(x0, x1, y, s, col, t, d, o){
+    o = o || {};
+    const p = aP({ x:x0, y }, s), q = aP({ x:x1, y }, s), off = d || 10;
+    if (Math.abs(q.x - p.x) < .5) return;
+    ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = (o.ancho || 4) + (E.hl && o.var === E.hl ? 2 : 0); ctx.lineCap = 'butt';
+    linea(ctx, { x:p.x, y:p.y + off }, { x:q.x, y:q.y + off });
+    ctx.lineWidth = 1.5; linea(ctx, { x:p.x, y:p.y + off - 5 }, { x:p.x, y:p.y + off + 5 }); linea(ctx, { x:q.x, y:q.y + off - 5 }, { x:q.x, y:q.y + off + 5 });
+    ctx.restore();
+    if (t) ocupar(rotulo(ctx, E.c, (p.x + q.x)/2, p.y + off + (o.arriba ? -13 : 15), t, col, 'center', 800, 13));
+  }
+  function barraV(y0, y1, x, s, col, t, d, o){
+    o = o || {};
+    const p = aP({ x, y:y0 }, s), q = aP({ x, y:y1 }, s), off = d || 10;
+    if (Math.abs(q.y - p.y) < .5) return;
+    ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = (o.ancho || 4) + (E.hl && o.var === E.hl ? 2 : 0);
+    const X = o.derecha ? p.x + off : p.x - off;
+    linea(ctx, { x:X, y:p.y }, { x:X, y:q.y });
+    ctx.lineWidth = 1.5; linea(ctx, { x:X - 5, y:p.y }, { x:X + 5, y:p.y }); linea(ctx, { x:X - 5, y:q.y }, { x:X + 5, y:q.y });
+    ctx.restore();
+    if (t){
+      ctx.font = `800 13px ${E.c.font}`; const w = ctx.measureText(t).width;
+      ocupar(rotulo(ctx, E.c, o.derecha ? X + 8 + w/2 : X - 8 - w/2, (p.y + q.y)/2, t, col, 'center', 800, 13));
+    }
+  }
+  function manija(P, s, activa){
+    const c = E.c, p = aP(P, s); p.y += P.off || 0;
+    ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = activa ? .2 : .09; ctx.beginPath(); ctx.arc(p.x, p.y, 19, 0, 7); ctx.fill(); ctx.restore();
+    ctx.fillStyle = c.card; ctx.strokeStyle = c.ink; ctx.lineWidth = 2.6; ctx.beginPath(); ctx.arc(p.x, p.y, 8.5, 0, 7); ctx.fill(); ctx.stroke();
+  }
+  const valor = (k, v) => (E.sim && E.sim[k] !== undefined ? E.sim[k] : fmt(v, 2));
+
+  // ----- los modos -----
+  const dib = {};
+  dib.cuadrado = s => {
+    const c = E.c, a = E.a, b = E.b, L = a + b, P = MC.piezasCuadrado({ a, b, hueco: L*0.08, f: E.prog.sep });
+    const cr = E.prog.crece;
+    // el lado: a en azul y b en naranja (debajo); con el cuadrado entero, también a la izquierda.
+    // Las barras siguen a las piezas cuando se separan.
+    const pz = id => P.piezas.find(q => q.id === id);
+    const pa = pz('a2'), pb = pz('b2');
+    const xa0 = pa ? pa.x : 0, xa1 = pa ? pa.x + pa.w : 0, xb0 = pb ? pb.x : a, xb1 = pb ? pb.x + pb.w : L;
+    const yb = Math.min(...P.piezas.map(q => q.y), 0), xi = Math.min(...P.piezas.map(q => q.x), 0);
+    const dBarra = 12;
+    if (!E.ver.split) barra(0, L, 0, s, c.ink, E.ver.valores ? `a + b = ${fmt(L, 0)}` : 'a + b', dBarra);
+    else {
+      barra(xa0, xa1, yb, s, c.a, E.ver.valores ? `a = ${valor('a', a)}` : 'a', dBarra, { var:'a' });
+      barra(xb0, xb1, yb, s, c.b, E.ver.valores ? `b = ${valor('b', b)}` : 'b', dBarra, { var:'b' });
+    }
+    if (cr <= 0 && E.ver.total){ const p = aP({ x:L/2, y:0 }, s); ocupar(rotulo(ctx, c, p.x, p.y - 22, `lado: a + b = ${fmt(L, 0)}`, c.ink, 'center', 800, 14)); }
+    if (cr >= 1 && E.ver.bordes && E.ver.division && E.ver.split){
+      barraV(pa ? pa.y : 0, pa ? pa.y + pa.h : 0, xi, s, c.a, '', dBarra, { var:'a' }); barraV(pb ? pb.y : a, pb ? pb.y + pb.h : L, xi, s, c.b, '', dBarra, { var:'b' });
+    }
+    if (cr > 0){
+      ctx.save();
+      const tope = aP({ x:0, y:cr*L + L*0.2 }, s);
+      ctx.beginPath(); ctx.rect(0, tope.y, W, H); ctx.clip();
+      if (!E.ver.division){
+        const p = pieza({ x:0, y:0, w:L, h:L }, s, c.ink, { alfa:.05, ancho:2.4, celdas:false });
+        if (cr >= 1 && E.ver.valores) rotPieza(p, E.extra.rotuloTotal || `(a + b)² = ${fmt(L*L, 0)}`, c.ink);
+      } else {
+        const col = { a2:c.a, ab:c.ab, b2:c.b }, nom = { a2:'a', ab:'ab', b2:'b' };
+        const quit = E.prog.quitar;
+        for (const q of P.piezas){
+          const esAB = q.tipo === 'ab';
+          const op = esAB && quit > 0 ? 1 - .55*quit : 1;
+          const p = pieza(q, s, col[q.tipo], { celdas:true, var:nom[q.tipo], opac:op, rayado: esAB && quit > 0 ? .5*quit : 0 });
+          if (cr < 1) continue;
+          const v = q.area, txt = E.ver.valores ? (esAB && quit > .5 ? `− ${fmt(v, 0)}` : `${q.termino} = ${E.sim ? E.sim[q.tipo] : fmt(v, 2)}`) : q.termino;
+          const fuera = E.extra.fuera ? E.extra.fuera[q.id] : null;
+          rotPieza(p, txt, col[q.tipo], fuera);
+        }
+      }
+      ctx.restore();
+    }
+    if (E.arrastrable && E.prog.sep <= 0) for (const m of E.manijas()) manija(m, s, (arrastrando && arrastrando.var === m.var) || (sobre && sobre.var === m.var));
+  };
+  dib.resta = s => {
+    const c = E.c, a = E.a, b = E.b, R = MC.restaCuadrado({ a, b }), pr = E.prog.resta;
+    const sim = E.sim;
+    const colG = sim ? c.x : (R.mayor === 'a' ? c.a : c.b), colC = sim ? c.b : (R.mayor === 'a' ? c.b : c.a);
+    const varG = sim ? 'x' : R.mayor, varC = sim ? 'b' : R.menor;
+    // barras de las medidas
+    if (sim){
+      barra(0, R.M, 0, s, c.x, 'x', 12, { var:'x' });
+    } else {
+      // el mayor, todo el lado; el menor, debajo de la tira de la derecha (su ancho)
+      const M = Math.max(a, b), gA = a >= b;
+      barra(gA ? 0 : M - a, M, 0, s, c.a, `a = ${fmt(a, 0)}`, gA ? 12 : 40, { var:'a' });
+      barra(gA ? M - b : 0, M, 0, s, c.b, `b = ${fmt(b, 0)}`, gA ? 40 : 12, { var:'b' });
+    }
+    if (!E.ver.cuadro){ if (E.arrastrable) for (const m of E.manijas()) manija(m, s, false); return; }
+    const G = pieza(R.cuadrado, s, colG, { celdas:!sim, var:varG });
+    if (R.m > 0 && sim){
+      // marcas de 3 en el borde de arriba y en el de la derecha
+      const pa = aP({ x:R.M - R.m, y:R.M }, s), pb = aP({ x:R.M, y:R.M }, s), pc = aP({ x:R.M, y:R.M - R.m }, s);
+      ctx.save(); ctx.strokeStyle = colC; ctx.lineWidth = 4 + (E.hl === 'b' ? 2 : 0); linea(ctx, { x:pa.x, y:pa.y - 8 }, { x:pb.x, y:pb.y - 8 }); linea(ctx, { x:pb.x + 8, y:pb.y }, { x:pc.x + 8, y:pc.y }); ctx.restore();
+      ocupar(rotulo(ctx, c, (pa.x + pb.x)/2, pa.y - 20, sim.b, colC, 'center', 800, 13));
+      ocupar(rotulo(ctx, c, pb.x + 18, (pb.y + pc.y)/2, sim.b, colC, 'left', 800, 13));
+    }
+    if (pr <= 0){
+      if (!sim) rotPieza(G, `${varG}² = ${fmt(R.cuadrado.area, 0)}`, colG);
+      else rotPieza(G, 'x²', colG);
+      if (E.ver.objetivo && R.resto.w > 0){ const pR = pieza(R.resto, s, c.ink, { relleno:false, ancho:2.2, trazos:[6, 5] }); rotPieza({ x:pR.x, y:pR.y + pR.h*.25, w:pR.w, h:pR.h*.5 }, sim ? `(x − ${sim.b})²` : '(a − b)²', c.ink); }
+      if (E.arrastrable) for (const m of E.manijas()) manija(m, s, false);
+      return;
+    }
+    const t1 = clamp(pr, 0, 1), t2 = clamp(pr - 1, 0, 1), t3 = clamp(pr - 2, 0, 1);
+    const tx = sim ? `− ${sim.b}x` : `− ${fmt(R.tiras[0].area, 0)}`;
+    if (R.m > 0){
+      const p1 = pieza(R.tiras[0], s, c.ab, { alfa:c.relleno*1.6*t1, rayado:.55*t1, opac:t1, var:'ab' });
+      const p2 = t2 > 0 ? pieza(R.tiras[1], s, c.ab, { alfa:c.relleno*1.6*t2, rayado:.55*t2, opac:t2, var:'ab' }) : null;
+      if (t3 > 0) pieza(R.esquina, s, colC, { alfa:c.relleno*2.6*t3, opac:t3, celdas:!sim, var:varC, ancho:2.6 });
+      if (t1 > .3) rotPieza({ x:p1.x, y:p1.y, w:p1.w - (p2 ? p2.w : 0), h:p1.h }, tx, c.ab, p1.h < 22 ? 'arriba' : null);
+      if (p2 && t2 > .3) rotPieza({ x:p2.x, y:p2.y + (t3 > 0 ? 0 : 0) + rpx(R.esquina, s).h, w:p2.w, h:p2.h - rpx(R.esquina, s).h }, tx, c.ab, p2.w < 40 ? 'derecha' : null);
+      if (t3 > .3) rotPieza(rpx(R.esquina, s), sim ? `+ ${sim.b2}` : `+ ${fmt(R.esquina.area, 0)}`, colC, 'arribaDer');
+    }
+    if (t3 >= 1 || R.m === 0){
+      const pR = pieza(R.resto, s, c.ink, { relleno:false, ancho:3 });
+      if (R.resto.w > 0) rotPieza(pR, sim ? `(x − ${sim.b})²` : `(a − b)² = ${fmt(R.resto.area, 0)}`, c.ink, pR.h < 22 ? 'abajo' : null);
+    }
+    if (E.arrastrable) for (const m of E.manijas()) manija(m, s, (arrastrando && arrastrando.var === m.var) || (sobre && sobre.var === m.var));
+  };
+  dib.diferencia = s => {
+    const c = E.c, a = E.a, b = E.b, D = MC.diferenciaCuadrados({ a, b }), sim = E.sim, f = E.prog.reac;
+    const colX = sim ? c.x : c.a, varX = sim ? 'x' : 'a';
+    const R = MC.reacomodo({ a, b, f });
+    // la pieza fija (abajo) y la móvil (la tira de arriba), del color de x² (o de a²)
+    if (f <= 0 && !E.ver.corte){
+      // la L entera, sin la línea del corte
+      const pF = pieza(D.fija, s, colX, { borde:false, celdas:!sim, var:varX }), pM = pieza(D.movil, s, colX, { borde:false, celdas:!sim, var:varX });
+      ctx.save(); ctx.strokeStyle = colX; ctx.lineWidth = 2.4;
+      const P = [{ x:0, y:0 }, { x:a, y:0 }, { x:a, y:a - b }, { x:a - b, y:a - b }, { x:a - b, y:a }, { x:0, y:a }].map(q => aP(q, s));
+      ctx.beginPath(); P.forEach((q, i) => i ? ctx.lineTo(q.x, q.y) : ctx.moveTo(q.x, q.y)); ctx.closePath(); ctx.stroke(); ctx.restore();
+      void pF; void pM;
+    } else {
+      pieza(D.fija, s, colX, { celdas:!sim, var:varX });
+      // la móvil, girada alrededor de su centro
+      const C = aP({ x:R.cx, y:R.cy }, s);
+      ctx.save(); ctx.translate(C.x, C.y); ctx.rotate(-R.giro*Math.PI/180);
+      const w = R.w*s.k, h = R.h*s.k;
+      ctx.fillStyle = colX; ctx.globalAlpha = c.relleno*(E.hl === varX ? 1.9 : 1); ctx.fillRect(-w/2, -h/2, w, h); ctx.globalAlpha = 1;
+      if (!sim && s.k >= 9){ ctx.strokeStyle = colX; ctx.lineWidth = 1; ctx.globalAlpha = .38; for (let i = 1; i < R.w; i++) linea(ctx, { x:-w/2 + i*s.k, y:-h/2 }, { x:-w/2 + i*s.k, y:h/2 }); for (let j = 1; j < R.h; j++) linea(ctx, { x:-w/2, y:-h/2 + j*s.k }, { x:w/2, y:-h/2 + j*s.k }); ctx.globalAlpha = 1; }
+      ctx.strokeStyle = colX; ctx.lineWidth = 2.4; ctx.strokeRect(-w/2, -h/2, w, h);
+      ctx.restore();
+    }
+    // la esquina que se quita (vacía, a trazos)
+    if (f < .3){
+      ctx.save(); ctx.globalAlpha = 1 - f/.3;
+      const pH = pieza(D.hueco, s, c.b, { relleno:false, trazos:[5, 4], ancho:2.2, var:'b' });
+      ctx.restore();
+      if (f <= 0) rotPieza(pH, sim ? `− ${sim.b2}` : `− ${fmt(D.hueco.area, 0)}`, c.b);
+    }
+    if (f <= 0){
+      // medidas de partida: el lado (x o a) y la esquina (3 o b)
+      barra(0, a, 0, s, colX, sim ? 'x' : `a = ${fmt(a, 0)}`, 12, { var:varX });
+      barra(a - b, a, a, s, c.b, sim ? sim.b : `b = ${fmt(b, 0)}`, -12, { var:'b', arriba:true });
+      if (E.ver.objetivo) rotPieza(rpx({ x:0, y:0, w:a, h:a - b }, s), sim ? `x² − ${sim.b2}` : `a² − b² = ${fmt(D.valor, 0)}`, c.ink);
+    }
+    if (f >= 1){
+      // el rectángulo que queda: (x + 3) por (x − 3)
+      const pR = pieza(D.rectangulo, s, c.ink, { relleno:false, ancho:2.6 });
+      barra(0, a, 0, s, colX, sim ? 'x' : `a = ${fmt(a, 0)}`, 12, { var:varX }); barra(a, a + b, 0, s, c.b, sim ? sim.b : `b = ${fmt(b, 0)}`, 12, { var:'b' });
+      // llave de todo el largo: x + 3
+      const yL = pR.y + pR.h + 36;
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(pR.x, yL - 5); ctx.lineTo(pR.x, yL); ctx.lineTo(pR.x + pR.w, yL); ctx.lineTo(pR.x + pR.w, yL - 5); ctx.stroke(); ctx.restore();
+      ocupar(rotulo(ctx, c, pR.x + pR.w/2, yL + 12, sim ? `x + ${sim.b}` : `a + b = ${fmt(a + b, 0)}`, c.ink, 'center', 800, 13));
+      barraV(0, a - b, a + b, s, c.ink, sim ? `x − ${sim.b}` : `a − b = ${fmt(a - b, 0)}`, 10, { derecha:true, ancho:3 });
+    }
+    if (E.arrastrable && f <= 0) for (const m of E.manijas()) manija(m, s, (arrastrando && arrastrando.var === m.var) || (sobre && sobre.var === m.var));
+  };
+  // Vista isométrica: se ven las caras de x, y y z mayores
+  const ISO = (x, y, z) => ({ x:(x - y)*0.866, y:z - (x + y)*0.5 });
+  dib.cubo = s => {
+    const c = E.c, a = E.a, b = E.b, L = a + b;
+    const col = { a3:c.a, a2b:c.a2b, ab2:c.ab2, b3:c.b };
+    const caras = (q, color, o) => {
+      const x0 = q.x, y0 = q.y, z0 = q.z, x1 = q.x + q.w, y1 = q.y + q.p, z1 = q.z + q.h;
+      const P = (x, y, z) => aP(ISO(x, y, z), s);
+      const poli = (pts, alfa) => { ctx.beginPath(); pts.forEach((p, i) => i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)); ctx.closePath();
+        ctx.save(); ctx.fillStyle = c.paper; ctx.fill(); ctx.fillStyle = color; ctx.globalAlpha = alfa; ctx.fill(); ctx.restore();
+        ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = o && o.hl ? 3 : 1.6; ctx.lineJoin = 'round'; ctx.stroke(); ctx.restore(); };
+      poli([P(x1, y0, z0), P(x1, y1, z0), P(x1, y1, z1), P(x1, y0, z1)], .30);   // cara derecha (x mayor)
+      poli([P(x0, y1, z0), P(x1, y1, z0), P(x1, y1, z1), P(x0, y1, z1)], .42);   // cara izquierda (y mayor)
+      poli([P(x0, y0, z1), P(x1, y0, z1), P(x1, y1, z1), P(x0, y1, z1)], .18);   // cara de arriba
+      return P((x0 + x1)/2, (y0 + y1)/2, z1);
+    };
+    if (E.prog.cortes <= 0){
+      caras({ x:0, y:0, z:0, w:L, p:L, h:L }, c.ink);
+    } else {
+      const C = MC.piezasCubo({ a, b, hueco: L*0.22, huecoZ: L*1.1, f: E.prog.sep });
+      const nom = { a3:'a', a2b:'a2b', ab2:'ab2', b3:'b' };
+      const tops = [];
+      for (const q of C.piezas) tops.push([q, caras(q, col[q.tipo], { hl: E.hl === nom[q.tipo] })]);
+      if (E.ver.valores && E.prog.sep > .6) for (const [q, t] of tops) rotulo(ctx, c, t.x, t.y, fmt(q.volumen, 0), col[q.tipo], 'center', 800, 12);
+    }
+    // aristas: a y b sobre la arista de adelante (x) y la vertical
+    if (E.ver.bordes){
+      const P = (x, y, z) => aP(ISO(x, y, z), s);
+      const off = E.prog.cortes > 0 ? E.prog.sep*L*0.11 : 0;
+      const tramo = (p, q, color, t, dx, dy, v) => {
+        ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = 4 + (E.hl === v ? 2 : 0); linea(ctx, { x:p.x + dx, y:p.y + dy }, { x:q.x + dx, y:q.y + dy }); ctx.restore();
+        ocupar(rotulo(ctx, c, (p.x + q.x)/2 + dx*2.4, (p.y + q.y)/2 + dy*2.4, t, color, 'center', 800, 13));
+      };
+      const ta = E.ver.valores ? `a = ${fmt(a, 0)}` : 'a', tb = E.ver.valores ? `b = ${fmt(b, 0)}` : 'b';
+      const oz = E.prog.cortes > 0 ? E.prog.sep*L*0.55 : 0;
+      // arista de abajo a la izquierda (a lo largo de x, con y = L)
+      tramo(P(-off, L + off, -oz), P(a - off, L + off, -oz), c.a, ta, -6, 9, 'a');
+      tramo(P(a + off, L + off, -oz), P(L + off, L + off, -oz), c.b, tb, -6, 9, 'b');
+      // arista vertical de la derecha (x = L, y = 0)
+      tramo(P(L + off, -off, -oz), P(L + off, -off, a - oz), c.a, ta, 12, 0, 'a');
+      tramo(P(L + off, -off, a + oz), P(L + off, -off, L + oz), c.b, tb, 12, 0, 'b');
+    }
+  };
+  dib.triangulo = s => {
+    const c = E.c, a = E.a, b = E.b, T = MC.hipotenusa({ a, b }), f = E.prog.tri;
+    // antes: el cuadrado de b a la derecha del de a, sobre la misma base (como el enunciado: 9 y después 16);
+    // al responder, el de b sube a su cateto
+    const mov = 1 - clamp(f/.5, 0, 1);
+    const dx = mov*(a + 1 + b), dy = -mov*a;
+    const poli = (pts, col, alfa, v) => { const P = pts.map(q => aP(q, s)); ctx.beginPath(); P.forEach((p, i) => i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)); ctx.closePath();
+      ctx.save(); ctx.fillStyle = col; ctx.globalAlpha = alfa*(E.hl === v ? 1.9 : 1); ctx.fill(); ctx.globalAlpha = 1; ctx.strokeStyle = col; ctx.lineWidth = 2 + (E.hl === v ? 2 : 0); ctx.stroke(); ctx.restore(); return P; };
+    const celdas = (O, u, v, n, col, alfa) => { if (s.k < 9) return; ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = 1; ctx.globalAlpha = alfa;
+      for (let i = 1; i < n; i++){ linea(ctx, aP({ x:O.x + u.x*i, y:O.y + u.y*i }, s), aP({ x:O.x + u.x*i + v.x*n, y:O.y + u.y*i + v.y*n }, s)); linea(ctx, aP({ x:O.x + v.x*i, y:O.y + v.y*i }, s), aP({ x:O.x + v.x*i + u.x*n, y:O.y + v.y*i + u.y*n }, s)); }
+      ctx.restore(); };
+    const sqB = T.cuadradoB.map(q => ({ x:q.x + dx, y:q.y + dy }));
+    const PA = poli(T.cuadradoA, c.a, c.relleno, 'a'); celdas(T.cuadradoA[0], { x:1, y:0 }, { x:0, y:-1 }, a, c.a, .38);
+    const PB = poli(sqB, c.b, c.relleno, 'b'); celdas(sqB[0], { x:0, y:1 }, { x:-1, y:0 }, b, c.b, .38);
+    const cen = P => ({ x:P.reduce((t, p) => t + p.x, 0)/P.length, y:P.reduce((t, p) => t + p.y, 0)/P.length });
+    const tA = E.extra.etA || `${fmt(T.cuadrados.a, 0)}`, tB = E.extra.etB || `${fmt(T.cuadrados.b, 0)}`;
+    const cA = cen(PA), cB = cen(PB);
+    ocupar(rotulo(ctx, c, cA.x, cA.y, tA, c.a, 'center', 800, 14)); ocupar(rotulo(ctx, c, cB.x, cB.y, tB, c.b, 'center', 800, 14));
+    const g = clamp((f - .5)/.5, 0, 1);
+    if (g > 0){
+      ctx.save(); ctx.globalAlpha = g;
+      const PC = poli(T.cuadradoC, c.r, c.relleno, 'r');
+      if (T.entera && T.valor <= 14){ const u = { x:-a/T.valor, y:b/T.valor }, v = { x:b/T.valor, y:a/T.valor }; celdas(T.cuadradoC[0], u, v, T.valor, c.r, .38*g); }
+      // el triángulo
+      const A = aP(T.vertices.A, s), B = aP(T.vertices.B, s), C0 = aP(T.vertices.C, s);
+      ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(C0.x, C0.y); ctx.lineTo(B.x, B.y); ctx.lineTo(A.x, A.y); ctx.closePath(); ctx.stroke();
+      ctx.strokeStyle = c.r; ctx.lineWidth = 4 + (E.hl === 'r' ? 2 : 0); linea(ctx, A, B);
+      // ángulo recto
+      ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; const m = 9; ctx.beginPath(); ctx.moveTo(C0.x + m, C0.y); ctx.lineTo(C0.x + m, C0.y - m); ctx.lineTo(C0.x, C0.y - m); ctx.stroke();
+      const cC = cen(PC);
+      ocupar(rotulo(ctx, c, cC.x, cC.y, E.extra.etC || fmt(T.cuadrados.c, 2), c.r, 'center', 800, 14));
+      // la medida de la hipotenusa, sobre ella, del lado del triángulo
+      const M = { x:(A.x + B.x)/2, y:(A.y + B.y)/2 }, n = { x:-(B.y - A.y), y:B.x - A.x }, Ln = Math.hypot(n.x, n.y) || 1;
+      // del lado del cuadrado de la hipotenusa (adentro del triángulo van los catetos)
+      const lado = n.x*(C0.x - M.x) + n.y*(C0.y - M.y) > 0 ? -1 : 1;
+      const tH = E.extra.etHip || `√(a² + b²) = ${fmt(T.valor, 2)}`;
+      ctx.font = `800 13px ${c.font}`;
+      const dH = 8 + ctx.measureText(tH).width/2*Math.abs(n.x/Ln) + 10*Math.abs(n.y/Ln);
+      ocupar(rotulo(ctx, c, M.x + lado*n.x/Ln*dH, M.y + lado*n.y/Ln*dH, tH, c.r, 'center', 800, 13));
+      if (E.ver.camino){
+        ctx.setLineDash([6, 5]); ctx.strokeStyle = c.muted; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(A.x + 6, A.y); ctx.lineTo(C0.x + 6, C0.y - 6); ctx.lineTo(B.x, B.y - 6); ctx.stroke(); ctx.setLineDash([]);
+      }
+      ctx.restore();
+    }
+    // los catetos con su medida
+    if (g > 0){
+      const C0 = aP({ x:0, y:0 }, s), B = aP({ x:a, y:0 }, s), A = aP({ x:0, y:b }, s);
+      ctx.save(); ctx.globalAlpha = g; ctx.lineWidth = 4 + (E.hl === 'a' ? 2 : 0); ctx.strokeStyle = c.a; linea(ctx, C0, B); ctx.lineWidth = 4 + (E.hl === 'b' ? 2 : 0); ctx.strokeStyle = c.b; linea(ctx, C0, A);
+      ctx.font = `800 13px ${c.font}`;
+      const ta = E.extra.etLa || `a = ${fmt(a, 0)}`, tb = E.extra.etLb || `b = ${fmt(b, 0)}`;
+      // cada cateto se rotula dentro de su propio cuadrado, debajo del área; si el cuadrado es chico, dentro del triángulo
+      const cabe = (t, lado) => lado*s.k >= Math.max(48, ctx.measureText(t).width + 8);
+      if (cabe(ta, a)) ocupar(rotulo(ctx, c, cA.x, cA.y + 20, ta, c.a, 'center', 800, 13));
+      else ocupar(rotulo(ctx, c, (C0.x + B.x)/2, C0.y - 14, ta, c.a, 'center', 800, 13));
+      if (cabe(tb, b)) ocupar(rotulo(ctx, c, (C0.x + A.x)/2 - b*s.k/2, (C0.y + A.y)/2 + 20, tb, c.b, 'center', 800, 13));
+      else ocupar(rotulo(ctx, c, C0.x + 10, (C0.y + A.y)/2, tb, c.b, 'left', 800, 13));
+      ctx.restore();
+    }
+    if (E.arrastrable) for (const m of E.manijas()) manija(m, s, (arrastrando && arrastrando.var === m.var) || (sobre && sobre.var === m.var));
+  };
+  // 2^(m + n): antes, solo los m + n doses en fila; al responder se agrupan en m y n, y se arman 2^m grupos de 2^n puntos
+  dib.potencia = s => {
+    const c = E.c, P = E.extra.pot, f = E.prog.pot, G = P.grupos, n = P.porGrupo, m = E.extra.m, k = E.extra.n;
+    const g = clamp(f/.3, 0, 1), h = clamp((f - .35)/.65, 0, 1);
+    const cw = 1.2, ch = n*0.9 + 0.3, T0 = ch + 1.6, ancho = G*cw - .25;
+    // los doses
+    const paso = 1.0, sep = 1.4*g, total = (m + k - 1)*paso + sep, x0 = (ancho - total)/2;
+    const xs = []; for (let i = 0; i < m + k; i++) xs.push(x0 + i*paso + (i >= m ? sep : 0));
+    for (const x of xs){ const q = aP({ x, y:T0 }, s); ctx.fillStyle = c.ink; ctx.font = `800 22px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('2', q.x, q.y); }
+    if (g > 0){
+      const llave = (i0, i1, col, t, v) => {
+        const p = aP({ x:xs[i0] - .35, y:T0 - .55 }, s), q = aP({ x:xs[i1] + .35, y:T0 - .55 }, s);
+        ctx.save(); ctx.globalAlpha = g; ctx.strokeStyle = col; ctx.lineWidth = 2.4 + (E.hl === v ? 2 : 0);
+        ctx.beginPath(); ctx.moveTo(p.x, p.y - 5); ctx.lineTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.lineTo(q.x, q.y - 5); ctx.stroke(); ctx.restore();
+        if (g >= 1) ocupar(rotulo(ctx, c, (p.x + q.x)/2, p.y + 14, t, col, 'center', 800, 13));
+      };
+      llave(0, m - 1, c.a, E.extra.etG, 'a'); llave(m, m + k - 1, c.b, E.extra.etN, 'b');
+    }
+    if (h <= 0) return;
+    for (let i = 0; i < G; i++){
+      const p = rpx({ x:i*cw, y:0, w:cw - .25, h:ch }, s);
+      ctx.save(); ctx.globalAlpha = h; ctx.strokeStyle = c.a; ctx.lineWidth = 2 + (E.hl === 'a' ? 2 : 0); ctx.fillStyle = c.a;
+      ctx.globalAlpha = c.relleno*.8*h; ctx.beginPath(); ctx.roundRect(p.x, p.y, p.w, p.h, 6); ctx.fill(); ctx.globalAlpha = h; ctx.stroke(); ctx.restore();
+      const lleno = clamp(h*G - i, 0, 1);
+      for (let j = 0; j < n; j++){
+        const q = aP({ x:i*cw + (cw - .25)/2, y:0.15 + (j + .5)*0.9 }, s);
+        ctx.save(); ctx.fillStyle = c.b; ctx.globalAlpha = lleno; ctx.beginPath(); ctx.arc(q.x, q.y, Math.max(3, s.k*.26), 0, 7); ctx.fill(); ctx.restore();
+      }
+    }
+    if (h >= 1){ const q = aP({ x:ancho/2, y:0 }, s); ocupar(rotulo(ctx, c, q.x, q.y + 16, E.extra.etTotal, c.ink, 'center', 800, 13)); }
+  };
+  dib.regla = s => {
+    const c = E.c, L = E.extra.log, f = E.prog.log, M = MC.marcasLog({ hasta:3 });
+    const tope = 2 + f;   // hasta dónde se ve la regla
+    const p0 = aP({ x:0, y:0 }, s), pT = aP({ x:tope, y:0 }, s);
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, p0, pT); ctx.restore();
+    for (const m of M){
+      if (m.pos > tope + 1e-9) continue;
+      const p = aP({ x:m.pos, y:0 }, s), h = m.mayor ? 12 : 6;
+      ctx.save(); ctx.strokeStyle = m.mayor ? c.ink : c.muted; ctx.lineWidth = m.mayor ? 2 : 1; linea(ctx, { x:p.x, y:p.y }, { x:p.x, y:p.y - h }); ctx.restore();
+      if (m.mayor && f > 0) ocupar(rotulo(ctx, c, p.x, p.y - 22, fmt(m.valor, 0), c.ink, 'center', 800, 13));
+    }
+    // los tramos: log a (azul) y log b (naranja); al responder, el de b se pega al final del de a
+    const ya = -0.55, yb = -1.25 + .7*f, xb = L.logA*f;
+    const tr = (x0, x1, y, col, t, v) => { const p = aP({ x:x0, y }, s), q = aP({ x:x1, y }, s); ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = 8 + (E.hl === v ? 2 : 0); ctx.lineCap = 'butt'; linea(ctx, p, q); ctx.restore(); ocupar(rotulo(ctx, c, (p.x + q.x)/2, p.y + 18, t, col, 'center', 800, 13)); };
+    if (f <= 0) return;
+    tr(0, L.logA, ya, c.a, f >= 1 ? `log ${fmt(E.extra.a, 0)} = ${fmt(L.logA, 0)}` : `log ${fmt(E.extra.a, 0)}`, 'a');
+    tr(xb, xb + L.logB, yb - (f >= 1 ? 0 : 0), c.b, f >= 1 ? `log ${fmt(E.extra.b, 0)} = ${fmt(L.logB, 0)}` : `log ${fmt(E.extra.b, 0)}`, 'b');
+    if (f >= 1){
+      const p = aP({ x:L.valor, y:0 }, s);
+      const yBar = aP({ x:0, y:ya }, s).y;
+      ctx.save(); ctx.strokeStyle = c.ab; ctx.lineWidth = 3 + (E.hl === 'ab' ? 2 : 0); linea(ctx, { x:p.x, y:p.y - 12 }, { x:p.x, y:yBar + 6 }); ctx.restore();
+      ocupar(rotulo(ctx, c, p.x - 6, p.y - 46, `${fmt(E.extra.a, 0)} · ${fmt(E.extra.b, 0)} = ${fmt(L.producto, 0)}`, c.ab, 'right', 800, 13));
+      if (E.ver.marca110){
+        const e = L.errores.logDeSuma, q = aP({ x:e.valor, y:0 }, s);
+        ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.6; ctx.setLineDash([4, 4]); linea(ctx, { x:q.x, y:q.y + 4 }, { x:q.x, y:yBar + 40 }); ctx.restore();
+        ocupar(rotulo(ctx, c, q.x, yBar + 50, `log ${fmt(e.numero, 0)} ≈ ${fmt(e.valor, 2)}`, c.muted, 'center', 700, 12));
+      }
+    }
+  };
+  dib.abs = s => {
+    const c = E.c, x = E.extra.x, R = E.extra.raiz, f = E.prog.abs;
+    const p0 = aP({ x:-5.5, y:0 }, s), p1 = aP({ x:5.5, y:0 }, s);
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, p0, p1); ctx.restore();
+    for (let k = -5; k <= 5; k++){ const p = aP({ x:k, y:0 }, s); ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = k === 0 ? 2 : 1.2; linea(ctx, { x:p.x, y:p.y - 5 }, { x:p.x, y:p.y + 5 }); ctx.restore();
+      if (k !== x) ocupar(rotulo(ctx, c, p.x, p.y + 18, fmt(k, 0), c.muted, 'center', 700, 12)); }
+    if (f > 0){
+      const lado = R.lado, r = { x:Math.min(0, x), y:0, w:lado, h:lado*f };
+      pieza(r, s, c.x, { celdas:true, var:'x', opac:f });
+      if (f >= 1){
+        const p = rpx({ x:Math.min(0, x), y:0, w:lado, h:lado }, s);
+        ocupar(rotulo(ctx, c, p.x + p.w/2, p.y + p.h/2, `x² = ${fmt(R.cuadrado, 0)}`, c.x, 'center', 800, 13));
+        ctx.save(); ctx.strokeStyle = c.r; ctx.lineWidth = 4 + (E.hl === 'r' ? 2 : 0); linea(ctx, { x:p.x, y:p.y - 8 }, { x:p.x + p.w, y:p.y - 8 }); ctx.restore();
+        ocupar(rotulo(ctx, c, p.x + p.w/2, p.y - 22, `lado = √(x²) = ${fmt(R.valor, 0)}`, c.r, 'center', 800, 13));
+      }
+    }
+    const q = aP({ x, y:0 }, s);
+    ctx.fillStyle = c.x; ctx.beginPath(); ctx.arc(q.x, q.y, 7, 0, 7); ctx.fill();
+    ctx.save(); ctx.strokeStyle = c.x; ctx.lineWidth = 1; linea(ctx, { x:q.x, y:q.y + 8 }, { x:q.x, y:q.y + 28 }); ctx.restore();
+    ocupar(rotulo(ctx, c, q.x, q.y + 38, `x = ${fmt(x, 0)}`, c.x, 'center', 800, 13));
+  };
+
+  E.dibujar = () => {
+    if (!W) return;
+    ocupadas = [];
+    const c = E.c = colores(), s = escala();
+    ctx.clearRect(0, 0, W, H); ctx.fillStyle = c.paper; ctx.fillRect(0, 0, W, H);
+    dib[E.modo](s);
+  };
+
+  // ----- manijas para arrastrar -----
+  E.manijas = () => {
+    const a = E.a, b = E.b;
+    if (E.modo === 'cuadrado') return [{ var:'a', x:a, y:0, eje:'x', origen:0, off:12 }, { var:'b', x:a + b, y:0, eje:'x', origen:a, off:12 }];
+    if (E.modo === 'resta'){
+      // la manija del mayor está al final de su barra; la del menor, al comienzo de la suya (que termina en M)
+      const M = Math.max(a, b), gA = a >= b;
+      return gA ? [{ var:'a', x:a, y:0, eje:'x', origen:0, off:12 }, { var:'b', x:M - b, y:0, eje:'x', origen:M, inv:true, off:40 }]
+        : [{ var:'b', x:b, y:0, eje:'x', origen:0, off:12 }, { var:'a', x:M - a, y:0, eje:'x', origen:M, inv:true, off:40 }];
+    }
+    if (E.modo === 'diferencia') return [{ var:'a', x:a, y:0, eje:'x', origen:0, off:12 }, { var:'b', x:a - b, y:a, eje:'x', origen:a, inv:true, off:-12 }];
+    if (E.modo === 'triangulo') return [{ var:'a', x:a, y:0, eje:'x', origen:0, off:0 }, { var:'b', x:0, y:b, eje:'y', origen:0, off:0 }];
+    return [];
+  };
+  E.poner = (k, v) => {
+    const L = LIM[E.modo]; if (!L) return;
+    const r = L[k]; let n = clamp(Math.round(v), r[0], r[1]);
+    let a = k === 'a' ? n : E.a, b = k === 'b' ? n : E.b;
+    if (E.modo === 'diferencia'){ if (b >= a){ if (k === 'a') a = b + 1; else b = a - 1; } a = clamp(a, 2, 8); b = clamp(b, 1, a - 1); }
+    if (E.modo === 'cuadrado' || E.modo === 'cubo'){ if (a + b === 0){ if (k === 'a') b = 1; else a = 1; } }
+    if (a === E.a && b === E.b) return;
+    E.a = a; E.b = b;
+    if (E.alValor) E.alValor(k);
+    if (arrastrando || E.cajaFija) E.dibujar(); else { W = 0; resize(); }
+    E.avisar();
+  };
+  E.limites = () => LIM[E.modo];
+  const local = e => { const r = cv.getBoundingClientRect(); return { x:e.clientX - r.left, y:e.clientY - r.top }; };
+  // Con el dedo, el dibujo deja desplazar la página (touch-action: pan-y); solo un toque que empieza cerca de una
+  // manija (radio de 40 px) se queda con el gesto. Con ratón, radio de 26 px.
+  function cerca(p, r){
+    if (!E.arrastrable || E.ocupado || E.prog.sep > 0 || E.prog.reac > 0) return null;
+    const s = escala(); let mejor = null, d0 = r;
+    for (const m of E.manijas()){
+      const q = aP(m, s), d = Math.hypot(p.x - q.x, p.y - (q.y + (m.off || 0)));
+      // dos manijas en el mismo lugar (b = 0): la de b si el puntero está a su derecha (o arriba)
+      if (mejor && Math.abs(d - d0) < 1){ if (m.var === 'b' && (m.eje === 'x' ? p.x > q.x : p.y < q.y)) mejor = m; continue; }
+      if (d < d0){ d0 = d; mejor = m; }
+    }
+    return mejor;
+  }
+  cv.addEventListener('touchstart', e => {
+    if (!E.arrastrable || E.ocupado || e.touches.length !== 1) return;
+    const r = cv.getBoundingClientRect(), t = e.touches[0];
+    if (cerca({ x:t.clientX - r.left, y:t.clientY - r.top }, 40)) e.preventDefault();
+  }, { passive:false });
+  cv.addEventListener('pointerdown', e => {
+    const m = cerca(local(e), e.pointerType === 'mouse' ? 26 : 40); if (!m) return;
+    arrastrando = m; congelada = E.cajaFija ? null : caja(); cv.setPointerCapture(e.pointerId); e.preventDefault(); cv.focus({ preventScroll:true }); E.dibujar();
+  }, { passive:false });
+  cv.addEventListener('pointermove', e => {
+    const p = local(e);
+    if (arrastrando){
+      const s = escala(), w = aMundo(p.x, p.y - (arrastrando.off || 0), s), m = arrastrando;
+      const coord = m.eje === 'x' ? w.x : w.y;
+      const actual = E.manijas().find(q => q.var === m.var);
+      E.poner(m.var, actual.inv ? actual.origen - coord : coord - actual.origen);
+      return;
+    }
+    const sb = cerca(p, 26);
+    if ((sb && sb.var) !== (sobre && sobre.var)){ sobre = sb; cv.style.cursor = sb ? 'grab' : ''; E.dibujar(); }
+  });
+  const soltar = () => { if (arrastrando){ arrastrando = null; congelada = null; W = 0; resize(); } };
+  cv.addEventListener('pointerup', soltar); cv.addEventListener('pointercancel', soltar);
+  cv.addEventListener('keydown', e => {
+    if (!E.arrastrable || E.ocupado) return;
+    const d = { ArrowLeft:['a', -1], ArrowRight:['a', 1], ArrowDown:['b', -1], ArrowUp:['b', 1] }[e.key];
+    if (!d) return;
+    e.preventDefault(); E.poner(d[0], E[d[0]] + d[1]);
+  });
+
+  // ----- lecturas, leyenda y descripción -----
+  E.avisar = () => {
+    const L = lecturasDe(E);
+    if (idLect) document.getElementById(idLect).innerHTML = L.map(([k, t, v]) => `<div class="lectura" style="--k:var(--c-${k}, var(--ink))"><span>${t}</span><b>${v}</b></div>`).join('');
+    // La descripción dice solo lo que muestran el dibujo y las lecturas: antes de responder no adelanta la respuesta.
+    if (idDesc) document.getElementById(idDesc).textContent = [descripcionCorta(), ...L.map(([, t, v]) => `${t}: ${v}.`)].join(' ');
+    E.leyenda();
+    if (E.alCambiar) E.alCambiar();
+  };
+  function descripcionCorta(){
+    const a = fmt(E.a, 0), b = fmt(E.b, 0);
+    switch (E.modo){
+      case 'cuadrado': return E.prog.crece <= 0 ? `Un segmento de largo a + b, con a = ${a} y b = ${b}.` : !E.ver.division ? 'Un cuadrado de lado a + b, entero.' : `Un cuadrado de lado a + b partido en cuatro piezas: a², dos rectángulos ab y b²${E.prog.sep > 0 ? ', separadas' : ''}.${E.arrastrable ? ' Se puede arrastrar el final de a y el final de b, o usar las flechas.' : ''}`;
+      case 'resta': return E.sim ? 'Un cuadrado de lado x, con tiras de ancho 3 marcadas arriba y a la derecha.' : E.ver.cuadro ? `El cuadrado del mayor de a = ${a} y b = ${b}, con las tiras de ancho del menor.` : `Dos segmentos: a = ${a} y b = ${b}.`;
+      case 'diferencia': return E.prog.reac >= 1 ? 'Las dos piezas forman un rectángulo.' : E.sim ? 'Un cuadrado de lado x al que le falta una esquina de 3 por 3.' : `Un cuadrado de lado a = ${a} al que le falta una esquina de lado b = ${b}.`;
+      case 'cubo': return E.prog.cortes <= 0 ? `Un cubo de arista a + b, con a = ${a} y b = ${b}, entero.` : `Un cubo de arista a + b cortado en ocho piezas${E.prog.sep > 0 ? ', separadas' : ''}.`;
+      case 'triangulo': return E.prog.tri <= 0 ? 'Dos cuadrados, uno al lado del otro.' : 'Un triángulo rectángulo con un cuadrado sobre cada lado.';
+      case 'potencia': return E.prog.pot <= 0 ? 'Cinco doses en fila.' : 'Los doses agrupados y grupos de puntos.';
+      case 'regla': return 'Una regla logarítmica: cada número va a una distancia igual a su logaritmo.';
+      case 'abs': return 'Una recta numérica con el punto x.';
+      default: return '';
+    }
+  }
+  E.leyenda = () => {
+    if (!idLey) return;
+    const it = (k, t, cls) => `<span><i class="${cls || ''}" style="border-color:var(--c-${k}, var(--ink)); background:color-mix(in srgb, var(--c-${k}, var(--ink)) 22%, transparent)"></i>${t}</span>`;
+    const l = [];
+    const m = E.modo, P = E.prog;
+    // La leyenda nombra solo lo que ya está dibujado (antes de responder no adelanta piezas que aún no se ven)
+    if (E.extra.leyenda){ for (const [k, t, cls] of E.extra.leyenda(E)) l.push(it(k, t, cls)); }
+    else if (m === 'cuadrado'){
+      if (!E.ver.split) l.push(it('ink', 'lado a + b', 'linea'));
+      else if (P.crece < 1 || !E.ver.division) l.push(it('a', 'a', 'linea'), it('b', 'b', 'linea'));
+      else l.push(it('a', 'a y la pieza a²'), it('b', 'b y la pieza b²'), it('ab', 'rectángulo ab'));
+    }
+    else if (m === 'resta'){
+      if (E.sim) l.push(it('x', 'x y la pieza x²'), it('b', 'el 3'));
+      else l.push(it('a', E.ver.cuadro ? 'a y a²' : 'a', E.ver.cuadro ? '' : 'linea'), it('b', E.ver.cuadro ? 'b y b²' : 'b', E.ver.cuadro ? '' : 'linea'));
+      if (E.ver.cuadro && P.resta > 0) l.push(it('ab', E.sim ? 'tira de 3x' : 'tira ab'));
+      if (E.sim && P.resta > 2) l.push(it('b', 'la esquina 9'));
+    }
+    else if (m === 'diferencia'){ if (E.sim) l.push(it('x', 'x y la pieza x²'), it('b', 'el 3 y la esquina 9')); else l.push(it('a', 'a y a²'), it('b', 'b y la esquina b²')); }
+    else if (m === 'cubo'){ if (P.cortes > 0) l.push(it('a', 'a y el cubo a³'), it('b', 'b y el cubo b³'), it('a2b', 'bloques a²b'), it('ab2', 'bloques ab²')); else l.push(it('a', 'a', 'linea'), it('b', 'b', 'linea')); }
+    else if (m === 'triangulo'){ l.push(it('a', P.tri > 0 ? 'cateto a y su cuadrado' : 'cuadrado a²'), it('b', P.tri > 0 ? 'cateto b y su cuadrado' : 'cuadrado b²')); if (P.tri > 0) l.push(it('r', 'hipotenusa √(a² + b²) y su cuadrado')); }
+    else if (m === 'potencia'){ if (P.pot > 0) l.push(it('a', 'grupos (2³)'), it('b', 'puntos de cada grupo (2²)')); }
+    else if (m === 'regla'){ if (P.log > 0) l.push(it('a', 'log 100', 'linea'), it('b', 'log 10', 'linea'), it('ab', '100 · 10', 'linea')); }
+    else if (m === 'abs') l.push(it('x', P.abs > 0 ? 'x y el cuadrado de área x²' : 'x'));
+    document.getElementById(idLey).innerHTML = l.join('');
+  };
+  E.setCaja = c => { E.cajaFija = c; W = 0; resize(); };
+  return E;
+}
+
+// Margen en píxeles alrededor del contenido, según lo que se rotula afuera en cada modo
+function padDe(E){
+  const m = E.modo;
+  if (m === 'cuadrado') return { l:36, r:E.extra && E.extra.margenDer ? 20 : 30, t:26, b:58 };
+  if (m === 'resta') return { l:24, r:48, t:34, b:72 };
+  if (m === 'diferencia') return { l:24, r:82, t:40, b:78 };
+  if (m === 'cubo') return { l:18, r:44, t:16, b:34 };
+  if (m === 'triangulo') return { l:20, r:20, t:22, b:22 };
+  if (m === 'regla') return { l:40, r:26, t:60, b:64 };
+  if (m === 'abs') return { l:16, r:16, t:40, b:52 };
+  return { l:30, r:30, t:30, b:30 };
+}
+// Caja del contenido (en unidades del mundo) para cada modo
+function cajaDe(modo, a, b, E){
+  if (modo === 'cuadrado' && E && E.prog.crece <= 0 && !E.cajaFija){ const L = Math.max(a + b, 1); return { x0:0, x1:L, y0:0, y1:L*0.22 }; }
+  if (modo === 'cuadrado'){ const L = Math.max(a + b, 1), m = L*0.04; const extra = E && E.extra && E.extra.margenDer ? E.extra.margenDer*L : 0; return { x0:-m, x1:L + m + extra, y0:-m, y1:L + m }; }
+  if (modo === 'resta'){ const M = Math.max(a, b, 1); return { x0:0, x1:M, y0:0, y1:M }; }
+  if (modo === 'diferencia'){
+    if (E && E.prog.reac <= 0 && !E.ver.corte) return { x0:0, x1:a, y0:0, y1:a };   // antes de responder: solo la L
+    const R = MotorCuadrado.reacomodo({ a, b, f:0.5 }); return { x0:0, x1:Math.max(a + b, R.alcance), y0:0, y1:a };
+  }
+  if (modo === 'cubo'){
+    const L = a + b, g = L*0.22/2, gz = L*1.1/2;
+    const P = [];
+    for (const x of [-g, L + g]) for (const y of [-g, L + g]) for (const z of [-gz, L + gz]) P.push({ x:(x - y)*0.866, y:z - (x + y)*0.5 });
+    return { x0:Math.min(...P.map(p => p.x)) - .3, x1:Math.max(...P.map(p => p.x)) + .6, y0:Math.min(...P.map(p => p.y)) - .2, y1:Math.max(...P.map(p => p.y)) };
+  }
+  if (modo === 'triangulo') return E && E.prog.tri <= 0 ? { x0:-.2, x1:a + 1 + b + .2, y0:-a, y1:b - a } : { x0:-b, x1:a + b, y0:-a, y1:a + b };
+  if (modo === 'potencia'){
+    const P = E.extra.pot, ch = P.porGrupo*0.9 + .3, T0 = ch + 1.6, W = P.grupos*1.2 - .25;
+    return E.prog.pot <= 0 ? { x0:-.2, x1:W + .2, y0:T0 - 1.3, y1:T0 + .6 } : { x0:-.2, x1:W + .2, y0:-.7, y1:T0 + .6 };
+  }
+  if (modo === 'regla') return E && E.prog.log <= 0 ? { x0:-.15, x1:3.15, y0:-.3, y1:.4 } : { x0:-.15, x1:3.15, y0:-1.4, y1:.9 };
+  if (modo === 'abs') return { x0:-5.5, x1:5.5, y0:-.6, y1:3.6 };
+  return { x0:0, x1:1, y0:0, y1:1 };
+}
+// Lecturas en vivo: solo las que el paso deja ver (antes de responder, ninguna que adelante la respuesta)
+function lecturasDe(E){
+  const a = E.a, b = E.b, out = [];
+  for (const k of E.lect){
+    if (k === 'a') out.push(['a', 'a', fmt(a, 0)]);
+    else if (k === 'b') out.push(['b', 'b', fmt(b, 0)]);
+    else if (k === 'lado') out.push(['ink', 'Lado a + b', fmt(a + b, 0)]);
+    else if (k === 'area'){ const P = MotorCuadrado.piezasCuadrado({ a, b }); out.push(['ink', 'Área (a + b)²', fmt(P.area, 0)]); }
+    else if (k === 'sumaCuad'){ const P = MotorCuadrado.piezasCuadrado({ a, b }); out.push(['ink', 'a² + b²', fmt(P.sumaCuadrados, 0)]); }
+    else if (k === 'rect'){ const P = MotorCuadrado.piezasCuadrado({ a, b }); out.push(['ab', '2ab', fmt(P.rectangulos, 0)]); }
+    else if (k === 'resta'){ const R = MotorCuadrado.restaCuadrado({ a, b }); out.push(['ink', '(a − b)²', fmt(R.valor, 0)]); }
+    else if (k === 'restaMal') out.push(['ink', 'a² − b²', fmt(MotorCuadrado.evaluar('a² − b²', { a, b }).valor, 0)]);
+    else if (k === 'dif'){ const D = MotorCuadrado.diferenciaCuadrados({ a, b }); out.push(['ink', 'a² − b²', fmt(D.valor, 0)]); }
+    else if (k === 'difProd'){ const D = MotorCuadrado.diferenciaCuadrados({ a, b }); out.push(['ink', '(a + b)(a − b)', fmt(D.producto, 0)]); }
+    else if (k === 'cubo'){ const C = MotorCuadrado.cuboBinomio({ a, b }); out.push(['ink', '(a + b)³', fmt(C.valor, 0)]); }
+    else if (k === 'cuboMal'){ out.push(['ink', 'a³ + b³', fmt(MotorCuadrado.evaluar('a³ + b³', { a, b }).valor, 0)]); }
+    else if (k === 'hip'){ const T = MotorCuadrado.hipotenusa({ a, b }); out.push(['r', '√(a² + b²)', fmt(T.valor, 2)]); }
+    else if (k === 'camino'){ const T = MotorCuadrado.hipotenusa({ a, b }); out.push(['ink', 'Camino a + b', fmt(T.camino, 0)]); }
+    else if (typeof k === 'function') out.push(k(E));
+  }
+  return out;
+}
+</script>
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1');
+const S = { step:0, max:0, pred:{}, hecho:{}, ocupado:false, listo:true, v3:{ a:3, b:2 }, x:{ modo:'cuadrado', a:3, b:2 } };
+
+// Todo lo que se pregunta sale del motor, con sus errores típicos
+const B1 = MC.binomioCuadrado({ a:3, b:2 });
+const X2 = MC.binomioCuadradoX({ b:3, signo:'-' });
+const C3 = MC.cuboBinomio({ a:2, b:3 });
+const F4 = MC.factorizar('x² − 9');
+const R5 = MC.raizDeSuma({ p:9, q:16 }), H5 = MC.hipotenusa({ a:3, b:4 });
+const S6 = MC.sumaProducto({ suma:7, producto:12 });
+const n0 = v => fmt(v, 0);
+
+const P1 = { id:'cuadrado-crece-paso2', ok:'c', opts:[
+  ['a', n0(B1.errores.sinDoble.valor), 'AL8-cuadrado-sin-doble-producto', 'parcial'],
+  ['b', n0(B1.errores.porDos.valor), 'cuadrado-por-dos', 'hipotesis'],
+  ['c', n0(B1.valor)],
+  ['d', n0(B1.errores.unSoloAB.valor), 'cuadrado-un-solo-rectangulo', 'hipotesis']],
+  fb:{ c:`¡Bien! El lado mide 5 y el cuadrado tiene 5 · 5 = ${n0(B1.valor)} cuadraditos: ${B1.cuenta}.`,
+    a:`Elegiste la A. 3² + 2² = ${n0(B1.errores.sinDoble.valor)} cuenta solo los dos cuadrados de las esquinas. Faltan los dos rectángulos de 3 por 2, que suman ${n0(B1.terminos.dobleAB)}. La correcta está marcada.`,
+    b:`Elegiste la B. 2 · (3 + 2) = ${n0(B1.errores.porDos.valor)} es el doble del lado, no el lado por sí mismo. El área es lado por lado: 5 · 5. La correcta está marcada.`,
+    d:`Elegiste la D. 9 + 6 + 4 = ${n0(B1.errores.unSoloAB.valor)} cuenta un solo rectángulo de 3 por 2, pero el cuadrado tiene dos. La correcta está marcada.` } };
+const P2 = { id:'cuadrado-crece-paso4', ok:'b', opts:[
+  ['a', X2.errores.sinDoble.texto, 'AL8-resta-sin-doble-producto', 'parcial'],
+  ['b', X2.texto],
+  ['c', X2.errores.signoB2.texto, 'resta-quita-tambien-la-esquina', 'hipotesis'],
+  ['d', X2.errores.unSoloAB.texto, 'resta-un-solo-rectangulo', 'hipotesis']],
+  fb:{ b:`¡Bien! Del cuadrado x² se quitan dos tiras de 3x; la esquina de 9 se quitó dos veces, así que se devuelve una vez: ${X2.texto}.`,
+    a:`Elegiste la A. ${X2.errores.sinDoble.texto} quita solo la esquina. Para dejar el cuadrado de lado x − 3 hay que quitar dos tiras de 3 por x. La correcta está marcada.`,
+    c:`Elegiste la C. Las dos tiras de 3x se montan en la esquina: esos 9 se quitaron dos veces. Hay que devolverlos, no restarlos otra vez. La correcta está marcada.`,
+    d:`Elegiste la D. ${X2.errores.unSoloAB.texto} quita una sola tira. Para que el lado baje de x a x − 3 por arriba y por la derecha hacen falta dos tiras. La correcta está marcada.` } };
+const P3 = { id:'cuadrado-crece-paso5', ok:'d', opts:[
+  ['a', C3.errores.reparte.desarrollo, 'AL11-cubo-reparte-el-exponente', 'hipotesis'],
+  ['b', C3.errores.unaDeCada.desarrollo, 'cubo-una-pieza-de-cada-forma', 'hipotesis'],
+  ['c', C3.errores.copiaCuadrado.desarrollo, 'cubo-copia-el-doble-producto', 'hipotesis'],
+  ['d', C3.desarrollo]],
+  fb:{ d:`¡Bien! Al cortar el cubo salen ocho piezas: un cubo a³, tres bloques a²b, tres bloques ab² y un cubo b³.`,
+    a:`Elegiste la A. a³ + b³ son solo los dos cubos de las esquinas. Con a = 2 y b = 3 da ${n0(C3.errores.reparte.valor)}, pero el cubo tiene ${n0(C3.valor)} cubitos. La correcta está marcada.`,
+    b:`Elegiste la B. Las formas son esas cuatro, pero de las del medio hay tres de cada una. Con a = 2 y b = 3, una de cada una da ${n0(C3.errores.unaDeCada.valor)}, no ${n0(C3.valor)}. La correcta está marcada.`,
+    c:`Elegiste la C. 2ab es un área: viene del cuadrado, no del cubo. En el cubo las piezas del medio son bloques a²b y ab². Con a = 2 y b = 3, tu expresión da ${n0(C3.errores.copiaCuadrado.valor)}. La correcta está marcada.` } };
+const P4 = { id:'cuadrado-crece-paso6', ok:'c', opts:[
+  ['a', F4.errores.cuadradoDeResta.expresion, 'AL8-factoriza-como-cuadrado-de-resta', 'hipotesis'],
+  ['b', F4.errores.sinRaiz.expresion, 'factoriza-sin-sacar-la-raiz', 'hipotesis'],
+  ['c', F4.texto],
+  ['d', F4.errores.factorComunFalso.expresion, 'factor-comun-sin-x', 'hipotesis']],
+  fb:{ c:`¡Bien! La pieza de arriba se gira y se pega al costado: queda un rectángulo de x + 3 por x − 3.`,
+    a:`Elegiste la A. ${F4.errores.cuadradoDeResta.expresion} es ${F4.errores.cuadradoDeResta.texto}, como viste en el paso 4: no es x² − 9. La correcta está marcada.`,
+    b:`Elegiste la B. ${F4.errores.sinRaiz.expresion} es ${F4.errores.sinRaiz.texto}. El 9 es 3²: la esquina mide 3 de lado, no 9. La correcta está marcada.`,
+    d:`Elegiste la D. ${F4.errores.factorComunFalso.expresion} es ${F4.errores.factorComunFalso.texto}. El 9 no tiene x, así que x no es factor común. La correcta está marcada.` } };
+const P5 = { id:'cuadrado-crece-paso7', ok:'a', opts:[
+  ['a', n0(R5.valor)],
+  ['b', n0(R5.errores.sumaDeRaices.valor), 'AL9-raiz-de-suma-como-suma-de-raices', 'parcial'],
+  ['c', n0(R5.errores.sinRaiz.valor), 'raiz-olvidada', 'hipotesis'],
+  ['d', n0(R5.errores.productoDeRaices.valor), 'raiz-mezcla-con-producto', 'hipotesis']],
+  fb:{ a:'¡Bien! Primero se suma: 9 + 16 = 25; después se saca la raíz: √25 = 5. Es la hipotenusa del triángulo 3-4-5.',
+    b:`Elegiste la B. √9 + √16 = 3 + 4 = ${n0(R5.errores.sumaDeRaices.valor)} es el camino por los dos catetos. La hipotenusa va en línea recta y es más corta. La correcta está marcada.`,
+    c:`Elegiste la C. 9 + 16 = ${n0(R5.errores.sinRaiz.valor)} es el área del cuadrado de la hipotenusa. Falta sacar la raíz para tener su lado. La correcta está marcada.`,
+    d:`Elegiste la D. √9 · √16 = ${n0(R5.errores.productoDeRaices.valor)} sería √(9 · 16), la raíz de un producto. Aquí hay una suma dentro de la raíz. La correcta está marcada.` } };
+const P6 = { id:'cuadrado-crece-paso8', ok:'b', opts:[
+  ['a', n0(S6.errores.sinDoble.valor), 'AL8-suma-de-cuadrados-como-cuadrado-de-suma', 'parcial'],
+  ['b', n0(S6.valor)],
+  ['c', n0(S6.errores.sumaDoble.valor), 'suma-2ab-en-vez-de-restar', 'hipotesis'],
+  ['d', n0(S6.errores.unSoloAB.valor), 'resta-un-solo-ab', 'hipotesis']],
+  fb:{ b:`¡Bien! (a + b)² = 49 tiene los dos rectángulos ab; sin ellos quedan las dos esquinas: ${S6.cuenta}.`,
+    a:`Elegiste la A. ${n0(S6.errores.sinDoble.valor)} es (a + b)², el cuadrado entero. a² + b² son solo dos de sus piezas: faltan quitar los dos rectángulos ab. La correcta está marcada.`,
+    c:`Elegiste la C. Los rectángulos ya están dentro de 49: hay que quitarlos, no sumarlos otra vez. La correcta está marcada.`,
+    d:`Elegiste la D. 49 − 12 quita un solo rectángulo ab, pero el cuadrado tiene dos. La correcta está marcada.` } };
+
+const fuenteAL8 = `<p class="fuente">Elevar cada término por separado ((a + b)² = a² + b²) es el error típico del binomio en las pruebas SIMCE de Chile (Agencia de Calidad de la Educación) y aparece entre los más comunes en ingresantes de Guadalajara y de Costa Rica (Universidad de Guadalajara, 2015; Gamboa, Castillo e Hidalgo, 2019); ninguna de esas fuentes da el porcentaje. Matz (1982) lo llamó extrapolación lineal: se aplica una regla que se parece. Las otras opciones son hipótesis nuestras.</p>`;
+
+function pasos(){
+  const p = (k, nombre) => `<span class="paso">${V(k, nombre)} <button type="button" data-p="${k}" data-d="-1" aria-label="Disminuir ${nombre}">−</button><output id="o-${k}" aria-live="off">${fmt(E[k], 0)}</output><button type="button" data-p="${k}" data-d="1" aria-label="Aumentar ${nombre}">+</button></span>`;
+  return `<div class="pasos">${p('a', 'a')}${p('b', 'b')}</div>`;
+}
+function enlazarPasos(){
+  $('stepBody').querySelectorAll('.paso button').forEach(b => b.onclick = () => { if (E.ocupado || S.ocupado) return; E.poner(b.dataset.p, E[b.dataset.p] + Number(b.dataset.d)); });
+  pintarPasos();
+}
+function pintarPasos(){
+  const L = E.limites(); if (!L) return;
+  for (const k of ['a', 'b']){
+    const o = $('o-' + k); if (!o) continue;
+    o.textContent = fmt(E[k], 0);
+    const [m, M] = L[k];
+    $('stepBody').querySelector(`.paso button[data-p="${k}"][data-d="-1"]`).disabled = E[k] <= m;
+    $('stepBody').querySelector(`.paso button[data-p="${k}"][data-d="1"]`).disabled = E[k] >= M;
+  }
+}
+
+const steps = [
+ { k:'Paso 1', t:'El lado mide a + b',
+   prep:() => E.config({ modo:'cuadrado', a:S.v3.a, b:S.v3.b, prog:{ crece:0 }, ver:{ total:true }, arrastrable:true, cajaFija:{ x0:0, x1:12, y0:0, y1:2.4 }, lect:['a', 'b', 'lado'], alCambiar:pintarPasos }),
+   body:() => `<p class="problem">Este segmento mide ${a_('a')} + ${b_('b')}: la parte azul mide ${a_('a')} y la naranja mide ${b_('b')}.</p>
+   <p>Arrastra los dos puntos (el final de ${a_('a')} y el final de ${b_('b')}) o usa los botones. En el siguiente paso, este segmento será el lado de un cuadrado.</p>
+   ${pasos()}
+   <p class="hint">Con teclado: toca el dibujo; ← y → cambian a, ↓ y ↑ cambian b.</p>`,
+   entrar:enlazarPasos },
+ { k:'Paso 2', t:'Predice: el área del cuadrado', gate:P1,
+   prep:() => { const r = !!S.pred[P1.id]; E.config({ modo:'cuadrado', a:3, b:2, prog:{ crece:r ? 1 : 0, sep:r ? 1 : 0 }, lect: r ? ['area', 'sumaCuad', 'rect'] : ['a', 'b', 'lado'] }); },
+   anima:fin => { E.prog.crece = .001; E.recajar(); E.cadena([n => E.animar('crece', 1, 1100, n), n => { E.leyenda(); esperar(300, n); }, n => E.animar('sep', 1, 800, n)], () => { E.lect = ['area', 'sumaCuad', 'rect']; E.avisar(); fin(); }); },
+   body:() => `<p class="problem">Con este segmento como lado se arma un cuadrado. Si ${a_('a = 3')} y ${b_('b = 2')}, ¿cuál es su área, (${a_('a')} + ${b_('b')})²?</p>${opcionesHTML(P1.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">(${a_('a')} + ${b_('b')})² = ${a_('a²')} + ${ab_('ab')} + ${ab_('ab')} + ${b_('b²')} = ${a_('a²')} + ${ab_('2ab')} + ${b_('b²')}</div>
+   <div class="eq">(3 + 2)² = ${a_('9')} + ${ab_('6')} + ${ab_('6')} + ${b_('4')} = ${n0(B1.valor)}</div>
+   <div class="eq">${a_('a²')} + ${b_('b²')} = ${a_('9')} + ${b_('4')} = ${n0(B1.errores.sinDoble.valor)}<span class="note">solo las dos esquinas</span></div></div>
+   <p>El cuadrado de lado ${a_('a')} + ${b_('b')} tiene <b>cuatro</b> piezas: el cuadrado ${a_('a²')}, el cuadrado ${b_('b²')} y dos rectángulos ${ab_('ab')}. La regla «(a + b)² = a² + b²» se olvida de los dos rectángulos.</p>
+   <p>En los libros, (a + b)² se llama <b>binomio al cuadrado</b>, y su desarrollo, a² + 2ab + b², es un <b>trinomio cuadrado perfecto</b>.</p>
+   ${fuenteAL8}</div>` },
+ { k:'Paso 3', t:'¿Hay algún cuadrado donde den lo mismo?', accion:true,
+   prep:() => E.config({ modo:'cuadrado', a:S.v3.a, b:S.v3.b, arrastrable:true, lect:['area', 'sumaCuad', 'rect'], alCambiar:() => { pintarPasos(); revisarCero(); }, alValor:() => { S.v3 = { a:E.a, b:E.b }; } }),
+   body:() => `<p class="problem">Arrastra ${a_('a')} y ${b_('b')}. ¿Hay algún cuadrado en el que el área (${a_('a')} + ${b_('b')})² y ${a_('a²')} + ${b_('b²')} den lo mismo?</p>
+   ${pasos()}
+   <p class="hint" id="estado">Mira las lecturas debajo del dibujo.</p>
+   <div id="tras" class="body" hidden>
+   <p>Solo cuando ${a_('a')} o ${b_('b')} vale 0: entonces los rectángulos ${ab_('ab')} miden 0 y desaparecen. En cualquier otro cuadrado, ${a_('a²')} + ${b_('b²')} se queda corto justo en ${ab_('2ab')}.</p>
+   <p class="aviso">Antes de usar una regla, pruébala con números chicos: con a = 1 y b = 1, (1 + 1)² = 4, pero 1² + 1² = 2.</p></div>`,
+   entrar:enlazarPasos },
+ { k:'Paso 4', t:'Predice: (x − 3)² desarrollado', gate:P2,
+   prep:() => { const r = !!S.pred[P2.id]; E.config({ modo:'resta', a:7, b:3, sim:{ b:'3', b2:'9' }, prog:{ resta:r ? 3 : 0 }, ver:{ objetivo:!r } }); },
+   anima:fin => { E.ver.objetivo = false; E.animar('resta', 3, 2600, fin); },
+   body:() => `<p class="problem">El cuadrado grande tiene lado ${x_('x')}. Si a cada lado se le quita ${b_('3')}, queda el cuadrado punteado, de lado ${x_('x')} − ${b_('3')}. ¿Cuál es su área, (${x_('x')} − ${b_('3')})², desarrollada?</p>${opcionesHTML(P2.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">(${x_('x')} − ${b_('3')})² = ${x_('x²')} − ${ab_('3x')} − ${ab_('3x')} + ${b_('9')} = ${x_('x²')} − ${ab_('6x')} + ${b_('9')}</div></div>
+   <p>Del cuadrado ${x_('x²')} se quita la tira de arriba (${ab_('3x')}) y la de la derecha (${ab_('3x')}). Las dos tiras tienen la esquina de 3 por 3: esa esquina se quitó dos veces, así que se devuelve una vez (${b_('+ 9')}).</p>
+   ${fuenteAL8.replace('((a + b)² = a² + b²)', '((a − b)² = a² − b² es la misma regla con resta)')}</div>` },
+ { k:'Paso 5', t:'Predice: el cubo de a + b', gate:P3,
+   prep:() => { const r = !!S.pred[P3.id]; E.config({ modo:'cubo', a:2, b:3, prog:{ cortes:r ? 1 : 0, sep:r ? 1 : 0 }, lect: r ? ['cubo', 'cuboMal'] : [] }); },
+   anima:fin => { E.prog.cortes = 1; E.prog.sep = 0; E.leyenda(); E.dibujar(); E.cadena([n => esperar(500, n), n => E.animar('sep', 1, 1300, n)], () => { E.lect = ['cubo', 'cuboMal']; E.avisar(); fin(); }); },
+   body:() => `<p class="problem">Ahora un cubo de arista ${a_('a')} + ${b_('b')}, con ${a_('a = 2')} y ${b_('b = 3')}. Se corta en cada dirección donde termina ${a_('a')}. ¿Qué expresión es igual a (${a_('a')} + ${b_('b')})³?</p>${opcionesHTML(P3.opts, 'fb', 'una')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">(${a_('a')} + ${b_('b')})³ = ${a_('a³')} + 3${a2b_('a²b')} + 3${ab2_('ab²')} + ${b_('b³')}</div>
+   <div class="eq">(2 + 3)³ = ${a_('8')} + 3 · ${a2b_(n0(C3.terminos.a2b))} + 3 · ${ab2_(n0(C3.terminos.ab2))} + ${b_('27')} = ${n0(C3.valor)}</div>
+   <div class="eq">${a_('a³')} + ${b_('b³')} = ${a_('8')} + ${b_('27')} = ${n0(C3.errores.reparte.valor)}<span class="note">solo los dos cubos de las esquinas</span></div>
+   <div class="eq">(${a_('a')} + ${b_('b')})³ = ${a_('a³')} + ${b_('b³')} + 3${ab_('ab')}(${a_('a')} + ${b_('b')})<span class="note">la forma corta</span></div></div>
+   <p>Es el <b>cubo de un binomio</b>. Son ocho piezas: un cubo ${a_('a³')} (2 · 2 · 2), tres bloques ${a2b_('a²b')} (2 · 2 · 3), tres bloques ${ab2_('ab²')} (2 · 3 · 3) y un cubo ${b_('b³')} (3 · 3 · 3). Los números de cada pieza son sus cubitos.</p>
+   <p class="fuente">Repartir el exponente sobre una suma ((a + b)³ = a³ + b³) es el mismo patrón que (a + b)² = a² + b² (Matz, 1982). No encontramos un dato propio para el cubo: estas opciones son hipótesis nuestras.</p></div>` },
+ { k:'Paso 6', t:'Predice: factorizar x² − 9', gate:P4,
+   prep:() => { const r = !!S.pred[P4.id]; E.config({ modo:'diferencia', a:7, b:3, sim:{ b:'3', b2:'9' }, prog:{ reac:r ? 1 : 0 }, ver:{ corte:r, objetivo:!r } }); },
+   anima:fin => { E.ver.corte = true; E.ver.objetivo = false; E.recajar(); E.cadena([n => esperar(500, n), n => E.animar('reac', 1, 2200, n)], fin); },
+   body:() => `<p class="problem">A un cuadrado de lado ${x_('x')} se le quita la esquina de ${b_('3')} por ${b_('3')}: queda ${x_('x²')} − ${b_('9')}. ¿Cómo se escribe x² − 9 como un producto?</p>${opcionesHTML(P4.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${x_('x²')} − ${b_('9')} = (${x_('x')} + ${b_('3')})(${x_('x')} − ${b_('3')})</div>
+   <div class="eq">Comprobación con x = 5: 25 − 9 = 16 y (5 + 3)(5 − 3) = 8 · 2 = 16</div></div>
+   <p>La pieza de arriba mide ${x_('x')} − ${b_('3')} por ${b_('3')}. Se gira y se pega a la derecha: el rectángulo que queda mide ${x_('x')} + ${b_('3')} de largo y ${x_('x')} − ${b_('3')} de alto. Es la <b>diferencia de cuadrados</b>: a² − b² = (a + b)(a − b).</p>
+   <p class="aviso">Para factorizar, mira las piezas: ${x_('x²')} − ${b_('9')} es un cuadrado con una esquina menos, no un cuadrado de lado x − 3.</p>
+   <p class="fuente">Escribir x² − 9 = (x − 3)² es la regla falsa del paso 4 leída al revés; no encontramos un dato propio para la factorización: las tres opciones incorrectas son hipótesis nuestras.</p></div>` },
+ { k:'Paso 7', t:'Predice: la raíz de una suma', gate:P5,
+   prep:() => { const r = !!S.pred[P5.id]; E.config({ modo:'triangulo', a:3, b:4, prog:{ tri:r ? 1 : 0 }, ver:{ camino:r }, extra:{ etA:'9', etB:'16', etC:'25', etHip:'√25 = 5', etLa:'√9 = 3', etLb:'√16 = 4', leyenda:E => E.prog.tri > 0 ? [['a', 'cateto √9 y su cuadrado'], ['b', 'cateto √16 y su cuadrado'], ['r', 'hipotenusa y su cuadrado']] : [['a', 'cuadrado de área 9'], ['b', 'cuadrado de área 16']] }, lect: r ? [() => ['r', '√(9 + 16)', n0(R5.valor)], () => ['ink', '√9 + √16', n0(R5.errores.sumaDeRaices.valor)]] : [] }); },
+   anima:fin => { E.ver.camino = true; E.prog.tri = .001; E.recajar(); E.leyenda(); E.animar('tri', 1, 1800, () => { E.lect = [() => ['r', '√(9 + 16)', n0(R5.valor)], () => ['ink', '√9 + √16', n0(R5.errores.sumaDeRaices.valor)]]; E.leyenda(); E.avisar(); fin(); }); },
+   body:() => `<p class="problem">Hay un cuadrado de área ${a_('9')} y otro de área ${b_('16')}. ¿Cuánto vale √(${a_('9')} + ${b_('16')})?</p>${opcionesHTML(P5.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">√(${a_('9')} + ${b_('16')}) = √${r_('25')} = ${r_('5')}</div>
+   <div class="eq">√${a_('9')} + √${b_('16')} = ${a_('3')} + ${b_('4')} = ${n0(R5.errores.sumaDeRaices.valor)}<span class="note">el camino por los catetos</span></div></div>
+   <p>Los cuadrados de 9 y 16 se ponen sobre los catetos de un triángulo rectángulo (3 y 4). El cuadrado de la hipotenusa tiene ${r_('25')} cuadraditos, así que la hipotenusa mide ${r_('5')}. Ir por los dos catetos (la línea punteada) es 7: más largo que ir derecho. Por eso √(a² + b²) nunca es a + b, salvo que a o b valga 0.</p>
+   <p class="fuente">Escribir √(a + b) = √a + √b apareció en un estudio con 42 ingresantes a pedagogía en matemática de Chile, y seguía después de un semestre (Aguerrea, Solís y Huincahue, 2022; sin porcentaje del ítem). Las otras opciones son hipótesis nuestras.</p></div>` },
+ { k:'Paso 8', t:'Predice: a² + b² sin saber a ni b', gate:P6,
+   prep:() => {
+     const r = !!S.pred[P6.id];
+     if (r && S.x.activo) return explorarConfig();
+     E.config({ modo:'cuadrado', a:3, b:4, ver:{ division:r, split:r }, prog:{ quitar:r ? 1 : 0 }, extra:{ rotuloTotal:'(a + b)² = 49' },
+       lect: r ? [() => ['ink', '(a + b)²', '49'], () => ['ab', '2ab', n0(S6.rectangulos)], () => ['ink', 'a² + b²', n0(S6.valor)]] : [] });
+   },
+   anima:fin => { E.ver.division = true; E.ver.split = true; E.leyenda(); E.dibujar(); E.cadena([n => esperar(700, n), n => E.animar('quitar', 1, 1000, n)], () => { E.lect = [() => ['ink', '(a + b)²', '49'], () => ['ab', '2ab', n0(S6.rectangulos)], () => ['ink', 'a² + b²', n0(S6.valor)]]; E.avisar(); fin(); }); },
+   body:() => `<p class="problem">Dos números cumplen ${a_('a')} + ${b_('b')} = 7 y ${ab_('ab')} = 12. Sin buscar los números, ¿cuánto vale ${a_('a²')} + ${b_('b²')}?</p>${opcionesHTML(P6.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${a_('a²')} + ${b_('b²')} = (${a_('a')} + ${b_('b')})² − ${ab_('2ab')} = 49 − ${ab_('24')} = ${n0(S6.valor)}</div>
+   <div class="eq">Comprobación con 3 y 4: ${a_('9')} + ${b_('16')} = ${n0(S6.valor)}</div></div>
+   <p>El cuadrado de lado 7 tiene 49 cuadraditos. Dentro están los dos rectángulos ${ab_('ab')}, de 12 cada uno: al quitarlos quedan las dos esquinas, ${a_('a²')} + ${b_('b²')}. Con la misma idea, (a − b)² = ${n0(S6.cuadradoDeLaSuma)} − 4 · 12 = ${n0(S6.cuadradoDeLaResta)}. Es una de las identidades de Legendre: (a + b)² − (a − b)² = 4ab.</p>
+   ${fuenteAL8}
+   <h3 class="step-t" style="font-size:1.1rem">Ahora explora tú</h3>
+   <div class="seg" id="x-modos" role="group" aria-label="Qué figura ver">
+     <button type="button" data-m="cuadrado">(a + b)²</button><button type="button" data-m="resta">(a − b)²</button><button type="button" data-m="diferencia">a² − b²</button><button type="button" data-m="cubo">(a + b)³</button><button type="button" data-m="triangulo">√(a² + b²)</button>
+   </div>
+   <div id="x-zona" hidden>${pasos()}<div class="acciones" style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="btn" id="x-anim">Separar las piezas</button></div><p class="hint" id="x-msg"></p></div>
+   </div>`,
+   entrar:() => { if (S.pred[P6.id]) explorar(); } },
+];
+
+// ----- el explorador del último paso -----
+const XMSG = {
+  cuadrado:'(a + b)² = a² + 2ab + b². Arrastra b hasta 0: los rectángulos desaparecen.',
+  resta:'(a − b)² = a² − 2ab + b², también si a es menor que b: el cuadrado que queda mide |a − b| de lado.',
+  diferencia:'a² − b² = (a + b)(a − b). Toca «Reacomodar» para girar la pieza.',
+  cubo:'(a + b)³ = a³ + 3a²b + 3ab² + b³. Con ← → cambias a; con ↓ ↑, b.',
+  triangulo:'√(a² + b²) es la hipotenusa: siempre más corta que el camino a + b.',
+};
+const XLECT = { cuadrado:['area', 'sumaCuad', 'rect'], resta:['resta', 'restaMal'], diferencia:['dif', 'difProd'], cubo:['cubo', 'cuboMal'], triangulo:['hip', 'camino'] };
+const XBTN = { cuadrado:'Separar las piezas', resta:'Quitar las tiras', diferencia:'Reacomodar', cubo:'Separar las piezas', triangulo:'' };
+function explorarConfig(){
+  const m = S.x.modo, L = LIM[m];
+  const a = clamp(S.x.a, L.a[0], L.a[1]); let b = clamp(S.x.b, L.b[0], L.b[1]);
+  if (m === 'diferencia' && b >= a) b = a - 1;
+  const prog = m === 'cuadrado' ? { sep:0 } : m === 'resta' ? { resta:3 } : m === 'diferencia' ? { reac:0 } : m === 'cubo' ? { cortes:1, sep:0 } : { tri:1 };
+  E.config({ modo:m, a, b, prog, ver:{ corte:true, camino:true }, arrastrable:true, lect:XLECT[m],
+    alCambiar:() => { pintarPasos(); }, alValor:() => { S.x.a = E.a; S.x.b = E.b; if (m === 'diferencia') E.prog.reac = 0; if (m === 'cuadrado' || m === 'cubo') E.prog.sep = 0; } });
+}
+function explorar(){
+  const zona = $('x-zona'), btns = [...$('x-modos').querySelectorAll('button')];
+  const pintar = () => btns.forEach(b => b.setAttribute('aria-pressed', String(S.x.activo && b.dataset.m === S.x.modo)));
+  const abrir = () => {
+    explorarConfig(); zona.hidden = false; pintar(); enlazarPasos();
+    $('x-msg').textContent = XMSG[S.x.modo];
+    const bt = $('x-anim'); bt.textContent = XBTN[S.x.modo]; bt.hidden = !XBTN[S.x.modo];
+  };
+  btns.forEach(b => b.onclick = () => { if (S.ocupado) return; S.x.activo = true; S.x.modo = b.dataset.m; abrir(); });
+  $('x-anim').onclick = () => {
+    if (E.ocupado) return;
+    const m = S.x.modo, k = m === 'diferencia' ? 'reac' : m === 'resta' ? 'resta' : 'sep', hasta = m === 'resta' ? 3 : 1;
+    if (m === 'resta') E.prog.resta = 0;
+    const ida = E.prog[k] < hasta/2;
+    E.ocupado = true;
+    E.animar(k, ida ? hasta : 0, m === 'resta' ? 2400 : 1200, () => { E.ocupado = false; E.dibujar(); });
+  };
+  if (S.x.activo) abrir(); else pintar();
+}
+
+function revisarCero(){
+  if (steps[S.step].k !== 'Paso 3') return;
+  const P = MC.piezasCuadrado({ a:E.a, b:E.b });
+  if (P.rectangulos === 0){
+    if (!S.hecho.cero){ S.hecho.cero = true; S.listo = true; desbloquear(S.step + 1); pintarDots(); nav(); }
+    $('estado').textContent = `Ahora sí: con ${E.a === 0 ? 'a' : 'b'} = 0 no hay rectángulos, y los dos valen ${fmt(P.area, 0)}.`;
+    $('tras').hidden = false;
+  } else $('estado').textContent = `Área ${fmt(P.area, 0)} y a² + b² = ${fmt(P.sumaCuadrados, 0)}: les faltan los dos rectángulos, ${fmt(P.rectangulos, 0)}.`;
+}
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; b.setAttribute('aria-label', `Ir al ${s.k.toLowerCase()}: ${s.t}`);
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k; S.listo = s.accion ? !!S.hecho.cero : true;
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  if (s.prep) s.prep();
+  pintarDots();
+  E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.gate) prediccion(s);
+  if (s.entrar) s.entrar();
+  if (s.accion){ if (S.hecho.cero) $('tras').hidden = false; E.avisar(); }
+  nav();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || (s.accion && !S.listo) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : (s.accion && !S.listo ? 'Primero haz que coincidan' : 'Siguiente');
+  E.ocupado = S.ocupado;
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){ if (k > S.max) S.max = k; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); E.compactar(false); pintar(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    S.ocupado = true; nav();
+    $('next').focus({ preventScroll:true });
+    // En el celular, el dibujo queda arriba de la pantalla: se lleva a la vista antes de animar.
+    const paso = S.step, chico = innerWidth < 900;
+    if (chico) $('cv').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+    esperar(chico ? 380 : 0, () => {
+      if (S.step !== paso) { S.ocupado = false; nav(); return; }
+      s.anima(() => { if (S.step === paso){ S.ocupado = false; E.avisar(); nav(); if (s.entrar) s.entrar(); } });
+    });
+  }));
+  pintar();
+}
+
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Experimentos del catálogo de docs/investigacion/algebra-funciones-ideas-erroneas.md: AL8 con a < b y con
+   números grandes, AL11 (el exponente que se reparte), AL10 (logaritmos) y la raíz de un cuadrado.
+   La escena cambia recién después de responder. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2');
+const n0 = v => fmt(v, 0);
+const R1 = MC.restaCuadrado({ a:2, b:5 });
+const B2 = MC.binomioCuadrado({ a:100, b:1 });
+const P3 = MC.potenciaDeSuma({ base:2, m:3, n:2 });
+const L4 = MC.logProducto({ a:100, b:10 });
+const Q5 = MC.raizDelCuadrado({ x:-3 });
+
+const EXPS = [
+  { id:'resta-a-menor', corto:'(a − b)² con a < b',
+    q:`Ahora ${a_('a = 2')} y ${b_('b = 5')}: ${a_('a')} es menor que ${b_('b')}. ¿Cuánto vale (${a_('a')} − ${b_('b')})²?`,
+    opts:[['a', n0(R1.errores.sinDoble.valor), 'AL8-resta-sin-doble-producto', 'parcial'],
+          ['b', n0(R1.errores.negativo.valor), 'cuadrado-de-negativo-es-negativo', 'hipotesis'],
+          ['c', n0(R1.valor)],
+          ['d', n0(R1.errores.sumaCuadrados.valor), 'resta-quita-el-doble-producto', 'hipotesis']],
+    ok:'c',
+    fb:{ a:`2² − 5² = ${n0(R1.errores.sinDoble.valor)} es la regla falsa (a − b)² = a² − b². Un cuadrado no puede tener área negativa.`,
+         b:`2 − 5 = −3, pero (−3)² = (−3) · (−3) = 9: menos por menos da más. El área de un cuadrado nunca es negativa.`,
+         d:`2² + 5² = ${n0(R1.errores.sumaCuadrados.valor)} deja los dos cuadrados y se olvida de quitar los dos rectángulos ab, de 10 cada uno.` },
+    antes:r => E.config({ modo:'resta', a:2, b:5, ver:{ cuadro:r }, prog:{ resta:r ? 3 : 0 }, lect: r ? ['resta', 'restaMal'] : ['a', 'b'] }),
+    despues:fin => { E.ver.cuadro = true; E.leyenda(); E.dibujar(); E.cadena([n => esperar(500, n), n => E.animar('resta', 3, 2600, n)], () => { E.lect = ['resta', 'restaMal']; fin(); }); },
+    exp:() => `<div class="eqs"><div class="eq">(${a_('a')} − ${b_('b')})² = ${a_('a²')} − ${ab_('2ab')} + ${b_('b²')} = ${a_('4')} − ${ab_('20')} + ${b_('25')} = ${n0(R1.valor)}</div>
+      <div class="eq">(2 − 5)² = (−3)² = ${n0(R1.valor)} = (5 − 2)²</div></div>
+      <p>Con ${a_('a')} menor que ${b_('b')}, el cuadrado grande es el de ${b_('b')}: ${b_('25')}. Se le quitan dos tiras de ${ab_('10')} y se devuelve la esquina ${a_('4')}, que se quitó dos veces. Queda un cuadrado de lado 3: ${R1.cuenta}. La misma fórmula sirve en los dos casos, porque (a − b)² = (b − a)².</p>
+      <p class="fuente">Elevar cada término por separado es el error típico del binomio en las pruebas SIMCE de Chile (Agencia de Calidad de la Educación), sin porcentaje. Las opciones −9 y 29 son hipótesis nuestras.</p>` },
+  { id:'ciento-uno', corto:'101² de memoria',
+    q:`Sin calculadora: 101² = (${a_('100')} + ${b_('1')})². ¿Cuánto vale?`,
+    opts:[['a', n0(B2.errores.sinDoble.valor), 'AL8-cuadrado-sin-doble-producto', 'parcial'],
+          ['b', n0(B2.errores.unSoloAB.valor), 'cuadrado-un-solo-rectangulo', 'hipotesis'],
+          ['c', n0(B2.errores.sinB2.valor), 'cuadrado-olvida-la-esquina', 'hipotesis'],
+          ['d', n0(B2.valor)]],
+    ok:'d',
+    fb:{ a:`100² + 1² = ${n0(B2.errores.sinDoble.valor)} se olvida de las dos tiras de 100 por 1. Son delgadas, pero suman 200.`,
+         b:`${n0(B2.errores.unSoloAB.valor)} cuenta una sola tira de 100 por 1; hay dos, una arriba y otra a la derecha.`,
+         c:`${n0(B2.errores.sinB2.valor)} tiene las dos tiras, pero le falta el cuadradito de la esquina, 1 por 1.` },
+    antes:r => E.config({ modo:'cuadrado', a:100, b:1, prog:{ crece:r ? 1 : 0 }, ver:{ celdas:false }, extra:{ fuera:{ ab1:'derecha', ab2:'arriba', b2:'arribaDer' }, margenDer:.42 },
+      lect: r ? ['area', 'sumaCuad', 'rect'] : [] }),
+    despues:fin => { E.prog.crece = .001; E.recajar(); E.animar('crece', 1, 1400, () => { E.leyenda(); E.lect = ['area', 'sumaCuad', 'rect']; fin(); }); },
+    exp:() => `<div class="eqs"><div class="eq">(${a_('100')} + ${b_('1')})² = ${a_('10 000')} + ${ab_('100')} + ${ab_('100')} + ${b_('1')} = ${n0(B2.valor)}</div></div>
+      <p>Las dos tiras de ${ab_('100 por 1')} se ven delgadas, pero valen ${ab_('200')}: mucho más que el cuadradito ${b_('1')}. Por eso, para elevar al cuadrado un número cercano a 100, se suma el doble producto: 101² = 10 000 + 200 + 1, y 99² = 10 000 − 200 + 1.</p>
+      <p class="fuente">Es el mismo error del binomio (SIMCE de Chile, sin porcentaje). Las opciones de una sola tira y sin la esquina son hipótesis nuestras.</p>` },
+  { id:'potencia', corto:'2 elevado a la (3 + 2)',
+    q:`¿Cuánto vale 2<sup>${a_('3')} + ${b_('2')}</sup>?`,
+    opts:[['a', n0(P3.valor)],
+          ['b', n0(P3.errores.reparte.valor), 'AL11-potencia-reparte-el-exponente', 'hipotesis'],
+          ['c', n0(P3.errores.multiplicaExp.valor), 'potencia-multiplica-exponentes', 'hipotesis'],
+          ['d', n0(P3.errores.porSuma.valor), 'potencia-base-por-exponente', 'hipotesis']],
+    ok:'a',
+    fb:{ b:`2³ + 2² = 8 + 4 = ${n0(P3.errores.reparte.valor)} reparte el exponente sobre la suma. Sumar exponentes es multiplicar potencias: 2³ · 2².`,
+         c:`2^(3 · 2) = ${n0(P3.errores.multiplicaExp.valor)} sería (2³)², una potencia de potencia. Aquí los exponentes se suman.`,
+         d:`2 · 5 = ${n0(P3.errores.porSuma.valor)} multiplica la base por el exponente. 2⁵ es 2 · 2 · 2 · 2 · 2.` },
+    antes:r => E.config({ modo:'potencia', prog:{ pot:r ? 1 : 0 }, extra:{ pot:P3, m:3, n:2, etG:'2³ = 8', etN:'2² = 4', etTotal:`8 grupos de 4: ${n0(P3.valor)} puntos` } }),
+    despues:fin => { E.prog.pot = .001; E.recajar(); E.animar('pot', 1, 2600, fin); },
+    exp:() => `<div class="eqs"><div class="eq">2<sup>${a_('3')} + ${b_('2')}</sup> = 2${a_('³')} · 2${b_('²')} = ${a_('8')} · ${b_('4')} = ${n0(P3.valor)}</div>
+      <div class="eq">2${a_('³')} + 2${b_('²')} = ${a_('8')} + ${b_('4')} = ${n0(P3.errores.reparte.valor)}<span class="note">no es lo mismo</span></div></div>
+      <p>2⁵ son cinco doses multiplicados. Los tres primeros dan ${a_('8')} y los dos últimos dan ${b_('4')}: son ${a_('8')} grupos de ${b_('4')} puntos, o sea ${n0(P3.valor)}. Sumar los exponentes es <b>multiplicar</b> las potencias, nunca sumarlas.</p>
+      <p class="fuente">Repartir el exponente (2^(x + y) = 2^x + 2^y) es el mismo patrón de linealidad que (a + b)² = a² + b² (Matz, 1982). No encontramos un dato propio: las tres opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'logaritmos', corto:'log 100 + log 10',
+    q:`¿Cuánto vale log ${a_('100')} + log ${b_('10')}? (Los logaritmos son de base 10.)`,
+    opts:[['a', n0(L4.errores.productoDeLogs.valor), 'AL10-log-producto-de-logs', 'parcial'],
+          ['b', fmt(L4.errores.logDeSuma.valor, 2), 'AL10-log-de-la-suma', 'parcial'],
+          ['c', n0(L4.errores.numero.valor), 'log-da-el-numero', 'hipotesis'],
+          ['d', n0(L4.valor)]],
+    ok:'d',
+    fb:{ a:`2 · 1 = ${n0(L4.errores.productoDeLogs.valor)} multiplica los logaritmos. La suma de logaritmos es el logaritmo del producto: log(100 · 10).`,
+         b:`${fmt(L4.errores.logDeSuma.valor, 2)} es log ${n0(L4.errores.logDeSuma.numero)} = log(100 + 10). Pero log 100 + log 10 no es log(100 + 10): es log(100 · 10). En la regla, ${n0(L4.errores.logDeSuma.numero)} queda casi encima de 100.`,
+         c:`100 · 10 = 1000 es el número; su logaritmo es el exponente al que hay que elevar 10 para llegar a él.` },
+    antes:r => E.config({ modo:'regla', prog:{ log:r ? 1 : 0 }, ver:{ marca110:true }, extra:{ log:L4, a:100, b:10 } }),
+    despues:fin => { E.prog.log = .001; E.recajar(); E.animar('log', 1, 1800, fin); },
+    exp:() => `<div class="eqs"><div class="eq">log ${a_('100')} + log ${b_('10')} = log(${a_('100')} · ${b_('10')}) = log ${ab_('1000')} = ${n0(L4.valor)}</div></div>
+      <p>En la regla logarítmica cada número está a una distancia igual a su logaritmo: 10 a 1 paso, 100 a 2 y 1000 a 3. Pegar el tramo de ${a_('100')} con el de ${b_('10')} es <b>multiplicar</b>: se llega a ${ab_('1000')}. Así funcionaban las reglas de cálculo. log(100 + 10) = log 110 queda muy cerca de 100, en unos ${fmt(L4.errores.logDeSuma.valor, 2)}.</p>
+      <p class="fuente">En Singapur, en estudios con 89 y 81 escolares, muchos errores con logaritmos fueron sobregeneralizaciones de reglas (log(a + b) = log a + log b o log(ab) = log a · log b), no falta de conocimiento (Chua y Wood, 2005; Ganesan y Dindyal, 2014); sin porcentaje del ítem. La opción 1000 es hipótesis nuestra.</p>` },
+  { id:'raiz-del-cuadrado', corto:'√(x²) con x negativo',
+    q:`Si ${x_('x = −3')}, ¿cuánto vale √(${x_('x')}²)?`,
+    opts:[['a', n0(Q5.errores.cancela.valor), 'raiz-cancela-el-cuadrado', 'hipotesis'],
+          ['b', n0(Q5.valor)],
+          ['c', n0(Q5.errores.sinRaiz.valor), 'raiz-olvidada', 'hipotesis'],
+          ['d', Q5.errores.dobleSigno.texto, 'raiz-con-doble-signo', 'hipotesis']],
+    ok:'b',
+    fb:{ a:`La raíz y el cuadrado no se «cancelan» siempre: (−3)² = 9, y √9 = 3, no −3. La raíz cuadrada nunca da un número negativo.`,
+         c:`(−3)² = 9 es el área del cuadrado; falta sacar la raíz, que es el lado: 3.`,
+         d:`√9 es un solo número, 3. El ± aparece al resolver x² = 9, que tiene dos soluciones.` },
+    antes:r => E.config({ modo:'abs', prog:{ abs:r ? 1 : 0 }, extra:{ x:-3, raiz:Q5 } }),
+    despues:fin => E.animar('abs', 1, 1400, fin),
+    exp:() => `<div class="eqs"><div class="eq">√(${x_('x')}²) = √((−3)²) = √9 = ${r_(n0(Q5.valor))} = |${x_('x')}|</div></div>
+      <p>${x_('x²')} es el área de un cuadrado cuyo lado mide lo que dista ${x_('x')} del 0: 3. La raíz devuelve el <b>lado</b>, y un lado nunca es negativo. Por eso √(x²) = |x|: con x = −3 da 3, y con x = 3 también da 3.</p>
+      <p class="fuente">No lo encontramos medido; se relaciona con creer que |x| = x siempre (AL22). Las tres opciones incorrectas son hipótesis nuestras. Se usa en problemas de admisión al simplificar √((x − 5)²) cuando x es menor que 5.</p>` },
+];
+const S = { k:0, pred:{}, t0:Date.now() };
+// Pastillas: la k solo se abre si todos los experimentos anteriores ya tienen respuesta;
+// las respondidas se revisitan libres (misma regla que los puntos del paso a paso).
+function primeraLibre(){ const j = EXPS.findIndex(x => !S.pred[x.id]); return j < 0 ? EXPS.length - 1 : j; }
+function botones(){
+  const libre = primeraLibre();
+  $('exps').innerHTML = EXPS.map((x, k) => k > libre
+    ? `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  if (k > primeraLibre()) return;
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k];
+  x.antes(!!S.pred[x.id]);
+  E.compactar(!S.pred[x.id]);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p class="problem">${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; botones(); E.compactar(false); pintar();
+    const chico = innerWidth < 900;
+    if (chico) $('cv2').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+    esperar(chico ? 380 : 0, () => { if (S.k !== k) return; x.despues(() => { if (S.k === k) { E.leyenda(); E.avisar(); E.dibujar(); } }); });
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+  });
+  pintar();
+}
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

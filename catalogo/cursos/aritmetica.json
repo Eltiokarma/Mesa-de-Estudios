@@ -220,7 +220,7 @@
       },
       "potencial_visual": "alto",
       "grado": 4,
-      "plantillas": [],
+      "plantillas": ["fracciones"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
@@ -423,7 +423,7 @@
       },
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["fracciones"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
@@ -454,7 +454,7 @@
       },
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["fracciones"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
@@ -507,7 +507,7 @@
       },
       "potencial_visual": "medio",
       "grado": 4,
-      "plantillas": [],
+      "plantillas": ["sucesiones"],
       "investigacion": null
     },
     {

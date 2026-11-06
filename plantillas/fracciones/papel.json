@@ -1,0 +1,133 @@
+{
+  "titulo": "La barra que se parte: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. En las fracciones, antes de sumar pregúntate en cuántos trozos iguales hay que partir la barra para que las dos fracciones quepan (el denominador común es el MCM de los denominadores). En los problemas de MCD y MCM, pregúntate qué se busca: un trozo que quepa justo en las dos cosas, lo más grande posible (MCD), o el primer momento en que dos cosas que se repiten vuelven a coincidir (MCM). En los promedios, pregúntate cuánto pesa cada dato.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Efectúa 3/4 + 5/6 y da el resultado como fracción irreducible.",
+      "respuesta": "19/12.",
+      "pasos": [
+        "Los denominadores 4 y 6 tienen como MCM 12: es la menor cantidad de trozos iguales en que caben a la vez los cuartos y los sextos.",
+        "3/4 = 9/12, porque cada cuarto se parte en 3 trozos de doceavo; 5/6 = 10/12, porque cada sexto se parte en 2.",
+        "9/12 + 10/12 = 19/12, que ya es irreducible (19 es primo). Sumar arriba y abajo daría 8/10, menos que 5/6: imposible, porque se le está sumando algo a 5/6."
+      ],
+      "verificar": [ { "fn": "sumar", "args": [[3, 4], [5, 6]], "espera": { "texto": "19/12", "comun": 12, "errores.sumaTodo": { "n": 8, "d": 10 } } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Ordena de menor a mayor: 0,7; 0,07; 0,675 y 0,71.",
+      "respuesta": "0,07 < 0,675 < 0,7 < 0,71.",
+      "pasos": [
+        "Escribe todos con la misma cantidad de cifras decimales, agregando ceros a la derecha (eso no cambia el número): 0,700; 0,070; 0,675 y 0,710.",
+        "Ahora son milésimas que se comparan como enteros: 70 < 675 < 700 < 710.",
+        "Ojo: 0,675 tiene más cifras que 0,7, pero es menor. Una cifra más a la derecha vale diez veces menos que la de su izquierda."
+      ],
+      "verificar": [ { "fn": "compararDecimales", "args": ["0,675", "0,7"], "espera": { "mayor": "b", "errores.masLargo": "a" } },
+                     { "fn": "compararDecimales", "args": ["0,7", "0,71"], "espera": { "mayor": "b" } },
+                     { "fn": "compararDecimales", "args": ["0,07", "0,675"], "espera": { "mayor": "b" } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Halla la fracción generatriz de 0,31818… (el 3 no se repite; el bloque 18 se repite sin fin) y simplifícala.",
+      "respuesta": "7/22.",
+      "pasos": [
+        "Es un periódico mixto: el 3 no se repite (anteperiodo) y el bloque 18 sí (periodo).",
+        "Numerador: el número formado por todas las cifras hasta el final del primer periodo menos el que no se repite: 318 − 3 = 315. Denominador: un 9 por cada cifra del periodo y un 0 por cada cifra del anteperiodo: 990.",
+        "315/990 se simplifica entre 45: 7/22. Control: 7 ÷ 22 = 0,31818…"
+      ],
+      "verificar": [ { "fn": "generatriz", "args": ["0,3(18)"], "espera": { "texto": "7/22", "sinSimplificar": { "n": 315, "d": 990 } } },
+                     { "fn": "decimal", "args": [[7, 22]], "espera": { "texto": "0,3(18)" } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "básico",
+      "enunciado": "¿Cuál de estas fracciones da un decimal exacto: 7/12, 9/40 o 5/33? Escribe el decimal de cada una.",
+      "respuesta": "Solo 9/40 = 0,225. Además, 7/12 = 0,58333… es periódico mixto y 5/33 = 0,1515… es periódico puro.",
+      "pasos": [
+        "Con la fracción irreducible, mira los factores primos del denominador. 40 = 2³·5 solo tiene 2 y 5: el decimal es exacto, porque 9/40 = 225/1000.",
+        "12 = 2²·3 tiene un 2 y un 3: es periódico mixto. 7 ÷ 12 = 0,58333…",
+        "33 = 3·11 no tiene ni 2 ni 5: es periódico puro. 5 ÷ 33 = 0,1515…"
+      ],
+      "verificar": [ { "fn": "decimal", "args": [[9, 40]], "espera": { "texto": "0,225", "tipo": "exacto", "factoresDen": "2³·5" } },
+                     { "fn": "decimal", "args": [[7, 12]], "espera": { "texto": "0,58(3)", "tipo": "periodico-mixto" } },
+                     { "fn": "decimal", "args": [[5, 33]], "espera": { "texto": "0,(15)", "tipo": "periodico-puro" } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Una persona gasta 1/3 de su sueldo en alquiler y luego 1/4 de lo que le queda en comida. Si le quedan S/ 900, ¿cuál es su sueldo?",
+      "respuesta": "S/ 1800.",
+      "pasos": [
+        "Después del alquiler le quedan 2/3 del sueldo. La comida se lleva 1/4 de eso, así que queda 3/4 de 2/3, es decir, (3/4)·(2/3) = 1/2 del sueldo.",
+        "Si la mitad del sueldo son S/ 900, el sueldo es S/ 1800.",
+        "Ojo con el «de lo que le queda»: si el 1/4 fuera del sueldo, quedarían 1 − 1/3 − 1/4 = 5/12, otra cuenta. Control: 1800 − 600 = 1200; 1200 − 300 = 900."
+      ],
+      "verificar": [ { "fn": "deLoQueQueda", "args": [[[1, 3], [1, 4]], 1800], "espera": { "texto": "900" } },
+                     { "fn": "parteQueFalta", "args": [[[1, 3], [1, 4]]], "espera": { "texto": "5/12" } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Se quiere cubrir un piso rectangular de 360 cm por 480 cm con losetas cuadradas iguales, enteras y lo más grandes posible. ¿Cuánto mide el lado de cada loseta y cuántas se necesitan?",
+      "respuesta": "Lado de 120 cm; se necesitan 12 losetas (3 por 4).",
+      "pasos": [
+        "El lado de la loseta tiene que caber justo en 360 y en 480: es un divisor común. Lo más grande posible: el MCD.",
+        "Por Euclides: 480 = 1·360 + 120 y 360 = 3·120 + 0. El MCD es 120. (Por descomposición: 360 = 2³·3²·5 y 480 = 2⁵·3·5; los comunes con el menor exponente: 2³·3·5 = 120.)",
+        "Caben 360/120 = 3 losetas a lo ancho y 480/120 = 4 a lo largo: 12 losetas. El MCM (1440) sería un cuadrado más grande que el piso."
+      ],
+      "verificar": [ { "fn": "mcd", "args": [[360, 480]], "espera": { "valor": 120, "euclides": [[480, 360, 1, 120], [360, 120, 3, 0]] } },
+                     { "fn": "cintas", "args": [360, 480], "espera": { "trozo": 120, "trozosA": 3, "trozosB": 4, "errores.mcm": 1440 } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Tres alarmas suenan juntas a las 8:00. Después, una suena cada 15 minutos, otra cada 20 y otra cada 36. ¿A qué hora vuelven a sonar juntas por primera vez?",
+      "respuesta": "A las 11:00 (180 minutos después).",
+      "pasos": [
+        "Vuelven a coincidir en un múltiplo común de 15, 20 y 36; la primera vez, en el MCM.",
+        "15 = 3·5, 20 = 2²·5 y 36 = 2²·3². Todos los primos con el mayor exponente: 2²·3²·5 = 180.",
+        "180 minutos son 3 horas: a las 11:00. El MCD (que aquí es 1) no sirve: a las 8:01 no suena ninguna."
+      ],
+      "verificar": [ { "fn": "mcm", "args": [[15, 20, 36]], "espera": { "valor": 180, "textoFactores": "2²·3²·5" } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "El MCD de dos números es 6 y su MCM es 72. Si uno de ellos es 18, ¿cuál es el otro?",
+      "respuesta": "24.",
+      "pasos": [
+        "Para dos números se cumple: MCD · MCM = producto de los dos números. Es porque el MCD toma de cada primo el menor exponente y el MCM el mayor: entre los dos, usan todos los factores una vez.",
+        "6 · 72 = 432 = 18 · x, así que x = 432/18 = 24.",
+        "Control: 18 = 2·3² y 24 = 2³·3; MCD = 2·3 = 6 y MCM = 2³·3² = 72."
+      ],
+      "verificar": [ { "fn": "mcd", "args": [[18, 24]], "espera": { "valor": 6 } }, { "fn": "mcm", "args": [[18, 24]], "espera": { "valor": 72 } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Un ciclista sube una cuesta a 12 km/h y la baja por el mismo camino a 36 km/h. ¿Cuál es su velocidad media en todo el recorrido?",
+      "respuesta": "18 km/h.",
+      "pasos": [
+        "No se sabe el largo de la cuesta, pero no hace falta: llámalo d. Sube en d/12 horas y baja en d/36 horas.",
+        "Tiempo total: d/12 + d/36 = 3d/36 + d/36 = 4d/36 = d/9. Distancia total: 2d. Velocidad media: 2d ÷ (d/9) = 18 km/h.",
+        "Con la fórmula de ida y vuelta: 2·12·36/(12 + 36) = 864/48 = 18. No es (12 + 36)/2 = 24: pasa tres veces más tiempo subiendo que bajando."
+      ],
+      "verificar": [ { "fn": "idaVuelta", "args": [36, 12, 36], "espera": { "media": 18, "t1": 3, "t2": 1, "errores.simple": 24 } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "En un examen, el promedio de los 25 hombres de un aula fue 12 y el de las 15 mujeres fue 16. ¿Cuál fue el promedio de toda el aula?",
+      "respuesta": "13,5.",
+      "pasos": [
+        "El promedio del aula es la suma de todas las notas entre el número de alumnos. La suma de las notas de los hombres es 25 · 12 = 300; la de las mujeres, 15 · 16 = 240.",
+        "Total: 540 puntos entre 40 alumnos: 540/40 = 13,5.",
+        "No es (12 + 16)/2 = 14: hay más hombres, y su promedio pesa más. Por eso el resultado queda más cerca de 12 que de 16."
+      ],
+      "verificar": [ { "fn": "ponderado", "args": [[12, 16], [25, 15]], "espera": { "media": 13.5, "errores.simple": 14 } } ]
+    }
+  ]
+}

@@ -1,0 +1,108 @@
+{
+  "plantilla": "cuadrado-crece",
+  "unidades": "Números sin unidad: los lados del cuadrado y del cubo se miden en cuadraditos (las áreas en cuadraditos y los volúmenes en cubitos). Cada letra es una sola variable: 2ab es 2 · a · b. Los logaritmos sin base son de base 10. Las fracciones se escriben con barra (25/36) y el menos tipográfico (−).",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.sinDoble.valor); las listas se comparan completas; los textos se comparan exactos. 'tambien' trae otras llamadas que comprueban lo mismo (con su propia 'fn' si cambia). Un error que con esos números da lo mismo que la respuesta correcta no va en 'errores' sino en 'coinciden'.",
+  "verificacion": "Verificado por un subagente independiente (6 nov 2026) que no leyó el motor ni este archivo, con un álgebra de polinomios propia (coeficientes Fraction, comparación por coeficientes y en varios puntos) y cada factorización comprobada multiplicando; raíces y logaritmos exactos con isqrt y potencias enteras. Coinciden todos los valores de los 20 casos. Después de la verificación se agregaron fraccionSumandos (AL12: (1 + 3)/(1 + 5) = 2/3 frente a 3/5; con x = 0 el error coincide) y el error ±3 de √(x²), recalculados a mano al integrar. El tramo intermedio del reacomodo (f = 0,45) depende de cómo se reparte la animación en el tiempo y no se recalculó por separado; los extremos f = 0 y f = 1 sí.",
+  "tolerancia": 1e-9,
+  "casos": [
+    { "nombre": "Paso a paso, predicción 1 (AL8): el cuadrado de lado a + b con a = 3 y b = 2 tiene 25 cuadraditos: 9 + 6 + 6 + 4. La regla falsa a² + b² da 13; un solo rectángulo, 19; multiplicar por 2, 10",
+      "fn": "binomioCuadrado", "args": [{ "a": 3, "b": 2 }],
+      "espera": { "valor": 25, "sustituida": "(3 + 2)²", "terminos.a2": 9, "terminos.ab": 6, "terminos.dobleAB": 12, "terminos.b2": 4, "cuenta": "9 + 6 + 6 + 4", "errores.sinDoble.valor": 13, "errores.unSoloAB.valor": 19, "errores.porDos.valor": 10, "errores.sinB2.valor": 21, "coinciden": [] } },
+
+    { "nombre": "Las cuatro piezas del cuadrado de lado 3 + 2 suman lo mismo que el cuadrado entero (25); a² + b² son solo las dos esquinas (13): faltan los dos rectángulos, 12",
+      "fn": "piezasCuadrado", "args": [{ "a": 3, "b": 2 }],
+      "espera": { "lado": 5, "area": 25, "sumaPiezas": 25, "sumaCuadrados": 13, "rectangulos": 12, "piezas.0.area": 9, "piezas.1.area": 6, "piezas.2.area": 6, "piezas.3.area": 4, "piezas.3.x": 3, "piezas.3.y": 3 },
+      "tambien": [ { "args": [{ "a": 3, "b": 2, "hueco": 1, "f": 1 }], "espera": { "piezas.0.x": -0.5, "piezas.0.y": -0.5, "piezas.3.x": 3.5, "piezas.3.y": 3.5, "sumaPiezas": 25 } } ] },
+
+    { "nombre": "Explorador: con b = 0 los rectángulos desaparecen y la regla falsa por fin se cumple: (a + 0)² = a². Por eso el error a² + b² no va en 'errores' sino en 'coinciden'",
+      "fn": "piezasCuadrado", "args": [{ "a": 4, "b": 0 }],
+      "espera": { "area": 16, "sumaCuadrados": 16, "rectangulos": 0, "piezas.length": 1 },
+      "tambien": [ { "fn": "binomioCuadrado", "args": [{ "a": 4, "b": 0 }], "espera": { "valor": 16, "coinciden": ["sinDoble", "unSoloAB", "sinB2"], "errores.porDos.valor": 8 } } ] },
+
+    { "nombre": "Paso a paso, predicción 2: (x − 3)² = x² − 6x + 9 (el cuadrado de lado x menos dos tiras de 3x, más la esquina de 9 que se quitó dos veces). AL8 da x² − 9; un solo rectángulo, x² − 3x + 9; restar también el 9, x² − 6x − 9",
+      "fn": "binomioCuadradoX", "args": [{ "b": 3, "signo": "-" }],
+      "espera": { "expresion": "(x − 3)²", "texto": "x² − 6x + 9", "piezas.rectangulo": "3x", "piezas.dobleProducto": "6x", "piezas.b2": "9", "errores.sinDoble.texto": "x² − 9", "errores.unSoloAB.texto": "x² − 3x + 9", "errores.signoB2.texto": "x² − 6x − 9", "errores.sumaCuadrados.texto": "x² + 9" } },
+
+    { "nombre": "¿Qué pasa si…? (a − b)² con a = 2 menor que b = 5: (2 − 5)² = (−3)² = 9 = 25 − 10 − 10 + 4. AL8 da 2² − 5² = −21; quitar el doble producto, 29; creer que el resultado es negativo, −9",
+      "fn": "restaCuadrado", "args": [{ "a": 2, "b": 5 }],
+      "espera": { "valor": 9, "mayor": "b", "menor": "a", "ladoResto": 3, "cuenta": "25 − 10 − 10 + 4 = 9", "esquina.area": 4, "tiras.0.area": 10, "resto.area": 9, "errores.sinDoble.valor": -21, "errores.sumaCuadrados.valor": 29, "errores.negativo.valor": -9 } },
+
+    { "nombre": "¿Qué pasa si…? 101² de memoria: (100 + 1)² = 10 000 + 200 + 1 = 10 201. AL8 da 10 001; un solo rectángulo, 10 101; olvidar el cuadradito de 1, 10 200",
+      "fn": "binomioCuadrado", "args": [{ "a": 100, "b": 1 }],
+      "espera": { "valor": 10201, "terminos.dobleAB": 200, "errores.sinDoble.valor": 10001, "errores.unSoloAB.valor": 10101, "errores.sinB2.valor": 10200 } },
+
+    { "nombre": "Paso a paso, predicción 3 (AL11): (2 + 3)³ = 8 + 3 · 12 + 3 · 18 + 27 = 125, en ocho piezas: un cubo de 2, tres de 2 · 2 · 3, tres de 2 · 3 · 3 y un cubo de 3. Repartir el exponente da 35; una pieza de cada forma, 65",
+      "fn": "cuboBinomio", "args": [{ "a": 2, "b": 3 }],
+      "espera": { "valor": 125, "desarrollo": "a³ + 3a²b + 3ab² + b³", "terminos.a2b": 12, "terminos.ab2": 18, "cuenta": "8 + 3 · 12 + 3 · 18 + 27", "identidad": true, "errores.reparte.valor": 35, "errores.unaDeCada.valor": 65, "errores.copiaCuadrado.valor": 47, "errores.porTres.valor": 15 },
+      "tambien": [ { "fn": "piezasCubo", "args": [{ "a": 2, "b": 3 }], "espera": { "arista": 5, "volumen": 125, "sumaPiezas": 125, "piezas.length": 8, "piezas.0.tipo": "a3", "piezas.7.tipo": "b3", "piezas.7.volumen": 27 } } ] },
+
+    { "nombre": "Paso a paso, predicción 4: x² − 9 es el cuadrado de lado x sin la esquina de 3 × 3. Con x = 7: 49 − 9 = 40, y al girar la tira de arriba queda un rectángulo de 10 × 4 = (7 + 3)(7 − 3). (a − b)² daría 16",
+      "fn": "diferenciaCuadrados", "args": [{ "a": 7, "b": 3 }],
+      "espera": { "valor": 40, "producto": 40, "hueco.area": 9, "fija.area": 28, "movil.area": 12, "rectangulo.w": 10, "rectangulo.h": 4, "rectangulo.area": 40, "final.x": 7, "final.giro": 90, "errores.cuadradoDeResta.valor": 16, "errores.sumaPorSuma.valor": 100 } },
+
+    { "nombre": "El reacomodo: la tira de 4 × 3 sale de arriba a la izquierda (centro en 2; 5,5), se corre, gira 90° y termina pegada a la derecha (centro en 8,5; 2)",
+      "fn": "reacomodo", "args": [{ "a": 7, "b": 3, "f": 0 }],
+      "espera": { "cx": 2, "cy": 5.5, "giro": 0, "w": 4, "h": 3 },
+      "tambien": [ { "args": [{ "a": 7, "b": 3, "f": 1 }], "espera": { "cx": 8.5, "cy": 2, "giro": 90 } },
+                   { "args": [{ "a": 7, "b": 3, "f": 0.45 }], "espera": { "cx": 10.3, "cy": 5.5, "giro": 0 } } ] },
+
+    { "nombre": "Factorizar x² − 9 = (x + 3)(x − 3): diferencia de cuadrados. Los errores, desarrollados, no dan x² − 9: (x − 3)² = x² − 6x + 9, (x + 9)(x − 9) = x² − 81 y x(x − 9) = x² − 9x",
+      "fn": "factorizar", "args": ["x² − 9"],
+      "espera": { "texto": "(x + 3)(x − 3)", "metodos": ["diferencia de cuadrados"], "identidad": true, "comprobacion.iguales": true, "comprobacion.izq.valor": -5, "errores.cuadradoDeResta.expresion": "(x − 3)²", "errores.cuadradoDeResta.texto": "x² − 6x + 9", "errores.sinRaiz.texto": "x² − 81", "errores.factorComunFalso.texto": "x² − 9x" } },
+
+    { "nombre": "Los otros tres métodos con las mismas piezas: aspa simple x² + 5x + 6 = (x + 2)(x + 3); trinomio cuadrado perfecto x² − 6x + 9 = (x − 3)²; factor común 2x² + 6x = 2x(x + 3); y combinados, 3x² − 12 = 3(x + 2)(x − 2)",
+      "fn": "factorizar", "args": ["x² + 5x + 6"],
+      "espera": { "texto": "(x + 2)(x + 3)", "metodos": ["aspa simple"], "aspa.cruces": [3, 2], "errores.signos.texto": "x² − 5x + 6", "errores.invertida.expresion": "(x + 1)(x + 5)", "errores.invertida.texto": "x² + 6x + 5" },
+      "tambien": [ { "args": ["x² − 6x + 9"], "espera": { "texto": "(x − 3)²", "metodos": ["trinomio cuadrado perfecto"], "errores.diferencia.texto": "x² − 9", "errores.signo.texto": "x² + 6x + 9" } },
+                   { "args": ["2x² + 6x"], "espera": { "texto": "2x(x + 3)", "metodos": ["factor común"], "errores.divideSoloElPrimero.texto": "2x² + 12x" } },
+                   { "args": ["3x² − 12"], "espera": { "texto": "3(x + 2)(x − 2)", "metodos": ["factor común", "diferencia de cuadrados"] } },
+                   { "args": ["6x² + x − 2"], "espera": { "texto": "(2x − 1)(3x + 2)", "metodos": ["aspa simple"] } },
+                   { "args": ["x² + 1"], "espera": { "sePuede": false, "texto": "x² + 1" } } ] },
+
+    { "nombre": "Paso a paso, predicción 5 (AL9): √(9 + 16) = √25 = 5, la hipotenusa del triángulo 3-4-5. √9 + √16 = 7 es el camino por los catetos; sin la raíz, 25; √9 · √16 = 12",
+      "fn": "raizDeSuma", "args": [{ "p": 9, "q": 16 }],
+      "espera": { "valor": 5, "exacto": "5", "catetos": [3, 4], "errores.sumaDeRaices.valor": 7, "errores.sinRaiz.valor": 25, "errores.productoDeRaices.valor": 12 },
+      "tambien": [ { "fn": "hipotenusa", "args": [{ "a": 3, "b": 4 }], "espera": { "valor": 5, "entera": true, "cuadrados.c": 25, "camino": 7, "ahorro": 2, "cuadradoC.2.x": 4, "cuadradoC.2.y": 7, "errores.sumaDeRaices.valor": 7, "errores.sinRaiz.valor": 25 } } ] },
+
+    { "nombre": "La hipotenusa de catetos 1 y 2 es √5, unos 2,236: no es exacta. El camino por los catetos mide 3",
+      "fn": "hipotenusa", "args": [{ "a": 1, "b": 2 }],
+      "espera": { "valor": 2.23606797749979, "exacto": null, "entera": false, "camino": 3, "errores.sumaDeRaices.valor": 3 } },
+
+    { "nombre": "Paso a paso, predicción 6 (problema guiado del informe): a + b = 7 y ab = 12 dan a² + b² = 49 − 2 · 12 = 25 (son 3 y 4). AL8 da 49; restar un solo ab, 37; sumar 2ab, 73",
+      "fn": "sumaProducto", "args": [{ "suma": 7, "producto": 12 }],
+      "espera": { "valor": 25, "cuenta": "7² − 2 · 12 = 49 − 24 = 25", "cuadradoDeLaSuma": 49, "rectangulos": 24, "numeros": [3, 4], "cuadradoDeLaResta": 1, "sumaDeCubos": 91, "errores.sinDoble.valor": 49, "errores.unSoloAB.valor": 37, "errores.sumaDoble.valor": 73 } },
+
+    { "nombre": "Identidades de Legendre con a = 5 y b = 2: (a + b)² + (a − b)² = 49 + 9 = 58 = 2(25 + 4); (a + b)² − (a − b)² = 40 = 4 · 5 · 2",
+      "fn": "legendre", "args": [{ "a": 5, "b": 2 }],
+      "espera": { "suma.valor": 58, "suma.comprobacion": 58, "resta.valor": 40, "resta.comprobacion": 40, "identidades": [true, true], "errores.dosAB.valor": 20 } },
+
+    { "nombre": "¿Qué pasa si…? 2^(3 + 2) = 2³ · 2² = 8 grupos de 4 = 32 (AL11: 2³ + 2² = 12; multiplicar exponentes, 64; base por exponente, 10)",
+      "fn": "potenciaDeSuma", "args": [{ "base": 2, "m": 3, "n": 2 }],
+      "espera": { "valor": 32, "grupos": 8, "porGrupo": 4, "cuenta": "8 · 4", "errores.reparte.valor": 12, "errores.reparte.sustituida": "2³ + 2²", "errores.multiplicaExp.valor": 64, "errores.porSuma.valor": 10 } },
+
+    { "nombre": "¿Qué pasa si…? log 100 + log 10 = log 1000 = 3: en la regla logarítmica los tramos de 2 y de 1 se pegan y llegan a 1000. AL10 da log 110 (unos 2,04) o log 100 · log 10 = 2",
+      "fn": "logProducto", "args": [{ "a": 100, "b": 10 }],
+      "espera": { "valor": 3, "exacto": "3", "logA": 2, "logB": 1, "producto": 1000, "errores.logDeSuma.valor": 2.041392685158225, "errores.logDeSuma.numero": 110, "errores.productoDeLogs.valor": 2, "errores.numero.valor": 1000 },
+      "tambien": [ { "fn": "logDeSuma", "args": [{ "a": 4, "b": 4, "base": 2 }], "espera": { "valor": 3, "sustituida": "log₂(4 + 4)", "errores.sumaDeLogs.valor": 4, "errores.sinLog.valor": 8 } } ] },
+
+    { "nombre": "¿Qué pasa si…? √(x²) con x = −3 es √9 = 3 = |x|, el lado del cuadrado de área 9. Cancelar da −3; sin la raíz, 9; el doble signo, ±3 (dos números). Con x = 1, cancelar y olvidar la raíz coinciden con la respuesta",
+      "fn": "raizDelCuadrado", "args": [{ "x": -3 }],
+      "espera": { "valor": 3, "sustituida": "√((−3)²)", "cuadrado": 9, "lado": 3, "errores.cancela.valor": -3, "errores.sinRaiz.valor": 9, "errores.noExiste.valor": null, "errores.dobleSigno.texto": "±3", "errores.dobleSigno.valores": [-3, 3] },
+      "tambien": [ { "args": [{ "x": 1 }], "espera": { "valor": 1, "coinciden": ["cancela", "sinRaiz"], "errores.dobleSigno.valores": [-1, 1] } } ] },
+
+    { "nombre": "Comprobación con fracciones: con a = 1/2 y b = 1/3, (a + b)² = 25/36 y a² + b² = 13/36, distintos; a² + 2ab + b² sí da 25/36. AL12: (x + 3)/(x + 5) con x = 1 es 4/6 = 2/3, no 3/5; tachar la x solo vale si x = 0",
+      "fn": "comprobar", "args": ["(a + b)²", "a² + b²", { "a": 0.5, "b": 0.3333333333333333 }],
+      "espera": { "iguales": false, "izq.exacto": "25/36", "der.exacto": "13/36", "izq.sustituida": "(1/2 + 1/3)²" },
+      "tambien": [ { "args": ["(a + b)²", "a² + 2ab + b²", { "a": 0.5, "b": 0.3333333333333333 }], "espera": { "iguales": true, "der.exacto": "25/36" } },
+                   { "fn": "identidad", "args": ["(a + b)²", "a² + b²"], "espera": { "identidad": false, "diferencia": "2ab", "contraejemplo.sustituida": "(1 + 1)² = 4, pero 1² + 1² = 2" } },
+                   { "fn": "identidad", "args": ["√(a + b)", "√a + √b"], "espera": { "identidad": false, "metodo": "numerico" } },
+                   { "fn": "fraccionSumandos", "args": [{ "x": 1, "m": 3, "n": 5 }], "espera": { "valor": 0.6666666666666666, "exacto": "2/3", "sustituida": "(1 + 3)/(1 + 5)", "errores.tachaX.expresion": "3/5", "errores.tachaX.valor": 0.6 } },
+                   { "fn": "fraccionSumandos", "args": [{ "x": 0, "m": 3, "n": 5 }], "espera": { "valor": 0.6, "coinciden": ["tachaX"] } } ] },
+
+    { "nombre": "Productos notables con el motor de polinomios: (x + 2)(x − 5) = x² − 3x − 10; (a + b + c)² con 1, 2 y 3 da 36 (no 1 + 4 + 9 = 14); (a + b)³ desarrollado",
+      "fn": "productoX", "args": [{ "m": 2, "n": -5 }],
+      "espera": { "expresion": "(x + 2)(x − 5)", "texto": "x² − 3x − 10", "suma": "−3", "producto": "−10", "errores.soloExtremos.texto": "x² − 10", "errores.cruzada.texto": "x² − 10x − 3" },
+      "tambien": [ { "fn": "trinomioCuadrado", "args": [{ "a": 1, "b": 2, "c": 3 }], "espera": { "valor": 36, "desarrollo": "a² + 2ab + 2ac + b² + 2bc + c²", "errores.sinDobles.valor": 14, "errores.unSoloDoble.valor": 25 } },
+                   { "fn": "desarrollar", "args": ["(a − b)³"], "espera": { "texto": "a³ − 3a²b + 3ab² − b³", "grado": 3 } } ] }
+  ]
+}

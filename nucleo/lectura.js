@@ -153,10 +153,11 @@
   /*
    * preparar(item, semilla) → copia del ítem con, en cada pregunta, "alternativas" barajadas.
    * Cada alternativa lleva su letra (A–E, lo que ve el alumno) y "pos" (1 a 5, su lugar en el banco:
-   * lo que se registra). La semilla de cada pregunta es `${semilla}|${problema}`: en la práctica
-   * se usa el id del alumno; en las pruebas, 'entrada' o 'salida', igual para todos.
+   * lo que se registra). La semilla de cada pregunta es `${semilla}|${problema}|${intento}`: en la práctica,
+   * el id del alumno y el número de intento (al repetir un texto cambia el orden); en las pruebas,
+   * una semilla fija por forma, igual para todos, y sin intento (`${semilla}|${problema}`).
    */
-  function preparar(item, semilla) {
+  function preparar(item, semilla, intento) {
     const it = normalizar(item);
     return {
       ...it,
@@ -164,7 +165,7 @@
       oraciones: oraciones(it),
       preguntas: it.preguntas.map(q => {
         const prob = problema(it, q);
-        const rng = Azar.crear(`${semilla}|${prob}`);
+        const rng = Azar.crear(intento === undefined ? `${semilla}|${prob}` : `${semilla}|${prob}|${intento}`);
         const alts = rng.barajar(q.alternativas.map((a, k) => ({ ...a, pos: k + 1, correcta: a.correcta === true })));
         return { ...q, problema: prob, alternativas: alts.map((a, k) => ({ ...a, letra: LETRAS[k] })) };
       }),
@@ -217,18 +218,22 @@
   /*
    * correccionPrevio(previo, resultado, item, frases) → { correcta, eligio, aceptada, explicacion, porQue, idea }
    *   explicacion: por qué la respuesta aceptada es la buena (siempre).
-   *   porQue: si falló, la explicación de lo que eligió (previo.explicaciones) o la frase de su código.
+   *   porQue: si falló, la explicación de lo que eligió (previo.explicaciones) o la frase de su código,
+   *     salvo cuando la frase no describe esa respuesta (FRASE_NO_APLICA): entonces queda vacía y
+   *     neutra es true (la pantalla dice "La respuesta aceptada es …" con la explicación del previo).
    *   idea: oraciones que se pintan con el color "idea" (la aceptada, solo en marcar-oracion).
    */
   function correccionPrevio(previo, resultado, item, frases) {
     const it = normalizar(item);
     const acept = respuestaAceptada(previo);
-    let porQue = '';
+    let porQue = '', neutra = false;
     if (!resultado.correcta) {
       const exp = previo.explicaciones && previo.explicaciones[resultado.opcion];
-      porQue = exp || (resultado.error && frases ? frases[resultado.error] || '' : '');
+      porQue = exp || (fraseAplica(previo, resultado.opcion) && resultado.error && frases ? frases[resultado.error] || '' : '');
+      neutra = !porQue;
     }
     return {
+      neutra,
       correcta: resultado.correcta,
       eligio: etiquetaPrevio(previo, resultado.opcion, it),
       aceptada: previo.tipo === 'ordenar' ? etiquetaPrevio(previo, previo.aceptada, it)
@@ -237,6 +242,43 @@
       porQue,
       idea: previo.tipo === 'marcar-oracion' ? acept.filter(x => x !== 'ninguna') : [],
     };
+  }
+
+  // Respuestas del paso previo para las que la frase del código (escrita para las alternativas) dice otra cosa:
+  // "Ninguna la dice completa" no es "una parte del texto" (RV3), y ante "Lo dice el texto" la frase de RV6
+  // ("Eso está dicho en el texto tal cual…") describe lo contrario de lo que pensó el alumno.
+  const FRASE_NO_APLICA = { 'marcar-oracion': ['ninguna'], clasificar: ['lo-dice'] };
+  const fraseAplica = (previo, opcion) => !(FRASE_NO_APLICA[previo.tipo] || []).includes(String(opcion));
+
+  // Avisos (no errores) para quien escribe el banco: respuestas incorrectas de un paso previo sin explicación
+  // propia en previo.explicaciones. neutra: la corrección quedará en la frase neutra (sin explicación ni frase que aplique).
+  function avisos(item, frases) {
+    const it = normalizar(item), out = [];
+    for (const q of it.preguntas) {
+      const p = q.previo;
+      if (!p || p.tipo === 'ordenar') continue;
+      const acept = respuestaAceptada(p);
+      for (const o of opcionesPrevio(p, it)) {
+        if (acept.includes(o) || (p.explicaciones && p.explicaciones[o])) continue;
+        const r = calificarPrevio(p, o, it);
+        if (r.correcta) continue;
+        const neutra = !(fraseAplica(p, o) && r.error && frases && frases[r.error]);
+        out.push({ item: it.id, pregunta: q.id, opcion: o, error: r.error, neutra });
+      }
+    }
+    return out;
+  }
+
+  // ---------- Pruebas de entrada y salida del módulo ----------
+  // Con entrada y salida en el índice, la mitad de los alumnos lee la entrada de entrada y la salida de salida
+  // (orden AB) y la otra mitad al revés (BA), con nucleo/pruebas.js (la misma regla que las pruebas por curso).
+  // Forma A = indice.entrada, forma B = indice.salida. Sin las dos, cada fase usa su texto (orden AB).
+  function formaPrueba(indice, alumno, fase, curso) {
+    const Pr = (typeof module === 'object' && module.exports) ? require('./pruebas.js') : root.Pruebas;
+    const ambas = !!(indice.entrada && indice.salida);
+    const orden = ambas && Pr ? Pr.orden(alumno, curso) : 'AB';
+    const forma = fase === 'entrada' ? orden[0] : orden[1];
+    return { orden, forma, id: forma === 'A' ? indice.entrada : indice.salida };
   }
 
   // ---------- Orden de la práctica ----------
@@ -257,13 +299,20 @@
 
   // ---------- Eventos de medición (sección 6; se guardan con nucleo/medicion.js) ----------
   const ev = {
-    lectura: ({ modulo, unidad, item, ms, fase }) => ({ tipo: 'lectura', ...(fase ? { fase } : {}), modulo, unidad, problema: problemaTexto(item), ms }),
-    previo: ({ modulo, pregunta, resultado, codigos, ms }) => ({ tipo: 'previo', modulo, unidad: pregunta.unidad, problema: pregunta.problema,
-      opcion: resultado.opcion, correcta: resultado.correcta, error: resultado.error || '', respaldo: respaldo(resultado.error, codigos), ms }),
-    respuesta: ({ modulo, pregunta, resultado, codigos, ms }) => ({ tipo: 'prediccion', modulo, unidad: pregunta.unidad, problema: pregunta.problema,
-      opcion: String(resultado.pos), correcta: resultado.correcta, error: resultado.error || '', respaldo: respaldo(resultado.error, codigos), ms }),
+    // intento: 1 la primera vez que el alumno hace ese texto, 2 al repetirlo… (el análisis cuenta solo el primero).
+    lectura: ({ modulo, unidad, item, ms, fase, intento }) => ({ tipo: 'lectura', ...(fase ? { fase } : {}), modulo, unidad, problema: problemaTexto(item), ms, ...(intento ? { intento } : {}) }),
+    previo: ({ modulo, pregunta, resultado, codigos, ms, intento }) => ({ tipo: 'previo', modulo, unidad: pregunta.unidad, problema: pregunta.problema,
+      opcion: resultado.opcion, correcta: resultado.correcta, error: resultado.error || '', respaldo: respaldo(resultado.error, codigos), ms, ...(intento ? { intento } : {}) }),
+    respuesta: ({ modulo, pregunta, resultado, codigos, ms, intento }) => ({ tipo: 'prediccion', modulo, unidad: pregunta.unidad, problema: pregunta.problema,
+      opcion: String(resultado.pos), correcta: resultado.correcta, error: resultado.error || '', respaldo: respaldo(resultado.error, codigos), ms, ...(intento ? { intento } : {}) }),
+    // Pruebas de entrada y salida: un 'item' por pregunta y una 'prueba' al final, con los campos de las pruebas
+    // por curso (nucleo/medicion.js), para que resumirCursos dé la ganancia de Hake y los errores RV antes y después.
+    item: ({ fase, curso, modulo, forma, orden, pregunta, resultado, codigos, ms }) => ({ tipo: 'item', fase, curso, forma, orden, banco: 'lectura',
+      item: pregunta.problema, par: pregunta.id, plantilla: modulo, unidad: pregunta.unidad, opcion: String(resultado.pos), correcta: resultado.correcta,
+      error: resultado.error || '', respaldo: respaldo(resultado.error, codigos), ms }),
     // En "respuestas", la posición en el banco de cada respuesta, una por pregunta ("215").
-    prueba: ({ fase, modulo, unidad, item, resultados, ms }) => ({ tipo: 'prueba', fase, modulo, unidad, problema: problemaTexto(item),
+    prueba: ({ fase, curso, forma, orden, modulo, unidad, item, resultados, ms }) => ({ tipo: 'prueba', fase, ...(curso ? { curso, forma, orden, banco: 'lectura' } : {}),
+      modulo, unidad, problema: problemaTexto(item),
       aciertos: resultados.filter(r => r.correcta).length, total: resultados.length, respuestas: resultados.map(r => r.pos).join(''), ms }),
   };
 
@@ -298,6 +347,8 @@
       if (p.tipo === 'ordenar') {
         const ns = ((it.cuerpo && it.cuerpo.oraciones) || []).map(o => o.n);
         if (!Array.isArray(p.aceptada) || [...p.aceptada].sort().join() !== [...ns].sort().join()) mal(`${d}: "aceptada" debe ordenar todas las oraciones del cuerpo`);
+        // Las tarjetas salen en el orden del cuerpo: si ya fuera el aceptado, bastaría confirmar sin mover nada.
+        else if (p.aceptada.join() === ns.join()) mal(`${d}: el orden aceptado no puede ser el mismo en que se presentan las oraciones`);
         continue;
       }
       if (p.tipo === 'clasificar' && !p.sonda) mal(`${d}: clasificar necesita "sonda"`);
@@ -321,5 +372,5 @@
 
   return { LETRAS, CLASES, RELACIONES, PROPOSITOS, ANALOGIAS, TIPOS_PREVIO, NOMBRE_EJERCICIO,
     normalizar, oraciones, numero, problema, problemaTexto, codigoOracion, opcionesPrevio, calificarPrevio,
-    preparar, calificar, respaldo, pintura, etiquetaPrevio, textoAnalogia, correccionPrevio, lista, siguiente, ev, validar };
+    preparar, calificar, respaldo, pintura, etiquetaPrevio, textoAnalogia, correccionPrevio, FRASE_NO_APLICA, avisos, formaPrueba, lista, siguiente, ev, validar };
 });

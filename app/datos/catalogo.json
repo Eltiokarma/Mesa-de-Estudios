@@ -766,7 +766,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "mol-composicion"
+     ]
     },
     {
      "id": "quimica.reacciones-y-balance",
@@ -1259,7 +1261,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "cuadrado-crece"
+     ]
     },
     {
      "id": "algebra.ecuaciones-lineales-y-cuadraticas",
@@ -1285,7 +1289,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "traductor-enunciados"
+     ]
     },
     {
      "id": "algebra.inecuaciones",
@@ -1422,7 +1428,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "cuadrado-crece"
+     ]
     },
     {
      "id": "algebra.ecuaciones-polinomiales",
@@ -1622,7 +1630,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "traductor-enunciados"
+     ]
     },
     {
      "id": "algebra.programacion-lineal",
@@ -1673,7 +1683,9 @@
      },
      "potencial_visual": "medio",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "sucesiones"
+     ]
     },
     {
      "id": "algebra.binomio-de-newton",
@@ -1921,7 +1933,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "fracciones"
+     ]
     },
     {
      "id": "aritmetica.analisis-combinatorio",
@@ -2121,7 +2135,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "fracciones"
+     ]
     },
     {
      "id": "aritmetica.numeros-racionales",
@@ -2151,7 +2167,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "fracciones"
+     ]
     },
     {
      "id": "aritmetica.potenciacion-y-radicacion",
@@ -2202,7 +2220,9 @@
      },
      "potencial_visual": "medio",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "sucesiones"
+     ]
     },
     {
      "id": "aritmetica.razonamiento-numerico",
@@ -2345,7 +2365,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "poligonos"
+     ]
     },
     {
      "id": "geometria.circunferencia",
@@ -2487,7 +2509,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "poligonos"
+     ]
     },
     {
      "id": "geometria.simetria",
@@ -3170,7 +3194,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "caso-ambiguo"
+     ]
     },
     {
      "id": "trigonometria.areas-y-lineas-notables",
@@ -3197,7 +3223,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "caso-ambiguo"
+     ]
     },
     {
      "id": "trigonometria.conicas",
@@ -3272,7 +3300,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "orden-informacion"
+     ]
     },
     {
      "id": "razonamiento-matematico.trazos-y-perimetros",
@@ -3314,7 +3344,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "orden-informacion"
+     ]
     },
     {
      "id": "razonamiento-matematico.verdades-y-mentiras",
@@ -3333,7 +3365,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "orden-informacion"
+     ]
     },
     {
      "id": "razonamiento-matematico.traslados-y-puntos-cardinales",
@@ -3390,7 +3424,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "sucesiones"
+     ]
     },
     {
      "id": "razonamiento-matematico.juegos-recreativos",
@@ -3453,7 +3489,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "orden-informacion"
+     ]
     },
     {
      "id": "razonamiento-matematico.frecuencia-de-sucesos",
@@ -3555,7 +3593,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "traductor-enunciados"
+     ]
     },
     {
      "id": "razonamiento-matematico.transformaciones-de-figuras",
@@ -4148,6 +4188,24 @@
     "/plantillas/calorimetria/papel.json"
    ]
   },
+  "caso-ambiguo": {
+   "id": "caso-ambiguo",
+   "titulo": "El compás del caso ambiguo: ley de senos y de cosenos",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "trigonometria.triangulos-oblicuangulos",
+    "trigonometria.areas-y-lineas-notables"
+   ],
+   "url": "/plantillas/caso-ambiguo/index.html",
+   "papel": "/plantillas/caso-ambiguo/papel.json",
+   "archivos": [
+    "/plantillas/caso-ambiguo/index.html",
+    "/plantillas/caso-ambiguo/motor.js",
+    "/plantillas/caso-ambiguo/papel.json"
+   ]
+  },
   "celda-galvanica": {
    "id": "celda-galvanica",
    "titulo": "Redox y celda galvánica: electrones por el alambre, iones por el puente",
@@ -4240,6 +4298,24 @@
     "/plantillas/circunferencia-trig/papel.json"
    ]
   },
+  "cuadrado-crece": {
+   "id": "cuadrado-crece",
+   "titulo": "El cuadrado que crece: productos notables y linealidad indebida",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "algebra.exponentes-y-productos-notables",
+    "algebra.factorizacion"
+   ],
+   "url": "/plantillas/cuadrado-crece/index.html",
+   "papel": "/plantillas/cuadrado-crece/papel.json",
+   "archivos": [
+    "/plantillas/cuadrado-crece/index.html",
+    "/plantillas/cuadrado-crece/motor.js",
+    "/plantillas/cuadrado-crece/papel.json"
+   ]
+  },
   "dinamica": {
    "id": "dinamica",
    "titulo": "Dinámica: fuerzas, plano inclinado y poleas",
@@ -4304,6 +4380,25 @@
    "papel": null,
    "archivos": [
     "/plantillas/estequiometria-limitante/generador.js"
+   ]
+  },
+  "fracciones": {
+   "id": "fracciones",
+   "titulo": "La barra que se parte: fracciones, decimales, MCD y MCM",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "aritmetica.numeros-racionales",
+    "aritmetica.mcd-y-mcm",
+    "aritmetica.estadistica"
+   ],
+   "url": "/plantillas/fracciones/index.html",
+   "papel": "/plantillas/fracciones/papel.json",
+   "archivos": [
+    "/plantillas/fracciones/index.html",
+    "/plantillas/fracciones/motor.js",
+    "/plantillas/fracciones/papel.json"
    ]
   },
   "gases": {
@@ -4391,6 +4486,23 @@
     "/plantillas/limitante-particulas/papel.json"
    ]
   },
+  "mol-composicion": {
+   "id": "mol-composicion",
+   "titulo": "Mol, masa molar y composición",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.mol-y-composicion"
+   ],
+   "url": "/plantillas/mol-composicion/index.html",
+   "papel": "/plantillas/mol-composicion/papel.json",
+   "archivos": [
+    "/plantillas/mol-composicion/index.html",
+    "/plantillas/mol-composicion/motor.js",
+    "/plantillas/mol-composicion/papel.json"
+   ]
+  },
   "mruv": {
    "id": "mruv",
    "titulo": "MRUV y gráficas",
@@ -4440,6 +4552,44 @@
     "/plantillas/optica-lente-delgada/index.html",
     "/plantillas/optica-lente-delgada/motor.js",
     "/plantillas/optica-lente-delgada/papel.json"
+   ]
+  },
+  "orden-informacion": {
+   "id": "orden-informacion",
+   "titulo": "El tablero de las pistas: orden de información y verdades y mentiras",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.ordenamiento-de-informacion",
+    "razonamiento-matematico.verdades-y-mentiras",
+    "razonamiento-matematico.certezas",
+    "razonamiento-matematico.razonamiento-deductivo"
+   ],
+   "url": "/plantillas/orden-informacion/index.html",
+   "papel": "/plantillas/orden-informacion/papel.json",
+   "archivos": [
+    "/plantillas/orden-informacion/index.html",
+    "/plantillas/orden-informacion/motor.js",
+    "/plantillas/orden-informacion/papel.json"
+   ]
+  },
+  "poligonos": {
+   "id": "poligonos",
+   "titulo": "El polígono que se abre: ángulos, diagonales y cuadriláteros",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.poligonos-y-cuadrilateros",
+    "geometria.poligonos-regulares"
+   ],
+   "url": "/plantillas/poligonos/index.html",
+   "papel": "/plantillas/poligonos/papel.json",
+   "archivos": [
+    "/plantillas/poligonos/index.html",
+    "/plantillas/poligonos/motor.js",
+    "/plantillas/poligonos/papel.json"
    ]
   },
   "porcentajes-sucesivos": {
@@ -4512,6 +4662,25 @@
     "/plantillas/soluciones/papel.json"
    ]
   },
+  "sucesiones": {
+   "id": "sucesiones",
+   "titulo": "La torre de fichas: sucesiones, patrones y series",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.razonamiento-inductivo",
+    "algebra.sucesiones-y-series",
+    "aritmetica.sucesiones-y-series"
+   ],
+   "url": "/plantillas/sucesiones/index.html",
+   "papel": "/plantillas/sucesiones/papel.json",
+   "archivos": [
+    "/plantillas/sucesiones/index.html",
+    "/plantillas/sucesiones/motor.js",
+    "/plantillas/sucesiones/papel.json"
+   ]
+  },
   "tiro-parabolico": {
    "id": "tiro-parabolico",
    "titulo": "Tiro parabólico y movimiento circular",
@@ -4527,6 +4696,25 @@
     "/plantillas/tiro-parabolico/index.html",
     "/plantillas/tiro-parabolico/motor.js",
     "/plantillas/tiro-parabolico/papel.json"
+   ]
+  },
+  "traductor-enunciados": {
+   "id": "traductor-enunciados",
+   "titulo": "El traductor de enunciados: letras, ecuaciones y planteo",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "algebra.ecuaciones-lineales-y-cuadraticas",
+    "algebra.sistemas-de-ecuaciones",
+    "razonamiento-matematico.planteo-de-ecuaciones"
+   ],
+   "url": "/plantillas/traductor-enunciados/index.html",
+   "papel": "/plantillas/traductor-enunciados/papel.json",
+   "archivos": [
+    "/plantillas/traductor-enunciados/index.html",
+    "/plantillas/traductor-enunciados/motor.js",
+    "/plantillas/traductor-enunciados/papel.json"
    ]
   },
   "triangulo-estira": {
