@@ -7,13 +7,13 @@
 <style>
 /* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md).
    Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
-   h y Ep verde, v y Ec rojo, x y Ee turquesa, k morado, m naranja, F azul, roce ámbar, P magenta. El morado de marca no se usa aquí. */
+   h verde, v rojo, x turquesa, Ep índigo, Ec celeste, Ee fucsia, k morado, m naranja, F azul, roce ámbar, P magenta. El morado de marca no se usa aquí. */
 [hidden]{display:none!important}
 :root{
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
   --detras:#f6ece4; --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
   --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
-  --c-m:#b85a06; --c-h:#4f7a17; --c-v:#c0364a; --c-x:#0f766e; --c-k:#6b3dbd; --c-F:#1f5fbf; --c-f:#8f5800; --c-P:#b3246b;
+  --c-m:#b85a06; --c-h:#4f7a17; --c-v:#c0364a; --c-x:#0f766e; --c-k:#6b3dbd; --c-F:#1f5fbf; --c-f:#8f5800; --c-P:#b3246b; --c-Ep:#0b0b8e; --c-Ec:#0979aa; --c-Ee:#c610c6;
   --metal:#545c6c; --suelo:#d9c8bb; --bloque:#f3e3d3;
   --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
   --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
@@ -23,13 +23,13 @@
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-m:#f0a04a; --c-h:#a3d65e; --c-v:#f17384; --c-x:#5ed9c8; --c-k:#ab8cf2; --c-F:#7cb0ff; --c-f:#ffc04d; --c-P:#ff86bd;
+  --c-m:#f0a04a; --c-h:#a3d65e; --c-v:#f17384; --c-x:#5ed9c8; --c-k:#ab8cf2; --c-F:#7cb0ff; --c-f:#ffc04d; --c-P:#ff86bd; --c-Ep:#607ffb; --c-Ec:#25caf4; --c-Ee:#f91ff9;
   --metal:#c9d0dc; --suelo:#4a3d55; --bloque:#5a4868; color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-m:#f0a04a; --c-h:#a3d65e; --c-v:#f17384; --c-x:#5ed9c8; --c-k:#ab8cf2; --c-F:#7cb0ff; --c-f:#ffc04d; --c-P:#ff86bd;
+  --c-m:#f0a04a; --c-h:#a3d65e; --c-v:#f17384; --c-x:#5ed9c8; --c-k:#ab8cf2; --c-F:#7cb0ff; --c-f:#ffc04d; --c-P:#ff86bd; --c-Ep:#607ffb; --c-Ec:#25caf4; --c-Ee:#f91ff9;
   --metal:#c9d0dc; --suelo:#4a3d55; --bloque:#5a4868; color-scheme:dark }
 
 *{box-sizing:border-box}
@@ -84,6 +84,9 @@ canvas.sin-scroll{touch-action:none}
 .v-F{color:var(--c-F); background:color-mix(in srgb, var(--c-F) 12%, transparent)}
 .v-f{color:var(--c-f); background:color-mix(in srgb, var(--c-f) 12%, transparent)}
 .v-P{color:var(--c-P); background:color-mix(in srgb, var(--c-P) 12%, transparent)}
+.v-Ep{color:var(--c-Ep); background:color-mix(in srgb, var(--c-Ep) 12%, transparent)}
+.v-Ec{color:var(--c-Ec); background:color-mix(in srgb, var(--c-Ec) 12%, transparent)}
+.v-Ee{color:var(--c-Ee); background:color-mix(in srgb, var(--c-Ee) 12%, transparent)}
 .v.hl{background:color-mix(in srgb, currentColor 26%, transparent)}
 
 .eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
@@ -177,9 +180,12 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
       <p class="sr" id="desc1" aria-live="polite"></p>
       <div class="legend">
         <span><i style="background:var(--c-m)"></i>m · masa</span>
-        <span><i style="background:var(--c-h)"></i>h · altura y E<sub>p</sub></span>
-        <span><i style="background:var(--c-v)"></i>v · rapidez y E<sub>c</sub></span>
-        <span><i style="background:var(--c-x)"></i>x · compresión y E<sub>e</sub></span>
+        <span><i style="background:var(--c-h)"></i>h · altura</span>
+        <span><i style="background:var(--c-v)"></i>v · rapidez</span>
+        <span><i style="background:var(--c-x)"></i>x · compresión</span>
+        <span><i style="background:var(--c-Ep)"></i>E<sub>p</sub> · potencial</span>
+        <span><i style="background:var(--c-Ec)"></i>E<sub>c</sub> · cinética</span>
+        <span><i style="background:var(--c-Ee)"></i>E<sub>e</sub> · elástica</span>
         <span><i style="background:var(--c-k)"></i>k · constante del resorte</span>
         <span><i style="background:var(--c-f)"></i>roce y calor</span>
       </div>
@@ -320,7 +326,7 @@ function ejes(ctx, c, b, R, tit, hl){
 function colores(){
   const g = n => css(n);
   return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
-    m:g('--c-m'), h:g('--c-h'), v:g('--c-v'), x:g('--c-x'), k:g('--c-k'), F:g('--c-F'), f:g('--c-f'), P:g('--c-P'),
+    m:g('--c-m'), h:g('--c-h'), v:g('--c-v'), x:g('--c-x'), k:g('--c-k'), F:g('--c-F'), f:g('--c-f'), P:g('--c-P'), Ep:g('--c-Ep'), Ec:g('--c-Ec'), Ee:g('--c-Ee'),
     metal:g('--metal'), suelo:g('--suelo'), bloque:g('--bloque'), mono:g('--mono'), font:g('--font') };
 }
 function punto(ctx, x, y, r, color, borde){
@@ -364,7 +370,7 @@ function resorte(ctx, c, x1, x2, y, a, on){
 }
 // Barras de energía en la caja b. e = { Ep, Ec, Ee, Eroce }; tope = valor de la barra llena; total = línea punteada.
 function barras(ctx, c, b, e, tope, total, hl){
-  const lista = [['Ep', 'p', c.h, 'h'], ['Ec', 'c', c.v, 'v'], ['Ee', 'e', c.x, 'x'], ['Eroce', 'calor', c.f, 'f']];
+  const lista = [['Ep', 'p', c.Ep, 'Ep'], ['Ec', 'c', c.Ec, 'Ec'], ['Ee', 'e', c.Ee, 'Ee'], ['Eroce', 'calor', c.f, 'f']];
   const n = lista.length, gap = 8, w = Math.min(46, (b.w - gap*(n + 1))/n), x0 = b.x + (b.w - n*w - (n - 1)*gap)/2;
   const base = b.y + b.h - 34, alto = b.h - 62, Y = v => base - clamp(v/tope, 0, 1.05)*alto;
   ctx.save();
@@ -515,11 +521,11 @@ const steps = [
  { k:'Paso 2', t:'Primero, el sistema', sistema:true,
    body:() => `<p>Antes de hacer cuentas, elige qué cuerpos entran. Aquí el sistema es <b>el bloque, la Tierra y el resorte</b> (el recuadro punteado). Dentro de él, la energía solo cambia de forma:</p>
    <ul class="map">
-     <li><b>${V('h','E<sub>p</sub>')} = ${V('m','m')}g${V('h','h')}</b><span>Energía potencial gravitatoria. No está "en el bloque": es del par bloque-Tierra, y depende de la ${V('h','altura')}.</span></li>
-     <li><b>${V('v','E<sub>c</sub>')} = ½${V('m','m')}${V('v','v')}²</b><span>Energía cinética: depende de la ${V('v','rapidez')}.</span></li>
-     <li><b>${V('x','E<sub>e</sub>')} = ½${V('k','k')}${V('x','x')}²</b><span>Energía elástica del resorte: depende de cuánto se ${V('x','comprime')}.</span></li>
+     <li><b>${V('Ep','E<sub>p</sub>')} = ${V('m','m')}g${V('h','h')}</b><span>Energía potencial gravitatoria. No está "en el bloque": es del par bloque-Tierra, y depende de la ${V('h','altura')}.</span></li>
+     <li><b>${V('Ec','E<sub>c</sub>')} = ½${V('m','m')}${V('v','v')}²</b><span>Energía cinética: depende de la ${V('v','rapidez')}.</span></li>
+     <li><b>${V('Ee','E<sub>e</sub>')} = ½${V('k','k')}${V('x','x')}²</b><span>Energía elástica del resorte: depende de cuánto se ${V('x','comprime')}.</span></li>
    </ul>
-   <div class="eqs"><div class="eq">${V('h','E<sub>p</sub>')} = ${V('m','m')}·g·${V('h','h')} = ${V('m','2')}·10·${V('h','1')} = ${V('h','20 J')}<span class="note">Al inicio, toda la energía es potencial</span></div></div>
+   <div class="eqs"><div class="eq">${V('Ep','E<sub>p</sub>')} = ${V('m','m')}·g·${V('h','h')} = ${V('m','2')}·10·${V('h','1')} = ${V('h','20 J')}<span class="note">Al inicio, toda la energía es potencial</span></div></div>
    <p class="fuente">El 98,9 % de 320 escolares de Valencia dijo que la energía potencial "está en el cuerpo" (Solbes y Tarín, 1998). Sin elegir el sistema, el balance de energía se enreda.</p>` },
  { k:'Paso 3', t:'Antes de calcular, predice', sistema:true, gate:P1,
    body:() => `<p>Si en lugar del bloque de 2 kg se suelta uno de ${V('m','4 kg')} desde la misma altura, ¿qué pasa con su ${V('v','rapidez')} al pie de la rampa?</p>${opciones(P1)}` },
@@ -529,7 +535,7 @@ const steps = [
      <div class="eq">${V('v','v')}² = 2·g·${V('h','h')} = 2·10·${V('h','1')} = 20 → ${V('v','v ≈ 4,47 m/s')}</div>
    </div>
    <p>La ${V('m','masa')} está a los dos lados y se cancela: un bloque de 4 kg llega igual de rápido. Lo que cambia es cuánta energía trae (40 J en vez de 20 J). ${S.pred['energia-paso3'] === 'a' ? 'Tu predicción era correcta.' : 'Compara con tu predicción del paso 3.'}</p>
-   <p>Mira las barras: la verde baja y la roja sube, y la suma no cambia. Tampoco importa la forma de la rampa, solo la altura que baja.</p>` },
+   <p>Mira las barras: la de ${V('Ep','E<sub>p</sub>')} baja y la de ${V('Ec','E<sub>c</sub>')} sube, y la suma no cambia. Tampoco importa la forma de la rampa, solo la altura que baja.</p>` },
  { k:'Paso 5', t:'El resorte: Ec se vuelve Ee', sistema:true, anim:'resorte',
    body:() => `<div class="eqs">
      <div class="eq">½·${V('m','m')}·${V('v','v')}² = ½·${V('k','k')}·${V('x','x')}²<span class="note">En la compresión máxima, el bloque se detiene un instante</span></div>
@@ -540,7 +546,7 @@ const steps = [
    body:() => `<p>Ahora el bloque de 2 kg se suelta desde el <b>doble</b> de altura, ${V('h','2 m')}. ¿Cuánto más se ${V('x','comprime')} el resorte?</p>${opciones(P2)}` },
  { k:'Paso 7', t:'Doble altura', sistema:true, anim:'todo', est:{ h:2 },
    body:() => `<div class="eqs">
-     <div class="eq">${V('h','E<sub>p</sub>')} = ${V('m','2')}·10·${V('h','2')} = 40 J<span class="note">El doble de energía</span></div>
+     <div class="eq">${V('Ep','E<sub>p</sub>')} = ${V('m','2')}·10·${V('h','2')} = 40 J<span class="note">El doble de energía</span></div>
      <div class="eq">40 = ½·${V('k','1000')}·${V('x','x')}² → ${V('x','x')}² = 0,08 → ${V('x','x ≈ 0,283 m')}</div>
      <div class="eq">${V('x','x')} = 0,2·√2 ≈ 0,283 m<span class="note">√2 ≈ 1,41 veces, no el doble</span></div>
    </div>
@@ -631,7 +637,7 @@ function vivo(alFinal){
   $('sm-o').textContent = `${fmt(S.m, 1)} kg`; $('sh-o').textContent = `${fmt(S.h, 1)} m`; $('sk-o').textContent = `${fmt(S.k, 0)} N/m`; $('sd-o').textContent = `${fmt(S.d, 1)} m`;
   const r = M.rampaResorte({ m:S.m, h:S.h, k:S.k, mu:S.mu, d:S.d });
   let txt = `<div class="eqs">
-    <div class="eq">${V('h','E<sub>p</sub>')} = ${V('m',fmt(S.m, 1))}·10·${V('h',fmt(S.h, 1))} = ${fmt(r.E, 1)} J</div>
+    <div class="eq">${V('Ep','E<sub>p</sub>')} = ${V('m',fmt(S.m, 1))}·10·${V('h',fmt(S.h, 1))} = ${fmt(r.E, 1)} J</div>
     <div class="eq">${V('v','v')}² = 2·10·${V('h',fmt(S.h, 1))} → ${V('v','v = ' + fmt(r.v, 2) + ' m/s')}<span class="note">al pie, sin importar m ni la forma</span></div>`;
   if (S.d > 0) txt += `<div class="eq">${V('f','W<sub>roce</sub>')} = −0,3·${V('m',fmt(S.m, 1))}·10·${fmt(r.seDetiene ? r.dDetiene : S.d, 2)} = ${V('f',fmt(r.Wroce, 1) + ' J')}</div>`;
   txt += r.seDetiene
