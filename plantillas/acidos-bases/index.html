@@ -7,7 +7,7 @@
 <style>
 /* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), copiada del molde de soluciones.
    Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
-   H⁺, [H⁺] y pH rojo; OH⁻, [OH⁻] y pOH turquesa; anión A⁻ verde; concentración del ácido C magenta;
+   H⁺, [H⁺] y pH rojo; OH⁻, [OH⁻] y pOH turquesa; anión A⁻ verde; C: concentración del soluto (ácido o base) magenta;
    fuerza Ka morado; volumen V azul; moles n café. La molécula entera HA se dibuja como su A⁻ con un H⁺ pegado.
    Los iones que no cambian el pH (Na⁺, Ca²⁺) y las moléculas neutras van en gris: no son variables.
    Los 7 colores se eligieron con CIEDE2000: ningún par baja de ΔE 24 en claro ni de 28 en oscuro, y todos pasan
@@ -89,8 +89,9 @@ canvas{display:block; width:100%; touch-action:pan-y; -webkit-user-select:none; 
 .v-n{color:var(--c-n); background:color-mix(in srgb, var(--c-n) 12%, transparent)}
 .v.hl{background:color-mix(in srgb, currentColor 26%, transparent)}
 
-.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
-.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.05rem; white-space:nowrap; font-variant-numeric:tabular-nums}
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); min-width:0}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.05rem; font-variant-numeric:tabular-nums; min-width:0; overflow-wrap:anywhere}
+.eq > *{max-width:100%}
 .eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.5em; white-space:normal}
 .frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1.15}
 .frac > span:first-child{border-bottom:1.5px solid currentColor; padding:0 .25em}
@@ -120,7 +121,7 @@ canvas{display:block; width:100%; touch-action:pan-y; -webkit-user-select:none; 
 .exps{border-radius:20px}
 .control{display:grid; gap:6px}
 .control > p{margin:0}
-input[type=range]{width:100%; max-width:420px; accent-color:var(--c-V); min-height:32px}
+input[type=range]{width:100%; max-width:420px; margin:0; accent-color:var(--c-V); min-height:32px}
 
 .nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
 .acciones{display:flex; flex-wrap:wrap; gap:8px}
@@ -140,7 +141,8 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
 .lecturas{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:8px}
 .lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:8px 10px; border-left:5px solid var(--k); min-width:0}
 .lectura b{display:block; color:var(--k); font:800 1.02rem var(--mono); font-variant-numeric:tabular-nums; overflow-wrap:anywhere}
-.lectura span{display:block; font-size:.78rem; color:var(--muted)}
+.lectura span{display:block; font-size:.78rem; color:var(--muted); overflow-wrap:anywhere}
+@media (max-width:420px){ .lecturas{grid-template-columns:repeat(2, minmax(0,1fr))} }
 .tabla{border-collapse:collapse; font-variant-numeric:tabular-nums; font-size:.95rem}
 .tabla th, .tabla td{padding:4px 10px; border-bottom:1px solid var(--line); text-align:right}
 .tabla th:first-child, .tabla td:first-child{text-align:left}
@@ -160,7 +162,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
     <header>
       <p class="eyebrow">Química · Ácidos y bases · Problemas tipo admisión</p>
       <h1>Ácidos, bases y pH</h1>
-      <p class="sub">La lupa muestra lo que hay en el agua: moléculas enteras, iones sueltos y los H⁺ que deciden el pH. Fuerte es cuántas se rompen; concentrado, cuántas hay.</p>
+      <p class="sub">La lupa muestra lo que hay en el agua: moléculas enteras, iones sueltos y los H⁺ que deciden el pH. Fuerte es qué parte se rompe; concentrado, cuántas hay en cada litro.</p>
     </header>
     <nav class="tabs" aria-label="Modo de la escena">
       <a href="#paso-a-paso" id="tab1">Paso a paso</a>
@@ -319,7 +321,7 @@ const LEY = {
   HA:'<span><i class="par"></i>HA · molécula entera (A⁻ con su H⁺)</span>',
   M:'<span><i class="cuad" style="background:var(--muted)"></i>catión que no cambia el pH (Na⁺, Ba²⁺)</span>',
   N:'<span><i class="hueco"></i>molécula neutra</span>',
-  B:'<span><i class="hueco" style="border-radius:2px"></i>NH₃ · NH₄⁺ con su H⁺ pegado</span>',
+  B:'<span><svg width="12" height="11" viewBox="0 0 12 11" aria-hidden="true"><path d="M6 1 L11 10 L1 10Z" style="fill:none;stroke:var(--muted);stroke-width:1.6"/></svg>NH₃ · NH₄⁺ con su H⁺ pegado</span>',
 };
 function leyenda(tipos, extra){ return [...new Set(tipos)].map(t => LEY[t] || '').join('') + (extra || ''); }
 
@@ -494,6 +496,8 @@ function crearEscena(cv, idDesc, idLey){
   function nombre(lu, t){ return lu.nombres[t] || { H:'H⁺', OH:'OH⁻', A:'A⁻', HA:'HA', M:'Na⁺', B:'NH₃', BH:'NH₄⁺', N:'moléculas' }[t]; }
   const COLOR = { H:'H', OH:'OH', A:'A', HA:'A', M:'muted', B:'muted', BH:'muted', N:'muted' };
   function numeroP(x){ const k = Math.round(x); return Math.abs(x - k) < 0.05 ? fmt(k, 0) : (x < 10 ? fmt(x, 1) : fmt(x, 0)); }
+  // ¿Se redondeó alguna especie que se ve (0,05 o más partículas)?
+  const redondea = info => MA_TIPOS.some(t => info.esperado[t] >= 0.05 && Math.abs(info.esperado[t] - Math.round(info.esperado[t])) >= 0.05);
   function dibujarLupa(ctx, c, lu, now){
     const l = E.lay.l[lu.id]; if (!l) return;
     const { x, y, R } = l;
@@ -522,11 +526,11 @@ function crearEscena(cv, idDesc, idLey){
     for (const t of ['HA', 'A', 'H', 'OH', 'M', 'B', 'BH', 'N']){
       if (e[t] < 0.05 && !(lu.siempre || []).includes(t)) continue;
       if (trozos.length) trozos.push([' · ', c.muted]);
-      trozos.push([`${numeroP(e[t])} ${nombre(lu, t)}`, c[COLOR[t]]]);
+      trozos.push([`${e[t] > 0 && e[t] < 0.05 ? 'casi 0' : numeroP(e[t])} ${nombre(lu, t)}`, c[COLOR[t]]]);
     }
     if (!trozos.length) trozos.push(['casi vacía', c.muted]);
     rotulos(ctx, c, x, y + R + 14, trozos, 800, R < 70 ? 10.5 : 11.5);
-    const extra = lu.pie || (lu.info.recorte ? `se dibujan ${MAXP} de cada especie como máximo` : (!lu.info.exacto ? (R < 95 ? 'dibujo redondeado' : 'el dibujo redondea; los números, no') : ''));
+    const extra = lu.pie || (lu.info.recorte ? `se dibujan ${MAXP} de cada especie como máximo` : (redondea(lu.info) ? (R < 95 ? 'dibujo redondeado' : 'el dibujo redondea; los números, no') : ''));
     if (extra) rotulo(ctx, c, x, y + R + 30, extra, c.muted, 'center', 700, 10);
   }
   function dibujarEscala(ctx, c, W){
@@ -556,7 +560,7 @@ function crearEscena(cv, idDesc, idLey){
     } else if (ancho){
       ctx.font = `700 9.5px ${c.font}`; ctx.textAlign = 'center'; ctx.fillStyle = c.H;
       for (let p = 0; p <= 14; p += 2) ctx.fillText(p === 0 ? '1 M' : pot(-p), X(p), yb + hb/2 + 45);
-      ctx.fillStyle = c.muted; ctx.textAlign = 'left'; ctx.fillText('[H⁺]', 4, yb + hb/2 + 45);
+      ctx.fillStyle = c.H; ctx.textAlign = 'left'; ctx.fillText('[H⁺]', 4, yb + hb/2 + 45);
     }
     // marcas: un triángulo encima de la barra y su rótulo; las que se enciman suben de fila
     for (const { m, xx, t, w, f } of filasMarcas(ctx, c, W).lista){
@@ -673,16 +677,16 @@ const P1 = { id:'acidos-bases-paso2', ok:'c', anima:animar1, opts:[
   fb:{ c:'¡Bien! Hay 100 veces menos H⁺ en cada volumen: [H⁺] pasa de 10⁻² a 10⁻⁴ M, y el pH, de 2 a 4.',
     a:'Elegiste la A. Sigue siendo HCl y sigue siendo fuerte (todo roto), pero ahora hay 100 veces menos en cada mililitro. El pH mide cuántos H⁺ hay por litro, no qué tan fuerte es el ácido. La correcta está marcada.',
     b:'Elegiste la B. Al diluir hay menos H⁺ por volumen, así que el pH sube, no baja: más H⁺, menor pH. La correcta está marcada.',
-    d:'Elegiste la D. 100 veces más agua no basta para llegar a 7: el pH sube 2 unidades, de 2 a 4. Haría falta diluir muchísimo más, y aun así se acercaría a 7 sin pasarlo. La correcta está marcada.' } };
+    d:'Elegiste la D. Con 100 veces más agua el pH sube 2 unidades, de 2 a 4. Por más agua que agregues, se acerca a 7 sin llegar ni pasarlo. La correcta está marcada.' } };
 const P2 = { id:'acidos-bases-paso5', ok:'b', anima:animar5, opts:[
   ['a','4,7: sube 2, como el ácido fuerte','debil-sube-como-fuerte','hipotesis'],
   ['b','Cerca de 3,7'],
   ['c','2,7: no cambia, porque Ka es la misma','debil-pH-no-cambia-por-Ka','hipotesis'],
-  ['d','0,7: al diluir se ioniza todo','debil-se-ioniza-todo','hipotesis']],
+  ['d','Menos de 2,7: al diluir se ioniza más, así que hay más H⁺','debil-diluir-mas-H','hipotesis']],
   fb:{ b:'¡Bien! Al diluir, el ácido débil se ioniza más (de 1 % a casi 10 %) y repone parte de los H⁺: el pH sube cerca de 1, no 2.',
     a:'Elegiste la A. Así sería con un ácido fuerte. El débil, al diluirse, rompe más moléculas y suelta H⁺ nuevos: el pH sube menos, cerca de 1. La correcta está marcada.',
     c:'Elegiste la C. Ka no cambia, pero la concentración sí: hay 100 veces menos ácido por litro, y eso deja menos H⁺. El pH sube. La correcta está marcada.',
-    d:'Elegiste la D. Se ioniza más, pero no todo: un 10 %. Y aunque se rompiera todo, con 0,002 M el pH sería 2,7, no 0,7; 0,7 es el pH de 0,2 M de un ácido fuerte. La correcta está marcada.' } };
+    d:'Elegiste la D. Se ionizan más moléculas, pero hay 100 veces menos ácido por litro: [H⁺] baja de 2 × 10⁻³ a 2 × 10⁻⁴ M y el pH sube. La correcta está marcada.' } };
 
 const opciones = P => `<div class="opts">${P.opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="fb"></p>`;
 const steps = [
@@ -696,43 +700,48 @@ const steps = [
  { k:'Paso 2', t:'Predice: diluir 100 veces', gate:P1, prep:() => cfg1(!!S.pred[P1.id]),
    body:() => `<p>Se agrega agua hasta que el ${Vv('volumen')} es 100 veces el inicial. ¿Cuál es el nuevo ${H('pH')}?</p>${opciones(P1)}
    <div id="tras" class="body" hidden><div class="eqs">
-     <div class="eq">${Cc('C')} = ${fr(Cc('0,01'), '100')} = ${Cc(pot(-4) + ' M')}<span class="note">los moles de HCl no cambian; el volumen crece 100 veces</span></div>
+     <div class="eq">${Cc('C')} = ${fr(Cc('0,01'), '100')} = ${Cc(pot(-4) + ' M')}<span class="note">${Nn('los moles de HCl')} no cambian; el ${Vv('volumen')} crece 100 veces</span></div>
      <div class="eq">${H('pH')} = −log ${pot(-4)} = ${H('4')}</div></div>
    <p>En la lupa del mismo volumen casi no queda nada: en promedio, 0,2 ${H('H⁺')}. Para volver a ver 20 hay que mirar un ${Vv('volumen 100 veces mayor')}: las mismas partículas, más repartidas.</p>
    <p class="fuente">En un grupo turco de 24 alumnos con enseñanza tradicional, el 45 % eligió "un ácido concentrado siempre es más fuerte que uno diluido" (solo el 4 % acertó) y el 29 % eligió "el pH de un ácido concentrado siempre es mayor que el de uno diluido" (Çetingül y Geban, 2011, pregunta 12). Que el pH llegue a 7 al diluir es una hipótesis nuestra, sin estudio que la mida.</p></div>` },
  { k:'Paso 3', t:'Cada unidad de pH es un factor de 10', prep:cfg3,
    body:() => `<p>Compara las dos lupas: el mismo ${Vv('volumen')}, una con HCl ${Cc('0,01 M')} y otra con ${Cc('0,001 M')}. La segunda tiene 10 veces menos ${H('H⁺')}, y su ${H('pH')} es solo 1 más.</p>
    <div class="eqs">
-     <div class="eq">${H('[H⁺]')} = ${pot(-2)} → ${H('pH 2')} · ${pot(-3)} → ${H('pH 3')} · ${pot(-4)} → ${H('pH 4')}</div>
-     <div class="eq">diluir 10 veces → ${H('pH')} + 1 · 100 veces → + 2 · 1000 veces → + 3<span class="note">en un ácido fuerte</span></div></div>
+     <div class="eq">${H('[H⁺]')} = ${pot(-2)} → ${H('pH 2')}</div>
+     <div class="eq">${H('[H⁺]')} = ${pot(-3)} → ${H('pH 3')}</div>
+     <div class="eq">${H('[H⁺]')} = ${pot(-4)} → ${H('pH 4')}</div>
+     <div class="eq">diluir 10 veces → ${H('pH')} + 1</div>
+     <div class="eq">diluir 100 veces → ${H('pH')} + 2<span class="note">en un ácido fuerte, lejos de pH 7</span></div></div>
    <p>El pH no es una regla lineal: es el exponente de ${H('[H⁺]')} con el signo cambiado. Una solución de pH 3 tiene 100 veces más ${H('H⁺')} que una de pH 5, no "un poco más". Y pH 0 es muy ácido: ${H('[H⁺]')} = 1 M.</p>
    <p class="fuente">De 16 escolares estadounidenses, solo 4 dieron la fórmula del pH; los otros 12 lo trataron como una escala lineal, y solo 1 explicó que pH 3 y pH 5 difieren 100 veces (Sheppard, 2006, citado por Damanhuri y otros, 2016). El 11,8 % de 304 escolares de Malasia cree que una disolución de pH 3 tiene más OH⁻ que H⁺ (Damanhuri y otros, 2016, ítem B2).</p>` },
  { k:'Paso 4', t:'Un ácido débil', prep:cfg4,
    body:() => `<p class="problem">Un ácido débil HA ${Cc('0,2 M')} tiene ${Ka('Ka = 2 × 10⁻⁵')}. ¿Cuál es su ${H('pH')}?</p>
-   <p>Ahora la lupa tiene 100 fórmulas de ácido y casi todas están enteras: solo una se rompió en ${An('A⁻')} y ${H('H⁺')}. Eso es ser débil. ${Ka('Ka')} mide cuánto se rompe.</p>
+   <p>Ahora la lupa tiene 100 moléculas de ácido (enteras o rotas) y casi todas están enteras: solo una se rompió en ${An('A⁻')} y ${H('H⁺')}. Eso es ser débil. ${Ka('Ka')} mide cuánto se rompe.</p>
    <div class="eqs">
-     <div class="eq">HA ⇌ ${H('H⁺')} + ${An('A⁻')} · ${Ka('Ka')} = ${fr(`${H('[H⁺]')}·${An('[A⁻]')}`, '[HA]')} = ${fr('x²', `${Cc('C')} − x`)}</div>
-     <div class="eq">si se rompe poco: x ≈ <span>√(${Ka('Ka')} · ${Cc('C')})</span> = <span>√(${Ka('2 × 10⁻⁵')} · ${Cc('0,2')})</span> = ${H('2 × 10⁻³ M')}</div>
+     <div class="eq">HA ⇌ ${H('H⁺')} + ${An('A⁻')} · ${Ka('Ka')} = ${fr(`${H('[H⁺]')}·${An('[A⁻]')}`, '[HA]')} = ${fr(`${H('x')}²`, `${Cc('C')} − ${H('x')}`)}</div>
+     <div class="eq">${H('x')} = ${H('[H⁺]')} = ${An('[A⁻]')}<span class="note">cada molécula que se rompe da un H⁺ y un A⁻</span></div>
+     <div class="eq">si se rompe poco: ${H('x')} ≈ <span>√(${Ka('Ka')} · ${Cc('C')})</span> = <span>√(${Ka('2 × 10⁻⁵')} · ${Cc('0,2')})</span> = ${H('2 × 10⁻³ M')}</div>
      <div class="eq">${H('pH')} = 3 − log 2 = ${H(fpH(HA0.aprox.pH))}<span class="note">ionización: ${fr(H('0,002'), Cc('0,2'))} = 1 %</span></div>
-     <div class="eq">con la cuadrática (x² + ${Ka('Ka')}·x − ${Ka('Ka')}·${Cc('C')} = 0): x = ${H(sci(HA0.cuadratica.H, 3))}<span class="note">${fmt(HA0.errorAprox*100, 1)} % de diferencia: la aproximación sirve</span></div></div>
+     <div class="eq">con la cuadrática: ${H('x')}² + ${Ka('Ka')}·${H('x')} − ${Ka('Ka')}·${Cc('C')} = 0</div>
+     <div class="eq">${H('x')} = ${H(sci(HA0.cuadratica.H, 3))}<span class="note">${fmt(HA0.errorAprox*100, 1)} % de diferencia: la aproximación sirve</span></div></div>
    <p class="aviso">La aproximación √(Ka·C) vale si la ionización que da es de 5 % o menos. Si sale más, resuelve la cuadrática. Y no trates un débil como fuerte: si este se rompiera todo, el pH sería ${fpH(HA0.errores.comoFuerte)} (la marca gris).</p>
    <p>Mira algo raro: este ácido es 20 veces más concentrado que el HCl del paso 1 (pH 2), y aun así su pH es mayor. Fuerte y concentrado no son lo mismo.</p>
-   <p class="fuente">El 27,6 % de 304 escolares de Malasia cree que el H₂SO₄ y el ácido acético son ácidos fuertes, y el 28,9 % que el KOH y el amoníaco son bases débiles (Damanhuri y otros, 2016, ítems B4 y B9). No encontramos estudios con porcentajes sobre Ka ni sobre la aproximación: lo de usarla con más de 5 % de ionización es una hipótesis.</p>` },
+   <p class="fuente">El 27,6 % de 304 escolares de Malasia cree que el ácido acético es fuerte, como el H₂SO₄, y el 28,9 % que el KOH es una base débil, como el amoníaco (Damanhuri y otros, 2016, ítems B4 y B9). No encontramos estudios con porcentajes sobre Ka ni sobre la aproximación: lo de usarla con más de 5 % de ionización es una hipótesis.</p>` },
  { k:'Paso 5', t:'Predice: diluir el débil', gate:P2, prep:() => cfg5(!!S.pred[P2.id]),
    body:() => `<p>El ácido HA ${Cc('0,2 M')} (pH 2,7) se diluye hasta 100 veces su ${Vv('volumen')}. ¿Cuál es el nuevo ${H('pH')}?</p>${opciones(P2)}
    <div id="tras" class="body" hidden><div class="eqs">
      <div class="eq">${Cc('C')} = ${fr(Cc('0,2'), '100')} = ${Cc('0,002 M')}</div>
-     <div class="eq">x ≈ <span>√(${Ka('2 × 10⁻⁵')} · ${Cc('0,002')})</span> = ${H('2 × 10⁻⁴')} → ${H('pH')} ≈ ${H('3,7')}</div>
+     <div class="eq">${H('x')} = ${H('[H⁺]')} ≈ <span>√(${Ka('2 × 10⁻⁵')} · ${Cc('0,002')})</span> = ${H('2 × 10⁻⁴')} → ${H('pH')} ≈ ${H('3,7')}</div>
      <div class="eq">ionización: ${fr(H('0,0002'), Cc('0,002'))} = 10 %<span class="note">pasa del 5 %: hay que usar la cuadrática</span></div>
-     <div class="eq">cuadrática: x = ${H(sci(HA1.cuadratica.H, 2))} → ${H('pH')} = ${H(fpH(HA1.cuadratica.pH))}<span class="note">ionización ${fmt(HA1.cuadratica.ionizacion*100, 1)} %</span></div></div>
-   <p>En la lupa del mismo ${Vv('volumen')} casi no queda nada. En la lupa ${Vv('100 veces mayor')} están las mismas 100 fórmulas, pero ahora se rompieron cerca de 10, no 1. Al diluir, el ácido débil se ioniza más y repone parte de los ${H('H⁺')}: por eso el pH sube cerca de 1 y no 2, como el fuerte.</p>
+     <div class="eq">cuadrática: ${H('x')} = ${H(sci(HA1.cuadratica.H, 2))} → ${H('pH')} = ${H(fpH(HA1.cuadratica.pH))}<span class="note">ionización ${fmt(HA1.cuadratica.ionizacion*100, 1)} %</span></div></div>
+   <p>En la lupa del mismo ${Vv('volumen')} casi no queda nada. En la lupa ${Vv('100 veces mayor')} están las mismas 100 moléculas de ácido, pero ahora se rompieron cerca de 10, no 1. Al diluir, el ácido débil se ioniza más y repone parte de los ${H('H⁺')}: por eso el pH sube cerca de 1 y no 2, como el fuerte.</p>
    <p class="fuente">Ninguna opción incorrecta de esta pregunta tiene un estudio que la mida: son hipótesis para medir con los alumnos. Salen de confundir fuerza con concentración, que sí está documentado (Çetingül y Geban, 2011). Un estudio turco con futuros profesores reporta "la dilución no cambia el porcentaje de ionización de un ácido débil", pero solo se leyó su resumen.</p></div>` },
  { k:'Paso 6', t:'Las bases también tienen pH', prep:cfg6,
-   body:() => `<p>Una base fuerte suelta ${OH('OH⁻')}. Con ella se calcula primero el ${OH('pOH')} y después el ${H('pH')}: a 25 °C, ${H('pH')} + ${OH('pOH')} = 14.</p>
+   body:() => `<p>Una base fuerte suelta ${OH('OH⁻')}. Con ${OH('[OH⁻]')} se calcula primero el ${OH('pOH')} y después el ${H('pH')}: a 25 °C, ${H('pH')} + ${OH('pOH')} = 14.</p>
    <div class="eqs">
      <div class="eq">NaOH ${Cc('0,001 M')}: ${OH('[OH⁻]')} = ${OH(pot(-3))} → ${OH('pOH 3')} → ${H('pH')} = 14 − 3 = ${H('11')}</div>
-     <div class="eq">Ba(OH)₂ ${Cc('0,0005 M')}: cada fórmula suelta 2 ${OH('OH⁻')} → ${OH('[OH⁻]')} = 2 · ${Cc('0,0005')} = ${OH(pot(-3))} → ${H('pH 11')}</div></div>
-   <p>Las dos lupas tienen los mismos ${OH('OH⁻')}: la de Ba(OH)₂ tiene la mitad de fórmulas, pero cada una entrega dos. Los ${H('H⁺')} no desaparecen en una base: quedan poquísimos (${H(pot(-11) + ' M')}), tan pocos que la lupa no ve ninguno.</p>
+     <div class="eq">Ba(OH)₂ ${Cc('0,0005 M')}: cada unidad de Ba(OH)₂ suelta 2 ${OH('OH⁻')} → ${OH('[OH⁻]')} = 2 · ${Cc('0,0005')} = ${OH(pot(-3))} → ${H('pH 11')}</div></div>
+   <p>Las dos lupas tienen los mismos ${OH('OH⁻')}: la de Ba(OH)₂ tiene la mitad de unidades que la de NaOH, pero cada una entrega dos. Los ${H('H⁺')} no desaparecen en una base: quedan poquísimos (${H(pot(-11) + ' M')}), tan pocos que la lupa no ve ninguno.</p>
    <p class="aviso">Dos errores de examen: dar 3 como pH (es el pOH; falta restarlo de 14) y olvidar los dos OH⁻. Con Ba(OH)₂ 0,005 M, [OH⁻] = 0,01 M y el pH es 12, no ${fpH(MA.solucion({ base:0.005, theta:2 }).errores.sinTheta)}.</p>
    <p class="fuente">La mayoría de 27 escolares turcos creía que el pH es solo para ácidos y el pOH solo para bases; 21 ordenaron bien el pH de tres sustancias, pero solo 1 lo explicó bien (Kala, Yaman y Ayas, 2013, citado por Damanhuri y otros, 2016). Olvidar los dos OH⁻ es una hipótesis nuestra, sin estudio que la mida.</p>` },
  { k:'Paso 7', t:'Lo que cambia y lo que no', prep:cfg7,
@@ -740,12 +749,13 @@ const steps = [
      <div class="eq">Fuerte: ${H('[H⁺]')} = θ · ${Cc('C')}<span class="note">se rompe todo; θ = 2 en H₂SO₄ (convención de los problemas)</span></div>
      <div class="eq">Débil: ${H('[H⁺]')} ≈ <span>√(${Ka('Ka')} · ${Cc('C')})</span><span class="note">si la ionización sale de 5 % o menos</span></div>
      <div class="eq">Base: ${OH('pOH')} = −log ${OH('[OH⁻]')} · ${H('pH')} = 14 − ${OH('pOH')}</div>
-     <div class="eq">Diluir 10 veces: fuerte ${H('pH')} + 1; débil, menos de 1<span class="note">los moles no cambian; la concentración baja</span></div>
+     <div class="eq">Diluir 10 veces: fuerte ${H('pH')} + 1 (lejos de pH 7); débil, menos de 1</div>
+     <div class="eq">Al diluir, ${Nn('los moles')} no cambian; la ${Cc('concentración')} baja</div>
      <div class="eq">Por más agua que se agregue, un ácido no pasa de ${H('pH 7')}</div></div>
-   <p>Antes de usar una fórmula, pregúntate dos cosas: ¿cuántas fórmulas hay por volumen (${Cc('concentración')})? ¿Qué parte se rompe (${Ka('fuerza')})? El ${H('pH')} depende de las dos.</p>
-   <p class="fuente">Furió, Calatayud y Bárcenas (2000) encontraron que los alumnos de Valencia mezclan tres niveles: lo que se ve, las partículas y la fórmula. Por eso esta escena dibuja siempre las partículas que hay en el agua.</p>` },
+   <p>Antes de usar una fórmula, pregúntate dos cosas: ¿cuántas moléculas de ácido hay por volumen (${Cc('concentración')})? ¿Qué parte se rompe (${Ka('fuerza')})? El ${H('pH')} depende de las dos.</p>
+   <p class="fuente">Según Furió, Calatayud y Bárcenas (2000), los alumnos mezclan tres niveles: lo que se ve, las partículas y la fórmula. Por eso esta escena dibuja siempre las partículas que hay en el agua.</p>` },
  { k:'Paso 8', t:'Ahora explora tú', explora:true,
-   body:() => `<p>Elige un ácido y diluye. La lupa sigue siempre a 40 fórmulas de ácido: cuanto más diluido, más ${Vv('volumen')} tiene que mirar para encontrarlas.</p>
+   body:() => `<p>Elige un ácido y diluye. La lupa sigue siempre a las mismas moléculas de ácido (enteras o rotas): 40, o 10 cuando queda muy diluido. Cuanto más diluido, más ${Vv('volumen')} tiene que mirar para encontrarlas.</p>
    <div class="control"><p class="hint">Concentración inicial (${Cc('C')}):</p>
    <div class="seg" role="group" aria-label="Concentración inicial" id="x-C">${[[1, '1 M'], [0.1, '0,1 M'], [0.01, '0,01 M']].map(([v, t]) => `<button type="button" data-v="${v}" aria-pressed="${S.x.C0 === v}">${t}</button>`).join('')}</div></div>
    <div class="control"><p class="hint">Fuerza (${Ka('Ka')}):</p>
@@ -814,34 +824,36 @@ const V0 = 10;   // mL iniciales
 function estadoX(){
   const x = S.x, f = Math.pow(10, x.d), C = x.C0/f;
   const sol = MA.solucion({ acido:C, Ka:x.K }), ini = MA.solucion({ acido:x.C0, Ka:x.K });
-  return { f, C, sol, ini, n: x.C0*V0/1000, mL: V0*f };
+  return { f, C, sol, ini, n: x.C0*V0/1000, mL: V0*f, meta: metaX(C) };
 }
+// Moléculas de ácido que encuadra la lupa: 40; 10 si está muy diluido, para que los H⁺ y OH⁻ del agua quepan sin recorte.
+const metaX = C => C < 1e-6 ? 10 : 40;
 const nombreK = K => K === Infinity ? 'fuerte' : `Ka ${sci(K, 1)}`;
 function cfgX(){
   const e = estadoX();
-  E.config({ lupas:[{ id:'x', titulo:`Ácido ${nombreK(S.x.K)}`, nota:notaX(e), notaV:true, sol:e.sol, escala:e.C/40, sem:21, siempre:['H'] }],
+  E.config({ lupas:[{ id:'x', titulo:`Ácido ${nombreK(S.x.K)}`, nota:notaX(e), notaV:true, sol:e.sol, escala:e.C/e.meta, sem:21, siempre:['H'] }],
     marcas:[{ id:'m', pH:e.sol.pH, etiqueta:'ahora' }, { id:'f', pH:e.ini.pH, etiqueta:'al inicio', fantasma:true }],
     leyenda: leyenda(['HA', 'A', 'H', 'OH'], '<span><i style="background:var(--c-V)"></i>V · volumen que mira la lupa</span>') });
 }
-function notaX(e){ return e.f === 1 ? '40 fórmulas de ácido' : `40 fórmulas en un volumen ${e.f >= 1e4 ? pot(Math.round(Math.log10(e.f))) : fmt(e.f, 0)} veces mayor`; }
+function notaX(e){ return e.f === 1 ? `${e.meta} moléculas de ácido` : `${e.meta} moléculas de ácido en un volumen ${e.f >= 1e4 ? pot(Math.round(Math.log10(e.f))) : fmt(e.f, 0)} veces mayor`; }
 function actualizarX(suave){
   const e = estadoX();
   if (!suave) cfgX();
-  else { E.lupaA('x', e.sol, e.C/40, { nota:notaX(e), titulo:`Ácido ${nombreK(S.x.K)}` }); E.marca('m', e.sol.pH); E.marca('f', e.ini.pH); }
+  else { E.lupaA('x', e.sol, e.C/e.meta, { nota:notaX(e), titulo:`Ácido ${nombreK(S.x.K)}` }); E.marca('m', e.sol.pH); E.marca('f', e.ini.pH); }
   $('x-dt').textContent = e.f >= 1e4 ? pot(Math.round(Math.log10(e.f))) + ' veces' : fmt(e.f, 0) + (e.f === 1 ? ' vez' : ' veces');
-  const caja = (k, que, val, det) => `<div class="lectura" style="--k:var(--c-${k})"><span>${que}</span><b>${val}</b><span>${det}</span></div>`;
+  const caja = (k, que, val, det) => `<div class="lectura" style="--k:var(${k === 'muted' ? '--muted' : '--c-' + k})"><span>${que}</span><b>${val}</b><span>${det}</span></div>`;
   $('x-lect').innerHTML = caja('n', 'Ácido, n', `${sci(e.n, 2)} mol`, 'no cambia al diluir')
     + caja('V', 'Volumen, V', e.mL >= 1e4 ? `${fmt(e.mL/1000, 0)} L` : `${fmt(e.mL, 0)} mL`, `${fmt(e.f, 0)} × el inicial`)
     + caja('C', 'Concentración, C', `${sci(e.C, 2)} M`, 'baja al diluir')
     + caja('H', '[H⁺]', `${sci(e.sol.H, 2)} M`, `pH ${fpH(e.sol.pH)}`)
     + caja('OH', '[OH⁻]', `${sci(e.sol.OH, 2)} M`, `pOH ${fpH(e.sol.pOH)}`)
-    + caja('Ka', 'Se rompe', `${fmt(e.sol.ionizacion*100, e.sol.ionizacion < 0.1 ? 2 : 1)} %`, S.x.K === Infinity ? 'fuerte: todo' : `de las fórmulas (${nombreK(S.x.K)})`);
+    + caja('muted', 'Se rompe (ionización)', `${fmt(e.sol.ionizacion*100, e.sol.ionizacion < 0.1 ? 2 : 1)} %`, S.x.K === Infinity ? 'fuerte: todo' : `de las moléculas (${nombreK(S.x.K)})`);
   let m = '';
-  if (S.x.K === Infinity) m = 'Fuerte: todas las fórmulas están rotas, diluyas o no. ';
-  else m = `Débil: se rompe el ${fmt(e.sol.ionizacion*100, e.sol.ionizacion < 0.1 ? 2 : 1)} %. Al diluir, se rompe una parte mayor. `;
+  if (S.x.K === Infinity) m = 'Fuerte: todas las moléculas de ácido están rotas, diluyas o no. ';
+  else m = `Débil: se rompe el ${fmt(e.sol.ionizacion*100, e.sol.ionizacion < 0.1 ? 2 : 1)} %${e.sol.ionizacion > 0.5 ? ' (débil quiere decir que no se rompe todo, aunque se rompa más de la mitad)' : ''}. Al diluir, se rompe una parte mayor. `;
   if (S.x.d > 0) m += `Los moles de ácido son los mismos; la concentración bajó ${fmt(e.f, 0)} veces y el pH subió ${fmt(e.sol.pH - e.ini.pH, 2)}. `;
-  if (e.C < 1e-6) m += 'Ya hay más H⁺ y OH⁻ del agua que del ácido: el pH se acerca a 7, pero no lo pasa. ';
-  $('x-msg').textContent = m;
+  if (e.sol.especies.A < e.sol.OH) m += 'Ahora el agua aporta más H⁺ que el ácido: el pH se acerca a 7, pero no lo pasa. ';
+  $('x-msg').innerHTML = m.replace('Los moles de ácido son los mismos', Nn('Los moles de ácido') + ' son los mismos');
 }
 function explorar(){
   cfgX(); actualizarX(true);
@@ -880,8 +892,8 @@ const ESC_S = 0.0025;
 const U = { s:0, neu:'debil' };
 // 3. Diluir mil veces: HCl 10⁻⁵ M → 10⁻⁸ M.
 const D3 = MA.diluir({ acido:1e-5 }, 1000), ESC_D = 5e-7;
-// 4. pH 3 contra pH 5 (HCl 10⁻³ M y 10⁻⁵ M). Una partícula por cada 2 × 10⁻⁵ mol/L.
-const L3 = MA.solucion({ acido:1e-3 }), L5 = MA.solucion({ acido:1e-5 }), ESC_L = 2e-5, RZ = MA.razonH(3, 5);
+// 4. pH 3 contra pH 5 (HCl 10⁻³ M y 10⁻⁵ M). Una partícula por cada 10⁻⁵ mol/L: 100 H⁺ contra 1.
+const L3 = MA.solucion({ acido:1e-3 }), L5 = MA.solucion({ acido:1e-5 }), ESC_L = 1e-5, RZ = MA.razonH(3, 5);
 // 5. Neutralizar: 20 mL de ácido 0,1 M con 20 mL de NaOH 0,1 M. Una partícula por cada 0,005 mol/L.
 const ESC_N = 0.005, KAN = 2e-5;
 const N_HA = MA.solucion({ acido:0.1, Ka:KAN }), N_OH = MA.solucion({ base:0.1 }), N_HCl = MA.solucion({ acido:0.1 });
@@ -906,9 +918,9 @@ function pintarNeu(){
     marcas:[{ id:'m', pH:m.pH, etiqueta:'equivalencia' }], leyenda: leyenda(['HA', 'A', 'H', 'OH', 'M']) });
   const d = $('neu-txt'); if (!d) return;
   const t = TIT[U.neu];
-  d.innerHTML = `<table class="tabla"><thead><tr><th>NaOH agregado</th>${t.map(r => `<th>${fmt(r.mL, 0)} mL</th>`).join('')}</tr></thead>
+  d.innerHTML = `<table class="tabla"><thead><tr><th>${Vv('NaOH agregado')}</th>${t.map(r => `<th>${Vv(fmt(r.mL, 0) + ' mL')}</th>`).join('')}</tr></thead>
     <tbody><tr><td>${H('pH')}</td>${t.map(r => `<td>${fpH(r.pH)}</td>`).join('')}</tr></tbody></table>
-    <p class="hint">20 mL de ácido 0,1 M con NaOH 0,1 M. A 20 mL hay los mismos moles de ácido y de base.</p>`;
+    <p class="hint">${Vv('20 mL')} de ácido 0,1 M con NaOH 0,1 M. A ${Vv('20 mL')} hay los mismos moles de ácido y de base.</p>`;
 }
 
 const EXPS = [
@@ -929,14 +941,14 @@ const EXPS = [
     despues:() => EXPS[0].antes(true),
     exp:() => `<div class="eqs"><div class="eq">A: ${H('[H⁺]')} = ${Cc('0,01')} = ${H(pot(-2))} → ${H('pH 2')}</div>
       <div class="eq">B: ${H('[H⁺]')} ≈ <span><span>√(${Ka('2 × 10⁻⁵')} · ${Cc('0,1')})</span></span> = ${H(sci(F.B.aprox.H, 1))} → ${H('pH ' + fpH(F.B.pH))}</div></div>
-      <p>Mira las cuatro lupas, todas del mismo volumen. Arriba de cada una dice si es fuerte o débil, y concentrado o diluido. "Concentrado" es cuántas fórmulas hay (C y B tienen 40). "Fuerte" es qué parte se rompe (en A y C, todas; en B y D, casi ninguna). El pH lo deciden los ${H('H⁺')} sueltos, y A tiene más que B.</p>
+      <p>Mira las cuatro lupas, todas del mismo volumen. Arriba de cada una dice si es fuerte o débil, y concentrado o diluido. "Concentrado" es cuántas moléculas de ácido hay, enteras o rotas (C y B tienen 40). "Fuerte" es qué parte se rompe (en A y C, todas; en B y D, casi ninguna). El pH lo deciden los ${H('H⁺')} sueltos, y A tiene más que B.</p>
       <p class="fuente">En un grupo turco de 24 alumnos con enseñanza tradicional, el 45 % eligió "un ácido concentrado siempre es más fuerte que uno diluido" y solo el 4 % acertó; el 33 % eligió "cualquier ácido concentrado siempre es más ácido que uno diluido" (Çetingül y Geban, 2011, preguntas 12 y 21). El 27,6 % de 304 escolares de Malasia cree que el ácido acético es fuerte (Damanhuri y otros, 2016, ítem B4). Las opciones C y D son hipótesis nuestras.</p>` },
   { id:'tiene-H', corto:'¿Tiene H, es ácido?',
-    q:'El metanol, CH₃OH, tiene átomos de H y un grupo OH. Si se disuelve en agua, ¿qué es?',
-    opts:[['a','Un ácido, porque tiene H','AB1-tiene-H-es-acido','documentado'],
-          ['b','Una base, porque tiene OH','AB1-tiene-OH-es-base','documentado'],
-          ['c','Ni ácido ni base: no suelta H⁺ ni OH⁻ al agua',null],
-          ['d','Ácido y base a la vez, porque tiene los dos','AB1-ambos','hipotesis']],
+    q:'El metanol, CH₃OH, tiene átomos de H y un grupo OH. Si se disuelve en agua, ¿cómo queda la disolución?',
+    opts:[['a','Ácida, porque tiene H','AB1-tiene-H-es-acido','documentado'],
+          ['b','Básica, porque tiene OH','AB1-tiene-OH-es-base','documentado'],
+          ['c','Neutra: no suelta H⁺ ni OH⁻ al agua',null],
+          ['d','Ácida y básica a la vez, porque tiene los dos','AB1-ambos','hipotesis']],
     ok:'c',
     antes:ver => { if (ver) pintarSust(); else E.config({ lupas:[{ id:'s', titulo:'CH₃OH 0,1 M', oculto:true, sol:lupaSust(0).s, escala:ESC_S }], marcas:[], leyenda: leyenda(['N', 'H', 'OH']) }); },
     despues:() => { U.s = 0; pintarSust(); },
@@ -974,14 +986,14 @@ const EXPS = [
     ok:'b',
     antes:ver => E.config({ lupas:[{ id:'a', titulo:'pH 3', nota:'volumen muy pequeño', oculto:!ver, sol:L3, escala:ESC_L, nombres:CL, sem:71 },
                                   { id:'b', titulo:'pH 5', nota:'el mismo volumen', oculto:!ver, sol:L5, escala:ESC_L, nombres:CL, sem:72, siempre:['H'] }],
-      marcas:[{ id:'a', pH:L3.pH, etiqueta:'pH 3' }, { id:'b', pH:L5.pH, etiqueta:'pH 5' }], leyenda: leyenda(['H', 'A']) }),
+      marcas:[{ id:'a', pH:L3.pH, etiqueta:'' }, { id:'b', pH:L5.pH, etiqueta:'' }], leyenda: leyenda(['H', 'A']) }),
     despues:() => EXPS[3].antes(true),
     exp:() => `<div class="eqs"><div class="eq">${H('pH 3')}: ${H('[H⁺]')} = ${pot(-3)} · ${H('pH 5')}: ${H('[H⁺]')} = ${pot(-5)}</div>
       <div class="eq">${fr(pot(-3), pot(-5))} = ${pot(2)} = ${fmt(RZ.veces, 0)}<span class="note">cada unidad de pH es un factor de 10</span></div></div>
-      <p>En el mismo volumen, la lupa de pH 3 tiene 50 ${H('H⁺')} y la de pH 5, medio (casi siempre está vacía). La escala de pH aprieta: de 3 a 5 son solo dos marcas, pero los ${H('H⁺')} cambian cien veces.</p>
+      <p>En el mismo volumen, la lupa de pH 3 tiene 100 ${H('H⁺')} y la de pH 5, solo 1. La escala de pH aprieta: de 3 a 5 son solo dos marcas, pero los ${H('H⁺')} cambian cien veces.</p>
       <p class="fuente">De 16 escolares estadounidenses, 12 trataron el pH como una escala lineal, y solo 1 explicó que pH 3 y pH 5 difieren 100 veces (Sheppard, 2006, citado por Damanhuri y otros, 2016). Ante "¿cuál es más ácido?", el 25 % de 24 alumnos turcos eligió pH 1 en vez de pH 0 (Çetingül y Geban, 2011, pregunta 4). Que el pH mayor tenga más H⁺ sale de "más concentrado, mayor pH", que eligió el 29 % de esos 24 (pregunta 12); la opción D es una hipótesis nuestra.</p>` },
   { id:'neutralizar', corto:'Neutralizar',
-    q:`Se mezclan 20 mL de un ácido débil HA ${Cc('0,1 M')} (${Ka('Ka = 2 × 10⁻⁵')}) con 20 mL de NaOH ${Cc('0,1 M')}: los mismos moles de ácido y de base. ¿Cómo queda la mezcla?`,
+    q:`Se mezclan ${Vv('20 mL')} de un ácido débil HA ${Cc('0,1 M')} (${Ka('Ka = 2 × 10⁻⁵')}) con ${Vv('20 mL')} de NaOH ${Cc('0,1 M')}: los mismos moles de ácido y de base. ¿Cómo queda la mezcla?`,
     opts:[['a','Neutra, pH 7: se neutralizaron','AB9-neutralizada-es-neutra','documentado'],
           ['b','Ácida: el ácido débil no alcanza a reaccionar','debil-no-reacciona','hipotesis'],
           ['c','Básica, con pH cercano a 8,7',null],
@@ -997,8 +1009,8 @@ const EXPS = [
     exp:() => `<div class="eqs"><div class="eq">HA + ${OH('OH⁻')} → ${An('A⁻')} + H₂O<span class="note">reaccionan desde la primera gota</span></div>
       <div class="eq">${An('A⁻')} + H₂O ⇌ HA + ${OH('OH⁻')}<span class="note">el A⁻ de un ácido débil atrapa algunos H⁺ del agua</span></div>
       <div class="eq">${H('pH')} = ${H(fpH(MEZ.debil.pH))} con HA · ${H(fpH(MEZ.fuerte.pH))} con HCl</div></div>
-      <p>Con los mismos moles, todo el ácido reaccionó. Pero el ${An('A⁻')} de un ácido débil es una base: de cada ${fmt(Math.round(MEZ.debil.especies.A/MEZ.debil.especies.HA/1000)*1000, 0)} A⁻, uno le quita un H⁺ al agua y deja un ${OH('OH⁻')} suelto. Es poco, pero alcanza para un pH básico. Solo ácido fuerte con base fuerte da pH 7. El ${An('Cl⁻')} del HCl no atrapa H⁺.</p>
-      <p class="fuente">Cerca del 25 % de escolares taiwaneses (Chiu, 2004) y 13 de 16 estadounidenses (Sheppard, 2006) creen que lo que sale de una neutralización es neutro, los dos citados por Damanhuri y otros (2016). De 8 alumnos de COU entrevistados en Valencia, solo 2 explicaron por qué el Na₂CO₃ da una disolución básica (Furió y otros, 2000). 14 de esos 16 estadounidenses creían que todo indicador cambia de color en pH 7 (Sheppard, 2006). La opción B es una hipótesis nuestra.</p>` },
+      <p>Con los mismos moles, todo el ácido reaccionó. Pero el ${An('A⁻')} de un ácido débil es una base: de cada ${fmt(Math.round(MEZ.debil.especies.A/MEZ.debil.especies.HA/1000)*1000, 0)} A⁻, uno le quita un H⁺ al agua y deja un ${OH('OH⁻')} suelto. Es poco, pero alcanza para un pH básico. Ácido fuerte con base fuerte da pH 7; ácido débil con base fuerte da una mezcla básica. El ${An('Cl⁻')} del HCl no atrapa H⁺.</p>
+      <p class="fuente">Cerca del 25 % de escolares taiwaneses de secundaria baja (Chiu, 2004) y 13 de 16 estadounidenses (Sheppard, 2006) creen que lo que sale de una neutralización es neutro, los dos citados por Damanhuri y otros (2016). De 8 alumnos de COU entrevistados en Valencia, solo 2 explicaron por qué el Na₂CO₃ da una disolución básica (Furió y otros, 2000). 14 de esos 16 estadounidenses creían que todo indicador cambia de color en pH 7 (Sheppard, 2006). La opción B es una hipótesis nuestra.</p>` },
 ];
 const S = { k:0, pred:{}, t0:Date.now() };
 function botones(){

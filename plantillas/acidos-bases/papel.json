@@ -1,6 +1,6 @@
 {
   "titulo": "Ácidos, bases y pH: problemas para lápiz y papel",
-  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Antes de usar una fórmula, decide: ¿es ácido o base? ¿Fuerte (se rompe todo) o débil (se rompe poco)? ¿Cuántos H⁺ u OH⁻ entrega cada fórmula? Recuerda que pH = −log[H⁺], que pH + pOH = 14 a 25 °C y que cada unidad de pH es un factor de 10. Usa log 2 = 0,3 y log 3 = 0,48. Nunca pruebes ni toques una sustancia para saber si es ácida: eso se mide con un indicador o un pH-metro.",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Antes de usar una fórmula, decide: ¿es ácido o base? ¿Fuerte (se rompe todo) o débil (se rompe poco)? ¿Cuántos H⁺ u OH⁻ entrega cada molécula o unidad? Recuerda que pH = −log[H⁺], que pH + pOH = 14 a 25 °C y que cada unidad de pH es un factor de 10. Usa log 2 = 0,3 y log 3 = 0,48. Nunca pruebes ni toques una sustancia para saber si es ácida: eso se mide con un indicador o un pH-metro.",
   "problemas": [
     {
       "id": "p1",
@@ -8,7 +8,7 @@
       "enunciado": "El jugo gástrico del estómago contiene ácido clorhídrico. Supón que equivale a una solución de HCl 0,01 M. ¿Cuál es su pH y cuál su concentración de OH⁻?",
       "respuesta": "pH = 2; [OH⁻] = 10⁻¹² M.",
       "pasos": [
-        "El HCl es un ácido fuerte: se rompe todo en H⁺ y Cl⁻. Cada fórmula entrega un H⁺, así que [H⁺] = 0,01 M = 10⁻² M.",
+        "El HCl es un ácido fuerte: se rompe todo en H⁺ y Cl⁻. Cada molécula entrega un H⁺, así que [H⁺] = 0,01 M = 10⁻² M.",
         "pH = −log 10⁻² = 2.",
         "pOH = 14 − 2 = 12, así que [OH⁻] = 10⁻¹² M. Hay OH⁻ incluso en un ácido, pero muy pocos.",
         "Ojo: pH 2 no es \"un poco ácido\". La escala no es lineal: pH 2 tiene 100 000 veces más H⁺ que el agua pura (pH 7)."
@@ -33,7 +33,7 @@
       "enunciado": "En el laboratorio hay una solución de hidróxido de sodio (NaOH) 0,001 M. ¿Cuál es su pOH y cuál su pH?",
       "respuesta": "pOH = 3; pH = 11.",
       "pasos": [
-        "El NaOH es una base fuerte: cada fórmula suelta un OH⁻. [OH⁻] = 0,001 M = 10⁻³ M.",
+        "El NaOH es una base fuerte: cada unidad de NaOH suelta un OH⁻. [OH⁻] = 0,001 M = 10⁻³ M.",
         "pOH = −log 10⁻³ = 3.",
         "pH = 14 − 3 = 11.",
         "Error frecuente: dar 3 como pH. −log[OH⁻] es el pOH; falta restarlo de 14. Una base siempre tiene pH mayor que 7."
@@ -46,7 +46,7 @@
       "enunciado": "El agua de cal se prepara con hidróxido de calcio, Ca(OH)₂, una base fuerte. Si la solución es 0,005 M, ¿cuál es su pH?",
       "respuesta": "pH = 12.",
       "pasos": [
-        "Cada fórmula de Ca(OH)₂ suelta dos OH⁻ (θ = 2): Ca(OH)₂ → Ca²⁺ + 2 OH⁻.",
+        "Cada unidad de Ca(OH)₂ suelta dos OH⁻ (θ = 2): Ca(OH)₂ → Ca²⁺ + 2 OH⁻.",
         "[OH⁻] = 2 · 0,005 = 0,01 M = 10⁻² M. pOH = 2.",
         "pH = 14 − 2 = 12.",
         "Si olvidas el 2, te sale [OH⁻] = 0,005 M, pOH = 2,3 y pH = 11,7. Antes de calcular, cuenta cuántos OH⁻ hay en la fórmula."
@@ -100,7 +100,7 @@
       "enunciado": "Un estudiante dice: \"Si diluyo una solución de HCl 10⁻⁶ M cien veces, queda 10⁻⁸ M y su pH es 8\". ¿Tiene razón? ¿Cuál es el pH, más o menos?",
       "respuesta": "No. El pH queda un poco por debajo de 7 (6,98): un ácido diluido nunca se vuelve básico.",
       "pasos": [
-        "El agua pura ya tiene [H⁺] = 10⁻⁷ M. El ácido le agrega 10⁻⁸ M más H⁺: el total es mayor que 10⁻⁷ M, así que el pH es menor que 7.",
+        "El agua pura ya tiene [H⁺] = 10⁻⁷ M. El ácido le agrega 10⁻⁸ M más H⁺: el total pasa de 10⁻⁷ M (el agua aporta un poco menos que antes, pero la suma es 1,05 × 10⁻⁷ M), así que el pH es menor que 7.",
         "−log 10⁻⁸ = 8 sería el pH si solo hubiera H⁺ del ácido, pero aquí el agua aporta más H⁺ que el ácido.",
         "La cuenta exacta resuelve [H⁺]² − 10⁻⁸ · [H⁺] − 10⁻¹⁴ = 0 (el ácido más el agua, con [H⁺]·[OH⁻] = 10⁻¹⁴): [H⁺] = 1,05 × 10⁻⁷ M y pH = 6,98.",
         "Regla que sirve siempre: por más agua que agregues, un ácido se acerca a pH 7 desde abajo y una base, desde arriba."
@@ -116,7 +116,7 @@
         "Moles de H⁺ al inicio: 0,1 · 0,020 = 0,002 mol. Cada OH⁻ que entra se lleva un H⁺: H⁺ + OH⁻ → H₂O. La reacción ocurre desde la primera gota.",
         "a) Entran 0,1 · 0,010 = 0,001 mol de OH⁻. Sobran 0,002 − 0,001 = 0,001 mol de H⁺ en 20 + 10 = 30 mL: [H⁺] = 0,001/0,030 = 1/30 M. pH = log 30 = 1 + 0,48 = 1,48.",
         "b) Entran 0,003 mol de OH⁻: se neutralizan los 0,002 mol de H⁺ y sobran 0,001 mol de OH⁻ en 50 mL. [OH⁻] = 0,02 M, pOH = 2 − 0,3 = 1,7 y pH = 14 − 1,7 = 12,3.",
-        "Divide siempre entre el volumen total de la mezcla, no entre el volumen inicial del ácido. Y no supongas pH 7 \"porque se neutralizó\": solo queda neutra cuando los moles de H⁺ y OH⁻ son iguales."
+        "Divide siempre entre el volumen total de la mezcla, no entre el volumen inicial del ácido. Y no supongas pH 7 \"porque se neutralizó\": solo queda neutra cuando los moles de H⁺ y OH⁻ son iguales (con ácido y base fuertes)."
       ],
       "verificar": [
         { "fn": "mezclar", "args": [{ "acido": { "C": 0.1, "mL": 20 }, "base": { "C": 0.1, "mL": 10 } }], "espera": { "pH": 1.4771212547157538, "excesoH": 0.03333333333333333 } },
@@ -131,7 +131,7 @@
       "pasos": [
         "Moles de H₂SO₄: 0,1 · 0,025 = 0,0025 mol. Cada uno entrega 2 H⁺: 0,005 mol de H⁺.",
         "Hacen falta 0,005 mol de OH⁻. Con NaOH 0,2 M: V = 0,005/0,2 = 0,025 L = 25 mL.",
-        "Si usas C₁V₁ = C₂V₂ sin contar los dos H⁺ (0,1 · 25 = 0,2 · V), te sale 12,5 mL: solo se neutraliza la mitad del ácido. Iguala equivalentes, no moles de fórmula: N₁V₁ = N₂V₂ con N = M · θ."
+        "Si usas C₁V₁ = C₂V₂ sin contar los dos H⁺ (0,1 · 25 = 0,2 · V), te sale 12,5 mL: solo se neutraliza la mitad del ácido. Iguala equivalentes, no moles de H₂SO₄: N₁V₁ = N₂V₂ con N = M · θ."
       ],
       "verificar": [ { "fn": "volumenEquivalencia", "args": [{ "C": 0.1, "mL": 25, "theta": 2 }, { "C": 0.2 }], "espera": { "mL": 25, "errores.sinTheta": 12.5 } } ]
     }
