@@ -6,8 +6,11 @@
  * navegador (window.MotorTransTrig) y en Node (require('./motor.js')), donde lo prueban casos.json y papel.json.
  *
  * Ángulos en grados sexagesimales. Los valores salen EXACTOS cuando todos los ángulos que intervienen son múltiplos
- * de 15° (0°, 15°, 30°, …): una suma de términos (n/d)·√r con su texto, '√6/2', '(√3 + 2)/2', '−√2/2'. Con otros
- * ángulos, el valor es numérico (Math). NO se usa la convención de academia (sen 37° = 3/5): con ella, sen 53° + sen 37°
+ * de 15° (0°, 15°, 30°, …): una suma de términos (n/d)·√r con su texto, '√6/2', '(2 + √3)/2', '−√2/2'. Con otros
+ * ángulos, el valor es numérico (Math) y su texto lleva 3 decimales fijos con coma ('0,940'). En el texto exacto van
+ * primero los términos positivos, con el entero delante ('2 + √3', '2 − √3', '√3 − 1'); si todos son negativos, el
+ * signo sale afuera ('−(1 + √3)/2'). 'exacto: true' quiere decir que el RESULTADO salió exacto: puede pasar aunque
+ * algún ángulo no sea múltiplo de 15°, si la fórmula lo anula (cos 20° + cos 140° + cos 260° = 0 exacto). NO se usa la convención de academia (sen 37° = 3/5): con ella, sen 53° + sen 37°
  * = 7/5 no coincidiría con 2 sen 45° cos 8°, que no es exacto.
  *
  * La idea de la escena: los puntos PA y PB de la circunferencia de radio 1 en los ángulos A y B son dos flechas
@@ -24,8 +27,9 @@
  *       sen+sen = 2 sen M cos D; sen−sen = 2 cos M sen D; cos+cos = 2 cos M cos D; cos−cos = −2 sen M sen D.
  *       → { valor, texto, exacto, A, B, M, D, coef (2 o −2), f1, f2, expresion ('2 sen 45° cos 30°'), directo
  *       (fn A op fn B calculado sin la fórmula), errores, coinciden }.
- *   productoASuma({ tipo, x, y })
- *       tipo 'sencos' (2 sen x cos y) | 'coscos' (2 cos x cos y) | 'sensen' (2 sen x sen y); x, y en grados.
+ *   productoASuma({ tipo, x, y, veces })
+ *       tipo 'sencos' (2 sen x cos y) | 'coscos' (2 cos x cos y) | 'sensen' (2 sen x sen y); x, y en grados; veces
+ *       (entero, 1 si no se da) multiplica todo: veces = 2 da 4 sen x cos y = 2 sen(x + y) + 2 sen(x − y).
  *       sencos = sen(x + y) + sen(x − y); coscos = cos(x + y) + cos(x − y); sensen = cos(x − y) − cos(x + y).
  *       → { valor, texto, exacto, x, y, terminos: [{ fn, g, signo }], expresion ('sen 90° + sen 60°'), directo,
  *       errores, coinciden }.
@@ -34,6 +38,15 @@
  *       ++ → tan Mx; −+ → tan Dx; +− → −cot Dx; −− → −cot Mx, con M = (p + q)/2 y D = (p − q)/2.
  *       → { texto ('tan 4x'), forma: { s, fn, k: { n, d } }, M, D, valorEn(x) (la forma simplificada en x grados),
  *       originalEn(x) (el cociente sin simplificar), errores (cada uno con su forma y texto), coinciden }.
+ *       Con { x } en la entrada, además en: { x, original, simplificada }. Las dos valen null donde no existen:
+ *       el original cuando su denominador es 0 (también 0/0) y la forma cuando tan o cot no existe. Ejemplo:
+ *       p = 3, q = 1 en x = 45° → las dos null; en x = 90° el original es 0/0 (null) y tan 180° = 0: la
+ *       simplificación vale solo donde el cociente original existe.
+ *   simplificar({ arriba, abajo, x })
+ *       Cociente general: arriba y abajo son { fn: 'sen' | 'cos', op: '+' | '−', p, q } = fn px op fn qx, con p ≠ q
+ *       enteros positivos en cualquier orden. Cada lado se vuelve producto, se cancela el factor común y queda
+ *       s · tan o cot de kx. → { texto ('tan 2x'), forma, comun ('sen 3x', el factor que se cancela), valorEn(x),
+ *       originalEn(x), en (si se da x) }. Error si no queda una tangente o una cotangente.
  *   agrupar({ solo, par: [p, q] })
  *       cos solo + cos p + cos q, agrupando el par con cos p + cos q = 2 cos M cos D. Hace falta que D (o M) sea
  *       ±solo (módulo 360°) y que el otro ángulo sea múltiplo de 15°. → { valor (k), texto de k, kPar (el par =
@@ -54,7 +67,7 @@
  *   exacto(t), texto(v, dec)
  *       Número exacto a partir de '√2/2' o '3/4' → { valor, texto }; número con coma decimal y signo − tipográfico.
  *   ERRORES
- *       id → descripción. TR12 y TR16 del informe docs/investigacion/trigonometria-ideas-erroneas.md; TT1 a TT12,
+ *       id → descripción. TR12 y TR16 del informe docs/investigacion/trigonometria-ideas-erroneas.md; TT1 a TT13,
  *       hipótesis nuestras (el informe no trata las transformaciones).
  *
  * Cada resultado que es respuesta de una predicción trae 'errores': nombre → { id, valor, texto }, lo que dan los
@@ -84,7 +97,8 @@
     TT9: 'serie: n veces el término del centro',
     TT10: 'la flecha suma apunta como la primera flecha',
     TT11: 'el largo de la suma es la suma de los largos (1 + 1 = 2)',
-    TT12: 'dos ondas que se suman nunca se apagan'
+    TT12: 'dos ondas que se suman nunca se apagan',
+    TT13: 'producto a suma con el 2 de más: 2 sen x cos y = 2[sen(x + y) + sen(x − y)]'
   };
 
   function numero(x, que) {
@@ -146,16 +160,18 @@
       const t = A[0], s = t.n < 0 ? '−' : '';
       return s + (t.d === 1 ? raiz(Math.abs(t.n), t.r) : `${raiz(Math.abs(t.n), t.r)}/${t.d}`);
     }
+    if (A.every(t => t.n < 0)) return '−' + exTexto(exNeg(A));   // −(1 + √3)/2
     const L = A.reduce((l, t) => l * t.d / mcd(l, t.d), 1);
-    const orden = A.filter(t => t.r !== 1).concat(A.filter(t => t.r === 1));
-    const kp = orden.findIndex(t => t.n > 0);
-    if (kp > 0) orden.unshift(orden.splice(kp, 1)[0]);
+    // primero los positivos (el entero delante: 2 + √3, 1 + √3), después los negativos: 2 − √3, √3 − 1, √6 + √2
+    const ent = A.filter(t => t.r === 1), rad = A.filter(t => t.r !== 1);
+    const orden = ent.filter(t => t.n > 0).concat(rad.filter(t => t.n > 0), rad.filter(t => t.n < 0), ent.filter(t => t.n < 0));
     let s = '';
     orden.forEach((t, i) => {
       const n = t.n * L / t.d, m = Math.abs(n);
       s += i === 0 ? (n < 0 ? '−' : '') + raiz(m, t.r) : (n < 0 ? ' − ' : ' + ') + raiz(m, t.r);
     });
-    return L === 1 ? s : `(${s})/${L}`;
+    if (L === 1) return s;
+    return `(${s})/${L}`;
   }
   function exDe(t) {
     const s = String(t).trim().replace(/−/g, '-');
@@ -167,13 +183,13 @@
   }
 
   // Coma decimal, signo menos tipográfico
-  function texto(v, dec) {
+  function texto(v, dec) {   // dec decimales fijos (3 si no se dice): 0,940
     if (v && typeof v === 'object' && v.texto) return v.texto;
     if (!Number.isFinite(v)) return '—';
-    const p = Math.pow(10, dec === undefined ? 2 : dec), r = Math.round(v * p) / p + 0;
-    return (r < 0 ? '−' : '') + String(Math.abs(r)).replace('.', ',');
+    const d = dec === undefined ? 3 : dec, r = Number((Math.round(v * Math.pow(10, d)) / Math.pow(10, d)).toFixed(d)) + 0;
+    return (r < 0 ? '−' : '') + Math.abs(r).toFixed(d).replace('.', ',');
   }
-  const grados = g => `${texto(g, 2)}°`;
+  function grados(g) { const r = Math.round(g * 100) / 100 + 0; return `${r < 0 ? '−' : ''}${String(Math.abs(r)).replace('.', ',')}°`; }
   const fa = (f, g) => (g < 0 ? `${f}(${grados(g)})` : `${f} ${grados(g)}`);   // sen 30°, sen(−30°)
 
   // ---------- Ángulos notables de verdad: múltiplos de 15° ----------
@@ -209,7 +225,7 @@
       if (t) return { valor: exValor(t), texto: exTexto(t), exacto: true, existe: true };
     }
     const v = mathFn(fn, g);
-    return { valor: v, texto: texto(v, 4), exacto: false, existe: true };
+    return { valor: v, texto: texto(v), exacto: false, existe: true };
   }
 
   // Un número: exacto { A } si se puede, si no numérico. prod(c, [fn, g], [fn, g]) = c · fn(g) · fn(g)
@@ -224,7 +240,7 @@
     return { v: ts.reduce((acc, [s, fn, g]) => acc + s * mathFn(fn, g), 0) };
   }
   const valorDe = X => (X.A ? exValor(X.A) : X.v + 0);
-  const textoDe = X => (X.A ? exTexto(X.A) : texto(X.v, 4));
+  const textoDe = X => (X.A ? exTexto(X.A) : texto(X.v));
   const pub = X => ({ valor: valorDe(X), texto: textoDe(X), exacto: !!X.A });
 
   // ---------- Errores: quitar los que coinciden con la correcta ----------
@@ -236,7 +252,7 @@
       const v = typeof X === 'number' ? X : valorDe(X);
       if (!Number.isFinite(v)) continue;
       if (igual(v, correcto)) { coinciden.push(k); continue; }
-      out[k] = { id, valor: v, texto: typeof X === 'number' ? texto(X, 4) : textoDe(X) };
+      out[k] = { id, valor: v, texto: typeof X === 'number' ? texto(X) : textoDe(X) };
     }
     return { errores: out, coinciden };
   }
@@ -280,19 +296,22 @@
     const P = PRODUCTOS[o.tipo];
     if (!P) throw new Error("tipo debe ser 'sencos', 'coscos' o 'sensen'");
     const x = numero(o.x, 'el ángulo x'), y = numero(o.y, 'el ángulo y');
+    const veces = o.veces === undefined ? 1 : numero(o.veces, 'veces');
+    if (!Number.isInteger(veces) || veces === 0) throw new Error('veces debe ser un entero distinto de 0');
     const ang = w => (w === '+' ? x + y : x - y);
-    const ts = P.t.map(([s, g, w]) => [s, g, ang(w)]);
+    const ts = P.t.map(([s, g, w]) => [veces * s, g, ang(w)]);
     const R = comb(ts), v = valorDe(R);
-    const directo = 2 * mathFn(P.fx, x) * mathFn(P.fy, y);
+    const directo = veces * 2 * mathFn(P.fx, x) * mathFn(P.fy, y);
     const otraF = o.tipo === 'sencos' ? 'cos' : 'sen';
     const E = errores(v, [
       ['unTermino', 'TT6', comb([ts[0]])],
-      ['funcion', 'TT7', o.tipo === 'sensen' ? comb([[1, 'cos', x - y], [1, 'cos', x + y]]) : comb(ts.map(([s, , g]) => [s, otraF, g]))],
+      ['funcion', 'TT7', o.tipo === 'sensen' ? comb([[veces, 'cos', x - y], [veces, 'cos', x + y]]) : comb(ts.map(([s, , g]) => [s, otraF, g]))],
       ['signo', 'TT5', comb([[-ts[0][0], ts[0][1], ts[0][2]], [-ts[1][0], ts[1][1], ts[1][2]]])],
-      ['dobla', 'TT1', comb(ts.map(([s, f, g]) => [2 * s, f, g]))]
+      ['dobla', 'TT13', comb(ts.map(([s, f, g]) => [2 * s, f, g]))]
     ]);
-    const expresion = ts.map(([s, f, g], i) => `${i ? (s < 0 ? ' − ' : ' + ') : (s < 0 ? '−' : '')}${fa(f, g)}`).join('');
-    return Object.assign(pub(R), { tipo: o.tipo, x, y, terminos: ts.map(([signo, fn, g]) => ({ fn, g, signo })), expresion, directo }, E);
+    const k = Math.abs(veces) === 1 ? '' : `${Math.abs(veces)} `;
+    const expresion = ts.map(([s, f, g], i) => `${i ? (s < 0 ? ' − ' : ' + ') : (s < 0 ? '−' : '')}${k}${fa(f, g)}`).join('');
+    return Object.assign(pub(R), { tipo: o.tipo, x, y, veces, terminos: ts.map(([signo, fn, g]) => ({ fn, g, signo })), expresion, directo }, E);
   }
 
   // ---------- Cocientes que se simplifican ----------
@@ -302,10 +321,13 @@
     if (k.d === 1) return `${s}${F.fn} ${k.n === 1 ? '' : k.n}x`;
     return `${s}${F.fn}(${k.n === 1 ? '' : k.n}x/${k.d})`;
   }
-  function formaEn(F, x) {
-    const g = F.k.n / F.k.d * x * GR, t = Math.tan(g);
-    return F.s * (F.fn === 'tan' ? t : 1 / t);
+  function formaEn(F, x) {   // null si no existe (tan con coseno 0, cot con seno 0)
+    const g = F.k.n / F.k.d * x * GR, sn = Math.sin(g), cs = Math.cos(g);
+    if (Math.abs(F.fn === 'tan' ? cs : sn) < 1e-12) return null;
+    const v = F.s * (F.fn === 'tan' ? sn / cs : cs / sn);
+    return Math.abs(v) < 1e-12 ? 0 : v + 0;
   }
+  const cocienteEn = (a, b) => (Math.abs(b) < 1e-12 ? null : a / b + 0);   // null si el denominador es 0 (también 0/0)
   const XS = [3.7, 7.3, 11.9, 17.1, 23.3];   // ángulos de prueba (grados): dos formas son iguales si coinciden en todos
   const mismaForma = (F, G) => XS.every(x => igual(formaEn(F, x), formaEn(G, x)));
   function cociente(o) {
@@ -332,10 +354,40 @@
       out[nom] = { id, forma: G, texto: formaTexto(G), valor: formaEn(G, XS[0]) };
     }
     const sn = num === '+' ? 1 : -1, sd = den === '+' ? 1 : -1;
-    return { texto: formaTexto(F), forma: F, valor: formaEn(F, XS[0]), M: kM.n / kM.d, D: kD.n / kD.d, p, q, num, den,
-      valorEn: x => formaEn(F, x),
-      originalEn: x => (Math.sin(p * x * GR) + sn * Math.sin(q * x * GR)) / (Math.cos(p * x * GR) + sd * Math.cos(q * x * GR)),
-      errores: out, coinciden };
+    const originalEn = x => cocienteEn(Math.sin(p * x * GR) + sn * Math.sin(q * x * GR), Math.cos(p * x * GR) + sd * Math.cos(q * x * GR));
+    const r = { texto: formaTexto(F), forma: F, valor: formaEn(F, XS[0]), M: kM.n / kM.d, D: kD.n / kD.d, p, q, num, den,
+      valorEn: x => formaEn(F, x), originalEn, errores: out, coinciden };
+    if (o.x !== undefined) { const x = numero(o.x, 'x'); r.en = { x, original: originalEn(x), simplificada: formaEn(F, x) }; }
+    return r;
+  }
+
+  // Cociente general: (fn p x op fn q x)/(fn p x op fn q x), con fn sen o cos y p ≠ q enteros positivos en cualquier
+  // orden. Cada lado se vuelve producto c · f1(M x) · f2(D x); se cancela el factor común y queda s · tan o cot de k x.
+  function lado(L, que) {
+    if (!L || !['sen', 'cos'].includes(L.fn)) throw new Error(`${que}: fn debe ser sen o cos`);
+    const p = numero(L.p, `${que}: p`), q = numero(L.q, `${que}: q`), op = opValido(L.op || '+');
+    if (!Number.isInteger(p) || !Number.isInteger(q) || p <= 0 || q <= 0 || p === q) throw new Error(`${que}: p y q deben ser enteros positivos distintos`);
+    let [c, f1, f2] = FORMULAS[L.fn + op];
+    let M = fr(p + q, 2), D = fr(p - q, 2);
+    if (D.n < 0) { D = fr(-D.n, D.d); if (f2 === 'sen') c = -c; }   // sen(−u) = −sen u; cos(−u) = cos u
+    return { c, fs: [[f1, M], [f2, D]] };
+  }
+  function simplificar(o) {
+    o = o || {};
+    const A = lado(o.arriba, 'arriba'), B = lado(o.abajo, 'abajo');
+    const mismo = (u, v) => u[0] === v[0] && u[1].n * v[1].d === v[1].n * u[1].d;
+    let ia = -1, ib = -1;
+    for (let i = 0; i < 2 && ia < 0; i++) for (let j = 0; j < 2; j++) if (mismo(A.fs[i], B.fs[j])) { ia = i; ib = j; break; }
+    if (ia < 0) throw new Error('arriba y abajo no tienen un factor común: no se simplifica a tan o cot');
+    const u = A.fs[1 - ia], v = B.fs[1 - ib];
+    if (u[1].n * v[1].d !== v[1].n * u[1].d || u[0] === v[0]) throw new Error('lo que queda no es una tangente ni una cotangente');
+    const F = { s: Math.sign(A.c * B.c), fn: u[0] === 'sen' ? 'tan' : 'cot', k: u[1] };
+    const val = (L, x) => mathFn(L.fn, L.p * x) + (opValido(L.op || '+') === '+' ? 1 : -1) * mathFn(L.fn, L.q * x);
+    const originalEn = x => cocienteEn(val(o.arriba, x), val(o.abajo, x));
+    const r = { texto: formaTexto(F), forma: F, valorEn: x => formaEn(F, x), originalEn,
+      comun: `${A.fs[ia][0]} ${formaTexto({ s: 1, fn: '', k: A.fs[ia][1] }).trim()}` };
+    if (o.x !== undefined) { const x = numero(o.x, 'x'); r.en = { x, original: originalEn(x), simplificada: formaEn(F, x) }; }
+    return r;
   }
 
   // ---------- Agrupar un par en una suma de tres cosenos ----------
@@ -447,5 +499,5 @@
 
   function exacto(t) { const A = exDe(t); return { valor: exValor(A), texto: exTexto(A) }; }
 
-  return { ERRORES, texto, normalizar, razon, sumaAProducto, productoASuma, cociente, agrupar, serie, rombo, pulsos, exacto };
+  return { ERRORES, texto, normalizar, razon, sumaAProducto, productoASuma, cociente, simplificar, agrupar, serie, rombo, pulsos, exacto };
 });

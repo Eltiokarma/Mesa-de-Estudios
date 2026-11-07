@@ -32,6 +32,7 @@ function llamar(fn, args) {
 }
 const campo = (r, k) => k.split('.').reduce((o, p) => (o == null ? o : o[p]), r);
 function comprobar(fn, args, espera, que) {
+  if (espera.error) { assert.throws(() => llamar(fn, args), e => e.message.includes(espera.error), `${que}: se esperaba el error «${espera.error}»`); return; }
   const r = llamar(fn, args);
   for (const [k, v] of Object.entries(espera)) {
     const x = campo(r, k);
@@ -101,8 +102,21 @@ test('los cocientes simplificados coinciden con el cociente original', () => {
       const x = ent(1, 400) / 7;
       const o = R.originalEn(x), v = R.valorEn(x), sd = den === '+' ? 1 : -1;
       if (Math.abs(Math.cos(p * x * GR) + sd * Math.cos(q * x * GR)) < 1e-6) continue;   // 0/0 o división por cero
-      if (!Number.isFinite(o) || Math.abs(o) > 1e6 || Math.abs(v) > 1e6) continue;
+      if (o === null || v === null || Math.abs(o) > 1e6 || Math.abs(v) > 1e6) continue;
       cerca(v, o, `(sen ${p}x ${num} sen ${q}x)/(cos ${p}x ${den} cos ${q}x) en x = ${x}`, 1e-6);
+    }
+  }
+});
+test('simplificar: la forma coincide con el cociente original donde los dos existen', () => {
+  for (let k = 0; k < N; k++) {
+    const p = ent(1, 9), q = ent(1, 9); if (p === q) continue;
+    const arriba = { fn: elegir(['sen', 'cos']), op: elegir(['+', '−']), p, q }, abajo = { fn: elegir(['sen', 'cos']), op: elegir(['+', '−']), p: elegir([p, q]), q: 0 };
+    abajo.q = abajo.p === p ? q : p;
+    let R; try { R = motor.simplificar({ arriba, abajo }); } catch (e) { assert.match(e.message, /factor común|tangente/); continue; }
+    for (let j = 0; j < 6; j++) {
+      const x = ent(1, 400) / 7, o = R.originalEn(x), v = R.valorEn(x);
+      if (o === null || v === null || Math.abs(o) > 1e6 || Math.abs(v) > 1e6) continue;
+      cerca(v, o, `simplificar ${JSON.stringify(arriba)} / ${JSON.stringify(abajo)} en x = ${x}`, 1e-6);
     }
   }
 });
@@ -139,18 +153,21 @@ function sinChoques(r, que) {
       const fval = (F, x) => { const t = Math.tan(F.k.n / F.k.d * x * GR); return F.s * (F.fn === 'tan' ? t : 1 / t); };
       assert.ok([3.7, 7.3, 11.9, 17.1, 23.3, 31.1].some(x => !casi(r.valorEn(x), fval(e.forma, x))), `${que}: el error ${k} es la misma función`);
     } else assert.ok(!casi(e.valor, r.valor), `${que}: el error ${k} da lo mismo que la correcta (${r.texto})`);
-    if (r.texto) assert.notEqual(e.texto, r.texto, `${que}: el error ${k} se escribe igual que la correcta`);
+    // con valores numéricos (3 decimales) dos valores cercanos pueden redondear igual; con exactos, nunca
+    if (r.texto && r.exacto !== false) assert.notEqual(e.texto, r.texto, `${que}: el error ${k} se escribe igual que la correcta`);
   }
   for (const k of r.coinciden) assert.ok(!(k in r.errores), `${que}: ${k} está en los dos lados`);
 }
 function revisar(r, que) {
+  if (r === undefined) return;
   if (r.errores) sinChoques(r, que);
   for (const k of ['direccion', 'largoExacto']) if (r[k]) sinChoques(r[k], `${que} · ${k}`);
 }
 test('ningún error típico coincide con la respuesta correcta (casos y barrido)', () => {
+  const seguro = (fn, args) => { try { return llamar(fn, args); } catch (e) { return undefined; } };   // los casos de error
   for (const c of datos.casos) {
-    revisar(llamar(c.fn, c.args), c.nombre);
-    for (const t of c.tambien || []) revisar(llamar(t.fn || c.fn, t.args), c.nombre);
+    revisar(seguro(c.fn, c.args), c.nombre);
+    for (const t of c.tambien || []) revisar(seguro(t.fn || c.fn, t.args), c.nombre);
   }
   for (let k = 0; k < N; k++) {
     revisar(motor.sumaAProducto({ fn: elegir(['sen', 'cos']), op: elegir(['+', '−']), A: Q15(), B: Q15() }), 'suma a producto exacta');
@@ -183,7 +200,7 @@ const ESCENA = {
   'cociente-con-resta': [() => op(motor.cociente({ p: 7, q: 3, num: '−' }), 'intercambia', 'sinDividir', 'funcion'), 'forma']
 };
 const FORMAS = {
-  exacto: t => /^−?(\d+|\d*√\d+|\((?:−?\d*√?\d+)(?: [+−] \d*√?\d+)+\)|\d*√\d+ [+−] \d+)(\/\d+)?$/.test(t),
+  exacto: t => /^−?(\d+|\d*√\d+|\((?:\d*√?\d+)(?: [+−] \d*√?\d+)+\)|\d*√?\d+ [+−] \d*√?\d+)(\/\d+)?$/.test(t),
   grados: t => /^\d+°$/.test(t),
   forma: t => /^−?(tan|cot) \d*x$/.test(t),
   entero: t => /^\d+$/.test(t)
@@ -219,6 +236,9 @@ test('entradas inválidas', () => {
   assert.throws(() => motor.pulsos({ p: 7, q: 9 }), /p > q/);
   assert.throws(() => motor.pulsos({ p: 9, q: 7, t0: 10, t1: 5 }), /t1/);
   assert.throws(() => motor.exacto('dos'), /exacto/);
+  assert.throws(() => motor.productoASuma({ tipo: 'sencos', x: 1, y: 2, veces: 1.5 }), /veces/);
+  assert.throws(() => motor.simplificar({ arriba: { fn: 'sen', p: 5, q: 3 }, abajo: { fn: 'cos', p: 7, q: 1 } }), /factor común/);
+  assert.throws(() => motor.simplificar({ arriba: { fn: 'sen', p: 3, q: 3 }, abajo: { fn: 'cos', p: 5, q: 1 } }), /distintos/);
 });
 
 // 4. papel.json

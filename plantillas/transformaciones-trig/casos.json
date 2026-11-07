@@ -9,7 +9,7 @@
       "fn": "razon", "args": ["sen", 75],
       "espera": { "valor": 0.9659258262890683, "texto": "(√6 + √2)/4", "exacto": true },
       "tambien": [ { "args": ["cos", 120], "espera": { "valor": -0.5, "texto": "−1/2" } },
-                   { "args": ["tan", 75], "espera": { "valor": 3.7320508075688772, "texto": "√3 + 2" } },
+                   { "args": ["tan", 75], "espera": { "valor": 3.7320508075688772, "texto": "2 + √3" } },
                    { "args": ["tan", 15], "espera": { "valor": 0.2679491924311227, "texto": "2 − √3" } },
                    { "args": ["sen", 20], "espera": { "valor": 0.3420201433256687, "texto": "0,342", "exacto": false } },
                    { "args": ["tan", 90], "espera": { "existe": false, "texto": "no existe" } } ] },
@@ -20,7 +20,7 @@
         "pendiente": 1, "direccion.texto": "45°", "direccion.errores.sinDividir.texto": "90°", "direccion.errores.intercambia.texto": "30°", "direccion.errores.primera.texto": "75°",
         "largoExacto.texto": "√3", "largoExacto.errores.sumaLargos.texto": "2", "largoExacto.errores.funcion.texto": "1", "largoExacto.errores.sinDos.texto": "√3/2" } },
 
-    { "nombre": "Rombo con ángulos cualesquiera: A = 80°, B = 20° → la suma (sen 80° + sen 20° ≈ 1,3268) es la diagonal de largo 2 cos 30° en la dirección 50°; la resta mide 2 sen 30° = 1 y es perpendicular (140°)",
+    { "nombre": "Rombo con ángulos cualesquiera: A = 80°, B = 20° → la suma (sen 80° + sen 20° ≈ 1,327) es la diagonal de largo 2 cos 30° en la dirección 50°; la resta mide 2 sen 30° = 1 y es perpendicular (140°)",
       "fn": "rombo", "args": [{ "A": 80, "B": 20 }],
       "espera": { "M": 50, "D": 30, "largo": 1.7320508075688772, "alturaSuma": 1.3268278963490515, "abscisaSuma": 1.113340798452839,
         "largoResta": 1, "direccionResta": 140, "abscisaResta": -0.766044443118978, "alturaResta": 0.6427876096865393 } },
@@ -45,26 +45,26 @@
       "espera": { "valor": 0.7071067811865476, "texto": "√2/2", "expresion": "2 cos 60° cos 45°",
         "errores.funcion.texto": "√6/2", "errores.lineal.texto": "−1/2", "errores.sinDos.texto": "√2/4", "coinciden": ["intercambia"] } },
 
-    { "nombre": "Suma a producto con ángulos no notables: sen 50° + sen 10° = 2 sen 30° cos 20° = cos 20° ≈ 0,9397; cos 80° − cos 20° = −2 sen 50° sen 30° = −sen 50°",
+    { "nombre": "Suma a producto con ángulos no notables: sen 50° + sen 10° = 2 sen 30° cos 20° = cos 20° ≈ 0,940; cos 80° − cos 20° = −2 sen 50° sen 30° = −sen 50°",
       "fn": "sumaAProducto", "args": [{ "fn": "sen", "A": 50, "B": 10 }],
-      "espera": { "valor": 0.9396926207859084, "exacto": false, "texto": "0,9397", "expresion": "2 sen 30° cos 20°", "directo": 0.9396926207859084 },
+      "espera": { "valor": 0.9396926207859084, "exacto": false, "texto": "0,940", "expresion": "2 sen 30° cos 20°", "directo": 0.9396926207859084 },
       "tambien": [ { "args": [{ "fn": "cos", "op": "−", "A": 80, "B": 20 }], "espera": { "valor": -0.766044443118978, "expresion": "−2 sen 50° sen 30°", "directo": -0.766044443118978 } } ] },
 
-    { "nombre": "2 sen 75° cos 45° = sen 120° + sen 30° = (√3 + 1)/2 (paso 7); TT6 un solo término sen 120° = √3/2; TT7 cos 120° + cos 30° = (√3 − 1)/2; TT1 el doble √3 + 1; 2 sen 75° cos 15° = sen 90° + sen 60° = (√3 + 2)/2",
+    { "nombre": "2 sen 75° cos 45° = sen 120° + sen 30° = (1 + √3)/2 (paso 7); TT6 un solo término sen 120° = √3/2; TT7 cos 120° + cos 30° = (√3 − 1)/2; TT13 el doble 1 + √3; 2 sen 75° cos 15° = sen 90° + sen 60° = (2 + √3)/2",
       "fn": "productoASuma", "args": [{ "tipo": "sencos", "x": 75, "y": 45 }],
-      "espera": { "valor": 1.3660254037844386, "texto": "(√3 + 1)/2", "expresion": "sen 120° + sen 30°", "directo": 1.3660254037844388,
-        "errores.unTermino.texto": "√3/2", "errores.funcion.texto": "(√3 − 1)/2", "errores.dobla.texto": "√3 + 1", "errores.signo.texto": "(−√3 − 1)/2" },
-      "tambien": [ { "args": [{ "tipo": "sencos", "x": 75, "y": 15 }], "espera": { "valor": 1.8660254037844386, "texto": "(√3 + 2)/2", "expresion": "sen 90° + sen 60°", "errores.unTermino.texto": "1", "errores.funcion.texto": "1/2" } } ] },
+      "espera": { "valor": 1.3660254037844386, "texto": "(1 + √3)/2", "expresion": "sen 120° + sen 30°", "directo": 1.3660254037844388,
+        "errores.unTermino.texto": "√3/2", "errores.funcion.texto": "(√3 − 1)/2", "errores.dobla.texto": "1 + √3", "errores.signo.texto": "−(1 + √3)/2" },
+      "tambien": [ { "args": [{ "tipo": "sencos", "x": 75, "y": 15 }], "espera": { "valor": 1.8660254037844386, "texto": "(2 + √3)/2", "expresion": "sen 90° + sen 60°", "errores.unTermino.texto": "1", "errores.funcion.texto": "1/2" } } ] },
 
-    { "nombre": "2 sen 75° sen 30° = cos 45° − cos 105° = (√6 + √2)/4 (qué pasa si 3); TT5 (−√6 − √2)/4; TT7 cos 45° + cos 105° = (3√2 − √6)/4; TT6 cos 45° = √2/2",
+    { "nombre": "2 sen 75° sen 30° = cos 45° − cos 105° = (√6 + √2)/4 (qué pasa si 3); TT5 −(√6 + √2)/4; TT7 cos 45° + cos 105° = (3√2 − √6)/4; TT6 cos 45° = √2/2",
       "fn": "productoASuma", "args": [{ "tipo": "sensen", "x": 75, "y": 30 }],
       "espera": { "valor": 0.9659258262890682, "texto": "(√6 + √2)/4", "expresion": "cos 45° − cos 105°",
-        "errores.signo.texto": "(−√6 − √2)/4", "errores.funcion.texto": "(3√2 − √6)/4", "errores.unTermino.texto": "√2/2" },
-      "tambien": [ { "args": [{ "tipo": "sensen", "x": 75, "y": 45 }], "espera": { "texto": "(√3 + 1)/2", "expresion": "cos 30° − cos 120°", "errores.funcion.texto": "(√3 − 1)/2" } } ] },
+        "errores.signo.texto": "−(√6 + √2)/4", "errores.funcion.texto": "(3√2 − √6)/4", "errores.unTermino.texto": "√2/2" },
+      "tambien": [ { "args": [{ "tipo": "sensen", "x": 75, "y": 45 }], "espera": { "texto": "(1 + √3)/2", "expresion": "cos 30° − cos 120°", "errores.funcion.texto": "(√3 − 1)/2" } } ] },
 
-    { "nombre": "2 cos 45° cos 15° = cos 60° + cos 30° = (√3 + 1)/2 (TT7 sen 60° + sen 30° da lo mismo; TT6 cos 60° = 1/2); 2 cos 50° cos 10° = cos 60° + cos 40° ≈ 1,2660 (no exacto)",
+    { "nombre": "2 cos 45° cos 15° = cos 60° + cos 30° = (1 + √3)/2 (TT7 sen 60° + sen 30° da lo mismo; TT6 cos 60° = 1/2); 2 cos 50° cos 10° = cos 60° + cos 40° ≈ 1,266 (no exacto)",
       "fn": "productoASuma", "args": [{ "tipo": "coscos", "x": 45, "y": 15 }],
-      "espera": { "valor": 1.3660254037844386, "texto": "(√3 + 1)/2", "expresion": "cos 60° + cos 30°", "coinciden": ["funcion"], "errores.unTermino.texto": "1/2" },
+      "espera": { "valor": 1.3660254037844386, "texto": "(1 + √3)/2", "expresion": "cos 60° + cos 30°", "coinciden": ["funcion"], "errores.unTermino.texto": "1/2" },
       "tambien": [ { "args": [{ "tipo": "coscos", "x": 50, "y": 10 }], "espera": { "valor": 1.2660444431189779, "exacto": false, "directo": 1.266044443118978 } } ] },
 
     { "nombre": "(sen 5x + sen 3x)/(cos 5x + cos 3x) = tan 4x (paso 8); TT2 tan x; TT4 tan 8x; TT3 cot 4x",
@@ -86,9 +86,9 @@
       "espera": { "valor": 0, "texto": "0", "M": 120, "D": -20, "kPar.texto": "−1", "total": 0,
         "errores.sinDos.texto": "1/2", "errores.signo.texto": "2", "errores.elPar.texto": "−1" } },
 
-    { "nombre": "Agrupar con la semisuma: cos 40° + cos 10° + cos 70° = cos 40° + 2 cos 40° cos 30° = (√3 + 1) cos 40°",
+    { "nombre": "Agrupar con la semisuma: cos 40° + cos 10° + cos 70° = cos 40° + 2 cos 40° cos 30° = (1 + √3) cos 40°",
       "fn": "agrupar", "args": [{ "solo": 40, "par": [10, 70] }],
-      "espera": { "valor": 2.732050807568877, "texto": "√3 + 1", "M": 40, "D": -30, "kPar.texto": "√3", "total": 2.092872339456855 } },
+      "espera": { "valor": 2.732050807568877, "texto": "1 + √3", "M": 40, "D": -30, "kPar.texto": "√3", "total": 2.092872339456855 } },
 
     { "nombre": "Series en progresión: sen 15° + sen 45° + sen 75° = [sen 45°/sen 15°] · sen 45° = (√6 + √2)/2 (TT9 3 sen 45° = 3√2/2); cos 20° + cos 140° + cos 260° = 0",
       "fn": "serie", "args": [{ "fn": "sen", "a": 15, "r": 30, "n": 3 }],
@@ -96,7 +96,7 @@
         "errores.nVeces.texto": "3√2/2", "errores.lineal.texto": "√2/2" },
       "tambien": [ { "args": [{ "fn": "cos", "a": 20, "r": 120, "n": 3 }], "espera": { "valor": 0, "texto": "0", "exacto": true, "centro": 140, "directo": 0 } } ] },
 
-    { "nombre": "Serie de cinco senos: sen 10° + sen 30° + sen 50° + sen 70° + sen 90° = [sen 50°/sen 10°] · sen 50° ≈ 3,3794 (no exacto)",
+    { "nombre": "Serie de cinco senos: sen 10° + sen 30° + sen 50° + sen 70° + sen 90° = [sen 50°/sen 10°] · sen 50° ≈ 3,379 (no exacto)",
       "fn": "serie", "args": [{ "fn": "sen", "a": 10, "r": 20, "n": 5 }],
       "espera": { "valor": 3.3793852415718164, "exacto": false, "centro": 50, "factor": 4.411474127809772, "directo": 3.379385241571817 } },
 

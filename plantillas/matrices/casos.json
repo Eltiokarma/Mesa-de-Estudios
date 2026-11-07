@@ -92,7 +92,7 @@
       },
       "tambien": [
         { "args": [{ "A": [3, 2], "B": [2, 3] }], "espera": { "AB": [3, 3], "BA": [2, 2], "texto": "AB es 3 × 3; BA es 2 × 2" } },
-        { "args": [{ "A": [2, 3], "B": [2, 3] }], "espera": { "AB": null, "BA": null, "texto": "AB no existe; BA no existe", "coinciden": ["medio", "reves", "mismoOrden"] } }
+        { "args": [{ "A": [2, 3], "B": [2, 3] }], "espera": { "AB": null, "BA": null, "texto": "AB no existe; BA no existe", "coinciden": ["medio", "reves"], "errores.mismoOrden.texto": "AB es 2 × 3; BA es 2 × 3" } }
       ]
     },
     {
