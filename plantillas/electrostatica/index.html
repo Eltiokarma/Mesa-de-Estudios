@@ -488,7 +488,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
         if (g > 0) flecha(P, { x:P.x + b.x*f, y:P.y + b.y*f }, c.F, 1.4, { trazos:true, alfa:.5 });
         flecha(cola, { x:cola.x + b.x*f, y:cola.y + b.y*f }, c.F, grosor('F', 2.6));
         if (f >= 1){
-          rotulo(ctx, c, P.x + a.x/2 + 6, P.y + a.y/2 - 13, `F₁ = ${fmt(F.partes[0].modulo, 2)} N`, c.F, 'center', 700, 12);
+          rotulo(ctx, c, P.x + Math.max(44, a.x*.35), P.y + a.y/2 + 15, `F₁ = ${fmt(F.partes[0].modulo, 2)} N`, c.F, 'left', 700, 12);
           rotulo(ctx, c, cola.x + b.x/2 + (g > .5 ? 10 : -10), cola.y + b.y/2, `F₂ = ${fmt(F.partes[1].modulo, 2)} N`, c.F, g > .5 ? 'left' : 'right', 700, 12);
         }
       }
