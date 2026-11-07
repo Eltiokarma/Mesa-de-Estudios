@@ -140,6 +140,54 @@ const V = {
     if (Math.abs(p.Eanodo - d.Eanodo) > 1e-9 || Math.abs(p.Ecatodo - d.Ecatodo) > 1e-9) throw new Error('los potenciales del enunciado no son los del motor');
     return { correcta: p.E, errores: { 'fem-multiplica-coeficientes': p.errores.multiplicaCoeficientes, 'fem-suma-sin-cambiar-signo': p.errores.sumaSinCambiarSigno, 'fem-resta-al-reves': p.errores.restaAlReves } };
   },
+  // qui-11 a qui-17: escenas de química que no tenían ítems (hoy en "reserva" del banco).
+  'qui-11': d => {
+    // Partículas de un anión: neutrones y electrones, con los errores que devuelve el motor del átomo.
+    const r = motor('atomo-y-tabla').particulas({ simbolo: d.simbolo, A: d.A, carga: d.carga });
+    if (r.protones !== d.Z) throw new Error('el Z del enunciado no es el del elemento');
+    const k = (n, e) => `${n}n-${e}e`;
+    return { correcta: k(r.neutrones, r.electrones), errores: {
+      'resta-carga-a-neutrones': k(r.errores['resta-carga-a-neutrones'], r.electrones),
+      'suma-carga-a-electrones': k(r.neutrones, r.errores['suma-carga-a-electrones']),
+      'ignora-la-carga': k(r.neutrones, r.errores['ignora-la-carga']) } };
+  },
+  'qui-12': d => {
+    // Electrones de valencia que reparte la estructura de Lewis de un anión.
+    const r = motor('enlace').lewis(d.formula);
+    return { correcta: r.electrones, errores: { 'ignora-la-carga': r.errores['ignora-la-carga'], 'carga-al-reves': r.errores['carga-al-reves'], 'EN4-valencia-del-O': r.errores['valencia-del-O'] } };
+  },
+  'qui-13': d => {
+    // Suma de coeficientes con los menores enteros (el combustible queda con 1, que también se suma).
+    const r = motor('balance-reacciones').balancear(d.ecuacion);
+    if (!r.coefs.includes(1)) throw new Error('el ítem necesita un coeficiente 1 para que «sin contar el 1» se distinga');
+    return { correcta: r.suma, errores: { 'ES12-olvida-el-oxigeno': r.errores.olvida.O.suma, 'suma-sin-contar-el-1': r.errores.sinContarUnos, 'no-simplifica': r.errores.doble } };
+  },
+  'qui-14': d => {
+    // Gas recogido sobre agua: la presión de vapor del enunciado es la del motor (Antoine), redondeada a 0,1 mmHg.
+    const L = motor('liquidos-y-solidos'), r = L.gasSobreAgua(d.Ptotal, d.T);
+    if (Math.abs(r.Pv - d.Pv) > 0.05) throw new Error(`la presión de vapor del enunciado (${d.Pv}) no es la del motor (${r.Pv})`);
+    return { correcta: r.Pgas, errores: { 'gas-agua-no-resta': r.errores['no-resta'], 'gas-agua-suma-el-vapor': r.errores['suma-el-vapor'], 'gas-agua-reparte-a-medias': r.errores['reparte-a-medias'] } };
+  },
+  'qui-15': d => {
+    // Muestra impura y rendimiento: masa real del producto.
+    const R = motor('rendimiento-pureza');
+    for (const [f, M] of Object.entries(d.masas)) if (R.masaMolar(f) !== M) throw new Error(`la masa molar de ${f} del enunciado no es la del motor`);
+    const r = R.producir({ reaccion: d.reaccion, muestra: d.muestra, pureza: d.pureza, rendimiento: d.rendimiento, producto: d.producto });
+    return { correcta: r.real, errores: { 'muestra-pura': r.errores['muestra-pura'], 'olvida-rendimiento': r.errores['olvida-rendimiento'], 'suma-porcentajes': r.errores['suma-porcentajes'] } };
+  },
+  'qui-16': d => {
+    // Masa molar de un péptido lineal: se resta un agua por cada unión (n − 1).
+    const B = motor('biomoleculas');
+    for (const [x, M] of Object.entries(d.masas)) if (B.pieza(x).M !== M) throw new Error(`la masa de ${x} del enunciado no es la del motor`);
+    const r = B.peptido(d.piezas);
+    return { correcta: r.M, errores: { 'BMH5-no-resta-agua': r.errores['no-resta-agua'], 'BMH6-n-aguas': r.errores['n-aguas'], 'BMH7-un-agua': r.errores['resta-un-agua'] } };
+  },
+  'qui-17': d => {
+    // Combustión en un frasco cerrado: la balanza no cambia.
+    const r = motor('quimica-ambiente').balanzaCombustion(d.hc, d.masaComb, d.masaO2, d.masaFrasco, true);
+    if (r.reparto.comb !== 0 || r.reparto.CO !== 0 || r.reparto.C !== 0) throw new Error('la combustión del ítem debe ser completa');
+    return { correcta: r.despues, errores: { 'QA9-masa-baja-cerrado': r.errores['gases-no-pesan'], 'QA10-se-vuelve-energia': r.errores['se-vuelve-energia'], 'se-suma-oxigeno-cerrado': r.errores['se-suma-oxigeno'] } };
+  },
 
   // ---------------- Geometría ----------------
   'geo-01': d => { const r = motor('ampliadora').segunMagnitud(d.area, d.k, 'area');
