@@ -618,6 +618,24 @@ const V = {
   },
 
   // ---------------- Reserva de álgebra (rutina de matemática C) ----------------
+  // cx-01 a pl-02: numeros-complejos, numeros-reales, polinomios y programacion-lineal (en "reserva": las formas de álgebra ya tienen 10 pares).
+  'cx-01': d => { const r = motor('numeros-complejos').modulo({ z: { re: d.re, im: d.im } }), e = r.errores;
+    return { correcta: r.valor, errores: { 'AL9-modulo-suma-partes': e.sumaPartes.num.re, 'CX10-raiz-de-la-suma': e.raizDeSuma.num.re, 'CX11-sin-raiz': e.sinRaiz.num.re } }; },
+  'cx-02': d => { const r = motor('numeros-complejos').potenciaI({ n: d.n }), e = r.errores;
+    return { correcta: r.texto, errores: { 'CX2-i-cubo-es-i': e.cicloTres.texto, 'CX3-usa-el-cociente': e.cociente.texto, 'CX4-ciclo-corrido': e.corrido.texto } }; },
+  're-01': d => { const r = motor('numeros-reales').absoluto({ a: d.a, op: '≤', r: d.r }), e = r.errores;
+    return { correcta: r.texto, errores: { 'AL22-quitar-las-barras': e.sinBarras.texto, 'NR5-dentro-por-fuera': e.alReves.texto, 'NR6-distancia-desde-menos-a': e.otroCentro.texto } }; },
+  're-02': d => { const r = motor('numeros-reales').imagen({ A: d.A, f: { tipo: 'afin', k: d.k, t: d.t } }), e = r.errores;
+    return { correcta: r.texto, errores: { 'AL20-no-invertir-con-negativo': e.sinVoltear.texto, 'NR20-ordena-sin-voltear-corchetes': e.corchetesSinVoltear.texto, 'NR22-olvida-sumar': e.sinSumar.texto } }; },
+  'po-01': d => { const r = motor('polinomios').teoremaResto({ coefs: d.coefs, divisor: d.divisor }), e = r.errores;
+    return { correcta: r.valor, errores: { 'PO8-resto-con-el-signo-del-divisor': e.signo.valor, 'PO15-potencia-par-de-negativo': e.parNegativo.valor, 'PO27-resto-es-el-independiente': e.independiente.valor } }; },
+  'po-02': d => { const r = motor('polinomios').factorK({ coefs: d.coefs, raiz: d.raiz }), e = r.errores;
+    return { correcta: r.valor, errores: { 'PO17-factor-con-el-signo-cambiado': e.signo.valor, 'PO33-factor-con-suma-de-coeficientes': e.sumaCoef.valor, 'AL16-despeje-con-signo-cambiado': e.despeje.valor } }; },
+  'pl-01': d => { const r = motor('programacion-lineal').traducir({ porUnidad: [d.p, d.q], total: d.total, frase: d.frase }), e = r.errores;
+    return { correcta: r.texto, errores: { 'PL14-coeficientes-cruzados': e.cruzada.texto, 'PL15-a-lo-mas-como-al-menos': e.sentido.texto, 'PL12-inecuacion-como-ecuacion': e.igualdad.texto } }; },
+  'pl-02': d => { const r = motor('programacion-lineal').optimizar({ restricciones: d.restricciones, noNegativas: true, objetivo: d.objetivo, sentido: 'max' }), e = r.errores;
+    if (r.tipo !== 'unico') throw new Error('el ítem supone un óptimo único');
+    return { correcta: r.optimoTexto, errores: { 'PL5-vertice-de-mayor-x': e.mayorX.texto, 'PL4-vertice-mas-lejano': e.masLejano.texto, 'PL7-solo-vertices-de-los-ejes': e.soloEjes.texto } }; },
 
   // ---------------- Reserva de geometría (rutina de matemática C) ----------------
   // cg-01 a si-02: congruencia, segmentos-angulos y simetria (en "reserva": las formas de geometría ya tienen 10 pares).

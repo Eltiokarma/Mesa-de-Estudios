@@ -120,6 +120,102 @@
     "EL7-potencia-de-potencia-suma": {
      "respaldo": "hipotesis",
      "describe": "En una potencia de potencia suma los exponentes en vez de multiplicarlos"
+    },
+    "AL9-modulo-suma-partes": {
+     "respaldo": "parcial",
+     "describe": "Suma las partes en vez de usar Pitágoras: |a + bi| = |a| + |b|"
+    },
+    "CX10-raiz-de-la-suma": {
+     "respaldo": "hipotesis",
+     "describe": "Saca la raíz de |a| + |b|, sin elevar al cuadrado"
+    },
+    "CX11-sin-raiz": {
+     "respaldo": "hipotesis",
+     "describe": "Da a² + b² y olvida la raíz"
+    },
+    "CX2-i-cubo-es-i": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que i³ = i"
+    },
+    "CX3-usa-el-cociente": {
+     "respaldo": "hipotesis",
+     "describe": "Usa el cociente de dividir el exponente entre 4 en vez del resto"
+    },
+    "CX4-ciclo-corrido": {
+     "respaldo": "hipotesis",
+     "describe": "Corre el ciclo de las potencias de i un lugar (i⁰ = i)"
+    },
+    "AL22-quitar-las-barras": {
+     "respaldo": "parcial",
+     "describe": "Quita las barras del valor absoluto: |x − a| ≤ r como x ≤ a + r"
+    },
+    "NR5-dentro-por-fuera": {
+     "respaldo": "hipotesis",
+     "describe": "Confunde «a lo más r de a» con los dos rayos de afuera"
+    },
+    "NR6-distancia-desde-menos-a": {
+     "respaldo": "hipotesis",
+     "describe": "Mide la distancia desde −a: cambia el signo del centro"
+    },
+    "AL20-no-invertir-con-negativo": {
+     "respaldo": "hipotesis",
+     "describe": "Multiplica por un negativo y deja los extremos en el mismo orden"
+    },
+    "NR20-ordena-sin-voltear-corchetes": {
+     "respaldo": "hipotesis",
+     "describe": "Ordena los extremos pero deja cada corchete en su lugar"
+    },
+    "NR22-olvida-sumar": {
+     "respaldo": "hipotesis",
+     "describe": "Multiplica por k y olvida sumar el término t"
+    },
+    "PO8-resto-con-el-signo-del-divisor": {
+     "respaldo": "hipotesis",
+     "describe": "Para x + a evalúa P(a) en vez de P(−a)"
+    },
+    "PO15-potencia-par-de-negativo": {
+     "respaldo": "hipotesis",
+     "describe": "Una potencia par de un negativo le sale negativa"
+    },
+    "PO27-resto-es-el-independiente": {
+     "respaldo": "hipotesis",
+     "describe": "Da el término independiente como resto"
+    },
+    "PO17-factor-con-el-signo-cambiado": {
+     "respaldo": "hipotesis",
+     "describe": "Para que x − r sea factor iguala a cero P(−r)"
+    },
+    "PO33-factor-con-suma-de-coeficientes": {
+     "respaldo": "hipotesis",
+     "describe": "Iguala a cero la suma de coeficientes, P(1)"
+    },
+    "AL16-despeje-con-signo-cambiado": {
+     "respaldo": "hipotesis",
+     "describe": "Despeja k con el signo cambiado"
+    },
+    "PL14-coeficientes-cruzados": {
+     "respaldo": "parcial",
+     "describe": "Cruza los coeficientes: pone a cada variable el dato de la otra"
+    },
+    "PL15-a-lo-mas-como-al-menos": {
+     "respaldo": "hipotesis",
+     "describe": "Lee «a lo más» como ≥"
+    },
+    "PL12-inecuacion-como-ecuacion": {
+     "respaldo": "parcial",
+     "describe": "Escribe la condición como ecuación, con =, y no como inecuación"
+    },
+    "PL5-vertice-de-mayor-x": {
+     "respaldo": "hipotesis",
+     "describe": "Toma como óptimo el vértice de mayor x"
+    },
+    "PL4-vertice-mas-lejano": {
+     "respaldo": "hipotesis",
+     "describe": "Toma como óptimo el vértice más lejano del origen"
+    },
+    "PL7-solo-vertices-de-los-ejes": {
+     "respaldo": "hipotesis",
+     "describe": "Evalúa solo los vértices que están en los ejes"
     }
    },
    "pares": [
