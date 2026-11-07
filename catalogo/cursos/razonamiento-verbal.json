@@ -224,7 +224,7 @@
       "universidades": {"unmsm": {"temas": [2, 16, 17]}},
       "potencial_visual": "bajo",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["lectura-ingles"],
       "investigacion": null
     }
   ]

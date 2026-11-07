@@ -1,0 +1,259 @@
+{
+  "id": "t051",
+  "version": 1,
+  "titulo": "Rosa and the Clay",
+  "tema": "Lectura en inglés · cerámica en Ica",
+  "grado": 3,
+  "dificultad": 1,
+  "tipo_texto": "narrativo",
+  "idioma": "en",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "Rosa is sixteen and lives in a small town near Ica."
+      },
+      {
+        "id": "o2",
+        "rol": "principal",
+        "t": "Every Saturday, she goes to her grandfather's workshop, where he teaches her to make pots from clay, just as his father taught him."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "First, they mix the clay with water and a little sand."
+      },
+      {
+        "id": "o4",
+        "rol": "detalle",
+        "t": "Then Rosa shapes each pot slowly with her hands."
+      },
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "After that, the pots dry in the sun for several days before they go into the kiln (a special oven)."
+      }
+    ],
+    [
+      {
+        "id": "o6",
+        "rol": "detalle",
+        "t": "At first, Rosa's pots were not very good."
+      },
+      {
+        "id": "o7",
+        "rol": "detalle",
+        "t": "Some of them broke in the kiln, and she felt embarrassed in front of her grandfather."
+      },
+      {
+        "id": "o8",
+        "rol": "detalle",
+        "t": "He just laughed and said, \"My first pots broke too.\""
+      },
+      {
+        "id": "o9",
+        "rol": "detalle",
+        "t": "Now she can paint birds and fish on them, like the ones on the old Nasca pots in the museum in Ica."
+      },
+      {
+        "id": "o10",
+        "rol": "principal",
+        "t": "Rosa wants to keep her family's craft alive, and she feels proud of every pot she makes."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración (en inglés) que mejor resume todo el texto.",
+        "aceptadas": [
+          "o2",
+          "o10"
+        ],
+        "ninguna": "RV3",
+        "explicacion": "La oración 2 dice de qué trata todo: Rosa aprende con su abuelo a hacer vasijas de arcilla, un oficio que pasa de padre a hijo. La 10 lo cierra: quiere mantener vivo ese oficio familiar y está orgullosa de lo que hace.",
+        "explicaciones": {
+          "o1": "«Rosa is sixteen…» solo presenta a Rosa: dice su edad y dónde vive.",
+          "o3": "«First, they mix the clay…» es el primer paso del trabajo, un detalle.",
+          "o4": "«Then Rosa shapes each pot…» es otro paso del trabajo.",
+          "o5": "«After that, the pots dry in the sun…» cuenta cómo se secan las vasijas: es un paso más.",
+          "o6": "«At first, Rosa's pots were not very good» cuenta cómo le iba al comienzo, no de qué trata todo el texto.",
+          "o7": "Cuenta un momento difícil (las vasijas que se rompieron), no la idea que junta todo.",
+          "o8": "Es la respuesta del abuelo en ese momento: un detalle de la historia.",
+          "o9": "Muestra lo que Rosa ya sabe hacer; es un ejemplo de cuánto avanzó.",
+          "ninguna": "La oración 10 ya lo dice casi todo: Rosa quiere mantener vivo el oficio de su familia y está orgullosa de lo que hace. La 2 dice de quién lo aprende."
+        }
+      },
+      "enunciado": "¿Cuál es la idea principal del texto?",
+      "alternativas": [
+        {
+          "t": "Rosa aprende de su abuelo la cerámica, un oficio familiar, y se siente orgullosa de él.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o10"
+          ],
+          "explicacion": "Junta lo que dicen las oraciones 2 y 10: el abuelo le enseña a hacer vasijas, como a él le enseñó su padre, y Rosa quiere mantener vivo ese oficio."
+        },
+        {
+          "t": "Antes de entrar al horno, las vasijas se secan al sol durante varios días.",
+          "codigo": "RV1",
+          "origen": "o5",
+          "explicacion": "Es verdad («the pots dry in the sun for several days»), pero es solo un paso del trabajo, no la idea de todo el texto."
+        },
+        {
+          "t": "La cerámica es un arte muy antiguo que se practica en muchas regiones del Perú.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto no habla de la cerámica del Perú, sino de Rosa y de lo que aprende con su abuelo."
+        },
+        {
+          "t": "Al principio, las vasijas que hacía Rosa no eran buenas y algunas se le rompían en el horno.",
+          "codigo": "RV3",
+          "origen": "o6",
+          "explicacion": "Es verdad («At first, Rosa's pots were not very good»), pero se queda con el comienzo de la historia y deja fuera lo principal: que aprende el oficio de su familia y ya mejoró."
+        },
+        {
+          "t": "En Ica, muchos ceramistas venden sus vasijas pintadas a los turistas.",
+          "codigo": "RV8",
+          "explicacion": "El texto no dice nada de ventas ni de turistas. Puede ser cierto, pero la respuesta sale de lo que se leyó."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "enunciado": "En la oración «she felt embarrassed in front of her grandfather», la palabra EMBARRASSED significa",
+      "alternativas": [
+        {
+          "t": "avergonzada.",
+          "correcta": true,
+          "evidencia": [
+            "o7",
+            "o8"
+          ],
+          "explicacion": "«Embarrassed» quiere decir avergonzada. Encaja con el texto: sus vasijas se rompieron delante del abuelo, y él la calma diciendo «My first pots broke too» («Mis primeras vasijas también se rompieron»)."
+        },
+        {
+          "t": "embarazada.",
+          "codigo": "RV54",
+          "origen": "o7",
+          "explicacion": "Es un falso amigo: «embarrassed» se parece a «embarazada», pero significa avergonzada. Embarazada, en inglés, es «pregnant»."
+        },
+        {
+          "t": "enfadada con su abuelo.",
+          "codigo": "RV19",
+          "explicacion": "Es otra emoción, pero no la que dice la palabra. Además, el abuelo no la calma por estar enfadada con él, sino porque se sintió mal de que se rompieran sus vasijas."
+        },
+        {
+          "t": "rota.",
+          "codigo": "RV5",
+          "origen": "o7",
+          "explicacion": "Repite la idea de «broke» (se rompieron), que está en la misma oración; pero lo que se rompió fueron las vasijas, y «embarrassed» dice cómo se sintió Rosa."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "compatibilidad",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "enunciado": "¿Cuál de estas afirmaciones es compatible con el texto?",
+      "alternativas": [
+        {
+          "t": "Con la práctica, Rosa mejoró: ahora pinta aves y peces en sus vasijas.",
+          "correcta": true,
+          "evidencia": [
+            "o6",
+            "o9"
+          ],
+          "explicacion": "«At first … were not very good» (al principio no eran muy buenas) está en pasado, y «Now she can paint birds and fish» (ahora puede pintar aves y peces) muestra que mejoró."
+        },
+        {
+          "t": "Las vasijas de Rosa todavía no son buenas y siguen rompiéndose en el horno.",
+          "codigo": "RV55",
+          "origen": "o6",
+          "explicacion": "«Were» y «broke» están en pasado, y «At first» marca el comienzo. El texto habla de cómo le iba antes; «Now she can paint…» dice que hoy ya le sale bien."
+        },
+        {
+          "t": "Desde el principio, las vasijas que hacía Rosa salieron muy bien.",
+          "codigo": "RV10",
+          "origen": "o6",
+          "explicacion": "Pasa por alto el «not»: «Rosa's pots were not very good» quiere decir que al principio no eran muy buenas."
+        },
+        {
+          "t": "Rosa ya pinta sus vasijas mejor que los antiguos ceramistas nasca.",
+          "codigo": "RV7",
+          "origen": "o9",
+          "explicacion": "«Like the ones on the old Nasca pots» quiere decir «como los de las antiguas vasijas nasca»: dice que se parecen, no que las de Rosa sean mejores."
+        },
+        {
+          "t": "El abuelo de Rosa guarda las vasijas de su familia en el museo de Ica.",
+          "codigo": "RV5",
+          "origen": "o9",
+          "explicacion": "Repite «museum in Ica», pero el texto solo dice que en ese museo hay vasijas nasca antiguas. No dice nada de vasijas de la familia."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.lectura-en-ingles",
+      "enunciado": "¿Por qué el abuelo le dice a Rosa «My first pots broke too» («Mis primeras vasijas también se rompieron»)?",
+      "alternativas": [
+        {
+          "t": "Para que Rosa no se sienta mal: a él también le pasó cuando empezaba.",
+          "correcta": true,
+          "evidencia": [
+            "o7",
+            "o8"
+          ],
+          "explicacion": "Rosa se siente avergonzada porque sus vasijas se rompieron (oración 7). El abuelo le cuenta que a él le pasó lo mismo al comienzo: la consuela."
+        },
+        {
+          "t": "Porque se burla de Rosa y piensa que ella nunca aprenderá el oficio.",
+          "codigo": "RV7",
+          "origen": "o8",
+          "explicacion": "«He just laughed» (solo se rió) no quiere decir que se burle. Lo que dice después la anima, y el texto cuenta que Rosa sí aprendió."
+        },
+        {
+          "t": "Porque antes los hornos rompían muchas más vasijas que los hornos de ahora.",
+          "codigo": "RV8",
+          "explicacion": "El texto no compara los hornos de antes con los de ahora. Esa idea sale de afuera, no de lo que se leyó."
+        },
+        {
+          "t": "Porque su padre le enseñó a hacer vasijas de arcilla en ese mismo taller.",
+          "codigo": "RV5",
+          "origen": "o2",
+          "explicacion": "Repite palabras de la oración 2 («just as his father taught him»), pero eso no explica por qué el abuelo dice esa frase. Tampoco dice que fuera en el mismo taller."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07",
+  "hechos": [
+    {
+      "afirmacion": "La cultura Nasca, en la región de Ica, hizo vasijas policromas con figuras de aves y peces, entre otros motivos.",
+      "fuente": "Proulx, Donald A. (2006). A Sourcebook of Nasca Ceramic Iconography. University of Iowa Press."
+    },
+    {
+      "afirmacion": "El Museo Regional de Ica «Adolfo Bermúdez Jenkins» exhibe cerámica nasca.",
+      "fuente": "Ministerio de Cultura del Perú, página del Museo Regional de Ica «Adolfo Bermúdez Jenkins»."
+    },
+    {
+      "afirmacion": "En la alfarería, la arcilla suele mezclarse con arena u otro desgrasante, y las piezas se secan antes de cocerse.",
+      "fuente": "Rice, Prudence M. (2015). Pottery Analysis: A Sourcebook, 2.ª ed. University of Chicago Press."
+    }
+  ],
+  "revision": {
+    "por": "subagente (verificador a ciegas y revisor de contenido)",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "Coincidió a ciegas con todas las claves. Cambios: «oven» por «kiln (a special oven)» y «kiln»; o9 con «like the ones on the old Nasca pots»; nueva explicación de «ninguna» en el previo de p1."
+  }
+}

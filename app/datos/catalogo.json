@@ -4261,7 +4261,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "lectura-ingles"
+     ]
     }
    ]
   }
@@ -5005,6 +5007,30 @@
     "/plantillas/interes/index.html",
     "/plantillas/interes/motor.js",
     "/plantillas/interes/papel.json"
+   ]
+  },
+  "lectura-ingles": {
+   "id": "lectura-ingles",
+   "titulo": "Reading in English",
+   "formato": "lectura",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-verbal.lectura-en-ingles"
+   ],
+   "url": "#/lectura/lectura-ingles",
+   "banco": "/contenido/razonamiento-verbal/indice-lectura-ingles.json",
+   "papel": null,
+   "entrada": null,
+   "salida": null,
+   "archivos": [
+    "/contenido/razonamiento-verbal/indice-lectura-ingles.json",
+    "/contenido/razonamiento-verbal/codigos.json",
+    "/contenido/razonamiento-verbal/frases.json",
+    "/contenido/razonamiento-verbal/textos/t051.json",
+    "/contenido/razonamiento-verbal/textos/t052.json",
+    "/contenido/razonamiento-verbal/textos/t053.json",
+    "/contenido/razonamiento-verbal/textos/t054.json"
    ]
   },
   "lectura-verbal": {
