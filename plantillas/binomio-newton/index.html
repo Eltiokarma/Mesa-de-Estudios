@@ -398,7 +398,7 @@ function crearTablero(cv, idDesc, idLect, idLey){
     // clavos
     for (let n = 0; n < R; n++) for (let k = 0; k <= n; k++){ ctx.fillStyle = c.muted; ctx.beginPath(); ctx.arc(L.x(n, k), L.y(n) + L.u*.3, Math.max(2, L.u*.07), 0, 7); ctx.fill(); }
     // casilleros
-    const yb = L.y(R) + L.u*3.2, alto = L.u*2.9, ancho = L.u*.78, tope = Math.max(40, ...g.cuenta);
+    const yb = L.y(R) + L.u*3.2, alto = L.u*2.6, ancho = L.u*.78, tope = Math.max(40, ...g.cuenta);
     for (let k = 0; k <= R; k++){
       const x = L.x(R, k);
       ctx.strokeStyle = k === g.marca ? c.k : c.line; ctx.lineWidth = k === g.marca ? grosor('k', 2.5) : 1.5;
@@ -406,7 +406,7 @@ function crearTablero(cv, idDesc, idLect, idLey){
       const h = alto*g.cuenta[k]/tope;
       ctx.save(); ctx.fillStyle = k === g.marca ? c.k : c.muted; ctx.globalAlpha = k === g.marca ? .5 : .32; ctx.fillRect(x - ancho/2 + 2, yb - h, ancho - 4, h); ctx.restore();
       if (g.esperado){ const he = alto*g.esperado[k]/tope; ctx.save(); ctx.strokeStyle = c.ink; ctx.setLineDash([3, 3]); ctx.lineWidth = 1.5; linea({ x:x - ancho/2, y:yb - he }, { x:x + ancho/2, y:yb - he }); ctx.restore(); }
-      if (g.contar) texto(c, x, yb - h - 9, [[String(g.cuenta[k]), k === g.marca ? 'k' : 'ink']], 'center', 10.5, 800);
+      if (g.contar) texto(c, x, yb - alto - 9, [[String(g.cuenta[k]), k === g.marca ? 'k' : 'ink']], 'center', 10.5, 800);
       texto(c, x, yb + 12, [[String(k), 'k']], 'center', 10.5, 800);
     }
     // bolitas en camino
@@ -602,7 +602,7 @@ function cfg1(ya){
     ? { tipo:'tri', R:s1.n, caminos: MB.caminos({ n:s1.n, k:s1.k }).lista.map(w => ({ w, tenue:true })), mano:{ k:s1.k } }
     : { tipo:'tri', R:5, numeros:-1, anillos:[[5, 3]], caminos:[{ w:'abbab' }] };
   E.config({ st, ley:LEY,
-    lect: ya ? [() => ['n', 'filas, n', String(s1.n)], () => ['k', 'letras b, k', String(s1.k)], () => ['ink', 'caminos, C(n, k)', Cnk(s1.n, s1.k)]]
+    lect: ya ? [() => ['n', 'filas, n', String(s1.n)], () => ['k', 'letras b, k', String(s1.k)], () => ['ink', 'C(n, k)', Cnk(s1.n, s1.k)]]
              : [() => ['n', 'filas, n', '5'], () => ['k', 'letras b, k', '3']],
     desc: ya ? 'Cada casillero muestra cuántos caminos llegan a él.' : 'Tablero de 5 filas con los casilleros vacíos; el camino abbab llega al casillero marcado.',
     alMover: k => { s1.k = k; st.caminos = MB.caminos({ n:s1.n, k }).lista.map(w => ({ w, tenue:true })); pal1(); } });
@@ -656,7 +656,7 @@ function cfg8(ya){
   const D = MB.desarrollo(Object.assign({ n:6 }, B8));
   const g = { min:-6, max:12, n:6, k: ya ? s8.k : 0, e:k => K8.exponentes[k], salto:'−3', mostrar:ya, mano:ya };
   E.config({ st:{ tipo:'regla', regla:g }, ley:[['m', 'exponente de x en el término'], ['b', 'un paso a la derecha más', 'linea']],
-    lect: ya ? [() => ['k', 'pasos a la derecha, k', String(g.k)], () => ['m', 'exponente de x', String(K8.exponentes[g.k]).replace('-', '−')], () => ['ink', 'término', D.terminos[g.k].texto]]
+    lect: ya ? [() => ['k', 'k', String(g.k)], () => ['m', 'exp. de x', String(K8.exponentes[g.k]).replace('-', '−')], () => ['ink', 'término', D.terminos[g.k].texto]]
              : [() => ['a', 'paso a la izquierda', 'x²'], () => ['b', 'paso a la derecha', '1/x']],
     desc: ya ? 'La recta de exponentes de x con la marca del término elegido.' : 'Una recta de exponentes de x, de −6 a 12, sin marcas.',
     alMover: k => { s8.k = k; } });
@@ -713,15 +713,15 @@ const steps = [
  { k:'Paso 3', t:'Predice: la suma de una fila', gate:P3, prep:() => cfg3(!!S.pred[P3.id]), anima:anima3,
    body:() => `<p class="problem">Suma todos los números de la fila ${n_('6')}: C(6, 0) + C(6, 1) + … + C(6, 6). ¿Cuánto da?</p>${opcionesHTML(P3.opts, 'fb')}
    <div id="tras" class="body" hidden>
-   <div class="eqs"><div class="eq">C(${n_('n')}, 0) + C(${n_('n')}, 1) + … + C(${n_('n')}, ${n_('n')}) = 2<sup>${n_('n')}</sup>  ⟹  1 + 6 + 15 + 20 + 15 + 6 + 1 = 64 = 2⁶</div></div>
+   <div class="eqs"><div class="eq">C(${n_('n')}, 0) + … + C(${n_('n')}, ${n_('n')}) = 2<sup>${n_('n')}</sup>  ⟹  1 + 6 + 15 + 20 + 15 + 6 + 1 = 64 = 2⁶</div></div>
    <p>La suma de una fila cuenta todos los caminos de ${n_('n')} filas, lleguen donde lleguen. Con dos opciones en cada clavo hay 2 · 2 · … · 2 = 2<sup>${n_('n')}</sup>. También se ve en el tablero: cada número se reparte en los dos de abajo, así que cada fila suma el doble que la anterior.</p>
    <div class="control"><label for="n3">Fila, n</label><input type="range" id="n3" min="0" max="10" step="1" value="${s3.n}"></div>
    ${HIP}</div>` },
  { k:'Paso 4', t:'Predice: cuántos términos', gate:P4, prep:() => cfg4(!!S.pred[P4.id]), anima:anima4,
    body:() => `<p class="problem">Al multiplicar (${a_('a')} + ${b_('b')})(${a_('a')} + ${b_('b')})…(${a_('a')} + ${b_('b')}), con ${n_('7')} paréntesis, se elige ${a_('a')} o ${b_('b')} en cada uno: cada camino de 7 filas es un producto, como <span class="palabras" style="display:inline-flex">${palabra('abbabaa')}</span> = a⁴b³. Los caminos que llegan al mismo casillero dan el mismo término. ¿Cuántos términos tiene el desarrollo de (a + b)⁷ después de juntar los semejantes?</p>${opcionesHTML(P4.opts, 'fb')}
    <div id="tras" class="body" hidden>
-   <div class="eqs"><div class="eq">(${a_('a')} + ${b_('b')})<sup>${n_('n')}</sup> = C(${n_('n')}, 0)${a_('a')}<sup>${n_('n')}</sup> + C(${n_('n')}, 1)${a_('a')}<sup>${n_('n')}−1</sup>${b_('b')} + … + C(${n_('n')}, ${n_('n')})${b_('b')}<sup>${n_('n')}</sup>;  ${n_('n')} + 1 términos</div>
-   <div class="eq">(a + b)⁷ = a⁷ + 7a⁶b + 21a⁵b² + 35a⁴b³ + 35a³b⁴ + 21a²b⁵ + 7ab⁶ + b⁷</div></div>
+   <div class="eqs"><div class="eq">(${a_('a')} + ${b_('b')})<sup>${n_('n')}</sup> = Σ C(${n_('n')}, ${k_('k')})${a_('a')}<sup>${n_('n')}−${k_('k')}</sup>${b_('b')}<sup>${k_('k')}</sup>;  ${k_('k')} = 0, 1, …, ${n_('n')}  ⟹  ${n_('n')} + 1 términos</div>
+   <div class="eq">(a + b)⁷ = a⁷ + 7a⁶b + 21a⁵b²</div><div class="eq">+ 35a⁴b³ + 35a³b⁴ + 21a²b⁵</div><div class="eq">+ 7ab⁶ + b⁷</div></div>
    <p>Hay un término por casillero de la última fila, y la fila ${n_('n')} tiene ${n_('n')} + 1 casilleros (k = 0, 1, …, ${n_('n')}). El coeficiente de cada término es el número de su casillero: cuántos caminos lo forman. En cada término los exponentes suman ${n_('n')}.</p>
    <div class="control"><label for="n4">Exponente, n</label><input type="range" id="n4" min="1" max="10" step="1" value="${s4.n}"></div>
    ${FUENTE_AL}</div>` },
@@ -884,7 +884,7 @@ let semilla = 2203;
 function cfg4(ya, cuenta){
   const g = { cuenta: cuenta || new Array(8).fill(0), marca:3, contar:!!ya, esperado: ya ? ESP4 : null, vuelo:[] };
   E.config({ st:{ tipo:'galton', R:7, galton:g }, ley:[['k', 'casillero k'], ['ink', 'promedio esperado', 'trazos'], ['n', 'fila n']],
-    lect: ya ? [() => ['k', 'cayeron en k = 3', String(g.cuenta[3])], () => ['ink', 'promedio esperado', G4.texto]] : [() => ['ink', 'bolitas', '128'], () => ['n', 'filas', '7']],
+    lect: ya ? [() => ['k', 'en k = 3', String(g.cuenta[3])], () => ['ink', 'promedio', G4.texto]] : [() => ['ink', 'bolitas', '128'], () => ['n', 'filas', '7']],
     desc: ya ? `Las bolitas cayeron en los casilleros: ${g.cuenta.join(', ')}. La línea punteada marca el promedio esperado.` : 'Un tablero de 7 filas de clavos con 8 casilleros abajo; el de k = 3 está marcado.' });
 }
 function anim4(){
@@ -968,7 +968,7 @@ const EXPS = [
       b:'2187 = 3⁷ sería la suma para (x + 2)⁷. Con el signo, x = 1 da (1 − 2)⁷ = (−1)⁷.',
       c:'128 = 2⁷ es la suma de la fila 7: sirve para (x + 1)⁷, no para (x − 2)⁷.' },
     antes:ya => cfg5(ya), despues:anim5,
-    exp:() => `<div class="eqs"><div class="eq">(1 − 2)⁷ = (−1)⁷ = −1</div><div class="eq">1 − 14 + 84 − 280 + 560 − 672 + 448 − 128 = −1</div></div>
+    exp:() => `<div class="eqs"><div class="eq">(1 − 2)⁷ = (−1)⁷ = −1</div><div class="eq">1 − 14 + 84 − 280 + 560</div><div class="eq">− 672 + 448 − 128 = −1</div></div>
       <p>Los coeficientes son C(7, ${k_('k')}) · (−2)<sup>${k_('k')}</sup>: grandes, con signos que se alternan, y casi se cancelan. La suma sigue siendo el desarrollo evaluado en x = 1.</p>${FUENTE_AL}` },
 ];
 function may(t){ return t.charAt(0).toUpperCase() + t.slice(1); }

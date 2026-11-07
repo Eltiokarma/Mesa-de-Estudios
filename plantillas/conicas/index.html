@@ -510,3 +510,603 @@ function lapiz(st, con, o){
     tecla:d => { st.t = (st.t || 0) + d*(o.paso || .08); if (o.tope) st.t = clamp(st.t, -o.tope, o.tope); const q = MC.puntoEn(con, st.t, st.rama); st.P = { x:q.x, y:q.y }; } };
 }
 </script>
+
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1', 'bar1');
+const S = { step:0, max:0, pred:{}, ocupado:false, c2:8, s1:null, s4:null, s5:null, s7:null };
+
+// Todo lo que se pregunta sale del motor, con sus errores típicos
+const E53 = MC.elipse({ a:5, c:3 }), E54 = MC.elipse({ a:5, c:4 });
+const E4 = MC.elipse({ h:2, k:-1, nx:9, ny:25 });
+const P5 = MC.parabola({ eje:'x', h:2, k:1, cuatroP:-8 });
+const H7 = MC.hiperbola({ a2:9, b2:16, eje:'x' });
+const G8 = MC.general({ A:-4, C:-9, D:8, E:-36, F:-4 }), E8 = G8.conica;
+const O = pt(0, 0);
+const foco = (C, i) => deLista(C.num.focos[i]);
+
+const FUENTE = `<p class="fuente">Los informes de ideas erróneas del proyecto no tratan las cónicas (el de trigonometría las deja fuera; el de geometría, la analítica), así que estas opciones son hipótesis nuestras: se confirmarán con los datos del colegio.</p>`;
+const T = r => r.texto, ER = (r, k) => r.errores[k].texto;
+
+const P2 = { id:'conicas-paso2', ok:'b', opts:[
+  ['a', ER(E54.semiejeMenor, 'cHiperbola'), 'CO1-elipse-con-c2-igual-a2-mas-b2', 'hipotesis'],
+  ['b', T(E54.semiejeMenor)],
+  ['c', ER(E54.semiejeMenor, 'resta'), 'CO3-b-igual-a-menos-c', 'hipotesis'],
+  ['d', ER(E54.semiejeMenor, 'sinRaiz'), 'CO4-olvida-la-raiz', 'hipotesis']],
+  fb:{ b:`¡Bien! Encima del centro, el lápiz está a la misma distancia de los dos clavos: cada mitad de la cuerda mide a = 5. Con c = 4 abajo, el triángulo rectángulo da b² = a² − c² = 25 − 16 = 9, así que b = 3.`,
+    a:`Elegiste la A. √41 sale de b² = a² + c², la relación de la hipérbola. En la elipse, la mitad de la cuerda (a) es la hipotenusa del triángulo: el lado más largo. Por eso b tiene que ser menor que 5. La correcta está marcada.`,
+    c:`Elegiste la C. 1 = 5 − 4 resta los lados sin elevar al cuadrado. Pitágoras pide los cuadrados: b² = 25 − 16 = 9. La correcta está marcada.`,
+    d:`Elegiste la D. 9 es b²: falta sacar la raíz. La correcta está marcada.` } };
+const P3 = { id:'conicas-paso3', ok:'c', opts:[
+  ['a', ER(E54.excentricidad, 'invertida'), 'CO5-excentricidad-invertida', 'hipotesis'],
+  ['b', ER(E54.excentricidad, 'otroSemieje'), 'CO6-excentricidad-con-b', 'hipotesis'],
+  ['c', T(E54.excentricidad)],
+  ['d', ER(E54.excentricidad, 'dosC'), 'CO24-excentricidad-con-2c', 'hipotesis']],
+  fb:{ c:`¡Bien! e = c/a = 4/5. Como en la elipse c < a, su excentricidad está entre 0 y 1. Ahora arrastra el clavo F₂: cuanto más se separan los clavos, más aplastada queda y más se acerca e a 1.`,
+    a:`Elegiste la A. 5/4 = a/c está invertida: da más que 1. En la elipse c < a (los clavos quedan dentro de la curva), así que e = c/a es menor que 1. La correcta está marcada.`,
+    b:`Elegiste la B. 3/5 = b/a usa el otro semieje. La excentricidad compara la distancia del centro a un foco, c, con a. La correcta está marcada.`,
+    d:`Elegiste la D. 8/5 = 2c/a usa la distancia completa entre los clavos. c es la mitad: del centro a un clavo. La correcta está marcada.` } };
+const P4 = { id:'conicas-paso4', ok:'a', opts:[
+  ['a', T(E4.focos)],
+  ['b', ER(E4.focos, 'signos'), 'CO8-centro-con-signos-cambiados', 'hipotesis'],
+  ['c', ER(E4.focos, 'ejeCambiado'), 'CO7-a2-siempre-bajo-x', 'hipotesis'],
+  ['d', ER(E4.focos, 'vertices'), 'CO18-focos-en-los-vertices', 'hipotesis']],
+  fb:{ a:`¡Bien! El centro es (2; −1): los signos cambian al salir del paréntesis. El denominador mayor, 25, está bajo y: el eje mayor es vertical, con a = 5 y b = 3. Entonces c = √(25 − 9) = 4, y los focos quedan 4 arriba y 4 abajo del centro.`,
+    b:`Elegiste la B. Esos focos salen de un centro (−2; 1). (x − 2)² dice h = 2, y (y + 1)², que es (y − (−1))², dice k = −1. La correcta está marcada.`,
+    c:`Elegiste la C. Pusiste los focos en una recta horizontal, como si a² estuviera siempre bajo x. Aquí el denominador mayor, 25, está bajo y: el eje mayor es vertical. La correcta está marcada.`,
+    d:`Elegiste la D. Esos son los vértices, a a = 5 del centro. Los focos están más adentro, a c = 4. La correcta está marcada.` } };
+const P5p = { id:'conicas-paso5', ok:'d', opts:[
+  ['a', ER(P5.foco, 'signo'), 'CO11-ignora-el-signo-de-p', 'hipotesis'],
+  ['b', ER(P5.foco, 'cuatroP'), 'CO12-toma-4p-como-p', 'hipotesis'],
+  ['c', ER(P5.foco, 'eje'), 'CO13-foco-en-el-otro-eje', 'hipotesis'],
+  ['d', T(P5.foco)]],
+  fb:{ d:`¡Bien! El vértice es (2; 1). 4p = −8, así que p = −2: el foco está 2 a la izquierda del vértice, en (0; 1), y la directriz 2 a la derecha, en x = 4. La parábola abre hacia el foco, a la izquierda.`,
+    a:`Elegiste la A. (4; 1) toma p = 2 sin su signo. Con 4p = −8, p es negativo y el foco va a la izquierda del vértice. En x = 4 queda la directriz. La correcta está marcada.`,
+    b:`Elegiste la B. (−6; 1) corre el foco 8 unidades, lo que vale 4p. p es la cuarta parte: 2 unidades. La correcta está marcada.`,
+    c:`Elegiste la C. (2; −1) corre el foco hacia abajo. La que va al cuadrado es y: la parábola abre hacia los lados y su eje es horizontal, la recta y = 1. La correcta está marcada.` } };
+const P6 = { id:'conicas-paso6', ok:'b', opts:[
+  ['a', ER(P5.lr, 'conSigno'), 'CO14-lado-recto-con-signo', 'hipotesis'],
+  ['b', T(P5.lr)],
+  ['c', ER(P5.lr, 'dosP'), 'CO15-lado-recto-2p', 'hipotesis'],
+  ['d', ER(P5.lr, 'soloP'), 'CO16-lado-recto-p', 'hipotesis']],
+  fb:{ b:`¡Bien! En la punta de arriba del lado recto, PF = PD. PD es lo que hay del foco a la directriz: 2|p| = 4. Entonces PF = 4, y el lado recto mide 2 · 4 = 8, que es 4|p|.`,
+    a:`Elegiste la A. −8 es 4p con su signo. Una longitud no es negativa: LR = |4p| = 8. La correcta está marcada.`,
+    c:`Elegiste la C. 4 = 2|p| es solo la mitad, del foco a una punta. La correcta está marcada.`,
+    d:`Elegiste la D. 2 = |p| es la distancia del vértice al foco. La correcta está marcada.` } };
+const P7 = { id:'conicas-paso7', ok:'c', opts:[
+  ['a', ER(H7.focos, 'cElipse'), 'CO2-hiperbola-con-c2-igual-a2-menos-b2', 'hipotesis'],
+  ['b', ER(H7.focos, 'aMayor'), 'CO17-a2-el-denominador-mayor', 'hipotesis'],
+  ['c', T(H7.focos)],
+  ['d', ER(H7.focos, 'vertices'), 'CO18-focos-en-los-vertices', 'hipotesis']],
+  fb:{ c:`¡Bien! El término positivo es el de x: a² = 9, b² = 16 y el eje focal es horizontal. En la hipérbola c² = a² + b² = 25, así que c = 5: la diagonal del rectángulo de lados 2a y 2b.`,
+    a:`Elegiste la A. c² = 16 − 9 = 7 es la relación de la elipse. En la hipérbola los focos quedan más afuera que los vértices: c² = a² + b². La correcta está marcada.`,
+    b:`Elegiste la B. Tomaste a² = 16, el mayor, como en la elipse, y eso te llevó al eje y. En la hipérbola, a² es el del término positivo: aquí 9, bajo x. La correcta está marcada.`,
+    d:`Elegiste la D. Esos son los vértices (a = 3). Los focos están más lejos del centro: c = 5. La correcta está marcada.` } };
+const P8 = { id:'conicas-paso8', ok:'d', opts:[
+  ['a', ER(G8, 'cambiaSigno'), 'CO19-elipse-por-hiperbola', 'hipotesis'],
+  ['b', ER(G8, 'dosCuadrados'), 'CO20-dos-cuadrados-circunferencia', 'hipotesis'],
+  ['c', ER(G8, 'lineales'), 'CO28-parabola-por-los-lineales', 'hipotesis'],
+  ['d', T(G8)]],
+  fb:{ d:`¡Bien! A = −4 y C = −9 tienen el mismo signo: es una elipse (y como A ≠ C, no es circunferencia). Al multiplicar por −1 y completar cuadrados queda 4(x − 1)² + 9(y + 2)² = 36.`,
+    a:`Elegiste la A. Los dos signos menos no la vuelven hipérbola. Lo que importa es si A y C tienen el mismo signo o signos distintos; aquí los dos son negativos, y al multiplicar por −1 los dos quedan positivos. La correcta está marcada.`,
+    b:`Elegiste la B. Para que sea circunferencia hace falta A = C, y aquí −4 ≠ −9. La correcta está marcada.`,
+    c:`Elegiste la C. En la parábola falta x² o y²; aquí están los dos. Los términos en x y en y solo corren el centro. La correcta está marcada.` } };
+
+// ----- configuraciones del dibujo -----
+const LEY_CUERDA = [['f1', 'PF₁ y el clavo F₁'], ['f2', 'PF₂ y el clavo F₂']];
+const barrasSuma = (d, total) => ({ max:total, filas:[[{ k:'f1', v:d.PF1 }, { k:'f2', v:d.PF2 }], [{ k:'a', v:total }]],
+  rotulos:[['f1', `PF₁ = ${fmt(d.PF1)}`], ['f2', `PF₂ = ${fmt(d.PF2)}`], ['a', `2a = ${fmt(total, 0)}`]] });
+function cuerda(L, C, P, o){
+  o = o || {};
+  const F1 = foco(C, 0), F2 = foco(C, 1);
+  L.segs.push(seg(F1, P, o.color1 || 'f1', { ancho:2.6, f:o.f }), seg(F2, P, o.color2 || 'f2', { ancho:2.6, f:o.f }));
+  L.puntos.push(pun(F1, 'f1', 'F₁', { dx:o.dx1 === undefined ? -6 : o.dx1, dy:o.dy1 === undefined ? 14 : o.dy1, align:'right', r:5 }), pun(F2, 'f2', 'F₂', { dx:o.dx2 === undefined ? 6 : o.dx2, dy:o.dy2 === undefined ? 14 : o.dy2, r:5 }));
+}
+// Paso 1: la cuerda de 10 con los clavos a 6
+function config1(){
+  if (!S.s1){ const q = MC.puntoEn(E53, 1.1); S.s1 = { t:1.1, P:{ x:q.x, y:q.y } }; }
+  const st = S.s1;
+  E.config({ modo:'plano', pl:{ caja:{ x0:-6.5, x1:6.5, y0:-5, y1:5 }, manijas:[lapiz(st, E53.num, { paso:.06 })],
+    rehacer:L => { L.curvas = [curva(E53.num, { ancho:1.6 })]; L.segs = []; L.puntos = []; cuerda(L, E53, st.P); } },
+    lect:[() => { const d = MC.distancias(E53, S.s1.P); return ['f1', 'PF₁', fmt(d.PF1)]; }, () => { const d = MC.distancias(E53, S.s1.P); return ['f2', 'PF₂', fmt(d.PF2)]; },
+      () => ['a', 'PF₁ + PF₂', fmt(MC.distancias(E53, S.s1.P).suma)]],
+    barras:() => barrasSuma(MC.distancias(E53, S.s1.P), 10), ley:LEY_CUERDA.concat([['ink', 'el camino del lápiz']]),
+    desc:'Dos clavos, F₁ y F₂, a 6 unidades uno de otro, una cuerda de 10 atada a ellos y el lápiz P que la mantiene tensa; el lápiz se arrastra.' });
+}
+// Paso 2: hasta dónde sube el lápiz (a = 5, c = 4)
+function est2(L, f, g){
+  const t = f*Math.PI/2, q = MC.puntoEn(E54, t), P = { x:q.x, y:q.y };
+  L.curvas = []; L.segs = []; L.puntos = [pun(O, 'ink', 'O', { r:3, dx:-6, dy:12, align:'right' })]; L.textos = [];
+  if (g > 0) L.curvas.push(curva(E54.num, { ancho:1.4, f:.35*g }));
+  if (f > 0) L.curvas.push(curva(E54.num, { t0:0, t1:t, ancho:2.2 }));
+  cuerda(L, E54, P, g >= 1 ? { color1:'a', color2:'a', dy1:-12, dy2:-12 } : null);
+  if (g > 0){
+    L.segs.push(seg(O, foco(E54, 1), 'c', { ancho:4.5, f:g, texto: g >= 1 ? 'c = 4' : null, dy:14 }), seg(O, P, 'b', { ancho:4.5, f:g, texto: g >= 1 ? 'b = 3' : null, dx:-24 }));
+    if (g >= 1) L.textos.push({ p:pt(2, 1.5), t:[['a = 5', 'a']], dx:16, align:'left' });
+  }
+  L.manijas = []; L.estado.P = P;
+}
+function config2(r){
+  E.config({ modo:'plano', pl:{ caja:{ x0:-6.5, x1:6.5, y0:-3.5, y1:4.5 }, rehacer:L => est2(L, r ? 1 : 0, r ? 1 : 0) },
+    lect: r ? lect2() : [() => ['a', '2a, la cuerda', '10'], () => ['c', '2c, entre clavos', '8']], ley: r ? LEY_CUERDA.concat([['a', 'cada mitad, a'], ['b', 'b'], ['c', 'c']]) : LEY_CUERDA,
+    desc: r ? 'El lápiz encima del centro: las dos mitades de la cuerda miden a = 5 y forman, con c = 4, un triángulo rectángulo de altura b = 3.' : 'Dos clavos a 8 unidades uno de otro y la cuerda de 10, tensa, con el lápiz en la punta derecha.' });
+}
+const lect2 = () => [() => ['a', 'a', E54.a.texto], () => ['c', 'c', E54.c.texto], () => ['b', 'b', E54.b.texto]];
+// Paso 3: qué tan alargada (después de responder, el clavo F₂ se arrastra)
+const elipseC = () => MC.elipse({ a:5, c:`${S.c2}/2` });
+function est3(L, suelto){
+  const C = suelto ? elipseC() : E54;
+  L.curvas = [curva(C.num, { ancho:2 })]; L.segs = []; L.puntos = [pun(O, 'ink', 'O', { r:3, dx:-6, dy:12, align:'right' })];
+  L.segs.push(seg(O, pt(5, 0), 'a', { ancho:4, texto:'a = 5', dy:-12, en:.75 }), seg(O, foco(C, 1), 'c', { ancho:4, texto:`c = ${C.c.texto}`, dy:14, en:.5 }));
+  L.puntos.push(pun(foco(C, 0), 'f1', 'F₁', { r:5, dx:-6, dy:-12, align:'right' }));
+  if (!suelto) L.puntos.push(pun(foco(C, 1), 'f2', 'F₂', { r:5, dx:6, dy:-12 }));
+  L.manijas = suelto ? [{ id:'F2', color:'f2', texto:'F₂', p:() => foco(elipseC(), 1),
+    mover:q => { S.c2 = clamp(Math.round(q.x*2), 2, 9); }, tecla:d => { S.c2 = clamp(S.c2 + d, 2, 9); } }] : [];
+}
+function config3(r){
+  E.config({ modo:'plano', pl:{ caja:{ x0:-6, x1:6, y0:-4, y1:4 }, rehacer:L => est3(L, !!r) },
+    lect: r ? lect3() : [], ley:[['a', 'a'], ['c', 'c'], ['f1', 'F₁'], ['f2', 'F₂']],
+    desc: r ? 'La elipse de la cuerda de 10; el clavo F₂ se arrastra y F₁ lo acompaña al otro lado.' : 'La elipse de la cuerda de 10 con los clavos a 8: a = 5 y c = 4.' });
+}
+const lect3 = () => [() => ['c', 'c', elipseC().c.texto], () => ['b', 'b', elipseC().b.texto], () => ['ink', 'e = c/a', elipseC().e.texto + ' ≈ ' + fmt(elipseC().e.valor)]];
+// Paso 4: la elipse vertical desplazada
+function est4(L, f, conLapiz){
+  L.curvas = []; L.segs = []; L.puntos = []; L.manijas = [];
+  if (f <= 0) return;
+  const Cc = pt(2, -1);
+  L.curvas.push(curva(E4.num, { f }));
+  L.segs.push(seg(Cc, pt(2, -6), 'a', { ancho:4, f, texto:'a = 5', dx:-30, en:.55 }), seg(Cc, pt(5, -1), 'b', { ancho:4, f, texto:'b = 3', dy:-12 }),
+    seg(Cc, foco(E4, 0), 'c', { ancho:4, f, texto:'c = 4', dx:-30, en:.55 }));
+  L.puntos.push(pun(Cc, 'ink', '(2; −1)', { f, dx:8, dy:12 }), pun(pt(2, 4), 'ink', null, { f, r:3.5 }), pun(pt(2, -6), 'ink', null, { f, r:3.5 }));
+  if (conLapiz){ const st = S.s4; L.segs.push(seg(foco(E4, 0), st.P, 'f1', { ancho:2.4 }), seg(foco(E4, 1), st.P, 'f2', { ancho:2.4 }));
+    L.manijas = [lapiz(st, E4.num, { paso:.06 })]; }
+  L.puntos.push(pun(foco(E4, 0), 'f1', 'F₁', { r:5, f, dx:8 }), pun(foco(E4, 1), 'f2', 'F₂', { r:5, f, dx:8, dy:12 }));
+}
+function config4(r){
+  if (!S.s4){ const q = MC.puntoEn(E4, 2.2); S.s4 = { t:2.2, P:{ x:q.x, y:q.y } }; }
+  E.config({ modo:'plano', pl:{ caja:{ x0:-3.5, x1:7.5, y0:-6.8, y1:4.8 }, rehacer:L => est4(L, r ? 1 : 0, !!r) },
+    lect: r ? lect4() : [], barras: r ? (() => barrasSuma(MC.distancias(E4, S.s4.P), 10)) : null,
+    ley: r ? [['a', 'a'], ['b', 'b'], ['c', 'c']].concat(LEY_CUERDA) : [],
+    desc: r ? 'La elipse vertical de centro (2; −1), con sus focos y un lápiz que se arrastra sobre ella.' : 'El plano cartesiano, todavía sin la elipse.' });
+}
+const lect4 = () => [() => ['f1', 'PF₁', fmt(MC.distancias(E4, S.s4.P).PF1)], () => ['f2', 'PF₂', fmt(MC.distancias(E4, S.s4.P).PF2)], () => ['a', 'PF₁ + PF₂ = 2a', fmt(MC.distancias(E4, S.s4.P).suma)]];
+// Paso 5 y 6: la parábola (y − 1)² = −8(x − 2)
+const Vp = pt(2, 1), Fp = deLista(P5.num.F);
+function baseParabola(L, f){
+  L.rectas = [{ p:pt(4, 0), d:pt(0, 1), color:'pd', ancho:2.4, f, texto:'directriz x = 4', en:pt(4, 7.3), dx:6 }];
+  L.segs.push(seg(Vp, Fp, 'p', { ancho:5, f, texto:'p = −2', dy:-14 }));
+  L.puntos.push(pun(Vp, 'ink', 'V', { f, dx:6, dy:14 }), pun(Fp, 'pf', 'F', { f, r:5, dx:-8, dy:14, align:'right' }));
+}
+function est5(L, f, conLapiz){
+  L.curvas = []; L.segs = []; L.puntos = []; L.manijas = []; L.rectas = [];
+  if (f <= 0) return;
+  L.curvas.push(curva(P5.num, { f }));
+  baseParabola(L, f);
+  if (conLapiz){ const st = S.s5, d = MC.distancias(P5, st.P);
+    L.segs.push(seg(Fp, st.P, 'pf', { ancho:2.6 }), seg(st.P, d.pie, 'pd', { ancho:2.6 }));
+    L.manijas = [lapiz(st, P5.num, { paso:.05, tope:3 })]; }
+}
+const lect5 = () => [() => ['p', 'p', P5.pTexto], () => ['pf', 'PF', fmt(MC.distancias(P5, S.s5.P).PF)], () => ['pd', 'PD', fmt(MC.distancias(P5, S.s5.P).PD)]];
+const barrasPar = d => { const m = Math.max(d.PF, d.PD, 1)*1.15; return { max:m, filas:[[{ k:'pf', v:d.PF }], [{ k:'pd', v:d.PD }]],
+  rotulos:[['pf', `PF = ${fmt(d.PF)}`], ['pd', `PD = ${fmt(d.PD)}`]] }; };
+function config5(r){
+  if (!S.s5){ const q = MC.puntoEn(P5, -1.6); S.s5 = { t:-1.6, P:{ x:q.x, y:q.y } }; }
+  E.config({ modo:'plano', pl:{ caja:{ x0:-7.5, x1:6, y0:-6, y1:8 }, rehacer:L => est5(L, r ? 1 : 0, !!r) },
+    lect: r ? lect5() : [], barras: r ? (() => barrasPar(MC.distancias(P5, S.s5.P))) : null,
+    ley: r ? [['pf', 'el foco F y PF'], ['pd', 'la directriz y PD'], ['p', 'p, de V a F']] : [],
+    desc: r ? 'La parábola que abre a la izquierda, su foco F, su directriz y un punto P que se arrastra sobre ella.' : 'El plano cartesiano, todavía sin la parábola.' });
+}
+function est6(L, f){
+  L.curvas = []; L.segs = []; L.puntos = []; L.manijas = []; L.rectas = [];
+  baseParabola(L, 1);
+  if (f <= 0) return;
+  const U = pt(0, 5), D = pt(0, -3);
+  L.curvas.push(curva(P5.num, { f }));
+  L.segs.push(seg(D, U, 'lr', { ancho:5, f, texto: f >= 1 ? 'LR = 8' : null, dx:-34 }),
+    seg(Fp, U, 'pf', { ancho:2.6, f, texto: f >= 1 ? 'PF = 4' : null, dx:30, en:.6, dy:0 }), seg(U, pt(4, 5), 'pd', { ancho:2.6, f, texto: f >= 1 ? 'PD = 4' : null, dy:-12 }));
+  L.puntos.push(pun(U, 'lr', null, { r:4.5, f }), pun(D, 'lr', null, { r:4.5, f }));
+}
+function config6(r){
+  E.config({ modo:'plano', pl:{ caja:{ x0:-7.5, x1:6, y0:-6, y1:8 }, rehacer:L => est6(L, r ? 1 : 0) },
+    lect: r ? lect6() : [() => ['p', 'p', P5.pTexto]], ley: r ? [['pf', 'el foco F y PF'], ['pd', 'la directriz y PD'], ['p', 'p'], ['lr', 'el lado recto LR']] : [['pf', 'el foco F'], ['pd', 'la directriz'], ['p', 'p, de V a F']],
+    desc: r ? 'La parábola con su lado recto: la cuerda vertical que pasa por el foco y llega a los puntos (0; 5) y (0; −3).' : 'El vértice V, el foco F y la directriz x = 4 de la parábola.' });
+}
+const lect6 = () => [() => ['pd', 'de F a la directriz', '4'], () => ['lr', 'LR', P5.lr.texto], () => ['p', '4|p|', P5.lr.texto]];
+// Paso 7: la hipérbola x²/9 − y²/16 = 1
+const CIRC5 = MC.circunferencia({ r2:25 });
+function est7(L, f, g, conLapiz){
+  L.curvas = []; L.segs = []; L.puntos = []; L.manijas = []; L.rectas = []; L.textos = [];
+  if (f <= 0) return;
+  const esq = [pt(3, 4), pt(-3, 4), pt(-3, -4), pt(3, -4)];
+  esq.forEach((q, i) => L.segs.push(seg(q, esq[(i + 1) % 4], 'ink', { ancho:1.2, dash:true, f })));
+  L.rectas.push({ p:O, d:pt(3, 4), color:'ink', dash:true, ancho:1.4, f }, { p:O, d:pt(3, -4), color:'ink', dash:true, ancho:1.4, f });
+  L.segs.push(seg(O, pt(3, 0), 'a', { ancho:4.5, f, texto:'a = 3', dy:14 }), seg(pt(3, 0), pt(3, 4), 'b', { ancho:4.5, f, texto:'b = 4', dx:24 }),
+    seg(O, pt(3, 4), 'c', { ancho:3, f, texto:'c = 5', dx:-24, dy:-4 }));
+  if (g > 0) L.curvas.push(curva(CIRC5.num, { color:'c', dash:true, ancho:1.4, f:g*.8 }), curva(H7.num, { f:g, ancho:2.2 }));
+  if (g > 0) L.puntos.push(pun(foco(H7, 0), 'f1', 'F₁', { r:5, f:g, dx:-6, dy:14, align:'right' }), pun(foco(H7, 1), 'f2', 'F₂', { r:5, f:g, dx:6, dy:14 }));
+  if (conLapiz){ const st = S.s7; L.segs.push(seg(foco(H7, 0), st.P, 'f1', { ancho:2.4 }), seg(foco(H7, 1), st.P, 'f2', { ancho:2.4 }));
+    L.manijas = [lapiz(st, H7.num, { paso:.05, tope:2 })]; }
+}
+const barrasDif = d => { const largo = Math.max(d.PF1, d.PF2), m = largo*1.08, uno = d.PF1 >= d.PF2;
+  return { max:m, filas:[[{ k: uno ? 'f1' : 'f2', v:largo }], [{ k: uno ? 'f2' : 'f1', v:Math.min(d.PF1, d.PF2) }, { k:'a', v:6, hueco:true }]],
+    rotulos:[['f1', `PF₁ = ${fmt(d.PF1)}`], ['f2', `PF₂ = ${fmt(d.PF2)}`], ['a', 'diferencia 2a = 6']] }; };
+function config7(r){
+  if (!S.s7){ const q = MC.puntoEn(H7, .7, 1); S.s7 = { t:.7, rama:1, P:{ x:q.x, y:q.y } }; }
+  E.config({ modo:'plano', pl:{ caja:{ x0:-8, x1:8, y0:-6.5, y1:6.5 }, rehacer:L => est7(L, r ? 1 : 0, r ? 1 : 0, !!r) },
+    lect: r ? lect7() : [], barras: r ? (() => barrasDif(MC.distancias(H7, S.s7.P))) : null,
+    ley: r ? [['a', 'a'], ['b', 'b'], ['c', 'c (la diagonal)']].concat(LEY_CUERDA) : [],
+    desc: r ? 'La hipérbola de dos ramas, el rectángulo de lados 2a y 2b con sus diagonales (las asíntotas) y un punto que se arrastra sobre las ramas.' : 'El plano cartesiano, todavía sin la hipérbola.' });
+}
+const lect7 = () => { const d = () => MC.distancias(H7, S.s7.P); return [() => ['f1', 'PF₁', fmt(d().PF1)], () => ['f2', 'PF₂', fmt(d().PF2)], () => ['a', '|PF₁ − PF₂|', fmt(d().diferencia)]]; };
+// Paso 8: reconocer y completar
+function est8(L, f){
+  L.curvas = []; L.segs = []; L.puntos = [];
+  if (f <= 0) return;
+  const Cc = pt(1, -2);
+  L.curvas.push(curva(E8.num, { f }));
+  L.segs.push(seg(Cc, pt(4, -2), 'a', { ancho:4, f, texto:'a = 3', dy:-12, en:.6 }), seg(Cc, pt(1, 0), 'b', { ancho:4, f, texto:'b = 2', dx:-24 }));
+  L.puntos.push(pun(Cc, 'ink', '(1; −2)', { f, dx:-8, dy:14, align:'right' }), pun(foco(E8, 0), 'f1', 'F₁', { r:4.5, f, dy:14, dx:-4, align:'right' }), pun(foco(E8, 1), 'f2', 'F₂', { r:4.5, f, dy:14, dx:4 }));
+}
+function config8(r){
+  E.config({ modo:'plano', pl:{ caja:{ x0:-3, x1:5, y0:-5, y1:1.2 }, rehacer:L => est8(L, r ? 1 : 0) },
+    lect: r ? [() => ['a', 'a', E8.a.texto], () => ['b', 'b', E8.b.texto], () => ['c', 'c', E8.c.texto]] : [], ley: r ? [['a', 'a'], ['b', 'b'], ['f1', 'F₁'], ['f2', 'F₂']] : [],
+    desc: r ? 'La elipse de centro (1; −2), con a = 3 horizontal y b = 2.' : 'El plano cartesiano, todavía sin la curva.' });
+}
+
+const steps = [
+ { k:'Paso 1', t:'La cuerda del jardinero',
+   prep:() => config1(),
+   body:() => `<p class="problem">Un jardinero clava dos estacas, ${f1_('F₁')} y ${f2_('F₂')}, a 6 m una de otra, y ata a ellas los extremos de una cuerda de 10 m. Con un palo mantiene la cuerda tensa y da la vuelta. Arrastra el lápiz P (o toca el dibujo y usa ← →).</p>
+   <p>Mira las barras: los dos tramos de la cuerda, ${f1_('PF₁')} y ${f2_('PF₂')}, cambian, pero juntos siempre miden lo mismo, ${a_('2a')} = 10. Así se define la elipse: es el <b>lugar geométrico</b> de los puntos cuya suma de distancias a dos puntos fijos, los focos, es constante.</p>
+   <div class="eqs"><div class="eq">${f1_('PF₁')} + ${f2_('PF₂')} = ${a_('2a')} = 10<span class="note">a es el semieje mayor: del centro a la punta</span></div></div>
+   <p>Del centro a cada estaca hay ${c_('c')} = 3. En los pasos que siguen se calcula todo lo demás con a, b y c.</p>` },
+ { k:'Paso 2', t:'Predice: hasta dónde sube el lápiz', gate:P2,
+   prep:() => config2(!!S.pred[P2.id]),
+   anima:fin => E.cadena([
+     sig => E.animar(1600, f => est2(E.pl, f, 0), sig),
+     sig => E.animar(800, g => est2(E.pl, 1, g), sig)],
+     () => { est2(E.pl, 1, 1); E.ley = LEY_CUERDA.concat([['a', 'cada mitad, a'], ['b', 'b'], ['c', 'c']]); E.leyenda(); E.lect = lect2(); E.desc = 'El lápiz encima del centro: las dos mitades de la cuerda miden a = 5 y forman, con c = 4, un triángulo rectángulo de altura b = 3.'; E.dibujar(); E.avisar(); fin(); }),
+   body:() => `<p class="problem">Ahora las estacas están a 8 m (${c_('c')} = 4) y la cuerda sigue midiendo 10 (${a_('a')} = 5). El lápiz empieza en la punta derecha. Cuando suba hasta quedar justo encima del centro, ¿a qué altura ${b_('b')} estará?</p>${opcionesHTML(P2.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${a_('a')}² = ${b_('b')}² + ${c_('c')}²<span class="note">en la elipse, a es la hipotenusa</span></div>
+   <div class="eq">${b_('b')} = √(25 − 16) = ${b_('3')}</div></div>
+   <p>Encima del centro, el lápiz está a la misma distancia de las dos estacas: cada mitad de la cuerda mide ${a_('a')}. Esa mitad, el tramo ${c_('c')} del centro a la estaca y la altura ${b_('b')} forman un triángulo rectángulo. Por eso, en toda elipse, a es el mayor de los tres.</p>
+   ${FUENTE}</div>` },
+ { k:'Paso 3', t:'Predice: qué tan alargada es', gate:P3,
+   prep:() => config3(!!S.pred[P3.id]),
+   anima:fin => { config3(true); E.compactar(false); fin(); },
+   body:() => `<p class="problem">La <b>excentricidad</b> e es un número que dice qué tan alargada es una cónica. Para la elipse de la cuerda de 10 con las estacas a 8 (${a_('a = 5')}, ${c_('c = 4')}, ${b_('b = 3')}), ¿cuánto vale e?</p>${opcionesHTML(P3.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">e = ${c_('c')}/${a_('a')} = 4/5<span class="note">en la elipse, 0 &lt; e &lt; 1</span></div></div>
+   <p>Arrastra el clavo ${f2_('F₂')} (o toca el dibujo y usa ← →): el otro se mueve igual hacia el otro lado. Con la cuerda fija, ${a_('a')} no cambia; al separar los clavos crece ${c_('c')}, baja ${b_('b')} y la elipse se aplasta.</p>
+   <p>El lado recto de la elipse, la cuerda que pasa por un foco perpendicular al eje mayor, mide LR = 2${b_('b')}²/${a_('a')}: aquí 2 · 9/5 = ${E54.ladoRecto.texto}.</p>
+   ${FUENTE}</div>` },
+ { k:'Paso 4', t:'Predice: dónde están los clavos', gate:P4,
+   prep:() => config4(!!S.pred[P4.id]),
+   anima:fin => E.animar(1300, f => est4(E.pl, f, false), () => { config4(true); E.compactar(false); fin(); }),
+   body:() => `<p class="problem">Una elipse tiene la ecuación ${E4.ecuacion}. ¿Dónde están sus focos?</p>${opcionesHTML(P4.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">centro (h; k) = (2; −1)<span class="note">(x − 2)² da h = 2; (y + 1)² da k = −1</span></div>
+   <div class="eq">${a_('a')}² = 25 (bajo y), ${b_('b')}² = 9 ⟹ ${c_('c')} = √(25 − 9) = 4</div>
+   <div class="eq">focos: (2; −1 + 4) y (2; −1 − 4) = ${E4.focosTexto}</div></div>
+   <p>En la elipse, ${a_('a²')} es siempre el denominador mayor, y el eje mayor sigue a la variable que lo tiene encima. Arrastra el lápiz: ${f1_('PF₁')} + ${f2_('PF₂')} vuelve a dar ${a_('2a')} = 10.</p>
+   ${FUENTE}</div>` },
+ { k:'Paso 5', t:'Predice: dónde está el foco', gate:P5p,
+   prep:() => config5(!!S.pred[P5p.id]),
+   anima:fin => E.animar(1300, f => est5(E.pl, f, false), () => { config5(true); E.compactar(false); fin(); }),
+   body:() => `<p class="problem">Ahora hay un solo foco ${pf_('F')} y una recta, la directriz. La <b>parábola</b> es el lugar geométrico de los puntos que están a la misma distancia del foco y de la directriz. Para la parábola (y − 1)² = −8(x − 2), ¿dónde está su foco?</p>${opcionesHTML(P5p.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">(y − k)² = 4${p_('p')}(x − h)<span class="note">la variable al cuadrado es y: eje horizontal</span></div>
+   <div class="eq">V = (2; 1), 4${p_('p')} = −8 ⟹ ${p_('p = −2')}</div>
+   <div class="eq">${pf_('F')} = (2 + ${p_('p')}; 1) = ${P5.focoTexto}; ${pd_('directriz')}: x = 2 − ${p_('p')} = 4</div></div>
+   <p>El signo de ${p_('p')} dice hacia dónde abre: negativo, a la izquierda. Arrastra el punto P: ${pf_('PF')} y ${pd_('PD')} miden siempre lo mismo.</p>
+   ${FUENTE}</div>` },
+ { k:'Paso 6', t:'Predice: el ancho a la altura del foco', gate:P6,
+   prep:() => config6(!!S.pred[P6.id]),
+   anima:fin => E.animar(1400, f => est6(E.pl, f), () => { E.lect = lect6(); E.ley = [['pf', 'el foco F y PF'], ['pd', 'la directriz y PD'], ['p', 'p'], ['lr', 'el lado recto LR']]; E.leyenda(); E.desc = 'La parábola con su lado recto: la cuerda vertical que pasa por el foco y llega a los puntos (0; 5) y (0; −3).'; E.avisar(); fin(); }),
+   body:() => `<p class="problem">El <b>lado recto</b> ${lr_('LR')} es la cuerda de la parábola que pasa por el foco ${pf_('F')}, perpendicular al eje. Para la misma parábola, con ${p_('p = −2')}, ¿cuánto mide?</p>${opcionesHTML(P6.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">en una punta: ${pf_('PF')} = ${pd_('PD')} = 2|${p_('p')}| = 4</div>
+   <div class="eq">${lr_('LR')} = 2 · 4 = 4|${p_('p')}| = ${lr_(P5.lr.texto)}</div></div>
+   <p>De la punta de arriba, (0; 5), a la directriz hay 4, igual que del foco a la directriz: el foco y la directriz forman un cuadrado con la punta. Las puntas del lado recto son ${P5.extremosLR}.</p>
+   ${FUENTE}</div>` },
+ { k:'Paso 7', t:'Predice: los focos de la hipérbola', gate:P7,
+   prep:() => config7(!!S.pred[P7.id]),
+   anima:fin => E.cadena([
+     sig => E.animar(1000, f => est7(E.pl, f, 0, false), sig),
+     sig => E.animar(1000, g => est7(E.pl, 1, g, false), sig)],
+     () => { config7(true); E.compactar(false); fin(); }),
+   body:() => `<p class="problem">La <b>hipérbola</b> es el lugar geométrico de los puntos cuya <i>diferencia</i> de distancias a dos focos es constante, 2${a_('a')}. Para la hipérbola ${H7.ecuacion}, ¿dónde están sus focos?</p>${opcionesHTML(P7.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${a_('a')}² = 9 (el positivo), ${b_('b')}² = 16</div>
+   <div class="eq">${c_('c')}² = ${a_('a')}² + ${b_('b')}² = 25 ⟹ ${c_('c = 5')}; focos ${H7.focosTexto}</div>
+   <div class="eq">asíntotas: ${H7.asintotas}; e = ${c_('c')}/${a_('a')} = ${H7.e.texto} &gt; 1</div></div>
+   <p>Dibuja el rectángulo de lados 2${a_('a')} y 2${b_('b')}: sus diagonales son las asíntotas, y su semidiagonal mide ${c_('c')}. Arrastra el punto por las dos ramas: |${f1_('PF₁')} − ${f2_('PF₂')}| = 2${a_('a')} = 6 siempre.</p>
+   ${FUENTE}</div>` },
+ { k:'Paso 8', t:'Predice: qué cónica es', gate:P8,
+   prep:() => config8(!!S.pred[P8.id]),
+   anima:fin => E.animar(1300, f => est8(E.pl, f), () => { config8(true); E.compactar(false); fin(); }),
+   body:() => `<p class="problem">Un examen da la ecuación general ${G8.ecuacionGeneral}. Sin completar cuadrados todavía, ¿qué cónica es?</p>${opcionesHTML(P8.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">Ax² + Cy² + Dx + Ey + F = 0<span class="note">A·C &gt; 0 elipse (A = C: circunferencia); A·C &lt; 0 hipérbola; A o C cero: parábola</span></div>
+   <div class="eq">×(−1): 4x² − 8x + 9y² + 36y + 4 = 0</div>
+   <div class="eq">${G8.completada} ⟹ ${G8.canonica}</div></div>
+   <p>Al completar cuadrados, lo que se suma dentro del paréntesis (1 por x, 4 por y, multiplicados por 4 y 9) se suma también al otro lado. Queda una elipse de centro (1; −2), con ${a_('a = 3')} horizontal y ${b_('b = 2')}. Si quedara un número negativo o cero a la derecha, no habría curva (o solo un punto).</p>
+   ${FUENTE}</div>` }
+];
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; b.dataset.label = `Ir al ${s.k.toLowerCase()}: ${s.t}`;
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  E.parar();
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  tramos($('stepBody'));
+  E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.prep) s.prep();
+  pintarDots();
+  if (s.gate) prediccion(s);
+  nav();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+  E.ocupado = S.ocupado;
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    // un paso bloqueado no delata su título
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : b.dataset.label);
+    if (k > S.max) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled');
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+// Se puede pasar al siguiente solo si el paso actual no tiene una predicción pendiente.
+function desbloquear(k){ const s = steps[S.step]; if (s.gate && !S.pred[s.gate.id]) return; if (k > S.max) S.max = k; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    S.ocupado = true; nav();
+    E.compactar(false);
+    $('next').focus({ preventScroll:true });
+    const paso = S.step;
+    Celular.alResponder($('cv'), () => s.anima(() => { S.ocupado = false; E.avisar(); nav(); }), () => S.step === paso, { siNo:() => { S.ocupado = false; nav(); } });
+  }));
+  pintar();
+}
+
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Experimentos con errores que son hipótesis nuestras (CO, los informes no tratan las cónicas): las estacas que se
+   juntan, una circunferencia por su ecuación general, la antena parabólica, las asíntotas de una hipérbola vertical
+   y el cono que se corta. La escena cambia recién después de responder. Un experimento se abre solo si los
+   anteriores ya tienen respuesta. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2', 'bar2');
+const J0 = MC.jardinero({ a:5, c:0 }), E53 = MC.elipse({ a:5, c:3 });
+const CG = MC.circunferenciaGeneral({ D:-6, E:8, F:-11 });
+const PL = MC.plato({ ancho:120, hondo:20 }), PLc = PL.conica;
+const HV = MC.hiperbola({ h:-2, k:1, a2:4, b2:9, eje:'y' });
+const CO = MC.cono({ inclinacion:60, generatriz:60 });
+const O = pt(0, 0);
+const FUENTE = `<p class="fuente">Los informes de ideas erróneas del proyecto no tratan las cónicas, así que estas opciones son hipótesis nuestras: se confirmarán con los datos del colegio.</p>`;
+const T = r => r.texto, ER = (r, k) => r.errores[k].texto;
+const S = { k:0, pred:{}, t0:Date.now(), fi:60 };
+
+// Exp. 1: las estacas se juntan (c de 3 a 0, la cuerda de 10)
+function juntar(L, f){
+  const k = Math.round(60*(1 - f)), J = MC.jardinero({ a:5, c:`${k}/20` }), C = J.conica, q = MC.puntoEn(C, 1.1), P = pt(q.x, q.y);
+  const F1 = C.num.focos ? deLista(C.num.focos[0]) : O, F2 = C.num.focos ? deLista(C.num.focos[1]) : O;
+  L.curvas = [curva(C.num, { ancho: f >= 1 ? 2.2 : 1.6, f: f >= 1 ? 1 : .5 })];
+  L.segs = [seg(F1, P, f >= 1 ? 'a' : 'f1', { ancho:2.6 }), seg(F2, P, f >= 1 ? 'a' : 'f2', { ancho:2.6, texto: f >= 1 ? 'r = a = 5' : null, dx:-30 })];
+  L.puntos = [pun(F1, 'f1', f >= 1 ? null : 'F₁', { r:5, dx:-6, dy:14, align:'right' }), pun(F2, 'f2', f >= 1 ? null : 'F₂', { r:5, dx:6, dy:14 })];
+  L.estado.c = k/20; L.estado.C = C;
+}
+// Exp. 2: la circunferencia por su ecuación general
+function circ(L, f){
+  L.curvas = []; L.segs = []; L.puntos = [];
+  if (f <= 0) return;
+  const Cc = pt(CG.h, CG.k);
+  L.curvas.push(curva(CG.num, { f }));
+  L.segs.push(seg(Cc, pt(CG.h + CG.r, CG.k), 'a', { ancho:4, f, texto: f >= 1 ? `r = ${CG.rTexto}` : null, dy:-12 }));
+  L.puntos.push(pun(Cc, 'ink', CG.centroTexto, { f, dx:-8, dy:14, align:'right' }));
+}
+// Exp. 3: la antena (x² = 4py con la boca de 120 y el hondo de 20)
+function antena(L, f){
+  const borde = PL.borde, w = borde[0], d = borde[1], tope = w/(2*PL.valor);
+  L.curvas = [curva(PLc.num, { t0:-tope, t1:tope, ancho:3 })];
+  L.segs = [seg(pt(-w, d), pt(w, d), 'ink', { ancho:1.2, dash:true, texto:'boca: 120 cm', dy:-12 }), seg(pt(0, 0), pt(0, d), 'ink', { ancho:1.2, dash:true, texto:'20 cm', dx:-30, en:.5 })];
+  L.puntos = [pun(pt(0, 0), 'ink', 'V', { r:3.5, dx:8, dy:12 })];
+  if (f <= 0) return;
+  const F = deLista(PLc.num.F);
+  for (const x of [-50, -30, 30, 50]){
+    const q = MC.sobre(PLc.num, pt(x, 0)), Q = pt(q.x, q.y), A = pt(x, 66), f1 = clamp(f*2, 0, 1), f2 = clamp(f*2 - 1, 0, 1);
+    L.segs.push(seg(A, pt(x, lerp(66, Q.y, f1)), 'ink', { ancho:1.4 }));
+    if (f2 > 0) L.segs.push(seg(Q, pt(lerp(Q.x, F.x, f2), lerp(Q.y, F.y, f2)), 'ink', { ancho:1.4 }));
+  }
+  if (f >= 1){ L.segs.push(seg(pt(0, 0), F, 'p', { ancho:4, texto:`p = ${PL.texto}`, dx:44, en:.6 })); L.puntos.push(pun(F, 'pf', 'F', { r:5.5, dx:10, dy:-10 })); }
+}
+// Exp. 4: la hipérbola vertical y sus asíntotas
+function asint(L, f){
+  L.curvas = []; L.segs = []; L.puntos = []; L.rectas = [];
+  if (f <= 0) return;
+  const Cc = pt(-2, 1), esq = [pt(1, 3), pt(-5, 3), pt(-5, -1), pt(1, -1)];
+  esq.forEach((q, i) => L.segs.push(seg(q, esq[(i + 1) % 4], 'ink', { ancho:1.2, dash:true, f })));
+  L.rectas.push({ p:Cc, d:pt(3, 2), color:'ink', dash:true, ancho:1.4, f }, { p:Cc, d:pt(3, -2), color:'ink', dash:true, ancho:1.4, f });
+  L.curvas.push(curva(HV.num, { f, ancho:2.2 }));
+  L.segs.push(seg(Cc, pt(-2, 3), 'a', { ancho:4.5, f, texto:'a = 2', dx:-24 }), seg(Cc, pt(1, 1), 'b', { ancho:4.5, f, texto:'b = 3', dy:14, en:.6 }));
+  L.puntos.push(pun(Cc, 'ink', '(−2; 1)', { f, dx:-8, dy:14, align:'right' }));
+}
+const lectJ = () => [() => ['c', 'c', fmt(E.pl.estado.c)], () => ['ink', 'e = c/a', fmt(E.pl.estado.c/5)], () => ['a', 'r = a', '5']];
+const lectCG = () => [() => ['ink', 'centro', CG.centroTexto], () => ['a', 'r', CG.rTexto], () => ['a', 'r²', '36']];
+const lectPL = () => [() => ['p', 'p (del fondo al foco)', PL.texto], () => ['ink', 'ecuación', PLc.ecuacion]];
+const lectHV = () => [() => ['a', 'a', HV.a.texto], () => ['b', 'b', HV.b.texto], () => ['ink', 'pendientes', HV.pendiente.texto]];
+const lectCO = () => { const R = MC.cono({ inclinacion:E.co.fi, generatriz:60 }); return [() => ['ink', 'inclinación', `${E.co.fi}°`], () => ['ink', 'e', fmt(R.e)], () => ['ink', 'la curva', R.nombre]]; };
+
+const EXPS = [
+  { id:'clavos-juntos', corto:'Las estacas se juntan', ok:'c',
+    q:`La cuerda mide 10 m y las estacas ${f1_('F₁')} y ${f2_('F₂')} están a 6 m. Si el jardinero acerca las estacas hasta clavarlas en el mismo hoyo y vuelve a dar la vuelta con la cuerda tensa, ¿qué dibuja?`,
+    opts:[['a', ER(J0, 'segmento'), 'CO34-segmento', 'hipotesis'], ['b', ER(J0, 'punto'), 'CO35-punto', 'hipotesis'], ['c', T(J0)], ['d', ER(J0, 'parabola'), 'CO36-parabola', 'hipotesis']],
+    fb:{ a:'El segmento sale al revés: cuando las estacas se separan hasta 10 m, la cuerda queda pegada al suelo entre ellas. Con las estacas juntas, la cuerda doblada mide 5 desde el hoyo.',
+      b:'El lápiz no se queda quieto: la cuerda doblada mide 5 desde el hoyo, y el lápiz da la vuelta a esa distancia.',
+      d:'La parábola no se cierra. Aquí el lápiz da la vuelta completa, siempre a 5 del hoyo.' },
+    antes:ya => E.config({ modo:'plano', pl:{ caja:{ x0:-6.5, x1:6.5, y0:-5.5, y1:5.5 }, rehacer:L => juntar(L, ya ? 1 : 0) },
+      ley: ya ? [['a', 'la cuerda doblada: r = a']] : [['f1', 'PF₁ y la estaca F₁'], ['f2', 'PF₂ y la estaca F₂']], lect: ya ? lectJ() : [],
+      desc:'La elipse de la cuerda de 10 con las estacas a 6 m.' }),
+    despues:() => { E.ley = [['f1', 'PF₁ y la estaca F₁'], ['f2', 'PF₂ y la estaca F₂']]; E.leyenda();
+      E.animar(1800, f => juntar(E.pl, f), () => { E.ley = [['a', 'la cuerda doblada: r = a']]; E.leyenda(); E.lect = lectJ(); E.desc = 'Con las estacas en el mismo hoyo, el lápiz dibuja una circunferencia de radio 5.'; E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">c = 0 ⟹ ${b_('b')} = √(${a_('a')}² − 0) = ${a_('a')}<span class="note">los dos semiejes iguales</span></div>
+      <div class="eq">e = c/a = 0; radio ${a_('r = a = 5')}</div></div>
+      <p>La circunferencia es la elipse de excentricidad 0: los dos focos se vuelven un solo centro y todos los puntos quedan a la misma distancia ${a_('r')}. En el otro extremo, con las estacas a 10 m (c = a, e = 1), la cuerda queda pegada al suelo y el lápiz recorre un segmento.</p>
+      ${FUENTE}` },
+  { id:'circunferencia', corto:'Centro y radio sin dibujo', ok:'b',
+    q:`Halla el centro y el radio de la circunferencia ${CG.general}.`,
+    opts:[['a', ER(CG, 'signos'), 'CO8-centro-con-signos-cambiados', 'hipotesis'], ['b', T(CG)], ['c', ER(CG, 'sinSumar'), 'CO10-completa-sin-sumar-al-otro-lado', 'hipotesis'], ['d', ER(CG, 'radioCuadrado'), 'CO9-radio-igual-a-r2', 'hipotesis']],
+    fb:{ a:'(−3; 4) cambia los signos al revés: −6x sale de (x − 3)², así que h = 3; +8y sale de (y + 4)², así que k = −4.',
+      c:'r = √11 sale de completar cuadrados sin sumar al otro lado el 9 y el 16 que se agregaron: (x − 3)² + (y + 4)² = 11 + 9 + 16 = 36.',
+      d:'36 es r², no el radio: r = √36 = 6.' },
+    antes:ya => E.config({ modo:'plano', pl:{ caja:{ x0:-4.5, x1:10.5, y0:-11, y1:3 }, rehacer:L => circ(L, ya ? 1 : 0) },
+      ley: ya ? [['a', 'el radio r']] : [], lect: ya ? lectCG() : [], desc: ya ? 'La circunferencia de centro (3; −4) y radio 6.' : 'El plano cartesiano, todavía sin la circunferencia.' }),
+    despues:() => { E.ley = [['a', 'el radio r']]; E.leyenda(); E.animar(1300, f => circ(E.pl, f), () => { E.lect = lectCG(); E.desc = 'La circunferencia de centro (3; −4) y radio 6.'; E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">(x² − 6x + 9) + (y² + 8y + 16) = 11 + 9 + 16<span class="note">lo que se suma a la izquierda, también a la derecha</span></div>
+      <div class="eq">${CG.completada} ⟹ centro ${CG.centroTexto}, ${a_('r')} = √36 = ${a_(CG.rTexto)}</div></div>
+      <p>Para completar el cuadrado de x² − 6x se suma la mitad de −6 al cuadrado, 9; para y² + 8y, 16. El radio ${a_('r')} es la cuerda doblada del experimento anterior: el mismo ${a_('a')} con b = a. Si a la derecha quedara 0, la «circunferencia» sería un punto; si quedara un negativo, no habría ningún punto.</p>
+      ${FUENTE}` },
+  { id:'plato', corto:'La antena del techo', ok:'c',
+    q:`Una antena parabólica mide 120 cm de boca y 20 cm de hondo. Su receptor va en el foco ${pf_('F')}, donde se juntan las señales que llegan paralelas al eje. ¿A qué altura sobre el fondo va el receptor?`,
+    opts:[['a', ER(PL, 'cuatroP'), 'CO12-toma-4p-como-p', 'hipotesis'], ['b', ER(PL, 'hondo'), 'CO29-foco-en-el-borde', 'hipotesis'], ['c', T(PL)], ['d', ER(PL, 'dosP'), 'CO30-x2-igual-2py', 'hipotesis']],
+    fb:{ a:'180 cm toma 4p como si fuera p: de 60² = 4p · 20 sale 4p = 180, y p es la cuarta parte.',
+      b:'El foco no está en el borde: 20 cm es lo hondo del plato. Con 60² = 4p · 20 sale p = 45: este receptor queda por encima del borde.',
+      d:'90 cm sale de x² = 2py. La parábola con el foco a p del vértice es x² = 4py.' },
+    antes:ya => E.config({ modo:'plano', pl:{ caja:{ x0:-72, x1:72, y0:-8, y1:68 }, rehacer:L => antena(L, ya ? 1 : 0) },
+      ley: ya ? [['ink', 'el plato y las señales'], ['pf', 'el foco F'], ['p', 'p']] : [['ink', 'el plato']], lect: ya ? lectPL() : [],
+      desc:'El corte de la antena: una parábola de 120 cm de boca y 20 cm de hondo, en centímetros.' }),
+    despues:() => { E.ley = [['ink', 'el plato y las señales'], ['pf', 'el foco F'], ['p', 'p']]; E.leyenda(); E.animar(2000, f => antena(E.pl, f), () => { E.lect = lectPL(); E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">x² = 4${p_('p')}y; el borde (60; 20): 3600 = 4${p_('p')} · 20 ⟹ ${p_('p')} = ${PL.texto}</div></div>
+      <p>Pon el vértice en el origen y el eje hacia arriba: el borde del plato es el punto (60; 20), con la mitad de la boca. Toda señal que llega paralela al eje rebota en el plato y pasa por el foco ${pf_('F')}. Este plato es poco hondo, así que su foco queda 25 cm por encima del borde, sostenido por un brazo.</p>
+      ${FUENTE}` },
+  { id:'asintotas', corto:'La hipérbola parada', ok:'d',
+    q:`¿Cuáles son las pendientes de las asíntotas de la hipérbola ${HV.ecuacion}?`,
+    opts:[['a', ER(HV.pendiente, 'sinRaiz'), 'CO22-asintotas-sin-raiz', 'hipotesis'], ['b', ER(HV.pendiente, 'invertida'), 'CO21-asintotas-invertidas', 'hipotesis'], ['c', ER(HV.pendiente, 'invertidaSinRaiz'), 'CO23-invertidas-y-sin-raiz', 'hipotesis'], ['d', T(HV.pendiente)]],
+    fb:{ a:'±4/9 usa a² y b² sin raíz: la pendiente se arma con a y b.',
+      b:'±3/2 = b/a es la de la hipérbola horizontal. Aquí el término positivo es el de y: el eje es vertical y la asíntota sube a = 2 por cada b = 3 de avance.',
+      c:'±9/4 invierte la razón y además olvida la raíz.' },
+    antes:ya => E.config({ modo:'plano', pl:{ caja:{ x0:-9, x1:5, y0:-5, y1:7 }, rehacer:L => asint(L, ya ? 1 : 0) },
+      ley: ya ? [['a', 'a'], ['b', 'b'], ['ink', 'las asíntotas', 'trazos']] : [], lect: ya ? lectHV() : [],
+      desc: ya ? 'La hipérbola de eje vertical, el rectángulo de lados 2a y 2b y sus diagonales.' : 'El plano cartesiano, todavía sin la hipérbola.' }),
+    despues:() => { E.ley = [['a', 'a'], ['b', 'b'], ['ink', 'las asíntotas', 'trazos']]; E.leyenda(); E.animar(1400, f => asint(E.pl, f), () => { E.lect = lectHV(); E.desc = 'La hipérbola de eje vertical, el rectángulo de lados 2a y 2b y sus diagonales.'; E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">(y − 1)²/${a_('4')} = (x + 2)²/${b_('9')}<span class="note">igualar a 0 el lado izquierdo</span></div>
+      <div class="eq">y − 1 = ±(${a_('2')}/${b_('3')})(x + 2) ⟹ pendientes ${HV.pendiente.texto}</div></div>
+      <p>El rectángulo mide 2${b_('b')} = 6 de ancho y 2${a_('a')} = 4 de alto, porque ${a_('a')} va con y. Sus diagonales son las asíntotas: suben 2 por cada 3. Igualar el lado izquierdo a 0 da las asíntotas sin memorizar si va a/b o b/a.</p>
+      ${FUENTE}` },
+  { id:'cono', corto:'El cono y el plano', ok:'b',
+    q:`Un cono doble se corta con un plano. Con el plano horizontal sale una circunferencia; al inclinarlo un poco (aquí 30°), una elipse. La generatriz del cono forma 60° con la horizontal. Si el plano se inclina hasta 60°, paralelo a la generatriz, ¿qué curva sale?`,
+    opts:[['a', ER(CO, 'cerrada'), 'CO31-todo-corte-es-elipse', 'hipotesis'], ['b', T(CO)], ['c', ER(CO, 'abierta'), 'CO32-paralelo-da-hiperbola', 'hipotesis'], ['d', ER(CO, 'rectas'), 'CO33-paralelo-da-rectas', 'hipotesis']],
+    fb:{ a:'La curva ya no se cierra: el plano nunca vuelve a cortar la generatriz que le es paralela, y la curva se va lejos por ese lado.',
+      c:'Para la hipérbola hace falta inclinar más: el plano corta las dos hojas del cono. Paralelo a la generatriz, corta una sola.',
+      d:'Dos rectas salen solo si el plano pasa por el vértice del cono.' },
+    antes:ya => E.config({ modo:'cono', co:{ fi: ya ? S.fi : 30, g:60, mostrar:true }, ley:[['ink', 'el cono, el plano y la curva']], lect: ya ? lectCO() : [],
+      desc:'Un cono doble visto de costado, cortado por un plano inclinado 30°, y al lado la elipse que sale del corte.' }),
+    despues:() => { E.animar(1600, f => { E.co.fi = Math.round(lerp(30, 60, f)); }, () => { S.fi = 60; E.lect = lectCO(); E.desc = 'Con el plano paralelo a la generatriz, el corte es una parábola.'; E.avisar(); const r = $('fi'); if (r){ r.value = 60; $('fiT').textContent = '60°'; } }); },
+    exp:() => `<div class="eqs"><div class="eq">e = sen φ / sen g<span class="note">φ: inclinación del plano; g: la de la generatriz</span></div>
+      <div class="eq">φ = g = 60° ⟹ e = 1: parábola</div></div>
+      <label class="control">Inclina el plano: <b id="fiT">${S.fi}°</b><input type="range" id="fi" min="0" max="85" step="1" value="${S.fi}" aria-label="Inclinación del plano en grados"></label>
+      <p>Con φ = 0 sale la circunferencia (e = 0); con φ menor que la generatriz, una elipse (e &lt; 1); igual, una parábola (e = 1); mayor, una hipérbola (e &gt; 1), porque el plano corta las dos hojas. Por eso se llaman <b>secciones cónicas</b>, y la excentricidad e = PF/PD las ordena a todas.</p>
+      ${FUENTE}` }
+];
+
+// Un experimento se abre solo si todos los anteriores ya tienen respuesta; los respondidos se revisitan libremente.
+const abierto = k => EXPS.slice(0, k).every(x => !!S.pred[x.id]);
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => abierto(k)
+    ? `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  if (k < 0 || k >= EXPS.length || !abierto(k)) return;
+  E.parar();
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  E.compactar(!ya);
+  x.antes(ya);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p class="problem">${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + `<div class="nav"><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    tramos($('res2'));
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    $('otra2').onclick = () => { E.parar(); x.antes(false); Celular.alResponder($('cv2'), () => x.despues(), () => S.k === k); };
+    const r = $('fi');
+    if (r) r.addEventListener('input', () => { if (E.anim) return; S.fi = +r.value; $('fiT').textContent = `${S.fi}°`; if (E.co){ E.co.fi = S.fi; E.lect = lectCO(); E.desc = `Plano inclinado ${S.fi}°: ${MC.cono({ inclinacion:S.fi, generatriz:60 }).nombre}.`; E.dibujar(); E.avisar(); } });
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar(); botones();
+    E.compactar(false);
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+    Celular.alResponder($('cv2'), () => x.despues(), () => S.k === k);
+  });
+  pintar();
+}
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

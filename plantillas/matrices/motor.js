@@ -45,8 +45,9 @@
  *                                     en medio, n × p), reves (MT8: BA existe con el orden de AB al revés, q × m),
  *                                     mismoOrden (MT16: solo se multiplican matrices del mismo orden) }.
  *   composicion({ primero: B, luego: A }) → primero se aplica B y luego A: la matriz es A·B (la de la derecha actúa
- *                                     primero). { matriz, texto, errores: alReves (MT2: B·A), suma (MT17: A + B),
- *                                     elementoAElemento (MT1) }.
+ *                                     primero). { matriz, texto, errores: alReves (MT34: B·A, en el orden en que actúan), suma
+ *                                     (MT17: A + B), escalar (MT33: (det B)·A, como si B estirara igual en todas las
+ *                                     direcciones) }.
  *   det({ M })                        → determinante de una matriz cuadrada de cualquier orden (eliminación exacta).
  *                                     { valor, texto }.
  *   det2({ M })                       → determinante 2 × 2 = ad − bc con M = [[a, b], [c, d]]. { valor, texto,
@@ -82,6 +83,12 @@
  *                                     { det, detX, detY, x, y, texto: 'x = 2', textoY: 'y = 1', errores (para x):
  *                                     sinDividir (MT29: x = Δx), alReves (MT30: x = Δ/Δx; no aparece si Δx = 0),
  *                                     otraColumna (MT31: Δy/Δ, el valor de y) }.
+ *   kSistema({ A, b })                → sistema A·(x; y) = b con UNA 'k' en A: el k con Δ = 0, sin solución única.
+ *                                     { valor, texto: 'k = 4', errores: sumaDiagonales (MT5: ad + bc = 0), cambiado
+ *                                     (AL17: iguala a 0 Δx, o Δy si Δx no depende de k), cero (MT21: k = 0) }.
+ *   sustituir({ M, valores })         → M con elementos número o expresión lineal de una letra ('x + 2', '2y', '−1');
+ *                                     valores = { x: 5, y: −3 }. { matriz, texto }. Lanza si falta un valor o la
+ *                                     expresión no es lineal.
  *   cramer3({ A, b })                 → sistema 3 × 3 por Cramer. { det, dets: [Δx, Δy, Δz], x, y, z, texto:
  *                                     'x = 1; y = 2; z = 3' }. Si det = 0 lanza «det = 0».
  *   productoTranspuesta({ A, B })     → (AB)ᵀ = BᵀAᵀ. { matriz, texto, errores: AtBt (MT9: AᵀBᵀ, si existe),
@@ -95,6 +102,13 @@
  *                                     rectángulo de lados a y det/a. { pasos: [{ u, v }, { u, v }, { u, v }] (columnas
  *                                     de números: al inicio, tras v − (b/a)·u y tras u − t·v), t1: b/a, t2,
  *                                     ancho: a, alto: det/a, det }. Lanza si a = 0.
+ *
+ * ENTRADAS QUE LANZAN (con mensaje en español): matriz vacía o con filas de distinto largo; un elemento que no es número
+ *   ni fracción; elemento({ i, j }) fuera de rango («aᵢⱼ no existe en una matriz de m × n»); sumar con órdenes
+ *   distintos («del mismo orden»); producto con columnas de A ≠ filas de B (p. ej. 2 × 3 por 2 × 3); det de una matriz
+ *   no cuadrada; det2/det3/inversa2/cizalla con otro orden; inversa2 con det = 0 («det = 0: no tiene inversa»);
+ *   cramer2/cramer3 con Δ = 0 («det = 0: Cramer no se aplica»), aunque Δx, Δy (y Δz) también sean 0; kSinInversa y
+ *   kSistema sin exactamente una 'k' o con un det que no depende de k; cizalla con a = 0.
  */
 (function (root, fabrica) {
   const api = fabrica();
@@ -268,9 +282,9 @@
     if (!(m === n && p === q && m === p)) throw new Error('las dos matrices deben ser cuadradas del mismo orden');
     const P = prod(A, B), r = { matriz: numeros(P), texto: textoQ(P) };
     Object.assign(r, juntar(r.texto, [
-      ['alReves', errM(prod(B, A), 'MT2', 'escribe las matrices en el orden en que actúan: B·A')],
+      ['alReves', errM(prod(B, A), 'MT34', 'escribe las matrices en el orden en que actúan: B·A')],
       ['suma', errM(A.map((f, i) => f.map((a, j) => sum(a, B[i][j]))), 'MT17', 'hacer una cosa y luego otra se toma como sumar A + B')],
-      ['elementoAElemento', errM(A.map((f, i) => f.map((a, j) => mul(a, B[i][j]))), 'MT1', 'multiplica elemento a elemento')],
+      ['escalar', errM(A.map(f => f.map(a => mul(detQ(B), a))), 'MT33', 'toma B como un número (su determinante) que multiplica a A: estira en todas las direcciones')],
     ]));
     return r;
   }
@@ -404,6 +418,45 @@
     return r;
   }
 
+  // sistema A·(x; y) = b con UNA 'k' en A: el k que deja Δ = 0 (sin solución única)
+  function kSistema({ A, b }) {
+    if (!Array.isArray(b) || b.length !== 2) throw new Error('b debe ser [e, f]');
+    const base = kSinInversa({ M: A }), B = b.map(Q);
+    const con = k => A.map(f => f.map(x => (x === 'k' ? F(k) : Q(x))));
+    const dx = M => res(mul(B[0], M[1][1]), mul(M[0][1], B[1])), dy = M => res(mul(M[0][0], B[1]), mul(B[0], M[1][0]));
+    const resolver = (f, id, regla) => { const b0 = f(con(0)), a1 = res(f(con(1)), b0); if (cero(a1)) return null;
+      const v = div(neg(b0), a1); return { valor: num(v), texto: `k = ${txt(v)}`, id, regla }; };
+    const cambiado = resolver(dx, 'AL17', 'cree que no hay solución única cuando Δx = 0') || resolver(dy, 'AL17', 'cree que no hay solución única cuando Δy = 0');
+    const r = { valor: base.valor, texto: base.texto };
+    Object.assign(r, juntar(r.texto, [
+      ['sumaDiagonales', base.errores.sumaDiagonales || null],
+      ['cambiado', cambiado],
+      ['cero', { valor: 0, texto: 'k = 0', id: 'MT21', regla: 'cree que un 0 en la matriz impide la solución única' }],
+    ]));
+    return r;
+  }
+
+  // reemplaza letras en una matriz cuyos elementos son números o expresiones lineales ('x + 2', '2y', '−1', '1/2')
+  function sustituir({ M, valores }) {
+    const ev = e => {
+      if (typeof e === 'number') return Q(e);
+      const t = String(e).replace(/−/g, '-').replace(/\s+/g, '');
+      if (!t) throw new Error('expresión vacía');
+      let acc = F(0);
+      for (const m of t.match(/[+-]?[^+-]+/g)) {
+        const k = m.match(/^([+-]?)(\d+(?:\/\d+)?)?([a-z]?)$/);
+        if (!k || (!k[2] && !k[3])) throw new Error(`«${e}» no es una expresión lineal`);
+        let v = k[2] ? Q(k[2]) : F(1);
+        if (k[3]) { if (!(k[3] in valores)) throw new Error(`falta el valor de ${k[3]}`); v = mul(v, Q(valores[k[3]])); }
+        acc = k[1] === '-' ? res(acc, v) : sum(acc, v);
+      }
+      return acc;
+    };
+    if (!Array.isArray(M) || !M.length) throw new Error('la matriz debe ser una lista de filas no vacías');
+    const R = M.map(f => f.map(ev));
+    return { matriz: numeros(R), texto: textoQ(R) };
+  }
+
   function cramer3({ A, b }) {
     const X = mat(A, 'A'); if (X.length !== 3 || X[0].length !== 3) throw new Error('se esperaba una matriz de 3 × 3');
     if (!Array.isArray(b) || b.length !== 3) throw new Error('b debe tener tres números');
@@ -446,6 +499,6 @@
   }
 
   return { textoMatriz, textoNumero, orden, construir, elemento, tipos, iguales, sumar, escalar, transpuesta, producto,
-    ordenProducto, composicion, det, det2, det3, detK, propiedadesDet, inversa2, kSinInversa, cramer2, cramer3,
+    ordenProducto, composicion, kSistema, sustituir, det, det2, det3, detK, propiedadesDet, inversa2, kSinInversa, cramer2, cramer3,
     productoTranspuesta, aplicar, paralelogramo, cizalla };
 });

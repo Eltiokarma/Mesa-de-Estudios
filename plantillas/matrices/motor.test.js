@@ -119,6 +119,8 @@ test('ningún error típico coincide con la respuesta correcta (casos y barrido)
     if (d !== 0) { sinChoques(motor.inversa2({ M: A }), 'inversa'); sinChoques(motor.cramer2({ A, b: [ent(-9, 9), ent(-9, 9)] }), 'Cramer'); }
     const K = matAzar(2, 2); K[ent(0, 1)][ent(0, 1)] = 'k';
     try { sinChoques(motor.kSinInversa({ M: K }), 'k sin inversa'); } catch (e) { if (!/no depende de k/.test(e.message)) throw e; }
+    try { const r = motor.kSistema({ A: K, b: [ent(-9, 9), ent(-9, 9)] }); sinChoques(r, 'k del sistema');
+      const Kk = K.map(f => f.map(x => (x === 'k' ? r.valor : x))); cerca(Kk[0][0] * Kk[1][1] - Kk[0][1] * Kk[1][0], 0, 'Δ = 0 con ese k'); } catch (e) { if (!/no depende de k/.test(e.message)) throw e; }
   }
 });
 
@@ -126,7 +128,7 @@ test('ningún error típico coincide con la respuesta correcta (casos y barrido)
 const ESCENA = {
   'paso2': () => { const r = motor.construir({ filas: 2, columnas: 3, formula: { i: 2, j: -1, c: 0 } }); return [r.texto, r.errores.cambiaIJ.texto, r.errores.ordenAlReves.texto, r.errores.porColumnas.texto]; },
   'paso3': () => { const r = motor.producto({ A: [[1, 2], [3, -1]], B: [[2, 0], [1, 4]] }); return [r.texto, r.errores.elementoAElemento.texto, r.errores.alReves.texto, r.errores.filaPorFila.texto]; },
-  'paso4': () => { const r = motor.composicion({ primero: [[2, 0], [0, 1]], luego: [[0, -1], [1, 0]] }); return [r.texto, r.errores.alReves.texto, r.errores.suma.texto, r.errores.elementoAElemento.texto]; },
+  'paso4': () => { const r = motor.composicion({ primero: [[2, 0], [0, 1]], luego: [[0, -1], [1, 0]] }); return [r.texto, r.errores.alReves.texto, r.errores.suma.texto, r.errores.escalar.texto]; },
   'paso5': () => { const r = motor.det2({ M: [[2, 2], [1, 3]] }); return [r.texto, r.errores.sumaDiagonales.texto, r.errores.alReves.texto, r.errores.filas.texto]; },
   'paso6': () => { const r = motor.det2({ M: [[1, 4], [2, 3]] }); return [r.texto, r.errores.sinSigno.texto, r.errores.sumaDiagonales.texto, r.errores.filas.texto]; },
   'paso7': () => { const r = motor.kSinInversa({ M: [['k', 6], [2, 3]] }); return [r.texto, r.errores.sumaDiagonales.texto, r.errores.filas.texto, r.errores.cero.texto]; },
@@ -135,6 +137,7 @@ const ESCENA = {
   'dos-determinantes': () => { const r = motor.propiedadesDet({ detA: 2, detB: 3 }); return [r.texto, r.errores.suma.texto, r.errores.transpuesta.texto, r.errores.ordenCambia.texto]; },
   'ordenes': () => { const r = motor.ordenProducto({ A: [2, 3], B: [3, 4] }); return [r.texto, r.errores.medio.texto, r.errores.reves.texto, r.errores.mismoOrden.texto]; },
   'sarrus': () => { const r = motor.det3({ M: [[2, 1, 3], [0, 4, 1], [1, 2, 5]] }); return [r.texto, r.errores.sumaTodo.texto, r.errores.soloPrincipal.texto, r.errores.alReves.texto]; },
+  'sin-solucion': () => { const r = motor.kSistema({ A: [['k', 2], [2, 1]], b: [3, 5] }); return [r.texto, r.errores.sumaDiagonales.texto, r.errores.cambiado.texto, r.errores.cero.texto]; },
   'cramer': () => { const r = motor.cramer2({ A: [[2, 1], [1, 2]], b: [5, 4] }); return [r.texto, r.errores.sinDividir.texto, r.errores.alReves.texto, r.errores.otraColumna.texto]; },
 };
 test('las predicciones de la escena: respuesta del motor, opciones distintas y de la misma forma', () => {
@@ -168,6 +171,17 @@ test('entradas inválidas', () => {
   assert.throws(() => motor.cizalla({ M: [[0, 1], [1, 0]] }), /a ≠ 0/);
   assert.throws(() => motor.composicion({ primero: [[1, 2]], luego: [[1, 0], [0, 1]] }), /cuadradas/);
   assert.equal(motor.textoNumero('-6/4'), '−3/2');
+  // bordes del verificador: con Δ = 0 lanza aunque Δx y Δy también sean 0
+  assert.throws(() => motor.inversa2({ M: [[2, 4], [1, 2]] }), /det = 0: no tiene inversa/);
+  assert.throws(() => motor.cramer2({ A: [[1, 2], [2, 4]], b: [3, 6] }), /det = 0/);
+  assert.throws(() => motor.cramer2({ A: [[1, 2], [2, 4]], b: [3, 7] }), /det = 0/);
+  assert.throws(() => motor.cramer3({ A: [[1, 1, 1], [1, 2, 3], [2, 3, 4]], b: [6, 14, 20] }), /det = 0/);
+  assert.throws(() => motor.cramer3({ A: [[1, 1, 1], [1, 2, 3], [2, 3, 4]], b: [6, 14, 21] }), /det = 0/);
+  assert.throws(() => motor.sumar({ A: [[1, 2, 3]], B: [[1, 2]] }), /mismo orden/);
+  assert.throws(() => motor.producto({ A: [[1, 2, 3], [4, 5, 6]], B: [[1, 2, 3], [4, 5, 6]] }), /columnas de A/);
+  assert.throws(() => motor.kSistema({ A: [['k', 0], [0, 0]], b: [1, 1] }), /no depende de k/);
+  assert.throws(() => motor.sustituir({ M: [['x²']], valores: { x: 1 } }), /lineal/);
+  assert.throws(() => motor.sustituir({ M: [['2z']], valores: { x: 1 } }), /falta el valor/);
 });
 
 // 4. papel.json
