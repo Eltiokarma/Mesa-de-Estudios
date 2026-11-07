@@ -261,7 +261,7 @@ const RAD = Math.PI/180;
 // Datos comunes de la bobina frente al imán (los del enunciado de los pasos 1, 2, 4 y 5)
 const BOB = { N:200, R:20 };
 const B6P = MI.femMovimiento(0.5, 0.4, 10, 4).Pelectrica;   // potencia del foquito a 10 m/s: brillo 1
-const ESC_mA = 2;   // fondo de escala del galvanómetro, en mA (a cada lado del cero)
+const ESC_mA = 2;   // fondo de escala del amperímetro, en mA (a cada lado del cero)
 
 function colores(){
   const g = n => css(n);
@@ -291,7 +291,7 @@ document.addEventListener('mouseout', e => { if (e.target.closest && e.target.cl
 document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
 
 /* ================= La escena =================
-   Vistas: 'iman' (de costado: un imán sobre el eje de una bobina conectada a un galvanómetro; con ver.graf, las
+   Vistas: 'iman' (de costado: un imán sobre el eje de una bobina conectada a un amperímetro de cero central; con ver.graf, las
    gráficas Φ(t) y ε(t) debajo, con el mismo eje de tiempo), 'campo' (de frente: una bobina cuadrada en un campo
    uniforme que entra, ⊗, con un amperímetro o, si está cortada, un voltímetro), 'barra' (de frente: dos rieles, un
    foquito y una barra que se desliza en un campo que entra), 'gen' (en perspectiva: una bobina que gira en un campo
@@ -512,8 +512,8 @@ function crearEscena(cv, idDesc, idLect, idLey){
         const P = { x:Cb.x - Bi*0.018*k, y:Cb.y + yy*ry }, Q = { x:Cb.x + Bi*0.018*k, y:Cb.y + yy*ry };
         flecha(P, Q, c.Bi, grosor('Bi', yy ? 2.2 : 3.2), { alfa:aBi });
       }
-      if (aBi > .5) rotulo(ctx, c, Cb.x + Bi*0.018*k + Bi*12, Cb.y - ry*.45 - 1, 'Bᵢ', c.Bi, 'center', 800, 13);
-      if (E.ver.cara && aBi > .5) rotulo(ctx, c, Cb.x - rx - 18, Cb.y - ry - 4, `cara ${Bi < 0 ? 'N' : 'S'}`, c.Bi, 'right', 800, 12);
+      if (aBi > .5) rotulo(ctx, c, Cb.x + Bi*(0.018*k + 12), Cb.y + ry*.45 + 13, 'Bᵢ', c.Bi, 'center', 800, 13);
+      if (E.ver.cara && aBi > .5) rotulo(ctx, c, Cb.x - rx - 6, Cb.y - ry - 12, `cara ${Bi < 0 ? 'norte' : 'sur'}`, c.Bi, 'right', 800, 12);
     }
     for (let j = -1; j <= 1; j++){
       ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(Cb.x + j*3, Cb.y, rx, ry, 0, -Math.PI/2, Math.PI/2); ctx.stroke(); ctx.restore();
@@ -524,9 +524,9 @@ function crearEscena(cv, idDesc, idLect, idLey){
       const sube = E.ver.sentido === 'antihorario';
       arcoFlecha({ x:Cb.x + 3, y:Cb.y }, rx + 5, sube ? Math.PI*.4 : -Math.PI*.4, sube ? -Math.PI*.4 : Math.PI*.4, c.I, grosor('I', 2.6), ry + 5);
       ctx.restore();
-      if (aBi > .5) rotulo(ctx, c, Cb.x + rx + 16, Cb.y + (sube ? -ry*.15 : ry*.15), 'I', c.I, 'center', 800, 13);
+      if (aBi > .5) rotulo(ctx, c, Cb.x + rx + 12, Cb.y + ry*.9 + 4, 'I', c.I, 'center', 800, 13);
     }
-    // cables hasta el galvanómetro
+    // cables hasta el amperímetro
     const G = { x:W - 34, y:Hs - 10 }, rg = 24;
     ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.5;
     ctx.beginPath(); ctx.moveTo(Cb.x - 3, Cb.y + ry); ctx.lineTo(Cb.x - 3, G.y); ctx.lineTo(G.x - rg, G.y); ctx.stroke();
@@ -556,6 +556,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
       linea(ctx, { x:P0, y:yd - 5 }, { x:P0, y:yd + 5 }); linea(ctx, { x:P1, y:yd - 5 }, { x:P1, y:yd + 5 }); ctx.restore();
       rotulo(ctx, c, P0 - 6, yd, `d = ${fmt(im.d*100, im.d*100 % 1 ? 1 : 0)} cm`, c.L, 'right', 800, 12);
     }
+    if (E.ver.congelado) rotulo(ctx, c, 10, 14, E.ver.congelado, c.muted, 'left', 700, 12);
     // recuadro: la bobina vista desde el imán
     if (E.ver.inset){
       const r = W < 560 ? 17 : 24, C = { x:W - r - 17, y:r + 13 }, bw = 2*r + 26;
@@ -623,10 +624,18 @@ function crearEscena(cv, idDesc, idLect, idLey){
     const b = E.barra, X0 = -0.14, X1 = 1.02, Y0 = -0.08, Y1 = 0.5;
     const k = Math.min((W - 16)/(X1 - X0), (H - 16)/(Y1 - Y0)), ox = (W - k*(X1 + X0))/2, oy = (H + k*(Y1 + Y0))/2;
     const aP = p => ({ x:ox + k*p.x, y:oy - k*p.y });
+    // zonas de rótulos y flechas: ahí no se dibujan ⊗ (para que nada se pise)
+    const Pb0 = aP({ x:b.x, y:0 }), Ya0 = Pb0.y, Yb0 = aP({ x:b.x, y:b.L }).y, ym = (Ya0 + Yb0)/2, Am = (aP({ x:0, y:0 }).x + Pb0.x)/2;
+    ctx.font = `800 12px ${c.font}`; const wL = ctx.measureText('L = 0,4 m').width;
+    const zonas = [[Pb0.x - 22 - wL - 4, Ya0 - 26, Pb0.x - 18, Ya0 - 6]];
+    if (b.v){ const x2 = Pb0.x + 6 + 66*b.v; zonas.push([Math.min(Pb0.x, x2), ym - 32, Math.max(Pb0.x, x2), ym]); }
+    if (b.F && b.I){ const x2 = Pb0.x - 72*(b.vSigno || 1); zonas.push([Math.min(Pb0.x, x2), ym - 14, Math.max(Pb0.x, x2), ym + 16]); }
+    if (b.I){ zonas.push([Pb0.x + 4, Yb0, Pb0.x + 24, Yb0 + 40], [Am - 42, aP({ x:0, y:b.L }).y - 22, Am + 26, aP({ x:0, y:b.L }).y], [Am - 26, Ya0, Am + 26, Ya0 + 20]); }
+    const libre = P => !zonas.some(([x1, y1, x2, y2]) => P.x > x1 - 7 && P.x < x2 + 7 && P.y > y1 - 7 && P.y < y2 + 7);
     const paso = 0.1;
     for (let x = -0.1; x <= 1.0 + 1e-9; x += paso) for (let y = -0.05; y <= 0.47; y += paso){
       const P = aP({ x, y }); if (P.x < 8 || P.x > W - 8 || P.y < 22 || P.y > H - 8) continue;
-      if (Math.abs(x - b.x) < .05) continue;
+      if (Math.abs(x - b.x) < .05 || !libre(P)) continue;
       simbolo(P, false, 5, c.B, grosor('B', 1.3), .5);
     }
     rotulo(ctx, c, 10, 12, 'B = 0,5 T, entra (⊗)', c.B, 'left', 800, 12);
@@ -699,11 +708,11 @@ function crearEscena(cv, idDesc, idLect, idLey){
       ctx.save(); ctx.strokeStyle = c.line; ctx.strokeRect(r.x + .5, r.y + .5, r.w - 1, r.h - 1); ctx.restore();
       const X = tt => r.x + 8 + (r.w - 16)*tt/G.tFin, y0 = r.y + r.h/2, Y = v => y0 - v/G.max*(r.h/2 - 14);
       ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1; linea(ctx, { x:r.x + 6, y:y0 }, { x:r.x + r.w - 6, y:y0 }); ctx.restore();
-      for (const l of G.lineas || []){ ctx.save(); ctx.strokeStyle = c.e; ctx.globalAlpha = .75; ctx.setLineDash([3, 4]); ctx.lineWidth = 1.4; linea(ctx, { x:r.x + 8, y:Y(l.v) }, { x:r.x + r.w - 8, y:Y(l.v) }); ctx.restore(); if (l.n) rotulo(ctx, c, l.izq ? r.x + 40 : r.x + r.w - 10, Y(l.v) + (l.izq ? 9 : -9), l.n, c.e, l.izq ? 'left' : 'right', 700, 11); }
       ctx.save(); ctx.strokeStyle = c.e; ctx.lineWidth = grosor('e', 2.6); ctx.beginPath();
       const hasta = Math.min(G.tFin, G.hasta === undefined ? G.tFin : G.hasta);
       for (let j = 0; j <= 200; j++){ const tt = hasta*j/200, P = { x:X(tt), y:Y(G.f(tt)) }; if (j) ctx.lineTo(P.x, P.y); else ctx.moveTo(P.x, P.y); }
       ctx.stroke(); ctx.restore();
+      for (const l of G.lineas || []){ ctx.save(); ctx.strokeStyle = c.e; ctx.globalAlpha = .75; ctx.setLineDash([3, 4]); ctx.lineWidth = 1.4; linea(ctx, { x:r.x + 8, y:Y(l.v) }, { x:r.x + r.w - 8, y:Y(l.v) }); ctx.restore(); if (l.n) rotulo(ctx, c, l.izq ? X(G.tFin*3/8) : r.x + r.w - 10, Y(l.v) + (l.izq ? 9 : -9), l.n, c.e, l.izq ? 'center' : 'right', 700, 11); }
       rotulo(ctx, c, r.x + 10, r.y + 11, 'ε (V)', c.e, 'left', 800, 12);
       ctx.save(); ctx.fillStyle = c.muted; ctx.font = `700 10px ${c.font}`; ctx.textAlign = 'right'; ctx.textBaseline = 'top'; ctx.fillText(G.etqT || 't', r.x + r.w - 4, r.y + r.h + 2); ctx.restore();
     }
@@ -726,7 +735,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
     }
     // bobinas
     const bob = (xc, n, etq) => {
-      const vueltas = Math.max(3, Math.min(9, Math.round(n/25)));
+      const vueltas = Math.max(2, Math.min(12, Math.round(n/25)));   // 200 y 50 vueltas: 8 y 2 dibujadas (4:1)
       for (let j = 0; j < vueltas; j++){ const y = y0 + e + 10 + j*(h - 2*e - 20)/(vueltas - 1); ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(xc, y, e*.95, 4, 0, 0, 7); ctx.stroke(); ctx.restore(); }
       rotulo(ctx, c, xc, y0 + h + 13, etq, c.ink, 'center', 800, 12);
     };
@@ -745,8 +754,11 @@ function crearEscena(cv, idDesc, idLect, idLey){
     linea(ctx, { x:x0 + w + e*.2, y:y0 + e + 8 }, { x:gx, y:y0 + e + 8 }); linea(ctx, { x:gx, y:y0 + e + 8 }, { x:gx, y:fy - 11 });
     linea(ctx, { x:x0 + w + e*.2, y:y0 + h - e - 8 }, { x:gx, y:y0 + h - e - 8 }); linea(ctx, { x:gx, y:y0 + h - e - 8 }, { x:gx, y:fy + 11 }); ctx.restore();
     foquito({ x:gx, y:fy }, 11, T.brillo || 0, c);
-    rotulo(ctx, c, gx, fy + 30, T.Vs === null || T.Vs === undefined ? 'Vs = ?' : `Vs = ${T.Vs}`, c.V, 'center', 800, 12);
-    if (T.Is !== null && T.Is !== undefined) rotulo(ctx, c, gx, fy + 46, `Is = ${T.Is}`, c.I, 'center', 800, 12);
+    // rótulos debajo del foquito, corridos a la izquierda si no caben
+    const txV = T.Vs === null || T.Vs === undefined ? 'Vs = ?' : (/^≠/.test(T.Vs) ? `Vs ${T.Vs}` : `Vs = ${T.Vs}`);
+    ctx.font = `800 12px ${c.font}`; const wV = ctx.measureText(txV).width;
+    rotulo(ctx, c, Math.min(gx, W - 8 - wV/2), fy + 30, txV, c.V, 'center', 800, 12);
+    if (T.Is !== null && T.Is !== undefined){ ctx.font = `800 12px ${c.font}`; const wI = ctx.measureText(`Is = ${T.Is}`).width; rotulo(ctx, c, Math.min(gx, W - 8 - wI/2), fy + 46, `Is = ${T.Is}`, c.I, 'center', 800, 12); }
   }
 
   function leyenda(){
@@ -759,10 +771,10 @@ function crearEscena(cv, idDesc, idLect, idLey){
       if (E.ver.v) l.push(it('v', 'v · velocidad del imán'));
       if (E.ver.d) l.push(it('L', 'd · distancia del polo a la bobina'));
       if (E.ver.graf){ l.push(it('phi', 'Φ · flujo')); if (E.ver.graf.fem) l.push(it('e', 'ε · fem inducida')); }
-      l.push('<span>N y S: polos del imán</span>');
+      l.push('<span>N y S pintados en el imán: sus polos norte y sur</span>');
     } else if (v === 'campo'){
       l.push(it('B', 'B · campo: ⊗ entra a la pantalla')); l.push(it('L', 'A · área de cada vuelta'));
-      if (E.campo.instr === 'V') l.push(it('e', 'ε · fem (la marca el voltímetro)')); else l.push(it('I', 'I · corriente (la marca el amperímetro)'));
+      if (E.campo.instr === 'V') l.push(it('e', 'ε · lo que marca el voltímetro')); else l.push(it('I', 'I · corriente (la marca el amperímetro)'));
     } else if (v === 'barra'){
       l.push(it('B', 'B · campo: ⊗ entra')); l.push(it('v', 'v · velocidad de la barra')); l.push(it('L', 'L · largo de la barra'));
       if (E.barra.I) l.push(it('I', 'I · corriente inducida'));
@@ -774,7 +786,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
       l.push('<span>a trazos: el eje de giro y la normal</span>');
     } else if (v === 'trafo'){
       l.push(it('V', 'V · voltajes')); l.push(it('phi', 'Φ · flujo en el núcleo de hierro'));
-      if (E.tr.Is !== null && E.tr.Is !== undefined) l.push(it('I', 'I · corriente'));
+      if (E.tr.fuente === 'alterna' || (E.tr.Is !== null && E.tr.Is !== undefined)) l.push(it('I', 'I · corriente'));
     }
     if (E.leyendaExtra) l.push(E.leyendaExtra);
     return l.join('');
@@ -812,6 +824,9 @@ function crearEscena(cv, idDesc, idLect, idLey){
     const ahora = performance.now(), dt = Math.max(0.016, (ahora - (ultimo || ahora - 50))/1000); ultimo = ahora;
     if (E.vista === 'iman'){
       const d1 = clamp(Math.round(nuevo*1000)/1000, 0.02, 0.15), d0 = E.im.d; if (d1 === d0) return;
+      // antes del paso 5 solo se acerca: alejarlo mostraría la corriente al revés, que es lo que pregunta el paso 5
+      if (E.arr.iman && E.arr.iman.soloAcercar && d1 > d0) return;
+      E.ver.congelado = null;
       E.im.d = d1; E.vivo.obj = (d1 - d0)/dt;
     } else {
       const x1 = clamp(Math.round(nuevo*1000)/1000, 0.12, 0.9), x0 = E.barra.x; if (x1 === x0) return;
@@ -864,17 +879,23 @@ function crearEscena(cv, idDesc, idLect, idLey){
     else if (E.vista === 'barra' && E.arr.barra){ e.preventDefault(); ultimo = performance.now() - 60; moverA(E.barra.x + d*(e.shiftKey ? 0.1 : 0.03)); }
   });
   // Anima el imán con un movimiento del motor (movimientoIman) y la aguja con femIman; fin al terminar.
+  // Lleva el imán a d sin corriente (no es un movimiento: se recoloca)
+  E.recolocar = d => { E.vivo = { v:0, obj:0, t:0 }; E.im.d = d; E.im.vel = 0; E.ver.I = 0; E.ver.BiAlfa = 0; E.ver.congelado = null; E.dibujar(); E.avisar(); };
   E.recorrido = (mov, tFin, dur, fin, o) => {
     o = o || {};
-    E.tween(dur, f => {
-      const t = (RM && o.tRM !== undefined) ? o.tRM : f*tFin, m = MI.movimientoIman(t, mov), r = MI.femIman(m.d, m.vd, { polo:E.im.polo }, BOB.N, BOB.R);
+    E.ver.congelado = null;
+    const cuadro = t => {
+      const m = MI.movimientoIman(t, mov), r = MI.femIman(m.d, m.vd, { polo:E.im.polo }, BOB.N, BOB.R);
       E.im.d = m.d; E.im.vel = m.vd ? Math.sign(m.vd) : 0; E.ver.I = r.I;
       if (o.lenz && m.vd){ const lz = MI.lenz(MI.flujoIman(m.d, { polo:E.im.polo }), MI.flujoIman(Math.max(0, m.d + m.vd*1e-3), { polo:E.im.polo })); E.ver.Bi = lz.Binducido; E.ver.sentido = lz.sentido; E.ver.BiAlfa = clamp(Math.abs(r.I)*1000/0.15, 0, 1); }
       else if (o.lenz) E.ver.BiAlfa = clamp(Math.abs(r.I)*1000/0.15, 0, 1);
       if (E.ver.graf){ E.ver.graf.cursor = t; E.ver.graf.series.forEach(s => { if (s.animar) s.hasta = RM ? tFin : t; }); }
-      if (o.cada) o.cada(t, m, r);
       E.dibujar(); E.avisar();
-    }, fin);
+    };
+    // con o.congelar (s), al terminar (o de entrada, con movimiento reducido) la escena queda quieta en ese instante,
+    // con la corriente y el campo inducido de ese momento y el rótulo o.rotulo («mientras se acerca»)
+    const fijo = o.congelar !== undefined;
+    E.tween(dur, f => cuadro(RM && fijo ? o.congelar : f*tFin), () => { if (fijo){ cuadro(o.congelar); E.ver.congelado = o.rotulo || null; E.dibujar(); } if (fin) fin(); });
   };
   return E;
 }
@@ -916,7 +937,7 @@ const P1 = { id:'induccion-paso1', ok:'c', opts:[
   ['a', 'Marca corriente, porque el imán está cerca y su campo ahí es fuerte', 'MG7-iman-quieto-induce', 'documentado'],
   ['b', 'Marca corriente, pero más pequeña que mientras el imán se movía', 'MG10-flujo-por-cambio-de-flujo', 'parcial'],
   ['c', 'Marca cero, porque el campo en la bobina ya no cambia'],
-  ['d', 'Marca cero, porque a esa distancia el imán no es lo bastante fuerte', 'MG-cero-solo-si-esta-lejos', 'hipotesis']],
+  ['d', 'Marca cero, porque a esa distancia el imán no es lo bastante fuerte', 'MG-cero-solo-si-esta-lejos', 'parcial']],
   fb:{ c:'¡Bien! La corriente aparece solo mientras el campo que atraviesa la bobina cambia. Con el imán quieto, nada cambia: cero.',
     a:'Elegiste la A. El campo es fuerte, pero ya no cambia: con el imán quieto no hay corriente. La correcta está marcada.',
     b:'Elegiste la B. No queda «un poco» de corriente: con el imán quieto el campo no cambia nada y la corriente es cero. La correcta está marcada.',
@@ -928,33 +949,33 @@ const P2 = { id:'induccion-paso2', ok:'b', opts:[
   ['d', 'En t₄ = 2,4 s', 'MG10-fem-con-el-flujo-mayor-quieto', 'parcial']],
   fb:{ b:'¡Bien! La corriente sigue a la PENDIENTE de la curva del flujo: en t₂ el flujo sube más rápido que en cualquier otro momento.',
     a:'Elegiste la A. En t₁ el imán va más rápido, pero está lejos: el flujo casi no cambia. Lo que cuenta es lo rápido que cambia el flujo. La correcta está marcada.',
-    c:'Elegiste la C. En t₃ el flujo es casi el mayor, pero el imán se está deteniendo y la curva queda plana: la corriente es casi cero. La correcta está marcada.',
+    c:'Elegiste la C. En t₃ el imán acaba de detenerse: el flujo ya es el mayor, pero dejó de cambiar y la corriente es cero. La correcta está marcada.',
     d:'Elegiste la D. En t₄ el flujo es el mayor, pero no cambia: la curva es horizontal y la corriente es cero. La correcta está marcada.' } };
-const P3 = { id:'induccion-paso3', ok:'a', opts:[
-  ['a', `ε = ${V(F3.femModulo)} V e I = ${V(F3.I)} A`],
-  ['b', `ε = ${V(F3.errores.sinN)} V e I = ${fmt(F3.errores.IsinN, 3)} A`, 'MG-faraday-olvida-N', 'hipotesis'],
+const P3 = { id:'induccion-paso3', ok:'d', opts:[
+  ['a', `ε = ${V(F3.errores.sinN)} V e I = ${fmt(F3.errores.IsinN, 3)} A`, 'MG-faraday-olvida-N', 'hipotesis'],
+  ['b', `ε = ${V(F3.femModulo)} V e I = ${V(F3.errores.IporR)} A`, 'MG-ohm-multiplica-por-R', 'hipotesis'],
   ['c', `ε = ${V(F3.errores.conFlujoInicial)} V e I = ${fmt(F3.errores.conFlujoInicial/8, 3)} A`, 'MG10-faraday-flujo-en-vez-de-cambio', 'parcial'],
-  ['d', `ε = ${V(F3.femModulo)} V e I = ${V(F3.errores.IporR)} A`, 'MG-ohm-multiplica-por-R', 'hipotesis']],
-  fb:{ a:'¡Bien! ε = N·|ΔΦ|/Δt con el CAMBIO del flujo de cada vuelta, multiplicado por las 100 vueltas; después, I = ε/R.',
-    b:'Elegiste la B. Falta multiplicar por N: cada una de las 100 vueltas aporta su fem, y se suman. La correcta está marcada.',
-    c:'Elegiste la C. Usaste el flujo del principio, 0,01 Wb, en lugar de su cambio, 0,008 Wb. La fem depende de cuánto cambia el flujo. La correcta está marcada.',
-    d:'Elegiste la D. La fem está bien, pero la corriente es ε/R, no ε·R: 4/8 = 0,5 A. La correcta está marcada.' } };
-const P4 = { id:'induccion-paso4', ok:'a', opts:[
-  ['a', 'Antihoraria, y la bobina repele al imán'],
-  ['b', 'Horaria, y la bobina atrae al imán', 'MG8-lenz-sentido-contrario', 'parcial'],
-  ['c', 'Horaria, y la bobina repele al imán', 'MG-mano-derecha-invertida', 'parcial'],
-  ['d', 'Antihoraria, y la bobina atrae al imán', 'MG-bobina-atrae-como-al-hierro', 'hipotesis']],
-  fb:{ a:'¡Bien! El flujo aumenta, así que el campo inducido apunta hacia el imán, contra ese aumento: la corriente es antihoraria vista desde el imán y la cara que lo mira es un polo N, que lo repele.',
-    b:'Elegiste la B. Al revés: el campo inducido se opone al aumento del flujo, así que apunta hacia el imán. Esa corriente es antihoraria vista desde el imán y repele. La correcta está marcada.',
-    c:'Elegiste la C. Sí repele, pero una corriente horaria vista desde el imán crearía un campo que se aleja del imán, y eso lo atraería. Repeler pide una corriente antihoraria. La correcta está marcada.',
-    d:'Elegiste la D. El sentido está bien, pero esa corriente vuelve polo N la cara que mira al imán, y N con N se repelen. La bobina frena el acercamiento. La correcta está marcada.' } };
-const P5 = { id:'induccion-paso5', ok:'a', opts:[
-  ['a', 'Horaria, y su campo inducido apunta alejándose del imán, como el del imán'],
-  ['b', 'Antihoraria, y su campo inducido apunta hacia el imán, contra el del imán', 'MG8-MG9-contra-el-campo', 'documentado'],
+  ['d', `ε = ${V(F3.femModulo)} V e I = ${V(F3.I)} A`]],
+  fb:{ d:'¡Bien! ε = N·|ΔΦ|/Δt con el CAMBIO del flujo de cada vuelta, multiplicado por las 100 vueltas; después, I = ε/R.',
+    a:'Elegiste la A. Falta multiplicar por N: cada una de las 100 vueltas aporta su fem, y se suman. La correcta está marcada.',
+    b:'Elegiste la B. La fem está bien, pero la corriente es ε/R, no ε·R: 4/8 = 0,5 A. La correcta está marcada.',
+    c:'Elegiste la C. Usaste el flujo del principio, 0,01 Wb, en lugar de su cambio, 0,008 Wb. La fem depende de cuánto cambia el flujo. La correcta está marcada.' } };
+const P4 = { id:'induccion-paso4', ok:'c', opts:[
+  ['a', 'Horaria, y la bobina atrae al imán', 'MG8-lenz-sentido-contrario', 'parcial'],
+  ['b', 'Antihoraria, y la bobina atrae al imán', 'MG-bobina-atrae-como-al-hierro', 'hipotesis'],
+  ['c', 'Antihoraria, y la bobina repele al imán'],
+  ['d', 'Horaria, y la bobina repele al imán', 'MG-mano-derecha-invertida', 'parcial']],
+  fb:{ c:'¡Bien! El flujo aumenta, así que el campo inducido apunta hacia el imán, contra ese aumento: la corriente es antihoraria vista desde el imán y la cara que lo mira se comporta como un polo norte, que lo repele.',
+    a:'Elegiste la A. Al revés: el campo inducido se opone al aumento del flujo, así que apunta hacia el imán. Esa corriente es antihoraria vista desde el imán y repele. La correcta está marcada.',
+    b:'Elegiste la B. El sentido está bien, pero esa corriente hace que la cara que mira al imán se comporte como un polo norte, y dos polos norte se repelen. La bobina frena el acercamiento. La correcta está marcada.',
+    d:'Elegiste la D. Sí repele, pero una corriente horaria vista desde el imán crearía un campo que se aleja del imán, y eso lo atraería. Repeler pide una corriente antihoraria. La correcta está marcada.' } };
+const P5 = { id:'induccion-paso5', ok:'b', opts:[
+  ['a', 'Antihoraria, y su campo inducido apunta hacia el imán, contra el del imán', 'MG8-MG9-contra-el-campo', 'documentado'],
+  ['b', 'Horaria, y su campo inducido apunta alejándose del imán, como el del imán'],
   ['c', 'Horaria, y su campo inducido apunta hacia el imán, contra el del imán', 'MG-mano-derecha-invertida', 'parcial'],
-  ['d', 'No circula, y no hay campo inducido: el imán se está alejando', 'MG8-sin-corriente-al-alejar', 'documentado']],
-  fb:{ a:'¡Bien! Ahora el flujo disminuye. El campo inducido se opone a esa disminución: refuerza el campo que se va. Por eso la bobina atrae al imán.',
-    b:'Elegiste la B. La corriente inducida no va contra el campo: va contra el CAMBIO del flujo. Aquí el flujo disminuye, así que el campo inducido lo refuerza. La correcta está marcada.',
+  ['d', 'No circula, y no hay campo inducido: el imán se está alejando', 'MG8-sin-corriente-al-alejar', 'parcial']],
+  fb:{ b:'¡Bien! Ahora el flujo disminuye. El campo inducido se opone a esa disminución: refuerza el campo que se va. Por eso la bobina atrae al imán.',
+    a:'Elegiste la A. La corriente inducida no va contra el campo: va contra el CAMBIO del flujo. Aquí el flujo disminuye, así que el campo inducido lo refuerza. La correcta está marcada.',
     c:'Elegiste la C. Una corriente horaria vista desde el imán crea un campo que se aleja del imán, no que apunta hacia él. La correcta está marcada.',
     d:'Elegiste la D. Alejarse también cambia el flujo: hay corriente mientras el imán se mueve, ahora en el otro sentido. La correcta está marcada.' } };
 const P6 = { id:'induccion-paso6', ok:'a', opts:[
@@ -966,15 +987,15 @@ const P6 = { id:'induccion-paso6', ok:'a', opts:[
     b:'Elegiste la B. Si la fuerza empujara hacia adelante, la barra se aceleraría sola y prendería el foquito gratis. Lenz dice lo contrario: la fuerza se opone al movimiento. La correcta está marcada.',
     c:'Elegiste la C. Falta el largo de la barra: ε = B·L·v = 0,5 · 0,4 · 10. La correcta está marcada.',
     d:'Elegiste la D. B es constante, pero el área encerrada crece al avanzar la barra, y con ella el flujo. Cambiar el área también induce. La correcta está marcada.' } };
-const P7 = { id:'induccion-paso7', ok:'a', opts:[
-  ['a', `εmax = ${fmt(G7.femMax, 0)} V y ε eficaz ≈ ${fmt(G7.eficaz, 0)} V`],
-  ['b', `εmax = ${fmt(G7.femMax, 0)} V y ε eficaz = ${fmt(G7.errores.eficazMitad, 0)} V`, 'MG-eficaz-entre-2', 'hipotesis'],
-  ['c', `εmax = ${fmt(G7.errores.sinN, 0)} V y ε eficaz ≈ ${fmt(G7.errores.sinNEficaz, 1)} V`, 'MG-generador-olvida-N', 'hipotesis'],
-  ['d', `εmax = ${fmt(G7.femMax, 0)} V y ε eficaz ≈ ${fmt(G7.errores.eficazPorRaiz, 0)} V`, 'MG-eficaz-por-raiz-de-2', 'hipotesis']],
-  fb:{ a:'¡Bien! εmax = N·B·A·ω y, para una fem senoidal, el valor eficaz es εmax/√2.',
-    b:'Elegiste la B. El valor eficaz no es la mitad del máximo: es εmax/√2 ≈ 0,71·εmax. La correcta está marcada.',
-    c:'Elegiste la C. Falta multiplicar por las 50 vueltas: εmax = N·B·A·ω. La correcta está marcada.',
-    d:'Elegiste la D. El eficaz es menor que el máximo: se divide entre √2, no se multiplica. La correcta está marcada.' } };
+const P7 = { id:'induccion-paso7', ok:'d', opts:[
+  ['a', `εmax = ${fmt(G7.femMax, 0)} V y ε eficaz = ${fmt(G7.errores.eficazMitad, 0)} V`, 'MG-eficaz-entre-2', 'hipotesis'],
+  ['b', `εmax = ${fmt(G7.errores.sinN, 0)} V y ε eficaz ≈ ${fmt(G7.errores.sinNEficaz, 1)} V`, 'MG-generador-olvida-N', 'hipotesis'],
+  ['c', `εmax = ${fmt(G7.femMax, 0)} V y ε eficaz ≈ ${fmt(G7.errores.eficazPorRaiz, 0)} V`, 'MG-eficaz-por-raiz-de-2', 'hipotesis'],
+  ['d', `εmax = ${fmt(G7.femMax, 0)} V y ε eficaz ≈ ${fmt(G7.eficaz, 0)} V`]],
+  fb:{ d:'¡Bien! εmax = N·B·A·ω y, para una fem senoidal, el valor eficaz es εmax/√2.',
+    a:'Elegiste la A. El valor eficaz no es la mitad del máximo: es εmax/√2 ≈ 0,71·εmax. La correcta está marcada.',
+    b:'Elegiste la B. Falta multiplicar por las 50 vueltas: εmax = N·B·A·ω. La correcta está marcada.',
+    c:'Elegiste la C. El eficaz es menor que el máximo: se divide entre √2, no se multiplica. La correcta está marcada.' } };
 const P8 = { id:'induccion-paso8', ok:'a', opts:[
   ['a', `Vs = ${fmt(T8.Vs, 0)} V e Is = ${fmt(T8.Is, 0)} A`],
   ['b', `Vs = ${fmt(T8.errores.razonInvertida.Vs, 0)} V e Is = ${fmt(T8.errores.razonInvertida.Is, 3)} A`, 'MG-trafo-razon-invertida', 'hipotesis'],
@@ -991,32 +1012,32 @@ const lectImanVivo = () => [['L', 'Distancia d', `${fmt(E.im.d*100, 1)} cm`], ['
 const steps = [
  { k:'Paso 1', t:'Predice: el imán quieto', gate:P1,
    prep:() => { const ya = !!S.pred[P1.id]; E.config({ vista:'iman', im:{ d:0.03 }, ver:{ I: ya ? 0 : null, d:true },
-     lect: () => ya ? lectImanVivo() : [['L', 'Distancia d', '3 cm'], ['v', 'El imán', 'quieto']], arr: ya ? { iman:true } : {},
-     desc: () => 'De costado: un imán de barra sobre el eje de una bobina, con el polo norte hacia la bobina y quieto a 3 cm. La bobina está conectada a un galvanómetro con el cero al centro.' }); },
+     lect: () => ya ? lectImanVivo() : [['L', 'Distancia d', '3 cm'], ['v', 'El imán', 'quieto']], arr: ya ? { iman:{ soloAcercar:true } } : {},
+     desc: () => 'De costado: un imán de barra sobre el eje de una bobina, con el polo norte hacia la bobina y quieto a 3 cm. La bobina está conectada a un amperímetro con el cero al centro.' }); },
    anima:fin => { E.im.d = 0.15; E.ver.I = 0; E.ver.v = true; E.lect = lectImanVivo;
-     E.recorrido(MOV, TFIN, RM ? 0 : 2600, () => { E.ver.v = false; E.im.vel = 0; E.ver.I = 0; E.permitir({ iman:true }); E.avisar(); fin(); }); },
-   body:() => `<p>Una bobina de N = 200 vueltas está conectada a un galvanómetro, un amperímetro sensible con el cero al centro. Se acerca un imán por el eje de la bobina, con el polo norte por delante: mientras se acerca, la aguja se mueve. El imán se detiene a ${L_('d = 3 cm')} y se queda quieto. ¿Qué marca ahora el galvanómetro?</p>${opcionesHTML(P1.opts, 'fb')}
+     E.recorrido(MOV, TFIN, RM ? 0 : 2600, () => { E.ver.v = false; E.im.vel = 0; E.ver.I = 0; E.permitir({ iman:{ soloAcercar:true } }); E.avisar(); fin(); }); },
+   body:() => `<p>Una bobina de N = 200 vueltas está conectada a un amperímetro sensible, con el cero al centro. Se acerca un imán por el eje de la bobina, con el polo norte por delante: mientras se acerca, la aguja se mueve. El imán se detiene a ${L_('d = 3 cm')} y se queda quieto. ¿Qué marca ahora el amperímetro?</p>${opcionesHTML(P1.opts, 'fb')}
    <div id="tras" class="body" hidden>
    <div class="eqs"><div class="eq">${e_('ε')} = −N · Δ${P_('Φ')} / Δt<span class="note">ley de Faraday</span></div>
    <div class="eq">imán quieto → Δ${P_('Φ')} = 0 → ${e_('ε')} = ${e_('0')} → ${I_('I')} = ${I_('0')}</div></div>
-   <p>Mira la escena: la aguja se mueve mientras el imán viaja y vuelve a cero apenas se detiene, aunque el imán quede pegado y su campo ahí sea fuerte. El flujo ${P_('Φ')} es la cantidad de campo que atraviesa la bobina, y la corriente no depende de cuánto flujo hay, sino de cuánto cambia en cada segundo. Arrastra el imán (o usa ← →): rápido mueve mucho la aguja, lento la mueve poco y quieto no la mueve.</p>
-   <div class="acciones"><button type="button" class="btn" id="otraVez">Ver otra vez</button></div>
-   <p class="fuente">En un estudio con 47 alumnos de un laboratorio universitario, antes del curso solo cerca de 1 de cada 4 acertó que con el imán quieto no hay corriente; después del curso, cerca de 7 de cada 10 (Secrest y Novodvorsky, 2005). El texto que leímos no separa las respuestas incorrectas: el respaldo de la opción A es ese fallo en conjunto. Confundir el flujo con su cambio (opción B) está en una lista de dificultades documentadas, sin porcentaje (Zuza, García y Guisasola, 2012, citados por Pantoja y Moreira, 2021). La opción D la mencionaron pocos alumnos en entrevistas, sin porcentaje: la tratamos como hipótesis.</p></div>` },
+   <p>Usa «Ver otra vez»: la aguja se mueve mientras el imán viaja y vuelve a cero apenas se detiene, aunque el imán quede pegado y su campo ahí sea fuerte. El flujo ${P_('Φ')} es la cantidad de campo que atraviesa la bobina, y la corriente no depende de cuánto flujo hay, sino de cuánto cambia en cada segundo. También puedes acercar el imán con el dedo (o con →): rápido mueve mucho la aguja, lento la mueve poco y quieto no la mueve. Para empezar de nuevo, llévalo a 15 cm con el botón.</p>
+   <div class="acciones"><button type="button" class="btn" id="otraVez">Ver otra vez</button><button type="button" class="btn" id="aQuince">Llevar el imán a 15 cm</button></div>
+   <p class="fuente">En un estudio con 47 alumnos de un laboratorio universitario, antes del curso solo cerca de 1 de cada 4 acertó que con el imán quieto no hay corriente; después del curso, cerca de 7 de cada 10 (Secrest y Novodvorsky, 2005). El texto que leímos no separa las respuestas incorrectas: el respaldo de la opción A es ese fallo en conjunto. Confundir el flujo con su cambio (opción B) está en una lista de dificultades documentadas, sin porcentaje (Zuza, García y Guisasola, 2012, citados por Pantoja y Moreira, 2021). La opción D la mencionaron pocos alumnos en entrevistas, sin porcentaje: respaldo parcial.</p></div>` },
  { k:'Paso 2', t:'Predice: ¿cuándo marca más?', gate:P2,
    prep:() => { const ya = !!S.pred[P2.id];
-     E.config({ vista:'iman', im:{ d: ya ? 0.03 : 0.15 }, tope:300, arr: ya ? { iman:true } : {},
+     E.config({ vista:'iman', im:{ d: ya ? 0.03 : 0.15 }, tope:300, arr: ya ? { iman:{ soloAcercar:true } } : {},
        ver:{ I: ya ? 0 : null, graf: graf({ fem:ya, marcas:INST.map((m, j) => ({ t:m.t, n:`t${'₁₂₃₄'[j]}`, dy: j === 3 ? 13 : -13, dx: j === 2 ? -6 : j === 3 ? 6 : 0 })), series: ya ? [{ puntos:SER.puntos }] : [{ puntos:SER.puntos }] }) },
        lect: () => ya ? lectImanVivo() : [['L', 'Recorrido', '15 cm → 3 cm'], ['ink', 'Se detiene en', 't = 1,7 s']],
        desc: () => 'Arriba, el mismo imán y la bobina. Abajo, la gráfica del flujo Φ que atraviesa cada vuelta mientras el imán se acerca, con cuatro instantes marcados: t₁, t₂, t₃ y t₄.' }); },
    anima:fin => { E.ver.graf.fem = true; E.ver.graf.series = [{ puntos:SER.puntos, animar:true, hasta:0 }]; E.redimensionar(); E.leyenda();
      E.im.d = 0.15; E.ver.I = 0; E.ver.v = true; E.lect = lectImanVivo;
-     E.recorrido(MOV, TFIN, RM ? 0 : 2600, () => { E.ver.v = false; E.im.vel = 0; E.ver.I = 0; E.ver.graf.cursor = null; E.ver.graf.series = [{ puntos:SER.puntos }]; E.permitir({ iman:true }); E.avisar(); fin(); }); },
-   body:() => `<p>El imán del paso 1 sale a ${L_('15 cm')} de la bobina en t = 0,2 s, va más rápido a la mitad del recorrido (t = 0,95 s) y frena hasta detenerse a ${L_('3 cm')} en t = 1,7 s. La gráfica muestra el flujo ${P_('Φ')} que atraviesa cada vuelta. ¿En cuál de los cuatro instantes marcados marca más corriente el galvanómetro?</p>${opcionesHTML(P2.opts, 'fb')}
+     E.recorrido(MOV, TFIN, RM ? 0 : 2600, () => { E.ver.v = false; E.im.vel = 0; E.ver.I = 0; E.ver.graf.cursor = null; E.ver.graf.series = [{ puntos:SER.puntos }]; E.permitir({ iman:{ soloAcercar:true } }); E.avisar(); fin(); }); },
+   body:() => `<p>El imán del paso 1 sale a ${L_('15 cm')} de la bobina en t = 0,2 s, va más rápido a la mitad del recorrido (t = 0,95 s) y frena hasta detenerse a ${L_('3 cm')} en t = 1,7 s. La gráfica muestra el flujo ${P_('Φ')} que atraviesa cada vuelta. ¿En cuál de los cuatro instantes marcados marca más corriente el amperímetro?</p>${opcionesHTML(P2.opts, 'fb')}
    <div id="tras" class="body" hidden>
    <div class="eqs"><div class="eq">${e_('ε')} = −N · Δ${P_('Φ')} / Δt<span class="note">la pendiente de la curva de Φ, no su altura</span></div>
    <div class="eq">${I_('I')}(t₁) ≈ ${I_(mA(INST[0].I))} · ${I_('I')}(t₂) ≈ ${I_(mA(INST[1].I))} · ${I_('I')}(t₃) = ${I_('I')}(t₄) = ${I_('0')}</div></div>
    <p>Abajo apareció la gráfica de la fem ${e_('ε')}: tiene su pico donde la curva del flujo es más empinada, cerca de t₂, y vale cero donde la curva es plana, aunque el flujo sea el mayor (t₃ y t₄). Es el mismo error que confundir la pendiente con la altura en una gráfica de posición contra tiempo. La fem es negativa porque el flujo aumenta: el signo menos de la ley es la ley de Lenz, que viene en el paso 4.</p>
-   <div class="acciones"><button type="button" class="btn" id="otraVez">Ver otra vez</button></div>
+   <div class="acciones"><button type="button" class="btn" id="otraVez">Ver otra vez</button><button type="button" class="btn" id="aQuince">Llevar el imán a 15 cm</button></div>
    <p class="fuente">Confundir el flujo con su cambio está en una lista de dificultades documentadas, sin porcentaje en lo que leímos (Zuza, García y Guisasola, 2012, citados por Pantoja y Moreira, 2021): por eso las opciones C y D tienen un respaldo parcial. La opción A es una hipótesis nuestra.</p></div>` },
  { k:'Paso 3', t:'Predice: la ley de Faraday', gate:P3,
    prep:() => { const ya = !!S.pred[P3.id]; E.config({ vista:'campo', campo:{ B: ya ? 0.1 : 0.5, B0:0.5, instr:'A', lectura: ya ? '0 A' : null },
@@ -1031,47 +1052,47 @@ const steps = [
    <div class="eq">|${e_('ε')}| = N · |Δ${P_('Φ')}| / Δt = 100 · ${P_('0,008')} / 0,2 = ${e_('4 V')}</div>
    <div class="eq">${I_('I')} = ${e_('ε')} / R = ${e_('4')} / 8 = ${I_('0,5 A')}<span class="note">solo mientras el campo baja</span></div></div>
    <p>El amperímetro marca 0,5 A durante los 0,2 s en que el campo baja (la escena lo pasa en cámara lenta) y vuelve a cero cuando el campo deja de cambiar, aunque quede en 0,1 T. Aquí no se mueve nada: basta con que cambie ${B_('B')}.</p>
-   <p class="fuente">Usar el flujo en vez de su cambio (opción C) sale de confundir flujo con cambio de flujo, documentado sin porcentaje (Zuza, García y Guisasola, 2012, citados por Pantoja y Moreira, 2021): respaldo parcial. Olvidar N (opción B) y multiplicar por R (opción D) son hipótesis nuestras.</p></div>` },
+   <p class="fuente">Usar el flujo en vez de su cambio (opción C) sale de confundir flujo con cambio de flujo, documentado sin porcentaje (Zuza, García y Guisasola, 2012, citados por Pantoja y Moreira, 2021): respaldo parcial. Olvidar N (opción A) y multiplicar por R (opción B) son hipótesis nuestras.</p></div>` },
  { k:'Paso 4', t:'Predice: el imán se acerca', gate:P4,
    // sin arrastre: alejar el imán aquí regalaría el paso 5
    prep:() => { const ya = !!S.pred[P4.id]; E.config({ vista:'iman', im:{ d: ya ? 0.03 : 0.12, vel: ya ? 0 : -1 },
      ver:{ I: ya ? 0 : null, inset: ya ? true : 'pregunta', v:!ya, lenzVivo:ya, cara:ya, Bi: ya ? L4.Binducido : 0, BiAlfa:0, sentido: ya ? L4.sentido : null },
-     lect: () => ya ? lectImanVivo() : [['v', 'El imán', 'se acerca a la bobina'], ['B', 'Polo hacia la bobina', 'norte (N)']],
+     lect: () => ya ? lectImanVivo() : [['v', 'El imán', 'se acerca'], ['ink', 'Polo hacia la bobina', 'norte']],
      desc: () => 'De costado: el imán se acerca a la bobina con el polo norte por delante. Arriba a la derecha, la bobina vista desde el imán, con el campo del imán que se aleja de quien mira (⊗).' }); },
    anima:fin => { E.ver.inset = true; E.ver.Bi = L4.Binducido; E.ver.sentido = L4.sentido; E.ver.cara = true; E.ver.lenzVivo = true; E.leyenda();
      E.im.d = 0.15; E.ver.I = 0; E.ver.v = true; E.lect = lectImanVivo;
-     E.recorrido(MOV, TFIN, RM ? 0 : 5200, () => { if (!RM){ E.ver.v = false; E.im.vel = 0; E.ver.I = 0; E.ver.BiAlfa = 0; } E.avisar(); fin(); }, { lenz:true, tRM:1.5 }); },
+     E.recorrido(MOV, TFIN, RM ? 0 : 5200, () => { E.avisar(); fin(); }, { lenz:true, congelar:1.5, rotulo:'mientras se acerca' }); },
    body:() => `<p>La misma bobina, ahora mirada desde el lado del imán. El imán se acerca con su polo norte por delante: su campo ${B_('B')} atraviesa la bobina alejándose del imán, y el flujo aumenta. ¿En qué sentido circula la corriente inducida, vista desde el imán, y qué hace la bobina con el imán?</p>${opcionesHTML(P4.opts, 'fb')}
    <div id="tras" class="body" hidden>
    <div class="eqs"><div class="eq">${P_('Φ')} aumenta → ${Bi_('Bᵢ')} apunta hacia el imán, contra el aumento</div>
    <div class="eq">${Bi_('Bᵢ')} hacia quien mira → ${I_('I')} antihoraria vista desde el imán</div>
-   <div class="eq">cara que mira al imán: polo ${Bi_('N')} → N frente a N: se repelen</div></div>
+   <div class="eq">cara que mira al imán: ${Bi_('polo norte')} → norte frente a norte: se repelen</div></div>
    <p>Esta es la ley de Lenz: la corriente inducida crea un campo ${Bi_('Bᵢ')} que se opone al CAMBIO del flujo. Para empujar el imán contra la bobina hay que hacer trabajo, y esa energía es la que se lleva la corriente. ¿Y si el imán se aleja? Es el paso siguiente.</p>
    <div class="acciones"><button type="button" class="btn" id="otraVez">Ver otra vez</button></div>
-   <p class="fuente">En un estudio con 47 universitarios, después del curso, menos de la mitad acertó el sentido de la corriente en una pregunta parecida (con el imán que se aleja) y más de un tercio eligió el contrario (Secrest y Novodvorsky, 2005): la opción B tiene un respaldo parcial porque la pregunta medida no es esta. La C sale de invertir la regla de la mano derecha, que en ese mismo estudio apareció en entrevistas, sin porcentaje. La D es una hipótesis nuestra.</p></div>` },
+   <p class="fuente">En un estudio con 47 universitarios, después del curso, menos de la mitad acertó el sentido de la corriente en una pregunta parecida (con el imán que se aleja) y más de un tercio eligió el contrario (Secrest y Novodvorsky, 2005): la opción A tiene un respaldo parcial porque la pregunta medida no es esta. La D sale de invertir la regla de la mano derecha: un alumno la invirtió en las entrevistas de ese estudio, sin porcentaje. La B es una hipótesis nuestra.</p></div>` },
  { k:'Paso 5', t:'Predice: el imán se aleja', gate:P5,
    prep:() => { const ya = !!S.pred[P5.id]; E.config({ vista:'iman', im:{ d: ya ? 0.15 : 0.04, vel: ya ? 0 : 1 }, arr: ya ? { iman:true } : {},
      ver:{ I: ya ? 0 : null, inset: ya ? true : 'pregunta', v:!ya, lenzVivo:ya, cara:ya, Bi: ya ? L5.Binducido : 0, BiAlfa:0, sentido: ya ? L5.sentido : null },
-     lect: () => ya ? lectImanVivo() : [['v', 'El imán', 'se aleja de la bobina'], ['B', 'Polo hacia la bobina', 'norte (N)']],
+     lect: () => ya ? lectImanVivo() : [['v', 'El imán', 'se aleja'], ['ink', 'Polo hacia la bobina', 'norte']],
      desc: () => 'De costado: el imán, con el polo norte hacia la bobina, se aleja de ella. Arriba a la derecha, la bobina vista desde el imán.' }); },
    anima:fin => { E.ver.inset = true; E.ver.Bi = L5.Binducido; E.ver.sentido = L5.sentido; E.ver.cara = true; E.ver.lenzVivo = true; E.leyenda();
      E.im.d = 0.03; E.ver.I = 0; E.ver.v = true; E.lect = lectImanVivo;
-     E.recorrido(MOVsale, TFIN, RM ? 0 : 5200, () => { if (!RM){ E.ver.v = false; E.im.vel = 0; E.ver.I = 0; E.ver.BiAlfa = 0; } E.permitir({ iman:true }); E.avisar(); fin(); }, { lenz:true, tRM:0.45 }); },
+     E.recorrido(MOVsale, TFIN, RM ? 0 : 5200, () => { E.permitir({ iman:true }); E.avisar(); fin(); }, { lenz:true, congelar:0.45, rotulo:'mientras se aleja' }); },
    body:() => `<p>Ahora el imán está cerca de la bobina, con el polo norte hacia ella, y se aleja. Su campo ${B_('B')} sigue atravesando la bobina alejándose del imán, pero cada vez menos: el flujo disminuye. ¿Cómo circula la corriente inducida, vista desde el imán, y hacia dónde apunta el campo inducido en el centro de la bobina?</p>${opcionesHTML(P5.opts, 'fb')}
    <div id="tras" class="body" hidden>
    <div class="eqs"><div class="eq">${P_('Φ')} disminuye → ${Bi_('Bᵢ')} apunta como ${B_('B')}: lo refuerza</div>
    <div class="eq">${Bi_('Bᵢ')} se aleja de quien mira → ${I_('I')} horaria vista desde el imán</div>
-   <div class="eq">cara que mira al imán: polo ${Bi_('S')} → N frente a S: se atraen</div></div>
+   <div class="eq">cara que mira al imán: ${Bi_('polo sur')} → norte frente a sur: se atraen</div></div>
    <p>La corriente inducida no va «contra el campo»: va contra el CAMBIO del flujo. Si el flujo aumenta, ${Bi_('Bᵢ')} apunta contra ${B_('B')} y la bobina repele al imán; si disminuye, ${Bi_('Bᵢ')} apunta como ${B_('B')} y lo atrae. En los dos casos la bobina se opone al movimiento del imán. Arrastra el imán (o usa ← →) hacia la bobina y lejos de ella: el campo inducido y la corriente cambian de sentido.</p>
    <div class="acciones"><button type="button" class="btn" id="otraVez">Ver otra vez</button></div>
-   <p class="fuente">Con un anillo y el polo norte que se aleja, un estudio con 47 universitarios encontró, después del curso, que cerca de 8 de cada 10 sabía que hay corriente (la opción D es el error de los demás), pero menos de la mitad acertó el sentido y más de un tercio eligió el contrario (Secrest y Novodvorsky, 2005). Ese contrario, la opción B, es también lo que da leer la ley de Lenz como «la corriente va contra el campo» (Bagno y Eylon, 1997, citados por Sağlam y Millar, sin porcentaje). La C sale de invertir la regla de la mano derecha (respaldo parcial: entrevistas del mismo estudio).</p></div>` },
+   <p class="fuente">Con un anillo y el polo norte que se aleja, un estudio con 47 universitarios encontró, después del curso, que cerca de 8 de cada 10 sabía que hay corriente; el estudio que leímos no dice qué eligieron los demás (opción D, respaldo parcial). Menos de la mitad acertó el sentido y más de un tercio eligió el contrario (Secrest y Novodvorsky, 2005). Ese contrario, la opción A, es también lo que da leer la ley de Lenz como «la corriente va contra el campo» (Bagno y Eylon, 1997, citados por Sağlam y Millar, sin porcentaje). La C sale de invertir la regla de la mano derecha: un alumno la invirtió en las entrevistas de ese estudio (respaldo parcial).</p></div>` },
  { k:'Paso 6', t:'Predice: la barra que se desliza', gate:P6,
    prep:() => { const ya = !!S.pred[P6.id]; E.config({ vista:'barra', barra:{ x: ya ? 0.8 : 0.3, L:0.4, v: ya ? 0 : 1, I: ya ? 0 : null, F:ya, brillo:0 }, arr: ya ? { barra:true } : {},
      lect: () => ya || S.p6 ? lectBarra() : [['B', 'Campo B', '0,5 T, constante'], ['v', 'Rapidez v', '10 m/s'], ['ink', 'Foquito', 'R = 4 Ω']],
      desc: () => 'De frente: dos rieles horizontales unidos a la izquierda por un foquito, y una barra vertical que se desliza sobre ellos, en un campo uniforme que entra a la pantalla.' }); },
    anima:fin => { S.p6 = true; const b = E.barra; b.I = B6.I; b.sube = B6.enLaBarra === 'sube'; b.F = true; b.vSigno = 1; b.brillo = 1; E.leyenda();
      E.lect = () => [['e', 'Fem ε', `${V(B6.fem)} V`], ['I', 'Corriente I', `${V(B6.I)} A`], ['F', 'Fuerza F', `${V(B6.F)} N, contra v`], ['ink', 'Potencia del foquito', `${V(B6.Pelectrica)} W`]]; E.avisar();
-     // cámara lenta: 0,055 s de movimiento en 2,2 s
+     // cámara lenta: 0,05 s de movimiento (de 0,3 m a 0,8 m a 10 m/s) en 2,2 s
      E.tween(RM ? 0 : 2200, f => { b.x = mix(0.3, 0.8, f); E.dibujar(); }, () => { b.v = 0; b.I = 0; b.brillo = 0; E.permitir({ barra:true }); E.lect = lectBarra; E.avisar(); fin(); }); },
    body:() => `<p>Una barra metálica de ${L_('L = 0,4 m')} se desliza a ${v_('v = 10 m/s')} hacia la derecha sobre dos rieles. A la izquierda, los rieles están unidos por un foquito de R = 4 Ω, y todo está en un campo uniforme ${B_('B = 0,5 T')} que entra a la pantalla. El campo no cambia. ¿Qué fem se induce y qué hace la fuerza magnética sobre la barra?</p>${opcionesHTML(P6.opts, 'fb')}
    <div id="tras" class="body" hidden>
@@ -1089,7 +1110,7 @@ const steps = [
    anima:fin => { E.ver.graf = grafGen(); E.ver.graf.hasta = 0; E.redimensionar(); E.leyenda();
      E.lect = () => [['e', 'Fem máxima', '100 V'], ['e', 'Fem eficaz', `≈ ${fmt(G7.eficaz, 1)} V`]]; E.avisar();
      E.tween(RM ? 0 : 1400, f => { E.ver.graf.hasta = f*E.ver.graf.tFin; E.dibujar(); }, fin); },
-   body:() => `<p>Un generador tiene una bobina de N = 50 vueltas, cada una de ${L_('A = 0,05 m²')}, que gira con ω = 100 rad/s en un campo uniforme ${B_('B = 0,4 T')}. El ángulo ${th_('θ')} entre ${B_('B')} y la normal a la bobina crece como ωt, así que el flujo de cada vuelta es ${B_('B')}·${L_('A')}·cos ωt y la fem es ${e_('ε')} = N·${B_('B')}·${L_('A')}·ω·sen ωt. ¿Cuál es la fem máxima y cuál es su valor eficaz?</p>${opcionesHTML(P7.opts, 'fb')}
+   body:() => `<p>Un generador tiene una bobina de N = 50 vueltas, cada una de ${L_('A = 0,05 m²')}, que gira con ω = 100 rad/s en un campo uniforme ${B_('B = 0,4 T')}. El ángulo ${th_('θ')} entre ${B_('B')} y la normal a la bobina crece como ωt, así que el flujo de cada vuelta es ${B_('B')}·${L_('A')}·cos ωt. ¿Cuál es la fem máxima y cuál es su valor eficaz?</p>${opcionesHTML(P7.opts, 'fb')}
    <div id="tras" class="body" hidden>
    <div class="eqs"><div class="eq">${e_('εmax')} = N · ${B_('B')} · ${L_('A')} · ω = 50 · ${B_('0,4')} · ${L_('0,05')} · 100 = ${e_('100 V')}</div>
    <div class="eq">${e_('ε eficaz')} = ${e_('εmax')} / √2 = ${e_('50√2 V')} ≈ ${e_(fmt(G7.eficaz, 1) + ' V')}<span class="note">no 100/2</span></div></div>
@@ -1129,6 +1150,8 @@ function go(k){
   pintarDots();
   if (s.gate) prediccion(s);
   const otra = $('otraVez');
+  const quince = $('aQuince');
+  if (quince) quince.onclick = () => { if (!S.ocupado) E.recolocar(0.15); };
   if (otra) otra.onclick = () => { if (S.ocupado) return; S.ocupado = true; E.ocupado = true; nav(); E.permitir({}); s.anima(() => { S.ocupado = false; E.ocupado = false; E.avisar(); nav(); }); };
   nav();
 }
@@ -1140,6 +1163,7 @@ function nav(){
   $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
   [...dots.querySelectorAll('button')].forEach((b, j) => { b.disabled = j > S.max || S.ocupado; });
   const otra = $('otraVez'); if (otra) otra.disabled = S.ocupado;
+  const quince = $('aQuince'); if (quince) quince.disabled = S.ocupado;
 }
 function pintarDots(){
   [...dots.querySelectorAll('button')].forEach((b, k) => {
@@ -1214,7 +1238,7 @@ const EXPS = [
       desc: () => 'De costado: el imán y la bobina del paso 2.' }),
     despues:() => { E.ver.graf = grafDoble(true); E.leyendaExtra = '<span>a trazos: en 1,5 s · llena: en 0,75 s</span>'; E.redimensionar(); E.leyenda(); E.im.d = 0.15; E.ver.v = true;
       E.lect = () => [['e', 'Pico de ε', `${mVv(R1.femMax0)} → ${mVv(R1.femMax1)}`], ['phi', 'ΔΦ por espira', 'el mismo']]; E.avisar();
-      E.recorrido(MOV2, TFIN, RM ? 0 : 2600, () => { E.ver.v = false; E.im.vel = 0; E.ver.I = 0; E.ver.graf.cursor = null; E.permitir({ iman:true }); E.dibujar(); }); },
+      E.recorrido(MOV2, TFIN, RM ? 0 : 2600, () => { E.ver.v = false; E.im.vel = 0; E.ver.I = 0; E.ver.graf.cursor = null; E.permitir({ iman:{ soloAcercar:true } }); E.dibujar(); }); },
     exp:() => `<div class="eqs"><div class="eq">${e_('ε')} = −N · Δ${P_('Φ')} / Δt → con Δt / 2, ${e_('2ε')}</div>
       <div class="eq">pico: ${e_(mVv(R1.femMax0))} → ${e_(mVv(R1.femMax1))} · Δ${P_('Φ')}: igual en los dos</div></div>
       <p>En la gráfica, la curva del flujo rápido (llena) sube en la mitad del tiempo hasta la misma altura que la lenta (a trazos): es el doble de empinada y su fem tiene el doble de pico, durante la mitad del tiempo. El área bajo la curva de ${e_('ε')} es la misma en los dos casos, porque es N·Δ${P_('Φ')}. Por eso un generador que gira más rápido da más voltaje.</p>
@@ -1226,17 +1250,17 @@ const EXPS = [
           ['c', 'Horaria, y la bobina atrae al imán', 'MG8-decide-solo-por-el-polo', 'parcial'],
           ['d', 'Antihoraria, y la bobina atrae al imán', 'MG-lenz-todo-al-reves', 'hipotesis']],
     ok:'b',
-    fb:{ a:'El sentido depende también del polo: con el sur, el campo del imán apunta hacia el imán y el campo inducido tiene que apuntar al revés que con el norte.', c:'Sí es horaria, pero la cara que mira al imán queda como polo S, y S frente a S se repelen: la bobina se opone a que el imán se acerque.', d:'Al acercarse cualquier polo, la bobina lo repele. Y con el polo sur, la corriente es horaria vista desde el imán.' },
+    fb:{ a:'El sentido depende también del polo: con el sur, el campo del imán apunta hacia el imán y el campo inducido tiene que apuntar al revés que con el norte.', c:'Sí es horaria, pero la cara que mira al imán queda como polo sur, y dos polos sur se repelen: la bobina se opone a que el imán se acerque.', d:'Al acercarse cualquier polo, la bobina lo repele. Y con el polo sur, la corriente es horaria vista desde el imán.' },
     antes:ya => E.config({ vista:'iman', im:{ d: ya ? 0.03 : 0.12, polo:'S', vel: ya ? 0 : -1 },
       ver:{ I: ya ? 0 : null, inset: ya ? true : 'pregunta', v:!ya, lenzVivo:ya, cara:ya, Bi: ya ? L2.Binducido : 0, BiAlfa:0, sentido: ya ? L2.sentido : null },
-      lect: () => [['B', 'Polo hacia la bobina', 'sur (S)'], ['v', 'El imán', 'se acerca']],
+      lect: () => [['ink', 'Polo hacia la bobina', 'sur'], ['v', 'El imán', 'se acerca']],
       desc: () => 'De costado: el imán se acerca a la bobina con el polo sur por delante. Arriba a la derecha, la bobina vista desde el imán.' }),
     despues:() => { E.ver.inset = true; E.ver.Bi = L2.Binducido; E.ver.sentido = L2.sentido; E.ver.cara = true; E.ver.lenzVivo = true; E.ver.I = 0; E.ver.v = true; E.im.d = 0.15; E.leyenda();
-      E.recorrido(MOV, TFIN, RM ? 0 : 5200, () => { if (!RM){ E.ver.v = false; E.im.vel = 0; E.ver.I = 0; E.ver.BiAlfa = 0; } E.dibujar(); }, { lenz:true, tRM:1.5 }); },
+      E.recorrido(MOV, TFIN, RM ? 0 : 5200, () => { E.dibujar(); }, { lenz:true, congelar:1.5, rotulo:'mientras se acerca' }); },
     exp:() => `<div class="eqs"><div class="eq">|${P_('Φ')}| aumenta → ${Bi_('Bᵢ')} contra ${B_('B')}: ahora se aleja del imán</div>
-      <div class="eq">${Bi_('Bᵢ')} se aleja de quien mira → ${I_('I')} horaria · cara ${Bi_('S')} frente al polo S: se repelen</div></div>
+      <div class="eq">${Bi_('Bᵢ')} se aleja de quien mira → ${I_('I')} horaria · cara ${Bi_('sur')} frente al polo sur: se repelen</div></div>
       <p>Con el polo sur todo se da vuelta: el campo del imán, el campo inducido y el sentido de la corriente. Lo que no cambia es la idea de Lenz: si el imán se acerca, la bobina lo repele, y si se aleja, lo atrae, sea cual sea el polo. Para decidir el sentido hacen falta las dos cosas: qué polo es y si el flujo aumenta o disminuye.</p>
-      <p class="fuente">Que algunos alumnos deciden el sentido solo por el polo y otros solo por si el imán se acerca o se aleja está documentado en entrevistas (Secrest y Novodvorsky, 2005), sin porcentaje: las opciones A y C tienen respaldo parcial. La D es una hipótesis nuestra.</p>` },
+      <p class="fuente">Que algunos alumnos deciden el sentido solo por el polo y otros solo por si el imán se acerca o se aleja lo describen Secrest y Novodvorsky (2005), sin porcentaje: las opciones A y C tienen respaldo parcial. La D es una hipótesis nuestra.</p>` },
   { id:'espira-gira', corto:'La bobina que gira',
     q:`Una bobina de N = 100 vueltas, cada una de ${L_('A = 0,02 m²')}, está en un campo uniforme ${B_('B = 0,5 T')} que no cambia. Al principio el campo es perpendicular a las vueltas (${th_('θ = 0°')} entre ${B_('B')} y la normal). En 0,1 s se la gira hasta ${th_('θ = 60°')}. ¿Qué fem media se induce?`,
     opts:[['a', 'ε = 0 V', 'MG10-campo-constante-sin-fem', 'parcial'],
@@ -1253,10 +1277,10 @@ const EXPS = [
     exp:() => `<div class="eqs"><div class="eq">${P_('Φ')} = ${B_('B')} · ${L_('A')} · cos ${th_('θ')}: de ${B_('0,5')} · ${L_('0,02')} · 1 = ${P_('0,01 Wb')} a ${B_('0,5')} · ${L_('0,02')} · cos ${th_('60°')} = ${P_('0,005 Wb')}</div>
       <div class="eq">|${e_('ε')}| = N · |Δ${P_('Φ')}| / Δt = 100 · ${P_('0,005')} / 0,1 = ${e_('5 V')}</div></div>
       <p>Para cambiar el flujo hay tres caminos: cambiar ${B_('B')}, cambiar el área ${L_('A')} o cambiar el ángulo ${th_('θ')}. Aquí cambió solo el ángulo, y basta. Es lo que hace un generador, que gira la bobina sin parar.</p>
-      <p class="fuente">No ver que cambiar el área o la orientación también induce, y poner el flujo en vez de su cambio, están en la lista de dificultades documentadas, sin porcentaje (Zuza, García y Guisasola, 2012, citados por Pantoja y Moreira, 2021): respaldo parcial para A y D. La C es una hipótesis nuestra.</p>` },
+      <p class="fuente">No ver que cambiar el área también induce (aquí cambia la orientación), y poner el flujo en vez de su cambio, están en la lista de dificultades documentadas, sin porcentaje (Zuza, García y Guisasola, 2012, citados por Pantoja y Moreira, 2021): respaldo parcial para A y D. La C es una hipótesis nuestra.</p>` },
   { id:'trafo-pila', corto:'El transformador con pila',
-    q:`El transformador del paso 8 (Np = 200, Ns = 50) se conecta ahora a una pila de ${V2_('12 V')}, de corriente continua, en lugar de la red. ¿Qué voltaje ${V2_('Vs')} da la secundaria?`,
-    opts:[['a', `Vs = ${fmt(T4.errores.continuaPasa.Vs, 0)} V todo el tiempo, como con alterna`, 'MG7-trafo-funciona-con-continua', 'parcial'],
+    q:`El transformador del paso 8 (Np = 200, Ns = 50) se conecta ahora a una pila de ${V2_('12 V')}, de corriente continua, en lugar de la red (como todo transformador real, su primaria tiene algo de resistencia). ¿Qué voltaje ${V2_('Vs')} da la secundaria?`,
+    opts:[['a', `Vs = ${fmt(T4.errores.continuaPasa.Vs, 0)} V todo el tiempo, como con alterna`, 'MG7-trafo-funciona-con-continua', 'hipotesis'],
           ['b', `Vs = ${fmt(T4.errores.sinCambio.Vs, 0)} V todo el tiempo, lo mismo que la pila`, 'MG-trafo-deja-pasar-la-continua', 'hipotesis'],
           ['c', `Vs = ${fmt(T4.errores.razonInvertida.Vs, 0)} V todo el tiempo, con la razón de vueltas`, 'MG-trafo-razon-invertida', 'hipotesis'],
           ['d', 'Vs = 0 V, salvo un instante al conectar o desconectar la pila']],
@@ -1267,10 +1291,10 @@ const EXPS = [
       desc: () => 'El transformador del paso 8, con una pila conectada a la primaria y un foquito en la secundaria.' }),
     despues:() => { const T = E.tr; T.Vs = '0 V'; E.lect = () => [['V', 'Vp (continua)', '12 V'], ['V', 'Vs', '0 V (salvo al conectar)']];
       // al conectar, el flujo sube de 0 a su valor fijo: solo en ese instante hay fem en la secundaria
-      E.tween(RM ? 0 : 1200, f => { T.phiPila = suave(Math.min(1, f*3)); T.brillo = f < .33 ? .7*Math.sin(f*3*Math.PI) : 0; T.Vs = f < .33 ? 'un instante' : '0 V'; E.dibujar(); }, () => { T.phiPila = 1; T.brillo = 0; T.Vs = '0 V'; E.dibujar(); E.avisar(); }); },
+      E.tween(RM ? 0 : 1200, f => { T.phiPila = suave(Math.min(1, f*3)); T.brillo = f < .33 ? .7*Math.sin(f*3*Math.PI) : 0; T.Vs = f < .33 ? '≠ 0 un instante' : '0 V'; E.dibujar(); }, () => { T.phiPila = 1; T.brillo = 0; T.Vs = '0 V'; E.dibujar(); E.avisar(); }); },
     exp:() => `<div class="eqs"><div class="eq">continua → ${P_('Φ')} del núcleo constante → Δ${P_('Φ')} = 0 → ${V2_('Vs')} = ${V2_('0')}</div></div>
       <p>Al conectar la pila, la corriente de la primaria sube de cero a su valor en un instante: en ese instante el flujo cambia y el foquito da un destello. Después el flujo queda fijo y la secundaria no da nada. Por eso la red eléctrica es de corriente alterna: se puede subir y bajar el voltaje con transformadores. (Además, la primaria de un transformador real conectada a continua se calienta mucho: sin la fem que se opone, solo la frena la resistencia del alambre.)</p>
-      <p class="fuente">Creer que el transformador funciona con continua sale de no ver que hace falta un cambio de flujo (MG7, documentado con el imán quieto), pero no encontramos estudios que lo midan en transformadores: respaldo parcial para A. B y C son hipótesis nuestras.</p>` },
+      <p class="fuente">La opción A sale de la misma idea que MG7 (no ver que hace falta un cambio de flujo), pero no encontramos estudios que lo midan en transformadores: es una hipótesis nuestra, como B y C.</p>` },
   { id:'espira-cortada', corto:'La bobina cortada',
     q:`Se corta la bobina del paso 3 (N = 100, ${L_('A = 0,02 m²')}) y se conecta un voltímetro entre los dos extremos del corte. El campo vuelve a bajar de ${B_('0,5 T')} a ${B_('0,1 T')} en 0,2 s. Mientras baja, ¿qué hay en la bobina?`,
     opts:[['a', 'Una fem de 4 V entre los extremos, pero ninguna corriente'],

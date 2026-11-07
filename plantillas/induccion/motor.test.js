@@ -106,6 +106,9 @@ test('Lenz: el sentido «visto desde el imán» crea, por Biot–Savart, el camp
     assert.equal(f.fem < 0, r.sentido === 'antihorario');
   }
   assert.equal(motor.lenz(5e-5, 5e-5).sentido, 'ninguno');
+  // MG8 «solo por el polo»: norte → antihoraria y repele; sur → horaria y atrae, se acerque o se aleje
+  for (const [P0, P1] of [[1e-5, 7e-5], [7e-5, 1e-5]]) { const e = motor.lenz(P0, P1).errores.soloPolo; assert.equal(e.sentido, 'antihorario'); assert.equal(e.fuerza, 'repele'); }
+  for (const [P0, P1] of [[-1e-5, -7e-5], [-7e-5, -1e-5]]) { const e = motor.lenz(P0, P1).errores.soloPolo; assert.equal(e.sentido, 'horario'); assert.equal(e.fuerza, 'atrae'); }
 });
 
 const MOV = { d0: 0.15, d1: 0.03, t0: 0.2, T: 1.5 };

@@ -59,7 +59,9 @@
  *                                      ε = N·B·A·ω·sen ωt (V)
  *   transformador(Np, Ns, Vp, Ip, o)   transformador ideal: Vs = Vp·Ns/Np (V), Is = Ip·Np/Ns (A), potencias (W)
  *                                      iguales. Con o = { continua: true } (una pila) el flujo del núcleo no cambia:
- *                                      Vs = 0 e Is = 0 (salvo el instante en que se conecta o se desconecta)
+ *                                      Vs = 0 e Is = 0 (salvo el instante en que se conecta o se desconecta); con
+ *                                      continua no hay transferencia por el núcleo: Ps = 0, y Pp = null porque la
+ *                                      primaria disipa Vp²/R, que depende de su resistencia (que el motor no conoce)
  *   campoIman(im, P), lineasIman(im, n, caja)  campo (sin unidades: solo su dirección) y líneas de un imán de barra
  *                                      en el plano del dibujo (modelo de dos polos; im = { x, y, largo, ang }, en m y
  *                                      grados, el norte hacia 'ang'). Solo para dibujar
@@ -87,7 +89,8 @@
  *     contraElCampo   MG9: el campo inducido siempre contra el campo del imán (y no contra el CAMBIO del flujo).
  *     alReves         MG8: el sentido contrario de la corriente (y con él, todo al revés).
  *     soloMovimiento  MG8: decidir solo por si el imán se acerca o se aleja, como si siempre mirara el polo N.
- *     soloPolo        MG8: decidir solo por el polo, como si el imán siempre se acercara.
+ *     soloPolo        MG8: decidir solo por el polo, sin mirar si el imán se acerca o se aleja: con el polo norte,
+ *                     antihoraria y repele; con el polo sur, horaria y atrae («el norte se repele, el sur se atrae»).
  *     sinCorriente    «no circula corriente» (sentido 'ninguno').
  *   femMovimiento.errores: sinL = B·v (V, olvidar el largo); campoConstante = 0 (V; MG10: «B no cambia, así que no
  *     hay fem», sin ver que cambia el área); fuerzaAyuda = 'empuja' («la corriente inducida empuja la barra hacia
@@ -217,7 +220,7 @@
         contraElCampo: lectura(-sB, polo),
         alReves: lectura(-bi, polo),
         soloMovimiento: lectura(acerca ? -1 : 1, 'N'),
-        soloPolo: lectura(-sB, polo),
+        soloPolo: Object.assign(lectura(-sB, polo), { fuerza: polo === 'N' ? 'repele' : 'atrae' }),
         sinCorriente: lectura(0, polo),
       },
     });
@@ -345,7 +348,8 @@
         continuaPasa: { Vs: limpio(Vp * k), Is: I === null ? null : limpio(I / k) },
       },
     };
-    if (I !== null) { r.Pp = cont ? 0 : limpio(Vp * I); r.Ps = cont ? 0 : limpio(Vs * Is); }
+    // con continua no hay transferencia por el núcleo (Ps = 0); lo que disipa la primaria, Vp²/R, depende de su resistencia
+    if (I !== null) { r.Pp = cont ? null : limpio(Vp * I); r.Ps = cont ? 0 : limpio(Vs * Is); }
     return r;
   }
 
