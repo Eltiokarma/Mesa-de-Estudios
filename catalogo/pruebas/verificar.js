@@ -172,11 +172,12 @@ const V = {
     return { correcta: r.primero, errores: { 'ON1-ON2-mano-mas-rapida': 'mano-rapida', 'ON1-ON3-mano-mas-alta': 'mano-alta', 'ON4-cuerda-mas-pesada': 'mas-pesada' } };
   },
   'fis-21': d => {
-    // Peso en otro planeta (kM masas y kR radios de la Tierra); el peso en la Tierra del enunciado es m·g₀.
-    const G = motor('gravitacion'), r = G.planeta({ kM: d.kM, kR: d.kR }), e = r.errores;
-    if (Math.abs(d.m * G.planeta({}).g - d.P) > 1e-9) throw new Error('el peso en la Tierra no es m·g₀');
+    // Peso en otro planeta (kM masas y kR radios de la Tierra; el triple se escribe en palabras, por eso van en el modelo);
+    // el peso en la Tierra del enunciado es m·g₀. olvida-la-masa: el mismo cálculo con la masa de la Tierra (kM = 1).
+    const G = motor('gravitacion'), r = G.planeta({ kM: d.kM, kR: d.kR }), e = r.errores, g0 = G.planeta({}).g;
+    if (Math.abs(d.m * g0 - d.P) > 1e-9) throw new Error('el peso en la Tierra no es m·g₀');
     return { correcta: d.m * r.g, errores: { 'G4-olvida-el-radio': d.m * e.soloMasa, 'G3-radio-sin-cuadrado': d.m * e.radioLineal,
-      'mas-grande-atrae-mas': d.m * e.masaPorRadio } };
+      'olvida-la-masa': d.P * G.planeta({ kM: 1, kR: d.kR }).g / g0 } };
   },
   'fis-22': d => {
     // Primera ley con Q y W del enunciado. Se comprueba que son los de un isobárico de helio (monoatómico) a la presión y
@@ -184,6 +185,7 @@ const V = {
     const T = motor('termodinamica'), r = T.primeraLey({ Q: d.Q, W: d.W });
     const pr = T.proceso({ tipo: 'isobarico', P1: d.P, V1: d.V1, T1: d.T1, Q: d.Q });
     if (Math.abs(pr.W - d.W) > 1e-6 || Math.abs(pr.dU - r.dU) > 1e-6) throw new Error('Q y W no son los de un isobárico monoatómico');
+    if (!(pr.final.T > 273 && pr.final.T < 400)) throw new Error('la temperatura final no es realista');
     return { correcta: r.dU, errores: { 'T8-todo-el-calor-a-energia-interna': r.errores.olvidaTrabajo, 'T9-suma-el-trabajo': r.errores.signoCambiado,
       'dU-cero-a-presion-constante': 0 } };
   },

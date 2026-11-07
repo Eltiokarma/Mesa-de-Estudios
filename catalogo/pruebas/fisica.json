@@ -263,10 +263,6 @@
       "respaldo": "parcial",
       "describe": "Divide entre el radio del planeta sin elevarlo al cuadrado"
     },
-    "mas-grande-atrae-mas": {
-      "respaldo": "hipotesis",
-      "describe": "Cree que un planeta más grande atrae más por su masa y también por su tamaño"
-    },
     "T9-suma-el-trabajo": {
       "respaldo": "parcial",
       "describe": "Suma el trabajo que hace el gas en vez de restarlo (signo del trabajo cambiado): ΔU = Q + W"
@@ -278,6 +274,10 @@
     "dU-cero-a-presion-constante": {
       "respaldo": "hipotesis",
       "describe": "Cree que a presión constante la energía interna no cambia"
+    },
+    "olvida-la-masa": {
+      "respaldo": "hipotesis",
+      "describe": "Divide entre el radio al cuadrado y se olvida de que el planeta tiene más masa"
     }
   },
   "pares": [
@@ -1287,30 +1287,30 @@
       "nombreUnidad": "Estática: equilibrio y torque",
       "mide": "Un cuerpo colgado de un nudo con dos cuerdas de ángulos distintos: la cuerda más cercana a la vertical es la más tensa; las tensiones se suman como vectores",
       "A": {
-        "enunciado": "Una lámpara de 4 kg está colgada de dos cables que se juntan en un mismo punto sobre ella: el cable de la izquierda forma 60° con el techo y el de la derecha, 30°. ¿Cuál de los dos cables está más tenso?",
+        "enunciado": "Una lámpara de 4 kg está colgada de dos cables que se juntan en un mismo punto sobre ella: el cable de la izquierda forma 53° con el techo y el de la derecha, 30°. ¿Cuál de los dos cables está más tenso?",
         "datos": {
           "m": 4,
-          "a1": 60,
+          "a1": 53,
           "a2": 30
         },
         "opciones": [
           {
-            "texto": "El de la izquierda, porque está más cerca de la vertical y sostiene más del peso",
+            "texto": "El de la izquierda, porque al bajar más parado carga una parte mayor del peso",
             "clave": "cuerda 1",
             "correcta": true
           },
           {
-            "texto": "El de la derecha, porque está más inclinado y tiene que hacer más esfuerzo",
+            "texto": "El de la derecha, porque va más tendido, casi pegado al techo, y le cuesta más",
             "clave": "cuerda 2",
             "error": "E8-cuerda-mas-vertical-menos-tensa"
           },
           {
-            "texto": "Los dos igual, porque cada uno sostiene la mitad del peso de la lámpara",
+            "texto": "Los dos igual, porque entre los dos se reparten el peso por mitades",
             "clave": "iguales",
             "error": "E8-tensiones-como-numeros"
           },
           {
-            "texto": "No se puede saber, porque falta saber cuánto mide cada uno de los cables",
+            "texto": "No se puede saber, porque la tensión depende de lo largo que sea cada cable",
             "clave": "no-se-sabe",
             "error": "E7-tension-depende-del-largo"
           }
@@ -1325,22 +1325,22 @@
         },
         "opciones": [
           {
-            "texto": "Las dos igual, porque cada una sostiene la mitad del peso del parlante",
+            "texto": "Las dos igual, porque entre las dos se reparten el peso por mitades",
             "clave": "iguales",
             "error": "E8-tensiones-como-numeros"
           },
           {
-            "texto": "La de la izquierda, porque está más inclinada y tiene que hacer más esfuerzo",
+            "texto": "La de la izquierda, porque va más tendida, casi pegada a la viga, y le cuesta más",
             "clave": "cuerda 1",
             "error": "E8-cuerda-mas-vertical-menos-tensa"
           },
           {
-            "texto": "No se puede saber, porque falta saber cuánto mide cada una de las cadenas",
+            "texto": "No se puede saber, porque la tensión depende de lo larga que sea cada cadena",
             "clave": "no-se-sabe",
             "error": "E7-tension-depende-del-largo"
           },
           {
-            "texto": "La de la derecha, porque está más cerca de la vertical y sostiene más del peso",
+            "texto": "La de la derecha, porque al bajar más parada carga una parte mayor del peso",
             "clave": "cuerda 2",
             "correcta": true
           }
@@ -1384,7 +1384,7 @@
         ]
       },
       "B": {
-        "enunciado": "En un partido de rugby, un jugador de 90 kg que corre a 6 m/s taclea a otro de 60 kg que está quieto, y los dos siguen abrazados. Justo después del choque, sin contar el roce con el pasto, ¿con qué rapidez se mueven juntos?",
+        "enunciado": "En un partido de rugby, un jugador de 90 kg que corre a 6 m/s derriba con un tacle a otro de 60 kg que está quieto, y los dos siguen abrazados. Justo después del choque, sin contar el roce con el pasto, ¿con qué rapidez se mueven juntos?",
         "datos": {
           "m1": 90,
           "v1": 6,
@@ -1421,22 +1421,22 @@
       "nombreUnidad": "Fluidos",
       "mide": "Presión en un punto que está bajo un techo: h es la distancia vertical hasta la superficie libre, no hasta el techo ni desde el fondo",
       "A": {
-        "enunciado": "Un tanque subterráneo tiene 1,5 m de alto y un techo de concreto. Por un tubo angosto que sale del techo, el agua sube hasta 2,4 m sobre el fondo del tanque. Un sensor pegado a la pared del tanque, a 0,5 m del fondo, mide la presión del agua. Sin contar la atmósfera, ¿cuánto marca? (g = 10 m/s²; agua: 1000 kg/m³)",
+        "enunciado": "Un tanque subterráneo tiene 1,5 m de alto y un techo de concreto. Por un tubo angosto que sale del techo, el agua sube hasta 2,4 m sobre el fondo del tanque. Un sensor pegado a la pared del tanque, a 0,7 m del fondo, mide la presión del agua. Sin contar la atmósfera, ¿cuánto marca? (g = 10 m/s²; agua: 1000 kg/m³)",
         "datos": {
           "techo": 1.5,
           "H": 2.4,
-          "y": 0.5,
+          "y": 0.7,
           "modelo": {
             "ancho": 2,
             "anchoTubo": 0.2,
-            "altoTubo": 1.5,
+            "altoTubo": 1.0,
             "x": 0.9
           }
         },
         "opciones": [
           {
-            "texto": "10 000 Pa",
-            "valor": 10000,
+            "texto": "8000 Pa",
+            "valor": 8000,
             "error": "F4-h-hasta-el-techo"
           },
           {
@@ -1445,13 +1445,13 @@
             "error": "F7-igual-en-todo"
           },
           {
-            "texto": "19 000 Pa",
-            "valor": 19000,
+            "texto": "17 000 Pa",
+            "valor": 17000,
             "correcta": true
           },
           {
-            "texto": "5000 Pa",
-            "valor": 5000,
+            "texto": "7000 Pa",
+            "valor": 7000,
             "error": "h-desde-el-fondo"
           }
         ]
@@ -1498,13 +1498,13 @@
       "plantilla": "mas",
       "unidad": "fisica.oscilaciones",
       "nombreUnidad": "Movimiento armónico simple",
-      "mide": "Período del péndulo simple con ángulos pequeños: T = 2π·√(L/g), y cambiar la masa de la esfera no lo cambia",
+      "mide": "Período del péndulo simple con oscilaciones pequeñas: se calcula con T = 2π·√(L/g), y cambiar la masa de la esfera no lo cambia",
       "A": {
-        "enunciado": "En un reloj de pared, el péndulo mide 0,64 m y lleva una pesa de 100 g. Al repararlo, el relojero le pone una pesa de 400 g del mismo tamaño, sin cambiar el largo. Con vaivenes chicos, ¿cuánto dura ahora cada ida y vuelta completa? (g = 10 m/s²; toma π² = 10)",
+        "enunciado": "En un reloj de pared, el péndulo mide 0,64 m y lleva una pesa de 150 g. Al repararlo, el relojero le pone una pesa de 600 g del mismo tamaño, sin cambiar el largo. Con oscilaciones pequeñas, ¿cuánto dura ahora cada ida y vuelta completa? (g = 10 m/s²; toma π² = 10)",
         "datos": {
           "L": 0.64,
-          "m1g": 100,
-          "m2g": 400
+          "m1g": 150,
+          "m2g": 600
         },
         "opciones": [
           {
@@ -1530,7 +1530,7 @@
         ]
       },
       "B": {
-        "enunciado": "En un reloj de pie, el péndulo mide 0,49 m y lleva una pesa de 250 g. Al repararlo, el relojero le pone una pesa de 1 kg del mismo tamaño, sin cambiar el largo. Con vaivenes chicos, ¿cuánto dura ahora cada ida y vuelta completa? (g = 10 m/s²; toma π² = 10)",
+        "enunciado": "En un reloj de pie, el péndulo mide 0,49 m y lleva una pesa de 250 g. Al repararlo, el relojero le pone una pesa de 1 kg del mismo tamaño, sin cambiar el largo. Con oscilaciones pequeñas, ¿cuánto dura ahora cada ida y vuelta completa? (g = 10 m/s²; toma π² = 10)",
         "datos": {
           "L": 0.49,
           "m1g": 250,
@@ -1589,7 +1589,7 @@
             "error": "ON1-ON3-mano-mas-alta"
           },
           {
-            "texto": "Tensar la soga con el doble de fuerza",
+            "texto": "Tensar la soga con el doble de fuerza, con la misma soga",
             "clave": "tensar",
             "correcta": true
           },
@@ -1613,7 +1613,7 @@
         },
         "opciones": [
           {
-            "texto": "Tensar el cable con el doble de fuerza",
+            "texto": "Tensar el cable con el doble de fuerza, con el mismo cable",
             "clave": "tensar",
             "correcta": true
           },
@@ -1642,12 +1642,12 @@
       "nombreUnidad": "Gravitación universal",
       "mide": "Peso en otro planeta: g = g₀·kM/kR², con la masa y el radio al cuadrado",
       "A": {
-        "enunciado": "Un robot explorador de 80 kg pesa 800 N en la Tierra. Lo llevan a un planeta que tiene 3 veces la masa de la Tierra y el doble de su radio. ¿Cuánto pesa el robot en la superficie de ese planeta?",
+        "enunciado": "Un robot explorador de 80 kg se pesa con un dinamómetro en la Tierra y marca 800 N. En la superficie de un planeta con el triple de la masa de la Tierra y el doble de su radio, ¿cuánto marca el mismo dinamómetro con el robot?",
         "datos": {
           "m": 80,
           "P": 800,
-          "kM": 3,
           "modelo": {
+            "kM": 3,
             "kR": 2
           }
         },
@@ -1663,9 +1663,9 @@
             "correcta": true
           },
           {
-            "texto": "4800 N",
-            "valor": 4800,
-            "error": "mas-grande-atrae-mas"
+            "texto": "200 N",
+            "valor": 200,
+            "error": "olvida-la-masa"
           },
           {
             "texto": "1200 N",
@@ -1675,12 +1675,12 @@
         ]
       },
       "B": {
-        "enunciado": "Una sonda de 120 kg pesa 1200 N en la Tierra. La llevan a un planeta que tiene 8 veces la masa de la Tierra y el doble de su radio. ¿Cuánto pesa la sonda en la superficie de ese planeta?",
+        "enunciado": "Una sonda de 120 kg se pesa con un dinamómetro en la Tierra y marca 1200 N. En la superficie de un planeta con 8 veces la masa de la Tierra y el doble de su radio, ¿cuánto marca el mismo dinamómetro con la sonda?",
         "datos": {
           "m": 120,
           "P": 1200,
-          "kM": 8,
           "modelo": {
+            "kM": 8,
             "kR": 2
           }
         },
@@ -1691,9 +1691,9 @@
             "correcta": true
           },
           {
-            "texto": "19 200 N",
-            "valor": 19200,
-            "error": "mas-grande-atrae-mas"
+            "texto": "300 N",
+            "valor": 300,
+            "error": "olvida-la-masa"
           },
           {
             "texto": "4800 N",
@@ -1715,13 +1715,13 @@
       "nombreUnidad": "Termodinámica",
       "mide": "Primera ley a presión constante: ΔU = Q − W; parte del calor se va como trabajo del gas al expandirse",
       "A": {
-        "enunciado": "En un laboratorio, un recipiente de helio está cerrado arriba por un pistón que sube sin trabarse, así que la presión del gas no cambia. Una resistencia le da 2500 J de calor y el helio, al expandirse, hace 1000 J de trabajo sobre el pistón. ¿De cuántos joules es la variación de la energía interna del helio?",
+        "enunciado": "En una planta, un gasómetro de campana guarda helio: la campana, pesada, sube o baja libremente, así que la presión del gas no cambia. Una resistencia le da 2500 J de calor y el helio, al expandirse, levanta la campana haciendo 1000 J de trabajo. ¿De cuántos joules es la variación de la energía interna del helio?",
         "datos": {
           "Q": 2500,
           "W": 1000,
           "modelo": {
             "P": 100,
-            "V1": 10,
+            "V1": 50,
             "T1": 300
           }
         },
@@ -1749,13 +1749,13 @@
         ]
       },
       "B": {
-        "enunciado": "En el techo de un laboratorio, un depósito pequeño de helio tiene una tapa flotante (la tapa sube sola, así que la presión del gas no cambia). El sol le da 750 J de calor y el helio, al expandirse, levanta la tapa haciendo 300 J de trabajo. ¿De cuántos joules es la variación de la energía interna del helio?",
+        "enunciado": "En la azotea de un laboratorio, un depósito de helio está cerrado por una tapa pesada que puede subir libremente, así que la presión del gas no cambia. El sol le da 750 J de calor y el helio, al expandirse, levanta la tapa haciendo 300 J de trabajo. ¿De cuántos joules es la variación de la energía interna del helio?",
         "datos": {
           "Q": 750,
           "W": 300,
           "modelo": {
             "P": 100,
-            "V1": 5,
+            "V1": 30,
             "T1": 300
           }
         },
