@@ -3,8 +3,8 @@
   "unidades": "Electrones y pares en unidades; ángulos en grados; electronegatividad de Pauling y dipolos del modelo sin unidades (el dipolo de enlace vale ΔEN).",
   "constantes": "Electronegatividad de Pauling (Allred 1961, tabla del CRC): H 2,20; Li 0,98; Be 1,57; B 2,04; C 2,55; N 3,04; O 3,44; F 3,98; Na 0,93; Mg 1,31; Al 1,61; Si 1,90; P 2,19; S 2,58; Cl 3,16; K 0,82; Ca 1,00; Br 2,96; I 2,66; Xe 2,60. Lewis de central único con O y S terminales en doble enlace cuando el central es del período 3 o más y tiene carga formal positiva (cargas formales mínimas). Cortes por ΔEN: ≥ 1,7 iónico; de 0,4 a menos de 1,7 covalente polar; < 0,4 covalente apolar. Pares libres sin dipolo propio.",
   "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (ligandos.0.orden es el orden del primer ligando; total.1 es la componente y del dipolo; errores.x es lo que da el error típico x). Los textos, booleanos y listas se comparan exactos; los números, con la tolerancia. Ejes: y hacia arriba, z hacia quien mira; orden de los ligandos como en la fórmula del catálogo de motor.js.",
-  "verificacion": "",
-  "tolerancia": 1e-9,
+  "verificacion": "Verificó un subagente independiente (7 nov 2026), sin leer el motor ni las pruebas. Recalculó con Python, con fracciones y vectores 3D propios: electrones, cargas formales, octeto y resonancia; el conteo AXₙEₘ con ángulos e hibridación; la suma de dipolos con electronegatividades de Pauling (cotejadas de memoria con la tabla CRC); los cortes de ΔEN y la red de NaCl. Coinciden 322 campos de 58 casos. Las 4 diferencias son de convención (orden de posiciones, orientación de los pares del H₂O y el formato \"1:1\"), no errores.",
+  "tolerancia": 1e-09,
   "casos": [
     {
       "nombre": "NH₃: 8 electrones de valencia (5 + 3 × 1), 3 pares enlazantes y 1 par libre en el N; con la \"valencia\" 3 del N (6 electrones) no queda ningún par libre",
