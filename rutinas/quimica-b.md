@@ -176,3 +176,70 @@ Mínimo de la escena contando pares de elementos: 20,3. Contraste mínimo de las
 - **`docs/diseno.md`:** «Variables de bolitas y palitos (`plantillas/hidrocarburos/`): C y H de la paleta común; cadena principal azul (#1f5fbf, oscuro #7cb0ff), localizadores magenta (#b3246b, oscuro #ff86bd), sustituyentes naranja (#a05200, oscuro #f0a04a), enlace doble o triple violeta (#4d00b8, oscuro #b27aff), temperatura de ebullición T verde oscuro (#255c1f, oscuro #5fe06a) y ángulo mostaza (#756300, oscuro #e3c84a); ΔE00 mínimo 20,4 (T–H); sustituyentes y ángulo (18,9) nunca comparten dibujo; contraste mínimo 4,54.»
 - **`docs/pendientes.md`:** «**Bolitas y palitos** (`plantillas/hidrocarburos/`, rutina de química B, 7 nov 2026): la molécula como grafo (girar un enlace simple no cambia la sustancia, el doble no gira), cadena principal y numeración IUPAC con la regla escolar de alquenos (avisa cuando la de 2013 difiere), isómeros contados hasta C10, cis-trans, hibridación y ángulos, ebullición y ramificación; armado libre; 23 casos verificados aparte; 10 de papel; 7 predicciones y 5 «¿qué pasa si…?»; documentado solo HC2 (Schmidt 1996). Falta: Z/E y confirmar el arrastre en un celular real. Sin ítems en el banco de química.»
 - **`CLAUDE.md`, historia:** «Hidrocarburos (7 nov 2026, rutina de química B): `plantillas/hidrocarburos/` (bolitas y palitos: la molécula como grafo, cadena principal y nombre IUPAC, isómeros, cis-trans, hibridación y ebullición; 23 casos verificados aparte).»
+
+## 7 nov 2026 · El grupo que se cambia (`plantillas/funciones-organicas/`)
+
+**Qué hice.**
+
+- **`motor.js`** (UMD, `window.MotorFunciones`, sin DOM; cabecera hasta la línea 64). Adapta el grafo, la forma canónica y las coordenadas de hidrocarburos (copiados a su carpeta).
+  - Lee semidesarrolladas y SMILES con C, O y N (valencias 4, 2 y 3; dobles y triples).
+  - Detecta grupos y familia; el grupo principal sale por prioridad (ácido > éster > amida > nitrilo > aldehído > cetona > alcohol > amina > éter).
+  - Nombra con IUPAC 1979/93 los compuestos monofuncionales de C1 a C8 (-ol, -al, -ona, ácido …-oico, …-oato de …-ilo, -amida, -nitrilo, -amina con N-, éteres como alcoxi), con la forma anterior, el nombre común de una lista y el benceno con un grupo.
+  - Calcula el tipo de alcohol y de amina, los puentes de hidrógeno (entre moléculas y con agua) y la ebullición de tabla (CRC y NIST).
+  - Compara isomería (función, posición o cadena) y enumera isómeros de verdad con la convención de la cabecera: esqueleto saturado, un solo grupo, sin O–O, O–N ni N–N y sin estereoisómeros. Así C₂H₆O = 2, C₃H₈O = 3, C₄H₁₀O = 7 y C₄H₈O₂ = 6.
+  - Trae la caja de grupos (`ponerGrupo`) y la esterificación con el origen de cada átomo.
+- **`casos.json`:** 24 casos. **`motor.test.js`:** 47 pruebas (cuentas por familia hasta C₆H₁₄O y C₅H₁₃N, nombres únicos al barajar átomos, errores que nunca dan la respuesta, puentes contra H unidos a O o N, la caja, la esterificación que conserva átomos). **`papel.json`:** 10 problemas propios.
+- **`index.html`, paso a paso** (8 pasos, 7 predicciones que bloquean):
+  1. ¿el CH₃–O–CH₃ es isómero del etanol? (FO1, parcial);
+  2. ¿cuál hierve más? El etanol (FO2, **documentado**, Schmidt 1996, tabla 1, citado como «en otra pregunta»);
+  3. propanal y propanona;
+  4. 2-metilpropan-2-ol: terciario;
+  5. CH₃–COO–CH₃: etanoato de metilo, con la parte del ácido y la del alcohol en colores distintos;
+  6. terc-butilamina: primaria;
+  7. pentan-2-ona, y la tabla de prioridad.
+- **¿Qué pasa si…?** (5): mover el C=O del butanal al carbono 3 (luego la caja con el C=O), los isómeros de C₃H₈O, la fórmula del etanoato de etilo (C₄H₈O₂, con el ¹⁸O de Roberts y Urey 1938 dicho como química), el H que falta para el puente (metanamina contra metoximetano; FO2 parcial) y con qué grupo hierve más (–COOH; luego la caja libre con 9 grupos y de 1 a 6 C).
+
+**Subagentes y lo que corrigieron.**
+
+- **Verificador:** sin leer el motor, contó isómeros por fuerza bruta sobre árboles etiquetados (Prüfer) y comprobó nombres, clases, puentes y fórmulas en los 24 casos: todo coincide; los puntos de ebullición, a menos de 1 °C de CRC/NIST. Avisó que la propan-1-amina (47,2 °C) hierve casi igual que el propanal (48 °C) aunque forma puentes: se agregó una nota.
+- **Revisor:** dos graves. El paso 3 decía que el metoximetano es gas de aerosoles antes de preguntar cuál hierve más, y el experimento 2 nombraba «alcoholes o éteres» y así descartaba FO1. Medias: la pregunta del paso 2 traía la definición que la contestaba; la cita de FO2 era de otra pregunta y decía «resumen» cuando el informe la dio por leída; los códigos del experimento 4 estaban cruzados; el papel p4 daba las temperaturas en el orden de la respuesta; el estado de la caja numeraba distinto que el dibujo; un ejemplo de isomería de cadena también cambiaba la posición; propan-2-ona y butan-2-ona como formas aceptadas. Bajas: contraste en opciones marcadas (tinte al 6 %, mínimo 4,59), anillos de «lugares» en punteado grueso de tinta, fila del éster sin sus dos colores en la tabla, espacios duros y guiones que no cortan, H con letra en los pares, la reacción a una sola escala, nota del HCN y textos del papel. Todo aplicado.
+
+**Colores.** C, H, O y N con `Elementos.css(['C','H','O','N'])`; ningún par de esos cuatro está en `Elementos.CERCANOS`. No se pudieron reusar los de hidrocarburos: su azul de cadena queda a 7,1 del N y su magenta a 10,8 del O.
+
+| Variable | Claro | Oscuro |
+| --- | --- | --- |
+| cadena principal | #187a00 | #59ce3b |
+| localizador | #81310e | #ff621f |
+| grupo funcional | #2c18dc | #958de2 |
+| temperatura de ebullición T | #665200 | #ceb13b |
+| puente de hidrógeno | #8f0081 | #ff33eb |
+| parte del ácido (éster) | #a35200 | #e98f35 |
+| parte del alcohol (éster) | #9d00e0 | #e099ff |
+
+En cada vista, ΔE00 ≥ 20 entre los que salen juntos. El mínimo de una variable contra un elemento o la tinta es 22,2; entre variables, 23,2 (localizador–T); entre elementos, 21,2 (C–N). Los pares que nunca comparten dibujo quedan más cerca: localizador–ácido 13,6, grupo–alcohol 13,9, puente–alcohol 14,4, T–ácido 19,3 y grupo–puente 19,8. Por eso, en la caja y en la tabla de prioridad el nombre del éster va en tinta. Contraste mínimo 4,59.
+
+**Pruebas.** `npm test`: 3451, pasan 3449; fallan solo `catalogo.json` y «está en el catálogo». `elementos-escenas` con la entrada de abajo: 26 de 26 (en el scratchpad). `pasada-celular.py` sin cambios ni QUEDA. Playwright a 390×844 y 1366×768, claro y oscuro, con y sin movimiento reducido: sin errores de consola ni desbordes.
+
+**Pendiente.**
+
+- `isomeros()` no enumera amidas, aunque sí las nombra. Tampoco maneja compuestos con varios grupos, anillos o C=C: lanza un error claro.
+- Los puntos de ebullición son de tabla; contrastarlos con el libro que se use.
+- El HCN está en la caja con una nota de que en las academias se trata como inorgánico.
+- Sin ítems en el banco de química.
+
+### Pedidos para la integración
+
+- **Catálogo:** `funciones-organicas` en `quimica.funciones-organicas`; `npm run catalogo`; subir `VERSION`.
+- **`nucleo/elementos-escenas.test.js`:**
+  ```js
+    'funciones-organicas': {
+      elementos: ['C', 'H', 'O', 'N'],
+      vistas: [
+        [['C', 'H', 'O', 'N'], ['--c-cad', '--c-loc', '--c-gf', '--c-T']],
+        [['C', 'H', 'O', 'N'], ['--c-pu', '--c-T']],
+        [['C', 'H', 'O'], ['--c-ac', '--c-al']],
+      ] },
+  ```
+- **`docs/diseno.md`:** «Variables del grupo que se cambia (`plantillas/funciones-organicas/`): C, H, O y N de la paleta común; cadena principal verde (#187a00, oscuro #59ce3b), localizador marrón rojizo (#81310e, oscuro #ff621f), grupo funcional índigo (#2c18dc, oscuro #958de2), temperatura de ebullición T ocre (#665200, oscuro #ceb13b), puente de hidrógeno magenta (#8f0081, oscuro #ff33eb), y en el éster la parte del ácido naranja (#a35200, oscuro #e98f35) y la del alcohol violeta (#9d00e0, oscuro #e099ff). ΔE00 mínimo 21,2 dentro de cada vista y contraste mínimo 4,59. Los colores de cadena y localizador no son los de hidrocarburos, porque aquel azul choca con el N y aquel magenta con el O. Los pares cercanos (localizador–ácido, grupo–alcohol, puente–alcohol) nunca comparten dibujo: el nombre del éster va en tinta en la caja y en la tabla de prioridad. Los lugares para el grupo van en punteado grueso de tinta.»
+- **`docs/pendientes.md`:** «**El grupo que se cambia** (`plantillas/funciones-organicas/`, rutina de química B, 7 nov 2026): el mismo esqueleto con el grupo que se mueve o se cambia (familia, nombre IUPAC y común, fórmula, ebullición y puentes de hidrógeno), isomería de función, posición y cadena, clases de alcohol y amina, el éster con sus dos partes y la esterificación; caja de grupos libre; 24 casos verificados aparte; 10 de papel; 7 predicciones y 5 «¿qué pasa si…?»; documentado solo FO2 (Schmidt 1996). Falta: amidas en el conteo de isómeros y compuestos con varios grupos. Sin ítems en el banco de química.»
+- **`CLAUDE.md`, historia:** «Funciones orgánicas (7 nov 2026, rutina de química B): `plantillas/funciones-organicas/` (el grupo que se cambia: grupos funcionales, nombres, isomería de función, clases de alcohol y amina, puentes de hidrógeno y el éster con sus dos partes; 24 casos verificados aparte). Con esto la rutina de química B terminó su lista.»
