@@ -323,46 +323,70 @@
     {
       "id": "p10",
       "nivel": "intermedio",
-      "enunciado": "Una sustancia se descompone con cinética de primer orden. En un frasco, su concentración baja de 0,8 M a 0,4 M en 12 minutos. a) En otro frasco, con la misma sustancia a la misma temperatura, hay 0,2 M. ¿Cuánto tarda en bajar a 0,1 M? b) En el primer frasco, ¿cuánto queda a los 36 minutos? c) ¿Se acaba a los 24 minutos?",
-      "respuesta": "a) 12 minutos. b) 0,1 M. c) No: a los 24 minutos quedan 0,2 M.",
+      "enunciado": "Una sustancia A se descompone con cinética de primer orden. En un frasco, [A] baja de 0,6 M a 0,3 M en 15 minutos. a) En otro frasco, con la misma sustancia a la misma temperatura, hay 0,2 M. ¿Cuánto tarda en bajar a 0,1 M? b) En el primer frasco, ¿cuánto queda a los 45 minutos? c) ¿Se acaba a los 30 minutos?",
+      "respuesta": "a) 15 minutos. b) 0,075 M. c) No: a los 30 minutos quedan 0,15 M.",
       "pasos": [
-        "a) En primer orden la vida media no depende de la concentración inicial: con 0,2 M también tarda 12 minutos en llegar a la mitad (t½ = ln 2/k, sin [A]₀).",
-        "b) 36 minutos son 36/12 = 3 vidas medias: 0,8 → 0,4 → 0,2 → 0,1 M. Queda (1/2)³ = 1/8 de lo inicial.",
-        "c) En la segunda vida media no se gasta otra vez 0,4 M, sino la mitad de lo que queda: de 0,4 a 0,2 M. Nunca se llega a cero en un número entero de vidas medias.",
-        "Si fuera de segundo orden, la segunda vida media duraría el doble (24 minutos): ahí sí la vida media depende de la concentración."
+        "a) En primer orden la vida media no depende de la concentración inicial: con 0,2 M también tarda 15 minutos en llegar a la mitad (t½ = ln 2/k, sin [A]₀).",
+        "b) 45 minutos son 45/15 = 3 vidas medias: 0,6 → 0,3 → 0,15 → 0,075 M. Queda (1/2)³ = 1/8 de lo inicial.",
+        "c) En la segunda vida media no se gasta otra vez 0,3 M, sino la mitad de lo que queda: de 0,3 a 0,15 M. Nunca se llega a cero en un número entero de vidas medias.",
+        "Si fuera de segundo orden, la segunda vida media duraría el doble (30 minutos): ahí sí la vida media depende de la concentración."
       ],
       "verificar": [
         {
           "fn": "vidaMedia",
           "args": [
             1,
-            0.057762265046662105,
+            0.046209812037329684,
             0.2
           ],
           "espera": {
-            "valor": 12
+            "valor": 15
+          }
+        },
+        {
+          "fn": "tiempo",
+          "args": [
+            1,
+            0.046209812037329684,
+            0.2,
+            0.1
+          ],
+          "espera": {
+            "valor": 15
+          }
+        },
+        {
+          "fn": "concentracion",
+          "args": [
+            1,
+            0.046209812037329684,
+            0.6,
+            45
+          ],
+          "espera": {
+            "valor": 0.075
           }
         },
         {
           "fn": "primerOrdenQueda",
           "args": [
-            0.8,
-            12,
-            36
+            0.6,
+            15,
+            45
           ],
           "espera": {
-            "valor": 0.1
+            "valor": 0.075
           }
         },
         {
           "fn": "primerOrdenQueda",
           "args": [
-            0.8,
-            12,
-            24
+            0.6,
+            15,
+            30
           ],
           "espera": {
-            "valor": 0.2,
+            "valor": 0.15,
             "errores.restando": 0
           }
         }

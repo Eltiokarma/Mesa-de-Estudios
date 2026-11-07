@@ -1201,7 +1201,7 @@ const D = (function(){
   return D;
 })();
 const leyN = () => `<span><i style="background:var(--c-N)"></i>[N₂O₅] · concentración</span><span><i style="background:var(--c-v)"></i>v · velocidad inicial</span>`;
-const leyVidas = r => `<span><i style="background:var(--c-N)"></i>[N₂O₅] · concentración</span>${r ? '<span><i style="background:var(--ink)"></i>vidas medias de primer orden</span><span><i style="background:var(--muted)"></i>a trazos y en gris: segundo orden</span>' : ''}`;
+const leyVidas = r => `<span><i style="background:var(--c-N)"></i>[N₂O₅] · concentración</span>${r ? '<span><i style="background:var(--ink)"></i>vidas medias de primer orden</span><span><i style="background:repeating-linear-gradient(90deg, var(--c-N) 0 4px, transparent 4px 7px)"></i>a trazos: [N₂O₅] si fuera de segundo orden</span><span><i style="background:var(--muted)"></i>en gris: sus vidas medias</span>' : ''}`;
 const tablaN = () => tabla({ cab:[N_('[N₂O₅]') + ' (mol/L)', v_('v') + ' inicial (mol/(L·s))'], filas:FRASCOS.map((f, i) => [`Frasco ${i + 1}`, dec(f.conc.N2O5, 2), cien(f.v)]) });
 const EXPS = [
   { id:'doble-A', corto:'El doble de A',
@@ -1305,7 +1305,7 @@ const EXPS = [
           ['c','v = k·[N₂O₅]'],
           ['d','v = k·[NO₂]⁴·[O₂]/[N₂O₅]²','ley-como-K', RES('hipotesis','hipótesis nuestra, cercana a CI10')]],
     ok:'c', bien:'¡Bien leído! Mira las barras para ver por qué.',
-    fb:{ a:'El 2 es el coeficiente de la ecuación, pero el orden se mide. Del frasco 1 al 2, [N₂O₅] se triplica y v también se triplica (3¹); con orden 2 se habría multiplicado por 9 (3²). Tomar los órdenes de los coeficientes es una idea documentada incluso en profesores (Kolomuç y Tekin, 2011), sin cifra.',
+    fb:{ a:'El 2 es el coeficiente de la ecuación, pero el orden se mide. Del frasco 1 al 2, [N₂O₅] se triplica y v también se triplica (3¹); con orden 2 se habría multiplicado por 9 (3²). Tomar los órdenes de los coeficientes es una idea documentada incluso en profesores (Kolomuç y Tekin, 2011, según Bain y Towns, 2016), sin cifra.',
       b:'El 3 es por cuánto se multiplicó v, no el orden. El orden es el exponente: 3 elevado al orden da 3, así que el orden es 1. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
       d:'Esa expresión, con los productos arriba, se parece a la de la constante de equilibrio, pero no es una ley de velocidad: la velocidad inicial depende de los reactivos, con exponentes que se miden. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
     arma:() => caja({}), vAntes:() => antes({}),
