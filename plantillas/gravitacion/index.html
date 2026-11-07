@@ -351,6 +351,8 @@ function vistaOrbita(ctx, c, B, O){
   if (O.geo){ ctx.save(); ctx.strokeStyle = c.T; ctx.lineWidth = 1.2; ctx.setLineDash([6, 4]); ctx.beginPath(); ctx.arc(cx, cy, P(O.geo), 0, Math.PI*2); ctx.stroke(); ctx.restore();
     rotulo(ctx, c, cx, cy - P(O.geo) - 9, 'T = 24 h', c.T, 'center', 800, 10); }
   planetaDib(ctx, c, cx, cy, P(O.planeta.R), O.planeta.nombre);
+  // capF: tope de las flechas de fuerza (en radios del planeta dibujado), para que la de la Tierra y la del satélite no se pisen.
+  const capF = O.capF ? P(O.planeta.R)*O.capF : Infinity;
   const res = { cx, cy, s, sats: [] };
   O.sats.forEach((S, j) => {
     const p = xy(S.r, S.th), ux = (cx - p.x)/(S.r*s || 1), uy = (cy - p.y)/(S.r*s || 1);
@@ -366,8 +368,8 @@ function vistaOrbita(ctx, c, B, O){
       rotulo(ctx, c, (q.x + p.x)/2 + nx*2.4, (q.y + p.y)/2 + ny*2.4, S.cotaH, c.h, nx > 0 ? 'left' : 'right', 800, 11);
     }
     // Fuerza sobre el satélite: hacia el centro del planeta.
-    if (S.F === 'si' && S.Flen > 1){ const x2 = p.x + ux*S.Flen, y2 = p.y + uy*S.Flen; flecha(ctx, p.x, p.y, x2, y2, c.F, S.hl ? 5 : 3); if (S.Ftxt) rotuloFlecha(ctx, c, p.x, p.y, x2, y2, S.Ftxt, c.F, S.Flado || 1); }
-    if (S.F === '?'){ const x2 = p.x + ux*40, y2 = p.y + uy*40; flecha(ctx, p.x, p.y, x2, y2, c.F, 2.4, [5, 4]); rotuloFlecha(ctx, c, p.x, p.y, x2, y2, S.Ftxt || 'F = ?', c.F, S.Flado || 1, 12, true); }
+    if (S.F === 'si' && S.Flen > 1){ const lf = Math.min(S.Flen, capF), x2 = p.x + ux*lf, y2 = p.y + uy*lf; flecha(ctx, p.x, p.y, x2, y2, c.F, S.hl ? 5 : 3); if (S.Ftxt) rotuloFlecha(ctx, c, p.x, p.y, x2, y2, S.Ftxt, c.F, S.Flado || 1); }
+    if (S.F === '?'){ const lf = Math.min(40, capF), x2 = p.x + ux*lf, y2 = p.y + uy*lf; flecha(ctx, p.x, p.y, x2, y2, c.F, 2.4, [5, 4]); rotuloFlecha(ctx, c, p.x, p.y, x2, y2, S.Ftxt || 'F = ?', c.F, S.Flado || 1, 12, true); }
     // Velocidad: tangente a la órbita, en el sentido del giro (antihorario).
     if (S.v === 'si' || S.v === '?'){
       const tx = -Math.sin(S.th), ty = -Math.cos(S.th), l = S.v === '?' ? 34 : S.vlen;
@@ -377,16 +379,17 @@ function vistaOrbita(ctx, c, B, O){
     }
     // Con S.radial, el nombre y las vueltas van hacia afuera de la órbita (no tapan el planeta).
     if (S.radial){ sateliteDib(ctx, c, p.x, p.y, S.th, S.tam);
-      rotulo(ctx, c, p.x - ux*22, p.y - uy*22, S.nom, c.ink, 'center', 800, 11);
-      if (S.vueltas !== undefined) rotulo(ctx, c, p.x - ux*40, p.y - uy*40, `${S.vueltas} ${S.vueltas === 1 ? 'vuelta' : 'vueltas'}`, c.T, 'center', 800, 10); }
+      const ox = -ux, oy = -uy, al = ox > 0.4 ? 'left' : ox < -0.4 ? 'right' : 'center';
+      const t = S.vueltas !== undefined ? `${S.nom} · ${S.vueltas} ${S.vueltas === 1 ? 'vuelta' : 'vueltas'}` : S.nom;
+      rotulo(ctx, c, p.x + ox*20, p.y + oy*20, t, c.ink, al, 800, 11); }
     else { sateliteDib(ctx, c, p.x, p.y, S.th, S.tam, S.nom, S.dyNom);
-      if (S.vueltas !== undefined) rotulo(ctx, c, p.x, p.y + 20, `${S.vueltas} ${S.vueltas === 1 ? 'vuelta' : 'vueltas'}`, c.T, 'center', 800, 10); }
+      if (S.vueltas !== undefined) rotulo(ctx, c, p.x, p.y + 20, `${S.vueltas} ${S.vueltas === 1 ? 'vuelta' : 'vueltas'}`, c.ink, 'center', 800, 10); }
     res.sats.push(p);
   });
   // Fuerza sobre la Tierra: desde su centro, hacia el primer satélite.
   if (O.tierraF && O.sats.length){
     const S = O.sats[0], p = res.sats[0], d = Math.hypot(p.x - cx, p.y - cy) || 1, ux = (p.x - cx)/d, uy = (p.y - cy)/d;
-    const l = O.tierraF.modo === '?' ? 40 : O.tierraF.len;
+    const l = Math.min(O.tierraF.modo === '?' ? 40 : O.tierraF.len, capF);
     if (l > 1){ const x2 = cx + ux*l, y2 = cy + uy*l; flecha(ctx, cx, cy, x2, y2, c.F, O.tierraF.modo === '?' ? 2.4 : 3, O.tierraF.modo === '?' ? [5, 4] : null);
       rotuloFlecha(ctx, c, cx, cy, x2, y2, O.tierraF.txt, c.F, -1, 11, O.tierraF.modo === '?'); }
     ctx.beginPath(); ctx.arc(cx, cy, 2.5, 0, Math.PI*2); ctx.fillStyle = c.ink; ctx.fill();
@@ -523,7 +526,7 @@ function vEE(ya, conTierra, extra){
   const th = Math.PI/2 + oEE.w*S.t*K_EE;
   return Object.assign({ rMax:1.32*RT, planeta:{ R:RT, nombre:'Tierra' }, orbitas:[RT + H_EE],
     sats:[{ r:RT + H_EE, th, nom:'estación', F: ya ? 'si' : '?', Flen: lenF(fEE.F, Fsuelo, 58), Ftxt: ya ? 'F · la Tierra' : 'F = ?', cotaH:'h = 400 km', dyNom:-22 }],
-    tierraF: conTierra ? conTierra : null }, extra || {});
+    tierraF: conTierra ? conTierra : null, capF:0.42 }, extra || {});
 }
 const base = s => Object.assign({ graf:null }, s);
 const grafG = (curva, extra) => Object.assign({ x0:0, x1:7, yMax:10, f:x => 10/(x*x), lineal:null, curva, xLab:'r (en radios R)', yLab:'g (m/s²)', colY:css('--c-g'), suelo:1 }, extra || {});
@@ -544,7 +547,7 @@ const steps = [
      ${fuente('En una pregunta abierta de un curso universitario de astronomía en Estados Unidos, cerca de la mitad de los alumnos dijo que los astronautas flotan porque en el espacio no hay gravedad, y cerca de uno de cada siete, que allá es mucho más débil; solo uno de cada diez habló de caída libre. En una versión de opción múltiple, cerca de uno de cada cinco eligió que la nave hace una fuerza que anula la de la Tierra (Williamson y otros, 2013). Las opciones A, B y D son esas tres ideas.')}`,
    lect:() => S.pred[P1.id] ? [['g', `g = ${fmt(gEE.g, 2)} m/s²`], ['F', `F = ${fmt(gEE.peso(60), 0)} N sobre ella`]] : [],
    desc:() => S.pred[P1.id] ? 'La estación da vueltas a la Tierra. La flecha de la fuerza apunta al centro de la Tierra y es casi tan larga como en el suelo.' : 'La Tierra y la estación a 400 kilómetros. La flecha de la fuerza está a trazos, con un signo de pregunta.' },
- { k:'Paso 3', t:'¿Y la estación tira de la Tierra? Predice', gate:P2, ley:['F','orbita'],
+ { k:'Paso 3', t:'La otra fuerza: predice', gate:P2, ley:['F','orbita'],
    vista:() => { const ya = !!S.pred[P2.id]; return base({ orb: vEE(true, { modo: ya ? 'si' : '?', len: lenF(fEE.F, Fsuelo, 58), txt: ya ? 'F · la estación' : 'F = ?' }) }); },
    body:() => `<p>La estación tiene una masa de ${V('m','420 t')}, y la Tierra la atrae con una ${V('F','fuerza')} de unos ${cien(fEE.F, 1)} N (con la ${V('g','g')} de esa altura). La Tierra tiene una masa de unos ${V('M', cien(M.M_T, 0) + ' kg')}. ¿Con qué fuerza atrae la estación a la Tierra?</p>${opcionesHTML(P2.opts, 'fb')}<div id="res" class="body"></div>`,
    exp:() => `<div class="eqs">
@@ -581,7 +584,7 @@ const steps = [
      ${fuente('En entrevistas a 112 universitarios de Estados Unidos, 8 dijeron que la rapidez de un planeta en su órbita depende de su masa o de su tamaño (Yu, Sahami y Denn, 2010). La opción B es esa idea con números; no está medida en problemas. Las opciones C y D son hipótesis nuestras.')}`,
    lect:() => S.pred[P4.id] ? [['v', `v = ${kms(o1.v)} los dos`], ['F', 'F sobre el de 2 t: el doble']] : [],
    desc:() => S.pred[P4.id] ? 'Los dos satélites giran juntos, en lados opuestos de la misma órbita. Sus flechas de velocidad son iguales; la de fuerza del más pesado es el doble.' : 'Dos satélites quietos en lados opuestos de la misma órbita, con sus velocidades a trazos y signos de pregunta.' },
- { k:'Paso 6', t:'Una órbita más grande: predice', gate:P5, ley:['r','orbita'], leyDespues:['T','r','orbita'],
+ { k:'Paso 6', t:'Una órbita más grande: predice', gate:P5, ley:['r','orbita'],
    vista:() => { const ya = !!S.pred[P5.id], k = oRas.T/1.2;   // la órbita rasante se ve en 1,2 s
      const s1 = ya ? oRas.estado(S.t*k) : { theta:90 }, s2 = ya ? o4.estado(S.t*k) : { theta:90 };
      return base({ orb:{ rMax:4.15*RT, planeta:{ R:RT, nombre:'' }, orbitas:[RT, 4*RT],
@@ -591,7 +594,7 @@ const steps = [
    exp:() => `<div class="eqs">
        <div class="eq">${V('T','T')} = 2π·${V('r','r')}/${V('v','v')} = 2π·√(${V('r','r')}³/(G·${V('M','M')}))<span class="note">tercera ley de Kepler: T² ∝ r³</span></div>
        <div class="eq">${V('T','T')}_B/${V('T','T')}_A = √(4³) = √64 = 8 → ${V('T','T')}_B ≈ 8·${tiempo(oRas.T)} ≈ ${V('T', tiempo(o4.T))}</div></div>
-     <p>Cuenta las vueltas: mientras B da una, A da ocho. B recorre 4 veces más camino y además va a la mitad de rapidez (${kms(o4.v)} contra ${kms(oRas.v)}): 4 · 2 = 8. A unas 6,6 veces el radio de la Tierra el período llega a 24 h: ahí están los satélites geoestacionarios, que dan la vuelta junto con la Tierra y se ven quietos en el cielo.</p>
+     <p>Cuenta las vueltas: mientras B da una, A da ocho. B recorre 4 veces más camino y además va a la mitad de rapidez (${kms(o4.v)} contra ${kms(oRas.v)}): 4 · 2 = 8. A unas ${fmt(geo.rEnR, 1)} veces el radio de la Tierra (unos ${fmt(geo.h/1000, -3)} km de altura) el período llega a 24 h: ahí están los satélites geoestacionarios, que dan la vuelta junto con la Tierra y se ven quietos en el cielo.</p>
      ${fuente('Que el período crezca en proporción al radio (T ∝ r) es un error de cálculo que suponemos: es la cara, en la tercera ley de Kepler, del error de proporcionalidad medido con la fuerza (Williamson y otros, 2013). Las opciones C y D son hipótesis nuestras.')}`,
    lect:() => S.pred[P5.id] ? [['T', `A: T = ${tiempo(oRas.T)}`], ['T', `B: T = ${tiempo(o4.T)}`]] : [],
    desc:() => S.pred[P5.id] ? 'Los dos satélites giran; mientras B da una vuelta, A da ocho.' : 'Dos satélites quietos: A a ras del suelo y B en una órbita de radio cuatro veces mayor.' },
@@ -600,7 +603,7 @@ const steps = [
      return base({ orb:o, graf: grafG(true, { punto:(RT + H_EE)/RT, marcas:[{ x:(RT + H_EE)/RT, t:'estación' }] }) }); },
    body:() => `<p class="answer">A ${V('h','400 km')}, la Tierra atrae a la astronauta con ${V('F', fmt(gEE.peso(60), 0) + ' N')}, el ${pct(gEE.fraccion)} de su peso en el suelo (${V('g','g')} = ${fmt(gEE.g, 2)} m/s²). Flota porque ella y la estación caen juntas.</p>
      <p>La estación va a ${V('v', kms(oEE.v))} y da una vuelta en unos ${V('T', tiempo(oEE.T))}. Todo sale de una sola ley: ${V('F','F')} = G·${V('M','M')}·${V('m','m')}/${V('r','r')}², con la distancia ${V('r','r')} medida al centro de la Tierra, la misma fuerza sobre los dos cuerpos y la gravedad haciendo de fuerza centrípeta.</p>
-     <p>Su energía potencial gravitatoria es Ep = −G·${V('M','M')}·${V('m','m')}/${V('r','r')}: negativa, porque el cero está lejísimos, en el infinito. Para escapar de la Tierra desde el suelo hace falta llegar a energía total cero: ${V('v','ve')} = √(2·g₀·R) ≈ ${kms(M.escape({}).ve)}.</p>`,
+     <p>Su energía potencial gravitatoria es Ep = −G·${V('M','M')}·${V('m','m')}/${V('r','r')}: negativa, porque el cero está lejísimos, en el infinito. Para escapar de la Tierra desde el suelo (sin aire), la energía total, cinética más potencial, tiene que llegar al menos a cero: ${V('v','ve')} = √(2·g₀·R) ≈ ${kms(M.escape({}).ve)}.</p>`,
    lect:() => [['g', `g = ${fmt(gEE.g, 2)} m/s²`], ['v', `v = ${kms(oEE.v)}`], ['T', `T = ${tiempo(oEE.T)}`]],
    desc:() => 'La estación gira con su flecha de fuerza hacia la Tierra, la flecha igual y opuesta sobre la Tierra y su velocidad tangente. En la gráfica, su punto sobre la curva de la gravedad.' },
  { k:'Paso 8', t:'Ahora explora tú', explora:true, ley:['F','g','v','T','h','r','orbita'],
@@ -790,7 +793,7 @@ function dibLuna(ctx, c, W, H, ya){
     rotulo(ctx, c, x, y + 22, txt, c.ink, 'center', 800, 10);
     return x;
   };
-  const F0 = 40;
+  const F0 = 28;
   const xa = dib(1, kr === 1 ? 'Luna' : 'Luna antes', 0, kr !== 1);
   flecha(ctx, xa - 10, y - 16, xa - 10 - F0, y - 16, c.F, kr === 1 ? 3 : 2); rotulo(ctx, c, xa - 10 - F0/2, y - 30, 'F', c.F, 'center', 800, 11);
   if (kr !== 1){
@@ -808,7 +811,7 @@ function dibLuna(ctx, c, W, H, ya){
 // 2. Tierra y un planeta: una persona en cada uno, con su peso.
 function dibPlaneta(ctx, c, W, H, ya){
   // Los dos planetas apoyados sobre la misma línea de abajo; la Tierra a la izquierda, el planeta a la derecha.
-  const p = M.planeta({ kM:E.kM, kR:E.kR }), rT = Math.min(W*0.11, (H - 120)/7), rP = rT*E.kR, piso = H - 34;
+  const p = M.planeta({ kM:E.kM, kR:E.kR }), rT = Math.min(W*0.11, (H - 70)/7), rP = rT*E.kR, piso = H - 34;
   const xT = 10 + rT, xP = Math.max(W - 10 - rP, xT + rT + rP + 12), yT = piso - rT, yP = piso - rP;
   planetaDib(ctx, c, xT, yT, rT, 'Tierra');
   planetaDib(ctx, c, xP, yP, rP, 'planeta', c.planeta);
