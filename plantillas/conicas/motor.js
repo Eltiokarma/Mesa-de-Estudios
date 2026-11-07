@@ -12,6 +12,7 @@
  *
  * Funciones exportadas (argumentos → lo que devuelve):
  *   circunferencia({ h, k, r2 })
+ *       r2 tiene que ser positivo: con r2 ≤ 0 lanza un error (el punto y el conjunto vacío los da circunferenciaGeneral).
  *       (x − h)² + (y − k)² = r2. → { tipo 'circunferencia', h, k, r2, r (valor), rTexto, centroTexto '(3; −4)',
  *       ecuacion, general ('x² + y² − 6x + 8y − 11 = 0'), D, E, F, texto ('(3; −4) y r = 6'), errores, coinciden, num }.
  *       errores: signos (CO8, centro (−h; −k)), radioCuadrado (CO9, r = r2). crudos: los mismos errores antes de quitar
@@ -52,7 +53,12 @@
  *   general({ A, C, D, E, F })
  *       A x² + C y² + D x + E y + F = 0, enteros, sin término xy. Reconoce por los signos de A y C (A·C > 0 elipse, y
  *       circunferencia si A = C; A·C < 0 hipérbola; A o C cero, parábola) y completa cuadrados.
- *       → { tipo: 'circunferencia' | 'elipse' | 'hiperbola' | 'parabola' | 'punto' | 'vacia' | 'rectas',
+ *       → { tipo: 'circunferencia' | 'elipse' | 'hiperbola' | 'parabola' | 'punto' | 'vacia' | 'rectas' | 'paralelas' |
+ *       'rectaDoble'. Casos que no son cónicas: con A·C > 0, a la derecha 0 da 'punto' y un negativo 'vacia'; con
+ *       A·C < 0 y 0 a la derecha, 'rectas' (dos rectas que se cortan en el centro); con A o C cero y sin el término
+ *       lineal de la otra variable (C = 0 y E = 0, o A = 0 y D = 0), (x − h)² = q da 'paralelas' (dos rectas
+ *       paralelas, q > 0), 'rectaDoble' (q = 0) o 'vacia' (q < 0). Con 'rectas', 'paralelas' y 'rectaDoble', rectasTexto
+ *       las nombra ('y = x e y = 2 − x', 'y = 3 e y = −1', 'x = 5 y x = −1').
  *       nombre ('una elipse'), porSignos (lo que dicen A y C antes de completar), completada
  *       ('4(x − 1)² + 9(y + 2)² = 36'), canonica (la ecuación de la cónica), conica (el resultado de circunferencia,
  *       elipse, hiperbola o parabola), errores, coinciden }. errores (nombres): cambiaSigno (CO19, elipse ↔ hipérbola),
@@ -61,14 +67,14 @@
  *       La cuerda de largo 2a atada a dos clavos a distancia 2c (0 ≤ c ≤ a), centro en el origen. → { figura
  *       ('una circunferencia' si c = 0, 'una elipse' si 0 < c < a, 'un segmento' si c = a), conica (elipse o
  *       circunferencia; null si es un segmento), errores, coinciden }. errores, solo con c = 0: segmento (CO34),
- *       punto (CO35), parabola (CO36).
+ *       punto (CO35), alargada (CO37, 'una elipse más alargada').
  *   plato({ ancho, hondo })
  *       Plato parabólico de boca 'ancho' y profundidad 'hondo' (cm): (ancho/2)² = 4p·hondo. → { valor p, texto
  *       '45 cm', errores: cuatroP (CO12, 4p), dosP (CO30, con x² = 2py: 2p), hondo (CO29, p = hondo), coinciden, conica }.
  *   cono({ inclinacion, generatriz })
  *       Corte de un cono doble por un plano. Ángulos en grados con la horizontal: el del plano (0 a 85) y el de la
  *       generatriz (entre 10 y 80); el plano pasa por el eje a una unidad debajo del vértice y se inclina hasta 85°. → { tipo, nombre ('una parábola'), e (sen inclinación / sen generatriz, numérico),
- *       cortes (puntos de la vista de costado donde el plano corta las generatrices, para el dibujo), errores (nombres
+ *       cortes (ordenados por x: puntos de la vista de costado donde el plano corta las generatrices, para el dibujo), errores (nombres
  *       de las otras curvas: cerrada CO31 'una elipse', abierta CO32 'una hipérbola', rectas CO33 'dos rectas'; cada
  *       uno solo si es distinto de la respuesta), coinciden, conica: { tipo 'polar', e, l } }.
  *   puntoEn(conica, t, rama)
@@ -87,7 +93,7 @@
  *   texto(v), fraccion(x)
  *       Texto exacto de una fracción o radical; fraccion convierte la entrada a { n, d }.
  *   ERRORES
- *       id → descripción. CO1 a CO36 son hipótesis nuestras: los informes de docs/investigacion/ no tratan las cónicas
+ *       id → descripción. CO1 a CO35 y CO37 son hipótesis nuestras: los informes de docs/investigacion/ no tratan las cónicas
  *       (el de trigonometría las deja fuera; el de geometría deja fuera la analítica).
  *
  * Cada pregunta trae 'errores': nombre → { id, valor, texto }, lo que da cada error típico. Un error que con esos
@@ -138,7 +144,7 @@
     CO33: 'cono: el plano paralelo a la generatriz da dos rectas',
     CO34: 'con los clavos juntos, la cuerda dibuja un segmento',
     CO35: 'con los clavos juntos, la cuerda dibuja un punto',
-    CO36: 'con los clavos juntos, la cuerda dibuja una parábola'
+    CO37: 'con los clavos juntos, la elipse se alarga'
   };
 
   // ---------- Fracciones ----------
@@ -460,13 +466,21 @@
 
   // ---------- Ecuación general ----------
   const NOMBRE = { circunferencia: 'una circunferencia', elipse: 'una elipse', hiperbola: 'una hipérbola', parabola: 'una parábola',
-    punto: 'un punto', vacia: 'ningún punto', rectas: 'dos rectas' };
+    punto: 'un punto', vacia: 'ningún punto', rectas: 'dos rectas', paralelas: 'dos rectas paralelas', rectaDoble: 'una recta' };
+  // y = mx + b con fracciones: 'x', '2 − x', '3x − 1/2', '3'
+  function rectaTexto(m, b) {
+    if (fCero(m)) return `y = ${fTexto(b)}`;
+    const am = fAbs(m), mx = (am.n === 1 && am.d === 1 ? '' : fTexto(am)) + 'x';
+    if (fCero(b)) return `y = ${m.n < 0 ? MENOS : ''}${mx}`;
+    if (m.n < 0) return `y = ${fTexto(b)} ${MENOS} ${mx}`;
+    return `y = ${mx} ${b.n < 0 ? MENOS : '+'} ${fTexto(fAbs(b))}`;
+  }
   function general(o) {
     o = o || {};
     const A = fraccion(o.A || 0, 'A'), C = fraccion(o.C || 0, 'C'), D = fraccion(o.D || 0, 'D'), E = fraccion(o.E || 0, 'E'), Fc = fraccion(o.F || 0, 'F');
     if (fCero(A) && fCero(C)) throw new Error('hace falta x² o y²: con A = C = 0 es una recta');
     const ecuacionGeneral = `${poli([[A, 'x²'], [C, 'y²'], [D, 'x'], [E, 'y'], [Fc, '']])} = 0`;
-    let tipo, completada, canonica, conica = null, porSignos;
+    let tipo, completada, canonica, conica = null, porSignos, rectasTexto = null;
     if (!fCero(A) && !fCero(C)) {
       porSignos = A.n * C.n > 0 ? (fIgual(A, C) ? 'circunferencia' : 'elipse') : 'hiperbola';
       const h = fDiv(fNeg(D), fMul(F(2), A)), k = fDiv(fNeg(E), fMul(F(2), C));
@@ -476,12 +490,22 @@
       let sA = A, sC = C, sR = Rr;
       if (A.n < 0) { sA = fNeg(A); sC = fNeg(C); sR = fNeg(Rr); }
       completada = `${term(sA, 'x', h)} ${sC.n < 0 ? MENOS : '+'} ${term(sC, 'y', k)} = ${fTexto(sR)}`;
+      if (porSignos === 'hiperbola') {   // con la derecha positiva y el término positivo primero: 4(y − 1)² − (x − 2)² = 4
+        const sg = Rr.n < 0 || (Rr.n === 0 && A.n < 0) ? -1 : 1, tA = F(sg * A.n, A.d), tC = F(sg * C.n, C.d), tR = F(sg * Rr.n, Rr.d);
+        const ts = tA.n > 0 ? [[tA, 'x', h], [tC, 'y', k]] : [[tC, 'y', k], [tA, 'x', h]];
+        completada = `${term(ts[0][0], ts[0][1], ts[0][2])} ${MENOS} ${term(ts[1][0], ts[1][1], ts[1][2])} = ${fTexto(tR)}`;
+      }
       if (porSignos !== 'hiperbola') {
         const q = fDiv(Rr, A);
         if (q.n === 0) tipo = 'punto'; else if (q.n < 0) tipo = 'vacia';
         else if (porSignos === 'circunferencia') { tipo = 'circunferencia'; conica = circunferencia({ h, k, r2: q }); canonica = conica.ecuacion; }
         else { tipo = 'elipse'; conica = elipse({ h, k, nx: fDiv(Rr, A), ny: fDiv(Rr, C) }); canonica = conica.ecuacion; }
-      } else if (Rr.n === 0) tipo = 'rectas';
+      } else if (Rr.n === 0) {
+        tipo = 'rectas';   // y − k = ±m(x − h), m = √(−A/C)
+        const m = raiz(fDiv(fNeg(A), C));
+        if (rRacional(m)) { const mf = F(m.n, m.d); rectasTexto = `${rectaTexto(mf, fRes(k, fMul(mf, h)))} e ${rectaTexto(fNeg(mf), fSum(k, fMul(mf, h)))}`; }
+        else rectasTexto = fCero(h) && fCero(k) ? `y = ±(${rTexto(m)})x` : `${binomio('y', k)} = ±(${rTexto(m)})(${binomio('x', h)})`;
+      }
       else {
         tipo = 'hiperbola';
         const nx = fDiv(Rr, A), ny = fDiv(Rr, C);   // uno positivo, otro negativo
@@ -497,8 +521,12 @@
       const vT = conX ? 'x' : 'y';
       if (fCero(M)) {
         const q = fDiv(fNeg(resto), Q);
-        tipo = q.n > 0 ? 'rectas' : (q.n === 0 ? 'rectas' : 'vacia');
+        tipo = q.n > 0 ? 'paralelas' : (q.n === 0 ? 'rectaDoble' : 'vacia');
         completada = `${cuadrado(vT, h)} = ${fTexto(q)}`;
+        if (q.n >= 0) {
+          const r = raiz(q), v = (s1) => `${vT} = ${coord(h, r, s1)}`;
+          rectasTexto = q.n === 0 ? `${vT} = ${fTexto(h)}` : `${v(1)} ${vT === 'y' ? 'e' : 'y'} ${v(-1)}`;
+        }
       } else {
         tipo = 'parabola';
         const k = fDiv(fNeg(resto), M), cuatroP = fDiv(fNeg(M), Q);
@@ -516,7 +544,7 @@
       };
     }
     const q = pregunta({ valor: null, texto: nombre }, errs);
-    return Object.assign(q, { tipo, nombre, porSignos, ecuacionGeneral, completada, canonica: canonica || null, conica });
+    return Object.assign(q, { tipo, nombre, porSignos, ecuacionGeneral, completada, canonica: canonica || null, conica, rectasTexto });
   }
 
   // ---------- La cuerda del jardinero ----------
@@ -528,7 +556,7 @@
     if (c.n === 0) { figura = 'una circunferencia'; conica = circunferencia({ h: 0, k: 0, r2: fMul(a, a) }); }
     else if (fIgual(c, a)) figura = 'un segmento';
     else { figura = 'una elipse'; conica = elipse({ a, c }); }
-    const errs = c.n === 0 ? { segmento: er('CO34', null, 'un segmento'), punto: er('CO35', null, 'un punto'), parabola: er('CO36', null, 'una parábola') } : {};
+    const errs = c.n === 0 ? { segmento: er('CO34', null, 'un segmento'), punto: er('CO35', null, 'un punto'), alargada: er('CO37', null, 'una elipse más alargada') } : {};
     return Object.assign(pregunta({ valor: null, texto: figura }, errs), { figura, conica, a: fNum(a), c: fNum(c) });
   }
 
@@ -563,6 +591,7 @@
       if (Math.abs(den) < 1e-12) continue;
       const x = -1 / den; cortes.push({ x, y: s * t * x });
     }
+    cortes.sort((p, q) => p.x - q.x);
     const nombre = NOMBRE[tipo];
     const q = pregunta({ valor: null, texto: nombre }, {
       cerrada: er('CO31', null, NOMBRE.elipse), abierta: er('CO32', null, NOMBRE.hiperbola), rectas: er('CO33', null, NOMBRE.rectas)
