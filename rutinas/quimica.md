@@ -650,3 +650,50 @@ Se trabajó en paralelo, con hasta 3 subagentes a la vez. Las unidades de biomol
   - CI1 se queda como documentado: 33 %, por verificar.
 - **Aria-label null de las pastillas.** No es un error. Las pastillas desbloqueadas no llevan aria-label a propósito, y su nombre accesible es el texto del botón («6. Gas que no reacciona, caja rígida»), como se ve en Playwright. No cambié nada.
 - Revisé soluciones y la celda galvánica: no tienen respaldos «documentado» sin cifra.
+
+## 7 nov 2026 · banco de entrada y salida de química (pedido de la conversación principal)
+
+**Qué se hizo**
+- 7 pares A/B nuevos, qui-11 a qui-17, en la `reserva` de `catalogo/pruebas/quimica.json`.
+- Un verificador por par en `catalogo/pruebas/verificar.js`. Cada uno saca la correcta y cada distractor del motor de su escena.
+- Esto toca `catalogo/`, que la rutina no deja tocar. Lo hice porque la principal lo pidió explícitamente.
+- Siguen en reserva porque el tope de 8 a 10 ítems por forma se queda: la principal no quiere que la prueba se coma la hora de clase. Cuáles entran a `pares` se decidirá cuando se sepa el temario del colegio piloto.
+
+**Revisiones**
+- Pasaron por dos revisiones a ciegas. Las claves estuvieron bien desde el principio.
+- La primera versión repetía casi tal cual una predicción o un problema de papel de su escena. La segunda todavía calcaba la tarea en cinco pares.
+- La versión final pide transferencia: la misma idea aplicada a una situación que el alumno no practicó.
+- Además:
+  - A y B tienen respuestas distintas, para que no se mida memoria entre la entrada y la salida.
+  - Ningún distractor coincide con un número del enunciado.
+
+**Pares y unidades** (para armar la forma del piloto)
+
+| Par | Escena | Unidad | Qué pide |
+|---|---|---|---|
+| qui-11 | atomo-y-tabla | `quimica.estructura-atomica` | Qué elemento es un anión X³⁻ dados sus electrones y neutrones. A: P; B: ¹⁵N. |
+| qui-12 | enlace | `quimica.enlace-quimico` | Electrones de valencia que aporta X en XO₂⁻ (18 en total) o en XO₄²⁻ (32). Respuestas: 5 y 6. |
+| qui-13 | balance-reacciones | `quimica.reacciones-y-balance` | Moléculas de O₂ por cada molécula de etanol (3) o de butanol (6). Trampa: el O que ya trae el alcohol. |
+| qui-14 | liquidos-y-solidos | `quimica.liquidos-y-solidos` | Gas recogido sobre agua: moléculas de vapor por cada 100 del gas seco. Respuestas: 3,95 y 2,69. |
+| qui-15 | rendimiento-pureza | `quimica.estequiometria` | Rendimiento con la pureza dada. A: Fe al 70 %, 75 %. B: Mg al 75 %, 80 %. |
+| qui-16 | biomoleculas | `quimica.biomoleculas-y-productos-naturales` | Agua que gasta la hidrólisis de un péptido cíclico de 5 (90 g) o de 6 (108 g) aminoácidos. |
+| qui-17 | quimica-ambiente | `quimica.recursos-naturales` | Con O₂ de sobra, masa de CO₂ más agua. Etano: 1,42 g. Butano: 2,66 g. |
+
+**Códigos de error**
+- Quedaron «hipótesis» salvo ES15, que es «parcial».
+- Al rehacer los pares salieron los únicos códigos documentados que traían (ES12 y QA9).
+
+**Pruebas**
+- `node --test catalogo/pruebas/*.test.js`: 54 de 55.
+- `parecidos.js`: sin parecidos.
+- `npm test`: 3351 de 3352.
+- La que falla es «app/datos/pruebas.json está al día». Se arregla con `npm run catalogo`, que escribe en `app/` y lo corre la principal.
+- Ojo: `node --test catalogo/pruebas/`, con la carpeta, no corre en Node 22. Hay que pasarle los archivos.
+
+**Pedidos**
+1. Correr `npm run catalogo` para que `app/datos/pruebas.json` quede al día (versión 1.2.0 del banco).
+2. Mejorar `catalogo/pruebas/parecidos.js`. Hoy no lee `papel.json` y solo compara palabras y números, así que no ve «la misma tarea con otros números». Propuesta:
+   - que lea también `papel.json`;
+   - que avise cuando un ítem comparte dos o más códigos de error con una predicción de su escena.
+3. En la escena `balance-reacciones`, el respaldo de ES12 dice «documentado». El 21,9 % es de todo el subtema de balance, no de dejar el O₂ en 1, así que debería ser «parcial».
+4. En `catalogo/pruebas/pruebas.test.js`, los chequeos de atajos, largo de opciones y lugar de la correcta solo miran `pares`. Convendría correrlos también sobre `reserva`, para que un par de reserva no falle recién al pasarlo.
