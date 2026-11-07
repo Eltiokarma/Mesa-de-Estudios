@@ -62,7 +62,8 @@
         ],
         "ninguna": "RV3",
         "codigos": {
-          "o1": "RV4"
+          "o1": "RV4",
+          "o6": "RV3"
         },
         "explicacion": "La oración 7 junta las dos caras de la historia: el logro técnico y su costo humano.",
         "explicaciones": {
@@ -130,7 +131,7 @@
           "lo-contradice": "El texto no dice que Meiggs no trabajara en las vías; simplemente no lo dice."
         }
       },
-      "enunciado": "Se infiere del texto que los zigzags permitían",
+      "enunciado": "Se infiere del texto que los zigzags servían sobre todo para",
       "alternativas": [
         {
           "t": "subir la cordillera sin que la vía quedara demasiado empinada.",
@@ -142,19 +143,19 @@
           "explicacion": "La oración 4 dice que la vía no podía subir en línea recta porque quedaría muy empinada; el \"por eso\" de la 5 presenta los zigzags como la solución."
         },
         {
-          "t": "que el tren avanzara, se detuviera y cambiara de vía.",
+          "t": "hacer que el tren avanzara, se detuviera y cambiara de vía.",
           "codigo": "RV6",
           "origen": "o5",
           "explicacion": "Eso describe cómo funciona un zigzag (oración 5), pero no responde para qué servía."
         },
         {
-          "t": "que los trabajadores llegados de otros países descansaran durante la obra.",
+          "t": "dar descanso a los trabajadores llegados de otros países.",
           "codigo": "RV5",
           "origen": "o6",
           "explicacion": "Usa palabras de la oración 6, pero no tiene nada que ver con los zigzags."
         },
         {
-          "t": "que el tren llegara a Huancayo más rápido que por una vía recta.",
+          "t": "llegar a Huancayo más rápido que por una vía recta.",
           "codigo": "RV7",
           "explicacion": "El texto no dice que los zigzags ahorren tiempo; al contrario, el tren se detiene y retrocede."
         }
@@ -184,9 +185,9 @@
         },
         {
           "t": "A los túneles de la oración 5.",
-          "codigo": "RV3",
+          "codigo": "RV1",
           "origen": "o5",
-          "explicacion": "Los túneles son parte del logro, pero no todo: el logro es haber vencido la geografía con toda la obra."
+          "explicacion": "Toma una parte de la obra por todo el logro."
         },
         {
           "t": "A que el tren fuera el más rápido del mundo.",
@@ -237,5 +238,10 @@
       "fuente": "Ferrocarril Central Andino, información histórica; Basadre, J., Historia de la República del Perú, sobre la obra de Meiggs; estudios sobre la \"fiebre de La Oroya\" (bartonelosis) en la construcción."
     }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "Cambios aplicados tras la revisión a ciegas; la segunda verificación pidió cuatro retoques de redacción (t025 p5, t026 p2, t027 p2 y la oración 8 de t028), ya aplicados."
+  }
 }

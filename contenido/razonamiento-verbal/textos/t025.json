@@ -4,7 +4,7 @@
   "titulo": "La fiebre del caucho",
   "tema": "Amazonía · historia del caucho",
   "grado": 5,
-  "dificultad": 3,
+  "dificultad": 2,
   "tipo_texto": "argumentativo",
   "parrafos": [
     [
@@ -102,9 +102,10 @@
           "explicacion": "El autor no pide eso; critica justamente cómo se explotaron."
         },
         {
-          "t": "Informar sobre las materias primas más buscadas del mundo.",
-          "codigo": "RV2",
-          "explicacion": "Es demasiado general: el texto habla del caucho amazónico y de lo que su historia enseña."
+          "t": "Denunciar los abusos que cometieron las empresas caucheras en el Putumayo.",
+          "codigo": "RV3",
+          "origen": "o4",
+          "explicacion": "La denuncia es parte del texto (oración 4), pero el autor la usa para sostener una lectura más amplia: que esa economía era injusta y frágil."
         }
       ]
     },
@@ -152,10 +153,10 @@
           "explicacion": "Es un hecho del texto, un detalle que apoya la tesis."
         },
         {
-          "t": "El auge del caucho terminó cuando las plantaciones de Asia empezaron a producir más barato.",
+          "t": "La economía del caucho fue injusta porque se basó en el trabajo forzado de los indígenas.",
           "codigo": "RV3",
-          "origen": "o6",
-          "explicacion": "Cuenta cómo terminó, pero deja fuera lo que el autor saca de ese final: que esa economía era frágil e injusta."
+          "origen": "o4",
+          "explicacion": "Recoge la injusticia, pero deja fuera la otra mitad de la tesis: que esa economía también era frágil."
         },
         {
           "t": "La época del caucho fue una riqueza que se perdió por mala suerte.",
@@ -249,7 +250,7 @@
         {
           "t": "pequeña.",
           "codigo": "RV19",
-          "explicacion": "Está cerca (algo débil), pero no es lo mismo: la economía del caucho no era pequeña, sino que podía caer fácilmente."
+          "explicacion": "\"Frágil\" no habla de tamaño: la economía del caucho era enorme, pero podía venirse abajo fácilmente."
         },
         {
           "t": "injusta.",
@@ -263,14 +264,15 @@
       "id": "p5",
       "tipo": "extrapolacion",
       "unidad": "razonamiento-verbal.extrapolacion",
-      "enunciado": "Si los caucheros de la Amazonía hubieran sembrado sus propias plantaciones antes que en Asia, según la lógica del texto,",
+      "enunciado": "Si los caucheros de la Amazonía hubieran sembrado sus propias plantaciones antes de que se sembraran en Asia, según la lógica del texto,",
       "alternativas": [
         {
           "t": "la competencia de las plantaciones de Asia les habría hecho menos daño.",
           "correcta": true,
           "evidencia": [
             "o2",
-            "o6"
+            "o6",
+            "o8"
           ],
           "explicacion": "El texto explica la caída por la competencia de plantaciones más baratas (oración 6); con plantaciones propias, esa ventaja de Asia habría sido menor."
         },
@@ -300,5 +302,10 @@
       "fuente": "Casement, R. (1912). Correspondence respecting the treatment of British colonial subjects and native Indians employed in the collection of rubber in the Putumayo district (Blue Book); Santos Granero, F. y Barclay, F. (2002). La frontera domesticada. PUCP; Chirif, A. (2009), sobre el Putumayo."
     }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "Cambios aplicados tras la revisión a ciegas; la segunda verificación pidió cuatro retoques de redacción (t025 p5, t026 p2, t027 p2 y la oración 8 de t028), ya aplicados."
+  }
 }

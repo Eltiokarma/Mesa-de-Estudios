@@ -32,12 +32,12 @@
       },
       {
         "id": "o5",
-        "rol": "detalle",
+        "rol": "apoyo",
         "t": "Un niño sordo que la aprende desde pequeño puede desarrollar su pensamiento y su lenguaje igual que un niño que oye."
       },
       {
         "id": "o6",
-        "rol": "detalle",
+        "rol": "apoyo",
         "t": "El problema aparece cuando no tiene con quién usarla: en la escuela, en el hospital o en una oficina pública, casi nadie la conoce."
       }
     ],
@@ -86,7 +86,7 @@
           "explicacion": "Es lo que dice la oración 7: la inclusión no depende solo de las personas sordas."
         },
         {
-          "t": "Desde 2010, una ley del Congreso reconoce la lengua de señas peruana como la lengua de las personas sordas del país.",
+          "t": "Desde 2010, una ley reconoce la lengua de señas peruana como lengua de las personas sordas del país.",
           "codigo": "RV1",
           "origen": "o2",
           "explicacion": "Es un dato del texto, un detalle."
@@ -160,10 +160,10 @@
           "explicacion": "Es una creencia común, pero la oración 4 dice que no es cierta."
         },
         {
-          "t": "en los hospitales del Perú casi todos conocen la lengua de señas.",
+          "t": "en los hospitales del Perú, un paciente sordo suele ser atendido en su propia lengua.",
           "codigo": "RV9",
           "origen": "o6",
-          "explicacion": "Choca con la oración 6: en el hospital \"casi nadie la conoce\"."
+          "explicacion": "Choca con la oración 6: si en el hospital casi nadie conoce la lengua de señas, un paciente sordo no suele ser atendido en ella."
         }
       ]
     },
@@ -242,5 +242,10 @@
       "fuente": "Ley 29535 (2010), Ley que otorga reconocimiento oficial a la lengua de señas peruana; Emmorey, K. (2002). Language, cognition, and the brain. Erlbaum; Mayberry, R. (2010), sobre la adquisición temprana."
     }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "Cambios aplicados tras la revisión a ciegas; la segunda verificación pidió cuatro retoques de redacción (t025 p5, t026 p2, t027 p2 y la oración 8 de t028), ya aplicados."
+  }
 }

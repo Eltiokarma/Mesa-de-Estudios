@@ -11,7 +11,7 @@
       {
         "id": "o1",
         "rol": "detalle",
-        "t": "En el concurso de dibujo del colegio, el de Carla ganó el primer puesto."
+        "t": "En el concurso de dibujo del colegio, el dibujo de Carla ganó el primer puesto."
       },
       {
         "id": "o2",
@@ -38,7 +38,7 @@
       {
         "id": "o6",
         "rol": "detalle",
-        "t": "Buscó a la profesora y le contó lo de la mancha."
+        "t": "Buscó a la profesora en la sala de maestros y le contó todo lo de la mancha."
       },
       {
         "id": "o7",
@@ -50,7 +50,7 @@
       {
         "id": "o8",
         "rol": "principal",
-        "t": "Inés la abrazó, y Carla sintió que el diploma valía menos que antes, pero que ella se sentía más liviana."
+        "t": "Inés abrazó a Carla, y aunque el diploma valía menos que antes, Carla se sentía más liviana."
       }
     ]
   ],
@@ -67,7 +67,8 @@
         ],
         "ninguna": "correcta",
         "codigos": {
-          "o1": "RV4"
+          "o1": "RV4",
+          "o6": "RV3"
         },
         "explicacion": "La oración 8 muestra la enseñanza: Carla pierde algo, pero se siente más liviana. También vale \"ninguna la dice completa\", porque la enseñanza no está dicha con todas sus palabras.",
         "explicaciones": {
@@ -76,7 +77,7 @@
           "o3": "Cuenta de dónde salía la mancha: es un detalle importante, pero no la enseñanza.",
           "o4": "Cuenta lo que recordó Carla; prepara lo que hará después.",
           "o5": "Es un detalle: Carla no salió al recreo.",
-          "o6": "Cuenta lo que hizo Carla, pero no lo que el relato muestra con eso.",
+          "o6": "Cuenta que Carla dijo la verdad, pero deja fuera lo que eso le costó y cómo se sintió.",
           "o7": "Cuenta la decisión de la profesora: es un hecho del final."
         }
       },
@@ -111,7 +112,7 @@
         {
           "t": "Los jurados de los concursos siempre se equivocan.",
           "codigo": "RV11",
-          "explicacion": "El relato cuenta un caso; \"siempre\" dice mucho más. Además, el jurado no sabía de la mancha."
+          "explicacion": "El relato cuenta un caso; \"siempre\" dice mucho más. Además, el relato no dice que el jurado se equivocara: juzgó la hoja tal como la vio."
         }
       ]
     },
@@ -203,5 +204,10 @@
   "origen": "propio",
   "fecha": "2026-11-06",
   "hechos": [],
-  "revision": null
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "Cambios aplicados tras la revisión a ciegas; la segunda verificación pidió cuatro retoques de redacción (t025 p5, t026 p2, t027 p2 y la oración 8 de t028), ya aplicados."
+  }
 }

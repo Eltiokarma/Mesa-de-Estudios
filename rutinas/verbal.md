@@ -4,7 +4,7 @@ Cada ejecución hace la primera pieza que falte:
 
 1. [x] Informe `docs/investigacion/razonamiento-verbal-ideas-erroneas.md`
 2. [x] Diseño del formato lectura, `docs/formato-lectura.md`
-3. [ ] Banco de textos propios en `contenido/razonamiento-verbal/` (24 de 30, más la pareja de entrada y salida)
+3. [ ] Banco de textos propios en `contenido/razonamiento-verbal/` (30 de 30, más la pareja de entrada y salida; faltan los ejercicios sueltos)
 4. [x] Guía para profesores, `docs/guia-profesores.md` (adelantada: se hizo antes de llegar a 30 textos)
 
 ---
@@ -335,3 +335,31 @@ También corregí el validador: `\b` de JavaScript toma las letras con tilde com
 - **Verificación final:** la concordancia de t023 p2 estaba rota ("las parteras… las parteras") y se ajustaron cuatro detalles más.
 
 **Pruebas:** `banco.test.js` da 30 de 30. `npm test` da 3980 de 3981; la que falla es la de siempre, "app/datos/catalogo.json está al día", que se arregla con `npm run catalogo`.
+
+---
+
+## 7 nov 2026 · Pieza 3, quinta tanda: t025 a t030
+
+**Qué hice.** Seis textos más, y con eso el banco llega a 30 textos de práctica en el índice:
+
+| Texto | Tema | Grado y dificultad |
+| --- | --- | --- |
+| t025 | El caucho en la Amazonía | 5.º, 2 (bajó de 3) |
+| t026 | El rayo y el trueno | 3.º, 1 |
+| t027 | La lengua de señas peruana | 4.º, 2 |
+| t028 | Relato «La mancha» | 3.º, 1 |
+| t029 | Qué es una teoría científica | 5.º, 2 (bajó de 3) |
+| t030 | El ferrocarril central y sus zigzags | 4.º, 2 |
+
+**Subagentes:** tres revisores a ciegas (dos textos cada uno) y una verificación de los cambios.
+- **Idea principal y resumen:**
+  - en t025, dos distractores de resumen que eran defendibles se volvieron resúmenes parciales (RV3) de verdad;
+  - en t026, la oración 3 daba solo la causa: dejó de ser principal y la aceptada quedó en la 8;
+  - en t027, las oraciones 5 y 6 pasaron a apoyo.
+- **Códigos:** en t029, la «corazonada» (RV5) pasó a «prueba que ya no admite ninguna duda» (RV11), para no repetir RV19. En t030 p3, RV3 pasó a RV1.
+- **Hechos:** t026 decía «tormenta cercana»; ahora dice que hay que refugiarse en cuanto se oye el trueno, con la regla de la NOAA.
+- **Redacción:** en t028, «Inés la abrazó» era ambiguo (podía ser la profesora); quedó «Inés abrazó a Carla», en una sola oración.
+
+**Pruebas:** `banco.test.js` da 36 de 36. `npm test` da 3986 de 3987; la que falla es la de siempre, «app/datos/catalogo.json está al día», que se arregla con `npm run catalogo`.
+
+**Pedido para la integración:** correr `npm run catalogo`, porque el índice cambió.

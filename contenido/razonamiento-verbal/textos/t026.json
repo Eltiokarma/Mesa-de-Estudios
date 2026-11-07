@@ -20,7 +20,7 @@
       },
       {
         "id": "o3",
-        "rol": "principal",
+        "rol": "apoyo",
         "t": "La razón es que la luz y el sonido viajan a velocidades muy distintas."
       }
     ],
@@ -43,7 +43,7 @@
       {
         "id": "o7",
         "rol": "detalle",
-        "t": "Si el trueno se oye casi junto con el destello, la tormenta está encima, y conviene buscar refugio dentro de una casa o de un vehículo cerrado."
+        "t": "Si se oye un trueno, el rayo ya puede alcanzarnos, y conviene buscar refugio dentro de una casa o de un vehículo cerrado de techo metálico; si se oye casi junto con el destello, la tormenta está encima."
       }
     ],
     [
@@ -63,21 +63,21 @@
         "tipo": "marcar-oracion",
         "pide": "Antes de ver las alternativas, toca la oración que mejor resume todo el texto.",
         "aceptadas": [
-          "o3",
           "o8"
         ],
         "ninguna": "correcta",
         "codigos": {
           "o1": "RV4"
         },
-        "explicacion": "La oración 3 da la causa y la 8 la conclusión. También vale \"ninguna la dice completa\", porque la idea entera junta las dos.",
+        "explicacion": "La oración 8 junta todo: la demora mide la distancia. La oración 3 da solo la causa. También vale \"ninguna la dice completa\".",
         "explicaciones": {
           "o1": "La primera oración explica qué es el trueno: es el punto de partida.",
           "o2": "Presenta lo que se observa; la explicación viene después.",
           "o4": "Da las velocidades: es un detalle de la explicación.",
           "o5": "Explica cómo hacer el cálculo: es una consecuencia.",
           "o6": "Es un ejemplo del cálculo.",
-          "o7": "Es un consejo práctico, un detalle."
+          "o7": "Es un consejo práctico, un detalle.",
+          "o3": "Da la causa, pero no lo que se hace con ella: medir la distancia."
         }
       },
       "enunciado": "¿Cuál es la idea principal del texto?",
@@ -153,16 +153,16 @@
           "explicacion": "Eso lo dice el texto tal cual (oración 4), pero no responde a cuántos kilómetros está la tormenta."
         },
         {
-          "t": "la tormenta está encima y hay que buscar refugio de inmediato.",
+          "t": "la tormenta está encima.",
           "codigo": "RV5",
           "origen": "o7",
-          "explicacion": "Repite palabras de la oración 7, pero eso vale cuando el trueno se oye casi junto con el destello, no seis segundos después."
+          "explicacion": "Eso vale cuando el trueno se oye casi junto con el destello (oración 7), no seis segundos después."
         },
         {
           "t": "la tormenta está exactamente a 2040 metros.",
           "codigo": "RV11",
           "origen": "o5",
-          "explicacion": "El texto dice que el cálculo es \"aproximado\": \"exactamente\" dice más de lo que permite."
+          "explicacion": "La oración 5 dice \"aproximadamente\": \"exactamente\" dice más de lo que permite."
         }
       ]
     },
@@ -218,7 +218,7 @@
           "t": "no conviene quedarse afuera cuando el trueno se oye casi junto con el destello.",
           "codigo": "RV10",
           "origen": "o7",
-          "explicacion": "Tiene un \"no\", pero es compatible: la oración 7 dice que conviene buscar refugio."
+          "explicacion": "Tiene un \"no\", pero es compatible: la oración 7 dice que conviene buscar refugio en cuanto se oye el trueno."
         },
         {
           "t": "los rayos pueden caer sobre los árboles altos.",
@@ -238,9 +238,14 @@
   "fecha": "2026-11-06",
   "hechos": [
     {
-      "afirmacion": "El trueno es la onda sonora del aire calentado por el rayo y se produce a la vez; el sonido viaja a unos 340 m/s (un kilómetro cada unos tres segundos); la regla de contar segundos y dividir entre tres; ante una tormenta cercana se recomienda refugiarse en un edificio o un vehículo cerrado.",
-      "fuente": "NOAA, National Weather Service, Lightning safety; cualquier texto de física general sobre la velocidad del sonido."
+      "afirmacion": "El trueno es la onda sonora del aire calentado por el rayo y se produce a la vez; el sonido viaja a unos 340 m/s (un kilómetro cada unos tres segundos); la regla de contar segundos y dividir entre tres; se recomienda refugiarse en cuanto se oye el trueno, en un edificio o un vehículo de techo metálico.",
+      "fuente": "NOAA, National Weather Service, Lightning safety; cualquier texto de física general sobre la velocidad del sonido. Regla «When thunder roars, go indoors» de la NOAA y la NWS."
     }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "Cambios aplicados tras la revisión a ciegas; la segunda verificación pidió cuatro retoques de redacción (t025 p5, t026 p2, t027 p2 y la oración 8 de t028), ya aplicados."
+  }
 }

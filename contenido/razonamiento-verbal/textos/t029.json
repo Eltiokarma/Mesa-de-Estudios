@@ -4,7 +4,7 @@
   "titulo": "«Es solo una teoría»",
   "tema": "Ciencia · qué es una teoría científica",
   "grado": 5,
-  "dificultad": 3,
+  "dificultad": 2,
   "tipo_texto": "argumentativo",
   "parrafos": [
     [
@@ -87,10 +87,10 @@
           "explicacion": "Está en el mismo campo, pero choca con las oraciones 5 y 6: una teoría se puede corregir."
         },
         {
-          "t": "una corazonada.",
-          "codigo": "RV5",
-          "origen": "o4",
-          "explicacion": "Repite una palabra de la oración 4, pero esa oración dice que las teorías \"no son corazonadas\"."
+          "t": "una prueba que ya no admite ninguna duda.",
+          "codigo": "RV11",
+          "origen": "o5",
+          "explicacion": "Va más allá de lo que dice el texto: las oraciones 5 y 6 aclaran que una teoría no es definitiva y puede corregirse."
         }
       ]
     },
@@ -107,7 +107,8 @@
         "ninguna": "RV3",
         "codigos": {
           "o1": "RV4",
-          "o7": "RV33"
+          "o7": "RV33",
+          "o9": "RV3"
         },
         "explicacion": "La oración 8 dice la tesis: una teoría es confiable porque ha sido muy probada y sigue abierta a revisión.",
         "explicaciones": {
@@ -118,14 +119,14 @@
           "o5": "Aclara que una teoría no es definitiva; es un paso del razonamiento.",
           "o6": "Explica cómo cambia una teoría: es un paso del razonamiento.",
           "o7": "Presenta la objeción que el autor va a responder.",
-          "o9": "Saca una consecuencia de la tesis, pero la tesis está en la oración 8.",
+          "o9": "Saca la consecuencia de confundir los dos sentidos, pero no dice por qué una teoría es confiable.",
           "ninguna": "La oración 8 sí la dice completa."
         }
       },
       "enunciado": "¿Cuál es la tesis del autor?",
       "alternativas": [
         {
-          "t": "Una teoría científica es confiable porque ha sido muy probada y sigue abierta a revisión, no porque no pueda cambiar.",
+          "t": "Una teoría científica no es una suposición sin pruebas: es confiable porque ha sido muy probada y sigue abierta a revisión, no porque no pueda cambiar.",
           "correcta": true,
           "evidencia": [
             "o8"
@@ -301,5 +302,10 @@
       "fuente": "National Academy of Sciences (2008). Science, evolution, and creationism; AAAS, Science for all Americans (1990), cap. 1."
     }
   ],
-  "revision": null
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "Cambios aplicados tras la revisión a ciegas; la segunda verificación pidió cuatro retoques de redacción (t025 p5, t026 p2, t027 p2 y la oración 8 de t028), ya aplicados."
+  }
 }
