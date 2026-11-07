@@ -9,19 +9,20 @@
    Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
    capital C azul, interés del capital I naranja, interés sobre interés fucsia (sin letra), monto M verde,
    tasa r turquesa, tiempo t rojo; en el descuento: valor nominal Vn mostaza, valor actual Va índigo,
-   descuento comercial Dc magenta y descuento racional Dr verde oscuro.
+   descuento comercial Dc granate (en oscuro, naranja rojizo) y descuento racional Dr oliva casi negro (en oscuro, gris oliva).
    Elegidos con CIEDE2000; mínimos entre los que salen juntos (claro / oscuro): la alcancía (C, I, interés sobre interés,
-   M, r, t) 22,0 / 22,0; el descuento (Vn, Va, Dc, Dr, r, t) 20,4 / 20,4. Pares parecidos que nunca salen juntos:
-   interés sobre interés y Dc (7,2 / 10,6), M y Dr (8,8 / 9,5), C y Va (17,0 / 12,1). La t roja se parece al rojo de los
-   avisos (5,4 / 5,0): el aviso siempre va con texto. Contraste AA sobre el papel, la tarjeta y su chip (.v, fondo al 8 %),
-   en claro y en oscuro (mínimo 4,54). Cifras en el informe del constructor. */
+   M, r, t) 22,0 / 22,0; el descuento (Vn, Va, Dc, Dr, r, t) 22,6 / 21,2. En claro, Dc y Dr quedan a 22,6 o más de todos
+   los demás colores de la plantilla; en oscuro, Dc queda a 17,5 del naranja del interés (nunca salen juntos) y lo demás
+   a 20 o más. Par parecido que nunca sale junto: C y Va (17,0 / 12,1). La t roja se parece al rojo de los avisos
+   (5,4 / 5,0), y Dc oscuro también (17,4): el aviso siempre va con texto. Contraste AA sobre el papel, la tarjeta y su
+   chip (.v, fondo al 8 %), en claro y en oscuro (mínimo 4,54). Cifras en el informe del constructor. */
 [hidden]{display:none!important}
 :root{
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
   --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
   --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
   --c-C:#1f5fbf; --c-I:#a05200; --c-X:#a10fbf; --c-M:#466d14; --c-r:#0f766e; --c-t:#c0364a;
-  --c-Vn:#7d6a00; --c-Va:#3328c4; --c-Dc:#b0009b; --c-Dr:#255c1f;
+  --c-Vn:#7d6a00; --c-Va:#3328c4; --c-Dc:#5a0f0f; --c-Dr:#2d2d0f;
   --relleno:.14;
   --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
   --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
@@ -32,14 +33,14 @@
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
   --c-C:#7cb0ff; --c-I:#f0a04a; --c-X:#cf6bfa; --c-M:#a3d65e; --c-r:#5ed9c8; --c-t:#f17384;
-  --c-Vn:#e3c84a; --c-Va:#9f9bff; --c-Dc:#ff6fe3; --c-Dr:#5fe06a;
+  --c-Vn:#e3c84a; --c-Va:#9f9bff; --c-Dc:#ff692d; --c-Dr:#a5a596;
   --relleno:.17; color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
   --c-C:#7cb0ff; --c-I:#f0a04a; --c-X:#cf6bfa; --c-M:#a3d65e; --c-r:#5ed9c8; --c-t:#f17384;
-  --c-Vn:#e3c84a; --c-Va:#9f9bff; --c-Dc:#ff6fe3; --c-Dr:#5fe06a;
+  --c-Vn:#e3c84a; --c-Va:#9f9bff; --c-Dc:#ff692d; --c-Dr:#a5a596;
   --relleno:.17; color-scheme:dark }
 
 *{box-sizing:border-box}
@@ -493,13 +494,14 @@ function crearEscena(cv, idDesc, idLect, idLey){
       let y = B;
       for (const p of col.partes){
         if (col.oculto && !p.ver) continue;
-        const h = p.v*s*(col.oculto ? 1 : F.prog), nf = p.n || 1;
+        const h = col.oculto ? 26 : p.v*s*F.prog, nf = col.oculto ? 1 : (p.n || 1);
         for (let j = 0; j < nf; j++) bloque(c, x, y - h*(j + 1)/nf, cw, h/nf, c[p.k], p.k);
+        if (p.trama && h > 2){ ctx.save(); ctx.beginPath(); ctx.rect(x, y - h, cw, h); ctx.clip(); ctx.strokeStyle = c.paper; ctx.lineWidth = 1.5; for (let d = -h; d < cw; d += 8) linea(ctx, { x:x + d, y }, { x:x + d + h, y:y - h }); ctx.restore(); }
         if (p.rot && h > 15) rotulo(ctx, c, x + cw/2, y - h/2, p.rot, c.ink, 'center', 800, 11);
         else if (p.rot) rotulo(ctx, c, x - 4, y - h/2, p.rot, c[p.k], 'right', 800, 11);
         y -= h;
       }
-      if (col.oculto){ pendiente(c, x, Tp + 30, cw, y - Tp - 36); }
+      if (col.oculto){ pendiente(c, x, Tp + 30, cw, (B - Tp)*0.62); }
       if (col.total && (!col.oculto || col.total.ver)){
         const yt = col.oculto ? Tp + 30 : B - col.total.v*s*F.prog, xb = x + cw + 8;
         ctx.save(); ctx.strokeStyle = c[col.total.k]; ctx.lineWidth = grosor(col.total.k, 2.4);
@@ -529,7 +531,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
     let l = E.ley;
     if (!l){
       if (E.modo === 'torre' || E.modo === 'barras'){
-        const comp = (E.torre && E.torre.tipo === 'compuesto') || E.modo === 'barras';
+        const comp = (E.torre && E.torre.tipo === 'compuesto' && !E.torre.ocultos) || (E.modo === 'barras' && E.barras.ver > 1);
         l = [['C', 'C · capital (recortado, no a escala)', true], ['I', comp ? 'interés del capital (como en el simple)' : 'I · interés', true]].concat(comp ? [['X', 'interés sobre interés', true]] : []).concat([['M', 'M · monto']]);
         if (E.graf) l.push(['t', 't · tiempo']);
       } else if (E.modo === 'grafica') l = [['M', 'M · monto: recta a trazos (simple) y curva (compuesto)'], ['t', 't · tiempo']];
@@ -625,9 +627,9 @@ const CAPS = [1, 2, 4, 12].map(m => MI.capitalizacion({ C:1000, j:24, m }));
 const pct = x => `${fmt(x, 2, true)} % anual`;
 
 const G1 = { id:'interes-paso1', ok:'b', opts:[
-  ['a', soles(P1.errores.sinConvertir), 'AR16-tasa-y-tiempo-sin-convertir', 'hipotesis'],
+  ['a', soles(P1.errores.sinConvertir), 'unidades-sin-convertir', 'hipotesis'],
   ['b', soles(P1.I)],
-  ['c', soles(P1.errores.daElMonto), 'da-el-monto', 'hipotesis'],
+  ['c', soles(P1.errores.daElMonto), 'AR5-da-el-monto', 'hipotesis'],
   ['d', soles(P1.errores.unPeriodo), 'interes-de-un-anio', 'hipotesis']],
   fb:{ b:'¡Bien! 8 meses son 8/12 de año. Al 15 % anual, cada mes gana el 15/12 = 1,25 % de S/ 2400, que es S/ 30. En 8 meses: S/ 240.',
     a:'Elegiste la A. Esa cuenta usa los 8 meses como si fueran 8 años con la tasa anual. La tasa y el tiempo tienen que estar en la misma unidad. La correcta está marcada.',
@@ -645,17 +647,17 @@ const G3 = { id:'interes-paso3', ok:'c', opts:[
 const G5 = { id:'interes-paso5', ok:'a', opts:[
   ['a', pct(P5.efectiva)],
   ['b', pct(P5.errores.proporcional), 'tasa-equivalente-como-proporcional', 'hipotesis'],
-  ['c', pct(P5.errores.factorComoTasa), 'factor-como-tasa', 'hipotesis'],
-  ['d', pct(P5.errores.sinCambio), 'la-tasa-no-cambia-con-el-plazo', 'hipotesis']],
+  ['c', pct(P5.errores.factorComoTasa), 'AR4-factor-como-tasa', 'parcial'],
+  ['d', pct(P5.errores.alReves), 'convierte-al-reves', 'hipotesis']],
   fb:{ a:'¡Bien! Cada mes el dinero se multiplica por 1,02. En 12 meses, por 1,02 elevado a 12, que es casi 1,2682: gana un 26,82 % en el año.',
     b:'Elegiste la B. 12 · 2 % = 24 % sería si cada mes ganara solo sobre el capital (interés simple). Con capitalización mensual, desde el segundo mes también gana sobre el interés. La correcta está marcada.',
     c:'Elegiste la C. 1,2682 es el factor: por cuánto se multiplica el dinero. El interés es lo que pasa de 1, o sea 0,2682: un 26,82 %. La correcta está marcada.',
-    d:'Elegiste la D. El 2 % es lo que gana en un mes. En un año hay 12 meses de interés. La correcta está marcada.' } };
+    d:'Elegiste la D. Esa cuenta divide 2 % entre 12, como si se pasara de anual a mensual. Es al revés: un año tiene 12 meses, así que la tasa anual es mayor que la mensual. La correcta está marcada.' } };
 const G7 = { id:'interes-paso7', ok:'a', opts:[
   ['a', soles(P7.C)],
-  ['b', soles(P7.errores.interesSobreMonto), 'porcentaje-del-monto', 'hipotesis'],
+  ['b', soles(P7.errores.interesSobreMonto), 'AR3-porcentaje-del-monto', 'parcial'],
   ['c', soles(P7.errores.sinTiempo), 'olvida-el-tiempo', 'hipotesis'],
-  ['d', soles(P7.errores.restaTasa), 'resta-la-tasa-del-monto', 'hipotesis']],
+  ['d', soles(P7.errores.restaTasa), 'AR3-resta-la-tasa-del-monto', 'parcial']],
   fb:{ a:'¡Bien! En 18 meses (1,5 años) al 10 % anual gana el 15 % del capital. Entonces el monto es el 115 % del capital: 3450 ÷ 1,15 = 3000.',
     b:'Elegiste la B. Esa cuenta saca el 15 % de S/ 3450 y lo resta. Pero el 15 % es del capital, no del monto: el interés salió de lo que se depositó. Comprueba: 2932,50 más su 15 % da 3372,38, no 3450. La correcta está marcada.',
     c:'Elegiste la C. Esa cuenta divide entre 1,10, como si el dinero hubiera estado un año. Estuvo 18 meses: el interés total es el 15 %. La correcta está marcada.',
@@ -663,11 +665,11 @@ const G7 = { id:'interes-paso7', ok:'a', opts:[
 const G8 = { id:'interes-paso8', ok:'b', opts:[
   ['a', soles(P8.racional.errores.comoComercial), 'racional-como-comercial', 'hipotesis'],
   ['b', soles(P8.racional.D)],
-  ['c', soles(P8.racional.errores.sinConvertir), 'AR16-descuento-sin-convertir', 'hipotesis'],
+  ['c', soles(P8.racional.errores.sobreVaComercial), 'racional-sobre-va-comercial', 'hipotesis'],
   ['d', soles(P8.racional.errores.vaComoDescuento), 'valor-actual-como-descuento', 'hipotesis']],
   fb:{ b:'¡Bien! En 4 meses al 15 % anual, r · t = 5 %. El valor actual más su 5 % tiene que dar 6300: Va = 6300 ÷ 1,05 = 6000. El descuento racional es 6300 − 6000 = S/ 300.',
     a:'Elegiste la A. S/ 315 es el 5 % de 6300: así se calcula el descuento comercial, sobre el valor nominal. El racional se calcula sobre el valor actual, que es menor. La correcta está marcada.',
-    c:'Elegiste la C. Esa cuenta usa los 4 meses con la tasa anual sin convertir (r · t = 60 %). En 4 meses, al 15 % anual, r · t es solo el 5 %. La correcta está marcada.',
+    c:'Elegiste la C. Esa cuenta saca el 5 % de 5985, el valor actual del descuento comercial. El racional usa su propio valor actual: el que, sumado a su 5 %, da 6300. Ese es 6000, y su 5 % es 300. La correcta está marcada.',
     d:'Elegiste la D. S/ 6000 es lo que recibes hoy, el valor actual. El descuento es lo que se queda el banco: la diferencia con 6300. La correcta está marcada.' } };
 
 // ---- configuraciones de la escena ----
@@ -681,14 +683,14 @@ const torreP5 = ya => ({ modo:'torre', torre:{ C:100, r:2, tipo:'compuesto', tma
   lect: [L('C', 'Capital C', 'S/ 100'), L('r', 'Tasa r', '2 % mensual'), L('t', 'Tiempo t', '12 meses')].concat(ya ? [L('M', 'Monto M', soles(P5T.M)), L('r', 'Tasa efectiva anual', `${fmt(P5.efectiva, 2, true)} %`)] : []),
   desc:'Torre de S/ 100 mes a mes con capitalización mensual.' });
 // La letra y el depósito como fichas iguales: el interés (o el descuento) es una ficha del tamaño que corresponde.
-const fichasP7 = ya => ({ modo:'fichas', fichas:{ vmax:3700, prog:1, cols: ya
+const fichasP7 = ya => ({ modo:'fichas', fichas:{ vmax:3450*1.08, prog:1, cols: ya
     ? [{ titulo:'El depósito', partes:[{ v:P7.C, k:'C', n:20, rot:'' }, { v:P7.I, k:'I', n:3 }], total:{ v:3450, k:'M', rot:'M = S/ 3450' } },
-       { titulo:'El 15 % del monto', partes:[{ v:P7.errores.interesSobreMonto, k:'C', rot:'' }, { v:3450 - P7.errores.interesSobreMonto, k:'I', rot:'' }], total:{ v:3450, k:'M', rot:'M = S/ 3450' } }]
+       { titulo:'Si se resta el 15 % de M', partes:[{ v:P7.errores.interesSobreMonto, k:'muted', rot:'lo que queda', trama:true }, { v:3450 - P7.errores.interesSobreMonto, k:'muted', rot:'15 % de M' }], total:{ v:3450, k:'M', rot:'M = S/ 3450' } }]
     : [{ titulo:'El depósito', partes:[], total:{ v:3450, k:'M', rot:'M = S/ 3450', ver:true }, oculto:true }] },
   lect: [L('M', 'Monto M', 'S/ 3450'), L('r', 'Tasa r', '10 % anual'), L('t', 'Tiempo t', '18 meses')].concat(ya ? [L('C', 'Capital C', soles(P7.C)), L('I', 'Interés I', soles(P7.I))] : []),
   ley: ya ? [['C', 'C · capital: 20 fichas de S/ 150', true], ['I', 'I · interés: 3 fichas iguales (15 %)', true], ['M', 'M · monto']] : [['M', 'M · monto']],
   desc:'El monto como una columna; adentro, el capital y el interés.' });
-const fichasP8 = ya => ({ modo:'fichas', fichas:{ vmax:6900, prog:1, cols: ya
+const fichasP8 = ya => ({ modo:'fichas', fichas:{ vmax:6300*1.08, prog:1, cols: ya
     ? [{ titulo:'Racional', partes:[{ v:P8.racional.Va, k:'Va', n:P8.fichas, rot:'' }, { v:P8.racional.D, k:'Dr', rot:'Dr' }], total:{ v:6300, k:'Vn', rot:'Vn = S/ 6300' } },
        { titulo:'Comercial', partes:[{ v:P8.comercial.Va, k:'Va', n:P8.fichas - 1, rot:'' }, { v:P8.comercial.D, k:'Dc', rot:'Dc' }], total:{ v:6300, k:'Vn', rot:'Vn = S/ 6300' } }]
     : [{ titulo:'Racional', partes:[], total:{ v:6300, k:'Vn', rot:'Vn = S/ 6300', ver:true }, oculto:true },
@@ -727,7 +729,7 @@ const steps = [
      <div class="eq">${I_('I')} = ${fr(`${C_('2400')} · ${r_('15')} · ${t_('8')}`, '1200')} = ${I_(fmt(P1.I, 0))}<span class="note">el 1200 es 100 · 12: los meses pasan a años</span></div></div>
    <p>La tasa es <b>anual</b> y el tiempo está en <b>meses</b>. Hay dos caminos: pasar el tiempo a años (8 meses = 8/12 de año) o la tasa a meses (15 % anual = 1,25 % mensual). En el dibujo, cada mes suma una ficha de ${I_('S/ 30')}: el 1,25 % de ${C_('2400')}.</p>
    <p class="aviso">Antes de multiplicar, mira las unidades: «% anual» con «meses» no se puede multiplicar así nomás.</p>
-   <p class="fuente">No encontramos estudios con cifras sobre mezclar la tasa anual con el tiempo en meses: es una hipótesis nuestra, que el informe de ideas erróneas liga a AR16. Las otras dos opciones también son hipótesis nuestras.</p></div>` },
+   <p class="fuente">No encontramos estudios con cifras sobre mezclar la tasa anual con el tiempo en meses: es una hipótesis nuestra. Responder el monto en vez del interés es AR5 del informe, también sin datos; la otra opción es hipótesis nuestra.</p></div>` },
  { k:'Paso 2', t:'La recta del interés simple', explora:'simple',
    prep:() => E.config(torreExplora('simple', 10, 10, 1100, vivoSimple)),
    body:() => `<p class="problem">Ahora, ${C_('S/ 1000')} al ${r_('10 % anual')} de interés simple. Arrastra el punto rojo de la gráfica (sobre el eje del tiempo) para ver la torre de cada año.</p>
@@ -743,7 +745,7 @@ const steps = [
    <p>¿Cuánto tendrá a los ${t_('3 años')}?</p>${opcionesHTML(G3.opts, 'fb')}
    <div id="tras" class="body" hidden>
    ${tablaHTML(['Año', 'Al empezar', 'Interés del año', 'Al terminar'], P3.torre.slice(1).map(p => [t_(String(p.k)), fmt(P3.torre[p.k - 1].M, 0), I_(fmt(p.interesDelPeriodo, 0)), M_(fmt(p.M, 0))]))}
-   <div class="eqs"><div class="eq">${M_('M')} = ${C_('C')} (1 + ${r_('r')}/100)<sup>${t_('t')}</sup> = ${C_('1000')} · ${r_('1,1')}<sup>${t_('3')}</sup> = ${M_(fmt(P3.M, 0))}</div></div>
+   <div class="eqs"><div class="eq">${M_('M')} = ${C_('C')} (1 + ${r_('r')}/100)<sup>${t_('t')}</sup> = ${C_('1000')} · 1,1<sup>${t_('3')}</sup> = ${M_(fmt(P3.M, 0))}</div></div>
    <p>Mira la torre: cada año tiene las fichas ${I_('naranjas')} del interés del capital (S/ 100 por año, como en el simple) y, encima, una capa ${X_('fucsia')}: el <b>interés sobre interés</b>. El segundo año es S/ 10 (el 10 % de los S/ 100 del primer año) y al tercero ya suma S/ 31.</p>
    <p class="fuente">Calcular el compuesto como si fuera simple (S/ 1300) es la idea errónea AR16. En una encuesta a adultos de 39 países, solo el 42 % respondió bien una pregunta de interés compuesto (OECD/INFE, 2023, según resúmenes que revisamos). Es una cifra de adultos, no de escolares, y no dice qué respondieron los demás; no encontramos la cifra peruana. Las opciones de S/ 3300 y S/ 1210 son hipótesis nuestras.</p></div>` },
  { k:'Paso 4', t:'La capa que crece', explora:'compuesto',
@@ -759,11 +761,11 @@ const steps = [
    body:() => `<p class="problem">Una cooperativa paga el ${r_('2 % mensual')} con capitalización mensual: cada mes, el interés se suma a la cuenta.</p>
    <p>Si dejas el dinero ${t_('un año')}, ¿qué tasa anual ganas de verdad (la tasa efectiva anual)?</p>${opcionesHTML(G5.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
-     <div class="eq">${C_('100')} · ${r_('1,02')}<sup>${t_('12')}</sup> = ${M_(fmt(P5T.M, 2))}</div>
-     <div class="eq">tasa efectiva = ${r_('1,02')}<sup>${t_('12')}</sup> − 1 = ${fmt(P5.factor, 4)} − 1 = ${r_(fmt(P5.efectiva, 2) + ' %')}</div></div>
+     <div class="eq">${C_('100')} · 1,02<sup>${t_('12')}</sup> = ${M_(fmt(P5T.M, 2))}</div>
+     <div class="eq">tasa efectiva = 1,02<sup>${t_('12')}</sup> − 1 = ${fmt(P5.factor, 4)} − 1 = ${r_(fmt(P5.efectiva, 2) + ' %')}</div></div>
    <p>Con ${C_('S/ 100')} se lee directo: al final del año hay ${M_(fmt(P5T.M, 2))}, o sea ${fmt(P5.efectiva, 2)} soles de interés por cada 100. Por eso el «24 % anual capitalizable mensualmente» (la <b>tasa nominal</b>) equivale a una <b>tasa efectiva</b> del ${fmt(P5.efectiva, 2)} % anual. Dos tasas son <b>equivalentes</b> si, con el mismo capital y el mismo tiempo, dan el mismo monto.</p>
    <p class="aviso">En el compuesto, una tasa no se reparte ni se junta multiplicando: se eleva. De mensual a anual, (1 + r)<sup>12</sup> − 1; de anual a mensual, la raíz duodécima.</p>
-   <p class="fuente">No encontramos estudios con cifras sobre tasas equivalentes. Las tres opciones incorrectas son hipótesis nuestras.</p></div>` },
+   <p class="fuente">No encontramos estudios con cifras sobre tasas equivalentes. Tomar el factor 1,2682 como si fuera la tasa es AR4 del informe (confundir el factor con el porcentaje; parcial, sin cifra). Las otras dos opciones son hipótesis nuestras.</p></div>` },
  { k:'Paso 6', t:'¿Cada cuánto se capitaliza?', explora:'barras',
    prep:() => { E.config({ modo:'barras', barras:{ C:1000, j:24, ops:[1, 2, 4, 12], ver:4, sel: S.cap === undefined ? 3 : S.cap, imax:300 },
      lect:[L('C', 'Capital C', 'S/ 1000'), L('r', 'Tasa nominal', '24 % anual'), L('t', 'Tiempo t', '1 año'),
@@ -782,9 +784,9 @@ const steps = [
      <div class="eq">${r_('r')} · ${t_('t')} = ${r_('10')} · ${t_('1,5')} = 15 %<span class="note">18 meses = 1,5 años</span></div>
      <div class="eq">${M_('M')} = ${C_('C')} + 15 % de ${C_('C')} = 1,15 · ${C_('C')}</div>
      <div class="eq">${C_('C')} = ${fr(M_('3450'), '1,15')} = ${C_(fmt(P7.C, 0))}</div></div>
-   <p>Si el ${C_('capital')} son 20 fichas iguales (cada una, el 5 %), el ${I_('interés')} del 15 % son 3 fichas más del mismo tamaño: el ${M_('monto')} son 23 fichas. Cada ficha vale 3450 ÷ 23 = S/ 150 y el capital, 20 · 150 = S/ 3000. A la derecha, lo que pasa si se saca el 15 % del monto: el interés queda más grande y el capital, más chico de lo que fue.</p>
+   <p>Si el ${C_('capital')} son 20 fichas iguales (cada una, el 5 %), el ${I_('interés')} del 15 % son 3 fichas más del mismo tamaño: el ${M_('monto')} son 23 fichas. Cada ficha vale 3450 ÷ 23 = S/ 150 y el capital, 20 · 150 = S/ 3000. A la derecha, en gris, lo que pasa si se resta el 15 % del monto: lo que se resta es más grande que el interés de verdad y lo que queda es menos que el capital que se depositó.</p>
    <p class="aviso">Un porcentaje es siempre «de algo». El interés es un porcentaje del capital: si te dan el monto, divide entre (1 + r · t/100); no restes.</p>
-   <p class="fuente">No encontramos estudios con cifras sobre este error. Sacar el porcentaje del monto, olvidar el tiempo y restar la tasa son hipótesis nuestras.</p></div>` },
+   <p class="fuente">Sacar el porcentaje del monto (y no del capital) es AR3 del informe: el porcentaje sobre la base equivocada, descrito en un estudio con universitarios sin cifra propia y en guías docentes (parcial). Olvidar el tiempo es hipótesis nuestra.</p></div>` },
  { k:'Paso 8', t:'Predice: el descuento de una letra', gate:G8,
    prep:() => E.config(fichasP8(!!S.pred[G8.id])),
    anima:fin => { E.config(fichasP8(true)); E.fichas.prog = 0; E.animar(0, 1, 1400, p => { E.fichas.prog = p; }, fin); },
@@ -917,37 +919,37 @@ const DIAS = MI.interesSimple({ C:3600, r:3, tasa:'mensual', t:45, tiempo:'dias'
 const DES = MI.nominalDesdeDescuentos({ Dc:330, Dr:300 });
 const DESL = MI.descuento({ Vn:DES.Vn, r:DES.rt, tasa:'anual', t:1, tiempo:'anios' });
 const CONT = [1, 12, 360, 'continua'].map(m => MI.capitalizacion({ C:1000, j:100, m }));
-const anios = x => `En unos ${fmt(x, 1)} años`;
+const anios = x => `En unos ${fmt(x, 1, true)} años`;
 const etQ = k => `${15*k} d`;
 
 const EXPS = [
   { id:'doble-de-tiempo', corto:'El doble de tiempo',
     q:`${C_('S/ 1000')} al ${r_('10 % anual')} de interés compuesto ganan S/ 610,51 de interés en ${t_('5 años')}. ¿Cuánto interés ganan en ${t_('10 años')}?`,
-    opts:[['a', soles(DOB.errores.doble), 'doble-tiempo-doble-interes', 'hipotesis'],
+    opts:[['a', soles(DOB.errores.doble), 'AR16-doble-tiempo', 'hipotesis'],
           ['b', soles(DOB.I2)],
-          ['c', soles(DOB.errores.cuadruple), 'cuadruplica', 'hipotesis']],
+          ['c', soles(DOB.errores.daElMonto), 'AR5-da-el-monto', 'hipotesis']],
     ok:'b',
-    fb:{ a:'El doble de tiempo da el doble de interés solo en el simple. En el compuesto, los segundos 5 años empiezan con S/ 1610,51, no con S/ 1000: ganan más que los primeros.', c:'Crece más del doble, pero no tanto: los S/ 610,51 de los primeros 5 años se multiplican por 1,61 en los siguientes 5, no por 3.' },
+    fb:{ a:'El doble de tiempo da el doble de interés solo en el simple. En el compuesto, los segundos 5 años empiezan con S/ 1610,51, no con S/ 1000: ganan más que los primeros.', c:'S/ 2593,74 es lo que hay en la alcancía a los 10 años: el monto, con el capital incluido. La pregunta es solo por el interés.' },
     antes:ya => E.config({ modo:'torre', graf:true, torre:{ C:1000, r:10, tipo:'compuesto', tmax:10, prog: ya ? 10 : 5, imax:1700, valores:true },
       g:{ C:1000, r:10, tmax:10, ymax:3000, simple:false, comp:true, hasta: ya ? 10 : 5, cursor: ya ? 10 : 5 },
       lect:[L('C', 'Capital C', 'S/ 1000'), L('r', 'Tasa r', '10 % anual'), L('ink', 'Interés en 5 años', soles(DOB.I1))].concat(ya ? [L('ink', 'Interés en 10 años', soles(DOB.I2))] : []) }),
     despues:() => { const T = E.torre, G = E.g; E.animar(5, 10, 2400, p => { T.prog = p; G.hasta = p; G.cursor = Math.round(p); }, () => { EXPS[0].antes(true); }, true); },
-    exp:() => `<div class="eqs"><div class="eq">interés (10 años) = ${C_('1000')} · (${r_('1,1')}<sup>${t_('10')}</sup> − 1) = ${fmt(DOB.I2, 2)}</div>
-      <div class="eq">${fr(fmt(DOB.I2, 2), fmt(DOB.I1, 2))} = ${fmt(DOB.razon, 2)} = ${r_('1,1')}<sup>${t_('5')}</sup> + 1<span class="note">más del doble</span></div></div>
+    exp:() => `<div class="eqs"><div class="eq">interés (10 años) = ${C_('1000')} · (1,1<sup>${t_('10')}</sup> − 1) = ${fmt(DOB.I2, 2)}</div>
+      <div class="eq">${fr(fmt(DOB.I2, 2), fmt(DOB.I1, 2))} = ${fmt(DOB.razon, 2)} = 1,1<sup>${t_('5')}</sup> + 1<span class="note">más del doble</span></div></div>
       <p>En los primeros 5 años la alcancía pasa de 1000 a 1610,51. En los siguientes 5, cada sol se vuelve a multiplicar por 1,61, pero ahora hay 1610,51 soles trabajando. La capa ${X_('fucsia')} crece cada vez más rápido.</p>
-      <p class="fuente">Esperar el doble es tratar el compuesto como simple, la idea AR16 (documentada en adultos, ver el paso 3). Esta forma de preguntarlo y sus opciones son hipótesis nuestras.</p>` },
+      <p class="fuente">Esperar el doble es tratar el compuesto como simple, ligado a la idea AR16 (con cifra en adultos, parcial; ver el paso 3). Esta forma de preguntarlo y sus opciones son hipótesis nuestras; dar el monto en vez del interés es AR5, sin datos.</p>` },
   { id:'medio-anio', corto:'Medio año',
     q:`${C_('S/ 1000')} al ${r_('10 % anual')}, durante ${t_('medio año')}. Con interés simple o con interés compuesto capitalizable cada año (usando la misma fórmula, con t = 0,5), ¿cuál da más?`,
     opts:[['a', 'Da más el compuesto'], ['b', 'Da más el simple'], ['c', 'Dan exactamente lo mismo']].map(([k, t]) =>
       [k, t, ...(k === 'a' ? ['compuesto-siempre-gana', 'hipotesis'] : k === 'c' ? ['simple-y-compuesto-iguales', 'hipotesis'] : [])]),
     ok: MED.mayor === 'simple' ? 'b' : 'a',
     fb:{ a:'Antes de completar un periodo, el compuesto todavía no tiene interés que gane interés, y la curva queda por debajo de la recta.', c:'Empatan justo en t = 1 año. Antes, la curva queda por debajo de la recta; después, por encima.' },
-    antes:ya => E.config({ modo:'grafica', g:{ C:1000, r:10, tmax:2, xpaso:0.25, xpaso:0.5, ymin:950, ymax:1250, ypaso:50, simple:!!ya, comp:!!ya, etX:'t (años) →',
+    antes:ya => E.config({ modo:'grafica', g:{ C:1000, r:10, tmax:2, xpaso:0.5, ymin:950, ymax:1250, ypaso:50, simple:!!ya, comp:!!ya, etX:'t (años) →',
         marcas: ya ? [{ t:0.5, y:MED.compuesto, et:'0,5' }, { t:1, y:1100, et:'1' }] : [] },
       lect:[L('C', 'Capital C', 'S/ 1000'), L('r', 'Tasa r', '10 % anual'), L('t', 'Tiempo t', 'medio año')].concat(ya ? [L('M', 'Simple', soles(MED.simple)), L('M', 'Compuesto', soles(MED.compuesto))] : []) }),
     despues:() => { const G = E.g; G.simple = G.comp = true; G.hasta = 0; E.animar(0, 2, 1800, p => { G.hasta = p; }, () => EXPS[1].antes(true), true); },
     exp:() => `<div class="eqs"><div class="eq">simple: ${C_('1000')} · (1 + ${r_('0,10')} · ${t_('0,5')}) = ${M_(fmt(MED.simple, 2))}</div>
-      <div class="eq">compuesto: ${C_('1000')} · ${r_('1,1')}<sup>${t_('0,5')}</sup> = ${M_(fmt(MED.compuesto, 2))}</div></div>
+      <div class="eq">compuesto: ${C_('1000')} · 1,1<sup>${t_('0,5')}</sup> = ${M_(fmt(MED.compuesto, 2))}</div></div>
       <p>La recta y la curva se cruzan en t = 1: ahí las dos dan ${M_('S/ 1100')}. Antes del primer año, la recta va por encima; después, la curva. El compuesto gana «a la larga», no siempre.</p>
       <p class="fuente">Pensar que el compuesto siempre da más es una hipótesis nuestra. En los exámenes, el compuesto casi siempre se pregunta con un número entero de periodos.</p>` },
   { id:'duplicar', corto:'¿Cuándo se duplica?',
@@ -961,14 +963,14 @@ const EXPS = [
         marcas: ya ? [{ t:DUP.t, y:2000, et:fmt(DUP.t, 1), dx:-8, align:'right' }, { t:10, y:2000, et:'10', dx:8, align:'left' }] : [] },
       lect:[L('C', 'Capital C', 'S/ 1000 (por ejemplo)'), L('r', 'Tasa r', '10 % anual')].concat(ya ? [L('t', 'Se duplica a los', `${fmt(DUP.t, 2)} años`)] : []) }),
     despues:() => { const G = E.g; G.simple = G.comp = true; G.hasta = 0; E.animar(0, 12, 2400, p => { G.hasta = p; }, () => EXPS[2].antes(true), true); },
-    exp:() => `<div class="eqs"><div class="eq">${r_('1,1')}<sup>${t_('t')}</sup> = 2 → ${t_('t')} = ${fr('log 2', 'log 1,1')} ≈ ${t_(fmt(DUP.t, 2))} años</div></div>
+    exp:() => `<div class="eqs"><div class="eq">1,1<sup>${t_('t')}</sup> = 2 → ${t_('t')} = ${fr('log 2', 'log 1,1')} ≈ ${t_(fmt(DUP.t, 2))} años</div></div>
       <p>Con 7 años no llega (1,1<sup>7</sup> ≈ 1,95) y con 8 se pasa (1,1<sup>8</sup> ≈ 2,14). La «regla del 72» lo estima rápido: 72 ÷ 10 ≈ 7,2 años. En el simple, en cambio, se duplica cuando el interés es el 100 % del capital: 100 ÷ 10 = 10 años.</p>
-      <p class="fuente">Las dos opciones incorrectas son hipótesis nuestras; la de 10 años es el compuesto calculado como simple (AR16).</p>` },
+      <p class="fuente">Las dos opciones incorrectas son hipótesis nuestras; la de 10 años es el compuesto calculado como simple, ligada a AR16.</p>` },
   { id:'dias', corto:'Días y meses',
     q:`Un préstamo de ${C_('S/ 3600')} cobra el ${r_('3 % mensual')} de interés simple y se paga a los ${t_('45 días')}. Con el año comercial, ¿cuánto es el interés?`,
     opts:[['a', soles(DIAS.I)],
           ['b', soles(DIAS.errores.anio365), 'anio-de-365-dias', 'hipotesis'],
-          ['c', soles(DIAS.errores.sinConvertir), 'AR16-dias-sin-convertir', 'hipotesis'],
+          ['c', soles(DIAS.errores.sinConvertir), 'dias-sin-convertir', 'hipotesis'],
           ['d', soles(DIAS.errores.unPeriodo), 'un-solo-mes', 'hipotesis']],
     ok:'a',
     fb:{ b:'Esa cuenta usa el año de 365 días. En los problemas de admisión se usa el año comercial: 360 días y meses de 30, salvo que digan otra cosa.', c:'Esa cuenta usa los 45 días como si fueran 45 meses. La tasa es mensual: hay que pasar los días a meses (45 días = 1,5 meses).', d:'S/ 108 es el interés de un mes (30 días). Fueron 45 días: mes y medio.' },
@@ -979,7 +981,7 @@ const EXPS = [
     exp:() => `<div class="eqs"><div class="eq">${t_('45 días')} = ${fr('45', '30')} = ${t_('1,5 meses')}</div>
       <div class="eq">${I_('I')} = ${fr(`${C_('3600')} · ${r_('3')} · ${t_('1,5')}`, '100')} = ${I_(fmt(DIAS.I, 0))}</div></div>
       <p>En el dibujo, cada columna son 15 días (medio mes, el 1,5 % de ${C_('3600')} = ${I_('S/ 54')}). Tres fichas de 54 hacen ${I_('S/ 162')}. Con la tasa anual: 3 % mensual = 36 % anual, e ${I_('I')} = 3600 · 36 · 45/36 000 = 162.</p>
-      <p class="fuente">Olvidar la conversión, usar 365 días y quedarse con un solo mes son hipótesis nuestras (el informe liga la mezcla de unidades a AR16).</p>` },
+      <p class="fuente">Olvidar la conversión, usar 365 días y quedarse con un solo mes son hipótesis nuestras.</p>` },
   { id:'dos-descuentos', corto:'Los dos descuentos',
     q:`De una letra se sabe que su descuento comercial es ${Dc_('Dc = S/ 330')} y su descuento racional es ${Dr_('Dr = S/ 300')} (a la misma tasa y el mismo tiempo). ¿Cuál es su valor nominal ${Vn_('Vn')}?`,
     opts:[['a', soles(DES.errores.suma), 'suma-los-descuentos', 'hipotesis'],
@@ -988,7 +990,7 @@ const EXPS = [
           ['d', soles(DES.errores.diferencia), 'diferencia-de-los-descuentos', 'hipotesis']],
     ok:'c',
     fb:{ a:'Los dos descuentos son dos formas de calcular lo mismo, no dos pedazos de la letra: no se suman.', b:'El promedio de los descuentos sigue siendo un descuento, mucho menor que la letra.', d:'S/ 30 es la diferencia entre los descuentos: el interés del descuento racional. La letra vale mucho más.' },
-    antes:ya => E.config({ modo:'fichas', fichas:{ vmax: ya ? 3700 : 3700, prog:1, cols: ya
+    antes:ya => E.config({ modo:'fichas', fichas:{ vmax: DES.Vn*1.12, prog:1, cols: ya
         ? [{ titulo:'Racional', partes:[{ v:DESL.racional.Va, k:'Va', n:DESL.fichas, rot:'' }, { v:300, k:'Dr', rot:'Dr' }], total:{ v:DES.Vn, k:'Vn', rot:`Vn = S/ ${fmt(DES.Vn, 0)}` } },
            { titulo:'Comercial', partes:[{ v:DESL.comercial.Va, k:'Va', n:DESL.fichas - 1, rot:'' }, { v:330, k:'Dc', rot:'Dc' }], total:{ v:DES.Vn, k:'Vn', rot:`Vn = S/ ${fmt(DES.Vn, 0)}` } }]
         : [{ titulo:'Racional', partes:[{ v:300, k:'Dr', rot:'Dr', ver:true }], oculto:true }, { titulo:'Comercial', partes:[{ v:330, k:'Dc', rot:'Dc', ver:true }], oculto:true }] },

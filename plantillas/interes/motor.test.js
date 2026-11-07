@@ -154,6 +154,13 @@ test('valor presente y tiempo: despejar y volver da lo mismo', () => {
     const T1 = motor.tiempo({ C, M: X.M, r, tipo: 'compuesto' }); cerca(T1.t, tc, 'tiempo compuesto'); sinChoques(T1.errores, T1.coinciden, T1.t, 'tiempo compuesto');
     const Ms = motor.interesSimple({ C, r, t: tc }).M;
     const T2 = motor.tiempo({ C, M: Ms, r, tipo: 'simple' }); cerca(T2.t, tc, 'tiempo simple'); sinChoques(T2.errores, T2.coinciden, T2.t, 'tiempo simple');
+    // dos montos del mismo capital: se recuperan C y r
+    const t1 = ent(1, 6), t2 = t1 + ent(1, 6);
+    for (const tipo of ['simple', 'compuesto']) {
+      const m = t => (tipo === 'simple' ? motor.interesSimple({ C, r, t }).M : motor.compuesto({ C, r, t }).M);
+      const D2 = motor.dosMontos({ M1: m(t1), t1, M2: m(t2), t2, tipo });
+      cerca(D2.C, C, `dos montos ${tipo}: C`); cerca(D2.r, r, `dos montos ${tipo}: r`); sinChoques(D2.errores, D2.coinciden, D2.C, 'dos montos');
+    }
   }
 });
 test('descuentos: Dc > Dr; Dc − Dr = Dc·Dr/Vn; Dc/Dr = 1 + r·t/100; Va racional + su interés = Vn; vencimiento común', () => {
@@ -184,14 +191,14 @@ test('los números de las predicciones de la escena: opciones distintas entre s�
   const X = motor.compuesto({ C: 1000, r: 10, t: 3 });
   distintas([X.M, X.errores.comoSimple, X.errores.factorPorTiempo, X.errores.unPeriodoMenos], 'paso 3');
   const E = motor.efectiva({ r: 2, n: 12 });
-  distintas([E.efectiva, E.errores.proporcional, E.errores.factorComoTasa, E.errores.sinCambio], 'paso 5');
+  distintas([E.efectiva, E.errores.proporcional, E.errores.factorComoTasa, E.errores.alReves], 'paso 5');
   const P = motor.capitalDesdeMonto({ M: 3450, r: 10, tasa: 'anual', t: 18, tiempo: 'meses' });
   distintas([P.C, P.errores.interesSobreMonto, P.errores.sinTiempo, P.errores.restaTasa], 'paso 7');
   const D = motor.descuento({ Vn: 6300, r: 15, tasa: 'anual', t: 4, tiempo: 'meses' });
-  distintas([D.racional.D, D.racional.errores.comoComercial, D.racional.errores.sinConvertir, D.racional.errores.vaComoDescuento], 'paso 8');
-  const T = motor.dobleTiempo({ C: 1000, r: 10, t: 5 }); distintas([T.I2, T.errores.doble, T.errores.cuadruple], 'experimento 1');
+  distintas([D.racional.D, D.racional.errores.comoComercial, D.racional.errores.sobreVaComercial, D.racional.errores.vaComoDescuento], 'paso 8');
+  const T = motor.dobleTiempo({ C: 1000, r: 10, t: 5 }); distintas([T.I2, T.errores.doble, T.errores.daElMonto], 'experimento 1');
   const Q = motor.comparar({ C: 1000, r: 10, t: 0.5 }); distintas([Q.mayor, ...Object.values(Q.errores)], 'experimento 2');
-  const Ti = motor.tiempo({ C: 1, M: 2, r: 10, tipo: 'compuesto' }); distintas([Ti.t, Ti.errores.comoSimple, Ti.errores.mitadDelSimple], 'experimento 3');
+  const Ti = motor.tiempo({ C: 1, M: 2, r: 10, tipo: 'compuesto' }); distintas([Ti.t, Ti.errores.comoSimple, Ti.errores.mitadDelSimple].map(x => x.toFixed(1)), 'experimento 3');
   const Di = motor.interesSimple({ C: 3600, r: 3, tasa: 'mensual', t: 45, tiempo: 'dias' });
   distintas([Di.I, Di.errores.anio365, Di.errores.sinConvertir, Di.errores.unPeriodo], 'experimento 4');
   const V = motor.nominalDesdeDescuentos({ Dc: 330, Dr: 300 }); distintas([V.Vn, V.errores.suma, V.errores.diferencia, V.errores.promedio], 'experimento 5');
@@ -213,6 +220,8 @@ test('errores de entrada', () => {
   assert.throws(() => motor.descuento({ Vn: 100, r: 10, t: 2, tasa: 'anual', tiempo: 'horas' }), /tiempo desconocida/);
   assert.throws(() => motor.nominalDesdeDescuentos({ Dc: 100, Dr: 120 }), /mayor que el racional/);
   assert.throws(() => motor.vencimientoComun({ letras: [{ Vn: 100, t: 3 }] }), /al menos dos/);
+  assert.throws(() => motor.dosMontos({ M1: 300, t1: 5, M2: 200, t2: 8 }), /mayores/);
+  assert.throws(() => motor.dosMontos({ M1: 100, t1: 5, M2: 1000, t2: 6 }), /capital positivo/);
   assert.throws(() => motor.vencimientoComun({ letras: [{ Vn: 100, t: 3 }, { Vn: -5, t: 2 }] }), /mayor que cero/);
 });
 

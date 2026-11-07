@@ -132,8 +132,8 @@
   // Doble de tiempo: el interés compuesto crece más del doble. I(2t)/I(t) = (1 + r/100)^t + 1.
   function dobleTiempo(o) {
     const A = compuesto({ C: o.C, r: o.r, t: o.t }), B = compuesto({ C: o.C, r: o.r, t: 2 * o.t });
-    const a = apartar({ doble: limpio(2 * A.I), cuadruple: limpio(4 * A.I) }, B.I);
-    return { I1: A.I, I2: B.I, razon: limpio(B.I / A.I), errores: a.errores, coinciden: a.coinciden };
+    const a = apartar({ doble: limpio(2 * A.I), cuadruple: limpio(4 * A.I), daElMonto: B.M }, B.I);
+    return { I1: A.I, I2: B.I, M2: B.M, razon: limpio(B.I / A.I), errores: a.errores, coinciden: a.coinciden };
   }
   // ¿Cuál da más en t periodos? Antes del primer periodo gana el simple; justo en 1 empatan; después gana el compuesto.
   function comparar(o) {
@@ -148,7 +148,7 @@
   function efectiva(o) {
     const r = numero(o.r, 'la tasa r', { noNegativo: true }), n = numero(o.n, 'n', { positivo: true });
     const F = Math.pow(1 + r / 100, n), e = limpio((F - 1) * 100);
-    const a = apartar({ proporcional: limpio(r * n), factorComoTasa: limpio(F * 100), sinCambio: r }, e);
+    const a = apartar({ proporcional: limpio(r * n), factorComoTasa: limpio(F * 100), sinCambio: r, alReves: limpio(r / n) }, e);
     return { efectiva: e, factor: limpio(F), errores: a.errores, coinciden: a.coinciden };
   }
   // La tasa por periodo que, compuesta n veces, da la efectiva: (1 + e/100)^(1/n) − 1. Error: dividir entre n.
@@ -217,7 +217,7 @@
     const VaC = limpio(Vn - Dc), VaR = limpio(Vn - Dr);
     const crudo = MISMA[tasa] !== tiempo ? r * t : null;          // r·t sin convertir
     const ec = apartar({ comoRacional: Dr, vaComoDescuento: VaC, sinConvertir: crudo === null ? null : limpio(Vn * crudo / 100) }, Dc);
-    const er = apartar({ comoComercial: Dc, vaComoDescuento: VaR, sinConvertir: crudo === null ? null : limpio(Vn * crudo / (100 + crudo)) }, Dr);
+    const er = apartar({ comoComercial: Dc, vaComoDescuento: VaR, sobreVaComercial: limpio(VaC * rt / 100), sinConvertir: crudo === null ? null : limpio(Vn * crudo / (100 + crudo)) }, Dr);
     return { rt, comercial: { D: Dc, Va: VaC, errores: ec.errores, coinciden: ec.coinciden },
       racional: { D: Dr, Va: VaR, errores: er.errores, coinciden: er.coinciden },
       diferencia: limpio(Dc - Dr), cociente: limpio(Dc / Dr), interesDelDr: limpio(Dr * rt / 100),
@@ -232,6 +232,21 @@
     const a = apartar({ suma: limpio(Dc + Dr), diferencia: limpio(Dc - Dr), promedio: limpio((Dc + Dr) / 2) }, Vn);
     return { Vn, rt: limpio((Dc / Dr - 1) * 100), errores: a.errores, coinciden: a.coinciden };
   }
+  // Dos montos del mismo capital en dos tiempos: se despejan C y r (r en % por unidad de tiempo).
+  // Simple: el interés de cada periodo es (M2 − M1)/(t2 − t1). Compuesto: (1 + r/100)^(t2 − t1) = M2/M1.
+  // Error: tomar M1 como el capital (restar en vez de retroceder hasta t = 0).
+  function dosMontos(o) {
+    const M1 = numero(o.M1, 'M1', { positivo: true }), M2 = numero(o.M2, 'M2', { positivo: true });
+    const t1 = numero(o.t1, 't1', { positivo: true }), t2 = numero(o.t2, 't2', { positivo: true }), tipo = o.tipo || 'simple';
+    if (!(t2 > t1) || !(M2 > M1)) throw new Error('el segundo tiempo y el segundo monto deben ser mayores');
+    if (tipo !== 'simple' && tipo !== 'compuesto') throw new Error("tipo debe ser 'simple' o 'compuesto'");
+    let C, r;
+    if (tipo === 'simple') { const p = (M2 - M1) / (t2 - t1); C = M1 - p * t1; if (!(C > 0)) throw new Error('esos montos no salen de un capital positivo'); r = 100 * p / C; }
+    else { const f = Math.pow(M2 / M1, 1 / (t2 - t1)); r = 100 * (f - 1); C = M1 / Math.pow(f, t1); }
+    C = limpio(C); r = limpio(r);
+    const a = apartar({ m1ComoCapital: M1 }, C);
+    return { C, r, errores: a.errores, coinciden: a.coinciden };
+  }
   // Varias letras que se cambian por una sola de valor Σ Vn: vence en Σ Vn·t / Σ Vn (descuento comercial, misma tasa).
   function vencimientoComun(o) {
     if (!o || !Array.isArray(o.letras) || o.letras.length < 2) throw new Error('hacen falta al menos dos letras');
@@ -242,5 +257,5 @@
   }
 
   return { POR_ANIO_TASA, POR_ANIO_TIEMPO, aAnios, tasaAnual, interesSimple, compuesto, curvas, dobleTiempo, comparar,
-    efectiva, porPeriodo, capitalizacion, capitalDesdeMonto, tiempo, descuento, nominalDesdeDescuentos, vencimientoComun };
+    efectiva, porPeriodo, capitalizacion, capitalDesdeMonto, tiempo, descuento, nominalDesdeDescuentos, dosMontos, vencimientoComun };
 });
