@@ -1,0 +1,107 @@
+{
+  "plantilla": "mezclas",
+  "unidades": "Cantidades en kilos, litros o gramos; precios en soles por kilo; grados de alcohol en porcentaje de alcohol puro en volumen (de 0 a 100); ley como fracción de metal fino (de 0 a 1, en milésimas); quilates de 0 a 24 (quilates = ley × 24). Las proporciones van como dos enteros sin factor común [q1, q2].",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.promedioSimple, partes.0.momento: el índice de una lista también va con punto); las listas se comparan completas y los textos exactos (coma decimal; «≈» cuando no hay decimal exacto corto). 'tambien' son llamadas extra del mismo caso. Un error que no aparece en 'errores' es porque en ese caso daría la respuesta correcta o lo mismo que otro error.",
+  "verificacion": "Verificado por un subagente independiente (7 nov 2026) sin leer el código del motor, solo su cabecera, con fracciones exactas en Python. El valor medio salió del punto donde se equilibran los momentos; las proporciones del aspa, de buscar el par entero más chico que equilibra; el agua, el oro y el cobre que se agregan, de buscar el valor que conserva el alcohol puro o el metal fino. Coinciden los 19 casos y los 10 problemas de papel.json, sin discrepancias. Tras la revisión (7 nov 2026) cambió, sin verificador independiente, el tercer error del caso del paso 3 (aspa(3, 8, 5)): la proporción con los precios 3 : 8 pasó a los precios cruzados 8 : 3, que da 48/11 ≈ S/ 4,36.",
+  "tolerancia": 1e-9,
+  "casos": [
+    { "nombre": "Predicción del paso 2: 30 kg a S/ 4 y 20 kg a S/ 6 → S/ 240 por 50 kg = S/ 4,80 el kilo; promedio simple 5, suma de precios 10, kilos cruzados 5,2; momentos 30 × 0,8 = 24 = 20 × 1,2",
+      "fn": "precioMedio", "args": [[{ "cantidad": 30, "precio": 4 }, { "cantidad": 20, "precio": 6 }]],
+      "espera": { "precioMedio": 4.8, "soles": "S/ 4,80", "costo": 240, "total": 50, "partes.0.producto": 120, "partes.1.producto": 120,
+        "partes.0.brazoTexto": "0,8", "partes.1.brazoTexto": "1,2", "partes.0.momento": 24, "partes.1.momento": 24, "momentoIzquierda": 24, "momentoDerecha": 24,
+        "errores.promedioSimple": 5, "errores.sumaValores": 10, "errores.cantidadesCruzadas": 5.2,
+        "erroresSoles.promedioSimple": "S/ 5,00", "erroresSoles.sumaValores": "S/ 10,00", "erroresSoles.cantidadesCruzadas": "S/ 5,20" } },
+
+    { "nombre": "Paso 1: 10 kg a S/ 2 y 10 kg a S/ 7 → S/ 4,50 (con cantidades iguales, el promedio simple es el correcto y no aparece como error)",
+      "fn": "precioMedio", "args": [[{ "cantidad": 10, "precio": 2 }, { "cantidad": 10, "precio": 7 }]],
+      "espera": { "precioMedio": 4.5, "soles": "S/ 4,50", "errores": { "sumaValores": 9 } } },
+
+    { "nombre": "Predicción del paso 3: de S/ 3 y S/ 8 para S/ 5 → 3 : 2 (distancias 2 y 3, cruzadas); al revés 2 : 3 (da S/ 6), con los precios cruzados 8 : 3 (48/11 ≈ 4,36), mitad y mitad 1 : 1 (5,5)",
+      "fn": "aspa", "args": [3, 8, 5],
+      "espera": { "posible": true, "proporcion": [3, 2], "texto": "3 : 2", "d1": 2, "d2": 3,
+        "errores.alReves": [2, 3], "errores.preciosCruzados": [8, 3], "errores.mitades": [1, 1],
+        "daria.alReves": 6, "dariaTexto.preciosCruzados": "≈ 4,36", "dariaSoles.preciosCruzados": "≈ S/ 4,36", "dariaTexto.mitades": "5,5" },
+      "tambien": [ { "fn": "precioMedio", "args": [[{ "cantidad": 3, "precio": 3 }, { "cantidad": 2, "precio": 8 }]], "espera": { "precioMedio": 5 } } ] },
+
+    { "nombre": "Aspa con decimales y proporción irreducible: S/ 2,50 y S/ 4 para S/ 3,10 → (4 − 3,1) : (3,1 − 2,5) = 0,9 : 0,6 = 3 : 2",
+      "fn": "aspa", "args": [2.5, 4, 3.1],
+      "espera": { "proporcion": [3, 2], "d1Texto": "0,6", "d2Texto": "0,9" } },
+
+    { "nombre": "¿Qué pasa si…? 2: S/ 9 no sale con S/ 3 y S/ 8 (queda por encima del mayor); el aspa sin signo daría 1 : 6 y al revés 6 : 1",
+      "fn": "aspa", "args": [3, 8, 9],
+      "espera": { "posible": false, "maximo": 8, "errores.sinSigno": [1, 6], "errores.sinSignoAlReves": [6, 1] } },
+
+    { "nombre": "Borde: el precio medio igual a un extremo → solo el primero (1 : 0); precios iguales → cualquier proporción",
+      "fn": "aspa", "args": [3, 8, 3],
+      "espera": { "posible": true, "extremo": true, "proporcion": [1, 0] },
+      "tambien": [ { "fn": "aspa", "args": [5, 5, 5], "espera": { "posible": true, "cualquiera": true } },
+                   { "fn": "aspa", "args": [5, 5, 6], "espera": { "posible": false } } ] },
+
+    { "nombre": "Predicción del paso 4: 10 L de 60° y 30 L de 20° → 6 L + 6 L de alcohol puro en 40 L = 30°; promedio simple 40°, suma 80°, litros cruzados 50°",
+      "fn": "gradoMezcla", "args": [[{ "volumen": 10, "grado": 60 }, { "volumen": 30, "grado": 20 }]],
+      "espera": { "grado": 30, "gradoTexto": "30°", "volumen": 40, "alcohol": 12, "agua": 28, "vasos.0.alcohol": 6, "vasos.1.alcohol": 6,
+        "errores.promedioSimple": 40, "errores.sumaValores": 80, "errores.cantidadesCruzadas": 50 } },
+
+    { "nombre": "Predicción del paso 5: agua para bajar 12 L de 75° a 45° → 9 L de alcohol puro, 20 L al final, 8 L de agua; aspa al revés 18, resta de grados 30, volumen final 20, baja relativa 4,8",
+      "fn": "aguaPara", "args": [12, 75, 45],
+      "espera": { "posible": true, "agua": 8, "alcohol": 9, "volumenFinal": 20, "d1": 30, "d2": 45, "momento": 360,
+        "errores.aspaAlReves": 18, "errores.restaGrados": 30, "errores.volumenFinal": 20, "errores.bajaRelativa": 4.8,
+        "daria.aspaAlReves": 30, "dariaTexto.restaGrados": "≈ 21,43°" } },
+
+    { "nombre": "Con agua el grado no sube: de 40° a 50° no hay solución; quedarse en el mismo grado es agregar 0 L",
+      "fn": "aguaPara", "args": [10, 40, 50],
+      "espera": { "posible": false },
+      "tambien": [ { "fn": "aguaPara", "args": [10, 40, 40], "espera": { "posible": true, "agua": 0 } },
+                   { "fn": "aguaPara", "args": [10, 40, 0], "espera": { "posible": false } } ] },
+
+    { "nombre": "Predicción del paso 6: joya de 48 g de 18 quilates → cada parte 2 g, 18 partes de oro = 36 g y 6 de liga = 12 g; quilates como gramos 18, como porcentaje 8,64",
+      "fn": "oroFino", "args": [48, 18],
+      "espera": { "fino": 36, "liga": 12, "parte": 2, "ley": 0.75, "leyTexto": "0,750", "partesFino": 18, "partesLiga": 6, "partes.17.tipo": "fino", "partes.18.tipo": "liga",
+        "errores.quilatesComoGramos": 18, "errores.quilatesComoPorcentaje": 8.64, "errores.daLaLiga": 12 } },
+
+    { "nombre": "Predicción del paso 7: 60 g de 18 quilates hasta 22 quilates con oro puro → 120 g (brazos 4 y 2: 60 × 4 = 120 × 2); al revés 30 g (20 quilates), masa final 180, 60 × 4 ÷ 24 = 10",
+      "fn": "oroPara", "args": [60, 18, 22],
+      "espera": { "posible": true, "agregar": 120, "total": 180, "finoInicial": 45, "finoFinal": 165, "d1": 4, "d2": 2, "momento": 240,
+        "errores.aspaAlReves": 30, "errores.total": 180, "errores.diferenciaPorMasa": 10,
+        "dariaQuilates.aspaAlReves": 20, "dariaQuilatesTexto.diferenciaPorMasa": "≈ 18,86" } },
+
+    { "nombre": "Bajar la ley con cobre: 300 g de ley 0,900 hasta 0,750 → 60 g de cobre (270 g de plata en 360 g)",
+      "fn": "aleacionPara", "args": [300, 0.9, 0.75, 0],
+      "espera": { "agregar": 60, "total": 360, "finoInicial": 270, "finoFinal": 270, "errores.aspaAlReves": 1500, "errores.diferenciaPorMasa": 45 } },
+
+    { "nombre": "Ley y quilates: 200 g de oro en 250 g → ley 0,800 y 19,2 quilates; ida y vuelta 18 quilates ↔ ley 0,750; oro puro: ley 1 y 24 quilates",
+      "fn": "ley", "args": [200, 250],
+      "espera": { "ley": 0.8, "leyTexto": "0,800", "quilates": 19.2, "quilatesTexto": "19,2", "liga": 50 },
+      "tambien": [ { "fn": "leyDeQuilates", "args": [18], "espera": { "ley": 0.75, "leyTexto": "0,750", "leyFraccion": "3/4" } },
+                   { "fn": "quilates", "args": [0.75], "espera": { "quilates": 18 } },
+                   { "fn": "quilates", "args": [1], "espera": { "quilates": 24, "leyTexto": "1,000" } } ] },
+
+    { "nombre": "Fundir dos aleaciones: 30 g de ley 0,700 y 50 g de ley 0,860 → 64 g de fino en 80 g = 0,800",
+      "fn": "leyMedia", "args": [[{ "masa": 30, "ley": 0.7 }, { "masa": 50, "ley": 0.86 }]],
+      "espera": { "ley": 0.8, "leyTexto": "0,800", "fino": 64, "quilatesTexto": "19,2" } },
+
+    { "nombre": "Tres ingredientes: 10 kg a S/ 12, 20 kg a S/ 15 y 15 kg a S/ 20 → S/ 720 ÷ 45 = S/ 16; momentos 40 + 20 = 60 a la izquierda y 60 a la derecha",
+      "fn": "precioMedio", "args": [[{ "cantidad": 10, "precio": 12 }, { "cantidad": 20, "precio": 15 }, { "cantidad": 15, "precio": 20 }]],
+      "espera": { "precioMedio": 16, "costo": 720, "momentoIzquierda": 60, "momentoDerecha": 60, "partes.0.momento": 40, "partes.1.momento": 20, "partes.2.momento": 60,
+        "errores.promedioSimple": 15.666666666666666, "erroresSoles.promedioSimple": "≈ S/ 15,67" } },
+
+    { "nombre": "¿Qué pasa si…? 1: 3 kg de café de S/ 20 y 1 kg de S/ 28 salen a S/ 22; con el doble de cada uno, igual (no 44, ni 11, ni el promedio simple 24)",
+      "fn": "escalar", "args": [[{ "cantidad": 3, "valor": 20 }, { "cantidad": 1, "valor": 28 }], 2],
+      "espera": { "media": 22, "mediaEscalada": 22, "errores.seMultiplica": 44, "errores.seDivide": 11, "errores.promedioSimple": 24 } },
+
+    { "nombre": "¿Qué pasa si…? 3: 10 L de 30° y 6 L de 50° tienen 3 L de alcohol puro cada uno",
+      "fn": "masAlcohol", "args": [{ "volumen": 10, "grado": 30 }, { "volumen": 6, "grado": 50 }],
+      "espera": { "alcoholA": 3, "alcoholB": 3, "respuesta": "igual", "errores": { "masVolumen": "A", "masGrado": "B", "noSeSabe": "no-se-sabe" } } },
+
+    { "nombre": "¿Qué pasa si…? 4: de 40 L de 80° se sacan 10 L y se reponen con agua → quedan 24 L de alcohol puro en 40 L = 60°; errores 70°, 40° y 20°",
+      "fn": "sacarYReponer", "args": [40, 80, 10],
+      "espera": { "alcoholInicial": 32, "alcoholSale": 8, "alcoholQueda": 24, "grado": 60, "gradoTexto": "60°",
+        "errores.restaLitros": 70, "errores.promedioSimple": 40, "errores.soloLaBaja": 20 } },
+
+    { "nombre": "La balanza del paso 2 apoyada en S/ 5 baja hacia el saco de S/ 4 (30 × 1 = 30 contra 20 × 1 = 20); en S/ 4,8 queda en equilibrio; cerca del equilibrio sin llegar, 'casi'",
+      "fn": "balanza", "args": [[{ "cantidad": 30, "valor": 4 }, { "cantidad": 20, "valor": 6 }], 5, 0.1],
+      "espera": { "estado": "baja-izquierda", "izquierda": 30, "derecha": 20, "momento": -10, "media": 4.8 },
+      "tambien": [ { "fn": "balanza", "args": [[{ "cantidad": 30, "valor": 4 }, { "cantidad": 20, "valor": 6 }], 4.8, 0.1], "espera": { "estado": "equilibrio", "angulo": 0, "izquierda": 24, "derecha": 24 } },
+                   { "fn": "balanza", "args": [[{ "cantidad": 10, "valor": 2 }, { "cantidad": 11, "valor": 7 }], 4.6, 0.1], "espera": { "estado": "casi", "entre": ["4,6", "4,7"] } } ] }
+  ]
+}

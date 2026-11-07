@@ -1,0 +1,126 @@
+{
+  "titulo": "La balanza de las mezclas: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Si te ayuda, imagina cada ingrediente sobre una regla, en su precio o en su grado, con un peso según su cantidad.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Se mezclan 25 kg de azúcar de S/ 3,20 el kilo con 15 kg de azúcar de S/ 4,00 el kilo. ¿A cuánto sale el kilo de la mezcla, sin ganar ni perder?",
+      "respuesta": "S/ 3,50 el kilo.",
+      "pasos": [
+        "Costo de cada parte: 25 × 3,20 = S/ 80 y 15 × 4 = S/ 60.",
+        "Costo total S/ 140 por 25 + 15 = 40 kg.",
+        "Precio medio: 140 ÷ 40 = S/ 3,50 el kilo. Queda más cerca de S/ 3,20 porque de ese azúcar hay más kilos."
+      ],
+      "verificar": [ { "fn": "precioMedio", "args": [[{ "cantidad": 25, "precio": 3.2 }, { "cantidad": 15, "precio": 4 }]], "espera": { "precioMedio": 3.5, "costo": 140, "soles": "S/ 3,50" } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Un comerciante tiene café de S/ 18 y de S/ 26 el kilo. Quiere 40 kg de una mezcla que salga a S/ 21 el kilo. ¿Cuántos kilos de cada café debe usar?",
+      "respuesta": "25 kg del de S/ 18 y 15 kg del de S/ 26.",
+      "pasos": [
+        "Distancias al precio buscado: 21 − 18 = 3 y 26 − 21 = 5.",
+        "Las cantidades van cruzadas con las distancias: del de S/ 18, 5 partes; del de S/ 26, 3 partes. Proporción 5 : 3.",
+        "Son 5 + 3 = 8 partes para 40 kg: cada parte es 5 kg. Del de S/ 18, 5 × 5 = 25 kg; del de S/ 26, 3 × 5 = 15 kg.",
+        "Control: 25 × 18 + 15 × 26 = 450 + 390 = 840, y 840 ÷ 40 = 21."
+      ],
+      "verificar": [ { "fn": "aspa", "args": [18, 26, 21], "espera": { "proporcion": [5, 3] } },
+                     { "fn": "precioMedio", "args": [[{ "cantidad": 25, "precio": 18 }, { "cantidad": 15, "precio": 26 }]], "espera": { "precioMedio": 21 } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Se mezclan 15 L de alcohol de 70° con 25 L de alcohol de 30°. ¿De cuántos grados es la mezcla?",
+      "respuesta": "45°.",
+      "pasos": [
+        "Alcohol puro de cada parte: 15 × 70 ÷ 100 = 10,5 L y 25 × 30 ÷ 100 = 7,5 L.",
+        "En total, 18 L de alcohol puro en 40 L.",
+        "18 ÷ 40 = 0,45: la mezcla es de 45°."
+      ],
+      "verificar": [ { "fn": "gradoMezcla", "args": [[{ "volumen": 15, "grado": 70 }, { "volumen": 25, "grado": 30 }]], "espera": { "grado": 45, "alcohol": 18 } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "¿Cuántos litros de agua hay que agregar a 30 L de alcohol de 80° para obtener alcohol de 60°?",
+      "respuesta": "10 L de agua.",
+      "pasos": [
+        "El alcohol puro no cambia al agregar agua: 30 × 80 ÷ 100 = 24 L.",
+        "Al final, esos 24 L deben ser el 60 % del total: 24 ÷ 0,6 = 40 L.",
+        "Agua que se agrega: 40 − 30 = 10 L."
+      ],
+      "verificar": [ { "fn": "aguaPara", "args": [30, 80, 60], "espera": { "agua": 10, "alcohol": 24, "volumenFinal": 40 } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "básico",
+      "enunciado": "Un anillo de oro de 14 quilates pesa 12 g; el resto es otro metal. ¿Cuántos gramos de oro puro tiene?",
+      "respuesta": "7 g.",
+      "pasos": [
+        "14 quilates quiere decir 14 partes de oro puro de cada 24 partes del anillo.",
+        "Cada parte pesa 12 ÷ 24 = 0,5 g.",
+        "Oro puro: 14 × 0,5 = 7 g (los otros 5 g son el otro metal)."
+      ],
+      "verificar": [ { "fn": "oroFino", "args": [12, 14], "espera": { "fino": 7, "liga": 5, "parte": 0.5 } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "básico",
+      "enunciado": "Un lingote de 250 g contiene 200 g de oro puro. ¿Cuál es su ley y de cuántos quilates es?",
+      "respuesta": "Ley 0,800; 19,2 quilates.",
+      "pasos": [
+        "Ley = oro puro ÷ peso total = 200 ÷ 250 = 0,800.",
+        "Quilates = ley × 24 = 0,8 × 24 = 19,2 quilates."
+      ],
+      "verificar": [ { "fn": "ley", "args": [200, 250], "espera": { "leyTexto": "0,800", "quilates": 19.2 } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Se tienen 300 g de una aleación de plata de ley 0,900. ¿Cuántos gramos de cobre hay que fundir con ella para que su ley baje a 0,750?",
+      "respuesta": "60 g de cobre.",
+      "pasos": [
+        "La plata pura no cambia: 300 × 0,9 = 270 g.",
+        "Con ley 0,750, esos 270 g son el 75 % del total: 270 ÷ 0,75 = 360 g.",
+        "Cobre que se agrega: 360 − 300 = 60 g."
+      ],
+      "verificar": [ { "fn": "aleacionPara", "args": [300, 0.9, 0.75, 0], "espera": { "agregar": 60, "total": 360, "finoInicial": 270 } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Se funden 30 g de una aleación de ley 0,700 con 50 g de otra de ley 0,860. ¿Qué ley tiene la aleación que resulta?",
+      "respuesta": "0,800.",
+      "pasos": [
+        "Metal fino de cada parte: 30 × 0,7 = 21 g y 50 × 0,86 = 43 g.",
+        "En total, 64 g de metal fino en 80 g.",
+        "Ley: 64 ÷ 80 = 0,800."
+      ],
+      "verificar": [ { "fn": "leyMedia", "args": [[{ "masa": 30, "ley": 0.7 }, { "masa": 50, "ley": 0.86 }]], "espera": { "leyTexto": "0,800", "fino": 64 } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Se mezclan 10 kg de té de S/ 12 el kilo y 20 kg de té de S/ 15 el kilo con cierta cantidad de té de S/ 20 el kilo. La mezcla sale a S/ 16 el kilo. ¿Cuántos kilos del té de S/ 20 se usaron?",
+      "respuesta": "15 kg.",
+      "pasos": [
+        "Los dos primeros quedan por debajo de S/ 16: 10 × (16 − 12) + 20 × (16 − 15) = 40 + 20 = 60.",
+        "El de S/ 20 queda 4 por encima, y debe compensar esos 60: x × 4 = 60, así que x = 15 kg.",
+        "Control: 10 × 12 + 20 × 15 + 15 × 20 = 120 + 300 + 300 = 720, y 720 ÷ 45 = 16."
+      ],
+      "verificar": [ { "fn": "precioMedio", "args": [[{ "cantidad": 10, "precio": 12 }, { "cantidad": 20, "precio": 15 }, { "cantidad": 15, "precio": 20 }]], "espera": { "precioMedio": 16, "momentoIzquierda": 60 } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "intermedio",
+      "enunciado": "¿Se puede obtener vino de S/ 30 el litro mezclando vino de S/ 12 con vino de S/ 25 el litro? Explica.",
+      "respuesta": "No.",
+      "pasos": [
+        "Mezclando, cada litro cuesta un precio que queda entre el del vino más barato y el del más caro: entre S/ 12 y S/ 25.",
+        "S/ 30 es más que S/ 25, así que no hay cantidades que lo den."
+      ],
+      "verificar": [ { "fn": "aspa", "args": [12, 25, 30], "espera": { "posible": false } } ]
+    }
+  ]
+}
