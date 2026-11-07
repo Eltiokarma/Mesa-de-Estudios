@@ -517,7 +517,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "induccion"
+     ]
     },
     {
      "id": "fisica.ondas-electromagneticas",
@@ -1090,7 +1092,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "hidrocarburos"
+     ]
     },
     {
      "id": "quimica.funciones-organicas",
@@ -4801,6 +4805,23 @@
     "/plantillas/gravitacion/papel.json"
    ]
   },
+  "hidrocarburos": {
+   "id": "hidrocarburos",
+   "titulo": "Bolitas y palitos: hidrocarburos",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.hidrocarburos"
+   ],
+   "url": "/plantillas/hidrocarburos/index.html",
+   "papel": "/plantillas/hidrocarburos/papel.json",
+   "archivos": [
+    "/plantillas/hidrocarburos/index.html",
+    "/plantillas/hidrocarburos/motor.js",
+    "/plantillas/hidrocarburos/papel.json"
+   ]
+  },
   "identidades-trig": {
    "id": "identidades-trig",
    "titulo": "¿Se suman las alturas? identidades y arcos compuestos",
@@ -4818,6 +4839,23 @@
     "/plantillas/identidades-trig/index.html",
     "/plantillas/identidades-trig/motor.js",
     "/plantillas/identidades-trig/papel.json"
+   ]
+  },
+  "induccion": {
+   "id": "induccion",
+   "titulo": "El imán, la espira y el foquito: inducción electromagnética",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.induccion-electromagnetica"
+   ],
+   "url": "/plantillas/induccion/index.html",
+   "papel": "/plantillas/induccion/papel.json",
+   "archivos": [
+    "/plantillas/induccion/index.html",
+    "/plantillas/induccion/motor.js",
+    "/plantillas/induccion/papel.json"
    ]
   },
   "interes": {

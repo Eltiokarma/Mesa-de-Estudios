@@ -2,7 +2,131 @@
 
 Rama `rutina/fisica-b`, sacada de `claude/awesome-wozniak-5etl1n`. Unidades de 5.º de electricidad, magnetismo y física moderna, en este orden: electrostática, magnetismo, inducción, física moderna y ondas electromagnéticas. Cada plantilla sigue el método de `docs/metodo/`: constructor, verificador independiente con `entradas.py`, revisor de contenido y correcciones devueltas al mismo constructor.
 
-**Ojo para la integración:** `rutinas/fisica.md` (rama `rutina/fisica`) todavía pone electrostática y ondas en su lista. Electrostática ya la hice aquí; hay que avisarle a esa rutina que no la repita.
+**Ya resuelto:** la conversación principal le avisó a la rutina de física que la electricidad es de esta rama.
+
+## 7 nov 2026 · Inducción: el imán, la espira y el foquito (`plantillas/induccion/`)
+
+### Qué hice
+
+Escena «El imán, la espira y el foquito: inducción electromagnética» para la unidad `fisica.induccion-electromagnetica`. La idea central:
+- La fem es la rapidez con que cambia el flujo: la pendiente de Φ(t), no su altura.
+- Un imán quieto no induce nada, aunque esté cerca.
+- La corriente inducida crea un campo Bᵢ que se opone al cambio del flujo. Al acercar el imán, la bobina lo repele; al alejarlo, lo atrae y Bᵢ refuerza el campo del imán.
+- También inducen el cambio de área, el giro de la espira y una barra que se mueve.
+
+**Motor** (`MotorInduccion`, cabecera hasta la línea 105):
+- Flujo con el ángulo medido desde la normal o desde el plano.
+- Faraday por cambio de campo, de área o de ángulo, también con la espira abierta.
+- Lenz: sentido visto desde el imán, cara norte o sur, si repele o atrae.
+- Barra: fem BLv, con su fuerza y su potencia.
+- Modelo suave del imán, solo para el dibujo y las gráficas Φ(t) y ε(t).
+- Generador: pico y valor eficaz.
+- Transformador. Con continua da Vs = 0 y Pp = null: no pasa nada por el núcleo y la primaria disipa Vp²/R.
+
+**Paso a paso** (8 pasos, todos con predicción; las correctas van C B D C B A D A):
+1. El imán quieto a 3 cm.
+2. ¿Cuándo marca más? (la pendiente de Φ).
+3. Faraday con números.
+4. Lenz al acercar el polo norte.
+5. Lenz al alejarlo.
+6. La barra en el riel.
+7. El generador y el valor eficaz.
+8. El transformador.
+
+**¿Qué pasa si…?** (5 experimentos): el doble de rápido, el polo sur, la bobina que gira 60°, el transformador con pila y la bobina cortada.
+
+**Arrastre:** el imán y la barra se arrastran con ratón, dedo y teclado. En los pasos 1 y 2 y en el experimento 1, el imán solo se acerca, para no adelantar el paso 5.
+
+**Papel:** 10 problemas propios; la indicación trae solo fórmulas.
+
+### Pruebas
+
+- 22 casos en `casos.json` y 44 pruebas del motor. Propiedades:
+  - Lenz contra Biot–Savart sumado tramo a tramo;
+  - ε = −N·dΦ/dt con derivada numérica, y ∫ε dt = −N·ΔΦ;
+  - P = F·v = ε·I en la barra;
+  - el valor eficaz como raíz del cuadrado medio;
+  - el transformador con continua;
+  - el pico ×f al ir f veces más rápido;
+  - las líneas del imán tangentes al campo.
+- `npm test`: 2583 pasan y 2 fallan, las de catálogo, que es lo esperado.
+- Playwright en 390×844 y 1366×768, claro y oscuro, con y sin movimiento reducido: sin errores de consola ni desbordes.
+  - El revisor arrastró con eventos táctiles reales. El dedo lejos desplaza la página.
+
+### Subagentes y lo que corrigieron
+
+**Verificador independiente:** recalculó los 22 casos a ciegas. Lenz y la barra los sacó por la fuerza q·v×B sobre los portadores, no por el signo de ΔΦ. Todo coincide, con dos diferencias de convención:
+- `Pp` con pila: en la revisión pasó de 0 a null. Es el único cambio a `casos.json`, y la verificación lo anota.
+- El signo de `errores.anguloConPlano`: se usa el módulo.
+
+**Revisor, graves:**
+- Las correctas quedaban casi siempre en la A. Se reordenaron: dos de cada letra.
+- En los pasos 1 y 2, alejar el imán mostraba la corriente al revés, la respuesta del paso 5. Ahora el arrastre solo acerca, y hay un botón «Llevar el imán a 15 cm».
+
+**Revisor, medios:**
+- Paso 5, opción D: de documentado a parcial.
+- Transformador con continua: hipótesis.
+- El enunciado de la pila aclara que la primaria tiene resistencia.
+- Leyenda del experimento 5 neutra.
+- El paso 7 ya no da ε = NBAω sen ωt.
+- Los pasos 4 y 5 terminan quietos en el instante de más corriente, con Bᵢ e I visibles.
+- Nueva retroalimentación de la C en el paso 2.
+- El rótulo «Vs ≠ 0 un instante» ya no se corta.
+
+**Revisor, bajos:**
+- Citas de la mano derecha y de MG8.
+- `soloPolo` corregido en el motor.
+- Regla 4: «polo norte» con palabras, porque N son las vueltas; N y S solo pintados en el imán.
+- Un solo instrumento, el amperímetro.
+- Vueltas del transformador en razón 4:1.
+- Rótulos que se tapaban.
+
+### Predicciones y respaldo
+
+- **Documentado:**
+  - MG7 (imán quieto induce): cerca de 1 de cada 4 acierta antes del curso y unos 7 de cada 10 después.
+  - MG8 (sentido contrario al alejar): más de un tercio.
+- **Parcial:**
+  - MG8 al acercar, porque el dato es del imán que se aleja.
+  - Paso 5 D (no circula), porque el estudio no dice qué eligieron los demás.
+  - MG9 y MG10.
+  - Paso 1 D (mencionado en entrevistas).
+  - La mano derecha invertida.
+  - MG8 decidir solo por el polo o solo por el movimiento.
+- **Hipótesis:** olvidar N, multiplicar por R, eficaz entre 2, la razón del transformador invertida, el transformador con continua y el resto de los experimentos.
+
+### Colores
+
+| Variable | Claro | Oscuro | Nota |
+| --- | --- | --- | --- |
+| B campo del imán | #2a7638 | #7fd67f | el de magnetismo; ⊙ y ⊗ en este color |
+| Bᵢ campo inducido | #4a13ae | #7e84fc | nuevo |
+| Φ flujo | #0d6b78 | #24e4f9 | nuevo |
+| ε fem | #a55412 | #ffa64d | nuevo |
+| I corriente | #6e110c | #f95a24 | se corre del de magnetismo (#7a1010/#ff5e4d) para separarse de v; ΔE00 2,4 y 8,3 respecto de aquel |
+| v velocidad | #c0364a | #f17384 | el de MRUV |
+| F fuerza | #1f5fbf | #7cb0ff | |
+| A, L, d medidas | #5c531f | #fdf2b4 | |
+| θ ángulo | #a10fbf | #cf6bfa | |
+| V voltaje | #b3246b | #ff86bd | el de circuitos |
+
+- ΔE00 mínimo entre los que salen juntos: 20,1 en claro (I–v) y 20,6 en oscuro (I–ε).
+- Pares cercanos que nunca comparten pantalla: v–V, Bᵢ–θ, θ–V y Bᵢ–F. En la barra no se dibuja Bᵢ.
+- Todos pasan AA sobre el papel y el chip. Los más justos: v claro con 4,56, y Bᵢ e I oscuros con 4,63.
+
+### Pendiente
+
+- El modelo del imán (Φmax = 2 × 10⁻⁴ Wb, a = 3 cm) solo sirve para el dibujo; ninguna predicción pide un número que salga de él.
+- El destello «Vs ≠ 0 un instante» no se capturó a mitad de la animación.
+- Las cifras del informe están por verificar con los PDF.
+
+### Pedidos para la integración
+
+- `catalogo/cursos/fisica.json`: en `fisica.induccion-electromagnetica`, `"plantillas": ["induccion"]`. Luego `npm run catalogo` y subir `VERSION` en `app/sw.js`.
+- `docs/diseno.md`, variables de inducción (`plantillas/induccion/`): B como en magnetismo; campo inducido Bᵢ `--c-Bi` índigo (#4a13ae, oscuro #7e84fc); flujo Φ `--c-phi` petróleo (#0d6b78, oscuro #24e4f9); fem ε `--c-fem` ocre (#a55412, oscuro #ffa64d); corriente I granate (#6e110c, oscuro #f95a24), corrido del de magnetismo para separarse de v (mismo criterio que I azul en circuitos); v, F, medidas, θ y V como en las hermanas.
+- `docs/pendientes.md`, línea propuesta: «**Inducción** (`plantillas/induccion/`, rutina de física B, 7 nov 2026): el imán, la espira y el foquito (imán quieto sin corriente, fem como pendiente del flujo, Faraday, Lenz al acercar y al alejar con el campo inducido, barra en el riel, generador con valor eficaz, transformador y transformador con pila, bobina cortada); 22 casos verificados aparte; 10 de papel; 8 predicciones y 5 «¿qué pasa si…?». Documentados: MG7 y MG8; parciales: MG9, MG10 y MG8 al acercar. Sin ítems en el banco de física.»
+- `CLAUDE.md`: agregar «el imán, la espira y el foquito» a la lista de plantillas, y en la historia: «Inducción (7 nov 2026, rutina de física B): `plantillas/induccion/` (el imán, la espira y el foquito: imán quieto, fem como pendiente del flujo, Lenz al acercar y al alejar, barra, generador y transformador; 22 casos verificados aparte).»
+- Banco de física: candidato el imán quieto junto a la bobina (MG7, documentado).
 
 ## 7 nov 2026 · Magnetismo: imanes, cables y cargas (`plantillas/magnetismo/`)
 
