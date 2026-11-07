@@ -4,6 +4,43 @@ Rama `rutina/fisica-b`, sacada de `claude/awesome-wozniak-5etl1n`. Unidades de 5
 
 **Ya resuelto:** la conversación principal le avisó a la rutina de física que la electricidad es de esta rama.
 
+## 7 nov 2026 · Electrostática 0.2.0: dieléctricos y contacto en nC (pedido de la principal)
+
+### Qué hice
+- **Experimento 6 nuevo, «Una lámina entre las placas».**
+  - Pregunta: un condensador de 10 µF, cargado a 12 V y desconectado, con las placas a 1 mm. Entra una lámina de un aislante (un dieléctrico) con κ = 3. ¿Cuánto valen V y Q?
+  - Correcta: D, 4 V y 120 µC.
+  - Distractores:
+    - A: EL6, «el aislante no hace nada», parcial (≈50 %, pero el dato es sobre polarización, no sobre condensadores).
+    - B: V sube con C (hipótesis).
+    - C: confundir desconectado con conectado (hipótesis).
+  - Al responder, la lámina entra animada, aparecen las cargas ligadas en gris y las flechas del campo bajan de 9 a 3.
+  - Un botón la muestra con la pila conectada.
+  - Un párrafo explica a dónde va la energía en los dos casos.
+- **Motor:** `dielectrico()` nuevo, para lámina entera o a medias. Da C, Q, V, E, U, la energía y el trabajo, y los errores típicos. La cabecera termina en la línea 59.
+- **Casos:** 22 y 23 nuevos. 49 pruebas del motor.
+- **Papel:** el p2, que repetía el paso 3, ahora es de dieléctrico. La indicación agrega los nC.
+- **Contacto de esferas en nC** (el experimento 5 y el p10): antes eran 12 µC en esferas de 1 cm, que romperían el aire.
+  - Solo cambió la unidad: ningún número de una predicción se movió.
+  - El potencial pasa de 2,7 × 10⁶ V a 2700 V.
+  - En `casos.json` solo cambió el nombre del caso 21.
+- **Versión:** `plantilla.json` sube a 0.2.0.
+
+### Revisiones
+- **Verificador independiente:** recalculó a ciegas los casos 22 y 23, por carga y energía, con la lámina a medias como dos condensadores en paralelo. Coinciden los 28 campos. Pidió corregir una frase de la cabecera («C × κ siempre»), ya corregida.
+- **Revisor:** nada grave. Lo corregido:
+  - Faltaba la distancia d = 1 mm en el enunciado y en el dibujo.
+  - El lector de pantalla recibía un aviso por cada cuadro de la animación.
+  - El párrafo de la energía, los rótulos que se pisaban, la palabra «dieléctrico» y los nC en la indicación.
+
+### Pendiente
+- Las esferas colgadas del paso 2 tienen 1 µC y 2 µC en esferas de 20 g, que tampoco es realista. Para arreglarlo habría que cambiar los números de una predicción medida, así que no lo toqué. **Lo decides tú.**
+- La frase de dieléctricos de la indicación del papel da la respuesta del experimento 6 si el alumno abre el papel antes que la escena. Ya pasa igual con serie y paralelo.
+
+### Pedidos para la integración
+- `npm run catalogo` (la plantilla sube a 0.2.0) y subir `VERSION`.
+- `docs/pendientes.md`: en electrostática, «0.2.0 (7 nov 2026): dieléctricos como experimento 6 (desconectado: V baja κ veces; con un botón, conectado) y el contacto de esferas en nC».
+
 ## 7 nov 2026 · Banco de física: fis-11 a fis-15 en reserva (pedido de la principal)
 
 ### Qué hice

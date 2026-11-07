@@ -59,6 +59,8 @@ h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; let
 @media (max-width:899px){
   .mode.pendiente .lecturas{gap:4px}
   .mode.pendiente .lectura{padding:2px 8px}
+  .mode.pendiente .lecturas{grid-template-columns:repeat(auto-fit, minmax(92px, 1fr))}
+  .mode.pendiente .lectura.ancha{grid-column:auto}
 }
 .lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
 canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
@@ -222,7 +224,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="../../nucleo/celular.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
-const PLANTILLA = { id: 'electrostatica', unidad: 'fisica.electrostatica', version: '0.1.0' };
+const PLANTILLA = { id: 'electrostatica', unidad: 'fisica.electrostatica', version: '0.2.0' };
 function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
   if (!window.Medicion) return;
   Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
@@ -309,13 +311,14 @@ function crearEscena(cv, idDesc, idLect, idLey){
       case 'placas': return chico ? 250 : 320;
       case 'cond': return chico ? 250 : 300;
       case 'placa': return chico ? 250 : 300;
+      case 'dielec': return chico ? 230 : 300;
       case 'contacto': return chico ? 220 : 280;
       default: { const c = E.caja, r = (c.y1 - c.y0)/(c.x1 - c.x0); return Math.round(chico ? clamp(w*r, 220, 400) : clamp(w*r, 300, 460)); }
     }
   }
   function resize(){
     const w = cv.clientWidth; if (!w) return;
-    const h = Math.round(Celular.alto(altoVista(w), E.compacto, { tope: E.vista === 'esferas' ? 260 : 250 }));
+    const h = Math.round(Celular.alto(altoVista(w), E.compacto, { tope: E.vista === 'esferas' ? 260 : E.vista === 'dielec' ? 200 : 250 }));
     const dpr = Celular.dpr();
     if (w === W && h === H) { E.dibujar(); return; }
     W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
@@ -416,7 +419,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
     if (!W) return;
     const c = E.c = colores();
     ctx.clearRect(0, 0, W, H); ctx.fillStyle = c.paper; ctx.fillRect(0, 0, W, H);
-    ({ plano:dibujarPlano, esferas:dibujarEsferas, placas:dibujarPlacas, cond:dibujarCond, placa:dibujarPlaca, contacto:dibujarContacto })[E.vista](c);
+    ({ plano:dibujarPlano, esferas:dibujarEsferas, placas:dibujarPlacas, cond:dibujarCond, placa:dibujarPlaca, dielec:dibujarDielec, contacto:dibujarContacto })[E.vista](c);
   };
 
   // ----- el plano -----
@@ -728,25 +731,76 @@ function crearEscena(cv, idDesc, idLect, idLey){
     rotulo(ctx, c, x0 + ancho/2 + 8, H - 14, `área A = ${fmt(P.A*1e4, 0)} cm²`, c.muted, 'left', 700, 11);
   }
 
+  // ----- un condensador con una lámina de dieléctrico -----
+  // E.di = { o:{ C0, V0, kappa, d }, conectado, f (cuánto entró la lámina, de 0 a 1) }. Todo lo numérico, del motor.
+  // La densidad de flechas del campo es proporcional a E; las cargas ligadas de la lámina van chicas, en gris.
+  function dibujarDielec(c){
+    const D = E.di, R = ME.dielectrico({ ...D.o, conectado:D.conectado, fraccion:D.f });
+    const x0 = Math.max(70, W*.2), ancho = Math.min(W*.5, 260, (W - x0 - 26)/2), x1 = x0 + ancho, gap = Math.min(80, H*.34), yC = H/2 + 2, yT = yC - gap/2, yB = yC + gap/2;
+    // lámina (entra desde la derecha)
+    const xL = mix(x1 + 20, x0, D.f);
+    ctx.save(); ctx.fillStyle = c.muted; ctx.globalAlpha = .16; ctx.fillRect(xL, yT + 1, ancho, gap - 2); ctx.globalAlpha = .7; ctx.strokeStyle = c.muted; ctx.lineWidth = 1.4; ctx.strokeRect(xL, yT + 1, ancho, gap - 2); ctx.restore();
+    // cargas ligadas: solo en la parte que ya está entre las placas
+    if (D.f > 0){
+      ctx.save(); ctx.fillStyle = c.muted; ctx.font = `700 9px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      for (let x = xL + 9; x < Math.min(x1, xL + ancho) - 4; x += 16){ ctx.fillText('−', x, yT + 7); ctx.fillText('+', x, yB - 7); }
+      ctx.restore();
+    }
+    if (D.f >= .98) rotulo(ctx, c, x1 + 20, yB - 10, `κ = ${fmt(D.o.kappa, 1)}`, c.ink, 'left', 800, 12);
+    else rotulo(ctx, c, Math.min(xL + ancho/2, (xL + W)/2), yC, `κ = ${fmt(D.o.kappa, 1)}`, c.ink, 'center', 800, 12);
+    // campo: líneas verticales, tantas como E/E0 · 9
+    const n = Math.max(1, Math.round(9*R.E/R.E0));
+    for (let k = 0; k < n; k++){ const x = x0 + ancho*(k + .5)/n; flecha({ x, y:yT + 14 }, { x, y:yB - 14 }, c.E, grosor('E', 1.8), { alfa:.75 }); }
+    // placas
+    ctx.save(); ctx.fillStyle = c.ink; ctx.fillRect(x0, yT - 7, ancho, 7); ctx.fillRect(x0, yB, ancho, 7); ctx.restore();
+    // cargas libres de las placas: un signo por cada 30 µC
+    const m = Math.max(1, Math.round(R.Q/30));
+    ctx.save(); ctx.fillStyle = c.ink; ctx.font = `800 13px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    // sin signos encima del cable, que sale del centro de cada placa
+    for (let k = 0; k < m; k++){ const x = x0 + (ancho - 18)*(k + .5)/m; if (Math.abs(x - (x0 + ancho/2)) < 7) continue; ctx.fillText('+', x, yT - 16); ctx.fillText('−', x, yB + 17); }
+    ctx.restore();
+    // distancia d entre placas (cota a la derecha, como en el condensador de placas)
+    { const xd = x1 + 12, d = D.o.d;
+      ctx.save(); ctx.strokeStyle = c.r; ctx.lineWidth = grosor('r', 1.8);
+      linea(ctx, { x:xd, y:yT }, { x:xd, y:yB }); linea(ctx, { x:xd - 5, y:yT }, { x:xd + 5, y:yT }); linea(ctx, { x:xd - 5, y:yB }, { x:xd + 5, y:yB }); ctx.restore();
+      rotulo(ctx, c, xd, yT - 15, `d = ${fmt(d*1000, 0)} mm`, c.r, 'center', 800, 11); }
+    // pila: conectada o no
+    const xp = x0 - 46, yP = yC;
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2;
+    linea(ctx, { x:x0 + ancho/2, y:yT - 7 }, { x:x0 + ancho/2, y:yT - 30 }); linea(ctx, { x:x0 + ancho/2, y:yB + 7 }, { x:x0 + ancho/2, y:yB + 30 });
+    // arriba, un interruptor: cerrado si está conectada; abierto (el brazo levantado) si no
+    const yS = yT - 30, xa = xp + 10, xb = xp + 34;
+    linea(ctx, { x:x0 + ancho/2, y:yS }, { x:xb, y:yS }); linea(ctx, { x:xp, y:yS }, { x:xa, y:yS });
+    linea(ctx, { x:xa, y:yS }, D.conectado ? { x:xb, y:yS } : { x:xb - 4, y:yS - 15 });
+    ctx.fillStyle = c.ink; for (const x of [xa, xb]){ ctx.beginPath(); ctx.arc(x, yS, 2.6, 0, 7); ctx.fill(); }
+    linea(ctx, { x:x0 + ancho/2, y:yB + 30 }, { x:xp, y:yB + 30 });
+    linea(ctx, { x:xp, y:yS }, { x:xp, y:yP - 8 }); linea(ctx, { x:xp, y:yP + 8 }, { x:xp, y:yB + 30 });
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 3; linea(ctx, { x:xp - 12, y:yP - 8 }, { x:xp + 12, y:yP - 8 }); ctx.lineWidth = 5; linea(ctx, { x:xp - 6, y:yP + 8 }, { x:xp + 6, y:yP + 8 });
+    ctx.restore();
+    rotulo(ctx, c, Math.max(8, xp - 16), yB + 46, D.conectado ? 'pila conectada' : 'pila desconectada', c.muted, 'left', 700, 11);
+    rotulo(ctx, c, xp + 16, yP, `${fmt(D.o.V0, 0)} V`, c.muted, 'left', 700, 11);
+  }
+
   // ----- dos esferas conductoras que se tocan -----
-  // E.ct = { Q1, R1, Q2, R2 } y prog.ct: 0 lejos, 0→1 se acercan, 1→2 pasa la carga, 2→3 se separan.
+  // E.ct = { Q1, R1, Q2, R2 } (cargas en nC) y prog.ct: 0 lejos, 0→1 se acercan, 1→2 pasa la carga, 2→3 se separan.
+  // El reparto es proporcional y sirve en cualquier unidad; el potencial se pide al motor en µC (1 nC = 10⁻³ µC).
   function dibujarContacto(c){
-    const T = E.ct, R = ME.contacto(T.Q1, T.R1, T.Q2, T.R2), f = E.prog.ct;
+    const T = E.ct, R = ME.contacto(T.Q1, T.R1, T.Q2, T.R2), RV = ME.contacto(T.Q1/1000, T.R1, T.Q2/1000, T.R2), f = E.prog.ct;
     const esc = Math.min(1600, (H - 80)/(2*T.R2)), r1 = T.R1*esc, r2 = T.R2*esc, y = H/2 - 8;
     const xA = W*.3, xB0 = Math.min(W - r2 - 16, xA + r1 + r2 + W*.22), xBt = xA + r1 + r2;
     const acerca = clamp(f, 0, 1) - clamp(f - 2, 0, 1), xB = mix(xB0, xBt, acerca);
     const pasa = clamp(f - 1, 0, 1), q1 = mix(T.Q1, R.Q1f, pasa), q2 = mix(T.Q2, R.Q2f, pasa);
     for (const [x, r, q, n] of [[xA, r1, q1, 'A'], [xB, r2, q2, 'B']]){
       ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fill(); ctx.stroke(); ctx.restore();
-      // un signo por µC, repartidos por la superficie
+      // un signo por nC, repartidos por la superficie
       const k = Math.round(Math.abs(q));
       ctx.save(); ctx.fillStyle = c.q; ctx.font = `800 12px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       for (let j = 0; j < k; j++){ const a = -Math.PI/2 + j*2*Math.PI/Math.max(k, 1); ctx.fillText(q > 0 ? '+' : '−', x + Math.cos(a)*(r - 8), y + Math.sin(a)*(r - 8)); }
       ctx.restore();
-      rotulo(ctx, c, x, y + r + 16, `${n}: ${conSigno(Math.round(q*10)/10)} µC`, c.q, 'center', 800, 13);
+      rotulo(ctx, c, x, y + r + 16, `${n}: ${conSigno(Math.round(q*10)/10)} nC`, c.q, 'center', 800, 13);
       rotulo(ctx, c, x, y - r - 12, `R = ${fmt(n === 'A' ? T.R1*100 : T.R2*100, 0)} cm`, c.r, 'center', 700, 12);
     }
-    if (f >= 3) rotulo(ctx, c, W/2, H - 12, `las dos a V = ${sci(R.V, 2)} V`, c.V, 'center', 800, 12);
+    if (f >= 3) rotulo(ctx, c, W/2, H - 12, `las dos a V = ${sci(RV.V, 2)} V`, c.V, 'center', 800, 12);
   }
 
   function leyenda(){
@@ -769,6 +823,9 @@ function crearEscena(cv, idDesc, idLect, idLey){
       if (E.cd.revelado) l.push(it('q', 'Q · carga de cada placa', true));
     } else if (E.vista === 'placa'){
       l.push(it('C', 'C · capacidad')); l.push(it('q', 'Q · carga', true)); l.push(it('V', 'V · voltaje')); l.push(it('r', 'd · distancia'));
+    } else if (E.vista === 'dielec'){
+      l.push(it('C', 'C · capacidad')); l.push(it('q', 'Q · carga', true)); l.push(it('V', 'V · voltaje')); l.push(it('E', 'E · campo (más flechas, más campo)')); l.push(it('U', 'U · energía')); l.push(it('r', 'd · distancia'));
+      l.push('<span>en gris: la lámina y sus cargas ligadas</span>');
     } else if (E.vista === 'contacto'){
       l.push(it('q', 'Q · carga', true)); l.push(it('r', 'R · radio')); l.push(it('V', 'V · potencial'));
     }
@@ -777,6 +834,8 @@ function crearEscena(cv, idDesc, idLect, idLey){
   }
   E.leyenda = () => { if (idLey) document.getElementById(idLey).innerHTML = leyenda(); };
   // Lecturas y descripción: solo lo que cada paso pide (no adelantan la respuesta).
+  // Solo las lecturas, sin tocar el aria-live (para las animaciones)
+  E.leer = () => { const ls = E.lect() || []; if (idLect) document.getElementById(idLect).innerHTML = ls.map(([k, t, v]) => `<div class="lectura${String(v).length > 14 ? ' ancha' : ''}" style="--k:${k === 'ink' ? 'var(--ink)' : `var(--c-${k})`}"><span>${t}</span><b>${v}</b></div>`).join(''); };
   E.avisar = () => {
     const ls = E.lect() || [];
     if (idLect) document.getElementById(idLect).innerHTML = ls.map(([k, t, v]) => `<div class="lectura${String(v).length > 14 ? ' ancha' : ''}" style="--k:${k === 'ink' ? 'var(--ink)' : `var(--c-${k})`}"><span>${t}</span><b>${v}</b></div>`).join('');
@@ -833,7 +892,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
 }
 
 // Opciones de predicción (las mismas en los dos modos)
-const sinCorte = t => String(t).replace(/ = /g, '&nbsp;=&nbsp;');
+const sinCorte = t => String(t).replace(/ = /g, '&nbsp;=&nbsp;').replace(/(\d) (?=µ|nC|pF|mm|kV|V\b|N\b|J\b)/g, '$1&nbsp;');
 const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${sinCorte(t)}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
 const NC = 'N/C';
 // Fuentes (cifras de resúmenes, por verificar con los PDF: docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md)
@@ -949,7 +1008,8 @@ function vivoPar(){
 function lecturasPrueba(){
   if (!E.prueba) { const e = ME.campo(Q5, { x:.3, y:0 }); return [['E', 'Campo en (0,3; 0)', `${sci(e.modulo)} ${NC}`], ['q', 'q₀', 'sin carga de prueba']]; }
   const r = ME.prueba(Q5, E.prueba, E.prueba.q), d = Math.hypot(E.prueba.x, E.prueba.y);
-  return [['r', 'Distancia a Q', `${fmt(d, 2)} m`], ['E', 'Campo E', `${sci(r.E.modulo)} ${NC}`], ['q', 'q₀', `${conSigno(E.prueba.q)} µC`],
+  // con la predicción pendiente, sin la distancia (está en el enunciado): el banco del celular no pasa de ~320 px
+  return [...(E.compacto ? [] : [['r', 'Distancia a Q', `${fmt(d, 2)} m`]]), ['E', 'Campo E', `${sci(r.E.modulo)} ${NC}`], ['q', 'q₀', `${conSigno(E.prueba.q)} µC`],
     ['F', 'F = q₀·E', `${fmt(r.F.modulo, 3)} N ${r.mismoSentido ? 'con E' : 'contra E'}`]];
 }
 function lecturasSonda(){
@@ -1134,6 +1194,7 @@ function nav(){
 function pintarDots(){
   [...dots.querySelectorAll('button')].forEach((b, k) => {
     b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : `Ir al ${steps[k].k.toLowerCase()}: ${steps[k].t}`);
     if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
   });
 }
@@ -1169,7 +1230,7 @@ go(0);
 </script>
 <script>
 /* ================= MODO 2: ¿qué pasa si…? =================
-   Respaldos: EL7 (parcial: solo 1 de cada 8 acierta; sin cifra de cuántos responden C = 0) y EL8 (parcial: «la mayoría», sin
+   Respaldos: EL6 (parcial: ≈50 % sobre polarización, no sobre condensadores), EL7 (parcial: solo 1 de cada 8 acierta; sin cifra de cuántos responden C = 0) y EL8 (parcial: «la mayoría», sin
    porcentaje), de docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md. Lo demás, hipótesis nuestras.
    La escena cambia recién después de responder. */
 (function(){
@@ -1178,8 +1239,22 @@ const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2');
 const O1 = { E:1000, q:4, m:2e-6, v0:100, L:0.2 }, U1 = ME.campoUniforme(O1), U1n = ME.campoUniforme({ ...O1, q:-4 });
 const D2 = [{ q:4, x:-0.3, y:0, n:'q₁' }, { q:4, x:0.3, y:0, n:'q₂' }], M2 = ME.campoYPotencial(D2, { x:0, y:0 });
 const PL = { A:0.02, d:0.001, Q:3.54e-9 }, C3 = ME.capacidad(PL), C3c = ME.capacidad({ ...PL, Q:0 }), C4 = ME.cambioPlacas(PL.A, PL.d, 1, 2);
-const K5 = ME.contacto(12, 0.01, 0, 0.03);
+// Experimento 5 en nC: el reparto es proporcional (K5, mismos números en cualquier unidad); el potencial, con las cargas
+// en µC para el motor (12 nC = 0,012 µC).
+const K5 = ME.contacto(12, 0.01, 0, 0.03), K5V = ME.contacto(0.012, 0.01, 0, 0.03);
 const pF = x => `${fmt(x, 2)} pF`;
+const DIo = { C0:10, V0:12, kappa:3, d:0.001 }, DI = ME.dielectrico({ ...DIo, conectado:false }), DIc = ME.dielectrico({ ...DIo, conectado:true });
+// Lecturas del experimento 6: el estado del condensador en cada cuadro, del motor
+function lecturasDi(){
+  const R = ME.dielectrico({ ...E.di.o, conectado:E.di.conectado, fraccion:E.di.f });
+  return [['C', 'C', `${fmt(R.C, 1)} µF`], ['q', 'Q', `${fmt(R.Q, 0)} µC`], ['V', 'V', `${fmt(R.V, 1)} V`], ['E', 'E', `${fmt(R.E/1000, 1)} kV/m`], ['U', 'U', `${fmt(R.U, 0)} µJ`]];
+}
+// La lámina entra; si el alumno pide la otra situación, se vuelve a empezar sin lámina.
+function meterLamina(conectado){
+  // en cada cuadro solo cambian el dibujo y las lecturas; el lector de pantalla recibe un aviso al final
+  E.di.conectado = conectado; E.di.f = 0; E.dibujar(); E.leer();
+  E.tween(1600, f => { E.di.f = f; E.dibujar(); E.leer(); }, () => { E.di.f = 1; E.dibujar(); E.avisar(); });
+}
 
 function lecturasSonda(){
   const r = ME.campoYPotencial(E.cargas, E.sonda);
@@ -1254,22 +1329,46 @@ const EXPS = [
       <p>Con más área, más capacidad; con las placas más lejos, menos. Y no depende de la carga (experimento anterior). Si el condensador estuviera conectado a la pila, al separar las placas bajaría su carga; si estuviera aislado, subiría su voltaje.</p>
       <p class="fuente">Las opciones incorrectas son hipótesis nuestras.</p>` },
   { id:'esferas-que-se-tocan', corto:'Dos esferas que se tocan',
-    q:`La esfera metálica A, de ${r_('1 cm')} de radio, tiene ${q_('+12 µC')}. La esfera B, de ${r_('3 cm')}, está descargada. Se tocan y se separan. ¿Con cuánta carga queda cada una?`,
-    opts:[['a', `A con ${fmt(K5.errores.mitades, 0)} µC y B con ${fmt(K5.errores.mitades, 0)} µC`, 'EL8-se-reparte-por-igual', 'parcial'],
-          ['b', `A con ${fmt(K5.errores.alReves.Q1f, 0)} µC y B con ${fmt(K5.errores.alReves.Q2f, 0)} µC`, 'EL8-la-chica-se-queda-con-mas', 'hipotesis'],
-          ['c', `A con ${fmt(K5.Q1f, 0)} µC y B con ${fmt(K5.Q2f, 0)} µC`],
-          ['d', `A con 0 µC y B con ${fmt(K5.errores.todaPasa.Q2f, 0)} µC`, 'EL8-toda-pasa-a-la-grande', 'hipotesis']],
+    q:`La esfera metálica A, de ${r_('1 cm')} de radio, tiene ${q_('+12 nC')}. La esfera B, de ${r_('3 cm')}, está descargada. Se tocan y se separan. ¿Con cuánta carga queda cada una?`,
+    opts:[['a', `A con ${fmt(K5.errores.mitades, 0)} nC y B con ${fmt(K5.errores.mitades, 0)} nC`, 'EL8-se-reparte-por-igual', 'parcial'],
+          ['b', `A con ${fmt(K5.errores.alReves.Q1f, 0)} nC y B con ${fmt(K5.errores.alReves.Q2f, 0)} nC`, 'EL8-la-chica-se-queda-con-mas', 'hipotesis'],
+          ['c', `A con ${fmt(K5.Q1f, 0)} nC y B con ${fmt(K5.Q2f, 0)} nC`],
+          ['d', `A con 0 nC y B con ${fmt(K5.errores.todaPasa.Q2f, 0)} nC`, 'EL8-toda-pasa-a-la-grande', 'hipotesis']],
     ok:'c',
     fb:{ a:'La carga no pasa hasta que haya la misma cantidad en las dos, sino hasta que tengan el mismo potencial. La más grande necesita más carga para llegar al mismo potencial.', b:'Es al revés: la esfera más grande se queda con más carga.', d:'La carga pasa hasta que las dos tengan el mismo potencial, no toda: A se queda con una parte.' },
     antes:ya => E.config({ vista:'contacto', ct:{ Q1:12, R1:.01, Q2:0, R2:.03 }, prog:{ ct: ya ? 3 : 0 },
-      lect: () => (ya ? [['q', 'Cargas finales', `${fmt(K5.Q1f, 0)} y ${fmt(K5.Q2f, 0)} µC`], ['V', 'Potencial de cada una', `${sci(K5.V)} V`]] : [['q', 'Cargas', '12 µC y 0 µC'], ['r', 'Radios', '1 cm y 3 cm']]),
+      lect: () => (ya ? [['q', 'Cargas finales', `${fmt(K5.Q1f, 0)} y ${fmt(K5.Q2f, 0)} nC`], ['V', 'Potencial de cada una', `${sci(K5V.V)} V`]] : [['q', 'Cargas', '12 nC y 0 nC'], ['r', 'Radios', '1 cm y 3 cm']]),
       desc: () => 'Dos esferas metálicas: A, chica y cargada; B, grande y descargada.' }),
-    despues:() => { E.lect = () => [['q', 'Cargas finales', `${fmt(K5.Q1f, 0)} y ${fmt(K5.Q2f, 0)} µC`], ['V', 'Potencial de cada una', `${sci(K5.V)} V`]];
+    despues:() => { E.lect = () => [['q', 'Cargas finales', `${fmt(K5.Q1f, 0)} y ${fmt(K5.Q2f, 0)} nC`], ['V', 'Potencial de cada una', `${sci(K5V.V)} V`]];
       E.tween(2600, f => { E.prog.ct = 3*f; E.dibujar(); }, () => { E.prog.ct = 3; E.dibujar(); E.avisar(); }); },
     exp:() => `<div class="eqs"><div class="eq">${P_('V')} = k · ${q_('Q<sub>A</sub>')} / ${r_('R<sub>A</sub>')} = k · ${q_('Q<sub>B</sub>')} / ${r_('R<sub>B</sub>')} → ${q_('Q<sub>A</sub>')} : ${q_('Q<sub>B</sub>')} = ${r_('1')} : ${r_('3')}</div>
-      <div class="eq">${q_('Q<sub>A</sub>')} = 12 · 1/4 = ${q_(fmt(K5.Q1f, 0) + ' µC')} y ${q_('Q<sub>B</sub>')} = 12 · 3/4 = ${q_(fmt(K5.Q2f, 0) + ' µC')}<span class="note">la suma sigue siendo 12</span></div></div>
-      <p>La carga se conserva y pasa de una a otra hasta que las dos tienen el mismo potencial, ${P_(sci(K5.V) + ' V')} (una vez separadas y lejos una de la otra). Solo si las esferas son iguales queda la mitad en cada una.</p>
+      <div class="eq">${q_('Q<sub>A</sub>')} = 12 · 1/4 = ${q_(fmt(K5.Q1f, 0) + ' nC')} y ${q_('Q<sub>B</sub>')} = 12 · 3/4 = ${q_(fmt(K5.Q2f, 0) + ' nC')}<span class="note">la suma sigue siendo 12</span></div></div>
+      <p>La carga se conserva y pasa de una a otra hasta que las dos tienen el mismo potencial, ${P_(sci(K5V.V) + ' V')} (una vez separadas y lejos una de la otra). Solo si las esferas son iguales queda la mitad en cada una.</p>
       <p class="fuente">Que la carga se reparte hasta que las dos tengan la misma cantidad lo cree «la mayoría» de alumnos de bachillerato y de primeros años de universidad, según Guisasola y otros (2010), sin un porcentaje en lo que leímos: por eso la opción A tiene un respaldo solo parcial. Las demás son hipótesis nuestras.</p>` },
+  { id:'dielectrico', corto:'Una lámina entre las placas',
+    q:`Un condensador de ${C_('10 µF')} se carga con una pila de ${P_('12 V')} (queda con ${q_('Q = 120 µC')}) y luego se <b>desconecta</b> de la pila. Ahora se mete entre sus placas una lámina de un aislante (un dieléctrico) con κ = 3, que llena todo el espacio. Las placas están a ${r_('1 mm')}. ¿Cuánto valen su voltaje y su carga?`,
+    opts:[['a', `V = ${fmt(DI.errores.nadaCambia.V, 0)} V y Q = ${fmt(DI.errores.nadaCambia.Q, 0)} µC: el aislante no hace nada, porque sus cargas no se mueven`, 'EL6-aislante-no-hace-nada', 'parcial'],
+          ['b', `V = ${fmt(DI.errores.vSubeConC.V, 0)} V y Q = ${fmt(DI.errores.vSubeConC.Q, 0)} µC: el voltaje sube 3 veces, como la capacidad`, 'DI-voltaje-sube-con-C', 'hipotesis'],
+          ['c', `V = ${fmt(DI.errores.otraSituacion.V, 0)} V y Q = ${fmt(DI.errores.otraSituacion.Q, 0)} µC: la carga sube 3 veces, como la capacidad`, 'DI-confunde-conectado', 'hipotesis'],
+          ['d', `V = ${fmt(DI.V, 0)} V y Q = ${fmt(DI.Q, 0)} µC: el voltaje baja 3 veces, porque la carga no cambia`]],
+    ok:'d',
+    fb:{ a:'Las cargas del aislante no viajan, pero sí se corren un poco dentro de cada molécula: la lámina se polariza y debilita el campo entre las placas. La capacidad sube 3 veces.',
+      b:'La capacidad sí sube 3 veces, pero sin pila la carga no cambia: V = Q / C baja, no sube.',
+      c:'Eso pasaría con la pila conectada, que fija el voltaje y manda más carga. Desconectado, la carga no tiene por dónde entrar: Q sigue en 120 µC y V baja.' },
+    antes:ya => { E.config({ vista:'dielec', di:{ o:DIo, conectado:false, f: ya ? 1 : 0 }, lect:lecturasDi,
+      desc: () => `Un condensador de placas con la pila ${E.di.conectado ? 'conectada' : 'desconectada'} y una lámina de aislante ${E.di.f >= 1 ? 'entre las placas' : E.di.f > 0 ? 'entrando entre las placas' : 'afuera, a la derecha'}.` }); },
+    despues:() => meterLamina(false),
+    exp:() => `<div class="eqs"><div class="eq">${C_('C')} = κ · ${C_('C₀')} = 3 · ${C_('10')} = ${C_(fmt(DI.C, 0) + ' µF')}<span class="note">la lámina multiplica la capacidad</span></div>
+      <div class="eq">${q_('Q')} = ${q_(fmt(DI.Q, 0) + ' µC')}<span class="note">desconectado: la carga no tiene a dónde ir</span></div>
+      <div class="eq">${P_('V')} = ${q_('Q')} / ${C_('C')} = ${q_('120')} / ${C_('30')} = ${P_(fmt(DI.V, 0) + ' V')} y </div>
+      <div class="eq">${E_('E')} = ${P_('V')} / ${r_('d')} baja de ${E_(fmt(DI.E0/1000, 0) + ' kV/m')} a ${E_(fmt(DI.E/1000, 0) + ' kV/m')}</div>
+      <div class="eq">${U_('U')} = ${q_('Q')} · ${P_('V')} / 2 = ${U_(fmt(DI.U, 0) + ' µJ')}<span class="note">antes ${fmt(DI.U0, 0)} µJ: un tercio</span></div></div>
+      <p>Las cargas del aislante se corren un poco dentro de cada molécula (los signos grises): frente a la placa + queda una capa −, y frente a la placa −, una capa +. Esas capas debilitan el campo entre las placas: hay menos flechas.</p>
+      <p><b>Con la pila conectada es al revés:</b> la pila mantiene ${P_('12 V')}, así que entra más carga, ${q_(fmt(DIc.Q, 0) + ' µC')}; el campo queda igual y la energía sube a ${U_(fmt(DIc.U, 0) + ' µJ')}.</p>
+      <p><b>¿Y la energía?</b> Desconectado, baja de ${U_(fmt(DI.U0, 0) + ' µJ')} a ${U_(fmt(DI.U, 0) + ' µJ')}: los ${fmt(DI.trabajoSobreLamina, 0)} µJ que faltan son el trabajo con que las placas jalan la lámina hacia adentro. Conectado, la pila entrega ${q_('Q')} · ${P_('V')} = ${q_(fmt(DIc.Q - DIc.Q0, 0))} · ${P_('12')} = ${fmt(DIc.trabajoPila, 0)} µJ: la mitad (${fmt(DIc.deltaU, 0)} µJ) se queda en el condensador, que sube de ${U_(fmt(DIc.U0, 0) + ' µJ')} a ${U_(fmt(DIc.U, 0) + ' µJ')}, y la otra mitad es el trabajo con que la lámina es jalada.</p>
+      <div class="acciones"><button type="button" class="btn" id="conectar6">Verlo con la pila conectada</button><button type="button" class="btn" id="desconectar6">Otra vez desconectado</button></div>
+      <p class="fuente">Creer que un aislante no se polariza porque sus cargas no se mueven lo tenía cerca del 50 % de un grupo de universitarios de primer año (Park y otros, 2001, citado por Guisasola y otros, 2010). Ese dato es sobre la polarización, no sobre el condensador: por eso la opción A tiene un respaldo solo parcial. Las demás opciones son hipótesis nuestras: no encontramos datos sobre dieléctricos.</p>`,
+    enlazar:() => { const a = $('conectar6'), b = $('desconectar6'); if (a) a.onclick = () => meterLamina(true); if (b) b.onclick = () => meterLamina(false); } },
 ];
 const S = { k:0, pred:{}, t0:Date.now() };
 // Pastillas: la k solo se abre si todos los experimentos anteriores ya tienen respuesta; las respondidas se revisitan.
@@ -1299,6 +1398,7 @@ function ir(k){
     fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la opción ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
     fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = x.exp() + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
+    if (x.enlazar) x.enlazar();
     const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
   };
   btns.forEach(b => b.onclick = () => {
