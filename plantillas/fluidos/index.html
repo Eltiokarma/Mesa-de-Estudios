@@ -1,0 +1,1246 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fluidos: presión, Pascal y Arquímedes</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md).
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4). Las fuerzas que ya tienen
+   color en dinámica lo conservan: W peso azul, N normal o reacción verde (lo que marca la balanza y el empuje de las
+   paredes), T tensión rojo (lo que marca el dinamómetro), F fuerza de una mano fucsia. Nuevos, medidos con
+   docs/metodo/paleta.py (ΔE00 ≥ 24 entre los siete, en claro y en oscuro; AA sobre el papel y sobre el chip .v):
+     E  empuje del líquido        turquesa  #0f766e / #5ed9c8
+     P  presión (manométrica)     naranja   #a35700 / #ef6f06
+     h  profundidad               sepia     #392f0e / #f9bd0b
+   Las densidades, volúmenes, masas, áreas y recorridos van en tinta. Los líquidos se pintan con rellenos pálidos
+   (agua, aceite, mercurio), que no son variables. El morado de marca no se usa aquí. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-W:#1f5fbf; --c-N:#4f7a17; --c-T:#c0364a; --c-F:#a10fbf; --c-E:#0f766e; --c-P:#a35700; --c-h:#392f0e;
+  --agua:#d4eaf3; --aceite:#f3e5ad; --mercurio:#c9c8d0; --suelo:#d9c8bb; --bloque:#d8dbe2; --madera:#e6cfb4; --vidrio:#8c8296;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-W:#7cb0ff; --c-N:#a3d65e; --c-T:#f17384; --c-F:#cf6bfa; --c-E:#5ed9c8; --c-P:#ef6f06; --c-h:#f9bd0b;
+  --agua:#22394d; --aceite:#463f24; --mercurio:#5b5968; --suelo:#4a3d55; --bloque:#5f6472; --madera:#6b5468; --vidrio:#9d90ad; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-W:#7cb0ff; --c-N:#a3d65e; --c-T:#f17384; --c-F:#cf6bfa; --c-E:#5ed9c8; --c-P:#ef6f06; --c-h:#f9bd0b;
+  --agua:#22394d; --aceite:#463f24; --mercurio:#5b5968; --suelo:#4a3d55; --bloque:#5f6472; --madera:#6b5468; --vidrio:#9d90ad; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+.lienzo:focus-within{outline:3px solid var(--ink); outline-offset:2px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block; flex:none}
+.lecturas{display:flex; flex-wrap:wrap; gap:6px; padding:0 4px}
+.lectura{display:inline-flex; gap:6px; align-items:baseline; padding:3px 10px; border-radius:999px; border:2px solid var(--k, var(--line));
+  color:var(--k, var(--ink)); background:var(--paper); font:700 .84rem var(--mono); font-variant-numeric:tabular-nums}
+.lectura.suma{border-style:dashed; --k:var(--ink)}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.step-t:focus{outline:none}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+/* Datos con color. Fondo del 8 % (el verde de N, del 4 %: con 8 % no llega al contraste AA). Resaltado: contorno, sin fondo. */
+.v{white-space:nowrap; font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-W{color:var(--c-W); background:color-mix(in srgb, var(--c-W) 8%, transparent)}
+.v-N{color:var(--c-N); background:color-mix(in srgb, var(--c-N) 4%, transparent)}
+.v-T{color:var(--c-T); background:color-mix(in srgb, var(--c-T) 8%, transparent)}
+.v-F{color:var(--c-F); background:color-mix(in srgb, var(--c-F) 8%, transparent)}
+.v-E{color:var(--c-E); background:color-mix(in srgb, var(--c-E) 8%, transparent)}
+.v-P{color:var(--c-P); background:color-mix(in srgb, var(--c-P) 8%, transparent)}
+.v-h{color:var(--c-h); background:color-mix(in srgb, var(--c-h) 8%, transparent)}
+.v-m{color:var(--ink); background:color-mix(in srgb, var(--ink) 7%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+
+.eqs{display:grid; grid-template-columns:minmax(0,1fr); gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.02rem; font-variant-numeric:tabular-nums}
+.eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.5em; white-space:normal}
+.answer{font-weight:700; padding:12px 16px; border-radius:16px; background:var(--paper); border:2px solid var(--ink); max-width:66ch}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb:focus{outline:none}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.ctrls{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap:12px; align-items:end}
+.slider{display:grid; gap:4px}
+.slider label{font-weight:700; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.slider output{font-family:var(--mono); color:var(--muted)}
+input[type=range]{width:100%; accent-color:var(--ink); min-height:28px}
+input.r-F{accent-color:var(--c-F)} input.r-h{accent-color:var(--c-h)}
+.chips{display:flex; flex-wrap:wrap; gap:6px}
+.chip{font-size:.86rem; padding:4px 12px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); font-weight:700}
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.grupo{display:grid; gap:6px}
+.grupo > span{font-weight:700; font-size:.92rem}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.4fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Física · Fluidos · Problemas tipo admisión</p>
+      <h1>Presión, Pascal y Arquímedes</h1>
+      <p class="sub">En un líquido quieto, ¿de qué depende la presión? Mira cómo los líquidos sostienen, transmiten fuerzas y empujan hacia arriba lo que se hunde en ellos.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo del paso">
+      <div class="lienzo"><canvas id="cv" tabindex="-1" role="img" aria-label="Tres recipientes con agua"></canvas></div>
+      <div class="lecturas" id="lect1" aria-hidden="true"></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="legend" id="ley1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT" tabindex="-1"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimento elegido">
+      <div class="lienzo"><canvas id="cv2" tabindex="-1" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <div class="lecturas" id="lect2" aria-hidden="true"></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="legend" id="ley2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2" tabindex="-1"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/fluidos">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'fluidos', unidad: 'fisica.fluidos', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas de dibujo compartidas =================
+   Toda la física sale de MotorFluidos (motor.js); aquí solo se pinta. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+// Coma decimal, espacio de miles (desde 5 cifras) y signo menos tipográfico.
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 1 : d), r = Math.round(n*p)/p + 0;
+  let [e, f] = String(Math.abs(r)).split('.');
+  if (e.length >= 5) e = e.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+// Hasta 2 decimales, sin ceros de más.
+const N2 = n => fmt(n, Math.abs(n*10 - Math.round(n*10)) < 1e-7 ? (Math.abs(n - Math.round(n)) < 1e-7 ? 0 : 1) : 2);
+const N1 = n => fmt(n, Math.abs(n - Math.round(n)) < 1e-7 ? 0 : 1);
+const Pa = p => `${fmt(p, 0)} Pa`;
+const cm = m => `${N1(m*100)} cm`;
+const cm2 = m => `${N2(m*100)} cm`;
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const M = MotorFluidos;
+// Escribe en una región aria-live solo si el texto cambia (si no, el lector de pantalla repite en cada cuadro).
+function decir(el, t){ if (el.textContent !== t) el.textContent = t; }
+
+const altoLienzo = W => W >= 560 ? clamp(W*0.64, 340, 470) : clamp(W*1.02, 330, 420);
+function crearLienzo(cv, alto, dibujar){
+  const ctx = cv.getContext('2d');
+  const L = { cv, ctx, W:0, H:0, compacto:false };
+  L.resize = () => {
+    const W = cv.clientWidth; if (!W) return;
+    const H = Math.round(Celular.alto(alto(W), L.compacto, { tope:260 })), dpr = window.devicePixelRatio || 1;
+    L.W = W; L.H = H; cv.style.height = H + 'px'; cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    dibujar();
+  };
+  new ResizeObserver(L.resize).observe(cv);
+  // Celular con predicción pendiente: el dibujo más bajo y pegado arriba (nucleo/celular.js).
+  L.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === !!L.compacto) return; L.compacto = on; L.resize(); };
+  return L;
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, x1, y1, x2, y2){ ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
+function rr(ctx, x, y, w, h, r){ ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h); }
+// Texto con un fondo del color del papel detrás, para que se lea sobre las líneas. No se sale del lienzo.
+function rotulo(ctx, c, x, y, t, color, align, peso, W, H){
+  ctx.font = `${peso || 700} ${c.chico ? 11 : 12}px ${c.font}`; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(t).width;
+  let x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  if (W) x0 = clamp(x0, 4, W - w - 4);
+  if (H) y = clamp(y, 10, H - 10);
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+  ctx.fillStyle = color; ctx.textAlign = 'left'; ctx.fillText(t, x0, y);
+  return { x0, x1: x0 + w, y };
+}
+function colores(W){
+  const g = n => css(n);
+  return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
+    W:g('--c-W'), N:g('--c-N'), T:g('--c-T'), F:g('--c-F'), E:g('--c-E'), P:g('--c-P'), h:g('--c-h'),
+    agua:g('--agua'), aceite:g('--aceite'), mercurio:g('--mercurio'), suelo:g('--suelo'), bloque:g('--bloque'), madera:g('--madera'), vidrio:g('--vidrio'),
+    mono:g('--mono'), font:g('--font'), chico: W < 480 };
+}
+// Flecha de (x1, y1) a (x2, y2); con trazos si dash.
+function flecha(ctx, x1, y1, x2, y2, color, w, dash){
+  const ang = Math.atan2(y2 - y1, x2 - x1), l = Math.hypot(x2 - x1, y2 - y1); if (l < 2) return;
+  const p = Math.min(9 + w, l*0.6);
+  ctx.save(); ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = w; ctx.lineCap = 'round';
+  if (dash) ctx.setLineDash(dash);
+  linea(ctx, x1, y1, x2 - Math.cos(ang)*p*0.7, y2 - Math.sin(ang)*p*0.7);
+  ctx.setLineDash([]);
+  ctx.beginPath(); ctx.moveTo(x2, y2); ctx.lineTo(x2 - Math.cos(ang - .45)*p, y2 - Math.sin(ang - .45)*p); ctx.lineTo(x2 - Math.cos(ang + .45)*p, y2 - Math.sin(ang + .45)*p);
+  ctx.closePath(); ctx.fill(); ctx.restore();
+}
+/* Una fuerza: { x, y, dx, dy (unitario, en pantalla), F (N), k (px por N), col, txt, oculta, crece (0 a 1), hl, al, lx, ly }.
+   Oculta: a trazos, de largo fijo y con "?" en el rótulo (la dirección se ve; el tamaño no). */
+function fuerza(ctx, c, f, W, H){
+  const largo = f.oculta ? (f.largoOculto || 36) : f.F*f.k*(f.crece === undefined ? 1 : f.crece);
+  if (largo >= 1.5){
+    const x2 = f.x + f.dx*largo, y2 = f.y + f.dy*largo, w = f.fina ? 1.8 : (f.hl ? 4.6 : 3.2);
+    flecha(ctx, f.x, f.y, x2, y2, f.col, w, f.oculta ? [6, 4] : null);
+  }
+  if (!f.txt || (f.crece !== undefined && f.crece < 0.98 && !f.oculta)) return;
+  const x2 = f.x + f.dx*Math.max(largo, 0), y2 = f.y + f.dy*Math.max(largo, 0);
+  const al = f.al || (f.dx > 0.35 ? 'left' : f.dx < -0.35 ? 'right' : 'center');
+  const lx = f.lx !== undefined ? f.lx : x2 + f.dx*10, ly = f.ly !== undefined ? f.ly : y2 + f.dy*12;
+  rotulo(ctx, c, lx, ly, f.txt, f.col, al, 800, W, H);
+}
+// Cota vertical con topes, en el color de su variable.
+function cotaV(ctx, c, x, y1, y2, col, txt, lado, W, H){
+  ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = 2; ctx.lineCap = 'round';
+  linea(ctx, x, y1, x, y2); linea(ctx, x - 5, y1, x + 5, y1); linea(ctx, x - 5, y2, x + 5, y2); ctx.restore();
+  if (txt) rotulo(ctx, c, x + (lado === 'left' ? -8 : 8), (y1 + y2)/2, txt, col, lado === 'left' ? 'right' : 'left', 800, W, H);
+}
+// Rótulo de una fuerza: "E = 5 N · agua".
+const rot = (sim, F, quien, oculta) => `${sim} = ${oculta ? '?' : N1(F) + ' N'} · ${quien}`;
+
+// Leyenda: solo las variables que aparecen en la escena.
+const NOMBRES = {
+  P:'P · presión del líquido (sobre la atmosférica)', h:'h · profundidad, en vertical hasta el nivel de la superficie libre',
+  Nw:'N · el techo empuja el agua', Nb:'N · lo que marca la balanza (el plato empuja el vaso)', Nf:'N · el fondo empuja el bloque',
+  T:'T · lo que marca el dinamómetro (la tensión del hilo)', E:'E · empuje (el líquido)', W:'W · peso (la Tierra)', F:'F · fuerza de la mano' };
+function leyenda(el, claves){
+  el.innerHTML = claves.map(k => `<span><i style="background:var(--c-${k[0]})"></i>${NOMBRES[k]}</span>`).join('');
+}
+function lecturas(el, items){
+  el.innerHTML = items.map(([k, t]) => `<span class="lectura${k === 'suma' ? ' suma' : ''}" style="${k && k !== 'suma' ? `--k:var(--c-${k})` : ''}">${t}</span>`).join('');
+}
+function animarValor(dur, paso, listo){
+  if (RM){ paso(1); listo && listo(); return () => {}; }
+  let id, ini = performance.now();
+  const tick = now => { const f = Math.min(1, (now - ini)/dur); paso(f); if (f < 1) id = requestAnimationFrame(tick); else listo && listo(); };
+  id = requestAnimationFrame(tick);
+  return () => cancelAnimationFrame(id);
+}
+const suave = f => f < 0.5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+const opcionesHTML = (opts, idfb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idfb}" tabindex="-1"></p>`;
+const fuente = t => `<p class="fuente">${t}</p>`;
+
+/* ---------- Líquido en un recipiente con paredes ---------- */
+// Paredes de un recipiente de tramos: [{ x0, x1, y0, y1 }] en pantalla (y0 abajo). Abierto arriba.
+function paredes(ctx, c, ts){
+  ctx.save(); ctx.strokeStyle = c.vidrio; ctx.lineWidth = 2.4; ctx.lineJoin = 'round';
+  const lado = s => { ctx.beginPath(); ts.forEach((t, i) => { const x = s < 0 ? t.x0 : t.x1; if (i === 0) ctx.moveTo(x, t.y0); else ctx.lineTo(x, t.y0); ctx.lineTo(x, t.y1); }); ctx.stroke(); };
+  lado(-1); lado(1); linea(ctx, ts[0].x0, ts[0].y0, ts[0].x1, ts[0].y0);
+  ctx.restore();
+}
+function superficie(ctx, c, x0, x1, y, xMarca){
+  ctx.save(); ctx.strokeStyle = c.ink; ctx.globalAlpha = .55; ctx.lineWidth = 1.2; linea(ctx, x0 + 2, y, x1 - 2, y);
+  const xm = xMarca === undefined ? (x0 + x1)/2 : xMarca; ctx.globalAlpha = .8; ctx.beginPath(); ctx.moveTo(xm - 5, y - 8); ctx.lineTo(xm + 5, y - 8); ctx.lineTo(xm, y - 1); ctx.closePath(); ctx.fillStyle = c.ink; ctx.fill();
+  ctx.restore();
+}
+
+/* ---------- Tres recipientes (paso 1 a 3) ----------
+   P = { man: 'oculta' | 'si' | 'nueva', crece, paredes, sensor: { i, x, y } | null, verSensor: 'oculta' | 'si', hl, sobre } */
+const FORMAS_P = ['ancho', 'estrecho', 'botella'];
+const NOMBRE_F = { ancho:'ancho', estrecho:'angosto', botella:'botella' };
+const REC = FORMAS_P.map(f => M.recipiente({ forma:f, H:2 }));
+function geoRec(W, H){
+  const alto = REC[0].alto, s = Math.min((W/3 - 18)/1, (H - 86)/alto), top = 24 + Math.max(0, (H - 86 - alto*s)/2);
+  const yF = top + alto*s;
+  return { s, yF, top, slots: REC.map((r, i) => { const cx = W*(i + 0.5)/3;
+    return { r, cx, pt:(x, y) => ({ x: cx + x*s, y: yF - y*s }), ts: r.tramos.map(t => ({ x0: cx - t.ancho*s/2, x1: cx + t.ancho*s/2, y0: yF - t.y0*s, y1: yF - t.y1*s })) }; }) };
+}
+function dial(ctx, c, x, y, r, P, ver, crece){
+  ctx.save(); ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2); ctx.fillStyle = c.card; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; ctx.stroke();
+  // Escala de 0 a 25 000 Pa en un arco de 240°.
+  ctx.strokeStyle = c.muted; ctx.lineWidth = 1;
+  for (let k = 0; k <= 5; k++){ const a = Math.PI*(5/6 + k*(4/3)/5); linea(ctx, x + Math.cos(a)*(r - 4), y + Math.sin(a)*(r - 4), x + Math.cos(a)*(r - 1), y + Math.sin(a)*(r - 1)); }
+  if (ver === 'oculta'){ ctx.fillStyle = c.ink; ctx.font = `800 ${r > 12 ? 12 : 10}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('?', x, y + 1); }
+  else {
+    const f = Math.min(1, P/25000)*(ver === 'nueva' ? crece : 1), a = Math.PI*(5/6 + f*4/3);
+    ctx.strokeStyle = c.P; ctx.lineWidth = 2.2; ctx.lineCap = 'round'; linea(ctx, x, y, x + Math.cos(a)*(r - 3), y + Math.sin(a)*(r - 3));
+    ctx.beginPath(); ctx.arc(x, y, 2, 0, Math.PI*2); ctx.fillStyle = c.ink; ctx.fill();
+  }
+  ctx.restore();
+}
+function vistaRecipientes(L, c, P){
+  const { ctx, W, H } = L; ctx.clearRect(0, 0, W, H);
+  const g = geoRec(W, H), Hm = 2;
+  g.slots.forEach((sl, i) => {
+    const r = sl.r, ySup = g.yF - Hm*g.s;
+    // Agua
+    ctx.save(); ctx.fillStyle = c.agua;
+    sl.ts.forEach((t, k) => { const yTop = Math.max(t.y1, ySup); if (yTop < t.y0) ctx.fillRect(t.x0, yTop, t.x1 - t.x0, t.y0 - yTop); });
+    ctx.restore();
+    const tsup = sl.ts.find((t, k) => r.tramos[k].y0 <= Hm && r.tramos[k].y1 >= Hm);
+    superficie(ctx, c, tsup.x0, tsup.x1, ySup);
+    paredes(ctx, c, sl.ts);
+    rotulo(ctx, c, sl.cx, Math.max(12, g.top - 12), NOMBRE_F[FORMAS_P[i]], c.ink, 'center', 800, W, H);
+    // Manómetro del fondo
+    const rd = c.chico ? 10 : 13, yd = g.yF + 8 + rd;
+    ctx.save(); ctx.strokeStyle = c.vidrio; ctx.lineWidth = 2; linea(ctx, sl.cx, g.yF, sl.cx, yd - rd); ctx.restore();
+    dial(ctx, c, sl.cx, yd, rd, r.Pfondo, P.man, P.crece);
+    const txt = P.man === 'oculta' ? 'P = ?' : (P.man === 'nueva' && P.crece < 0.98 ? '' : Pa(r.Pfondo));
+    if (txt) rotulo(ctx, c, sl.cx, yd + rd + 10, txt, c.P, 'center', 800, W, H);
+    // Paredes que empujan: el techo de la botella empuja el agua hacia abajo.
+    if (P.paredes && FORMAS_P[i] === 'botella' && P.crece > 0.98){
+      const yT = sl.pt(0, 0.8).y, xs = [sl.pt(-0.31, 0).x, sl.pt(0.31, 0).x], lg = Math.max(22, 0.3*g.s);
+      xs.forEach(x => flecha(ctx, x, yT + 2, x, yT + 2 + lg, c.N, P.hl === 'N' ? 3.4 : 2.4));
+      rotulo(ctx, c, sl.cx, yT + lg + 14, `N = ${fmt(r.fuerzaParedes, 0)} N · techo`, c.N, 'center', 800, W, H);
+    }
+  });
+  // Sensor
+  if (P.sensor){
+    const sl = g.slots[P.sensor.i], q = sl.r.presionEn(P.sensor.x, P.sensor.y), p = sl.pt(P.sensor.x, P.sensor.y), ySup = sl.pt(0, Hm).y;
+    const derecha = p.x < W/2;
+    if (P.verSensor !== 'oculta'){
+      // h: en vertical hasta el nivel de la superficie libre (a trazos si hay un techo en el camino).
+      if (q.bajoTecho){ ctx.save(); ctx.strokeStyle = c.h; ctx.globalAlpha = .7; ctx.setLineDash([4, 3]); ctx.lineWidth = 1.4;
+        const xc = sl.pt(0, Hm).x; linea(ctx, Math.min(p.x, xc) - 6, ySup, Math.max(p.x, xc) + 6, ySup); ctx.restore(); }
+      cotaV(ctx, c, p.x, ySup, p.y, c.h, `h = ${N2(q.h)} m`, derecha ? 'left' : 'right', W, H);
+    }
+    ctx.save(); ctx.beginPath(); ctx.arc(p.x, p.y, P.sobre ? 8 : 6.5, 0, Math.PI*2); ctx.fillStyle = c.card; ctx.fill(); ctx.strokeStyle = c.P; ctx.lineWidth = 3; ctx.stroke();
+    if (P.arrastrable){ ctx.setLineDash([3, 2]); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.arc(p.x, p.y, 12, 0, Math.PI*2); ctx.stroke(); }
+    ctx.restore();
+    const t = P.verSensor === 'oculta' ? 'sensor: P = ?' : `P = ${Pa(q.P)}`;
+    rotulo(ctx, c, p.x + (derecha ? 14 : -14), p.y + (q.bajoTecho ? 0 : 14), t, c.P, derecha ? 'left' : 'right', 800, W, H);
+  }
+}
+function sensorDesdePantalla(W, H, px, py){
+  const g = geoRec(W, H);
+  let i = clamp(Math.floor(px/(W/3)), 0, 2); const sl = g.slots[i];
+  let y = clamp(Math.round(((g.yF - py)/g.s)*20)/20, 0.05, 1.9);
+  const ancho = sl.r.ancho(y + 1e-6), m = Math.max(0, ancho/2 - 0.05);
+  const x = clamp(Math.round(((px - sl.cx)/g.s)*20)/20, -m, m);
+  return { i, x, y };
+}
+
+/* ---------- Bloque, dinamómetro, vaso y balanza (pasos 4 a 8) ----------
+   P = { r: resultado de M.balanza, etiqueta, liquido ('agua' | 'aceite' | 'salmuera'), ver: { T, E, N } ('oculta' | 'si' | 'nueva'),
+         crece, hl, sobre, arrastrable, nota } */
+function geoBal(W, H, r){
+  const a = r.a, lado = Math.sqrt(0.02), hLiq = 0.15;
+  const yHook = 62, s = Math.min((H - 120)/(0.06 + a + hLiq), (W*0.3)/lado);
+  const extra = Math.max(0, (H - 120) - (0.06 + a + hLiq)*s);
+  const yS0 = yHook + 12 + (0.06 + a)*s + extra*0.5;
+  return { s, a, lado, yHook, yS0, yVb: yS0 + hLiq*s, x0: W*0.3, xd: W*0.71 };
+}
+function vistaBalanza(L, c, P){
+  const { ctx, W, H } = L; ctx.clearRect(0, 0, W, H);
+  const r = P.r, g = geoBal(W, H, r), { s, x0 } = g, ver = P.ver, cr = P.crece === undefined ? 1 : P.crece;
+  const visto = k => ver[k] === 'si' || (ver[k] === 'nueva' && cr > 0.98);
+  const wv = g.lado*s, ab = r.a*s, ySup = g.yS0 - r.subida*s, yBot = g.yS0 + r.fondoBloque*s, yTopB = yBot - ab;
+  // Soporte y dinamómetro
+  ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2.4; linea(ctx, x0 - 34, 8, x0 + 34, 8); ctx.lineWidth = 1; ctx.globalAlpha = .6;
+  for (let x = x0 - 30; x < x0 + 34; x += 10) linea(ctx, x, 8, x + 7, 1); ctx.restore();
+  const yb0 = 12, yb1 = g.yHook - 8;
+  ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; linea(ctx, x0, 8, x0, yb0);
+  rr(ctx, x0 - 10, yb0, 20, yb1 - yb0, 6); ctx.fillStyle = c.card; ctx.fill(); ctx.stroke();
+  // Resorte y aguja: la aguja baja más cuanto más jala el hilo (0 a 25 N).
+  const yAg = yb0 + 8 + (visto('T') ? Math.min(1, r.T/25) : 0.5)*(yb1 - yb0 - 16);
+  ctx.beginPath(); ctx.moveTo(x0, yb0 + 3); const nz = 6;
+  for (let k = 1; k <= nz; k++) ctx.lineTo(x0 + (k % 2 ? 5 : -5), yb0 + 3 + (yAg - yb0 - 3)*k/(nz + 1));
+  ctx.lineTo(x0, yAg); ctx.stroke();
+  if (visto('T')){ ctx.strokeStyle = c.T; ctx.lineWidth = 2.4; linea(ctx, x0 - 8, yAg, x0 + 8, yAg); }
+  ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; linea(ctx, x0, yb1, x0, g.yHook);
+  ctx.restore();
+  rotulo(ctx, c, x0 - 16, (yb0 + yb1)/2, visto('T') ? `T = ${N1(r.T)} N` : 'T = ?', c.T, 'right', 800, W, H);
+  // Hilo (flojo si el bloque flota)
+  ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.3;
+  if (r.flojo){ const yt = yTopB; ctx.beginPath(); ctx.moveTo(x0, g.yHook); ctx.quadraticCurveTo(x0 + 16, (g.yHook + yt)/2 + 8, x0, yt); ctx.stroke(); }
+  else linea(ctx, x0, g.yHook, x0, yTopB);
+  ctx.restore();
+  // Vaso con líquido
+  const xv0 = x0 - wv/2, xv1 = x0 + wv/2, yRim = g.yS0 - 0.055*s;
+  ctx.save(); ctx.fillStyle = c[P.liquido === 'aceite' ? 'aceite' : 'agua']; if (P.liquido === 'salmuera') ctx.globalAlpha = 1;
+  ctx.fillRect(xv0, ySup, wv, g.yVb - ySup); ctx.restore();
+  // Bloque (la parte sumergida, tapada por el líquido a medias)
+  ctx.save(); ctx.fillStyle = P.madera ? c.madera : c.bloque; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; rr(ctx, x0 - ab/2, yTopB, ab, ab, 3); ctx.fill(); ctx.stroke();
+  const yIn = Math.max(yTopB, ySup); if (yIn < yBot){ ctx.globalAlpha = .45; ctx.fillStyle = c[P.liquido === 'aceite' ? 'aceite' : 'agua']; ctx.fillRect(x0 - ab/2 + 1, yIn, ab - 2, yBot - yIn - 1); }
+  ctx.restore();
+  ctx.save(); ctx.fillStyle = c.ink; ctx.font = `800 ${c.chico ? 10 : 11}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(P.etiqueta, x0, yTopB + ab/2); ctx.restore();
+  if (P.arrastrable){ ctx.save(); ctx.strokeStyle = c.ink; ctx.setLineDash([3, 2]); ctx.lineWidth = P.sobre ? 2 : 1.4; rr(ctx, x0 - ab/2 - 5, yTopB - 5, ab + 10, ab + 10, 6); ctx.stroke(); ctx.restore();
+    rotulo(ctx, c, x0 + ab/2 + 8, yTopB + ab/2, '↕', c.ink, 'left', 800, W, H); }
+  superficie(ctx, c, xv0, xv1, ySup, xv0 + 9);
+  // Presión del líquido sobre la cara de arriba (empuja hacia abajo) y la de abajo (hacia arriba): la de abajo es mayor.
+  if (P.caras && cr > 0.98){
+    const kp = Math.max(6, Math.min(26, g.yVb - yBot - 3))/1500, pa = 1000*10*(r.profundidadFondo - r.a), pb = 1000*10*r.profundidadFondo;
+    [-ab/4, ab/4].forEach(dx => {
+      flecha(ctx, x0 + dx, yTopB - pa*kp - 1, x0 + dx, yTopB - 1, c.P, 2);
+      flecha(ctx, x0 + dx, yBot + pb*kp + 1, x0 + dx, yBot + 1, c.P, 2);
+    });
+  }
+  paredes(ctx, c, [{ x0: xv0, x1: xv1, y0: g.yVb, y1: yRim }]);
+  // Balanza
+  const yP = g.yVb + 2;
+  ctx.save(); ctx.fillStyle = c.suelo; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4;
+  rr(ctx, xv0 - 10, yP, wv + 20, 5, 2); ctx.fill(); ctx.stroke();
+  rr(ctx, xv0 - 14, yP + 7, wv + 28, 26, 6); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = c.paper; rr(ctx, x0 - Math.min(34, wv/2 + 10), yP + 11, Math.min(68, wv + 20), 18, 4); ctx.fill(); ctx.stroke(); ctx.restore();
+  ctx.save(); ctx.fillStyle = c.N; ctx.font = `800 ${c.chico ? 10 : 11}px ${c.mono}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(visto('N') ? `N = ${N1(r.N)} N` : 'N = ?', x0, yP + 20.5); ctx.restore();
+  if (P.nota) rotulo(ctx, c, W - 6, H - 12, P.nota, c.ink, 'right', 700, W, H);
+  // Fuerzas sobre el bloque, aparte
+  const xd = g.xd, ladoD = c.chico ? 26 : 32, kF = Math.min(8, (H/2 - ladoD/2 - 30)/22), yd = H/2 + 4;
+  rotulo(ctx, c, xd, 12, 'fuerzas sobre el bloque', c.muted, 'center', 700, W, H);
+  ctx.save(); ctx.fillStyle = P.madera ? c.madera : c.bloque; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; rr(ctx, xd - ladoD/2, yd - ladoD/2, ladoD, ladoD, 3); ctx.fill(); ctx.stroke(); ctx.restore();
+  const fT = { x:xd - 8, y:yd - ladoD/2, dx:0, dy:-1, F:r.T, k:kF, col:c.T, hl:P.hl === 'T', oculta:ver.T === 'oculta', crece:ver.T === 'nueva' ? cr : 1,
+    txt: r.T < 0.05 && ver.T !== 'oculta' ? 'T = 0 · hilo flojo' : rot('T', r.T, 'hilo', ver.T === 'oculta'), al:'right' };
+  fT.lx = xd - 14; fT.ly = yd - ladoD/2 - (fT.oculta ? 36 : Math.max(r.T*kF, 10)) - 4;
+  if (r.T < 0.05 && !fT.oculta){ fT.al = 'left'; fT.lx = xd + ladoD/2 + 6; fT.ly = yd + 2; }
+  const fE = { x:xd + 8, y:yd - ladoD/2, dx:0, dy:-1, F:r.E, k:kF, col:c.E, hl:P.hl === 'E', oculta:ver.E === 'oculta', crece:ver.E === 'nueva' ? cr : 1,
+    txt: r.E < 0.05 && ver.E !== 'oculta' ? 'E = 0 · fuera del líquido' : rot('E', r.E, P.liquido === 'aceite' ? 'aceite' : P.liquido === 'salmuera' ? 'salmuera' : 'agua', ver.E === 'oculta'), al:'left' };
+  fE.lx = xd + 14; fE.ly = yd - ladoD/2 - (fE.oculta ? 36 : Math.max(r.E*kF, 10)) - 4;
+  if (r.E < 0.05 && !fE.oculta){ fE.al = 'right'; fE.lx = xd - ladoD/2 - 6; fE.ly = yd + 2; }
+  const fW = { x:xd, y:yd + ladoD/2, dx:0, dy:1, F:r.W, k:kF, col:c.W, hl:P.hl === 'W', txt:rot('W', r.W, 'Tierra'), al:'left', lx:xd + 8, ly:yd + ladoD/2 + r.W*kF - 4 };
+  [fT, ver.E === 'no' ? null : fE, fW].forEach(f => f && fuerza(ctx, c, f, W, H));
+}
+
+/* ---------- Vasos comunicantes (¿qué pasa si…? 1) ----------
+   P = { V (m³), lleno (0 a 1), ver: 'antes' | 'despues' } */
+const VASOS = { areas:[0.001, 0.002], alto:1.2 };
+function vistaVasos(L, c, P){
+  const { ctx, W, H } = L; ctx.clearRect(0, 0, W, H);
+  const r = M.vasosComunicantes({ areas:VASOS.areas, volumen:P.V }), s = Math.min((H - 70)/VASOS.alto, W*0.5);
+  const yF = H - 40, w1 = Math.max(16, W*0.09), w2 = 2*w1, xa = W*0.3, xb = W*0.66, canal = 16;
+  const ts = (x, w) => [{ x0: x - w/2, x1: x + w/2, y0: yF, y1: yF - VASOS.alto*s }];
+  const h = r.nivel*(P.ver === 'antes' ? 0 : suave(P.lleno)), yN = yF - canal - h*s;
+  // Canal de abajo y agua
+  ctx.save(); ctx.fillStyle = c.agua;
+  ctx.fillRect(xa - w1/2, yF - canal, xb + w2/2 - (xa - w1/2), canal);
+  if (h > 0){ ctx.fillRect(xa - w1/2, yN, w1, yF - canal - yN); ctx.fillRect(xb - w2/2, yN, w2, yF - canal - yN); }
+  ctx.restore();
+  ctx.save(); ctx.strokeStyle = c.vidrio; ctx.lineWidth = 2.4; ctx.lineJoin = 'round';
+  ctx.beginPath(); ctx.moveTo(xa - w1/2, yF - VASOS.alto*s); ctx.lineTo(xa - w1/2, yF); ctx.lineTo(xb + w2/2, yF); ctx.lineTo(xb + w2/2, yF - VASOS.alto*s); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(xa + w1/2, yF - VASOS.alto*s); ctx.lineTo(xa + w1/2, yF - canal); ctx.lineTo(xb - w2/2, yF - canal); ctx.lineTo(xb - w2/2, yF - VASOS.alto*s); ctx.stroke();
+  ctx.restore();
+  rotulo(ctx, c, xa, 14, 'angosta', c.ink, 'center', 800, W, H); rotulo(ctx, c, xb, 14, 'ancha (el doble)', c.ink, 'center', 800, W, H);
+  if (P.ver === 'antes'){
+    // Una jarra echa agua por la rama angosta; la rama ancha, con "?".
+    ctx.save(); ctx.fillStyle = c.agua; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4;
+    const jx = xa - w1/2 - 30, jy = 30; rr(ctx, jx - 12, jy, 24, 26, 4); ctx.fill(); ctx.stroke();
+    ctx.strokeStyle = c.agua; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(jx + 12, jy + 4); ctx.quadraticCurveTo(xa, jy, xa, yF - canal); ctx.stroke(); ctx.restore();
+    rotulo(ctx, c, xb, (yF - VASOS.alto*s + yF)/2, '?', c.ink, 'center', 800, W, H);
+  } else if (P.lleno > 0.98){
+    superficie(ctx, c, xa - w1/2, xa + w1/2, yN); superficie(ctx, c, xb - w2/2, xb + w2/2, yN);
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.setLineDash([5, 4]); ctx.lineWidth = 1.2; linea(ctx, xa - w1/2 - 8, yN, xb + w2/2 + 8, yN); ctx.restore();
+    rotulo(ctx, c, xb + w2/2 + 6, yN - 22, 'mismo nivel', c.ink, 'right', 800, W, H);
+    // Presión en el fondo de cada rama: la misma profundidad, la misma presión.
+    const Pf = M.presion({ h: r.nivel + 0 }).Pman;
+    ctx.save(); ctx.strokeStyle = c.P; ctx.setLineDash([4, 3]); ctx.lineWidth = 1.4; linea(ctx, xa - w1/2 - 14, yF - canal, xb + w2/2 + 4, yF - canal); ctx.restore();
+    rotulo(ctx, c, xa - w1/2 - 20, yF - canal + 14, `P = ${Pa(Pf)}`, c.P, 'right', 800, W, H);
+    rotulo(ctx, c, xb + w2/2 + 6, yF - canal + 14, `P = ${Pa(Pf)}`, c.P, 'left', 800, W, H);
+    cotaV(ctx, c, xa - w1/2 - 14, yN, yF - canal, c.h, `h = ${cm(r.nivel)}`, 'left', W, H);
+  }
+  return r;
+}
+
+/* ---------- Prensa hidráulica (¿qué pasa si…? 2) ----------
+   P = { r: resultado de M.prensa, ver: 'antes' | 'despues', mov (0 a 1), hl } */
+function vistaPrensa(L, c, P){
+  const { ctx, W, H } = L; ctx.clearRect(0, 0, W, H);
+  const r = P.r, yF = H - 84, d1 = Math.min(18, W*0.05), d2 = Math.min(W*0.36, d1*Math.sqrt(r.razon)), xa = W*0.33, xb = W*0.7;
+  const hC = Math.min(280, H - 124), carrera = Math.max(10, Math.min(90, hC*0.4, hC*0.55 - 26)), mov = P.ver === 'antes' ? 0 : suave(P.mov || 0);
+  const kd = carrera/0.5;                                                // px por metro del recorrido del émbolo chico
+  const y0 = yF - hC*0.55, ya = y0 + mov*r.d1*kd, yb = y0 - mov*r.d2*kd;   // al inicio, los dos émbolos a la misma altura
+  // Aceite
+  ctx.save(); ctx.fillStyle = c.aceite; ctx.fillRect(xa - d1/2, ya, d1, yF - ya); ctx.fillRect(xa - d1/2, yF - 18, xb - xa, 18); ctx.fillRect(xb - d2/2, yb, d2, yF - yb); ctx.restore();
+  ctx.save(); ctx.strokeStyle = c.vidrio; ctx.lineWidth = 2.4; ctx.lineJoin = 'round';
+  ctx.beginPath(); ctx.moveTo(xa - d1/2, yF - hC); ctx.lineTo(xa - d1/2, yF); ctx.lineTo(xb + d2/2, yF); ctx.lineTo(xb + d2/2, yF - hC); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(xa + d1/2, yF - hC); ctx.lineTo(xa + d1/2, yF - 18); ctx.lineTo(xb - d2/2, yF - 18); ctx.lineTo(xb - d2/2, yF - hC); ctx.stroke(); ctx.restore();
+  // Émbolos
+  ctx.save(); ctx.fillStyle = c.bloque; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; rr(ctx, xa - d1/2 + 1, ya - 7, d1 - 2, 7, 2); ctx.fill(); ctx.stroke();
+  rr(ctx, xb - d2/2 + 1, yb - 8, d2 - 2, 8, 2); ctx.fill(); ctx.stroke();
+  // Carga sobre el émbolo grande
+  const cw = d2*0.7, ch = Math.min(34, hC*0.25); ctx.fillStyle = c.madera; rr(ctx, xb - cw/2, yb - 8 - ch, cw, ch, 4); ctx.fill(); ctx.stroke(); ctx.restore();
+  ctx.save(); ctx.fillStyle = c.ink; ctx.font = `800 ${c.chico ? 10 : 11}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('carga', xb, yb - 8 - ch/2); ctx.restore();
+  const fin = P.ver !== 'antes' && P.mov > 0.98;
+  rotulo(ctx, c, xa, yF + 12, `${N2(r.A1)} m²${fin ? ` · bajó ${cm(r.d1)}` : ''}`, c.ink, 'center', 700, W, H);
+  rotulo(ctx, c, xb, yF + 12, `${N2(r.A2)} m²${fin ? ` · subió ${cm(r.d2)}` : ''}`, c.ink, 'center', 700, W, H);
+  // Fuerzas: la mano empuja el émbolo chico; la Tierra jala la carga.
+  const kF = 50/Math.max(r.F1, 1);
+  fuerza(ctx, c, { x:xa, y:ya - 7 - 50, dx:0, dy:1, F:r.F1, k:kF, col:c.F, hl:P.hl === 'F', txt:rot('F', r.F1, 'mano'), al:'right', lx:xa - d1/2 - 16, ly:ya - 7 - 32 }, W, H);
+  const oc = P.ver === 'antes', lyF = ya - 7 - 32;
+  let lyW = yb - 8 - ch - 12; if (Math.abs(lyW - lyF) < 20) lyW = Math.min(lyW, lyF) - 14;
+  fuerza(ctx, c, { x:xb + cw/2 + 10, y:yb - 8 - ch, dx:0, dy:1, F:r.F2, k:Math.min(40/r.F2, 1), col:c.W, hl:P.hl === 'W', oculta:oc, largoOculto:36,
+    txt:rot('W', r.F2, 'Tierra', oc), al:'right', lx:xb + cw/2 + 4, ly:lyW }, W, H);
+  if (!oc && P.mov > 0.98){
+    rotulo(ctx, c, (xa + xb)/2, yF - 9, `la mano agrega ${Pa(r.P)} en todo el aceite`, c.P, 'center', 800, W, H);
+    // Recorridos (en tinta): el chico baja d₁; el grande sube d₂, aumentado para que se vea.
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.3; const xc = xa - d1/2 - 10, yI = y0 - 7;
+    linea(ctx, xc, yI, xc, ya - 7); linea(ctx, xc - 4, yI, xc + 4, yI); linea(ctx, xc - 4, ya - 7, xc + 4, ya - 7); ctx.restore();
+    // Trabajo en los dos lados: barras iguales.
+    const l = W*0.5, t1 = r.trabajo1;
+    ctx.save(); ctx.fillStyle = c.F; ctx.fillRect(12, H - 46, l, 5); ctx.fillStyle = c.W; ctx.fillRect(12, H - 18, l*r.trabajo2/t1, 5); ctx.restore();
+    rotulo(ctx, c, 12, H - 56, `trabajo de la mano: F · d₁ = ${N1(t1)} J`, c.F, 'left', 800, W, H);
+    rotulo(ctx, c, 12, H - 28, `trabajo sobre la carga: W · d₂ = ${N1(r.trabajo2)} J`, c.W, 'left', 800, W, H);
+  }
+}
+
+/* ---------- Tubo en U con agua sobre mercurio (¿qué pasa si…? 3) ----------
+   P = { r: resultado de M.tuboU, ver: 'antes' | 'despues', crece } */
+function vistaTuboU(L, c, P){
+  const { ctx, W, H } = L; ctx.clearRect(0, 0, W, H);
+  const r = P.r, w = Math.max(22, W*0.08), xa = W*0.34, xb = W*0.66, yF = H - 26, hBase = 0.12;
+  const s = Math.min((H - 70)/(hBase + 0.45), 700), cr = P.ver === 'antes' ? 0 : suave(P.crece);
+  const yFr = yF - hBase*s;                                   // frontera agua-mercurio, a la izquierda
+  const yMd = yFr - r.x*s*cr, yAg = yFr - r.h1*s;
+  // Mercurio y agua
+  ctx.save(); ctx.fillStyle = c.mercurio;
+  ctx.fillRect(xa - w/2, yFr, w, yF - yFr); ctx.fillRect(xa - w/2, yF - w, xb - xa + w, w);
+  if (P.ver !== 'antes') ctx.fillRect(xb - w/2, yMd, w, yF - yMd);
+  ctx.fillStyle = c.agua; ctx.fillRect(xa - w/2, yAg, w, yFr - yAg); ctx.restore();
+  ctx.save(); ctx.strokeStyle = c.vidrio; ctx.lineWidth = 2.4; ctx.lineJoin = 'round'; const yT = 24;
+  ctx.beginPath(); ctx.moveTo(xa - w/2, yT); ctx.lineTo(xa - w/2, yF); ctx.lineTo(xb + w/2, yF); ctx.lineTo(xb + w/2, yT); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(xa + w/2, yT); ctx.lineTo(xa + w/2, yF - w); ctx.lineTo(xb - w/2, yF - w); ctx.lineTo(xb - w/2, yT); ctx.stroke(); ctx.restore();
+  superficie(ctx, c, xa - w/2, xa + w/2, yAg);
+  rotulo(ctx, c, (xa + xb)/2, yF - w/2, 'mercurio', c.ink, 'center', 700, W, H);
+  if (yFr - yAg > 46) rotulo(ctx, c, xa + w/2 + 6, (yAg + yFr)/2, 'agua', c.ink, 'left', 700, W, H);
+  cotaV(ctx, c, xa - w/2 - 12, yAg, yFr, c.h, `h = ${cm(r.h1)}`, 'left', W, H);
+  if (P.ver === 'antes'){
+    ctx.save(); ctx.fillStyle = c.card; ctx.fillRect(xb - w/2 + 1.5, yT, w - 3, yF - w - yT); ctx.restore();
+    rotulo(ctx, c, xb, (yT + yF)/2, '?', c.ink, 'center', 800, W, H);
+    return;
+  }
+  superficie(ctx, c, xb - w/2, xb + w/2, yMd);
+  if (cr > 0.98){
+    // A la altura de la frontera, en las dos ramas hay mercurio conectado: la misma presión.
+    ctx.save(); ctx.strokeStyle = c.P; ctx.setLineDash([5, 4]); ctx.lineWidth = 1.6; linea(ctx, xa - w/2, yFr, xb + w/2, yFr); ctx.restore();
+    rotulo(ctx, c, (xa + xb)/2, yFr - 12, `P = ${Pa(r.Pfrontera)}`, c.P, 'center', 800, W, H);
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.3; const xc = xb + w/2 + 8; linea(ctx, xc, yMd, xc, yFr); linea(ctx, xc - 4, yMd, xc + 4, yMd); ctx.restore();
+    rotulo(ctx, c, xb + w/2 + 14, yMd - 10, `x = ${cm(r.x)}`, c.ink, 'left', 800, W, H);
+  }
+}
+
+/* ---------- Cinco bloques soltados bajo el agua (¿qué pasa si…? 4) ----------
+   P = { b: resultado de M.bloques, masas, f (0 a 1: se mueven a su destino), ver: 'antes' | 'despues' } */
+function vistaBloques(L, c, P){
+  const { ctx, W, H } = L; ctx.clearRect(0, 0, W, H);
+  const n = P.masas.length, x0 = 12, x1 = W - 12, yS = 40, yF = H - 30, lado = Math.min((x1 - x0)/n*0.5, 38), ymid = (yS + yF)/2;
+  ctx.save(); ctx.fillStyle = c.agua; ctx.fillRect(x0, yS, x1 - x0, yF - yS); ctx.restore();
+  superficie(ctx, c, x0, x1, yS);
+  paredes(ctx, c, [{ x0, x1, y0: yF, y1: yS - 18 }]);
+  if (P.ver === 'antes'){ ctx.save(); ctx.strokeStyle = c.ink; ctx.setLineDash([4, 4]); ctx.globalAlpha = .6; linea(ctx, x0 + 4, ymid - lado/2 - 8, x1 - 4, ymid - lado/2 - 8); ctx.restore();
+    rotulo(ctx, c, W/2, ymid - lado/2 - 20, 'se sueltan aquí, todos juntos', c.ink, 'center', 700, W, H); }
+  const f = P.ver === 'antes' ? 0 : suave(P.f);
+  // Fuerzas desde el centro de cada bloque, a una escala que cabe en el tanque (los números van en las fichas).
+  const kF = 3.5;   // 2 N ya se ven; el peso se dibuja llegando al centro desde arriba, sin cruzar el fondo
+  P.b.lista.forEach((b, i) => {
+    const cx = x0 + (x1 - x0)*(i + 0.5)/n;
+    const yDest = b.destino === 'flota' ? yS - lado/2 + b.fraccion*lado : b.destino === 'fondo' ? yF - lado/2 : ymid;
+    const y = ymid + (yDest - ymid)*f;
+    ctx.save(); ctx.fillStyle = P.ver === 'antes' ? c.bloque : (b.rhoC < 1000 ? c.madera : c.bloque); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; rr(ctx, cx - lado/2, y - lado/2, lado, lado, 3); ctx.fill(); ctx.stroke(); ctx.restore();
+    if (f > 0.98){
+      flecha(ctx, cx - 6, y - b.W*kF, cx - 6, y, c.W, 2.4);
+      flecha(ctx, cx + 4, y, cx + 4, y - b.E*kF, c.E, 2.4);
+      if (b.normalFondo > 0) flecha(ctx, cx + 11, y + lado/2 - 3, cx + 11, y + lado/2 - 3 - b.normalFondo*kF, c.N, 2.4);
+    }
+    // En el fondo, la masa va debajo (las flechas ocupan el espacio de arriba).
+    rotulo(ctx, c, cx, f > 0.98 && b.destino === 'fondo' ? yF + 12 : y - lado/2 - 9, `${N2(b.m)} kg`, c.ink, 'center', 800, W, H);
+  });
+}
+
+/* ---------- El mismo cubo en agua y en aceite (¿qué pasa si…? 5) ----------
+   P = { rhoAc, ver: 'antes' | 'despues', crece } */
+function vistaDosLiquidos(L, c, P){
+  const { ctx, W, H } = L; ctx.clearRect(0, 0, W, H);
+  const liq = [['agua', 1000, c.agua], ['aceite', P.rhoAc, c.aceite]];
+  const ancho = Math.min(W*0.34, 170), lado = Math.min(ancho*0.42, 60), yS = H*0.5, yF = H - 22, kF = Math.min(4, (yS - lado - 30)/14);
+  liq.forEach(([nom, rho, fill], i) => {
+    const cx = W*(i === 0 ? 0.27 : 0.73), r = M.flotacion({ rhoC:600, V:0.002, rhoF:rho });
+    ctx.save(); ctx.fillStyle = fill; ctx.fillRect(cx - ancho/2, yS, ancho, yF - yS); ctx.restore();
+    superficie(ctx, c, cx - ancho/2, cx + ancho/2, yS);
+    paredes(ctx, c, [{ x0: cx - ancho/2, x1: cx + ancho/2, y0: yF, y1: yS - 30 }]);
+    rotulo(ctx, c, cx, yF + 11, nom === 'agua' ? 'agua, 1000 kg/m³' : `aceite, ${fmt(rho, 0)} kg/m³`, c.ink, 'center', 700, W, H);
+    const yTop = yS - (1 - r.fraccion)*lado;
+    ctx.save(); ctx.fillStyle = c.madera; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; rr(ctx, cx - lado/2, yTop, lado, lado, 3); ctx.fill(); ctx.stroke();
+    ctx.globalAlpha = .45; ctx.fillStyle = fill; ctx.fillRect(cx - lado/2 + 1, yS, lado - 2, yTop + lado - yS - 1); ctx.restore();
+    rotulo(ctx, c, cx, 14, `${fmt(r.fraccion*100, 0)} % hundido`, c.ink, 'center', 700, W, H);
+    const oc = P.ver === 'antes', cr = oc ? 1 : P.crece;
+    fuerza(ctx, c, { x:cx - 8, y:yTop + lado, dx:0, dy:1, F:r.W, k:kF, col:c.W, txt:rot('W', r.W, 'Tierra'), al:'center', lx:cx - 8, ly:yTop + lado + r.W*kF + 10 }, W, H);
+    fuerza(ctx, c, { x:cx + 8, y:yTop, dx:0, dy:-1, F:r.E, k:kF, col:c.E, oculta:oc, crece:cr, largoOculto:34, txt:rot('E', r.E, nom, oc), al:'center', lx:cx + 8, ly:yTop - (oc ? 34 : r.E*kF) - 10 }, W, H);
+  });
+}
+</script>
+<script>
+/* ================= MODO 1: paso a paso =================
+   Problemas guiados de docs/investigacion/fluidos-calor-termodinamica-ideas-erroneas.md: tres recipientes con 2 m de agua
+   (presión hidrostática) y un bloque que se hunde colgado de un dinamómetro, sobre una balanza (empuje). */
+(function(){
+const $ = id => document.getElementById(id);
+const cv = $('cv');
+const BAL = { m:2, V:0.0005, mVaso:1, Avaso:0.02, hLiq:0.15 };
+const ENTERO = 0.07, HONDO = 0.12;                       // bajada del fondo del bloque bajo la superficie inicial (m)
+const bal = o => M.balanza(Object.assign({}, BAL, o));
+const B1 = bal({ bajada:ENTERO }), BH = bal({ bajada:HONDO }), B1k = bal({ m:1, bajada:ENTERO });
+const S1 = M.sumergido({ m:1, V:BAL.V, mRef:2 });
+const SENSOR0 = { i:2, x:0.3, y:0.5 };
+const S = { step:0, max:0, pred:{}, hl:null, crece:1, ocupado:false, sensor:Object.assign({}, SENSOR0), sobre:false,
+  ex:{ m:2, liq:'agua', y:-0.04 } };
+const LIQ = { agua:1000, aceite:800, salmuera:1200 };
+let parar = () => {};
+const L = crearLienzo(cv, altoLienzo, draw);
+const rec = REC[2], q0 = rec.presionEn(SENSOR0.x, SENSOR0.y);
+
+const P1 = { id:'fluidos-fondo', ok:'d',
+  opts:[['a','En el ancho, porque tiene más agua encima.','F2-peso-de-encima','documentado'],
+        ['b','En la botella, porque su fondo está encerrado bajo un techo.','F3-encerrado','documentado'],
+        ['c','En el angosto, porque sus paredes aprietan más el agua.','paredes-cerca','parcial'],
+        ['d','Igual en los tres, porque los tres fondos están 2 m bajo la superficie.',null,'']],
+  fb:{ d:'¡Bien! En un líquido quieto, la presión solo depende de cuán hondo está el punto. Los tres fondos marcan 20 000 Pa.',
+       a:'Elegiste la A. El ancho tiene más agua, pero ese peso se reparte en un fondo más grande. La presión del fondo es la misma en los tres. La correcta está marcada.',
+       b:'Elegiste la B. Estar bajo un techo no agrega presión: lo que cuenta es la profundidad hasta el nivel de la superficie libre, 2 m en los tres. La correcta está marcada.',
+       c:'Elegiste la C. Las paredes no aprietan más por estar cerca: empujan el agua de costado y no cambian la presión del fondo. La correcta está marcada.' } };
+const P2 = { id:'fluidos-bajo-techo', ok:'c',
+  opts:[['a','3000 Pa','F4-h-hasta-el-techo','documentado'], ['b','5000 Pa','h-desde-el-fondo','hipotesis'],
+        ['c','15 000 Pa',null,''], ['d','20 000 Pa','F7-igual-en-todo','documentado']],
+  fb:{ c:'¡Bien! h se mide en vertical hasta el nivel de la superficie libre: 2 − 0,5 = 1,5 m, aunque en el camino haya un techo.',
+       a:'Elegiste la A. 3000 Pa sale de medir h solo hasta el techo (0,3 m). Pero el agua bajo el techo está conectada con la del cuello: su h llega hasta el nivel de la superficie libre. La correcta está marcada.',
+       b:'Elegiste la B. 5000 Pa sale de medir h desde el fondo (0,5 m). La profundidad se mide desde arriba, desde la superficie libre. La correcta está marcada.',
+       d:'Elegiste la D. 20 000 Pa es la presión del fondo. Dentro del agua la presión no es la misma en todas partes: crece hacia abajo. La correcta está marcada.' } };
+const P3 = { id:'fluidos-dinamometro', ok:'b',
+  opts:[['a','20 N','dinamometro-sin-cambio','hipotesis'], ['b','15 N',null,''], ['c','5 N','lectura-igual-al-empuje','hipotesis'], ['d','25 N','el-agua-empuja-hacia-abajo','hipotesis']],
+  fb:{ b:'¡Bien! El agua empuja el bloque hacia arriba con 5 N, así que el hilo solo tiene que sostener 20 − 5 = 15 N.',
+       a:'Elegiste la A. El bloque pesa lo mismo, pero ya no lo sostiene solo el hilo: el agua lo empuja hacia arriba y el hilo jala menos. La correcta está marcada.',
+       c:'Elegiste la C. 5 N es el empuje del agua, no lo que marca el dinamómetro. El hilo sostiene lo que falta: 20 − 5. La correcta está marcada.',
+       d:'Elegiste la D. El agua no empuja el bloque hacia abajo en total: lo empuja más fuerte por abajo que por arriba, así que la suma va hacia arriba. La correcta está marcada.' } };
+const P4 = { id:'fluidos-balanza', ok:'b',
+  opts:[['a','40 N, porque el bloque cuelga del hilo y no se apoya en el vaso.','balanza-sin-cambio','hipotesis'],
+        ['b','45 N, porque el bloque empuja el agua hacia abajo tanto como el agua lo empuja a él hacia arriba.',null,''],
+        ['c','60 N, porque ahora el bloque entero está dentro del vaso.','balanza-peso-entero','hipotesis'],
+        ['d','35 N, porque el empuje del agua aligera todo lo que hay sobre la balanza.','balanza-resta','hipotesis']],
+  fb:{ b:'¡Bien! El empuje tiene su pareja, como toda fuerza: el bloque empuja el agua hacia abajo con 5 N, y eso llega a la balanza.',
+       a:'Elegiste la A. El bloque no toca el vaso, pero sí empuja el agua: si el agua lo empuja hacia arriba con 5 N, él empuja el agua hacia abajo con 5 N. La correcta está marcada.',
+       c:'Elegiste la C. La balanza no carga el peso entero del bloque: 15 N los sigue sosteniendo el hilo. Solo le llegan los 5 N del empuje. La correcta está marcada.',
+       d:'Elegiste la D. El empuje aligera al bloque, no al vaso: el bloque empuja el agua hacia abajo con la misma fuerza. La correcta está marcada.' } };
+const P5 = { id:'fluidos-mas-hondo', ok:'c',
+  opts:[['a','Baja, porque más hondo hay más presión y el empuje crece.','F12-empuje-crece-con-profundidad','documentado'],
+        ['b','Sube, porque ahora hay más agua encima del bloque que lo empuja hacia abajo.','agua-de-encima-tension','documentado'],
+        ['c','No cambia, porque el empuje depende del volumen sumergido, que ya es todo el bloque.',null,''],
+        ['d','Baja hasta 0 N, porque a esa profundidad el bloque encuentra dónde flotar.','F11-profundidad-propia','parcial']],
+  fb:{ c:'¡Bien! Más hondo, la presión crece arriba y abajo del bloque por igual: la diferencia, que es el empuje, no cambia.',
+       a:'Elegiste la A. La presión sí crece, pero sobre la cara de arriba y sobre la de abajo por igual. El empuje es la diferencia, y esa no cambia. La correcta está marcada.',
+       b:'Elegiste la B. Es cierto que el agua de encima empuja más fuerte hacia abajo, pero el agua de abajo también empuja más fuerte hacia arriba, y en la misma cantidad. La correcta está marcada.',
+       d:'Elegiste la D. Un bloque que pesa más que su empuje no flota a ninguna profundidad: sin el hilo, se iría al fondo. La correcta está marcada.' } };
+const P6 = { id:'fluidos-otro-bloque', ok:'c',
+  opts:[['a','2,5 N, porque tiene la mitad de masa.','F10-mas-masa-mas-empuje','documentado'],
+        ['b','10 N, porque al ser más liviano el agua lo empuja más.','F10-mas-liviano-mas-empuje','hipotesis'],
+        ['c','5 N, porque desaloja la misma cantidad de agua.',null,''],
+        ['d','0 N, porque el hilo lo sostiene y el agua no tiene que empujarlo.','empuje-ligado-al-hilo','parcial']],
+  fb:{ c:'¡Bien! El empuje sale del volumen sumergido y del líquido, no del cuerpo: 0,5 L de agua desalojada pesan 5 N.',
+       a:'Elegiste la A. El empuje no depende de la masa del bloque: depende del volumen sumergido y del líquido. Los dos bloques desalojan 0,5 L. La correcta está marcada.',
+       b:'Elegiste la B. El agua no sabe cuánto pesa el bloque: empuja igual a todo lo que ocupa 0,5 L sumergidos. Al más liviano le basta con menos ayuda del hilo, nada más. La correcta está marcada.',
+       d:'Elegiste la D. El hilo y el agua actúan a la vez. El empuje existe aunque haya un hilo: el dinamómetro marca menos por eso. La correcta está marcada.' } };
+
+const LIQNOM = { agua:'agua', aceite:'aceite', salmuera:'salmuera' };
+const verBal = (T, E, N) => ({ T, E, N });
+const steps = [
+ { k:'Paso 1', t:'Tres recipientes', ley:['P','h'],
+   vista:() => ({ tipo:'rec', man:'oculta' }),
+   body:() => `<p class="problem">Tres recipientes abiertos, de formas distintas, tienen agua hasta 2 m de altura: uno ancho, uno angosto y una botella, ancha abajo, con un techo y un cuello angosto. En el fondo de cada uno hay un manómetro: un aparato que mide la ${V('P','presión')} del agua.</p>
+   <p>La ${V('P','presión')} es la fuerza que el agua hace sobre cada metro cuadrado de lo que toca. Se mide en pascales: 1 Pa = 1 N/m². Los manómetros marcan cuánto agrega el agua a la presión del aire de arriba (la manométrica).</p>
+   <p>La ${V('h','profundidad h')} de un punto se mide en vertical, hacia abajo, desde el nivel de la superficie libre del agua. Toca o pasa el puntero sobre un dato para ver dónde está.</p>`,
+   lect:() => [],
+   desc:() => 'Tres recipientes con agua hasta 2 metros: ancho, angosto y una botella con techo y cuello angosto. Un manómetro en cada fondo, todavía sin lectura.' },
+ { k:'Paso 2', t:'¿En qué fondo hay más presión?', gate:P1, ley:['P','h'], leyDespues:['P','Nw'],
+   vista:() => S.pred[P1.id] ? { tipo:'rec', man:'nueva', paredes:true } : { tipo:'rec', man:'oculta' },
+   body:() => `<p>¿En cuál de los tres fondos es mayor la ${V('P','presión')} del agua?</p>${opcionesHTML(P1.opts, 'fb')}<div id="res" class="body"></div>`,
+   exp:() => `<div class="eqs">
+       <div class="eq">${V('P','P')} = ρ · g · ${V('h','h')} = 1000 · 10 · ${V('h','2')} = ${V('P', Pa(20000))}<span class="note">en los tres fondos</span></div>
+       <div class="eq">ancho: ${N1(REC[0].pesoAgua)} N de agua sobre ${N2(REC[0].areaFondo)} m²; angosto: ${N1(REC[1].pesoAgua)} N sobre ${N2(REC[1].areaFondo)} m²</div>
+       <div class="eq">botella: el agua pesa ${fmt(REC[2].pesoAgua, 0)} N, pero empuja el fondo con ${fmt(REC[2].fuerzaFondo, 0)} N</div></div>
+     <p>Dentro de un líquido quieto, cada capa sostiene a las de encima, así que la presión crece hacia abajo: ρ·g por cada metro. Solo importa la profundidad, no la forma ni cuánta agua hay. En el ancho hay más agua, pero se reparte en un fondo más grande.</p>
+     <p>¿Y la botella? Su agua pesa ${fmt(REC[2].pesoAgua, 0)} N, pero el fondo recibe ${fmt(REC[2].fuerzaFondo, 0)} N. Los ${fmt(REC[2].fuerzaParedes, 0)} N que faltan los pone el ${V('N','techo')}: el agua lo empuja hacia arriba y él la empuja hacia abajo (flechas verdes). A esto se le llama la paradoja hidrostática.</p>
+     ${fuente('En una pregunta con un recipiente de tres secciones, antes de estudiar el tema, entre el 29 % y el 51 % de los estudiantes, según el curso, eligió la opción de "más agua encima", y entre el 36 % y el 52 % la de "encerrado" (Goszewski y otros, 2012, Estados Unidos). Que las paredes cercanas cambian la presión también apareció como opción, menos elegida.')}`,
+   lect:() => S.pred[P1.id] ? [['P', 'ancho: 20 000 Pa'], ['P', 'angosto: 20 000 Pa'], ['P', 'botella: 20 000 Pa']] : [],
+   desc:() => S.pred[P1.id] ? 'Los tres manómetros marcan 20 000 pascales. En la botella, el techo empuja el agua hacia abajo.' : 'Tres recipientes con agua hasta 2 metros. Los manómetros de los fondos todavía no marcan.' },
+ { k:'Paso 3', t:'Un sensor bajo el techo', gate:P2, ley:['P','h'], drag:true,
+   vista:() => ({ tipo:'rec', man:'si', sensor: S.pred[P2.id] ? S.sensor : SENSOR0, verSensor: S.pred[P2.id] ? 'si' : 'oculta', arrastrable: !!S.pred[P2.id] }),
+   body:() => `<p>En la botella, un sensor de ${V('P','presión')} está en la parte ancha, a 0,5 m del fondo y debajo del techo. El techo está a 0,8 m del fondo, así que el sensor queda 0,3 m bajo el techo. El agua llega a 2 m del fondo, dentro del cuello. ¿Cuánto marca el sensor, sin contar la atmósfera?</p>${opcionesHTML(P2.opts, 'fb')}<div id="res" class="body"></div>`,
+   exp:() => `<div class="eqs">
+       <div class="eq">${V('h','h')} = 2 − 0,5 = ${V('h','1,5 m')}<span class="note">en vertical, hasta el nivel de la superficie libre</span></div>
+       <div class="eq">${V('P','P')} = 1000 · 10 · ${V('h','1,5')} = ${V('P', Pa(q0.P))}</div>
+       <div class="eq">absoluta: 100 000 + ${fmt(q0.P, 0)} = ${Pa(q0.Pabs)}<span class="note">sumando la atmósfera</span></div></div>
+     <p>El agua de debajo del techo está conectada con la del cuello. A la misma altura, dentro del mismo líquido quieto, la presión es la misma: si no, el agua correría de un lado a otro. Por eso la ${V('h','h')} se cuenta hasta el nivel de la superficie libre (la línea a trazos), aunque en el camino haya un techo.</p>
+     <p>Ahora arrastra el sensor por cualquiera de los tres recipientes, o enfoca el dibujo y usa las flechas del teclado. Mira qué pasa al moverlo de costado, a la misma altura.</p>
+     <div id="vivoS" class="eqs"></div>
+     ${fuente('Medir h solo hasta lo que está justo encima del punto (un techo, una tapa) lo eligió entre el 24 % y el 32 % de los estudiantes antes de estudiar el tema, en todos los cursos medidos (Goszewski y otros, 2012). Que la presión es la misma en todo el líquido apareció en cerca del 5 % de los universitarios (Loverude, 1999). Medir h desde el fondo es un error que suponemos.')}`,
+   lect:() => { if (!S.pred[P2.id]) return []; const sl = REC[S.sensor.i], q = sl.presionEn(S.sensor.x, S.sensor.y); return [['h', `h = ${N2(q.h)} m`], ['P', `P = ${Pa(q.P)}`]]; },
+   desc:() => { if (!S.pred[P2.id]) return 'Un sensor en la parte ancha de la botella, a 0,5 metros del fondo y 0,3 metros bajo el techo. Todavía no marca.';
+     const q = REC[S.sensor.i].presionEn(S.sensor.x, S.sensor.y); return `Sensor en el recipiente ${NOMBRE_F[FORMAS_P[S.sensor.i]]}, a ${N2(S.sensor.y)} metros del fondo. Profundidad ${N2(q.h)} metros, presión ${fmt(q.P, 0)} pascales.`; } },
+ { k:'Paso 4', t:'Un bloque que se hunde', gate:P3, ley:['T','W','E','Nb'],
+   vista:() => ({ tipo:'bal', r:B1, ver: S.pred[P3.id] ? verBal('nueva', 'nueva', 'oculta') : verBal('oculta', 'no', 'oculta') }),
+   body:() => `<p class="problem">Un bloque de metal de ${V('m','2 kg')} y 0,5 L (0,0005 m³) cuelga de un dinamómetro, que marca ${V('T','T = 20 N')}: su ${V('W','peso')}. Debajo hay un vaso con agua sobre una balanza, que marca ${V('N','N = 40 N')}. Se baja el bloque hasta que queda entero bajo el agua, sin tocar el fondo.</p>
+     <p>¿Cuánto marca ahora el dinamómetro?</p>${opcionesHTML(P3.opts, 'fb')}<div id="res" class="body"></div>`,
+   exp:() => `<div class="eqs">
+       <div class="eq">${V('E','E')} = ρ · g · V = 1000 · 10 · 0,0005 = ${V('E','5 N')}<span class="note">el empuje del agua</span></div>
+       <div class="eq">${V('T','T')} + ${V('E','E')} = ${V('W','W')} → ${V('T','T')} = ${V('W','20')} − ${V('E','5')} = ${V('T','15 N')}</div></div>
+     <p>El agua empuja el bloque por todos lados, pero más fuerte por abajo, que está más hondo, que por arriba. La suma de todos esos empujones es una fuerza hacia arriba: el ${V('E','empuje')}. Vale lo que pesa el agua que el bloque desaloja (el principio de Arquímedes).</p>
+     <p>A la derecha del dibujo están las fuerzas sobre el bloque: el hilo y el agua lo sostienen entre los dos. Por eso un cuerpo sumergido "pesa menos": 15 N es su peso aparente.</p>
+     ${fuente('Las tres opciones incorrectas son errores que suponemos: no encontramos un estudio que mida esta pregunta.')}`,
+   lect:() => S.pred[P3.id] ? [['W', 'W = 20 N'], ['E', 'E = 5 N'], ['T', 'T = 15 N']] : [],
+   desc:() => S.pred[P3.id] ? 'El bloque está entero bajo el agua. El dinamómetro marca 15 newtons: el agua lo empuja hacia arriba con 5.' : 'El bloque de 2 kilogramos está entero bajo el agua, colgado del dinamómetro, que todavía no marca. La balanza tampoco.' },
+ { k:'Paso 5', t:'¿Y la balanza?', gate:P4, ley:['T','W','E','Nb'],
+   vista:() => ({ tipo:'bal', r:B1, ver: verBal('si', 'si', S.pred[P4.id] ? 'nueva' : 'oculta') }),
+   body:() => `<p>Con el bloque entero bajo el agua, colgado del hilo y sin tocar el fondo, ¿cuánto marca la balanza? Antes de hundirlo marcaba ${V('N','40 N')}.</p>${opcionesHTML(P4.opts, 'fb')}<div id="res" class="body"></div>`,
+   exp:() => `<div class="eqs">
+       <div class="eq">${V('N','N')} = 40 + ${V('E','5')} = ${V('N','45 N')}<span class="note">el bloque empuja el agua hacia abajo con 5 N</span></div>
+       <div class="eq">${V('T','15')} + ${V('N','45')} = 60 N = 20 + 40<span class="note">entre el hilo y la balanza sostienen todo</span></div></div>
+     <p>Por la tercera ley, si el agua empuja el bloque hacia arriba con 5 N, el bloque empuja el agua hacia abajo con 5 N. Esa fuerza pasa por el agua al fondo del vaso y a la balanza. Lo que deja de sostener el hilo lo pasa a sostener la balanza: la suma no cambia. Mira también que el nivel del agua subió.</p>
+     ${fuente('Las opciones incorrectas son errores que suponemos. Loverude (1999) encontró que muchos errores de flotación son errores de dinámica: no ver que el que empuja también es empujado. Esta pregunta en particular no está medida.')}`,
+   lect:() => S.pred[P4.id] ? [['T', 'T = 15 N'], ['N', 'N = 45 N'], ['suma', 'T + N = 60 N']] : [['T', 'T = 15 N']],
+   desc:() => S.pred[P4.id] ? 'La balanza marca 45 newtons: los 40 del vaso con agua más los 5 con que el bloque empuja el agua hacia abajo.' : 'El bloque entero bajo el agua; el dinamómetro marca 15 newtons. La balanza todavía no marca.' },
+ { k:'Paso 6', t:'Más hondo', gate:P5, ley:['T','W','E','Nb'], leyDespues:['T','W','E','Nb','P'],
+   vista:() => S.pred[P5.id] ? { tipo:'bal', r:BH, ver:verBal('nueva', 'nueva', 'nueva'), nota:'5 cm más abajo', caras:true } : { tipo:'bal', r:BH, ver:verBal('oculta', 'oculta', 'oculta'), nota:'5 cm más abajo' },
+   body:() => `<p>Bajas el bloque 5 cm más, todavía entero bajo el agua y sin tocar el fondo. Recuerda que el dinamómetro marcaba ${V('T','15 N')}. ¿Qué pasa con lo que marca?</p>${opcionesHTML(P5.opts, 'fb')}<div id="res" class="body"></div>`,
+   exp:() => { const a = BH.a, d0 = BH.profundidadFondo - a, d1 = BH.profundidadFondo, e0 = B1.profundidadFondo - a, e1 = B1.profundidadFondo;
+     const fila = (que, h0, h1) => `<div class="eq">${que}: arriba ${V('h','h')} = ${cm2(h0)} → ${V('P', Pa(1000*10*h0))}; abajo ${V('h','h')} = ${cm2(h1)} → ${V('P', Pa(1000*10*h1))}</div>`;
+     return `<div class="eqs">
+       ${fila('antes', e0, e1)}
+       ${fila('5 cm más abajo', d0, d1)}
+       <div class="eq">diferencia: ${V('P', Pa(1000*10*a))} en los dos casos</div>
+       <div class="eq">${V('E','E')} = ${V('P', Pa(1000*10*a))} · ${fmt(a*a, 4)} m² de cara = ${V('E', N1(BH.E) + ' N')} → ${V('T','T = 15 N')}</div></div>
+     <p>Al bajar, la presión crece sobre las dos caras, arriba y abajo, en la misma cantidad. El empuje sale de la diferencia entre las dos, y la diferencia solo depende del alto del bloque. Por eso, ya sumergido entero, el empuje no cambia con la profundidad. La balanza tampoco: sigue en ${V('N','45 N')}.</p>
+     ${fuente('Con dos bloques iguales a distinta profundidad, el 25 % de dos grupos de universitarios (de 201 y de 37) dijo que el más hondo recibe más empuje, y entre el 30 % y el 50 % dijo que el hilo del más hondo jala más "por el agua de encima" (Loverude, 1999). Que cada cuerpo busca su profundidad está documentado en otra pregunta (experimento 4 de ¿Qué pasa si…?).')}`; },
+   lect:() => S.pred[P5.id] ? [['T', 'T = 15 N'], ['E', 'E = 5 N'], ['N', 'N = 45 N']] : [],
+   desc:() => S.pred[P5.id] ? 'Cinco centímetros más abajo, el dinamómetro sigue en 15 newtons y la balanza en 45.' : 'El bloque bajó cinco centímetros más, entero bajo el agua. El dinamómetro y la balanza todavía no marcan.' },
+ { k:'Paso 7', t:'Otro bloque del mismo tamaño', gate:P6, ley:['T','W','E','Nb'],
+   vista:() => ({ tipo:'bal', r:B1k, ver: S.pred[P6.id] ? verBal('nueva', 'nueva', 'nueva') : verBal('oculta', 'no', 'oculta'), etiqueta:'1 kg' }),
+   body:() => `<p>Cambias el bloque por otro del mismo tamaño (0,5 L) pero de ${V('m','1 kg')}, y lo hundes entero, a la misma profundidad. El de 2 kg recibía un ${V('E','empuje de 5 N')}. ¿Cuánto empuje recibe el de 1 kg?</p>${opcionesHTML(P6.opts, 'fb')}<div id="res" class="body"></div>`,
+   exp:() => `<div class="eqs">
+       <div class="eq">${V('E','E')} = 1000 · 10 · 0,0005 = ${V('E', N1(S1.E) + ' N')}<span class="note">igual que el de 2 kg</span></div>
+       <div class="eq">${V('T','T')} = ${V('W', N1(S1.W))} − ${V('E', N1(S1.E))} = ${V('T', N1(S1.T) + ' N')}; ${V('N','N')} = 40 + ${V('E','5')} = ${V('N','45 N')}</div></div>
+     <p>El agua no "sabe" qué hay dentro del bloque: empuja igual a cualquier cosa que ocupe ese lugar. Si en vez del bloque hubiera 0,5 L de agua, ese poco de agua se quedaría quieto, sostenido justo por el empuje. Por eso el empuje vale el peso del agua desalojada: 5 N. Lo que cambia con la masa es cuánto tiene que ayudar el hilo.</p>
+     ${fuente('Con dos bloques del mismo volumen y distinta masa sumergidos, entre el 40 % y el 45 % de 201 universitarios de primer año dijo que el más pesado recibe más empuje; acertó solo el 25 % (Loverude, 1999). Que el más liviano recibe más empuje es un error que suponemos: el estudio no da su porcentaje. Ligar el empuje al hilo aparece como idea en Wagner y otros (2013), sin un porcentaje que pudiéramos leer.')}`,
+   lect:() => S.pred[P6.id] ? [['W', 'W = 10 N'], ['E', 'E = 5 N'], ['T', 'T = 5 N']] : [],
+   desc:() => S.pred[P6.id] ? 'El bloque de 1 kilogramo recibe el mismo empuje, 5 newtons. El dinamómetro marca 5 y la balanza 45.' : 'Un bloque de 1 kilogramo, del mismo tamaño, entero bajo el agua. El empuje y las lecturas todavía no se muestran.' },
+ { k:'Paso 8', t:'Ahora explora tú', ley:['T','W','E','Nb'], drag:true, explora:true,
+   vista:() => { const e = S.ex, r = bal({ m:e.m, rhoF:LIQ[e.liq], bajada:e.y });
+     return { tipo:'bal', r, ver:verBal('si', 'si', 'si'), etiqueta:`${N2(e.m)} kg`, liquido:e.liq, madera:e.m < 0.5, arrastrable:true, nota: r.flojo ? 'flota: el hilo queda flojo' : '' }; },
+   body:() => `<p>Arrastra el bloque hacia arriba y hacia abajo (o enfoca el dibujo y usa ↑ ↓). Cambia el bloque o el líquido y mira qué marcan el dinamómetro y la balanza.</p>
+     <div class="grupo"><span>Bloque (todos de 0,5 L)</span><div class="seg" id="segM" role="group" aria-label="Bloque"><button type="button" data-m="2">metal, 2 kg</button><button type="button" data-m="1">metal, 1 kg</button><button type="button" data-m="0.3">madera, 0,3 kg</button></div></div>
+     <div class="grupo"><span>Líquido (15 cm en el vaso)</span><div class="seg" id="segL" role="group" aria-label="Líquido"><button type="button" data-l="agua">agua, 1000 kg/m³</button><button type="button" data-l="aceite">aceite, 800</button><button type="button" data-l="salmuera">salmuera, 1200</button></div></div>
+     <div id="vivoB" class="eqs"></div>
+     <p class="hint">Prueba la madera: al bajarla, flota y el hilo queda flojo. Prueba el metal: el empuje crece mientras se hunde y deja de crecer cuando queda entero bajo el líquido.</p>`,
+   lect:() => { const e = S.ex, r = bal({ m:e.m, rhoF:LIQ[e.liq], bajada:e.y }); return [['T', `T = ${N1(r.T)} N`], ['E', `E = ${N1(r.E)} N`], ['N', `N = ${N1(r.N)} N`], ['suma', `T + N = ${N1(r.total)} N`]]; },
+   desc:() => { const e = S.ex, r = bal({ m:e.m, rhoF:LIQ[e.liq], bajada:e.y });
+     return `Bloque de ${N2(e.m)} kilogramos en ${e.liq}, ${fmt(r.fraccion*100, 0)} por ciento sumergido. Dinamómetro ${N1(r.T)} newtons, empuje ${N1(r.E)}, balanza ${N1(r.N)}.${r.flojo ? ' Flota: el hilo queda flojo.' : ''}`; } },
+];
+function verActual(){ return steps[S.step].vista(); }
+function draw(){
+  if (!L.W) return;
+  const c = colores(L.W), s = steps[S.step], v = verActual();
+  v.crece = S.crece; v.hl = S.hl; v.sobre = S.sobre;
+  if (v.tipo === 'rec') vistaRecipientes(L, c, v);
+  else vistaBalanza(L, c, Object.assign({ etiqueta:'2 kg', liquido:'agua' }, v));
+  lecturas($('lect1'), s.lect());
+  decir($('desc1'), s.desc());
+}
+const dots = $('dots');
+steps.forEach((s, n) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = n + 1; b.setAttribute('aria-label', `Ir al ${s.k.toLowerCase()}: ${s.t}`);
+  b.addEventListener('click', () => go(n, true)); li.appendChild(b); dots.appendChild(li);
+});
+// Corta cualquier animación en curso y deja la escena en su estado final (así "Siguiente" nunca queda trabado).
+function detener(){ parar(); parar = () => {}; if (S.ocupado){ S.ocupado = false; S.crece = 1; nav(); draw(); } }
+function go(n, enfocar){
+  if (n < 0 || n >= steps.length || n > S.max) return;
+  detener();
+  const s = steps[n]; S.step = n; S.hl = null; S.crece = 1; S.sobre = false;
+  const arrastra = puedeArrastrar();
+  cv.tabIndex = arrastra ? 0 : -1;
+  cv.setAttribute('aria-label', s.explora ? 'Bloque colgado del dinamómetro sobre el vaso: con las flechas ↑ ↓ lo subes o lo bajas'
+    : s.drag ? 'Tres recipientes con un sensor de presión: con las flechas del teclado lo mueves' : 'Dibujo del paso');
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  ponerLeyenda(); pintarDots();
+  L.compactar(!!(s.gate && !S.pred[s.gate.id]));
+  if (s.gate) prediccion(s);
+  if (s.drag && !s.explora && S.pred[s.gate.id]) vivoSensor();
+  if (s.explora) explorar();
+  nav(); draw();
+  if (enfocar) $('stepT').focus({ preventScroll:true });
+}
+function ponerLeyenda(){ const s = steps[S.step]; leyenda($('ley1'), s.gate && S.pred[s.gate.id] && s.leyDespues ? s.leyDespues : s.ley); }
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0;
+  const falta = s.gate && !S.pred[s.gate.id];
+  $('next').disabled = S.step === steps.length - 1 || falta || S.ocupado;
+  $('next').textContent = falta ? 'Elige una opción' : 'Siguiente';
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(n){ if (n > S.max) S.max = n; }
+function animarRespuesta(){
+  parar = animarValor(700, f => { S.crece = f; draw(); }, () => { parar = () => {}; S.ocupado = false; nav(); draw(); });
+}
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('res').innerHTML = s.exp();
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1);
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    S.ocupado = true; S.crece = 0;
+    pintar(); pintarDots(); nav(); ponerLeyenda();
+    if (s.drag){ cv.tabIndex = 0; vivoSensor(); }
+    $('fb').focus({ preventScroll:true });
+    const paso = S.step;
+    L.compactar(false); draw();
+    // En el celular, el dibujo sube a la vista y la escena cambia un momento después (nucleo/celular.js).
+    Celular.alResponder(L.cv, animarRespuesta, () => S.step === paso, { siNo: () => { S.ocupado = false; S.crece = 1; nav(); } });
+  }));
+  pintar();
+}
+
+// ----- paso 3: el sensor que se arrastra -----
+function vivoSensor(){
+  const el = $('vivoS'); if (!el) return;
+  const sl = REC[S.sensor.i], q = sl.presionEn(S.sensor.x, S.sensor.y);
+  el.innerHTML = `<div class="eq">recipiente ${NOMBRE_F[FORMAS_P[S.sensor.i]]}, a ${N2(S.sensor.y)} m del fondo${q.bajoTecho ? ', bajo el techo' : ''}</div>
+    <div class="eq">${V('h','h')} = 2 − ${N2(S.sensor.y)} = ${V('h', N2(q.h) + ' m')} → ${V('P','P')} = 1000 · 10 · ${V('h', N2(q.h))} = ${V('P', Pa(q.P))}</div>`;
+}
+// ----- paso 8: explorador -----
+function explorar(){
+  const marcarSeg = () => {
+    $('segM').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.m === S.ex.m)));
+    $('segL').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.l === S.ex.liq)));
+  };
+  $('segM').querySelectorAll('button').forEach(b => b.onclick = () => { S.ex.m = +b.dataset.m; marcarSeg(); vivo(); });
+  $('segL').querySelectorAll('button').forEach(b => b.onclick = () => { S.ex.liq = b.dataset.l; marcarSeg(); vivo(); });
+  marcarSeg(); vivo();
+}
+function vivo(){
+  const e = S.ex, rho = LIQ[e.liq], r = bal({ m:e.m, rhoF:rho, bajada:e.y });
+  $('vivoB').innerHTML = `<div class="eq">sumergido: ${fmt(r.fraccion*100, 0)} % del bloque → ${N2(r.Vsum*1000)} L</div>
+    <div class="eq">${V('E','E')} = ${fmt(rho, 0)} · 10 · ${N2(r.Vsum*1000)}/1000 = ${V('E', N1(r.E) + ' N')}</div>
+    <div class="eq">${V('T','T')} = ${r.flojo ? '0 N<span class="note">el hilo queda flojo: el bloque flota y ' + V('E','E') + ' = ' + V('W','W') + '</span>' : `${V('W', N1(r.W))} − ${V('E', N1(r.E))} = ${V('T', N1(r.T) + ' N')}`}</div>
+    <div class="eq">${V('N','N')} = ${N1(r.Wvaso)} + ${V('E', N1(r.E))} = ${V('N', N1(r.N) + ' N')}<span class="note">vaso con ${e.liq}: ${N1(r.Wvaso)} N</span></div>
+    <div class="eq">${V('T','T')} + ${V('N','N')} = ${N2(r.total)} N<span class="note">siempre igual: el peso de todo</span></div>`;
+  draw();
+}
+// Arrastre: solo cerca del sensor (paso 3, ya respondido) o del bloque (paso 8). Lo demás deja desplazar la página.
+function puedeArrastrar(){ const s = steps[S.step]; return !!(s.explora || (s.drag && S.pred[s.gate.id])); }
+function asa(){
+  const s = steps[S.step], v = verActual();
+  if (v.tipo === 'rec'){ const g = geoRec(L.W, L.H), sl = g.slots[S.sensor.i]; return sl.pt(S.sensor.x, S.sensor.y); }
+  const g = geoBal(L.W, L.H, v.r); return { x:g.x0, y:g.yS0 + (v.r.fondoBloque - v.r.a/2)*g.s };
+}
+function mover(p){
+  const s = steps[S.step];
+  if (!s.explora){ const n = sensorDesdePantalla(L.W, L.H, p.x, p.y);
+    if (n.i !== S.sensor.i || n.x !== S.sensor.x || n.y !== S.sensor.y){ S.sensor = n; vivoSensor(); draw(); } return; }
+  const v = verActual(), g = geoBal(L.W, L.H, v.r);
+  const y = clamp(Math.round(((p.y - g.yS0)/g.s + v.r.a/2)*200)/200, -0.06, 0.13);
+  if (y !== S.ex.y){ S.ex.y = y; vivo(); }
+}
+Celular.arrastre(cv, {
+  activo: puedeArrastrar,
+  cerca: (p, r) => { const a = asa(); return Math.hypot(p.x - a.x, p.y - a.y) < r + 6; },
+  empezar: () => { S.sobre = true; detener(); draw(); },
+  mover: p => mover(p),
+  soltar: () => { S.sobre = false; draw(); },
+  sobre: b => { S.sobre = b; draw(); }
+});
+cv.addEventListener('keydown', e => {
+  if (!puedeArrastrar()) return;
+  const s = steps[S.step];
+  const d = { ArrowUp:1, ArrowDown:-1, ArrowLeft:0, ArrowRight:0 }[e.key]; if (d === undefined) return;
+  e.preventDefault();
+  if (s.explora){ if (!d) return; S.ex.y = clamp(Math.round((S.ex.y - d*0.005)*200)/200, -0.06, 0.13); vivo(); return; }
+  // Sensor: ↑ ↓ cambian la altura; ← → lo pasan de costado (y de un recipiente a otro).
+  const g = geoRec(L.W, L.H), p = g.slots[S.sensor.i].pt(S.sensor.x, S.sensor.y);
+  const n = sensorDesdePantalla(L.W, L.H, p.x + (e.key === 'ArrowRight' ? 0.05*g.s + 0.5 : e.key === 'ArrowLeft' ? -0.05*g.s - 0.5 : 0), p.y - d*0.05*g.s);
+  if (e.key === 'ArrowRight' && n.i === S.sensor.i && n.x === S.sensor.x && S.sensor.i < 2) { n.i = S.sensor.i + 1; n.x = -Math.max(0, REC[n.i].ancho(n.y + 1e-6)/2 - 0.05); }
+  if (e.key === 'ArrowLeft' && n.i === S.sensor.i && n.x === S.sensor.x && S.sensor.i > 0) { n.i = S.sensor.i - 1; n.x = Math.max(0, REC[n.i].ancho(n.y + 1e-6)/2 - 0.05); }
+  S.sensor = n; vivoSensor(); draw();
+});
+
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1, true); });
+$('prev').addEventListener('click', () => go(S.step - 1, true));
+function marcar(k){
+  S.hl = k;
+  document.querySelectorAll('#m1 .v').forEach(e => e.classList.toggle('hl', !!k && e.dataset.var === k));
+  draw();
+}
+document.addEventListener('pointerover', e => { const t = e.target.closest && e.target.closest('#m1 [data-var]'); if (t) marcar(t.dataset.var); });
+document.addEventListener('pointerout', e => { const t = e.target.closest && e.target.closest('#m1 [data-var]'); if (t && !t.contains(e.relatedTarget)) marcar(null); });
+document.addEventListener('focusin', e => { const t = e.target.closest && e.target.closest('#m1 [data-var]'); if (t) marcar(t.dataset.var); });
+document.addEventListener('focusout', e => { if (e.target.closest && e.target.closest('#m1 [data-var]')) marcar(null); });
+alRedibujarTema(draw);
+addEventListener('modo', () => { if ($('m1').hidden) detener(); else L.resize(); });
+L.resize(); go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Preguntas de docs/investigacion/fluidos-calor-termodinamica-ideas-erroneas.md. La escena cambia recién después de
+   responder. Lo que se dibuja sale de MotorFluidos. */
+(function(){
+const $ = id => document.getElementById(id);
+const cv = $('cv2');
+const L = crearLienzo(cv, altoLienzo, draw);
+let parar = () => {};
+const E = {};
+const S = { k:0, pred:{}, t0:0 };
+const MASAS = [0.2, 0.4, 0.5, 1, 2];
+const PRENSA = { A1:0.01, A2:0.5, F1:200, d1:0.5 };
+const TUBO = { rho1:1000, h1:0.272, rho2:13600 };
+const pr0 = M.prensa(PRENSA), tu0 = M.tuboU(TUBO), bl0 = M.bloques({ masas:MASAS, V:0.0005 }), fa = M.flotacion({ rhoC:600, V:0.002 }), fo = M.flotacion({ rhoC:600, V:0.002, rhoF:800 });
+
+const EXPS = [
+  { id:'vasos', corto:'Las dos ramas', ley:['P','h'],
+    q:'Un tubo tiene dos ramas abiertas unidas por abajo: la izquierda es angosta y la derecha, el doble de ancha. Se echa agua por la rama angosta y se espera a que quede quieta. ¿Dónde queda el nivel del agua en la rama ancha?',
+    opts:[['a','Más abajo que en la angosta, porque el agua de la rama ancha pesa más.','F1-ancha-mas-baja','documentado'],
+          ['b','Más arriba que en la angosta, porque en la rama ancha cabe más agua.','ancha-mas-alta','hipotesis'],
+          ['c','A la misma altura que en la angosta, porque sobre las dos superficies solo hay aire a la misma presión.',null],
+          ['d','Depende de cuánta agua se echó: con poca queda más abajo; con mucha, igual.','depende-de-la-cantidad','hipotesis']],
+    ok:'c',
+    fb:{ a:'Elegiste la A. El agua de la rama ancha pesa más, pero ese peso se reparte en un fondo más ancho: la presión abajo depende solo de la altura. La correcta está marcada; mira la escena.',
+         b:'Elegiste la B. Que quepa más agua no la hace subir más: el agua se mueve hasta que la presión abajo es la misma en las dos ramas, y eso pasa a la misma altura. La correcta está marcada; mira la escena.',
+         d:'Elegiste la D. Con poca o con mucha agua, las dos superficies quedan a la misma altura. La correcta está marcada; mira la escena.' },
+    antes:() => Object.assign(E, { tipo:'vasos', V:0.0015, lleno:0, ver:'antes' }),
+    despues:() => { E.ver = 'despues'; E.lleno = 0; mover(1400, f => { E.lleno = f; }); },
+    fin:() => { E.ver = 'despues'; E.lleno = 1; },
+    ctrl:() => `<div class="slider"><label for="q-v"><span>Agua echada</span><output id="q-v-o"></output></label><input id="q-v" type="range" min="0.6" max="3.3" step="0.1" value="${E.V*1000}"></div><div class="chips" id="chips2"></div>`,
+    vivo:() => { const r = M.vasosComunicantes({ areas:VASOS.areas, volumen:E.V }); $('q-v-o').textContent = `${N1(E.V*1000)} L`;
+      $('chips2').innerHTML = `<span class="chip">angosta: ${cm(r.niveles[0])}</span><span class="chip">ancha: ${cm(r.niveles[1])}</span>`; },
+    alCambiar:() => { E.V = +$('q-v').value/1000; E.lleno = 1; },
+    exp:`<p>El agua se mueve mientras la ${V('P','presión')} abajo no sea la misma en las dos ramas. En el fondo, la presión solo depende de la ${V('h','profundidad')}: ρ·g·${V('h','h')}. Se iguala cuando las dos superficies quedan a la misma altura, sean como sean de anchas las ramas.</p>
+      <p>La rama ancha sí tiene el doble de agua y pesa el doble, pero ese peso se reparte en un fondo del doble de área. Mueve el agua echada: los dos niveles suben juntos.</p>
+      ${fuente('Es el error más frecuente que encontramos en fluidos: en varios grupos de universitarios de Estados Unidos, después de estudiar el tema, entre el 50 % y el 70 % de los de primer año dibujó el agua más baja en la rama ancha, y en una sección de segundo año el 10 % lo siguió diciendo justo después de ver la demostración (Loverude, 1999). Las opciones B y D son errores que suponemos.')}` },
+  { id:'prensa', corto:'La prensa hidráulica', ley:['F','W','P'],
+    q:`En una prensa hidráulica, el émbolo chico tiene 0,01 m² y el grande, 0,5 m². Una mano empuja el chico hacia abajo con ${V('F','F = 200 N')}. ¿Qué ${V('W','peso W')} de carga puede sostener el émbolo grande? Desprecia el peso de los émbolos y del aceite.`,
+    opts:[['a','200 N','fuerza-se-transmite-igual','hipotesis'], ['b','10 000 N',null], ['c','4 N','razon-de-areas-invertida','hipotesis'], ['d','1414 N','razon-de-diametros','hipotesis']],
+    ok:'b',
+    fb:{ a:'Elegiste la A. Lo que se transmite igual a todo el aceite es la presión, no la fuerza. El émbolo grande tiene 50 veces más área, así que recibe 50 veces más fuerza. La correcta está marcada; mira la escena.',
+         c:'Elegiste la C. 4 N sale de dividir entre 50 en vez de multiplicar. El émbolo grande, con más área, recibe más fuerza, no menos. La correcta está marcada; mira la escena.',
+         d:'Elegiste la D. 1414 N sale de multiplicar por la razón de los diámetros (√50 ≈ 7,07). La fuerza crece con la razón de las áreas, 50. La correcta está marcada; mira la escena.' },
+    antes:() => Object.assign(E, { tipo:'prensa', F:200, A2:0.5, ver:'antes', mov:0 }),
+    despues:() => { E.ver = 'despues'; E.mov = 0; mover(1600, f => { E.mov = f; }); },
+    fin:() => { E.ver = 'despues'; E.mov = 1; },
+    ctrl:() => `<div class="ctrls"><div class="slider"><label for="q-F"><span>Fuerza de la mano (${V('F','F')})</span><output id="q-F-o"></output></label><input id="q-F" class="r-F" type="range" min="50" max="400" step="10" value="${E.F}"></div>
+      <div class="slider"><label for="q-A"><span>Área del émbolo grande</span><output id="q-A-o"></output></label><input id="q-A" type="range" min="0.05" max="0.5" step="0.05" value="${E.A2}"></div></div><div class="chips" id="chips2"></div>`,
+    vivo:() => { const r = M.prensa({ A1:0.01, A2:E.A2, F1:E.F, d1:0.5 }); $('q-F-o').textContent = `${N1(E.F)} N`; $('q-A-o').textContent = `${N2(E.A2)} m²`;
+      $('chips2').innerHTML = `<span class="chip">P = ${Pa(r.P)}</span><span class="chip">W = ${fmt(r.F2, 0)} N</span><span class="chip">el grande sube ${cm(r.d2)}</span><span class="chip">trabajo: ${N1(r.trabajo1)} J y ${N1(r.trabajo2)} J</span>`; },
+    alCambiar:() => { E.F = +$('q-F').value; E.A2 = +$('q-A').value; E.mov = 1; },
+    exp:`<div class="eqs"><div class="eq">${V('P','P')} = ${V('F','200')} / 0,01 = ${V('P', Pa(pr0.P))}<span class="note">se transmite a todo el aceite (Pascal)</span></div>
+      <div class="eq">${V('W','W')} = ${V('P', Pa(pr0.P))} · 0,5 m² = ${V('W', fmt(pr0.F2, 0) + ' N')}</div>
+      <div class="eq">baja 50 cm · 0,01 m² = sube 1 cm · 0,5 m²<span class="note">el aceite que sale de un lado entra al otro</span></div>
+      <div class="eq">${V('F','200')} · 0,5 = ${V('W','10 000')} · 0,01 = 100 J</div></div>
+      <p>La mano aumenta la ${V('P','presión')} del aceite, y ese aumento llega igual a todas partes: es el principio de Pascal. Sobre el émbolo grande, la misma presión actúa en un área 50 veces mayor y da una fuerza 50 veces mayor.</p>
+      <p>Pero la prensa no regala energía: para subir la carga 1 cm, la mano tiene que bajar 50 cm. El trabajo es el mismo en los dos lados (las dos barras de abajo).</p>
+      ${fuente('No encontramos un estudio que mida errores con la prensa hidráulica, aunque es un problema clásico de admisión. Las tres opciones incorrectas son errores que suponemos. La de 200 N sale de leer el principio de Pascal como "todo es igual en el líquido", una idea documentada pero poco frecuente: cerca del 5 % de los universitarios (Loverude, 1999).')}` },
+  { id:'tubo-u', corto:'Agua sobre mercurio', ley:['h','P'],
+    q:`Un tubo en U de sección pareja tiene mercurio (13 600 kg/m³). Por la rama izquierda se echa agua hasta formar una columna de ${V('h','h = 27,2 cm')} sobre el mercurio. ¿Cuánto más arriba queda el mercurio de la rama derecha que la frontera entre el agua y el mercurio de la izquierda?`,
+    opts:[['a','0 cm','sin-desnivel','hipotesis'], ['b','2 cm',null], ['c','27,2 cm','superficies-parejas','hipotesis'], ['d','370 cm','densidades-invertidas','hipotesis']],
+    ok:'b',
+    fb:{ a:'Elegiste la A. Si quedaran parejos, la rama izquierda tendría 27,2 cm de agua de más empujando hacia abajo, y el mercurio se movería. La correcta está marcada; mira la escena.',
+         c:'Elegiste la C. Con un solo líquido, las superficies quedan parejas. Con dos líquidos no: solo se iguala la presión dentro del mismo líquido, a la misma altura. La correcta está marcada; mira la escena.',
+         d:'Elegiste la D. 370 cm sale de invertir las densidades. El mercurio es 13,6 veces más denso: le basta una columna 13,6 veces más baja. La correcta está marcada; mira la escena.' },
+    antes:() => Object.assign(E, { tipo:'tubo', h1:0.272, ver:'antes', crece:0 }),
+    despues:() => { E.ver = 'despues'; E.crece = 0; mover(1000, f => { E.crece = f; }); },
+    fin:() => { E.ver = 'despues'; E.crece = 1; },
+    ctrl:() => `<div class="slider"><label for="q-h"><span>Columna de agua (${V('h','h')})</span><output id="q-h-o"></output></label><input id="q-h" class="r-h" type="range" min="0.05" max="0.4" step="0.01" value="${E.h1}"></div><div class="chips" id="chips2"></div>`,
+    vivo:() => { const r = M.tuboU(Object.assign({}, TUBO, { h1:E.h1 })); $('q-h-o').textContent = cm(E.h1);
+      $('chips2').innerHTML = `<span class="chip">desnivel del mercurio: ${cm(r.x)}</span><span class="chip">P en la frontera: ${Pa(r.Pfrontera)}</span>`; },
+    alCambiar:() => { E.h1 = +$('q-h').value; E.crece = 1; },
+    exp:`<div class="eqs"><div class="eq">izquierda: ${V('P','P')} = 1000 · 10 · ${V('h','0,272')} = ${V('P', Pa(tu0.Pfrontera))}</div>
+      <div class="eq">derecha: ${V('P','P')} = 13 600 · 10 · x → x = 2720 / 136 000 = ${cm(tu0.x)}</div></div>
+      <p>Toma la altura de la frontera agua-mercurio (la línea a trazos). A esa altura, en las dos ramas hay mercurio conectado por abajo: la ${V('P','presión')} tiene que ser la misma. A la izquierda la pone la columna de agua; a la derecha, el mercurio que sobresale, x. Como el mercurio es 13,6 veces más denso, le basta una columna 13,6 veces más baja: 27,2 / 13,6 = 2 cm.</p>
+      <p>Mueve la columna de agua: el desnivel x siempre es h / 13,6. Así funciona un manómetro de tubo en U.</p>
+      ${fuente('Con dos líquidos, en cuatro grupos de universitarios, entre el 20 % y el 60 % dijo que a la misma altura hay más presión en el líquido más denso, y solo entre el 15 % y el 40 % comparó bien (Loverude, 1999). Las tres opciones incorrectas, entre ellas la de las superficies parejas, son errores que suponemos.')}` },
+  { id:'bloques', corto:'Cinco bloques bajo el agua', ley:['W','E','Nf'],
+    q:'Cinco bloques del mismo tamaño (0,5 L) y masas de 0,2; 0,4; 0,5; 1 y 2 kg se sueltan juntos, a media altura, dentro de un tanque con agua. ¿Dónde queda cada uno cuando todo se calma?',
+    opts:[['a','Escalonados: cada uno a una profundidad distinta, el más pesado más abajo.','F11-escalonados','documentado'],
+          ['b','Los dos más livianos flotan, el de 0,5 kg queda a media agua y los dos más pesados van al fondo.',null],
+          ['c','Los cinco van al fondo, porque todos son sólidos y el agua no puede sostenerlos.','todos-al-fondo','hipotesis'],
+          ['d','Los cinco quedan donde se soltaron, porque todos reciben el mismo empuje.','quedan-donde-se-sueltan','hipotesis']],
+    ok:'b',
+    fb:{ a:'Elegiste la A. Un bloque solo puede quedar quieto a media agua si su empuje es igual a su peso, y el empuje de un bloque sumergido no cambia con la profundidad. Así que no hay "su" profundidad. La correcta está marcada; mira la escena.',
+         c:'Elegiste la C. El agua sí puede sostener un sólido: si pesa menos que el agua que desaloja, el empuje lo sube. La correcta está marcada; mira la escena.',
+         d:'Elegiste la D. Es cierto que sumergidos reciben el mismo empuje, 5 N, pero no pesan lo mismo: los que pesan más bajan, los que pesan menos suben. La correcta está marcada; mira la escena.' },
+    antes:() => Object.assign(E, { tipo:'bloques', f:0, ver:'antes' }),
+    despues:() => { E.ver = 'despues'; E.f = 0; mover(1600, f => { E.f = f; }); },
+    fin:() => { E.ver = 'despues'; E.f = 1; },
+    ctrl:() => `<div class="chips" id="chips2"></div><p><button type="button" class="btn" id="repetir">Soltarlos otra vez</button></p>`,
+    vivo:() => { $('chips2').innerHTML = bl0.lista.map(b => `<span class="chip">${N2(b.m)} kg: ${b.destino === 'flota' ? `flota, ${fmt(b.fraccion*100, 0)} % bajo el agua` : b.destino}</span>`).join(''); },
+    alCambiar:() => {},
+    exp:`<p>Bajo el agua, los cinco reciben el mismo ${V('E','empuje')}: 5 N, lo que pesan 0,5 L de agua. Lo que cambia es su ${V('W','peso')}. Los de 0,2 y 0,4 kg pesan menos de 5 N: suben y flotan con una parte afuera, la justa para que el empuje iguale su peso (40 % y 80 % bajo el agua). El de 0,5 kg pesa justo 5 N: queda quieto donde lo sueltes. Los de 1 y 2 kg pesan más: bajan hasta el fondo, que los sostiene con lo que falta (${V('N','N')} = 5 N y 15 N).</p>
+      <p>Solo hay tres destinos, según la densidad del bloque comparada con la del agua: menor, igual o mayor que 1000 kg/m³.</p>
+      ${fuente('Con este experimento, solo el 20 % de 371 universitarios de primer año de Estados Unidos acertó; casi todos los demás dibujaron los bloques escalonados. El resultado fue prácticamente el mismo con o sin enseñanza previa (Loverude, 1999). Las opciones C y D son errores que suponemos.')}` },
+  { id:'dos-liquidos', corto:'Un cubo en dos líquidos', ley:['W','E'],
+    q:'El mismo cubo de madera (1,2 kg, 2 L) flota en agua y en aceite (800 kg/m³). En el agua sobresale más; en el aceite queda más hundido. ¿En cuál de los dos recibe más empuje?',
+    opts:[['a','En el agua, porque flota más alto: el agua lo empuja más.','F13-flota-mas-alto','documentado'],
+          ['b','En el aceite, porque tiene más volumen bajo el líquido.','F13-mas-sumergido','documentado'],
+          ['c','Igual en los dos, porque en los dos sostiene el mismo peso.',null],
+          ['d','En ninguno, porque un cuerpo que flota no recibe empuje: se apoya en la superficie.','flota-sin-empuje','hipotesis']],
+    ok:'c',
+    fb:{ a:'Elegiste la A. Flota más alto porque el agua es más densa: le basta menos volumen sumergido para dar el mismo empuje. La correcta está marcada; mira la escena.',
+         b:'Elegiste la B. Tiene más volumen sumergido en el aceite, pero el aceite es menos denso: ρ·g·V da lo mismo. La correcta está marcada; mira la escena.',
+         d:'Elegiste la D. La superficie del líquido no es un piso: lo que sostiene al cubo es el empuje del líquido sobre su parte hundida. La correcta está marcada; mira la escena.' },
+    antes:() => Object.assign(E, { tipo:'dos', rhoAc:800, ver:'antes', crece:0 }),
+    despues:() => { E.ver = 'despues'; E.crece = 0; mover(700, f => { E.crece = f; }); },
+    fin:() => { E.ver = 'despues'; E.crece = 1; },
+    ctrl:() => `<div class="slider"><label for="q-r"><span>Densidad del aceite</span><output id="q-r-o"></output></label><input id="q-r" type="range" min="650" max="950" step="10" value="${E.rhoAc}"></div><div class="chips" id="chips2"></div>`,
+    vivo:() => { const r = M.flotacion({ rhoC:600, V:0.002, rhoF:E.rhoAc }); $('q-r-o').textContent = `${fmt(E.rhoAc, 0)} kg/m³`;
+      $('chips2').innerHTML = `<span class="chip">en el aceite: ${fmt(r.fraccion*100, 0)} % bajo el líquido</span><span class="chip">E = ${N1(r.E)} N en los dos</span>`; },
+    alCambiar:() => { E.rhoAc = +$('q-r').value; E.crece = 1; },
+    exp:`<div class="eqs"><div class="eq">flota quieto → ${V('E','E')} = ${V('W','W')} = ${V('W','12 N')}<span class="note">en el agua y en el aceite</span></div>
+      <div class="eq">agua: 1000 · 10 · V = 12 → V = 1,2 L (${fmt(fa.fraccion*100, 0)} %); aceite: 800 · 10 · V = 12 → V = 1,5 L (${fmt(fo.fraccion*100, 0)} %)</div></div>
+      <p>Un cuerpo que flota quieto no sube ni baja: su ${V('E','empuje')} es igual a su ${V('W','peso')}, en cualquier líquido. Lo que cambia es cuánto se hunde: en el aceite, menos denso, necesita más volumen sumergido para juntar el mismo empuje. La fracción sumergida es la razón de densidades: 600/1000 en el agua y 600/800 en el aceite.</p>
+      ${fuente('En un curso de Maryland (Estados Unidos), con dos cubos iguales en líquidos distintos, el 55 % dijo que recibe más empuje el que flota más alto y el 25 % el que está más hundido; acertó cerca del 20 % (Loverude, 1999; no vimos el tamaño del grupo). La opción D es un error que suponemos.')}` },
+];
+// En este modo los datos de color no resaltan nada en el dibujo: no son paradas del tabulador.
+const sinParada = el => el.querySelectorAll('.v').forEach(e => { e.removeAttribute('tabindex'); e.style.cursor = 'default'; });
+function mover(dur, paso){ parar(); const k = S.k; parar = animarValor(dur, f => { if (S.k !== k) return; paso(f); draw(); }, () => { parar = () => {}; draw(); }); }
+function draw(){
+  if (!L.W || !E.tipo) return;
+  const c = colores(L.W), x = EXPS[S.k], ya = !!S.pred[x.id];
+  if (E.tipo === 'vasos'){
+    vistaVasos(L, c, E);
+    const r = M.vasosComunicantes({ areas:VASOS.areas, volumen:E.V });
+    lecturas($('lect2'), ya && E.lleno > 0.98 ? [['h', `h = ${cm(r.nivel)} en las dos`], ['P', `P abajo = ${Pa(r.nivel*10000)} en las dos`]] : []);
+    decir($('desc2'), ya ? `Las dos ramas quedan con el agua a la misma altura, ${cm(r.nivel)}.` : 'Un tubo con una rama angosta y otra el doble de ancha, unidas por abajo. Una jarra echa agua por la angosta. La rama ancha, con un signo de pregunta.');
+  } else if (E.tipo === 'prensa'){
+    const r = M.prensa({ A1:0.01, A2:E.A2, F1:E.F, d1:0.5 });
+    vistaPrensa(L, c, { r, ver:E.ver, mov:E.mov });
+    lecturas($('lect2'), ya && E.mov > 0.98 ? [['F', `F = ${N1(r.F1)} N`], ['P', `P = ${Pa(r.P)}`], ['W', `W = ${fmt(r.F2, 0)} N`]] : []);
+    decir($('desc2'), ya ? `La mano empuja con ${N1(r.F1)} newtons; el émbolo grande sostiene ${fmt(r.F2, 0)} newtons. El chico baja 50 centímetros y el grande sube ${N1(r.d2*100)}.` : 'Una prensa hidráulica: la mano empuja el émbolo chico con 200 newtons. Sobre el émbolo grande hay una carga de peso desconocido.');
+  } else if (E.tipo === 'tubo'){
+    const r = M.tuboU(Object.assign({}, TUBO, { h1:E.h1 }));
+    vistaTuboU(L, c, { r, ver:E.ver, crece:E.crece });
+    lecturas($('lect2'), ya && E.crece > 0.98 ? [['h', `h = ${cm(r.h1)}`], ['P', `P = ${Pa(r.Pfrontera)} a la altura de la frontera`], ['', `x = ${cm(r.x)}`]] : []);
+    decir($('desc2'), ya ? `El mercurio de la derecha queda ${cm(r.x)} sobre la frontera del agua.` : 'Un tubo en U con mercurio y una columna de 27,2 centímetros de agua en la rama izquierda. La rama derecha está tapada con un signo de pregunta.');
+  } else if (E.tipo === 'bloques'){
+    vistaBloques(L, c, { b:bl0, masas:MASAS, f:E.f, ver:E.ver });
+    lecturas($('lect2'), ya && E.f > 0.98 ? [['E', 'E = 5 N bajo el agua'], ['W', 'W = 2, 4, 5, 10 y 20 N']] : []);
+    decir($('desc2'), ya ? 'Los bloques de 0,2 y 0,4 kilogramos flotan, el de 0,5 queda a media agua y los de 1 y 2 están en el fondo.' : 'Cinco bloques iguales de distinta masa, a media altura en un tanque con agua, a punto de soltarse.');
+  } else if (E.tipo === 'dos'){
+    vistaDosLiquidos(L, c, E);
+    const r = M.flotacion({ rhoC:600, V:0.002, rhoF:E.rhoAc });
+    lecturas($('lect2'), ya && E.crece > 0.98 ? [['W', 'W = 12 N'], ['E', 'E = 12 N en los dos']] : []);
+    decir($('desc2'), ya ? `El empuje es de 12 newtons en el agua y en el aceite. En el aceite queda ${fmt(r.fraccion*100, 0)} por ciento hundido.` : 'El mismo cubo de madera flota en agua, con el 60 por ciento hundido, y en aceite, con el 75 por ciento. El empuje todavía no se muestra.');
+  }
+}
+// Pastillas: la k solo se abre si todos los experimentos anteriores ya tienen respuesta;
+// las respondidas se revisitan libres (misma regla que los puntos del paso a paso).
+function primeraLibre(){ const j = EXPS.findIndex(x => !S.pred[x.id]); return j < 0 ? EXPS.length - 1 : j; }
+function botones(){
+  if (!$('exps').children.length){
+    $('exps').innerHTML = EXPS.map((x, k) => `<button type="button" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
+    $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k, true));
+  }
+  const libre = primeraLibre();
+  [...$('exps').children].forEach((b, k) => {
+    const cerrado = k > libre; b.disabled = cerrado; b.setAttribute('aria-pressed', String(!cerrado && k === S.k));
+    if (cerrado){ b.setAttribute('aria-disabled', 'true'); b.setAttribute('aria-label', `Experimento ${k+1}, bloqueado`); }
+    else { b.removeAttribute('aria-disabled'); b.removeAttribute('aria-label'); }
+  });
+}
+function reiniciar(x){ for (const k of Object.keys(E)) delete E[k]; x.antes(); }
+function ir(k, enfocar){
+  if (k > primeraLibre()) return;
+  parar(); parar = () => {};
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  reiniciar(x);
+  if (ya) x.fin();
+  botones();
+  leyenda($('ley2'), x.ley);
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  sinParada($('body2'));
+  L.compactar(!ya);
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : (x.fb && x.fb[p]) || `Elegiste la ${p.toUpperCase()}. La correcta está marcada; mira la escena para ver por qué.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.ctrl() + x.exp + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
+    $('res2').querySelectorAll('input').forEach(inp => inp.addEventListener('input', () => { parar(); parar = () => {}; x.alCambiar(); x.vivo(); draw(); }));
+    const rep = $('repetir'); if (rep) rep.onclick = () => { x.despues(); };
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1, true); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    sinParada($('res2')); x.vivo();
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; botones();
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+    pintar();
+    // El botón elegido queda desactivado: el foco pasa a la respuesta para no perderse.
+    $('fb2').focus({ preventScroll:true });
+    L.compactar(false); draw();
+    // En el celular, el dibujo sube a la vista y la escena cambia un momento después (nucleo/celular.js).
+    Celular.alResponder(L.cv, () => { x.despues(); draw(); }, () => S.k === k && !$('m2').hidden, { siNo: () => { if (S.k === k){ x.fin(); draw(); } } });
+  });
+  pintar(); draw();
+  if (enfocar) $('t2').focus({ preventScroll:true });
+}
+alRedibujarTema(draw);
+// Al salir de este modo, la animación se corta y la escena queda en su estado final.
+addEventListener('modo', () => { if ($('m2').hidden){ parar(); parar = () => {}; const x = EXPS[S.k]; if (x && S.pred[x.id]){ x.fin(); } } else L.resize(); });
+L.resize(); ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

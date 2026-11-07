@@ -1,5 +1,5 @@
 {
-  "titulo": "Alturas que no se suman: problemas para lápiz y papel",
+  "titulo": "¿Se suman las alturas? problemas para lápiz y papel",
   "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Dibuja el triángulo de hipotenusa 1 o la circunferencia cuando te ayude. Tres controles antes de marcar: el seno de una suma no es la suma de los senos (sen(a + b) = sen a cos b + cos a sen b); sen²x es (sen x)², no sen(x²); y en el ángulo mitad, el signo lo da el cuadrante de x/2, no el de x.",
   "problemas": [
     {
