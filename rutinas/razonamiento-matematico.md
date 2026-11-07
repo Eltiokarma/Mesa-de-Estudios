@@ -246,3 +246,66 @@ Sesión paralela a la conversación principal, en la rama `rutina/razonamiento-m
 - `docs/pendientes.md` (ra1): «Hecha `trazos-rutas` (un solo trazo con Euler, cartero, perímetros escalonados con entrante, caminos en cuadrícula con obras y en el espacio, y la hormiga en la caja; 21 casos verificados aparte)».
 - `CLAUDE.md`, historia: «Trazos y rutas (7 nov 2026, rutina de razonamiento matemático): `plantillas/trazos-rutas/` (el lápiz y la hormiga: figuras de un solo trazo con los vértices impares y vuelta atrás, recorrido mínimo repitiendo lo menos, escaleras que se corren y el entrante que suma, caminos por las calles con el cruce cerrado y la hormiga que abre la caja; 21 casos verificados aparte).»
 - Posible arreglo común: `.frac > span:first-child{align-self:stretch; text-align:center}` y `.frac > span{white-space:nowrap}` donde haya fracciones con denominador ancho.
+
+## 7 nov 2026 · Fichas, banderas y ruedas (`plantillas/arreglos-giros/`)
+
+**Qué hice.** Unidades `razonamiento-matematico.arreglos-numericos` y `razonamiento-matematico.transformaciones-de-figuras`. Título neutro (no adelanta el centro, el doble conteo de los vértices ni la vuelta de más; «espejos» se quitó porque ponía en guardia ante el error del paso 5).
+
+- **`motor.js`** (UMD, `MotorArreglos`, sin DOM; cabecera hasta la línea 154, con las piezas y sus coordenadas): cuadrados mágicos por fuerza bruta (todas las soluciones, simetrías), números en polígonos (suma por lado, vértices, todas las distribuciones y las distintas bajo giros y reflejos), piezas en cuadrícula (giro, reflejo, normalización y comparación), ruedas (vueltas sobre una recta, alrededor por fuera y por dentro, y alrededor de un marco), vuelcos de polígonos (radios y arcos del punto que se sigue) y área barrida por un segmento que gira. Exactos con π como coeficiente («(4 + 2√3)π/3»).
+- **`casos.json`:** 22 casos. **`motor.test.js`:** 45 pruebas (los 8 cuadrados mágicos de 1 a 9 son giros y reflejos de uno; el centro es la constante entre 3; lados · S = total + V en todas las distribuciones; 4 giros y 2 reflejos devuelven la pieza; vueltas de la rueda contra una simulación por puntos de contacto; radios de vuelco como distancia real al pivote; área barrida contra suma de anillos; errores que no coinciden).
+- **`papel.json`:** 10 problemas propios (cuadrado del 3 al 11, completar un cuadrado, triángulo máximo, 1 a 9 con cuatro por lado, cuadrado con 1 a 8 donde la cuenta da 11,5 y la respuesta es 12, orientaciones de la L, moneda alrededor de otra de radio triple, bicicleta, vuelco de un cuadrado de 4 m y limpiaparabrisas de 120°).
+- **Paso a paso** (8 pasos, 5 predicciones que bloquean; todo hipótesis nuestra):
+  1. centro del cuadrado mágico de 1 a 9: 5 (9, 1, «cualquiera»);
+  2. armar el cuadrado (arrastre o toque; «que lo arme el motor» recorre los 8);
+  3. menor suma común por lado con 1 a 6 en el triángulo: 9 (7 contando vértices una vez, 6, 12);
+  4. armar el triángulo;
+  5. ¿qué pieza se consigue moviendo la bandera sin darle la vuelta? la girada (dos reflejos y otra forma; cita GE9 parcial como contexto);
+  6. girar y voltear la bandera;
+  7. moneda alrededor de otra igual: 2 vueltas sobre sí misma (1, 0, 3), con cuatro casos animados después;
+  8. cuadrado de 2 m que vuelca 4 veces: (2 + √2)π (8 m, 4π, (3 + √2)π).
+- **¿Qué pasa si…?** (5, con bloqueo y la correcta en otras posiciones): centro de 2, 5, …, 26 (14), mayor suma con 1 a 9 y cuatro por lado (23), rueda r = 2 alrededor de un marco de lado 6π (7 vueltas), limpiaparabrisas de 10 a 50 cm y 90° (600π cm²) y triángulo de 3 m que vuelca 3 veces (4π).
+
+**Pruebas.** `npm test`: 3311, pasan 3309; fallan solo los 2 del catálogo. `herramientas/pasada-celular.py` sin QUEDA (ninguna animación corre sin parar; no hace falta `Celular.bucle`). Playwright a 1366×768 y 390×844, claro y oscuro, con y sin movimiento reducido: sin errores ni desbordes, lienzo arriba al responder; toques simulados (CDP) a 390×844: arrastrar fichas y tocar ficha y casilla funcionan, y el dedo fuera de las fichas desplaza la página.
+
+**Subagentes.**
+
+- **Verificador independiente** (solo la cabecera): cuadrados por las 9! permutaciones, polígonos por permutaciones con forma canónica, piezas con normalización propia, ruedas por el recorrido del centro y por ángulo acumulado, vuelcos con coordenadas rotadas y áreas como diferencia de sectores: 0 discrepancias; papel sin errores. Pidió cerrar dos lecturas del papel (vueltas «sobre sí misma» en p7; orientación final en p9). Las correcciones no cambiaron ningún valor del motor.
+- **Revisor de contenido** (nada grave de matemática). Se aplicó todo:
+  - paso 5: «la misma bandera» dejaba defendible el reflejo (una cartulina volteada sigue siendo la misma): ahora «moviendo la bandera sobre la mesa, sin darle la vuelta»;
+  - paso 7: la retroalimentación de la B decía algo falso del borde de la moneda;
+  - paso 3 y E2: las opciones decían «con los más chicos/grandes en los vértices» y la pareja delataba la correcta: ahora solo número y cuenta;
+  - regla 4: en el vuelco el color del lado pintaba también la diagonal (radios en neutro), y A era área en E4 y vértice en E5 (el área ahora es «área barrida»);
+  - título, rótulos cortados a 1366, rótulo «2 m» sobre el suelo, alto del lienzo en el celular, fantasmas de la moneda con movimiento reducido y cita de GE9 más fiel.
+
+**Colores** (claro / oscuro):
+
+| Variable | Claro | Oscuro |
+| --- | --- | --- |
+| c (centro) | #a10fbf | #cf6bfa |
+| K (suma de una línea) | #7a4a1e | #d9a877 |
+| S (suma por lado) | #a05200 | #f0a04a |
+| V (suma de los vértices) | #0f766e | #5ed9c8 |
+| g (girada) | #466d14 | #a3d65e |
+| e (espejo) | #b3246b | #ff86bd |
+| r (la que rueda) | #3328c4 | #9f9bff |
+| R (la fija) | #7d6a00 | #e3c84a |
+| d (camino del centro) | #255c1f | #5fe06a |
+| n (vueltas) | #77032c | #fdb4ce |
+| l (lado) | #086a96 | #25caf4 |
+| p (recorrido del punto) | #6a3fc0 | #b49cff |
+| a (inicio de la plumilla) | #8f5800 | #ffc04d |
+| b (final de la plumilla) | #c0364a | #f17384 |
+| área barrida | #1f5fbf | #7cb0ff |
+
+- ΔE00 mínimo entre los que salen juntos: 23,5 en claro y 26,2 en oscuro (ruedas y vuelcos); contra la tinta, 23,0 y 19,5 (el revisor lo midió).
+- Contraste ≥ 4,54:1 en claro y 4,64:1 en oscuro, chips incluidos.
+- Reusa los tonos de `trazos-rutas`.
+
+**Pendiente.** La unidad de transformaciones queda cubierta en unos 4 de sus 6 temas: faltan semejanza (la tiene `ampliadora` en geometría) y aplicaciones de áreas (áreas sombreadas que se trasladan y compensan, lúnulas, la región que barre un cuadrado que gira sobre un vértice). La traslación solo se nombra.
+
+**Pedidos para la integración.**
+
+- Catálogo: `"arreglos-giros"` en `razonamiento-matematico.arreglos-numericos` y `razonamiento-matematico.transformaciones-de-figuras`; `investigacion`: el informe de aritmética y razonamiento en arreglos y `docs/investigacion/geometria-ideas-erroneas.md` en transformaciones. Sugerencia: enlazar también `ampliadora` en transformaciones para la semejanza. `npm run catalogo`; `VERSION` de `app/sw.js`; rebalanceo del banco de RM si toca.
+- `docs/diseno.md`: la tabla de colores de arriba.
+- `docs/pendientes.md` (ra1): «Hecha `arreglos-giros` (cuadrado mágico, números en polígonos, giro contra reflejo, ruedas que ruedan y vuelcos con el recorrido de un punto; 22 casos verificados aparte). Falta en transformaciones: áreas sombreadas y región barrida al girar».
+- `CLAUDE.md`, historia: «Arreglos y giros (7 nov 2026, rutina de razonamiento matemático): `plantillas/arreglos-giros/` (fichas, banderas y ruedas: el centro del cuadrado mágico, la suma por lado con los vértices contados dos veces, la bandera girada contra la volteada, la moneda que da 2 vueltas alrededor de otra y el vértice que vuelca; 22 casos verificados aparte).»

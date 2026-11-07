@@ -1,0 +1,148 @@
+{
+  "titulo": "Las fichas en los aros: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Si te ayuda, dibuja los aros dentro de un rectángulo y anota cuántas personas hay en cada región.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Se encuestó a 50 vecinos de Juliaca: 32 desayunan con quinua, 26 con maca y 14 con las dos. ¿Cuántos no desayunan con ninguna de las dos?",
+      "respuesta": "6 vecinos.",
+      "pasos": [
+        "Los 14 de las dos están en el aro de la quinua y también en el de la maca.",
+        "Solo quinua: 32 − 14 = 18. Solo maca: 26 − 14 = 12.",
+        "Con al menos una: 18 + 14 + 12 = 44 (o 32 + 26 − 14 = 44).",
+        "Con ninguna: 50 − 44 = 6."
+      ],
+      "verificar": [ { "fn": "regiones", "args": [{ "U": 50, "A": 32, "B": 26, "AB": 14 }], "espera": { "cardinales.ninguno": 6, "cardinales.union": 44, "regiones.A": 18, "regiones.B": 12 } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "De 40 alumnos, 23 aprobaron Álgebra, 19 aprobaron Aritmética y 8 no aprobaron ninguno de los dos cursos. ¿Cuántos aprobaron solo uno de los dos cursos?",
+      "respuesta": "22 alumnos.",
+      "pasos": [
+        "Aprobaron al menos uno: 40 − 8 = 32.",
+        "Los dos cursos: 23 + 19 − 32 = 10.",
+        "Solo Álgebra: 23 − 10 = 13. Solo Aritmética: 19 − 10 = 9.",
+        "Solo uno: 13 + 9 = 22."
+      ],
+      "verificar": [ { "fn": "regiones", "args": [{ "U": 40, "A": 23, "B": 19, "ninguno": 8 }], "espera": { "regiones.AB": 10, "cardinales.exactamenteUno": 22 } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "En un aula de 36 alumnos, 20 son mujeres y 15 usan lentes. Hay 9 varones que no usan lentes. ¿Cuántas mujeres usan lentes?",
+      "respuesta": "8 mujeres.",
+      "pasos": [
+        "Una tabla de Carroll: filas mujeres y varones; columnas con lentes y sin lentes.",
+        "Varones: 36 − 20 = 16. De ellos, 9 sin lentes: 16 − 9 = 7 varones con lentes.",
+        "Con lentes hay 15: mujeres con lentes, 15 − 7 = 8."
+      ],
+      "verificar": [ { "fn": "regiones", "args": [{ "U": 36, "A": 20, "B": 15, "noAB": 9 }], "espera": { "regiones.AB": 8, "regiones.B": 7 } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Un grupo de 80 turistas visitó Cusco: 45 fueron a Machu Picchu, 38 al Valle Sagrado y 30 a Moray; 20 fueron a Machu Picchu y al Valle, 15 a Machu Picchu y a Moray, 12 al Valle y a Moray (en cada uno de estos números se cuentan también los que fueron a los tres lugares), y 8 fueron a los tres. ¿Cuántos no fueron a ninguno de los tres lugares?",
+      "respuesta": "6 turistas.",
+      "pasos": [
+        "Al menos un lugar: 45 + 38 + 30 − 20 − 15 − 12 + 8 = 74.",
+        "Los 8 de los tres lugares se suman tres veces y se restan tres veces: por eso se vuelven a sumar una vez.",
+        "Ninguno: 80 − 74 = 6.",
+        "Control por regiones: los tres 8; Machu Picchu y Valle sin Moray 12; Machu Picchu y Moray sin Valle 7; Valle y Moray sin Machu Picchu 4; solo Machu Picchu 18; solo Valle 14; solo Moray 11. Suman 74."
+      ],
+      "verificar": [ { "fn": "regiones", "args": [{ "U": 80, "A": 45, "B": 38, "C": 30, "AB": 20, "AC": 15, "BC": 12, "ABC": 8 }], "espera": { "cardinales.ninguno": 6, "cardinales.union": 74, "regiones.A": 18, "regiones.AC": 7 } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "En una academia de idiomas: 14 estudian solo inglés, 9 solo quechua, 6 solo portugués; 5 estudian inglés y quechua pero no portugués; 3 inglés y portugués pero no quechua; 2 quechua y portugués pero no inglés, y 4 estudian los tres idiomas. ¿Cuántos estudian inglés? ¿Cuántos estudian exactamente dos idiomas?",
+      "respuesta": "26 estudian inglés y 10 estudian exactamente dos idiomas.",
+      "pasos": [
+        "En el aro del inglés están las regiones: solo inglés, inglés y quechua, inglés y portugués, y los tres.",
+        "Inglés: 14 + 5 + 3 + 4 = 26.",
+        "Exactamente dos: las tres regiones de dos idiomas sin el tercero, 5 + 3 + 2 = 10 (los 4 de los tres no entran)."
+      ],
+      "verificar": [ { "fn": "contar", "args": [{ "A": 14, "B": 9, "C": 6, "AB": 5, "AC": 3, "BC": 2, "ABC": 4 }, "A"], "espera": { "valor": 26 } },
+                     { "fn": "contar", "args": [{ "A": 14, "B": 9, "C": 6, "AB": 5, "AC": 3, "BC": 2, "ABC": 4 }, "exactamenteDos"], "espera": { "valor": 10 } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "básico",
+      "enunciado": "Un conjunto M tiene 5 elementos. ¿Cuántos subconjuntos tiene? ¿Cuántos son subconjuntos propios (distintos de M)?",
+      "respuesta": "32 subconjuntos y 31 propios.",
+      "pasos": [
+        "Para armar un subconjunto, cada elemento entra o no entra: 2 × 2 × 2 × 2 × 2 = 32.",
+        "Entre ellos están el vacío y M mismo.",
+        "Propios: todos menos M, 32 − 1 = 31."
+      ],
+      "verificar": [ { "fn": "potenciaCantidad", "args": [5], "espera": { "cantidad": 32, "propios": 31 } },
+                     { "fn": "potencia", "args": [["p", "q", "r", "s", "t"]], "espera": { "cantidad": 32 } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Un conjunto tiene 63 subconjuntos propios. ¿Cuántos elementos tiene? ¿Y cuántos subconjuntos tendría si se le agregaran dos elementos más?",
+      "respuesta": "6 elementos; con dos más tendría 256 subconjuntos.",
+      "pasos": [
+        "Propios: todos los subconjuntos menos uno. Subconjuntos: 63 + 1 = 64.",
+        "64 = 2 × 2 × 2 × 2 × 2 × 2: son 6 elementos.",
+        "Cada elemento nuevo duplica la cantidad: 64 × 2 × 2 = 256."
+      ],
+      "verificar": [ { "fn": "elementosPorSubconjuntos", "args": [63, true], "espera": { "posible": true, "n": 6 } },
+                     { "fn": "potenciaCantidad", "args": [8], "espera": { "cantidad": 256 } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "A = {2x + 1 / x es entero, 1 ≤ x ≤ 4} y B = {x / x es entero positivo y divisor de 6}. Escribe A y B por extensión, halla A ∩ B y di cuántos elementos tiene A × B.",
+      "respuesta": "A = {3, 5, 7, 9}, B = {1, 2, 3, 6}, A ∩ B = {3} y A × B tiene 16 elementos.",
+      "pasos": [
+        "Para x = 1, 2, 3, 4: 2x + 1 da 3, 5, 7, 9.",
+        "Divisores positivos de 6: 1, 2, 3 y 6.",
+        "En los dos conjuntos solo está el 3: A ∩ B = {3}.",
+        "A × B tiene un par por cada elección de x en A y de y en B: 4 × 4 = 16."
+      ],
+      "verificar": [ { "fn": "extension", "args": [{ "desde": 1, "hasta": 4, "forma": { "a": 2, "b": 1 } }], "espera": { "valor": [3, 5, 7, 9] } },
+                     { "fn": "extension", "args": [{ "desde": 1, "hasta": 6, "condicion": { "divisorDe": 6 } }], "espera": { "valor": [1, 2, 3, 6] } },
+                     { "fn": "interseccion", "args": [[3, 5, 7, 9], [1, 2, 3, 6]], "espera": { "valor": [3] } },
+                     { "fn": "cartesiano", "args": [[3, 5, 7, 9], [1, 2, 3, 6]], "espera": { "n": 16 } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "básico",
+      "enunciado": "U = {1, 2, 3, 4, 5, 6, 7, 8, 9}, A = {1, 2, 3, 4, 5, 6} y B = {2, 4, 6, 8}. Halla A − B, B − A, A Δ B y (A ∪ B)′.",
+      "respuesta": "A − B = {1, 3, 5}, B − A = {8}, A Δ B = {1, 3, 5, 8} y (A ∪ B)′ = {7, 9}.",
+      "pasos": [
+        "A − B: los de A que no están en B, {1, 3, 5}.",
+        "B − A: los de B que no están en A, {8}.",
+        "A Δ B: los que están en uno solo de los dos, {1, 3, 5} junto con {8}.",
+        "A ∪ B = {1, 2, 3, 4, 5, 6, 8}; lo que falta de U: {7, 9}."
+      ],
+      "verificar": [ { "fn": "diferencia", "args": [[1, 2, 3, 4, 5, 6], [2, 4, 6, 8]], "espera": { "valor": [1, 3, 5] } },
+                     { "fn": "diferencia", "args": [[2, 4, 6, 8], [1, 2, 3, 4, 5, 6]], "espera": { "valor": [8] } },
+                     { "fn": "diferenciaSimetrica", "args": [[1, 2, 3, 4, 5, 6], [2, 4, 6, 8]], "espera": { "valor": [1, 3, 5, 8] } },
+                     { "fn": "operar", "args": ["noAuB", { "A": [1, 2, 3, 4, 5, 6], "B": [2, 4, 6, 8], "U": [1, 2, 3, 4, 5, 6, 7, 8, 9] }], "espera": { "texto": "{7, 9}" } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "A = {1, {2}, 3}. Di si cada afirmación es verdadera o falsa: 2 ∈ A; {2} ∈ A; {1, 3} ⊂ A; {2} ⊂ A; ∅ ⊂ A. ¿Cuántos subconjuntos tiene A?",
+      "respuesta": "F, V, V, F, V. A tiene 8 subconjuntos.",
+      "pasos": [
+        "Los elementos de A son tres: el 1, el conjunto {2} y el 3. El 2 suelto no es elemento: 2 ∈ A es falsa.",
+        "{2} sí es uno de los elementos: {2} ∈ A es verdadera.",
+        "{1, 3} ⊂ A es verdadera: el 1 y el 3 son elementos de A.",
+        "{2} ⊂ A pediría que el 2 sea elemento de A, y no lo es: falsa.",
+        "El vacío es subconjunto de cualquier conjunto: verdadera.",
+        "Con 3 elementos: 2 × 2 × 2 = 8 subconjuntos."
+      ],
+      "verificar": [ { "fn": "afirmar", "args": [2, "∈", [1, [2], 3]], "espera": { "valor": false } },
+                     { "fn": "afirmar", "args": [[2], "∈", [1, [2], 3]], "espera": { "valor": true } },
+                     { "fn": "afirmar", "args": [[1, 3], "⊂", [1, [2], 3]], "espera": { "valor": true } },
+                     { "fn": "afirmar", "args": [[2], "⊂", [1, [2], 3]], "espera": { "valor": false } },
+                     { "fn": "afirmar", "args": [[], "⊂", [1, [2], 3]], "espera": { "valor": true } },
+                     { "fn": "potencia", "args": [[1, [2], 3]], "espera": { "cantidad": 8 } } ]
+    }
+  ]
+}

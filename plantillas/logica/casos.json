@@ -1,0 +1,108 @@
+{
+  "plantilla": "logica",
+  "unidades": "Valores de verdad como true (V) y false (F). Las fórmulas se escriben con ~ ∧ ∨ Δ → ↔ y paréntesis; las variables son p, q, r y s. Las filas de una tabla van en el orden de academia: la primera variable es V en la primera mitad de las filas y la última alterna V, F, V, F. Una fila se escribe como texto con los valores de las variables en orden alfabético («V F» es p = V, q = F).",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.reciproca, filas.0.valor: el índice de una lista también va con punto); las listas se comparan completas y los textos exactos. 'tambien' son llamadas extra del mismo caso. Un error que no aparece en 'errores' es porque en ese caso daría la respuesta correcta o lo mismo que otro error (para las fórmulas, «lo mismo» es la misma tabla de verdad).",
+  "verificacion": "Verificado por un subagente independiente (7 nov 2026) sin leer el código del motor: cada fórmula se tradujo a mano a una función de Python con la jerarquía de la cabecera, y las tablas completas (itertools.product, V primero), la clasificación, las equivalencias, los contraejemplos y los errores se recalcularon por fuerza bruta. Los 20 casos y los 10 problemas de papel.json coinciden; los textos de leer() se revisaron solo por su sentido. Tras la revisión (7 nov 2026) cambiaron, sin verificador independiente, el caso del lector de pantalla (leer() ya no dice los paréntesis: ~(p ∨ q) → (q ∨ r) se lee «si no es cierto que p o q, entonces q o r») y la fórmula del caso del paso 2, que pasó de (p ∧ q) ∨ ~r a (p ∧ q) ∧ ~r (mismas 3 variables y mismos números).",
+  "casos": [
+    { "nombre": "Predicción del paso 2: (p ∧ q) ∧ ~r tiene 3 variables → 2³ = 8 filas; errores 2 × 3 = 6, 3 y 3² = 9",
+      "fn": "filasDe", "args": ["(p ∧ q) ∧ ~r"],
+      "espera": { "variables": 3, "filas": 8, "errores.dobleDeVariables": 6, "errores.igualAVariables": 3, "errores.cuadrado": 9 } },
+
+    { "nombre": "Con 2 variables, 2 × 2 = 2² = 4 y 2² = 4 coinciden con la respuesta y no aparecen como errores; queda solo «igual a las variables» (2)",
+      "fn": "filasDe", "args": [2],
+      "espera": { "filas": 4, "errores": { "igualAVariables": 2 } } },
+
+    { "nombre": "Tabla de verdad de p → q en el orden de academia (VV, VF, FV, FF): V F V V",
+      "fn": "tablaVerdad", "args": ["p → q"],
+      "espera": { "variables": ["p", "q"], "matriz": "VFVV", "cantidad": 4, "filas.1.valores.p": true, "filas.1.valores.q": false, "filas.1.valor": false } },
+
+    { "nombre": "Predicción del paso 3: «si llueve, llevo paraguas» (p → q) solo es falsa en la fila V F; errores: F V (al revés), F F (las dos falsas) y V F con F V (como bicondicional)",
+      "fn": "filasFalsas", "args": ["p → q"],
+      "espera": { "falsas": ["V F"], "errores.alReves": ["F V"], "errores.ambasFalsas": ["F F"], "errores.comoBicondicional": ["V F", "F V"] } },
+
+    { "nombre": "Predicción del paso 4: ~(p ∨ q) → (q ∨ r) con p = F, q = V, r = V → antecedente F, consecuente V, fórmula V; errores: negar solo la p (V V | V), ∨ como Δ (F F | V), → como ∧ (F V | F)",
+      "fn": "valorConPartes", "args": ["~(p ∨ q) → (q ∨ r)", { "p": false, "q": true, "r": true }],
+      "espera": { "partes": ["~(p ∨ q)", "q ∨ r"], "valoresPartes": [false, true], "valor": true, "texto": "F V | V",
+        "erroresTexto.negacionSoloPrimera": "V V | V", "erroresTexto.oExclusiva": "F F | V", "erroresTexto.condicionalComoY": "F V | F" } },
+
+    { "nombre": "Evaluar con la jerarquía: ~p ∧ q es (~p) ∧ q; con p = V, q = V da F, y ~(p ∧ q) también F; con p = F, q = F: ~p ∧ q es F pero ~(p ∧ q) es V",
+      "fn": "evaluar", "args": ["~p ∧ q", { "p": true, "q": true }],
+      "espera": { "valor": false },
+      "tambien": [ { "fn": "evaluar", "args": ["~p ∧ q", { "p": false, "q": false }], "espera": { "valor": false } },
+                   { "fn": "evaluar", "args": ["~(p ∧ q)", { "p": false, "q": false }], "espera": { "valor": true } } ] },
+
+    { "nombre": "Predicción del paso 5: (p → q) ∨ (q → p) es tautología (V V V V); errores: ∨ como ∧ da contingencia con 2 filas F, → como ∧ da 3 filas F, y el tipo opuesto, contradicción",
+      "fn": "clasificar", "args": ["(p → q) ∨ (q → p)"],
+      "espera": { "tipo": "tautologia", "matriz": "VVVV", "falsas": 0,
+        "errores.oComoY.tipo": "contingencia", "errores.oComoY.falsas": 2, "errores.condicionalComoY.falsas": 3, "errores.tipoOpuesto.tipo": "contradiccion" } },
+
+    { "nombre": "p ∨ ~p es tautología, p ∧ ~p contradicción y p → ~p contingencia (F en la fila p = V)",
+      "fn": "clasificar", "args": ["p ∨ ~p"],
+      "espera": { "tipo": "tautologia", "matriz": "VV" },
+      "tambien": [ { "fn": "clasificar", "args": ["p ∧ ~p"], "espera": { "tipo": "contradiccion", "matriz": "FF" } },
+                   { "fn": "clasificar", "args": ["p → ~p"], "espera": { "tipo": "contingencia", "matriz": "FV" } } ] },
+
+    { "nombre": "Predicción del paso 6: ~(p ∧ q) ≡ ~p ∨ ~q (De Morgan); errores ~p ∧ ~q, ~p ∨ q y ~p ∧ q",
+      "fn": "negar", "args": ["p ∧ q"],
+      "espera": { "texto": "~p ∨ ~q", "ley": "De Morgan: ~(a ∧ b) ≡ ~a ∨ ~b", "errores.negaPartes": "~p ∧ ~q", "errores.niegaSoloPrimera": "~p ∨ q", "errores.niegaPrimeraSinCambiar": "~p ∧ q" } },
+
+    { "nombre": "Negación del condicional: ~(p → q) ≡ p ∧ ~q; errores ~p → ~q, p → ~q y ~p ∧ q",
+      "fn": "negar", "args": ["p → q"],
+      "espera": { "texto": "p ∧ ~q", "errores.negaPartes": "~p → ~q", "errores.niegaConsecuente": "p → ~q", "errores.cambiaSinNegarBien": "~p ∧ q" } },
+
+    { "nombre": "Negación del bicondicional: ~(p ↔ q) ≡ p Δ q; negar las dos partes da ~p ↔ ~q, que es lo mismo que p ↔ q (no la negación); y la doble negación ~~p ≡ p",
+      "fn": "negar", "args": ["p ↔ q"],
+      "espera": { "texto": "p Δ q", "errores.negaPartes": "~p ↔ ~q", "errores.comoConjuncion": "~p ∧ ~q" },
+      "tambien": [ { "fn": "negar", "args": ["~p"], "espera": { "texto": "p", "ley": "doble negación: ~~a ≡ a" } },
+                   { "fn": "equivalentes", "args": ["~p ↔ ~q", "p ↔ q"], "espera": { "equivalentes": true } } ] },
+
+    { "nombre": "Predicción del paso 7: la contrarrecíproca de p → q es ~q → ~p (la única equivalente); recíproca q → p, inversa ~p → ~q y bicondicional p ↔ q no lo son (q → p difiere de p → q en p = V, q = F)",
+      "fn": "formasCondicional", "args": ["p", "q"],
+      "espera": { "contrarreciproca": "~q → ~p", "errores.reciproca": "q → p", "errores.inversa": "~p → ~q", "errores.bicondicional": "p ↔ q",
+        "matrices.condicional": "VFVV", "matrices.contrarreciproca": "VFVV", "matrices.reciproca": "VVFV", "matrices.inversa": "VVFV", "matrices.bicondicional": "VFFV" },
+      "tambien": [ { "fn": "equivalentes", "args": ["p → q", "~q → ~p"], "espera": { "equivalentes": true } },
+                   { "fn": "equivalentes", "args": ["p → q", "q → p"], "espera": { "equivalentes": false, "contraejemplo.p": true, "contraejemplo.q": false } } ] },
+
+    { "nombre": "Analizador: la jerarquía de academia. p ∧ q → r es (p ∧ q) → r y p → q ↔ r es (p → q) ↔ r; imprimir pone paréntesis a lo compuesto",
+      "fn": "imprimir", "args": ["p ∧ q → r"],
+      "espera": { "valor": "(p ∧ q) → r" },
+      "tambien": [ { "fn": "imprimir", "args": ["p → q ↔ r"], "espera": { "valor": "(p → q) ↔ r" } },
+                   { "fn": "imprimir", "args": ["~[p | q]"], "espera": { "valor": "~(p ∨ q)" } },
+                   { "fn": "imprimir", "args": ["(p -> q) <-> (~q => ~p)", { "minimo": true }], "espera": { "valor": "p → q ↔ ~q → ~p" } } ] },
+
+    { "nombre": "Lector de pantalla: los símbolos se leen con palabras y los paréntesis no se dicen: ~ de algo compuesto es «no es cierto que», las partes de → van sin más y (p ∧ q) ∨ r es «tanto p como q, o r»",
+      "fn": "leer", "args": ["~(p ∨ q) → (q ∨ r)"],
+      "espera": { "valor": "si no es cierto que p o q, entonces q o r" },
+      "tambien": [ { "fn": "leer", "args": ["(p ∧ ~q) → r"], "espera": { "valor": "si p y no q, entonces r" } },
+                   { "fn": "leer", "args": ["(p ∧ q) ∨ r"], "espera": { "valor": "tanto p como q, o r" } },
+                   { "fn": "leer", "args": ["p ↔ q"], "espera": { "valor": "p si y solo si q" } },
+                   { "fn": "leer", "args": ["p Δ q"], "espera": { "valor": "p o exclusivo q" } } ] },
+
+    { "nombre": "¿Qué pasa si…? 1: de 3 a 4 variables las filas pasan de 8 a 16; errores 12 (crecer de 4 en 4), 9 y 10",
+      "fn": "masFilas", "args": [3],
+      "espera": { "antes": 8, "despues": 16, "errores.sumaIgual": 12, "errores.sumaUna": 9, "errores.sumaDos": 10 } },
+
+    { "nombre": "¿Qué pasa si…? 2: el circuito de p → q es ~p ∨ q (inversor en p, en paralelo con q); errores p ∨ ~q, ~p ∧ q y p ∨ q",
+      "fn": "condicionalComoCircuito", "args": ["p", "q"],
+      "espera": { "respuesta": "~p ∨ q", "equivalentes": true, "errores.invierteConsecuente": "p ∨ ~q", "errores.enSerie": "~p ∧ q", "errores.sinInversor": "p ∨ q",
+        "matrices.invierteConsecuente": "VVFV", "matrices.enSerie": "FFVF", "matrices.sinInversor": "VVVF" } },
+
+    { "nombre": "¿Qué pasa si…? 3: con p = F, p → (q ∧ ~r) es V en las 4 filas; errores: siempre F (→ como ∧), igual al consecuente, contrario al consecuente (como ↔)",
+      "fn": "conAntecedenteFalso", "args": ["p → (q ∧ ~r)"],
+      "espera": { "filas": 4, "respuesta": "siempreV", "errores.comoY": "siempreF", "errores.comoConsecuente": "igualConsecuente", "errores.comoBicondicional": "contrarioConsecuente" } },
+
+    { "nombre": "¿Qué pasa si…? 4: p Δ q y p ∨ q difieren solo en la fila V V; errores: F F, ninguna, V F y F V",
+      "fn": "diferencias", "args": ["p Δ q", "p ∨ q"],
+      "espera": { "filas": ["V V"], "errores.ambasF": ["F F"], "errores.ninguna": [], "errores.distintas": ["V F", "F V"] } },
+
+    { "nombre": "¿Qué pasa si…? 5: la negación de «todos aprobaron» es «alguno no aprobó»; errores: ninguno, alguno, solo algunos",
+      "fn": "negarCuantificador", "args": ["todos"],
+      "espera": { "respuesta": "algunoNo", "errores.niegaTodo": "ninguno", "errores.cambiaSinNegar": "alguno", "errores.soloAlgunos": "soloAlgunos" },
+      "tambien": [ { "fn": "cuantificador", "args": ["todos", [true, true, false, true, true]], "espera": { "valor": false } },
+                   { "fn": "cuantificador", "args": ["algunoNo", [true, true, false, true, true]], "espera": { "valor": true } } ] },
+
+    { "nombre": "Circuito: (p ∧ q) ∨ ~r son p y q en serie, en paralelo con un interruptor invertido de r; con p = V, q = F, r = F la corriente pasa por ~r",
+      "fn": "corriente", "args": ["(p ∧ q) ∨ ~r", { "p": true, "q": false, "r": false }],
+      "espera": { "valor": true } }
+  ]
+}

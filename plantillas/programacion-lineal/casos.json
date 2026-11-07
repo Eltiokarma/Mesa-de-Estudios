@@ -1,0 +1,113 @@
+{
+  "plantilla": "programacion-lineal",
+  "unidades": "Cantidades sin unidad en el motor (en la escena, x chompas, y chalinas, horas y soles). Las restricciones van como [a, b, op, c] para a·x + b·y op c, con op '<=', '<', '>=', '>' o '='; la función objetivo z = a·x + b·y como [a, b]. Los puntos van como [x, y] y se escriben (x; y), con punto y coma, porque la coma es decimal. Fracciones con barra (14/5) y menos tipográfico (−).",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.mayorX.texto); las listas se comparan completas; los textos se comparan exactos. 'tambien' trae otras llamadas que comprueban lo mismo (con su propia 'fn' si cambia). Un error que con esos números da lo mismo que la respuesta correcta no va en 'errores' sino en 'coinciden'; uno que no tiene sentido con esos números va en 'noAplica'; si dos errores dan lo mismo, el segundo va en 'repetidos'. Taller de la escena: tejido 3x + y ≤ 21, feria x + y ≤ 11, alpaca y ≤ 9, con x ≥ 0 e y ≥ 0.",
+  "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer el motor ni casos.json: fracciones exactas en Python; vértices enumerando todos los pares de fronteras y filtrando, óptimos contrastados con fuerza bruta en una rejilla de paso 1/8, regiones no acotadas con la dirección de recesión y recorte de ventana por semiplanos. Los 20 casos coinciden; la única diferencia (signoDespeje (5; 16)) es de interpretación del error y se mantiene la de casos.json. Después (7 nov 2026): por la revisión se agregaron el desempate explícito de mayorY (la mayor x entre las de mayor y) y el error soloExtremos (PL9) en los óptimos múltiples; ningún valor verificado cambió.",
+  "tolerancia": 1e-9,
+  "casos": [
+    { "nombre": "Paso a paso, predicción 1: «cada chompa lleva 3 h de tejido y cada chalina 1 h; hay a lo más 21 h» da 3x + y ≤ 21. Cruzar los coeficientes da x + 3y ≤ 21 (PL14); leer «a lo más» como «al menos», 3x + y ≥ 21 (PL15); quedarse en la ecuación, 3x + y = 21 (PL12)",
+      "fn": "traducir", "args": [{ "porUnidad": [3, 1], "total": 21, "frase": "a lo más" }],
+      "espera": { "op": "<=", "texto": "3x + y ≤ 21", "restriccion": [3, 1, "<=", 21], "errores.cruzada.texto": "x + 3y ≤ 21", "errores.sentido.texto": "3x + y ≥ 21", "errores.igualdad.texto": "3x + y = 21", "errores.estricta.texto": "3x + y < 21", "coinciden": [] },
+      "tambien": [
+        { "args": [{ "porUnidad": [2, 3], "total": 12, "frase": "al menos" }], "espera": { "texto": "2x + 3y ≥ 12", "errores.cruzada.texto": "3x + 2y ≥ 12", "errores.sentido.texto": "2x + 3y ≤ 12" } },
+        { "args": [{ "porUnidad": [1, 1], "total": 12, "frase": "menos de" }], "espera": { "texto": "x + y < 12", "errores.estricta.texto": "x + y ≤ 12", "coinciden": ["cruzada"] } } ] },
+
+    { "nombre": "Prueba de un punto en 3x + y ≤ 21: el origen cumple (0 ≤ 21); (5; 6) está justo en la frontera (21 = 21, cumple); (6; 5) no cumple (23 > 21)",
+      "fn": "prueba", "args": [{ "r": [3, 1, "<=", 21], "P": [0, 0] }],
+      "espera": { "izquierda": 0, "derecha": 21, "cumple": true, "enFrontera": false, "texto": "3·0 + 0 = 0 ≤ 21" },
+      "tambien": [
+        { "args": [{ "r": [3, 1, "<=", 21], "P": [5, 6] }], "espera": { "izquierda": 21, "cumple": true, "enFrontera": true, "texto": "3·5 + 6 = 21 ≤ 21" } },
+        { "args": [{ "r": [3, 1, "<=", 21], "P": [6, 5] }], "espera": { "izquierda": 23, "cumple": false, "veredicto": "no cumple" } } ] },
+
+    { "nombre": "Paso a paso, predicción 2: 3x + y ≤ 21 se sombrea del lado del origen y con la recta continua (≤ incluye la frontera). El lado contrario es PL1, la recta punteada PL2 y solo la recta PL12; no hay que dividir entre un negativo, así que PL13 no aplica",
+      "fn": "semiplano", "args": [{ "r": [3, 1, "<=", 21] }],
+      "espera": { "trazo": "continua", "lado": "origen", "origen.cumple": true, "despeje.texto": "y ≤ −3x + 21", "despeje.sentido": "abajo", "cortes.x": 7, "cortes.y": 21,
+        "errores.ladoContrario.lado": "contrario", "errores.trazoContrario.trazo": "punteada", "errores.comoEcuacion.trazo": "solo la recta", "noAplica": ["sinInvertir"] } },
+
+    { "nombre": "Semiplano con b negativo: 2x − y > 4. El origen no cumple (0 > 4 es falso): se sombrea el lado contrario, con la recta punteada. Al despejar, −y > 4 − 2x se divide entre −1 y el sentido se invierte: y < 2x − 4 (abajo). Sin invertir, y > 2x − 4 (arriba; PL13)",
+      "fn": "semiplano", "args": [{ "r": [2, -1, ">", 4] }],
+      "espera": { "trazo": "punteada", "lado": "contrario", "origen.cumple": false, "origen.texto": "2·0 − 0 = 0 > 4", "despeje.texto": "y < 2x − 4", "despeje.sentido": "abajo",
+        "errores.sinInvertir.texto": "despeje|y > 2x − 4", "errores.sinInvertir.sentido": "arriba", "errores.ladoContrario.lado": "origen", "errores.trazoContrario.trazo": "continua" } },
+
+    { "nombre": "Frontera que pasa por el origen: x − 2y ≤ 0. El origen no sirve de prueba (cae en la recta); con (1; 0), 1 ≤ 0 es falso. Despeje: −2y ≤ −x → y ≥ (1/2)x (arriba); sin invertir, y ≤ (1/2)x",
+      "fn": "semiplano", "args": [{ "r": [1, -2, "<=", 0] }],
+      "espera": { "lado": "la frontera pasa por el origen", "otraPrueba.texto": "(1; 0)", "otraPrueba.cumple": false, "despeje.texto": "y ≥ (1/2)x", "despeje.sentido": "arriba", "errores.sinInvertir.sentido": "abajo", "noAplica": ["ladoContrario"] },
+      "tambien": [ { "args": [{ "r": [-1, 0, ">=", -3] }], "espera": { "despeje.texto": "x ≤ 3", "despeje.sentido": "izquierda", "lado": "origen", "errores.sinInvertir.texto": "despeje|x ≥ 3", "cortes.x": 3, "cortes.y": null } } ] },
+
+    { "nombre": "Paso a paso, predicción 3: tejido (3x + y = 21) y feria (x + y = 11) se cruzan en (5; 6): restando, 2x = 10. Cruzar las coordenadas da (6; 5); mezclar los cortes con los ejes (7 de la primera, 11 de la segunda) da (7; 11); despejar y = 11 + x, (5; 16) (PL10)",
+      "fn": "interseccion", "args": [{ "r1": [3, 1, "<=", 21], "r2": [1, 1, "<=", 11] }],
+      "espera": { "tipo": "punto", "punto": [5, 6], "texto": "(5; 6)", "errores.intercambiada.texto": "(6; 5)", "errores.cortesMezclados.texto": "(7; 11)", "errores.signoDespeje.texto": "(5; 16)", "coinciden": [] },
+      "tambien": [ { "args": [{ "r1": [3, 1, "<=", 21], "r2": [1, 1, ">=", 12] }], "espera": { "texto": "(9/2; 15/2)", "punto": [4.5, 7.5] } } ] },
+
+    { "nombre": "Rectas paralelas (x + y = 11 y x + y = 12) no se cortan; 2x + 2y = 22 y x + y = 11 son la misma recta",
+      "fn": "interseccion", "args": [{ "r1": [1, 1, "<=", 11], "r2": [1, 1, ">=", 12] }],
+      "espera": { "tipo": "paralelas", "punto": null },
+      "tambien": [ { "args": [{ "r1": [2, 2, "<=", 22], "r2": [1, 1, "<=", 11] }], "espera": { "tipo": "coincidentes" } } ] },
+
+    { "nombre": "Vértices del taller con x ≥ 0 e y ≥ 0: (0; 0), (7; 0), (5; 6), (2; 9) y (0; 9), en sentido antihorario; región acotada. (4; 9), cruce de tejido y alpaca, no es vértice: 4 + 9 = 13 > 11",
+      "fn": "vertices", "args": [{ "restricciones": [[3, 1, "<=", 21], [1, 1, "<=", 11], [0, 1, "<=", 9]], "noNegativas": true }],
+      "espera": { "vacia": false, "acotada": true, "n": 5, "textos": ["(0; 0)", "(7; 0)", "(5; 6)", "(2; 9)", "(0; 9)"] } },
+
+    { "nombre": "Los mismos vértices sin x ≥ 0 ni y ≥ 0 (PL6): solo quedan (5; 6) y (2; 9) y la región se va al infinito hacia los negativos (no acotada)",
+      "fn": "vertices", "args": [{ "restricciones": [[3, 1, "<=", 21], [1, 1, "<=", 11], [0, 1, "<=", 9]], "noNegativas": false }],
+      "espera": { "vacia": false, "acotada": false, "n": 2, "textos": ["(5; 6)", "(2; 9)"] } },
+
+    { "nombre": "Paso a paso, predicciones 5 y 6: máximo de z = 40x + 20y en el taller. Tabla: 0, 280, 320, 260 y 180; el máximo es 320 en (5; 6). El vértice de mayor x da (7; 0) (PL5), el más lejano del origen (2; 9) (PL4), el promedio de los vértices (14/5; 24/5), un punto interior (PL3), y el mínimo (0; 0) (PL8). Evaluar solo los cruces que no están en los ejes da lo mismo (coincide). El vértice de mayor y desempata y = 9 entre (2; 9) y (0; 9) por la mayor x: da (2; 9), que repite al más lejano",
+      "fn": "optimizar", "args": [{ "restricciones": [[3, 1, "<=", 21], [1, 1, "<=", 11], [0, 1, "<=", 9]], "noNegativas": true, "objetivo": [40, 20], "sentido": "max" }],
+      "espera": { "tipo": "unico", "valor": 320, "optimoTexto": "(5; 6)", "optimo": [5, 6], "rango.min": 0, "rango.max": 320,
+        "errores.mayorX.texto": "(7; 0)", "errores.mayorX.valor": 280, "errores.masLejano.texto": "(2; 9)", "errores.masLejano.valor": 260,
+        "errores.interior.texto": "(14/5; 24/5)", "errores.interior.valor": 208, "errores.sentidoContrario.texto": "(0; 0)", "coinciden": ["soloCruces"], "repetidos.mayorY": "masLejano" } },
+
+    { "nombre": "Paso a paso, predicción 6 (tabla con otros precios): z = 20x + 30y da 0, 140, 280, 310 y 270; el máximo es 310 en (2; 9). Quedarse con el óptimo anterior (5; 6) da 280 (PL21); solo los vértices de los ejes, (0; 9) con 270 (PL7); el de mayor x, (7; 0) con 140 (PL5). Aquí el más lejano del origen sí coincide",
+      "fn": "optimizar", "args": [{ "restricciones": [[3, 1, "<=", 21], [1, 1, "<=", 11], [0, 1, "<=", 9]], "noNegativas": true, "objetivo": [20, 30], "sentido": "max", "anterior": [40, 20] }],
+      "espera": { "tipo": "unico", "valor": 310, "optimoTexto": "(2; 9)", "errores.anterior.texto": "(5; 6)", "errores.anterior.valor": 280, "errores.soloEjes.texto": "(0; 9)", "errores.soloEjes.valor": 270,
+        "errores.mayorX.texto": "(7; 0)", "errores.mayorX.valor": 140, "coinciden": ["masLejano", "mayorY", "soloCruces"] } },
+
+    { "nombre": "¿Qué pasa si…?, 1: con z = 40x + 40y la recta de nivel es paralela a la feria (x + y = 11): 440 en (5; 6) y en (2; 9), y en todo el lado entre ellos (óptimos múltiples). Quedarse con un solo vértice, o con los dos vértices pero no con los puntos entre ellos, es PL9",
+      "fn": "optimizar", "args": [{ "restricciones": [[3, 1, "<=", 21], [1, 1, "<=", 11], [0, 1, "<=", 9]], "noNegativas": true, "objetivo": [40, 40], "sentido": "max" }],
+      "espera": { "tipo": "multiple", "valor": 440, "optimos": ["(5; 6)", "(2; 9)"], "lado": [[5, 6], [2, 9]], "errores.unicoPrimero.texto": "(5; 6)", "errores.unicoUltimo.texto": "(2; 9)", "errores.unicoUltimo.valor": 440, "errores.soloExtremos.texto": "(5; 6) y (2; 9)" } },
+
+    { "nombre": "¿Qué pasa si…?, 2 (minimizar): chacra con x + y ≥ 6, x ≤ 5, y ≤ 4; costo z = 2x + 3y. Vértices (5; 1), (5; 4) y (2; 4): 13, 22 y 16. El mínimo es 13 en (5; 1). Dar el máximo (5; 4) es PL8; el vértice más cercano al origen, (2; 4), PL4; el origen, que no está en la región, PL20",
+      "fn": "optimizar", "args": [{ "restricciones": [[1, 1, ">=", 6], [1, 0, "<=", 5], [0, 1, "<=", 4]], "noNegativas": true, "objetivo": [2, 3], "sentido": "min" }],
+      "espera": { "tipo": "unico", "valor": 13, "optimoTexto": "(5; 1)", "errores.sentidoContrario.texto": "(5; 4)", "errores.sentidoContrario.valor": 22,
+        "errores.masCercano.texto": "(2; 4)", "errores.masCercano.valor": 16, "errores.origen.texto": "(0; 0)", "rango.min": 13, "rango.max": 22 },
+      "tambien": [ { "fn": "vertices", "args": [{ "restricciones": [[1, 1, ">=", 6], [1, 0, "<=", 5], [0, 1, "<=", 4]], "noNegativas": true }], "espera": { "textos": ["(5; 1)", "(5; 4)", "(2; 4)"], "acotada": true } } ] },
+
+    { "nombre": "¿Qué pasa si…?, 3 (región no acotada): x + 2y ≥ 8, 3x + y ≥ 9, x ≥ 0, y ≥ 0; z = x + y. Vértices (8; 0), (0; 9) y (2; 3): 8, 9 y 5. Mínimo 5 en (2; 3)",
+      "fn": "optimizar", "args": [{ "restricciones": [[1, 2, ">=", 8], [3, 1, ">=", 9]], "noNegativas": true, "objetivo": [1, 1], "sentido": "min" }],
+      "espera": { "tipo": "unico", "valor": 5, "optimoTexto": "(2; 3)", "acotada": false, "rango.min": 5, "rango.max": null, "errores.origen.texto": "(0; 0)" } },
+
+    { "nombre": "La misma región no acotada, ahora máximo: no hay, z crece sin fin hacia arriba y a la derecha. Dar el mejor vértice, (0; 9) con 9, como si la región fuera cerrada es PL16",
+      "fn": "optimizar", "args": [{ "restricciones": [[1, 2, ">=", 8], [3, 1, ">=", 9]], "noNegativas": true, "objetivo": [1, 1], "sentido": "max" }],
+      "espera": { "tipo": "noAcotado", "valor": null, "errores.soloVertices.texto": "(0; 9)", "errores.soloVertices.valor": 9, "rango.max": null, "rango.min": 5 } },
+
+    { "nombre": "¿Qué pasa si…?, 4 (región vacía): al taller se le pide al menos 12 prendas (x + y ≥ 12), pero la feria admite a lo más 11: ningún punto cumple todo y no hay óptimo. Los cruces (9/2; 15/2) y (3; 9) cumplen otras restricciones pero no la feria (PL17)",
+      "fn": "optimizar", "args": [{ "restricciones": [[3, 1, "<=", 21], [1, 1, "<=", 11], [0, 1, "<=", 9], [1, 1, ">=", 12]], "noNegativas": true, "objetivo": [40, 20], "sentido": "max" }],
+      "espera": { "tipo": "vacia", "valor": null, "optimos": [] },
+      "tambien": [
+        { "fn": "vertices", "args": [{ "restricciones": [[3, 1, "<=", 21], [1, 1, "<=", 11], [0, 1, "<=", 9], [1, 1, ">=", 12]], "noNegativas": true }], "espera": { "vacia": true, "n": 0 } },
+        { "fn": "interseccion", "args": [{ "r1": [0, 1, "<=", 9], "r2": [1, 1, ">=", 12] }], "espera": { "texto": "(3; 9)" } } ] },
+
+    { "nombre": "¿Qué pasa si…?, 5 (restricción redundante): x ≤ 8 no cambia nada, porque el tejido ya obliga a x ≤ 7. Creer que agrega el vértice (8; 0) es PL18. En cambio y ≤ 9 sí cuenta: sin ella el vértice (0; 11) reemplaza a (2; 9) y (0; 9)",
+      "fn": "redundante", "args": [{ "restricciones": [[3, 1, "<=", 21], [1, 1, "<=", 11], [0, 1, "<=", 9], [1, 0, "<=", 8]], "noNegativas": true, "indice": 3 }],
+      "espera": { "redundante": true, "errores.nuevoVertice.texto": "(8; 0)", "verticesSin": ["(0; 0)", "(7; 0)", "(5; 6)", "(2; 9)", "(0; 9)"] },
+      "tambien": [ { "args": [{ "restricciones": [[3, 1, "<=", 21], [1, 1, "<=", 11], [0, 1, "<=", 9]], "noNegativas": true, "indice": 2 }], "espera": { "redundante": false, "verticesSin": ["(0; 0)", "(7; 0)", "(5; 6)", "(0; 11)"] } } ] },
+
+    { "nombre": "Paso a paso, predicción 4: la recta de nivel 40x + 20y = 200 tiene pendiente −40/20 = −2 y corta los ejes en 5 y 10. Dividir al revés da −1/2 y olvidar el signo, 2 (PL11). Su punto más cercano al origen es (4; 2)",
+      "fn": "rectaNivel", "args": [{ "objetivo": [40, 20], "k": 200 }],
+      "espera": { "texto": "40x + 20y = 200", "pendienteTexto": "−2", "pendiente": -2, "cortes.x": 5, "cortes.y": 10, "pieTexto": "(4; 2)", "gradiente": [40, 20],
+        "errores.invertida.texto": "−1/2", "errores.signo.texto": "2", "coinciden": [] } },
+
+    { "nombre": "Al subir k de 200 a 320, la recta de nivel avanza (12/5; 6/5) en la dirección del gradiente (40; 20) y se aleja del origen: 120/√2000 ≈ 2,683 (PL19 es creer que se acerca)",
+      "fn": "desplazar", "args": [{ "objetivo": [40, 20], "k1": 200, "k2": 320 }],
+      "espera": { "vectorTexto": "(12/5; 6/5)", "vector": [2.4, 1.2], "sentido": "gradiente", "origen": "se aleja del origen", "distancia": 2.6832815729997477 },
+      "tambien": [ { "args": [{ "objetivo": [40, 20], "k1": 320, "k2": 200 }], "espera": { "origen": "se acerca al origen", "sentido": "contra el gradiente" } } ] },
+
+    { "nombre": "Evaluar z = 40x + 20y en (5; 6): 40·5 + 20·6 = 320. La región del taller recortada a la ventana −2 ≤ x ≤ 12, −2 ≤ y ≤ 13 es el mismo pentágono; sin x ≥ 0 ni y ≥ 0, la sola restricción del tejido llena la ventana hasta su recta",
+      "fn": "evaluar", "args": [{ "objetivo": [40, 20], "P": [5, 6] }],
+      "espera": { "valor": 320, "cuenta": "40·5 + 20·6 = 320" },
+      "tambien": [
+        { "fn": "poligono", "args": [{ "restricciones": [[3, 1, "<=", 21], [1, 1, "<=", 11], [0, 1, "<=", 9]], "noNegativas": true, "ventana": { "x0": -2, "x1": 12, "y0": -2, "y1": 13 } }], "espera": { "vacia": false, "textos": ["(7; 0)", "(5; 6)", "(2; 9)", "(0; 9)", "(0; 0)"] } },
+        { "fn": "poligono", "args": [{ "restricciones": [[3, 1, "<=", 21]], "noNegativas": false, "ventana": { "x0": -2, "x1": 12, "y0": -2, "y1": 13 } }], "espera": { "textos": ["(−2; −2)", "(23/3; −2)", "(8/3; 13)", "(−2; 13)"] } } ] }
+  ]
+}

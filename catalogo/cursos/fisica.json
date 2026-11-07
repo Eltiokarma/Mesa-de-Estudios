@@ -310,8 +310,8 @@
       "universidades": {"uni": {"semanas": [18]}, "unmsm": {"temas": [17]}},
       "potencial_visual": "bajo",
       "grado": 5,
-      "plantillas": [],
-      "investigacion": null
+      "plantillas": ["ondas-electromagneticas"],
+      "investigacion": "docs/investigacion/ondas-electromagneticas-ideas-erroneas.md"
     },
     {
       "id": "fisica.optica-geometrica",

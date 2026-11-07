@@ -4,6 +4,124 @@ Rama `rutina/fisica-b`, sacada de `claude/awesome-wozniak-5etl1n`. Unidades de 5
 
 **Ya resuelto:** la conversación principal le avisó a la rutina de física que la electricidad es de esta rama.
 
+## 7 nov 2026 · Ondas electromagnéticas: la antena y el arcoíris (`plantillas/ondas-electromagneticas/`)
+
+### Qué hice
+
+La principal pidió dos cosas: primero un informe y después una escena corta. Las dos están hechas.
+
+**Informe nuevo:** `docs/investigacion/ondas-electromagneticas-ideas-erroneas.md`, con los errores OE1 a OE20.
+- La red no dejó abrir ningún artículo completo. Todo sale de resúmenes, fragmentos o notas docentes, y el informe lo avisa arriba.
+- Solo OE6 tiene cifra («se ven objetos solo con UV»: cerca de 8 de cada 10 de 283 escolares).
+- OE1 a OE5 y OE7 a OE11 son parciales. Bajé OE5 a parcial porque su 30 % no trae muestra.
+- OE12 a OE20 son hipótesis nuestras.
+
+**Escena:** «La antena y el arcoíris: ondas electromagnéticas», unidad `fisica.ondas-electromagneticas`. La idea central:
+- Una onda electromagnética es un campo eléctrico y un campo magnético que oscilan juntos, en fase, perpendiculares entre sí y al avance.
+- En el vacío todas viajan a c.
+- Lo que cambia de una a otra es f, y con ella λ y la energía del fotón: en el espectro las tres van en una sola regla, como en física moderna.
+- En un medio cambian v y λ, pero no f.
+- Qué atraviesa qué depende de la frecuencia y del material.
+
+**Motor** (`MotorOndasEM`, cabecera hasta la línea 113):
+- conversión entre frecuencia y longitud de onda, y las regiones del espectro;
+- fotón;
+- campos y la dirección de B;
+- tiempo de viaje y eco;
+- medio con índice n;
+- tabla de qué atraviesa qué (simplificada, y la escena lo dice);
+- lectura de la expresión de la onda (`leerOnda`) e intensidad;
+- si una radiación ioniza.
+
+**Notación:** el campo eléctrico va sin letra (escrito «campo eléctrico», en azul), porque la E es la energía del fotón, como en física moderna. Una nota dice que en los libros y en el examen se escribe E₀ = c·B₀.
+
+**Paso a paso** (7 pasos, todos con predicción; las correctas van C A B D B A C):
+1. La radio y el foco hacia la Luna.
+2. ¿Cómo oscila B?
+3. El espectro ordenado por frecuencia.
+4. λ de una emisora de FM.
+5. La radio cruza una pared y la luz no.
+6. Luz de 600 nm al entrar al agua.
+7. Leer la expresión de la onda.
+
+**¿Qué pasa si…?** (4): la emisora más potente, el Sol que se apaga, la puerta del horno y B₀ a partir del campo eléctrico.
+
+**Papel:** 10 problemas propios, entre ellos uno de intensidad y uno de leer la onda.
+
+**Celular:** botones para saltar a radio FM, microondas, rojo, verde, violeta, ultravioleta y rayos X.
+
+### Pruebas
+
+- 23 casos y 42 pruebas del motor.
+- `npm test`: 3539 en verde; fallan solo las 2 de catálogo, como se espera.
+- `pasada-celular.py`: no marca nada pendiente (QUEDA).
+- Playwright a 390×844 y 1366×768, en claro y oscuro, con y sin movimiento reducido, revisado por el constructor y el revisor:
+  - sin errores de consola ni desbordes;
+  - con la predicción pendiente, el banco del celular mide 330 px o menos;
+  - el dedo sobre el dibujo desplaza la página (probado con toque real).
+
+### Subagentes y lo que corrigieron
+
+- **Informe:** lo escribió un subagente de investigación; yo bajé OE5 a parcial.
+- **Verificador independiente**, dos vueltas:
+  - Primera: 124 de 124 campos coinciden. Dos nombres de caso estaban mal (600 nm es naranja; 1 mm todavía es infrarrojo) y ya están corregidos.
+  - Segunda, tras la revisión: la tabla nueva, `leerOnda` e intensidad. Coinciden los 31 campos.
+- **Revisor, graves:**
+  - La tabla de qué atraviesa qué afirmaba de más. Ahora la rejilla deja pasar el infrarrojo; el vidrio frena parte del ultravioleta; el hueso absorbe mucho más los rayos X, pero no todos; la piel deja pasar algo de luz roja.
+  - En el paso 6, «se ve naranja bajo el agua» chocaba con que en lo hondo todo se ve azulado; ahora se explica.
+  - En el paso 2, la perspectiva hacía ver B desfasado (justo el error OE14). Bajó el sesgo, se marca una cresta y hay un rótulo «hacia ti».
+- **Revisor, medios:**
+  - El enunciado del paso 5 tenía una salida defendible por las ventanas; ahora es un cuarto sin ventanas.
+  - La escala decía «de 10 en 10»; en realidad es ×10 000 por marca.
+  - Citas sin cifras de más, y la rejilla del horno explicada como onda, no como objeto.
+  - Nota de E₀ = c·B₀.
+  - En el celular, el enunciado ya no queda tapado.
+- **Veredicto del revisor:** así como estaba era delgada y repetía física moderna. Por eso se agregó el paso 7, lo que el examen sí pregunta: leer E₀ sen(kx − ωt) para sacar λ, f, la región y la dirección de B, más la intensidad en el motor y el papel. Con eso se queda como plantilla propia.
+
+### Predicciones y respaldo
+
+- No hay ninguna documentada: OE6 no entró en ninguna predicción.
+- **Parcial:** OE1 a OE5 (la radio no es luz, rapideces distintas, v crece con f, energía con la amplitud, necesita un medio), OE4 en la emisora potente y OE9 en el horno.
+- **Hipótesis:** OE12 a OE20 y los errores de la lectura de la onda (λ = k, λ = 1/k, λ = k/2π).
+- Todas las citas llevan «por verificar».
+
+### Colores
+
+| Variable | Claro | Oscuro | Nota |
+| --- | --- | --- | --- |
+| λ | #0d6b78 | #24e4f9 | como en física moderna |
+| f | #5c531f | #fdf2b4 | como en física moderna |
+| E energía del fotón | #a55412 | #ffa64d | como en física moderna |
+| campo eléctrico (sin letra) | #1f5fbf | #7cb0ff | el azul de F; el turquesa de E en electrostática quedaba a ΔE00 ≈ 10 de λ |
+| B | #2a7638 | #7fd67f | como en magnetismo |
+| c y v rapidez | #c0364a | #f17384 | el rojo de v |
+| n índice | #7614b8 | #aa74fb | el violeta de P en física moderna (nunca salen juntos) |
+
+- ΔE00 mínimo: 21,1 en claro y 21,9 en oscuro, entre f y B.
+- Contraste AA en todos. El más justo es c/v en claro: 4,56 sobre su chip.
+- El color de la luz va solo en banda translúcida (alfa 0,34; 0,25 en oscuro). Las ondas van en tinta.
+
+### Pendiente
+
+- En el paso 2, la perspectiva todavía corre un poco las crestas de B respecto de las del campo eléctrico. La cresta marcada muestra que salen juntas.
+- La tabla de qué atraviesa qué es simplificada.
+- Las cifras del informe salen de resúmenes. Para leer los artículos completos habría que permitir esos dominios en la red de la sesión.
+- No hay datos peruanos ni latinoamericanos.
+
+### Pedidos para la integración
+
+- `catalogo/cursos/fisica.json`: en `fisica.ondas-electromagneticas`, poner `"plantillas": ["ondas-electromagneticas"]` y `"investigacion": "docs/investigacion/ondas-electromagneticas-ideas-erroneas.md"`. Luego `npm run catalogo` y subir `VERSION` en `app/sw.js`.
+- `docs/diseno.md`: variables de ondas electromagnéticas (`plantillas/ondas-electromagneticas/`).
+  - λ, f y la energía del fotón E como en física moderna.
+  - El campo eléctrico sin letra, en el azul de F (#1f5fbf, oscuro #7cb0ff), porque E es la energía del fotón.
+  - B como en magnetismo.
+  - c y v en el rojo de v.
+  - El índice n en el violeta de P (#7614b8, oscuro #aa74fb).
+- `docs/pendientes.md`, línea propuesta: «**Ondas electromagnéticas** (`plantillas/ondas-electromagneticas/`, rutina de física B, 7 nov 2026): la antena y el arcoíris (todas a c en el vacío, campo eléctrico y B en fase y perpendiculares, espectro en una sola regla con λ, f y energía del fotón, FM de 100 MHz, qué atraviesa qué, luz que entra al agua, leer E₀ sen(kx − ωt) e intensidad); 23 casos verificados aparte en dos vueltas; 10 de papel; 7 predicciones y 4 «¿qué pasa si…?». Informe nuevo `docs/investigacion/ondas-electromagneticas-ideas-erroneas.md` (OE1 a OE20, desde resúmenes, por verificar). Nada documentado. Sin ítems en el banco de física.»
+- `CLAUDE.md`:
+  - Agregar «la antena y el arcoíris» a la lista de plantillas.
+  - Historia: «Ondas electromagnéticas (7 nov 2026, rutina de física B): `plantillas/ondas-electromagneticas/` (la antena y el arcoíris: todas a c, campos en fase y perpendiculares, espectro, qué atraviesa qué, cambio de medio y lectura de la onda; 23 casos verificados aparte) e informe `docs/investigacion/ondas-electromagneticas-ideas-erroneas.md`.»
+
 ## 7 nov 2026 · Física moderna: la lámpara y la placa (`plantillas/fisica-moderna/`)
 
 ### Qué hice

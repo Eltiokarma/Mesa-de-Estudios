@@ -19,7 +19,7 @@
       "universidades": {"uni": {"semanas": [1, 2, 18]}},
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["conjuntos", "logica"],
       "investigacion": null
     },
     {
@@ -280,7 +280,7 @@
       "universidades": {"uni": {"semanas": [16, 17]}, "unmsm": {"temas": [18]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": [],
+      "plantillas": ["programacion-lineal"],
       "investigacion": null
     },
     {

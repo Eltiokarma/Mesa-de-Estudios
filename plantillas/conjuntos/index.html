@@ -1,0 +1,1135 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Las fichas en los aros: conjuntos</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de «La balanza de las mezclas».
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4), uno por papel en toda la
+   escena (los mismos hex que «Las fichas que se agrupan»): el conjunto A (su aro, su nombre, sus elementos y n(A)) azul
+   #1f5fbf / #7cb0ff; el conjunto B naranja #a05200 / #f0a04a; el conjunto C verde #466d14 / #a3d65e; lo que está en
+   todos los aros a la vez (A ∩ B con dos aros, A ∩ B ∩ C con tres) fucsia #a10fbf / #e180ff; lo que queda fuera de
+   todos los aros (los que no están en ninguno) turquesa #0f766e / #5ed9c8, y los subconjuntos y P(A) rojo
+   #b02c41 / #ff8091 (los dos oscuros, más claros que en numeración para pasar AA con margen). Las fichas, el universo U, las cuentas de las regiones de dos aros (con tres) y lo que no es
+   variable van en tinta; el resultado de una operación, rayado en tinta.
+   Elegidos con CIEDE2000 (docs/metodo/paleta.py): mínimo 23,6 en claro (C–fuera) y 25,1 en oscuro (∩–subconjuntos);
+   A–B 48,9; A–∩ 27,1; B–subconjuntos 25,8. Contraste AA sobre el papel, la tarjeta, el chip (.v, fondo al 8 %) y las
+   opciones ya marcadas, donde el color va sin chip (.t-*): mínimo 4,53 en claro (fuera, en la opción marcada) y 4,94 en
+   oscuro (∩ con chip sobre la opción correcta). El rojo de los subconjuntos queda cerca del rojo de los avisos (ΔE00 7,6
+   en claro y 4,5 en oscuro) y el turquesa, del verde de «correcto» (11): nunca van en las opciones, y los avisos y
+   «correcto» siempre llevan texto. Los glifos ∪ ∩ ∅ ∈ ⊂ Δ van con la letra de texto (.g): en monoespaciada se confunden
+   con «u», «n» y «ø». */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-A:#1f5fbf; --c-B:#a05200; --c-C:#466d14; --c-I:#a10fbf; --c-fu:#0f766e; --c-S:#b02c41;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-A:#7cb0ff; --c-B:#f0a04a; --c-C:#a3d65e; --c-I:#e180ff; --c-fu:#5ed9c8; --c-S:#ff8091;
+  color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-A:#7cb0ff; --c-B:#f0a04a; --c-C:#a3d65e; --c-I:#e180ff; --c-fu:#5ed9c8; --c-S:#ff8091;
+  color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+@media (max-width:899px){ .mode.pendiente .lecturas{gap:4px} .mode.pendiente .lectura{padding:2px 8px} }
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+canvas:focus-visible{outline:3px solid var(--ink); outline-offset:-3px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; grid-template-columns:minmax(0, 1fr); gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; grid-template-columns:minmax(0, 1fr); gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-A{color:var(--c-A); background:color-mix(in srgb, var(--c-A) 8%, transparent)}
+.v-B{color:var(--c-B); background:color-mix(in srgb, var(--c-B) 8%, transparent)}
+.v-C{color:var(--c-C); background:color-mix(in srgb, var(--c-C) 8%, transparent)}
+.v-I{color:var(--c-I); background:color-mix(in srgb, var(--c-I) 8%, transparent)}
+.v-fu{color:var(--c-fu); background:color-mix(in srgb, var(--c-fu) 8%, transparent)}
+.v-S{color:var(--c-S); background:color-mix(in srgb, var(--c-S) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+/* En las opciones, el color va solo en la letra (sin el fondo del chip): así pasa AA sobre la opción marcada. */
+.t-A{color:var(--c-A); font-weight:800} .t-B{color:var(--c-B); font-weight:800} .t-C{color:var(--c-C); font-weight:800}
+.t-I{color:var(--c-I); font-weight:800} .t-fu{color:var(--c-fu); font-weight:800} .t-S{color:var(--c-S); font-weight:800}
+.num{font-variant-numeric:tabular-nums; white-space:nowrap}
+.eq .g, .lectura .g, .opt .g{font-family:var(--font); font-size:1.15em; line-height:1; font-weight:inherit}
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eqs:empty{display:none}
+.eq{font-family:var(--mono); font-size:1.02rem; line-height:1.75; font-variant-numeric:tabular-nums; overflow-wrap:anywhere}
+.eq .note{display:block; font-family:var(--font); font-size:.84rem; line-height:1.4; color:var(--muted); white-space:normal}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.seg button:disabled{opacity:.45; cursor:not-allowed}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(110px, 1fr)); gap:8px}
+.lecturas:empty{display:none}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura b{display:block; color:var(--k); font:800 .95rem var(--mono); font-variant-numeric:tabular-nums; overflow-wrap:anywhere}
+.lectura > span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.25fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+/* Mover una ficha sin arrastrar: elegirla y marcar en qué aros está */
+.mover{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+.mover > div{display:inline-flex; align-items:center; gap:6px; background:var(--paper); border:1px solid var(--line); border-radius:999px; padding:4px 6px 4px 12px}
+.mover button{font:800 .95rem var(--font); min-width:42px; height:40px; padding:0 10px; border-radius:999px; border:1.5px solid var(--line); background:var(--card); color:var(--ink); cursor:pointer}
+.mover button[aria-pressed="true"]{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.mover button:disabled{opacity:.4; cursor:not-allowed}
+.mover .val{font:800 1rem var(--font); min-width:3.6em; text-align:center}
+.mover .que{font-size:.85rem; color:var(--muted); font-weight:700}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Aritmética · Conjuntos · Problemas tipo admisión</p>
+      <h1>Las fichas en los aros</h1>
+      <p class="sub">Alumnos que se acomodan en aros que se cruzan, árboles de decisiones y cuadrículas de parejas. Antes de cada respuesta, predice; después, la escena te muestra por qué.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo de la escena: aros con fichas, un árbol o una cuadrícula">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Dibujo de la escena"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos con conjuntos">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/conjuntos">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'conjuntos', unidad: 'aritmetica.conjuntos', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la matemática (regiones, cuentas, operaciones, subconjuntos, pares, y dónde cae cada ficha sin encimarse) sale
+   de MotorConjuntos (motor.js); aquí solo se pinta y se anima. El celular va con nucleo/celular.js. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const M = MotorConjuntos;
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
+// Texto plano para el lector de pantalla.
+const quitar = t => String(t).replace(/<[^>]+>/g, '')
+  .replace(/n\(([^()]*(?:\([^()]*\))?[^()]*)\)/g, 'el número de elementos de $1')
+  .replace(/P\(A\)/g, 'P de A').replace(/∪/g, ' unión ').replace(/∩/g, ' intersección ').replace(/Δ/g, ' diferencia simétrica ')
+  .replace(/′/g, ' complemento').replace(/∉/g, ' no pertenece a ').replace(/∈/g, ' pertenece a ').replace(/⊂/g, ' está incluido en ')
+  .replace(/≠/g, ' es distinto de ').replace(/∅/g, 'el vacío').replace(/ × /g, ' por ').replace(/ − /g, ' menos ')
+  .replace(/…/g, '').replace(/\s+/g, ' ').trim();
+// Los glifos de conjuntos, con la letra de texto (en monoespaciada se confunden con «u», «n» y «ø»). Solo fuera de las etiquetas.
+const glifos = h => String(h).replace(/(<[^>]*>)|([∪∩∅∈∉⊂⊄Δ′])/g, (m, tag, g) => tag || `<span class="g">${g}</span>`);
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const T = (k, t) => `<span class="t-${k}">${t}</span>`;
+const nb = t => String(t).replace(/ /g, ' ');
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+const pl = (n, uno, varios) => (n === 1 ? uno : varios);
+function tween(dur, paso, fin){
+  if (RM || !dur){ paso(1); if (fin) setTimeout(fin, 0); return; }
+  const t0 = performance.now();
+  const tick = now => { const f = Math.min(1, (now - t0)/dur); paso(suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
+  requestAnimationFrame(tick);
+}
+// Variables: A, B y C los conjuntos (azul, naranja, verde), I lo que está en todos los aros (fucsia), fu lo que queda
+// fuera de todos (turquesa) y S los subconjuntos y P(A) (rojo).
+const CLAVES = ['A', 'B', 'C', 'I', 'fu', 'S'];
+function colores(){
+  const c = { ink:css('--ink'), muted:css('--muted'), grid:css('--grid'), paper:css('--paper'), card:css('--card'), line:css('--line'),
+    ok:css('--ok'), warn:css('--warn'), mono:css('--mono'), font:css('--font') };
+  for (const k of CLAVES) c[k] = css('--c-' + k);
+  return c;
+}
+const col = (c, k) => (c[k] || c.ink);
+const varCSS = k => (k === 'ink' ? '--ink' : k === 'muted' ? '--muted' : '--c-' + k);
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function redondeado(ctx, x, y, w, h, r){ r = Math.max(0, Math.min(r, w/2, h/2)); ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}" tabindex="-1"></p>`;
+const FUENTE = '<p class="fuente">No encontramos estudios con datos sobre estos errores; las opciones incorrectas son hipótesis nuestras, y la app las medirá en el colegio.</p>';
+// La zona que está en todos los aros va en fucsia; la de afuera, en turquesa; las demás cuentas, en tinta.
+const claveZona = (z, n) => (z === '' ? 'fu' : z.length === n ? 'I' : 'ink');
+// Fichas anónimas para una cuenta por región, en el orden en que aparecen en la animación.
+const cartel = (k, ps) => ({ k, partes:ps });
+const fichasDe = (cuentas, orden) => [].concat(...orden.map(z => Array.from({ length: cuentas[z] || 0 }, () => ({ zona: z }))));
+</script>
+<script>
+/* ================= La escena =================
+   Modos: 'venn' (2 o 3 aros dentro del universo U, con fichas que se arrastran; o solo carteles antes de responder),
+   'carroll' (la tabla de dos filas, con las mismas fichas), 'arbol' (entra o no entra, nivel por nivel),
+   'cuadricula' (los pares de A × B) y 'bolsas' (conjuntos como bolsas con sus elementos, para P(A)). */
+function crearEscena(cv, idDesc, idLect, idLey){
+  const E = { modo:'venn', st:{}, lect:[], ley:null, hl:null, alCambiar:null, ocupado:false, tok:0, anim:false, compacto:false, desc:null, sel:0 };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, sobre = false, arrastre = null, geo = null, lay = null;
+  const PIE = 30;
+  const ALTO = { venn: () => (E.st.carteles ? 190 : (E.st.n === 3 ? 350 : 290) + (E.st.banca ? 44 : 0)), carroll: () => (E.st.n === 3 ? 300 : 270),
+    arbol: () => 300, cuadricula: () => 230, bolsas: () => 210 };
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    const h = Math.round(Celular.alto(ALTO[E.modo]() + (E.st.pie ? PIE : 0), E.compacto)), dpr = Celular.dpr();
+    if (w === W && h === H) { E.acomodar(); E.dibujar(); return; }
+    W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    E.acomodar(); E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  alRedibujarTema(() => E.dibujar());
+
+  E.config = o => {
+    E.tok++; E.anim = false;
+    Object.assign(E, { modo:'venn', st:{}, lect:[], ley:null, alCambiar:null, desc:null }, o);
+    E.listo = true; if (E.sel >= (E.st.fichas || []).length) E.sel = 0;
+    W = 0; resize(); E.leyenda(); E.dibujar(); E.avisar();
+  };
+  E.redimensionar = () => { W = 0; resize(); };
+  E.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === E.compacto) return; E.compacto = on; W = 0; resize(); };
+  const movible = () => (E.modo === 'venn' || E.modo === 'carroll') && !!E.st.mover && !E.st.carteles && !!(E.st.fichas || []).length;
+  E.etiquetar = () => {
+    const m = movible();
+    cv.tabIndex = m ? 0 : -1;
+    if (m){ const f = E.st.fichas[E.sel];
+      cv.setAttribute('aria-label', quitar(`Diagrama con ${E.st.fichas.length} fichas. Ficha elegida: ${f.id}, ${M.nombreZona(f.zona, E.st.n)}. Flechas izquierda y derecha: elegir ficha; teclas ${M.LETRAS[E.st.n].join(', ')}: meterla o sacarla de cada aro.`)); }
+    else cv.setAttribute('aria-label', 'Dibujo de la escena');
+  };
+
+  // ----- geometría y dónde va cada ficha (del motor) -----
+  const pieAbajo = () => (E.st.pie ? PIE : 0);
+  E.acomodar = () => {
+    geo = null; lay = null;
+    if (!W || !E.listo || (E.modo !== 'venn' && E.modo !== 'carroll') || E.st.carteles) return;
+    const s = E.st;
+    geo = E.modo === 'venn' ? M.aros(s.n, W, H, { relacion:s.relacion, banca:s.banca || 0, abajo:pieAbajo(), arriba: 26 })
+      : M.carroll(s.n, W, H, { abajo:pieAbajo() });
+    const fs = s.fichas || [], cuentas = {};
+    geo.zonas.forEach(z => { cuentas[z] = 0; });
+    fs.forEach(f => { cuentas[f.zona] = (cuentas[f.zona] || 0) + 1; });
+    lay = M.layout(geo, cuentas, { rotulos:true, radio: s.radio || 11, radioRotulo: 11 });
+    const usados = {};
+    fs.forEach(f => { const j = usados[f.zona] = (usados[f.zona] || 0); usados[f.zona]++; const p = lay.pos[f.zona][j]; f.x = p ? p.x : -99; f.y = p ? p.y : -99; });
+  };
+  E.geo = () => geo;
+
+  function rotulo(c, x, y, t, color, align, peso, tam){
+    ctx.font = `${peso || 700} ${tam || 13}px ${c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+    const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+    ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+    ctx.fillStyle = color; ctx.fillText(t, x, y);
+    return w;
+  }
+  // Un rótulo hecho de pedazos: [['25', 'A'], [' + ', 'ink'], ['18', 'B']].
+  function partes(c, x, y, ps, align, tam, peso, maxW){
+    tam = tam || 14; ctx.font = `${peso || 800} ${tam}px ${c.font}`; ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
+    const lim = maxW || W - 12;
+    let ws = ps.map(([t]) => ctx.measureText(String(t)).width), tot = ws.reduce((s, w) => s + w, 0);
+    if (tot > lim){ tam = Math.max(9, Math.floor(tam*lim/tot)); ctx.font = `${peso || 800} ${tam}px ${c.font}`; ws = ps.map(([t]) => ctx.measureText(String(t)).width); tot = ws.reduce((s, w) => s + w, 0); }
+    let x0 = align === 'left' ? x : align === 'right' ? x - tot : x - tot/2;
+    ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - tam*.75, tot + 6, tam*1.55); ctx.restore();
+    ps.forEach(([t, k], j) => { ctx.fillStyle = col(c, k || 'ink'); ctx.fillText(String(t), x0, y); x0 += ws[j]; });
+    return tot;
+  }
+  function linea(x1, y1, x2, y2){ ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
+  // Recorta el lienzo a una región del Venn: dentro de sus aros y fuera de los demás.
+  function recortar(z){
+    const U = geo.U;
+    ctx.beginPath(); ctx.rect(U.x, U.y, U.w, U.h); ctx.clip();
+    geo.aros.forEach(a => {
+      ctx.beginPath();
+      if (z.includes(a.k)) ctx.arc(a.x, a.y, a.r, 0, 7);
+      else { ctx.rect(U.x, U.y, U.w, U.h); ctx.moveTo(a.x + a.r, a.y); ctx.arc(a.x, a.y, a.r, 0, 7); }
+      ctx.clip('evenodd');
+    });
+  }
+  function pintarZona(c, z, como){
+    ctx.save();
+    if (geo.tipo === 'venn') recortar(z);
+    else { const k = geo.celdas.find(k => k.zona === z); if (!k) { ctx.restore(); return; } ctx.beginPath(); ctx.rect(k.x, k.y, k.w, k.h); ctx.clip(); }
+    const U = geo.U;
+    if (como.rayado){ ctx.strokeStyle = c.ink; ctx.globalAlpha = .38; ctx.lineWidth = 1.3; for (let x = U.x - U.h; x < U.x + U.w; x += 8) linea(x, U.y + U.h, x + U.h, U.y); }
+    else { ctx.fillStyle = como.color; ctx.globalAlpha = como.alfa; ctx.fillRect(U.x, U.y, U.w, U.h); }
+    ctx.restore();
+  }
+  function ficha(c, f, r, grande){
+    const R = grande ? r + 3 : r;
+    (f.halos || []).forEach((k, i) => { ctx.save(); ctx.strokeStyle = c[k]; ctx.lineWidth = 2.2; ctx.beginPath(); ctx.arc(f.x, f.y, R + 2.4 + i*2.8, 0, 7); ctx.stroke(); ctx.restore(); });
+    ctx.save(); ctx.beginPath(); ctx.arc(f.x, f.y, R, 0, 7);
+    if (f.ini){ ctx.fillStyle = c.card; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; ctx.stroke(); }
+    else { ctx.fillStyle = c.ink; ctx.globalAlpha = .22; ctx.fill(); ctx.globalAlpha = 1; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.2; ctx.stroke(); }
+    ctx.restore();
+    if (f.ini){ ctx.fillStyle = c.ink; ctx.font = `800 ${Math.round(R*1.05)}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(f.ini, f.x, f.y + .5); }
+  }
+
+  // ----- Venn y Carroll -----
+  function dibVenn(c){
+    const s = E.st;
+    if (s.carteles){ dibCarteles(c); return; }
+    if (!geo) return;
+    const U = geo.U, n = s.n;
+    // el universo
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; redondeado(ctx, U.x + .5, U.y + .5, U.w - 1, U.h - 1, 12); ctx.stroke(); ctx.restore();
+    if (geo.tipo === 'venn'){
+      geo.aros.forEach(a => { ctx.save(); ctx.fillStyle = c[a.k]; ctx.globalAlpha = .05; ctx.beginPath(); ctx.arc(a.x, a.y, a.r, 0, 7); ctx.fill(); ctx.restore(); });
+      if (s.tinte !== false && geo.aros.length === n) pintarZona(c, M.ZONAS[n].find(z => z.length === n), { color:c.I, alfa:.1 });
+    } else {
+      const todo = M.ZONAS[n].find(z => z.length === n); if (s.tinte !== false) pintarZona(c, todo, { color:c.I, alfa:.1 });
+    }
+    (s.sombra || []).forEach(z => pintarZona(c, z, { rayado:true }));
+    if (arrastre && arrastre.zona != null) pintarZona(c, arrastre.zona, { color:c.ink, alfa:.07 });
+    if (geo.tipo === 'venn'){
+      geo.aros.forEach(a => { ctx.save(); ctx.strokeStyle = c[a.k]; ctx.lineWidth = E.hl === a.k ? 4.5 : 2.6; ctx.beginPath(); ctx.arc(a.x, a.y, a.r, 0, 7); ctx.stroke(); ctx.restore(); });
+      Object.entries(s.nombres || {}).forEach(([k, t]) => { const p = geo.rotulos[k]; if (p) rotulo(c, p.x, p.y, t, c[k], p.align, 800, 13); });
+    } else {
+      ctx.save(); ctx.strokeStyle = c.line; ctx.lineWidth = 1.5;
+      geo.celdas.forEach(k => { ctx.strokeRect(k.x, k.y, k.w, k.h); }); ctx.restore();
+      geo.filas.forEach(f => partes(c, f.x, f.y, f.partes, 'center', 13, 800, geo.izq - 6));
+      geo.columnas.forEach(f => partes(c, f.x, f.y, f.partes, 'center', 12, 800, (U.w - geo.izq)/geo.columnas.length - 4));
+      ctx.save(); ctx.strokeStyle = c[E.hl === 'A' ? 'A' : 'ink']; ctx.lineWidth = E.hl === 'A' ? 3 : 1.5; linea(U.x + geo.izq, U.y + 4, U.x + geo.izq, U.y + U.h - 4); ctx.restore();
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; linea(U.x + 4, U.y + geo.arriba, U.x + U.w - 4, U.y + geo.arriba); ctx.restore();
+    }
+    if (geo.tipo === 'venn') rotulo(c, geo.rotuloU.x, geo.rotuloU.y, s.rotuloU || 'U', c.ink, 'right', 800, 13);
+    // la cuenta de cada región
+    if (s.cuentas){
+      const cnt = {}; (s.fichas || []).forEach(f => { cnt[f.zona] = (cnt[f.zona] || 0) + 1; });
+      Object.entries(lay.rotulo).forEach(([z, p]) => {
+        if (Array.isArray(s.cuentas) && !s.cuentas.includes(z)) return;   // una cuenta que el problema no da no se dibuja
+        const k = claveZona(z, n), t = String(cnt[z] || 0);
+        ctx.save(); ctx.fillStyle = c.paper; ctx.strokeStyle = col(c, k); ctx.lineWidth = 2; redondeado(ctx, p.x - p.r - 2, p.y - p.r + 1, 2*p.r + 4, 2*p.r - 2, 6); ctx.fill(); ctx.stroke(); ctx.restore();
+        ctx.fillStyle = col(c, k); ctx.font = `800 ${t.length > 1 ? 12 : 13}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(t, p.x, p.y + .5);
+      });
+    }
+    // las fichas
+    const fs = s.fichas || [], vis = s.visibles == null ? fs.length : s.visibles;
+    fs.forEach((f, i) => { if (i >= vis || (arrastre && arrastre.f === f)) return; ficha(c, f, lay.radio); });
+    if (movible()){ const f = fs[E.sel]; cv.dataset.ficha = `${Math.round(f.x)},${Math.round(f.y)}`;
+      cv.dataset.zonas = JSON.stringify(geo.tipo === 'venn' ? geo.aros.map(a => [a.k, Math.round(a.x), Math.round(a.y), Math.round(a.r)]) : geo.celdas.map(k => [k.zona, Math.round(k.x + k.w/2), Math.round(k.y + k.h/2)])); }
+    if (movible() && document.activeElement === cv){ const f = fs[E.sel]; if (f && !(arrastre && arrastre.f === f)){ ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.setLineDash([3, 2]); ctx.beginPath(); ctx.arc(f.x, f.y, lay.radio + 4.5, 0, 7); ctx.stroke(); ctx.restore(); } }
+    if (arrastre) ficha(c, Object.assign({}, arrastre.f, { x:arrastre.x, y:arrastre.y }), lay.radio, true);
+    if (s.pie) partes(c, W/2, H - PIE/2, s.pie, 'center', 14, 800);
+  }
+  function dibCarteles(c){
+    const s = E.st, k = s.carteles.length, alto = 40, gap = 12, y0 = (H - pieAbajo() - (k*alto + (k - 1)*gap))/2;
+    s.carteles.forEach((t, i) => {
+      const y = y0 + i*(alto + gap);
+      ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = c[t.k]; ctx.lineWidth = 2.4; redondeado(ctx, 14, y, W - 28, alto, 14); ctx.fill(); ctx.stroke(); ctx.restore();
+      partes(c, W/2, y + alto/2, t.partes, 'center', 15, 800, W - 44);
+    });
+    if (s.pie) partes(c, W/2, H - PIE/2, s.pie, 'center', 14, 800);
+  }
+
+  // ----- el árbol de decisiones -----
+  function dibArbol(c){
+    const s = E.st, A = s.arbol, n = A.n, k = s.niveles == null ? n : s.niveles;
+    const izq = 54, x0 = izq, x1 = W - 8, top = 22, abajoH = 74 + pieAbajo(), dy = (H - top - abajoH)/Math.max(1, n);
+    const X = (nivel, j) => x0 + (j + .5)*(x1 - x0)/(2 ** nivel), Y = nivel => top + nivel*dy;
+    for (let i = 0; i < n; i++){
+      // la pregunta de cada nivel, a la izquierda
+      if (i < k) rotulo(c, 6, (Y(i) + Y(i + 1))/2, `¿${M.texto(A.elementos[i])}?`, c.A, 'left', 800, 12);
+      for (let j = 0; j < 2 ** i; j++){
+        if (i >= k) continue;
+        const px = X(i, j), py = Y(i);
+        ctx.save(); ctx.lineWidth = 1.6; ctx.strokeStyle = c.ink; linea(px, py, X(i + 1, 2*j), Y(i + 1));
+        ctx.setLineDash([4, 3]); ctx.strokeStyle = c.muted; linea(px, py, X(i + 1, 2*j + 1), Y(i + 1)); ctx.restore();
+      }
+    }
+    for (let i = 0; i <= k; i++) for (let j = 0; j < 2 ** i; j++){
+      ctx.save(); ctx.fillStyle = i === k ? c.S : c.ink; ctx.beginPath(); ctx.arc(X(i, j), Y(i), i === k ? 3.6 : 2.6, 0, 7); ctx.fill(); ctx.restore();
+    }
+    // los rótulos del último nivel dibujado: el subconjunto armado hasta ahí
+    const txt = A.nivelesTexto[k], m = txt.length, tam = m > 16 ? 9 : m > 8 ? 10.5 : 12;
+    txt.forEach((t, j) => {
+      const x = X(k, j), completo = k === n && j === 0, vacio = j === m - 1;
+      const color = completo ? c.A : c.S;
+      // el vacío va derecho y más grande (rotado y chico se pierde); todos empiezan debajo del círculo de marcar
+      const rota = m > 4 && !vacio, yy = Y(k) + 11;
+      ctx.save(); ctx.translate(x, yy); ctx.rotate(rota ? Math.PI/2 : 0); ctx.font = `800 ${vacio ? 14 : tam}px ${c.font}`; ctx.fillStyle = color;
+      ctx.textAlign = rota ? 'left' : 'center'; ctx.textBaseline = rota ? 'middle' : 'top'; ctx.fillText(t, 0, 0); ctx.restore();
+      if (s.marcar && k === n && (completo || vacio)){ ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x, Y(k), 7.5, 0, 7); ctx.stroke(); ctx.restore(); }
+    });
+    if (s.pie) partes(c, W/2, H - PIE/2, s.pie, 'center', 14, 800);
+  }
+
+  // ----- la cuadrícula de A × B -----
+  function dibCuadricula(c){
+    const s = E.st, filas = s.filas, cols = s.columnas, izq = 40, arriba = 30, abajo = 8 + pieAbajo();
+    const cw = (W - izq - 8)/cols.length, ch = Math.min(46, (H - arriba - abajo)/filas.length);
+    cols.forEach((t, j) => rotulo(c, izq + (j + .5)*cw, arriba/2 + 2, t, c.B, 'center', 800, 14));
+    filas.forEach((t, i) => rotulo(c, izq/2, arriba + (i + .5)*ch, t, c.A, 'center', 800, 14));
+    ctx.save(); ctx.strokeStyle = c.line; ctx.lineWidth = 1.2;
+    for (let i = 0; i < filas.length; i++) for (let j = 0; j < cols.length; j++) ctx.strokeRect(izq + j*cw + 2, arriba + i*ch + 2, cw - 4, ch - 4);
+    ctx.restore();
+    const vis = s.visibles == null ? filas.length*cols.length : s.visibles;
+    let q = 0;
+    for (let i = 0; i < filas.length; i++) for (let j = 0; j < cols.length; j++, q++){
+      if (q >= vis) continue;
+      const x = izq + (j + .5)*cw, y = arriba + (i + .5)*ch;
+      partes(c, x, y, [['(', 'ink'], [filas[i], 'A'], [', ', 'ink'], [cols[j], 'B'], [')', 'ink']], 'center', 14, 800, cw - 8);
+      if ((s.marcar || []).includes(`(${filas[i]}, ${cols[j]})`)){ ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2.6; redondeado(ctx, izq + j*cw + 3, arriba + i*ch + 3, cw - 6, ch - 6, 8); ctx.stroke(); ctx.restore(); }
+    }
+    if (s.pie) partes(c, W/2, H - PIE/2, s.pie, 'center', 14, 800);
+  }
+
+  // ----- conjuntos como bolsas (P(A) y sus elementos) -----
+  function dibBolsas(c){
+    const s = E.st, B = s.bolsas, k = B.length, top = 30, alto = H - top - 14 - pieAbajo();
+    const anchos = B.map(b => b.ancho || 1), tot = anchos.reduce((a, b) => a + b, 0), libre = W - 16 - (k - 1)*10;
+    let x = 8;
+    B.forEach((b, i) => {
+      const w = libre*anchos[i]/tot, cx = x + w/2, cy = top + alto/2;
+      ctx.save(); ctx.strokeStyle = c[b.k]; ctx.lineWidth = E.hl === b.k ? 4.5 : 2.6; ctx.fillStyle = c[b.k]; ctx.globalAlpha = .05;
+      ctx.beginPath(); ctx.ellipse(cx, cy, w/2 - 2, alto/2 - 2, 0, 0, 7); ctx.fill(); ctx.globalAlpha = 1; ctx.stroke(); ctx.restore();
+      rotulo(c, cx, 14, b.nombre, c[b.k], 'center', 800, 14);
+      const it = b.items;
+      if (!it){ rotulo(c, cx, cy, '?', c[b.k], 'center', 800, 22); }
+      else {
+        const cols = it.length > 4 ? 3 : it.length > 1 ? 2 : 1, filas = Math.ceil(it.length/cols);
+        it.forEach((t, j) => {
+          const fx = cx + ((j % cols) - (cols - 1)/2)*(w*.62/cols), fy = cy + (Math.floor(j/cols) - (filas - 1)/2)*Math.min(34, alto*.7/filas);
+          const marcado = (b.marcar || []).includes(t);
+          ctx.font = `800 15px ${c.font}`; const tw = ctx.measureText(t).width + 16;
+          ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = marcado ? c.ink : c.line; ctx.lineWidth = marcado ? 2.6 : 1.4; redondeado(ctx, fx - tw/2, fy - 13, tw, 26, 10); ctx.fill(); ctx.stroke(); ctx.restore();
+          ctx.fillStyle = c.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(t, fx, fy + .5);
+        });
+      }
+      x += w + 10;
+    });
+    if (s.pie) partes(c, W/2, H - PIE/2, s.pie, 'center', 14, 800);
+  }
+
+  const DIB = { venn:dibVenn, carroll:dibVenn, arbol:dibArbol, cuadricula:dibCuadricula, bolsas:dibBolsas };
+  E.dibujar = () => { if (!W || !E.listo) return; const c = colores(); ctx.clearRect(0, 0, W, H); DIB[E.modo](c); };
+
+  // ----- arrastrar fichas (dedo, ratón) y teclado -----
+  const cercana = (p, r) => { if (!lay) return null; let mejor = null, d0 = Math.min(r, lay.radio + 14);
+    (E.st.fichas || []).forEach((f, i) => { const d = Math.hypot(p.x - f.x, p.y - f.y); if (d < d0){ d0 = d; mejor = i; } }); return mejor; };
+  Celular.arrastre(cv, {
+    activo: () => !E.ocupado && !E.anim && movible(),
+    cerca: (p, r) => cercana(p, r) !== null,
+    empezar: p => { const i = cercana(p, 40); if (i === null) return; E.sel = i; const f = E.st.fichas[i]; arrastre = { f, x:p.x, y:p.y, zona:f.zona }; E.dibujar(); },
+    mover: p => { if (!arrastre) return; arrastre.x = clamp(p.x, 0, W); arrastre.y = clamp(p.y, 0, H); const z = M.zonaDe(geo, arrastre); arrastre.zona = z === null ? arrastre.f.zona : z; E.dibujar(); },
+    soltar: () => { if (!arrastre) return; const { f, zona } = arrastre; arrastre = null; E.moverFicha(f, zona); },
+    sobre: v => { sobre = v; },
+  });
+  E.moverFicha = (f, zona) => { if (zona !== f.zona){ f.zona = zona; if (E.st.alMover) E.st.alMover(); } E.acomodar(); E.dibujar(); E.avisar(); };
+  E.alternar = (f, k) => { const z = f.zona.includes(k) ? f.zona.replace(k, '') : f.zona + k; E.moverFicha(f, z.split('').sort().join('')); };
+  cv.addEventListener('keydown', e => {
+    if (E.ocupado || E.anim || !movible()) return;
+    const fs = E.st.fichas, L = M.LETRAS[E.st.n], k = e.key.toUpperCase();
+    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft'){ e.preventDefault(); E.sel = (E.sel + (e.key === 'ArrowRight' ? 1 : fs.length - 1)) % fs.length; E.dibujar(); E.avisar(); }
+    else if (L.includes(k) && !e.ctrlKey && !e.metaKey && !e.altKey){ e.preventDefault(); E.alternar(fs[E.sel], k); }
+  });
+  cv.addEventListener('focus', () => E.dibujar()); cv.addEventListener('blur', () => E.dibujar());
+
+  E.leyenda = () => {
+    if (!idLey) return;
+    document.getElementById(idLey).innerHTML = (E.ley || []).map(([k, t, raya]) => `<span><i style="background:${raya ? `repeating-linear-gradient(135deg, var(--ink) 0 2px, transparent 2px 5px)` : `var(${varCSS(k)})`}"></i>${t}</span>`).join('');
+  };
+  // Lecturas y descripción para lectores de pantalla (leen el estado del momento; antes de responder no adelantan nada).
+  E.avisar = () => {
+    const filas = E.lect.map(k => k(E));
+    if (idLect) document.getElementById(idLect).innerHTML = glifos(filas.map(([k, t, v]) => `<div class="lectura" style="--k:var(${varCSS(k)})"><span>${t}</span><b>${v}</b></div>`).join(''));
+    if (idDesc && !E.anim){
+      const d = typeof E.desc === 'function' ? E.desc(E) : (E.desc || 'Un diagrama.');
+      document.getElementById(idDesc).textContent = quitar([d, ...filas.map(([, t, v]) => `${t}: ${v}.`)].join(' '));
+    }
+    E.etiquetar();
+    if (E.alCambiar) E.alCambiar();
+  };
+  E.animar = (de, a, dur, paso, fin) => {
+    const tok = ++E.tok; E.anim = true;
+    tween(dur, f => { if (tok !== E.tok) return; paso(de + (a - de)*f); E.dibujar(); },
+      () => { if (tok !== E.tok) return; E.anim = false; E.avisar(); if (fin) fin(); });
+  };
+  // Una lista de estados, uno tras otro (cada uno se queda ms[j] milisegundos).
+  E.secuencia = (estados, ms, fin) => {
+    const tok = ++E.tok; E.anim = true; let j = 0;
+    const sig = () => { if (tok !== E.tok) return;
+      if (j >= estados.length){ E.anim = false; E.avisar(); if (fin) fin(); return; }
+      const e = estados[j]; if (typeof e === 'function') e(E.st); else Object.assign(E.st, e);
+      E.redimensionar(); const espera = Array.isArray(ms) ? ms[j] : ms; j++; setTimeout(sig, RM ? 0 : espera); };
+    sig();
+  };
+  // Las fichas aparecen de a poco (las visibles van de «de» a «a»).
+  E.aparecer = (de, a, dur, fin) => { E.animar(de, a, dur, v => { E.st.visibles = Math.round(v); }, fin); };
+  E.parar = () => { E.tok++; E.anim = false; arrastre = null; };
+  return E;
+}
+// Fichas con nombre (las iniciales no repiten ninguna letra de la escena: A, B, C, U, n, P).
+const NOMBRES = [['Dani', 'D'], ['Elsa', 'E'], ['Gino', 'G'], ['Hilda', 'H'], ['Kike', 'K'], ['Luz', 'L'], ['Mía', 'M'], ['Rosa', 'R'], ['Saúl', 'S'], ['Teo', 'T']];
+const conNombre = (zonas) => zonas.map((z, i) => ({ id:NOMBRES[i][0], ini:NOMBRES[i][1], zona:z }));
+// Quiénes están en cada región, para el lector de pantalla.
+function quienes(fichas, n){
+  return M.ZONAS[n].map(z => { const fs = fichas.filter(f => f.zona === z); return fs.length ? `${M.nombreZona(z, n)}: ${fs.map(f => f.id).join(', ')}` : ''; }).filter(Boolean).join('. ') + '.';
+}
+// Los elementos de cada conjunto según dónde están las fichas (A: las fichas dentro del aro A, …).
+function listas(fichas, n){
+  const S = { U: fichas.map(f => f.id) };
+  M.LETRAS[n].forEach(k => { S[k] = fichas.filter(f => f.zona.includes(k)).map(f => f.id); });
+  return S;
+}
+// Botones para mover una ficha sin arrastrar: elegir la ficha y marcar en qué aros está.
+const moverHTML = n => `<div class="mover" role="group" aria-label="Mover una ficha sin arrastrar">
+  <div><span class="que">ficha</span><button type="button" data-fi="-1" aria-label="Ficha anterior">◀</button><span class="val" id="fichaSel" aria-live="polite"></span><button type="button" data-fi="1" aria-label="Ficha siguiente">▶</button></div>
+  <div><span class="que">en el aro</span>${M.LETRAS[n].map(k => `<button type="button" data-aro="${k}" aria-pressed="false">${k}</button>`).join('')}</div></div>`;
+function enlazarMover(E, raiz){
+  raiz.querySelectorAll('[data-fi]').forEach(b => b.onclick = () => { if (E.ocupado || E.anim) return; const fs = E.st.fichas; E.sel = (E.sel + +b.dataset.fi + fs.length) % fs.length; E.dibujar(); E.avisar(); });
+  raiz.querySelectorAll('[data-aro]').forEach(b => b.onclick = () => { if (E.ocupado || E.anim) return; E.alternar(E.st.fichas[E.sel], b.dataset.aro); });
+}
+function pintarMover(E, raiz){
+  const f = (E.st.fichas || [])[E.sel], v = raiz.querySelector('#fichaSel'); if (!f || !v) return;
+  v.textContent = f.id;
+  raiz.querySelectorAll('[data-aro]').forEach(b => { const on = f.zona.includes(b.dataset.aro); b.setAttribute('aria-pressed', String(on)); b.setAttribute('aria-label', `${f.id} en el aro ${b.dataset.aro}`); });
+}
+</script>
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1');
+const S = { step:0, max:0, pred:{}, ocupado:false, f1:null, f8:null, n8:2, vista8:'venn', op8:'' };
+const A_ = t => V('A', t), B_ = t => V('B', t), C_ = t => V('C', t), I_ = t => V('I', t), fu_ = t => V('fu', t), S_ = t => V('S', t);
+
+// Números de la escena: todos salen del motor
+const D2 = { A:26, B:18, AB:7 }, P2 = M.alMenosUno(D2.A, D2.B, D2.AB);
+const P3 = M.soloUno(22, 15, 6);
+const P4 = M.interseccionPorComplemento(45, 28, 21, 6);
+const D5 = { U:60, A:30, B:25, C:20, AB:10, AC:8, BC:6, ABC:3 }, P5 = M.ningunoTres(D5);
+const A6 = [1, 3, 5, 7], P6 = M.cuantosSubconjuntos(A6.length), AR6 = M.arbol(A6);
+const A7 = [1, 2, 3], B7 = [2, 3, 4, 5], P7 = M.cuantosPares(A7, B7), CA7 = M.cartesiano(A7, B7);
+const fb = (letra, ok, txt) => (letra === ok ? txt : `Elegiste la ${letra.toUpperCase()}. ${txt} La correcta está marcada.`);
+
+console.assert(P2.respuesta === 37 && P2.soloA === 19 && Object.keys(P2.errores).length === 3, 'paso 2: revisar las opciones');
+console.assert(P3.respuesta === 16 && P3.errores.todoElConjunto && P3.errores.quitaDosVeces && P3.errores.elOtro, 'paso 3: revisar las opciones');
+console.assert(P4.respuesta === 10 && Object.keys(P4.errores).length === 3, 'paso 4: revisar las opciones');
+console.assert(P5.respuesta === 6 && Object.keys(P5.errores).length === 3, 'paso 5: revisar las opciones');
+console.assert(P6.respuesta[0] === 16 && Object.keys(P6.errores).length === 3 && AR6.cantidad === 16, 'paso 6: revisar las opciones');
+console.assert(P7.respuesta === 12 && Object.keys(P7.errores).length === 3, 'paso 7: revisar las opciones');
+
+const al = n => `${n} ${pl(n, 'alumno', 'alumnos')}`;
+const P_2 = { id:'conjuntos-paso2', ok:'c', opts:[
+  ['a', al(P2.errores.sumaSinRestar), 'suma-sin-restar-la-interseccion', 'hipotesis'],
+  ['b', al(P2.errores.restaDosVeces), 'resta-la-interseccion-dos-veces', 'hipotesis'],
+  ['c', al(P2.respuesta)],
+  ['d', al(P2.errores.elMayor), 'da-el-grupo-mayor', 'hipotesis']],
+  fb:{ c:`¡Bien! Los ${D2.AB} que juegan los dos deportes están dentro de los dos aros: en ${D2.A} + ${D2.B} = ${P2.suma} se cuentan dos veces. Se quitan una vez: ${P2.suma} − ${D2.AB} = ${P2.respuesta}.`,
+    a:`${P2.suma} = ${D2.A} + ${D2.B} cuenta dos veces a los ${D2.AB} que juegan los dos deportes: están entre los ${D2.A} y también entre los ${D2.B}. Contados una sola vez: ${P2.suma} − ${D2.AB} = ${P2.respuesta}.`,
+    b:`${P2.errores.restaDosVeces} = ${P2.suma} − ${D2.AB} − ${D2.AB} son los que juegan uno solo de los dos deportes; «al menos uno» incluye también a los ${D2.AB} que juegan los dos. Basta quitarlos una vez: ${P2.suma} − ${D2.AB} = ${P2.respuesta}.`,
+    d:`${D2.A} son los que juegan fútbol. También cuentan los de vóley que no juegan fútbol: entre todos, ${D2.A} + ${D2.B} − ${D2.AB} = ${P2.respuesta}.` } };
+
+const P_3 = { id:'conjuntos-paso3', ok:'b', opts:[
+  ['a', al(P3.errores.todoElConjunto), 'solo-como-todo-el-conjunto', 'hipotesis'],
+  ['b', al(P3.respuesta)],
+  ['c', al(P3.errores.quitaDosVeces), 'quita-la-interseccion-dos-veces', 'hipotesis'],
+  ['d', al(P3.errores.elOtro), 'cuenta-solo-el-otro-conjunto', 'hipotesis']],
+  fb:{ b:`¡Bien! «Solo en la UNI» es dentro del aro A y fuera del aro B. De los 22 del aro A, 6 también darán examen en San Marcos: 22 − 6 = ${P3.respuesta}.`,
+    a:`22 son todos los que darán examen en la UNI, también los 6 que darán en las dos. «Solo en la UNI» deja afuera a esos 6: 22 − 6 = ${P3.respuesta}.`,
+    c:`${P3.errores.quitaDosVeces} = 22 − 6 − 6 quita dos veces a los 6 que darán en las dos universidades. Basta quitarlos una vez: 22 − 6 = ${P3.respuesta}.`,
+    d:`${P3.errores.elOtro} = 15 − 6 son los que darán examen solo en San Marcos. Solo en la UNI: 22 − 6 = ${P3.respuesta}.` } };
+
+const P_4 = { id:'conjuntos-paso4', ok:'c', opts:[
+  ['a', al(P4.errores.olvidaLosDeFuera), 'olvida-a-los-que-no-estan-en-ninguno', 'hipotesis'],
+  ['b', al(P4.errores.daLaUnion), 'da-los-que-estan-en-al-menos-uno', 'hipotesis'],
+  ['c', al(P4.respuesta)],
+  ['d', al(P4.errores.daSoloElOtro), 'da-los-que-estan-solo-en-el-otro', 'hipotesis']],
+  fb:{ c:`¡Bien! Dentro de los aros están 45 − 6 = ${P4.union}. En 28 + 21 = ${P4.suma}, los que tienen las dos cosas se cuentan dos veces: sobran ${P4.suma} − ${P4.union} = ${P4.respuesta}.`,
+    a:`${P4.errores.olvidaLosDeFuera} = 28 + 21 − 45 resta a toda la promoción, pero 6 de los 45 están fuera de los aros. Dentro hay 45 − 6 = ${P4.union}, y ${P4.suma} − ${P4.union} = ${P4.respuesta}.`,
+    b:`${P4.union} = 45 − 6 son los que tienen al menos una de las dos cosas. Los que tienen las dos son los que se cuentan dos veces en 28 + 21 = ${P4.suma}: ${P4.suma} − ${P4.union} = ${P4.respuesta}.`,
+    d:`${P4.errores.daSoloElOtro} = ${P4.union} − 28 son los que tienen computadora pero no celular. Los que tienen las dos: 28 + 21 − ${P4.union} = ${P4.respuesta}.` } };
+
+const P_5 = { id:'conjuntos-paso5', ok:'b', opts:[
+  ['a', al(P5.errores.olvidaDevolverElCentro), 'olvida-devolver-a-los-de-los-tres', 'hipotesis'],
+  ['b', al(P5.respuesta)],
+  ['c', al(P5.errores.daLaUnion), 'da-los-que-estan-en-al-menos-uno', 'hipotesis'],
+  ['d', al(P5.errores.restaElCentro), 'resta-a-los-de-los-tres', 'hipotesis']],
+  fb:{ b:`¡Bien! En 30 + 25 + 20 = ${P5.suma}, los de dos deportes se cuentan dos veces y los 3 de los tres, tres veces. Al restar 10 + 8 + 6 = ${P5.pares}, esos 3 se quitan tres veces y quedan sin contar: se devuelven. ${P5.suma} − ${P5.pares} + 3 = ${P5.union}, y 60 − ${P5.union} = ${P5.respuesta}.`,
+    a:`${P5.errores.olvidaDevolverElCentro} sale de 60 − (${P5.suma} − ${P5.pares}). Al restar los pares, los 3 de los tres deportes se quitaron tres veces, después de haberse sumado tres veces: quedaron sin contar. Se devuelven una vez: ${P5.suma} − ${P5.pares} + 3 = ${P5.union}, y 60 − ${P5.union} = ${P5.respuesta}.`,
+    c:`${P5.union} son los que practican al menos un deporte. Los que no practican ninguno son 60 − ${P5.union} = ${P5.respuesta}.`,
+    d:`${P5.errores.restaElCentro} sale de restar también a los 3 de los tres deportes. Pero al restar los pares ya se quitaron tres veces; hay que devolverlos: ${P5.suma} − ${P5.pares} + 3 = ${P5.union}, y 60 − ${P5.union} = ${P5.respuesta}.` } };
+
+const sub = ([a, b]) => `${a} subconjuntos y ${b} propios`;
+const dosVeces = Array(A6.length).fill('2').join(' × ');
+const P_6 = { id:'conjuntos-paso6', ok:'b', opts:[
+  ['a', sub(P6.errores.dosPorElemento), 'dos-por-cada-elemento', 'hipotesis'],
+  ['b', sub(P6.respuesta)],
+  ['c', sub(P6.errores.sinElVacio), 'olvida-el-vacio', 'hipotesis'],
+  ['d', sub(P6.errores.permutaciones), 'cuenta-ordenamientos', 'hipotesis']],
+  fb:{ b:`¡Bien! Cada elemento entra o no entra: ${dosVeces} = ${P6.subconjuntos} subconjuntos. Uno de ellos es A mismo, el único que no es propio: ${P6.propios} propios.`,
+    a:`${P6.errores.dosPorElemento[0]} = 2 × 4 cuenta dos opciones por elemento, pero las opciones de un elemento se combinan con las de los demás: se multiplican, ${dosVeces} = ${P6.subconjuntos}. Propios: ${P6.propios}.`,
+    c:`Faltó el conjunto vacío ∅, que también es subconjunto de A: es el camino del árbol en que no entra ninguno. Son ${P6.subconjuntos}, y propios ${P6.propios}.`,
+    d:`${P6.errores.permutaciones[0]} = 4 × 3 × 2 × 1 cuenta las formas de ordenar los 4 elementos, pero en un conjunto el orden no importa: {1, 3} es lo mismo que {3, 1}. Cada elemento entra o no entra: ${P6.subconjuntos}, y propios ${P6.propios}.` } };
+
+const P_7 = { id:'conjuntos-paso7', ok:'b', opts:[
+  ['a', `${P7.errores.suma} pares`, 'suma-los-cardinales', 'hipotesis'],
+  ['b', `${P7.respuesta} pares`],
+  ['c', `${P7.errores.ordenNoImporta} pares`, 'par-ordenado-sin-orden', 'hipotesis'],
+  ['d', `${P7.errores.cuentaLosNumeros} pares`, 'cuenta-los-numeros-distintos', 'hipotesis']],
+  fb:{ b:`¡Bien! Cada x de A forma un par con cada y de B: ${P7.nA} filas de ${P7.nB} pares, ${P7.respuesta}. ${P7.dadosVuelta[0]} y ${P7.dadosVuelta[1]} son dos pares distintos.`,
+    a:`${P7.errores.suma} = 3 + 4 junta los elementos de los dos conjuntos. Cada elemento de A forma un par con cada elemento de B: ${P7.nA} filas de ${P7.nB} pares, ${P7.respuesta}.`,
+    c:`${P7.errores.ordenNoImporta} junta ${P7.dadosVuelta[0]} con ${P7.dadosVuelta[1]} como si fueran el mismo par. En un par ordenado importa qué va primero: ${P7.dadosVuelta[0]} ≠ ${P7.dadosVuelta[1]}. Son ${P7.nA} × ${P7.nB} = ${P7.respuesta}.`,
+    d:`${P7.errores.cuentaLosNumeros} son los números distintos que aparecen en A y en B, pero A × B tiene pares, no números: ${P7.nA} filas de ${P7.nB} pares, ${P7.respuesta}.` } };
+
+// ----- paso 1 y paso 8: las fichas que se arrastran -----
+const LEY2 = (a, b, mas) => [['A', a], ['B', b]].concat(mas || []);
+function prep1(){
+  if (!S.f1) S.f1 = conNombre(Array(8).fill(''));
+  E.config({ modo:'venn', st:{ n:2, banca:44, fichas:S.f1, mover:true, cuentas:true, nombres:{ A:'A · fútbol', B:'B · vóley' }, alMover:vivo1 },
+    ley:LEY2('A: juegan fútbol', 'B: juegan vóley', [['ink', 'cuenta de cada región']]), alCambiar:vivo1,
+    lect:[() => ['ink', 'fichas', String(S.f1.length)], ee => { const f = ee.st.fichas[ee.sel]; return ['ink', 'ficha elegida', `${f.id}: ${M.nombreZona(f.zona, 2)}`]; }],
+    desc: () => `Universo U con los aros A y B. ${quienes(S.f1, 2)}` });
+}
+function vivo1(){ pintarMover(E, $('stepBody')); }
+
+const OPS2 = [['', 'ninguna'], ['AuB', 'A ∪ B'], ['AnB', 'A ∩ B'], ['A-B', 'A − B'], ['B-A', 'B − A'], ['AdB', 'A Δ B'], ['noAuB', '(A ∪ B)′']];
+const OPS3 = OPS2.concat([['AnBnC', 'A ∩ B ∩ C'], ['AuBuC', 'A ∪ B ∪ C']]);
+const INI8 = { 2:['A', 'A', 'AB', 'B', 'B', 'B', '', 'A', 'AB', ''], 3:['A', 'AB', 'ABC', 'B', 'BC', 'C', '', 'AC', 'A', 'C'] };
+function prep8(){
+  if (!S.f8 || S.f8.n !== S.n8){ S.f8 = conNombre(INI8[S.n8]); S.f8.n = S.n8; }
+  const n = S.n8, ops = n === 2 ? OPS2 : OPS3;
+  if (!ops.some(o => o[0] === S.op8)) S.op8 = '';
+  const nom = n === 2 ? { A:'A', B:'B' } : { A:'A', B:'B', C:'C' };
+  E.config({ modo:S.vista8, st:{ n, banca:44, fichas:S.f8, mover:true, cuentas:true, nombres:nom, sombra:S.op8 ? M.zonasOperacion(S.op8, n) : [], alMover:vivo8 },
+    ley:[['A', 'A'], ['B', 'B']].concat(n === 3 ? [['C', 'C']] : [], [['I', n === 2 ? 'A ∩ B' : 'en los tres aros'], ['fu', 'fuera de todos']], S.op8 ? [['ink', 'resultado de la operación', true]] : []),
+    alCambiar:vivo8,
+    lect:[() => { const c = M.cardinales(M.deFichas(S.f8.map(f => f.zona), n)); return ['A', 'n(A)', String(c.A)]; }, () => ['B', 'n(B)', String(M.cardinales(M.deFichas(S.f8.map(f => f.zona), n)).B)]]
+      .concat(n === 3 ? [() => ['C', 'n(C)', String(M.cardinales(M.deFichas(S.f8.map(f => f.zona), n)).C)]] : [])
+      .concat([() => { const c = M.cardinales(M.deFichas(S.f8.map(f => f.zona), n)); return ['I', n === 2 ? 'n(A ∩ B)' : 'n(A ∩ B ∩ C)', String(n === 2 ? c.AB : c.ABC)]; },
+        () => ['fu', 'fuera de todos', String(M.cardinales(M.deFichas(S.f8.map(f => f.zona), n)).ninguno)]]),
+    desc: () => `${S.vista8 === 'venn' ? 'Diagrama de Venn' : 'Diagrama de Carroll'} con ${n} conjuntos. ${quienes(S.f8, n)}` });
+}
+function vivo8(){
+  const d = $('vivo8'); if (!d) return;
+  pintarMover(E, $('stepBody'));
+  const n = S.n8, R = M.deFichas(S.f8.map(f => f.zona), n), c = M.cardinales(R), L = listas(S.f8, n);
+  $('stepBody').querySelectorAll('[data-n8]').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.n8 === n)));
+  $('stepBody').querySelectorAll('[data-vista8]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.vista8 === S.vista8)));
+  $('stepBody').querySelectorAll('[data-op8]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.op8 === S.op8)));
+  const ops = n === 2 ? OPS2 : OPS3, op = ops.find(o => o[0] === S.op8);
+  const res = S.op8 ? M.operar(S.op8, L) : null;
+  const ie = n === 2
+    ? `<div class="eq">n(A ∪ B) = ${A_('n(A)')} + ${B_('n(B)')} − ${I_('n(A ∩ B)')} = ${A_(c.A)} + ${B_(c.B)} − ${I_(c.AB)} = ${c.union}<span class="note">los que están en los dos aros se cuentan en n(A) y otra vez en n(B): se restan una vez</span></div>`
+    : `<div class="eq">n(A ∪ B ∪ C) = ${A_(c.A)} + ${B_(c.B)} + ${C_(c.C)} − ${c.AB} − ${c.AC} − ${c.BC} + ${I_(c.ABC)} = ${c.union}<span class="note">se suman los aros, se restan las intersecciones de a dos y se devuelven los que están en los tres</span></div>`;
+  d.innerHTML = glifos(`<div class="eqs">${ie}
+    <div class="eq">U = ${nb(M.texto(L.U))}<span class="note">n(U) = ${c.U}; fuera de todos los aros: ${fu_(c.ninguno)}</span></div>
+    ${res ? `<div class="eq">${op[1]} = ${nb(res.texto)}<span class="note">la parte rayada del dibujo; tiene ${res.n} ${pl(res.n, 'elemento', 'elementos')}</span></div>` : ''}</div>`);
+}
+
+// ----- estados del dibujo de cada predicción (antes y después de responder) -----
+const nombres2 = (a, b) => ({ A:a, B:b });
+const steps = [
+ { k:'Paso 1', t:'Explora: los alumnos en los aros', explora:true,
+   prep:() => prep1(),
+   body:() => `<p class="problem">Ocho alumnos de una sección y dos aros: en el aro ${A_('A')} van los que juegan fútbol y en el aro ${B_('B')}, los que juegan vóley. Arrastra cada ficha adonde quieras (o elígela con los botones y marca en qué aros está). El número de cada región dice cuántas fichas tiene.</p>
+   ${moverHTML(2)}
+   <p>El rectángulo es el universo U: todos los alumnos de la sección. Un alumno que no juega ninguno de los dos deportes queda dentro de U, fuera de los aros.</p>
+   <p class="hint">Con el teclado: elige el dibujo con Tab, cambia de ficha con las flechas y usa las teclas A y B.</p>`,
+   luego:() => { enlazarMover(E, $('stepBody')); vivo1(); } },
+ { k:'Paso 2', t:'Predice: al menos uno de los dos', gate:P_2,
+   prep:() => { const ya = !!S.pred[P_2.id];
+     E.config({ modo:'venn', st: ya ? Object.assign({ n:2, nombres:nombres2(`A · fútbol: ${D2.A}`, `B · vóley: ${D2.B}`) }, fin2())
+         : { carteles:[cartel('A', [['A · fútbol: ', 'A'], [`${D2.A} alumnos`, 'ink']]), cartel('B', [['B · vóley: ', 'B'], [`${D2.B} alumnos`, 'ink']]), cartel('I', [['los dos: ', 'I'], [`${D2.AB} alumnos`, 'ink']])] },
+       ley:LEY2('A: juegan fútbol', 'B: juegan vóley', ya ? [['I', 'juegan los dos']] : []),
+       desc: ya ? DESC2 : `Tres carteles: fútbol, ${D2.A} alumnos; vóley, ${D2.B} alumnos; los dos deportes, ${D2.AB} alumnos.`,
+       lect:[() => ['A', 'juegan fútbol', String(D2.A)], () => ['B', 'juegan vóley', String(D2.B)], () => ['I', 'juegan los dos', String(D2.AB)]].concat(ya ? [() => ['ink', 'al menos uno', String(P2.respuesta)]] : []) }); },
+   anima:fin => { const s = E.st, fs = fichasDe({ A:P2.soloA, AB:P2.ambos, B:P2.soloB }, ['A', 'AB', 'B']);
+     Object.assign(s, { n:2, carteles:null, nombres:nombres2(`A · fútbol: ${D2.A}`, `B · vóley: ${D2.B}`), fichas:fs, visibles:0 }); E.redimensionar();
+     E.ley = LEY2('A: juegan fútbol', 'B: juegan vóley', [['I', 'juegan los dos']]); E.leyenda();
+     E.aparecer(0, fs.length, 900, () => E.secuencia([
+       st => { st.fichas.forEach(f => { f.halos = f.zona.includes('A') ? ['A'] : []; }); st.pie = [[String(D2.A), 'A'], [' fichas en el aro A', 'ink']]; },
+       st => { st.fichas.forEach(f => { f.halos = ['A', 'B'].filter(k => f.zona.includes(k)); }); st.pie = [[String(D2.A), 'A'], [' + ', 'ink'], [String(D2.B), 'B'], [` = ${P2.suma}: las del medio, dos veces`, 'ink']]; },
+       fin2()], [1300, 1600, 0], () => { E.lect = E.lect.concat([() => ['ink', 'al menos uno', String(P2.respuesta)]]); E.desc = DESC2; E.avisar(); fin(); })); },
+   body:() => `<p class="problem">En una sección, ${A_(D2.A + ' alumnos juegan fútbol')}, ${B_(D2.B + ' juegan vóley')} y ${I_(D2.AB + ' juegan los dos deportes')}. ¿Cuántos alumnos juegan al menos uno de los dos deportes?</p>${opcionesHTML(P_2.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${A_(D2.A)} + ${B_(D2.B)} = ${P2.suma}<span class="note">los ${I_(D2.AB)} del medio están en los dos aros: aquí se cuentan dos veces</span></div>
+     <div class="eq">n(A ∪ B) = ${A_('n(A)')} + ${B_('n(B)')} − ${I_('n(A ∩ B)')} = ${P2.suma} − ${I_(D2.AB)} = ${P2.respuesta}<span class="note">se quitan una vez: cada alumno queda contado una sola vez</span></div></div>
+   <p>«Al menos uno» son todos los que están dentro de algún aro: A ∪ B. Al sumar n(A) y n(B), cada alumno de la intersección se cuenta dos veces; por eso se resta n(A ∩ B) una vez.</p>${FUENTE}</div>` },
+ { k:'Paso 3', t:'Predice: solo en uno', gate:P_3,
+   prep:() => { const ya = !!S.pred[P_3.id];
+     E.config({ modo:'venn', st: ya ? Object.assign({ n:2, nombres:nombres2('A · UNI: 22', 'B · San Marcos: 15') }, fin3())
+         : { carteles:[cartel('A', [['A · UNI: ', 'A'], ['22 postulantes', 'ink']]), cartel('B', [['B · San Marcos: ', 'B'], ['15 postulantes', 'ink']]), cartel('I', [['las dos: ', 'I'], ['6 postulantes', 'ink']])] },
+       ley:LEY2('A: examen en la UNI', 'B: examen en San Marcos', ya ? [['I', 'en las dos'], ['ink', 'solo en la UNI', true]] : []),
+       desc: ya ? DESC3 : 'Tres carteles: la UNI, 22 postulantes; San Marcos, 15 postulantes; las dos universidades, 6 postulantes.',
+       lect:[() => ['A', 'en la UNI', '22'], () => ['B', 'en San Marcos', '15'], () => ['I', 'en las dos', '6']] }); },
+   anima:fin => { const s = E.st, fs = fichasDe({ A:P3.respuesta, AB:P3.ambos, B:P3.soloB }, ['AB', 'A', 'B']);
+     Object.assign(s, { n:2, carteles:null, nombres:nombres2('A · UNI: 22', 'B · San Marcos: 15'), fichas:fs, visibles:0 }); E.redimensionar(); E.ley = LEY2('A: examen en la UNI', 'B: examen en San Marcos', [['I', 'en las dos'], ['ink', 'solo en la UNI', true]]); E.leyenda();
+     E.aparecer(0, fs.length, 900, () => E.secuencia([fin3()], [0], () => { E.desc = DESC3; E.avisar(); fin(); })); },
+   body:() => `<p class="problem">De un grupo de postulantes, ${A_('22 darán examen en la UNI')}, ${B_('15 en San Marcos')} y ${I_('6 en las dos universidades')}. ¿Cuántos darán examen solo en la UNI?</p>${opcionesHTML(P_3.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">n(A − B) = ${A_('n(A)')} − ${I_('n(A ∩ B)')} = ${A_('22')} − ${I_('6')} = ${P3.respuesta}<span class="note">la parte rayada: dentro de A y fuera de B</span></div></div>
+   <p>${A_('n(A)')} cuenta a todos los del aro A, también a los que están en la intersección. «Solo A» es la diferencia A − B: los de A que no están en B.</p>${FUENTE}</div>` },
+ { k:'Paso 4', t:'Predice: los que tienen las dos cosas', gate:P_4,
+   prep:() => { const ya = !!S.pred[P_4.id];
+     E.config({ modo:'venn', st:Object.assign({ n:2, banca:44, rotuloU:'U: 45', nombres:nombres2('A · celular: 28', 'B · computadora: 21') }, ya ? fin4() : { fichas:[] }),
+       ley:LEY2('A: tienen celular', 'B: tienen computadora', [['I', 'las dos cosas'], ['fu', 'ninguna']]),
+       desc: ya ? DESC4 : 'El universo U, de 45 alumnos, con los aros A, del celular, y B, de la computadora, todavía sin fichas.',
+       lect:[() => ['ink', 'alumnos', '45'], () => ['A', 'celular', '28'], () => ['B', 'computadora', '21'], () => ['fu', 'ninguna', '6']] }); },
+   anima:fin => { const s = E.st, fs = fichasDe({ '':6, A:P4.soloA, AB:P4.respuesta, B:P4.soloB }, ['', 'A', 'AB', 'B']);
+     Object.assign(s, { fichas:fs, visibles:0 }); E.redimensionar();
+     E.aparecer(0, 6, 700, () => E.secuencia([st => { st.pie = [['45 − ', 'ink'], ['6', 'fu'], [` = ${P4.union} dentro de los aros`, 'ink']]; }], [1300], () =>
+       E.aparecer(6, fs.length, 1000, () => E.secuencia([
+         st => { st.fichas.forEach(f => { f.halos = ['A', 'B'].filter(k => f.zona.includes(k)); }); st.pie = [['28', 'A'], [' + ', 'ink'], ['21', 'B'], [` = ${P4.suma}: las del medio, dos veces`, 'ink']]; },
+         fin4()], [1600, 0], () => { E.desc = DESC4; E.avisar(); fin(); })))); },
+   body:() => `<p class="problem">En una promoción de 45 alumnos, ${A_('28 tienen celular propio')}, ${B_('21 tienen computadora en casa')} y ${fu_('6 no tienen ninguna de las dos cosas')}. ¿Cuántos tienen las dos?</p>${opcionesHTML(P_4.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">n(A ∪ B) = n(U) − ${fu_('n((A ∪ B)′)')} = 45 − ${fu_('6')} = ${P4.union}<span class="note">los que están dentro de algún aro</span></div>
+     <div class="eq">${I_('n(A ∩ B)')} = ${A_('28')} + ${B_('21')} − ${P4.union} = ${I_(P4.respuesta)}<span class="note">lo que sobra al sumar los aros: los que se contaron dos veces</span></div></div>
+   <p>Los que no están en ningún aro forman el complemento (A ∪ B)′. Primero se quitan del total; lo que queda es A ∪ B, y de ahí sale la intersección.</p>${FUENTE}</div>` },
+ { k:'Paso 5', t:'Predice: tres aros', gate:P_5,
+   prep:() => { const ya = !!S.pred[P_5.id];
+     E.config({ modo:'venn', st:Object.assign({ n:3, banca:44, rotuloU:'U: 60', nombres:{ A:'A · atletismo: 30', B:'B · natación: 25', C:'C · ciclismo: 20' } }, ya ? fin5() : { fichas:[] }),
+       ley:[['A', 'A: atletismo'], ['B', 'B: natación'], ['C', 'C: ciclismo'], ['I', 'en los tres aros'], ['fu', 'ninguno']],
+       desc: ya ? DESC5 : 'El universo U, de 60 alumnos, con los aros A, B y C, todavía sin fichas.',
+       lect:[() => ['ink', 'alumnos', '60'], () => ['I', 'los tres', '3']] }); },
+   anima:fin => { const s = E.st, R = P5.regiones, fs = fichasDe(R, ['ABC', 'AB', 'AC', 'BC', 'A', 'B', 'C', '']);
+     Object.assign(s, { fichas:fs, visibles:0, radio:8 }); E.redimensionar();
+     E.aparecer(0, fs.length - R[''], 1600, () => E.secuencia([st => { st.pie = [[`${P5.suma} − ${P5.pares} + `, 'ink'], ['3', 'I'], [` = ${P5.union} en algún aro`, 'ink']]; }], [1400], () =>
+       E.aparecer(fs.length - R[''], fs.length, 600, () => E.secuencia([fin5()], [0], () => { E.desc = DESC5; E.avisar(); fin(); })))); },
+   body:() => `<p class="problem">De 60 alumnos de un colegio, ${A_('30 practican atletismo')}, ${B_('25 natación')} y ${C_('20 ciclismo')}; 10 practican atletismo y natación, 8 atletismo y ciclismo, y 6 natación y ciclismo. En cada uno de estos tres números están también los ${I_('3 alumnos que practican los tres deportes')}. ¿Cuántos no practican ninguno de los tres?</p>${opcionesHTML(P_5.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${A_('30')} + ${B_('25')} + ${C_('20')} − 10 − 8 − 6 + ${I_('3')} = ${P5.union}<span class="note">n(A ∪ B ∪ C): se suman los aros, se restan los pares y se devuelven los de los tres</span></div>
+     <div class="eq">60 − ${P5.union} = ${fu_(P5.respuesta)}<span class="note">fuera de los tres aros</span></div></div>
+   <p>Un alumno de los tres deportes se suma tres veces (en cada aro) y se resta tres veces (en cada par): queda en cero, y hay que devolverlo una vez. Uno de dos deportes se suma dos veces y se resta una: queda contado una vez.</p>${FUENTE}</div>` },
+ { k:'Paso 6', t:'Predice: ¿cuántos subconjuntos?', gate:P_6,
+   prep:() => { const ya = !!S.pred[P_6.id];
+     if (ya) E.config({ modo:'arbol', st:fin6(), ley:LEY6, desc:DESC6, lect:LECT6 });
+     else E.config({ modo:'bolsas', st:{ bolsas:[{ k:'A', nombre:'A', items:A6.map(String) }] }, ley:[['A', 'el conjunto A']], desc:'El conjunto A con sus cuatro elementos: 1, 3, 5 y 7.', lect:[] }); },
+   anima:fin => { E.config({ modo:'arbol', st:{ arbol:AR6, niveles:0 }, ley:LEY6, desc:DESC6, lect:[] });
+     E.secuencia([1, 2, 3, 4].map(k => ({ niveles:k })).concat([fin6()]), [700, 700, 700, 900, 0], () => { E.lect = LECT6; E.avisar(); fin(); }); },
+   body:() => `<p class="problem">${A_('A = {1, 3, 5, 7}')}. ¿Cuántos ${S_('subconjuntos')} tiene A, y cuántos de ellos son propios? (Un subconjunto propio de A es cualquier subconjunto distinto de A).</p>${opcionesHTML(P_6.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${dosVeces} = ${S_(P6.subconjuntos)}<span class="note">cada elemento entra (línea llena) o no entra (a trazos)</span></div>
+     <div class="eq">n(P(A)) = 2<sup>n(A)</sup> = 2<sup>4</sup> = ${S_(P6.subconjuntos)} y propios: ${S_(P6.subconjuntos)} − 1 = ${S_(P6.propios)}<span class="note">A mismo es el único subconjunto que no es propio</span></div></div>
+   <p>Los subconjuntos de A forman el conjunto potencia P(A). El primer camino del árbol mete a todos (A mismo) y el último no mete a ninguno: el vacío ∅, que es subconjunto de cualquier conjunto.</p>${FUENTE}</div>` },
+ { k:'Paso 7', t:'Predice: las parejas de A × B', gate:P_7,
+   prep:() => { const ya = !!S.pred[P_7.id];
+     if (ya) E.config({ modo:'cuadricula', st:fin7(), ley:LEY7, desc:DESC7, lect:LECT7 });
+     else E.config({ modo:'bolsas', st:{ bolsas:[{ k:'A', nombre:'A', items:A7.map(String) }, { k:'B', nombre:'B', items:B7.map(String) }] }, ley:[['A', 'el conjunto A'], ['B', 'el conjunto B']], desc:'El conjunto A, con 1, 2 y 3, y el conjunto B, con 2, 3, 4 y 5.', lect:[] }); },
+   anima:fin => { E.config({ modo:'cuadricula', st:Object.assign(fin7(), { visibles:0, marcar:[], pie:null }), ley:LEY7, desc:DESC7, lect:[] });
+     E.aparecer(0, P7.respuesta, 1500, () => E.secuencia([fin7()], [0], () => { E.lect = LECT7; E.avisar(); fin(); })); },
+   body:() => `<p class="problem">${A_('A = {1, 2, 3}')} y ${B_('B = {2, 3, 4, 5}')}. El producto cartesiano A × B es el conjunto de todos los pares ordenados (x, y) con x en A e y en B. ¿Cuántos elementos tiene A × B?</p>${opcionesHTML(P_7.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">n(A × B) = ${A_('n(A)')} × ${B_('n(B)')} = ${A_(P7.nA)} × ${B_(P7.nB)} = ${P7.respuesta}<span class="note">una fila por cada elemento de A, una columna por cada elemento de B</span></div>
+     <div class="eq">${P7.dadosVuelta[0]} ≠ ${P7.dadosVuelta[1]}<span class="note">en un par ordenado, primero va el de A y después el de B</span></div></div>
+   <p>Dos pares ordenados son iguales solo si coinciden la primera componente con la primera y la segunda con la segunda. Por eso A × B y B × A tienen el mismo número de elementos, ${P7.respuesta}, pero no son el mismo conjunto.</p>${FUENTE}</div>` },
+ { k:'Paso 8', t:'Explora: dos o tres aros, Venn o Carroll', explora:true,
+   prep:() => prep8(),
+   body:() => `<p class="problem">Arrastra las fichas, elige 2 o 3 aros, cambia entre el diagrama de Venn y el de Carroll (una tabla con las mismas regiones) y elige una operación para ver qué parte del dibujo es.</p>
+   <div class="seg" role="group" aria-label="Cuántos conjuntos">${[2, 3].map(n => `<button type="button" data-n8="${n}" aria-pressed="${n === S.n8}">${n} conjuntos</button>`).join('')}</div>
+   <div class="seg" role="group" aria-label="Diagrama">${[['venn', 'Venn'], ['carroll', 'Carroll']].map(([k, t]) => `<button type="button" data-vista8="${k}" aria-pressed="${k === S.vista8}">${t}</button>`).join('')}</div>
+   <div id="mover8">${moverHTML(S.n8)}</div>
+   <div class="seg" role="group" aria-label="Operación">${(S.n8 === 2 ? OPS2 : OPS3).map(([k, t]) => `<button type="button" data-op8="${k}" aria-pressed="${k === S.op8}">${t}</button>`).join('')}</div>
+   <div id="vivo8"></div>
+   <p><a class="btn primary" href="#que-pasa-si" style="display:inline-block; text-decoration:none">Seguir con ¿Qué pasa si…?</a></p>`,
+   luego:() => {
+     const sb = $('stepBody');
+     sb.querySelectorAll('[data-n8]').forEach(b => b.onclick = () => { if (S.ocupado || E.anim || +b.dataset.n8 === S.n8) return; S.n8 = +b.dataset.n8; E.sel = 0; go(S.step); });
+     sb.querySelectorAll('[data-vista8]').forEach(b => b.onclick = () => { if (S.ocupado || E.anim) return; S.vista8 = b.dataset.vista8; prep8(); vivo8(); });
+     sb.querySelectorAll('[data-op8]').forEach(b => b.onclick = () => { if (S.ocupado || E.anim) return; S.op8 = b.dataset.op8; prep8(); vivo8(); });
+     enlazarMover(E, sb); vivo8(); } },
+];
+// Estados finales de cada predicción (los mismos al volver al paso)
+function fin2(){ return { fichas:fichasDe({ A:P2.soloA, AB:P2.ambos, B:P2.soloB }, ['A', 'AB', 'B']), visibles:null, cuentas:['A', 'AB', 'B'], pie:[[String(D2.A), 'A'], [' + ', 'ink'], [String(D2.B), 'B'], [' − ', 'ink'], [String(D2.AB), 'I'], [` = ${P2.respuesta}`, 'ink']] }; }
+const DESC2 = `Los aros con sus fichas: ${P2.soloA} dentro de A y fuera de B, ${D2.AB} en los dos aros y ${P2.soloB} dentro de B y fuera de A. Al sumar ${D2.A} y ${D2.B}, las ${D2.AB} del medio se cuentan dos veces: dentro de algún aro hay ${P2.respuesta}.`;
+function fin3(){ return { fichas:fichasDe({ A:P3.respuesta, AB:P3.ambos, B:P3.soloB }, ['AB', 'A', 'B']), visibles:null, cuentas:['A', 'AB', 'B'], sombra:['A'], pie:[['22', 'A'], [' − ', 'ink'], ['6', 'I'], [` = ${P3.respuesta} solo en la UNI`, 'ink']] }; }
+const DESC3 = `Los aros con sus fichas: ${P3.respuesta} dentro de A y fuera de B (rayado), 6 en los dos aros y ${P3.soloB} dentro de B y fuera de A.`;
+function fin4(){ return { fichas:fichasDe({ '':6, A:P4.soloA, AB:P4.respuesta, B:P4.soloB }, ['', 'A', 'AB', 'B']), visibles:null, cuentas:true, pie:[['28', 'A'], [' + ', 'ink'], ['21', 'B'], [` − ${P4.union} = `, 'ink'], [String(P4.respuesta), 'I']] }; }
+const DESC4 = `El universo con sus 45 fichas: 6 fuera de los aros, ${P4.soloA} dentro de A y fuera de B, ${P4.respuesta} en los dos aros y ${P4.soloB} dentro de B y fuera de A.`;
+function fin5(){ return { fichas:fichasDe(P5.regiones, ['ABC', 'AB', 'AC', 'BC', 'A', 'B', 'C', '']), visibles:null, cuentas:true, radio:8, pie:[[`60 − ${P5.union} = `, 'ink'], [String(P5.respuesta), 'fu'], [' en ninguno', 'ink']] }; }
+const R5 = P5.regiones;
+const DESC5 = `Los tres aros con sus fichas: ${R5.ABC} en los tres; ${R5.AB} en A y B, no en C; ${R5.AC} en A y C, no en B; ${R5.BC} en B y C, no en A; ${R5.A} solo en A; ${R5.B} solo en B; ${R5.C} solo en C, y ${R5['']} fuera de los tres.`;
+function fin6(){ return { arbol:AR6, niveles:4, marcar:true, pie:[[dosVeces + ' = ', 'ink'], [String(P6.subconjuntos), 'S'], [' caminos', 'ink']] }; }
+const LEY6 = [['A', 'A mismo'], ['S', 'subconjuntos'], ['ink', '¿entra? línea llena: sí']];
+const DESC6 = `Un árbol de cuatro niveles: en cada uno, un elemento de A entra o no entra. Al final quedan ${P6.subconjuntos} caminos, uno por subconjunto: el primero es A mismo y el último es el vacío.`;
+const LECT6 = [() => ['S', 'subconjuntos', String(P6.subconjuntos)], () => ['S', 'propios', String(P6.propios)]];
+function fin7(){ return { filas:A7.map(String), columnas:B7.map(String), visibles:null, marcar:P7.dadosVuelta, pie:[[P7.dadosVuelta[0], 'ink'], [' y ', 'ink'], [P7.dadosVuelta[1], 'ink'], [': pares distintos', 'ink']] }; }
+const LEY7 = [['A', 'primera componente, de A'], ['B', 'segunda componente, de B']];
+const DESC7 = `Una cuadrícula de ${P7.nA} filas, una por elemento de A, y ${P7.nB} columnas, una por elemento de B: ${P7.respuesta} pares. Están marcados ${P7.dadosVuelta[0]} y ${P7.dadosVuelta[1]}, que son distintos.`;
+const LECT7 = [() => ['ink', 'pares en A × B', String(P7.respuesta)]];
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; b.dataset.label = `Ir al ${s.k.toLowerCase()}: ${quitar(s.t)}`;
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  E.parar();
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = glifos(s.body());
+  E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.prep) s.prep();
+  pintarDots();
+  if (s.gate) prediccion(s);
+  if (s.luego) s.luego();
+  nav();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+  E.ocupado = S.ocupado;
+  pintarDots();
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max || (S.ocupado && k !== S.step);
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : b.dataset.label);
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){ if (k > S.max) S.max = k; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const f = $('fb'); f.textContent = quitarSimple(fb(p, P.ok, P.fb[p])); f.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    S.ocupado = true; nav();
+    E.compactar(false);
+    $('fb').focus({ preventScroll:true });
+    const paso = S.step, listo = () => { S.ocupado = false; E.avisar(); nav(); };
+    Celular.alResponder($('cv'), () => s.anima(listo), () => S.step === paso, { siNo:listo });
+  }));
+  pintar();
+}
+const quitarSimple = t => String(t).replace(/<[^>]+>/g, '');
+
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   B dentro de A, aros que no se tocan, un elemento más en el conjunto, A − B contra B − A, y ∈ contra ⊂ en P(A).
+   La escena cambia recién después de responder. Un experimento se abre solo si los anteriores ya tienen respuesta. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2');
+const A_ = t => V('A', t), B_ = t => V('B', t), I_ = t => V('I', t), S_ = t => V('S', t);
+const S = { k:0, pred:{}, t0:Date.now() };
+
+const Q1 = M.alMenosUno(20, 8, 8);
+const AM = Array.from({ length:14 }, (_, i) => 'm' + i), AT = Array.from({ length:11 }, (_, i) => 't' + i), Q2 = M.alMenosUno(14, 11, 0);
+const Q2i = M.interseccion(AM, AT);
+const A3 = [1, 3, 5], Q3 = M.agregarElemento(A3.length), AR3 = M.arbol(A3), AR4 = M.arbol(A3.concat([7]));
+const A4 = [1, 2, 3, 4, 5], B4 = [4, 5, 6, 7], Q4 = M.diferencias(A4, B4);
+const A5 = [1, 2], P5 = M.potencia(A5);
+const AF5 = { a:[1, '∈'], b:[[1], '∈'], c:[[], '∉'], d:[[1, 2], '∉'] };
+const verdad5 = Object.fromEntries(Object.entries(AF5).map(([k, [x, r]]) => [k, M.afirmar(x, r, P5.lista)]));
+console.assert(Q1.respuesta === 20 && Q1.errores.sumaSinRestar && Q1.errores.restaDosVeces && Q2i.length === 0 && !M.iguales(Q2i, [0]) && !M.iguales(Q2i, [[]])
+  && Q3.respuesta === 16 && Object.keys(Q3.errores).length === 3 && M.texto(Q4.respuesta) === '{6, 7}' && Object.keys(Q4.errores).length === 4
+  && Object.values(verdad5).filter(Boolean).length === 1 && verdad5.b, 'qué pasa si: revisar las opciones');
+
+const al = n => `${n} ${n === 1 ? 'alumno' : 'alumnos'}`;
+const EXPS = [
+  { id:'b-dentro-de-a', corto:'Pintura y cerámica',
+    q:`En una casa de la cultura, ${A_('20 alumnos van al taller de pintura')} y ${B_('8 al de cerámica')}; todos los de cerámica también van a pintura. ¿Cuántos alumnos van a al menos uno de los dos talleres?`,
+    opts:[['a', al(Q1.errores.sumaSinRestar), 'suma-sin-restar-la-interseccion', 'hipotesis'], ['b', al(Q1.respuesta)],
+          ['c', al(Q1.errores.restaDosVeces), 'resta-la-interseccion-dos-veces', 'hipotesis'], ['d', 'No se puede saber: falta cuántos van a los dos', 'no-ve-la-interseccion-en-la-inclusion', 'hipotesis']],
+    ok:'b',
+    fb:{ a:`${Q1.errores.sumaSinRestar} = 20 + 8 cuenta dos veces a los 8 de cerámica: también están entre los 20 de pintura. Contados una vez: 20.`,
+      c:`${Q1.errores.restaDosVeces} = 20 + 8 − 8 − 8 deja afuera a los 8 de cerámica, que sí van a un taller. Los que van a alguno son los 20 de pintura.`,
+      d:'Sí se sabe: como todos los de cerámica van también a pintura, los que van a los dos son los 8 de cerámica. Entonces 20 + 8 − 8 = 20.' },
+    antes:ya => E.config(ya ? { modo:'venn', st:finQ1(), ley:[['A', 'A: pintura'], ['B', 'B: cerámica']], desc:DESCQ1, lect:LECTQ1 }
+      : { modo:'venn', st:{ carteles:[cartel('A', [['A · pintura: ', 'A'], ['20 alumnos', 'ink']]), cartel('B', [['B · cerámica: ', 'B'], ['8 alumnos', 'ink']])] }, ley:[['A', 'A: pintura'], ['B', 'B: cerámica']], desc:'Dos carteles: pintura, 20 alumnos; cerámica, 8 alumnos.', lect:[] }),
+    despues:() => { E.config({ modo:'venn', st:Object.assign(finQ1(), { visibles:0, pie:null }), ley:[['A', 'A: pintura'], ['B', 'B: cerámica']], desc:DESCQ1, lect:[] });
+      E.aparecer(0, 20, 1100, () => E.secuencia([finQ1()], [0], () => { E.lect = LECTQ1; E.avisar(); })); },
+    exp:() => `<div class="eqs"><div class="eq">B ⊂ A → A ∩ B = B y A ∪ B = A<span class="note">el aro B queda entero dentro del aro A</span></div>
+      <div class="eq">n(A ∪ B) = ${A_('20')} + ${B_('8')} − ${I_('8')} = ${Q1.respuesta}</div></div>
+      <p>«Todos los de cerámica van a pintura» dice que B está incluido en A. Entonces la intersección es todo B, y la unión es todo A. La regla de siempre sigue sirviendo: n(A ∩ B) = n(B).</p>` },
+
+  { id:'disjuntos', corto:'Aros que no se tocan',
+    q:`En una academia, ${A_('14 alumnos estudian en el turno mañana')} y ${B_('11 en el turno tarde')}; nadie estudia en los dos turnos. Si A es el conjunto de los del turno mañana y B el de los del turno tarde, ¿qué es A ∩ B?`,
+    opts:[['a', 'A ∩ B = {0}: tiene un elemento, el 0', 'el-vacio-como-el-cero', 'hipotesis'], ['b', 'A ∩ B = {∅}: tiene un elemento, el vacío', 'el-vacio-entre-llaves', 'hipotesis'],
+          ['c', 'A ∩ B no existe: los aros no se cruzan', 'la-interseccion-no-existe', 'hipotesis'], ['d', 'A ∩ B = ∅: no tiene elementos']],
+    ok:'d',
+    fb:{ a:'{0} es un conjunto con un elemento: el número 0. En A ∩ B no hay ningún alumno, ni siquiera uno llamado «0»: A ∩ B = ∅, y n(A ∩ B) = 0.',
+      b:'{∅} es un conjunto con un elemento: el vacío. Una bolsa con una bolsa vacía adentro ya no está vacía. A ∩ B no tiene ningún elemento: A ∩ B = ∅.',
+      c:'La intersección siempre existe: es el conjunto de los que están en los dos. Si no hay nadie, es el conjunto vacío: A ∩ B = ∅.' },
+    antes:ya => E.config(ya ? { modo:'venn', st:finQ2(), ley:LEYQ2, desc:DESCQ2, lect:LECTQ2 }
+      : { modo:'venn', st:{ carteles:[cartel('A', [['A · mañana: ', 'A'], ['14 alumnos', 'ink']]), cartel('B', [['B · tarde: ', 'B'], ['11 alumnos', 'ink']])] }, ley:LEYQ2, desc:'Dos carteles: turno mañana, 14 alumnos; turno tarde, 11 alumnos.', lect:[] }),
+    despues:() => { E.config({ modo:'venn', st:Object.assign(finQ2(), { visibles:0, pie:null }), ley:LEYQ2, desc:DESCQ2, lect:[] });
+      E.aparecer(0, 25, 1100, () => E.secuencia([finQ2()], [0], () => { E.lect = LECTQ2; E.avisar(); })); },
+    exp:() => `<div class="eqs"><div class="eq">A ∩ B = ${M.texto(Q2i)} y n(A ∩ B) = ${Q2i.length}</div>
+      <div class="eq">n(A ∪ B) = ${A_('14')} + ${B_('11')} − 0 = ${Q2.respuesta}</div></div>
+      <p>Dos conjuntos sin elementos comunes se llaman <b>disjuntos</b>: su intersección es el conjunto vacío ∅ (no {0} ni {∅}, que tienen un elemento cada uno). Con disjuntos, n(A ∪ B) es la suma directa.</p>` },
+
+  { id:'un-elemento-mas', corto:'Un elemento más',
+    q:`${A_('A = {1, 3, 5}')} tiene ${S_(Q3.antes + ' subconjuntos')}. Si se le agrega el elemento 7, ¿cuántos subconjuntos tiene el nuevo conjunto {1, 3, 5, 7}?`,
+    opts:[['a', `${Q3.errores.soloElUnitario} subconjuntos`, 'solo-agrega-el-unitario', 'hipotesis'], ['b', `${Q3.errores.elUnitarioYElTotal} subconjuntos`, 'agrega-el-unitario-y-el-conjunto-entero', 'hipotesis'],
+          ['c', `${Q3.respuesta} subconjuntos`], ['d', `${Q3.errores.porElNuevoCardinal} subconjuntos`, 'multiplica-por-el-numero-de-elementos', 'hipotesis']],
+    ok:'c',
+    fb:{ a:`Además de {7}, aparecen {1, 7}, {3, 7}, {1, 3, 5, 7}…: cada uno de los ${Q3.antes} subconjuntos viejos tiene una copia con el 7. ${Q3.antes} + ${Q3.nuevos} = ${Q3.respuesta}.`,
+      b:`No solo aparecen {7} y {1, 3, 5, 7}: cada uno de los ${Q3.antes} subconjuntos viejos tiene una copia con el 7, como {1, 7} o {3, 5, 7}. ${Q3.antes} + ${Q3.nuevos} = ${Q3.respuesta}.`,
+      d:`${Q3.errores.porElNuevoCardinal} = ${Q3.antes} × 4 multiplica por el número de elementos. El elemento nuevo solo tiene dos opciones, entra o no entra: ${Q3.antes} × 2 = ${Q3.respuesta}.` },
+    antes:ya => E.config(ya ? { modo:'arbol', st:finQ3(), ley:LEYQ3, desc:DESCQ3, lect:LECTQ3 }
+      : { modo:'arbol', st:{ arbol:AR3, niveles:3 }, ley:LEYQ3, desc:`Un árbol de tres niveles para A = {1, 3, 5}: ${Q3.antes} caminos, uno por subconjunto.`, lect:[() => ['S', 'subconjuntos de {1, 3, 5}', String(Q3.antes)]] }),
+    despues:() => { E.config({ modo:'arbol', st:{ arbol:AR4, niveles:3 }, ley:LEYQ3, desc:DESCQ3, lect:[] });
+      E.secuencia([{ niveles:4 }, finQ3()], [900, 0], () => { E.lect = LECTQ3; E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">${Q3.antes} × 2 = ${S_(Q3.respuesta)}<span class="note">cada camino viejo se parte en dos: con el 7 y sin el 7</span></div></div>
+      <p>Cada elemento nuevo <b>duplica</b> el número de subconjuntos: los viejos siguen, y cada uno tiene una copia con el elemento nuevo. Por eso un conjunto de n elementos tiene 2 × 2 × … × 2 = 2<sup>n</sup>.</p>` },
+
+  { id:'a-menos-b', corto:'La diferencia',
+    q:`${A_('A = {1, 2, 3, 4, 5}')} y ${B_('B = {4, 5, 6, 7}')}. ¿Cuál es B − A?`,
+    opts:[['a', `B − A = ${M.texto(Q4.errores.alReves)}`, 'invierte-la-diferencia', 'hipotesis'], ['b', `B − A = ${M.texto(Q4.errores.interseccion)}`, 'da-la-interseccion', 'hipotesis'],
+          ['c', `B − A = ${M.texto(Q4.respuesta)}`], ['d', `B − A = ${M.texto(Q4.errores.simetrica)}`, 'da-la-diferencia-simetrica', 'hipotesis']],
+    ok:'c',
+    fb:{ a:`${M.texto(Q4.AmenosB)} es A − B: los de A que no están en B. B − A empieza por B: los de B que no están en A, ${M.texto(Q4.respuesta)}.`,
+      b:`${M.texto(Q4.interseccion)} es A ∩ B: los que están en los dos. B − A son los de B que no están en A: ${M.texto(Q4.respuesta)}.`,
+      d:`${M.texto(Q4.simetrica)} es A Δ B: los que están en uno solo de los dos. B − A solo toma los de B: ${M.texto(Q4.respuesta)}.` },
+    antes:ya => E.config(ya ? { modo:'venn', st:finQ4(), ley:LEYQ4, desc:DESCQ4, lect:LECTQ4 }
+      : { modo:'venn', st:{ carteles:[cartel('A', [['A = ', 'A'], [M.texto(A4), 'ink']]), cartel('B', [['B = ', 'B'], [M.texto(B4), 'ink']])] }, ley:[['A', 'A'], ['B', 'B']], desc:'Dos carteles: A es el conjunto 1, 2, 3, 4, 5; B es el conjunto 4, 5, 6, 7.', lect:[] }),
+    despues:() => { E.config({ modo:'venn', st:Object.assign(finQ4(), { visibles:0, sombra:[], pie:null }), ley:LEYQ4, desc:DESCQ4, lect:[] });
+      E.aparecer(0, 7, 900, () => E.secuencia([finQ4()], [0], () => { E.lect = LECTQ4; E.avisar(); })); },
+    exp:() => `<div class="eqs"><div class="eq">B − A = ${M.texto(Q4.respuesta)} y A − B = ${M.texto(Q4.AmenosB)}<span class="note">la diferencia no se puede dar vuelta: B − A ≠ A − B</span></div></div>
+      <p>B − A se lee «B menos A»: lo que queda de B cuando se le quita lo que tiene en común con A. En el dibujo, la parte de B que está fuera del aro A.</p>` },
+
+  { id:'pertenencia-inclusion', corto:'∈ o ⊂ en P(A)',
+    q:`${A_('A = {1, 2}')}. ${S_('P(A)')} es el conjunto de todos los subconjuntos de A. ¿Cuál de estas afirmaciones es verdadera?`,
+    opts:[['a', '1 ∈ P(A)', 'confunde-elemento-con-subconjunto', 'hipotesis'], ['b', '{1} ∈ P(A)'],
+          ['c', '∅ ∉ P(A)', 'el-vacio-no-cuenta', 'hipotesis'], ['d', '{1, 2} ∉ P(A)', 'el-conjunto-no-es-subconjunto-de-si-mismo', 'hipotesis']],
+    ok:'b',
+    fb:{ a:`Los elementos de P(A) son conjuntos: ${P5.texto}. El 1 es elemento de A, pero no de P(A); lo que está en P(A) es {1}.`,
+      c:`El vacío es subconjunto de todo conjunto, así que ∅ es un elemento de P(A): ${P5.texto}.`,
+      d:`Todo conjunto es subconjunto de sí mismo: {1, 2} ⊂ A, así que {1, 2} ∈ P(A). Lo que no es es un subconjunto propio.` },
+    antes:ya => E.config(ya ? { modo:'bolsas', st:finQ5(), ley:LEYQ5, desc:DESCQ5, lect:LECTQ5 }
+      : { modo:'bolsas', st:{ bolsas:[{ k:'A', nombre:'A', items:['1', '2'], ancho:.7 }, { k:'S', nombre:'P(A)', items:null }] }, ley:LEYQ5, desc:'El conjunto A, con 1 y 2, y el conjunto P de A, todavía sin mostrar sus elementos.', lect:[] }),
+    despues:() => { E.config({ modo:'bolsas', st:{ bolsas:[{ k:'A', nombre:'A', items:['1', '2'], ancho:.7 }, { k:'S', nombre:'P(A)', items:[] }] }, ley:LEYQ5, desc:DESCQ5, lect:[] });
+      E.secuencia(P5.lista.map((_, j) => st => { st.bolsas[1].items = P5.lista.slice(0, j + 1).map(M.texto); }).concat([finQ5()]), [500, 500, 500, 500, 0], () => { E.lect = LECTQ5; E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">P(A) = ${P5.texto}<span class="note">sus elementos son conjuntos</span></div>
+      <div class="eq">{1} ∈ P(A) y {1} ⊂ A, pero 1 ∉ P(A)</div></div>
+      <p><b>∈</b> relaciona un elemento con un conjunto; <b>⊂</b>, un conjunto con otro. El 1 pertenece a A; el conjunto {1} está incluido en A, y por eso pertenece a P(A).</p>` },
+];
+function finQ1(){ return { n:2, relacion:'dentro', fichas:fichasDe({ A:12, AB:8 }, ['A', 'AB']), visibles:null, cuentas:['A', 'AB'], nombres:{ A:'A · pintura: 20', B:'B · cerámica: 8' }, pie:[['20', 'A'], [' + ', 'ink'], ['8', 'B'], [' − ', 'ink'], ['8', 'I'], [` = ${Q1.respuesta}`, 'ink']] }; }
+const DESCQ1 = 'El aro B, de cerámica, queda entero dentro del aro A, de pintura: 8 fichas en los dos y 12 solo en pintura. Dentro de algún aro hay 20.';
+const LECTQ1 = [() => ['ink', 'al menos uno', String(Q1.respuesta)]];
+function finQ2(){ return { n:2, relacion:'separados', fichas:fichasDe({ A:14, B:11 }, ['A', 'B']), visibles:null, cuentas:['A', 'B'], tinte:false, nombres:{ A:'A · mañana: 14', B:'B · tarde: 11' }, pie:[['A ∩ B = ', 'ink'], [M.texto(Q2i), 'ink']] }; }
+const LEYQ2 = [['A', 'A: turno mañana'], ['B', 'B: turno tarde']];
+const DESCQ2 = 'Dos aros separados, que no se tocan: 14 fichas en A y 11 en B. No hay ninguna región que esté en los dos: A intersección B es el vacío.';
+const LECTQ2 = [() => ['ink', 'n(A ∩ B)', '0'], () => ['ink', 'n(A ∪ B)', String(Q2.respuesta)]];
+function finQ3(){ return { arbol:AR4, niveles:4, marcar:true, pie:[[`${Q3.antes} × 2 = `, 'ink'], [String(Q3.respuesta), 'S'], [' caminos', 'ink']] }; }
+const LEYQ3 = [['A', 'el conjunto entero'], ['S', 'subconjuntos'], ['ink', '¿entra? línea llena: sí']];
+const DESCQ3 = `Al agregar el 7, cada uno de los ${Q3.antes} caminos se parte en dos, con el 7 y sin el 7: quedan ${Q3.respuesta}.`;
+const LECTQ3 = [() => ['S', 'subconjuntos de {1, 3, 5, 7}', String(Q3.respuesta)]];
+const zonas4 = [1, 2, 3, 4, 5, 6, 7].map(x => (M.pertenece(x, A4) ? 'A' : '') + (M.pertenece(x, B4) ? 'B' : ''));
+function finQ4(){ return { n:2, fichas:zonas4.map((z, i) => ({ id:String(i + 1), ini:String(i + 1), zona:z })), visibles:null, cuentas:false, sombra:['B'], nombres:{ A:'A', B:'B' },
+  pie:[['B − A = ', 'ink'], [M.texto(Q4.respuesta), 'ink']] }; }
+const LEYQ4 = [['A', 'A'], ['B', 'B'], ['ink', 'B − A', true]];
+const DESCQ4 = `Los números en los aros: 1, 2 y 3 solo en A; 4 y 5 en los dos; 6 y 7 solo en B. Rayada, la parte de B fuera de A: ${quitar(M.texto(Q4.respuesta))}.`;
+const LECTQ4 = [() => ['ink', 'B − A', M.texto(Q4.respuesta)], () => ['ink', 'A − B', M.texto(Q4.AmenosB)]];
+function finQ5(){ return { bolsas:[{ k:'A', nombre:'A', items:['1', '2'], ancho:.7 }, { k:'S', nombre:'P(A)', items:P5.lista.map(M.texto), marcar:['{1}'] }], pie:[['{1} ∈ P(A)', 'ink'], [' · ', 'muted'], ['1 ∉ P(A)', 'ink']] }; }
+const LEYQ5 = [['A', 'A'], ['S', 'P(A)']];
+const DESCQ5 = 'El conjunto P de A tiene cuatro elementos, todos conjuntos: el vacío, el conjunto 1, el conjunto 2 y el conjunto 1, 2. El número 1 no está entre ellos.';
+const LECTQ5 = [() => ['S', 'n(P(A))', String(P5.cantidad)]];
+
+const abierto = k => EXPS.slice(0, k).every(x => !!S.pred[x.id]);
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => abierto(k)
+    ? `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  if (k < 0 || k >= EXPS.length || !abierto(k)) return;
+  E.parar();
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  E.compactar(!ya);
+  x.antes(ya);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = glifos(`<p class="problem">${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`);
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const f = $('fb2');
+    f.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    f.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = glifos(x.exp()) + FUENTE + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    $('otra2').onclick = () => { E.parar(); Celular.alResponder($('cv2'), () => x.despues(), () => S.k === k); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar(); botones();
+    E.compactar(false); $('fb2').focus({ preventScroll:true });
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+    Celular.alResponder($('cv2'), () => x.despues(), () => S.k === k);
+  });
+  pintar();
+}
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>
