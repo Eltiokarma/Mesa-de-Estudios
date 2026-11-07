@@ -1,0 +1,15 @@
+{
+  "id": "numeros-complejos",
+  "titulo": "La flecha en el plano: números complejos",
+  "formato": "escena",
+  "unidades": [
+    "algebra.numeros-complejos"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}
