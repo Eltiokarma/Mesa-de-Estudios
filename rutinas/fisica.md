@@ -8,9 +8,79 @@ Cada ejecución construye una plantilla de escena de física, completa y revisad
 - **Celular:** en las plantillas nuevas, usar `nucleo/celular.js` (ejemplo en `plantillas/mruv/`) en vez de copiar a mano el lienzo compacto y sticky.
 
 - **Pastillas de «¿Qué pasa si…?» bloqueadas** (decisión de Gerson, 6 nov 2026, recibida de la conversación principal). Se puede ir a un experimento solo si todos los anteriores ya tienen respuesta. Los respondidos se revisitan libremente. Los bloqueados llevan `disabled`, `aria-disabled` y aria-label «Experimento N, bloqueado», igual que los puntos del paso a paso. También se cierran las otras vías de salto, como el hash o el teclado. La pestaña entre modos no se bloquea. En `dinamica/` lo arregla la conversación principal: no tocarla.
-- Dinámica ya está integrada en `claude/awesome-wozniak-5etl1n` (catálogo, diseño, pendientes y el pedido del informe). Tiro parabólico (6 nov), estática, choques, fluidos, MAS y ondas mecánicas (7 nov) quedaron hechos (abajo); termodinámica y gravitación están en curso.
+- Dinámica ya está integrada en `claude/awesome-wozniak-5etl1n` (catálogo, diseño, pendientes y el pedido del informe). Tiro parabólico (6 nov), estática, choques, fluidos, MAS, ondas mecánicas y termodinámica (7 nov) quedaron hechos (abajo); gravitación está en curso.
 - Los avisos de «terminado» van a la conversación principal nueva: `session_01P39d2yUDZET7Wso3ubSiiV` (desde el 7 nov; la anterior era `session_01P39d2yLWTLWLv3TGZ6FkHB`). Ella integra estática.
 - Desde el 7 nov la rutina sigue el método de `docs/metodo/`: constructor, verificador independiente con `entradas.py`, revisor y correcciones al mismo constructor. Lecciones nuevas de ese brief: al menos 4 predicciones en el paso a paso, opciones con la misma forma, ningún distractor que coincida con la respuesta, nombres de experimentos sin la respuesta y dibujo fijo y compacto arriba en el celular mientras hay predicción pendiente.
+
+## 7 nov 2026 · Termodinámica: primera ley, procesos y máquinas (`plantillas/termodinamica/`)
+
+**Qué hay.**
+
+`motor.js` (MotorTermodinamica): estado del gas ideal, procesos (isobárico, isocórico, isotérmico y adiabático), caminos de varios tramos, ciclo rectangular, primera ley, máquina térmica, Carnot y su ciclo, el juez del inventor, refrigerador y límites. La convención es la de las academias: Q > 0 si el gas recibe calor y W > 0 si el gas hace trabajo, con Q = ΔU + W, R = 8,31 y gas monoatómico. Cada resultado trae `errores`.
+
+- `casos.json`: 20 casos.
+- `motor.test.js`: 45 pruebas.
+- `papel.json`: 10 problemas propios.
+
+`index.html`:
+- **Paso a paso:** 8 pasos con 5 predicciones:
+  - el trabajo isobárico, con su signo (paso 2);
+  - el calor en el mismo proceso (paso 3);
+  - otro camino entre los mismos estados, donde W y Q cambian y ΔU no (paso 5);
+  - el trabajo neto de un ciclo (paso 6);
+  - la eficiencia de Carnot (paso 7).
+
+  Hay un diagrama P–V con área rayada (W < 0) o rellena (W > 0), un cilindro con mechero, agua fría o baño, y barras de Q, W y ΔU. El explorador final deja arrastrar el estado B en los cuatro procesos.
+- **«¿Qué pasa si…?»:** 5 experimentos con pastillas bloqueadas:
+  - el cilindro aislado (compresión adiabática);
+  - el baño a 300 K (isotérmico);
+  - la vuelta al revés (el ciclo antihorario);
+  - el inventor que promete superar a Carnot;
+  - trabado o libre (Cv contra Cp).
+
+**Verificador independiente.** Recalculó los 20 casos con fracciones exactas y por otros caminos. Todo coincide; solo difiere el nombre de la etiqueta `sentido` del caso isocórico, que no es física.
+
+**Revisor de contenido.** Lo que se corrigió:
+- **Lo grave:**
+  - «La vuelta al revés» mostraba un «refrigerador» con COP 4,75, por encima de Carnot (0,2). El gas absorbe ese calor mientras se calienta de 300 a 1800 K, no lo saca de un lugar frío. Se quitó el COP y se explica qué llaman refrigerador las academias.
+  - El papel p1 tenía datos imposibles para cualquier gas ideal (salía Cv = 2/3 R). Se rehízo con 2250 J, W = 900 J y ΔU = 1350 J.
+- **Lo medio:**
+  - Mientras la predicción estaba pendiente, la leyenda decía «+ si se expande» y eso regalaba el signo.
+  - En «El inventor» la opción C acertaba el veredicto; ahora también se pregunta «¿Por qué?».
+  - El «mechero» enfriaba cuando Q < 0; ahora dice «agua fría».
+  - En el celular se enciman los rótulos del explorador en los extremos.
+  - Dos respaldos eran inconsistentes (T10 y T3).
+- **Lo bajo:**
+  - p9 decía 3455 en vez de ≈ 3455.
+  - La barra pasó a «Qf (sale)».
+  - El paso 7 ahora rotula °C = K.
+  - Se cambiaron frases de «Cilindro aislado» y la nota del isotérmico.
+  - Las barras ya se ven en pantalla grande.
+  - Se usan Cp y Cv.
+
+**Colores** (para `docs/diseno.md`):
+
+| Variable | Claro | Oscuro |
+| --- | --- | --- |
+| P | #1f5fbf | #7cb0ff |
+| V | #466d14 | #a3d65e |
+| T | #b02c41 | #f5899a |
+| Q | #924a00 | #f0a04a |
+| W | #a10fbf | #d888fb |
+| ΔU | #0c6b63 | #5ed9c8 |
+
+- ΔE00 mínimo dentro de la escena: 23,0 en claro y 23,6 en oscuro.
+- AA mínimo: 4,52, el de P sobre una opción ya respondida mal. Pasa justo.
+- **Cruces entre escenas:**
+  - Q es naranja aquí y azul en calorimetría. Su tono oscuro, #f0a04a, es igual a la m de calorimetría y a la n de gases.
+  - En claro, Q queda a 5,3 de la P ámbar de fluidos.
+  - W tiene el mismo fucsia que la F de dinámica. El trabajo ya va en tres colores entre escenas: azul en energía, granate en electrostática y fucsia aquí.
+  - V y T son casi iguales a las de gases.
+
+**Pedidos para la integración.**
+1. En la unidad `fisica.termodinamica`, agregar `"plantillas": ["termodinamica"]` y correr `npm run catalogo`.
+2. Llevar los colores y sus cruces a `docs/diseno.md`.
+3. Actualizar pendientes y `CLAUDE.md`.
 
 ## 7 nov 2026 · Ondas mecánicas y sonido (`plantillas/ondas/`)
 
