@@ -1,0 +1,1170 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ondas en una cuerda y sonido</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md).
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
+   amplitud A azul, frecuencia f fucsia, longitud de onda λ verde, rapidez de la onda v rojo (como la v de MRUV y tiro),
+   tiempo t naranja (como en MRUV y tiro) y tensión T turquesa. En dinámica la tensión es roja; aquí el rojo es de v,
+   que sale junto a T en v = √(T/μ), así que T va en turquesa (ningún color nombra dos cosas). El periodo no lleva letra:
+   se escribe «periodo» o 1/f, porque T es la tensión. μ (masa por metro), x, y, la cuerda, la cinta, la mano y la
+   velocidad de un punto de la cuerda (u, flecha fina) van en tinta.
+   Sonido (experimentos 4 y 5, sin A ni f a la vez que I y β): intensidad I índigo y nivel β ocre.
+   ΔE00 mínimo entre los que salen juntos: 23,6 en claro (λ–T) y 25,3 en oscuro; I–β más de 40.
+   Contraste mínimo 4,54 (β sobre el chip al 8 %). v queda a 5 del rojo de los avisos, que siempre llevan texto.
+   El morado de marca no se usa aquí. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-A:#1f5fbf; --c-f:#a10fbf; --c-lam:#466d14; --c-v:#c0364a; --c-t:#a05200; --c-T:#0f766e; --c-I:#3328c4; --c-b:#7d6a00;
+  --bloque:#f3e3d3; --pared:#d9c8bb;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-A:#7cb0ff; --c-f:#cf6bfa; --c-lam:#a3d65e; --c-v:#f17384; --c-t:#f0a04a; --c-T:#5ed9c8; --c-I:#9f9bff; --c-b:#e3c84a;
+  --bloque:#5a4868; --pared:#4a3d55; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-A:#7cb0ff; --c-f:#cf6bfa; --c-lam:#a3d65e; --c-v:#f17384; --c-t:#f0a04a; --c-T:#5ed9c8; --c-I:#9f9bff; --c-b:#e3c84a;
+  --bloque:#5a4868; --pared:#4a3d55; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+.lienzo:focus-within{outline:3px solid var(--ink); outline-offset:2px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block; flex:none}
+.legend i.punto{width:9px; height:9px; border-radius:50%}
+.legend i.trazos{background:none!important; border-top:2px dashed currentColor; height:0}
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance; outline:none}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+/* Datos con color: fondo del 8 %; resaltado con contorno y sin fondo. */
+.v{white-space:nowrap; font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-A{color:var(--c-A); background:color-mix(in srgb, var(--c-A) 8%, transparent)}
+.v-f{color:var(--c-f); background:color-mix(in srgb, var(--c-f) 8%, transparent)}
+.v-lam{color:var(--c-lam); background:color-mix(in srgb, var(--c-lam) 8%, transparent)}
+.v-v{color:var(--c-v); background:color-mix(in srgb, var(--c-v) 8%, transparent)}
+.v-t{color:var(--c-t); background:color-mix(in srgb, var(--c-t) 8%, transparent)}
+.v-T{color:var(--c-T); background:color-mix(in srgb, var(--c-T) 8%, transparent)}
+.v-I{color:var(--c-I); background:color-mix(in srgb, var(--c-I) 8%, transparent)}
+.v-b{color:var(--c-b); background:color-mix(in srgb, var(--c-b) 8%, transparent)}
+.v-m{color:var(--ink); background:color-mix(in srgb, var(--ink) 7%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+.eqs{display:grid; grid-template-columns:minmax(0,1fr); gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.02rem; font-variant-numeric:tabular-nums}
+.eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.5em; white-space:normal}
+.answer{font-weight:700; padding:12px 16px; border-radius:16px; background:var(--paper); border:2px solid var(--ink); max-width:66ch}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0; outline:none}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.ctrls{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 210px), 1fr)); gap:12px; align-items:end}
+.slider{display:grid; gap:4px}
+.slider label{font-weight:700; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.slider output{font-family:var(--mono); color:var(--muted)}
+input[type=range]{width:100%; accent-color:var(--ink); min-height:28px}
+input.r-A{accent-color:var(--c-A)} input.r-f{accent-color:var(--c-f)} input.r-T{accent-color:var(--c-T)}
+.chips{display:flex; flex-wrap:wrap; gap:6px}
+.chip{font-size:.86rem; padding:4px 12px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); font-weight:700}
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+.check{display:inline-flex; align-items:center; gap:8px; font-weight:700; font-size:.92rem; cursor:pointer; min-height:44px}
+.check input{width:20px; height:20px; accent-color:var(--ink)}
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.4fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Física · Ondas mecánicas y sonido · Problemas tipo admisión</p>
+      <h1>Ondas en una cuerda y sonido</h1>
+      <p class="sub">¿Qué decide qué tan rápido viaja una onda? Agita una cuerda, sigue una cinta amarrada a ella y compara lo que ves con sus gráficas.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo del paso: la cuerda, la cinta y sus gráficas">
+      <div class="lienzo"><canvas id="cv" tabindex="-1" role="img" aria-label="Una cuerda tensa entre una mano y una pared"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="legend" id="ley1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT" tabindex="-1"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Dibujo del experimento elegido">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="legend" id="ley2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2" tabindex="-1"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/ondas">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'ondas', unidad: 'fisica.ondas-mecanicas', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas de dibujo compartidas =================
+   Toda la física sale de MotorOndas (motor.js); aquí solo se pinta. Las animaciones van en cámara lenta:
+   1 s en la pantalla son 10 ms de verdad (CAMARA = 100). Los tiempos se muestran en milisegundos. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const CAMARA = 100;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 1 : d), r = Math.round(n*p)/p + 0;
+  let [e, f] = String(Math.abs(r)).split('.');
+  if (e.length >= 5) e = e.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+// Hasta 2 decimales, sin ceros de más.
+const N2 = n => fmt(n, Math.abs(n*10 - Math.round(n*10)) < 1e-7 ? (Math.abs(n - Math.round(n)) < 1e-7 ? 0 : 1) : 2);
+const ms = s => N2(s*1000);
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const M = MotorOndas;
+// Escribe en una región aria-live solo si el texto cambia (si no, el lector de pantalla repite en cada cuadro).
+function decir(el, t){ if (el.textContent !== t) el.textContent = t; }
+
+const altoLienzo = W => W >= 560 ? clamp(W*0.62, 340, 470) : clamp(W*1.0, 340, 420);
+function crearLienzo(cv, alto, dibujar){
+  const ctx = cv.getContext('2d');
+  const L = { cv, ctx, W:0, H:0, compacto:false };
+  L.resize = () => {
+    const W = cv.clientWidth; if (!W) return;
+    const H = Math.round(Celular.alto(alto(W), L.compacto)), dpr = window.devicePixelRatio || 1;
+    L.W = W; L.H = H; cv.style.height = H + 'px'; cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    dibujar();
+  };
+  new ResizeObserver(L.resize).observe(cv);
+  // Celular con predicción pendiente: el dibujo más bajo y pegado arriba (nucleo/celular.js).
+  L.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === L.compacto) return; L.compacto = on; L.resize(); };
+  return L;
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function colores(W){
+  const g = n => css(n);
+  return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
+    A:g('--c-A'), f:g('--c-f'), lam:g('--c-lam'), v:g('--c-v'), t:g('--c-t'), T:g('--c-T'), I:g('--c-I'), b:g('--c-b'),
+    bloque:g('--bloque'), pared:g('--pared'), mono:g('--mono'), font:g('--font'), chico: W < 480 };
+}
+function linea(ctx, x1, y1, x2, y2){ ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
+function rr(ctx, x, y, w, h, r){ ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h); }
+// Texto con fondo del papel detrás; nunca se sale del lienzo.
+function rotulo(ctx, c, x, y, t, color, align, peso, W, H){
+  ctx.font = `${peso || 700} ${c.chico ? 11 : 12}px ${c.font}`; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(t).width;
+  let x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  if (W) x0 = clamp(x0, 4, W - w - 4);
+  if (H) y = clamp(y, 10, H - 10);
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+  ctx.fillStyle = color; ctx.textAlign = 'left'; ctx.fillText(t, x0, y);
+  return { x0, x1: x0 + w };
+}
+function flecha(ctx, x1, y1, x2, y2, color, w, dash){
+  const ang = Math.atan2(y2 - y1, x2 - x1), l = Math.hypot(x2 - x1, y2 - y1); if (l < 2) return;
+  const p = Math.min(9 + w, l*0.6);
+  ctx.save(); ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = w; ctx.lineCap = 'round';
+  if (dash) ctx.setLineDash(dash);
+  linea(ctx, x1, y1, x2 - Math.cos(ang)*p*0.7, y2 - Math.sin(ang)*p*0.7);
+  ctx.setLineDash([]);
+  ctx.beginPath(); ctx.moveTo(x2, y2); ctx.lineTo(x2 - Math.cos(ang - .45)*p, y2 - Math.sin(ang - .45)*p); ctx.lineTo(x2 - Math.cos(ang + .45)*p, y2 - Math.sin(ang + .45)*p);
+  ctx.closePath(); ctx.fill(); ctx.restore();
+}
+// Cota con topes (horizontal o vertical).
+function cota(ctx, x1, y1, x2, y2, col){
+  const l = Math.hypot(x2 - x1, y2 - y1); if (l < 2) return;
+  const nx = -(y2 - y1)/l*5, ny = (x2 - x1)/l*5;
+  ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = 2; ctx.lineCap = 'round';
+  linea(ctx, x1, y1, x2, y2); linea(ctx, x1 - nx, y1 - ny, x1 + nx, y1 + ny); linea(ctx, x2 - nx, y2 - ny, x2 + nx, y2 + ny);
+  ctx.restore();
+}
+function mano(ctx, c, x, y, txt){
+  ctx.save(); ctx.fillStyle = c.bloque; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6;
+  rr(ctx, x - 9, y - 12, 16, 24, 7); ctx.fill(); ctx.stroke();
+  rr(ctx, x - 13, y - 5, 6, 12, 3); ctx.fill(); ctx.stroke();
+  ctx.restore();
+  if (txt){ ctx.fillStyle = c.ink; ctx.font = `700 ${c.chico ? 10 : 11}px ${c.font}`; ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillText(txt, Math.max(2, x - 14), y + 15); }
+}
+function pared(ctx, c, x, y1, y2){
+  ctx.save(); ctx.fillStyle = c.pared; ctx.fillRect(x, y1, 10, y2 - y1);
+  ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, x, y1, x, y2);
+  ctx.lineWidth = 1; ctx.globalAlpha = .6; for (let y = y1 + 4; y < y2; y += 10) linea(ctx, x, y + 6, x + 8, y);
+  ctx.restore();
+}
+function bolita(ctx, x, y, r, relleno, borde, w){
+  ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2); ctx.fillStyle = relleno; ctx.fill();
+  if (borde){ ctx.strokeStyle = borde; ctx.lineWidth = w || 2; ctx.stroke(); }
+}
+function pasoBonito(rango, n){
+  const crudo = rango/n, p = Math.pow(10, Math.floor(Math.log10(crudo))), r = crudo/p;
+  return (r < 1.5 ? 1 : r < 3 ? 2 : r < 7 ? 5 : 10)*p;
+}
+
+/* ---------- La cuerda vista de costado, con su gráfica y-t abajo ----------
+   P = { largo (m), y(x) en m, yMax (m: alto de la escala), mano: y de la mano | null, vibrador, pared, union: { x },
+         cintas: [x], cinta: x de la cinta que se grafica, cinta2, traza: [y…] (camino de la cinta), u: velocidad de la cinta,
+         frente: { x, txt, oculta }, cotaL: [{ x1, x2, txt }], cotaA: { x, y, txt }, tension: txt, envolvente(x), nodos: [x],
+         vientres: [x], regla, gris: y(x) (otra cuerda, a trazos), yt: { curvas: [{ f(t), dash }], t0, t1, ahora, rotulo } } */
+function vistaCuerda(L, c, P){
+  const { ctx, W, H } = L;
+  ctx.clearRect(0, 0, W, H);
+  const conYT = !!P.yt, Hs = conYT ? Math.round(H*(L.compacto ? 0.56 : 0.58)) : H;
+  const mx0 = c.chico ? 30 : 40, mx1 = P.pared ? 22 : 10, w = W - mx0 - mx1;
+  const X = x => mx0 + x/P.largo*w;
+  const yc = Math.round(Hs*0.52), aPx = Math.min(Hs*0.30, 78), Y = y => yc - y/P.yMax*aPx;
+  // Eje de la posición de equilibrio
+  ctx.save(); ctx.strokeStyle = c.muted; ctx.globalAlpha = .4; ctx.setLineDash([3, 5]); linea(ctx, mx0, yc, mx0 + w, yc); ctx.restore();
+  if (P.regla){
+    const paso = pasoBonito(P.largo, c.chico ? 4 : 8);
+    ctx.font = `600 10px ${c.mono}`; ctx.fillStyle = c.muted; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    ctx.strokeStyle = c.muted; ctx.lineWidth = 1;
+    const yr = Hs - 16;
+    for (let x = 0; x <= P.largo + 1e-9; x += paso){ linea(ctx, X(x), yr - 4, X(x), yr); ctx.fillText(fmt(x, paso < 1 ? 1 : 0), X(x), yr + 1); }
+    ctx.textAlign = 'left'; ctx.fillText('x (m)', 4, yr + 1);
+  }
+  if (P.union){
+    const xu = X(P.union.x);
+    ctx.save(); ctx.fillStyle = c.muted; ctx.globalAlpha = .08; ctx.fillRect(xu, 8, mx0 + w - xu, Hs - 30); ctx.restore();
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.setLineDash([2, 3]); linea(ctx, xu, 8, xu, Hs - 22); ctx.restore();
+  }
+  if (P.envolvente){
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.setLineDash([4, 4]); ctx.lineWidth = 1.4;
+    for (const s of [1, -1]){ ctx.beginPath(); for (let j = 0; j <= 200; j++){ const x = P.largo*j/200; const p = Y(s*P.envolvente(x)); j ? ctx.lineTo(X(x), p) : ctx.moveTo(X(x), p); } ctx.stroke(); }
+    ctx.restore();
+  }
+  if (P.gris){
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.globalAlpha = .7; ctx.setLineDash([6, 5]); ctx.lineWidth = 2; ctx.beginPath();
+    for (let j = 0; j <= 300; j++){ const x = P.largo*j/300; j ? ctx.lineTo(X(x), Y(P.gris(x))) : ctx.moveTo(X(x), Y(P.gris(x))); }
+    ctx.stroke(); ctx.restore();
+  }
+  // La cuerda (más gruesa después de la unión)
+  const tramo = (a, b, grosor) => {
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = grosor; ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.beginPath();
+    const n = Math.max(20, Math.round((b - a)/P.largo*360));
+    for (let j = 0; j <= n; j++){ const x = a + (b - a)*j/n; j ? ctx.lineTo(X(x), Y(P.y(x))) : ctx.moveTo(X(x), Y(P.y(x))); }
+    ctx.stroke(); ctx.restore();
+  };
+  if (P.union){ tramo(0, P.union.x, 2.2); tramo(P.union.x, P.largo, 5); }
+  else tramo(0, P.largo, 2.6);
+  if (P.pared) pared(ctx, c, mx0 + w, 10, Hs - 26);
+  if (P.mano !== undefined && P.mano !== null) mano(ctx, c, mx0 - 6, Y(P.mano), P.manoTxt === undefined ? 'mano' : P.manoTxt);
+  if (P.vibrador){
+    ctx.save(); ctx.fillStyle = c.bloque; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; rr(ctx, mx0 - 22, yc - 14, 20, 28, 5); ctx.fill(); ctx.stroke(); ctx.restore();
+    ctx.fillStyle = c.ink; ctx.font = `700 ${c.chico ? 10 : 11}px ${c.font}`; ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillText('vibrador', 2, yc + 18);
+  }
+  for (const x of P.nodos || []) bolita(ctx, X(x), yc, 4, c.paper, c.ink, 1.6);
+  (P.vientres || []).forEach((x, j) => rotulo(ctx, c, X(x), 16, String(j + 1), c.ink, 'center', 800, W));
+  if (P.vientres && P.vientres.length) rotulo(ctx, c, mx0, 16, 'vientres:', c.muted, 'right', 700, W);
+  for (const x of P.cintas || []) bolita(ctx, X(x), Y(P.y(x)), 3.2, c.ink);
+  if (P.traza && P.cinta !== undefined && P.traza.length > 1){
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.globalAlpha = .35; ctx.lineWidth = 6; ctx.lineCap = 'round';
+    const lo = Math.min(...P.traza), hi = Math.max(...P.traza); linea(ctx, X(P.cinta), Y(hi), X(P.cinta), Y(lo)); ctx.restore();
+  }
+  const cintaEn = (x, txt) => {
+    const px = X(x), py = Y(P.y(x));
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 3; linea(ctx, px, py - 9, px, py + 9); ctx.restore();
+    bolita(ctx, px, py, 6, c.ink, c.card, 2);
+    rotulo(ctx, c, px, py > yc ? py + 20 : py - 20, txt, c.ink, 'center', 800, W);
+  };
+  if (P.cinta !== undefined && P.cinta !== null) cintaEn(P.cinta, P.cintaTxt || 'cinta');
+  if (P.cinta2 !== undefined && P.cinta2 !== null) cintaEn(P.cinta2, P.cinta2Txt || 'cinta 2');
+  if (P.u && P.cinta !== undefined && Math.abs(P.u.v) > 1e-9){
+    const px = X(P.cinta) + 14, py = Y(P.y(P.cinta)), l = clamp(P.u.v/P.u.max, -1, 1)*34;
+    flecha(ctx, px, py, px, py - l, c.ink, 1.8, [4, 3]);
+    if (Math.abs(l) > 10) rotulo(ctx, c, px + 6, py - l, 'u', c.ink, 'left', 800, W);
+  }
+  for (const q of P.cotaL || []){
+    const yq = clamp(Y(P.yMax*1.05) - 10, 26, yc - 20);
+    cota(ctx, X(q.x1), yq, X(q.x2), yq, c.lam);
+    rotulo(ctx, c, (X(q.x1) + X(q.x2))/2, yq - 11, q.txt, c.lam, 'center', 800, W);
+  }
+  if (P.cotaA){
+    const px = X(P.cotaA.x); cota(ctx, px, yc, px, Y(P.cotaA.y), c.A);
+    rotulo(ctx, c, px + 7, (yc + Y(P.cotaA.y))/2, P.cotaA.txt, c.A, 'left', 800, W);
+  }
+  if (P.frente){
+    const px = X(P.frente.x), py = yc + aPx + 6;
+    flecha(ctx, px - 30, py, px + 4, py, c.v, 2.6, P.frente.oculta ? [5, 4] : null);
+    rotulo(ctx, c, px + 8, py, P.frente.txt, c.v, 'left', 800, W, Hs);
+  }
+  if (P.tension){
+    const px = mx0 + w - 6, py = yc;
+    flecha(ctx, px - 34, py - 30, px - 2, py - 30, c.T, 2.6);
+    rotulo(ctx, c, px - 36, py - 46, P.tension, c.T, 'right', 800, W);
+  }
+  if (P.etiquetas) for (const e of P.etiquetas) rotulo(ctx, c, X(e.x), e.y !== undefined ? e.y : Hs - 34, e.txt, c[e.col] || c.ink, e.al || 'center', 800, W);
+  // ---- y-t de la cinta
+  if (conYT){
+    const g = P.yt, b = { x: mx0, y: Hs + 10, w: W - mx0 - 12, h: H - Hs - 34 };
+    if (b.h < 30) return;
+    ctx.fillStyle = c.paper; ctx.fillRect(b.x, b.y, b.w, b.h);
+    const Xt = t => b.x + (t - g.t0)/(g.t1 - g.t0)*b.w, ycg = b.y + b.h/2, Yg = y => ycg - y/(g.yMax || P.yMax)*(b.h*0.44);
+    const paso = pasoBonito((g.t1 - g.t0)*1000, b.w < 300 ? 4 : 8)/1000;
+    ctx.strokeStyle = c.grid; ctx.lineWidth = 1; ctx.font = `600 10px ${c.mono}`; ctx.fillStyle = c.t; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    for (let t = Math.ceil(g.t0/paso - 1e-9)*paso; t <= g.t1 + 1e-12; t += paso){ linea(ctx, Xt(t), b.y, Xt(t), b.y + b.h); ctx.fillText(ms(t), clamp(Xt(t), b.x + 8, b.x + b.w - 8), b.y + b.h + 3); }
+    ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; linea(ctx, b.x, ycg, b.x + b.w, ycg); linea(ctx, b.x, b.y, b.x, b.y + b.h);
+    ctx.font = `800 11px ${c.mono}`; ctx.fillStyle = c.t; ctx.textAlign = 'right'; ctx.textBaseline = 'bottom'; ctx.fillText('t (ms)', b.x + b.w, ycg - 3);
+    ctx.fillStyle = c.ink; ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillText(g.rotulo || 'y de la cinta', b.x + 4, b.y + 2);
+    const ahora = Math.min(g.ahora, g.t1);
+    g.curvas.forEach(cu => {
+      ctx.save(); ctx.beginPath(); ctx.rect(b.x, b.y, b.w, b.h); ctx.clip();
+      ctx.strokeStyle = c.ink; ctx.lineWidth = 2.2; ctx.setLineDash(cu.dash ? [6, 4] : []); ctx.beginPath();
+      const n = 260; let primero = true;
+      for (let j = 0; j <= n; j++){ const t = g.t0 + (ahora - g.t0)*j/n; const p = Yg(cu.f(t)); primero ? ctx.moveTo(Xt(t), p) : ctx.lineTo(Xt(t), p); primero = false; }
+      ctx.stroke(); ctx.restore();
+      if (ahora > g.t0) bolita(ctx, Xt(ahora), Yg(cu.f(ahora)), 3.6, c.ink, c.card, 1.5);
+    });
+    if (g.periodo){ const q = g.periodo; cota(ctx, Xt(q.t1), b.y + b.h - 8, Xt(q.t2), b.y + b.h - 8, c.ink); rotulo(ctx, c, (Xt(q.t1) + Xt(q.t2))/2, b.y + b.h - 20, q.txt, c.ink, 'center', 700, W); }
+    if (ahora > g.t0 && ahora < g.t1){ ctx.save(); ctx.strokeStyle = c.t; ctx.globalAlpha = .5; linea(ctx, Xt(ahora), b.y, Xt(ahora), b.y + b.h); ctx.restore(); }
+  }
+}
+
+// Leyenda: solo lo que aparece en el dibujo.
+const NOMBRES = {
+  cuerda:'<span><i style="background:var(--ink)"></i>la cuerda (y es su altura)</span>',
+  cinta:'<span><i class="punto" style="background:var(--ink)"></i>cinta amarrada a la cuerda</span>',
+  v:'<span><i style="background:var(--c-v)"></i>v · rapidez de la onda</span>',
+  T:'<span><i style="background:var(--c-T)"></i>T · tensión (la pared jala)</span>',
+  A:'<span><i style="background:var(--c-A)"></i>A · amplitud</span>',
+  lam:'<span><i style="background:var(--c-lam)"></i>λ · longitud de onda</span>',
+  t:'<span><i style="background:var(--c-t)"></i>t · tiempo (ms)</span>',
+  u:'<span><i class="trazos" style="color:var(--ink)"></i>u · velocidad de la cinta</span>',
+  env:'<span><i class="trazos" style="color:var(--muted)"></i>hasta dónde llega cada punto</span>',
+  nodo:'<span><i class="punto" style="background:var(--paper);border:1.5px solid var(--ink)"></i>nodo: punto quieto</span>',
+  gris:'<span><i class="trazos" style="color:var(--muted)"></i>la de antes, para comparar</span>',
+  union:'<span><i style="background:var(--ink);height:6px"></i>cuerda gruesa (sombreada)</span>',
+  I:'<span><i style="background:var(--c-I)"></i>I · intensidad (W/m²)</span>',
+  b:'<span><i style="background:var(--c-b)"></i>β · nivel (dB)</span>',
+  aire:'<span><i class="punto" style="background:var(--muted)"></i>capas de aire</span>',
+  pelusa:'<span><i class="punto" style="background:var(--ink)"></i>la pelusa</span>',
+  pulsos:'<span><i class="trazos" style="color:var(--muted)"></i>cada pulso solo</span>'
+};
+const leyenda = (el, claves) => { el.innerHTML = claves.map(k => NOMBRES[k]).join(''); };
+const opcionesHTML = (opts, idfb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idfb}" tabindex="-1"></p>`;
+// Anima el tiempo físico de t0 a t1 en cámara lenta; con movimiento reducido salta al final. Devuelve cómo pararla.
+function animarTiempo(t0, t1, paso, listo, camara){
+  if (RM){ paso(t1); listo && listo(); return () => {}; }
+  let id; const ini = performance.now(), dur = (t1 - t0)*(camara || CAMARA)*1000;
+  const tick = now => { const f = Math.min(1, (now - ini)/dur); paso(t0 + (t1 - t0)*f); if (f < 1) id = requestAnimationFrame(tick); else listo && listo(); };
+  id = requestAnimationFrame(tick);
+  return () => cancelAnimationFrame(id);
+}
+// Bucle sin fin (estacionarias, explorador): fn(dt en segundos de pantalla).
+function bucle(fn){
+  let id, antes = performance.now();
+  const tick = now => { const dt = Math.min(0.05, (now - antes)/1000); antes = now; fn(dt); id = requestAnimationFrame(tick); };
+  id = requestAnimationFrame(tick);
+  return () => cancelAnimationFrame(id);
+}
+// Los datos con color resaltan el dibujo al pasar el puntero o enfocarlos.
+function resaltado(sel, marcar){
+  document.addEventListener('pointerover', e => { const t = e.target.closest && e.target.closest(sel + ' [data-var]'); if (t) marcar(t.dataset.var); });
+  document.addEventListener('pointerout', e => { const t = e.target.closest && e.target.closest(sel + ' [data-var]'); if (t && !t.contains(e.relatedTarget)) marcar(null); });
+  document.addEventListener('focusin', e => { const t = e.target.closest && e.target.closest(sel + ' [data-var]'); if (t) marcar(t.dataset.var); });
+  document.addEventListener('focusout', e => { if (e.target.closest && e.target.closest(sel + ' [data-var]')) marcar(null); });
+}
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso =================
+   Problema guiado de docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md: cuerda de 2 m, T = 100 N,
+   μ = 0,01 kg/m, fija en los dos extremos. */
+(function(){
+const $ = id => document.getElementById(id);
+const cv = $('cv');
+const LARGO = 2, TEN = 100, MU = 0.01, AMP = 0.02, X_CINTA = 0.5;
+const V0 = M.cuerda({ T:TEN, mu:MU }).v;
+const S = { step:0, max:0, pred:{}, t:0, hl:null, modo:1, traza:[],
+  ex:{ T:100, f:50, A:0.02, auto:true, tf:0, hist:[], manoY:0, arrastra:false } };
+let parar = () => {};
+const L = crearLienzo(cv, altoLienzo, draw);
+
+// Carrera del paso 2: la base y las cuatro opciones.
+const CARR = M.carrera({ L:LARGO, base:{ A:0.05, ancho:0.15, T:TEN, mu:MU },
+  cambios:[{ nombre:'a', cambio:{ ancho:0.06 } }, { nombre:'b', cambio:{ A:0.1 } }, { nombre:'c', cambio:{ T:400 } }, { nombre:'d', cambio:{ mu:0.04 } }] });
+const RCARR = { base:'como al inicio', a:'A · mano más rápida', b:'B · mano más alta', c:'C · más tensión', d:'D · cuerda más pesada' };
+function vistaCarrera(c, t){
+  const { ctx, W, H } = L; ctx.clearRect(0, 0, W, H);
+  const n = CARR.carriles.length, mx0 = 14, mx1 = 20, w = W - mx0 - mx1, alto = (H - 26)/n;
+  const X = x => mx0 + x/LARGO*w;
+  CARR.carriles.forEach((ca, j) => {
+    const yc = 8 + alto*j + alto*0.62, p = M.pulso({ A:ca.A, ancho:ca.ancho, T:ca.T, mu:ca.mu, x0:-0.3 });
+    const esc = alto*0.42/0.1;
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = ca.mu > MU ? 4.5 : 2.2; ctx.beginPath();
+    for (let k = 0; k <= 240; k++){ const x = LARGO*k/240, y = yc - p.y(x, t)*esc; k ? ctx.lineTo(X(x), y) : ctx.moveTo(X(x), y); }
+    ctx.stroke(); ctx.restore();
+    pared(ctx, c, mx0 + w, yc - alto*0.5, yc + 8);
+    rotulo(ctx, c, mx0 + 2, 8 + alto*j + 10, RCARR[ca.nombre], c.ink, 'left', 700, W);
+    const llega = p.llegada(LARGO);
+    if (t >= llega) rotulo(ctx, c, mx0 + w - 4, 8 + alto*j + 10, `llegó: ${ms(ca.llegada)} ms`, c.t, 'right', 800, W);
+  });
+  ctx.font = `700 11px ${c.font}`; ctx.fillStyle = c.t; ctx.textAlign = 'left'; ctx.textBaseline = 'bottom';
+  ctx.fillText(`t = ${ms(t)} ms (cámara lenta)`, 6, H - 4);
+}
+// Onda que sale de la mano (hasta que el frente llega a la pared).
+const onda = f => M.mano({ A:AMP, f, T:TEN, mu:MU });
+function vistaMano(f, t, extra){
+  const m = onda(f), tt = Math.min(t, LARGO/m.v);
+  return Object.assign({ largo:LARGO, yMax:0.03, y: x => m.y(x, tt), mano:m.h(tt), pared:true, regla:true, cintas:[0.25, 0.75, 1, 1.25, 1.5, 1.75] }, extra || {});
+}
+const steps = [
+ { k:'Paso 1', t:'El problema', ley:['cuerda', 'T', 'v'],
+   vista:() => ({ tipo:'cuerda', largo:LARGO, yMax:0.03, y:() => 0, mano:0, pared:true, regla:true, tension:'T = 100 N · la pared',
+     frente:{ x:0.9, txt:'v = ?', oculta:true }, etiquetas:[{ x:1, y:30, txt:'μ = 0,01 kg/m', col:'ink' }] }),
+   desc:() => 'Una cuerda de 2 metros, tensa con 100 newtons, entre una mano y una pared. La rapidez de la onda todavía no se conoce.',
+   body:() => `<p class="problem">Una cuerda de ${V('m','2 m')} y ${V('m','0,01 kg')} por metro (${V('m','μ')}) está tensa con ${V('T','T = 100 N')}, entre una mano y una pared. La mano da un golpe y sale un pulso. ¿Con qué ${V('v','rapidez v')} viaja? ¿Con qué frecuencias forma la cuerda una onda estacionaria, fija en sus dos extremos?</p>
+   <p>Todo lo que vas a ver pasa muy rápido, en milésimas de segundo: la escena lo muestra en cámara lenta. Toca o pasa el puntero sobre un dato para ver dónde está en el dibujo.</p>
+   <p class="hint">Aquí ${V('T','T')} es la tensión (en newtons). Para el periodo de una onda no usamos letra: lo escribimos 1/f.</p>` },
+ { k:'Paso 2', t:'Antes de ver, predice', ley:['cuerda', 'v'], leyDespues:['cuerda', 't'],
+   gate:{ id:'ondas-paso2', ok:'c',
+     opts:[['a','Mover la mano más rápido','ON1-ON2-mano-mas-rapida','documentado'], ['b','Mover la mano más alto (un pulso más grande)','ON1-ON3-mano-mas-alta','parcial'],
+           ['c','Tensar más la cuerda','',''], ['d','Usar una cuerda más pesada, con la misma tensión','ON4-cuerda-mas-pesada','documentado']],
+     fb:{ c:'¡Bien! La rapidez la pone la cuerda: más tensión, pulso más rápido. Mira la carrera.',
+          a:'Elegiste la A. Mover la mano más rápido hace un pulso más angosto, pero no más rápido: mira la carrera. La correcta está marcada.',
+          b:'Elegiste la B. Un pulso más alto no viaja más rápido: la amplitud no cambia la rapidez. Mira la carrera. La correcta está marcada.',
+          d:'Elegiste la D. Con la misma tensión, una cuerda más pesada es más lenta, no más rápida: mira la carrera. La correcta está marcada.' } },
+   vista:() => S.pred['ondas-paso2'] ? { tipo:'carrera' } : vistaMano(100, 0, { tipo:'cuerda', y: x => M.pulso({ A:0.05, ancho:0.15, T:TEN, mu:MU, x0:0.3 }).y(x, 0), yMax:0.06, mano:0, cintas:[], frente:{ x:0.75, txt:'v = ?', oculta:true } }),
+   anima:() => { S.t = 0; parar = animarTiempo(0, 0.046, t => { S.t = t; draw(); }, null); },
+   desc:() => S.pred['ondas-paso2'] ? `Carrera de pulsos, t = ${ms(S.t)} milisegundos. ` + CARR.carriles.filter(c => S.t >= c.llegada).map(c => `${RCARR[c.nombre]} llegó en ${ms(c.llegada)} ms`).join('; ') : 'Un pulso sale de la mano hacia la pared.',
+   body:s => `<p>La mano da un golpe y el pulso viaja hacia la pared. ¿Qué haces para que llegue <b>antes</b> a la pared?</p>${opcionesHTML(s.gate.opts, 'fb')}<div id="res" class="body"></div>`,
+   exp:() => `<p>Los pulsos A y B llegan junto con el de arriba, a los ${V('t','20 ms')}: la mano cambia la forma del pulso (más angosto, más alto), no su rapidez. El de la cuerda más tensa llega en ${V('t','10 ms')} y el de la cuerda más pesada, en ${V('t','40 ms')}.</p>
+     <p>Hay dos rapideces distintas: la de un trozo de cuerda, que sube y baja (esa sí la controla la mano), y la del pulso, que avanza a lo largo de la cuerda (esa la controla la cuerda).</p>
+     <p class="fuente">En un estudio con 541 universitarios de México que rindieron un test de ondas en español, solo cerca de 3 de cada 10 supo que mover la mano más rápido no cambia la rapidez del pulso, y cerca de un tercio eligió «mover la mano más rápido»; cerca del 11 % creyó que la cuerda más pesada es más rápida (Barniol y Zavala, 2017). En Maryland, cerca del 90 % de los universitarios ponía a la mano entre las causas antes de la instrucción (Wittmann, 2002). Que un pulso más alto vaya más rápido aparece en entrevistas, sin porcentaje.</p>` },
+ { k:'Paso 3', t:'La rapidez la pone la cuerda', ley:['cuerda', 'v', 'T', 't'], vista:() => {
+     const v = M.cuerda({ T:S.T3, mu:MU }).v, p = M.pulso({ A:0.05, ancho:0.15, v, x0:-0.3 }), llega = p.llegada(LARGO);
+     return { tipo:'cuerda', largo:LARGO, yMax:0.06, y: x => p.y(x, S.t), mano:0, pared:true, regla:true, tension:`T = ${N2(S.T3)} N · la pared`,
+       frente:{ x:clamp(p.centro(S.t), 0.25, LARGO), txt:`v = ${N2(v)} m/s` }, etiquetas: S.t >= llega ? [{ x:1, y:30, txt:`llegó a la pared: ${ms(llega)} ms`, col:'t' }] : [] }; },
+   anima:() => soltar3(),
+   desc:() => { const v = M.cuerda({ T:S.T3, mu:MU }).v; return `Tensión de ${N2(S.T3)} newtons: el pulso viaja a ${N2(v)} metros por segundo y llega a la pared en ${ms(LARGO/v)} milisegundos.`; },
+   body:() => `<div class="eqs">
+       <div class="eq">${V('v','v')} = √(${V('T','T')}/${V('m','μ')}) = √(${V('T','100')}/${V('m','0,01')}) = √10 000 = ${V('v','100 m/s')}<span class="note">la tensión y la masa por metro: dos cosas de la cuerda</span></div>
+       <div class="eq">${V('t','t')} = 2 m / ${V('v','100 m/s')} = ${V('t','0,02 s')} = ${V('t','20 ms')}</div></div>
+     <p>Más tensión hace la cuerda más «nerviosa»: cada trozo jala antes al siguiente. Más masa por metro la hace más perezosa. Ni la mano ni el tamaño del pulso aparecen en la fórmula.</p>
+     <div class="ctrls"><div class="slider"><label for="s-T3"><span>Tensión (${V('T','T')})</span><output id="s-T3-o"></output></label><input id="s-T3" class="r-T" type="range" min="25" max="400" step="25" value="${S.T3}"></div></div>
+     <p><button type="button" class="btn" id="soltar3">Soltar otro pulso</button></p>
+     <p class="hint">Cuatro veces la tensión da el doble de rapidez, no cuatro veces: la tensión está dentro de una raíz.</p>` },
+ { k:'Paso 4', t:'La mano agita más rápido: predice', ley:['cuerda', 'cinta', 'A', 'lam', 't'], leyDespues:['cuerda', 'cinta', 'A', 'lam', 'v', 't', 'gris'],
+   gate:{ id:'ondas-paso4', ok:'b',
+     opts:[['a','v se duplica; λ sigue en 1 m','ON2-mas-frecuencia-mas-rapidez','documentado'], ['b','v sigue en 100 m/s; λ baja a 0,5 m','',''],
+           ['c','v sigue en 100 m/s; λ sube a 2 m','lambda-crece-con-f','hipotesis'], ['d','v se duplica; λ sube a 2 m','todo-crece-con-f','hipotesis']],
+     fb:{ b:'¡Bien! La cuerda es la misma, así que v no cambia; con el doble de oscilaciones en el mismo tramo, λ se reduce a la mitad.',
+          a:'Elegiste la A. Si v se duplicara, el frente llegaría antes a la pared; mira: llega a los mismos 20 ms. Lo que cambia es λ. La correcta está marcada.',
+          c:'Elegiste la C. Con más oscilaciones por segundo, las crestas salen más seguidas y quedan más juntas: λ baja. La correcta está marcada.',
+          d:'Elegiste la D. El frente llega a la pared a los mismos 20 ms: v no cambió. Y las crestas quedan más juntas. La correcta está marcada.' } },
+   vista:() => {
+     const ya = S.pred['ondas-paso4'], f = ya ? 200 : 100, m = onda(f), t = ya ? S.t : LARGO/V0;
+     const v = vistaMano(f, t, { tipo:'cuerda', cinta:X_CINTA,
+       yt:{ curvas:[{ f: s => m.y(X_CINTA, s) }], t0:0, t1:0.02, ahora:Math.min(t, 0.02), yMax:0.03 } });
+     // Cresta de λ: entre dos crestas completas detrás del frente.
+     const xc = cresta(m, Math.min(t, LARGO/m.v));
+     v.cotaL = xc ? [{ x1:xc - m.lambda, x2:xc, txt:`λ = ${N2(m.lambda)} m` }] : [];
+     v.cotaA = xc ? { x:xc, y:AMP, txt:'A = 2 cm' } : null;
+     if (ya){ v.frente = { x:m.frente(Math.min(t, LARGO/m.v)), txt:`v = ${N2(m.v)} m/s` }; v.gris = x => onda(100).y(x, Math.min(t, 0.02)); }
+     return v; },
+   anima:() => { S.t = 0; parar = animarTiempo(0, 0.02, t => { S.t = t; draw(); }, null); },
+   desc:() => S.pred['ondas-paso4'] ? `Mano a 200 hercios, t = ${ms(S.t)} ms. El frente avanza a 100 metros por segundo; longitud de onda 0,5 metros.` : 'Foto de la cuerda con la mano a 100 hercios, justo cuando el frente llega a la pared: longitud de onda 1 metro, amplitud 2 centímetros.',
+   body:s => `<p>La mano agita la punta de la cuerda ${V('f','100 veces por segundo')} (${V('f','f = 100 Hz')}), con ${V('A','A = 2 cm')}. El dibujo es la foto de la cuerda justo cuando el frente llega a la pared; abajo, la altura de la cinta contra el ${V('t','tiempo')}. Se ve ${V('lam','λ = 1 m')}.</p>
+     <p>Ahora la mano agita ${V('f','200 veces por segundo')}, con la misma amplitud. ¿Qué pasa con la ${V('v','rapidez v')} de la onda y con ${V('lam','λ')}?</p>${opcionesHTML(s.gate.opts, 'fb')}<div id="res" class="body"></div>`,
+   exp:() => `<div class="eqs">
+       <div class="eq">${V('v','v')} = ${V('lam','λ')}·${V('f','f')} = ${V('lam','1 m')} · ${V('f','100 Hz')} = ${V('lam','0,5 m')} · ${V('f','200 Hz')} = ${V('v','100 m/s')}</div>
+       <div class="eq">y = ${V('A','A')}·sen(kx − ωt) = ${V('A','0,02')}·sen(4πx − 400πt)<span class="note">con 200 Hz: k = 2π/λ = 4π, ω = 2πf = 400π; el signo menos dice que va hacia +x</span></div></div>
+     <p>La línea gris a trazos es la onda de 100 Hz. Los dos frentes llegan juntos a la pared, a los ${V('t','20 ms')}: la ${V('v','rapidez')} la pone la cuerda. Al agitar más rápido, las crestas salen más seguidas y quedan más juntas. En v = λ·f, si f se duplica en el mismo medio, es λ la que se ajusta.</p>
+     <p class="fuente">En el estudio de México, cerca de la mitad (46 %) dijo que un sonido más agudo (de más frecuencia) viaja más rápido; los autores lo atribuyen a leer v = λ·f como si λ no cambiara (Barniol y Zavala, 2017). Las opciones C y D son errores que suponemos (hipótesis nuestra).</p>` },
+ { k:'Paso 5', t:'¿Qué hace la cinta? Predice', ley:['cuerda', 'cinta', 't'], leyDespues:['cuerda', 'cinta', 'u', 'v', 't'],
+   gate:{ id:'ondas-paso5', ok:'b',
+     opts:[['a','Avanza con la onda hacia la pared','ON5-se-va-con-la-onda','parcial'], ['b','Sube y baja en su sitio','',''],
+           ['c','Avanza hacia la pared en zigzag, subiendo y bajando','ON5-se-va-en-senoide','parcial'], ['d','Se queda quieta mientras la onda pasa','se-queda-quieta','hipotesis']],
+     fb:{ b:'¡Bien! La cinta repite lo que hizo la mano, un poco después: sube y baja, y se queda en su sitio.',
+          a:'Elegiste la A. Lo que avanza es la forma de la onda, no la cuerda: mira la franja que deja la cinta, vertical. La correcta está marcada.',
+          c:'Elegiste la C. La cinta sube y baja, pero no avanza: su franja es vertical y su x no cambia. La correcta está marcada.',
+          d:'Elegiste la D. Cuando la onda la alcanza, la cinta se mueve: sube y baja con la misma frecuencia que la mano. La correcta está marcada.' } },
+   vista:() => {
+     const ya = S.pred['ondas-paso5'], m = onda(200), t = ya ? S.t : 0;
+     const v = vistaMano(200, t, { tipo:'cuerda', cinta:X_CINTA, mano:m.h(t), yt:{ curvas:[{ f: s => m.y(X_CINTA, s) }], t0:0, t1:0.02, ahora:ya ? t : 0, yMax:0.03 } });
+     if (ya){ v.traza = S.traza; v.u = { v:m.u(X_CINTA, t), max:m.uMax }; v.frente = { x:m.frente(Math.min(t, LARGO/m.v)), txt:`v = ${N2(m.v)} m/s` }; }
+     else v.cintas = [];
+     return v; },
+   anima:() => { S.t = 0; S.traza = []; const m = onda(200); parar = animarTiempo(0, 0.02, t => { S.t = t; S.traza.push(m.y(X_CINTA, t)); draw(); }, null); },
+   desc:() => S.pred['ondas-paso5'] ? `t = ${ms(S.t)} ms: la cinta, en x = 0,5 metros, está a ${fmt(onda(200).y(X_CINTA, S.t)*100, 1)} centímetros de altura.` : 'La cuerda quieta, con una cinta amarrada a medio metro de la mano.',
+   body:s => `<p>Amarramos una cinta a la cuerda, a ${V('m','0,5 m')} de la mano. La mano agita a ${V('f','200 Hz')}. Mientras la onda pasa, ¿qué hace la cinta?</p>${opcionesHTML(s.gate.opts, 'fb')}<div id="res" class="body"></div>`,
+   exp:() => `<p>La cinta queda quieta hasta que el frente la alcanza, a los ${V('t','5 ms')}. Desde ahí sube y baja ${V('f','200 veces por segundo')}, como la mano, y nunca se aleja de x = 0,5 m: la franja que deja es vertical. Su gráfica y-t (abajo) es la de la mano, con un retraso.</p>
+     <p>La flecha a trazos es la velocidad de la cinta (u): cambia todo el tiempo, es cero arriba y abajo y llega hasta ${V('A','A')}·ω = 0,02 · 400π ≈ 25 m/s. La ${V('v','rapidez de la onda')}, 100 m/s, es otra cosa: es lo rápido que avanza la forma.</p>
+     <p class="fuente">Que el medio «se va» con la onda está medido con el sonido: en México, cerca del 40 % dijo que una partícula frente a un parlante se aleja (Barniol y Zavala, 2017). En la cuerda es el mismo error en otra situación. La opción D es un error que suponemos (hipótesis nuestra).</p>` },
+ { k:'Paso 6', t:'Fija los dos extremos: predice', ley:['cuerda', 'v'], leyDespues:['cuerda', 'env', 'nodo'],
+   gate:{ id:'ondas-paso6', ok:'b',
+     opts:[['a','50 Hz','fn-olvida-el-2','hipotesis'], ['b','25 Hz','',''], ['c','12,5 Hz','fn-cuatro-L','hipotesis'], ['d','200 Hz','fn-v-por-L','hipotesis']],
+     fb:{ b:'¡Bien! En el modo más bajo cabe media longitud de onda: λ = 2L = 4 m, y f = v/λ = 25 Hz.',
+          a:'Elegiste la A. Con 50 Hz cabe una longitud de onda entera y salen dos vientres. Para uno solo cabe media λ: f = v/(2L). La correcta está marcada.',
+          c:'Elegiste la C. v/(4L) es el de un tubo cerrado en un extremo; la cuerda está fija en los dos: f = v/(2L). La correcta está marcada.',
+          d:'Elegiste la D. v·L no da una frecuencia (sus unidades son m²/s). La correcta está marcada.' } },
+   vista:() => {
+     const ya = S.pred['ondas-paso6'];
+     if (!ya) return { tipo:'cuerda', largo:LARGO, yMax:0.05, y:() => 0, vibrador:true, pared:true, regla:true, frente:{ x:1, txt:'v = 100 m/s' } };
+     const e = M.estacionaria({ L:LARGO, v:V0, n:S.n6, A:0.012 });
+     return { tipo:'cuerda', largo:LARGO, yMax:0.03, y: x => e.y(x, S.t), vibrador:true, pared:true, regla:true, envolvente:e.amplitud, nodos:e.nodos, vientres:e.vientres,
+       etiquetas:[{ x:1, txt:`f = ${N2(e.f)} Hz · λ = ${N2(e.lambda)} m`, col:'ink' }] }; },
+   anima:() => estacionar(),
+   desc:() => { if (!S.pred['ondas-paso6']) return 'Cuerda de 2 metros fija entre un vibrador y la pared; la onda viaja a 100 metros por segundo.';
+     const e = M.estacionaria({ L:LARGO, v:V0, n:S.n6 }); return `Modo ${S.n6}: ${N2(e.f)} hercios, ${S.n6} vientre${S.n6 > 1 ? 's' : ''} y ${S.n6 + 1} nodos contando los extremos.`; },
+   body:s => `<p>Cambiamos la mano por un vibrador (casi no se mueve: es como un extremo fijo). La onda va, rebota en la pared y vuelve, una y otra vez. Con ciertas frecuencias la ida y la vuelta se acomodan y la cuerda forma una onda estacionaria. La ${V('v','rapidez')} sigue en ${V('v','100 m/s')}.</p>
+     <p>¿Cuál es la frecuencia <b>más baja</b> con la que se forma una onda estacionaria en la cuerda de 2 m?</p>${opcionesHTML(s.gate.opts, 'fb')}<div id="res" class="body"></div>`,
+   exp:() => `<p>En el modo más bajo la cuerda tiene un solo vientre: media longitud de onda entre los dos extremos fijos, λ = 2·2 = 4 m. Así, f = v/λ = 100/4 = 25 Hz. Los puntos de los extremos, que no se mueven, son nodos.</p>
+     <div class="seg" id="modos6" role="group" aria-label="Modo de vibración">${[1, 2, 3, 4].map(n => `<button type="button" data-n="${n}" aria-pressed="${n === S.n6}">${n} vientre${n > 1 ? 's' : ''}</button>`).join('')}</div>
+     <p class="hint">Cuenta los vientres (los números arriba), no los nodos: con n vientres hay n + 1 nodos y f = n·v/(2L).</p>
+     <p class="fuente">Olvidar el 2 o usar 4L son errores de cálculo que suponemos (hipótesis nuestra). El informe no encontró estudios que los midan.</p>` },
+ { k:'Paso 7', t:'La respuesta', ley:['cuerda', 'env', 'nodo'], vista:() => {
+     const e = M.estacionaria({ L:LARGO, v:V0, n:3, A:0.012 });
+     return { tipo:'cuerda', largo:LARGO, yMax:0.03, y: x => e.y(x, S.t), vibrador:true, pared:true, regla:true, envolvente:e.amplitud, nodos:e.nodos, vientres:e.vientres,
+       cotaL:[{ x1:0, x2:e.lambda, txt:'λ₃ = 4/3 m' }] }; },
+   anima:() => { S.n6v = 3; estacionar(3); },
+   desc:() => 'Modo de 3 vientres: 75 hercios, longitud de onda cuatro tercios de metro, 4 nodos.',
+   body:() => `<p class="answer">Respuesta: el pulso viaja a ${V('v','100 m/s')}. La cuerda forma ondas estacionarias con ${V('f','25 Hz')}, ${V('f','50 Hz')}, ${V('f','75 Hz')}… Con 3 vientres, ${V('f','f₃ = 75 Hz')} y ${V('lam','λ₃ = 4/3 m')}.</p>
+     <div class="eqs">
+       <div class="eq">${V('f','fₙ')} = n·${V('v','v')}/(2L) = n · 100/4 = n · ${V('f','25 Hz')}</div>
+       <div class="eq">${V('lam','λₙ')} = 2L/n → ${V('lam','λ₃')} = 4/3 m<span class="note">y ${V('lam','λ₃')}·${V('f','f₃')} = 4/3 · 75 = ${V('v','100')}</span></div></div>
+     <p>Si cuadruplicas la tensión, ${V('v','v')} se duplica y todas las frecuencias también: 50, 100, 150 Hz… La cuerda manda en la rapidez; la frecuencia la pone lo que la agita.</p>` },
+ { k:'Paso 8', t:'Ahora agita tú', ley:['cuerda', 'cinta', 'A', 'lam', 'v', 't'], explora:true, drag:true, vista:() => vistaExplorador(),
+   anima:() => explorar(),
+   desc:() => { const e = S.ex, v = M.cuerda({ T:e.T, mu:MU }).v; return e.auto ? `Mano automática a ${N2(e.f)} hercios y ${N2(e.A*100)} centímetros. Tensión ${N2(e.T)} newtons: la onda viaja a ${N2(v)} metros por segundo, longitud de onda ${N2(v/e.f)} metros.` : `Mano libre. Tensión ${N2(e.T)} newtons: la onda viaja a ${N2(v)} metros por segundo.`; },
+   body:() => `<div class="seg" id="ex-modo" role="group" aria-label="Cómo se mueve la mano"><button type="button" data-a="1">Mano automática</button><button type="button" data-a="0">Agito yo</button></div>
+     <div class="ctrls">
+       <div class="slider" id="ex-f-box"><label for="ex-f"><span>Frecuencia (${V('f','f')})</span><output id="ex-f-o"></output></label><input id="ex-f" class="r-f" type="range" min="25" max="200" step="5" value="${S.ex.f}"></div>
+       <div class="slider" id="ex-A-box"><label for="ex-A"><span>Amplitud (${V('A','A')})</span><output id="ex-A-o"></output></label><input id="ex-A" class="r-A" type="range" min="0.005" max="0.03" step="0.005" value="${S.ex.A}"></div>
+       <div class="slider"><label for="ex-T"><span>Tensión (${V('T','T')})</span><output id="ex-T-o"></output></label><input id="ex-T" class="r-T" type="range" min="25" max="400" step="25" value="${S.ex.T}"></div></div>
+     <div id="live" class="body"></div>
+     <p class="hint">Con «Agito yo», arrastra la mano hacia arriba y hacia abajo (o enfoca el dibujo y usa ↑ ↓). La cuerda sigue fuera del dibujo: aquí no hay pared. Al cambiar la tensión, la cuerda se calma y empieza de nuevo.</p>` },
+];
+// x de una cresta completa detrás del frente (para poner las cotas de λ y A).
+function cresta(m, t){
+  const fr = m.frente(t); if (fr < m.lambda*1.05) return null;
+  // y = A·sen(kx − ωt) es máxima donde kx − ωt = π/2 + 2πj.
+  const j = Math.floor(((m.k*fr - m.w*t) - Math.PI/2)/(2*Math.PI) - 1e-9);
+  let x = (Math.PI/2 + 2*Math.PI*j + m.w*t)/m.k;
+  while (x > fr - 0.02) x -= m.lambda;
+  return x - m.lambda < 0 ? null : x;
+}
+S.T3 = 100; S.n6 = 1;
+function soltar3(){ parar(); const v = M.cuerda({ T:S.T3, mu:MU }).v; S.t = 0; parar = animarTiempo(0, (LARGO + 0.6)/v, t => { S.t = t; draw(); }, null); }
+function estacionar(nFijo){
+  parar();
+  const n = nFijo || S.n6, e = M.estacionaria({ L:LARGO, v:V0, n });
+  if (RM){ S.t = 0.25/e.f; draw(); return; }
+  S.t = 0;
+  // Cámara muy lenta para las estacionarias: un ciclo cada 1,2 s de pantalla.
+  parar = bucle(dt => { S.t += dt/(1.2*e.f); draw(); });
+}
+
+/* ---------- Explorador: la mano que agita ---------- */
+const EXL = 4, EXC = 1;
+function vEx(){ return M.cuerda({ T:S.ex.T, mu:MU }).v; }
+// Historial de la mano: [t, y] cada cuadro. La física (y = h(t − x/v)) la pone el motor.
+function hEx(t){
+  const h = S.ex.hist; if (!h.length || t < h[0][0]) return 0;
+  let lo = 0, hi = h.length - 1;
+  if (t >= h[hi][0]) return h[hi][1];
+  while (hi - lo > 1){ const m = (lo + hi) >> 1; if (h[m][0] <= t) lo = m; else hi = m; }
+  const [t0, y0] = h[lo], [t1, y1] = h[hi]; return y0 + (y1 - y0)*(t - t0)/(t1 - t0 || 1);
+}
+function vistaExplorador(){
+  const e = S.ex, v = vEx(), cu = M.cuerdaConMano({ v1:v, h:hEx }), t = e.tf;
+  const P = { tipo:'cuerda', largo:EXL, yMax:0.035, y: x => cu.y(x, t), mano:hEx(t), manoTxt: e.auto ? 'mano' : 'arrástrame', regla:true, cinta:EXC, cintas:[0.5, 1.5, 2, 2.5, 3, 3.5],
+    yt:{ curvas:[{ f: s => cu.y(EXC, s) }], t0:Math.max(0, t - 0.04), t1:Math.max(0.04, t), ahora:t, yMax:0.035 },
+    frente: e.auto && v*t < EXL ? { x:v*t, txt:`v = ${N2(v)} m/s` } : { x:EXL*0.55, txt:`v = ${N2(v)} m/s` } };
+  if (e.auto){
+    const m = M.mano({ A:e.A, f:e.f, v }), xc = cresta(m, Math.min(t, EXL/v) + 1e-9);
+    if (xc && t >= 0) { P.cotaL = [{ x1:xc - m.lambda, x2:xc, txt:`λ = ${N2(m.lambda)} m` }]; P.cotaA = { x:xc, y:e.A, txt:`A = ${N2(e.A*100)} cm` }; }
+  }
+  return P;
+}
+function explorar(){
+  const e = S.ex;
+  const pintarModo = () => { $('ex-modo').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String((b.dataset.a === '1') === e.auto)));
+    $('ex-f-box').hidden = !e.auto; $('ex-A-box').hidden = !e.auto; cv.setAttribute('aria-label', e.auto ? 'Cuerda con la mano automática' : 'Cuerda: arrastra la mano hacia arriba y abajo, o usa las flechas del teclado'); };
+  const reiniciar = () => { e.hist = []; e.tf = 0; e.manoY = 0; };
+  $('ex-modo').querySelectorAll('button').forEach(b => b.onclick = () => { e.auto = b.dataset.a === '1'; reiniciar(); pintarModo(); vivo(); });
+  $('ex-f').oninput = () => { e.f = +$('ex-f').value; reiniciar(); vivo(); };
+  $('ex-A').oninput = () => { e.A = +$('ex-A').value; reiniciar(); vivo(); };
+  $('ex-T').oninput = () => { e.T = +$('ex-T').value; reiniciar(); vivo(); };
+  pintarModo(); reiniciar(); vivo();
+  parar();
+  if (RM && e.auto){ // sin animación: una foto con la onda ya armada
+    const v = vEx(), m = M.mano({ A:e.A, f:e.f, v }), tf = EXL/v;
+    for (let k = 0; k <= 400; k++){ const t = tf*k/400; e.hist.push([t, m.h(t)]); } e.tf = tf; draw(); return;
+  }
+  parar = bucle(dt => {
+    const tf = e.tf + dt/CAMARA;
+    const y = e.auto ? M.mano({ A:e.A, f:e.f, v:vEx() }).h(tf) : e.manoY;
+    e.hist.push([tf, y]); e.tf = tf;
+    // Solo se guarda lo que todavía está en la cuerda dibujada (y la ventana de la gráfica).
+    const viejo = tf - Math.max(EXL/vEx(), 0.04) - 0.01; while (e.hist.length > 2 && e.hist[1][0] < viejo) e.hist.shift();
+    draw();
+  });
+}
+function vivo(){
+  const e = S.ex, v = vEx();
+  $('ex-f-o').textContent = `${N2(e.f)} Hz`; $('ex-A-o').textContent = `${N2(e.A*100)} cm`; $('ex-T-o').textContent = `${N2(e.T)} N`;
+  $('live').innerHTML = `<div class="eqs"><div class="eq">${V('v','v')} = √(${V('T', N2(e.T))}/0,01) = ${V('v', N2(v) + ' m/s')}<span class="note">no depende de la mano</span></div>`
+    + (e.auto ? `<div class="eq">${V('lam','λ')} = ${V('v','v')}/${V('f','f')} = ${N2(v)}/${N2(e.f)} = ${V('lam', N2(v/e.f) + ' m')}</div>` : '') + '</div>';
+  draw();
+}
+// Arrastre de la mano (solo en el explorador, con «Agito yo»).
+function geoMano(){ const c = colores(L.W), Hs = Math.round(L.H*(L.compacto ? 0.56 : 0.58)), yc = Math.round(Hs*0.52), aPx = Math.min(Hs*0.30, 78); return { x:(c.chico ? 30 : 40) - 6, yc, aPx }; }
+Celular.arrastre(cv, {
+  activo: () => !!steps[S.step].drag && !S.ex.auto,
+  cerca: (p, r) => { const g = geoMano(); return Math.hypot(p.x - g.x, p.y - (g.yc - S.ex.manoY/0.035*g.aPx)) < r; },
+  mover: p => { const g = geoMano(); S.ex.manoY = clamp((g.yc - p.y)/g.aPx*0.035, -0.035, 0.035); },
+  soltar: () => {}
+});
+cv.addEventListener('keydown', e => {
+  if (!steps[S.step].drag || S.ex.auto) return;
+  const d = { ArrowUp:0.005, ArrowDown:-0.005 }[e.key]; if (!d) return;
+  e.preventDefault(); S.ex.manoY = clamp(S.ex.manoY + d, -0.035, 0.035);
+});
+
+function draw(){
+  if (!L.W) return;
+  const c = colores(L.W), s = steps[S.step], v = s.vista();
+  if (v.tipo === 'carrera') vistaCarrera(c, S.t);
+  else { if (S.hl === 'v' && v.frente) v.frente.hl = true; vistaCuerda(L, c, v); }
+  decir($('desc1'), s.desc());
+}
+const dots = $('dots');
+steps.forEach((s, n) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = n + 1; b.setAttribute('aria-label', `Ir al ${s.k.toLowerCase()}: ${s.t}`);
+  b.addEventListener('click', () => go(n, true)); li.appendChild(b); dots.appendChild(li);
+});
+function go(n, enfocar){
+  if (n < 0 || n >= steps.length || n > S.max) return;
+  parar(); parar = () => {};
+  const s = steps[n]; S.step = n; S.hl = null; S.t = 0;
+  cv.tabIndex = s.drag ? 0 : -1;
+  if (!s.drag) cv.setAttribute('aria-label', 'Dibujo del paso: la cuerda, la cinta y sus gráficas');
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body(s);
+  ponerLeyenda();
+  pintarDots();
+  const pendiente = !!(s.gate && !S.pred[s.gate.id]);
+  L.compactar(pendiente);
+  if (s.gate) prediccion(s);
+  if (s.gate && S.pred[s.gate.id]) montarRes(s);
+  if (!s.gate && s.anima) s.anima();
+  if (s.k === 'Paso 3') montar3();
+  nav(); draw();
+  if (enfocar) $('stepT').focus({ preventScroll:true });
+}
+function ponerLeyenda(){ const s = steps[S.step]; leyenda($('ley1'), s.gate && S.pred[s.gate.id] && s.leyDespues ? s.leyDespues : s.ley); }
+function nav(){
+  const s = steps[S.step], falta = s.gate && !S.pred[s.gate.id];
+  $('prev').disabled = S.step === 0;
+  $('next').disabled = S.step === steps.length - 1 || falta;
+  $('next').textContent = falta ? 'Elige una opción' : 'Siguiente';
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    if (k > S.max){ b.setAttribute('aria-disabled', 'true'); b.setAttribute('aria-label', `Paso ${k + 1}, bloqueado`); }
+    else { b.removeAttribute('aria-disabled'); b.setAttribute('aria-label', `Ir al ${steps[k].k.toLowerCase()}: ${steps[k].t}`); }
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(n){ if (n > S.max) S.max = n; }
+function montar3(){
+  $('s-T3-o').textContent = `${N2(S.T3)} N`;
+  $('s-T3').oninput = () => { S.T3 = +$('s-T3').value; $('s-T3-o').textContent = `${N2(S.T3)} N`; soltar3(); };
+  $('soltar3').onclick = soltar3;
+}
+// Lo que aparece después de responder: la explicación y sus controles; la animación la arranca quien llama.
+function montarRes(s){
+  $('res').innerHTML = s.exp();
+  const m6 = $('modos6');
+  if (m6) m6.querySelectorAll('button').forEach(b => b.onclick = () => { S.n6 = +b.dataset.n; m6.querySelectorAll('button').forEach(q => q.setAttribute('aria-pressed', String(q === b))); estacionar(); });
+}
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id]) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1);
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    pintar(); pintarDots(); nav(); ponerLeyenda(); montarRes(s);
+    // El botón elegido queda desactivado: el foco pasa a la respuesta.
+    $('fb').focus({ preventScroll:true });
+    const paso = S.step;
+    L.compactar(false); draw();
+    Celular.alResponder(L.cv, () => s.anima(), () => S.step === paso && !$('m1').hidden);
+  }));
+  pintar();
+  // Revisita de un paso ya respondido: se ve el final de la animación (o el bucle de las estacionarias).
+  if (S.pred[P.id]){ if (s.k === 'Paso 6') estacionar(); else { S.t = s.k === 'Paso 2' ? 0.046 : 0.02; if (s.k === 'Paso 5'){ const m = onda(200); S.traza = []; for (let k = 0; k <= 200; k++) S.traza.push(m.y(X_CINTA, 0.02*k/200)); } } }
+}
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1, true); });
+$('prev').addEventListener('click', () => go(S.step - 1, true));
+resaltado('#m1', k => { S.hl = k; document.querySelectorAll('#m1 .v').forEach(e => e.classList.toggle('hl', !!k && e.dataset.var === k)); draw(); });
+alRedibujarTema(draw);
+// Al cambiar de pestaña se para lo que esté corriendo; al volver se rearma el paso (nada queda trabado).
+addEventListener('modo', () => { if ($('m1').hidden){ parar(); parar = () => {}; } else { L.resize(); go(S.step); } });
+L.resize(); go(0);
+})();
+</script>
+
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   ON8 (tensión y λ), cambio de medio (ON4), ON7 (pulsos que se cruzan), ON5 (la pelusa frente al parlante) y los
+   decibeles (sin estudios: hipótesis). La escena cambia recién después de responder. */
+(function(){
+const $ = id => document.getElementById(id);
+const cv = $('cv2');
+const L = crearLienzo(cv, altoLienzo, draw);
+let parar = () => {};
+const E = {};
+const ESTAC = (T, n) => M.estacionaria({ L:2, T, mu:0.01, n, A:0.012 });
+const TENS = [[25, 4], [44.4444444444, 3], [100, 2], [400, 1]];
+// Pulso de la mano: medio seno de 4 ms.
+const golpe = t => (t < 0 || t > 0.004 ? 0 : 0.02*Math.sin(Math.PI*t/0.004));
+
+/* ---- Vista de los parlantes y el medidor ---- */
+function vistaDecibeles(c){
+  const { ctx, W, H } = L; ctx.clearRect(0, 0, W, H);
+  const n = E.n, on = E.ya ? n : 1, beta = E.beta;
+  // Parlantes
+  const cols = Math.min(5, Math.max(1, n)), filas = Math.ceil(Math.max(n, 2)/5), tam = Math.min(34, (H*0.42)/Math.max(2, filas*1.25));
+  const mostrar = E.ya ? n : 2;
+  for (let k = 0; k < mostrar; k++){
+    const x = 16 + (k % 5)*(tam + 6), y = 18 + Math.floor(k/5)*(tam*1.25);
+    const prendido = k < on;
+    ctx.save(); ctx.globalAlpha = prendido ? 1 : .45; ctx.fillStyle = c.bloque; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6;
+    rr(ctx, x, y, tam*0.8, tam, 5); ctx.fill(); ctx.stroke();
+    bolita(ctx, x + tam*0.4, y + tam*0.58, tam*0.24, c.paper, c.ink, 1.4); ctx.restore();
+    if (!prendido) rotulo(ctx, c, x + tam*0.4, y + tam + 10, 'apagado', c.muted, 'center', 700, W);
+  }
+  // Medidor
+  const mw = Math.min(170, W*0.42), mx = W - mw - 14, my = 18, mh = 86;
+  ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = c.ink; ctx.lineWidth = 2; rr(ctx, mx, my, mw, mh, 14); ctx.fill(); ctx.stroke(); ctx.restore();
+  ctx.fillStyle = c.muted; ctx.font = `700 11px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'top'; ctx.fillText('medidor', mx + mw/2, my + 8);
+  ctx.fillStyle = c.b; ctx.font = `800 ${c.chico ? 26 : 32}px ${c.mono}`; ctx.textBaseline = 'middle';
+  ctx.fillText(E.ya ? `${fmt(beta, 0)} dB` : (n > 1 ? '? dB' : '80 dB'), mx + mw/2, my + mh*0.58);
+  // Regla logarítmica: I arriba (índigo), β abajo (ocre), alineados.
+  const rx0 = 30, rx1 = W - 24, ry = H*0.70, lo = -6, hi = -2, X = lg => rx0 + (lg - lo)/(hi - lo)*(rx1 - rx0);
+  ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; linea(ctx, rx0, ry, rx1, ry);
+  ctx.font = `700 10px ${c.mono}`; ctx.textAlign = 'center';
+  for (let e = lo; e <= hi; e++){
+    linea(ctx, X(e), ry - 6, X(e), ry + 6);
+    ctx.fillStyle = c.I; ctx.textBaseline = 'bottom'; ctx.fillText(`10^${e}`.replace('^-', '⁻').replace(/\d$/, d => '⁰¹²³⁴⁵⁶⁷⁸⁹'[d]), X(e), ry - 8);
+    ctx.fillStyle = c.b; ctx.textBaseline = 'top'; ctx.fillText(`${(e + 12)*10} dB`, X(e), ry + 8);
+  }
+  ctx.font = `800 11px ${c.font}`; ctx.textAlign = 'left'; ctx.fillStyle = c.I; ctx.textBaseline = 'bottom'; ctx.fillText('I (W/m²)', rx0 - 20, ry - 26);
+  ctx.fillStyle = c.b; ctx.textBaseline = 'top'; ctx.fillText('β = 10·log(I/I₀)', rx0 - 20, ry + 26);
+  if (E.ya){
+    const lg = Math.log10(E.I), px = X(clamp(lg, lo, hi));
+    bolita(ctx, X(-4), ry, 5, c.paper, c.I, 2);
+    bolita(ctx, px, ry, 7, c.I, c.card, 2);
+    if (n > 1) flecha(ctx, X(-4), ry - 40, px, ry - 40, c.I, 2.2);
+    if (n > 1) rotulo(ctx, c, (X(-4) + px)/2, ry - 52, `I × ${n}`, c.I, 'center', 800, W);
+  } else bolita(ctx, X(-4), ry, 7, c.I, c.card, 2);
+}
+
+/* ---- Vista del aire frente al parlante ---- */
+const LON = M.longitudinal({ A:0.12, f:170, v:340 });
+function vistaAire(c){
+  const { ctx, W, H } = L; ctx.clearRect(0, 0, W, H);
+  const Hs = Math.round(H*0.56), x0 = 46, x1 = W - 12, largo = 4, X = x => x0 + x/largo*(x1 - x0);
+  const filas = 6, y0 = 16, dy = (Hs - 36)/filas, t = E.t, on = E.ya;
+  const s = (x, tt) => (on && tt*LON.v >= x ? LON.s(x, tt) : 0);
+  // Parlante
+  const cono = on ? s(0, t)/largo*(x1 - x0) : 0;
+  ctx.save(); ctx.fillStyle = c.bloque; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6;
+  rr(ctx, 6, Hs*0.5 - 34, 22, 68, 5); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(28 + cono, Hs*0.5 - 26); ctx.lineTo(40 + cono, Hs*0.5 - 40); ctx.lineTo(40 + cono, Hs*0.5 + 40); ctx.lineTo(28 + cono, Hs*0.5 + 26); ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.restore();
+  for (let k = 0; k < 64; k++){
+    const xe = (k + 0.5)*largo/64;
+    for (let j = 0; j < filas; j++){
+      const xx = X(xe + s(xe, t)), yy = y0 + dy*(j + 0.5) + ((k*7 + j*3) % 5 - 2)*1.2;
+      bolita(ctx, xx, yy, 2.2, c.muted);
+    }
+  }
+  // Pelusa
+  const xp = 1.5, px = X(xp + s(xp, t)), py = y0 + dy*filas*0.5;
+  if (E.traza.length > 1){ ctx.save(); ctx.strokeStyle = c.ink; ctx.globalAlpha = .3; ctx.lineWidth = 6; ctx.lineCap = 'round';
+    linea(ctx, X(xp + Math.min(...E.traza)), py, X(xp + Math.max(...E.traza)), py); ctx.restore(); }
+  bolita(ctx, px, py, 7, c.ink, c.card, 2);
+  rotulo(ctx, c, px, py - 18, 'pelusa', c.ink, 'center', 800, W);
+  if (on){
+    rotulo(ctx, c, X(3.2), Hs - 12, `v = 340 m/s →`, c.v, 'center', 800, W);
+    const fr = Math.min(largo, LON.v*t); if (fr < largo) { ctx.save(); ctx.strokeStyle = c.v; ctx.setLineDash([3, 3]); linea(ctx, X(fr), 8, X(fr), Hs - 22); ctx.restore(); }
+  }
+  ctx.fillStyle = c.muted; ctx.font = `700 10px ${c.font}`; ctx.textAlign = 'left'; ctx.textBaseline = 'bottom'; ctx.fillText('movimiento del aire exagerado', 46, Hs - 2);
+  // Gráfica: cuánto se corre la pelusa (adelante +) contra el tiempo
+  const b = { x:46, y:Hs + 10, w:W - 58, h:H - Hs - 34 }, T1 = 0.03;
+  ctx.fillStyle = c.paper; ctx.fillRect(b.x, b.y, b.w, b.h);
+  const Xt = tt => b.x + tt/T1*b.w, yc = b.y + b.h/2, Yg = v => yc - v/0.14*(b.h*0.44);
+  ctx.strokeStyle = c.grid; ctx.font = `600 10px ${c.mono}`; ctx.fillStyle = c.t; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  for (let tt = 0; tt <= T1 + 1e-9; tt += 0.005){ linea(ctx, Xt(tt), b.y, Xt(tt), b.y + b.h); ctx.fillText(ms(tt), clamp(Xt(tt), b.x + 8, b.x + b.w - 8), b.y + b.h + 3); }
+  ctx.strokeStyle = c.muted; linea(ctx, b.x, yc, b.x + b.w, yc); linea(ctx, b.x, b.y, b.x, b.y + b.h);
+  ctx.fillStyle = c.ink; ctx.font = `800 11px ${c.mono}`; ctx.textAlign = 'left'; ctx.fillText('cuánto se corre la pelusa (→ +)', b.x + 4, b.y + 2);
+  ctx.fillStyle = c.t; ctx.textAlign = 'right'; ctx.textBaseline = 'bottom'; ctx.fillText('t (ms)', b.x + b.w, yc - 3);
+  if (on){ ctx.save(); ctx.beginPath(); ctx.rect(b.x, b.y, b.w, b.h); ctx.clip(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2.2; ctx.beginPath();
+    const tt1 = Math.min(t, T1); for (let j = 0; j <= 200; j++){ const tt = tt1*j/200; const p = Yg(s(xp, tt)); j ? ctx.lineTo(Xt(tt), p) : ctx.moveTo(Xt(tt), p); } ctx.stroke(); ctx.restore(); }
+}
+
+const EXPS = [
+  { id:'tension-lambda', corto:'La cuerda más tensa', ley:['cuerda', 'lam', 'env', 'nodo'], leyDespues:['cuerda', 'lam', 'env', 'nodo', 'gris'],
+    q:`La cuerda del paso a paso (2 m, 0,01 kg/m) vibra con un vibrador de ${V('f','50 Hz')} y ${V('T','T = 100 N')}: se ve una onda estacionaria con ${V('lam','λ = 2 m')}. El vibrador sigue a ${V('f','50 Hz')} y tensas la cuerda hasta ${V('T','T = 400 N')}. ¿Qué le pasa a ${V('lam','λ')}?`,
+    opts:[['a','Sube a 4 m'], ['b','Baja a 1 m','ON8-tension-al-reves','documentado'], ['c','Sigue en 2 m','lambda-solo-depende-de-f','hipotesis'], ['d','Sube a 8 m','lambda-proporcional-a-T','hipotesis']],
+    ok:'a',
+    fb:{ b:'Elegiste la B. Más tensión da más rapidez, y con la misma frecuencia, λ = v/f crece. La correcta está marcada.',
+         c:'Elegiste la C. λ = v/f: la frecuencia no cambió, pero v sí, porque cambió la tensión. La correcta está marcada.',
+         d:'Elegiste la D. La tensión está dentro de una raíz: cuatro veces T da el doble de v, no cuatro veces. La correcta está marcada.' },
+    antes:() => Object.assign(E, { tipo:'estac', T:100, Tantes:100 }),
+    despues:() => { E.T = 400; arrancar(); },
+    ctrl:() => `<div class="seg" id="tens" role="group" aria-label="Tensión de la cuerda">${TENS.map(([T]) => `<button type="button" data-ten="${T}" aria-pressed="${Math.abs(T - E.T) < 1e-6}">${N2(T)} N</button>`).join('')}</div>
+      <p class="hint">Son las tensiones con las que el vibrador de 50 Hz arma una onda estacionaria en esta cuerda; con otras, la ida y la vuelta no se acomodan.</p>`,
+    exp:`<div class="eqs"><div class="eq">${V('T','T')} × 4 → v = √(400/0,01) = 200 m/s (el doble)</div><div class="eq">${V('lam','λ')} = v/${V('f','f')} = 200/50 = ${V('lam','4 m')}<span class="note">la cuerda queda con un solo vientre</span></div></div>
+      <p>La frecuencia la pone el vibrador, así que no cambia. La tensión cambia la rapidez; con la misma frecuencia, una onda más rápida avanza más en cada oscilación: λ crece. La línea gris a trazos es cómo estaba antes, con 100 N.</p>
+      <p class="fuente">En el estudio de México, solo cerca de 1 de cada 4 acertó cómo cambia λ con la tensión, y el error más común (16 %) fue justificar bien que cambia la rapidez y predecir λ al revés (Barniol y Zavala, 2017). Las opciones C y D son errores que suponemos (hipótesis nuestra).</p>`,
+    desc:() => { const [, n] = TENS.find(([T]) => Math.abs(T - E.T) < 1e-6) || [0, 2]; const e = ESTAC(E.T, n); return `Tensión ${N2(E.T)} newtons, vibrador a 50 hercios: ${n} vientre${n > 1 ? 's' : ''}, longitud de onda ${N2(e.lambda)} metros.`; } },
+  { id:'cambio-medio', corto:'Dos cuerdas unidas', ley:['cuerda', 'union', 'cinta', 'lam', 'v'], leyDespues:['cuerda', 'union', 'cinta', 'lam', 'v', 't'],
+    q:`Una cuerda delgada (${V('v','v = 100 m/s')}) está unida a otra cuatro veces más pesada por metro, con la misma tensión. La mano agita la delgada a ${V('f','50 Hz')}, y en ella ${V('lam','λ = 2 m')}. Cuando la onda pasa a la cuerda gruesa, ¿qué pasa?`,
+    opts:[['a','f sigue en 50 Hz; λ baja a 1 m'], ['b','f baja a 25 Hz; λ sigue en 2 m','f-cambia-con-el-medio','hipotesis'], ['c','f sigue en 50 Hz; λ sigue en 2 m','nada-cambia','hipotesis'], ['d','f sigue en 50 Hz; λ sube a 4 m','ON4-cuerda-mas-pesada','parcial']],
+    ok:'a',
+    fb:{ b:'Elegiste la B. El punto de la unión sube y baja al ritmo de la onda que llega: f no puede cambiar. Lo que cambia es v, y con ella λ. La correcta está marcada.',
+         c:'Elegiste la C. La rapidez la pone cada cuerda: en la gruesa la onda va más lenta, y λ = v/f baja. La correcta está marcada.',
+         d:'Elegiste la D. Con la misma tensión, la cuerda más pesada es más lenta, no más rápida: λ baja. La correcta está marcada.' },
+    antes:() => Object.assign(E, { tipo:'medio', t:0.04, forma:'onda' }),
+    despues:() => { E.forma = 'onda'; arrancar(); },
+    ctrl:() => `<p><button type="button" class="btn" id="repetir">Repetir la onda</button> <button type="button" class="btn" id="golpe">Mandar un solo pulso</button></p>`,
+    exp:`<div class="eqs"><div class="eq">delgada: ${V('lam','λ')} = ${V('v','100')}/${V('f','50')} = ${V('lam','2 m')}</div><div class="eq">gruesa: ${V('v','v')} = 100/√4 = ${V('v','50 m/s')} → ${V('lam','λ')} = ${V('v','50')}/${V('f','50')} = ${V('lam','1 m')}</div></div>
+      <p>Las dos cintas suben y bajan con el mismo periodo (mira sus gráficas abajo, la de la gruesa a trazos): la frecuencia pasa igual de una cuerda a la otra. La rapidez la pone cada cuerda, así que la onda se «aprieta» en la gruesa.</p>
+      <p>En la unión, una parte de la onda rebota. Con un solo pulso se ve mejor: el que rebota vuelve de cabeza (la cuerda gruesa es «más dura» de mover) y el que pasa sale más chico, más angosto y más lento.</p>
+      <p class="fuente">En México, cerca del 11 % creyó que la cuerda más pesada es más rápida (Barniol y Zavala, 2017); aquí ese error aparece en otra situación. Las opciones B y C son errores que suponemos (hipótesis nuestra).</p>`,
+    desc:() => E.ya ? `t = ${ms(E.t)} ms. En la delgada la onda va a 100 metros por segundo; en la gruesa, a 50.` : 'Dos cuerdas unidas: la onda de 50 hercios llega por la delgada hasta la unión.' },
+  { id:'pulsos', corto:'Dos pulsos de frente', ley:['cuerda'], leyDespues:['cuerda', 'pulsos', 't'],
+    q:`Por una cuerda viajan dos pulsos iguales, uno hacia arriba y otro hacia abajo, uno hacia el otro. En un instante la cuerda se ve completamente plana. ¿Qué pasa después?`,
+    opts:[['a','La cuerda se queda plana: los pulsos se anularon','ON7-se-anulan','documentado'], ['b','Los dos pulsos reaparecen y siguen: se atravesaron'],
+          ['c','Los pulsos reaparecen y vuelven por donde vinieron: rebotaron','ON7-rebotan','parcial'], ['d','Reaparecen más chicos: perdieron energía al chocar','ON7-salen-mas-chicos','documentado']],
+    ok:'b',
+    fb:{ a:'Elegiste la A. En el instante plano la cuerda no está quieta: unos trozos suben y otros bajan. Por eso los pulsos reaparecen. La correcta está marcada.',
+         c:'Elegiste la C. Los pulsos no chocan como carritos: se atraviesan. Mira hacia dónde sigue cada uno. La correcta está marcada.',
+         d:'Elegiste la D. Cada pulso sale con su tamaño de antes: mientras se cruzan, solo se suman punto por punto. La correcta está marcada.' },
+    antes:() => Object.assign(E, { tipo:'pulsos', t:2 }),
+    despues:() => arrancar(),
+    ctrl:() => `<div class="slider"><label for="tq"><span>Tiempo (${V('t','t')})</span><output id="tq-o"></output></label><input id="tq" type="range" min="0" max="4" step="0.02" value="${E.t}" style="accent-color:var(--c-t)"></div><p><button type="button" class="btn" id="repetir">Repetir</button></p>`,
+    exp:`<p>Mientras se cruzan, la cuerda es la suma de los dos pulsos punto por punto (las líneas a trazos son cada pulso solo). En el instante en que se ve plana, la suma vale cero en todas partes, pero cada trozo de cuerda sigue moviéndose: el pulso que llega lo empuja hacia arriba o hacia abajo. Después cada pulso sale con su forma y su tamaño, como si el otro no hubiera estado.</p>
+      <p class="fuente">Antes de la instrucción, cerca del 20 % de 182 universitarios dijo que los pulsos se anulan para siempre (Wittmann, Steinberg y Redish, 1999). En México, cerca del 9 % dijo que salen más chicos (Barniol y Zavala, 2017). Que reboten aparece en esos estudios sin porcentaje propio.</p>`,
+    desc:() => '' },
+  { id:'pelusa', corto:'La pelusa y el parlante', ley:['aire', 'pelusa'], leyDespues:['aire', 'pelusa', 'v', 't'],
+    q:`Una pelusa flota quieta en el aire, frente a un parlante apagado. Se prende el parlante con un sonido grave y continuo. ¿Qué hace la pelusa?`,
+    opts:[['a','Se va alejando del parlante','ON5-se-va','documentado'], ['b','Va y viene: se acerca y se aleja, sin irse'],
+          ['c','Sube y baja, sin irse','ON5-sube-y-baja','documentado'], ['d','Se va alejando mientras sube y baja','ON5-se-va-en-senoide','parcial']],
+    ok:'b',
+    fb:{ a:'Elegiste la A. El sonido no es un viento: cada capa de aire va y viene alrededor de su lugar, y la pelusa con ella. La correcta está marcada.',
+         c:'Elegiste la C. En el sonido el aire se mueve a lo largo de la dirección en que viaja la onda, no de arriba abajo. La correcta está marcada.',
+         d:'Elegiste la D. La pelusa no se va: oscila alrededor de su lugar, a lo largo de la dirección del sonido. La correcta está marcada.' },
+    antes:() => Object.assign(E, { tipo:'aire', t:0, traza:[] }),
+    despues:() => arrancar(),
+    ctrl:() => `<p><button type="button" class="btn" id="repetir">Repetir</button></p>`,
+    exp:`<p>El parlante empuja y jala la capa de aire de al lado; esa empuja a la siguiente, y así. Lo que viaja a ${V('v','340 m/s')} es el empujón, no el aire. Cada capa, y la pelusa con ella, va y viene en la dirección en que viaja el sonido: se juntan (compresión) y se separan. La gráfica de abajo sube y baja alrededor de cero: la pelusa nunca se va.</p>
+      <p>Por eso en el vacío no hay sonido: no hay capas que se empujen.</p>
+      <p class="fuente">En México, cerca del 40 % dijo que la partícula se va y cerca del 19 % que sube y baja (Barniol y Zavala, 2017). En Maryland, la mitad dijo que se va antes de la instrucción, en línea recta o siguiendo una curva (Wittmann, Steinberg y Redish, 2003).</p>`,
+    desc:() => E.ya ? `t = ${ms(E.t)} ms. La pelusa está corrida ${fmt((E.t*340 >= 1.5 ? LON.s(1.5, E.t) : 0)*100, 0)} centímetros (exagerado) de su lugar.` : 'Un parlante apagado y una pelusa quieta entre las capas de aire.' },
+  { id:'decibeles', corto:'Dos parlantes', ley:['b', 'I'], leyDespues:['b', 'I'],
+    q:`Un parlante encendido marca ${V('b','80 dB')} en el medidor. Se prende otro parlante igual, al lado. ¿Cuánto marca ahora el medidor?`,
+    opts:[['a','160 dB','suma-decibeles','hipotesis'], ['b','83 dB'], ['c','80 dB','nivel-no-cambia','hipotesis'], ['d','90 dB','doble-como-diez-veces','hipotesis']],
+    ok:'b',
+    fb:{ a:'Elegiste la A. Se suman las intensidades, no los decibeles. 160 dB sería un ruido mucho más fuerte que el de un avión al despegar. La correcta está marcada.',
+         c:'Elegiste la C. Con dos parlantes llega el doble de energía por segundo: la intensidad se duplica y el nivel sube un poco. La correcta está marcada.',
+         d:'Elegiste la D. +10 dB es multiplicar la intensidad por 10; aquí solo se duplica. La correcta está marcada.' },
+    antes:() => Object.assign(E, { tipo:'db', n:2, beta:80, I:1e-4 }),
+    despues:() => { const r = M.sumarNiveles({ niveles:Array(E.n).fill(80) }); E.I = r.I; parar(); parar = animarTiempo(0, 1, f => { E.beta = 80 + (r.betaAcademia - 80)*f; draw(); }, null, 0.6); },
+    ctrl:() => `<div class="seg" id="npar" role="group" aria-label="Parlantes encendidos">${[1, 2, 4, 10].map(n => `<button type="button" data-n="${n}" aria-pressed="${n === E.n}">${n} parlante${n > 1 ? 's' : ''}</button>`).join('')}</div><div class="eqs" id="vivoDb"></div>`,
+    exp:`<p>Cada vez que la intensidad se multiplica por 10, el nivel sube 10 dB: la escala de decibeles cuenta ceros. Duplicar la intensidad suma 10·log 2 ≈ 3 dB.</p>
+      <p class="fuente">El informe no encontró estudios con alumnos sobre decibeles: las tres opciones incorrectas son errores que suponemos (hipótesis nuestra). En un estudio con 12 futuros profesores de física de Canadá, el alumno que ellos imaginaban decía «debería sonar el doble porque hay dos» (Milner-Bolotin y Zazkis, 2021).</p>`,
+    desc:() => E.ya ? `${E.n} parlantes: intensidad ${E.n} veces la de uno, el medidor marca ${fmt(E.beta, 0)} decibeles.` : 'Un parlante encendido marca 80 decibeles; el segundo está apagado.' },
+];
+EXPS[2].desc = () => E.ya ? `t = ${N2(E.t)} segundos. ${Math.abs(E.t - 2) < 0.03 ? 'La cuerda se ve plana.' : E.t > 2 ? 'Los pulsos ya se cruzaron y siguen.' : 'Los pulsos se acercan.'}` : 'Dos pulsos iguales y opuestos en el instante en que la cuerda se ve plana.';
+
+const S = { k:0, pred:{}, t0:Date.now() };
+const PUL = M.dosPulsos({ A1:0.02, A2:-0.02, ancho:0.3, v:1, x1:0, x2:4 });
+function arrancar(){
+  parar(); parar = () => {};
+  if (E.tipo === 'estac'){
+    const [, n] = TENS.find(([T]) => Math.abs(T - E.T) < 1e-6), e = ESTAC(E.T, n);
+    if (RM){ E.t = 0.25/e.f; draw(); return; }
+    E.t = 0; parar = bucle(dt => { E.t += dt/(1.2*e.f); draw(); });
+  } else if (E.tipo === 'medio'){
+    E.t = 0; parar = animarTiempo(0, 0.09, t => { E.t = t; draw(); }, null);
+  } else if (E.tipo === 'pulsos'){
+    E.t = 0; parar = animarTiempo(0, 4, t => { E.t = t; sincronizar(); }, null, 1.6/4*1);
+  } else if (E.tipo === 'aire'){
+    E.t = 0; E.traza = [];
+    parar = animarTiempo(0, 0.03, t => { E.t = t; if (t*340 >= 1.5) E.traza.push(LON.s(1.5, t)); draw(); }, null, 200);
+    if (RM){ for (let k = 0; k <= 300; k++){ const t = 0.03*k/300; if (t*340 >= 1.5) E.traza.push(LON.s(1.5, t)); } draw(); }
+  }
+}
+function sincronizar(){
+  const tq = $('tq'); if (tq){ tq.value = E.t; $('tq-o').textContent = `${N2(E.t)} s`; }
+  draw();
+}
+function draw(){
+  if (!L.W || !E.tipo) return;
+  const c = colores(L.W), x = EXPS[S.k];
+  if (E.tipo === 'db') vistaDecibeles(c);
+  else if (E.tipo === 'aire') vistaAire(c);
+  else if (E.tipo === 'estac'){
+    const [, n] = TENS.find(([T]) => Math.abs(T - E.T) < 1e-6), e = ESTAC(E.T, n);
+    const P = { largo:2, yMax:0.03, y: xx => e.y(xx, E.t), vibrador:true, pared:true, regla:true, envolvente:e.amplitud, nodos:e.nodos,
+      cotaL:[{ x1:0, x2:Math.min(2, e.lambda), txt: e.lambda > 2 ? `λ = ${N2(e.lambda)} m (media λ = 2 m)` : `λ = ${N2(e.lambda)} m` }],
+      tension:`T = ${N2(E.T)} N · la pared`, etiquetas:[{ x:1, txt:'vibrador a 50 Hz', col:'f' }] };
+    if (e.lambda > 2) P.cotaL = [{ x1:0, x2:2, txt:`media λ = 2 m → λ = ${N2(e.lambda)} m` }];
+    if (E.ya){ const e0 = ESTAC(100, 2); P.gris = xx => e0.amplitud(xx)*Math.sign(Math.sin(e0.k*xx)); }
+    vistaCuerda(L, c, P);
+  } else if (E.tipo === 'medio'){
+    const d = 2, largo = 4, f = 50, v1 = 100, v2 = 50;
+    const mano = M.mano({ A:0.02, f, v:v1 });
+    const h = E.forma === 'pulso' ? golpe : mano.h;
+    const cu = M.cuerdaConMano({ v1, v2, d, h });
+    const t = E.ya ? E.t : 0.04;
+    const y = E.ya ? (xx => cu.y(xx, t)) : (xx => (xx <= d ? mano.y(xx, Math.min(t, 0.02)) : 0));
+    const P = { largo, yMax:0.03, y, mano:h(t), union:{ x:d }, regla:true, cinta:1, cinta2:3, cintaTxt:'cinta 1', cinta2Txt:'cinta 2',
+      etiquetas:[{ x:1, y:24, txt:'v = 100 m/s', col:'v' }, { x:3, y:24, txt: E.ya ? 'v = 50 m/s' : 'v = ?', col:'v' }] };
+    P.cotaL = E.forma === 'onda' ? [{ x1:0, x2:2, txt:'λ = 2 m' }].concat(E.ya && t > 0.03 ? [{ x1:2.5, x2:3.5, txt:'λ = 1 m' }] : []) : [];
+    if (E.ya) P.yt = { curvas:[{ f: s => cu.y(1, s) }, { f: s => cu.y(3, s), dash:true }], t0:0, t1:0.09, ahora:t, yMax:0.035, rotulo:'y de la cinta 1 (entera) y de la cinta 2 (a trazos)' };
+    vistaCuerda(L, c, P);
+  } else if (E.tipo === 'pulsos'){
+    const t = E.ya ? E.t : 2;
+    const P = { largo:4, yMax:0.025, y: xx => PUL.y(xx, t), regla:true, cintas:[] };
+    if (E.ya) P.gris = xx => PUL.y1(xx, t);
+    vistaCuerda(L, c, P);
+    if (E.ya){ // el segundo pulso solo, también a trazos
+      const g = { largo:4, yMax:0.025 }; const { ctx, W, H } = L;
+      const mx0 = c.chico ? 30 : 40, w = W - mx0 - 10, yc = Math.round(H*0.52), aPx = Math.min(H*0.30, 78);
+      ctx.save(); ctx.strokeStyle = c.muted; ctx.globalAlpha = .7; ctx.setLineDash([6, 5]); ctx.lineWidth = 2; ctx.beginPath();
+      for (let j = 0; j <= 300; j++){ const xx = g.largo*j/300, px = mx0 + xx/g.largo*w, py = yc - PUL.y2(xx, t)/g.yMax*aPx; j ? ctx.lineTo(px, py) : ctx.moveTo(px, py); }
+      ctx.stroke(); ctx.restore();
+      rotulo(ctx, c, 8, H - 30, `t = ${N2(t)} s`, c.t, 'left', 800, W);
+    }
+  }
+  decir($('desc2'), x.desc());
+}
+// Pastillas: la k solo se abre si todos los experimentos anteriores ya tienen respuesta; las respondidas se revisitan.
+function primeraLibre(){ const j = EXPS.findIndex(x => !S.pred[x.id]); return j < 0 ? EXPS.length - 1 : j; }
+function botones(){
+  if (!$('exps').children.length){
+    $('exps').innerHTML = EXPS.map((x, k) => `<button type="button" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
+    $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k, true));
+  }
+  const libre = primeraLibre();
+  [...$('exps').children].forEach((b, k) => {
+    const cerrado = k > libre; b.disabled = cerrado; b.setAttribute('aria-pressed', String(!cerrado && k === S.k));
+    if (cerrado){ b.setAttribute('aria-disabled', 'true'); b.setAttribute('aria-label', `Experimento ${k+1}, bloqueado`); }
+    else { b.removeAttribute('aria-disabled'); b.removeAttribute('aria-label'); }
+  });
+}
+function reiniciar(x){ for (const k of Object.keys(E)) delete E[k]; x.antes(); E.ya = !!S.pred[x.id]; }
+function finalEstatico(x){
+  // Al revisitar: el estado final sin animar (las estacionarias sí se mueven).
+  parar(); parar = () => {};
+  if (E.tipo === 'estac') arrancar();
+  else if (E.tipo === 'medio') E.t = 0.09;
+  else if (E.tipo === 'pulsos') E.t = 4;
+  else if (E.tipo === 'aire'){ E.t = 0.03; E.traza = []; for (let k = 0; k <= 300; k++){ const t = 0.03*k/300; if (t*340 >= 1.5) E.traza.push(LON.s(1.5, t)); } }
+  else if (E.tipo === 'db'){ const r = M.sumarNiveles({ niveles:Array(E.n).fill(80) }); E.I = r.I; E.beta = r.betaAcademia; }
+}
+function ir(k, enfocar){
+  if (k > primeraLibre()) return;
+  parar(); parar = () => {};
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  reiniciar(x);
+  if (ya) finalEstatico(x);
+  botones();
+  leyenda($('ley2'), ya && x.leyDespues ? x.leyDespues : x.ley);
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  L.compactar(!ya);
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : (x.fb && x.fb[p]) || `Elegiste la ${p.toUpperCase()}. La correcta está marcada; mira la escena para ver por qué.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.ctrl() + x.exp + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
+    controles(x);
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1, true); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; E.ya = true; botones();
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+    pintar(); leyenda($('ley2'), x.leyDespues || x.ley);
+    $('fb2').focus({ preventScroll:true });
+    L.compactar(false); draw();
+    Celular.alResponder(L.cv, () => { x.despues(); draw(); }, () => S.k === k && !$('m2').hidden);
+  });
+  pintar(); draw();
+  if (enfocar) $('t2').focus({ preventScroll:true });
+}
+function controles(x){
+  const tens = $('tens');
+  if (tens) tens.querySelectorAll('button').forEach(b => b.onclick = () => { E.T = +b.dataset.ten; tens.querySelectorAll('button').forEach(q => q.setAttribute('aria-pressed', String(q === b))); arrancar(); });
+  const rep = $('repetir'); if (rep) rep.onclick = () => { if (E.tipo === 'medio') E.forma = 'onda'; arrancar(); };
+  const gol = $('golpe'); if (gol) gol.onclick = () => { E.forma = 'pulso'; arrancar(); };
+  const tq = $('tq'); if (tq){ tq.oninput = () => { parar(); parar = () => {}; E.t = +tq.value; sincronizar(); }; sincronizar(); }
+  const np = $('npar');
+  const vivoDb = () => { const r = M.sumarNiveles({ niveles:Array(E.n).fill(80) });
+    $('vivoDb').innerHTML = `<div class="eq">${V('I','I')} = ${E.n} · 10⁻⁴ W/m²</div><div class="eq">${V('b','β')} = 10·log(${E.n} · 10⁸) = ${V('b', fmt(r.betaAcademia, 0) + ' dB')}${E.n === 2 || E.n === 4 ? '<span class="note">con log 2 = 0,3</span>' : ''}</div>`; };
+  if (np){ np.querySelectorAll('button').forEach(b => b.onclick = () => { E.n = +b.dataset.n; np.querySelectorAll('button').forEach(q => q.setAttribute('aria-pressed', String(q === b))); vivoDb(); x.despues(); }); vivoDb(); }
+}
+resaltado('#m2', k => { document.querySelectorAll('#m2 .v').forEach(e => e.classList.toggle('hl', !!k && e.dataset.var === k)); });
+alRedibujarTema(draw);
+addEventListener('modo', () => { if ($('m2').hidden){ parar(); parar = () => {}; } else { L.resize(); ir(S.k); } });
+L.resize(); ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>
