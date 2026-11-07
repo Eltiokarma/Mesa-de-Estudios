@@ -1212,7 +1212,7 @@ const EXPS = [
     antes:ya => E.config({ vista:'iman', im:{ d:0.03 }, tope:300, ver:{ I:0, graf: ya ? grafDoble(false) : null },
       lect: () => ya ? [['e', 'Pico de ε', `${mVv(R1.femMax0)} → ${mVv(R1.femMax1)}`], ['phi', 'ΔΦ por espira', 'el mismo']] : [['L', 'Recorrido', 'de 15 cm a 3 cm'], ['ink', 'Tiempo', '1,5 s → 0,75 s']],
       desc: () => 'De costado: el imán y la bobina del paso 2.' }),
-    despues:() => { E.ver.graf = grafDoble(true); E.redimensionar(); E.leyenda(); E.im.d = 0.15; E.ver.v = true;
+    despues:() => { E.ver.graf = grafDoble(true); E.leyendaExtra = '<span>a trazos: en 1,5 s · llena: en 0,75 s</span>'; E.redimensionar(); E.leyenda(); E.im.d = 0.15; E.ver.v = true;
       E.lect = () => [['e', 'Pico de ε', `${mVv(R1.femMax0)} → ${mVv(R1.femMax1)}`], ['phi', 'ΔΦ por espira', 'el mismo']]; E.avisar();
       E.recorrido(MOV2, TFIN, RM ? 0 : 2600, () => { E.ver.v = false; E.im.vel = 0; E.ver.I = 0; E.ver.graf.cursor = null; E.permitir({ iman:true }); E.dibujar(); }); },
     exp:() => `<div class="eqs"><div class="eq">${e_('ε')} = −N · Δ${P_('Φ')} / Δt → con Δt / 2, ${e_('2ε')}</div>
