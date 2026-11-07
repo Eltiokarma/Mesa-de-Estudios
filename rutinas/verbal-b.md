@@ -21,7 +21,7 @@
 | de9564f | Texto y contexto |
 | 2122042 | Textos filosóficos y científicos |
 | 66e7abf | Lectura en inglés |
-| (último) | Documentación (`docs/formato-lectura.md` 5.7, LEEME) y este reporte |
+| 91871d0 | Documentación (`docs/formato-lectura.md` 5.7, LEEME) y este reporte |
 
 ## Cómo quedó armado
 
