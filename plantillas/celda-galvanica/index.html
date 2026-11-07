@@ -9,25 +9,22 @@
    Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables y de las especies (regla 4):
      --c-e   electrones, carga Q y moles de e⁻   dorado    #8f5f00 / #ffd54a
      --c-E   potencial y fem (voltímetro)        magenta   #b3246b / #ff86bd (el mismo voltaje de circuitos-cc)
-     --c-cat cationes del puente (K⁺)            índigo    #0f04a9 / #857eed
      --c-an  aniones (NO₃⁻)                      verde     #4f7a17 / #a3d65e
-     --c-Zn  zinc y Zn²⁺                         celeste   #1975b3 / #99d6ff
-     --c-Cu  cobre y Cu²⁺                        cobre     #c93c0c / #ff9a66
-     --c-Ag  plata y Ag⁺                         turquesa  #0f766e / #5ed9c8
-     --c-Fe  hierro y Fe²⁺                       granate   #57191d / #ff4d58
      --c-I   corriente (Faraday)                 azul      #1f5fbf / #7cb0ff (el de circuitos-cc)
      --c-t   tiempo (Faraday)                    oliva     #474515 / #f1f0d0
+   Los metales y el K⁺ del puente llevan la paleta común de química (nucleo/elementos.js, bloque generado más abajo):
+     --el-Zn zinc y Zn²⁺ azul · --el-Fe hierro y Fe²⁺ gris acero · --el-Cu cobre y Cu²⁺ cobre · --el-Ag plata y Ag⁺
+     turquesa · --el-K catión del puente (K⁺) violeta. En el código el K⁺ sigue llamándose «cat».
    La masa depositada va en el color de su metal. Diferencia CIEDE2000 mínima entre colores que aparecen en el
-   mismo dibujo: 20,1 (claro y oscuro, NO₃⁻–t); contra la tinta y el gris, 19,7 o más. El tiempo está a 20 o más
-   de los diez colores en los dos modos. Quedan cerca dos pares que nunca se ven juntos (I solo sale en Faraday,
-   sin Zn ni K⁺): Zn–I 9,4 (claro) / 11,1 (oscuro) e I–K⁺ 16,8 (oscuro); separarlos rompía Zn–Ag, que sí se ven
-   juntos. Todos pasan el contraste AA sobre el papel y la tarjeta. */
+   mismo dibujo (nucleo/elementos-escenas.test.js): 20,2 en claro (Zn–K⁺) y 20,1 en oscuro (K⁺–E°). Quedan cerca
+   pares que nunca se ven juntos (I solo sale en Faraday, sin Zn ni K⁺): Zn–I y Ag con el H de la paleta (aquí no hay H).
+   Todos pasan el contraste AA sobre el papel, la tarjeta y el chip al 8 %. */
 [hidden]{display:none!important}
 :root{
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
   --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
   --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
-  --c-e:#8f5f00; --c-E:#b3246b; --c-cat:#0f04a9; --c-an:#4f7a17; --c-Zn:#1975b3; --c-Cu:#c93c0c; --c-Ag:#0f766e; --c-Fe:#57191d;
+  --c-e:#8f5f00; --c-E:#b3246b; --c-an:#4f7a17;
   --c-I:#1f5fbf; --c-t:#474515;
   --cable:#4b3f5c; --vidrio:#8e97a8; --liquido:rgba(31,95,191,.06); --puente:#efe6dc;
   --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
@@ -38,16 +35,21 @@
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-e:#ffd54a; --c-E:#ff86bd; --c-cat:#857eed; --c-an:#a3d65e; --c-Zn:#99d6ff; --c-Cu:#ff9a66; --c-Ag:#5ed9c8; --c-Fe:#ff4d58;
+  --c-e:#ffd54a; --c-E:#ff86bd; --c-an:#a3d65e;
   --c-I:#7cb0ff; --c-t:#f1f0d0;
   --cable:#cfc4dc; --vidrio:#a99cb8; --liquido:rgba(124,176,255,.07); --puente:#3a3046; color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-e:#ffd54a; --c-E:#ff86bd; --c-cat:#857eed; --c-an:#a3d65e; --c-Zn:#99d6ff; --c-Cu:#ff9a66; --c-Ag:#5ed9c8; --c-Fe:#ff4d58;
+  --c-e:#ffd54a; --c-E:#ff86bd; --c-an:#a3d65e;
   --c-I:#7cb0ff; --c-t:#f1f0d0;
   --cable:#cfc4dc; --vidrio:#a99cb8; --liquido:rgba(124,176,255,.07); --puente:#3a3046; color-scheme:dark }
+/* Colores de los elementos: paleta común de química (nucleo/elementos.js). Este bloque sale de
+   Elementos.css(['K', 'Fe', 'Cu', 'Zn', 'Ag']) y no se edita a mano: nucleo/elementos-escenas.test.js lo compara. */
+:root{ --el-K:#7843e9; --el-Fe:#6a676d; --el-Cu:#c52e03; --el-Zn:#1768be; --el-Ag:#0b7471 }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --el-K:#a788d3; --el-Fe:#9e9ea4; --el-Cu:#ff8a3d; --el-Zn:#239af9; --el-Ag:#02d6d6 } }
+:root[data-theme="dark"]{ --el-K:#a788d3; --el-Fe:#9e9ea4; --el-Cu:#ff8a3d; --el-Zn:#239af9; --el-Ag:#02d6d6 }
 
 *{box-sizing:border-box}
 body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
@@ -91,12 +93,12 @@ canvas{display:block; width:100%; touch-action:pan-y; -webkit-user-select:none; 
 .v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
 .v-e{color:var(--c-e); background:color-mix(in srgb, var(--c-e) 12%, transparent)}
 .v-E{color:var(--c-E); background:color-mix(in srgb, var(--c-E) 12%, transparent)}
-.v-cat{color:var(--c-cat); background:color-mix(in srgb, var(--c-cat) 12%, transparent)}
+.v-cat{color:var(--el-K); background:color-mix(in srgb, var(--el-K) 8%, transparent)}
 .v-an{color:var(--c-an); background:color-mix(in srgb, var(--c-an) 12%, transparent)}
-.v-Zn{color:var(--c-Zn); background:color-mix(in srgb, var(--c-Zn) 12%, transparent)}
-.v-Cu{color:var(--c-Cu); background:color-mix(in srgb, var(--c-Cu) 12%, transparent)}
-.v-Ag{color:var(--c-Ag); background:color-mix(in srgb, var(--c-Ag) 12%, transparent)}
-.v-Fe{color:var(--c-Fe); background:color-mix(in srgb, var(--c-Fe) 12%, transparent)}
+.v-Zn{color:var(--el-Zn); background:color-mix(in srgb, var(--el-Zn) 8%, transparent)}
+.v-Cu{color:var(--el-Cu); background:color-mix(in srgb, var(--el-Cu) 8%, transparent)}
+.v-Ag{color:var(--el-Ag); background:color-mix(in srgb, var(--el-Ag) 8%, transparent)}
+.v-Fe{color:var(--el-Fe); background:color-mix(in srgb, var(--el-Fe) 8%, transparent)}
 .v-I{color:var(--c-I); background:color-mix(in srgb, var(--c-I) 12%, transparent)}
 .v-t{color:var(--c-t); background:color-mix(in srgb, var(--c-t) 12%, transparent)}
 .v.hl{background:color-mix(in srgb, currentColor 26%, transparent)}
@@ -313,16 +315,16 @@ function rotuloColor(ctx, c, x, y, trozos, align, peso, tam, fam){
 function colores(){
   const g = n => css(n);
   const c = { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
-    e:g('--c-e'), E:g('--c-E'), cat:g('--c-cat'), an:g('--c-an'), I:g('--c-I'), t:g('--c-t'), warn:g('--warn'),
+    e:g('--c-e'), E:g('--c-E'), cat:g('--el-K'), an:g('--c-an'), I:g('--c-I'), t:g('--c-t'), warn:g('--warn'),
     cable:g('--cable'), vidrio:g('--vidrio'), liquido:g('--liquido'), puente:g('--puente'), mono:g('--mono'), font:g('--font') };
-  for (const m of METALES) c[m] = g('--c-' + m);
+  for (const m of METALES) c[m] = g('--el-' + m);
   return c;
 }
 const colorDe = (c, id) => c[id] || c.ink;
 const leyendaPila = (a, b, extra, puente) => `<span><i class="pt" style="background:var(--c-e)"></i>e⁻ · electrones (solo en metal y alambre)</span>`
-  + (puente === undefined || puente === 'sal' ? `<span><i class="pt" style="background:var(--c-cat)"></i>K⁺ · catión del puente</span>` : '')
+  + (puente === undefined || puente === 'sal' ? `<span><i class="pt" style="background:var(--el-K)"></i>K⁺ · catión del puente</span>` : '')
   + `<span><i class="pt" style="background:var(--c-an)"></i>NO₃⁻ · anión</span>`
-  + [a, b].map(m => `<span><i class="pt" style="background:var(--c-${m})"></i>${MC.par(m).red} y ${MC.par(m).ox} · ${NOMBRE[m]}</span>`).join('')
+  + [a, b].map(m => `<span><i class="pt" style="background:var(--el-${m})"></i>${MC.par(m).red} y ${MC.par(m).ox} · ${NOMBRE[m]}</span>`).join('')
   + `<span><i style="background:var(--c-E)"></i>E° (fem) y lo que marca el voltímetro</span>` + (extra || '');
 
 // Resaltar en el dibujo la variable que se toca en el texto (regla 4: el mismo color en el texto y en el dibujo).
@@ -361,7 +363,7 @@ function crearEscena(cv, idDesc, idLey){
   E.soltar = () => { E.cfg.pausa = false; if (E.est) E.est.abierto = false; };
   E.cambiarPuente = p => { E.cfg.puente = p; E.config(Object.assign({}, E.cfg, { semilla:E.cfg.semilla + 1 })); };
   const leyendaFaraday = () => `<span><i class="pt" style="background:var(--c-e)"></i>e⁻ · electrones (solo en metal y alambre)</span>`
-    + E.cfg.especies.map(m => `<span><i class="pt" style="background:var(--c-${m})"></i>${MC.par(m).red} y ${MC.par(m).ox} · ${NOMBRE[m]}</span>`).join('')
+    + E.cfg.especies.map(m => `<span><i class="pt" style="background:var(--el-${m})"></i>${MC.par(m).red} y ${MC.par(m).ox} · ${NOMBRE[m]}</span>`).join('')
     + `<span><i class="pt" style="background:var(--c-an)"></i>NO₃⁻ · anión</span>`;
 
   // ----- tiempo -----

@@ -7,13 +7,14 @@
 <style>
 /* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md).
    Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
-   cada elemento con su color (N azul, H turquesa, O rojo, Cl verde, Al naranja), productos morado, mol mostaza y g siena. */
+   cada elemento con su color de la paleta común (nucleo/elementos.js: N azul, H turquesa, O rojo, Cl verde, Al celeste,
+   C gris), productos morado, mol mostaza y g siena. ΔE00 mínimo entre lo que sale junto: 20,8 en claro (O–g) y 21,6 en
+   oscuro; contraste mínimo de los elementos 4,54 (AA), también en el chip al 8 %. */
 [hidden]{display:none!important}
 :root{
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
   --detras:#f6ece4; --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
   --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
-  --c-N:#1f5fbf; --c-H:#0f766e; --c-O:#c0364a; --c-Cl:#4f7a17; --c-Al:#b85a06; --c-C:#3d3a45; --c-Ca:#5b6470;
   --c-prod:#6b3dbd; --c-mol:#7d6a00; --c-g:#773922; --vidrio:#8e97a8; --letra-atomo:#ffffff;
   --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
   --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
@@ -23,14 +24,17 @@
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-N:#7cb0ff; --c-H:#5ed9c8; --c-O:#f17384; --c-Cl:#a3d65e; --c-Al:#f0a04a; --c-C:#c9c3d3; --c-Ca:#9aa3b2;
   --c-prod:#ab8cf2; --c-mol:#e3c84a; --c-g:#e0a07a; --vidrio:#a99cb8; --letra-atomo:#1d1626; color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-N:#7cb0ff; --c-H:#5ed9c8; --c-O:#f17384; --c-Cl:#a3d65e; --c-Al:#f0a04a; --c-C:#c9c3d3; --c-Ca:#9aa3b2;
   --c-prod:#ab8cf2; --c-mol:#e3c84a; --c-g:#e0a07a; --vidrio:#a99cb8; --letra-atomo:#1d1626; color-scheme:dark }
+/* Colores de los elementos: paleta común de química (nucleo/elementos.js). Este bloque sale de
+   Elementos.css(['H', 'C', 'N', 'O', 'Al', 'Cl', 'Ca']) y no se edita a mano: nucleo/elementos-escenas.test.js lo compara. */
+:root{ --el-H:#0f766e; --el-C:#6b6b6b; --el-N:#136caa; --el-O:#c4284e; --el-Al:#056ea3; --el-Cl:#466d14; --el-Ca:#6a5b8f }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --el-H:#5ed9c8; --el-C:#9a9a9a; --el-N:#4eb3f9; --el-O:#f17384; --el-Al:#38b6e8; --el-Cl:#a3d65e; --el-Ca:#deb0f5 } }
+:root[data-theme="dark"]{ --el-H:#5ed9c8; --el-C:#9a9a9a; --el-N:#4eb3f9; --el-O:#f17384; --el-Al:#38b6e8; --el-Cl:#a3d65e; --el-Ca:#deb0f5 }
 
 *{box-sizing:border-box}
 body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
@@ -77,13 +81,13 @@ canvas.sin-scroll{touch-action:none}
 .map b{font-family:var(--mono); min-width:4.6em; flex:none}
 
 .v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
-.v-N{color:var(--c-N); background:color-mix(in srgb, var(--c-N) 12%, transparent)}
-.v-H{color:var(--c-H); background:color-mix(in srgb, var(--c-H) 12%, transparent)}
-.v-O{color:var(--c-O); background:color-mix(in srgb, var(--c-O) 12%, transparent)}
-.v-Cl{color:var(--c-Cl); background:color-mix(in srgb, var(--c-Cl) 12%, transparent)}
-.v-Al{color:var(--c-Al); background:color-mix(in srgb, var(--c-Al) 12%, transparent)}
-.v-C{color:var(--c-C); background:color-mix(in srgb, var(--c-C) 12%, transparent)}
-.v-Ca{color:var(--c-Ca); background:color-mix(in srgb, var(--c-Ca) 12%, transparent)}
+.v-N{color:var(--el-N); background:color-mix(in srgb, var(--el-N) 8%, transparent)}
+.v-H{color:var(--el-H); background:color-mix(in srgb, var(--el-H) 8%, transparent)}
+.v-O{color:var(--el-O); background:color-mix(in srgb, var(--el-O) 8%, transparent)}
+.v-Cl{color:var(--el-Cl); background:color-mix(in srgb, var(--el-Cl) 8%, transparent)}
+.v-Al{color:var(--el-Al); background:color-mix(in srgb, var(--el-Al) 8%, transparent)}
+.v-C{color:var(--el-C); background:color-mix(in srgb, var(--el-C) 8%, transparent)}
+.v-Ca{color:var(--el-Ca); background:color-mix(in srgb, var(--el-Ca) 8%, transparent)}
 .v-prod{color:var(--c-prod); background:color-mix(in srgb, var(--c-prod) 12%, transparent)}
 .v-mol{color:var(--c-mol); background:color-mix(in srgb, var(--c-mol) 12%, transparent)}
 .v-g{color:var(--c-g); background:color-mix(in srgb, var(--c-g) 12%, transparent)}
@@ -313,7 +317,7 @@ function ejes(ctx, c, b, R, tit, hl){
 }
 // Color de cada elemento (los átomos) y de los productos. Un reactivo que es un elemento (N₂, H₂, O₂, Cl₂, Al)
 // lleva el color de su elemento en la ecuación, los contadores y las curvas; todos los productos van en morado.
-const ELEM = { N:'--c-N', H:'--c-H', O:'--c-O', Cl:'--c-Cl', Al:'--c-Al', C:'--c-C', Ca:'--c-Ca' };
+const ELEM = { N:'--el-N', H:'--el-H', O:'--el-O', Cl:'--el-Cl', Al:'--el-Al', C:'--el-C', Ca:'--el-Ca' };
 function colores(){
   const g = n => css(n);
   const c = { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),

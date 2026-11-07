@@ -9,16 +9,9 @@
    Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4).
 
    Colores de esta escena (claro / oscuro). Revisados con CIEDE2000 y contraste WCAG sobre --paper y --card:
-     Elementos (cada átomo y cada montón de un elemento lleva su color; el texto dice "átomos de H" o "moléculas de H₂O")
-       H  hidrógeno   turquesa      #0f766e / #5ed9c8   (los de limitante-particulas)
-       C  carbono     gris oscuro   #3d3a45 / #c9c3d3
-       O  oxígeno     rojo          #c0364a / #f17384
-       N  nitrógeno   azul          #1f5fbf / #7cb0ff
-       Ca calcio      gris pizarra  #5b6470 / #9aa3b2
-       Mg magnesio    petróleo      #005c6c / #009ca4   (nuevo; solo en los pasos 4 y 5, con C)
-       Fe hierro      celeste       #0478ac / #0898d8   (nuevo; en Fe₂O₃, con O)
-       S  azufre      añil          #3a1fe0 / #9178ff   (nuevo; en H₂SO₄, con H y O)
-       Cu cobre       cobre         #c93c0c / #ff9a66   (el de celda-galvanica; definido, pero no sale en esta escena)
+     Elementos (cada átomo y cada montón de un elemento lleva su color; el texto dice "átomos de H" o "moléculas de H₂O"):
+       la paleta común de química (nucleo/elementos.js), en el bloque generado más abajo: H turquesa, C gris, O rojo,
+       N azul, Ca lavanda, Mg azul pizarra, Fe gris acero, S añil y Cu cobre (definido, pero no sale en esta escena).
      Variables
        m  masa (g o u)            siena     #773922 / #e0a07a   (la de limitante-particulas)
        n  moles                   mostaza   #7d6a00 / #e3c84a   (la de limitante-particulas)
@@ -27,20 +20,16 @@
        %  porcentaje en masa      tinta: cada tramo de la barra lleva el color de su elemento y el número va en tinta.
    Qué sale junto: todas las variables con todos los elementos del explorador (H, C, O, N, Ca, S, Fe; la segunda
    sustancia del explorador es siempre H₂, O₂ o H₂O); Mg solo con C; Fe nunca con N, S, Ca ni C; S nunca con N, Fe ni C.
-   ΔE00 mínimo de los colores nuevos contra todo lo que sale con ellos: 22,3 en claro (Fe–H) y 21,2 en oscuro
-   (S–tinta gris). Contraste mínimo: 4,61 en claro (Fe) y 4,60 en oscuro (Mg); todos pasan AA (4,5).
-   Un color propio para % no entra: con M, N y % nuevos, lo mejor que encontramos (búsqueda exhaustiva por familias de
-   tono) da ΔE00 20,4, pero con dos verdes casi iguales; por eso el porcentaje va en tinta, como el tiempo en cinética.
-   Pares heredados por debajo de 20 (de limitante-particulas, se dejan como están): C–tinta 11,1 / 9,3; C–Ca 15,2 / 12,1
-   (salen juntos en CaCO₃: cada átomo lleva además su letra); m–O 18,9 en claro. Parecidos que nunca salen juntos:
-   Fe–N 12,1 / 13,3 (Fe₂O₃ y NH₃ no se muestran a la vez) y Cu–m (Cu no se usa aquí; si se agrega un hidrato de cobre,
-   hay que revisarlo). */
+   ΔE00 mínimo entre todo lo que sale junto (nucleo/elementos-escenas.test.js): 20,2 en claro (Ca–C) y 20,1 en oscuro
+   (Ca–tinta). Contraste mínimo 4,54 (AA). Un color propio para % no entra: con M, N y % nuevos, lo mejor que encontramos
+   (búsqueda exhaustiva por familias de tono) da ΔE00 20,4, pero con dos verdes casi iguales; por eso el porcentaje va en
+   tinta, como el tiempo en cinética. Con la paleta común quedan resueltos C–tinta, C–Ca y m–O. Parecidos que nunca salen
+   juntos: Fe–C y Mg–N (Elementos.CERCANOS); Cu–m 16 si se agrega un hidrato de cobre, hay que revisarlo. */
 [hidden]{display:none!important}
 :root{
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
   --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
   --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
-  --e-H:#0f766e; --e-C:#3d3a45; --e-O:#c0364a; --e-N:#1f5fbf; --e-Ca:#5b6470; --e-Mg:#005c6c; --e-Fe:#0478ac; --e-S:#3a1fe0; --e-Cu:#c93c0c;
   --c-masa:#773922; --c-mol:#7d6a00; --c-Mm:#c400ad; --c-part:#0a8200;
   --vidrio:#8e97a8; --monton:#e3d5ca; --letra-atomo:#ffffff;
   --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
@@ -51,16 +40,19 @@
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --e-H:#5ed9c8; --e-C:#c9c3d3; --e-O:#f17384; --e-N:#7cb0ff; --e-Ca:#9aa3b2; --e-Mg:#009ca4; --e-Fe:#0898d8; --e-S:#9178ff; --e-Cu:#ff9a66;
   --c-masa:#e0a07a; --c-mol:#e3c84a; --c-Mm:#ff2ed8; --c-part:#2da500;
   --vidrio:#5e5670; --monton:#4a3d58; --letra-atomo:#1d1626; color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --e-H:#5ed9c8; --e-C:#c9c3d3; --e-O:#f17384; --e-N:#7cb0ff; --e-Ca:#9aa3b2; --e-Mg:#009ca4; --e-Fe:#0898d8; --e-S:#9178ff; --e-Cu:#ff9a66;
   --c-masa:#e0a07a; --c-mol:#e3c84a; --c-Mm:#ff2ed8; --c-part:#2da500;
   --vidrio:#5e5670; --monton:#4a3d58; --letra-atomo:#1d1626; color-scheme:dark }
+/* Colores de los elementos: paleta común de química (nucleo/elementos.js). Este bloque sale de
+   Elementos.css(['H', 'C', 'N', 'O', 'Mg', 'S', 'Ca', 'Fe', 'Cu']) y no se edita a mano: nucleo/elementos-escenas.test.js lo compara. */
+:root{ --el-H:#0f766e; --el-C:#6b6b6b; --el-N:#136caa; --el-O:#c4284e; --el-Mg:#425697; --el-S:#3328c4; --el-Ca:#6a5b8f; --el-Fe:#6a676d; --el-Cu:#c52e03 }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --el-H:#5ed9c8; --el-C:#9a9a9a; --el-N:#4eb3f9; --el-O:#f17384; --el-Mg:#8db7ff; --el-S:#9f9bff; --el-Ca:#deb0f5; --el-Fe:#9e9ea4; --el-Cu:#ff8a3d } }
+:root[data-theme="dark"]{ --el-H:#5ed9c8; --el-C:#9a9a9a; --el-N:#4eb3f9; --el-O:#f17384; --el-Mg:#8db7ff; --el-S:#9f9bff; --el-Ca:#deb0f5; --el-Fe:#9e9ea4; --el-Cu:#ff8a3d }
 
 *{box-sizing:border-box}
 body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
@@ -109,8 +101,8 @@ canvas{display:block; width:100%; touch-action:pan-y; -webkit-user-select:none; 
 .v-mol{color:var(--c-mol); background:color-mix(in srgb, var(--c-mol) 12%, transparent)}
 .v-Mm{color:var(--c-Mm); background:color-mix(in srgb, var(--c-Mm) 12%, transparent)}
 .v-part{color:var(--c-part); background:color-mix(in srgb, var(--c-part) 12%, transparent)}
-.v-H{color:var(--e-H)} .v-C{color:var(--e-C)} .v-O{color:var(--e-O)} .v-N{color:var(--e-N)} .v-Ca{color:var(--e-Ca)}
-.v-Mg{color:var(--e-Mg)} .v-Fe{color:var(--e-Fe)} .v-S{color:var(--e-S)} .v-Cu{color:var(--e-Cu)}
+.v-H{color:var(--el-H)} .v-C{color:var(--el-C)} .v-O{color:var(--el-O)} .v-N{color:var(--el-N)} .v-Ca{color:var(--el-Ca)}
+.v-Mg{color:var(--el-Mg)} .v-Fe{color:var(--el-Fe)} .v-S{color:var(--el-S)} .v-Cu{color:var(--el-Cu)}
 .v.hl{background:color-mix(in srgb, currentColor 26%, transparent)}
 
 .eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
@@ -306,7 +298,7 @@ const NA_TXT = '6,02 × 10²³';
 
 function colores(){
   const g = n => css(n), el = {};
-  for (const e of Object.keys(NOMBRE)) el[e] = g('--e-' + e);
+  for (const e of Object.keys(NOMBRE)) el[e] = g('--el-' + e);
   return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
     masa:g('--c-masa'), mol:g('--c-mol'), Mm:g('--c-Mm'), part:g('--c-part'), el, vidrio:g('--vidrio'), monton:g('--monton'),
     letra:g('--letra-atomo'), mono:g('--mono'), font:g('--font') };
@@ -704,7 +696,7 @@ function elementosVistos(v){
   return [...s];
 }
 function leyendaHTML(v){
-  const it = elementosVistos(v).map(e => `<span><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="6" fill="var(--e-${e})"/></svg>${e} · ${NOMBRE[e]}</span>`);
+  const it = elementosVistos(v).map(e => `<span><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="6" fill="var(--el-${e})"/></svg>${e} · ${NOMBRE[e]}</span>`);
   const vars = v.vars || [];
   if (vars.includes('masa')) it.push(`<span><i style="background:var(--c-masa)"></i>m · masa${v.bal && v.bal.u === 'u' ? ' (en u)' : ''}</span>`);
   if (vars.includes('Mm')) it.push(`<span><i style="background:var(--c-Mm)"></i>M · masa molar</span>`);
@@ -925,7 +917,7 @@ function explorar(){
     const fila = f => { const r = MM.moles(f, { gramos: f === X.A ? X.mA : X.mB });
       return `<div class="fila"><b>${Fh(f)}</b><span>${n_(fmtMol(r.n) + ' mol')}</span><span>${N_(sci(r.moleculas))} ${particula(f)}</span><span>${N_(sci(r.atomos))} átomos</span></div>`; };
     const cp = MM.composicion(X.A).porcentajes;
-    $('live').innerHTML = fila(X.A) + fila(X.B) + `<div>Composición de ${Fh(X.A)} en masa:</div><div class="barra" role="img" aria-label="Composición de ${sub(X.A)}: ${Object.entries(cp).map(([e, p]) => `${NOMBRE[e]} ${fmt(p, 1)} %`).join(', ')}">${Object.entries(cp).map(([e, p]) => `<span style="width:${p}%; background:var(--e-${e})"></span>`).join('')}</div>
+    $('live').innerHTML = fila(X.A) + fila(X.B) + `<div>Composición de ${Fh(X.A)} en masa:</div><div class="barra" role="img" aria-label="Composición de ${sub(X.A)}: ${Object.entries(cp).map(([e, p]) => `${NOMBRE[e]} ${fmt(p, 1)} %`).join(', ')}">${Object.entries(cp).map(([e, p]) => `<span style="width:${p}%; background:var(--el-${e})"></span>`).join('')}</div>
       <div class="barra-rot">${Object.entries(cp).map(([e, p]) => `<span>${Fh(e)} ${fmt(p, 1)} %</span>`).join('')}</div>`;
   };
   $('xA').value = X.A; $('xB').value = X.B; $('mA').value = X.mA; $('mB').value = Math.round(X.mB);

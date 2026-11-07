@@ -10,32 +10,23 @@
 
    Colores de esta escena (claro / oscuro). Revisados con CIEDE2000 (docs/metodo/paleta.py) y contraste WCAG sobre
    #fdf7f1 y #241c2e, también sobre el chip .v (fondo del 8 %):
-     Elementos (cada átomo lleva el color de su elemento y su letra; el texto dice "moléculas de H₂O" o "átomos de H")
-       H  hidrógeno   turquesa      #0f766e / #5ed9c8   (el de limitante-particulas y mol-composicion)
-       O  oxígeno     rojo          #c0364a / #f17384   (ídem)
-       N  nitrógeno   azul          #1f5fbf / #7cb0ff   (ídem)
-       C  carbono     gris          #6b6b6b / #9a9a9a   (más claro que el de mol-composicion, para separarlo de la tinta)
-       Cl cloro       verde         #466d14 / #a3d65e
-       Fe hierro      celeste       #036a99 / #30b4f2
-       Zn zinc        gris pizarra  #5b6470 / #9aa3b2
-       Cu cobre       cobre         #b5402a / #ff8a70
-       Mn manganeso   marrón rojizo #6b260f / #ff6600
-       Cr cromo       verde oscuro  #255c1f / #5fe06a
+     Elementos (cada átomo lleva el color de su elemento y su letra; el texto dice "moléculas de H₂O" o "átomos de H"):
+       la paleta común de química (nucleo/elementos.js), en el bloque generado más abajo: H turquesa, O rojo, N azul,
+       C gris, Cl verde, Fe gris acero, Zn azul, Cu cobre, Mn marrón rojizo y Cr verde.
      Variables
        coeficiente (cuántas moléculas)   fucsia  #a10fbf / #cf6bfa   (el subíndice va en el color de su elemento)
        e⁻ electrones (las fichas)        dorado  #8f5f00 / #ffd54a   (el de celda-galvanica)
        carga, número de oxidación y masa: en tinta, con su signo o su unidad.
    Qué sale junto: H y O; C, H y O; Zn, Cu y Cl con e⁻; Mn, Fe, O y H con e⁻; N y H; Fe y O; Zn, H y Cl; H y O (peróxido);
    Cr, Fe, O y H con e⁻; Fe y Cl; N, O y H. Todos con el coeficiente y la tinta.
-   ΔE00 mínimo entre los que salen juntos: 20,4 en claro (Cr–H) y 20,0 en oscuro (Zn–tinta). Contraste mínimo 4,5 (AA)
-   en papel y en chip, en los dos modos.
-   Parecidos que nunca comparten dibujo: C–Zn (7,4), Cl–Cr (8,8), N–Fe (9,5) y O–Cu (11,4): cada átomo lleva su letra. */
+   ΔE00 mínimo entre los que salen juntos: 21,5 en claro (C–H) y 20,2 en oscuro (Fe–tinta). Contraste mínimo 4,54 (AA)
+   en papel y en chip, en los dos modos. Parecidos que nunca comparten dibujo (Elementos.CERCANOS): C–Fe, Cl–Cr, N–Zn y
+   O–Cu (18,9 en claro): cada átomo lleva su letra. */
 [hidden]{display:none!important}
 :root{
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
   --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
   --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
-  --e-H:#0f766e; --e-O:#c0364a; --e-N:#1f5fbf; --e-C:#6b6b6b; --e-Cl:#466d14; --e-Fe:#036a99; --e-Zn:#5b6470; --e-Cu:#b5402a; --e-Mn:#6b260f; --e-Cr:#255c1f;
   --c-coef:#a10fbf; --c-e:#8f5f00;
   --vidrio:#8e97a8; --caja:#f6ece4; --letra-atomo:#ffffff;
   --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
@@ -46,16 +37,19 @@
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --e-H:#5ed9c8; --e-O:#f17384; --e-N:#7cb0ff; --e-C:#9a9a9a; --e-Cl:#a3d65e; --e-Fe:#30b4f2; --e-Zn:#9aa3b2; --e-Cu:#ff8a70; --e-Mn:#ff6600; --e-Cr:#5fe06a;
   --c-coef:#cf6bfa; --c-e:#ffd54a;
   --vidrio:#5e5670; --caja:#211a2a; --letra-atomo:#1d1626; color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --e-H:#5ed9c8; --e-O:#f17384; --e-N:#7cb0ff; --e-C:#9a9a9a; --e-Cl:#a3d65e; --e-Fe:#30b4f2; --e-Zn:#9aa3b2; --e-Cu:#ff8a70; --e-Mn:#ff6600; --e-Cr:#5fe06a;
   --c-coef:#cf6bfa; --c-e:#ffd54a;
   --vidrio:#5e5670; --caja:#211a2a; --letra-atomo:#1d1626; color-scheme:dark }
+/* Colores de los elementos: paleta común de química (nucleo/elementos.js). Este bloque sale de
+   Elementos.css(['H', 'C', 'N', 'O', 'Cl', 'Cr', 'Mn', 'Fe', 'Cu', 'Zn']) y no se edita a mano: nucleo/elementos-escenas.test.js lo compara. */
+:root{ --el-H:#0f766e; --el-C:#6b6b6b; --el-N:#136caa; --el-O:#c4284e; --el-Cl:#466d14; --el-Cr:#4f7303; --el-Mn:#6b260f; --el-Fe:#6a676d; --el-Cu:#c52e03; --el-Zn:#1768be }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --el-H:#5ed9c8; --el-C:#9a9a9a; --el-N:#4eb3f9; --el-O:#f17384; --el-Cl:#a3d65e; --el-Cr:#58a833; --el-Mn:#ff6600; --el-Fe:#9e9ea4; --el-Cu:#ff8a3d; --el-Zn:#239af9 } }
+:root[data-theme="dark"]{ --el-H:#5ed9c8; --el-C:#9a9a9a; --el-N:#4eb3f9; --el-O:#f17384; --el-Cl:#a3d65e; --el-Cr:#58a833; --el-Mn:#ff6600; --el-Fe:#9e9ea4; --el-Cu:#ff8a3d; --el-Zn:#239af9 }
 
 *{box-sizing:border-box}
 body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
@@ -102,8 +96,8 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .f sub, .f sup{font-size:.72em; line-height:0}
 .v-coef{color:var(--c-coef); background:color-mix(in srgb, var(--c-coef) 8%, transparent)}
 .v-e{color:var(--c-e); background:color-mix(in srgb, var(--c-e) 8%, transparent)}
-.v-H{color:var(--e-H)} .v-O{color:var(--e-O)} .v-N{color:var(--e-N)} .v-C{color:var(--e-C)} .v-Cl{color:var(--e-Cl)}
-.v-Fe{color:var(--e-Fe)} .v-Zn{color:var(--e-Zn)} .v-Cu{color:var(--e-Cu)} .v-Mn{color:var(--e-Mn)} .v-Cr{color:var(--e-Cr)}
+.v-H{color:var(--el-H)} .v-O{color:var(--el-O)} .v-N{color:var(--el-N)} .v-C{color:var(--el-C)} .v-Cl{color:var(--el-Cl)}
+.v-Fe{color:var(--el-Fe)} .v-Zn{color:var(--el-Zn)} .v-Cu{color:var(--el-Cu)} .v-Mn{color:var(--el-Mn)} .v-Cr{color:var(--el-Cr)}
 .v.hl{background:none; outline:2px solid currentColor; outline-offset:1px}
 .carga{color:var(--ink); font-weight:800}
 
@@ -307,7 +301,7 @@ function EQ(e){ return String(e).split(' -> ').map(l => l.split(' + ').map(t => 
 
 function colores(){
   const g = n => css(n), el = {};
-  for (const e of Object.keys(NOMBRE)) el[e] = g('--e-' + e);
+  for (const e of Object.keys(NOMBRE)) el[e] = g('--el-' + e);
   return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'), ok:g('--ok'), warn:g('--warn'),
     coef:g('--c-coef'), e:g('--c-e'), el, vidrio:g('--vidrio'), caja:g('--caja'), letra:g('--letra-atomo'), font:g('--font') };
 }
@@ -688,7 +682,7 @@ function elementosVistos(v){
   return [...s];
 }
 function leyendaHTML(v){
-  const it = elementosVistos(v).map(e => `<span><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="6" fill="var(--e-${e})"/></svg>${e} · ${NOMBRE[e]}</span>`);
+  const it = elementosVistos(v).map(e => `<span><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="6" fill="var(--el-${e})"/></svg>${e} · ${NOMBRE[e]}</span>`);
   if (v.tipo === 'tablero') it.push(`<span><i style="background:var(--c-coef)"></i>coeficiente · cuántas moléculas</span>`);
   const ec = v.ec ? MB.ecuacion(v.ec) : null;
   if ((ec && [...ec.reactivos, ...ec.productos].some(t => t.f === 'e^-')) || (v.fichas && v.fichas.p > 0)) it.push(`<span><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="6" fill="var(--c-e)"/></svg>e⁻ · electrón</span>`);
