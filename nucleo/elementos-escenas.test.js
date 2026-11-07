@@ -65,6 +65,18 @@ const ESCENAS = {
       [['H', 'O'], ['--c-T']],                                 // el vapor que se enfría
     ] },
   // Viene de la rutina de química B; la prueba la cuida en cuanto la escena llegue a esta rama.
+  'nomenclatura-inorganica': {
+    elementos: ['H', 'C', 'N', 'O', 'Na', 'Al', 'P', 'S', 'Cl', 'K', 'Ca', 'Fe', 'Zn', 'Pb'],
+    vistas: [
+      [['Fe', 'O', 'H'], []], [['Al', 'S', 'O'], []], [['Pb', 'O'], []], [['Na', 'O'], []],
+      [['Na', 'S', 'O', 'H'], []], [['Na', 'Cl', 'O', 'H'], []], [['Cl', 'O', 'H'], []],
+      [['K', 'C', 'O', 'H'], []], [['Fe', 'S', 'O', 'H'], []],
+      // Mesa y árbol libres: las parejas de Elementos.CERCANOS se apagan.
+      [['Na', 'O', 'H', 'N', 'P', 'S', 'Cl'], []], [['K', 'O', 'H', 'C', 'N', 'P', 'Cl'], []],
+      [['Ca', 'O', 'H', 'C', 'N', 'P', 'Cl'], []], [['Al', 'O', 'H', 'C', 'P', 'S', 'Cl'], []],
+      [['Fe', 'O', 'H', 'C', 'P', 'S', 'Cl'], []], [['Zn', 'O', 'H', 'N', 'P', 'S', 'Cl'], []],
+      [['Pb', 'O', 'H', 'C', 'N', 'S', 'Cl'], []], [['N', 'H', 'O', 'C', 'P', 'S', 'Cl'], []],
+    ] },
   'materia-energia': {
     elementos: ['H', 'C', 'O', 'Na', 'Si', 'S', 'Cl', 'Fe'],
     vistas: [

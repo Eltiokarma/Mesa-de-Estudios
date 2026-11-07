@@ -154,7 +154,7 @@
       },
       "potencial_visual": "bajo",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["nomenclatura-inorganica"],
       "investigacion": "docs/investigacion/quimica-materia-nomenclatura-organica-ideas-erroneas.md"
     },
     {

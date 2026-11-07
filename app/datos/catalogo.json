@@ -760,7 +760,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "nomenclatura-inorganica"
+     ]
     },
     {
      "id": "quimica.mol-y-composicion",
@@ -4950,6 +4952,23 @@
     "/plantillas/mruv/index.html",
     "/plantillas/mruv/motor.js",
     "/plantillas/mruv/papel.json"
+   ]
+  },
+  "nomenclatura-inorganica": {
+   "id": "nomenclatura-inorganica",
+   "titulo": "El árbol de las funciones: nomenclatura inorgánica",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.nomenclatura-inorganica"
+   ],
+   "url": "/plantillas/nomenclatura-inorganica/index.html",
+   "papel": "/plantillas/nomenclatura-inorganica/papel.json",
+   "archivos": [
+    "/plantillas/nomenclatura-inorganica/index.html",
+    "/plantillas/nomenclatura-inorganica/motor.js",
+    "/plantillas/nomenclatura-inorganica/papel.json"
    ]
   },
   "numeracion": {
