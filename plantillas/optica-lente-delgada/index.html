@@ -1042,6 +1042,7 @@ resize(); go(0);
 const cv = document.getElementById('cv3'), ctx = cv.getContext('2d');
 const $ = id => document.getElementById(id);
 const O = 30, F = 10, HO = 4, XR = 40, YL = 10, NR = 9, D0 = 8;
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const IMG = MotorLente.imagen(O, F, HO); // i = 15, altura −2
 let W = 0, H = 0, sx = 1, sy = 1;
 // Celular con predicción pendiente: el dibujo más bajo y pegado arriba (nucleo/celular.js).
@@ -1093,7 +1094,8 @@ const EXPS = [
     exp:`<p>El tamaño y el lugar de la imagen dependen solo de f y de o (la ecuación no tiene el ancho de la lente). Una lente más ancha recoge más rayos de cada punto del objeto y los manda al mismo punto imagen: la imagen sale <b>más brillante</b>. Si la lente es redonda, el doble de ancho junta 4 veces más luz.</p>
       <p class="hint">De 70 escolares, 25 dijeron "más grande", 6 "más pequeña" y 12 "no cambia nada"; solo 18 dijeron "más brillante" (John, Molepo y Chirwa, 2017).</p>` },
 ];
-const S = { k:0, pred:{}, t0:Date.now() };
+const S = { k:0, pred:{}, t0:Date.now(), sobre:false };
+let agarra = false;
 
 function resize(){
   W = cv.clientWidth; if (!W) return;
@@ -1154,7 +1156,8 @@ function draw(){
   // Brillo relativo: luz que entra (proporcional al área de una lente redonda) por la fracción no tapada.
   const luz = (E.D/D0)**2 * (E.tapa ? 0.5 : 1);
   if (E.pantalla){
-    ctx.strokeStyle = c.muted; ctx.lineWidth = 4; line(X(E.xp), Y(9.5), X(E.xp), Y(-9.5));
+    const mano = puedeCorrer() && (S.sobre || agarra);
+    ctx.strokeStyle = mano ? c.ink : c.muted; ctx.lineWidth = mano ? 6 : 4; line(X(E.xp), Y(9.5), X(E.xp), Y(-9.5));
     ctx.fillStyle = c.muted; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom'; ctx.fillText('pantalla', X(E.xp), Y(9.5) - 2);
     // Lo que queda en la pantalla: la mancha de cada punto del objeto (un punto si está en foco).
     for (let k = 0; k <= 16; k++){
@@ -1199,7 +1202,7 @@ function botones(){
   $('exps3').innerHTML = EXPS.map((x, k) => k > libre
     ? `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}. ${x.corto}</button>`
     : `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
-  $('exps3').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+  $('exps3').querySelectorAll('button').forEach(b => b.onclick = () => { ir(+b.dataset.k); $('t3').focus({ preventScroll:true }); });
 }
 function reiniciar(){ E.tapa = null; E.pantalla = true; E.xp = IMG.i; E.D = D0; }
 function ir(k){
@@ -1208,29 +1211,64 @@ function ir(k){
   const x = EXPS[k], p = S.pred[x.id];
   if (p) x.aplicar();
   compactar(!p);
-  botones();
+  botones(); lienzo();
   $('k3').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
   $('t3').textContent = x.corto;
   $('body3').innerHTML = `<p>${x.q}</p>
     <div class="opts">${x.opts.map(([l, t]) => `<button class="opt" type="button" data-k="${l}">${t}</button>`).join('')}</div>
-    <p class="fb" id="fb3"></p><div id="res3" class="body"></div>`;
+    <p class="fb" id="fb3" tabindex="-1"></p><div id="res3" class="body"></div>`;
   const btns = [...$('body3').querySelectorAll('.opt')];
   const pintar = () => {
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
-    $('fb3').textContent = p === x.ok ? 'Bien pensado. Mira la escena para ver por qué.' : 'No es esa. La correcta está marcada; mira la escena para ver por qué.';
+    $('fb3').textContent = x.opts.find(q => q[0] === p)[4];
     $('res3').innerHTML = x.ctrl() + x.exp + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="primary" id="sig3">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
     controles();
-    const sig = $('sig3'); if (sig) sig.onclick = () => { ir(k + 1); scrollTo({ top: 0, behavior: 'smooth' }); };
+    const sig = $('sig3'); if (sig) sig.onclick = () => { ir(k + 1); document.getElementById('m3').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); $('t3').focus({ preventScroll:true }); };
   };
   btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
     const o = x.opts.find(q => q[0] === b.dataset.k);
-    S.pred[x.id] = o[0]; botones(); x.aplicar(); pintar(); compactar(false);
-    Celular.alResponder(cv, draw, () => S.k === k);
+    S.pred[x.id] = o[0]; botones(); pintar(); lienzo(); compactar(false);
+    $('fb3').focus({ preventScroll:true });
+    // En el celular, el dibujo sube a la vista y recién entonces cambia la escena.
+    Celular.alResponder(cv, () => { x.aplicar(); sincronizar(); draw(); }, () => S.k === k);
     registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
   });
   pintar(); draw();
 }
+// Los controles muestran el estado de la escena (también cuando cambió después de responder).
+function sincronizar(){
+  const res = $('res3'); if (!res) return;
+  res.querySelectorAll('[data-tapa]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.tapa === (E.tapa || ''))));
+  res.querySelectorAll('[data-pant]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.pant === (E.pantalla ? '1' : '0'))));
+  const xp = $('xp3'); if (xp){ xp.value = String(E.xp); infoXp(); }
+  const d = $('d3'); if (d){ d.value = String(E.D); infoD(); }
+}
+function infoXp(){
+  const m = MotorLente.mancha(O, F, HO, E.D, E.xp, null);
+  $('xp3-out').textContent = fmt(E.xp) + ' cm';
+  $('xp3-info').textContent = m.ancho < 0.05 ? 'Nítida: aquí se juntan los rayos de cada punto (i = 15 cm).' : `La punta del objeto deja una mancha de ${fmt(m.ancho)} cm de alto.`;
+}
+function infoD(){
+  $('d3-out').textContent = fmt(E.D) + ' cm';
+  $('d3-info').textContent = `Luz que llega a la imagen: ${fmt((E.D/D0)**2)} veces la de la lente de ${D0} cm. La imagen sigue a 15 cm y mide 2 cm.`;
+}
+// La pantalla se arrastra en «Correr la pantalla», después de responder.
+function puedeCorrer(){ return EXPS[S.k].id === 'correr' && !!S.pred.correr && E.pantalla; }
+function lienzo(){
+  const on = puedeCorrer();
+  cv.classList.toggle('arrastrable', on);
+  cv.setAttribute('aria-label', on ? 'Lente, objeto, abanico de rayos y pantalla. Arrastra la pantalla o usa el deslizador de abajo.' : 'Lente convergente, objeto, abanico de rayos y pantalla con la imagen');
+}
+Celular.arrastre(cv, {
+  activo: puedeCorrer,
+  cerca: (p, r) => Math.abs(p.x - X(E.xp)) < r && p.y > Y(9.5) - r && p.y < Y(-9.5) + r,
+  empezar: () => { agarra = true; cv.classList.add('agarrando'); draw(); },
+  mover: p => { E.xp = Math.max(6, Math.min(36, Math.round(((p.x - W*0.5)/sx)*2)/2)); sincronizar(); draw(); },
+  soltar: () => { agarra = false; cv.classList.remove('agarrando'); draw(); decir('vivo3', 'Pantalla a ' + fmt(E.xp) + ' cm. ' + $('xp3-info').textContent); },
+  sobre: on => { S.sobre = on; draw(); },
+});
 function controles(){
   const marcar = (sel, v) => $('res3').querySelectorAll(sel).forEach(b => b.setAttribute('aria-pressed', String(b.dataset[Object.keys(b.dataset)[0]] === v)));
   $('res3').querySelectorAll('[data-tapa]').forEach(b => b.onclick = () => { E.tapa = b.dataset.tapa || null; marcar('[data-tapa]', b.dataset.tapa); draw(); });
@@ -1238,15 +1276,9 @@ function controles(){
   $('res3').querySelectorAll('[data-pant]').forEach(b => b.onclick = () => { E.pantalla = b.dataset.pant === '1'; marcar('[data-pant]', b.dataset.pant); draw(); });
   if ($('res3').querySelector('[data-pant]')) marcar('[data-pant]', E.pantalla ? '1' : '0');
   const xp = $('xp3');
-  if (xp){ const upd = () => { E.xp = +xp.value; const m = MotorLente.mancha(O, F, HO, E.D, E.xp, null);
-      $('xp3-out').textContent = fmt(E.xp) + ' cm';
-      $('xp3-info').textContent = m.ancho < 0.05 ? 'Nítida: aquí se juntan los rayos de cada punto (i = 15 cm).' : `La punta del objeto deja una mancha de ${fmt(m.ancho)} cm de alto.`; draw(); };
-    xp.oninput = upd; upd(); }
+  if (xp){ xp.oninput = () => { E.xp = +xp.value; infoXp(); draw(); }; infoXp(); }
   const d = $('d3');
-  if (d){ const upd = () => { E.D = +d.value;
-      $('d3-out').textContent = fmt(E.D) + ' cm';
-      $('d3-info').textContent = `Luz que llega a la imagen: ${fmt((E.D/D0)**2)} veces la de la lente de ${D0} cm. La imagen sigue a 15 cm y mide 2 cm.`; draw(); };
-    d.oninput = upd; upd(); }
+  if (d){ d.oninput = () => { E.D = +d.value; infoD(); draw(); }; infoD(); }
 }
 
 new ResizeObserver(resize).observe(cv);
