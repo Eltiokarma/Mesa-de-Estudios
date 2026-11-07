@@ -15,10 +15,13 @@ const motor = require('./motor.js');
 const datos = JSON.parse(fs.readFileSync(path.join(__dirname, 'casos.json'), 'utf8'));
 const tol = datos.tolerancia;
 
-function cerca(real, esperado, que) {
-  assert.ok(Math.abs(real - esperado) <= tol,
-    `${que}: el motor da ${real}, se esperaba ${esperado} (tolerancia ${tol})`);
+function cerca(real, esperado, que, t) {
+  const tt = t === undefined ? tol : t;
+  assert.ok(Math.abs(real - esperado) <= tt,
+    `${que}: el motor da ${real}, se esperaba ${esperado} (tolerancia ${tt})`);
 }
+// papel.json trae algunas respuestas redondeadas a 7 decimales (50/3 ≈ 16,6666667).
+const TOL_PAPEL = 1e-6;
 
 function resolver(entrada) {
   const sis = motor.sistema(entrada.o1, entrada.h, entrada.lentes);
@@ -56,13 +59,15 @@ for (const caso of datos.casos) {
   });
 }
 
-// La migración al formato fn/args/espera (7 nov 2026) no cambió ningún valor.
-test('casos.json: los siete casos de la 0.1.0, en el formato fn/args/espera', () => {
-  assert.equal(datos.casos.length, 7);
+// La migración al formato fn/args/espera (7 nov 2026) no cambió ningún valor; el caso 4 pasó a sus fracciones
+// exactas (10/3, −4/3, −8/3) al bajar la tolerancia a 1e-9, y se agregaron los casos 8 y 9.
+test('casos.json: los siete casos de la 0.1.0 más dos, en el formato fn/args/espera', () => {
+  assert.equal(datos.casos.length, 9);
   assert.ok(datos.casos.every(c => c.fn === 'problema' && Array.isArray(c.args) && c.espera));
-  assert.deepEqual(datos.casos.map(c => c.args[0]), [30, 10, 5, 15, 15, 10, 15]);
-  assert.deepEqual(datos.casos.map(c => c.espera.i || null), [[15], null, [-10], [30, 20], [30, 3.3333], [-5], [30, 20, -5]]);
-  assert.deepEqual(datos.casos.map(c => c.espera.A === undefined ? null : c.espera.A), [-0.5, null, 2, 2, -1.3333, 0.5, 1]);
+  assert.deepEqual(datos.casos.map(c => c.args[0]), [30, 10, 5, 15, 15, 10, 15, 15, 4]);
+  const r4 = x => Math.round(x * 1e4) / 1e4;
+  assert.deepEqual(datos.casos.map(c => c.espera.i ? c.espera.i.map(r4) : null), [[15], null, [-10], [30, 20], [30, 3.3333], [-5], [30, 20, -5], [30], [-6.6667]]);
+  assert.deepEqual(datos.casos.map(c => c.espera.A === undefined ? null : r4(c.espera.A)), [-0.5, null, 2, 2, -1.3333, 0.5, 1, null, 1.6667]);
 });
 
 for (const caso of datos.casos.filter(c => c.fn === 'problema' && !c.espera.sin_imagen)) {
@@ -152,9 +157,9 @@ for (const p of papel.problemas) {
     const fin = pasos[pasos.length - 1];
     if (v.espera.infinito) { assert.ok(fin.inf, `${p.id}: se esperaba imagen en el infinito`); return; }
     assert.ok(!fin.inf && pasos.length === v.lentes.length, `${p.id}: la cadena se cortó`);
-    if ('i' in v.espera) cerca(fin.i, v.espera.i, `${p.id} i`);
-    if ('A' in v.espera) cerca(motor.aumentoTotal(pasos), v.espera.A, `${p.id} A`);
-    if ('hi' in v.espera) cerca(fin.h, v.espera.hi, `${p.id} altura de la imagen`);
-    if ('x' in v.espera) cerca(fin.x, v.espera.x, `${p.id} posición final`);
+    if ('i' in v.espera) cerca(fin.i, v.espera.i, `${p.id} i`, TOL_PAPEL);
+    if ('A' in v.espera) cerca(motor.aumentoTotal(pasos), v.espera.A, `${p.id} A`, TOL_PAPEL);
+    if ('hi' in v.espera) cerca(fin.h, v.espera.hi, `${p.id} altura de la imagen`, TOL_PAPEL);
+    if ('x' in v.espera) cerca(fin.x, v.espera.x, `${p.id} posición final`, TOL_PAPEL);
   });
 }
