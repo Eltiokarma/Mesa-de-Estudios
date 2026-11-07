@@ -133,6 +133,10 @@ test('fotones por segundo: N·E = P; los juegos de constantes son consistentes p
   }
   cerca(motor.constantes('eV').hc, 1240, 'hc'); cerca(motor.constantes('SI').h, 6.6e-34, 'h');
 });
+test('Bohr, error «la energía del nivel de llegada»: de 3 a 2 da 3,4 eV y λ = 1240/3,4 ≈ 365 nm, ultravioleta', () => {
+  const e = motor.transicion(3, 2).errores.nivelLlegada;
+  cerca(e.E, 3.4, 'E'); cerca(e.lambda, 1240 / 3.4, 'λ'); assert.equal(e.region, 'ultravioleta');
+});
 test('Bohr: ΔE = 13,6·|1/nf² − 1/ni²|; Balmer de 3 a 6 se ve, Lyman es ultravioleta y Paschen infrarrojo', () => {
   for (let ni = 2; ni <= 8; ni++) for (let nf = 1; nf < ni; nf++) {
     const r = motor.transicion(ni, nf);
@@ -142,6 +146,7 @@ test('Bohr: ΔE = 13,6·|1/nf² − 1/ni²|; Balmer de 3 a 6 se ve, Lyman es ult
     if (nf === 2 && ni <= 6) assert.equal(r.region, 'visible');
     if (nf === 3) assert.equal(r.region, 'infrarrojo');
     assert.ok(r.errores.unoSobreN.E !== r.E && r.errores.sumaNiveles.E > r.E);
+    cerca(r.errores.nivelLlegada.E, 13.6 / (nf * nf), 'nivel de llegada');
   }
 });
 test('rayos X: λmin·V = hc; el espectro es cero bajo λmin y vale a lo más 1', () => {
@@ -156,6 +161,7 @@ test('color de la luz (solo dibujo): nada fuera del visible; rojo a 650 nm, azul
   assert.equal(motor.colorLuz(300), null); assert.equal(motor.colorLuz(800), null);
   const r = motor.colorLuz(650), b = motor.colorLuz(460), g = motor.colorLuz(530);
   assert.ok(r.r > r.g && r.r > r.b); assert.ok(b.b > b.r && b.b > b.g); assert.ok(g.g > g.r && g.g > g.b);
+  const rojo = motor.colorLuz(620); assert.ok(rojo.r === 255 && rojo.g < 60 && rojo.b === 0, `620 nm se ve rojo: ${JSON.stringify(rojo)}`);
   assert.equal(motor.region(379).region, 'ultravioleta'); assert.equal(motor.region(751).region, 'infrarrojo');
   assert.equal(motor.region(380).color, 'violeta'); assert.equal(motor.region(750).color, 'rojo');
 });

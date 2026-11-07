@@ -42,7 +42,10 @@
  *   electron(K, V, t)                 un electrón que sale del cátodo con K (eV) entre placas a distancia 1 con la pila
  *                                     V (V): x(t) = √K·t + V·t²/4 (unidades del dibujo: x en fracciones de la
  *                                     distancia, t en unidades con ½m = 1, de modo que v² = K + V·x). Da x, v, llega
- *                                     (alcanza el colector), tLlega, xMax y tVuelve (si regresa al cátodo)
+ *                                     (alcanza el colector), tLlega, xMax y tVuelve (si regresa al cátodo).
+ *                                     Convenciones: si llega al colector sin dar la vuelta, xMax = null (y tVuelve =
+ *                                     null) y desde tLlega x = 1; si da la vuelta, x(t) = √K·t + V·t²/4 vale solo
+ *                                     hasta tVuelve, y desde ahí x = 0 (se queda en el cátodo)
  *   avanzarElectron({ x, v }, V, dt)  un paso dt del mismo movimiento con la pila V de ese instante: x += v·dt + V·dt²/4,
  *                                     v += V·dt/2; llego (cruzó x = 1) y volvio (regresó a x = 0). Para el dibujo
  *   fotonesPorSegundo(P, lambda, juego)  N = P/(h·f) (1/s), con E (eV) y EJ (J)
@@ -60,7 +63,8 @@
  *   wien(T)                           λmax = 2,9 × 10⁻³/T (m y nm)
  *   incertidumbre(dx, juego)          Δp mínimo = h/(4π·Δx) (kg·m/s)
  *   colorLuz(lambda)                  color aproximado de la luz visible { r, g, b } (0 a 255) o null fuera de 380 a
- *                                     750 nm. Solo para el dibujo: no es un color de variable
+ *                                     750 nm (de 600 a 630 nm se corre hacia el rojo, para que 620 nm se vea rojo y
+ *                                     no naranja). Solo para el dibujo: no es un color de variable
  *   azar(semilla)                     números al azar con semilla
  *
  * Cada resultado que alimenta una predicción trae un campo 'errores' con lo que da cada error típico (FM1 a FM4 de
@@ -90,6 +94,7 @@
  *     unoSobreN     En = −13,6/n (1/n en vez de 1/n²).
  *     unNivel       la energía de un solo nivel, |En(ni)|, en vez de la diferencia.
  *     sumaNiveles   |En(ni)| + |En(nf)| (sumar en vez de restar).
+ *     nivelLlegada  la energía del nivel de llegada, |En(nf)|, en vez de la diferencia.
  *   rayosX.errores (λ en nm): sinKilo = hc/V con V en kV como si fueran voltios (hc en eV·nm); sinE = h·c/V con h en
  *     J·s y sin la carga e (sale en nm); joulesConEv = hc (eV·nm) entre e·V en joules.
  *   cambioRayosX.errores (nm): proporcional = λmin0·V1/V0 (más voltaje, λ más larga); igual = λmin0 (el voltaje solo
@@ -267,6 +272,7 @@
         unoSobreN: lectura(Math.abs(RYD / nf - RYD / ni), k),
         unNivel: lectura(Math.abs(Ei), k),
         sumaNiveles: lectura(Math.abs(Ei) + Math.abs(Ef), k),
+        nivelLlegada: lectura(Math.abs(Ef), k),
       },
     });
   }
@@ -316,7 +322,8 @@
     else if (lambda < 490) { g = (lambda - 440) / 50; b = 1; }
     else if (lambda < 510) { g = 1; b = (510 - lambda) / 20; }
     else if (lambda < 580) { r = (lambda - 510) / 70; g = 1; }
-    else if (lambda < 645) { r = 1; g = (645 - lambda) / 65; }
+    else if (lambda < 600) { r = 1; g = 1 - 0.65 * (lambda - 580) / 20; }
+    else if (lambda < 630) { r = 1; g = 0.35 * (630 - lambda) / 30; }
     else r = 1;
     const f = lambda < 420 ? 0.3 + 0.7 * (lambda - 380) / 40 : lambda > 700 ? 0.3 + 0.7 * (750 - lambda) / 50 : 1;
     const q = x => Math.round(255 * Math.pow(x * f, 0.8));
