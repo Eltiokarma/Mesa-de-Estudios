@@ -1,0 +1,151 @@
+{
+  "plantilla": "materia-energia",
+  "unidades": "Masas en gramos (g) salvo donde dice kg; masas atómicas de academia (H = 1, C = 12, O = 16, Na = 23, Si = 28, S = 32, Cl = 35,5, Fe = 56). Energía en joules (J) y kWh (1 kWh = 3,6 × 10⁶ J); c = 3 × 10⁸ m/s; masas nucleares en u, con 1 u = 931,5 MeV y 1 u = 1,66054 × 10⁻²⁷ kg. Temperaturas en °C; calor en calorías con c = 1 cal/(g °C) y Lv = 540 cal/g para el agua.",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.vaporNoPesa); un número en el camino es el índice de una lista (fracciones.0). Las listas se comparan completas y en orden, y los textos, exactos. Una partícula es { formula, n, fase?, estado?, sustancia? }: 'sustancia' agrupa los iones de una sal disuelta (Na^+ y Cl^- son NaCl). Una parte de un sistema es { nombre, sustancia, formula?, fase, estado, disuelto? }: cada valor distinto de 'fase' es una fase y cada valor distinto de 'sustancia', un componente. En cambio(), el tipo es 'nuclear' si cambian los elementos, 'físico' si quedan las mismas sustancias y 'químico' si aparecen otras con los mismos átomos.",
+  "verificacion": "",
+  "tolerancia": 1e-9,
+  "casos": [
+    { "nombre": "Paso 2 y predicción 1 (MA9): la caja 2 (6 moléculas de H2O) es la del compuesto: una sola sustancia con dos clases de átomos unidos; 18 átomos",
+      "fn": "clasificarCaja", "args": [[{ "formula": "H2O", "n": 6 }]],
+      "espera": { "tipo": "compuesto", "nombre": "sustancia pura (compuesto)", "pura": true, "nSustancias": 1, "elementos": ["H", "O"], "particulas": 6, "atomos": 18, "nFases": 1 } },
+
+    { "nombre": "Predicción 1, distractor (MA9): la caja 4 (5 H2 y 3 O2) es mezcla homogénea de dos elementos; quien mira «dos clases de átomos» o «átomos unidos» dice compuesto; quien mira a la vista (MA10), sustancia pura",
+      "fn": "clasificarCaja", "args": [[{ "formula": "H2", "n": 5 }, { "formula": "O2", "n": 3 }]],
+      "espera": { "tipo": "mezcla", "nombre": "mezcla homogénea", "sustancias": ["H2", "O2"], "nElementos": 2, "particulas": 8, "atomos": 16,
+                  "errores.dosClasesDeAtomos": "compuesto", "errores.atomosUnidos": "compuesto", "errores.aLaVista": "sustancia pura" },
+      "tambien": [ { "args": [[{ "formula": "O2", "n": 6 }]], "espera": { "tipo": "elemento", "nombre": "sustancia pura (elemento)", "atomos": 12, "errores.atomosUnidos": "compuesto", "errores.dosClasesDeAtomos": "elemento" } },
+                   { "args": [[{ "formula": "He", "n": 9 }]], "espera": { "tipo": "elemento", "atomos": 9, "errores.atomosUnidos": "elemento", "errores.cadaAtomoUnaSustancia": 9 } },
+                   { "fn": "especie", "args": ["O3"], "espera": { "tipo": "elemento", "nAtomos": 3, "masaMolar": 48, "errores.porUnion": "compuesto" } } ] },
+
+    { "nombre": "Experimento 2 (MA9): 4 moléculas de O2 y 3 de O3 son una mezcla de dos sustancias de un solo elemento (alótropos)",
+      "fn": "clasificarCaja", "args": [[{ "formula": "O2", "n": 4 }, { "formula": "O3", "n": 3 }]],
+      "espera": { "tipo": "mezcla", "nombre": "mezcla homogénea", "nSustancias": 2, "elementos": ["O"], "nElementos": 1, "atomos": 17, "errores.dosClasesDeAtomos": "elemento", "errores.atomosUnidos": "compuesto" } },
+
+    { "nombre": "Informe, caso «Clasificar»: H2O compuesto, O2 elemento, aire, agua de mar y acero (aleación) mezclas homogéneas, NaCl compuesto, diamante elemento",
+      "fn": "material", "args": ["agua destilada"], "espera": { "nombre": "sustancia pura (compuesto)" },
+      "tambien": [ { "args": ["oxígeno del aire (O₂)"], "espera": { "nombre": "sustancia pura (elemento)" } },
+                   { "args": ["aire"], "espera": { "nombre": "mezcla homogénea", "sustancias": ["N2", "O2"] } },
+                   { "args": ["agua de mar"], "espera": { "nombre": "mezcla homogénea", "sustancias": ["H2O", "NaCl"] } },
+                   { "args": ["acero"], "espera": { "nombre": "mezcla homogénea", "elementos": ["Fe", "C"] } },
+                   { "args": ["sal de mesa (NaCl)"], "espera": { "nombre": "sustancia pura (compuesto)" } },
+                   { "args": ["diamante"], "espera": { "nombre": "sustancia pura (elemento)" } },
+                   { "args": ["bronce"], "espera": { "nombre": "mezcla homogénea" } },
+                   { "args": ["granito"], "espera": { "nombre": "mezcla heterogénea", "nFases": 2 } } ] },
+
+    { "nombre": "Agua con hielo: una sola sustancia (sustancia pura, compuesto) en dos fases: sistema heterogéneo",
+      "fn": "material", "args": ["agua con hielo"],
+      "espera": { "nombre": "sustancia pura (compuesto)", "tipo": "compuesto", "nSustancias": 1, "nFases": 2, "sistema": "heterogéneo" } },
+
+    { "nombre": "Paso 3 y predicción 2: agua, hielo, sal disuelta, aceite y arena: 4 fases (la sal está en la del agua) y 4 componentes (agua y hielo son H2O). Errores: 5 fases y 5 componentes contando cada cosa; 5 componentes con el hielo aparte; 5 fases con la sal aparte",
+      "fn": "contarSistema", "args": [[
+        { "nombre": "agua líquida", "sustancia": "H2O", "formula": "H2O", "fase": "agua con sal", "estado": "l" },
+        { "nombre": "cubitos de hielo", "sustancia": "H2O", "formula": "H2O", "fase": "hielo", "estado": "s" },
+        { "nombre": "sal disuelta", "sustancia": "NaCl", "formula": "NaCl", "fase": "agua con sal", "estado": "s", "disuelto": true },
+        { "nombre": "una capa de aceite", "sustancia": "aceite", "fase": "aceite", "estado": "l" },
+        { "nombre": "arena en el fondo", "sustancia": "SiO2", "formula": "SiO2", "fase": "arena", "estado": "s" } ]],
+      "espera": { "nFases": 4, "fases": ["agua con sal", "hielo", "aceite", "arena"], "nComponentes": 4, "componentes": ["H2O", "NaCl", "aceite", "SiO2"],
+                  "sistema": "heterogéneo", "nombre": "tetrafásico y cuaternario", "nElementos": null,
+                  "errores.cadaCosaUnaFase": 5, "errores.cadaCosaUnComponente": 5, "errores.hieloOtroComponente": 5, "errores.disueltoEsFase": 5 } },
+
+    { "nombre": "Papel: agua, hielo, azúcar disuelta y limaduras de hierro, con aire encima (N2 y O2): 4 fases, 5 componentes y 5 elementos (H, O, C, Fe, N)",
+      "fn": "contarSistema", "args": [[
+        { "nombre": "agua", "sustancia": "H2O", "formula": "H2O", "fase": "agua azucarada", "estado": "l" },
+        { "nombre": "hielo", "sustancia": "H2O", "formula": "H2O", "fase": "hielo", "estado": "s" },
+        { "nombre": "azúcar disuelta", "sustancia": "C12H22O11", "formula": "C12H22O11", "fase": "agua azucarada", "estado": "s", "disuelto": true },
+        { "nombre": "limaduras de hierro", "sustancia": "Fe", "formula": "Fe", "fase": "hierro", "estado": "s" },
+        { "nombre": "nitrógeno del aire", "sustancia": "N2", "formula": "N2", "fase": "aire", "estado": "g" },
+        { "nombre": "oxígeno del aire", "sustancia": "O2", "formula": "O2", "fase": "aire", "estado": "g" } ]],
+      "espera": { "nFases": 4, "nComponentes": 5, "nElementos": 5, "elementos": ["H", "O", "C", "Fe", "N"], "nombre": "tetrafásico y quinario", "atomosPorUnidad.C12H22O11": 45 } },
+
+    { "nombre": "Informe, caso «Fenómeno»: fundir hielo y disolver sal son físicos; oxidar hierro y quemar metano, químicos; la fisión del uranio-235, nuclear (cambian los elementos)",
+      "fn": "fenomeno", "args": ["fundir-hielo"], "espera": { "tipo": "físico", "nuevas": [], "conservaAtomos": true, "cambiaEstado": true, "errores.cambioDeEstadoEsQuimico": "químico", "errores.reversibleEsFisico": "físico" },
+      "tambien": [ { "args": ["disolver-sal"], "espera": { "tipo": "físico", "nuevas": [], "sustanciasDespues": ["NaCl", "H2O"] } },
+                   { "args": ["oxidar-hierro"], "espera": { "tipo": "químico", "nuevas": ["Fe2O3"], "seVan": ["Fe", "O2"], "conservaAtomos": true, "atomosDespues.Fe": 4, "atomosDespues.O": 10, "errores.sigueSiendoElMismo": "físico", "errores.colorEsQuimico": "químico" } },
+                   { "args": ["quemar-metano"], "espera": { "tipo": "químico", "nuevas": ["CO2", "H2O"], "conservaAtomos": true } },
+                   { "args": ["fision-uranio"], "espera": { "tipo": "nuclear", "elementosAntes": ["U"], "elementosDespues": ["Ba", "Kr"], "conservaAtomos": false, "errores.nuclearEsQuimico": "químico" } },
+                   { "args": ["electrolisis-agua"], "espera": { "tipo": "químico", "nuevas": ["H2", "O2"], "errores.reversibleEsFisico": "físico" } } ] },
+
+    { "nombre": "Paso 4 y predicción 3 (MA1): en las burbujas del agua que hierve hay moléculas de H2O (su vapor), no H2 y O2; hervir es físico",
+      "fn": "burbujas", "args": ["H2O"],
+      "espera": { "contiene": ["H2O"], "nuevas": [], "tipo": "físico", "errores.elementos": ["H2", "O2"], "errores.aire": ["N2", "O2"], "errores.vacio": [] },
+      "tambien": [ { "fn": "fenomeno", "args": ["hervir-agua"], "espera": { "tipo": "físico", "cambiaEstado": true, "errores.cambioDeEstadoEsQuimico": "químico" } },
+                   { "fn": "fenomeno", "args": ["condensar-vapor"], "espera": { "tipo": "físico", "errores.cambioDeEstadoEsQuimico": "químico" } } ] },
+
+    { "nombre": "Paso 5 y predicción 4 (MA4): 0,5 g de alcohol se evaporan en un frasco cerrado de 300 g: la balanza sigue en 300,5 g; si el vapor no pesara, 300 g. Destapado, el vapor sale y marca 300 g",
+      "fn": "evaporar", "args": [{ "recipiente": 300, "masa": 0.5, "fraccion": 1, "cerrado": true }],
+      "espera": { "antes": 300.5, "despues": 300.5, "vapor": 0.5, "seVa": 0, "liquidoQueQueda": 0, "errores.vaporNoPesa": 300, "errores.vaporPesaMenos": [300, 300.5], "errores.vaporEmpuja": "más" },
+      "tambien": [ { "args": [{ "recipiente": 300, "masa": 0.5, "fraccion": 1, "cerrado": false }], "espera": { "antes": 300.5, "despues": 300, "seVa": 0.5 } } ] },
+
+    { "nombre": "Informe, casos «Balanza»: 20 g de alcohol en un frasco de 150 g: 170 g antes y después si está cerrado; 150 g si está abierto y se evapora todo",
+      "fn": "evaporar", "args": [{ "recipiente": 150, "masa": 20, "fraccion": 1, "cerrado": true }],
+      "espera": { "antes": 170, "despues": 170 },
+      "tambien": [ { "args": [{ "recipiente": 150, "masa": 20, "fraccion": 1, "cerrado": false }], "espera": { "despues": 150, "seVa": 20 } },
+                   { "args": [{ "recipiente": 150, "masa": 20, "fraccion": 0.25, "cerrado": false }], "espera": { "despues": 165, "vapor": 5, "liquidoQueQueda": 15 } } ] },
+
+    { "nombre": "Paso 6 y predicción 5 (MA2, MA3): el azúcar se disuelve sin formar otra sustancia (físico); el clavo forma Fe2O3, una sustancia nueva con los mismos átomos (químico)",
+      "fn": "fenomeno", "args": ["disolver-azucar"],
+      "espera": { "tipo": "físico", "nuevas": [], "sustanciasAntes": ["C12H22O11", "H2O"], "conservaAtomos": true, "atomosAntes.C": 36 },
+      "tambien": [ { "fn": "cambio", "args": [[{ "formula": "Fe", "n": 4 }, { "formula": "O2", "n": 3 }, { "formula": "H2O", "n": 4 }], [{ "formula": "Fe2O3", "n": 2 }, { "formula": "H2O", "n": 4 }]],
+                     "espera": { "tipo": "químico", "nuevas": ["Fe2O3"], "atomosAntes.O": 10, "atomosDespues.O": 10 } } ] },
+
+    { "nombre": "Paso 7 y predicción 6: agua con sal se separa por evaporación (o destilación); filtrar no separa nada: todo pasa por el papel (error de la tabla «sin respaldo»)",
+      "fn": "metodoPara", "args": ["agua-sal"],
+      "espera": { "adecuados": ["evaporacion", "destilacion"], "difiere": "la temperatura de ebullición", "homogenea": true, "errores.filtrarLoDisuelto": "filtracion", "errores.noSeSepara": "ninguno" },
+      "tambien": [ { "fn": "separar", "args": ["agua-sal", "filtracion"], "espera": { "separa": false, "adecuado": false, "fracciones": [[], ["agua", "sal"]], "pierde": [] } },
+                   { "fn": "separar", "args": ["agua-sal", "evaporacion"], "espera": { "separa": true, "adecuado": true, "fracciones": [["sal"]], "pierde": ["agua"] } },
+                   { "fn": "separar", "args": ["agua-sal", "decantacion"], "espera": { "separa": false } },
+                   { "fn": "separar", "args": ["agua-sal", "destilacion"], "espera": { "separa": true, "fracciones": [["agua"], ["sal"]], "pierde": [] } } ] },
+
+    { "nombre": "Paso 7, la escena ejecuta cada método: agua con arena se filtra; agua con aceite se decanta (arriba el aceite, 0,92 g/mL); hierro con azufre se imanta; agua con alcohol se destila (primero el alcohol, 78 °C) y evaporarla no deja nada",
+      "fn": "separar", "args": ["agua-arena", "filtracion"],
+      "espera": { "separa": true, "adecuado": true, "fracciones": [["arena"], ["agua"]] },
+      "tambien": [ { "args": ["agua-aceite", "decantacion"], "espera": { "separa": true, "fracciones": [["aceite"], ["agua"]] } },
+                   { "args": ["agua-aceite", "filtracion"], "espera": { "separa": false } },
+                   { "args": ["hierro-azufre", "imantacion"], "espera": { "separa": true, "fracciones": [["hierro"], ["azufre"]] } },
+                   { "args": ["hierro-azufre", "filtracion"], "espera": { "separa": false } },
+                   { "args": ["agua-alcohol", "destilacion"], "espera": { "separa": true, "adecuado": true, "fracciones": [["alcohol"], ["agua"]] } },
+                   { "args": ["agua-alcohol", "evaporacion"], "espera": { "separa": false, "pierde": ["agua", "alcohol"] } },
+                   { "args": ["agua-alcohol", "decantacion"], "espera": { "separa": false } } ] },
+
+    { "nombre": "Paso 8 y predicción 7 (E = mc²): 1 g equivale a 9 × 10¹³ J (2,5 × 10⁷ kWh). Errores: 1 g sin pasar a kg, 9 × 10¹⁶ J; c en km/s, 9 × 10⁷ J; sin elevar c al cuadrado, 3 × 10⁵ J",
+      "fn": "energia", "args": [1, "g"],
+      "espera": { "kg": 0.001, "E": 9e13, "kWh": 2.5e7, "errores.gramosSinConvertir": 9e16, "errores.cEnKmPorS": 9e7, "errores.sinCuadrado": 3e5 } },
+
+    { "nombre": "Informe: m = 2 kg da E = 1,8 × 10¹⁷ J",
+      "fn": "energia", "args": [2, "kg"], "espera": { "E": 1.8e17, "g": 2000, "kWh": 5e10 } },
+
+    { "nombre": "Informe, E = mc² inverso: E = 4,5 × 10¹³ J corresponde a m = 5 × 10⁻⁴ kg = 0,5 g",
+      "fn": "masaDeEnergia", "args": [4.5e13], "espera": { "kg": 5e-4, "g": 0.5, "errores.conservaMasa": 0 } },
+
+    { "nombre": "Experimento 5 e informe «Defecto de masa»: si se liberan 1,8 × 10¹⁴ J, la masa baja 2 × 10⁻³ kg = 2 g. Errores: la masa se conserva (0 g); dejarlo en kg y leerlo como gramos (0,002 g); c en km/s (2000 kg)",
+      "fn": "balanzaNuclear", "args": [1.8e14],
+      "espera": { "baja": 2, "bajaKg": 0.002, "errores.conservaMasa": 0, "errores.kgComoGramos": 0.002, "errores.cEnKmPorS": 2000 },
+      "tambien": [ { "fn": "masaDeEnergia", "args": [1.8e14], "espera": { "kg": 0.002, "g": 2, "errores.sinCuadrado": 600000 } } ] },
+
+    { "nombre": "Experimento 5, comparación química: arder 1 mol de metano libera unos 890 000 J; la masa que «se pierde» es 890 000 / (9 × 10¹⁶) kg ≈ 9,9 × 10⁻⁹ g: ninguna balanza lo nota",
+      "fn": "masaDeEnergia", "args": [890000], "espera": { "kg": 9.888888888888889e-12, "g": 9.888888888888889e-9 } },
+
+    { "nombre": "Defecto de masa de la fusión D + T → He-4 + n con masas de 4 decimales (2,0141 + 3,0160 → 4,0026 + 1,0087 u): Δm = 0,0188 u, unos 17,5 MeV",
+      "fn": "defectoMasa", "args": [[2.0141, 3.0160], [4.0026, 1.0087]],
+      "espera": { "masaAntes": 5.0301, "masaDespues": 5.0113, "dmU": 0.0188, "MeV": 17.5122, "dmKg": 3.1218152e-29, "E": 2.80963368e-12, "errores.conservaMasa": 0 } },
+
+    { "nombre": "Experimento 1 (MA5 al revés): 5,6 g de lana de acero (Fe) arden en una balanza abierta y forman Fe2O3: se unen 2,4 g de oxígeno del aire y la balanza sube a 8 g; en frasco cerrado no cambia",
+      "fn": "quemarMetal", "args": [{ "metal": "Fe", "masa": 5.6, "oxido": "Fe2O3", "cerrado": false }],
+      "espera": { "antes": 5.6, "despues": 8, "oxigeno": 2.4, "masaOxido": 8, "moles": 0.1, "sube": 2.4, "errores.conservaSiempre": 5.6, "errores.seConsume": "baja" },
+      "tambien": [ { "args": [{ "metal": "Fe", "masa": 5.6, "oxido": "Fe2O3", "recipiente": 200, "cerrado": true }], "espera": { "antes": 205.6, "despues": 205.6, "sube": 0, "errores.cerradoSube": 208 } },
+                   { "args": [{ "metal": "Fe", "masa": 11.2, "oxido": "Fe2O3", "cerrado": false }], "espera": { "despues": 16, "oxigeno": 4.8 } } ] },
+
+    { "nombre": "Experimento 4 (MA6, MA7): 500 g de agua hirviendo en Juliaca (unos 87 °C) reciben 2000 cal/min durante 5 min: sigue a 87 °C y se evaporan 10 000/540 = 500/27 g. Errores: 100 °C; sigue subiendo, 87 + 10 000/500 = 107 °C",
+      "fn": "hervir", "args": [{ "masa": 500, "Teb": 87, "minutos": 5, "potencia": 2000 }],
+      "espera": { "T": 87, "Q": 10000, "vapor": 18.51851851851852, "errores.siempre100": 100, "errores.sigueSubiendo": 107 } },
+
+    { "nombre": "Experimento 3 (MA11, AT1): un solo átomo de azufre tiene masa, pero no color, temperatura de fusión ni dureza: son propiedades de muchos átomos juntos",
+      "fn": "particula", "args": ["S", ["color", "temperatura de fusión", "dureza", "masa"]],
+      "espera": { "tiene": ["masa"], "noTiene": ["color", "temperatura de fusión", "dureza"], "errores.todasIguales": ["color", "temperatura de fusión", "dureza", "masa"] } },
+
+    { "nombre": "Propiedades: masa y volumen son extensivas; densidad, temperatura, color y temperatura de ebullición, intensivas; la combustibilidad es química (e intensiva)",
+      "fn": "clasificarPropiedades", "args": [["masa", "volumen", "densidad", "temperatura", "color", "temperatura de ebullición", "combustibilidad"]],
+      "espera": { "extensivas": ["masa", "volumen"], "intensivas": ["densidad", "temperatura", "color", "temperatura de ebullición", "combustibilidad"],
+                  "quimicas": ["combustibilidad"], "nIntensivas": 5, "nExtensivas": 2, "errores.medibleEsExtensiva": 5, "errores.temperaturaExtensiva": 3 } }
+  ]
+}
