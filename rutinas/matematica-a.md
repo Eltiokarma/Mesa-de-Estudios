@@ -461,3 +461,91 @@ La conversación principal mandó una lista nueva: transformaciones trigonométr
 
 3. Informe de álgebra: registrar CX1 a CX35 como hipótesis nuestras.
 4. Línea para `docs/pendientes.md` y `CLAUDE.md`: «Números complejos (7 nov 2026, sesión de matemática A): `plantillas/numeros-complejos/` (la flecha en el plano: multiplicar por i gira 90°, módulo con cuadritos, conjugado como reflejo, producto que gira y estira, De Moivre; 19 casos verificados aparte)».
+
+## 7 nov 2026 · Transformaciones trigonométricas: dos flechas en la circunferencia (`plantillas/transformaciones-trig/`)
+
+**Qué hice.**
+
+- **`motor.js`** (UMD; la cabecera para el verificador va hasta la línea 76).
+  - Calcula la suma a producto en sus cuatro casos, el producto a suma (también con `veces`), el cociente con dónde no existe (`en: {original, simplificada}`), agrupar, series y el rombo de las dos flechas. Tiene también las pulsaciones y `simplificar({arriba, abajo})` para el papel.
+  - Los valores son exactos con múltiplos de 15°; `exacto: true` también cuando el resultado sale exacto aunque haya otro ángulo. Con otros ángulos el valor es numérico y siempre va con 3 cifras.
+  - No usa la convención 37°/53°.
+  - Hay errores TT1 a TT13.
+- **`casos.json`**: 22 casos; el formato admite `"espera": {"error": …}`.
+- **`motor.test.js`**: 42 pruebas. Incluye la prueba de propiedades (en los casos y en un barrido que cubre las flechas que se arrastran) y las 12 predicciones.
+- **`papel.json`**: 10 problemas propios.
+- **`plantilla.json`**: unidad `trigonometria.transformaciones-trigonometricas`.
+- **`index.html`**: dos puntos en la circunferencia, en A y en B, que se arrastran. La suma de las dos flechas es un rombo: apunta en M = (A + B)/2 y mide 2 cos D, con D = (A − B)/2. La altura y el avance dan las cuatro fórmulas y el cociente.
+  - **Paso a paso** (7 predicciones):
+    - la dirección de la suma;
+    - su largo;
+    - sen 75° + sen 15°;
+    - sen 75° − sen 15°;
+    - cos 105° − cos 15°;
+    - 2 sen 75° cos 45°;
+    - el cociente (sen 5x + sen 3x)/(cos 5x + cos 3x), que después se arrastra y da tan 4x en vivo.
+  - **¿Qué pasa si…?** (5):
+    - cos 20° + cos 100° + cos 140°;
+    - las pulsaciones de sen 9t + sen 7t;
+    - 2 sen 75° sen 30°;
+    - cos 105° + cos 15°;
+    - otro cociente.
+- **Respaldo.** Todo va como hipótesis, porque el informe deja fuera las transformaciones (línea 5).
+  - TR16 va como extensión nuestra. El ejemplo del informe, sen 30° + sen 60° = sen 90°, tiene la forma del distractor del paso 4.
+  - TR12 también va como extensión: se aplica a cos 120°.
+  - TT1 a TT13 son hipótesis nuestras.
+
+**Pruebas.** `motor.test.js` pasa 42 de 42. La pasada del celular no da QUEDA. Playwright pasa en las 8 combinaciones:
+- sin errores ni desbordes;
+- el bloqueo aguanta;
+- el dedo lejos de las flechas desplaza la página.
+
+En `npm test` falla, además de lo esperado, la prueba de matrices, que todavía está a medio hacer.
+
+**Subagentes.**
+
+- **Verificador independiente.** Calculó cada valor directo, sin las fórmulas de transformación. Reconoció las formas exactas a + b√2 + c√3 + d√6 y comprobó los cocientes en cuatro ángulos. Coincidieron los 20 casos y los 10 de papel. Pidió:
+  - formato coherente (positivos primero, y el signo afuera cuando todo es negativo);
+  - que p6, p8 y p9 comprobaran el problema mismo y no un hermano.
+
+  Entraron sus bordes:
+  - A = B y A = −B;
+  - sumas que dan 0;
+  - cos A − cos B en los dos órdenes y con ángulos negativos;
+  - productos con α = β;
+  - cocientes donde el denominador es 0;
+  - series largas y ángulos que no son múltiplos de 15°;
+  - el rombo fuera de rango, que da error.
+- **Revisor de contenido.** Sin graves. Corregí:
+  - la ecuación del cociente, que pedía scroll lateral en el celular y ahora va en tres líneas;
+  - rótulos encimados en los pasos 3 y 7 y en el experimento 1;
+  - la nota del paso 5, que no correspondía a su distractor;
+  - la cita de TR16;
+  - el título del paso 7, que insinuaba dos términos;
+  - las leyendas α (= M) y β (= D);
+  - cos x y cos 5x, que no tenían color;
+  - «−(√6 + √2)/4»;
+  - TT13, separado de TT1;
+  - lecturas con 3 cifras;
+  - p9 (N en vez de M, por la serie) y el control de p10;
+  - la flecha de 20° en oscuro, que estaba a ΔE00 19,5 de la tinta y ahora va en el verde de D.
+
+**Pendiente.** No están las productorias del temario.
+
+**Pedidos para la integración.**
+
+1. Catálogo: `transformaciones-trig` en `trigonometria.transformaciones-trigonometricas`, y luego `npm run catalogo`. Sus ítems de prueba van a `reserva`.
+2. `docs/diseno.md`, colores de esta escena:
+
+   | Variable | Claro | Oscuro |
+   | --- | --- | --- |
+   | A | #1f5fbf | #7cb0ff |
+   | B | #7d6a00 | #e3c84a |
+   | M = (A + B)/2, también α en producto a suma | #a10fbf | #cf6bfa |
+   | D = (A − B)/2, también β | #2e7535 | #7fd36a |
+   | Suma | #77032c | #fdb4ce |
+   | Resta (cuerda) | #b04a00 | #ff8a3d |
+
+   ΔE00 mínimo: 23,5 en claro y 23,7 en oscuro. Contraste mínimo: 4,54.
+3. Informe de trigonometría: registrar TT1 a TT13 como hipótesis nuestras.
+4. Línea para `docs/pendientes.md` y `CLAUDE.md`: «Transformaciones trigonométricas (7 nov 2026, sesión de matemática A): `plantillas/transformaciones-trig/` (dos flechas en la circunferencia: la suma es un rombo que apunta en la semisuma y mide 2 cos de la semidiferencia; suma a producto, producto a suma, cocientes y pulsaciones; 22 casos verificados aparte)». Con esto, la fila ma1 de pendientes queda cubierta salvo cónicas y polares.
