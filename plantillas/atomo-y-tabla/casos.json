@@ -3,200 +3,654 @@
   "unidades": "Partículas y electrones en unidades; energía de ionización en kJ/mol; radios en pm; electronegatividad de Pauling, sin unidades.",
   "constantes": "Configuración por la regla de Möller (n + l, y a igual n + l, por n), con Cr y Cu como únicas excepciones del período 4 (Mo, Ag y Au, el mismo patrón). Cationes: salen primero los de mayor n y, a igual n, los de mayor l. Cajas de mₗ = −l a +l, primero las flechas hacia arriba (mₛ = +1/2). Datos de tabla de Z = 1 a 36: primera energía de ionización de NIST (eV × 96,485, redondeada a entero), radios calculados de Clementi y otros (1967) y electronegatividad de Pauling (Allred 1961); radios iónicos de Shannon (1976, coordinación 6).",
   "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.resta-carga-a-neutrones, valores.P); los textos (configuraciones como '[Ar] 3d5', con el exponente pegado a la subcapa) y los booleanos se comparan exactos; las listas, completas y en orden; los números, con la tolerancia.",
-  "verificacion": "",
-  "tolerancia": 1e-9,
+  "verificacion": "Recalculados el 7 de noviembre de 2026 por un subagente que no leyó el motor ni este archivo (solo la cabecera de motor.js): su propio programa en Python con llenado por Möller y Cr y Cu como excepciones, cationes que pierden primero los de mayor n, cajas de −l a +l y fracciones exactas para mₛ; los órdenes isoelectrónicos también por Z. Coinciden los 29 casos. Solo difiere el redondeo de las 4.as energías sucesivas del Na (9543) y del Mg (10543), en menos de 0,03 %. Los datos de NIST, Clementi, Pauling y Shannon se cotejaron de memoria, no contra la fuente: hay que confirmarlos con el libro o la tabla que use el colegio.",
+  "tolerancia": 1e-09,
   "casos": [
     {
       "nombre": "⁵⁶Fe³⁺: 26 protones, 30 neutrones y 23 electrones (restar la carga a los neutrones da 27; sumarla a los electrones, 29)",
       "fn": "particulas",
-      "args": [{ "simbolo": "Fe", "A": 56, "carga": 3 }],
-      "espera": { "protones": 26, "neutrones": 30, "electrones": 23, "errores.resta-carga-a-neutrones": 27, "errores.suma-carga-a-electrones": 29, "errores.ignora-la-carga": 26 }
+      "args": [
+        {
+          "simbolo": "Fe",
+          "A": 56,
+          "carga": 3
+        }
+      ],
+      "espera": {
+        "protones": 26,
+        "neutrones": 30,
+        "electrones": 23,
+        "errores.resta-carga-a-neutrones": 27,
+        "errores.suma-carga-a-electrones": 29,
+        "errores.ignora-la-carga": 26
+      }
     },
     {
       "nombre": "³²S²⁻: 16 protones, 16 neutrones y 18 electrones",
       "fn": "particulas",
-      "args": [{ "simbolo": "S", "A": 32, "carga": -2 }],
-      "espera": { "protones": 16, "neutrones": 16, "electrones": 18 }
+      "args": [
+        {
+          "simbolo": "S",
+          "A": 32,
+          "carga": -2
+        }
+      ],
+      "espera": {
+        "protones": 16,
+        "neutrones": 16,
+        "electrones": 18
+      }
     },
     {
       "nombre": "³⁷Cl, isótopo neutro: 17 protones, 20 neutrones y 17 electrones",
       "fn": "particulas",
-      "args": [{ "Z": 17, "A": 37, "carga": 0 }],
-      "espera": { "protones": 17, "neutrones": 20, "electrones": 17 }
+      "args": [
+        {
+          "Z": 17,
+          "A": 37,
+          "carga": 0
+        }
+      ],
+      "espera": {
+        "protones": 17,
+        "neutrones": 20,
+        "electrones": 17
+      }
     },
     {
       "nombre": "Ca²⁺ y S²⁻ son isoelectrónicos: 18 electrones cada uno, como el Ar",
       "fn": "isoelectronicos",
-      "args": [["Ca2+", "S2-"]],
-      "espera": { "electrones": [18, 18], "todos": true, "igualA": "Ar" }
+      "args": [
+        [
+          "Ca2+",
+          "S2-"
+        ]
+      ],
+      "espera": {
+        "electrones": [
+          18,
+          18
+        ],
+        "todos": true,
+        "igualA": "Ar"
+      }
     },
     {
       "nombre": "N (Z = 7): 1s² 2s² 2p³, 3 desapareados; último electrón n = 2, l = 1, mₗ = +1, mₛ = +1/2",
       "fn": "configuracion",
-      "args": ["N"],
-      "espera": { "texto": "1s2 2s2 2p3", "desapareados": 3, "paramagnetico": true },
-      "tambien": [{ "fn": "ultimoElectron", "args": ["N"], "espera": { "n": 2, "l": 1, "ml": 1, "ms": 0.5 } }]
+      "args": [
+        "N"
+      ],
+      "espera": {
+        "texto": "1s2 2s2 2p3",
+        "desapareados": 3,
+        "paramagnetico": true
+      },
+      "tambien": [
+        {
+          "fn": "ultimoElectron",
+          "args": [
+            "N"
+          ],
+          "espera": {
+            "n": 2,
+            "l": 1,
+            "ml": 1,
+            "ms": 0.5
+          }
+        }
+      ]
     },
     {
       "nombre": "O (Z = 8): 1s² 2s² 2p⁴, 2 desapareados; último electrón 2, 1, −1, −1/2",
       "fn": "configuracion",
-      "args": ["O"],
-      "espera": { "texto": "1s2 2s2 2p4", "desapareados": 2 },
-      "tambien": [{ "fn": "ultimoElectron", "args": ["O"], "espera": { "subcapa": "2p", "n": 2, "l": 1, "ml": -1, "ms": -0.5 } }]
+      "args": [
+        "O"
+      ],
+      "espera": {
+        "texto": "1s2 2s2 2p4",
+        "desapareados": 2
+      },
+      "tambien": [
+        {
+          "fn": "ultimoElectron",
+          "args": [
+            "O"
+          ],
+          "espera": {
+            "subcapa": "2p",
+            "n": 2,
+            "l": 1,
+            "ml": -1,
+            "ms": -0.5
+          }
+        }
+      ]
     },
     {
       "nombre": "Fe (Z = 26): [Ar] 4s² 3d⁶, 4 desapareados; último electrón 3, 2, −2, −1/2",
       "fn": "configuracion",
-      "args": ["Fe"],
-      "espera": { "abreviada": "[Ar] 4s2 3d6", "texto": "1s2 2s2 2p6 3s2 3p6 4s2 3d6", "desapareados": 4 },
-      "tambien": [{ "fn": "ultimoElectron", "args": ["Fe"], "espera": { "n": 3, "l": 2, "ml": -2, "ms": -0.5 } }]
+      "args": [
+        "Fe"
+      ],
+      "espera": {
+        "abreviada": "[Ar] 4s2 3d6",
+        "texto": "1s2 2s2 2p6 3s2 3p6 4s2 3d6",
+        "desapareados": 4
+      },
+      "tambien": [
+        {
+          "fn": "ultimoElectron",
+          "args": [
+            "Fe"
+          ],
+          "espera": {
+            "n": 3,
+            "l": 2,
+            "ml": -2,
+            "ms": -0.5
+          }
+        }
+      ]
     },
     {
       "nombre": "Fe²⁺: [Ar] 3d⁶ (salen los dos 4s), 4 desapareados",
       "fn": "configuracion",
-      "args": ["Fe2+"],
-      "espera": { "abreviada": "[Ar] 3d6", "desapareados": 4, "electrones": 24 }
+      "args": [
+        "Fe2+"
+      ],
+      "espera": {
+        "abreviada": "[Ar] 3d6",
+        "desapareados": 4,
+        "electrones": 24
+      }
     },
     {
       "nombre": "Fe³⁺: [Ar] 3d⁵, 5 desapareados (quitar los últimos en llenarse da [Ar] 4s² 3d³; no restar, [Ar] 4s² 3d⁶)",
       "fn": "configuracion",
-      "args": ["Fe", 3],
-      "espera": { "abreviada": "[Ar] 3d5", "desapareados": 5, "paramagnetico": true, "electrones": 23,
-        "errores.quita-los-ultimos-en-llenarse": "[Ar] 4s2 3d3", "errores.quita-uno-de-s": "[Ar] 4s1 3d4", "errores.no-resta-electrones": "[Ar] 4s2 3d6" }
+      "args": [
+        "Fe",
+        3
+      ],
+      "espera": {
+        "abreviada": "[Ar] 3d5",
+        "desapareados": 5,
+        "paramagnetico": true,
+        "electrones": 23,
+        "errores.quita-los-ultimos-en-llenarse": "[Ar] 4s2 3d3",
+        "errores.quita-uno-de-s": "[Ar] 4s1 3d4",
+        "errores.no-resta-electrones": "[Ar] 4s2 3d6"
+      }
     },
     {
       "nombre": "Cr (Z = 24), excepción: [Ar] 4s¹ 3d⁵, 6 desapareados (sin la excepción, 4s² 3d⁴ y 4)",
       "fn": "configuracion",
-      "args": ["Cr"],
-      "espera": { "abreviada": "[Ar] 4s1 3d5", "desapareados": 6, "excepcion": true, "errores.sin-excepcion": "[Ar] 4s2 3d4", "errores.sin-excepcion-desapareados": 4 }
+      "args": [
+        "Cr"
+      ],
+      "espera": {
+        "abreviada": "[Ar] 4s1 3d5",
+        "desapareados": 6,
+        "excepcion": true,
+        "errores.sin-excepcion": "[Ar] 4s2 3d4",
+        "errores.sin-excepcion-desapareados": 4
+      }
     },
     {
       "nombre": "Cu (Z = 29), excepción: [Ar] 4s¹ 3d¹⁰, 1 desapareado",
       "fn": "configuracion",
-      "args": ["Cu"],
-      "espera": { "abreviada": "[Ar] 4s1 3d10", "desapareados": 1, "excepcion": true }
+      "args": [
+        "Cu"
+      ],
+      "espera": {
+        "abreviada": "[Ar] 4s1 3d10",
+        "desapareados": 1,
+        "excepcion": true
+      }
     },
     {
       "nombre": "Cu⁺: [Ar] 3d¹⁰, 0 desapareados (diamagnético)",
       "fn": "configuracion",
-      "args": ["Cu+"],
-      "espera": { "abreviada": "[Ar] 3d10", "desapareados": 0, "paramagnetico": false }
+      "args": [
+        "Cu+"
+      ],
+      "espera": {
+        "abreviada": "[Ar] 3d10",
+        "desapareados": 0,
+        "paramagnetico": false
+      }
     },
     {
       "nombre": "Mn²⁺ (Z = 25): [Ar] 3d⁵, 5 desapareados",
       "fn": "configuracion",
-      "args": ["Mn2+"],
-      "espera": { "abreviada": "[Ar] 3d5", "desapareados": 5 }
+      "args": [
+        "Mn2+"
+      ],
+      "espera": {
+        "abreviada": "[Ar] 3d5",
+        "desapareados": 5
+      }
     },
     {
       "nombre": "Zn²⁺ (Z = 30): [Ar] 3d¹⁰, 0 desapareados (diamagnético)",
       "fn": "configuracion",
-      "args": ["Zn2+"],
-      "espera": { "abreviada": "[Ar] 3d10", "desapareados": 0, "paramagnetico": false }
+      "args": [
+        "Zn2+"
+      ],
+      "espera": {
+        "abreviada": "[Ar] 3d10",
+        "desapareados": 0,
+        "paramagnetico": false
+      }
     },
     {
       "nombre": "Ni (Z = 28), sin excepción: [Ar] 4s² 3d⁸, 2 desapareados (generalizar la excepción da 4s¹ 3d⁹)",
       "fn": "configuracion",
-      "args": ["Ni"],
-      "espera": { "abreviada": "[Ar] 4s2 3d8", "desapareados": 2, "excepcion": false, "errores.excepcion-generalizada": "[Ar] 4s1 3d9" }
+      "args": [
+        "Ni"
+      ],
+      "espera": {
+        "abreviada": "[Ar] 4s2 3d8",
+        "desapareados": 2,
+        "excepcion": false,
+        "errores.excepcion-generalizada": "[Ar] 4s1 3d9"
+      }
     },
     {
       "nombre": "Br⁻ (Z = 35): [Ar] 4s² 3d¹⁰ 4p⁶, como el Kr; 0 desapareados",
       "fn": "configuracion",
-      "args": ["Br-"],
-      "espera": { "abreviada": "[Ar] 4s2 3d10 4p6", "igualA": "Kr", "desapareados": 0 }
+      "args": [
+        "Br-"
+      ],
+      "espera": {
+        "abreviada": "[Ar] 4s2 3d10 4p6",
+        "igualA": "Kr",
+        "desapareados": 0
+      }
     },
     {
       "nombre": "S y P: el electrón que sale del S (3p⁴) está apareado; el del P (3p³), solo en su caja",
       "fn": "electronQueSale",
-      "args": ["S"],
-      "espera": { "subcapa": "3p", "apareado": true, "ml": -1, "ms": -0.5 },
-      "tambien": [{ "args": ["P"], "espera": { "subcapa": "3p", "apareado": false, "ml": 1, "ms": 0.5 } }]
+      "args": [
+        "S"
+      ],
+      "espera": {
+        "subcapa": "3p",
+        "apareado": true,
+        "ml": -1,
+        "ms": -0.5
+      },
+      "tambien": [
+        {
+          "args": [
+            "P"
+          ],
+          "espera": {
+            "subcapa": "3p",
+            "apareado": false,
+            "ml": 1,
+            "ms": 0.5
+          }
+        }
+      ]
     },
     {
       "nombre": "Ubicación: Fe en el período 4, grupo 8 (VIIIB), bloque d; Cl en el 3, grupo 17 (VIIA), bloque p",
       "fn": "ubicacion",
-      "args": ["Fe"],
-      "espera": { "periodo": 4, "grupo": 8, "grupoAB": "VIIIB", "bloque": "d" },
+      "args": [
+        "Fe"
+      ],
+      "espera": {
+        "periodo": 4,
+        "grupo": 8,
+        "grupoAB": "VIIIB",
+        "bloque": "d"
+      },
       "tambien": [
-        { "args": ["Cl"], "espera": { "periodo": 3, "grupo": 17, "grupoAB": "VIIA", "bloque": "p" } },
-        { "args": ["Cr"], "espera": { "periodo": 4, "grupo": 6, "grupoAB": "VIB", "bloque": "d" } },
-        { "args": ["Cu"], "espera": { "periodo": 4, "grupo": 11, "grupoAB": "IB", "bloque": "d" } },
-        { "args": ["He"], "espera": { "periodo": 1, "grupo": 18, "grupoAB": "VIIIA", "bloque": "s" } },
-        { "args": ["Ca"], "espera": { "periodo": 4, "grupo": 2, "grupoAB": "IIA", "bloque": "s" } }
+        {
+          "args": [
+            "Cl"
+          ],
+          "espera": {
+            "periodo": 3,
+            "grupo": 17,
+            "grupoAB": "VIIA",
+            "bloque": "p"
+          }
+        },
+        {
+          "args": [
+            "Cr"
+          ],
+          "espera": {
+            "periodo": 4,
+            "grupo": 6,
+            "grupoAB": "VIB",
+            "bloque": "d"
+          }
+        },
+        {
+          "args": [
+            "Cu"
+          ],
+          "espera": {
+            "periodo": 4,
+            "grupo": 11,
+            "grupoAB": "IB",
+            "bloque": "d"
+          }
+        },
+        {
+          "args": [
+            "He"
+          ],
+          "espera": {
+            "periodo": 1,
+            "grupo": 18,
+            "grupoAB": "VIIIA",
+            "bloque": "s"
+          }
+        },
+        {
+          "args": [
+            "Ca"
+          ],
+          "espera": {
+            "periodo": 4,
+            "grupo": 2,
+            "grupoAB": "IIA",
+            "bloque": "s"
+          }
+        }
       ]
     },
     {
       "nombre": "Radios, serie isoelectrónica de 10 electrones: O²⁻ > F⁻ > Na⁺ > Mg²⁺ > Al³⁺ (al revés: más protones, más grande)",
       "fn": "ordenarRadios",
-      "args": [["Na+", "Al3+", "F-", "Mg2+", "O2-"]],
-      "espera": { "orden": ["O2-", "F-", "Na+", "Mg2+", "Al3+"], "isoelectronicos": true, "ionicos": [140, 133, 102, 72, 53.5],
-        "errores.mas-protones-mas-grande": ["Al3+", "Mg2+", "Na+", "F-", "O2-"], "errores.ordena-como-atomos": ["Na+", "Mg2+", "Al3+", "O2-", "F-"] }
+      "args": [
+        [
+          "Na+",
+          "Al3+",
+          "F-",
+          "Mg2+",
+          "O2-"
+        ]
+      ],
+      "espera": {
+        "orden": [
+          "O2-",
+          "F-",
+          "Na+",
+          "Mg2+",
+          "Al3+"
+        ],
+        "isoelectronicos": true,
+        "ionicos": [
+          140,
+          133,
+          102,
+          72,
+          53.5
+        ],
+        "errores.mas-protones-mas-grande": [
+          "Al3+",
+          "Mg2+",
+          "Na+",
+          "F-",
+          "O2-"
+        ],
+        "errores.ordena-como-atomos": [
+          "Na+",
+          "Mg2+",
+          "Al3+",
+          "O2-",
+          "F-"
+        ]
+      }
     },
     {
       "nombre": "Radios del período 3: Na > Mg > Al > Si",
       "fn": "ordenar",
-      "args": [["Si", "Na", "Al", "Mg"], "radio"],
-      "espera": { "orden": ["Na", "Mg", "Al", "Si"], "valores": [190, 145, 118, 111] }
+      "args": [
+        [
+          "Si",
+          "Na",
+          "Al",
+          "Mg"
+        ],
+        "radio"
+      ],
+      "espera": {
+        "orden": [
+          "Na",
+          "Mg",
+          "Al",
+          "Si"
+        ],
+        "valores": [
+          190,
+          145,
+          118,
+          111
+        ]
+      }
     },
     {
       "nombre": "Radios del grupo 1: Li < Na < K",
       "fn": "ordenar",
-      "args": [["K", "Li", "Na"], "radio", "menor"],
-      "espera": { "orden": ["Li", "Na", "K"] }
+      "args": [
+        [
+          "K",
+          "Li",
+          "Na"
+        ],
+        "radio",
+        "menor"
+      ],
+      "espera": {
+        "orden": [
+          "Li",
+          "Na",
+          "K"
+        ]
+      }
     },
     {
       "nombre": "Átomo e ion: Cl⁻ es más grande que Cl; Na es más grande que Na⁺",
       "fn": "compararRadio",
-      "args": ["Cl", "Cl-"],
-      "espera": { "mayor": "Cl-", "regla": "mismo-elemento" },
-      "tambien": [{ "args": ["Na+", "Na"], "espera": { "mayor": "Na", "regla": "mismo-elemento" } }]
+      "args": [
+        "Cl",
+        "Cl-"
+      ],
+      "espera": {
+        "mayor": "Cl-",
+        "regla": "mismo-elemento"
+      },
+      "tambien": [
+        {
+          "args": [
+            "Na+",
+            "Na"
+          ],
+          "espera": {
+            "mayor": "Na",
+            "regla": "mismo-elemento"
+          }
+        }
+      ]
     },
     {
       "nombre": "Energía de ionización del período 3: Na < Al < Mg < Si < S < P < Cl < Ar (bajadas de 2 a 13 y de 15 a 16)",
       "fn": "ordenar",
-      "args": [["Na", "Mg", "Al", "Si", "P", "S", "Cl", "Ar"], "ei", "menor"],
-      "espera": { "orden": ["Na", "Al", "Mg", "Si", "S", "P", "Cl", "Ar"], "valores": [496, 578, 738, 787, 1000, 1012, 1251, 1521] }
+      "args": [
+        [
+          "Na",
+          "Mg",
+          "Al",
+          "Si",
+          "P",
+          "S",
+          "Cl",
+          "Ar"
+        ],
+        "ei",
+        "menor"
+      ],
+      "espera": {
+        "orden": [
+          "Na",
+          "Al",
+          "Mg",
+          "Si",
+          "S",
+          "P",
+          "Cl",
+          "Ar"
+        ],
+        "valores": [
+          496,
+          578,
+          738,
+          787,
+          1000,
+          1012,
+          1251,
+          1521
+        ]
+      }
     },
     {
       "nombre": "P contra S: el P tiene mayor energía de ionización (1012 contra 1000 kJ/mol) porque el electrón que sale del S está apareado",
       "fn": "compararEI",
-      "args": ["P", "S"],
-      "espera": { "mayor": "P", "razon": "apareado", "valores.P": 1012, "valores.S": 1000, "errores.solo-carga-nuclear": "S", "errores.semillena-estable": "P" }
+      "args": [
+        "P",
+        "S"
+      ],
+      "espera": {
+        "mayor": "P",
+        "razon": "apareado",
+        "valores.P": 1012,
+        "valores.S": 1000,
+        "errores.solo-carga-nuclear": "S",
+        "errores.semillena-estable": "P"
+      }
     },
     {
       "nombre": "Mg contra Al: el Mg tiene mayor energía de ionización (738 contra 578 kJ/mol); el electrón del Al inaugura la subcapa 3p",
       "fn": "compararEI",
-      "args": ["Mg", "Al"],
-      "espera": { "mayor": "Mg", "razon": "subcapa-nueva", "errores.solo-carga-nuclear": "Al" }
+      "args": [
+        "Mg",
+        "Al"
+      ],
+      "espera": {
+        "mayor": "Mg",
+        "razon": "subcapa-nueva",
+        "errores.solo-carga-nuclear": "Al"
+      }
     },
     {
       "nombre": "Sucesivas del Na: la segunda (4562) es unas 9 veces la primera (496): el segundo electrón sale de la capa 2; con la atracción repartida saldría 545,6",
       "fn": "ionizacionesSucesivas",
-      "args": ["Na"],
-      "espera": { "valores": [496, 4562, 6910, 9543], "salto": 1, "valencia": 1, "capaTrasSalto": 2, "errores.reparte-atraccion": 545.6 }
+      "args": [
+        "Na"
+      ],
+      "espera": {
+        "valores": [
+          496,
+          4562,
+          6910,
+          9543
+        ],
+        "salto": 1,
+        "valencia": 1,
+        "capaTrasSalto": 2,
+        "errores.reparte-atraccion": 545.6
+      }
     },
     {
       "nombre": "Sucesivas del Mg: el gran salto viene después del segundo electrón (1451 → 7733)",
       "fn": "ionizacionesSucesivas",
-      "args": ["Mg"],
-      "espera": { "valores": [738, 1451, 7733, 10543], "salto": 2, "valencia": 2 }
+      "args": [
+        "Mg"
+      ],
+      "espera": {
+        "valores": [
+          738,
+          1451,
+          7733,
+          10543
+        ],
+        "salto": 2,
+        "valencia": 2
+      }
     },
     {
       "nombre": "Electronegatividad: F > O > N > C en el período 2 y Cl > Br en el grupo 17; el He no tiene valor",
       "fn": "ordenar",
-      "args": [["C", "N", "F", "O"], "en"],
-      "espera": { "orden": ["F", "O", "N", "C"], "valores": [3.98, 3.44, 3.04, 2.55] },
+      "args": [
+        [
+          "C",
+          "N",
+          "F",
+          "O"
+        ],
+        "en"
+      ],
+      "espera": {
+        "orden": [
+          "F",
+          "O",
+          "N",
+          "C"
+        ],
+        "valores": [
+          3.98,
+          3.44,
+          3.04,
+          2.55
+        ]
+      },
       "tambien": [
-        { "args": [["Br", "Cl"], "en"], "espera": { "orden": ["Cl", "Br"] } },
-        { "fn": "propiedad", "args": ["He", "en"], "espera": { "valor": null } }
+        {
+          "args": [
+            [
+              "Br",
+              "Cl"
+            ],
+            "en"
+          ],
+          "espera": {
+            "orden": [
+              "Cl",
+              "Br"
+            ]
+          }
+        },
+        {
+          "fn": "propiedad",
+          "args": [
+            "He",
+            "en"
+          ],
+          "espera": {
+            "valor": null
+          }
+        }
       ]
     },
     {
       "nombre": "Por configuración: el elemento del período 4 y grupo 16 es el Se (Z = 34)",
       "fn": "enCasilla",
-      "args": [4, 16],
-      "espera": { "simbolo": "Se", "Z": 34, "bloque": "p", "grupoAB": "VIA" }
+      "args": [
+        4,
+        16
+      ],
+      "espera": {
+        "simbolo": "Se",
+        "Z": 34,
+        "bloque": "p",
+        "grupoAB": "VIA"
+      }
     }
   ]
 }
