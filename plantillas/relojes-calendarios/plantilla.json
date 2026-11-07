@@ -1,0 +1,15 @@
+{
+  "id": "relojes-calendarios",
+  "titulo": "El reloj y el calendario: ángulo entre las agujas, adelantos, campanadas y días de la semana",
+  "formato": "escena",
+  "unidades": [
+    "razonamiento-matematico.cronometria-y-calendarios"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}

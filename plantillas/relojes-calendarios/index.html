@@ -1,0 +1,1098 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El reloj y el calendario: ángulo entre las agujas, adelantos, campanadas y días de la semana</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de interes/.
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
+   hora H y el horario azul, minutos M y el minutero naranja, ángulo α fucsia; adelanto (o atraso) acumulado A turquesa,
+   tiempo transcurrido t verde; campanadas n índigo, intervalos rojo; días d mostaza y resto r (de dividir entre 7) granate.
+   Elegidos con CIEDE2000; mínimos entre los que salen juntos (claro / oscuro): el reloj (H, M, α) 27,1 / 29,3;
+   los adelantos (H, M, A, t) 23,6 / 25,3; las campanadas (n, intervalos, t) 37,8 / 32,5; el calendario (d, r) 35,7 / 40,8.
+   Pares parecidos que nunca salen en la misma vista: M–d (6,5 / 10,5), H–n (17,0 / 12,1), α–n (16,2 / 16,2),
+   intervalos–r (17,6 / 16,8) y d–t (17,3 / 18,1). El rojo de los intervalos se parece al de los avisos (5,4 / 5,0): el aviso
+   siempre va con texto. Contraste AA sobre el papel, la tarjeta y su chip (.v, fondo al 8 %), en claro y en oscuro
+   (mínimo 4,64). Cifras en el informe del constructor. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-H:#1f5fbf; --c-M:#a05200; --c-al:#a10fbf; --c-A:#0f766e; --c-t:#466d14; --c-n:#3328c4; --c-k:#c0364a; --c-d:#7d6a00; --c-r:#77032c;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-H:#7cb0ff; --c-M:#f0a04a; --c-al:#cf6bfa; --c-A:#5ed9c8; --c-t:#a3d65e; --c-n:#9f9bff; --c-k:#f17384; --c-d:#e3c84a; --c-r:#fdb4ce;
+  color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-H:#7cb0ff; --c-M:#f0a04a; --c-al:#cf6bfa; --c-A:#5ed9c8; --c-t:#a3d65e; --c-n:#9f9bff; --c-k:#f17384; --c-d:#e3c84a; --c-r:#fdb4ce;
+  color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+/* Celular con una predicción pendiente: nucleo/celular.js pone el dibujo más bajo y pegado arriba. */
+@media (max-width:899px){
+  .mode.pendiente .lecturas{gap:4px}
+  .mode.pendiente .lectura{padding:2px 8px}
+}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+.lienzo:has(canvas:focus-visible){outline:3px solid var(--ink); outline-offset:2px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+.legend i.sq{width:12px; height:12px; border-radius:3px; opacity:.8}
+.legend i.dash{background:none!important; border-top:2px dashed var(--k); height:0}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-H{color:var(--c-H); background:color-mix(in srgb, var(--c-H) 8%, transparent)}
+.v-M{color:var(--c-M); background:color-mix(in srgb, var(--c-M) 8%, transparent)}
+.v-al{color:var(--c-al); background:color-mix(in srgb, var(--c-al) 8%, transparent)}
+.v-A{color:var(--c-A); background:color-mix(in srgb, var(--c-A) 8%, transparent)}
+.v-t{color:var(--c-t); background:color-mix(in srgb, var(--c-t) 8%, transparent)}
+.v-n{color:var(--c-n); background:color-mix(in srgb, var(--c-n) 8%, transparent)}
+.v-k{color:var(--c-k); background:color-mix(in srgb, var(--c-k) 8%, transparent)}
+.v-d{color:var(--c-d); background:color-mix(in srgb, var(--c-d) 8%, transparent)}
+.v-r{color:var(--c-r); background:color-mix(in srgb, var(--c-r) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.02rem; font-variant-numeric:tabular-nums}
+.eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.5em; white-space:normal}
+.frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1.15}
+.frac > span:first-child{border-bottom:1.5px solid currentColor; padding:0 .25em}
+.frac > span:last-child{padding:0 .25em}
+.fm{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1; font-size:.78em; margin-left:.12em}
+.fm > span:first-child{border-bottom:1.2px solid currentColor; padding:0 .15em 1px}
+.fm > span:last-child{padding:1px .15em 0}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:center; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.seg button:disabled{opacity:.45; cursor:not-allowed}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn.chico{padding:8px 14px; min-height:40px; font-size:.9rem}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+.fila{display:flex; flex-wrap:wrap; gap:8px}
+button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(120px, 1fr)); gap:8px}
+.lecturas:empty{display:none}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura b{display:block; color:var(--k); font:800 .95rem var(--mono); font-variant-numeric:tabular-nums; overflow-wrap:anywhere}
+.lectura span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.2fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Razonamiento matemático · Relojes y calendarios · Problemas tipo admisión</p>
+      <h1>El reloj y el calendario</h1>
+      <p class="sub">Arrastra el minutero y mira qué hace el horario mientras tanto. Después, adelanta relojes, cuenta campanadas y salta semanas en el calendario: en cada caso hay algo que se mueve aunque no lo mires.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo de la escena: reloj, línea del día, campanadas o calendario">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Dibujo de la escena"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos con relojes y calendarios">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/relojes-calendarios">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'relojes-calendarios', unidad: 'razonamiento-matematico.cronometria-y-calendarios', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0, unidad){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: unidad || PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la matemática (ángulos, horas en que se forma un ángulo, adelantos, campanadas, bisiestos y días de la semana)
+   sale de MotorRelojes (motor.js); aquí solo se pinta, se arrastra y se anima. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MR = MotorRelojes;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  d = d === undefined ? 2 : d;
+  const p = Math.pow(10, d), r = Math.round(n*p)/p + 0;
+  let [e, f] = String(Math.abs(r)).split('.');
+  if (e.length > 4) e = e.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const fr = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
+// Número mixto de academia (16 4/11) a partir de la fracción del motor
+const mixto = f => f.den === 1 ? String(f.num) : `${f.entero ? f.entero : ''}<span class="fm" aria-hidden="true"><span>${f.resto}</span><span>${f.den}</span></span><span class="sr"> y ${f.resto}/${f.den}</span>`;
+const mixtoTxt = f => f.den === 1 ? String(f.num) : `${f.entero} ${f.resto}/${f.den}`;
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+function tween(dur, paso, fin, lineal){
+  if (RM || !dur){ paso(1); if (fin) setTimeout(fin, 0); return; }
+  const t0 = performance.now();
+  const tick = now => { const f = Math.max(0, Math.min(1, (now - t0)/dur)); paso(lineal ? f : suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
+  requestAnimationFrame(tick);
+}
+const H_ = t => V('H', t), M_ = t => V('M', t), al_ = t => V('al', t), A_ = t => V('A', t), t_ = t => V('t', t),
+  n_ = t => V('n', t), k_ = t => V('k', t), d_ = t => V('d', t), r_ = t => V('r', t);
+const VARS = ['H', 'M', 'al', 'A', 't', 'n', 'k', 'd', 'r'];
+// Texto de una hora del día (minutos desde las 0:00) con a. m. / p. m.; minutos enteros.
+function horaTxt(min){ const h = MR.reloj12(min), m = Math.round(h.m); return `${h.h}:${String(m).padStart(2, '0')} ${h.sufijo}`; }
+// Texto de una hora del reloj (minutos desde las 12:00) sin a. m. / p. m.
+function relojTxt(min){ const a = MR.agujas(min), m = Math.round(a.M); return `${a.H === 0 ? 12 : a.H}:${String(m).padStart(2, '0')}`; }
+const DIA_CORTO = ['lun', 'mar', 'mié', 'jue', 'vie', 'sáb', 'dom'];
+const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'setiembre', 'octubre', 'noviembre', 'diciembre'];
+const fechaTxt = f => `${f.d} de ${MESES[f.m - 1]} de ${f.a}`;
+
+function colores(){
+  const c = { ink:css('--ink'), muted:css('--muted'), grid:css('--grid'), paper:css('--paper'), card:css('--card'), line:css('--line'), warn:css('--warn'), font:css('--font') };
+  for (const k of VARS) c[k] = css('--c-' + k);
+  return c;
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, p, q){ ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke(); }
+function rotulo(ctx, c, x, y, t, color, align, peso, tam){
+  ctx.font = `${peso || 700} ${tam || 13}px ${c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+  ctx.fillStyle = color; ctx.fillText(t, x, y);
+  return w;
+}
+function redondeado(ctx, x, y, w, h, r){ r = Math.min(r, Math.abs(h)/2, w/2); ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+/* ================= La escena =================
+   Modos:
+   'reloj'     uno o dos relojes de agujas. Cada reloj: { t (minutos desde las 12:00), titulo, horario (false: «?»),
+               arco ('ver' | 'oculto' | null), fantasmas: [{ k:'H'|'M', t }] (una aguja a trazos en otra hora) }.
+               Con E.drag, el minutero del primer reloj se arrastra (dedo, ratón o flechas) entre E.tmin y E.tmax.
+   'linea'     el día en dos filas de 12 h, con una marca en cada instante en que las agujas se superponen.
+   'adelanto'  dos relojes (el bueno y el que se adelanta, o dos que se apartan) y la barra del desfase acumulado A.
+   'campanas'  filas de campanadas sobre una línea del tiempo: cada golpe un círculo y cada intervalo un tramo.
+   'semanas'   el salto de d días en el calendario: semanas completas (no cambian el día) y el resto r.
+   'mes'       la hoja de un mes que empieza en un día dado.
+   'siglos'    los años de 1901 a 2100, con los bisiestos llenos.
+   Antes de responder, lo que se pregunta se dibuja como «?» y nada adelanta la respuesta. */
+function crearEscena(cv, idDesc, idLect, idLey){
+  const E = { modo:'reloj', lect:[], ley:null, hl:null, alCambiar:null, ocupado:false, tok:0, anim:false, compacto:false, desc:'',
+    relojes:null, drag:false, tmin:0, tmax:720, linea:null, adel:null, camp:null, sem:null, mes:null, sig:null, alArrastrar:null };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, Hh = 0, sobre = false, arr = false;
+  function altoBase(w){
+    if (E.modo === 'reloj') return E.relojes && E.relojes.length > 1 ? (w >= 560 ? 330 : 250) : (w >= 560 ? 360 : 330);
+    if (E.modo === 'adelanto') return w >= 560 ? 360 : 330;
+    if (E.modo === 'linea') return w >= 560 ? 300 : 280;
+    if (E.modo === 'campanas') return w >= 560 ? 280 : 270;
+    if (E.modo === 'mes' || E.modo === 'siglos') return w >= 560 ? 330 : 300;
+    return w >= 560 ? 320 : 300;
+  }
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    const h = Math.round(Celular.alto(altoBase(w), E.compacto)), dpr = window.devicePixelRatio || 1;
+    if (w === W && h === Hh) { E.dibujar(); return; }
+    W = w; Hh = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  alRedibujarTema(() => E.dibujar());
+
+  E.config = o => {
+    E.tok++; E.anim = false;
+    Object.assign(E, { modo:'reloj', lect:[], ley:null, alCambiar:null, desc:'', relojes:null, drag:false, tmin:0, tmax:720,
+      linea:null, adel:null, camp:null, sem:null, mes:null, sig:null, alArrastrar:null }, o);
+    if (E.relojes) E.relojes = E.relojes.map(r => Object.assign({ t:0, titulo:'', horario:true, minutero:true, arco:null, fantasmas:[] }, r));
+    cv.tabIndex = E.drag ? 0 : -1;
+    W = 0; resize(); E.leyenda(); E.dibujar(); E.avisar();
+  };
+  E.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === E.compacto) return; E.compacto = on; W = 0; resize(); };
+  const grosor = (k, base) => (E.hl === k ? base + 2.5 : base);
+  const rad = deg => (deg - 90) * Math.PI / 180;
+
+  // ----- un reloj de agujas -----
+  function aguja(c, cx, cy, deg, largo, ancho, color, dash, alfa){
+    ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = ancho; ctx.lineCap = 'round'; if (dash) ctx.setLineDash(dash); if (alfa) ctx.globalAlpha = alfa;
+    linea(ctx, { x:cx, y:cy }, { x:cx + largo*Math.cos(rad(deg)), y:cy + largo*Math.sin(rad(deg)) }); ctx.restore();
+  }
+  function reloj(c, cx, cy, R, st, k){
+    ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(cx, cy, R, 0, 7); ctx.fill(); ctx.stroke(); ctx.restore();
+    ctx.save(); ctx.strokeStyle = c.muted;
+    for (let j = 0; j < 60; j++){
+      const g = j*6, a = rad(g), r1 = j % 5 ? R - 4 : R - 9;
+      ctx.lineWidth = j % 5 ? 1 : 2;
+      linea(ctx, { x:cx + r1*Math.cos(a), y:cy + r1*Math.sin(a) }, { x:cx + (R - 1.5)*Math.cos(a), y:cy + (R - 1.5)*Math.sin(a) });
+    }
+    ctx.restore();
+    if (R >= 46){
+      ctx.save(); ctx.fillStyle = c.ink; ctx.font = `700 ${R >= 90 ? 14 : 11}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      for (let h = 1; h <= 12; h++){ const a = rad(h*30), rr = R - (R >= 90 ? 22 : 17); ctx.fillText(String(h), cx + rr*Math.cos(a), cy + rr*Math.sin(a)); }
+      ctx.restore();
+    }
+    const G = MR.agujas(st.t);
+    for (const f of st.fantasmas){
+      const g = MR.agujas(f.t);
+      if (f.k === 'H') aguja(c, cx, cy, f.quieto ? MR.posiciones({ H:g.H, M:g.M }).horarioQuieto : g.horario, R*0.5, 4, c.H, [5, 4], .75);
+      else aguja(c, cx, cy, g.minutero, R*0.8, 3, c.M, [5, 4], .75);
+    }
+    // el ángulo α entre las agujas, por el lado menor
+    if (st.arco && st.horario){
+      let a0 = G.horario, a1 = G.minutero, dif = ((a1 - a0) % 360 + 360) % 360;
+      if (dif > 180){ const x = a0; a0 = a1; a1 = x; dif = 360 - dif; }
+      const ra = R*0.3;
+      ctx.save(); ctx.strokeStyle = c.al; ctx.lineWidth = grosor('al', 3); if (st.arco === 'oculto') ctx.setLineDash([4, 4]);
+      ctx.beginPath(); ctx.arc(cx, cy, ra, rad(a0), rad(a0 + dif)); ctx.stroke(); ctx.restore();
+      if (dif > 0.5){
+        ctx.save(); ctx.fillStyle = c.al; ctx.globalAlpha = .12; ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, ra, rad(a0), rad(a0 + dif)); ctx.closePath(); ctx.fill(); ctx.restore();
+      }
+      // el rótulo va en la bisectriz; si el ángulo es chico, del otro lado (para que las agujas no lo tapen)
+      const mid = rad(a0 + dif/2 + (dif < 50 ? 180 : 0)), rl = R*0.3 + (dif < 50 ? 10 : 22);
+      const txt = st.arco === 'oculto' ? 'α = ?' : `α = ${fmt(G.menor, 2)}°`;
+      rotulo(ctx, c, cx + rl*Math.cos(mid), cy + rl*Math.sin(mid), txt, c.al, 'center', 800, R >= 90 ? 13 : 11);
+    }
+    if (st.minutero) aguja(c, cx, cy, G.minutero, R*0.8, grosor('M', 3.5), c.M);
+    if (st.horario) aguja(c, cx, cy, G.horario, R*0.5, grosor('H', 6), c.H);
+    else {
+      ctx.save(); ctx.strokeStyle = c.H; ctx.setLineDash([3, 4]); ctx.lineWidth = 1.6; ctx.beginPath(); ctx.arc(cx, cy, R*0.5, 0, 7); ctx.stroke(); ctx.restore();
+      rotulo(ctx, c, cx, cy - R*0.28, 'horario: ?', c.H, 'center', 800, R >= 90 ? 13 : 11);
+    }
+    ctx.save(); ctx.fillStyle = c.ink; ctx.beginPath(); ctx.arc(cx, cy, 4, 0, 7); ctx.fill(); ctx.restore();
+    if (E.drag && k === 0){
+      const x = cx + R*0.8*Math.cos(rad(G.minutero)), y = cy + R*0.8*Math.sin(rad(G.minutero));
+      ctx.save(); ctx.fillStyle = c.M; ctx.globalAlpha = (arr || sobre) ? .22 : .12; ctx.beginPath(); ctx.arc(x, y, 18, 0, 7); ctx.fill(); ctx.restore();
+      ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = c.M; ctx.lineWidth = 2.4; ctx.beginPath(); ctx.arc(x, y, 7, 0, 7); ctx.fill(); ctx.stroke(); ctx.restore();
+    }
+    if (st.titulo) rotulo(ctx, c, cx, cy + R + 14, st.titulo, c.ink, 'center', 800, 12);
+  }
+  function geoRelojes(){
+    const n = E.relojes.length, top = 8, bot = E.relojes.some(r => r.titulo) ? 26 : 8;
+    if (n === 1){ const R = Math.min(W/2 - 16, (Hh - top - bot)/2); return [{ cx:W/2, cy:top + (Hh - top - bot)/2, R }]; }
+    const R = Math.min(W/4 - 12, (Hh - top - bot)/2);
+    return [{ cx:W/4, cy:top + (Hh - top - bot)/2, R }, { cx:3*W/4, cy:top + (Hh - top - bot)/2, R }];
+  }
+  function dibRelojes(c){ geoRelojes().forEach((g, k) => reloj(c, g.cx, g.cy, g.R, E.relojes[k], k)); }
+
+  // ----- el día en dos filas -----
+  function dibLinea(c){
+    const L = E.linea, x0 = 34, x1 = W - 14, chicoR = Math.min(46, Hh*0.2);
+    const filas = [{ y: Hh*0.48, de:0 }, { y: Hh*0.8, de:720 }];
+    const X = m => x0 + (x1 - x0)*m/720;
+    // reloj chico arriba, con la hora que va recorriendo
+    reloj(c, W/2, 8 + chicoR, chicoR, { t:L.prog, horario:true, minutero:true, arco:null, fantasmas:[] }, 1);
+    rotulo(ctx, c, W/2 + chicoR + 8, 8 + chicoR, horaTxt(L.prog), c.ink, 'left', 800, 12);
+    filas.forEach((f, j) => {
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; linea(ctx, { x:x0, y:f.y }, { x:x1, y:f.y }); ctx.restore();
+      for (let h = 0; h <= 12; h++){
+        ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1; linea(ctx, { x:X(h*60), y:f.y - 5 }, { x:X(h*60), y:f.y + 5 }); ctx.restore();
+        if (h % 3 === 0 || W >= 560){ ctx.save(); ctx.fillStyle = c.muted; ctx.font = `600 10px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'top'; ctx.fillText(String(h + 12*j), X(h*60), f.y + 7); ctx.restore(); }
+      }
+      rotulo(ctx, c, x0 - 6, f.y, j ? 'p. m.' : 'a. m.', c.muted, 'right', 700, 10);
+      // lo recorrido
+      const hasta = clamp(L.prog - f.de, 0, 720);
+      if (hasta > 0){ ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 3.2; linea(ctx, { x:x0, y:f.y }, { x:X(hasta), y:f.y }); ctx.restore(); }
+      if (!L.oculto) for (const m of L.instantes){
+        if (m < f.de || m >= f.de + 720 || m > L.prog + 1e-6) continue;
+        ctx.save(); ctx.fillStyle = c.al; ctx.beginPath(); ctx.arc(X(m - f.de), f.y, grosor('al', 5), 0, 7); ctx.fill(); ctx.restore();
+      }
+    });
+    if (L.oculto) rotulo(ctx, c, W/2, Hh*0.64, '¿cuántas veces quedan juntas?', c.al, 'center', 800, 12);
+    else if (L.prog > 0){ const v = L.instantes.filter(m => m <= L.prog + 1e-6).length; rotulo(ctx, c, x1, Hh*0.64, `juntas: ${v} ${v === 1 ? 'vez' : 'veces'}`, c.al, 'right', 800, 12); }
+  }
+
+  // ----- dos relojes y la barra del desfase -----
+  function dibAdelanto(c){
+    const D = E.adel; if (D.calc) D.calc(D);
+    const barH = 74, top = 8, R = Math.min(W/4 - 12, (Hh - barH - top - 26)/2), cy = top + R;
+    D.relojes.forEach((r, k) => {
+      const x = MR.horaMarcada({ inicio:D.inicio, transcurrido:D.T, a: r.a || 1, cada:D.cada, tipo: r.s < 0 ? 'atrasa' : 'adelanta' });
+      const tt = r.s === 0 ? x.real : x.marcada;
+      reloj(c, k ? 3*W/4 : W/4, cy, R, { t:tt, horario:!r.oculto, minutero:!r.oculto, arco:null, fantasmas:[], titulo:r.titulo }, 1);
+      if (r.oculto) rotulo(ctx, c, k ? 3*W/4 : W/4, cy, '?', c.ink, 'center', 800, 22);
+    });
+    // barra
+    const y = Hh - barH + 22, x0 = 18, x1 = W - 18, X = v => x0 + (x1 - x0)*clamp(v/D.meta, 0, 1);
+    ctx.save(); ctx.fillStyle = c.grid; redondeado(ctx, x0, y, x1 - x0, 16, 8); ctx.fill(); ctx.restore();
+    if (!D.ocultaA && D.A > 0){ ctx.save(); ctx.fillStyle = c.A; ctx.globalAlpha = E.hl && E.hl !== 'A' ? .5 : .9; redondeado(ctx, x0, y, Math.max(8, X(D.A) - x0), 16, 8); ctx.fill(); ctx.restore(); }
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, { x:x1, y:y - 6 }, { x:x1, y:y + 22 }); ctx.restore();
+    rotulo(ctx, c, x0, y - 12, D.etiquetaA + (D.ocultaA ? ': ?' : `: ${fmt(D.A, 1)} min`), c.A, 'left', 800, 12);
+    rotulo(ctx, c, x1, y - 12, D.metaTxt, c.ink, 'right', 800, 12);
+    rotulo(ctx, c, x0, y + 34, D.tTxt, c.t, 'left', 800, 12);
+  }
+
+  // ----- campanadas -----
+  function dibCampanas(c){
+    const Cp = E.camp, x0 = 20, x1 = W - 20, filas = Cp.filas.length, alto = (Hh - 16)/filas;
+    const X = s => x0 + (x1 - x0)*s/Cp.tmax;
+    Cp.filas.forEach((f, j) => {
+      const y = 8 + alto*j + alto*0.55;
+      rotulo(ctx, c, x0, 8 + alto*j + 12, f.titulo, c.ink, 'left', 800, 12);
+      ctx.save(); ctx.strokeStyle = c.line; ctx.lineWidth = 1.5; linea(ctx, { x:x0, y:y + 16 }, { x:x1, y:y + 16 }); ctx.restore();
+      for (let s = 0; s <= Cp.tmax; s++){ ctx.save(); ctx.strokeStyle = c.muted; linea(ctx, { x:X(s), y:y + 12 }, { x:X(s), y:y + 20 }); ctx.restore();
+        if (s % (Cp.tmax > 12 ? 4 : 1) === 0 && (W >= 560 || s % 2 === 0)){ ctx.save(); ctx.fillStyle = c.muted; ctx.font = `600 10px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'top'; ctx.fillText(String(s), X(s), y + 22); ctx.restore(); } }
+      if (f.oculto){ ctx.save(); ctx.strokeStyle = c.muted; ctx.setLineDash([5, 4]); ctx.lineWidth = 1.5; redondeado(ctx, x0, y - 14, x1 - x0, 26, 8); ctx.stroke(); ctx.restore(); rotulo(ctx, c, (x0 + x1)/2, y - 1, f.pregunta || '?', c.muted, 'center', 800, 12); return; }
+      const i = f.intervalo, ver = Math.min(f.n, Math.floor(f.prog + 1e-9));
+      for (let g = 1; g < ver; g++){
+        ctx.save(); ctx.strokeStyle = c.k; ctx.lineWidth = grosor('k', 3); linea(ctx, { x:X((g - 1)*i) + 7, y }, { x:X(g*i) - 7, y }); ctx.restore();
+      }
+      for (let g = 0; g < ver; g++){
+        ctx.save(); ctx.fillStyle = c.n; ctx.globalAlpha = E.hl && E.hl !== 'n' ? .5 : 1; ctx.beginPath(); ctx.arc(X(g*i), y, grosor('n', 6), 0, 7); ctx.fill(); ctx.restore();
+      }
+      if (ver >= f.n && f.llave){
+        const yb = y - 13;
+        ctx.save(); ctx.strokeStyle = c.t; ctx.lineWidth = grosor('t', 2); linea(ctx, { x:X(0), y:yb + 4 }, { x:X(0), y:yb }); linea(ctx, { x:X(0), y:yb }, { x:X((f.n - 1)*i), y:yb }); linea(ctx, { x:X((f.n - 1)*i), y:yb }, { x:X((f.n - 1)*i), y:yb + 4 }); ctx.restore();
+        rotulo(ctx, c, X((f.n - 1)*i), yb - 2, f.llave, c.t, 'right', 800, 11);
+      }
+    });
+  }
+
+  // ----- el calendario: semanas completas y resto -----
+  function dibSemanas(c){
+    const S = E.sem, x0 = 12, x1 = W - 12, cw = (x1 - x0)/7, top = 10;
+    DIA_CORTO.forEach((t, j) => rotulo(ctx, c, x0 + cw*(j + .5), top + 8, t, c.muted, 'center', 800, 11));
+    const ch = Math.min(38, (Hh - 40)/4.2), y1 = top + 22;
+    const celda = (j, y, fill, borde, txt, col) => {
+      ctx.save(); redondeado(ctx, x0 + cw*j + 3, y, cw - 6, ch - 6, 7);
+      if (fill){ ctx.fillStyle = fill; ctx.globalAlpha = .18; ctx.fill(); ctx.globalAlpha = 1; }
+      ctx.strokeStyle = borde || c.line; ctx.lineWidth = borde ? 2.4 : 1; ctx.stroke(); ctx.restore();
+      if (txt) rotulo(ctx, c, x0 + cw*(j + .5), y + (ch - 6)/2, txt, col || c.ink, 'center', 800, 11);
+    };
+    for (let j = 0; j < 7; j++) celda(j, y1, null, j === S.inicio ? c.ink : null, j === S.inicio ? 'parte' : '', c.ink);
+    // las semanas completas: una banda que vuelve al mismo día
+    const yb = y1 + ch + 4, hb = ch*1.1;
+    ctx.save(); ctx.fillStyle = c.d; ctx.globalAlpha = .12; redondeado(ctx, x0 + 3, yb, x1 - x0 - 6, hb, 10); ctx.fill(); ctx.restore();
+    ctx.save(); ctx.strokeStyle = c.d; ctx.lineWidth = grosor('d', 1.6); redondeado(ctx, x0 + 3, yb, x1 - x0 - 6, hb, 10); ctx.stroke(); ctx.restore();
+    const txtB = S.oculto ? `${S.titulo}: ? días` : (S.q ? `${S.q} ${S.q === 1 ? 'semana completa' : 'semanas completas'} = ${7*S.q} días: mismo día` : 'ninguna semana completa');
+    rotulo(ctx, c, (x0 + x1)/2, yb + hb/2, txtB, c.d, 'center', 800, W >= 420 ? 12 : 11);
+    // el resto: r días más desde el día de partida
+    const yr = yb + hb + 6;
+    if (S.oculto){ rotulo(ctx, c, (x0 + x1)/2, yr + ch/2, 'resto: ?   llega a: ?', c.r, 'center', 800, 12); return; }
+    const ver = Math.floor(S.prog + 1e-9);
+    for (let k = 1; k <= S.r; k++){
+      const j = (S.inicio + k) % 7, fila = Math.floor((S.inicio + k) / 7);
+      if (k > ver) { celda(j, yr + fila*ch, null, null, '', c.r); continue; }
+      celda(j, yr + fila*ch, c.r, k === S.r ? c.r : null, `+${k}`, c.r);
+    }
+    if (S.r === 0) celda(S.inicio, yr, c.r, c.r, '+0', c.r);
+    if (ver >= S.r) rotulo(ctx, c, x1, Hh - 12, `llega a: ${S.llega}`, c.ink, 'right', 800, 12);
+  }
+
+  // ----- la hoja de un mes -----
+  function dibMes(c){
+    const Ms = E.mes, x0 = 10, x1 = W - 10, cw = (x1 - x0)/7, top = 8;
+    DIA_CORTO.forEach((t, j) => rotulo(ctx, c, x0 + cw*(j + .5), top + 8, t, c.muted, 'center', 800, 11));
+    const filas = Math.ceil((Ms.primer + Ms.dias)/7), ch = Math.min(44, (Hh - top - 26)/filas);
+    const y1 = top + 20, ver = Ms.oculto ? 1 : Math.floor(Ms.prog + 1e-9);
+    if (!Ms.oculto && ver >= Ms.dias) for (let j = 0; j < 7; j++) if (Ms.cinco.includes(j)){
+      ctx.save(); ctx.strokeStyle = c.r; ctx.lineWidth = grosor('r', 2.4); redondeado(ctx, x0 + cw*j + 1, y1 - 2, cw - 2, ch*filas + 2, 9); ctx.stroke(); ctx.restore();
+    }
+    for (let d = 1; d <= Ms.dias; d++){
+      if (Ms.oculto && d > 1) break;
+      const p = Ms.primer + d - 1, j = p % 7, y = y1 + Math.floor(p/7)*ch;
+      const extra = d > 28;
+      ctx.save(); redondeado(ctx, x0 + cw*j + 4, y + 2, cw - 8, ch - 6, 6);
+      if (d <= ver){ ctx.fillStyle = extra ? c.r : c.d; ctx.globalAlpha = .16; ctx.fill(); ctx.globalAlpha = 1; ctx.strokeStyle = extra ? c.r : c.d; ctx.lineWidth = 1.4; }
+      else { ctx.strokeStyle = c.line; ctx.lineWidth = 1; }
+      ctx.stroke(); ctx.restore();
+      if (d <= ver) rotulo(ctx, c, x0 + cw*(j + .5), y + (ch - 4)/2, String(d), extra ? c.r : c.ink, 'center', 800, 12);
+    }
+    if (Ms.oculto) rotulo(ctx, c, W/2, y1 + ch*2.6, '¿qué días salen 5 veces?', c.r, 'center', 800, 12);
+  }
+
+  // ----- dos siglos de años -----
+  function dibSiglos(c){
+    const Sg = E.sig, cols = 20, filas = Math.ceil((Sg.hasta - Sg.desde + 1)/cols), x0 = 46, x1 = W - 8, cw = (x1 - x0)/cols;
+    const ch = Math.min(26, (Hh - 30)/filas), y0 = 10;
+    const ver = Sg.oculto ? 0 : Math.floor(Sg.prog + 1e-9);
+    for (let f = 0; f < filas; f++){
+      rotulo(ctx, c, x0 - 6, y0 + ch*(f + .5), String(Sg.desde + f*cols), c.muted, 'right', 700, 10);
+      for (let j = 0; j < cols; j++){
+        const y = Sg.desde + f*cols + j; if (y > Sg.hasta) break;
+        const X = x0 + cw*j + 1, Y = y0 + ch*f + 1, w = cw - 2, h = ch - 2;
+        ctx.save(); ctx.strokeStyle = c.line; ctx.lineWidth = 1; ctx.strokeRect(X, Y, w, h); ctx.restore();
+        if (f*cols + j >= ver) continue;
+        if (MR.esBisiesto(y)){ ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = .75; ctx.fillRect(X + 1, Y + 1, w - 2, h - 2); ctx.restore();
+          if (y % 100 === 0){ ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2.4; ctx.strokeRect(X - 2, Y - 2, w + 4, h + 4); ctx.restore(); } }
+        else if (y % 4 === 0){ ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.8; linea(ctx, { x:X + 2, y:Y + 2 }, { x:X + w - 2, y:Y + h - 2 }); linea(ctx, { x:X + w - 2, y:Y + 2 }, { x:X + 2, y:Y + h - 2 }); ctx.restore(); }
+      }
+    }
+    if (Sg.oculto) rotulo(ctx, c, W/2, Hh - 12, `del ${Sg.desde} al ${Sg.hasta}: ¿cuántos bisiestos?`, c.ink, 'center', 800, 12);
+    else if (ver > 0){ let n = 0; for (let y = Sg.desde; y < Sg.desde + ver && y <= Sg.hasta; y++) if (MR.esBisiesto(y)) n++; rotulo(ctx, c, W/2, Hh - 12, `bisiestos contados: ${n}`, c.ink, 'center', 800, 12); }
+  }
+
+  E.dibujar = () => {
+    if (!W) return;
+    const c = colores();
+    ctx.clearRect(0, 0, W, Hh); ctx.fillStyle = c.paper; ctx.fillRect(0, 0, W, Hh);
+    if (E.modo === 'reloj' && E.relojes) dibRelojes(c);
+    else if (E.modo === 'linea' && E.linea) dibLinea(c);
+    else if (E.modo === 'adelanto' && E.adel) dibAdelanto(c);
+    else if (E.modo === 'campanas' && E.camp) dibCampanas(c);
+    else if (E.modo === 'semanas' && E.sem) dibSemanas(c);
+    else if (E.modo === 'mes' && E.mes) dibMes(c);
+    else if (E.modo === 'siglos' && E.sig) dibSiglos(c);
+  };
+  E.leyenda = () => {
+    if (!idLey) return;
+    const it = (k, t, f) => `<span style="--k:var(${k === 'ink' ? '--ink' : '--c-' + k})"><i class="${f || ''}" style="background:var(${k === 'ink' ? '--ink' : '--c-' + k})"></i>${t}</span>`;
+    let l = E.ley;
+    if (!l){
+      if (E.modo === 'reloj') l = [['H', 'horario (H)'], ['M', 'minutero (M)']].concat(E.relojes && E.relojes.some(r => r.arco) ? [['al', 'α · ángulo entre las agujas']] : []);
+      else if (E.modo === 'linea') l = [['al', 'agujas juntas (α = 0°)']];
+      else if (E.modo === 'adelanto') l = [['H', 'horario'], ['M', 'minutero'], ['A', 'A · desfase acumulado', 'sq'], ['t', 't · tiempo real']];
+      else if (E.modo === 'campanas') l = [['n', 'n · campanadas'], ['k', 'intervalos'], ['t', 't · tiempo']];
+      else if (E.modo === 'semanas') l = [['d', 'd · días: semanas completas', 'sq'], ['r', 'r · resto (días que sobran)', 'sq']];
+      else if (E.modo === 'mes') l = [['d', 'días 1 a 28 (4 semanas)', 'sq'], ['r', 'días que sobran', 'sq']];
+      else l = [['ink', 'bisiesto (lleno)', 'sq'], ['ink', 'múltiplo de 4 que no es bisiesto (cruz)']];
+    }
+    document.getElementById(idLey).innerHTML = l.map(([k, t, f]) => it(k, t, f)).join('');
+  };
+  E.avisar = () => {
+    const filas = E.lect.map(f => f(E));
+    if (idLect) document.getElementById(idLect).innerHTML = filas.map(([k, t, v]) => `<div class="lectura" style="--k:var(${k === 'ink' ? '--ink' : '--c-' + k})"><span>${t}</span><b>${v}</b></div>`).join('');
+    if (idDesc && !E.anim){
+      const base = { reloj:'Reloj de agujas.', linea:'El día en dos filas de 12 horas.', adelanto:'Dos relojes y la barra del desfase acumulado.',
+        campanas:'Campanadas sobre una línea del tiempo.', semanas:'Calendario: semanas completas y resto.', mes:'Hoja de un mes.', siglos:'Los años de dos siglos.' }[E.modo];
+      document.getElementById(idDesc).textContent = [E.desc || base, ...filas.map(([, t, v]) => `${t}: ${v}.`)].join(' ');
+    }
+    if (E.alCambiar) E.alCambiar();
+  };
+  E.animar = (de, a, dur, paso, fin, lineal) => {
+    const tok = ++E.tok; E.anim = true;
+    tween(dur, f => { if (tok !== E.tok) return; paso(de + (a - de)*f); E.dibujar(); E.avisar(); },
+      () => { if (tok !== E.tok) return; E.anim = false; E.avisar(); if (fin) fin(); }, lineal);
+  };
+  E.parar = () => { E.tok++; E.anim = false; };
+
+  // ----- arrastrar el minutero (dedo, ratón y teclado) -----
+  function punta(){
+    if (!E.drag || E.modo !== 'reloj' || !E.relojes) return null;
+    const g = geoRelojes()[0], G = MR.agujas(E.relojes[0].t);
+    const a = (G.minutero - 90)*Math.PI/180;
+    return { x:g.cx + g.R*0.8*Math.cos(a), y:g.cy + g.R*0.8*Math.sin(a), g };
+  }
+  function ponerT(t){
+    t = clamp(t, E.tmin, E.tmax);
+    if (Math.abs(t - E.relojes[0].t) < 1e-9) return;
+    E.relojes[0].t = t; if (E.alArrastrar) E.alArrastrar(t); E.dibujar(); E.avisar();
+  }
+  Celular.arrastre(cv, {
+    activo: () => !!E.drag && !E.ocupado && !E.anim,
+    cerca: (p, r) => { const m = punta(); return !!m && Math.hypot(p.x - m.x, p.y - m.y) < r; },
+    empezar: () => { arr = true; E.dibujar(); },
+    mover: p => {
+      const m = punta(); if (!m) return;
+      let deg = Math.atan2(p.y - m.g.cy, p.x - m.g.cx)*180/Math.PI + 90; deg = (deg + 360) % 360;
+      const minNuevo = Math.round(deg/6) % 60, G = MR.agujas(E.relojes[0].t), minViejo = Math.round(G.M) % 60;
+      let dm = minNuevo - minViejo; if (dm > 30) dm -= 60; if (dm < -30) dm += 60;
+      ponerT(Math.round(E.relojes[0].t) + dm);
+    },
+    soltar: () => { arr = false; E.dibujar(); },
+    sobre: s => { sobre = s; E.dibujar(); }
+  });
+  cv.addEventListener('keydown', e => {
+    if (!E.drag || E.ocupado || E.anim) return;
+    const paso = e.shiftKey ? 5 : 1;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowUp'){ e.preventDefault(); ponerT(Math.round(E.relojes[0].t) + paso); }
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowDown'){ e.preventDefault(); ponerT(Math.round(E.relojes[0].t) - paso); }
+  });
+  E.ponerT = ponerT;
+  return E;
+}
+
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+const L = (k, nombre, valor) => () => [k, nombre, valor];
+const hm = (H, f) => `${H} h ${mixto(f)} min`;
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1');
+const S = { step:0, max:0, pred:{}, ocupado:false, dias:0, libre:3*60 + 30 };
+
+// Números de la escena: todos salen del motor
+const P1 = MR.angulo({ H:3, M:30 });
+const P3 = MR.horaConAngulo({ H:3, alfa:0 });
+const P4 = MR.coincidencias({ horas:24, tipo:'superpuestas' });
+const P5 = MR.vuelveHoraCorrecta({ a:5, cada:4 });
+const P6 = MR.campanadas({ n:6, t:5, m:12 });
+const HOY = { a:2026, m:11, d:7 };
+const F8a = { a:2027, m:3, d:15 }, F8b = { a:2028, m:3, d:15 };
+const P8 = MR.desdeFecha({ desde:F8a, hasta:F8b, dia:'lunes' });
+const grados = x => `${fmt(x, 1)}°`;
+const dias = x => `${fmt(x, 2)} días`;
+const seg = x => `${fmt(x, 2)} s`;
+
+const G1 = { id:'relojes-paso1', ok:'b', opts:[
+  ['a', grados(P1.errores.horarioQuieto), 'AR7-horario-quieto', 'hipotesis'],
+  ['b', grados(P1.menor)],
+  ['c', grados(P1.errores.signoCambiado), 'formula-signo-cambiado', 'hipotesis'],
+  ['d', grados(P1.errores.noMenor), 'no-toma-el-menor-angulo', 'hipotesis']],
+  fb:{ b:'¡Bien! A las 3:30 el horario ya no está en el 3: en media hora avanzó 30 · 0,5° = 15°, hasta la mitad entre el 3 y el 4. El minutero está en el 6 (180°) y el horario en 105°: forman 75°.',
+    a:'Elegiste la A. Así sería si el horario se quedara clavado en el 3 hasta las 4. Pero el horario camina 0,5° por minuto: a las 3:30 está a mitad de camino entre el 3 y el 4. La correcta está marcada.',
+    c:'Elegiste la C. Esa cuenta suma 90 + 165 = 255° y toma 360 − 255. En la fórmula los minutos se restan: α = |30H − 11M/2| = |90 − 165| = 75°. La correcta está marcada.',
+    d:'Elegiste la D. 285° es el ángulo que da la vuelta por fuera. La pregunta pide el menor ángulo, y 285° pasa de 180°: el menor es 360 − 285 = 75°. La correcta está marcada.' } };
+const G3 = { id:'relojes-paso3', ok:'c', opts:[
+  ['a', hm(3, P3.errores.horarioQuieto.fraccion), 'AR7-horario-quieto', 'hipotesis'],
+  ['b', hm(3, P3.errores.sumaRapideces.fraccion), 'RM4-suma-las-rapideces', 'hipotesis'],
+  ['c', hm(3, P3.primera.fraccion)],
+  ['d', hm(3, P3.errores.conElSuplemento.fraccion), 'superpuestas-como-opuestas', 'hipotesis']],
+  fb:{ c:'¡Bien! A las 3:00 el minutero está 90° detrás del horario. Cada minuto le descuenta 6° − 0,5° = 5,5°. Lo alcanza en 90/5,5 = 180/11 = 16 4/11 min.',
+    a:'Elegiste la A. A las 3:15 el minutero llega al 3, pero el horario ya no está ahí: avanzó 7,5° en esos 15 minutos. El minutero todavía tiene que alcanzarlo. La correcta está marcada.',
+    b:'Elegiste la B. Esa cuenta divide entre 6,5 (6 + 0,5), como si las agujas fueran una hacia la otra. Las dos giran en el mismo sentido: el minutero le gana al horario 6 − 0,5 = 5,5° por minuto. La correcta está marcada.',
+    d:'Elegiste la D. A las 3 h 49 1/11 min las agujas están en línea, pero en sentidos opuestos (forman 180°). Juntas quiere decir α = 0°. La correcta está marcada.' } };
+const G4 = { id:'relojes-paso4', ok:'d', opts:[
+  ['a', `${P4.errores.unaPorHora} veces`, 'una-superposicion-por-hora', 'hipotesis'],
+  ['b', `${P4.errores.contarExtremos} veces`, 'cuenta-los-dos-extremos', 'hipotesis'],
+  ['c', `${P4.errores.mitad} veces`, 'cuenta-solo-12-horas', 'hipotesis'],
+  ['d', `${P4.veces} veces`]],
+  fb:{ d:'¡Bien! Entre una vez y la siguiente pasan 720/11 min, un poco más de una hora (1 h 5 5/11 min). Por eso en 12 horas se juntan 11 veces, no 12, y en un día 22.',
+    a:'Elegiste la A. Parece que cada hora se juntan una vez, pero entre las 11 y la 1 se juntan una sola vez (a las 12:00). Cada encuentro tarda un poco más de una hora. La correcta está marcada.',
+    b:'Elegiste la B. Esa cuenta incluye las 12:00 del inicio y también las 12:00 del final. Pero la medianoche siguiente ya es parte del otro día. La correcta está marcada.',
+    c:'Elegiste la C. 11 veces es lo que pasa en 12 horas. El día tiene 24: las agujas dan dos vueltas de horario. La correcta está marcada.' } };
+const G5 = { id:'relojes-paso5', ok:'a', opts:[
+  ['a', dias(P5.dias)],
+  ['b', dias(P5.erroresDias.dia24), 'adelanto-hasta-24-horas', 'hipotesis'],
+  ['c', dias(P5.erroresDias.sinCada), 'adelanto-por-hora-sin-el-cada', 'hipotesis'],
+  ['d', dias(P5.erroresDias.unaHora), 'adelanto-hasta-una-hora', 'hipotesis']],
+  fb:{ a:'¡Bien! Un reloj de agujas vuelve a marcar la hora correcta cuando se adelanta 12 horas (720 min). A 5 min cada 4 h necesita 720/5 = 144 periodos de 4 h: 576 horas, que son 24 días.',
+    b:'Elegiste la B. Esa cuenta espera que se adelante 24 horas. Pero las agujas dan una vuelta completa cada 12 horas: con 12 horas de adelanto ya marcan lo mismo. La correcta está marcada.',
+    c:'Elegiste la C. Esa cuenta toma 720/5 = 144 como si fueran horas. Son 144 periodos de 4 horas cada uno. La correcta está marcada.',
+    d:'Elegiste la D. Con una hora de adelanto (60 min) el reloj marca las 4 cuando son las 3: todavía no coincide. Tiene que adelantarse 12 horas. La correcta está marcada.' } };
+const G6 = { id:'relojes-paso6', ok:'b', opts:[
+  ['a', seg(P6.errores.proporcional), 'AR7-campanadas-proporcionales', 'hipotesis'],
+  ['b', seg(P6.tiempo)],
+  ['c', seg(P6.errores.intervalosComoCampanadas), 'campanadas-como-intervalos', 'hipotesis']],
+  fb:{ b:'¡Bien! 6 campanadas dejan 5 intervalos: cada uno dura 1 s. 12 campanadas dejan 11 intervalos: 11 s.',
+    a:'Elegiste la A. Esa cuenta es una regla de tres: el doble de campanadas, el doble de tiempo. Pero el tiempo no se mide en campanadas sino en los espacios entre ellas: 5 espacios en el dato, 11 en la pregunta. La correcta está marcada.',
+    c:'Elegiste la C. Usaste bien el intervalo de 1 s, pero 12 campanadas no dejan 12 intervalos: dejan 11. La primera campanada suena en el segundo 0. La correcta está marcada.' } };
+const G8 = { id:'relojes-paso8', ok:'b', opts:[
+  ['a', P8.errores.sinBisiestos, 'calendario-sin-29-de-febrero', 'hipotesis'],
+  ['b', P8.nombre],
+  ['c', P8.errores.contarPartida, 'calendario-cuenta-el-dia-de-partida', 'hipotesis'],
+  ['d', P8.errores.alReves, 'calendario-resto-al-reves', 'hipotesis']].map(o => [o[0], o[1][0].toUpperCase() + o[1].slice(1), o[2], o[3]]),
+  fb:{ b:`¡Bien! Entre esas dos fechas está el 29 de febrero de 2028: son 366 días, 52 semanas y 2 días. El lunes avanza 2: miércoles.`,
+    a:'Elegiste la A. Así sería con un año de 365 días (52 semanas y 1 día). Pero 2028 es bisiesto y su 29 de febrero queda entre las dos fechas. La correcta está marcada.',
+    c:'Elegiste la C. Esa cuenta suma un día más, como si el 15 de marzo de 2027 también hubiera que contarlo. Pero ese día es el punto de partida: lo que se cuenta son los días que pasan. La correcta está marcada.',
+    d:'Elegiste la D. Esa cuenta retrocede 2 días desde el lunes. Si la fecha buscada va después, el día de la semana avanza. La correcta está marcada.' } };
+
+// ---- configuraciones ----
+const reloj1 = ya => ({ modo:'reloj', relojes:[{ t: ya ? 210 : 210, horario:!!ya, arco: ya ? 'ver' : 'oculto', fantasmas: ya ? [{ k:'H', t:180 }] : [] }],
+  lect:[L('H', 'Hora H', '3'), L('M', 'Minutos M', '30')].concat(ya ? [L('al', 'Ángulo α', grados(P1.menor))] : []),
+  ley: ya ? [['H', 'horario'], ['M', 'minutero'], ['al', 'α · ángulo'], ['H', 'horario a las 3:00 (a trazos)', 'dash']] : [['H', 'horario: ¿dónde está?'], ['M', 'minutero']],
+  desc:'Un reloj a las 3:30.' });
+const reloj3 = ya => ({ modo:'reloj', relojes:[{ t: ya ? 180 + P3.primera.M : 180, arco: ya ? 'ver' : null, fantasmas: ya ? [{ k:'M', t:195 }] : [] }],
+  lect:[L('H', 'Hora H', '3'), L('M', 'Minutos M', ya ? mixtoTxt(P3.primera.fraccion) : '?')].concat(ya ? [L('al', 'Ángulo α', '0°')] : []),
+  ley: ya ? [['H', 'horario'], ['M', 'minutero'], ['M', 'minutero a las 3:15 (a trazos)', 'dash']] : null,
+  desc:'Un reloj a las 3:00.' });
+const linea4 = ya => ({ modo:'linea', linea:{ instantes:P4.instantes, prog: ya ? 1440 : 0, oculto:!ya },
+  lect: ya ? [L('al', 'Veces juntas en 24 h', String(P4.veces)), L('ink', 'Entre una y otra', '1 h 5 5/11 min')] : [L('ink', 'Desde', '12:00 a. m.'), L('ink', 'Durante', '24 horas')],
+  desc:'Un día completo, de medianoche a medianoche.' });
+const adel5 = (ya, T) => ({ modo:'adelanto', adel:{ inicio:0, cada:4, T: T === undefined ? (ya ? P5.horas : 0) : T, meta:720, metaTxt:'12 h = 720 min',
+    relojes:[{ titulo:'reloj bueno', s:0 }, { titulo:'el que se adelanta', s:1, a:5 }], etiquetaA:'A · adelanto', ocultaA:false, A:0, tTxt:'',
+    calc:D => { D.A = MR.horaMarcada({ inicio:0, transcurrido:D.T, a:5, cada:4, tipo:'adelanta' }).desfase; D.tTxt = D.T || ya ? `t = ${fmt(D.T/24, 1)} días` : 't = ?'; } },
+  lect:[L('A', 'Se adelanta', '5 min cada 4 h')].concat(ya ? [L('t', 'Tiempo t', dias(P5.dias))] : [L('t', 'Tiempo t', '?')]),
+  desc:'Dos relojes puestos en hora a la vez: el bueno y uno que se adelanta.' });
+const camp6 = ya => ({ modo:'campanas', camp:{ tmax:12, filas:[{ titulo:'6 campanadas en 5 s', n:6, intervalo:P6.intervalo, prog:6, llave:'t = 5 s' },
+    { titulo:'12 campanadas', n:12, intervalo:P6.intervalo, prog: ya ? 12 : 0, oculto:!ya, pregunta:'¿cuánto tardan?', llave: ya ? `t = ${seg(P6.tiempo)}` : '' }] },
+  lect:[L('n', 'Campanadas n', '6 → 12'), L('t', 'Tiempo de 6', '5 s')].concat(ya ? [L('k', 'Intervalos', '5 → 11'), L('t', 'Tiempo de 12', seg(P6.tiempo))] : []),
+  desc:'Campanadas sobre una línea del tiempo en segundos.' });
+const sem7 = () => { const f = MR.sumarDias(HOY, S.dias), D = MR.desdeFecha({ desde:HOY, hasta:f });
+  return { modo:'semanas', sem:{ inicio:MR.diaSemana(HOY).indice, q:D.semanas, r:D.resto, llega:D.nombre, prog:7, oculto:false },
+    lect:[L('d', 'Días d', String(S.dias)), L('d', 'Semanas completas', String(D.semanas)), L('r', 'Resto r', String(D.resto)), L('ink', 'Cae', `${D.nombre} ${fechaTxt(f)}`)],
+    desc:`Desde el sábado ${fechaTxt(HOY)}, ${S.dias} días después.` }; };
+const sem8 = ya => ({ modo:'semanas', sem:{ inicio:0, q:P8.semanas, r:P8.resto, llega:P8.nombre, prog: ya ? 7 : 0, oculto:!ya, titulo:'del 15 mar 2027 al 15 mar 2028' },
+  lect:[L('ink', 'Parte', 'lunes 15 de marzo de 2027')].concat(ya ? [L('d', 'Días d', String(P8.dias)), L('r', 'Resto r', String(P8.resto)), L('ink', 'Llega a', P8.nombre)] : [L('d', 'Días d', '?')]),
+  desc:'Del 15 de marzo de 2027 al 15 de marzo de 2028.' });
+function libre(){
+  E.config({ modo:'reloj', drag:true, tmin:-1e6, tmax:1e6, relojes:[{ t:S.libre, arco:'ver' }],
+    lect:[E0 => ['H', 'Hora', relojTxt(E0.relojes[0].t)], E0 => ['al', 'Ángulo α', grados(MR.agujas(E0.relojes[0].t).menor)],
+      E0 => ['ink', 'El otro lado', grados(360 - MR.agujas(E0.relojes[0].t).menor)]],
+    alArrastrar:t => { S.libre = t; }, alCambiar:vivoLibre, desc:'Reloj libre: arrastra el minutero.' });
+}
+function vivoLibre(){
+  const d = $('vivoL'); if (!d) return;
+  const G = MR.agujas(E.relojes[0].t), H = G.H, Hs = H === 0 ? 12 : H, sig = H + 1;
+  const sol = a => MR.horaConAngulo({ H, alfa:a }).soluciones;
+  const boton = (s, et) => `<button type="button" class="btn chico" data-ir="${60*H + s.M}">${Hs} h ${mixto(s.fraccion)} min</button>`;
+  d.innerHTML = `<div class="eqs"><div class="eq">${al_('α')} = |30 · ${H_(Hs)} − ${fr('11', '2')} · ${M_(fmt(G.M, 2))}| = ${al_(fmt(G.formula, 2) + '°')}${G.formula > 180 ? `<span class="note">más de 180°: el ángulo es 360° − ${fmt(G.formula, 2)}° = ${fmt(G.menor, 2)}°</span>` : ''}</div></div>
+    <p>Entre las ${Hs} y las ${sig}, según el motor:</p>
+    <p><b>Juntas:</b></p><div class="fila">${sol(0).filter(s => s.M > 0 || H !== 12).map(s => boton(s)).join('') || '<span class="hint">ninguna vez</span>'}</div>
+    <p><b>Opuestas:</b></p><div class="fila">${sol(180).map(s => boton(s)).join('') || '<span class="hint">ninguna vez</span>'}</div>
+    <p><b>Ángulo recto:</b></p><div class="fila">${sol(90).map(s => boton(s)).join('') || '<span class="hint">ninguna vez</span>'}</div>`;
+  d.querySelectorAll('[data-ir]').forEach(b => b.onclick = () => { if (E.anim) return; E.relojes[0].t = +b.dataset.ir; S.libre = E.relojes[0].t; E.dibujar(); E.avisar(); });
+}
+function vivoCamina(){
+  const d = $('vivoC'); if (!d) return;
+  const G = MR.agujas(E.relojes[0].t), m = G.M;
+  d.innerHTML = `<div class="eq">minutero: 6 · ${M_(fmt(m, 0))} = ${M_(fmt(G.minutero, 1) + '°')}</div>
+    <div class="eq">horario: 30 · ${H_('3')} + 0,5 · ${M_(fmt(m, 0))} = ${H_(fmt(G.horario, 1) + '°')}</div>
+    <div class="eq">${al_('α')} = |90 − 5,5 · ${M_(fmt(m, 0))}| = ${al_(fmt(G.formula, 1) + '°')}${G.formula > 180 ? `<span class="note">el menor: ${fmt(G.menor, 1)}°</span>` : ''}</div>`;
+}
+
+const steps = [
+ { k:'Paso 1', t:'Predice: las tres y media', gate:G1,
+   prep:() => E.config(reloj1(!!S.pred[G1.id])),
+   anima:fin => { E.config(reloj1(true)); const R = E.relojes[0]; R.t = 180; E.animar(180, 210, 2000, p => { R.t = p; }, () => { E.config(reloj1(true)); fin(); }); },
+   body:() => `<p class="problem">Son las ${H_('3')}:${M_('30')}. El minutero está en el 6.</p>
+   <p>¿Cuál es el menor ángulo ${al_('α')} que forman las agujas?</p>${opcionesHTML(G1.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">minutero: 6° · ${M_('30')} = ${M_('180°')}<span class="note">6° por minuto</span></div>
+     <div class="eq">horario: 30° · ${H_('3')} + 0,5° · ${M_('30')} = ${H_('105°')}<span class="note">30° por hora y 0,5° por minuto</span></div>
+     <div class="eq">${al_('α')} = |30${H_('H')} − ${fr('11', '2')}${M_('M')}| = |90 − 165| = ${al_(grados(P1.menor))}</div></div>
+   <p>En el dibujo, la aguja azul a trazos es donde estaba el horario a las 3:00. En media hora se movió 15°: la mitad de los 30° que hay entre el 3 y el 4. El 11/2 de la fórmula sale de restar lo que avanza cada aguja por minuto: 6 − 0,5 = 5,5.</p>
+   <p class="aviso">Si la fórmula da más de 180°, el ángulo entre las agujas es 360° menos ese número.</p>
+   <p class="fuente">El informe de aritmética liga el horario quieto a la ilusión de linealidad (AR7), que tiene datos en otros problemas, pero no hay cifras para el reloj: es una hipótesis nuestra. Las otras dos opciones también son hipótesis nuestras.</p></div>` },
+ { k:'Paso 2', t:'El horario también camina', explora:true,
+   prep:() => E.config({ modo:'reloj', drag:true, tmin:180, tmax:239, relojes:[{ t:180 + 20, arco:'ver' }],
+     lect:[E0 => ['M', 'Minutos M', fmt(MR.agujas(E0.relojes[0].t).M, 0)], E0 => ['H', 'Horario', grados(MR.agujas(E0.relojes[0].t).horario)], E0 => ['al', 'Ángulo α', grados(MR.agujas(E0.relojes[0].t).menor)]],
+     alCambiar:vivoCamina, desc:'Reloj entre las 3 y las 4: arrastra el minutero.' }),
+   body:() => `<p class="problem">Arrastra la punta del minutero (o usa las flechas del teclado) entre las ${H_('3')}:00 y las ${H_('3')}:59. Mira cómo el horario se arrastra detrás, despacito.</p>
+   <div class="eqs" id="vivoC"></div>
+   <p>Por cada minuto, el ${M_('minutero')} avanza 6° y el ${H_('horario')} medio grado. Por eso, en cada minuto, el ángulo entre ellos cambia 5,5°: la fórmula de academia es ${al_('α')} = |30${H_('H')} − ${fr('11', '2')}${M_('M')}|.</p>` },
+ { k:'Paso 3', t:'Predice: las agujas juntas', gate:G3,
+   prep:() => E.config(reloj3(!!S.pred[G3.id])),
+   anima:fin => { E.config(reloj3(false)); const R = E.relojes[0]; E.animar(180, 180 + P3.primera.M, 2400, p => { R.t = p; }, () => { E.config(reloj3(true)); fin(); }); },
+   body:() => `<p class="problem">El reloj marca las ${H_('3')}:00. El minutero está en el 12 y el horario en el 3.</p>
+   <p>¿A qué hora, entre las 3 y las 4, quedan las dos agujas una encima de la otra?</p>${opcionesHTML(G3.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">30 · ${H_('3')} − ${fr('11', '2')}${M_('M')} = 0</div>
+     <div class="eq">${M_('M')} = ${fr('2 · 90', '11')} = ${fr('180', '11')} = ${M_(mixto(P3.primera.fraccion))} min</div></div>
+   <p>Es una persecución: a las 3:00 el minutero va 90° atrás y le gana 5,5° por minuto al horario. En el dibujo, el minutero naranja a trazos marca las 3:15: ya pasó por el 3, pero el horario se había movido un poco más.</p>
+   <p class="aviso">En el reloj casi nada cae en minutos exactos: las respuestas de academia suelen venir con onceavos (11 = 2 · 5,5).</p>
+   <p class="fuente">El horario quieto se liga a AR7 y sumar las rapideces a RM4 (sumar velocidades donde van en el mismo sentido); ninguno tiene cifras para el reloj: son hipótesis nuestras, igual que confundir juntas con opuestas.</p></div>` },
+ { k:'Paso 4', t:'Predice: un día completo', gate:G4,
+   prep:() => E.config(linea4(!!S.pred[G4.id])),
+   anima:fin => { E.config(linea4(false)); const Li = E.linea; Li.oculto = false; E.animar(0, 1440, 4200, p => { Li.prog = p; }, () => { E.config(linea4(true)); fin(); }, true); },
+   body:() => `<p class="problem">Desde la medianoche hasta justo antes de la medianoche siguiente (24 horas).</p>
+   <p>¿Cuántas veces quedan el minutero y el horario uno encima del otro?</p>${opcionesHTML(G4.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">entre dos encuentros: ${fr('360', '5,5')} = ${fr('720', '11')} min = 1 h 5<span class="fm"><span>5</span><span>11</span></span> min<span class="note">una vuelta de ventaja a 5,5° por minuto</span></div>
+     <div class="eq">en 12 h: ${fr('720', '720/11')} = 11 veces; en 24 h: 22 veces</div></div>
+   <p>Mira la fila de la mañana: hay una marca cerca de cada hora, pero ninguna entre las 11 y las 12. La de las 11 «se corre» hasta las 12:00 exactas. Lo mismo pasa con las opuestas (11 en 12 horas) y con el ángulo recto (22 en 12 horas, dos por vuelta).</p>
+   <p class="fuente">Contar una superposición por hora, contar los dos extremos y quedarse con 12 horas son hipótesis nuestras. No hay estudios con cifras sobre esto.</p></div>` },
+ { k:'Paso 5', t:'Predice: el reloj apurado', gate:G5,
+   prep:() => E.config(adel5(!!S.pred[G5.id])),
+   anima:fin => { E.config(adel5(false)); const D = E.adel; E.animar(0, P5.horas, 3600, p => { D.T = p; }, () => { E.config(adel5(true)); fin(); }, true); },
+   body:() => `<p class="problem">Un reloj se adelanta ${A_('5 min')} cada ${t_('4 h')}. Hoy a las 12:00 marca la hora correcta.</p>
+   <p>¿Dentro de cuánto ${t_('tiempo')} volverá a marcar la hora correcta?</p>${opcionesHTML(G5.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${A_('A')} = 12 h = ${A_('720 min')}<span class="note">una vuelta del horario</span></div>
+     <div class="eq">periodos = ${fr(A_('720'), A_('5'))} = 144 → ${t_('t')} = 144 · ${t_('4 h')} = ${t_('576 h')} = ${t_(dias(P5.dias))}</div></div>
+   <p>La barra turquesa es el adelanto acumulado. Cuando llega a 12 horas, el reloj apurado da exactamente una vuelta más que el bueno y sus agujas quedan en el mismo lugar.</p>
+   <p class="aviso">En un reloj de agujas, «marcar la hora correcta» pide 12 horas de diferencia, no 24 (salvo que el reloj diga a. m. y p. m., o la fecha).</p>
+   <p class="fuente">Usar 24 horas y las otras dos opciones son hipótesis nuestras: no encontramos estudios con cifras sobre adelantos y atrasos.</p></div>` },
+ { k:'Paso 6', t:'Predice: las campanadas', gate:G6,
+   prep:() => E.config(camp6(!!S.pred[G6.id])),
+   anima:fin => { E.config(camp6(true)); const F = E.camp.filas[1]; F.prog = 0; F.llave = ''; E.animar(0, 12, 2600, p => { F.prog = p; }, () => { E.config(camp6(true)); fin(); }, true); },
+   body:() => `<p class="problem">Un reloj da ${n_('6 campanadas')} en ${t_('5 segundos')}, contando desde la primera hasta la última.</p>
+   <p>¿Cuánto ${t_('tiempo')} tarda en dar ${n_('12 campanadas')}?</p>${opcionesHTML(G6.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${k_('intervalos')} = ${n_('n')} − 1</div>
+     <div class="eq">${n_('6')} → ${k_('5 intervalos')}: cada uno, ${fr(t_('5 s'), k_('5'))} = 1 s</div>
+     <div class="eq">${n_('12')} → ${k_('11 intervalos')}: ${t_('t')} = 11 · 1 s = ${t_(seg(P6.tiempo))}</div></div>
+   <p>Es como los postes de una cerca: 6 postes dejan 5 espacios. La primera campanada suena en el segundo 0; el tiempo corre en los tramos rojos.</p>
+   <p class="fuente">La regla de tres es la ilusión de linealidad (AR7 del informe): estudios con escolares la encontraron en problemas que no son proporcionales, pero no hay cifras para las campanadas. Por eso es una hipótesis nuestra, igual que la otra opción.</p></div>` },
+ { k:'Paso 7', t:'Saltos en el calendario', explora:'semanas',
+   prep:() => E.config(sem7()),
+   body:() => `<p class="problem">Hoy es sábado ${fechaTxt(HOY)}. Suma días y mira en qué día de la semana caes.</p>
+   <div class="fila">${[1, 7, 30, 100, 365].map(n => `<button type="button" class="btn chico" data-sumar="${n}">+${n} ${n === 1 ? 'día' : 'días'}</button>`).join('')}<button type="button" class="btn chico" data-sumar="0">Volver a hoy</button></div>
+   <div class="eqs" id="vivoS"></div>
+   <p>Cada 7 días se vuelve al mismo día de la semana. Por eso solo importa el ${r_('resto')} de dividir los ${d_('días')} entre 7: las semanas completas no mueven nada. 365 días son 52 semanas y 1 día; 366 son 52 semanas y 2 días.</p>` },
+ { k:'Paso 8', t:'Predice: un año después', gate:G8,
+   prep:() => E.config(sem8(!!S.pred[G8.id])),
+   anima:fin => { E.config(sem8(true)); const Sm = E.sem; Sm.prog = 0; E.animar(0, P8.resto, 1200, p => { Sm.prog = p; }, () => { E.config(sem8(true)); fin(); }, true); },
+   body:() => `<p class="problem">El 15 de marzo de 2027 cae lunes.</p>
+   <p>¿Qué día de la semana será el 15 de marzo de 2028?</p>${opcionesHTML(G8.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${d_('d')} = ${d_(String(P8.dias))}<span class="note">incluye el 29 de febrero de 2028</span></div>
+     <div class="eq">${d_(String(P8.dias))} = 7 · ${P8.semanas} + ${r_(String(P8.resto))} → lunes + ${r_(String(P8.resto))} = ${P8.nombre}</div></div>
+   <p>Un año es bisiesto si es múltiplo de 4; los múltiplos de 100 solo lo son si también son múltiplos de 400 (2000 sí, 2100 no). Lo que importa es si el 29 de febrero queda <b>entre</b> las dos fechas: del 15 de marzo de 2028 al de 2029 son solo 365 días.</p>
+   <p class="fuente">No contar el 29 de febrero o el día de partida figura en el informe de aritmética como error «sin dato»: son hipótesis nuestras, igual que avanzar al revés.</p></div>` },
+ { k:'Paso 9', t:'Ahora explora tú', explora:'libre',
+   prep:() => libre(),
+   body:() => `<p>Arrastra el minutero a cualquier hora (da vueltas y cambia de hora) o usa las flechas. Toca una de las horas de abajo para llevar el reloj ahí.</p>
+   <div id="vivoL" class="body"></div>` },
+];
+function vivoSem(){
+  const d = $('vivoS'); if (!d) return;
+  const f = MR.sumarDias(HOY, S.dias), D = MR.desdeFecha({ desde:HOY, hasta:f });
+  d.innerHTML = `<div class="eq">${d_(String(S.dias))} = 7 · ${D.semanas} + ${r_(String(D.resto))}</div>
+    <div class="eq">sábado + ${r_(String(D.resto))} = ${D.nombre}<span class="note">${fechaTxt(f)}</span></div>`;
+}
+function semanasBotones(){
+  $('stepBody').querySelectorAll('[data-sumar]').forEach(b => b.onclick = () => {
+    const n = +b.dataset.sumar; S.dias = n ? S.dias + n : 0; E.config(sem7()); E.alCambiar = vivoSem; vivoSem();
+  });
+}
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; b.dataset.label = `Ir al ${s.k.toLowerCase()}: ${s.t}`;
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  E.compacto = false;
+  if (s.prep) s.prep();
+  pintarDots();
+  E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.gate) prediccion(s);
+  if (s.explora === 'semanas'){ semanasBotones(); E.alCambiar = vivoSem; }
+  if (E.alCambiar) E.alCambiar();
+  nav();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+  E.ocupado = S.ocupado;
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    if (k > S.max) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled');
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : b.dataset.label);
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){ if (k > S.max) S.max = k; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0, P.unidad);
+    S.ocupado = true; nav();
+    E.compactar(false);
+    $('next').focus({ preventScroll:true });
+    const paso = S.step;
+    Celular.alResponder($('cv'), () => s.anima(() => { S.ocupado = false; E.avisar(); nav(); }), () => S.step === paso,
+      { siNo:() => { S.ocupado = false; nav(); } });
+  }));
+  pintar();
+}
+
+$('next').addEventListener('click', () => { if (S.ocupado) return; const s = steps[S.step]; if (s.gate && !S.pred[s.gate.id]) return; desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Experimentos: el ángulo recto, el reloj que se atrasa, dos relojes, contar campanadas, dos siglos de bisiestos y
+   un mes de 31 días. La escena cambia recién después de responder. Un experimento se abre solo si los anteriores
+   ya tienen respuesta. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2');
+const RE = MR.horaConAngulo({ H:2, alfa:90 });
+const AT = MR.horaMarcada({ inicio:480, transcurrido:10, a:3, cada:1, tipo:'atrasa' });
+const DR = MR.dosRelojes({ a:2, b:1, cada:1 });
+const CE = MR.campanadasEn({ n:5, t:12, T:24 });
+const BI = MR.bisiestos({ desde:1901, hasta:2100 });
+const ME = MR.mes({ diasMes:31, primerDia:'jueves' });
+const dias = x => `${fmt(x, 2)} días`;
+
+const EXPS = [
+  { id:'angulo-recto', corto:'Ángulo recto',
+    q:`¿A qué hora, entre las ${H_('2')} y las ${H_('3')}, forman las agujas un ángulo ${al_('α')} de 90°?`,
+    opts:[['a', hm(2, RE.errores.horarioQuieto.fraccion), 'AR7-horario-quieto', 'hipotesis'],
+          ['b', hm(2, RE.primera.fraccion)],
+          ['c', hm(2, RE.errores.sumaRapideces.fraccion), 'RM4-suma-las-rapideces', 'hipotesis']],
+    ok:'b',
+    fb:{ a:'A las 2:25 el minutero está en el 5, a 90° del 2, pero el horario ya se movió 12,5° hacia el 3: el ángulo es 77,5°. Faltan unos minutos más.', c:'Esa cuenta divide entre 6,5, como si las agujas giraran una hacia la otra. Van en el mismo sentido: la diferencia es 5,5° por minuto.' },
+    antes:ya => E.config({ modo:'reloj', relojes:[{ t: ya ? 120 + RE.primera.M : 120, arco: ya ? 'ver' : null, fantasmas: ya ? [{ k:'M', t:145 }] : [] }],
+      lect:[L('H', 'Hora H', '2')].concat(ya ? [L('M', 'Minutos M', mixtoTxt(RE.primera.fraccion)), L('al', 'Ángulo α', '90°')] : [L('al', 'Ángulo pedido α', '90°')]),
+      ley: ya ? [['H', 'horario'], ['M', 'minutero'], ['al', 'α · ángulo'], ['M', 'minutero a las 2:25 (a trazos)', 'dash']] : null, desc:'Un reloj a las 2:00.' }),
+    despues:() => { EXPS[0].antes(false); const R = E.relojes[0]; R.arco = 'ver'; E.animar(120, 120 + RE.primera.M, 2400, p => { R.t = p; }, () => EXPS[0].antes(true)); },
+    exp:() => `<div class="eqs"><div class="eq">${fr('11', '2')}${M_('M')} − 30 · ${H_('2')} = 90 → ${fr('11', '2')}${M_('M')} = 150</div>
+      <div class="eq">${M_('M')} = ${fr('300', '11')} = ${M_(mixto(RE.primera.fraccion))} min</div></div>
+      <p>A las 2:00 el minutero va 60° detrás del horario. Primero lo alcanza y después tiene que sacarle 90° de ventaja: en total le gana 150°, a 5,5° por minuto. La otra solución de la fórmula (minutero 90° detrás) cae a las 3:00 exactas, que ya no está «entre» las 2 y las 3.</p>
+      <p class="fuente">Las dos opciones incorrectas son hipótesis nuestras (ligadas a AR7 y a RM4 del informe, sin cifras para el reloj).</p>` },
+  { id:'reloj-atrasado', corto:'El reloj que se atrasa',
+    q:`Un reloj se atrasa ${A_('3 min')} cada ${t_('hora')}. Se pone en hora a las 8:00 a. m. ¿Qué hora marca cuando son realmente las 6:00 p. m.?`,
+    opts:[['a', horaTxt(AT.marcada)], ['b', horaTxt(AT.errores.signoCambiado), 'atraso-sumado', 'hipotesis'],
+          ['c', horaTxt(AT.errores.unPeriodo), 'atraso-de-una-sola-hora', 'hipotesis'], ['d', horaTxt(AT.errores.sinDesfase), 'olvida-el-atraso', 'hipotesis']],
+    ok:'a',
+    fb:{ b:'Esa cuenta suma el atraso. Un reloj que se atrasa va por detrás de la hora real: marca menos.', c:'3 minutos es el atraso de una sola hora. De 8:00 a. m. a 6:00 p. m. pasan 10 horas.', d:'Esa es la hora real. El reloj atrasado acumula su atraso hora tras hora y ya no coincide.' },
+    antes:ya => E.config({ modo:'adelanto', adel:{ inicio:480, cada:1, T: ya ? 10 : 0, meta:60, metaTxt:'60 min',
+        relojes:[{ titulo:'hora real', s:0 }, { titulo:'el que se atrasa', s:-1, a:3, oculto:false }], etiquetaA:'A · atraso', ocultaA:false, A:0, tTxt:'',
+        calc:D => { D.A = MR.horaMarcada({ inicio:480, transcurrido:D.T, a:3, cada:1, tipo:'atrasa' }).desfase; D.tTxt = `t = ${fmt(D.T, 1)} h (reales)`; } },
+      lect:[L('A', 'Se atrasa', '3 min por hora'), L('ink', 'Se pone en hora', '8:00 a. m.')].concat(ya ? [L('t', 'Tiempo t', '10 h'), L('A', 'Atraso A', `${fmt(AT.desfase, 0)} min`)] : [L('t', 'Tiempo t', '?')]),
+      desc:'Dos relojes puestos en hora a las 8:00 a. m.: la hora real y uno que se atrasa.' }),
+    despues:() => { EXPS[1].antes(false); const D = E.adel; E.animar(0, 10, 2600, p => { D.T = p; }, () => EXPS[1].antes(true), true); },
+    exp:() => `<div class="eqs"><div class="eq">${t_('t')} = de 8:00 a. m. a 6:00 p. m. = ${t_('10 h')}</div>
+      <div class="eq">${A_('A')} = 10 · ${A_('3 min')} = ${A_('30 min')} → marca 6:00 − 0:30 = ${horaTxt(AT.marcada)}</div></div>
+      <p>Hora marcada = hora real + adelanto, o hora real − atraso. Si te dan la hora que marca y piden la real, se hace al revés.</p>
+      <p class="fuente">Sumar en vez de restar el atraso y las otras dos opciones son hipótesis nuestras.</p>` },
+  { id:'dos-relojes', corto:'Dos relojes',
+    q:`Dos relojes se ponen en hora al mismo tiempo. Uno se adelanta ${A_('2 min')} por hora y el otro se atrasa ${A_('1 min')} por hora. ¿Dentro de cuánto ${t_('tiempo')} volverán a marcar los dos la misma hora?`,
+    opts:[['a', dias(DR.dias)], ['b', dias(DR.erroresDias.otraRapidez), 'resta-los-desfases', 'hipotesis'],
+          ['c', dias(DR.erroresDias.dia24), 'adelanto-hasta-24-horas', 'hipotesis'], ['d', dias(DR.erroresDias.soloUno), 'solo-el-primer-reloj', 'hipotesis']],
+    ok:'a',
+    fb:{ b:'Esa cuenta resta 2 − 1. Pero uno va hacia adelante y el otro hacia atrás: cada hora se separan 2 + 1 = 3 minutos.', c:'Esa cuenta espera 24 horas de diferencia. Con 12 horas las agujas ya quedan en el mismo lugar.', d:'Esa cuenta mira solo el reloj que se adelanta. La pregunta compara los dos relojes entre sí, y el otro también se mueve.' },
+    antes:ya => E.config({ modo:'adelanto', adel:{ inicio:0, cada:1, T: ya ? DR.horas : 0, meta:720, metaTxt:'12 h = 720 min',
+        relojes:[{ titulo:'se adelanta', s:1, a:2 }, { titulo:'se atrasa', s:-1, a:1 }], etiquetaA:'A · diferencia', ocultaA:!ya, A:0, tTxt:'',
+        calc:D => { D.A = MR.horaMarcada({ inicio:0, transcurrido:D.T, a:2, cada:1 }).desfase + MR.horaMarcada({ inicio:0, transcurrido:D.T, a:1, cada:1, tipo:'atrasa' }).desfase; D.tTxt = D.T ? `t = ${fmt(D.T/24, 1)} días` : 't = ?'; } },
+      lect:[L('A', 'Se separan', ya ? '3 min por hora' : '?')].concat(ya ? [L('t', 'Tiempo t', dias(DR.dias))] : [L('t', 'Tiempo t', '?')]),
+      desc:'Dos relojes puestos en hora a la vez: uno se adelanta y el otro se atrasa.' }),
+    despues:() => { EXPS[2].antes(false); const D = E.adel; D.ocultaA = false; E.animar(0, DR.horas, 3200, p => { D.T = p; }, () => EXPS[2].antes(true), true); },
+    exp:() => `<div class="eqs"><div class="eq">se separan ${A_('2')} + ${A_('1')} = ${A_('3 min')} por hora</div>
+      <div class="eq">${t_('t')} = ${fr(A_('720'), A_('3'))} = ${t_('240 h')} = ${t_(dias(DR.dias))}</div></div>
+      <p>Como en los móviles: si van en sentidos contrarios, la distancia entre ellos crece con la suma de las rapideces; si van en el mismo sentido, con la diferencia. Aquí la «distancia» es la diferencia de horas, y la meta, 12 horas.</p>
+      <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras (restar se parece a RM4 del informe, también sin datos).</p>` },
+  { id:'contar-campanadas', corto:'Contar campanadas',
+    q:`Un reloj da ${n_('5 campanadas')} en ${t_('12 s')}. Con el mismo ritmo, ¿cuántas campanadas da en ${t_('24 s')}, contando la primera?`,
+    opts:[['a', `${CE.errores.sinMasUno} campanadas`, 'campanadas-sin-la-primera', 'hipotesis'], ['b', `${CE.campanadas} campanadas`],
+          ['c', `${CE.errores.proporcional} campanadas`, 'AR7-campanadas-proporcionales', 'hipotesis']],
+    ok:'b',
+    fb:{ a:'24/3 = 8 cuenta los intervalos. Las campanadas son una más que los intervalos: la primera suena en el segundo 0.', c:'Esa cuenta es una regla de tres: el doble de tiempo, el doble de campanadas. Lo que se duplica son los intervalos (de 4 a 8), y las campanadas son 8 + 1.' },
+    antes:ya => E.config({ modo:'campanas', camp:{ tmax:24, filas:[{ titulo:'5 campanadas en 12 s', n:5, intervalo:CE.intervalo, prog:5, llave:'t = 12 s' },
+        { titulo:'en 24 s', n:CE.campanadas, intervalo:CE.intervalo, prog: ya ? CE.campanadas : 0, oculto:!ya, pregunta:'¿cuántas campanadas?', llave: ya ? 't = 24 s' : '' }] },
+      lect:[L('n', 'Campanadas', '5 en 12 s'), L('t', 'Tiempo nuevo', '24 s')].concat(ya ? [L('k', 'Intervalos', '4 → 8'), L('n', 'Campanadas en 24 s', String(CE.campanadas))] : []),
+      desc:'Campanadas sobre una línea del tiempo de 24 segundos.' }),
+    despues:() => { EXPS[3].antes(true); const F = E.camp.filas[1]; F.prog = 0; F.llave = ''; E.animar(0, CE.campanadas, 2400, p => { F.prog = p; }, () => EXPS[3].antes(true), true); },
+    exp:() => `<div class="eqs"><div class="eq">${n_('5')} campanadas → ${k_('4 intervalos')} de ${fr(t_('12'), k_('4'))} = 3 s</div>
+      <div class="eq">en ${t_('24 s')}: ${fr(t_('24'), '3')} = ${k_('8 intervalos')} → ${n_(String(CE.campanadas))} campanadas</div></div>
+      <p>Del tiempo se pasa a intervalos, y de los intervalos a campanadas sumando 1. Es el mismo «+1» de los postes y los espacios.</p>
+      <p class="fuente">Las dos opciones incorrectas son hipótesis nuestras; la regla de tres se liga a AR7 (ilusión de linealidad), sin cifras para este problema.</p>` },
+  { id:'bisiestos', corto:'Dos siglos de bisiestos',
+    q:`¿Cuántos años bisiestos hay del 1901 al 2100, los dos incluidos?`,
+    opts:[['a', `${BI.errores.sinRegla400} años`, 'bisiesto-sin-la-regla-del-400', 'hipotesis'], ['b', `${BI.cuantos} años`], ['c', `${BI.errores.soloCada4} años`, 'bisiesto-solo-cada-4', 'hipotesis']],
+    ok:'b',
+    fb:{ a:'Esa cuenta quita los dos múltiplos de 100 (2000 y 2100). Pero 2000 es múltiplo de 400: sí es bisiesto.', c:'Esa cuenta toma todos los múltiplos de 4. El 2100 es múltiplo de 100 y no de 400: no es bisiesto.' },
+    antes:ya => E.config({ modo:'siglos', sig:{ desde:1901, hasta:2100, prog: ya ? 200 : 0, oculto:!ya },
+      lect:[L('ink', 'Años', 'del 1901 al 2100')].concat(ya ? [L('ink', 'Bisiestos', String(BI.cuantos))] : []),
+      desc:'Los años del 1901 al 2100, en filas de 20.' }),
+    despues:() => { EXPS[4].antes(true); E.sig.prog = 0; E.animar(0, 200, 2600, p => { E.sig.prog = p; }, () => EXPS[4].antes(true), true); },
+    exp:() => `<div class="eqs"><div class="eq">múltiplos de 4: del 1904 al 2100 → ${fr('2100 − 1904', '4')} + 1 = 50</div>
+      <div class="eq">menos el 2100 (múltiplo de 100, no de 400) → ${BI.cuantos}</div></div>
+      <p>La regla: múltiplo de 4, sí; múltiplo de 100, no; múltiplo de 400, sí otra vez. En el dibujo, el 2000 lleva un marco y el 2100 una cruz. El «+1» al contar los múltiplos es otra vez el de los postes y los espacios.</p>
+      <p class="fuente">Las dos opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'mes-de-31', corto:'Un mes de 31 días',
+    q:`Un mes de ${d_('31 días')} empieza en jueves. ¿Qué días de la semana aparecen cinco veces en ese mes?`,
+    opts:[['a', 'Solo el jueves', 'mes-solo-el-primer-dia', 'hipotesis'], ['b', 'Jueves, viernes, sábado y domingo', 'mes-un-dia-de-mas', 'hipotesis'],
+          ['c', 'Jueves, viernes y sábado'], ['d', 'Ninguno', 'mes-de-cuatro-semanas', 'hipotesis']],
+    ok:'c',
+    fb:{ a:'El jueves sale cinco veces, pero no es el único: los días 29, 30 y 31 caen en jueves, viernes y sábado.', b:'Esa cuenta toma 4 días de sobra. 31 = 28 + 3: sobran 3 días, no 4.', d:'4 semanas son 28 días, y el mes tiene 31: los 3 días que sobran hacen que tres días de la semana salgan cinco veces.' },
+    antes:ya => E.config({ modo:'mes', mes:{ dias:31, primer:3, prog: ya ? 31 : 1, oculto:!ya, cinco: ME.cinco.map(n => MR.DIAS.indexOf(n)) },
+      lect:[L('d', 'Días d', '31'), L('ink', 'Empieza', 'jueves')].concat(ya ? [L('r', 'Resto r', '3'), L('ink', 'Termina', ME.ultimo)] : []),
+      desc:'La hoja de un mes de 31 días que empieza en jueves.' }),
+    despues:() => { EXPS[5].antes(true); E.mes.prog = 0; E.animar(0, 31, 2600, p => { E.mes.prog = p; }, () => EXPS[5].antes(true), true); },
+    exp:() => `<div class="eqs"><div class="eq">${d_('31')} = 7 · 4 + ${r_('3')}</div>
+      <div class="eq">los ${r_('3')} días que sobran: jueves, viernes y sábado</div></div>
+      <p>Los primeros 28 días forman 4 semanas completas: cada día de la semana sale 4 veces. Los días que sobran empiezan otra vez desde el primer día del mes. Febrero de un año normal (28 días) tiene todos sus días exactamente 4 veces.</p>
+      <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras.</p>` },
+];
+const S = { k:0, pred:{}, t0:Date.now() };
+const abierto = k => EXPS.slice(0, k).every(x => !!S.pred[x.id]);
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => abierto(k)
+    ? `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  if (k < 0 || k >= EXPS.length || !abierto(k)) return;
+  E.parar();
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  E.compacto = false;
+  x.antes(ya);
+  E.compactar(!ya);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    $('otra2').onclick = () => { E.parar(); Celular.alResponder($('cv2'), () => { x.despues(); E.avisar(); }, () => S.k === k); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar(); botones();
+    E.compactar(false);
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0, x.unidad);
+    Celular.alResponder($('cv2'), () => { x.despues(); E.leyenda(); E.dibujar(); E.avisar(); }, () => S.k === k);
+  });
+  pintar();
+}
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

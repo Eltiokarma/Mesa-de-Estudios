@@ -1,0 +1,666 @@
+{
+  "plantilla": "relojes-calendarios",
+  "unidades": "Ángulos en grados sexagesimales; H es la hora del horario (0 a 12) y M los minutos; las horas del día en minutos desde las 0:00 (480 = 8:00 a. m., 1050 = 5:30 p. m.); adelantos en minutos, periodos y tiempos en horas; campanadas en segundos; fechas { a, m, d } del calendario gregoriano.",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.horarioQuieto, primera.fraccion, soluciones.0.M); 'length' es el largo de una lista; las listas, objetos y textos se comparan completos. Las fracciones son { num, den, entero, resto } (16 4/11 = 180/11). 'tambien' son llamadas extra del mismo caso (con 'fn' propia si la traen).",
+  "verificacion": "",
+  "tolerancia": 1e-09,
+  "casos": [
+    {
+      "nombre": "Predicción del paso 1: a las 3:30 el menor ángulo es 75° (horario quieto: 90°; el mayor: 285°; signo cambiado: 105°)",
+      "fn": "angulo",
+      "args": [
+        {
+          "H": 3,
+          "M": 30
+        }
+      ],
+      "espera": {
+        "formula": 75,
+        "menor": 75,
+        "mayor": 285,
+        "errores.horarioQuieto": 90,
+        "errores.noMenor": 285,
+        "errores.signoCambiado": 105
+      }
+    },
+    {
+      "nombre": "A las 9:45 forman 22,5° (horario quieto: 0°, signo cambiado: 157,5°); a las 12:00, 0°",
+      "fn": "angulo",
+      "args": [
+        {
+          "H": 9,
+          "M": 45
+        }
+      ],
+      "espera": {
+        "menor": 22.5,
+        "mayor": 337.5,
+        "errores.horarioQuieto": 0,
+        "errores.signoCambiado": 157.5
+      },
+      "tambien": [
+        {
+          "args": [
+            {
+              "H": 12,
+              "M": 0
+            }
+          ],
+          "espera": {
+            "menor": 0,
+            "formula": 360,
+            "mayor": 360
+          }
+        },
+        {
+          "args": [
+            {
+              "H": 0,
+              "M": 0
+            }
+          ],
+          "espera": {
+            "menor": 0,
+            "formula": 0
+          }
+        },
+        {
+          "fn": "posiciones",
+          "args": [
+            {
+              "H": 9,
+              "M": 45
+            }
+          ],
+          "espera": {
+            "horario": 292.5,
+            "minutero": 270,
+            "horarioQuieto": 270
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "A las 8:20 forman 130° (horario quieto: 120°, signo cambiado: 10°)",
+      "fn": "angulo",
+      "args": [
+        {
+          "H": 8,
+          "M": 20
+        }
+      ],
+      "espera": {
+        "formula": 130,
+        "menor": 130,
+        "mayor": 230,
+        "errores.horarioQuieto": 120,
+        "errores.signoCambiado": 10
+      }
+    },
+    {
+      "nombre": "A la 1:50 la fórmula da 245°: el ángulo entre las agujas es 115° (horario quieto: 90°, signo cambiado: 55°)",
+      "fn": "angulo",
+      "args": [
+        {
+          "H": 1,
+          "M": 50
+        }
+      ],
+      "espera": {
+        "formula": 245,
+        "menor": 115,
+        "mayor": 245,
+        "errores.noMenor": 245,
+        "errores.horarioQuieto": 90,
+        "errores.signoCambiado": 55
+      }
+    },
+    {
+      "nombre": "Predicción del paso 3: entre las 3 y las 4 se superponen a las 3 h 16 4/11 min (horario quieto: 15 min; suma de rapideces: 13 11/13 min; opuestas: 49 1/11 min)",
+      "fn": "horaConAngulo",
+      "args": [
+        {
+          "H": 3,
+          "alfa": 0
+        }
+      ],
+      "espera": {
+        "soluciones.length": 1,
+        "primera.M": 16.363636363636363,
+        "primera.fraccion": {
+          "num": 180,
+          "den": 11,
+          "entero": 16,
+          "resto": 4
+        },
+        "errores.horarioQuieto.M": 15,
+        "errores.sumaRapideces.fraccion": {
+          "num": 180,
+          "den": 13,
+          "entero": 13,
+          "resto": 11
+        },
+        "errores.conElSuplemento.fraccion": {
+          "num": 540,
+          "den": 11,
+          "entero": 49,
+          "resto": 1
+        }
+      }
+    },
+    {
+      "nombre": "Experimento 1: entre las 2 y las 3 forman 90° a las 2 h 27 3/11 min (horario quieto: 25 min; suma de rapideces: 23 1/13 min; el suplemento de 90° es 90°: coincide)",
+      "fn": "horaConAngulo",
+      "args": [
+        {
+          "H": 2,
+          "alfa": 90
+        }
+      ],
+      "espera": {
+        "soluciones.length": 1,
+        "primera.fraccion": {
+          "num": 300,
+          "den": 11,
+          "entero": 27,
+          "resto": 3
+        },
+        "errores.horarioQuieto.M": 25,
+        "errores.sumaRapideces.fraccion": {
+          "num": 300,
+          "den": 13,
+          "entero": 23,
+          "resto": 1
+        },
+        "coinciden": [
+          "conElSuplemento"
+        ]
+      }
+    },
+    {
+      "nombre": "Entre las 4 y las 5 forman 90° dos veces: a las 4 h 5 5/11 min y a las 4 h 38 2/11 min; a las 6 se superponen a las 6 h 32 8/11 min y se oponen solo a las 6:00 exactas",
+      "fn": "horaConAngulo",
+      "args": [
+        {
+          "H": 4,
+          "alfa": 90
+        }
+      ],
+      "espera": {
+        "soluciones.0.fraccion": {
+          "num": 60,
+          "den": 11,
+          "entero": 5,
+          "resto": 5
+        },
+        "soluciones.1.fraccion": {
+          "num": 420,
+          "den": 11,
+          "entero": 38,
+          "resto": 2
+        },
+        "soluciones.length": 2
+      },
+      "tambien": [
+        {
+          "args": [
+            {
+              "H": 6,
+              "alfa": 0
+            }
+          ],
+          "espera": {
+            "primera.fraccion": {
+              "num": 360,
+              "den": 11,
+              "entero": 32,
+              "resto": 8
+            }
+          }
+        },
+        {
+          "args": [
+            {
+              "H": 6,
+              "alfa": 180
+            }
+          ],
+          "espera": {
+            "soluciones.length": 1,
+            "soluciones.0.M": 0,
+            "primera": null
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "Predicción del paso 4: en un día (24 h desde las 0:00) se superponen 22 veces (una por hora: 24; las de 12 h: 11; contando los dos extremos: 23)",
+      "fn": "coincidencias",
+      "args": [
+        {
+          "horas": 24,
+          "tipo": "superpuestas"
+        }
+      ],
+      "espera": {
+        "veces": 22,
+        "instantes.1": 65.45454545454545,
+        "instantes.11": 720,
+        "errores.unaPorHora": 24,
+        "errores.mitad": 11,
+        "errores.contarExtremos": 23
+      }
+    },
+    {
+      "nombre": "En 12 h forman ángulo recto 22 veces y se oponen 11 (la primera oposición, a las 12 h 32 8/11 min)",
+      "fn": "coincidencias",
+      "args": [
+        {
+          "horas": 12,
+          "tipo": "rectas"
+        }
+      ],
+      "espera": {
+        "veces": 22,
+        "instantes.0": 16.363636363636363,
+        "errores.unaPorHora": 24,
+        "errores.mitad": 11,
+        "errores.contarExtremos": 23
+      },
+      "tambien": [
+        {
+          "args": [
+            {
+              "horas": 12,
+              "tipo": "opuestas"
+            }
+          ],
+          "espera": {
+            "veces": 11,
+            "instantes.0": 32.72727272727273,
+            "errores.mitad": 5,
+            "errores.unaPorHora": 12
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "Predicción del paso 5: un reloj que se adelanta 5 min cada 4 h vuelve a marcar la hora correcta a los 24 días (con 24 h: 48 días; con una hora: 2 días; sin el «cada 4 h»: 6 días)",
+      "fn": "vuelveHoraCorrecta",
+      "args": [
+        {
+          "a": 5,
+          "cada": 4
+        }
+      ],
+      "espera": {
+        "minutos": 720,
+        "periodos": 144,
+        "horas": 576,
+        "dias": 24,
+        "errores.dia24": 1152,
+        "errores.unaHora": 48,
+        "errores.sinCada": 144
+      },
+      "tambien": [
+        {
+          "args": [
+            {
+              "a": 3,
+              "cada": 24
+            }
+          ],
+          "espera": {
+            "horas": 5760,
+            "dias": 240
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "Experimento 2: se atrasa 3 min por hora; puesto en hora a las 8:00 a. m., a las 6:00 p. m. reales marca las 5:30 p. m. (al revés: 6:30; un solo periodo: 5:57; sin desfase: 6:00)",
+      "fn": "horaMarcada",
+      "args": [
+        {
+          "inicio": 480,
+          "transcurrido": 10,
+          "a": 3,
+          "cada": 1,
+          "tipo": "atrasa"
+        }
+      ],
+      "espera": {
+        "real": 1080,
+        "desfase": 30,
+        "marcada": 1050,
+        "errores.signoCambiado": 1110,
+        "errores.unPeriodo": 1077,
+        "errores.sinDesfase": 1080
+      }
+    },
+    {
+      "nombre": "Se adelanta 2 min por hora; puesto en hora a las 6:00 a. m., marca las 10:08 a. m.: son las 10:00 a. m. (desfase con el tiempo marcado: 9:59 y 44 s; al revés: 10:16)",
+      "fn": "horaReal",
+      "args": [
+        {
+          "inicio": 360,
+          "marcada": 608,
+          "a": 2,
+          "cada": 1,
+          "tipo": "adelanta"
+        }
+      ],
+      "espera": {
+        "real": 600,
+        "transcurrido": 4,
+        "desfase": 8,
+        "errores.desfaseConTiempoMarcado": 599.7333333333333,
+        "errores.signoCambiado": 616
+      }
+    },
+    {
+      "nombre": "Experimento 3: uno se adelanta 2 min por hora y otro se atrasa 1 min por hora: vuelven a marcar la misma hora a los 10 días (restando: 30 días; con 24 h: 20 días; solo el primero: 15 días)",
+      "fn": "dosRelojes",
+      "args": [
+        {
+          "a": 2,
+          "b": 1,
+          "cada": 1
+        }
+      ],
+      "espera": {
+        "rapidez": 3,
+        "horas": 240,
+        "dias": 10,
+        "errores.otraRapidez": 720,
+        "errores.dia24": 480,
+        "errores.soloUno": 360
+      },
+      "tambien": [
+        {
+          "args": [
+            {
+              "a": 5,
+              "b": 2,
+              "cada": 1,
+              "mismoSentido": true
+            }
+          ],
+          "espera": {
+            "rapidez": 3,
+            "horas": 240,
+            "errores.otraRapidez": 102.85714285714286
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "Predicción del paso 6: 6 campanadas en 5 s; 12 campanadas tardan 11 s (proporcional: 10 s; contar campanadas como intervalos: 12 s)",
+      "fn": "campanadas",
+      "args": [
+        {
+          "n": 6,
+          "t": 5,
+          "m": 12
+        }
+      ],
+      "espera": {
+        "intervalos": 5,
+        "intervalo": 1,
+        "intervalosM": 11,
+        "tiempo": 11,
+        "errores.proporcional": 10,
+        "errores.intervalosComoCampanadas": 12
+      },
+      "tambien": [
+        {
+          "args": [
+            {
+              "n": 3,
+              "t": 4,
+              "m": 7
+            }
+          ],
+          "espera": {
+            "intervalo": 2,
+            "tiempo": 12,
+            "errores.proporcional": 9.333333333333334,
+            "errores.intervalosComoCampanadas": 14
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "Experimento 4: 5 campanadas en 12 s; en 24 s da 9 (proporcional: 10; sin la primera: 8)",
+      "fn": "campanadasEn",
+      "args": [
+        {
+          "n": 5,
+          "t": 12,
+          "T": 24
+        }
+      ],
+      "espera": {
+        "intervalo": 3,
+        "campanadas": 9,
+        "errores.proporcional": 10,
+        "errores.sinMasUno": 8
+      },
+      "tambien": [
+        {
+          "args": [
+            {
+              "n": 5,
+              "t": 12,
+              "T": 25
+            }
+          ],
+          "espera": {
+            "campanadas": 9
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "Experimento 5: de 1901 a 2100 hay 49 años bisiestos (solo la regla del 4: 50; sin la regla del 400: 48)",
+      "fn": "bisiestos",
+      "args": [
+        {
+          "desde": 1901,
+          "hasta": 2100
+        }
+      ],
+      "espera": {
+        "cuantos": 49,
+        "errores.soloCada4": 50,
+        "errores.sinRegla400": 48
+      },
+      "tambien": []
+    },
+    {
+      "nombre": "Predicción del paso 8: el 15 de marzo de 2027 es lunes; el 15 de marzo de 2028 es miércoles (366 días, resto 2; sin el 29 de febrero: martes; contando el día de partida: jueves; al revés: sábado)",
+      "fn": "desdeFecha",
+      "args": [
+        {
+          "desde": {
+            "a": 2027,
+            "m": 3,
+            "d": 15
+          },
+          "hasta": {
+            "a": 2028,
+            "m": 3,
+            "d": 15
+          },
+          "dia": "lunes"
+        }
+      ],
+      "espera": {
+        "dias": 366,
+        "semanas": 52,
+        "resto": 2,
+        "febreros29": 1,
+        "nombre": "miércoles",
+        "errores.sinBisiestos": "martes",
+        "errores.contarPartida": "jueves",
+        "errores.alReves": "sábado"
+      },
+      "tambien": [
+        {
+          "fn": "diaSemana",
+          "args": [
+            {
+              "a": 2027,
+              "m": 3,
+              "d": 15
+            }
+          ],
+          "espera": {
+            "nombre": "lunes",
+            "indice": 0
+          }
+        },
+        {
+          "fn": "diaSemana",
+          "args": [
+            {
+              "a": 2000,
+              "m": 2,
+              "d": 29
+            }
+          ],
+          "espera": {
+            "nombre": "martes"
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "Hacia atrás: el 7 de noviembre de 2026 es sábado; el 28 de julio de 2026 fue martes (102 días antes; contando el día de partida: lunes; al revés: miércoles)",
+      "fn": "desdeFecha",
+      "args": [
+        {
+          "desde": {
+            "a": 2026,
+            "m": 11,
+            "d": 7
+          },
+          "hasta": {
+            "a": 2026,
+            "m": 7,
+            "d": 28
+          },
+          "dia": "sábado"
+        }
+      ],
+      "espera": {
+        "dias": -102,
+        "resto": 3,
+        "febreros29": 0,
+        "nombre": "martes",
+        "errores.contarPartida": "lunes",
+        "errores.alReves": "miércoles"
+      }
+    },
+    {
+      "nombre": "Paso 7: 100 días después del sábado 7 de noviembre de 2026 es lunes 15 de febrero de 2027 (14 semanas y 2 días)",
+      "fn": "desdeFecha",
+      "args": [
+        {
+          "desde": {
+            "a": 2026,
+            "m": 11,
+            "d": 7
+          },
+          "hasta": {
+            "a": 2027,
+            "m": 2,
+            "d": 15
+          }
+        }
+      ],
+      "espera": {
+        "dias": 100,
+        "semanas": 14,
+        "resto": 2,
+        "nombre": "lunes"
+      },
+      "tambien": [
+        {
+          "fn": "semanas",
+          "args": [
+            365
+          ],
+          "espera": {
+            "semanas": 52,
+            "resto": 1
+          }
+        },
+        {
+          "fn": "semanas",
+          "args": [
+            366
+          ],
+          "espera": {
+            "semanas": 52,
+            "resto": 2
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "Experimento 6: un mes de 31 días que empieza en jueves tiene 5 jueves, 5 viernes y 5 sábados (solo el primero: jueves; uno de más: hasta el domingo; «4 semanas»: ninguno)",
+      "fn": "mes",
+      "args": [
+        {
+          "diasMes": 31,
+          "primerDia": "jueves"
+        }
+      ],
+      "espera": {
+        "conteo": [
+          4,
+          4,
+          4,
+          5,
+          5,
+          5,
+          4
+        ],
+        "cinco": [
+          "jueves",
+          "viernes",
+          "sábado"
+        ],
+        "ultimo": "sábado",
+        "errores.soloElPrimero": [
+          "jueves"
+        ],
+        "errores.unoDeMas": [
+          "jueves",
+          "viernes",
+          "sábado",
+          "domingo"
+        ],
+        "errores.ninguno": []
+      },
+      "tambien": [
+        {
+          "args": [
+            {
+              "diasMes": 28,
+              "primerDia": "lunes"
+            }
+          ],
+          "espera": {
+            "cinco": [],
+            "coinciden": [
+              "ninguno"
+            ],
+            "ultimo": "domingo"
+          }
+        }
+      ]
+    }
+  ]
+}

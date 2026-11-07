@@ -1,0 +1,129 @@
+{
+  "titulo": "El reloj y el calendario: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 minutos por problema, como en el examen. En el reloj, el minutero avanza 6° por minuto y el horario 0,5° por minuto: el ángulo de fórmula es α = |30H − 11M/2| y el ángulo entre las agujas es el menor de α y 360° − α. Un reloj que se adelanta o se atrasa vuelve a marcar la hora correcta cuando acumula 12 horas (720 min). En las campanadas cuenta los intervalos: n campanadas dejan n − 1 intervalos. En el calendario, 365 días son 52 semanas y 1 día; 366 son 52 semanas y 2 días; un año es bisiesto si es múltiplo de 4, salvo los múltiplos de 100 que no lo son de 400.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "¿Qué ángulo forman las agujas de un reloj a las 4:40?",
+      "respuesta": "100°.",
+      "pasos": [
+        "Con H = 4 y M = 40: α = |30 · 4 − 11 · 40/2| = |120 − 220| = 100°.",
+        "Como 100° es menor que 180°, ese es el ángulo entre las agujas.",
+        "Comprueba con las posiciones: el minutero está en 6 · 40 = 240°; el horario, en 120° + 40 · 0,5° = 140°. La diferencia es 100°. Si dejas el horario quieto en el 4 (120°), sale 120°, que no es."
+      ],
+      "verificar": [ { "fn": "angulo", "args": [{ "H": 4, "M": 40 }], "espera": { "menor": 100, "errores.horarioQuieto": 120 } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "¿Qué ángulo forman las agujas de un reloj a las 10:25?",
+      "respuesta": "162,5°, o sea 162° 30'.",
+      "pasos": [
+        "α = |30 · 10 − 11 · 25/2| = |300 − 137,5| = 162,5°.",
+        "Es menor que 180°: es el ángulo entre las agujas. En grados y minutos: 162° 30'.",
+        "El otro ángulo, el que da la vuelta por fuera, mide 360° − 162,5° = 197,5°."
+      ],
+      "verificar": [ { "fn": "angulo", "args": [{ "H": 10, "M": 25 }], "espera": { "menor": 162.5, "mayor": 197.5 } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "¿A qué hora, entre las 5 y las 6, se superponen las agujas de un reloj?",
+      "respuesta": "A las 5 h 27 3/11 min.",
+      "pasos": [
+        "Superpuestas quiere decir α = 0: 30 · 5 − 11M/2 = 0.",
+        "Entonces 11M/2 = 150 y M = 300/11 = 27 3/11 min.",
+        "Otra forma: a las 5:00 el minutero está 150° detrás del horario y le descuenta 5,5° por minuto. Tarda 150/5,5 = 300/11 min. Si dejas el horario quieto, sale 5:25, y a esa hora el horario ya avanzó 12,5°."
+      ],
+      "verificar": [ { "fn": "horaConAngulo", "args": [{ "H": 5, "alfa": 0 }], "espera": { "primera.fraccion": { "num": 300, "den": 11, "entero": 27, "resto": 3 }, "errores.horarioQuieto.M": 25 } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Entre las 7 y las 8, ¿a qué hora forman las agujas un ángulo recto por primera vez?",
+      "respuesta": "A las 7 h 21 9/11 min (la segunda vez es a las 7 h 54 6/11 min).",
+      "pasos": [
+        "Ángulo recto: |210 − 11M/2| = 90. Hay dos casos.",
+        "Primer caso: 210 − 11M/2 = 90, así que 11M/2 = 120 y M = 240/11 = 21 9/11 min.",
+        "Segundo caso: 11M/2 − 210 = 90, así que 11M/2 = 300 y M = 600/11 = 54 6/11 min. La primera vez es la de menos minutos: 7 h 21 9/11 min."
+      ],
+      "verificar": [ { "fn": "horaConAngulo", "args": [{ "H": 7, "alfa": 90 }], "espera": { "soluciones.0.fraccion": { "num": 240, "den": 11, "entero": 21, "resto": 9 }, "soluciones.1.fraccion": { "num": 600, "den": 11, "entero": 54, "resto": 6 } } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "¿A qué hora, entre la 1 y las 2, las agujas de un reloj están en sentidos opuestos?",
+      "respuesta": "A la 1 h 38 2/11 min.",
+      "pasos": [
+        "Opuestas quiere decir que forman 180°: 11M/2 − 30 · 1 = 180.",
+        "Entonces 11M/2 = 210 y M = 420/11 = 38 2/11 min.",
+        "Comprueba: el minutero está en 6 · 420/11 ≈ 229,1° y el horario en 30° + 210/11 ≈ 49,1°. La diferencia es 180°."
+      ],
+      "verificar": [ { "fn": "horaConAngulo", "args": [{ "H": 1, "alfa": 180 }], "espera": { "primera.fraccion": { "num": 420, "den": 11, "entero": 38, "resto": 2 } } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "básico",
+      "enunciado": "Un reloj se atrasa 6 minutos cada día. Si hoy marca la hora correcta, ¿dentro de cuántos días volverá a marcarla?",
+      "respuesta": "Dentro de 120 días.",
+      "pasos": [
+        "Un reloj de agujas vuelve a marcar la hora correcta cuando su atraso llega a 12 horas: 12 · 60 = 720 min.",
+        "A 6 minutos por día, necesita 720/6 = 120 días.",
+        "Si usas 24 horas (1440 min), salen 240 días: el doble. Pero las agujas dan la vuelta completa en 12 horas."
+      ],
+      "verificar": [ { "fn": "vuelveHoraCorrecta", "args": [{ "a": 6, "cada": 24 }], "espera": { "dias": 120, "errores.dia24": 5760 } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Un reloj se adelanta 4 minutos cada 3 horas. Se pone en hora a las 7:00 a. m. ¿Qué hora marcará cuando sean realmente las 7:00 p. m. del mismo día?",
+      "respuesta": "Las 7:16 p. m.",
+      "pasos": [
+        "De 7:00 a. m. a 7:00 p. m. pasan 12 horas reales, que son 12/3 = 4 periodos de 3 horas.",
+        "En 4 periodos se adelanta 4 · 4 = 16 minutos.",
+        "Como se adelanta, marca más que la hora real: 7:00 p. m. + 16 min = 7:16 p. m. Si restas, sale 6:44 p. m., que sería la de un reloj que se atrasa."
+      ],
+      "verificar": [ { "fn": "horaMarcada", "args": [{ "inicio": 420, "transcurrido": 12, "a": 4, "cada": 3, "tipo": "adelanta" }], "espera": { "desfase": 16, "marcada": 1156, "errores.signoCambiado": 1124 } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "básico",
+      "enunciado": "Un reloj da 7 campanadas en 9 segundos, contando desde la primera hasta la última. ¿Cuánto tarda en dar 10 campanadas?",
+      "respuesta": "13,5 segundos.",
+      "pasos": [
+        "7 campanadas dejan 6 intervalos entre ellas. Cada intervalo dura 9/6 = 1,5 s.",
+        "10 campanadas dejan 9 intervalos: 9 · 1,5 = 13,5 s.",
+        "Con una regla de tres directa (7 campanadas en 9 s, 10 en x) sale x ≈ 12,86 s: esa cuenta trata las campanadas como si fueran los intervalos."
+      ],
+      "verificar": [ { "fn": "campanadas", "args": [{ "n": 7, "t": 9, "m": 10 }], "espera": { "intervalo": 1.5, "tiempo": 13.5, "errores.proporcional": 12.857142857142858 } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "intermedio",
+      "enunciado": "El 1 de enero de 2027 es viernes. ¿Qué día de la semana será el 1 de enero de 2029?",
+      "respuesta": "Lunes.",
+      "pasos": [
+        "Del 1 de enero de 2027 al 1 de enero de 2028 pasa el año 2027, que es normal: 365 días, 52 semanas y 1 día.",
+        "Del 1 de enero de 2028 al de 2029 pasa 2028, que es bisiesto (tiene 29 de febrero): 366 días, 52 semanas y 2 días.",
+        "En total, el día de la semana avanza 1 + 2 = 3 días: viernes → sábado → domingo → lunes. Si no cuentas el 29 de febrero, sale domingo."
+      ],
+      "verificar": [ { "fn": "desdeFecha", "args": [{ "desde": { "a": 2027, "m": 1, "d": 1 }, "hasta": { "a": 2029, "m": 1, "d": 1 }, "dia": "viernes" }], "espera": { "dias": 731, "resto": 3, "nombre": "lunes", "errores.sinBisiestos": "domingo" } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "intermedio",
+      "enunciado": "Febrero de 2032 empieza en domingo. ¿Cuántos domingos tiene ese mes y en qué día de la semana termina?",
+      "respuesta": "Tiene 5 domingos y termina en domingo.",
+      "pasos": [
+        "2032 es múltiplo de 4 y no de 100: es bisiesto, así que febrero tiene 29 días.",
+        "29 días son 4 semanas y 1 día: cada día de la semana sale 4 veces y el primero (domingo) sale una vez más.",
+        "El día 29 es 28 días después del 1, un número exacto de semanas: también es domingo."
+      ],
+      "verificar": [
+        { "fn": "diaSemana", "args": [{ "a": 2032, "m": 2, "d": 1 }], "espera": { "nombre": "domingo" } },
+        { "fn": "mes", "args": [{ "diasMes": 29, "primerDia": "domingo" }], "espera": { "cinco": ["domingo"], "ultimo": "domingo", "conteo": [4, 4, 4, 4, 4, 4, 5] } }
+      ]
+    }
+  ]
+}
