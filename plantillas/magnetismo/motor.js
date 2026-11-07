@@ -1,5 +1,5 @@
 /*
- * Motor de «El empujón magnético: campo y fuerza magnética».
+ * Motor de «Imanes, cables y cargas: campo y fuerza magnética».
  *
  * Aquí vive toda la física de la plantilla (regla 1 de CLAUDE.md). No toca el DOM: funciona igual en el
  * navegador (window.MotorMagnetismo) y en Node (require('./motor.js')), donde lo prueban casos.json y papel.json.

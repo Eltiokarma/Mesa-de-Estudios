@@ -1,4 +1,4 @@
-// Pruebas del motor de «El empujón magnético». Se corren desde la raíz con: node --test
+// Pruebas del motor de «Imanes, cables y cargas». Se corren desde la raíz con: node --test
 //
 // 1. Cada caso de casos.json debe salir igual del motor (regla 2 de CLAUDE.md).
 // 2. Propiedades, con datos al azar (semilla fija): F = q·v×B es siempre perpendicular a v y a B, vale |q|vB sen θ y

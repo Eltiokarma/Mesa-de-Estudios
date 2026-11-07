@@ -1,5 +1,5 @@
 {
-  "titulo": "El empujón magnético: problemas para lápiz y papel",
+  "titulo": "Imanes, cables y cargas: problemas para lápiz y papel",
   "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Usa μ₀ = 4π × 10⁻⁷ T·m/A (así, μ₀/2π = 2 × 10⁻⁷), sen 37° = 3/5, sen 53° = 4/5 y sen 30° = 1/2. La fuerza sobre una carga es F = |q|·v·B·sen θ, con θ el ángulo entre v y B, y su sentido sale de la regla de la mano derecha (al revés si la carga es negativa). Una carga quieta, o que se mueve paralela al campo, no siente fuerza magnética. Con v perpendicular a B la carga gira: r = m·v/(|q|·B) y T = 2π·m/(|q|·B). El campo de un hilo largo es B = 2 × 10⁻⁷ · I / d; el de una espira en su centro, μ₀·I/(2R); el de un solenoide, μ₀·n·I. Sobre un conductor, F = B·I·L·sen θ. Dos cables paralelos se hacen fuerzas iguales: F/L = 2 × 10⁻⁷ · I₁·I₂ / d.",
   "problemas": [
     {
