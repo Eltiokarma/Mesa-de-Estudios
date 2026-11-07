@@ -676,7 +676,7 @@ const lect4 = () => [() => ['f1', 'PF₁', fmt(MC.distancias(E4, S.s4.P).PF1)], 
 // Paso 5 y 6: la parábola (y − 1)² = −8(x − 2)
 const Vp = pt(2, 1), Fp = deLista(P5.num.F);
 function baseParabola(L, f){
-  L.rectas = [{ p:pt(4, 0), d:pt(0, 1), color:'pd', ancho:2.4, f, texto:'directriz x = 4', en:pt(4, 7.3), dx:6 }];
+  L.rectas = [{ p:pt(4, 0), d:pt(0, 1), color:'pd', ancho:2.4, f, texto:'directriz x = 4', en:pt(4, 7.3), dx:-6, align:'right' }];
   L.segs.push(seg(Vp, Fp, 'p', { ancho:5, f, texto:'p = −2', dy:-14 }));
   L.puntos.push(pun(Vp, 'ink', 'V', { f, dx:6, dy:14 }), pun(Fp, 'pf', 'F', { f, r:5, dx:-8, dy:14, align:'right' }));
 }
@@ -714,7 +714,7 @@ function config6(r){
     lect: r ? lect6() : [() => ['p', 'p', P5.pTexto]], ley: r ? [['pf', 'el foco F y PF'], ['pd', 'la directriz y PD'], ['p', 'p'], ['lr', 'el lado recto LR']] : [['pf', 'el foco F'], ['pd', 'la directriz'], ['p', 'p, de V a F']],
     desc: r ? 'La parábola con su lado recto: la cuerda vertical que pasa por el foco y llega a los puntos (0; 5) y (0; −3).' : 'El vértice V, el foco F y la directriz x = 4 de la parábola.' });
 }
-const lect6 = () => [() => ['pd', 'de F a la directriz', '4'], () => ['lr', 'LR', P5.lr.texto], () => ['p', '4|p|', P5.lr.texto]];
+const lect6 = () => [() => ['pd', 'F a directriz', '4'], () => ['lr', 'LR', P5.lr.texto], () => ['p', '4|p|', P5.lr.texto]];
 // Paso 7: la hipérbola x²/9 − y²/16 = 1
 const CIRC5 = MC.circunferencia({ r2:25 });
 function est7(L, f, g, conLapiz){
