@@ -616,3 +616,28 @@ Se trabajó en paralelo, con hasta 3 subagentes a la vez. Las unidades de biomol
 - El revisor encontró una leyenda que descartaba «no cristaliza nada» antes de responder y dos rótulos encimados. Todo corregido.
 - Colores nuevos: la curva S en verde #476e0c (oscuro #9bd35a) y la presión P en azul petróleo #093f53 (oscuro #409dbf). T va en tinta.
 - Pendiente: contrastar las tablas de solubilidad con el CRC Handbook. Son valores usuales de textos, redondeados.
+
+### 5. Celda galvánica: electrólisis del agua (hecho)
+- Hay dos experimentos nuevos al final de «¿Qué pasa si…?». Cada uno tiene tubos invertidos que se llenan de gas. Los electrones van solo por el cable, y los iones derivan y se gastan.
+  - **6. Electrolizo agua (Hofmann con Na₂SO₄).** Con 19 300 C salen 2,24 L de H₂ en el cátodo (−) y 1,12 L de O₂ en el ánodo (+). Los distractores son:
+    - gases 1 : 1, hipótesis;
+    - polos al revés, parcial: es la cita de la UNAM «la reducción del hidrógeno ocurre en el polo positivo», que es EC3/EC6, no EC7;
+    - el doble de O₂, hipótesis.
+  - **7. Sal en agua o fundida.** En la salmuera sale H₂, y el Na⁺ se queda como NaOH. En la sal fundida sale sodio. Los distractores son:
+    - sodio en las dos, hipótesis;
+    - «la corriente solo separa los iones», EC7, parcial;
+    - H₂ en las dos, hipótesis.
+  - La salmuera va matizada: si está diluida, en el ánodo sale también O₂.
+- Motor: `electrolizar()` (con Q, o con I y tiempo) y `productos()`, con errores típicos (1 : 1, polos al revés, sale sodio, olvidar el 2 o el 4). Usa F = 96 500 C/mol y 22,4 L/mol.
+- Casos 21 a 26: verificados aparte, todos coinciden.
+- Papel: el p11 (3 A durante 1 h 4 min 20 s) reemplaza al p7, porque ya había 10 problemas.
+- El revisor encontró dos cosas, ya corregidas: la salmuera no estaba matizada, y los iones del dibujo no se gastaban.
+- Colores: H, O, Na y Cl de la paleta común. Al Na⁺ le puse un aro y el «+» más grande, porque el Na claro (#3f4948) queda a unos 19,5 de la tinta.
+
+**Pedidos para la integración.**
+1. Traer `plantillas/celda-galvanica/` y `nucleo/elementos-escenas.test.js` (la escena declara H, O, Na y Cl y tiene dos vistas nuevas). Luego subir la versión y correr `npm run catalogo`.
+2. En `nucleo/elementos.js`, VISTAS: agregar «celda-galvanica: agua con Na₂SO₄» ['H','O','Na'] y «celda-galvanica: salmuera y NaCl fundido» ['H','Na','Cl'].
+3. En `docs/investigacion/equilibrio-acidos-electroquimica-ideas-erroneas.md`, la fila «Electrólisis en agua» de lo que no tiene respaldo dice EC7. Debe decir EC3 (y EC6): la cita de la UNAM es una confusión de polos.
+4. El Na claro de la paleta (#3f4948) queda a unos 19,5 de la tinta. Si hay un tono más separado, mejor.
+
+**Con esto queda cerrada la lista de huecos** (puntos 1 a 5).
