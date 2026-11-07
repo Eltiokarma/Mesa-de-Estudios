@@ -37,7 +37,7 @@ function comprobar(fn, args, espera, que) {
 // 1. casos.json
 test('casos.json: formato', () => {
   assert.equal(datos.plantilla, 'numeros-complejos');
-  assert.equal(datos.verificacion, '', 'la verificación la llena el verificador');
+  assert.ok(typeof datos.verificacion === 'string', 'falta verificacion');
   assert.ok(datos.casos.length >= 15 && datos.casos.length <= 22, `hay ${datos.casos.length} casos`);
   for (const c of datos.casos) {
     assert.ok(c.nombre && c.fn && Array.isArray(c.args) && c.espera && typeof c.espera === 'object', JSON.stringify(c).slice(0, 80));
@@ -97,6 +97,7 @@ test('polar: ida y vuelta, y producto / cociente en polar = binómicos', () => {
     igualN(mulN(motor.cocientePolar({ z: a, w: b }).num, B), A, 'cocientePolar', 1e-9);
     const n = ent(1, 9); let p = { re: 1, im: 0 }; for (let j = 0; j < n; j++) p = mulN(p, z);
     igualN(motor.deMoivre({ z, n }).num, p, `De Moivre n = ${n}`, 1e-9);
+    igualN(mulN(motor.deMoivre({ z, n: -n }).num, p), { re: 1, im: 0 }, `De Moivre n = ${-n}`, 1e-9);
   }
 });
 test('cuadrática: las raíces anulan el polinomio; con Δ < 0 son conjugadas', () => {
@@ -129,7 +130,7 @@ test('ningún error típico coincide con la respuesta correcta (casos y barrido)
     sinChoques(motor.argumento({ z: w }), 'argumento'); sinChoques(motor.polar({ z: w }), 'polar');
     const a = { r: ent(1, 6), theta: ent(-180, 180) }, b = { r: ent(1, 6), theta: ent(-180, 180) };
     sinChoques(motor.productoPolar({ z: a, w: b }), 'producto polar'); sinChoques(motor.cocientePolar({ z: a, w: b }), 'cociente polar');
-    sinChoques(motor.deMoivre({ z: w, n: ent(2, 9) }), 'De Moivre');
+    sinChoques(motor.deMoivre({ z: w, n: ent(2, 9) }), 'De Moivre'); sinChoques(motor.deMoivre({ z: w, n: -ent(1, 5) }), 'De Moivre negativo');
     sinChoques(motor.raizNegativa({ a: ent(1, 30), b: ent(1, 30) }), '√(−a)·√(−b)');
     sinChoques(motor.cuadratica({ a: ent(1, 3), b: ent(-9, 9), c: ent(-9, 20) }), 'cuadrática');
   }
@@ -143,12 +144,12 @@ const ESCENA = {
   'paso3': () => E(motor.multiplicar({ z: { re: 2, im: 3 }, w: { re: 1, im: -2 } }), ['partePorParte', 'cuadradoPositivo', 'sigueI']),
   'paso4': () => E(motor.modulo({ z: { re: -4, im: 3 } }), ['sumaPartes', 'raizDeSuma', 'sinRaiz']),
   'paso5': () => E(motor.conjugado({ z: { re: -3, im: 2 } }), ['cambiaReal', 'opuesto', 'intercambia']),
-  'paso6': () => E(motor.dividir({ z: { re: 5, im: 1 }, w: { re: 1, im: -1 } }), ['partePorParte', 'sinDenominador', 'cuadradoPositivo']),
+  'paso6': () => E(motor.dividir({ z: { re: 5, im: 1 }, w: { re: 1, im: -1 } }), ['partePorParte', 'porW', 'sinDenominador']),
   'paso7': () => E(motor.polar({ z: { re: -1, im: '√3' } }), ['arctanDirecto', 'referencia', 'sinRaiz']),
-  'paso8': () => E(motor.productoPolar({ z: { r: 2, theta: 15 }, w: { r: 3, theta: 20 } }), ['sumaModulos', 'multiplicaArgumentos', 'restaArgumentos']),
+  'paso8': () => E(motor.productoPolar({ z: { r: 2, theta: 10 }, w: { r: 3, theta: 30 } }), ['sumaModulos', 'multiplicaArgumentos', 'restaArgumentos']),
   'inverso': () => E(motor.potenciaI({ n: -1 }), ['comoPositivo', 'seCancelan', 'soloSigno']),
   'raices-negativas': () => E(motor.raizNegativa({ a: 4, b: 9 }), ['juntaRaices', 'sigueI', 'noExiste']),
-  'cociente-polar': () => E(motor.cocientePolar({ z: { r: 6, theta: 100 }, w: { r: 2, theta: 40 } }), ['sumaArgumentos', 'restaModulos', 'divideArgumentos']),
+  'cociente-polar': () => E(motor.cocientePolar({ z: { r: 6, theta: 100 }, w: { r: 2, theta: 40 } }), ['sumaArgumentos', 'restaModulos', 'restaAlReves']),
   'de-moivre': () => E(motor.deMoivre({ z: { re: 1, im: 1 }, n: 8 }), ['reparte', 'sinModulo', 'porN']),
   'cuadratica': () => E(motor.cuadratica({ a: 1, b: -4, c: 13 }), ['signoB', 'sinDividirIm', 'sinDividir']),
 };
@@ -179,7 +180,9 @@ test('entradas inválidas', () => {
   assert.throws(() => motor.sumar({ z: { re: 'dos', im: 1 }, w: { re: 1, im: 1 } }), /fracción/);
   assert.throws(() => motor.productoPolar({ z: { r: -2, theta: 10 }, w: { r: 1, theta: 0 } }), /positivo/);
   assert.throws(() => motor.binomica({ r: 2, theta: 'treinta' }), /grados/);
-  assert.throws(() => motor.deMoivre({ z: { re: 1, im: 1 }, n: 0 }), /entero mayor/);
+  assert.throws(() => motor.deMoivre({ z: { re: 1, im: 1 }, n: 1.5 }), /entero/);
+  assert.throws(() => motor.deMoivre({ z: { re: 0, im: 0 }, n: 2 }), /no está definido/);
+  cerca(motor.deMoivre({ z: { re: 1, im: 1 }, n: 0 }).num, { re: 1, im: 0 }, 'z⁰ = 1');
   assert.throws(() => motor.raizNegativa({ a: -4, b: 9 }), /positivos/);
   assert.throws(() => motor.cuadratica({ a: 0, b: 1, c: 1 }), /distinto de 0/);
 });

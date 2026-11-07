@@ -135,7 +135,7 @@ input[type=range]{width:100%; margin:0; accent-color:var(--ink); min-height:32px
 .lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(96px, 1fr)); gap:8px}
 .lecturas:empty{display:none}
 .lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
-.lectura b{display:block; color:var(--k); font:800 .92rem var(--mono); font-variant-numeric:tabular-nums; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.lectura b{display:block; color:var(--k); font:800 .92rem var(--mono); font-variant-numeric:tabular-nums; white-space:normal; overflow-wrap:anywhere}
 .lectura span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
 
 @media (min-width:900px){
@@ -152,7 +152,7 @@ input[type=range]{width:100%; margin:0; accent-color:var(--ink); min-height:32px
     <header>
       <p class="eyebrow">Álgebra · Números complejos · Problemas tipo admisión</p>
       <h1>La flecha en el plano</h1>
-      <p class="sub">Cada número complejo es una flecha que sale del origen. Arrastra su punta y mira qué les pasa al sumar, multiplicar, dividir y elevar.</p>
+      <p class="sub">Cada número complejo es una flecha que sale del origen. Arrastra su punta y mira qué les pasa al multiplicar, dividir, conjugar y elevar.</p>
     </header>
     <nav class="tabs" aria-label="Modo de la escena">
       <a href="#paso-a-paso" id="tab1">Paso a paso</a>
@@ -476,8 +476,8 @@ const Z4 = { re:-4, im:3 }, D4 = MC.modulo({ z:Z4 });
 const Z5 = { re:-3, im:2 }, C5 = MC.conjugado({ z:Z5 });
 const Z6 = { re:5, im:1 }, W6 = { re:1, im:-1 }, Q6 = MC.dividir({ z:Z6, w:W6 }), WB6 = MC.conjugado({ z:W6 });
 const Z7 = { re:-1, im:'√3' }, PO7 = MC.polar({ z:Z7 }), A7 = MC.argumento({ z:Z7 });
-const Z8 = { r:2, theta:15 }, W8 = { r:3, theta:20 }, M8 = MC.productoPolar({ z:Z8, w:W8 });
-const hip = `<p class="fuente">El informe de ideas erróneas de álgebra no trata los números complejos: estas opciones son hipótesis nuestras, armadas con errores que se ven en el aula, y se confirman con lo que marquen los alumnos.`;
+const Z8 = { r:2, theta:10 }, W8 = { r:3, theta:30 }, M8 = MC.productoPolar({ z:Z8, w:W8 });
+const hip = `<p class="fuente">El informe de ideas erróneas de álgebra no trata los números complejos: estas opciones son hipótesis nuestras, armadas con errores que creemos frecuentes, y se confirman con lo que marquen los alumnos.`;
 const P1 = { id:'numeros-complejos-paso1', ok:'b', opts:[
   ['a', I2.errores.cuadradoPositivo.texto, 'CX1-i-cuadrado-es-1', 'hipotesis'],
   ['b', I2.texto],
@@ -525,12 +525,12 @@ const P5 = { id:'numeros-complejos-paso5', ok:'b', opts:[
     d:'Elegiste la D. 3 − 2i es −z, el opuesto: cambia los dos signos. El conjugado cambia solo uno. La correcta está marcada.' } };
 const P6 = { id:'numeros-complejos-paso6', ok:'c', opts:[
   ['a', Q6.errores.partePorParte.texto, 'CX15-divide-parte-por-parte', 'hipotesis'],
-  ['b', Q6.errores.cuadradoPositivo.texto, 'CX1-i-cuadrado-es-1', 'hipotesis'],
+  ['b', Q6.errores.porW.texto, 'CX35-multiplica-por-w', 'hipotesis'],
   ['c', Q6.texto],
   ['d', Q6.errores.sinDenominador.texto, 'CX16-sin-denominador', 'hipotesis']],
   fb:{ c:'¡Bien! Arriba y abajo por 1 + i: (5 + i)(1 + i) = 4 + 6i y (1 − i)(1 + i) = 2. Queda 2 + 3i.',
     a:'Elegiste la A. 5 − i divide 5 entre 1 y 1 entre −1, parte por parte. Comprueba: (5 − i)(1 − i) = 4 − 6i, no 5 + i. La correcta está marcada.',
-    b:'Elegiste la B. 3 + 3i sale de tomar i² = 1 en el numerador. (5 + i)(1 + i) = 5 + 5i + i + i² = 4 + 6i. La correcta está marcada.',
+    b:'Elegiste la B. 3 − 2i sale de multiplicar arriba por w = 1 − i en vez de por su conjugado w̄ = 1 + i. La correcta está marcada.',
     d:'Elegiste la D. 4 + 6i es el numerador: falta dividir entre (1 − i)(1 + i) = 2. La correcta está marcada.' } };
 const P7 = { id:'numeros-complejos-paso7', ok:'d', opts:[
   ['a', PO7.errores.arctanDirecto.texto, 'CX17-arctan-sin-cuadrante', 'hipotesis'],
@@ -546,10 +546,10 @@ const P8 = { id:'numeros-complejos-paso8', ok:'a', opts:[
   ['b', M8.errores.multiplicaArgumentos.texto, 'CX20-multiplica-argumentos', 'hipotesis'],
   ['c', M8.errores.sumaModulos.texto, 'CX19-suma-modulos', 'hipotesis'],
   ['d', M8.errores.restaArgumentos.texto, 'CX21-resta-argumentos', 'hipotesis']],
-  fb:{ a:'¡Bien! Los largos se multiplican (2 · 3 = 6) y los ángulos se suman (15° + 20° = 35°).',
-    b:'Elegiste la B. 300° = 15° · 20°. Al multiplicar, la flecha de z gira el ángulo de w: los ángulos se suman. La correcta está marcada.',
+  fb:{ a:'¡Bien! Los largos se multiplican (2 · 3 = 6) y los ángulos se suman (10° + 30° = 40°).',
+    b:'Elegiste la B. 300° = 10° · 30°. Al multiplicar, la flecha de z gira el ángulo de w: los ángulos se suman. La correcta está marcada.',
     c:'Elegiste la C. 5 = 2 + 3. El largo de z se estira tres veces (el largo de w): se multiplica. La correcta está marcada.',
-    d:'Elegiste la D. −5° = 15° − 20° es la regla de la división. Al multiplicar, los ángulos se suman. La correcta está marcada.' } };
+    d:'Elegiste la D. −20° = 10° − 30° es la regla de la división. Al multiplicar, los ángulos se suman. La correcta está marcada.' } };
 
 const LEY_Z = [['r', 'la flecha de z (su largo es |z|)'], ['re', 'parte real a'], ['im', 'parte imaginaria b']];
 const rej = B => ({ x0:Math.ceil(B.x0), x1:Math.floor(B.x1), y0:Math.ceil(B.y0), y1:Math.floor(B.y1) });
@@ -637,7 +637,7 @@ function cuadros4(L, z, f){
   const ent = x => (Math.abs(x - Math.round(x)) < 1e-9 ? Math.round(x) : 0);
   L.cuadros.push({ o:pt(a, 0), u:pt(-a, 0), v:pt(0, -sb*Math.abs(a)), n:ent(Math.abs(a)), color:'re', texto:[[`a² = ${MC.decimal(M.areas[0])}`, 're']], f:f[0] },
     { o:pt(a, 0), u:pt(0, b), v:pt(sa*Math.abs(b), 0), n:ent(Math.abs(b)), color:'im', texto:[[`b² = ${MC.decimal(M.areas[1])}`, 'im']], f:f[1] },
-    { o:O, u:pt(a, b), v:n1, n:ent(M.valor), color:'r', texto:[[`|z|² = ${M.cuadrado}`, 'r']], f:f[2] });
+    { o:O, u:pt(a, b), v:n1, n:ent(M.valor), color:'r', texto:[[`|z|² = ${M.cuadrado}`, 'r']], dy:18, f:f[2] });
 }
 function config4(r){
   E.config({ L:{ caja:BOX4, estado:{ z:pt(Z4.re, Z4.im), f:r ? [1, 1, 1] : [0, 0, 0], libre:r },
@@ -718,7 +718,7 @@ function config7(r){
           L.segs.push({ p:O, q, color:'muted', ancho:1.6, dash:true, f:s.f });
           L.puntos.push({ p:q, color:'muted', hueco:true, texto:[[`arctan(b/a) = ${A7.errores.arctanDirecto.texto}`, 'muted']], dy:16, f:s.f }); } }
       flechaZ(L, z, { partes:true, ta:[[`a = ${s.exacto ? '−1' : MC.decimal(z.x)}`, 're']], tb:[[`b = ${s.exacto ? '√3' : MC.decimal(z.y)}`, 'im']], texto:[['z', 'r']], dx:-10 });
-      if (s.f >= 1) L.textos.push({ p:pt(z.x/2, z.y/2), t:[[`r = ${M.texto}`, 'r']], dx: z.x < 0 ? 12 : -12, dy:4, align: z.x < 0 ? 'left' : 'right' });
+      if (s.f >= 1) L.textos.push({ p:pt(z.x*.8, z.y*.8), t:[[`r = ${M.texto}`, 'r']], dx: z.x < 0 ? 12 : -12, dy:0, align: z.x < 0 ? 'left' : 'right' });
       if (s.libre) L.manijas = [{ id:'z', p:z, color:'r' }]; },
     mover:(id, q, L) => { const s = L.estado; s.z = sinCero(snap(q, -2.5, 2.5, -2, 2.5, .5), s.z); s.exacto = false; },
     tecla:(id, dx, dy, L) => { const s = L.estado, z = s.exacto ? pt(-1, 1.5) : s.z; s.z = sinCero(pt(clamp(z.x + dx*.5, -2.5, 2.5), clamp(z.y + dy*.5, -2, 2.5)), z); s.exacto = false; } },
@@ -738,9 +738,9 @@ function config8(r){
         L.polys.push({ pts:[O, pt(1, 0), z], color:'r', alfa:2.2 });
         L.polys.push({ pts:[O, A, B], color:'ink', alfa:.9, dash:true });
         if (s.f >= 1){ L.segs.push({ p:O, q:zw, color:'ink', ancho:3, flecha:true });
-          L.arcos.push({ de:0, a:Z8.theta + s.wg, r:3.6, color:'th', dash:true, texto:`${MC.decimal(Z8.theta + s.wg)}°`, sep:12 });
+          L.arcos.push({ de:0, a:Z8.theta + s.wg, r:3.6, color:'ink', dash:true, texto:`${MC.decimal(Z8.theta + s.wg)}°`, sep:12 });
           L.puntos.push({ p:zw, color:'ink', r:4, texto:[[`z · w = ${M.texto}`, 'ink']], dy:-15 }); } }
-      L.arcos.push({ de:0, a:Z8.theta, r:1.1, color:'th', texto:'15°', sep:12, en:7 });
+      L.arcos.push({ de:0, a:Z8.theta, r:1.1, color:'th', texto:`${Z8.theta}°`, sep:12, en:Z8.theta/2 });
       L.arcos.push({ de:0, a:s.wg, r:1.7, color:'w', texto:`${MC.decimal(s.wg)}°`, sep:12, en: s.wg*.62 });
       flechaZ(L, z, { texto:[['z', 'r']], dx:12, dy:-10 });
       L.segs.push({ p:O, q:w, color:'w', ancho:3, flecha:true });
@@ -748,8 +748,8 @@ function config8(r){
       if (s.libre) L.manijas = [{ id:'w', p:w, color:'w' }]; },
     mover:(id, q, L) => { const s = L.estado; s.wr = clamp(Math.round(Math.hypot(q.x, q.y)*10)/10, .5, 3.2); s.wg = clamp(Math.round(ang(q)), 0, 80); },
     tecla:(id, dx, dy, L) => { const s = L.estado; s.wg = clamp(s.wg + dy*5, 0, 80); s.wr = clamp(Math.round((s.wr + dx*.1)*10)/10, .5, 3.2); } },
-    lect: r ? lect8 : [], ley: r ? [['r', 'z y el triángulo 0, 1, z'], ['w', 'w y su ángulo'], ['th', 'ángulos'], ['ink', 'z · w y el triángulo semejante', 'trazos']] : [['r', 'la flecha de z'], ['th', 'el ángulo de z'], ['w', 'la flecha de w y su ángulo']],
-    desc:'El plano complejo con la flecha de z, de largo 2 y ángulo 15°, la flecha de w, de largo 3 y ángulo 20°, y el punto 1.' });
+    lect: r ? lect8 : [], ley: r ? [['r', 'z y el triángulo 0, 1, z'], ['th', 'el ángulo de z'], ['w', 'w y su ángulo'], ['ink', 'z · w, su ángulo y el triángulo semejante', 'trazos']] : [['r', 'la flecha de z'], ['th', 'el ángulo de z'], ['w', 'la flecha de w y su ángulo']],
+    desc:'El plano complejo con la flecha de z, de largo 2 y ángulo 10°, la flecha de w, de largo 3 y ángulo 30°, y el punto 1.' });
 }
 const lect8 = [E => { const s = E.L.estado; return ['w', 'w', MC.productoPolar({ z:{ r:1, theta:0 }, w:{ r:s.wr, theta:s.wg } }).textoDecimal]; },
   E => { const s = E.L.estado; return ['ink', 'z · w', MC.productoPolar({ z:Z8, w:{ r:s.wr, theta:s.wg } }).textoDecimal]; }];
@@ -780,7 +780,7 @@ const steps = [
    anima:fin => { config3(false); const s = E.L.estado; E.cadena([0, 1, 2, 3].map(k => n => E.animar(650, f => { s.f = k + f; }, n)), () => esperar(400, () => { config3(true); fin(); })); },
    body:() => `<p class="problem">Sea z = ${re_('2')} + ${im_('3')}i y ${w_('w = 1 − 2i')}. ¿Cuánto vale z · w?</p>${opcionesHTML(P3.opts, 'fb')}
    <div id="tras" class="body" hidden>
-   <div class="eqs"><div class="eq">(${re_('2')} + ${im_('3')}i)(1 − 2i) = 2 − 4i + 3i − 6i² = 2 − 4i + 3i + 6 = 8 − i</div></div>
+   <div class="eqs"><div class="eq">(${re_('2')} + ${im_('3')}i)${w_('(1 − 2i)')} = 2 − 4i + 3i − 6i² = 2 − 4i + 3i + 6 = 8 − i</div></div>
    <p>Son cuatro productos, como en (a + b)(c + d). En el dibujo van uno detrás de otro: 2 hacia la derecha, −4i hacia abajo, 3i hacia arriba y −6i² = +6 otra vez hacia la derecha. La flecha punteada llega a la suma, 8 − i.</p>
    <p>Arrastra la punta de ${w_('w')} (o usa las flechas del teclado): mira cómo cambian las piezas.</p>
    ${hip}</p></div>` },
@@ -792,7 +792,7 @@ const steps = [
    <div class="eqs"><div class="eq">${r_('|z|')}² = ${re_('a')}² + ${im_('b')}² = 16 + 9 = 25  ⟹  ${r_('|z|')} = √25 = 5</div></div>
    <p>La flecha y sus dos partes forman un triángulo rectángulo: la flecha es la hipotenusa. Cuenta los cuadritos: 16 en el cuadro de ${re_('a')} y 9 en el de ${im_('b')} llenan los 25 del cuadro de la flecha.</p>
    <p>Arrastra la punta de ${r_('z')}: los cuadros siempre cumplen ${re_('a')}² + ${im_('b')}² = ${r_('|z|')}².</p>
-   <p class="fuente">El informe de álgebra recoge √(a² + b²) = a + b entre los errores de linealidad que tienen ingresantes chilenos a pedagogía y que persisten tras un semestre (AL9; Aguerrea y otros, 2022, según resúmenes y sin cifra del ítem). Es la misma regla que da |a + bi| = |a| + |b|. Las otras dos opciones son hipótesis nuestras.</p></div>` },
+   <p class="fuente">El informe de álgebra recoge √(a² + b²) = a + b entre los errores de linealidad que tienen ingresantes chilenos a pedagogía y que persisten tras un semestre (AL9; Aguerrea y otros, 2022, según resúmenes y sin cifra del ítem). Sin los signos, esa regla da |a + bi| = |a| + |b| = 7. Las otras dos opciones son hipótesis nuestras.</p></div>` },
  { k:'Paso 5', t:'Predice: el conjugado', gate:P5,
    prep:() => config5(!!S.pred[P5.id]),
    anima:fin => { config5(false); const s = E.L.estado; E.cadena([n => E.animar(900, f => { s.f = f; }, n), n => E.animar(500, f => { s.otros = f; }, n), n => esperar(900, n)], () => { config5(true); fin(); }); },
@@ -805,9 +805,9 @@ const steps = [
  { k:'Paso 6', t:'Predice: una división', gate:P6,
    prep:() => config6(!!S.pred[P6.id]),
    anima:fin => { config6(false); const s = E.L.estado; E.cadena([n => E.animar(700, f => { s.f1 = f; }, n), n => E.animar(800, f => { s.f2 = f; }, n), n => E.animar(800, f => { s.f3 = f; }, n)], () => esperar(400, () => { config6(true); fin(); })); },
-   body:() => `<p class="problem">Sea z = ${re_('5')} + ${im_('1')} · i y ${w_('w = 1 − i')}. ¿Cuánto vale z/w, escrito como a + bi?</p>${opcionesHTML(P6.opts, 'fb')}
+   body:() => `<p class="problem">Sea z = 5 + i (${re_('a = 5')}, ${im_('b = 1')}) y ${w_('w = 1 − i')}. ¿Cuánto vale z/w en forma binómica?</p>${opcionesHTML(P6.opts, 'fb')}
    <div id="tras" class="body" hidden>
-   <div class="eqs"><div class="eq">(5 + i)/(1 − i) · (1 + i)/(1 + i) = (5 + 5i + i + i²)/(1 − i²) = (4 + 6i)/2 = 2 + 3i</div></div>
+   <div class="eqs"><div class="eq">(5 + i)/${w_('(1 − i)')} · ${w_('(1 + i)')}/${w_('(1 + i)')} = (5 + 5i + i + i²)/(1 − i²) = (4 + 6i)/2 = 2 + 3i</div></div>
    <p>Para quitar la i del denominador se multiplica arriba y abajo por su conjugado, ${w_('w̄ = 1 + i')}. Abajo queda ${w_('w')} · ${w_('w̄')} = |${w_('w')}|² = 2, un número real; arriba, z · ${w_('w̄')} = 4 + 6i. En el dibujo, la flecha punteada de z · ${w_('w̄')} se encoge a la mitad y queda z/w.</p>
    <p>Arrastra la punta de ${r_('z')} (o usa las flechas del teclado).</p>
    ${hip}</p></div>` },
@@ -819,15 +819,15 @@ const steps = [
    <div class="eqs"><div class="eq">${r_('r')} = √(1 + 3) = 2;  tan ${th_('θ')} = √3/(−1) con el punto en el II cuadrante  ⟹  ${th_('θ')} = 180° − 60° = 120°</div>
    <div class="eq">z = 2 cis 120° = 2(cos 120° + i sen 120°) = 2(−1/2 + (√3/2)i) = −1 + √3 i</div></div>
    <p>arctan(b/a) solo devuelve ángulos entre −90° y 90°: no distingue (−1; √3) de (1; −√3). Primero se mira en qué cuadrante está el punto; después se corrige el ángulo.</p>
-   <p>Arrastra la punta de ${r_('z')} por los cuatro cuadrantes: el argumento principal va de −180° a 180°.</p>
+   <p>Arrastra la punta de ${r_('z')} por los cuatro cuadrantes: el argumento principal cumple −180° &lt; θ ≤ 180° (algunos libros toman 0° ≤ θ &lt; 360°).</p>
    ${hip}</p></div>` },
  { k:'Paso 8', t:'Predice: multiplicar flechas', gate:P8,
    prep:() => config8(!!S.pred[P8.id]),
    anima:fin => { config8(false); const s = E.L.estado; E.animar(1400, f => { s.f = f; }, () => esperar(500, () => { config8(true); fin(); })); },
-   body:() => `<p class="problem">Sea z = ${r_('2')} cis ${th_('15°')} y ${w_('w = 3 cis 20°')}. ¿Cuánto vale z · w?</p>${opcionesHTML(P8.opts, 'fb')}
+   body:() => `<p class="problem">Sea z = ${r_('2')} cis ${th_('10°')} y ${w_('w = 3 cis 30°')}. ¿Cuánto vale z · w?</p>${opcionesHTML(P8.opts, 'fb')}
    <div id="tras" class="body" hidden>
-   <div class="eqs"><div class="eq">(${r_('2')} cis ${th_('15°')})(${w_('3 cis 20°')}) = (2 · 3) cis (15° + 20°) = 6 cis 35°</div></div>
-   <p>Multiplicar por ${w_('w')} hace dos cosas a la vez: estira la flecha de z tantas veces como mide ${w_('w')} y la gira el ángulo de ${w_('w')}. El triángulo 0, 1, z se convierte en el triángulo 0, ${w_('w')}, z · w: tiene la misma forma (es semejante), tres veces más grande y girado 20°.</p>
+   <div class="eqs"><div class="eq">(${r_('2')} cis ${th_('10°')})(${w_('3 cis 30°')}) = (2 · 3) cis (10° + 30°) = 6 cis 40°</div></div>
+   <p>Multiplicar por ${w_('w')} hace dos cosas a la vez: estira la flecha de z tantas veces como mide ${w_('w')} y la gira el ángulo de ${w_('w')}. El triángulo 0, 1, z se convierte en el triángulo 0, ${w_('w')}, z · w: tiene la misma forma (es semejante), tres veces más grande y girado 30°.</p>
    <p>Arrastra la punta de ${w_('w')}: el triángulo grande la sigue. Al dividir pasa lo contrario: los largos se dividen y los ángulos se restan.</p>
    ${hip}</p></div>` },
 ];
@@ -943,15 +943,15 @@ function cfg2(ya){
     rehacer:L => { const s = L.estado;
       base(L, B2, 2);
       L.puntos.push({ p:pt(-4, 0), color:'muted', hueco:true, texto:[['−4', 'muted']], dy:-14 }, { p:pt(-9, 0), color:'muted', hueco:true, texto:[['−9', 'muted']], dy:-14 });
-      if (s.f1 > 0){ L.segs.push({ p:O, q:pt(0, 2*s.f1), color:'r', ancho:4, flecha:true }, { p:pt(.25, 0), q:pt(.25, 3*s.f1), color:'w', ancho:4, flecha:true });
-        if (s.f1 >= 1) L.puntos.push({ p:pt(0, 2), color:'r', r:3, texto:[[`√(−4) = ${R2.factores[0]}`, 'r']], dx:-34, align:'right', dy:0 },
-          { p:pt(.25, 3), color:'w', r:3, texto:[[`√(−9) = ${R2.factores[1]}`, 'w']], dx:12, align:'left', dy:0 }); }
+      if (s.f1 > 0){ L.segs.push({ p:O, q:pt(0, 2*s.f1), color:'muted', ancho:4, flecha:true }, { p:pt(.25, 0), q:pt(.25, 3*s.f1), color:'ink', ancho:4, flecha:true });
+        if (s.f1 >= 1) L.puntos.push({ p:pt(0, 2), color:'muted', r:3, texto:[[`√(−4) = ${R2.factores[0]}`, 'muted']], dx:-34, align:'right', dy:0 },
+          { p:pt(.25, 3), color:'ink', r:3, texto:[[`√(−9) = ${R2.factores[1]}`, 'ink']], dx:12, align:'left', dy:0 }); }
       if (s.f2 > 0){ const g = 90 + 90*s.f2, p = P_(lerp(2, 6, s.f2), g);
         L.arcos.push({ de:90, a:g, r:1.1, color:'th', texto: s.f2 >= 1 ? '90° + 90° = 180°' : null, sep:14, en:150, align:'right' });
         L.segs.push({ p:O, q:p, color:'ink', ancho:3, flecha:true, dash:true });
         if (s.f2 >= 1) L.puntos.push({ p, color:'ink', r:4, texto:[[`2i · 3i = 6i² = ${R2.texto}`, 'ink']], dy:32, dx:10 }); } } },
-    lect: ya ? [() => ['r', '√(−4)', R2.factores[0]], () => ['w', '√(−9)', R2.factores[1]], () => ['ink', 'producto', R2.texto]] : [],
-    ley: ya ? [['r', '√(−4)'], ['w', '√(−9)'], ['ink', 'el producto', 'trazos'], ['th', 'ángulos']] : [['muted', 'los números −4 y −9']],
+    lect: ya ? [() => ['muted', '√(−4)', R2.factores[0]], () => ['ink', '√(−9)', R2.factores[1]], () => ['ink', 'producto', R2.texto]] : [],
+    ley: ya ? [['muted', '√(−4)', 'linea'], ['ink', '√(−9) y el producto (trazos)', 'linea'], ['th', 'ángulos']] : [['muted', 'los números −4 y −9']],
     desc:'El plano complejo con los números −4 y −9 marcados sobre el eje real.' });
 }
 // 3. Cociente en polar
@@ -966,7 +966,7 @@ function cfg3(ya){
       L.segs.push({ p:O, q:w, color:'w', ancho:3, flecha:true }); L.puntos.push({ p:w, color:'w', r:3.5, texto:[['w', 'w']], dx:12, dy:-6 });
       if (s.f > 0){ const p = P_(lerp(Z3.r, Math.hypot(Q3.num.re, Q3.num.im), s.f), lerp(Z3.theta, Q3.theta, s.f));
         L.segs.push({ p:O, q:p, color:'ink', ancho:3, flecha:true, dash:true });
-        if (s.f >= 1){ L.arcos.push({ de:0, a:Q3.theta, r:2.2, color:'th', dash:true, texto:'60°', sep:12, en:52 });
+        if (s.f >= 1){ L.arcos.push({ de:0, a:Q3.theta, r:2.2, color:'ink', dash:true, texto:'60°', sep:12, en:52 });
           L.puntos.push({ p, color:'ink', r:4, texto:[[`z/w = ${Q3.texto}`, 'ink']], dx:12, align:'left', dy:0 }); } } } },
     lect: ya ? [() => ['ink', 'z/w', Q3.texto], () => ['ink', 'z/w (a + bi)', MC.binomica({ r:3, theta:60 }).texto]] : [],
     ley:[['r', 'la flecha de z'], ['th', 'su ángulo'], ['w', 'la flecha de w y su ángulo']].concat(ya ? [['ink', 'z/w', 'trazos']] : []),
@@ -984,9 +984,9 @@ function cfg4(ya){
       POT4.forEach((P, k) => { if (k === 0) return; const f = clamp(s.f - k, 0, 1); if (f <= 0) return;
         const q = deN(P.num), a = lerp(45*k, 45*(k + 1), f), r = Math.pow(Math.SQRT2, k)*Math.pow(Math.SQRT2, f), p = P_(r, a);
         L.segs.push({ p:prev, q: f >= 1 ? q : p, color:'muted', ancho:1.6, dash:true });
-        if (f >= 1) L.puntos.push({ p:q, color: k === 7 ? 'ink' : 'muted', r: k === 7 ? 5 : 3.5, texto:[[k === 7 ? `(1 + i)⁸ = ${D4.texto}` : `${k + 1}`, k === 7 ? 'ink' : 'muted']], dy: q.y >= 0 ? -14 : 14, dx: k === 7 ? -40 : 0 });
+        if (f >= 1) L.puntos.push({ p:q, color: k === 7 ? 'ink' : 'muted', r: k === 7 ? 5 : 3.5, texto:[[k === 7 ? `(1 + i)⁸ = ${D4.texto}` : `${k + 1}`, k === 7 ? 'ink' : 'muted']], dy: q.y >= 0 ? -14 : 14, dx: k === 7 ? -40 : k === 5 ? 14 : 0, align: k === 5 ? 'left' : 'center' });
         prev = q; }); } },
-    lect: ya ? [() => ['r', '|1 + i|', '√2'], () => ['ink', '(1 + i)⁸', `${D4.polar} = ${D4.texto}`]] : [],
+    lect: ya ? [() => ['r', '|1 + i|', '√2'], () => ['ink', '(1 + i)⁸', D4.texto]] : [],
     ley:[['r', 'la flecha de 1 + i']].concat(ya ? [['muted', 'las potencias 2.ª a 7.ª', 'trazos'], ['ink', 'la octava']] : []),
     desc:'El plano complejo con la flecha de 1 + i.' });
 }
@@ -1002,41 +1002,41 @@ function cfg5(ya){
         if (s.f >= 1){ L.puntos.push({ p:z2, color:'ink', r:5, texto:[[`x₂ = ${C5.raices[1].texto}`, 'ink']], dx:12, dy:12, align:'left' });
           L.puntos.push({ p:pt(z1.x, 0), color:'muted', hueco:true, texto:[['(x₁ + x₂)/2', 'muted']], dx:-10, dy:-12, align:'right' }); } } } },
     lect: ya ? [() => ['ink', 'Δ', C5.deltaTexto], () => ['ink', 'x₁ + x₂', C5.suma], () => ['ink', 'x₁ · x₂', C5.producto]] : [],
-    ley: ya ? [['ink', 'las dos raíces'], ['muted', 'reflejo en el eje real', 'trazos']] : [['muted', 'el plano complejo', 'trazos']],
+    ley: ya ? [['ink', 'las dos raíces'], ['muted', 'reflejo en el eje real', 'trazos']] : [],
     desc:'El plano complejo, todavía vacío.' });
 }
 
 const EXPS = [
   { id:'inverso', corto:'Una potencia negativa', frase:true,
     q:`Multiplicar por i gira la flecha 90° en sentido antihorario. ¿Cuánto vale i⁻¹, o sea 1/i?`,
-    opts:[['a', `${I1.errores.comoPositivo.texto}: dividir 1 entre i da i, como 1/1 = 1`, 'CX25-exponente-negativo-no-cambia', 'hipotesis'],
+    opts:[['a', `${I1.errores.comoPositivo.texto}: dividir entre i no mueve la flecha`, 'CX25-exponente-negativo-no-cambia', 'hipotesis'],
       ['b', `${I1.texto}: dividir entre i gira la flecha 90° hacia atrás`],
-      ['c', `${I1.errores.soloSigno.texto}: el exponente negativo deja solo el signo`, 'CX27-solo-el-signo', 'hipotesis'],
-      ['d', `${I1.errores.seCancelan.texto}: i⁻¹ e i se cancelan y queda 1`, 'CX26-se-cancelan', 'hipotesis']], ok:'b',
-    fb:{ a:'1/1 = 1 porque 1 · 1 = 1. Pero i · i = −1, no 1: i no es su propio inverso.',
-      c:'El exponente −1 pide el inverso, el número que multiplicado por i da 1. −1 · i = −i, no 1.',
+      ['c', `${I1.errores.soloSigno.texto}: dividir entre i gira la flecha 180°`, 'CX27-solo-el-signo', 'hipotesis'],
+      ['d', `${I1.errores.seCancelan.texto}: i⁻¹ e i se cancelan y la flecha queda en 1`, 'CX26-se-cancelan', 'hipotesis']], ok:'b',
+    fb:{ a:'Si dividir entre i no moviera la flecha, i⁻¹ sería i, y entonces i · i⁻¹ = i · i = −1, no 1.',
+      c:'Dividir entre i deshace un solo giro de 90°, no dos. Comprueba: i · (−1) = −i, no 1.',
       d:'Lo que da 1 es el producto i · i⁻¹, no i⁻¹ solo. Si i⁻¹ fuera 1, entonces i · 1 = i, no 1.' },
     antes:ya => cfg1(ya), despues:() => { cfg1(false); const s = E.L.estado; E.animar(900, f => { s.f = f; }, () => esperar(400, () => cfg1(true))); },
     exp:() => `<div class="eqs"><div class="eq">1/i = 1/i · (−i)/(−i) = −i/(−i²) = −i/1 = −i</div><div class="eq">Comprobación: i · (−i) = −i² = 1</div></div>
       <p>Multiplicar por i gira 90° hacia adelante; dividir entre i deshace ese giro: 90° hacia atrás. Por eso i⁻¹ = −i, i⁻² = −1, i⁻³ = i y i⁻⁴ = 1: el ciclo de cuatro también vale hacia atrás.</p><p class="fuente">${hip}</p>` },
   { id:'raices-negativas', corto:'Raíces de negativos', frase:true,
     q:`¿Cuánto vale √(−4) · √(−9)?`,
-    opts:[['a', `${R2.texto}: cada raíz da un número con i, y i · i = −1`],
-      ['b', `${R2.errores.juntaRaices.texto}: se juntan las raíces, √((−4)(−9)) = √36`, 'CX28-junta-las-raices', 'hipotesis'],
-      ['c', `${R2.errores.sigueI.texto}: la i queda una sola vez, 2i · 3i = 6i`, 'CX6-i-por-i-es-i', 'hipotesis'],
-      ['d', `${may(R2.errores.noExiste.texto)}: un número negativo no tiene raíz cuadrada`, 'CX29-negativo-sin-raiz', 'hipotesis']], ok:'a',
+    opts:[['a', `${R2.texto}: √(−4) · √(−9) = 2i · 3i = 6i²`],
+      ['b', `${R2.errores.juntaRaices.texto}: √(−4) · √(−9) = √((−4)(−9)) = √36`, 'CX28-junta-las-raices', 'hipotesis'],
+      ['c', `${R2.errores.sigueI.texto}: √(−4) · √(−9) = 2i · 3i = 6i`, 'CX6-i-por-i-es-i', 'hipotesis'],
+      ['d', `${may(R2.errores.noExiste.texto)}: √(−4) y √(−9) no son números`, 'CX29-negativo-sin-raiz', 'hipotesis']], ok:'a',
     fb:{ b:'La regla √a · √b = √(ab) vale si a y b no son negativos. Con negativos, primero se saca la i de cada raíz.',
       c:'2i · 3i = 6 · i · i = 6i²: hay dos i, y i² = −1.',
       d:'En los reales no existe, pero en los complejos sí: √(−4) = 2i, porque (2i)² = 4i² = −4.' },
     antes:ya => cfg2(ya), despues:() => { cfg2(false); const s = E.L.estado; E.cadena([n => E.animar(700, f => { s.f1 = f; }, n), n => E.animar(1100, f => { s.f2 = f; }, n)], () => cfg2(true)); },
-    exp:() => `<div class="eqs"><div class="eq">√(−4) · √(−9) = ${r_('2i')} · ${w_('3i')} = 6i² = −6</div></div>
+    exp:() => `<div class="eqs"><div class="eq">√(−4) · √(−9) = 2i · 3i = 6i² = −6</div></div>
       <p>Las dos flechas apuntan hacia arriba (ángulo 90°). Al multiplicar, los largos se multiplican (2 · 3 = 6) y los ángulos se suman (90° + 90° = 180°): la flecha queda en −6.</p><p class="fuente">${hip}</p>` },
   { id:'cociente-polar', corto:'Dividir en polar',
     q:`Sea z = ${r_('6')} cis ${th_('100°')} y ${w_('w = 2 cis 40°')}. ¿Cuánto vale z/w?`,
-    opts:[['a', Q3.errores.sumaArgumentos.texto, 'CX22-suma-argumentos-al-dividir', 'hipotesis'], ['b', Q3.errores.divideArgumentos.texto, 'CX24-divide-argumentos', 'hipotesis'],
+    opts:[['a', Q3.errores.sumaArgumentos.texto, 'CX22-suma-argumentos-al-dividir', 'hipotesis'], ['b', Q3.errores.restaAlReves.texto, 'CX24-resta-al-reves', 'hipotesis'],
       ['c', Q3.texto], ['d', Q3.errores.restaModulos.texto, 'CX23-resta-modulos', 'hipotesis']], ok:'c',
     fb:{ a:'Sumar los ángulos es la regla del producto. Al dividir, la flecha de z gira hacia atrás el ángulo de w: 100° − 40°.',
-      b:'Los largos se dividen, pero los ángulos se restan: dividir entre w deshace el giro de w.',
+      b:'−60° sale de restar al revés, 40° − 100°. Es la flecha de z la que gira hacia atrás el ángulo de w: 100° − 40° = 60°.',
       d:'Los largos no se restan: z mide 6 y se encoge a la mitad, porque w mide 2. 6/2 = 3.' },
     antes:ya => cfg3(ya), despues:() => { cfg3(false); const s = E.L.estado; E.animar(1300, f => { s.f = f; }, () => esperar(400, () => cfg3(true))); },
     exp:() => `<div class="eqs"><div class="eq">(${r_('6')} cis ${th_('100°')})/(${w_('2 cis 40°')}) = (6/2) cis (100° − 40°) = 3 cis 60°</div></div>
@@ -1057,7 +1057,7 @@ const EXPS = [
     opts:[['a', C5.errores.sinDividirIm.texto, 'CX33-no-divide-la-parte-imaginaria', 'hipotesis'], ['b', C5.texto],
       ['c', C5.errores.signoB.texto, 'CX32-signo-de-b', 'hipotesis'], ['d', C5.errores.sinDividir.texto, 'CX34-no-divide-entre-2a', 'hipotesis']], ok:'b',
     fb:{ a:'√(−36) = 6i, y el 6i también se divide entre 2a = 2: queda 3i.',
-      c:'En la fórmula va −b: con b = −4, −b = +4, y 4/2 = 2.',
+      c:'En la fórmula va menos el coeficiente de x: −(−4) = 4, y 4/2 = 2.',
       d:'Falta dividir entre 2a = 2: (4 ± 6i)/2 = 2 ± 3i.' },
     antes:ya => cfg5(ya), despues:() => { cfg5(false); const s = E.L.estado; E.animar(1000, f => { s.f = f; }, () => esperar(400, () => cfg5(true))); },
     exp:() => `<div class="eqs"><div class="eq">Δ = 16 − 52 = −36;  x = (4 ± √(−36))/2 = (4 ± 6i)/2 = 2 ± 3i</div></div>

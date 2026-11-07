@@ -46,7 +46,8 @@
  *                                     num } (z·w̄), denominador: { texto, num } (|w|² = c² + d²), errores:
  *                                     partePorParte (CX15: a/c + (b/d)i; noAplica si c o d es 0), sinDenominador
  *                                     (CX16: se queda con z·w̄), cuadradoPositivo (CX1: i² = 1 en el numerador, dividido
- *                                     entre c² + d²) }. w = 0 lanza «división entre cero».
+ *                                     entre c² + d²), porW (CX35: multiplica arriba por w y no por w̄: z·w/(c² + d²)) }.
+ *                                     w = 0 lanza «división entre cero».
  *   iguales({ z, w })               → { valor: booleano (partes reales iguales y partes imaginarias iguales) }.
  *   modulo({ z })                   → |z| = √(a² + b²). { texto: '10', '2√2', num: { re: |z|, im: 0 }, valor: |z|
  *                                     (número), cuadrado: texto de a² + b², catetos: [|a|, |b|] (números), areas: [a²,
@@ -70,18 +71,23 @@
  *                                     sumaModulos (CX19: r₁ + r₂), multiplicaArgumentos (CX20: θ₁·θ₂), restaArgumentos
  *                                     (CX21: θ₁ − θ₂) }.
  *   cocientePolar({ z, w })         → z/w en polar. { r, theta: θ₁ − θ₂, principal, texto, num, errores:
- *                                     sumaArgumentos (CX22: θ₁ + θ₂), restaModulos (CX23: r₁ − r₂), divideArgumentos
- *                                     (CX24: θ₁/θ₂; noAplica si θ₂ = 0) }.
- *   deMoivre({ z, n })              → zⁿ con z binómico { re, im } y n entero ≥ 1: rⁿ cis(nθ). { r: texto de rⁿ, theta:
- *                                     n·Arg z, polar: texto polar, texto: texto binómico (exacto si nθ es notable), num,
- *                                     errores (con texto binómico): reparte (AL11: aⁿ + (bi)ⁿ, el exponente se reparte
- *                                     sobre la suma), sinModulo (CX30: r cis(nθ), no eleva el módulo), porN (CX31:
- *                                     n·r cis(nθ), multiplica el módulo por n) }.
+ *                                     sumaArgumentos (CX22: θ₁ + θ₂), restaModulos (CX23: r₁ − r₂; noAplica si
+ *                                     r₁ − r₂ ≤ 0, porque un módulo negativo no existe), restaAlReves (CX24: θ₂ − θ₁) }.
+ *   deMoivre({ z, n })              → zⁿ con z ≠ 0 binómico { re, im } y n entero cualquiera (negativo y 0 también:
+ *                                     (1 + i)⁻² = −(1/2)i): rⁿ cis(nθ). { r: texto de rⁿ, theta: n·Arg z (sin reducir),
+ *                                     principal: nθ reducido a ⟨−180°; 180°], polar: texto polar con theta, texto: texto
+ *                                     binómico (exacto si nθ es notable), num, errores (con texto binómico): reparte
+ *                                     (AL11: aⁿ + (bi)ⁿ, el exponente se reparte sobre la suma; se calcula también con
+ *                                     partes radicales: (1 + √3 i)³ → 1 − 3√3 i; noAplica si una parte es 0 y n < 0),
+ *                                     sinModulo (CX30: r cis(nθ), no eleva el módulo), porN (CX31: n·r cis(nθ),
+ *                                     multiplica el módulo por n; noAplica si n ≤ 0) }.
  *   raizNegativa({ a, b })          → √(−a) · √(−b) con a, b enteros positivos. { texto: '−6', num, factores: ['2i',
  *                                     '3i'], errores: juntaRaices (CX28: √(ab), como si fueran positivos), sigueI (CX6:
  *                                     √a·√b·i), noExiste (CX29: 'no existe'; num null) }.
  *   cuadratica({ a, b, c })         → raíces de ax² + bx + c = 0 (a, b, c racionales, a ≠ 0). { delta: número, deltaTexto,
- *                                     raices: [{ texto, num }, …], texto: '2 ± 3i' (Δ < 0), '−1 y 5' (Δ > 0), '3' (Δ = 0),
+ *                                     raices: [{ texto, num }, …], texto: '2 ± 3i' (Δ < 0; sin parte real: '±3i', pegado),
+ *                                     '−1 y 5' (Δ > 0 con raíces racionales), '1 ± √2' o '±√2' (Δ > 0 sin cuadrado
+ *                                     perfecto), '3' (Δ = 0, raíz doble, errores {}),
  *                                     suma, producto (textos: −b/a y c/a), errores (solo si Δ < 0; num de la raíz con +):
  *                                     signoB (CX32: usa b en vez de −b), sinDividirIm (CX33: divide la parte real entre
  *                                     2a pero no la imaginaria), sinDividir (CX34: no divide nada entre 2a) }.
@@ -280,6 +286,7 @@
       ['partePorParte', 'CX15', 'se divide parte por parte: (a + bi)/(c + di) = a/c + (b/d)i', () => (esCero(c) || esCero(d) ? null : salida({ re: div(a, c), im: div(b, d) }))],
       ['sinDenominador', 'CX16', 'se multiplica arriba por el conjugado y se olvida dividir entre c² + d²', () => salida(nu)],
       ['cuadradoPositivo', 'CX1', 'i² = 1 en el numerador: (a + bi)(c − di) da (ac − bd) + (bc − ad)i', () => salida({ re: div(res(mul(a, c), mul(b, d)), den), im: div(nu.im, den) })],
+      ['porW', 'CX35', 'se multiplica arriba por w y no por su conjugado w̄: z·w/(c² + d²)', () => { const m = cMul(z, w); return salida({ re: div(m.re, den), im: div(m.im, den) }); }],
     ]));
   }
   function iguales(o) { const z = C(o.z, 'z'), w = C(o.w, 'w'); return { valor: igual(z.re, w.re) && igual(z.im, w.im) }; }
@@ -373,23 +380,24 @@
     return Object.assign(base, errores(base, [
       ['sumaArgumentos', 'CX22', 'los argumentos se suman también al dividir', () => polarSalida(r, z.g + w.g)],
       ['restaModulos', 'CX23', 'los módulos se restan en lugar de dividirse', () => { if (z.r.m !== w.r.m) return null; const d = res(z.r, w.r); return d.n > 0 ? polarSalida(d, g) : null; }],
-      ['divideArgumentos', 'CX24', 'los argumentos se dividen, como los módulos', () => (w.g === 0 ? null : polarSalida(r, z.g / w.g))],
+      ['restaAlReves', 'CX24', 'los argumentos se restan al revés: θ₂ − θ₁', () => polarSalida(r, w.g - z.g)],
     ]));
   }
   function deMoivre(o) {
     const n = o && o.n;
-    if (!Number.isSafeInteger(n) || n < 1) throw new Error('n debe ser un entero mayor o igual que 1');
-    const z = C(o.z), A = argumento({ z: o.z }), r = raiz(sum(mul(z.re, z.re), mul(z.im, z.im))), rn = pot(r, n), g = n * A.grados;
-    const B = binomica({ r: rn, theta: g });
-    const base = { r: tx(rn), theta: g, polar: textoPolar({ r: rn, theta: g }), texto: B.texto, num: B.num };
+    if (!Number.isSafeInteger(n)) throw new Error('n debe ser un número entero');
+    const z = C(o.z), A = argumento({ z: o.z }), r = raiz(sum(mul(z.re, z.re), mul(z.im, z.im))), g = n * A.grados;
+    const potZ = (x, e) => (e >= 0 ? pot(x, e) : inv(pot(x, -e)));
+    const rn = potZ(r, n), B = binomica({ r: rn, theta: g });
+    const base = { r: tx(rn), theta: g, principal: principal(g), polar: textoPolar({ r: rn, theta: g }), texto: B.texto, num: B.num };
     const bin = (rr, gg) => { const b = binomica({ r: rr, theta: gg }); return { texto: b.texto, num: b.num }; };
     return Object.assign(base, errores(base, [
       ['reparte', 'AL11', 'el exponente se reparte sobre la suma: (a + bi)ⁿ = aⁿ + (bi)ⁿ', () => {
-        if (!racional(z.re) || !racional(z.im)) return null;
-        const p = iA(n), bn = pot(z.im, n), x = { re: sum(pot(z.re, n), mul(bn, aR(p.num.re))), im: mul(bn, aR(p.num.im)) };
+        if (n < 0 && (esCero(z.re) || esCero(z.im))) return null;
+        const p = iA(n), bn = potZ(z.im, n), x = { re: sum(potZ(z.re, n), mul(bn, aR(p.num.re))), im: mul(bn, aR(p.num.im)) };
         return { texto: textoC(x), num: numC(x) }; }],
       ['sinModulo', 'CX30', 'se multiplica el argumento por n pero el módulo no se eleva', () => bin(r, g)],
-      ['porN', 'CX31', 'el módulo se multiplica por n en lugar de elevarse a la n', () => bin(mul(r, R(n)), g)],
+      ['porN', 'CX31', 'el módulo se multiplica por n en lugar de elevarse a la n', () => (n <= 0 ? null : bin(mul(r, R(n)), g))],
     ]));
   }
   function raizNegativa(o) {
@@ -409,7 +417,7 @@
     if (esCero(a)) throw new Error('a debe ser distinto de 0');
     const D = res(mul(b, b), mul(R(4), mul(a, c))), dos = mul(R(2), a), p = div(neg(b), dos);
     const base = { delta: val(D), deltaTexto: tx(D), suma: tx(div(neg(b), a)), producto: tx(div(c, a)) };
-    const pm = (re, im) => `${esCero(re) ? '' : tx(re) + ' '}± ${txI(im)}`.replace(/^± /, '± ');
+    const pm = (re, im) => (esCero(re) ? `±${txI(im)}` : `${tx(re)} ± ${txI(im)}`);
     if (D.n < 0) {
       const q = abs(div(raiz(neg(D)), dos));
       const z1 = { re: p, im: q }, z2 = { re: p, im: neg(q) };
@@ -424,7 +432,7 @@
     if (D.n === 0) return Object.assign(base, { raices: [{ texto: tx(p), num: real(val(p)) }], texto: tx(p), num: real(val(p)), errores: {}, coinciden: [], noAplica: [] });
     const s = raiz(D);
     if (!racional(s)) {
-      const q = abs(div(s, dos)), t = `${esCero(p) ? '' : tx(p) + ' '}± ${txAbs(q)}`;
+      const q = abs(div(s, dos)), t = esCero(p) ? `±${txAbs(q)}` : `${tx(p)} ± ${txAbs(q)}`;
       const t1 = esCero(p) ? txAbs(q) : `${tx(p)} + ${txAbs(q)}`, t2 = esCero(p) ? MENOS + txAbs(q) : `${tx(p)} ${MENOS} ${txAbs(q)}`;
       return Object.assign(base, { raices: [{ texto: t1, num: real(val(p) + val(q)) }, { texto: t2, num: real(val(p) - val(q)) }], texto: t, num: real(val(p) + val(q)), errores: {}, coinciden: [], noAplica: [] });
     }

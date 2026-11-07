@@ -50,10 +50,9 @@
       "pasos": [
         "Dos complejos son iguales si tienen la misma parte real y la misma parte imaginaria.",
         "Parte real: x − 1 = 4, así que x = 5.",
-        "Parte imaginaria: y + 2 = −3, así que y = −5."
+        "Parte imaginaria: y + 2 = −3, así que y = −5. Comprobación: con x = 5 e y = −5, (x − 1) + (y + 2)i = 4 − 3i."
       ],
-      "verificar": [ { "fn": "sumar", "args": [{ "z": { "re": 4, "im": -3 }, "w": { "re": 1, "im": -2 } }], "espera": { "texto": "5 − 5i" } },
-                     { "fn": "iguales", "args": [{ "z": { "re": 4, "im": -3 }, "w": { "re": "4", "im": "-3" } }], "espera": { "valor": true } } ]
+      "verificar": [ { "fn": "sumar", "args": [{ "z": { "re": 5, "im": -5 }, "w": { "re": -1, "im": 2 } }], "espera": { "texto": "4 − 3i" } } ]
     },
     {
       "id": "p5",
@@ -128,7 +127,7 @@
       "pasos": [
         "Δ = 6² − 4 · 1 · 25 = 36 − 100 = −64. Es negativo: no hay raíces reales, pero sí complejas.",
         "√(−64) = 8i, así que x = (−6 ± 8i)/2 = −3 ± 4i. Se divide entre 2 la parte real y también la imaginaria.",
-        "Las dos raíces son conjugadas: suman (−3 + 4i) + (−3 − 4i) = −6 = −b/a y su producto es 9 + 16 = 25 = c/a."
+        "Las dos raíces son conjugadas: suman (−3 + 4i) + (−3 − 4i) = −6, el opuesto del coeficiente de x, y su producto es 9 + 16 = 25, el término independiente (aquí el coeficiente de x² es 1)."
       ],
       "verificar": [ { "fn": "cuadratica", "args": [{ "a": 1, "b": 6, "c": 25 }], "espera": { "texto": "−3 ± 4i", "delta": -64, "suma": "−6", "producto": "25" } } ]
     }

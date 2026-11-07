@@ -364,3 +364,100 @@ Hubo dos cortes por el límite de uso; los avances quedaron en commits parciales
 4. Líneas para `docs/pendientes.md` y `CLAUDE.md`: «Funciones trigonométricas inversas (7 nov 2026, rutina de matemática A): `plantillas/funciones-trig-inversas/` (la ventana principal: la recta y = k corta la onda muchas veces y solo un corte cae en la ventana; reflejo en y = x, arcsen y arccos en la circunferencia, compuestas con el triángulo, dominio y suma de arcotangentes; 19 casos verificados aparte)». Con esto, en la fila ma1 de pendientes solo faltan las transformaciones.
 
 **Fin de la lista.** Las cuatro plantillas pedidas están hechas. La conversación principal mandó por mensaje una lista nueva (transformaciones trigonométricas, complejos, matrices, binomio de Newton, números reales, programación lineal y cónicas). Queda en espera hasta que Gerson confirme.
+
+## Lista nueva (confirmada por Gerson el 7 nov 2026)
+
+La conversación principal mandó una lista nueva: transformaciones trigonométricas, números complejos, matrices, binomio de Newton, números reales, programación lineal y cónicas. Gerson la confirmó en esta sesión.
+
+- Números reales, programación lineal, lógica y conjuntos ya los hicieron otras rutinas, así que los salté.
+- Quedan cinco: transformaciones, complejos, matrices, binomio y cónicas.
+- Corren hasta 3 subagentes a la vez.
+
+## 7 nov 2026 · Números complejos: la flecha en el plano (`plantillas/numeros-complejos/`)
+
+**Qué hice.**
+
+- **`motor.js`**: UMD con aritmética exacta (fracciones y radicales k√m). La cabecera para el verificador va hasta la línea 102. Cubre:
+  - potencias de i, con su ciclo y las potencias negativas;
+  - operaciones en forma binómica: suma, producto, conjugado y cociente con el conjugado;
+  - módulo y argumento principal en ⟨−180°; 180°], con el campo `positivo` en [0°; 360°⟩;
+  - polar cis y paso a binómica;
+  - producto y cociente en polar;
+  - De Moivre con cualquier entero;
+  - raíces de la cuadrática con Δ < 0;
+  - √(−a)·√(−b).
+
+  Hay errores propios del CX1 al CX35. En la cabecera quedaron escritas tres convenciones:
+  - `restaModulos` va a `noAplica` si el módulo sale ≤ 0;
+  - `reparte` también se calcula con radicales;
+  - «±3i» va pegado y «1 ± 2i» con espacios.
+- **`casos.json`**: 19 casos con 84 llamadas en `tambien`.
+- **`motor.test.js`**: 38 pruebas.
+  - Propiedades: el ciclo de iⁿ, (z/w)·w = z, z·z̄ = |z|², la ida y vuelta entre polar y binómica, De Moivre contra la multiplicación repetida y las raíces de la cuadrática.
+  - Ningún error coincide con la respuesta, en los casos y en un barrido de 300.
+  - Las opciones de la escena salen del motor.
+- **`papel.json`**: 10 problemas propios.
+- **`plantilla.json`**: solo la unidad `algebra.numeros-complejos`. No puse `trigonometria.coordenadas-polares-y-complejos`, porque su temario pide coordenadas polares de puntos y forma exponencial.
+- **`index.html`**: el plano de Argand con la flecha de z que se arrastra.
+  - **Paso a paso** (8 predicciones):
+    - i², donde multiplicar por i gira 90°;
+    - i⁴³, con las vueltas contadas;
+    - (2 + 3i)(1 − 2i);
+    - |−4 + 3i|, con la hipotenusa y sus cuadritos;
+    - el conjugado como reflejo;
+    - (5 + i)/(1 − i);
+    - −1 + √3 i en polar;
+    - (2 cis 10°)(3 cis 30°), con el triángulo semejante.
+  - **¿Qué pasa si…?** (5): i⁻¹, √(−4)·√(−9) = −6, el cociente en polar, (1 + i)⁸ y x² − 4x + 13 = 0.
+- **Respaldo.**
+  - AL9 es 'parcial' solo en el paso 4. El informe nombra √(a² + b²) = a + b (Aguerrea y otros 2022, sin cifra).
+  - AL11 queda como hipótesis.
+  - CX1 a CX35 son hipótesis nuestras, porque el informe no trata los complejos.
+
+**Pruebas.** `motor.test.js` pasa 38 de 38. En `npm test` fallan solo las 2 de catálogo y app, y la de matrices, que todavía está a medio hacer en esta rama. La pasada del celular no da QUEDA. Playwright pasa en las 8 combinaciones.
+
+**Subagentes.**
+
+- **Verificador independiente.** Recalculó todo en Q(i) con Fraction y con cmath, sin leer el motor ni `casos.json`. Coincidieron todos los valores y los 10 problemas de papel. Quedaron escritas sus convenciones y entraron sus bordes:
+  - i⁻¹⁰⁰ e i⁻²⁰²⁷;
+  - z = 0 y la división entre 0;
+  - Arg de −5 y de 3i;
+  - cocientes entre imaginarios puros;
+  - De Moivre con n ≤ 0;
+  - un producto que cae en 180° y no en −180°;
+  - cuadráticas con a < 0, con Δ > 0 y con Δ = 0;
+  - −√3 − i.
+
+  Además, p4 ahora comprueba la igualdad pedida.
+- **Revisor de contenido.**
+  - **Lo grave:** en el paso 8, z = 2 cis 15° y w = 3 cis 20° casi coincidían y la flecha de w tapaba a z en el celular. Ahora z = 2 cis 10° y w = 3 cis 30°, con la respuesta 6 cis 40°.
+  - **También corregí:**
+    - los rótulos encimados del paso 7 y las lecturas cortadas;
+    - los experimentos 1 y 2, donde la justificación de la correcta la delataba; ahora todas las opciones tienen la misma forma;
+    - el distractor «3 + 3i», que no era creíble; ahora es «3 − 2i» (CX35, multiplicar por w y no por w̄);
+    - «z = 5 + 1 · i»;
+    - el subtítulo, que hablaba de la suma;
+    - w sin color en las ecuaciones;
+    - el azul de θ, que nombraba dos ángulos; el ángulo del resultado va en tinta;
+    - la b de la fórmula cuadrática, que chocaba con Im;
+    - el rango de Arg, con la otra convención;
+    - el matiz de AL9;
+    - el distractor «3 cis 2,5°», que ahora es «3 cis (−60°)».
+
+**Pendiente.** Del temario quedan la forma exponencial, las raíces n-ésimas y las regiones en el plano.
+
+**Pedidos para la integración.**
+
+1. Catálogo: `numeros-complejos` en `algebra.numeros-complejos`, y luego `npm run catalogo`. Rebalancear los ítems de álgebra (la prueba avisa).
+2. `docs/diseno.md`. ΔE00 mínimo entre variables: 23,6 en claro y 25,3 en oscuro. Contraste mínimo: 4,63. w queda a ΔE00 11 del verde de «correcto», que siempre lleva texto.
+
+   | Variable | Claro | Oscuro |
+   | --- | --- | --- |
+   | Re (a) | #a05200 | #f0a04a |
+   | Im (b) | #466d14 | #a3d65e |
+   | r (flecha de z y \|z\|) | #a10fbf | #cf6bfa |
+   | θ (Arg z) | #1f5fbf | #7cb0ff |
+   | w | #0f766e | #5ed9c8 |
+
+3. Informe de álgebra: registrar CX1 a CX35 como hipótesis nuestras.
+4. Línea para `docs/pendientes.md` y `CLAUDE.md`: «Números complejos (7 nov 2026, sesión de matemática A): `plantillas/numeros-complejos/` (la flecha en el plano: multiplicar por i gira 90°, módulo con cuadritos, conjugado como reflejo, producto que gira y estira, De Moivre; 19 casos verificados aparte)».
