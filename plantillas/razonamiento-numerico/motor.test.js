@@ -254,3 +254,33 @@ test('papel.json: entre 8 y 10 problemas, con respuesta, pasos y verificación',
 for (const p of (papel && papel.problemas) || []) test(`papel ${p.id}: la respuesta coincide con el motor`, () => {
   for (const x of p.verificar) comprobar(x.fn, x.args, x.espera, p.id);
 });
+
+// Trazas: cada error escrito paso por paso termina en el valor del error, y la vuelta en la respuesta
+const ultimo = t => { const m = String(t).match(/= (−?[\d/]+)$/); return m ? m[1].replace('−', '-') : null; };
+test('trazas del regresivo: terminan en el error y empiezan en el final', () => {
+  for (let t = 0; t < 800; t++) {
+    const cadena = Array.from({ length: ent(1, 5) }, opAzar), x = M.fr(ent(0, 200), 1);
+    const final = cadena.reduce((v, o) => M.aplicar(o, v), x), R = M.regresivo(cadena, final);
+    assert.deepEqual(Object.keys(R.trazas).sort(), Object.keys(R.errores).sort());
+    for (const [k, txt] of Object.entries(R.trazas)) assert.equal(ultimo(txt), String(R.errores[k]).replace('−', '-'), `${k}: ${txt}`);
+    assert.equal(ultimo(R.vueltaTexto), String(R.respuesta).replace('−', '-'), R.vueltaTexto);
+    assert.ok(R.vueltaTexto.startsWith(M.frTexto(final)) || R.vueltaTexto.startsWith('(' + M.frTexto(final)), R.vueltaTexto);
+  }
+  const P = M.mercado([{ op: 'gasta', parte: [1, 2], mas: 5 }, { op: 'gasta', parte: [1, 2], mas: 3 }], 12);
+  assert.deepEqual(Object.keys(P.trazas).sort(), Object.keys(P.errores).sort());
+  const O = M.ordenCambiado([{ op: 'mas', k: 6 }, { op: 'por', k: 2 }], 30, 0);
+  assert.equal(ultimo(O.vueltaAntesTexto), String(O.antes)); assert.equal(ultimo(O.vueltaTexto), String(O.respuesta));
+  for (const k of Object.keys(O.trazas)) assert.equal(ultimo(O.trazas[k]), String(O.errores[k]));
+});
+test('formas = n!, decimales del cociente y contraejemplos del centro', () => {
+  assert.equal(M.distribuir('triangulo3', [1, 2, 3, 4, 5, 6]).formas, 720);
+  assert.equal(M.distribuir('triangulo4', [1, 2, 3, 4, 5, 6, 7, 8, 9]).formas, 362880);
+  assert.equal(M.milesTexto(362880), '362 880');
+  assert.equal(M.corral(15, 45).cocienteDecimal, '7,5');
+  assert.equal(M.falsaSuposicion(10, 31, 2, 5).cocienteDecimal, '≈ 3,67');
+  const C = M.centroMagico(), K = C.contraejemplos;
+  assert.ok(K.elMayor.suma > C.constante && K.elMenor.suma < C.constante);
+  assert.equal(C.cuenta.izquierda, C.total + C.cuenta.deMas * C.cuenta.centro);
+  assert.deepEqual(M.centroMagico([2, 3, 4, 5, 6, 7, 8, 9, 10]).respuesta, [6]);
+  assert.throws(() => M.centroMagico([1, 2, 3, 4, 5, 6, 7, 8, 10]), /no hay cuadrado/);
+});

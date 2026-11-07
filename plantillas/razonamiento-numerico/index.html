@@ -11,24 +11,27 @@
      falsa suposición: gallinas g naranja #a05200 / #f0a04a; conejos c azul #1f5fbf / #7cb0ff; el total que se cuenta
      (patas o puntaje) t verde #466d14 / #a3d65e; lo que falta o sobra para llegar al total f fucsia #a10fbf / #cf6bfa;
      lo que mueve cada cambio d turquesa #0f766e / #5ed9c8; respuestas buenas b granate #77032c / #fdb4ce y malas
-     m café #7a4a1e / #d9a877;
+     m pizarra #1f3f47 / celeste #22a5bf (antes café: quedaba a ΔE00 9,5 y 8,2 de g, que sale en el paso de al lado);
      método regresivo: el número de partida x ocre #7d6a00 / #e3c84a y el resultado final y índigo #3328c4 / #9f9bff
      (las operaciones y los valores de en medio, en tinta);
-     distribuciones: la suma de cada línea s magenta #b3246b / #ff86bd y las casillas que están en más de una línea
-     v ámbar #8f5800 / #ffc04d (las fichas y su total, en tinta).
-   Elegidos con CIEDE2000 (docs/metodo/paleta.py) entre los que salen juntos (corral: g c t f d; examen: b m t f d;
-   tira y barras: x y; tablero: s v): mínimo 23,6 en claro (t–d) y 25,2 en oscuro (b–f). Contraste AA sobre el papel, la
-   tarjeta y el chip (.v, fondo al 8 %): mínimo 4,54 en claro (x con chip sobre el papel) y 4,64 en oscuro (f con chip
-   sobre la tarjeta). Las opciones van en tinta, sin chips. El turquesa d queda cerca del verde de «correcto» (ΔE00 11)
-   y el magenta s del rojo de los avisos (18,6 en claro y 15,4 en oscuro): los avisos y «correcto» siempre llevan texto.
+     distribuciones: la suma de cada línea s magenta #b3246b / #ff86bd. Las casillas que están en más de una línea
+     (esquinas del triángulo, centro del cuadrado) no tienen color propio: borde grueso en tinta y la palabra en negrita.
+     Las fichas y su total, en tinta.
+   Elegidos con CIEDE2000 (docs/metodo/paleta.py). Entre los que salen juntos (corral: g c t f d; examen: b m t f d;
+   tira y barras: x y; tablero: s): mínimo 21,2 en claro (m–d) y 20,5 en oscuro (m–d). m queda a 38,9 / 45,9 de g y a
+   22,3 / 19,4 de c (c sale en otro paso, nunca junto a m). Contraste AA sobre el papel, la tarjeta y el chip (.v, fondo
+   al 8 %): mínimo 4,54 en claro (x con chip sobre el papel) y 4,64 en oscuro (f con chip sobre la tarjeta); m 9,2 / 4,7.
+   Las opciones van en tinta, sin chips; en el aviso del paso 8 el chip va sin fondo (.aviso .v).
+   Cercanías con «correcto» (--ok) y con el rojo de aviso (--warn), que siempre van con texto: d a 11,1 / 11,0 de «correcto»;
+   t a 15,6 / 17,3 de «correcto»; s a 18,6 / 15,4 del aviso; b en oscuro a 17,4 del aviso (20,6 en claro).
    Los glifos × ÷ − → van con la letra de texto (.g) dentro de la letra monoespaciada. */
 [hidden]{display:none!important}
 :root{
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
   --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
   --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
-  --c-g:#a05200; --c-c:#1f5fbf; --c-t:#466d14; --c-f:#a10fbf; --c-d:#0f766e; --c-b:#77032c; --c-m:#7a4a1e;
-  --c-x:#7d6a00; --c-y:#3328c4; --c-s:#b3246b; --c-v:#8f5800;
+  --c-g:#a05200; --c-c:#1f5fbf; --c-t:#466d14; --c-f:#a10fbf; --c-d:#0f766e; --c-b:#77032c; --c-m:#1f3f47;
+  --c-x:#7d6a00; --c-y:#3328c4; --c-s:#b3246b;
   --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
   --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
   color-scheme:light;
@@ -37,15 +40,15 @@
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-g:#f0a04a; --c-c:#7cb0ff; --c-t:#a3d65e; --c-f:#cf6bfa; --c-d:#5ed9c8; --c-b:#fdb4ce; --c-m:#d9a877;
-  --c-x:#e3c84a; --c-y:#9f9bff; --c-s:#ff86bd; --c-v:#ffc04d;
+  --c-g:#f0a04a; --c-c:#7cb0ff; --c-t:#a3d65e; --c-f:#cf6bfa; --c-d:#5ed9c8; --c-b:#fdb4ce; --c-m:#22a5bf;
+  --c-x:#e3c84a; --c-y:#9f9bff; --c-s:#ff86bd;
   color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-g:#f0a04a; --c-c:#7cb0ff; --c-t:#a3d65e; --c-f:#cf6bfa; --c-d:#5ed9c8; --c-b:#fdb4ce; --c-m:#d9a877;
-  --c-x:#e3c84a; --c-y:#9f9bff; --c-s:#ff86bd; --c-v:#ffc04d;
+  --c-g:#f0a04a; --c-c:#7cb0ff; --c-t:#a3d65e; --c-f:#cf6bfa; --c-d:#5ed9c8; --c-b:#fdb4ce; --c-m:#22a5bf;
+  --c-x:#e3c84a; --c-y:#9f9bff; --c-s:#ff86bd;
   color-scheme:dark }
 
 *{box-sizing:border-box}
@@ -99,7 +102,7 @@ canvas:focus-visible{outline:3px solid var(--ink); outline-offset:-3px}
 .v-x{color:var(--c-x); background:color-mix(in srgb, var(--c-x) 8%, transparent)}
 .v-y{color:var(--c-y); background:color-mix(in srgb, var(--c-y) 8%, transparent)}
 .v-s{color:var(--c-s); background:color-mix(in srgb, var(--c-s) 8%, transparent)}
-.v-v{color:var(--c-v); background:color-mix(in srgb, var(--c-v) 8%, transparent)}
+.aviso .v{background:none}
 .v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
 .num{font-variant-numeric:tabular-nums; white-space:nowrap}
 .eq .g, .lectura .g{font-family:var(--font); font-weight:inherit}
@@ -249,7 +252,7 @@ const M = MotorRazonamientoNumerico;
 const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
 // Texto plano para el lector de pantalla.
 const quitar = t => String(t).replace(/<[^>]+>/g, '')
-  .replace(/S\/ ?([\d ]+)/g, '$1 soles').replace(/ × /g, ' por ').replace(/ ÷ /g, ' entre ').replace(/ − /g, ' menos ').replace(/−(\d)/g, 'menos $1')
+  .replace(/S\/[ \u00a0]?(\d+)/g, '$1 soles').replace(/ × /g, ' por ').replace(/ ÷ /g, ' entre ').replace(/ − /g, ' menos ').replace(/−(\d)/g, 'menos $1')
   .replace(/ → /g, ', ').replace(/…/g, '').replace(/\s+/g, ' ').trim();
 // Los glifos de operación, con la letra de texto dentro de la monoespaciada. Solo fuera de las etiquetas.
 const glifos = h => String(h).replace(/(<[^>]*>)|([×÷−→])/g, (m, tag, g) => tag || `<span class="g">${g}</span>`);
@@ -257,10 +260,12 @@ const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</s
 const nb = t => String(t).replace(/ /g, ' ');
 const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 const pl = M.pl;
-const soles = n => `S/ ${n}`;
+const soles = n => `S/\u00a0${n}`;   // sin cortar «S/» del número
+// La retroalimentación: a la vista sin etiquetas y con «S/» pegado a su número; al lector de pantalla, con quitar() (el foco va ahí)
+function ponerFb(f, t){ f.textContent = String(t).replace(/<[^>]+>/g, '').replace(/S\/ (?=\d)/g, 'S/\u00a0'); f.setAttribute('aria-label', quitar(t)); }
 // Variables: g gallinas, c conejos, t el total (patas o puntaje), f lo que falta o sobra, d lo que mueve cada cambio,
 // b buenas, m malas, x el número de partida, y el resultado final, s la suma de cada línea, v casillas compartidas.
-const CLAVES = ['g', 'c', 't', 'f', 'd', 'b', 'm', 'x', 'y', 's', 'v'];
+const CLAVES = ['g', 'c', 't', 'f', 'd', 'b', 'm', 'x', 'y', 's'];
 function colores(){
   const c = { ink:css('--ink'), muted:css('--muted'), grid:css('--grid'), paper:css('--paper'), card:css('--card'), line:css('--line'),
     ok:css('--ok'), warn:css('--warn'), mono:css('--mono'), font:css('--font') };
@@ -520,7 +525,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
     geo.cas.forEach((p, i) => {
       const marcada = (s.marcar || []).includes(i);
       ctx.save(); ctx.beginPath(); ctx.arc(p.x, p.y, geo.r, 0, 7); ctx.fillStyle = c.paper; ctx.fill();
-      ctx.strokeStyle = marcada ? c.v : c.muted; ctx.lineWidth = marcada ? 3.4 : 1.4; if (!marcada) ctx.setLineDash([3, 3]); ctx.stroke(); ctx.restore();
+      ctx.strokeStyle = marcada ? c.ink : c.muted; ctx.lineWidth = marcada ? 4.2 : 1.4; if (!marcada) ctx.setLineDash([3, 3]); ctx.stroke(); ctx.restore();
       if (s.pregunta && s.pregunta.includes(i) && s.col[i] == null){ ctx.fillStyle = c.muted; ctx.font = `800 ${Math.round(geo.r*1.05)}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('?', p.x, p.y + .5); }
     });
     if (arrastre && arrastre.casilla != null){ const p = geo.cas[arrastre.casilla]; ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2.4; ctx.beginPath(); ctx.arc(p.x, p.y, geo.r + 4, 0, 7); ctx.stroke(); ctx.restore(); }
@@ -670,7 +675,7 @@ const $ = id => document.getElementById(id);
 const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1');
 const S = { step:0, max:0, pred:{}, ocupado:false, f1:null, t8:'triangulo3', col8:{} };
 const g_ = t => V('g', t), c_ = t => V('c', t), t_ = t => V('t', t), f_ = t => V('f', t), d_ = t => V('d', t), b_ = t => V('b', t), m_ = t => V('m', t);
-const x_ = t => V('x', t), y_ = t => V('y', t), s_ = t => V('s', t), v_ = t => V('v', t);
+const x_ = t => V('x', t), y_ = t => V('y', t), s_ = t => V('s', t), v_ = t => `<b>${t}</b>`;   // casillas compartidas: sin color propio, borde grueso en tinta y la palabra en negrita
 
 // Números de la escena: todos salen del motor
 const P2 = M.corral(20, 64);
@@ -694,10 +699,10 @@ const P_2 = { id:'razonamiento-numerico-paso2', ok:'c', opts:[
   ['b', conejos(P2.errores.faltanSinDividir), 'da-lo-que-falta-sin-dividir', 'hipotesis'],
   ['c', conejos(P2.respuesta)],
   ['d', conejos(P2.errores.divideEntreElOtro), 'divide-entre-el-valor-del-otro-tipo', 'hipotesis']],
-  fb:{ c:`¡Bien! Si los 20 fueran gallinas habría 20 × 2 = ${P2.supuestoTotal} patas; faltan 64 − ${P2.supuestoTotal} = ${P2.faltan}. Cada gallina que se cambia por un conejo agrega 4 − 2 = 2 patas: ${P2.faltan} ÷ 2 = ${P2.respuesta} conejos.`,
-    a:`${P2.gallinas} son las gallinas. Si se supone que todos son gallinas, cada cambio pone un conejo en lugar de una gallina: los ${P2.faltan} ÷ 2 = ${P2.respuesta} cambios son los conejos, y quedan 20 − ${P2.respuesta} = ${P2.gallinas} gallinas.`,
-    b:`${P2.faltan} son las patas que faltan si los 20 fueran gallinas, no animales. Cada conejo que entra en lugar de una gallina agrega solo 2 patas: ${P2.faltan} ÷ 2 = ${P2.respuesta} conejos.`,
-    d:`${P2.faltan} ÷ 4 = ${P2.errores.divideEntreElOtro} toma las 4 patas del conejo, pero la gallina que sale ya tenía 2: cada cambio agrega 4 − 2 = 2 patas. Son ${P2.faltan} ÷ 2 = ${P2.respuesta} conejos.` } };
+  fb:{ c:`¡Bien! Si los ${P2.animales} fueran gallinas habría ${P2.animales} × ${P2.vSupuesto} = ${P2.supuestoTotal} patas; faltan ${P2.patas} − ${P2.supuestoTotal} = ${P2.faltan}. Cada gallina que se cambia por un conejo agrega ${P2.vOtro} − ${P2.vSupuesto} = ${P2.diferencia} patas: ${P2.faltan} ÷ ${P2.diferencia} = ${P2.respuesta} conejos.`,
+    a:`${P2.gallinas} son las gallinas. Si se supone que todos son gallinas, cada cambio pone un conejo en lugar de una gallina: los ${P2.faltan} ÷ ${P2.diferencia} = ${P2.respuesta} cambios son los conejos, y quedan ${P2.animales} − ${P2.respuesta} = ${P2.gallinas} gallinas.`,
+    b:`${P2.faltan} son las patas que faltan si los ${P2.animales} fueran gallinas, no animales. Cada conejo que entra en lugar de una gallina agrega solo ${P2.diferencia} patas: ${P2.faltan} ÷ ${P2.diferencia} = ${P2.respuesta} conejos.`,
+    d:`${P2.faltan} ÷ ${P2.vOtro} = ${P2.errores.divideEntreElOtro} toma las ${P2.vOtro} patas del conejo, pero la gallina que sale ya tenía ${P2.vSupuesto}: cada cambio agrega ${P2.vOtro} − ${P2.vSupuesto} = ${P2.diferencia} patas. Son ${P2.faltan} ÷ ${P2.diferencia} = ${P2.respuesta} conejos.` } };
 
 const buenas = n => `${n} ${pl(n, 'buena', 'buenas')}`;
 const P_3 = { id:'razonamiento-numerico-paso3', ok:'d', opts:[
@@ -705,50 +710,52 @@ const P_3 = { id:'razonamiento-numerico-paso3', ok:'d', opts:[
   ['b', buenas(P3.errores.sinDescuento), 'ignora-el-descuento', 'hipotesis'],
   ['c', buenas(P3.errores.restaLosPuntos), 'diferencia-como-resta-de-puntos', 'hipotesis'],
   ['d', buenas(P3.respuesta)]],
-  fb:{ d:`¡Bien! Con las 50 buenas tendría 50 × 4 = ${P3.supuestoTotal} puntos; le sobran ${P3.supuestoTotal} − 140 = ${P3.sobran}. Cada buena que pasa a mala pierde sus 4 puntos y además resta 1: baja 4 + 1 = ${P3.quita}. ${P3.sobran} ÷ ${P3.quita} = ${P3.incorrectas} malas y ${P3.respuesta} buenas.`,
-    a:`${P3.incorrectas} son las malas: el cociente ${P3.sobran} ÷ ${P3.quita} cuenta las buenas que pasan a malas. Buenas: 50 − ${P3.incorrectas} = ${P3.respuesta}.`,
-    b:`140 ÷ 4 = ${P3.errores.sinDescuento} reparte el puntaje como si las malas no restaran. Con ${P3.daria.sinDescuento.buenas} buenas y ${P3.daria.sinDescuento.malas} malas tendría ${P3.daria.sinDescuento.puntaje} puntos, no 140. Suponiendo todas buenas sobran ${P3.sobran}, y cada mala baja ${P3.quita}: ${P3.incorrectas} malas y ${P3.respuesta} buenas.`,
-    c:`${P3.sobran} ÷ ${P3.daria.restaLosPuntos.entre} = ${P3.daria.restaLosPuntos.malas} malas usa 4 − 1 = 3, como si cada mala valiera 3 puntos menos. Pero una buena que pasa a mala pierde sus 4 puntos y además resta 1: baja 4 + 1 = ${P3.quita}. ${P3.sobran} ÷ ${P3.quita} = ${P3.incorrectas} malas y ${P3.respuesta} buenas.` } };
+  fb:{ d:`¡Bien! Con las ${P3.preguntas} buenas tendría ${P3.preguntas} × ${P3.buena} = ${P3.supuestoTotal} puntos; le sobran ${P3.supuestoTotal} − ${P3.puntaje} = ${P3.sobran}. Cada buena que pasa a mala pierde sus ${P3.buena} puntos y además resta ${P3.descuento}: baja ${P3.buena} + ${P3.descuento} = ${P3.quita}. ${P3.sobran} ÷ ${P3.quita} = ${P3.incorrectas} malas y ${P3.respuesta} buenas.`,
+    a:`${P3.incorrectas} son las malas: el cociente ${P3.sobran} ÷ ${P3.quita} cuenta las buenas que pasan a malas. Buenas: ${P3.preguntas} − ${P3.incorrectas} = ${P3.respuesta}.`,
+    b:`${P3.puntaje} ÷ ${P3.buena} = ${P3.errores.sinDescuento} reparte el puntaje como si las malas no restaran. Con ${P3.daria.sinDescuento.buenas} buenas y ${P3.daria.sinDescuento.malas} malas tendría ${P3.daria.sinDescuento.puntaje} puntos, no ${P3.puntaje}. Suponiendo todas buenas sobran ${P3.sobran}, y cada mala baja ${P3.quita}: ${P3.incorrectas} malas y ${P3.respuesta} buenas.`,
+    c:`${P3.sobran} ÷ ${P3.daria.restaLosPuntos.entre} = ${P3.daria.restaLosPuntos.malas} malas usa ${P3.buena} − ${P3.descuento} = ${P3.daria.restaLosPuntos.entre}, como si cada mala valiera ${P3.daria.restaLosPuntos.entre} puntos menos. Pero una buena que pasa a mala pierde sus ${P3.buena} puntos y además resta ${P3.descuento}: baja ${P3.buena} + ${P3.descuento} = ${P3.quita}. ${P3.sobran} ÷ ${P3.quita} = ${P3.incorrectas} malas y ${P3.respuesta} buenas.` } };
 
+const ultima4 = P4.vuelta[0];
 const P_4 = { id:'razonamiento-numerico-paso4', ok:'b', opts:[
   ['a', String(P4.errores.ordenSinInvertir), 'recorre-hacia-atras-sin-invertir', 'hipotesis'],
   ['b', String(P4.respuesta)],
   ['c', String(P4.errores.haciaAdelante), 'aplica-las-operaciones-hacia-adelante', 'hipotesis'],
   ['d', String(P4.errores.invierteSinOrden), 'invierte-sin-cambiar-el-orden', 'hipotesis']],
-  fb:{ b:`¡Bien! Se empieza por el 30 y se deshace cada operación, de la última a la primera: 30 − 10 = 20, 20 × 2 = 40, 40 + 8 = 48 y 48 ÷ 3 = ${P4.respuesta}.`,
-    c:`${P4.errores.haciaAdelante} sale de hacer las mismas operaciones con el 30: 30 × 3 = 90, 90 − 8 = 82, 82 ÷ 2 = 41 y 41 + 10 = 51. Pero el 30 es lo que le salió al final: hay que deshacer cada operación, de la última a la primera. Sale ${P4.respuesta}.`,
-    a:`${P4.errores.ordenSinInvertir} sale de recorrer la cadena desde el final pero sin cambiar las operaciones: 30 + 10 = 40, 40 ÷ 2 = 20, 20 − 8 = 12 y 12 × 3 = 36. Cada una se deshace con su contraria: − 10, × 2, + 8 y ÷ 3. Sale ${P4.respuesta}.`,
-    d:`${P4.errores.invierteSinOrden} sale de deshacer las operaciones en el orden en que se hicieron: 30 ÷ 3 = 10, 10 + 8 = 18, 18 × 2 = 36 y 36 − 10 = 26. Lo último que hizo Ana fue sumar 10, y eso se deshace primero. Sale ${P4.respuesta}.` } };
+  fb:{ b:`¡Bien! Se empieza por el ${P4.final} y se deshace cada operación, de la última a la primera: ${P4.vueltaTexto}.`,
+    c:`${P4.errores.haciaAdelante} sale de hacer las mismas operaciones con el ${P4.final}: ${P4.trazas.haciaAdelante}. Pero el ${P4.final} es lo que le salió al final: hay que deshacer cada operación, de la última a la primera. Sale ${P4.respuesta}.`,
+    a:`${P4.errores.ordenSinInvertir} sale de recorrer la cadena desde el final pero sin cambiar las operaciones: ${P4.trazas.ordenSinInvertir}. Cada una se deshace con su contraria: ${P4.vuelta.map(v => v.texto).join(', ')}. Sale ${P4.respuesta}.`,
+    d:`${P4.errores.invierteSinOrden} sale de deshacer las operaciones en el orden en que se hicieron: ${P4.trazas.invierteSinOrden}. Lo último que hizo Ana fue «${ultima4.ida}», y eso se deshace primero. Sale ${P4.respuesta}.` } };
 
 const P_5 = { id:'razonamiento-numerico-paso5', ok:'b', opts:[
   ['a', soles(P5.errores.devuelveDespues), 'dobla-y-despues-devuelve', 'hipotesis'],
   ['b', soles(P5.respuesta)],
   ['c', soles(P5.errores.olvidaElExtra), 'olvida-lo-que-gasto-de-mas', 'hipotesis'],
   ['d', soles(P5.errores.restaElExtra), 'resta-lo-que-gasto-de-mas', 'hipotesis']],
-  fb:{ b:`¡Bien! En la segunda tienda, antes de los S/ 3 de más tenía 12 + 3 = 15, que es la mitad que no gastó: entró con 15 × 2 = S/ 30. En la primera, 30 + 5 = 35 y 35 × 2 = S/ ${P5.respuesta}.`,
-    a:`${soles(P5.errores.devuelveDespues)} sale de doblar primero y sumar después: 12 × 2 + 3 = 27 y 27 × 2 + 5 = 59. Lo último que gastó fueron los S/ 3: se devuelven primero. 12 + 3 = 15 es la mitad que no gastó; entró con 15 × 2 = 30. Después, (30 + 5) × 2 = ${P5.respuesta}.`,
-    c:`${soles(P5.errores.olvidaElExtra)} = 12 × 2 × 2 deshace solo las mitades y olvida los S/ 3 y los S/ 5 que gastó de más. Con ellos: (12 + 3) × 2 = 30 y (30 + 5) × 2 = ${P5.respuesta}.`,
-    d:`${soles(P5.errores.restaElExtra)} sale de restar los soles de más al volver: (12 − 3) × 2 = 18 y (18 − 5) × 2 = 26. Pero esos soles los gastó: al volver, se le devuelven. (12 + 3) × 2 = 30 y (30 + 5) × 2 = ${P5.respuesta}.` } };
+  fb:{ b:`¡Bien! En la segunda tienda, antes de los ${soles(B5[1].extra)} de más tenía ${B5[1].queda} + ${B5[1].extra} = ${B5[1].noGasto}, que es la mitad que no gastó: entró con ${B5[1].noGasto} × ${B5[1].veces} = ${soles(B5[1].antes)}. En la primera, ${B5[0].queda} + ${B5[0].extra} = ${B5[0].noGasto} y ${B5[0].noGasto} × ${B5[0].veces} = ${soles(P5.respuesta)}.`,
+    a:`${soles(P5.errores.devuelveDespues)} sale de doblar primero y sumar después: ${P5.trazas.devuelveDespues}. Lo último que gastó fueron los ${soles(B5[1].extra)}: se devuelven primero. ${P5.vueltaTexto}.`,
+    c:`${soles(P5.errores.olvidaElExtra)} sale de deshacer solo las mitades (${P5.trazas.olvidaElExtra}) y olvida los ${soles(B5[1].extra)} y los ${soles(B5[0].extra)} que gastó de más. Con ellos: ${P5.vueltaTexto}.`,
+    d:`${soles(P5.errores.restaElExtra)} sale de restar los soles de más al volver: ${P5.trazas.restaElExtra}. Pero esos soles los gastó: al volver, se le devuelven. ${P5.vueltaTexto}.` } };
 
 const P_6 = { id:'razonamiento-numerico-paso6', ok:'b', opts:[
   ['a', String(P6.errores.losMenores), 'suma-las-tres-menores', 'hipotesis'],
   ['b', String(P6.respuesta)],
   ['c', String(P6.errores.totalEntreLineas), 'reparte-el-total-sin-contar-las-esquinas-dos-veces', 'hipotesis'],
   ['d', String(P6.errores.laMayor), 'da-la-mayor-suma', 'hipotesis']],
-  fb:{ b:`¡Bien! Al sumar los tres lados, cada ficha de una esquina se cuenta dos veces: 3 × suma = 21 + (lo que suman las esquinas). Lo menos que pueden sumar las esquinas es 1 + 2 + 3 = 6: 3 × suma = 27 y la suma es ${P6.respuesta}.`,
-    a:`${P6.errores.losMenores} = 1 + 2 + 3 son las tres fichas más chicas, pero no pueden estar a la vez en los tres lados: cada lado lleva tres fichas y se usan las seis. Con el 1, el 2 y el 3 en las esquinas, cada lado suma ${P6.respuesta}.`,
-    c:`21 ÷ 3 = ${P6.errores.totalEntreLineas} reparte las seis fichas entre los tres lados, pero las de las esquinas están en dos lados y se cuentan dos veces: 3 × suma = 21 + esquinas. Con las esquinas más chicas, 1 + 2 + 3: suma = 27 ÷ 3 = ${P6.respuesta}.`,
-    d:`${P6.errores.laMayor} es la mayor suma posible, con el 4, el 5 y el 6 en las esquinas. La menor sale con las esquinas más chicas: (21 + 1 + 2 + 3) ÷ 3 = ${P6.respuesta}.` } };
+  fb:{ b:`¡Bien! Al sumar los ${P6.lados} lados, cada ficha de una esquina se cuenta dos veces: ${P6.lados} × suma = ${P6.total} + (lo que suman las esquinas). Lo menos que pueden sumar las esquinas es ${P6.vertices.join(' + ')} = ${P6.sumaVertices}: ${P6.lados} × suma = ${P6.cuenta.izquierda} y la suma es ${P6.respuesta}.`,
+    a:`${P6.errores.losMenores} = ${P6.vertices.join(' + ')} son las tres fichas más chicas, pero no pueden estar a la vez en los ${P6.lados} lados: cada lado lleva tres fichas y se usan las seis. Con ${P6.vertices.join(', ')} en las esquinas, cada lado suma ${P6.respuesta}.`,
+    c:`${P6.total} ÷ ${P6.lados} = ${P6.errores.totalEntreLineas} reparte las seis fichas entre los ${P6.lados} lados, pero las de las esquinas están en dos lados y se cuentan dos veces: ${P6.lados} × suma = ${P6.total} + esquinas. Con las esquinas más chicas, ${P6.vertices.join(' + ')}: suma = ${P6.cuenta.izquierda} ÷ ${P6.lados} = ${P6.respuesta}.`,
+    d:`${P6.errores.laMayor} es la mayor suma posible, con ${P6.verticesMayor.join(', ')} en las esquinas. La menor sale con las esquinas más chicas: (${P6.total} + ${P6.sumaVertices}) ÷ ${P6.lados} = ${P6.respuesta}.` } };
 
+const K7 = P7.contraejemplos, C7 = `${P7.porElCentro} × ${P7.constante} = ${P7.cuenta.izquierda} = ${P7.total} + ${P7.cuenta.deMas} × centro`;
 const P_7 = { id:'razonamiento-numerico-paso7', ok:'a', opts:[
-  ['a', 'Solo el 5'],
-  ['b', 'Solo el 9', 'el-mayor-al-centro', 'hipotesis'],
-  ['c', 'Cualquiera de las impares: 1, 3, 5, 7 o 9', 'cualquier-impar-al-centro', 'hipotesis'],
+  ['a', `Solo el ${P7.respuesta[0]}`],
+  ['b', `Solo el ${P7.errores.elMayor[0]}`, 'el-mayor-al-centro', 'hipotesis'],
+  ['c', `Cualquiera de las impares: ${P7.errores.losImpares.slice(0, -1).join(', ')} o ${P7.errores.losImpares.slice(-1)}`, 'cualquier-impar-al-centro', 'hipotesis'],
   ['d', 'Cualquiera de las nueve, según cómo se armen las demás', 'cualquiera-al-centro', 'hipotesis']],
-  fb:{ a:`¡Bien! Las tres filas usan las nueve fichas una vez: cada línea suma 45 ÷ 3 = ${P7.constante}. Por el centro pasan cuatro líneas, que juntas suman 4 × ${P7.constante} = ${P7.cuenta.izquierda}; en ellas, el centro se cuenta cuatro veces y las demás fichas una: ${P7.cuenta.izquierda} = 45 + 3 × centro, y el centro es ${P7.cuenta.centro}.`,
-    b:`Cada línea suma 45 ÷ 3 = ${P7.constante}. Con el 9 en el centro, el 8 quedaría en una línea con el 9, y esa línea sumaría al menos 9 + 8 + 1 = 18. Por el centro pasan cuatro líneas: ${P7.cuenta.izquierda} = 45 + 3 × centro, y el centro es ${P7.cuenta.centro}.`,
-    c:`El 5 es impar, pero no cualquier impar sirve. Con el 1 en el centro, el 2 quedaría en una línea con el 1, y esa línea sumaría a lo más 1 + 2 + 9 = 12, menos que ${P7.constante}. Por el centro pasan cuatro líneas: ${P7.cuenta.izquierda} = 45 + 3 × centro, y el centro es ${P7.cuenta.centro}.`,
-    d:`La casilla del centro está en cuatro líneas a la vez, más que cualquier otra: eso la fija. Las cuatro líneas suman 4 × ${P7.constante} = ${P7.cuenta.izquierda} = 45 + 3 × centro, y el centro es ${P7.cuenta.centro}. El motor probó las 362 880 formas de poner las fichas: en los ${P7.soluciones} cuadrados que funcionan, el centro es ${P7.cuenta.centro}.` } };
+  fb:{ a:`¡Bien! Las ${P7.filas} filas usan las nueve fichas una vez: cada línea suma ${P7.total} ÷ ${P7.filas} = ${P7.constante}. Por el centro pasan ${P7.porElCentro} líneas; en ellas, el centro se cuenta ${P7.porElCentro} veces y las demás fichas una: ${C7}, y el centro es ${P7.cuenta.centro}.`,
+    b:`Cada línea suma ${P7.total} ÷ ${P7.filas} = ${P7.constante}. Con el ${K7.elMayor.centro} en el centro, el ${K7.elMayor.otra} quedaría en una línea con el ${K7.elMayor.centro}, y esa línea sumaría al menos ${K7.elMayor.centro} + ${K7.elMayor.otra} + ${K7.elMayor.tercera} = ${K7.elMayor.suma}. Por el centro pasan ${P7.porElCentro} líneas: ${C7}, y el centro es ${P7.cuenta.centro}.`,
+    c:`El ${P7.cuenta.centro} es impar, pero no cualquier impar sirve. Con el ${K7.elMenor.centro} en el centro, el ${K7.elMenor.otra} quedaría en una línea con el ${K7.elMenor.centro}, y esa línea sumaría a lo más ${K7.elMenor.centro} + ${K7.elMenor.otra} + ${K7.elMenor.tercera} = ${K7.elMenor.suma}, menos que ${P7.constante}. Por el centro pasan ${P7.porElCentro} líneas: ${C7}, y el centro es ${P7.cuenta.centro}.`,
+    d:`La casilla del centro está en ${P7.porElCentro} líneas a la vez, más que cualquier otra: eso la fija. ${C7}, y el centro es ${P7.cuenta.centro}. El motor probó las ${M.milesTexto(P7.formas)} formas de poner las fichas: en los ${P7.soluciones} cuadrados que funcionan, el centro es ${P7.cuenta.centro}.` } };
 
 // ----- paso 1: el corral que se explora -----
 const META1 = 32;
@@ -775,7 +782,7 @@ function prep8(){
   if (!S.col8[tipo]) S.col8[tipo] = Array(t.casillas).fill(null);
   if (E.sel >= t.casillas) E.sel = 0;
   E.config({ modo:'tablero', st:{ tipo, col:S.col8[tipo], nums:T8[tipo].nums, mover:true, sumas:true, marcar:marcar8(tipo) }, alCambiar:vivo8,
-    ley:[['s', 'suma de la línea'], ['v', tipo === 'cuadrado3' ? 'el centro: está en cuatro líneas' : 'esquinas: están en dos lados']],
+    ley:[['s', 'suma de la línea'], ['ink', tipo === 'cuadrado3' ? 'borde grueso: el centro, está en cuatro líneas' : 'borde grueso: esquinas, están en dos lados']],
     lect:[() => { const C = M.comprobar(tipo, S.col8[tipo]); return ['ink', 'fichas puestas', `${C.puestas} de ${t.casillas}`]; },
       () => { const C = M.comprobar(tipo, S.col8[tipo]); return ['s', 'líneas completas', `${C.lineas.filter(l => l.completa).length} de ${t.lineas.length}`]; }],
     desc: () => textoTablero(tipo, S.col8[tipo]) });
@@ -795,33 +802,36 @@ function vivo8(){
 }
 
 // ----- estados finales de cada predicción (los mismos al volver al paso) -----
-const LEY2 = [['g', 'gallina: 2 patas'], ['c', 'conejo: 4 patas'], ['t', 'patas en total']];
-function fin2(){ return { fichas:corralDe(P2.gallinas, P2.conejos), una:false, nuevo:null, pie:[[`${P2.faltan} ÷ `, 'ink'], ['2', 'd'], [' = ', 'ink'], [String(P2.respuesta), 'c'], [' cambios: ', 'ink'], [String(P2.patas) + ' patas', 't']] }; }
-const DESC2 = `El corral con ${P2.gallinas} gallinas y ${P2.conejos} conejos: ${P2.gallinas} × 2 + ${P2.conejos} × 4 = 64 patas. Se empezó con las 20 gallinas, 40 patas, y cada cambio de una gallina por un conejo sumó 2 patas, hasta llegar a 64 después de ${P2.conejos} cambios.`;
-const LECT2 = [() => ['ink', 'animales', '20'], () => ['t', 'patas', '64']];
+const LEY2 = [['g', `gallina: ${P2.vSupuesto} patas`], ['c', `conejo: ${P2.vOtro} patas`], ['t', 'patas en total']];
+function fin2(){ return { fichas:corralDe(P2.gallinas, P2.conejos), una:false, nuevo:null, pie:[[String(P2.faltan), 'f'], [' ÷ ', 'ink'], [String(P2.diferencia), 'd'], [' = ', 'ink'], [String(P2.respuesta), 'c'], [' cambios: ', 'ink'], [String(P2.patas) + ' patas', 't']] }; }
+const DESC2 = `El corral con ${P2.gallinas} gallinas y ${P2.conejos} conejos: ${P2.gallinas} × ${P2.vSupuesto} + ${P2.conejos} × ${P2.vOtro} = ${P2.patas} patas. Se empezó con las ${P2.animales} gallinas, ${P2.supuestoTotal} patas, y cada cambio de una gallina por un conejo sumó ${P2.diferencia} patas, hasta llegar a ${P2.patas} después de ${P2.conejos} cambios.`;
+const LECT2 = [() => ['ink', 'animales', String(P2.animales)], () => ['t', 'patas', String(P2.patas)]];
 const LECT2b = LECT2.concat([() => ['g', 'gallinas', String(P2.gallinas)], () => ['c', 'conejos', String(P2.conejos)]]);
-function fin3(){ return { fichas:animales(P3.correctas, 'b').concat(animales(P3.incorrectas, 'm')), nuevo:null, pie:[[`${P3.sobran} ÷ `, 'ink'], [String(P3.quita), 'd'], [' = ', 'ink'], [String(P3.incorrectas) + ' malas', 'm'], [' y ', 'ink'], [String(P3.correctas) + ' buenas', 'b']] }; }
-const DESC3 = `Las 50 preguntas: ${P3.correctas} buenas y ${P3.incorrectas} malas. Con todas buenas serían 200 puntos; cada buena que pasa a mala baja 5, y después de ${P3.incorrectas} cambios quedan 140.`;
-const LECT3 = [() => ['ink', 'preguntas', '50'], () => ['t', 'puntaje', '140']];
-const LEY3 = [['b', 'buena: + 4'], ['m', 'mala: − 1'], ['t', 'puntaje']];
+function fin3(){ return { fichas:animales(P3.correctas, 'b').concat(animales(P3.incorrectas, 'm')), nuevo:null, pie:[[String(P3.sobran), 'f'], [' ÷ ', 'ink'], [String(P3.quita), 'd'], [' = ', 'ink'], [String(P3.incorrectas) + ' malas', 'm'], [' y ', 'ink'], [String(P3.correctas) + ' buenas', 'b']] }; }
+const DESC3 = `Las ${P3.preguntas} preguntas: ${P3.correctas} buenas y ${P3.incorrectas} malas. Con todas buenas serían ${P3.supuestoTotal} puntos; cada buena que pasa a mala baja ${P3.quita}, y después de ${P3.incorrectas} cambios quedan ${P3.puntaje}.`;
+const LECT3 = [() => ['ink', 'preguntas', String(P3.preguntas)], () => ['t', 'puntaje', String(P3.puntaje)]];
+const LEY3 = [['b', `buena: + ${P3.buena}`], ['m', `mala: − ${P3.descuento}`], ['t', 'puntaje']];
 const ops4 = P4.cadena.map(t => [t]);
 const ida4 = P4.ida.map((v, i) => (i ? `${P4.cadena[i - 1]} → ${v}` : String(v))), vuelta4 = P4.vuelta.map(v => `${v.texto} → ${v.a}`);
 function fin4(){ return { ops:ops4, valores:P4.ida.slice(), vuelta:P4.vuelta.slice().reverse().map(v => v.texto), vueltaK:CAD4.length, resalta:0,
-  pie:[['30', 'y'], [' → ' + vuelta4.slice(0, -1).join(' → ') + ' → ' + P4.vuelta[CAD4.length - 1].texto + ' → ', 'ink'], [String(P4.respuesta), 'x']] }; }
-const DESC4 = `La tira con el número de Ana, ${P4.respuesta}, y las cajas 48, 40, 20 y 30. Arriba, la ida: por 3, menos 8, entre 2, más 10. Abajo, la vuelta de derecha a izquierda: menos 10, por 2, más 8, entre 3.`;
+  pie:[[String(P4.final), 'y'], [' → ' + vuelta4.slice(0, -1).join(' → ') + ' → ' + P4.vuelta[CAD4.length - 1].texto + ' → ', 'ink'], [String(P4.respuesta), 'x']] }; }
+const DESC4 = quitar(`La tira con el número de Ana, ${P4.respuesta}, y las cajas ${P4.ida.slice(1).join(', ')}. Arriba, la ida: ${P4.cadena.join(', ')}. Abajo, la vuelta de derecha a izquierda: ${P4.vuelta.map(v => v.texto).join(', ')}.`);
+const VAL4 = () => P4.ida.map((v, i) => (i === CAD4.length ? v : null));
+const LECT4 = [() => ['x', 'pensó', String(P4.respuesta)], () => ['y', 'le salió', String(P4.final)]];
 const LEY4 = [['x', 'número que pensó'], ['y', 'resultado final'], ['ink', 'arriba: ida · abajo: vuelta']];
-const nombres5 = ['1.ª tienda: gastó la mitad y S/ 5 más', '2.ª tienda: gastó la mitad y S/ 3 más'];
-function fin5(){ return { tramos:B5, vis:[3, 3], nombres:nombres5, pie:[['salió con ', 'ink'], [soles(P5.respuesta), 'x'], [' y volvió con ', 'ink'], [soles(12), 'y']] }; }
-const DESC5 = `Dos barras. Primera tienda: tenía ${P5.respuesta} soles, gastó la mitad, 35, y 5 más; le quedaron 30. Segunda tienda: tenía 30, gastó la mitad, 15, y 3 más; le quedaron 12. De vuelta: 12 más 3 es 15, la mitad que no gastó, por 2 es 30; 30 más 5 es 35, por 2 es 70.`;
+const nombres5 = B5.map((t, i) => `${i + 1}.ª tienda: gastó ${t.parteTexto} y ${soles(t.extra)} más`);
+function fin5(){ return { tramos:B5, vis:[3, 3], nombres:nombres5, pie:[['salió con ', 'ink'], [soles(P5.respuesta), 'x'], [' y volvió con ', 'ink'], [soles(P5.final), 'y']] }; }
+const DESC5 = `Dos barras. ${B5.map((t, i) => `${i ? 'Segunda' : 'Primera'} tienda: tenía ${t.antes} soles, gastó ${t.parteTexto}, ${t.parte}, y ${t.extra} más; le quedaron ${t.queda}.`).join(' ')} De vuelta: ${B5.slice().reverse().map(t => `${t.queda} más ${t.extra} es ${t.noGasto}, lo que no gastó, por ${t.veces} es ${t.antes}`).join('; ')}.`;
+const LECT5 = [() => ['x', 'salió con', soles(P5.respuesta)], () => ['y', 'volvió con', soles(P5.final)]];
 const LEY5 = [['x', 'con lo que salió'], ['y', 'con lo que volvió'], ['ink', 'lo que gastó', true]];
-function fin6(){ return { tipo:'triangulo3', col:P6.muestra.slice(), nums:N6, sumas:true, marcar:[0, 1, 2], pie:[[`3 × `, 'ink'], [String(P6.respuesta), 's'], [` = 21 + (`, 'ink'], [P6.vertices.join(' + '), 'v'], [')', 'ink']] }; }
-const DESC6 = `El triángulo con el 1, el 2 y el 3 en las esquinas y el 6, el 4 y el 5 en el medio de los lados: cada lado suma 9. Las esquinas, marcadas, están en dos lados cada una.`;
-const LEY6 = [['s', 'suma de cada lado'], ['v', 'esquinas: están en dos lados']];
+function fin6(){ return { tipo:'triangulo3', col:P6.muestra.slice(), nums:N6, sumas:true, marcar:[0, 1, 2], pie:[[`${P6.lados} × `, 'ink'], [String(P6.respuesta), 's'], [` = ${P6.total} + (${P6.vertices.join(' + ')})`, 'ink']] }; }
+const DESC6 = `El triángulo con ${P6.vertices.join(', ')} en las esquinas y ${P6.muestra.slice(3).join(', ')} en el medio de los lados: cada lado suma ${P6.respuesta}. Las esquinas, con borde grueso, están en dos lados cada una.`;
+const LEY6 = [['s', 'suma de cada lado'], ['ink', 'borde grueso: esquinas, están en dos lados']];
 const LECT6 = [() => ['s', 'menor suma por lado', String(P6.respuesta)], () => ['ink', 'sumas posibles', P6.sumas.join(', ')]];
-function fin7(){ return { tipo:'cuadrado3', col:P7.muestra.slice(), nums:N7, sumas:true, marcar:[4], resaltar:[1, 4, 6, 7], pie:[['4 × ', 'ink'], [String(P7.constante), 's'], [` = 45 + 3 × `, 'ink'], [String(P7.cuenta.centro), 'v']] }; }
-const DESC7 = `Un cuadrado mágico: ${P7.muestra.slice(0, 3).join(', ')} arriba; ${P7.muestra.slice(3, 6).join(', ')} en el medio; ${P7.muestra.slice(6).join(', ')} abajo. Cada fila, columna y diagonal suma 15. Resaltadas, las cuatro líneas que pasan por el centro, donde está el 5.`;
-const LEY7 = [['s', 'suma de cada línea'], ['v', 'el centro: está en cuatro líneas']];
-const LECT7 = [() => ['s', 'cada línea', String(P7.constante)], () => ['v', 'centro', String(P7.cuenta.centro)], () => ['ink', 'cuadrados', String(P7.soluciones)]];
+function fin7(){ return { tipo:'cuadrado3', col:P7.muestra.slice(), nums:N7, sumas:true, sinBanca:true, marcar:[4], resaltar:[1, 4, 6, 7], pie:[[`${P7.porElCentro} × `, 'ink'], [String(P7.constante), 's'], [` = ${P7.total} + ${P7.cuenta.deMas} × ${P7.cuenta.centro}`, 'ink']] }; }
+const DESC7 = `Un cuadrado mágico: ${P7.muestra.slice(0, 3).join(', ')} arriba; ${P7.muestra.slice(3, 6).join(', ')} en el medio; ${P7.muestra.slice(6).join(', ')} abajo. Cada fila, columna y diagonal suma ${P7.constante}. Resaltadas, las ${P7.porElCentro} líneas que pasan por el centro, donde está el ${P7.cuenta.centro}.`;
+const LEY7 = [['s', 'suma de cada línea'], ['ink', `borde grueso: el centro, está en ${P7.porElCentro} líneas`]];
+const LECT7 = [() => ['s', 'cada línea', String(P7.constante)], () => ['ink', 'centro', String(P7.cuenta.centro)], () => ['ink', 'cuadrados', String(P7.soluciones)]];
 
 const steps = [
  { k:'Paso 1', t:'Explora: el corral', explora:true,
@@ -835,89 +845,89 @@ const steps = [
  { k:'Paso 2', t:'Predice: ¿cuántos conejos?', gate:P_2,
    prep:() => { const ya = !!S.pred[P_2.id];
      E.config(ya ? { modo:'corral', st:fin2(), ley:LEY2, desc:DESC2, lect:LECT2b }
-       : { modo:'corral', st:{ fichas:animales(20, '?'), una:true }, ley:LEY2, desc:'Un corral con 20 animales que todavía no se sabe qué son.', lect:LECT2 }); },
-   anima:fin => { const fs = animales(20, 'g');
-     E.config({ modo:'corral', st:{ fichas:fs, una:false, pie:[['20 × 2 = ', 'ink'], [String(P2.supuestoTotal), 't'], [' patas: faltan ', 'ink'], [String(P2.faltan), 'f']] }, ley:LEY2, desc:DESC2, lect:LECT2.concat([() => ['t', 'patas ahora', String(M.contarCorral(E.st.fichas).patas)]]) });
+       : { modo:'corral', st:{ fichas:animales(P2.animales, '?'), una:true }, ley:LEY2, desc:`Un corral con ${P2.animales} animales que todavía no se sabe qué son.`, lect:LECT2 }); },
+   anima:fin => { const fs = animales(P2.animales, 'g');
+     E.config({ modo:'corral', st:{ fichas:fs, una:false, pie:[[`${P2.animales} × ${P2.vSupuesto} = `, 'ink'], [String(P2.supuestoTotal), 't'], [' patas: faltan ', 'ink'], [String(P2.faltan), 'f']] }, ley:LEY2, desc:DESC2, lect:LECT2.concat([() => ['t', 'patas ahora', String(M.contarCorral(E.st.fichas).patas)]]) });
      const cambios = Array.from({ length:P2.conejos }, (_, k) => st => { st.fichas[P2.gallinas + (P2.conejos - 1 - k)].tipo = 'c'; st.nuevo = P2.gallinas + (P2.conejos - 1 - k);
-       st.pie = [[`cambio ${k + 1}: `, 'ink'], ['+ 2', 'd'], [' → ', 'ink'], [`${P2.cambios[k + 1]} patas`, 't']]; });
+       st.pie = [[`cambio ${k + 1}: `, 'ink'], [`+ ${P2.diferencia}`, 'd'], [' → ', 'ink'], [`${P2.cambios[k + 1]} patas`, 't']]; });
      E.secuencia([{}].concat(cambios, [fin2()]), [1500].concat(cambios.map(() => 420), [0]), () => { E.lect = LECT2b; E.avisar(); fin(); }); },
-   body:() => `<p class="problem">En un corral hay 20 animales entre ${g_('gallinas')} y ${c_('conejos')}, y en total se cuentan ${t_('64 patas')}. ¿Cuántos conejos hay?</p>${opcionesHTML(P_2.opts, 'fb')}
+   body:() => `<p class="problem">En un corral hay ${P2.animales} animales entre ${g_('gallinas')} y ${c_('conejos')}, y en total se cuentan ${t_(P2.patas + ' patas')}. ¿Cuántos conejos hay?</p>${opcionesHTML(P_2.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
-     <div class="eq">20 × 2 = ${t_(P2.supuestoTotal)}<span class="note">si los 20 fueran gallinas</span></div>
-     <div class="eq">64 − ${P2.supuestoTotal} = ${f_(P2.faltan)}<span class="note">las patas que faltan</span></div>
-     <div class="eq">4 − 2 = ${d_(2)}<span class="note">lo que agrega cada cambio de una gallina por un conejo</span></div>
-     <div class="eq">${f_(P2.faltan)} ÷ ${d_(2)} = ${c_(P2.respuesta)} conejos y 20 − ${P2.respuesta} = ${g_(P2.gallinas)} gallinas<span class="note">comprobación: ${P2.conejos} × 4 + ${P2.gallinas} × 2 = 64</span></div></div>
+     <div class="eq">${P2.animales} × ${P2.vSupuesto} = ${t_(P2.supuestoTotal)}<span class="note">si los ${P2.animales} fueran gallinas</span></div>
+     <div class="eq">${P2.patas} − ${P2.supuestoTotal} = ${f_(P2.faltan)}<span class="note">las patas que faltan</span></div>
+     <div class="eq">${P2.vOtro} − ${P2.vSupuesto} = ${d_(P2.diferencia)}<span class="note">lo que agrega cada cambio de una gallina por un conejo</span></div>
+     <div class="eq">${f_(P2.faltan)} ÷ ${d_(P2.diferencia)} = ${c_(P2.respuesta)} conejos y ${P2.animales} − ${P2.respuesta} = ${g_(P2.gallinas)} gallinas<span class="note">comprobación: ${P2.conejos} × ${P2.vOtro} + ${P2.gallinas} × ${P2.vSupuesto} = ${P2.patas}</span></div></div>
    <p>Este es el método de la <b>falsa suposición</b>: se supone que todos son de un tipo, se cuenta cuánto falta para llegar al total y se divide entre lo que cambia el total en cada cambio. El cociente cuenta los del otro tipo.</p>${FUENTE}</div>` },
  { k:'Paso 3', t:'Predice: el examen con puntos en contra', gate:P_3,
    prep:() => { const ya = !!S.pred[P_3.id];
      E.config(ya ? { modo:'examen', st:fin3(), ley:LEY3, desc:DESC3, lect:LECT3.concat([() => ['b', 'buenas', String(P3.correctas)], () => ['m', 'malas', String(P3.incorrectas)]]) }
-       : { modo:'examen', st:{ fichas:animales(50, '?') }, ley:LEY3, desc:'Las 50 preguntas del examen, todavía sin saber cuáles son buenas y cuáles malas.', lect:LECT3 }); },
-   anima:fin => { const fs = animales(50, 'b');
-     E.config({ modo:'examen', st:{ fichas:fs, pie:[['50 × 4 = ', 'ink'], [String(P3.supuestoTotal), 't'], [' puntos: sobran ', 'ink'], [String(P3.sobran), 'f']] }, ley:LEY3, desc:DESC3, lect:LECT3 });
-     const cambios = Array.from({ length:P3.incorrectas }, (_, k) => st => { const i = 49 - k; st.fichas[i].tipo = 'm'; st.nuevo = i;
+       : { modo:'examen', st:{ fichas:animales(P3.preguntas, '?') }, ley:LEY3, desc:`Las ${P3.preguntas} preguntas del examen, todavía sin saber cuáles son buenas y cuáles malas.`, lect:LECT3 }); },
+   anima:fin => { const fs = animales(P3.preguntas, 'b');
+     E.config({ modo:'examen', st:{ fichas:fs, pie:[[`${P3.preguntas} × ${P3.buena} = `, 'ink'], [String(P3.supuestoTotal), 't'], [' puntos: sobran ', 'ink'], [String(P3.sobran), 'f']] }, ley:LEY3, desc:DESC3, lect:LECT3 });
+     const cambios = Array.from({ length:P3.incorrectas }, (_, k) => st => { const i = P3.preguntas - 1 - k; st.fichas[i].tipo = 'm'; st.nuevo = i;
        st.pie = [[`mala ${k + 1}: `, 'ink'], [`− ${P3.quita}`, 'd'], [' → ', 'ink'], [`${P3.cambios[k + 1]} puntos`, 't']]; });
      E.secuencia([{}].concat(cambios, [fin3()]), [1500].concat(cambios.map(() => 420), [0]), () => { E.lect = LECT3.concat([() => ['b', 'buenas', String(P3.correctas)], () => ['m', 'malas', String(P3.incorrectas)]]); E.avisar(); fin(); }); },
-   body:() => `<p class="problem">En un examen de admisión de 50 preguntas, cada ${b_('respuesta buena suma 4 puntos')} y cada ${m_('respuesta mala resta 1 punto')}. Luis respondió todas y obtuvo ${t_('140 puntos')}. ¿Cuántas respondió bien?</p>${opcionesHTML(P_3.opts, 'fb')}
+   body:() => `<p class="problem">En un examen de admisión de ${P3.preguntas} preguntas, cada ${b_(`respuesta buena suma ${P3.buena} puntos`)} y cada ${m_(`respuesta mala resta ${P3.descuento} ${pl(P3.descuento, 'punto', 'puntos')}`)}. Luis respondió todas y obtuvo ${t_(P3.puntaje + ' puntos')}. ¿Cuántas respondió bien?</p>${opcionesHTML(P_3.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
-     <div class="eq">50 × 4 = ${t_(P3.supuestoTotal)}<span class="note">si las 50 fueran buenas</span></div>
-     <div class="eq">${P3.supuestoTotal} − 140 = ${f_(P3.sobran)}<span class="note">los puntos que sobran</span></div>
-     <div class="eq">4 + 1 = ${d_(P3.quita)}<span class="note">una buena que pasa a mala pierde sus 4 puntos y además resta 1</span></div>
-     <div class="eq">${f_(P3.sobran)} ÷ ${d_(P3.quita)} = ${m_(P3.incorrectas)} malas y 50 − ${P3.incorrectas} = ${b_(P3.correctas)} buenas<span class="note">comprobación: ${P3.correctas} × 4 − ${P3.incorrectas} × 1 = 140</span></div></div>
-   <p>Es la misma idea del corral: cada cambio mueve el total siempre lo mismo. Aquí el cambio baja el puntaje, y lo que baja es la distancia entre lo que vale una buena y lo que vale una mala: de + 4 a − 1 hay 5 puntos.</p>${FUENTE}</div>` },
+     <div class="eq">${P3.preguntas} × ${P3.buena} = ${t_(P3.supuestoTotal)}<span class="note">si las ${P3.preguntas} fueran buenas</span></div>
+     <div class="eq">${P3.supuestoTotal} − ${P3.puntaje} = ${f_(P3.sobran)}<span class="note">los puntos que sobran</span></div>
+     <div class="eq">${P3.buena} + ${P3.descuento} = ${d_(P3.quita)}<span class="note">una buena que pasa a mala pierde sus ${P3.buena} puntos y además resta ${P3.descuento}</span></div>
+     <div class="eq">${f_(P3.sobran)} ÷ ${d_(P3.quita)} = ${m_(P3.incorrectas)} malas y ${P3.preguntas} − ${P3.incorrectas} = ${b_(P3.correctas)} buenas<span class="note">comprobación: ${P3.correctas} × ${P3.buena} − ${P3.incorrectas} × ${P3.descuento} = ${P3.puntaje}</span></div></div>
+   <p>Es la misma idea del corral: cada cambio mueve el total siempre lo mismo. Aquí el cambio baja el puntaje, y lo que baja es la distancia entre lo que vale una buena y lo que vale una mala: de + ${P3.buena} a − ${P3.descuento} hay ${P3.quita} puntos.</p>${FUENTE}</div>` },
  { k:'Paso 4', t:'Predice: el número que pensó Ana', gate:P_4,
    prep:() => { const ya = !!S.pred[P_4.id];
-     E.config(ya ? { modo:'tira', st:fin4(), ley:LEY4, desc:DESC4, lect:[() => ['x', 'pensó', String(P4.respuesta)], () => ['y', 'le salió', '30']] }
-       : { modo:'tira', st:{ ops:ops4, valores:[null, null, null, null, 30], vuelta:[], vueltaK:0 }, ley:LEY4.slice(0, 2), desc:'Una tira de cinco cajas. La primera, el número que pensó Ana, tiene un signo de pregunta; arriba, las operaciones: por 3, menos 8, entre 2 y más 10. La última caja dice 30.', lect:[() => ['y', 'le salió', '30']] }); },
+     E.config(ya ? { modo:'tira', st:fin4(), ley:LEY4, desc:DESC4, lect:LECT4 }
+       : { modo:'tira', st:{ ops:ops4, valores:VAL4(), vuelta:[], vueltaK:0 }, ley:LEY4.slice(0, 2), desc:quitar(`Una tira de cinco cajas. La primera, el número que pensó Ana, tiene un signo de pregunta; arriba, las operaciones: ${P4.cadena.join(', ')}. La última caja dice ${P4.final}.`), lect:[LECT4[1]] }); },
    anima:fin => {
-     E.config({ modo:'tira', st:{ ops:ops4, valores:[null, null, null, null, 30], vuelta:P4.vuelta.slice().reverse().map(v => v.texto), vueltaK:0, resalta:4 }, ley:LEY4, desc:DESC4, lect:[() => ['y', 'le salió', '30']] });
+     E.config({ modo:'tira', st:{ ops:ops4, valores:VAL4(), vuelta:P4.vuelta.slice().reverse().map(v => v.texto), vueltaK:0, resalta:CAD4.length }, ley:LEY4, desc:DESC4, lect:[LECT4[1]] });
      const est = P4.vuelta.map((v, j) => st => { st.vueltaK = j + 1; st.valores[CAD4.length - 1 - j] = v.a; st.resalta = CAD4.length - 1 - j;
        st.pie = [[`${v.de} `, 'ink'], [v.texto, 'ink'], [` = ${v.a}`, j === CAD4.length - 1 ? 'x' : 'ink'], [`: se deshace «${v.ida}»`, 'ink']]; });
-     E.secuencia([{}].concat(est, [fin4()]), [600].concat(est.map(() => 1300), [0]), () => { E.lect = [() => ['x', 'pensó', String(P4.respuesta)], () => ['y', 'le salió', '30']]; E.avisar(); fin(); }); },
-   body:() => `<p class="problem">Ana pensó un ${x_('número')}. Lo multiplicó por 3, al resultado le restó 8, lo que obtuvo lo dividió entre 2 y, por último, le sumó 10. Le salió ${y_('30')}. ¿Qué número pensó Ana?</p>${opcionesHTML(P_4.opts, 'fb')}
+     E.secuencia([{}].concat(est, [fin4()]), [600].concat(est.map(() => 1300), [0]), () => { E.lect = LECT4; E.avisar(); fin(); }); },
+   body:() => `<p class="problem">Ana pensó un ${x_('número')}. Lo multiplicó por ${CAD4[0].k}, al resultado le restó ${CAD4[1].k}, lo que obtuvo lo dividió entre ${CAD4[2].k} y, por último, le sumó ${CAD4[3].k}. Le salió ${y_(P4.final)}. ¿Qué número pensó Ana?</p>${opcionesHTML(P_4.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
-     <div class="eq">${x_(P4.respuesta)} → ${ida4.slice(1, -1).join(' → ')} → ${P4.cadena[CAD4.length - 1]} → ${y_(30)}<span class="note">la ida, como la hizo Ana</span></div>
-     <div class="eq">${y_(30)} → ${vuelta4.slice(0, -1).join(' → ')} → ${P4.vuelta[CAD4.length - 1].texto} → ${x_(P4.respuesta)}<span class="note">la vuelta: desde el final, cada operación con su contraria</span></div></div>
+     <div class="eq">${x_(P4.respuesta)} → ${ida4.slice(1, -1).join(' → ')} → ${P4.cadena[CAD4.length - 1]} → ${y_(P4.final)}<span class="note">la ida, como la hizo Ana</span></div>
+     <div class="eq">${y_(P4.final)} → ${vuelta4.slice(0, -1).join(' → ')} → ${P4.vuelta[CAD4.length - 1].texto} → ${x_(P4.respuesta)}<span class="note">la vuelta: desde el final, cada operación con su contraria</span></div></div>
    <p>Este es el <b>método regresivo</b> (o del cangrejo): se parte del resultado y se camina hacia atrás. Cambian dos cosas a la vez: el orden (la última operación se deshace primero) y cada operación (× con ÷, + con −).</p>${FUENTE}</div>` },
  { k:'Paso 5', t:'Predice: ¿con cuánto salió al mercado?', gate:P_5,
    prep:() => { const ya = !!S.pred[P_5.id];
-     E.config(ya ? { modo:'barras', st:fin5(), ley:LEY5, desc:DESC5, lect:[() => ['x', 'salió con', soles(P5.respuesta)], () => ['y', 'volvió con', soles(12)]] }
-       : { modo:'tira', st:{ ops:[['gasta la mitad', 'y S/ 5 más'], ['gasta la mitad', 'y S/ 3 más']], valores:[null, null, 12], moneda:true, vuelta:[], vueltaK:0 }, ley:LEY5.slice(0, 2),
-           desc:'Una tira de tres cajas. La primera, con lo que salió Rosa, tiene un signo de pregunta; en la primera tienda gasta la mitad y 5 soles más, y en la segunda la mitad y 3 soles más. La última caja dice 12 soles.', lect:[() => ['y', 'volvió con', soles(12)]] }); },
+     E.config(ya ? { modo:'barras', st:fin5(), ley:LEY5, desc:DESC5, lect:LECT5 }
+       : { modo:'tira', st:{ ops:B5.map(t => [`gasta ${t.parteTexto}`, `y ${soles(t.extra)} más`]), valores:[null, null, P5.final], moneda:true, vuelta:[], vueltaK:0 }, ley:LEY5.slice(0, 2),
+           desc:quitar(`Una tira de tres cajas. La primera, con lo que salió Rosa, tiene un signo de pregunta; ${B5.map((t, i) => `en la ${i ? 'segunda' : 'primera'} tienda gasta ${t.parteTexto} y ${soles(t.extra)} más`).join(', y ')}. La última caja dice ${soles(P5.final)}.`), lect:[LECT5[1]] }); },
    anima:fin => {
-     E.config({ modo:'barras', st:{ tramos:B5, vis:[0, 1], nombres:nombres5 }, ley:LEY5, desc:DESC5, lect:[() => ['y', 'volvió con', soles(12)]] });
+     E.config({ modo:'barras', st:{ tramos:B5, vis:[0, 1], nombres:nombres5 }, ley:LEY5, desc:DESC5, lect:[LECT5[1]] });
      E.secuencia([{}, { vis:[0, 2] }, { vis:[1, 3] }, { vis:[2, 3] }, { vis:[3, 3] }, fin5()], [900, 1500, 1500, 1500, 1500, 0],
-       () => { E.lect = [() => ['x', 'salió con', soles(P5.respuesta)], () => ['y', 'volvió con', soles(12)]]; E.avisar(); fin(); }); },
-   body:() => `<p class="problem">Rosa salió al mercado con ${x_('cierta cantidad de dinero')}. En la primera tienda gastó la mitad de lo que tenía y S/ 5 más; en la segunda, la mitad de lo que le quedaba y S/ 3 más. Volvió a casa con ${y_('S/ 12')}. ¿Con cuánto dinero salió?</p>${opcionesHTML(P_5.opts, 'fb')}
+       () => { E.lect = LECT5; E.avisar(); fin(); }); },
+   body:() => `<p class="problem">Rosa salió al mercado con ${x_('cierta cantidad de dinero')}. En la primera tienda gastó ${B5[0].parteTexto} de lo que tenía y ${soles(B5[0].extra)} más; en la segunda, ${B5[1].parteTexto} de lo que le quedaba y ${soles(B5[1].extra)} más. Volvió a casa con ${y_(soles(P5.final))}. ¿Con cuánto dinero salió?</p>${opcionesHTML(P_5.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
-     <div class="eq">${B5[1].queda} + ${B5[1].extra} = ${B5[1].noGasto} → ${B5[1].noGasto} × ${B5[1].veces} = ${B5[1].antes}<span class="note">2.ª tienda: primero se devuelven los S/ 3 que gastó al final; los ${B5[1].noGasto} son la mitad que no gastó</span></div>
-     <div class="eq">${B5[0].queda} + ${B5[0].extra} = ${B5[0].noGasto} → ${B5[0].noGasto} × ${B5[0].veces} = ${x_(B5[0].antes)}<span class="note">1.ª tienda: lo mismo, con los S/ 5</span></div></div>
-   <p>«Gastó la mitad y S/ 5 más» son dos operaciones seguidas: primero quita la mitad y después quita 5. De vuelta, se deshacen al revés: primero se devuelven los 5 y después se dobla. En la barra se ve: lo que le quedó más los 5 es la mitad que no gastó.</p>${FUENTE}</div>` },
+     <div class="eq">${B5[1].queda} + ${B5[1].extra} = ${B5[1].noGasto} → ${B5[1].noGasto} × ${B5[1].veces} = ${B5[1].antes}<span class="note">2.ª tienda: primero se devuelven los ${soles(B5[1].extra)} que gastó al final; los ${B5[1].noGasto} son la mitad que no gastó</span></div>
+     <div class="eq">${B5[0].queda} + ${B5[0].extra} = ${B5[0].noGasto} → ${B5[0].noGasto} × ${B5[0].veces} = ${x_(B5[0].antes)}<span class="note">1.ª tienda: lo mismo, con los ${soles(B5[0].extra)}</span></div></div>
+   <p>«Gastó ${B5[0].parteTexto} y ${soles(B5[0].extra)} más» son dos operaciones seguidas: primero quita ${B5[0].parteTexto} y después quita ${B5[0].extra}. De vuelta, se deshacen al revés: primero se devuelven los ${B5[0].extra} y después se multiplica por ${B5[0].veces}. En la barra se ve: lo que le quedó más los ${B5[0].extra} es la mitad que no gastó.</p>${FUENTE}</div>` },
  { k:'Paso 6', t:'Predice: el triángulo de fichas', gate:P_6,
    prep:() => { const ya = !!S.pred[P_6.id];
      E.config(ya ? { modo:'tablero', st:fin6(), ley:LEY6, desc:DESC6, lect:LECT6 }
-       : { modo:'tablero', st:{ tipo:'triangulo3', col:Array(6).fill(null), nums:N6 }, ley:[['s', 'suma de cada lado']], desc:'Un triángulo con seis círculos vacíos, tres en las esquinas y tres en el medio de los lados, y debajo las fichas del 1 al 6.', lect:[() => ['ink', 'fichas', '1 a 6']] }); },
+       : { modo:'tablero', st:{ tipo:'triangulo3', col:Array(6).fill(null), nums:N6 }, ley:[['s', 'suma de cada lado']], desc:`Un triángulo con seis círculos vacíos, tres en las esquinas y tres en el medio de los lados, y debajo las fichas del ${N6[0]} al ${N6[N6.length - 1]}.`, lect:[() => ['ink', 'fichas', '1 a 6']] }); },
    anima:fin => {
      E.config({ modo:'tablero', st:{ tipo:'triangulo3', col:Array(6).fill(null), nums:N6 }, ley:LEY6, desc:DESC6, lect:[() => ['ink', 'fichas', '1 a 6']] });
      const orden = [0, 1, 2, 3, 4, 5], est = orden.map(i => st => { st.col[i] = P6.muestra[i]; });
      E.secuencia(est.concat([{ sumas:true }, fin6()]), est.map(() => 380).concat([1300, 0]), () => { E.lect = LECT6; E.avisar(); fin(); }); },
-   body:() => `<p class="problem">Las fichas del 1 al 6 se colocan en los seis círculos del triángulo, una en cada uno, de modo que los tres números de cada lado sumen lo mismo. ¿Cuál es la menor ${s_('suma por lado')} que se puede lograr?</p>${opcionesHTML(P_6.opts, 'fb')}
+   body:() => `<p class="problem">Las fichas del ${N6[0]} al ${N6[N6.length - 1]} se colocan en los seis círculos del triángulo (tres en las esquinas y tres en el medio de los lados), una en cada uno, de modo que los tres números de cada lado sumen lo mismo. ¿Cuál es la menor ${s_('suma por lado')} que se puede lograr?</p>${opcionesHTML(P_6.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
-     <div class="eq">3 × ${s_('suma')} = (1 + 2 + … + 6) + ${v_('esquinas')} = 21 + ${v_('esquinas')}<span class="note">al sumar los tres lados, cada esquina aparece dos veces</span></div>
-     <div class="eq">3 × ${s_(P6.respuesta)} = 21 + ${v_(P6.vertices.join(' + '))}<span class="note">la menor suma: las tres fichas más chicas en las esquinas</span></div></div>
-   <p>El motor probó las 720 formas de poner las seis fichas: las sumas posibles son ${P6.sumas.join(', ')}. Con ${P6.respuesta} hay ${P6.soluciones} formas, que son giros y reflejos de una sola.</p>${FUENTE}</div>` },
+     <div class="eq">${P6.lados} × ${s_('suma')} = (${N6[0]} + ${N6[1]} + … + ${N6[N6.length - 1]}) + ${v_('esquinas')} = ${P6.total} + ${v_('esquinas')}<span class="note">al sumar los tres lados, cada esquina aparece dos veces</span></div>
+     <div class="eq">${P6.lados} × ${s_(P6.respuesta)} = ${P6.total} + ${v_(P6.vertices.join(' + '))}<span class="note">la menor suma: las tres fichas más chicas en las esquinas</span></div></div>
+   <p>El motor probó las ${M.milesTexto(P6.formas)} formas de poner las seis fichas: las sumas posibles son ${P6.sumas.join(', ')}. Con ${P6.respuesta} hay ${P6.soluciones} formas, que son giros y reflejos de una sola.</p>${FUENTE}</div>` },
  { k:'Paso 7', t:'Predice: el centro del cuadrado', gate:P_7,
    prep:() => { const ya = !!S.pred[P_7.id];
      E.config(ya ? { modo:'tablero', st:fin7(), ley:LEY7, desc:DESC7, lect:LECT7 }
-       : { modo:'tablero', st:{ tipo:'cuadrado3', col:Array(9).fill(null), nums:N7, pregunta:[4] }, ley:[['s', 'suma de cada línea']], desc:'Un cuadrado de 3 por 3 con nueve casillas vacías; la del centro tiene un signo de pregunta. Debajo, las fichas del 1 al 9.', lect:[() => ['ink', 'fichas', '1 a 9']] }); },
+       : { modo:'tablero', st:{ tipo:'cuadrado3', col:Array(9).fill(null), nums:N7, pregunta:[4] }, ley:[['s', 'suma de cada línea']], desc:`Un cuadrado de 3 por 3 con nueve casillas vacías; la del centro tiene un signo de pregunta. Debajo, las fichas del ${N7[0]} al ${N7[N7.length - 1]}.`, lect:[() => ['ink', 'fichas', '1 a 9']] }); },
    anima:fin => {
      E.config({ modo:'tablero', st:{ tipo:'cuadrado3', col:Array(9).fill(null), nums:N7 }, ley:LEY7, desc:DESC7, lect:[() => ['ink', 'fichas', '1 a 9']] });
      const est = [0, 1, 2, 3, 5, 6, 7, 8, 4].map(i => st => { st.col[i] = P7.muestra[i]; });
      E.secuencia(est.concat([{ sumas:true }, { marcar:[4], resaltar:[1, 4, 6, 7] }, fin7()]), est.map(() => 320).concat([1300, 1300, 0]), () => { E.lect = LECT7; E.avisar(); fin(); }); },
-   body:() => `<p class="problem">Las fichas del 1 al 9 se colocan en un cuadrado de 3 × 3, una en cada casilla, de modo que cada fila, cada columna y cada una de las dos diagonales sumen lo mismo. ¿Qué ficha puede ir en la casilla del centro?</p>${opcionesHTML(P_7.opts, 'fb')}
+   body:() => `<p class="problem">Las fichas del ${N7[0]} al ${N7[N7.length - 1]} se colocan en un cuadrado de 3 × 3, una en cada casilla, de modo que cada fila, cada columna y cada una de las dos diagonales sumen lo mismo. ¿Qué ficha puede ir en la casilla del centro?</p>${opcionesHTML(P_7.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
-     <div class="eq">3 × ${s_('suma')} = 1 + 2 + … + 9 = 45, así que ${s_('suma')} = ${s_(P7.constante)}<span class="note">las tres filas usan las nueve fichas una vez</span></div>
-     <div class="eq">4 × ${s_(P7.constante)} = 45 + 3 × ${v_('centro')}, así que ${v_('centro')} = ${v_(P7.cuenta.centro)}<span class="note">las cuatro líneas que pasan por el centro usan las nueve fichas, y el centro cuatro veces</span></div></div>
-   <p>El motor probó las 362 880 formas de poner las nueve fichas: hay ${P7.soluciones} cuadrados mágicos, y en todos el centro es ${P7.cuenta.centro}.</p>${FUENTE}</div>` },
+     <div class="eq">${P7.filas} × ${s_('suma')} = ${N7[0]} + ${N7[1]} + … + ${N7[N7.length - 1]} = ${P7.total}, así que ${s_('suma')} = ${s_(P7.constante)}<span class="note">las tres filas usan las nueve fichas una vez</span></div>
+     <div class="eq">${P7.porElCentro} × ${s_(P7.constante)} = ${P7.total} + ${P7.cuenta.deMas} × ${v_('centro')}, así que ${v_('centro')} = ${v_(P7.cuenta.centro)}<span class="note">las cuatro líneas que pasan por el centro usan las nueve fichas, y el centro cuatro veces</span></div></div>
+   <p>El motor probó las ${M.milesTexto(P7.formas)} formas de poner las nueve fichas: hay ${P7.soluciones} cuadrados mágicos, y en todos el centro es ${P7.cuenta.centro}.</p>${FUENTE}</div>` },
  { k:'Paso 8', t:'Explora: el tablero de fichas', explora:true,
    prep:() => prep8(),
    body:() => `<p class="problem">Arma tu propio tablero: arrastra las fichas a los círculos (o elige la casilla y la ficha con los botones). Cada línea completa muestra su suma; cuando todas sumen lo mismo, el motor te dice cuántas formas hay.</p>
@@ -976,7 +986,7 @@ function prediccion(s){
   const pintar = () => {
     const p = S.pred[P.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
-    const f = $('fb'); f.textContent = quitarSimple(fb(p, P.ok, P.fb[p])); f.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    const f = $('fb'); ponerFb(f, fb(p, P.ok, P.fb[p])); f.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
     $('tras').hidden = false;
   };
   const t0 = Date.now();
@@ -993,7 +1003,6 @@ function prediccion(s){
   }));
   pintar();
 }
-const quitarSimple = t => String(t).replace(/<[^>]+>/g, '');
 
 $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
@@ -1010,118 +1019,120 @@ const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2');
 const g_ = t => V('g', t), c_ = t => V('c', t), t_ = t => V('t', t), f_ = t => V('f', t), d_ = t => V('d', t), x_ = t => V('x', t), y_ = t => V('y', t), s_ = t => V('s', t);
 const S = { k:0, pred:{}, t0:Date.now() };
 
-const Q1 = M.corralAlReves(20, 64);
+const Q1 = M.corralAlReves(20, 56);
 const CQ2 = [{ op:'mas', k:6 }, { op:'por', k:2 }], Q2 = M.ordenCambiado(CQ2, 30, 0);
 const Q3 = M.corral(15, 45);
-const COL4 = M.distribuir('triangulo3', [1, 2, 3, 4, 5, 6]).detalle.find(d => d.suma === 10).muestra, Q4 = M.subirFichas('triangulo3', COL4, 1);
-const Q5 = M.cuadradosDistintos();
-console.assert(Q1.respuesta === 12 && Object.keys(Q1.errores).length === 3 && Q2.respuesta === 12 && Q2.antes === 9 && Object.keys(Q2.errores).length === 3
-  && !Q3.posible && Q3.vecinos.length === 2 && Q3.cambios.length === 9 && Q4.respuesta === 13 && Object.keys(Q4.errores).length === 3 && Q5.respuesta === 1 && Object.keys(Q5.errores).length === 3, 'qué pasa si: revisar las opciones');
+const N4 = [1, 2, 3, 4, 5, 6], COL4 = M.distribuir('triangulo3', N4).detalle.find(d => d.suma === 10).muestra, Q4 = M.subirFichas('triangulo3', COL4, 1);
+const N4b = Q4.colocacion.slice().sort((a, b) => a - b);
+const N5 = [2, 3, 4, 5, 6, 7, 8, 9, 10], Q5 = M.cuadradosDistintos(N5);
+console.assert(Q1.respuesta === 8 && Object.keys(Q1.errores).length === 3 && Q2.respuesta === 12 && Q2.antes === 9 && Object.keys(Q2.errores).length === 3
+  && !Q3.posible && Q3.vecinos.length === 2 && Q3.cambios.length === 9 && Q4.respuesta === 13 && Object.keys(Q4.errores).length === 3
+  && Q5.respuesta === 1 && Q5.centro[0] === 6 && Object.keys(Q5.errores).length === 3, 'qué pasa si: revisar las opciones');
 
 const conejos = n => `${n} ${M.pl(n, 'conejo', 'conejos')}`;
 const LEYC = [['g', 'gallina: 2 patas'], ['c', 'conejo: 4 patas'], ['t', 'patas en total']];
 const patas = () => ['t', 'patas ahora', String(M.contarCorral(E.st.fichas).patas)];
+const [Q2a, Q2b] = Q2.vuelta, [V3a, V3b] = Q3.vecinos;
 const EXPS = [
   { id:'suponer-al-reves', corto:'Suponer al revés',
-    q:`En un corral hay 20 animales entre ${g_('gallinas')} y ${c_('conejos')}, con ${t_('64 patas')} en total. Sofía empieza suponiendo que los 20 son conejos. ¿Cuántos conejos le sale que hay?`,
+    q:`En un corral hay ${Q1.animales} animales entre ${g_('gallinas')} y ${c_('conejos')}, con ${t_(Q1.patas + ' patas')} en total. Sofía empieza suponiendo que los ${Q1.animales} son conejos. ¿Cuántos conejos le sale que hay?`,
     opts:[['a', conejos(Q1.errores.leeElCocienteComoConejos), 'lee-el-cociente-como-el-tipo-supuesto', 'hipotesis'], ['b', conejos(Q1.errores.sobranSinDividir), 'da-lo-que-sobra-sin-dividir', 'hipotesis'],
           ['c', conejos(Q1.respuesta)], ['d', conejos(Q1.errores.divideEntreElSupuesto), 'divide-entre-el-valor-del-tipo-supuesto', 'hipotesis']],
     ok:'c',
-    fb:{ a:`${Q1.gallinas} es el cociente ${Q1.sobran} ÷ 2, pero cuenta los cambios de conejo por gallina: son las gallinas. Conejos: 20 − ${Q1.gallinas} = ${Q1.respuesta}.`,
-      b:`${Q1.sobran} son las patas que sobran si los 20 fueran conejos (80 − 64), no animales. Cada conejo que se cambia por una gallina quita 2 patas: ${Q1.sobran} ÷ 2 = ${Q1.gallinas} gallinas y ${Q1.respuesta} conejos.`,
-      d:`${Q1.sobran} ÷ 4 = ${Q1.errores.divideEntreElSupuesto} toma las 4 patas del conejo, pero en su lugar entra una gallina con 2: cada cambio quita 4 − 2 = 2. Son ${Q1.sobran} ÷ 2 = ${Q1.gallinas} gallinas y ${Q1.respuesta} conejos.` },
+    fb:{ a:`${Q1.gallinas} es el cociente ${Q1.sobran} ÷ ${Q1.diferencia}, pero cuenta los cambios de conejo por gallina: son las gallinas. Conejos: ${Q1.animales} − ${Q1.gallinas} = ${Q1.respuesta}.`,
+      b:`${Q1.sobran} son las patas que sobran si los ${Q1.animales} fueran conejos (${Q1.supuestoTotal} − ${Q1.patas}), no animales. Cada conejo que se cambia por una gallina quita ${Q1.diferencia} patas: ${Q1.sobran} ÷ ${Q1.diferencia} = ${Q1.gallinas} gallinas y ${Q1.respuesta} conejos.`,
+      d:`${Q1.sobran} ÷ ${Q1.vSupuesto} = ${Q1.errores.divideEntreElSupuesto} toma las ${Q1.vSupuesto} patas del conejo, pero en su lugar entra una gallina con ${Q1.vOtro}: cada cambio quita ${Q1.vSupuesto} − ${Q1.vOtro} = ${Q1.diferencia}. Son ${Q1.sobran} ÷ ${Q1.diferencia} = ${Q1.gallinas} gallinas y ${Q1.respuesta} conejos.` },
     antes:ya => E.config(ya ? { modo:'corral', st:finQ1(), ley:LEYC, desc:DESCQ1, lect:LECTQ1 }
-      : { modo:'corral', st:{ fichas:animales(20, '?'), una:true }, ley:LEYC, desc:'Un corral con 20 animales que todavía no se sabe qué son.', lect:[() => ['ink', 'animales', '20'], () => ['t', 'patas', '64']] }),
-    despues:() => { const fs = animales(20, 'c');
-      E.config({ modo:'corral', st:{ fichas:fs, pie:[['20 × 4 = ', 'ink'], [String(Q1.supuestoTotal), 't'], [' patas: sobran ', 'ink'], [String(Q1.sobran), 'f']] }, ley:LEYC, desc:DESCQ1, lect:[patas] });
-      const est = Array.from({ length:Q1.gallinas }, (_, k) => st => { st.fichas[k].tipo = 'g'; st.nuevo = k; st.pie = [[`cambio ${k + 1}: `, 'ink'], ['− 2', 'd'], [' → ', 'ink'], [`${Q1.cambios[k + 1]} patas`, 't']]; });
+      : { modo:'corral', st:{ fichas:animales(Q1.animales, '?'), una:true }, ley:LEYC, desc:`Un corral con ${Q1.animales} animales que todavía no se sabe qué son.`, lect:[() => ['ink', 'animales', String(Q1.animales)], () => ['t', 'patas', String(Q1.patas)]] }),
+    despues:() => { const fs = animales(Q1.animales, 'c');
+      E.config({ modo:'corral', st:{ fichas:fs, pie:[[`${Q1.animales} × ${Q1.vSupuesto} = `, 'ink'], [String(Q1.supuestoTotal), 't'], [' patas: sobran ', 'ink'], [String(Q1.sobran), 'f']] }, ley:LEYC, desc:DESCQ1, lect:[patas] });
+      const est = Array.from({ length:Q1.gallinas }, (_, k) => st => { st.fichas[k].tipo = 'g'; st.nuevo = k; st.pie = [[`cambio ${k + 1}: `, 'ink'], [`− ${Q1.diferencia}`, 'd'], [' → ', 'ink'], [`${Q1.cambios[k + 1]} patas`, 't']]; });
       E.secuencia([{}].concat(est, [finQ1()]), [1500].concat(est.map(() => 450), [0]), () => { E.lect = LECTQ1; E.avisar(); }); },
-    exp:() => `<div class="eqs"><div class="eq">20 × 4 = ${t_(Q1.supuestoTotal)} → sobran ${f_(Q1.sobran)} → ${f_(Q1.sobran)} ÷ ${d_(2)} = ${g_(Q1.gallinas)} gallinas<span class="note">suponiendo que todos son conejos, el cociente da las gallinas</span></div>
-      <div class="eq">20 − ${Q1.gallinas} = ${c_(Q1.respuesta)} conejos<span class="note">lo mismo que suponiendo que todos son gallinas</span></div></div>
+    exp:() => `<div class="eqs"><div class="eq">${Q1.animales} × ${Q1.vSupuesto} = ${t_(Q1.supuestoTotal)} → sobran ${f_(Q1.sobran)} → ${f_(Q1.sobran)} ÷ ${d_(Q1.diferencia)} = ${g_(Q1.gallinas)} gallinas<span class="note">suponiendo que todos son conejos, el cociente da las gallinas</span></div>
+      <div class="eq">${Q1.animales} − ${Q1.gallinas} = ${c_(Q1.respuesta)} conejos<span class="note">lo mismo que sale suponiendo que todos son gallinas</span></div></div>
       <p>Se puede suponer cualquiera de los dos tipos: si se supone el que tiene menos patas, faltan; si se supone el que tiene más, sobran. En los dos casos el cociente cuenta los animales del tipo que <b>no</b> se supuso.</p>` },
 
   { id:'otro-orden', corto:'Otro orden',
-    q:`Pedro pensó un número, le sumó 6 y multiplicó el resultado por 2: le salió 30, así que pensó el ${Q2.antes}. Si en cambio primero lo multiplica por 2 y después le suma 6, y otra vez le sale ${y_('30')}, ¿qué ${x_('número')} pensó?`,
+    q:`Pedro pensó un número, le sumó ${CQ2[0].k} y multiplicó el resultado por ${CQ2[1].k}. Lucía pensó otro ${x_('número')}: primero lo multiplicó por ${CQ2[1].k} y después le sumó ${CQ2[0].k}. A los dos les salió ${y_(Q2a.de)}. ¿Qué número pensó Lucía?`,
     opts:[['a', String(Q2.errores.elDeAntes), 'el-orden-no-importa', 'hipotesis'], ['b', String(Q2.errores.haciaAdelante), 'aplica-las-operaciones-hacia-adelante', 'hipotesis'],
           ['c', String(Q2.errores.ordenSinInvertir), 'recorre-hacia-atras-sin-invertir', 'hipotesis'], ['d', String(Q2.respuesta)]],
     ok:'d',
-    fb:{ a:`${Q2.antes} era con la suma primero. Ahora lo último que hizo fue sumar 6, y eso se deshace primero: 30 − 6 = 24 y 24 ÷ 2 = ${Q2.respuesta}.`,
-      b:`${Q2.errores.haciaAdelante} = 30 × 2 + 6 hace las operaciones de ida con el 30, pero el 30 es el final. De vuelta: 30 − 6 = 24 y 24 ÷ 2 = ${Q2.respuesta}.`,
-      c:`${Q2.errores.ordenSinInvertir} = (30 + 6) × 2 recorre la cadena desde el final, pero sin cambiar las operaciones. Cada una se deshace con su contraria: 30 − 6 = 24 y 24 ÷ 2 = ${Q2.respuesta}.` },
+    fb:{ a:`${Q2.antes} es el número de Pedro, que sumó primero: ${Q2.vueltaAntesTexto}. Lucía sumó al final, y eso se deshace primero: ${Q2.vueltaTexto}.`,
+      b:`${Q2.errores.haciaAdelante} sale de hacer las operaciones de ida con el ${Q2a.de} (${Q2.trazas.haciaAdelante}), pero el ${Q2a.de} es el final. De vuelta: ${Q2.vueltaTexto}.`,
+      c:`${Q2.errores.ordenSinInvertir} sale de recorrer la cadena desde el final, pero sin cambiar las operaciones: ${Q2.trazas.ordenSinInvertir}. Cada una se deshace con su contraria: ${Q2.vueltaTexto}.` },
     antes:ya => E.config(ya ? { modo:'tira', st:finQ2(), ley:LEYQ2, desc:DESCQ2, lect:LECTQ2 }
-      : { modo:'tira', st:{ ops:Q2.cadena.map(t => [t]), valores:[null, null, 30], vuelta:[], vueltaK:0 }, ley:LEYQ2.slice(0, 2), desc:'Una tira de tres cajas: un signo de pregunta, por 2, otra caja vacía, más 6, y 30.', lect:[() => ['y', 'le salió', '30']] }),
-    despues:() => { E.config({ modo:'tira', st:{ ops:Q2.cadena.map(t => [t]), valores:[null, null, 30], vuelta:Q2.vuelta.slice().reverse().map(v => v.texto), vueltaK:0, resalta:2 }, ley:LEYQ2, desc:DESCQ2, lect:[() => ['y', 'le salió', '30']] });
+      : { modo:'tira', st:{ ops:Q2.cadena.map(t => [t]), valores:[null, null, Q2a.de], vuelta:[], vueltaK:0 }, ley:LEYQ2.slice(0, 2), desc:quitar(`La tira de Lucía, de tres cajas: un signo de pregunta, ${Q2.cadena[0]}, otra caja vacía, ${Q2.cadena[1]}, y ${Q2a.de}.`), lect:[() => ['y', 'le salió', String(Q2a.de)]] }),
+    despues:() => { E.config({ modo:'tira', st:{ ops:Q2.cadena.map(t => [t]), valores:[null, null, Q2a.de], vuelta:Q2.vuelta.slice().reverse().map(v => v.texto), vueltaK:0, resalta:2 }, ley:LEYQ2, desc:DESCQ2, lect:[() => ['y', 'le salió', String(Q2a.de)]] });
       const est = Q2.vuelta.map((v, j) => st => { st.vueltaK = j + 1; st.valores[1 - j] = v.a; st.resalta = 1 - j; st.pie = [[`${v.de} ${v.texto} = `, 'ink'], [String(v.a), j === 1 ? 'x' : 'ink']]; });
       E.secuencia([{}].concat(est, [finQ2()]), [500].concat(est.map(() => 1300), [0]), () => { E.lect = LECTQ2; E.avisar(); }); },
-    exp:() => `<div class="eqs"><div class="eq">+ 6, × 2: 30 ÷ 2 = 15 → 15 − 6 = ${Q2.antes}<span class="note">el orden de antes</span></div>
-      <div class="eq">× 2, + 6: 30 − 6 = 24 → 24 ÷ 2 = ${x_(Q2.respuesta)}<span class="note">el orden nuevo</span></div></div>
-      <p>Con las mismas operaciones en otro orden, el número de partida cambia: sumar 6 antes de doblar agrega 12 al final, y después de doblar solo 6. Por eso, en el cangrejo, el orden de vuelta es justo el contrario del de ida.</p>` },
+    exp:() => `<div class="eqs"><div class="eq">Pedro (${Q2.cadenaAntes.join(', ')}): ${Q2.vueltaAntesTexto}<span class="note">sumó primero</span></div>
+      <div class="eq">Lucía (${Q2.cadena.join(', ')}): ${Q2.vueltaTexto}<span class="note">sumó al final</span></div></div>
+      <p>Con las mismas operaciones en otro orden, el número de partida cambia: lo que se suma antes de multiplicar también queda multiplicado. Por eso, en el cangrejo, el orden de vuelta es justo el contrario del de ida.</p>` },
 
-  { id:'patas-impares', corto:'Patas impares',
-    q:`En un corral hay 15 animales entre ${g_('gallinas')} y ${c_('conejos')}, y alguien dice que contó ${t_('45 patas')}. ¿Cuántos conejos hay?`,
+  { id:'patas-impares', corto:'Las 45 patas',
+    q:`En un corral hay ${Q3.animales} animales entre ${g_('gallinas')} y ${c_('conejos')}, y alguien dice que contó ${t_(Q3.patas + ' patas')}. ¿Cuántos conejos hay?`,
     opts:[['a', conejos(Q3.errores.trunca), 'redondea-hacia-abajo', 'hipotesis'], ['b', conejos(Q3.errores.redondea), 'redondea-hacia-arriba', 'hipotesis'],
-          ['c', 'Ningún reparto da 45 patas'], ['d', 'Faltan datos para saberlo', 'cree-que-faltan-datos', 'hipotesis']],
+          ['c', `Ningún reparto da ${Q3.patas} patas`], ['d', 'Faltan datos para saberlo', 'cree-que-faltan-datos', 'hipotesis']],
     ok:'c',
-    fb:{ a:`Con ${Q3.vecinos[0].conejos} conejos y ${Q3.vecinos[0].gallinas} gallinas hay ${Q3.vecinos[0].patas} patas, no 45. Con 15 gallinas hay 30 patas y cada cambio suma 2: el total siempre es par. Ningún reparto da 45.`,
-      b:`Con ${Q3.vecinos[1].conejos} conejos y ${Q3.vecinos[1].gallinas} gallinas hay ${Q3.vecinos[1].patas} patas, no 45. Con 15 gallinas hay 30 patas y cada cambio suma 2: el total siempre es par. Ningún reparto da 45.`,
-      d:'No faltan datos: con las cabezas y las patas basta. Pero gallinas y conejos tienen un número par de patas, así que el total siempre es par: 45 no puede salir. Ningún reparto cumple.' },
+    fb:{ a:`Con ${V3a.conejos} conejos y ${V3a.gallinas} gallinas hay ${V3a.patas} patas, no ${Q3.patas}. Con ${Q3.animales} gallinas hay ${Q3.supuestoTotal} patas y cada cambio suma ${Q3.diferencia}: el total siempre es par. Ningún reparto da ${Q3.patas}.`,
+      b:`Con ${V3b.conejos} conejos y ${V3b.gallinas} gallinas hay ${V3b.patas} patas, no ${Q3.patas}. Con ${Q3.animales} gallinas hay ${Q3.supuestoTotal} patas y cada cambio suma ${Q3.diferencia}: el total siempre es par. Ningún reparto da ${Q3.patas}.`,
+      d:`No faltan datos: con las cabezas y las patas basta. Pero gallinas y conejos tienen un número par de patas, así que el total siempre es par: ${Q3.patas} no puede salir. Ningún reparto cumple.` },
     antes:ya => E.config(ya ? { modo:'corral', st:finQ3(), ley:LEYC, desc:DESCQ3, lect:LECTQ3 }
-      : { modo:'corral', st:{ fichas:animales(15, '?'), una:true }, ley:LEYC, desc:'Un corral con 15 animales que todavía no se sabe qué son.', lect:[() => ['ink', 'animales', '15'], () => ['t', 'patas que dicen', '45']] }),
-    despues:() => { const fs = animales(15, 'g');
-      E.config({ modo:'corral', st:{ fichas:fs, pie:[['15 × 2 = ', 'ink'], [String(Q3.supuestoTotal), 't'], [' patas: faltan ', 'ink'], [String(Q3.faltan), 'f']] }, ley:LEYC, desc:DESCQ3, lect:[patas] });
-      const est = Array.from({ length:V3b.conejos }, (_, k) => st => { const i = 14 - k; st.fichas[i].tipo = 'c'; st.nuevo = i; st.pie = [[`cambio ${k + 1}: `, 'ink'], ['+ 2', 'd'], [' → ', 'ink'], [`${Q3.cambios[k + 1]} patas`, 't']]; });
+      : { modo:'corral', st:{ fichas:animales(Q3.animales, '?'), una:true }, ley:LEYC, desc:`Un corral con ${Q3.animales} animales que todavía no se sabe qué son.`, lect:[() => ['ink', 'animales', String(Q3.animales)], () => ['t', 'patas que dicen', String(Q3.patas)]] }),
+    despues:() => { const fs = animales(Q3.animales, 'g');
+      E.config({ modo:'corral', st:{ fichas:fs, pie:[[`${Q3.animales} × ${Q3.vSupuesto} = `, 'ink'], [String(Q3.supuestoTotal), 't'], [' patas: faltan ', 'ink'], [String(Q3.faltan), 'f']] }, ley:LEYC, desc:DESCQ3, lect:[patas] });
+      const est = Array.from({ length:V3b.conejos }, (_, k) => st => { const i = Q3.animales - 1 - k; st.fichas[i].tipo = 'c'; st.nuevo = i; st.pie = [[`cambio ${k + 1}: `, 'ink'], [`+ ${Q3.diferencia}`, 'd'], [' → ', 'ink'], [`${Q3.cambios[k + 1]} patas`, 't']]; });
       E.secuencia([{}].concat(est, [finQ3()]), [1500].concat(est.map(() => 450), [0]), () => { E.lect = LECTQ3; E.avisar(); }); },
-    exp:() => `<div class="eqs"><div class="eq">45 − ${Q3.supuestoTotal} = ${f_(Q3.faltan)} y ${f_(Q3.faltan)} ÷ ${d_(2)} = ${Q3.cociente}<span class="note">la falsa suposición da un número que no es entero: no hay reparto</span></div></div>
-      <p>${Q3.razon} Con 2 y 4 patas, cualquier corral tiene un número par de patas.</p>` },
+    exp:() => `<div class="eqs"><div class="eq">${Q3.patas} − ${Q3.supuestoTotal} = ${f_(Q3.faltan)} y ${f_(Q3.faltan)} ÷ ${d_(Q3.diferencia)} = ${Q3.cocienteDecimal}: no es entero, no hay reparto<span class="note">la falsa suposición pide un número de cambios que no existe</span></div></div>
+      <p>${Q3.razon} Con ${Q3.vSupuesto} y ${Q3.vOtro} patas, cualquier corral tiene un número par de patas.</p>` },
 
-  { id:'subir-las-fichas', corto:'Fichas del 2 al 7',
-    q:`En el triángulo de la escena, las fichas del 1 al 6 están puestas de modo que cada lado suma ${s_(Q4.antes)}. Si a cada ficha se le suma 1 (quedan las fichas del 2 al 7, cada una en el lugar de la que reemplaza), ¿cuánto suma ahora cada lado?`,
+  { id:'subir-las-fichas', corto:`Fichas del ${N4b[0]} al ${N4b[N4b.length - 1]}`,
+    q:`En el triángulo de la escena, las fichas del ${N4[0]} al ${N4[N4.length - 1]} están puestas de modo que cada lado suma ${s_(Q4.antes)}. Si a cada ficha se le suma ${Q4.delta} (quedan las fichas del ${N4b[0]} al ${N4b[N4b.length - 1]}, cada una en el lugar de la que reemplaza), ¿cuánto suma ahora cada lado?`,
     opts:[['a', String(Q4.errores.sinCambio), 'la-suma-no-cambia', 'hipotesis'], ['b', String(Q4.errores.subeUnaVez), 'sube-una-vez-por-lado', 'hipotesis'],
           ['c', String(Q4.respuesta)], ['d', String(Q4.errores.porCadaFicha), 'sube-por-cada-ficha-del-tablero', 'hipotesis']],
     ok:'c',
-    fb:{ a:`Cada ficha sube 1, así que cada lado también cambia: tiene tres fichas, y sube 3. ${Q4.antes} + 3 = ${Q4.respuesta}.`,
-      b:`Cada lado tiene tres fichas, y cada una subió 1: el lado sube 1 + 1 + 1 = 3, no 1. ${Q4.antes} + 3 = ${Q4.respuesta}.`,
-      d:`${Q4.errores.porCadaFicha} = ${Q4.antes} + 6 suma 1 por cada una de las seis fichas del tablero, pero cada lado tiene solo tres. ${Q4.antes} + 3 = ${Q4.respuesta}.` },
+    fb:{ a:`Cada ficha sube ${Q4.delta}, así que cada lado también cambia: tiene ${Q4.porLinea} fichas, y sube ${Q4.sube}. ${Q4.antes} + ${Q4.sube} = ${Q4.respuesta}.`,
+      b:`Cada lado tiene ${Q4.porLinea} fichas, y cada una subió ${Q4.delta}: el lado sube ${Array(Q4.porLinea).fill(Q4.delta).join(' + ')} = ${Q4.sube}, no ${Q4.delta}. ${Q4.antes} + ${Q4.sube} = ${Q4.respuesta}.`,
+      d:`${Q4.errores.porCadaFicha} sube ${Q4.delta} por cada una de las ${Q4.casillas} fichas del tablero, pero cada lado tiene solo ${Q4.porLinea}. ${Q4.antes} + ${Q4.sube} = ${Q4.respuesta}.` },
     antes:ya => E.config(ya ? { modo:'tablero', st:finQ4(), ley:LEYQ4, desc:DESCQ4, lect:LECTQ4 }
-      : { modo:'tablero', st:{ tipo:'triangulo3', col:COL4.slice(), nums:[1, 2, 3, 4, 5, 6], sumas:true, sinBanca:true }, ley:LEYQ4, desc:`${textoTablero('triangulo3', COL4)}`, lect:[() => ['s', 'cada lado', String(Q4.antes)]] }),
-    despues:() => { E.config({ modo:'tablero', st:{ tipo:'triangulo3', col:COL4.slice(), nums:[1, 2, 3, 4, 5, 6], sumas:false, sinBanca:true }, ley:LEYQ4, desc:DESCQ4, lect:[] });
-      E.secuencia([{}, st => { st.col = Q4.colocacion.slice(); st.nums = [2, 3, 4, 5, 6, 7]; st.pie = [['cada ficha + 1', 'ink']]; }, finQ4()], [700, 1400, 0], () => { E.lect = LECTQ4; E.avisar(); }); },
-    exp:() => `<div class="eqs"><div class="eq">${s_(Q4.antes)} + 1 + 1 + 1 = ${s_(Q4.respuesta)}<span class="note">cada lado tiene tres fichas, y cada una subió 1</span></div></div>
-      <p>Si a todas las fichas se les suma lo mismo, cada línea sube eso por cada ficha que tiene. Por eso con las fichas del 2 al 7 todas las sumas posibles del triángulo son 3 más que con las del 1 al 6.</p>` },
+      : { modo:'tablero', st:{ tipo:'triangulo3', col:COL4.slice(), nums:N4, sumas:true, sinBanca:true }, ley:LEYQ4, desc:`${textoTablero('triangulo3', COL4)}`, lect:[() => ['s', 'cada lado', String(Q4.antes)]] }),
+    despues:() => { E.config({ modo:'tablero', st:{ tipo:'triangulo3', col:COL4.slice(), nums:N4, sumas:false, sinBanca:true }, ley:LEYQ4, desc:DESCQ4, lect:[] });
+      E.secuencia([{}, st => { st.col = Q4.colocacion.slice(); st.nums = N4b; st.pie = [[`cada ficha + ${Q4.delta}`, 'ink']]; }, finQ4()], [700, 1400, 0], () => { E.lect = LECTQ4; E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">${s_(Q4.antes)} + ${Array(Q4.porLinea).fill(Q4.delta).join(' + ')} = ${s_(Q4.respuesta)}<span class="note">cada lado tiene ${Q4.porLinea} fichas, y cada una subió ${Q4.delta}</span></div></div>
+      <p>Si a todas las fichas se les suma lo mismo, cada línea sube eso por cada ficha que tiene. Por eso con las fichas del ${N4b[0]} al ${N4b[N4b.length - 1]} todas las sumas posibles del triángulo son ${Q4.sube} más que con las del ${N4[0]} al ${N4[N4.length - 1]}.</p>` },
 
   { id:'girar-el-cuadrado', corto:'Girar y reflejar',
-    q:`El motor probó todas las formas de poner las fichas del 1 al 9 en un cuadrado de 3 × 3 y encontró ${Q5.soluciones} cuadrados mágicos (filas, columnas y diagonales con la misma suma). Si dos cuadrados cuentan como el mismo cuando uno sale del otro al girar o reflejar el tablero, ¿cuántos cuadrados mágicos distintos hay?`,
+    q:`El motor probó las ${M.milesTexto(Q5.formas)} formas de poner las fichas del ${N5[0]} al ${N5[N5.length - 1]} en un cuadrado de 3 × 3 y encontró ${Q5.soluciones} cuadrados mágicos (filas, columnas y diagonales con la misma suma). Si dos cuadrados cuentan como el mismo cuando uno sale del otro al girar o reflejar el tablero, ¿cuántos cuadrados mágicos distintos hay?`,
     opts:[['a', String(Q5.errores.cuentaTodos), 'cuenta-giros-y-reflejos-como-distintos', 'hipotesis'], ['b', String(Q5.respuesta)],
           ['c', String(Q5.errores.soloGiros), 'solo-quita-los-giros', 'hipotesis'], ['d', String(Q5.errores.soloUnReflejo), 'solo-quita-un-reflejo', 'hipotesis']],
     ok:'b',
-    fb:{ a:`Los ${Q5.soluciones} son el mismo cuadrado visto de ${Q5.simetrias} maneras: 4 giros (0°, 90°, 180° y 270°) y, de cada uno, su reflejo. Distintos hay ${Q5.respuesta}.`,
+    fb:{ a:`Los ${Q5.soluciones} son el mismo cuadrado visto de ${Q5.simetrias} maneras: ${Q5.giros} giros (0°, 90°, 180° y 270°) y, de cada uno, su reflejo. Distintos hay ${Q5.respuesta}.`,
       c:`Quitar solo los giros deja ${Q5.errores.soloGiros}: el cuadrado y su reflejo. Pero el reflejo también cuenta como el mismo: hay ${Q5.respuesta}.`,
       d:`Quitar solo un reflejo deja ${Q5.errores.soloUnReflejo}, que todavía son giros unos de otros. Con giros y reflejos, los ${Q5.soluciones} son uno solo: ${Q5.respuesta}.` },
     antes:ya => E.config(ya ? { modo:'tablero', st:finQ5(Q5.vistas.length - 1), ley:LEYQ5, desc:DESCQ5, lect:LECTQ5 }
-      : { modo:'tablero', st:{ tipo:'cuadrado3', col:Array(9).fill(null), nums:[1, 2, 3, 4, 5, 6, 7, 8, 9], sinBanca:true, pregunta:[0, 1, 2, 3, 4, 5, 6, 7, 8] }, ley:[['s', 'suma de cada línea']], desc:'Un cuadrado de 3 por 3 con signos de pregunta en las nueve casillas.', lect:[() => ['ink', 'cuadrados mágicos', String(Q5.soluciones)]] }),
+      : { modo:'tablero', st:{ tipo:'cuadrado3', col:Array(9).fill(null), nums:N5, sinBanca:true, pregunta:[0, 1, 2, 3, 4, 5, 6, 7, 8] }, ley:[['s', 'suma de cada línea']], desc:'Un cuadrado de 3 por 3 con signos de pregunta en las nueve casillas.', lect:[() => ['ink', 'cuadrados mágicos', String(Q5.soluciones)]] }),
     despues:() => { E.config({ modo:'tablero', st:finQ5(0), ley:LEYQ5, desc:DESCQ5, lect:[] });
       E.secuencia(Q5.vistas.map((_, j) => st => Object.assign(st, finQ5(j))), Q5.vistas.map(() => 900), () => { E.lect = LECTQ5; E.avisar(); }); },
-    exp:() => `<div class="eqs"><div class="eq">${Q5.soluciones} ÷ ${Q5.simetrias} = ${Q5.respuesta}<span class="note">4 giros × 2 (con reflejo o sin él) = 8 maneras de mirar el mismo cuadrado</span></div></div>
-      <p>Un cuadrado tiene 8 simetrías: 4 giros y 4 reflejos. Ningún cuadrado mágico queda igual al girarlo, así que cada uno aparece 8 veces entre las soluciones. Con las fichas del 1 al 9 hay un solo cuadrado mágico, mirado de 8 maneras.</p>` },
+    exp:() => `<div class="eqs"><div class="eq">${Q5.soluciones} ÷ ${Q5.simetrias} = ${Q5.respuesta}<span class="note">${Q5.giros} giros, y cada uno con reflejo o sin él: ${Q5.simetrias} maneras de mirar el mismo cuadrado</span></div></div>
+      <p>Un cuadrado tiene ${Q5.simetrias} simetrías: ${Q5.giros} giros y ${Q5.reflejos} reflejos. Ningún cuadrado mágico queda igual al girarlo, así que cada uno aparece ${Q5.simetrias} veces entre las soluciones. Con las fichas del ${N5[0]} al ${N5[N5.length - 1]} hay un solo cuadrado mágico, mirado de ${Q5.simetrias} maneras.</p>` },
 ];
-function finQ1(){ return { fichas:corralDe(Q1.gallinas, Q1.conejos), nuevo:null, pie:[[`${Q1.sobran} ÷ `, 'ink'], ['2', 'd'], [' = ', 'ink'], [`${Q1.gallinas} gallinas`, 'g'], [' y ', 'ink'], [`${Q1.conejos} conejos`, 'c']] }; }
-const DESCQ1 = `Se empezó con 20 conejos, 80 patas; cada cambio de un conejo por una gallina quitó 2 patas. Después de ${Q1.gallinas} cambios quedan ${Q1.gallinas} gallinas y ${Q1.conejos} conejos, con 64 patas.`;
-const LECTQ1 = [() => ['g', 'gallinas', String(Q1.gallinas)], () => ['c', 'conejos', String(Q1.conejos)], () => ['t', 'patas', '64']];
-function finQ2(){ return { ops:Q2.cadena.map(t => [t]), valores:Q2.ida.slice(), vuelta:Q2.vuelta.slice().reverse().map(v => v.texto), vueltaK:2, resalta:0, pie:[[`${Q2.vuelta[0].de} ${Q2.vuelta[0].texto} = ${Q2.vuelta[0].a} → ${Q2.vuelta[1].texto} = `, 'ink'], [String(Q2.respuesta), 'x']] }; }
-const LEYQ2 = [['x', 'número que pensó'], ['y', 'resultado final'], ['ink', 'arriba: ida · abajo: vuelta']];
-const DESCQ2 = `La tira con el orden nuevo: ${Q2.respuesta}, por 2, 24, más 6, 30. De vuelta: 30 menos 6 es 24, entre 2 es ${Q2.respuesta}.`;
-const LECTQ2 = [() => ['x', 'pensó', String(Q2.respuesta)], () => ['ink', 'con el orden de antes', String(Q2.antes)]];
-const [V3a, V3b] = Q3.vecinos;
-function finQ3(){ return { fichas:corralDe(V3b.gallinas, V3b.conejos), nuevo:null, pie:[[String(V3a.patas), 't'], [', ', 'ink'], [String(V3b.patas), 't'], [': el 45 nunca sale', 'ink']] }; }
-const DESCQ3 = `Se empezó con 15 gallinas, ${Q3.supuestoTotal} patas, y cada cambio sumó 2: ${Q3.cambios.slice(1, 3).join(', ')}, y así hasta ${V3a.patas} con ${V3a.conejos} conejos y ${V3b.patas} con ${V3b.conejos}. El 45 se salta: ningún reparto da 45 patas.`;
+function finQ1(){ return { fichas:corralDe(Q1.gallinas, Q1.conejos), nuevo:null, pie:[[String(Q1.sobran), 'f'], [' ÷ ', 'ink'], [String(Q1.diferencia), 'd'], [' = ', 'ink'], [`${Q1.gallinas} gallinas`, 'g'], [' y ', 'ink'], [`${Q1.conejos} conejos`, 'c']] }; }
+const DESCQ1 = `Se empezó con ${Q1.animales} conejos, ${Q1.supuestoTotal} patas; cada cambio de un conejo por una gallina quitó ${Q1.diferencia} patas. Después de ${Q1.gallinas} cambios quedan ${Q1.gallinas} gallinas y ${Q1.conejos} conejos, con ${Q1.patas} patas.`;
+const LECTQ1 = [() => ['g', 'gallinas', String(Q1.gallinas)], () => ['c', 'conejos', String(Q1.conejos)], () => ['t', 'patas', String(Q1.patas)]];
+function finQ2(){ return { ops:Q2.cadena.map(t => [t]), valores:Q2.ida.slice(), vuelta:Q2.vuelta.slice().reverse().map(v => v.texto), vueltaK:2, resalta:0, pie:[[`${Q2a.de} ${Q2a.texto} = ${Q2a.a} → ${Q2b.texto} = `, 'ink'], [String(Q2.respuesta), 'x']] }; }
+const LEYQ2 = [['x', 'número que pensó Lucía'], ['y', 'resultado final'], ['ink', 'arriba: ida · abajo: vuelta']];
+const DESCQ2 = quitar(`La tira de Lucía: ${Q2.ida[0]}, ${Q2.cadena[0]}, ${Q2.ida[1]}, ${Q2.cadena[1]}, ${Q2.ida[2]}. De vuelta: ${Q2.vueltaTexto}.`);
+const LECTQ2 = [() => ['x', 'pensó Lucía', String(Q2.respuesta)], () => ['ink', 'pensó Pedro', String(Q2.antes)]];
+function finQ3(){ return { fichas:corralDe(V3b.gallinas, V3b.conejos), nuevo:null, pie:[[String(V3a.patas), 't'], [', ', 'ink'], [String(V3b.patas), 't'], [`: el ${Q3.patas} nunca sale`, 'ink']] }; }
+const DESCQ3 = `Se empezó con ${Q3.animales} gallinas, ${Q3.supuestoTotal} patas, y cada cambio sumó ${Q3.diferencia}: ${Q3.cambios.slice(1, 3).join(', ')}, y así hasta ${V3a.patas} con ${V3a.conejos} conejos y ${V3b.patas} con ${V3b.conejos}. El ${Q3.patas} se salta: ningún reparto da ${Q3.patas} patas.`;
 const LECTQ3 = [() => ['t', `con ${V3a.conejos} conejos`, `${V3a.patas} patas`], () => ['t', `con ${V3b.conejos} conejos`, `${V3b.patas} patas`]];
-function finQ4(){ return { tipo:'triangulo3', col:Q4.colocacion.slice(), nums:[2, 3, 4, 5, 6, 7], sumas:true, sinBanca:true, pie:[[String(Q4.antes), 'ink'], [' + 3 × 1 = ', 'ink'], [String(Q4.respuesta), 's']] }; }
+function finQ4(){ return { tipo:'triangulo3', col:Q4.colocacion.slice(), nums:N4b, sumas:true, sinBanca:true, pie:[[`${Q4.antes} + ${Q4.porLinea} × ${Q4.delta} = `, 'ink'], [String(Q4.respuesta), 's']] }; }
 const LEYQ4 = [['s', 'suma de cada lado']];
-const DESCQ4 = `${textoTablero('triangulo3', Q4.colocacion)} Cada ficha subió 1, y cada lado, que tiene tres fichas, subió 3.`;
+const DESCQ4 = `${textoTablero('triangulo3', Q4.colocacion)} Cada ficha subió ${Q4.delta}, y cada lado, que tiene ${Q4.porLinea} fichas, subió ${Q4.sube}.`;
 const LECTQ4 = [() => ['ink', 'antes', String(Q4.antes)], () => ['s', 'ahora', String(Q4.respuesta)]];
-function finQ5(j){ return { tipo:'cuadrado3', col:Q5.vistas[j].slice(), nums:[1, 2, 3, 4, 5, 6, 7, 8, 9], sinBanca:true, sumas:true, pregunta:[], pie:[[`vista ${j + 1} de ${Q5.vistas.length}`, 'ink'], [j ? ': la primera, girada o reflejada' : ': la primera', 'ink']] }; }
+function finQ5(j){ return { tipo:'cuadrado3', col:Q5.vistas[j].slice(), nums:N5, sinBanca:true, sumas:true, pregunta:[], pie:[[`vista ${j + 1} de ${Q5.vistas.length}`, 'ink'], [j ? ': la primera, girada o reflejada' : ': la primera', 'ink']] }; }
 const LEYQ5 = [['s', 'suma de cada línea']];
-const DESCQ5 = `Las ${Q5.soluciones} soluciones, una tras otra: todas son el mismo cuadrado girado o reflejado. ${Q5.vistas[0].slice(0, 3).join(', ')} arriba; ${Q5.vistas[0].slice(3, 6).join(', ')} en el medio; ${Q5.vistas[0].slice(6).join(', ')} abajo, y sus giros y reflejos.`;
+const DESCQ5 = `Las ${Q5.soluciones} soluciones, una tras otra: todas son el mismo cuadrado girado o reflejado. ${Q5.vistas[0].slice(0, 3).join(', ')} arriba; ${Q5.vistas[0].slice(3, 6).join(', ')} en el medio; ${Q5.vistas[0].slice(6).join(', ')} abajo, y sus giros y reflejos. Cada línea suma ${Q5.constante}.`;
 const LECTQ5 = [() => ['ink', 'soluciones', String(Q5.soluciones)], () => ['s', 'distintas', String(Q5.respuesta)]];
 
 const abierto = k => EXPS.slice(0, k).every(x => !!S.pred[x.id]);
@@ -1147,7 +1158,7 @@ function ir(k){
     const p = S.pred[x.id]; if (!p) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
     const f = $('fb2');
-    f.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    ponerFb(f, p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`);
     f.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
     $('res2').innerHTML = glifos(x.exp()) + FUENTE + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
     const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };

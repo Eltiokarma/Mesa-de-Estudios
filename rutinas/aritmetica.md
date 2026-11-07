@@ -610,3 +610,126 @@ El dividendo D y la caja de 10 000 van en tinta.
 - **`fuentes/por-conseguir.md`:** literatura sobre cómo se interpreta el condicional (leído como conjunción o como bicondicional), para pasar de hipótesis a datos. Además, un manual de academia para fijar la jerarquía de Δ.
 - **`docs/pendientes.md`** (Detalles): «**Lógica** (`plantillas/logica/`, rutina de aritmética, 7 nov 2026): los interruptores de la lógica (cada proposición es un interruptor; ∧ en serie, ∨ en paralelo, ~ invertido; el condicional como promesa que solo se rompe con V → F; tablas que se llenan solas, tautología, De Morgan, contrarrecíproca, Δ contra ∨ y negar «todos»; lector de pantalla con frases); 20 casos verificados aparte; 10 de papel; 6 predicciones y 5 «¿qué pasa si…?»; todo hipótesis. Sin ítems en el banco.» En ma4, quitar «lógica».
 - **`CLAUDE.md`:** sumar «los interruptores de la lógica» a la lista y una línea en Historia: «Lógica (7 nov 2026, rutina de aritmética): `plantillas/logica/` (los interruptores de la lógica: circuitos de interruptores para ∧, ∨ y ~, el condicional como promesa, tablas de verdad, De Morgan y contrarrecíproca; 20 casos verificados aparte).»
+
+## 7 nov 2026 · Las fichas que se cambian (`plantillas/razonamiento-numerico/`)
+
+**Qué hice.** Cubre falsa suposición, método regresivo y distribuciones numéricas. Edades, móviles, criptoaritmética y suficiencia ya están en traductor-enunciados, cuatro-operaciones y tablas-graficos.
+
+- **`motor.js`:** todo exacto, con enteros y fracciones. Tiene:
+  - `falsaSuposicion`, `corral`, `corralAlReves` y `examen`: con los cambios uno a uno y la validación de que haya solución;
+  - `regresivo`, `mercado` y `ordenCambiado`: la cadena, su vuelta y la traza de cada error;
+  - `distribuir`: fuerza bruta para triángulos de 3 y 4 por lado y el cuadrado 3 × 3, con las soluciones agrupadas por giros y reflejos;
+  - `comprobar`, `menorSuma`, `subirFichas`, `centroMagico` y `cuadradosDistintos`;
+  - la geometría del dibujo.
+- **`casos.json`:** 19 casos, verificados aparte.
+- **`motor.test.js`:** 43 pruebas:
+  - la falsa suposición contra todos los repartos (3000 datos al azar);
+  - el regresivo de ida y vuelta (1500 cadenas al azar), y cada traza termina en su error;
+  - las distribuciones contra un segundo algoritmo, las permutaciones de Heap;
+  - el cuadrado mágico: 8 soluciones, centro 5 y una sola sin contar giros y reflejos;
+  - los bordes.
+- **`papel.json`:** 10 problemas propios: patos y cuyes, billetes, examen +5/−2, jornal con multa, número pensado, compras con «la tercera parte y 6 más», el juego que duplica, triángulos de 3 y 4 por lado y el cuadrado mágico de 2 a 10.
+- **Interacción:** se arrastran los animales entre las dos mitades del corral (paso 1) y las fichas entre la banca y las casillas (paso 8). También hay teclado y botones.
+- **Paso a paso** (8 pasos, 6 predicciones, todo hipótesis, sin RM1):
+
+  | Paso | Pregunta | Correcta | Distractores |
+  | --- | --- | --- | --- |
+  | 2 | 20 animales y 64 patas: conejos | 12 | 8 `da-los-del-tipo-supuesto`, 24 `da-lo-que-falta-sin-dividir`, 6 |
+  | 3 | Examen de 50 preguntas (+4 y −1, todas respondidas), 140 puntos: buenas | 38 | 12, 35 `ignora-el-descuento`, 30 |
+  | 4 | ×3, −8, ÷2, +10 da 30: número pensado | 16 | 36 `recorre-hacia-atras-sin-invertir`, 51 `aplica-las-operaciones-hacia-adelante`, 26 `invierte-sin-cambiar-el-orden` |
+  | 5 | La mitad y S/ 5 más, luego la mitad y S/ 3 más, y le quedan S/ 12 | S/ 70 | 59 `dobla-y-despues-devuelve`, 48, 26 |
+  | 6 | Triángulo con 1 a 6: menor suma por lado | 9 | 6, 7, 12 |
+  | 7 | Cuadrado mágico con 1 a 9: el centro | solo el 5 | — |
+
+- **«¿Qué pasa si…?»**, con otros datos para no regalar el paso a paso, porque esa pestaña no se bloquea:
+  1. 20 animales y 56 patas, suponiendo que todos son conejos: 8 conejos;
+  2. Pedro y Lucía con las mismas operaciones en otro orden: 12;
+  3. las 45 patas: no hay reparto;
+  4. fichas del 2 al 7: la suma sube 3 por lado (13);
+  5. cuadrados mágicos de 2 a 10: 1 distinto.
+
+**Pruebas.** `npm test`: fallan solo los 2 de catálogo y el de `app/datos/pruebas.json` (por la reserva del banco; se arregla con `npm run catalogo`). `pasada-celular.py` no marca nada. Playwright corrió en las 8 combinaciones con arrastre por ratón, toque y teclado; lejos de las fichas, el dedo desplaza la página.
+
+**Subagentes.**
+
+- **Verificador independiente:** hizo la falsa suposición buscando todos los repartos, el regresivo como función lineal con fracciones y las distribuciones con itertools y sus propias simetrías. **0 discrepancias** en 19 casos y 10 de papel. Lo que cambió después de la revisión lo comprobé a mano: 80 − 56 = 24, 24 ÷ 2 = 12 gallinas y 8 conejos; Lucía 12 y Pedro 9; cuadrado de 2 a 10 con centro 6.
+- **Revisor de contenido:** nada grave. Corregido:
+  - **Regalos entre pestañas:** «¿Qué pasa si…?» regalaba el paso a paso, porque el experimento 1 usaba el mismo corral, el 5 mostraba el 5 al centro y el 2 traía un regresivo resuelto. Ahora usan otros datos.
+  - **Título:** «Patas impares» regalaba la respuesta; ahora es «Las 45 patas».
+  - **Regla 1:** las cuentas escritas a mano en las retroalimentaciones ahora salen del motor (trazas de cada error, `formas` y `vueltaTexto`).
+  - **Regla 4:** v (esquinas y centro) ya no tiene color, va con borde grueso en tinta. m estaba a ΔE00 9 de g y pasó a pizarra o celeste.
+  - **Contraste:** el chip en el aviso daba 4,14.
+  - **Detalles:**
+    - «15 ÷ 2 = 7,5», en vez de dejarlo como fracción;
+    - pies en el color de f;
+    - el paso 6 dice dónde van las fichas;
+    - «4 × 15 = 60» en el paso 7;
+    - la retroalimentación ahora tiene un aria-label limpio, y «S/» ya no se separa de su número;
+    - la banca vacía al final del paso 7.
+  - **Progresión aceptada (para el análisis):** el paso 1 al 2, el 4 al 5 y el 6 al 7. La predicción del paso 2 se toma después de explorar el corral.
+
+**Colores** (claro / oscuro):
+
+| Variable | Claro | Oscuro |
+| --- | --- | --- |
+| gallinas g | #a05200 | #f0a04a |
+| conejos c | #1f5fbf | #7cb0ff |
+| total t | #466d14 | #a3d65e |
+| falta o sobra f | #a10fbf | #cf6bfa |
+| lo que mueve cada cambio d | #0f766e | #5ed9c8 |
+| buenas b | #77032c | #fdb4ce |
+| malas m | #1f3f47 | #22a5bf |
+| número de partida x | #7d6a00 | #e3c84a |
+| resultado final y | #3328c4 | #9f9bff |
+| suma de la línea s | #b3246b | #ff86bd |
+
+- Las casillas compartidas no tienen color: van con borde grueso en tinta.
+- **ΔE00 mínimo entre los que salen juntos:** 21,2 en claro y 20,5 en oscuro (m–d).
+- **Contraste:** ≥ 4,54 en claro y ≥ 4,64 en oscuro.
+- **Cercanías anotadas en el CSS:** d y t con «correcto»; s y b (en oscuro) con el rojo de aviso. Siempre van con texto.
+
+**Pendiente.**
+
+- No está el tablero de círculos en cadena.
+- Sin ítems en el banco de aritmética para esta plantilla todavía (los preparo aparte).
+
+**Pedidos para la integración.**
+
+- **Catálogo:** agregar `razonamiento-numerico` a `aritmetica.razonamiento-numerico`, correr `npm run catalogo` y subir `VERSION`.
+- **`docs/diseno.md`:** la tabla de colores de arriba.
+- **`docs/pendientes.md`** (Detalles): «**Razonamiento numérico** (`plantillas/razonamiento-numerico/`, rutina de aritmética, 7 nov 2026): las fichas que se cambian (falsa suposición con el corral que cambia animales uno a uno, examen con descuento, método regresivo con la tira que se recorre hacia atrás, «la mitad y S/ 5 más», triángulos y cuadrado mágico con fichas que se arrastran y soluciones contadas por fuerza bruta con sus simetrías); 19 casos verificados aparte; 10 de papel; 6 predicciones y 5 «¿qué pasa si…?»; todo hipótesis.» En ma4, quitar «razonamiento numérico» de «Faltan».
+- **`CLAUDE.md`:** sumar «las fichas que se cambian» a la lista y una línea en Historia: «Razonamiento numérico (7 nov 2026, rutina de aritmética): `plantillas/razonamiento-numerico/` (las fichas que se cambian: falsa suposición, método regresivo y distribuciones numéricas; 19 casos verificados aparte). Con esto la rutina de aritmética cerró su lista.»
+
+## 7 nov 2026 · Banco de aritmética: reserva ari-15 a ari-26
+
+Pedido por la principal al cerrar la lista. Son 12 pares en `reserva` de `catalogo/pruebas/aritmetica.json`, 2 por plantilla. Cada uno toma una predicción de su escena, con otra situación y otros números (transferencia cercana), y los mismos códigos de error. Cada par tiene su verificador en `catalogo/pruebas/verificar.js`, que llama al motor.
+
+| Par | Plantilla | Qué mide | Correcta A / B |
+| --- | --- | --- | --- |
+| ari-15 | numeración | de base b a base 10 | 134 / 206 |
+| ari-16 | numeración | base desconocida | 7 / 9 |
+| ari-17 | cuatro operaciones | resta con préstamo por ceros | 4416 / 2747 |
+| ari-18 | cuatro operaciones | residuo por exceso | 7 / 3 |
+| ari-19 | potenciación | menor multiplicador para un cubo | 5 / 7 |
+| ari-20 | potenciación | cuadrados entre dos números | 12 / 18 |
+| ari-21 | mezclas | precio medio (AR15 parcial) | S/ 20 / S/ 9 |
+| ari-22 | mezclas | agua para bajar el grado | 28 L / 27 L |
+| ari-23 | conjuntos | intersección con el total y «ninguno» | 10 / 12 |
+| ari-24 | conjuntos | cantidad de subconjuntos | 32 / 64 |
+| ari-25 | lógica | negar una disyunción (De Morgan) | — |
+| ari-26 | lógica | cuándo no se cumple un condicional | — |
+
+- **Errores:** 36 códigos nuevos en `errores`, todos hipótesis salvo `AR15-promedio-simple`, que es parcial.
+- **Revisor a ciegas:** solo vio enunciados y opciones. Resolvió los 24 ítems y en todos encontró una sola correcta, sin datos de más o de menos y sin atajos; A y B tienen la misma dificultad. Apliqué sus cuatro arreglos:
+  - ari-18: «que los sobrantes completen otra bolsa»;
+  - ari-22: «60 % de alcohol puro»;
+  - ari-23A: «estudiantes»;
+  - ari-26A: «tu nota».
+- **Parecidos:** `parecidos.js` no da parecidos. El aviso de códigos compartidos con la escena no ve estas seis escenas, porque arman sus opciones con funciones: lo revisé a mano y ninguno copia la situación ni los números.
+- **Pruebas:** falla «app/datos/pruebas.json está al día» hasta que corra `npm run catalogo`.
+
+**Pedidos para la integración.**
+
+- **Pasar a `pares`:** las seis plantillas ya están en el catálogo y la prueba lo avisa. Hay que elegir cuáles pasan sin pasar de 10 por forma; hoy hay 10, de cinco plantillas con 2 cada una.
+- **Regenerar `app/datos/pruebas.json`.**
+- **(Opcional) `parecidos.js`:** que reconozca las opciones armadas con `numH(...)` y `T(...)`.

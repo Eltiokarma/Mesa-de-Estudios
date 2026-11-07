@@ -1,7 +1,7 @@
 /*
  * Motor de «Las fichas que se cambian»: razonamiento numérico.
  *
- * CABECERA: fr, frTexto, numTexto, suma, resta, prod, divi, falsaSuposicion, contarCorral, corral, corralAlReves, examen, textoOp, aplicar, invertir,
+ * CABECERA: fr, frTexto, numTexto, milesTexto, suma, resta, prod, divi, falsaSuposicion, contarCorral, corral, corralAlReves, examen, textoOp, aplicar, invertir,
  *           regresivo, barras, ordenCambiado, mercado, TABLEROS, tablero, distribuir, comprobar, menorSuma, subirTodos,
  *           subirFichas, centroMagico, cuadradosDistintos, corralGeo, mitadDe, examenGeo, tiraGeo, tableroGeo, cercana, pl
  *
@@ -22,33 +22,41 @@
  * Números
  *   fr(n, d)                     fracción irreducible { n, d } con d > 0 (enteros seguros)
  *   frTexto(f), numTexto(x)      «16», «−3», «77/2»; números con coma decimal
+ *   milesTexto(n)                un entero con espacio de miles: «362 880»
  * Falsa suposición
  *   falsaSuposicion(total, valorTotal, vSupuesto, vOtro)   supone que los «total» son del tipo que vale vSupuesto:
  *                                base, falta (valorTotal − base, con signo), diferencia (vOtro − vSupuesto), otros (los del
- *                                otro tipo), supuestos, cambios (el total después de cada cambio) y, si no hay reparto entero
- *                                entre 0 y total, posible: false con la razón
+ *                                otro tipo), supuestos, cambios (el total ANTES de cambiar nada y después de cada cambio:
+ *                                otros + 1 valores, el primero es base y el último valorTotal) y, si no hay reparto entero
+ *                                entre 0 y total, posible: false con la razón, el cociente («15/2») y cocienteDecimal («7,5»)
  *   contarCorral(fichas)         cabezas, gallinas, conejos y patas de una lista de fichas ('g' o 'c')
- *   corral(animales, patas)      predicción: ¿cuántos conejos? (supone que todos son gallinas); si no hay reparto, el
- *                                cociente, los dos repartos vecinos y el total después de cada cambio
+ *   corral(animales, patas)      predicción: ¿cuántos conejos? (supone que todos son gallinas; vSupuesto 2, vOtro 4); si no
+ *                                hay reparto, el cociente (también en decimal), los dos repartos vecinos y cambios (con el total inicial)
  *   corralAlReves(animales, patas)   lo mismo suponiendo que todos son conejos (el cociente da las gallinas)
  *   examen(preguntas, puntaje, buena, mala)   ¿cuántas buenas? (supone que todas son buenas; cada mala quita buena − mala);
- *                                daria: lo que dan los repartos de cada error
+ *                                descuento (lo que resta una mala, positivo); daria: lo que dan los repartos de cada error
  * Método regresivo (una operación es { op: 'mas'|'menos'|'por'|'entre', k } o { op: 'gasta', parte: [p, q], mas: k }:
  * «gastó p/q de lo que tenía y k más»; con k negativo, «k menos»)
  *   textoOp(op), aplicar(op, x), invertir(op)    la operación escrita, aplicada a x y su contraria (una lista de simples)
- *   regresivo(cadena, final)     el número de partida, los valores de ida, los pasos de vuelta y los errores
+ *   regresivo(cadena, final)     el número de partida, los valores de ida, los pasos de vuelta y los errores; vueltaTexto
+ *                                («30 − 10 = 20, …, y 48 ÷ 3 = 16», o por tramos con «gasta»: «(12 + 3) × 2 = 30 y …») y
+ *                                trazas: la misma cuenta, paso por paso, de cada error que queda en «errores»
  *   barras(cadena, inicio)       para dibujar «gastó»: lo que tenía, la parte, el extra y lo que le quedó en cada tramo,
  *                                lo que no gastó (lo que le quedó + el extra) y por cuánto se multiplica para volver
- *   ordenCambiado(cadena, final, i)   la misma cadena con las operaciones i e i + 1 intercambiadas
- *   mercado(cadena, final)       predicción de «gastó la mitad y k más»: el error de deshacer en el orden equivocado
+ *   ordenCambiado(cadena, final, i)   la misma cadena con las operaciones i e i + 1 intercambiadas (con la vuelta de las dos
+ *                                cadenas escrita y las trazas de sus errores)
+ *   mercado(cadena, final)       predicción de «gastó la mitad y k más»: el error de deshacer en el orden equivocado (con trazas)
  * Distribuciones
  *   TABLEROS, tablero(tipo)      casillas, líneas (listas de casillas), simetrías (giros y reflejos) y casillas compartidas
  *   distribuir(tipo, numeros)    fuerza bruta: soluciones, sumas posibles, cuántas hay de cada suma y cuántas sin contar
  *                                giros y reflejos (y solo giros), con una solución de muestra por suma, y qué fichas
- *                                pueden ir en cada casilla (posibles)
- *   comprobar(tipo, colocacion)  la suma de cada línea (null si falta una ficha), si están completas e iguales
- *   menorSuma(tipo, numeros), subirTodos(tipo, numeros, delta), subirFichas(tipo, colocacion, delta), centroMagico(),
- *   cuadradosDistintos()         predicciones
+ *                                pueden ir en cada casilla (posibles); formas: n! maneras de poner las n fichas
+ *   comprobar(tipo, colocacion)  la suma de cada línea (null si falta una ficha; parcial: lo que suman las puestas), si
+ *                                están completas e iguales; distintas: cuántas sumas diferentes hay entre las líneas completas
+ *                                (1 si todas las completas suman lo mismo, 0 si no hay ninguna completa)
+ *   menorSuma(tipo, numeros), subirTodos(tipo, numeros, delta), subirFichas(tipo, colocacion, delta),
+ *   centroMagico(numeros), cuadradosDistintos(numeros)   predicciones (por omisión, las fichas del 1 al 9); centroMagico
+ *                                trae también la cuenta del centro y los contraejemplos del mayor y del menor
  * Para el dibujo (la escena solo pinta)
  *   corralGeo(n, W, H, o), examenGeo(n, W, H, o), tiraGeo(nOps, W, H, o), tableroGeo(tipo, W, H, o), cercana(puntos, p, r)
  *
@@ -83,9 +91,18 @@
   const entero = f => F(f).d === 1;
   const menos = t => String(t).replace(/^-/, '−');
   const numTexto = x => menos(String(x).replace('.', ','));
+  // un entero con espacio de miles: «362 880»
+  const milesTexto = n => menos(String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' '));
   const frTexto = f => { f = F(f); return f.d === 1 ? menos(String(f.n)) : menos(f.n + '/' + f.d); };
   // valor para afuera: número si es entero, texto «a/b» si no
   const valor = f => (entero(f) ? F(f).n : frTexto(f));
+  // una fracción como decimal (exacto si el denominador solo tiene 2 y 5; si no, con ≈ y dos decimales)
+  function decimal(f) {
+    f = F(f);
+    let d = f.d; while (d % 2 === 0) d /= 2; while (d % 5 === 0) d /= 5;
+    const x = f.n / f.d;
+    return d === 1 ? numTexto(+x.toFixed(12)) : '≈ ' + numTexto(x.toFixed(2));
+  }
   const pl = (n, uno, varios) => (Math.abs(n) === 1 ? uno : varios);
 
   function limpiar(errores, correcta) {
@@ -107,7 +124,7 @@
     if (diferencia === 0) return Object.assign(r, { posible: false, razon: 'Los dos tipos valen lo mismo: cambiar uno por otro no mueve el total.' });
     if (falta % diferencia !== 0) {
       const q = divi(falta, diferencia);
-      return Object.assign(r, { posible: false, cociente: frTexto(q), abajo: Math.floor(q.n / q.d), arriba: Math.ceil(q.n / q.d),
+      return Object.assign(r, { posible: false, cociente: frTexto(q), cocienteDecimal: decimal(q), abajo: Math.floor(q.n / q.d), arriba: Math.ceil(q.n / q.d),
         razon: `${numTexto(Math.abs(falta))} no se reparte en cambios de ${numTexto(Math.abs(diferencia))}: ${numTexto(falta)} ÷ ${numTexto(diferencia)} no es un número entero, así que ningún reparto da exactamente ${numTexto(valorTotal)}.` });
     }
     const otros = falta / diferencia + 0;
@@ -126,9 +143,9 @@
   // ¿Cuántos conejos? Se supone que todos son gallinas: faltan patas, y cada cambio de gallina por conejo agrega 2.
   function corral(animales, patas) {
     const R = falsaSuposicion(animales, patas, 2, 4);
-    const base = { animales, patas, supuestoTotal: R.base, faltan: R.falta, diferencia: 2, posible: R.posible };
+    const base = { animales, patas, vSupuesto: 2, vOtro: 4, supuestoTotal: R.base, faltan: R.falta, diferencia: 2, posible: R.posible };
     if (!R.posible) {
-      const r = Object.assign(base, { razon: R.razon, abajo: R.abajo, arriba: R.arriba, cociente: R.cociente,
+      const r = Object.assign(base, { razon: R.razon, abajo: R.abajo, arriba: R.arriba, cociente: R.cociente, cocienteDecimal: R.cocienteDecimal,
         errores: R.abajo !== undefined ? limpiar({ trunca: R.abajo, redondea: R.arriba }, null) : {} });
       // los dos repartos de al lado (el que se queda corto y el que se pasa), y el total después de cada cambio
       if (R.abajo !== undefined && R.abajo >= 0 && R.arriba <= animales) {
@@ -146,7 +163,7 @@
     const R = falsaSuposicion(animales, patas, 4, 2);
     if (!R.posible) throw new Error(R.razon);
     const gallinas = R.otros, conejos = R.supuestos, sobran = -R.falta + 0;
-    return { animales, patas, supuestoTotal: R.base, sobran, diferencia: 2, gallinas, conejos, respuesta: conejos, cambios: R.cambios,
+    return { animales, patas, vSupuesto: 4, vOtro: 2, supuestoTotal: R.base, sobran, diferencia: 2, gallinas, conejos, respuesta: conejos, cambios: R.cambios,
       errores: limpiar({ leeElCocienteComoConejos: gallinas, sobranSinDividir: sobran, divideEntreElSupuesto: sobran % 4 === 0 ? sobran / 4 : null }, conejos) };
   }
   // Un examen sin preguntas en blanco: buena puntos por correcta y mala (negativo) por incorrecta. Se supone que todas son buenas.
@@ -161,7 +178,7 @@
     const daria = {
       sinDescuento: sd === null ? null : { buenas: sd, malas: preguntas - sd, puntaje: sd * buena + (preguntas - sd) * mala },
       restaLosPuntos: rl === null ? null : { malas: rl, buenas: preguntas - rl, entre: resta } };
-    return { preguntas, puntaje, buena, mala, supuestoTotal: R.base, sobran, quita, correctas, incorrectas, respuesta: correctas, cambios: R.cambios, daria,
+    return { preguntas, puntaje, buena, mala, descuento: -mala + 0, supuestoTotal: R.base, sobran, quita, correctas, incorrectas, respuesta: correctas, cambios: R.cambios, daria,
       errores: limpiar({
         daLasIncorrectas: incorrectas,
         sinDescuento: puntaje % buena === 0 ? puntaje / buena : null,
@@ -214,6 +231,31 @@
     return out;
   }
   const aplicarLista = (ops, x) => ops.reduce((v, o) => aplicar(o, v), F(x));
+  const unir = xs => (xs.length > 1 ? xs.slice(0, -1).join(', ') + ' y ' + xs[xs.length - 1] : xs[0] || '');
+  // Recorre una lista de operaciones desde x0 y anota cada cuenta: «30 − 10 = 20»
+  function recorrer(ops, x0) {
+    let y = F(x0);
+    const pasos = [];
+    for (const o of ops) { const a = aplicar(o, y); pasos.push({ op: textoOp(o), de: valor(y), a: valor(a), texto: `${frTexto(y)} ${textoOp(o)} = ${frTexto(a)}` }); y = a; }
+    return { fr: y, valor: valor(y), pasos, texto: unir(pasos.map(p => p.texto)) };
+  }
+  // La vuelta tramo por tramo (de la última operación a la primera), bien hecha o con un error de «gasta»:
+  // 'bien' (q + k) × 2, 'alReves' q × 2 + k, 'restaElExtra' (q − k) × 2, 'olvida' q × 2
+  function porTramos(cadena, final, como) {
+    let y = F(final);
+    const textos = [];
+    for (const o of cadena.slice().reverse()) {
+      if (o.op !== 'gasta') { const r = recorrer(invertir(o), y); textos.push(r.texto); y = r.fr; continue; }
+      const [p, q] = o.parte, m = o.mas || 0, veces = fr(q, q - p), Y = frTexto(y), V = frTexto(veces), K = String(Math.abs(m));
+      let r, t;
+      if (como === 'alReves') { r = suma(prod(y, veces), m); t = `${Y} × ${V} ${m < 0 ? '−' : '+'} ${K}`; }
+      else if (como === 'restaElExtra') { r = prod(resta(y, m), veces); t = `(${Y} ${m < 0 ? '+' : '−'} ${K}) × ${V}`; }
+      else if (como === 'olvida') { r = prod(y, veces); t = `${Y} × ${V}`; }
+      else { r = prod(suma(y, m), veces); t = m ? `(${Y} ${m < 0 ? '−' : '+'} ${K}) × ${V}` : `${Y} × ${V}`; }
+      textos.push(`${t} = ${frTexto(r)}`); y = r;
+    }
+    return { fr: y, valor: valor(y), tramos: textos, texto: unir(textos) };
+  }
   function regresivo(cadena, final) {
     if (!Array.isArray(cadena) || !cadena.length) throw new Error('la cadena necesita al menos una operación');
     cadena.forEach(validar);
@@ -228,25 +270,18 @@
     let x = inicio;
     for (const o of cadena) { x = aplicar(o, x); ida.push(valor(x)); }
     if (resta(x, final).n !== 0) throw new Error('la vuelta no devuelve el final');
-    // errores
-    const adelante = cadena.reduce((v, o) => aplicar(o, v), F(final));
-    const ordenSinInvertir = cadena.slice().reverse().reduce((v, o) => aplicar(o, v), F(final));
-    const sinOrden = cadena.reduce((v, o) => aplicarLista(invertir(o), v), F(final));
-    const errores = { haciaAdelante: valor(adelante), ordenSinInvertir: valor(ordenSinInvertir), invierteSinOrden: valor(sinOrden) };
-    if (cadena.some(o => o.op === 'gasta')) Object.assign(errores, erroresGasta(cadena, final));
-    const respuesta = valor(inicio);
-    return { cadena: cadena.map(textoOp), final: valor(final), respuesta, entero: entero(inicio), ida, vuelta, errores: limpiar(errores, respuesta) };
-  }
-  // Los errores propios de «gastó la mitad y k más», aplicados a cada tramo de vuelta
-  function erroresGasta(cadena, final) {
-    const malo = como => cadena.slice().reverse().reduce((y, o) => {
-      if (o.op !== 'gasta') return aplicarLista(invertir(o), y);
-      const [p, q] = o.parte, m = o.mas || 0, veces = fr(q, q - p);
-      if (como === 'alReves') return suma(prod(y, veces), m);        // q·2 + k: primero se dobla y después se devuelve
-      if (como === 'restaElExtra') return prod(resta(y, m), veces);   // (q − k)·2: el extra con el signo cambiado
-      return prod(y, veces);                                          // q·2: se olvida el extra
-    }, F(final));
-    return { devuelveDespues: valor(malo('alReves')), restaElExtra: valor(malo('restaElExtra')), olvidaElExtra: valor(malo('olvida')) };
+    const simple = cadena.every(o => o.op !== 'gasta');
+    // la vuelta bien hecha y la traza de cada error (las cuentas, una por una)
+    const bien = simple ? recorrer(cadena.slice().reverse().flatMap(invertir), final) : porTramos(cadena, final, 'bien');
+    const trazas = { haciaAdelante: recorrer(cadena, final), ordenSinInvertir: recorrer(cadena.slice().reverse(), final), invierteSinOrden: recorrer(cadena.flatMap(invertir), final) };
+    if (!simple) Object.assign(trazas, { devuelveDespues: porTramos(cadena, final, 'alReves'), restaElExtra: porTramos(cadena, final, 'restaElExtra'), olvidaElExtra: porTramos(cadena, final, 'olvida') });
+    const errores = {};
+    for (const [k, t] of Object.entries(trazas)) errores[k] = t.valor;
+    const respuesta = valor(inicio), e = limpiar(errores, respuesta);
+    const trazasTexto = {};
+    for (const k of Object.keys(e)) trazasTexto[k] = trazas[k].texto;
+    return { cadena: cadena.map(textoOp), final: valor(final), respuesta, entero: entero(inicio), ida, vuelta, vueltaTexto: bien.texto,
+      vueltaTramos: bien.tramos || bien.pasos.map(p => p.texto), errores: e, trazas: trazasTexto };
   }
   function barras(cadena, inicio) {
     let x = F(inicio);
@@ -267,13 +302,16 @@
     const otra = cadena.slice(); [otra[i], otra[i + 1]] = [otra[i + 1], otra[i]];
     const A = regresivo(cadena, final), B = regresivo(otra, final);
     return { antes: A.respuesta, respuesta: B.respuesta, cadena: B.cadena, cadenaAntes: A.cadena, vuelta: B.vuelta, ida: B.ida,
+      vueltaTexto: B.vueltaTexto, vueltaAntesTexto: A.vueltaTexto, trazas: { haciaAdelante: B.trazas.haciaAdelante, ordenSinInvertir: B.trazas.ordenSinInvertir },
       errores: limpiar({ elDeAntes: A.respuesta, haciaAdelante: B.errores.haciaAdelante, ordenSinInvertir: B.errores.ordenSinInvertir }, B.respuesta) };
   }
   function mercado(cadena, final) {
     const R = regresivo(cadena, final);
     if (!cadena.some(o => o.op === 'gasta')) throw new Error('la cadena del mercado lleva al menos un «gasta»');
     const e = R.errores;
-    return Object.assign({}, R, { errores: limpiar({ devuelveDespues: e.devuelveDespues, restaElExtra: e.restaElExtra, olvidaElExtra: e.olvidaElExtra }, R.respuesta) });
+    const errores = limpiar({ devuelveDespues: e.devuelveDespues, restaElExtra: e.restaElExtra, olvidaElExtra: e.olvidaElExtra }, R.respuesta), trazas = {};
+    for (const k of Object.keys(errores)) trazas[k] = R.trazas[k];
+    return Object.assign({}, R, { errores, trazas });
   }
 
   // ---------- distribuciones ----------
@@ -342,7 +380,8 @@
       return { suma: s, soluciones: e.soluciones, distintas: e.clases.size, distintasGiros: e.clasesGiros.size, muestra: m,
         compartidas: t.compartidas.map(i => m[i]), sumaCompartidas: t.compartidas.reduce((a, i) => a + (t.veces[i] - 1) * m[i], 0) };
     });
-    const r = { tipo, nombre: t.nombre, numeros: numeros.slice(), total, lineas: t.lineas.length, soluciones: sols.length,
+    let formas = 1; for (let i = 2; i <= n; i++) formas *= i;   // n! formas de poner las fichas
+    const r = { tipo, nombre: t.nombre, numeros: numeros.slice(), total, formas, lineas: t.lineas.length, soluciones: sols.length,
       distintas: detalle.reduce((a, d) => a + d.distintas, 0), sumas, detalle,
       // qué fichas pueden ir en cada casilla en alguna solución
       posibles: posibles.map(S => [...S].sort((a, b) => a - b)),
@@ -374,7 +413,8 @@
     const D = distribuir(tipo, numeros), t = tablero(tipo), k = t.lineas[0].length, orden = numeros.slice().sort((a, b) => a - b);
     const menores = orden.slice(0, k).reduce((a, b) => a + b, 0);
     const m = D.detalle[0];
-    return { respuesta: D.menor, mayor: D.mayor, sumas: D.sumas, total: D.total, menores, muestra: m.muestra, vertices: m.compartidas, cuenta: D.cuenta[0],
+    return { respuesta: D.menor, mayor: D.mayor, sumas: D.sumas, total: D.total, formas: D.formas, lados: t.lineas.length, menores, muestra: m.muestra,
+      vertices: m.compartidas, sumaVertices: m.sumaCompartidas, verticesMayor: D.detalle[D.detalle.length - 1].compartidas, cuenta: D.cuenta[0],
       soluciones: m.soluciones, distintas: m.distintas,
       errores: limpiar({ losMenores: menores, totalEntreLineas: D.total % t.lineas.length === 0 ? D.total / t.lineas.length : null, laMayor: D.mayor }, D.menor) };
   }
@@ -391,23 +431,30 @@
     const t = tablero(tipo), A = comprobar(tipo, colocacion);
     if (!A.valido) throw new Error('la distribución de partida no tiene todas las líneas iguales');
     const nueva = colocacion.map(x => x + delta), B = comprobar(tipo, nueva), k = t.lineas[0].length;
-    return { antes: A.suma, respuesta: B.suma, colocacion: nueva, porLinea: k, sube: B.suma - A.suma,
+    return { antes: A.suma, respuesta: B.suma, colocacion: nueva, porLinea: k, casillas: t.casillas, delta, sube: B.suma - A.suma,
       errores: limpiar({ sinCambio: A.suma, subeUnaVez: A.suma + delta, porCadaFicha: A.suma + delta * t.casillas }, B.suma) };
   }
   // Cuadrado mágico con 1 a 9: qué números pueden ir en el centro
-  function centroMagico() {
-    const D = distribuir('cuadrado3', [1, 2, 3, 4, 5, 6, 7, 8, 9]), nums = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-    const respuesta = D.posibles[4], constante = D.sumas[0];
-    return { respuesta, constante, total: D.total, soluciones: D.soluciones, muestra: D.detalle[0].muestra,
-      // las 4 líneas que pasan por el centro suman 4 × 15 = 60: el total 45 más el centro contado 3 veces de más
-      porElCentro: 4, cuenta: { izquierda: 4 * constante, total: D.total, centro: (4 * constante - D.total) / 3 },
-      errores: limpiar({ elMayor: [9], losImpares: nums.filter(x => x % 2), cualquiera: nums }, respuesta) };
+  const UNO_A_NUEVE = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  function centroMagico(numeros) {
+    const nums = (numeros || UNO_A_NUEVE).slice().sort((a, b) => a - b), D = distribuir('cuadrado3', nums);
+    if (!D.sumas.length) throw new Error('con estas fichas no hay cuadrado mágico');
+    const respuesta = D.posibles[4], constante = D.sumas[0], [a, b] = nums, [z, y] = nums.slice().reverse();
+    return { respuesta, constante, total: D.total, filas: 3, formas: D.formas, soluciones: D.soluciones, muestra: D.detalle[0].muestra,
+      // las 4 líneas que pasan por el centro suman 4 × constante: el total más el centro contado 3 veces de más
+      porElCentro: 4, cuenta: { izquierda: 4 * constante, total: D.total, deMas: 3, centro: (4 * constante - D.total) / 3 },
+      // por qué no sirven el mayor ni el menor: toda casilla está en una línea con el centro
+      contraejemplos: { elMayor: { centro: z, otra: y, tercera: a, suma: z + y + a }, elMenor: { centro: a, otra: b, tercera: z, suma: a + b + z } },
+      errores: limpiar({ elMayor: [z], losImpares: nums.filter(x => x % 2), cualquiera: nums }, respuesta) };
   }
-  function cuadradosDistintos() {
-    const D = distribuir('cuadrado3', [1, 2, 3, 4, 5, 6, 7, 8, 9]), t = tablero('cuadrado3'), m = D.detalle[0].muestra;
+  function cuadradosDistintos(numeros) {
+    const nums = numeros || UNO_A_NUEVE, D = distribuir('cuadrado3', nums), t = tablero('cuadrado3');
+    if (!D.sumas.length) throw new Error('con estas fichas no hay cuadrado mágico');
+    const m = D.detalle[0].muestra;
     const vistas = t.simetrias.map(g => { const d = Array(9); g.forEach((a, i) => { d[a] = m[i]; }); return d; });
     const reflejo = cerrarGrupo(9, t.reflejos).length;   // la identidad y un reflejo
-    return { respuesta: D.distintas, soluciones: D.soluciones, simetrias: t.simetrias.length, vistas,
+    return { respuesta: D.distintas, soluciones: D.soluciones, simetrias: t.simetrias.length, giros: t.soloGiros.length, reflejos: t.simetrias.length - t.soloGiros.length, constante: D.sumas[0], centro: D.posibles[4],
+      formas: D.formas, vistas,
       errores: limpiar({ cuentaTodos: D.soluciones, soloGiros: D.detalle[0].distintasGiros, soloUnReflejo: D.soluciones / reflejo }, D.distintas) };
   }
 
@@ -512,7 +559,7 @@
     return mejor;
   }
 
-  return { fr, frTexto, numTexto, suma, resta, prod, divi, falsaSuposicion, contarCorral, corral, corralAlReves, examen,
+  return { fr, frTexto, numTexto, milesTexto, suma, resta, prod, divi, falsaSuposicion, contarCorral, corral, corralAlReves, examen,
     textoOp, aplicar, invertir, regresivo, barras, ordenCambiado, mercado, TABLEROS, tablero, distribuir, comprobar,
     menorSuma, subirTodos, subirFichas, centroMagico, cuadradosDistintos, corralGeo, mitadDe, examenGeo, tiraGeo, tableroGeo, cercana, pl };
 });
