@@ -45,10 +45,10 @@
  *                                      la escalera y su copia, y los errores
  *   sumatoria(tipo, n)                 1 + … + n, pares, impares (n²), cuadrados y cubos, con su fórmula
  * División entera
- *   division(D, d)                     por defecto (D = d·q + r) y por exceso (D = d·(q + 1) − r′), con r + r′ = d,
+ *   division(D, d)                     por defecto (D = d·q + r) y por exceso (D = d·(q + 1) − rₑ), con r + rₑ = d,
  *                                      y los errores sobre el residuo por exceso
  *   residuoMaximo(d)                   d − 1, y los errores
- *   residuosIguales(d)                 ¿cuándo r = r′? (d par y r = d/2), y los errores
+ *   residuosIguales(d)                 ¿cuándo r = rₑ? (d par y r = d/2), y los errores
  * Cantidad de cifras
  *   cifrasProducto(m, n)               un número de m cifras por uno de n cifras tiene m + n − 1 o m + n cifras
  *
@@ -493,7 +493,7 @@
     const out = { D: num(Dv), d: num(dv), q: num(q), r: num(r), exacta, qExceso: exacta ? null : num(q + 1n), rExceso: re === null ? null : num(re),
       residuoMaximo: num(dv - 1n), filas: { llenas: num(q), sobran: num(r), huecos: re === null ? 0 : num(re) } };
     out.errores = exacta ? {} : limpiar({
-      igualAlDefecto: num(r),                                         // cree que r′ = r
+      igualAlDefecto: num(r),                                         // cree que rₑ = r
       divisorMenosUnoMenosR: dv - 1n - r > 0n ? num(dv - 1n - r) : undefined, // resta del residuo máximo: d − 1 − r
       sumaElDivisor: num(dv + r),                                      // suma el divisor al residuo
       masUno: num(r + 1n),                                             // cree que si el cociente sube 1, el residuo también
@@ -505,7 +505,7 @@
     if (dv < 2) throw new Error('d debe ser mayor o igual que 2');
     return { d: dv, maximo: dv - 1, errores: limpiar({ igualAlDivisor: dv, mitad: Math.floor(dv / 2), menosDos: dv - 2 > 0 ? dv - 2 : undefined }, dv - 1) };
   }
-  // r = r′ solo si r = d − r, es decir, d par y r = d/2. La respuesta es el residuo, o 'nunca' si d es impar.
+  // r = rₑ solo si r = d − r, es decir, d par y r = d/2. La respuesta es el residuo, o 'nunca' si d es impar.
   function residuosIguales(d) {
     const dv = num(positivo(d, 'd'));
     if (dv < 2) throw new Error('d debe ser mayor o igual que 2');

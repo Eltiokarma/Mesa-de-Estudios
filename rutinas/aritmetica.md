@@ -123,7 +123,7 @@ El revisor de cuatro operaciones revisó numeración con la regla nueva y encont
   - suma, resta y multiplicación por una cifra en columnas y en cualquier base, con la llevada y el préstamo por columna, y los cuadros de animación (`cuadroColumnas`, `cuadroResta`);
   - complemento aritmético con la regla «a 9 todas, a 10 la última significativa»;
   - cifras que faltan y criptoaritmética por fuerza bruta, con unicidad;
-  - número menos su reverso (siempre 99·(a − c)) y división entera por defecto y por exceso (r + r′ = d);
+  - número menos su reverso (siempre 99·(a − c)) y división entera por defecto y por exceso (r + rₑ = d);
   - sumatorias de academia y cantidad de cifras de un producto.
 
   Cada respuesta trae `errores`. La cabecera documenta cómo se forma cada error del reverso y las convenciones de la animación.
@@ -190,7 +190,7 @@ El revisor de cuatro operaciones revisó numeración con la regla nueva y encont
 | divisor d | #c70576 | #fb56b6 |
 | cociente q | #766619 | #f9d524 |
 | residuo por defecto r | #630b03 | #fdc3af |
-| residuo por exceso r′ | #194d2b | #c8f9d1 |
+| residuo por exceso rₑ | #194d2b | #c8f9d1 |
 | suma S | #5c330a | #fde7b9 |
 | cantidad de términos n | #1d5a87 | #06a6f9 |
 
@@ -213,7 +213,7 @@ El dividendo D y la caja de 10 000 van en tinta.
 - **Arrastre:** CLAUDE.md pide arrastrar como interacción principal. Aquí y en numeración todo va con botones. Propuesta: en el explorador, arrastrar una pieza para abrirla o juntarla.
 - **En papel y no en la escena:** la suma de los números de 3 cifras (su error de contar 899 términos no da un entero).
 - **Banco:** sin ítems en el de aritmética.
-- **Para Gerson:** ¿r′ o rₑ? La escena usa r′ y lo aclara con una nota.
+- **Decidido (Gerson, 7 nov 2026):** el residuo por exceso se escribe rₑ; cambiado en escena, motor y casos. En el celular, el tablero sube a un tope de 340 px con predicción pendiente.
 
 **Pedidos para la integración.**
 

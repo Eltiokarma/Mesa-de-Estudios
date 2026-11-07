@@ -61,7 +61,7 @@
                    { "fn": "sumatoria", "args": ["cuadrados", 10], "espera": { "S": 385 } },
                    { "fn": "sumatoria", "args": ["cubos", 5], "espera": { "S": 225 } } ] },
 
-    { "nombre": "Predicción del paso 6: 47 ÷ 9 por defecto da q = 5 y r = 2; por exceso, q = 6 y r′ = 7 (r + r′ = 9); r′ = r: 2; d − 1 − r: 6; d + r: 11",
+    { "nombre": "Predicción del paso 6: 47 ÷ 9 por defecto da q = 5 y r = 2; por exceso, q = 6 y rₑ = 7 (r + rₑ = 9); rₑ = r: 2; d − 1 − r: 6; d + r: 11",
       "fn": "division", "args": [47, 9],
       "espera": { "q": 5, "r": 2, "qExceso": 6, "rExceso": 7, "exacta": false, "residuoMaximo": 8, "filas.llenas": 5, "filas.sobran": 2, "filas.huecos": 7,
         "errores.igualAlDefecto": 2, "errores.divisorMenosUnoMenosR": 6, "errores.sumaElDivisor": 11, "errores.masUno": 3 } },

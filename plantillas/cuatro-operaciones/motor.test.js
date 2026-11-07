@@ -4,7 +4,7 @@
 // 2. Propiedades, con números al azar (semilla fija) y contra cuentas hechas de otra manera (parseInt y toString de
 //    JavaScript, BigInt, fuerza bruta): sumas, restas y multiplicaciones en columnas en muchas bases coinciden con la
 //    aritmética directa, y cada columna cumple «lo que entra = cifra + b · llevada»; los cuadros de la animación no
-//    pierden piezas; CA(N) + N = 10ᵏ y la regla de academia da lo mismo; D = d·q + r con 0 ≤ r < d y r + r′ = d; las
+//    pierden piezas; CA(N) + N = 10ᵏ y la regla de academia da lo mismo; D = d·q + r con 0 ≤ r < d y r + rₑ = d; las
 //    sumatorias coinciden con sumar término a término; la cantidad de cifras de un producto, con probarlo; las
 //    cifras que faltan y las criptos de la escena tienen una sola solución. Y lo más importante para la escena:
 //    ningún error típico da la respuesta correcta ni dos errores dan lo mismo.
@@ -198,7 +198,7 @@ test('sumatorias: coinciden con sumar término a término, y los errores no dan 
   }
 });
 
-test('división entera: D = d·q + r con 0 ≤ r < d, D = d·(q + 1) − r′ y r + r′ = d cuando no es exacta', () => {
+test('división entera: D = d·q + r con 0 ≤ r < d, D = d·(q + 1) − rₑ y r + rₑ = d cuando no es exacta', () => {
   for (let i = 0; i < 2000; i++) {
     const d = ent(1, 60), D = ent(0, 3000), X = M.division(D, d);
     assert.equal(X.d * X.q + X.r, D); assert.ok(X.r >= 0 && X.r < d);
