@@ -338,7 +338,7 @@ function vistaCuerda(L, c, P){
     ctx.strokeStyle = c.muted; ctx.lineWidth = 1;
     const yr = Hs - 16;
     for (let x = 0; x <= P.largo + 1e-9; x += paso){ linea(ctx, X(x), yr - 4, X(x), yr); ctx.fillText(fmt(x, paso < 1 ? 1 : 0), X(x), yr + 1); }
-    ctx.textAlign = 'left'; ctx.fillText('x (m)', 4, yr + 1);
+    ctx.textAlign = 'left'; ctx.textBaseline = 'bottom'; ctx.fillText('x (m)', 3, yr - 5);
   }
   if (P.union){
     const xu = X(P.union.x);
@@ -346,12 +346,12 @@ function vistaCuerda(L, c, P){
     ctx.save(); ctx.strokeStyle = c.muted; ctx.setLineDash([2, 3]); linea(ctx, xu, 8, xu, Hs - 22); ctx.restore();
   }
   if (P.envolvente){
-    ctx.save(); ctx.strokeStyle = c.muted; ctx.setLineDash([4, 4]); ctx.lineWidth = 1.4;
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.globalAlpha = .55; ctx.setLineDash([2, 4]); ctx.lineWidth = 1.2;
     for (const s of [1, -1]){ ctx.beginPath(); for (let j = 0; j <= 200; j++){ const x = P.largo*j/200; const p = Y(s*P.envolvente(x)); j ? ctx.lineTo(X(x), p) : ctx.moveTo(X(x), p); } ctx.stroke(); }
     ctx.restore();
   }
   if (P.gris){
-    ctx.save(); ctx.strokeStyle = c.muted; ctx.globalAlpha = .7; ctx.setLineDash([6, 5]); ctx.lineWidth = 2; ctx.beginPath();
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.globalAlpha = .9; ctx.setLineDash([9, 5]); ctx.lineWidth = 2.4; ctx.beginPath();
     for (let j = 0; j <= 300; j++){ const x = P.largo*j/300; j ? ctx.lineTo(X(x), Y(P.gris(x))) : ctx.moveTo(X(x), Y(P.gris(x))); }
     ctx.stroke(); ctx.restore();
   }
@@ -421,7 +421,7 @@ function vistaCuerda(L, c, P){
     ctx.strokeStyle = c.grid; ctx.lineWidth = 1; ctx.font = `600 10px ${c.mono}`; ctx.fillStyle = c.t; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
     for (let t = Math.ceil(g.t0/paso - 1e-9)*paso; t <= g.t1 + 1e-12; t += paso){ linea(ctx, Xt(t), b.y, Xt(t), b.y + b.h); ctx.fillText(ms(t), clamp(Xt(t), b.x + 8, b.x + b.w - 8), b.y + b.h + 3); }
     ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; linea(ctx, b.x, ycg, b.x + b.w, ycg); linea(ctx, b.x, b.y, b.x, b.y + b.h);
-    ctx.font = `800 11px ${c.mono}`; ctx.fillStyle = c.t; ctx.textAlign = 'right'; ctx.textBaseline = 'bottom'; ctx.fillText('t (ms)', b.x + b.w, ycg - 3);
+    ctx.font = `800 11px ${c.mono}`; ctx.fillStyle = c.t; ctx.textAlign = 'right'; ctx.textBaseline = 'bottom'; ctx.fillText('t (ms)', b.x + b.w - 2, b.y + b.h - 2);
     ctx.fillStyle = c.ink; ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillText(g.rotulo || 'y de la cinta', b.x + 4, b.y + 2);
     const ahora = Math.min(g.ahora, g.t1);
     g.curvas.forEach(cu => {
@@ -447,7 +447,7 @@ const NOMBRES = {
   lam:'<span><i style="background:var(--c-lam)"></i>λ · longitud de onda</span>',
   t:'<span><i style="background:var(--c-t)"></i>t · tiempo (ms)</span>',
   u:'<span><i class="trazos" style="color:var(--ink)"></i>u · velocidad de la cinta</span>',
-  env:'<span><i class="trazos" style="color:var(--muted)"></i>hasta dónde llega cada punto</span>',
+  env:'<span><i class="trazos" style="color:var(--muted);border-top-style:dotted"></i>hasta dónde llega cada punto</span>',
   nodo:'<span><i class="punto" style="background:var(--paper);border:1.5px solid var(--ink)"></i>nodo: punto quieto</span>',
   gris:'<span><i class="trazos" style="color:var(--muted)"></i>la de antes, para comparar</span>',
   union:'<span><i style="background:var(--ink);height:6px"></i>cuerda gruesa (sombreada)</span>',
@@ -506,7 +506,7 @@ function vistaCarrera(c, t){
   const n = CARR.carriles.length, mx0 = 14, mx1 = 20, w = W - mx0 - mx1, alto = (H - 26)/n;
   const X = x => mx0 + x/LARGO*w;
   CARR.carriles.forEach((ca, j) => {
-    const yc = 8 + alto*j + alto*0.62, p = M.pulso({ A:ca.A, ancho:ca.ancho, T:ca.T, mu:ca.mu, x0:-0.3 });
+    const yc = 8 + alto*j + alto*0.62, p = M.pulso({ A:ca.A, ancho:ca.ancho, T:ca.T, mu:ca.mu, x0:0 });
     const esc = alto*0.42/0.1;
     ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = ca.mu > MU ? 4.5 : 2.2; ctx.beginPath();
     for (let k = 0; k <= 240; k++){ const x = LARGO*k/240, y = yc - p.y(x, t)*esc; k ? ctx.lineTo(X(x), y) : ctx.moveTo(X(x), y); }
@@ -963,7 +963,7 @@ const EXPS = [
       <p>En la unión, una parte de la onda rebota. Con un solo pulso se ve mejor: el que rebota vuelve de cabeza (la cuerda gruesa es «más dura» de mover) y el que pasa sale más chico, más angosto y más lento.</p>
       <p class="fuente">En México, cerca del 11 % creyó que la cuerda más pesada es más rápida (Barniol y Zavala, 2017); aquí ese error aparece en otra situación. Las opciones B y C son errores que suponemos (hipótesis nuestra).</p>`,
     desc:() => E.ya ? `t = ${ms(E.t)} ms. En la delgada la onda va a 100 metros por segundo; en la gruesa, a 50.` : 'Dos cuerdas unidas: la onda de 50 hercios llega por la delgada hasta la unión.' },
-  { id:'pulsos', corto:'Dos pulsos de frente', ley:['cuerda'], leyDespues:['cuerda', 'pulsos', 't'],
+  { id:'pulsos', corto:'Dos pulsos de frente', ley:['cuerda'], leyDespues:['cuerda', 'pulsos'],
     q:`Por una cuerda viajan dos pulsos iguales, uno hacia arriba y otro hacia abajo, uno hacia el otro. En un instante la cuerda se ve completamente plana. ¿Qué pasa después?`,
     opts:[['a','La cuerda se queda plana: los pulsos se anularon','ON7-se-anulan','documentado'], ['b','Los dos pulsos reaparecen y siguen: se atravesaron'],
           ['c','Los pulsos reaparecen y vuelven por donde vinieron: rebotaron','ON7-rebotan','parcial'], ['d','Reaparecen más chicos: perdieron energía al chocar','ON7-salen-mas-chicos','documentado']],
@@ -971,9 +971,9 @@ const EXPS = [
     fb:{ a:'Elegiste la A. En el instante plano la cuerda no está quieta: unos trozos suben y otros bajan. Por eso los pulsos reaparecen. La correcta está marcada.',
          c:'Elegiste la C. Los pulsos no chocan como carritos: se atraviesan. Mira hacia dónde sigue cada uno. La correcta está marcada.',
          d:'Elegiste la D. Cada pulso sale con su tamaño de antes: mientras se cruzan, solo se suman punto por punto. La correcta está marcada.' },
-    antes:() => Object.assign(E, { tipo:'pulsos', t:2 }),
+    antes:() => Object.assign(E, { tipo:'pulsos', t:1.4 }),
     despues:() => arrancar(),
-    ctrl:() => `<div class="slider"><label for="tq"><span>Tiempo (${V('t','t')})</span><output id="tq-o"></output></label><input id="tq" type="range" min="0" max="4" step="0.02" value="${E.t}" style="accent-color:var(--c-t)"></div><p><button type="button" class="btn" id="repetir">Repetir</button></p>`,
+    ctrl:() => `<div class="slider"><label for="tq"><span>Tiempo (${V('t','t')})</span><output id="tq-o"></output></label><input id="tq" type="range" min="0" max="2.8" step="0.02" value="${E.t}" style="accent-color:var(--c-t)"></div><p><button type="button" class="btn" id="repetir">Repetir</button></p>`,
     exp:`<p>Mientras se cruzan, la cuerda es la suma de los dos pulsos punto por punto (las líneas a trazos son cada pulso solo). En el instante en que se ve plana, la suma vale cero en todas partes, pero cada trozo de cuerda sigue moviéndose: el pulso que llega lo empuja hacia arriba o hacia abajo. Después cada pulso sale con su forma y su tamaño, como si el otro no hubiera estado.</p>
       <p class="fuente">Antes de la instrucción, cerca del 20 % de 182 universitarios dijo que los pulsos se anulan para siempre (Wittmann, Steinberg y Redish, 1999). En México, cerca del 9 % dijo que salen más chicos (Barniol y Zavala, 2017). Que reboten aparece en esos estudios sin porcentaje propio.</p>`,
     desc:() => '' },
@@ -1006,10 +1006,10 @@ const EXPS = [
       <p class="fuente">El informe no encontró estudios con alumnos sobre decibeles: las tres opciones incorrectas son errores que suponemos (hipótesis nuestra). En un estudio con 12 futuros profesores de física de Canadá, el alumno que ellos imaginaban decía «debería sonar el doble porque hay dos» (Milner-Bolotin y Zazkis, 2021).</p>`,
     desc:() => E.ya ? `${E.n} parlantes: intensidad ${E.n} veces la de uno, el medidor marca ${fmt(E.beta, 0)} decibeles.` : 'Un parlante encendido marca 80 decibeles; el segundo está apagado.' },
 ];
-EXPS[2].desc = () => E.ya ? `t = ${N2(E.t)} segundos. ${Math.abs(E.t - 2) < 0.03 ? 'La cuerda se ve plana.' : E.t > 2 ? 'Los pulsos ya se cruzaron y siguen.' : 'Los pulsos se acercan.'}` : 'Dos pulsos iguales y opuestos en el instante en que la cuerda se ve plana.';
+EXPS[2].desc = () => E.ya ? `t = ${N2(E.t)} segundos. ${Math.abs(E.t - 1.4) < 0.03 ? 'La cuerda se ve plana.' : E.t > 1.4 ? 'Los pulsos ya se cruzaron y siguen.' : 'Los pulsos se acercan.'}` : 'Dos pulsos iguales y opuestos en el instante en que la cuerda se ve plana.';
 
 const S = { k:0, pred:{}, t0:Date.now() };
-const PUL = M.dosPulsos({ A1:0.02, A2:-0.02, ancho:0.3, v:1, x1:0, x2:4 });
+const PUL = M.dosPulsos({ A1:0.02, A2:-0.02, ancho:0.3, v:1, x1:0.6, x2:3.4 });
 function arrancar(){
   parar(); parar = () => {};
   if (E.tipo === 'estac'){
@@ -1019,7 +1019,7 @@ function arrancar(){
   } else if (E.tipo === 'medio'){
     E.t = 0; parar = animarTiempo(0, 0.09, t => { E.t = t; draw(); }, null);
   } else if (E.tipo === 'pulsos'){
-    E.t = 0; parar = animarTiempo(0, 4, t => { E.t = t; sincronizar(); }, null, 1.6/4*1);
+    E.t = 0; parar = animarTiempo(0, 2.8, t => { E.t = t; sincronizar(); }, null, 1.6);
   } else if (E.tipo === 'aire'){
     E.t = 0; E.traza = [];
     parar = animarTiempo(0, 0.03, t => { E.t = t; if (t*340 >= 1.5) E.traza.push(LON.s(1.5, t)); draw(); }, null, 200);
@@ -1051,12 +1051,12 @@ function draw(){
     const t = E.ya ? E.t : 0.04;
     const y = E.ya ? (xx => cu.y(xx, t)) : (xx => (xx <= d ? mano.y(xx, Math.min(t, 0.02)) : 0));
     const P = { largo, yMax:0.03, y, mano:h(t), union:{ x:d }, regla:true, cinta:1, cinta2:3, cintaTxt:'cinta 1', cinta2Txt:'cinta 2',
-      etiquetas:[{ x:1, y:24, txt:'v = 100 m/s', col:'v' }, { x:3, y:24, txt: E.ya ? 'v = 50 m/s' : 'v = ?', col:'v' }] };
-    P.cotaL = E.forma === 'onda' ? [{ x1:0, x2:2, txt:'λ = 2 m' }].concat(E.ya && t > 0.03 ? [{ x1:2.5, x2:3.5, txt:'λ = 1 m' }] : []) : [];
+      etiquetas:[{ x:1, txt:'v = 100 m/s', col:'v' }, { x:3, txt: E.ya ? 'v = 50 m/s' : 'v = ?', col:'v' }] };
+    P.cotaL = E.forma === 'onda' ? [{ x1:0, x2:2, txt:'λ = 2 m' }].concat(E.ya && t >= 0.05 ? [{ x1:2.5, x2:3.5, txt:'λ = 1 m' }] : []) : [];
     if (E.ya) P.yt = { curvas:[{ f: s => cu.y(1, s) }, { f: s => cu.y(3, s), dash:true }], t0:0, t1:0.09, ahora:t, yMax:0.035, rotulo:'y de la cinta 1 (entera) y de la cinta 2 (a trazos)' };
     vistaCuerda(L, c, P);
   } else if (E.tipo === 'pulsos'){
-    const t = E.ya ? E.t : 2;
+    const t = E.ya ? E.t : 1.4;
     const P = { largo:4, yMax:0.025, y: xx => PUL.y(xx, t), regla:true, cintas:[] };
     if (E.ya) P.gris = xx => PUL.y1(xx, t);
     vistaCuerda(L, c, P);
@@ -1091,7 +1091,7 @@ function finalEstatico(x){
   parar(); parar = () => {};
   if (E.tipo === 'estac') arrancar();
   else if (E.tipo === 'medio') E.t = 0.09;
-  else if (E.tipo === 'pulsos') E.t = 4;
+  else if (E.tipo === 'pulsos') E.t = 2.8;
   else if (E.tipo === 'aire'){ E.t = 0.03; E.traza = []; for (let k = 0; k <= 300; k++){ const t = 0.03*k/300; if (t*340 >= 1.5) E.traza.push(LON.s(1.5, t)); } }
   else if (E.tipo === 'db'){ const r = M.sumarNiveles({ niveles:Array(E.n).fill(80) }); E.I = r.I; E.beta = r.betaAcademia; }
 }
