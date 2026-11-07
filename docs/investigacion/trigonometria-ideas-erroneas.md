@@ -207,8 +207,8 @@ Los errores TT1 a TT13 de `plantillas/transformaciones-trig/` (suma a producto, 
 
 ## Cónicas (CO1 a CO37, 7 nov 2026)
 
-Este informe no cubre las cónicas. Los errores CO1 a CO35 y CO37 de `plantillas/conicas/` (la cuerda del jardinero) son **hipótesis nuestras**, sin dato publicado leído; la lista está en `rutinas/matematica-a.md` y en la cabecera del motor. Falta un informe que los respalde o descarte; mientras tanto se confirman con los datos del colegio piloto.
+Este informe no cubre las cónicas. Los errores CO1 a CO35 y CO37 de `plantillas/conicas/` (la cuerda del jardinero) son **hipótesis nuestras**, sin dato publicado leído; la lista está en `rutinas/matematica-a.md` y en la cabecera del motor. Se confirman con los datos del colegio piloto. Búsqueda de respaldo (7 nov 2026): [`matematica-avanzada-ideas-erroneas.md`](matematica-avanzada-ideas-erroneas.md). Ningún código llegó a documentado ni a parcial.
 
 ## Coordenadas polares (CP1 a CP27, 7 nov 2026)
 
-Los errores CP1 a CP27 de `plantillas/coordenadas-polares/` (el radar) son **hipótesis nuestras**; la lista está en la cabecera de su `motor.js`. TR11, TR12 y AL9 se usan allí como parcial, con la fuente de su propio informe. Se confirman con los datos del colegio piloto.
+Los errores CP1 a CP27 de `plantillas/coordenadas-polares/` (el radar) son **hipótesis nuestras**; la lista está en la cabecera de su `motor.js`. TR11, TR12 y AL9 se usan allí como parcial, con la fuente de su propio informe. Se confirman con los datos del colegio piloto. Búsqueda de respaldo (7 nov 2026): [`matematica-avanzada-ideas-erroneas.md`](matematica-avanzada-ideas-erroneas.md). Propone CP3 como parcial (Habre, 2017).

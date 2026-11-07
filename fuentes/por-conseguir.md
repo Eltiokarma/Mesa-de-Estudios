@@ -189,3 +189,131 @@ Para diseñar plantillas y escribir problemas propios, no para copiar (ver "Uso 
 ## 4. Ya leídos completos (no hace falta conseguirlos)
 
 Wörner y otros (2022); John, Molepo y Chirwa (2017); Singh y Schunn (2016); Handayani y Arifin (2021); Taşlıdere y Eryılmaz (2015); Horn y Mikelskis (2001); Beichner (1994); Thornton y Sokoloff (1998); Prescott y Mitchelmore (2005); Carrascosa, Gil Pérez y Valdés (2004); Castillo, Moscoso, Phan y Quiroz (2013); Mora y Herrera (2009); Bao, Hogg y Zollman (2002); Mahajan (2005). Los enlaces están en cada informe de `docs/investigacion/`.
+
+## 5. Matemática avanzada (7 nov 2026, rutina de investigación de matemática)
+
+Fuentes de [`docs/investigacion/matematica-avanzada-ideas-erroneas.md`](../docs/investigacion/matematica-avanzada-ideas-erroneas.md) que solo se vieron por resumen, fragmento o cita: la red de la sesión no dejó abrir ningún texto completo. Prioridad A: puede subir un código de hipótesis a parcial o de parcial a documentado. Guardar como `fuentes/libros/<primer-autor>-<año>-<tema>.pdf`.
+
+### Cónicas
+
+- **A** · Sudihartinih, E. y Purniati, T. (2020). Students' Mistakes and Misconceptions on the Subject of Conics. *International Journal of Education*, 12(2). DOI 10.17509/ije.v12i2.19130. https://ejournal.upi.edu/index.php/ije/article/download/19130/pdf (acceso abierto). Para ver las respuestas erróneas concretas y sus frecuencias en lado recto, asíntotas, focos de la hipérbola y ecuaciones en los dos ejes; puede subir CO2, CO7, CO21–CO23 y CO25–CO27 a parcial o documentado.
+- **A** · Karapiçak, S. Tesis de maestría: «10. sınıf öğrencilerinin analitik geometride hata ve kavram yanılgılarının analizi». https://acikbilim.yok.gov.tr/handle/20.500.12812/381714 . Muestra de 2552 alumnos; si incluye la circunferencia, puede dar cifras para CO8, CO9 y CO10.
+- **A** · Tesis de YÖK sobre imágenes de la hipérbola en 90 futuros profesores. https://acikbilim.yok.gov.tr/handle/20.500.12812/569819 . Dice que hay ideas erróneas «con sus causas»; puede tocar CO2, CO17, CO18 y CO21.
+- **B** · Wright, V. (2013). Pre-service Teachers' Concept Image for Circle and Ellipse. MERGA 36, 682-689. https://acuresearchbank.acu.edu.au/download/6781c252d0976cee28a9cc03df6f21a0343bff7f01616513ac9e55fa6634e23d/146566/Wright_2013_Pre_service_teachers_concept_image.pdf (acceso abierto). Cifras sobre circunferencia como caso de elipse (CO20, CO34–CO37).
+- **B** · Boubée, C., Rey, G. y Sastre Vázquez, P. (2018). Errores en situaciones de validación. https://funes.uniandes.edu.co/wp-content/uploads/tainacan-items/32454/1170868/Boubee2018Errores.pdf . Confirmar si los alumnos no consideran la parábola al deformar la elipse (CO31, CO32).
+- **B** · Tesis PUCP sobre la elipse en 5.º de secundaria. https://tesis.pucp.edu.pe/bitstreams/7287a9be-1d91-4157-a1d8-3a68db59c7ca/download . Única fuente peruana de secundaria; ver si registra respuestas a la definición con dos focos.
+- **B** · Estudio de la Universidad Pasundan sobre dificultades con la elipse. https://journal.unpas.ac.id/index.php/symmetry/article/view/27500 . Ver qué fórmula del lado recto usan (CO25–CO27).
+- **C** · Tesis «11. Sınıf Öğrencilerinin Elips, Parabol ve Hiperbol Kavramlarını Oluşturma Sürecinin Araştırılması», Universidad de Trakya. https://dspace.trakya.edu.tr/xmlui/handle/trakya/5576 . Contexto de enseñanza con matemática realista.
+- **C** · Revisión de tesis de la MEM-PUCP sobre cónicas (2014-2020). https://tesis.pucp.edu.pe/items/2a58f672-c577-492f-8fae-8d537edf0a35 . Mapa de qué se ha estudiado en el Perú.
+- **C** · Rabanal (2003), Universidad Abierta de Filipinas, 16 estudiantes de ingeniería. https://repository.upou.edu.ph/items/3a01530c-8dbe-4efe-872e-3aadadf5773d .
+- **C** · Tesis fenomenográfica de la UIN Sunan Gunung Djati, 105 estudiantes. https://digilib.uinsgd.ac.id/143082/66/02.%20ABSTRAK.pdf .
+- **C** · González Gallegos, W. M. (2018). Tesis, Universidad de Cuenca. https://dspace-test.ucuenca.edu.ec/bitstream/123456789/30735/1/Tesis.pdf .
+- **C** · Tesis de NTNU (Taiwán, 2011) sobre modelos mentales de parábola y elipse. https://etds.lib.ntnu.edu.tw/thesis/detail/6f1ba8ad2ff23de9c1792175bc12355c .
+
+Para abrir las de prioridad A y B hay que permitir en la red de la sesión: ejournal.upi.edu, acikbilim.yok.gov.tr, acuresearchbank.acu.edu.au, funes.uniandes.edu.co, tesis.pucp.edu.pe y journal.unpas.ac.id.
+
+### Coordenadas polares
+
+| Referencia | Para qué | URL | Prioridad |
+| --- | --- | --- | --- |
+| Borji, V., Erfani, H. y Font, V. (2020). A combined application of APOS and OSA to explore undergraduate students' understanding of polar coordinates. *IJMEST* 51(3), 405–423. | Cifras por tarea: ver si alguna tarea trata r negativo, cuántos de los 34 fallan y qué hacen (¿ignoran el signo, reflejan?). Podría sumar respaldo a CP3 y llevar CP4, CP5 y CP7 a parcial | https://doi.org/10.1080/0020739X.2019.1578904 | A |
+| Habre, S. (2017). Students' challenges with polar functions. *IJMEST* 48(1), 48–66. | Muestra, tareas y respuestas con r negativo; quizás curvas tipo r = a cos θ o rosas (CP15 a CP24) | https://laur.lau.edu.lb:8443/xmlui/handle/10725/4239 ; https://doi.org/10.1080/0020739X.2016.1220027 | A |
+| Montiel, M., Vidakovic, D. y Kabael, T. (2008). Relationship between students' understanding of functions in Cartesian and polar coordinate systems. *Investigations in Mathematics Learning* 1(2), 52–70. | Qué ideas cartesianas se trasladan; posible respaldo para CP27, CP25 y CP15 | https://doi.org/10.1080/24727466.2008.11790283 | A |
+| Moore, K. C., Paoletti, T. y Musgrave, S. (2014). Complexities in students' construction of the polar coordinate system. *JMB* 36, 135–149. | Medida del ángulo y referencia (CP9, CP2); traslado cartesiano (CP27) | https://digitalcommons.montclair.edu/mathsci-facpubs/57 | B |
+| Kabael, T. (2015). Analysis II students' construction of polar functions. *Necatibey Eğitim Fakültesi Elektronik Fen ve Matematik Eğitimi Dergisi*. | Contraste con Montiel y otros; posibles errores de graficar | https://dergipark.org.tr/en/download/article-file/39920 | B |
+| Aznar, M. A., Distéfano, M. L., Prieto, G. y Moler, E. (2010). Análisis de errores en la conversión de representaciones de números complejos. | Ítems de módulo y argumento: posible dato para CP10, CP12 y CP13 en la forma polar del complejo | https://funes.uniandes.edu.co/wp-content/uploads/tainacan-items/32454/1181282/Aznar2010Analisis.pdf | A |
+| Distéfano, M. L., Aznar, M. A. y Pochulu, M. (2012). Errores asociados a la representación geométrica-vectorial de números complejos. *Unión* 30, 61–80. | Igual que la anterior (argumento y cuadrante) | https://funes.uniandes.edu.co/wp-content/uploads/tainacan-items/32454/1159053/Dist25C325A9fano2012Errores.pdf | A |
+| Artículo de *REAMEC* 3(1) (2015) sobre dificultades en coordenadas polares en cálculo de varias variables (UANL); autores por confirmar. | Confirmar autores, a qué categoría va el 56 % y si hay ítems de graficar o convertir | https://periodicoscientificos.ufmt.br/ojs/index.php/reamec/article/download/5306/3501/16900 | B |
+| Montiel, M., Wilhelmi, M., Vidakovic, D. y Elstak, I. (2009). *ESM* 72(2), 139–160. | Respuestas de alumnos en polares, si las reporta | https://doi.org/10.1007/s10649-009-9184-2 | C |
+| Sayre, E. C. y Wittmann, M. C. (2008). *Phys. Rev. ST PER* 4, 020105 (acceso abierto). | Detalles de cómo deducen x = r cos θ (CP14, TR11) | https://doi.org/10.1103/PhysRevSTPER.4.020105 | C |
+| Owusu, Bonyah y Arthur (2023), *Cogent Education*; Zengin y Tatar (2015), *IJMEST*; Alabdulaziz, Aldossary, Alyahya y Althubiti (2021), *Education and Information Technologies* 26, 2685–2713, DOI 10.1007/s10639-020-10371-5 (en línea en noviembre de 2020; alumnas de 3.º de secundaria de Arabia Saudita, unidad de polares y complejos; el total de 60 no está confirmado, solo se vio «30 en el grupo tradicional») | Ver si sus pruebas listan errores por ítem; el de Alabdulaziz es el único escolar | https://doi.org/10.1080/2331186X.2023.2177050 ; https://doi.org/10.1080/0020739X.2014.904529 ; https://doi.org/10.1007/s10639-020-10371-5 | C |
+
+### Matrices y determinantes
+
+| Referencia | Para qué | URL | Prioridad |
+| --- | --- | --- | --- |
+| Aygör y Özdağ (2012), *Procedia – Social and Behavioral Sciences* 46, 2989–2994 (acceso abierto en ScienceDirect) | Confirmar MT4 con porcentaje; ver si reporta det(A + B) (MT3), el intercambio de filas y otros errores | https://doi.org/10.1016/j.sbspro.2012.05.602 | A |
+| Kazunga y Bansilal (2018), «Misconceptions about determinants», Springer | Lista de errores con conteos sobre 116 profesores: det de la inversa, transpuesta (MT25), propiedades (MT3, MT26), det(kA) (MT4, MT24); confirmar la cifra de 34 | https://doi.org/10.1007/978-3-319-66811-6_6 | A |
+| Kazunga y Bansilal (2017), *Journal of Mathematical Behavior* | Qué respuestas dieron en el producto fila × columna (MT15, MT16) y en el producto en general (MT1, MT2, MT14) | (buscar por título en ScienceDirect) | A |
+| Kazunga y Bansilal (2020), *Educational Studies in Mathematics* 103(3) | Errores en la inversa (MT7, MT13, MT22, MT23) | https://doi.org/10.1007/s10649-020-09935-6 | B |
+| Kartini y Alawiyah (2023), *Mosharafa* 12(1) (acceso abierto) | Porcentajes por tipo de error en el producto de matrices, alumnos de secundaria (MT1, MT15, MT16) | https://doi.org/10.31980/mosharafa.v12i1.1811 | B |
+| Estudios indonesios de clase XI (Anggriani en *JUDIKA*, *Proximal*, Khairani y Kartini 2021 en *Mosharafa*) | Ver si traen ejemplos de respuestas erróneas concretas en determinante e inversa (MT5, MT18, MT19, MT7) | https://journal.ipm2kpe.or.id/index.php/JUDIKA/article/view/19778 ; https://e-journal.my.id/proximal/article/view/2136 | B |
+| Trabajo del proyecto IOLA sobre el determinante (NSF PAR 10566425 y 10566423) | Ideas de los alumnos sobre el determinante como área con signo (MT20) y revisión de la poca literatura que hay | https://par.nsf.gov/servlets/purl/10566425 | B |
+| Kinanti (2024), tesis, Universitas Jember | Tipos de error al aplicar Cramer con Sarrus (MT6, MT27 a MT31) | https://repository.unej.ac.id/handle/123456789/119707 | C |
+| Tesis de la PUCP sobre errores en sistemas de ecuaciones lineales en ingeniería (clasificación de Socas) | Único antecedente peruano cercano; ver si toca Cramer o la inversa | https://repositorio.pucp.edu.pe/items/c3fe64ad-48c2-4d2f-9aea-b12fabb63dfd | C |
+| Stewart, Andrews-Larson, Berman y Zandieh (eds., 2018), *Challenges and Strategies in Teaching Linear Algebra*, Springer (libro completo) | Otros capítulos sobre el producto de matrices (Figueroa, Possani y Trigueros) y las transformaciones (MT17, MT33, MT34) | https://doi.org/10.1007/978-3-319-66811-6 | C |
+| Dorier (ed., 2000), *On the Teaching of Linear Algebra*, Kluwer | Marco general (obstáculo del formalismo, modos de descripción de Hillel); no se espera que dé cifras para MT | https://doi.org/10.1007/0-306-47224-4 | C |
+
+### Binomio de Newton
+
+| Referencia | Para qué | URL | Prioridad |
+| --- | --- | --- | --- |
+| Batanero, Navarro-Pelayo y Godino (1997), ESM 32, 181–199 | Tabla de frecuencias del error de orden, de repetición y de operación por problema y por grupo; pasar BN12 (y quizá BN13) a documentado | https://www.ugr.es/~batanero/pages/ARTICULOS/Implicitmodel.htm (también hay PDF en la misma carpeta, según el informe de aritmética) | A |
+| Navarro-Pelayo, Batanero y Godino (1996), Educación Matemática 8(1) | Versión en español con los mismos datos; confirmar el 37,8 % y el 66,6 % | https://funes.uniandes.edu.co/wp-content/uploads/tainacan-items/32454/1141903/Razonamiento1996Navarro.pdf | A |
+| Roa (2000), tesis, Universidad de Granada; Roa, Batanero y Godino (2003), Educación Matemática | Porcentajes de error en universitarios (91 en el artículo, 120 en la ponencia del SEIEM de 2001) | https://dialnet.unirioja.es/descarga/articulo/617785.pdf | A |
+| Lecoutre (1992), *Cognitive models and problem spaces in "purely random" situations*, ESM 23, 557–568 | Proporción de equiprobabilidad leída en el texto completo, para BN21 | https://doi.org/10.1007/BF00540060 | B |
+| Begué, Batanero, Gea y Díaz-Levicoy (2020), Tangram 3(2), 27–50 | Frecuencia del sesgo de equiprobabilidad en la binomial: principal candidato para documentar BN21 | https://zaguan.unizar.es/record/121598/files/texto_completo.pdf | A |
+| Eizenberg y Zaslavsky (2004), MTL 6(1) | Confirmar en la p. 31 el 40 % (43 de 108) y los errores conceptuales | https://doi.org/10.1207/s15327833mtl0601_2 | B |
+| Lockwood y Gibson (2016), ESM 91 | Cifras de acierto con y sin listado; respaldo del diseño de la escena | https://par.nsf.gov//servlets/purl/10099133 | B |
+| Fischbein y Gazit (1988), *The combinatorial solving capacity in children and adolescents*, ZDM 20(5) | Acierto en combinaciones contra variaciones después de enseñar | (por buscar) | B |
+| Tatira (2021), EURASIA 17(12) | Único estudio empírico sobre el desarrollo binomial; ver si reporta errores de coeficiente o signo que se traspasen a n natural | https://www.ejmste.com/download/mathematics-education-students-understanding-of-binomial-series-expansion-based-on-the-apos-theory-11287.pdf | B |
+| Informes de examinadores de Edexcel, AQA, OCR y Cambridge International (Additional Mathematics 0606, 9709) | Suelen decir qué fracción de candidatos falló una pregunta de binomio; es lo más cercano a un dato para BN2, BN4 y BN8 | Sitios de cada examinador (Examiner reports) | A |
+| Tarlow (2011), *Pizzas, towers, and binomials*, en Maher, Powell y Uptegrove (eds.), *Combinatorics and Reasoning*, Springer | Cómo alumnos de 10.º grado conectan torres, Pascal y coeficientes; ideas para la escena, no cifras | https://rd.springer.com/chapter/10.1007/978-94-007-0615-6_11 | C |
+| Tesis peruanas o de pregrado sobre el binomio de Newton (UNMSM, UNI, PUCP, UNA Puno, en ALICIA o RENATI) | Primer dato local, si existe | https://alicia.concytec.gob.pe | B |
+| Datos del propio lanzamiento (eventos de predicción de la escena) | Única vía realista para confirmar BN1 a BN27 | — | A |
+
+### Números complejos
+
+| Referencia | Para qué | URL | Prioridad |
+| --- | --- | --- | --- |
+| Turanlı, Keçeli y Türker (2007), *BAÜ FBE Dergisi* 9(2), 135–149, escolares turcos de 2.º de secundaria | Es la fuente de secundaria más cercana (tamaño de muestra por confirmar); el texto completo puede traer porcentajes por ítem de conjugado, raíces de negativos (CX28) y operaciones (CX7, CX12–CX16) | https://dergipark.org.tr/en/download/article-file/231670 | A |
+| Keçeli y Turanlı (2013), universitarios | Lista de errores comunes; ver si trae i² = 1 o √(−a)·√(−b) con cifra | https://dergipark.org.tr/en/download/article-file/87135 | A |
+| Lukumon y otros (2026), 18 alumnos nigerianos | Ver qué error exacto cometen en De Moivre (CX30, CX31, AL11), conjugado y cociente | https://journals.iuiu.ac.ug/index.php/ije/article/download/1210/851/2650 | A |
+| Smith, Zwolak y Manogue (2019), acceso abierto | Confirmar CX17 y CX18 con conteos; muestra exacta | https://doi.org/10.1103/PhysRevPhysEducRes.15.010138 | A |
+| Distéfano, Aznar y Pochulu (2012); Aznar y otros (2010); Andino y otros (2012), Argentina | Errores de universitarios hispanohablantes en módulo, argumento, polar y binómica; quizá con frecuencias | https://funes.uniandes.edu.co/wp-content/uploads/tainacan-items/32454/1159053/Dist25C325A9fano2012Errores.pdf · …/1181282/Aznar2010Analisis.pdf · …/1167354/Andino2012Numeros.pdf | A |
+| Seloane, Ramaila y Ndlovu (2025) | Frecuencias por tipo de error antes y después | https://doi.org/10.4102/pythagoras.v46i1.825 | B |
+| Panaoura y otros (2006), 95 escolares griegos | Ítems y porcentajes de aciertos por registro | https://doi.org/10.1080/00207390600712281 | B |
+| Nordlander y Nordlander (2012) | Las cuatro categorías y las concepciones erróneas listadas (CX29) | IJMEST 43 (número y páginas por confirmar; Taylor & Francis) | B |
+| Chin y Jiew (2020), *The Mathematics Enthusiast* 17(1), 2 universitarios | Estudio empírico sobre i = √(−1) (indicio para CX28) | https://scholarworks.umt.edu/tme/vol17/iss1/11 | B |
+| Karaaslan, tesis «Karmaşık sayılar konusundaki kavram yanılgıları ve hataları» (Hacettepe) | Posible desglose por error | https://openaccess.hacettepe.edu.tr/handle/11655/19755 | B |
+| Karakok, Soto-Johnson y Dyben (2015) | Producto como giro en profesores; solo 3 casos | https://doi.org/10.1007/s10857-014-9288-1 | C |
+| Conner, Rasmussen, Zandieh y Smith | Multiplicar por −1 como giro; confirmar año y sede | https://www.academia.edu/26387792 | C |
+| Bustamante (2000), tesis PUCP sobre enfoques para presentar los complejos | Única fuente peruana hallada; es sobre enseñanza, no conteo de errores | Repositorio PUCP (no ubicado) | C |
+| Tirosh y Almog (1989) y Danenhower (2000) | Citadas en el pedido; no se pudo confirmar que existan con esos datos | — | C |
+
+Hosts que habría que permitir para leer los textos completos: funes.uniandes.edu.co, dergipark.org.tr, journals.iuiu.ac.ug, link.aps.org, pythagoras.org.za.
+
+### Geometría del espacio
+
+| Referencia | Para qué | URL | Prioridad |
+| --- | --- | --- | --- |
+| Kondo, Fujita, Kunimune, Jones y Kumakura (2014), PME 38, vol. 4, 25–32 | Confirmar el total de respuestas del ángulo BGD, las cuentas de 60°, 45° y 22,5° y la muestra; pasaría `anguloEnVertice.angulo.recto` a documentado | https://eprints.soton.ac.uk/445744 | A |
+| Kondo, Fujita, Kunimune y Jones (2013), PME 37 | Niveles y la respuesta de 90° por la red | https://eprints.soton.ac.uk/445811/1/Kondo_etc_PME37_2013.pdf | A |
+| Fujita y otros (2017), *Journal of Mathematical Behavior*, representaciones del cubo | Porcentajes por respuesta en tareas de ángulos y propiedades del cubo (7.° a 9.° grado) | https://ore.exeter.ac.uk/repository/handle/10871/26954 | A |
+| Fujita y otros (2020), *MERJ* 32(2) (acceso abierto) | Tareas con diagramas engañosos en 1357 alumnos; posible cifra para las claves `dibujo` | https://eprints.soton.ac.uk/441656/1/Fujita_etc_spatial_reasoning_skills_2D_3D_2020.pdf | A |
+| Götte (2019), tesis de maestría, UNL | Leer los ejemplos de la categoría «analogías» (perpendicularidad recta-plano, paralelismo, cruzadas); si describen «basta una recta» o «no se cortan, entonces son paralelas», `bastaUna` y `paralelas` pasarían a parciales | https://bibliotecavirtual.unl.edu.ar:8443/bitstream/handle/11185/5808/Tesis.pdf | A |
+| Widder, Berman y Koichu (2019), JRME 50(5), y su informe PME-NA | Porcentajes de comprensión por boceto del cubo; información engañosa del dibujo | https://nctm.org/Publications/Journal-for-Research-in-Mathematics-Education/2019/Vol50/Issue5/An-A-Priori-Measure-of-Visual-Difficulty-of-2-D-Sketches-Depicting-3-D-Objects | B |
+| Parzysz (1988), ESM 19, 79–92 | Texto original de «saber contra ver» | DOI 10.1007/BF00428386 | B |
+| Götte y Mántica (2012, RevEM; 2021, UNIÓN) | Ejemplos de errores de perpendicularidad recta-plano | https://dialnet.unirioja.es/descarga/articulo/8833045.pdf ; https://union.fespm.es/index.php/UNION/article/view/187 | B |
+| Pittalis y Christou (2010), ESM 75(2) | Tareas de «propiedades matemáticas» de sólidos con porcentaje de acierto | DOI 10.1007/s10649-010-9251-8 | C |
+| Estudios indonesios de *dimensi tiga* (Ridha y otros 2023 en *Aksioma*; Asri y otros 2018; Al-Khwarizmi) | Tienen tablas por ítem en distancia y ángulo recta-plano en el cubo, el mismo tipo de problema de academia | https://jurnal.unigal.ac.id/jwp/article/download/4670/4140 ; https://ejournal.iainpalopo.ac.id/index.php/al-khwarizmi/article/download/1177/1159/4610 | C |
+| TIMSS Advanced 2008, apéndice de ítems | Buscar ítems liberados de ángulo recta-plano o diedro con porcentaje por opción | https://elvis.bc.edu/timss_advanced/downloads/T08_TR_AppendixD.pdf | C |
+
+Para abrirlas hace falta permitir en la red de la sesión, como mínimo: eprints.soton.ac.uk, ore.exeter.ac.uk, bibliotecavirtual.unl.edu.ar, link.springer.com, doaj.org y funes.uniandes.edu.co. Con las cuatro de prioridad A se podría pasar a documentado el ángulo del cubo y, quizá, las claves `dibujo`. Para el resto, lo más realista sigue siendo lo que propone el informe de geometría: preguntas abiertas en el colegio piloto y distractores sacados de esas respuestas.
+
+### Conteo de figuras
+
+| Referencia | Para qué | URL | Prioridad |
+| --- | --- | --- | --- |
+| Battista y Clements (1996), JRME 27(3), 258–292 | Confirmar 23 % y 63 % (no confirmados), el tamaño de la muestra y la frecuencia de cada estrategia (solo visibles, caras, doble cuenta de aristas); es lo que puede subir `pila.*` a documentado | https://doi.org/10.5951/jresematheduc.27.3.0258 · https://www.researchgate.net/publication/343754592 | A |
+| Ben-Chaim, Lappan y Houang (1985), ESM 16(4), 389–409 | Frecuencia de cada uno de los cuatro errores y la muestra; asignar a cada opción los ≈17, 22, 8 y 8 % y confirmar los aciertos de ≈25 a 50 % | https://doi.org/10.1007/BF00417194 | A |
+| Olkun y Knaupp (1999), ERIC ED428954 | Cifras de cubos visibles y caras visibles en escolares | https://files.eric.ed.gov/fulltext/ED428954.pdf | B |
+| Tekin (CIMT) y el estudio turco de 6.º grado (ERIC EJ1013939) | Porcentajes de estrategias al contar cubos en 6.º a 8.º | https://www.cimt.org.uk/journal/tekin2.pdf · https://files.eric.ed.gov/fulltext/EJ1013939.pdf | B |
+| Battista y otros (1998), JRME 29(5), 503–532 | Niveles de estructuración de cuadrículas; ver si hay tareas con cuadrados de varios tamaños | https://doi.org/10.5951/jresematheduc.29.5.0503 | B |
+| Finesilver (2017), estructuración y errores con arreglos 3D en alumnos con necesidades especiales | Catálogo de errores de conteo de cubos con frecuencias | https://kclpure.kcl.ac.uk/ws/files/67257027/Finesilver_2017_3DArrays_MTL_acceptedauthormanuscript.pdf | B |
+| Fujita y Jones (2007) y Fujita (2012) | Confirmar el 13 % de 158 futuros profesores que aceptan el cuadrado como rectángulo (`rectangulosCuadricula.sinCuadrados`) | https://eprints.soton.ac.uk/49731/1/Fujita_Jones_RME_vol9_2007.pdf | B |
+| Navarro-Pelayo, Batanero y Godino (1996) y Roa (2000) | Confirmar el 37,8 % del error de orden (ya pendiente en AR17) | http://www.revista-educacion-matematica.org.mx/descargas/Vol8/1/05Navarro.pdf | B |
+| Ítems liberados de TIMSS (4.º y 8.º) con cubos ocultos | Porcentaje por opción de un ítem real de contar cubos | https://webarchive.library.unt.edu/web/20130318101826/http:/nces.ed.gov/timss/pdf/TIMSS8_Math_ConceptsItems.pdf | C |
+| Una tesis o informe peruano sobre conteo de figuras (repositorios PUCP, UNMSM, UNE, UCV) o resultados de la ECE con cubos | Dato local; hoy no existe ninguno encontrado | — | C |
+
+**Para completar en una tarde:** permitir en la red de la sesión `doi.org`, `jstor.org`, `link.springer.com`, `researchgate.net`, `files.eric.ed.gov` y `cimt.org.uk`, y leer las dos fuentes de prioridad A.
