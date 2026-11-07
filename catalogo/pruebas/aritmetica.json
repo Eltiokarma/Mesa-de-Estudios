@@ -267,6 +267,30 @@
     "condicional-como-bicondicional": {
       "respaldo": "hipotesis",
       "describe": "Lee el condicional como bicondicional («si y solo si»)"
+    },
+    "da-los-del-tipo-supuesto": {
+      "respaldo": "hipotesis",
+      "describe": "Da la cantidad del tipo que se supuso, no la del otro tipo"
+    },
+    "da-lo-que-falta-sin-dividir": {
+      "respaldo": "hipotesis",
+      "describe": "Da lo que falta para el total sin dividir entre lo que agrega cada cambio"
+    },
+    "divide-entre-el-valor-del-otro-tipo": {
+      "respaldo": "hipotesis",
+      "describe": "Divide lo que falta entre el valor del otro tipo y no entre la diferencia de valores"
+    },
+    "dobla-y-despues-devuelve": {
+      "respaldo": "hipotesis",
+      "describe": "Al ir hacia atrás, duplica primero y suma lo de más después"
+    },
+    "olvida-lo-que-gasto-de-mas": {
+      "respaldo": "hipotesis",
+      "describe": "Al ir hacia atrás, duplica pero olvida devolver lo que se gastó de más"
+    },
+    "resta-lo-que-gasto-de-mas": {
+      "respaldo": "hipotesis",
+      "describe": "Al ir hacia atrás, resta lo que se gastó de más en vez de devolverlo"
     }
   },
   "pares": [
@@ -1731,6 +1755,138 @@
             "texto": "Cuando compras dos polos y no te la regalan, y también cuando no los compras y te la regalan",
             "clave": "V F|F V",
             "error": "condicional-como-bicondicional"
+          }
+        ]
+      }
+    },
+    {
+      "par": "ari-27",
+      "plantilla": "razonamiento-numerico",
+      "unidad": "aritmetica.razonamiento-numerico",
+      "nombreUnidad": "Problemas de razonamiento numérico",
+      "mide": "Falsa suposición: se supone todo de un tipo y lo que falta, dividido entre lo que agrega cada cambio, da los del otro tipo",
+      "A": {
+        "enunciado": "En un estacionamiento hay 26 vehículos, entre bicicletas y autos. Entre todos tienen 80 ruedas. ¿Cuántos autos hay?",
+        "datos": {
+          "total": 26,
+          "patas": 80
+        },
+        "opciones": [
+          {
+            "texto": "28 autos",
+            "valor": 28,
+            "error": "da-lo-que-falta-sin-dividir"
+          },
+          {
+            "texto": "14 autos",
+            "valor": 14,
+            "correcta": true
+          },
+          {
+            "texto": "7 autos",
+            "valor": 7,
+            "error": "divide-entre-el-valor-del-otro-tipo"
+          },
+          {
+            "texto": "12 autos",
+            "valor": 12,
+            "error": "da-los-del-tipo-supuesto"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "En una chacra hay 35 animales, entre pavos y carneros. Entre todos tienen 110 patas. ¿Cuántos carneros hay?",
+        "datos": {
+          "total": 35,
+          "patas": 110
+        },
+        "opciones": [
+          {
+            "texto": "15 carneros",
+            "valor": 15,
+            "error": "da-los-del-tipo-supuesto"
+          },
+          {
+            "texto": "10 carneros",
+            "valor": 10,
+            "error": "divide-entre-el-valor-del-otro-tipo"
+          },
+          {
+            "texto": "20 carneros",
+            "valor": 20,
+            "correcta": true
+          },
+          {
+            "texto": "40 carneros",
+            "valor": 40,
+            "error": "da-lo-que-falta-sin-dividir"
+          }
+        ]
+      }
+    },
+    {
+      "par": "ari-28",
+      "plantilla": "razonamiento-numerico",
+      "unidad": "aritmetica.razonamiento-numerico",
+      "nombreUnidad": "Problemas de razonamiento numérico",
+      "mide": "Método regresivo con «la mitad y k más»: se devuelve primero lo de más y después se duplica, de la última etapa a la primera",
+      "A": {
+        "enunciado": "En el primer paradero bajó la mitad de los pasajeros de un bus y 3 más. En el segundo paradero bajó la mitad de los que quedaban y 2 más. Al final quedaron 8 pasajeros y no subió nadie. ¿Cuántos pasajeros había al principio?",
+        "datos": {
+          "k1": 3,
+          "k2": 2,
+          "final": 8
+        },
+        "opciones": [
+          {
+            "texto": "18 pasajeros",
+            "valor": 18,
+            "error": "resta-lo-que-gasto-de-mas"
+          },
+          {
+            "texto": "46 pasajeros",
+            "valor": 46,
+            "correcta": true
+          },
+          {
+            "texto": "32 pasajeros",
+            "valor": 32,
+            "error": "olvida-lo-que-gasto-de-mas"
+          },
+          {
+            "texto": "39 pasajeros",
+            "valor": 39,
+            "error": "dobla-y-despues-devuelve"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Una panadera vendió en la mañana la mitad de sus panes y 4 más. En la tarde vendió la mitad de los que le quedaban y 3 más. Le quedaron 7 panes. ¿Cuántos panes tenía al empezar el día?",
+        "datos": {
+          "k1": 4,
+          "k2": 3,
+          "final": 7
+        },
+        "opciones": [
+          {
+            "texto": "38 panes",
+            "valor": 38,
+            "error": "dobla-y-despues-devuelve"
+          },
+          {
+            "texto": "8 panes",
+            "valor": 8,
+            "error": "resta-lo-que-gasto-de-mas"
+          },
+          {
+            "texto": "48 panes",
+            "valor": 48,
+            "correcta": true
+          },
+          {
+            "texto": "28 panes",
+            "valor": 28,
+            "error": "olvida-lo-que-gasto-de-mas"
           }
         ]
       }

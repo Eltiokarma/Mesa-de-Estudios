@@ -427,6 +427,16 @@ const V = {
     return { correcta: k(r.falsas), errores: { 'condicional-al-reves': k(e.alReves), 'antecedente-falso-hace-falsa-la-promesa': k(e.ambasFalsas), 'condicional-como-bicondicional': k(e.comoBicondicional) } };
   },
 
+  // ari-27 y ari-28: razonamiento-numerico (en "reserva" mientras la plantilla no entre al catálogo).
+  'ari-27': d => { const r = motor('razonamiento-numerico').corral(d.total, d.patas), e = r.errores;
+    if (!r.posible) throw new Error(r.razon);
+    return { correcta: r.respuesta, errores: { 'da-los-del-tipo-supuesto': e.daLosSupuestos, 'da-lo-que-falta-sin-dividir': e.faltanSinDividir, 'divide-entre-el-valor-del-otro-tipo': e.divideEntreElOtro } }; },
+  'ari-28': d => {
+    // Dos etapas de «la mitad y k más»; la vuelta y cada error salen del motor (mercado).
+    const r = motor('razonamiento-numerico').mercado([{ op: 'gasta', parte: [1, 2], mas: d.k1 }, { op: 'gasta', parte: [1, 2], mas: d.k2 }], d.final), e = r.errores;
+    return { correcta: r.respuesta, errores: { 'dobla-y-despues-devuelve': e.devuelveDespues, 'olvida-lo-que-gasto-de-mas': e.olvidaElExtra, 'resta-lo-que-gasto-de-mas': e.restaElExtra } };
+  },
+
   // ---------------- Aritmética (cuentas exactas, ver arriba) ----------------
   'ari-01': d => { const f = (1 - d.a / 100) * (1 - d.b / 100);
     return { correcta: d.P * f, errores: { 'suma-descuentos': d.P * (1 - (d.a + d.b) / 100), 'monto-descuento': d.P * (1 - f), 'un-solo-descuento': d.P * (1 - Math.max(d.a, d.b) / 100) } }; },
