@@ -3,8 +3,8 @@
   "unidades": "Masa en g; cantidad en mol; volumen de gas en L en condiciones normales (22,4 L/mol); pureza y rendimiento en % (de 0 a 100); masa equivalente en g/eq; fracción de combustionIncompleta y f de reparto de 0 a 1.",
   "constantes": "Masas atómicas de academia: H 1, C 12, N 14, O 16, Na 23, Mg 24, Al 27, P 31, S 32, Cl 35,5, K 39, Ca 40, Fe 56, Cu 63,5, Zn 65. Volumen molar en CN: 22,4 L/mol. θ declarado: HCl 1, HNO₃ 1, H₂SO₄ 2, H₃PO₄ 3, NaOH 1, KOH 1, Ca(OH)₂ 2, Al(OH)₃ 3, NaCl 1, CaCl₂ 2, CaCO₃ 2, Al₂(SO₄)₃ 6.",
   "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.muestra-pura es lo que da el error típico 'muestra-pura'; quedan.CaCO3, la masa de CaCO₃ sin reaccionar). El campo vacío '' es el resultado entero (masaMolar y masaAMasa devuelven un número). 'tambien' repite la función con otros args. Textos y booleanos se comparan exactos; los números, con la tolerancia relativa.",
-  "verificacion": "",
-  "tolerancia": 1e-9,
+  "verificacion": "Verificó un subagente independiente (7 nov 2026), sin leer el código del motor ni casos.json. Recalculó los 29 casos (145 campos) en Python, con fracciones exactas y masas de academia, por factores de conversión encadenados y por moles, cruzando los dos caminos. Coinciden 142 campos. Las 3 diferencias son de interpretación de la cabecera: olvida-coeficiente aplica η, masa-se-conserva no lo aplica y teoricoVisible es una fracción. casos.json es coherente con su definición.",
+  "tolerancia": 1e-09,
   "casos": [
     {
       "nombre": "Masas molares de academia: Fe₂O₃ 160, CaCO₃ 100, KClO₃ 122,5, H₂SO₄ 98, Ca(OH)₂ 74 g/mol",
