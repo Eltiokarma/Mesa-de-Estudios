@@ -312,6 +312,108 @@
       "espera": {
         "valor": 0.13470732865164853
       }
+    },
+    {
+      "nombre": "Tabla de 2 NO + 2 H₂ → N₂ + 2 H₂O: [NO] ×3 da v ×9 (orden 2) y [H₂] ×2 da v ×2 (orden 1, aunque su coeficiente es 2); k = 1,2 L²/(mol²·s). Con los coeficientes saldría orden 2 en H₂; con la proporción directa, 3 en NO",
+      "fn": "ordenes",
+      "args": [
+        [
+          {
+            "conc": {
+              "NO": 0.1,
+              "H2": 0.1
+            },
+            "v": 0.0012
+          },
+          {
+            "conc": {
+              "NO": 0.3,
+              "H2": 0.1
+            },
+            "v": 0.0108
+          },
+          {
+            "conc": {
+              "NO": 0.1,
+              "H2": 0.2
+            },
+            "v": 0.0024
+          }
+        ],
+        {
+          "NO": 2,
+          "H2": 2
+        }
+      ],
+      "espera": {
+        "ordenes.NO": 2,
+        "ordenes.H2": 1,
+        "ordenTotal": 3,
+        "k": 1.2,
+        "unidades": "L²/(mol²·s)",
+        "pares.NO.fc": 3,
+        "pares.NO.fv": 9,
+        "pares.H2.fc": 2,
+        "pares.H2.fv": 2,
+        "errores.coeficientes.NO": 2,
+        "errores.coeficientes.H2": 2,
+        "errores.proporcion.NO": 3,
+        "errores.proporcion.H2": 1,
+        "errores.todosUno.NO": 1,
+        "errores.todosUno.H2": 1
+      }
+    },
+    {
+      "nombre": "Vidas medias seguidas en primer orden (k = ln 2/10, [A]₀ = 0,8): las tres duran 10 s y terminan a los 10, 20 y 30 s",
+      "fn": "vidasMedias",
+      "args": [
+        1,
+        0.06931471805599453,
+        0.8,
+        3
+      ],
+      "espera": {
+        "0.dura": 10,
+        "1.dura": 10,
+        "2.dura": 10,
+        "2.hasta": 30,
+        "1.C": 0.4,
+        "2.Cfin": 0.1
+      }
+    },
+    {
+      "nombre": "Vidas medias seguidas en segundo orden (k = 0,125, [A]₀ = 0,8): duran 10, 20 y 40 s y terminan a los 10, 30 y 70 s",
+      "fn": "vidasMedias",
+      "args": [
+        2,
+        0.125,
+        0.8,
+        3
+      ],
+      "espera": {
+        "0.dura": 10,
+        "1.dura": 20,
+        "2.dura": 40,
+        "1.hasta": 30,
+        "2.hasta": 70,
+        "2.Cfin": 0.1
+      }
+    },
+    {
+      "nombre": "Primer orden con [A]₀ = 0,8 y t½ = 10 s: a los 30 s quedan 0,1 (no 0, que da «se acaba en dos vidas medias»; ni 0,8/6; ni 0,2, que da la vida media que se alarga como en segundo orden)",
+      "fn": "primerOrdenQueda",
+      "args": [
+        0.8,
+        10,
+        30
+      ],
+      "espera": {
+        "valor": 0.1,
+        "vidas": 3,
+        "errores.restando": 0,
+        "errores.dividiendo": 0.13333333333333333,
+        "errores.vidaMediaCrece": 0.2
+      }
     }
   ]
 }
