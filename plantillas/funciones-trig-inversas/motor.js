@@ -1,5 +1,5 @@
 /*
- * Motor de «Una sola respuesta»: funciones trigonométricas inversas (arcsen, arccos, arctan y arccot).
+ * Motor de «La ventana principal»: funciones trigonométricas inversas (arcsen, arccos, arctan y arccot).
  *
  * Aquí vive toda la matemática de la plantilla (regla 1 de CLAUDE.md). No toca el DOM: funciona igual en el
  * navegador (window.MotorInvTrig) y en Node (require('./motor.js')), donde lo prueban casos.json y papel.json.
