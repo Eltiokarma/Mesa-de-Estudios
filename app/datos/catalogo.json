@@ -277,7 +277,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "mas"
+     ]
     },
     {
      "id": "fisica.ondas-mecanicas",
@@ -4840,6 +4842,23 @@
     "/plantillas/magnetismo/index.html",
     "/plantillas/magnetismo/motor.js",
     "/plantillas/magnetismo/papel.json"
+   ]
+  },
+  "mas": {
+   "id": "mas",
+   "titulo": "Movimiento armónico simple: resorte, péndulo y la sombra que gira",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.oscilaciones"
+   ],
+   "url": "/plantillas/mas/index.html",
+   "papel": "/plantillas/mas/papel.json",
+   "archivos": [
+    "/plantillas/mas/index.html",
+    "/plantillas/mas/motor.js",
+    "/plantillas/mas/papel.json"
    ]
   },
   "materia-energia": {
