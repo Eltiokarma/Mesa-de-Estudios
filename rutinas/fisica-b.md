@@ -4,6 +4,118 @@ Rama `rutina/fisica-b`, sacada de `claude/awesome-wozniak-5etl1n`. Unidades de 5
 
 **Ojo para la integración:** `rutinas/fisica.md` (rama `rutina/fisica`) todavía pone electrostática y ondas en su lista. Electrostática ya la hice aquí; hay que avisarle a esa rutina que no la repita.
 
+## 7 nov 2026 · Magnetismo: imanes, cables y cargas (`plantillas/magnetismo/`)
+
+### Qué hice
+
+Escena «Imanes, cables y cargas: campo y fuerza magnética» para la unidad `fisica.magnetismo`. La idea central:
+- La fuerza magnética es perpendicular a v y a B, y por eso la carga gira en un círculo con rapidez constante.
+- Una carga quieta, o que se mueve paralela al campo, no siente fuerza.
+- El campo de un hilo da vueltas alrededor de él y baja como 1/r.
+- Entre corrientes opuestas, los campos se suman.
+- Dos cables se hacen fuerzas iguales, aunque lleven corrientes distintas.
+
+**Motor** (`MotorMagnetismo`, cabecera hasta la línea 84):
+- Fuerza sobre una carga: q·v×B en 3D.
+- Movimiento circular y hélice, con la trayectoria exacta.
+- Campos: hilo, superposición de hilos, espira y solenoide, y la brújula.
+- Fuerza sobre un conductor y entre cables paralelos.
+- Líneas de un imán de dos polos, solo para dibujar.
+- Unidades SI, μ₀/2π = 2 × 10⁻⁷ y senos notables exactos.
+
+**Vistas:**
+- El imán con sus líneas.
+- De frente, con la notación ⊙/⊗.
+- En perspectiva con los tres ejes: se arrastra la punta de v o del cable, la vista se gira con botones y F lleva escuadras de 90°.
+- Cables con brújulas.
+- El solenoide de costado.
+
+**Paso a paso** (8 pasos, los 8 con predicción):
+1. Imán y protón quieto.
+2. Protón que entra contra B.
+3. v ⊥ B con la mano derecha.
+4. v a 37° de la horizontal, con B vertical.
+5. El electrón.
+6. El hilo al doble de distancia.
+7. El punto medio entre corrientes opuestas.
+8. Cables de 10 A y 20 A.
+
+**¿Qué pasa si…?** (5 experimentos): el doble de rapidez, el cable girado a 30°, una corriente invertida, el solenoide con el doble de n y las brújulas de Oersted con 100 A.
+
+**Papel:** 10 problemas propios, y la indicación solo trae fórmulas.
+
+### Pruebas
+
+- 21 casos en `casos.json` y 44 pruebas del motor. Propiedades con un cálculo independiente:
+  - F perpendicular a v y a B;
+  - la trayectoria contra RK4;
+  - T no depende de v;
+  - Ampère por un círculo y por un cuadrado;
+  - la espira contra Biot–Savart;
+  - las brújulas tangentes al campo;
+  - las líneas del imán siguen el campo.
+- `npm test`: 2410 pasan y 2 fallan, `catalogo.test.js` y `app.test.js`. Es lo esperado hasta que se integre.
+- Playwright en 390×844 y 1366×768, en claro y oscuro, con y sin movimiento reducido: sin errores de consola ni desbordes.
+  - El revisor arrastró con eventos táctiles reales.
+  - Si el dedo toca lejos de lo arrastrable, la página se desplaza.
+
+### Subagentes y lo que corrigieron
+
+- **Verificador independiente:** recalculó los 21 casos y sus variantes sin leer el motor, con fracciones exactas. La fuerza la sacó con el módulo y el sentido por determinante, y la trayectoria por geometría. No hubo ninguna discrepancia. Pidió aclarar en la cabecera:
+  - que `perpendicular` significa que F es perpendicular a v y a B;
+  - las unidades de los errores del periodo (en segundos) y del solenoide (en Bpi).
+- **Revisor de contenido:** no encontró nada grave. Lo corregido:
+  - En el experimento 1 en el celular, la F del protón 2 pisaba al protón 1: ahora arranca arriba de su círculo.
+  - El paso 1, opción A, no calzaba con MG1 tal como lo describe el informe.
+  - La lectura 3D dice «hacia +z» y la leyenda «z sale hacia ti».
+  - La indicación del papel regalaba los pasos 1, 2 y 8.
+  - Las brújulas pasaron de 10 A a 100 A, porque con 10 A el campo era menor que el de la Tierra.
+  - Se rehízo la explicación del experimento 3.
+  - Bajos: «F = 0» en el paso 4, la leyenda y la precisión del radio del electrón, la flecha I visible, la circunferencia que pasa por P dibujada en vivo, líneas del imán también desde S, la cita de la mano derecha invertida y el subtítulo.
+- **De la integración** (conversación principal): el título y el subtítulo son preguntas neutras, y los pasos bloqueados se anuncian como «Paso N, bloqueado».
+
+### Predicciones y respaldo
+
+- **Documentado:**
+  - MG1: un imán atrae a una carga quieta. Cerca de 4 de cada 10 aciertan después del curso.
+  - MG5: entre corrientes opuestas, «se anulan». Cerca de 4 de cada 10 aciertan, sin mejora con el curso.
+- **Parcial:** MG2 (se frena, o la fuerza va en la dirección del campo), MG3 (el ángulo con la horizontal), MG4 (corrientes opuestas se atraen), MG6 (más corriente empuja más), EL9 (el polo como una carga) y la mano derecha invertida.
+- **Hipótesis:** 1/d² en el hilo, olvidar el seno, olvidar el signo del electrón y los distractores de los experimentos.
+
+### Colores
+
+| Variable | Claro | Oscuro | Nota |
+| --- | --- | --- | --- |
+| q carga | #a05200 | #f0a04a | el de electrostática |
+| F fuerza | #1f5fbf | #7cb0ff | el de electrostática |
+| d, r, R, L longitudes | #5c531f | #fdf2b4 | el de electrostática |
+| θ ángulo | #a10fbf | #cf6bfa | el de electrostática |
+| v velocidad | #c0364a | #f17384 | el de MRUV; claro con 5,11 sobre el papel y 4,56 sobre el chip |
+| B campo magnético | #2a7638 | #7fd67f | nuevo; distinto del turquesa de E |
+| I corriente | #7a1010 | #ff5e4d | nuevo; el azul de circuitos ya es F |
+
+- ΔE00 mínimo entre los que salen juntos: 21,1 en claro y 21,9 en oscuro, entre B y las longitudes.
+- v e I quedan cerca (18,0 en claro y 12,9 en oscuro), pero nunca comparten pantalla: la vista 3D muestra v o el cable, no los dos.
+- Todos pasan AA sobre el papel y sobre el chip.
+- Van en tinta o gris: m, T, n, los polos N y S, las brújulas, los ejes y las trayectorias.
+- **Para Gerson:** B usa el mismo verde que U en electrostática, e I el mismo granate que W. Nunca se cruzan, pero el sistema queda con un hex para dos variables en plantillas distintas. ¿Se acepta?
+
+### Pendiente
+
+- En el paso 1, B = 0,2 T a 8 cm del polo es alto para un imán de barra; uno de neodimio sí llega. Se dejó así porque el caso 1 lo usa. La respuesta no cambia: F = 0.
+- La espira solo está en el motor y el papel, no en la escena.
+- El círculo del electrón se dibuja unas 1800 veces más grande que el real, y un rótulo lo dice.
+- La letra T nombra el periodo y la unidad tesla en las mismas lecturas del paso 3, como en las academias.
+- Las cifras del informe están por verificar con los PDF.
+
+### Pedidos para la integración
+
+- `catalogo/cursos/fisica.json`: en `fisica.magnetismo`, `"plantillas": ["magnetismo"]`. Luego `npm run catalogo` y subir `VERSION` en `app/sw.js`.
+- `docs/diseno.md`, variables de magnetismo (`plantillas/magnetismo/`): campo magnético B `--c-B` verde (#2a7638, oscuro #7fd67f), corriente I `--c-I` granate (#7a1010, oscuro #ff5e4d), velocidad v `--c-v` rojo (#c0364a, oscuro #f17384), y carga q, fuerza F, longitudes y θ como en electrostática. Las convenciones ⊙ (sale) y ⊗ (entra) van en el color de B.
+- `docs/pendientes.md`, línea propuesta: «**Magnetismo** (`plantillas/magnetismo/`, rutina de física B, 7 nov 2026): imanes, cables y cargas (imán y carga quieta, carga paralela al campo, mano derecha frente a una vista 3D que se gira, ángulo entre v y B, electrón, hilo con 1/r, punto medio entre corrientes opuestas, fuerzas iguales entre cables, radio y periodo, conductor girado, solenoide y Oersted); 21 casos verificados aparte; 10 de papel; 8 predicciones y 5 «¿qué pasa si…?». Documentados: MG1 y MG5; parciales: MG2 a MG4, MG6 y EL9. Falta en la escena la espira (está en el motor y el papel). Sin ítems en el banco de física.»
+- `CLAUDE.md`: agregar «imanes, cables y cargas» a la lista de plantillas, y en la historia: «Magnetismo (7 nov 2026, rutina de física B): `plantillas/magnetismo/` (imán y carga quieta, mano derecha en una vista 3D, círculo con rapidez constante, hilo, punto medio entre corrientes, cables paralelos, solenoide y Oersted; 21 casos verificados aparte).»
+- Banco de física: candidatos el protón paralelo a B, que sigue recto, y el punto medio entre corrientes opuestas (MG5, documentado).
+
 ## 7 nov 2026 · Electrostática: cargas que se empujan (`plantillas/electrostatica/`)
 
 ### Qué hice

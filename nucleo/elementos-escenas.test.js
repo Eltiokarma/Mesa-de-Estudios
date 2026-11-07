@@ -65,6 +65,38 @@ const ESCENAS = {
       [['H', 'O'], ['--c-T']],                                 // el vapor que se enfría
     ] },
   // Viene de la rutina de química B; la prueba la cuida en cuanto la escena llegue a esta rama.
+  'rendimiento-pureza': {
+    elementos: ['O', 'Fe'],   // solo en la lupa de la hematita; las sustancias van con los colores de sus masas
+    vistas: [
+      [['Fe', 'O'], ['--c-imp', '--c-pur', '--c-teo', '--c-real']],   // la hematita (pasos 1 a 3, experimento 2, explorador)
+    ] },
+  'quimica-ambiente': {
+    elementos: ['H', 'C', 'O', 'S', 'Fe', 'Zn'],   // sin N: los NOₓ van en tinta; las cadenas de la torre dibujan solo sus C
+    vistas: [
+      [['C', 'H', 'O'], ['--c-m']],                      // el frasco sellado y abierto, la combustión incompleta y el explorador
+      [['C', 'O'], ['--c-UV', '--c-IR', '--c-T']],       // el cielo: O₃ arriba, CO₂ en el medio
+      [['Zn', 'S', 'O', 'H'], ['--c-pH']],               // la fundición (ZnS) y la gota con SO₂ y H₂O; el CO₂ no se dibuja
+      [['Fe', 'O', 'H'], ['--c-m']],                     // el clavo que se oxida (sin el N del aire)
+      [['C'], ['--c-T']],                                // la torre de destilación
+      [['O'], []],                                       // la laguna y el smog: el O₂ y el O₃ de las gráficas
+    ] },
+  'biomoleculas': {
+    elementos: ['H', 'O'],   // las piezas son bloques con nombre; solo el H y el OH que salen en cada unión llevan color
+    vistas: [
+      [['H', 'O'], ['--c-n', '--c-k', '--c-Mp', '--c-Ma', '--c-M']],   // el taller: la gota de agua con todas las variables
+    ] },
+  'nomenclatura-inorganica': {
+    elementos: ['H', 'C', 'N', 'O', 'Na', 'Al', 'P', 'S', 'Cl', 'K', 'Ca', 'Fe', 'Zn', 'Pb'],
+    vistas: [
+      [['Fe', 'O', 'H'], []], [['Al', 'S', 'O'], []], [['Pb', 'O'], []], [['Na', 'O'], []],
+      [['Na', 'S', 'O', 'H'], []], [['Na', 'Cl', 'O', 'H'], []], [['Cl', 'O', 'H'], []],
+      [['K', 'C', 'O', 'H'], []], [['Fe', 'S', 'O', 'H'], []],
+      // Mesa y árbol libres: las parejas de Elementos.CERCANOS se apagan.
+      [['Na', 'O', 'H', 'N', 'P', 'S', 'Cl'], []], [['K', 'O', 'H', 'C', 'N', 'P', 'Cl'], []],
+      [['Ca', 'O', 'H', 'C', 'N', 'P', 'Cl'], []], [['Al', 'O', 'H', 'C', 'P', 'S', 'Cl'], []],
+      [['Fe', 'O', 'H', 'C', 'P', 'S', 'Cl'], []], [['Zn', 'O', 'H', 'N', 'P', 'S', 'Cl'], []],
+      [['Pb', 'O', 'H', 'C', 'N', 'S', 'Cl'], []], [['N', 'H', 'O', 'C', 'P', 'S', 'Cl'], []],
+    ] },
   'materia-energia': {
     elementos: ['H', 'C', 'O', 'Na', 'Si', 'S', 'Cl', 'Fe'],
     vistas: [

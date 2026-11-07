@@ -337,7 +337,7 @@
       },
       "potencial_visual": "bajo",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["cuatro-operaciones"],
       "investigacion": null
     },
     {

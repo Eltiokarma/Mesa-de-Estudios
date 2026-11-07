@@ -8,9 +8,308 @@ Cada ejecución construye una plantilla de escena de física, completa y revisad
 - **Celular:** en las plantillas nuevas, usar `nucleo/celular.js` (ejemplo en `plantillas/mruv/`) en vez de copiar a mano el lienzo compacto y sticky.
 
 - **Pastillas de «¿Qué pasa si…?» bloqueadas** (decisión de Gerson, 6 nov 2026, recibida de la conversación principal). Se puede ir a un experimento solo si todos los anteriores ya tienen respuesta. Los respondidos se revisitan libremente. Los bloqueados llevan `disabled`, `aria-disabled` y aria-label «Experimento N, bloqueado», igual que los puntos del paso a paso. También se cierran las otras vías de salto, como el hash o el teclado. La pestaña entre modos no se bloquea. En `dinamica/` lo arregla la conversación principal: no tocarla.
-- Dinámica ya está integrada en `claude/awesome-wozniak-5etl1n` (catálogo, diseño, pendientes y el pedido del informe). Tiro parabólico (6 nov), estática, choques y fluidos (7 nov) quedaron hechos (abajo); MAS está en curso.
+- Dinámica ya está integrada en `claude/awesome-wozniak-5etl1n` (catálogo, diseño, pendientes y el pedido del informe). Tiro parabólico (6 nov), estática, choques, fluidos, MAS, ondas mecánicas, termodinámica y gravitación (7 nov) quedaron hechos (abajo). Con esto la lista de física está completa; la siguiente ejecución espera un orden nuevo de Gerson.
 - Los avisos de «terminado» van a la conversación principal nueva: `session_01P39d2yUDZET7Wso3ubSiiV` (desde el 7 nov; la anterior era `session_01P39d2yLWTLWLv3TGZ6FkHB`). Ella integra estática.
 - Desde el 7 nov la rutina sigue el método de `docs/metodo/`: constructor, verificador independiente con `entradas.py`, revisor y correcciones al mismo constructor. Lecciones nuevas de ese brief: al menos 4 predicciones en el paso a paso, opciones con la misma forma, ningún distractor que coincida con la respuesta, nombres de experimentos sin la respuesta y dibujo fijo y compacto arriba en el celular mientras hay predicción pendiente.
+
+## 7 nov 2026 · Gravitación universal y satélites (`plantillas/gravitacion/`)
+
+**Qué hay.**
+
+`motor.js` (MotorGravitacion):
+- **Valores de academia:** G = 6,67·10⁻¹¹, g0 = 10 m/s² y R = 6400 km. Se toma GM de la Tierra = g0·R², así g0 sale exacto. Otro planeta va como kM masas y kR radios terrestres.
+- **Funciones:**
+  - `fuerza` (tercera ley), `comparar`, `gAltura`, `alturaParaG` y `planeta`;
+  - `orbita` (con estado(t) y las energías), `kepler3` y `geoestacionario`;
+  - `escape` y `lanzamiento`: el cañón de Newton, con `vSinChoque`, la rapidez mínima para no chocar con el suelo;
+  - `balanza` (ascensor) y `kepler2` (áreas iguales).
+- **Errores:** cada resultado trae `errores`: 1/r en vez de 1/r², h en vez de R + h, olvidar el radio, rapidez según la masa, T ∝ r, «no hay gravedad», etc.
+
+`casos.json`: 19 casos, entre ellos los 4 de gravitación que propone el informe: h = R da g/4 y el error lineal da g/2; h = R/2 da 4/9; la estación da 256/289; con a = 4, T sale 8 veces.
+
+`motor.test.js`: 44 pruebas. Comprueba:
+- F·r² constante e igual sobre los dos cuerpos;
+- v²/r = g;
+- T²/r³ constante;
+- energía cero con la velocidad de escape;
+- en el cañón, energía y momento angular punto a punto;
+- áreas iguales medidas con triángulos.
+
+`papel.json`: 10 problemas propios.
+
+`index.html`:
+- **Paso a paso:** 8 pasos con 5 predicciones:
+  - la fuerza sobre la estación espacial (cerca del 89 %);
+  - la fuerza de la estación sobre la Tierra (la misma);
+  - a qué altura g baja a la cuarta parte;
+  - la rapidez de dos satélites de distinta masa en la misma órbita;
+  - el período a 4 veces el radio.
+
+  Dibuja la Tierra y el satélite con las dos fuerzas F, la órbita animada, la cota de h con su rótulo hacia afuera, una flecha de referencia «F en el suelo» y la gráfica g–r contra la curva 1/r a trazos. En el explorador se arrastra el satélite y se cambia su masa.
+- **«¿Qué pasa si…?»:** 5 experimentos con pastillas bloqueadas: cuatro veces más lejos, otro planeta, el ascensor con el cable cortado, el cañón de Newton desde una torre imaginaria y la órbita alargada (Kepler II).
+- **Antes de responder:** toda fuerza desconocida es un trazo fijo de 12 px con «F = ?», y toda rapidez desconocida, solo el rótulo «v = ?». Así ninguna flecha delata la respuesta.
+
+**Verificador independiente.** Recalculó los 193 campos con fracciones exactas y por otros caminos:
+- g = GM/r²;
+- T = 2πr/v;
+- Newton-Raphson para el geoestacionario;
+- rp·vp = ra·va.
+
+Todo coincide y no hay ninguna discrepancia. Pidió aclarar en la cabecera que, en un lanzamiento que cae, rMin y rMax son el perigeo y el apogeo de la cónica completa; ya está.
+
+**Revisor de contenido.** Lo que se corrigió:
+- **Lo grave:**
+  - El cañón decía que por debajo de la circular la bala cae. Desde 2R solo cae por debajo de 4,6 km/s, que ahora calcula el motor; entre eso y 5,7 km/s da vueltas en una elipse.
+  - En el experimento del planeta y en el paso de la tercera ley, la flecha «F = ?» medía lo mismo que la respuesta correcta.
+- **Lo medio:**
+  - una opción D que no se sostenía;
+  - el respaldo de T ∝ r bajó a hipótesis;
+  - «recta a trazos» pasó a «curva a trazos»;
+  - al cañón le faltaba la flecha de gravedad y la torre imaginaria no estaba explicada;
+  - el satélite tapaba la cota de 400 km;
+  - faltaba una flecha F en el suelo para comparar;
+  - con movimiento reducido, el paso 6 no mostraba 8 vueltas contra 1;
+  - la F del explorador no crecía con la masa.
+- **Lo bajo:**
+  - leyendas y rótulos encimados en el celular;
+  - el resaltado de h, r, v y T;
+  - textos más precisos;
+  - «1000 kg» en vez de «1 t», para no confundir con T;
+  - las flechas v del perihelio y del afelio en razón 4:1.
+
+**Colores** (para `docs/diseno.md`):
+
+| Variable | Claro | Oscuro |
+| --- | --- | --- |
+| F fuerza | #a10fbf | #d47afb |
+| g gravedad | #456b14 | #a3d65e |
+| v velocidad | #b03244 | #f27a8a |
+| T período | #964d00 | #f0a04a |
+| r distancia al centro | #1f5ebd | #7cb0ff |
+| h altura | #0e6d66 | #5ed9c8 |
+
+- Las masas, R, la energía, el área barrida y la aceleración del ascensor van en tinta.
+- ΔE00 mínimo dentro de la escena: 23,3 en claro y 25,3 en oscuro (g–h).
+- AA mínimo: 4,55.
+- **Cruces entre escenas:**
+  - En dinámica y estática, el azul es el peso P y el rojo la tensión T.
+  - En el MAS, el fucsia es el período T, y aquí el período es naranja.
+  - En choques, el verde es la altura h, y aquí h es turquesa.
+  - En termodinámica, el naranja es Q.
+
+**Pedidos para la integración.**
+1. En la unidad `fisica.gravitacion`, agregar `"plantillas": ["gravitacion"]` y correr `npm run catalogo`.
+2. Llevar los colores y sus cruces a `docs/diseno.md`.
+3. Actualizar pendientes y `CLAUDE.md`.
+
+## 7 nov 2026 · Termodinámica: primera ley, procesos y máquinas (`plantillas/termodinamica/`)
+
+**Qué hay.**
+
+`motor.js` (MotorTermodinamica): estado del gas ideal, procesos (isobárico, isocórico, isotérmico y adiabático), caminos de varios tramos, ciclo rectangular, primera ley, máquina térmica, Carnot y su ciclo, el juez del inventor, refrigerador y límites. La convención es la de las academias: Q > 0 si el gas recibe calor y W > 0 si el gas hace trabajo, con Q = ΔU + W, R = 8,31 y gas monoatómico. Cada resultado trae `errores`.
+
+- `casos.json`: 20 casos.
+- `motor.test.js`: 45 pruebas.
+- `papel.json`: 10 problemas propios.
+
+`index.html`:
+- **Paso a paso:** 8 pasos con 5 predicciones:
+  - el trabajo isobárico, con su signo (paso 2);
+  - el calor en el mismo proceso (paso 3);
+  - otro camino entre los mismos estados, donde W y Q cambian y ΔU no (paso 5);
+  - el trabajo neto de un ciclo (paso 6);
+  - la eficiencia de Carnot (paso 7).
+
+  Hay un diagrama P–V con área rayada (W < 0) o rellena (W > 0), un cilindro con mechero, agua fría o baño, y barras de Q, W y ΔU. El explorador final deja arrastrar el estado B en los cuatro procesos.
+- **«¿Qué pasa si…?»:** 5 experimentos con pastillas bloqueadas:
+  - el cilindro aislado (compresión adiabática);
+  - el baño a 300 K (isotérmico);
+  - la vuelta al revés (el ciclo antihorario);
+  - el inventor que promete superar a Carnot;
+  - trabado o libre (Cv contra Cp).
+
+**Verificador independiente.** Recalculó los 20 casos con fracciones exactas y por otros caminos. Todo coincide; solo difiere el nombre de la etiqueta `sentido` del caso isocórico, que no es física.
+
+**Revisor de contenido.** Lo que se corrigió:
+- **Lo grave:**
+  - «La vuelta al revés» mostraba un «refrigerador» con COP 4,75, por encima de Carnot (0,2). El gas absorbe ese calor mientras se calienta de 300 a 1800 K, no lo saca de un lugar frío. Se quitó el COP y se explica qué llaman refrigerador las academias.
+  - El papel p1 tenía datos imposibles para cualquier gas ideal (salía Cv = 2/3 R). Se rehízo con 2250 J, W = 900 J y ΔU = 1350 J.
+- **Lo medio:**
+  - Mientras la predicción estaba pendiente, la leyenda decía «+ si se expande» y eso regalaba el signo.
+  - En «El inventor» la opción C acertaba el veredicto; ahora también se pregunta «¿Por qué?».
+  - El «mechero» enfriaba cuando Q < 0; ahora dice «agua fría».
+  - En el celular se enciman los rótulos del explorador en los extremos.
+  - Dos respaldos eran inconsistentes (T10 y T3).
+- **Lo bajo:**
+  - p9 decía 3455 en vez de ≈ 3455.
+  - La barra pasó a «Qf (sale)».
+  - El paso 7 ahora rotula °C = K.
+  - Se cambiaron frases de «Cilindro aislado» y la nota del isotérmico.
+  - Las barras ya se ven en pantalla grande.
+  - Se usan Cp y Cv.
+
+**Colores** (para `docs/diseno.md`):
+
+| Variable | Claro | Oscuro |
+| --- | --- | --- |
+| P | #1f5fbf | #7cb0ff |
+| V | #466d14 | #a3d65e |
+| T | #b02c41 | #f5899a |
+| Q | #924a00 | #f0a04a |
+| W | #a10fbf | #d888fb |
+| ΔU | #0c6b63 | #5ed9c8 |
+
+- ΔE00 mínimo dentro de la escena: 23,0 en claro y 23,6 en oscuro.
+- AA mínimo: 4,52, el de P sobre una opción ya respondida mal. Pasa justo.
+- **Cruces entre escenas:**
+  - Q es naranja aquí y azul en calorimetría. Su tono oscuro, #f0a04a, es igual a la m de calorimetría y a la n de gases.
+  - En claro, Q queda a 5,3 de la P ámbar de fluidos.
+  - W tiene el mismo fucsia que la F de dinámica. El trabajo ya va en tres colores entre escenas: azul en energía, granate en electrostática y fucsia aquí.
+  - V y T son casi iguales a las de gases.
+
+**Pedidos para la integración.**
+1. En la unidad `fisica.termodinamica`, agregar `"plantillas": ["termodinamica"]` y correr `npm run catalogo`.
+2. Llevar los colores y sus cruces a `docs/diseno.md`.
+3. Actualizar pendientes y `CLAUDE.md`.
+
+## 7 nov 2026 · Ondas mecánicas y sonido (`plantillas/ondas/`)
+
+**Qué hay.**
+
+`motor.js` (MotorOndas):
+- **Cuerda y pulsos:** cuerda con v = √(T/μ), onda y función de onda, la mano que agita, el pulso, una carrera de pulsos y la cuerda con mano y unión, con las reflexiones exactas.
+- **Medios y superposición:** cambio de medio (f se conserva; r y t), dos pulsos que se cruzan, onda estacionaria y sus modos.
+- **Sonido:** tubos, rapidez del sonido en el aire, decibeles (también con los logaritmos de academia: log 2 = 0,3 y log 3 = 0,48), suma de niveles, distancia, Doppler y onda longitudinal.
+- **Errores:** cada resultado trae `errores`. La cabecera explica cómo se calcula cada uno.
+
+`casos.json`: 31 casos, entre ellos todos los de ondas y sonido del informe.
+
+`motor.test.js`: 51 pruebas. Comprueba:
+- la ecuación de onda y que la forma se traslada;
+- que v no depende de A ni de f;
+- el retraso x/v;
+- la continuidad en la unión (1 + r = t);
+- la superposición;
+- la estacionaria como suma de dos ondas viajeras;
+- los decibeles y el Doppler;
+- que el error `lambdaFija` nunca coincide con la respuesta.
+
+`papel.json`: 9 problemas propios: la soga en la plaza, la guitarra, el bus en Lima, la zampoña y otros.
+
+`index.html`:
+- **Paso a paso:** 8 pasos con 4 predicciones:
+  - qué hacer para que el pulso llegue antes (una carrera de 5 carriles);
+  - la mano a 200 Hz;
+  - qué hace la cinta;
+  - la fundamental con los dos extremos fijos.
+
+  La cuerda tiene puntos marcados y va sincronizada con la foto y-x y con la y-t de la cinta, en cámara lenta (1 s de pantalla son 10 ms). En el explorador, «Agito yo» deja arrastrar la mano.
+- **«¿Qué pasa si…?»:** 5 experimentos con pastillas bloqueadas: la cuerda más tensa, dos cuerdas unidas (con el pulso reflejado invertido y el transmitido), dos pulsos de frente, la pelusa frente al parlante y dos parlantes de 80 dB.
+- **Letras:** T es la tensión, en turquesa, porque en v = √(T/μ) sale junto a v. El periodo va sin letra (1/f), y así se explica en el paso 1.
+
+**Verificador independiente.** Usó husos de λ/2, decibeles comparando intensidades, Doppler contando frentes de onda e impedancias Z ∝ 1/v. Coincidieron los 127 campos que se podían recalcular. Encontró que el error `lambdaFija` coincidía con la λ correcta en el caso 9.
+- El constructor cambió el motor para que ese error use la frecuencia de antes. Agregó un caso y una prueba de que nunca coincide.
+- Esos campos ya no son exactamente los que verificó.
+- Los 6 errores que no se podían derivar de la cabecera quedaron documentados en ella.
+
+**Revisor de contenido.** Los números estaban bien. Lo que se corrigió:
+- **Lo grave:**
+  - el paso 4 ya mostraba la cinta subiendo y bajando, que es la respuesta del paso 5;
+  - el paso 3 mostraba 23 ms en el dibujo contra 20 ms en la ecuación;
+  - con movimiento reducido, el explorador se quedaba plano;
+  - con movimiento reducido, el pulso reflejado invertido de la unión nunca se veía.
+- **Lo medio:**
+  - el respaldo del paso 4 pasó a parcial (el 46 % es del «sonido agudo más rápido»);
+  - una cita decía más que el informe;
+  - en los dos parlantes faltaba la premisa de sonidos independientes;
+  - los ejes delataban la respuesta antes de responder;
+  - una frase del paso 7 se contradecía;
+  - los pulsos atravesaban la pared;
+  - el medidor quedaba tapado con 10 parlantes y marcaba «?» con un parlante prendido.
+- **Lo bajo:** leyendas, forma de las opciones, el enunciado de los pulsos, rótulos encimados, la raíz partida en dos líneas, el charango cambiado por guitarra y la indicación del papel, que adelantaba una predicción.
+
+**Colores** (para `docs/diseno.md`):
+
+| Variable | Claro | Oscuro |
+| --- | --- | --- |
+| A | #1f5fbf | #7cb0ff |
+| f | #a10fbf | #cf6bfa |
+| λ | #466d14 | #a3d65e |
+| v | #c0364a | #f17384 |
+| t | #a05200 | #f0a04a |
+| T tensión | #0f766e | #5ed9c8 |
+| I | #3328c4 | #9f9bff |
+| β | #7d6a00 | #e3c84a |
+
+- μ, x, y, la cuerda y la cinta van en tinta.
+- ΔE00 mínimo entre los que salen juntos: 23,6 en claro y 25,3 en oscuro.
+- AA mínimo: 4,54.
+- Entre escenas: la tensión es turquesa aquí y roja en dinámica; el fucsia es F en dinámica y aquí es f.
+
+**Pedidos para la integración.**
+1. En la unidad `fisica.ondas-mecanicas`, agregar `"plantillas": ["ondas"]` y correr `npm run catalogo`.
+2. Llevar los colores y sus cruces a `docs/diseno.md`.
+3. Actualizar pendientes y `CLAUDE.md`.
+
+**Pendiente.** Tubos y Doppler están en el motor y en los casos, pero no en la escena. Tampoco hay barrido de frecuencias con resonancia.
+
+## 7 nov 2026 · Movimiento armónico simple (`plantillas/mas/`)
+
+**Qué hay.**
+- `motor.js` (MotorMAS):
+  - `resorte` horizontal y vertical, con deq = mg/k y el mismo período en los dos;
+  - `estado(t)` con el punto del círculo de referencia;
+  - vmax, amax y energías;
+  - `pendulo`, con g efectiva (ascensor o vagón) y corrección de amplitud grande;
+  - `comparar`, que da las razones entre dos sistemas;
+  - `resortes` en serie y en paralelo.
+
+  π es el real; con `pi2:true`, π² ≈ 10 solo en T y f. Cada resultado trae `errores`.
+- `casos.json`: 23 casos, entre ellos los 4 del informe.
+- `motor.test.js`: 49 pruebas. Comprueban la conservación de la energía, que v y a sean derivadas numéricas, que el movimiento se repita cada T, la sombra del círculo de referencia, que T no dependa de A ni de la masa del péndulo, el mismo T en vertical y en el ascensor, y que en A/2 la cinética sea 3/4 de E.
+- `papel.json`: 10 problemas propios.
+- `index.html`:
+  - **Paso a paso:** 8 pasos con 4 predicciones: T al soltar desde el doble de amplitud, T con 1,6 kg, dónde va más rápido y dónde acelera más, y Ec en A/2. El bloque y el resorte van sincronizados con las gráficas x-t, v-t y a-t, el círculo de referencia y las barras de energía. En el explorador, el bloque se arrastra (en la mesa o colgado).
+  - **«¿Qué pasa si…?»:** 5 experimentos con pastillas bloqueadas: péndulo con la masa, péndulo con el largo, resorte colgado, ascensor y resortes en serie o en paralelo.
+  - Usa `nucleo/celular.js`.
+
+**Verificador independiente.** Trabajó con energía para vmax, el círculo de referencia para los instantes, un diagrama de fuerzas para la g efectiva, y fuerza con estiramiento para serie y paralelo. Coincidieron los 23 casos. Encontró un problema real, ya corregido: `errores.periodoConG` daba el período correcto (deq/g = m/k), así que un distractor con ese valor habría sido correcto. Ninguna opción lo usaba.
+
+**Revisor de contenido.** Recalculó todo y estaba bien. Lo que se corrigió:
+- **Lo grave:**
+  - El paso 2 tenía O1 como «documentado». El 25 % es una explicación de universitarios de tercer año, no esa opción: ahora es «parcial», en sus dos versiones numéricas.
+  - Los chips no pasaban AA sobre las opciones ya respondidas. Cambió la paleta y t pasó a tinta.
+- **Lo medio:**
+  - «a = 0 en los extremos» pasó a C1 «parcial» (Thornton y Sokoloff).
+  - En la fuente de O3 cambió «documentado» por «descrito».
+  - El subtítulo adelantaba que importan la masa y el largo.
+  - Había rótulos encimados en el resorte colgado y en el explorador.
+  - «Uno al lado del otro» dibujaba un solo resorte.
+  - El chip de cámara lenta ahora aclara que las gráficas marcan el tiempo real, y no sale con movimiento reducido.
+
+**Colores** (para `docs/diseno.md`):
+
+| Variable | Claro | Oscuro |
+| --- | --- | --- |
+| x | #1f5fbf | #7cb0ff |
+| v | #b02c41 | #f6909d |
+| a | #466d14 | #a3d65e |
+| T período | #a10fbf | #d98bfb |
+| Ec | #0b6b63 | #5ed9c8 |
+| Ep | #944b00 | #f0a04a |
+
+- t va en tinta, igual que A, m, k, L, g, ω, φ y E.
+- ΔE00 mínimo: 23,1 en claro y 23,9 en oscuro.
+- AA mínimo: 4,52, también en chips sobre opciones respondidas.
+- Entre escenas: el fucsia es F en dinámica y aquí es T; el turquesa es la aceleración en dinámica y aquí es Ec; el naranja de Ep es el de t en otras escenas.
+
+**Pedidos para la integración.**
+1. Unidad `fisica.oscilaciones` → `"plantillas": ["mas"]`, y `npm run catalogo`.
+2. Los colores en `docs/diseno.md`, con sus cruces entre escenas.
+3. Pendientes y `CLAUDE.md`.
+4. Hay que decidir si t en tinta (aquí) se vuelve la norma cuando el naranja no pasa AA en chips de opciones respondidas.
+
+**Pendiente.** π² ≈ 10 solo aparece en el papel (p4), no en la escena.
 
 ## 7 nov 2026 · Fluidos: presión, Pascal y Arquímedes (`plantillas/fluidos/`)
 

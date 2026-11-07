@@ -1,0 +1,16 @@
+{
+  "id": "quimica-ambiente",
+  "titulo": "Del pozo al cielo: combustión, petróleo, metales y el aire",
+  "formato": "escena",
+  "unidades": [
+    "quimica.recursos-naturales",
+    "quimica.ambiente-y-quimica-aplicada"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}

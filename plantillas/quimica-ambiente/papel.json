@@ -1,0 +1,155 @@
+{
+  "titulo": "Del pozo al cielo: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Masas atómicas: H = 1, C = 12, N = 14, O = 16, S = 32, Fe = 56, Zn = 65. Para balancear una combustión, cuenta primero los C, después los H y al final los O. Gasolina: tómala como octano (C₈H₁₈) de 0,70 g/mL. Octanaje de una mezcla: usa la regla de academia, un promedio pesado por el volumen. En agua, 1 ppm = 1 mg/L y 1 ppb = 1 µg/L. pH = −log[H⁺].",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "El gas de los balones de cocina es casi todo propano, C₃H₈. Balancea su combustión completa (sale CO₂ y H₂O) y su combustión incompleta en la que todo el carbono sale como CO. Comprueba que en cada una la masa de los reactivos es igual a la de los productos.",
+      "respuesta": "Completa: C₃H₈ + 5O₂ → 3CO₂ + 4H₂O (204 g a cada lado). Incompleta: 2C₃H₈ + 7O₂ → 6CO + 8H₂O (312 g a cada lado).",
+      "pasos": [
+        "Completa: 3 C dan 3 CO₂; 8 H dan 4 H₂O. A la derecha hay 3 × 2 + 4 = 10 átomos de O, que son 5 O₂.",
+        "Masas: 44 + 5 × 32 = 204 g; 3 × 44 + 4 × 18 = 132 + 72 = 204 g.",
+        "Incompleta: 3 C dan 3 CO; 8 H dan 4 H₂O. Ahora a la derecha hay 3 + 4 = 7 átomos de O: 3,5 O₂. Se multiplica todo por 2: 2C₃H₈ + 7O₂ → 6CO + 8H₂O.",
+        "Masas: 2 × 44 + 7 × 32 = 88 + 224 = 312 g; 6 × 28 + 8 × 18 = 168 + 144 = 312 g. Con menos oxígeno, el carbono queda con un solo O."
+      ],
+      "verificar": [
+        { "fn": "combustion", "args": ["propano", "completa"], "espera": { "coef.comb": 1, "coef.O2": 5, "coef.CO2": 3, "coef.H2O": 4, "masas": [204, 204] } },
+        { "fn": "combustion", "args": ["propano", "incompleta"], "espera": { "coef.comb": 2, "coef.O2": 7, "coef.CO": 6, "coef.H2O": 8, "masas": [312, 312] } }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Una familia gasta un balón de 10 kg de propano (C₃H₈) al mes. Si todo se quema por completo, ¿cuántos kilogramos de CO₂ salen a la cocina y de ahí al aire? ¿Y cuántos kilogramos de O₂ se usaron?",
+      "respuesta": "30 kg de CO₂ y unos 36,4 kg de O₂.",
+      "pasos": [
+        "C₃H₈ + 5O₂ → 3CO₂ + 4H₂O. M(C₃H₈) = 44 g/mol y M(CO₂) = 44 g/mol.",
+        "n(C₃H₈) = 10 000 g ÷ 44 ≈ 227,3 mol. Cada mol da 3 mol de CO₂: 227,3 × 3 × 44 = 30 000 g = 30 kg.",
+        "O₂: 227,3 × 5 × 32 ≈ 36 364 g ≈ 36,4 kg.",
+        "Salen 30 kg de CO₂ de 10 kg de propano: el CO₂ lleva el oxígeno del aire. Comprueba: 10 + 36,4 = 30 + 16,4 (el agua)."
+      ],
+      "verificar": [
+        { "fn": "co2DeCombustible", "args": [10000, "propano"], "espera": { "CO2": 30000, "O2": 36363.64, "H2O": 16363.64 }, "tol": { "O2": 0.01, "H2O": 0.01 } }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Una mototaxi gasta 5 L de gasolina en un día. Toma la gasolina como octano (C₈H₁₈) de 0,70 g/mL y su combustión como completa. ¿Cuántos kilogramos de CO₂ echa al aire ese día?",
+      "respuesta": "Unos 10,8 kg de CO₂.",
+      "pasos": [
+        "Masa de gasolina: 5 L = 5000 mL; 5000 × 0,70 = 3500 g.",
+        "2C₈H₁₈ + 25O₂ → 16CO₂ + 18H₂O: cada mol de octano (114 g) da 8 mol de CO₂ (8 × 44 = 352 g).",
+        "n = 3500 ÷ 114 ≈ 30,7 mol; CO₂ = 30,7 × 352 ≈ 10 807 g ≈ 10,8 kg.",
+        "Son unos 3,1 kg de CO₂ por cada kilogramo de gasolina: se le suman los O del aire."
+      ],
+      "verificar": [
+        { "fn": "co2PorLitro", "args": [5, 0.7, "octano"], "espera": { "masa": 3500, "CO2": 10807.02, "razon": 3.0877 }, "tol": { "CO2": 0.01, "razon": 0.0001 } }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "avanzado",
+      "enunciado": "En una cocina mal ventilada se quema 1 mol de propano con solo 4 mol de O₂. El oxígeno alcanza primero para el agua y después para el carbono, que sale como CO; si sobra oxígeno, parte del CO pasa a CO₂. ¿Cuántos moles de H₂O, CO y CO₂ se forman? Comprueba la masa.",
+      "respuesta": "4 mol de H₂O, 2 mol de CO y 1 mol de CO₂; 172 g antes y después.",
+      "pasos": [
+        "Hay 4 × 2 = 8 átomos de O (en moles). Los 8 H del propano forman 4 H₂O: usan 4 O. Quedan 4.",
+        "Los 3 C toman un O cada uno: 3 CO. Queda 1 O, que convierte 1 CO en CO₂.",
+        "Resultado: 4 H₂O, 2 CO y 1 CO₂. Comprueba los O: 4 + 2 + 2 = 8.",
+        "Masa: 44 + 4 × 32 = 172 g; 4 × 18 + 2 × 28 + 44 = 72 + 56 + 44 = 172 g. El CO es tóxico: por eso la cocina necesita ventilación."
+      ],
+      "verificar": [
+        { "fn": "repartoO2", "args": ["propano", 1, 4], "espera": { "H2O": 4, "CO": 2, "CO2": 1, "C": 0, "masas": [172, 172] } }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Un grifo mezcla 70 % de gasolina de 90 octanos con 30 % de gasolina de 97 octanos (en volumen). Con la regla de academia, ¿qué octanaje tiene la mezcla? ¿Qué porcentaje de la de 97 haría falta para llegar a 95 octanos?",
+      "respuesta": "92,1 octanos. Para 95 octanos, unos 71,4 % de la de 97.",
+      "pasos": [
+        "Promedio pesado por el volumen: 0,70 × 90 + 0,30 × 97 = 63 + 29,1 = 92,1.",
+        "Para 95: 90 + x(97 − 90) = 95, así que x = 5/7 ≈ 0,714: unos 71,4 % de la de 97.",
+        "El octanaje no es el porcentaje de octano de la gasolina: dice cómo resiste la detonación, comparada con una mezcla de isooctano (100) y n-heptano (0)."
+      ],
+      "verificar": [
+        { "fn": "mezclaOctanaje", "args": [[{ "vol": 70, "oct": 90 }, { "vol": 30, "oct": 97 }]], "espera": { "octanaje": 92.1 } },
+        { "fn": "paraLlegar", "args": [90, 97, 95], "espera": { "porcentajeB": 71.43 }, "tol": { "porcentajeB": 0.01 } }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "básico",
+      "enunciado": "En una muestra de 500 mL de agua de un pozo se encuentran 0,03 mg de arsénico. ¿Cuántas ppm y cuántas ppb son? Si el límite para agua de beber es 10 ppb, ¿cuántas veces lo pasa?",
+      "respuesta": "0,06 ppm = 60 ppb: 6 veces el límite.",
+      "pasos": [
+        "En agua, ppm = mg/L: 0,03 mg ÷ 0,5 L = 0,06 mg/L = 0,06 ppm.",
+        "1 ppm = 1000 ppb: 0,06 × 1000 = 60 ppb.",
+        "60 ÷ 10 = 6: pasa 6 veces el límite. El agua puede verse transparente: lo disuelto no se ve."
+      ],
+      "verificar": [
+        { "fn": "ppm", "args": [0.03, 0.5], "espera": { "ppm": 0.06, "ppb": 60 } }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Cerca de una fundición, una gota de lluvia tiene 2 × 10⁻⁵ mol/L de H₂SO₄. Cuenta los dos H⁺ de cada H₂SO₄ y no tomes en cuenta el CO₂. ¿Qué pH tiene? Otra lluvia de la zona tiene pH 4,3: ¿cuántas veces más H⁺ tiene que la lluvia normal, de pH 5,6?",
+      "respuesta": "pH ≈ 4,4. La de pH 4,3 tiene unas 20 veces más H⁺ que la normal.",
+      "pasos": [
+        "[H⁺] = 2 × 2 × 10⁻⁵ = 4 × 10⁻⁵ mol/L; pH = −log(4 × 10⁻⁵) = 5 − log 4 ≈ 5 − 0,60 = 4,40.",
+        "Cada unidad de pH es un factor 10 en [H⁺]. De 5,6 a 4,3 hay 1,3 unidades: 10^1,3 ≈ 20 veces.",
+        "El ácido sale del SO₂ que se oxida a SO₃ y se disuelve en las gotas: SO₃ + H₂O → H₂SO₄."
+      ],
+      "verificar": [
+        { "fn": "acidoFuerte", "args": [2e-5, 2], "espera": { "H": 4e-5, "pH": 4.398 }, "tol": { "pH": 0.001 } },
+        { "fn": "compararPH", "args": [4.3, 5.6], "espera": { "veces": 19.95 }, "tol": { "veces": 0.01 } }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Un alto horno recibe 2 toneladas de mineral de hierro con 80 % de hematita (Fe₂O₃). La reacción es Fe₂O₃ + 3CO → 2Fe + 3CO₂ y el rendimiento es 95 %. ¿Cuántos kilogramos de hierro se obtienen? ¿Cuántos kilogramos de CO₂ salen, si toda la hematita reacciona?",
+      "respuesta": "1064 kg de Fe y 1320 kg de CO₂.",
+      "pasos": [
+        "Hematita pura: 2000 × 0,80 = 1600 kg. M(Fe₂O₃) = 2 × 56 + 3 × 16 = 160: son 10 kmol.",
+        "Fe teórico: 10 × 2 × 56 = 1120 kg. Con el 95 %: 1120 × 0,95 = 1064 kg.",
+        "CO₂: 10 × 3 × 44 = 1320 kg.",
+        "Sin la ley (tomar los 2000 kg como hematita pura) saldrían 1330 kg de Fe: más hierro del que trae el mineral (1120 kg)."
+      ],
+      "verificar": [
+        { "fn": "metalurgia", "args": ["hematita", 2000, 0.8, 0.95], "espera": { "puro": 1600, "teorico": 1120, "real": 1064, "gas": 1320 } }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "intermedio",
+      "enunciado": "Una reja de hierro de 5,6 kg queda a la intemperie. Con los años, el 10 % de su hierro se convierte en Fe₂O₃ (4Fe + 3O₂ → 2Fe₂O₃) y ningún trozo se cae. ¿Cuánto pesa ahora la reja con su óxido?",
+      "respuesta": "5,84 kg.",
+      "pasos": [
+        "Se oxidan 0,10 × 5600 = 560 g de Fe, que son 10 mol.",
+        "10 mol de Fe dan 5 mol de Fe₂O₃: 5 × 160 = 800 g. El oxígeno que se unió: 800 − 560 = 240 g.",
+        "Masa final: 5600 − 560 + 800 = 5840 g = 5,84 kg."
+      ],
+      "verificar": [
+        { "fn": "oxidarHierro", "args": [5600, 0.1], "espera": { "Fe2O3": 800, "O": 240, "masaFinal": 5840 } }
+      ]
+    },
+    {
+      "id": "p10",
+      "nivel": "básico",
+      "enunciado": "En una torre de destilación, las bandejas están, de abajo arriba, a 350, 250, 150 y 30 °C, y el petróleo entra a 400 °C. Cada sustancia se condensa en la primera bandeja más fría que su punto de ebullición; lo que no se condensa en ninguna sale arriba como gas. ¿Dónde sale cada una: butano (−0,5 °C), n-heptano (98,4 °C), dodecano (216,3 °C) y hexadecano (286,9 °C)? Las bandejas son, de abajo arriba: aceites y fuel, diésel, queroseno y gasolina.",
+      "respuesta": "Butano: arriba, con los gases. Heptano: gasolina. Dodecano: queroseno. Hexadecano: diésel.",
+      "pasos": [
+        "Hexadecano: 350 °C no lo condensa (está sobre su punto de ebullición); 250 °C sí. Sale como diésel.",
+        "Dodecano: pasa la de 350 y la de 250 como vapor; en la de 150 °C se condensa: queroseno.",
+        "Heptano: llega hasta la de 30 °C: gasolina. Butano: ni a 30 °C se condensa; sale como gas.",
+        "La torre no fabrica sustancias: solo separa las que ya estaban en el petróleo."
+      ],
+      "verificar": [
+        { "fn": "torre", "args": [null, ["butano", "heptano", "dodecano", "hexadecano"]], "espera": { "fraccion.butano": "gases", "fraccion.heptano": "gasolina", "fraccion.dodecano": "queroseno", "fraccion.hexadecano": "diésel" } }
+      ]
+    }
+  ]
+}
