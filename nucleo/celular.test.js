@@ -39,3 +39,14 @@ test('el CSS compacto solo aplica bajo 900 px', () => {
   assert.match(C.CSS, /max-width:899px/);
   assert.match(C.CSS, /\.mode\.pendiente \.bench\{position:sticky/);
 });
+
+test('dpr: hasta 1,5 en el celular y hasta 2 en pantalla grande', () => {
+  assert.equal(C.dpr({ ancho: 360, dpr: 2 }), 1.5);
+  assert.equal(C.dpr({ ancho: 360, dpr: 3 }), 1.5);
+  assert.equal(C.dpr({ ancho: 899, dpr: 1.5 }), 1.5);
+  assert.equal(C.dpr({ ancho: 360, dpr: 1 }), 1);
+  assert.equal(C.dpr({ ancho: 900, dpr: 3 }), 2);
+  assert.equal(C.dpr({ ancho: 1366, dpr: 1 }), 1);
+  assert.equal(C.dpr({ ancho: 1366, dpr: 1.25 }), 1.25);
+  assert.equal(C.dpr({ ancho: 1366 }), 1); // sin devicePixelRatio (Node): 1
+});

@@ -10,6 +10,12 @@
 <link rel="icon" href="iconos/icono.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="iconos/icono-192.png">
 <link rel="stylesheet" href="estilos.css">
+<!-- El catálogo se pide de entrada, junto con los scripts: es lo único que necesita el primer pintado. -->
+<link rel="preload" href="datos/catalogo.json" as="fetch" crossorigin>
+<!-- Solo lo que usa el inicio. El resto (prueba.js, practica.js, lectura.js y su núcleo) lo carga app.js al entrar a su ruta. -->
+<script src="/nucleo/medicion.js" defer></script>
+<script src="ilustraciones.js" defer></script>
+<script src="app.js" defer></script>
 </head>
 <body>
 <div id="app" aria-live="polite"></div>
@@ -20,15 +26,5 @@
   <a href="#/progreso" data-ruta="progreso"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V10M12 20V4M19 20v-7"/></svg><span>Progreso</span></a>
   <a href="#/perfil" data-ruta="perfil"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span>Perfil</span></a>
 </nav>
-<script src="/nucleo/azar.js"></script>
-<script src="/nucleo/predicciones.js"></script>
-<script src="/nucleo/medicion.js"></script>
-<script src="/nucleo/pruebas.js"></script>
-<script src="/nucleo/lectura.js"></script>
-<script src="ilustraciones.js"></script>
-<script src="practica.js"></script>
-<script src="prueba.js"></script>
-<script src="lectura.js"></script>
-<script src="app.js"></script>
 </body>
 </html>

@@ -194,7 +194,9 @@
      },
      "potencial_visual": "medio",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "gravitacion"
+     ]
     },
     {
      "id": "fisica.trabajo-y-energia",
@@ -392,7 +394,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "termodinamica"
+     ]
     },
     {
      "id": "fisica.electrostatica",
@@ -851,7 +855,8 @@
      "grado": 4,
      "plantillas": [
       "estequiometria-limitante",
-      "limitante-particulas"
+      "limitante-particulas",
+      "rendimiento-pureza"
      ]
     },
     {
@@ -1145,7 +1150,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "biomoleculas"
+     ]
     },
     {
      "id": "quimica.recursos-naturales",
@@ -1172,7 +1179,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "quimica-ambiente"
+     ]
     },
     {
      "id": "quimica.ambiente-y-quimica-aplicada",
@@ -1203,7 +1212,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "quimica-ambiente"
+     ]
     }
    ]
   },
@@ -2243,7 +2254,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "potenciacion"
+     ]
     },
     {
      "id": "aritmetica.sucesiones-y-series",
@@ -3644,7 +3657,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "cortes-pesadas"
+     ]
     },
     {
      "id": "razonamiento-matematico.planteo-de-ecuaciones",
@@ -4279,6 +4294,23 @@
     "/plantillas/balance-reacciones/papel.json"
    ]
   },
+  "biomoleculas": {
+   "id": "biomoleculas",
+   "titulo": "El taller de las piezas: azúcares, proteínas y grasas",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.biomoleculas-y-productos-naturales"
+   ],
+   "url": "/plantillas/biomoleculas/index.html",
+   "papel": "/plantillas/biomoleculas/papel.json",
+   "archivos": [
+    "/plantillas/biomoleculas/index.html",
+    "/plantillas/biomoleculas/motor.js",
+    "/plantillas/biomoleculas/papel.json"
+   ]
+  },
   "calorimetria": {
    "id": "calorimetria",
    "titulo": "Calorimetría",
@@ -4438,6 +4470,23 @@
     "/plantillas/congruencia/index.html",
     "/plantillas/congruencia/motor.js",
     "/plantillas/congruencia/papel.json"
+   ]
+  },
+  "cortes-pesadas": {
+   "id": "cortes-pesadas",
+   "titulo": "La sierra y la balanza: cortes y pesadas",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.cortes-y-pesadas"
+   ],
+   "url": "/plantillas/cortes-pesadas/index.html",
+   "papel": "/plantillas/cortes-pesadas/papel.json",
+   "archivos": [
+    "/plantillas/cortes-pesadas/index.html",
+    "/plantillas/cortes-pesadas/motor.js",
+    "/plantillas/cortes-pesadas/papel.json"
    ]
   },
   "cuadrado-crece": {
@@ -4733,6 +4782,23 @@
     "/plantillas/grafica-perillas/index.html",
     "/plantillas/grafica-perillas/motor.js",
     "/plantillas/grafica-perillas/papel.json"
+   ]
+  },
+  "gravitacion": {
+   "id": "gravitacion",
+   "titulo": "Gravitación: la Tierra, los satélites y la órbita",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.gravitacion"
+   ],
+   "url": "/plantillas/gravitacion/index.html",
+   "papel": "/plantillas/gravitacion/papel.json",
+   "archivos": [
+    "/plantillas/gravitacion/index.html",
+    "/plantillas/gravitacion/motor.js",
+    "/plantillas/gravitacion/papel.json"
    ]
   },
   "identidades-trig": {
@@ -5111,6 +5177,23 @@
     "/plantillas/porcentajes-sucesivos/generador.js"
    ]
   },
+  "potenciacion": {
+   "id": "potenciacion",
+   "titulo": "El cuadrado de fichas: potenciación y radicación",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "aritmetica.potenciacion-y-radicacion"
+   ],
+   "url": "/plantillas/potenciacion/index.html",
+   "papel": "/plantillas/potenciacion/papel.json",
+   "archivos": [
+    "/plantillas/potenciacion/index.html",
+    "/plantillas/potenciacion/motor.js",
+    "/plantillas/potenciacion/papel.json"
+   ]
+  },
   "probabilidad-dados": {
    "id": "probabilidad-dados",
    "titulo": "La tabla de los dos dados: conteo y probabilidad",
@@ -5128,6 +5211,24 @@
     "/plantillas/probabilidad-dados/index.html",
     "/plantillas/probabilidad-dados/motor.js",
     "/plantillas/probabilidad-dados/papel.json"
+   ]
+  },
+  "quimica-ambiente": {
+   "id": "quimica-ambiente",
+   "titulo": "Del pozo al cielo: combustión, petróleo, metales y el aire",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.recursos-naturales",
+    "quimica.ambiente-y-quimica-aplicada"
+   ],
+   "url": "/plantillas/quimica-ambiente/index.html",
+   "papel": "/plantillas/quimica-ambiente/papel.json",
+   "archivos": [
+    "/plantillas/quimica-ambiente/index.html",
+    "/plantillas/quimica-ambiente/motor.js",
+    "/plantillas/quimica-ambiente/papel.json"
    ]
   },
   "regla-de-tres": {
@@ -5164,6 +5265,23 @@
     "/plantillas/relojes-calendarios/index.html",
     "/plantillas/relojes-calendarios/motor.js",
     "/plantillas/relojes-calendarios/papel.json"
+   ]
+  },
+  "rendimiento-pureza": {
+   "id": "rendimiento-pureza",
+   "titulo": "El montón y la caja punteada: pureza, rendimiento y equivalentes",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.estequiometria"
+   ],
+   "url": "/plantillas/rendimiento-pureza/index.html",
+   "papel": "/plantillas/rendimiento-pureza/papel.json",
+   "archivos": [
+    "/plantillas/rendimiento-pureza/index.html",
+    "/plantillas/rendimiento-pureza/motor.js",
+    "/plantillas/rendimiento-pureza/papel.json"
    ]
   },
   "segmentos-angulos": {
@@ -5253,6 +5371,23 @@
     "/plantillas/tablas-graficos/index.html",
     "/plantillas/tablas-graficos/motor.js",
     "/plantillas/tablas-graficos/papel.json"
+   ]
+  },
+  "termodinamica": {
+   "id": "termodinamica",
+   "titulo": "Termodinámica: primera ley, diagrama P-V y máquinas",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.termodinamica"
+   ],
+   "url": "/plantillas/termodinamica/index.html",
+   "papel": "/plantillas/termodinamica/papel.json",
+   "archivos": [
+    "/plantillas/termodinamica/index.html",
+    "/plantillas/termodinamica/motor.js",
+    "/plantillas/termodinamica/papel.json"
    ]
   },
   "tiro-parabolico": {

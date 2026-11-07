@@ -1,0 +1,15 @@
+{
+  "id": "cortes-pesadas",
+  "titulo": "La sierra y la balanza: cortes y pesadas",
+  "formato": "escena",
+  "unidades": [
+    "razonamiento-matematico.cortes-y-pesadas"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}

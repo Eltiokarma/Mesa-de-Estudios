@@ -219,6 +219,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 </script>
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'estatica', unidad: 'fisica.estatica', version: '0.1.0' };
@@ -231,7 +232,7 @@ function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
 /* ================= Piezas de dibujo compartidas =================
    Toda la física sale de MotorEstatica (motor.js); aquí solo se pinta. */
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
 // Coma decimal, espacio de miles (desde 5 cifras) y signo menos tipográfico.
 function fmt(n, d){
   if (!Number.isFinite(n)) return '—';
@@ -257,7 +258,7 @@ function crearLienzo(cv, alto, dibujar){
   const L = { cv, ctx, W:0, H:0, compacto:false };
   L.resize = () => {
     const W = cv.clientWidth; if (!W) return;
-    const H = Math.round(L.compacto && innerWidth < 900 ? clamp(W*0.66, 220, 250) : alto(W)), dpr = window.devicePixelRatio || 1;
+    const H = Math.round(L.compacto && innerWidth < 900 ? clamp(W*0.66, 220, 250) : alto(W)), dpr = Celular.dpr();
     L.W = W; L.H = H; cv.style.height = H + 'px'; cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
     ctx.setTransform(dpr,0,0,dpr,0,0);
     dibujar();

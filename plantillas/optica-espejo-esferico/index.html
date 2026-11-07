@@ -236,7 +236,7 @@ function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
    Toda la física sale de MotorEspejo (motor.js); aquí solo se pinta.
    Coordenadas del motor: espejo en x = 0, objeto a la izquierda, detrás del espejo a la derecha. */
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
 // Coma decimal y signo menos tipográfico.
 function fmt(n, d){
   if (!Number.isFinite(n)) return '∞';
@@ -261,7 +261,7 @@ function crearLienzo(cv, vista, dibujar){
   L.aModelo = (px, py) => [px/L.sx + L.vista.xmin, (L.H/2 - py)/L.sy];
   L.resize = () => {
     const W = cv.clientWidth; if (!W) return;
-    const H = Math.round(Celular.alto(clamp(W*0.64, 260, 460), L.compacto, { tope:260 })), dpr = window.devicePixelRatio || 1;
+    const H = Math.round(Celular.alto(clamp(W*0.64, 260, 460), L.compacto, { tope:260 })), dpr = Celular.dpr();
     L.W = W; L.H = H; cv.style.height = H + 'px'; cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
     ctx.setTransform(dpr,0,0,dpr,0,0);
     L.sx = W/(L.vista.xmax - L.vista.xmin); L.sy = (H/2 - 12)/L.vista.ymax;
@@ -938,7 +938,7 @@ function draw(){
 // (en el espejo plano, A = 1): en el convexo el auto y los postes salen más chicos y caben más.
 function inserto(c, r){
   const cc = document.getElementById('comp'); if (!cc || !cc.clientWidth) return;
-  const ctx = cc.getContext('2d'), dpr = window.devicePixelRatio || 1, CW = cc.clientWidth, CH = 132;
+  const ctx = cc.getContext('2d'), dpr = Celular.dpr(), CW = cc.clientWidth, CH = 132;
   cc.style.height = CH + 'px'; cc.width = Math.round(CW*dpr); cc.height = Math.round(CH*dpr); ctx.setTransform(dpr,0,0,dpr,0,0);
   ctx.clearRect(0, 0, CW, CH);
   const gap = 12, w = Math.min(170, (CW - gap - 4)/2), h = CH - 36, x0 = (CW - 2*w - gap)/2, y0 = 2;

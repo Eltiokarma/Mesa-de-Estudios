@@ -166,8 +166,8 @@
       "universidades": {"unmsm": {"temas": [12, 13]}},
       "potencial_visual": "alto",
       "grado": 3,
-      "plantillas": [],
-      "investigacion": null
+      "plantillas": ["cortes-pesadas"],
+      "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
       "id": "razonamiento-matematico.planteo-de-ecuaciones",

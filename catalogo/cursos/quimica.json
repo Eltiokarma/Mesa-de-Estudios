@@ -242,7 +242,8 @@
       "grado": 4,
       "plantillas": [
         "estequiometria-limitante",
-        "limitante-particulas"
+        "limitante-particulas",
+        "rendimiento-pureza"
       ],
       "investigacion": "docs/investigacion/estequiometria-ideas-erroneas.md"
     },
@@ -532,8 +533,8 @@
       },
       "potencial_visual": "bajo",
       "grado": 5,
-      "plantillas": [],
-      "investigacion": null
+      "plantillas": ["biomoleculas"],
+      "investigacion": "docs/investigacion/biomoleculas-ideas-erroneas.md"
     },
     {
       "id": "quimica.recursos-naturales",
@@ -560,8 +561,8 @@
       },
       "potencial_visual": "bajo",
       "grado": 4,
-      "plantillas": [],
-      "investigacion": null
+      "plantillas": ["quimica-ambiente"],
+      "investigacion": "docs/investigacion/quimica-ambiente-ideas-erroneas.md"
     },
     {
       "id": "quimica.ambiente-y-quimica-aplicada",
@@ -592,8 +593,8 @@
       },
       "potencial_visual": "bajo",
       "grado": 4,
-      "plantillas": [],
-      "investigacion": null
+      "plantillas": ["quimica-ambiente"],
+      "investigacion": "docs/investigacion/quimica-ambiente-ideas-erroneas.md"
     }
   ]
 }

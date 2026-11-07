@@ -104,7 +104,7 @@
       "universidades": {"uni": {"semanas": [6]}, "unmsm": {"temas": [8]}},
       "potencial_visual": "medio",
       "grado": 4,
-      "plantillas": [],
+      "plantillas": ["gravitacion"],
       "investigacion": "docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md"
     },
     {
@@ -224,7 +224,7 @@
       "universidades": {"uni": {"semanas": [12, 13]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": [],
+      "plantillas": ["termodinamica"],
       "investigacion": "docs/investigacion/fluidos-calor-termodinamica-ideas-erroneas.md"
     },
     {

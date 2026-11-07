@@ -37,6 +37,67 @@ test('el service worker sirve sin conexión todo lo que guarda', () => {
     const u = src.startsWith('/') ? src : '/app/' + src;
     assert.ok(lista.includes(u), `sw.js no guarda ${u}, que carga index.html`);
   }
+  // Y los que app.js carga al entrar a cada ruta (MODULOS).
+  const app = fs.readFileSync(path.join(__dirname, 'app.js'), 'utf8');
+  const modulos = app.match(/const MODULOS = \{([\s\S]*?)\n\};/);
+  assert.ok(modulos, 'app.js ya no tiene MODULOS');
+  for (const [, u] of modulos[1].matchAll(/'(\/[^']+\.js)'/g)) assert.ok(lista.includes(u), `sw.js no guarda ${u}, que carga app.js`);
+});
+
+// Simula la instalación del service worker con una caché anterior: la cáscara se baja de nuevo, los archivos
+// de plantilla que ya estaban se copian (sin red) y solo se bajan los nuevos. Después, stale-while-revalidate
+// guarda la versión nueva de una plantilla bajo su dirección sin «?…», que es la que se sirve.
+test('al subir VERSION, el service worker reutiliza la caché anterior', async () => {
+  const vm = require('node:vm');
+  const ORIGEN = 'http://x';
+  const abs = u => new URL(typeof u === 'string' ? u : u.url, ORIGEN).href;
+  const sinQ = u => { const x = new URL(u); return x.origin + x.pathname; };
+  class Resp { constructor(url, cuerpo) { this.url = url; this.cuerpo = cuerpo; this.ok = true; } clone() { return new Resp(this.url, this.cuerpo); } async json() { return JSON.parse(this.cuerpo); } }
+  class Cache {
+    constructor() { this.e = []; }
+    async matchAll(q, o = {}) { const u = abs(q); return this.e.filter(([k]) => (o.ignoreSearch ? sinQ(k) === sinQ(u) : k === u)).map(([, r]) => r.clone()); }
+    async match(q, o) { return (await this.matchAll(q, o))[0]; }
+    async put(q, r) { const u = abs(q); this.e = this.e.filter(([k]) => k !== u); this.e.push([u, r]); }
+    async add(q) { await this.put(q, await fetch(q)); }
+    async addAll(l) { for (const q of l) await this.add(q); }
+  }
+  const almacen = new Map();
+  const caches = { open: async k => { if (!almacen.has(k)) almacen.set(k, new Cache()); return almacen.get(k); }, keys: async () => [...almacen.keys()], delete: async k => almacen.delete(k) };
+  const cat = { plantillas: { a: { archivos: ['/plantillas/a/index.html', '/plantillas/a/motor.js'] }, b: { archivos: ['/plantillas/b/index.html'] } } };
+  const pedidos = [];
+  const fetch = async (q, o) => { const u = abs(q); pedidos.push({ u, cache: (o && o.cache) || (q && q.cache) }); return new Resp(u, u.endsWith('catalogo.json') ? JSON.stringify(cat) : 'nuevo'); };
+  // Caché anterior: la plantilla a (con una copia vieja sin «?» y otra más reciente con ?desde=app) y una cáscara vieja.
+  const vieja = await caches.open('lab-v0');
+  await vieja.put('/plantillas/a/index.html', new Resp('', 'a-vieja'));
+  await vieja.put('/plantillas/a/index.html?desde=app', new Resp('', 'a-reciente'));
+  await vieja.put('/plantillas/a/motor.js', new Resp('', 'motor-a'));
+  await vieja.put('/app/app.js', new Resp('', 'app-vieja'));
+  const oyentes = {};
+  const self = { addEventListener: (t, f) => { oyentes[t] = f; }, skipWaiting: async () => {}, clients: { claim: async () => {} } };
+  class Request { constructor(u, o = {}) { this.url = abs(u); this.cache = o.cache; } }
+  vm.runInNewContext(fs.readFileSync(path.join(__dirname, 'sw.js'), 'utf8'), { self, caches, fetch, Request, URL, location: { origin: ORIGEN }, console });
+  const esperar = async (tipo, ev) => { let p; oyentes[tipo]({ ...ev, waitUntil: x => { p = x; }, respondWith: x => { p = x; } }); return p; };
+  await esperar('install', {});
+  const VERSION = fs.readFileSync(path.join(__dirname, 'sw.js'), 'utf8').match(/const VERSION = '([^']+)'/)[1];
+  const nueva = almacen.get(`lab-${VERSION}`);
+  const cuerpo = async u => (await nueva.match(u, { ignoreSearch: true })).cuerpo;
+  assert.equal(await cuerpo('/plantillas/a/index.html'), 'a-reciente', 'debe copiar la copia más reciente de la caché anterior');
+  assert.equal(await cuerpo('/plantillas/a/motor.js'), 'motor-a');
+  assert.equal(await cuerpo('/plantillas/b/index.html'), 'nuevo', 'lo que no estaba se baja');
+  assert.equal(await cuerpo('/app/app.js'), 'nuevo', 'la cáscara se baja siempre de nuevo');
+  const bajados = pedidos.map(p => new URL(p.u).pathname);
+  assert.ok(!bajados.includes('/plantillas/a/index.html') && !bajados.includes('/plantillas/a/motor.js'), 'no debe bajar lo que ya tenía');
+  assert.ok(pedidos.filter(p => new URL(p.u).pathname === '/app/app.js').every(p => p.cache === 'no-cache'), 'la cáscara se revalida (no-cache)');
+  await esperar('activate', {});
+  assert.deepEqual([...almacen.keys()], [`lab-${VERSION}`], 'al activar se borran las cachés anteriores');
+  // stale-while-revalidate: responde lo guardado y guarda lo nuevo bajo la dirección sin «?».
+  let extra;
+  const r = await new Promise(ok => oyentes.fetch({ request: { url: ORIGEN + '/plantillas/a/index.html?desde=app', method: 'GET', mode: 'navigate' },
+    respondWith: p => ok(p), waitUntil: p => { extra = p; } }));
+  assert.equal(r.cuerpo, 'a-reciente');
+  await extra;
+  assert.equal(await cuerpo('/plantillas/a/index.html?desde=app'), 'nuevo', 'la próxima visita debe ver la plantilla renovada');
+  assert.equal((await nueva.matchAll('/plantillas/a/index.html', { ignoreSearch: true })).length, 1, 'una sola copia por archivo');
 });
 
 test('el manifiesto es instalable', () => {

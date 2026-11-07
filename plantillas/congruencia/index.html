@@ -233,7 +233,7 @@ function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
    MotorCongruencia (motor.js); aquí solo se pinta, se arrastra y se anima. */
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const MC = MotorCongruencia;
-const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
 function fmt(n, d){
   if (n === null || n === undefined || !Number.isFinite(n)) return '—';
   const p = Math.pow(10, d === undefined ? 1 : d), r = Math.round(n*p)/p + 0;
@@ -290,7 +290,7 @@ function crearMesa(cv, idDesc, idLect, idLey){
   }
   function resize(){
     const w = cv.clientWidth; if (!w) return;
-    const h = Math.round(Celular.alto(base(w), E.compacto)), dpr = window.devicePixelRatio || 1;
+    const h = Math.round(Celular.alto(base(w), E.compacto)), dpr = Celular.dpr();
     if (w === W && h === H) { E.dibujar(); return; }
     W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
     ctx.setTransform(dpr,0,0,dpr,0,0);
