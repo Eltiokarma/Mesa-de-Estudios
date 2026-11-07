@@ -338,8 +338,8 @@ function crearEscena(cv, idDesc, idLect, idLey){
   function resize(){
     const w = cv.clientWidth; if (!w) return;
     W = w; const c = colores();
-    // con cajas una dentro de otra, el dibujo apretado no se lee en 240 px: tope de 300
-    const anidado = (E.st.circuitos || []).some(A => A.D.elementos.some(e => e.tipo !== 'interruptor' && e.dueno != null));
+    // con cajas (una dentro de otra o varias) o con dos circuitos, el dibujo apretado no se lee en 240 px: tope de 300
+    const cs = E.st.circuitos || [], anidado = cs.length > 1 || cs.some(A => A.D.elementos.some(e => e.tipo !== 'interruptor'));
     LIM = 0; const hn = Math.round(geo(c).h), cap = Math.round(Celular.alto(hn, E.compacto, anidado ? { tope:300 } : undefined));
     if (cap < hn){ LIM = cap; H0 = Math.round(geo(c).h); } else H0 = hn;
     const h = Math.min(cap, H0), dpr = Celular.dpr();
@@ -421,7 +421,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
         const x = X(e.x), y = Y(e.y), w = e.w*U, h = e.h*U;
         ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = .045; redondeado(ctx, x, y, w, h, 8); ctx.fill(); ctx.globalAlpha = 1; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; ctx.stroke(); ctx.restore();
         const tc = Math.max(9, Math.min(12, M.MEDIDAS.cab*U*.55));
-        rotulo(c, x + 6, y + Math.max(tc*.6 + 2, M.MEDIDAS.cab*U*.5), OPNOM[e.op], c.ink, 'left', 800, tc);
+        rotulo(c, x + 6, y + Math.max(tc*.6 + 4, M.MEDIDAS.cab*U*.5), OPNOM[e.op], c.ink, 'left', 800, tc);
         // lo que sale de la caja: su valor
         const t = tapado(e.id) ? '?' : M.VF(R.pasa[e.id]);
         const bs = Math.max(12, Math.min(18, U*.7));

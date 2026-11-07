@@ -511,7 +511,7 @@
     return OPS[c.op](pasa(c.a, valores), pasa(c.b, valores));
   }
   // Medidas en unidades de cuadrícula. Cada bloque tiene entrada a la izquierda y salida a la derecha, a la altura ym.
-  const M_ = { intW: 2, intH: 1.8, hueco: 0.5, riel: 0.5, sep: 0.5, pad: 0.35, cab: 1.1, foco: 1.6 };
+  const M_ = { intW: 2, intH: 1.8, hueco: 0.5, riel: 0.5, sep: 0.7, pad: 0.35, cab: 1.1, foco: 1.6 };
   function medir(c) {
     if (c.k === 'int') { c.w = M_.intW; c.h = M_.intH; c.ym = c.h / 2; return c; }
     if (c.k === 'serie') {
