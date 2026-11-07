@@ -617,6 +617,53 @@ const V = {
     return { correcta: r.respuesta, errores: { 'dobla-y-despues-devuelve': e.devuelveDespues, 'olvida-lo-que-gasto-de-mas': e.olvidaElExtra, 'resta-lo-que-gasto-de-mas': e.restaElExtra } };
   },
 
+  // ---------------- Reserva de álgebra (rutina de matemática C) ----------------
+  // cx-01 a pl-02: numeros-complejos, numeros-reales, polinomios y programacion-lineal (en "reserva": las formas de álgebra ya tienen 10 pares).
+  'cx-01': d => { const r = motor('numeros-complejos').modulo({ z: { re: d.re, im: d.im } }), e = r.errores;
+    return { correcta: r.valor, errores: { 'AL9-modulo-suma-partes': e.sumaPartes.num.re, 'CX10-raiz-de-la-suma': e.raizDeSuma.num.re, 'CX11-sin-raiz': e.sinRaiz.num.re } }; },
+  'cx-02': d => { const r = motor('numeros-complejos').potenciaI({ n: d.n }), e = r.errores;
+    return { correcta: r.texto, errores: { 'CX2-i-cubo-es-i': e.cicloTres.texto, 'CX3-usa-el-cociente': e.cociente.texto, 'CX4-ciclo-corrido': e.corrido.texto } }; },
+  're-01': d => { const r = motor('numeros-reales').absoluto({ a: d.a, op: '≤', r: d.r }), e = r.errores;
+    return { correcta: r.texto, errores: { 'AL22-quitar-las-barras': e.sinBarras.texto, 'NR5-dentro-por-fuera': e.alReves.texto, 'NR6-distancia-desde-menos-a': e.otroCentro.texto } }; },
+  're-02': d => { const r = motor('numeros-reales').imagen({ A: d.A, f: { tipo: 'afin', k: d.k, t: d.t } }), e = r.errores;
+    return { correcta: r.texto, errores: { 'AL20-no-invertir-con-negativo': e.sinVoltear.texto, 'NR20-ordena-sin-voltear-corchetes': e.corchetesSinVoltear.texto, 'NR22-olvida-sumar': e.sinSumar.texto } }; },
+  'po-01': d => { const r = motor('polinomios').teoremaResto({ coefs: d.coefs, divisor: d.divisor }), e = r.errores;
+    return { correcta: r.valor, errores: { 'PO8-resto-con-el-signo-del-divisor': e.signo.valor, 'PO15-potencia-par-de-negativo': e.parNegativo.valor, 'PO27-resto-es-el-independiente': e.independiente.valor } }; },
+  'po-02': d => { const r = motor('polinomios').factorK({ coefs: d.coefs, raiz: d.raiz }), e = r.errores;
+    return { correcta: r.valor, errores: { 'PO17-factor-con-el-signo-cambiado': e.signo.valor, 'PO33-factor-con-suma-de-coeficientes': e.sumaCoef.valor, 'AL16-despeje-con-signo-cambiado': e.despeje.valor } }; },
+  'pl-01': d => { const r = motor('programacion-lineal').traducir({ porUnidad: [d.p, d.q], total: d.total, frase: d.frase }), e = r.errores;
+    return { correcta: r.texto, errores: { 'PL14-coeficientes-cruzados': e.cruzada.texto, 'PL15-a-lo-mas-como-al-menos': e.sentido.texto, 'PL12-inecuacion-como-ecuacion': e.igualdad.texto } }; },
+  'pl-02': d => { const r = motor('programacion-lineal').optimizar({ restricciones: d.restricciones, noNegativas: true, objetivo: d.objetivo, sentido: 'max' }), e = r.errores;
+    if (r.tipo !== 'unico') throw new Error('el ítem supone un óptimo único');
+    return { correcta: r.optimoTexto, errores: { 'PL5-vertice-de-mayor-x': e.mayorX.texto, 'PL4-vertice-mas-lejano': e.masLejano.texto, 'PL7-solo-vertices-de-los-ejes': e.soloEjes.texto } }; },
+
+  // ---------------- Reserva de geometría (rutina de matemática C) ----------------
+  // cg-01 a si-02: congruencia, segmentos-angulos y simetria (en "reserva": las formas de geometría ya tienen 10 pares).
+  'cg-01': d => { const r = motor('congruencia').mediatriz({ A: [-d.AB / 2, 0], B: [d.AB / 2, 0], t: d.t }), e = r.errores;
+    if (Math.abs(r.PA - r.PB) > 1e-9) throw new Error('P no equidista de A y B');
+    return { correcta: r.PB, errores: { 'PM-como-PB': e.PMcomoPB, 'suma-de-segmentos': e.suma, 'GE11-resta-cuadrados': e.restaCuadrados } }; },
+  'cg-02': d => { const r = motor('congruencia').medianaHipotenusa({ catetos: [d.AB, d.BC] }), e = r.errores;
+    if (Math.abs(r.hipotenusa - d.AC) > 1e-9) throw new Error('la hipotenusa del enunciado no es la del motor');
+    return { correcta: r.mediana, errores: { 'mediana-igual-cateto': e.cateto, 'GE8-mediana-como-altura': e.altura, 'mediana-promedio-catetos': e.promedioCatetos } }; },
+  'sa-01': d => { const r = motor('segmentos-angulos').ecuacionPar('alternos internos', [d.a1, d.b1], [d.a2, d.b2]), e = r.errores;
+    return { correcta: r.x, errores: { 'GE17-suplementa-alternos': e.otraRelacion.x, 'despeje-signo': e.despejeSigno, 'da-el-angulo-y-no-x': e.xEsElAngulo } }; },
+  'sa-02': d => { const r = motor('segmentos-angulos').solapados({ AC: d.AC, BD: d.BD, AD: d.AD }), e = r.errores;
+    return { correcta: r.BC, errores: { 'suma-segmentos-solapados': e.sumaSolapados, 'resta-da-otro-segmento': e.restaConAD, 'promedia-los-datos': e.promedio } }; },
+  'si-01': d => { const r = motor('simetria').reflejar({ x: d.x, y: d.y }, { m: 1, n: d.n }), e = r.errores, k = P => punto(P.x, P.y);
+    return { correcta: k(r.P), errores: { 'se-queda-en-el-pie': k(e.pie), 'refleja-en-vertical': k(e.vertical), 'intercambia-coordenadas': k(e.intercambia) } }; },
+  'si-02': d => { const S = motor('simetria'), r = S.prediccionEjes(S.figura('regular', d.n, 3)), e = r.errores;
+    // El motor dibuja el polígono regular con un vértice arriba, como dice el enunciado.
+    if (!r.simetrias.ejes.some(x => Math.abs(x.angulo - 90) < 1e-9)) throw new Error('el polígono no tiene un vértice arriba');
+    return { correcta: r.ejes, errores: { 'solo-el-eje-vertical': e.soloVertical, 'impar-sin-ejes': e.ninguno, 'cuenta-vertices-y-lados-aparte': e.dobleCuenta } }; },
+
+  // ---------------- Reserva de trigonometría (rutina de matemática C) ----------------
+  // tt-01 y tt-02: transformaciones-trig (en "reserva" mientras la plantilla no entre al catálogo).
+  'tt-01': d => { const r = motor('transformaciones-trig').sumaAProducto({ fn: 'sen', op: '+', A: d.A, B: d.B }), e = r.errores;
+    if (!r.exacto) throw new Error('la suma debe salir exacta');
+    return { correcta: r.valor, errores: { 'TR16-suma-de-senos-lineal': e.lineal.valor, 'TT2-semidiferencia-por-semisuma': e.intercambia.valor, 'TT1-olvida-el-2': e.sinDos.valor } }; },
+  'tt-02': d => { const r = motor('transformaciones-trig').cociente({ p: d.p, q: d.q, num: '+', den: '+' }), e = r.errores;
+    return { correcta: r.texto, errores: { 'TT4-no-divide-entre-2': e.sinDividir.texto, 'TT2-semidiferencia-por-semisuma': e.intercambia.texto, 'TT3-cot-por-tan': e.funcion.texto } }; },
+
   // ---------------- Aritmética (cuentas exactas, ver arriba) ----------------
   'ari-01': d => { const f = (1 - d.a / 100) * (1 - d.b / 100);
     return { correcta: d.P * f, errores: { 'suma-descuentos': d.P * (1 - (d.a + d.b) / 100), 'monto-descuento': d.P * (1 - f), 'un-solo-descuento': d.P * (1 - Math.max(d.a, d.b) / 100) } }; },

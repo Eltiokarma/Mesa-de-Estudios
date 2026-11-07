@@ -1,0 +1,16 @@
+{
+  "id": "matrices",
+  "titulo": "El plano que se deforma: matrices y determinantes",
+  "formato": "escena",
+  "unidades": [
+    "algebra.matrices-y-determinantes",
+    "algebra.sistemas-de-ecuaciones"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}
