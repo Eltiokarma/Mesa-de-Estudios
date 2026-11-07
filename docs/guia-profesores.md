@@ -51,7 +51,7 @@ Detalles importantes:
 - La salida tiene preguntas **parecidas** a las de la entrada, no las mismas. Hay dos formas, A y B, y la app reparte el orden: la mitad de los alumnos empieza con la A y la otra mitad con la B. Así se puede comparar sin que nadie repita preguntas.
 - Al terminar la salida, el alumno ve cuántas acertó antes y ahora. La revisión pregunta por pregunta aparece **solo si usted abrió `?soluciones=`**. Conviene abrirla después de que todo el grupo terminó la salida, para que las respuestas no circulen.
 - Si un alumno no hizo la entrada, el enlace de salida lo lleva primero a la entrada.
-- Cada prueba se hace **una sola vez**. "Borrar mi avance" no borra las pruebas de ciencias y matemática. Ojo: **sí borra las de razonamiento verbal** (ya se avisó al equipo para corregirlo); mientras tanto, pidan a los alumnos que no usen ese botón.
+- Cada prueba se hace **una sola vez**. "Borrar mi avance" no borra las pruebas de ningún curso.
 - Lo que se abre con el enlace queda guardado en ese navegador, aunque cambie el alumno. No hay contraseña: el control es que el enlace lo reparte usted.
 
 ## 5. En el laboratorio de cómputo: «Otro alumno en esta PC»

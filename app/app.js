@@ -322,8 +322,11 @@ function vPerfil() {
   if (bi) bi.onclick = async () => { instalar.prompt(); await instalar.userChoice; instalar = null; vPerfil(); };
   document.getElementById('borrar').onclick = () => {
     if (!confirm('¿Borrar tu avance de este celular? No se puede deshacer.')) return;
-    // Las pruebas de entrada y salida se conservan: se hacen una sola vez y son los datos del colegio.
-    est = { nombre: '', uni: '', grado: '', colegio: est.colegio, alumno: est.alumno, vistas: {}, dias: [], tema: '', practica: {}, pruebas: est.pruebas,
+    // Las pruebas de entrada y salida se conservan: se hacen una sola vez y son los datos del colegio. Las de
+    // razonamiento verbal viven en practica[id] (app/lectura.js): de esas solo se guardan entrada y salida.
+    const practica = {};
+    for (const [id, p] of Object.entries(est.practica || {})) if (p && (p.entrada || p.salida)) practica[id] = { entrada: p.entrada || null, salida: p.salida || null };
+    est = { nombre: '', uni: '', grado: '', colegio: est.colegio, alumno: est.alumno, vistas: {}, dias: [], tema: '', practica, pruebas: est.pruebas,
       salidaHabilitada: est.salidaHabilitada, solucionesHabilitadas: est.solucionesHabilitadas }; guardar(); aplicarTema(); ir('#/bienvenida');
   };
 }
