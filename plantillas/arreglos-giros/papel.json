@@ -1,5 +1,5 @@
 {
-  "titulo": "Fichas, espejos y ruedas: problemas para lápiz y papel",
+  "titulo": "Fichas, banderas y ruedas: problemas para lápiz y papel",
   "indicacion": "Resuélvelos sin la escena, con unos 2 minutos por problema, como en el examen.",
   "problemas": [
     {
@@ -71,8 +71,8 @@
     {
       "id": "p6",
       "nivel": "básico",
-      "enunciado": "Una pieza en forma de L está hecha con 4 cuadraditos: tres en columna y uno más al pie, a la derecha. Sobre una cuadrícula, ¿en cuántas posiciones distintas se puede poner si solo se gira sobre la mesa? ¿Y si también se le puede dar la vuelta?",
-      "respuesta": "4 posiciones solo girando; 8 si también se le da la vuelta.",
+      "enunciado": "Una pieza en forma de L está hecha con 4 cuadraditos: tres en columna y uno más al pie, a la derecha. Sobre una cuadrícula, ¿cuántas orientaciones distintas puede tener (sin contar los desplazamientos) si solo se gira sobre la mesa? ¿Y si también se le puede dar la vuelta?",
+      "respuesta": "4 orientaciones solo girando; 8 si también se le da la vuelta.",
       "pasos": [
         "Girando de 90° en 90°, el pie de la L apunta a la derecha, arriba, a la izquierda y abajo: 4 posiciones distintas, y el cuarto giro la devuelve a la primera.",
         "Al darle la vuelta se obtiene su imagen en el espejo, una L con el pie a la izquierda. Ningún giro la convierte en la original, porque la L no tiene un eje de simetría.",
@@ -83,7 +83,7 @@
     {
       "id": "p7",
       "nivel": "intermedio",
-      "enunciado": "Una moneda de radio 1 cm rueda, sin resbalar, alrededor de un disco fijo de radio 3 cm, siempre pegada a su borde, hasta volver al punto de partida. ¿Cuántas vueltas da la moneda si rueda por fuera del disco? ¿Y si rueda por dentro de un aro de radio 3 cm?",
+      "enunciado": "Una moneda de radio 1 cm rueda, sin resbalar, alrededor de un disco fijo de radio 3 cm, siempre pegada a su borde, hasta volver al punto de partida. ¿Cuántas vueltas da la moneda sobre sí misma (cuántas veces una flecha pintada en la moneda vuelve a apuntar arriba) si rueda por fuera del disco? ¿Y si rueda por dentro de un aro de radio 3 cm?",
       "respuesta": "4 vueltas por fuera; 2 por dentro.",
       "pasos": [
         "Lo que cuenta es el camino del centro de la moneda: rodando sin resbalar, la moneda da una vuelta por cada 2π · 1 cm que avanza su centro.",
@@ -108,7 +108,7 @@
     {
       "id": "p9",
       "nivel": "intermedio",
-      "enunciado": "Un cuadrado ABCD de 4 m de lado está apoyado en el suelo sobre su lado AB, con A a la izquierda. Se vuelca hacia la derecha, girando sobre el vértice de abajo a la derecha, hasta que se apoya en otro lado; esto se repite hasta completar 4 vuelcos. ¿Qué longitud recorre el vértice A?",
+      "enunciado": "Un cuadrado ABCD de 4 m de lado está apoyado en el suelo sobre su lado AB, con A a la izquierda. Se vuelca hacia la derecha, girando sobre el vértice de abajo a la derecha, hasta que se apoya en otro lado; esto se repite hasta completar 4 vuelcos, y el cuadrado queda otra vez con AB en el suelo y A a la izquierda. ¿Qué longitud recorre el vértice A?",
       "respuesta": "(4 + 2√2)π m.",
       "pasos": [
         "En cada vuelco el cuadrado gira 90° alrededor de un vértice, así que A recorre un cuarto de circunferencia cuyo radio es su distancia a ese vértice.",

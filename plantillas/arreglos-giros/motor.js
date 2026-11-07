@@ -1,5 +1,5 @@
 /*
- * Motor de «Fichas, espejos y ruedas» (razonamiento matemático): cuadrados mágicos de 3 × 3, números en los vértices
+ * Motor de «Fichas, banderas y ruedas» (razonamiento matemático): cuadrados mágicos de 3 × 3, números en los vértices
  * y lados de un polígono con la misma suma por lado, piezas de cuadrícula que se giran o se reflejan, ruedas y monedas
  * que ruedan sin resbalar, el recorrido de un vértice de un polígono que vuelca sobre una recta y la región que barre
  * un segmento que gira.
@@ -29,8 +29,10 @@
  *     los vértices numerados desde 0 en sentido contrario a las agujas del reloj: el 0 en (0, 0), el 1 en (l, 0), el 2
  *     el siguiente hacia arriba, … Vuelca hacia la derecha: en el vuelco j (j = 1, 2, …) gira 360°/n en el sentido de
  *     las agujas del reloj alrededor del vértice que está en el suelo más a la derecha, que es el vértice j mod n.
- *   - Un «exacto» es un texto con π, raíces o fracciones simplificadas ('(2 + √2)π', '600π', '7/2', '4'). Los
- *     ángulos se dan en grados, salvo donde se dice radianes.
+ *   - Un «exacto» es un texto con π, raíces o fracciones simplificadas ('(2 + √2)π', '600π', '7/2', '4'). Si hay
+ *     parte racional y parte con raíz y alguna es fracción, se escribe con denominador común fuera del paréntesis:
+ *     (4/3 + (2/3)√3)π se da como '(4 + 2√3)π/3'; π/2 como 'π/2' y 2π/3 como '2π/3'. Los ángulos se dan en grados,
+ *     salvo donde se dice radianes.
  *   - Cada resultado que es la respuesta de una predicción trae 'errores' (lo que da cada error típico), 'coinciden'
  *     (los nombres de los errores que en ese caso dan justo la respuesta correcta: no se ofrecen y no van en
  *     'errores') y 'repetidos' (un error que da lo mismo que otro anterior de la lista: { nombre: el anterior }).
@@ -93,7 +95,8 @@
  *                               alrededor · (R ± r) / r, exacto (fracción), recorridoCentro: 2π(R ± r) · alrededor,
  *                               recorridoExacto (texto con π), radioCentro (R ± r), contacto: alrededor · R / r (lo que
  *                               mide el borde que toca, dividido entre 2πr), errores: contacto (solo el borde que toca),
- *                               bordeExterior (fuera: alrededor · (R + 2r) / r, el camino del punto más alejado),
+ *                               bordeExterior (solo por fuera: alrededor · (R + 2r) / r, el camino del punto más
+ *                               alejado; por dentro, bordeExterior no se calcula y no aparece en errores),
  *                               mismoLado (0: «va pegada, no gira»), otroLado (como si rodara por el otro lado) }.
  *   rodarEn({ R, r, lado, theta })   la posición a mitad de camino: el centro de la rueda r cuando la recta que une los
  *                               centros forma un ángulo theta (radianes, desde el eje x, en sentido contrario a las
