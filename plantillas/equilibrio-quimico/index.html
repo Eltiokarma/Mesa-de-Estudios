@@ -395,7 +395,7 @@ function crearEscena(cv, idDesc, modoId, conTermo, idLey){
       ctx.font = `800 12px ${c.font}`; ctx.fillStyle = c.V; ctx.textAlign = 'right'; ctx.textBaseline = 'top'; ctx.fillText(`V = ${fmt(s.V, v.escalaV ? 2 : 1)} L`, b.x + b.w, b.y + b.h + 16);
     } else {
       const tc = v.rigida ? `caja rígida de ${fmt(s.V, 0)} L` : `caja de ${fmt(s.V, 1)} L`;
-      ctx.font = `700 11px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'right'; ctx.textBaseline = 'top'; ctx.fillText(tc, b.x + b.w, b.y + b.h + 16);
+      ctx.font = `700 11px ${c.font}`; ctx.fillStyle = v.rigida ? c.V : c.muted; ctx.textAlign = 'right'; ctx.textBaseline = 'top'; ctx.fillText(tc, b.x + b.w, b.y + b.h + 16);
     }
     if (v.congelada && v.lupa && v.aviso){ ctx.font = `800 12px ${c.font}`; ctx.fillStyle = c.ink; ctx.textAlign = 'right'; ctx.textBaseline = 'bottom'; ctx.fillText(v.aviso, b.x + b.w, b.y - 6); }
   }
@@ -447,7 +447,7 @@ function crearEscena(cv, idDesc, modoId, conTermo, idLey){
     // K: raya vertical; Q: triángulo. Escala logarítmica, de 1/50 a 50.
     ctx.strokeStyle = c.K; ctx.lineWidth = E.hl === 'K' ? 5 : 3; linea(ctx, X(K), y - 11, X(K), y + 11);
     ctx.font = `800 11px ${c.mono}`; ctx.fillStyle = c.K; ctx.textBaseline = 'bottom';
-    const xk = clamp(X(K), x0 + 22, x1 - 22); ctx.fillText(`K = ${fmtK(K)}`, xk, y - 12);
+    const xk = clamp(X(K), x0 + 22, x1 - 22); ctx.fillText(`Kc = ${fmtK(K)}`, xk, y - 12);
     const xq = X(Q === Infinity ? 1e9 : Q === 0 ? 1e-9 : Q), r = E.hl === 'Q' ? 8 : 6;
     ctx.fillStyle = c.Q; ctx.beginPath(); ctx.moveTo(xq, y - r); ctx.lineTo(xq + r*0.75, y); ctx.lineTo(xq, y + r); ctx.lineTo(xq - r*0.75, y); ctx.closePath(); ctx.fill();
     const tq = Q === Infinity ? 'Q muy grande' : `Q = ${fmtK(Q)}`;
@@ -546,7 +546,8 @@ function crearEscena(cv, idDesc, modoId, conTermo, idLey){
     else {
       const k = s.cambios();
       t = `Hay ${n[a]} porciones de ${a} y ${n[b]} de ${b}${v.embolo ? ` en ${fmt(s.V, v.escalaV ? 2 : 1)} L` : ''}. En el último segundo, ${k.directa} cambios de ${a} a ${b} y ${k.inversa} de ${b} a ${a}.`;
-      if (v.qk) t += ` Q = ${fmtK(s.Q())}, K = ${fmtK(s.K())}: ${sentidoTexto(s)}.`;
+      if (v.qk) t += ` Q = ${fmtK(s.Q())}, Kc = ${fmtK(s.K())}: ${sentidoTexto(s)}.`;
+      if (v.pres){ const pr = s.presiones(); t += ` Presiones: ${Object.keys(pr).map(k => `p(${k}) = ${fmt(pr[k], 0)} atm`).join(', ')}.`; }
       if (v.termo) t += ` Temperatura: ${fmt(s.T, 0)} K.`;
     }
     t += gris;
@@ -584,7 +585,7 @@ function leyendaHTML(s, v){
   if (v.qk) it.push(`<span>${sv(14, '<path d="M7 1 L12 7 L7 13 L2 7 Z" fill="var(--c-Q)"/>')}Q · cociente</span>`);
   if (v.K || v.qk) it.push(`<span><i style="background:var(--c-K)"></i>K · constante</span>`);
   if (v.termo) it.push(`<span><i style="background:var(--c-T)"></i>T · temperatura</span>`);
-  if (v.embolo) it.push(`<span><i style="background:var(--c-V)"></i>V · volumen</span>`);
+  if (v.embolo || v.rigida) it.push(`<span><i style="background:var(--c-V)"></i>V · volumen</span>`);
   if (v.contadores || v.graf === 'rap'){ const a = s.tipo === 'AB' ? 'A' : '2 X', b = s.tipo === 'AB' ? 'B' : 'Y'; it.push(`<span>línea continua: ${a} → ${b} · a trazos: ${b} → ${a}</span>`); }
   if (v.graf === 'cat') it.push(`<span>gráfica: línea gruesa, con catalizador · fina y clara, sin</span>`);
   return it.join('');

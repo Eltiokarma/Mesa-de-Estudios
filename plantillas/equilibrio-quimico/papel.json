@@ -430,9 +430,9 @@
       "pasos": [
         "Parte de 1 mol de N₂O₄. Quedan 1 − α de N₂O₄ y se forman 2α de NO₂. Los moles de gas son 1 + α de la reacción más 4,5 de argón: 5,5 + α en total.",
         "Presiones parciales: P(NO₂) = 2α/(5,5 + α) · 3 y P(N₂O₄) = (1 − α)/(5,5 + α) · 3. El argón no entra en Kp, pero sí en los moles totales.",
-        "Kp = P(NO₂)² / P(N₂O₄) = 12α² / ((1 − α)(5,5 + α)) = 1. Prueba α = 0,5: 12 · 0,25 / (0,5 · 6) = 3/3 = 1. Entonces α = 0,5.",
+        "Kp = P(NO₂)² / P(N₂O₄) = 12α² / ((1 − α)(5,5 + α)) = 1. Desarrolla: 12α² = (1 − α)(5,5 + α) → 26α² + 9α − 11 = 0 → α = (−9 + 35)/52 = 0,5 (la otra raíz es negativa).",
         "Comprueba: hay 0,5 mol de N₂O₄, 1 mol de NO₂ y 4,5 de argón, 6 mol en total. P(NO₂) = 1/6 · 3 = 0,5 atm y P(N₂O₄) = 0,5/6 · 3 = 0,25 atm; 0,5²/0,25 = 1.",
-        "b) Con la presión total fija, el argón ocupa lugar: la suma de las presiones parciales de N₂O₄ y NO₂ baja de 3 atm a 0,75 atm. Es como descomprimir la mezcla, y se corre hacia el lado con más moles de gas: se disocia más (de 0,28 a 0,5).",
+        "b) Con la presión total fija, el argón ocupa lugar: la suma de las presiones parciales de N₂O₄ y NO₂ baja de 3 atm a 0,75 atm. Es como descomprimir la mezcla, y se corre hacia el lado con más moles de gas: se disocia más (de 0,28 a 0,5). Con argón, las presiones parciales de N₂O₄ y NO₂ suman 0,75 atm, igual que en el problema 7a: por eso sale el mismo α = 0,5.",
         "c) Con el émbolo trabado, el argón sube la presión total, pero no cambia ni los moles ni el volumen del N₂O₄ y del NO₂: sus presiones parciales siguen igual y Q sigue igual a K. No se desplaza."
       ],
       "verificar": [
