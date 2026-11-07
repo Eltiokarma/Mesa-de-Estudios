@@ -1766,7 +1766,7 @@
       "nombreUnidad": "Problemas de razonamiento numérico",
       "mide": "Falsa suposición: se supone todo de un tipo y lo que falta, dividido entre lo que agrega cada cambio, da los del otro tipo",
       "A": {
-        "enunciado": "En un estacionamiento hay 26 vehículos, entre bicicletas y autos. Entre todos tienen 80 ruedas. ¿Cuántos autos hay?",
+        "enunciado": "En un estacionamiento hay 26 vehículos: solo bicicletas y autos. Entre todos tienen 80 ruedas. ¿Cuántos autos hay?",
         "datos": {
           "total": 26,
           "patas": 80
@@ -1795,7 +1795,7 @@
         ]
       },
       "B": {
-        "enunciado": "En una chacra hay 35 animales, entre pavos y carneros. Entre todos tienen 110 patas. ¿Cuántos carneros hay?",
+        "enunciado": "En una chacra hay 35 animales: solo pavos y carneros. Entre todos tienen 110 patas. ¿Cuántos carneros hay?",
         "datos": {
           "total": 35,
           "patas": 110
@@ -1861,7 +1861,7 @@
         ]
       },
       "B": {
-        "enunciado": "Una panadera vendió en la mañana la mitad de sus panes y 4 más. En la tarde vendió la mitad de los que le quedaban y 3 más. Le quedaron 7 panes. ¿Cuántos panes tenía al empezar el día?",
+        "enunciado": "Una panadera vendió en la mañana la mitad de sus panes y 4 más. En la tarde vendió la mitad de los que le quedaban y 3 más. Al final del día le quedaron 7 panes. ¿Cuántos panes tenía al empezar el día?",
         "datos": {
           "k1": 4,
           "k2": 3,
