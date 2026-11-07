@@ -1,6 +1,6 @@
 {
   "titulo": "Temperatura y calor: problemas para lápiz y papel",
-  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Usa Q = m·c·ΔT para calentar o enfriar y Q = m·L para cambiar de fase; en una mezcla, calor ganado = calor cedido. Toma c del agua = 1 cal/g°C, c del hielo = 0,5 cal/g°C, c del vapor = 0,5 cal/g°C, Lf = 80 cal/g y Lv = 540 cal/g. Sin pérdidas, salvo que el problema diga otra cosa. Si hay hielo o vapor, revisa primero si el calor alcanza para completar el cambio de fase. Para la dilatación: Δℓ = ℓ₀·α·ΔT; un área crece con 2α y un volumen con 3α. Para la conducción: Q/t = k·A·ΔT/ℓ. La temperatura de la ley de Stefan va en kelvin.",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Usa Q = m·c·ΔT para calentar o enfriar y Q = m·L para cambiar de fase; en una mezcla, calor ganado = calor cedido. Toma c del agua = 1 cal/g°C, c del hielo = 0,5 cal/g°C, c del vapor = 0,5 cal/g°C, Lf = 80 cal/g y Lv = 540 cal/g. Sin pérdidas, salvo que el problema diga otra cosa. Si hay hielo o vapor, revisa primero si el calor alcanza para completar el cambio de fase. Para la dilatación: Δℓ = ℓ₀·α·ΔT; un área crece con 2α y un volumen con 3α (aproximación: se desprecian los términos con α², que son muy chicos). Para la conducción: Q/t = k·A·ΔT/ℓ. La temperatura de la ley de Stefan va en kelvin.",
   "problemas": [
     {
       "id": "p1",
@@ -21,10 +21,10 @@
     {
       "id": "p10",
       "nivel": "básico",
-      "enunciado": "Un riel de acero mide 12 m a 10 °C. Un mediodía de verano llega a 45 °C. ¿Cuánto se alarga? α del acero = 1,2 × 10⁻⁵ °C⁻¹.",
-      "respuesta": "5,04 mm.",
-      "pasos": ["ΔT = 45 − 10 = 35 °C.", "Δℓ = ℓ₀·α·ΔT = 12·1,2 × 10⁻⁵·35 = 5,04 × 10⁻³ m = 5,04 mm.", "Si usas 45 °C en lugar de ΔT, te sale 6,48 mm: en la fórmula va cuánto cambió la temperatura.", "Por eso los rieles llevan una junta de unos milímetros entre tramo y tramo."],
-      "verificar": [{"fn": "dilatacion", "args": [{"tipo": "lineal", "inicial": 12, "alfa": 1.2e-05, "T0": 10, "Tf": 45}], "espera": {"delta": 0.00504, "errores.DL-usa-T-final": 0.00648}}]
+      "enunciado": "Un riel de acero mide 15 m a 5 °C. Un mediodía de verano llega a 40 °C. ¿Cuánto se alarga? α del acero = 1,2 × 10⁻⁵ °C⁻¹.",
+      "respuesta": "6,3 mm.",
+      "pasos": ["ΔT = 40 − 5 = 35 °C.", "Δℓ = ℓ₀·α·ΔT = 15·1,2 × 10⁻⁵·35 = 6,3 × 10⁻³ m = 6,3 mm.", "Si usas 40 °C en lugar de ΔT, te sale 7,2 mm: en la fórmula va cuánto cambió la temperatura.", "Por eso los rieles llevan una junta de unos milímetros entre tramo y tramo."],
+      "verificar": [{"fn": "dilatacion", "args": [{"tipo": "lineal", "inicial": 15, "alfa": 1.2e-05, "T0": 5, "Tf": 40}], "espera": {"delta": 0.0063, "errores.DL-usa-T-final": 0.0072}}]
     },
     {
       "id": "p3",
@@ -77,9 +77,9 @@
     {
       "id": "p13",
       "nivel": "avanzado",
-      "enunciado": "Una barra de cobre de 40 cm (k = 400 W/m·K) y una de acero de 10 cm (k = 50 W/m·K), las dos de 1 cm² de sección, se unen por un extremo y se aíslan por los costados. El extremo libre del cobre está a 100 °C y el del acero a 10 °C. ¿Qué temperatura tiene la unión y cuánto calor pasa por segundo?",
+      "enunciado": "Una barra de cobre de 40 cm (k = 400 W/(m·K)) y una de acero de 10 cm (k = 50 W/(m·K)), las dos de 1 cm² de sección, se unen por un extremo y se aíslan por los costados. El extremo libre del cobre está a 100 °C y el del acero a 10 °C. ¿Qué temperatura tiene la unión y cuánto calor pasa por segundo?",
       "respuesta": "70 °C en la unión y 3 W.",
-      "pasos": ["Por las dos barras pasa el mismo calor por segundo; si no, la unión se calentaría o se enfriaría.", "Q/t = k·A·ΔT/ℓ en cada una: 400·A·(100 − T)/0,4 = 50·A·(T − 10)/0,1.", "1000·(100 − T) = 500·(T − 10), así que 1500T = 105 000 y T = 70 °C.", "Q/t = 400·10⁻⁴·30/0,4 = 3 W (en el acero: 50·10⁻⁴·60/0,1 = 3 W, cuadra).", "El promedio (55 °C) y la fórmula sin los largos (90 °C) son errores: la caída grande va en la barra que conduce peor."],
+      "pasos": ["Por las dos barras pasa el mismo calor por segundo; si no, la unión se calentaría o se enfriaría.", "Q/t = k·A·ΔT/ℓ en cada una: 400·A·(100 − T)/0,4 = 50·A·(T − 10)/0,1.", "1000·(100 − T) = 500·(T − 10), así que 1500T = 105 000 y T = 70 °C.", "Q/t = 400·10⁻⁴·30/0,4 = 3 W (en el acero: 50·10⁻⁴·60/0,1 = 3 W, cuadra).", "El promedio (55 °C) y la fórmula sin los largos (90 °C) son errores: la caída grande va en la barra que más frena, la de mayor ℓ/(k·A); aquí, el acero (0,1/(50·10⁻⁴) = 20 contra 10 del cobre)."],
       "verificar": [{"fn": "serie", "args": [{"capas": [{"k": 400, "ell": 0.4}, {"k": 50, "ell": 0.1}], "A": 0.0001, "T1": 100, "T2": 10}], "espera": {"flujo": 3, "uniones": [70], "errores.TC3-union-en-el-promedio": 55, "errores.TC-ignora-largos": 90}}]
     }
   ]
