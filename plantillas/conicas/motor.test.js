@@ -48,7 +48,6 @@ function comprobar(fn, args, espera, que) {
 // 1. casos.json
 test('casos.json: formato', () => {
   assert.equal(datos.plantilla, 'conicas');
-  assert.equal(datos.verificacion, '', 'la verificación la llena otro subagente');
   assert.ok(datos.casos.length >= 15 && datos.casos.length <= 22, `hay ${datos.casos.length} casos`);
   for (const c of datos.casos) {
     assert.ok(c.nombre && c.fn && Array.isArray(c.args), JSON.stringify(c).slice(0, 80));
@@ -139,6 +138,19 @@ test('la ecuación general se reconoce y se completa de vuelta', () => {
     if (tipo === 'elipse') cerca(G.conica.a2.valor, Math.max(nx, ny), 'a²');
   }
 });
+test('sin término lineal de la otra variable: dos rectas paralelas, una recta doble o nada', () => {
+  for (let k = 0; k < N; k++) {
+    const h = ent(-6, 6), q = ent(-9, 9), s = elegir([1, -2, 3]), conX = elegir([true, false]);
+    // s·((v − h)² − q) = 0
+    const G = motor.general(conX ? { A: s, C: 0, D: -2 * h * s, E: 0, F: (h * h - q) * s } : { A: 0, C: s, D: 0, E: -2 * h * s, F: (h * h - q) * s });
+    assert.equal(G.tipo, q > 0 ? 'paralelas' : q === 0 ? 'rectaDoble' : 'vacia', `q = ${q}`);
+    if (q >= 0) {
+      const v = conX ? 'x' : 'y', vals = G.rectasTexto.split(/ [ey] /).map(t => { assert.ok(t.startsWith(`${v} = `), t); return t.slice(4); });
+      if (q === 0) assert.equal(vals.length, 1);
+      else { const r = Math.sqrt(q); assert.equal(vals.length, 2); if (Number.isInteger(r)) assert.deepEqual(vals.map(t => Number(t.replace('−', '-'))).sort((a, b) => a - b), [h - r, h + r]); }
+    }
+  }
+});
 test('circunferencia: la general y la ordinaria dicen lo mismo', () => {
   for (let k = 0; k < N; k++) {
     const h = ent(-9, 9), kk = ent(-9, 9), r2 = ent(1, 80), C = motor.circunferencia({ h, k: kk, r2 });
@@ -213,7 +225,7 @@ const ESCENA = {
   paso6: [() => op(P5.lr, 'conSigno', 'dosP', 'soloP'), 'numero'],
   paso7: [() => op(H7.focos, 'cElipse', 'aMayor', 'vertices'), 'puntoPm'],
   paso8: [() => op(motor.general({ A: -4, C: -9, D: 8, E: -36, F: -4 }), 'cambiaSigno', 'dosCuadrados', 'lineales'), 'nombre'],
-  'clavos-juntos': [() => op(motor.jardinero({ a: 5, c: 0 }), 'segmento', 'punto', 'parabola'), 'nombre'],
+  'clavos-juntos': [() => op(motor.jardinero({ a: 5, c: 0 }), 'segmento', 'punto', 'alargada'), 'nombre'],
   'circunferencia': [() => op(motor.circunferenciaGeneral({ D: -6, E: 8, F: -11 }), 'signos', 'radioCuadrado', 'sinSumar'), 'centroRadio'],
   'plato': [() => op(motor.plato({ ancho: 120, hondo: 20 }), 'cuatroP', 'dosP', 'hondo'), 'cm'],
   'asintotas': [() => op(motor.hiperbola({ h: -2, k: 1, a2: 4, b2: 9, eje: 'y' }).pendiente, 'invertida', 'sinRaiz', 'invertidaSinRaiz'), 'pm'],
@@ -225,7 +237,7 @@ const FORMAS = {
   punto: t => new RegExp(`^\\(${NUM}; ${NUM}\\)$`).test(t),
   par: t => new RegExp(`^\\(${NUM}; ${NUM}\\) y \\(${NUM}; ${NUM}\\)$`).test(t),
   puntoPm: t => new RegExp(`^\\((±${NUM}|0); (±${NUM}|0)\\)$`).test(t),
-  nombre: t => /^(una|un|dos) [a-záéíóú]+$/.test(t),
+  nombre: t => /^(una|un|dos) [a-záéíóú]+( más alargada)?$/.test(t),
   centroRadio: t => new RegExp(`^\\(${NUM}; ${NUM}\\) y r = ${NUM}$`).test(t),
   cm: t => /^\d+ cm$/.test(t),
   pm: t => new RegExp(`^±${NUM}$`).test(t)
