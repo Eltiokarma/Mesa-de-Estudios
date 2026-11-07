@@ -577,6 +577,193 @@
         "Pregunta 4. Antes de las alternativas: Se deduce del texto. El texto no lo dice con esas palabras, pero se deduce: el autor defiende la reparación porque «da trabajo cerca de casa» (oración 6) y lamenta que el oficio de los técnicos «se vuelve imposible» cuando no hay repuestos (oración 7).",
         "Pregunta 4. Clave D. El autor la rechaza y responde con lo que esa cuenta no incluye: la basura que se acumula (oración 3) y el dinero y el trabajo que salen del barrio (oración 8)."
       ]
+    },
+    {
+      "id": "t055",
+      "nivel": "avanzado (tipo UNI)",
+      "enunciado": "Lee el texto «La riqueza que llegaba en barcos» y responde las 4 preguntas.",
+      "texto": {
+        "titulo": "La riqueza que llegaba en barcos",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "Frente a la costa de Pisco, en las islas de Chincha, enormes colonias de aves marinas, como el guanay, dejaron durante siglos capa sobre capa de excremento."
+            },
+            {
+              "n": 2,
+              "t": "Como en esa costa casi nunca llueve, el agua no lavó ese guano, y en él se conservó el nitrógeno que hace crecer a las plantas."
+            },
+            {
+              "n": 3,
+              "t": "Hacia 1840, los agricultores de Europa empezaron a comprarlo como abono, y el Estado peruano, dueño de las islas, se puso a venderlo por barcos enteros."
+            }
+          ],
+          [
+            {
+              "n": 4,
+              "t": "Con esa renta, el Estado hizo cosas que antes no podía."
+            },
+            {
+              "n": 5,
+              "t": "En 1854 declaró libres a los esclavos, y luego pagó a sus dueños con dinero del guano, y suprimió el tributo que pagaban los indígenas."
+            },
+            {
+              "n": 6,
+              "t": "A comienzos de la década de 1870 pidió grandes préstamos en Europa, con el guano como garantía, para tender ferrocarriles."
+            },
+            {
+              "n": 7,
+              "t": "Pero las islas se fueron agotando, la deuda siguió creciendo y, en 1876, el país dejó de pagarla."
+            }
+          ],
+          [
+            {
+              "n": 8,
+              "t": "Suele contarse esta historia como un caso de despilfarro y de corrupción, y no faltaron ni el uno ni la otra."
+            },
+            {
+              "n": 9,
+              "t": "Sin embargo, esa explicación supone que habría bastado con gastar honradamente, y deja fuera lo más importante."
+            },
+            {
+              "n": 10,
+              "t": "En sus mejores años, el guano daba la mayor parte de los ingresos del Estado, y como ese dinero llegaba de unas islas, el Estado ya no necesitaba cobrarle a la población ni que el resto del país produjera más para sostenerse."
+            },
+            {
+              "n": 11,
+              "t": "Por eso el guano no hizo más fuerte al Estado, sino más frágil: cuando las islas se agotaron, no tenía otra cosa de qué vivir."
+            }
+          ],
+          [
+            {
+              "n": 12,
+              "t": "No en vano el historiador Jorge Basadre llamó a la época del guano «la prosperidad falaz»."
+            },
+            {
+              "n": 13,
+              "t": "La lección, entonces, no es solo que debió gastarse con más honradez, sino que una riqueza que llega sin que el país tenga que producirla no reemplaza la tarea de construir una economía que produzca."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas: ¿qué busca sobre todo el autor? Elige: «Explicar o informar», «Convencer», «Narrar».",
+          "enunciado": "El texto es, fundamentalmente, de tipo",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "argumentativo, porque se vale de un episodio histórico para defender una idea sobre los ingresos que no nacen del trabajo productivo del país."
+            },
+            {
+              "letra": "B",
+              "t": "argumentativo, porque sostiene que la bonanza del guano se perdió por el despilfarro y la corrupción."
+            },
+            {
+              "letra": "C",
+              "t": "expositivo, porque explica las causas de la quiebra de 1876 sin tomar partido entre las distintas explicaciones."
+            },
+            {
+              "letra": "D",
+              "t": "narrativo, porque relata en orden, con fechas que van de 1840 a 1876, cómo el Perú pasó de la bonanza del guano a dejar de pagar su deuda externa."
+            },
+            {
+              "letra": "E",
+              "t": "descriptivo, porque presenta cómo se formaron los depósitos de guano en las islas de Chincha."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "enunciado": "¿Qué función cumplen los dos primeros párrafos en el texto?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Presentan el caso histórico del que el autor saca su tesis en los párrafos siguientes."
+            },
+            {
+              "letra": "B",
+              "t": "Describen las islas de Chincha y sus aves, que son el tema central de todo el texto."
+            },
+            {
+              "letra": "C",
+              "t": "Inician el relato de la era del guano, que el texto sigue contando hasta el final."
+            },
+            {
+              "letra": "D",
+              "t": "Exponen la tesis del autor, que los dos últimos párrafos ilustran con ejemplos."
+            },
+            {
+              "letra": "E",
+              "t": "Prueban que todo el dinero del guano se gastó en obras inútiles para el país."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "¿Cuál es la tesis del autor?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "El Estado peruano llegó a depender tanto del guano que, cuando se agotaron las islas de Chincha, dejó de pagar su deuda externa."
+            },
+            {
+              "letra": "B",
+              "t": "La bonanza del guano se perdió sobre todo porque los gobernantes de la época la despilfarraron en gastos inútiles y se robaron buena parte de ella."
+            },
+            {
+              "letra": "C",
+              "t": "En 1854 el Estado usó el dinero del guano para liberar a los esclavos y suprimir el tributo de los indígenas."
+            },
+            {
+              "letra": "D",
+              "t": "Un ingreso que no depende de lo que el país produce vuelve frágil al Estado y no sustituye el desarrollo de una economía productiva."
+            },
+            {
+              "letra": "E",
+              "t": "La riqueza de un país depende de sus recursos naturales y de cómo sus gobiernos los administran."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "previo": "Antes de mirar las alternativas, decide qué relación tiene esta afirmación con el texto. «Para el autor, aunque el dinero del guano se hubiera gastado con total honradez, el Estado igual habría quedado sin sustento al agotarse las islas.» Elige: «Lo dice el texto», «Se deduce del texto», «El texto no lo dice ni se deduce», «Lo contradice».",
+          "enunciado": "Se infiere del texto que, para el autor, la supresión del tributo indígena en 1854",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "contribuyó a que el Estado dependiera aún más del guano."
+            },
+            {
+              "letra": "B",
+              "t": "fue la causa principal de que el país dejara de pagar su deuda en 1876."
+            },
+            {
+              "letra": "C",
+              "t": "dejó al Estado sin ningún otro ingreso que el que le daba el guano."
+            },
+            {
+              "letra": "D",
+              "t": "fue una medida injusta que el autor lamenta y que el Estado debió evitar."
+            },
+            {
+              "letra": "E",
+              "t": "ocurrió el mismo año en que el Estado declaró libres a los esclavos."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: A · 2: A · 3: D · 4: A.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: Convencer. El autor quiere que el lector acepte una lectura de la historia del guano: una riqueza que no exige producir vuelve frágil al Estado (oraciones 11 y 13). Para eso rebate la explicación más común (oraciones 8 y 9) y da una razón (oración 10).",
+        "Pregunta 1. Clave A. Los dos primeros párrafos dan el caso; el tercero rebate la explicación común y da una razón, y el último saca la lección. Lo que organiza todo es convencer.",
+        "Pregunta 2. Clave A. La oración 8 retoma lo contado («esta historia») para discutirlo, y las oraciones 11 y 13 sacan de ese caso la tesis del autor.",
+        "Pregunta 3. Clave D. Junta la conclusión sobre el Estado (oración 11) con la lección general del último párrafo (oración 13).",
+        "Pregunta 4. Antes de las alternativas: Se deduce del texto. Se deduce: la oración 9 dice que no habría bastado con gastar honradamente, y las oraciones 10 y 11 explican por qué: el Estado vivía de las islas y no de lo que producía el país.",
+        "Pregunta 4. Clave A. La oración 5 cuenta que se suprimió el tributo, y la oración 10 dice que, como el dinero llegaba de las islas, el Estado ya no necesitaba cobrarle a la población: vivía del guano, que daba la mayor parte de sus ingresos."
+      ]
     }
   ]
 }

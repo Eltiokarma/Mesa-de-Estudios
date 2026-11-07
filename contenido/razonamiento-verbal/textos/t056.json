@@ -1,0 +1,347 @@
+{
+  "id": "t056",
+  "version": 1,
+  "titulo": "Lo que el mar caliente no explica",
+  "tema": "Costa · El Niño y la anchoveta",
+  "grado": 5,
+  "dificultad": 3,
+  "tipo_texto": "argumentativo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "contraste",
+        "t": "Cada vez que llega El Niño, en la costa peruana se repite la misma frase: el mar caliente se llevó a la anchoveta."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "En años normales, los vientos del sur empujan mar adentro el agua de la superficie, y desde el fondo sube agua fría cargada de nutrientes que alimenta al plancton del que vive este pez."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "Durante El Niño, en cambio, una capa de agua cálida y pobre en nutrientes cubre la costa, y la anchoveta se dispersa, se hunde o se refugia en las pocas zonas que siguen frías."
+      },
+      {
+        "id": "o4",
+        "rol": "apoyo",
+        "t": "Que el calor la golpea es, pues, indudable; lo que la frase repetida calla es que ese golpe no siempre tiene el mismo desenlace."
+      }
+    ],
+    [
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "A fines de la década de 1960 y en 1970, la flota peruana sacaba más de diez millones de toneladas de anchoveta al año, por encima de lo que los científicos consideraban prudente."
+      },
+      {
+        "id": "o6",
+        "rol": "detalle",
+        "t": "El Niño de 1972 encontró una población ya mermada, que casi no dejó crías, y la pesquería se desplomó durante años."
+      },
+      {
+        "id": "o7",
+        "rol": "detalle",
+        "t": "El Niño de 1997-1998 fue todavía más intenso, y la pesca de anchoveta también cayó con fuerza."
+      },
+      {
+        "id": "o8",
+        "rol": "detalle",
+        "t": "Esa vez, sin embargo, la especie volvió a abundar en pocos años."
+      }
+    ],
+    [
+      {
+        "id": "o9",
+        "rol": "principal",
+        "t": "Lo que separa ambos desenlaces no parece ser la fuerza del calor, que en 1997 fue mayor, sino sobre todo el estado en que este encontró a la población: en 1972, la pesca excesiva ya se había llevado buena parte de los adultos que debían reponerla."
+      },
+      {
+        "id": "o10",
+        "rol": "principal",
+        "t": "La anchoveta ha convivido con El Niño durante miles de años y sabe reponerse de él, siempre que el calor no la sorprenda ya debilitada."
+      },
+      {
+        "id": "o11",
+        "rol": "apoyo",
+        "t": "Por eso, ante el próximo Niño, la pregunta útil no es solo cuánto se calentará el mar, sino cuánto se habrá pescado antes."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "resumen",
+      "unidad": "razonamiento-verbal.resumen-y-sintesis",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que mejor resume todo el texto.",
+        "aceptadas": [
+          "o9",
+          "o10"
+        ],
+        "ninguna": "correcta",
+        "codigos": {
+          "o1": "RV4"
+        },
+        "explicacion": "La oración 9 da la tesis: lo que separa los dos casos no parece ser la fuerza del calor, sino el estado en que encontró a la población; la 10 la vuelve general: la anchoveta se repone de El Niño siempre que el calor no la sorprenda ya debilitada. También vale «Ninguna la dice completa», porque ninguna oración junta esa idea con el golpe del calor que reconoce la oración 4 y con la consecuencia práctica de la 11.",
+        "explicaciones": {
+          "o1": "Es la frase que el autor va a corregir: el texto muestra que el calor no basta para explicar lo que pasa con la anchoveta.",
+          "o2": "Explica qué pasa en el mar en años normales: es el punto de partida del mecanismo, no la idea que junta el texto.",
+          "o3": "Explica cómo golpea El Niño a la anchoveta; se queda con el primer párrafo y deja fuera por qué unas veces se recupera y otras no.",
+          "o4": "Concede que el calor golpea y anuncia que el desenlace cambia, pero todavía no dice de qué depende.",
+          "o5": "Da el dato de cuánto se pescaba antes de 1972: es un detalle del primer caso.",
+          "o6": "Cuenta el colapso de 1972: es uno de los dos casos que se comparan.",
+          "o7": "Cuenta que El Niño de 1997-1998 fue más intenso: es un detalle del segundo caso.",
+          "o8": "Dice que esa vez la especie se recuperó: es el desenlace del segundo caso; la explicación está en la oración 9.",
+          "o11": "Saca la consecuencia práctica (mirar cuánto se pesca antes), pero no dice qué pasó ni por qué; supone la idea de las oraciones 9 y 10."
+        }
+      },
+      "enunciado": "¿Cuál es el mejor resumen del texto?",
+      "alternativas": [
+        {
+          "t": "El Niño siempre golpea a la anchoveta, pero solo la lleva al colapso si la pesca ya la había mermado; por eso su suerte depende de cuánto se pesque antes.",
+          "correcta": true,
+          "evidencia": [
+            "o4",
+            "o9",
+            "o10",
+            "o11"
+          ],
+          "explicacion": "Junta las tres partes con la relación que plantea el texto: el calor golpea siempre (oración 4), el colapso depende de cómo encuentra a la población (oraciones 9 y 10) y, por eso, importa la pesca previa (oración 11)."
+        },
+        {
+          "t": "En años normales sube agua fría con nutrientes; con El Niño llega agua cálida y la anchoveta se dispersa; en 1972 la pesquería se desplomó y después de 1998 la especie se recuperó en pocos años.",
+          "codigo": "RV43",
+          "explicacion": "Repite los hechos en el orden del texto, pero no dice qué los une: por qué un Niño llevó a la anchoveta al colapso y el otro, más fuerte, no."
+        },
+        {
+          "t": "La pesca excesiva y El Niño son dos amenazas distintas que, sumadas, explican por qué la anchoveta escasea cada cierto tiempo.",
+          "codigo": "RV44",
+          "explicacion": "Cambia la relación: el texto no suma dos amenazas parejas, sino que pone una condición. El calor golpea siempre, y la pesca previa decide si ese golpe termina en colapso."
+        },
+        {
+          "t": "El Niño cubre la costa de agua cálida y pobre en nutrientes, y por eso la anchoveta se dispersa y su pesca cae con fuerza.",
+          "codigo": "RV3",
+          "origen": "o3",
+          "explicacion": "Se queda con el primer párrafo. Falta lo esencial: que el desenlace depende de cuánto se había pescado antes."
+        },
+        {
+          "t": "El clima del mar peruano decide la riqueza de su pesca.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general y, además, deja fuera lo que el texto subraya: no basta el clima, también cuenta la pesca."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "titulo",
+      "unidad": "razonamiento-verbal.resumen-y-sintesis",
+      "enunciado": "¿Cuál es el título más adecuado para el texto?",
+      "alternativas": [
+        {
+          "t": "El Niño golpea; la pesca decide",
+          "correcta": true,
+          "evidencia": [
+            "o4",
+            "o10",
+            "o11"
+          ],
+          "explicacion": "Recoge las dos mitades de la idea: el calor golpea siempre a la anchoveta, pero el desenlace depende de cuánto se pescó antes."
+        },
+        {
+          "t": "El desplome de la pesquería peruana en 1972",
+          "codigo": "RV1",
+          "origen": "o6",
+          "explicacion": "Es uno de los dos casos que el texto compara; sirve para sostener la idea, no es la idea."
+        },
+        {
+          "t": "El mar caliente que se lleva a la anchoveta",
+          "codigo": "RV4",
+          "origen": "o1",
+          "explicacion": "Repite la frase con la que abre el texto, que es justo la que el autor corrige: el calor solo no explica el colapso."
+        },
+        {
+          "t": "Lo que El Niño hace con el mar de la costa peruana",
+          "codigo": "RV3",
+          "origen": "o3",
+          "explicacion": "Nombra solo el primer párrafo; deja fuera la comparación entre 1972 y 1998 y la conclusión sobre la pesca."
+        },
+        {
+          "t": "El fenómeno de El Niño y la economía del Perú",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado amplio: el texto no habla de la economía, sino de por qué la anchoveta colapsa o se recupera."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "estructura",
+      "unidad": "razonamiento-verbal.resumen-y-sintesis",
+      "enunciado": "¿Para qué compara el autor los Niños de 1972 y de 1997-1998?",
+      "alternativas": [
+        {
+          "t": "Para mostrar que un calor mayor no basta para llevar al colapso a una población que no estaba mermada.",
+          "correcta": true,
+          "evidencia": [
+            "o7",
+            "o8",
+            "o9"
+          ],
+          "explicacion": "El Niño de 1997-1998 fue más intenso y aun así la especie se recuperó (oraciones 7 y 8); de ahí saca el autor que lo decisivo fue el estado de la población (oración 9)."
+        },
+        {
+          "t": "Porque esa comparación es la tesis del texto, y el tercer párrafo se limita a repetirla con otras palabras, sin agregar nada nuevo.",
+          "codigo": "RV42",
+          "explicacion": "Confunde la función del párrafo: la comparación es el argumento; la tesis la saca el tercer párrafo (oraciones 9 y 10), que explica qué separa los dos casos."
+        },
+        {
+          "t": "Para confirmar la frase de la oración 1: que el mar caliente es lo que se lleva a la anchoveta.",
+          "codigo": "RV53",
+          "origen": "o1",
+          "explicacion": "Es al revés: la comparación sirve para corregir esa frase, porque el Niño más fuerte no llevó a la especie al colapso."
+        },
+        {
+          "t": "Para narrar la historia de la pesca de anchoveta en el Perú desde la década de 1960 hasta fines del siglo XX.",
+          "codigo": "RV13",
+          "explicacion": "Confunde el propósito con la forma: los dos casos van en orden de fechas, pero el autor no cuenta una historia, los usa para sostener una idea."
+        },
+        {
+          "t": "Para probar que, desde 1998, El Niño ya no puede llevar al colapso a la anchoveta.",
+          "codigo": "RV7",
+          "explicacion": "Va más allá del texto: el autor no dice que el peligro haya pasado; dice que depende de cómo encuentre el calor a la población, y por eso pide mirar cuánto se pesca (oración 11)."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.resumen-y-sintesis",
+      "enunciado": "En la oración 4, la palabra DESENLACE significa",
+      "alternativas": [
+        {
+          "t": "el resultado al que lleva algo.",
+          "correcta": true,
+          "evidencia": [
+            "o4",
+            "o9"
+          ],
+          "explicacion": "El golpe del calor puede terminar de dos maneras, en colapso o en recuperación, y la oración 9 llama así a esos dos resultados."
+        },
+        {
+          "t": "la parte final de una novela o de una película.",
+          "codigo": "RV18",
+          "explicacion": "Es el sentido más común de la palabra, pero aquí no hay ninguna historia contada: se habla de lo que le pasa a la población de anchoveta."
+        },
+        {
+          "t": "la fuerza con que se produce un golpe.",
+          "codigo": "RV19",
+          "origen": "o9",
+          "explicacion": "Es del mismo campo que «golpe», pero la oración 9 separa justo las dos cosas: lo que cambia entre los casos no es la fuerza, sino el resultado."
+        },
+        {
+          "t": "la unión que hay entre dos hechos.",
+          "codigo": "RV20",
+          "explicacion": "Se parece a «enlace» por la forma, pero «desenlace» no es una unión: es cómo termina algo."
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.resumen-y-sintesis",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
+        "sonda": "Si en los años anteriores a un Niño fuerte se pesca con moderación, es más probable que la anchoveta se recupere pronto.",
+        "clase": "se-deduce",
+        "codigos": {
+          "lo-dice": "RV58",
+          "no-se-sabe": "RV34",
+          "lo-contradice": "RV53"
+        },
+        "explicacion": "Se deduce: la oración 10 dice que la especie se repone si el calor no la encuentra debilitada, y la 9 dice que lo que la debilitó en 1972 fue la pesca excesiva. Si se pesca con moderación, quedan los adultos que la reponen.",
+        "explicaciones": {
+          "lo-dice": "El texto no habla de pescar con moderación ni dice esa frase; se llega a ella juntando las oraciones 9, 10 y 11.",
+          "no-se-sabe": "No está dicho con esas palabras, pero se deduce: si la pesca excesiva fue lo que llevó a la población al colapso en 1972 (oración 9), pescar con moderación deja a la especie en condiciones de reponerse (oración 10).",
+          "lo-contradice": "Eso sería creer que solo el calor decide, que es la frase de la oración 1, la que el autor corrige."
+        }
+      },
+      "enunciado": "Se infiere del texto que",
+      "alternativas": [
+        {
+          "t": "una población con muchos adultos puede reponerse aunque llegue un Niño muy fuerte.",
+          "correcta": true,
+          "evidencia": [
+            "o7",
+            "o8",
+            "o9",
+            "o10"
+          ],
+          "explicacion": "El Niño de 1997-1998 fue más intenso y aun así la especie se recuperó (oraciones 7 y 8); lo que faltó en 1972 fueron los adultos que debían reponerla (oración 9)."
+        },
+        {
+          "t": "en años normales, desde el fondo del mar sube agua fría cargada de nutrientes.",
+          "codigo": "RV6",
+          "origen": "o2",
+          "explicacion": "Es lo que dice la oración 2 casi con las mismas palabras; la pregunta pide lo que se deduce."
+        },
+        {
+          "t": "si se prohibiera pescar anchoveta, sus poblaciones ya no bajarían cuando llega El Niño.",
+          "codigo": "RV7",
+          "explicacion": "Va más allá del texto: el calor la golpea de todos modos (oración 4); lo que la pesca moderada evita es que el golpe termine en colapso."
+        },
+        {
+          "t": "la mayor parte de la anchoveta que se pesca en el Perú se convierte en harina de pescado.",
+          "codigo": "RV8",
+          "explicacion": "Puede ser cierto, pero el texto no dice nada sobre el destino de la pesca: se responde con lo que se sabe por otro lado."
+        },
+        {
+          "t": "la anchoveta nunca colapsará mientras se pesque menos de diez millones de toneladas al año.",
+          "codigo": "RV11",
+          "origen": "o5",
+          "explicacion": "Convierte un dato de esos años en una regla absoluta; el texto no fija ningún límite seguro ni promete que la especie nunca colapse."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07",
+  "hechos": [
+    {
+      "afirmacion": "Frente a la costa peruana, los vientos del sur y sureste alejan de la costa el agua superficial y provocan el afloramiento de agua fría y rica en nutrientes, que sostiene al plancton y a la anchoveta (Engraulis ringens).",
+      "fuente": "Chavez, F. P., Bertrand, A., Guevara-Carrasco, R., Soler, P. y Csirke, J. (2008). The northern Humboldt Current System: Brief history, present status and a view towards the future. Progress in Oceanography 79(2-4), 95-105."
+    },
+    {
+      "afirmacion": "Durante El Niño llega a la costa agua cálida y pobre en nutrientes; la anchoveta se dispersa, se profundiza o se concentra en los focos de agua fría que quedan cerca de la costa, y las capturas bajan.",
+      "fuente": "Ñiquen, M. y Bouchon, M. (2004). Impact of El Niño events on pelagic fisheries in Peruvian waters. Deep-Sea Research II 51."
+    },
+    {
+      "afirmacion": "A fines de la década de 1960 y en 1970, las capturas peruanas de anchoveta superaron los diez millones de toneladas al año (unos 12 millones en 1970), por encima de la cuota que recomendaban los científicos.",
+      "fuente": "Clark, W. G. (1977). The lessons of the Peruvian anchoveta fishery. CalCOFI Reports 19; FAO, serie de capturas FishStat."
+    },
+    {
+      "afirmacion": "El Niño de 1972 encontró una población muy explotada; el reclutamiento casi falló y la pesquería colapsó, con capturas bajas durante años. Los estudios atribuyen el colapso a El Niño sumado a la sobrepesca.",
+      "fuente": "Clark, W. G. (1977), CalCOFI Reports 19; Pauly, D. y Tsukayama, I. (eds.) (1987). The Peruvian anchoveta and its upwelling ecosystem: three decades of change. ICLARM Studies and Reviews 15."
+    },
+    {
+      "afirmacion": "El Niño de 1997-1998 fue más intenso que el de 1972-1973 (uno de los dos más fuertes del siglo XX, con el de 1982-1983); las capturas de anchoveta cayeron mucho, pero la población se recuperó en pocos años.",
+      "fuente": "McPhaden, M. J. (1999). Genesis and evolution of the 1997-98 El Niño. Science 283, 950-954; Ñiquen y Bouchon (2004), Deep-Sea Research II 51."
+    },
+    {
+      "afirmacion": "El Niño ocurre desde hace miles de años (registros arqueológicos y geológicos de la costa peruana).",
+      "fuente": "Sandweiss, D. H., Richardson, J. B., Reitz, E. J., Rollins, H. B. y Maasch, K. A. (1996). Geoarchaeological evidence from Peru for a 5000 years B.P. onset of El Niño. Science 273, 1531-1533."
+    },
+    {
+      "afirmacion": "Nota: el texto simplifica la diferencia entre 1972 y 1998. Además del estado de la población, influyeron el cambio de régimen decenal del Pacífico (una fase cálida, de sardina, desde mediados de los setenta, y el regreso a la fase fría, de anchoveta, hacia fines de los noventa) y el manejo con vedas y cuotas después de 1998.",
+      "fuente": "Chavez, F. P., Ryan, J., Lluch-Cota, S. E. y Ñiquen, M. (2003). From anchovies to sardines and back: multidecadal change in the Pacific Ocean. Science 299, 217-221; Ñiquen y Bouchon (2004), Deep-Sea Research II 51."
+    }
+  ],
+  "revision": {
+    "por": "subagente (verificador a ciegas y revisor de contenido)",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: 5 de 5 preguntas y 2 de 2 previos (en p1 marcó «ninguna»). Cambios: o9 matizada («no parece ser… sobre todo») y nota en hechos sobre el cambio de régimen decenal y las vedas; «hunde» cambiado por «lleva al colapso» donde significa colapso; o9 pasa a principal y o11 a apoyo (aceptadas o9 y o10, «ninguna» sigue correcta); capturas de o5 fechadas a fines de los sesenta y 1970; p3 rehecha como pregunta de estructura (para qué compara los dos Niños), con RV42, RV53, RV13 y RV7. Segunda verificación a ciegas de los ítems cambiados: coincidió en todo, sin cambios."
+  }
+}

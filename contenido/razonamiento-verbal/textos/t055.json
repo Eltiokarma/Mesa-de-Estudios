@@ -1,0 +1,313 @@
+{
+  "id": "t055",
+  "version": 1,
+  "titulo": "La riqueza que llegaba en barcos",
+  "tema": "Historia del Perú · la época del guano",
+  "grado": 5,
+  "dificultad": 3,
+  "tipo_texto": "argumentativo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "Frente a la costa de Pisco, en las islas de Chincha, enormes colonias de aves marinas, como el guanay, dejaron durante siglos capa sobre capa de excremento."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "Como en esa costa casi nunca llueve, el agua no lavó ese guano, y en él se conservó el nitrógeno que hace crecer a las plantas."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "Hacia 1840, los agricultores de Europa empezaron a comprarlo como abono, y el Estado peruano, dueño de las islas, se puso a venderlo por barcos enteros."
+      }
+    ],
+    [
+      {
+        "id": "o4",
+        "rol": "detalle",
+        "t": "Con esa renta, el Estado hizo cosas que antes no podía."
+      },
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "En 1854 declaró libres a los esclavos, y luego pagó a sus dueños con dinero del guano, y suprimió el tributo que pagaban los indígenas."
+      },
+      {
+        "id": "o6",
+        "rol": "detalle",
+        "t": "A comienzos de la década de 1870 pidió grandes préstamos en Europa, con el guano como garantía, para tender ferrocarriles."
+      },
+      {
+        "id": "o7",
+        "rol": "detalle",
+        "t": "Pero las islas se fueron agotando, la deuda siguió creciendo y, en 1876, el país dejó de pagarla."
+      }
+    ],
+    [
+      {
+        "id": "o8",
+        "rol": "contraste",
+        "t": "Suele contarse esta historia como un caso de despilfarro y de corrupción, y no faltaron ni el uno ni la otra."
+      },
+      {
+        "id": "o9",
+        "rol": "apoyo",
+        "t": "Sin embargo, esa explicación supone que habría bastado con gastar honradamente, y deja fuera lo más importante."
+      },
+      {
+        "id": "o10",
+        "rol": "apoyo",
+        "t": "En sus mejores años, el guano daba la mayor parte de los ingresos del Estado, y como ese dinero llegaba de unas islas, el Estado ya no necesitaba cobrarle a la población ni que el resto del país produjera más para sostenerse."
+      },
+      {
+        "id": "o11",
+        "rol": "principal",
+        "t": "Por eso el guano no hizo más fuerte al Estado, sino más frágil: cuando las islas se agotaron, no tenía otra cosa de qué vivir."
+      }
+    ],
+    [
+      {
+        "id": "o12",
+        "rol": "cita",
+        "t": "No en vano el historiador Jorge Basadre llamó a la época del guano «la prosperidad falaz»."
+      },
+      {
+        "id": "o13",
+        "rol": "principal",
+        "t": "La lección, entonces, no es solo que debió gastarse con más honradez, sino que una riqueza que llega sin que el país tenga que producirla no reemplaza la tarea de construir una economía que produzca."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "tipo-de-texto",
+      "unidad": "razonamiento-verbal.tipologia-textual",
+      "previo": {
+        "tipo": "proposito",
+        "pide": "Antes de ver las alternativas: ¿qué busca sobre todo el autor?",
+        "aceptada": "convencer",
+        "codigos": {
+          "explicar": "RV14",
+          "narrar": "RV41"
+        },
+        "explicacion": "El autor quiere que el lector acepte una lectura de la historia del guano: una riqueza que no exige producir vuelve frágil al Estado (oraciones 11 y 13). Para eso rebate la explicación más común (oraciones 8 y 9) y da una razón (oración 10).",
+        "explicaciones": {
+          "explicar": "El texto da muchos datos, pero los ordena para sostener una postura: el «Sin embargo» de la oración 9 rechaza una explicación y la oración 13 saca una lección. Eso es convencer, no solo informar.",
+          "narrar": "Las fechas de los dos primeros párrafos son un rasgo de superficie. Desde la oración 8 el texto ya no cuenta qué pasó: discute cómo hay que entenderlo."
+        }
+      },
+      "enunciado": "El texto es, fundamentalmente, de tipo",
+      "alternativas": [
+        {
+          "t": "argumentativo, porque se vale de un episodio histórico para defender una idea sobre los ingresos que no nacen del trabajo productivo del país.",
+          "correcta": true,
+          "evidencia": [
+            "o9",
+            "o11",
+            "o13"
+          ],
+          "explicacion": "Los dos primeros párrafos dan el caso; el tercero rebate la explicación común y da una razón, y el último saca la lección. Lo que organiza todo es convencer."
+        },
+        {
+          "t": "narrativo, porque relata en orden, con fechas que van de 1840 a 1876, cómo el Perú pasó de la bonanza del guano a dejar de pagar su deuda externa.",
+          "codigo": "RV41",
+          "origen": "o7",
+          "explicacion": "Las fechas en orden son un rasgo de superficie. La historia ocupa la primera mitad y está al servicio de la tesis: desde la oración 8 el autor discute cómo leerla."
+        },
+        {
+          "t": "expositivo, porque explica las causas de la quiebra de 1876 sin tomar partido entre las distintas explicaciones.",
+          "codigo": "RV14",
+          "origen": "o7",
+          "explicacion": "El autor sí toma partido: dice que la explicación del despilfarro «deja fuera lo más importante» (oración 9) y propone la suya. Llamarlo expositivo deja fuera su postura."
+        },
+        {
+          "t": "descriptivo, porque presenta cómo se formaron los depósitos de guano en las islas de Chincha.",
+          "codigo": "RV57",
+          "origen": "o1",
+          "explicacion": "La formación del guano ocupa las dos primeras oraciones y sirve para presentar el recurso. Ese pasaje no organiza el texto."
+        },
+        {
+          "t": "argumentativo, porque sostiene que la bonanza del guano se perdió por el despilfarro y la corrupción.",
+          "codigo": "RV53",
+          "origen": "o8",
+          "explicacion": "El tipo es el correcto, pero la tesis no: el despilfarro es la explicación común que el autor presenta con «Suele contarse…» para decir que no basta."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "estructura",
+      "unidad": "razonamiento-verbal.tipologia-textual",
+      "enunciado": "¿Qué función cumplen los dos primeros párrafos en el texto?",
+      "alternativas": [
+        {
+          "t": "Presentan el caso histórico del que el autor saca su tesis en los párrafos siguientes.",
+          "correcta": true,
+          "evidencia": [
+            "o8",
+            "o11",
+            "o13"
+          ],
+          "explicacion": "La oración 8 retoma lo contado («esta historia») para discutirlo, y las oraciones 11 y 13 sacan de ese caso la tesis del autor."
+        },
+        {
+          "t": "Exponen la tesis del autor, que los dos últimos párrafos ilustran con ejemplos.",
+          "codigo": "RV4",
+          "explicacion": "Es al revés: los dos primeros párrafos son el caso y los últimos dan la tesis (oraciones 11 y 13)."
+        },
+        {
+          "t": "Inician el relato de la era del guano, que el texto sigue contando hasta el final.",
+          "codigo": "RV42",
+          "explicacion": "El relato termina en la oración 7. Desde la oración 8 el autor no cuenta más hechos: discute cómo entenderlos."
+        },
+        {
+          "t": "Describen las islas de Chincha y sus aves, que son el tema central de todo el texto.",
+          "codigo": "RV57",
+          "origen": "o1",
+          "explicacion": "Las islas y las aves aparecen solo en las primeras oraciones, para presentar el guano. El texto trata de qué le hizo esa riqueza al Estado."
+        },
+        {
+          "t": "Prueban que todo el dinero del guano se gastó en obras inútiles para el país.",
+          "codigo": "RV7",
+          "origen": "o5",
+          "explicacion": "El texto no dice eso: cuenta que con ese dinero se liberó a los esclavos (oración 5), y el autor no lo llama inútil."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.tipologia-textual",
+      "enunciado": "¿Cuál es la tesis del autor?",
+      "alternativas": [
+        {
+          "t": "Un ingreso que no depende de lo que el país produce vuelve frágil al Estado y no sustituye el desarrollo de una economía productiva.",
+          "correcta": true,
+          "evidencia": [
+            "o11",
+            "o13"
+          ],
+          "explicacion": "Junta la conclusión sobre el Estado (oración 11) con la lección general del último párrafo (oración 13)."
+        },
+        {
+          "t": "La bonanza del guano se perdió sobre todo porque los gobernantes de la época la despilfarraron en gastos inútiles y se robaron buena parte de ella.",
+          "codigo": "RV53",
+          "origen": "o8",
+          "explicacion": "Es la explicación común que el autor presenta para decir que «deja fuera lo más importante» (oración 9); su tesis va más allá."
+        },
+        {
+          "t": "En 1854 el Estado usó el dinero del guano para liberar a los esclavos y suprimir el tributo de los indígenas.",
+          "codigo": "RV1",
+          "origen": "o5",
+          "explicacion": "Es un hecho del caso que el texto cuenta, no la tesis que saca de él."
+        },
+        {
+          "t": "El Estado peruano llegó a depender tanto del guano que, cuando se agotaron las islas de Chincha, dejó de pagar su deuda externa.",
+          "codigo": "RV3",
+          "origen": "o7",
+          "explicacion": "Se queda con la conclusión sobre el caso y deja fuera la lección general del último párrafo: que ninguna riqueza así reemplaza construir una economía que produzca."
+        },
+        {
+          "t": "La riqueza de un país depende de sus recursos naturales y de cómo sus gobiernos los administran.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general y además no es lo que dice el autor: para él, administrar bien no habría bastado (oración 9)."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.tipologia-textual",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
+        "sonda": "Para el autor, aunque el dinero del guano se hubiera gastado con total honradez, el Estado igual habría quedado sin sustento al agotarse las islas.",
+        "clase": "se-deduce",
+        "codigos": {
+          "lo-dice": "RV58",
+          "no-se-sabe": "RV34",
+          "lo-contradice": "RV53"
+        },
+        "explicacion": "Se deduce: la oración 9 dice que no habría bastado con gastar honradamente, y las oraciones 10 y 11 explican por qué: el Estado vivía de las islas y no de lo que producía el país.",
+        "explicaciones": {
+          "lo-dice": "El texto no lo dice con esas palabras; se llega a eso juntando las oraciones 9, 10 y 11.",
+          "no-se-sabe": "No está escrito así, pero se deduce: si «habría bastado con gastar honradamente» es lo que el autor rechaza (oración 9), es porque el problema seguía aunque no se robara.",
+          "lo-contradice": "Eso sería creer que la honradez lo resolvía todo, que es la explicación común que el autor rebate en las oraciones 8 y 9."
+        }
+      },
+      "enunciado": "Se infiere del texto que, para el autor, la supresión del tributo indígena en 1854",
+      "alternativas": [
+        {
+          "t": "contribuyó a que el Estado dependiera aún más del guano.",
+          "correcta": true,
+          "evidencia": [
+            "o5",
+            "o10"
+          ],
+          "explicacion": "La oración 5 cuenta que se suprimió el tributo, y la oración 10 dice que, como el dinero llegaba de las islas, el Estado ya no necesitaba cobrarle a la población: vivía del guano, que daba la mayor parte de sus ingresos."
+        },
+        {
+          "t": "ocurrió el mismo año en que el Estado declaró libres a los esclavos.",
+          "codigo": "RV6",
+          "origen": "o5",
+          "explicacion": "Es lo que dice la oración 5; la pregunta pide lo que se deduce, no lo que está escrito."
+        },
+        {
+          "t": "fue la causa principal de que el país dejara de pagar su deuda en 1876.",
+          "codigo": "RV7",
+          "origen": "o7",
+          "explicacion": "Va más allá del texto: la oración 7 da otras razones de la quiebra, el agotamiento de las islas y la deuda que crecía."
+        },
+        {
+          "t": "fue una medida injusta que el autor lamenta y que el Estado debió evitar.",
+          "codigo": "RV33",
+          "explicacion": "El texto no califica la medida de injusta ni dice que debió evitarse: la menciona entre lo que el Estado hizo con la renta del guano (oración 5)."
+        },
+        {
+          "t": "dejó al Estado sin ningún otro ingreso que el que le daba el guano.",
+          "codigo": "RV11",
+          "origen": "o10",
+          "explicacion": "Exagera: la oración 10 dice que el guano daba «la mayor parte» de los ingresos, no todos."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07",
+  "hechos": [
+    {
+      "afirmacion": "El guano de las islas de Chincha, frente a Pisco, es excremento acumulado de aves marinas como el guanay; la falta de lluvia en la costa peruana impide que se lave y conserva su riqueza en nitrógeno, que lo hace un abono valioso.",
+      "fuente": "Gregory T. Cushman, Guano and the Opening of the Pacific World: A Global Ecological History, Cambridge University Press, 2013, caps. 1 y 2."
+    },
+    {
+      "afirmacion": "La exportación de guano a Europa como fertilizante empezó hacia 1840-1841; el Estado peruano era dueño de los depósitos y los vendía mediante contratos de consignación.",
+      "fuente": "Heraclio Bonilla, Guano y burguesía en el Perú, Instituto de Estudios Peruanos, 1974; Carlos Contreras y Marcos Cueto, Historia del Perú contemporáneo, IEP, 1999 (cap. sobre la era del guano)."
+    },
+    {
+      "afirmacion": "En 1854, durante el gobierno de Ramón Castilla, se abolió la esclavitud indemnizando a los propietarios con recursos provenientes del guano, y se suprimió la contribución (tributo) de indígenas, por decretos de Ramón Castilla como presidente provisorio (julio y diciembre de 1854); los dueños recibieron bonos de manumisión desde 1855.",
+      "fuente": "Carlos Contreras y Marcos Cueto, Historia del Perú contemporáneo, IEP, 1999; Jorge Basadre, Historia de la República del Perú, tomo sobre el segundo gobierno de Castilla."
+    },
+    {
+      "afirmacion": "En sus mejores años, la renta del guano llegó a ser la mayor parte de los ingresos del Estado peruano.",
+      "fuente": "Shane J. Hunt, «Guano y crecimiento en el Perú del siglo XIX», HISLA, n.º 4, 1984; Contreras y Cueto, Historia del Perú contemporáneo, IEP, 1999."
+    },
+    {
+      "afirmacion": "A comienzos de la década de 1870 (empréstitos de 1870 y 1872) el Perú se endeudó en Europa con el guano como garantía para construir ferrocarriles; en 1876 suspendió el pago de su deuda externa.",
+      "fuente": "Carlos Marichal, A Century of Debt Crises in Latin America, Princeton University Press, 1989, cap. 4; Contreras y Cueto, Historia del Perú contemporáneo, IEP, 1999."
+    },
+    {
+      "afirmacion": "Jorge Basadre llamó «la prosperidad falaz» a la época del guano.",
+      "fuente": "Jorge Basadre, Historia de la República del Perú, tomo IV (página por verificar)."
+    }
+  ],
+  "revision": {
+    "por": "subagente (verificador a ciegas y revisor de contenido)",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: 4 de 4 preguntas y 2 de 2 previos. Cambios: o10 dice que el Estado ya no necesitaba cobrarle a la población, y p4 se apoya en o5 y o10 (explicación de RV33 sin atribuir intención al autor); correctas de p1 y p3 reescritas para no repetir la frase de o13, con el distractor RV3 de p3 alargado; o5 separa la libertad del pago posterior a los dueños (bonos de manumisión desde 1855); o12 nombra la época del guano y la fuente de Basadre es el tomo IV; en p2 el relato que sigue pasa a RV42 y la tesis al inicio a RV4. Segunda verificación a ciegas de los ítems cambiados: coincidió en todo, sin cambios."
+  }
+}

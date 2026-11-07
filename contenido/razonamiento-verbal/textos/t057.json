@@ -1,0 +1,337 @@
+{
+  "id": "t057",
+  "version": 1,
+  "titulo": "Carta al reloj de la ventanilla 3",
+  "tema": "Sociedad · columna irónica sobre las colas en una oficina municipal (oficina inventada)",
+  "grado": 5,
+  "dificultad": 3,
+  "tipo_texto": "argumentativo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "Estimado reloj de la ventanilla 3:"
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "Le escribo desde la mesa de mi cocina, con el café frío y el certificado de domicilio todavía sin sacar, porque usted y yo ya nos conocemos bien."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "Nos vimos de lunes a jueves, siempre a las seis de la mañana, cuando la cola ya doblaba la esquina del parque."
+      },
+      {
+        "id": "o4",
+        "rol": "detalle",
+        "t": "Usted marcaba las horas con una puntualidad admirable; la ventanilla, en cambio, abría cuando le parecía."
+      }
+    ],
+    [
+      {
+        "id": "o5",
+        "rol": "cita",
+        "t": "El viernes anterior, en la radio, el gerente de Atención al Vecino de la municipalidad había anunciado: «Gracias al nuevo sistema de citas en línea, nadie espera más de quince minutos»."
+      },
+      {
+        "id": "o6",
+        "rol": "detalle",
+        "t": "Le creí, y esa misma noche pedí mi cita por internet; la más cercana era para el jueves, así que mientras tanto probé suerte en la cola."
+      },
+      {
+        "id": "o7",
+        "rol": "cita",
+        "t": "El jueves, el vigilante le echó una mirada a mi celular y me dijo: «Eso aquí no lo ven, señora; haga su cola como todos»."
+      },
+      {
+        "id": "o8",
+        "rol": "detalle",
+        "t": "Así que hice mi cola como todos, frente a usted, y a las once me avisaron que el sistema se había caído y que volviera mañana."
+      }
+    ],
+    [
+      {
+        "id": "o9",
+        "rol": "apoyo",
+        "t": "No le guardo rencor, querido reloj: al contrario, le agradezco sus lecciones de paciencia, que ningún colegio me habría dado tan completas."
+      },
+      {
+        "id": "o10",
+        "rol": "apoyo",
+        "t": "Usted no tiene la culpa de que el anuncio de la radio y la puerta de la oficina cuenten dos historias distintas."
+      },
+      {
+        "id": "o11",
+        "rol": "apoyo",
+        "t": "Por eso, como usted no tiene oídos, dejo esta carta en mi columna del domingo, donde pueden leerla quienes sí los tienen."
+      },
+      {
+        "id": "o12",
+        "rol": "apoyo",
+        "t": "En el segundo piso, detrás de una puerta de vidrio que dice «Gerencia de Atención al Vecino», también se lee el periódico del domingo."
+      },
+      {
+        "id": "o13",
+        "rol": "principal",
+        "t": "Ojalá alguien, allá arriba, decida que los quince minutos sean una promesa que se cumple en la ventanilla, y no solo una frase que suena bien en la radio."
+      },
+      {
+        "id": "o14",
+        "rol": "detalle",
+        "t": "Ernestina Llanos Cutipa"
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "contexto",
+      "unidad": "razonamiento-verbal.texto-y-contexto",
+      "enunciado": "¿A quién busca llegar en realidad la autora con su carta?",
+      "alternativas": [
+        {
+          "t": "A quienes dirigen la oficina desde el segundo piso, que pueden cambiar la atención.",
+          "correcta": true,
+          "evidencia": [
+            "o11",
+            "o12",
+            "o13"
+          ],
+          "explicacion": "La carta se dirige al reloj, pero la autora dice que la deja donde la lean «quienes sí» tienen oídos, recuerda que en la Gerencia del segundo piso también se lee el periódico del domingo y pide que «alguien, allá arriba», cumpla la promesa."
+        },
+        {
+          "t": "Al reloj de la ventanilla 3, al que le agradece haberle enseñado a esperar.",
+          "codigo": "RV49",
+          "origen": "o1",
+          "explicacion": "El reloj es a quien se nombra al inicio, pero la autora misma dice que no tiene oídos: le habla al reloj para que la escuchen otros."
+        },
+        {
+          "t": "Al vigilante de la puerta, que el jueves no quiso reconocerle la cita que ella había pedido por internet.",
+          "codigo": "RV50",
+          "origen": "o7",
+          "explicacion": "El vigilante aparece citado en la carta, pero solo como parte de lo que le pasó; la autora no le pide nada a él."
+        },
+        {
+          "t": "A los vecinos que hacen la cola cada madrugada frente a la oficina, para que no pierdan la paciencia.",
+          "codigo": "RV51",
+          "explicacion": "El tema son las colas, pero nada en la carta les habla a los vecinos: lo que se pide es que se cumpla la promesa de la Gerencia, y eso no depende de quienes esperan."
+        },
+        {
+          "t": "A los empleados de la ventanilla, que abren la atención a la hora que les parece.",
+          "codigo": "RV5",
+          "origen": "o4",
+          "explicacion": "Repite palabras de la oración 4, pero la autora no les escribe a los empleados: la carta va a quienes dirigen la oficina desde el segundo piso (oraciones 12 y 13)."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "contexto",
+      "unidad": "razonamiento-verbal.texto-y-contexto",
+      "enunciado": "¿En qué situación escribe la autora?",
+      "alternativas": [
+        {
+          "t": "En su casa, tras varias mañanas de cola sin lograr el trámite, para la columna que publica en el periódico.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o8",
+            "o11"
+          ],
+          "explicacion": "Escribe «desde la mesa de mi cocina», con el certificado «todavía sin sacar» después de la semana de cola, y deja la carta «en mi columna del domingo»."
+        },
+        {
+          "t": "De pie frente al reloj de la ventanilla, mientras espera en la cola a que abran la atención.",
+          "codigo": "RV5",
+          "origen": "o8",
+          "explicacion": "Repite el «frente a usted» de la oración 8, que habla de la cola del jueves; la oración 2 dice que escribe desde su cocina: hablarle al reloj es un recurso, no el lugar donde está."
+        },
+        {
+          "t": "En su casa, la noche del jueves, con el certificado ya en la mano gracias a la paciencia que tuvo en la cola.",
+          "codigo": "RV10",
+          "origen": "o2",
+          "explicacion": "Pasa por alto el «sin» de la oración 2: el certificado está «todavía sin sacar», y el jueves le dijeron que volviera mañana."
+        },
+        {
+          "t": "Como gerente de Atención al Vecino, para responder en el periódico a las quejas por las colas.",
+          "codigo": "RV50",
+          "origen": "o5",
+          "explicacion": "El gerente es alguien a quien la autora cita por lo que dijo en la radio; ella es una vecina que hizo la cola y le reclama a esa Gerencia."
+        },
+        {
+          "t": "En su casa, después de que la atendieran en la ventanilla, para agradecer por escrito al personal de la oficina.",
+          "codigo": "RV49",
+          "origen": "o9",
+          "explicacion": "Toma al pie de la letra el «le agradezco» de la oración 9, sin la situación: el certificado sigue «todavía sin sacar» y la carta reclama, no agradece."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.texto-y-contexto",
+      "enunciado": "En la carta, la frase «le agradezco sus lecciones de paciencia» expresa",
+      "alternativas": [
+        {
+          "t": "un reproche por las largas esperas, dicho como si fuera un elogio.",
+          "correcta": true,
+          "evidencia": [
+            "o8",
+            "o9",
+            "o10"
+          ],
+          "explicacion": "Después de cuatro madrugadas y una cita que no sirvió, «agradecer» la paciencia es una ironía: dice lo contrario de lo que quiere decir y señala lo mucho que la hicieron esperar."
+        },
+        {
+          "t": "una gratitud sincera, porque la semana de cola le enseñó a esperar con calma.",
+          "codigo": "RV49",
+          "origen": "o9",
+          "explicacion": "Es el sentido al pie de la letra. La situación (el certificado sin sacar, el sistema caído, la promesa de quince minutos) muestra que no está agradecida."
+        },
+        {
+          "t": "que en la cola recibió consejos o clases sobre cómo tener paciencia.",
+          "codigo": "RV18",
+          "explicacion": "Toma «lecciones» en su sentido más común, el de una clase. Aquí la lección es la espera misma, que nadie le dio a propósito."
+        },
+        {
+          "t": "la admiración de la autora por la puntualidad con que el reloj marca las horas.",
+          "codigo": "RV5",
+          "origen": "o4",
+          "explicacion": "Repite la «puntualidad admirable» de la oración 4, pero allí sirve para contrastar con la ventanilla que abre cuando quiere, no para elogiar al reloj."
+        },
+        {
+          "t": "que la autora culpa al reloj de todo el tiempo que perdió durante esa semana.",
+          "codigo": "RV10",
+          "origen": "o10",
+          "explicacion": "Pasa por alto dos negaciones: «No le guardo rencor» y «Usted no tiene la culpa». El reproche no va al reloj, sino a la oficina."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "intencion",
+      "unidad": "razonamiento-verbal.texto-y-contexto",
+      "previo": {
+        "tipo": "proposito",
+        "pide": "Antes de ver las alternativas: ¿qué busca sobre todo la autora?",
+        "aceptada": "convencer",
+        "codigos": {
+          "explicar": "RV14",
+          "narrar": "RV13"
+        },
+        "explicacion": "Cuenta lo que le pasó, pero para reclamar: quiere que en la Gerencia alguien decida cumplir la promesa de los quince minutos (oraciones 11 a 13).",
+        "explicaciones": {
+          "explicar": "Da información sobre el sistema de citas y la cola, pero no se queda ahí: la usa para exigir un cambio.",
+          "narrar": "Hay un relato de su semana en la cola, pero es el medio: la carta termina pidiendo que la promesa se cumpla."
+        }
+      },
+      "enunciado": "¿Cuál es la intención principal de la autora?",
+      "alternativas": [
+        {
+          "t": "Exigir, con ironía, que la atención prometida en la radio se cumpla en la oficina.",
+          "correcta": true,
+          "evidencia": [
+            "o10",
+            "o13"
+          ],
+          "explicacion": "La carta junta el anuncio del gerente con lo que de verdad pasó, y termina pidiendo que los quince minutos sean una promesa cumplida y no solo una frase."
+        },
+        {
+          "t": "Contar, día por día, las madrugadas que pasó en la cola de la ventanilla 3 durante aquella semana.",
+          "codigo": "RV13",
+          "origen": "o3",
+          "explicacion": "El relato de la semana está, pero sirve para mostrar la distancia entre el anuncio y la oficina; la carta no termina contando, sino pidiendo."
+        },
+        {
+          "t": "Informar a los vecinos de cómo funciona el nuevo sistema de citas en línea y por qué a veces se cae.",
+          "codigo": "RV14",
+          "explicacion": "Deja fuera la postura de la autora. Además, la carta no explica cómo funciona el sistema: muestra que en la oficina no lo respetan."
+        },
+        {
+          "t": "Agradecer al reloj de la ventanilla la paciencia que le enseñó durante una semana entera de espera.",
+          "codigo": "RV49",
+          "origen": "o9",
+          "explicacion": "Toma al pie de la letra el agradecimiento de la oración 9, que es irónico, y al destinatario que se nombra al inicio, que no es a quien busca llegar."
+        },
+        {
+          "t": "Convencer a los vecinos de que dejen las citas por internet y vuelvan a hacer cola desde temprano.",
+          "codigo": "RV33",
+          "explicacion": "La autora no les recomienda nada a los vecinos ni rechaza las citas: reclama que la oficina respete las que da su propia página."
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.texto-y-contexto",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
+        "sonda": "Lo que anunció el gerente en la radio no se cumplía en la ventanilla 3.",
+        "clase": "se-deduce",
+        "codigos": {
+          "lo-dice": "RV58",
+          "no-se-sabe": "RV34",
+          "lo-contradice": "RV50"
+        },
+        "explicacion": "Se deduce: el gerente prometió que nadie esperaría más de quince minutos (oración 5), pero la autora hizo cola desde las seis hasta las once y no la atendieron (oraciones 3 y 8). La oración 10 lo deja entrever: la radio y la puerta «cuentan dos historias distintas».",
+        "explicaciones": {
+          "lo-dice": "La carta no lo dice con esas palabras; se llega a eso comparando la promesa de la oración 5 con lo que pasó en las oraciones 3, 7 y 8.",
+          "no-se-sabe": "No está dicho, pero se deduce: el gerente prometió quince minutos de espera y la autora esperó cinco horas sin que la atendieran.",
+          "lo-contradice": "Eso sería tomar como cierto lo que dijo el gerente en la radio. La autora lo cita para mostrar que la oficina cuenta otra historia."
+        }
+      },
+      "enunciado": "Del texto se deduce, aunque no lo diga con esas palabras, que",
+      "alternativas": [
+        {
+          "t": "la oficina no atiende por las citas que la misma municipalidad entrega por internet.",
+          "correcta": true,
+          "evidencia": [
+            "o5",
+            "o6",
+            "o7"
+          ],
+          "explicacion": "La página le dio una cita, pero el vigilante le dijo que eso «aquí no lo ven» y la mandó a la cola: la oficina no respeta las citas de su propio sistema."
+        },
+        {
+          "t": "el gerente sabía que el sistema de citas no funcionaba cuando hizo su anuncio en la radio.",
+          "codigo": "RV7",
+          "origen": "o5",
+          "explicacion": "La carta muestra que el anuncio no coincide con lo que pasa, pero no dice ni permite saber si el gerente lo sabía."
+        },
+        {
+          "t": "ningún vecino ha logrado jamás hacer un trámite en la ventanilla 3 de esa oficina.",
+          "codigo": "RV11",
+          "explicacion": "Generaliza con «ningún» y «jamás» lo que le pasó a una sola persona en una semana."
+        },
+        {
+          "t": "los sistemas de citas en línea suelen fallar en las municipalidades por falta de presupuesto.",
+          "codigo": "RV8",
+          "explicacion": "Puede sonar razonable, pero la carta no habla de otras municipalidades ni del presupuesto."
+        },
+        {
+          "t": "la autora pidió su cita por internet la misma noche en que escuchó el anuncio del gerente.",
+          "codigo": "RV6",
+          "origen": "o6",
+          "explicacion": "Es verdad, pero lo dice la oración 6 casi con esas palabras: es un dato del texto, no algo que se deduzca."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07",
+  "hechos": [
+    {
+      "afirmacion": "La oficina, la Gerencia de Atención al Vecino, su gerente, el vigilante y la columnista Ernestina Llanos Cutipa son inventados; el texto no menciona datos del mundo real.",
+      "fuente": "Texto propio"
+    }
+  ],
+  "revision": {
+    "por": "subagente (verificador a ciegas y revisor de contenido)",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: 5 de 5 preguntas y 2 de 2 previos. Cambios: «de la municipalidad» en o5; días de lunes a jueves (o3, o6, o7, cuatro madrugadas en p3); o12 menos directa (el periódico del domingo también se lee en el segundo piso); enunciado de p5 con «aunque no lo diga con esas palabras»; en p1, explicación de RV5 sin «despachan»; en p2, la asamblea (RV7) cambiada por agradecer al personal (RV49), y el distractor «frente al reloj» pasa a RV5 (eco de «frente a usted»). Segunda verificación a ciegas (9 de 9 en los ítems cambiados de t055 a t057): la sonda del previo de p5 repetía la correcta y se cambió por otra deducción."
+  }
+}

@@ -701,6 +701,222 @@
         "Pregunta 4. Clave B. La misma oración lo explica: frente a la quebrada «asomó la arena», donde las taricayas ponen sus huevos.",
         "Pregunta 5. Clave B. Don Arquímedes pide que no se los lleven como el año pasado, Wílmer le prometió vigilar y explica qué hacer si alguien escarba la arena."
       ]
+    },
+    {
+      "id": "t057",
+      "nivel": "avanzado (tipo UNI)",
+      "enunciado": "Lee el texto «Carta al reloj de la ventanilla 3» y responde las 5 preguntas.",
+      "texto": {
+        "titulo": "Carta al reloj de la ventanilla 3",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "Estimado reloj de la ventanilla 3:"
+            },
+            {
+              "n": 2,
+              "t": "Le escribo desde la mesa de mi cocina, con el café frío y el certificado de domicilio todavía sin sacar, porque usted y yo ya nos conocemos bien."
+            },
+            {
+              "n": 3,
+              "t": "Nos vimos de lunes a jueves, siempre a las seis de la mañana, cuando la cola ya doblaba la esquina del parque."
+            },
+            {
+              "n": 4,
+              "t": "Usted marcaba las horas con una puntualidad admirable; la ventanilla, en cambio, abría cuando le parecía."
+            }
+          ],
+          [
+            {
+              "n": 5,
+              "t": "El viernes anterior, en la radio, el gerente de Atención al Vecino de la municipalidad había anunciado: «Gracias al nuevo sistema de citas en línea, nadie espera más de quince minutos»."
+            },
+            {
+              "n": 6,
+              "t": "Le creí, y esa misma noche pedí mi cita por internet; la más cercana era para el jueves, así que mientras tanto probé suerte en la cola."
+            },
+            {
+              "n": 7,
+              "t": "El jueves, el vigilante le echó una mirada a mi celular y me dijo: «Eso aquí no lo ven, señora; haga su cola como todos»."
+            },
+            {
+              "n": 8,
+              "t": "Así que hice mi cola como todos, frente a usted, y a las once me avisaron que el sistema se había caído y que volviera mañana."
+            }
+          ],
+          [
+            {
+              "n": 9,
+              "t": "No le guardo rencor, querido reloj: al contrario, le agradezco sus lecciones de paciencia, que ningún colegio me habría dado tan completas."
+            },
+            {
+              "n": 10,
+              "t": "Usted no tiene la culpa de que el anuncio de la radio y la puerta de la oficina cuenten dos historias distintas."
+            },
+            {
+              "n": 11,
+              "t": "Por eso, como usted no tiene oídos, dejo esta carta en mi columna del domingo, donde pueden leerla quienes sí los tienen."
+            },
+            {
+              "n": 12,
+              "t": "En el segundo piso, detrás de una puerta de vidrio que dice «Gerencia de Atención al Vecino», también se lee el periódico del domingo."
+            },
+            {
+              "n": 13,
+              "t": "Ojalá alguien, allá arriba, decida que los quince minutos sean una promesa que se cumple en la ventanilla, y no solo una frase que suena bien en la radio."
+            },
+            {
+              "n": 14,
+              "t": "Ernestina Llanos Cutipa"
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "enunciado": "¿A quién busca llegar en realidad la autora con su carta?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "A los empleados de la ventanilla, que abren la atención a la hora que les parece."
+            },
+            {
+              "letra": "B",
+              "t": "Al vigilante de la puerta, que el jueves no quiso reconocerle la cita que ella había pedido por internet."
+            },
+            {
+              "letra": "C",
+              "t": "Al reloj de la ventanilla 3, al que le agradece haberle enseñado a esperar."
+            },
+            {
+              "letra": "D",
+              "t": "A los vecinos que hacen la cola cada madrugada frente a la oficina, para que no pierdan la paciencia."
+            },
+            {
+              "letra": "E",
+              "t": "A quienes dirigen la oficina desde el segundo piso, que pueden cambiar la atención."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "enunciado": "¿En qué situación escribe la autora?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "En su casa, después de que la atendieran en la ventanilla, para agradecer por escrito al personal de la oficina."
+            },
+            {
+              "letra": "B",
+              "t": "En su casa, la noche del jueves, con el certificado ya en la mano gracias a la paciencia que tuvo en la cola."
+            },
+            {
+              "letra": "C",
+              "t": "En su casa, tras varias mañanas de cola sin lograr el trámite, para la columna que publica en el periódico."
+            },
+            {
+              "letra": "D",
+              "t": "De pie frente al reloj de la ventanilla, mientras espera en la cola a que abran la atención."
+            },
+            {
+              "letra": "E",
+              "t": "Como gerente de Atención al Vecino, para responder en el periódico a las quejas por las colas."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "En la carta, la frase «le agradezco sus lecciones de paciencia» expresa",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "la admiración de la autora por la puntualidad con que el reloj marca las horas."
+            },
+            {
+              "letra": "B",
+              "t": "una gratitud sincera, porque la semana de cola le enseñó a esperar con calma."
+            },
+            {
+              "letra": "C",
+              "t": "que en la cola recibió consejos o clases sobre cómo tener paciencia."
+            },
+            {
+              "letra": "D",
+              "t": "un reproche por las largas esperas, dicho como si fuera un elogio."
+            },
+            {
+              "letra": "E",
+              "t": "que la autora culpa al reloj de todo el tiempo que perdió durante esa semana."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "previo": "Antes de mirar las alternativas: ¿qué busca sobre todo la autora? Elige: «Explicar o informar», «Convencer», «Narrar».",
+          "enunciado": "¿Cuál es la intención principal de la autora?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Exigir, con ironía, que la atención prometida en la radio se cumpla en la oficina."
+            },
+            {
+              "letra": "B",
+              "t": "Agradecer al reloj de la ventanilla la paciencia que le enseñó durante una semana entera de espera."
+            },
+            {
+              "letra": "C",
+              "t": "Informar a los vecinos de cómo funciona el nuevo sistema de citas en línea y por qué a veces se cae."
+            },
+            {
+              "letra": "D",
+              "t": "Contar, día por día, las madrugadas que pasó en la cola de la ventanilla 3 durante aquella semana."
+            },
+            {
+              "letra": "E",
+              "t": "Convencer a los vecinos de que dejen las citas por internet y vuelvan a hacer cola desde temprano."
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "previo": "Antes de mirar las alternativas, decide qué relación tiene esta afirmación con el texto. «Lo que anunció el gerente en la radio no se cumplía en la ventanilla 3.» Elige: «Lo dice el texto», «Se deduce del texto», «El texto no lo dice ni se deduce», «Lo contradice».",
+          "enunciado": "Del texto se deduce, aunque no lo diga con esas palabras, que",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "los sistemas de citas en línea suelen fallar en las municipalidades por falta de presupuesto."
+            },
+            {
+              "letra": "B",
+              "t": "el gerente sabía que el sistema de citas no funcionaba cuando hizo su anuncio en la radio."
+            },
+            {
+              "letra": "C",
+              "t": "la oficina no atiende por las citas que la misma municipalidad entrega por internet."
+            },
+            {
+              "letra": "D",
+              "t": "ningún vecino ha logrado jamás hacer un trámite en la ventanilla 3 de esa oficina."
+            },
+            {
+              "letra": "E",
+              "t": "la autora pidió su cita por internet la misma noche en que escuchó el anuncio del gerente."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: E · 2: C · 3: D · 4: A · 5: C.",
+      "pasos": [
+        "Pregunta 1. Clave E. La carta se dirige al reloj, pero la autora dice que la deja donde la lean «quienes sí» tienen oídos, recuerda que en la Gerencia del segundo piso también se lee el periódico del domingo y pide que «alguien, allá arriba», cumpla la promesa.",
+        "Pregunta 2. Clave C. Escribe «desde la mesa de mi cocina», con el certificado «todavía sin sacar» después de la semana de cola, y deja la carta «en mi columna del domingo».",
+        "Pregunta 3. Clave D. Después de cuatro madrugadas y una cita que no sirvió, «agradecer» la paciencia es una ironía: dice lo contrario de lo que quiere decir y señala lo mucho que la hicieron esperar.",
+        "Pregunta 4. Antes de las alternativas: Convencer. Cuenta lo que le pasó, pero para reclamar: quiere que en la Gerencia alguien decida cumplir la promesa de los quince minutos (oraciones 11 a 13).",
+        "Pregunta 4. Clave A. La carta junta el anuncio del gerente con lo que de verdad pasó, y termina pidiendo que los quince minutos sean una promesa cumplida y no solo una frase.",
+        "Pregunta 5. Antes de las alternativas: Se deduce del texto. Se deduce: el gerente prometió que nadie esperaría más de quince minutos (oración 5), pero la autora hizo cola desde las seis hasta las once y no la atendieron (oraciones 3 y 8). La oración 10 lo deja entrever: la radio y la puerta «cuentan dos historias distintas».",
+        "Pregunta 5. Clave C. La página le dio una cita, pero el vigilante le dijo que eso «aquí no lo ven» y la mandó a la cola: la oficina no respeta las citas de su propio sistema."
+      ]
     }
   ]
 }
