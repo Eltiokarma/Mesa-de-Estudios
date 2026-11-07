@@ -1,0 +1,1203 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El átomo y la tabla periódica</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md).
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4).
+
+   Colores de esta escena (claro / oscuro). Revisados con CIEDE2000 y contraste WCAG sobre --paper, --card y el chip .v:
+     Z    protones, carga del núcleo           rojo            #b02c41 / #f17384
+     N    neutrones                            granate / rosa  #66003d / #ffc2ea
+     e⁻   electrones                           azul            #1f5fbf / #7cb0ff
+     el electrón que sale (o entra)            ámbar           #8f5800 / #ffc04d
+     n    nivel: las bandas del dibujo         verde           #466d14 / #a3d65e
+     r    radio                                turquesa        #0f766e / #5ed9c8
+     EI   energía de ionización                fucsia          #a10fbf / #cf6bfa
+     EN   electronegatividad                   tostado         #5a1802 / #f96c1f
+     A (número de masa), q (carga del ion), l, mₗ, mₛ, período y grupo van en tinta.
+   Qué sale junto: Z, e⁻, el electrón que sale y n en casi todas las vistas; N solo en los pasos 1 y 2 (con Z, e⁻ y el que
+   sale); de EI, r y EN, una sola a la vez (el mapa muestra una propiedad). Aun así, los ocho se separan entre todos:
+   ΔE00 mínimo 20,6 en claro (Z–N; Z–EN 21,0) y 22,2 en oscuro (Z–N); n–r 23,6 / 25,3. Z está a ΔE00 7,6 / 5,0 del
+   rojo de los avisos (--warn): el aviso siempre va con texto. Contraste mínimo contra el papel, la tarjeta, el chip (8 %)
+   y el fondo de una opción respondida (verde 10 % o rojo 9 %; dentro de .opt la ficha va sin fondo): 4,53 en claro (r
+   sobre la opción) y 4,63 en oscuro (EI sobre la opción correcta); todos pasan AA (4,5). La nube sin niveles de los pasos 1 y 2 va
+   en gris (--nube): no es una variable. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-Z:#b02c41; --c-N:#66003d; --c-e:#1f5fbf; --c-sale:#8f5800; --c-n:#466d14; --c-r:#0f766e; --c-EI:#a10fbf; --c-EN:#5a1802;
+  --nube:#8e86a0;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-Z:#f17384; --c-N:#ffc2ea; --c-e:#7cb0ff; --c-sale:#ffc04d; --c-n:#a3d65e; --c-r:#5ed9c8; --c-EI:#cf6bfa; --c-EN:#f96c1f;
+  --nube:#6e6580; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-Z:#f17384; --c-N:#ffc2ea; --c-e:#7cb0ff; --c-sale:#ffc04d; --c-n:#a3d65e; --c-r:#5ed9c8; --c-EI:#cf6bfa; --c-EN:#f96c1f;
+  --nube:#6e6580; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+/* Celular con una predicción pendiente: el dibujo más bajo y pegado arriba, para que se vea mientras se elige. */
+@media (max-width:899px){
+  .mode.pendiente .bench{position:sticky; top:0; z-index:1; padding:6px; gap:4px; background:var(--card); border-radius:0 0 20px 20px}
+  .mode.pendiente .legend{display:none}
+}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+/* Nada se arrastra en esta escena: el dedo siempre desplaza la página sobre el dibujo (en el explorador, un toque elige
+   una casilla de la tabla, sin impedir el desplazamiento). */
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+canvas.tocable{cursor:pointer}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+.legend svg{flex:none}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 2px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px; white-space:nowrap}
+.v-Z{color:var(--c-Z); background:color-mix(in srgb, var(--c-Z) 8%, transparent)}
+.v-N{color:var(--c-N); background:color-mix(in srgb, var(--c-N) 8%, transparent)}
+.v-e{color:var(--c-e); background:color-mix(in srgb, var(--c-e) 8%, transparent)}
+.v-sale{color:var(--c-sale); background:color-mix(in srgb, var(--c-sale) 8%, transparent)}
+.v-n{color:var(--c-n); background:color-mix(in srgb, var(--c-n) 8%, transparent)}
+.v-r{color:var(--c-r); background:color-mix(in srgb, var(--c-r) 8%, transparent)}
+.v-EI{color:var(--c-EI); background:color-mix(in srgb, var(--c-EI) 8%, transparent)}
+.v-EN{color:var(--c-EN); background:color-mix(in srgb, var(--c-EN) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+/* Dentro de una opción (respondida o no) la ficha va sin fondo: así pasa AA sobre el verde y el rojo de la respuesta. */
+.opt .v{background:transparent}
+.cfg{font-family:var(--mono); white-space:nowrap; font-variant-numeric:tabular-nums}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.02rem; font-variant-numeric:tabular-nums; min-width:0}
+.eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); white-space:normal; flex-basis:100%}
+.eq .ex{white-space:normal; line-height:2}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.ctrls{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap:12px; align-items:end}
+select{font:700 .95rem var(--font); padding:9px 12px; border-radius:12px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); min-height:44px; max-width:100%}
+.campo{display:grid; gap:4px; font-weight:700}
+.botones{display:flex; flex-wrap:wrap; gap:6px}
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.seg button:disabled{opacity:.45; cursor:not-allowed}
+.lect{font-size:.92rem; font-variant-numeric:tabular-nums; display:grid; gap:4px}
+.lect .fila{display:flex; flex-wrap:wrap; gap:2px 14px}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.2fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Química · Átomo y tabla periódica · Problemas tipo admisión</p>
+      <h1>El átomo por dentro y la tabla como mapa</h1>
+      <p class="sub">El núcleo, los niveles, las cajas de electrones y la tabla periódica, con los mismos colores. Predice y después mira.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="El átomo, sus cajas y la tabla">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="El átomo con su núcleo y sus niveles, el diagrama de cajas, barras de energía de ionización y la tabla periódica de Z = 1 a 36, según el paso"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="legend" id="ley1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos con átomos, iones y la tabla">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Átomos e iones, sus cajas, barras y la tabla periódica, que se completan al responder"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="legend" id="ley2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/atomo-y-tabla">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+// La unidad principal es la estructura atómica; las predicciones de tabla periódica pasan su propia unidad.
+const PLANTILLA = { id: 'atomo-y-tabla', unidad: 'quimica.estructura-atomica', version: '0.1.0' };
+const U_TABLA = 'quimica.tabla-periodica';
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0, unidad){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: unidad || PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la química sale de MotorAtomo (motor.js): partículas, configuraciones, cajas, el electrón que sale o entra,
+   niveles, ubicación en la tabla, datos de tabla, órdenes y tamaños de dibujo. Aquí solo se pinta lo que el motor dice.
+   El átomo se dibuja con bandas por nivel (la zona donde es más probable hallar a sus electrones), nunca con órbitas:
+   el modelo actual no tiene caminos (AT6). Las cajas son un diagrama para contar electrones, y así se dice. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MA = MotorAtomo;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 0 : d), r = Math.round(n*p)/p + 0;
+  let [e, f] = String(Math.abs(r)).split('.');
+  if (e.length > 4) e = e.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+const SUP = { '+':'⁺', '-':'⁻', '0':'⁰', '1':'¹', '2':'²', '3':'³', '4':'⁴', '5':'⁵', '6':'⁶', '7':'⁷', '8':'⁸', '9':'⁹' };
+const sup = t => String(t).split('').map(ch => SUP[ch] || ch).join('');
+// 'Fe3+' → 'Fe³⁺'; '[Ar] 4s2 3d6' → '[Ar] 4s² 3d⁶'.
+const esp = s => String(s).replace(/^([A-Z][a-z]?)(\d*)([+-]?)$/, (_, el, d, sg) => el + (sg ? sup(d) + sup(sg) : ''));
+const cfg = t => String(t).replace(/([spdf])(\d+)/g, (_, l, d) => l + sup(d));
+const cfgH = t => `<span class="cfg">${cfg(t) || '—'}</span>`;
+const especieDe = (Z, q) => MA.SIMBOLOS[Z] + (q === 0 ? '' : (Math.abs(q) === 1 ? '' : Math.abs(q)) + (q > 0 ? '+' : '-'));
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
+// Chips del texto: cada variable con su color; al tocarlos se resalta en el dibujo.
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const Z_ = t => V('Z', t), N_ = t => V('N', t), e_ = t => V('e', t), s_ = t => V('sale', t), n_ = t => V('n', t),
+  r_ = t => V('r', t), EI_ = t => V('EI', t), EN_ = t => V('EN', t);
+const PROP = { ei:{ k:'EI', nombre:'energía de ionización', corto:'Energía de ionización', u:'kJ/mol', d:0 },
+  radio:{ k:'r', nombre:'radio atómico calculado', corto:'Radio atómico', u:'pm', d:0 }, en:{ k:'EN', nombre:'electronegatividad', corto:'Electronegatividad', u:'', d:2 } };
+const valorProp = (Z, p) => { const v = MA.propiedad(Z, p); return v === null ? 'sin valor' : `${fmt(v, PROP[p].d)}${PROP[p].u ? ' ' + PROP[p].u : ''}`; };
+
+function colores(){
+  const g = css;
+  return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'), nube:g('--nube'),
+    Z:g('--c-Z'), N:g('--c-N'), e:g('--c-e'), sale:g('--c-sale'), n:g('--c-n'), r:g('--c-r'), EI:g('--c-EI'), EN:g('--c-EN'),
+    font:g('--font'), mono:g('--mono') };
+}
+const colVar = (c, k) => c[k] || c.ink;
+function alfa(hex, a){
+  const h = String(hex).replace('#', ''); if (h.length !== 6) return hex;
+  return `rgba(${parseInt(h.slice(0, 2), 16)},${parseInt(h.slice(2, 4), 16)},${parseInt(h.slice(4, 6), 16)},${a})`;
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, x1, y1, x2, y2){ ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
+function rr(ctx, x, y, w, h, r){ ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h); }
+function azar(sem){ let s = sem >>> 0 || 1; return () => (s = (s*1664525 + 1013904223) >>> 0)/4294967296; }
+
+/* ----- Texto en el lienzo, por piezas de colores: [texto, clave de color, peso]. Baja la letra hasta 9 px si no entra. ----- */
+function anchoPiezas(ctx, c, ps, tam){ let w = 0; for (const [t, , peso] of ps){ ctx.font = `${peso || 700} ${tam}px ${c.font}`; w += ctx.measureText(t).width; } return w; }
+function dibujarPiezas(ctx, c, ps, x, y, tam, align, max){
+  let t = tam; if (max) while (t > 9 && anchoPiezas(ctx, c, ps, t) > max) t -= 0.5;
+  const w = anchoPiezas(ctx, c, ps, t);
+  let x0 = align === 'center' ? x - w/2 : align === 'right' ? x - w : x;
+  ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+  for (const [txt, k, peso] of ps){ ctx.font = `${peso || 700} ${t}px ${c.font}`; ctx.fillStyle = colVar(c, k); ctx.fillText(txt, x0, y); x0 += ctx.measureText(txt).width; }
+  return w;
+}
+function envolver(ctx, c, txt, max, tam){
+  ctx.font = `700 ${tam}px ${c.font}`; const pal = String(txt).split(' '), lineas = []; let l = '';
+  for (const p of pal){ const t = l ? l + ' ' + p : p; if (ctx.measureText(t).width > max && l){ lineas.push(l); l = p; } else l = t; }
+  if (l) lineas.push(l); return lineas;
+}
+
+/* ----- La escena -----
+   E.vista dice qué se ve, en paneles (el primero es el principal: en el celular, con una predicción pendiente, es el
+   único que se muestra):
+     atomos: { items:[{ Z, carga, desde, p, nube, ocultar, marcarSale, escala, rot:[[piezas]] }], aEscala }
+             'desde' y 'p' animan los electrones que salen (o entran) de la carga 'desde' a 'carga'.
+     cajas:  { filas:[{ Z, carga, desde, p, marcarSale, rot }] } | { tapa:'texto' }
+     barras: { titulo:[piezas], items:[{ etq, valor, oculto, marcar, sub:[piezas] }], max, fantasma:{ i, valor, etq } }
+     tabla:  { prop:'ei'|'radio'|'en'|null, marcar:[Z], sel:Z }
+     enlace: { } (H–F con el par compartido)
+     pie: 'texto', vars:[claves de la leyenda], desc: 'texto para el lector de pantalla'
+   Nada regala la respuesta antes de responder: lo que la delataría queda tapado o fuera del dibujo. */
+const ESCENAS = [];
+const NOTA_CAJAS = 'Las cajas son un diagrama para contar electrones: no son lugares ni caminos.';
+function crearEscena(cv, idDesc, modoId, idLey){
+  const E = { vista:{ paneles:[] }, hl:null, modoId, anims:[], compacto:false, celdas:[] };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, Lz = null, llaveLz = '';
+  const paneles = () => (E.vista.paneles || []).filter(k => E.vista[k]);
+  const llave = w => `${w}|${E.compacto}|${innerWidth < 900}|${paneles().join(',')}|${E.vista.atomos ? E.vista.atomos.items.length + ':' + E.vista.atomos.items.map(i => (i.rot || []).length).join('') : ''}|${E.vista.cajas ? (E.vista.cajas.tapa ? 't' : E.vista.cajas.filas.map(f => f.Z + ':' + (f.desde === undefined ? f.carga : f.desde)).join(',')) : ''}|${E.vista.pie || ''}`;
+  // Estructura de una fila de cajas (la más ancha entre el estado de partida y el final).
+  function estructura(f){
+    const a = MA.cajas(f.Z, f.desde === undefined ? f.carga : f.desde, true), b = MA.cajas(f.Z, f.carga, true);
+    const cuenta = cj => cj.subcapas.reduce((t, s) => t + s.orbitales.length, 0);
+    return cuenta(a) >= cuenta(b) ? a : b;
+  }
+  function layout(w){
+    const v = E.vista, chico = innerWidth < 900, L = { p:[] };
+    let ks = paneles(); if (E.compacto && chico) ks = ks.slice(0, 1);
+    const tope = E.compacto && chico ? 238 : Infinity;
+    let y = 6;
+    for (const k of ks){
+      let h, extra = {};
+      if (k === 'atomos'){
+        const n = v.atomos.items.length, cap = Math.max(0, ...v.atomos.items.map(it => (it.rot || []).length))*15;
+        let R = n === 1 ? Math.min(w*0.3, 104) : n === 2 ? Math.min(w/4 - 18, 86) : Math.min(w/(2*n) - 10, 58);
+        const m = q => Math.max(14, q*0.2);
+        if (2*(R + m(R)) + cap + 22 > tope - y) R = Math.max(28, (tope - y - cap - 22)/2.4);
+        const linea = v.atomos.items.some(it => !it.nube) ? 16 : 0;
+        extra = { R, m:m(R), cap, linea }; h = 2*(R + m(R)) + cap + 6 + linea;
+      } else if (k === 'cajas'){
+        if (v.cajas.tapa) h = 58;
+        else {
+          const es = v.cajas.filas.map(estructura), labelW = 46;
+          const anchoFila = cj => cj.subcapas.reduce((t, s) => t + s.orbitales.length, 0);
+          const grupos = cj => cj.subcapas.length;
+          let b = 24;
+          for (const cj of es){ const nc = anchoFila(cj), ng = grupos(cj); b = Math.min(b, (w - 16 - labelW - (cj.nucleo ? 34 : 0) - (ng - 1)*9)/Math.max(1, nc)); }
+          b = Math.max(12, b);
+          const nota = envolver(ctx, colores(), NOTA_CAJAS, w - 20, 10.5);
+          extra = { b, labelW, nota }; h = v.cajas.filas.length*(b + 24) + 8 + nota.length*13;
+          if (h > tope - y) h = tope - y;
+        }
+      } else if (k === 'barras'){ h = Math.min(v.barras.zoom ? 196 : 156, tope - y); }
+      else if (k === 'tabla'){ const cw = (w - 12)/18, ch = clamp(cw*1.3, 22, 34); extra = { cw, ch }; h = 4*ch + 26; }
+      else if (k === 'enlace'){ h = 112; }
+      L.p.push({ k, y, h, ...extra }); y += h + 8;
+    }
+    if (v.pie && !(E.compacto && chico)){ const c = colores(); L.pie = envolver(ctx, c, v.pie, w - 24, 11.5); L.yPie = y; y += L.pie.length*15 + 2; }
+    L.H = Math.max(80, y + 2);
+    return L;
+  }
+  E.resize = () => {
+    const w = cv.clientWidth; if (!w) return;
+    Lz = layout(w); llaveLz = llave(w); const h = Lz.H, dpr = window.devicePixelRatio || 1;
+    if (w !== W || h !== H){ W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); ctx.setTransform(dpr,0,0,dpr,0,0); }
+  };
+  E.compactar = on => { on = !!on; cv.closest('.mode').classList.toggle('pendiente', on); if (on === E.compacto) return; E.compacto = on; E.resize(); E.dibujar(); };
+  new ResizeObserver(() => { E.resize(); E.dibujar(); }).observe(cv);
+
+  // ----- El átomo: núcleo con su carga, bandas por nivel y electrones -----
+  function atomo(c, it, cx, cy, R, m){
+    const p = it.p === undefined ? 1 : it.p, anim = it.desde !== undefined && it.desde !== it.carga;
+    const seq = anim ? MA.secuencia(it.Z, it.desde, it.carga) : [], sale = seq.length > 0 && seq[0].tipo === 'sale';
+    const rn = clamp(R*0.17, 8, 17), de = clamp(R*0.04, 2.3, 4.2);
+    // Núcleo.
+    ctx.save();
+    ctx.beginPath(); ctx.arc(cx, cy, rn, 0, Math.PI*2); ctx.fillStyle = alfa(it.ocultar ? c.muted : c.Z, 0.16); ctx.fill();
+    ctx.lineWidth = E.hl === 'Z' ? 3 : 1.6; ctx.strokeStyle = it.ocultar ? c.muted : c.Z; ctx.stroke();
+    ctx.fillStyle = it.ocultar ? c.muted : c.Z; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    const tz = it.ocultar ? '?' : `${it.Z}+`; let fs = rn*0.95; ctx.font = `800 ${fs}px ${c.font}`;
+    while (fs > 7 && ctx.measureText(tz).width > rn*1.75){ fs -= 0.5; ctx.font = `800 ${fs}px ${c.font}`; }
+    ctx.fillText(tz, cx, cy + 0.5);
+    ctx.restore();
+    const rnd = azar(it.Z*97 + 13);
+    if (it.nube){
+      // Sin niveles: una nube gris con los electrones repartidos (pasos 1 y 2).
+      ctx.save();
+      const g = ctx.createRadialGradient(cx, cy, rn, cx, cy, R); g.addColorStop(0, alfa(c.nube, 0)); g.addColorStop(0.35, alfa(c.nube, 0.16)); g.addColorStop(1, alfa(c.nube, 0));
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI*2); ctx.fill();
+      if (it.ocultar){ ctx.fillStyle = c.muted; ctx.font = `800 ${Math.round(R*0.22)}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('?', cx + R*0.55, cy - R*0.4); }
+      else {
+        if (it.neutrones !== undefined){
+          // El núcleo: sus protones y sus neutrones (sin letra: N ya es neutrones y n es el nivel).
+          const ps = [[`${it.Z} p⁺`, 'Z', 800], [' · ', 'ink', 700], [`${it.neutrones} neutrones`, 'N', 800]], wq = anchoPiezas(ctx, c, ps, 11);
+          rr(ctx, cx - wq/2 - 5, cy + rn + 4, wq + 10, 17, 8); ctx.fillStyle = c.card; ctx.fill(); ctx.strokeStyle = c.line; ctx.lineWidth = 1; ctx.stroke();
+          dibujarPiezas(ctx, c, ps, cx, cy + rn + 12.5, 11, 'center');
+        }
+        const ne = it.Z - it.carga, nf = Math.max(0, it.carga);
+        for (let i = 0; i < ne + nf; i++){
+          const a = rnd()*Math.PI*2, r = rn + 6 + Math.sqrt(rnd())*(R - rn - 8);
+          let x = cx + r*Math.cos(a), y = cy + r*Math.sin(a), col = c.e;
+          if (i >= ne){ // los que se fueron: salen hacia la derecha
+            const j = i - ne, xf = cx + R + m*0.55, yf = cy - R*0.3 + j*(de*3.2);
+            x += (xf - x)*p; y += (yf - y)*p; col = c.sale;
+          }
+          punto(c, x, y, de, col, i >= ne ? 'sale' : 'e');
+        }
+      }
+      ctx.restore(); return;
+    }
+    // Estado que se dibuja en las bandas: en un catión, el de partida (los que salen se van); en un anión, el final.
+    const estado = anim && sale ? it.desde : it.carga, lv = MA.niveles(it.Z, estado);
+    const nmax = Math.max(1, lv.length, anim ? MA.niveles(it.Z, it.desde).length : 0);
+    const paso = (R - rn)/nmax, hk = paso*0.48;
+    const rk = k => rn + paso*(k - 0.5);
+    // Al terminar de salir, un nivel que quedó vacío ya no se dibuja.
+    const lvBanda = anim && sale && p >= 1 ? MA.niveles(it.Z, it.carga) : lv, nBandas = lvBanda.filter(x => x > 0).length;
+    ctx.save();
+    for (let k = 1; k <= nmax; k++){
+      if (!lvBanda[k - 1]) continue;
+      const g = ctx.createRadialGradient(cx, cy, Math.max(0, rk(k) - hk), cx, cy, rk(k) + hk);
+      const a = E.hl === 'n' ? 0.34 : 0.2;
+      g.addColorStop(0, alfa(c.n, 0)); g.addColorStop(0.25, alfa(c.n, a)); g.addColorStop(0.75, alfa(c.n, a)); g.addColorStop(1, alfa(c.n, 0));
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, rk(k) + hk, 0, Math.PI*2); ctx.fill();
+    }
+    if (it.ocultar || it.ocultaE){
+      if (it.ocultaE){ ctx.fillStyle = c.muted; ctx.font = `800 ${Math.round(R*0.2)}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('?', cx + R*0.6, cy - R*0.55); }
+      ctx.restore(); return;
+    }
+    // Quiénes se mueven: en orden de la secuencia, de cada nivel los últimos.
+    const usados = {}, mov = [];
+    seq.forEach((s, j) => { usados[s.n] = (usados[s.n] || 0) + 1; mov.push({ n:s.n, idx: lv[s.n - 1] - usados[s.n], j }); });
+    const marcaSale = it.marcarSale ? MA.electronQueSale(it.Z, it.carga) : null;
+    // Rótulos de nivel: todos si las bandas son anchas; si no, solo el de afuera. Los electrones dejan libre su sector.
+    const AN = -Math.PI*0.5 - 0.5, todos = paso >= 13, rotula = k => lvBanda[k - 1] && (todos || k === nBandas), HUECO = 0.5;
+    for (let k = 1; k <= lv.length; k++){
+      const cnt = lv[k - 1], hueco = rotula(k) ? HUECO : 0, arco = 2*Math.PI - 2*hueco;
+      for (let i = 0; i < cnt; i++){
+        // Repartidos en todo el ancho de la banda: una zona, no un camino.
+        const a0 = AN + hueco + arco*(i + 0.5)/cnt + (rnd() - 0.5)*0.6*(arco/cnt), r0 = rk(k) + (rnd() - 0.5)*1.7*hk;
+        let x = cx + r0*Math.cos(a0), y = cy + r0*Math.sin(a0), col = c.e, clave = 'e';
+        const mv = mov.find(q => q.n === k && q.idx === i);
+        if (mv){
+          const f = clamp(p*seq.length - mv.j, 0, 1), ease = f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+          const rf = R + m*0.6, xf = cx + rf*Math.cos(a0), yf = cy + rf*Math.sin(a0);
+          if (sale){ x += (xf - x)*ease; y += (yf - y)*ease; } else { x = xf + (x - xf)*ease; y = yf + (y - yf)*ease; }
+          if (p > 0 || !sale){ col = c.sale; clave = 'sale'; }
+        } else if (marcaSale && k === lv.length && i === cnt - 1){ col = c.sale; clave = 'sale'; }
+        punto(c, x, y, de, col, clave);
+      }
+    }
+    // Los números de nivel, encima de los electrones para que se lean.
+    for (let k = 1; k <= nmax; k++){
+      if (!rotula(k)) continue;
+      ctx.font = `800 ${clamp(hk*1.1, 8.5, 11)}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      // En un átomo chico, el rótulo de afuera va fuera del átomo para no montarse sobre el núcleo.
+      const rr0 = todos ? rk(k) : Math.max(rk(k), R + 8), t = k === nBandas ? `n=${k}` : `${k}`, tx = cx + rr0*Math.cos(AN), ty = cy + rr0*Math.sin(AN);
+      ctx.lineJoin = 'round'; ctx.strokeStyle = c.paper; ctx.lineWidth = 3.5; ctx.strokeText(t, tx, ty); ctx.fillStyle = c.n; ctx.fillText(t, tx, ty);
+    }
+    ctx.restore();
+  }
+  function punto(c, x, y, r, col, clave){
+    ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2); ctx.fillStyle = col; ctx.fill();
+    if (E.hl === clave){ ctx.strokeStyle = c.ink; ctx.lineWidth = 1.3; ctx.beginPath(); ctx.arc(x, y, r + 2, 0, Math.PI*2); ctx.stroke(); }
+  }
+  function panelAtomos(c, P){
+    const A = E.vista.atomos, n = A.items.length;
+    A.items.forEach((it, i) => {
+      const cx = W*(i + 0.5)/n, cy = P.y + P.m + P.R, R = P.R*(it.escala === undefined ? 1 : it.escala);
+      atomo(c, it, cx, cy, R, P.m);
+      (it.rot || []).forEach((ps, j) => dibujarPiezas(ctx, c, ps, cx, P.y + 2*(P.R + P.m) + 6 + j*15, 12, 'center', W/n - 8));
+    });
+    if (P.linea) dibujarPiezas(ctx, c, [['Niveles: ', 'n', 800], ['zonas donde es probable hallar electrones, no órbitas.', 'muted', 700]], W/2, P.y + P.h - 8, 11, 'center', W - 16);
+  }
+
+  // ----- Cajas: cada caja un orbital (de mₗ = −l a +l), cada flecha un electrón -----
+  function flecha(c, x, y0, y1, col, w){
+    ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = w || 1.8; linea(ctx, x, y0, x, y1);
+    const d = y1 < y0 ? -1 : 1, s = 3.6; ctx.beginPath(); ctx.moveTo(x, y1 + d*0.5); ctx.lineTo(x - s, y1 - d*s*1.3); ctx.lineTo(x + s, y1 - d*s*1.3); ctx.closePath(); ctx.fill();
+  }
+  function panelCajas(c, P){
+    const C = E.vista.cajas;
+    if (C.tapa){
+      ctx.save(); rr(ctx, 12, P.y + 4, W - 24, P.h - 8, 12); ctx.fillStyle = c.grid; ctx.fill();
+      dibujarPiezas(ctx, c, [[C.tapa, 'muted', 700]], W/2, P.y + P.h/2, 12.5, 'center', W - 40); ctx.restore(); return;
+    }
+    const b = P.b;
+    C.filas.forEach((f, fi) => {
+      const p = f.p === undefined ? 1 : f.p, anim = f.desde !== undefined && f.desde !== f.carga;
+      const seq = anim ? MA.secuencia(f.Z, f.desde, f.carga) : [], sale = seq.length && seq[0].tipo === 'sale';
+      // Antes de terminar la animación se dibuja el estado de partida (catión) o el final (anión).
+      const enPartida = anim && sale && p < 1;
+      const cj = MA.cajas(f.Z, enPartida ? f.desde : f.carga, true);
+      const yTop = P.y + 4 + fi*(b + 24), yb = yTop + 16;
+      ctx.save();
+      dibujarPiezas(ctx, c, f.rot || [[esp(especieDe(f.Z, enPartida ? f.desde : f.carga)), 'ink', 800]], 6, yb + b/2, 12.5, 'left', P.labelW - 6);
+      let x = P.labelW;
+      if (cj.nucleo){ dibujarPiezas(ctx, c, [[`[${cj.nucleo}]`, 'ink', 700]], x, yb + b/2, 12, 'left'); x += 34; }
+      if (!cj.subcapas.length) dibujarPiezas(ctx, c, [['sin electrones', 'muted', 700]], x, yb + b/2, 11.5, 'left');
+      const marca = f.marcarSale ? MA.electronQueSale(f.Z, f.carga) : null;
+      for (const s of cj.subcapas){
+        const k = s.orbitales.length;
+        dibujarPiezas(ctx, c, [[s.nombre, 'ink', 800]], x + k*b/2, yTop + 8, 11, 'center');
+        s.orbitales.forEach((o, i) => {
+          const bx = x + i*b;
+          ctx.strokeStyle = c.ink; ctx.lineWidth = 1.2; ctx.strokeRect(bx + 0.5, yb + 0.5, b - 1, b - 1);
+          for (const [tiene, ms, xx] of [[o.arriba, 0.5, bx + b*0.34], [o.abajo, -0.5, bx + b*0.66]]){
+            if (!tiene) continue;
+            let col = c.e, alpha = 1, dy = 0, clave = 'e';
+            const mv = seq.findIndex(q => q.subcapa === s.nombre && q.ml === o.ml && q.ms === ms);
+            if (mv >= 0 && (sale ? enPartida : true)){
+              const fj = clamp(p*seq.length - mv, 0, 1);
+              if (p > 0 || !sale){ col = c.sale; clave = 'sale'; }
+              if (sale){ alpha = 1 - fj; dy = -fj*b*0.6; } else { alpha = fj; dy = (1 - fj)*-b*0.6; }
+            }
+            if (marca && marca.subcapa === s.nombre && marca.ml === o.ml && marca.ms === ms){ col = c.sale; clave = 'sale'; }
+            ctx.globalAlpha = alpha;
+            if (ms > 0) flecha(c, xx, yb + b - 3 + dy, yb + 4 + dy, col, E.hl === clave ? 2.8 : 1.8);
+            else flecha(c, xx, yb + 3 + dy, yb + b - 4 + dy, col, E.hl === clave ? 2.8 : 1.8);
+            ctx.globalAlpha = 1;
+          }
+          // Los dos electrones de una caja se repelen: se marca cuando el que sale está apareado.
+          if (f.repele && marca && marca.apareado && marca.subcapa === s.nombre && marca.ml === o.ml){
+            ctx.strokeStyle = c.sale; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(bx + b*0.2, yb - 2); ctx.quadraticCurveTo(bx + b/2, yb - 8, bx + b*0.8, yb - 2); ctx.stroke();
+          }
+        });
+        x += k*b + 9;
+      }
+      if (f.nota) dibujarPiezas(ctx, c, f.nota, Math.min(W - 6, x + 2), yb + b/2, 11, 'left', W - x - 8);
+      ctx.restore();
+    });
+    P.nota.forEach((l, k) => dibujarPiezas(ctx, c, [[l, 'muted', 700]], W/2, P.y + P.h - 6 - (P.nota.length - 1 - k)*13, 10.5, 'center'));
+  }
+
+  // ----- Barras (energías de ionización) -----
+  function panelBarras(c, P){
+    const B = E.vista.barras, n = B.items.length, x0 = 12, x1 = W - 12, top = P.y + 30, bot = P.y + P.h - 32;
+    dibujarPiezas(ctx, c, B.titulo, W/2, P.y + 9, 12, 'center', W - 20);
+    const slot = (x1 - x0)/n, bw = Math.min(42, slot*0.56);
+    ctx.save(); ctx.strokeStyle = c.line; ctx.lineWidth = 1; linea(ctx, x0, bot, x1, bot);
+    B.items.forEach((it, i) => {
+      const x = x0 + slot*(i + 0.5);
+      if (it.oculto){
+        ctx.setLineDash([4, 3]); ctx.strokeStyle = c.muted; ctx.strokeRect(x - bw/2, bot - 22, bw, 22); ctx.setLineDash([]);
+        dibujarPiezas(ctx, c, [['?', 'muted', 800]], x, bot - 30, 11, 'center');
+      } else {
+        const h = (bot - top)*it.valor/B.max;
+        rr(ctx, x - bw/2, bot - h, bw, h, 3); ctx.fillStyle = alfa(c.EI, it.marcar ? 0.95 : 0.55); ctx.fill();
+        if (it.marcar || E.hl === 'EI'){ ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.stroke(); }
+        dibujarPiezas(ctx, c, [[fmt(it.valor, 0), 'EI', 800]], x, bot - h - 8, 10.5, 'center', slot + 4);
+      }
+      dibujarPiezas(ctx, c, [[it.etq, 'ink', it.marcar ? 800 : 700]], x, bot + 10, 11, 'center', slot);
+      if (it.sub) dibujarPiezas(ctx, c, it.sub, x, bot + 23, 10, 'center', slot);
+    });
+    if (B.zoom){
+      // Recuadro ampliado (escala ×10) arriba de la 1.ª y la 2.ª: se ve la barra de «si se repartiera».
+      const Zm = B.zoom, bx = x0 + 2, bwz = Math.min(2*slot - 8, 230), by = top - 10, bh = Math.max(46, (bot - top)*0.46);
+      rr(ctx, bx, by, bwz, bh, 8); ctx.fillStyle = c.card; ctx.fill(); ctx.strokeStyle = c.line; ctx.lineWidth = 1; ctx.stroke();
+      dibujarPiezas(ctx, c, [[bwz < 200 ? 'punteada: si se repartiera' : 'ampliado ×10 · punteada: si se repartiera', 'muted', 700]], bx + bwz/2, by + 8, 9.5, 'center', bwz - 8);
+      const base = by + bh - 13, alto = bh - 34, mb = Math.min(16, bwz/8), xs = [0.22, 0.5, 0.78].map(f => bx + bwz*f);
+      Zm.items.forEach((q, i) => {
+        const hh = Math.min(alto + 6, alto*q.valor/Zm.max), x = xs[i];
+        if (q.punteada){ ctx.setLineDash([3, 2]); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.3; ctx.strokeRect(x - mb/2, base - hh, mb, hh); ctx.setLineDash([]); }
+        else { ctx.fillStyle = alfa(c.EI, q.valor > Zm.max ? 0.95 : 0.55); ctx.fillRect(x - mb/2, base - hh, mb, hh); }
+        dibujarPiezas(ctx, c, q.etq, x, base + 7, 9, 'center', bwz/3);
+        if (q.valor > Zm.max) dibujarPiezas(ctx, c, [['↑', 'ink', 800]], x + mb/2 + 5, base - hh + 5, 10, 'center');
+      });
+    }
+    if (B.fantasma){
+      const f = B.fantasma, x = x0 + slot*(f.i + 0.5) + bw*0.62, h = (bot - top)*f.valor/B.max;
+      ctx.setLineDash([3, 3]); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.3; ctx.strokeRect(x - bw*0.3, bot - h, bw*0.6, h); ctx.setLineDash([]);
+      const tam = 10, ancho = anchoPiezas(ctx, c, f.etq, tam), xl = clamp(x - ancho/2, 4, W - ancho - 4), yl = bot - h - 16;
+      rr(ctx, xl - 4, yl - 9, ancho + 8, 18, 6); ctx.fillStyle = c.card; ctx.fill(); ctx.strokeStyle = c.line; ctx.lineWidth = 1; ctx.stroke();
+      dibujarPiezas(ctx, c, f.etq, xl, yl, tam, 'left');
+    }
+    ctx.restore();
+  }
+
+  // ----- La tabla como mapa: cada casilla con una barra que sube con la propiedad -----
+  const MAPAS = {};
+  const mapaDe = p => MAPAS[p] || (MAPAS[p] = MA.mapa(p));
+  function panelTabla(c, P){
+    const T = E.vista.tabla, m = mapaDe(T.prop || 'ei'), cw = P.cw, ch = P.ch, x0 = (W - 18*cw)/2, y0 = P.y + 20;
+    const pr = T.prop ? PROP[T.prop] : null;
+    dibujarPiezas(ctx, c, pr ? [[`Mapa: ${pr.nombre}${pr.u ? ' (' + pr.u + ')' : ''}`, pr.k, 800], ...(W >= 560 ? [['  · barra más llena, valor más alto', 'muted', 700]] : [])] : [['Tabla periódica, Z = 1 a 36', 'ink', 800]], W/2, P.y + 9, 11.5, 'center', W - 16);
+    E.celdas = [];
+    ctx.save();
+    for (const q of m){
+      const x = x0 + (q.grupo - 1)*cw, y = y0 + (q.periodo - 1)*ch, marc = (T.marcar || []).includes(q.Z), sel = T.sel === q.Z;
+      rr(ctx, x + 1, y + 1, cw - 2, ch - 2, 3); ctx.fillStyle = sel ? c.grid : c.paper; ctx.fill();
+      ctx.strokeStyle = marc || sel ? c.ink : c.line; ctx.lineWidth = sel ? 2.4 : marc ? 2 : 1; ctx.stroke();
+      if (pr){
+        const hb = (ch - 4)*0.38;
+        if ((T.ocultos || []).includes(q.Z)){ ctx.fillStyle = c.muted; ctx.font = `800 ${Math.min(10, cw*0.45)}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('?', x + cw/2, y + ch - hb/2 - 2); }
+        else if (q.t === null){ ctx.fillStyle = c.muted; ctx.font = `700 ${Math.min(9, cw*0.4)}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('—', x + cw/2, y + ch - hb/2 - 2); }
+        else { const h = hb*(0.08 + 0.92*q.t); ctx.fillStyle = alfa(c[pr.k], 0.9); ctx.fillRect(x + 3, y + ch - 3 - h, cw - 6, h); }
+      }
+      ctx.fillStyle = c.ink; ctx.font = `${marc || sel ? 800 : 700} ${Math.min(11.5, cw*0.48)}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(q.simbolo, x + cw/2, y + (pr ? ch*0.32 : ch/2) + 1);
+      E.celdas.push({ Z:q.Z, x, y, w:cw, h:ch });
+    }
+    ctx.restore();
+  }
+
+  // ----- Un enlace H–F: el par compartido pasa más tiempo cerca del F -----
+  function panelEnlace(c, P){
+    const cy = P.y + 52, xH = W/2 - 70, xF = W/2 + 60;
+    ctx.save();
+    const nube = ctx.createRadialGradient(xF - 18, cy, 4, xF - 18, cy, 60); nube.addColorStop(0, alfa(c.e, 0.22)); nube.addColorStop(1, alfa(c.e, 0));
+    ctx.fillStyle = nube; ctx.beginPath(); ctx.ellipse((xH + xF)/2 + 18, cy, 92, 30, 0, 0, Math.PI*2); ctx.fill();
+    for (const [x, r, t] of [[xH, 14, 'H'], [xF, 22, 'F']]){
+      ctx.beginPath(); ctx.arc(x, cy, r, 0, Math.PI*2); ctx.fillStyle = c.paper; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; ctx.stroke();
+      ctx.fillStyle = c.ink; ctx.font = `800 ${r*0.9}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(t, x, cy + 1);
+    }
+    const xp = xH + (xF - xH)*0.68;
+    punto(c, xp - 2, cy - 6, 3.6, c.e, 'e'); punto(c, xp + 2, cy + 6, 3.6, c.e, 'e');
+    dibujarPiezas(ctx, c, [['δ+', 'ink', 800]], xH, cy - 28, 13, 'center');
+    dibujarPiezas(ctx, c, [['δ−', 'ink', 800]], xF, cy - 36, 13, 'center');
+    dibujarPiezas(ctx, c, [['El par compartido (', 'ink', 700], ['e⁻', 'e', 800], [') pasa más tiempo cerca del F', 'ink', 700]], W/2, P.y + P.h - 14, 11.5, 'center', W - 16);
+    ctx.restore();
+  }
+
+  E.dibujar = () => {
+    const w = cv.clientWidth; if (!w) return;
+    if (!Lz || llaveLz !== llave(w)) E.resize();
+    const c = colores(); ctx.clearRect(0, 0, W, H);
+    for (const P of Lz.p){
+      if (P.k === 'atomos') panelAtomos(c, P);
+      else if (P.k === 'cajas') panelCajas(c, P);
+      else if (P.k === 'barras') panelBarras(c, P);
+      else if (P.k === 'tabla') panelTabla(c, P);
+      else if (P.k === 'enlace') panelEnlace(c, P);
+    }
+    if (Lz.pie){ ctx.save(); ctx.fillStyle = c.muted; ctx.font = `700 11.5px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; Lz.pie.forEach((l, k) => ctx.fillText(l, W/2, Lz.yPie + 6 + k*15)); ctx.restore(); }
+    const ley = leyendaHTML(E.vista), el = document.getElementById(idLey);
+    if (el && el.dataset.k !== ley){ el.dataset.k = ley; el.innerHTML = ley; }
+  };
+  // Toque en la tabla (solo si la vista lo pide): un clic no impide desplazar la página.
+  cv.addEventListener('click', ev => {
+    if (!E.alTocar || !E.celdas.length) return;
+    const r = cv.getBoundingClientRect(), x = ev.clientX - r.left, y = ev.clientY - r.top;
+    const q = E.celdas.find(k => x >= k.x && x <= k.x + k.w && y >= k.y && y <= k.y + k.h);
+    if (q) E.alTocar(q.Z);
+  });
+  E.describir = () => { const t = E.vista.desc || '', el = document.getElementById(idDesc); if (el.textContent !== t) el.textContent = t; };
+  return E;
+}
+const LEY = {
+  Z:'Z · protones: la carga del núcleo', N:'neutrones', e:'e⁻ · electrones', sale:'el electrón que sale o entra',
+  n:'n · nivel: la zona donde es más probable hallar sus electrones (no es un camino)', r:'r · radio', EI:'EI · energía de ionización', EN:'EN · electronegatividad' };
+function leyendaHTML(v){
+  return (v.vars || []).map(k => k === 'n'
+    ? `<span><i style="background:var(--c-n); height:8px; border-radius:4px; opacity:.6"></i>${LEY.n}</span>`
+    : k === 'e' || k === 'sale' ? `<span><svg width="10" height="10" aria-hidden="true"><circle cx="5" cy="5" r="4" fill="var(--c-${k})"/></svg>${LEY[k]}</span>`
+    : `<span><i style="background:var(--c-${k})"></i>${LEY[k]}</span>`).join('');
+}
+// Resaltar en el dibujo lo que se toca en el texto (regla 4).
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+// Un bucle que solo corre mientras algo se mueve.
+let RAF = 0, ULT = 0;
+function pedir(){ if (!RAF){ ULT = performance.now(); RAF = requestAnimationFrame(tick); } }
+function tick(now){
+  RAF = 0; const dt = Math.min(0.05, (now - ULT)/1000); ULT = now; let sigue = false;
+  for (const E of ESCENAS){
+    if (document.getElementById(E.modoId).hidden) continue;
+    for (const a of [...E.anims]){ a.t += dt; const f = Math.min(1, a.t/a.dur); a.paso(f); if (f >= 1){ E.anims.splice(E.anims.indexOf(a), 1); if (a.fin) a.fin(); } else sigue = true; }
+    E.dibujar();
+  }
+  if (sigue) pedir();
+}
+// Animación de dur segundos; con movimiento reducido, de una vez.
+function animar(E, dur, paso, fin, retraso){
+  if (RM){ paso(1); if (fin) fin(); E.dibujar(); return; }
+  E.anims.push({ t:-(retraso || 0), dur, paso:f => paso(Math.max(0, f)), fin }); pedir();
+}
+function cortar(E){ E.anims = []; }
+const LETRAS = 'abcd';
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}" aria-label="Opción ${LETRAS.indexOf(k) + 1}: ${t.replace(/<[^>]+>/g, '')}"><span class="l">${LETRAS.indexOf(k) + 1}</span><span>${t.replace(/ tabindex="0"/g, '')}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+const otraVez = `<button type="button" class="btn" data-repetir>Ver de nuevo</button>`;
+// La fuente queda escrita aquí para quien lea el código; la medición guarda solo la categoría.
+const RES = (cat, fuente) => cat;
+const ESTUDIO_SG = 'un estudio con 979 escolares de Singapur (Tan y otros, 2005)';
+// Respuestas de «¿Qué pasa si…?»: la misma variable que abre los experimentos en orden. El explorador del paso 8 la lee
+// para no regalar el Mg contra Al (experimento 1) ni el Cr, Cu y Ni (experimento 4) antes de responderlos.
+const PRED_EXP = {};
+const DESCUBRE = 'Descúbrelo en «¿Qué pasa si…?»';
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso =================
+   docs/investigacion/atomo-enlace-ideas-erroneas.md: partículas de un ion y configuración del Fe³⁺ (hipótesis, "Lo que no
+   tiene respaldo"), Na⁺ y un electrón libre (TP1, TP2), la segunda ionización del Na (TP3, TP4) y P contra S (TP6, TP7). */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'm1', 'ley1');
+const S = { step:0, max:0, pred:{}, ocupado:false };
+const FE = MA.particulas({ simbolo:'Fe', A:56, carga:3 }), CFE = MA.configuracion('Fe'), CFE3 = MA.configuracion('Fe3+');
+const SEQ_FE = MA.secuencia('Fe', 0, 3);
+const NA = MA.ionizacionesSucesivas('Na'), NA_SEQ = MA.secuencia('Na', 0, NA.valores.length);
+const NAp = MA.configuracion('Na+'), REP = NA.errores['reparte-atraccion'], VECES = Math.round(NA.valores[1]/NA.valores[0]);
+const PS = MA.compararEI('P', 'S'), PER3 = ['Si', 'P', 'S', 'Cl'];
+const S_SALE = MA.electronQueSale('S'), CS = MA.configuracion('S'), CP = MA.configuracion('P');
+const FE_ULT = MA.ultimoElectron('Fe');
+const msTxt = ms => ms > 0 ? '+1/2' : '−1/2', mlTxt = ml => ml > 0 ? '+' + ml : ml < 0 ? '−' + (-ml) : '0';
+const pFe = (n, que) => `${n} ${que}`;
+
+const P0 = { id:'atomo-paso2', unidad:PLANTILLA.unidad, ok:'c', opts:[
+  ['a', `${Z_(pFe(FE.protones, 'protones'))}, ${N_(pFe(FE.errores['resta-carga-a-neutrones'], 'neutrones'))} y ${e_(pFe(FE.electrones, 'electrones'))}`, 'resta-carga-a-neutrones', RES('hipotesis', 'tabla de lo que no tiene respaldo')],
+  ['b', `${Z_(pFe(FE.protones, 'protones'))}, ${N_(pFe(FE.neutrones, 'neutrones'))} y ${e_(pFe(FE.errores['suma-carga-a-electrones'], 'electrones'))}`, 'suma-carga-a-electrones', RES('hipotesis', 'tabla de lo que no tiene respaldo')],
+  ['c', `${Z_(pFe(FE.protones, 'protones'))}, ${N_(pFe(FE.neutrones, 'neutrones'))} y ${e_(pFe(FE.electrones, 'electrones'))}`],
+  ['d', `${Z_(pFe(FE.protones, 'protones'))}, ${N_(pFe(FE.neutrones, 'neutrones'))} y ${e_(pFe(FE.errores['ignora-la-carga'], 'electrones'))}`, 'ignora-la-carga', RES('hipotesis', 'hipótesis nuestra')]],
+  fb:{ c:`¡Bien! Los protones son Z = ${FE.protones} y no cambian. Los neutrones son A − Z = 56 − 26 = ${FE.neutrones}. La carga 3+ dice que el átomo perdió 3 electrones: 26 − 3 = ${FE.electrones}. Mira el dibujo: 3 electrones se van.`,
+    a:`Elegiste la 1. Restaste la carga a los neutrones: 56 − 26 − 3 = ${FE.errores['resta-carga-a-neutrones']}. Pero la carga del ion viene de los electrones que perdió; los neutrones no tienen carga y siguen siendo A − Z = ${FE.neutrones}. Este error es una hipótesis nuestra: no encontramos un estudio que lo mida. La correcta está marcada.`,
+    b:`Elegiste la 2. Sumaste la carga: 26 + 3 = ${FE.errores['suma-carga-a-electrones']}. Un ion positivo tiene menos electrones que protones, no más: perdió 3. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
+    d:`Elegiste la 4. Con ${FE.errores['ignora-la-carga']} electrones el hierro sería neutro. La carga 3+ dice que tiene 3 electrones menos que protones. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.` } };
+const P1 = { id:'atomo-paso3', unidad:PLANTILLA.unidad, ok:'d', opts:[
+  ['a', cfgH(CFE3.errores['quita-los-ultimos-en-llenarse']), 'quita-los-ultimos-en-llenarse', RES('hipotesis', 'tabla de lo que no tiene respaldo')],
+  ['b', cfgH(CFE3.errores['quita-uno-de-s']), 'quita-uno-de-4s', RES('hipotesis', 'informe, propuesta de cajas')],
+  ['c', cfgH(CFE3.errores['quita-solo-uno']), 'quita-solo-uno', RES('hipotesis', 'hipótesis nuestra')],
+  ['d', cfgH(CFE3.abreviada)]],
+  fb:{ d:`¡Bien! Salen primero los electrones del nivel más alto: los dos 4s (${n_('n = 4')}) y luego uno 3d (${n_('n = 3')}). Queda ${cfg(CFE3.abreviada)}. Mira cómo se van en las cajas y en el átomo.`,
+    a:`Elegiste la 1. Quitaste los últimos en llenarse, los 3d. Pero al formar un catión salen primero los del nivel más alto: el 4s está en el nivel 4, más afuera que el 3d. Que este error sea frecuente es una hipótesis nuestra: no encontramos un estudio que lo mida. La correcta está marcada.`,
+    b:`Elegiste la 2. Sacaste un 4s y dos 3d. Los dos electrones 4s están en el nivel más alto: salen los dos antes que cualquier 3d. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
+    c:`Elegiste la 3. Quitaste un solo electrón (un 4s), como si fuera Fe⁺. El Fe³⁺ pierde 3: los dos 4s y uno 3d. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.` } };
+const P2 = { id:'atomo-paso5', unidad:U_TABLA, ok:'b', opts:[
+  ['a', 'No se unen: el Na⁺ ya tiene octeto y no quiere perderlo.', 'TP2-octeto-no-recombina', RES('documentado', 'Tan y otros 2005, ítem 1: 44 % de 979')],
+  ['b', 'Se unen y forman el átomo de Na; al unirse se libera energía.'],
+  ['c', 'No se unen: el sodio solo pierde electrones, nunca los gana.', 'solo-pierde-electrones', RES('documentado', 'Tan y otros 2005, ítem 1, A1: 4,8 %')],
+  ['d', 'Se unen, pero el átomo de Na es menos estable que el ion suelto.', 'TP1-ion-mas-estable', RES('parcial', 'Tan y otros 2005, ítem 3: 64 %, otra pregunta')]],
+  fb:{ b:`¡Bien! El núcleo del Na⁺ tiene ${Z_('11 protones')} y solo ${e_(NAp.electrones + ' electrones')}: atrae al electrón libre. Al unirse se liberan ${EI_(NA.valores[0] + ' kJ/mol')}, lo mismo que cuesta quitárselo (la primera energía de ionización). El átomo neutro es el que tiene menos energía.`,
+    a:`Elegiste la 1. El octeto no hace que el Na⁺ rechace al electrón: su núcleo tiene un protón más que sus electrones y lo atrae. En ${ESTUDIO_SG}, cerca del 44 % eligió esta idea. La correcta está marcada.`,
+    c:`Elegiste la 3. «El sodio pierde electrones» describe lo que suele pasar en sus reacciones, no una regla: un Na⁺ atrae a cualquier electrón libre. En ${ESTUDIO_SG}, cerca del 5 % eligió esta idea. La correcta está marcada.`,
+    d:`Elegiste la 4. Si el ion suelto fuera más estable, no se liberaría energía al unirse, y se liberan ${NA.valores[0]} kJ/mol: para separarlos hay que dar esa energía. En ${ESTUDIO_SG}, cerca del 64 % dijo que el Na⁺ con su electrón suelto es «más estable» que el átomo, por tener octeto; la pregunta era parecida, no esta. La correcta está marcada.` } };
+const P3 = { id:'atomo-paso6', unidad:U_TABLA, ok:'a', opts:[
+  ['a', 'El segundo sale del nivel 2: está más cerca del núcleo y menos tapado.'],
+  ['b', 'Los 11 protones reparten su atracción entre 10 electrones: a cada uno le toca más.', 'TP4-reparte-atraccion', RES('documentado', 'Tan y otros 2005, ítem 4: 18 %')],
+  ['c', 'Se rompe el octeto del Na⁺, y un octeto es estable por sí solo, sin importar el nivel.', 'TP3-rompe-octeto', RES('parcial', 'Tan y otros 2005, ítem 4: 16 % "rompe el octeto"; variante nuestra')],
+  ['d', 'El segundo sale de un nivel más lejano, y cuesta más llevarlo hasta afuera.', 'segundo-mas-lejos', RES('hipotesis', 'hipótesis nuestra')]],
+  fb:{ a:`¡Bien! El primer electrón sale del nivel 3, el de afuera. El segundo ya sale del nivel 2: más cerca del núcleo y con menos electrones entre él y el núcleo que lo tapen (apantallen). Mira las barras: el gran salto llega justo al cambiar de nivel.`,
+    b:`Elegiste la 2. La atracción no se reparte: cada electrón siente la carga del núcleo según su distancia y lo que lo tapa. Si se repartiera, la segunda costaría solo unos ${fmt(REP, 0)} kJ/mol (${NA.valores[0]} × 11/10), no ${fmt(NA.valores[1], 0)}: mira la barra punteada del recuadro ampliado. En ${ESTUDIO_SG}, cerca del 18 % explicó la segunda ionización así. La correcta está marcada.`,
+    c:`Elegiste la 3. Lo que hace caro quitar el segundo electrón es dónde está: en el nivel 2, mucho más cerca del núcleo y casi sin electrones que lo tapen. «Rompe el octeto» describe la configuración, pero no explica el costo: el que pesa es el nivel. La correcta está marcada.`,
+    d:`Elegiste la 4. Es al revés: el segundo electrón está en el nivel 2, más cerca del núcleo que el primero (nivel 3). Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.` } };
+const P4 = { id:'atomo-paso7', unidad:U_TABLA, ok:'c', opts:[
+  ['a', 'Está en una subcapa 3p semillena, que suelta fácil sus electrones.', 'TP6-semillena-en-S', RES('parcial', 'Tan y otros 2005, ítem 9, A3: 20 % "el 3p del P semilleno"; variante nuestra')],
+  ['b', 'Sus electrones 3p están más lejos del núcleo que los del P.', 'TP7-mas-lejos', RES('documentado', 'Tan y otros 2005, ítem 9, A2: 3,9 %')],
+  ['c', 'Comparte orbital con otro electrón, y la repulsión entre los dos lo empuja.'],
+  ['d', 'El núcleo reparte su atracción entre más electrones que en el P.', 'TP4-reparte-entre-mas', RES('parcial', 'Tan y otros 2005, ítem 2: 50 %, otra pregunta')]],
+  fb:{ c:`¡Bien! El S tiene cuatro electrones 3p: tres solos en su caja y el cuarto apareado con otro. Es el primero que comparte orbital, y la repulsión entre los dos pesa más que el protón extra. Mira las cajas: el que sale está marcado. En ${ESTUDIO_SG}, solo cerca del 32 % dio esta razón.`,
+    a:`Elegiste la 1. La subcapa semillena es la del P (3p³), no la del S (3p⁴). Y lo especial de una subcapa semillena es justamente que no tiene electrones apareados: en el S aparece el primer par. En ${ESTUDIO_SG}, cerca del 20 % explicó esta bajada con «el 3p del P está semilleno y es estable»: acierta el orden, pero no dice qué pasa en el S. La correcta está marcada.`,
+    b:`Elegiste la 2. Los dos electrones que salen están en la misma subcapa, la 3p, y el S es incluso un poco más pequeño que el P. En ${ESTUDIO_SG}, cerca del 4 % eligió una razón así. La correcta está marcada.`,
+    d:`Elegiste la 4. La atracción del núcleo no se reparte: con un protón más, el núcleo del S atrae más a cada electrón. En ${ESTUDIO_SG}, cerca de la mitad usó esta idea del reparto en otra pregunta, la del Na⁺. La correcta está marcada.` } };
+
+// ----- Vistas -----
+const rotFe = r => r ? [[['⁵⁶Fe³⁺', 'ink', 800]], [[`${FE.protones} protones`, 'Z', 800], [' · ', 'muted'], [`${FE.neutrones} neutrones`, 'N', 800], [' · ', 'muted'], [`${FE.electrones} electrones`, 'e', 800]]]
+  : [[['⁵⁶Fe³⁺', 'ink', 800]], [['protones, neutrones y electrones: ?', 'muted', 700]]];
+const vPart = (r, p) => ({ paneles:['atomos', 'tabla'],
+  atomos:{ items:[{ Z:26, carga:3, nube:true, ocultar:!r, neutrones: r ? FE.neutrones : undefined, p: p === undefined ? 1 : p, rot:rotFe(r) }] }, tabla:{ prop:null, marcar:[26] },
+  pie: r ? `En este dibujo los electrones van sin niveles; cómo se reparten se ve en el paso 3. En ámbar, los 3 que se fueron.` : 'El átomo está tapado hasta que respondas en el paso 2. Abajo, el hierro en la tabla.',
+  vars: r ? ['Z', 'N', 'e', 'sale'] : [], desc: r ? `Fe 3+: núcleo con 26 protones y 30 neutrones; 23 electrones alrededor y 3 que se fueron.` : 'El átomo de hierro, tapado. Abajo, la tabla con el hierro marcado.' });
+const vConfig = (r, p) => {
+  const pp = p === undefined ? 1 : p, fin = r && pp >= 1;
+  return { paneles:['cajas', 'atomos'],
+    cajas:{ filas:[{ Z:26, carga: r ? 3 : 0, desde: r ? 0 : undefined, p:pp, rot:[[fin ? 'Fe³⁺' : 'Fe', 'ink', 800]],
+      nota: fin ? [[`${CFE3.desapareados} desapareados`, 'ink', 700]] : null }] },
+    atomos:{ items:[{ Z:26, carga: r ? 3 : 0, desde: r ? 0 : undefined, p:pp,
+      rot:[[[fin ? 'Fe³⁺' : 'Fe', 'ink', 800], [': ', 'ink'], [`${fin ? CFE3.electrones : 26} electrones`, 'e', 800]]] }] },
+    pie: r ? 'Salen primero los del nivel más alto: los dos 4s (nivel 4) y luego uno 3d.' : 'El hierro neutro: 26 electrones. Para el Fe³⁺ salen 3. ¿Cuáles?',
+    vars:['Z', 'e', ...(r ? ['sale'] : []), 'n'],
+    desc: fin ? `Fe 3+: [Ar] 3d5. Salieron los dos 4s y un 3d. 5 electrones desapareados.` : 'Hierro neutro: [Ar] 4s2 3d6, con sus cajas y su átomo de cuatro niveles.' };
+};
+const vNa = (r, p) => {
+  const pp = r ? (p === undefined ? 1 : p) : 0, fin = r && pp >= 1;
+  return { paneles:['atomos'],
+    atomos:{ items:[{ Z:11, carga:0, desde:1, p:pp,
+      rot:[[[fin ? 'Na' : 'Na⁺ y un electrón libre', 'ink', 800]], fin ? [['se liberan ', 'ink', 700], [`${NA.valores[0]} kJ/mol`, 'EI', 800]] : [[`${11} protones · ${NAp.electrones} electrones`, 'muted', 700]]] }] },
+    pie: fin ? 'El electrón libre entró al nivel 3: el Na⁺ lo atrajo.' : 'A la derecha, el electrón libre, en ámbar.',
+    vars:['Z', 'e', 'sale', 'n', ...(fin ? ['EI'] : [])],
+    desc: fin ? `El electrón entró al nivel 3 y se formó el átomo de sodio; se liberan ${NA.valores[0]} kJ/mol.` : 'Un ion Na+ con 10 electrones en dos niveles y un electrón libre afuera.' };
+};
+const barrasNa = r => ({ titulo:[['Energías de ionización sucesivas del Na (', 'ink', 800], ['EI', 'EI', 800], [', kJ/mol)', 'ink', 800]],
+  max:NA.valores[NA.valores.length - 1],
+  items: NA.valores.map((v, i) => ({ etq:`${i + 1}.ª`, valor:v, oculto: !r && i > 1, marcar: i === 1,
+    sub: r ? [[`nivel ${NA_SEQ[i].n}`, 'n', 800]] : null })),
+  zoom: r ? { max:1000, items:[{ valor:NA.valores[0], etq:[['1.ª', 'ink', 700]] }, { valor:REP, punteada:true, etq:[[fmt(REP, 0), 'EI', 800]] },
+    { valor:NA.valores[1], etq:[['2.ª', 'ink', 700]] }] } : null });
+const vNa2 = (r, p) => {
+  const pp = p === undefined ? 1 : p;
+  return { paneles: r ? ['barras', 'atomos'] : ['barras'], barras:barrasNa(r),
+    atomos: r ? { items:[{ Z:11, carga:2, desde:0, p:pp, rot:[[['Na → Na⁺ → Na²⁺', 'ink', 800]]] }] } : null,
+    pie: r ? 'El primero sale del nivel 3; el segundo, del nivel 2, mucho más cerca del núcleo.' : 'La 1.ª y la 2.ª están medidas; la 3.ª y la 4.ª se ven al responder.',
+    vars: r ? ['EI', 'Z', 'e', 'sale', 'n'] : ['EI'],
+    desc: r ? `Energías del sodio: ${NA.valores.join(', ')} kilojoules por mol. El primer electrón sale del nivel 3 y el segundo del nivel 2.` : `Barras: primera ${NA.valores[0]} y segunda ${NA.valores[1]} kilojoules por mol.` };
+};
+const barrasP3 = () => ({ titulo:[['Primera energía de ionización, del Si al Cl (', 'ink', 800], ['EI', 'EI', 800], [', kJ/mol)', 'ink', 800]], max:MA.propiedad('Cl', 'ei'),
+  items:PER3.map(s => ({ etq:s, valor:MA.propiedad(s, 'ei'), marcar: s === 'P' || s === 'S' })) });
+const vPS = r => ({ paneles:['barras', 'cajas'], barras:barrasP3(),
+  cajas: r ? { filas:[{ Z:15, carga:0, marcarSale:true }, { Z:16, carga:0, marcarSale:true, repele:true, nota:[['se repelen', 'sale', 800]] }] } : { tapa:'Las cajas del P y del S se ven al responder' },
+  pie: r ? 'En ámbar, el electrón que sale de cada uno. En el S comparte caja con otro, y se repelen.' : '',
+  vars: r ? ['EI', 'e', 'sale'] : ['EI'],
+  desc: r ? `Fósforo [Ne] 3s2 3p3: el que sale está solo en su caja. Azufre [Ne] 3s2 3p4: el que sale comparte caja con otro.` : `Barras del período 3. Fósforo ${PS.valores.P}, azufre ${PS.valores.S} kilojoules por mol.` });
+
+const steps = [
+ { k:'Paso 1', t:'El problema', vista:() => vPart(undefined),
+   body:() => `<p class="problem">El hierro de la sangre viaja como ion. Toma el ion ⁵⁶Fe³⁺, con ${Z_('Z = 26')}. ¿Cuántos protones, neutrones y electrones tiene? ¿Y cómo se reparten sus electrones?</p>
+   <p>En la notación, el número de arriba es A, el número de masa: protones más neutrones. ${Z_('Z')} es el número atómico, los protones, que dan la carga del núcleo. La carga del ion, 3+, se escribe arriba a la derecha.</p>
+   <p>Arriba, el dibujo del átomo: el núcleo con su carga y los ${e_('electrones e⁻')} alrededor. Está tapado hasta que predigas. Abajo, la tabla periódica de Z = 1 a 36, con el hierro marcado: período 4, grupo 8.</p>
+   <p class="hint">Cada variable tiene su color en el texto, en el dibujo y en las cuentas. Toca un color del texto para resaltarlo en el dibujo.</p>` },
+ { k:'Paso 2', t:'Antes de mirar, predice', gate:P0, vista:r => vPart(r ? true : false),
+   anima: fin => { animar(E, 1.1, f => { E.vista = vPart(true, f); }, () => { E.vista = vPart(true, 1); fin(); }, 0.2); },
+   body:() => `<p>¿Cuántos protones, neutrones y electrones tiene el ⁵⁶Fe³⁺ (${Z_('Z = 26')})?</p>${opcionesHTML(P0.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq"><span class="ex">${N_('neutrones')} = A − ${Z_('Z')} = 56 − ${Z_('26')} = ${N_(FE.neutrones)}</span><span class="note">La carga no entra aquí: los neutrones no tienen carga.</span></div>
+     <div class="eq"><span class="ex">${e_('e⁻')} = ${Z_('Z')} − carga = ${Z_('26')} − 3 = ${e_(FE.electrones)}</span><span class="note">Un catión perdió electrones; un anión los ganó (S²⁻: 16 + 2 = 18).</span></div>
+   </div></div>` },
+ { k:'Paso 3', t:'¿Qué electrones se van?', gate:P1, vista:r => vConfig(!!r, r ? 1 : 0),
+   anima: fin => { E.vista = vConfig(true, 0); E.dibujar(); animar(E, 2.1, f => { E.vista = vConfig(true, f); }, () => { E.vista = vConfig(true, 1); fin(); }, 0.25); },
+   body:() => `<p>El hierro neutro tiene ${e_('26 electrones')}. Por la regla de ${n_('n')} + l se llenan así: ${cfgH(CFE.abreviada)}, como en las cajas del dibujo. Para formar el Fe³⁺ salen 3 electrones. ¿Cuál es la configuración del Fe³⁺?</p>${opcionesHTML(P1.opts, 'fb')}` },
+ { k:'Paso 4', t:'Hund, desapareados y el último electrón', vista:() => vConfig(true, 1),
+   body:() => `<p>Los 3 electrones salieron del ${n_('nivel')} más alto primero: dos del 4s (${n_('nivel 4')}) y uno del 3d (${n_('nivel 3')}). Se llenan por ${n_('n')} + l, pero se van por ${n_('n')}: el 4s se llena antes que el 3d y también se vacía antes.</p>
+   <div class="eqs">
+     <div class="eq"><span class="ex">Fe: ${cfgH(CFE.abreviada)} (${e_('26 e⁻')}) &nbsp;→&nbsp; Fe³⁺: ${cfgH(CFE3.abreviada)} (${e_(CFE3.electrones + ' e⁻')})</span></div>
+   </div>
+   <p>Las cajas son un diagrama para contar: cada caja es un orbital y cada flecha, un electrón con su espín (hacia arriba o hacia abajo). Regla de Hund: en una subcapa, primero va una flecha en cada caja y recién después se aparean. En el Fe³⁺ hay 5 electrones 3d, uno en cada caja: ${CFE3.desapareados} desapareados. Por eso es paramagnético (un imán lo atrae). El Fe neutro tiene ${CFE.desapareados}.</p>
+   <div class="eqs">
+     <div class="eq"><span class="ex">Último electrón del Fe (3d⁶): ${n_('n = ' + FE_ULT.n)}, l = ${FE_ULT.l}, mₗ = ${mlTxt(FE_ULT.ml)}, mₛ = ${msTxt(FE_ULT.ms)}</span><span class="note">Convención de la escena: las cajas van de mₗ = −l (izquierda) a +l (derecha) y primero se ponen todas las flechas hacia arriba (mₛ = +1/2). El sexto electrón 3d aparea la primera caja. Hay academias que llenan al revés: entonces mₗ y mₛ cambian de signo.</span></div>
+   </div>
+   <div class="nav"><span></span>${otraVez}</div>
+   <p class="fuente">Los errores de configuración de iones del paso 3 no tienen estudios con porcentaje en lo que revisamos: son hipótesis nuestras, para confirmar con los datos del colegio.</p>` },
+ { k:'Paso 5', t:'Un ion y un electrón suelto: predice', gate:P2, vista:r => vNa(!!r, r ? 1 : 0),
+   anima: fin => { E.vista = vNa(true, 0); E.dibujar(); animar(E, 1.1, f => { E.vista = vNa(true, f); }, () => { E.vista = vNa(true, 1); fin(); }, 0.2); },
+   body:() => `<p>Ahora el sodio, del grupo 1. En estado gaseoso, un ion Na⁺ (${Z_('11 protones')}, ${e_(NAp.electrones + ' electrones')}, como el Ne) se encuentra con un electrón libre (${s_('en ámbar')}). ¿Qué pasa?</p>${opcionesHTML(P2.opts, 'fb')}` },
+ { k:'Paso 6', t:'El segundo electrón: predice', gate:P3, vista:r => vNa2(!!r, 1),
+   anima: fin => { E.vista = vNa2(true, 0); E.dibujar(); animar(E, 2.0, f => { E.vista = vNa2(true, f); }, () => { E.vista = vNa2(true, 1); fin(); }, 0.25); },
+   body:() => `<p>Quitarle un electrón al sodio cuesta ${EI_(NA.valores[0] + ' kJ/mol')}: es su primera ${EI_('energía de ionización')}. Quitarle otro al Na⁺ cuesta ${EI_(fmt(NA.valores[1], 0) + ' kJ/mol')}, unas ${VECES} veces más. ¿Por qué tanto más?</p>${opcionesHTML(P3.opts, 'fb')}` },
+ { k:'Paso 7', t:'El fósforo y el azufre: predice', gate:P4, vista:r => vPS(!!r),
+   anima: fin => { E.vista = vPS(true); E.dibujar(); fin(); },
+   body:() => `<p>En el período 3, la primera ${EI_('energía de ionización')} casi siempre sube con ${Z_('Z')}. Pero del P (${Z_('Z = 15')}) al S (${Z_('Z = 16')}) baja: de ${EI_(PS.valores.P + ' kJ/mol')} a ${EI_(PS.valores.S + ' kJ/mol')}, aunque el S tiene un protón más. ¿Qué hace más fácil quitar el electrón del S?</p>${opcionesHTML(P4.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+     <div class="eqs"><div class="eq"><span class="ex">P: ${cfgH(CP.abreviada)} &nbsp; · &nbsp; S: ${cfgH(CS.abreviada)}</span><span class="note">Del P al S hay dos factores: un protón más (sube la atracción) y el primer par en el 3p (la repulsión empuja al electrón). Aquí gana la repulsión. En el período 3 hay otra bajada; la verás en «¿Qué pasa si…?».</span></div></div>
+     <p class="fuente">Muchas academias explican estas bajadas con «la subcapa llena o semillena es estable». El orden que predicen es correcto; la razón de fondo son los dos factores que pesan a la vez. En ${ESTUDIO_SG}, cerca del 20 % explicó esta bajada con «el 3p del P está semilleno» y solo cerca del 32 % dio la razón del par que se repele: acertar el orden no es entender el porqué.</p>
+   </div>` },
+ { k:'Paso 8', t:'Ahora explora tú', explora:true, vista:() => vistaExp(),
+   body:() => `<div class="ctrls">
+     <label class="campo" for="xEl">Elemento<select id="xEl">${Array.from({ length:MA.ZTABLA }, (_, i) => i + 1).map(z => `<option value="${z}">${z} · ${MA.SIMBOLOS[z]} (${MA.NOMBRES[z]})</option>`).join('')}</select></label>
+     <div class="campo"><span>Mapa de la tabla</span><div class="seg" id="xProp" role="group" aria-label="Propiedad del mapa">${Object.entries(PROP).map(([k, p]) => `<button type="button" data-p="${k}" aria-pressed="false">${p.corto}</button>`).join('')}</div></div>
+   </div>
+   <div class="botones" role="group" aria-label="Electrones"><button type="button" class="btn" id="xMenos">Quitar un electrón</button><button type="button" class="btn" id="xMas">Agregar un electrón</button><button type="button" class="btn" id="xNeutro">Átomo neutro</button></div>
+   <div class="lect" id="live" aria-live="off"></div>
+   <p class="hint">Toca una casilla de la tabla para abrir su átomo. Recorre un período y mira cómo baja el ${r_('radio')} y sube la ${EI_('energía de ionización')}; busca dónde baja la energía de ionización aunque suba ${Z_('Z')}. Algunos iones del explorador no existen en la naturaleza (como el Ne⁻): aquí solo se cuentan electrones.</p>` },
+];
+
+// ----- Explorador -----
+const X = { Z:26, q:0, prop:'ei', anim:null };
+// Lo que el explorador no muestra hasta responder su experimento de «¿Qué pasa si…?» (PRED_EXP, la variable del bloqueo).
+const valorOculto = (Z, prop) => !PRED_EXP['mg-al'] && (prop === 'ei' || prop === 'radio') && (Z === 12 || Z === 13);
+const configOculta = Z => !PRED_EXP['cromo-niquel'] && (Z === 24 || Z === 28 || Z === 29);
+function vistaExp(p, desde){
+  const pp = p === undefined ? 1 : p, sp = especieDe(X.Z, X.q), oc = configOculta(X.Z);
+  return { paneles:['atomos', 'cajas', 'tabla'],
+    atomos:{ items:[{ Z:X.Z, carga:X.q, desde, p:pp, ocultaE:oc, rot:[[[esp(sp), 'ink', 800], ['  ', 'ink'], [`${X.Z}+`, 'Z', 800], [' · ', 'muted'], [`${X.Z - X.q} e⁻`, 'e', 800]]] }] },
+    cajas: oc ? { tapa:`Configuración del ${MA.SIMBOLOS[X.Z]}: descúbrela en «¿Qué pasa si…?» (experimento 4)` }
+      : X.Z - X.q > 0 || desde !== undefined ? { filas:[{ Z:X.Z, carga:X.q, desde, p:pp, rot:[[esp(sp), 'ink', 800]] }] } : { tapa:'Sin electrones: el H⁺ es solo un protón' },
+    tabla:{ prop:X.prop, sel:X.Z, ocultos:[12, 13].filter(z => valorOculto(z, X.prop)) },
+    pie:'El tamaño del átomo en el dibujo no es a escala: el radio va en el mapa (elige «Radio atómico»).',
+    vars:['Z', 'e', 'sale', 'n', PROP[X.prop].k], desc:'' };
+}
+function explorar(){
+  const vivo = () => {
+    const c = MA.configuracion(X.Z, X.q), u = MA.ubicacion(X.Z), sp = especieDe(X.Z, X.q), pr = PROP[X.prop];
+    $('xEl').value = X.Z;
+    $('xProp').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.p === X.prop)));
+    $('xMenos').disabled = X.q >= 3 || X.Z - X.q <= 0; $('xMas').disabled = X.q <= -3;
+    $('xNeutro').disabled = X.q === 0;
+    const oc = configOculta(X.Z), ov = valorOculto(X.Z, X.prop);
+    const ult = X.q === 0 && !oc ? MA.ultimoElectron(X.Z) : null;
+    const valTxt = ov ? `? (${DESCUBRE})` : valorProp(X.Z, X.prop);
+    $('live').innerHTML = `<div class="fila"><b>${esp(sp)}</b><span>${Z_(X.Z + ' protones')}</span><span>${e_((X.Z - X.q) + ' electrones')}</span><span>carga ${X.q > 0 ? '+' + X.q : X.q < 0 ? '−' + (-X.q) : '0'}</span></div>
+      <div class="fila"><span>Configuración: ${oc ? `? (${DESCUBRE}, experimento 4)` : cfgH(c.abreviada) + (c.igualA ? ` (como el ${c.igualA})` : '')}</span></div>
+      ${oc ? '' : `<div class="fila"><span>${c.desapareados} ${c.desapareados === 1 ? 'desapareado' : 'desapareados'}: ${c.paramagnetico ? 'paramagnético' : 'diamagnético'}</span>${c.excepcion && X.q === 0 ? '<span>Es una excepción: un electrón del 4s pasa al 3d.</span>' : ''}</div>`}
+      <div class="fila"><span>Período ${u.periodo} · grupo ${u.grupo} (${u.grupoAB}) · bloque ${u.bloque}</span></div>
+      <div class="fila"><span>${pr.corto} del átomo neutro: ${ov ? valTxt : V(pr.k, valTxt)}</span></div>
+      ${ult ? `<div class="fila"><span>Último electrón (${ult.subcapa}): ${n_('n = ' + ult.n)}, l = ${ult.l}, mₗ = ${ult.ml > 0 ? '+' + ult.ml : ult.ml < 0 ? '−' + (-ult.ml) : 0}, mₛ = ${ult.ms > 0 ? '+1/2' : '−1/2'}</span></div>` : ''}`;
+    E.vista = vistaExp(); E.vista.desc = `${esp(sp)}: ${X.Z} protones, ${X.Z - X.q} electrones, ${oc ? 'configuración por descubrir' : cfg(c.abreviada) + ', ' + c.desapareados + ' desapareados'}. Período ${u.periodo}, grupo ${u.grupo}. ${pr.corto}: ${valTxt}.`;
+    E.dibujar(); pedir();
+  };
+  const cambiarCarga = dq => {
+    if (X.anim) return;
+    const desde = X.q; X.q += dq; X.anim = true; cortar(E);
+    const chico = innerWidth < 900;
+    if (chico) $('cv').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+    esperar(chico ? 380 : 0, () => {
+      if (S.step !== steps.length - 1){ X.anim = null; return; }
+      animar(E, 0.7, f => { E.vista = vistaExp(f, desde); }, () => { X.anim = null; vivo(); E.describir(); });
+    });
+  };
+  $('xEl').onchange = () => { X.Z = +$('xEl').value; X.q = 0; vivo(); E.describir(); };
+  $('xProp').querySelectorAll('button').forEach(b => b.onclick = () => { X.prop = b.dataset.p; vivo(); E.describir(); });
+  $('xMenos').onclick = () => cambiarCarga(+1);
+  $('xMas').onclick = () => cambiarCarga(-1);
+  $('xNeutro').onclick = () => { X.q = 0; vivo(); E.describir(); };
+  E.alTocar = z => { if (X.anim) return; X.Z = z; X.q = 0; vivo(); E.describir(); };
+  $('cv').classList.add('tocable');
+  vivo();
+}
+
+// ----- Navegación -----
+const dots = $('dots');
+steps.forEach((s, n) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = n + 1; b.addEventListener('click', () => go(n)); li.appendChild(b); dots.appendChild(li);
+});
+function enlazarRepetir(){
+  const rep = $('stepBody').querySelector('[data-repetir]');
+  if (rep) rep.onclick = () => {
+    if (S.ocupado) return; const paso = S.step, chico = innerWidth < 900;
+    if (chico) $('cv').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+    esperar(chico ? 380 : 0, () => { if (S.step !== paso) return; steps[paso - 1].anima(() => { E.describir(); }); });
+  };
+}
+function go(n){
+  if (n < 0 || n >= steps.length || n > S.max || S.ocupado) return;
+  const s = steps[n]; S.step = n; cortar(E); X.anim = null;
+  E.alTocar = null; $('cv').classList.remove('tocable');
+  const r = s.gate ? !!S.pred[s.gate.id] : true;
+  E.vista = s.vista(s.gate ? r : undefined);
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  enlazarRepetir(); pintarDots();
+  E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.gate) prediccion(s);
+  if (s.explora) explorar();
+  nav(); E.dibujar(); pedir(); E.describir();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+  [...dots.querySelectorAll('button')].forEach(b => { if (S.ocupado) b.disabled = true; });
+  if (!S.ocupado) pintarDots();
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : `Ir al ${steps[k].k.toLowerCase()}: ${steps[k].t}`);
+    if (k > S.max) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled');
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(n){ if (n > S.max) S.max = n; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.innerHTML = P.fb[p].replace(/ tabindex="0"/g, ''); fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    const tras = $('tras'); if (tras) tras.hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0, P.unidad);
+    S.ocupado = true; nav();
+    E.compactar(false);
+    $('next').focus({ preventScroll:true });
+    // En el celular, el dibujo queda arriba de la pantalla: se lleva a la vista antes de animar.
+    const paso = S.step, chico = innerWidth < 900;
+    if (chico) $('cv').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+    esperar(chico ? 380 : 0, () => {
+      if (S.step !== paso){ S.ocupado = false; nav(); return; }
+      s.anima(() => { S.ocupado = false; nav(); E.describir(); });
+      E.describir();
+    });
+  }));
+  pintar();
+}
+$('next').addEventListener('click', () => { const s = steps[S.step]; if (S.ocupado || (s.gate && !S.pred[s.gate.id])) return; desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+alRedibujarTema(() => E.dibujar());
+addEventListener('modo', () => {
+  // Al volver de «¿Qué pasa si…?», el explorador se rehace: puede haber casillas recién descubiertas.
+  if (!document.getElementById('m1').hidden && steps[S.step].explora && !S.ocupado) go(S.step);
+  else { E.resize(); E.dibujar(); pedir(); }
+});
+go(0);
+})();
+</script>
+
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   docs/investigacion/atomo-enlace-ideas-erroneas.md: Mg contra Al (TP7), radios de átomos e iones y la serie
+   isoelectrónica (hipótesis), Cr y Ni (hipótesis cercana a TP5 y TP6) y la electronegatividad (TP8). */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'm2', 'ley2');
+const MGAL = MA.compararEI('Mg', 'Al'), ESC_MA = MA.escalasDibujo(['Mg', 'Al']);
+const ESC_CL = MA.escalasDibujo(['Cl', 'Cl-']), ESC_NA = MA.escalasDibujo(['Na', 'Na+']);
+const CL_MAYOR = MA.compararRadio('Cl', 'Cl-').mayor, NA_MAYOR = MA.compararRadio('Na', 'Na+').mayor;
+const ISO = ['O2-', 'F-', 'Na+', 'Mg2+'], ORD = MA.ordenarRadios(ISO), ESC_ISO = MA.escalasDibujo(ISO);
+const CR = MA.configuracion('Cr'), NI = MA.configuracion('Ni');
+const ord = l => l.map(esp).join(' > ');
+const rotSp = (s, extra) => { const q = MA.especie(s); return [[[esp(s), 'ink', 800]], [[`${q.Z}+`, 'Z', 800], [' · ', 'muted'], [`${q.Z - q.carga} e⁻`, 'e', 800]], ...(extra ? [extra] : [])]; };
+const mezcla = (a, b, f) => a + (b - a)*f;
+const EXPS = [
+  { id:'mg-al', corto:'El magnesio y el aluminio', unidad:U_TABLA, ok:'b',
+    q:`El Al (${Z_('Z = 13')}) tiene un protón más que el Mg (${Z_('Z = 12')}), y los dos están en el período 3. ¿Cuál tiene mayor primera ${EI_('energía de ionización')}, y por qué?`,
+    opts:[['a', 'El Al: su protón extra atrae con más fuerza a sus electrones.', 'TP7-solo-carga-nuclear', RES('parcial', 'Tan y otros 2005, ítem 6: un solo factor; sin porcentaje de esta opción')],
+          ['b', 'El Mg: el electrón del Al es el primero del 3p, de más energía y tapado por los 3s.'],
+          ['c', 'El Mg: el átomo de Al es más grande y su electrón queda más lejos del núcleo.', 'TP7-Al-mas-grande', RES('parcial', 'Tan y otros 2005, ítem 6: 48 % "el 3p está más lejos"; variante nuestra')],
+          ['d', 'Iguales: los dos pierden un electrón del nivel 3, a la misma distancia.', 'misma-capa-iguales', RES('hipotesis', 'hipótesis nuestra')]],
+    fb:{ a:'Un protón más sí atrae más, pero hay otro factor que pesa más: el electrón que sale del Al es el primero de una subcapa nueva, la 3p, de más energía y tapada por los dos electrones 3s. Mirar un solo factor es una idea documentada en un estudio con 979 escolares de Singapur (Tan y otros, 2005), pero no tenemos el porcentaje de esta opción.',
+      c:`El átomo de Al es más pequeño que el de Mg (${MA.propiedad('Al', 'radio')} contra ${MA.propiedad('Mg', 'radio')} pm en radios calculados): avanza el período y el núcleo atrae más. En un estudio con 979 escolares de Singapur, cerca del 48 % explicó esta diferencia con «el 3p está más lejos»; esta opción es una variante nuestra de esa idea.`,
+      d:'Los dos salen del nivel 3, pero no de la misma subcapa: del Mg sale un 3s y del Al, un 3p. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    antes:() => ({ paneles:['atomos', 'tabla'], atomos:{ items:[{ Z:12, carga:0, rot:rotSp('Mg') }, { Z:13, carga:0, rot:rotSp('Al') }] }, tabla:{ prop:null, marcar:[12, 13] },
+      pie:'Los dos átomos van del mismo tamaño hasta que respondas.', vars:['Z', 'e', 'n'], desc:'Magnesio y aluminio, del mismo tamaño en el dibujo, y su lugar en la tabla.' }),
+    despues:p => ({ paneles:['atomos', 'cajas', 'barras'],
+      atomos:{ items:[{ Z:12, carga:0, marcarSale:true, escala:mezcla(1, ESC_MA.escalas[0], p), rot:rotSp('Mg', [[`${ESC_MA.pm[0]} pm`, 'r', 800]]) },
+        { Z:13, carga:0, marcarSale:true, escala:mezcla(1, ESC_MA.escalas[1], p), rot:rotSp('Al', [[`${ESC_MA.pm[1]} pm`, 'r', 800]]) }] },
+      cajas:{ filas:[{ Z:12, carga:0, marcarSale:true }, { Z:13, carga:0, marcarSale:true }] },
+      barras:{ titulo:[['Primera ', 'ink', 800], ['energía de ionización', 'EI', 800], [' (kJ/mol)', 'ink', 800]], max:MGAL.valores.Mg*1.1,
+        items:[{ etq:'Mg', valor:MGAL.valores.Mg, marcar:true }, { etq:'Al', valor:MGAL.valores.Al, marcar:true }] },
+      pie:'Átomos a escala. Radios calculados (Clementi, 1967); tu libro usa radios medidos, con otros números y el mismo orden. En ámbar, el electrón que sale de cada uno.', vars:['Z', 'e', 'sale', 'n', 'r', 'EI'],
+      desc:`Magnesio ${MGAL.valores.Mg} y aluminio ${MGAL.valores.Al} kilojoules por mol. Del Al sale el primer electrón 3p.` }),
+    anima:true,
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">Mg: ${cfgH(MA.configuracion('Mg').abreviada)} → ${EI_(MGAL.valores.Mg + ' kJ/mol')} &nbsp; · &nbsp; Al: ${cfgH(MA.configuracion('Al').abreviada)} → ${EI_(MGAL.valores.Al + ' kJ/mol')}</span>
+      <span class="note">Dos factores a la vez: el Al tiene un protón más (atrae más), pero el electrón que sale es el primero de la subcapa 3p, de más energía y tapado por los dos 3s. Aquí gana el segundo.</span></div></div>
+      <p>Fíjate en el ${r_('radio')}: el Al es más pequeño que el Mg. Que su electrón sea más fácil de quitar no es porque el átomo sea más grande.</p>
+      <p class="fuente">En un estudio con 979 escolares de Singapur (Tan y otros, 2005), cerca del 70 % acertó que el Mg tiene mayor energía de ionización, pero solo cerca del 5 % dio la razón correcta; casi la mitad dijo que el electrón 3p está más lejos. Las razones «la subcapa 3s del Mg está llena y es estable» que enseñan muchas academias dan el orden correcto, pero se quedan en la mitad del porqué.</p>` },
+  { id:'atomo-ion', corto:'Átomos e iones', unidad:U_TABLA, ok:'a',
+    q:`Compara los ${r_('radios')}: el átomo de cloro (Cl) con el ion cloruro (Cl⁻), y el átomo de sodio (Na) con el ion sodio (Na⁺).`,
+    opts:[['a', 'Cl⁻ más grande que Cl, y Na⁺ más pequeño que Na'],
+          ['b', 'Cl⁻ más pequeño que Cl, y Na⁺ más pequeño que Na', 'anion-mas-pequeno', RES('hipotesis', 'tabla de lo que no tiene respaldo')],
+          ['c', 'Cl⁻ más grande que Cl, y Na⁺ más grande que Na', 'ion-siempre-mas-grande', RES('hipotesis', 'hipótesis nuestra')],
+          ['d', 'Cl⁻ igual que Cl, y Na⁺ igual que Na', 'mismo-nucleo-mismo-tamano', RES('hipotesis', 'hipótesis nuestra')]],
+    fb:{ b:'Al ganar un electrón, el Cl⁻ tiene los mismos 17 protones para 18 electrones, que se repelen más: la nube crece. «Un anión es más pequeño que su átomo» está en nuestra lista de errores sin estudio que los mida: es una hipótesis nuestra.',
+      c:'El Na⁺ perdió su único electrón del nivel 3: se quedó con dos niveles y es mucho más pequeño. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      d:'El núcleo es el mismo, pero los electrones no: el tamaño depende de cuántos electrones hay y de cuánto los atrae el núcleo. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    antes:() => ({ paneles:['atomos'], atomos:{ items:['Cl', 'Cl-', 'Na', 'Na+'].map(s => ({ ...MA.especie(s), rot:rotSp(s) })) },
+      pie:'Los cuatro van del mismo tamaño hasta que respondas.', vars:['Z', 'e', 'n'], desc:'Cloro, cloruro, sodio e ion sodio, del mismo tamaño en el dibujo.' }),
+    despues:p => ({ paneles:['atomos'], atomos:{ items:[
+        { Z:17, carga:0, escala:mezcla(1, ESC_CL.escalas[0], p), rot:rotSp('Cl') },
+        { Z:17, carga:-1, desde:0, p, escala:mezcla(1, ESC_CL.escalas[1], p), rot:rotSp('Cl-') },
+        { Z:11, carga:0, escala:mezcla(1, ESC_NA.escalas[0], p), rot:rotSp('Na') },
+        { Z:11, carga:1, desde:0, p, escala:mezcla(1, ESC_NA.escalas[1], p), rot:rotSp('Na+') }] },
+      pie:'No es a escala: solo muestra cuál es más grande en cada par. Al Cl⁻ le entra un electrón; del Na⁺ sale uno, y con él su nivel 3.',
+      vars:['Z', 'e', 'sale', 'n'], desc:`El ${CL_MAYOR === 'Cl-' ? 'cloruro' : 'cloro'} es más grande en el primer par; el ${NA_MAYOR === 'Na' ? 'sodio' : 'ion sodio'} en el segundo.` }),
+    anima:true,
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">Cl: ${Z_('17+')}, ${e_('17 e⁻')} &nbsp;→&nbsp; Cl⁻: ${Z_('17+')}, ${e_('18 e⁻')} &nbsp; (más grande)</span><span class="note">Los mismos protones para un electrón más: se repelen más y el núcleo los sujeta menos a cada uno.</span></div>
+      <div class="eq"><span class="ex">Na: ${cfgH(MA.configuracion('Na').abreviada)} &nbsp;→&nbsp; Na⁺: ${cfgH(MA.configuracion('Na+').abreviada)} &nbsp; (más pequeño)</span><span class="note">El Na⁺ perdió todo su nivel 3: le quedan dos niveles.</span></div></div>
+      <p class="fuente">No encontramos estudios con porcentajes sobre radios de átomos e iones: las tres opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'isoelectronicos', corto:'Diez electrones cada uno', unidad:U_TABLA, ok:'c',
+    q:`O²⁻ (${Z_('Z = 8')}), F⁻ (${Z_('Z = 9')}), Na⁺ (${Z_('Z = 11')}) y Mg²⁺ (${Z_('Z = 12')}) tienen ${e_('10 electrones')} cada uno. Ordénalos de mayor a menor ${r_('radio')}.`,
+    opts:[['a', ord(ORD.errores['mas-protones-mas-grande']), 'mas-protones-mas-grande', RES('hipotesis', 'tabla de lo que no tiene respaldo')],
+          ['b', ISO.map(esp).join(' = '), 'mismos-electrones-mismo-tamano', RES('hipotesis', 'tabla de lo que no tiene respaldo')],
+          ['c', ord(ORD.orden)],
+          ['d', ord(ORD.errores['ordena-como-atomos']), 'ordena-como-atomos', RES('hipotesis', 'hipótesis nuestra')]],
+    fb:{ a:'Es al revés: con los mismos 10 electrones, el que tiene más protones los atrae más y queda más pequeño. «Más protones, más grande» está en nuestra lista de errores sin estudio que los mida.',
+      b:'Tener los mismos electrones no da el mismo tamaño: el núcleo de cada uno tiene distinta carga, y el que tiene más protones aprieta más su nube. Esta opción es una hipótesis nuestra (ordenar por número de electrones).',
+      d:'Ese es el orden de los átomos neutros (el Na y el Mg son grandes porque tienen un nivel más). Los iones ya no tienen ese nivel: los cuatro tienen dos niveles, y manda la carga del núcleo. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    antes:() => ({ paneles:['atomos'], atomos:{ items:ISO.map(s => ({ ...MA.especie(s), rot:rotSp(s) })) },
+      pie:'Los cuatro van del mismo tamaño hasta que respondas.', vars:['Z', 'e', 'n'], desc:'Cuatro iones de 10 electrones, del mismo tamaño en el dibujo.' }),
+    despues:p => ({ paneles:['atomos'], atomos:{ items:ISO.map((s, i) => ({ ...MA.especie(s), escala:mezcla(1, ESC_ISO.escalas[i], p), rot:rotSp(s, [[`${fmt(ESC_ISO.pm[i], 1)} pm`, 'r', 800]]) })) },
+      pie:'A escala con los radios iónicos de Shannon (1976). Mismos electrones: más protones, más pequeño.', vars:['Z', 'e', 'n', 'r'],
+      desc:`De mayor a menor: ${ORD.orden.join(', ')}. Radios ${ESC_ISO.pm.join(', ')} picómetros.` }),
+    anima:true,
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">${ORD.orden.map((s, i) => `${esp(s)} (${Z_(MA.especie(s).Z + '+')}): ${r_(fmt(ESC_ISO.pm[i], 1) + ' pm')}`).join(' &nbsp;>&nbsp; ')}</span>
+      <span class="note">Los cuatro tienen la configuración del Ne (1s² 2s² 2p⁶). Lo único que cambia es la carga del núcleo: de 8+ a 12+.</span></div></div>
+      <p class="fuente">Radios iónicos de Shannon (1976), con número de coordinación 6; otros libros dan números algo distintos con el mismo orden. Las opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'cromo-niquel', corto:'Cromo y níquel', unidad:PLANTILLA.unidad, ok:'d',
+    q:`El cromo (${Z_('Z = 24')}) y el níquel (${Z_('Z = 28')}) son metales de transición del período 4. ¿Cuáles son sus configuraciones?`,
+    opts:[['a', `Cr ${cfgH(CR.errores['sin-excepcion'])} y Ni ${cfgH(NI.abreviada)}`, 'Cr-sin-excepcion', RES('hipotesis', 'tabla de lo que no tiene respaldo')],
+          ['b', `Cr ${cfgH(CR.abreviada)} y Ni ${cfgH(NI.errores['excepcion-generalizada'])}`, 'Ni-excepcion-generalizada', RES('hipotesis', 'tabla de lo que no tiene respaldo; cercana a TP5 y TP6')],
+          ['c', `Cr ${cfgH(CR.errores['sin-excepcion'])} y Ni ${cfgH(NI.errores['excepcion-generalizada'])}`, 'excepcion-al-reves', RES('hipotesis', 'hipótesis nuestra')],
+          ['d', `Cr ${cfgH(CR.abreviada)} y Ni ${cfgH(NI.abreviada)}`]],
+    fb:{ a:`El Cr es una de las dos excepciones del período 4: un electrón del 4s pasa al 3d y queda ${cfg(CR.abreviada)}. No aplicarla es una hipótesis nuestra, sin estudio que la mida.`,
+      b:`El Cr sí es una excepción, pero el Ni no: es ${cfg(NI.abreviada)}. Aplicar la «excepción» a otros elementos, de memoria, es una hipótesis nuestra que saldría de la regla «subcapa llena o semillena es estable» (TP5 y TP6 en nuestro informe); no tenemos un estudio que la mida.`,
+      c:'Es la excepción puesta en el elemento equivocado: el Cr la tiene y el Ni no. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    antes:() => ({ paneles:['tabla', 'cajas'], tabla:{ prop:null, marcar:[24, 28] }, cajas:{ tapa:'Las cajas del Cr y del Ni se ven al responder' },
+      pie:'', vars:[], desc:'El cromo y el níquel marcados en la tabla.' }),
+    despues:() => ({ paneles:['cajas', 'atomos', 'tabla'],
+      cajas:{ filas:[{ Z:24, carga:0, nota:[[`${CR.desapareados} desapareados`, 'ink', 700]] }, { Z:28, carga:0, nota:[[`${NI.desapareados} desapareados`, 'ink', 700]] }] },
+      atomos:{ items:[{ Z:24, carga:0, rot:rotSp('Cr') }, { Z:28, carga:0, rot:rotSp('Ni') }] }, tabla:{ prop:null, marcar:[24, 28] },
+      pie:'El tamaño de los átomos no es a escala.', vars:['Z', 'e', 'n'],
+      desc:`Cromo ${CR.abreviada}, ${CR.desapareados} desapareados. Níquel ${NI.abreviada}, ${NI.desapareados} desapareados.` }),
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">Cr: ${cfgH(CR.abreviada)} (${CR.desapareados} desapareados) &nbsp; · &nbsp; sin la excepción sería ${cfgH(CR.errores['sin-excepcion'])}, con ${CR.errores['sin-excepcion-desapareados']}</span></div>
+      <div class="eq"><span class="ex">Ni: ${cfgH(NI.abreviada)} (${NI.desapareados} desapareados)</span><span class="note">En el período 4, las únicas excepciones son el Cr y el Cu (${cfgH(MA.configuracion('Cu').abreviada)}). El Ni, el V y los demás siguen la regla de ${n_('n')} + l.</span></div></div>
+      <p class="fuente">No encontramos estudios que midan estos errores: las tres opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'electronegativo', corto:'Ser electronegativo', unidad:U_TABLA, ok:'b',
+    q:`El flúor es el elemento con mayor ${EN_('electronegatividad')} de la tabla. ¿Qué quiere decir eso?`,
+    opts:[['a', 'Que el átomo de F tiene carga negativa.', 'TP8-carga-negativa', RES('documentado', 'Uyulgan y Akkuzu 2016: 25 % de 88')],
+          ['b', 'Que en un enlace, el F atrae hacia sí los electrones compartidos.'],
+          ['c', 'Que el F forma siempre enlaces iónicos, nunca covalentes.', 'electronegativo-siempre-ionico', RES('hipotesis', 'hipótesis nuestra')],
+          ['d', 'Que el F es el átomo al que más cuesta quitarle un electrón.', 'confunde-ionizacion', RES('hipotesis', 'tabla de lo que no tiene respaldo')]],
+    fb:{ a:'El átomo de F neutro tiene 9 protones y 9 electrones: no tiene carga. La electronegatividad es una tendencia dentro de un enlace. En un estudio con 88 futuros profesores de Turquía (Uyulgan y Akkuzu, 2016), cerca del 25 % la definió como tener carga negativa o más electrones que protones.',
+      c:'El F forma enlaces covalentes, como en el F₂ o el HF: ahí comparte electrones, aunque en el HF los atrae más que el H. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      d:`Eso es la energía de ionización, y el F no es el más alto: el He (${MA.propiedad('He', 'ei')} kJ/mol) y el Ne (${MA.propiedad('Ne', 'ei')}) cuestan más que el F (${MA.propiedad('F', 'ei')}). Confundir las dos propiedades es una hipótesis nuestra, sin estudio que la mida.` },
+    antes:() => ({ paneles:['tabla'], tabla:{ prop:null, marcar:[9] }, pie:'El flúor marcado en la tabla.', vars:[], desc:'El flúor marcado en la tabla.' }),
+    despues:() => ({ paneles:['tabla', 'enlace', 'atomos'], tabla:{ prop:'en', sel:9 }, enlace:{},
+      atomos:{ items:[{ Z:9, carga:0, rot:[[['F suelto: ', 'ink', 800], ['9+', 'Z', 800], [' y ', 'ink'], ['9 e⁻', 'e', 800], [': carga 0', 'ink', 800]]] }] },
+      pie:'Los gases nobles no tienen valor de electronegatividad en esta tabla: casi no forman enlaces.', vars:['EN', 'Z', 'e', 'n'],
+      desc:`Mapa de electronegatividad: el flúor, ${fmt(MA.propiedad('F', 'en'), 2)}, es el más alto. En el enlace H–F, el par compartido pasa más tiempo cerca del flúor. El átomo de flúor suelto es neutro.` }),
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">${EN_('EN')}: F ${EN_(fmt(MA.propiedad('F', 'en'), 2))} &nbsp; > &nbsp; O ${EN_(fmt(MA.propiedad('O', 'en'), 2))} &nbsp; > &nbsp; Cl ${EN_(fmt(MA.propiedad('Cl', 'en'), 2))} &nbsp; > &nbsp; H ${EN_(fmt(MA.propiedad('H', 'en'), 2))}</span>
+      <span class="note">Escala de Pauling, sin unidades. En el mapa, sube hacia la derecha y hacia arriba.</span></div></div>
+      <p>En el H–F, los dos comparten un par de electrones, pero el F lo atrae más: el F queda con una carga parcial negativa (δ−) y el H con una positiva (δ+). Es una propiedad del átomo dentro de un enlace; el F suelto es neutro.</p>
+      <p class="fuente">Definir la electronegatividad como «tener carga negativa» o «tener más electrones que protones»: cerca del 25 % de 88 futuros profesores de Turquía (Uyulgan y Akkuzu, 2016). Las otras dos opciones incorrectas son hipótesis nuestras.</p>` },
+];
+const S = { k:0, pred:PRED_EXP, t0:Date.now(), ocupado:false };
+// Regla de Gerson: un experimento se abre solo si todos los anteriores ya tienen respuesta. Los respondidos se revisitan.
+const abierto = k => EXPS.slice(0, k).every(x => S.pred[x.id]);
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => abierto(k)
+    ? `<button type="button" aria-pressed="${k === S.k}" data-k="${k}"${S.ocupado ? ' disabled' : ''}>${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}. ${x.corto}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function despues(x, k, fin){
+  cortar(E);
+  if (x.anima){ E.vista = x.despues(0); E.dibujar(); animar(E, 1.3, f => { E.vista = x.despues(f); }, () => { E.vista = x.despues(1); if (fin) fin(); }, 0.3); }
+  else { E.vista = x.despues(); if (fin) fin(); }
+  E.dibujar(); pedir();
+}
+function ir(k){
+  if (!abierto(k) || S.ocupado) return;
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  cortar(E); E.vista = ya ? (x.anima ? x.despues(1) : x.despues()) : x.antes();
+  E.compactar(!ya);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const explicar = () => {
+    if (S.k !== k || !S.pred[x.id]) return;
+    $('res2').innerHTML = x.exp() + `<div class="nav">${x.anima ? otraVez : '<span></span>'}${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    const sig = $('sig2'); if (sig) sig.onclick = () => { if (S.ocupado) return; ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    const rep = $('res2').querySelector('[data-repetir]');
+    if (rep) rep.onclick = () => { if (S.ocupado) return; const chico = innerWidth < 900; if (chico) $('cv2').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+      esperar(chico ? 380 : 0, () => { if (S.k === k) despues(x, k, () => E.describir()); }); };
+  };
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira el dibujo y la explicación para ver por qué.' : `Elegiste la ${LETRAS.indexOf(p) + 1}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    explicar();
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id] || S.ocupado) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; S.ocupado = true; pintar(); botones();
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0, x.unidad);
+    E.compactar(false);
+    const chico = innerWidth < 900;
+    if (chico) $('cv2').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+    esperar(chico ? 380 : 0, () => {
+      if (S.k !== k){ S.ocupado = false; botones(); return; }
+      despues(x, k, () => { S.ocupado = false; botones(); E.describir(); });
+    });
+  });
+  pintar(); E.dibujar(); pedir(); E.describir();
+}
+alRedibujarTema(() => E.dibujar());
+addEventListener('modo', () => { E.resize(); E.dibujar(); pedir(); });
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>
