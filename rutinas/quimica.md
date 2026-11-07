@@ -641,3 +641,12 @@ Se trabajó en paralelo, con hasta 3 subagentes a la vez. Las unidades de biomol
 4. El Na claro de la paleta (#3f4948) queda a unos 19,5 de la tinta. Si hay un tono más separado, mejor.
 
 **Con esto queda cerrada la lista de huecos** (puntos 1 a 5).
+
+### Pendientes que quedaban (pedido de la principal)
+- **Respaldos de equilibrio.** Los antiguos marcaban como «documentado» dos errores que en el informe no tienen cifra. Los pasé a «parcial»:
+  - EQ10 con Tagle Barrios, sin porcentaje: tres opciones. Bilgin deja el cambio de concentración bajo el 20 % y no lo reporta.
+  - EQ14 con Quílez, sin porcentaje: dos opciones.
+- **Respaldos de cinética.** Al revisar encontré lo mismo: CI2 a CI7 estaban como «documentado» y el informe dice «sin cifra leída». Pasaron a «parcial»; son seis opciones.
+  - CI1 se queda como documentado: 33 %, por verificar.
+- **Aria-label null de las pastillas.** No es un error. Las pastillas desbloqueadas no llevan aria-label a propósito, y su nombre accesible es el texto del botón («6. Gas que no reacciona, caja rígida»), como se ve en Playwright. No cambié nada.
+- Revisé soluciones y la celda galvánica: no tienen respaldos «documentado» sin cifra.
