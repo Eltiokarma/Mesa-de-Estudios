@@ -205,8 +205,10 @@ test('las opciones de las predicciones de la escena son distintas entre sí y de
   const C1 = motor.compararRectangulos({ tipo: 'perimetro', valor: 24, anchos: [11, 6, 8] }); distintas([C1.mejor, C1.errores.masAlargado, C1.errores.intermedio, C1.errores.todosIguales], 'paso 1');
   const P3 = motor.paredMaxima({ malla: 40 }); distintas([P3, P3.errores.cuadrado, P3.errores.comoCorralLibre, P3.errores.alReves].map(r => [r.x, r.paralelo]), 'paso 3');
   const R5 = motor.recorridoMinimo({ a: 3, b: 5, d: 6 }); distintas([R5.minimo, R5.errores.sumaPerpendiculares, R5.errores.perpendicularA, R5.errores.porLaOrilla], 'paso 5');
-  const I7 = motor.ingresoMaximo({ p0: 10, q0: 60, dp: 1, dq: 3 }); distintas([I7.precio, I7.errores.noCambiar, I7.errores.hastaLaMitad, I7.errores.igualarFactores], 'paso 7');
+  const I7 = motor.ingresoMaximo({ p0: 10, q0: 66, dp: 1, dq: 3 }); distintas([I7.precio, I7.errores.noCambiar, I7.errores.hastaLaMitad, I7.errores.igualarFactores], 'paso 7');
   const M8 = motor.minimoColores(motor.rueda(5)); distintas([M8.colores, M8.errores.alternarDos, M8.errores.tresBastan, M8.errores.unoPorRegion], 'paso 8');
+  // el menú del paso 7: todo entero
+  for (const v of [I7.u, I7.precio, I7.cantidad, I7.ingreso, ...Object.values(I7.errores), ...Object.values(I7.erroresIngreso)]) assert.ok(Number.isInteger(v), `paso 7 entero: ${v}`);
   const E1 = motor.escalarCorral({ perimetro: 24, factor: 2 }); distintas([E1.areaNueva, E1.errores.lineal, E1.errores.aditiva], 'experimento 1');
   const E2 = motor.compararRectangulos({ tipo: 'area', valor: 36, anchos: [18, 9, 6] }); distintas([E2.mejor, E2.errores.masAlargado, E2.errores.intermedio, E2.errores.todosIguales], 'experimento 2');
   const E3 = motor.moverPunto({ a: 3, b: 5, d: 6, b2: 9 }); distintas([E3.sentido, E3.errores.quieto, E3.errores.contrario, E3.errores.puntoMedio], 'experimento 3');

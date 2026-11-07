@@ -307,7 +307,7 @@ document.addEventListener('focusin', e => { const s = e.target.closest && e.targ
              recta (0 a 1: cuánto de la recta A–B' se dibuja), bAntes (otra posición de B, a trazos), pAntes, pmin, pmax }.
    'precio'  el rectángulo precio × cantidad, cuya área es el ingreso. pre = { p0, q0, dp, dq, u, umin, umax, paso, pmax, qmax,
              unidad, verI, curva }.
-   'mapa'    la pileta y n jardines en ronda. mapa = { n, colores, conflictos, oculto }. Con E.tocar, tocar una zona la pinta.
+   'mapa'    el jardín redondo del centro y n jardines en ronda. mapa = { n, colores, conflictos, oculto }. Con E.tocar, tocar una zona la pinta.
    'dos'     dos corrales cuadrados lado a lado (el cordel y el doble). dos = { l1, l2, ver, prog }.
    Antes de responder, lo que se pregunta se dibuja como «?» y nada adelanta la respuesta. */
 function crearEscena(cv, idDesc, idLect, idLey){
@@ -317,13 +317,15 @@ function crearEscena(cv, idDesc, idLect, idLey){
   const ctx = cv.getContext('2d');
   let W = 0, Hh = 0, sobre = false, arr = false, geo = null;
   const conCurva = () => (E.modo === 'corral' && E.cor && E.cor.curva.ver) || (E.modo === 'pared' && E.par && E.par.curva.ver) || (E.modo === 'precio' && E.pre && E.pre.curva.ver);
+  // El alto sale de la escala del dibujo (con topes), para no dejar franjas vacías.
   function altoBase(w){
-    const ancho = w >= 560;
+    const ancho = w >= 560, entre = (h, a, b) => Math.round(Math.max(a, Math.min(b, h)));
     if (conCurva()) return ancho ? 330 : 400;
-    if (E.modo === 'pared' && E.par && E.par.reflejo) return ancho ? 340 : 340;
+    if (E.modo === 'pared' && E.par){ const Pa = E.par, s = Math.min((w - 84)/(Pa.malla - 2*Pa.xmin), 14); return entre(Pa.xmax*(Pa.reflejo ? 2 : 1)*s + 58, 170, 400); }
+    if (E.modo === 'corral' && E.cor){ const C = E.cor, mx = C.tipo === 'perimetro' ? C.valor/2 : C.xmax, my = C.tipo === 'perimetro' ? C.valor/2 : C.valor/C.xmin; return entre((w - 86)/mx*my + 50, 240, 360); }
+    if (E.modo === 'dos' && E.dos){ const D = E.dos, s = Math.min((w - 178)/(D.l1 + D.l2), 18); return entre(D.l2*s + 84, 200, 330); }
     if (E.modo === 'rio') return ancho ? 330 : 310;
     if (E.modo === 'mapa') return ancho ? 330 : 310;
-    if (E.modo === 'dos') return ancho ? 300 : 260;
     return ancho ? 320 : 300;
   }
   function resize(){
@@ -523,14 +525,14 @@ function crearEscena(cv, idDesc, idLect, idLey){
     const pieA = g.P(0, 0), pieB = g.P(Ri.d, 0);
     ctx.save(); ctx.strokeStyle = c.muted; ctx.setLineDash([3, 4]); ctx.lineWidth = 1.2; linea(ctx, A, pieA); linea(ctx, B, pieB); ctx.restore();
     rotulo(ctx, c, A.x - 6, (A.y + pieA.y)/2, `${fmt(Ri.a)} m`, c.ink, 'right', 700, 11);
-    rotulo(ctx, c, B.x + 6, (B.y + pieB.y)/2, `${fmt(Ri.b)} m`, c.ink, 'left', 700, 11);
-    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1; const yb = pieA.y + 12;
+    rotulo(ctx, c, B.x + 6, Ri.bAntes ? B.y + (pieB.y - B.y)*0.25 : (B.y + pieB.y)/2, `${fmt(Ri.b)} m`, c.ink, 'left', 700, 11);
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1; const yb = pieA.y + 30;
     linea(ctx, { x:pieA.x, y:yb - 4 }, { x:pieA.x, y:yb + 4 }); linea(ctx, { x:pieB.x, y:yb - 4 }, { x:pieB.x, y:yb + 4 }); linea(ctx, { x:pieA.x, y:yb }, { x:pieB.x, y:yb }); ctx.restore();
     rotulo(ctx, c, (pieA.x + pieB.x)/2, yb + 11, `${fmt(Ri.d)} m`, c.ink, 'center', 700, 11);
     if (Ri.bAntes){
       const Ba = g.P(Ri.d, Ri.bAntes);
       punto(ctx, c, Ba.x, Ba.y, 5, c.paper, c.muted);
-      rotulo(ctx, c, Ba.x - 9, Ba.y, 'B antes', c.muted, 'right', 700, 11);
+      rotulo(ctx, c, Ba.x + 9, Ba.y, 'B antes', c.muted, 'left', 700, 11);
       if (Ri.pAntes !== undefined){
         const Pa = g.P(Ri.pAntes, 0), Bap = g.P(Ri.d, -Ri.bAntes);
         ctx.save(); ctx.strokeStyle = c.muted; ctx.setLineDash([4, 4]); ctx.lineWidth = 1.4; linea(ctx, A, Bap); ctx.restore();
@@ -554,14 +556,15 @@ function crearEscena(cv, idDesc, idLect, idLey){
       if (Ri.verReflejo){ ctx.setLineDash([6, 5]); ctx.lineWidth = 2; ctx.globalAlpha = .75*atenuar('PB'); linea(ctx, P, Bp); }
       ctx.restore();
       if (Ri.verNum){
-        rotulo(ctx, c, (A.x + P.x)/2 - 8, (A.y + P.y)/2, `${fmt(R.AP)} m`, c.AP, 'right', 800, 11);
-        rotulo(ctx, c, (B.x + P.x)/2 + 8, (B.y + P.y)/2 - 6, `${fmt(R.PB)} m`, c.PB, 'left', 800, 11);
+        // dentro de la V que forman AP y PB, lejos de los datos (3 m, 5 m) que van por fuera
+        rotulo(ctx, c, A.x + (P.x - A.x)*0.35 + 10, A.y + (P.y - A.y)*0.35, `${fmt(R.AP)} m`, c.AP, 'left', 800, 11);
+        rotulo(ctx, c, P.x + (B.x - P.x)*0.6 - 10, P.y + (B.y - P.y)*0.6, `${fmt(R.PB)} m`, c.PB, 'right', 800, 11);
       }
       if (E.drag){ ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = (arr || sobre) ? .2 : .1; ctx.beginPath(); ctx.arc(P.x, P.y, 16, 0, 7); ctx.fill(); ctx.restore(); }
       punto(ctx, c, P.x, P.y, 6, c.card, c.ink);
-      rotulo(ctx, c, P.x, P.y + 26, 'P', c.ink, 'center', 800, 12);
+      rotulo(ctx, c, P.x, P.y + 15, 'P', c.ink, 'center', 800, 12);
       geo.esquina = P;
-    } else rotulo(ctx, c, (pieA.x + pieB.x)/2, pieA.y + 44, '¿dónde toca la orilla?', c.ink, 'center', 800, 11);
+    } else rotulo(ctx, c, (pieA.x + pieB.x)/2, pieA.y + 62, '¿dónde toca la orilla?', c.ink, 'center', 800, 11);
     punto(ctx, c, A.x, A.y, 6, c.ink); rotulo(ctx, c, A.x, A.y - 15, 'A', c.ink, 'center', 800, 13);
     punto(ctx, c, B.x, B.y, 6, c.ink); rotulo(ctx, c, B.x, B.y - 15, 'B', c.ink, 'center', 800, 13);
   }
@@ -593,8 +596,11 @@ function crearEscena(cv, idDesc, idLect, idLey){
     ctx.restore();
     const tI = Pr.verI ? `I = ${sol(R.ingreso)}` : 'I = ?';
     rotulo(ctx, c, (o.x + e.x)/2, (o.y + e.y)/2, tI, c.I, 'center', 800, 12);
-    const der = e.x > (g.l + g.r)/2;
-    rotulo(ctx, c, e.x + (der ? -12 : 12), e.y - 14, `${sol(R.precio)} · ${fmt(R.cantidad, 2)}`, c.ink, der ? 'right' : 'left', 800, 11);
+    const der = e.x > (g.l + g.r)/2, tp = sol(R.precio), tq = `${fmt(R.cantidad, 2)} ${Pr.unidad}`, xr = e.x + (der ? -12 : 12);
+    ctx.font = `800 11px ${c.font}`;
+    const wq = ctx.measureText(tq).width, wp = ctx.measureText(tp + ' · ').width;
+    if (der){ rotulo(ctx, c, xr, e.y - 14, tq, c.q, 'right', 800, 11); rotulo(ctx, c, xr - wq - 6, e.y - 14, tp + ' ·', c.p, 'right', 800, 11); }
+    else { rotulo(ctx, c, xr, e.y - 14, tp + ' ·', c.p, 'left', 800, 11); rotulo(ctx, c, xr + wp, e.y - 14, tq, c.q, 'left', 800, 11); }
     if (E.drag){
       ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = (arr || sobre) ? .2 : .1; ctx.beginPath(); ctx.arc(e.x, e.y, 16, 0, 7); ctx.fill(); ctx.restore();
       punto(ctx, c, e.x, e.y, 7, c.card, c.ink);
@@ -609,7 +615,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
       tx:'precio (S/)', cx:c.p, ty:'I (S/)', cy:c.I });
   }
 
-  // ----- la plaza: pileta y jardines en ronda -----
+  // ----- la plaza: jardín del centro y jardines en ronda -----
   function geoMapa(){
     const Ma = E.mapa, cx = W/2, cy = Hh/2 + 4, R2 = Math.min(W/2 - 12, Hh/2 - 14), R1 = R2*0.38;
     const ang = k => -Math.PI/2 + (k - 1)*2*Math.PI/Ma.n;
@@ -636,15 +642,17 @@ function crearEscena(cv, idDesc, idLect, idLey){
     }
     ctx.save(); ctx.beginPath(); ctx.arc(g.cx, g.cy, g.R1, 0, 7); ctx.fillStyle = relleno(0); ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.stroke(); ctx.restore();
     ctx.save(); ctx.fillStyle = c.ink; ctx.font = `800 12px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillText('pileta', g.cx, g.cy - (col[0] === null || col[0] === undefined ? 0 : 8));
+    ctx.fillText('centro', g.cx, g.cy - (col[0] === null || col[0] === undefined ? 0 : 8));
     if (!(col[0] === null || col[0] === undefined)) ctx.fillText(`flor ${col[0] + 1}`, g.cx, g.cy + 9);
     ctx.restore();
     // choques: el borde común, grueso y a trazos
     for (const [i, j] of Ma.conflictos || []){
-      ctx.save(); ctx.strokeStyle = c.warn; ctx.lineWidth = 5; ctx.setLineDash([7, 4]); ctx.beginPath();
-      if (i === 0) ctx.arc(g.cx, g.cy, g.R1, g.ang(j), g.ang(j + 1));
-      else { const k = (j === i + 1) ? j : i, a = g.ang(k); ctx.moveTo(g.cx + g.R1*Math.cos(a), g.cy + g.R1*Math.sin(a)); ctx.lineTo(g.cx + g.R2*Math.cos(a), g.cy + g.R2*Math.sin(a)); }
-      ctx.stroke(); ctx.restore();
+      const trazo = () => { ctx.beginPath();
+        if (i === 0) ctx.arc(g.cx, g.cy, g.R1, g.ang(j), g.ang(j + 1));
+        else { const k = (j === i + 1) ? j : i, a = g.ang(k); ctx.moveTo(g.cx + g.R1*Math.cos(a), g.cy + g.R1*Math.sin(a)); ctx.lineTo(g.cx + g.R2*Math.cos(a), g.cy + g.R2*Math.sin(a)); } };
+      // contorno en tinta (contrasta con las flores) y encima el borde a trazos del aviso
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 9; ctx.lineCap = 'round'; trazo(); ctx.stroke(); ctx.restore();
+      ctx.save(); ctx.strokeStyle = c.warn; ctx.lineWidth = 5; ctx.setLineDash([7, 4]); trazo(); ctx.stroke(); ctx.restore();
     }
     if (Ma.conflictos && Ma.conflictos.length) rotulo(ctx, c, 10, 12, `⚠ choques: ${Ma.conflictos.length}`, c.warn, 'left', 800, 12);
     if (Ma.oculto) rotulo(ctx, c, W - 10, 12, '¿cuántos colores?', c.ink, 'right', 800, 12);
@@ -652,8 +660,8 @@ function crearEscena(cv, idDesc, idLect, idLey){
 
   // ----- dos corrales cuadrados -----
   function dibDos(c){
-    const D = E.dos, mg = 64, s = Math.min((W - mg*2 - 50)/(D.l1 + D.l2), (Hh - 70)/D.l2);
-    const oy = Hh - 30, ax = mg, bx = mg + D.l1*s + 66;
+    const D = E.dos, mg = 64, s = Math.min((W - mg*2 - 50)/(D.l1 + D.l2), (Hh - 84)/D.l2);
+    const oy = Hh - 44, ax = mg, bx = mg + D.l1*s + 66;
     const cuadro = (ox, l, llenar, txt, oculto) => {
       if (llenar){ ctx.save(); ctx.fillStyle = c.S; ctx.globalAlpha = .2*atenuar('S'); ctx.fillRect(ox, oy - l*s, l*s, l*s); ctx.restore(); }
       ctx.save(); ctx.strokeStyle = c.grid; ctx.lineWidth = 1;
@@ -665,12 +673,22 @@ function crearEscena(cv, idDesc, idLect, idLey){
       ctx.restore();
       rotulo(ctx, c, ox + l*s/2, oy + 13, oculto ? 'x = ?' : `x = ${m(l)}`, c.x, 'center', 800, 11);
       rotulo(ctx, c, ox - 5, oy - l*s/2, oculto ? 'y = ?' : `y = ${m(l)}`, c.y, 'right', 800, 11);
-      rotulo(ctx, c, ox + l*s/2, oy - l*s/2, txt, c.S, 'center', 800, 12);
+      ctx.font = `800 12px ${c.font}`;
+      if (txt && ctx.measureText(txt).width + 8 < l*s) rotulo(ctx, c, ox + l*s/2, oy - l*s/2, txt, c.S, 'center', 800, 12);
+      else if (txt) rotulo(ctx, c, ox + l*s/2, oy + 30, txt, c.S, 'center', 800, 12);
     };
     cuadro(ax, D.l1, true, `S = ${m2(D.l1*D.l1)}`);
     rotulo(ctx, c, ax + D.l1*s/2, oy - D.l1*s - 14, `cordel ${m(4*D.l1)}`, c.ink, 'center', 800, 11);
-    cuadro(bx, D.l2, false, '', !D.ver);
-    if (D.ver){
+    if (!D.ver){
+      // antes de responder: solo un contorno a trazos del mismo tamaño que el chico, con «?»
+      ctx.save(); ctx.strokeStyle = c.muted; ctx.setLineDash([6, 5]); ctx.lineWidth = 2; ctx.strokeRect(bx, oy - D.l1*s, D.l1*s, D.l1*s); ctx.restore();
+      rotulo(ctx, c, bx + D.l1*s/2, oy - D.l1*s/2, '?', c.ink, 'center', 800, 16);
+      rotulo(ctx, c, bx + D.l1*s/2, oy - D.l1*s - 14, `cordel ${m(4*D.l2)}`, c.ink, 'center', 800, 11);
+      rotulo(ctx, c, bx + D.l1*s/2, oy + 13, 'S = ?', c.S, 'center', 800, 12);
+      return;
+    }
+    cuadro(bx, D.l2, false, '');
+    {
       const k = D.l2/D.l1, n = Math.floor(D.prog + 1e-9);
       for (let j = 0; j < k*k && j < n; j++){
         const i = j % k, f = Math.floor(j/k), x0 = bx + i*D.l1*s, y0 = oy - (f + 1)*D.l1*s;
@@ -714,7 +732,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
     if (idLect) document.getElementById(idLect).innerHTML = filas.map(([k, t, v]) => `<div class="lectura" style="--k:var(${k === 'ink' ? '--ink' : '--c-' + k})"><span>${t}</span><b>${v}</b></div>`).join('');
     if (idDesc && !E.anim){
       const base = { corral:'Un corral rectangular sobre una cuadrícula de 1 m.', pared:'Un corral rectangular contra una pared.', rio:'La orilla de un río con los puntos A y B.',
-        precio:'El rectángulo precio por cantidad: su área es el ingreso.', mapa:'Una plaza con una pileta al centro y jardines alrededor.', dos:'Dos corrales cuadrados.' }[E.modo];
+        precio:'El rectángulo precio por cantidad: su área es el ingreso.', mapa:'Una plaza con un jardín redondo al centro y jardines alrededor.', dos:'Dos corrales cuadrados.' }[E.modo];
       document.getElementById(idDesc).textContent = [E.desc || base, ...filas.map(([, t, v]) => `${t}: ${v}.`)].join(' ');
     }
     if (E.alCambiar) E.alCambiar();
@@ -770,10 +788,10 @@ const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `
 const L = (k, nombre, valor) => () => [k, nombre, valor];
 // Pintor del mapa: paleta de flores y botones por zona (teclado), además de tocar el dibujo.
 function pintor(E, cont, regiones, vecinos, estado, alPintar){
-  const nombres = k => k === 0 ? 'Pileta' : `Jardín ${k}`;
+  const nombres = k => k === 0 ? 'Jardín del centro' : `Jardín ${k}`;
   const html = () => `<div class="fila" role="group" aria-label="Elige una flor">${[0, 1, 2, 3].map(k => `<button type="button" class="btn chico flor" data-flor="${k}" aria-pressed="${estado.flor === k}"><i style="background:var(--pin-${k})"></i>Flor ${k + 1}</button>`).join('')}
       <button type="button" class="btn chico" data-flor="-1" aria-pressed="${estado.flor === -1}">Borrar</button></div>
-    <div class="fila" role="group" aria-label="Pinta una zona">${Array.from({ length: regiones }, (_, k) => `<button type="button" class="btn chico zona" data-zona="${k}" aria-label="${nombres(k)}: ${estado.colores[k] === null ? 'sin flor' : 'flor ' + (estado.colores[k] + 1)}">${k === 0 ? 'Pileta' : k}</button>`).join('')}</div>
+    <div class="fila" role="group" aria-label="Pinta una zona">${Array.from({ length: regiones }, (_, k) => `<button type="button" class="btn chico zona" data-zona="${k}" aria-label="${nombres(k)}: ${estado.colores[k] === null ? 'sin flor' : 'flor ' + (estado.colores[k] + 1)}">${k === 0 ? 'Centro' : k}</button>`).join('')}</div>
     <div class="fila"><button type="button" class="btn chico" data-accion="ejemplo">Ver una pintura del motor</button><button type="button" class="btn chico" data-accion="borrar">Borrar todo</button></div>`;
   const pintar = k => { estado.colores[k] = estado.flor < 0 ? null : estado.flor; alPintar(); poner(); };
   function poner(){
@@ -806,9 +824,9 @@ const R1 = k => P1.rectangulos.find(r => r.ancho === k);
 const M2 = MM.productoMaximo({ a:1, b:1, total:12 });
 const P3 = MM.paredMaxima({ malla:40 });
 const R5 = MM.recorridoMinimo({ a:3, b:5, d:6 });
-const I7 = MM.ingresoMaximo({ p0:10, q0:60, dp:1, dq:3 });
+const I7 = MM.ingresoMaximo({ p0:10, q0:66, dp:1, dq:3 });
 const RU = MM.rueda(5), M8 = MM.minimoColores(RU);
-const MENU = { p0:10, q0:60, dp:1, dq:3 };
+const MENU = { p0:10, q0:66, dp:1, dq:3 };
 const dims = r => `${fmt(r.ancho)} m × ${fmt(r.largo)} m`;
 const frTxt = v => { const f = MM.fraccion(v); return f && f.den !== 1 ? f.mixto : fmt(v); };
 S.mapa.colores = new Array(RU.regiones).fill(null);
@@ -824,12 +842,12 @@ const G1 = { id:'maximos-paso1', ok:'b', opts:[
     d:`Elegiste la D. El cordel (el perímetro) es el mismo, pero el área no: ${fmt(R1(11).area)} m², ${fmt(R1(8).area)} m² y ${fmt(R1(6).area)} m². El perímetro mide el borde; el área, lo que queda adentro. La correcta está marcada.` } };
 const dimP = r => `${frTxt(r.x)} m de fondo y ${frTxt(r.paralelo)} m junto a la pared`;
 const G3 = { id:'maximos-paso3', ok:'c', opts:[
-  ['a', `${frTxt(P3.errores.cuadrado.x)} m por lado: un cuadrado, como con el cordel`, 'pared-cuadrado-sin-mirar-que-se-suma', 'hipotesis'],
+  ['a', `${MM.fraccion(P3.errores.cuadrado.x).texto} m (unos ${fmt(P3.errores.cuadrado.x, 1)} m) por lado: un cuadrado, como con el cordel`, 'pared-cuadrado-sin-mirar-que-se-suma', 'hipotesis'],
   ['b', `${dimP(P3.errores.alReves)}: el fondo es el doble`, 'pared-razon-invertida', 'hipotesis'],
   ['c', `${dimP(P3)}: la mitad de la malla va junto a la pared`],
   ['d', `${dimP(P3.errores.comoCorralLibre)}: el mejor corral de 40 m`, 'pared-regla-del-corral-libre', 'hipotesis']],
   fb:{ c:`¡Bien! Lo que se suma es x + x + y = 40. El producto es máximo cuando las dos partes, 2x e y, valen lo mismo: 20 y 20. Fondo de 10 m y 20 m junto a la pared: ${fmt(P3.area)} m².`,
-    a:`Elegiste la A. El cuadrado de 40/3 m por lado encierra 1600/9 ≈ ${fmt(P3.errores.cuadrado.area, 1)} m². Con la pared, x e y ya no se suman por igual: x va dos veces. El mejor es 10 × 20 = ${fmt(P3.area)} m². La correcta está marcada.`,
+    a:`Elegiste la A. El cuadrado de 40/3 m (unos 13,3 m) por lado encierra 1600/9 ≈ ${fmt(P3.errores.cuadrado.area, 1)} m². Con la pared, x e y ya no se suman por igual: x va dos veces. El mejor es 10 × 20 = ${fmt(P3.area)} m². La correcta está marcada.`,
     b:`Elegiste la B. 16 m de fondo y 8 m junto a la pared encierran ${fmt(P3.errores.alReves.area)} m². Es al revés: conviene alargar el lado junto a la pared, porque su malla se pone una sola vez. La correcta está marcada.`,
     d:`Elegiste la D. 10 × 10 es el mejor corral de 40 m sin pared, pero aquí usa solo 30 m de malla y le sobran 10. Con toda la malla: 10 × 20 = ${fmt(P3.area)} m². La correcta está marcada.` } };
 const G5 = { id:'maximos-paso5', ok:'c', opts:[
@@ -844,20 +862,20 @@ const G5 = { id:'maximos-paso5', ok:'c', opts:[
 const G7 = { id:'maximos-paso7', ok:'b', opts:[
   ['a', `${sol(I7.errores.noCambiar)}: cada sol de más le quita clientes`, 'precio-no-cambiar', 'hipotesis'],
   ['b', `${sol(I7.precio)}: sube un poco y pierde pocos clientes`],
-  ['c', `${sol(I7.errores.hastaLaMitad)}: a la mitad del camino hasta S/ 30, cuando ya nadie compra`, 'precio-mitad-hasta-el-cero', 'hipotesis'],
+  ['c', `${sol(I7.errores.hastaLaMitad)}: a la mitad del camino hasta S/ 32, cuando ya nadie compra`, 'precio-mitad-hasta-el-cero', 'hipotesis'],
   ['d', `${sol(I7.errores.igualarFactores)}: el precio igual al número de menús, como en el cuadrado`, 'precio-iguala-factores-sin-suma-fija', 'hipotesis']],
-  fb:{ b:`¡Bien! El ingreso es precio × menús: (10 + n)(60 − 3n). Se hace cero en n = −10 (gratis) y en n = 20 (S/ 30, nadie compra). El máximo está a la mitad de los dos ceros: n = 5. ${sol(I7.precio)} × ${I7.cantidad} menús = ${sol(I7.ingreso)}.`,
-    a:`Elegiste la A. Hoy gana 10 × 60 = ${sol(I7.erroresIngreso.noCambiar)}. Si sube a S/ 15 pierde 15 clientes, pero cada uno de los 45 que quedan paga más: ${sol(I7.ingreso)}. La correcta está marcada.`,
-    c:`Elegiste la C. A S/ 20 vende 30 menús: ${sol(I7.erroresIngreso.hastaLaMitad)}, lo mismo que hoy. La curva sube y baja igual a los dos lados del máximo: S/ 10 y S/ 20 dan lo mismo, y el mejor está en medio. La correcta está marcada.`,
-    d:`Elegiste la D. Igualar los factores funciona cuando su suma es fija. Aquí precio + menús cambia: (10 + n) + (60 − 3n) baja 2 por cada sol. A ${sol(I7.errores.igualarFactores)} vendería 22,5 menús: ${sol(I7.erroresIngreso.igualarFactores)}. La correcta está marcada.` } };
+  fb:{ b:`¡Bien! El ingreso es precio × menús: (10 + n)(66 − 3n). Se hace cero en n = −10 (gratis) y en n = 22 (S/ 32, nadie compra). El máximo está a la mitad de los dos ceros: n = 6. ${sol(I7.precio)} × ${I7.cantidad} menús = ${sol(I7.ingreso)}.`,
+    a:`Elegiste la A. Hoy gana 10 × 66 = ${sol(I7.erroresIngreso.noCambiar)}. Si sube a S/ 16 pierde 18 clientes, pero cada uno de los 48 que quedan paga más: ${sol(I7.ingreso)}. La correcta está marcada.`,
+    c:`Elegiste la C. A S/ 21 vende 33 menús: ${sol(I7.erroresIngreso.hastaLaMitad)}, más que hoy pero menos que el máximo. La curva sube y baja igual a los dos lados del máximo: S/ 11 y S/ 21 dan lo mismo, y el mejor está en medio, en S/ 16. La correcta está marcada.`,
+    d:`Elegiste la D. Igualar los factores funciona cuando su suma es fija. Aquí precio + menús cambia: (10 + n) + (66 − 3n) baja 2 por cada sol. A ${sol(I7.errores.igualarFactores)} vende 24 menús: ${sol(I7.erroresIngreso.igualarFactores)}. La correcta está marcada.` } };
 const G8 = { id:'maximos-paso8', ok:'c', opts:[
-  ['a', `${M8.errores.alternarDos} colores: se alternan alrededor de la pileta`, 'mapa-alternar-dos', 'hipotesis'],
-  ['b', `${M8.errores.tresBastan} colores: la pileta de uno y los jardines alternando otros dos`, 'mapa-tres-bastan', 'hipotesis'],
-  ['c', `${M8.colores} colores: la pileta de uno y los jardines con otros tres`],
+  ['a', `${M8.errores.alternarDos} colores: se alternan alrededor del centro`, 'mapa-alternar-dos', 'hipotesis'],
+  ['b', `${M8.errores.tresBastan} colores: el centro de uno y los jardines de alrededor alternando otros dos`, 'mapa-tres-bastan', 'hipotesis'],
+  ['c', `${M8.colores} colores: el centro de uno y los jardines de alrededor con otros tres`],
   ['d', `${M8.errores.unoPorRegion} colores: uno por zona, porque todas se tocan`, 'mapa-uno-por-region', 'hipotesis']],
-  fb:{ c:'¡Bien! Con 5 jardines en ronda, dos colores no alcanzan para alternar: al dar la vuelta, el quinto choca con el primero. La ronda pide 3 colores, y la pileta, que toca a los cinco, uno más: 4.',
-    a:'Elegiste la A. Alternar dos colores funciona con un número par de jardines. Con 5, el último queda junto al primero con el mismo color. Y la pileta toca a todos. La correcta está marcada.',
-    b:`Elegiste la B. Con 5 jardines, alternar dos colores falla al cerrar la vuelta: la ronda ya necesita 3, y la pileta toca a los cinco, así que necesita un cuarto color. El motor probó las ${fmt(M8.probadas, 0)} formas de pintar con 3 colores: todas tienen un choque. La correcta está marcada.`,
+  fb:{ c:'¡Bien! Con 5 jardines en ronda, dos colores no alcanzan para alternar: al dar la vuelta, el quinto choca con el primero. La ronda pide 3 colores, y el jardín del centro, que toca a los cinco, uno más: 4.',
+    a:'Elegiste la A. Alternar dos colores funciona con un número par de jardines. Con 5, el último queda junto al primero con el mismo color. Y el jardín del centro toca a todos. La correcta está marcada.',
+    b:`Elegiste la B. Con 5 jardines, alternar dos colores falla al cerrar la vuelta: la ronda ya necesita 3, y el jardín del centro toca a los cinco, así que necesita un cuarto color. El motor probó las ${fmt(M8.probadas, 0)} formas de pintar con 3 colores: todas tienen un choque. La correcta está marcada.`,
     d:'Elegiste la D. No todas las zonas se tocan: el jardín 1 y el 3, por ejemplo, no comparten borde y pueden llevar la misma flor. Bastan 4. La correcta está marcada.' } };
 
 // ---- configuraciones ----
@@ -871,10 +889,10 @@ function corral2(){
 }
 function vivoCorral(){
   const d = $('vivoC'); if (!d) return;
-  const R = MM.rectangulo({ perimetro:24, ancho:E.cor.x }), dif = Math.abs(R.ancho - 6);
+  const R = MM.rectangulo({ perimetro:24, ancho:E.cor.x }), t = R.ancho - 6, tt = (t < 0 ? '(' : '') + fmt(t) + (t < 0 ? ')' : '');
   d.innerHTML = `<div class="eq">${x_('x')} + ${y_('y')} = ${x_(fmt(R.ancho))} + ${y_(fmt(R.largo))} = 12<span class="note">medio cordel</span></div>
     <div class="eq">${S_('S')} = ${x_(fmt(R.ancho))} · ${y_(fmt(R.largo))} = ${S_(fmt(R.area))}</div>
-    <div class="eq">(6 + ${fmt(dif)})(6 − ${fmt(dif)}) = 36 − ${fmt(dif)}² = ${S_(fmt(R.area))}<span class="note">a ${fmt(dif)} m del cuadrado</span></div>`;
+    <div class="eq">t = ${tt}: ${x_('x')} = 6 + t, ${y_('y')} = 6 − t → ${S_('S')} = 36 − t² = 36 − ${tt}² = ${S_(fmt(R.area))}</div>`;
 }
 const tablaCorral = () => { const xs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], rs = xs.map(x => MM.rectangulo({ perimetro:24, ancho:x }));
   return `<div style="overflow-x:auto"><table class="tabla"><tr><th>${x_('x')}</th>${rs.map(r => `<td class="tx">${r.ancho}</td>`).join('')}</tr><tr><th>${y_('y')}</th>${rs.map(r => `<td class="ty">${r.largo}</td>`).join('')}</tr><tr><th>${S_('S')}</th>${rs.map(r => `<td class="tS${r.area === M2.producto ? ' max' : ''}">${r.area}</td>`).join('')}</tr></table></div>`; };
@@ -882,7 +900,7 @@ const lectPared = verS => [E0 => ['x', 'Fondo x', m(E0.par.x)], E0 => ['y', 'Jun
   .concat(verS ? [E0 => ['S', 'Área S', m2(MM.pared({ malla:40, x:E0.par.x }).area)]] : [L('S', 'Área S', '?')]);
 const pared3 = ya => ({ modo:'pared', par:{ malla:40, x: ya ? P3.x : 8, xmin:1, xmax:19, verS:ya, curva:{ ver:ya, max:ya } }, lect:lectPared(ya), desc:'Un corral contra una pared con 40 m de malla.' });
 function pared4(){
-  E.config({ modo:'pared', drag:true, par:{ malla:40, x:S.x4, xmin:1, xmax:19, verS:true, reflejo:S.reflejo }, lect:lectPared(true),
+  E.config({ modo:'pared', drag:true, par:{ malla:40, x:S.x4, xmin:1, xmax:14, verS:true, reflejo:S.reflejo }, lect:lectPared(true),
     alArrastrar:v => { S.x4 = v; }, alCambiar:vivoPared, desc:'Corral contra la pared: arrastra la esquina de abajo.' });
 }
 function vivoPared(){
@@ -907,19 +925,19 @@ function vivoRio(){
     <div class="eq">${PB_('PB')} = ${PB_("PB'")} → ${AP_('AP')} + ${PB_("PB'")} ≥ ${T_("AB'")} = ${T_(fmt(R.ABprima) + ' m')}<span class="note">${Math.abs(R.total - R.ABprima) < 1e-9 ? 'P está sobre la recta: es el mínimo' : `te sobran ${fmt(R.total - R.ABprima)} m`}</span></div>`;
 }
 const lectPrecio = verI => [E0 => ['p', 'Precio p', sol(MM.ingreso(E0.pre).precio)], E0 => ['q', 'Menús q', fmt(MM.ingreso(E0.pre).cantidad)],
-  verI ? (E0 => ['I', 'Ingreso I', sol(MM.ingreso(E0.pre).ingreso)]) : L('I', 'Ingreso hoy', sol(600))];
-const precio7 = ya => ({ modo:'precio', drag:ya, pre:Object.assign({ u: ya ? S.u7 : 0, umin:-4, umax:19, pmax:32, qmax:75, unidad:'menús', verI:true, curva:{ ver:ya, max:ya } }, MENU),
+  verI ? (E0 => ['I', 'Ingreso I', sol(MM.ingreso(E0.pre).ingreso)]) : L('I', 'Ingreso hoy', sol(I7.erroresIngreso.noCambiar))];
+const precio7 = ya => ({ modo:'precio', drag:ya, pre:Object.assign({ u: ya ? S.u7 : 0, umin:-4, umax:21, pmax:34, qmax:80, unidad:'menús', verI:true, curva:{ ver:ya, max:ya } }, MENU),
   lect:lectPrecio(ya), alArrastrar:v => { S.u7 = v; }, alCambiar: ya ? vivoPrecio : null, desc:'El menú: un rectángulo de precio por menús vendidos.' });
 function vivoPrecio(){
   const d = $('vivoI'); if (!d) return;
   const R = MM.ingreso(E.pre), n = E.pre.u;
-  d.innerHTML = `<div class="eq">${I_('I')} = (10 + ${fmt(n)}) · (60 − 3 · ${fmt(n)}) = ${p_(fmt(R.precio))} · ${q_(fmt(R.cantidad))} = ${I_(sol(R.ingreso))}</div>`;
+  d.innerHTML = `<div class="eq">${I_('I')} = (10 + ${fmt(n)}) · (66 − 3 · ${fmt(n)}) = ${p_(fmt(R.precio))} · ${q_(fmt(R.cantidad))} = ${I_(sol(R.ingreso))}</div>`;
 }
 function mapa8(ya){
   const est = S.mapa;
   E.config({ modo:'mapa', tocar:ya, mapa:{ n:5, colores: ya ? est.colores : new Array(RU.regiones).fill(null), conflictos: ya ? MM.revisarPintura({ regiones:RU.regiones, vecinos:RU.vecinos, colores:est.colores }).conflictos : [], oculto:!ya },
-    lect: ya ? lecturasMapa(RU.regiones, RU.vecinos, est) : [L('ink', 'Zonas', '6 (pileta y 5 jardines)')],
-    desc:'La plaza: una pileta al centro y 5 jardines en ronda. Cada jardín toca la pileta y a sus dos vecinos.' });
+    lect: ya ? lecturasMapa(RU.regiones, RU.vecinos, est) : [L('ink', 'Zonas', '6 (el centro y 5 jardines)')], ley: ya ? null : [],
+    desc:'La plaza: un jardín redondo al centro y 5 jardines en ronda. Cada jardín de la ronda toca al del centro y a sus dos vecinos.' });
 }
 function repintar(){ const est = S.mapa; E.mapa.colores = est.colores; E.mapa.conflictos = MM.revisarPintura({ regiones:RU.regiones, vecinos:RU.vecinos, colores:est.colores }).conflictos; E.dibujar(); E.avisar(); }
 
@@ -941,7 +959,7 @@ const steps = [
    body:() => `<p class="problem">Arrastra la esquina (o usa las flechas del teclado). El cordel no cambia: si el ${x_('ancho')} crece, el ${y_('largo')} se achica lo mismo.</p>
    <div class="eqs" id="vivoC"></div>
    ${tablaCorral()}
-   <p>La regla: si dos números tienen una <b>suma fija</b> (${x_('x')} + ${y_('y')} = 12), su <b>producto</b> es máximo cuando son iguales (6 · 6 = ${M2.producto}). Si te alejas d del 6 por un lado y por el otro, el producto es 36 − d²: siempre menos.</p>
+   <p>La regla: si dos números tienen una <b>suma fija</b> (${x_('x')} + ${y_('y')} = 12), su <b>producto</b> es máximo cuando son iguales (6 · 6 = ${M2.producto}). Si x = 6 + t, entonces y = 6 − t y el producto es 36 − t²: siempre menos que 36.</p>
    <p>La tabla es simétrica: 5 · 7 y 7 · 5 dan lo mismo. Por eso el máximo queda justo en el medio.</p>` },
  { k:'Paso 3', t:'Predice: contra la pared', gate:G3,
    prep:() => E.config(pared3(!!S.pred[G3.id])),
@@ -952,7 +970,7 @@ const steps = [
    <div id="tras" class="body" hidden><div class="eqs">
      <div class="eq">${x_('x')} + ${x_('x')} + ${y_('y')} = 40<span class="note">lo que se suma son 2x e y</span></div>
      <div class="eq">2${x_('x')} = ${y_('y')} = 20 → ${x_('x')} = ${x_('10')}, ${y_('y')} = ${y_('20')}, ${S_('S')} = ${S_(fmt(P3.area))}</div></div>
-   <p>La regla del paso 2 sigue valiendo, pero hay que mirar qué se suma: aquí los sumandos son ${x_('2x')} e ${y_('y')}, y son ellos los que deben ser iguales. El cuadrado de 40/3 m por lado encierra solo 1600/9 ≈ ${fmt(P3.errores.cuadrado.area, 1)} m².</p>
+   <p>La regla del paso 2 sigue valiendo, pero hay que mirar qué se suma: aquí los sumandos son ${x_('2x')} e ${y_('y')}, y son ellos los que deben ser iguales. El cuadrado de 40/3 m (unos 13,3 m) por lado encierra solo 1600/9 ≈ ${fmt(P3.errores.cuadrado.area, 1)} m².</p>
    <p class="fuente">El cuadrado otra vez, invertir la razón y usar la regla del corral sin pared son hipótesis nuestras: no encontramos estudios con cifras sobre estos problemas.</p></div>` },
  { k:'Paso 4', t:'El reflejo en la pared', explora:'pared',
    prep:() => pared4(),
@@ -977,16 +995,16 @@ const steps = [
    prep:() => rio6(),
    body:() => `<p class="problem">Arrastra el punto P por la orilla (o usa las flechas). La línea a trazos fucsia es la recta de A a B'.</p>
    <div class="eqs" id="vivoR"></div>
-   <p>Fíjate en los ángulos: en el mejor punto, ${AP_('AP')} y ${PB_('PB')} forman el mismo ángulo con la orilla (${fmt(R5.angulo, 1)}°), como la luz que rebota en un espejo. Por eso la luz siempre sigue el camino más corto que toca el espejo.</p>` },
+   <p>Fíjate en los ángulos: en el mejor punto, ${AP_('AP')} y ${PB_('PB')} forman el mismo ángulo con la orilla (${fmt(R5.angulo, 1)}°), como la luz que rebota en un espejo. Por eso un rayo de luz que rebota en un espejo hace justo el camino más corto que toca el espejo.</p>` },
  { k:'Paso 7', t:'Predice: el precio del menú', gate:G7,
    prep:() => { E.config(precio7(!!S.pred[G7.id])); },
    anima:fin => { const o = precio7(true); o.pre.u = -4; o.pre.curva = { ver:true, hasta:6, max:false }; o.drag = false; E.config(o); const Pr = E.pre;
-     E.animar(-4, 19, 2800, v => { Pr.u = Math.round(v*2)/2; Pr.curva.hasta = MENU.p0 + v; }, () => E.animar(19, I7.u, 1200, v => { Pr.u = Math.round(v*2)/2; }, () => { S.u7 = I7.u; E.config(precio7(true)); fin(); }), true); },
-   body:() => `<p class="problem">Doña Rosa vende 60 menús al día a S/ 10. Por cada sol que sube el ${p_('precio')}, pierde 3 clientes. Su ${I_('ingreso')} es ${p_('precio')} × ${q_('menús vendidos')}: el área del rectángulo.</p>
+     E.animar(-4, 21, 2800, v => { Pr.u = Math.round(v*2)/2; Pr.curva.hasta = MENU.p0 + v; }, () => E.animar(21, I7.u, 1200, v => { Pr.u = Math.round(v*2)/2; }, () => { S.u7 = I7.u; E.config(precio7(true)); fin(); }), true); },
+   body:() => `<p class="problem">Doña Rosa vende 66 menús al día a S/ 10. Por cada sol que sube el ${p_('precio')}, pierde 3 clientes. Su ${I_('ingreso')} es ${p_('precio')} × ${q_('menús vendidos')}: el área del rectángulo.</p>
    <p>¿A qué precio gana más dinero al día?</p>${opcionesHTML(G7.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
-     <div class="eq">${I_('I')} = (10 + n)(60 − 3n)<span class="note">n soles de aumento</span></div>
-     <div class="eq">ceros: n = −10 y n = 20 → máximo en n = ${fr('−10 + 20', '2')} = 5</div>
+     <div class="eq">${I_('I')} = (10 + n)(66 − 3n)<span class="note">n soles de aumento</span></div>
+     <div class="eq">ceros: n = −10 y n = 22 → máximo en n = ${fr('−10 + 22', '2')} = ${I7.u}</div>
      <div class="eq">${p_(sol(I7.precio))} · ${q_(String(I7.cantidad))} = ${I_(sol(I7.ingreso))}</div></div>
    <div class="eqs" id="vivoI"></div>
    <p>Ahora puedes arrastrar la esquina del rectángulo. Subir el precio agranda un lado y achica el otro, pero esta vez la suma de los lados no es fija: por eso «iguales» no sirve. Lo que sí sirve es la simetría: el ingreso es una parábola, y su punto más alto está a la mitad entre los dos precios en que el ingreso es cero.</p>
@@ -995,14 +1013,14 @@ const steps = [
    prep:() => { mapa8(!!S.pred[G8.id]); },
    anima:fin => { S.mapa.colores = new Array(RU.regiones).fill(null); mapa8(true); E.tocar = false; const ej = M8.ejemplo;
      E.animar(0, RU.regiones, 2200, v => { const n = Math.floor(v + 1e-9); S.mapa.colores = ej.map((c0, k) => k < n ? c0 : null); E.mapa.colores = S.mapa.colores; E.mapa.conflictos = []; }, () => { mapa8(true); montarPintor(); fin(); }, true); },
-   body:() => `<p class="problem">En la plaza hay una pileta al centro y 5 jardines alrededor. Cada zona se siembra con flores de un solo color, y dos zonas que comparten un borde no pueden tener el mismo color.</p>
+   body:() => `<p class="problem">En la plaza hay un jardín redondo al centro y 5 jardines alrededor. Las 6 zonas se siembran, cada una con flores de un solo color, y dos zonas que comparten un borde no pueden tener el mismo color (si solo se tocaran en un punto, no contarían como vecinas).</p>
    <p>¿Cuál es el menor número de colores de flores que se necesita?</p>${opcionesHTML(G8.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
      <div class="eq">con 3 colores: 3⁶ = ${fmt(M8.probadas, 0)} formas → todas con un choque</div>
      <div class="eq">con 4 colores: ${M8.formas} formas sin choques</div></div>
    <p>Pinta tú: elige una flor y toca una zona del dibujo (o su botón). Intenta usar solo 3 flores: siempre queda un choque, marcado con un borde grueso a trazos.</p>
    <div id="pintor" class="body"></div>
-   <p>Con un número par de jardines, la ronda se alterna con dos colores y basta un tercero para la pileta. Con un número impar, la ronda ya necesita tres. Cuatro colores alcanzan para cualquier mapa dibujado en un plano (es un teorema famoso), pero no siempre hacen falta los cuatro.</p>
+   <p>Con un número par de jardines, la ronda se alterna con dos colores y basta un tercero para el centro. Con un número impar, la ronda ya necesita tres. Cuatro colores alcanzan para cualquier mapa dibujado en un plano, si las zonas que solo se tocan en un punto no cuentan como vecinas (es un teorema famoso), pero no siempre hacen falta los cuatro.</p>
    <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras: no encontramos estudios con cifras sobre problemas de colorear mapas.</p></div>` },
 ];
 function montarPintor(){
@@ -1029,7 +1047,7 @@ function go(k){
   pintarDots();
   E.compactar(s.gate && !S.pred[s.gate.id]);
   if (s.gate) prediccion(s);
-  if (s.explora === 'pared'){ $('btnRef').onclick = () => { S.reflejo = !S.reflejo; $('btnRef').setAttribute('aria-pressed', S.reflejo); pared4(); }; }
+  if (s.explora === 'pared'){ $('btnRef').onclick = () => { S.reflejo = !S.reflejo; $('btnRef').setAttribute('aria-pressed', S.reflejo); pared4(); if (innerWidth < 900) $('cv').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' }); }; }
   if (s.gate === G8 && S.pred[G8.id]) montarPintor();
   if (E.alCambiar) E.alCambiar();
   nav();
@@ -1100,7 +1118,7 @@ const mapa6 = { flor:0, colores:new Array(RU6.regiones).fill(null) };
 const EXPS = [
   { id:'cordel-doble', corto:'El cordel doble',
     q:`Con 24 m de cordel, el mejor corral es el cuadrado de 6 m × 6 m, que encierra ${S_('36 m²')}. Si el cordel mide el doble, 48 m, ¿cuánta ${S_('área')} encierra el mejor corral?`,
-    opts:[['a', `${fmt(E1.errores.lineal)} m²: el doble de cordel, el doble de área`, 'AR7-area-proporcional-al-perimetro', 'documentado'],
+    opts:[['a', `${fmt(E1.errores.lineal)} m²: el doble de cordel, el doble de área`, 'GE1-area-proporcional-al-lado', 'documentado'],
           ['b', `${fmt(E1.errores.aditiva)} m²: 24 m más de cordel, 24 m² más de área`, 'AR6-area-aditiva', 'hipotesis'],
           ['c', `${fmt(E1.areaNueva)} m²: el lado se duplica y el área se cuadruplica`]],
     ok:'c',
@@ -1113,7 +1131,7 @@ const EXPS = [
     exp:() => `<div class="eqs"><div class="eq">lado = ${fr('48', '4')} = 12 m<span class="note">el doble de 6</span></div>
       <div class="eq">${S_('S')} = 12 · 12 = ${S_(fmt(E1.areaNueva) + ' m²')} = ${E1.razon} · 36</div></div>
       <p>En el dibujo, el corral grande se llena con cuatro copias del chico. Si el cordel se multiplica por 3, el área se multiplica por 9: el área va con el cuadrado.</p>
-      <p class="fuente">Aplicar la proporción donde no va es la ilusión de linealidad (AR7 del informe de aritmética). Los estudios que cita el informe (Van Dooren y otros, 2005; De Bock y otros) la encontraron en escolares de varias edades; con áreas de figuras semejantes, alumnos de 12 a 16 años no distinguían lo proporcional de lo que no lo es. Las cifras salen de resúmenes y están por verificar. Sumar lo que creció el cordel es una hipótesis nuestra, ligada a la estrategia aditiva (AR6).</p>` },
+      <p class="fuente">Creer que el área crece en la misma proporción que el lado (o que el cordel) es la ilusión de linealidad (GE1 del informe de geometría, ligada a AR7). En un problema con un terreno cuadrado de lado triple, más del 90 % de los alumnos belgas de 12 años y más del 80 % de los de 16 respondieron como si el trabajo solo se triplicara (De Bock y otros). Las cifras salen de resúmenes y están por verificar. Sumar lo que creció el cordel es una hipótesis nuestra, ligada a la estrategia aditiva (AR6).</p>` },
   { id:'malla-minima', corto:'La malla mínima',
     q:`Un huerto rectangular debe tener ${S_('36 m²')}. ¿Qué forma necesita menos malla para cercarlo?`,
     opts:[['a', `${R2(18).ancho} m × ${R2(18).largo} m: es angosto y casi no ocupa`, 'malla-mas-alargado', 'hipotesis'],
@@ -1144,7 +1162,8 @@ const EXPS = [
       lect:[L('ink', 'B a la orilla', '5 m → 9 m')].concat(ya ? [L('ink', 'P (desde el pie de A)', `${MM.fraccion(E3.p1).texto} m → ${MM.fraccion(E3.p2).texto} m`), L('T', "AB'", `${E3m.exacto} m`)] : [L('ink', 'P', '?')]),
       desc:'El río con B a 9 m de la orilla; a trazos, B donde estaba antes, a 5 m.' }),
     despues:() => { const x = EXPS[2]; x.antes(true); const Ri = E.rio; Ri.verP = false; Ri.recta = 0; E.animar(0, 1, 1600, v => { Ri.recta = v; }, () => x.antes(true)); },
-    exp:() => `<div class="eqs"><div class="eq">P = ${fr('a · d', 'a + b')}: ${fr('3 · 6', '3 + 5')} = ${MM.fraccion(E3.p1).texto} → ${fr('3 · 6', '3 + 9')} = ${MM.fraccion(E3.p2).texto}</div>
+    exp:() => `<div class="eqs"><div class="eq">distancia de P al pie de A = ${fr('a · d', 'a + b')}<span class="note">a = 3 (A), b = distancia de B y d = 6</span></div>
+      <div class="eq">${fr('3 · 6', '3 + 5')} = ${MM.fraccion(E3.p1).texto} → ${fr('3 · 6', '3 + 9')} = ${MM.fraccion(E3.p2).texto}</div>
       <div class="eq">${T_("AB'")} = √(6² + 12²) = ${T_(E3m.exacto + ' m')}</div></div>
       <p>La recta A–B' corta la orilla en la proporción de las distancias: P queda más cerca del punto que está más cerca de la orilla. AP y PB siguen formando el mismo ángulo con la orilla.</p>
       <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras.</p>` },
@@ -1153,7 +1172,7 @@ const EXPS = [
     opts:[['a', `${sol(E4.errores.noCambiar)}: rebajar es perder plata`, 'precio-no-cambiar', 'hipotesis'],
           ['b', `${sol(E4.errores.igualarFactores)}: el precio igual al número de chompas`, 'precio-iguala-factores-sin-suma-fija', 'hipotesis'],
           ['c', `${sol(E4.precio)}: rebaja un poco y vende muchas más`],
-          ['d', `${sol(E4.errores.hastaLaMitad)}: a mitad de precio vende el doble`, 'precio-mitad-hasta-el-cero', 'hipotesis']],
+          ['d', `${sol(E4.errores.hastaLaMitad)}: a mitad del camino hasta regalarlas`, 'precio-mitad-hasta-el-cero', 'hipotesis']],
     ok:'c',
     fb:{ a:`Hoy gana 40 × 30 = ${sol(E4.erroresIngreso.noCambiar)}. A S/ 30 vende 45: ${sol(E4.ingreso)}. Aquí conviene bajar.`,
          b:`Igualar precio y cantidad no sirve si su suma cambia. A S/ 36 vende 36: ${sol(E4.erroresIngreso.igualarFactores)}, menos que ${sol(E4.ingreso)}.`,
@@ -1168,17 +1187,17 @@ const EXPS = [
       <p>Esta vez conviene bajar el precio: el máximo de la parábola está del lado de la rebaja. Para saber hacia dónde ir, busca los dos ceros y quédate en medio.</p>
       <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras.</p>` },
   { id:'seis-jardines', corto:'La plaza de 6 jardines',
-    q:'Ahora la plaza tiene la pileta y 6 jardines alrededor. Dos zonas que comparten borde no pueden tener flores del mismo color. ¿Cuál es el menor número de colores?',
-    opts:[['a', `${E5.errores.alternarDos} colores: se alternan alrededor de la pileta`, 'mapa-alternar-dos', 'hipotesis'],
-          ['b', `${E5.colores} colores: la pileta de uno y los jardines alternando otros dos`],
+    q:'Ahora en la plaza hay un jardín redondo al centro y 6 jardines alrededor. Las 7 zonas se siembran, cada una con flores de un solo color, y dos zonas que comparten un borde no pueden tener el mismo color (si solo se tocaran en un punto, no contarían como vecinas). ¿Cuál es el menor número de colores?',
+    opts:[['a', `${E5.errores.alternarDos} colores: se alternan alrededor del centro`, 'mapa-alternar-dos', 'hipotesis'],
+          ['b', `${E5.colores} colores: el centro de uno y los jardines de alrededor alternando otros dos`],
           ['c', `${E5.errores.siempreCuatro} colores: con mapas siempre hacen falta 4`, 'mapa-siempre-cuatro', 'hipotesis'],
           ['d', `${E5.errores.unoPorRegion} colores: uno por zona, porque todas se tocan`, 'mapa-uno-por-region', 'hipotesis']],
     ok:'b',
-    fb:{ a:'Los jardines sí pueden alternar dos colores (son 6, un número par), pero la pileta toca a todos y necesita un tercero.',
-         c:'Cuatro colores siempre alcanzan para un mapa plano, pero no siempre hacen falta. Aquí la ronda par se alterna con 2 y la pileta lleva el tercero.',
+    fb:{ a:'Los jardines sí pueden alternar dos colores (son 6, un número par), pero el jardín del centro toca a todos y necesita un tercero.',
+         c:'Cuatro colores siempre alcanzan para un mapa plano (si los toques en un punto no cuentan), pero no siempre hacen falta. Aquí la ronda par se alterna con 2 y el centro lleva el tercero.',
          d:'Los jardines que no son vecinos pueden repetir color. Bastan 3.' },
     antes:ya => { E.config({ modo:'mapa', tocar:ya, mapa:{ n:6, colores: ya ? mapa6.colores : new Array(RU6.regiones).fill(null), conflictos: ya ? MM.revisarPintura({ regiones:RU6.regiones, vecinos:RU6.vecinos, colores:mapa6.colores }).conflictos : [], oculto:!ya },
-      lect: ya ? lecturasMapa(RU6.regiones, RU6.vecinos, mapa6) : [L('ink', 'Zonas', '7 (pileta y 6 jardines)')], desc:'La plaza con una pileta y 6 jardines en ronda.' }); },
+      lect: ya ? lecturasMapa(RU6.regiones, RU6.vecinos, mapa6) : [L('ink', 'Zonas', '7 (el centro y 6 jardines)')], ley: ya ? null : [], desc:'La plaza con un jardín redondo al centro y 6 jardines en ronda.' }); },
     despues:() => { const x = EXPS[4]; mapa6.colores = new Array(RU6.regiones).fill(null); x.antes(true); E.tocar = false;
       E.animar(0, RU6.regiones, 2000, v => { const n = Math.floor(v + 1e-9); mapa6.colores = E5.ejemplo.map((c0, k) => k < n ? c0 : null); E.mapa.colores = mapa6.colores; E.mapa.conflictos = []; }, () => { x.antes(true); montar6(); }, true); },
     exp:() => `<div class="eqs"><div class="eq">con 2 colores: 2⁷ = ${E5.probadas} formas → todas con un choque</div>

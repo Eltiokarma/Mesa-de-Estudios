@@ -13,7 +13,8 @@
  *   - El río: la orilla es la recta y = 0; A = (0, a) y B = (d, b) están del mismo lado (a, b > 0, d ≥ 0);
  *     P = (p, 0) es el punto de la orilla que se toca. B' = (d, −b) es el reflejo de B en la orilla.
  *   - Un «exacto» es un texto con fracciones o raíces simplificadas ('40/3', '6√5', '3 + √61'); es null si los
- *     datos no permiten escribirlo así.
+ *     datos no permiten escribirlo así. En una suma, el entero va primero y después las raíces en el orden en que
+ *     aparecen los tramos ('5 + 3√5', '3√2 + √34').
  *   - Cada resultado que es la respuesta de una predicción trae 'errores' (lo que da cada error típico) y
  *     'coinciden' (los nombres de los errores que en ese caso dan justo la respuesta correcta: no se ofrecen y
  *     no van en 'errores'). Un error que da lo mismo que otro anterior de la lista tampoco va en 'errores':
@@ -78,8 +79,8 @@
  *                               igualarFactores (el precio con que precio = cantidad: u = (q0 − p0)/(dp + dq)) y
  *                               hastaLaMitad (va la mitad del camino entre hoy, u = 0, y el cero que queda hacia donde
  *                               conviene moverse); erroresIngreso: el ingreso de cada error, con las mismas claves }.
- *   rueda(n)                    mapa de una pileta (región 0) rodeada por n jardines en ronda (1 a n; n ≥ 3): cada
- *                               jardín toca la pileta y a sus dos vecinos de ronda. { regiones: n + 1, vecinos: [[i, j]] }.
+ *   rueda(n)                    mapa de un jardín redondo central (región 0) rodeado por n jardines en ronda (1 a n;
+ *                               n ≥ 3): cada jardín de la ronda toca al del centro y a sus dos vecinos de ronda. { regiones: n + 1, vecinos: [[i, j]] }.
  *   tablero({ filas, columnas, esquinas })   casillas de un tablero (numeradas por filas desde 0); son vecinas las que
  *                               comparten un lado, y también las que se tocan por una esquina si esquinas es true.
  *                               { regiones, vecinos }.
@@ -92,8 +93,9 @@
  *                               errores: unoPorRegion (regiones), alternarDos (2), tresBastan (3),
  *                               siempreCuatro (4) }.
  *   revisarPintura({ regiones, vecinos, colores })   colores: lista con un número ≥ 0 o null (sin pintar) por región.
- *                               { conflictos: [[i, j]] (vecinas del mismo color), sinPintar, usados (colores
- *                               distintos), valida (todas pintadas y sin conflictos) }.
+ *                               { conflictos: [[i, j]] (vecinas del mismo color), sinPintar (cuántas regiones
+ *                               quedan sin pintar: un número), usados (cuántos colores distintos), valida (todas pintadas
+ *                               y sin conflictos) }.
  *   fraccion(x)                 { num, den, entero, resto, texto ('40/3' o '7'), mixto ('13 1/3') } si x es una
  *                               fracción de denominador ≤ 1000 (con tolerancia 1e-9); si no, null.
  *   radical(n)                  √n simplificada para n entero ≥ 0: { coef, rad, texto ('6√5', '10', '√61'), valor };
@@ -101,8 +103,9 @@
  *
  * Respaldos (docs/investigacion/): «todos encierran lo mismo» y «todos usan la misma malla» son GE5 de
  * geometria-ideas-erroneas.md (parcial: D'Amore y Fandiño Pinilla, 2007, sin cifra); el área que se duplica con el
- * cordel es AR7 de aritmetica-razonamiento-ideas-erroneas.md (ilusión de linealidad, documentada con áreas de figuras
- * semejantes). Todo lo demás son hipótesis nuestras.
+ * cordel (escalarCorral, errores.lineal) es GE1 de geometria-ideas-erroneas.md, ligada a AR7 de
+ * aritmetica-razonamiento-ideas-erroneas.md (ilusión de linealidad; documentada: De Bock y otros, con un terreno
+ * cuadrado de lado triple). Todo lo demás son hipótesis nuestras.
  */
 (function (root, fabrica) {
   const motor = fabrica();
