@@ -36,6 +36,24 @@
  * queda en x = -i, donde la pone imagen(). Un giro rígido no cambia la
  * distancia de cada punto a la bisagra: la imagen sigue a |i| de la línea.
  * La hoja se ve de canto (ancho cos θ + kx·sen θ = 0) en s* = atan2(1, -kx)/π.
+ * Todo punto plegado es { x, y, z } en cm de pantalla, con z > 0 hacia quien mira.
+ * sMasCercano(p, W, yH, k): el s de la pestaña de la hoja (en (W, yH) de la
+ *   hoja) que se ve en el punto de pantalla p = { x, y }; 0 o 1 si p cae fuera
+ *   de su recorrido (media elipse).
+ * hojaDeSalida(o, f, h, s, op) devuelve:
+ *   s; theta = π·s; ancho = anchoHoja(s); deCanto = |ancho| < op.umbralCanto
+ *   (0,18); sentido = signo de ancho; hoja = { mitadSalida, mitadEntrada },
+ *   las 4 esquinas plegadas de [0, xHoja] y [-xHoja, 0] por [-yHoja, yHoja];
+ *   imagen = la imagen de la lente, (i, A·h) plegado, más { i, A, real, inf:
+ *   false }, o { inf: true } si el objeto está en F; focoPrima = (f, 0) y
+ *   dobleFoco = (2f, 0), plegados; regla = [{ v, x, y, z }], cada marca v de
+ *   op.regla ([10, 20, 30]) en (v, op.yRegla) plegada; distanciaBisagra = |i|
+ *   (Infinity si no hay imagen); rayos = los principales (paralelo, foco,
+ *   vertice; el del foco falta con el objeto en F) que tocan la abertura op.D,
+ *   cada uno { nombre, yM, uEntra, uSale (pendiente al salir de la lente),
+ *   desde = (0, yM) plegado, hasta = (xRayo, yM + uSale·xRayo) plegado,
+ *   pendPantalla (pendiente de la recta plegada; null si es vertical),
+ *   prolongacion ({ desde, hasta: la imagen plegada } si es virtual; si no, null) }.
  */
 (function (root, fabrica) {
   const motor = fabrica();

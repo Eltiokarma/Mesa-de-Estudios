@@ -35,7 +35,9 @@
  *     el examen usa 200); cobre 1,7e-5 k 400; latón 2,0e-5 k 110; vidrio 9e-6 k 0,8; pyrex 3,2e-6;
  *     cuarzo 5e-7; invar 1,2e-6; madera k 0,12; lana k 0,04; aire k 0,026.
  *   LIQUIDOS: γ (1/°C): mercurio 1,8e-4; gasolina 9,5e-4.  SIGMA = 5,67e-8 W/(m²·K⁴).
- *   EFUSIVIDAD.hielo = 2000 (se suma a la tabla de efusividades de abajo).
+ *   EFUSIVIDAD e = √(k·ρ·c), en W·s^½/(m²·K), aproximada, para comparar: piel 1100, aluminio 24 000,
+ *     acero 14 000, vidrio 1500, madera 400, lana 60, aire 6, hielo 2000. contacto(T1, e1, T2, e2) =
+ *     (e1T1 + e2T2)/(e1 + e2); flujoDesdeMano(Tmano, Tobj, eObj[, ePiel]) = (Tmano − Tobj)·ePiel·eObj/(ePiel + eObj).
  * Dilatación (n = 1, 2 o 3 según tipo 'lineal', 'superficial' o 'volumetrica'):
  *   dilatacion({ tipo, inicial, alfa, dT })  (o T0 y Tf en lugar de dT; opcionales lados:[a, b] y ref)
  *     → { n, coef = n·α, delta = inicial·n·α·ΔT, final = inicial + delta, exacta = inicial·(1 + αΔT)^n,
@@ -82,7 +84,8 @@
  *     resistencias intercambiadas, 'TC3-toda-la-caida-en-el-peor' = T1, 'TC-suma-k' = (k1 + k2)A(T1 −
  *     T2)/(ell1 + ell2), 'TC-ignora-largos' = (k1T1 + k2T2)/(k1 + k2) }.
  *   hieloSobre(material, Taula): modelo de contacto para comparar, no para medir: flujo = e_m·e_h/(e_m +
- *     e_h)·(Taula − 0), con e de EFUSIVIDAD (hielo 2000); Tcontacto = contacto(Taula, e_m, 0, e_h);
+ *     e_h)·(Taula − 0), con e de EFUSIVIDAD (hielo 2000); Tcontacto = contacto(Taula, e_m, 0, e_h) (solo
+ *     comparativo: el hielo que se derrite fija su cara a 0 °C, así que la escena no lo muestra);
  *     tiempoRelativo = flujo del aluminio / flujo (1 en el aluminio). errores (textos): 'Q2-madera-primero'
  *     y 'Q6-calor-guardado' = 'madera', 'TC1-al-mismo-tiempo' = 'igual'.
  *   enfriamiento({ T0, Tamb, tau, t, otra }) (Newton; t y tau en min): T = Tamb + (T0 − Tamb)e^(−t/τ),

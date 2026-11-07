@@ -2,7 +2,7 @@
   "plantilla": "optica-espejo-esferico",
   "unidades": "cm",
   "convencion": "1/f = 1/o + 1/i; A = -i/o; f = R/2. f > 0 cóncavo, f < 0 convexo. o > 0 objeto real; i > 0 imagen real, delante del espejo; i < 0 virtual, detrás. Cada caso llama a la función 'fn' de motor.js con 'args' (una lista) y compara 'espera'; los campos anidados van con punto (imagen.x, regla.2.x: la tercera marca de la regla). imagen() devuelve i, el aumento m (= A), la altura h de la imagen (A·h del objeto) y su posición x = −i en el dibujo. El doblez: la hoja de la luz que sale está en el marco de una lente de la misma f (la luz sale hacia x > 0, imagen en x = +i) y se dobla una fracción s (0 = lente, 1 = espejo) sobre la línea x = 0; plegar lleva (x, y) a x′ = x·cos πs + kx·x·sen πs, y′ = y + ky·x·sen πs, z = x·sen πs, con k = (kx, ky) = (−1/4; −7/20). En hojaDeSalida, la regla por omisión tiene las marcas [10, 20, 30] sobre y = 0, focoPrima es el punto (f, 0) de la hoja y dobleFoco (2f, 0); sentido es el signo del ancho visto de la hoja (cos πs + kx·sen πs); rayos es la lista de los rayos principales en el orden paralelo, foco, vértice (el del foco falta si la vela está en F), uSale la pendiente con que salen de la lente y pendPantalla la pendiente de su recta ya plegada.",
-  "verificacion": "Los siete casos son los de docs/investigacion/optica-espejos-esfericos.md. Se recalcularon el 5 de noviembre de 2026 con fracciones exactas en Python (fractions.Fraction): i = 1/(1/f - 1/o), A = -i/o, h_i = A·h, sin pasar por el motor. Todos dieron valores exactos (por ejemplo, i = -15/2 y A = 1/4 en el convexo con o = 30), y el caso del foco da o - f = 0: no hay imagen. Los casos 7 a 21 (D1 a D15, el doblez; 7 nov 2026): verificación independiente pendiente.",
+  "verificacion": "Los siete casos son los de docs/investigacion/optica-espejos-esfericos.md. Se recalcularon el 5 de noviembre de 2026 con fracciones exactas en Python (fractions.Fraction): i = 1/(1/f - 1/o), A = -i/o, h_i = A·h, sin pasar por el motor. Todos dieron valores exactos (por ejemplo, i = -15/2 y A = 1/4 en el convexo con o = 30), y el caso del foco da o - f = 0: no hay imagen. Verificador independiente (subagente, 7 nov 2026), sin leer el motor ni casos.json: espejo con 1/o + 1/i = 2/R en fracciones exactas, trazado de dos rayos con reflexión exacta en x = 0 (paraxial) y doblez con matriz de rotación alrededor del eje y más la proyección de gabinete. Con s = 1 la imagen de la lente doblada cae donde la pone el trazado del espejo. Los 22 casos (los 7 migrados y D1 a D15) coinciden con tolerancia 1e-9; sMasCercano por búsqueda en 200 001 valores de s.",
   "tolerancia": 1e-09,
   "casos": [
     {
@@ -302,7 +302,7 @@
         "y": -8,
         "z": 0
       },
-      "verificacion": ""
+      "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer el motor ni casos.json: espejo con 1/o + 1/i = 2/R en fracciones exactas, trazado de dos rayos con reflexión exacta en x = 0 (paraxial) y doblez con matriz de rotación alrededor del eje y más la proyección de gabinete. Con s = 1 la imagen de la lente doblada cae donde la pone el trazado del espejo. Los 22 casos (los 7 migrados y D1 a D15) coinciden con tolerancia 1e-9; sMasCercano por búsqueda en 200 001 valores de s."
     },
     {
       "nombre": "D2 · plegar, hoja a medio doblar (s = 1/2), con k = (−1/4; −7/20) → x −15/2, y −37/2, z 30",
@@ -317,7 +317,7 @@
         "y": -18.5,
         "z": 30
       },
-      "verificacion": ""
+      "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer el motor ni casos.json: espejo con 1/o + 1/i = 2/R en fracciones exactas, trazado de dos rayos con reflexión exacta en x = 0 (paraxial) y doblez con matriz de rotación alrededor del eje y más la proyección de gabinete. Con s = 1 la imagen de la lente doblada cae donde la pone el trazado del espejo. Los 22 casos (los 7 migrados y D1 a D15) coinciden con tolerancia 1e-9; sMasCercano por búsqueda en 200 001 valores de s."
     },
     {
       "nombre": "D3 · plegar, hoja doblada (s = 1) → x −30, y −8",
@@ -332,7 +332,7 @@
         "y": -8,
         "z": 0
       },
-      "verificacion": ""
+      "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer el motor ni casos.json: espejo con 1/o + 1/i = 2/R en fracciones exactas, trazado de dos rayos con reflexión exacta en x = 0 (paraxial) y doblez con matriz de rotación alrededor del eje y más la proyección de gabinete. Con s = 1 la imagen de la lente doblada cae donde la pone el trazado del espejo. Los 22 casos (los 7 migrados y D1 a D15) coinciden con tolerancia 1e-9; sMasCercano por búsqueda en 200 001 valores de s."
     },
     {
       "nombre": "D4 · hojaDeSalida, problema guiado (o = 15, f = 10, h = 4), hoja doblada (s = 1) → la imagen de la lente cae delante del espejo",
@@ -357,7 +357,7 @@
         "sentido": -1,
         "distanciaBisagra": 30
       },
-      "verificacion": ""
+      "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer el motor ni casos.json: espejo con 1/o + 1/i = 2/R en fracciones exactas, trazado de dos rayos con reflexión exacta en x = 0 (paraxial) y doblez con matriz de rotación alrededor del eje y más la proyección de gabinete. Con s = 1 la imagen de la lente doblada cae donde la pone el trazado del espejo. Los 22 casos (los 7 migrados y D1 a D15) coinciden con tolerancia 1e-9; sMasCercano por búsqueda en 200 001 valores de s."
     },
     {
       "nombre": "D5 · hojaDeSalida, problema guiado, hoja abierta (s = 0, la lente) → imagen al otro lado",
@@ -374,7 +374,7 @@
         "focoPrima.x": 10,
         "sentido": 1
       },
-      "verificacion": ""
+      "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer el motor ni casos.json: espejo con 1/o + 1/i = 2/R en fracciones exactas, trazado de dos rayos con reflexión exacta en x = 0 (paraxial) y doblez con matriz de rotación alrededor del eje y más la proyección de gabinete. Con s = 1 la imagen de la lente doblada cae donde la pone el trazado del espejo. Los 22 casos (los 7 migrados y D1 a D15) coinciden con tolerancia 1e-9; sMasCercano por búsqueda en 200 001 valores de s."
     },
     {
       "nombre": "D6 · hojaDeSalida, problema guiado, a medio doblar (s = 1/2)",
@@ -396,7 +396,7 @@
         "regla.1.x": -5,
         "regla.1.y": -7
       },
-      "verificacion": ""
+      "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer el motor ni casos.json: espejo con 1/o + 1/i = 2/R en fracciones exactas, trazado de dos rayos con reflexión exacta en x = 0 (paraxial) y doblez con matriz de rotación alrededor del eje y más la proyección de gabinete. Con s = 1 la imagen de la lente doblada cae donde la pone el trazado del espejo. Los 22 casos (los 7 migrados y D1 a D15) coinciden con tolerancia 1e-9; sMasCercano por búsqueda en 200 001 valores de s."
     },
     {
       "nombre": "D7 · hojaDeSalida, cóncavo con la vela más allá de C (o = 30, f = 10, h = 4), doblada",
@@ -427,7 +427,7 @@
           }
         }
       ],
-      "verificacion": ""
+      "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer el motor ni casos.json: espejo con 1/o + 1/i = 2/R en fracciones exactas, trazado de dos rayos con reflexión exacta en x = 0 (paraxial) y doblez con matriz de rotación alrededor del eje y más la proyección de gabinete. Con s = 1 la imagen de la lente doblada cae donde la pone el trazado del espejo. Los 22 casos (los 7 migrados y D1 a D15) coinciden con tolerancia 1e-9; sMasCercano por búsqueda en 200 001 valores de s."
     },
     {
       "nombre": "D8 · hojaDeSalida, lente divergente (o = 10, f = −10, h = 4), abierta (experimento 5)",
@@ -446,7 +446,7 @@
         "imagen.real": false,
         "focoPrima.x": -10
       },
-      "verificacion": ""
+      "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer el motor ni casos.json: espejo con 1/o + 1/i = 2/R en fracciones exactas, trazado de dos rayos con reflexión exacta en x = 0 (paraxial) y doblez con matriz de rotación alrededor del eje y más la proyección de gabinete. Con s = 1 la imagen de la lente doblada cae donde la pone el trazado del espejo. Los 22 casos (los 7 migrados y D1 a D15) coinciden con tolerancia 1e-9; sMasCercano por búsqueda en 200 001 valores de s."
     },
     {
       "nombre": "D9 · hojaDeSalida, la misma lente divergente doblada: el convexo",
@@ -477,7 +477,7 @@
           }
         }
       ],
-      "verificacion": ""
+      "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer el motor ni casos.json: espejo con 1/o + 1/i = 2/R en fracciones exactas, trazado de dos rayos con reflexión exacta en x = 0 (paraxial) y doblez con matriz de rotación alrededor del eje y más la proyección de gabinete. Con s = 1 la imagen de la lente doblada cae donde la pone el trazado del espejo. Los 22 casos (los 7 migrados y D1 a D15) coinciden con tolerancia 1e-9; sMasCercano por búsqueda en 200 001 valores de s."
     },
     {
       "nombre": "D10 · hojaDeSalida, cóncavo con la vela entre F y el espejo (o = 5, f = 10, h = 4), doblada",
@@ -508,7 +508,7 @@
           }
         }
       ],
-      "verificacion": ""
+      "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer el motor ni casos.json: espejo con 1/o + 1/i = 2/R en fracciones exactas, trazado de dos rayos con reflexión exacta en x = 0 (paraxial) y doblez con matriz de rotación alrededor del eje y más la proyección de gabinete. Con s = 1 la imagen de la lente doblada cae donde la pone el trazado del espejo. Los 22 casos (los 7 migrados y D1 a D15) coinciden con tolerancia 1e-9; sMasCercano por búsqueda en 200 001 valores de s."
     },
     {
       "nombre": "D11 · hojaDeSalida, convexo con la vela lejos (o = 30, f = −10, h = 4), doblada",
@@ -525,7 +525,7 @@
         "imagen.i": -7.5,
         "imagen.A": 0.25
       },
-      "verificacion": ""
+      "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer el motor ni casos.json: espejo con 1/o + 1/i = 2/R en fracciones exactas, trazado de dos rayos con reflexión exacta en x = 0 (paraxial) y doblez con matriz de rotación alrededor del eje y más la proyección de gabinete. Con s = 1 la imagen de la lente doblada cae donde la pone el trazado del espejo. Los 22 casos (los 7 migrados y D1 a D15) coinciden con tolerancia 1e-9; sMasCercano por búsqueda en 200 001 valores de s."
     },
     {
       "nombre": "D12 · hojaDeSalida, vela en F (o = 10, f = 10, h = 4) y su rayo paralelo (rayos.0)",
@@ -554,14 +554,14 @@
           }
         }
       ],
-      "verificacion": ""
+      "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer el motor ni casos.json: espejo con 1/o + 1/i = 2/R en fracciones exactas, trazado de dos rayos con reflexión exacta en x = 0 (paraxial) y doblez con matriz de rotación alrededor del eje y más la proyección de gabinete. Con s = 1 la imagen de la lente doblada cae donde la pone el trazado del espejo. Los 22 casos (los 7 migrados y D1 a D15) coinciden con tolerancia 1e-9; sMasCercano por búsqueda en 200 001 valores de s."
     },
     {
       "nombre": "D13 · sDeCanto con k = (−1/4; −7/20): el s en que la hoja se ve de canto",
       "fn": "sDeCanto",
       "args": [],
       "espera": 0.422020869622631,
-      "verificacion": ""
+      "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer el motor ni casos.json: espejo con 1/o + 1/i = 2/R en fracciones exactas, trazado de dos rayos con reflexión exacta en x = 0 (paraxial) y doblez con matriz de rotación alrededor del eje y más la proyección de gabinete. Con s = 1 la imagen de la lente doblada cae donde la pone el trazado del espejo. Los 22 casos (los 7 migrados y D1 a D15) coinciden con tolerancia 1e-9; sMasCercano por búsqueda en 200 001 valores de s."
     },
     {
       "nombre": "D14 · sMasCercano: la pestaña en (34, 14) vista en el punto de pantalla (−8,5; 2,1)",
@@ -575,7 +575,7 @@
         14
       ],
       "espera": 0.5,
-      "verificacion": ""
+      "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer el motor ni casos.json: espejo con 1/o + 1/i = 2/R en fracciones exactas, trazado de dos rayos con reflexión exacta en x = 0 (paraxial) y doblez con matriz de rotación alrededor del eje y más la proyección de gabinete. Con s = 1 la imagen de la lente doblada cae donde la pone el trazado del espejo. Los 22 casos (los 7 migrados y D1 a D15) coinciden con tolerancia 1e-9; sMasCercano por búsqueda en 200 001 valores de s."
     },
     {
       "nombre": "D15 · pendienteLente: rayo que llega paralelo a 4 cm del eje a una lente de f = 10; y el mismo rayo en el espejo (reflejar)",
@@ -597,7 +597,7 @@
           "espera": 0.4
         }
       ],
-      "verificacion": ""
+      "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer el motor ni casos.json: espejo con 1/o + 1/i = 2/R en fracciones exactas, trazado de dos rayos con reflexión exacta en x = 0 (paraxial) y doblez con matriz de rotación alrededor del eje y más la proyección de gabinete. Con s = 1 la imagen de la lente doblada cae donde la pone el trazado del espejo. Los 22 casos (los 7 migrados y D1 a D15) coinciden con tolerancia 1e-9; sMasCercano por búsqueda en 200 001 valores de s."
     }
   ]
 }

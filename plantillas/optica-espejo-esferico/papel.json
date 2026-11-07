@@ -126,6 +126,28 @@
       }
     },
     {
+      "id": "p10",
+      "nivel": "intermedio",
+      "enunciado": "Una lente convergente y un espejo cóncavo tienen la misma distancia focal, 12 cm. En dos experimentos separados, un objeto se pone a 18 cm de cada uno. ¿Dónde queda cada imagen? Si la lente y el espejo se ponen en el mismo lugar de la mesa, ¿qué distancia separa las dos imágenes?",
+      "respuesta": "En los dos, i = 36 cm y A = −2. Con la lente, la imagen queda 36 cm al otro lado; con el espejo, 36 cm delante, del lado del objeto. Las dos imágenes quedan a 72 cm una de la otra.",
+      "pasos": [
+        "La ecuación es la misma: 1/i = 1/12 − 1/18 = 3/36 − 2/36 = 1/36, así que i = 36 cm, para la lente y para el espejo.",
+        "i positiva: la imagen es real, y está hacia donde sale la luz. En la lente, la luz sigue al otro lado; en el espejo, vuelve hacia adelante.",
+        "Es como doblar la hoja por la línea de la lente: la imagen de la lente, a 36 cm al otro lado de la línea, queda a 36 cm delante.",
+        "Entre las dos posiciones hay 36 + 36 = 72 cm. A = −36/18 = −2 en los dos: invertidas y el doble de grandes."
+      ],
+      "verificar": {
+        "o": 18,
+        "f": 12,
+        "espera": {
+          "i": 36,
+          "A": -2,
+          "xEspejo": -36,
+          "xLente": 36
+        }
+      }
+    },
+    {
       "id": "p7",
       "nivel": "avanzado",
       "enunciado": "Con un espejo cóncavo de distancia focal 15 cm quieres ver un objeto derecho y 3 veces más grande. ¿A qué distancia del espejo lo pones y dónde aparece la imagen?",
@@ -181,28 +203,6 @@
         "f": 8,
         "espera": {
           "infinito": true
-        }
-      }
-    },
-    {
-      "id": "p10",
-      "nivel": "intermedio",
-      "enunciado": "Una lente convergente y un espejo cóncavo tienen la misma distancia focal, 12 cm. En dos experimentos separados, un objeto se pone a 18 cm de cada uno. ¿Dónde queda cada imagen? Si la lente y el espejo se ponen en el mismo lugar de la mesa, ¿qué distancia separa las dos imágenes?",
-      "respuesta": "En los dos, i = 36 cm y A = −2. Con la lente, la imagen queda 36 cm al otro lado; con el espejo, 36 cm delante, del lado del objeto. Las dos imágenes quedan a 72 cm una de la otra.",
-      "pasos": [
-        "La ecuación es la misma: 1/i = 1/12 − 1/18 = 3/36 − 2/36 = 1/36, así que i = 36 cm, para la lente y para el espejo.",
-        "i positiva: la imagen es real, y está hacia donde sale la luz. En la lente, la luz sigue al otro lado; en el espejo, vuelve hacia adelante.",
-        "Es como doblar la hoja por la línea de la lente: la imagen de la lente, a 36 cm detrás de la línea, queda a 36 cm delante.",
-        "Entre las dos posiciones hay 36 + 36 = 72 cm. A = −36/18 = −2 en los dos: invertidas y el doble de grandes."
-      ],
-      "verificar": {
-        "o": 18,
-        "f": 12,
-        "espera": {
-          "i": 36,
-          "A": -2,
-          "xEspejo": -36,
-          "xLente": 36
         }
       }
     }
