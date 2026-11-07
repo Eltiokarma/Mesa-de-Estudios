@@ -28,14 +28,17 @@
  *                                otro tipo), supuestos, cambios (el total después de cada cambio) y, si no hay reparto entero
  *                                entre 0 y total, posible: false con la razón
  *   contarCorral(fichas)         cabezas, gallinas, conejos y patas de una lista de fichas ('g' o 'c')
- *   corral(animales, patas)      predicción: ¿cuántos conejos? (supone que todos son gallinas)
+ *   corral(animales, patas)      predicción: ¿cuántos conejos? (supone que todos son gallinas); si no hay reparto, el
+ *                                cociente, los dos repartos vecinos y el total después de cada cambio
  *   corralAlReves(animales, patas)   lo mismo suponiendo que todos son conejos (el cociente da las gallinas)
- *   examen(preguntas, puntaje, buena, mala)   ¿cuántas buenas? (supone que todas son buenas; cada mala quita buena − mala)
+ *   examen(preguntas, puntaje, buena, mala)   ¿cuántas buenas? (supone que todas son buenas; cada mala quita buena − mala);
+ *                                daria: lo que dan los repartos de cada error
  * Método regresivo (una operación es { op: 'mas'|'menos'|'por'|'entre', k } o { op: 'gasta', parte: [p, q], mas: k }:
  * «gastó p/q de lo que tenía y k más»; con k negativo, «k menos»)
  *   textoOp(op), aplicar(op, x), invertir(op)    la operación escrita, aplicada a x y su contraria (una lista de simples)
  *   regresivo(cadena, final)     el número de partida, los valores de ida, los pasos de vuelta y los errores
- *   barras(cadena, inicio)       para dibujar «gastó»: lo que tenía, la parte, el extra y lo que le quedó en cada tramo
+ *   barras(cadena, inicio)       para dibujar «gastó»: lo que tenía, la parte, el extra y lo que le quedó en cada tramo,
+ *                                lo que no gastó (lo que le quedó + el extra) y por cuánto se multiplica para volver
  *   ordenCambiado(cadena, final, i)   la misma cadena con las operaciones i e i + 1 intercambiadas
  *   mercado(cadena, final)       predicción de «gastó la mitad y k más»: el error de deshacer en el orden equivocado
  * Distribuciones
@@ -124,8 +127,16 @@
   function corral(animales, patas) {
     const R = falsaSuposicion(animales, patas, 2, 4);
     const base = { animales, patas, supuestoTotal: R.base, faltan: R.falta, diferencia: 2, posible: R.posible };
-    if (!R.posible) return Object.assign(base, { razon: R.razon, abajo: R.abajo, arriba: R.arriba,
-      errores: R.abajo !== undefined ? limpiar({ trunca: R.abajo, redondea: R.arriba }, null) : {} });
+    if (!R.posible) {
+      const r = Object.assign(base, { razon: R.razon, abajo: R.abajo, arriba: R.arriba, cociente: R.cociente,
+        errores: R.abajo !== undefined ? limpiar({ trunca: R.abajo, redondea: R.arriba }, null) : {} });
+      // los dos repartos de al lado (el que se queda corto y el que se pasa), y el total después de cada cambio
+      if (R.abajo !== undefined && R.abajo >= 0 && R.arriba <= animales) {
+        r.vecinos = [R.abajo, R.arriba].map(c => ({ conejos: c, gallinas: animales - c, patas: 2 * (animales - c) + 4 * c }));
+        r.cambios = Array.from({ length: R.arriba + 1 }, (_, i) => R.base + 2 * i);
+      }
+      return r;
+    }
     const conejos = R.otros, gallinas = R.supuestos;
     return Object.assign(base, { respuesta: conejos, conejos, gallinas, cambios: R.cambios,
       errores: limpiar({ daLosSupuestos: gallinas, faltanSinDividir: R.falta, divideEntreElOtro: R.falta % 4 === 0 ? R.falta / 4 : null }, conejos) });
@@ -146,7 +157,11 @@
     if (!R.posible) throw new Error(R.razon);
     const incorrectas = R.otros, correctas = R.supuestos, sobran = -R.falta + 0, quita = buena - mala;
     const resta = buena + mala;   // el error de «4 − 1»: restar los puntos en vez de juntarlos
-    return { preguntas, puntaje, buena, mala, supuestoTotal: R.base, sobran, quita, correctas, incorrectas, respuesta: correctas, cambios: R.cambios,
+    const sd = puntaje % buena === 0 ? puntaje / buena : null, rl = resta > 0 && sobran % resta === 0 ? sobran / resta : null;
+    const daria = {
+      sinDescuento: sd === null ? null : { buenas: sd, malas: preguntas - sd, puntaje: sd * buena + (preguntas - sd) * mala },
+      restaLosPuntos: rl === null ? null : { malas: rl, buenas: preguntas - rl, entre: resta } };
+    return { preguntas, puntaje, buena, mala, supuestoTotal: R.base, sobran, quita, correctas, incorrectas, respuesta: correctas, cambios: R.cambios, daria,
       errores: limpiar({
         daLasIncorrectas: incorrectas,
         sinDescuento: puntaje % buena === 0 ? puntaje / buena : null,
@@ -240,7 +255,8 @@
       const t = { op: textoOp(o), antes: valor(antes), despues: valor(x) };
       if (o.op === 'gasta') {
         const [p, q] = o.parte, parte = prod(antes, fr(p, q));
-        Object.assign(t, { parte: valor(parte), extra: o.mas || 0, queda: valor(x), parteTexto: parteTexto(o.parte) });
+        Object.assign(t, { parte: valor(parte), extra: o.mas || 0, queda: valor(x), parteTexto: parteTexto(o.parte),
+          noGasto: valor(suma(x, o.mas || 0)), veces: frTexto(fr(q, q - p)) });
         if (resta(resta(resta(antes, parte), o.mas || 0), x).n !== 0) throw new Error('las barras no cuadran');
       }
       return t;
@@ -396,15 +412,15 @@
   }
 
   // ---------- geometría para el dibujo ----------
-  // n fichas en una cuadrícula dentro de W × H (o = { arriba, abajo, lado, max }), lo más grandes posible
+  // n fichas en una cuadrícula dentro de W × H (o = { arriba, abajo, lado, max, cols }), lo más grandes posible
   function rejilla(n, W, H, o) {
     o = o || {};
     const arriba = o.arriba || 0, abajo = o.abajo || 0, lado = o.lado != null ? o.lado : 8, max = o.max || 18;
     const w = W - 2 * lado, h = H - arriba - abajo;
     let mejor = null;
-    for (let cols = 1; cols <= Math.max(1, n); cols++) {
+    for (let cols = o.cols || 1; cols <= (o.cols || Math.max(1, n)); cols++) {
       const filas = Math.ceil(n / cols), r = Math.min(max, w / cols / 2 * 0.84, h / filas / 2 * 0.84);
-      if (!mejor || r > mejor.r + 1e-9) mejor = { cols, filas, r };
+      if (!mejor || r > mejor.r - 1e-9) mejor = { cols, filas, r };   // con el mismo tamaño, la de más columnas (filas llenas arriba)
     }
     const { cols, filas, r } = mejor, cw = w / cols, ch = h / filas, pos = [];
     for (let i = 0; i < n; i++) {
@@ -442,7 +458,7 @@
   function mitadDe(geo, p) { if (geo.una) return null; return lado(p, geo.cajas.g) ? 'g' : lado(p, geo.cajas.c) ? 'c' : null; }
   function examenGeo(n, W, H, o) {
     o = o || {};
-    const R = rejilla(n, W, H, { arriba: o.arriba || 0, abajo: o.abajo || 0, lado: 8, max: o.max || 14 });
+    const R = rejilla(n, W, H, { arriba: o.arriba || 0, abajo: o.abajo || 0, lado: 8, max: o.max || 14, cols: Math.min(10, n) });   // de 10 en 10, para contar fácil
     return R;
   }
   // La tira del cangrejo: nOps + 1 cajas en fila con flechas entre ellas; arriba la ida y abajo la vuelta
@@ -465,15 +481,16 @@
     const zona = { x: 8, y: arriba, w: W - 16, h: H - arriba - banca - abajo - 6 };
     let cas = [], lineas = [], r;
     if (tipo === 'cuadrado3') {
-      const l = Math.min(zona.w, zona.h), c = l / 3, x0 = zona.x + (zona.w - l) / 2, y0 = zona.y + (zona.h - l) / 2;
+      // lugar a la derecha y abajo para las sumas de filas, columnas y diagonales
+      const l = Math.min(zona.w - 64, zona.h - 22), c = l / 3, x0 = zona.x + (zona.w - l) / 2, y0 = zona.y + (zona.h - 22 - l) / 2;
       r = Math.min(24, c * 0.36);
       for (let i = 0; i < 9; i++) cas.push({ x: x0 + (i % 3 + 0.5) * c, y: y0 + (Math.floor(i / 3) + 0.5) * c, r });
       lineas = t.lineas.map(L => L.map(i => ({ x: cas[i].x, y: cas[i].y })));
       return { tipo, cas, lineas, r, celda: c, x0, y0, lado: l, banca: bancaGeo(t.casillas, W, H - abajo, banca, r), zona };
     }
     const k = tipo === 'triangulo3' ? 3 : 4;
-    // triángulo equilátero lo más grande posible, con margen para las casillas
-    const m = 26, lmax = Math.min(zona.w - 2 * m, (zona.h - 2 * m) * 2 / Math.sqrt(3)), l = lmax, h = l * Math.sqrt(3) / 2;
+    // triángulo equilátero lo más grande posible, con margen para las casillas y las sumas de los lados
+    const m = 40, lmax = Math.min(zona.w - 2 * m, (zona.h - 2 * m) * 2 / Math.sqrt(3)), l = lmax, h = l * Math.sqrt(3) / 2;
     const cx = zona.x + zona.w / 2, top = zona.y + (zona.h - h) / 2;
     const V = [{ x: cx, y: top }, { x: cx - l / 2, y: top + h }, { x: cx + l / 2, y: top + h }];
     r = Math.min(22, l / (k - 1) * 0.3);
