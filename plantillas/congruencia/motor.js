@@ -35,7 +35,8 @@
  *                             LLL además ordenDeUnion 'seis' (uno por cada orden de unir las varillas) y
  *                             bisagrasLibres 'infinitos' (cree que las uniones se pueden abrir);
  *                             LAA: soloConLadoEntre 'infinitos' (cree que el lado tiene que estar entre los ángulos);
- *                             LLA con dos: comoCriterio 'uno' y ladoCortoNoCierra 'ninguno'; LLA con uno:
+ *                             LLA con dos: comoCriterio 'uno', ladoCortoNoCierra 'ninguno' y baseLibre 'infinitos'
+ *                             (cree que, con la base de largo libre, AB puede medir cualquier cosa); LLA con uno:
  *                             nuncaDetermina 'dos' y, si el ángulo es recto, pitagorasSuma = √(opuesto² + adyacente²);
  *                             LLA con ninguno: comoCriterio 'uno'; AAA: comoCriterio 'uno' y sinTriangulo 'ninguno';
  *                             con datos que no cierran (n = 0, salvo LLA): comoSiCerrara 'uno'.
@@ -61,6 +62,8 @@
  *                           triangulo ({A,B,C} si cierra), piezas } con las piezas para dibujar:
  *                           { tipo:'varilla', lado, de, a }, { tipo:'rayo', de, angulo }, { tipo:'elastico', lado, de, a }
  *                           y { tipo:'bisagra', letra, vertice, desde, hasta } (ángulos polares en grados, antihorario).
+ *   avanzar(kit, P, sentido)  el paso del teclado por el lugar 'libre': 3° (círculo) o 0,25 (rayo), +1 antihorario o
+ *                           hacia afuera; si en ese paso hay un cierre, se queda en él (el imán no atrapa: el paso siguiente sale).
  *   enLocus(kit, f)         el punto del lugar 'libre' para f de 0 a 1 (una vuelta entera desde 'inicio' en sentido
  *                           horario, o el rayo de desde a hasta): sirve para animar el barrido.
  *   correspondencia(t1, t2) t = { nombres: 'ABC', lados: [l01, l12, l20] } (lados[i] une el vértice i con el i + 1) y,
@@ -70,6 +73,16 @@
  *                           porPosicion (emparejar por el lugar en el dibujo: el de más arriba con el de más arriba y los
  *                           otros dos de izquierda a derecha; solo si hay puntos), volteadoNoCongruente: 'no congruentes'
  *                           (si uno es reflejo del otro) } }; un error que coincide con una correspondencia válida va null.
+ *   compararDatos(t1, t2)   dos triángulos dados por datos con sus propios nombres: t = { nombres: 'DEF',
+ *                           datos: { D: 50, E: 60, DF: 9 } } (ángulos por su vértice, lados por sus dos vértices; tres datos que
+ *                           determinen el triángulo). Cada triángulo se construye por su cuenta y se compara. Devuelve
+ *                           { congruentes, criterios: ['LAA', 'LAA'], opuestos: [{ lado, vertice, angulo } por cada lado dado]
+ *                           (el vértice opuesto a cada lado dado y su ángulo, en grados de academia), lados: [{ AB, BC, CA },
+ *                           { DE, EF, FD }], angulos: [{ A, B, C }, { D, E, F }] (academia), vertices: [dos objetos con claves A, B, C
+ *                           para el primer, segundo y tercer nombre, como en construir], texto ('ΔABC ≅ ΔDEF' con los vértices
+ *                           emparejados por ángulos iguales, o null), errores: { ladoSinMirarAngulo: 'congruentes' (emparejar el
+ *                           lado dado con el lado dado sin ver frente a qué ángulo está; null si de verdad son congruentes),
+ *                           faltaUnLado: 'faltan datos' } }.
  *   superponer(origen, destino, f)   lleva el triángulo origen (3 puntos) sobre destino, congruente, para f de 0 a 1:
  *                           si hace falta, primero lo voltea (f de 0 a 0,4) y después lo gira y lo traslada.
  *                           Devuelve { puntos, refleja, giro (grados) }.
@@ -79,7 +92,9 @@
  *                           Devuelve { P, M, PA, PB, PM, mitad (AB/2), errores: { PMcomoPB (= |t|), suma (|t| + AB/2),
  *                           restaCuadrados (√(t² − (AB/2)²), null si no existe) } }.
  *   bisectriz({ angulo, d })  ángulo AOB de vértice O = (0; 0), lado OA sobre el eje x; P en la bisectriz con OP = d.
- *                           Devuelve { P, H (pie sobre OA), K (pie sobre OB), distancias: [PH, PK], OH, OK, mitad,
+ *                           angulo va en grados de academia (74 = 2·37°, 106 = 2·53°). Devuelve { P, H (pie sobre OA), K (pie
+ *                           sobre OB), distancias: [PH, PK], OH, OK, mitad (la mitad del ángulo, en grados de academia: 37 para 74),
+ *                           A y B (puntos de los lados, a 1,6·d de O), errores (cada uno un par [x, y], null si coincide) }:
  *                           errores: { pieComoDistancia: [OH, OK], mitadDeOP: [d/2, d/2], noEquidista: [PH, OH] } }.
  *   baseMedia({ A, B, C })  M punto medio de AB y N de AC: { M, N, MN, BC, razon (MN/BC), paralela,
  *                           errores: { ladoEntero: BC, cuarto: BC/4 } }.
@@ -91,9 +106,10 @@
  *                           promedioCatetos, hipotenusaEntera } } (null el que coincida con la mediana).
  *   notable({ tipo, hipotenusa | menor | mayor | cateto })  tipo '30-60' (k, k√3, 2k), '45-45' (k, k, k√2) o '37-53'
  *                           (3k, 4k, 5k). Devuelve { k, menor, mayor, hipotenusa, textos: { menor, mayor, hipotenusa },
- *                           errores } con, para '30-60' dado por la hipotenusa: intercambiados (el cateto mayor en lugar
+ *                           errores } (cada error es un número, una longitud, o null si coincide con el cateto menor) con, para '30-60': intercambiados (el cateto mayor en lugar
  *                           del menor), proporcionalAngulos (lados proporcionales a 30, 60 y 90: hipotenusa/3) y
- *                           otroNotable (el de 45°: hipotenusa/√2).
+ *                           otroNotable (el de 45°: hipotenusa/√2); para '37-53': intercambiados (4k) y proporcionalAngulos
+ *                           (hipotenusa·37/90); para '45-45': sinRaiz (la hipotenusa). textos: 5√3, 12, 4√2 (o el número con coma).
  *   raizTexto(x)            un número como lo escribe la academia: 5√3, 4√2, 12, o null si no es entero ni p√q.
  *   azar(semilla)           números al azar con semilla (para las pruebas).
  *
@@ -207,7 +223,7 @@
       terceros = terceros.filter(t => t > TOL * esc);
       R.triangulos = terceros.map(t => { const v = { [lg]: o, [ladj]: s, [lter]: t }; return desdeLados(v.a, v.b, v.c); });
       const n = terceros.length, recto = Math.abs(grados(W) - 90) < 1e-9;
-      if (n === 2) R.errores = { comoCriterio: 'uno', ladoCortoNoCierra: 'ninguno' };
+      if (n === 2) R.errores = { comoCriterio: 'uno', ladoCortoNoCierra: 'ninguno', baseLibre: 'infinitos' };
       else if (n === 1) { R.errores = { nuncaDetermina: 'dos' }; if (recto) R.errores.pitagorasSuma = Math.sqrt(o * o + s * s); }
       else R.errores = { comoCriterio: 'uno' };
       const motivo = n === 0 ? 'no alcanza' : n === 2 ? 'dos cortes' : (Math.abs(o - h) <= TOL * esc && !recto ? 'tangente' : 'un corte');
@@ -397,6 +413,59 @@
     return { congruentes: validas.length > 0, pares, texto: todas[0] || null, todas, errores };
   }
 
+  // ---------- Comparar dos triángulos dados por datos (LAA mal emparejado) ----------
+  function compararDatos(t1, t2) {
+    const uno = (t, que) => {
+      if (!t || typeof t.nombres !== 'string' || t.nombres.length !== 3 || !t.datos) throw new Error(`${que}: faltan nombres o datos`);
+      const N = t.nombres, d = {}, opuestos = [];
+      for (const [k, v] of Object.entries(t.datos)) {
+        if (k.length === 1 && N.includes(k)) d[ANGULOS[N.indexOf(k)]] = v;
+        else if (k.length === 2 && N.includes(k[0]) && N.includes(k[1]) && k[0] !== k[1]) {
+          const op = [0, 1, 2].find(i => !k.includes(N[i]));
+          d[LADOS[op]] = v; opuestos.push({ lado: k, vertice: N[op] });
+        } else throw new Error(`${que}: dato desconocido ${k}`);
+      }
+      const r = construir(d);
+      if (r.n !== 1) throw new Error(`${que}: los datos no determinan un solo triángulo`);
+      const t0 = r.triangulos[0];
+      opuestos.forEach(o => { o.angulo = t0.academia[ANGULOS[N.indexOf(o.vertice)]]; });
+      const lados = { [N[0] + N[1]]: t0.lados.c, [N[1] + N[2]]: t0.lados.a, [N[2] + N[0]]: t0.lados.b };
+      const angulos = { [N[0]]: t0.academia.A, [N[1]]: t0.academia.B, [N[2]]: t0.academia.C };
+      return { criterio: r.criterio, opuestos, lados, angulos, real: t0.angulos, vertices: t0.vertices, N };
+    };
+    const a = uno(t1, 'el primer triángulo'), b = uno(t2, 'el segundo triángulo');
+    const V = x => [x.vertices.A, x.vertices.B, x.vertices.C];
+    const cong = congruentes(V(a), V(b));
+    let texto = null;
+    if (cong) {
+      const ra = [a.real.A, a.real.B, a.real.C], rb = [b.real.A, b.real.B, b.real.C];
+      const s = PERMS.find(p => [0, 1, 2].every(i => Math.abs(ra[i] - rb[p[i]]) < 1e-7));
+      if (s) texto = `Δ${a.N} ≅ Δ${s.map(i => b.N[i]).join('')}`;
+    }
+    return { congruentes: cong, criterios: [a.criterio, b.criterio], opuestos: a.opuestos.concat(b.opuestos), lados: [a.lados, b.lados],
+      angulos: [a.angulos, b.angulos], vertices: [a.vertices, b.vertices], texto,
+      errores: { ladoSinMirarAngulo: cong ? null : 'congruentes', faltaUnLado: 'faltan datos' } };
+  }
+
+  // ---------- Avanzar con el teclado por el lugar de la punta libre ----------
+  // Un paso (3° en un círculo, 0,25 en un rayo) en el sentido dado (+1 antihorario o hacia afuera, −1 al revés);
+  // si en ese paso pasa por un cierre, se queda justo en él, y el paso siguiente sale de él.
+  function avanzar(kit, P0, sentido) {
+    const R = armador(kit), L = R.libre, P = punto(P0, 'el punto'), sg = sentido < 0 ? -1 : 1;
+    if (L.tipo === 'puntos') return dist(P, L.puntos[0]) <= dist(P, L.puntos[1]) ? L.puntos[1].slice() : L.puntos[0].slice();
+    if (L.tipo === 'circulo') {
+      const t = polar(L.centro, P), paso = 3 * sg;
+      let mejor = null;
+      R.cierres.forEach(Q => { const d = ((polar(L.centro, Q) - t) * sg % 360 + 360) % 360; if (d > 1e-7 && d <= 3 + 1e-9 && (mejor === null || d < mejor.d)) mejor = { d, Q }; });
+      return mejor ? mejor.Q.slice() : enCirculo(L.centro, L.radio, t + paso);
+    }
+    const u = [Math.cos(L.angulo * PI / 180), Math.sin(L.angulo * PI / 180)];
+    const t = (P[0] - L.origen[0]) * u[0] + (P[1] - L.origen[1]) * u[1], t2 = Math.max(L.desde, Math.min(L.hasta, t + 0.25 * sg));
+    let mejor = null;
+    R.cierres.forEach(Q => { const q = dist(L.origen, Q), d = (q - t) * sg; if (d > 1e-7 && d <= 0.25 + 1e-9 && (mejor === null || d < mejor.d)) mejor = { d, Q }; });
+    return mejor ? mejor.Q.slice() : enCirculo(L.origen, t2, L.angulo);
+  }
+
   // ---------- Superponer un triángulo sobre otro (animación) ----------
   function tresPuntos(P, que) { if (!Array.isArray(P) || P.length !== 3) throw new Error(`${que}: se necesitan tres puntos`); return P.map((p, i) => punto(p, `${que} ${i + 1}`)); }
   function congruentes(P0, Q0) {
@@ -518,6 +587,6 @@
 
   function azar(sem) { let s = (sem >>> 0) || 1; return () => (s = (Math.imul(s, 1664525) + 1013904223) >>> 0) / 4294967296; }
 
-  return { TOL, G37, G53, grados, academia, sen, cos, construir, armador, mover, enLocus, correspondencia, superponer,
+  return { TOL, G37, G53, grados, academia, sen, cos, construir, armador, mover, avanzar, enLocus, correspondencia, compararDatos, superponer,
     congruentes, mediatriz, bisectriz, baseMedia, medianaHipotenusa, notable, raizTexto, azar, distancia: (P, Q) => dist(punto(P, 'P'), punto(Q, 'Q')) };
 });

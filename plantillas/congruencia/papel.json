@@ -5,15 +5,16 @@
     {
       "id": "p1",
       "nivel": "básico",
-      "enunciado": "En los triángulos ABC y DEF se sabe que AB = DE = 9, BC = EF = 12 y que el ángulo B mide lo mismo que el ángulo E, 70°. ¿Son congruentes? ¿Con qué criterio? ¿Y si en vez de los ángulos B y E fueran iguales los ángulos C y F?",
-      "respuesta": "Sí, por LAL (el ángulo B está entre AB y BC). Con los ángulos C y F, no se puede asegurar: sería LLA.",
+      "enunciado": "En los triángulos ABC y DEF se sabe que AB = DE = 9, BC = EF = 12 y que el ángulo B mide lo mismo que el ángulo E, 70°. ¿Son congruentes? ¿Con qué criterio? ¿Y si en vez de los ángulos B y E fueran iguales los ángulos C y F, de 37°?",
+      "respuesta": "Sí, por LAL (el ángulo B está entre AB y BC). Con los ángulos C y F de 37°, no se puede asegurar: es LLA y hay dos triángulos posibles.",
       "pasos": [
         "El ángulo B está formado por los lados BA y BC: es el ángulo comprendido entre los dos lados dados. Eso es LAL.",
         "LAL determina el triángulo: ΔABC ≅ ΔDEF, con A con D, B con E y C con F.",
         "El ángulo C no está entre AB y BC: está frente a AB. Con dos lados y un ángulo no comprendido (LLA) puede haber dos triángulos distintos.",
-        "Ojo: en el segundo caso el ángulo C está frente a AB = 9, que es el lado menor de los dos. Por eso no basta."
+        "En el segundo caso el ángulo C de 37° está frente a AB = 9, el menor de los dos lados dados. La distancia de B a la recta CA es 12 · 3/5 = 7,2, menor que AB = 9, y 9 < 12: con centro en B, el compás de 9 corta dos veces la recta CA delante de C. Hay dos triángulos."
       ],
-      "verificar": [ { "fn": "construir", "args": [{ "c": 9, "a": 12, "B": 70 }], "espera": { "criterio": "LAL", "cuantos": "uno" } } ]
+      "verificar": [ { "fn": "construir", "args": [{ "c": 9, "a": 12, "B": 70 }], "espera": { "criterio": "LAL", "cuantos": "uno" } },
+                     { "fn": "construir", "args": [{ "C": 37, "a": 12, "c": 9 }], "espera": { "criterio": "LLA", "cuantos": "dos", "altura": 7.2 } } ]
     },
     {
       "id": "p2",

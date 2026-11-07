@@ -36,7 +36,7 @@
     { "nombre": "Trampa LLA: ∠A = 37°, AC = 10 y BC = 6,5. La altura desde C es 6; el compás corta la base en AB = 8 ∓ 2,5: dos triángulos no congruentes (5,5 y 10,5)",
       "fn": "construir", "args": [{ "A": 37, "b": 10, "a": 6.5 }],
       "espera": { "criterio": "LLA", "cuantos": "dos", "determina": false, "altura": 6, "terceros": [5.5, 10.5], "frenteAlMayor": false,
-                  "errores.comoCriterio": "uno", "errores.ladoCortoNoCierra": "ninguno", "triangulos.0.lados.c": 5.5, "triangulos.1.lados.c": 10.5 },
+                  "errores.comoCriterio": "uno", "errores.ladoCortoNoCierra": "ninguno", "errores.baseLibre": "infinitos", "triangulos.0.lados.c": 5.5, "triangulos.1.lados.c": 10.5 },
       "tambien": [
         { "fn": "mover", "args": [{ "A": 37, "b": 10, "a": 6.5 }, [5.4, 0.2]], "espera": { "cierra": true, "indice": 0, "punto": [5.5, 0], "lados.c": 5.5 } },
         { "fn": "mover", "args": [{ "A": 37, "b": 10, "a": 6.5 }, [8, 13]], "espera": { "cierra": false, "punto": [8, 12.5], "falta": 12.5 } }
@@ -50,19 +50,17 @@
       "fn": "construir", "args": [{ "A": 37, "b": 10, "a": 5 }],
       "espera": { "cuantos": "ninguno", "terceros": [], "errores.comoCriterio": "uno" } },
 
-    { "nombre": "LLA con el ángulo frente al lado mayor: BC = 12 > AC = 10; el otro corte cae detrás de A, en 8 − √108; un solo triángulo con AB = 8 + √108",
-      "fn": "construir", "args": [{ "A": 37, "b": 10, "a": 12 }],
-      "espera": { "cuantos": "uno", "determina": true, "frenteAlMayor": true, "terceros": [18.392304845413264], "detras": [-2.392304845413264], "errores.nuncaDetermina": "dos" },
-      "tambien": [ { "args": [{ "A": 37, "b": 10, "a": 10 }], "espera": { "cuantos": "uno", "terceros": [16] } } ] },
+    { "nombre": "LLA con a = b: ∠A = 37°, AC = BC = 10; el compás pasa por A (ese corte no sirve) y corta la base en AB = 16: uno solo, isósceles. Con BC = 12 > AC, frente al lado mayor: uno (8 + √108; el otro corte, 8 − √108, cae detrás de A). Con 120°: AC = 5, BC = 7 → AB = 3; AC = 7, BC = 5 o AC = BC = 5 → ninguno",
+      "fn": "construir", "args": [{ "A": 37, "b": 10, "a": 10 }],
+      "espera": { "cuantos": "uno", "determina": true, "frenteAlMayor": false, "terceros": [16], "detras": [], "errores.nuncaDetermina": "dos" },
+      "tambien": [ { "args": [{ "A": 37, "b": 10, "a": 12 }], "espera": { "cuantos": "uno", "frenteAlMayor": true, "terceros": [18.392304845413264], "detras": [-2.392304845413264] } },
+                   { "args": [{ "A": 120, "b": 5, "a": 7 }], "espera": { "cuantos": "uno", "terceros": [3], "detras": [-8], "frenteAlMayor": true } },
+                   { "args": [{ "A": 120, "b": 7, "a": 5 }], "espera": { "cuantos": "ninguno", "terceros": [] } },
+                   { "args": [{ "A": 120, "b": 5, "a": 5 }], "espera": { "cuantos": "ninguno", "terceros": [] } } ] },
 
     { "nombre": "Hipotenusa y cateto: ∠A = 90°, cateto AC = 6, hipotenusa BC = 10 → AB = 8 (el corte de atrás, −8, es el reflejo); GE11 sumando: √136",
       "fn": "construir", "args": [{ "A": 90, "b": 6, "a": 10 }],
       "espera": { "criterio": "LLA", "cuantos": "uno", "recto": true, "terceros": [8], "detras": [-8], "errores.pitagorasSuma": 11.661903789690601, "triangulos.0.academia.B": 37 } },
-
-    { "nombre": "LLA con ángulo obtuso, frente al lado mayor: ∠A = 120°, AC = 5, BC = 7 → AB = 3, uno solo; al revés (AC = 7, BC = 5) no hay ninguno",
-      "fn": "construir", "args": [{ "A": 120, "b": 5, "a": 7 }],
-      "espera": { "cuantos": "uno", "terceros": [3], "frenteAlMayor": true },
-      "tambien": [ { "args": [{ "A": 120, "b": 7, "a": 5 }], "espera": { "cuantos": "ninguno", "terceros": [] } } ] },
 
     { "nombre": "AAA: 37°, 53° y 90° no determinan el tamaño (infinitos, todos semejantes); 40°, 60° y 90° no suman 180° y no cierran",
       "fn": "construir", "args": [{ "A": 37, "B": 53, "C": 90 }],
@@ -78,7 +76,17 @@
                   "errores.ordenEscritura": "ΔABC ≅ ΔPQR", "errores.porPosicion": "ΔABC ≅ ΔPRQ", "errores.volteadoNoCongruente": "no congruentes" },
       "tambien": [ { "args": [ { "nombres": "ABC", "lados": [5, 5, 6] }, { "nombres": "DEF", "lados": [5, 5, 6] } ],
                      "espera": { "texto": "ΔABC ≅ ΔDEF", "todas": ["ΔABC ≅ ΔDEF", "ΔABC ≅ ΔFED"], "errores.ordenEscritura": null } },
-                   { "args": [ { "nombres": "ABC", "lados": [5, 6, 7] }, { "nombres": "DEF", "lados": [5, 6, 8] } ], "espera": { "congruentes": false, "texto": null } } ] },
+                   { "args": [ { "nombres": "ABC", "lados": [5, 6, 7] }, { "nombres": "DEF", "lados": [5, 6, 8] } ], "espera": { "congruentes": false, "texto": null } },
+                   { "args": [ { "nombres": "ABC", "lados": [4, 4, 4] }, { "nombres": "DEF", "lados": [4, 4, 4] } ],
+                     "espera": { "texto": "ΔABC ≅ ΔDEF", "todas": ["ΔABC ≅ ΔDEF", "ΔABC ≅ ΔDFE", "ΔABC ≅ ΔEDF", "ΔABC ≅ ΔEFD", "ΔABC ≅ ΔFDE", "ΔABC ≅ ΔFED"], "errores.ordenEscritura": null } } ] },
+
+    { "nombre": "LAA mal emparejado: ∠A = ∠D = 50°, ∠B = ∠E = 60°, BC = DF = 9. BC está frente a A (50°) y DF frente a E (60°): no son congruentes (EF = 9·sen 50°/sen 60°, DE = 9·sen 70°/sen 60°). Con EF = 9, frente a D, sí: ΔABC ≅ ΔDEF",
+      "fn": "compararDatos", "args": [ { "nombres": "ABC", "datos": { "A": 50, "B": 60, "BC": 9 } }, { "nombres": "DEF", "datos": { "D": 50, "E": 60, "DF": 9 } } ],
+      "espera": { "congruentes": false, "texto": null, "criterios": ["LAA", "LAA"], "opuestos.0.vertice": "A", "opuestos.0.angulo": 50, "opuestos.1.vertice": "E", "opuestos.1.angulo": 60,
+                  "lados.0.CA": 10.174642873624224, "lados.0.AB": 11.040134372151096, "lados.1.EF": 7.960967378027261, "lados.1.DE": 9.765572176192483, "lados.1.FD": 9,
+                  "angulos.1.F": 70, "errores.ladoSinMirarAngulo": "congruentes", "errores.faltaUnLado": "faltan datos" },
+      "tambien": [ { "args": [ { "nombres": "ABC", "datos": { "A": 50, "B": 60, "BC": 9 } }, { "nombres": "DEF", "datos": { "D": 50, "E": 60, "EF": 9 } } ],
+                     "espera": { "congruentes": true, "texto": "ΔABC ≅ ΔDEF", "errores.ladoSinMirarAngulo": null } } ] },
 
     { "nombre": "Mediatriz: A(−5; 0), B(5; 0) y P a 12 del punto medio → PA = PB = 13 (5-12-13); errores: 12, 17 y √119",
       "fn": "mediatriz", "args": [{ "A": [-5, 0], "B": [5, 0], "t": 12 }],
@@ -92,9 +100,10 @@
       "fn": "baseMedia", "args": [{ "A": [2, 9], "B": [0, 0], "C": [14, 0] }],
       "espera": { "M": [1, 4.5], "N": [8, 4.5], "MN": 7, "BC": 14, "razon": 0.5, "paralela": true, "errores.ladoEntero": 14, "errores.cuarto": 3.5 } },
 
-    { "nombre": "Mediana relativa a la hipotenusa: catetos 6 y 8 → hipotenusa 10 y mediana 5; la altura es 4,8 (GE8) y el promedio de catetos 7",
-      "fn": "medianaHipotenusa", "args": [{ "catetos": [6, 8] }],
-      "espera": { "hipotenusa": 10, "mediana": 5, "altura": 4.8, "B": [-1.4, 4.8], "errores.cateto": 6, "errores.altura": 4.8, "errores.promedioCatetos": 7, "errores.hipotenusaEntera": 10 },
+    { "nombre": "Mediana relativa a la hipotenusa: catetos AB = 5 y BC = 12 → hipotenusa 13 y mediana 13/2; la altura es 60/13 (GE8), el promedio de catetos 8,5 y el cateto AB 5. B queda en x = (25 − 144)/26 = −119/26 respecto de M",
+      "fn": "medianaHipotenusa", "args": [{ "catetos": [5, 12] }],
+      "espera": { "hipotenusa": 13, "mediana": 6.5, "altura": 4.615384615384615, "B": [-4.576923076923077, 4.615384615384615], "catetos": [5, 12],
+                  "errores.cateto": 5, "errores.otroCateto": 12, "errores.altura": 4.615384615384615, "errores.promedioCatetos": 8.5, "errores.hipotenusaEntera": 13 },
       "tambien": [ { "args": [{ "hipotenusa": 10, "t": 120 }], "espera": { "mediana": 5, "catetos": [5, 8.660254037844386], "errores.cateto": null } } ] },
 
     { "nombre": "Notable 30°-60°: hipotenusa 10 → k = 5, catetos 5 y 5√3 (errores: 5√3, 10/3 y 5√2); 37°-53° con hipotenusa 15 → 9 y 12; 45°-45° con cateto 4 → 4√2",
@@ -102,7 +111,8 @@
       "espera": { "k": 5, "menor": 5, "mayor": 8.660254037844386, "textos.mayor": "5√3", "errores.intercambiados": 8.660254037844386,
                   "errores.proporcionalAngulos": 3.3333333333333335, "errores.otroNotable": 7.0710678118654755 },
       "tambien": [ { "args": [{ "tipo": "37-53", "hipotenusa": 15 }], "espera": { "menor": 9, "mayor": 12, "k": 3 } },
-                   { "args": [{ "tipo": "45-45", "cateto": 4 }], "espera": { "hipotenusa": 5.656854249492381, "textos.hipotenusa": "4√2" } } ] },
+                   { "args": [{ "tipo": "45-45", "cateto": 4 }], "espera": { "hipotenusa": 5.656854249492381, "textos.hipotenusa": "4√2" } },
+                   { "args": [{ "tipo": "45-45", "hipotenusa": 6 }], "espera": { "k": 4.242640687119285, "menor": 4.242640687119285, "mayor": 4.242640687119285, "textos.menor": "3√2" } } ] },
 
     { "nombre": "Superponer: PQR (volteado) cae sobre ABC con Q en A, R en B y P en C; al final los puntos coinciden",
       "fn": "superponer", "args": [ [[6.285714285714286, 4.948716593053935], [7, 0], [0, 0]], [[0, 0], [5, 0], [4, 6.928203230275509]], 1 ],

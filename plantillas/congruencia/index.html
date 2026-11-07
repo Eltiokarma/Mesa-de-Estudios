@@ -157,7 +157,7 @@ button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--
     <header>
       <p class="eyebrow">Geometría · Congruencia de triángulos · Problemas tipo admisión</p>
       <h1>El armador de triángulos</h1>
-      <p class="sub">Te dan piezas: varillas de largo fijo y bisagras con un ángulo fijo. Trata de armar un triángulo distinto al de la figura. Si no puedes, los datos lo determinan.</p>
+      <p class="sub">Te dan piezas: varillas de largo fijo y cuñas con un ángulo fijo. Trata de armar un triángulo distinto al de la figura. Si no puedes, los datos lo determinan.</p>
     </header>
     <nav class="tabs" aria-label="Modo de la escena">
       <a href="#paso-a-paso" id="tab1">Paso a paso</a>
@@ -334,7 +334,7 @@ function crearMesa(cv, idDesc, idLect, idLey){
     if (o.pasadores !== false) for (const R of [P, Q]){ ctx.fillStyle = c.paper; ctx.beginPath(); ctx.arc(X(R[0]), Y(R[1]), 2.6, 0, 2*Math.PI); ctx.fill(); }
     ctx.restore();
     if (texto){
-      const dx = X(Q[0]) - X(P[0]), dy = Y(Q[1]) - Y(P[1]), L = Math.hypot(dx, dy) || 1, lado = o.lado || 1, sep = o.sep || 16;
+      const dx = X(Q[0]) - X(P[0]), dy = Y(Q[1]) - Y(P[1]), L = Math.hypot(dx, dy) || 1, lado = o.arriba ? (dx >= 0 ? 1 : -1) : (o.lado || 1), sep = o.sep || 16;
       const mx = (X(P[0]) + X(Q[0]))/2 + lado*(dy/L)*sep, my = (Y(P[1]) + Y(Q[1]))/2 - lado*(dx/L)*sep;
       rotuloPx(c, mx, my, texto, color, 'center', 13);
     }
@@ -439,7 +439,9 @@ function crearMesa(cv, idDesc, idLect, idLey){
     if (!d) return;
     e.preventDefault();
     const P = E.mano.pos(), k = (E.mano.paso || 0.3)*(e.shiftKey ? 3 : 1);
-    E.mano.poner([P[0] + d[0]*k, P[1] + d[1]*k]); E.dibujar(); E.avisar();
+    if (E.mano.teclado) E.mano.teclado(d[0] + d[1] > 0 ? 1 : -1);
+    else E.mano.poner([P[0] + d[0]*k, P[1] + d[1]*k]);
+    E.dibujar(); E.avisar();
   });
   return E;
 }
@@ -462,7 +464,7 @@ function pintarArmador(D, kit, r, o){
   for (const p of r.piezas){
     if (p.tipo === 'varilla'){
       const L = kit[p.lado] !== undefined ? kit[p.lado] : MC.distancia(p.de, p.a);
-      D.varilla(p.de, p.a, c[p.lado], `${p.lado} = ${fmt(L)}`, { clave:p.lado, lado: (o.ladoRot && o.ladoRot[p.lado]) || 1 });
+      D.varilla(p.de, p.a, c[p.lado], `${p.lado} = ${fmt(L)}`, { clave:p.lado, lado: (o.ladoRot && o.ladoRot[p.lado]) || 1, arriba: kit.a !== undefined && kit.b !== undefined && kit.c !== undefined && p.lado !== 'c' });
     } else if (p.tipo === 'elastico'){
       const L = MC.distancia(p.de, p.a);
       D.varilla(p.de, p.a, c[p.lado], o.medirElastico === false ? '' : `${p.lado} = ${fmt(L)}`, { clave:p.lado, ancho:3, trazos:[7, 5], pasadores:false, lado: (o.ladoRot && o.ladoRot[p.lado]) || 1 });
@@ -483,7 +485,7 @@ function pintarArmador(D, kit, r, o){
     else if (kit.b !== undefined && kit.a !== undefined) { const R = MC.armador(kit); D.pt(R.base.C, 'C', null, { dy:-16 }); }
   }
 }
-// Las piezas sueltas, antes de armar (para no adelantar nada): varillas en fila y bisagras como cuñas
+// Las piezas sueltas, antes de armar (para no adelantar nada): varillas en fila y cuñas
 function pintarSueltas(D, varillas, angulos){
   const c = D.c, W = D.W, H = D.H, s = D.s;
   const filas = varillas.length + (angulos && angulos.length ? 1 : 0);
@@ -524,12 +526,12 @@ const ABC = { nombres:'ABC', lados:[5, 7, 8], puntos:[[0, 0], [5, 0], R_LLL.tria
 const PQR_P = (() => { const s = MC.construir({ a:5, b:8, c:7 }).triangulos[0].vertices; const off = 8.5; return [[s.A[0] + off, 0], [s.C[0] + off, s.C[1]], [s.B[0] + off, 0]]; })();
 const PQR = { nombres:'PQR', lados:[8, 5, 7], puntos:PQR_P };
 const CO = MC.correspondencia(ABC, PQR);
-const MH = MC.medianaHipotenusa({ catetos:[6, 8] });
+const MH = MC.medianaHipotenusa({ catetos:[5, 12] });
 const CU = { uno:'Uno', dos:'Dos', seis:'Seis', infinitos:'Infinitos', ninguno:'Ninguno' };
 
 const P1 = { id:'congruencia-paso1', ok:'a', opts:[
-  ['a', 'Uno solo: cualquier otro que armes es el mismo, quizá dado vuelta'],
-  ['b', `${CU[R_LLL.errores.reflejoComoOtro]}: uno con la punta hacia arriba y otro hacia abajo`, 'GE9-reflejo-como-otro', 'parcial'],
+  ['a', 'Uno: con los tres largos fijos, el triángulo no tiene juego'],
+  ['b', `${CU[R_LLL.errores.reflejoComoOtro]}: uno con la punta hacia arriba y otro hacia abajo`, 'GE9-reflejo-como-otro', 'hipotesis'],
   ['c', `${CU[R_LLL.errores.ordenDeUnion]}: uno por cada orden en que se unen las varillas`, 'LLL-orden-de-union', 'hipotesis'],
   ['d', `${CU[R_LLL.errores.bisagrasLibres]}: las uniones se pueden abrir más o menos`, 'LLL-bisagras-libres', 'hipotesis']],
   fb:{ a:'¡Bien! Con tres varillas fijas, las uniones no tienen juego: el triángulo solo cierra en dos lugares, y esos dos son el mismo triángulo dado vuelta.',
@@ -538,20 +540,20 @@ const P1 = { id:'congruencia-paso1', ok:'a', opts:[
     d:'Elegiste la D. Una unión se puede abrir solo si una de las varillas puede alargarse o acortarse. Con los tres largos fijos, cada ángulo queda fijo. La correcta está marcada.' } };
 const P2 = { id:'congruencia-paso3', ok:'c', opts:[
   ['a', 'Sí: dos lados y un ángulo bastan, como en LAL', 'LLA-como-criterio', 'hipotesis'],
-  ['b', 'Sí: es LAL, aunque el ángulo no esté entre las dos varillas', 'LAL-angulo-no-comprendido', 'hipotesis'],
+  ['b', 'Sí: el ángulo de 37° y las dos varillas fijan la forma', 'LLA-fija-la-forma', 'hipotesis'],
   ['c', 'No: la varilla de 6,5 puede llegar a la base en dos lugares'],
-  ['d', 'No: la varilla de 6,5 es más corta que la de 10 y no cierra', 'LLA-lado-corto-no-cierra', 'hipotesis']],
+  ['d', 'No: con la base libre, AB puede medir cualquier cosa', 'LLA-infinitos', 'hipotesis']],
   fb:{ c:`¡Bien! La varilla BC gira en C como un compás y corta la base dos veces: AB puede medir ${fmt(R_LLA.terceros[0])} o ${fmt(R_LLA.terceros[1])}. Dos triángulos con los mismos tres datos que no son congruentes.`,
     a:`Elegiste la A. En LAL el ángulo está entre los dos lados y no deja juego. Aquí el ángulo de 37° está entre AC y la base, no entre AC y BC: BC queda suelta y gira. Puede cerrar en dos lugares, con AB = ${fmt(R_LLA.terceros[0])} o ${fmt(R_LLA.terceros[1])}. La correcta está marcada.`,
-    b:'Elegiste la B. LAL pide justo eso: el ángulo entre los dos lados. Si el ángulo está frente a uno de los lados, es otro caso (LLA), y ese no siempre determina. La correcta está marcada.',
-    d:`Elegiste la D. Para cerrar, BC no tiene que medir lo que AC: tiene que llegar a la base, y C está a ${fmt(R_LLA.altura)} de ella. Como 6,5 es más que ${fmt(R_LLA.altura)}, llega, y en dos lugares. La correcta está marcada.` } };
+    b:'Elegiste la B. Las tres piezas fijan la cuña y la varilla AC, pero BC queda suelta: gira en C y puede llegar a la base en dos lugares. Con dos lugares hay dos formas distintas. La correcta está marcada.',
+    d:`Elegiste la D. La base es libre, pero B tiene que quedar a 6,5 de C, y eso solo pasa en los puntos donde el compás toca la base: dos, no infinitos. AB mide ${fmt(R_LLA.terceros[0])} o ${fmt(R_LLA.terceros[1])}. La correcta está marcada.` } };
 const P3 = { id:'congruencia-paso4', ok:'b', opts:[
   ['a', 'No: es LLA, y LLA nunca asegura un solo triángulo', 'LLA-nunca-determina', 'hipotesis'],
-  ['b', `Sí: el compás da un solo triángulo, con AB = ${fmt(R_HC.terceros[0])}`],
+  ['b', `Sí: el compás da un solo triángulo, con AB&nbsp;=&nbsp;${fmt(R_HC.terceros[0])}`],
   ['c', 'No: a un triángulo rectángulo le falta además un ángulo agudo', 'rectangulo-necesita-angulo', 'hipotesis'],
-  ['d', `Sí: un solo triángulo, con AB = √${fmt(R_HC.errores.pitagorasSuma**2, 0)} ≈ ${fmt(R_HC.errores.pitagorasSuma)}`, 'GE11-suma-con-cateto', 'parcial']],
+  ['d', `Sí: un solo triángulo, con AB&nbsp;=&nbsp;√${fmt(R_HC.errores.pitagorasSuma**2, 0)}`, 'GE11-suma-con-cateto', 'parcial']],
   fb:{ b:'¡Bien! El compás de 10 corta la recta de la base dos veces, a 8 a cada lado de A. Pero los dos triángulos son reflejo uno del otro: es uno solo. Hipotenusa y cateto determinan el triángulo rectángulo.',
-    a:'Elegiste la A. LLA a veces deja dos triángulos, pero no siempre. Cuando el ángulo dado está frente al lado mayor, el segundo corte cae detrás del vértice. El ángulo recto siempre está frente al mayor, la hipotenusa: aquí hay uno solo. La correcta está marcada.',
+    a:'Elegiste la A. LLA a veces deja dos triángulos, pero no siempre. Con el ángulo recto, el compás corta la recta a 8 a cada lado de A, y esos dos triángulos son reflejo uno del otro: encajan. Hay uno solo. La correcta está marcada.',
     c:'Elegiste la C. El ángulo recto ya es un dato. Con la hipotenusa y un cateto, el otro cateto sale de Pitágoras, y los ángulos agudos quedan fijos. La correcta está marcada.',
     d:`Elegiste la D. √136 sale de sumar 10² + 6². Pero 10 es la hipotenusa: el cateto que falta se obtiene restando, 10² − 6² = 64, AB = 8. Un cateto no puede medir más que la hipotenusa. La correcta está marcada.` } };
 const P4 = { id:'congruencia-paso5', ok:'b', opts:[
@@ -560,9 +562,9 @@ const P4 = { id:'congruencia-paso5', ok:'b', opts:[
   ['c', 'Sí: con dos ángulos ya es ALA, y aquí hay tres', 'ALA-sin-lado', 'hipotesis'],
   ['d', 'No: con solo ángulos no se arma ningún triángulo', 'AAA-sin-triangulo', 'hipotesis']],
   fb:{ b:'¡Bien! Los ángulos fijan la forma, pero no el tamaño: el 3-4-5 y el 6-8-10 tienen los mismos ángulos. Son semejantes, no congruentes.',
-    a:'Elegiste la A. Los ángulos fijan la forma, no el tamaño. Si alargas la base, las bisagras no cambian y el triángulo crece: 3-4-5, 6-8-10… La correcta está marcada.',
+    a:'Elegiste la A. Los ángulos fijan la forma, no el tamaño. Si alargas la base, las cuñas no cambian y el triángulo crece: 3-4-5, 6-8-10… La correcta está marcada.',
     c:'Elegiste la C. ALA pide dos ángulos y el lado entre ellos. Aquí no hay ningún lado, y el tercer ángulo no agrega nada: sale de la suma de 180°. La correcta está marcada.',
-    d:'Elegiste la D. Sí se arma: estas bisagras cierran un triángulo con cualquier base. El problema es el contrario: se arman demasiados, de todos los tamaños. La correcta está marcada.' } };
+    d:'Elegiste la D. Sí se arma: estas cuñas cierran un triángulo con cualquier base. El problema es el contrario: se arman demasiados, de todos los tamaños. La correcta está marcada.' } };
 const P5 = { id:'congruencia-paso6', ok:'c', opts:[
   ['a', `${CO.errores.ordenEscritura}: en el orden en que se nombran`, 'correspondencia-orden-de-escritura', 'hipotesis'],
   ['b', `${CO.errores.porPosicion}: cada vértice con el que ocupa su lugar`, 'GE22-empareja-por-posicion', 'hipotesis'],
@@ -575,11 +577,11 @@ const P5 = { id:'congruencia-paso6', ok:'c', opts:[
 const P6 = { id:'congruencia-paso7', ok:'a', opts:[
   ['a', `${fmt(MH.mediana)}: la mitad de la hipotenusa`],
   ['b', `${fmt(MH.errores.cateto)}: lo mismo que el cateto AB`, 'mediana-igual-cateto', 'hipotesis'],
-  ['c', `${fmt(MH.errores.altura)}: lo mismo que la altura a AC`, 'GE8-mediana-como-altura', 'parcial'],
+  ['c', `≈ ${fmt(MH.errores.altura)}: lo mismo que la altura a AC`, 'GE8-mediana-como-altura', 'parcial'],
   ['d', `${fmt(MH.errores.promedioCatetos)}: el promedio de los catetos`, 'mediana-promedio-catetos', 'hipotesis']],
-  fb:{ a:'¡Bien! M está a la misma distancia de A, B y C: la circunferencia de diámetro AC pasa por B. BM = AM = MC = 5.',
-    b:'Elegiste la B. BM y AB salen los dos de B, pero van a puntos distintos. BM llega al medio de AC, y M está a 5 de los tres vértices. La correcta está marcada.',
-    c:'Elegiste la C. La altura es la perpendicular de B a AC, y mide 4,8. La mediana va al punto medio M, que no es el pie de la altura (salvo en el isósceles). La correcta está marcada.',
+  fb:{ a:'¡Bien! M está a la misma distancia de A, B y C: la circunferencia de diámetro AC pasa por B. BM = AM = MC = 6,5.',
+    b:'Elegiste la B. BM y AB salen los dos de B, pero van a puntos distintos. BM llega al medio de AC, y M está a 6,5 de los tres vértices. La correcta está marcada.',
+    c:'Elegiste la C. La altura es la perpendicular de B a AC: 5 · 12/13 = 60/13, unos 4,6. La mediana va al punto medio M, que no es el pie de la altura (salvo en el isósceles). La correcta está marcada.',
     d:'Elegiste la D. La mediana no es un promedio de lados: es la distancia de B al punto medio de AC. Y ese punto medio es el centro de una circunferencia que pasa por A, B y C. La correcta está marcada.' } };
 
 // ----- el armador (pasos 2 y 8) -----
@@ -593,7 +595,8 @@ function configArmador(kits, clave, clavePunto){
   if (!S.punto[clavePunto + clave]) S.punto[clavePunto + clave] = R.puntoInicio;
   const estado = () => MC.mover(kit, S.punto[clavePunto + clave]);
   E.config({ vista:VISTA_KIT(clave),
-    mano:{ pos:() => estado().punto, poner:P => { S.punto[clavePunto + clave] = MC.mover(kit, P).punto; } },
+    mano:{ pos:() => estado().punto, poner:P => { S.punto[clavePunto + clave] = MC.mover(kit, P).punto; },
+      teclado:sg => { S.punto[clavePunto + clave] = MC.avanzar(kit, S.punto[clavePunto + clave], sg); } },
     pintar:D => {
       const r = estado();
       if (R.libre.tipo === 'circulo') D.circulo(R.libre.centro, R.libre.radio, D.c.muted, [3, 6]);
@@ -604,7 +607,9 @@ function configArmador(kits, clave, clavePunto){
     ley:[['ink', 'triángulo cerrado'], ['muted', 'por donde puede ir la punta libre']],
     lect:[() => { const r = estado(); return ['ink', 'cierra', r.cierra ? 'sí' : 'no']; },
       () => ['ink', 'triángulos distintos', CU[R.solucion.cuantos].toLowerCase()],
-      () => { const r = estado(); return ['c', 'AB (lado c)', r.cierra ? fmt(r.lados.c) : '—']; }],
+      () => { const r = estado(), l = ['a', 'b', 'c'].find(x => kit[x] === undefined);
+        if (!l) { const t = r.cierra ? MC.construir({ a:r.lados.a, b:r.lados.b, c:r.lados.c }).triangulos[0] : null; return ['A', 'ángulo A', t ? `${fmt(t.academia.A)}°` : '—']; }
+        return [l, `${LADO_NOMBRE[l]} (lado ${l}, libre)`, r.cierra ? fmt(r.lados[l]) : '—']; }],
     desc:() => `Armador ${NOMBRE_KIT[clave]}. ${estado().cierra ? 'El triángulo está cerrado.' : 'Todavía no cierra.'}`,
     alCambiar:() => { const el = $('vivo'); if (el) el.innerHTML = vivoArmador(kit, estado(), R); } });
 }
@@ -618,11 +623,11 @@ function segKits(id, kits, actual){
 }
 const TXT_KIT = {
   LLL:`Tres varillas: ${a_('a = 7')}, ${b_('b = 8')} y ${c_('c = 5')}. La varilla ${b_('b')} gira en A; el triángulo cierra solo cuando su punta llega a la punta de ${a_('a')}.`,
-  LAL:`Dos varillas, ${b_('b = 8')} y ${c_('c = 5')}, y la bisagra ${A_('A = 60°')} entre ellas. La bisagra no se mueve: la punta solo puede estar arriba o, volteada, abajo. El tercer lado (a trazos) sale solo.`,
-  ALA:`La varilla ${c_('c = 8')} con dos bisagras fijas en sus puntas: ${A_('A = 60°')} y ${B_('B = 45°')}. La punta corre por el lado de A; cierra solo donde se cruza con el lado de B.`,
-  LLA:`La bisagra ${A_('A = 37°')}, la varilla ${b_('b = 10')} pegada a ella y la varilla ${a_('a = 6,5')}, que gira en C como un compás. Mira cuántas veces toca la base.`,
+  LAL:`Dos varillas, ${b_('b = 8')} y ${c_('c = 5')}, y la cuña ${A_('A = 60°')} entre ellas. La cuña no se mueve: la punta solo puede estar arriba o, volteada, abajo. El tercer lado (a trazos) sale solo.`,
+  ALA:`La varilla ${c_('c = 8')} con dos cuñas fijas en sus puntas: ${A_('A = 60°')} y ${B_('B = 45°')}. La punta corre por el lado de A; cierra solo donde se cruza con el lado de B.`,
+  LLA:`La cuña ${A_('A = 37°')}, la varilla ${b_('b = 10')} pegada a ella y la varilla ${a_('a = 6,5')}, que gira en C como un compás. Mira cuántas veces toca la base.`,
   'LLA-mayor':`Lo mismo, pero ahora la varilla que gira es la mayor: ${a_('a = 12')}, más que ${b_('b = 10')}. El ángulo ${A_('A')} queda frente al lado mayor.`,
-  AAA:`Solo bisagras: ${A_('A = 37°')}, ${B_('B = 53°')} y ${C_('C = 90°')}. Arrastra B por la base: el triángulo siempre cierra, de cualquier tamaño.` };
+  AAA:`Solo cuñas: ${A_('A = 37°')}, ${B_('B = 53°')} y ${C_('C = 90°')}. Arrastra B por la base: el triángulo siempre cierra, de cualquier tamaño.` };
 
 // ----- dibujos de los pasos con predicción -----
 function dibLLL(D, f){   // f: 0 sueltas; de 0 a 1 el barrido y el volteo
@@ -668,7 +673,7 @@ function dibCompas(D, kit, f, o){   // LLA: el compás gira y marca dónde toca 
     D.pt([0, 0], 'A', null, { dx:-12, dy:10 }); D.pt(R.base.C, 'C', null, { dy:-16 });
   }
   R.cierres.forEach((Q, i) => { if (fb >= R.fCierres[i]) D.anillo(Q, D.c.ink); });
-  (R.detras || []).forEach((Q, i) => { if (fb >= R.fDetras[i]) D.cruz(Q, D.c.muted); });
+  if (!o.reflejo) (R.detras || []).forEach((Q, i) => { if (fb >= R.fDetras[i]) D.cruz(Q, D.c.muted); });
 }
 function dibAAA(D, f, c){   // c: la base del triángulo dibujado; f > 0: se dibuja el triángulo
   if (f <= 0){ pintarSueltas(D, [], [['A', 37], ['B', 53], ['C', 90]]); return; }
@@ -709,7 +714,7 @@ function dibCorrespondencia(D, f){
   D.pt(Pp, 'P', null, { dx: fin ? 14 : -12, dy: fin ? -2 : 10 }); D.pt(Q, 'Q', null, { dx: fin ? -12 : 0, dy: fin ? 26 : -15 }); D.pt(R, 'R', null, { dx: fin ? 14 : 12, dy: fin ? 26 : 12 });
 }
 function dibMediana(D, f, B){
-  const c = D.c, h = 10, R = B ? MC.medianaHipotenusa({ hipotenusa:h, hacia:B }) : MH;
+  const c = D.c, h = MH.hipotenusa, R = B ? MC.medianaHipotenusa({ hipotenusa:h, hacia:B }) : MH;
   const [A, Bv, C, M] = [R.A, R.B, R.C, R.M];
   D.poligono([A, Bv, C], c.ink, c.relleno*.5, null);
   D.linea(A, Bv, c.c, D.g('c', 4)); D.linea(Bv, C, c.a, D.g('a', 4)); D.linea(A, C, c.b, D.g('b', 4));
@@ -717,18 +722,18 @@ function dibMediana(D, f, B){
   D.recto(Bv, u, v, c.muted);
   D.rotulo((A[0] + Bv[0])/2 - .7, (A[1] + Bv[1])/2 + .3, fmt(R.catetos[0]), c.c, 'center', 13);
   D.rotulo((C[0] + Bv[0])/2 + .7, (C[1] + Bv[1])/2 + .3, fmt(R.catetos[1]), c.a, 'center', 13);
-  D.rotulo(0, -.7, `AC = ${fmt(h)}`, c.b, 'center', 13);
+  D.rotulo(h/4, -.75, `AC = ${fmt(h)}`, c.b, 'center', 13);
   if (f > 0){
     const g = tramo(f, 0, .5), k = tramo(f, .5, 1);
     D.linea(M, lerpP(M, Bv, g), c.m, D.g('m', 4));
     if (k > 0) D.circulo(M, h/2, c.muted, [3, 6], 0, 180*k);
-    if (g >= 1) D.rotulo(Bv[0]*.5 + .55, Bv[1]*.5, `BM = ${fmt(R.mediana)}`, c.m, 'left', 13);
+    if (g >= 1) D.rotulo(Bv[0]*.25 + .35, Bv[1]*.25 - .2, `BM = ${fmt(R.mediana)}`, c.m, 'left', 13);
   }
   D.pt(A, 'A', null, { dx:-10, dy:14 }); D.pt(C, 'C', null, { dx:10, dy:14 }); D.pt(Bv, 'B', null, { dy:-16 }); D.pt(M, 'M', null, { dy:16 });
 }
 
 const steps = [
- { k:'Paso 1', t:'Predice: tres varillas', gate:P1,
+ { k:'Paso 1', t:'Predice: tres varillas', gate:P1, descFin:'Las varillas armadas: con c de base y b girando en A, el triángulo cierra solo en dos lugares, arriba y abajo, y el de abajo, volteado, encaja con el de arriba. Hay un solo triángulo.',
    prep:() => { const ya = !!S.pred[P1.id];
      E.config({ vista:{ x0:-8.5, x1:9, y0:-8.5, y1:8.5 }, pintar:D => dibLLL(D, ya ? 1 : 0),
        ley: ya ? [['a', 'varilla a'], ['b', 'varilla b'], ['c', 'varilla c'], ['muted', 'por donde gira la punta de b']] : [['a', 'varilla a'], ['b', 'varilla b'], ['c', 'varilla c']],
@@ -741,7 +746,7 @@ const steps = [
      <p>La varilla ${c_('c')} queda de base y la ${b_('b')} gira en A. La punta de ${b_('b')} da toda la vuelta, pero el triángulo cierra solo donde llega también la punta de ${a_('a')}: en dos lugares, arriba y abajo. El de abajo es el de arriba dado vuelta.</p>
      <div class="eqs"><div class="eq">${a_('a')}, ${b_('b')} y ${c_('c')} fijos → un solo triángulo<span class="note">criterio LLL</span></div></div>
      <p>Dos triángulos son <b>congruentes</b> (≅) si encajan exacto uno sobre otro, aunque haya que girar o voltear uno: tienen los tres lados y los tres ángulos iguales. «Con estos datos, ¿queda determinado?» quiere decir: todo triángulo que cumpla los datos, ¿es congruente al primero?</p>
-     <p class="fuente">Contar el reflejo como otro triángulo se parece a GE9 del informe de geometría (la figura cambia si cambia de posición), descrito sin cifras en secundaria. Las otras dos opciones son hipótesis nuestras.</p></div>` },
+     <p class="fuente">Contar el reflejo como otro triángulo es hipótesis nuestra, cercana a GE9 del informe de geometría (la figura cambia si cambia de posición), que no trae cifras para secundaria. Las otras dos opciones también son hipótesis nuestras.</p></div>` },
  { k:'Paso 2', t:'Arma tú: tres juegos de piezas', explora:true,
    prep:() => configArmador(KITS2, S.kit2, 'p2'),
    body:() => `${segKits('kits2', KITS2, S.kit2)}<p class="problem" id="txtKit">${TXT_KIT[S.kit2]}</p><div class="eqs" id="vivo"></div>
@@ -752,13 +757,13 @@ const steps = [
    <p class="hint">Con teclado: toca el dibujo y usa las flechas.</p>`,
    alMontar:() => { $('kits2').querySelectorAll('button').forEach(b => b.onclick = () => { S.kit2 = b.dataset.k;
      $('kits2').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); $('txtKit').innerHTML = TXT_KIT[S.kit2]; configArmador(KITS2, S.kit2, 'p2'); }); } },
- { k:'Paso 3', t:'Predice: dos varillas y una bisagra', gate:P2,
+ { k:'Paso 3', t:'Predice: dos varillas y una cuña', gate:P2, descFin:'El compás de 6,5 con centro en C corta la base dos veces: AB = 5,5 o AB = 10,5. Son dos triángulos que no encajan.',
    prep:() => { const ya = !!S.pred[P2.id];
      E.config({ vista:{ x0:-1, x1:15, y0:-1.6, y1:7.6 }, pintar:D => dibCompas(D, K_LLA3, ya ? 1 : 0),
-       ley:[['b', 'varilla b'], ['a', 'varilla a, que gira en C'], ['A', 'bisagra A'], ['muted', 'la base, de largo libre']],
-       desc:'La bisagra A de 37°, la varilla b de 10 hasta C y la varilla a de 6,5, que sale de C hacia la derecha sin tocar la base.' }); },
+       ley:[['b', 'varilla b'], ['a', 'varilla a, que gira en C'], ['A', 'cuña A'], ['muted', 'la base, de largo libre']],
+       desc:'La cuña A de 37°, la varilla b de 10 hasta C y la varilla a de 6,5, que sale de C hacia la derecha sin tocar la base.' }); },
    anima:fin => { let f = 0; E.pintar = D => dibCompas(D, K_LLA3, f); E.animar(RM ? 0 : 4200, x => { f = Math.max(x, .001); }, fin); },
-   body:() => `<p class="problem">Gael armó un triángulo ABC con la bisagra ${A_('A = 37°')}, la varilla ${b_('AC = 10')} y la varilla ${a_('BC = 6,5')}. La base, de A hacia la derecha, puede ser tan larga como haga falta.</p>
+   body:() => `<p class="problem">Gael armó un triángulo ABC con la cuña ${A_('A = 37°')}, la varilla ${b_('AC = 10')} y la varilla ${a_('BC = 6,5')}. La base, de A hacia la derecha, puede ser tan larga como haga falta.</p>
    <p>Lía arma otro con las mismas tres piezas. ¿Su triángulo es, seguro, congruente al de Gael?</p>${opcionesHTML(P2.opts, 'fb')}
    <div id="tras" class="body" hidden>
      <div class="eqs"><div class="eq">${b_('b')} = 10, ${A_('A')} = 37° → C está a ${fmt(R_LLA.altura)} de la base<span class="note">el notable de 37° y 53°: 3k = 6 con 5k = 10</span></div>
@@ -766,26 +771,26 @@ const steps = [
      <div class="eq">${c_('AB')} = ${fmt(R_LLA.terceros[0])} o ${c_('AB')} = ${fmt(R_LLA.terceros[1])}</div></div>
      <p>El ángulo de 37° no está entre ${b_('AC')} y ${a_('BC')}: está frente a ${a_('BC')}. Eso deja suelta a ${a_('BC')}, que gira en C como un compás. Los dos triángulos cumplen los tres datos y no encajan uno sobre otro: <b>LLA no es un criterio de congruencia</b>.</p>
      <p class="fuente">No encontramos estudios con cifras sobre este error; las opciones incorrectas son hipótesis nuestras. El mismo compás, con la ley de senos, está en la escena del caso ambiguo de trigonometría.</p></div>` },
- { k:'Paso 4', t:'Predice: la bisagra recta', gate:P3,
+ { k:'Paso 4', t:'Predice: la cuña recta', gate:P3, descFin:'El compás de 10 corta la recta a 8 a cada lado de A, y esos dos triángulos son reflejo uno del otro. Hay uno solo, con AB = 8.',
    prep:() => { const ya = !!S.pred[P3.id];
      E.config({ vista:{ x0:-10.5, x1:10.5, y0:-4.5, y1:7.5 }, pintar:D => dibCompas(D, K_HC, ya ? 1 : 0, { reflejo:true }),
-       ley:[['b', 'cateto b'], ['a', 'hipotenusa a, que gira en C'], ['A', 'bisagra recta A']],
-       desc:'La bisagra A de 90°, el cateto b de 6 hasta C y la hipotenusa a de 10, que sale de C hacia la derecha.' }); },
+       ley:[['b', 'cateto b'], ['a', 'hipotenusa a, que gira en C'], ['A', 'cuña recta A']],
+       desc:'La cuña A de 90°, el cateto b de 6 hasta C y la hipotenusa a de 10, que sale de C hacia la derecha.' }); },
    anima:fin => { let f = 0; E.pintar = D => dibCompas(D, K_HC, f, { reflejo:true }); E.animar(RM ? 0 : 4200, x => { f = Math.max(x, .001); }, fin); },
-   body:() => `<p class="problem">Ahora la bisagra es recta, ${A_('A = 90°')}. La varilla ${b_('AC = 6')} es un cateto y la varilla ${a_('BC = 10')} es la hipotenusa, y gira en C.</p>
+   body:() => `<p class="problem">Ahora la cuña es recta, ${A_('A = 90°')}. La varilla ${b_('AC = 6')} es un cateto y la varilla ${a_('BC = 10')} es la hipotenusa, y gira en C.</p>
    <p>¿Queda determinado el triángulo?</p>${opcionesHTML(P3.opts, 'fb')}
    <div id="tras" class="body" hidden>
      <div class="eqs"><div class="eq">${c_('AB')}² = ${a_('10')}² − ${b_('6')}² = 64 → ${c_('AB = 8')}<span class="note">el 6-8-10, notable de 37° y 53°</span></div></div>
      <p>El compás corta la recta dos veces, a 8 a cada lado de A. Pero los dos triángulos son reflejo uno del otro: encajan. Es el criterio <b>hipotenusa y cateto</b>.</p>
      <p>Es un LLA que sí determina, porque el ángulo dado está frente al <b>lado mayor</b>. Pasa siempre que el ángulo dado sea recto u obtuso, y también con uno agudo si el lado de enfrente es el mayor de los dos (pruébalo en el paso 8).</p>
      <p class="fuente">Sumar los cuadrados cuando falta un cateto es GE11 del informe de geometría («Pitágoras mal aplicado»), descrito sin porcentajes. Las otras dos opciones son hipótesis nuestras.</p></div>` },
- { k:'Paso 5', t:'Predice: solo bisagras', gate:P4,
+ { k:'Paso 5', t:'Predice: solo cuñas', gate:P4, descFin:'Las cuñas de 37°, 53° y 90° cierran con cualquier base: el 3-4-5 y el 6-8-10 tienen los mismos ángulos. Se puede mover B por la base.',
    prep:() => { const ya = !!S.pred[P4.id];
      E.config({ vista:VISTA_KIT('AAA'), pintar:D => dibAAA(D, ya ? 1 : 0, ya ? S.cAAA || 10 : undefined),
        mano: ya ? { pos:() => [S.cAAA || 10, 0], poner:P => { S.cAAA = MC.mover(K_AAA, P).punto[0]; } } : null,
-       ley: ya ? [['A', 'bisagra A'], ['B', 'bisagra B'], ['C', 'bisagra C']] : [['A', 'bisagra A'], ['B', 'bisagra B'], ['C', 'bisagra C']],
+       ley: ya ? [['A', 'cuña A'], ['B', 'cuña B'], ['C', 'cuña C']] : [['A', 'cuña A'], ['B', 'cuña B'], ['C', 'cuña C']],
        lect: ya ? [E => { const r = MC.mover(K_AAA, [S.cAAA || 10, 0]); return ['ink', 'lados', `${fmt(r.lados.a)}, ${fmt(r.lados.b)}, ${fmt(r.lados.c)}`]; }] : [],
-       desc:'Tres bisagras sueltas: 37°, 53° y 90°.' }); },
+       desc:'Tres cuñas sueltas: 37°, 53° y 90°.' }); },
    anima:fin => { let f = 0; S.cAAA = 10; E.pintar = D => dibAAA(D, f); E.animar(RM ? 0 : 3200, x => { f = Math.max(x, .001); },
      () => { E.pintar = D => dibAAA(D, 1, S.cAAA || 10); E.mano = { pos:() => [S.cAAA || 10, 0], poner:P => { S.cAAA = MC.mover(K_AAA, P).punto[0]; } };
        E.lect = [() => { const r = MC.mover(K_AAA, [S.cAAA || 10, 0]); return ['ink', 'lados', `${fmt(r.lados.a)}, ${fmt(r.lados.b)}, ${fmt(r.lados.c)}`]; }];
@@ -793,11 +798,11 @@ const steps = [
    body:() => `<p class="problem">Los triángulos ABC y PQR tienen los mismos tres ángulos: ${A_('37°')}, ${B_('53°')} y ${C_('90°')}. No se sabe nada de sus lados.</p>
    <p>¿Son congruentes?</p>${opcionesHTML(P4.opts, 'fb')}
    <div id="tras" class="body" hidden>
-     <p>Las bisagras fijan la forma, no el tamaño. Arrastra B por la base: el 3-4-5 crece hasta el 6-8-10 sin que cambie ningún ángulo. Son <b>semejantes</b> (misma forma), pero solo son congruentes si además tienen un lado igual.</p>
+     <p>Las cuñas fijan la forma, no el tamaño. Arrastra B por la base: el 3-4-5 crece hasta el 6-8-10 sin que cambie ningún ángulo. Son <b>semejantes</b> (misma forma), pero solo son congruentes si además tienen un lado igual.</p>
      <div class="eqs"><div class="eq">3k, 4k, 5k<span class="note">el notable de 37° y 53°, para cualquier k</span></div></div>
      <p>AAA no es criterio de congruencia. Para ver qué pasa con las áreas cuando un triángulo crece, está la escena de la ampliadora.</p>
      <p class="fuente">No encontramos estudios con cifras sobre este error; las opciones incorrectas son hipótesis nuestras.</p></div>` },
- { k:'Paso 6', t:'Predice: quién va con quién', gate:P5,
+ { k:'Paso 6', t:'Predice: quién va con quién', gate:P5, descFin:'PQR, volteado y girado, encaja sobre ABC con Q en A, R en B y P en C.',
    prep:() => { const ya = !!S.pred[P5.id];
      E.config({ vista:{ x0:-1, x1:16.2, y0:-1.2, y1:8 }, pintar:D => dibCorrespondencia(D, ya ? 1 : 0),
        ley: ya ? [['c', 'lado de 5'], ['a', 'lado de 7'], ['b', 'lado de 8']] : [['c', 'AB = 5'], ['a', 'BC = 7'], ['b', 'CA = 8'], ['ink', 'el triángulo PQR']],
@@ -810,21 +815,21 @@ const steps = [
      <div class="eqs"><div class="eq">${c_('AB')} = QR = 5, ${a_('BC')} = RP = 7, ${b_('CA')} = PQ = 8 → ${CO.texto}<span class="note">LLL</span></div></div>
      <p>En ΔABC ≅ ΔQRP, la primera letra va con la primera, la segunda con la segunda y la tercera con la tercera: A con Q, B con R y C con P. Así, AB = QR, ∠A = ∠Q, y lo mismo con todo lo demás. Para emparejar, mira qué vértice está entre qué lados (o frente a qué lado), no el orden de las letras ni el lugar del dibujo.</p>
      <p>PQR estaba dado vuelta: para encajar, hubo que voltearlo además de girarlo. Sigue siendo congruente.</p>
-     <p class="fuente">Emparejar por la posición en el dibujo es GE22 del informe de geometría, sin estudios con datos. Rechazar un triángulo volteado se parece a GE9 (la figura cambia si cambia de posición), descrito sin cifras en secundaria. El orden de escritura es hipótesis nuestra.</p></div>` },
- { k:'Paso 7', t:'Predice: la mediana del triángulo rectángulo', gate:P6,
+     <p class="fuente">Emparejar por la posición en el dibujo es la misma idea que GE22 (en el informe, para semejanza y Thales), sin estudios con datos. Rechazar un triángulo volteado se parece a GE9 (la figura cambia si cambia de posición), descrito sin cifras en secundaria. El orden de escritura es hipótesis nuestra.</p></div>` },
+ { k:'Paso 7', t:'Predice: la mediana del triángulo rectángulo', gate:P6, descFin:'La mediana BM mide 6,5, lo mismo que MA y MC: la circunferencia de diámetro AC pasa por B. Se puede mover B por ella.',
    prep:() => { const ya = !!S.pred[P6.id];
-     E.config({ vista:{ x0:-6, x1:6, y0:-1.3, y1:5.9 }, pintar:D => dibMediana(D, ya ? 1 : 0, ya ? S.b7 : null),
+     E.config({ vista:{ x0:-7.4, x1:7.4, y0:-1.4, y1:7.4 }, pintar:D => dibMediana(D, ya ? 1 : 0, ya ? S.b7 : null),
        mano: ya ? manoB7() : null,
        ley: ya ? [['c', 'cateto AB'], ['a', 'cateto BC'], ['b', 'hipotenusa AC'], ['m', 'mediana BM']] : [['c', 'cateto AB'], ['a', 'cateto BC'], ['b', 'hipotenusa AC']],
        lect: ya ? lect7 : [],
-       desc:'Triángulo rectángulo en B con AB = 6, BC = 8 y AC = 10; M es el punto medio de AC.' }); },
+       desc:'Triángulo rectángulo en B con AB = 5, BC = 12 y AC = 13; M es el punto medio de AC.' }); },
    anima:fin => { let f = 0; E.pintar = D => dibMediana(D, f, null); E.ley = [['c', 'cateto AB'], ['a', 'cateto BC'], ['b', 'hipotenusa AC'], ['m', 'mediana BM']]; E.leyenda();
      E.animar(RM ? 0 : 2600, x => { f = Math.max(x, .001); }, () => { S.b7 = MH.B; E.pintar = D => dibMediana(D, 1, S.b7); E.mano = manoB7(); E.lect = lect7; $('cv').tabIndex = 0; fin(); }); },
-   body:() => `<p class="problem">El triángulo ABC es rectángulo en B, con ${c_('AB = 6')}, ${a_('BC = 8')} y la hipotenusa ${b_('AC = 10')}. M es el punto medio de ${b_('AC')}.</p>
+   body:() => `<p class="problem">El triángulo ABC es rectángulo en B, con ${c_('AB = 5')}, ${a_('BC = 12')} y la hipotenusa ${b_('AC = 13')}. M es el punto medio de ${b_('AC')}.</p>
    <p>¿Cuánto mide la ${m_('mediana BM')}?</p>${opcionesHTML(P6.opts, 'fb')}
    <div id="tras" class="body" hidden>
      <div class="eqs"><div class="eq">${m_('BM')} = AM = MC = ${fmt(MH.hipotenusa/2)} = ${fr(b_('AC'))}<span class="note">mediana relativa a la hipotenusa</span></div></div>
-     <p>Arrastra B: se mueve por la semicircunferencia de diámetro AC, el ángulo en B sigue recto, los catetos cambian y ${m_('BM')} siempre mide 5. Por qué: si se completa el rectángulo ABCD, sus diagonales son iguales y se cortan en su punto medio M. Los triángulos AMB y CMD son congruentes (LAL), y MB = MA = MC.</p>
+     <p>Arrastra B: se mueve por la semicircunferencia de diámetro AC, el ángulo en B sigue recto, los catetos cambian y ${m_('BM')} siempre mide 6,5. Por qué: si se completa el rectángulo ABCD, los triángulos ABC y DCB son congruentes (LAL: AB = DC, BC común y ángulos rectos en B y en C), así que las diagonales AC y BD miden lo mismo. Como se cortan en su punto medio M, MB = BD/2 = AC/2 = MA = MC.</p>
      <p class="fuente">Confundir la mediana con la altura es GE8 del informe de geometría, con respaldo parcial y sin porcentaje. Tomarla igual a un cateto o al promedio de los catetos son hipótesis nuestras.</p></div>` },
  { k:'Paso 8', t:'Arma tú: todas las piezas', explora:true,
    prep:() => configArmador(KITS8, S.kit8, 'p8'),
@@ -840,10 +845,10 @@ const steps = [
      $('kits8').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); $('txtKit').innerHTML = TXT_KIT[S.kit8]; configArmador(KITS8, S.kit8, 'p8'); }); } },
 ];
 function fr(t){ return `${t}/2`; }
-function manoB7(){ return { paso:.3, pos:() => (S.b7 || MH.B), poner:P => { S.b7 = MC.medianaHipotenusa({ hipotenusa:10, hacia:P }).B; } }; }
-const lect7 = [() => { const R = MC.medianaHipotenusa({ hipotenusa:10, hacia:S.b7 || MH.B }); return ['c', 'AB', fmt(R.catetos[0])]; },
-  () => { const R = MC.medianaHipotenusa({ hipotenusa:10, hacia:S.b7 || MH.B }); return ['a', 'BC', fmt(R.catetos[1])]; },
-  () => { const R = MC.medianaHipotenusa({ hipotenusa:10, hacia:S.b7 || MH.B }); return ['m', 'BM', fmt(R.mediana)]; }];
+function manoB7(){ return { paso:.3, pos:() => (S.b7 || MH.B), poner:P => { S.b7 = MC.medianaHipotenusa({ hipotenusa:MH.hipotenusa, hacia:P }).B; } }; }
+const lect7 = [() => { const R = MC.medianaHipotenusa({ hipotenusa:MH.hipotenusa, hacia:S.b7 || MH.B }); return ['c', 'AB', fmt(R.catetos[0])]; },
+  () => { const R = MC.medianaHipotenusa({ hipotenusa:MH.hipotenusa, hacia:S.b7 || MH.B }); return ['a', 'BC', fmt(R.catetos[1])]; },
+  () => { const R = MC.medianaHipotenusa({ hipotenusa:MH.hipotenusa, hacia:S.b7 || MH.B }); return ['m', 'BM', fmt(R.mediana)]; }];
 
 const dots = $('dots');
 steps.forEach((s, k) => {
@@ -858,6 +863,7 @@ function go(k){
   $('stepT').textContent = s.t;
   $('stepBody').innerHTML = s.body();
   s.prep();
+  if (s.gate && S.pred[s.gate.id] && s.descFin) E.desc = s.descFin;
   if (s.alMontar) s.alMontar();
   pintarDots();
   E.compactar(s.gate && !S.pred[s.gate.id]);
@@ -902,7 +908,7 @@ function prediccion(s){
     E.compactar(false);
     $('next').focus({ preventScroll:true });
     const paso = S.step;
-    Celular.alResponder($('cv'), () => s.anima(() => { S.ocupado = false; E.avisar(); nav(); }), () => S.step === paso,
+    Celular.alResponder($('cv'), () => s.anima(() => { S.ocupado = false; if (s.descFin) E.desc = s.descFin; E.avisar(); nav(); }), () => S.step === paso,
       { siNo:() => { S.ocupado = false; nav(); } });
   }));
   pintar();
@@ -916,7 +922,7 @@ go(0);
 
 <script>
 /* ================= MODO 2: ¿qué pasa si…? =================
-   La mediatriz, la bisectriz, la base media, el ángulo obtuso en LLA y el notable de 30° y 60°.
+   La mediatriz, la bisectriz, la base media, dos ángulos y un lado mal emparejados y el notable de 30° y 60°.
    La escena cambia recién después de responder. Un experimento se abre solo si los anteriores ya tienen respuesta. */
 (function(){
 const $ = id => document.getElementById(id);
@@ -924,7 +930,7 @@ const E = crearMesa($('cv2'), 'desc2', 'lect2', 'leyenda2');
 const MT = MC.mediatriz({ A:[-5, 0], B:[5, 0], t:12 });
 const BI = MC.bisectriz({ angulo:74, d:10 });
 const BM0 = { A:[2, 9], B:[0, 0], C:[14, 0] }, BMr = MC.baseMedia(BM0);
-const K_OB = { A:120, b:5, a:7, vuelta:2/3 }, R_OB = MC.construir({ A:120, b:5, a:7 });
+const EM = MC.compararDatos({ nombres:'ABC', datos:{ A:50, B:60, BC:9 } }, { nombres:'DEF', datos:{ D:50, E:60, DF:9 } });
 const NT = MC.notable({ tipo:'30-60', hipotenusa:10 });
 const S = { k:0, pred:{}, t0:Date.now(), P:null, A:null };
 
@@ -940,9 +946,9 @@ function dibMediatriz(D, f, P){
     D.linea(R.P, A, c.d, D.g('d', 3.5)); D.linea(R.P, B, c.d, D.g('d', 3.5));
     D.rotulo((A[0] + R.P[0])/2 - .9, (A[1] + R.P[1])/2, `PA = ${fmt(R.PA)}`, c.d, 'right', 13);
     D.rotulo((B[0] + R.P[0])/2 + .9, (B[1] + R.P[1])/2, `PB = ${fmt(R.PB)}`, c.d, 'left', 13);
-  } else { D.linea(R.P, A, c.ink, 1.6); D.linea(R.P, B, c.ink, 1.6); }
+  }
   D.rotulo(-2.5, -.8, '5', c.ink, 'center', 12); D.rotulo(2.5, -.8, '5', c.ink, 'center', 12);
-  D.rotulo(.35, R.P[1]/2, `PM = ${fmt(R.PM)}`, c.ink, 'left', 12, 600);
+  D.rotulo(.35, Math.min(R.P[1]/2, 2.2), `PM = ${fmt(R.PM)}`, c.ink, 'left', 12, 600);
   D.pt(A, 'A', null, { dx:-10, dy:14 }); D.pt(B, 'B', null, { dx:10, dy:14 }); D.pt(M, 'M', null, { dy:16 }); D.pt(R.P, 'P', null, { dx:-14 });
 }
 function dibBisectriz(D, f){
@@ -950,7 +956,7 @@ function dibBisectriz(D, f){
   D.linea(O, R.A, c.ink, 2.5); D.linea(O, R.B, c.ink, 2.5);
   D.linea(O, [R.P[0]*1.5, R.P[1]*1.5], c.muted, 1.4, [6, 5]);
   D.bisagra(O, 0, MC.grados(37), c.muted, '37°', { r:30 }); D.bisagra(O, MC.grados(37), MC.grados(74), c.muted, '37°', { r:38 });
-  D.linea(O, R.P, c.ink, 1.6, [2, 4]); D.rotulo(R.P[0]*.45, R.P[1]*.45 + .5, 'OP = 10', c.ink, 'right', 12, 600);
+  D.linea(O, R.P, c.ink, 1.6, [2, 4]); D.rotulo(R.P[0]*.68 - .2, R.P[1]*.68 + .6, 'OP = 10', c.ink, 'right', 12, 600);
   if (f > 0){
     const k = tramo(f, 0, .6);
     D.poligono([O, R.H, R.P], c.d, .1 * k, null); D.poligono([O, R.K, R.P], c.d, .1 * k, null);
@@ -976,23 +982,26 @@ function dibBaseMedia(D, f, A){
   D.pt(Av, 'A'); D.pt(B, 'B', null, { dx:-10, dy:14 }); D.pt(C, 'C', null, { dx:10, dy:14 });
   D.pt(R.M, 'M', null, { dx:-14, dy:0 }); D.pt(R.N, 'N', null, { dx:14, dy:0 });
 }
-function dibObtuso(D, f){
-  const R = MC.armador(K_OB);
-  if (f <= 0){ pintarArmador(D, K_OB, MC.mover(K_OB, R.puntoInicio), {}); D.linea([-10, 0], [0, 0], D.c.eje, 1.4, [2, 5]); return; }
-  D.linea([-10, 0], [0, 0], D.c.eje, 1.4, [2, 5]);
-  const fb = tramo(f, 0, .7), ff = tramo(f, .72, 1);
-  D.circulo(R.libre.centro, R.libre.radio, D.c.muted, [3, 6], R.inicio, R.inicio - 360*K_OB.vuelta*fb);
-  R.detras.forEach((Q, i) => { if (fb >= R.fDetras[i]) D.cruz(Q, D.c.warn); });
-  R.cierres.forEach((Q, i) => { if (fb >= R.fCierres[i]) D.anillo(Q, D.c.ink); });
-  if (ff <= 0) pintarArmador(D, K_OB, MC.mover(K_OB, MC.enLocus(K_OB, fb), { iman:.3 }), {});
-  else {
-    const t = R_OB.triangulos[0], v = t.vertices;
-    D.poligono([v.A, v.B, v.C], D.c.ink, D.c.relleno*.6, D.c.ink);
-    pintarArmador(D, K_OB, MC.mover(K_OB, v.B), { relleno:false });
-    D.rotulo(v.B[0]/2, -.8, `AB = ${fmt(t.lados.c)}`, D.c.c, 'center', 13);
-    const Bd = R.detras[0]; D.linea(R.base.C, Bd, D.c.muted, 1.6, [5, 4]);
-    D.rotulo(Bd[0], -.8, 'detrás de A', D.c.muted, 'center', 12, 600);
-  }
+function dibEmparejado(D, f){
+  const c = D.c, off = 14.5, [v1, v2] = EM.vertices;
+  const T1 = [v1.A, v1.B, v1.C], T2 = [v2.A, v2.B, v2.C].map(P => [P[0] + off, P[1]]);
+  const lados = (T, L, n, alfa, mostrar) => {   // cada lado en el color del ángulo que tiene enfrente: 50° → a, 60° → b, 70° → c
+    const seg = [[T[1], T[2], 'a', L[n[1] + n[2]]], [T[2], T[0], 'b', L[n[2] + n[0]]], [T[0], T[1], 'c', L[n[0] + n[1]]]];
+    seg.forEach(([P, Q, k, v]) => { D.linea(P, Q, c[k], D.g(k, 3.5));
+      if (mostrar(k)) { const m = [(P[0] + Q[0])/2, (P[1] + Q[1])/2], dx = Q[0] - P[0], dy = Q[1] - P[1], L2 = Math.hypot(dx, dy);
+        D.rotulo(m[0] + dy/L2*.75, m[1] - dx/L2*.75, fmt(v), c[k], 'center', 13); } });
+  };
+  D.poligono(T1, c.ink, c.relleno*.5, null);
+  lados(T1, EM.lados[0], 'ABC', 1, k => k === 'a' || f > 0);
+  D.bisagra(T1[0], 0, 50, c.A, '50°', { clave:'A' }); D.bisagra(T1[1], 120, 180, c.B, '60°', { clave:'B' });
+  D.pt(T1[0], 'A', null, { dx:-12, dy:10 }); D.pt(T1[1], 'B', null, { dx:10, dy:12 }); D.pt(T1[2], 'C');
+  if (f <= 0){ D.rotuloPx(D.X(off + 5), D.Y(3.5), 'DEF aparece al responder', c.muted, 'center', 13, 600); return; }
+  D.ctx.save(); D.ctx.globalAlpha = Math.min(1, f*1.5);
+  D.poligono(T2, c.ink, c.relleno*.5, null);
+  lados(T2, EM.lados[1], 'DEF', 1, () => true);
+  D.bisagra(T2[0], 0, 50, c.A, '50°', { clave:'A' }); D.bisagra(T2[1], 120, 180, c.B, '60°', { clave:'B' });
+  D.pt(T2[0], 'D', null, { dx:-12, dy:10 }); D.pt(T2[1], 'E', null, { dx:10, dy:12 }); D.pt(T2[2], 'F');
+  D.ctx.restore();
 }
 function dibNotable(D, f){
   const c = D.c, Cc = [0, 0], A = [NT.mayor, 0], B = [0, NT.menor], Bp = [0, -NT.menor];
@@ -1013,14 +1022,14 @@ function dibNotable(D, f){
 }
 
 const EXPS = [
-  { id:'mediatriz', corto:'Un punto de la mediatriz',
+  { id:'mediatriz', corto:'Un punto de la mediatriz', descFin:'PA = PB = 13; los triángulos PMA y PMB son congruentes. Se puede mover P por la mediatriz.',
     q:`M es el punto medio de AB, con AB = 10, y P está sobre la mediatriz de AB, a 12 de M. ¿Cuánto mide ${d_('PB')}?`,
-    opts:[['a', fmt(MT.errores.PMcomoPB), 'PM-como-PB', 'hipotesis'], ['b', fmt(MT.PB)], ['c', fmt(MT.errores.suma), 'suma-de-segmentos', 'hipotesis'], ['d', `√119 ≈ ${fmt(MT.errores.restaCuadrados)}`, 'GE11-resta-cuadrados', 'parcial']],
+    opts:[['a', fmt(MT.errores.PMcomoPB), 'PM-como-PB', 'hipotesis'], ['b', fmt(MT.PB)], ['c', fmt(MT.errores.suma), 'suma-de-segmentos', 'hipotesis'], ['d', `√${fmt(MT.errores.restaCuadrados**2, 0)}`, 'GE11-resta-cuadrados', 'parcial']],
     ok:'b',
     fb:{ a:'12 es PM, la distancia de P a la recta AB. PB es inclinado: es la hipotenusa del triángulo PMB, y mide más que PM.',
       c:'12 + 5 sería ir de P a M y de M a B, por los dos catetos. El segmento PB va directo, por la hipotenusa: es más corto.',
       d:'√119 sale de restar 12² − 5². Pero PB es la hipotenusa del triángulo PMB, así que los cuadrados se suman: 144 + 25 = 169.' },
-    vista:{ x0:-8.5, x1:8.5, y0:-1.4, y1:13.3 }, dib:dibMediatriz, dur:2600, ley:[['d', 'PA y PB'], ['muted', 'mediatriz de AB']], ley0:[['muted', 'mediatriz de AB']],
+    vista:{ x0:-8.5, x1:8.5, y0:-1.4, y1:13.3 }, dib:dibMediatriz, dur:2600, ley:[['d', 'PA = PB'], ['muted', 'mediatriz de AB']], ley0:[['muted', 'mediatriz de AB']],
     desc:'El segmento AB de 10, su punto medio M, la mediatriz y el punto P a 12 de M.',
     mano:() => ({ paso:.4, pos:() => (S.P || MT.P), poner:P => { const R = MC.mediatriz({ A:[-5, 0], B:[5, 0], hacia:P }); if (R.PM >= 1 && R.PM <= 13 && R.P[1] > 0) S.P = R.P; } }),
     dibFinal:D => dibMediatriz(D, 1, S.P),
@@ -1029,7 +1038,7 @@ const EXPS = [
     exp:() => `<div class="eqs"><div class="eq">${d_('PB')}² = 12² + 5² = 169 → ${d_('PB')} = ${d_('13')} = ${d_('PA')}</div></div>
       <p>Arrastra P por la mediatriz: ${d_('PA')} y ${d_('PB')} cambian, pero siempre juntos. Los triángulos PMA y PMB son congruentes por LAL: PM es común, MA = MB y los dos ángulos en M son rectos. Por eso <b>todo punto de la mediatriz equidista de los extremos</b> del segmento.</p>
       <p class="fuente">Restar los cuadrados en vez de sumarlos cabe en GE11 del informe de geometría («Pitágoras mal aplicado»), sin porcentajes. Las otras dos opciones son hipótesis nuestras.</p>` },
-  { id:'bisectriz', corto:'Un punto de la bisectriz',
+  { id:'bisectriz', corto:'Un punto de la bisectriz', descFin:'Las perpendiculares desde P miden PH = PK = 6, y OH = OK = 8.',
     q:`El ángulo AOB mide 74° y P está sobre su bisectriz, con OP = 10. ¿A qué ${d_('distancia')} está P de cada lado del ángulo?`,
     opts:[['a', `${fmt(BI.errores.pieComoDistancia[0])} y ${fmt(BI.errores.pieComoDistancia[1])}`, 'pie-como-distancia', 'hipotesis'], ['b', `${fmt(BI.errores.noEquidista[0])} y ${fmt(BI.errores.noEquidista[1])}`, 'bisectriz-no-equidista', 'hipotesis'],
       ['c', `${fmt(BI.distancias[0])} y ${fmt(BI.distancias[1])}`], ['d', `${fmt(BI.errores.mitadDeOP[0])} y ${fmt(BI.errores.mitadDeOP[1])}`, 'mitad-de-OP', 'hipotesis']],
@@ -1037,12 +1046,12 @@ const EXPS = [
     fb:{ a:'8 es lo que hay de O al pie de cada perpendicular (OH y OK). La distancia de P a un lado es el largo de la perpendicular PH, que mide 6.',
       b:'Las dos distancias son iguales: los triángulos OHP y OKP tienen la misma hipotenusa OP y el mismo ángulo de 37° en O, así que son congruentes.',
       d:'La mitad de OP no tiene nada que ver: PH es el cateto opuesto a 37° en un triángulo de hipotenusa 10. En el notable, 3k con 5k = 10: 6.' },
-    vista:{ x0:-1.2, x1:16.5, y0:-1.4, y1:15.8 }, dib:dibBisectriz, dur:2000, ley:[['d', 'distancias de P a los lados'], ['muted', 'bisectriz']], ley0:[['muted', 'bisectriz']],
+    vista:{ x0:-1.2, x1:16.5, y0:-1.4, y1:15.8 }, dib:dibBisectriz, dur:2000, ley:[['d', 'PH = PK'], ['muted', 'bisectriz']], ley0:[['muted', 'bisectriz']],
     desc:'El ángulo AOB de 74° partido por su bisectriz en dos de 37°, y el punto P sobre ella, a 10 de O.',
     exp:() => `<div class="eqs"><div class="eq">OP = 5k = 10 → k = 2: ${d_('PH')} = 3k = ${d_('6')}, OH = 4k = 8</div><div class="eq">ΔOHP ≅ ΔOKP<span class="note">LAA: OP común, ángulos de 37° en O y rectos en H y K</span></div></div>
       <p>Por la congruencia, ${d_('PH = PK')}: <b>todo punto de la bisectriz equidista de los lados del ángulo</b>. Y también OH = OK.</p>
       <p class="fuente">No encontramos estudios con cifras sobre estos errores; las opciones incorrectas son hipótesis nuestras.</p>` },
-  { id:'base-media', corto:'Los puntos medios de dos lados',
+  { id:'base-media', corto:'Los puntos medios de dos lados', descFin:'MN = 7, paralela a BC y la mitad de su largo. Se puede mover A.',
     q:`En el triángulo ABC, ${a_('BC = 14')}. M es el punto medio de AB y N el de AC. ¿Qué se puede decir de ${n_('MN')}?`,
     opts:[['a', `${n_('MN')} = ${fmt(BMr.errores.ladoEntero)}, igual que BC`, 'base-media-lado-entero', 'hipotesis'], ['b', `${n_('MN')} = ${fmt(BMr.MN)}, y solo si AB = AC`, 'base-media-solo-isosceles', 'hipotesis'],
       ['c', `${n_('MN')} = ${fmt(BMr.MN)}, en cualquier triángulo`], ['d', `${n_('MN')} depende de dónde esté A`, 'base-media-depende-de-A', 'hipotesis']],
@@ -1058,23 +1067,27 @@ const EXPS = [
     exp:() => `<div class="eqs"><div class="eq">${n_('MN')} = ${a_('BC')}/2 = ${n_('7')} y ${n_('MN')} ∥ ${a_('BC')}<span class="note">teorema de la base media</span></div></div>
       <p>Arrastra A: el triángulo cambia, pero ${n_('MN')} sigue paralela a ${a_('BC')} y con la mitad de su largo. Por qué: si se prolonga MN hasta Q, con NQ = MN, los triángulos AMN y CQN son congruentes (LAL: AN = NC, MN = NQ y los ángulos opuestos por el vértice en N). Entonces CQ = AM = MB y CQ ∥ AB, así que MBCQ es un paralelogramo: MQ = BC, y MN es la mitad.</p>
       <p class="fuente">No encontramos estudios con cifras sobre estos errores; las opciones incorrectas son hipótesis nuestras.</p>` },
-  { id:'obtuso', corto:'Dos lados y un ángulo obtuso',
-    q:`La bisagra mide ${A_('A = 120°')}, la varilla ${b_('AC = 5')} está pegada a ella y la varilla ${a_('BC = 7')} gira en C. ¿Cuántos triángulos distintos se pueden armar?`,
-    opts:[['a', 'Dos: LLA siempre deja dos posibilidades', 'LLA-siempre-dos', 'hipotesis'], ['b', 'Uno: el ángulo de 120° está frente al lado mayor'],
-      ['c', 'Ninguno: BC es más larga que AC y no cierra', 'lado-largo-no-cierra', 'hipotesis'], ['d', 'Infinitos: falta saber el tercer lado', 'LLA-nunca-determina', 'hipotesis']],
-    ok:'b',
-    fb:{ a:'El compás corta la recta dos veces, pero uno de los cortes cae detrás de A. Con ese punto, el ángulo en A mediría 60°, no 120°: no sirve.',
-      c:'Que BC sea más larga no impide cerrar: el compás llega de sobra a la base. Justamente, por ser la mayor, solo uno de los cortes queda delante de A.',
-      d:'El tercer lado no hace falta: sale del armado, y aquí sale uno solo, AB = 3.' },
-    vista:{ x0:-9.8, x1:5.5, y0:-3.2, y1:11.2 }, dib:dibObtuso, dur:3600, ley:[['b', 'varilla b'], ['a', 'varilla a, que gira en C'], ['A', 'bisagra A']],
-    desc:'La bisagra A de 120°, la varilla AC de 5 y la varilla BC de 7 que gira en C.',
-    exp:() => `<div class="eqs"><div class="eq">${c_('AB')} = ${fmt(R_OB.terceros[0])}<span class="note">el otro corte cae en ${fmt(R_OB.detras[0])}, detrás de A</span></div></div>
-      <p>Un ángulo obtuso siempre está frente al lado mayor del triángulo. Por eso, con ${A_('120°')}, LLA da uno o ninguno, nunca dos: ${a_('BC')} tiene que ser mayor que ${b_('AC')} para cerrar, y entonces el triángulo queda determinado.</p>
-      <p class="fuente">No encontramos estudios con cifras sobre estos errores; las opciones incorrectas son hipótesis nuestras.</p>` },
-  { id:'notable', corto:'El notable de 30° y 60°',
+  { id:'laa-emparejado', corto:'Dos ángulos y un lado',
+    q:`En ABC y DEF, ${A_('∠A = ∠D = 50°')}, ${B_('∠B = ∠E = 60°')} y BC = DF = 9. ¿Son congruentes?`,
+    opts:[['a', 'Sí: es ALA, con dos ángulos y un lado iguales', 'GE22-ALA-sin-mirar-angulo', 'hipotesis'], ['b', 'Sí: es LAA, porque el tercer ángulo sale de la suma', 'GE22-LAA-sin-mirar-angulo', 'hipotesis'],
+      ['c', 'No: BC está frente a 50° y DF está frente a 60°'], ['d', 'No: con dos ángulos y un lado falta un dato', 'LAA-falta-un-lado', 'hipotesis']],
+    ok:'c',
+    fb:{ a:'ALA pide el lado entre los dos ángulos iguales: entre A y B está AB, no BC. Y BC y DF no se corresponden: BC está frente a 50° y DF frente a 60°.',
+      b:'LAA sí es un criterio, pero el lado igual tiene que estar frente al mismo ángulo en los dos triángulos. BC está frente a A (50°) y DF frente a E (60°).',
+      d:'Dos ángulos y un lado sí bastan (LAA), si el lado está frente al mismo ángulo en los dos. Aquí cada triángulo queda determinado, pero salen distintos.' },
+    vista:{ x0:-1, x1:25.6, y0:-1.8, y1:9.2 }, dib:dibEmparejado, dur:1400,
+    ley:[['A', '50°'], ['B', '60°'], ['a', 'lado frente a 50°'], ['b', 'lado frente a 60°'], ['c', 'lado frente a 70°']],
+    ley0:[['A', '50°'], ['B', '60°'], ['a', 'BC, frente a 50°']],
+    desc:'El triángulo ABC con ángulos de 50° en A y 60° en B y el lado BC = 9. DEF aparece al responder.',
+    descFin:`ΔABC tiene CA ≈ ${fmt(EM.lados[0].CA)} y AB ≈ ${fmt(EM.lados[0].AB)}; ΔDEF tiene EF ≈ ${fmt(EM.lados[1].EF)} y DE ≈ ${fmt(EM.lados[1].DE)}. Tienen los mismos ángulos y no son congruentes.`,
+    exp:() => `<div class="eqs"><div class="eq">BC = 9 frente a ${A_('∠A = 50°')}; DF = 9 frente a ${B_('∠E = 60°')}</div>
+      <div class="eq">ΔABC: ${b_('CA ≈ ' + fmt(EM.lados[0].CA))}, ${c_('AB ≈ ' + fmt(EM.lados[0].AB))}; ΔDEF: ${a_('EF ≈ ' + fmt(EM.lados[1].EF))}, ${c_('DE ≈ ' + fmt(EM.lados[1].DE))}</div></div>
+      <p>Cada lado va en el color del ángulo que tiene enfrente. Cada triángulo queda determinado (LAA), pero el lado de 9 está frente a ángulos distintos: frente a 50° el triángulo sale más grande que frente a 60°. Tienen los mismos ángulos: son semejantes, no congruentes. Si fuera EF = 9, frente a D, sí serían congruentes: ΔABC ≅ ΔDEF.</p>
+      <p class="fuente">Emparejar el lado sin mirar frente a qué ángulo está es la misma idea que GE22 (en el informe, para semejanza y Thales), sin estudios con datos. La última opción es hipótesis nuestra.</p>` },
+  { id:'notable', corto:'El notable de 30° y 60°', descFin:'Con su reflejo sobre AC forma un triángulo equilátero de lado 10; BC = 5, la mitad del lado.',
     q:`Un triángulo ABC es rectángulo en C, con ${A_('A = 30°')}, ${B_('B = 60°')} y la hipotenusa ${c_('AB = 10')}. ¿Cuánto mide el cateto ${a_('BC')}, opuesto a 30°?`,
-    opts:[['a', `${NT.textos.mayor} ≈ ${fmt(NT.errores.intercambiados)}`, 'notable-catetos-cambiados', 'hipotesis'], ['b', `10/3 ≈ ${fmt(NT.errores.proporcionalAngulos)}`, 'lados-proporcionales-a-angulos', 'hipotesis'],
-      ['c', `5√2 ≈ ${fmt(NT.errores.otroNotable)}`, 'notable-equivocado-45', 'hipotesis'], ['d', fmt(NT.menor)]],
+    opts:[['a', NT.textos.mayor, 'notable-catetos-cambiados', 'hipotesis'], ['b', '10/3', 'lados-proporcionales-a-angulos', 'hipotesis'],
+      ['c', MC.raizTexto(NT.errores.otroNotable), 'notable-equivocado-45', 'hipotesis'], ['d', NT.textos.menor]],
     ok:'d',
     fb:{ a:'5√3 es el cateto opuesto a 60°, el mayor. Frente al ángulo menor, 30°, va el lado menor: k = 5.',
       b:'Los lados no son proporcionales a los ángulos: 30°, 60° y 90° no dan lados 1, 2 y 3. En el notable son k, k√3 y 2k.',
@@ -1094,7 +1107,7 @@ function botones(){
 }
 function final(x){
   E.config({ vista:x.vista, pintar: x.dibFinal || (D => x.dib(D, 1)), ley:x.ley, mano: x.mano ? x.mano() : null, lect:x.lect || [],
-    desc:`${x.corto}: el dibujo ya muestra la respuesta.` });
+    desc: x.descFin || `${x.corto}: el dibujo ya muestra la respuesta.` });
 }
 function ir(k){
   if (k < 0 || k >= EXPS.length || !abierto(k)) return;
