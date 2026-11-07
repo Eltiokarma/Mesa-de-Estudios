@@ -2,7 +2,7 @@
   "plantilla": "cuatro-operaciones",
   "unidades": "Números enteros sin unidad. Los numerales van como texto, de la cifra de mayor orden a las unidades ('342' en base 5 es 342₍₅₎); las cuentas y las columnas, de las unidades hacia la izquierda ([4, 3, 0] son 4 sueltas, 3 paquetes y ninguna caja).",
   "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.todasANueve, columnas.0.llevadaSale: el índice de una lista también va con punto); 'valor' es el resultado si es un número, un texto o una lista sueltos; las listas se comparan completas y los textos exactos. 'tambien' son llamadas extra del mismo caso. Un error que no aparece en 'errores' es porque en ese caso daría la respuesta correcta o lo mismo que otro error.",
-  "verificacion": "",
+  "verificacion": "Verificado por un subagente independiente (7 nov 2026) sin leer el código del motor: valores recalculados con conversión de bases y columnas simuladas en Python, y unicidad de las cifras que faltan y las criptoaritméticas comprobada por fuerza bruta propia. Coinciden todos los valores matemáticos y los errores reconstruibles. Las convenciones de animación y los errores de diferenciaInvertida se documentaron en la cabecera tras la verificación.",
   "tolerancia": 1e-9,
   "casos": [
     { "nombre": "Paso 1: 478 + 356 = 834 en columnas; unidades 8 + 6 = 14 (queda 4, sube 1 paquete), decenas 7 + 5 + 1 = 13 (queda 3, sube 1), centenas 4 + 3 + 1 = 8; sin llevar: 724; escribiendo cada suma entera: 71214",
@@ -24,7 +24,7 @@
         "relleno.texto": "10000", "relleno.llevadas": 4,
         "errores.todasANueve": "5926", "errores.dejaElCero": "5027", "errores.potenciaDeMas": "95927" } },
 
-    { "nombre": "Complemento de 3740: 6260; la última significativa es el 4 (va a 10) y el 0 final queda; a 9 todas: 6259; «a 10 la última» sobre el 0 final: 6250; sin el 0 final: 626",
+    { "nombre": "Complemento de 3740: 6260; la última significativa es el 4, en la posición 2 contando desde la izquierda y desde 0 (va a 10) y el 0 final queda; a 9 todas: 6259; «a 10 la última» sobre el 0 final: 6250; sin el 0 final: 626",
       "fn": "complemento", "args": ["3740", 10],
       "espera": { "texto": "6260", "regla": [6, 2, 6, 0], "ultimaSignificativa": 2, "cerosFinales": 1,
         "errores.todasANueve": "6259", "errores.aBUltima": "6250", "errores.quitaLosCeros": "626", "errores.potenciaDeMas": "96260" } },
@@ -83,9 +83,9 @@
       "tambien": [ { "fn": "cripto", "args": [["AB", "AB"], "BCC", { "distintas": true }], "espera": { "unica": true, "solucion.A": 6, "solucion.B": 1, "solucion.C": 2 } },
                    { "fn": "cripto", "args": [["XY", "YX"], "132", { "distintas": true }], "espera": { "unica": false } } ] },
 
-    { "nombre": "¿Qué pasa si…? 2: un número de 3 cifras menos su reverso, si la diferencia empieza con 4, es 495 = 99 · 5; sin préstamo: 404; presta sin descontar: 406; con el medio en 0: 405",
+    { "nombre": "¿Qué pasa si…? 2: un número de 3 cifras menos su reverso, si la diferencia empieza con 4, es 495 = 99 · 5; todo con 551 − 155 restado mal: sin préstamo, 404; presta sin descontar, 406; descontando solo el primer préstamo, 496",
       "fn": "diferenciaInvertida", "args": [4],
-      "espera": { "diferencia": 495, "texto": "495", "primeraMenosUltima": 5, "errores.sinPrestamo": "404", "errores.sinDescontar": "406", "errores.medioCero": "405" },
+      "espera": { "diferencia": 495, "texto": "495", "primeraMenosUltima": 5, "errores.sinPrestamo": "404", "errores.sinDescontar": "406", "errores.soloPrimerDescuento": "496" },
       "tambien": [ { "fn": "conSuReverso", "args": ["752"], "espera": { "reverso": "257", "diferencia": 495, "k": 5 } },
                    { "fn": "conSuReverso", "args": ["831"], "espera": { "diferencia": 693, "k": 7 } } ] },
 

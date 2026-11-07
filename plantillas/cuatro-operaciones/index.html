@@ -113,6 +113,7 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .eq{font-family:var(--mono); font-size:1.02rem; line-height:1.75; font-variant-numeric:tabular-nums; overflow-wrap:anywhere}
 .eq .num{font-family:var(--mono)}
 .eq .note{display:block; font-family:var(--font); font-size:.84rem; line-height:1.4; color:var(--muted); white-space:normal}
+.eq .v{white-space:nowrap}
 .eq sup{font-size:.75em; vertical-align:.6em; line-height:0}
 .aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
 
@@ -648,7 +649,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
   return E;
 }
 
-const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}" tabindex="-1"></p>`;
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}" aria-label="${k.toUpperCase()}: ${quitar(t)}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}" tabindex="-1"></p>`;
 // Leyenda del tablero: solo las columnas que se ven; la base solo si no es 10.
 const leyTablero = (b, K) => [['o0', 'fichas sueltas'], ['o1', `paquetes de ${b}`], ['o2', `cajas de ${b*b}`], ['o3', `cajones de ${b*b*b}`]].slice(0, Math.min(K, 4)).concat(b === 10 ? [] : [['b', 'la base']]);
 const LEY_ESCRITO = [['o0', 'unidades'], ['o1', 'decenas'], ['o2', 'centenas'], ['o3', 'millares']];
@@ -705,7 +706,7 @@ const P_FA = { id:'cuatro-operaciones-paso4', ok:'a', opts:[
   ['b', String(FA.errores.sinLlevadas), 'deduce-sin-llevadas', 'hipotesis'],
   ['c', String(FA.errores.soloLaPrimera), 'olvida-la-segunda-llevada', 'hipotesis'],
   ['d', String(FA.errores.sumaLaLlevada), 'suma-la-llevada-al-deducir', 'hipotesis']],
-  fb:{ a:'¡Bien! 585 + 697 = 1282: faltan 7, 9 y 5, que suman 21.',
+  fb:{ a:'¡Bien! 585 + 697 = 1282: faltan 5, 9 y 7, que suman 21.',
     b:'13 deduce cada columna sin las llevadas (7, 0 y 6). Pero 5 + 7 = 12 sube 1 a las decenas, y entonces ahí falta un 9, porque 8 + 9 + 1 = 18. Control: 685 + 607 = 1292, no 1282.',
     c:'22 usa la llevada de las unidades pero olvida la de las decenas: 8 + 9 + 1 = 18 también sube 1. Por eso en las centenas falta un 5 (5 + 6 + 1 = 12), no un 6. Control: 685 + 697 = 1382, no 1282.',
     d:'15 suma la llevada en vez de restarla: en las decenas toma 8 − 8 + 1 = 1. Pero la llevada ya entra en la columna: 8 + ☐ + 1 tiene que terminar en 8, y eso pide un 9. Control: 785 + 617 = 1402, no 1282.' } };
@@ -884,14 +885,14 @@ const steps = [
    prep:() => { const ya = !!S.pred[P_FA.id];
      E.config({ modo:'escrito', st:escritoFA(ya ? 3 : 0), ley:LEY_ESCRITO, desc: ya ? '585 más 697 es 1282; faltaban 5, 9 y 7.' : 'Una suma con tres casillas vacías: ? 8 5 más 6 ? ? igual a 1282.', lect: ya ? [() => ['ink', 'suma de las que faltan', String(FA.suma)]] : [] }); },
    anima:fin => { E.config({ modo:'escrito', st:escritoFA(0), ley:LEY_ESCRITO, desc:'Se deduce columna por columna.', lect:[] });
-     E.secuencia([1, 2, 3].map(h => escritoFA(h)), [1100, 1100, 0], () => { E.lect = [() => ['ink', 'suma de las que faltan', String(FA.suma)]]; E.desc = '585 más 697 es 1282; faltaban 7, 9 y 5.'; E.avisar(); fin(); }); },
-   body:() => `<p class="problem">En la suma ${o_(2, '☐')}85 + 6${o_(1, '☐')}${o_(0, '☐')} = 1282 faltan tres cifras.</p>
+     E.secuencia([1, 2, 3].map(h => escritoFA(h)), [1100, 1100, 0], () => { E.lect = [() => ['ink', 'suma de las que faltan', String(FA.suma)]]; E.desc = '585 más 697 es 1282; faltaban 5, 9 y 7.'; E.avisar(); fin(); }); },
+   body:() => `<p class="problem">En la suma ${numH('☐85', 10)} + ${numH('6☐☐', 10)} = ${numH('1282', 10)} faltan tres cifras.</p>
    <p>¿Cuánto suman las tres cifras que faltan?</p>${opcionesHTML(P_FA.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
      <div class="eq">${o_(0, '5 + ☐ = 12')} → ${o_(0, '☐ = 7')}, sube ${o_(1, '1')}<span class="note">5 + ☐ termina en 2: tiene que ser 12</span></div>
      <div class="eq">${o_(1, '8 + ☐ + 1 = 18')} → ${o_(1, '☐ = 9')}, sube ${o_(2, '1')}<span class="note">con la llevada, la columna termina en 8</span></div>
      <div class="eq">${o_(2, '☐ + 6 + 1 = 12')} → ${o_(2, '☐ = 5')}<span class="note">y la llevada de esta columna es el 1 de los millares</span></div>
-     <div class="eq">585 + 697 = 1282 → 7 + 9 + 5 = ${FA.suma}</div></div>
+     <div class="eq">585 + 697 = 1282 → 5 + 9 + 7 = ${FA.suma}</div></div>
    <p>Se deduce de derecha a izquierda, porque cada columna necesita saber qué llevada le llega de su derecha. La llevada se <b>suma</b> en la columna a la que llega, así que al deducir se resta.</p>${FUENTE}</div>` },
  { k:'Paso 5', t:'Predice: una sumatoria', gate:P_SU,
    prep:() => { const ya = !!S.pred[P_SU.id];
@@ -917,7 +918,7 @@ const steps = [
    <p>Por exceso se cuenta una fila más, la sexta, aunque esté incompleta. ¿Cuál es el residuo por exceso?</p>${opcionesHTML(P_DV.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
      <div class="eq">47 = ${d_('9')} · ${q_('5')} + ${r_('2')}<span class="note">por defecto: D = d · q + r, con r menor que d</span></div>
-     <div class="eq">47 = ${d_('9')} · 6 − ${rp_('7')}<span class="note">por exceso: D = d · (q + 1) − r′</span></div>
+     <div class="eq">47 = ${d_('9')} · 6 − ${rp_('7')}<span class="note">por exceso: D = d · (q + 1) − r′ (en algunos libros, el residuo por exceso se escribe rₑ)</span></div>
      <div class="eq">${r_('r')} + ${rp_('r′')} = ${r_('2')} + ${rp_('7')} = ${d_('9')}<span class="note">lo que sobra más lo que falta llena una fila: siempre suman el divisor</span></div></div>
    <p>El residuo por defecto son las fichas que <b>sobran</b> y el residuo por exceso, los huecos que <b>faltan</b> para completar otra fila. Por eso r + r′ = d, y el cociente por exceso es q + 1. El residuo nunca llega al divisor: con ${d_('9')} por fila, lo más que puede sobrar es 8.</p>${FUENTE}</div>` },
  { k:'Paso 7', t:'Predice: las letras que son cifras', gate:P_IV,
@@ -1034,7 +1035,7 @@ const EJ = ['621', '843', '984'].map(t => M.conSuReverso(t)), OTROS = ['831', '7
 const FUENTE = '<p class="fuente">No encontramos estudios con datos sobre estos errores; las opciones incorrectas son hipótesis nuestras.</p>';
 const S = { k:0, pred:{}, t0:Date.now() };
 console.assert(C58.errores.todasANueve && C58.errores.aBUltima && C58.errores.quitaLosCeros, 'ceros: revisar las opciones');
-console.assert(DI.errores.sinPrestamo && DI.errores.sinDescontar && DI.errores.medioCero, 'reverso: revisar las opciones');
+console.assert(DI.errores.sinPrestamo && DI.errores.sinDescontar && DI.errores.soloPrimerDescuento, 'reverso: revisar las opciones');
 console.assert(X5.errores.comoDecimal && X5.errores.sinLlevar && X5.errores.olvidaSumar, 'base 5: revisar las opciones');
 const d_ = t => V('d', t), r_ = t => V('r', t), rp_ = t => V('rp', t);
 const LEY_DV = [['d', 'divisor d'], ['r', 'residuo por defecto r'], ['rp', 'residuo por exceso r′']];
@@ -1063,16 +1064,16 @@ const EXPS = [
       <p>Las ${o_(0, 'sueltas')} y los ${o_(1, 'paquetes')} de 5800 están vacíos y el número de llegada, 10 000, también tiene esas columnas vacías: ahí no falta nada y no sube ninguna llevada. Por eso el complemento de 5800 es el de 58 con los dos ceros repuestos: 42 → 4200.</p>${FUENTE}` },
 
   { id:'reverso', corto:'Un número menos su reverso',
-    q:'A un número de tres cifras, cuya primera cifra es mayor que la última, se le resta el número con las mismas cifras al revés. Si la diferencia tiene tres cifras y empieza con 4, ¿cuál es?',
-    opts:[['a', DI.errores.sinPrestamo, 'resta-el-menor-del-mayor', 'hipotesis'], ['b', DI.errores.medioCero, 'cree-que-la-cifra-del-medio-da-cero', 'hipotesis'],
+    q:'A un número de tres cifras, cuya primera cifra es mayor que la última y la última cifra no es 0, se le resta el número con las mismas cifras al revés. Si la diferencia tiene tres cifras y empieza con 4, ¿cuál es?',
+    opts:[['a', DI.errores.sinPrestamo, 'resta-el-menor-del-mayor', 'hipotesis'], ['b', DI.errores.soloPrimerDescuento, 'descuenta-solo-el-primer-prestamo', 'hipotesis'],
           ['c', DI.errores.sinDescontar, 'presta-sin-descontar', 'hipotesis'], ['d', DI.texto]],
     ok:'d',
     fb:{ a:'404 resta en cada columna el menor del mayor. Pero en las unidades, arriba está la cifra menor: hay que pedir prestado, y eso cambia la cifra del medio. Por ejemplo, 621 − 126 = 495.',
-      b:'405 acierta en que los extremos suman 9, pero la cifra del medio no da 0: la de arriba prestó una pieza y ya no alcanza para quitar la de abajo, que es igual. Pide prestado a su vez y queda en 9. Por ejemplo, 621 − 126 = 495.',
+      b:'496 descuenta solo el primer préstamo: la columna del medio también pide prestado a la primera cifra, y esa pieza hay que descontarla. Con la misma regla, 621 − 126 daría 595, y la resta verdadera es 495.',
       c:'406 pide prestado para las unidades pero no descuenta en la columna del medio. Esa columna quedó con una pieza menos arriba, así que también pide prestado y da 9. Por ejemplo, 621 − 126 = 495.' },
-    antes:ya => E.config(ya ? { modo:'tarjetas', st:{ lineas: EJ.map(lineaResta).concat([[['99 · 5 = 495', 'ink']]]) }, ley:leyTablero(10, 3), desc:'621 menos 126, 843 menos 348 y 984 menos 489 dan 495.', lect:[() => ['ink', 'diferencia', '495']] }
-      : { modo:'tarjetas', st:{ lineas:[[['un número de tres cifras', 'ink']], [['− el mismo al revés', 'ink']], [['= ', 'ink'], ['4', 'o2'], [' ? ?', 'muted']]] }, ley:[], desc:'Un número de tres cifras menos el mismo al revés da una diferencia que empieza con 4.', lect:[] }),
-    despues:() => { E.config({ modo:'tarjetas', st:{ lineas:[] }, ley:leyTablero(10, 3), desc:'Ejemplos.', lect:[] });
+    antes:ya => E.config(ya ? { modo:'tarjetas', st:{ lineas: EJ.map(lineaResta).concat([[['99 · 5 = 495', 'ink']]]) }, ley:LEY_ESCRITO.slice(0, 3), desc:'621 menos 126, 843 menos 348 y 984 menos 489 dan 495.', lect:[() => ['ink', 'diferencia', '495']] }
+      : { modo:'tarjetas', st:{ lineas:[[['un número de tres cifras', 'ink']], [['− el mismo al revés', 'ink']], [['= ', 'ink'], ['4', 'o2'], [' ? ?', 'muted']]] }, ley:LEY_ESCRITO.slice(0, 3), desc:'Un número de tres cifras menos el mismo al revés da una diferencia que empieza con 4.', lect:[] }),
+    despues:() => { E.config({ modo:'tarjetas', st:{ lineas:[] }, ley:LEY_ESCRITO.slice(0, 3), desc:'Ejemplos.', lect:[] });
       const L = EJ.map(lineaResta);
       E.secuencia([{ lineas:L.slice(0, 1) }, { lineas:L.slice(0, 2) }, { lineas:L }, { lineas:L.concat([[['99 · 5 = 495', 'ink']]]) }], [900, 900, 900, 0], () => { E.lect = [() => ['ink', 'diferencia', '495']]; E.desc = '621 menos 126, 843 menos 348 y 984 menos 489 dan 495, que es 99 por 5.'; E.avisar(); }); },
     exp:() => `<div class="eqs">${EJ.concat(OTROS).map(R => `<div class="eq">${numH(R.N, 10)} − ${numH(R.reverso, 10)} = ${numH(R.texto, 10)} = 99 · ${R.k}</div>`).join('')}
@@ -1095,7 +1096,7 @@ const EXPS = [
       <div class="eq">9999 · 999 = ${fmt(CP.mayor.producto)}<span class="note">el mayor: ${CP.mayor.cifras} cifras (4 + 3), y menos que 10 000 · 1000 = 10 000 000, que ya tiene 8</span></div></div>
       <p>Un número de 4 cifras está entre 1000 y 10 000, y uno de 3 cifras, entre 100 y 1000. El producto queda entre 100 000 y 10 000 000: tiene 6 o 7 cifras. En general, un número de m cifras por uno de n cifras tiene m + n − 1 o m + n cifras.</p>${FUENTE}` },
 
-  { id:'iguales', corto:'Los dos residuos iguales',
+  { id:'iguales', corto:'El residuo por defecto y el por exceso',
     q:`Se reparten fichas en filas de ${d_('14')}. ¿Cuándo el residuo por defecto es igual al residuo por exceso?`,
     opts:[['a', 'Cuando el residuo es 0', 'residuo-cero-los-hace-iguales', 'hipotesis'], ['b', 'Cuando el residuo es 7'], ['c', 'Cuando el residuo es 13', 'residuo-maximo-los-hace-iguales', 'hipotesis'], ['d', 'Nunca', 'nunca-son-iguales', 'hipotesis']],
     ok:'b',

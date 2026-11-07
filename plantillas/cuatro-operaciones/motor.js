@@ -23,8 +23,18 @@
  * Complemento aritmético
  *   complemento(N, b)                  CA(N) = bᵏ − N con la regla «a b − 1 todas, a b la última significativa», el
  *                                      relleno (N + CA llena la caja de bᵏ con llevadas en cadena), y los errores
- *   diferenciaInvertida(L)             un número de 3 cifras menos su reverso (primera cifra mayor que la última) cuya
- *                                      diferencia empieza con L: siempre 99·k, y lo que darían los errores al prestar
+ *   diferenciaInvertida(L)             un número de 3 cifras menos su reverso (primera cifra mayor que la última, que no
+ *                                      es 0) cuya diferencia empieza con L: siempre 99·k, k = L + 1. Los errores salen de
+ *                                      restar mal el número concreto (L + 1)5 1 menos su reverso 15(L + 1) (para L = 4,
+ *                                      551 − 155), cuya primera menos última es L, así que quien resta mal ve una
+ *                                      diferencia que empieza con L:
+ *                                        sinPrestamo          en cada columna, el menor del mayor: 5−1 | 5−5 | 5−1 → 404
+ *                                        sinDescontar         presta 10 a las unidades y no descuenta en la del medio:
+ *                                                             5−1 | 5−5 | 11−5 → 406
+ *                                        soloPrimerDescuento  descuenta el primer préstamo (el medio queda en 4), pide
+ *                                                             prestado otra vez para el medio y no lo descuenta de la
+ *                                                             primera cifra: 5−1 | 14−5 | 11−5 → 496
+ *                                      (ninguno es múltiplo de 99 ni coincide con otro; lo comprueba motor.test.js)
  * Cifras que faltan y criptoaritmética (fuerza bruta: todas las posibilidades, para saber si la solución es única)
  *   cifrasFaltantes(sumandos, resultado, b)  casillas con '?' en una suma; las soluciones, la suma de las cifras que
  *                                      faltan y los errores al deducir columna por columna
@@ -41,6 +51,18 @@
  *   residuosIguales(d)                 ¿cuándo r = r′? (d par y r = d/2), y los errores
  * Cantidad de cifras
  *   cifrasProducto(m, n)               un número de m cifras por uno de n cifras tiene m + n − 1 o m + n cifras
+ *
+ * Convenciones de la animación (la escena solo dibuja lo que dicen los cuadros)
+ *   cuadroColumnas(plan, t): t va de 0 a la cantidad de columnas; la columna en curso es ⌊t⌋ y f = t − ⌊t⌋.
+ *     Con f < 0,5 las piezas de esa columna (y su llevada) bajan al resultado: moviendo = { tipo: 'bajar', f: f/0,5 }.
+ *     Con f ≥ 0,5 ya están en el resultado; si hay llevada, el paquete sube a la casilla de la columna siguiente:
+ *     moviendo = { tipo: 'subir', paquetes, f: (f − 0,5)/0,5 } y el resultado ya muestra la cifra; si no, muestra el total.
+ *   cuadroResta(R, t): t va de 0 a acciones.length; las acciones antes de ⌊t⌋ ya pasaron y la acción ⌊t⌋ va por
+ *     moviendo.f = t − ⌊t⌋. En 'abrir', la pieza viaja a la columna de la derecha y al final se cuenta como b piezas.
+ *     En 'quitar', moviendo.tachadas = round(min(1, f/0,6) · quita) piezas tachadas; desde f = 0,6 la escena baja las
+ *     que quedan al resultado, que se anota al terminar la acción.
+ *   complemento: ultimaSignificativa es la posición de la última cifra que no es 0, contada desde la izquierda
+ *     empezando en 0 (en 3740 es 2: el 4).
  *
  * Los campos «errores» dicen lo que da cada error típico. Un error que en un caso daría la respuesta correcta
  * (o lo mismo que otro error anterior) no aparece: así la escena nunca tiene dos opciones iguales.
@@ -329,11 +351,16 @@
     const ej = [];
     for (let a = 1; a <= 9; a++) for (let m = 0; m <= 9; m++) { const c = a - k; if (c >= 1) ej.push(`${a}${m}${c}`); }
     const muestra = restaColumnas(`${L + 1}5${1}`, `${1}5${L + 1}`, 10);      // primera − última = L
+    // descuenta solo el primer préstamo: las unidades piden al medio (que baja 1); el medio pide a la primera cifra,
+    // que no baja
+    const a = muestra.arriba, ab = muestra.abajo;
+    const u = a[0] + 10 - ab[0], med = a[1] - 1 + 10 - ab[1], pri = a[2] - ab[2];
+    const soloPrimer = pri >= 1 && med <= 9 ? `${pri}${med}${u}` : undefined;
     return { L, diferencia: dif, texto: t, primeraMenosUltima: k, cifras: t.split('').map(Number), ejemplos: ej,
       errores: limpiar({
         sinPrestamo: muestra.errores.menorDelMayor,                         // en cada columna, el menor del mayor: L0L
         sinDescontar: muestra.errores.sinDescontar,                         // presta a las unidades y no descuenta: L0(10 − L)
-        medioCero: `${L}0${9 - L}`,                                         // cree que la cifra del medio da 0 (m − m)
+        soloPrimerDescuento: soloPrimer,                                    // descuenta solo el primer préstamo: L9(10 − L)
       }, t) };
   }
   // La diferencia de un número de 3 cifras y su reverso, para los ejemplos de la escena.

@@ -1,6 +1,6 @@
 {
   "titulo": "El tablero de las llevadas: problemas para lápiz y papel",
-  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Al sumar en columnas, cada vez que una columna llega a la base se forma un paquete que sube a la columna de la izquierda: es la llevada. Al restar, si arriba no alcanza, se abre un paquete de la columna de la izquierda (el préstamo); si ahí hay un 0, el préstamo viene de más lejos y cada 0 que lo deja pasar queda en 9 (en base b, en b − 1). El complemento aritmético CA(N) es lo que le falta a N para llegar a 1 seguido de tantos ceros como cifras tiene N. El subíndice indica la base: 342₍₅₎ es 342 en base 5.",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. El complemento aritmético CA(N) es lo que le falta a N para llegar a 1 seguido de tantos ceros como cifras tiene N. El subíndice indica la base: 342₍₅₎ es 342 en base 5.",
   "problemas": [
     {
       "id": "p1",
