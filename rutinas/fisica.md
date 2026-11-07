@@ -8,9 +8,101 @@ Cada ejecución construye una plantilla de escena de física, completa y revisad
 - **Celular:** en las plantillas nuevas, usar `nucleo/celular.js` (ejemplo en `plantillas/mruv/`) en vez de copiar a mano el lienzo compacto y sticky.
 
 - **Pastillas de «¿Qué pasa si…?» bloqueadas** (decisión de Gerson, 6 nov 2026, recibida de la conversación principal). Se puede ir a un experimento solo si todos los anteriores ya tienen respuesta. Los respondidos se revisitan libremente. Los bloqueados llevan `disabled`, `aria-disabled` y aria-label «Experimento N, bloqueado», igual que los puntos del paso a paso. También se cierran las otras vías de salto, como el hash o el teclado. La pestaña entre modos no se bloquea. En `dinamica/` lo arregla la conversación principal: no tocarla.
-- Dinámica ya está integrada en `claude/awesome-wozniak-5etl1n` (catálogo, diseño, pendientes y el pedido del informe). Tiro parabólico (6 nov), estática y choques (7 nov) quedaron hechos (abajo); fluidos y MAS están en curso.
+- Dinámica ya está integrada en `claude/awesome-wozniak-5etl1n` (catálogo, diseño, pendientes y el pedido del informe). Tiro parabólico (6 nov), estática, choques y fluidos (7 nov) quedaron hechos (abajo); MAS está en curso.
 - Los avisos de «terminado» van a la conversación principal nueva: `session_01P39d2yUDZET7Wso3ubSiiV` (desde el 7 nov; la anterior era `session_01P39d2yLWTLWLv3TGZ6FkHB`). Ella integra estática.
 - Desde el 7 nov la rutina sigue el método de `docs/metodo/`: constructor, verificador independiente con `entradas.py`, revisor y correcciones al mismo constructor. Lecciones nuevas de ese brief: al menos 4 predicciones en el paso a paso, opciones con la misma forma, ningún distractor que coincida con la respuesta, nombres de experimentos sin la respuesta y dibujo fijo y compacto arriba en el celular mientras hay predicción pendiente.
+
+## 7 nov 2026 · Fluidos: presión, Pascal y Arquímedes (`plantillas/fluidos/`)
+
+Se construyó en paralelo con choques, con el mismo método.
+
+**Qué hay.**
+- `motor.js` (MotorFluidos):
+  - presión manométrica y absoluta a una profundidad;
+  - recipientes de cuatro formas (ancho, estrecho, botella con techo y embudo), con la paradoja hidrostática: en la botella, el techo empuja hacia abajo y el fondo recibe 20 000 N aunque el agua pese 11 000 N;
+  - presión en cualquier punto;
+  - vasos comunicantes, tubo en U con dos líquidos y barómetro;
+  - prensa hidráulica con trabajo igual en los dos émbolos;
+  - empuje: fracción sumergida, peso aparente, bloque atado al fondo y cinco bloques del mismo tamaño soltados bajo el agua;
+  - el bloque en el dinamómetro que baja a un vaso sobre la balanza;
+  - continuidad y Bernoulli.
+
+  La cabecera documenta la geometría de cada recipiente.
+- `casos.json`: 18 casos. Incluye los nueve que propone el informe.
+- `motor.test.js`: 39 pruebas. Comprueba:
+  - fuerza en el fondo = peso del agua + fuerza de las paredes, sumada por franjas;
+  - presiones iguales en la interfaz del tubo en U;
+  - el volumen que baja en la prensa es igual al que sube;
+  - las ideas F1, F2, F3, F4, F10, F11, F12 y F13;
+  - dinamómetro + balanza = peso total siempre.
+- `papel.json`: 9 problemas propios: cisterna, tanque con tubo, tubo en U, barómetro en Juliaca, gata, tronco de eucalipto, piedra en el dinamómetro, vaso en la balanza y manguera. El de Bernoulli es para San Marcos.
+- `index.html`:
+  - **Paso a paso:** 8 pasos con 6 predicciones:
+    - el fondo de los tres recipientes;
+    - el sensor bajo el techo;
+    - el dinamómetro;
+    - la balanza;
+    - el bloque 5 cm más hondo;
+    - otro bloque del mismo tamaño.
+
+    El sensor se arrastra. El explorador tiene bloque, líquido y profundidad.
+  - **«¿Qué pasa si…?»:** 5 experimentos con pastillas bloqueadas: las dos ramas, la prensa, agua sobre mercurio, cinco bloques y un cubo en dos líquidos.
+  - Usa `nucleo/celular.js`. El peso se rotula W, para que P sea la presión.
+
+**Verificador independiente.** Leyó solo la cabecera y usó otros caminos:
+- prensa por trabajo;
+- balanza por el balance de fuerzas del sistema;
+- tubo en U igualando presiones;
+- paradoja con el peso del agua más la fuerza del techo.
+
+Coincidieron 131 campos. Las 3 diferencias fueron de nombre o de interpretación. Pidió documentar la geometría y los errores en la cabecera, y ya está.
+
+**Revisor de contenido.** Recalculó todo y estaba bien. Lo que se corrigió:
+- **Grave:**
+  - «Un cubo en dos líquidos» mostraba «E = 12 N» antes de responder.
+  - «el más liviano recibe más empuje» iba como documentado sin dato; ahora es hipótesis.
+- **Medio:**
+  - Los cinco bloques ya no se colorean (madera o metal) antes de responder.
+  - La flecha de E ya no se dibuja antes de responder en los pasos 4 y 7, porque descartaba opciones.
+  - El código de «agua de encima» pasó a uno propio.
+  - Agua sobre mercurio, opción C: pasó a hipótesis.
+  - Prensa:
+    - «P en todo el aceite» se cambió por «la mano agrega», con los émbolos a la misma altura;
+    - quedan «trabajo de la mano» y «trabajo sobre la carga».
+  - Rótulos que se encimaban con valores extremos.
+- **Bajo:**
+  - redondeos que no cuadraban;
+  - el paso 6 ahora muestra la diferencia de presiones antes y después;
+  - la cita de Loverude (el 10 % es de segundo año).
+
+**Colores** (para `docs/diseno.md`):
+
+| Variable | Color | Claro | Oscuro |
+| --- | --- | --- | --- |
+| W peso | azul | #1f5fbf | #7cb0ff |
+| N (balanza, techo, fondo) | verde | #4f7a17 | #a3d65e |
+| T tensión, dinamómetro | rojo | #c0364a | #f17384 |
+| F mano | fucsia | #a10fbf | #cf6bfa |
+| E empuje | turquesa | #0f766e | #5ed9c8 |
+| P presión | ámbar | #a35700 | #ef6f06 |
+| h profundidad | sepia | #392f0e | #f9bd0b |
+
+- Dentro de la escena:
+  - el ΔE00 mínimo es 24,4 en claro y 25,3 en oscuro (el par N–E);
+  - todos los colores pasan AA; el chip de N va con fondo al 4 %.
+- Entre escenas (lo detectó el revisor; buscó reemplazos y ninguno quedó mejor, así que se dejan y se documentan):
+  - P claro queda a ΔE00 5,9 del ámbar del roce y a 1,9 del naranja de t;
+  - h oscuro queda a 5,0 del roce oscuro;
+  - h claro casi parece tinta;
+  - en gases la presión es azul, y aquí el azul es el peso.
+
+**Pedidos para la integración.**
+1. Unidad `fisica.fluidos` → `"plantillas": ["fluidos"]`, y luego `npm run catalogo`.
+2. Los colores y sus cercanías en `docs/diseno.md`.
+3. En el informe de fluidos, la línea 183 da 15–25 % para «el más liviano recibe más empuje», pero la fila F10 no tiene ese dato (parece mezclar el 15 % de segundo año con el 25 % de aciertos). Conviene corregirla, y separar «agua de encima» (30–50 %, Loverude) en su propia fila.
+4. Pendientes y `CLAUDE.md`.
+
+**Pendiente.** Continuidad, Bernoulli y el barómetro están en el motor y en el papel, pero no en la escena. Tensión superficial no se cubre.
 
 ## 7 nov 2026 · Choques: impulso y cantidad de movimiento (`plantillas/choques/`)
 
