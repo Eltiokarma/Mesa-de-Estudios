@@ -1322,7 +1322,7 @@ function draw(){
     const err = S.step === 1 && final && ['a', 'd'].includes(S.pred[P1.id]) ? { x0:0, x1:4, F:S.pred[P1.id] === 'a' ? 40 : 10 } : null;
     const ej = graficaFx(ctx, c, B, { puntos:GA, R:esc.R, pasoX:esc.pasoX, hasta:rev ? aqui : null, cursor:rev && !final ? aqui : null, media:S.step === 1 && final ? rA.Fmedia : null, error:err });
     if (rev && aqui > 0.05) rotulosArea(ctx, c, ej, GA, 0, aqui, { texto:w => `área = W = ${J(w)}` });
-    else rotuloEn(ctx, c, B, ej.X(2) - 20, ej.Y(18), 'W = ?', c.muted, 800);
+    if (!rev) rotuloEn(ctx, c, B, ej.X(2) - 20, ej.Y(18), 'W = ?', c.muted, 800);
     if (S.step === 1 && final){
       rotuloEn(ctx, c, B, ej.X(4) - 92, ej.Y(rA.Fmedia) - 12, `F media = ${fmt(rA.Fmedia, 0)} N`, c.F, 800);
       if (err) rotuloEn(ctx, c, B, ej.X(0.2), ej.Y(err.F) - 12, `tu cuenta: ${J(err.F*4)}`, c.muted, 800);
@@ -1334,7 +1334,6 @@ function draw(){
     const ej = graficaFx(ctx, c, B, { puntos:GA, R:esc.R, pasoX:esc.pasoX, hasta:4 });
     rotulosArea(ctx, c, ej, GA, 0, 4, { texto:w => `área = W = ${J(w)}` });
     riel(ctx, c, z.riel, X, [eA, eB].map((e, j) => ({ x:e.x, m:j ? 8 : 2, F:M.fuerzaEn(GA, e.x), v:e.v, verV:rev, etqV:rev ? `v = ${fmt(e.v, 1)} m/s` : '' })), { Fmax:40, kv:5 });
-    rotuloEn(ctx, c, z.riel, z.riel.x + z.riel.w, z.riel.y + 8, 'la misma F(x) en los dos', c.F, 700);
     if (z.barras) barras3(ctx, c, z.barras, [{ nombre:'Ec', sub:'2 kg', col:c.Ec, hl:'Ec', v:rev ? eA.Ec : null }, { nombre:'Ec', sub:'8 kg', col:c.Ec, hl:'Ec', v:rev ? eB.Ec : null }], 110,
       rev && f >= 1 ? `W = ΔEc = ${J(rA.W)}` : '');
   } else if (s.esc === 'C'){
@@ -1370,7 +1369,7 @@ function draw(){
     riel(ctx, c, z.riel, X, [{ x:aqui, m:S.ex.m, F:Fa, etqF:`F = ${fmt(Fa, 0)} N`, v, verV:true, etqV:`v = ${fmt(v, 1)} m/s`, marca:!r.arranca ? 'no arranca' : '' }], { Fmax:40, kv:6 });
     if (z.barras){
       const tope = Math.max(20, r.Ec0 + Pg.positiva)*1.08;
-      barras3(ctx, c, z.barras, [{ nombre:'Ec', sub:'carrito', col:c.Ec, hl:'Ec', v:e ? Ec : Math.max(0, r.Ec), ini:r.Ec0 }], tope, r.llega ? `W neto = ΔEc = ${J(r.W)}` : 'se detiene');
+      barras3(ctx, c, z.barras, [{ nombre:'Ec', sub:'carrito', col:c.Ec, hl:'Ec', v:e ? Ec : Math.max(0, r.Ec), ini:r.Ec0 }], tope, r.llega ? `W neto = ΔEc = ${J(r.W)}` : r.arranca ? 'se detiene' : 'no arranca');
     }
   }
 }
