@@ -119,8 +119,7 @@
         { "material": "madera", "T": 43, "contacto": 36.4 } ]
     },
 
-    
-{"nombre": "Riel (dilatación, pasos 1 a 3): acero, ℓ₀ = 12 m, de 10 °C a 45 °C → Δℓ = 0,00504 m, final 12,00504 m; con T final en vez de ΔT, 0,00648 m", "fn": "dilatacion", "args": [{"tipo": "lineal", "inicial": 12, "alfa": 1.2e-05, "T0": 10, "Tf": 45}], "espera": {"delta": 0.00504, "final": 12.00504, "errores.DL-usa-T-final": 0.00648}, "verificacion": "pendiente"},
+    {"nombre": "Riel (dilatación, pasos 1 a 3): acero, ℓ₀ = 12 m, de 10 °C a 45 °C → Δℓ = 0,00504 m, final 12,00504 m; con T final en vez de ΔT, 0,00648 m", "fn": "dilatacion", "args": [{"tipo": "lineal", "inicial": 12, "alfa": 1.2e-05, "T0": 10, "Tf": 45}], "espera": {"delta": 0.00504, "final": 12.00504, "errores.DL-usa-T-final": 0.00648}, "verificacion": "pendiente"},
     {"nombre": "Riel doble (predicción D1): ℓ₀ = 24 m, ΔT = 35 °C → Δℓ = 0,01008 m, el doble del de 12 m; «no depende del largo» da 0,00504 y «al cuadrado», 0,02016", "fn": "dilatacion", "args": [{"tipo": "lineal", "inicial": 24, "alfa": 1.2e-05, "dT": 35, "ref": 12}], "espera": {"delta": 0.01008, "errores.DL1-no-depende-de-l0": 0.00504, "errores.DL1-cuadrado": 0.02016}, "verificacion": "pendiente"},
     {"nombre": "Caso del informe: ℓ₀ = 10 m, α = 1,2e-5 1/°C, ΔT = 50 °C → Δℓ = 0,006 m", "fn": "dilatacion", "args": [{"tipo": "lineal", "inicial": 10, "alfa": 1.2e-05, "dT": 50}], "espera": {"delta": 0.006}, "verificacion": "pendiente"},
     {"nombre": "Placa (predicción D2): aluminio de 50 × 40 cm (2000 cm²), ΔT = 100 °C → ΔA = 9,6 cm² (exacta 9,61152); con α, 4,8; con 3α, 14,4; producto de los estiramientos, 0,01152", "fn": "dilatacion", "args": [{"tipo": "superficial", "inicial": 2000, "alfa": 2.4e-05, "dT": 100, "lados": [50, 40]}], "espera": {"delta": 9.6, "deltaExacta": 9.61152, "errores.D2-alfa-para-area": 4.8, "errores.D2-tres-alfa-para-area": 14.4, "errores.D2-producto-de-estiramientos": 0.01152}, "verificacion": "pendiente"},
