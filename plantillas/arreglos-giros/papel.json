@@ -1,0 +1,134 @@
+{
+  "titulo": "Fichas, espejos y ruedas: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 minutos por problema, como en el examen.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Se quieren poner los números del 3 al 11 en un cuadrado de 3 × 3, uno por casilla, de modo que cada fila, cada columna y cada diagonal sumen lo mismo. ¿Cuánto suma cada línea? ¿Qué número va en la casilla del centro?",
+      "respuesta": "Cada línea suma 21 y en el centro va el 7.",
+      "pasos": [
+        "Los nueve números suman 3 + 4 + … + 11 = 63.",
+        "Las tres filas usan todos los números una vez: cada fila suma 63 ÷ 3 = 21.",
+        "Por el centro pasan cuatro líneas: la fila del medio, la columna del medio y las dos diagonales. Juntas suman 4 · 21 = 84.",
+        "En esas cuatro líneas están todos los números una vez, menos el del centro, que está cuatro veces: 84 = 63 + 3 · centro.",
+        "Centro = (84 − 63) ÷ 3 = 7."
+      ],
+      "verificar": [ { "fn": "cuadradoMagico", "args": [[3, 4, 5, 6, 7, 8, 9, 10, 11]], "espera": { "constante": 21, "centro": 7, "cuantas": 8 } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "intermedio",
+      "enunciado": "En un cuadrado mágico de 3 × 3 con los números del 1 al 9, la esquina de arriba a la izquierda tiene un 2 y la de arriba a la derecha tiene un 4. ¿Qué número va en la casilla del medio de la fila de abajo?",
+      "respuesta": "El 1.",
+      "pasos": [
+        "Con 1 a 9, cada línea suma 45 ÷ 3 = 15 y el centro es 5.",
+        "La fila de arriba: 2 + ? + 4 = 15, así que la casilla del medio de arriba es 9.",
+        "La columna del medio: 9 + 5 + ? = 15, así que la casilla del medio de abajo es 1.",
+        "Comprobación: completando con las diagonales queda 2 9 4 / 7 5 3 / 6 1 8, y las ocho líneas suman 15."
+      ],
+      "verificar": [ { "fn": "revisarCuadrado", "args": [[2, 9, 4, 7, 5, 3, 6, 1, 8]], "espera": { "magico": true, "buenas": 8 } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Los números del 1 al 6 se colocan en los tres vértices y en los puntos medios de los lados de un triángulo, uno en cada lugar, de modo que los tres números de cada lado sumen lo mismo. ¿Cuál es la mayor suma por lado que se puede conseguir?",
+      "respuesta": "12, con 4, 5 y 6 en los vértices.",
+      "pasos": [
+        "Al sumar los tres lados, cada número del medio se cuenta una vez y cada vértice dos veces, porque es la punta de dos lados.",
+        "Si S es la suma de cada lado y V la de los vértices: 3S = (1 + 2 + … + 6) + V = 21 + V.",
+        "S es mayor cuanto mayor sea V: lo más que puede valer es 4 + 5 + 6 = 15.",
+        "3S = 21 + 15 = 36, así que S = 12.",
+        "Se puede: 4, 5 y 6 en los vértices y 3, 1 y 2 en los medios (4 + 3 + 5, 5 + 1 + 6, 6 + 2 + 4)."
+      ],
+      "verificar": [ { "fn": "sumaLado", "args": [{ "extremo": "maximo" }], "espera": { "respuesta": 12, "V": 15, "vertices": [4, 5, 6] } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Los números del 1 al 9 se colocan en un triángulo con cuatro números en cada lado (los tres vértices y dos números más en cada lado). Cada lado suma 20. ¿Cuánto suman los tres números de los vértices?",
+      "respuesta": "15.",
+      "pasos": [
+        "Al sumar los tres lados se cuentan todos los números una vez y los vértices una vez más.",
+        "3 · 20 = (1 + 2 + … + 9) + V, es decir, 60 = 45 + V.",
+        "V = 60 − 45 = 15."
+      ],
+      "verificar": [ { "fn": "poligonoNumeros", "args": [{ "porLado": 4 }], "espera": { "sumas.2.S": 20, "sumas.2.V": 15 } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "avanzado",
+      "enunciado": "Los números del 1 al 8 se colocan en un cuadrado: uno en cada vértice y uno en el medio de cada lado, de modo que los tres números de cada lado sumen lo mismo. ¿Cuál es la menor suma por lado posible?",
+      "respuesta": "12.",
+      "pasos": [
+        "Con S la suma de cada lado y V la de los cuatro vértices: 4S = (1 + 2 + … + 8) + V = 36 + V.",
+        "Lo menos que puede valer V es 1 + 2 + 3 + 4 = 10, pero entonces 4S = 46 y S = 11,5, que no es entero.",
+        "36 + V tiene que ser múltiplo de 4, así que V también: el menor posible desde 10 es V = 12, que da S = 12.",
+        "Se puede: vértices 1, 6, 2 y 3, en ese orden alrededor, con 5, 4, 7 y 8 en los medios (1 + 5 + 6, 6 + 4 + 2, 2 + 7 + 3, 3 + 8 + 1)."
+      ],
+      "verificar": [ { "fn": "sumaLado", "args": [{ "lados": 4, "extremo": "minimo" }], "espera": { "respuesta": 12, "V": 12, "cota": 11.5 } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "básico",
+      "enunciado": "Una pieza en forma de L está hecha con 4 cuadraditos: tres en columna y uno más al pie, a la derecha. Sobre una cuadrícula, ¿en cuántas posiciones distintas se puede poner si solo se gira sobre la mesa? ¿Y si también se le puede dar la vuelta?",
+      "respuesta": "4 posiciones solo girando; 8 si también se le da la vuelta.",
+      "pasos": [
+        "Girando de 90° en 90°, el pie de la L apunta a la derecha, arriba, a la izquierda y abajo: 4 posiciones distintas, y el cuarto giro la devuelve a la primera.",
+        "Al darle la vuelta se obtiene su imagen en el espejo, una L con el pie a la izquierda. Ningún giro la convierte en la original, porque la L no tiene un eje de simetría.",
+        "La pieza en espejo también tiene 4 giros distintos: en total, 4 + 4 = 8."
+      ],
+      "verificar": [ { "fn": "orientaciones", "args": [[[0, 0], [0, 1], [0, 2], [1, 0]]], "espera": { "giros": 4, "conReflejos": 8, "quiral": true } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Una moneda de radio 1 cm rueda, sin resbalar, alrededor de un disco fijo de radio 3 cm, siempre pegada a su borde, hasta volver al punto de partida. ¿Cuántas vueltas da la moneda si rueda por fuera del disco? ¿Y si rueda por dentro de un aro de radio 3 cm?",
+      "respuesta": "4 vueltas por fuera; 2 por dentro.",
+      "pasos": [
+        "Lo que cuenta es el camino del centro de la moneda: rodando sin resbalar, la moneda da una vuelta por cada 2π · 1 cm que avanza su centro.",
+        "Por fuera, el centro va a 3 + 1 = 4 cm del centro del disco: recorre 2π · 4 = 8π cm. Vueltas: 8π ÷ 2π = 4.",
+        "Por dentro, el centro va a 3 − 1 = 2 cm: recorre 2π · 2 = 4π cm. Vueltas: 4π ÷ 2π = 2.",
+        "El borde que toca mide 6π cm en los dos casos: el giro de la vuelta completa suma una vuelta por fuera y resta una por dentro."
+      ],
+      "verificar": [ { "fn": "rodarCirculo", "args": [{ "R": 3, "r": 1 }], "espera": { "vueltas": 4 } }, { "fn": "rodarCirculo", "args": [{ "R": 3, "r": 1, "lado": "dentro" }], "espera": { "vueltas": 2 } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "básico",
+      "enunciado": "La rueda de una bicicleta tiene 35 cm de radio y da 200 vueltas sobre una pista recta, sin resbalar. ¿Cuántos metros avanza la bicicleta?",
+      "respuesta": "140π m (unos 440 m).",
+      "pasos": [
+        "En cada vuelta, la rueda avanza lo que mide su borde: 2π · 35 = 70π cm.",
+        "En 200 vueltas: 200 · 70π = 14 000π cm.",
+        "14 000π cm = 140π m ≈ 440 m."
+      ],
+      "verificar": [ { "fn": "rodarRecta", "args": [{ "r": 35, "Lpi": 14000 }], "espera": { "vueltas": 200 } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "intermedio",
+      "enunciado": "Un cuadrado ABCD de 4 m de lado está apoyado en el suelo sobre su lado AB, con A a la izquierda. Se vuelca hacia la derecha, girando sobre el vértice de abajo a la derecha, hasta que se apoya en otro lado; esto se repite hasta completar 4 vuelcos. ¿Qué longitud recorre el vértice A?",
+      "respuesta": "(4 + 2√2)π m.",
+      "pasos": [
+        "En cada vuelco el cuadrado gira 90° alrededor de un vértice, así que A recorre un cuarto de circunferencia cuyo radio es su distancia a ese vértice.",
+        "Primer vuelco, sobre B: radio AB = 4. Segundo, sobre C: radio AC, la diagonal, 4√2. Tercero, sobre D: radio AD = 4. Cuarto, sobre A: A no se mueve.",
+        "Cada cuarto de circunferencia mide (2π · radio) ÷ 4 = (π/2) · radio.",
+        "Total: (π/2)(4 + 4√2 + 4 + 0) = (π/2)(8 + 4√2) = (4 + 2√2)π m."
+      ],
+      "verificar": [ { "fn": "volcar", "args": [{ "n": 4, "l": 4 }], "espera": { "exacto": "(4 + 2√2)π", "radiosExactos": ["4", "4√2", "4", "0"] } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "intermedio",
+      "enunciado": "La plumilla de un limpiaparabrisas empieza a 20 cm del eje y termina a 60 cm. Si gira 120°, ¿qué área del vidrio limpia?",
+      "respuesta": "3200π/3 cm² (unos 3351 cm²).",
+      "pasos": [
+        "La plumilla barre la parte de un sector de 120° que queda entre las circunferencias de radio 20 cm y 60 cm.",
+        "120° es la tercera parte de una vuelta: el sector grande mide (1/3)π · 60² = 1200π y el chico (1/3)π · 20² = 400π/3.",
+        "Área limpia: 1200π − 400π/3 = 3200π/3 cm² ≈ 3351 cm²."
+      ],
+      "verificar": [ { "fn": "regionBarrida", "args": [{ "a": 20, "b": 60, "angulo": 120 }], "espera": { "exacto": "3200π/3" } } ]
+    }
+  ]
+}

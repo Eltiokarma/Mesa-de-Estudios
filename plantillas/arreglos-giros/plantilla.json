@@ -1,0 +1,16 @@
+{
+  "id": "arreglos-giros",
+  "titulo": "Fichas, espejos y ruedas: arreglos y movimientos de figuras",
+  "formato": "escena",
+  "unidades": [
+    "razonamiento-matematico.arreglos-numericos",
+    "razonamiento-matematico.transformaciones-de-figuras"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}
