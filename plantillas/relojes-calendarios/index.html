@@ -416,7 +416,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
       ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; linea(ctx, { x:x0, y:f.y }, { x:x1, y:f.y }); ctx.restore();
       for (let h = 0; h <= 12; h++){
         ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1; linea(ctx, { x:X(h*60), y:f.y - 5 }, { x:X(h*60), y:f.y + 5 }); ctx.restore();
-        if (h % 3 === 0 || W >= 560){ ctx.save(); ctx.fillStyle = c.muted; ctx.font = `600 10px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'top'; ctx.fillText(String(h + 12*j), X(h*60), f.y + 7); ctx.restore(); }
+        if (h % 3 === 0 || W >= 560){ ctx.save(); ctx.fillStyle = c.muted; ctx.font = `600 10px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'top'; ctx.fillText(String(h === 0 ? 12 : h), X(h*60), f.y + 7); ctx.restore(); }
       }
       rotulo(ctx, c, x0 - 6, f.y, j ? 'p. m.' : 'a. m.', c.muted, 'right', 700, 10);
       // lo recorrido
@@ -445,9 +445,9 @@ function crearEscena(cv, idDesc, idLect, idLey){
     const y = Hh - barH + 22, x0 = 18, x1 = W - 18, X = v => x0 + (x1 - x0)*clamp(v/D.meta, 0, 1);
     ctx.save(); ctx.fillStyle = c.grid; redondeado(ctx, x0, y, x1 - x0, 16, 8); ctx.fill(); ctx.restore();
     if (!D.ocultaA && D.A > 0){ ctx.save(); ctx.fillStyle = c.A; ctx.globalAlpha = E.hl && E.hl !== 'A' ? .5 : .9; redondeado(ctx, x0, y, Math.max(8, X(D.A) - x0), 16, 8); ctx.fill(); ctx.restore(); }
-    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, { x:x1, y:y - 6 }, { x:x1, y:y + 22 }); ctx.restore();
+    if (!D.ocultaMeta){ ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, { x:x1, y:y - 6 }, { x:x1, y:y + 22 }); ctx.restore(); }
     rotulo(ctx, c, x0, y - 12, D.etiquetaA + (D.ocultaA ? ': ?' : `: ${fmt(D.A, 1)} min`), c.A, 'left', 800, 12);
-    rotulo(ctx, c, x1, y - 12, D.metaTxt, c.ink, 'right', 800, 12);
+    rotulo(ctx, c, x1, y - 12, D.ocultaMeta ? 'meta: ?' : D.metaTxt, c.ink, 'right', 800, 12);
     rotulo(ctx, c, x0, y + 34, D.tTxt, c.t, 'left', 800, 12);
   }
 
@@ -458,12 +458,12 @@ function crearEscena(cv, idDesc, idLect, idLey){
     Cp.filas.forEach((f, j) => {
       const y = 8 + alto*j + alto*0.55;
       rotulo(ctx, c, x0, 8 + alto*j + 12, f.titulo, c.ink, 'left', 800, 12);
-      ctx.save(); ctx.strokeStyle = c.line; ctx.lineWidth = 1.5; linea(ctx, { x:x0, y:y + 16 }, { x:x1, y:y + 16 }); ctx.restore();
-      for (let s = 0; s <= Cp.tmax; s++){ ctx.save(); ctx.strokeStyle = c.muted; linea(ctx, { x:X(s), y:y + 12 }, { x:X(s), y:y + 20 }); ctx.restore();
+      if (!Cp.sinRegla){ ctx.save(); ctx.strokeStyle = c.line; ctx.lineWidth = 1.5; linea(ctx, { x:x0, y:y + 16 }, { x:x1, y:y + 16 }); ctx.restore(); }
+      if (!Cp.sinRegla) for (let s = 0; s <= Cp.tmax; s++){ ctx.save(); ctx.strokeStyle = c.muted; linea(ctx, { x:X(s), y:y + 12 }, { x:X(s), y:y + 20 }); ctx.restore();
         if (s % (Cp.tmax > 12 ? 4 : 1) === 0 && (W >= 560 || s % 2 === 0)){ ctx.save(); ctx.fillStyle = c.muted; ctx.font = `600 10px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'top'; ctx.fillText(String(s), X(s), y + 22); ctx.restore(); } }
       if (f.oculto){ ctx.save(); ctx.strokeStyle = c.muted; ctx.setLineDash([5, 4]); ctx.lineWidth = 1.5; redondeado(ctx, x0, y - 14, x1 - x0, 26, 8); ctx.stroke(); ctx.restore(); rotulo(ctx, c, (x0 + x1)/2, y - 1, f.pregunta || '?', c.muted, 'center', 800, 12); return; }
       const i = f.intervalo, ver = Math.min(f.n, Math.floor(f.prog + 1e-9));
-      for (let g = 1; g < ver; g++){
+      if (!Cp.sinRegla) for (let g = 1; g < ver; g++){
         ctx.save(); ctx.strokeStyle = c.k; ctx.lineWidth = grosor('k', 3); linea(ctx, { x:X((g - 1)*i) + 7, y }, { x:X(g*i) - 7, y }); ctx.restore();
       }
       for (let g = 0; g < ver; g++){
@@ -667,12 +667,12 @@ const G1 = { id:'relojes-paso1', ok:'b', opts:[
     d:'Elegiste la D. 285° es el ángulo que da la vuelta por fuera. La pregunta pide el menor ángulo, y 285° pasa de 180°: el menor es 360 − 285 = 75°. La correcta está marcada.' } };
 const G3 = { id:'relojes-paso3', ok:'c', opts:[
   ['a', hm(3, P3.errores.horarioQuieto.fraccion), 'AR7-horario-quieto', 'hipotesis'],
-  ['b', hm(3, P3.errores.sumaRapideces.fraccion), 'RM4-suma-las-rapideces', 'hipotesis'],
+  ['b', hm(3, P3.errores.sinElMedio.fraccion), 'formula-sin-el-medio', 'hipotesis'],
   ['c', hm(3, P3.primera.fraccion)],
   ['d', hm(3, P3.errores.conElSuplemento.fraccion), 'superpuestas-como-opuestas', 'hipotesis']],
   fb:{ c:'¡Bien! A las 3:00 el minutero está 90° detrás del horario. Cada minuto le descuenta 6° − 0,5° = 5,5°. Lo alcanza en 90/5,5 = 180/11 = 16 4/11 min.',
     a:'Elegiste la A. A las 3:15 el minutero llega al 3, pero el horario ya no está ahí: avanzó 7,5° en esos 15 minutos. El minutero todavía tiene que alcanzarlo. La correcta está marcada.',
-    b:'Elegiste la B. Esa cuenta divide entre 6,5 (6 + 0,5), como si las agujas fueran una hacia la otra. Las dos giran en el mismo sentido: el minutero le gana al horario 6 − 0,5 = 5,5° por minuto. La correcta está marcada.',
+    b:'Elegiste la B. Esa cuenta resuelve 11M = 90: se olvidó dividir el 11 entre 2. El minutero le gana al horario 5,5° por minuto, no 11°: tarda el doble, 180/11 min. La correcta está marcada.',
     d:'Elegiste la D. A las 3 h 49 1/11 min las agujas están en línea, pero en sentidos opuestos (forman 180°). Juntas quiere decir α = 0°. La correcta está marcada.' } };
 const G4 = { id:'relojes-paso4', ok:'d', opts:[
   ['a', `${P4.errores.unaPorHora} veces`, 'una-superposicion-por-hora', 'hipotesis'],
@@ -721,12 +721,12 @@ const reloj3 = ya => ({ modo:'reloj', relojes:[{ t: ya ? 180 + P3.primera.M : 18
 const linea4 = ya => ({ modo:'linea', linea:{ instantes:P4.instantes, prog: ya ? 1440 : 0, oculto:!ya },
   lect: ya ? [L('al', 'Veces juntas en 24 h', String(P4.veces)), L('ink', 'Entre una y otra', '1 h 5 5/11 min')] : [L('ink', 'Desde', '12:00 a. m.'), L('ink', 'Durante', '24 horas')],
   desc:'Un día completo, de medianoche a medianoche.' });
-const adel5 = (ya, T) => ({ modo:'adelanto', adel:{ inicio:0, cada:4, T: T === undefined ? (ya ? P5.horas : 0) : T, meta:720, metaTxt:'12 h = 720 min',
+const adel5 = (ya, T) => ({ modo:'adelanto', adel:{ inicio:0, cada:4, T: T === undefined ? (ya ? P5.horas : 0) : T, meta:720, metaTxt:'12 h = 720 min', ocultaMeta:!ya,
     relojes:[{ titulo:'reloj bueno', s:0 }, { titulo:'el que se adelanta', s:1, a:5 }], etiquetaA:'A · adelanto', ocultaA:false, A:0, tTxt:'',
     calc:D => { D.A = MR.horaMarcada({ inicio:0, transcurrido:D.T, a:5, cada:4, tipo:'adelanta' }).desfase; D.tTxt = D.T || ya ? `t = ${fmt(D.T/24, 1)} días` : 't = ?'; } },
   lect:[L('A', 'Se adelanta', '5 min cada 4 h')].concat(ya ? [L('t', 'Tiempo t', dias(P5.dias))] : [L('t', 'Tiempo t', '?')]),
   desc:'Dos relojes puestos en hora a la vez: el bueno y uno que se adelanta.' });
-const camp6 = ya => ({ modo:'campanas', camp:{ tmax:12, filas:[{ titulo:'6 campanadas en 5 s', n:6, intervalo:P6.intervalo, prog:6, llave:'t = 5 s' },
+const camp6 = ya => ({ modo:'campanas', camp:{ tmax:12, sinRegla:!ya, filas:[{ titulo:'6 campanadas en 5 s', n:6, intervalo:P6.intervalo, prog:6, llave:'t = 5 s' },
     { titulo:'12 campanadas', n:12, intervalo:P6.intervalo, prog: ya ? 12 : 0, oculto:!ya, pregunta:'¿cuánto tardan?', llave: ya ? `t = ${seg(P6.tiempo)}` : '' }] },
   lect:[L('n', 'Campanadas n', '6 → 12'), L('t', 'Tiempo de 6', '5 s')].concat(ya ? [L('k', 'Intervalos', '5 → 11'), L('t', 'Tiempo de 12', seg(P6.tiempo))] : []),
   desc:'Campanadas sobre una línea del tiempo en segundos.' });
@@ -745,14 +745,19 @@ function libre(){
 }
 function vivoLibre(){
   const d = $('vivoL'); if (!d) return;
-  const G = MR.agujas(E.relojes[0].t), H = G.H, Hs = H === 0 ? 12 : H, sig = H + 1;
+  const G = MR.agujas(E.relojes[0].t), H = G.H, Hs = H === 0 ? 12 : H, A = MR.angulo({ H:Hs, M:G.M });
+  const las = h => (h === 1 ? `la ${h}` : `las ${h}`);
   const sol = a => MR.horaConAngulo({ H, alfa:a }).soluciones;
-  const boton = (s, et) => `<button type="button" class="btn chico" data-ir="${60*H + s.M}">${Hs} h ${mixto(s.fraccion)} min</button>`;
-  d.innerHTML = `<div class="eqs"><div class="eq">${al_('α')} = |30 · ${H_(Hs)} − ${fr('11', '2')} · ${M_(fmt(G.M, 2))}| = ${al_(fmt(G.formula, 2) + '°')}${G.formula > 180 ? `<span class="note">más de 180°: el ángulo es 360° − ${fmt(G.formula, 2)}° = ${fmt(G.menor, 2)}°</span>` : ''}</div></div>
-    <p>Entre las ${Hs} y las ${sig}, según el motor:</p>
-    <p><b>Juntas:</b></p><div class="fila">${sol(0).filter(s => s.M > 0 || H !== 12).map(s => boton(s)).join('') || '<span class="hint">ninguna vez</span>'}</div>
-    <p><b>Opuestas:</b></p><div class="fila">${sol(180).map(s => boton(s)).join('') || '<span class="hint">ninguna vez</span>'}</div>
-    <p><b>Ángulo recto:</b></p><div class="fila">${sol(90).map(s => boton(s)).join('') || '<span class="hint">ninguna vez</span>'}</div>`;
+  const boton = s => `<button type="button" class="btn chico" data-ir="${60*H + s.M}">${Hs} h ${mixto(s.fraccion)} min</button>`;
+  const fila = a => sol(a).map(s => boton(s)).join('') || '<span class="hint">ninguna vez</span>';
+  // la hora 2 es la del experimento 1 de «¿Qué pasa si…?»: no se resuelve aquí antes de que lo respondan
+  const reservada = H === 2 && !(window.RESPONDIDOS && window.RESPONDIDOS['angulo-recto']);
+  d.innerHTML = `<div class="eqs"><div class="eq">${al_('α')} = |30 · ${H_(Hs)} − ${fr('11', '2')} · ${M_(fmt(G.M, 2))}| = ${al_(fmt(A.formula, 2) + '°')}${A.formula > 180 ? `<span class="note">más de 180°: el ángulo es 360° − ${fmt(A.formula, 2)}° = ${fmt(A.menor, 2)}°</span>` : ''}</div></div>
+    <p>Entre ${las(Hs)} y ${las(H + 1)}, según el motor:</p>
+    ${reservada ? '<p class="hint">Esta hora la vas a resolver en el experimento 1 de «¿Qué pasa si…?». Respóndelo primero y aquí aparecerán las horas.</p>' : `
+    <p><b>Juntas:</b></p><div class="fila">${fila(0)}</div>
+    <p><b>Opuestas:</b></p><div class="fila">${fila(180)}</div>
+    <p><b>Ángulo recto:</b></p><div class="fila">${fila(90)}</div>`}`;
   d.querySelectorAll('[data-ir]').forEach(b => b.onclick = () => { if (E.anim) return; E.relojes[0].t = +b.dataset.ir; S.libre = E.relojes[0].t; E.dibujar(); E.avisar(); });
 }
 function vivoCamina(){
@@ -782,7 +787,7 @@ const steps = [
      alCambiar:vivoCamina, desc:'Reloj entre las 3 y las 4: arrastra el minutero.' }),
    body:() => `<p class="problem">Arrastra la punta del minutero (o usa las flechas del teclado) entre las ${H_('3')}:00 y las ${H_('3')}:59. Mira cómo el horario se arrastra detrás, despacito.</p>
    <div class="eqs" id="vivoC"></div>
-   <p>Por cada minuto, el ${M_('minutero')} avanza 6° y el ${H_('horario')} medio grado. Por eso, en cada minuto, el ángulo entre ellos cambia 5,5°: la fórmula de academia es ${al_('α')} = |30${H_('H')} − ${fr('11', '2')}${M_('M')}|.</p>` },
+   <p>Por cada minuto, el ${M_('minutero')} avanza 6° y el ${H_('horario')} medio grado. Por eso, en cada minuto, el ángulo entre ellos cambia 5,5°: la fórmula de academia es ${al_('α')} = |30${H_('H')} − ${fr('11', '2')}${M_('M')}|. Muchas academias la escriben sin barras: ${al_('α')} = 30${H_('H')} − ${fr('11', '2')}${M_('M')} si el horario va adelante, y ${al_('α')} = ${fr('11', '2')}${M_('M')} − 30${H_('H')} si el minutero va adelante.</p>` },
  { k:'Paso 3', t:'Predice: las agujas juntas', gate:G3,
    prep:() => E.config(reloj3(!!S.pred[G3.id])),
    anima:fin => { E.config(reloj3(false)); const R = E.relojes[0]; E.animar(180, 180 + P3.primera.M, 2400, p => { R.t = p; }, () => { E.config(reloj3(true)); fin(); }); },
@@ -791,9 +796,9 @@ const steps = [
    <div id="tras" class="body" hidden><div class="eqs">
      <div class="eq">30 · ${H_('3')} − ${fr('11', '2')}${M_('M')} = 0</div>
      <div class="eq">${M_('M')} = ${fr('2 · 90', '11')} = ${fr('180', '11')} = ${M_(mixto(P3.primera.fraccion))} min</div></div>
-   <p>Es una persecución: a las 3:00 el minutero va 90° atrás y le gana 5,5° por minuto al horario. En el dibujo, el minutero naranja a trazos marca las 3:15: ya pasó por el 3, pero el horario se había movido un poco más.</p>
+   <p>Es una persecución: a las 3:00 el minutero va 90° atrás y le gana 5,5° por minuto al horario. En el dibujo, el minutero naranja a trazos marca las 3:15: ya llegó al 3, pero el horario se había movido 7,5° más allá.</p>
    <p class="aviso">En el reloj casi nada cae en minutos exactos: las respuestas de academia suelen venir con onceavos (11 = 2 · 5,5).</p>
-   <p class="fuente">El horario quieto se liga a AR7 y sumar las rapideces a RM4 (sumar velocidades donde van en el mismo sentido); ninguno tiene cifras para el reloj: son hipótesis nuestras, igual que confundir juntas con opuestas.</p></div>` },
+   <p class="fuente">El horario quieto se liga a AR7 del informe (ilusión de linealidad), sin cifras para el reloj; olvidar el 2 de la fórmula y confundir juntas con opuestas también son hipótesis nuestras.</p></div>` },
  { k:'Paso 4', t:'Predice: un día completo', gate:G4,
    prep:() => E.config(linea4(!!S.pred[G4.id])),
    anima:fin => { E.config(linea4(false)); const Li = E.linea; Li.oculto = false; E.animar(0, 1440, 4200, p => { Li.prog = p; }, () => { E.config(linea4(true)); fin(); }, true); },
@@ -806,8 +811,8 @@ const steps = [
    <p class="fuente">Contar una superposición por hora, contar los dos extremos y quedarse con 12 horas son hipótesis nuestras. No hay estudios con cifras sobre esto.</p></div>` },
  { k:'Paso 5', t:'Predice: el reloj apurado', gate:G5,
    prep:() => E.config(adel5(!!S.pred[G5.id])),
-   anima:fin => { E.config(adel5(false)); const D = E.adel; E.animar(0, P5.horas, 3600, p => { D.T = p; }, () => { E.config(adel5(true)); fin(); }, true); },
-   body:() => `<p class="problem">Un reloj se adelanta ${A_('5 min')} cada ${t_('4 h')}. Hoy a las 12:00 marca la hora correcta.</p>
+   anima:fin => { E.config(adel5(false)); const D = E.adel; D.ocultaMeta = false; E.animar(0, P5.horas, 3600, p => { D.T = p; }, () => { E.config(adel5(true)); fin(); }, true); },
+   body:() => `<p class="problem">Un reloj de agujas se adelanta ${A_('5 min')} cada ${t_('4 h')}. Hoy a las 12:00 marca la hora correcta.</p>
    <p>¿Dentro de cuánto ${t_('tiempo')} volverá a marcar la hora correcta?</p>${opcionesHTML(G5.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
      <div class="eq">${A_('A')} = 12 h = ${A_('720 min')}<span class="note">una vuelta del horario</span></div>
@@ -828,7 +833,7 @@ const steps = [
    <p class="fuente">La regla de tres es la ilusión de linealidad (AR7 del informe): estudios con escolares la encontraron en problemas que no son proporcionales, pero no hay cifras para las campanadas. Por eso es una hipótesis nuestra, igual que la otra opción.</p></div>` },
  { k:'Paso 7', t:'Saltos en el calendario', explora:'semanas',
    prep:() => E.config(sem7()),
-   body:() => `<p class="problem">Hoy es sábado ${fechaTxt(HOY)}. Suma días y mira en qué día de la semana caes.</p>
+   body:() => `<p class="problem">El ${fechaTxt(HOY)} es sábado. Suma días y mira en qué día de la semana caes.</p>
    <div class="fila">${[1, 7, 30, 100, 365].map(n => `<button type="button" class="btn chico" data-sumar="${n}">+${n} ${n === 1 ? 'día' : 'días'}</button>`).join('')}<button type="button" class="btn chico" data-sumar="0">Volver a hoy</button></div>
    <div class="eqs" id="vivoS"></div>
    <p>Cada 7 días se vuelve al mismo día de la semana. Por eso solo importa el ${r_('resto')} de dividir los ${d_('días')} entre 7: las semanas completas no mueven nada. 365 días son 52 semanas y 1 día; 366 son 52 semanas y 2 días.</p>` },
@@ -924,6 +929,7 @@ function prediccion(s){
 $('next').addEventListener('click', () => { if (S.ocupado) return; const s = steps[S.step]; if (s.gate && !S.pred[s.gate.id]) return; desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+addEventListener('modo', () => { if (steps[S.step].explora === 'libre') vivoLibre(); });
 })();
 </script>
 <script>
@@ -941,15 +947,16 @@ const CE = MR.campanadasEn({ n:5, t:12, T:24 });
 const BI = MR.bisiestos({ desde:1901, hasta:2100 });
 const ME = MR.mes({ diasMes:31, primerDia:'jueves' });
 const dias = x => `${fmt(x, 2)} días`;
+const lista = l => { const t = l.length > 1 ? l.slice(0, -1).join(', ') + ' y ' + l[l.length - 1] : l.join(''); return t[0].toUpperCase() + t.slice(1); };
 
 const EXPS = [
   { id:'angulo-recto', corto:'Ángulo recto',
     q:`¿A qué hora, entre las ${H_('2')} y las ${H_('3')}, forman las agujas un ángulo ${al_('α')} de 90°?`,
     opts:[['a', hm(2, RE.errores.horarioQuieto.fraccion), 'AR7-horario-quieto', 'hipotesis'],
           ['b', hm(2, RE.primera.fraccion)],
-          ['c', hm(2, RE.errores.sumaRapideces.fraccion), 'RM4-suma-las-rapideces', 'hipotesis']],
+          ['c', hm(2, RE.errores.signoCambiado.fraccion), 'formula-signo-cambiado', 'hipotesis']],
     ok:'b',
-    fb:{ a:'A las 2:25 el minutero está en el 5, a 90° del 2, pero el horario ya se movió 12,5° hacia el 3: el ángulo es 77,5°. Faltan unos minutos más.', c:'Esa cuenta divide entre 6,5, como si las agujas giraran una hacia la otra. Van en el mismo sentido: la diferencia es 5,5° por minuto.' },
+    fb:{ a:'A las 2:25 el minutero está en el 5, a 90° del 2, pero el horario ya se movió 12,5° hacia el 3: el ángulo es 77,5°. Faltan unos minutos más.', c:'Esa cuenta usa 30H + 11M/2 = 90, con los minutos sumados. En la fórmula los minutos se restan: a las 2 h 5 5/11 min el ángulo entre las agujas es 30°, no 90°.' },
     antes:ya => E.config({ modo:'reloj', relojes:[{ t: ya ? 120 + RE.primera.M : 120, arco: ya ? 'ver' : null, fantasmas: ya ? [{ k:'M', t:145 }] : [] }],
       lect:[L('H', 'Hora H', '2')].concat(ya ? [L('M', 'Minutos M', mixtoTxt(RE.primera.fraccion)), L('al', 'Ángulo α', '90°')] : [L('al', 'Ángulo pedido α', '90°')]),
       ley: ya ? [['H', 'horario'], ['M', 'minutero'], ['al', 'α · ángulo'], ['M', 'minutero a las 2:25 (a trazos)', 'dash']] : null, desc:'Un reloj a las 2:00.' }),
@@ -957,7 +964,7 @@ const EXPS = [
     exp:() => `<div class="eqs"><div class="eq">${fr('11', '2')}${M_('M')} − 30 · ${H_('2')} = 90 → ${fr('11', '2')}${M_('M')} = 150</div>
       <div class="eq">${M_('M')} = ${fr('300', '11')} = ${M_(mixto(RE.primera.fraccion))} min</div></div>
       <p>A las 2:00 el minutero va 60° detrás del horario. Primero lo alcanza y después tiene que sacarle 90° de ventaja: en total le gana 150°, a 5,5° por minuto. La otra solución de la fórmula (minutero 90° detrás) cae a las 3:00 exactas, que ya no está «entre» las 2 y las 3.</p>
-      <p class="fuente">Las dos opciones incorrectas son hipótesis nuestras (ligadas a AR7 y a RM4 del informe, sin cifras para el reloj).</p>` },
+      <p class="fuente">Las dos opciones incorrectas son hipótesis nuestras (el horario quieto se liga a AR7 del informe, sin cifras para el reloj).</p>` },
   { id:'reloj-atrasado', corto:'El reloj que se atrasa',
     q:`Un reloj se atrasa ${A_('3 min')} cada ${t_('hora')}. Se pone en hora a las 8:00 a. m. ¿Qué hora marca cuando son realmente las 6:00 p. m.?`,
     opts:[['a', horaTxt(AT.marcada)], ['b', horaTxt(AT.errores.signoCambiado), 'atraso-sumado', 'hipotesis'],
@@ -975,17 +982,17 @@ const EXPS = [
       <p>Hora marcada = hora real + adelanto, o hora real − atraso. Si te dan la hora que marca y piden la real, se hace al revés.</p>
       <p class="fuente">Sumar en vez de restar el atraso y las otras dos opciones son hipótesis nuestras.</p>` },
   { id:'dos-relojes', corto:'Dos relojes',
-    q:`Dos relojes se ponen en hora al mismo tiempo. Uno se adelanta ${A_('2 min')} por hora y el otro se atrasa ${A_('1 min')} por hora. ¿Dentro de cuánto ${t_('tiempo')} volverán a marcar los dos la misma hora?`,
-    opts:[['a', dias(DR.dias)], ['b', dias(DR.erroresDias.otraRapidez), 'resta-los-desfases', 'hipotesis'],
+    q:`Dos relojes de agujas se ponen en hora al mismo tiempo. Uno se adelanta ${A_('2 min')} por hora y el otro se atrasa ${A_('1 min')} por hora. ¿Dentro de cuánto ${t_('tiempo')} volverán a marcar los dos la misma hora?`,
+    opts:[['a', dias(DR.dias)], ['b', dias(DR.erroresDias.otraRapidez), 'RM4-resta-los-desfases', 'hipotesis'],
           ['c', dias(DR.erroresDias.dia24), 'adelanto-hasta-24-horas', 'hipotesis'], ['d', dias(DR.erroresDias.soloUno), 'solo-el-primer-reloj', 'hipotesis']],
     ok:'a',
     fb:{ b:'Esa cuenta resta 2 − 1. Pero uno va hacia adelante y el otro hacia atrás: cada hora se separan 2 + 1 = 3 minutos.', c:'Esa cuenta espera 24 horas de diferencia. Con 12 horas las agujas ya quedan en el mismo lugar.', d:'Esa cuenta mira solo el reloj que se adelanta. La pregunta compara los dos relojes entre sí, y el otro también se mueve.' },
-    antes:ya => E.config({ modo:'adelanto', adel:{ inicio:0, cada:1, T: ya ? DR.horas : 0, meta:720, metaTxt:'12 h = 720 min',
+    antes:ya => E.config({ modo:'adelanto', adel:{ inicio:0, cada:1, T: ya ? DR.horas : 0, meta:720, metaTxt:'12 h = 720 min', ocultaMeta:!ya,
         relojes:[{ titulo:'se adelanta', s:1, a:2 }, { titulo:'se atrasa', s:-1, a:1 }], etiquetaA:'A · diferencia', ocultaA:!ya, A:0, tTxt:'',
         calc:D => { D.A = MR.horaMarcada({ inicio:0, transcurrido:D.T, a:2, cada:1 }).desfase + MR.horaMarcada({ inicio:0, transcurrido:D.T, a:1, cada:1, tipo:'atrasa' }).desfase; D.tTxt = D.T ? `t = ${fmt(D.T/24, 1)} días` : 't = ?'; } },
       lect:[L('A', 'Se separan', ya ? '3 min por hora' : '?')].concat(ya ? [L('t', 'Tiempo t', dias(DR.dias))] : [L('t', 'Tiempo t', '?')]),
       desc:'Dos relojes puestos en hora a la vez: uno se adelanta y el otro se atrasa.' }),
-    despues:() => { EXPS[2].antes(false); const D = E.adel; D.ocultaA = false; E.animar(0, DR.horas, 3200, p => { D.T = p; }, () => EXPS[2].antes(true), true); },
+    despues:() => { EXPS[2].antes(false); const D = E.adel; D.ocultaA = false; D.ocultaMeta = false; E.animar(0, DR.horas, 3200, p => { D.T = p; }, () => EXPS[2].antes(true), true); },
     exp:() => `<div class="eqs"><div class="eq">se separan ${A_('2')} + ${A_('1')} = ${A_('3 min')} por hora</div>
       <div class="eq">${t_('t')} = ${fr(A_('720'), A_('3'))} = ${t_('240 h')} = ${t_(dias(DR.dias))}</div></div>
       <p>Como en los móviles: si van en sentidos contrarios, la distancia entre ellos crece con la suma de las rapideces; si van en el mismo sentido, con la diferencia. Aquí la «distancia» es la diferencia de horas, y la meta, 12 horas.</p>
@@ -996,7 +1003,7 @@ const EXPS = [
           ['c', `${CE.errores.proporcional} campanadas`, 'AR7-campanadas-proporcionales', 'hipotesis']],
     ok:'b',
     fb:{ a:'24/3 = 8 cuenta los intervalos. Las campanadas son una más que los intervalos: la primera suena en el segundo 0.', c:'Esa cuenta es una regla de tres: el doble de tiempo, el doble de campanadas. Lo que se duplica son los intervalos (de 4 a 8), y las campanadas son 8 + 1.' },
-    antes:ya => E.config({ modo:'campanas', camp:{ tmax:24, filas:[{ titulo:'5 campanadas en 12 s', n:5, intervalo:CE.intervalo, prog:5, llave:'t = 12 s' },
+    antes:ya => E.config({ modo:'campanas', camp:{ tmax:24, sinRegla:!ya, filas:[{ titulo:'5 campanadas en 12 s', n:5, intervalo:CE.intervalo, prog:5, llave:'t = 12 s' },
         { titulo:'en 24 s', n:CE.campanadas, intervalo:CE.intervalo, prog: ya ? CE.campanadas : 0, oculto:!ya, pregunta:'¿cuántas campanadas?', llave: ya ? 't = 24 s' : '' }] },
       lect:[L('n', 'Campanadas', '5 en 12 s'), L('t', 'Tiempo nuevo', '24 s')].concat(ya ? [L('k', 'Intervalos', '4 → 8'), L('n', 'Campanadas en 24 s', String(CE.campanadas))] : []),
       desc:'Campanadas sobre una línea del tiempo de 24 segundos.' }),
@@ -1020,10 +1027,10 @@ const EXPS = [
       <p class="fuente">Las dos opciones incorrectas son hipótesis nuestras.</p>` },
   { id:'mes-de-31', corto:'Un mes de 31 días',
     q:`Un mes de ${d_('31 días')} empieza en jueves. ¿Qué días de la semana aparecen cinco veces en ese mes?`,
-    opts:[['a', 'Solo el jueves', 'mes-solo-el-primer-dia', 'hipotesis'], ['b', 'Jueves, viernes, sábado y domingo', 'mes-un-dia-de-mas', 'hipotesis'],
-          ['c', 'Jueves, viernes y sábado'], ['d', 'Ninguno', 'mes-de-cuatro-semanas', 'hipotesis']],
+    opts:[['a', lista(ME.errores.contarPartida), 'calendario-cuenta-el-dia-de-partida', 'hipotesis'], ['b', lista(ME.errores.alReves), 'calendario-resto-al-reves', 'hipotesis'],
+          ['c', lista(ME.cinco)], ['d', lista(ME.errores.restoDesplazado), 'mes-resto-desplazado', 'hipotesis']],
     ok:'c',
-    fb:{ a:'El jueves sale cinco veces, pero no es el único: los días 29, 30 y 31 caen en jueves, viernes y sábado.', b:'Esa cuenta toma 4 días de sobra. 31 = 28 + 3: sobran 3 días, no 4.', d:'4 semanas son 28 días, y el mes tiene 31: los 3 días que sobran hacen que tres días de la semana salgan cinco veces.' },
+    fb:{ a:'Esa cuenta empieza a contar los días que sobran desde el viernes, como si el jueves 1 no contara. El día 29 es 28 días después del 1: cae en jueves otra vez.', b:'Esa cuenta va hacia atrás desde el jueves. Los días 29, 30 y 31 vienen después del 28, que es miércoles: siguen jueves, viernes y sábado.', d:'Esa cuenta corre los días que sobran 3 lugares. Pero el día 29 cae en el mismo día de la semana que el 1, porque entre ellos hay 4 semanas exactas.' },
     antes:ya => E.config({ modo:'mes', mes:{ dias:31, primer:3, prog: ya ? 31 : 1, oculto:!ya, cinco: ME.cinco.map(n => MR.DIAS.indexOf(n)) },
       lect:[L('d', 'Días d', '31'), L('ink', 'Empieza', 'jueves')].concat(ya ? [L('r', 'Resto r', '3'), L('ink', 'Termina', ME.ultimo)] : []),
       desc:'La hoja de un mes de 31 días que empieza en jueves.' }),
@@ -1034,6 +1041,7 @@ const EXPS = [
       <p class="fuente">Las tres opciones incorrectas son hipótesis nuestras.</p>` },
 ];
 const S = { k:0, pred:{}, t0:Date.now() };
+window.RESPONDIDOS = S.pred;   // el paso 9 del otro modo lo consulta
 const abierto = k => EXPS.slice(0, k).every(x => !!S.pred[x.id]);
 function botones(){
   $('exps').innerHTML = EXPS.map((x, k) => abierto(k)

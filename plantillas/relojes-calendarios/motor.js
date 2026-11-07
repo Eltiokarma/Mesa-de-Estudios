@@ -7,8 +7,9 @@
  * donde lo prueban casos.json y papel.json.
  *
  * Convenciones (notación de academia peruana):
- *   - H es la hora que marca el horario (entero de 0 a 12; 12 equivale a 0) y M los minutos (0 ≤ M < 60, puede ser
- *     fraccionario). El minutero avanza 6° por minuto y el horario 0,5° por minuto (30° por hora).
+ *   - H es la hora que marca el horario (entero de 0 a 12) y M los minutos (0 ≤ M < 60, puede ser fraccionario).
+ *     En la fórmula, H = 12 se usa tal cual (a las 12:00, α = |360 − 0| = 360 y el menor es 0°); en las posiciones y
+ *     en horaConAngulo, 12 equivale a 0. El minutero avanza 6° por minuto y el horario 0,5° por minuto (30° por hora).
  *   - α = |30H − 11M/2| es el ángulo «de fórmula»; el ángulo entre las agujas es el menor de α y 360° − α.
  *   - Las fracciones exactas se devuelven como { num, den, entero, resto } (16 4/11 → entero 16, resto 4, den 11),
  *     con num/den ya simplificado. Las horas del día van en minutos desde las 0:00 (0 a 1439).
@@ -23,12 +24,16 @@
  *   horaConAngulo({ H, alfa })  los M en [0, 60) en que, entre las H y las H+1, las agujas forman el ángulo alfa (0 a 180;
  *                               0 = superpuestas, 180 = opuestas). { soluciones: [{ M, fraccion }], primera (el primer M > 0),
  *                               errores } con errores (todos el primer M > 0 de su ecuación, con su fraccion):
- *                               horarioQuieto (|30H − 6M| = alfa), sumaRapideces (6,5 en vez de 5,5 por minuto) y
- *                               conElSuplemento (resuelve con 180 − alfa; 0 ↔ 180). alfa debe ser múltiplo de 0,5.
+ *                               horarioQuieto (|30H − 6M| = alfa), sumaRapideces (6,5 en vez de 5,5 por minuto),
+ *                               sinElMedio (|30H − 11M| = alfa: olvida dividir 11M entre 2), signoCambiado
+ *                               (|30H + 11M/2| = alfa) y conElSuplemento (resuelve con 180 − alfa; 0 ↔ 180).
+ *                               Si en esa hora no hay ningún M > 0, primera es null. alfa debe ser múltiplo de 0,5.
  *   coincidencias({ horas, tipo }) cuántas veces, en [0, horas) contadas desde las 12:00 (0:00), las agujas quedan
  *                               'superpuestas', 'opuestas' o 'rectas' (90°). horas entero positivo. { veces, instantes
- *                               (minutos, exactos como número), errores: unaPorHora, mitad (lo de la mitad del tiempo),
- *                               contarExtremos (veces + 1) }.
+ *                               (minutos, exactos como número), errores: unaPorHora (lo que da contar las de cada hora
+ *                               como si fueran exactas: 1 por hora en superpuestas y opuestas, 2 por hora en rectas, por
+ *                               las horas), mitad (las veces en la mitad del tiempo, horas/2; null si horas es impar)
+ *                               y contarExtremos (veces + 1: cuenta también el instante final) }.
  *   vuelveHoraCorrecta({ a, cada })  un reloj que se adelanta (o atrasa) a minutos cada 'cada' horas vuelve a marcar la
  *                               hora correcta cuando acumula 720 min (12 h). { minutos: 720, periodos: 720/a,
  *                               horas: 720·cada/a, dias: horas/24, errores (en horas): dia24 (acumula 1440),
@@ -67,8 +72,12 @@
  *                               febrero), alReves (avanza el resto hacia el otro lado) }.
  *   mes({ diasMes, primerDia }) un mes de 28 a 31 días que empieza en primerDia (nombre o índice).
  *                               { conteo (7 números, de lunes a domingo), cinco (nombres de los días que salen 5 veces,
- *                               en orden desde primerDia), ultimo (nombre del último día), errores: soloElPrimero
+ *                               en orden desde primerDia), ultimo (nombre del último día), errores (listas de nombres):
+ *                               contarPartida (los r días que sobran empiezan al día siguiente del primero),
+ *                               alReves (los r días hacia atrás desde el primero, en orden de la semana),
+ *                               restoDesplazado (los r días empiezan r días después del primero), soloElPrimero
  *                               ([primerDia]), unoDeMas (un día más de los que tocan), ninguno ([]: «4 semanas») }.
+ *                               r = diasMes − 28.
  *   agujas(minutos)             el reloj a 'minutos' desde las 12:00 (se toma mod 720): { H (0 a 11), M, horario, minutero,
  *                               menor, formula } (para dibujar y arrastrar el minutero).
  *   sumarDias(f, n)             la fecha { a, m, d } que cae n días después de f (n negativo: antes).
@@ -163,6 +172,16 @@
     }
     return out.map(x => ({ M: limpio(x.num / v), fraccion: fraccion(x.num, v) })).sort((p, q) => p.M - q.M);
   }
+  // Resuelve |30H + vM| ≡ alfa (mod 360): el error de sumar los minutos en la fórmula.
+  function resolverSuma(H, alfa, v) {
+    const dos = Math.round(2 * alfa), out = [];
+    for (const s of [1, -1]) for (let k = -3; k <= 3; k++) {
+      const num = -60 * H + s * dos + 720 * k;
+      if (num < 0 || num >= 60 * v) continue;
+      if (!out.includes(num)) out.push(num);
+    }
+    return out.map(num => ({ M: limpio(num / v), fraccion: fraccion(num, v) })).sort((p, q) => p.M - q.M);
+  }
   function horaConAngulo(o) {
     const H = numero(o.H, 'la hora H', { entero: true, min: 0, max: 12 }) % 12;
     const alfa = numero(o.alfa, 'el ángulo', { min: 0, max: 180 });
@@ -171,6 +190,7 @@
     const primeraDe = l => l.find(x => x.M > EPS) || null;
     const primera = primeraDe(soluciones);
     const err = { horarioQuieto: primeraDe(resolver(H, alfa, 12)), sumaRapideces: primeraDe(resolver(H, alfa, 13)),
+      sinElMedio: primeraDe(resolver(H, alfa, 22)), signoCambiado: primeraDe(resolverSuma(H, alfa, 11)),
       conElSuplemento: primeraDe(resolver(H, 180 - alfa, 11)) };
     const e = {}, coinciden = [];
     for (const [k, v] of Object.entries(err)) { if (!v) continue; if (primera && igual(v.M, primera.M)) coinciden.push(k); else e[k] = v; }
@@ -304,7 +324,7 @@
     const dia = o.dia === undefined ? diaSemana(f1).indice : indiceDia(o.dia, 'el día');
     const dias = diasEntre(f1, f2), s = Math.sign(dias) || 1, resto = mod(dias, 7);
     const i = mod(dia + dias, 7), b = febreros29(f1, f2);
-    const x = apartar({ contarPartida: DIAS[mod(dia + dias + s, 7)], sinBisiestos: b ? DIAS[mod(dia + dias - s * b, 7)] : null,
+    const x = apartar({ contarPartida: DIAS[mod(dia + dias + s, 7)], sinBisiestos: DIAS[mod(dia + dias - s * b, 7)],
       alReves: DIAS[mod(dia - dias, 7)] }, DIAS[i]);
     return { dias, semanas: Math.floor(Math.abs(dias) / 7), resto, febreros29: b, indice: i, nombre: DIAS[i], errores: x.errores, coinciden: x.coinciden };
   }
@@ -314,7 +334,9 @@
     for (let d = 0; d < n; d++) conteo[(p + d) % 7]++;
     const cinco = []; for (let k = 0; k < n - 28; k++) cinco.push(DIAS[(p + k) % 7]);
     const uno = []; for (let k = 0; k < n - 27; k++) uno.push(DIAS[(p + k) % 7]);
-    const x = apartar({ soloElPrimero: [DIAS[p]], unoDeMas: uno, ninguno: [] }, cinco);
+    const r = n - 28, desde = q => { const l = []; for (let k = 0; k < r; k++) l.push(DIAS[mod(q + k, 7)]); return l; };
+    const x = apartar({ contarPartida: desde(p + 1), alReves: desde(p - r), restoDesplazado: desde(p + r),
+      soloElPrimero: [DIAS[p]], unoDeMas: uno, ninguno: [] }, cinco);
     return { conteo, cinco, ultimo: DIAS[(p + n - 1) % 7], errores: x.errores, coinciden: x.coinciden };
   }
   function bisiestos(o) {

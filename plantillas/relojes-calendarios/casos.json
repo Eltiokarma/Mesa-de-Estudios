@@ -81,7 +81,7 @@
       ]
     },
     {
-      "nombre": "A las 8:20 forman 130° (horario quieto: 120°, signo cambiado: 10°)",
+      "nombre": "A las 8:20 forman 130° (horario quieto: 120°, signo cambiado: 10°); a las 12:20 la fórmula con H = 12 da 250°: 110° (el signo cambiado coincide)",
       "fn": "angulo",
       "args": [
         {
@@ -95,7 +95,25 @@
         "mayor": 230,
         "errores.horarioQuieto": 120,
         "errores.signoCambiado": 10
-      }
+      },
+      "tambien": [
+        {
+          "args": [
+            {
+              "H": 12,
+              "M": 20
+            }
+          ],
+          "espera": {
+            "formula": 250,
+            "menor": 110,
+            "mayor": 250,
+            "coinciden": [
+              "signoCambiado"
+            ]
+          }
+        }
+      ]
     },
     {
       "nombre": "A la 1:50 la fórmula da 245°: el ángulo entre las agujas es 115° (horario quieto: 90°, signo cambiado: 55°)",
@@ -116,7 +134,7 @@
       }
     },
     {
-      "nombre": "Predicción del paso 3: entre las 3 y las 4 se superponen a las 3 h 16 4/11 min (horario quieto: 15 min; suma de rapideces: 13 11/13 min; opuestas: 49 1/11 min)",
+      "nombre": "Predicción del paso 3: entre las 3 y las 4 se superponen a las 3 h 16 4/11 min (horario quieto: 15 min; suma de rapideces: 13 11/13 min; opuestas: 49 1/11 min; sin dividir 11M entre 2: 8 2/11 min)",
       "fn": "horaConAngulo",
       "args": [
         {
@@ -145,11 +163,23 @@
           "den": 11,
           "entero": 49,
           "resto": 1
+        },
+        "errores.sinElMedio.fraccion": {
+          "num": 90,
+          "den": 11,
+          "entero": 8,
+          "resto": 2
+        },
+        "errores.signoCambiado.fraccion": {
+          "num": 540,
+          "den": 11,
+          "entero": 49,
+          "resto": 1
         }
       }
     },
     {
-      "nombre": "Experimento 1: entre las 2 y las 3 forman 90° a las 2 h 27 3/11 min (horario quieto: 25 min; suma de rapideces: 23 1/13 min; el suplemento de 90° es 90°: coincide)",
+      "nombre": "Experimento 1: entre las 2 y las 3 forman 90° a las 2 h 27 3/11 min (horario quieto: 25 min; suma de rapideces: 23 1/13 min; signo cambiado: 2 h 5 5/11 min; sin dividir entre 2: 13 7/11 min; el suplemento de 90° es 90°: coincide)",
       "fn": "horaConAngulo",
       "args": [
         {
@@ -174,11 +204,23 @@
         },
         "coinciden": [
           "conElSuplemento"
-        ]
+        ],
+        "errores.signoCambiado.fraccion": {
+          "num": 60,
+          "den": 11,
+          "entero": 5,
+          "resto": 5
+        },
+        "errores.sinElMedio.fraccion": {
+          "num": 150,
+          "den": 11,
+          "entero": 13,
+          "resto": 7
+        }
       }
     },
     {
-      "nombre": "Entre las 4 y las 5 forman 90° dos veces: a las 4 h 5 5/11 min y a las 4 h 38 2/11 min; a las 6 se superponen a las 6 h 32 8/11 min y se oponen solo a las 6:00 exactas",
+      "nombre": "Entre las 4 y las 5 forman 90° dos veces: a las 4 h 5 5/11 min y a las 4 h 38 2/11 min; a las 6 se superponen a las 6 h 32 8/11 min y se oponen solo a las 6:00 exactas; entre las 11 y las 12 no se superponen; entre las 5 y las 6 no se oponen; entre las 3 y las 4 forman 90° a las 3:00 y a las 3 h 32 8/11 min",
       "fn": "horaConAngulo",
       "args": [
         {
@@ -230,6 +272,47 @@
             "soluciones.0.M": 0,
             "primera": null
           }
+        },
+        {
+          "args": [
+            {
+              "H": 11,
+              "alfa": 0
+            }
+          ],
+          "espera": {
+            "soluciones.length": 0,
+            "primera": null
+          }
+        },
+        {
+          "args": [
+            {
+              "H": 5,
+              "alfa": 180
+            }
+          ],
+          "espera": {
+            "soluciones.length": 0
+          }
+        },
+        {
+          "args": [
+            {
+              "H": 3,
+              "alfa": 90
+            }
+          ],
+          "espera": {
+            "soluciones.length": 2,
+            "soluciones.0.M": 0,
+            "primera.fraccion": {
+              "num": 360,
+              "den": 11,
+              "entero": 32,
+              "resto": 8
+            }
+          }
         }
       ]
     },
@@ -252,7 +335,7 @@
       }
     },
     {
-      "nombre": "En 12 h forman ángulo recto 22 veces y se oponen 11 (la primera oposición, a las 12 h 32 8/11 min)",
+      "nombre": "En 12 h forman ángulo recto 22 veces y se oponen 11 (la primera oposición, a las 12 h 32 8/11 min); en 6 h se superponen 6 veces",
       "fn": "coincidencias",
       "args": [
         {
@@ -280,6 +363,17 @@
             "instantes.0": 32.72727272727273,
             "errores.mitad": 5,
             "errores.unaPorHora": 12
+          }
+        },
+        {
+          "args": [
+            {
+              "horas": 6,
+              "tipo": "superpuestas"
+            }
+          ],
+          "espera": {
+            "veces": 6
           }
         }
       ]
@@ -478,7 +572,7 @@
       "tambien": []
     },
     {
-      "nombre": "Predicción del paso 8: el 15 de marzo de 2027 es lunes; el 15 de marzo de 2028 es miércoles (366 días, resto 2; sin el 29 de febrero: martes; contando el día de partida: jueves; al revés: sábado)",
+      "nombre": "Predicción del paso 8: el 15 de marzo de 2027 es lunes; el 15 de marzo de 2028 es miércoles (366 días, resto 2; sin el 29 de febrero: martes; contando el día de partida: jueves; al revés: sábado); del 29/2/2028 al 28/2/2029 son 365 días; del 1/3/1899 al 1/3/1900, 365 (1900 no es bisiesto)",
       "fn": "desdeFecha",
       "args": [
         {
@@ -531,6 +625,67 @@
           ],
           "espera": {
             "nombre": "martes"
+          }
+        },
+        {
+          "args": [
+            {
+              "desde": {
+                "a": 2028,
+                "m": 2,
+                "d": 29
+              },
+              "hasta": {
+                "a": 2029,
+                "m": 2,
+                "d": 28
+              }
+            }
+          ],
+          "espera": {
+            "dias": 365,
+            "febreros29": 0,
+            "nombre": "miércoles",
+            "coinciden": [
+              "sinBisiestos"
+            ]
+          }
+        },
+        {
+          "args": [
+            {
+              "desde": {
+                "a": 1899,
+                "m": 3,
+                "d": 1
+              },
+              "hasta": {
+                "a": 1900,
+                "m": 3,
+                "d": 1
+              }
+            }
+          ],
+          "espera": {
+            "dias": 365,
+            "febreros29": 0,
+            "nombre": "jueves",
+            "coinciden": [
+              "sinBisiestos"
+            ]
+          }
+        },
+        {
+          "fn": "diaSemana",
+          "args": [
+            {
+              "a": 1821,
+              "m": 7,
+              "d": 28
+            }
+          ],
+          "espera": {
+            "nombre": "sábado"
           }
         }
       ]
@@ -609,7 +764,7 @@
       ]
     },
     {
-      "nombre": "Experimento 6: un mes de 31 días que empieza en jueves tiene 5 jueves, 5 viernes y 5 sábados (solo el primero: jueves; uno de más: hasta el domingo; «4 semanas»: ninguno)",
+      "nombre": "Experimento 6: un mes de 31 días que empieza en jueves tiene 5 jueves, 5 viernes y 5 sábados (desde el día siguiente: viernes a domingo; al revés: lunes a miércoles; corrido 3 días: domingo a martes; solo el primero: jueves; uno de más: hasta el domingo; «4 semanas»: ninguno)",
       "fn": "mes",
       "args": [
         {
@@ -642,7 +797,22 @@
           "sábado",
           "domingo"
         ],
-        "errores.ninguno": []
+        "errores.ninguno": [],
+        "errores.contarPartida": [
+          "viernes",
+          "sábado",
+          "domingo"
+        ],
+        "errores.alReves": [
+          "lunes",
+          "martes",
+          "miércoles"
+        ],
+        "errores.restoDesplazado": [
+          "domingo",
+          "lunes",
+          "martes"
+        ]
       },
       "tambien": [
         {
@@ -655,9 +825,35 @@
           "espera": {
             "cinco": [],
             "coinciden": [
+              "contarPartida",
+              "alReves",
+              "restoDesplazado",
               "ninguno"
             ],
             "ultimo": "domingo"
+          }
+        },
+        {
+          "args": [
+            {
+              "diasMes": 30,
+              "primerDia": "domingo"
+            }
+          ],
+          "espera": {
+            "cinco": [
+              "domingo",
+              "lunes"
+            ],
+            "conteo": [
+              5,
+              4,
+              4,
+              4,
+              4,
+              4,
+              5
+            ]
           }
         }
       ]

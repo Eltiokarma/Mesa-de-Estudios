@@ -195,19 +195,19 @@ test('calendario: el ciclo de 400 años; el día de la semana avanza el resto; l
 test('las opciones de las predicciones de la escena son distintas entre sí y de la correcta', () => {
   const distintas = (xs, que) => assert.equal(new Set(xs.map(x => JSON.stringify(x))).size, xs.length, `${que}: ${JSON.stringify(xs)}`);
   const A = motor.angulo({ H: 3, M: 30 }); distintas([A.menor, A.errores.horarioQuieto, A.errores.signoCambiado, A.errores.noMenor], 'paso 1');
-  const S = motor.horaConAngulo({ H: 3, alfa: 0 }); distintas([S.primera.M, S.errores.horarioQuieto.M, S.errores.sumaRapideces.M, S.errores.conElSuplemento.M], 'paso 3');
+  const S = motor.horaConAngulo({ H: 3, alfa: 0 }); distintas([S.primera.M, S.errores.horarioQuieto.M, S.errores.sinElMedio.M, S.errores.conElSuplemento.M], 'paso 3');
   const C = motor.coincidencias({ horas: 24 }); distintas([C.veces, C.errores.unaPorHora, C.errores.mitad, C.errores.contarExtremos], 'paso 4');
   const V = motor.vuelveHoraCorrecta({ a: 5, cada: 4 }); distintas([V.horas, V.errores.dia24, V.errores.unaHora, V.errores.sinCada], 'paso 5');
   for (const x of [V.horas, V.errores.dia24, V.errores.unaHora, V.errores.sinCada]) assert.ok(Number.isInteger(x / 24), 'días enteros en las opciones');
   const K = motor.campanadas({ n: 6, t: 5, m: 12 }); distintas([K.tiempo, K.errores.proporcional, K.errores.intervalosComoCampanadas], 'paso 6');
   const F = motor.desdeFecha({ desde: { a: 2027, m: 3, d: 15 }, hasta: { a: 2028, m: 3, d: 15 }, dia: 'lunes' });
   distintas([F.nombre, F.errores.sinBisiestos, F.errores.contarPartida, F.errores.alReves], 'paso 8');
-  const R = motor.horaConAngulo({ H: 2, alfa: 90 }); distintas([R.primera.M, R.errores.horarioQuieto.M, R.errores.sumaRapideces.M], 'experimento 1');
+  const R = motor.horaConAngulo({ H: 2, alfa: 90 }); distintas([R.primera.M, R.errores.horarioQuieto.M, R.errores.signoCambiado.M], 'experimento 1');
   const Mk = motor.horaMarcada({ inicio: 480, transcurrido: 10, a: 3, cada: 1, tipo: 'atrasa' }); distintas([Mk.marcada, Mk.errores.signoCambiado, Mk.errores.unPeriodo, Mk.errores.sinDesfase], 'experimento 2');
   const D = motor.dosRelojes({ a: 2, b: 1, cada: 1 }); distintas([D.horas, D.errores.otraRapidez, D.errores.dia24, D.errores.soloUno], 'experimento 3');
   const E = motor.campanadasEn({ n: 5, t: 12, T: 24 }); distintas([E.campanadas, E.errores.proporcional, E.errores.sinMasUno], 'experimento 4');
   const B = motor.bisiestos({ desde: 1901, hasta: 2100 }); distintas([B.cuantos, B.errores.soloCada4, B.errores.sinRegla400], 'experimento 5');
-  const Ms = motor.mes({ diasMes: 31, primerDia: 'jueves' }); distintas([Ms.cinco, Ms.errores.soloElPrimero, Ms.errores.unoDeMas, Ms.errores.ninguno], 'experimento 6');
+  const Ms = motor.mes({ diasMes: 31, primerDia: 'jueves' }); distintas([Ms.cinco, Ms.errores.contarPartida, Ms.errores.alReves, Ms.errores.restoDesplazado], 'experimento 6');
   // el 15 de marzo de 2027 es lunes de verdad
   assert.equal(motor.diaSemana({ a: 2027, m: 3, d: 15 }).nombre, 'lunes');
 });
