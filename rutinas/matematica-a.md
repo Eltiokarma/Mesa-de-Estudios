@@ -549,3 +549,96 @@ En `npm test` falla, además de lo esperado, la prueba de matrices, que todavía
    ΔE00 mínimo: 23,5 en claro y 23,7 en oscuro. Contraste mínimo: 4,54.
 3. Informe de trigonometría: registrar TT1 a TT13 como hipótesis nuestras.
 4. Línea para `docs/pendientes.md` y `CLAUDE.md`: «Transformaciones trigonométricas (7 nov 2026, sesión de matemática A): `plantillas/transformaciones-trig/` (dos flechas en la circunferencia: la suma es un rombo que apunta en la semisuma y mide 2 cos de la semidiferencia; suma a producto, producto a suma, cocientes y pulsaciones; 22 casos verificados aparte)». Con esto, la fila ma1 de pendientes queda cubierta salvo cónicas y polares.
+
+## 7 nov 2026 · Matrices y determinantes: el plano que se deforma (`plantillas/matrices/`)
+
+**Qué hice.**
+
+- **`motor.js`** (UMD, fracciones exactas). La cabecera llega hasta la línea 98 e incluye un bloque «ENTRADAS QUE LANZAN». Cubre:
+  - elemento aᵢⱼ y tipos (cuadrada, diagonal, identidad, triangular, simétrica y traza);
+  - suma, escalar, producto fila por columna (con la condición de orden) y transpuesta;
+  - determinante 2×2 y 3×3, por Sarrus y por cofactores;
+  - propiedades: det(AB), det(kA) = kⁿ det A, Aᵀ, intercambio de filas, fila de ceros y filas proporcionales;
+  - inversa 2×2 con la adjunta;
+  - Cramer 2×2 y 3×3;
+  - cizallas;
+  - `kSinInversa`, `kSistema` y `sustituir`.
+
+  Tiene los errores MT1 a MT34.
+- **`casos.json`**: 22 casos con sus `tambien`.
+- **`motor.test.js`**: 39 pruebas. Comprueba propiedades con matrices al azar y que A·A⁻¹ = I, que Cramer cumple el sistema, que (AB)ᵀ = BᵀAᵀ y que la cizalla conserva el área. Incluye la prueba de propiedades y las predicciones.
+- **`papel.json`**: 10 problemas propios.
+- **`plantilla.json`**: unidades `algebra.matrices-y-determinantes` y `algebra.sistemas-de-ecuaciones`. Esta última va por Cramer (escena, motor y papel) y por el sistema con parámetro.
+- **`index.html`**: la matriz 2×2 como transformación del plano. El cuadradito se deforma en el paralelogramo de las columnas u y v, cuya área con signo es el determinante; si det = 0, el paralelogramo colapsa a una recta.
+  - **Paso a paso** (7 predicciones):
+    - construir aᵢⱼ = 2i − j;
+    - AB fila por columna contra BA;
+    - estirar y luego girar = AB, con el orden de la composición;
+    - det 4 con cuadritos;
+    - det −5, con la orientación invertida;
+    - k sin inversa;
+    - la inversa con adj A / det A.
+  - **¿Qué pasa si…?** (6):
+    - det(3A) con 9 copias;
+    - det(AB) contra det(A + B);
+    - órdenes que no permiten multiplicar;
+    - Sarrus;
+    - Cramer como deslizar w a lo largo de v;
+    - «sin solución única» para kx + 2y = 3; 2x + y = 5.
+- **Respaldo.** Todo es hipótesis nuestra, porque el informe no trata matrices. La excepción es AL17, que es 'parcial' en el sistema con k: Ochoviet (2009, tesis, sin cifras) según el informe.
+
+**Pruebas.** `npm test`: 4287; pasan 4285 y fallan solo las 2 esperadas del catálogo. La pasada del celular no da QUEDA. Playwright pasa en las 8 combinaciones:
+- sin errores ni desbordes;
+- el bloqueo aguanta;
+- el lienzo sube al responder;
+- el dedo lejos desplaza la página.
+
+Ya lleva el estilo «pegatinas»: `data-curso="algebra"` y `nucleo/pegatina.css`.
+
+**Subagentes.**
+
+- **Verificador independiente.** No leyó el motor. Calculó los determinantes por eliminación gaussiana y las inversas por Gauss-Jordan, contrastó Cramer con A⁻¹b y (AB)ᵀ con BᵀAᵀ. Coincidieron los 21 casos campo por campo y los 10 de papel. Entraron sus bordes:
+  - matrices singulares en inversa y en Cramer 2×2 y 3×3, incompatibles e indeterminadas;
+  - productos 1×3 por 3×1 y A²;
+  - triangular, columna proporcional y 1×1;
+  - inversas con fracciones;
+  - (AB)ᵀ no cuadrada;
+  - traza fraccionaria;
+  - det(kA) con k negativo y fraccionario;
+  - k sin inversa;
+  - entradas que lanzan.
+
+  Además, p2 ahora comprueba x e y de verdad.
+- **Revisor de contenido.** Lo grave: P2 mostraba antes de responder la matriz vacía de 2 × 3 con sus índices, y el aria-live lo decía. Eso descartaba dos de los tres errores. Ahora no hay dibujo hasta responder. Otras correcciones:
+  - ecuaciones con scroll lateral en P3 y en Sarrus (también en la PC);
+  - el pie del experimento 3, que contradecía al dibujo;
+  - la notación: «det M o |M|», adj A, el área sin «|−5|» y las matrices dibujadas en las lecturas;
+  - el distractor «matriz nula» de P4, que no era creíble; ahora es 2A (MT33);
+  - la predicción nueva del sistema con k;
+  - textos de los feedback;
+  - el 3 de «(2 × 3)», que estaba en el color de la fila;
+  - rótulos en oscuro;
+  - A⁻¹ con superíndice;
+  - MT2 con un solo nombre; la composición pasa a ser MT34.
+
+  El constructor encontró además un error en `tween`: el avance negativo del primer cuadro colgaba la animación en el celular. Ya está acotado. Puede estar también en polinomios, por el molde; lo reviso aparte.
+
+**Pendiente.** El determinante en vivo aparece solo en el paso 8, después de responder.
+
+**Pedidos para la integración.**
+
+1. Catálogo: `matrices` en `algebra.matrices-y-determinantes` y en `algebra.sistemas-de-ecuaciones`, y luego `npm run catalogo`. Los ítems de prueba van a `reserva`.
+2. `docs/diseno.md`: misma paleta que polinomios.
+
+   | Variable | Claro | Oscuro |
+   | --- | --- | --- |
+   | u (columna 1) | #1f5fbf | #7cb0ff |
+   | v (columna 2) | #a05200 | #f0a04a |
+   | det (área con signo) | #a10fbf | #cf6bfa |
+   | k | #0f766e | #5ed9c8 |
+   | fila i | #77032c | #fdb4ce |
+   | columna j | #466d14 | #a3d65e |
+
+   ΔE00 mínimo: 23,6 en claro y 25,2 en oscuro. Contraste mínimo: 4,63. La fila i queda a 17,4 del rojo de los avisos en oscuro; los avisos siempre llevan texto.
+3. Informe de álgebra: registrar MT1 a MT34 como hipótesis, con una línea «este informe no cubre matrices», como la que ya existe para polinomios.
+4. Línea para `docs/pendientes.md` y `CLAUDE.md`: «Matrices (7 nov 2026, sesión de matemática A): `plantillas/matrices/` (el plano que se deforma: el determinante es el área con signo del paralelogramo de las columnas, AB contra BA como orden de aplicación, inversa, Sarrus y Cramer como deslizar un vector; 22 casos verificados aparte)».
