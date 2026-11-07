@@ -271,7 +271,11 @@ function crearLienzo(cv, alto, dibujar){
   L.resize = () => {
     const W = cv.clientWidth; if (!W) return;
     const Hh = Math.round(Celular.alto(alto(W), L.compacto, { tope:340 })), dpr = Celular.dpr();
-    L.W = W; L.H = Hh; cv.style.height = Hh + 'px'; cv.width = Math.round(W*dpr); cv.height = Math.round(Hh*dpr);
+    L.W = W; L.H = Hh; L.dpr = dpr; cv.style.height = Hh + 'px';
+    // Cada asignación vuelve a reservar el mapa de bits: solo si la medida cambió (la2). dibujar() borra todo igual.
+    const nw = Math.round(W*dpr), nh = Math.round(Hh*dpr);
+    if (cv.width !== nw) cv.width = nw;
+    if (cv.height !== nh) cv.height = nh;
     ctx.setTransform(dpr,0,0,dpr,0,0);
     dibujar();
   };
@@ -503,7 +507,11 @@ function crearEscena(cv, idDesc, idLey){
   function numeroP(x){ const k = Math.round(x); return Math.abs(x - k) < 0.05 ? fmt(k, 0) : (x < 10 ? fmt(x, 1) : fmt(x, 0)); }
   // ¿Se redondeó alguna especie que se ve (0,05 o más partículas)?
   const redondea = info => MA_TIPOS.some(t => info.esperado[t] >= 0.05 && Math.abs(info.esperado[t] - Math.round(info.esperado[t])) >= 0.05);
-  function dibujarLupa(ctx, c, lu, now){
+  // Una lupa se pinta en dos capas (la2): el fondo (papel, agua, «?» y rótulos), que no cambia de un cuadro a otro y
+  // va en el lienzo aparte, y el frente (partículas, borde y mango), que se pinta en cada cuadro. Con R < 36 (celular
+  // compacto con 3 o más lupas) el mango puede rozar el rótulo de abajo: entonces el rótulo va al frente, como antes.
+  const rotuloAbajoAlFrente = R => R < 36;
+  function fondoLupa(ctx, c, lu){
     const l = E.lay.l[lu.id]; if (!l) return;
     const { x, y, R } = l;
     ctx.save();
@@ -514,17 +522,30 @@ function crearEscena(cv, idDesc, idLey){
     if (lu.oculto){
       ctx.globalAlpha = 1; ctx.fillStyle = c.muted; ctx.font = `800 ${Math.round(R*0.5)}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.fillText('?', x, y);
-    } else {
-      const vivos = lu.parts.length, s = R*0.052*clamp(Math.sqrt(50/Math.max(50, vivos)), 0.5, 1);
-      for (const q of lu.parts) particula(ctx, c, q, x + q.x*R, y + q.y*R, s);
     }
     ctx.restore();
+    rotulo(ctx, c, x, y - R - 28, lu.titulo, c.ink, 'center', 800, 12);
+    rotulo(ctx, c, x, y - R - 12, lu.nota, lu.notaV ? c.V : c.muted, 'center', E.hl === 'V' && lu.notaV ? 900 : 700, 10.5);
+    if (!rotuloAbajoAlFrente(R)) rotuloAbajo(ctx, c, lu);
+  }
+  function frenteLupa(ctx, c, lu){
+    const l = E.lay.l[lu.id]; if (!l) return;
+    const { x, y, R } = l;
+    if (!lu.oculto && lu.parts.length){
+      ctx.save();
+      ctx.beginPath(); ctx.arc(x, y, R, 0, Math.PI*2); ctx.clip();
+      const vivos = lu.parts.length, s = R*0.052*clamp(Math.sqrt(50/Math.max(50, vivos)), 0.5, 1);
+      for (const q of lu.parts) particula(ctx, c, q, x + q.x*R, y + q.y*R, s);
+      ctx.restore();
+    }
     ctx.save(); ctx.beginPath(); ctx.arc(x, y, R, 0, Math.PI*2);
     ctx.strokeStyle = E.hl === 'C' ? c.C : c.ink; ctx.lineWidth = E.hl === 'C' ? 4 : 2.4; ctx.stroke();
     ctx.lineWidth = 6; ctx.lineCap = 'round'; ctx.strokeStyle = c.vidrio;
     linea(ctx, x + R*0.72, y + R*0.72, x + R*0.72 + 12, y + R*0.72 + 12); ctx.restore();
-    rotulo(ctx, c, x, y - R - 28, lu.titulo, c.ink, 'center', 800, 12);
-    rotulo(ctx, c, x, y - R - 12, lu.nota, lu.notaV ? c.V : c.muted, 'center', E.hl === 'V' && lu.notaV ? 900 : 700, 10.5);
+    if (rotuloAbajoAlFrente(R)) rotuloAbajo(ctx, c, lu);
+  }
+  function rotuloAbajo(ctx, c, lu){
+    const { x, y, R } = E.lay.l[lu.id];
     if (lu.oculto || !lu.info) return;
     // conteo debajo, cada especie en su color
     const e = lu.info.esperado, trozos = [];
@@ -580,14 +601,31 @@ function crearEscena(cv, idDesc, idLey){
       ctx.restore();
     }
   }
+  // El fondo (todo menos las partículas, los bordes y los mangos) se rehace solo si cambió algo de lo que pinta: su firma
+  // junta todo eso. Si no, se pega tal cual: en cada cuadro solo se pintan las partículas que se mueven (la2).
+  const fondo = document.createElement('canvas'), fctx = fondo.getContext('2d');
+  let firma = '', nInfo = 0;
+  const firmaDe = c => [L.W, L.H, cv.width, cv.height, E.hl, E.pOH, E.sinEscala, Object.values(c).join(','),
+    E.lupas.map(lu => [lu.id, lu.titulo, lu.nota, lu.notaV, lu.oculto, lu.pie, (lu.siempre || []).join(), JSON.stringify(lu.nombres),
+      lu.info ? (lu.info._n || (lu.info._n = ++nInfo)) : 0].join('|')).join(';'),
+    E.marcas.map(m => [m.id, m.ver, m.etiqueta, m.fantasma].join('|')).join(';')].join('#');
   function dibujar(now){
     if (!L.W) return;
     const c = colores(), { ctx, W } = L, Hh = L.H;
-    ctx.clearRect(0, 0, W, Hh);
-    layout(W, Hh, filasMarcas(ctx, c, W).n);
-    if (E.extra) E.extra(ctx, c, W, Hh, now);
-    for (const lu of E.lupas) dibujarLupa(ctx, c, lu, now);
-    dibujarEscala(ctx, c, W);
+    const f = E.extra ? null : firmaDe(c), rehacer = f === null || f !== firma;
+    if (rehacer){
+      if (fondo.width !== cv.width || fondo.height !== cv.height){ fondo.width = cv.width; fondo.height = cv.height; }
+      fctx.setTransform(L.dpr, 0, 0, L.dpr, 0, 0);
+      fctx.clearRect(0, 0, W, Hh);
+      layout(W, Hh, filasMarcas(fctx, c, W).n);
+      if (E.extra) E.extra(fctx, c, W, Hh, now);
+      for (const lu of E.lupas) fondoLupa(fctx, c, lu);
+      dibujarEscala(fctx, c, W);
+      firma = f || '';
+    }
+    ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, cv.width, cv.height); ctx.drawImage(fondo, 0, 0); ctx.restore();
+    for (const lu of E.lupas) frenteLupa(ctx, c, lu);
+    if (!rehacer && E.desc) return;   // la descripción depende de lo mismo que el fondo
     const d = E.descr ? E.descr() : E.lupas.map(lu => lu.oculto ? `${lu.titulo}: oculta hasta que respondas` :
         `${lu.titulo}: ` + Object.entries(lu.info ? lu.info.esperado : {}).filter(([, v]) => v >= 0.05).map(([t, v]) => `${numeroP(v)} ${nombre(lu, t)}`).join(', ')).join('. ')
       + (E.marcas.length ? '. Escala de pH: ' + E.marcas.map(m => `${m.etiqueta || 'solución'} en pH ${fpH(m.pH)}`).join(', ') : '');
