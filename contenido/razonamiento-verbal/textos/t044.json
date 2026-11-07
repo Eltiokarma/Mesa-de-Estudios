@@ -90,7 +90,7 @@
         "sonda": "Quien escribe conoce en persona a quien lee.",
         "clase": "se-deduce",
         "codigos": {
-          "lo-dice": "RV6",
+          "lo-dice": "RV58",
           "no-se-sabe": "RV34",
           "lo-contradice": null
         },
@@ -252,6 +252,6 @@
     "por": "subagente (verificador a ciegas y revisor de contenido)",
     "fecha": "2026-11-07",
     "veredicto": "aprobado",
-    "notas": "A ciegas: acertó 20 de 20 (los cuatro textos de la unidad). Cambios: tipo de texto expositivo; la oración 9 dice que el centro le queda cerca al tío, y la 11 pasa a «para el lunes»."
+    "notas": "A ciegas: acertó 20 de 20 (los cuatro textos de la unidad). Cambios: tipo de texto expositivo; la oración 9 dice que el centro le queda cerca al tío, y la 11 pasa a «para el lunes». Rutina verbal C (7 nov 2026): en el previo clasificar, «lo dice» ante lo que se deduce pasó a RV58 (antes RV6, RV5 o null)."
   }
 }

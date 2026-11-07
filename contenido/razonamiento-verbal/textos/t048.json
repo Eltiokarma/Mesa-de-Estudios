@@ -146,7 +146,7 @@
         "sonda": "Para el autor, los seis alumnos de la última fila tienen razón en reclamar contra la regla.",
         "clase": "se-deduce",
         "codigos": {
-          "lo-dice": "RV5",
+          "lo-dice": "RV58",
           "no-se-sabe": "RV34",
           "lo-contradice": "RV53"
         },
@@ -304,6 +304,6 @@
     "por": "subagente (verificador a ciegas y revisor de contenido)",
     "fecha": "2026-11-07",
     "veredicto": "aprobado",
-    "notas": "A ciegas: 5 de 5 preguntas; dudó en el previo de idea principal. Cambios: la oración 11 junta la prueba y la conclusión sobre la mayoría (explicaciones del previo rehechas); sonda nueva en el previo de inferencia (se deduce); distractor RV11 cambiado por uno RV7 sobre la unanimidad; Rawls elige «los principios de justicia de una sociedad»; correcta de inferencia acortada."
+    "notas": "A ciegas: 5 de 5 preguntas; dudó en el previo de idea principal. Cambios: la oración 11 junta la prueba y la conclusión sobre la mayoría (explicaciones del previo rehechas); sonda nueva en el previo de inferencia (se deduce); distractor RV11 cambiado por uno RV7 sobre la unanimidad; Rawls elige «los principios de justicia de una sociedad»; correcta de inferencia acortada. Rutina verbal C (7 nov 2026): en el previo clasificar, «lo dice» ante lo que se deduce pasó a RV58 (antes RV6, RV5 o null)."
   }
 }

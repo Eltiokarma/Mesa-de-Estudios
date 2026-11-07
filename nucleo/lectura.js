@@ -309,9 +309,9 @@
   }
 
   // Respuestas del paso previo para las que la frase del código (escrita para las alternativas) dice otra cosa:
-  // "Ninguna la dice completa" no es "una parte del texto" (RV3), y ante "Lo dice el texto" la frase de RV6
-  // ("Eso está dicho en el texto tal cual…") describe lo contrario de lo que pensó el alumno.
-  const FRASE_NO_APLICA = { 'marcar-oracion': ['ninguna'], clasificar: ['lo-dice'] };
+  // "Ninguna la dice completa" no es "una parte del texto" (RV3). Antes también "Lo dice el texto" en clasificar,
+  // porque se registraba RV6, cuya frase dice lo contrario; desde la rutina verbal C ese caso es RV58, con su frase.
+  const FRASE_NO_APLICA = { 'marcar-oracion': ['ninguna'] };
   const fraseAplica = (previo, opcion) => !(FRASE_NO_APLICA[previo.tipo] || []).includes(String(opcion));
 
   // Avisos (no errores) para quien escribe el banco: respuestas incorrectas de un paso previo sin explicación

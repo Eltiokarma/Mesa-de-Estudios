@@ -154,7 +154,7 @@
         "sonda": "En octubre, la biblioteca prestó más libros en total que en agosto.",
         "clase": "se-deduce",
         "codigos": {
-          "lo-dice": null,
+          "lo-dice": "RV58",
           "no-se-sabe": "RV34",
           "lo-contradice": "RV45"
         },
@@ -207,6 +207,6 @@
     "por": "subagente (verificador a ciegas y revisor de contenido)",
     "fecha": "2026-11-07",
     "veredicto": "aprobado",
-    "notas": "A ciegas coincidió en todos los ítems de este texto (17 de 18 en los cuatro textos). Sin cambios de contenido."
+    "notas": "A ciegas coincidió en todos los ítems de este texto (17 de 18 en los cuatro textos). Sin cambios de contenido. Rutina verbal C (7 nov 2026): en el previo clasificar, «lo dice» ante lo que se deduce pasó a RV58 (antes RV6, RV5 o null)."
   }
 }

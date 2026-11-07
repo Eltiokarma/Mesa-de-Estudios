@@ -132,7 +132,7 @@
         "sonda": "Lucía quería ayudar a su hermano a terminar la maqueta.",
         "clase": "se-deduce",
         "codigos": {
-          "lo-dice": "RV6",
+          "lo-dice": "RV58",
           "no-se-sabe": "RV34",
           "lo-contradice": null
         },
@@ -215,6 +215,6 @@
     "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
     "fecha": "2026-11-07",
     "veredicto": "aprobado",
-    "notas": "A ciegas: 5 de 5. Cambio menor en o3 (las paredes no medían todas lo mismo). Una segunda verificación de los cambios corrigió la concordancia de t023 p2 y cuatro detalles."
+    "notas": "A ciegas: 5 de 5. Cambio menor en o3 (las paredes no medían todas lo mismo). Una segunda verificación de los cambios corrigió la concordancia de t023 p2 y cuatro detalles. Rutina verbal C (7 nov 2026): en el previo clasificar, «lo dice» ante lo que se deduce pasó a RV58 (antes RV6, RV5 o null)."
   }
 }

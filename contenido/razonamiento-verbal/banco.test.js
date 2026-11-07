@@ -86,6 +86,10 @@ function validarPrevio(q, t, donde) {
   } else if (p.tipo === 'clasificar') {
     assert.ok(p.sonda && CLASES.includes(p.clase), `${donde}: clasificar necesita "sonda" y una "clase" válida`);
     revisar(p.codigos, CLASES.filter(c => c !== p.clase));
+    // RV6 es elegir una alternativa literal cuando se pide una inferencia: no describe ninguna respuesta de clasificar.
+    // "Lo dice" ante algo que se deduce es darlo por escrito (RV58), aunque la afirmación repita palabras del texto.
+    assert.ok(!Object.values(p.codigos).includes('RV6'), `${donde}: RV6 no va en un previo clasificar (ante "lo dice" es RV58)`);
+    if (p.clase === 'se-deduce') assert.equal(p.codigos['lo-dice'], 'RV58', `${donde}: "lo dice" ante algo que se deduce es RV58`);
   } else if (p.tipo === 'relacion') {
     assert.equal(p.aceptada, 'oposicion', `${donde}: por ahora, el previo relacion solo se usa con la oposición`);
     revisar(p.codigos, ['suma', 'causa']);

@@ -140,7 +140,7 @@ Los ejemplos son propios, escritos para este informe.
 
 ### Tipología, resumen, textos discontinuos, contexto, textos filosóficos y científicos, y lectura en inglés
 
-Agregados por la rutina verbal B (7 nov 2026) para las seis unidades que no tenían módulo. Ninguno tiene estudio propio en esta revisión: los diecisiete son hipótesis, cada una ligada al error con algún dato del que sale.
+Agregados por la rutina verbal B (7 nov 2026) para las seis unidades que no tenían módulo. Ninguno tiene estudio propio en esta revisión: los diecisiete son hipótesis, cada una ligada al error con algún dato del que sale. RV58, al final, lo agregó la rutina verbal C para el paso previo de inferencia.
 
 | # | Idea errónea | Ejemplo tipo examen | Dato | Respaldo | Fuente |
 | --- | --- | --- | --- | --- | --- |
@@ -161,6 +161,7 @@ Agregados por la rutina verbal B (7 nov 2026) para las seis unidades que no ten�
 | RV55 | **Se lee mal el tiempo o el modo del verbo inglés** (used to, will, would, may) y se cambia cuándo pasa algo o si es seguro. | "People used to cross the lake by boat": se entiende que hoy cruzan en bote. | Sin dato en esta revisión. | Hipótesis | — |
 | RV56 | **Una pregunta de concepto se responde con un ejemplo o un hecho**: ante "¿qué es…?" o "¿qué entiende el autor por…?", se elige un caso y no la definición. | Texto sobre qué es una ley científica: el alumno elige "la ley de la gravedad" como lo que el autor entiende por ley. | Sin estudio encontrado; vecino de RV1. | Hipótesis (ligada a RV1) | — |
 | RV57 | **Se reconoce el tipo o la estructura del texto por un pasaje o un detalle que no lo organiza** (una frase descriptiva, un dato mencionado una vez). | Texto argumentativo con una oración que describe el bosque: el alumno lo llama descriptivo. | Sin estudio encontrado; propuesto por el revisor de tipología (7 nov 2026). Vecino de RV41 y de RV1. | Hipótesis (ligada a RV41) | — |
+| RV58 | **Se da por dicho lo que solo se deduce**: el alumno completa el texto con su propia inferencia y cree que está escrito (no separa lo explícito de lo implícito). | El relato cuenta que la abuela probó su balanza delante de todos; ante "la abuela estaba segura de su balanza", el alumno responde "lo dice el texto". | Indirecto: en estudios de memoria de oraciones, los lectores reconocen como leídas oraciones que solo habían inferido (Bransford, Barclay y Franks, 1972, con universitarios en inglés). Sin dato con postulantes ni en pruebas de lectura. Es el reverso de RV6 y vecino de RV34. Agregado por la rutina verbal C (7 nov 2026): el paso previo "clasificar" registraba RV6 en este caso, y RV6 describe el error contrario. | Hipótesis (con contexto indirecto) | Bransford, Barclay y Franks (1972) |
 
 ## Lo que no tiene respaldo (todavía)
 
@@ -171,6 +172,7 @@ Errores que suponemos en los ítems de academia, sin estudio que los mida. Cada 
 | Primera oración como idea principal (RV4) | RV1 (detalle por idea principal) |
 | Lo literal tomado como inferencia (RV6) | Contexto indirecto: UNA Puno y PIRLS |
 | No aceptar lo que se deduce (RV34) | RV6 (es el error contrario) |
+| Dar por dicho lo que se deduce (RV58) | RV6 (es su reverso) y RV34; contexto indirecto: memoria de oraciones |
 | Inferencia que generaliza de más (RV7) | RV2 (demasiado general) |
 | Negación pasada por alto (RV10) | RV9 (incompatibilidad implícita) |
 | Términos absolutos (RV11) | Sin dato |
@@ -273,6 +275,7 @@ Leídas solo a través del buscador (resúmenes, fichas y fragmentos). Ninguna s
 - Cerdán, R., Vidal-Abarca, E., Martínez, T., Gilabert, R. y Gil, L. (2009). *Impact of question-answering tasks on search processes and reading comprehension*. Learning and Instruction 19(1), 13–27.
 - Otero, J. y Kintsch, W. (1992). *Failures to detect contradictions in a text: what readers believe versus what they read*. Psychological Science 3(4), 229–236.
 - Markman, E. M. (1979). *Realizing that you don't understand: elementary school children's awareness of inconsistencies*. Child Development 50(3), 643–655. DOI 10.2307/1128929.
+- Bransford, J. D., Barclay, J. R. y Franks, J. J. (1972). *Sentence memory: a constructive versus interpretive approach*. Cognitive Psychology 3(2), 193–209. Citado de memoria por la rutina verbal C: por verificar páginas con el original (para RV58).
 
 **Léxico y analogías**
 

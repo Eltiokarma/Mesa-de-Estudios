@@ -283,5 +283,10 @@
   "nombre": "Se reconoce el tipo o la estructura del texto por un pasaje o un detalle que no lo organiza",
   "respaldo": "hipotesis",
   "por_verificar": false
+ },
+ "RV58": {
+  "nombre": "Se da por dicho lo que solo se deduce",
+  "respaldo": "hipotesis",
+  "por_verificar": false
  }
 }

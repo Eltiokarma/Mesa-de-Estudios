@@ -241,7 +241,7 @@
         "sonda": "Al autor le preocupa que los técnicos de los barrios se queden sin trabajo.",
         "clase": "se-deduce",
         "codigos": {
-          "lo-dice": "RV5",
+          "lo-dice": "RV58",
           "no-se-sabe": "RV34",
           "lo-contradice": null
         },
@@ -301,6 +301,6 @@
     "por": "subagente (verificador a ciegas y revisor de contenido)",
     "fecha": "2026-11-07",
     "veredicto": "aprobado",
-    "notas": "Coincidió a ciegas en todas las claves. Cambios: dificultad 3 → 2; oración 5 reescrita; el distractor «descriptivo» pasa a RV57; en el previo de p4, «lo dice» pasa de RV6 a RV5 (eco de la sonda)."
+    "notas": "Coincidió a ciegas en todas las claves. Cambios: dificultad 3 → 2; oración 5 reescrita; el distractor «descriptivo» pasa a RV57; en el previo de p4, «lo dice» pasa de RV6 a RV5 (eco de la sonda). Rutina verbal C (7 nov 2026): en el previo clasificar, «lo dice» ante lo que se deduce pasó a RV58 (antes RV6, RV5 o null)."
   }
 }

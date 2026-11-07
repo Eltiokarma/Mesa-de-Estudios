@@ -55,5 +55,6 @@
   "RV54": "Esa palabra inglesa se parece a una española, pero no significa lo mismo (es un falso amigo).",
   "RV55": "Fíjate en el verbo: dice cuándo pasa algo o si es seguro, y eso cambia la respuesta.",
   "RV56": "La pregunta pide qué es algo (el concepto), y elegiste un ejemplo o un caso.",
-  "RV57": "Te fijaste en una parte pequeña del texto. El tipo y la estructura los decide lo que organiza todo el texto."
+  "RV57": "Te fijaste en una parte pequeña del texto. El tipo y la estructura los decide lo que organiza todo el texto.",
+  "RV58": "Eso no está escrito: lo dedujiste (o lo calculaste) a partir de lo que dice el texto. Está bien deducirlo, pero deducir no es lo mismo que leerlo."
 }

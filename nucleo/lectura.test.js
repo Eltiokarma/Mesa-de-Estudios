@@ -254,15 +254,16 @@ test('el paso previo no usa la frase del código cuando no describe la respuesta
   const p = t.preguntas.find(q => q.previo && q.previo.tipo === 'marcar-oracion').previo;
   const c = L.correccionPrevio(p, L.calificarPrevio(p, 'ninguna', t), t, FRASES);
   if (!(p.explicaciones || {}).ninguna) { assert.equal(c.neutra, true); assert.equal(c.porQue, ''); }
-  // Clasificar: ante "lo dice" la frase de RV6 dice lo contrario; con otra respuesta sí se usa.
-  const sinte = { tipo: 'clasificar', pide: 'x', sonda: 's', clase: 'se-deduce', codigos: { 'lo-dice': 'RV6', 'no-se-sabe': 'RV34', 'lo-contradice': null }, explicacion: 'Se deduce de la oración 6.' };
+  // Clasificar: "lo dice" ante algo que se deduce es RV58, y su frase sí describe esa respuesta.
+  const sinte = { tipo: 'clasificar', pide: 'x', sonda: 's', clase: 'se-deduce', codigos: { 'lo-dice': 'RV58', 'no-se-sabe': 'RV34', 'lo-contradice': null }, explicacion: 'Se deduce de la oración 6.' };
   const c1 = L.correccionPrevio(sinte, L.calificarPrevio(sinte, 'lo-dice', t), t, FRASES);
-  assert.deepEqual([c1.neutra, c1.porQue], [true, '']);
+  assert.deepEqual([c1.neutra, c1.porQue], [false, FRASES.RV58]);
   const c2 = L.correccionPrevio(sinte, L.calificarPrevio(sinte, 'no-se-sabe', t), t, FRASES);
   assert.deepEqual([c2.neutra, c2.porQue], [false, FRASES.RV34]);
   const c3 = L.correccionPrevio(sinte, L.calificarPrevio(sinte, 'lo-contradice', t), t, FRASES);
   assert.equal(c3.neutra, true, 'sin código ni explicación: frase neutra');
-  assert.ok(L.avisos({ ...t, preguntas: [{ ...t.preguntas[0], previo: sinte }] }, FRASES).some(a => a.opcion === 'lo-dice' && a.neutra));
+  const av = L.avisos({ ...t, preguntas: [{ ...t.preguntas[0], previo: sinte }] }, FRASES);
+  assert.ok(av.some(a => a.opcion === 'lo-dice' && !a.neutra) && av.some(a => a.opcion === 'lo-contradice' && a.neutra));
 });
 
 test('avisos del banco: respuestas incorrectas del paso previo sin explicación propia', t => {
