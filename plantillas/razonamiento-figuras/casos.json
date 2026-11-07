@@ -2,7 +2,7 @@
   "plantilla": "razonamiento-figuras",
   "unidades": "Coordenadas sin unidades, con el eje y hacia arriba; puntos como { x, y }. Una figura es { lineas: [[P, Q], …], puntos }. Los cubos son de arista 1; alturas[i][j] es la altura de la columna x = j, y = i.",
   "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.soloPiezas, porTamano.2). Un argumento { fig: [nombre, …] } es la figura motor[nombre](…) (constructores de la cabecera: recta, abanico, cuadricula, cuadradoDiagonales, dosCevianas, tresMedianas, cuadradoCompleto). En contar, 'piezas' son las figuras del tipo pedido que no tienen nada dibujado adentro (tamaño 1); los cuadriláteros cuentan solo si son convexos; los cuadrados también son rectángulos. En las pilas, un cubo se ve si tiene expuesta una de sus caras +x, +y o +z.",
-  "verificacion": "",
+  "verificacion": "Verificador independiente (subagente, sin leer motor ni casos), 7 nov 2026, dos pasadas: los 170 valores se recalcularon con fuerza bruta propia en fracciones exactas (cruces, piezas por recorrido de la figura, ternas y cuaternas con lados dibujados y prueba de convexidad, unión de piezas como el polígono que encierra exactamente las elegidas) y con las fórmulas de academia (C(n, 2), k·n(n + 1)/2, Σk², C(m + 1, 2)·C(n + 1, 2), m·C(n + 1, 2)); los cubos visibles, con trazado de rayos hacia (1, 1, 1). Coinciden los 170 y los 10 problemas de papel.json.",
   "tolerancia": 1e-9,
   "casos": [
     { "nombre": "Predicción 1 (paso 1): 6 puntos en una recta → C(6, 2) = 15 segmentos (errores: solo los 5 tramos; tramos y el total, 6; AB y BA aparte, 30)",

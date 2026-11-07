@@ -591,3 +591,89 @@ Segunda lista. Gerson confirmó que siga con simetría, geometría del espacio y
 1. En `catalogo/cursos/geometria.json`, unidad `geometria.geometria-del-espacio`: `"plantillas": ["geometria-espacio"]`. Después, `npm run catalogo`, y si se quiere, `pasada-pegatina.py`, que dará lo mismo.
 2. En `docs/diseno.md`, los colores de arriba.
 3. Para `docs/pendientes.md` y CLAUDE.md: «El cubo que gira (7 nov 2026): `plantillas/geometria-espacio/` (varilla perpendicular al piso, proyección, ángulo recta-plano, tres perpendiculares, diedro con la puerta, rectas cruzadas y triedro; el cubo gira solo después de responder; 20 casos verificados aparte; 9 de papel)».
+
+## 7 nov 2026 · El reflector de figuras (`plantillas/razonamiento-figuras/`)
+
+Esta plantilla evita a propósito lo que ya está en otras: los trazos, perímetros y rutas de `trazos-rutas`, los palitos de `sucesiones`, los giros de `arreglos-giros` y el cubo pintado de `solidos`. Su foco es contar figuras.
+
+**Qué hice.**
+
+- **`motor.js`** (`MotorFiguras`, UMD):
+  - `armar` y `contar` cuentan por fuerza bruta segmentos, triángulos, cuadriláteros convexos (por convención nuestra, los cóncavos no entran), cuadrados y rectángulos, con el tamaño de cada figura;
+  - fórmulas de academia: C(n, 2), k·p(p + 1)/2 en el abanico, trapecios, Σ(m − k + 1)(n − k + 1) y C(m + 1, 2)·C(n + 1, 2);
+  - pilas de cubos en la esquina y escalera, con visibles, ocultos y caras;
+  - `union`, que dice si un grupo de piezas forma una figura.
+- **`casos.json`:** 20 casos con sus «tambien».
+- **`motor.test.js`:** 40 pruebas. La fuerza bruta coincide con cada fórmula, se cumple Euler, girar o escalar no cambia la cuenta y en las pilas los visibles se comprueban con rayos.
+- **`papel.json`:** 10 problemas propios.
+- **`index.html`, paso a paso** (9 pasos, 6 predicciones):
+  1. 6 puntos en una recta;
+  2. el abanico de 4 piezas;
+  3. explorar el abanico;
+  4. el cuadrado con sus diagonales;
+  5. el tablero de 4 × 4;
+  6. la tira de 2 × 3;
+  7. la pila de 3 capas en la esquina;
+  8. explorar la cuadrícula;
+  9. «Arma tú»: el alumno toca piezas y el motor dice si forman un triángulo, con «k de 16 hallados».
+
+  Después de cada respuesta, un reflector ilumina una por una las figuras contadas.
+- **`index.html`, «¿qué pasa si…?»** (5 experimentos): una cuerda en el abanico, sus cuadriláteros, el tablero de 3 × 5, la escalera de cubitos y el triángulo con dos cevianas.
+- **Respaldo:**
+  - AR17 (orden) queda parcial, citado como la cifra de combinatoria de Navarro-Pelayo y otros, según la tesis de Roa (2000).
+  - GE13 queda parcial: el estudio usó bloques, y aquí la pila es escalonada.
+  - AR18 y todo lo demás es hipótesis.
+- **Estilo:** ya lleva `pegatina.css` y `data-curso="geometria"`, puesto a mano.
+
+**Pruebas.** `npm test`: 4207 en total, 4205 pasan y fallan solo las 2 del catálogo, como se esperaba. `pasada-celular.py` no dice QUEDA. Playwright revisó 1366 y 390, en claro y en oscuro, con y sin movimiento reducido: sin errores, y el lienzo sube a la vista en los pasos para explorar.
+
+**Subagentes.**
+
+- **Verificador independiente** (no leyó el motor ni `casos.json`). Usó fuerza bruta propia con fracciones: cruces, piezas por recorrido de la figura, ternas y cuaternas convexas, y la unión de piezas. Además aplicó las fórmulas de academia y, para los cubos, trazado de rayos.
+  - **Primera pasada:** 148 de 148 valores.
+  - **Segunda pasada:** con los bordes nuevos (una diagonal, el triángulo suelto, el cóncavo, la pila de 2 × 2 × 2, la cuadrícula de 1 × 4 y `union`), 170 de 170.
+
+  No hubo ninguna discrepancia.
+- **Revisor de contenido.** No encontró nada grave. Apliqué todo:
+  - el enunciado del paso 7 regalaba la suma de cuadrados y descartaba GE13; ahora dice «sin huecos: cada cubito descansa sobre el piso o sobre otro»;
+  - AR18 bajó de parcial a hipótesis;
+  - ajusté los textos de fuente de AR17 y GE13;
+  - «10 rectángulos» era defendible con la definición excluyente de rectángulo; ahora el distractor es 12 (solo los de una fila);
+  - en el celular, el lienzo se quedaba fuera de pantalla en los pasos para explorar;
+  - el aria-live de la escalera no anunciaba el resultado;
+  - la letra n nombraba dos cosas: las piezas pasaron a p;
+  - agregué el paso «Arma tú», porque no había nada que tocar.
+
+**Colores** (claro / oscuro):
+
+| Variable | Claro | Oscuro |
+| --- | --- | --- |
+| S, piezas simples | #1f5fbf | #7cb0ff |
+| C, compuestas | #a10fbf | #cf6bfa |
+| N, lo que se elige | #a05200 | #f0a04a |
+| K, cuadrados | #5f6f00 | #c8dc3c |
+| Q, cubitos que se ven | #0f766e | #5ed9c8 |
+| O, cubitos ocultos | #77032c | #ff8fa3 |
+
+- **ΔE00 entre los que salen juntos:** mínimo 27,1.
+- **Contraste:** AA, mínimo 4,63 sobre el chip.
+
+**Pendiente.**
+
+- Temas de examen que faltan:
+  - cubos dentro de un cubo (Σk³);
+  - el triángulo cuadriculado en n² triangulitos;
+  - el pentágono con su estrella (35 triángulos);
+  - ángulos con rayos desde un punto;
+  - figuras de un solo trazo, que San Marcos pregunta seguido.
+- **Para Gerson:** los cuadriláteros cóncavos no se cuentan. Si se quieren contar, es un cambio de una línea en el motor.
+
+**Pedidos para la integración.**
+
+1. En `catalogo/cursos/geometria.json`, unidad `geometria.razonamiento-con-figuras`: `"plantillas": ["razonamiento-figuras"]`. Después, `npm run catalogo`.
+2. En `docs/diseno.md`, los colores de arriba.
+3. Para `docs/pendientes.md` y CLAUDE.md: «El reflector de figuras (7 nov 2026): `plantillas/razonamiento-figuras/` (conteo de segmentos, triángulos, cuadriláteros, cuadrados y rectángulos por fuerza bruta con un reflector que ilumina cada figura; abanicos y cuadrículas con sus fórmulas, pilas de cubos con los ocultos y «Arma tú»; 20 casos verificados aparte; 10 de papel)».
+
+## Cierre de la segunda lista (7 nov 2026)
+
+Las tres plantillas de la segunda lista quedaron hechas, verificadas dos veces, revisadas y subidas: simetría, geometría del espacio y razonamiento con figuras. Con esto, geometría tiene escena en todas sus unidades del catálogo.
