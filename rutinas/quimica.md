@@ -248,7 +248,7 @@ Cada ejecución construye una plantilla de escena de química nueva, en la rama 
   - la escala de radios teórica, distinta de la de los libros;
   - textos cortados en el celular.
   
-  Correcciones en curso. Decisiones mías:
+  Todo quedó corregido. El constructor volvió a probar las 8 combinaciones con Playwright, sin problemas, y las 58 pruebas pasan. Decisiones mías:
   - en el explorador, Mg, Al, Cr, Cu y Ni quedan con "?" hasta responder su experimento;
   - se queda la escala de Clementi, nombrada en pantalla con el aviso "tu libro usa radios medidos, con otros números y el mismo orden".
 
@@ -260,7 +260,7 @@ Cada ejecución construye una plantilla de escena de química nueva, en la rama 
 **Pedidos para la integración.**
 1. En `catalogo/cursos/quimica.json`, poner `"plantillas": ["atomo-y-tabla"]` en `quimica.estructura-atomica` y en `quimica.tabla-periodica`. Después, `npm run catalogo`. Si química llega a 4 plantillas o más, rebalancear `catalogo/pruebas/quimica.json`, como dice `docs/metodo/LEEME.md`.
 2. En `docs/diseno.md`, las variables de átomo y tabla (`plantillas/atomo-y-tabla/`):
-   - protones Z: rojo #b02c41 (oscuro #f17384);
+   - protones Z: rojo #b02c41 (oscuro #f17384), oscurecido para pasar AA dentro de las opciones ya respondidas;
    - neutrones: granate #66003d (oscuro #ffc2ea);
    - electrones: azul #1f5fbf (oscuro #7cb0ff);
    - electrón que sale o entra: ámbar #8f5800 (oscuro #ffc04d);
@@ -269,10 +269,10 @@ Cada ejecución construye una plantilla de escena de química nueva, en la rama 
    - energía de ionización: fucsia #a10fbf (oscuro #cf6bfa);
    - electronegatividad: tostado #5a1802 (oscuro #f96c1f);
    - en tinta: A, q, l, mₗ, mₛ, período y grupo;
-   - ΔE00 mínimo: 23,2 en claro y 22,2 en oscuro;
+   - ΔE00 mínimo: 20,6 en claro (Z–neutrones) y 22,2 en oscuro;
+   - contraste mínimo: 4,53;
    - Z queda cerca del rojo de los avisos, y el aviso siempre va con texto.
-   
-   El valor final de Z en claro lo confirma el constructor al terminar las correcciones.
+   - los neutrones se escriben con la palabra entera, porque n es el nivel.
 3. En `docs/pendientes.md` y `CLAUDE.md`, una línea como las de las otras plantillas.
 
 **Siguiente en la cola:** `enlace`.

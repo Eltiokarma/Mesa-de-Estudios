@@ -125,7 +125,7 @@
       "enunciado": "Un elemento del período 3 tiene estas energías de ionización sucesivas, en kJ/mol: 578, 1817, 2745 y 11 577. ¿A qué grupo pertenece? ¿Qué elemento es?",
       "respuesta": "Grupo 13 (IIIA): es el aluminio.",
       "pasos": [
-        "Busca el gran salto: de 2745 a 11 577 se multiplica por más de 4; los otros pasos, por 3 o menos.",
+        "Busca el gran salto: de 2745 a 11 577 se multiplica por más de 4; los otros pasos, por unas 3 veces o menos (1817/578 ≈ 3,1 y 2745/1817 ≈ 1,5).",
         "El salto viene después del tercer electrón: el cuarto ya sale de una capa más interna. Tiene 3 electrones en la capa de afuera.",
         "Período 3 con 3 electrones de valencia (3s² 3p¹): grupo 13, el aluminio (Z = 13)."
       ],

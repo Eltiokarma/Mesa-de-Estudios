@@ -183,7 +183,8 @@ test('predicciones de la escena: cada error da algo distinto de la respuesta', (
   assert.notEqual(p.errores['suma-carga-a-electrones'], p.electrones);
   assert.notEqual(p.errores['ignora-la-carga'], p.electrones);
   const f = motor.configuracion('Fe3+'), errs = Object.values(f.errores);
-  assert.equal(new Set([f.abreviada, ...errs]).size, 4, 'Fe³⁺: las cuatro configuraciones son distintas');
+  assert.equal(new Set([f.abreviada, ...errs]).size, 1 + errs.length, 'Fe³⁺: todas las configuraciones son distintas');
+  assert.equal(f.errores['quita-solo-uno'], '[Ar] 4s1 3d6');
   const cr = motor.configuracion('Cr'), ni = motor.configuracion('Ni');
   assert.notEqual(cr.errores['sin-excepcion'], cr.abreviada); assert.notEqual(ni.errores['excepcion-generalizada'], ni.abreviada);
   const ps = motor.compararEI('P', 'S');

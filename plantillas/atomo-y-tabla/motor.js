@@ -16,7 +16,8 @@
  *  - Llenado por la regla de Möller: por n + l y, a igual n + l, por n (1s 2s 2p 3s 3p 4s 3d 4p 5s 4d 5p 6s 4f…).
  *  - Excepciones: solo Cr (4s¹ 3d⁵) y Cu (4s¹ 3d¹⁰) en el período 4, las que pide el CEPRE; Mo, Ag y Au siguen el
  *    mismo patrón (un electrón del s pasa al d) y también se declaran. Ninguna otra: el motor no generaliza la
- *    "excepción" (el Ni es 4s² 3d⁸). Para Z > 36 es la regla de academia; varios elementos reales de los
+ *    "excepción" (el Ni es 4s² 3d⁸: su configuración 3d⁹ 4s¹ está a solo 0,03 eV, pero NIST da 3d⁸ 4s² como estado
+ *    fundamental). Para Z > 36 es la regla de academia; varios elementos reales de los
  *    períodos 5 y 6 (Nb, Ru, Rh, Pd, Pt, La…) tienen otras configuraciones que el motor no modela.
  *  - La configuración se escribe en el orden de llenado (Möller), también en los iones: "[Ar] 4s2 3d6".
  *    La abreviada usa el gas noble más grande con MENOS electrones que la especie (Ar: [Ne] 3s2 3p6; Br⁻:
@@ -36,8 +37,9 @@
  *    and ionization energies", en eV) por 96,485 kJ/mol por eV, redondeadas a entero.
  *  - Energías de ionización sucesivas del Na, el Mg y el Al, en kJ/mol redondeadas a entero, de las mismas
  *    energías de NIST (como las reproduce la tabla "Molar ionization energies of the elements").
- *  - Radio atómico, en pm, una sola escala: los radios calculados de Clementi, Raimondi y Reinhardt (1967),
- *    tal como los reproduce la tabla de radios atómicos de los elementos (columna "calculado"). Es la escala que
+ *  - Radio atómico, en pm, una sola escala: los radios calculados de Clementi, Raimondi y Reinhardt, "Atomic
+ *    screening constants from SCF functions. II", J. Chem. Phys. 47, 1300 (1967), tal como los reproduce la tabla de
+ *    radios atómicos de los elementos (columna "calculado"). Los libros de academia usan radios medidos. Es la escala que
  *    baja sin saltos en cada período, también en los gases nobles. Otras tablas (covalente, metálico) dan otros
  *    números con el mismo orden en los grupos principales.
  *  - Radio iónico, en pm: Shannon (1976), número de coordinación 6, solo para algunos iones. No se compara
@@ -218,6 +220,8 @@
       r.errores['no-resta-electrones'] = abreviar(base).texto;
       // El primero de la capa de afuera y el resto desde los últimos en llenarse (Fe³⁺ → [Ar] 4s1 3d4).
       r.errores['quita-uno-de-s'] = abreviar(quitarUltimos(quitarDeAfuera(base, 1), q - 1)).texto;
+      // Quitar un solo electrón, aunque la carga pida más (Fe³⁺ → [Ar] 4s1 3d6).
+      if (q > 1) r.errores['quita-solo-uno'] = abreviar(quitarDeAfuera(base, 1)).texto;
     }
     if (q === 0) {
       if (EXCEPCIONES[Z]) {
