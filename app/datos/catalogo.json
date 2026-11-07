@@ -544,7 +544,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "ondas-electromagneticas"
+     ]
     },
     {
      "id": "fisica.optica-geometrica",
@@ -1720,7 +1722,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "programacion-lineal"
+     ]
     },
     {
      "id": "algebra.sucesiones-y-series",
@@ -4467,7 +4471,7 @@
    "titulo": "Circuitos",
    "formato": "escena",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "fisica.corriente-y-circuitos"
    ],
@@ -5240,6 +5244,23 @@
     "/plantillas/ondas/papel.json"
    ]
   },
+  "ondas-electromagneticas": {
+   "id": "ondas-electromagneticas",
+   "titulo": "La antena y el arcoíris: ondas electromagnéticas",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.ondas-electromagneticas"
+   ],
+   "url": "/plantillas/ondas-electromagneticas/index.html",
+   "papel": "/plantillas/ondas-electromagneticas/papel.json",
+   "archivos": [
+    "/plantillas/ondas-electromagneticas/index.html",
+    "/plantillas/ondas-electromagneticas/motor.js",
+    "/plantillas/ondas-electromagneticas/papel.json"
+   ]
+  },
   "optica-espejo-esferico": {
    "id": "optica-espejo-esferico",
    "titulo": "Espejos esféricos",
@@ -5380,6 +5401,23 @@
     "/plantillas/probabilidad-dados/index.html",
     "/plantillas/probabilidad-dados/motor.js",
     "/plantillas/probabilidad-dados/papel.json"
+   ]
+  },
+  "programacion-lineal": {
+   "id": "programacion-lineal",
+   "titulo": "La región que se arma: programación lineal",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "algebra.programacion-lineal"
+   ],
+   "url": "/plantillas/programacion-lineal/index.html",
+   "papel": "/plantillas/programacion-lineal/papel.json",
+   "archivos": [
+    "/plantillas/programacion-lineal/index.html",
+    "/plantillas/programacion-lineal/motor.js",
+    "/plantillas/programacion-lineal/papel.json"
    ]
   },
   "quimica-ambiente": {
