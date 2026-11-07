@@ -620,6 +620,23 @@ const V = {
   // ---------------- Reserva de álgebra (rutina de matemática C) ----------------
 
   // ---------------- Reserva de geometría (rutina de matemática C) ----------------
+  // cg-01 a si-02: congruencia, segmentos-angulos y simetria (en "reserva": las formas de geometría ya tienen 10 pares).
+  'cg-01': d => { const r = motor('congruencia').mediatriz({ A: [-d.AB / 2, 0], B: [d.AB / 2, 0], t: d.t }), e = r.errores;
+    if (Math.abs(r.PA - r.PB) > 1e-9) throw new Error('P no equidista de A y B');
+    return { correcta: r.PB, errores: { 'PM-como-PB': e.PMcomoPB, 'suma-de-segmentos': e.suma, 'GE11-resta-cuadrados': e.restaCuadrados } }; },
+  'cg-02': d => { const r = motor('congruencia').medianaHipotenusa({ catetos: [d.AB, d.BC] }), e = r.errores;
+    if (Math.abs(r.hipotenusa - d.AC) > 1e-9) throw new Error('la hipotenusa del enunciado no es la del motor');
+    return { correcta: r.mediana, errores: { 'mediana-igual-cateto': e.cateto, 'GE8-mediana-como-altura': e.altura, 'mediana-promedio-catetos': e.promedioCatetos } }; },
+  'sa-01': d => { const r = motor('segmentos-angulos').ecuacionPar('alternos internos', [d.a1, d.b1], [d.a2, d.b2]), e = r.errores;
+    return { correcta: r.x, errores: { 'GE17-suplementa-alternos': e.otraRelacion.x, 'despeje-signo': e.despejeSigno, 'da-el-angulo-y-no-x': e.xEsElAngulo } }; },
+  'sa-02': d => { const r = motor('segmentos-angulos').solapados({ AC: d.AC, BD: d.BD, AD: d.AD }), e = r.errores;
+    return { correcta: r.BC, errores: { 'suma-segmentos-solapados': e.sumaSolapados, 'resta-da-otro-segmento': e.restaConAD, 'promedia-los-datos': e.promedio } }; },
+  'si-01': d => { const r = motor('simetria').reflejar({ x: d.x, y: d.y }, { m: 1, n: d.n }), e = r.errores, k = P => punto(P.x, P.y);
+    return { correcta: k(r.P), errores: { 'se-queda-en-el-pie': k(e.pie), 'refleja-en-vertical': k(e.vertical), 'intercambia-coordenadas': k(e.intercambia) } }; },
+  'si-02': d => { const S = motor('simetria'), r = S.prediccionEjes(S.figura('regular', d.n, 3)), e = r.errores;
+    // El motor dibuja el polígono regular con un vértice arriba, como dice el enunciado.
+    if (!r.simetrias.ejes.some(x => Math.abs(x.angulo - 90) < 1e-9)) throw new Error('el polígono no tiene un vértice arriba');
+    return { correcta: r.ejes, errores: { 'solo-el-eje-vertical': e.soloVertical, 'impar-sin-ejes': e.ninguno, 'cuenta-vertices-y-lados-aparte': e.dobleCuenta } }; },
 
   // ---------------- Reserva de trigonometría (rutina de matemática C) ----------------
   // tt-01 y tt-02: transformaciones-trig (en "reserva" mientras la plantilla no entre al catálogo).

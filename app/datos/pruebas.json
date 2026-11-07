@@ -2065,6 +2065,74 @@
     "distancia-recta-sin-c": {
      "respaldo": "hipotesis",
      "describe": "Olvida el término independiente C"
+    },
+    "PM-como-PB": {
+     "respaldo": "hipotesis",
+     "describe": "Da la distancia de P al punto medio como si fuera la distancia a A o a B"
+    },
+    "suma-de-segmentos": {
+     "respaldo": "hipotesis",
+     "describe": "Suma la distancia al punto medio y la mitad de AB en vez de usar Pitágoras"
+    },
+    "mediana-igual-cateto": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que la mediana a la hipotenusa mide lo mismo que un cateto"
+    },
+    "GE8-mediana-como-altura": {
+     "respaldo": "parcial",
+     "describe": "Confunde la mediana a la hipotenusa con la altura"
+    },
+    "mediana-promedio-catetos": {
+     "respaldo": "hipotesis",
+     "describe": "Da el promedio de los catetos como mediana a la hipotenusa"
+    },
+    "GE17-suplementa-alternos": {
+     "respaldo": "hipotesis",
+     "describe": "Suma 180° a dos alternos internos, que entre paralelas son iguales"
+    },
+    "despeje-signo": {
+     "respaldo": "hipotesis",
+     "describe": "Pasa un número al otro lado de la ecuación sin cambiarle el signo"
+    },
+    "da-el-angulo-y-no-x": {
+     "respaldo": "hipotesis",
+     "describe": "Responde la medida del ángulo cuando se pide x"
+    },
+    "suma-segmentos-solapados": {
+     "respaldo": "hipotesis",
+     "describe": "Suma dos segmentos que se pisan como si no tuvieran una parte común"
+    },
+    "resta-da-otro-segmento": {
+     "respaldo": "hipotesis",
+     "describe": "Resta dos datos y obtiene otro tramo (CD), no el que se pide"
+    },
+    "promedia-los-datos": {
+     "respaldo": "hipotesis",
+     "describe": "Promedia los datos aunque el promedio no es ningún tramo"
+    },
+    "se-queda-en-el-pie": {
+     "respaldo": "hipotesis",
+     "describe": "Da el pie de la perpendicular, a mitad del camino, como simétrico"
+    },
+    "refleja-en-vertical": {
+     "respaldo": "hipotesis",
+     "describe": "Va en vertical hasta el espejo y sigue otro tanto, sin ir en perpendicular"
+    },
+    "intercambia-coordenadas": {
+     "respaldo": "hipotesis",
+     "describe": "Cambia x por y, lo que solo vale para el espejo y = x"
+    },
+    "solo-el-eje-vertical": {
+     "respaldo": "hipotesis",
+     "describe": "Ve solo el eje vertical, el «del medio» tal como está dibujada la figura"
+    },
+    "impar-sin-ejes": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que un polígono de lados impares no tiene ejes de simetría"
+    },
+    "cuenta-vertices-y-lados-aparte": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta dos veces cada eje: uno por el vértice y otro por el lado que corta"
     }
    },
    "pares": [
