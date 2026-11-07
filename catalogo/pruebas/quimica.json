@@ -197,18 +197,18 @@
       "unidad": "quimica.estequiometria",
       "mide": "Reactivo limitante con partículas: comparar con la receta, no la cantidad ni el coeficiente",
       "A": {
-        "enunciado": "En un recipiente hay 6 moléculas de H₂ y 4 moléculas de O₂, que reaccionan según 2 H₂ + O₂ → 2 H₂O. ¿Cuál es el reactivo limitante?",
+        "enunciado": "En el convertidor catalítico de un auto hay, en un instante, 12 moléculas de CO y 7 moléculas de O₂, que reaccionan según 2 CO + O₂ → 2 CO₂. ¿Cuál es el reactivo limitante?",
         "datos": {
           "moleculas": {
-            "H2": 6,
-            "O2": 4
+            "CO": 12,
+            "O2": 7
           },
           "otro": "O2",
           "reaccion": {
             "reactivos": [
               [
                 2,
-                "H2"
+                "CO"
               ],
               [
                 1,
@@ -218,7 +218,7 @@
             "productos": [
               [
                 2,
-                "H2O"
+                "CO2"
               ]
             ]
           }
@@ -235,8 +235,8 @@
             "error": "ES21-menor-coeficiente"
           },
           {
-            "texto": "El H₂, porque se acaba primero",
-            "clave": "H2",
+            "texto": "El CO, porque para 7 O₂ harían falta 14 CO",
+            "clave": "CO",
             "correcta": true
           },
           {
@@ -247,52 +247,56 @@
         ]
       },
       "B": {
-        "enunciado": "En un recipiente hay 3 moléculas de N₂ y 6 moléculas de H₂, que reaccionan según N₂ + 3 H₂ → 2 NH₃. ¿Cuál es el reactivo limitante?",
+        "enunciado": "Una chispa enciende una mezcla de 3 moléculas de etileno (C₂H₄) y 8 moléculas de O₂, que reaccionan según C₂H₄ + 3 O₂ → 2 CO₂ + 2 H₂O. ¿Cuál es el reactivo limitante?",
         "datos": {
           "moleculas": {
-            "N2": 3,
-            "H2": 6
+            "C2H4": 3,
+            "O2": 8
           },
-          "otro": "N2",
+          "otro": "C2H4",
           "reaccion": {
             "reactivos": [
               [
                 1,
-                "N2"
+                "C2H4"
               ],
               [
                 3,
-                "H2"
+                "O2"
               ]
             ],
             "productos": [
               [
                 2,
-                "NH3"
+                "CO2"
+              ],
+              [
+                2,
+                "H2O"
               ]
             ]
           }
         },
         "opciones": [
           {
-            "texto": "El N₂, porque hay menos moléculas",
-            "clave": "N2-cantidad",
+            "texto": "El C₂H₄, porque hay menos moléculas",
+            "clave": "C2H4-cantidad",
             "error": "ES20-menor-cantidad"
           },
           {
-            "texto": "El N₂, porque su coeficiente es el menor",
-            "clave": "N2-coeficiente",
+            "texto": "El C₂H₄, porque su coeficiente es el menor",
+            "clave": "C2H4-coeficiente",
             "error": "ES21-menor-coeficiente"
-          },
-          {
-            "texto": "El H₂, porque se acaba primero",
-            "clave": "H2",
-            "correcta": true
           },
           {
             "texto": "Los dos, porque se acaban a la vez",
             "clave": "los-dos",
             "error": "ES22-se-acaban-los-dos"
+          },
+          {
+            "texto": "El O₂, porque para 3 C₂H₄ harían falta 9 O₂",
+            "clave": "O2",
+            "correcta": true
           }
         ]
       }

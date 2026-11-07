@@ -207,6 +207,7 @@ Desde el 7 nov 2026 (plan más amplio de Gerson) son nueve sesiones paralelas, c
 - Destilar el método de construcción de plantillas en un skill (f2a). Ya hay 3 escenas y 2 módulos de predicciones como base.
 - Material de la UNA Puno cuando llegue (f2c). UNSA y UNSAAC también.
 - Las ideas de `docs/vision-futura.md`, que no se desarrollan todavía.
+- Idea, sin hacer: una pregunta de **transferencia lejana** por curso en las pruebas de entrada y salida. Sería una tarea inversa o en otro punto (por ejemplo, dar las cintas y pedir cuántos niños hay), aparte de los pares de transferencia cercana. El criterio está en `docs/arquitectura.md`. Hay propuestas concretas para fis-08, fis-10, geo-05, geo-10, fr-02, tri-10, rm-08 y qui-01 en la revisión del 7 nov 2026 (`rutinas/quimica.md`).
 
 ## Para Gerson
 
