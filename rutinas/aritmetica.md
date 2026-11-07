@@ -426,3 +426,93 @@ El dividendo D y la caja de 10 000 van en tinta.
 - **Informe** (si se quiere): anotar que el promedio simple en mezclas se mide como AR15 (parcial) en esta plantilla.
 - **`docs/pendientes.md`** (Detalles): «**Mezclas** (`plantillas/mezclas/`, rutina de aritmética, 7 nov 2026): la balanza de las mezclas (el precio medio es el punto de equilibrio y el apoyo se arrastra; regla del aspa como momentos, grados de alcohol con el alcohol puro aparte, agua que baja el grado, ley y quilates con la barra de 24 partes, oro que se agrega, rango imposible, sacar y reponer); 19 casos verificados aparte; 10 de papel; 6 predicciones y 4 «¿qué pasa si…?»; AR15 parcial, lo demás hipótesis. Sin ítems en el banco de aritmética.» En ma4, quitar «mezclas» de «Faltan».
 - **`CLAUDE.md`:** sumar «la balanza de las mezclas» a la lista y una línea en Historia: «Mezclas (7 nov 2026, rutina de aritmética): `plantillas/mezclas/` (la balanza de las mezclas: precio medio como equilibrio, aspa, grados de alcohol, agua, ley y quilates; 19 casos verificados aparte).»
+
+## 7 nov 2026 · Las fichas en los aros (`plantillas/conjuntos/`)
+
+**Qué hice.**
+
+- **`motor.js`** (UMD):
+  - operaciones: unión, intersección, diferencia, complemento, diferencia simétrica, inclusión, pertenencia, `afirmar` (∈ ∉ ⊂ ⊄) y `extension`;
+  - conjunto potencia, con la lista y la cantidad en BigInt; `arbol` y `cartesiano`;
+  - `regiones(datos)` para 2 y 3 aros: resuelve las regiones con fracciones exactas, dice cuáles quedan fijas o libres, y explica por qué cuando los datos se contradicen o dan una región negativa o fraccionaria;
+  - el dibujo: aros (que se cruzan, uno dentro de otro, separados o tres), la vista Carroll y el `layout` de fichas, cada una en su región y sin encimarse.
+- **`casos.json`:** 20 casos, verificados aparte.
+- **`motor.test.js`:** 41 pruebas:
+  - inclusión-exclusión con 2 y 3 conjuntos al azar contra el conteo directo;
+  - De Morgan;
+  - |P(A)| = 2ⁿ y |A × B| = |A|·|B|;
+  - regiones nunca negativas;
+  - dibujo en más de 32 geometrías;
+  - errores distintos entre sí;
+  - bordes: vacío, A = B, B ⊂ A y conjuntos disjuntos.
+- **`papel.json`:** 10 problemas propios.
+- **Unidades:** `aritmetica.conjuntos` y `algebra.logica-y-conjuntos`.
+- **Interacción:** las fichas se arrastran entre regiones, en Venn o en Carroll. Se agarran a unos 25 px; el revisor lo midió con toque real y anda bien, y el dedo lejos de las fichas desplaza la página. También funcionan el teclado (←/→ y las teclas A, B, C) y los botones.
+- **Paso a paso** (8 pasos, 6 predicciones, todo hipótesis):
+
+  | Paso | Pregunta | Correcta | Distractores |
+  | --- | --- | --- | --- |
+  | 2 | 26 fútbol, 18 vóley, 7 los dos: ¿cuántos juegan al menos uno? | 37 | 44 `suma-sin-restar-la-interseccion`, 30 `resta-la-interseccion-dos-veces`, 26 `da-el-grupo-mayor` |
+  | 3 | Solo UNI (22, 15 y 6) | 16 | 22 `solo-como-todo-el-conjunto`, 10 `quita-la-interseccion-dos-veces`, 9 `cuenta-solo-el-otro-conjunto` |
+  | 4 | U = 45, ninguna 6: ¿cuántos tienen las dos? | 10 | 4 `olvida-a-los-que-no-estan-en-ninguno`, 39, 11 |
+  | 5 | Tres aros, U = 60: ¿cuántos no están en ninguno? | 6 | 9 `olvida-devolver-a-los-de-los-tres`, 54, 12 |
+  | 6 | Subconjuntos y propios de {1, 3, 5, 7} | 16 y 15 | 8 y 7, 15 y 14 `olvida-el-vacio`, 24 y 23 |
+  | 7 | n(A × B) con 3 y 4 elementos | 12 | 7 `suma-los-cardinales`, 11 `par-ordenado-sin-orden`, 5 |
+
+- **«¿Qué pasa si…?»** (5 experimentos):
+  1. pintura y cerámica, con B ⊂ A: 20;
+  2. dos turnos sin nadie en común: A ∩ B = ∅, contra {0}, {∅} y «no existe»;
+  3. un elemento más: 16;
+  4. la diferencia B − A: {6, 7};
+  5. pertenencia contra inclusión: {1} ∈ P(A).
+
+**Pruebas.** `npm test`: solo fallan los 2 de catálogo. `pasada-celular.py` no marca nada para conjuntos. Playwright corrió en las 8 combinaciones, con arrastre con ratón, toque y teclado: sin errores de consola ni desbordes.
+
+**Subagentes.**
+
+- **Verificador independiente.** Sacó las regiones por búsqueda exhaustiva de repartos enteros y contó los cardinales sobre poblaciones explícitas, sin usar inclusión-exclusión. P(A) y A × B, con itertools. **0 discrepancias** en 20 casos y 10 de papel.
+  - La geometría del dibujo no tiene casos; la cubren las pruebas de propiedades.
+  - El caso del paso 2, que cambió en la revisión (26 + 18 − 7 = 37), lo comprobé a mano.
+- **Revisor de contenido.** Nada grave. Corregido:
+  - en el paso 2, solo fútbol daba 18, igual a n(B); los datos pasaron a 26, 18 y 7;
+  - en los pasos 2 y 3, la intersección teñida antes de responder ya decía que los 7 están dentro de los 26; ahora van carteles;
+  - el título «B dentro de A» regalaba la clave; ahora es «Pintura y cerámica». Y «A − B y B − A» pasó a «La diferencia»;
+  - con 3 aros, las fichas de afuera parecían estar en una región; ahora van en una franja abajo;
+  - el ∅ del árbol estaba tapado;
+  - en la fuente mono, ∪, ∩ y ∅ se leían «u», «n» y «ø»; ahora van con la letra de texto;
+  - el rojo de P(A) en las opciones se confundía con el rojo de aviso; ahora los números de las opciones van en tinta;
+  - «fucsia: en los tres aros» en la leyenda;
+  - A y B ahora están definidos en el experimento 2;
+  - se corrigió el «por eso» del paso 7;
+  - se subió el contraste en oscuro (fucsia y rojo).
+
+**Colores** (claro / oscuro):
+
+| Variable | Claro | Oscuro |
+| --- | --- | --- |
+| A | #1f5fbf | #7cb0ff |
+| B | #a05200 | #f0a04a |
+| C | #466d14 | #a3d65e |
+| ∩ (en todos los aros) | #a10fbf | #e180ff |
+| fuera de todos | #0f766e | #5ed9c8 |
+| subconjuntos, P(A) | #b02c41 | #ff8091 |
+
+- U, las fichas y el resultado de una operación van en tinta.
+- **ΔE00 mínimo:** 23,6 en claro y 25,1 en oscuro.
+- **Contraste:** ≥ 4,53 en claro y ≥ 4,94 en oscuro.
+- **Cerca del rojo de aviso:** el rojo de P(A) queda a ΔE00 4,5 en oscuro. Ya no sale en las opciones y los avisos siempre llevan texto.
+- **Para `docs/diseno.md`:** en conjuntos, el fucsia y el rojo oscuros son más claros que en las hermanas.
+
+**Pendiente.**
+
+- A 1366 px, los aros no usan todo el ancho.
+- Sobre la fila de fichas de afuera, el dedo no desplaza la página.
+- El paso 3 mide después de lo que enseña el paso 2 (la doble cuenta): conviene leerlo así en el análisis.
+- Sin ítems en el banco de aritmética.
+
+**Pedidos para la integración.**
+
+- **Catálogo:** agregar `conjuntos` a `aritmetica.conjuntos` y a `algebra.logica-y-conjuntos`, correr `npm run catalogo` y subir `VERSION`. Si álgebra llega a 4 plantillas o más, rebalancear su banco.
+- **`docs/diseno.md`:** la tabla de colores de arriba.
+- **`docs/pendientes.md`** (Detalles): «**Conjuntos** (`plantillas/conjuntos/`, rutina de aritmética, 7 nov 2026): las fichas en los aros (fichas que se arrastran a aros de 2 y 3 conjuntos y a Carroll, al menos uno contra solo, complemento, tres aros, conjunto potencia con el árbol, producto cartesiano, B ⊂ A, disjuntos, diferencia y pertenencia contra inclusión); 20 casos verificados aparte; 10 de papel; 6 predicciones y 5 «¿qué pasa si…?»; todo hipótesis. Sin ítems en el banco.» En ma4, quitar «conjuntos». En álgebra, «lógica y conjuntos» pasa a tener módulo.
+- **`CLAUDE.md`:** sumar «las fichas en los aros» a la lista y una línea en Historia: «Conjuntos (7 nov 2026, rutina de aritmética): `plantillas/conjuntos/` (las fichas en los aros: Venn de 2 y 3 aros con fichas que se arrastran, Carroll, conjunto potencia y producto cartesiano; 20 casos verificados aparte).»
