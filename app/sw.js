@@ -2,7 +2,7 @@
 // Estrategia: al instalar, guarda la cáscara, el catálogo y los archivos de cada plantilla (en lectura, el banco entero).
 // Después responde desde lo guardado y actualiza en segundo plano (stale-while-revalidate).
 // Al cambiar algo de la cáscara, subir VERSION para que los celulares la renueven.
-const VERSION = 'v41';
+const VERSION = 'v42';
 const CACHE = `lab-${VERSION}`;
 const CASCARA = ['/app/', '/app/index.html', '/app/estilos.css', '/app/app.js', '/app/manifest.webmanifest',
   '/app/practica.js', '/app/prueba.js', '/app/lectura.js', '/app/ilustraciones.js', '/app/datos/catalogo.json', '/app/datos/pruebas.json',

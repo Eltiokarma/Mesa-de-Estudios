@@ -144,9 +144,13 @@ function vInicio() {
         ? `<a class="btn blanco" href="${esc(enlace(cat.plantillas[conEscena.u.plantillas[0]], conEscena.u.id))}" data-abrir="${esc(conEscena.u.id)}">${VERBO[cat.plantillas[conEscena.u.plantillas[0]].formato] || 'Abrir'} ›</a>`
         : `<a class="btn blanco" href="#/curso/${esc(conEscena.c.id)}">Ver unidad ›</a>`}
     </div>` : `<div class="reto">${Ilus.gatoDormido('class="reto-gato"')}<h3>¡Terminaste todo el temario!</h3><p>Repasa lo que más te costó.</p></div>`;
-  const sig = pend.filter(x => x !== conEscena).slice(0, 4).map(x => `<a class="item" href="#/curso/${esc(x.c.id)}">${icono(x.c.id)}
+  // Lo que sigue: solo unidades con módulo (las demás no tienen nada que abrir todavía), una por curso primero
+  // para que no salgan cuatro del mismo curso, y luego el resto en el orden del temario.
+  const conModulo = pend.filter(x => x !== conEscena && cat.plantillas[x.u.plantillas[0]]);
+  const cursosVistos = new Set(), primeras = conModulo.filter(x => !cursosVistos.has(x.c.id) && cursosVistos.add(x.c.id));
+  const sig = [...primeras, ...conModulo.filter(x => !primeras.includes(x))].slice(0, 4).map(x => `<a class="item" href="${esc(enlace(cat.plantillas[x.u.plantillas[0]], x.u.id))}" data-abrir="${esc(x.u.id)}">${icono(x.c.id)}
       <span class="tx"><span class="t">${esc(x.u.nombre)}</span><br><span class="d">${esc(x.c.nombre)} · ${esc(etiquetaUbic(x.u, est.uni))}</span></span>
-      <span class="der">${tagAdelanto(x.u)}${x.u.plantillas.length ? `<span class="tag acento">${ETIQUETA[cat.plantillas[x.u.plantillas[0]].formato] || 'Módulo'}</span>` : ''}›</span></a>`).join('');
+      <span class="der">${tagAdelanto(x.u)}<span class="tag acento">${ETIQUETA[cat.plantillas[x.u.plantillas[0]].formato] || 'Módulo'}</span>›</span></a>`).join('');
   const salidas = pruebas ? cat.cursos.filter(c => pruebas.cursos[c.id] && PruebaCurso.habilitada(est, c.id) && est.pruebas[c.id] && est.pruebas[c.id].entrada && !est.pruebas[c.id].salida)
     .map(c => ({ c, href: `#/prueba/${c.id}/salida` })) : [];
   for (const c of cat.cursos) {
@@ -167,7 +171,7 @@ function vInicio() {
       <div class="stat"><div class="ic" style="background:#efe6ff">${Ilus.mini.meta}</div><div class="n">${totalU ? Math.round(100 * hechas / totalU) : 0}<span style="font-size:16px">%</span></div><div class="l">del temario ${esc(UNI_CORTA[est.uni] || '')}</div></div>
     </div></div><div>
     <h2>Lo que sigue <a href="#/cursos">Ver cursos ›</a></h2>
-    <div class="lista">${sig || `<div class="vacio">${Ilus.gatoDormido('width="140"')}<p>No hay más unidades pendientes.</p></div>`}</div></div></div>`;
+    <div class="lista">${sig || `<div class="vacio">${Ilus.gatoDormido('width="140"')}<p>${pend.length > 1 ? 'Ya abriste todas las unidades con escena. El resto del temario está en Cursos.' : 'No hay más unidades pendientes.'}</p></div>`}</div></div></div>`;
 }
 
 function vCursos() {
