@@ -1,0 +1,165 @@
+{
+  "titulo": "Estática: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Primero dibuja el diagrama de cuerpo libre: cada fuerza con quién la ejerce (la Tierra, el apoyo, la cuerda, el piso). El peso de una barra pareja va en su centro, no en un extremo. Para que un cuerpo no se traslade, las fuerzas suman cero; para que no gire, los momentos suman cero, todos tomados respecto a un mismo punto. El momento de una fuerza es la fuerza por su brazo, la distancia perpendicular del punto a la línea de la fuerza. Toma g = 10 m/s², sen 37° = 3/5 y cos 37° = 4/5.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "En una chacra, un agricultor mueve una piedra con una barreta de 1,5 m de peso despreciable. La apoya sobre una piedrita a 0,3 m de la punta, que queda debajo de la piedra grande. La piedra grande empuja la punta hacia abajo con 800 N. ¿Con qué fuerza vertical debe empujar el agricultor hacia abajo en el otro extremo para empezar a levantarla, y cuánto soporta la piedrita?",
+      "respuesta": "Con 200 N. La piedrita soporta 1000 N.",
+      "pasos": [
+        "Fuerzas sobre la barreta: la piedra grande empuja la punta hacia abajo con 800 N, el agricultor empuja el otro extremo hacia abajo y la piedrita empuja hacia arriba en el apoyo.",
+        "Toma momentos respecto al apoyo, así la fuerza de la piedrita no gira nada. El brazo de los 800 N es 0,3 m; el del agricultor, 1,5 − 0,3 = 1,2 m.",
+        "Para que no gire: 800 · 0,3 = fuerza · 1,2, así que la fuerza es 240 / 1,2 = 200 N.",
+        "Las fuerzas verticales suman cero: la piedrita empuja hacia arriba con 800 + 200 = 1000 N.",
+        "La palanca no regala nada: con un cuarto de la fuerza, tu mano baja cuatro veces más de lo que sube la piedra."
+      ],
+      "verificar": [
+        { "fn": "barra", "args": [{ "L": 1.5, "m": 0, "apoyos": [{ "x": 0.3 }], "cargas": [{ "x": 0, "F": 800 }, { "x": 1.5, "F": "?" }] }], "espera": { "incognita": 200, "R": 1000 } }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "intermedio",
+      "enunciado": "Un tablón homogéneo de 5 m y 30 kg está apoyado sobre un caballete a 1 m de su extremo A. ¿Qué masa hay que colocar en el extremo A para que el tablón quede horizontal? ¿Cuánto empuja el caballete?",
+      "respuesta": "45 kg. El caballete empuja con 750 N.",
+      "pasos": [
+        "El peso del tablón, 30 · 10 = 300 N, actúa en su centro, a 2,5 m de A. Desde el caballete, eso está a 2,5 − 1 = 1,5 m, del lado de B.",
+        "La carga en A está a 1 m del caballete, del otro lado.",
+        "Momentos respecto al caballete: peso de la carga · 1 = 300 · 1,5, así que la carga pesa 450 N, es decir, 45 kg.",
+        "El caballete sostiene todo: 300 + 450 = 750 N hacia arriba.",
+        "Ojo: igualar lo que pesa el tablón a cada lado del caballete (60 N a un lado y 240 N al otro) daría 180 N, y es un error. Lo que se iguala son los momentos, no los pesos."
+      ],
+      "verificar": [
+        { "fn": "barra", "args": [{ "L": 5, "m": 30, "apoyos": [{ "x": 1 }], "cargas": [{ "x": 0, "F": "?" }] }], "espera": { "incognita": 450, "R": 750, "errores.igualarPesosLados": 180 } }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Una viga homogénea de 6 m y 40 kg descansa sobre dos apoyos, uno en cada extremo, A y B. Una persona de 60 kg está parada sobre la viga a 2 m de A. ¿Cuánto empuja cada apoyo?",
+      "respuesta": "El apoyo A empuja con 600 N y el apoyo B, con 400 N.",
+      "pasos": [
+        "Fuerzas sobre la viga: su peso, 400 N, en el centro (a 3 m de A); el empuje de los pies de la persona, 600 N, a 2 m de A; y los dos apoyos hacia arriba.",
+        "Momentos respecto a A, así el apoyo A no gira nada: apoyo B · 6 = 400 · 3 + 600 · 2 = 2400, de donde el apoyo B empuja con 400 N.",
+        "Fuerzas verticales: apoyo A + 400 = 400 + 600, así que el apoyo A empuja con 600 N.",
+        "Compruébalo con momentos respecto a B: 600 · 6 = 400 · 3 + 600 · 4 = 3600. Da cero respecto a cualquier punto.",
+        "Tiene sentido: la persona está más cerca de A, y A carga más."
+      ],
+      "verificar": [
+        { "fn": "barra", "args": [{ "L": 6, "m": 40, "apoyos": [{ "x": 0 }, { "x": 6 }], "cargas": [{ "x": 2, "F": 600 }] }], "espera": { "R": 600, "R2": 400 } },
+        { "fn": "momentoNeto", "args": [{ "L": 6, "m": 40, "apoyos": [{ "x": 0 }, { "x": 6 }], "cargas": [{ "x": 2, "F": 600 }] }, 6], "espera": { "neto": 0 } }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "básico",
+      "enunciado": "Para aflojar una tuerca usas una llave de 0,25 m. Jalas su extremo con 80 N, pero la fuerza forma 53° con la llave. ¿Qué momento le das a la tuerca? ¿Y si jalaras perpendicular a la llave?",
+      "respuesta": "16 N·m. Perpendicular, 20 N·m.",
+      "pasos": [
+        "El brazo no es el largo de la llave: es la distancia perpendicular desde la tuerca hasta la línea de la fuerza, 0,25 · sen 53° = 0,25 · 4/5 = 0,2 m.",
+        "Momento = 80 · 0,2 = 16 N·m.",
+        "Otra forma: solo la parte de la fuerza perpendicular a la llave hace girar, 80 · sen 53° = 64 N, y 64 · 0,25 = 16 N·m. La parte a lo largo de la llave, 80 · cos 53° = 48 N, tiene su línea pasando por la tuerca y no gira nada.",
+        "Perpendicular, el brazo es la llave entera: 80 · 0,25 = 20 N·m. Por eso conviene jalar en ángulo recto."
+      ],
+      "verificar": [
+        { "fn": "momentoFuerza", "args": [{ "F": 80, "d": 0.25, "angulo": 53 }], "espera": { "tau": 16, "brazo": 0.2, "Fperp": 64, "Fpar": 48 } },
+        { "fn": "momentoFuerza", "args": [{ "F": 80, "d": 0.25, "angulo": 90 }], "espera": { "tau": 20 } }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Un macetero de 12 kg cuelga de un nudo, y del nudo salen dos cuerdas hacia el techo. La de la izquierda forma 37° con el techo y la de la derecha, 53°. ¿Cuánto vale la tensión de cada cuerda?",
+      "respuesta": "La de 37° tiene 72 N y la de 53°, 96 N.",
+      "pasos": [
+        "Sobre el nudo actúan tres fuerzas: las dos tensiones y la cuerda del macetero, que jala hacia abajo con el peso, 120 N.",
+        "En horizontal: tensión izquierda · cos 37° = tensión derecha · cos 53°, es decir, 4/5 de la izquierda = 3/5 de la derecha.",
+        "En vertical: tensión izquierda · 3/5 + tensión derecha · 4/5 = 120.",
+        "De la primera, la derecha es 4/3 de la izquierda. En la segunda: izquierda · (3/5 + 16/15) = 120, así que la izquierda vale 72 N y la derecha, 96 N.",
+        "Las cuerdas forman 90° entre sí: las tres fuerzas cierran un triángulo 3-4-5 de 72, 96 y 120. La más empinada (53°) es la más tensa. Y suman 168 N, más que el peso: se suman como vectores, no como números."
+      ],
+      "verificar": [
+        { "fn": "nudo", "args": [{ "m": 12, "a1": 37, "a2": 53 }], "espera": { "T1": 72, "T2": 96, "suma": 168 } }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "avanzado",
+      "enunciado": "Un letrero de 8 kg cuelga de un nudo sostenido por dos cuerdas iguales que forman 30° con el techo cada una. ¿Cuánto vale la tensión de cada cuerda? ¿Qué pasa si las cuerdas se tienden casi horizontales?",
+      "respuesta": "80 N cada una, tanto como el peso entero del letrero. Si se acercan a la horizontal, la tensión crece sin límite.",
+      "pasos": [
+        "Por simetría, las dos tensiones son iguales.",
+        "En vertical: 2 · tensión · sen 30° = 80, es decir, 2 · tensión · 1/2 = 80, y la tensión vale 80 N.",
+        "Cada cuerda soporta tanto como el peso entero, no la mitad: la mitad solo valdría si las cuerdas fueran verticales.",
+        "Si el ángulo con el techo se achica, sen del ángulo se acerca a cero y la tensión, 80 / (2 · sen del ángulo), crece sin límite. Por eso un cable bien tendido en horizontal se revienta con poco peso."
+      ],
+      "verificar": [
+        { "fn": "nudo", "args": [{ "m": 8, "a1": 30, "a2": 30 }], "espera": { "T1": 80, "T2": 80 } },
+        { "fn": "nudo", "args": [{ "m": 8, "a1": 16, "a2": 16 }], "espera": { "T1": 142.85714285714286 } }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "básico",
+      "enunciado": "Tres esferas pequeñas están fijas en una lámina ligera: una de 1 kg en (0; 0), una de 2 kg en (3 m; 0) y una de 3 kg en (0; 4 m). ¿Dónde está el centro de gravedad del conjunto?",
+      "respuesta": "En (1 m; 2 m).",
+      "pasos": [
+        "La masa total es 1 + 2 + 3 = 6 kg.",
+        "x = (1 · 0 + 2 · 3 + 3 · 0) / 6 = 6/6 = 1 m.",
+        "y = (1 · 0 + 2 · 0 + 3 · 4) / 6 = 12/6 = 2 m.",
+        "Cada posición pesa según su masa: el promedio simple de las posiciones, (1 m; 1,33 m), estaría mal porque trata igual a la esfera de 1 kg y a la de 3 kg."
+      ],
+      "verificar": [
+        { "fn": "centroGravedad", "args": [[{ "m": 1, "x": 0, "y": 0 }, { "m": 2, "x": 3, "y": 0 }, { "m": 3, "x": 0, "y": 4 }]], "espera": { "x": 1, "y": 2, "M": 6, "errores.promedioSimple.x": 1, "errores.promedioSimple.y": 1.3333333333333333 } }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "De una plancha cuadrada y homogénea de 6 cm de lado, con una esquina en el origen y los lados sobre los ejes, se recorta un cuadrado de 2 cm de lado en la esquina opuesta (de x = 4 a 6 cm y de y = 4 a 6 cm). ¿Dónde queda el centro de gravedad de la plancha recortada?",
+      "respuesta": "En (2,75 cm; 2,75 cm).",
+      "pasos": [
+        "Como la plancha es homogénea, el peso de cada pedazo va con su área. La plancha entera: 36 cm², con centro en (3; 3). El recorte: 4 cm², con centro en (5; 5).",
+        "El hueco se resta: área que queda, 36 − 4 = 32 cm².",
+        "x = (36 · 3 − 4 · 5) / 32 = (108 − 20) / 32 = 2,75 cm. Por simetría, y también vale 2,75 cm.",
+        "El centro se aleja del hueco, hacia donde quedó más material. Si sumaras el hueco en lugar de restarlo, te daría (3,2; 3,2): del lado equivocado de (3; 3)."
+      ],
+      "verificar": [
+        { "fn": "figuraCompuesta", "args": [[{ "tipo": "rect", "x": 0, "y": 0, "ancho": 6, "alto": 6 }, { "tipo": "rect", "x": 4, "y": 4, "ancho": 2, "alto": 2, "hueco": true }]], "espera": { "area": 32, "x": 2.75, "y": 2.75, "errores.huecoSumado.x": 3.2 } }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "intermedio",
+      "enunciado": "Un ropero de 50 kg está sobre un piso con coeficiente de rozamiento estático 0,4. Lo empujas horizontalmente con 150 N y no se mueve. ¿Cuánto vale el rozamiento? ¿Con qué fuerza mínima empezaría a moverse?",
+      "respuesta": "El rozamiento vale 150 N. Empieza a moverse con algo más de 200 N.",
+      "pasos": [
+        "En vertical: la normal del piso equilibra el peso, 500 N.",
+        "El máximo que puede dar el rozamiento estático es 0,4 · 500 = 200 N.",
+        "Como el ropero no se mueve, las fuerzas horizontales se cancelan: el rozamiento vale justo 150 N, contra tu empuje. No vale 200 N: ese es su tope, no lo que da siempre.",
+        "Si empujas con 200 N, el rozamiento llega a su tope; con un poco más, el ropero arranca."
+      ],
+      "verificar": [
+        { "fn": "planoRoce", "args": [{ "m": 50, "mus": 0.4, "F": 150 }], "espera": { "N": 500, "fsMax": 200, "roce": 150, "quieto": true, "Fmax": 200 } }
+      ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Una barra homogénea de 3 m y 20 kg está articulada a una pared por su extremo A y se mantiene horizontal con un cable atado al extremo B, que forma 53° con la barra. ¿Cuánto vale la tensión del cable?",
+      "respuesta": "125 N.",
+      "pasos": [
+        "Toma momentos respecto a la articulación A: así la fuerza de la pared, que no conoces, no gira nada.",
+        "El peso, 200 N, actúa en el centro, a 1,5 m de A: su momento es 200 · 1,5 = 300 N·m, en sentido horario.",
+        "La tensión está aplicada a 3 m de A, pero forma 53° con la barra: su brazo es 3 · sen 53° = 2,4 m, y su momento es tensión · 2,4, en sentido antihorario.",
+        "Para que no gire: tensión · 2,4 = 300, así que la tensión vale 125 N.",
+        "Comprueba: la parte vertical de la tensión, 125 · 4/5 = 100 N, sostiene la mitad del peso; la pared sostiene la otra mitad y además empuja hacia afuera con 125 · 3/5 = 75 N."
+      ],
+      "verificar": [
+        { "fn": "barra", "args": [{ "L": 3, "m": 20, "apoyos": [{ "x": 0 }], "cargas": [{ "x": 3, "F": "?" }] }], "espera": { "incognita": -100, "R": 100 } },
+        { "fn": "momentoFuerza", "args": [{ "F": 125, "d": 3, "angulo": 53 }], "espera": { "tau": 300, "brazo": 2.4, "Fperp": 100, "Fpar": 75 } }
+      ]
+    }
+  ]
+}
