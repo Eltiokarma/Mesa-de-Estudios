@@ -167,6 +167,8 @@ Cinco conversaciones aparte trabajan solas, cada una en su rama y sin tocar cat�
 | Rutina de razonamiento verbal (diaria, 4:41 p. m.) | `rutina/verbal` | Correcciones de los textos, textos de entrada y salida (t000a, t000b), más textos hasta 30, guía para profesores |
 | Paralelo: álgebra y trigonometría | `rutina/matematica-a` | Exponenciales y logaritmos, identidades y polinomios (hechas); funciones trigonométricas inversas, transformaciones, complejos, matrices, binomio, reales, programación lineal y cónicas |
 | Paralelo: geometría | `rutina/matematica-b` | Sólidos, geometría analítica, interés, relojes y calendarios (hechas); congruencia, simetría, geometría del espacio, razonamiento con figuras |
+| Paralelo: razonamiento verbal B (7 nov) | `rutina/verbal-b` | Tipología textual, resumen y síntesis, textos discontinuos, texto y contexto, textos filosóficos y científicos, lectura en inglés |
+| Paralelo: matemática C (7 nov) | `rutina/matematica-c` | Coordenadas polares; pares de reserva del banco para álgebra, geometría y trigonometría |
 | Rutina de razonamiento matemático (7 nov) | `rutina/razonamiento-matematico` | Máximos y mínimos, tablas y suficiencia, cortes y pesadas, trazos y rutas, arreglos y transformaciones, traslados y frecuencia |
 | Rutina de aritmética (7 nov) | `rutina/aritmetica` | Numeración, cuatro operaciones, mezclas, conjuntos y lógica, razonamiento numérico |
 | Rutina de química B (7 nov) | `rutina/quimica-b` | Informe de materia, nomenclatura y orgánica; materia y energía, nomenclatura inorgánica, hidrocarburos, funciones orgánicas |
