@@ -463,3 +463,49 @@ Se trabajó en paralelo, con hasta 3 subagentes a la vez. Las unidades de biomol
    
    Son los mismos de líquidos y sólidos, con otro significado, y H y O vienen de la paleta común. Ojo: el O queda cerca de `--warn` y el H del verde de `--ok`; los dos siempre van con texto.
 3. Una línea en `docs/pendientes.md` y otra en `CLAUDE.md`.
+
+### rendimiento-pureza (terminada)
+
+**Qué se hizo.** `plantillas/rendimiento-pureza/` (unidad `quimica.estequiometria`). Es la escena que faltaba según `docs/pendientes.md`; el informe es `estequiometria-ideas-erroneas.md`. En la sección «Rendimiento y reactivos impuros» todo es hipótesis.
+- **Motor (`window.MotorRendimiento`):**
+  - pureza;
+  - rendimiento teórico, real, porcentual y en cadena;
+  - problema inverso;
+  - balance de masa en recipiente cerrado (lo que no se formó queda como reactivo sin reaccionar);
+  - combustión incompleta;
+  - volumen en condiciones normales;
+  - equivalentes con θ declarado y la ley de equivalentes;
+  - errores típicos: muestra como pura, olvidar el rendimiento, sumar porcentajes, dividir por η.
+- **Números:** 29 casos, 10 problemas de papel y 53 pruebas.
+- **Escena:**
+  - montones de impureza, de puro y de producto, más la caja punteada del teórico;
+  - 4 predicciones: el mineral de Fe₂O₃ (100,8 g), el rendimiento porcentual, el recipiente cerrado y el problema inverso;
+  - 4 experimentos: rendimiento en cadena con 80 % y 60 %, mejorar la pureza contra mejorar el horno, gas en condiciones normales y equivalentes.
+
+**Subagentes.**
+- **Verificador:** recalculó por factores de conversión y por moles. Coinciden 142 de 145 campos; las 3 diferencias eran de interpretación de la cabecera, que ya está aclarada.
+- **Revisor:** sin hallazgos graves. Los medios, ya corregidos:
+  - la tapa del explorador para el experimento 2 era débil;
+  - el experimento 1 ya estaba resuelto en el paso a paso, así que se cambiaron sus números;
+  - el dibujo del gas contradecía el enunciado;
+  - el reactivo puro no bajaba al reaccionar;
+  - el celular en el paso 7;
+  - la definición de pureza;
+  - el par de colores teo y vol: vol pasó a vino #730030 / magenta #ff47c8;
+  - la caja punteada «guardaba» masa.
+  
+  Además, 10 bajos. Se volvió a probar con Playwright en las 8 combinaciones.
+
+**Pedidos para la integración.**
+1. En `catalogo/cursos/quimica.json`, sumar `"rendimiento-pureza"` a las plantillas de `quimica.estequiometria`. Después, `npm run catalogo` y rebalancear el banco si hace falta.
+2. En `docs/diseno.md`, los colores de rendimiento y pureza:
+   - impureza: café #7a4a1e (oscuro #d9a877);
+   - reactivo puro: turquesa #0d6f6b (#4fd1c5);
+   - teórico: violeta #6a3fc0 (#b49cff), en la caja punteada;
+   - real: verde #36700c (#8fd14f);
+   - volumen en condiciones normales: vino #730030 (#ff47c8);
+   - equivalentes: naranja #a04f00 (#ffa64d);
+   - Fe y O, de la paleta común, solo en la lupa de la hematita.
+   
+   El ΔE00 mínimo entre los que salen juntos es 20,1. Ojo: el puro y el real quedan cerca del verde de `--ok`, que siempre va con texto.
+3. Una línea en `docs/pendientes.md` y otra en `CLAUDE.md`.

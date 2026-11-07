@@ -1,0 +1,553 @@
+{
+  "plantilla": "rendimiento-pureza",
+  "unidades": "Masa en g; cantidad en mol; volumen de gas en L en condiciones normales (22,4 L/mol); pureza y rendimiento en % (de 0 a 100); masa equivalente en g/eq; fracción de combustionIncompleta y f de reparto de 0 a 1.",
+  "constantes": "Masas atómicas de academia: H 1, C 12, N 14, O 16, Na 23, Mg 24, Al 27, P 31, S 32, Cl 35,5, K 39, Ca 40, Fe 56, Cu 63,5, Zn 65. Volumen molar en CN: 22,4 L/mol. θ declarado: HCl 1, HNO₃ 1, H₂SO₄ 2, H₃PO₄ 3, NaOH 1, KOH 1, Ca(OH)₂ 2, Al(OH)₃ 3, NaCl 1, CaCl₂ 2, CaCO₃ 2, Al₂(SO₄)₃ 6.",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.muestra-pura es lo que da el error típico 'muestra-pura'; quedan.CaCO3, la masa de CaCO₃ sin reaccionar). El campo vacío '' es el resultado entero (masaMolar y masaAMasa devuelven un número). 'tambien' repite la función con otros args. Textos y booleanos se comparan exactos; los números, con la tolerancia relativa.",
+  "verificacion": "Verificó un subagente independiente (7 nov 2026), sin leer el código del motor ni casos.json. Recalculó los 29 casos (145 campos) en Python, con fracciones exactas y masas de academia, por factores de conversión encadenados y por moles, cruzando los dos caminos. Coinciden 142 campos. Las 3 diferencias son de interpretación de la cabecera: olvida-coeficiente aplica η, masa-se-conserva no lo aplica y teoricoVisible es una fracción. casos.json es coherente con su definición.",
+  "tolerancia": 1e-09,
+  "casos": [
+    {
+      "nombre": "Masas molares de academia: Fe₂O₃ 160, CaCO₃ 100, KClO₃ 122,5, H₂SO₄ 98, Ca(OH)₂ 74 g/mol",
+      "fn": "masaMolar",
+      "args": [
+        "Fe2O3"
+      ],
+      "espera": {
+        "": 160
+      },
+      "tambien": [
+        {
+          "args": [
+            "CaCO3"
+          ],
+          "espera": {
+            "": 100
+          }
+        },
+        {
+          "args": [
+            "KClO3"
+          ],
+          "espera": {
+            "": 122.5
+          }
+        },
+        {
+          "args": [
+            "H2SO4"
+          ],
+          "espera": {
+            "": 98
+          }
+        },
+        {
+          "args": [
+            "Ca(OH)2"
+          ],
+          "espera": {
+            "": 74
+          }
+        },
+        {
+          "args": [
+            "CaO"
+          ],
+          "espera": {
+            "": 56
+          }
+        },
+        {
+          "args": [
+            "Fe"
+          ],
+          "espera": {
+            "": 56
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "Las cuatro ecuaciones del motor están balanceadas: hematita con CO",
+      "fn": "balance",
+      "args": [
+        "hierro"
+      ],
+      "espera": {
+        "balanceada": true,
+        "izquierda.Fe": 2,
+        "izquierda.O": 6,
+        "derecha.C": 3
+      }
+    },
+    {
+      "nombre": "Clorato: 2KClO₃ → 2KCl + 3O₂, 6 O a cada lado",
+      "fn": "balance",
+      "args": [
+        "clorato"
+      ],
+      "espera": {
+        "balanceada": true,
+        "izquierda.O": 6,
+        "derecha.O": 6,
+        "derecha.K": 2
+      }
+    },
+    {
+      "nombre": "Masa a masa: 160 g de Fe₂O₃ dan 112 g de Fe (1 mol → 2 mol)",
+      "fn": "masaAMasa",
+      "args": [
+        "hierro",
+        160,
+        "Fe2O3",
+        "Fe"
+      ],
+      "espera": {
+        "": 112
+      }
+    },
+    {
+      "nombre": "Masa a masa: 50 g de CaCO₃ dan 28 g de CaO y 22 g de CO₂",
+      "fn": "masaAMasa",
+      "args": [
+        "caliza",
+        50,
+        "CaCO3",
+        "CaO"
+      ],
+      "espera": {
+        "": 28
+      }
+    },
+    {
+      "nombre": "Pureza: 80 g de caliza al 75 % tienen 60 g de CaCO₃ y 20 g de impureza",
+      "fn": "pureza",
+      "args": [
+        80,
+        75
+      ],
+      "espera": {
+        "pura": 60,
+        "impureza": 20
+      }
+    },
+    {
+      "nombre": "Informe, pureza y rendimiento (predicción del paso 2): 200 g de mineral al 80 % de Fe₂O₃, rendimiento 90 % → 160 g puros (1 mol), teórico 112 g de Fe, real 100,8 g. Errores: como si fuera puro 126 (200 g de Fe₂O₃ dan 140 g y el 90 % es 126), sin rendimiento 112, 80 + 90 − 100 = 70 % da 98",
+      "fn": "producir",
+      "args": [
+        {
+          "reaccion": "hierro",
+          "muestra": 200,
+          "pureza": 80,
+          "rendimiento": 90
+        }
+      ],
+      "espera": {
+        "pura": 160,
+        "impureza": 40,
+        "n": 1,
+        "teorico": 112,
+        "real": 100.8,
+        "noFormado": 11.2,
+        "nProducto": 1.8,
+        "errores.muestra-pura": 126,
+        "errores.olvida-rendimiento": 112,
+        "errores.suma-porcentajes": 98,
+        "errores.divide-rendimiento": 124.44444444444444,
+        "errores.rendimiento-dos-veces": 90.72,
+        "errores.olvida-coeficiente": 50.4,
+        "errores.masa-se-conserva": 160
+      }
+    },
+    {
+      "nombre": "Informe, pureza: 80 g de caliza al 75 % → 60 g de CaCO₃ puro, 26,4 g de CO₂ y 13,44 L en CN (como si fuera puro: 35,2 g; 22,4 L si se toma 1 mol por el coeficiente)",
+      "fn": "producir",
+      "args": [
+        {
+          "reaccion": "caliza",
+          "muestra": 80,
+          "pureza": 75,
+          "producto": "CO2"
+        }
+      ],
+      "espera": {
+        "pura": 60,
+        "teorico": 26.4,
+        "real": 26.4,
+        "V": 13.44,
+        "errores.muestra-pura": 35.2,
+        "errores.masa-como-volumen": 26.4,
+        "errores.coeficiente-como-moles": 22.4
+      }
+    },
+    {
+      "nombre": "Zinc impuro: 100 g al 65 % con HCl en exceso y rendimiento 80 % → 2 g de H₂ teóricos, 1,6 g reales, 17,92 L en CN",
+      "fn": "producir",
+      "args": [
+        {
+          "reaccion": "zinc",
+          "muestra": 100,
+          "pureza": 65,
+          "rendimiento": 80
+        }
+      ],
+      "espera": {
+        "pura": 65,
+        "teorico": 2,
+        "real": 1.6,
+        "V": 17.92,
+        "Vteorico": 22.4,
+        "errores.suma-porcentajes": 1.3846153846153846
+      }
+    },
+    {
+      "nombre": "Clorato: 245 g de muestra al 50 % → 122,5 g de KClO₃ (1 mol), 48 g de O₂, 33,6 L en CN",
+      "fn": "producir",
+      "args": [
+        {
+          "reaccion": "clorato",
+          "muestra": 245,
+          "pureza": 50
+        }
+      ],
+      "espera": {
+        "pura": 122.5,
+        "teorico": 48,
+        "real": 48,
+        "V": 33.6,
+        "errores.coeficiente-como-moles": 67.2
+      }
+    },
+    {
+      "nombre": "Informe, rendimiento porcentual (paso 4): 50 g de CaCO₃ dan 21 g de CaO; teórico 28 g, rendimiento 75 %. Errores: 21/50 = 42 %, lo que falta 25 %, al revés 133,3 %, contra el teórico del CO₂ (22 g) 95,45 %",
+      "fn": "rendimientoPorcentual",
+      "args": [
+        {
+          "reaccion": "caliza",
+          "masa": 50,
+          "real": 21
+        }
+      ],
+      "espera": {
+        "teorico": 28,
+        "porcentaje": 75,
+        "noFormado": 7,
+        "errores.sobre-reactivo": 42,
+        "errores.lo-que-falta": 25,
+        "errores.invierte": 133.33333333333334,
+        "errores.otro-producto": 95.45454545454545
+      }
+    },
+    {
+      "nombre": "Rendimiento con reactivo impuro: 49 g de KClO₃ puro dan 19,2 g de O₂ teóricos; con 14,4 g reales, 75 %",
+      "fn": "rendimientoPorcentual",
+      "args": [
+        {
+          "reaccion": "clorato",
+          "masa": 49,
+          "real": 14.4
+        }
+      ],
+      "espera": {
+        "teorico": 19.2,
+        "porcentaje": 75
+      }
+    },
+    {
+      "nombre": "Problema inverso (paso 6): 42 g de CaO reales con 75 % de rendimiento y caliza al 80 % → teórico 56 g, 100 g de CaCO₃, 125 g de caliza. Errores: sin pureza 100, multiplicar por la pureza 80, multiplicar por el rendimiento 70,3125, multiplicar los dos 45, sin rendimiento 93,75",
+      "fn": "muestraNecesaria",
+      "args": [
+        {
+          "reaccion": "caliza",
+          "real": 42,
+          "pureza": 80,
+          "rendimiento": 75
+        }
+      ],
+      "espera": {
+        "teorico": 56,
+        "pura": 100,
+        "muestra": 125,
+        "impureza": 25,
+        "errores.olvida-pureza": 100,
+        "errores.multiplica-pureza": 80,
+        "errores.multiplica-rendimiento": 70.3125,
+        "errores.multiplica-ambos": 45,
+        "errores.olvida-rendimiento": 93.75
+      }
+    },
+    {
+      "nombre": "Problema inverso con hematita: 78,4 g de Fe reales con 70 % y mineral al 80 % → 112 g teóricos, 160 g de Fe₂O₃, 200 g de mineral",
+      "fn": "muestraNecesaria",
+      "args": [
+        {
+          "reaccion": "hierro",
+          "real": 78.4,
+          "pureza": 80,
+          "rendimiento": 70
+        }
+      ],
+      "espera": {
+        "teorico": 112,
+        "pura": 160,
+        "muestra": 200
+      }
+    },
+    {
+      "nombre": "Rendimiento en cadena (experimento 1): 90 % y 80 % dan 72 %, no 70 % (sumar y restar 100), ni 85 % (promedio), ni 80 % (el menor)",
+      "fn": "rendimientoCadena",
+      "args": [
+        [
+          90,
+          80
+        ]
+      ],
+      "espera": {
+        "total": 72,
+        "acumulado": [
+          90,
+          72
+        ],
+        "errores.suma-porcentajes": 70,
+        "errores.promedio": 85,
+        "errores.el-menor": 80
+      }
+    },
+    {
+      "nombre": "Cadena de tres pasos: 90 %, 80 % y 50 % dan 36 %",
+      "fn": "rendimientoCadena",
+      "args": [
+        [
+          90,
+          80,
+          50
+        ]
+      ],
+      "espera": {
+        "total": 36,
+        "acumulado": [
+          90,
+          72,
+          36
+        ],
+        "errores.suma-porcentajes": 20
+      }
+    },
+    {
+      "nombre": "Pureza contra rendimiento (experimento 2): con 200 g al 80 % y 90 %, la pureza al 100 % da 126 g y el rendimiento al 100 %, 112 g: sube más la pureza (× 1,25 contra × 1,11)",
+      "fn": "compararMejoras",
+      "args": [
+        {
+          "reaccion": "hierro",
+          "muestra": 200,
+          "pureza": 80,
+          "rendimiento": 90
+        }
+      ],
+      "espera": {
+        "real": 100.8,
+        "conPureza": 126,
+        "conRendimiento": 112,
+        "mejor": "pureza",
+        "factorPureza": 1.25,
+        "factorRendimiento": 1.1111111111111112
+      }
+    },
+    {
+      "nombre": "Pureza y rendimiento iguales: con 70 % y 70 % las dos mejoras dan lo mismo",
+      "fn": "compararMejoras",
+      "args": [
+        {
+          "reaccion": "caliza",
+          "muestra": 100,
+          "pureza": 70,
+          "rendimiento": 70
+        }
+      ],
+      "espera": {
+        "mejor": "igual",
+        "conPureza": 39.2,
+        "conRendimiento": 39.2
+      }
+    },
+    {
+      "nombre": "La masa no desaparece (paso 5): 50 g de CaCO₃ en recipiente cerrado con 75 % → 21 g de CaO, 16,5 g de CO₂ y 12,5 g de CaCO₃ sin reaccionar: 50 g. Errores: se pierde (21 + 22 = 43), sale como gas (21 + 29), sobra tanto como falta (7 g: 44,5)",
+      "fn": "balanceMasa",
+      "args": [
+        {
+          "reaccion": "caliza",
+          "masa": 50,
+          "rendimiento": 75
+        }
+      ],
+      "espera": {
+        "inicial": 50,
+        "reacciona": 37.5,
+        "quedan.CaCO3": 12.5,
+        "formados.CaO": 21,
+        "formados.CO2": 16.5,
+        "total": 50,
+        "falta": 7,
+        "errores.se-pierde.total": 43,
+        "errores.se-pierde.formados.CO2": 22,
+        "errores.sale-como-gas.formados.CO2": 29,
+        "errores.sale-como-gas.total": 50,
+        "errores.falta-igual-sobra.quedan.CaCO3": 7,
+        "errores.falta-igual-sobra.total": 44.5
+      }
+    },
+    {
+      "nombre": "Producto secundario: 12 g de C con 75 % a CO₂ → 33 g de CO₂ y 7 g de CO con 28 g de O₂; 12 + 28 = 33 + 7",
+      "fn": "combustionIncompleta",
+      "args": [
+        12,
+        0.75
+      ],
+      "espera": {
+        "CO2": 33,
+        "CO": 7,
+        "O2": 28,
+        "teoricoCO2": 44,
+        "total": 40,
+        "reactivos": 40
+      }
+    },
+    {
+      "nombre": "Informe, equivalentes: H₂SO₄ con θ = 2 tiene 49 g por equivalente (con θ = 1 serían 98)",
+      "fn": "masaEquivalente",
+      "args": [
+        "H2SO4"
+      ],
+      "espera": {
+        "M": 98,
+        "theta": 2,
+        "Meq": 49,
+        "errores.theta-1": 98,
+        "errores.theta-multiplica": 196
+      }
+    },
+    {
+      "nombre": "Informe, equivalentes: Ca(OH)₂ con θ = 2 tiene 37 g por equivalente",
+      "fn": "masaEquivalente",
+      "args": [
+        "Ca(OH)2"
+      ],
+      "espera": {
+        "M": 74,
+        "theta": 2,
+        "Meq": 37
+      }
+    },
+    {
+      "nombre": "Sales: Al₂(SO₄)₃ con θ = 6 (2 Al³⁺) tiene 57 g por equivalente",
+      "fn": "masaEquivalente",
+      "args": [
+        "Al2(SO4)3"
+      ],
+      "espera": {
+        "M": 342,
+        "theta": 6,
+        "Meq": 57
+      }
+    },
+    {
+      "nombre": "H₃PO₄ con θ = 3: 98/3 g por equivalente; 49 g son 1,5 eq",
+      "fn": "equivalentes",
+      "args": [
+        49,
+        "H3PO4"
+      ],
+      "espera": {
+        "eq": 1.5,
+        "Meq": 32.666666666666664,
+        "errores.theta-1": 0.5
+      }
+    },
+    {
+      "nombre": "Informe, ley de equivalentes: 49 g de H₂SO₄ (1 eq) neutralizan 37 g de Ca(OH)₂",
+      "fn": "neutralizar",
+      "args": [
+        "H2SO4",
+        49,
+        "Ca(OH)2"
+      ],
+      "espera": {
+        "eq": 1,
+        "masaBase": 37,
+        "molesAcido": 0.5,
+        "molesBase": 0.5
+      }
+    },
+    {
+      "nombre": "Neutralización (experimento 4): 98 g de H₂SO₄ son 2 eq y piden 80 g de NaOH. Errores: θ = 1 para todo 40 g, masas iguales 98 g, Meq = M·θ 20 g",
+      "fn": "neutralizar",
+      "args": [
+        "H2SO4",
+        98,
+        "NaOH"
+      ],
+      "espera": {
+        "eq": 2,
+        "masaBase": 80,
+        "MeqAcido": 49,
+        "MeqBase": 40,
+        "errores.theta-1": 40,
+        "errores.masas-iguales": 98,
+        "errores.theta-multiplica": 20
+      }
+    },
+    {
+      "nombre": "HCl con Ca(OH)₂: 73 g de HCl (2 eq) neutralizan 74 g de Ca(OH)₂",
+      "fn": "neutralizar",
+      "args": [
+        "HCl",
+        73,
+        "Ca(OH)2"
+      ],
+      "espera": {
+        "eq": 2,
+        "masaBase": 74,
+        "errores.theta-1": 148
+      }
+    },
+    {
+      "nombre": "Animación: a f = 0,35 la impureza ya se separó y la reacción no empezó; a f = 1 se formó todo el producto real",
+      "fn": "reparto",
+      "args": [
+        {
+          "impureza": 40,
+          "pura": 160,
+          "teorico": 112,
+          "real": 100.8
+        },
+        0.35
+      ],
+      "espera": {
+        "separa": 1,
+        "avance": 0,
+        "puroQueda": 160,
+        "formado": 0
+      }
+    },
+    {
+      "nombre": "Animación al final, con 75 % del puro que reacciona: quedan 12,5 g de 50 y se formaron los 21 g",
+      "fn": "reparto",
+      "args": [
+        {
+          "impureza": 0,
+          "pura": 50,
+          "teorico": 28,
+          "real": 21,
+          "reacciona": 0.75
+        },
+        1
+      ],
+      "espera": {
+        "separa": 1,
+        "avance": 1,
+        "puroQueda": 12.5,
+        "formado": 21,
+        "teoricoVisible": 1
+      }
+    }
+  ]
+}

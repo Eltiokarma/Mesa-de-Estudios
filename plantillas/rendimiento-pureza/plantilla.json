@@ -1,0 +1,15 @@
+{
+  "id": "rendimiento-pureza",
+  "titulo": "El montón y la caja punteada: pureza, rendimiento y equivalentes",
+  "formato": "escena",
+  "unidades": [
+    "quimica.estequiometria"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}

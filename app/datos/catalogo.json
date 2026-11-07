@@ -851,7 +851,8 @@
      "grado": 4,
      "plantillas": [
       "estequiometria-limitante",
-      "limitante-particulas"
+      "limitante-particulas",
+      "rendimiento-pureza"
      ]
     },
     {
@@ -5183,6 +5184,23 @@
     "/plantillas/relojes-calendarios/index.html",
     "/plantillas/relojes-calendarios/motor.js",
     "/plantillas/relojes-calendarios/papel.json"
+   ]
+  },
+  "rendimiento-pureza": {
+   "id": "rendimiento-pureza",
+   "titulo": "El montón y la caja punteada: pureza, rendimiento y equivalentes",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.estequiometria"
+   ],
+   "url": "/plantillas/rendimiento-pureza/index.html",
+   "papel": "/plantillas/rendimiento-pureza/papel.json",
+   "archivos": [
+    "/plantillas/rendimiento-pureza/index.html",
+    "/plantillas/rendimiento-pureza/motor.js",
+    "/plantillas/rendimiento-pureza/papel.json"
    ]
   },
   "segmentos-angulos": {

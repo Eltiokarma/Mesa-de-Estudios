@@ -242,7 +242,8 @@
       "grado": 4,
       "plantillas": [
         "estequiometria-limitante",
-        "limitante-particulas"
+        "limitante-particulas",
+        "rendimiento-pureza"
       ],
       "investigacion": "docs/investigacion/estequiometria-ideas-erroneas.md"
     },

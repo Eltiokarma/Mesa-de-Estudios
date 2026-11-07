@@ -65,6 +65,11 @@ const ESCENAS = {
       [['H', 'O'], ['--c-T']],                                 // el vapor que se enfría
     ] },
   // Viene de la rutina de química B; la prueba la cuida en cuanto la escena llegue a esta rama.
+  'rendimiento-pureza': {
+    elementos: ['O', 'Fe'],   // solo en la lupa de la hematita; las sustancias van con los colores de sus masas
+    vistas: [
+      [['Fe', 'O'], ['--c-imp', '--c-pur', '--c-teo', '--c-real']],   // la hematita (pasos 1 a 3, experimento 2, explorador)
+    ] },
   'biomoleculas': {
     elementos: ['H', 'O'],   // las piezas son bloques con nombre; solo el H y el OH que salen en cada unión llevan color
     vistas: [
