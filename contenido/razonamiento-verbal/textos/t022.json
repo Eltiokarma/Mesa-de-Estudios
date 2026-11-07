@@ -1,0 +1,215 @@
+{
+  "id": "t022",
+  "version": 1,
+  "titulo": "Medir dos veces",
+  "tema": "Relato · el error que enseña",
+  "grado": 3,
+  "dificultad": 1,
+  "tipo_texto": "narrativo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "Lucía y su hermano Joel tenían que entregar el lunes una maqueta de su casa para el curso de arte."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "Joel, que quería terminar rápido, midió la pared más larga del cuarto con su regla, cortó todas las tiras de cartón del mismo tamaño y empezó a pegarlas."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "Lucía le dijo que esperara, que el cuarto no era cuadrado, pero él siguió."
+      }
+    ],
+    [
+      {
+        "id": "o4",
+        "rol": "detalle",
+        "t": "Cuando quiso cerrar la última esquina, dos paredes se salían del piso y no había forma de unirlas."
+      },
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "Joel tiró la regla sobre la mesa y dijo que la maqueta estaba mal hecha desde el principio."
+      },
+      {
+        "id": "o6",
+        "rol": "detalle",
+        "t": "Lucía no se burló; despegó las paredes con cuidado y midió cada una por separado."
+      },
+      {
+        "id": "o7",
+        "rol": "detalle",
+        "t": "Eran tres tiras que había que recortar un poco, y una que había que hacer de nuevo."
+      }
+    ],
+    [
+      {
+        "id": "o8",
+        "rol": "detalle",
+        "t": "El domingo en la noche, la maqueta estaba terminada."
+      },
+      {
+        "id": "o9",
+        "rol": "principal",
+        "t": "Joel pensó que el error no había estado en la regla ni en el cartón, sino en el apuro de no medir dos veces."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que mejor resume lo que el relato quiere mostrar.",
+        "aceptadas": [
+          "o9"
+        ],
+        "ninguna": "RV3",
+        "codigos": {
+          "o1": "RV4"
+        },
+        "explicacion": "La oración 9 dice lo que el relato muestra: el error estuvo en el apuro de no medir dos veces.",
+        "explicaciones": {
+          "o1": "La primera oración presenta a los personajes y la tarea: es el comienzo.",
+          "o2": "Cuenta el error de Joel, pero no lo que se aprende de él.",
+          "o3": "Cuenta el aviso de Lucía; prepara el conflicto.",
+          "o4": "Cuenta el momento en que aparece el problema.",
+          "o5": "Cuenta cómo reaccionó Joel: es un detalle.",
+          "o6": "Cuenta lo que hizo Lucía; muestra la solución, pero no la dice.",
+          "o7": "Cuenta cuánto había que corregir: es un detalle.",
+          "o8": "Cuenta cómo terminó la tarea, no lo que se aprendió.",
+          "ninguna": "La oración 9 sí lo dice: el error estuvo en el apuro de no medir dos veces."
+        }
+      },
+      "enunciado": "¿Cuál es la idea central del relato?",
+      "alternativas": [
+        {
+          "t": "Trabajar con apuro, sin revisar, lleva a errores que después cuesta más corregir.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o9"
+          ],
+          "explicacion": "Es lo que entiende Joel al final (oración 9): el problema fue el apuro de no medir dos veces."
+        },
+        {
+          "t": "Joel midió la pared más larga y cortó todas las tiras de cartón del mismo tamaño.",
+          "codigo": "RV1",
+          "origen": "o2",
+          "explicacion": "Es un hecho del relato, el error de Joel, no lo que el relato quiere mostrar."
+        },
+        {
+          "t": "Los trabajos del colegio se hacen mejor en equipo.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general, y además el relato no trata de trabajar en equipo, sino de no apurarse."
+        },
+        {
+          "t": "Joel se enojó porque la maqueta no cerraba.",
+          "codigo": "RV3",
+          "origen": "o5",
+          "explicacion": "Cuenta una parte del relato, pero deja fuera lo esencial: lo que Joel entiende al final."
+        },
+        {
+          "t": "Los hermanos menores siempre se equivocan más que los mayores.",
+          "codigo": "RV11",
+          "explicacion": "El relato no dice quién es mayor, y \"siempre\" dice mucho más de lo que muestra una sola historia."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.inferencias",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
+        "sonda": "Lucía quería ayudar a su hermano a terminar la maqueta.",
+        "clase": "se-deduce",
+        "codigos": {
+          "lo-dice": "RV6",
+          "no-se-sabe": "RV34",
+          "lo-contradice": null
+        },
+        "explicacion": "El relato no lo dice con esas palabras, pero se deduce: Lucía no se burla y arregla las paredes con cuidado (oración 6).",
+        "explicaciones": {
+          "lo-dice": "El relato nunca dice \"quería ayudar\"; eso se saca de lo que Lucía hace.",
+          "no-se-sabe": "No hace falta que el relato lo diga: arreglar las paredes con cuidado, sin burlarse, muestra que quería ayudar.",
+          "lo-contradice": "Nada en el relato muestra lo contrario; Lucía ayuda desde el principio."
+        }
+      },
+      "enunciado": "Se infiere del relato que Lucía midió cada pared por separado porque",
+      "alternativas": [
+        {
+          "t": "sabía que las paredes del cuarto no eran todas del mismo largo.",
+          "correcta": true,
+          "evidencia": [
+            "o3",
+            "o6"
+          ],
+          "explicacion": "Ya lo había avisado (oración 3): el cuarto no era cuadrado, así que las paredes no podían medir lo mismo."
+        },
+        {
+          "t": "Joel tiró la regla sobre la mesa.",
+          "codigo": "RV6",
+          "origen": "o5",
+          "explicacion": "Eso lo dice el relato (oración 5), pero no explica por qué Lucía midió cada pared."
+        },
+        {
+          "t": "quería hacer la maqueta ella sola y quitársela a Joel.",
+          "codigo": "RV7",
+          "explicacion": "Nada en el relato apoya eso: Lucía ayuda sin burlarse, y la maqueta se termina entre los dos."
+        },
+        {
+          "t": "la regla de Joel estaba rota y medía mal.",
+          "codigo": "RV9",
+          "origen": "o9",
+          "explicacion": "Choca con el relato: la oración 9 dice que el error no estuvo en la regla."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.sentido-contextual",
+      "enunciado": "En la oración 9, la palabra APURO significa",
+      "alternativas": [
+        {
+          "t": "la prisa por terminar.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o9"
+          ],
+          "explicacion": "Joel \"quería terminar rápido\" (oración 2): el apuro es esa prisa."
+        },
+        {
+          "t": "una situación difícil o un aprieto.",
+          "codigo": "RV18",
+          "explicacion": "Es otro sentido común de \"apuro\" (\"estar en apuros\"), pero aquí se habla de la prisa de Joel."
+        },
+        {
+          "t": "el enojo.",
+          "codigo": "RV19",
+          "origen": "o5",
+          "explicacion": "Joel se enoja (oración 5), pero \"apuro\" no significa enojo: el error vino antes, de la prisa."
+        },
+        {
+          "t": "la regla y el cartón.",
+          "codigo": "RV5",
+          "origen": "o9",
+          "explicacion": "Repite palabras de la misma oración, pero el relato dice justo que el error no estuvo en la regla ni en el cartón."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-06",
+  "hechos": [],
+  "revision": null
+}

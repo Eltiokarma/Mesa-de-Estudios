@@ -26,7 +26,8 @@ const TIPOS_PREGUNTA = ['idea-principal', 'inferencia', 'compatibilidad', 'incom
   'intencion', 'sentido-contextual', 'referente', 'conector'];
 const CLASES = ['lo-dice', 'se-deduce', 'no-se-sabe', 'lo-contradice'];
 const PROPOSITOS = ['explicar', 'convencer', 'narrar'];
-const LETRA = /\b(la|alternativa|opción) [A-E]\b/i;
+// Sin \b al final: en JavaScript, \b toma las letras con tilde como separadores ("la década" daría falso positivo).
+const LETRA = /(^|[^\p{L}])(la|alternativa|opción) [A-E](?![\p{L}\p{N}])/iu;
 const ROL_CODIGO = { detalle: 'RV1', ejemplo: 'RV1', cita: 'RV1', general: 'RV2', apoyo: 'RV3', contraste: 'RV3' };
 
 const oraciones = t => t.parrafos.flat();

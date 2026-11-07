@@ -1,0 +1,246 @@
+{
+  "id": "t020",
+  "version": 1,
+  "titulo": "El óxido no espera",
+  "tema": "Ciencia de todos los días · la oxidación del hierro",
+  "grado": 3,
+  "dificultad": 1,
+  "tipo_texto": "expositivo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "Una reja de hierro que se deja al aire libre termina cubierta de una capa rojiza que se descascara: el óxido."
+      },
+      {
+        "id": "o2",
+        "rol": "principal",
+        "t": "Para que el hierro se oxide no basta con el aire: hacen falta a la vez el oxígeno y el agua."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "Por eso, un clavo guardado en un frasco seco puede pasar años sin cambiar, mientras que uno que se moja todos los días se oxida en pocas semanas."
+      }
+    ],
+    [
+      {
+        "id": "o4",
+        "rol": "detalle",
+        "t": "La sal acelera el proceso, porque el agua salada conduce mejor la corriente eléctrica que se forma en la superficie del metal."
+      },
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "En las ciudades junto al mar, donde el aire lleva humedad y gotitas de agua salada, los autos y las rejas se oxidan más rápido que en la sierra seca."
+      },
+      {
+        "id": "o6",
+        "rol": "detalle",
+        "t": "La capa de óxido tampoco protege al hierro que está debajo: se agrieta y deja pasar más agua."
+      }
+    ],
+    [
+      {
+        "id": "o7",
+        "rol": "apoyo",
+        "t": "De ahí salen las formas de protegerlo: pintarlo, cubrirlo con una capa de otro metal, como el zinc de las calaminas, o mantenerlo seco."
+      },
+      {
+        "id": "o8",
+        "rol": "principal",
+        "t": "Todas hacen lo mismo: impiden que el agua y el oxígeno lleguen juntos al hierro."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que mejor resume todo el texto.",
+        "aceptadas": [
+          "o2",
+          "o8"
+        ],
+        "ninguna": "RV3",
+        "codigos": {
+          "o1": "RV4"
+        },
+        "explicacion": "La oración 2 dice la causa (agua y oxígeno a la vez) y la 8 lo que tienen en común todas las formas de protegerlo.",
+        "explicaciones": {
+          "o1": "La primera oración presenta el óxido: es el punto de partida.",
+          "o3": "Es un ejemplo que muestra la idea de la oración 2.",
+          "o4": "Explica por qué la sal acelera el proceso: es un detalle.",
+          "o5": "Es un ejemplo de lo que hace la sal.",
+          "o6": "Explica por qué el óxido no protege: es un detalle.",
+          "o7": "Enumera formas de protección; la idea que las une está en la oración 8.",
+          "ninguna": "Las oraciones 2 y 8 sí lo dicen: hacen falta agua y oxígeno juntos, y protegerlo es impedir que lleguen juntos."
+        }
+      },
+      "enunciado": "¿Cuál es la idea principal del texto?",
+      "alternativas": [
+        {
+          "t": "El hierro se oxida cuando le llegan a la vez agua y oxígeno, y se protege impidiendo que eso ocurra.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o8"
+          ],
+          "explicacion": "Junta la causa (oración 2: hacen falta agua y oxígeno a la vez) con lo que tienen en común todas las protecciones (oración 8)."
+        },
+        {
+          "t": "En las ciudades junto al mar, los autos y las rejas se oxidan más rápido que en la sierra seca.",
+          "codigo": "RV1",
+          "origen": "o5",
+          "explicacion": "Es un ejemplo concreto, un detalle que apoya la explicación."
+        },
+        {
+          "t": "Los metales cambian con el paso del tiempo.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto habla del hierro y de por qué se oxida."
+        },
+        {
+          "t": "La sal acelera la oxidación del hierro.",
+          "codigo": "RV3",
+          "origen": "o4",
+          "explicacion": "Es una parte del texto, pero deja fuera la causa principal y cómo se protege el hierro."
+        },
+        {
+          "t": "El acero inoxidable no se oxida nunca.",
+          "codigo": "RV8",
+          "explicacion": "Es algo que se suele creer, pero el texto no habla del acero inoxidable."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "conector",
+      "unidad": "razonamiento-verbal.conectores",
+      "enunciado": "¿Qué conector podría ir al comienzo de la oración 6 (\"___, la capa de óxido tampoco protege…\") sin cambiar el sentido del texto?",
+      "alternativas": [
+        {
+          "t": "Además,",
+          "correcta": true,
+          "evidencia": [
+            "o5",
+            "o6"
+          ],
+          "explicacion": "La oración 6 suma otra razón por la que el hierro se deteriora: va en la misma dirección que las anteriores, como lo anuncia el \"tampoco\"."
+        },
+        {
+          "t": "Sin embargo,",
+          "codigo": "RV26",
+          "explicacion": "Marca una oposición que no existe: la oración 6 no contradice a la 5, agrega otro problema."
+        },
+        {
+          "t": "Por lo tanto,",
+          "codigo": "RV24",
+          "explicacion": "Lee como consecuencia lo que es una suma: que el aire de la costa sea salado no es la razón de que la capa de óxido se agriete."
+        },
+        {
+          "t": "Es decir,",
+          "codigo": "RV35",
+          "explicacion": "\"Es decir\" anuncia que se repite lo mismo, pero la oración 6 dice algo nuevo."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "compatibilidad",
+      "unidad": "razonamiento-verbal.compatibilidad",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
+        "sonda": "Las calaminas de zinc se oxidan más rápido que una reja de hierro sin pintar.",
+        "clase": "no-se-sabe",
+        "codigos": {
+          "lo-dice": "RV5",
+          "se-deduce": "RV7",
+          "lo-contradice": null
+        },
+        "explicacion": "El texto dice que el zinc protege al hierro (oración 7), pero no compara cuánto se oxida el zinc. No se puede saber.",
+        "explicaciones": {
+          "lo-dice": "El texto nombra el zinc y las calaminas, pero no dice cuánto se oxidan.",
+          "se-deduce": "Que el zinc sirva para proteger al hierro no permite concluir cuánto se oxida él mismo: eso va más allá del texto.",
+          "lo-contradice": "El texto no compara el zinc con el hierro sin pintar; simplemente no habla de eso."
+        }
+      },
+      "enunciado": "Es compatible con el texto afirmar que",
+      "alternativas": [
+        {
+          "t": "un clavo dentro de un frasco seco y cerrado se oxida muy despacio.",
+          "correcta": true,
+          "evidencia": [
+            "o3"
+          ],
+          "explicacion": "La oración 3 dice que un clavo guardado en un frasco seco puede pasar años sin cambiar."
+        },
+        {
+          "t": "basta el aire seco para que el hierro se oxide rápidamente.",
+          "codigo": "RV10",
+          "origen": "o2",
+          "explicacion": "Choca con la oración 2, que dice \"no basta con el aire\": hace falta también el agua."
+        },
+        {
+          "t": "la capa de óxido protege al hierro que está debajo.",
+          "codigo": "RV9",
+          "origen": "o6",
+          "explicacion": "Choca con la oración 6: la capa se agrieta y deja pasar más agua."
+        },
+        {
+          "t": "las rejas de la costa se oxidan más despacio que las de la sierra seca.",
+          "codigo": "RV5",
+          "origen": "o5",
+          "explicacion": "Repite palabras de la oración 5, pero al revés: en la costa se oxidan más rápido."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.sentido-contextual",
+      "enunciado": "En la oración 4, la palabra ACELERA significa",
+      "alternativas": [
+        {
+          "t": "hace más rápido.",
+          "correcta": true,
+          "evidencia": [
+            "o4",
+            "o5"
+          ],
+          "explicacion": "Con sal, el hierro se oxida en menos tiempo: la oración 5 lo muestra en las ciudades junto al mar."
+        },
+        {
+          "t": "pisa el acelerador.",
+          "codigo": "RV18",
+          "explicacion": "Es un sentido común de \"acelerar\" (en un auto), pero aquí se habla de un proceso químico."
+        },
+        {
+          "t": "provoca.",
+          "codigo": "RV19",
+          "origen": "o2",
+          "explicacion": "Está cerca, pero no es lo mismo: la sal no causa la oxidación (la causan el agua y el oxígeno), solo la hace más rápida."
+        },
+        {
+          "t": "conduce la corriente.",
+          "codigo": "RV5",
+          "origen": "o4",
+          "explicacion": "Repite palabras de la misma oración, pero eso es lo que hace el agua salada, no lo que significa \"acelera\"."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-06",
+  "hechos": [
+    {
+      "afirmacion": "El hierro se oxida en presencia de agua y oxígeno a la vez; la sal acelera la corrosión porque el electrolito conduce mejor; el óxido de hierro es poroso y no protege; se protege con pintura, galvanizado (zinc) o manteniéndolo seco.",
+      "fuente": "Química general (p. ej., Chang, R. Química, cap. de electroquímica: corrosión)."
+    }
+  ],
+  "revision": null
+}
