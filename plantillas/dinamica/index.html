@@ -47,10 +47,12 @@ body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font
 h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
 .sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
 
-.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.top > *{min-width:0}
+.tabs{display:flex; flex-wrap:wrap; gap:4px; padding:5px; border-radius:20px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
 .tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
 .tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
 .tabs a:hover:not([aria-current]){color:var(--ink)}
+@media (max-width:480px){ .tabs a{padding:8px 12px; font-size:.88rem} }
 
 .mode{display:grid; gap:16px; min-width:0; align-items:start}
 .bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
@@ -83,14 +85,14 @@ canvas:focus-visible{outline:3px solid var(--ink); outline-offset:-3px}
 .map b{font-family:var(--mono); min-width:4.6em; flex:none}
 
 .v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
-.v-P{color:var(--c-P); background:color-mix(in srgb, var(--c-P) 12%, transparent)}
-.v-N{color:var(--c-N); background:color-mix(in srgb, var(--c-N) 12%, transparent)}
-.v-f{color:var(--c-f); background:color-mix(in srgb, var(--c-f) 12%, transparent)}
-.v-T{color:var(--c-T); background:color-mix(in srgb, var(--c-T) 12%, transparent)}
-.v-T2{color:var(--c-T2); background:color-mix(in srgb, var(--c-T2) 12%, transparent)}
-.v-F{color:var(--c-F); background:color-mix(in srgb, var(--c-F) 12%, transparent)}
-.v-a{color:var(--c-a); background:color-mix(in srgb, var(--c-a) 12%, transparent)}
-.v-C{color:var(--c-C); background:color-mix(in srgb, var(--c-C) 12%, transparent)}
+.v-P{color:var(--c-P); background:color-mix(in srgb, var(--c-P) 8%, transparent)}
+.v-N{color:var(--c-N); background:color-mix(in srgb, var(--c-N) 4%, transparent)}
+.v-f{color:var(--c-f); background:color-mix(in srgb, var(--c-f) 8%, transparent)}
+.v-T{color:var(--c-T); background:color-mix(in srgb, var(--c-T) 8%, transparent)}
+.v-T2{color:var(--c-T2); background:color-mix(in srgb, var(--c-T2) 8%, transparent)}
+.v-F{color:var(--c-F); background:color-mix(in srgb, var(--c-F) 8%, transparent)}
+.v-a{color:var(--c-a); background:color-mix(in srgb, var(--c-a) 8%, transparent)}
+.v-C{color:var(--c-C); background:color-mix(in srgb, var(--c-C) 8%, transparent)}
 .v-m{color:var(--ink); background:color-mix(in srgb, var(--ink) 9%, transparent)}
 .v.hl{outline:2px solid currentColor; outline-offset:1px}
 
@@ -596,7 +598,7 @@ function vistaColumpio(L, c, P){
   if (!P.verF) return;
   const k = Math.min((Lp - 50)*0.95/888, 50/300), cr = P.crece === undefined ? 1 : P.crece, lista = [];
   lista.push({ x:sx, y:sy + 4, dx:0, dy:1, F:r.P, k, col:c.P, crece:cr, txt:rot('P', r.P, 'Tierra'), al:'left', ox:6, oy:-12 });
-  lista.push({ x:sx + 9, y:sy - 22, dx:0, dy:-1, F:r.T, k, col:c.T, crece:cr, txt:rot('T', r.T, 'cadenas'), al:'left', ox:6 });
+  lista.push({ x:sx + 16, y:sy - 22, dx:0, dy:-1, F:r.T, k, col:c.T, crece:cr, txt:rot('T', r.T, 'cadenas'), al:'left', ox:6 });
   if (r.neta > 1e-9){
     lista.push({ x:sx - 44, y:sy - 14, dx:0, dy:-1, F:r.neta, k, col:c.ink, fina:true, crece:cr, txt:`ΣF = ${N1(r.neta)} N`, al:'right', ox:-4 });
     lista.push({ x:sx + W*0.3, y:sy - 14, dx:0, dy:-1, F:r.ac, k:k*30, col:c.a, crece:cr, txt:`a = ${N1(r.ac)} m/s² (al centro)`, al:'center' });
@@ -627,7 +629,7 @@ function vistaLoma(L, c, P){
   if (!enCima) return;
   if (P.v > 1e-9){ flecha(ctx, cx + 28, ytop - 16, cx + 70, ytop - 16, c.muted, 2); rotulo(ctx, c, cx + 76, ytop - 16, `v = ${fmt(P.v, 0)} m/s`, c.muted, 'left', 700, W); }
   const r = P.r, k = Math.min(ytop - 28, H - ytop - 58)/8000, cr = P.crece === undefined ? 1 : P.crece, lista = [];
-  lista.push({ x:cx - 8, y:ytop - 14, dx:0, dy:1, F:r.P, k, col:c.P, txt:rot('P', r.P, 'Tierra'), al:'center' });
+  lista.push({ x:cx - 6, y:ytop - 14, dx:0, dy:1, F:r.P, k, col:c.P, txt:rot('P', r.P, 'Tierra'), al:'center' });
   if (P.verN === 'oculta') lista.push({ x:cx + 8, y:ytop, dx:0, dy:-1, F:r.N, k, col:c.N, oculta:true, largoOculto:46, txt:rot('N', r.N, 'pista', true), al:'left', ox:4 });
   else if (r.N > 1e-9) lista.push({ x:cx + 8, y:ytop, dx:0, dy:-1, F:r.N, k, col:c.N, crece:P.verN === 'nueva' ? cr : 1, txt:rot('N', r.N, 'pista'), al:'left', ox:4 });
   if (P.verX && r.neta > 1e-9){
@@ -636,7 +638,7 @@ function vistaLoma(L, c, P){
     lista.push({ x:cx + 60, y:ytop + 2, dx:0, dy:1, F:r.aRadial, k:k*800, col:c.a, crece:crx, txt:`a = ${N1(r.aRadial)} m/s²`, al:'left', ox:4 });
   }
   lista.forEach(f => fuerza(ctx, c, f, W, H));
-  rotulo(ctx, c, cx, ytop - 15, '800 kg', c.ink, 'center', 800, W);
+  rotulo(ctx, c, cx - 30, ytop - 40, '800 kg', c.ink, 'right', 800, W);
   if (P.verX && r.despega) rotulo(ctx, c, W/2, 14, 'la pista no puede jalarlo hacia abajo: se despega', c.ink, 'center', 800, W);
 }
 
@@ -645,7 +647,7 @@ function vistaLoma(L, c, P){
    Devuelve la mano y la escala de F, para el arrastre. */
 function vistaTren(L, c, P){
   const { ctx, W, H } = L; ctx.clearRect(0, 0, W, H);
-  const s = clamp(W/400, 0.9, 1.5), n = P.masas.length, y0 = Math.round(H*0.64), hc = 32*s, yc = y0 - 10 - hc/2;
+  const s = clamp(W/400, 0.9, 1.5), n = P.masas.length, y0 = Math.round(H*0.55), hc = 32*s, yc = y0 - 10 - hc/2;
   const ws = P.masas.map(m => (26 + 5*m)*s), suma = ws.reduce((a, b) => a + b, 0);
   const g = clamp((W - 14 - suma - 112*s)/(n - 1), 36, 140);
   // Escala común de F y de las tensiones (las de la cuerda caben en su hueco).
@@ -690,9 +692,9 @@ function vistaTren(L, c, P){
   }
   if (P.roce){
     caja.forEach((b, i) => { if (P.r.sentido !== 'quieto') fuerza(ctx, c, { x:(b.x1 + b.x2)/2, y:y0 + 3, dx:-1, dy:0, F:P.r.roce[i], k, col:c.f }, W, H); });
-    rotulo(ctx, c, 8, y0 + 24, P.r.sentido === 'quieto' ? `roce del piso (μ = ${fmt(P.mu, 1)}): alcanza para que no se muevan` : `fₖ · piso (μ = ${fmt(P.mu, 1)}): ${P.r.roce.map(f => N1(f)).join(' N, ')} N, hacia atrás`, c.f, 'left', 700, W);
+    rotulo(ctx, c, 8, y0 + 24, P.r.sentido === 'quieto' ? `roce del piso (μ = ${fmt(P.mu, 1)}): alcanza, no se mueven` : `fₖ · piso (μ = ${fmt(P.mu, 1)}): ${P.r.roce.map(f => N1(f)).join(' N, ')} N, hacia atrás`, c.f, 'left', 700, W);
   }
-  rotulo(ctx, c, 8, y0 + (P.roce ? 44 : 24), 'en vertical, cada carrito está en equilibrio (no se dibujan P ni N)', c.muted, 'left', 600, W);
+  rotulo(ctx, c, 8, y0 + (P.roce ? 44 : 24), 'P y N no se dibujan: en vertical se equilibran', c.muted, 'left', 600, W);
   if (P.verA && P.r.a > 1e-9) fuerza(ctx, c, { x:caja[n - 1].x1 + 6, y:yt - 56, dx:1, dy:0, F:P.r.a, k:Math.min(W*0.3, 120)/10, col:c.a, txt:`a = ${N1(P.r.a)} m/s² (los ${n === 3 ? 'tres' : n})`, al:'left', ox:4 }, W, H);
   return { mano:{ x:xm + 7, y:yc }, base:xf, k };
 }
@@ -702,7 +704,7 @@ function vistaTren(L, c, P){
          dx (m que el de arriba se corrió sobre el de abajo), mano }. Devuelve la mano, la escala de F y el borde. */
 function vistaApilados(L, c, P){
   const { ctx, W, H } = L; ctx.clearRect(0, 0, W, H);
-  const s = clamp(W/400, 0.9, 1.4), y0 = Math.round(H*0.68), pxm = 20;
+  const s = clamp(W/400, 0.9, 1.4), y0 = Math.round(H*0.55), pxm = 20;
   const wB = 130*s, hB = 44*s, wA = 76*s, hA = 34*s, xB = clamp((W - wB)/2 - 50*s, 20, 200), yi = y0 - hB;
   const lim = (wB/2)/pxm, xA = xB + wB/2 + clamp(P.dx || 0, -lim, lim)*pxm;  // centro del de arriba
   ctx.fillStyle = c.suelo; ctx.globalAlpha = .55; ctx.fillRect(4, y0, W - 8, 10); ctx.globalAlpha = 1;
@@ -729,10 +731,13 @@ function vistaApilados(L, c, P){
   else if (Math.abs(r.roceA) > 1e-9){
     const cr = P.verF === 'nueva' ? P.crece : 1, sg = Math.sign(r.roceA), kf = kF, nm = r.tipoRoce === 'cinetico' ? 'fₖ' : 'fₛ';
     const t = cr > 0.99 ? `${nm} = ${fmt(Math.abs(r.roceA), 1)} N · ` : '';
-    fuerza(ctx, c, { x:xc, y:yi - 4, dx:sg, dy:0, F:Math.abs(r.roceA), k:kf, col:c.f, crece:cr, txt:t && t + 'B → A', ox:sg*6, oy:-10 }, W, H);
+    // El rótulo sobre A, al costado de A (no encima de su esquina).
+    fuerza(ctx, c, { x:xc, y:yi - 4, dx:sg, dy:0, F:Math.abs(r.roceA), k:kf, col:c.f, crece:cr }, W, H);
+    if (t){ const tip = xc + sg*Math.abs(r.roceA)*kf;
+      rotulo(ctx, c, sg > 0 ? Math.max(tip + 8, xA + wA/2 + 6) : Math.min(tip - 8, xA - wA/2 - 6), yi - 8, t + 'B → A', c.f, sg > 0 ? 'left' : 'right', 800, W); }
     fuerza(ctx, c, { x:xc, y:yi + 4, dx:-sg, dy:0, F:Math.abs(r.roceA), k:kf, col:c.f, crece:cr, txt:t && t + 'A → B', ox:-sg*6, oy:10 }, W, H);
   }
-  rotulo(ctx, c, 8, y0 + 42, 'en vertical, cada bloque está en equilibrio (no se dibujan P ni N)', c.muted, 'left', 600, W);
+  rotulo(ctx, c, 8, y0 + 42, 'P y N no se dibujan: en vertical se equilibran', c.muted, 'left', 600, W);
   if (P.verA){
     const ka = Math.min(W*0.28, 110)/17;
     // Si resbalan, cada bloque tiene su aceleración: el mismo turquesa, con subíndice y pegada a su bloque.
@@ -1053,16 +1058,17 @@ function vivo(){
 // Arrastre de la rampa: solo cerca de la punta de arriba (el resto del dibujo deja desplazar la página; nucleo/celular.js).
 function cercaAsa(p, rad){ const g = geoRampa(L.W, L.H, S.ang); return Math.hypot(p.x - g.A.x, p.y - g.A.y) < rad; }
 function ponerAngulo(p){
-  const g = geoRampa(L.W, L.H, S.ang);
-  const a = Math.round(clamp(Math.atan2(g.B.y - p.y, g.B.x - p.x)*180/Math.PI, 0, 60));
+  const B = S.arrastrando && S.B0 ? S.B0 : geoRampa(L.W, L.H, S.ang).B;
+  const a = Math.round(clamp(Math.atan2(B.y - p.y, B.x - p.x)*180/Math.PI, 0, 60));
   if (a !== S.ang){ parar(); S.ang = a; S.s = INICIO; vivo(); }
 }
 Celular.arrastre(cv, {
   activo: () => S.explora,
   cerca: (p, rad) => cercaAsa(p, rad),
-  empezar: () => { S.arrastrando = true; draw(); },
+  // B (el pie de la rampa) se mueve con el ángulo: se guarda al empezar para que el asa no se aleje del dedo.
+  empezar: () => { S.arrastrando = true; S.B0 = geoRampa(L.W, L.H, S.ang).B; draw(); },
   mover: p => ponerAngulo(p),
-  soltar: () => { S.arrastrando = false; draw(); },
+  soltar: () => { S.arrastrando = false; S.B0 = null; draw(); },
   sobre: s => { S.sobreAsa = s; draw(); }
 });
 cv.addEventListener('keydown', e => {
@@ -1229,7 +1235,9 @@ function empujar(desde){
 function balancear(){
   const r = rCol(); if (RM || r.anguloMax === null || E.v < 1e-9){ E.vaiven = false; X.draw(); return; }
   const T = 2*r.periodo; E.vaiven = true;
-  X.A.anim(T*1000, f => { E.th = r.vaiven(T*f); X.draw(); }, () => { E.th = 0; E.vaiven = false; X.draw(); });
+  // Amplitud del dibujo limitada a unos 30° (el vaivén es decorativo; las flechas se calculan abajo).
+  const esc = Math.min(1, 30/Math.max(r.anguloMax, 1e-9));
+  X.A.anim(T*1000, f => { E.th = r.vaiven(T*f)*esc; X.draw(); }, () => { E.th = 0; E.vaiven = false; X.draw(); });
 }
 // El auto sale de la cima con su rapidez y cruza la loma (1,5 s); luego vuelve a la cima con las flechas.
 function cruzar(){
@@ -1457,7 +1465,7 @@ const EXPS = [
       ${fuente('Las opciones incorrectas son errores que suponemos, sin estudio con porcentaje: tomar la tensión igual al peso de uno de los bloques, o a la suma de los dos.')}` },
   { id:'contacto', corto:'Las dos cajas', ley:['F','C','a'], leyAntes:['F','C'],
     q:`Empujas con 50 N una caja grande de 8 kg, que a su vez empuja a una caja pequeña de 2 kg que está delante, sobre un piso sin roce. ¿Cuál de las dos cajas empuja más fuerte a la otra?`,
-    opts:[['a','La grande a la pequeña, porque tiene más masa','D10-mas-masa-mas-fuerza','documentado'], ['b','Las dos se empujan igual, porque es un par de acción y reacción',null],
+    opts:[['a','La grande a la pequeña, porque tiene más masa','D10-mas-masa-mas-fuerza','parcial'], ['b','Las dos se empujan igual, porque es un par de acción y reacción',null],
           ['c','La pequeña a la grande, porque la frena','la-de-adelante-empuja-mas','hipotesis'], ['d','Se empujan igual y por eso se anulan: las cajas no aceleran','D11-accion-reaccion-se-anulan','parcial']],
     ok:'b',
     fb:{ b:'¡Bien! Son un par de acción y reacción: 10 N cada una, en sentidos opuestos, aunque las masas sean distintas.',
@@ -1504,7 +1512,7 @@ const EXPS = [
       <p>Activa el roce (μ = 0,2): la aceleración baja a 3 m/s², pero ${V('T','T₁')} y ${V('T2','T₂')} no cambian, porque cada cuerda también vence el roce de lo que arrastra. Cambia el orden a 2-4-4: ahora ${V('T2','T₂')} = 20 N.</p>
       ${fuente('Las opciones incorrectas son errores que suponemos: hipótesis nuestras, sin estudio con porcentaje.')}` },
   { id:'apilados', corto:'Un bloque sobre otro',
-    ley: resp => resp ? ['F','f','a'] : ['F','f'],
+    ley: resp => resp ? ['F', ['f', 'f · roce entre los bloques'], 'a'] : ['F', ['f', 'f · roce entre los bloques']],
     q:`Un bloque A de 2 kg está encima de otro B de 3 kg, sobre un piso liso. Entre los dos bloques, μs = 0,4 y μk = 0,3. Jalas el de abajo con ${V('F','15 N')} horizontales. ¿Qué pasa?`,
     opts:[['a','Se mueven juntos; el roce sobre el de arriba vale 8 N, que es μs·N.','roce-estatico-siempre-maximo','hipotesis'],
           ['b','Se mueven juntos; el roce sobre el de arriba vale 6 N, lo justo para que acelere con el otro.',null],

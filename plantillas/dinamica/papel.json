@@ -196,7 +196,7 @@
       "enunciado": "Un balde de 2 kg cuelga de una polea móvil. La cuerda está atada al techo, pasa por la polea móvil, sube a una polea fija y en el otro extremo cuelga otro balde, también de 2 kg. Poleas y cuerda ligeras, sin roce. Se sueltan desde el reposo. ¿Qué balde baja? ¿Con qué aceleración se mueve cada uno y cuánto vale la tensión? ¿Qué masa debería tener el balde del extremo para que todo quede quieto?",
       "respuesta": "Baja el del extremo, con 4 m/s²; el de la polea sube con 2 m/s²; la tensión es 12 N. Para que todo quede quieto, el del extremo debería tener 1 kg.",
       "pasos": [
-        "Ligadura: si el extremo baja x, cada uno de los dos tramos que sostienen la polea se acorta x/2, así que la polea sube x/2. Por eso a₁ = a₂/2.",
+        "Llama a₂ a la aceleración del balde del extremo y a₁ a la de la polea con su balde. Ligadura: si el extremo baja x, cada uno de los dos tramos que sostienen la polea se acorta x/2, así que la polea sube x/2. Por eso a₁ = a₂/2.",
         "Balde del extremo (baja): 20 − T = 2·a₂. Polea con su balde (sube): 2T − 20 = 2·(a₂/2).",
         "De la primera, T = 20 − 2·a₂. En la segunda: 40 − 4·a₂ − 20 = a₂, así que a₂ = 4 m/s², a₁ = 2 m/s² y T = 12 N.",
         "Comprueba: la polea recibe 2T = 24 N hacia arriba contra 20 N de peso; sobran 4 N = 2·2. Con masas iguales no hay equilibrio: la polea móvil necesita el doble.",
