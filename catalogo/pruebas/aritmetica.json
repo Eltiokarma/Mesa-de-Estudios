@@ -1142,7 +1142,7 @@
       "nombreUnidad": "Las cuatro operaciones",
       "mide": "Residuo por exceso: lo que falta para completar otro grupo es el divisor menos el residuo por defecto",
       "A": {
-        "enunciado": "Se empacan 89 panes en bolsas de 12. ¿Cuántos panes faltan para completar una bolsa más?",
+        "enunciado": "Se empacan 89 panes en bolsas de 12. Se llenan todas las bolsas que se pueda y sobran algunos panes. ¿Cuántos panes faltan para que esos panes sobrantes completen otra bolsa?",
         "datos": {
           "D": 89,
           "d": 12
@@ -1171,7 +1171,7 @@
         ]
       },
       "B": {
-        "enunciado": "Se acomodan 74 sillas en filas de 11. ¿Cuántas sillas faltan para completar una fila más?",
+        "enunciado": "Se acomodan 74 sillas en filas de 11. Se completan todas las filas que se pueda y sobran algunas sillas. ¿Cuántas sillas faltan para que esas sillas sobrantes completen otra fila?",
         "datos": {
           "D": 74,
           "d": 11
@@ -1404,7 +1404,7 @@
       "nombreUnidad": "Mezclas y aleaciones",
       "mide": "Agua para bajar el grado de un alcohol: el alcohol puro no cambia y se reparte en el volumen final",
       "A": {
-        "enunciado": "En una farmacia hay 14 L de alcohol de 60°. ¿Cuántos litros de agua hay que agregarle para que quede de 20°?",
+        "enunciado": "En una farmacia hay 14 L de alcohol de 60° (es decir, 60 % de alcohol puro). ¿Cuántos litros de agua hay que agregarle para que quede de 20° (20 % de alcohol puro)?",
         "datos": {
           "V": 14,
           "g0": 60,
@@ -1434,7 +1434,7 @@
         ]
       },
       "B": {
-        "enunciado": "En un laboratorio hay 9 L de alcohol de 80°. ¿Cuántos litros de agua hay que agregarle para que quede de 20°?",
+        "enunciado": "En un laboratorio hay 9 L de alcohol de 80° (es decir, 80 % de alcohol puro). ¿Cuántos litros de agua hay que agregarle para que quede de 20° (20 % de alcohol puro)?",
         "datos": {
           "V": 9,
           "g0": 80,
@@ -1480,22 +1480,22 @@
         },
         "opciones": [
           {
-            "texto": "3 personas",
+            "texto": "3 estudiantes",
             "valor": 3,
             "error": "olvida-a-los-que-no-estan-en-ninguno"
           },
           {
-            "texto": "8 personas",
+            "texto": "8 estudiantes",
             "valor": 8,
             "error": "da-los-que-estan-solo-en-el-otro"
           },
           {
-            "texto": "10 personas",
+            "texto": "10 estudiantes",
             "valor": 10,
             "correcta": true
           },
           {
-            "texto": "33 personas",
+            "texto": "33 estudiantes",
             "valor": 33,
             "error": "da-los-que-estan-en-al-menos-uno"
           }
@@ -1679,7 +1679,7 @@
       "nombreUnidad": "Lógica proposicional",
       "mide": "Un condicional solo es falso cuando el antecedente es verdadero y el consecuente falso",
       "A": {
-        "enunciado": "Un profesor promete: «Si apruebas el examen, te pongo un punto extra en la libreta». ¿En qué caso el profesor no cumplió su promesa?",
+        "enunciado": "Un profesor promete: «Si apruebas el examen, te pongo un punto extra en tu nota». ¿En qué caso el profesor no cumplió su promesa?",
         "datos": {
           "formula": "p → q"
         },
