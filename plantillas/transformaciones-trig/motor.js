@@ -232,6 +232,7 @@
   function prod(c, a, b) {
     const ea = exFn(a[0], a[1]), eb = exFn(b[0], b[1]);
     if (ea && eb) return { A: exEsc(exProd(ea, eb), c.n, c.d) };
+    if ((ea && ea.length === 0) || (eb && eb.length === 0)) return { A: [] };   // un factor exacto vale 0: el producto es 0 exacto
     return { v: (c.n / c.d) * mathFn(a[0], a[1]) * mathFn(b[0], b[1]) };
   }
   // combinación de términos s · fn(g)

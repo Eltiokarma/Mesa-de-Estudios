@@ -32,14 +32,14 @@
       "id": "p3",
       "nivel": "básico",
       "enunciado": "Calcula G = sen 105° · cos 15° sin usar tablas.",
-      "respuesta": "G = (√3 + 2)/4.",
+      "respuesta": "G = (2 + √3)/4.",
       "pasos": [
         "La fórmula de producto a suma lleva un 2: 2 sen x cos y = sen(x + y) + sen(x − y).",
-        "Con x = 105° e y = 15°: 2 sen 105° cos 15° = sen 120° + sen 90° = √3/2 + 1 = (√3 + 2)/2.",
-        "G es la mitad de eso: G = (√3 + 2)/4.",
-        "Control: sen 105° ≈ 0,966 y cos 15° ≈ 0,966; su producto ≈ 0,933, y (√3 + 2)/4 ≈ 0,933."
+        "Con x = 105° e y = 15°: 2 sen 105° cos 15° = sen 120° + sen 90° = √3/2 + 1 = (2 + √3)/2.",
+        "G es la mitad de eso: G = (2 + √3)/4.",
+        "Control: sen 105° ≈ 0,966 y cos 15° ≈ 0,966; su producto ≈ 0,933, y (2 + √3)/4 ≈ 0,933."
       ],
-      "verificar": [ { "fn": "productoASuma", "args": [{ "tipo": "sencos", "x": 105, "y": 15 }], "espera": { "texto": "(√3 + 2)/2", "expresion": "sen 120° + sen 90°" } } ]
+      "verificar": [ { "fn": "productoASuma", "args": [{ "tipo": "sencos", "x": 105, "y": 15 }], "espera": { "texto": "(2 + √3)/2", "expresion": "sen 120° + sen 90°" } } ]
     },
     {
       "id": "p4",
@@ -78,7 +78,7 @@
         "Se cancelan el 2 y sen 3x: K = sen 2x / cos 2x = tan 2x.",
         "Control: si se olvida el signo menos de la fórmula, sale −tan 2x; con x = 10°, K = (cos 10° − cos 50°)/(sen 50° + sen 10°) ≈ 0,342/0,940 ≈ 0,364, que es positivo, como tan 20°."
       ],
-      "verificar": [ { "fn": "cociente", "args": [{ "p": 5, "q": 1, "num": "+", "den": "−" }], "espera": { "texto": "−cot 2x" } } ]
+      "verificar": [ { "fn": "simplificar", "args": [{ "arriba": { "fn": "cos", "op": "−", "p": 1, "q": 5 }, "abajo": { "fn": "sen", "op": "+", "p": 5, "q": 1 }, "x": 10 }], "espera": { "texto": "tan 2x", "comun": "sen 3x", "en.original": 0.36397023426620234, "en.simplificada": 0.36397023426620234 } } ]
     },
     {
       "id": "p7",
@@ -98,28 +98,27 @@
       "id": "p8",
       "nivel": "intermedio",
       "enunciado": "Expresa 4 sen 3x cos x como una suma de senos y calcula su valor para x = 15°.",
-      "respuesta": "4 sen 3x cos x = 2 sen 4x + 2 sen 2x; con x = 15° vale √3 + 1.",
+      "respuesta": "4 sen 3x cos x = 2 sen 4x + 2 sen 2x; con x = 15° vale 1 + √3.",
       "pasos": [
         "Se separa el 2: 4 sen 3x cos x = 2 · (2 sen 3x cos x), y 2 sen 3x cos x = sen(3x + x) + sen(3x − x) = sen 4x + sen 2x.",
         "Entonces 4 sen 3x cos x = 2 sen 4x + 2 sen 2x.",
-        "Con x = 15°: 2 sen 60° + 2 sen 30° = √3 + 1.",
-        "Control: 4 sen 45° cos 15° ≈ 4 · 0,707 · 0,966 ≈ 2,732, y √3 + 1 ≈ 2,732."
+        "Con x = 15°: 2 sen 60° + 2 sen 30° = 1 + √3.",
+        "Control: 4 sen 45° cos 15° ≈ 4 · 0,707 · 0,966 ≈ 2,732, y 1 + √3 ≈ 2,732."
       ],
-      "verificar": [ { "fn": "productoASuma", "args": [{ "tipo": "sencos", "x": 45, "y": 15 }], "espera": { "texto": "(√3 + 1)/2", "expresion": "sen 60° + sen 30°" } } ]
+      "verificar": [ { "fn": "productoASuma", "args": [{ "tipo": "sencos", "x": 45, "y": 15, "veces": 2 }], "espera": { "texto": "1 + √3", "expresion": "2 sen 60° + 2 sen 30°" } } ]
     },
     {
       "id": "p9",
       "nivel": "avanzado",
-      "enunciado": "Calcula M = cos 15° + cos 45° + cos 75°.",
-      "respuesta": "M = (√6 + √2)/2.",
+      "enunciado": "Calcula N = cos 15° + cos 45° + cos 75°.",
+      "respuesta": "N = (√6 + √2)/2.",
       "pasos": [
         "Se agrupan los extremos: cos 15° + cos 75° = 2 cos 45° cos(−30°) = 2 · (√2/2) · (√3/2) = √6/2.",
-        "Se suma el del centro: M = √6/2 + √2/2 = (√6 + √2)/2.",
-        "Con la fórmula de la serie (tres ángulos que avanzan de 30° en 30°): M = [sen 45° / sen 15°] · cos 45°, que da lo mismo.",
-        "Control: no es 3 cos 45° ≈ 2,12 (tres veces el del centro); M ≈ 0,966 + 0,707 + 0,259 ≈ 1,932."
+        "Se suma el del centro: N = √6/2 + √2/2 = (√6 + √2)/2.",
+        "Con la fórmula de la serie (senos y cosenos de ángulos en progresión aritmética; aquí tres ángulos que avanzan de 30° en 30°): N = [sen 45° / sen 15°] · cos 45°, que da lo mismo.",
+        "Control: no es 3 cos 45° ≈ 2,12 (tres veces el del centro); N ≈ 0,966 + 0,707 + 0,259 ≈ 1,932."
       ],
-      "verificar": [ { "fn": "serie", "args": [{ "fn": "cos", "a": 15, "r": 30, "n": 3 }], "espera": { "texto": "(√6 + √2)/2", "errores.nVeces.texto": "3√2/2" } },
-                     { "fn": "sumaAProducto", "args": [{ "fn": "cos", "A": 15, "B": 75 }], "espera": { "texto": "√6/2" } } ]
+      "verificar": [ { "fn": "serie", "args": [{ "fn": "cos", "a": 15, "r": 30, "n": 3 }], "espera": { "texto": "(√6 + √2)/2", "errores.nVeces.texto": "3√2/2" } } ]
     },
     {
       "id": "p10",
@@ -130,7 +129,7 @@
         "sen 12t + sen 8t = 2 sen 10t cos 2t: la onda rápida es sen 10t y la envolvente es 2 cos 2t.",
         "La envolvente se anula cuando 2t = 90°, 270°, 450° o 630° (todos los que caben con 2t ≤ 720°).",
         "Eso da t = 45°, 135°, 225° y 315°: 4 veces.",
-        "Control: no son 20 veces; esas son las de cos 10t, la semisuma, que es la onda rápida."
+        "Control: no son 20: esos son los ceros de cos 10t, que sale de usar la semisuma (la de la onda rápida) en lugar de la semidiferencia."
       ],
       "verificar": [ { "fn": "pulsos", "args": [{ "p": 12, "q": 8, "n": 2 }], "espera": { "valor": 4, "ceros": [45, 135, 225, 315], "errores.intercambia.texto": "20" } } ]
     }
