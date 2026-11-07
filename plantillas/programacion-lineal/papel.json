@@ -82,14 +82,14 @@
     {
       "id": "p6",
       "nivel": "intermedio",
-      "enunciado": "Una panadería de Arequipa hace tortas y pyes. Cada torta usa 2 h de horno y 1 kg de masa; cada pye, 1 h de horno y 2 kg de masa. Al día hay a lo más 14 h de horno y 16 kg de masa. Cada torta deja S/ 30 de ganancia y cada pye S/ 20. ¿Cuántas tortas y cuántos pyes conviene hacer, y cuánto se gana?",
-      "respuesta": "4 tortas y 6 pyes, con S/ 240.",
+      "enunciado": "Una panadería de Arequipa hace tortas y pyes. Cada torta usa 2 h de horno y 1 kg de masa; cada pye, 1 h de horno y 2 kg de masa. Al día hay a lo más 14 h de horno y 16 kg de masa. Cada torta deja S/ 30 de ganancia y cada pye S/ 20. ¿Cuántas tortas y cuántos pyes conviene hacer, y cuánto se gana?",
+      "respuesta": "4 tortas y 6 pyes, con S/ 240.",
       "pasos": [
         "Sea x el número de tortas e y el número de pyes. Horno: 2x + y ≤ 14. Masa: x + 2y ≤ 16. Además x ≥ 0 e y ≥ 0. Ganancia: z = 30x + 20y.",
         "Cortes: el horno corta el eje x en 7 y la masa corta el eje y en 8.",
         "Cruce: de 2x + y = 14 sale y = 14 − 2x; en x + 2(14 − 2x) = 16 queda −3x = −12, x = 4 e y = 6.",
         "Vértices y ganancia: (0; 0) da 0; (7; 0) da 210; (4; 6) da 120 + 120 = 240; (0; 8) da 160.",
-        "Conviene hacer 4 tortas y 6 pyes: S/ 240 al día."
+        "Conviene hacer 4 tortas y 6 pyes: S/ 240 al día."
       ],
       "verificar": [
         { "fn": "traducir", "args": [{ "porUnidad": [2, 1], "total": 14, "frase": "a lo más" }], "espera": { "texto": "2x + y ≤ 14" } },

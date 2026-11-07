@@ -31,6 +31,9 @@
  * Cada resultado que es la respuesta de una predicción trae 'errores': lo que da cada error típico.
  * Un error que con esos números da lo mismo que la respuesta correcta NO va en 'errores': va en 'coinciden'.
  * Si dos errores dan lo mismo, queda el primero y el otro va a 'repetidos' ({ otro: 'primero' }).
+ * Desempates: mayorX elige, entre los de mayor x, el de mayor y; mayorY, entre los de mayor y, el de mayor x
+ * (en el taller, y = 9 empata entre (2; 9) y (0; 9): mayorY es (2; 9)). masLejano y masCercano se quedan con el primero
+ * del orden antihorario.
  *
  * Códigos de error (docs/investigacion/algebra-funciones-ideas-erroneas.md no tiene datos de programación lineal):
  *   PL1  sombrear el lado contrario (no probar con un punto)                        hipótesis
@@ -41,15 +44,15 @@
  *   PL6  olvidar x ≥ 0 e y ≥ 0                                                      hipótesis
  *   PL7  evaluar solo algunos vértices (por ejemplo, solo los de los ejes)          hipótesis
  *   PL8  confundir máximo con mínimo                                                hipótesis
- *   PL9  creer que el óptimo siempre es único                                       hipótesis
+ *   PL9  creer que el óptimo siempre es único (o que solo valen los dos vértices del lado y no los puntos entre ellos)   hipótesis
  *   PL10 intersección mal calculada (coordenadas cruzadas, cortes mezclados, signo al despejar)   hipótesis
  *   PL11 pendiente de la recta objetivo mal leída (−b/a o a/b en vez de −a/b)       hipótesis
  *   PL12 tratar la inecuación como ecuación: solo la recta                          parcial (mismo mecanismo que AL19,
- *        Tsamir y Almog 2001, con cautela: allí son inecuaciones de una variable)
+ *        Tsamir y Almog 2001, con cautela: allí son inecuaciones escolares, sin porcentaje)
  *   PL13 no invertir el sentido al dividir entre un negativo al despejar y          hipótesis (es AL20, que el informe
  *        también tiene como hipótesis)
- *   PL14 coeficientes cruzados al traducir el enunciado (3x + y por x + 3y)         parcial (se parece a la inversión de
- *        AL1, Clement 1982, pero no es el mismo ítem)
+ *   PL14 coeficientes cruzados al traducir el enunciado (3x + y por x + 3y)         parcial (recuerda la inversión de
+ *        AL1, Clement 1982, aunque allí la trampa es el orden de las palabras)
  *   PL15 «a lo más» leído como ≥                                                    hipótesis
  *   PL16 en una región no acotada, dar como máximo el mejor vértice                 hipótesis
  *   PL17 tomar como óptimo un cruce de rectas que no cumple todas las restricciones hipótesis
@@ -444,8 +447,10 @@
     const alcanzado = opts.some(f => f.enRegion);
     const correcta = multiple ? { texto: opts.map(f => txP(f.P)).join(' a ') } : { texto: txP(opts[0].P) };
     // Para óptimos múltiples, quedarse con uno solo (PL9): cada vértice del lado es un error distinto
-    const errores = Object.assign({ unicoPrimero: multiple ? fila(opts[0].P) : null, unicoUltimo: multiple ? fila(opts[opts.length - 1].P) : null },   // PL9
-      errVert, { interior });
+    // PL9: un solo vértice del lado, o los dos vértices pero no los puntos entre ellos
+    const extremos = multiple ? { texto: opts.map(f => txP(f.P)).join(' y '), puntos: opts.map(f => numP(f.P)), soloExtremos: true } : null;
+    const errores = Object.assign({ unicoPrimero: multiple ? fila(opts[0].P) : null, unicoUltimo: multiple ? fila(opts[opts.length - 1].P) : null,
+      soloExtremos: extremos }, errVert, { interior });
     // Si el óptimo es un lado, un vértice de ese lado no es «la» respuesta, pero da el mismo z: lo dejamos como error
     const igual = v => (multiple ? false : v.texto === correcta.texto);
     const r = {}, coinciden = [], noAplica = [], repetidos = {};

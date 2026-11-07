@@ -2,7 +2,7 @@
   "plantilla": "programacion-lineal",
   "unidades": "Cantidades sin unidad en el motor (en la escena, x chompas, y chalinas, horas y soles). Las restricciones van como [a, b, op, c] para a·x + b·y op c, con op '<=', '<', '>=', '>' o '='; la función objetivo z = a·x + b·y como [a, b]. Los puntos van como [x, y] y se escriben (x; y), con punto y coma, porque la coma es decimal. Fracciones con barra (14/5) y menos tipográfico (−).",
   "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.mayorX.texto); las listas se comparan completas; los textos se comparan exactos. 'tambien' trae otras llamadas que comprueban lo mismo (con su propia 'fn' si cambia). Un error que con esos números da lo mismo que la respuesta correcta no va en 'errores' sino en 'coinciden'; uno que no tiene sentido con esos números va en 'noAplica'; si dos errores dan lo mismo, el segundo va en 'repetidos'. Taller de la escena: tejido 3x + y ≤ 21, feria x + y ≤ 11, alpaca y ≤ 9, con x ≥ 0 e y ≥ 0.",
-  "verificacion": "",
+  "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer el motor ni casos.json: fracciones exactas en Python; vértices enumerando todos los pares de fronteras y filtrando, óptimos contrastados con fuerza bruta en una rejilla de paso 1/8, regiones no acotadas con la dirección de recesión y recorte de ventana por semiplanos. Los 20 casos coinciden; la única diferencia (signoDespeje (5; 16)) es de interpretación del error y se mantiene la de casos.json. Después (7 nov 2026): por la revisión se agregaron el desempate explícito de mayorY (la mayor x entre las de mayor y) y el error soloExtremos (PL9) en los óptimos múltiples; ningún valor verificado cambió.",
   "tolerancia": 1e-9,
   "casos": [
     { "nombre": "Paso a paso, predicción 1: «cada chompa lleva 3 h de tejido y cada chalina 1 h; hay a lo más 21 h» da 3x + y ≤ 21. Cruzar los coeficientes da x + 3y ≤ 21 (PL14); leer «a lo más» como «al menos», 3x + y ≥ 21 (PL15); quedarse en la ecuación, 3x + y = 21 (PL12)",
@@ -52,20 +52,20 @@
       "fn": "vertices", "args": [{ "restricciones": [[3, 1, "<=", 21], [1, 1, "<=", 11], [0, 1, "<=", 9]], "noNegativas": false }],
       "espera": { "vacia": false, "acotada": false, "n": 2, "textos": ["(5; 6)", "(2; 9)"] } },
 
-    { "nombre": "Paso a paso, predicciones 5 y 6: máximo de z = 40x + 20y en el taller. Tabla: 0, 280, 320, 260 y 180; el máximo es 320 en (5; 6). El vértice de mayor x da (7; 0) (PL5), el más lejano del origen (2; 9) (PL4), el promedio de los vértices (14/5; 24/5), un punto interior (PL3), y el mínimo (0; 0) (PL8). Evaluar solo los cruces que no están en los ejes da lo mismo (coincide)",
+    { "nombre": "Paso a paso, predicciones 5 y 6: máximo de z = 40x + 20y en el taller. Tabla: 0, 280, 320, 260 y 180; el máximo es 320 en (5; 6). El vértice de mayor x da (7; 0) (PL5), el más lejano del origen (2; 9) (PL4), el promedio de los vértices (14/5; 24/5), un punto interior (PL3), y el mínimo (0; 0) (PL8). Evaluar solo los cruces que no están en los ejes da lo mismo (coincide). El vértice de mayor y desempata y = 9 entre (2; 9) y (0; 9) por la mayor x: da (2; 9), que repite al más lejano",
       "fn": "optimizar", "args": [{ "restricciones": [[3, 1, "<=", 21], [1, 1, "<=", 11], [0, 1, "<=", 9]], "noNegativas": true, "objetivo": [40, 20], "sentido": "max" }],
       "espera": { "tipo": "unico", "valor": 320, "optimoTexto": "(5; 6)", "optimo": [5, 6], "rango.min": 0, "rango.max": 320,
         "errores.mayorX.texto": "(7; 0)", "errores.mayorX.valor": 280, "errores.masLejano.texto": "(2; 9)", "errores.masLejano.valor": 260,
-        "errores.interior.texto": "(14/5; 24/5)", "errores.interior.valor": 208, "errores.sentidoContrario.texto": "(0; 0)", "coinciden": ["soloCruces"] } },
+        "errores.interior.texto": "(14/5; 24/5)", "errores.interior.valor": 208, "errores.sentidoContrario.texto": "(0; 0)", "coinciden": ["soloCruces"], "repetidos.mayorY": "masLejano" } },
 
     { "nombre": "Paso a paso, predicción 6 (tabla con otros precios): z = 20x + 30y da 0, 140, 280, 310 y 270; el máximo es 310 en (2; 9). Quedarse con el óptimo anterior (5; 6) da 280 (PL21); solo los vértices de los ejes, (0; 9) con 270 (PL7); el de mayor x, (7; 0) con 140 (PL5). Aquí el más lejano del origen sí coincide",
       "fn": "optimizar", "args": [{ "restricciones": [[3, 1, "<=", 21], [1, 1, "<=", 11], [0, 1, "<=", 9]], "noNegativas": true, "objetivo": [20, 30], "sentido": "max", "anterior": [40, 20] }],
       "espera": { "tipo": "unico", "valor": 310, "optimoTexto": "(2; 9)", "errores.anterior.texto": "(5; 6)", "errores.anterior.valor": 280, "errores.soloEjes.texto": "(0; 9)", "errores.soloEjes.valor": 270,
         "errores.mayorX.texto": "(7; 0)", "errores.mayorX.valor": 140, "coinciden": ["masLejano", "mayorY", "soloCruces"] } },
 
-    { "nombre": "¿Qué pasa si…?, 1: con z = 40x + 40y la recta de nivel es paralela a la feria (x + y = 11): 440 en (5; 6) y en (2; 9), y en todo el lado entre ellos (óptimos múltiples). Quedarse con un solo vértice es PL9",
+    { "nombre": "¿Qué pasa si…?, 1: con z = 40x + 40y la recta de nivel es paralela a la feria (x + y = 11): 440 en (5; 6) y en (2; 9), y en todo el lado entre ellos (óptimos múltiples). Quedarse con un solo vértice, o con los dos vértices pero no con los puntos entre ellos, es PL9",
       "fn": "optimizar", "args": [{ "restricciones": [[3, 1, "<=", 21], [1, 1, "<=", 11], [0, 1, "<=", 9]], "noNegativas": true, "objetivo": [40, 40], "sentido": "max" }],
-      "espera": { "tipo": "multiple", "valor": 440, "optimos": ["(5; 6)", "(2; 9)"], "lado": [[5, 6], [2, 9]], "errores.unicoPrimero.texto": "(5; 6)", "errores.unicoUltimo.texto": "(2; 9)", "errores.unicoUltimo.valor": 440 } },
+      "espera": { "tipo": "multiple", "valor": 440, "optimos": ["(5; 6)", "(2; 9)"], "lado": [[5, 6], [2, 9]], "errores.unicoPrimero.texto": "(5; 6)", "errores.unicoUltimo.texto": "(2; 9)", "errores.unicoUltimo.valor": 440, "errores.soloExtremos.texto": "(5; 6) y (2; 9)" } },
 
     { "nombre": "¿Qué pasa si…?, 2 (minimizar): chacra con x + y ≥ 6, x ≤ 5, y ≤ 4; costo z = 2x + 3y. Vértices (5; 1), (5; 4) y (2; 4): 13, 22 y 16. El mínimo es 13 en (5; 1). Dar el máximo (5; 4) es PL8; el vértice más cercano al origen, (2; 4), PL4; el origen, que no está en la región, PL20",
       "fn": "optimizar", "args": [{ "restricciones": [[1, 1, ">=", 6], [1, 0, "<=", 5], [0, 1, "<=", 4]], "noNegativas": true, "objetivo": [2, 3], "sentido": "min" }],
