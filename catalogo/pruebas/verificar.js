@@ -87,26 +87,28 @@ const V = {
   // fis-11 a fis-15: escenas de electricidad, magnetismo y física moderna (en "reserva": las formas tienen un tope de 10).
   'fis-11': d => {
     // Dos esferas que se tocan: la carga se reparte hasta igualar el potencial (motor contacto). Se pide la de la chica (1).
+    // Las cargas van en nC: el reparto es proporcional, así que el motor (en µC) da la misma cuenta con los números en nC.
     const r = motor('electrostatica').contacto(d.Q1, d.R1cm / 100, d.Q2, d.R2cm / 100);
     if (!(d.R1cm < d.R2cm)) throw new Error('la esfera 1 debe ser la chica');
     return { correcta: r.Q1f, errores: { 'EL8-se-reparte-por-igual': r.errores.mitades, 'EL8-la-chica-se-queda-con-mas': r.errores.alReves.Q1f,
       'EL8-toda-pasa-a-la-grande': r.errores.todaPasa.Q1f } };
   },
   'fis-12': d => {
-    // Punto medio entre dos hilos con corrientes opuestas e iguales (ida y vuelta de un cordón), en mT.
-    const r = motor('magnetismo').puntoMedio(d.I, -d.I, d.dmm / 1000), mT = x => x * 1000;
+    // Punto medio entre dos cables con corrientes opuestas e iguales (ida y vuelta), separados d cm; en µT.
+    const r = motor('magnetismo').puntoMedio(d.I, -d.I, d.dcm / 100), uT = x => x * 1e6;
     if (!r.seSuman) throw new Error('las corrientes deben ser opuestas');
-    return { correcta: mT(r.B), errores: { 'MG5-opuestas-se-anulan': mT(r.errores.seAnulan),
-      'MG-usa-la-distancia-entre-cables': mT(r.errores.distanciaEntreCables), 'MG-hilo-uno-sobre-d2': mT(r.errores.unoSobreD2) } };
+    return { correcta: uT(r.B), errores: { 'MG5-opuestas-se-anulan': uT(r.errores.seAnulan),
+      'MG-usa-la-distancia-entre-cables': uT(r.errores.distanciaEntreCables), 'MG-hilo-uno-sobre-d2': uT(r.errores.unoSobreD2) } };
   },
   'fis-13': d => {
     // Electroimán que se apaga: el flujo va de B·A a 0 (cara N: Φ > 0; cara S: Φ < 0) y Lenz da el sentido visto desde
-    // él y el campo inducido. La mano derecha invertida deja el sentido y da vuelta el campo (como en el paso 5 de la escena).
+    // él y el campo inducido. El enunciado pide el sentido visto desde detrás de la espira: el del motor, al revés.
+    // La mano derecha invertida deja el sentido y da vuelta el campo (como en el paso 5 de la escena).
     const I = motor('induccion'), s = d.cara === 'N' ? 1 : -1, r = I.lenz(s * I.flujo(d.B0, d.A).Phi, 0);
     if (!r.refuerza) throw new Error('el flujo debe disminuir en valor absoluto (el campo inducido refuerza al del electroimán)');
-    const k = x => `${x.sentido}|${x.campoInducido}`;
+    const atras = s => ({ horario: 'antihorario', antihorario: 'horario' }[s] || s), k = x => `${atras(x.sentido)}|${x.campoInducido}`;
     return { correcta: k(r), errores: { 'MG8-MG9-contra-el-campo': k(r.errores.contraElCampo),
-      'MG-mano-derecha-invertida': `${r.sentido}|${r.errores.alReves.campoInducido}`, 'MG8-sin-corriente-al-alejar': k(r.errores.sinCorriente) } };
+      'MG-mano-derecha-invertida': `${atras(r.sentido)}|${r.errores.alReves.campoInducido}`, 'MG8-sin-corriente-al-alejar': k(r.errores.sinCorriente) } };
   },
   'fis-14': d => {
     // Dos luces sobre el mismo metal: la intensa bajo el umbral y la tenue sobre él (motor fotoelectrico, juego eV).

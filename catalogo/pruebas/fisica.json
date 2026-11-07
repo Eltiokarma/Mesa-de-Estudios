@@ -152,7 +152,7 @@
     },
     "MG-usa-la-distancia-entre-cables": {
       "respaldo": "hipotesis",
-      "describe": "Usa la distancia entre los cables, y no la distancia de cada cable al punto"
+      "describe": "Usa la distancia entre los cables y no la de cada cable al punto (da lo mismo que contar un solo cable)"
     },
     "MG-hilo-uno-sobre-d2": {
       "respaldo": "hipotesis",
@@ -861,64 +861,64 @@
       "nombreUnidad": "Electrostática",
       "mide": "Dos esferas conductoras que se tocan se reparten la carga hasta tener el mismo potencial: cada una en proporción a su radio, no en partes iguales",
       "A": {
-        "enunciado": "La cúpula de un generador de Van de Graaff es una bola conductora de 15 cm de radio con +40 µC. Con un mango aislante se le arrima una pelotita conductora de 5 cm de radio que trae +8 µC; se juntan un instante y luego se apartan. ¿Qué carga le queda a la pelotita?",
+        "enunciado": "La cúpula de un generador de Van de Graaff es una bola conductora de 15 cm de radio con +400 nC. Con un mango aislante se le arrima una pelotita conductora de 5 cm de radio que trae +80 nC; se juntan un instante y luego se apartan. ¿Qué carga le queda a la pelotita?",
         "datos": {
           "R1cm": 5,
-          "Q1": 8,
+          "Q1": 80,
           "R2cm": 15,
-          "Q2": 40
+          "Q2": 400
         },
         "opciones": [
           {
-            "texto": "24 µC",
-            "valor": 24,
+            "texto": "240 nC",
+            "valor": 240,
             "error": "EL8-se-reparte-por-igual"
           },
           {
-            "texto": "12 µC",
-            "valor": 12,
+            "texto": "120 nC",
+            "valor": 120,
             "correcta": true
           },
           {
-            "texto": "0 µC",
+            "texto": "0 nC",
             "valor": 0,
             "error": "EL8-toda-pasa-a-la-grande"
           },
           {
-            "texto": "36 µC",
-            "valor": 36,
+            "texto": "360 nC",
+            "valor": 360,
             "error": "EL8-la-chica-se-queda-con-mas"
           }
         ]
       },
       "B": {
-        "enunciado": "Una bola conductora grande, de 8 cm de radio, guarda +45 µC. Una bolita conductora de 2 cm de radio, con +5 µC, cuelga de un hilo aislante; se la arrima hasta que hace contacto con la bola grande y luego se la aparta. ¿Qué carga le queda a la bolita?",
+        "enunciado": "Una bola conductora grande, de 8 cm de radio, guarda +450 nC. Una bolita conductora de 2 cm de radio, con +50 nC, cuelga de un hilo aislante; se la arrima hasta que hace contacto con la bola grande y luego se la aparta. ¿Qué carga le queda a la bolita?",
         "datos": {
           "R1cm": 2,
-          "Q1": 5,
+          "Q1": 50,
           "R2cm": 8,
-          "Q2": 45
+          "Q2": 450
         },
         "opciones": [
           {
-            "texto": "25 µC",
-            "valor": 25,
-            "error": "EL8-se-reparte-por-igual"
+            "texto": "400 nC",
+            "valor": 400,
+            "error": "EL8-la-chica-se-queda-con-mas"
           },
           {
-            "texto": "10 µC",
-            "valor": 10,
-            "correcta": true
-          },
-          {
-            "texto": "0 µC",
+            "texto": "0 nC",
             "valor": 0,
             "error": "EL8-toda-pasa-a-la-grande"
           },
           {
-            "texto": "40 µC",
-            "valor": 40,
-            "error": "EL8-la-chica-se-queda-con-mas"
+            "texto": "250 nC",
+            "valor": 250,
+            "error": "EL8-se-reparte-por-igual"
+          },
+          {
+            "texto": "100 nC",
+            "valor": 100,
+            "correcta": true
           }
         ]
       }
@@ -930,60 +930,60 @@
       "nombreUnidad": "Campo y fuerza magnética",
       "mide": "Campo en el punto medio entre dos corrientes opuestas: los dos campos apuntan igual y se suman, cada uno con la mitad de la separación",
       "A": {
-        "enunciado": "El cable de una plancha tiene dos alambres largos y paralelos, separados 4 mm: por uno la corriente de 5 A va hacia la plancha y por el otro vuelve. Con μ₀/(2π) = 2 × 10⁻⁷ T·m/A, ¿cuánto vale el campo magnético en el punto medio entre los dos alambres?",
+        "enunciado": "Una máquina de soldar tiene dos conductores rectos y muy largos, uno al lado del otro, a 30 cm de distancia; por uno van 45 A hacia la pinza y por el otro vuelven. Con μ₀/(2π) = 2 × 10⁻⁷ T·m/A, ¿qué intensidad tiene el campo magnético justo a mitad de camino entre ellos?",
         "datos": {
-          "dmm": 4,
-          "I": 5
+          "dcm": 30,
+          "I": 45
         },
         "opciones": [
           {
-            "texto": "0 mT",
+            "texto": "0 µT",
             "valor": 0,
             "error": "MG5-opuestas-se-anulan"
           },
           {
-            "texto": "0,5 mT",
-            "valor": 0.5,
+            "texto": "60 µT",
+            "valor": 60,
             "error": "MG-usa-la-distancia-entre-cables"
           },
           {
-            "texto": "1 mT",
-            "valor": 1,
+            "texto": "120 µT",
+            "valor": 120,
             "correcta": true
           },
           {
-            "texto": "500 mT",
-            "valor": 500,
+            "texto": "800 µT",
+            "valor": 800,
             "error": "MG-hilo-uno-sobre-d2"
           }
         ]
       },
       "B": {
-        "enunciado": "Una lámpara de escritorio se conecta con un cordón de dos alambres largos y paralelos, separados 6 mm. Por uno van 9 A hacia la lámpara y por el otro los 9 A vuelven. Con μ₀/(2π) = 2 × 10⁻⁷ T·m/A, ¿cuánto vale el campo magnético justo en el medio entre los dos alambres?",
+        "enunciado": "Al arrancar un auto, los dos conductores rectos y muy largos de su batería quedan uno al lado del otro, a 50 cm de distancia; por uno van 100 A hacia el motor de arranque y por el otro vuelven. Con μ₀/(2π) = 2 × 10⁻⁷ T·m/A, ¿qué intensidad tiene el campo magnético justo a mitad de camino entre ellos?",
         "datos": {
-          "dmm": 6,
-          "I": 9
+          "dcm": 50,
+          "I": 100
         },
         "opciones": [
           {
-            "texto": "0 mT",
+            "texto": "160 µT",
+            "valor": 160,
+            "correcta": true
+          },
+          {
+            "texto": "0 µT",
             "valor": 0,
             "error": "MG5-opuestas-se-anulan"
           },
           {
-            "texto": "0,6 mT",
-            "valor": 0.6,
-            "error": "MG-usa-la-distancia-entre-cables"
-          },
-          {
-            "texto": "1,2 mT",
-            "valor": 1.2,
-            "correcta": true
-          },
-          {
-            "texto": "400 mT",
-            "valor": 400,
+            "texto": "640 µT",
+            "valor": 640,
             "error": "MG-hilo-uno-sobre-d2"
+          },
+          {
+            "texto": "80 µT",
+            "valor": 80,
+            "error": "MG-usa-la-distancia-entre-cables"
           }
         ]
       }
@@ -995,7 +995,7 @@
       "nombreUnidad": "Inducción electromagnética",
       "mide": "Ley de Lenz cuando el flujo disminuye: el campo inducido refuerza el campo que se va (no va siempre contra él), y la corriente sigue la mano derecha",
       "A": {
-        "enunciado": "Un electroimán encendido está frente a una espira circular de alambre, sobre su eje, con su cara norte mirando a la espira; en la espira, su campo vale 0,3 T. Se apaga el electroimán y su campo baja hasta desaparecer. Mientras baja, ¿en qué sentido circula la corriente en la espira, vista desde el electroimán, y hacia dónde apunta el campo inducido en el centro de la espira?",
+        "enunciado": "Un electroimán encendido está frente a una espira circular de alambre, sobre su eje, con su cara norte mirando a la espira; en la espira, su campo vale 0,3 T. Se apaga el electroimán y su campo baja hasta desaparecer. Mientras baja, ¿en qué sentido circula la corriente en la espira, vista desde el lado opuesto al electroimán (desde detrás de la espira), y hacia dónde apunta el campo inducido en el centro de la espira?",
         "datos": {
           "B0": 0.3,
           "cara": "N",
@@ -1005,18 +1005,18 @@
         },
         "opciones": [
           {
-            "texto": "Horaria, con el campo inducido alejándose del electroimán",
-            "clave": "horario|alejándose del imán",
+            "texto": "Antihoraria, con el campo inducido alejándose del electroimán",
+            "clave": "antihorario|alejándose del imán",
             "correcta": true
-          },
-          {
-            "texto": "Antihoraria, con el campo inducido hacia el electroimán",
-            "clave": "antihorario|hacia el imán",
-            "error": "MG8-MG9-contra-el-campo"
           },
           {
             "texto": "Horaria, con el campo inducido hacia el electroimán",
             "clave": "horario|hacia el imán",
+            "error": "MG8-MG9-contra-el-campo"
+          },
+          {
+            "texto": "Antihoraria, con el campo inducido hacia el electroimán",
+            "clave": "antihorario|hacia el imán",
             "error": "MG-mano-derecha-invertida"
           },
           {
@@ -1027,7 +1027,7 @@
         ]
       },
       "B": {
-        "enunciado": "Un anillo de aluminio está frente a un electroimán encendido, sobre su eje, con la cara sur del electroimán mirando al anillo; en el anillo, el campo vale 0,5 T. Se desconecta el electroimán y su campo se apaga poco a poco. Mientras se apaga, ¿en qué sentido circula la corriente en el anillo, visto desde el electroimán, y hacia dónde apunta el campo inducido en el centro del anillo?",
+        "enunciado": "Un anillo de aluminio está frente a un electroimán encendido, sobre su eje, con la cara sur del electroimán mirando al anillo; en el anillo, el campo vale 0,5 T. Se desconecta el electroimán y su campo se apaga poco a poco. Mientras se apaga, ¿en qué sentido circula la corriente en el anillo, vista desde el lado opuesto al electroimán (desde detrás del anillo), y hacia dónde apunta el campo inducido en el centro del anillo?",
         "datos": {
           "B0": 0.5,
           "cara": "S",
@@ -1037,19 +1037,19 @@
         },
         "opciones": [
           {
-            "texto": "Antihoraria, con el campo inducido hacia el electroimán",
-            "clave": "antihorario|hacia el imán",
-            "correcta": true
+            "texto": "Antihoraria, con el campo inducido alejándose del electroimán",
+            "clave": "antihorario|alejándose del imán",
+            "error": "MG8-MG9-contra-el-campo"
           },
           {
             "texto": "Horaria, con el campo inducido alejándose del electroimán",
             "clave": "horario|alejándose del imán",
-            "error": "MG8-MG9-contra-el-campo"
+            "error": "MG-mano-derecha-invertida"
           },
           {
-            "texto": "Antihoraria, con el campo inducido alejándose del electroimán",
-            "clave": "antihorario|alejándose del imán",
-            "error": "MG-mano-derecha-invertida"
+            "texto": "Horaria, con el campo inducido hacia el electroimán",
+            "clave": "horario|hacia el imán",
+            "correcta": true
           },
           {
             "texto": "No circula corriente ni aparece campo inducido",
@@ -1108,6 +1108,11 @@
         },
         "opciones": [
           {
+            "texto": "Solo la verde",
+            "clave": "solo-verde",
+            "correcta": true
+          },
+          {
             "texto": "Solo la roja",
             "clave": "solo-rojo",
             "error": "FM2-basta-subir-la-intensidad"
@@ -1121,11 +1126,6 @@
             "texto": "Ninguna de las dos",
             "clave": "ninguna",
             "error": "FM-intensidad-minima"
-          },
-          {
-            "texto": "Solo la verde",
-            "clave": "solo-verde",
-            "correcta": true
           }
         ]
       }
