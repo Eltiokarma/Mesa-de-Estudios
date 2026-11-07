@@ -136,7 +136,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "estatica"
+     ]
     },
     {
      "id": "fisica.dinamica",
@@ -4380,6 +4382,23 @@
     "/plantillas/equilibrio-quimico/index.html",
     "/plantillas/equilibrio-quimico/motor.js",
     "/plantillas/equilibrio-quimico/papel.json"
+   ]
+  },
+  "estatica": {
+   "id": "estatica",
+   "titulo": "Estática: palancas, centro de gravedad y cuerdas",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.estatica"
+   ],
+   "url": "/plantillas/estatica/index.html",
+   "papel": "/plantillas/estatica/papel.json",
+   "archivos": [
+    "/plantillas/estatica/index.html",
+    "/plantillas/estatica/motor.js",
+    "/plantillas/estatica/papel.json"
    ]
   },
   "estequiometria-limitante": {

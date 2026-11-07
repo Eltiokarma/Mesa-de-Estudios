@@ -72,7 +72,7 @@
       "universidades": {"uni": {"semanas": [4]}, "unmsm": {"temas": [6]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "plantillas": [],
+      "plantillas": ["estatica"],
       "investigacion": "docs/investigacion/estatica-energia-ideas-erroneas.md"
     },
     {

@@ -8,7 +8,7 @@
 npm test
 ```
 
-Deben pasar 1567 pruebas.
+Deben pasar 1620 pruebas.
 
 ```bash
 npm run dev
@@ -73,6 +73,7 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 
 - **Cinética** (`plantillas/cinetica/`, rutina de química, 6 nov 2026): caja de discos con teoría de colisiones (energía y orientación), temperatura, catalizador y perfil de energía. Informe `docs/investigacion/cinetica-ideas-erroneas.md` (CI1 a CI13) con cifras sin verificar por el bloqueo de red: la escena no muestra porcentajes de cinética. La fracción contada queda unos pocos por ciento bajo la teoría. Falta en la escena: orden ≠ coeficiente y vida media.
 
+- **Estática** (`plantillas/estatica/`, rutina de física, 7 nov 2026): barra con peso propio, momentos respecto a cualquier punto, bate cortado, nudo, polea y roce estático; 21 casos verificados aparte; 10 de papel; 5 predicciones y 5 «¿qué pasa si…?» (Ortiz y otros 2005, Fischer y otros 2014, Flores-García y otros 2009). Falta en la escena alargar una sola cuerda del nudo sin cambiar su ángulo (E7); sin ítems en el banco de física todavía. Las opciones del momento inclinado, la reacción y la caja son hipótesis.
 - **Dinámica** (`plantillas/dinamica/`, rutina de física, 6 nov 2026): plano inclinado con roce estático que se ajusta, poleas, ascensor, tercera ley y empujón; 21 casos verificados aparte; 10 de papel; 3 predicciones y 6 «¿qué pasa si…?» (Halloun y Hestenes 1985, Bao y otros 2002, Castillo y otros 2013). Falta: dinámica circular en escena (va con tiro parabólico), tren de bloques, bloque sobre bloque, polea móvil y péndulo en un vagón. Para Gerson: en «¿qué pasa si…?» las pastillas dejan saltar sin responder (como en MRUV).
 - **Equilibrio químico** (`plantillas/equilibrio-quimico/`, rutina de química, 6 nov 2026): A ⇌ B y 2 X ⇌ Y con partículas, Q contra K en vez de la regla de Le Chatelier (Quílez 2017); 18 casos verificados aparte; 9 de papel. Falta el gas inerte a presión constante y Kp en la escena (está en papel). ΔH y Ea de la escena elegidos para números redondos.
 
@@ -136,7 +137,7 @@ Cinco conversaciones aparte trabajan solas, cada una en su rama y sin tocar cat�
 - **la1, pruebas de entrada y salida por curso (hecha el 6 nov 2026; revisada y ampliada el mismo día):** banco en `catalogo/pruebas/` (formato en `docs/arquitectura.md`), dos formas paralelas A y B por curso en orden contrabalanceado, 66 ítems por forma en siete cursos (física 10, química 10, geometría 10, trigonometría 8, álgebra 10, aritmética 10, razonamiento matemático 8; desde el 7 nov, 2 por plantilla en los cursos de matemática), cada respuesta y cada distractor verificados con el motor de su plantilla. Aritmética y razonamiento matemático llevan 2 pares por cada uno de sus 4 módulos; trigonometría suma la circunferencia y el caso ambiguo; álgebra, el traductor de enunciados (y 2 de `cuadrado-crece` en reserva). Ningún ítem repite una predicción de escena ni un problema de generador (prueba automática), la respuesta nunca está escrita en el enunciado, los atajos caen igual en A y B y las opciones tienen la misma forma. La salida y las soluciones las abre el profesor (`?salida=`, `?soluciones=`) y hay «Otro alumno en esta PC». Falta:
   - Al agregar una plantilla a un curso, sumar sus ítems (la prueba avisa).
   - Álgebra tiene 2 pares de `cuadrado-crece` en `reserva`: cuando esa plantilla entre al catálogo, pasarlos a `pares` (la prueba avisa) y bajar dos de la gráfica con perillas para no pasar de 10.
-  - Sin ítems todavía (la prueba avisa): sucesiones en álgebra, tiro parabólico en física, mol y composición en química; razonamiento verbal no tiene banco (formato lectura).
+  - Sin ítems todavía (la prueba avisa): sucesiones en álgebra, tiro parabólico y estática en física, mol y composición en química; razonamiento verbal no tiene banco (formato lectura).
   - La equivalencia de A y B es por diseño (ítems isomorfos); hay que confirmarla con los datos del colegio (columna «Forma A / B»).
   - Los enunciados no usan los colores de variables (una prueba es neutra) ni tienen figuras: todo va en texto.
   - La respuesta en `app/datos/pruebas.json` va mezclada, no cifrada: no es seguridad real.
