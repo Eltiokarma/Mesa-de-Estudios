@@ -141,6 +141,8 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
 .btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
 .btn:disabled{opacity:.45; cursor:not-allowed}
+.btn[aria-pressed="true"]{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn[aria-pressed="true"]::before{content:"✓ "}
 button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
 .hint{font-size:.88rem; color:var(--muted)}
 .fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
@@ -355,8 +357,10 @@ function crearEscena(cv, idDesc, idLect, idLey){
 
   E.config = o => {
     E.tok++; E.anim = false;   // una animación vieja no sigue moviendo el dibujo nuevo
-    Object.assign(E, { modo:'tablero', st:{}, lect:[], ley:null, alCambiar:null, desc:null }, o);
-    E.listo = true; cv.tabIndex = -1;
+    Object.assign(E, { modo:'tablero', st:{}, lect:[], ley:null, alCambiar:null, desc:null, alSoltar:null, alElegir:null }, o);
+    E.listo = true; E.arr = null; E.sel = null; E.geo = null;
+    cv.tabIndex = E.st.mano ? 0 : -1;
+    cv.setAttribute('aria-label', E.st.mano ? 'Tablero para mover piezas: ← y → eligen la columna, Enter abre una pieza y J junta' : 'Dibujo de la escena');
     W = 0; resize(); E.leyenda(); E.dibujar(); E.avisar();
   };
   E.redimensionar = () => { W = 0; resize(); };
@@ -419,8 +423,10 @@ function crearEscena(cv, idDesc, idLect, idLey){
       const fi = Math.floor(i/lay.por), j = i % lay.por, x = x0 + j*(lay.w + lay.g + ex), y = y0 + fi*(lay.h + lay.g);
       const tach = o.tachadas && i < o.tachadas;
       dibPieza(c, k, b, x, y, lay.u, o.estilo, tach ? .32*(o.alfa === undefined ? 1 : o.alfa) : o.alfa);
+      if (o.registro) o.registro.push({ k, x, y, w:lay.w, h:lay.h, u:lay.u });
       if (tach){ ctx.save(); if (o.alfa !== undefined) ctx.globalAlpha = o.alfa; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.3; linea(x - 1, y - 1, x + lay.w + 1, y + lay.h + 1); linea(x + lay.w + 1, y - 1, x - 1, y + lay.h + 1); ctx.restore(); }
     }
+    return lay;
   }
 
   // ----- el tablero de columnas -----
@@ -434,6 +440,15 @@ function crearEscena(cv, idDesc, idLect, idLey){
   const areaPiezas = (g, x, y) => ({ x:x + 4, y:y + 19, w:g.cw - 8, h:g.rowH - 23 });
   function dibTablero(c){
     const s = E.st, g = geoTablero(), b = s.b, mv = s.moviendo || null;
+    // la fila que se mueve a mano (explorador): se guardan sus celdas y piezas para el arrastre
+    const manoEn = f => !!s.mano && s.mano.fila === f;
+    if (s.mano) E.geo = { celdas:[], piezas:[], K:g.K };
+    function dibMano(c, k, b, n, A, estilo, x, y){
+      const oculta = E.arr && E.arr.k === k ? 1 : 0;   // la pieza que va en la mano no se dibuja en su columna
+      E.geo.celdas[k] = { x:x + 2, y:y + 2, w:g.cw - 4, h:g.rowH - 4 };
+      const lay = racimo(c, k, b, n - oculta, A, { estilo, registro:E.geo.piezas });
+      E.geo.celdas[k].u = lay ? lay.u : Math.min(8, A.h/DIM[Math.min(k, 4)][1]);
+    }
     // cabeceras de columna
     for (let k = 0; k < g.K; k++){
       const x = g.colX(k) + g.cw/2, colr = k <= 3 ? c[ko(k)] : c.ink;
@@ -478,7 +493,8 @@ function crearEscena(cv, idDesc, idLect, idLey){
               racimo(c, k, b, mv.quita, A, { estilo:F.estilo, tachadas:mv.quita, alfa:1 - h });
               racimo(c, k, b, mv.quedan, { x:A.x, y:A.y + suave(h)*(g.resY - y), w:A.w, h:A.h }, { estilo:F.estilo }); }
           } else racimo(c, k, b, n, A, { estilo:F.estilo, alfa:Math.max(0, 1 - mv.f/.6) });
-        } else racimo(c, k, b, n, A, { estilo:F.estilo });
+        } else if (manoEn(i)) dibMano(c, k, b, n, A, F.estilo, x, y);
+        else racimo(c, k, b, n, A, { estilo:F.estilo });
       }
     });
     // la pieza que se abre en el préstamo
@@ -499,7 +515,8 @@ function crearEscena(cv, idDesc, idLect, idLey){
         if (n === null || n === undefined) continue;
         rotulo(c, x + 8, y + 11, String(n), n >= b ? c.ink : colr, 'left', 800, n >= b ? 13 : 15);
         if (n >= b) rotulo(c, x + g.cw - 6, y + 11, `≥ ${b}`, c.ink, 'right', 700, 10);
-        racimo(c, k, b, n, areaPiezas(g, x, y), {});
+        if (manoEn('res')) dibMano(c, k, b, n, areaPiezas(g, x, y), 'lleno', x, y);
+        else racimo(c, k, b, n, areaPiezas(g, x, y), {});
       }
       if (mv && mv.tipo === 'subir'){
         const k = mv.orden, A = areaPiezas(g, g.colX(k), g.resY), f = suave(mv.f);
@@ -509,7 +526,70 @@ function crearEscena(cv, idDesc, idLect, idLey){
         racimo(c, k + 1, b, mv.paquetes, { x:cx - bw/2, y:cy - bh/2, w:bw, h:bh }, { tope:7 });
       }
     }
+    if (s.mano && E.geo){
+      const cel = E.geo.celdas;
+      // la columna elegida con el teclado
+      if (E.sel !== null && cel[E.sel]){ const q = cel[E.sel]; ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2.5; redondeado(ctx, q.x - 2, q.y - 2, q.w + 4, q.h + 4, 11); ctx.stroke(); ctx.restore(); }
+      // mientras se arrastra: dónde se puede soltar, y la pieza en la mano
+      if (E.arr){
+        const k = E.arr.k, dest = destino(E.arr.x);
+        metas(k).forEach(([kk, que]) => { const q = cel[kk]; if (!q) return; const on = dest === kk;
+          ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = on ? 3 : 1.6; ctx.setLineDash(on ? [] : [6, 4]); redondeado(ctx, q.x - 2, q.y - 2, q.w + 4, q.h + 4, 11); ctx.stroke(); ctx.restore();
+          rotulo(c, q.x + q.w/2, q.y + q.h - 9, que, c.ink, 'center', 800, 11); });
+        const u = cel[k] ? cel[k].u : 6, [w, h] = dim(k, u);
+        dibPieza(c, k, b, E.arr.x - w/2, E.arr.y - h/2, u, 'lleno', .85);
+      }
+    }
   }
+  // ----- el arrastre (solo en el explorador, con la cuenta a mano): abrir una pieza o juntar b -----
+  // Las columnas donde una pieza de la columna k puede caer: a la derecha se abre; a la izquierda se juntan b.
+  function metas(k){
+    const s = E.st, cu = s.mano ? s.mano.cuentas : [], K = s.K, m = [];
+    if (k >= 1 && cu[k] >= 1) m.push([k - 1, 'abrir']);
+    if (cu[k] >= s.b && k + 1 < K) m.push([k + 1, `juntar ${s.b}`]);
+    return m;
+  }
+  // La columna bajo el puntero (por x); fuera del tablero, la del borde más cercano.
+  function destino(x){
+    const cel = E.geo ? E.geo.celdas : []; let mejor = null, d = Infinity;
+    cel.forEach((q, k) => { if (!q) return; const dd = Math.max(q.x - x, 0, x - q.x - q.w); if (dd < d){ d = dd; mejor = k; } });
+    return mejor;
+  }
+  const manoLibre = () => E.modo === 'tablero' && !!E.st.mano && !!E.geo && !E.anim && !E.ocupado;
+  function piezaCerca(p, r){
+    if (!manoLibre()) return null;
+    let mejor = null, d = r;
+    for (const z of E.geo.piezas){
+      if (!metas(z.k).length) continue;
+      const dx = Math.max(z.x - p.x, 0, p.x - z.x - z.w), dy = Math.max(z.y - p.y, 0, p.y - z.y - z.h), dd = Math.hypot(dx, dy);
+      if (dd <= d){ d = dd; mejor = z; }
+    }
+    return mejor;
+  }
+  Celular.arrastre(cv, {
+    activo: manoLibre,
+    cerca: (p, r) => piezaCerca(p, r) !== null,
+    empezar: p => { const z = piezaCerca(p, 40); if (!z) return; E.arr = { k:z.k, x:p.x, y:p.y }; E.dibujar(); },
+    mover: p => { if (!E.arr) return; E.arr.x = p.x; E.arr.y = p.y; E.dibujar(); },
+    soltar: () => {
+      const a = E.arr; E.arr = null; if (!a || !E.geo) { E.dibujar(); return; }
+      const dest = destino(a.x), m = metas(a.k).find(([kk]) => kk === dest);
+      E.dibujar();
+      if (m && E.alSoltar) E.alSoltar(dest < a.k ? 'abrir' : 'juntar', a.k);
+    },
+  });
+  cv.addEventListener('keydown', e => {
+    if (!manoLibre()) return;
+    const K = E.st.K, cu = E.st.mano.cuentas;
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight'){
+      const s0 = E.sel === null ? 0 : E.sel; E.sel = clamp(s0 + (e.key === 'ArrowLeft' ? 1 : -1), 0, K - 1);
+      E.dibujar(); if (E.alElegir) E.alElegir(E.sel); e.preventDefault(); return;
+    }
+    if (E.sel === null) return;
+    if (e.key === 'Enter' && E.sel >= 1 && cu[E.sel] >= 1){ e.preventDefault(); if (E.alSoltar) E.alSoltar('abrir', E.sel); }
+    else if ((e.key === 'j' || e.key === 'J' || e.key === ' ') && cu[E.sel] >= E.st.b && E.sel + 1 < K){ e.preventDefault(); if (E.alSoltar) E.alSoltar('juntar', E.sel); }
+  });
+  cv.addEventListener('blur', () => { if (E.sel !== null){ E.sel = null; E.dibujar(); } });
 
   // ----- la cuenta escrita en columnas -----
   function celdaEscrito(w){ const K = E.st.K || 4; return Math.min(w >= 560 ? 56 : 48, (w - 90)/K); }
@@ -663,7 +743,7 @@ const celdas = t => { const cs = String(t).split(''), L = cs.length; return cs.m
 (function(){
 const $ = id => document.getElementById(id);
 const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1');
-const S = { step:0, max:0, pred:{}, ocupado:false, p1:'b10', hecho1:false, op8:'suma', b8:10, a8:478, c8:356 };
+const S = { step:0, max:0, pred:{}, ocupado:false, p1:'b10', hecho1:false, op8:'suma', b8:10, a8:478, c8:356, mano8:false, m8:null };
 
 // Números de la escena: todos salen del motor
 const P1 = { b10: M.sumaColumnas(['478', '356'], 10), b5: M.sumaColumnas(['342', '213'], 5) };
@@ -780,7 +860,42 @@ function arreglar8(){
   if (S.op8 === 'multiplica') S.c8 = clamp(S.c8, 1, b - 1);
   else S.c8 = clamp(S.c8, 0, S.op8 === 'resta' ? S.a8 : mx);
 }
+// La cuenta a mano: S.m8 es el estado del motor (aMano, abrirMano, juntarMano); el dibujo solo lo muestra.
+const puedeMano = () => S.op8 === 'suma' || S.op8 === 'resta';
+function stMano(){
+  const b = S.b8, m = S.m8, K = m.K, tA = S.a8.toString(b), tB = S.c8.toString(b), cero = Array(K).fill(0);
+  if (m.op === 'suma') return { b, K, filas:[{ signo:'', cuentas:cero, cifras:porColumna(tA, K), estilo:'lleno' }, { signo:'+', cuentas:cero, cifras:porColumna(tB, K), estilo:'lleno' }],
+    resultado:m.cuentas.slice(), llevada:cero, marcas:cero, mostrarRes:true, mano:{ fila:'res', cuentas:m.cuentas } };
+  const arriba = M.aMano('resta', tA, tB, b).cuentas;
+  return { b, K, filas:[{ signo:'', cuentas:m.cuentas.slice(), cifras:porColumna(tA, K), nuevas:m.cuentas, original:arriba, estilo:'lleno' },
+      { signo:'−', cuentas:m.abajo.slice(), cifras:porColumna(tB, K), estilo:'hueco' }],
+    resultado:m.resultado.slice(), llevada:cero, marcas:cero, mostrarRes:true, mano:{ fila:0, cuentas:m.cuentas } };
+}
+function descMano(){
+  const b = S.b8, m = S.m8, cols = m.cuentas.map((x, k) => cuenta(k, b, x)).reverse().join(', ');
+  if (m.op === 'suma') return `Suma a mano: en el resultado hay ${cols}. ` + (m.listo ? `Ya es un numeral: ${quitar(numH(m.texto, b))}.` : `Todavía se pueden juntar ${b} piezas.`);
+  return `Resta a mano: arriba hay ${cols}. ` + (m.faltan.length ? `En la columna de ${NOMBRE[m.faltan[0]]} no alcanza para quitar: abre una pieza de la izquierda.` : m.listo ? `La diferencia es ${quitar(numH(m.texto, b))}.` : `Todavía se pueden juntar ${b} piezas.`);
+}
+function prepMano(){
+  arreglar8();
+  const b = S.b8; if (!S.m8) S.m8 = M.aMano(S.op8, S.a8.toString(b), S.c8.toString(b), b);
+  E.config({ modo:'tablero', st:stMano(), ley:leyTablero(b, S.m8.K), desc:descMano(),
+    lect:[() => lectNum(S.m8.op === 'suma' ? 'suma' : 'diferencia', S.m8.listo ? S.m8.texto : '—', b), () => ['ink', 'en base 10', String(S.m8.op === 'suma' ? S.m8.valor : S.m8.diferencia)]],
+    alCambiar:vivo8, alSoltar:accionMano,
+    alElegir: k => { $('desc1').textContent = `Columna de ${NOMBRE[k]}: hay ${S.m8.cuentas[k]}.`; } });
+}
+// Abrir una pieza de la columna k o juntar b piezas de la columna k (lo calcula el motor; el valor no cambia).
+function accionMano(que, k){
+  if (S.ocupado || E.anim || !S.m8) return;
+  const b = S.b8; let R;
+  try { R = que === 'abrir' ? M.abrirMano(S.m8, k) : M.juntarMano(S.m8, k); } catch (e) { return; }
+  S.m8 = R; const sel = E.sel;
+  E.st = stMano(); E.sel = sel;
+  E.desc = (que === 'abrir' ? `Se abrió 1 ${NOMBRE1[k]} en ${b} ${k - 1 === 0 ? 'sueltas' : NOMBRE[k - 1]}. ` : `Se juntaron ${b} ${k === 0 ? 'sueltas' : NOMBRE[k]} en 1 ${NOMBRE1[k + 1]}. `) + descMano();
+  E.dibujar(); E.avisar();
+}
 function prep8(){
+  if (S.mano8 && puedeMano()) return prepMano();
   arreglar8();
   const C = cuenta8(), R = C.R, b = S.b8, n = S.op8 === 'resta' ? R.acciones.length : R.K;
   const st = S.op8 === 'multiplica' ? C.st(0) : C.st(n);
@@ -799,25 +914,50 @@ function vivo8(){
   $('stepBody').querySelectorAll('[data-db]').forEach(q => { const db = +q.dataset.db; q.disabled = S.ocupado || b + db < 2 || b + db > 10; });
   $('stepBody').querySelectorAll('[data-op]').forEach(q => q.setAttribute('aria-pressed', String(q.dataset.op === S.op8)));
   const tA = S.a8.toString(b), tB = S.c8.toString(b);
+  const bm = $('mano8'); bm.hidden = mult; bm.setAttribute('aria-pressed', String(S.mano8 && !mult)); bm.disabled = S.ocupado;
+  $('ver8').textContent = S.mano8 && !mult ? 'Ver la cuenta hecha' : 'Ver la cuenta';
+  if (S.mano8 && puedeMano() && S.m8){
+    const m = S.m8, libre = !S.ocupado && !E.anim, nom = k => (k === 0 ? 'sueltas' : NOMBRE[k]);
+    const nota = m.op === 'suma'
+      ? (m.listo ? `ninguna columna llega a ${b}: la suma es ${numH(m.texto, b)}` : `${m.llenos.map(k => `${m.cuentas[k]} ${nom(k)}`).join(' y ')}: ${m.llenos.length === 1 ? 'llega' : 'llegan'} a ${b} o más; junta ${b} y súbelas como una pieza de la izquierda`)
+      : (m.faltan.length ? `en ${m.faltan.map(k => nom(k)).join(' y ')} arriba no alcanza para quitar: abre una pieza de la columna de la izquierda` : m.listo ? `en todas las columnas alcanza: la diferencia es ${numH(m.texto, b)}` : `ya alcanza en todas las columnas, pero alguna queda con ${b} o más: júntalas`);
+    d.innerHTML = `<div class="eqs"><div class="eq">${numH(tA, b)} ${C.signo} ${numH(tB, b)} = ${m.listo ? numH(m.texto, b) : '¿?'}<span class="note">${nota}</span></div>
+      <div class="eq">${m.cuentas.map((x, k) => (k === 0 ? o_(0, x) : `${o_(Math.min(k, 3), x)}·${b}${k > 1 ? '<sup>' + k + '</sup>' : ''}`)).reverse().join(' + ')} = ${m.valor}<span class="note">${m.op === 'suma' ? 'el total' : 'lo que hay arriba'}: abrir o juntar no lo cambia</span></div></div>
+      <div class="seg" role="group" aria-label="Abrir o juntar piezas">
+        ${[...Array(m.K).keys()].slice(1).reverse().map(k => `<button type="button" data-abrir="${k}" ${!libre || !m.cuentas[k] ? 'disabled' : ''}>Abrir 1 ${NOMBRE1[k]}</button>`).join('')}
+        ${[...Array(m.K - 1).keys()].map(k => `<button type="button" data-juntar="${k}" ${!libre || m.cuentas[k] < b ? 'disabled' : ''}>Juntar ${b} ${nom(k)}</button>`).join('')}
+        <button type="button" id="otra8" ${!libre ? 'disabled' : ''}>Empezar de nuevo</button>
+      </div>
+      <p class="hint">Arrastra una pieza ${m.op === 'suma' ? 'del resultado' : 'de arriba'} a la columna de la derecha para abrirla, o una de una columna con ${b} o más a la izquierda para juntarlas. Con teclado: toca el dibujo; ← y → eligen la columna, Enter abre una pieza y J junta.</p>`;
+    d.querySelectorAll('[data-abrir]').forEach(q => q.onclick = () => accionMano('abrir', +q.dataset.abrir));
+    d.querySelectorAll('[data-juntar]').forEach(q => q.onclick = () => accionMano('juntar', +q.dataset.juntar));
+    $('otra8').onclick = () => { if (S.ocupado || E.anim) return; S.m8 = null; prep8(); vivo8(); };
+    return;
+  }
   d.innerHTML = `<div class="eqs"><div class="eq">${numH(tA, b)} ${C.signo === '×' ? '·' : C.signo} ${mult ? S.c8 : numH(tB, b)} = ${numH(R.texto, b)}</div>
     ${b !== 10 ? `<div class="eq">${parseInt(tA, b)} ${C.signo === '×' ? '·' : C.signo} ${mult ? S.c8 : parseInt(tB, b)} = ${R.valor}<span class="note">la misma cuenta en base 10</span></div>` : ''}</div>`;
+}
+function mano8(){
+  if (S.ocupado || E.anim || !puedeMano()) return;
+  S.mano8 = !S.mano8; S.m8 = null; prep8(); vivo8();
 }
 function mover8(cual, dx){
   if (S.ocupado || E.anim) return;
   const b = S.b8, x = dx*(Math.abs(dx) === 1 ? 1 : b/10);
   if (cual === 'a') S.a8 += x; else S.c8 += x;
-  prep8(); vivo8();
+  S.m8 = null; prep8(); vivo8();
 }
 function base8(db){
   if (S.ocupado || E.anim) return;
-  S.b8 = clamp(S.b8 + db, 2, 10); prep8(); vivo8();
+  S.b8 = clamp(S.b8 + db, 2, 10); S.m8 = null; prep8(); vivo8();
 }
 function op8(op){
   if (S.ocupado || E.anim || op === S.op8) return;
-  S.op8 = op; if (op === 'multiplica') S.c8 = clamp(S.c8, 1, S.b8 - 1); prep8(); vivo8();
+  S.op8 = op; S.m8 = null; if (op === 'multiplica') S.c8 = clamp(S.c8, 1, S.b8 - 1); prep8(); vivo8();
 }
 function animar8(){
   if (S.ocupado || E.anim) return;
+  if (S.mano8){ S.mano8 = false; S.m8 = null; vivo8(); }
   const C = cuenta8(), R = C.R, n = S.op8 === 'resta' ? R.acciones.length : R.K;
   if (S.op8 === 'multiplica'){
     E.st = Object.assign(C.st(0), {}); E.redimensionar();
@@ -937,14 +1077,14 @@ const steps = [
    <p>En la criptoaritmética, las columnas dicen qué cifras pueden ser y las llevadas conectan una columna con la siguiente. Aquí las dos columnas suman lo mismo, así que XY + YX siempre es 11 veces X + Y.</p>${FUENTE}</div>` },
  { k:'Paso 8', t:'Explora: cualquier cuenta, cualquier base', explora:true,
    prep:() => prep8(),
-   body:() => `<p class="problem">Elige la operación, la base y los números. El tablero arma la cuenta con las mismas piezas; toca «Ver la cuenta» para mirar cómo se lleva o cómo se presta.</p>
+   body:() => `<p class="problem">Elige la operación, la base y los números. El tablero arma la cuenta con las mismas piezas; toca «Ver la cuenta» para mirar cómo se lleva o cómo se presta. En la suma y en la resta también puedes hacerla <b>a mano</b>: arrastra una pieza a la columna de la derecha para abrirla (el préstamo) o junta ${b_('b')} piezas de una columna y súbelas a la izquierda (la llevada).</p>
    <div class="seg" role="group" aria-label="Operación">${[['suma', 'suma'], ['resta', 'resta'], ['multiplica', 'por una cifra']].map(([k, t]) => `<button type="button" data-op="${k}" aria-pressed="${S.op8 === k}">${t}</button>`).join('')}</div>
    <div class="stepper">
      <div><span class="que">primero</span>${[-10, -1].map(d => `<button type="button" data-da="${d}"></button>`).join('')}<span class="val" id="a8" aria-live="polite"></span>${[1, 10].map(d => `<button type="button" data-da="${d}"></button>`).join('')}</div>
      <div><span class="que">segundo</span>${[-10, -1].map(d => `<button type="button" data-dc="${d}"></button>`).join('')}<span class="val" id="c8" aria-live="polite"></span>${[1, 10].map(d => `<button type="button" data-dc="${d}"></button>`).join('')}</div>
      <div><span class="que">base</span><button type="button" data-db="-1" aria-label="Bajar la base">−</button><span class="val" id="b8" aria-live="polite"></span><button type="button" data-db="1" aria-label="Subir la base">+</button></div>
    </div>
-   <p><button type="button" class="btn primary" id="ver8">Ver la cuenta</button></p>
+   <p style="display:flex; gap:8px; flex-wrap:wrap"><button type="button" class="btn primary" id="ver8">Ver la cuenta</button><button type="button" class="btn" id="mano8" aria-pressed="false">Hacerla a mano</button></p>
    <div id="vivo8b"></div>
    <p>Prueba con una resta que tenga ceros arriba, o con una base chica: en base 2, cada 2 piezas ya suben.</p>
    <p><a class="btn primary" href="#que-pasa-si" style="display:inline-block; text-decoration:none">Seguir con ¿Qué pasa si…?</a></p>`,
@@ -952,7 +1092,7 @@ const steps = [
      $('stepBody').querySelectorAll('[data-dc]').forEach(q => q.onclick = () => mover8('c', +q.dataset.dc));
      $('stepBody').querySelectorAll('[data-db]').forEach(q => q.onclick = () => base8(+q.dataset.db));
      $('stepBody').querySelectorAll('[data-op]').forEach(q => q.onclick = () => op8(q.dataset.op));
-     $('ver8').onclick = animar8; vivo8(); } },
+     $('ver8').onclick = animar8; $('mano8').onclick = mano8; vivo8(); } },
 ];
 
 const dots = $('dots');

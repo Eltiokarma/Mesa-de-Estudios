@@ -250,8 +250,9 @@ test('la cuenta a mano: abrir y juntar al azar conservan el valor; juntar todo (
       assert.ok(m.listo); assert.equal(m.texto, bruto(a + c, b), 'juntar todo da la suma');
     } else {
       // de derecha a izquierda: abrir donde falta (desde la primera columna con piezas), y después juntar lo que sobre
-      for (let g = 0; g < 500 && m.faltan.length; g++) { const k = m.faltan[0]; let j = k + 1; while (!m.cuentas[j]) j++; m = M.abrirMano(m, j); }
-      for (let g = 0; g < 500 && !m.listo; g++) { const k = m.resultado.findIndex(x => x >= b); m = M.juntarMano(m, k); }
+      for (let g = 0; g < 500 && m.llenos.length; g++) m = M.juntarMano(m, m.llenos[0]);   // primero, todo junto
+      for (let g = 0; g < 500 && m.faltan.length; g++) { const k = m.faltan[0]; let j = k + 1; while (j < m.K && !m.cuentas[j]) j++; assert.ok(j < m.K, 'hay de dónde prestar'); m = M.abrirMano(m, j); }
+      for (let g = 0; g < 500 && !m.listo; g++) { const k = m.resultado.findIndex(x => x >= b); assert.ok(k >= 0 && k < m.K - 1); m = M.juntarMano(m, k); }
       assert.ok(m.listo); assert.equal(m.texto, bruto(a - c, b), 'prestar lo necesario da la resta');
     }
   }
@@ -281,8 +282,9 @@ test('la cuenta a mano: abrir y juntar al azar conservan el valor; juntar todo (
       assert.ok(m.listo); assert.equal(m.texto, bruto(a + c, b), 'juntar todo da la suma');
     } else {
       // de derecha a izquierda: abrir donde falta (desde la primera columna con piezas), y después juntar lo que sobre
-      for (let g = 0; g < 500 && m.faltan.length; g++) { const k = m.faltan[0]; let j = k + 1; while (!m.cuentas[j]) j++; m = M.abrirMano(m, j); }
-      for (let g = 0; g < 500 && !m.listo; g++) { const k = m.resultado.findIndex(x => x >= b); m = M.juntarMano(m, k); }
+      for (let g = 0; g < 500 && m.llenos.length; g++) m = M.juntarMano(m, m.llenos[0]);   // primero, todo junto
+      for (let g = 0; g < 500 && m.faltan.length; g++) { const k = m.faltan[0]; let j = k + 1; while (j < m.K && !m.cuentas[j]) j++; assert.ok(j < m.K, 'hay de dónde prestar'); m = M.abrirMano(m, j); }
+      for (let g = 0; g < 500 && !m.listo; g++) { const k = m.resultado.findIndex(x => x >= b); assert.ok(k >= 0 && k < m.K - 1); m = M.juntarMano(m, k); }
       assert.ok(m.listo); assert.equal(m.texto, bruto(a - c, b), 'prestar lo necesario da la resta');
     }
   }
