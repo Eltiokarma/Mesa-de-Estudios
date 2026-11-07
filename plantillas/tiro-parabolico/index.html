@@ -8,14 +8,15 @@
 /* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md).
    Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
    vx azul (y la sombra en el eje horizontal), vy rojo (y la sombra en el eje vertical), v morado,
-   a aceleración verde (g en el tiro, ac en el círculo), t tiempo naranja, ω velocidad angular turquesa.
-   Posiciones, alturas, radios y ángulos van en tinta. El morado de marca no se usa aquí. */
+   a aceleración verde (g en el tiro, ac en el círculo), t tiempo naranja, ω velocidad angular turquesa,
+   at aceleración tangencial ocre (solo en «Ruedas»). Posiciones, alturas, radios, ángulos, vueltas, la distancia
+   que falta en la pista y la aceleración total del MCUV (a trazos, sin letra) van en tinta. El morado de marca no se usa aquí. */
 [hidden]{display:none!important}
 :root{
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
   --detras:#f6ece4; --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
   --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
-  --c-vx:#1f5fbf; --c-vy:#c0364a; --c-v:#8a2aa8; --c-a:#4f7a17; --c-t:#a05200; --c-w:#0f766e;
+  --c-vx:#1f5fbf; --c-vy:#c0364a; --c-v:#8a2aa8; --c-a:#466d14; --c-t:#a05200; --c-w:#0f766e; --c-at:#4a3b00;
   --suelo:#d9c8bb; --bloque:#f3e3d3;
   --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
   --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
@@ -25,13 +26,13 @@
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-vx:#7cb0ff; --c-vy:#f17384; --c-v:#ec62e6; --c-a:#a3d65e; --c-t:#f0a04a; --c-w:#5ed9c8;
+  --c-vx:#7cb0ff; --c-vy:#f17384; --c-v:#ec62e6; --c-a:#a3d65e; --c-t:#f0a04a; --c-w:#5ed9c8; --c-at:#ffde0a;
   --suelo:#4a3d55; --bloque:#5a4868; color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-vx:#7cb0ff; --c-vy:#f17384; --c-v:#ec62e6; --c-a:#a3d65e; --c-t:#f0a04a; --c-w:#5ed9c8;
+  --c-vx:#7cb0ff; --c-vy:#f17384; --c-v:#ec62e6; --c-a:#a3d65e; --c-t:#f0a04a; --c-w:#5ed9c8; --c-at:#ffde0a;
   --suelo:#4a3d55; --bloque:#5a4868; color-scheme:dark }
 
 *{box-sizing:border-box}
@@ -48,14 +49,12 @@ h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; let
 .tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
 .tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
 .tabs a:hover:not([aria-current]){color:var(--ink)}
+@media (max-width:419px){ .tabs{overflow-x:auto} .tabs a{padding:9px 12px} }
 
 .mode{display:grid; gap:16px; min-width:0; align-items:start}
 .bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
 .lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
-canvas{display:block; width:100%; touch-action:pan-y; -webkit-user-select:none; user-select:none}
-canvas.arrastrable{cursor:grab}
-canvas.agarrando{cursor:grabbing}
-canvas.sin-scroll{touch-action:none}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none}
 canvas:focus-visible{outline:3px solid var(--ink); outline-offset:-3px}
 .legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
 .legend span{display:inline-flex; align-items:center; gap:6px}
@@ -79,14 +78,15 @@ canvas:focus-visible{outline:3px solid var(--ink); outline-offset:-3px}
 .map b{font-family:var(--mono); min-width:4.6em; flex:none}
 
 .v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
-.v-vx{color:var(--c-vx); background:color-mix(in srgb, var(--c-vx) 12%, transparent)}
-.v-vy{color:var(--c-vy); background:color-mix(in srgb, var(--c-vy) 12%, transparent)}
-.v-v{color:var(--c-v); background:color-mix(in srgb, var(--c-v) 12%, transparent)}
-.v-a{color:var(--c-a); background:color-mix(in srgb, var(--c-a) 12%, transparent)}
-.v-t{color:var(--c-t); background:color-mix(in srgb, var(--c-t) 12%, transparent)}
-.v-w{color:var(--c-w); background:color-mix(in srgb, var(--c-w) 12%, transparent)}
-.v-m{color:var(--ink); background:color-mix(in srgb, var(--ink) 9%, transparent)}
-.v.hl{background:color-mix(in srgb, currentColor 26%, transparent)}
+.v-vx{color:var(--c-vx); background:color-mix(in srgb, var(--c-vx) 8%, transparent)}
+.v-vy{color:var(--c-vy); background:color-mix(in srgb, var(--c-vy) 8%, transparent)}
+.v-v{color:var(--c-v); background:color-mix(in srgb, var(--c-v) 8%, transparent)}
+.v-a{color:var(--c-a); background:color-mix(in srgb, var(--c-a) 8%, transparent)}
+.v-t{color:var(--c-t); background:color-mix(in srgb, var(--c-t) 8%, transparent)}
+.v-w{color:var(--c-w); background:color-mix(in srgb, var(--c-w) 8%, transparent)}
+.v-at{color:var(--c-at); background:color-mix(in srgb, var(--c-at) 8%, transparent)}
+.v-m{color:var(--ink); background:color-mix(in srgb, var(--ink) 8%, transparent)}
+.v.hl{background:none; outline:2px solid currentColor; outline-offset:1px}
 
 .eqs{display:grid; grid-template-columns:minmax(0,1fr); gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
 .eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.05rem; white-space:nowrap; font-variant-numeric:tabular-nums}
@@ -117,7 +117,7 @@ canvas:focus-visible{outline:3px solid var(--ink); outline-offset:-3px}
 .slider label{font-weight:700; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
 .slider output{font-family:var(--mono); color:var(--muted)}
 input[type=range]{width:100%; accent-color:var(--ink); min-height:28px}
-input.r-v{accent-color:var(--c-v)} input.r-a{accent-color:var(--c-a)} input.r-t{accent-color:var(--c-t)} input.r-w{accent-color:var(--c-w)}
+input.r-v{accent-color:var(--c-v)} input.r-a{accent-color:var(--c-a)} input.r-t{accent-color:var(--c-t)} input.r-w{accent-color:var(--c-w)} input.r-at{accent-color:var(--c-at)}
 .chips{display:flex; flex-wrap:wrap; gap:6px}
 .chip{font-size:.86rem; padding:4px 12px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); font-weight:700}
 .chip.ok{border-color:var(--ok); color:var(--ok)}
@@ -170,6 +170,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
     <nav class="tabs" aria-label="Modo de la escena">
       <a href="#paso-a-paso" id="tab1">Paso a paso</a>
       <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+      <a href="#ruedas" id="tab3" aria-label="Ruedas y pistas: movimiento circular">Ruedas</a>
     </nav>
   </div>
 
@@ -211,6 +212,23 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
     </section>
   </div>
 
+  <!-- ===== MODO 3: ruedas y pistas ===== -->
+  <div id="m3" class="mode" hidden>
+    <section class="bench" aria-label="Experimento elegido de ruedas y pistas">
+      <div class="lienzo"><canvas id="cv3" tabindex="-1" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc3" aria-live="polite"></p>
+      <div class="legend" id="ley3"></div>
+    </section>
+    <section class="guide">
+      <div class="seg exps" id="exps3" role="group" aria-label="Experimentos de ruedas y pistas (se abren en orden: responde uno para pasar al siguiente)"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k3"></p>
+        <h2 class="step-t" id="t3" tabindex="-1"></h2>
+      </div>
+      <div id="body3" class="body"></div>
+    </section>
+  </div>
+
   <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/tiro-parabolico">Problemas para lápiz y papel</a></p>
 </main>
 
@@ -227,7 +245,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="../../nucleo/celular.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
-const PLANTILLA = { id: 'tiro-parabolico', unidad: 'fisica.movimiento-parabolico-y-circular', version: '0.1.0' };
+const PLANTILLA = { id: 'tiro-parabolico', unidad: 'fisica.movimiento-parabolico-y-circular', version: '0.2.0' };
 function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
   if (!window.Medicion) return;
   Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
@@ -246,25 +264,28 @@ function fmt(n, d){
   return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
 }
 const N1 = n => fmt(n, Math.abs(n - Math.round(n)) < 1e-9 ? 0 : 1);
+// Un múltiplo de π, como en el examen: 8π, −π, 0,24π.
+const fmtPi = x => { const k = x/Math.PI; return Math.abs(k - 1) < 1e-9 ? 'π' : Math.abs(k + 1) < 1e-9 ? '−π' : `${fmt(k, 2)}π`; };
 const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
 const fr = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
 const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 const M = MotorTiro;
-const chico = () => innerWidth < 900;
+const chico = () => Celular.chico();
 // Escribe en una región aria-live solo si el texto cambia (si no, el lector de pantalla repite en cada cuadro).
 function decir(el, t){ if (el.textContent !== t) el.textContent = t; }
-function esperar(ms, fn){ return ms ? setTimeout(fn, ms) : fn(); }
 function crearLienzo(cv, alto, dibujar){
   const ctx = cv.getContext('2d');
   const L = { cv, ctx, W:0, H:0 };
   L.resize = () => {
     const W = cv.clientWidth; if (!W) return;
-    const H = Math.round(alto(W)), dpr = Celular.dpr();
+    const H = Math.round(Celular.alto(alto(W), L.compacto, { tope:260 })), dpr = Celular.dpr();
     L.W = W; L.H = H; cv.style.height = H + 'px'; cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
     ctx.setTransform(dpr,0,0,dpr,0,0);
     dibujar();
   };
   new ResizeObserver(L.resize).observe(cv);
+  // Celular con predicción pendiente: el dibujo más bajo y pegado arriba (nucleo/celular.js).
+  L.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === !!L.compacto) return; L.compacto = on; L.resize(); };
   return L;
 }
 const altoLienzo = W => W >= 560 ? clamp(W*0.62, 330, 460) : clamp(W*0.95, 320, 400);
@@ -285,7 +306,7 @@ function rotulo(ctx, c, x, y, t, color, align, peso, W){
 function colores(W){
   const g = n => css(n);
   return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
-    vx:g('--c-vx'), vy:g('--c-vy'), v:g('--c-v'), a:g('--c-a'), t:g('--c-t'), w:g('--c-w'),
+    vx:g('--c-vx'), vy:g('--c-vy'), v:g('--c-v'), a:g('--c-a'), t:g('--c-t'), w:g('--c-w'), at:g('--c-at'),
     suelo:g('--suelo'), bloque:g('--bloque'), mono:g('--mono'), font:g('--font'), chico: W < 480 };
 }
 function flecha(ctx, x1, y1, x2, y2, color, w, dash){
@@ -301,7 +322,7 @@ function flecha(ctx, x1, y1, x2, y2, color, w, dash){
 /* Un vector dibujado: { x, y, dx, dy (en pantalla, sin normalizar: largo en px), col, txt, al, ox, oy, fino, hl } */
 function vector(ctx, c, f, W, H){
   const l = Math.hypot(f.dx, f.dy); if (l < 1.5) return;
-  flecha(ctx, f.x, f.y, f.x + f.dx, f.y + f.dy, f.col, f.fino ? 1.8 : (f.hl ? 4.4 : 3), f.fino ? [5, 4] : null);
+  flecha(ctx, f.x, f.y, f.x + f.dx, f.y + f.dy, f.col, f.ancho || (f.fino ? 1.8 : (f.hl ? 4.4 : 3)), f.trazos || (f.fino ? [5, 4] : null));
   if (!f.txt) return;
   const ux = f.dx/l, uy = f.dy/l;
   const al = f.al || (ux > 0.35 ? 'left' : ux < -0.35 ? 'right' : 'center');
@@ -319,8 +340,10 @@ function altoCampo(W, P){
   return Math.round(clamp(64 + P.Ymax*s + 24, 230, altoLienzo(W)));
 }
 /* ---------- Campo de tiro ----------
-   P = { tiros:[{ o, nombre, trazos }], t, xmin, Xmax, Ymax, ver:{ tray:'toda'|'hasta'|null, estrobo, sombras, vx, vy, v, a, comp0,
-         cima, alcance, alturas, avion, gTodos }, canon, plataforma, crece, hl }
+   P = { tiros:[{ o, nombre, trazos }], t, tFin, xmin, Xmax, Ymax, ver:{ tray:'toda'|'hasta'|null, estrobo, sombras, vx, vy, v, a, comp0,
+         v0, cima, alcance, alturas, avion, gTodos, mira, triangulo }, canon, plataforma, crece, hl,
+         pared:{ d, alto, cota, asa, sobre, marca, estrella, edificio } }
+   tFin corta el vuelo del primer tiro (el impacto contra la pared, que calcula impactoPared en el motor).
    Escala: la misma en los dos ejes, para que la trayectoria, el ángulo del cañón y las flechas de velocidad coincidan. */
 function marco(W, H, P){
   const ml = 42, mr = 16, mt = 16, mb = 48, xmin = P.xmin || 0;
@@ -350,6 +373,7 @@ function vistaTiro(L, c, P){
   if (P.plataforma && y0 > 0){
     ctx.fillStyle = c.bloque; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4;
     rr(ctx, X(0) - 26, Y(y0), 26, Y(0) - Y(y0), 3); ctx.fill(); ctx.stroke();
+    if (P.altoTxt) rotulo(ctx, c, X(0) - 13, (Y(y0) + Y(0))/2, `${N1(y0)} m`, c.ink, 'center', 800, W);
   }
   // Números del eje vertical, encima de la plataforma y con fondo, para que se lean
   ctx.save(); ctx.font = `600 10px ${c.mono}`; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
@@ -359,11 +383,28 @@ function vistaTiro(L, c, P){
     ctx.fillStyle = c.muted; ctx.fillText(t, X(0) - 6, Y(y));
   }
   ctx.restore();
-  const tCl = q => clamp(P.t, 0, q.p.tVuelo);
+  const tCl = q => clamp(P.t, 0, q === ps[0] && P.tFin !== undefined && P.tFin !== null ? Math.min(P.tFin, q.p.tVuelo) : q.p.tVuelo);
+  // Pared vertical (o el edificio de enfrente) a la distancia d del punto de lanzamiento
+  const pa = P.pared;
+  if (pa){
+    const xw = X(ps[0].p.x0 + pa.d), top = Number.isFinite(pa.alto) ? Y(pa.alto) : m.mt - 4, ancho = pa.edificio ? Math.max(18, W*0.06) : 8;
+    ctx.save(); ctx.fillStyle = c.bloque; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4;
+    rr(ctx, xw, top, ancho, Y(0) - top, 2); ctx.fill(); ctx.stroke(); ctx.restore();
+    if (pa.cota){
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.2; const yc = Y(0) + 34;
+      linea(ctx, X(ps[0].p.x0), yc, xw, yc); linea(ctx, X(ps[0].p.x0), yc - 5, X(ps[0].p.x0), yc + 5); linea(ctx, xw, yc - 5, xw, yc + 5); ctx.restore();
+      rotulo(ctx, c, (X(ps[0].p.x0) + xw)/2, Y(0) + 34, `${N1(pa.d)} m`, c.ink, 'center', 800, W);
+    }
+    if (pa.marca !== undefined && pa.marca !== null && pa.marca <= P.Ymax + 1e-9){
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.setLineDash([4, 3]); linea(ctx, xw - 10, Y(pa.marca), xw + ancho + 4, Y(pa.marca)); ctx.restore();
+      rotulo(ctx, c, xw - 14, Y(pa.marca), `tu respuesta: ${N1(pa.marca)} m`, c.ink, 'right', 700, W);
+    }
+    if (pa.asa){ ctx.save(); ctx.beginPath(); ctx.arc(xw + ancho/2, Y(0), pa.sobre ? 11 : 9, 0, Math.PI*2); ctx.fillStyle = c.card; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.stroke(); ctx.restore(); }
+  }
   // Trayectorias
   ps.forEach((q, j) => {
     if (!ver.tray && !q.fantasma) return;
-    const tf = ver.tray === 'toda' || q.fantasma ? q.p.tVuelo : tCl(q);
+    const tf = q.fantasma ? q.p.tVuelo : ver.tray === 'toda' ? (j === 0 && P.tFin != null ? Math.min(P.tFin, q.p.tVuelo) : q.p.tVuelo) : tCl(q);
     ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.8; ctx.setLineDash(q.trazos ? [7, 5] : [2, 4]); ctx.beginPath();
     for (let k = 0; k <= 100; k++){ const e = q.p.estado(tf*k/100); k ? ctx.lineTo(X(e.x), Y(e.y)) : ctx.moveTo(X(e.x), Y(e.y)); }
     ctx.stroke(); ctx.restore();
@@ -427,6 +468,18 @@ function vistaTiro(L, c, P){
     lista.push({ x:x0, y:y0p, dx:0, dy:-q.p.vy*kv, col:c.vy, txt:`v₀y = ${N1(q.p.vy)} m/s`, al:'right', ox:-4, hl:P.hl === 'vy' });
     lista.push({ x:x0, y:y0p, dx:q.p.vx*kv, dy:-q.p.vy*kv, col:c.v, txt:`v₀ = ${N1(q.p.v0)} m/s`, oy:-10, hl:P.hl === 'v' });
   }
+  if (ver.v0){ const x0 = X(q.p.x0), y0p = Y(q.p.y0); lista.push({ x:x0, y:y0p, dx:q.p.vx*kv, dy:-q.p.vy*kv, col:c.v, txt:`v₀ = ${N1(q.p.v0)} m/s`, oy:-10 }); }
+  if (ver.mira){
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.6; ctx.setLineDash([6, 5]);
+    linea(ctx, X(q.p.x0), Y(q.p.y0), X(q.p.x0 + ver.mira), Y(q.p.y0 + ver.mira*q.p.vy/q.p.vx)); ctx.restore();
+    rotulo(ctx, c, X(q.p.x0 + ver.mira) + 6, Y(q.p.y0 + ver.mira*q.p.vy/q.p.vx), 'línea de mira', c.muted, 'left', 700, W);
+  }
+  if (ver.triangulo && Math.abs(e.vy) > 0.05){
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.3; ctx.setLineDash([4, 4]);
+    linea(ctx, bx + e.vx*kv, by, bx + e.vx*kv, by - e.vy*kv); ctx.restore();
+    const ang = Math.atan2(-e.vy, e.vx); ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(bx, by, 22, 0, ang, ang < 0); ctx.stroke(); ctx.restore();
+    rotulo(ctx, c, bx + 26*Math.cos(ang/2) + 4, by + 26*Math.sin(ang/2) + 4, `${fmt(Math.abs(Math.atan2(e.vy, e.vx))*180/Math.PI, 0)}°`, c.ink, 'left', 800, W);
+  }
   if (ver.vx) lista.push({ x:bx, y:by, dx:e.vx*kv*sh(ver.vx), dy:0, col:c.vx, txt:`vx = ${N1(e.vx)} m/s`, oy:12, al:'left', hl:P.hl === 'vx' });
   if (ver.vy && Math.abs(e.vy) > 0.05 && !enSuelo) lista.push({ x:bx, y:by, dx:0, dy:-e.vy*kv*sh(ver.vy), col:c.vy, txt:`vy = ${N1(e.vy)} m/s`, al:'right', ox:-6, hl:P.hl === 'vy' });
   if (ver.v) lista.push({ x:bx, y:by, dx:e.vx*kv*sh(ver.v), dy:-e.vy*kv*sh(ver.v), col:c.v, txt:`v = ${N1(e.v)} m/s`, oy:-10, hl:P.hl === 'v' });
@@ -436,17 +489,25 @@ function vistaTiro(L, c, P){
   }
   if (ver.a && !enSuelo) lista.push({ x:bx, y:by + 8, dx:0, dy:10*ka*sh(ver.a), col:c.a, txt:'a = g = 10 m/s²', al:'left', ox:6, oy:-4, hl:P.hl === 'a' });
   lista.forEach(f => vector(ctx, c, f, W, H));
+  // Estrella en el punto donde golpea la pared
+  if (pa && pa.estrella){ const ex = X(pa.estrella.x), ey = Y(pa.estrella.y); estrella(ctx, ex, ey, 9, c.ink, c.card); }
   // Marcas: altura máxima y alcance
   if (ver.cima && q.p.vy > 0 && (q.p.H - q.p.y0)*m.sy > 20){
     const xc = X(q.p.x0 + q.p.vx*q.p.tSubida), yc = Y(q.p.H);
     ctx.save(); ctx.strokeStyle = c.ink; ctx.globalAlpha = .5; ctx.setLineDash([4, 4]); linea(ctx, xc, yc, xc, Y(0)); ctx.restore();
     rotulo(ctx, c, xc + 6, (yc + Y(0))/2, `H = ${N1(q.p.H)} m`, c.ink, 'left', 800, W);
   }
-  if (ver.alcance && q.p.alcance*m.sx > 40){
+  if (ver.alcance && q.p.alcance*m.sx > 40 && !(pa && pa.estrella)){
     ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; linea(ctx, X(q.p.x0), Y(0) + 36, X(q.p.x0 + q.p.alcance), Y(0) + 36); ctx.restore();
     rotulo(ctx, c, (X(q.p.x0) + X(q.p.x0 + q.p.alcance))/2, Y(0) + 36, `alcance ${N1(q.p.alcance)} m`, c.ink, 'center', 800, W);
   }
   return m;
+}
+
+function estrella(ctx, x, y, r, borde, relleno){
+  ctx.save(); ctx.beginPath();
+  for (let k = 0; k < 10; k++){ const a = -Math.PI/2 + k*Math.PI/5, rr = k % 2 ? r*0.45 : r; ctx.lineTo(x + rr*Math.cos(a), y + rr*Math.sin(a)); }
+  ctx.closePath(); ctx.fillStyle = relleno; ctx.fill(); ctx.strokeStyle = borde; ctx.lineWidth = 1.8; ctx.stroke(); ctx.restore();
 }
 
 /* ---------- Movimiento circular, visto desde arriba ----------
@@ -493,8 +554,192 @@ function vistaCirculo(L, c, P){
   rotulo(ctx, c, cx, cy + R + 18, P.pie || `radio ${N1(P.r)} m · vista desde arriba`, c.muted, 'center', 700, W);
 }
 
-const NOMBRES = { vx:'vx · velocidad horizontal (y su sombra)', vy:'vy · velocidad vertical (y su sombra)', v:'v · velocidad', a:'a · aceleración (g en el tiro; ac en el círculo)', t:'t · tiempo (líneas de igual instante)', w:'ω · velocidad angular' };
-function leyenda(el, claves){ el.innerHTML = claves.map(k => `<span><i style="background:var(--c-${k})"></i>${NOMBRES[k]}</span>`).join(''); }
+/* ---------- Arco de giro (ω) con su punta ---------- sentido horario en pantalla si horario */
+function arcoGiro(ctx, c, cx, cy, rad, color, horario, txt, W, tx, ty){
+  const a0 = -2.3, a1 = horario ? a0 + 1.5 : a0 - 1.5;
+  ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = 2.6; ctx.beginPath(); ctx.arc(cx, cy, rad, a0, a1, !horario); ctx.stroke(); ctx.restore();
+  const a2 = horario ? a1 - 0.5 : a1 + 0.5;
+  flecha(ctx, cx + rad*Math.cos(a2), cy + rad*Math.sin(a2), cx + rad*Math.cos(a1), cy + rad*Math.sin(a1), color, 2.6);
+  if (txt) rotulo(ctx, c, tx === undefined ? cx : tx, ty === undefined ? cy - rad - 12 : ty, txt, color, 'center', 800, W);
+}
+function rueda(ctx, c, cx, cy, R, th, o){
+  o = o || {};
+  ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI*2); ctx.fillStyle = c.bloque; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = o.llanta ? 4 : 1.6; ctx.stroke();
+  if (o.dientes){ ctx.lineWidth = 1.4; for (let j = 0; j < o.dientes; j++){ const a = th + j*2*Math.PI/o.dientes; linea(ctx, cx + R*Math.cos(a), cy - R*Math.sin(a), cx + (R + 4)*Math.cos(a), cy - (R + 4)*Math.sin(a)); } }
+  if (o.rayos){ ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; for (let j = 0; j < o.rayos; j++){ const a = th + j*2*Math.PI/o.rayos; linea(ctx, cx + (o.desde || 0)*Math.cos(a), cy - (o.desde || 0)*Math.sin(a), cx + R*Math.cos(a), cy - R*Math.sin(a)); } }
+  // La marca: un radio en tinta con un punto, para ver cuánto gira
+  ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, cx, cy, cx + R*0.85*Math.cos(th), cy - R*0.85*Math.sin(th));
+  ctx.beginPath(); ctx.arc(cx + R*0.85*Math.cos(th), cy - R*0.85*Math.sin(th), Math.max(3, Math.min(6, R*0.12)), 0, Math.PI*2); ctx.fillStyle = c.ink; ctx.fill();
+  ctx.beginPath(); ctx.arc(cx, cy, 3, 0, Math.PI*2); ctx.fill(); ctx.restore();
+}
+
+/* ---------- Transmisión: cadena entre dos ruedas (vista de lado) o dos ruedas en el mismo eje ----------
+   P = { tipo:'cadena'|'eje', r1, r2 (m), th1, th2 (rad, + antihorario; giran en sentido horario), avance (m de cadena),
+         v1, perfil:[{ r, v }], ver:{ w1, w2, v, w }, txtW1, txtW2, txtV, contador, pie } */
+function vistaTransmision(L, c, P){
+  const { ctx, W, H } = L; ctx.clearRect(0, 0, W, H);
+  const ver = P.ver || {};
+  if (P.tipo === 'cadena'){
+    const Dm = P.r1 + P.r2 + 0.1, k = Math.min((W - 80)/(P.r1 + Dm + P.r2), (H - 120)/(2*Math.max(P.r1, P.r2)));
+    const R1 = P.r1*k, R2 = P.r2*k, D = Dm*k, x1 = (W - (R1 + D + R2))/2 + R1, x2 = x1 + D, y = H/2 + 4;
+    // Recorrido de la cadena: tangentes exteriores y los arcos que abraza en cada rueda
+    const cosA = (R1 - R2)/D, al = Math.acos(clamp(cosA, -1, 1)), sA = Math.sin(al);
+    const T1 = [R1*cosA, R1*sA], T2 = [D + R2*cosA, R2*sA], B2 = [D + R2*cosA, -R2*sA], B1 = [R1*cosA, -R1*sA];
+    const seg = Math.hypot(T2[0] - T1[0], T2[1] - T1[1]), arc2 = R2*2*al, arc1 = R1*(2*Math.PI - 2*al), tot = 2*seg + arc1 + arc2;
+    const pt = u => { u = ((u % tot) + tot) % tot; let q;
+      if (u < seg){ const f = u/seg; q = [T1[0] + (T2[0] - T1[0])*f, T1[1] + (T2[1] - T1[1])*f]; }
+      else if ((u -= seg) < arc2){ const a = al - u/R2; q = [D + R2*Math.cos(a), R2*Math.sin(a)]; }
+      else if ((u -= arc2) < seg){ const f = u/seg; q = [B2[0] + (B1[0] - B2[0])*f, B2[1] + (B1[1] - B2[1])*f]; }
+      else { u -= seg; const a = -al - u/R1; q = [R1*Math.cos(a), R1*Math.sin(a)]; }
+      return [x1 + q[0], y - q[1]]; };
+    rueda(ctx, c, x1, y, R1, P.th1, { dientes: Math.round(P.r1*200) });
+    rueda(ctx, c, x2, y, R2, P.th2, { dientes: Math.max(5, Math.round(P.r2*200)) });
+    // Biela y pedal de la catalina
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 4; ctx.lineCap = 'round'; const bx = x1 - R1*1.15*Math.cos(P.th1), by = y + R1*1.15*Math.sin(P.th1);
+    linea(ctx, x1, y, bx, by); ctx.fillStyle = c.ink; ctx.fillRect(bx - 9, by - 3, 18, 6); ctx.restore();
+    // Eslabones: rayitas que avanzan a la rapidez de la cadena
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2.4; ctx.globalAlpha = .75;
+    const paso = 11, off = ((P.avance || 0)*k) % paso;
+    for (let u = off; u < tot + off - 1; u += paso){ const a = pt(u), b = pt(u + 6); linea(ctx, a[0], a[1], b[0], b[1]); }
+    ctx.restore();
+    if (ver.w1) arcoGiro(ctx, c, x1, y, R1 + 16, c.w, true, P.txtW1, W, x1, y - R1 - 34);
+    if (ver.w2) arcoGiro(ctx, c, x2, y, R2 + 14, c.w, true, P.txtW2, W, x2, y + R2 + 36);
+    if (ver.v){
+      const kv = Math.min(W*0.16, 70)/Math.max(P.v1, 1e-9);
+      vector(ctx, c, { x:x1, y:y - R1, dx:P.v1*kv, dy:0, col:c.v, txt:'' }, W, H);
+      vector(ctx, c, { x:x2, y:y - R2, dx:P.v1*kv, dy:0, col:c.v, txt:'' }, W, H);
+      if (P.txtV) rotulo(ctx, c, (x1 + x2)/2, Math.min(y - R1, y - R2) - 14, P.txtV, c.v, 'center', 800, W);
+    }
+    rotulo(ctx, c, x1, y + R1 + 16, `catalina · ${fmt(P.r1*100, 0)} cm`, c.ink, 'center', 700, W);
+    rotulo(ctx, c, x2, y + R2 + 16, `piñón · ${fmt(P.r2*100, 0)} cm`, c.ink, 'center', 700, W);
+  } else {
+    const cx = W/2, cy = H/2 + 10, k = (Math.min(W*0.9, H) / 2 - 30)/0.35, R1 = P.r1*k, R2 = P.r2*k;
+    rueda(ctx, c, cx, cy, R2, P.th1, { llanta:true, rayos:12, desde:R1 });
+    rueda(ctx, c, cx, cy, R1, P.th1, { dientes:9 });
+    // Flechas v a lo largo del radio vertical de arriba (de los puntos que en este instante pasan por ahí)
+    const kv = (W/2 - 70)/7;
+    (P.perfil || []).forEach((q, j, arr) => {
+      const yy = cy - q.r*k;
+      vector(ctx, c, { x:cx, y:yy, dx:q.v*kv, dy:0, col:c.v, txt:q.txt || '', al:'left', oy:0, ancho:3 }, W, H);
+      ctx.save(); ctx.fillStyle = c.ink; ctx.beginPath(); ctx.arc(cx, yy, 2.6, 0, Math.PI*2); ctx.fill(); ctx.restore();
+      if (q.rtxt) rotulo(ctx, c, cx - 8, yy, q.rtxt, c.ink, 'right', 700, W);
+    });
+    if (ver.w) arcoGiro(ctx, c, cx, cy, Math.max(R1 + 18, R2*0.5), c.w, true, P.txtW1, W, cx, cy + Math.max(R1 + 18, R2*0.5) + 14);
+  }
+  if (P.contador) rotulo(ctx, c, 10, 16, P.contador, c.ink, 'left', 800, W);
+  if (P.pie) rotulo(ctx, c, W/2, H - 12, P.pie, c.muted, 'center', 700, W);
+}
+
+/* ---------- Frena la rueda: rueda que gira y gráfica ω-t con el área barrida ----------
+   P = { f0, tp, t, seguir, ver:{ area, cursor, flechas, rect } }   ω en vueltas por segundo; todo sale del motor */
+function vistaGiroW(L, c, P){
+  const { ctx, W, H } = L; ctx.clearRect(0, 0, W, H);
+  const ver = P.ver || {}, r = 0.3, w0 = P.f0*M.TAU;
+  const d = M.mcuvDatos({ f0:P.f0, f:0, t:P.tp, r });
+  const giro = M.mcuv({ r, omega0:w0, alfa:d.alfa, t:P.t || 0, frena:!P.seguir });
+  const ancho = W >= 560;
+  const tAx = Math.ceil(P.seguir ? P.tp*1.5 : P.tp + 1), fTop = Math.ceil(P.f0 + 0.5), fBot = P.seguir ? -Math.ceil(P.f0*0.5) : 0;
+  const gx0 = ancho ? W*0.4 : 46, gx1 = W - 16, gy0 = ancho ? 30 : 30, gy1 = H - 42;
+  const Xg = t => gx0 + t/tAx*(gx1 - gx0), Yg = f => gy0 + (fTop - f)/(fTop - fBot)*(gy1 - gy0);
+  // Cuadrícula de 1 s por 1 vuelta/s
+  ctx.save(); ctx.strokeStyle = c.grid; ctx.lineWidth = 1;
+  for (let t = 0; t <= tAx; t++) linea(ctx, Xg(t), Yg(fTop), Xg(t), Yg(fBot));
+  for (let f = fBot; f <= fTop; f++) linea(ctx, Xg(0), Yg(f), Xg(tAx), Yg(f));
+  ctx.restore();
+  // Área barrida hasta el cursor (en tinta suave): lo que giró
+  if (ver.area && P.t > 0){
+    const tA = Math.min(P.t, P.tp), fA = P.f0*(1 - tA/P.tp);
+    ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = .16; ctx.beginPath();
+    ctx.moveTo(Xg(0), Yg(0)); ctx.lineTo(Xg(0), Yg(P.f0)); ctx.lineTo(Xg(tA), Yg(fA)); ctx.lineTo(Xg(tA), Yg(0)); ctx.closePath(); ctx.fill(); ctx.restore();
+    if (P.seguir && P.t > P.tp){
+      const fB = P.f0*(1 - P.t/P.tp);
+      ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = .08; ctx.beginPath(); ctx.moveTo(Xg(P.tp), Yg(0)); ctx.lineTo(Xg(P.t), Yg(fB)); ctx.lineTo(Xg(P.t), Yg(0)); ctx.closePath(); ctx.fill(); ctx.restore();
+    }
+  }
+  if (ver.rect){
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; ctx.setLineDash([5, 4]); ctx.strokeRect(Xg(0), Yg(P.f0), Xg(P.tp) - Xg(0), Yg(0) - Yg(P.f0)); ctx.restore();
+    rotulo(ctx, c, Xg(P.tp) - 4, Yg(P.f0) + 12, `rectángulo ${N1(d.errores.vueltasRectanguloInicial)} · la mitad: ${N1(d.vueltas)}`, c.ink, 'right', 800, W);
+  }
+  // Ejes
+  ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; linea(ctx, Xg(0), Yg(0), Xg(tAx), Yg(0)); linea(ctx, Xg(0), Yg(fBot), Xg(0), Yg(fTop)); ctx.restore();
+  ctx.save(); ctx.font = `600 10px ${c.mono}`; ctx.fillStyle = c.muted; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  for (let t = 0; t <= tAx; t++) ctx.fillText(String(t), Xg(t), Yg(Math.min(0, fBot)) + 5);
+  ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+  for (let f = fBot; f <= fTop; f++) if (f) ctx.fillText(String(f).replace('-', '−'), Xg(0) - 5, Yg(f));
+  ctx.restore();
+  ctx.save(); ctx.font = `700 10px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'right'; ctx.textBaseline = 'bottom';
+  ctx.fillText('t (s)', Xg(tAx), Yg(Math.min(0, fBot)) + 30); ctx.textAlign = 'left'; ctx.fillText('ω (vueltas por segundo)', Xg(0) + 4, gy0 - 8); ctx.restore();
+  // La recta de ω
+  ctx.save(); ctx.strokeStyle = c.w; ctx.lineWidth = 3; linea(ctx, Xg(0), Yg(P.f0), Xg(P.tp), Yg(0));
+  if (P.seguir){ ctx.setLineDash([6, 5]); linea(ctx, Xg(P.tp), Yg(0), Xg(tAx), Yg(P.f0*(1 - tAx/P.tp))); }
+  ctx.restore();
+  if (ver.cursor){
+    const xt = Xg(Math.min(P.t, tAx));
+    ctx.save(); ctx.strokeStyle = c.t; ctx.lineWidth = 2; linea(ctx, xt, Yg(fTop), xt, Yg(fBot)); ctx.restore();
+    rotulo(ctx, c, xt, Yg(fBot) - 10, `t = ${fmt(P.t, 1)} s`, c.t, 'center', 800, W);
+  }
+  // La rueda (arriba a la izquierda en pantalla grande; en la esquina libre del gráfico en el celular)
+  const Rw = ancho ? Math.min(W*0.13, H*0.26) : 30, wx = ancho ? W*0.2 : W - 52, wy = ancho ? H*0.42 : gy0 + 46;
+  const th = Math.PI/2 - giro.theta;
+  rueda(ctx, c, wx, wy, Rw, th, { llanta:true, rayos:8 });
+  if (ver.cursor) rotulo(ctx, c, ancho ? wx : W - 14, ancho ? wy + Rw + 22 : wy + Rw + 16, `vueltas: ${fmt(giro.vueltas, 1)}`, c.ink, ancho ? 'center' : 'right', 800, W);
+  if (ver.flechas && Math.abs(giro.omega) > 1e-9){
+    const px = wx + Rw*Math.cos(th), py = wy - Rw*Math.sin(th), acMax = w0*w0*r, Lm = ancho ? Rw*0.9 : 34;
+    const lac = giro.ac/acMax*Lm, lat = Math.max(14, Math.abs(giro.at)/acMax*Lm), sg = Math.sign(giro.omega);
+    // Gira en sentido horario: la velocidad va (sen θ, cos θ) en pantalla; at frena, en contra
+    const ux = Math.sin(th)*sg, uy = Math.cos(th)*sg, atx = giro.at < 0 ? -ux*lat : ux*lat, aty = giro.at < 0 ? -uy*lat : uy*lat;
+    const acx = -Math.cos(th)*lac, acy = Math.sin(th)*lac;
+    if (Math.abs(giro.at) > 1e-9){ flecha(ctx, px, py, px + atx + acx, py + aty + acy, c.ink, 1.8, [4, 3]); }
+    flecha(ctx, px, py, px + atx, py + aty, c.at, 3.6);
+    if (lac > 2) flecha(ctx, px, py, px + acx, py + acy, c.a, 3.2);
+    rotulo(ctx, c, px + atx*1.25, py + aty*1.25, 'at', c.at, 'center', 800, W);
+    if (lac > 10) rotulo(ctx, c, px + acx*0.55, py + acy*0.55 - 9, 'ac', c.a, 'center', 800, W);
+  }
+  if (P.pie) rotulo(ctx, c, W/2, H - 10, P.pie, c.muted, 'center', 700, W);
+}
+
+/* ---------- La pista: vista desde arriba, A y B corren; el arco grueso es la distancia que falta cerrar ----------
+   P = { L, v1, v2, sentido, s0, t, ver:{ arco, fin } }   posiciones con encuentroPista(...).estado(t) */
+function vistaPista(L, c, P){
+  const { ctx, W, H } = L; ctx.clearRect(0, 0, W, H);
+  const e = M.encuentroPista({ L:P.L, v1:P.v1, v2:P.v2, sentido:P.sentido, separacion:P.s0 }), st = e.estado(P.t || 0), ver = P.ver || {};
+  const cx = W/2, cy = H/2 + 6, R = Math.min(W*0.42, H/2 - 44);
+  const ang = s => Math.PI/2 - s/P.L*2*Math.PI, at = (s, rr) => [cx + rr*Math.cos(ang(s)), cy - rr*Math.sin(ang(s))];
+  ctx.save(); ctx.strokeStyle = c.suelo; ctx.globalAlpha = .55; ctx.lineWidth = 26; ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI*2); ctx.stroke(); ctx.restore();
+  ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(cx, cy, R - 13, 0, Math.PI*2); ctx.stroke(); ctx.beginPath(); ctx.arc(cx, cy, R + 13, 0, Math.PI*2); ctx.stroke(); ctx.restore();
+  // Salida
+  ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 3; linea(ctx, cx, cy - R - 14, cx, cy - R + 14); ctx.restore();
+  rotulo(ctx, c, cx + 8, cy - R - 24, `salida · pista de ${N1(P.L)} m`, c.ink, 'left', 700, W);
+  const mismo = P.sentido === 'mismo';
+  // Lo que falta cerrar para el primer encuentro: desde el que persigue, en el sentido de A
+  if (ver.arco && !e.nunca){
+    const resta = Math.max(0, e.brecha - e.vRel*(P.t || 0)), desde = mismo && P.v1 < P.v2 ? st.b : st.a;
+    if (resta > 0.5){
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 6; ctx.globalAlpha = .8; ctx.lineCap = 'round'; ctx.beginPath(); ctx.arc(cx, cy, R, -ang(desde), -ang(desde + resta), false); ctx.stroke(); ctx.restore();
+      const mid = at(desde + resta/2, R - 30); rotulo(ctx, c, mid[0], mid[1], `falta ${N1(resta)} m`, c.ink, 'center', 800, W);
+    }
+  }
+  if (ver.fin){ ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(cx, cy, R + 17, 0, Math.PI*2); ctx.stroke(); ctx.restore(); }
+  // Corredores: A (relleno, carril de adentro) y B (hueco, carril de afuera)
+  const kv = R*0.07, pa = at(st.a, R - 6), pb = at(st.b, R + 6);
+  const tang = (s, sg) => { const a = ang(s); return [Math.sin(a)*sg, Math.cos(a)*sg]; };
+  const ta = tang(st.a, 1), tb = tang(st.b, mismo ? 1 : -1);
+  vector(ctx, c, { x:pa[0], y:pa[1], dx:ta[0]*P.v1*kv, dy:ta[1]*P.v1*kv, col:c.v, txt:`v₁ = ${N1(P.v1)} m/s` }, W, H);
+  vector(ctx, c, { x:pb[0], y:pb[1], dx:tb[0]*P.v2*kv, dy:tb[1]*P.v2*kv, col:c.v, txt:`v₂ = ${N1(P.v2)} m/s` }, W, H);
+  ctx.save(); ctx.lineWidth = 2; ctx.strokeStyle = c.ink;
+  ctx.beginPath(); ctx.arc(pa[0], pa[1], 8, 0, Math.PI*2); ctx.fillStyle = c.ink; ctx.fill();
+  ctx.beginPath(); ctx.arc(pb[0], pb[1], 8, 0, Math.PI*2); ctx.fillStyle = c.card; ctx.fill(); ctx.stroke(); ctx.restore();
+  const la = at(st.a, R - 34), lb = at(st.b, R + 34);
+  rotulo(ctx, c, la[0], la[1], 'Ana', c.ink, 'center', 800, W); rotulo(ctx, c, lb[0], lb[1] + (lb[1] > cy ? 4 : -4), 'Beto', c.ink, 'center', 800, W);
+  // Reloj
+  ctx.save(); ctx.font = `800 ${c.chico ? 17 : 20}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = c.t;
+  ctx.fillText(`t = ${fmt(P.t || 0, 0)} s`, cx, cy - (ver.fin ? 12 : 0)); ctx.restore();
+  if (ver.fin && !e.nunca) rotulo(ctx, c, cx, cy + 14, `${mismo ? (P.v1 >= P.v2 ? '¡Ana alcanza a Beto!' : '¡Beto alcanza a Ana!') : '¡se cruzan!'} a ${N1(e.lugar)} m`, c.ink, 'center', 800, W);
+}
+
+const NOMBRES = { vx:'vx · velocidad horizontal (y su sombra)', vy:'vy · velocidad vertical (y su sombra)', v:'v · velocidad', a:'a · aceleración de la gravedad, g', t:'t · tiempo (líneas de igual instante)', w:'ω · velocidad angular' };
+const NOMBRES_RUEDAS = { v:'v · velocidad (del borde o de cada corredor)', a:'ac · aceleración centrípeta', at:'at · aceleración tangencial', w:'ω · velocidad angular', t:'t · tiempo' };
+function leyenda(el, claves, nombres){ const n = nombres || NOMBRES; el.innerHTML = (claves || []).map(k => `<span><i style="background:var(--c-${k})"></i>${n[k]}</span>`).join(''); }
 function animarValor(dur, paso, listo){
   if (RM){ paso(1); listo && listo(); return () => {}; }
   let id, ini = performance.now();
@@ -504,6 +749,7 @@ function animarValor(dur, paso, listo){
 }
 const opcionesHTML = (opts, idfb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idfb}" tabindex="-1"></p>`;
 const fuente = t => `<p class="fuente">${t}</p>`;
+const FASES = { subiendo:'todavía subiendo', cima:'en lo más alto', bajando:'ya bajando' };
 </script>
 <script>
 /* ================= MODO 1: paso a paso =================
@@ -513,30 +759,38 @@ const $ = id => document.getElementById(id);
 const cv = $('cv');
 const CANON = { v0:50, angulo:37 }, BOLAS = [{ o:{ vx:0, y0:80 }, nombre:'soltada' }, { o:{ vx:15, y0:80 }, nombre:'lanzada', trazos:true }];
 const S = { step:0, max:0, pred:{}, hl:null, t:0, crece:1, ocupado:false, explora:false,
-  v0:40, ang:53, y0:0, previo:null, sobreAsa:false, arrastrando:false };
+  v0:40, ang:53, y0:0, previo:null, sobre:null, cerca:null, cual:null, arrastrando:false, pared:false, dPared:0, altoPared:100 };
 let parar = () => {};
 const L = crearLienzo(cv, W => S.explora ? altoLienzo(W) : altoCampo(W, steps[S.step].cfg()), draw);
+// Pared del explorador (opcional): impactoPared del motor; null si no hay pared o el tiro no avanza.
+function impacto(){
+  if (!S.pared) return null;
+  const o = datos(); if (!(M.proyectil(o).vx > 0)) return { sinAvance:true };
+  return M.impactoPared(Object.assign({ d:S.dPared, alto:S.altoPared >= 100 ? undefined : S.altoPared }, o));
+}
+const tFinal = () => { const w = impacto(); return w && w.choca ? w.t : M.proyectil(datos()).tVuelo; };
+const XmaxExplora = () => Math.max(80, ...[datos(), S.previo].filter(Boolean).map(o => M.proyectil(o).alcance*1.08));
 const pg = M.proyectil(CANON);
 
 const P1 = { id:'tiro-dos-esferas', ok:'c',
   opts:[['a','La soltada, porque recorre menos camino','P1-soltada-cae-antes','documentado'],
         ['b','La lanzada, porque va más rápido','P2-mas-rapida-llega-antes','documentado'],
-        ['c','Llegan a la vez',null,''],
-        ['d','Depende de cuánto pese cada una','C2-depende-de-la-masa','documentado']],
+        ['c','Llegan a la vez, porque en vertical caen igual',null,''],
+        ['d','Depende de cuánto pese cada una','C2-depende-de-la-masa','parcial']],
   fb:{ c:'¡Bien! Las dos caen igual en vertical: la velocidad horizontal no cambia cómo cae.',
        a:'Elegiste la A. La lanzada recorre un camino más largo, pero lo recorre más rápido. En vertical las dos caen igual. La correcta está marcada.',
        b:'Elegiste la B. Ir más rápido en horizontal no la hace caer más rápido: en vertical las dos empiezan con velocidad cero. La correcta está marcada.',
        d:'Elegiste la D. Sin aire, todas caen con la misma aceleración, pesen lo que pesen. La correcta está marcada.' } };
 const P2 = { id:'tiro-v-cima', ok:'b',
-  opts:[['a','0 m/s: arriba se detiene','v-cero-en-la-cima','hipotesis'], ['b','40 m/s',null,''],
-        ['c','30 m/s','confunde-vx-con-vy','hipotesis'], ['d','50 m/s: la rapidez no cambia en todo el vuelo','rapidez-constante','hipotesis']],
+  opts:[['a','0 m/s: arriba se detiene','v-cero-en-la-cima','hipotesis'], ['b','40 m/s: arriba le queda la parte horizontal',null,''],
+        ['c','30 m/s: la parte vertical con que salió','confunde-vx-con-vy','hipotesis'], ['d','50 m/s: la rapidez no cambia en todo el vuelo','rapidez-constante','hipotesis']],
   fb:{ b:'¡Bien! Arriba vy = 0, pero vx sigue en 40 m/s: la velocidad es horizontal, no cero.',
        a:'Elegiste la A. Arriba se acaba la velocidad vertical, no la horizontal: sigue avanzando a 40 m/s. La correcta está marcada.',
        c:'Elegiste la C. 30 m/s es la velocidad vertical del inicio, y esa es justamente la que llega a cero arriba. La correcta está marcada.',
        d:'Elegiste la D. Al subir, la parte vertical baja 10 m/s cada segundo; la horizontal no cambia. Arriba queda solo la horizontal, 40 m/s. La correcta está marcada.' } };
 const P3 = { id:'tiro-a-cima', ok:'b',
-  opts:[['a','Cero: arriba la velocidad vertical es cero','C1-aceleracion-cero-en-la-cima','documentado'], ['b','10 m/s² hacia abajo',null,''],
-        ['c','Hacia adelante, en la dirección en que avanza','K3-a-en-direccion-del-movimiento','documentado'], ['d','Depende de cuánto pese el proyectil','C2-depende-de-la-masa','documentado']],
+  opts:[['a','Cero: arriba la velocidad vertical es cero','C1-aceleracion-cero-en-la-cima','documentado'], ['b','10 m/s² hacia abajo, igual que en todo el vuelo',null,''],
+        ['c','Hacia adelante, en la dirección en que avanza','K3-a-en-direccion-del-movimiento','parcial'], ['d','Depende de cuánto pese el proyectil','C2-depende-de-la-masa','parcial']],
   fb:{ b:'¡Bien! La aceleración es g, 10 m/s² hacia abajo, en todo el vuelo: al subir, arriba y al bajar.',
        a:'Elegiste la A. Que vy sea cero un instante no quiere decir que deje de cambiar: un instante antes subía y uno después baja. La correcta está marcada.',
        c:'Elegiste la C. La aceleración no sigue al movimiento: es la de la gravedad, siempre vertical y hacia abajo. La correcta está marcada.',
@@ -600,17 +854,24 @@ const steps = [
      <p>La receta del examen: parte la velocidad en ${V('vx','vx')} = v₀·cos θ y ${V('vy','v₀y')} = v₀·sen θ; lo vertical es un lanzamiento vertical (o una caída, si sale en horizontal) con ${V('a','a = g = 10 m/s²')} hacia abajo; lo horizontal, velocidad constante. El ${V('t','tiempo')} es el mismo para los dos.</p>`,
    desc:() => 'Respuesta: 6 segundos en el aire, 45 metros de altura máxima, 240 metros de alcance.' },
  { k:'Paso 8', t:'Ahora explora tú', explora:true, ley:['vx','vy','a'],
-   cfg:() => ({ tiros: S.previo ? [{ o:datos() }, { o:S.previo, trazos:true, fantasma:true }] : [{ o:datos() }], t:S.t, xmin:-10, Xmax:Math.max(80, ...[datos(), S.previo].filter(Boolean).map(o => M.proyectil(o).alcance*1.08)),
-     Ymax:Math.max(30, ...[datos(), S.previo].filter(Boolean).map(o => M.proyectil(o).H*1.15)), canon:true, plataforma:true, asa:true, sobreAsa:S.sobreAsa || S.arrastrando,
-     ver:{ tray:'hasta', estrobo:0.5, sombras:true, vx:true, vy:true, a:true, cima:true, alcance:S.t >= M.proyectil(datos()).tVuelo - 1e-6 } }),
+   cfg:() => { const w = impacto(), choca = !!(w && w.choca);
+     return { tiros: S.previo ? [{ o:datos() }, { o:S.previo, trazos:true, fantasma:true }] : [{ o:datos() }], t:S.t, tFin: choca ? w.t : null, xmin:-10, Xmax:XmaxExplora(),
+     Ymax:Math.max(30, ...[datos(), S.previo].filter(Boolean).map(o => M.proyectil(o).H*1.15)), canon:true, plataforma:true, asa:true, sobreAsa:S.sobre === 'canon' || S.cual === 'canon',
+     pared: S.pared ? { d:S.dPared, alto:S.altoPared >= 100 ? Infinity : S.altoPared, asa:true, sobre:S.sobre === 'pared' || S.cual === 'pared', estrella: choca && S.t >= w.t - 1e-9 ? { x:S.dPared, y:w.y } : null } : null,
+     ver:{ tray:'hasta', estrobo:0.5, sombras:true, vx:true, vy:true, a:true, cima:true, alcance:!choca && S.t >= M.proyectil(datos()).tVuelo - 1e-6 } }; },
    body:() => `<div class="ctrls">
        <div class="slider"><label for="e-v0"><span>Rapidez (${V('v','v₀')})</span><output id="e-v0-o"></output></label><input id="e-v0" class="r-v" type="range" min="5" max="60" step="1" value="${S.v0}"></div>
        <div class="slider"><label for="e-ang"><span>Ángulo</span><output id="e-ang-o"></output></label><input id="e-ang" type="range" min="0" max="90" step="1" value="${S.ang}"></div>
        <div class="slider"><label for="e-y0"><span>Altura de lanzamiento</span><output id="e-y0-o"></output></label><input id="e-y0" type="range" min="0" max="60" step="5" value="${S.y0}"></div>
      </div>
      <p><button type="button" class="btn primary" id="disparar">Disparar</button></p>
+     <label class="check"><input type="checkbox" id="e-pared" ${S.pared ? 'checked' : ''}> Poner una pared</label>
+     <div class="ctrls" id="e-pared-ctrl" ${S.pared ? '' : 'hidden'}>
+       <div class="slider"><label for="e-d"><span>Distancia a la pared</span><output id="e-d-o"></output></label><input id="e-d" type="range" min="5" max="400" step="1" value="${S.dPared}"></div>
+       <div class="slider"><label for="e-h"><span>Alto de la pared</span><output id="e-h-o"></output></label><input id="e-h" type="range" min="5" max="100" step="5" value="${S.altoPared}"></div>
+     </div>
      <div id="live" class="body"></div>
-     <p class="hint">El disparo anterior queda a trazos para comparar. Prueba 37° y luego 53° con la misma rapidez, desde el suelo: ¿dónde caen? También puedes arrastrar la boca del cañón (o enfocar el dibujo y usar las flechas del teclado).</p>`,
+     <p class="hint">El disparo anterior queda a trazos para comparar. Prueba 37° y luego 53° con la misma rapidez, desde el suelo: ¿dónde caen? También puedes arrastrar la boca del cañón y el pie de la pared (o enfocar el dibujo y usar las flechas del teclado para el ángulo).</p>`,
    desc:() => '' },
 ];
 const datos = () => ({ v0:S.v0, angulo:S.ang, y0:S.y0 });
@@ -646,6 +907,7 @@ function go(n){
   $('stepK').textContent = `${s.k} de ${steps.length}`;
   $('stepT').textContent = s.t;
   $('stepBody').innerHTML = s.body();
+  L.compactar(s.gate && !S.pred[s.gate.id]);
   L.resize();
   const respondido = s.gate && S.pred[s.gate.id];
   leyenda($('ley1'), s.gate && !respondido && s.leyAntes ? s.leyAntes : respondido && s.leyDespues ? s.leyDespues : (s.ley || []));
@@ -688,16 +950,15 @@ function prediccion(s){
     S.ocupado = true; pintar(); pintarDots(); nav();
     leyenda($('ley1'), s.leyDespues || s.ley || []);
     $('fb').focus({ preventScroll:true });
-    const paso = S.step, ch = chico(), an = s.anima;
-    S.t = an.desde || 0; S.crece = an.crece ? 0 : 1; draw();
-    // En el celular, el dibujo queda arriba de la pantalla: se lleva a la vista antes de animar.
-    if (ch) cv.scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
-    esperar(ch ? 380 : 0, () => {
-      if (S.step !== paso){ S.ocupado = false; nav(); return; }
-      const fin = () => { S.ocupado = false; nav(); draw(); if (!RM) $('next').focus({ preventScroll:true }); };
+    const paso = S.step, an = s.anima;
+    S.t = an.desde || 0; S.crece = an.crece ? 0 : 1;
+    L.compactar(false); draw();
+    // En el celular, el dibujo sube a la vista y la animación arranca ~380 ms después (nucleo/celular.js).
+    Celular.alResponder(cv, () => {
+      const fin = () => { S.ocupado = false; nav(); draw(); if (!RM && S.step === paso && !$('m1').hidden) $('next').focus({ preventScroll:true }); };
       if (an.crece) parar = animarValor(500, f => { S.crece = f; draw(); }, () => vuela(an.desde || 0, an.hasta, fin));
       else vuela(an.desde || 0, an.hasta, fin);
-    });
+    }, () => S.step === paso && !$('m1').hidden, { siNo: () => { S.ocupado = false; nav(); } });
   }));
   pintar();
 }
@@ -707,17 +968,30 @@ function explorar(){
   [['e-v0', 'v0'], ['e-ang', 'ang'], ['e-y0', 'y0']].forEach(([id, k]) => $(id).addEventListener('input', () => {
     parar(); S[k] = +$(id).value;
     if (S.y0 === 0 && S.ang < 1) S.ang = 1; // desde el suelo, a 0° no hay tiro
-    S.t = M.proyectil(datos()).tVuelo; vivo();
+    acomodarPared(); S.t = tFinal(); vivo();
   }));
   $('disparar').addEventListener('click', () => disparar());
-  S.t = M.proyectil(datos()).tVuelo; vivo();
+  $('e-pared').addEventListener('change', () => {
+    parar(); S.pared = $('e-pared').checked; $('e-pared-ctrl').hidden = !S.pared;
+    if (S.pared){ S.dPared = Math.max(5, Math.round(M.proyectil(datos()).alcance*0.6/5)*5); $('e-d').value = S.dPared; }
+    acomodarPared(); S.t = tFinal(); L.resize(); vivo();
+  });
+  $('e-d').addEventListener('input', () => { parar(); S.dPared = +$('e-d').value; acomodarPared(); S.t = tFinal(); vivo(); });
+  $('e-h').addEventListener('input', () => { parar(); S.altoPared = +$('e-h').value; S.t = tFinal(); vivo(); });
+  acomodarPared(); S.t = tFinal(); vivo();
+}
+// La pared se queda dentro del dibujo: el deslizador llega hasta el borde derecho del campo.
+function acomodarPared(){
+  const max = Math.max(5, Math.floor(XmaxExplora() - 4));
+  S.dPared = clamp(S.dPared, 5, max);
+  const d = $('e-d'); if (d){ d.max = max; d.value = S.dPared; }
 }
 function disparar(){
   // El disparo anterior queda a trazos, para comparar (se guarda al empezar el nuevo).
-  const p = M.proyectil(datos()), ahora = JSON.stringify(datos());
+  const ahora = JSON.stringify(datos());
   if (S.ultimo && S.ultimo !== ahora) S.previo = JSON.parse(S.ultimo);
   S.ultimo = ahora;
-  vuela(0, p.tVuelo);
+  acomodarPared(); vuela(0, tFinal());
 }
 function vivo(){
   $('e-v0-o').textContent = `${S.v0} m/s`; $('e-ang-o').textContent = `${S.ang}°`; $('e-y0-o').textContent = `${S.y0} m`;
@@ -727,40 +1001,53 @@ function vivo(){
       <div class="eq">${V('vx','vx')} = ${fmt(p.vx, 1)} m/s · ${V('vy','v₀y')} = ${fmt(p.vy, 1)} m/s</div>
       <div class="eq">subida ${fmt(p.tSubida, 2)} s · altura máxima ${fmt(p.H, 1)} m</div>
       <div class="eq">${V('t','en el aire')} ${fmt(p.tVuelo, 2)} s · alcance ${fmt(p.alcance, 1)} m</div>
-    </div>`;
+    </div>${chipsPared()}`;
+  if (S.pared){ $('e-d-o').textContent = `${S.dPared} m`; $('e-h-o').textContent = S.altoPared >= 100 ? 'muy alta' : `${S.altoPared} m`; }
   // Se rehace en cada movimiento del deslizador: sus datos de color no son paradas del tabulador.
   $('live').querySelectorAll('.v').forEach(e => e.removeAttribute('tabindex'));
   draw();
 }
-const local = e => { const r = cv.getBoundingClientRect(); return { x:e.clientX - r.left, y:e.clientY - r.top }; };
-function asa(){ const m = marco(L.W, L.H, steps[S.step].cfg()), th = S.ang*Math.PI/180; return { x:m.X(0) + Math.cos(th)*40, y:m.Y(S.y0) - Math.sin(th)*40, bx:m.X(0), by:m.Y(S.y0) }; }
-function cercaAsa(p, rad){ const a = asa(); return Math.hypot(p.x - a.x, p.y - a.y) < rad; }
-function ponerAngulo(p){
-  const a = asa(), ang = Math.round(clamp(Math.atan2(a.by - p.y, p.x - a.bx)*180/Math.PI, S.y0 > 0 ? 0 : 1, 90));
-  if (ang !== S.ang){ parar(); S.ang = ang; S.t = M.proyectil(datos()).tVuelo; vivo(); }
+function chipsPared(){
+  if (!S.pared) return '';
+  const w = impacto();
+  if (w.sinAvance) return '<div class="chips"><span class="chip">a 90° no avanza: no llega a la pared</span></div>';
+  if (w.choca) return `<div class="chips"><span class="chip">golpea la pared a ${fmt(w.y, 1)} m</span><span class="chip">${FASES[w.fase]}</span><span class="chip">${V('v','v')} = ${fmt(w.v, 1)} m/s</span></div>`;
+  return `<div class="chips"><span class="chip">${w.motivo === 'cae-antes' ? `no llega: cae a ${fmt(w.alcance, 1)} m` : 'pasa por encima de la pared'}</span></div>`;
 }
-cv.addEventListener('touchstart', e => {
-  if (!S.explora || e.touches.length !== 1) return;
-  const r = cv.getBoundingClientRect(), t = e.touches[0];
-  if (cercaAsa({ x:t.clientX - r.left, y:t.clientY - r.top }, 40)) e.preventDefault();
-}, { passive:false });
-cv.addEventListener('pointerdown', e => {
-  if (!S.explora) return;
-  const p = local(e); if (!cercaAsa(p, e.pointerType === 'mouse' ? 26 : 40)) return;
-  S.arrastrando = true; cv.setPointerCapture(e.pointerId); e.preventDefault(); cv.focus({ preventScroll:true }); draw();
-}, { passive:false });
-cv.addEventListener('pointermove', e => {
-  const p = local(e);
-  if (S.arrastrando){ ponerAngulo(p); return; }
-  const s = S.explora && cercaAsa(p, 26);
-  if (s !== S.sobreAsa){ S.sobreAsa = s; cv.style.cursor = s ? 'grab' : ''; draw(); }
+// Asas del explorador: la boca del cañón (ángulo) y el pie de la pared (distancia). Celular.arrastre elige la más cercana.
+function asas(){
+  const P = steps[S.step].cfg(), m = marco(L.W, L.H, P), th = S.ang*Math.PI/180;
+  const r = [{ id:'canon', x:m.X(0) + Math.cos(th)*40, y:m.Y(S.y0) - Math.sin(th)*40, m }];
+  if (S.pared) r.push({ id:'pared', x:m.X(S.dPared) + 4, y:m.Y(0), m });
+  return r;
+}
+function masCercana(p, rad){
+  let mejor = null, dm = rad;
+  for (const a of asas()){ const d = Math.hypot(p.x - a.x, p.y - a.y); if (d < dm){ dm = d; mejor = a; } }
+  return mejor;
+}
+function ponerAngulo(p){
+  const m = marco(L.W, L.H, steps[S.step].cfg()), bx = m.X(0), by = m.Y(S.y0);
+  const ang = Math.round(clamp(Math.atan2(by - p.y, p.x - bx)*180/Math.PI, S.y0 > 0 ? 0 : 1, 90));
+  if (ang !== S.ang){ parar(); S.ang = ang; acomodarPared(); S.t = tFinal(); vivo(); }
+}
+function ponerPared(p){
+  const m = marco(L.W, L.H, steps[S.step].cfg()), d = Math.round(m.xmin + (p.x - 4 - m.ml)/m.sx);
+  const nd = clamp(d, 5, Math.max(5, Math.floor(XmaxExplora() - 4)));
+  if (nd !== S.dPared){ parar(); S.dPared = nd; acomodarPared(); S.t = tFinal(); vivo(); }
+}
+Celular.arrastre(cv, {
+  activo: () => S.explora,
+  cerca: (p, r) => { S.cerca = masCercana(p, r); return !!S.cerca; },
+  empezar: () => { S.cual = S.cerca && S.cerca.id; draw(); },
+  mover: p => { if (S.cual === 'canon') ponerAngulo(p); else if (S.cual === 'pared') ponerPared(p); },
+  soltar: () => { S.cual = null; draw(); },
+  sobre: s => { S.sobre = s && S.cerca ? S.cerca.id : null; draw(); }
 });
-const soltarAsa = () => { if (S.arrastrando){ S.arrastrando = false; draw(); } };
-cv.addEventListener('pointerup', soltarAsa); cv.addEventListener('pointercancel', soltarAsa);
 cv.addEventListener('keydown', e => {
   if (!S.explora) return;
   const d = { ArrowUp:1, ArrowRight:1, ArrowDown:-1, ArrowLeft:-1 }[e.key]; if (!d) return;
-  e.preventDefault(); parar(); S.ang = clamp(S.ang + d, S.y0 > 0 ? 0 : 1, 90); S.t = M.proyectil(datos()).tVuelo; vivo();
+  e.preventDefault(); parar(); S.ang = clamp(S.ang + d, S.y0 > 0 ? 0 : 1, 90); acomodarPared(); S.t = tFinal(); vivo();
 });
 
 $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); $('stepT').focus({ preventScroll:true }); });
@@ -780,66 +1067,191 @@ L.resize(); go(0);
 })();
 </script>
 <script>
-/* ================= MODO 2: ¿qué pasa si…? =================
-   Preguntas de docs/investigacion/cinematica-ideas-erroneas.md (P2 a P4) y de dinamica-ideas-erroneas.md (D9).
-   La escena cambia recién después de responder. Los experimentos se abren en orden. */
-(function(){
-const $ = id => document.getElementById(id);
-const cv = $('cv2');
-const L = crearLienzo(cv, W => EXPS[S.k] && EXPS[S.k].tipo === 'tiro' && E.cfg ? altoCampo(W, E.cfg) : altoLienzo(W), draw);
-let parar = () => {};
-const E = {};
-const EXPS = [
-  { id:'mas-rapida', corto:'Dos pelotas', ley:['t'], leyAntes:[],  tipo:'tiro',
+/* ================= Máquina de experimentos (pestañas 2 y 3) =================
+   La escena cambia recién después de responder. Los experimentos de cada pestaña se abren en orden
+   (decisión de Gerson, 6 nov 2026); entre pestañas no se bloquea nada. Toda la física sale de MotorTiro.
+   cfg = { modo, cv, exps, ley, k, t, body, desc, titulo, nombres, ids:{ fb, res, sig, rep }, crear(api) → EXPS }
+   Cada experimento: { id, mid (id de medición), corto, tipo, ley, leyAntes, q, opts, ok, fb, antes(), despues(revisita),
+   ctrl(), vivo(), alCambiar(), enlazar(), exp, dibujar(L, c), desc(respondido), arrastre:{ cerca, mover }, continuo } */
+function modoExperimentos(cfg){
+  const $ = id => document.getElementById(id);
+  const modo = $(cfg.modo), cv = $(cfg.cv), ids = cfg.ids;
+  const E = {}, S = { k:0, pred:{}, t0:Date.now() };
+  let EXPS = [];
+  const L = crearLienzo(cv, W => { const x = EXPS[S.k]; if (!x) return altoLienzo(W); return x.alto ? x.alto(W) : x.tipo === 'tiro' && E.cfg ? altoCampo(W, E.cfg) : altoLienzo(W); }, draw);
+  // Un solo bucle por lienzo (nucleo/celular.js): se duerme cuando nada se mueve o el lienzo no se ve.
+  const bucle = Celular.bucle(cv, dt => {
+    if (!E.mover) return false;
+    const sigue = E.mover(Math.min(dt, 0.05));
+    if (!sigue) E.mover = null;
+    draw(); return !!sigue;
+  });
+  function parar(){ E.mover = null; }
+  // mover(dt) avanza el estado y devuelve true mientras siga. Con movimiento reducido, se salta al final
+  // (o, si es un giro sin fin, se dibuja quieto).
+  function animar(mover, continuo){
+    parar();
+    if (RM){ if (!continuo){ let n = 0; while (mover(1e3) && n++ < 1e4); } draw(); return; }
+    E.mover = mover; bucle.despertar();
+  }
+  const api = { E, animar, parar, draw: () => draw(), ir: k => ir(k), $, L, pred: id => S.pred[id] };
+  const abierto = k => EXPS.slice(0, k).every(x => S.pred[x.id]);
+  function draw(){
+    if (!L.W || !EXPS.length) return;
+    const x = EXPS[S.k], c = colores(L.W);
+    if (x.dibujar) x.dibujar(L, c);
+    else if (x.tipo === 'circulo') vistaCirculo(L, c, Object.assign({ crece:E.crece }, E.circ));
+    else vistaTiro(L, c, Object.assign({}, E.cfg, { t:E.t, crece:E.crece }));
+    decir($(cfg.desc), x.desc(!!S.pred[x.id]));
+  }
+  function botones(){
+    const cont = $(cfg.exps);
+    if (!cont.children.length){
+      cont.innerHTML = EXPS.map((x, k) => `<button type="button" data-k="${k}">${k + 1}. ${x.corto}</button>`).join('');
+      cont.querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+    }
+    [...cont.children].forEach((b, k) => {
+      const ok = abierto(k);
+      b.disabled = !ok; b.setAttribute('aria-pressed', String(k === S.k));
+      if (ok){ b.removeAttribute('aria-disabled'); b.removeAttribute('aria-label'); }
+      else { b.setAttribute('aria-disabled', 'true'); b.setAttribute('aria-label', `Experimento ${k + 1}, bloqueado`); }
+    });
+  }
+  const sinParada = el => el.querySelectorAll('.v').forEach(e => { e.removeAttribute('tabindex'); e.style.cursor = 'default'; });
+  function ir(k){
+    if (!abierto(k)) return;   // ninguna vía salta un experimento sin responder
+    parar();
+    S.k = k; S.t0 = Date.now();
+    const x = EXPS[k];
+    for (const key of Object.keys(E)) delete E[key];
+    x.antes();
+    const resp = S.pred[x.id];
+    if (resp){
+      x.despues(true);
+      // Al volver a un experimento respondido, su animación ya terminó (salvo los giros sin fin).
+      if (E.mover && !x.continuo){ let n = 0; while (E.mover && E.mover(1e3) && n++ < 1e4); E.mover = null; }
+    }
+    L.compactar(!resp);
+    botones(); L.resize();
+    leyenda($(cfg.ley), resp ? x.ley : x.leyAntes, cfg.nombres);
+    $(cfg.k).textContent = `${cfg.titulo} · ${k + 1} de ${EXPS.length}`;
+    $(cfg.t).textContent = x.corto;
+    $(cfg.body).innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, ids.fb)}<div id="${ids.res}" class="body"></div>`;
+    sinParada($(cfg.body));
+    const btns = [...$(cfg.body).querySelectorAll('.opt')];
+    const pintar = () => {
+      const p = S.pred[x.id]; if (!p) return;
+      btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+      const fb = $(ids.fb);
+      fb.textContent = x.fb ? x.fb[p] : p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. La correcta está marcada; mira la escena para ver por qué.`;
+      fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+      $(ids.res).innerHTML = x.ctrl() + x.exp + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="${ids.sig}">Siguiente: ${EXPS[k + 1].corto}</button></div>` : '');
+      $(ids.res).querySelectorAll('input').forEach(inp => inp.addEventListener('input', () => { if (!x.continuo) parar(); x.alCambiar(); x.vivo(); draw(); }));
+      const rep = $(ids.rep); if (rep) rep.onclick = () => { parar(); x.repetir ? x.repetir() : x.despues(false); };
+      if (x.enlazar) x.enlazar();
+      const sig = $(ids.sig); if (sig) sig.onclick = () => { ir(k + 1); modo.scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); $(cfg.t).focus({ preventScroll:true }); };
+      sinParada($(ids.res)); x.vivo();
+    };
+    btns.forEach(b => b.onclick = () => {
+      if (S.pred[x.id]) return;
+      const o = x.opts.find(q => q[0] === b.dataset.k);
+      S.pred[x.id] = o[0];
+      registrarPrediccion(x.mid, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+      if (x.alResponder) x.alResponder(o[0]);
+      pintar(); botones(); leyenda($(cfg.ley), x.ley, cfg.nombres);
+      $(ids.fb).focus({ preventScroll:true });
+      L.compactar(false);
+      Celular.alResponder(cv, () => { x.despues(false); draw(); }, () => S.k === k && !modo.hidden);
+    });
+    pintar(); draw();
+  }
+  // Arrastre (solo después de responder y en los experimentos que lo traen): el dedo cerca captura; lejos, desplaza la página.
+  Celular.arrastre(cv, {
+    activo: () => { const x = EXPS[S.k]; return !!(x && x.arrastre && S.pred[x.id]); },
+    cerca: (p, r) => EXPS[S.k].arrastre.cerca(p, r),
+    empezar: () => { E.agarrado = true; draw(); },
+    mover: p => { parar(); EXPS[S.k].arrastre.mover(p); EXPS[S.k].vivo(); draw(); },
+    soltar: () => { E.agarrado = false; draw(); },
+    sobre: s => { E.sobre = s; draw(); }
+  });
+  EXPS = cfg.crear(api);
+  alRedibujarTema(draw);
+  addEventListener('modo', () => {
+    if (modo.hidden) parar();
+    else { L.resize(); if (E.reanudar && S.pred[EXPS[S.k].id]) E.reanudar(); }
+  });
+  L.resize(); ir(0);
+  return api;
+}
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? (tiro) =================
+   Preguntas de docs/investigacion/cinematica-ideas-erroneas.md (P2 a P5) y, para el golpe, del informe de
+   estática y energía (E8, sumar como números). */
+modoExperimentos({ modo:'m2', cv:'cv2', exps:'exps', ley:'ley2', k:'k2', t:'t2', body:'body2', desc:'desc2', titulo:'¿Qué pasa si…?',
+  nombres:NOMBRES, ids:{ fb:'fb2', res:'res2', sig:'sig2', rep:'repetir' },
+  crear: api2 => { const { E, animar, $ } = api2;
+  // El tiro vuela hasta E.T (o hasta el impacto) a 650 ms por segundo simulado.
+  const volar = () => animar(dt => { E.t = Math.min(E.T, E.t + dt/0.65); return E.t < E.T; });
+  const pared = () => M.impactoPared({ v0:50, angulo:37, d:E.d });
+  const golpe = () => M.impactoPared({ vx:15, y0:45, d:E.d, alto:60 });
+  return [
+  { id:'mas-rapida', mid:'que-pasa-si-mas-rapida', corto:'Dos pelotas', ley:['t'], leyAntes:[], tipo:'tiro',
     q:`Desde lo alto de un acantilado de 80 m se lanzan dos pelotas en horizontal al mismo tiempo: una a 15 m/s y otra a 30 m/s. ¿Cuál llega primero al agua?`,
     opts:[['a','La más rápida, porque va con más fuerza','P2-mas-rapida-llega-antes','documentado'],
           ['b','La más lenta: la rápida se queda más tiempo en el aire','P2-mas-rapida-dura-mas','documentado'],
-          ['c','Llegan a la vez',null],
-          ['d','Depende de cuánto pese cada pelota','C2-depende-de-la-masa','documentado']],
+          ['c','Llegan a la vez: en vertical caen igual',null],
+          ['d','Depende de cuánto pese cada pelota','C2-depende-de-la-masa','parcial']],
     ok:'c',
     antes:() => Object.assign(E, { cfg:{ tiros:[{ o:{ vx:15, y0:80 }, nombre:'15 m/s' }, { o:{ vx:30, y0:80 }, nombre:'30 m/s', trazos:true }], xmin:-12, Xmax:130, Ymax:90, plataforma:true, ver:{} }, t:0, T:4 }),
-    despues:() => { E.cfg.ver = { tray:'hasta', estrobo:0.5, alturas:true }; correr(); },
+    despues:() => { E.cfg.ver = { tray:'hasta', estrobo:0.5, alturas:true }; E.t = 0; volar(); },
     ctrl:() => `<div class="chips" id="chips2"></div><p><button type="button" class="btn" id="repetir">Disparar otra vez</button></p>`,
     vivo:() => { $('chips2').innerHTML = '<span class="chip">las dos: 4 s en el aire</span><span class="chip">caen a 60 m y a 120 m</span>'; },
+    alCambiar:() => {},
     exp:`<p>Las líneas naranjas a trazos unen las dos pelotas en el mismo instante: son horizontales. En vertical, las dos caen igual, sin velocidad vertical al salir: 80 = 5t², t = 4 s. La más rápida no cae más rápido ni más lento: solo llega más lejos, al doble de distancia.</p>
-      ${fuente('Según Prescott y Mitchelmore (2005), con dos balas disparadas en horizontal a distinta velocidad, el 38 % de las alumnas entrevistadas dijo que la más rápida está más tiempo en el aire. Con pelotas, el 43 % dijo que la más rápida llega primero.')}` },
-  { id:'cada-segundo', corto:'Segundo a segundo', ley:['vx','vy'], leyAntes:[],  tipo:'tiro',
+      ${fuente('Según Prescott y Mitchelmore (2005), con dos balas disparadas en horizontal a distinta velocidad, el 38 % de las alumnas entrevistadas dijo que la más rápida está más tiempo en el aire. Con pelotas, el 43 % dijo que la más rápida llega primero. Que el más pesado caiga distinto está documentado sin cifra (Carrascosa, Gil Pérez y Valdés, 2004).')}`,
+    desc: r => r ? 'Las dos pelotas caen a la par y llegan juntas a los 4 segundos; la rápida cae el doble de lejos.' : 'Un acantilado de 80 metros con dos pelotas listas para lanzarse en horizontal, a 15 y a 30 metros por segundo.' },
+  { id:'cada-segundo', mid:'que-pasa-si-cada-segundo', corto:'Segundo a segundo', ley:['vx','vy'], leyAntes:[], tipo:'tiro',
     q:`Una pelota sale rodando del borde de una azotea de 80 m. En el primer segundo avanza 15 m en horizontal. ¿Cuánto avanza en horizontal durante el segundo siguiente?`,
     opts:[['a','Menos de 15 m: la velocidad horizontal se va gastando','P3-vx-se-gasta','documentado'],
-          ['b','15 m',null],
+          ['b','15 m: en horizontal nada la frena',null],
           ['c','Más de 15 m, porque cae cada vez más rápido','confunde-vx-con-vy','hipotesis'],
           ['d','0 m: ya se le acabó el impulso y cae en picada','P3-cae-en-picada','documentado']],
     ok:'b',
     antes:() => Object.assign(E, { cfg:{ tiros:[{ o:{ vx:15, y0:80 } }], xmin:-12, Xmax:70, Ymax:90, plataforma:true, ver:{ tray:'hasta', estrobo:1 } }, t:1, T:4 }),
-    despues:() => { E.cfg.ver = { tray:'hasta', estrobo:1, sombras:true, vx:true, vy:true }; correr(); },
+    despues:() => { E.cfg.ver = { tray:'hasta', estrobo:1, sombras:true, vx:true, vy:true }; E.t = 0; volar(); },
     ctrl:() => `<div class="chips" id="chips2"></div><p><button type="button" class="btn" id="repetir">Otra vez</button></p>`,
     vivo:() => { $('chips2').innerHTML = '<span class="chip">en horizontal: 15, 15, 15 y 15 m</span><span class="chip">en vertical cae: 5, 15, 25 y 35 m</span>'; },
+    alCambiar:() => {},
     exp:`<p>Mira las sombras. La ${V('vx','azul')}, en el suelo, avanza 15 m cada segundo: en horizontal no hay ninguna aceleración, así que ${V('vx','vx')} no cambia. La ${V('vy','roja')}, en el eje vertical, baja 5, 15, 25 y 35 m: en vertical sí hay aceleración.</p>
       <p>La pelota tampoco «cae en picada» al acabarse el impulso: desde que deja la azotea su camino es una parábola, sin tramo recto y sin esquina.</p>
-      ${fuente('Según Prescott y Mitchelmore (2005), en una pregunta parecida (10 m en el primer segundo), el 60 % de las alumnas dijo que en el segundo siguiente avanza menos. Que un objeto siga recto un tramo y recién después caiga lo reportó McCloskey (1983) en más de un tercio de escolares y universitarios, según Prescott y Mitchelmore (2005).')}` },
-  { id:'avioneta', corto:'El paquete', ley:['t'], leyAntes:[],  tipo:'tiro',
+      ${fuente('Según Prescott y Mitchelmore (2005), en una pregunta parecida (10 m en el primer segundo), el 60 % de las alumnas dijo que en el segundo siguiente avanza menos. Que un objeto siga recto un tramo y recién después caiga lo reportó McCloskey (1983) en más de un tercio de escolares y universitarios, según Prescott y Mitchelmore (2005).')}`,
+    desc: r => r ? 'En horizontal avanza 15 metros cada segundo; en vertical cae 5, 15, 25 y 35 metros.' : 'La pelota al final del primer segundo, 15 metros adelante del borde.' },
+  { id:'avioneta', mid:'que-pasa-si-avioneta', corto:'El paquete', ley:['t'], leyAntes:[], tipo:'tiro',
     q:`Una avioneta vuela en horizontal a 50 m/s constantes, a 180 m de altura, y suelta un paquete. Sin aire, mientras el paquete cae, ¿dónde está respecto a la avioneta?`,
     opts:[['a','Cae recto hacia abajo desde donde lo soltaron, y la avioneta se aleja','P4-cae-recto','documentado'],
-          ['b','Se va quedando atrás de la avioneta','P4-queda-atras','documentado'],
-          ['c','Siempre justo debajo de la avioneta',null],
+          ['b','Se va quedando atrás de la avioneta','P4-queda-atras','parcial'],
+          ['c','Siempre justo debajo: avanza a la par de la avioneta',null],
           ['d','Adelante de la avioneta','adelanta-al-avion','hipotesis']],
     ok:'c',
     antes:() => Object.assign(E, { cfg:{ tiros:[{ o:{ vx:50, y0:180 } }], xmin:-15, Xmax:330, Ymax:200, ver:{ avion:true } }, t:0, T:6 }),
-    despues:() => { E.cfg.ver = { avion:true, avionLinea:true, tray:'hasta', estrobo:1 }; correr(); },
+    despues:() => { E.cfg.ver = { avion:true, avionLinea:true, tray:'hasta', estrobo:1 }; E.t = 0; volar(); },
     ctrl:() => `<div class="chips" id="chips2"></div><p><button type="button" class="btn" id="repetir">Soltar otra vez</button></p>`,
     vivo:() => { $('chips2').innerHTML = '<span class="chip">6 s de caída</span><span class="chip">cae a 300 m de donde lo soltaron</span><span class="chip">la avioneta también avanzó 300 m</span>'; },
+    alCambiar:() => {},
     exp:`<p>Al soltarlo, el paquete ya va a 50 m/s en horizontal, igual que la avioneta, y nada lo frena en horizontal. Por eso avanza a la par de la avioneta mientras cae: la línea a trazos que los une queda siempre vertical. Cae en 6 s (180 = 5t²), a 300 m de donde lo soltaron.</p>
       <p>Visto desde la avioneta, el paquete cae en línea recta, siempre debajo de ella. Visto desde el suelo, hace una parábola. Las dos descripciones son correctas. Lo que no pasa es lo de la opción A: caer recto sobre el punto del suelo donde lo soltaron. Con aire, el paquete sí se quedaría un poco atrás.</p>
-      ${fuente('Según Prescott y Mitchelmore (2005), en preguntas de este tipo (soltar algo desde un avión, una faja transportadora o alguien que camina) solo entre el 25 % y el 38 % acertó, según el caso, y entre el 30 % y el 53 % dijo que cae recto.')}` },
-  { id:'complementarios', corto:'37° o 53°', ley:[], leyAntes:[],  tipo:'tiro',
+      ${fuente('Según Prescott y Mitchelmore (2005), en preguntas de este tipo (soltar algo desde un avión, una faja transportadora o alguien que camina) solo entre el 25 % y el 38 % acertó, según el caso, y entre el 30 % y el 53 % dijo que cae recto. Que se quede atrás es una idea vecina, sin cifra propia.')}`,
+    desc: r => r ? 'El paquete cae siempre justo debajo de la avioneta y llega al suelo a los 6 segundos, a 300 metros.' : 'Una avioneta a 180 metros de altura, con el paquete a punto de soltarse.' },
+  { id:'complementarios', mid:'que-pasa-si-complementarios', corto:'37° o 53°', ley:[], leyAntes:[], tipo:'tiro',
     q:`Dos proyectiles salen del suelo con la misma rapidez, 50 m/s: uno a 37° y otro a 53°. ¿Cuál llega más lejos?`,
     opts:[['a','El de 53°: sube más, así que llega más lejos','mas-angulo-mas-lejos','hipotesis'],
           ['b','El de 37°: va más rápido en horizontal','menos-angulo-mas-lejos','hipotesis'],
-          ['c','Llegan al mismo lugar',null],
-          ['d','Depende de cuánto pese cada uno','C2-depende-de-la-masa','documentado']],
+          ['c','Llegan al mismo lugar: vx y vy se intercambian',null],
+          ['d','Depende de cuánto pese cada uno','C2-depende-de-la-masa','parcial']],
     ok:'c',
     antes:() => Object.assign(E, { ang:37, cfg:{ tiros:[{ o:{ v0:50, angulo:37 } }, { o:{ v0:50, angulo:53 }, trazos:true }], xmin:-8, Xmax:260, Ymax:90, canon:true, ver:{} }, t:0, T:8 }),
-    despues:() => { E.cfg.ver = { tray:'hasta', estrobo:1 }; E.cfg.tiros[0].nombre = `${E.ang}°`; E.cfg.tiros[1].nombre = `${90 - E.ang}°`; correr(); },
+    despues:() => { E.cfg.ver = { tray:'hasta', estrobo:1 }; E.cfg.tiros[0].nombre = `${E.ang}°`; E.cfg.tiros[1].nombre = `${90 - E.ang}°`; E.t = 0; volar(); },
     ctrl:() => `<div class="slider"><label for="q-ang"><span>Ángulo del primero (el otro es su complemento)</span><output id="q-ang-o"></output></label><input id="q-ang" type="range" min="10" max="45" step="1" value="${E.ang}"></div><div class="chips" id="chips2"></div>`,
     vivo:() => {
       const a = M.proyectil({ v0:50, angulo:E.ang }), b = M.proyectil({ v0:50, angulo:90 - E.ang });
@@ -849,138 +1261,313 @@ const EXPS = [
     alCambiar:() => { E.ang = +$('q-ang').value; E.cfg.tiros = [{ o:{ v0:50, angulo:E.ang }, nombre:`${E.ang}°` }, { o:{ v0:50, angulo:90 - E.ang }, nombre:`${90 - E.ang}°`, trazos:true }]; E.T = M.proyectil({ v0:50, angulo:90 - E.ang }).tVuelo; E.t = E.T; },
     exp:`<p>Con 37° y 53°, los dos caen a 240 m. El de 53° sube mucho más (80 m contra 45 m) y está más tiempo en el aire (8 s contra 6 s), pero avanza más lento en horizontal (30 m/s contra 40 m/s). Al pasar de 37° a 53° se intercambian vx y vy, y el alcance depende del producto de las dos.</p>
       <p>Mueve el ángulo: cualquier par que sume 90° llega al mismo lugar, si se lanza y cae a la misma altura. Con la misma rapidez, y si se lanza y cae a la misma altura, el alcance más grande es a 45°. Desde una azotea, el mejor ángulo es algo menor.</p>
-      ${fuente('Las opciones incorrectas son errores que suponemos, sin estudio con porcentaje; la de la masa es la idea documentada de que el más pesado cae distinto.')}` },
-  { id:'honda', corto:'Se rompe la cuerda', ley:['v','w'], leyAntes:['w'],  tipo:'circulo',
+      ${fuente('Las opciones incorrectas son errores que suponemos, sin estudio con porcentaje; la de la masa es la cara, en este problema, de la idea de que el más pesado cae distinto, documentada sin cifra.')}`,
+    desc: r => r ? `Disparos a ${E.ang} y ${90 - E.ang} grados con 50 metros por segundo: caen en el mismo lugar.` : 'Un cañón listo para disparar a 37 grados y a 53 grados con 50 metros por segundo.' },
+  { id:'pared', mid:'que-pasa-si-pared', corto:'La pared', ley:['vx','vy','v'], leyAntes:['v'], tipo:'tiro',
+    q:`Un cañón en el suelo dispara a 50 m/s, a 37° sobre la horizontal, hacia una pared muy alta que está a 160 m. ¿A qué altura golpea la pared?`,
+    opts:[['a','45 m: llega a la pared en lo más alto de su vuelo','pared-en-la-cima','hipotesis'],
+          ['b','120 m: sigue la línea hacia donde apunta el cañón','pared-linea-de-mira','hipotesis'],
+          ['c','40 m: ya pasó lo más alto y está bajando',null],
+          ['d','44,8 m: tarda 160 entre 50, o sea 3,2 s','pared-t-con-v0','hipotesis']],
+    ok:'c',
+    fb:{ c:'¡Bien! Llega a la pared a los 4 s (160 entre 40). Sube 120 m por su velocidad vertical y cae 80 m por la gravedad: queda a 40 m, ya de bajada, porque lo más alto lo pasó a los 120 m.',
+         a:'Elegiste la A. Lo más alto lo alcanza a los 120 m del cañón, a los 3 s. La pared está más lejos: cuando llega, ya está bajando. La correcta está marcada.',
+         b:'Elegiste la B. Eso pasaría si no hubiera gravedad. Desde que sale, la gravedad lo va bajando cada vez más que la línea de mira: a los 4 s, ya 80 m. La correcta está marcada.',
+         d:'Elegiste la D. El tiempo hasta la pared sale de la velocidad horizontal, porque la pared está a 160 m en horizontal: 160 entre 40 da 4 s. Los 50 m/s van en diagonal. La correcta está marcada.' },
+    antes:() => Object.assign(E, { d:160, t:0, T:0, marca:null, cfg:{ tiros:[{ o:{ v0:50, angulo:37 } }], xmin:-8, Xmax:260, Ymax:130, canon:true, ver:{ v0:true } } }),
+    alResponder: o => { const w = pared(); E.marcaElegida = { a:w.errores.yEnLaCima, b:w.errores.yRecta, d:w.errores.yConTv0 }[o]; },
+    despues:() => {
+      if (E.marcaElegida === undefined){ const m = { a:'yEnLaCima', b:'yRecta', d:'yConTv0' }[api2.pred('pared')]; E.marcaElegida = m ? M.impactoPared({ v0:50, angulo:37, d:160 }).errores[m] : null; }
+      E.cfg.ver = { tray:'hasta', estrobo:0.5, vx:true, vy:true, v:true, cima:true }; E.T = pared().t; E.t = 0; volar();
+    },
+    dibujar:(L, c) => {
+      const w = pared(), hit = w.choca && E.t >= w.t - 1e-9, resp = api2.pred('pared');
+      const ver = Object.assign({}, E.cfg.ver, resp ? { mira:E.d } : {});
+      vistaTiro(L, c, Object.assign({}, E.cfg, { ver, t:E.t, tFin: w.choca ? w.t : null,
+        pared:{ d:E.d, alto:Infinity, cota:true, asa:!!resp, sobre:E.sobre || E.agarrado, marca: resp && E.d === 160 ? E.marcaElegida : null, estrella: hit ? { x:E.d, y:w.y } : null } }));
+    },
+    arrastre:{
+      cerca:(p, r) => { const m = marco(api2.L.W, api2.L.H, E.cfg); return Math.hypot(p.x - m.X(E.d) - 4, p.y - m.Y(0)) < r; },
+      mover: p => { const m = marco(api2.L.W, api2.L.H, E.cfg), d = clamp(Math.round((m.xmin + (p.x - 4 - m.ml)/m.sx)/10)*10, 20, 240);
+        if (d !== E.d){ E.d = d; $('q-d').value = d; const w = pared(); E.t = E.T = w.choca ? w.t : M.proyectil({ v0:50, angulo:37 }).tVuelo; } }
+    },
+    ctrl:() => `<div class="slider"><label for="q-d"><span>Distancia a la pared</span><output id="q-d-o"></output></label><input id="q-d" type="range" min="20" max="240" step="10" value="${E.d}"></div><div class="chips" id="chips2"></div>
+      <p class="hint">Prueba con 80 m y con 160 m. También puedes arrastrar el pie de la pared.</p><p><button type="button" class="btn" id="repetir">Disparar otra vez</button></p>`,
+    vivo:() => {
+      const w = pared(); $('q-d-o').textContent = `${E.d} m`;
+      $('chips2').innerHTML = w.choca
+        ? `<span class="chip">llega a los ${fmt(w.t, 2)} s</span><span class="chip">sube ${fmt(w.sube, 1)} y cae ${fmt(w.cae, 1)}: ${fmt(w.y, 1)} m</span><span class="chip">${FASES[w.fase]}</span><span class="chip">${V('v','v')} = ${fmt(w.v, 1)} m/s</span>`
+        : `<span class="chip">no llega: cae a ${N1(w.alcance)} m, antes de la pared</span>`;
+    },
+    alCambiar:() => { E.d = +$('q-d').value; const w = pared(); E.t = E.T = w.choca ? w.t : M.proyectil({ v0:50, angulo:37 }).tVuelo; },
+    repetir:() => { const w = pared(); E.T = w.choca ? w.t : M.proyectil({ v0:50, angulo:37 }).tVuelo; E.t = 0; volar(); },
+    exp:`<div class="eqs"><div class="eq">${V('t','t')} = 160 ÷ ${V('vx','40')} = ${V('t','4 s')}<span class="note">la pared está a 160 m en horizontal</span></div>
+      <div class="eq">y = ${V('vy','30')}·4 − 5·4² = 120 − 80 = 40 m<span class="note">sube por su velocidad vertical, cae por la gravedad</span></div></div>
+      <p>La línea gris a trazos es hacia donde apunta el cañón: sin gravedad, llegaría a la pared a 120 m. La gravedad lo baja 5·t² metros: a los 4 s, 80 m. Lo más alto (45 m) lo pasó a los 120 m del cañón; en la pared ya va de bajada, con ${V('vy','vy')} = −10 m/s.</p>
+      ${fuente('Las tres opciones incorrectas son hipótesis nuestras, sin estudio con porcentaje. La de la línea de mira se parece a una idea documentada: que un proyectil sigue recto un tramo antes de caer (McCloskey, 1983, según Prescott y Mitchelmore, 2005).')}`,
+    desc: r => { if (!r) return 'Un cañón a 37 grados y una pared alta a 160 metros.'; const w = pared();
+      return w.choca ? `Con la pared a ${E.d} metros, el proyectil la golpea a los ${fmt(w.t, 1)} segundos, a ${fmt(w.y, 1)} metros de altura, ${FASES[w.fase]}.` : `Con la pared a ${E.d} metros, el proyectil cae antes de llegar.`; } },
+  { id:'golpe', mid:'que-pasa-si-golpe', corto:'El golpe', ley:['vx','vy','v'], leyAntes:['vx'], tipo:'tiro',
+    q:`Desde una azotea de 45 m lanzas una pelota en horizontal a 15 m/s hacia la pared de otro edificio, que está a 30 m. Llega a la pared a los 2 s. ¿Con qué rapidez la golpea?`,
+    opts:[['a','15 m/s: en horizontal nada la frena, así que va igual de rápido','rapidez-constante','hipotesis'],
+          ['b','35 m/s: los 15 de la horizontal más los 20 que ganó al caer','VE-suma-modulos','parcial'],
+          ['c','25 m/s: los 15 y los 20 se combinan como los lados de una escuadra',null],
+          ['d','20 m/s: al chocar solo cuenta lo que ganó al caer','pared-solo-vertical','hipotesis']],
+    ok:'c',
+    fb:{ c:'¡Bien! En 2 s ganó 20 m/s hacia abajo y conserva los 15 m/s horizontales. Las dos flechas forman un ángulo recto: v = √(15² + 20²) = 25 m/s, inclinada 53° bajo la horizontal.',
+         a:'Elegiste la A. La parte horizontal sí se queda en 15 m/s, pero además ganó 20 m/s hacia abajo. La rapidez es la de las dos juntas. La correcta está marcada.',
+         b:'Elegiste la B. 15 + 20 sería si las dos apuntaran hacia el mismo lado. Una va en horizontal y la otra en vertical, así que se suman como flechas: 25 m/s. La correcta está marcada.',
+         d:'Elegiste la D. La parte horizontal no desaparece al chocar: la pelota sigue avanzando a 15 m/s cuando llega. La rapidez combina las dos: 25 m/s. La correcta está marcada.' },
+    antes:() => Object.assign(E, { d:30, t:0, T:0, cfg:{ tiros:[{ o:{ vx:15, y0:45 } }], xmin:-14, Xmax:60, Ymax:70, plataforma:true, altoTxt:true, ver:{ vx:true } } }),
+    despues:() => { E.cfg.ver = { tray:'hasta', vx:true, vy:true, v:true }; const w = golpe(); E.T = w.choca ? w.t : w.tVuelo; E.t = 0; volar(); },
+    dibujar:(L, c) => {
+      const w = golpe(), hit = w.choca && E.t >= w.t - 1e-9;
+      const ver = Object.assign({}, E.cfg.ver, hit ? { triangulo:true } : {});
+      vistaTiro(L, c, Object.assign({}, E.cfg, { ver, t:E.t, tFin: w.choca ? w.t : null,
+        pared:{ d:E.d, alto:60, edificio:true, cota:true, estrella: hit ? { x:E.d, y:w.y } : null } }));
+    },
+    ctrl:() => `<div class="slider"><label for="q-dg"><span>Distancia al otro edificio</span><output id="q-dg-o"></output></label><input id="q-dg" type="range" min="10" max="45" step="5" value="${E.d}"></div><div class="chips" id="chips2"></div><p><button type="button" class="btn" id="repetir">Lanzar otra vez</button></p>`,
+    vivo:() => {
+      const w = golpe(); $('q-dg-o').textContent = `${E.d} m`;
+      $('chips2').innerHTML = w.choca
+        ? `<span class="chip">en ${fmt(w.t, 2)} s cae ${fmt(w.cae, 1)} m: golpea a ${fmt(w.y, 1)} m</span><span class="chip">${V('v','v')} = √(${V('vx', fmt(w.vx, 0))}² + ${V('vy', fmt(Math.abs(w.vy), 1))}²) = ${fmt(w.v, 1)} m/s</span><span class="chip">${fmt(Math.abs(w.angulo), 0)}° bajo la horizontal</span>`
+        : `<span class="chip">llega justo al pie del edificio, a los ${fmt(w.tVuelo, 1)} s</span>`;
+    },
+    alCambiar:() => { E.d = +$('q-dg').value; const w = golpe(); E.t = E.T = w.choca ? w.t : w.tVuelo; },
+    exp:`<div class="eqs"><div class="eq">${V('vy','vy')} = −10·${V('t','2')} = −20 m/s<span class="note">lo que ganó al caer</span></div>
+      <div class="eq">${V('v','v')} = √(${V('vx','15')}² + ${V('vy','20')}²) = √625 = ${V('v','25 m/s')}<span class="note">las dos partes son perpendiculares</span></div></div>
+      <p>Las flechas ${V('vx','azul')} y ${V('vy','roja')} forman un ángulo recto, y la ${V('v','morada')} es la hipotenusa de ese triángulo: 15, 20 y 25, como el triángulo de 37° y 53°. Golpea a 25 m del suelo (cae 5·2² = 20 m), inclinada 53° bajo la horizontal.</p>
+      ${fuente('Sumar 15 + 20 como números tiene un pariente documentado: en una pregunta con dos cuerdas, cerca del 15 % de 132 alumnos trató las tensiones como números (Flores-García y otros, 2009). Las otras dos opciones son hipótesis nuestras.')}`,
+    desc: r => { if (!r) return 'Una azotea de 45 metros con una pelota en el borde, lista para lanzarse en horizontal a 15 metros por segundo hacia otro edificio a 30 metros.'; const w = golpe();
+      return w.choca ? `La pelota golpea el edificio de enfrente a ${fmt(w.y, 1)} metros de altura, a ${fmt(w.v, 1)} metros por segundo.` : 'La pelota llega justo al pie del edificio de enfrente.'; } },
+  ]; } });
+</script>
+<script>
+/* ================= MODO 3: ruedas y pistas =================
+   MCU (rotonda y honda, que se mudaron desde «¿Qué pasa si…?» con sus mismos ids de medición), transmisión por cadena
+   y por eje, MCUV con la gráfica ω-t y encuentros en una pista circular. Casi todo es hipótesis nuestra (se dice en pantalla). */
+modoExperimentos({ modo:'m3', cv:'cv3', exps:'exps3', ley:'ley3', k:'k3', t:'t3', body:'body3', desc:'desc3', titulo:'Ruedas',
+  nombres:NOMBRES_RUEDAS, ids:{ fb:'fb3', res:'res3', sig:'sig3', rep:'repetir3' },
+  crear: api3 => { const { E, animar, $ } = api3;
+  const hasta = (clave, fin, rapidez) => dt => { E[clave] = Math.min(fin, E[clave] + dt*rapidez); return E[clave] < fin; };
+  const cadena = () => M.transmision({ r1:E.r1, r2:E.r2, f1:1, tipo:'faja' });
+  const eje = r => M.transmision({ r1:0.04, r2:r, v1:0.8, tipo:'eje' });
+  const frenado = () => M.mcuvDatos({ f0:E.f0, f:0, t:E.tp, r:0.3 });
+  const finFrena = () => (E.seguir ? Math.ceil(E.tp*1.5) : E.tp);
+  const pista = () => M.encuentroPista({ L:400, v1:E.v1, v2:E.v2, sentido:E.sentido, separacion:E.s0 });
+  const finPista = () => { const r = pista(); return r.nunca ? 60 : r.t; };
+  const vueltas = n => `${fmt(n, 1)} ${Math.abs(n - 1) < 1e-9 ? 'vuelta' : 'vueltas'}`;
+  const girarRotonda = revisita => {
+    E.crece = RM || revisita ? 1 : 0;
+    const mv = dt => { if (E.crece < 1){ E.crece = Math.min(1, E.crece + dt/0.5); return true; } E.circ.theta += dt*E.circ.omega*180/Math.PI; return true; };
+    E.reanudar = () => animar(mv, true); animar(mv, true);
+  };
+  const lista = [
+  { id:'rotonda', mid:'que-pasa-si-rotonda', corto:'La rotonda', ley:['v','a'], leyAntes:['v'], tipo:'circulo', continuo:true,
+    q:`Un auto da vueltas a una rotonda (óvalo) de 50 m de radio a 10 m/s constantes. ¿Tiene aceleración?`,
+    opts:[['a','No: su rapidez no cambia','rapidez-constante-sin-aceleracion','hipotesis'],
+          ['b','Sí, hacia el centro: la dirección de su velocidad cambia',null],
+          ['c','Sí, hacia afuera: es lo que se siente al dar la curva','D9-hacia-afuera','hipotesis'],
+          ['d','Sí, hacia adelante: en el sentido en que avanza','K3-a-en-direccion-del-movimiento','parcial']],
+    ok:'b',
+    fb:{ b:'¡Bien! La rapidez no cambia, pero la dirección de la velocidad sí, en cada punto de la curva: eso ya es acelerar. La aceleración apunta al centro: ac = v²/r = 100/50 = 2 m/s².',
+         a:'Elegiste la A. La rapidez es constante, pero la velocidad también tiene dirección, y esa cambia en cada punto de la curva. Cambiar la dirección ya es acelerar. La correcta está marcada.',
+         c:'Elegiste la C. Lo que se siente «hacia afuera» es tu cuerpo, que tiende a seguir recto. La aceleración del auto apunta al centro de la rotonda, y la produce el roce de la pista. La correcta está marcada.',
+         d:'Elegiste la D. Si apuntara hacia adelante, el auto iría cada vez más rápido. Va a rapidez constante: la aceleración no lo apura, lo hace doblar, y apunta al centro. La correcta está marcada.' },
+    antes:() => Object.assign(E, { r:50, v:10, circ:{ r:50, omega:0.2, theta:30, auto:true, ver:{ v:true }, pie:'rotonda de 50 m · vista desde arriba' }, t:0, T:6 }),
+    despues: revisita => { E.circ.ver = { v:'nueva', a:'nueva', todos:true }; girarRotonda(revisita); },
+    ctrl:() => `<div class="slider"><label for="w-r"><span>Radio de la rotonda</span><output id="w-r-o"></output></label><input id="w-r" type="range" min="10" max="100" step="5" value="${E.r}"></div>
+      <div class="slider"><label for="w-v"><span>Rapidez (${V('v','v')})</span><output id="w-v-o"></output></label><input id="w-v" class="r-v" type="range" min="2" max="15" step="1" value="${E.v}"></div><div class="chips" id="chips3"></div>`,
+    vivo:() => {
+      const m = M.mcu({ r:E.r, v:E.v }); $('w-r-o').textContent = `${E.r} m`; $('w-v-o').textContent = `${E.v} m/s`;
+      $('chips3').innerHTML = `<span class="chip">ac = v²/r = ${fmt(m.ac, 2)} m/s², hacia el centro</span>${m.ac > 7 ? '<span class="chip">más de unos 7 m/s²: un auto real patina</span>' : ''}<span class="chip">una vuelta en ${fmt(m.periodo, 1)} s</span>`;
+    },
+    alCambiar:() => { E.r = +$('w-r').value; E.v = +$('w-v').value; const m = M.mcu({ r:E.r, v:E.v }); E.circ.r = E.r; E.circ.omega = m.omega; E.circ.pie = `rotonda de ${E.r} m · vista desde arriba`; },
+    exp:`<p>La rapidez no cambia, pero la dirección de la ${V('v','velocidad')} sí: en cada punto apunta hacia otro lado. Cambiar la velocidad, aunque sea solo su dirección, es acelerar. Las flechas ${V('a','verdes')} muestran que esa aceleración apunta siempre al centro: ac = v²/r = 100/50 = 2 m/s².</p>
+      <p>Lo que la produce es el roce de la pista sobre las llantas, hacia el centro. Lo que se siente «hacia afuera» no es una fuerza sobre el auto: es tu cuerpo, que tiende a seguir en línea recta mientras el auto gira.</p>
+      ${fuente('Que la aceleración apunte hacia afuera es un error que suponemos, sin estudio con porcentaje. Creemos que sale de una idea documentada: que en el movimiento circular hay una fuerza real hacia afuera (Hestenes, Wells y Swackhamer, 1992). Que la aceleración apunte hacia donde se mueve está reportado sin porcentaje (Trowbridge y McDermott, 1981). En la PUCP, según Castillo y otros (2013), el movimiento circular en general fue de lo peor contestado en el curso de nivelación. La opción de que no hay aceleración es otro error que suponemos.')}`,
+    desc: r => r ? `El auto gira a ${E.v} metros por segundo en una rotonda de ${E.r} metros; su aceleración apunta al centro.` : 'Un auto en una rotonda de 50 metros, con su velocidad tangente.' },
+  { id:'honda', mid:'que-pasa-si-honda', corto:'Se rompe la cuerda', ley:['v','w'], leyAntes:['w'], tipo:'circulo',
     q:`Haces girar una piedra atada a una cuerda en un círculo horizontal, sobre tu cabeza. Visto desde arriba, si la cuerda se rompe justo cuando la piedra está aquí, ¿qué camino sigue?`,
-    opts:[['a','Sigue curvándose un rato y luego se endereza','D9-sigue-curvando','documentado'],
+    opts:[['a','Sigue curvándose un rato y luego se endereza','D9-sigue-curvando','parcial'],
           ['b','En línea recta, tangente al círculo',null],
           ['c','En línea recta hacia afuera, alejándose del centro','sale-hacia-afuera','hipotesis'],
           ['d','En línea recta, en diagonal entre la tangente y la dirección hacia afuera','entre-tangente-y-radio','hipotesis']],
     ok:'b',
+    fb:{ b:'¡Bien! Al romperse la cuerda, ya nada la desvía: sigue en línea recta con la velocidad que tenía en ese instante, tangente al círculo.',
+         a:'Elegiste la A. Un movimiento no «recuerda» su curva: la curva la hacía la cuerda, que tiraba hacia el centro. Sin cuerda, sigue recto. La correcta está marcada.',
+         c:'Elegiste la C. Se aleja del centro, pero no por el radio: sale con la velocidad que tenía, y esa es tangente al círculo. La correcta está marcada.',
+         d:'Elegiste la D. Nada la empuja hacia afuera: sigue la dirección de su velocidad en ese instante, la tangente. La correcta está marcada.' },
     antes:() => Object.assign(E, { circ:{ r:1.5, omega:3, theta:0, ver:{ w:true } }, t:0, T:0.3 }),
-    despues:() => { E.circ.ver = { v:true, w:true }; E.circ.suelto = { theta0:0, t:0 }; correr(); },
-    ctrl:() => `<p><button type="button" class="btn" id="repetir">Otra vez</button></p>`,
-    vivo:() => {},
+    despues:() => { E.circ.ver = { v:true, w:true }; E.circ.suelto = { theta0:0, t:0 }; animar(dt => { E.circ.suelto.t = Math.min(E.T, E.circ.suelto.t + dt*E.T/1.6); return E.circ.suelto.t < E.T; }); },
+    ctrl:() => `<p><button type="button" class="btn" id="repetir3">Otra vez</button></p>`,
+    vivo:() => {}, alCambiar:() => {},
     exp:`<p>Mientras gira, la cuerda tira de la piedra hacia el centro y le cambia la dirección todo el tiempo. Cuando se rompe, ya nada la desvía: sigue en línea recta con la ${V('v','velocidad')} que tenía en ese instante, que es tangente al círculo.</p>
       <p>Por eso parece que «sale disparada hacia afuera»: se aleja del centro, pero en línea recta tangente, no en la dirección del radio. Y no conserva ninguna curva: un movimiento no «recuerda» su camino. Además va cayendo por su peso, pero visto desde arriba eso no se nota.</p>
-      ${fuente('La idea de que un objeto que salió de un camino curvo sigue curvándose la documentaron McCloskey, Caramazza y Green (1980). Que salga en la dirección del radio es un error que suponemos, sin estudio con porcentaje.')}` },
-  { id:'rotonda', corto:'La rotonda', ley:['v','a'], leyAntes:['v'],  tipo:'circulo',
-    q:`Un auto da vueltas a una rotonda (óvalo) de 50 m de radio a 10 m/s constantes. ¿Tiene aceleración?`,
-    opts:[['a','No: su rapidez no cambia','rapidez-constante-sin-aceleracion','hipotesis'],
-          ['b','Sí, hacia el centro de la rotonda',null],
-          ['c','Sí, hacia afuera de la rotonda','D9-hacia-afuera','hipotesis'],
-          ['d','Sí, hacia adelante, en el sentido en que avanza','K3-a-en-direccion-del-movimiento','documentado']],
-    ok:'b',
-    antes:() => Object.assign(E, { r:50, v:10, circ:{ r:50, omega:0.2, theta:30, auto:true, ver:{ v:true }, pie:'rotonda de 50 m · vista desde arriba' }, t:0, T:6 }),
-    despues:() => { E.circ.ver = { v:'nueva', a:'nueva', todos:true }; crecer(() => correr()); },
-    ctrl:() => `<div class="slider"><label for="q-r"><span>Radio de la rotonda</span><output id="q-r-o"></output></label><input id="q-r" type="range" min="10" max="100" step="5" value="${E.r}"></div>
-      <div class="slider"><label for="q-v"><span>Rapidez (${V('v','v')})</span><output id="q-v-o"></output></label><input id="q-v" class="r-v" type="range" min="2" max="15" step="1" value="${E.v}"></div><div class="chips" id="chips2"></div>`,
-    vivo:() => {
-      const m = M.mcu({ r:E.r, v:E.v }); $('q-r-o').textContent = `${E.r} m`; $('q-v-o').textContent = `${E.v} m/s`;
-      $('chips2').innerHTML = `<span class="chip">ac = v²/r = ${fmt(m.ac, 2)} m/s², hacia el centro</span>${m.ac > 7 ? '<span class="chip">más de unos 7 m/s²: un auto real patina</span>' : ''}<span class="chip">una vuelta en ${fmt(m.periodo, 1)} s</span>`;
+      ${fuente('La idea de que un objeto que salió de un camino curvo sigue curvándose la describieron McCloskey, Caramazza y Green (1980), sin una cifra para esta pregunta. Que salga en la dirección del radio es un error que suponemos, sin estudio con porcentaje.')}`,
+    desc: r => r ? 'Al romperse la cuerda, la piedra sigue en línea recta, tangente al círculo.' : 'Vista desde arriba: una piedra atada a una cuerda gira en sentido antihorario. Ahora está en el extremo derecho del círculo.' },
+  { id:'cadena', mid:'ruedas-cadena', corto:'La cadena', ley:['w','v'], leyAntes:['w'], tipo:'cadena',
+    q:`En una bicicleta, la catalina (el plato de los pedales, de 12 cm de radio) da 1 vuelta por segundo y mueve con la cadena al piñón de atrás, de 4 cm de radio. ¿Cuántas vueltas por segundo da el piñón?`,
+    opts:[['a','1/3: es más chico, así que gira más despacio','RM5-proporcion-directa','hipotesis'],
+          ['b','1: la cadena los hace girar juntos','omega-igual-con-faja','hipotesis'],
+          ['c','3: su borde va igual de rápido que el de la catalina, y es 3 veces más corto',null],
+          ['d','9: el radio es 3 veces menor y, como en las áreas, se eleva al cuadrado','radio-al-cuadrado','hipotesis']],
+    ok:'c',
+    fb:{ c:'¡Bien! La cadena no se estira ni resbala: todos sus eslabones van a la misma rapidez, y con ella los dos bordes. Mientras la catalina da 1 vuelta, pasan por el piñón 2π·12 cm de cadena: le alcanzan para 3 vueltas de 2π·4 cm.',
+         a:'Elegiste la A. Con cadena es al revés: la rueda chica gira más rápido, porque su borde da una vuelta más corta con la misma cadena. La correcta está marcada.',
+         b:'Elegiste la B. Lo que comparten es la rapidez de la cadena en el borde, no las vueltas. Si dieran las mismas vueltas, la cadena tendría que ir más rápido en un borde que en el otro. La correcta está marcada.',
+         d:'Elegiste la D. La cadena recorre el contorno de la rueda, y el contorno crece con el radio, no con su cuadrado: 3 veces menos radio, 3 veces más vueltas. La correcta está marcada.' },
+    alto: W => (W >= 560 ? clamp(W*0.5, 300, 400) : 300),
+    antes:() => Object.assign(E, { r1:0.12, r2:0.04, t:0 }),
+    despues:() => { E.t = 0; animar(hasta('t', 3, 1)); },
+    dibujar:(L, c) => {
+      const tr = cadena(), resp = api3.pred('cadena'), n = Math.min(3, Math.floor(E.t + 1e-9));
+      vistaTransmision(L, c, { tipo:'cadena', r1:E.r1, r2:E.r2, th1:Math.PI/2 - tr.omega1*E.t, th2:Math.PI/2 - tr.omega2*E.t, avance:tr.v1*E.t, v1:tr.v1,
+        ver: resp ? { w1:true, w2:true, v:true } : { w1:true }, txtW1:'ω₁ = 1 vuelta/s', txtW2:`ω₂ = ${fmt(tr.f2, 2)} vueltas/s`,
+        txtV:`v = ${fmtPi(tr.v1)} ≈ ${fmt(tr.v1, 2)} m/s en los dos bordes`, contador: resp ? `catalina ${vueltas(n)} · piñón ${vueltas(n*tr.f2)}` : '' });
     },
-    alCambiar:() => { E.r = +$('q-r').value; E.v = +$('q-v').value; const m = M.mcu({ r:E.r, v:E.v }); E.circ.r = E.r; E.circ.omega = m.omega; E.circ.pie = `rotonda de ${E.r} m · vista desde arriba`; },
-    exp:`<p>La rapidez no cambia, pero la dirección de la ${V('v','velocidad')} sí: en cada punto apunta hacia otro lado. Cambiar la velocidad, aunque sea solo su dirección, es acelerar. Las flechas ${V('a','verdes')} muestran que esa aceleración apunta siempre al centro: ac = v²/r = 100/50 = 2 m/s².</p>
-      <p>Lo que la produce es el roce de la pista sobre las llantas, hacia el centro. Lo que se siente «hacia afuera» no es una fuerza sobre el auto: es tu cuerpo, que tiende a seguir en línea recta mientras el auto gira.</p>
-      ${fuente('Que la aceleración apunte hacia afuera es un error que suponemos, sin estudio con porcentaje. Creemos que sale de una idea documentada: que en el movimiento circular hay una fuerza real hacia afuera (Hestenes, Wells y Swackhamer, 1992). Que la aceleración apunte hacia donde se mueve está reportado sin porcentaje (Trowbridge y McDermott, 1981). En la PUCP, según Castillo y otros (2013), el movimiento circular en general fue de lo peor contestado en el curso de nivelación. La opción de que no hay aceleración es otro error que suponemos.')}` },
-];
-const S = { k:0, pred:{}, t0:Date.now() };
-const sinParada = el => el.querySelectorAll('.v').forEach(e => { e.removeAttribute('tabindex'); e.style.cursor = 'default'; });
-// Se puede abrir un experimento solo si todos los anteriores tienen respuesta (decisión de Gerson, 6 nov 2026).
-const abierto = k => EXPS.slice(0, k).every(x => S.pred[x.id]);
-function crecer(listo){ parar(); E.crece = 0; parar = animarValor(500, f => { E.crece = f; draw(); }, () => { listo && listo(); draw(); }); }
-function correr(){
-  parar();
-  if (EXPS[S.k].tipo === 'circulo' && E.circ.suelto){
-    parar = animarValor(RM ? 0 : 1600, f => { E.circ.suelto.t = E.T*f; draw(); });
-  } else if (EXPS[S.k].id === 'rotonda'){
-    if (RM){ draw(); return; }
-    let id, antes = performance.now();
-    const tick = now => { E.circ.theta += (now - antes)/1000*E.circ.omega*180/Math.PI; antes = now; draw(); id = requestAnimationFrame(tick); };
-    id = requestAnimationFrame(tick); parar = () => cancelAnimationFrame(id);
-  } else {
-    const desde = E.desde || 0;
-    parar = animarValor(RM ? 0 : (E.T - desde)*650, f => { E.t = desde + (E.T - desde)*f; draw(); });
-  }
-}
-function draw(){
-  if (!L.W) return;
-  const x = EXPS[S.k], c = colores(L.W);
-  if (x.tipo === 'circulo') vistaCirculo(L, c, Object.assign({ crece:E.crece }, E.circ));
-  else vistaTiro(L, c, Object.assign({}, E.cfg, { t:E.t, crece:E.crece }));
-  decir($('desc2'), describir(x));
-}
-function describir(x){
-  const r = S.pred[x.id];
-  if (x.id === 'mas-rapida') return r ? 'Las dos pelotas caen a la par y llegan juntas a los 4 segundos; la rápida cae el doble de lejos.' : 'Un acantilado de 80 metros con dos pelotas listas para lanzarse en horizontal, a 15 y a 30 metros por segundo.';
-  if (x.id === 'cada-segundo') return r ? 'En horizontal avanza 15 metros cada segundo; en vertical cae 5, 15, 25 y 35 metros.' : 'La pelota al final del primer segundo, 15 metros adelante del borde.';
-  if (x.id === 'avioneta') return r ? 'El paquete cae siempre justo debajo de la avioneta y llega al suelo a los 6 segundos, a 300 metros.' : 'Una avioneta a 180 metros de altura, con el paquete a punto de soltarse.';
-  if (x.id === 'complementarios') return r ? `Disparos a ${E.ang} y ${90 - E.ang} grados con 50 metros por segundo: caen en el mismo lugar.` : 'Un cañón listo para disparar a 37 grados y a 53 grados con 50 metros por segundo.';
-  if (x.id === 'honda') return r ? 'Al romperse la cuerda, la piedra sigue en línea recta, tangente al círculo.' : 'Vista desde arriba: una piedra atada a una cuerda gira en sentido antihorario. Ahora está en el extremo derecho del círculo.';
-  return r ? `El auto gira a ${E.v} metros por segundo en una rotonda de ${E.r} metros; su aceleración apunta al centro.` : 'Un auto en una rotonda de 50 metros, con su velocidad tangente.';
-}
-function botones(){
-  if (!$('exps').children.length){
-    $('exps').innerHTML = EXPS.map((x, k) => `<button type="button" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
-    $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
-  }
-  [...$('exps').children].forEach((b, k) => {
-    const ok = abierto(k);
-    b.disabled = !ok; b.setAttribute('aria-pressed', String(k === S.k));
-    if (ok){ b.removeAttribute('aria-disabled'); b.removeAttribute('aria-label'); }
-    else { b.setAttribute('aria-disabled', 'true'); b.setAttribute('aria-label', `Experimento ${k + 1}, bloqueado`); }
-  });
-}
-function reiniciar(x){ for (const k of Object.keys(E)) delete E[k]; x.antes(); }
-function ir(k){
-  if (!abierto(k)) return;
-  parar();
-  S.k = k; S.t0 = Date.now();
-  const x = EXPS[k];
-  reiniciar(x);
-  if (S.pred[x.id]){ x.despues(); parar(); E.crece = 1; if (E.T !== undefined && x.tipo === 'tiro') E.t = E.T; if (E.circ && E.circ.suelto) E.circ.suelto.t = E.T; if (x.id === 'rotonda') correr(); }
-  botones(); L.resize();
-  leyenda($('ley2'), S.pred[x.id] ? x.ley : x.leyAntes);
-  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
-  $('t2').textContent = x.corto;
-  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
-  sinParada($('body2'));
-  const btns = [...$('body2').querySelectorAll('.opt')];
-  const pintar = () => {
-    const p = S.pred[x.id]; if (!p) return;
-    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
-    const fb = $('fb2');
-    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. La correcta está marcada; mira la escena para ver por qué.`;
-    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
-    $('res2').innerHTML = x.ctrl() + x.exp + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
-    $('res2').querySelectorAll('input').forEach(inp => inp.addEventListener('input', () => { if (x.id !== 'rotonda') parar(); x.alCambiar(); x.vivo(); draw(); }));
-    const rep = $('repetir'); if (rep) rep.onclick = () => { if (E.circ && E.circ.suelto) E.circ.suelto.t = 0; E.t = 0; correr(); };
-    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); $('t2').focus({ preventScroll:true }); };
-    sinParada($('res2')); x.vivo();
-  };
-  btns.forEach(b => b.onclick = () => {
-    if (S.pred[x.id]) return;
-    const o = x.opts.find(q => q[0] === b.dataset.k);
-    S.pred[x.id] = o[0];
-    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
-    pintar(); botones(); leyenda($('ley2'), x.ley);
-    $('fb2').focus({ preventScroll:true });
-    const ch = chico();
-    if (ch) cv.scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
-    esperar(ch ? 380 : 0, () => { if (S.k !== k || $('m2').hidden) return; E.t = 0; x.despues(); draw(); });
-  });
-  pintar(); draw();
-}
-alRedibujarTema(draw);
-addEventListener('modo', () => { if ($('m2').hidden) parar(); else { L.resize(); if (EXPS[S.k].id === 'rotonda' && S.pred.rotonda) correr(); } });
-L.resize(); ir(0);
-})();
+    ctrl:() => `<div class="ctrls"><div class="slider"><label for="w-r1"><span>Radio de la catalina</span><output id="w-r1-o"></output></label><input id="w-r1" type="range" min="2" max="15" step="1" value="${Math.round(E.r1*100)}"></div>
+      <div class="slider"><label for="w-r2"><span>Radio del piñón</span><output id="w-r2-o"></output></label><input id="w-r2" type="range" min="2" max="15" step="1" value="${Math.round(E.r2*100)}"></div></div>
+      <div class="chips" id="chips3"></div><p><button type="button" class="btn" id="repetir3">Otra vez</button></p>`,
+    vivo:() => {
+      const tr = cadena(); $('w-r1-o').textContent = `${fmt(E.r1*100, 0)} cm`; $('w-r2-o').textContent = `${fmt(E.r2*100, 0)} cm`;
+      $('chips3').innerHTML = `<span class="chip">${V('w','ω₂')} = ${V('w','ω₁')}·r₁/r₂ = 1·${fmt(E.r1*100, 0)}/${fmt(E.r2*100, 0)} = ${fmt(tr.f2, 2)} vueltas/s</span><span class="chip">misma ${V('v','v')} en los dos bordes: ${fmt(tr.v1, 2)} m/s</span>`;
+    },
+    alCambiar:() => { E.r1 = +$('w-r1').value/100; E.r2 = +$('w-r2').value/100; E.t = 3; },
+    exp:`<div class="eqs"><div class="eq">${V('v','v')} = ${V('w','ω₁')}·r₁ = ${V('w','ω₂')}·r₂<span class="note">la cadena lleva la misma rapidez a los dos bordes</span></div>
+      <div class="eq">${V('w','ω₂')} = 1·${fr('12', '4')} = 3 vueltas/s</div></div>
+      <p>Mira los eslabones: avanzan igual de rápido en las dos ruedas, y las flechas ${V('v','moradas')} de los bordes son iguales. El piñón tiene un contorno 3 veces más corto, así que con la misma cadena da 3 vueltas por cada vuelta de la catalina. Con cadena o faja, la rueda chica gira más rápido.</p>
+      ${fuente('Las tres opciones incorrectas son hipótesis nuestras. No encontramos estudios con porcentaje sobre poleas, cadenas o engranajes. La de la A es la versión con cadena de un error que suponemos en los engranajes: tomar como directa una proporción inversa.')}`,
+    desc: r => { if (!r) return 'Una catalina de 12 centímetros unida por una cadena a un piñón de 4 centímetros. La catalina da 1 vuelta por segundo; el dibujo está quieto.'; const tr = cadena();
+      return `La catalina da 1 vuelta por segundo y el piñón ${fmt(tr.f2, 2)}; los bordes de las dos van a la misma rapidez, ${fmt(tr.v1, 2)} metros por segundo.`; } },
+  { id:'eje', mid:'ruedas-eje', corto:'La rueda de atrás', ley:['v','w'], leyAntes:['v'], tipo:'eje', continuo:true,
+    q:`El piñón (4 cm de radio) y la rueda de atrás (30 cm de radio) están en el mismo eje. La cadena mueve el borde del piñón a 0,8 m/s. ¿A qué rapidez va el borde de la rueda, que es lo que avanza la bicicleta?`,
+    opts:[['a','0,8 m/s: lo que está unido va igual de rápido','v-igual-en-eje','hipotesis'],
+          ['b','6 m/s: gira junto con el piñón, y su borde está 7,5 veces más lejos del eje',null],
+          ['c','Unos 0,11 m/s: es más grande, así que va más lento, como con la cadena','inversa-en-eje','hipotesis'],
+          ['d','45 m/s: el radio es 7,5 veces mayor y se eleva al cuadrado','radio-al-cuadrado','hipotesis']],
+    ok:'b',
+    fb:{ b:'¡Bien! Piñón y rueda son una sola pieza: dan las mismas vueltas, ω = 0,8/0,04 = 20 rad/s. El borde de la rueda está más lejos del centro y recorre más en cada vuelta: v = 20·0,3 = 6 m/s, unos 22 km/h.',
+         a:'Elegiste la A. Unidas por el eje comparten las vueltas, no la rapidez del borde. Mira los rayos: cuanto más lejos del centro, más largo es el camino de cada vuelta. La correcta está marcada.',
+         c:'Elegiste la C. «Más grande, más lento» vale con cadena. En el mismo eje es al revés: la grande va más rápido en su borde. La correcta está marcada.',
+         d:'Elegiste la D. v = ω·r crece con el radio, no con su cuadrado: 7,5 veces más lejos, 7,5 veces más rápido. La correcta está marcada.' },
+    antes:() => Object.assign(E, { r2:0.30, th:Math.PI/2 }),
+    despues:() => { const mv = dt => { E.th -= dt*0.9; return true; }; E.reanudar = () => animar(mv, true); animar(mv, true); },
+    dibujar:(L, c) => {
+      const resp = api3.pred('eje'), d = eje(E.r2);
+      const radios = resp ? [0.04, 0.10, 0.20, E.r2].filter((r, j, a) => j === 0 || r - a[j - 1] > 0.015) : [0.04];
+      const perfil = radios.map(r => ({ r, v: r === 0.04 ? 0.8 : eje(r).v2 }));
+      perfil.forEach(q => { q.rtxt = `${fmt(q.r*100, 0)} cm`; });
+      perfil[0].txt = 'v = 0,8 m/s';
+      if (resp) perfil[perfil.length - 1].txt = `${fmt(d.v2, 1)} m/s`; else perfil.push({ r:E.r2, v:0, rtxt:`${fmt(E.r2*100, 0)} cm` });
+      vistaTransmision(L, c, { tipo:'eje', r1:0.04, r2:E.r2, th1:E.th, perfil, ver:{ w:!!resp }, txtW1:`ω = ${fmt(d.omega2, 0)} rad/s en los dos`,
+        pie: resp ? `gira en cámara lenta: de verdad da ${fmt(d.f2, 1)} vueltas por segundo` : 'piñón y rueda en el mismo eje · vista de lado' });
+    },
+    ctrl:() => `<div class="slider"><label for="w-re"><span>Radio de la rueda</span><output id="w-re-o"></output></label><input id="w-re" type="range" min="20" max="35" step="1" value="${Math.round(E.r2*100)}"></div>
+      <div class="chips" id="chips3"></div><p><button type="button" class="btn" id="w-cad">Cambiar a cadena</button></p>`,
+    enlazar:() => { $('w-cad').onclick = () => { api3.ir(2); $('t3').focus({ preventScroll:true }); }; },
+    vivo:() => {
+      const d = eje(E.r2); $('w-re-o').textContent = `${fmt(E.r2*100, 0)} cm`;
+      $('chips3').innerHTML = `<span class="chip">${V('w','ω')} = 0,8/0,04 = ${fmt(d.omega2, 0)} rad/s en los dos</span><span class="chip">${V('v','v')} = ${fmt(d.omega2, 0)}·${fmt(E.r2, 2)} = ${fmt(d.v2, 1)} m/s</span>`;
+    },
+    alCambiar:() => { E.r2 = +$('w-re').value/100; },
+    exp:`<div class="eqs"><div class="eq">${V('w','ω')} = ${fr('0,8', '0,04')} = 20 rad/s<span class="note">la misma para el piñón y la rueda</span></div>
+      <div class="eq">${V('v','v')} = ${V('w','ω')}·r = 20·0,3 = ${V('v','6 m/s')}</div></div>
+      <p>Las flechas ${V('v','moradas')} son las velocidades de los puntos de un mismo radio: crecen en línea recta con la distancia al eje. Con cadena, los bordes van igual de rápido (misma ${V('v','v')}); en el mismo eje, las ruedas dan las mismas vueltas (misma ${V('w','ω')}). Por eso una bicicleta convierte el pedaleo lento en avance rápido.</p>
+      ${fuente('Hipótesis nuestras, sin estudio con porcentaje. Las proponemos porque en el examen la cadena (misma v) y el eje (misma ω) vienen juntos.')}`,
+    desc: r => { if (!r) return 'Un piñón de 4 centímetros y una rueda de 30 en el mismo eje. El borde del piñón va a 0,8 metros por segundo.'; const d = eje(E.r2);
+      return `Piñón y rueda giran juntos a ${fmt(d.omega2, 0)} radianes por segundo; el borde de la rueda de ${fmt(E.r2*100, 0)} centímetros va a ${fmt(d.v2, 1)} metros por segundo.`; } },
+  { id:'frena', mid:'ruedas-frena', corto:'Frena la rueda', ley:['w','t','at','a'], leyAntes:['w'], tipo:'frena',
+    q:`Una rueda de bicicleta gira a 2 vueltas por segundo. El ciclista frena y la rueda se detiene de manera pareja en 4 s. La gráfica muestra cómo baja su ω. ¿Cuántas vueltas da desde que empieza a frenar hasta detenerse?`,
+    opts:[['a','8 vueltas: la altura de la recta al inicio por los 4 s','mcuv-sin-frenar','hipotesis'],
+          ['b','4 vueltas: el área del triángulo bajo la recta',null],
+          ['c','½ vuelta: la inclinación de la recta, 2 entre 4','G4-pendiente-en-vez-de-area','parcial'],
+          ['d','2 vueltas: lo que marca la recta al inicio','G4-lee-el-eje','parcial']],
+    ok:'b',
+    fb:{ b:'¡Bien! En cada momento la rueda da tantas vueltas por segundo como marca la recta. Al juntar los 4 s queda el área: un triángulo de 4 por 2, la mitad del rectángulo, 4 vueltas. Es lo mismo que ω media por tiempo: 1 vuelta/s durante 4 s.',
+         a:'Elegiste la A. 8 vueltas daría si no frenara: el rectángulo entero. Como va cada vez más lento, solo cuenta el triángulo bajo la recta, la mitad. La correcta está marcada.',
+         c:'Elegiste la C. La inclinación de la recta dice cuánto baja ω cada segundo: es α, −½ vuelta/s². Las vueltas que da son el área bajo la recta. La correcta está marcada.',
+         d:'Elegiste la D. 2 es lo rápido que giraba al empezar, no cuánto giró. Lo girado se acumula segundo a segundo: es el área. La correcta está marcada.' },
+    antes:() => Object.assign(E, { f0:2, tp:4, t:0, seguir:false }),
+    despues:() => { const fin = finFrena(); E.t = 0; animar(hasta('t', fin, Math.max(1, fin/5))); },
+    dibujar:(L, c) => {
+      const resp = api3.pred('frena');
+      vistaGiroW(L, c, { f0:E.f0, tp:E.tp, t:E.t, seguir: !!resp && E.seguir, ver: resp ? { area:true, cursor:true, flechas:true, rect:E.t >= E.tp - 1e-9 } : {},
+        pie: resp ? 'flechas de aceleración sin escala: ac es mucho mayor que at' : '' });
+    },
+    ctrl:() => `<div class="ctrls"><div class="slider"><label for="w-f0"><span>${V('w','ω₀')} (vueltas por segundo)</span><output id="w-f0-o"></output></label><input id="w-f0" class="r-w" type="range" min="1" max="4" step="0.5" value="${E.f0}"></div>
+      <div class="slider"><label for="w-tp"><span>Tiempo de frenado</span><output id="w-tp-o"></output></label><input id="w-tp" class="r-t" type="range" min="2" max="8" step="1" value="${E.tp}"></div></div>
+      <label class="check"><input type="checkbox" id="w-seg" ${E.seguir ? 'checked' : ''}> Seguir la fórmula después de detenerse</label>
+      <div class="chips" id="chips3"></div><p><button type="button" class="btn" id="repetir3">Otra vez</button></p>`,
+    vivo:() => {
+      const d = frenado(), mitad = M.mcuv({ r:0.3, omega0:d.omega0, alfa:d.alfa, t:E.tp/2, frena:true });
+      $('w-f0-o').textContent = `${fmt(E.f0, 1)} vueltas/s`; $('w-tp-o').textContent = `${E.tp} s`;
+      let h = `<span class="chip">α = ${fmt(d.alfaV, 2)} vuelta/s² = ${fmtPi(d.alfa)} rad/s²</span><span class="chip">θ = ${fmt(d.vueltas, 1)} vueltas = ${fmtPi(d.theta)} rad</span>
+        <span class="chip">${V('at','at')} = α·r ≈ ${fmt(d.at, 2)} m/s²</span><span class="chip">${V('a','ac')} a los ${fmt(E.tp/2, 1)} s ≈ ${fmt(mitad.ac, 1)} m/s²</span><span class="chip">1 vuelta/s = 2π rad/s</span>`;
+      if (E.seguir){ const fin = finFrena(), libre = M.mcuv({ r:0.3, omega0:d.omega0, alfa:d.alfa, t:fin }), quieta = M.mcuv({ r:0.3, omega0:d.omega0, alfa:d.alfa, t:fin, frena:true });
+        h += `<span class="chip">sin tope, a los ${fin} s la fórmula da ${fmt(libre.vueltas, 1)} vueltas en vez de ${fmt(quieta.vueltas, 1)}: «retrocede»</span>`; }
+      $('chips3').innerHTML = h;
+    },
+    alCambiar:() => { E.f0 = +$('w-f0').value; E.tp = +$('w-tp').value; E.seguir = $('w-seg').checked; E.t = finFrena(); },
+    exp:`<div class="eqs"><div class="eq">vueltas = área = ${fr('4·2', '2')} = 4 vueltas = 8π rad<span class="note">el triángulo bajo la recta</span></div>
+      <div class="eq">α = ${fr('0 − 4π', '4')} = −π rad/s²<span class="note">la inclinación de la recta</span></div></div>
+      <p>El cursor ${V('t','naranja')} barre el tiempo y el área sombreada crece a la par del contador de vueltas: lo que gira es el área bajo la recta de ${V('w','ω')}. En el borde, ${V('at','at')} (ocre) frena la rueda y no cambia; ${V('a','ac')} (verde) se achica a medida que baja ω, porque ac = ω²·r. La resultante va a trazos.</p>
+      <p>Marca «seguir la fórmula» para ver qué pasa si se usa θ = ω₀t + ½αt² después de los 4 s: daría que la rueda gira al revés y «desgira». Una rueda que frena se queda quieta.</p>
+      ${fuente('En un test con 524 escolares y universitarios, sacar el cambio de velocidad del área de una gráfica lo logró cerca de 1 de cada 4; calcular la pendiente o leer el eje en vez del área fue de los errores más comunes (Beichner, 1994). Aquí es la misma pregunta con una gráfica de giro. La opción del rectángulo es hipótesis nuestra.')}`,
+    desc: r => { if (!r) return 'Una rueda quieta y una gráfica de ω contra el tiempo: una recta que baja de 2 vueltas por segundo a cero en 4 segundos.'; const d = frenado();
+      return `La rueda baja de ${fmt(E.f0, 1)} vueltas por segundo a cero en ${E.tp} segundos y da ${fmt(d.vueltas, 1)} vueltas: el área bajo la recta.`; } },
+  { id:'pista', mid:'ruedas-pista', corto:'La pista', ley:['v','t'], leyAntes:['v','t'], tipo:'pista',
+    q:`En una pista circular de 400 m, Ana corre a 7 m/s y Beto a 3 m/s. Salen juntos del mismo punto y en el mismo sentido. ¿Cuánto tiempo pasa hasta que Ana vuelve a alcanzar a Beto?`,
+    opts:[['a','40 s: entre los dos avanzan 10 m cada segundo','RM4-suma-en-alcance','hipotesis'],
+          ['b','100 s: Ana le saca 4 m por segundo y necesita sacarle una vuelta entera',null],
+          ['c','Unos 57 s: lo que tarda Ana en dar una vuelta','vuelta-del-rapido','hipotesis'],
+          ['d','Nunca: salieron juntos y Ana siempre va adelante','nunca-alcanza','hipotesis']],
+    ok:'b',
+    fb:{ b:'¡Bien! Lo que importa es cuánto se separan: 7 − 3 = 4 m cada segundo. Ana lo alcanza cuando le lleva una vuelta de ventaja: 400 entre 4 = 100 s. Ella corrió 700 m (1¾ vueltas) y él 300 m: se juntan a 300 m de la salida.',
+         a:'Elegiste la A. Sumar sirve cuando van en sentidos contrarios, al encuentro. Si van hacia el mismo lado, la ventaja crece con la diferencia, 4 m/s. La correcta está marcada.',
+         c:'Elegiste la C. Cuando Ana completa su vuelta, Beto ya avanzó unos 171 m: todavía no lo alcanza. Lo necesario es una vuelta de ventaja, no una vuelta. La correcta está marcada.',
+         d:'Elegiste la D. En una recta nunca lo alcanzaría otra vez, pero la pista es cerrada: cuando le saca una vuelta, lo vuelve a tener al lado. La correcta está marcada.' },
+    alto: W => (W >= 560 ? clamp(W*0.55, 320, 440) : clamp(W*0.95, 320, 380)),
+    antes:() => Object.assign(E, { v1:7, v2:3, sentido:'mismo', s0:0, t:0 }),
+    despues:() => { const fin = finPista(); E.t = 0; animar(hasta('t', fin, fin/6)); },
+    dibujar:(L, c) => {
+      const resp = api3.pred('pista'), r = pista();
+      vistaPista(L, c, { L:400, v1:E.v1, v2:E.v2, sentido:E.sentido, s0:E.s0, t:E.t, ver: resp ? { arco:true, fin: !r.nunca && E.t >= r.t - 1e-9 } : {} });
+    },
+    ctrl:() => `<div class="seg" role="group" aria-label="Sentido de los corredores"><button type="button" id="w-mismo" aria-pressed="${E.sentido === 'mismo'}">Mismo sentido</button><button type="button" id="w-contra" aria-pressed="${E.sentido === 'contrario'}">Sentidos contrarios</button></div>
+      <div class="ctrls"><div class="slider"><label for="w-s0"><span>Beto sale adelante</span><output id="w-s0-o"></output></label><input id="w-s0" type="range" min="0" max="350" step="50" value="${E.s0}"></div>
+      <div class="slider"><label for="w-v1"><span>Rapidez de Ana (${V('v','v₁')})</span><output id="w-v1-o"></output></label><input id="w-v1" class="r-v" type="range" min="1" max="9" step="1" value="${E.v1}"></div>
+      <div class="slider"><label for="w-v2"><span>Rapidez de Beto (${V('v','v₂')})</span><output id="w-v2-o"></output></label><input id="w-v2" class="r-v" type="range" min="0" max="9" step="1" value="${E.v2}"></div></div>
+      <div class="chips" id="chips3"></div><p><button type="button" class="btn" id="repetir3">Correr otra vez</button></p>`,
+    enlazar:() => {
+      const poner = s => { api3.parar(); E.sentido = s; $('w-mismo').setAttribute('aria-pressed', String(s === 'mismo')); $('w-contra').setAttribute('aria-pressed', String(s === 'contrario')); E.t = finPista(); EXPS_pista().vivo(); api3.draw(); };
+      $('w-mismo').onclick = () => poner('mismo'); $('w-contra').onclick = () => poner('contrario');
+    },
+    vivo:() => {
+      const r = pista(), mismo = E.sentido === 'mismo';
+      $('w-s0-o').textContent = `${E.s0} m`; $('w-v1-o').textContent = `${E.v1} m/s`; $('w-v2-o').textContent = `${E.v2} m/s`;
+      if (r.nunca){ $('chips3').innerHTML = `<span class="chip">${mismo ? 'con la misma rapidez y el mismo sentido, la distancia entre ellos no cambia: nunca se encuentran' : 'ninguno se mueve: nunca se encuentran'}</span>`; return; }
+      $('chips3').innerHTML = `<span class="chip">${mismo ? `cada segundo se acercan |${V('v','v₁')} − ${V('v','v₂')}| = ${fmt(r.vRel, 1)} m` : `entre los dos cierran ${V('v','v₁')} + ${V('v','v₂')} = ${fmt(r.vRel, 1)} m por segundo`}</span>
+        <span class="chip">${V('t','t')} = ${fr('distancia que falta', mismo ? '|v₁ − v₂|' : 'v₁ + v₂')} = ${fmt(r.brecha, 0)}/${fmt(r.vRel, 1)} = ${fmt(r.t, 1)} s</span>
+        <span class="chip">Ana ${fmt(r.s1, 0)} m · Beto ${fmt(r.s2, 0)} m</span><span class="chip">a ${fmt(r.lugar, 0)} m de la salida</span>`;
+    },
+    alCambiar:() => { E.s0 = +$('w-s0').value; E.v1 = +$('w-v1').value; E.v2 = +$('w-v2').value; E.t = finPista(); },
+    exp:`<div class="eqs"><div class="eq">ventaja de Ana = (${V('v','7')} − ${V('v','3')})·${V('t','t')} = 4·${V('t','t')}<span class="note">lo que le saca cada segundo</span></div>
+      <div class="eq">400 = 4·${V('t','t')} → ${V('t','t = 100 s')}<span class="note">una vuelta entera de ventaja</span></div></div>
+      <p>El arco grueso en tinta es lo que le falta a Ana para alcanzar a Beto: se acorta 4 m cada segundo y se cierra a los 100 s, cuando ella le lleva una vuelta. Ana corrió 700 m y Beto 300 m: se juntan a 300 m de la salida. Prueba con sentidos contrarios: se cruzan a los 40 s, porque juntos cierran 7 + 3 = 10 m por segundo.</p>
+      ${fuente('Hipótesis nuestras. Sumar en vez de restar en los móviles es un error que suponemos, sin estudio con porcentaje (informe de aritmética y razonamiento, RM4).')}`,
+    desc: r => { if (!r) return 'Una pista circular de 400 metros vista desde arriba. Ana y Beto están en la salida, listos para correr en el mismo sentido, Ana a 7 y Beto a 3 metros por segundo.'; const p = pista();
+      return p.nunca ? 'Con esos datos, Ana y Beto nunca se encuentran.' : `Se encuentran a los ${fmt(p.t, 1)} segundos, a ${fmt(p.lugar, 0)} metros de la salida. Ana corrió ${fmt(p.s1, 0)} metros y Beto ${fmt(p.s2, 0)}.`; } },
+  ];
+  const EXPS_pista = () => lista[5];
+  return lista;
+  } });
 </script>
 
 <script>
 /* ================= Pestañas ================= */
 (function(){
-  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2'], ['#ruedas', 'm3', 'tab3']];
   function route(){
     const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
     modos.forEach(([, m, t], j) => {

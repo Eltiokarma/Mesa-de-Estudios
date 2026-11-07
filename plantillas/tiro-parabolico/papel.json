@@ -1,6 +1,6 @@
 {
   "titulo": "Tiro parabólico y movimiento circular: problemas para lápiz y papel",
-  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. En el tiro parabólico, separa dos movimientos: en horizontal, velocidad constante (x = vx·t); en vertical, caída libre con 10 m/s² hacia abajo (vy = v₀y − 10t; y = y₀ + v₀y·t − 5t²), también en el punto más alto. El tiempo lo comparten. Descompón la velocidad inicial: vx = v₀·cos θ y v₀y = v₀·sen θ, con sen 37° = 3/5 y cos 37° = 4/5. En el movimiento circular uniforme, la rapidez es constante pero hay aceleración hacia el centro: ac = v²/r = ω²·r, con v = ω·r y ω = 2π/T. Toma g = 10 m/s² y no cuentes el aire.",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. En el tiro parabólico, separa dos movimientos: en horizontal, velocidad constante (x = vx·t); en vertical, caída libre con 10 m/s² hacia abajo (vy = v₀y − 10t; y = y₀ + v₀y·t − 5t²), también en el punto más alto. El tiempo lo comparten. Descompón la velocidad inicial: vx = v₀·cos θ y v₀y = v₀·sen θ, con sen 37° = 3/5 y cos 37° = 4/5. En el movimiento circular uniforme, la rapidez es constante pero hay aceleración hacia el centro: ac = v²/r = ω²·r, con v = ω·r y ω = 2π/T. Toma g = 10 m/s² y no cuentes el aire. Con faja o cadena, los bordes van igual de rápido (misma v); en el mismo eje, giran juntos (misma ω). En una pista circular, el que alcanza cierra la distancia con v₁ − v₂; si van en sentidos contrarios, con v₁ + v₂. En el MCUV, lo que gira es el área bajo la gráfica ω-t.",
   "problemas": [
     {
       "id": "p1",
@@ -49,34 +49,37 @@
     {
       "id": "p2",
       "nivel": "básico",
-      "enunciado": "Desde un mirador de 45 m de altura, una alumna lanza una piedra en horizontal a 10 m/s y, en el mismo instante, su compañero suelta otra piedra desde el mismo lugar. ¿Cuál llega primero al suelo? ¿A qué distancia del pie del mirador cae la piedra lanzada?",
-      "respuesta": "Llegan a la vez, a los 3 s. La lanzada cae a 30 m del pie del mirador.",
+      "enunciado": "Desde la azotea de un edificio de 45 m, un niño lanza una pelota en horizontal a 15 m/s hacia la pared de otro edificio que está a 30 m. ¿Llega a la pared antes de tocar el suelo? ¿Cuánto tarda, a qué altura golpea la pared y con qué rapidez?",
+      "respuesta": "Sí: tardaría 3 s en llegar al suelo y llega a la pared a los 2 s. La golpea a 25 m de altura, a 25 m/s.",
       "pasos": [
-        "En vertical, las dos piedras empiezan con velocidad vertical cero y caen con la misma aceleración, 10 m/s². Lo horizontal no cambia eso.",
-        "45 = ½·10·t², así que t² = 9 y t = 3 s, para las dos.",
-        "La lanzada avanza en horizontal 10 m/s durante 3 s: 30 m.",
-        "Que la lanzada recorra un camino más largo no la hace tardar más: recorre ese camino más rápido."
+        "En horizontal va a 15 m/s constantes: llega a la pared en t = 30/15 = 2 s.",
+        "Al suelo tardaría 45 = 5t², t = 3 s. Como 2 s < 3 s, choca con la pared.",
+        "En 2 s cae 5·2² = 20 m: golpea a 45 − 20 = 25 m del suelo.",
+        "Velocidad al chocar: vx = 15 m/s; vy = −10·2 = −20 m/s. Rapidez √(15² + 20²) = 25 m/s, inclinada 53° hacia abajo. No es 15 + 20: las dos partes son perpendiculares."
       ],
       "verificar": [
         {
-          "fn": "proyectil",
+          "fn": "impactoPared",
           "args": [
             {
-              "vx": 10,
-              "y0": 45
+              "vx": 15,
+              "y0": 45,
+              "d": 30
             }
           ],
           "espera": {
-            "tVuelo": 3,
-            "alcance": 30,
-            "errores.tSoltado": 3
+            "choca": true,
+            "t": 2,
+            "y": 25,
+            "vy": -20,
+            "v": 25
           }
         },
         {
           "fn": "proyectil",
           "args": [
             {
-              "vx": 0,
+              "vx": 15,
               "y0": 45
             }
           ],
@@ -262,25 +265,45 @@
     {
       "id": "p8",
       "nivel": "intermedio",
-      "enunciado": "Un auto da la vuelta a una rotonda (óvalo) de 40 m de radio a 12 m/s constantes. ¿Tiene aceleración? Si la tiene, ¿cuánto vale y hacia dónde apunta? Si de pronto la pista estuviera aceitada y no hubiera roce, ¿qué camino seguiría el auto?",
-      "respuesta": "Sí: 3,6 m/s², hacia el centro de la rotonda. Sin roce, seguiría en línea recta, tangente a la rotonda.",
+      "enunciado": "En una pista circular de 400 m, Ana corre a 7 m/s y Beto a 3 m/s. Salen juntos del mismo punto. a) Si corren en el mismo sentido, ¿cuándo alcanza Ana a Beto por primera vez y a qué distancia de la salida? b) Si corren en sentidos contrarios, ¿cada cuánto tiempo se cruzan?",
+      "respuesta": "a) A los 100 s, a 300 m de la salida (Ana corrió 700 m y Beto 300 m). b) Cada 40 s.",
       "pasos": [
-        "La rapidez es constante, pero la dirección de la velocidad cambia todo el tiempo: eso es aceleración.",
-        "ac = v²/r = 144/40 = 3,6 m/s², hacia el centro.",
-        "Lo que da esa aceleración es el roce de la pista sobre las llantas, que apunta al centro. No hay una fuerza que empuje el auto hacia afuera.",
-        "Sin roce no hay nada que lo desvíe: sigue en línea recta en la dirección que llevaba, tangente a la curva. Por eso parece que «sale disparado hacia afuera»: en realidad sigue recto mientras la pista se curva."
+        "Mismo sentido: cada segundo Ana le saca 7 − 3 = 4 m de ventaja.",
+        "Lo alcanza cuando le lleva una vuelta entera: 400/4 = 100 s. No cuenta el instante de la salida.",
+        "Ana corrió 7·100 = 700 m, que es una vuelta y 300 m; Beto, 300 m. Se juntan a 300 m de la salida.",
+        "Sentidos contrarios: juntos cierran 7 + 3 = 10 m por segundo; se cruzan cada 400/10 = 40 s. Restar en el alcance y sumar en el cruce, no al revés."
       ],
       "verificar": [
         {
-          "fn": "mcu",
+          "fn": "encuentroPista",
           "args": [
             {
-              "r": 40,
-              "v": 12
+              "L": 400,
+              "v1": 7,
+              "v2": 3,
+              "sentido": "mismo"
             }
           ],
           "espera": {
-            "ac": 3.6
+            "t": 100,
+            "lugar": 300,
+            "s1": 700,
+            "s2": 300
+          }
+        },
+        {
+          "fn": "encuentroPista",
+          "args": [
+            {
+              "L": 400,
+              "v1": 7,
+              "v2": 3,
+              "sentido": "contrario"
+            }
+          ],
+          "espera": {
+            "t": 40,
+            "periodo": 40
           }
         }
       ]
@@ -320,30 +343,48 @@
     {
       "id": "p10",
       "nivel": "avanzado",
-      "enunciado": "Un disco de 0,5 m de radio gira a 2 rad/s y empieza a acelerar con una aceleración angular constante de 1 rad/s². A los 4 s, ¿cuál es su velocidad angular, cuántos radianes giró, y cuánto valen la aceleración tangencial y la centrípeta de un punto del borde?",
-      "respuesta": "ω = 6 rad/s; giró 16 rad (unas 2,5 vueltas); at = 0,5 m/s² y ac = 18 m/s².",
+      "enunciado": "La rueda de una bicicleta, de 30 cm de radio, gira a 2 vueltas por segundo. El ciclista frena y la rueda se detiene de manera uniforme en 4 s. ¿Cuántas vueltas da hasta detenerse? ¿Cuánto vale su aceleración angular? A los 2 s de empezar a frenar, ¿cuánto valen la aceleración tangencial y la centrípeta de un punto del borde? Usa π.",
+      "respuesta": "4 vueltas (8π rad); α = −π rad/s²; a los 2 s, at = −0,3π ≈ −0,94 m/s² y ac = 1,2π² ≈ 12 m/s².",
       "pasos": [
-        "ω = ω₀ + α·t = 2 + 1·4 = 6 rad/s.",
-        "θ = ω₀·t + ½·α·t² = 8 + 8 = 16 rad, que son 16/(2π), unas 2,5 vueltas.",
-        "Tangencial: at = α·r = 0,5 m/s². Cambia la rapidez del punto.",
-        "Centrípeta: ac = ω²·r = 36·0,5 = 18 m/s², con la ω de ese instante (no con la inicial). Cambia la dirección de la velocidad. Las dos son perpendiculares."
+        "ω₀ = 2 vueltas/s = 4π rad/s; ω = 0 a los 4 s.",
+        "Vueltas: ω media por tiempo = (2 + 0)/2·4 = 4 vueltas = 8π rad. Es el área del triángulo bajo ω-t, no 2·4 = 8.",
+        "α = (0 − 4π)/4 = −π rad/s²: baja π rad/s cada segundo.",
+        "Tangencial: at = α·r = −0,3π m/s², la misma todo el frenado y contra el giro.",
+        "A los 2 s: ω = 4π − 2π = 2π rad/s, así que ac = ω²·r = 4π²·0,3 = 1,2π² ≈ 12 m/s². Con la ω de ese instante, no la inicial (eso daría 4,8π²)."
       ],
       "verificar": [
+        {
+          "fn": "mcuvDatos",
+          "args": [
+            {
+              "f0": 2,
+              "f": 0,
+              "t": 4,
+              "r": 0.3
+            }
+          ],
+          "espera": {
+            "vueltas": 4,
+            "theta": 25.132741228718345,
+            "alfa": -3.141592653589793,
+            "at": -0.9424777960769379
+          }
+        },
         {
           "fn": "mcuv",
           "args": [
             {
-              "r": 0.5,
-              "omega0": 2,
-              "alfa": 1,
-              "t": 4
+              "r": 0.3,
+              "omega0": 12.566370614359172,
+              "alfa": -3.141592653589793,
+              "t": 2,
+              "frena": true
             }
           ],
           "espera": {
-            "omega": 6,
-            "theta": 16,
-            "at": 0.5,
-            "ac": 18
+            "omega": 6.283185307179586,
+            "at": -0.9424777960769379,
+            "ac": 11.84352528130723
           }
         }
       ]
