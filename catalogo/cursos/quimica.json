@@ -561,8 +561,8 @@
       },
       "potencial_visual": "bajo",
       "grado": 4,
-      "plantillas": [],
-      "investigacion": null
+      "plantillas": ["quimica-ambiente"],
+      "investigacion": "docs/investigacion/quimica-ambiente-ideas-erroneas.md"
     },
     {
       "id": "quimica.ambiente-y-quimica-aplicada",
@@ -593,8 +593,8 @@
       },
       "potencial_visual": "bajo",
       "grado": 4,
-      "plantillas": [],
-      "investigacion": null
+      "plantillas": ["quimica-ambiente"],
+      "investigacion": "docs/investigacion/quimica-ambiente-ideas-erroneas.md"
     }
   ]
 }

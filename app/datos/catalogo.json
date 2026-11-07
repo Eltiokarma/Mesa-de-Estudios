@@ -1177,7 +1177,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "quimica-ambiente"
+     ]
     },
     {
      "id": "quimica.ambiente-y-quimica-aplicada",
@@ -1208,7 +1210,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "quimica-ambiente"
+     ]
     }
    ]
   },
@@ -5169,6 +5173,24 @@
     "/plantillas/probabilidad-dados/index.html",
     "/plantillas/probabilidad-dados/motor.js",
     "/plantillas/probabilidad-dados/papel.json"
+   ]
+  },
+  "quimica-ambiente": {
+   "id": "quimica-ambiente",
+   "titulo": "Del pozo al cielo: combustión, petróleo, metales y el aire",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.recursos-naturales",
+    "quimica.ambiente-y-quimica-aplicada"
+   ],
+   "url": "/plantillas/quimica-ambiente/index.html",
+   "papel": "/plantillas/quimica-ambiente/papel.json",
+   "archivos": [
+    "/plantillas/quimica-ambiente/index.html",
+    "/plantillas/quimica-ambiente/motor.js",
+    "/plantillas/quimica-ambiente/papel.json"
    ]
   },
   "regla-de-tres": {
