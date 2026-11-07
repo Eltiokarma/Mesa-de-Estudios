@@ -533,7 +533,7 @@
       }
     },
     {
-      "nombre": "Torre de destilación: bandejas de 350, 250, 150 y 30 °C, horno a 400 °C",
+      "nombre": "Torre de destilación: bandejas de 350, 250, 150 y 30 °C, horno a 400 °C; destinos reales y de los tres errores para todas las sustancias",
       "fn": "torre",
       "args": [],
       "espera": {
@@ -549,7 +549,26 @@
         "fraccion.residuo": "residuo",
         "errores.por-densidad.hexadecano": "fondo",
         "errores.el-calor-sube.hexadecano": 3,
-        "errores.invierte-la-regla.hexadecano": 0
+        "errores.invierte-la-regla.hexadecano": 0,
+        "destino.tetracosano": 0,
+        "errores.por-densidad.metano": "gases",
+        "errores.por-densidad.pentano": 3,
+        "errores.por-densidad.octano": 3,
+        "errores.por-densidad.dodecano": "fondo",
+        "errores.por-densidad.tetracosano": "fondo",
+        "errores.por-densidad.residuo": "fondo",
+        "errores.el-calor-sube.metano": "fondo",
+        "errores.el-calor-sube.pentano": 0,
+        "errores.el-calor-sube.octano": 1,
+        "errores.el-calor-sube.dodecano": 2,
+        "errores.el-calor-sube.tetracosano": 3,
+        "errores.el-calor-sube.residuo": "gases",
+        "errores.invierte-la-regla.metano": 3,
+        "errores.invierte-la-regla.pentano": 2,
+        "errores.invierte-la-regla.octano": 2,
+        "errores.invierte-la-regla.dodecano": 1,
+        "errores.invierte-la-regla.tetracosano": "gases",
+        "errores.invierte-la-regla.residuo": "gases"
       }
     },
     {
