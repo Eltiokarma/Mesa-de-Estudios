@@ -1,0 +1,1035 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dos flechas en la circunferencia: transformaciones trigonométricas</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de identidades-trig.
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
+   A azul (su ángulo, su flecha OPA y su altura sen A), B mostaza (lo mismo para B), la semisuma M = (A + B)/2 fucsia
+   (su arco y la bisectriz), la semidiferencia D = (A − B)/2 verde (su arco), la flecha suma OPA + OPB granate (y su
+   altura y su abscisa) y la flecha resta PA − PB, la cuerda, naranja (y sus componentes). En producto a suma, α va
+   con M y β con D: α + β es A y α − β es B. En los cocientes, x va en tinta. En las ondas, sen pt con A, sen qt con
+   B, la suma con la suma y la envolvente 2 cos Dt con D.
+   Elegidos con CIEDE2000 (docs/metodo/paleta.py): ΔE00 mínimo entre los seis, 23,5 en claro (B–D) y 23,7 en oscuro
+   (B–D). Contraste AA sobre el papel, la tarjeta y su chip (.v, fondo al 8 %): el más bajo es B en claro, 4,54, y
+   M en oscuro, 4,64. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-a:#1f5fbf; --c-b:#7d6a00; --c-m:#a10fbf; --c-d:#2e7535; --c-s:#77032c; --c-r:#b04a00;
+  --relleno:.16;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-a:#7cb0ff; --c-b:#e3c84a; --c-m:#cf6bfa; --c-d:#7fd36a; --c-s:#fdb4ce; --c-r:#ff8a3d;
+  --relleno:.2; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-a:#7cb0ff; --c-b:#e3c84a; --c-m:#cf6bfa; --c-d:#7fd36a; --c-s:#fdb4ce; --c-r:#ff8a3d;
+  --relleno:.2; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+/* Celular con una predicción pendiente: el dibujo más bajo y pegado arriba (nucleo/celular.js pone lo demás). */
+@media (max-width:899px){
+  .mode.pendiente .bench{position:sticky; top:0; z-index:1; padding:6px; gap:4px; background:var(--card); border-radius:0 0 20px 20px}
+  .mode.pendiente .legend{display:none}
+  .mode.pendiente .lecturas{gap:4px}
+  .mode.pendiente .lectura{padding:2px 8px}
+}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+.lienzo:focus-within{outline:3px solid var(--ink); outline-offset:2px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:16px; height:0; border-top:3px solid; display:inline-block}
+.legend i.trazos{border-top-style:dashed; border-top-width:2px}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-a{color:var(--c-a); background:color-mix(in srgb, var(--c-a) 8%, transparent)}
+.v-b{color:var(--c-b); background:color-mix(in srgb, var(--c-b) 8%, transparent)}
+.v-m{color:var(--c-m); background:color-mix(in srgb, var(--c-m) 8%, transparent)}
+.v-d{color:var(--c-d); background:color-mix(in srgb, var(--c-d) 8%, transparent)}
+.v-s{color:var(--c-s); background:color-mix(in srgb, var(--c-s) 8%, transparent)}
+.v-r{color:var(--c-r); background:color-mix(in srgb, var(--c-r) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{font-family:var(--mono); font-size:1.02rem; line-height:1.9; font-variant-numeric:tabular-nums}
+.eq .tramo{white-space:nowrap}
+.eq .note{display:inline-block; font-family:var(--font); font-size:.84rem; line-height:1.3; color:var(--muted); margin-left:.5em; white-space:normal}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt .m{font-family:var(--mono); font-variant-numeric:tabular-nums}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+/* Lecturas en vivo, cada una con el color de su variable */
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(96px, 1fr)); gap:8px}
+.lecturas:empty{display:none}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura b{display:block; color:var(--k); font:800 1.02rem var(--mono); font-variant-numeric:tabular-nums; overflow-wrap:anywhere}
+.lectura span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.3fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Trigonometría · Transformaciones trigonométricas · Problemas tipo admisión</p>
+      <h1>Dos flechas en la circunferencia</h1>
+      <p class="sub">Dos flechas de largo 1 salen del centro. Súmalas, réstalas y mira hacia dónde apunta el resultado y cuánto mide.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo de la escena">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Dibujo de la escena"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Dibujo del experimento">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/transformaciones-trig">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'transformaciones-trig', unidad: 'trigonometria.transformaciones-trigonometricas', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la matemática (las fórmulas de suma a producto y de producto a suma, los cocientes, la geometría de las dos
+   flechas, las pulsaciones y los errores típicos) sale de MotorTransTrig (motor.js); aquí solo se pinta, se arrastra
+   y se anima. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MT = MotorTransTrig;
+const GR = Math.PI/180;
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 2 : d), r = Math.round(n*p)/p + 0;
+  const [e, f] = String(Math.abs(r)).split('.');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const a_ = t => V('a', t), b_ = t => V('b', t), m_ = t => V('m', t), d_ = t => V('d', t), s_ = t => V('s', t), r_ = t => V('r', t);
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+const lerp = (a, b, f) => a + (b - a)*f;
+function tween(dur, paso, fin){
+  if (RM || !dur){ paso(1); if (fin) setTimeout(fin, 0); return; }
+  const t0 = performance.now();
+  const tick = now => { const f = Math.min(1, (now - t0)/dur); paso(suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
+  requestAnimationFrame(tick);
+}
+// En el celular, una ecuación larga se parte solo entre tramos (después de ⟹, de = o de ;), nunca a media expresión.
+function tramos(raiz){ raiz.querySelectorAll('.eq').forEach(q => { if (q.dataset.tr) return; q.dataset.tr = '1';
+  const nota = q.querySelector('.note'), html = nota ? q.innerHTML.replace(nota.outerHTML, '') : q.innerHTML;
+  q.innerHTML = html.split(/(⟹|;| = )/).reduce((a, p, i, l) => (i % 2 ? a : a + `<span class="tramo">${p}${l[i + 1] || ''}</span> `), '') + (nota ? ' ' + nota.outerHTML : ''); }); }
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span class="m">${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+const KS = ['a', 'b', 'm', 'd', 's', 'r'];
+function colores(){
+  const c = { ink:css('--ink'), muted:css('--muted'), grid:css('--grid'), paper:css('--paper'), card:css('--card'), line:css('--line'),
+    relleno:Number(css('--relleno')) || .16, font:css('--font') };
+  for (const k of KS) c[k] = css('--c-' + k);
+  return c;
+}
+const col = (c, k) => (c[k] || k);
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, p, q){ ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke(); }
+// Texto con fondo del color del papel, para que se lea sobre las líneas. partes: [[texto, color], …]
+function rotuloM(ctx, c, x, y, partes, align, tam){
+  ctx.font = `800 ${tam || 12}px ${c.font}`; ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
+  const ws = partes.map(([t]) => ctx.measureText(t).width), w = ws.reduce((s, v) => s + v, 0);
+  const x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+  let xx = x0; partes.forEach(([t, k], i) => { ctx.fillStyle = col(c, k); ctx.fillText(t, xx, y); xx += ws[i]; });
+}
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+const pol = (g, r) => ({ x:(r === undefined ? 1 : r)*Math.cos(g*GR), y:(r === undefined ? 1 : r)*Math.sin(g*GR) });
+const mas = (p, q) => ({ x:p.x + q.x, y:p.y + q.y }), por = (p, k) => ({ x:p.x*k, y:p.y*k });
+const O = { x:0, y:0 };
+// Piezas del plano
+const arco = (de, a, color, r, texto, o) => Object.assign({ de, a, color, r: r || .22, texto }, o || {});
+const flechaDe = (p, q, color, o) => Object.assign({ p, q, color, ancho:3, flecha:true }, o || {});
+
+/* ================= La escena =================
+   Modos:
+     plano   la circunferencia de radio 1 con flechas, arcos, segmentos, puntos y rótulos en coordenadas del plano;
+             las manijas (puntos de la circunferencia) se arrastran.
+     ondas   dos ondas y su suma para t de 0° a 360°, con la envolvente. */
+function crearEscena(cv, idDesc, idLect, idLey){
+  const E = { modo:'plano', lect:[], ley:[], hl:null, ocupado:false, tok:0, cad:0, anim:false, compacto:false, pl:null, on:null, desc:'' };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, arrastrando = null, sobre = false;
+  function alto(w){
+    const g = innerWidth >= 900 ? Math.max(300, Math.min(520, innerHeight - 230)) : 460;
+    let h;
+    if (E.modo === 'ondas') h = w >= 560 ? Math.min(g, 360) : 280;
+    else { const B = E.pl ? E.pl.caja : { x0:-1, x1:1, y0:-1, y1:1 }; h = clamp(w*(B.y1 - B.y0)/(B.x1 - B.x0), 240, w >= 560 ? g : Math.min(g, 420)); }
+    return Math.round(Celular.alto(h, E.compacto, { tope:250 }));
+  }
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    const h = alto(w), dpr = Celular.dpr();
+    if (w === W && h === H) { E.dibujar(); return; }
+    W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  alRedibujarTema(() => E.dibujar());
+
+  E.config = o => {
+    E.tok++; E.cad++; E.anim = false;
+    Object.assign(E, { modo:'plano', lect:[], ley:[], pl:null, on:null, desc:'' }, o);
+    if (E.pl) E.pl = Object.assign({ caja:{ x0:-1.2, x1:1.2, y0:-.3, y1:1.2 }, estado:{}, arcos:[], segs:[], puntos:[], textos:[], rectos:[], manijas:[], rehacer:null }, E.pl);
+    if (E.pl && E.pl.rehacer) E.pl.rehacer(E.pl);
+    cv.tabIndex = arrastrable() ? 0 : -1;
+    W = 0; resize(); E.leyenda(); E.dibujar(); E.avisar();
+  };
+  const arrastrable = () => E.modo === 'plano' && E.pl && E.pl.manijas.length > 0;
+  E.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === E.compacto) return; E.compacto = on; W = 0; resize(); };
+  const grosor = (k, base) => (E.hl === k ? base + 2.5 : base);
+  E.angosto = () => (cv.clientWidth || W) < 520;
+
+  function escala(){
+    const B = E.pl.caja, pad = 14;
+    const k = Math.min((W - 2*pad)/(B.x1 - B.x0), (H - 2*pad)/(B.y1 - B.y0));
+    const ox = (W - k*(B.x1 - B.x0))/2 - k*B.x0, oy = (H - k*(B.y1 - B.y0))/2 + k*B.y1;
+    return { k, B, P: p => ({ x: ox + k*p.x, y: oy - k*p.y }), mundo: q => ({ x:(q.x - ox)/k, y:(oy - q.y)/k }) };
+  }
+  function punta(p, q, color, s){
+    const ang = Math.atan2(q.y - p.y, q.x - p.x);
+    ctx.fillStyle = color; ctx.beginPath(); ctx.moveTo(q.x, q.y);
+    ctx.lineTo(q.x - s*Math.cos(ang - .42), q.y - s*Math.sin(ang - .42)); ctx.lineTo(q.x - s*Math.cos(ang + .42), q.y - s*Math.sin(ang + .42)); ctx.fill();
+  }
+  const alfa = o => (o.f === undefined ? 1 : o.f);
+  const partes = (t, k) => (typeof t === 'string' ? [[t, k]] : t);
+  function dibPlano(c){
+    const L = E.pl, e = escala(), B = e.B, Oc = e.P(O);
+    // ejes y circunferencia
+    ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2;
+    linea(ctx, e.P({ x:B.x0 + .03, y:0 }), e.P({ x:B.x1 - .03, y:0 }));
+    linea(ctx, e.P({ x:0, y:Math.max(B.y0 + .03, -1.1) }), e.P({ x:0, y:Math.min(B.y1 - .03, 2.05) }));
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.arc(Oc.x, Oc.y, e.k, 0, 7); ctx.stroke();
+    // arcos de ángulo
+    for (const A of L.arcos){ if (!(alfa(A) > 0)) continue;
+      const r = e.k*A.r, color = col(c, A.color), c0 = A.centro ? e.P(A.centro) : Oc;
+      ctx.save(); ctx.globalAlpha = alfa(A); ctx.strokeStyle = color; ctx.lineWidth = grosor(A.color, A.ancho || 3);
+      ctx.beginPath(); ctx.arc(c0.x, c0.y, r, -A.de*GR, -A.a*GR, A.a > A.de); ctx.stroke(); ctx.restore();
+      if (A.texto && alfa(A) >= 1){ const mg = (A.de + A.a)/2, rr = r + 14; rotuloM(ctx, c, c0.x + rr*Math.cos(mg*GR) + (A.dx || 0), c0.y - rr*Math.sin(mg*GR) + (A.dy || 0), partes(A.texto, A.color), 'center', 12); }
+    }
+    // ángulos rectos
+    for (const Rr of L.rectos){ if (!(alfa(Rr) > 0)) continue;
+      const u = Math.hypot(Rr.d1.x - Rr.en.x, Rr.d1.y - Rr.en.y), v = Math.hypot(Rr.d2.x - Rr.en.x, Rr.d2.y - Rr.en.y), q = 9/e.k;
+      const a = mas(Rr.en, por({ x:Rr.d1.x - Rr.en.x, y:Rr.d1.y - Rr.en.y }, q/u)), b = mas(Rr.en, por({ x:Rr.d2.x - Rr.en.x, y:Rr.d2.y - Rr.en.y }, q/v));
+      const ab = mas(a, { x:b.x - Rr.en.x, y:b.y - Rr.en.y });
+      ctx.save(); ctx.globalAlpha = alfa(Rr); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.2; ctx.beginPath(); [a, ab, b].map(e.P).forEach((p, i) => i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)); ctx.stroke(); ctx.restore(); }
+    // segmentos y flechas
+    for (const S of L.segs){ if (!(alfa(S) > 0)) continue;
+      const p = e.P(S.p), q = e.P(S.q), color = col(c, S.color);
+      ctx.save(); ctx.globalAlpha = alfa(S); ctx.strokeStyle = color; ctx.lineWidth = grosor(S.color, S.ancho || 3);
+      ctx.lineCap = 'round'; ctx.setLineDash(S.dash ? [6, 5] : []);
+      if (S.flecha && Math.hypot(q.x - p.x, q.y - p.y) > 12){ const ang = Math.atan2(q.y - p.y, q.x - p.x), qq = { x:q.x - 7*Math.cos(ang), y:q.y - 7*Math.sin(ang) }; linea(ctx, p, qq); ctx.setLineDash([]); punta(p, q, color, 11); }
+      else linea(ctx, p, q);
+      ctx.restore();
+      if (S.texto && alfa(S) >= 1){ const m = { x:lerp(p.x, q.x, S.en === undefined ? .5 : S.en) + (S.dx || 0), y:lerp(p.y, q.y, S.en === undefined ? .5 : S.en) + (S.dy || 0) };
+        rotuloM(ctx, c, m.x, m.y, partes(S.texto, S.color), S.align || 'center', 12); }
+    }
+    // puntos
+    for (const Pt of L.puntos){ if (!(alfa(Pt) > 0)) continue;
+      const p = e.P(Pt.p); ctx.save(); ctx.globalAlpha = alfa(Pt); ctx.fillStyle = col(c, Pt.color); ctx.beginPath(); ctx.arc(p.x, p.y, Pt.r === undefined ? 4.5 : Pt.r, 0, 7); ctx.fill(); ctx.restore();
+      if (Pt.texto && alfa(Pt) >= 1) rotuloM(ctx, c, p.x + (Pt.dx === undefined ? 8 : Pt.dx), p.y + (Pt.dy === undefined ? -12 : Pt.dy), partes(Pt.texto, Pt.color), Pt.align || 'left', 12); }
+    for (const T of L.textos){ if (!(alfa(T) > 0)) continue; const p = e.P(T.p);
+      rotuloM(ctx, c, p.x + (T.dx || 0), p.y + (T.dy || 0), partes(T.t, T.color || 'ink'), T.align || 'center', 12); }
+    // manijas
+    for (const M of L.manijas){
+      const p = e.P(pol(M.g)), on = arrastrando === M.id || (sobre && !arrastrando);
+      ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = on ? .18 : .09; ctx.beginPath(); ctx.arc(p.x, p.y, 20, 0, 7); ctx.fill(); ctx.restore();
+      ctx.fillStyle = c.card; ctx.strokeStyle = col(c, M.color); ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(p.x, p.y, 9, 0, 7); ctx.fill(); ctx.stroke();
+    }
+  }
+  function dibOndas(c){
+    const Q = E.on, pad = { l:34, r:12, t:14, b:24 }, w = W - pad.l - pad.r, h = H - pad.t - pad.b, ym = 2.3;
+    const X = t => pad.l + w*t/360, Y = y => pad.t + h*(ym - y)/(2*ym);
+    ctx.strokeStyle = c.grid; ctx.lineWidth = 1;
+    for (const t of [90, 180, 270, 360]) linea(ctx, { x:X(t), y:pad.t }, { x:X(t), y:pad.t + h });
+    for (const y of [-2, -1, 1, 2]) linea(ctx, { x:pad.l, y:Y(y) }, { x:pad.l + w, y:Y(y) });
+    ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; linea(ctx, { x:pad.l, y:Y(0) }, { x:pad.l + w, y:Y(0) }); linea(ctx, { x:pad.l, y:pad.t }, { x:pad.l, y:pad.t + h });
+    ctx.font = `700 11px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    for (const t of [0, 90, 180, 270, 360]) ctx.fillText(`${t}°`, X(t), pad.t + h + 6);
+    ctx.textAlign = 'right'; ctx.textBaseline = 'middle'; for (const y of [-2, 0, 2]) ctx.fillText(fmt(y, 0), pad.l - 6, Y(y));
+    const ms = Q.muestras, curva = (k, color, ancho, hasta, dash, signo) => {
+      ctx.save(); ctx.strokeStyle = col(c, color); ctx.lineWidth = grosor(color, ancho); ctx.setLineDash(dash ? [6, 5] : []); ctx.beginPath();
+      let i0 = true; for (const m of ms){ if (m.t > hasta + 1e-9) break; const y = (signo || 1)*m[k]; if (i0){ ctx.moveTo(X(m.t), Y(y)); i0 = false; } else ctx.lineTo(X(m.t), Y(y)); }
+      ctx.stroke(); ctx.restore(); };
+    if (Q.ondas !== false){ ctx.save(); ctx.globalAlpha = Q.suma ? .55 : 1; curva('y1', 'a', 2, 360); curva('y2', 'b', 2, 360); ctx.restore(); }
+    if (Q.suma) curva('suma', 's', 3, 360*Q.f);
+    if (Q.env && Q.f >= 1){ curva('env', 'd', 2.2, 360, true); curva('env', 'd', 2.2, 360, true, -1); }
+    if (Q.ceros && Q.f >= 1) for (const t of Q.ceros){ ctx.fillStyle = c.d; ctx.beginPath(); ctx.arc(X(t), Y(0), 5, 0, 7); ctx.fill(); rotuloM(ctx, c, X(t), Y(0) - 16, [[`${fmt(t, 0)}°`, 'd']], 'center', 11); }
+  }
+
+  E.dibujar = () => {
+    if (!W) return;
+    const c = colores();
+    ctx.clearRect(0, 0, W, H);
+    if (E.modo === 'ondas' && E.on) dibOndas(c); else if (E.pl) dibPlano(c);
+  };
+  E.leyenda = () => {
+    document.getElementById(idLey).innerHTML = E.ley.map(([k, t, tipo]) => `<span><i class="${tipo || ''}" style="border-color:var(${k === 'ink' ? '--ink' : '--c-' + k})"></i>${t}</span>`).join('');
+  };
+  // Lecturas y descripción para lectores de pantalla (dicen lo mismo; antes de responder no adelantan la respuesta).
+  E.avisar = () => {
+    const filas = E.lect.map(k => k(E));
+    document.getElementById(idLect).innerHTML = filas.map(([k, t, v]) => `<div class="lectura" style="--k:var(${k === 'ink' ? '--ink' : '--c-' + k})"><span>${t}</span><b>${v}</b></div>`).join('');
+    if (!E.anim) document.getElementById(idDesc).textContent = [E.desc, ...filas.map(([, t, v]) => `${t}: ${v}.`)].join(' ');
+  };
+  E.animar = (dur, paso, fin) => {
+    const tok = ++E.tok; E.anim = true;
+    tween(dur, f => { if (tok !== E.tok) return; paso(f); E.dibujar(); },
+      () => { if (tok !== E.tok) return; E.anim = false; E.avisar(); if (fin) fin(); });
+  };
+  // Varias animaciones en fila (E.parar o un E.config nuevo cortan la cadena)
+  E.cadena = (fs, fin) => { const id = ++E.cad; let i = 0; const sig = () => { if (id !== E.cad) return; if (i >= fs.length){ if (fin) fin(); return; } fs[i++](sig); }; sig(); };
+  E.parar = () => { E.tok++; E.cad++; E.anim = false; };
+
+  // ---------- arrastrar los puntos de la circunferencia (dedo, ratón y teclado) ----------
+  function manijas(){ if (!arrastrable() || !W) return []; const e = escala(); return E.pl.manijas.map(M => ({ id:M.id, p:e.P(pol(M.g)) })); }
+  function cerca(p, radio){ if (E.ocupado || E.anim) return null; let mejor = null, dm = radio;
+    for (const m of manijas()){ const d = Math.hypot(p.x - m.p.x, p.y - m.p.y); if (d < dm){ dm = d; mejor = m.id; } } return mejor; }
+  function ponerAngulo(id, g){
+    const M = E.pl.manijas.find(m => m.id === id); if (!M) return;
+    const v = clamp(Math.round(g/(M.paso || 1))*(M.paso || 1), M.min, M.max); if (v === M.g) return;
+    M.g = v; if (E.pl.rehacer) E.pl.rehacer(E.pl); E.dibujar(); E.avisar();
+  }
+  Celular.arrastre(cv, {
+    activo: () => arrastrable(),
+    cerca: (p, r) => cerca(p, r),
+    empezar: p => { arrastrando = cerca(p, 40); E.dibujar(); },
+    mover: p => { if (!arrastrando || !arrastrable()) return; const q = escala().mundo(p); let g = Math.atan2(q.y, q.x)/GR; if (g < -90) g += 360; ponerAngulo(arrastrando, g); },
+    soltar: () => { arrastrando = null; E.dibujar(); },
+    sobre: s => { sobre = !!s; E.dibujar(); }
+  });
+  // Teclado: ← y → mueven la primera manija; ↑ y ↓, la segunda (si hay).
+  cv.addEventListener('keydown', e => {
+    if (E.ocupado || E.anim || !arrastrable()) return;
+    const ms = E.pl.manijas, k = { ArrowRight:[0, 1], ArrowLeft:[0, -1], ArrowUp:[1, 1], ArrowDown:[1, -1] }[e.key];
+    if (!k) return;
+    const M = ms[Math.min(k[0], ms.length - 1)]; e.preventDefault();
+    ponerAngulo(M.id, M.g + k[1]*(M.paso || 1));
+  });
+  return E;
+}
+
+// ---------- dibujos de las dos flechas (las posiciones salen de MT.rombo) ----------
+// La suma: la flecha de A desde O y la de B que se desliza hasta la punta de A (f de 0 a 1); con g > 0, la diagonal.
+function dibSuma(L, R, f, g, o){
+  o = o || {};
+  const PA = R.PA, PB = R.PB, inicio = por(PA, f), Sm = R.suma;
+  L.segs.push(flechaDe(O, PA, 'a'), flechaDe(O, PB, 'b', { f: f > 0 && !o.fijaB ? .35 : 1 }));
+  if (f > 0) L.segs.push(flechaDe(inicio, mas(inicio, PB), 'b'));
+  if (g > 0){
+    L.segs.push({ p:PB, q:Sm, color:'a', ancho:1.5, dash:true, f:g*.6 });
+    L.segs.push(flechaDe(O, por(Sm, g), 's', { ancho:4, texto:o.textoSuma, en:.62, dx:o.dxS === undefined ? -14 : o.dxS, dy:o.dyS === undefined ? -10 : o.dyS, align:o.alignS || 'right', f: 1 }));
+  }
+}
+const arcosAB = (R, ta, tb, o) => [arco(0, R.A, 'a', (o && o.ra) || .2, ta), arco(0, R.B, 'b', (o && o.rb) || .34, tb)];
+const arcoM = (R, texto, r) => arco(0, R.M, 'm', r || .5, texto);
+const bisectriz = (R, largo) => ({ p:O, q:pol(R.M, largo || 2), color:'m', ancho:1.6, dash:true });
+const altura = (p, color, o) => Object.assign({ p:{ x:p.x, y:0 }, q:p, color, ancho:4 }, o || {});
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1');
+const S = { step:0, max:0, pred:{}, ocupado:false, A:70, B:20, x8:12 };
+
+// Todo lo que se pregunta sale del motor, con sus errores típicos
+const R75 = MT.rombo({ A:75, B:15 });
+const R120 = MT.rombo({ A:120, B:0 });
+const S75 = MT.sumaAProducto({ fn:'sen', A:75, B:15 });
+const R75r = MT.sumaAProducto({ fn:'sen', op:'−', A:75, B:15 });
+const C105 = MT.sumaAProducto({ fn:'cos', op:'−', A:105, B:15 }), R105 = MT.rombo({ A:105, B:15 });
+const P75 = MT.productoASuma({ tipo:'sencos', x:75, y:45 }), R12030 = MT.rombo({ A:120, B:30 });
+const Q53 = MT.cociente({ p:5, q:3 });
+
+const FUENTE = `<p class="fuente">El informe de ideas erróneas del curso no trata las transformaciones a producto, así que estas opciones son hipótesis nuestras: se confirmarán con los datos del colegio.`;
+const fTR16 = `${FUENTE} La opción «sen A + sen B = sen(A + B)» es una extensión nuestra de la linealidad TR16, que el informe recoge para sen(a + b) = sen a + sen b (Gür, 2009, y Matz, 1982, citados por terceros y según resúmenes, sin porcentaje); aquí queda como hipótesis.</p>`;
+
+const P2 = { id:'transformaciones-trig-paso2', ok:'b', opts:[
+  ['a', R75.direccion.errores.sinDividir.texto, 'TT4-no-divide-entre-2', 'hipotesis'],
+  ['b', R75.direccion.texto],
+  ['c', R75.direccion.errores.primera.texto, 'TT10-suma-como-la-primera-flecha', 'hipotesis'],
+  ['d', R75.direccion.errores.intercambia.texto, 'TT2-semidiferencia-por-semisuma', 'hipotesis']],
+  fb:{ b:`¡Bien! Las dos flechas miden 1: al poner una a continuación de la otra se forma un rombo, y la diagonal de un rombo parte el ángulo en dos mitades iguales. Apunta a (75° + 15°)/2 = 45°.`,
+    a:`Elegiste la A. 90° = 75° + 15° suma los ángulos sin dividir entre 2. La suma de las flechas queda entre las dos, no más allá de la de 75°. La correcta está marcada.`,
+    c:`Elegiste la C. 75° es la dirección de la primera flecha; al poner la segunda a continuación, la suma gira hacia ella. Como las dos miden 1, queda justo en el medio. La correcta está marcada.`,
+    d:`Elegiste la D. 30° = (75° − 15°)/2 es la semidiferencia: lo que la suma se separa de cada flecha, no su dirección. La correcta está marcada.` } };
+const P3 = { id:'transformaciones-trig-paso3', ok:'c', opts:[
+  ['a', R120.largoExacto.errores.sumaLargos.texto, 'TT11-suma-de-los-largos', 'hipotesis'],
+  ['b', R120.largoExacto.errores.funcion.texto, 'TT3-seno-por-coseno', 'hipotesis'],
+  ['c', R120.largoExacto.texto],
+  ['d', R120.largoExacto.errores.sinDos.texto, 'TT1-olvida-el-2', 'hipotesis']],
+  fb:{ c:`¡Bien! Con 120° entre ellas, las dos flechas y la suma forman un triángulo equilátero: la suma mide 1. En general mide 2 cos D, con D = (A − B)/2 = 60°: 2 · 1/2 = 1.`,
+    a:`Elegiste la A. 2 = 1 + 1 sería el largo si las dos flechas apuntaran al mismo lado. Cuanto más se abren, más corta es la suma: mide 2 cos D. La correcta está marcada.`,
+    b:`Elegiste la B. √3 = 2 sen 60° usa el seno de D. La mitad de la diagonal es el cateto pegado al ángulo D, así que va con coseno: 2 cos 60° = 1. La correcta está marcada.`,
+    d:`Elegiste la D. 1/2 = cos 60° es solo la mitad de la diagonal: falta el 2. La correcta está marcada.` } };
+const P4 = { id:'transformaciones-trig-paso4', ok:'c', opts:[
+  ['a', S75.errores.lineal.texto, 'TR16-suma-de-senos-lineal', 'hipotesis'],
+  ['b', S75.errores.intercambia.texto, 'TT2-semidiferencia-por-semisuma', 'hipotesis'],
+  ['c', S75.texto],
+  ['d', S75.errores.sinDos.texto, 'TT1-olvida-el-2', 'hipotesis']],
+  fb:{ c:`¡Bien! La punta de la flecha suma está a la altura sen 75° + sen 15°. Esa flecha mide 2 cos 30° = √3 y apunta a 45°: su altura es √3 · sen 45° = √6/2 ≈ ${fmt(S75.valor)}.`,
+    a:`Elegiste la A. 1 = sen 90° = sen(75° + 15°). Pero las alturas apiladas pasan de 1: sen 75° ≈ 0,97 más sen 15° ≈ 0,26. La suma de senos no es el seno de la suma. La correcta está marcada.`,
+    b:`Elegiste la B. √2/2 = 2 sen 30° cos 45° cambia de lugar la semisuma y la semidiferencia. El seno va con la dirección de la suma, M = 45°, y el coseno con D = 30°. La correcta está marcada.`,
+    d:`Elegiste la D. √6/4 = sen 45° cos 30° olvida el 2: es la altura de la mitad de la diagonal. La correcta está marcada.` } };
+const P5 = { id:'transformaciones-trig-paso5', ok:'d', opts:[
+  ['a', R75r.errores.intercambia.texto, 'TT2-semidiferencia-por-semisuma', 'hipotesis'],
+  ['b', R75r.errores.sinDos.texto, 'TT1-olvida-el-2', 'hipotesis'],
+  ['c', R75r.errores.lineal.texto, 'TR16-resta-de-senos-lineal', 'hipotesis'],
+  ['d', R75r.texto]],
+  fb:{ d:`¡Bien! La resta de flechas es la cuerda que va de PB a PA: mide 2 sen 30° = 1 y apunta a 45° + 90° = 135°. Su subida es 1 · sen 135° = √2/2.`,
+    a:`Elegiste la A. √6/2 = 2 sen 45° cos 30° es la fórmula de la suma. En la resta, la cuerda es perpendicular a la diagonal y el seno y el coseno cambian de lugar: 2 cos M sen D. La correcta está marcada.`,
+    b:`Elegiste la B. √2/4 = cos 45° sen 30° olvida el 2: es la subida de media cuerda. La correcta está marcada.`,
+    c:`Elegiste la C. √3/2 = sen 60° = sen(75° − 15°): la resta de senos no es el seno de la resta. La correcta está marcada.` } };
+const P6 = { id:'transformaciones-trig-paso6', ok:'b', opts:[
+  ['a', C105.errores.signo.texto, 'TT5-olvida-el-signo-menos', 'hipotesis'],
+  ['b', C105.texto],
+  ['c', C105.errores.funcion.texto, 'TT3-coseno-por-seno', 'hipotesis'],
+  ['d', C105.errores.sinDos.texto, 'TT1-olvida-el-2', 'hipotesis']],
+  fb:{ b:`¡Bien! PA está a la izquierda de PB: la cuerda que va de PB a PA corre hacia la izquierda, y su avance horizontal es negativo. cos 105° − cos 15° = −2 sen 60° sen 45° = −√6/2.`,
+    a:`Elegiste la A. √6/2 tiene el tamaño correcto y el signo cambiado. Con 0° ≤ B < A ≤ 180°, el punto de A está más a la izquierda que el de B: cos A − cos B es negativo. Por eso la fórmula lleva el menos delante. La correcta está marcada.`,
+    c:`Elegiste la C. −√2/2 = −2 cos 60° sen 45° pone un coseno donde va un seno. En la resta de cosenos los dos factores son senos: −2 sen M sen D. La correcta está marcada.`,
+    d:`Elegiste la D. −√6/4 = −sen 60° sen 45° olvida el 2: es lo que avanza media cuerda. La correcta está marcada.` } };
+const P7 = { id:'transformaciones-trig-paso7', ok:'c', opts:[
+  ['a', P75.errores.unTermino.texto, 'TT6-un-solo-termino', 'hipotesis'],
+  ['b', P75.errores.dobla.texto, 'TT1-el-2-de-mas', 'hipotesis'],
+  ['c', P75.texto],
+  ['d', P75.errores.funcion.texto, 'TT7-formula-de-otro-producto', 'hipotesis']],
+  fb:{ c:`¡Bien! 2 sen 75° cos 45° es la altura de una flecha de largo 2 cos 45° que apunta a 75°: la suma de las flechas de 120° y 30°. Su altura es sen 120° + sen 30° = √3/2 + 1/2.`,
+    a:`Elegiste la A. √3/2 = sen 120° se queda con una sola flecha. Son dos: la de 75° + 45° y la de 75° − 45°. La correcta está marcada.`,
+    b:`Elegiste la B. √3 + 1 = 2 (sen 120° + sen 30°) pone el 2 dos veces: ya está en la fórmula 2 sen α cos β = sen(α + β) + sen(α − β). La correcta está marcada.`,
+    d:`Elegiste la D. (√3 − 1)/2 = cos 120° + cos 30° suma las abscisas de las dos flechas; 2 sen α cos β es una altura, y las alturas van con senos. La correcta está marcada.` } };
+const P8 = { id:'transformaciones-trig-paso8', ok:'d', opts:[
+  ['a', Q53.errores.sinDividir.texto, 'TT4-no-divide-entre-2', 'hipotesis'],
+  ['b', Q53.errores.funcion.texto, 'TT3-cot-por-tan', 'hipotesis'],
+  ['c', Q53.errores.intercambia.texto, 'TT2-semidiferencia-por-semisuma', 'hipotesis'],
+  ['d', Q53.texto]],
+  fb:{ d:`¡Bien! Arriba está la altura de la flecha suma y abajo lo que avanza: el cociente es la pendiente de una flecha que apunta a (5x + 3x)/2 = 4x. Vale tan 4x con cualquier x.`,
+    a:`Elegiste la A. tan 8x usa 5x + 3x sin dividir entre 2. La suma apunta a la mitad, 4x. La correcta está marcada.`,
+    b:`Elegiste la B. cot 4x es avance entre altura. Arriba van los senos, que son la altura: altura entre avance es la tangente. La correcta está marcada.`,
+    c:`Elegiste la C. tan x usa la semidiferencia, (5x − 3x)/2. Arriba y abajo aparece cos x, que se cancela; queda la semisuma. La correcta está marcada.` } };
+
+// ----- configuraciones del dibujo -----
+const CAJA_DRAG = { x0:-1.15, x1:2.08, y0:-.28, y1:2.08 };
+const LEY_AB = [['a', 'A, su flecha y sen A'], ['b', 'B, su flecha y sen B']];
+const LEY_SUMA = LEY_AB.concat([['s', 'la flecha suma'], ['m', 'M = (A + B)/2', 'trazos']]);
+// Paso 1: las dos flechas se arrastran
+function config1(){
+  E.config({ modo:'plano', pl:{ caja:CAJA_DRAG,
+    manijas:[{ id:'A', g:S.A, min:S.B + 10, max:170, color:'a' }, { id:'B', g:S.B, min:0, max:S.A - 10, color:'b' }],
+    rehacer:L => { const [MA, MB] = L.manijas; MA.min = MB.g + 10; MB.max = MA.g - 10; S.A = MA.g; S.B = MB.g;
+      const R = MT.rombo({ A:S.A, B:S.B }); L.estado.R = R;
+      L.arcos = arcosAB(R, 'A', 'B'); L.segs = []; dibSuma(L, R, 0, 0);
+      L.segs.push(altura(R.PA, 'a', { dash:true, ancho:2.5 }), altura(R.PB, 'b', { dash:true, ancho:2.5 }));
+      L.puntos = [{ p:R.PA, color:'a', r:0, texto:'PA', dx:R.A > 100 ? -12 : 12, dy:-14, align:R.A > 100 ? 'right' : 'left' }, { p:R.PB, color:'b', r:0, texto:'PB', dx:12, dy:10 }]; } },
+    lect:[() => ['a', 'A', `${S.A}°`], () => ['b', 'B', `${S.B}°`], () => ['a', 'sen A', fmt(E.pl.estado.R.PA.y, 3)], () => ['b', 'sen B', fmt(E.pl.estado.R.PB.y, 3)]],
+    ley:LEY_AB, desc:'La circunferencia de radio 1 con dos flechas desde el centro, hasta los puntos PA y PB; las dos se arrastran.' });
+}
+// Paso 2: hacia dónde apunta la suma (A = 75°, B = 15°)
+function est2(L, f, g){
+  const R = R75; L.arcos = arcosAB(R, 'A', 'B'); L.segs = []; L.puntos = [];
+  dibSuma(L, R, f, g);
+  if (g >= 1){ L.segs.unshift(bisectriz(R, 2)); L.arcos.push(arcoM(R, 'M', .55)); }
+}
+function config2(r){
+  E.config({ modo:'plano', pl:{ caja:{ x0:-.3, x1:1.6, y0:-.22, y1:1.55 }, rehacer:L => est2(L, r ? 1 : 0, r ? 1 : 0) },
+    lect: r ? lect2() : [], ley: r ? LEY_SUMA : LEY_AB,
+    desc: r ? 'Las flechas de 75° y 15° y su suma, la diagonal del rombo, sobre la bisectriz.' : 'Dos flechas de largo 1 desde el centro: una a 75° y otra a 15°.' });
+}
+const lect2 = () => [() => ['a', 'A', '75°'], () => ['b', 'B', '15°'], () => ['m', 'dirección de la suma', R75.direccion.texto]];
+// Paso 3: cuánto mide la suma (A = 120°, B = 0°)
+function est3(L, f, g){
+  const R = R120, N = por(R.suma, .5);
+  L.arcos = arcosAB(R, 'A', null, { ra:.18 }); L.segs = []; L.rectos = []; L.textos = [{ p:pol(0, 1), t:[['B', 'b']], dx:4, dy:14, align:'left' }];
+  dibSuma(L, R, f, g, { textoSuma: g >= 1 ? [['2 cos 60° = ', 's'], [R120.largoExacto.texto, 's']] : null, dxS:12, dyS:4, alignS:'left' });
+  if (g >= 1){ L.arcos.push(arco(0, R.M, 'd', .42, 'D'));
+    L.segs.push({ p:R.PB, q:R.PA, color:'ink', ancho:1.2, dash:true }); L.rectos.push({ en:N, d1:O, d2:R.PB }); }
+}
+function config3(r){
+  E.config({ modo:'plano', pl:{ caja:{ x0:-.72, x1:1.4, y0:-.25, y1:1.15 }, rehacer:L => est3(L, r ? 1 : 0, r ? 1 : 0) },
+    lect: r ? lect3() : [], ley: r ? LEY_AB.slice(0).concat([['s', 'la flecha suma'], ['d', 'D = (A − B)/2']]) : LEY_AB,
+    desc: r ? 'Las flechas de 120° y 0° y su suma: las tres forman un triángulo equilátero.' : 'Dos flechas de largo 1 desde el centro: una a 120° y otra a 0°.' });
+}
+const lect3 = () => [() => ['d', 'D = (A − B)/2', '60°'], () => ['s', 'largo de la suma', R120.largoExacto.texto]];
+// Paso 4: la altura de la suma
+function est4(L, f, g, h){
+  const R = R75, Sm = R.suma;
+  est2(L, f, g);
+  if (h > 0){
+    L.segs.push({ p:{ x:Sm.x, y:0 }, q:Sm, color:'s', ancho:9, f:h },
+      { p:{ x:Sm.x, y:0 }, q:{ x:Sm.x, y:R.PA.y }, color:'a', ancho:3, f:h, texto:[['sen A', 'a']], dx:30, align:'left' },
+      { p:{ x:Sm.x, y:R.PA.y }, q:Sm, color:'b', ancho:3, f:h, texto:[['sen B', 'b']], dx:30, align:'left' },
+      { p:R.PA, q:{ x:Sm.x, y:R.PA.y }, color:'muted', ancho:1, dash:true, f:h });
+  }
+}
+function config4(r){
+  E.config({ modo:'plano', pl:{ caja:{ x0:-.3, x1:1.85, y0:-.22, y1:1.55 }, rehacer:L => est4(L, r ? 1 : 0, r ? 1 : 0, r ? 1 : 0) },
+    lect: r ? lect4() : [], ley: r ? LEY_SUMA : LEY_AB,
+    desc: r ? 'La flecha de 15° puesta a continuación de la de 75°: sus alturas se apilan hasta la punta de la suma.' : 'Dos flechas de largo 1 desde el centro: una a 75° y otra a 15°.' });
+}
+const lect4 = () => [() => ['a', 'sen 75°', '≈ ' + fmt(R75.PA.y, 3)], () => ['b', 'sen 15°', '≈ ' + fmt(R75.PB.y, 3)], () => ['s', 'sen A + sen B', S75.texto]];
+// Paso 5: la resta de senos (la cuerda)
+function est5(L, f, R, conX){
+  L.arcos = arcosAB(R, 'A', 'B'); L.puntos = []; L.rectos = [];
+  L.segs = [flechaDe(O, R.PA, 'a'), flechaDe(O, R.PB, 'b')];
+  if (f > 0){
+    const Q = mas(R.PB, por(R.resta, f)), N = por(R.suma, .5);
+    L.segs.unshift({ p:O, q:R.suma, color:'s', ancho:1.5, dash:true, f:.6 });
+    L.segs.push(flechaDe(R.PB, Q, 'r', { ancho:3.5 }));
+    if (f >= 1){
+      L.rectos.push({ en:N, d1:R.PA, d2:O });
+      const esquina = { x:R.PA.x, y:R.PB.y };
+      if (conX) L.segs.push(flechaDe(R.PB, esquina, 'r', { ancho:5, texto:[['cos A − cos B', 'r']], dy:16, en:.3 }), { p:esquina, q:R.PA, color:'muted', ancho:1.2, dash:true });
+      else L.segs.push({ p:R.PB, q:esquina, color:'muted', ancho:1.2, dash:true }, flechaDe(esquina, R.PA, 'r', { ancho:5, texto:[['sen A − sen B', 'r']], dx:12, align:'left' }));
+    }
+  }
+}
+function config5(r){
+  E.config({ modo:'plano', pl:{ caja:{ x0:-.3, x1:1.55, y0:-.22, y1:1.2 }, rehacer:L => est5(L, r ? 1 : 0, R75, false) },
+    lect: r ? lect5() : [], ley: r ? LEY_AB.concat([['r', 'la resta PA − PB (la cuerda)']]) : LEY_AB,
+    desc: r ? 'La cuerda que va de PB a PA es la resta de las flechas; es perpendicular a la diagonal del rombo.' : 'Dos flechas de largo 1 desde el centro: una a 75° y otra a 15°.' });
+}
+const lect5 = () => [() => ['r', 'cuerda', fmt(R75.largoResta, 3)], () => ['r', 'su dirección', `${R75.direccionResta}°`], () => ['r', 'sen A − sen B', R75r.texto]];
+// Paso 6: el signo de cos A − cos B
+function config6(r){
+  E.config({ modo:'plano', pl:{ caja:{ x0:-.55, x1:1.3, y0:-.3, y1:1.2 }, rehacer:L => est5(L, r ? 1 : 0, R105, true) },
+    lect: r ? lect6() : [], ley: r ? LEY_AB.concat([['r', 'la resta PA − PB y su avance']]) : LEY_AB,
+    desc: r ? 'La cuerda que va de PB a PA corre hacia la izquierda: su avance horizontal es negativo.' : 'Dos flechas de largo 1 desde el centro: una a 105° y otra a 15°.' });
+}
+const lect6 = () => [() => ['a', 'cos 105°', '≈ ' + fmt(R105.PA.x, 3)], () => ['b', 'cos 15°', '≈ ' + fmt(R105.PB.x, 3)], () => ['r', 'cos A − cos B', C105.texto]];
+// Paso 7: producto a suma (α = 75°, β = 15°)
+function est7(L, f, g){
+  L.arcos = [arco(0, 75, 'm', .5, 'α')]; L.segs = [{ p:O, q:pol(75, 1.6), color:'m', ancho:1.6, dash:true }]; L.puntos = [];
+  if (f <= 0) return;
+  const R = R12030, Sm = R.suma;
+  L.arcos.push(arco(30, 75, 'd', .3, 'β', { f }), arco(75, 120, 'd', .3, 'β', { f }));
+  L.segs.push(flechaDe(O, R.PA, 'a', { f, texto:'α + β', en:.9, dx:-30 }), flechaDe(O, R.PB, 'b', { f, texto:'α − β', en:.82, dx:20, dy:12, align:'left' }));
+  if (g > 0){
+    L.segs.push(flechaDe(R.PA, mas(R.PA, por(R.PB, g)), 'b', { ancho:2 }), flechaDe(O, Sm, 's', { ancho:4, f:g }));
+    if (g >= 1) L.segs.push({ p:{ x:Sm.x, y:0 }, q:Sm, color:'s', ancho:9 },
+      { p:{ x:Sm.x, y:0 }, q:{ x:Sm.x, y:R.PA.y }, color:'a', ancho:3, texto:[['sen 120°', 'a']], dx:34, align:'left' },
+      { p:{ x:Sm.x, y:R.PA.y }, q:Sm, color:'b', ancho:3, texto:[['sen 30°', 'b']], dx:34, align:'left' },
+      { p:R.PA, q:{ x:Sm.x, y:R.PA.y }, color:'muted', ancho:1, dash:true });
+  }
+}
+function config7(r){
+  E.config({ modo:'plano', pl:{ caja:{ x0:-.75, x1:1.45, y0:-.22, y1:1.6 }, rehacer:L => est7(L, r ? 1 : 0, r ? 1 : 0) },
+    lect: r ? lect7() : [], ley: r ? [['m', 'α (la dirección de la suma)', 'trazos'], ['d', 'β'], ['a', 'α + β'], ['b', 'α − β'], ['s', 'la flecha suma']] : [['m', 'α', 'trazos']],
+    desc: r ? 'Las flechas de 120° y 30° y su suma, que apunta a 75° y mide 2 cos 45°: su altura es sen 120° más sen 30°.' : 'La circunferencia de radio 1 con la dirección de 75° marcada.' });
+}
+const lect7 = () => [() => ['s', 'largo de la suma', '2 cos 45°'], () => ['s', 'su altura', P75.texto]];
+// Paso 8: el cociente (x se arrastra después de responder)
+function est8(L, x, mostrar){
+  const R = MT.rombo({ A:5*x, B:3*x }), Sm = R.suma; L.estado.R = R;
+  L.arcos = arcosAB(R, null, null, { ra:.24, rb:.4 }); L.segs = [flechaDe(O, R.PA, 'a', { texto:'5x', en:1.13 }), flechaDe(O, R.PB, 'b', { texto:'3x', en:1.13 })]; L.puntos = []; L.rectos = [];
+  if (!mostrar) return;
+  L.arcos.push(arco(0, R.M, 'm', .62, '4x'));
+  L.segs.push({ p:R.PA, q:Sm, color:'b', ancho:1.5, dash:true }, { p:R.PB, q:Sm, color:'a', ancho:1.5, dash:true },
+    flechaDe(O, Sm, 's', { ancho:4 }),
+    { p:O, q:{ x:Sm.x, y:0 }, color:'s', ancho:2.5, dash:true, texto:[[E.angosto() ? 'avance' : 'cos 5x + cos 3x', 's']], dy:14 },
+    { p:{ x:Sm.x, y:0 }, q:Sm, color:'s', ancho:2.5, dash:true, texto:[[E.angosto() ? 'altura' : 'sen 5x + sen 3x', 's']], dx:8, align:'left', en:.4 });
+  L.rectos.push({ en:{ x:Sm.x, y:0 }, d1:O, d2:Sm });
+}
+function config8(r){
+  E.config({ modo:'plano', pl:{ caja:{ x0:-.4, x1:2.05, y0:-.3, y1:1.75 },
+    manijas: r ? [{ id:'x', g:5*S.x8, min:15, max:100, paso:5, color:'a' }] : [],
+    rehacer:L => { if (L.manijas[0]) S.x8 = L.manijas[0].g/5; est8(L, S.x8, r); } },
+    lect: r ? lect8() : [], ley: r ? [['a', 'la flecha de 5x'], ['b', 'la flecha de 3x'], ['s', 'su suma, con altura y avance'], ['m', 'la dirección 4x']] : [['a', 'la flecha de 5x'], ['b', 'la flecha de 3x']],
+    desc: r ? 'Las flechas de 5x y 3x, su suma y el triángulo de su altura y su avance; el punto de 5x se arrastra.' : 'Dos flechas de largo 1 desde el centro, en los ángulos 5x y 3x, con x = 12°.' });
+}
+const lect8 = () => [() => ['ink', 'x', `${S.x8}°`], () => ['m', '4x', `${4*S.x8}°`],
+  () => ['s', 'altura ÷ avance', fmt(E.pl.estado.R.pendiente, 3)], () => ['m', 'tan 4x', fmt(MT.razon('tan', 4*S.x8).valor, 3)]];
+
+const steps = [
+ { k:'Paso 1', t:'Dos flechas de largo 1',
+   prep:() => config1(),
+   body:() => `<p class="problem">Desde el centro de la circunferencia de radio 1 salen dos flechas: una hasta el punto PA, en el ángulo ${a_('A')}, y otra hasta PB, en el ángulo ${b_('B')}. Arrastra los puntos (o toca el dibujo y usa ← → para A, ↑ ↓ para B).</p>
+   <p>Cada flecha mide 1, así que la altura de su punta es el seno de su ángulo: ${a_('sen A')} y ${b_('sen B')}.</p>
+   <p>Un problema de examen pide, por ejemplo, ${a_('sen A')} + ${b_('sen B')} sin tabla. Para sumar las dos alturas, se suman las flechas: se pone una a continuación de la otra. De eso tratan los pasos que siguen.</p>` },
+ { k:'Paso 2', t:'Predice: hacia dónde apunta la suma', gate:P2,
+   prep:() => config2(!!S.pred[P2.id]),
+   anima:fin => E.cadena([
+     sig => E.animar(1400, f => { est2(E.pl, f, 0); }, sig),
+     sig => E.animar(900, g => { est2(E.pl, 1, g); }, sig)],
+     () => { est2(E.pl, 1, 1); E.ley = LEY_SUMA; E.leyenda(); E.lect = lect2(); E.desc = 'Las flechas de 75° y 15° y su suma, la diagonal del rombo, sobre la bisectriz.'; E.dibujar(); E.avisar(); fin(); }),
+   body:() => `<p class="problem">Las flechas apuntan a ${a_('A = 75°')} y ${b_('B = 15°')}. Se pone la flecha de B a continuación de la de A. ¿Hacia qué ángulo apunta la ${s_('flecha suma')}, la que va del centro a la punta final?</p>${opcionesHTML(P2.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${m_('M')} = (${a_('A')} + ${b_('B')})/2 = (75° + 15°)/2 = ${m_('45°')}<span class="note">la semisuma</span></div></div>
+   <p>Las dos flechas y sus copias forman un rombo: cuatro lados de largo 1. La ${s_('suma')} es su diagonal, y la diagonal de un rombo es la bisectriz del ángulo. Por eso apunta a la semisuma ${m_('M')}, justo entre las dos flechas.</p>
+   ${FUENTE}</p></div>` },
+ { k:'Paso 3', t:'Predice: cuánto mide la suma', gate:P3,
+   prep:() => config3(!!S.pred[P3.id]),
+   anima:fin => E.cadena([
+     sig => E.animar(1400, f => { est3(E.pl, f, 0); }, sig),
+     sig => E.animar(900, g => { est3(E.pl, 1, g); }, sig)],
+     () => { est3(E.pl, 1, 1); E.ley = LEY_AB.concat([['s', 'la flecha suma'], ['d', 'D = (A − B)/2']]); E.leyenda(); E.lect = lect3(); E.desc = 'Las flechas de 120° y 0° y su suma: las tres forman un triángulo equilátero.'; E.dibujar(); E.avisar(); fin(); }),
+   body:() => `<p class="problem">Ahora las flechas apuntan a ${a_('A = 120°')} y ${b_('B = 0°')}. Cada una mide 1. ¿Cuánto mide la ${s_('flecha suma')}?</p>${opcionesHTML(P3.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">largo de la ${s_('suma')} = 2 cos ${d_('D')}, con ${d_('D')} = (${a_('A')} − ${b_('B')})/2</div>
+   <div class="eq">2 cos ${d_('60°')} = 2 · 1/2 = ${s_(R120.largoExacto.texto)}</div></div>
+   <p>La cuerda de PB a PA corta a la diagonal en su punto medio, en ángulo recto. Queda un triángulo rectángulo de hipotenusa 1 (una flecha) con el ángulo ${d_('D')} en el centro: su cateto pegado a ${d_('D')}, la mitad de la diagonal, mide cos ${d_('D')}. La diagonal entera mide 2 cos ${d_('D')}. Dos flechas de largo 1 pueden sumar menos que 1… o hasta 0, si apuntan a lados opuestos.</p>
+   ${FUENTE}</p></div>` },
+ { k:'Paso 4', t:'Predice: una suma de senos', gate:P4,
+   prep:() => config4(!!S.pred[P4.id]),
+   anima:fin => E.cadena([
+     sig => E.animar(1400, f => { est4(E.pl, f, 0, 0); }, sig),
+     sig => E.animar(800, g => { est4(E.pl, 1, g, 0); }, sig),
+     sig => E.animar(900, h => { est4(E.pl, 1, 1, h); }, sig)],
+     () => { E.ley = LEY_SUMA; E.leyenda(); E.lect = lect4(); E.desc = 'La flecha de 15° puesta a continuación de la de 75°: sus alturas se apilan hasta la punta de la suma.'; E.avisar(); fin(); }),
+   body:() => `<p class="problem">Sin tabla de valores: ¿cuánto vale ${a_('sen 75°')} + ${b_('sen 15°')}?</p>${opcionesHTML(P4.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${a_('sen A')} + ${b_('sen B')} = 2 sen ${m_('M')} cos ${d_('D')}<span class="note">altura de la suma = largo · sen de su dirección</span></div>
+   <div class="eq">${a_('sen 75°')} + ${b_('sen 15°')} = 2 sen ${m_('45°')} cos ${d_('30°')} = 2 · (√2/2)(√3/2) = ${s_(S75.texto)}</div></div>
+   <p>La altura de la punta de la ${s_('suma')} es la altura de A más lo que sube la flecha de B. Y esa flecha suma mide 2 cos ${d_('D')} y apunta a ${m_('M')}: su altura es 2 cos ${d_('D')} · sen ${m_('M')}. Así una suma se vuelve un producto.</p>
+   ${fTR16}</div>` },
+ { k:'Paso 5', t:'Predice: una resta de senos', gate:P5,
+   prep:() => config5(!!S.pred[P5.id]),
+   anima:fin => E.animar(1500, f => { est5(E.pl, f, R75, false); }, () => { est5(E.pl, 1, R75, false); E.ley = LEY_AB.concat([['r', 'la resta PA − PB (la cuerda)']]); E.leyenda(); E.lect = lect5(); E.desc = 'La cuerda que va de PB a PA es la resta de las flechas; es perpendicular a la diagonal del rombo.'; E.dibujar(); E.avisar(); fin(); }),
+   body:() => `<p class="problem">Las mismas flechas de ${a_('75°')} y ${b_('15°')}. ¿Cuánto vale ${a_('sen 75°')} − ${b_('sen 15°')}?</p>${opcionesHTML(P5.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${a_('sen A')} − ${b_('sen B')} = 2 cos ${m_('M')} sen ${d_('D')}</div>
+   <div class="eq">${a_('sen 75°')} − ${b_('sen 15°')} = 2 cos ${m_('45°')} sen ${d_('30°')} = 2 · (√2/2)(1/2) = ${r_(R75r.texto)}</div></div>
+   <p>Restar es ir de la punta de B a la punta de A: la ${r_('cuerda')}. Mide 2 sen ${d_('D')} (los dos catetos opuestos a ${d_('D')}) y es perpendicular a la diagonal, así que apunta a ${m_('M')} + 90°. Su subida es 2 sen ${d_('D')} · sen(${m_('M')} + 90°) = 2 sen ${d_('D')} cos ${m_('M')}: el seno y el coseno cambian de lugar respecto de la suma.</p>
+   ${fTR16}</div>` },
+ { k:'Paso 6', t:'Predice: una resta de cosenos', gate:P6,
+   prep:() => config6(!!S.pred[P6.id]),
+   anima:fin => E.animar(1500, f => { est5(E.pl, f, R105, true); }, () => { est5(E.pl, 1, R105, true); E.ley = LEY_AB.concat([['r', 'la resta PA − PB y su avance']]); E.leyenda(); E.lect = lect6(); E.desc = 'La cuerda que va de PB a PA corre hacia la izquierda: su avance horizontal es negativo.'; E.dibujar(); E.avisar(); fin(); }),
+   body:() => `<p class="problem">Ahora las flechas apuntan a ${a_('A = 105°')} y ${b_('B = 15°')}. ¿Cuánto vale ${a_('cos 105°')} − ${b_('cos 15°')}?</p>${opcionesHTML(P6.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${a_('cos A')} − ${b_('cos B')} = −2 sen ${m_('M')} sen ${d_('D')}</div>
+   <div class="eq">${a_('cos 105°')} − ${b_('cos 15°')} = −2 sen ${m_('60°')} sen ${d_('45°')} = −2 · (√3/2)(√2/2) = ${r_(C105.texto)}</div></div>
+   <p>La ${r_('cuerda')} apunta a ${m_('M')} + 90° = 150°, y cos(${m_('M')} + 90°) = −sen ${m_('M')}: de ahí sale el signo menos de la fórmula. En la mitad de arriba, el ángulo mayor tiene el coseno menor, y la resta es negativa.</p>
+   ${FUENTE}</p></div>` },
+ { k:'Paso 7', t:'Predice: un producto que se vuelve suma', gate:P7,
+   prep:() => config7(!!S.pred[P7.id]),
+   anima:fin => E.cadena([
+     sig => E.animar(1000, f => { est7(E.pl, f, 0); }, sig),
+     sig => E.animar(1400, g => { est7(E.pl, 1, g); }, sig)],
+     () => { est7(E.pl, 1, 1); E.ley = [['m', 'α (la dirección de la suma)', 'trazos'], ['d', 'β'], ['a', 'α + β'], ['b', 'α − β'], ['s', 'la flecha suma']]; E.leyenda(); E.lect = lect7(); E.desc = 'Las flechas de 120° y 30° y su suma, que apunta a 75° y mide 2 cos 45°: su altura es sen 120° más sen 30°.'; E.dibujar(); E.avisar(); fin(); }),
+   body:() => `<p class="problem">Al revés: con ${m_('α = 75°')} y ${d_('β = 45°')}, ¿cuánto vale 2 sen ${m_('75°')} cos ${d_('45°')}?</p>${opcionesHTML(P7.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">2 sen ${m_('α')} cos ${d_('β')} = ${a_('sen(α + β)')} + ${b_('sen(α − β)')}</div>
+   <div class="eq">2 sen ${m_('75°')} cos ${d_('45°')} = ${a_('sen 120°')} + ${b_('sen 30°')} = √3/2 + 1/2 = ${s_(P75.texto)}</div>
+   <div class="eq">2 cos ${m_('α')} cos ${d_('β')} = ${a_('cos(α + β)')} + ${b_('cos(α − β)')}; 2 sen ${m_('α')} sen ${d_('β')} = ${b_('cos(α − β)')} − ${a_('cos(α + β)')}</div></div>
+   <p>Es el rombo leído al revés: una flecha de largo 2 cos ${d_('β')} en la dirección ${m_('α')} es la suma de las flechas de ${a_('α + β')} y ${b_('α − β')}. Su altura es la suma de sus dos alturas.</p>
+   ${FUENTE}</p></div>` },
+ { k:'Paso 8', t:'Predice: un cociente que se simplifica', gate:P8,
+   prep:() => config8(!!S.pred[P8.id]),
+   anima:fin => { E.pl.rehacer = L => est8(L, S.x8, true); E.animar(900, () => { E.pl.rehacer(E.pl); }, () => { config8(true); fin(); }); },
+   body:() => `<p class="problem">Simplifica la expresión (${a_('sen 5x')} + ${b_('sen 3x')}) / (${a_('cos 5x')} + ${b_('cos 3x')}).</p>${opcionesHTML(P8.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">(${a_('sen 5x')} + ${b_('sen 3x')}) / (${a_('cos 5x')} + ${b_('cos 3x')}) = (2 sen ${m_('4x')} cos x) / (2 cos ${m_('4x')} cos x) = ${m_(Q53.texto)}</div></div>
+   <p>Arriba está la altura de la ${s_('flecha suma')} y abajo lo que avanza: altura entre avance es la pendiente, la tangente de su dirección ${m_('4x')}. El 2 y cos x se cancelan. Arrastra el punto de 5x: el cociente y tan 4x cambian juntos.</p>
+   ${FUENTE}</p></div>` }
+];
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; b.dataset.label = `Ir al ${s.k.toLowerCase()}: ${s.t}`;
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  E.parar();
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  tramos($('stepBody'));
+  E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.prep) s.prep();
+  pintarDots();
+  if (s.gate) prediccion(s);
+  nav();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+  E.ocupado = S.ocupado;
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    // un paso bloqueado no delata su título
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : b.dataset.label);
+    if (k > S.max) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled');
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+// Se puede pasar al siguiente solo si el paso actual no tiene una predicción pendiente.
+function desbloquear(k){ const s = steps[S.step]; if (s.gate && !S.pred[s.gate.id]) return; if (k > S.max) S.max = k; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    S.ocupado = true; nav();
+    E.compactar(false);
+    $('next').focus({ preventScroll:true });
+    const paso = S.step;
+    Celular.alResponder($('cv'), () => s.anima(() => { S.ocupado = false; E.avisar(); nav(); }), () => S.step === paso, { siNo:() => { S.ocupado = false; nav(); } });
+  }));
+  pintar();
+}
+
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Experimentos con errores de docs/investigacion/trigonometria-ideas-erroneas.md (TR12 y TR16, extendidos) y nuestros
+   (TT): tres cosenos que se anulan, dos sonidos que laten, el producto de dos senos, la suma de dos cosenos y otro
+   cociente. La escena cambia recién después de responder. Un experimento se abre solo si los anteriores ya tienen
+   respuesta. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2');
+const G = MT.agrupar({ solo:20, par:[100, 140] }), Rg = MT.rombo({ A:140, B:100 });
+const PU = MT.pulsos({ p:9, q:7 });
+const SS = MT.productoASuma({ tipo:'sensen', x:75, y:30 }), R10545 = MT.rombo({ A:105, B:45 });
+const CC = MT.sumaAProducto({ fn:'cos', A:105, B:15 }), R105 = MT.rombo({ A:105, B:15 });
+const QR = MT.cociente({ p:7, q:3, num:'−' }), R7030 = MT.rombo({ A:70, B:30 });
+const FUENTE = `<p class="fuente">El informe de ideas erróneas del curso no trata las transformaciones a producto, así que estas opciones son hipótesis nuestras: se confirmarán con los datos del colegio.`;
+const LEY_AB = [['a', 'A, su flecha'], ['b', 'B, su flecha']];
+
+// Exp. 1: tres cosenos
+function tres(L, f){
+  const P20 = pol(20), Sm = Rg.suma;
+  L.arcos = [arco(0, 20, 'ink', .2, '20°')]; L.puntos = []; L.rectos = [];
+  L.segs = [flechaDe(O, P20, 'ink'), flechaDe(O, Rg.PA, 'a', { texto:'140°', en:1.12 }), flechaDe(O, Rg.PB, 'b', { texto:'100°', en:1.12 })];
+  if (f <= 0) return;
+  L.segs.push({ p:Rg.PB, q:Sm, color:'a', ancho:1.5, dash:true, f }, { p:Rg.PA, q:Sm, color:'b', ancho:1.5, dash:true, f }, flechaDe(O, por(Sm, f), 's', { ancho:4 }));
+  L.arcos.push(arco(0, 120, 'm', .42, f >= 1 ? '120°' : null, { f }));
+  if (f >= 1) L.segs.push(flechaDe({ x:0, y:-.08 }, { x:Sm.x, y:-.08 }, 's', { ancho:5, texto:[['par: −cos 20°', 's']], dy:14 }),
+    flechaDe({ x:0, y:-.2 }, { x:P20.x, y:-.2 }, 'ink', { ancho:5, texto:[['cos 20°', 'ink']], dy:14 }));
+}
+// Exp. 3: 2 sen 75° sen 45° con la cuerda de PA a PB
+function dosSenos(L, f){
+  const R = R10545;
+  L.arcos = [arco(0, 75, 'm', .46, 'α'), arco(75, 105, 'd', .3, f >= 1 ? 'β' : null, { f: f > 0 ? 1 : 0 })];
+  L.segs = [{ p:O, q:pol(75, 1.2), color:'m', ancho:1.6, dash:true }]; L.puntos = []; L.rectos = [];
+  if (f <= 0) return;
+  L.segs.push(flechaDe(O, R.PA, 'a', { texto:'α + β', en:.75, dx:-26 }), flechaDe(O, R.PB, 'b', { texto:'α − β', en:.8, dy:14 }),
+    flechaDe(R.PA, mas(R.PA, por({ x:-R.resta.x, y:-R.resta.y }, f)), 'r', { ancho:3.5 }));
+  if (f >= 1) L.segs.push(flechaDe({ x:R.PA.x, y:-.1 }, { x:R.PB.x, y:-.1 }, 'r', { ancho:5, texto:[['cos(α − β) − cos(α + β)', 'r']], dy:15 }),
+    { p:R.PA, q:{ x:R.PA.x, y:-.1 }, color:'muted', ancho:1.2, dash:true }, { p:R.PB, q:{ x:R.PB.x, y:-.1 }, color:'muted', ancho:1.2, dash:true });
+}
+// Exp. 4: cos 105° + cos 15°
+function dosCos(L, f, g){
+  const R = R105, Sm = R.suma;
+  L.arcos = [arco(0, 105, 'a', .2, 'A'), arco(0, 15, 'b', .36, 'B', { dx:6 })]; L.puntos = []; L.rectos = [];
+  L.segs = []; dibSuma(L, R, f, g);
+  if (g >= 1){ L.segs.unshift(bisectriz(R, 1.6)); L.arcos.push(arco(0, 60, 'm', .5, 'M'));
+    L.segs.push(flechaDe({ x:0, y:-.1 }, { x:Sm.x, y:-.1 }, 's', { ancho:5, texto:[['cos A + cos B', 's']], dy:15 }), { p:Sm, q:{ x:Sm.x, y:-.1 }, color:'muted', ancho:1.2, dash:true }); }
+}
+// Exp. 5: (sen 7x − sen 3x)/(cos 7x + cos 3x) con x = 10°
+function cociente(L, f){
+  const R = R7030, Sm = R.suma, N = por(Sm, .5);
+  L.arcos = [arco(0, 70, 'a', .2, null), arco(0, 30, 'b', .34, null)]; L.puntos = []; L.rectos = [];
+  L.segs = [flechaDe(O, R.PA, 'a', { texto:'7x', en:1.13 }), flechaDe(O, R.PB, 'b', { texto:'3x', en:1.13 })];
+  if (f <= 0) return;
+  L.segs.push({ p:O, q:Sm, color:'s', ancho:2, dash:true, f }, flechaDe(R.PB, mas(R.PB, por(R.resta, f)), 'r', { ancho:3 }));
+  if (f >= 1){
+    L.arcos.push(arco(30, 50, 'd', .55, '2x'));
+    L.rectos.push({ en:N, d1:O, d2:R.PA });
+    L.segs.push({ p:O, q:{ x:Sm.x, y:0 }, color:'s', ancho:5, texto:[[E.angosto() ? 'avance' : 'cos 7x + cos 3x', 's']], dy:14 },
+      flechaDe({ x:R.PB.x + .2, y:R.PB.y }, { x:R.PB.x + .2, y:R.PA.y }, 'r', { ancho:5, texto:[[E.angosto() ? 'subida' : 'sen 7x − sen 3x', 'r']], dx:10, align:'left' }), { p:R.PB, q:{ x:R.PB.x + .2, y:R.PB.y }, color:'muted', ancho:1, dash:true }, { p:R.PA, q:{ x:R.PB.x + .2, y:R.PA.y }, color:'muted', ancho:1, dash:true });
+  }
+}
+
+const EXPS = [
+  { id:'tres-cosenos', corto:'Tres cosenos', ok:'c',
+    q:`Para calcular cos 20° + ${b_('cos 100°')} + ${a_('cos 140°')} se agrupan los dos últimos. Al final, toda la suma queda como k · cos 20°. ¿Cuánto vale k?`,
+    opts:[['a', G.errores.signo.texto, 'TR12-signo-de-cos-120', 'hipotesis'], ['b', G.errores.sinDos.texto, 'TT1-olvida-el-2', 'hipotesis'], ['c', G.texto], ['d', G.errores.elPar.texto, 'TT8-olvida-el-termino-de-afuera', 'hipotesis']],
+    fb:{ a:'2 sale de tomar cos 120° = +1/2. El ángulo de 120° está en el segundo cuadrante: cos 120° = −1/2.', b:'1/2 sale de olvidar el 2: el par vale 2 cos 120° cos 20° = −cos 20°.', d:'−1 es solo el par, −cos 20°: falta sumar el cos 20° que quedó afuera.' },
+    antes:ya => E.config({ modo:'plano', pl:{ caja:{ x0:-1.2, x1:1.15, y0:-.42, y1:1.78 }, rehacer:L => tres(L, ya ? 1 : 0) }, ley:[['ink', 'la flecha de 20°'], ['b', '100°'], ['a', '140°']].concat(ya ? [['s', 'la suma del par']] : []),
+      lect: ya ? lectTres() : [], desc:'Tres flechas de largo 1 desde el centro: a 20°, 100° y 140°.' }),
+    despues:() => { E.ley = [['ink', 'la flecha de 20°'], ['b', '100°'], ['a', '140°'], ['s', 'la suma del par'], ['m', 'su dirección, 120°']]; E.leyenda(); E.animar(1600, f => tres(E.pl, f), () => { E.lect = lectTres(); E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">${b_('cos 100°')} + ${a_('cos 140°')} = 2 cos ${m_('120°')} cos ${d_('(−20°)')} = 2 (−1/2) cos 20° = ${s_('−cos 20°')}</div>
+      <div class="eq">cos 20° + ${s_('(−cos 20°)')} = ${G.texto}</div></div>
+      <p>La flecha suma del par apunta a ${m_('120°')} y mide 2 cos 20°: su avance es −cos 20°, justo lo contrario del de la flecha de 20°. Las dos se cancelan. Visto de otro modo: cos 100° = cos 260°, y las flechas de 20°, 140° y 260° están separadas por 120°: forman un triángulo equilátero y suman cero.</p>
+      ${FUENTE} La opción de cos 120° = +1/2 es una extensión nuestra de TR12 (el seno o el coseno como distancia, sin signo), que el informe describe para el seno (Brown, 2005, citado por terceros); aquí queda como hipótesis.</p>` },
+  { id:'pulsaciones', corto:'Dos sonidos', ok:'b',
+    q:`Dos sonidos: ${a_('y = sen 9t')} e ${b_('y = sen 7t')} (t en grados). Al sumarlos, la ${s_('suma')} oscila rápido dentro de una ${d_('envolvente')} que crece y se achica. ¿Cuántas veces vale 0 la envolvente entre t = 0° y t = 360°?`,
+    opts:[['a', PU.errores.intercambia.texto, 'TT2-semisuma-por-semidiferencia', 'hipotesis'], ['b', PU.texto], ['c', PU.errores.nunca.texto, 'TT12-las-ondas-nunca-se-apagan', 'hipotesis'], ['d', PU.errores.sinDividir.texto, 'TT4-no-divide-entre-2', 'hipotesis']],
+    fb:{ a:'16 son los ceros de cos 8t: 8 es la semisuma, la onda rápida que va dentro. La envolvente lleva la semidiferencia: 2 cos t.', c:'Dos ondas casi iguales se refuerzan donde van juntas y se cancelan donde van opuestas: la envolvente 2 cos t vale 0 en 90° y en 270°.', d:'4 son los ceros de cos 2t: 9 − 7 = 2 sin dividir entre 2.' },
+    antes:ya => E.config({ modo:'ondas', on:{ muestras:PU.muestras, suma:ya, env:ya, ceros:PU.ceros, f: ya ? 1 : 0 },
+      ley:[['a', 'sen 9t'], ['b', 'sen 7t']].concat(ya ? [['s', 'la suma'], ['d', 'la envolvente ±2 cos t', 'trazos']] : []), lect: ya ? lectPu() : [],
+      desc:'Dos ondas, sen 9t y sen 7t, para t de 0° a 360°.' }),
+    despues:() => { E.on.suma = true; E.on.env = true; E.ley = [['a', 'sen 9t'], ['b', 'sen 7t'], ['s', 'la suma'], ['d', 'la envolvente ±2 cos t', 'trazos']]; E.leyenda(); E.animar(2400, f => { E.on.f = f; }, () => { E.lect = lectPu(); E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">${a_('sen 9t')} + ${b_('sen 7t')} = 2 sen ${m_('8t')} · cos ${d_('t')}</div></div>
+      <p>La suma es una onda rápida, sen ${m_('8t')} (la semisuma), dentro de la ${d_('envolvente')} ±2 cos ${d_('t')} (la semidiferencia). La envolvente se anula cuando cos t = 0: en t = 90° y t = 270°, ${PU.texto} veces. Así se oyen las pulsaciones cuando dos cuerdas casi afinadas suenan juntas: el sonido sube y baja de volumen.</p>
+      ${FUENTE}</p>` },
+  { id:'dos-senos', corto:'Dos senos multiplicados', ok:'a',
+    q:`Con ${m_('α = 75°')} y ${d_('β = 30°')}, ¿cuánto vale 2 sen ${m_('75°')} sen ${d_('30°')}?`,
+    opts:[['a', SS.texto], ['b', SS.errores.signo.texto, 'TT5-signo-cambiado', 'hipotesis'], ['c', SS.errores.unTermino.texto, 'TT6-un-solo-termino', 'hipotesis'], ['d', SS.errores.funcion.texto, 'TT7-formula-de-otro-producto', 'hipotesis']],
+    fb:{ b:'Es el valor con el signo cambiado: cos 105° − cos 45°. Además, sen 75° y sen 30° son positivos: su producto no puede ser negativo. Primero va el coseno de la resta: cos(α − β) − cos(α + β).', c:'√2/2 = cos 45° se queda con un término: falta restar cos 105°, que es negativo.', d:'(3√2 − √6)/4 = cos 45° + cos 105° usa la fórmula de 2 cos α cos β, con +.' },
+    antes:ya => E.config({ modo:'plano', pl:{ caja:{ x0:-.72, x1:1.2, y0:-.42, y1:1.15 }, rehacer:L => dosSenos(L, ya ? 1 : 0) },
+      ley: ya ? [['m', 'α', 'trazos'], ['d', 'β'], ['a', 'α + β'], ['b', 'α − β'], ['r', 'la cuerda PB − PA y su avance']] : [['m', 'α', 'trazos']], lect: ya ? lectSS() : [],
+      desc:'La circunferencia de radio 1 con la dirección de 75° marcada.' }),
+    despues:() => { E.ley = [['m', 'α', 'trazos'], ['d', 'β'], ['a', 'α + β'], ['b', 'α − β'], ['r', 'la cuerda PB − PA y su avance']]; E.leyenda(); E.animar(1600, f => dosSenos(E.pl, f), () => { E.lect = lectSS(); E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">2 sen ${m_('α')} sen ${d_('β')} = ${b_('cos(α − β)')} − ${a_('cos(α + β)')}</div>
+      <div class="eq">2 sen ${m_('75°')} sen ${d_('30°')} = ${b_('cos 45°')} − ${a_('cos 105°')} = √2/2 − (√2 − √6)/4 = ${r_(SS.texto)}</div></div>
+      <p>Las flechas de ${a_('α + β = 105°')} y ${b_('α − β = 45°')} tienen su semisuma en ${m_('α')} y su semidiferencia en ${d_('β')}. La ${r_('cuerda')} que va de la punta de 105° a la de 45° avanza hacia la derecha: cos 45° − cos 105°, que es 2 sen α sen β, positivo. De paso, sale igual a sen 75°.</p>
+      ${FUENTE}</p>` },
+  { id:'dos-cosenos', corto:'Dos cosenos', ok:'b',
+    q:`Sin tabla: ¿cuánto vale ${a_('cos 105°')} + ${b_('cos 15°')}?`,
+    opts:[['a', CC.errores.lineal.texto, 'TR16-suma-de-cosenos-lineal', 'hipotesis'], ['b', CC.texto], ['c', CC.errores.sinDos.texto, 'TT1-olvida-el-2', 'hipotesis'], ['d', CC.errores.funcion.texto, 'TT3-seno-por-coseno', 'hipotesis']],
+    fb:{ a:'−1/2 = cos 120° = cos(105° + 15°): la suma de cosenos no es el coseno de la suma.', c:'√2/4 = cos 60° cos 45° olvida el 2.', d:'√6/2 = 2 sen 60° cos 45° pone un seno: el avance de la flecha suma va con el coseno de su dirección, 2 cos M cos D.' },
+    antes:ya => E.config({ modo:'plano', pl:{ caja:{ x0:-.55, x1:1.3, y0:-.4, y1:1.42 }, rehacer:L => dosCos(L, ya ? 1 : 0, ya ? 1 : 0) },
+      ley: ya ? LEY_AB.concat([['s', 'la flecha suma y su avance'], ['m', 'M = (A + B)/2', 'trazos']]) : LEY_AB, lect: ya ? lectCC() : [],
+      desc:'Dos flechas de largo 1 desde el centro: una a 105° y otra a 15°.' }),
+    despues:() => { E.ley = LEY_AB.concat([['s', 'la flecha suma y su avance'], ['m', 'M = (A + B)/2', 'trazos']]); E.leyenda();
+      E.cadena([sig => E.animar(1300, f => dosCos(E.pl, f, 0), sig), sig => E.animar(900, g => dosCos(E.pl, 1, g), sig)], () => { E.lect = lectCC(); E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">${a_('cos A')} + ${b_('cos B')} = 2 cos ${m_('M')} cos ${d_('D')}</div>
+      <div class="eq">${a_('cos 105°')} + ${b_('cos 15°')} = 2 cos ${m_('60°')} cos ${d_('45°')} = 2 · (1/2)(√2/2) = ${s_(CC.texto)}</div></div>
+      <p>La ${s_('flecha suma')} apunta a ${m_('60°')} y mide 2 cos ${d_('45°')} = √2: lo que avanza hacia la derecha es √2 · cos 60° = √2/2. El avance de la flecha de 105° es negativo y el de 15°, positivo: se compensan en parte.</p>
+      ${FUENTE} La opción «cos A + cos B = cos(A + B)» es una extensión nuestra de la linealidad TR16 (el informe la recoge para sen(a + b), según resúmenes y sin porcentaje); aquí queda como hipótesis.</p>` },
+  { id:'cociente-con-resta', corto:'Otro cociente', ok:'b',
+    q:`Simplifica la expresión (${a_('sen 7x')} − ${b_('sen 3x')}) / (${a_('cos 7x')} + ${b_('cos 3x')}).`,
+    opts:[['a', QR.errores.intercambia.texto, 'TT2-semisuma-por-semidiferencia', 'hipotesis'], ['b', QR.texto], ['c', QR.errores.funcion.texto, 'TT3-cot-por-tan', 'hipotesis'], ['d', QR.errores.sinDividir.texto, 'TT4-no-divide-entre-2', 'hipotesis']],
+    fb:{ a:'tan 5x usa la semisuma. Arriba sale 2 cos 5x sen 2x y abajo 2 cos 5x cos 2x: se cancela cos 5x y queda la semidiferencia.', c:'cot 2x pone el coseno arriba; arriba queda sen 2x.', d:'tan 4x usa 7x − 3x sin dividir entre 2.' },
+    antes:ya => E.config({ modo:'plano', pl:{ caja:{ x0:-.3, x1:1.5, y0:-.3, y1:1.5 }, rehacer:L => cociente(L, ya ? 1 : 0) },
+      ley: ya ? [['a', 'la flecha de 7x'], ['b', 'la flecha de 3x'], ['r', 'la subida de la resta'], ['s', 'el avance de la suma'], ['d', 'D = 2x']] : [['a', 'la flecha de 7x'], ['b', 'la flecha de 3x']], lect: ya ? lectQR() : [],
+      desc:'Dos flechas de largo 1 desde el centro, en los ángulos 7x y 3x, con x = 10°.' }),
+    despues:() => { E.ley = [['a', 'la flecha de 7x'], ['b', 'la flecha de 3x'], ['r', 'la subida de la resta'], ['s', 'el avance de la suma'], ['d', 'D = 2x']]; E.leyenda(); E.animar(1500, f => cociente(E.pl, f), () => { E.lect = lectQR(); E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">(${a_('sen 7x')} − ${b_('sen 3x')}) / (${a_('cos 7x')} + ${b_('cos 3x')}) = (2 cos 5x sen ${d_('2x')}) / (2 cos 5x cos ${d_('2x')}) = ${d_(QR.texto)}</div></div>
+      <p>Arriba va la subida de la ${r_('cuerda')} (la resta) y abajo el avance de la ${s_('diagonal')} (la suma). Las dos llevan el factor 2 cos 5x, que se cancela. Queda sen ${d_('2x')} / cos ${d_('2x')}: en el triángulo rectángulo del centro, con una flecha de hipotenusa, es el cateto opuesto a ${d_('D = 2x')} entre el pegado.</p>
+      ${FUENTE}</p>` }
+];
+const lectTres = () => [() => ['s', 'el par', `${G.kPar.texto} · cos 20°`], () => ['ink', 'la suma completa', `${G.texto} · cos 20°`]];
+const lectPu = () => [() => ['d', 'envolvente', '2 cos t'], () => ['m', 'onda rápida', 'sen 8t'], () => ['d', 'ceros', PU.ceros.map(t => `${t}°`).join(', ')]];
+const lectSS = () => [() => ['b', 'cos 45°', '≈ ' + fmt(R10545.PB.x, 3)], () => ['a', 'cos 105°', '≈ ' + fmt(R10545.PA.x, 3)], () => ['r', 'el avance', SS.texto]];
+const lectCC = () => [() => ['a', 'cos 105°', '≈ ' + fmt(R105.PA.x, 3)], () => ['b', 'cos 15°', '≈ ' + fmt(R105.PB.x, 3)], () => ['s', 'cos A + cos B', CC.texto]];
+const lectQR = () => [() => ['ink', 'x', '10°'], () => ['r', 'subida ÷ avance', fmt(R7030.alturaResta/R7030.abscisaSuma, 3)], () => ['d', 'tan 2x', fmt(MT.razon('tan', 20).valor, 3)]];
+
+const S = { k:0, pred:{}, t0:Date.now() };
+// Un experimento se abre solo si todos los anteriores ya tienen respuesta; los respondidos se revisitan libremente.
+const abierto = k => EXPS.slice(0, k).every(x => !!S.pred[x.id]);
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => abierto(k)
+    ? `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  if (k < 0 || k >= EXPS.length || !abierto(k)) return;
+  E.parar();
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  E.compactar(!ya);
+  x.antes(ya);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p class="problem">${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + `<div class="nav"><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    tramos($('res2'));
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    $('otra2').onclick = () => { E.parar(); x.antes(false); Celular.alResponder($('cv2'), () => x.despues(), () => S.k === k); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar(); botones();
+    E.compactar(false);
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+    Celular.alResponder($('cv2'), () => x.despues(), () => S.k === k);
+  });
+  pintar();
+}
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>
