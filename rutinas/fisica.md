@@ -8,9 +8,68 @@ Cada ejecución construye una plantilla de escena de física, completa y revisad
 - **Celular:** en las plantillas nuevas, usar `nucleo/celular.js` (ejemplo en `plantillas/mruv/`) en vez de copiar a mano el lienzo compacto y sticky.
 
 - **Pastillas de «¿Qué pasa si…?» bloqueadas** (decisión de Gerson, 6 nov 2026, recibida de la conversación principal). Se puede ir a un experimento solo si todos los anteriores ya tienen respuesta. Los respondidos se revisitan libremente. Los bloqueados llevan `disabled`, `aria-disabled` y aria-label «Experimento N, bloqueado», igual que los puntos del paso a paso. También se cierran las otras vías de salto, como el hash o el teclado. La pestaña entre modos no se bloquea. En `dinamica/` lo arregla la conversación principal: no tocarla.
-- Dinámica ya está integrada en `claude/awesome-wozniak-5etl1n` (catálogo, diseño, pendientes y el pedido del informe). Tiro parabólico (6 nov), estática, choques, fluidos, MAS, ondas mecánicas, termodinámica y gravitación (7 nov) quedaron hechos (abajo). Con esto la lista de física está completa. **Lista nueva (huecos de escenas hechas):** dinámica y energía (hechas, abajo), tiro parabólico (en curso), calorimetría, circuitos y espejos.
+- Dinámica ya está integrada en `claude/awesome-wozniak-5etl1n` (catálogo, diseño, pendientes y el pedido del informe). Tiro parabólico (6 nov), estática, choques, fluidos, MAS, ondas mecánicas, termodinámica y gravitación (7 nov) quedaron hechos (abajo). Con esto la lista de física está completa. **Lista nueva (huecos de escenas hechas):** dinámica, tiro parabólico y energía (hechas, abajo), calorimetría y circuitos (en curso), calorimetría, circuitos y espejos.
 - Los avisos de «terminado» van a la conversación principal nueva: `session_01P39d2yUDZET7Wso3ubSiiV` (desde el 7 nov; la anterior era `session_01P39d2yLWTLWLv3TGZ6FkHB`). Ella integra estática.
 - Desde el 7 nov la rutina sigue el método de `docs/metodo/`: constructor, verificador independiente con `entradas.py`, revisor y correcciones al mismo constructor. Lecciones nuevas de ese brief: al menos 4 predicciones en el paso a paso, opciones con la misma forma, ningún distractor que coincida con la respuesta, nombres de experimentos sin la respuesta y dibujo fijo y compacto arriba en el celular mientras hay predicción pendiente.
+
+## 7 nov 2026 · Tiro parabólico 0.2.0: ruedas, pared y encuentros (`plantillas/tiro-parabolico/`)
+
+Es el punto 2 de la lista nueva.
+
+**Qué hay de nuevo.**
+
+- **Tres pestañas:**
+  - «Paso a paso», igual que antes.
+  - «¿Qué pasa si…?»: los 4 de tiro, más «La pared» (altura del impacto) y «El golpe» (rapidez del impacto).
+  - «Ruedas» (`#ruedas`), nueva: la rotonda y la honda (se mudaron con sus mismos ids), más la cadena (faja), la rueda de atrás (mismo eje), el frenado (MCUV) y la pista (encuentros, con un arco grueso que muestra lo que falta cerrar).
+  - El explorador tiene una pared opcional que se arrastra.
+- **Motor:**
+  - Nuevas: `impactoPared`, `mcuvDatos` (tres de ω0, ω, α, t, θ) y `encuentroPista` (alcance y cruce, ventaja inicial y n-ésimo encuentro).
+  - `mcuv` gana `frena: true`, sin retroceso.
+  - `transmision` acepta engranaje, faja cruzada, sentido y la entrada por v1, f1 o rpm1.
+  - Los 17 casos de antes siguen tal cual.
+- **Casos y pruebas:** 37 casos (20 nuevos, N1 a N20) y 70 pruebas.
+- **Papel:** p2, p8 y p10 son ahora la pared, la pista y la rueda que frena. El revisor cambió sus números para que no repitan los de la escena.
+- **6 predicciones nuevas.** Solo 3 de los 18 distractores llegan a parcial: la suma de módulos (Flores-García 2009) y dos de G4 (Beichner 1994). Los demás son hipótesis, porque no hay estudios con cifra de transmisión, MCUV ni encuentros.
+- **Notación:** f (vueltas/s) y ω (rad/s), las dos en turquesa; f = ω/2π.
+- **Lo que se arregló de lo publicado:**
+  - C2, K3, D9, «queda atrás» y P3-cae-en-picada pasan a parcial.
+  - Las 9 correctas que iban sin razón ya la llevan.
+  - Toda la escena usa `nucleo/celular.js`.
+  - El verde de a pasa a #466d14 y los chips van al 8 %.
+
+**Verificador independiente.** Recalculó N1 a N20 por otros caminos:
+- la pared con y(x) y su pendiente;
+- el MCUV con el área bajo f(t);
+- las ruedas contando vueltas por perímetro y dientes;
+- la pista con rapidez relativa.
+
+Todo coincide. Pidió aclarar `vueltasEje`, que ahora es |f0|, lo que se lee en el eje al empezar.
+
+**Revisor de contenido.** No encontró nada grave.
+- **Lo medio:**
+  - el papel repetía los números de la escena;
+  - en «Frena la rueda», el pie decía que ac siempre supera a at (al final se hace cero);
+  - una fuente le atribuía a Beichner algo que el informe no dice;
+  - el rótulo de la respuesta se encimaba en «La pared»;
+  - ω iba en vueltas/s;
+  - P3 subía de más.
+- **Lo bajo:**
+  - código y fuente de «El golpe»; la azotea pasó a 50 m para que 25 m de altura y 25 m/s no coincidan;
+  - la cadena giraba al revés, como pedaleando hacia atrás;
+  - rótulos y redondeos de la pista;
+  - el botón de «La rueda de atrás»;
+  - el mensaje «cae justo al pie».
+
+**Colores** (para `docs/diseno.md`):
+- **at nueva:** #4a3b00 en claro y #ffde0a en oscuro. Contraste 10,3 y 12,3; ΔE00 mínimo 21,7 y 21,3 (con ac). Va en flechas de 4 px con halo y punta rellena.
+- **a / ac:** #466d14 en claro. diseno.md todavía trae #4f7a17.
+- **Lo demás no cambia:** vx #1f5fbf, vy #c0364a, v #8a2aa8, t #a05200 y ω/f #0f766e (claro).
+
+**Pedidos para la integración.**
+1. `npm run catalogo` (versión 0.2.0).
+2. En `docs/diseno.md`: at y el verde nuevo de a.
+3. Pendientes: corregir la línea de tiro parabólico. Decía que encuentros y pared ya estaban en el motor y en el papel, pero no estaban; ahora sí.
 
 ## 7 nov 2026 · Energía 0.2.0: fuerza variable (`plantillas/energia/`)
 

@@ -1,8 +1,8 @@
 {
  "plantilla": "tiro-parabolico",
- "unidades": "SI: m, s, m/s, m/s², rad, rad/s; g = 10 m/s²; sin aire; ángulos en grados con sen 37° = 3/5 y cos 37° = 4/5 (53° y 16° igual)",
+ "unidades": "SI: m, s, m/s, m/s², rad, rad/s; g = 10 m/s²; sin aire; ángulos en grados con sen 37° = 3/5 y cos 37° = 4/5 (53° y 16° igual); velocidades angulares en rad/s, vueltas por segundo (f) o rpm; distancias de pista en m",
  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (vFinal.vy, errores.tSoltado). 'estadoEn' es proyectil(o).estado(t); 'cuandoEn' es proyectil(o).cuando(h), una lista que se compara por índice y por 'largo'. y positivo hacia arriba, el suelo en y = 0; los ángulos de la velocidad final van en grados, negativos hacia abajo. En el círculo, ω positiva es antihoraria y el ángulo se mide desde el eje x.",
- "verificacion": "Verificado por un subagente independiente (6 nov 2026) sin leer motor.js ni las pruebas. Recalculó los 17 casos y sus 'tambien' (143 claves) con fracciones exactas de Python (fractions.Fraction) y, para π, raíces y arcotangentes, con math y tolerancia 1e-9. Usó sus propias ecuaciones y un segundo camino en cada caso: la altura máxima por v² y por la posición en la cima; el tiempo de vuelo por la cuadrática y por la simetría; el alcance por componentes y por v0²·sen 2θ/g; la rapidez final por componentes y por energía; ac como v²/r y como ω²r; en el MCUV, θ por la ecuación y por el área bajo ω-t; al soltarse del círculo, por ω × r. No hubo discrepancias. A pedido suyo se agregaron: un caso con raíz negativa, otro con h = 0 en cuandoEn, el giro horario a 37°, los ángulos de 53° y 16°, el MCUV que frena y la transmisión por faja y por eje; los volvió a verificar. Los casos del oblicuo a 37° y del horizontal desde 80 m son las filas de 'Casos de prueba propuestos' de docs/investigacion/cinematica-ideas-erroneas.md.",
+ "verificacion": "Verificado por un subagente independiente (6 nov 2026) sin leer motor.js ni las pruebas. Recalculó los 17 casos y sus 'tambien' (143 claves) con fracciones exactas de Python (fractions.Fraction) y, para π, raíces y arcotangentes, con math y tolerancia 1e-9. Usó sus propias ecuaciones y un segundo camino en cada caso: la altura máxima por v² y por la posición en la cima; el tiempo de vuelo por la cuadrática y por la simetría; el alcance por componentes y por v0²·sen 2θ/g; la rapidez final por componentes y por energía; ac como v²/r y como ω²r; en el MCUV, θ por la ecuación y por el área bajo ω-t; al soltarse del círculo, por ω × r. No hubo discrepancias. A pedido suyo se agregaron: un caso con raíz negativa, otro con h = 0 en cuandoEn, el giro horario a 37°, los ángulos de 53° y 16°, el MCUV que frena y la transmisión por faja y por eje; los volvió a verificar. Los casos del oblicuo a 37° y del horizontal desde 80 m son las filas de 'Casos de prueba propuestos' de docs/investigacion/cinematica-ideas-erroneas.md. N1 a N20 verificados por un verificador independiente (7 nov 2026), sin leer el código del motor, con fracciones exactas y π como coeficiente. Pared con la ecuación de la trayectoria y(x) y su pendiente; MCUV con el área bajo f(t); transmisiones contando vueltas por perímetro y dientes; encuentros con la rapidez relativa y la distancia por cerrar. Coinciden todos los campos; vueltasEje = 2 se tomó como leer f0 del eje.",
  "tolerancia": 1e-09,
  "casos": [
   {
@@ -576,6 +576,450 @@
      }
     }
    ]
+  },
+  {
+   "nombre": "N1. Pared a 160 m, cañón a 50 m/s y 37°: llega a los 4 s y la golpea a 40 m, ya bajando (vy = −10); lo más alto fue a los 120 m",
+   "fn": "impactoPared",
+   "args": [
+    {
+     "v0": 50,
+     "angulo": 37,
+     "d": 160
+    }
+   ],
+   "espera": {
+    "choca": true,
+    "t": 4,
+    "y": 40,
+    "vx": 40,
+    "vy": -10,
+    "v": 41.23105625617661,
+    "angulo": -14.036243467926477,
+    "fase": "bajando",
+    "xCima": 120,
+    "errores.yEnLaCima": 45,
+    "errores.yRecta": 120,
+    "errores.tConV0": 3.2,
+    "errores.yConTv0": 44.8,
+    "errores.ySenCos": 71.11111111111111
+   },
+   "tambien": [
+    {
+     "args": [
+      {
+       "v0": 50,
+       "angulo": 37,
+       "d": 80
+      }
+     ],
+     "espera": {
+      "t": 2,
+      "y": 40,
+      "vy": 10,
+      "fase": "subiendo",
+      "errores.yConTv0": 35.2
+     }
+    },
+    {
+     "args": [
+      {
+       "v0": 50,
+       "angulo": 37,
+       "d": 120
+      }
+     ],
+     "espera": {
+      "t": 3,
+      "y": 45,
+      "vy": 0,
+      "fase": "cima"
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "N2. Desde una azotea de 45 m, en horizontal a 15 m/s, hacia una pared a 30 m: la golpea a los 2 s, a 25 m, a 25 m/s (ni 35 ni 20 ni 15)",
+   "fn": "impactoPared",
+   "args": [
+    {
+     "vx": 15,
+     "y0": 45,
+     "d": 30
+    }
+   ],
+   "espera": {
+    "t": 2,
+    "y": 25,
+    "vy": -20,
+    "v": 25,
+    "angulo": -53.13010235415598,
+    "fase": "bajando",
+    "errores.vSumaComponentes": 35,
+    "errores.vSoloVertical": 20,
+    "errores.vIgualV0": 15,
+    "errores.vAlSuelo": 33.54101966249685
+   }
+  },
+  {
+   "nombre": "N3. 50 m/s a 53°, pared a 210 m: t = 7 s, y = 35 m, vy = −30, v = 30√2, 45° hacia abajo",
+   "fn": "impactoPared",
+   "args": [
+    {
+     "v0": 50,
+     "angulo": 53,
+     "d": 210
+    }
+   ],
+   "espera": {
+    "t": 7,
+    "y": 35,
+    "vy": -30,
+    "v": 42.42640687119285,
+    "angulo": -45
+   }
+  },
+  {
+   "nombre": "N4. Hacia abajo desde 32 m, 10 m/s a −37°, pared a 8 m: t = 1 s, y = 21 m, vy = −16, v = 8√5",
+   "fn": "impactoPared",
+   "args": [
+    {
+     "v0": 10,
+     "angulo": -37,
+     "y0": 32,
+     "d": 8
+    }
+   ],
+   "espera": {
+    "t": 1,
+    "y": 21,
+    "vy": -16,
+    "v": 17.88854381999832
+   }
+  },
+  {
+   "nombre": "N5. Si la pared está más allá del alcance, cae antes; si es baja, pasa por encima",
+   "fn": "impactoPared",
+   "args": [
+    {
+     "v0": 50,
+     "angulo": 37,
+     "d": 300
+    }
+   ],
+   "espera": {
+    "choca": false,
+    "motivo": "cae-antes",
+    "t": null
+   },
+   "tambien": [
+    {
+     "args": [
+      {
+       "v0": 50,
+       "angulo": 37,
+       "d": 160,
+       "alto": 30
+      }
+     ],
+     "espera": {
+      "choca": false,
+      "motivo": "pasa-por-encima"
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "N6. MCUV con tres datos: de 2 vueltas/s a 0 en 4 s, r = 0,3 m → 4 vueltas (8π rad), α = −π, at = −0,3π, ac0 = 4,8π²",
+   "fn": "mcuvDatos",
+   "args": [
+    {
+     "f0": 2,
+     "f": 0,
+     "t": 4,
+     "r": 0.3
+    }
+   ],
+   "espera": {
+    "vueltas": 4,
+    "theta": 25.132741228718345,
+    "alfa": -3.141592653589793,
+    "rpm0": 120,
+    "at": -0.9424777960769379,
+    "ac0": 47.37410112522892,
+    "errores.vueltasRectanguloInicial": 8,
+    "errores.vueltasEje": 2,
+    "errores.vueltasPendiente": 0.5
+   }
+  },
+  {
+   "nombre": "N7. Ventilador a 600 rpm que se apaga y se detiene en 6 s: 30 vueltas, α = −10π/3",
+   "fn": "mcuvDatos",
+   "args": [
+    {
+     "rpm0": 600,
+     "f": 0,
+     "t": 6
+    }
+   ],
+   "espera": {
+    "f0": 10,
+    "vueltas": 30,
+    "alfa": -10.471975511965978
+   }
+  },
+  {
+   "nombre": "N8. De 5 a 3 vueltas/s en 8 vueltas: t = 2 s, α = −2π",
+   "fn": "mcuvDatos",
+   "args": [
+    {
+     "f0": 5,
+     "f": 3,
+     "vueltas": 8
+    }
+   ],
+   "espera": {
+    "t": 2,
+    "alfa": -6.283185307179586
+   }
+  },
+  {
+   "nombre": "N9. Desde 5 vueltas/s con α = −2π, después de 6 vueltas: f = √13 y t = 5 − √13 (la raíz que llega primero)",
+   "fn": "mcuvDatos",
+   "args": [
+    {
+     "f0": 5,
+     "alfa": -6.283185307179586,
+     "vueltas": 6
+    }
+   ],
+   "espera": {
+    "f": 3.605551275463989,
+    "t": 1.3944487245360109
+   }
+  },
+  {
+   "nombre": "N10. Rueda que frena (frena: true): desde 4π rad/s con α = −π se detiene a los 4 s tras 4 vueltas y se queda quieta; sin tope «retrocedería» a 6π",
+   "fn": "mcuv",
+   "args": [
+    {
+     "r": 0.3,
+     "omega0": 12.566370614359172,
+     "alfa": -3.141592653589793,
+     "t": 6,
+     "frena": true
+    }
+   ],
+   "espera": {
+    "omega": 0,
+    "theta": 25.132741228718345,
+    "vueltas": 4,
+    "at": 0,
+    "ac": 0,
+    "tParada": 4,
+    "errores.thetaSinDetenerse": 18.84955592153876
+   },
+   "tambien": [
+    {
+     "args": [
+      {
+       "r": 0.3,
+       "omega0": 12.566370614359172,
+       "alfa": -3.141592653589793,
+       "t": 2,
+       "frena": true
+      }
+     ],
+     "espera": {
+      "omega": 6.283185307179586,
+      "theta": 18.84955592153876,
+      "at": -0.9424777960769379,
+      "ac": 11.84352528130723,
+      "errores.acConOmega0": 47.37410112522892
+     }
+    }
+   ]
+  },
+  {
+   "nombre": "N11. Cadena: catalina de 12 cm a 1 vuelta/s, piñón de 4 cm → 3 vueltas/s, misma v = 0,24π m/s",
+   "fn": "transmision",
+   "args": [
+    {
+     "r1": 0.12,
+     "r2": 0.04,
+     "f1": 1,
+     "tipo": "faja"
+    }
+   ],
+   "espera": {
+    "f2": 3,
+    "v1": 0.7539822368615503,
+    "v2": 0.7539822368615503,
+    "sentido2": 1,
+    "errores.omegaIgualConFaja": 6.283185307179586,
+    "errores.omegaDirecta": 2.0943951023931953
+   }
+  },
+  {
+   "nombre": "N12. Mismo eje: piñón de 4 cm con el borde a 0,8 m/s, rueda de 30 cm → ω = 20 rad/s, v2 = 6 m/s",
+   "fn": "transmision",
+   "args": [
+    {
+     "r1": 0.04,
+     "r2": 0.3,
+     "v1": 0.8,
+     "tipo": "eje"
+    }
+   ],
+   "espera": {
+    "omega2": 20,
+    "v2": 6,
+    "errores.vIgualEnEje": 0.8,
+    "errores.vInversa": 0.10666666666666667,
+    "errores.vCuadrado": 45
+   }
+  },
+  {
+   "nombre": "N13. Engranajes de 5 y 10 cm, el chico a 120 rpm → el grande a 60 rpm y al revés",
+   "fn": "transmision",
+   "args": [
+    {
+     "r1": 0.05,
+     "r2": 0.1,
+     "rpm1": 120,
+     "tipo": "engranaje"
+    }
+   ],
+   "espera": {
+    "rpm2": 60,
+    "sentido2": -1
+   }
+  },
+  {
+   "nombre": "N14. Pista de 400 m, Ana a 7 m/s y Beto a 3 m/s, salen juntos en el mismo sentido: la alcanza a los 100 s, a 300 m de la salida",
+   "fn": "encuentroPista",
+   "args": [
+    {
+     "L": 400,
+     "v1": 7,
+     "v2": 3,
+     "sentido": "mismo"
+    }
+   ],
+   "espera": {
+    "t": 100,
+    "vRel": 4,
+    "periodo": 100,
+    "lugar": 300,
+    "vueltas1": 1.75,
+    "vueltas2": 0.75,
+    "errores.tConSuma": 40,
+    "errores.tVueltaDelRapido": 57.142857142857146
+   }
+  },
+  {
+   "nombre": "N15. Los mismos en sentidos contrarios: se cruzan a los 40 s, a 280 m",
+   "fn": "encuentroPista",
+   "args": [
+    {
+     "L": 400,
+     "v1": 7,
+     "v2": 3,
+     "sentido": "contrario"
+    }
+   ],
+   "espera": {
+    "t": 40,
+    "vRel": 10,
+    "lugar": 280,
+    "errores.tConResta": 100
+   }
+  },
+  {
+   "nombre": "N16. Mismo sentido, Beto sale 200 m adelante, segundo encuentro: t = 150 s, a 250 m",
+   "fn": "encuentroPista",
+   "args": [
+    {
+     "L": 400,
+     "v1": 7,
+     "v2": 3,
+     "sentido": "mismo",
+     "separacion": 200,
+     "n": 2
+    }
+   ],
+   "espera": {
+    "t": 150,
+    "lugar": 250,
+    "errores.tSinSeparacion": 200,
+    "errores.tEnesimo": 100
+   }
+  },
+  {
+   "nombre": "N17. Sentidos contrarios, Beto sale 200 m adelante, tercer cruce: t = 100 s, a 300 m",
+   "fn": "encuentroPista",
+   "args": [
+    {
+     "L": 400,
+     "v1": 7,
+     "v2": 3,
+     "sentido": "contrario",
+     "separacion": 200,
+     "n": 3
+    }
+   ],
+   "espera": {
+    "t": 100,
+    "lugar": 300
+   }
+  },
+  {
+   "nombre": "N18. El de atrás es el lento (3 m/s) y el de adelante el rápido (5 m/s), 100 m adelante: cierra 300 m, t = 150 s, a 50 m",
+   "fn": "encuentroPista",
+   "args": [
+    {
+     "L": 400,
+     "v1": 3,
+     "v2": 5,
+     "sentido": "mismo",
+     "separacion": 100
+    }
+   ],
+   "espera": {
+    "brecha": 300,
+    "t": 150,
+    "lugar": 50
+   }
+  },
+  {
+   "nombre": "N19. Versión angular: ω1 = 3 y ω2 = 1 rad/s en el mismo sentido → t = π s, a 180°",
+   "fn": "encuentroPista",
+   "args": [
+    {
+     "omega1": 3,
+     "omega2": 1,
+     "sentido": "mismo"
+    }
+   ],
+   "espera": {
+    "t": 3.141592653589793,
+    "lugarGrados": 180
+   }
+  },
+  {
+   "nombre": "N20. Con la misma rapidez y en el mismo sentido, nunca se encuentran",
+   "fn": "encuentroPista",
+   "args": [
+    {
+     "L": 400,
+     "v1": 5,
+     "v2": 5,
+     "sentido": "mismo"
+    }
+   ],
+   "espera": {
+    "nunca": true,
+    "t": null
+   }
   }
  ]
 }

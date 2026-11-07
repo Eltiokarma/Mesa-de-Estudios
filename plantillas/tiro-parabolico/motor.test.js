@@ -7,6 +7,9 @@
 // 3. Lo que enseña la escena: el movimiento vertical no depende del horizontal (P1, P2); el avance
 //    horizontal es igual cada segundo (P3); en la cima a = −g (C1); ángulos complementarios dan el mismo
 //    alcance y 45° el máximo; en el MCU la aceleración apunta al centro; al soltarse, sigue tangente (D9).
+//    Pared, MCUV con tres datos, transmisión y encuentros en la pista (0.2.0): la pared sale del mismo
+//    proyectil; las diez combinaciones de tres datos del MCUV devuelven los otros dos; con faja la v es igual
+//    y en el eje la ω; en la pista la separación se cierra justo en cada encuentro y nunca antes.
 // 4. Errores de entrada.
 // 5. Cada problema de papel.json coincide con el motor.
 
@@ -152,6 +155,129 @@ test('MCUV: el ángulo es el área bajo ω-t', () => {
   cerca(motor.mcuv(Object.assign({ t: T }, o)).theta, area, 'θ', 1e-6);
 });
 
+// Pared, MCUV con tres datos, transmisión y encuentros (versión 0.2.0)
+test('pared = proyectil: la altura, vy y v en la pared son las de estado(d/vx); energía, simetría y cima', () => {
+  for (const o of TIROS) {
+    const p = motor.proyectil(o);
+    for (const f of [0.1, 0.3, 0.5, 0.7, 0.9]) {
+      const d = p.alcance * f, w = motor.impactoPared(Object.assign({ d }, o)), e = p.estado(d / p.vx);
+      assert.equal(w.choca, true, `choca ${JSON.stringify(o)} d = ${d}`);
+      cerca(w.y, e.y, 'y'); cerca(w.vy, e.vy, 'vy'); cerca(w.v, e.v, 'v'); cerca(w.t, d / p.vx, 't');
+      cerca(w.v ** 2, p.v0 ** 2 - 2 * p.g * (w.y - p.y0), 'energía', 1e-9);
+      const d2 = 2 * w.xCima - d;
+      if (d2 > 1e-6 && d2 < p.alcance - 1e-6) cerca(motor.impactoPared(Object.assign({ d: d2 }, o)).y, w.y, `simetría respecto de xCima ${JSON.stringify(o)}`, 1e-9);
+    }
+    for (const f of [1, 1.2, 3]) assert.equal(motor.impactoPared(Object.assign({ d: p.alcance * f }, o)).choca, false, 'más allá del alcance no choca');
+    if (p.vy > 0) {
+      const yc = motor.impactoPared(Object.assign({ d: p.vx * p.tSubida }, o));
+      cerca(yc.y, p.H, 'en xCima la altura es H'); assert.equal(yc.fase, 'cima');
+      for (let k = 1; k < 40; k++) assert.ok(motor.impactoPared(Object.assign({ d: p.alcance * k / 40 }, o)).y <= p.H + 1e-9, 'la altura más grande en la pared está en xCima');
+    }
+  }
+});
+test('pared: una pared más baja que el punto de impacto deja pasar al proyectil', () => {
+  const w = motor.impactoPared({ v0: 50, angulo: 37, d: 160 });
+  assert.equal(motor.impactoPared({ v0: 50, angulo: 37, d: 160, alto: w.y - 0.01 }).motivo, 'pasa-por-encima');
+  assert.equal(motor.impactoPared({ v0: 50, angulo: 37, d: 160, alto: w.y + 0.01 }).choca, true);
+});
+const GIROS = [{ w0: 2, al: 1, t: 4 }, { w0: 10, al: -2, t: 3 }, { w0: 0, al: 3, t: 2 }, { w0: -4, al: 1, t: 2 }, { w0: 3, al: 0, t: 2 }];
+test('MCUV con tres datos: las diez combinaciones devuelven los otros dos', () => {
+  const NOMBRES = ['omega0', 'omega', 'alfa', 't', 'theta'];
+  const combos = [];
+  for (let a = 0; a < 5; a++) for (let b = a + 1; b < 5; b++) for (let c = b + 1; c < 5; c++) combos.push([a, b, c].map(k => NOMBRES[k]));
+  assert.equal(combos.length, 10);
+  for (const g of GIROS) {
+    const real = { omega0: g.w0, omega: g.w0 + g.al * g.t, alfa: g.al, t: g.t, theta: g.w0 * g.t + g.al * g.t * g.t / 2 };
+    for (const cb of combos) {
+      if (g.al === 0 && cb.join() === 'omega0,omega,alfa') { assert.throws(() => motor.mcuvDatos({ omega0: real.omega0, omega: real.omega, alfa: 0 }), /no cambia/); continue; }
+      const args = {}; cb.forEach(k => { args[k] = real[k]; });
+      const m = motor.mcuvDatos(args);
+      for (const k of NOMBRES) cerca(m[k], real[k], `${JSON.stringify(g)} con ${cb.join(', ')} · ${k}`, 1e-9);
+      cerca(m.vueltas, real.theta / (2 * Math.PI), 'vueltas'); cerca(m.f, real.omega / (2 * Math.PI), 'f'); cerca(m.rpm0, real.omega0 * 60 / (2 * Math.PI), 'rpm0');
+    }
+  }
+});
+test('MCUV con tres datos: θ es el área bajo ω-t y ω² = ω0² + 2αθ', () => {
+  for (const g of GIROS) {
+    const m = motor.mcuvDatos({ omega0: g.w0, alfa: g.al, t: g.t });
+    let area = 0; const n = 20000;
+    for (let k = 0; k < n; k++) area += (m.omega0 + m.alfa * (k + 0.5) * g.t / n) * g.t / n;
+    cerca(m.theta, area, `área ${JSON.stringify(g)}`, 1e-9);
+    cerca(m.omega ** 2, m.omega0 ** 2 + 2 * m.alfa * m.theta, `ω² ${JSON.stringify(g)}`, 1e-9);
+  }
+  const m = motor.mcuvDatos({ f0: 2, f: 0, t: 4 });
+  cerca(m.errores.vueltasRectanguloInicial, 2 * m.vueltas, 'el rectángulo es el doble del triángulo');
+});
+test('mcuv con frena: después de detenerse se queda quieta y nunca retrocede; sin frena, la ecuación sigue', () => {
+  for (const o of [{ r: 0.3, omega0: 4 * Math.PI, alfa: -Math.PI }, { r: 1, omega0: 10, alfa: -2 }, { r: 2, omega0: -6, alfa: 1.5 }]) {
+    const tp = motor.mcuv(Object.assign({ t: 0 }, o)).tParada;
+    let antes = 0;
+    for (let k = 0; k <= 60; k++) {
+      const t = tp * 2 * k / 60, m = motor.mcuv(Object.assign({ t, frena: true }, o));
+      assert.ok(Math.abs(m.theta) >= Math.abs(antes) - 1e-9, `no retrocede en t = ${t}`); antes = m.theta;
+      if (t > tp + 1e-9) {
+        assert.equal(m.omega, 0); cerca(m.theta, m.thetaParada, 'θ parada'); assert.equal(m.at, 0); assert.equal(m.a, 0);
+        const libre = motor.mcuv(Object.assign({ t }, o));
+        cerca(m.errores.thetaSinDetenerse, libre.theta, 'thetaSinDetenerse es la fórmula sin tope');
+        assert.ok(Math.abs(libre.theta) < Math.abs(m.theta) + 1e-9, 'sin tope, la ecuación «retrocede»');
+      } else cerca(m.omega, motor.mcuv(Object.assign({ t }, o)).omega, 'antes de detenerse, igual que sin frena');
+    }
+  }
+});
+test('transmisión: faja ω1·r1 = ω2·r2, eje v2/v1 = r2/r1, sentidos, y el tren multiplica las razones', () => {
+  for (const [r1, r2] of [[0.12, 0.04], [0.1, 0.3], [0.05, 0.05], [0.2, 0.07]]) for (const f1 of [0.5, 1, 3]) {
+    for (const tipo of ['faja', 'cruzada', 'engranaje']) {
+      const m = motor.transmision({ r1, r2, f1, tipo });
+      cerca(m.omega1 * r1, m.omega2 * r2, `${tipo}: misma v`);
+      if (r2 < r1) assert.ok(m.omega2 > m.omega1, 'la chica gira más rápido');
+      assert.equal(m.sentido2, tipo === 'faja' ? 1 : -1, `sentido con ${tipo}`);
+    }
+    const e = motor.transmision({ r1, r2, f1, tipo: 'eje' });
+    cerca(e.v2 / e.v1, r2 / r1, 'eje: v proporcional al radio'); cerca(e.omega2, e.omega1, 'eje: misma ω'); assert.equal(e.sentido2, 1);
+    cerca(motor.transmision({ r1, r2, v1: e.v1, tipo: 'eje' }).omega2, e.omega2, 'con v1 da lo mismo');
+  }
+  const tr = motor.tren({ f1: 1, ruedas: [{ r: 0.12 }, { r: 0.04, union: 'faja' }, { r: 0.3, union: 'eje' }, { r: 0.1, union: 'engranaje' }] });
+  cerca(tr[3].omega, 2 * Math.PI * (0.12 / 0.04) * 1 * (0.3 / 0.1), 'producto de las razones');
+  cerca(tr[2].v, 2 * Math.PI * 3 * 0.3, 'la rueda de atrás'); assert.deepEqual(tr.map(q => q.sentido), [1, 1, 1, -1]);
+});
+const CARRERAS = [{ L: 400, v1: 7, v2: 3, sentido: 'mismo' }, { L: 400, v1: 7, v2: 3, sentido: 'contrario', separacion: 200 },
+  { L: 400, v1: 3, v2: 5, sentido: 'mismo', separacion: 100 }, { L: 250, v1: 2.5, v2: 6, sentido: 'contrario', separacion: 30 },
+  { L: 300, v1: 6, v2: 1.5, sentido: 'mismo', separacion: 275 }, { L: 400, v1: 0, v2: 4, sentido: 'contrario', separacion: 120 }];
+test('pista: en cada tₙ la separación es 0 y entre dos encuentros nunca; periodo·vRel = L', () => {
+  for (const o of CARRERAS) {
+    let previo = 0;
+    for (const n of [1, 2, 3, 4]) {
+      const e = motor.encuentroPista(Object.assign({ n }, o)), s = e.estado(e.t);
+      assert.ok(s.separacion < 1e-7 || s.separacion > e.L - 1e-7, `separación 0 en t${n} ${JSON.stringify(o)}`);
+      assert.ok(Math.abs(s.a - s.b) < 1e-7 || Math.abs(Math.abs(s.a - s.b) - e.L) < 1e-7, 'a ≡ b');
+      cerca(s.a, e.lugar, 'lugar', 1e-9);
+      for (let k = 1; k < 200; k++) {
+        const t = previo + (e.t - previo) * k / 200;
+        assert.ok(e.estado(t).separacion > 1e-9, `separación > 0 entre encuentros, t = ${t}`);
+      }
+      if (n > 1) cerca(e.t - previo, e.periodo, 'tₙ − tₙ₋₁ = periodo');
+      cerca(e.periodo * e.vRel, e.L, 'periodo·vRel = L');
+      previo = e.t;
+    }
+  }
+});
+test('pista: contrario antes que mismo, cambiar los papeles, escalar L y la versión angular', () => {
+  for (const o of CARRERAS) {
+    const a = motor.encuentroPista(o);
+    const otro = motor.encuentroPista(Object.assign({}, o, { sentido: o.sentido === 'mismo' ? 'contrario' : 'mismo' }));
+    const [m, c] = o.sentido === 'mismo' ? [a, otro] : [otro, a];
+    if (!m.nunca) assert.ok(c.t <= m.t + 1e-9, `contrario no tarda más que mismo ${JSON.stringify(o)}`);
+    if (o.sentido === 'mismo') {
+      const s0 = o.separacion || 0, b = motor.encuentroPista(Object.assign({}, o, { v1: o.v2, v2: o.v1, separacion: s0 ? o.L - s0 : 0 }));
+      cerca(b.t, a.t, 'cambiar los papeles de A y B');
+    }
+    for (const k of [0.5, 3]) cerca(motor.encuentroPista(Object.assign({}, o, { L: o.L * k, v1: o.v1, v2: o.v2, separacion: (o.separacion || 0) * k })).t, a.t * k, 'L por k, t por k');
+    const r = o.L / (2 * Math.PI), ang = motor.encuentroPista({ omega1: o.v1 / r, omega2: o.v2 / r, theta0: (o.separacion || 0) / o.L * 360, sentido: o.sentido });
+    cerca(ang.t, a.t, 'angular y en metros dan el mismo t'); cerca(ang.lugarGrados, a.lugar / o.L * 360, 'mismo lugar', 1e-9);
+    cerca(motor.encuentroPista(Object.assign({ r }, o, { L: undefined })).t, a.t, 'con r en vez de L');
+  }
+});
+
 // 4. Errores de entrada
 test('errores de entrada', () => {
   assert.throws(() => motor.proyectil({ v0: 10, angulo: 120 }), /−90° a 90°/);
@@ -161,6 +287,22 @@ test('errores de entrada', () => {
   assert.throws(() => motor.mcu({ r: 2 }), /falta/);
   assert.throws(() => motor.mcu({ r: 0, v: 3 }), /mayor que cero/);
   assert.throws(() => motor.mcuv({ r: 1, omega0: 1, alfa: 1, t: -1 }), /negativo/);
+  assert.throws(() => motor.impactoPared({ v0: 50, angulo: 37, d: 0 }), /mayor que cero/);
+  assert.throws(() => motor.impactoPared({ v0: 50, angulo: 37, d: -5 }), /mayor que cero/);
+  assert.throws(() => motor.impactoPared({ v0: 10, angulo: 90, d: 5 }), /velocidad horizontal/);
+  assert.throws(() => motor.mcuvDatos({ f0: 2, f: 0 }), /exactamente tres/);
+  assert.throws(() => motor.mcuvDatos({ f0: 2, f: 0, t: 4, alfa: -1 }), /exactamente tres/);
+  assert.throws(() => motor.mcuvDatos({ f0: 2, t: 4, theta: 3, vueltas: 1 }), /no las dos/);
+  assert.throws(() => motor.mcuvDatos({ f0: 2, alfa: -Math.PI, vueltas: 5 }), /se detiene antes: solo gira 4 vueltas/);
+  assert.throws(() => motor.mcuvDatos({ f0: 2, f: 2, alfa: 1 }), /no llega|no cambia/);
+  assert.throws(() => motor.mcuvDatos({ f0: 2, f: 0, t: 0 }), /mayor que cero/);
+  assert.throws(() => motor.encuentroPista({ L: 400, v1: 7, v2: 3, sentido: 'opuesto' }), /mismo/);
+  assert.throws(() => motor.encuentroPista({ L: 400, v1: 7, v2: 3, sentido: 'mismo', separacion: 400 }), /una vuelta/);
+  assert.throws(() => motor.encuentroPista({ L: 400, v1: -7, v2: 3, sentido: 'mismo' }), /negativas/);
+  assert.throws(() => motor.encuentroPista({ L: 400, v1: 7, v2: 3, sentido: 'mismo', n: 0 }), /1, 2, 3/);
+  assert.throws(() => motor.encuentroPista({ L: 400, v1: 7, v2: 3, sentido: 'mismo', n: 1.5 }), /1, 2, 3/);
+  assert.throws(() => motor.transmision({ r1: 0.1, r2: 0.2, tipo: 'faja' }), /falta/);
+  assert.throws(() => motor.transmision({ r1: 0.1, r2: 0.2, f1: 1, v1: 2, tipo: 'faja' }), /no las dos/);
 });
 
 // 5. Problemas de papel (regla 6)
