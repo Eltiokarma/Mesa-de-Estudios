@@ -159,7 +159,7 @@ test('valor presente y tiempo: despejar y volver da lo mismo', () => {
     for (const tipo of ['simple', 'compuesto']) {
       const m = t => (tipo === 'simple' ? motor.interesSimple({ C, r, t }).M : motor.compuesto({ C, r, t }).M);
       const D2 = motor.dosMontos({ M1: m(t1), t1, M2: m(t2), t2, tipo });
-      cerca(D2.C, C, `dos montos ${tipo}: C`); cerca(D2.r, r, `dos montos ${tipo}: r`); sinChoques(D2.errores, D2.coinciden, D2.C, 'dos montos');
+      cerca(D2.C, C, `dos montos ${tipo}: C`); cerca(D2.r, r, `dos montos ${tipo}: r`); sinChoques(D2.errores, D2.coinciden, D2.C, 'dos montos'); sinChoques(D2.erroresR, D2.coincidenR, D2.r, 'dos montos, tasa');
     }
   }
 });

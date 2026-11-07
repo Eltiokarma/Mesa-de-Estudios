@@ -240,12 +240,16 @@
     const t1 = numero(o.t1, 't1', { positivo: true }), t2 = numero(o.t2, 't2', { positivo: true }), tipo = o.tipo || 'simple';
     if (!(t2 > t1) || !(M2 > M1)) throw new Error('el segundo tiempo y el segundo monto deben ser mayores');
     if (tipo !== 'simple' && tipo !== 'compuesto') throw new Error("tipo debe ser 'simple' o 'compuesto'");
-    let C, r;
-    if (tipo === 'simple') { const p = (M2 - M1) / (t2 - t1); C = M1 - p * t1; if (!(C > 0)) throw new Error('esos montos no salen de un capital positivo'); r = 100 * p / C; }
-    else { const f = Math.pow(M2 / M1, 1 / (t2 - t1)); r = 100 * (f - 1); C = M1 / Math.pow(f, t1); }
-    C = limpio(C); r = limpio(r);
-    const a = apartar({ m1ComoCapital: M1 }, C);
-    return { C, r, errores: a.errores, coinciden: a.coinciden };
+    const simple = () => { const p = (M2 - M1) / (t2 - t1), C0 = M1 - p * t1; return { C: C0, r: 100 * p / C0, rM1: 100 * p / M1 }; };
+    const comp = () => { const f = Math.pow(M2 / M1, 1 / (t2 - t1)); return { C: M1 / Math.pow(f, t1), r: 100 * (f - 1), rM1: 100 * (f - 1) }; };
+    const S = simple(), K = comp(), R = tipo === 'simple' ? S : K, O = tipo === 'simple' ? K : S;
+    if (!(R.C > 0)) throw new Error('esos montos no salen de un capital positivo');
+    const C = limpio(R.C), r = limpio(R.r);
+    // errores del capital: tomar M1 como capital; resolver con el otro tipo de interés
+    const a = apartar({ m1ComoCapital: M1, otroTipo: O.C > 0 ? limpio(O.C) : null }, C);
+    // errores de la tasa: con M1 como capital (en el simple cambia la tasa; en el compuesto no), con el otro tipo
+    const b = apartar({ m1ComoCapital: limpio(R.rM1), otroTipo: O.C > 0 ? limpio(O.r) : null }, r);
+    return { C, r, errores: a.errores, coinciden: a.coinciden, erroresR: b.errores, coincidenR: b.coinciden };
   }
   // Varias letras que se cambian por una sola de valor Σ Vn: vence en Σ Vn·t / Σ Vn (descuento comercial, misma tasa).
   function vencimientoComun(o) {
