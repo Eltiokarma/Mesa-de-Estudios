@@ -1,0 +1,62 @@
+{
+  "id": "e001",
+  "version": 1,
+  "tipo": "analogia",
+  "unidad": "razonamiento-verbal.analogias",
+  "grado": 3,
+  "dificultad": 1,
+  "cuerpo": {
+    "base": [
+      "AGRICULTOR",
+      "CHAQUITACLLA"
+    ]
+  },
+  "previo": {
+    "tipo": "relacion-analogia",
+    "pide": "Antes de ver las alternativas: ¿qué relación hay entre las dos palabras?",
+    "aceptada": "a-usa-b",
+    "explicacion": "La chaquitaclla es el arado de pie andino: el agricultor la usa para voltear la tierra.",
+    "explicaciones": {
+      "b-usa-a": "Es al revés: la chaquitaclla es la herramienta y el agricultor es quien la usa.",
+      "a-produce-b": "El agricultor no fabrica la chaquitaclla en esta relación: la usa para trabajar."
+    }
+  },
+  "enunciado": "AGRICULTOR : CHAQUITACLLA ::",
+  "alternativas": [
+    {
+      "t": "pescador : red",
+      "correcta": true,
+      "evidencia": [],
+      "explicacion": "Una persona y la herramienta con la que trabaja, en el mismo orden: el agricultor usa la chaquitaclla y el pescador usa la red."
+    },
+    {
+      "t": "pincel : pintor",
+      "codigo": "RV16",
+      "explicacion": "La relación es la misma, pero al revés: primero va la herramienta y después la persona."
+    },
+    {
+      "t": "semilla : surco",
+      "codigo": "RV15",
+      "explicacion": "Las dos palabras recuerdan la chacra, pero entre ellas no hay una persona que usa una herramienta."
+    },
+    {
+      "t": "martillo : clavo",
+      "codigo": "RV17",
+      "explicacion": "Es una herramienta y aquello sobre lo que actúa, no una persona y la herramienta que usa."
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07",
+  "hechos": [
+    {
+      "afirmacion": "La chaquitaclla es el arado de pie que se usa en los Andes desde tiempos prehispánicos.",
+      "fuente": "Conocimiento general; descripción en textos escolares de historia del Perú."
+    }
+  ],
+  "revision": {
+    "por": "subagente (resolución a ciegas de 5 ejercicios cada uno) y una segunda verificación a ciegas de los cambios",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: resuelto bien. Sin cambios de clave."
+  }
+}

@@ -39,8 +39,8 @@
   ];
   // Analogías: {a} y {b} se reemplazan por las palabras de la pareja base. Las que tienen dirección van en pares.
   const ANALOGIAS = [
-    { id: 'a-produce-b', t: '{a} produce {b}', inversa: 'b-produce-a' },
-    { id: 'b-produce-a', t: '{b} produce {a}', inversa: 'a-produce-b' },
+    { id: 'a-produce-b', t: '{a} fabrica o da {b}', inversa: 'b-produce-a' }, // como la vaca y la leche; «causa» es causa y efecto
+    { id: 'b-produce-a', t: '{b} fabrica o da {a}', inversa: 'a-produce-b' },
     { id: 'a-parte-de-b', t: '{a} es parte de {b}', inversa: 'b-parte-de-a' },
     { id: 'b-parte-de-a', t: '{b} es parte de {a}', inversa: 'a-parte-de-b' },
     { id: 'a-usa-b', t: '{a} usa {b}', inversa: 'b-usa-a' },
@@ -52,6 +52,7 @@
     { id: 'sinonimos', t: 'Son sinónimos' },
     { id: 'contrarios', t: 'Son contrarios' },
   ];
+  const CONCLUSION = /^\s*(así|por eso|por ello|por esas?\b|por lo tanto|en conclusión|en suma|en resumen)/i;
   const TIPOS_PREVIO = ['marcar-oracion', 'clasificar', 'relacion', 'relacion-analogia', 'proposito', 'ordenar'];
   const ROL_CODIGO = { detalle: 'RV1', ejemplo: 'RV1', cita: 'RV1', general: 'RV2', apoyo: 'RV3', contraste: 'RV3' };
   const NOMBRE_EJERCICIO = { analogia: 'Analogía', 'termino-excluido': 'Término excluido', 'oracion-incompleta': 'Oración incompleta',
@@ -120,6 +121,9 @@
       if (opcion === previo.aceptada.join('-')) return { correcta: true, error: null, opcion };
       const pos = Object.fromEntries(orden.map((n, k) => [n, k]));
       const ors = (item.cuerpo && item.cuerpo.oraciones) || [];
+      // RV37: empieza por la conclusión (una oración sin retoma que abre con «así», «por eso», «por ello»…).
+      const primera = ors.find(o => o.n === orden[0]);
+      if (primera && !primera.retoma && primera.n !== previo.aceptada[0] && CONCLUSION.test(primera.t || '')) return { correcta: false, error: 'RV37', opcion };
       const rompeRetoma = ors.some(o => o.retoma && o.n in pos && o.retoma in pos && pos[o.n] < pos[o.retoma]);
       return { correcta: false, error: rompeRetoma ? 'RV28' : 'RV29', opcion };
     }

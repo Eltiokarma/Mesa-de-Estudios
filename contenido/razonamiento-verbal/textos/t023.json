@@ -1,0 +1,255 @@
+{
+  "id": "t023",
+  "version": 1,
+  "titulo": "Lavarse las manos",
+  "tema": "Ciencia e historia · Semmelweis",
+  "grado": 5,
+  "dificultad": 2,
+  "tipo_texto": "argumentativo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "Hacia 1847, en un hospital de Viena, el médico húngaro Ignaz Semmelweis notó algo extraño: en la sala atendida por médicos, muchas más madres morían de fiebre después del parto que en la sala atendida por parteras."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "Los médicos solían pasar de examinar cadáveres a atender partos sin lavarse."
+      },
+      {
+        "id": "o3",
+        "rol": "apoyo",
+        "t": "Semmelweis sospechó que llevaban en las manos algo que causaba la fiebre, y ordenó que se las lavaran con una solución de cloro antes de cada parto."
+      },
+      {
+        "id": "o4",
+        "rol": "detalle",
+        "t": "Las muertes en esa sala bajaron de golpe."
+      }
+    ],
+    [
+      {
+        "id": "o5",
+        "rol": "contraste",
+        "t": "Podría pensarse que, con un resultado así, todos aceptaron la medida."
+      },
+      {
+        "id": "o6",
+        "rol": "detalle",
+        "t": "No fue lo que pasó: muchos colegas la rechazaron, en parte porque Semmelweis no podía explicar qué era ese «algo», y en parte porque les molestaba la idea de que los médicos causaran muertes."
+      },
+      {
+        "id": "o7",
+        "rol": "detalle",
+        "t": "Solo décadas después, cuando se demostró que los microbios causan enfermedades, su medida tuvo la explicación que le faltaba."
+      }
+    ],
+    [
+      {
+        "id": "o8",
+        "rol": "principal",
+        "t": "El caso muestra que en la ciencia no basta con tener razón: un dato que contradice lo que se cree necesita, además, una explicación, y quienes deben aceptarlo tienen que estar dispuestos a revisar sus propias ideas."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que mejor resume la tesis del autor.",
+        "aceptadas": [
+          "o8"
+        ],
+        "ninguna": "RV3",
+        "codigos": {
+          "o1": "RV4"
+        },
+        "explicacion": "La oración 8 dice la tesis: en la ciencia no basta con tener razón; hacen falta explicación y disposición a revisar las ideas.",
+        "explicaciones": {
+          "o1": "La primera oración presenta el caso: es el punto de partida.",
+          "o2": "Explica lo que hacían los médicos: es un detalle del caso.",
+          "o3": "Cuenta la sospecha de Semmelweis y su medida: es parte del caso.",
+          "o4": "Cuenta el resultado de la medida: es un hecho.",
+          "o5": "Presenta lo que podría pensarse, y que el texto va a corregir.",
+          "o6": "Explica por qué rechazaron la medida: es un argumento.",
+          "o7": "Cuenta cuándo llegó la explicación: es un hecho que apoya la tesis.",
+          "ninguna": "La oración 8 sí la dice completa: en la ciencia no basta con tener razón."
+        }
+      },
+      "enunciado": "¿Cuál es la tesis del autor?",
+      "alternativas": [
+        {
+          "t": "Para que un dato nuevo se acepte en la ciencia no basta con que sea cierto: también hacen falta una explicación y disposición a cambiar de idea.",
+          "correcta": true,
+          "evidencia": [
+            "o8"
+          ],
+          "explicacion": "Es lo que dice la oración 8, que saca la lección del caso de Semmelweis."
+        },
+        {
+          "t": "En la sala atendida por médicos morían muchas más madres que en la atendida por parteras.",
+          "codigo": "RV1",
+          "origen": "o1",
+          "explicacion": "Es el dato con que empieza el caso, un detalle."
+        },
+        {
+          "t": "La medicina ha avanzado mucho desde el siglo XIX.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto habla de por qué tardó en aceptarse una medida concreta."
+        },
+        {
+          "t": "Semmelweis tenía razón, pero sus colegas no quisieron aceptarlo.",
+          "codigo": "RV3",
+          "origen": "o6",
+          "explicacion": "Resume el caso, pero le falta lo que el autor saca de él: que además de tener razón hacía falta una explicación."
+        },
+        {
+          "t": "Los médicos de Viena eran malos profesionales.",
+          "codigo": "RV33",
+          "explicacion": "El autor no dice eso: explica por qué rechazaron la medida, sin juzgarlos como profesionales."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.inferencias",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
+        "sonda": "Semmelweis recibió en vida un premio por su descubrimiento.",
+        "clase": "no-se-sabe",
+        "codigos": {
+          "lo-dice": "RV5",
+          "se-deduce": "RV7",
+          "lo-contradice": "RV36"
+        },
+        "explicacion": "El texto no dice nada sobre premios. No se puede saber.",
+        "explicaciones": {
+          "lo-dice": "El texto habla de Semmelweis y de su descubrimiento, pero nunca de un premio.",
+          "se-deduce": "Que su medida funcionara no permite concluir que lo premiaran; de hecho, el texto dice que muchos la rechazaron.",
+          "lo-contradice": "El texto no dice que no lo premiaran; dice que muchos colegas rechazaron su medida, que no es lo mismo."
+        }
+      },
+      "enunciado": "Se infiere del texto que las parteras de ese hospital",
+      "alternativas": [
+        {
+          "t": "no pasaban de examinar cadáveres a atender partos.",
+          "correcta": true,
+          "evidencia": [
+            "o1",
+            "o2"
+          ],
+          "explicacion": "El texto no lo dice así, pero se deduce: lo que distinguía a los médicos era pasar de los cadáveres a los partos (oración 2), y en la sala de las parteras morían menos (oración 1)."
+        },
+        {
+          "t": "atendían partos en una sala distinta de la de los médicos.",
+          "codigo": "RV6",
+          "origen": "o1",
+          "explicacion": "Eso lo dice el texto (oración 1): no es una inferencia sobre las parteras."
+        },
+        {
+          "t": "sabían que los microbios causan enfermedades.",
+          "codigo": "RV9",
+          "origen": "o7",
+          "explicacion": "Choca con el texto: los microbios se demostraron \"décadas después\" (oración 7), así que todavía no se había demostrado."
+        },
+        {
+          "t": "atendían a menos madres que los médicos.",
+          "codigo": "RV7",
+          "explicacion": "El texto no dice cuántas madres atendía cada sala; esa razón no sale de lo que se lee."
+        },
+        {
+          "t": "se lavaban las manos con cloro desde mucho antes que los médicos.",
+          "codigo": "RV5",
+          "origen": "o3",
+          "explicacion": "Usa palabras de la oración 3 (\"lavaran\", \"cloro\"), pero el texto dice que el lavado con cloro lo ordenó Semmelweis."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.sentido-contextual",
+      "enunciado": "En la oración 8, la expresión REVISAR SUS PROPIAS IDEAS significa",
+      "alternativas": [
+        {
+          "t": "volver a examinar lo que uno cree y cambiarlo si hay razones.",
+          "correcta": true,
+          "evidencia": [
+            "o6",
+            "o8"
+          ],
+          "explicacion": "Los colegas de Semmelweis rechazaron la medida por lo que ya creían (oración 6); revisar sus ideas habría sido aceptar que podían estar equivocados."
+        },
+        {
+          "t": "volver a pensar en un tema para recordarlo mejor.",
+          "codigo": "RV18",
+          "explicacion": "Es un sentido común de \"revisar\" (repasar para un examen), pero aquí no se trata de recordar, sino de cambiar lo que uno cree."
+        },
+        {
+          "t": "defender con más fuerza lo que uno ya piensa.",
+          "codigo": "RV19",
+          "explicacion": "Está en el mismo campo (lo que uno hace con sus ideas), pero es casi lo contrario: revisar las ideas es estar dispuesto a cambiarlas, no a reforzarlas."
+        },
+        {
+          "t": "explicar qué es ese «algo» que llevaban las manos.",
+          "codigo": "RV5",
+          "origen": "o6",
+          "explicacion": "Repite palabras de las oraciones 6 y 8 (\"explicación\", «algo»), pero eso es lo que le faltaba a Semmelweis, no lo que significa revisar las ideas."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.extrapolacion",
+      "enunciado": "Si Semmelweis hubiera podido mostrar los microbios en sus manos en 1847, según la lógica del texto,",
+      "alternativas": [
+        {
+          "t": "su medida probablemente se habría aceptado antes.",
+          "correcta": true,
+          "evidencia": [
+            "o6",
+            "o7"
+          ],
+          "explicacion": "Una de las razones del rechazo era que no podía explicar qué era ese «algo» (oración 6); con esa explicación, esa razón desaparecía."
+        },
+        {
+          "t": "sus colegas la habrían rechazado igual, porque nadie podía explicar qué era ese «algo».",
+          "codigo": "RV12",
+          "explicacion": "Cambia la condición, pero deja igual la consecuencia: si mostraba los microbios, ya había explicación."
+        },
+        {
+          "t": "todos los médicos del mundo se habrían lavado las manos al día siguiente.",
+          "codigo": "RV11",
+          "explicacion": "Es una consecuencia exagerada: el texto dice que también pesaba la molestia de los médicos, que no desaparece de un día para otro."
+        },
+        {
+          "t": "ya no habría hecho falta lavarse las manos.",
+          "codigo": "RV7",
+          "explicacion": "Al contrario: mostrar los microbios daría más razones para lavarse. Esa conclusión no sale del texto."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-06",
+  "hechos": [
+    {
+      "afirmacion": "En 1847, en el Hospital General de Viena, Semmelweis vio más muertes por fiebre puerperal en la sala de médicos (que venían de autopsias) que en la de parteras; impuso lavarse con solución de cloro y la mortalidad bajó mucho; muchos colegas rechazaron la idea; la teoría microbiana (Pasteur, Koch) dio la explicación décadas después.",
+      "fuente": "Semmelweis, I. (1861). Die Ätiologie, der Begriff und die Prophylaxis des Kindbettfiebers; Carter, K. C. (2005). Childbed fever. Transaction Publishers."
+    }
+  ],
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: 6 de 6, pero un distractor de inferencia era defendible: se reescribió la pregunta («las parteras de ese hospital…»). Distractores más cercanos; dificultad bajada a 2 (no llegaba a tipo UNI). Una segunda verificación de los cambios corrigió la concordancia de t023 p2 y cuatro detalles."
+  }
+}

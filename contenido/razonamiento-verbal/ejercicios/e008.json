@@ -1,0 +1,63 @@
+{
+  "id": "e008",
+  "version": 1,
+  "tipo": "conector",
+  "unidad": "razonamiento-verbal.conectores",
+  "grado": 4,
+  "dificultad": 1,
+  "cuerpo": {
+    "oracion": "El quechua es la lengua originaria más hablada del Perú; ___, en muchas ciudades los niños ya no lo aprenden."
+  },
+  "previo": {
+    "tipo": "relacion",
+    "pide": "Antes de ver las alternativas: ¿qué relación hay entre las dos partes de la oración?",
+    "aceptada": "oposicion",
+    "codigos": {
+      "suma": "RV26",
+      "causa": "RV24"
+    },
+    "explicacion": "La primera parte deja esperar que el quechua siga vivo en todas partes; la segunda dice que en las ciudades se pierde. Se oponen.",
+    "explicaciones": {
+      "suma": "La segunda parte no agrega otra ventaja del quechua: cuenta un problema que va en contra de la primera.",
+      "causa": "Ser la lengua originaria más hablada no causa que los niños dejen de aprenderla."
+    }
+  },
+  "enunciado": "Elige el conector que completa la oración.",
+  "alternativas": [
+    {
+      "t": "sin embargo",
+      "correcta": true,
+      "evidencia": [],
+      "explicacion": "Que sea la lengua originaria más hablada haría esperar que se siga aprendiendo, y no pasa: \"sin embargo\" marca esa oposición."
+    },
+    {
+      "t": "por eso",
+      "codigo": "RV24",
+      "explicacion": "\"Por eso\" presenta una consecuencia, pero que mucha gente lo hable no es la razón de que los niños dejen de aprenderlo."
+    },
+    {
+      "t": "además",
+      "codigo": "RV26",
+      "explicacion": "\"Además\" suma una idea en la misma dirección, y la segunda parte va en contra de lo que deja esperar la primera."
+    },
+    {
+      "t": "es decir",
+      "codigo": "RV35",
+      "explicacion": "\"Es decir\" anuncia que se repite lo mismo con otras palabras, y la segunda parte dice algo distinto."
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07",
+  "hechos": [
+    {
+      "afirmacion": "El quechua es la lengua originaria más hablada del Perú (13,9 % de la población de 5 años a más la aprendió en su niñez).",
+      "fuente": "INEI, Censos Nacionales 2017."
+    }
+  ],
+  "revision": {
+    "por": "subagente (resolución a ciegas de 5 ejercicios cada uno) y una segunda verificación a ciegas de los cambios",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: resuelto bien. Sin cambios de clave."
+  }
+}

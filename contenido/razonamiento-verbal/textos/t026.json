@@ -1,0 +1,251 @@
+{
+  "id": "t026",
+  "version": 1,
+  "titulo": "Contar hasta el trueno",
+  "tema": "Ciencia de todos los días · luz y sonido",
+  "grado": 3,
+  "dificultad": 1,
+  "tipo_texto": "expositivo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "En una tormenta, el rayo y el trueno se producen al mismo tiempo: el trueno es el ruido que hace el aire al calentarse y expandirse de golpe por la descarga."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "Sin embargo, casi siempre vemos el rayo primero y oímos el trueno después."
+      },
+      {
+        "id": "o3",
+        "rol": "apoyo",
+        "t": "La razón es que la luz y el sonido viajan a velocidades muy distintas."
+      }
+    ],
+    [
+      {
+        "id": "o4",
+        "rol": "detalle",
+        "t": "La luz llega casi al instante, mientras que el sonido recorre en el aire unos 340 metros por segundo, es decir, alrededor de un kilómetro cada tres segundos."
+      },
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "Por eso, si se cuentan los segundos entre el destello y el trueno y se dividen entre tres, se obtiene aproximadamente a cuántos kilómetros cayó el rayo."
+      },
+      {
+        "id": "o6",
+        "rol": "detalle",
+        "t": "Si pasan nueve segundos, la tormenta está a unos tres kilómetros."
+      },
+      {
+        "id": "o7",
+        "rol": "detalle",
+        "t": "Si se oye un trueno, el rayo ya puede alcanzarnos, y conviene buscar refugio dentro de una casa o de un vehículo cerrado de techo metálico; si se oye casi junto con el destello, la tormenta está encima."
+      }
+    ],
+    [
+      {
+        "id": "o8",
+        "rol": "principal",
+        "t": "Así, la diferencia entre lo que vemos y lo que oímos no es un capricho de la tormenta: es una medida de su distancia."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que mejor resume todo el texto.",
+        "aceptadas": [
+          "o8"
+        ],
+        "ninguna": "correcta",
+        "codigos": {
+          "o1": "RV4"
+        },
+        "explicacion": "La oración 8 junta todo: la demora mide la distancia. La oración 3 da solo la causa. También vale \"ninguna la dice completa\".",
+        "explicaciones": {
+          "o1": "La primera oración explica qué es el trueno: es el punto de partida.",
+          "o2": "Presenta lo que se observa; la explicación viene después.",
+          "o4": "Da las velocidades: es un detalle de la explicación.",
+          "o5": "Explica cómo hacer el cálculo: es una consecuencia.",
+          "o6": "Es un ejemplo del cálculo.",
+          "o7": "Es un consejo práctico, un detalle.",
+          "o3": "Da la causa, pero no lo que se hace con ella: medir la distancia."
+        }
+      },
+      "enunciado": "¿Cuál es la idea principal del texto?",
+      "alternativas": [
+        {
+          "t": "El trueno se oye después del rayo porque el sonido es más lento que la luz, y esa demora sirve para calcular la distancia.",
+          "correcta": true,
+          "evidencia": [
+            "o3",
+            "o8"
+          ],
+          "explicacion": "Junta la causa (oración 3) con la conclusión (oración 8): la demora mide la distancia."
+        },
+        {
+          "t": "Si pasan nueve segundos entre el destello del rayo y el ruido del trueno, la tormenta está a unos tres kilómetros de quien la observa.",
+          "codigo": "RV1",
+          "origen": "o6",
+          "explicacion": "Es un ejemplo del cálculo, un detalle."
+        },
+        {
+          "t": "Las tormentas son fenómenos peligrosos de la naturaleza.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto explica por qué el trueno llega después del rayo."
+        },
+        {
+          "t": "La luz y el sonido viajan a velocidades muy distintas.",
+          "codigo": "RV3",
+          "origen": "o3",
+          "explicacion": "Es la causa, pero deja fuera lo que el texto concluye: que la demora mide la distancia."
+        },
+        {
+          "t": "Los rayos caen más seguido en los lugares altos.",
+          "codigo": "RV8",
+          "explicacion": "Es una idea de fuera del texto: el texto no habla de dónde caen los rayos."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.inferencias",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
+        "sonda": "El trueno se produce un poco después que el rayo.",
+        "clase": "lo-contradice",
+        "codigos": {
+          "lo-dice": "RV8",
+          "se-deduce": "RV7",
+          "no-se-sabe": "RV9"
+        },
+        "explicacion": "La oración 1 dice que el rayo y el trueno se producen al mismo tiempo: lo que llega después es el sonido.",
+        "explicaciones": {
+          "lo-dice": "El texto dice que el trueno se OYE después, no que se produzca después (oración 1).",
+          "se-deduce": "Que se oiga después no permite concluir que se produzca después: el texto explica que solo tarda en llegar.",
+          "no-se-sabe": "Sí se puede saber: la oración 1 dice que se producen al mismo tiempo."
+        }
+      },
+      "enunciado": "Se infiere del texto que, si entre el destello y el trueno pasan seis segundos,",
+      "alternativas": [
+        {
+          "t": "la tormenta está a unos dos kilómetros.",
+          "correcta": true,
+          "evidencia": [
+            "o5"
+          ],
+          "explicacion": "Según la oración 5, se dividen los segundos entre tres: 6 entre 3 da unos 2 kilómetros."
+        },
+        {
+          "t": "el sonido recorre en el aire unos 340 metros por segundo.",
+          "codigo": "RV6",
+          "origen": "o4",
+          "explicacion": "Eso lo dice el texto tal cual (oración 4), pero no responde a cuántos kilómetros está la tormenta."
+        },
+        {
+          "t": "la tormenta está encima.",
+          "codigo": "RV5",
+          "origen": "o7",
+          "explicacion": "Eso vale cuando el trueno se oye casi junto con el destello (oración 7), no seis segundos después."
+        },
+        {
+          "t": "la tormenta está exactamente a 2040 metros.",
+          "codigo": "RV11",
+          "origen": "o5",
+          "explicacion": "La oración 5 dice \"aproximadamente\": \"exactamente\" dice más de lo que permite."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.sentido-contextual",
+      "enunciado": "En la oración 8, la palabra MEDIDA significa",
+      "alternativas": [
+        {
+          "t": "un dato que permite calcular algo.",
+          "correcta": true,
+          "evidencia": [
+            "o5",
+            "o8"
+          ],
+          "explicacion": "La demora entre el destello y el trueno permite calcular la distancia de la tormenta (oración 5)."
+        },
+        {
+          "t": "una acción para resolver un problema.",
+          "codigo": "RV18",
+          "explicacion": "Es un sentido común de \"medida\" (\"tomar medidas\"), pero aquí no se habla de una acción."
+        },
+        {
+          "t": "un aviso de peligro.",
+          "codigo": "RV19",
+          "explicacion": "Está cerca (la demora puede avisar que la tormenta está cerca), pero no es lo mismo: \"medida\" dice que sirve para calcular."
+        },
+        {
+          "t": "un capricho de la tormenta.",
+          "codigo": "RV5",
+          "origen": "o8",
+          "explicacion": "Repite palabras de la misma oración, pero la oración dice justo que no es un capricho."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "incompatibilidad",
+      "unidad": "razonamiento-verbal.compatibilidad",
+      "enunciado": "Es incompatible con el texto afirmar que",
+      "alternativas": [
+        {
+          "t": "el sonido viaja tan rápido como la luz.",
+          "correcta": true,
+          "evidencia": [
+            "o3",
+            "o4"
+          ],
+          "explicacion": "Choca con las oraciones 3 y 4: la luz llega casi al instante y el sonido recorre unos 340 metros por segundo."
+        },
+        {
+          "t": "no conviene quedarse afuera cuando el trueno se oye casi junto con el destello.",
+          "codigo": "RV10",
+          "origen": "o7",
+          "explicacion": "Tiene un \"no\", pero es compatible: la oración 7 dice que conviene buscar refugio en cuanto se oye el trueno."
+        },
+        {
+          "t": "los rayos pueden caer sobre los árboles altos.",
+          "codigo": "RV36",
+          "explicacion": "El texto no lo menciona, pero tampoco dice nada en contra: que algo no esté dicho no lo vuelve incompatible."
+        },
+        {
+          "t": "el rayo y el trueno nacen al mismo tiempo.",
+          "codigo": "RV8",
+          "origen": "o1",
+          "explicacion": "Puede sonar extraño, porque se oye después, pero es lo que dice la oración 1."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-06",
+  "hechos": [
+    {
+      "afirmacion": "El trueno es la onda sonora del aire calentado por el rayo y se produce a la vez; el sonido viaja a unos 340 m/s (un kilómetro cada unos tres segundos); la regla de contar segundos y dividir entre tres; se recomienda refugiarse en cuanto se oye el trueno, en un edificio o un vehículo de techo metálico.",
+      "fuente": "NOAA, National Weather Service, Lightning safety; cualquier texto de física general sobre la velocidad del sonido. Regla «When thunder roars, go indoors» de la NOAA y la NWS."
+    }
+  ],
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "Cambios aplicados tras la revisión a ciegas; la segunda verificación pidió cuatro retoques de redacción (t025 p5, t026 p2, t027 p2 y la oración 8 de t028), ya aplicados."
+  }
+}

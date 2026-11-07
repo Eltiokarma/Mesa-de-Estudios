@@ -1,0 +1,85 @@
+{
+  "id": "e013",
+  "version": 1,
+  "tipo": "eliminacion",
+  "unidad": "razonamiento-verbal.eliminacion-de-oraciones",
+  "titulo": "Eliminación de oraciones: La llama",
+  "grado": 3,
+  "dificultad": 1,
+  "cuerpo": {
+    "oraciones": [
+      {
+        "n": "I",
+        "t": "La llama es un camélido que los pueblos andinos domesticaron hace miles de años."
+      },
+      {
+        "n": "II",
+        "t": "Puede cargar entre 25 y 30 kilos durante horas por caminos de altura."
+      },
+      {
+        "n": "III",
+        "t": "Su lana, más gruesa que la de la alpaca, sirve para hacer sogas y costales."
+      },
+      {
+        "n": "IV",
+        "t": "La fibra de la alpaca, en cambio, se exporta para hacer prendas finas."
+      }
+    ]
+  },
+  "previo": {
+    "tipo": "marcar-oracion",
+    "pide": "Antes de ver las alternativas: toca la oración que sobra.",
+    "aceptadas": [
+      "IV"
+    ],
+    "codigos": {
+      "I": "RV38",
+      "II": "RV30",
+      "III": "RV5"
+    },
+    "explicacion": "El texto trata de la llama; la oración IV habla de la fibra de la alpaca. Parece seguir el hilo de la III, que compara las dos fibras, pero se va a otro animal.",
+    "explicaciones": {
+      "I": "La oración I presenta el tema: sin ella no se sabe de qué animal hablan las demás.",
+      "II": "Cuenta que la llama sirve para cargar: es un dato nuevo, pero sobre el tema.",
+      "III": "No repite la palabra \"llama\", pero \"su lana\" es la lana de la llama: habla del tema."
+    }
+  },
+  "enunciado": "¿Qué oración se debe eliminar?",
+  "alternativas": [
+    {
+      "t": "IV",
+      "correcta": true,
+      "evidencia": [],
+      "explicacion": "Habla de la alpaca y no de la llama: es impertinente, aunque parezca seguir el hilo de la III."
+    },
+    {
+      "t": "I",
+      "codigo": "RV38",
+      "explicacion": "Presenta el tema; las demás oraciones dependen de ella."
+    },
+    {
+      "t": "II",
+      "codigo": "RV30",
+      "explicacion": "Es un dato nuevo, pero es sobre la llama: cuenta para qué sirve."
+    },
+    {
+      "t": "III",
+      "codigo": "RV5",
+      "explicacion": "No dice \"llama\", pero habla de su lana: es pertinente."
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07",
+  "hechos": [
+    {
+      "afirmacion": "La llama puede cargar de 25 a 30 kg en jornadas largas; su fibra es más gruesa que la de la alpaca.",
+      "fuente": "FAO, Situación actual de los camélidos sudamericanos en Perú (2005)."
+    }
+  ],
+  "revision": {
+    "por": "subagente (resolución a ciegas de 5 ejercicios cada uno) y una segunda verificación a ciegas de los cambios",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: resuelto bien. La oración IV era demasiado obvia; ahora parece seguir el hilo de la III."
+  }
+}

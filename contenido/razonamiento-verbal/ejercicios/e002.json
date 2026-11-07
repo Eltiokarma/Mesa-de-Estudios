@@ -1,0 +1,62 @@
+{
+  "id": "e002",
+  "version": 1,
+  "tipo": "analogia",
+  "unidad": "razonamiento-verbal.analogias",
+  "grado": 3,
+  "dificultad": 2,
+  "cuerpo": {
+    "base": [
+      "CUY",
+      "ROEDOR"
+    ]
+  },
+  "previo": {
+    "tipo": "relacion-analogia",
+    "pide": "Antes de ver las alternativas: ¿qué relación hay entre las dos palabras?",
+    "aceptada": "a-tipo-de-b",
+    "explicacion": "Los roedores son mamíferos con dientes delanteros que no paran de crecer; el cuy es uno de ellos.",
+    "explicaciones": {
+      "b-tipo-de-a": "Es al revés: el cuy es un tipo de roedor, no el roedor un tipo de cuy.",
+      "a-parte-de-b": "El cuy no es una parte de un roedor: es un roedor entero, uno de los muchos que hay."
+    }
+  },
+  "enunciado": "CUY : ROEDOR ::",
+  "alternativas": [
+    {
+      "t": "trucha : pez",
+      "correcta": true,
+      "evidencia": [],
+      "explicacion": "Un animal y la clase a la que pertenece, en el mismo orden: el cuy es un roedor y la trucha es un pez."
+    },
+    {
+      "t": "ave : cóndor",
+      "codigo": "RV16",
+      "explicacion": "Es la relación de clase, pero al revés: primero va la clase y después el animal."
+    },
+    {
+      "t": "fogón : cocina",
+      "codigo": "RV15",
+      "explicacion": "Recuerda al cuy que se cría junto al fogón, pero el fogón no es una clase de cocina: es una parte de ella."
+    },
+    {
+      "t": "cola : zorro",
+      "codigo": "RV17",
+      "explicacion": "La cola es una parte del zorro, no una clase de zorro."
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07",
+  "hechos": [
+    {
+      "afirmacion": "El cuy (Cavia porcellus) es un roedor de la familia de los cávidos; la trucha es un pez.",
+      "fuente": "Clasificación zoológica; FAO, Producción de cuyes (Chauca, 1997)."
+    }
+  ],
+  "revision": {
+    "por": "subagente (resolución a ciegas de 5 ejercicios cada uno) y una segunda verificación a ciegas de los cambios",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: resuelto bien. Cambió de pareja base: con SEQUÍA : HAMBRUNA, el paso previo tenía «produce» y «causa» igual de válidas."
+  }
+}

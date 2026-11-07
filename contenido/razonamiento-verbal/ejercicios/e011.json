@@ -1,0 +1,86 @@
+{
+  "id": "e011",
+  "version": 1,
+  "tipo": "plan-de-redaccion",
+  "unidad": "razonamiento-verbal.plan-de-redaccion",
+  "titulo": "Plan de redacción: El lago Titicaca",
+  "grado": 4,
+  "dificultad": 2,
+  "cuerpo": {
+    "oraciones": [
+      {
+        "n": "I",
+        "t": "Esa contaminación daña a los peces y a la totora, y con ellos a las familias que viven del lago.",
+        "retoma": "V"
+      },
+      {
+        "n": "II",
+        "t": "El lago Titicaca está entre el Perú y Bolivia, a más de 3800 metros de altura."
+      },
+      {
+        "n": "III",
+        "t": "Por ello, cuidar el lago es también cuidar a quienes viven de él."
+      },
+      {
+        "n": "IV",
+        "t": "En sus orillas viven pueblos que dependen de él para pescar y cultivar.",
+        "retoma": "II"
+      },
+      {
+        "n": "V",
+        "t": "Sin embargo, en las últimas décadas parte de sus aguas se ha contaminado con desagües sin tratar.",
+        "retoma": "IV"
+      }
+    ]
+  },
+  "previo": {
+    "tipo": "ordenar",
+    "pide": "Antes de ver las alternativas: arrastra las tarjetas al orden que tendría el texto.",
+    "aceptada": [
+      "II",
+      "IV",
+      "V",
+      "I",
+      "III"
+    ],
+    "explicacion": "Primero se presenta el lago (II); \"sus orillas\" lo retoma (IV); \"sin embargo\" se opone a esa vida que depende del lago (V); \"esa contaminación\" retoma la V (I), y \"por ello\" cierra (III)."
+  },
+  "enunciado": "Elige el orden correcto de las oraciones.",
+  "alternativas": [
+    {
+      "t": "II – IV – V – I – III",
+      "correcta": true,
+      "evidencia": [],
+      "explicacion": "Presenta el lago, quiénes viven de él, el problema, su daño y la conclusión."
+    },
+    {
+      "t": "III – II – IV – V – I",
+      "codigo": "RV37",
+      "explicacion": "Empieza por la conclusión: \"por ello\" se refiere a razones que todavía no se han dado."
+    },
+    {
+      "t": "II – V – IV – I – III",
+      "codigo": "RV28",
+      "explicacion": "\"Sin embargo\" (V) queda sin nada a qué oponerse: va antes de contar que los pueblos dependen del lago."
+    },
+    {
+      "t": "II – IV – V – III – I",
+      "codigo": "RV29",
+      "explicacion": "La conclusión llega antes de mostrar el daño que la justifica (I)."
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07",
+  "hechos": [
+    {
+      "afirmacion": "El lago Titicaca está a unos 3810 m de altura, entre el Perú y Bolivia; la bahía interior de Puno sufre contaminación por aguas residuales sin tratar.",
+      "fuente": "Autoridad Binacional del Lago Titicaca; Defensoría del Pueblo, Informe sobre la contaminación del lago Titicaca (2014)."
+    }
+  ],
+  "revision": {
+    "por": "subagente (resolución a ciegas de 5 ejercicios cada uno) y una segunda verificación a ciegas de los cambios",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: resuelto bien. Sin cambios de clave."
+  }
+}

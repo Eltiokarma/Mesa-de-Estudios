@@ -101,8 +101,8 @@ const ICONOS_CURSO = {
   'razonamiento-verbal': ['#c5ece9', `<path d="M16 9c-4-3-8-3-12-2v17c4-1 8-1 12 2 4-3 8-3 12-2V7c-4-1-8-1-12 2z" fill="#fff"/><path d="M16 9v17M8 12h4M8 16h4M20 12h4" fill="none"/>`],
 };
 function iconoCurso(id) {
-  const [fondo, dibujo] = ICONOS_CURSO[id] || [LAV, `<circle cx="16" cy="16" r="9" fill="#fff"/>`];
-  return `<span class="ico" aria-hidden="true" style="background:${fondo}"><svg viewBox="0 0 32 32" width="26" height="26"><g stroke="${T}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${dibujo}</g></svg></span>`;
+  const [, dibujo] = ICONOS_CURSO[id] || [LAV, `<circle cx="16" cy="16" r="9" fill="#fff"/>`];
+  return `<span class="ico" aria-hidden="true" style="${tinte(id)}"><svg viewBox="0 0 32 32" width="26" height="26"><g stroke="${T}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${dibujo}</g></svg></span>`;
 }
 
 // Íconos chicos de las estadísticas de "Hoy".
@@ -112,5 +112,52 @@ const mini = {
   meta: `<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="#fff" stroke="${T}" stroke-width="1.8"/><circle cx="12" cy="12" r="4.5" fill="${ROSA}" stroke="${T}" stroke-width="1.8"/></svg>`,
 };
 
-window.Ilus = { gato, gatoDormido, taza, escritorio, iconoCurso, mini, COLORES: { CREMA, ROSA, LAV, MENTA, MIEL, CIELO } };
+// Color de cada curso (pastel de fondo y "base" de la pegatina). Solo cáscara: nunca dentro de una escena.
+const TINTE = {
+  fisica: ['#e9e1ff', '#7f5ae0'], quimica: ['#d6f3e7', '#2f9e78'], algebra: ['#dbecff', '#3f7fd1'],
+  aritmetica: ['#ffebc8', '#d98f1e'], geometria: ['#ffdfe9', '#d9567f'], trigonometria: ['#ffe1d3', '#e0703f'],
+  'razonamiento-matematico': ['#fff0c2', '#c9961a'], 'razonamiento-verbal': ['#d3f1ed', '#26948b'],
+};
+const tinte = id => { const [f, b] = TINTE[id] || TINTE.fisica; return `--cf:${f};--cb:${b}`; };
+
+// Viñetas grandes por curso (160 × 120), para las tarjetas de cursos, el reto del día y la cabecera del curso.
+const fondoViñeta = () => `<g class="halo-v" opacity=".58"><circle cx="96" cy="58" r="50" fill="#fff"/><circle cx="34" cy="26" r="9" fill="#fff"/><circle cx="146" cy="96" r="6" fill="#fff"/></g>`;
+const VIÑETAS = {
+  fisica: `<path d="M18 100h126" ${trazo}/><path d="M30 100 118 46v54z" fill="${LAV}" ${trazo}/>
+    <g transform="rotate(-31.5 74 66)"><rect x="56" y="50" width="36" height="20" rx="6" fill="#fff" ${trazo}/><circle cx="64" cy="74" r="5" fill="${T}"/><circle cx="84" cy="74" r="5" fill="${T}"/>
+    <path d="M96 58h22m-6-6 6 6-6 6" fill="none" stroke="${ROSA_2}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></g>
+    <circle cx="132" cy="28" r="12" fill="${MIEL}" ${trazo}/><path d="M132 8v-4M150 28h4M145 15l3-3M119 15l-3-3" ${trazo}/>`,
+  quimica: `<path d="M64 24h28M70 24v24l-26 42a8 8 0 0 0 7 12h54a8 8 0 0 0 7-12L86 48V24" fill="#fff" ${trazo}/>
+    <path d="M52 78h52l9 14a5 5 0 0 1-4 7H47a5 5 0 0 1-4-7z" fill="${MENTA}"/><path d="M70 24v24l-26 42a8 8 0 0 0 7 12h54a8 8 0 0 0 7-12L86 48V24" fill="none" ${trazo}/>
+    <circle cx="68" cy="88" r="4" fill="#fff" ${trazo}/><circle cx="84" cy="84" r="3" fill="#fff" ${trazo}/><circle cx="78" cy="64" r="3" fill="#fff" ${trazo}/>
+    <path d="M122 36l14-8M122 36l2 16" ${trazo}/><circle cx="122" cy="36" r="8" fill="${ROSA}" ${trazo}/><circle cx="138" cy="27" r="6" fill="#fff" ${trazo}/><circle cx="125" cy="55" r="6" fill="#fff" ${trazo}/>`,
+  algebra: `<path d="M80 30v66M58 100h44" ${trazo}/><path d="M36 42h88" ${trazo}/><circle cx="80" cy="28" r="5" fill="${MIEL}" ${trazo}/>
+    <path d="M36 42 24 70h24zM124 42l-12 28h24z" fill="none" ${trazo}/><path d="M20 70h32a16 8 0 0 1-32 0zM108 70h32a16 8 0 0 1-32 0z" fill="#fff" ${trazo}/>
+    <rect x="25" y="50" width="22" height="20" rx="4" fill="${CIELO}" ${trazo}/><text x="36" y="65" text-anchor="middle" font-family="ui-rounded,system-ui,sans-serif" font-weight="800" font-size="15" fill="${T}">x</text>
+    <circle cx="117" cy="63" r="7" fill="${ROSA}" ${trazo}/><circle cx="131" cy="63" r="7" fill="${ROSA}" ${trazo}/>`,
+  aritmetica: `<rect x="26" y="28" width="108" height="74" rx="10" fill="#fff" ${trazo}/><path d="M26 50h108M26 72h108M26 94h108" fill="none" stroke="${T}" stroke-width="2"/>
+    ${[[40, 50, MIEL], [52, 50, MIEL], [64, 50, MIEL], [104, 50, '#fff'], [40, 72, ROSA], [52, 72, ROSA], [92, 72, '#fff'], [104, 72, '#fff'], [116, 72, '#fff'], [40, 94, MENTA], [80, 94, '#fff'], [92, 94, '#fff']]
+      .map(([x, y, f]) => `<ellipse cx="${x}" cy="${y}" rx="6" ry="7" fill="${f}" ${trazo}/>`).join('')}
+    <circle cx="136" cy="24" r="14" fill="${MIEL}" ${trazo}/><text x="136" y="30" text-anchor="middle" font-family="ui-rounded,system-ui,sans-serif" font-weight="800" font-size="15" fill="${T}">S/</text>`,
+  geometria: `<path d="M30 98 74 26l44 72z" fill="${ROSA}" ${trazo}/><path d="M74 26v72" fill="none" stroke="${T}" stroke-width="2.5" stroke-dasharray="4 5"/>
+    <path d="M74 88h10v10" fill="none" stroke="${T}" stroke-width="2.5"/><circle cx="124" cy="44" r="20" fill="#fff" ${trazo}/><circle cx="124" cy="44" r="3" fill="${T}"/><path d="M124 44l14 14" ${trazo}/>
+    <rect x="106" y="80" width="40" height="14" rx="3" fill="${MIEL}" ${trazo}/><path d="M114 80v6M122 80v4M130 80v6M138 80v4" stroke="${T}" stroke-width="2"/>`,
+  trigonometria: `<path d="M18 62h124M58 20v84" stroke="${T}" stroke-width="2" opacity=".5"/><circle cx="58" cy="62" r="32" fill="#fff" ${trazo}/>
+    <path d="M58 62l26-19" ${trazo}/><path d="M84 43v19" stroke="${ROSA_2}" stroke-width="3.5" stroke-linecap="round"/><path d="M58 62h26" stroke="${LAV_2}" stroke-width="3.5" stroke-linecap="round"/>
+    <path d="M70 62a12 12 0 0 0-2-7" fill="none" ${trazo}/><circle cx="84" cy="43" r="5" fill="${MIEL}" ${trazo}/>
+    <path d="M96 62c6-30 14-30 20 0s14 30 20 0" fill="none" stroke="${ROSA_2}" stroke-width="3.5" stroke-linecap="round"/>`,
+  'razonamiento-matematico': `<path d="M28 40h22v8a7 7 0 1 1 0 12v8H28zM56 40h22v28h-8a7 7 0 1 0-12 0h-2z" fill="${MIEL}" ${trazo}/>
+    <path d="M28 74h22v24H28zM56 74h22v24H56z" fill="#fff" ${trazo}/>
+    <g transform="rotate(12 120 62)"><rect x="96" y="38" width="48" height="48" rx="10" fill="#fff" ${trazo}/>
+    ${[[108, 50], [132, 50], [120, 62], [108, 74], [132, 74]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="4" fill="${T}"/>`).join('')}</g>`,
+  'razonamiento-verbal': `<path d="M80 46c-14-8-30-8-46-4v52c16-4 32-4 46 4 14-8 30-8 46-4V42c-16-4-32-4-46 4z" fill="#fff" ${trazo}/><path d="M80 46v52" ${trazo}/>
+    <path d="M44 58h24M44 68h24M44 78h18M92 58h24M92 68h24M92 78h14" stroke="${T}" stroke-width="2.5" stroke-linecap="round" opacity=".7"/>
+    <path d="M108 14h36a8 8 0 0 1 8 8v14a8 8 0 0 1-8 8h-22l-10 8v-8h-4a8 8 0 0 1-8-8V22a8 8 0 0 1 8-8z" fill="${MENTA}" ${trazo}/>
+    <circle cx="116" cy="29" r="2.5" fill="${T}"/><circle cx="126" cy="29" r="2.5" fill="${T}"/><circle cx="136" cy="29" r="2.5" fill="${T}"/>`,
+};
+function viñeta(id, extra = '') {
+  return `<svg viewBox="0 0 160 120" aria-hidden="true" ${extra}>${fondoViñeta()}${VIÑETAS[id] || VIÑETAS.fisica}</svg>`;
+}
+
+window.Ilus = { gato, gatoDormido, taza, escritorio, iconoCurso, mini, viñeta, tinte, TINTE, COLORES: { CREMA, ROSA, LAV, MENTA, MIEL, CIELO } };
 })();
