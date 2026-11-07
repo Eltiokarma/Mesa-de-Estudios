@@ -320,7 +320,7 @@ const colAt = (c, el) => /^CH/.test(el) ? c.C : (c[el] || c.C);
 // Las moléculas chicas (u < 10 px: líquido, vapor, burbuja, tubo) se pintan una vez por giro en un lienzo aparte y se
 // pegan con drawImage (la2): son decenas por cuadro y cada una pedía unos diez trazos. Hay 256 giros y la figura cae en
 // el píxel real más cercano: la diferencia con el trazo directo no pasa de medio píxel real. Cada dibujo prepara a lo
-// más 8 figuras nuevas (las demás van con trazo directo mientras tanto), para que un cambio de tamaño no trabe el toque.
+// más 3 figuras nuevas (las demás van con trazo directo mientras tanto), para que un cambio de tamaño no trabe el toque.
 // Las grandes (con letras o u ≥ 10) se siguen trazando directo.
 const FIGURAS = new Map(), GIROS = 256;
 let NUEVAS = 0;
@@ -328,7 +328,7 @@ function figura(c, s, u, k, d){
   const clave = `${s}|${u}|${k}|${d}|${c.ink}|${c.borde}|${c.H}|${c.O}|${c.N}|${c.C}|${c.F}|${c.S}`;
   let f = FIGURAS.get(clave);
   if (!f){
-    if (NUEVAS >= 8) return null;
+    if (NUEVAS >= 3) return null;
     NUEVAS++;
     if (FIGURAS.size > 3000) FIGURAS.clear();
     const S = ML.SUSTANCIAS[s], ext = Math.max(...S.atomos.map(a => Math.hypot(a.x, a.y) + (RAD[a.el] || 0.5)))*u + 2, n = Math.ceil(2*ext*d) + 2;
