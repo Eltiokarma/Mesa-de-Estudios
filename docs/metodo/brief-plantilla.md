@@ -8,7 +8,7 @@ Regla 4: un color por variable, el mismo en enunciado, dibujo y ecuación; ningu
 
 LECCIONES de las revisiones anteriores (las revisiones las buscan; cúmplelas desde el inicio):
 - Regla de Gerson (6 nov 2026): en «¿Qué pasa si…?» las pastillas de experimentos solo dejan ir a un experimento si todos los anteriores tienen respuesta (los respondidos se revisitan; los bloqueados disabled, aria-disabled y aria-label «Experimento N, bloqueado»); también otras vías de salto. La pestaña entre modos no se bloquea.
-- En el celular, mientras haya una predicción pendiente, el dibujo queda fijo arriba (.bench sticky, lienzo ~240 px), como en plantillas/cinta-radio/.
+- En el celular, mientras haya una predicción pendiente, el dibujo queda fijo arriba (.bench sticky, lienzo ~240 px). Usa nucleo/celular.js (desde el 7 nov 2026): Celular.compactar(modo, on), Celular.alto(h, compacto, { tope }), Celular.alResponder(lienzo, animar, vigente) y Celular.arrastre(canvas, { cerca, activo, empezar, mover, soltar }); ejemplo en plantillas/mruv/.
 - Todas las opciones de una predicción con la misma forma: la correcta no puede ser la única con (o sin) justificación.
 - El dibujo, las lecturas en vivo, rótulos, marcas, tablas y el aria-live NO regalan la respuesta antes de responder.
 - Celular (<900 px): al responder, lienzo.scrollIntoView({block:'start'}) y animar ~380 ms después (no animar si el alumno cambió de paso o escena); canvas con touch-action: pan-y pinch-zoom; preventDefault y captura del puntero solo si el toque empieza cerca de lo arrastrable (radio ~40 px).

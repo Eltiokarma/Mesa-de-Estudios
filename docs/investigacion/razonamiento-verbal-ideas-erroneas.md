@@ -76,6 +76,7 @@ Los ejemplos son propios, escritos para este informe.
 | RV9 | **No se detecta la incompatibilidad implícita**: solo se ve la contradicción si está dicha con las mismas palabras. | El texto dice que el lago se calentó; la alternativa dice que "sus aguas se mantuvieron frías", sin la palabra "calentó". | Las contradicciones explícitas se detectan más que las implícitas; aun a los 12 años, una proporción "considerable" de textos con contradicciones obvias se juzga comprensible. Sin cifra visible. | Parcial (cualitativo, niños) | Markman (1979) |
 | RV10 | **Se pasa por alto una negación** o un cuantificador ("no", "solo", "ningún"), y se marca como compatible lo incompatible. | Texto: "El quechua no se habla solo en el campo: también se oye en los mercados de Lima." Pregunta: "Es compatible con el texto…". Distractor: "El quechua se habla solo en el campo" (el alumno no ve el "no" y lo marca como compatible). Correcta: "El quechua también se habla en la ciudad". | Sin estudio encontrado. | Hipótesis | — |
 | RV11 | **Términos absolutos**: se acepta una alternativa con "siempre", "nunca", "todos" o "únicamente" cuando el texto dice "a menudo" o "algunos". | "El texto afirma que todos los glaciares peruanos desaparecerán." | Solo en guías de técnica de examen. | Hipótesis | — |
+| RV36 | **En incompatibilidad, se marca como incompatible lo que el texto solo no menciona**: se confunde "el texto no lo dice" con "el texto lo contradice". | Texto sobre la castaña; pregunta "Es incompatible con el texto…"; el alumno marca "las castañas se venden también en Lima", que el texto no menciona pero no contradice. | Sin estudio encontrado. | Hipótesis (ligada a RV9) | — |
 | RV12 | **Extrapolación literal**: ante "si…, entonces…", se responde con lo que el texto ya dice, o se cambia la condición sin cambiar la consecuencia. | "Si el puente de Q'eswachaka no se renovara cada año, …"; distractor: "se seguiría tejiendo con ichu" (repite el texto, no extrapola). | Sin estudio encontrado sobre extrapolación. | Hipótesis (ligada a RV5) | — |
 | RV34 | **Se queda en lo literal**: no acepta lo que se deduce del texto porque no está dicho con esas palabras ("el texto no lo dice"). | El texto dice que la paja del puente se pudre y que el saber solo sobrevive si se practica; ante "si no se renovara, el saber podría perderse", el alumno responde "no se puede saber". | Indirecto: en la UNA Puno, el nivel literal es el más alto y el inferencial queda "en medio". Sin cifra de este error. | Hipótesis (con contexto indirecto) | Valero-Ancco y otros (2024) |
 
@@ -120,6 +121,7 @@ Los ejemplos son propios, escritos para este informe.
 | RV24 | **Lo contracausal se lee como causal**: se pone "por eso" donde va "sin embargo", o se interpreta una concesiva como causa. | "Llovió toda la semana; ___, el río no creció": distractor "por lo tanto"; correcta "sin embargo". | Con conector, la relación contracausal da más errores que la causal en adultos de distinta escolaridad (tarea de continuar oraciones); la causalidad se procesa "por defecto". Orden de dificultad al completar oraciones (niños de 3.º, 6.º y 9.º grado): *because* (porque) < *and* (y) < *but* (pero) < *even though* (aunque), igual en todos los grados. Porcentajes no visibles. | Parcial (dos estudios coinciden en el orden; sin cifra visible) | Zunino (2016); Zunino, Abusamra y Raiter (2016); McClure y Steffensen (1980) |
 | RV25 | **Los concesivos del registro escrito** ("si bien", "no obstante", "aun cuando") se confunden con aditivos o con causales. | "___ el Inca Garcilaso escribió en España, su obra habla del Cusco": distractor "Dado que"; correcta "Si bien". | Los concesivos escritos siguen siendo difíciles en la adolescencia; a los 10 años los adversativos y concesivos no llegan al nivel adulto. El vocabulario y la exposición a lo escrito pesan más que la edad. | Parcial (por verificar) | Cain y Nash (2011); Zufferey y Gygax (2020); Tskhovrebova, Zufferey y Gygax (2022) |
 | RV26 | **Se pone un aditivo donde hay contraste** ("además" por "en cambio"). | "Arequipa tiene clima seco; ___, Iquitos es húmedo." Distractor: "además". | Sin cifra propia; ligado al orden de dificultad de RV24 (*and* es más fácil que *but*). | Hipótesis (ligada a RV24) | — |
+| RV35 | **Se elige un conector de otra clase por descarte o porque "suena bien"** (reformulación, ejemplo o tiempo) donde la relación es otra. | "Al principio, el efecto parece bueno. ___ ese aumento es engañoso": distractor "Es decir,"; correcta "Sin embargo,". | Sin estudio encontrado. | Hipótesis (ligada a RV24) | — |
 | RV27 | **El pronombre se asigna al último sustantivo mencionado.** | "El dirigente esperó al alcalde en la plaza; cuando este llegó, él le entregó el pliego de reclamos." ¿Quién entregó el pliego? Correcta: el dirigente (quien presenta reclamos). Distractor: el alcalde, el último mencionado. | En 3.º grado los niños superan el 90 % de aciertos, sea cual sea su nivel socioeconómico; el pronombre sin pista de género es el más difícil (Argentina). Que, sin pistas, el referente se asigne al último personaje mencionado aparece en un resumen de búsqueda, no confirmado en el de Borzone. Los lectores débiles fallan más, sobre todo si hace falta una inferencia, y les cuesta controlar su comprensión de las anáforas. | Parcial (por verificar; niños) | Borzone (2005); Yuill y Oakhill (1986); Ehrlich, Rémond y Tardieu (1999) |
 
 ### Plan de redacción y eliminación de oraciones
@@ -144,9 +146,11 @@ Errores que suponemos en los ítems de academia, sin estudio que los mida. Cada 
 | Inferencia que generaliza de más (RV7) | RV2 (demasiado general) |
 | Negación pasada por alto (RV10) | RV9 (incompatibilidad implícita) |
 | Términos absolutos (RV11) | Sin dato |
+| No dicho tomado por contradicho (RV36) | RV9 (incompatibilidad implícita) |
 | Extrapolación que repite el texto (RV12) | RV5 (eco literal) |
 | Antónimo de otro rasgo (RV21) | RV19 (mismo campo, no sinónimo) |
 | Aditivo por contraste (RV26) | RV24 (contracausal leído como causal) |
+| Conector de otra clase por descarte (RV35) | RV24 |
 | Plan por cronología superficial (RV29) | Sin dato; el único estudio apunta en contra |
 | Eliminar lo pertinente (RV30) | RV5 (eco literal) |
 | Redundancia por paráfrasis (RV32) | Sin dato |
@@ -169,12 +173,12 @@ El diseño detallado va en la pieza 2 de la rutina (`docs/formato-lectura.md`). 
 | --- | --- |
 | Idea principal o tema central | RV1 (detalle), RV2 (demasiado general), RV3 (omite una parte) |
 | Inferencia | RV5 (eco literal), RV6 (literal), RV7 (no autorizada), RV8 (saber del mundo) |
-| Compatibilidad e incompatibilidad | RV5, RV8, RV9, RV10 o RV11 |
+| Compatibilidad e incompatibilidad | RV5, RV8, RV9, RV10 o RV11; en incompatibilidad, RV36 |
 | Extrapolación | RV12, RV7, RV8 |
 | Intención del autor | RV13 (forma por propósito), RV14 (sin postura), RV33 (postura que no toma), RV2 |
 | Analogías | RV15 (asociación con C), RV16 (invertida), RV17 (mismo campo) |
 | Sinónimo o antónimo en contexto | RV18 (sentido frecuente), RV19 (mismo campo), RV20 (parónimo), RV21 |
-| Conectores y oraciones incompletas | RV24 (causal por contracausal), RV25 (concesivo), RV26 (aditivo), RV23 |
+| Conectores y oraciones incompletas | RV24 (causal por contracausal), RV25 (concesivo), RV26 (aditivo), RV35 (otra clase), RV23 |
 | Referente | RV27 (último sustantivo) |
 | Plan de redacción | RV28 (vieja-nueva o contraste), RV29 (cronología) |
 | Eliminación de oraciones | RV30 (elimina lo pertinente), RV31 (deja lo incompatible), RV32 (redundancia) |

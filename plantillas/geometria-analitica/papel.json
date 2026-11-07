@@ -1,0 +1,158 @@
+{
+  "titulo": "El plano con imán: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Antes de usar una fórmula, ubica los puntos en un plano a mano alzada: así ves si la recta sube o baja y más o menos cuánto debe salir. Resta siempre en el mismo orden (el segundo punto menos el primero, arriba y abajo). Las distancias y las áreas nunca son negativas.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Halla el perímetro del triángulo de vértices A(−1; −1), B(5; −1) y C(5; 7).",
+      "respuesta": "24 u.",
+      "pasos": [
+        "AB es horizontal: d(A, B) = 5 − (−1) = 6.",
+        "BC es vertical: d(B, C) = 7 − (−1) = 8.",
+        "AC es la hipotenusa del triángulo rectángulo de catetos 6 y 8: d(A, C) = √(6² + 8²) = √100 = 10.",
+        "Perímetro: 6 + 8 + 10 = 24 u. Si te sale 6 + 8 + 14 = 28, sumaste los catetos en vez de usar Pitágoras."
+      ],
+      "verificar": [
+        { "fn": "distancia", "args": [{ "A": [-1, -1], "B": [5, -1] }], "espera": { "valor": 6 } },
+        { "fn": "distancia", "args": [{ "A": [5, -1], "B": [5, 7] }], "espera": { "valor": 8 } },
+        { "fn": "distancia", "args": [{ "A": [-1, -1], "B": [5, 7] }], "espera": { "valor": 10, "errores.sumaCatetos.valor": 14 } }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "M(2; −1) es el punto medio del segmento AB y A(−3; 4). Halla las coordenadas de B.",
+      "respuesta": "B(7; −6).",
+      "pasos": [
+        "El punto medio es el promedio: (−3 + x)/2 = 2 y (4 + y)/2 = −1.",
+        "Entonces x = 4 + 3 = 7 e y = −2 − 4 = −6.",
+        "Atajo: B = 2M − A = (4 − (−3); −2 − 4) = (7; −6).",
+        "Comprueba: el promedio de (−3; 4) y (7; −6) es (2; −1)."
+      ],
+      "verificar": [
+        { "fn": "puntoMedio", "args": [{ "A": [-3, 4], "B": [7, -6] }], "espera": { "texto": "(2; −1)" } }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "El punto P está en el segmento AB, con A(−4; 1) y B(6; 6), y cumple AP : PB = 2 : 3. Halla P.",
+      "respuesta": "P(0; 3).",
+      "pasos": [
+        "AP : PB = 2 : 3 parte el segmento en 2 + 3 = 5 partes iguales; P está a 2 de esas 5 partes desde A.",
+        "De A a B: Δx = 10 y Δy = 5. Las 2/5 partes son 4 y 2.",
+        "P = (−4 + 4; 1 + 2) = (0; 3).",
+        "Con la fórmula: P = (3A + 2B)/5 = ((−12 + 12)/5; (3 + 12)/5) = (0; 3). Ojo: el 3 multiplica a A y el 2 a B, al revés de como aparecen en la razón."
+      ],
+      "verificar": [
+        { "fn": "divide", "args": [{ "A": [-4, 1], "B": [6, 6], "m": 2, "n": 3 }], "espera": { "texto": "(0; 3)", "errores.alReves.texto": "(2; 4)" } }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "básico",
+      "enunciado": "Una recta pasa por A(−1; −2) y B(2; 1). Halla su pendiente y su ángulo de inclinación.",
+      "respuesta": "m = 1; el ángulo de inclinación es 45°.",
+      "pasos": [
+        "m = (1 − (−2))/(2 − (−1)) = 3/3 = 1.",
+        "La pendiente es la tangente del ángulo de inclinación: tan θ = 1, así que θ = 45°.",
+        "Como m es positiva, la recta sube de izquierda a derecha."
+      ],
+      "verificar": [
+        { "fn": "pendiente", "args": [{ "A": [-1, -2], "B": [2, 1] }], "espera": { "valor": 1, "angulo": 45, "tipo": "creciente" } }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Halla la ecuación general de la recta que pasa por A(−2; 3) y B(4; −1), y los puntos donde corta a los ejes.",
+      "respuesta": "2x + 3y − 5 = 0. Corta al eje x en (5/2; 0) y al eje y en (0; 5/3).",
+      "pasos": [
+        "m = (−1 − 3)/(4 − (−2)) = −4/6 = −2/3.",
+        "Punto-pendiente con A: y − 3 = −(2/3)(x + 2).",
+        "Por 3: 3y − 9 = −2x − 4, o sea 2x + 3y − 5 = 0.",
+        "Con y = 0: x = 5/2. Con x = 0: y = 5/3. El 5/3 es b, el corte con el eje y; el 5/2 es el corte con el eje x."
+      ],
+      "verificar": [
+        { "fn": "recta", "args": [{ "A": [-2, 3], "B": [4, -1] }], "espera": { "general.texto": "2x + 3y − 5 = 0", "interceptoX": 2.5, "bTexto": "5/3" } }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Halla la ecuación de la recta que pasa por P(3; −1) y es perpendicular a L: 2x − 3y + 6 = 0.",
+      "respuesta": "3x + 2y − 7 = 0.",
+      "pasos": [
+        "Pendiente de L: m₁ = −A/B = −2/(−3) = 2/3.",
+        "Perpendicular: m₁ · m₂ = −1, así que m₂ = −3/2 (se invierte y se cambia el signo).",
+        "y + 1 = −(3/2)(x − 3). Por 2: 2y + 2 = −3x + 9, o sea 3x + 2y − 7 = 0.",
+        "Comprueba con P: 9 − 2 − 7 = 0."
+      ],
+      "verificar": [
+        { "fn": "perpendicular", "args": [{ "L": [2, -3, 6] }, [3, -1]], "espera": { "texto": "−3/2", "recta.general.texto": "3x + 2y − 7 = 0" } }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "¿Para qué valor de k la recta kx + 2y − 1 = 0 es perpendicular a 3x − y + 4 = 0?",
+      "respuesta": "k = 2/3.",
+      "pasos": [
+        "Pendientes: m₁ = −k/2 y m₂ = −3/(−1) = 3.",
+        "Perpendiculares: (−k/2) · 3 = −1, así que k = 2/3.",
+        "Otra forma: dos rectas son perpendiculares si A₁A₂ + B₁B₂ = 0: 3k + 2 · (−1) = 0, k = 2/3."
+      ],
+      "verificar": [
+        { "fn": "posicion", "args": [{ "L1": [0.6666666666666666, 2, -1], "L2": [3, -1, 4] }], "espera": { "relacion": "perpendiculares", "producto": -1 } },
+        { "fn": "posicion", "args": [{ "L1": [-0.6666666666666666, 2, -1], "L2": [3, -1, 4] }], "espera": { "relacion": "secantes" } }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Calcula la distancia del punto P(4; 1) a la recta L: x − 2y + 3 = 0.",
+      "respuesta": "√5 u.",
+      "pasos": [
+        "d = |Ax₀ + By₀ + C|/√(A² + B²) = |4 − 2 + 3|/√(1 + 4) = 5/√5.",
+        "Racionaliza: 5/√5 = 5√5/5 = √5 ≈ 2,24.",
+        "El pie de la perpendicular es (3; 3): la distancia de (4; 1) a (3; 3) es √(1 + 4) = √5. Coincide."
+      ],
+      "verificar": [
+        { "fn": "distanciaPuntoRecta", "args": [{ "P": [4, 1], "L": [1, -2, 3] }], "espera": { "texto": "√5", "pie": [3, 3] } },
+        { "fn": "distancia", "args": [{ "A": [4, 1], "B": [3, 3] }], "espera": { "texto": "√5" } }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "intermedio",
+      "enunciado": "Halla el área del cuadrilátero de vértices A(−2; −1), B(4; −2), C(5; 3) y D(−1; 4).",
+      "respuesta": "31 u².",
+      "pasos": [
+        "Escribe los vértices en orden, recorriendo el borde (A, B, C, D), y repite A al final.",
+        "Productos que bajan: (−2)(−2) + 4 · 3 + 5 · 4 + (−1)(−1) = 4 + 12 + 20 + 1 = 37.",
+        "Productos que suben: (−1) · 4 + (−2) · 5 + 3 · (−1) + 4 · (−2) = −4 − 10 − 3 − 8 = −25.",
+        "Área = |37 − (−25)|/2 = 62/2 = 31 u². Si saltas de A a C, el camino se cruza y el resultado ya no es el área."
+      ],
+      "verificar": [
+        { "fn": "area", "args": [{ "vertices": [[-2, -1], [4, -2], [5, 3], [-1, 4]] }], "espera": { "sumaBajada": 37, "sumaSubida": -25, "valor": 31 } }
+      ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Halla la ecuación de la circunferencia que tiene como diámetro el segmento de extremos A(−1; 2) y B(5; −6).",
+      "respuesta": "(x − 2)² + (y + 2)² = 25, o sea x² + y² − 4x + 4y − 17 = 0.",
+      "pasos": [
+        "El centro es el punto medio del diámetro: ((−1 + 5)/2; (2 − 6)/2) = (2; −2).",
+        "El diámetro mide √(6² + 8²) = 10, así que el radio es 5.",
+        "Ecuación ordinaria: (x − 2)² + (y + 2)² = 25. Ojo con el signo: el centro tiene y = −2, y en la ecuación aparece y + 2.",
+        "Desarrollando: x² + y² − 4x + 4y + 4 + 4 − 25 = 0, o sea x² + y² − 4x + 4y − 17 = 0."
+      ],
+      "verificar": [
+        { "fn": "circunferencia", "args": [{ "A": [-1, 2], "B": [5, -6] }], "espera": { "centroTexto": "(2; −2)", "r": 5, "ecuacion": "(x − 2)² + (y + 2)² = 25", "general": "x² + y² − 4x + 4y − 17 = 0" } },
+        { "fn": "distancia", "args": [{ "A": [-1, 2], "B": [5, -6] }], "espera": { "valor": 10 } }
+      ]
+    }
+  ]
+}

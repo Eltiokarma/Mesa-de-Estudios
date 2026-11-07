@@ -1,0 +1,316 @@
+{
+  "id": "t009",
+  "version": 1,
+  "titulo": "La riqueza que salía de las islas",
+  "tema": "Historia republicana · la época del guano",
+  "grado": 5,
+  "dificultad": 3,
+  "tipo_texto": "argumentativo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "A mediados del siglo XIX, el Perú encontró una riqueza inesperada en unas islas pequeñas y secas frente a su costa."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "Durante siglos, millones de aves marinas habían dejado allí su excremento, el guano, que se acumuló en capas de muchos metros porque casi nunca llueve."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "En Europa, donde los campos cansados necesitaban abono, el guano se pagaba a precios muy altos, y el Estado peruano se reservó su venta."
+      }
+    ],
+    [
+      {
+        "id": "o4",
+        "rol": "detalle",
+        "t": "Durante unas tres décadas, ese dinero llenó las arcas públicas: se pagaron deudas, se construyeron ferrocarriles y se abolieron la esclavitud y el tributo indígena."
+      },
+      {
+        "id": "o5",
+        "rol": "cita",
+        "t": "Años después, el historiador Jorge Basadre llamó a esa época una «prosperidad falaz»."
+      },
+      {
+        "id": "o6",
+        "rol": "apoyo",
+        "t": "La riqueza dependía de un recurso que se agotaba y de unos pocos compradores extranjeros; casi no se invirtió en actividades que pudieran reemplazarlo, y el país se endeudó contando con que el guano duraría."
+      },
+      {
+        "id": "o7",
+        "rol": "detalle",
+        "t": "Cuando las islas se fueron vaciando y apareció el salitre como abono rival, el Estado ya no pudo pagar lo que debía."
+      }
+    ],
+    [
+      {
+        "id": "o8",
+        "rol": "contraste",
+        "t": "Algunos historiadores matizan ese juicio: recuerdan que los ferrocarriles quedaron y que la abolición de la esclavitud fue un cambio real."
+      },
+      {
+        "id": "o9",
+        "rol": "principal",
+        "t": "Aun así, la lección de fondo se mantiene: un país que vive de vender un solo recurso, sin preparar nada para cuando se acabe, confunde un ingreso pasajero con una riqueza duradera."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "intencion",
+      "unidad": "razonamiento-verbal.inferencias",
+      "previo": {
+        "tipo": "proposito",
+        "pide": "Antes de ver las alternativas: ¿qué busca sobre todo el autor?",
+        "aceptada": "convencer",
+        "codigos": {
+          "explicar": "RV14",
+          "narrar": "RV13"
+        },
+        "explicacion": "El texto cuenta y explica, pero para defender una idea: termina sacando una lección (\"la lección de fondo se mantiene\").",
+        "explicaciones": {
+          "explicar": "El texto explica cómo funcionó la época del guano, pero lo hace para juzgarla y sacar una lección: busca convencer.",
+          "narrar": "El texto cuenta hechos en orden, pero no se queda en contarlos: los juzga y saca una conclusión."
+        }
+      },
+      "enunciado": "¿Cuál es la intención principal del autor?",
+      "alternativas": [
+        {
+          "t": "Sacar una lección a partir de un episodio de la historia económica del Perú.",
+          "correcta": true,
+          "evidencia": [
+            "o9"
+          ],
+          "explicacion": "El autor cuenta la época del guano y la juzga: termina con \"la lección de fondo se mantiene\". Busca convencer, apoyado en un caso histórico."
+        },
+        {
+          "t": "Contar lo que ocurrió en el Perú durante la época del guano.",
+          "codigo": "RV13",
+          "explicacion": "El texto sí cuenta esa época, pero lo hace para sacar una lección (oración 9): contar es el medio, no el fin."
+        },
+        {
+          "t": "Describir cómo se formaron las capas de guano en las islas frente a la costa peruana.",
+          "codigo": "RV14",
+          "origen": "o2",
+          "explicacion": "Eso aparece en la oración 2, pero es solo el comienzo. Esta alternativa deja fuera la postura del autor."
+        },
+        {
+          "t": "Defender que el Perú nunca debió vender el guano de sus islas.",
+          "codigo": "RV33",
+          "explicacion": "El autor no dice eso: critica que no se preparara nada para cuando se acabara, no que se vendiera."
+        },
+        {
+          "t": "Informar sobre la historia de los abonos en el mundo.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto habla del guano peruano y de lo que se hizo con su dinero."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que mejor resume la tesis del autor.",
+        "aceptadas": [
+          "o9"
+        ],
+        "ninguna": "RV3",
+        "codigos": {
+          "o1": "RV4"
+        },
+        "explicacion": "La oración 9 dice la tesis: vivir de vender un solo recurso, sin preparar nada para cuando se acabe, es confundir un ingreso pasajero con una riqueza duradera.",
+        "explicaciones": {
+          "o1": "La primera oración presenta el tema: es el punto de partida, no la tesis.",
+          "o2": "Explica de dónde salió el guano: es un detalle.",
+          "o3": "Explica por qué el guano valía tanto: es información de base.",
+          "o4": "Cuenta lo que se hizo con el dinero; es parte del caso, no la tesis.",
+          "o5": "Es la opinión de Basadre que el autor cita. Apoya la tesis, pero es la voz de otro.",
+          "o6": "Es el argumento principal, pero la tesis, más general, está en la oración 9.",
+          "o7": "Cuenta cómo terminó la época del guano: es un hecho del caso.",
+          "o8": "Presenta el matiz de otros historiadores; el autor lo reconoce, pero no es su tesis.",
+          "ninguna": "La oración 9 sí la dice completa: un país que vive de un solo recurso sin prepararse confunde un ingreso pasajero con una riqueza duradera."
+        }
+      },
+      "enunciado": "¿Cuál es la tesis del autor?",
+      "alternativas": [
+        {
+          "t": "Depender de vender un solo recurso, sin prepararse para su fin, da una riqueza que no dura.",
+          "correcta": true,
+          "evidencia": [
+            "o6",
+            "o9"
+          ],
+          "explicacion": "Es lo que dice la oración 9, apoyada en la 6: vivir de un solo recurso sin preparar el después confunde un ingreso pasajero con una riqueza duradera."
+        },
+        {
+          "t": "Las aves marinas dejaron en las islas capas de guano de muchos metros, porque allí casi nunca llueve.",
+          "codigo": "RV1",
+          "origen": "o2",
+          "explicacion": "Es un detalle sobre el origen del guano, no lo que el autor sostiene."
+        },
+        {
+          "t": "La economía del Perú ha tenido épocas buenas y épocas malas.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto juzga una época concreta y saca de ella una lección precisa."
+        },
+        {
+          "t": "El dinero del guano sirvió para pagar deudas y construir ferrocarriles.",
+          "codigo": "RV3",
+          "origen": "o4",
+          "explicacion": "Es una parte del texto, pero deja fuera el juicio del autor: que esa riqueza no se preparó para durar."
+        },
+        {
+          "t": "Los historiadores no se ponen de acuerdo sobre si la época del guano fue buena o mala.",
+          "codigo": "RV14",
+          "origen": "o8",
+          "explicacion": "Describe el debate de las oraciones 5 y 8, pero deja fuera la postura del autor: \"aun así, la lección de fondo se mantiene\"."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "compatibilidad",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
+        "sonda": "Según el texto, el Estado peruano dejó la venta del guano en manos privadas.",
+        "clase": "lo-contradice",
+        "codigos": {
+          "lo-dice": "RV5",
+          "se-deduce": "RV7",
+          "no-se-sabe": "RV9"
+        },
+        "explicacion": "La oración 3 dice que el Estado peruano \"se reservó su venta\": la afirmación dice lo contrario.",
+        "explicaciones": {
+          "lo-dice": "El texto dice lo opuesto: la oración 3 dice que el Estado \"se reservó\" la venta, es decir, que la guardó para sí.",
+          "se-deduce": "Nada en el texto permite concluir que la venta quedara en manos privadas; la oración 3 dice que la manejó el Estado.",
+          "no-se-sabe": "Sí se puede saber: la oración 3 lo dice, y dice lo contrario de la afirmación."
+        }
+      },
+      "enunciado": "Es compatible con el texto afirmar que los historiadores que matizan el juicio de Basadre",
+      "alternativas": [
+        {
+          "t": "reconocen que la época del guano dejó algunos cambios duraderos.",
+          "correcta": true,
+          "evidencia": [
+            "o8"
+          ],
+          "explicacion": "La oración 8 dice que recuerdan que los ferrocarriles quedaron y que la abolición de la esclavitud fue un cambio real."
+        },
+        {
+          "t": "consideran que la época del guano solo trajo beneficios al país.",
+          "codigo": "RV11",
+          "origen": "o8",
+          "explicacion": "\"Matizar\" no es dar vuelta el juicio: recuerdan algunos logros, no dicen que todo fuera bueno."
+        },
+        {
+          "t": "fueron los que llamaron a esa época una «prosperidad falaz».",
+          "codigo": "RV5",
+          "origen": "o5",
+          "explicacion": "Repite palabras de la oración 5, pero quien usó esa expresión fue Basadre, no los que lo matizan."
+        },
+        {
+          "t": "sostienen que los ferrocarriles desaparecieron cuando el Estado dejó de pagar sus deudas.",
+          "codigo": "RV9",
+          "origen": "o8",
+          "explicacion": "Choca con la oración 8, que dice justo lo contrario: que los ferrocarriles quedaron."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.sentido-contextual",
+      "enunciado": "En la oración 5, la palabra FALAZ significa",
+      "alternativas": [
+        {
+          "t": "engañosa.",
+          "correcta": true,
+          "evidencia": [
+            "o5",
+            "o6"
+          ],
+          "explicacion": "Basadre llama falaz a esa prosperidad porque parecía sólida y no lo era: dependía de un recurso que se acababa (oración 6). Era engañosa."
+        },
+        {
+          "t": "fugaz.",
+          "codigo": "RV20",
+          "explicacion": "El texto dice de forma indirecta que esa riqueza fue pasajera (oración 9), pero \"falaz\" nombra otra cosa: que engañaba, que hizo confundir lo pasajero con lo duradero. \"Fugaz\" solo se le parece en la forma."
+        },
+        {
+          "t": "abundante.",
+          "codigo": "RV19",
+          "explicacion": "Está en el mismo campo que \"prosperidad\" (riqueza, abundancia), pero no significa lo mismo que \"falaz\"."
+        },
+        {
+          "t": "duradera.",
+          "codigo": "RV5",
+          "origen": "o9",
+          "explicacion": "Repite una palabra de la oración 9, pero es lo contrario de lo que el texto quiere decir: esa riqueza no era duradera."
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.extrapolacion",
+      "enunciado": "Según la lógica del texto, si el Estado hubiera invertido el dinero del guano en actividades capaces de reemplazarlo,",
+      "alternativas": [
+        {
+          "t": "la crisis que siguió al fin del guano habría sido menos probable.",
+          "correcta": true,
+          "evidencia": [
+            "o6",
+            "o9"
+          ],
+          "explicacion": "El texto culpa a la falta de preparación: casi no se invirtió en reemplazar el guano (oración 6). Si se hubiera hecho, el fin del guano habría golpeado menos."
+        },
+        {
+          "t": "el país se habría endeudado igual, contando con que el guano duraría.",
+          "codigo": "RV12",
+          "explicacion": "Cambia la condición, pero deja igual la consecuencia: si se preparaba el reemplazo, ya no se dependía de que el guano durara."
+        },
+        {
+          "t": "el guano de las islas no se habría agotado.",
+          "codigo": "RV7",
+          "explicacion": "Invertir el dinero no detiene el agotamiento: el guano se acababa igual. Lo que cambia, según el texto, es lo que pasa cuando se acaba."
+        },
+        {
+          "t": "nunca habría existido la Guerra del Pacífico.",
+          "codigo": "RV8",
+          "explicacion": "El texto no habla de la guerra; esa idea viene de lo que se sabe de historia, no de lo que se leyó."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-06",
+  "hechos": [
+    {
+      "afirmacion": "La época del guano (aprox. 1840 a 1870): monopolio del Estado, venta a Europa, deuda, ferrocarriles, abolición de la esclavitud y del tributo indígena (1854), y crisis hacia 1876 con la competencia del salitre.",
+      "fuente": "Contreras, C. y Cueto, M. (2013). Historia del Perú contemporáneo. IEP; Bonilla, H. (1974). Guano y burguesía en el Perú. IEP."
+    },
+    {
+      "afirmacion": "Jorge Basadre llamó a esa época una «prosperidad falaz».",
+      "fuente": "Basadre, J. (1958 y ediciones posteriores). La promesa de la vida peruana / Historia de la República del Perú; la expresión es ampliamente citada."
+    },
+    {
+      "afirmacion": "Las capas de guano llegaban a muchos metros de espesor en las islas Chincha.",
+      "fuente": "Cushman, G. T. (2013). Guano and the opening of the Pacific world. Cambridge University Press."
+    }
+  ],
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-06",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: 7 de 7. Cambios: sonda del previo que no era indiscutible (la abolición) cambiada por una sobre la venta estatal del guano; distractores que se descartaban enseguida reemplazados por otros más cercanos para que el texto tenga de verdad dificultad alta; códigos de la guerra (RV8) y del previo ajustados. Una segunda verificación de los ítems cambiados confirmó claves únicas; se ajustaron cuatro explicaciones y un enunciado."
+  }
+}

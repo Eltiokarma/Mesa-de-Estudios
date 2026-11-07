@@ -1,0 +1,102 @@
+{
+  "plantilla": "solidos",
+  "unidades": "Las del problema (cm, m, u); el motor no convierte. En los sólidos con círculos, 'pi.*' y 'respuestas.*' son el coeficiente de π (pi.volumen = 12 quiere decir 12π u³); 'lateral', 'total' y 'volumen' sin 'pi' ya vienen multiplicados por π. Los ángulos van en grados.",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.volumen.sinTercio, pi.lateral, piezas.0.volumen); las listas se comparan completas. 'tambien' trae otras llamadas que comprueban lo mismo (con su propia 'fn' si cambia). Un error que con esos números da lo mismo que la respuesta correcta no va en 'errores' sino en 'coinciden'. Los números irracionales van con 9 o más decimales y se comparan con tolerancia relativa 1e-9.",
+  "verificacion": "Calculados a mano por el constructor (6 nov 2026) con las fórmulas de academia: prisma A_L = 2p·h, A_T = A_L + 2A_B, V = A_B·h; pirámide ap² = h² + apBase², A_L = p·ap (p semiperímetro), V = A_B·h/3; cilindro A_L = 2πrh, V = πr²h; cono g² = r² + h², ángulo del sector 360°·r/g, A_L = πrg, V = πr²h/3; esfera 4πr² y 4πr³/3 frente al cilindro de radio r y altura 2r; tronco de cono πh(R² + r² + Rr)/3 y tronco de pirámide h(A₁ + A₂ + √(A₁A₂))/3; cubitos a·b·c, en el dibujo a·b·c − (a−1)(b−1)(c−1), sin pintura (n − 2)³; Euler C + V = A + 2. Pendiente: la verificación por un agente independiente que no lea el motor.",
+  "tolerancia": 1e-9,
+  "casos": [
+    { "nombre": "Paso a paso, predicción 1 (GE13, GE14): la caja de 3 × 2 × 4 tiene 24 cubitos. Las caritas que se ven en el dibujo son 6 + 8 + 12 = 26; los cubitos que asoman, 18; la suma de todas las caras (el área total), 52",
+      "fn": "bloque", "args": [3, 2, 4],
+      "espera": { "total": 24, "visiblesDibujo": 18, "ocultosDibujo": 6, "carasDibujo": 26, "areaTotal": 52, "interior": 0, "respuestas.total": 24, "errores.total.carasDibujo": 26, "errores.total.visiblesDibujo": 18, "errores.total.areaTotal": 52, "errores.total.sumaAristas": 9, "coinciden.total": [] } },
+
+    { "nombre": "Caso del informe (GE13): bloque de 3 × 4 × 2 cubitos: son 24, no las 26 caritas que se ven (12 + 8 + 6). Asoman 18 y quedan 6 escondidos",
+      "fn": "bloque", "args": [3, 4, 2],
+      "espera": { "total": 24, "carasDibujo": 26, "visiblesDibujo": 18, "ocultosDibujo": 6, "pintadas.3": 8, "pintadas.2": 12, "pintadas.1": 4, "pintadas.0": 0 } },
+
+    { "nombre": "La caja de 3 × 2 × 4 como prisma: perímetro de la base 10, A_B = 6, A_L = 10 · 4 = 40, A_T = 52, V = 24. El volumen como suma de caras (GE14) da 52. Abierta del todo, su desarrollo mide 52 u² y queda plano",
+      "fn": "prisma", "args": [{ "base": { "tipo": "rectangulo", "largo": 3, "ancho": 2 }, "h": 4 }],
+      "espera": { "perimetroBase": 10, "areaBase": 6, "lateral": 40, "total": 52, "volumen": 24, "caras": 6, "vertices": 8, "aristas": 12, "diagonal": 5.385164807134504, "errores.volumen.comoArea": 52, "errores.volumen.comoLateral": 40 },
+      "tambien": [ { "fn": "desarrollo", "args": ["prisma", { "base": { "tipo": "rectangulo", "largo": 3, "ancho": 2 }, "h": 4 }, 1], "espera": { "area": 52, "plano": true, "caras.length": 6 } },
+                   { "fn": "desarrollo", "args": ["prisma", { "base": { "tipo": "rectangulo", "largo": 3, "ancho": 2 }, "h": 4 }, 0], "espera": { "area": 52, "plano": false } } ] },
+
+    { "nombre": "Prisma hexagonal regular de lado 2 y altura 5: A_B = 6 · (√3/4) · 4 = 6√3, A_L = 12 · 5 = 60, A_T = 60 + 12√3, V = 30√3; 8 caras, 12 vértices y 18 aristas",
+      "fn": "prisma", "args": [{ "base": { "tipo": "hexagono", "lado": 2 }, "h": 5 }],
+      "espera": { "perimetroBase": 12, "areaBase": 10.392304845413264, "lateral": 60, "total": 80.78460969082653, "volumen": 51.96152422706632, "caras": 8, "vertices": 12, "aristas": 18, "base.apotema": 1.7320508075688772 } },
+
+    { "nombre": "Caso 9 del informe y predicciones 2 y 3 (GE20, GE21): pirámide de base cuadrada 6 y altura 4. ap = √(4² + 3²) = 5; A_L = 12 · 5 = 60 (con la altura, 48); A_T = 96; V = 36 · 4/3 = 48 (sin el tercio, 144; con la mitad, 72; como suma de caras, 96)",
+      "fn": "piramide", "args": [{ "base": { "tipo": "cuadrado", "lado": 6 }, "h": 4 }],
+      "espera": { "ap": 5, "apotemaBase": 3, "semiperimetro": 12, "areaBase": 36, "lateral": 60, "total": 96, "volumen": 48, "aristaLateral": 5.830951894845301, "caras": 5, "vertices": 5, "aristas": 8,
+        "errores.lateral.conAltura": 48, "errores.lateral.sinMitad": 120, "errores.lateral.conBase": 96, "errores.volumen.sinTercio": 144, "errores.volumen.mitad": 72, "errores.volumen.comoArea": 96, "errores.volumen.conApotema": 60, "errores.ap.conAltura": 4, "coinciden.lateral": [], "coinciden.volumen": [] },
+      "tambien": [ { "fn": "desarrollo", "args": ["piramide", { "base": { "tipo": "cuadrado", "lado": 6 }, "h": 4 }, 1], "espera": { "area": 96, "plano": true, "caras.length": 5 } } ] },
+
+    { "nombre": "Pirámide cuadrangular con la apotema dada: lado 8 y ap = 5. La apotema de la base es 4, así que h = 3; A_L = 16 · 5 = 80, A_T = 144, V = 64 · 3/3 = 64; la arista lateral, √(3² + (4√2)²) = √41",
+      "fn": "piramide", "args": [{ "base": { "tipo": "cuadrado", "lado": 8 }, "ap": 5 }],
+      "espera": { "h": 3, "ap": 5, "lateral": 80, "total": 144, "volumen": 64, "aristaLateral": 6.4031242374328485 } },
+
+    { "nombre": "Pirámide triangular regular (tetraedro no regular) de lado 6 y altura 1: la apotema de la base es √3, ap = √(1 + 3) = 2, A_L = 9 · 2 = 18, A_B = 9√3, V = 3√3",
+      "fn": "piramide", "args": [{ "base": { "tipo": "triangulo", "lado": 6 }, "h": 1 }],
+      "espera": { "apotemaBase": 1.7320508075688772, "ap": 2, "lateral": 18, "areaBase": 15.588457268119896, "volumen": 5.196152422706632, "caras": 4, "aristas": 6 } },
+
+    { "nombre": "Paso a paso, predicción 4 (GE19): la lata de radio 3 y altura 5. El rectángulo de su desarrollo mide 2π · 3 = 6π de largo (con πr², 9π; con el diámetro, 12π; con πr, 3π); A_L = 30π, A_T = 48π, V = 45π",
+      "fn": "cilindro", "args": [{ "r": 3, "h": 5 }],
+      "espera": { "pi.largo": 6, "pi.lateral": 30, "pi.total": 48, "pi.volumen": 45, "pi.areaBase": 9, "largo": 18.84955592153876, "errores.largo.conArea": 9, "errores.largo.conDiametro": 12, "errores.largo.mitad": 3, "errores.volumen.comoLateral": 30, "coinciden.largo": [] },
+      "tambien": [ { "args": [{ "r": 2, "h": 7 }], "espera": { "pi.largo": 4, "coinciden.largo": ["conArea"], "errores.largo.conDiametro": 8 } } ] },
+
+    { "nombre": "Caso 8 del informe y predicción 5 (GE20, GE21): cono de r = 3 y h = 4. g = 5; A_L = π · 3 · 5 = 15π (con la altura, 12π; con el diámetro, 30π; con la base, 24π); A_T = 24π; V = 12π (sin el tercio, 36π); el sector del desarrollo mide 360° · 3/5 = 216°",
+      "fn": "cono", "args": [{ "r": 3, "h": 4 }],
+      "espera": { "g": 5, "angulo": 216, "pi.arco": 6, "pi.lateral": 15, "pi.total": 24, "pi.volumen": 12, "volumen": 37.69911184307752,
+        "errores.lateral.conAltura": 12, "errores.lateral.conDiametro": 30, "errores.lateral.conBase": 24, "errores.volumen.sinTercio": 36, "errores.angulo.conAltura": 270, "errores.angulo.completo": 360, "errores.angulo.mitad": 108 },
+      "tambien": [ { "fn": "desarrollo", "args": ["cono", { "r": 3, "h": 4 }, 1, { "N": 48 }], "espera": { "plano": true, "caras.length": 49 } } ] },
+
+    { "nombre": "Cono con la generatriz dada: r = 5 y g = 13. h = 12; A_L = 65π, A_T = 90π, V = 100π; el sector mide 360° · 5/13 ≈ 138,46°",
+      "fn": "cono", "args": [{ "r": 5, "g": 13 }],
+      "espera": { "h": 12, "g": 13, "pi.lateral": 65, "pi.total": 90, "pi.volumen": 100, "angulo": 138.46153846153845 } },
+
+    { "nombre": "¿Qué pasa si…? Un semicírculo de radio 10 enrollado: el arco 10π es la circunferencia de la base, así que r = 5 y h = 5√3. Igualar el arco a πr² da √10 (GE19); tomar el radio del sector como radio de la base, 10; igualar el arco a 2r, 5π",
+      "fn": "conoDeSector", "args": [{ "g": 10, "angulo": 180 }],
+      "espera": { "r": 5, "h": 8.660254037844386, "arcoPi": 10, "respuestas.r": 5, "errores.r.igualG": 10, "errores.r.conArea": 3.1622776601683795, "errores.r.sinPi": 15.707963267948966, "errores.r.mitad": 2.5, "formas.conArea": "√10", "formas.sinPi": "5π", "coinciden.r": [] } },
+
+    { "nombre": "Paso a paso, predicción 6 (Arquímedes): esfera de r = 3 dentro del cilindro de radio 3 y altura 6. V_esfera = 36π, V_cilindro = 54π: la esfera ocupa 2/3. Su superficie, 36π, es igual al área lateral del cilindro (6π · 6) y vale cuatro círculos máximos",
+      "fn": "esfera", "args": [{ "r": 3 }],
+      "espera": { "pi.area": 36, "pi.volumen": 36, "pi.cilVolumen": 54, "pi.cilLateral": 36, "pi.cilTotal": 54, "fraccion": 0.6666666666666666, "fraccionArea": 0.6666666666666666, "circulosMaximos": 4, "cilindro.h": 6,
+        "errores.fraccion.comoCono": 0.3333333333333333, "errores.fraccion.mitad": 0.5, "errores.fraccion.tresCuartos": 0.75, "errores.area.comoCirculo": 9 } },
+
+    { "nombre": "Caso 12 del informe: esfera de r = 6. A = 144π (el cuádruple de 36π) y V = 288π (ocho veces 36π)",
+      "fn": "esfera", "args": [{ "r": 6 }],
+      "espera": { "pi.area": 144, "pi.volumen": 288, "pi.cilVolumen": 432 } },
+
+    { "nombre": "¿Qué pasa si…? El vaso: tronco de cono de radios 6 y 3 y altura 4. V = 4π(36 + 9 + 18)/3 = 84π = 96π − 12π (el cono grande de altura 8 menos el chico de altura 4). Sin el tercio, 252π; con el radio promedio, 81π; con el promedio de las bases, 90π",
+      "fn": "troncoCono", "args": [{ "R": 6, "r": 3, "h": 4 }],
+      "espera": { "pi.volumen": 84, "g": 5, "pi.lateral": 45, "pi.total": 90, "conoGrande.h": 8, "conoGrande.piVolumen": 96, "conoChico.h": 4, "conoChico.piVolumen": 12,
+        "errores.volumen.sinTercio": 252, "errores.volumen.radioPromedio": 81, "errores.volumen.basesPromedio": 90, "coinciden.volumen": [] } },
+
+    { "nombre": "Tronco de pirámide de bases cuadradas 8 y 2 y altura 4: apotema √(16 + 9) = 5, A_L = 2 · 10 · 5 = 100, A_T = 168, V = 4(64 + 4 + 16)/3 = 112",
+      "fn": "troncoPiramide", "args": [{ "L": 8, "l": 2, "h": 4 }],
+      "espera": { "ap": 5, "lateral": 100, "total": 168, "volumen": 112, "errores.volumen.sinTercio": 336, "errores.volumen.basesPromedio": 136 } },
+
+    { "nombre": "¿Qué pasa si…? El cubo de 6 × 6 × 6 pintado por fuera: 64 cubitos sin pintura (4³), 96 con una cara, 48 con dos y 8 con tres. Quitar una sola capa da 125 (5³); contar solo el centro de una cara, 16; confundirlos con los de una cara pintada, 96; contar los pintados, 152 (todos hipótesis)",
+      "fn": "cuboPintado", "args": [6],
+      "espera": { "sinPintura": 64, "total": 216, "pintadas.0": 64, "pintadas.1": 96, "pintadas.2": 48, "pintadas.3": 8, "errores.sinPintura.quitaUnaCapa": 125, "errores.sinPintura.centroDeUnaCara": 16, "errores.sinPintura.unaCara": 96, "errores.sinPintura.conPintura": 152, "coinciden.sinPintura": [] },
+      "tambien": [ { "args": [5], "espera": { "sinPintura": 27, "pintadas.1": 54, "pintadas.2": 36, "errores.sinPintura.quitaUnaCapa": 64 } },
+                   { "args": [3], "espera": { "sinPintura": 1, "coinciden.sinPintura": ["centroDeUnaCara"] } },
+                   { "args": [2], "espera": { "sinPintura": 0, "pintadas.3": 8, "coinciden.sinPintura": ["centroDeUnaCara", "unaCara"] } },
+                   { "fn": "bloque", "args": [5, 4, 3], "espera": { "pintadas.3": 8, "pintadas.2": 24, "pintadas.1": 22, "pintadas.0": 6, "total": 60 } },
+                   { "fn": "bloque", "args": [1, 3, 4], "espera": { "pintadas.4": 4, "pintadas.3": 6, "pintadas.2": 2, "pintadas.0": 0, "areaTotal": 38 } } ] },
+
+    { "nombre": "¿Qué pasa si…? El prisma hexagonal: 8 caras, 12 vértices y 18 aristas (8 + 12 = 18 + 2). Contar solo las aristas de las bases da 12; las caras, 8; sumar C + V + 2, 22",
+      "fn": "poliedro", "args": [{ "tipo": "prisma", "n": 6 }],
+      "espera": { "caras": 8, "vertices": 12, "aristas": 18, "euler": 2, "cumpleEuler": true, "errores.aristas.soloBases": 12, "errores.aristas.comoCaras": 8, "errores.aristas.eulerSuma": 22 },
+      "tambien": [ { "args": [{ "tipo": "piramide", "n": 5 }], "espera": { "caras": 6, "vertices": 6, "aristas": 10 } },
+                   { "args": [{ "tipo": "dodecaedro" }], "espera": { "caras": 12, "vertices": 20, "aristas": 30, "euler": 2 } } ] },
+
+    { "nombre": "¿Qué pasa si…? Una hoja de 10 × 6 enrollada de dos formas: las dos tienen A_L = 60, pero el cilindro bajo (circunferencia 10, alto 6) guarda 150/π y el alto (circunferencia 6, alto 10) 90/π: 5/3 más. Con una hoja cuadrada guardan lo mismo",
+      "fn": "hojaEnrollada", "args": [{ "largo": 10, "ancho": 6 }],
+      "espera": { "lateral": 60, "bajo.sobrePi": 150, "alto.sobrePi": 90, "razon": 1.6666666666666667, "bajo.r": 1.5915494309189535, "respuestas.mayor": "bajo", "errores.mayor.iguales": "iguales", "errores.mayor.alto": "alto", "coinciden.mayor": [] },
+      "tambien": [ { "args": [{ "largo": 8, "ancho": 8 }], "espera": { "respuestas.mayor": "iguales", "coinciden.mayor": ["iguales"], "errores.mayor.alto": "alto" } } ] },
+
+    { "nombre": "Paso a paso, predicción 3: la caja de 6 × 6 × 4 se parte en tres pirámides con el mismo vértice; cada una mide 48 (la tercera parte de 144). Si se corre el vértice de la de abajo al centro de la tapa, sigue midiendo 48. Coordenadas: la caja ocupa [−a/2, a/2] × [−a/2, a/2] × [0, h] (base centrada en el origen, z hacia arriba, y hacia el fondo); el vértice común es P = (−a/2, a/2, h), la esquina de atrás a la izquierda de la tapa. Piezas en orden: abajo (no se mueve con sep), frente (se corre sep hacia x negativo) y derecha (sep hacia x positivo)",
+      "fn": "tresPiramides", "args": [{ "a": 6, "h": 4 }],
+      "espera": { "caja": 144, "volumenCadaUna": 48, "suma": 144, "piezas.0.volumen": 48, "piezas.1.volumen": 48, "piezas.2.volumen": 48, "piezas.0.altura": 4, "piezas.1.altura": 6, "piezas.1.areaBase": 24 },
+      "tambien": [ { "args": [{ "a": 6, "h": 4, "punta": 1, "sep": 2 }], "espera": { "piezas.0.volumen": 48, "piezas.0.vertice": [0, 0, 4], "piezas.1.vertice": [-5, 3, 4], "piezas.2.vertice": [-1, 3, 4], "suma": 144 } } ] }
+  ]
+}

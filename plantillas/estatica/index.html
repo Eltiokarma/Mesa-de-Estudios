@@ -1,0 +1,1232 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Estática: palancas, centro de gravedad y cuerdas</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md).
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4), los mismos de dinámica:
+   P peso azul, N reacción del apoyo o normal verde, f roce ámbar, T tensión rojo (T₁ en el nudo), F fuerza de una
+   mano fucsia. T₂, la segunda cuerda del nudo, turquesa (ΔE00 ≥ 24 con los otros cinco, en claro y en oscuro).
+   El brazo de cada fuerza (línea con topes) y su giro τ (arco) llevan el color de su fuerza: τ de T es T × brazo de T.
+   La masa, las posiciones en metros, los ángulos, el punto O y las sumas ΣF y Στ van en tinta.
+   El morado de marca no se usa aquí. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-P:#1f5fbf; --c-N:#4f7a17; --c-f:#8f5800; --c-T:#c0364a; --c-F:#a10fbf; --c-T2:#0f766e;
+  --suelo:#d9c8bb; --bloque:#f3e3d3; --madera:#e6cfb4; --hielo:#e9f1f4;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-P:#7cb0ff; --c-N:#a3d65e; --c-f:#ffc04d; --c-T:#f17384; --c-F:#cf6bfa; --c-T2:#5ed9c8;
+  --suelo:#4a3d55; --bloque:#5a4868; --madera:#6b5468; --hielo:#2c3442; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-P:#7cb0ff; --c-N:#a3d65e; --c-f:#ffc04d; --c-T:#f17384; --c-F:#cf6bfa; --c-T2:#5ed9c8;
+  --suelo:#4a3d55; --bloque:#5a4868; --madera:#6b5468; --hielo:#2c3442; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+/* Celular con una predicción pendiente: el dibujo más bajo y pegado arriba, para que se vea mientras se elige. */
+@media (max-width:899px){
+  .mode.pendiente .bench{position:sticky; top:0; z-index:1; padding:6px; gap:4px; background:var(--card); border-radius:0 0 20px 20px}
+  .mode.pendiente .legend{display:none}
+}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+.lienzo:focus-within{outline:3px solid var(--ink); outline-offset:2px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block; flex:none}
+.legend i.cota{height:10px; background:none!important; border:2px solid currentColor; border-top:0; border-bottom:0; position:relative; width:16px}
+.legend i.cota::after{content:""; position:absolute; left:0; right:0; top:3px; border-top:2px solid currentColor}
+.lecturas{display:flex; flex-wrap:wrap; gap:6px; padding:0 4px}
+.lectura{display:inline-flex; gap:6px; align-items:baseline; padding:3px 10px; border-radius:999px; border:2px solid var(--k, var(--line));
+  color:var(--k, var(--ink)); background:var(--paper); font:700 .84rem var(--mono); font-variant-numeric:tabular-nums}
+.lectura.suma{border-style:dashed; --k:var(--ink)}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+/* Datos con color. Fondo del 8 % (el verde de N, del 4 %: con 8 % no llegaba al contraste AA). Resaltado: contorno, sin fondo. */
+.v{white-space:nowrap; font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-P{color:var(--c-P); background:color-mix(in srgb, var(--c-P) 8%, transparent)}
+.v-N{color:var(--c-N); background:color-mix(in srgb, var(--c-N) 4%, transparent)}
+.v-f{color:var(--c-f); background:color-mix(in srgb, var(--c-f) 8%, transparent)}
+.v-T{color:var(--c-T); background:color-mix(in srgb, var(--c-T) 8%, transparent)}
+.v-F{color:var(--c-F); background:color-mix(in srgb, var(--c-F) 8%, transparent)}
+.v-T2{color:var(--c-T2); background:color-mix(in srgb, var(--c-T2) 8%, transparent)}
+.v-m{color:var(--ink); background:color-mix(in srgb, var(--ink) 7%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+
+.eqs{display:grid; grid-template-columns:minmax(0,1fr); gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.02rem; font-variant-numeric:tabular-nums}
+.eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.5em; white-space:normal}
+.answer{font-weight:700; padding:12px 16px; border-radius:16px; background:var(--paper); border:2px solid var(--ink); max-width:66ch}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.ctrls{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap:12px; align-items:end}
+.slider{display:grid; gap:4px}
+.slider label{font-weight:700; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.slider output{font-family:var(--mono); color:var(--muted)}
+input[type=range]{width:100%; accent-color:var(--ink); min-height:28px}
+input.r-F{accent-color:var(--c-F)} input.r-T{accent-color:var(--c-T)} input.r-T2{accent-color:var(--c-T2)}
+.chips{display:flex; flex-wrap:wrap; gap:6px}
+.chip{font-size:.86rem; padding:4px 12px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); font-weight:700}
+.chip.ok{border-color:var(--ok); color:var(--ok)}
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.4fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Física · Estática · Problemas tipo admisión</p>
+      <h1>Palancas, centro de gravedad y cuerdas</h1>
+      <p class="sub">Un cuerpo en equilibrio no se traslada ni gira: sus fuerzas suman cero, y también sus giros. Cada fuerza es una flecha con su color y con quién la ejerce.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo del paso, con las fuerzas, sus brazos y sus giros">
+      <div class="lienzo"><canvas id="cv" tabindex="-1" role="img" aria-label="Una barra apoyada en un punto, con las fuerzas que actúan sobre ella"></canvas></div>
+      <div class="lecturas" id="lect1" aria-hidden="true"></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="legend" id="ley1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimento elegido, con sus fuerzas">
+      <div class="lienzo"><canvas id="cv2" tabindex="-1" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <div class="lecturas" id="lect2" aria-hidden="true"></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="legend" id="ley2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/estatica">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'estatica', unidad: 'fisica.estatica', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas de dibujo compartidas =================
+   Toda la física sale de MotorEstatica (motor.js); aquí solo se pinta. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+// Coma decimal, espacio de miles (desde 5 cifras) y signo menos tipográfico.
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 1 : d), r = Math.round(n*p)/p + 0;
+  let [e, f] = String(Math.abs(r)).split('.');
+  if (e.length >= 5) e = e.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+// Hasta 2 decimales, sin ceros de más.
+const N2 = n => fmt(n, Math.abs(n*10 - Math.round(n*10)) < 1e-7 ? (Math.abs(n - Math.round(n)) < 1e-7 ? 0 : 1) : 2);
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const M = MotorEstatica;
+const chico = () => innerWidth < 900;
+// Escribe en una región aria-live solo si el texto cambia (si no, el lector de pantalla repite en cada cuadro).
+function decir(el, t){ if (el.textContent !== t) el.textContent = t; }
+function esperar(ms, fn){ return ms ? setTimeout(fn, ms) : fn(); }
+
+const altoLienzo = W => W >= 560 ? clamp(W*0.64, 340, 470) : clamp(W*1.02, 330, 420);
+// Con una predicción pendiente en el celular, el lienzo baja a unos 240 px y queda fijo arriba (como en cinta-radio).
+function crearLienzo(cv, alto, dibujar){
+  const ctx = cv.getContext('2d');
+  const L = { cv, ctx, W:0, H:0, compacto:false };
+  L.resize = () => {
+    const W = cv.clientWidth; if (!W) return;
+    const H = Math.round(L.compacto && innerWidth < 900 ? clamp(W*0.66, 220, 250) : alto(W)), dpr = window.devicePixelRatio || 1;
+    L.W = W; L.H = H; cv.style.height = H + 'px'; cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    dibujar();
+  };
+  L.compactar = on => { on = !!on; cv.closest('.mode').classList.toggle('pendiente', on); if (on === L.compacto) return; L.compacto = on; L.resize(); };
+  new ResizeObserver(L.resize).observe(cv);
+  return L;
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, x1, y1, x2, y2){ ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
+function rr(ctx, x, y, w, h, r){ ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h); }
+// Texto con un fondo del color del papel detrás, para que se lea sobre las líneas. No se sale del lienzo.
+function rotulo(ctx, c, x, y, t, color, align, peso, W, H){
+  ctx.font = `${peso || 700} ${c.chico ? 11 : 12}px ${c.font}`; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(t).width;
+  let x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  if (W) x0 = clamp(x0, 4, W - w - 4);
+  if (H) y = clamp(y, 10, H - 10);
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+  ctx.fillStyle = color; ctx.textAlign = 'left'; ctx.fillText(t, x0, y);
+  return { x0, x1: x0 + w, y };
+}
+function colores(W){
+  const g = n => css(n);
+  return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
+    P:g('--c-P'), N:g('--c-N'), f:g('--c-f'), T:g('--c-T'), F:g('--c-F'), T2:g('--c-T2'),
+    suelo:g('--suelo'), bloque:g('--bloque'), madera:g('--madera'), hielo:g('--hielo'), mono:g('--mono'), font:g('--font'), chico: W < 480 };
+}
+// Flecha de (x1, y1) a (x2, y2); con trazos si dash.
+function flecha(ctx, x1, y1, x2, y2, color, w, dash){
+  const ang = Math.atan2(y2 - y1, x2 - x1), l = Math.hypot(x2 - x1, y2 - y1); if (l < 2) return;
+  const p = Math.min(9 + w, l*0.6);
+  ctx.save(); ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = w; ctx.lineCap = 'round';
+  if (dash) ctx.setLineDash(dash);
+  linea(ctx, x1, y1, x2 - Math.cos(ang)*p*0.7, y2 - Math.sin(ang)*p*0.7);
+  ctx.setLineDash([]);
+  ctx.beginPath(); ctx.moveTo(x2, y2); ctx.lineTo(x2 - Math.cos(ang - .45)*p, y2 - Math.sin(ang - .45)*p); ctx.lineTo(x2 - Math.cos(ang + .45)*p, y2 - Math.sin(ang + .45)*p);
+  ctx.closePath(); ctx.fill(); ctx.restore();
+}
+/* Una fuerza: { x, y, dx, dy (unitario, en pantalla), F (N), k (px por N), col, txt, oculta, fina, crece (0 a 1), hl, al, ox, oy, lx, ly }.
+   Oculta: a trazos, de largo fijo y con "?" en el rótulo (la dirección se ve; el tamaño no). lx, ly: rótulo en un punto fijo. */
+function fuerza(ctx, c, f, W, H){
+  const largo = f.oculta ? (f.largoOculto || 44) : f.F*f.k*(f.crece === undefined ? 1 : f.crece);
+  if (largo < 1.5) return;
+  const x2 = f.x + f.dx*largo, y2 = f.y + f.dy*largo, w = f.fina ? 1.8 : (f.hl ? 4.6 : 3.2);
+  flecha(ctx, f.x, f.y, x2, y2, f.col, w, f.oculta || f.fina ? [6, 4] : null);
+  if (!f.txt || (f.crece !== undefined && f.crece < 0.98)) return;
+  const al = f.al || (f.dx > 0.35 ? 'left' : f.dx < -0.35 ? 'right' : 'center');
+  const lx = f.lx !== undefined ? f.lx : x2 + f.dx*10 + (f.ox || 0), ly = f.ly !== undefined ? f.ly : y2 + f.dy*13 + (f.oy || 0);
+  rotulo(ctx, c, lx, ly, f.txt, f.col, al, f.fina ? 700 : 800, W, H);
+}
+// Cota del brazo: línea con topes en el color de la fuerza.
+function cota(ctx, c, x1, y1, x2, y2, col, txt, W, arriba){
+  const l = Math.hypot(x2 - x1, y2 - y1); if (l < 2) return;
+  const nx = -(y2 - y1)/l*5, ny = (x2 - x1)/l*5;
+  ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = 2; ctx.lineCap = 'round';
+  linea(ctx, x1, y1, x2, y2); linea(ctx, x1 - nx, y1 - ny, x1 + nx, y1 + ny); linea(ctx, x2 - nx, y2 - ny, x2 + nx, y2 + ny);
+  ctx.restore();
+  if (txt) rotulo(ctx, c, (x1 + x2)/2, (y1 + y2)/2 + (arriba === false ? 10 : -10), txt, col, 'center', 800, W);
+}
+// Arco de giro alrededor de (cx, cy), desde el ángulo a0 (radianes de pantalla) recorriendo 'barrido' (positivo: horario).
+function arcoGiro(ctx, cx, cy, r, a0, barrido, col, w, dash){
+  ctx.save(); ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = w || 2.4; ctx.lineCap = 'round';
+  if (dash) ctx.setLineDash(dash);
+  ctx.beginPath(); ctx.arc(cx, cy, r, a0, a0 + barrido, barrido < 0); ctx.stroke(); ctx.setLineDash([]);
+  const a1 = a0 + barrido, sg = Math.sign(barrido), tx = -Math.sin(a1)*sg, ty = Math.cos(a1)*sg;
+  const px = cx + r*Math.cos(a1), py = cy + r*Math.sin(a1), p = 8;
+  ctx.beginPath(); ctx.moveTo(px + tx*p, py + ty*p); ctx.lineTo(px - ty*p*0.6, py + tx*p*0.6); ctx.lineTo(px + ty*p*0.6, py - tx*p*0.6); ctx.closePath(); ctx.fill();
+  ctx.restore();
+}
+function bloque(ctx, c, x, y, w, h, txt){
+  ctx.save(); ctx.fillStyle = c.bloque; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; rr(ctx, x - w/2, y - h/2, w, h, 5); ctx.fill(); ctx.stroke(); ctx.restore();
+  if (txt){ ctx.fillStyle = c.ink; ctx.font = `800 ${c.chico ? 11 : 12}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(txt, x, y); }
+}
+function suelo(ctx, c, x1, x2, y){
+  ctx.fillStyle = c.suelo; ctx.globalAlpha = .55; ctx.fillRect(x1, y, x2 - x1, 10); ctx.globalAlpha = 1;
+  ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; linea(ctx, x1, y, x2, y);
+}
+function techo(ctx, c, x1, x2, y){
+  ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2.4; linea(ctx, x1, y, x2, y); ctx.lineWidth = 1.1; ctx.globalAlpha = .6;
+  for (let x = x1 + 4; x < x2; x += 12) linea(ctx, x, y, x + 8, y - 8);
+  ctx.restore();
+}
+const N1 = n => fmt(n, Math.abs(n - Math.round(n)) < 1e-9 ? 0 : 1);
+// Texto del rótulo: "T = 150 N · cuerda".
+const rot = (sim, F, quien, oculta) => `${sim} = ${oculta ? '?' : N1(F) + ' N'} · ${quien}`;
+const giroTxt = t => Math.abs(t) < 1e-9 ? '0 N·m' : `${N2(Math.abs(t))} N·m ${t > 0 ? '↺' : '↻'}`;
+
+// Leyenda: solo las variables que aparecen en la escena.
+const NOMBRES = { P:'P · peso (la Tierra)', N:'N · reacción del apoyo (empuja)', Nn:'N · normal (el piso)', f:'f · roce (el piso)', T:'T · tensión (la cuerda)',
+  T1:'T₁ · tensión de la cuerda 1', T2:'T₂ · tensión de la cuerda 2', F:'F · fuerza aplicada (por una mano o una persona)' };
+function leyenda(el, claves){
+  el.innerHTML = claves.map(k => {
+    if (k === 'brazo') return '<span><i class="cota"></i>brazo de una fuerza; arco: su giro τ, en el color de la fuerza (τ = fuerza × brazo)</span>';
+    if (k === 'O') return '<span><i style="background:var(--ink);width:8px;height:8px;border-radius:50%"></i>O · punto respecto al que se toman los giros</span>';
+    const col = k === 'T1' ? 'T' : k === 'Nn' ? 'N' : k;
+    return `<span><i style="background:var(--c-${col})"></i>${NOMBRES[k]}</span>`;
+  }).join('');
+}
+function lecturas(el, items){
+  el.innerHTML = items.map(([k, t]) => `<span class="lectura${k === 'suma' ? ' suma' : ''}" style="${k && k !== 'suma' ? `--k:var(--c-${k})` : ''}">${t}</span>`).join('');
+}
+function animarValor(dur, paso, listo){
+  if (RM){ paso(1); listo && listo(); return () => {}; }
+  let id, ini = performance.now();
+  const tick = now => { const f = Math.min(1, (now - ini)/dur); paso(f); if (f < 1) id = requestAnimationFrame(tick); else listo && listo(); };
+  id = requestAnimationFrame(tick);
+  return () => cancelAnimationFrame(id);
+}
+const opcionesHTML = (opts, idfb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idfb}" tabindex="-1"></p>`;
+
+/* ---------- Barra con apoyo ----------
+   P = { L, s (apoyo), phi (grados; sube B), barra: resultado de M.barra, cargas: [{ x, F, ver }], verP, verN, O (x del punto
+   de giros, o null para el apoyo), brazos, k (px por N), crece, hl, asas: ['apoyo', 'carga', 'O'], sobre } */
+function geoBarra(W, H, P){
+  const mx = W < 480 ? 30 : 42, kx = (W - 2*mx)/P.L, th = (P.phi || 0)*Math.PI/180;
+  const yb = Math.round(H*(P.yb || 0.44)), xs = mx + P.s*kx;
+  const pt = x => ({ x: xs + (x - P.s)*kx*Math.cos(th), y: yb - (x - P.s)*kx*Math.sin(th) });
+  return { mx, kx, th, yb, xs, pt, piso: H - 16 };
+}
+function vistaBarra(L, c, P){
+  const { ctx, W, H } = L; ctx.clearRect(0, 0, W, H);
+  const g = geoBarra(W, H, P), { pt, kx, yb, xs, th } = g, A = pt(0), B = pt(P.L), grosor = 12;
+  suelo(ctx, c, 4, W - 4, g.piso);
+  // Apoyo: un caballete con la punta justo debajo de la barra.
+  ctx.save(); ctx.fillStyle = c.suelo; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6;
+  ctx.beginPath(); ctx.moveTo(xs, yb + grosor/2); ctx.lineTo(xs - 16, yb + grosor/2 + 26); ctx.lineTo(xs + 16, yb + grosor/2 + 26); ctx.closePath(); ctx.fill(); ctx.stroke();
+  rr(ctx, xs - 5, yb + grosor/2 + 26, 10, g.piso - (yb + grosor/2 + 26), 2); ctx.fill(); ctx.stroke(); ctx.restore();
+  // Barra
+  ctx.save(); ctx.translate(xs, yb); ctx.rotate(-th);
+  ctx.fillStyle = c.madera; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; rr(ctx, (0 - P.s)*kx, -grosor/2, P.L*kx, grosor, 4); ctx.fill(); ctx.stroke();
+  // Regla: una marca por metro.
+  ctx.strokeStyle = c.ink; ctx.globalAlpha = .45; ctx.lineWidth = 1;
+  for (let x = 1; x < P.L - 1e-9; x += 1) linea(ctx, (x - P.s)*kx, -grosor/2 + 2, (x - P.s)*kx, grosor/2 - 2);
+  ctx.restore();
+  // A y B a los lados de los extremos; los metros, encima de la barra (debajo van las cuerdas y el apoyo).
+  if (P.pasador){ ctx.save(); ctx.beginPath(); ctx.arc(xs, yb, 3.6, 0, Math.PI*2); ctx.fillStyle = c.card; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.stroke(); ctx.restore(); }
+  rotulo(ctx, c, A.x - 11, A.y, 'A', c.ink, 'right', 800, W, H);
+  rotulo(ctx, c, B.x + 11, B.y, 'B', c.ink, 'left', 800, W, H);
+  if (P.regla && !th){
+    ctx.save(); ctx.font = `600 10px ${c.mono}`; ctx.fillStyle = c.muted; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+    for (let x = 1; x < P.L - 1e-9; x += 1) if (Math.abs(x - P.s) > 0.3 && !(P.O !== null && P.O !== undefined && Math.abs(x - P.O) < 0.3)) ctx.fillText(`${fmt(x, 0)} m`, pt(x).x, yb - grosor/2 - 3);
+    ctx.restore();
+  }
+  const k = P.k, cr = P.crece === undefined ? 1 : P.crece, lista = [], hl = P.hl;
+  const crec = v => v === 'nueva' ? cr : 1;
+  // Cuerdas y bloques colgados (dibujo; la fuerza sobre la barra es la tensión T de la cuerda).
+  (P.cargas || []).forEach(q => {
+    const p = pt(q.x), largo = clamp(H*0.2, 46, 84), yB = p.y + largo, lado = 26;
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; linea(ctx, p.x, p.y + grosor/2, p.x, yB - lado/2); ctx.restore();
+    bloque(ctx, c, p.x, yB, lado + 10, lado, q.ver === 'oculta' ? '?' : `${N1(q.F)} N`);
+    if (q.ver) lista.push({ x:p.x, y:p.y + grosor/2, dx:0, dy:1, F:q.F || 0, k, col:c.T, hl:hl === 'T', crece:crec(q.ver), oculta:q.ver === 'oculta', largoOculto:40,
+      txt:rot('T', q.F, 'cuerda', q.ver === 'oculta'), al:'left', ...(yB + lado/2 + 24 > g.piso ? { lx:p.x + (lado + 10)/2 + 6, ly:yB } : { lx:p.x - 14, ly:yB + lado/2 + 14 }) });
+  });
+  const b = P.barra, cg = pt(b.xcg);
+  if (P.verP) lista.push({ x:cg.x, y:cg.y + grosor/2, dx:0, dy:1, F:b.P, k, col:c.P, hl:hl === 'P', crece:crec(P.verP), txt:rot('P', b.P, 'Tierra'), al:'left', lx:cg.x + 8, ly:cg.y + grosor/2 + Math.min(b.P*k, 140) - 6 });
+  if (P.verN) lista.push({ x:xs, y:yb - grosor/2, dx:0, dy:-1, F:P.N, k, col:c.N, hl:hl === 'N', crece:crec(P.verN), oculta:P.verN === 'oculta', largoOculto:40, txt:rot('N', P.N, 'apoyo', P.verN === 'oculta'), al:'center' });
+  // Brazos y giros respecto a O (o al apoyo). Las fuerzas son verticales: el brazo es horizontal, a la altura de O.
+  if (P.brazos && P.mom){
+    const xo = P.O === null || P.O === undefined ? P.s : P.O, po = pt(xo);
+    const fs = P.mom.lista.filter(f => f.brazo > 1e-9 && (P.brazos === true || P.brazos.includes(f.nombre)));
+    const radio = { izq:0, der:0 };
+    fs.forEach((f, i) => {
+      const col = f.nombre === 'peso de la barra' ? c.P : f.F > 0 ? c.N : c.T;
+      const pf = pt(f.x), ycota = Math.min(po.y, pf.y) - 26 - 15*i, arriba = true;
+      cota(ctx, c, po.x, ycota, pf.x, ycota, col, `${N2(f.brazo)} m`, W, arriba);
+      ctx.save(); ctx.strokeStyle = col; ctx.globalAlpha = .5; ctx.setLineDash([2, 3]); ctx.lineWidth = 1; linea(ctx, pf.x, ycota, pf.x, pf.y); ctx.restore();
+      const lado = pf.x > po.x ? 1 : -1, sentido = (f.F < 0 ? 1 : -1)*lado, key = lado > 0 ? 'der' : 'izq';
+      const r = 20 + 9*radio[key]++, base = (lado > 0 ? 0 : Math.PI) - th, b0 = base - 0.62*sentido;
+      arcoGiro(ctx, po.x, po.y, r, b0, 1.24*sentido, col, 2.4);
+    });
+  }
+  lista.forEach(f => fuerza(ctx, c, f, W, H));
+  // Punto O
+  if (P.O !== null && P.O !== undefined){
+    const po = pt(P.O), s = P.sobre === 'O' ? 9 : 7;
+    ctx.save(); ctx.beginPath(); ctx.arc(po.x, po.y, s, 0, Math.PI*2); ctx.fillStyle = c.card; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2.4; ctx.stroke();
+    ctx.beginPath(); ctx.arc(po.x, po.y, 2.4, 0, Math.PI*2); ctx.fillStyle = c.ink; ctx.fill(); ctx.restore();
+    rotulo(ctx, c, po.x + 10, po.y - 16, 'O', c.ink, 'left', 800, W, H);
+  }
+  // Asas para arrastrar
+  (P.asas || []).forEach(a => {
+    const p = asaEn(W, H, P, a); if (!p) return;
+    ctx.save(); ctx.beginPath(); ctx.arc(p.x, p.y, P.sobre === a ? 11 : 9, 0, Math.PI*2); ctx.fillStyle = c.card; ctx.globalAlpha = .9; ctx.fill(); ctx.globalAlpha = 1;
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.setLineDash(P.teclado === a ? [] : [3, 2]); ctx.stroke(); ctx.restore();
+    ctx.save(); ctx.fillStyle = c.ink; ctx.font = `800 11px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('↔', p.x, p.y + 0.5); ctx.restore();
+  });
+  if (P.nota) rotulo(ctx, c, W/2, 14, P.nota, c.ink, 'center', 800, W, H);
+  return g;
+}
+function asaEn(W, H, P, a){
+  const g = geoBarra(W, H, P);
+  // El asa del apoyo va en su poste y la del bloque en su cuerda, lejos de los rótulos de las fuerzas.
+  if (a === 'apoyo') return { x:g.xs, y:g.yb + 6 + 48 };
+  if (a === 'carga'){ const p = g.pt(P.cargas[0].x); return { x:p.x, y:p.y + 6 + clamp(H*0.2, 46, 84)*0.62 }; }
+  if (a === 'O') return g.pt(P.O);
+  return null;
+}
+
+/* ---------- El bate de juguete y la balanza de platos ----------
+   P = { b: resultado de M.bate, corte (0 a 1: se separa), balanza (0 a 1: la balanza se inclina), ver: 'antes' | 'despues' } */
+function vistaBate(L, c, P){
+  const { ctx, W, H } = L; ctx.clearRect(0, 0, W, H);
+  const b = P.b, mx = W < 480 ? 34 : 60, kx = (W - 2*mx)/b.L, yb = Math.round(H*0.24);
+  const X = x => mx + x*kx, rMango = 4.5, rPunta = clamp(W*0.03, 10, 15);
+  const sep = (P.corte || 0)*16;
+  // Bate: mango delgado y cuerpo grueso (dos tramos parejos, como en el motor).
+  ctx.save(); ctx.fillStyle = c.madera; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; ctx.globalAlpha = P.corte ? 1 - 0.55*P.corte : 1;
+  rr(ctx, X(0) - sep, yb - rMango, b.corte*kx, 2*rMango, 3); ctx.fill(); ctx.stroke();
+  rr(ctx, X(b.corte) + sep, yb - rPunta, (b.L - b.corte)*kx, 2*rPunta, [3, rPunta, rPunta, 3]); ctx.fill(); ctx.stroke();
+  ctx.restore();
+  const xc = X(b.xcg);
+  // Dedo que lo sostiene
+  if (!P.corte){
+    ctx.save(); ctx.fillStyle = c.bloque; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; rr(ctx, xc - 7, yb + rMango + 1, 14, 34, 7); ctx.fill(); ctx.stroke(); ctx.restore();
+    rotulo(ctx, c, xc - 12, yb + rMango + 30, 'dedo', c.muted, 'right', 700, W, H);
+    // El peso llega al bate desde arriba, con la punta en el centro de gravedad; el dedo empuja desde abajo.
+    // Así las dos flechas van sobre la misma vertical sin taparse con el dedo.
+    const k = Math.min(W, H)*0.14/b.P, lp = b.P*k, yDedo = yb + rMango + 36;
+    fuerza(ctx, c, { x:xc, y:yb - rPunta - 2 - lp, dx:0, dy:1, F:b.P, k, col:c.P, txt:rot('P', b.P, 'Tierra'), al:'left', lx:xc + 8, ly:yb - rPunta - 2 - lp + 6 }, W, H);
+    fuerza(ctx, c, { x:xc, y:yDedo + 2 + lp, dx:0, dy:-1, F:b.P, k, col:c.N, txt:rot('N', b.P, 'dedo'), al:'left', lx:xc + 8, ly:yDedo + 2 + lp - 6 }, W, H);
+  }
+  // Línea del corte
+  ctx.save(); ctx.strokeStyle = c.ink; ctx.setLineDash([4, 4]); ctx.lineWidth = 1.4; linea(ctx, xc, yb - rPunta - 6 - (P.corte ? 0 : 0), xc, yb + rPunta + 6); ctx.restore();
+  if (!P.corte) rotulo(ctx, c, xc - 10, yb - rPunta - 10, 'se corta aquí ✂', c.ink, 'right', 800, W, H);
+  // Balanza de platos (brazos iguales)
+  const cx = W/2, yv = Math.round(H*0.62), brazo = clamp(W*0.3, 100, 190);
+  const tilt = (P.balanza || 0)*(b.masMasa === 'punta' ? 1 : b.masMasa === 'mango' ? -1 : 0)*0.16;
+  ctx.save(); ctx.strokeStyle = c.ink; ctx.fillStyle = c.suelo; ctx.lineWidth = 1.6;
+  ctx.beginPath(); ctx.moveTo(cx, yv); ctx.lineTo(cx - 22, H - 16); ctx.lineTo(cx + 22, H - 16); ctx.closePath(); ctx.fill(); ctx.stroke();
+  suelo(ctx, c, cx - 70, cx + 70, H - 16);
+  const ex = Math.cos(tilt)*brazo, ey = Math.sin(tilt)*brazo;
+  ctx.lineWidth = 3; linea(ctx, cx - ex, yv - ey, cx + ex, yv + ey);
+  ctx.beginPath(); ctx.arc(cx, yv, 4, 0, Math.PI*2); ctx.fillStyle = c.ink; ctx.fill();
+  const plato = (px, py, lado) => {
+    ctx.lineWidth = 1.2; linea(ctx, px, py, px - 26, py + 40); linea(ctx, px, py, px + 26, py + 40);
+    ctx.lineWidth = 2.4; linea(ctx, px - 32, py + 40, px + 32, py + 40);
+    return { x:px, y:py + 40, lado };
+  };
+  const pi = plato(cx - ex, yv - ey, 'mango'), pd = plato(cx + ex, yv + ey, 'punta');
+  ctx.restore();
+  if (P.corte >= 1){
+    ctx.save(); ctx.fillStyle = c.madera; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4;
+    const esc = Math.min(0.55, 72/(Math.max(b.mango.largo, b.punta.largo)*kx)), lm = b.mango.largo*kx*esc, lp = b.punta.largo*kx*esc;
+    rr(ctx, pi.x - lm/2, pi.y - 2*rMango - 1, lm, 2*rMango, 3); ctx.fill(); ctx.stroke();
+    const rp = rPunta*0.8; rr(ctx, pd.x - lp/2, pd.y - 2*rp - 1, lp, 2*rp, [3, rp, rp, 3]); ctx.fill(); ctx.stroke();
+    ctx.restore();
+    if ((P.balanza || 0) > 0.98){
+      rotulo(ctx, c, pi.x, pi.y + 16, `mango: ${N2(b.mango.m)} kg`, c.ink, 'center', 800, W, H);
+      rotulo(ctx, c, pd.x, pd.y + 16, `punta: ${N2(b.punta.m)} kg`, c.ink, 'center', 800, W, H);
+    }
+  } else rotulo(ctx, c, cx - brazo, yv + 58, 'balanza de platos', c.muted, 'center', 700, W, H);
+}
+
+/* ---------- Una fuerza inclinada en el extremo de una barra con eje ----------
+   P = { r: resultado de M.momentoFuerza, F, d, ang, ver: 'antes' | 'despues', crece } */
+function vistaLlave(L, c, P){
+  const { ctx, W, H } = L; ctx.clearRect(0, 0, W, H);
+  const ox = W < 480 ? 40 : 70, yb = Math.round(H*0.5), kx = (W - ox - (W < 480 ? 120 : 190))/P.d;
+  const E = { x: ox + P.d*kx, y: yb }, r = P.r, th = P.ang*Math.PI/180, u = { x: Math.cos(th), y: -Math.sin(th) };
+  const k = Math.min(W, H)*0.36/P.F, cr = P.crece === undefined ? 1 : P.crece, ve = P.ver === 'despues';
+  // Pared con el eje
+  ctx.save(); ctx.fillStyle = c.suelo; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; ctx.fillRect(ox - 34, yb - 60, 14, 120); linea(ctx, ox - 20, yb - 60, ox - 20, yb + 60);
+  ctx.fillStyle = c.bloque; rr(ctx, ox - 20, yb - 8, 18, 16, 3); ctx.fill(); ctx.stroke(); ctx.restore();
+  // Barra
+  ctx.save(); ctx.fillStyle = c.madera; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; rr(ctx, ox - 6, yb - 6, E.x - ox + 12, 12, 6); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.arc(ox, yb, 4.5, 0, Math.PI*2); ctx.fillStyle = c.card; ctx.fill(); ctx.stroke(); ctx.restore();
+  rotulo(ctx, c, ox + 2, yb + 22, 'eje', c.ink, 'center', 800, W, H);
+  // Distancia del eje a donde se aplica la fuerza (tinta)
+  ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.2; const yc = yb - 26;
+  linea(ctx, ox, yc, E.x, yc); linea(ctx, ox, yc - 5, ox, yc + 5); linea(ctx, E.x, yc - 5, E.x, yc + 5); ctx.restore();
+  rotulo(ctx, c, (ox + E.x)/2, yc - 11, `${N2(P.d)} m`, c.ink, 'center', 800, W, H);
+  // Ángulo con la barra
+  ctx.save(); ctx.strokeStyle = c.ink; ctx.setLineDash([3, 4]); ctx.globalAlpha = .55; linea(ctx, E.x, yb, E.x + 70, yb); ctx.setLineDash([]); ctx.globalAlpha = 1;
+  ctx.lineWidth = 1.3; ctx.beginPath(); ctx.arc(E.x, yb, 34, -th, 0); ctx.stroke(); ctx.restore();
+  rotulo(ctx, c, E.x + 40, yb - 12*Math.sin(th/2) - 6, `${fmt(P.ang, 0)}°`, c.ink, 'left', 800, W, H);
+  if (ve){
+    // Línea de acción, brazo y componentes
+    const pie = { x: ox + r.pie.x*kx, y: yb - r.pie.y*kx };
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.setLineDash([5, 5]); ctx.lineWidth = 1.2;
+    linea(ctx, E.x + u.x*90, E.y + u.y*90, pie.x - u.x*26, pie.y - u.y*26); ctx.restore();
+    if (cr > 0.02){
+      const q = { x: ox + (pie.x - ox)*cr, y: yb + (pie.y - yb)*cr };
+      cota(ctx, c, ox, yb, q.x, q.y, c.F, cr > 0.98 ? `brazo ${N2(r.brazo)} m` : '', W, false);
+      if (cr > 0.98){
+        // Marca de ángulo recto en el pie
+        const s = 8, a = { x: (ox - pie.x)/Math.hypot(ox - pie.x, yb - pie.y), y: (yb - pie.y)/Math.hypot(ox - pie.x, yb - pie.y) };
+        ctx.save(); ctx.strokeStyle = c.F; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.moveTo(pie.x + a.x*s, pie.y + a.y*s); ctx.lineTo(pie.x + a.x*s + u.x*s, pie.y + a.y*s + u.y*s); ctx.lineTo(pie.x + u.x*s, pie.y + u.y*s); ctx.stroke(); ctx.restore();
+      }
+    }
+    fuerza(ctx, c, { x:E.x, y:E.y, dx:0, dy:-1, F:r.Fperp, k, col:c.F, fina:true, crece:cr, txt:`${N1(r.Fperp)} N`, al:'right', ox:-6, oy:4 }, W, H);
+    fuerza(ctx, c, { x:E.x, y:E.y, dx:1, dy:0, F:r.Fpar, k, col:c.F, fina:true, crece:cr, txt:`${N1(r.Fpar)} N`, al:'left', oy:12 }, W, H);
+    if (cr > 0.98) arcoGiro(ctx, ox, yb, 30, 0.55, -1.5, c.F, 2.6);
+  }
+  fuerza(ctx, c, { x:E.x, y:E.y, dx:u.x, dy:u.y, F:P.F, k, col:c.F, hl:P.hl === 'F', txt:rot('F', P.F, 'mano'), al:'left', ox:-4 }, W, H);
+}
+</script>
+<script>
+/* ================= MODO 1: paso a paso =================
+   Problema guiado de docs/investigacion/estatica-energia-ideas-erroneas.md (Balanza): barra homogénea de 6 m y 30 kg
+   apoyada a 2 m de A. ¿Qué peso se cuelga en A? */
+(function(){
+const $ = id => document.getElementById(id);
+const cv = $('cv');
+const GUIA = { L:6, m:30, apoyos:[{ x:2, nombre:'apoyo' }], cargas:[{ x:0, F:'?', nombre:'cuerda' }] };
+const guia = M.barra(GUIA);                                  // carga en A y reacción
+const CON = { L:6, m:30, apoyos:[{ x:2, nombre:'apoyo' }], cargas:[{ x:0, F:guia.incognita, nombre:'cuerda' }] };
+const INCL = 16;                                             // grados que se inclina en el paso 5
+const BATE = M.bate({ tramos:[{ largo:0.6, m:0.3 }, { largo:0.3, m:0.6 }] });
+const LLAVE = { F:50, d:2, angulo:37 }, llave = M.momentoFuerza(LLAVE);
+const S = { step:0, max:0, pred:{}, hl:null, crece:1, ocupado:false, O:0, corte:0, bal:0,
+  ex:{ s:2, c:0, W:150 }, teclado:'apoyo', arrastra:null, sobre:null };
+let parar = () => {};
+const L = crearLienzo(cv, altoLienzo, draw);
+
+const P1 = { id:'estatica-peso-en-A', ok:'b',
+  opts:[['a','100 N','E1-mismo-peso-a-cada-lado','parcial'], ['b','150 N',null,''],
+        ['c','300 N','igualar-pesos-sin-distancias','hipotesis'], ['d','600 N','peso-de-la-barra-en-su-extremo','hipotesis']],
+  fb:{ b:'¡Bien! Lo que se iguala es el giro: 150 N con 2 m de brazo hacen girar tanto como los 300 N de la barra con 1 m.',
+       a:'Elegiste la A. Con 100 N habría el mismo peso a cada lado del apoyo (100 N de barra más 100 N colgados, contra 200 N de barra), pero lo que tiene que ser igual es el giro, no el peso. La barra giraría hacia B. La correcta está marcada.',
+       c:'Elegiste la C. 300 N iguala el peso de la barra, pero sin mirar las distancias: el bloque cuelga a 2 m del apoyo y el peso de la barra actúa a 1 m. La correcta está marcada.',
+       d:'Elegiste la D. 600 N sale de poner el peso de la barra en su extremo B, a 4 m del apoyo. Pero el peso de una barra pareja actúa en su centro, a 1 m del apoyo. La correcta está marcada.' } };
+const P2 = { id:'estatica-reaccion', ok:'d',
+  opts:[['a','0 N','E4-sin-giro-sin-fuerza','parcial'], ['b','150 N','restar-las-fuerzas','hipotesis'],
+        ['c','300 N','reaccion-sin-la-carga','hipotesis'], ['d','450 N',null,'']],
+  fb:{ d:'¡Bien! El apoyo sostiene todo lo que cuelga y todo lo que pesa: 300 + 150 = 450 N hacia arriba.',
+       a:'Elegiste la A. Que los giros se cancelen no quiere decir que el apoyo no haga fuerza: sin él, la barra caería entera. Giro y fuerza son cosas distintas. La correcta está marcada.',
+       b:'Elegiste la B. 300 − 150 resta las dos fuerzas, pero las dos tiran hacia abajo: se suman. La correcta está marcada.',
+       c:'Elegiste la C. 300 N es solo el peso de la barra; el apoyo también sostiene los 150 N del bloque. La correcta está marcada.' } };
+const P3 = { id:'estatica-inclinada', ok:'c',
+  opts:[['a','Vuelve sola a quedar horizontal, porque solo así está en equilibrio.','E3-equilibrio-es-horizontal','parcial'],
+        ['b','Baja el lado de A hasta el suelo, porque el extremo que queda más bajo gana.','el-lado-bajo-gana','hipotesis'],
+        ['c','Se queda quieta e inclinada, porque los dos giros siguen siendo iguales.',null,''],
+        ['d','Baja el lado de B, porque al inclinarla su brazo largo pesa más.','al-inclinar-gana-el-brazo-largo','hipotesis']],
+  fb:{ c:'¡Bien! Al inclinarla, los dos brazos se acortan en la misma proporción, así que los giros siguen siendo iguales. Equilibrio no es estar horizontal: es no girar.',
+       a:'Elegiste la A. Un cuerpo en reposo que no gira está en equilibrio, esté horizontal o inclinado. Aquí nada la empuja a volver. La correcta está marcada.',
+       b:'Elegiste la B. Que A quede más abajo no le da más giro: los brazos se miden en horizontal y se acortan igual a los dos lados. La correcta está marcada.',
+       d:'Elegiste la D. Al inclinarla, el brazo de cada fuerza se acorta, y se acorta en la misma proporción a los dos lados. La correcta está marcada.' } };
+const P4 = { id:'estatica-bate', ok:'c',
+  opts:[['a','Pesan lo mismo, porque el bate estaba en equilibrio.','E1-mismo-peso-a-cada-lado','documentado'],
+        ['b','La del mango, porque es más larga.','mas-largo-mas-masa','hipotesis'],
+        ['c','La de la punta, porque su peso actúa más cerca del corte.',null,''],
+        ['d','La del mango, porque su peso actúa más lejos del corte y hace más giro.','giro-mayor-mas-peso','hipotesis']],
+  fb:{ c:'¡Bien! El equilibrio iguala los giros, no las masas. La punta, que es gruesa, tiene su peso más cerca del corte, así que necesita más peso para girar lo mismo.',
+       a:'Elegiste la A. En equilibrio se igualan los giros respecto al corte, no los pesos. La parte del mango tiene su peso lejos del corte y le basta con menos. La correcta está marcada.',
+       b:'Elegiste la B. Más larga no es más pesada: el mango es delgado. Y al ser larga, su peso actúa lejos del corte, así que le basta con menos peso para equilibrar. La correcta está marcada.',
+       d:'Elegiste la D. Respecto al corte, las dos partes giran lo mismo: por eso el bate estaba en equilibrio. El mango tiene su peso lejos del corte, así que le basta con menos masa. La correcta está marcada.' } };
+const P5 = { id:'estatica-fuerza-inclinada', ok:'b',
+  opts:[['a','30 N·m','olvidar-la-distancia','hipotesis'], ['b','60 N·m',null,''],
+        ['c','80 N·m','coseno-en-vez-de-seno','hipotesis'], ['d','100 N·m','sin-el-seno','hipotesis']],
+  fb:{ b:'¡Bien! El brazo es la distancia perpendicular del eje a la línea de la fuerza: 2·sen 37° = 1,2 m. Y 50·1,2 = 60 N·m.',
+       a:'Elegiste la A. 30 N es la parte de la fuerza que hace girar, pero falta multiplicarla por su distancia al eje, 2 m. La correcta está marcada.',
+       c:'Elegiste la C. 80 N·m usa el coseno: esa parte de la fuerza va a lo largo de la barra, sobre una línea que pasa por el eje, así que no gira nada. La correcta está marcada.',
+       d:'Elegiste la D. 50·2 = 100 N·m valdría si la fuerza fuera perpendicular a la barra. Inclinada, gira menos. La correcta está marcada.' } };
+
+const fuente = t => `<p class="fuente">${t}</p>`;
+// Qué se dibuja en cada paso: vista() da la configuración; antes y después de responder cambian 'ver'.
+const steps = [
+ { k:'Paso 1', t:'El problema', ley:['P','T'],
+   vista:() => ({ tipo:'barra', cargas:[{ x:0, ver:'oculta' }], verP:'si' }),
+   body:() => `<p class="problem">Una barra homogénea de 6 m y ${V('m','30 kg')} se apoya a 2 m de su extremo A. ¿Qué peso hay que colgar en A para que la barra quede horizontal? Usa g = 10 m/s².</p>
+   <p>El ${V('P','peso')} de la barra, 30·10 = ${V('P','300 N')}, lo ejerce la Tierra. Como la barra es pareja, actúa en su centro: a 3 m de A. Ahí está su centro de gravedad, y ahí se dibuja siempre, no en un extremo.</p>
+   <p>El bloque colgado jala la barra a través de su cuerda: sobre la barra, esa fuerza es la ${V('T','tensión')} de la cuerda, igual al peso del bloque. Toca o pasa el puntero sobre un dato para ver dónde está.</p>`,
+   lect:() => [],
+   desc:() => 'Una barra de 6 metros apoyada a 2 metros del extremo A. Su peso de 300 newtons está en el centro, a 3 metros de A. De A cuelga un bloque de peso desconocido.' },
+ { k:'Paso 2', t:'¿Qué peso se cuelga en A?', gate:P1, ley:['P','T'], leyDespues:['P','T','brazo'],
+   vista:() => S.pred[P1.id] ? { tipo:'barra', cargas:[{ x:0, F:guia.incognita, ver:'nueva' }], verP:'si', brazos:true, mom:M.momentoNeto(CON, 2) }
+                             : { tipo:'barra', cargas:[{ x:0, ver:'oculta' }], verP:'si' },
+   body:() => `<p>¿Qué peso hay que colgar en A para que la barra no gire?</p>${opcionesHTML(P1.opts, 'fb')}<div id="res" class="body"></div>`,
+   exp:() => { const m = M.momentoNeto(CON, 2).lista, tP = m[0], tT = m[1];
+     return `<div class="eqs">
+       <div class="eq">giro de ${V('T','T')}: ${V('T','T')} · ${V('T', N2(tT.brazo) + ' m')} <span class="note">↺, baja A</span></div>
+       <div class="eq">giro de ${V('P','P')}: ${V('P','300')} · ${V('P', N2(tP.brazo) + ' m')} = ${V('P', giroTxt(tP.tau))}</div>
+       <div class="eq">${V('T','T')} · 2 = 300 · 1 → ${V('T','T')} = ${V('T', N1(guia.incognita) + ' N')}</div>
+     </div>
+     <p>Cada fuerza hace girar la barra alrededor del apoyo, y gira más cuanto más lejos actúa. Su giro, o momento τ, es la fuerza por su <b>brazo</b>: la distancia del apoyo a la línea de la fuerza. En el dibujo, cada brazo es una línea con topes y cada giro, un arco, en el color de su fuerza.</p>
+     <p>A la izquierda del apoyo hay menos barra (2 m contra 4 m), pero eso no importa: lo que cuenta es dónde actúa el peso entero de la barra, su centro.</p>
+     ${fuente('Igualar lo que hay a cada lado del apoyo es la cara numérica de un error documentado con el bate (paso 6): la mayoría de más de 1000 universitarios dijo que las dos partes pesan igual (Ortiz, Heron y Shaffer, 2005), cerca del 80 % según un póster que cita ese estudio. En esta barra no está medido. Las opciones de 300 N y 600 N son errores que suponemos.')}`; },
+   lect:() => S.pred[P1.id] ? (() => { const m = M.momentoNeto(CON, 2).lista; return [['T', `τ de T = ${N1(m[1].F*-1)} × ${N2(m[1].brazo)} = ${giroTxt(m[1].tau)}`], ['P', `τ de P = 300 × ${N2(m[0].brazo)} = ${giroTxt(m[0].tau)}`]]; })() : [],
+   desc:() => S.pred[P1.id] ? 'En A cuelgan 150 newtons, a 2 metros del apoyo: giran 300 newton metro en sentido antihorario. El peso de la barra, 300 newtons a 1 metro del apoyo, gira 300 newton metro en sentido horario.' : 'Una barra de 6 metros apoyada a 2 metros de A, con su peso de 300 newtons en el centro. El peso del bloque en A todavía no se muestra.' },
+ { k:'Paso 3', t:'¿Cuánto empuja el apoyo?', gate:P2, ley:['P','T','N'],
+   vista:() => ({ tipo:'barra', cargas:[{ x:0, F:guia.incognita, ver:'si' }], verP:'si', verN:S.pred[P2.id] ? 'nueva' : 'oculta', N:guia.R }),
+   body:() => `<p>Ya cuelgan ${V('T','150 N')} en A. ¿Con qué fuerza ${V('N','N')} empuja el apoyo a la barra hacia arriba?</p>${opcionesHTML(P2.opts, 'fb')}<div id="res" class="body"></div>`,
+   exp:() => `<div class="eqs"><div class="eq">ΣF = 0: ${V('N','N')} = ${V('P','300')} + ${V('T','150')} = ${V('N', N1(guia.R) + ' N')}<span class="note">las dos tiran hacia abajo</span></div></div>
+     <p class="answer">Respuesta: en A se cuelgan 150 N, y el apoyo empuja con 450 N.</p>
+     <p>Hay dos condiciones de equilibrio, y se usan las dos: las fuerzas suman cero (no se traslada) y los giros suman cero (no gira). La ${V('N','reacción')} no gira nada respecto al apoyo porque actúa justo ahí: su brazo es cero.</p>
+     ${fuente('Las opciones incorrectas son errores que suponemos, sin estudio con porcentaje. La de 0 N mezcla giro y fuerza: Rimoldini y Singh (2005) encontraron en entrevistas que muchos estudiantes tratan el momento y la fuerza como si fueran lo mismo, sin dar un porcentaje.')}`,
+   lect:() => [],
+   desc:() => S.pred[P2.id] ? 'El apoyo empuja hacia arriba con 450 newtons: sostiene los 300 de la barra y los 150 del bloque.' : 'Cuelgan 150 newtons en A y el peso de la barra es de 300 newtons. La fuerza del apoyo todavía no tiene valor.' },
+ { k:'Paso 4', t:'Respecto a cualquier punto', ley:['P','T','N','brazo','O'], drag:'O',
+   vista:() => ({ tipo:'barra', cargas:[{ x:0, F:guia.incognita, ver:'si' }], verP:'si', verN:'si', N:guia.R, O:S.O, brazos:true, mom:M.momentoNeto(CON, S.O) }),
+   body:() => `<p>Los giros se pueden tomar respecto a <b>cualquier</b> punto O, no solo respecto al apoyo. Arrastra el punto O por la barra (o elige uno abajo): cada giro cambia, pero la suma sigue en cero.</p>
+     <div class="seg" id="ptos" role="group" aria-label="Punto respecto al que se toman los giros">
+       <button type="button" data-x="0">O en A</button><button type="button" data-x="2">en el apoyo</button><button type="button" data-x="3">en el centro</button><button type="button" data-x="6">en B</button></div>
+     <div id="vivoO" class="eqs"></div>
+     <p>Una sola regla: <b>todos</b> los giros de una suma se toman respecto al mismo punto. Elegir el apoyo es cómodo porque la ${V('N','reacción')} desaparece de la cuenta, pero cualquier punto da la misma respuesta.</p>
+     ${fuente('Tomar cada momento respecto a un punto distinto en la misma suma está reportado en entrevistas por Rimoldini y Singh (2005), sin porcentaje.')}`,
+   lect:() => { const m = M.momentoNeto(CON, S.O); return [['T', `τ de T ${giroTxt(m.lista[1].tau)}`], ['P', `τ de P ${giroTxt(m.lista[0].tau)}`], ['N', `τ de N ${giroTxt(m.lista[2].tau)}`], ['suma', `Στ = ${giroTxt(m.neto)}`]]; },
+   desc:() => { const m = M.momentoNeto(CON, S.O); return `Punto O a ${N2(S.O)} metros de A. Giro de la tensión ${N2(m.lista[1].tau)}, del peso ${N2(m.lista[0].tau)}, de la reacción ${N2(m.lista[2].tau)} newton metro. La suma es cero.`; } },
+ { k:'Paso 5', t:'¿Y si se inclina?', gate:P3, ley:['P','T','N'], leyDespues:['P','T','N','brazo'],
+   vista:() => { const b = M.barra(Object.assign({ inclinacion:INCL }, CON));
+     return { tipo:'barra', pasador:true, phi:INCL, cargas:[{ x:0, F:guia.incognita, ver:'si' }], verP:'si', verN:'si', N:b.R, brazos:!!S.pred[P3.id], mom:b.momentos(2), barra:b, yb:0.5 }; },
+   body:() => `<p>Con los ${V('T','150 N')} colgados en A, alguien inclina la barra ${INCL}° (sube el extremo B) y la suelta. La barra es delgada y gira alrededor de un pasador que la atraviesa justo en el apoyo. ¿Qué hace la barra?</p>${opcionesHTML(P3.opts, 'fb')}<div id="res" class="body"></div>`,
+   exp:() => { const b = M.barra(Object.assign({ inclinacion:INCL }, CON)), m = b.momentos(2).lista;
+     return `<div class="eqs">
+       <div class="eq">brazo de ${V('T','T')}: 2 · cos ${INCL}° = ${V('T', N2(m[1].brazo) + ' m')}; giro ${V('T', giroTxt(m[1].tau))}</div>
+       <div class="eq">brazo de ${V('P','P')}: 1 · cos ${INCL}° = ${V('P', N2(m[0].brazo) + ' m')}; giro ${V('P', giroTxt(m[0].tau))}</div>
+       <div class="eq">Στ = ${giroTxt(b.momentos(2).neto)}<span class="note">sigue en equilibrio</span></div></div>
+     <p>Las fuerzas siguen siendo verticales, así que cada brazo se mide en horizontal, desde el apoyo hasta la línea de la fuerza. Al inclinar la barra, los dos brazos se acortan por el mismo factor, cos ${INCL}° = 24/25. Los giros se achican igual y siguen cancelándose: la barra se queda quieta, inclinada. Aunque el bloque cuelga más abajo, su cuerda jala en A, que está en la línea del pasador.</p>
+     ${fuente('Tratar al cuerpo inclinado y en reposo como un caso distinto del horizontal es una idea que, según el resumen de Ortiz, Heron y Shaffer (2005), tienen muchos estudiantes; el resumen no da porcentaje. Las otras dos opciones son errores que suponemos.')}`; },
+   lect:() => { if (!S.pred[P3.id]) return []; const b = M.barra(Object.assign({ inclinacion:INCL }, CON)), m = b.momentos(2).lista; return [['T', `τ de T ${giroTxt(m[1].tau)}`], ['P', `τ de P ${giroTxt(m[0].tau)}`], ['suma', `Στ = ${giroTxt(b.momentos(2).neto)}`]]; },
+   desc:() => S.pred[P3.id] ? 'La barra se queda quieta, inclinada 16 grados. Los brazos horizontales miden 1,92 y 0,96 metros, y los dos giros valen 288 newton metro, en sentidos opuestos.' : 'La barra inclinada 16 grados, con el extremo B arriba, 150 newtons colgados en A, su peso de 300 newtons en el centro y el apoyo. Todavía no se muestra qué pasa al soltarla.' },
+ { k:'Paso 6', t:'Un bate que no es parejo', gate:P4, ley:['P','N'], leyDespues:[],
+   vista:() => ({ tipo:'bate' }),
+   body:() => `<p>Un bate de juguete de ${N2(BATE.L)} m tiene un mango delgado y una punta gruesa. Se equilibra sobre un dedo a ${N2(BATE.xcg)} m del extremo del mango: ahí está su centro de gravedad. Se corta justo ahí y cada parte va a un plato de una balanza. ¿Qué parte pesa más?</p>${opcionesHTML(P4.opts, 'fb')}<div id="res" class="body"></div>`,
+   exp:() => `<div class="eqs">
+       <div class="eq">mango: ${N2(BATE.mango.m)} kg, su centro a ${N2(BATE.mango.brazo)} m del corte → ${N2(BATE.mango.P)} N · ${N2(BATE.mango.brazo)} m = ${N2(BATE.mango.tau)} N·m</div>
+       <div class="eq">punta: ${N2(BATE.punta.m)} kg, su centro a ${N2(BATE.punta.brazo)} m del corte → ${N2(BATE.punta.P)} N · ${N2(BATE.punta.brazo)} m = ${N2(Math.abs(BATE.punta.tau))} N·m</div></div>
+     <p>Las dos partes giran lo mismo respecto al corte, y por eso el bate estaba en equilibrio. Pero la punta tiene su peso más cerca del corte: para girar lo mismo necesita el doble de masa. En la balanza de platos, que tiene brazos iguales, la punta baja.</p>
+     ${fuente('Es la idea errónea más fuerte de estática que encontramos: con el bate, la mayoría de más de 1000 universitarios, después del curso, dijo que las dos partes pesan igual (Ortiz, Heron y Shaffer, 2005); según un póster de Fischer y otros (2014) que cita ese estudio, fue cerca del 80 %. Con dos cajas sobre una tabla, en cambio, alrededor del 95 % acierta en el estudio de Ortiz (70 % en los grupos de Fischer): el error aparece cuando la masa está repartida.')}`,
+   lect:() => [],
+   desc:() => S.pred[P4.id] ? `El bate cortado: el mango pesa ${N2(BATE.mango.m)} kilogramos y la punta ${N2(BATE.punta.m)}. En la balanza baja el plato de la punta.` : 'Un bate de 0,9 metros con el mango delgado y la punta gruesa, equilibrado sobre un dedo a 0,6 metros del extremo del mango. Debajo, una balanza de platos vacía.' },
+ { k:'Paso 7', t:'Una fuerza inclinada', gate:P5, ley:['F'], leyDespues:['F','brazo'],
+   vista:() => ({ tipo:'llave' }),
+   body:() => `<p>Una barra puede girar alrededor de un eje en su extremo. A ${N2(LLAVE.d)} m del eje se jala con ${V('F','F = ' + LLAVE.F + ' N')}, formando ${LLAVE.angulo}° con la barra. ¿Cuánto vale el giro (el momento) de ${V('F','F')} respecto al eje? Usa sen 37° = 3/5.</p>${opcionesHTML(P5.opts, 'fb')}<div id="res" class="body"></div>`,
+   exp:() => `<div class="eqs">
+       <div class="eq">brazo = ${N2(LLAVE.d)} · sen 37° = ${V('F', N2(llave.brazo) + ' m')}</div>
+       <div class="eq">τ = ${V('F','50')} · ${V('F', N2(llave.brazo))} = ${V('F', N2(llave.tau) + ' N·m')} ↺</div>
+       <div class="eq">otra forma: (${V('F','50')} · sen 37°) · ${N2(LLAVE.d)} = ${V('F', N1(llave.Fperp))} · ${N2(LLAVE.d)} = ${N2(llave.tau)} N·m</div></div>
+     <p>El brazo no es la distancia hasta donde se aplica la fuerza: es la distancia perpendicular del eje a la <b>línea</b> de la fuerza (a trazos). Otra forma de verlo: de la fuerza, solo la parte perpendicular a la barra, ${N1(llave.Fperp)} N, hace girar; la parte a lo largo, ${N1(llave.Fpar)} N, va sobre una línea que pasa por el eje y no gira nada.</p>
+     ${fuente('Olvidar el seno, o usar el coseno, son errores que suponemos: no encontramos un estudio que los mida en estudiantes.')}`,
+   lect:() => S.pred[P5.id] ? [['F', `τ de F = ${N2(llave.tau)} N·m ↺`]] : [],
+   desc:() => S.pred[P5.id] ? 'El brazo de la fuerza es la perpendicular del eje a su línea: 1,2 metros. El momento vale 60 newton metro, antihorario.' : 'Una barra con un eje en el extremo izquierdo. A 2 metros del eje, una mano jala con 50 newtons formando 37 grados con la barra.' },
+ { k:'Paso 8', t:'Ahora explora tú', ley:['P','T','N','brazo'], drag:'explora', explora:true,
+   vista:() => { const e = S.ex, o = { L:6, m:30, apoyos:[{ x:e.s, nombre:'apoyo' }], cargas:[{ x:e.c, F:e.W, nombre:'cuerda' }] }, b = M.barra(o);
+     return { tipo:'barra', regla:true, cargas:[{ x:e.c, F:e.W, ver:'si' }], verP:'si', verN:'si', N:b.R, brazos:true, mom:b.momentos(e.s), barra:b, s:e.s, k:Math.min(L.W, L.H)*0.3/700,
+       asas:['apoyo', 'carga'], nota:b.equilibrio ? 'en equilibrio' : `no se equilibra: gira ${b.gira === 'horario' ? '↻, baja el lado derecho' : '↺, baja el lado izquierdo'}` }; },
+   body:() => `<div class="ctrls">
+       <div class="slider"><label for="e-W"><span>Peso colgado (${V('T','T')})</span><output id="e-W-o"></output></label><input id="e-W" class="r-T" type="range" min="0" max="600" step="10" value="${S.ex.W}"></div></div>
+     <p class="hint">Arrastra el apoyo (debajo de la barra) o el punto de donde cuelga el bloque. Con el teclado, enfoca el dibujo y usa ← →; elige aquí qué mueves:</p>
+     <div class="seg" id="tecla" role="group" aria-label="Qué mueven las flechas del teclado"><button type="button" data-a="apoyo">el apoyo</button><button type="button" data-a="carga">el bloque</button></div>
+     <div id="live" class="body"></div>`,
+   lect:() => { const e = S.ex, b = M.barra({ L:6, m:30, apoyos:[{ x:e.s }], cargas:[{ x:e.c, F:e.W }] }), m = b.momentos(e.s);
+     return [['T', `τ de T ${giroTxt(m.lista[1].tau)}`], ['P', `τ de P ${giroTxt(m.lista[0].tau)}`], ['suma', `Στ = ${giroTxt(m.neto)}`]]; },
+   desc:() => '' },
+];
+const vistaDe = s => Object.assign({ L:6, s:2, phi:0, barra:guia, N:guia.R, k:Math.min(L.W, L.H)*0.34/450, regla:true }, s.vista());
+function verActual(){ return vistaDe(steps[S.step]); }
+function draw(){
+  if (!L.W) return;
+  const c = colores(L.W), s = steps[S.step], v = verActual();
+  v.crece = S.crece; v.hl = S.hl; v.sobre = S.sobre; v.teclado = s.explora ? S.teclado : null;
+  if (v.tipo === 'barra') vistaBarra(L, c, v);
+  else if (v.tipo === 'bate') vistaBate(L, c, { b:BATE, corte:S.pred[P4.id] ? S.corte : 0, balanza:S.pred[P4.id] ? S.bal : 0 });
+  else if (v.tipo === 'llave') vistaLlave(L, c, { r:llave, F:LLAVE.F, d:LLAVE.d, ang:LLAVE.angulo, ver:S.pred[P5.id] ? 'despues' : 'antes', crece:S.crece, hl:S.hl });
+  lecturas($('lect1'), s.lect());
+  decir($('desc1'), s.explora ? resumen() : s.desc());
+}
+function resumen(){
+  const e = S.ex, b = M.barra({ L:6, m:30, apoyos:[{ x:e.s }], cargas:[{ x:e.c, F:e.W }] });
+  return `Apoyo a ${N2(e.s)} metros de A, bloque de ${N1(e.W)} newtons a ${N2(e.c)} metros de A. ` + (b.equilibrio ? 'La barra está en equilibrio.' : `No se equilibra: gira en sentido ${b.gira}. Giro neto ${N2(Math.abs(b.momentoApoyo))} newton metro.`);
+}
+const dots = $('dots');
+steps.forEach((s, n) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = n + 1; b.setAttribute('aria-label', `Ir al ${s.k.toLowerCase()}: ${s.t}`);
+  b.addEventListener('click', () => go(n)); li.appendChild(b); dots.appendChild(li);
+});
+function go(n){
+  if (n < 0 || n >= steps.length || n > S.max) return;
+  parar(); S.ocupado = false;
+  const s = steps[n]; S.step = n; S.hl = null; S.crece = 1; S.sobre = null; S.arrastra = null;
+  if (s.gate === P4){ S.corte = S.pred[P4.id] ? 1 : 0; S.bal = S.corte; }
+  cv.tabIndex = s.drag ? 0 : -1;
+  cv.setAttribute('aria-label', s.drag === 'O' ? 'Barra con el punto O: con las flechas del teclado lo mueves' : s.explora ? 'Barra del explorador: con las flechas del teclado mueves el apoyo o el bloque' : 'Dibujo del paso, con las fuerzas que actúan');
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  ponerLeyenda();
+  pintarDots();
+  L.compactar(!!(s.gate && !S.pred[s.gate.id]));
+  if (s.gate) prediccion(s);
+  if (s.drag === 'O') puntoO();
+  if (s.explora) explorar();
+  nav(); draw();
+}
+function ponerLeyenda(){ const s = steps[S.step]; leyenda($('ley1'), s.gate && S.pred[s.gate.id] && s.leyDespues ? s.leyDespues : s.ley); }
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0;
+  const falta = s.gate && !S.pred[s.gate.id];
+  $('next').disabled = S.step === steps.length - 1 || falta || S.ocupado;
+  $('next').textContent = falta ? 'Elige una opción' : 'Siguiente';
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(n){ if (n > S.max) S.max = n; }
+function animarRespuesta(s){
+  if (s.gate === P4){
+    S.corte = 0; S.bal = 0;
+    parar = animarValor(500, f => { S.corte = f; draw(); }, () => { parar = animarValor(700, f => { S.bal = f; draw(); }, fin); });
+  } else parar = animarValor(600, f => { S.crece = f; draw(); }, fin);
+  function fin(){ S.ocupado = false; nav(); draw(); $('next').focus({ preventScroll:true }); }
+}
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('res').innerHTML = s.exp();
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1);
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    S.ocupado = true; S.crece = 0; if (s.gate === P4){ S.corte = 0; S.bal = 0; }
+    pintar(); pintarDots(); nav(); ponerLeyenda();
+    $('fb').focus({ preventScroll:true });
+    // En el celular, el dibujo deja de estar pegado arriba y se lleva a la vista antes de animar.
+    const paso = S.step, ch = chico();
+    L.compactar(false);
+    if (ch) cv.scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+    draw();
+    esperar(ch ? 380 : 0, () => {
+      if (S.step !== paso){ S.ocupado = false; nav(); return; }
+      animarRespuesta(s);
+    });
+  }));
+  pintar();
+}
+
+// ----- paso 4: el punto O -----
+function puntoO(){
+  const pintarO = () => {
+    $('ptos').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(Math.abs(+b.dataset.x - S.O) < 1e-9)));
+    const m = M.momentoNeto(CON, S.O), l = m.lista;
+    $('vivoO').innerHTML = `<div class="eq">O a ${N2(S.O)} m de A</div>
+      <div class="eq">${V('T','τ de T')} = ${giroTxt(l[1].tau)}</div><div class="eq">${V('P','τ de P')} = ${giroTxt(l[0].tau)}</div><div class="eq">${V('N','τ de N')} = ${giroTxt(l[2].tau)}</div>
+      <div class="eq">Στ = ${giroTxt(m.neto)}<span class="note">respecto a cualquier punto</span></div>`;
+    draw();
+  };
+  $('ptos').querySelectorAll('button').forEach(b => b.onclick = () => { S.O = +b.dataset.x; pintarO(); });
+  S.alMover = pintarO; pintarO();
+}
+// ----- paso 8: explorador -----
+function explorar(){
+  $('e-W').addEventListener('input', () => { S.ex.W = +$('e-W').value; vivo(); });
+  $('tecla').querySelectorAll('button').forEach(b => b.onclick = () => { S.teclado = b.dataset.a; marcarTecla(); draw(); });
+  S.alMover = vivo; marcarTecla(); vivo();
+}
+function marcarTecla(){ $('tecla').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.a === S.teclado))); }
+function vivo(){
+  const e = S.ex, o = { L:6, m:30, apoyos:[{ x:e.s }], cargas:[{ x:e.c, F:e.W }] }, b = M.barra(o), m = b.momentos(e.s);
+  $('e-W-o').textContent = `${N1(e.W)} N`;
+  let falta = '';
+  try { const q = M.barra({ L:6, m:30, apoyos:[{ x:e.s }], cargas:[{ x:e.c, F:'?' }] }).incognita;
+    falta = q >= 0 ? `Para equilibrarla con el bloque ahí, haría falta colgar ${N1(q)} N.` : 'Con el bloque ahí no se puede equilibrar colgando peso: haría falta jalar hacia arriba.';
+  } catch (err) { falta = 'El bloque cuelga justo sobre el apoyo: no hace girar la barra.'; }
+  $('live').innerHTML = `<div class="eqs">
+      <div class="eq">apoyo a ${N2(e.s)} m de A; bloque a ${N2(e.c)} m de A</div>
+      <div class="eq">${V('T','τ de T')} = ${V('T', N1(e.W))} · ${V('T', N2(m.lista[1].brazo) + ' m')} = ${giroTxt(m.lista[1].tau)}</div>
+      <div class="eq">${V('P','τ de P')} = ${V('P','300')} · ${V('P', N2(m.lista[0].brazo) + ' m')} = ${giroTxt(m.lista[0].tau)}</div>
+      <div class="eq">${V('N','N')} = ${N1(b.R)} N<span class="note">el apoyo sostiene todo</span></div>
+      <div class="eq">Στ = ${giroTxt(m.neto)}<span class="note">${b.equilibrio ? 'en equilibrio' : 'gira'}</span></div></div>
+    <p class="hint">${falta} Prueba poner el apoyo en el centro de la barra, sin bloque: el peso de la barra pasa por el apoyo y no gira nada.</p>`;
+  draw();
+}
+// Arrastre: solo cerca del apoyo, del bloque o del punto O (el resto del dibujo deja desplazar la página).
+const local = e => { const r = cv.getBoundingClientRect(); return { x:e.clientX - r.left, y:e.clientY - r.top }; };
+function asas(){ const s = steps[S.step]; return s.drag === 'O' ? ['O'] : s.explora ? ['apoyo', 'carga'] : []; }
+function cerca(p, rad){
+  const v = verActual(); let mejor = null, dm = rad;
+  for (const a of asas()){ const q = asaEn(L.W, L.H, v, a); const d = Math.hypot(p.x - q.x, p.y - q.y); if (d < dm){ dm = d; mejor = a; } }
+  return mejor;
+}
+function mover(a, p){
+  // De la pantalla a metros desde A (la barra está horizontal en los pasos con arrastre), redondeado a 0,25 m.
+  const g = geoBarra(L.W, L.H, verActual()), xm = clamp(Math.round(((p.x - g.mx)/g.kx)*4)/4, 0, 6);
+  if (a === 'O'){ if (xm !== S.O){ S.O = xm; S.alMover(); } return; }
+  if (a === 'apoyo' && xm !== S.ex.s){ S.ex.s = xm; S.alMover(); }
+  if (a === 'carga' && xm !== S.ex.c){ S.ex.c = xm; S.alMover(); }
+}
+cv.addEventListener('touchstart', e => {
+  if (!asas().length || e.touches.length !== 1) return;
+  const r = cv.getBoundingClientRect(), t = e.touches[0];
+  if (cerca({ x:t.clientX - r.left, y:t.clientY - r.top }, 40)) e.preventDefault();
+}, { passive:false });
+cv.addEventListener('pointerdown', e => {
+  if (!asas().length) return;
+  const a = cerca(local(e), e.pointerType === 'mouse' ? 26 : 40); if (!a) return;
+  S.arrastra = a; S.sobre = a; if (steps[S.step].explora){ S.teclado = a; marcarTecla(); }
+  cv.setPointerCapture(e.pointerId); e.preventDefault(); cv.focus({ preventScroll:true }); draw();
+}, { passive:false });
+cv.addEventListener('pointermove', e => {
+  const p = local(e);
+  if (S.arrastra){ mover(S.arrastra, p); return; }
+  if (!asas().length) return;
+  const a = cerca(p, 26);
+  if (a !== S.sobre){ S.sobre = a; cv.style.cursor = a ? 'grab' : ''; draw(); }
+});
+const soltarAsa = () => { if (S.arrastra){ S.arrastra = null; draw(); } };
+cv.addEventListener('pointerup', soltarAsa); cv.addEventListener('pointercancel', soltarAsa);
+cv.addEventListener('keydown', e => {
+  const s = steps[S.step]; if (!s.drag) return;
+  const d = { ArrowRight:0.25, ArrowUp:0.25, ArrowLeft:-0.25, ArrowDown:-0.25 }[e.key]; if (!d) return;
+  e.preventDefault();
+  if (s.drag === 'O') S.O = clamp(S.O + d, 0, 6);
+  else if (S.teclado === 'apoyo') S.ex.s = clamp(S.ex.s + d, 0, 6);
+  else S.ex.c = clamp(S.ex.c + d, 0, 6);
+  S.alMover();
+});
+
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+function marcar(k){
+  S.hl = k;
+  document.querySelectorAll('#m1 .v').forEach(e => e.classList.toggle('hl', !!k && e.dataset.var === k));
+  draw();
+}
+document.addEventListener('pointerover', e => { const t = e.target.closest && e.target.closest('#m1 [data-var]'); if (t) marcar(t.dataset.var); });
+document.addEventListener('pointerout', e => { const t = e.target.closest && e.target.closest('#m1 [data-var]'); if (t && !t.contains(e.relatedTarget)) marcar(null); });
+document.addEventListener('focusin', e => { const t = e.target.closest && e.target.closest('#m1 [data-var]'); if (t) marcar(t.dataset.var); });
+document.addEventListener('focusout', e => { if (e.target.closest && e.target.closest('#m1 [data-var]')) marcar(null); });
+alRedibujarTema(draw);
+addEventListener('modo', () => { if ($('m1').hidden) parar(); else L.resize(); });
+L.resize(); go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Preguntas de docs/investigacion/estatica-energia-ideas-erroneas.md. La escena cambia recién después de responder.
+   Lo que se dibuja sale de MotorEstatica. */
+(function(){
+const $ = id => document.getElementById(id);
+const cv = $('cv2');
+const L = crearLienzo(cv, altoLienzo, draw);
+let parar = () => {};
+const E = {};
+const fuente = t => `<p class="fuente">${t}</p>`;
+
+/* ---------- Nudo con dos cuerdas ---------- */
+function vistaNudo(L, c, P){
+  const { ctx, W, H } = L; ctx.clearRect(0, 0, W, H);
+  const r = M.nudo({ m:10, a1:P.a1, a2:P.a2 }), g = r.geometria(P.h || 1);
+  const yT = 22, span = g.x2 - g.x1, hpx = clamp(H*0.3, 70, 130);
+  const s = Math.min((W - 40)/span, hpx/(P.h || 1)), K = { x: W/2 - (g.x1 + g.x2)/2*s, y: yT + (P.h || 1)*s };
+  const A1 = { x: K.x + g.x1*s, y: yT }, A2 = { x: K.x + g.x2*s, y: yT };
+  techo(ctx, c, 8, W - 8, yT);
+  ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; linea(ctx, A1.x, A1.y, K.x, K.y); linea(ctx, A2.x, A2.y, K.x, K.y);
+  const yB = K.y + 44; linea(ctx, K.x, K.y, K.x, yB - 15); ctx.restore();
+  bloque(ctx, c, K.x, yB, 36, 30, '10 kg');
+  ctx.save(); ctx.beginPath(); ctx.arc(K.x, K.y, 3.5, 0, Math.PI*2); ctx.fillStyle = c.ink; ctx.fill(); ctx.restore();
+  // Ángulos con el techo
+  const th1 = P.a1*Math.PI/180, th2 = P.a2*Math.PI/180;
+  ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.2;
+  ctx.beginPath(); ctx.arc(A1.x, A1.y, 26, 0, th1); ctx.stroke(); ctx.beginPath(); ctx.arc(A2.x, A2.y, 26, Math.PI - th2, Math.PI); ctx.stroke(); ctx.restore();
+  rotulo(ctx, c, A1.x + 32*Math.cos(th1/2) + 4, A1.y + 32*Math.sin(th1/2) + 2, `${fmt(P.a1, 0)}°`, c.ink, 'left', 800, W, H);
+  rotulo(ctx, c, A2.x - 32*Math.cos(th2/2) - 4, A2.y + 32*Math.sin(th2/2) + 2, `${fmt(P.a2, 0)}°`, c.ink, 'right', 800, W, H);
+  // Fuerzas: sobre el sistema nudo + bloque. Las tensiones jalan hacia los anclajes; el peso, desde el bloque.
+  const u1 = { x:(A1.x - K.x)/Math.hypot(A1.x - K.x, A1.y - K.y), y:(A1.y - K.y)/Math.hypot(A1.x - K.x, A1.y - K.y) };
+  const u2 = { x:(A2.x - K.x)/Math.hypot(A2.x - K.x, A2.y - K.y), y:(A2.y - K.y)/Math.hypot(A2.x - K.x, A2.y - K.y) };
+  const k = Math.min(W, H)*0.2/Math.max(r.P, r.T1, r.T2)*(P.escala || 1), cr = P.crece === undefined ? 1 : P.crece, ver = P.ver;
+  fuerza(ctx, c, { x:K.x, y:K.y, dx:u1.x, dy:u1.y, F:r.T1, k, col:c.T, oculta:ver === 'oculta', crece:ver === 'nueva' ? cr : 1, largoOculto:46, txt:rot('T₁', r.T1, 'cuerda 1', ver === 'oculta'), al:'right', ox:-2, oy:14 }, W, H);
+  fuerza(ctx, c, { x:K.x, y:K.y, dx:u2.x, dy:u2.y, F:r.T2, k, col:c.T2, oculta:ver === 'oculta', crece:ver === 'nueva' ? cr : 1, largoOculto:46, txt:rot('T₂', r.T2, 'cuerda 2', ver === 'oculta'), al:'left', ox:10, oy:20 }, W, H);
+  fuerza(ctx, c, { x:K.x, y:yB + 15, dx:0, dy:1, F:r.P, k:Math.min(k, (H - yB - 30)/r.P), col:c.P, txt:rot('P', r.P, 'Tierra'), al:'right', ox:-8, oy:-14 }, W, H);
+  // Triángulo de fuerzas cerrado (después de responder): P, luego T₁, luego T₂ vuelve al inicio.
+  if (P.triangulo && cr > 0.98){
+    const sx = W - 18, sy = yB - 6, kt = Math.min((H - sy - 22)/r.P, (W*0.34)/Math.max(r.componentes.T2x, 1));
+    const S0 = { x:sx, y:sy }, S1 = { x:sx, y:sy + r.P*kt }, S2 = { x:S1.x + r.componentes.T1x*kt, y:S1.y - r.componentes.T1y*kt };
+    ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = .05; ctx.beginPath(); ctx.moveTo(S0.x, S0.y); ctx.lineTo(S1.x, S1.y); ctx.lineTo(S2.x, S2.y); ctx.closePath(); ctx.fill(); ctx.restore();
+    flecha(ctx, S0.x, S0.y, S1.x, S1.y, c.P, 2.6); flecha(ctx, S1.x, S1.y, S2.x, S2.y, c.T, 2.6); flecha(ctx, S2.x, S2.y, S0.x, S0.y, c.T2, 2.6);
+    rotulo(ctx, c, (S0.x + S2.x)/2, Math.min(S0.y, S2.y) - 12, 'se cierra', c.ink, 'center', 700, W, H);
+  }
+  return r;
+}
+/* ---------- La tabla sobre el hielo, vista desde arriba ---------- */
+function vistaPar(L, c, P){
+  const { ctx, W, H } = L; ctx.clearRect(0, 0, W, H);
+  ctx.save(); ctx.fillStyle = c.hielo; rr(ctx, 8, 8, W - 16, H - 16, 14); ctx.fill(); ctx.restore();
+  rotulo(ctx, c, 18, 22, 'pista de hielo, vista desde arriba', c.muted, 'left', 700, W, H);
+  const cx = W/2, cy = H/2 + 6, half = Math.min(W*0.36, H*0.36), a = -(P.ang || 0); // en pantalla, antihorario = ángulo negativo
+  const d = { x:Math.cos(a), y:Math.sin(a) }, n = { x:Math.sin(a), y:-Math.cos(a) }; // n: perpendicular hacia "arriba" de la tabla
+  // Recorrido de las puntas
+  if (P.ang > 0.02){ ctx.save(); ctx.strokeStyle = c.muted; ctx.setLineDash([3, 4]); ctx.beginPath(); ctx.arc(cx, cy, half, -P.ang, 0); ctx.stroke(); ctx.beginPath(); ctx.arc(cx, cy, half, Math.PI - P.ang, Math.PI); ctx.stroke(); ctx.restore(); }
+  ctx.save(); ctx.translate(cx, cy); ctx.rotate(a); ctx.fillStyle = c.madera; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; rr(ctx, -half, -9, 2*half, 18, 5); ctx.fill(); ctx.stroke(); ctx.restore();
+  ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, 4, 0, Math.PI*2); ctx.fillStyle = c.ink; ctx.fill(); ctx.restore();
+  rotulo(ctx, c, cx, cy + 24, 'centro', c.ink, 'center', 800, W, H);
+  const k = Math.min(W, H)*0.18/P.F, B = { x:cx + d.x*half, y:cy + d.y*half }, A = { x:cx - d.x*half, y:cy - d.y*half };
+  // En B la fuerza empuja hacia "arriba" de la tabla y en A hacia "abajo": el par gira la tabla en sentido antihorario.
+  fuerza(ctx, c, { x:B.x - n.x*9, y:B.y - n.y*9, dx:n.x, dy:n.y, F:P.F, k, col:c.F, hl:P.hl === 'F', txt:rot('F', P.F, 'persona'), al:'center' }, W, H);
+  fuerza(ctx, c, { x:A.x + n.x*9, y:A.y + n.y*9, dx:-n.x, dy:-n.y, F:P.F, k, col:c.F, hl:P.hl === 'F', txt:rot('F', P.F, 'persona'), al:'center' }, W, H);
+  if (P.giro) arcoGiro(ctx, cx, cy, 40, 0.9, -1.8, c.ink, 2.2, [5, 4]);
+}
+/* ---------- La cuerda y la rueda (polea fija) ---------- */
+function vistaPolea(L, c, P){
+  const { ctx, W, H } = L; ctx.clearRect(0, 0, W, H);
+  const cx = W/2, cy = 58, R = 28, yT = 14, r = P.r;
+  techo(ctx, c, cx - 90, cx + 90, yT);
+  ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; linea(ctx, cx, yT, cx, cy);
+  ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI*2); ctx.fillStyle = c.card; ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.arc(cx, cy, 3, 0, Math.PI*2); ctx.fillStyle = c.ink; ctx.fill(); ctx.restore();
+  const base = H*0.55, off = clamp(P.off, -H*0.18, H*0.18);
+  // Balde (izquierda) más arriba que el bloque (derecha) al empezar; ninguno se mete en la rueda.
+  const y1 = Math.max(cy + R + 64, base - H*0.1 + off), y2 = Math.max(cy + R + 52, base + H*0.1 - off);
+  const x1 = cx - R, x2 = cx + R;
+  ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.arc(cx, cy, R, Math.PI, 0); ctx.stroke();
+  linea(ctx, x1, cy, x1, y1 - 16); linea(ctx, x2, cy, x2, y2 - 16); ctx.restore();
+  // Balde
+  ctx.save(); ctx.fillStyle = c.bloque; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6;
+  ctx.beginPath(); ctx.moveTo(x1 - 20, y1 - 16); ctx.lineTo(x1 + 20, y1 - 16); ctx.lineTo(x1 + 15, y1 + 16); ctx.lineTo(x1 - 15, y1 + 16); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.arc(x1, y1 - 16, 18, Math.PI, 0); ctx.stroke(); ctx.restore();
+  bloque(ctx, c, x2, y2, 34, 32);
+  rotulo(ctx, c, x1 - 26, y1, 'balde', c.ink, 'right', 800, W, H);
+  rotulo(ctx, c, x2 + 26, y2, 'bloque', c.ink, 'left', 800, W, H);
+  const k = Math.min(W, H)*0.2/r.P1, cr = P.crece === undefined ? 1 : P.crece, ver = P.ver;
+  fuerza(ctx, c, { x:x1 - 4, y:y1 - 18, dx:0, dy:-1, F:r.T, k, col:c.T, oculta:ver === 'oculta', crece:ver === 'nueva' ? cr : 1, txt:rot('T', r.T, 'cuerda', ver === 'oculta'), al:'right', lx:x1 - 26, ly:y1 - 34 }, W, H);
+  fuerza(ctx, c, { x:x1, y:y1 + 16, dx:0, dy:1, F:r.P1, k, col:c.P, oculta:ver === 'oculta', crece:ver === 'nueva' ? cr : 1, txt:rot('P', r.P1, 'Tierra', ver === 'oculta'), al:'right', ox:-8, oy:-10 }, W, H);
+  fuerza(ctx, c, { x:x2 + 4, y:y2 - 16, dx:0, dy:-1, F:r.T, k, col:c.T, oculta:ver === 'oculta', crece:ver === 'nueva' ? cr : 1, txt:rot('T', r.T, 'cuerda', ver === 'oculta'), al:'left', lx:x2 + 26, ly:y2 - 30 }, W, H);
+  fuerza(ctx, c, { x:x2, y:y2 + 16, dx:0, dy:1, F:r.P2, k, col:c.P, oculta:ver === 'oculta', crece:ver === 'nueva' ? cr : 1, txt:rot('P', r.P2, 'Tierra', ver === 'oculta'), al:'left', ox:8, oy:-10 }, W, H);
+  // La tensión en tres puntos de la cuerda (después de responder)
+  if (P.puntos && cr > 0.98){
+    const a = -Math.PI/4, pts = [[x1, cy + 22, 'right'], [cx + R*Math.cos(a), cy + R*Math.sin(a), 'left'], [x2, cy + 22, 'left']];
+    pts.forEach(([x, y, al]) => { ctx.save(); ctx.beginPath(); ctx.arc(x, y, 3.5, 0, Math.PI*2); ctx.fillStyle = c.T; ctx.fill(); ctx.restore();
+      rotulo(ctx, c, x + (al === 'right' ? -8 : 8), y + (y < cy ? -6 : 0), `${N1(r.tensionEn())} N`, c.T, al, 800, W, H); });
+  }
+}
+/* ---------- La caja en el piso ---------- */
+function vistaRoce(L, c, P){
+  const { ctx, W, H } = L; ctx.clearRect(0, 0, W, H);
+  const y0 = Math.round(H*0.66), l = clamp(H*0.26, 70, 110), r = P.r, des = r.quieto ? 0 : 14;
+  suelo(ctx, c, 4, W - 4, y0);
+  rotulo(ctx, c, 10, y0 + 40, `piso con μs = ${fmt(P.mus, 1)}`, c.muted, 'left', 700, W, H);
+  const cx = W*0.5 + des, cb = { x:cx, y:y0 - l/2 };
+  bloque(ctx, c, cb.x, cb.y, l, l);
+  if (!r.quieto){ ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.5; for (let i = 0; i < 3; i++) linea(ctx, cx - l/2 - 10 - i*8, cb.y - 14 + i*14, cx - l/2 - 26 - i*8, cb.y - 14 + i*14); ctx.restore(); }
+  // Mano
+  ctx.save(); ctx.fillStyle = c.bloque; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; rr(ctx, cx - l/2 - 22, cb.y - 12, 20, 24, 7); ctx.fill(); ctx.stroke(); linea(ctx, cx - l/2 - 22, cb.y, cx - l/2 - 54, cb.y - 8); ctx.restore();
+  const k = Math.min(W, H)*0.4/r.P, cr = P.crece === undefined ? 1 : P.crece, fv = P.verf;
+  if (P.F > 0) fuerza(ctx, c, { x:cx - l/2 - P.F*k, y:cb.y - l*0.3, dx:1, dy:0, F:P.F, k, col:c.F, hl:P.hl === 'F', txt:rot('F', P.F, 'mano'), al:'right', lx:cx - l/2 - 8, ly:cb.y - l*0.3 - 16 }, W, H);
+  fuerza(ctx, c, { x:cb.x + l*0.12, y:cb.y + 8, dx:0, dy:1, F:r.P, k, col:c.P, txt:rot('P', r.P, 'Tierra'), al:'left', lx:cb.x + l*0.12 + 8, ly:cb.y + 8 + r.P*k - 6 }, W, H);
+  fuerza(ctx, c, { x:cb.x - l*0.3, y:y0, dx:0, dy:-1, F:r.N, k, col:c.N, txt:rot('N', r.N, 'piso'), al:'right', lx:cb.x - l*0.3 - 8, ly:y0 - r.N*k + 8 }, W, H);
+  if (fv){
+    const mod = r.quieto ? r.roce : r.fsMax, x0 = cb.x + l/2 - 4;
+    if (fv === 'oculta' || mod > 1e-9) fuerza(ctx, c, { x:x0, y:y0 + 6, dx:-1, dy:0, F:mod, k, col:c.f, oculta:fv === 'oculta', crece:fv === 'nueva' ? cr : 1, largoOculto:40,
+      txt:fv === 'oculta' ? 'f = ? · piso' : r.quieto ? rot('f', r.roce, 'piso') : `f llega a ${N1(r.fsMax)} N y no alcanza`, al:'left', lx:x0 + 6, ly:y0 + 22 }, W, H);
+  }
+  rotulo(ctx, c, cb.x + l/2 - 6, cb.y - l/2 + 12, '20 kg', c.ink, 'right', 800, W, H);
+}
+
+const S = { k:0, pred:{}, t0:Date.now() };
+const EXPS = [
+  { id:'nudo', corto:'El nudo de 37° y 53°', ley:['P','T1','T2'],
+    q:`Un bloque de 10 kg cuelga de un nudo. Del nudo salen dos cuerdas al techo: la ${V('T','cuerda 1')} forma 37° con el techo y la ${V('T2','cuerda 2')}, 53°. ¿Qué cuerda está más tensa?`,
+    opts:[['a','La 1, porque está más tendida y hace más esfuerzo.','E8-cuerda-mas-vertical-menos-tensa','documentado'],
+          ['b','Las dos igual, porque cada una sostiene la mitad del peso.','E8-tensiones-como-numeros','documentado'],
+          ['c','La 2, porque está más cerca de la vertical y sostiene más del peso.',null],
+          ['d','No se puede saber, porque depende de cuánto mide cada cuerda.','E7-tension-depende-del-largo','documentado']],
+    ok:'c',
+    antes:() => Object.assign(E, { tipo:'nudo', a1:37, a2:53, h:1, ver:'oculta' }),
+    despues:() => { E.ver = 'nueva'; E.triangulo = true; crecer(); },
+    ctrl:() => `<div class="ctrls">
+        <div class="slider"><label for="q-a1"><span>Ángulo de la ${V('T','cuerda 1')}</span><output id="q-a1-o"></output></label><input id="q-a1" class="r-T" type="range" min="5" max="90" step="1" value="${E.a1}"></div>
+        <div class="slider"><label for="q-a2"><span>Ángulo de la ${V('T2','cuerda 2')}</span><output id="q-a2-o"></output></label><input id="q-a2" class="r-T2" type="range" min="5" max="90" step="1" value="${E.a2}"></div>
+        <div class="slider"><label for="q-h"><span>Profundidad del nudo (alarga las cuerdas)</span><output id="q-h-o"></output></label><input id="q-h" type="range" min="0.5" max="2" step="0.1" value="${E.h}"></div></div><div class="chips" id="chips2"></div>`,
+    vivo:() => {
+      $('q-a1-o').textContent = `${E.a1}°`; $('q-a2-o').textContent = `${E.a2}°`; $('q-h-o').textContent = `${fmt(E.h, 1)} m`;
+      let t = '';
+      try { const r = M.nudo({ m:10, a1:E.a1, a2:E.a2 }), g = r.geometria(E.h);
+        t = `<span class="chip">T₁ = ${N1(r.T1)} N</span><span class="chip">T₂ = ${N1(r.T2)} N</span><span class="chip">T₁ + T₂ = ${N1(r.suma)} N, con un peso de 100 N</span><span class="chip">largos: ${fmt(g.l1, 2)} m y ${fmt(g.l2, 2)} m</span>`;
+      } catch (e) { t = '<span class="chip">Con las dos cuerdas verticales, cualquier reparto sirve: no se puede saber cuánto sostiene cada una.</span>'; }
+      $('chips2').innerHTML = t;
+    },
+    alCambiar:() => { E.a1 = +$('q-a1').value; E.a2 = +$('q-a2').value; E.h = +$('q-h').value; if (E.a1 === 90 && E.a2 === 90){ E.a2 = 89; $('q-a2').value = 89; } },
+    exp:`<div class="eqs"><div class="eq">horizontal: ${V('T','T₁')}·cos 37° = ${V('T2','T₂')}·cos 53° → ${V('T','T₁')}·4 = ${V('T2','T₂')}·3</div>
+      <div class="eq">vertical: ${V('T','T₁')}·sen 37° + ${V('T2','T₂')}·sen 53° = ${V('P','100')}</div>
+      <div class="eq">${V('T','T₁')} = ${V('T','60 N')}; ${V('T2','T₂')} = ${V('T2','80 N')}</div></div>
+      <p>La cuerda más cercana a la vertical sostiene más del peso, así que está más tensa. Y fíjate: 60 + 80 = 140 N sostienen un peso de 100 N. Las tensiones no se suman como números sino como flechas: al ponerlas una detrás de otra, con el peso, cierran un triángulo (a la derecha del dibujo). Aquí las dos cuerdas forman 90° entre sí, y el triángulo es el 3-4-5 de los libros.</p>
+      <p>Mueve los ángulos: si una cuerda se acerca a la horizontal, su tensión crece mucho. Y baja el nudo: las cuerdas se alargan, pero las tensiones no cambian, porque solo dependen de los ángulos y del peso.</p>
+      ${fuente('Las tres opciones incorrectas están documentadas por Flores-García y otros (2009), con estudiantes de Estados Unidos y de Ciudad Juárez que ya habían llevado el tema. En una pregunta de dos cuerdas con ángulos y largos distintos, alrededor del 20 % de 132 estudiantes razonó con los largos (aquí no hacen falta: la tensión solo depende de los ángulos y del peso), cerca del 15 % dijo que las tensiones eran iguales y un cuarto eligió que la cuerda más vertical tenía menos tensión.')}` },
+  { id:'simetrico', corto:'El nudo de 53° y 53°', ley:['P','T1','T2'],
+    q:`Ahora el bloque de 10 kg cuelga de dos cuerdas iguales, ${V('T','1')} y ${V('T2','2')}, que forman 53° con el techo cada una. ¿Cuánto vale la tensión de cada cuerda?`,
+    opts:[['a','40 N','mitad-por-seno','hipotesis'], ['b','50 N','E8-mitad-del-peso','parcial'], ['c','62,5 N',null], ['d','83,3 N','angulo-con-la-vertical','hipotesis']],
+    ok:'c',
+    antes:() => Object.assign(E, { tipo:'nudo', a1:53, a2:53, h:1, ver:'oculta' }),
+    despues:() => { E.ver = 'nueva'; E.triangulo = true; crecer(); },
+    ctrl:() => `<div class="slider"><label for="q-a"><span>Ángulo de las dos cuerdas con el techo</span><output id="q-a-o"></output></label><input id="q-a" type="range" min="5" max="89" step="1" value="${E.a1}"></div><div class="chips" id="chips2"></div>`,
+    vivo:() => { const r = M.nudo({ m:10, a1:E.a1, a2:E.a2 }); $('q-a-o').textContent = `${E.a1}°`;
+      $('chips2').innerHTML = `<span class="chip">T₁ = T₂ = ${N1(r.T1)} N</span><span class="chip">${r.T1 > 100 ? 'cada una, más que el peso entero' : 'más de la mitad del peso'}</span>`; },
+    alCambiar:() => { E.a1 = E.a2 = +$('q-a').value; },
+    exp:`<div class="eqs"><div class="eq">vertical: ${V('T','T₁')}·sen 53° + ${V('T2','T₂')}·sen 53° = ${V('P','100')}</div>
+      <div class="eq">con ${V('T','T₁')} = ${V('T2','T₂')}: 2·${V('T','T₁')}·4/5 = 100 → ${V('T','T₁')} = ${V('T2','T₂')} = 62,5 N</div></div>
+      <p>Cada cuerda jala inclinada: solo su parte vertical, la tensión por sen 53°, sostiene el peso. Por eso cada una tiene que jalar con más de la mitad del peso: 62,5 N y no 50 N. Las partes horizontales se cancelan entre sí.</p>
+      <p>Baja el ángulo: a 30° cada cuerda ya soporta los 100 N enteros, y cerca de la horizontal la tensión crece sin límite. La mitad del peso solo vale con las cuerdas verticales.</p>
+      ${fuente('Repartir el peso por mitades tiene respaldo cualitativo, sin porcentaje en este caso: Flores-García y otros (2009) citan como hallazgo previo que los estudiantes suman las tensiones como números. Las otras dos opciones, multiplicar en vez de dividir y medir el ángulo desde la vertical, son errores que suponemos.')}` },
+  { id:'par', corto:'La tabla en el hielo', ley:['F'],
+    q:`Una tabla de 2 m y 12 kg está sobre una pista de hielo, sin roce. Dos personas la empujan en sus extremos con ${V('F','6 N')} cada una, en sentidos opuestos y perpendicular a la tabla, siempre perpendicular aunque se mueva. ¿Qué hace la tabla?`,
+    opts:[['a','Se queda quieta, porque las dos fuerzas se cancelan.','E4-momento-igual-fuerza','parcial'],
+          ['b','Gira en su sitio, porque las fuerzas se cancelan pero sus giros se suman.',null],
+          ['c','Se desliza hacia un lado, porque una de las dos fuerzas siempre gana.','una-fuerza-gana','hipotesis'],
+          ['d','Gira alrededor de uno de sus extremos, porque cada fuerza la hace girar desde el otro.','gira-alrededor-de-un-extremo','hipotesis']],
+    ok:'b',
+    antes:() => Object.assign(E, { tipo:'par', ang:0, giro:false }),
+    despues:() => { E.giro = true; girar(); },
+    ctrl:() => `<div class="chips" id="chips2"></div><p><button type="button" class="btn" id="repetir">Empujar otra vez</button></p>`,
+    vivo:() => { const r = M.par({ F:6, L:2, m:12 });
+      $('chips2').innerHTML = `<span class="chip">fuerza neta: ${N1(r.resultante)} N</span><span class="chip">giro respecto al centro: ${N2(r.momentoRespecto(1, 0))} N·m</span><span class="chip">respecto a un extremo: ${N2(r.momentoRespecto(0, 0))} N·m</span><span class="chip">respecto a un punto fuera: ${N2(r.momentoRespecto(3, -1))} N·m</span>`; },
+    alCambiar:() => {},
+    exp:`<p>Las dos fuerzas se anulan como fuerzas: la suma es cero, así que el centro de la tabla no se mueve. Pero sus giros no se anulan: los dos la hacen girar en el mismo sentido. El giro total es ${V('F','6 N')} · 2 m = 12 N·m, y vale lo mismo respecto a cualquier punto. A esto se le llama un <b>par</b>.</p>
+      <p>Fuerza y giro son cosas distintas: que las fuerzas sumen cero no basta para el equilibrio. También tienen que sumar cero los giros.</p>
+      ${fuente('Tratar momento y fuerza como si fueran lo mismo aparece en las entrevistas de Rimoldini y Singh (2005): muchos estudiantes los trataron como equivalentes, y ante un helicóptero de papel que gira al caer, menos del 20 % de 16 entrevistados pudo explicar por qué empieza a girar. No hay un porcentaje para esta pregunta; las opciones C y D son errores que suponemos.')}` },
+  { id:'polea', corto:'La cuerda y la rueda', ley:['P','T'],
+    q:`Un balde y un bloque cuelgan de los extremos de una cuerda que pasa por una rueda fija (una polea sin roce). Están quietos, el bloque más abajo que el balde. ¿Qué se puede decir de sus pesos?`,
+    opts:[['a','El bloque pesa más, porque está más abajo.','E9-el-de-abajo-pesa-mas','documentado'],
+          ['b','Pesan lo mismo, porque la cuerda jala igual a los dos.',null],
+          ['c','No se puede saber, porque depende de cuánta cuerda hay a cada lado.','E7-tension-depende-del-largo','parcial'],
+          ['d','El balde pesa más, porque está más cerca de la rueda, donde la cuerda está más tensa.','E6-tension-cambia-en-la-cuerda','parcial']],
+    ok:'b',
+    fb:{ a:'Elegiste la A. Estar más abajo no cambia el peso: en equilibrio, cada uno pesa lo que jala la cuerda, y la cuerda jala igual a los dos. La correcta está marcada; mira la escena.',
+         c:'Elegiste la C. Cuánta cuerda hay a cada lado no importa: una cuerda ligera en una polea sin roce tiene la misma tensión en todos sus puntos. La correcta está marcada; mira la escena.',
+         d:'Elegiste la D. La tensión no crece cerca de la rueda: es la misma en toda la cuerda, a los dos lados. La correcta está marcada; mira la escena.' },
+    antes:() => Object.assign(E, { tipo:'polea', off:0, ver:'oculta' }),
+    despues:() => { E.ver = 'nueva'; E.puntos = true; crecer(); },
+    ctrl:() => `<div class="slider"><label for="q-off"><span>Mueve la cuerda (sube el bloque, baja el balde)</span><output id="q-off-o"></output></label><input id="q-off" type="range" min="-50" max="50" step="5" value="${E.off}"></div><div class="chips" id="chips2"></div>`,
+    vivo:() => { const r = M.polea({ m1:5, m2:5 }); $('q-off-o').textContent = E.off > 0 ? 'bloque más arriba' : E.off < 0 ? 'bloque más abajo' : 'como al inicio';
+      $('chips2').innerHTML = `<span class="chip">${r.equilibrio ? 'sigue quieto' : 'se mueve'}</span><span class="chip">T = ${N1(r.T)} N en toda la cuerda</span><span class="chip">pesos: ${N1(r.P1)} N y ${N1(r.P2)} N</span>`; },
+    alCambiar:() => { E.off = +$('q-off').value; },
+    exp:`<p>Sobre cada cuerpo actúan dos fuerzas: su ${V('P','peso')} hacia abajo y la ${V('T','tensión')} de la cuerda hacia arriba. Como están quietos, en cada uno la tensión es igual al peso. Y una cuerda ligera que pasa por una polea sin roce tiene la misma tensión en todos sus puntos, a los dos lados (mira los tres puntos rojos). Entonces los dos pesos son iguales.</p>
+      <p>Mueve la cuerda: el bloque sube, el balde baja, y siguen quietos donde los dejes. La altura no cambia nada.</p>
+      ${fuente('Según Flores-García y otros (2009), que citan un estudio de Gunstone y White con 463 alumnos, alrededor de un cuarto dijo que el bloque pesa más, sobre todo porque está más cerca del suelo. En otra pregunta de su estudio, al ordenar la tensión en cinco puntos de una cuerda, acertó el 42 % de 90 alumnos en Nuevo México y el 34 % de 105 en Ciudad Juárez; alrededor de un tercio razona según la cercanía al peso o a la polea; con esta polea no está medido. Que la tensión dependa del largo de la cuerda está documentado con dos cuerdas distintas, tampoco con esta polea.')}` },
+  { id:'roce', corto:'La caja en el piso', ley:['P','Nn','f','F'],
+    q:`Una caja de 20 kg está sobre un piso con coeficiente de rozamiento estático μs = 0,5. La empujas horizontalmente con ${V('F','30 N')} y no se mueve. ¿Cuánto vale el ${V('f','roce')} del piso?`,
+    opts:[['a','0 N','sin-movimiento-sin-roce','hipotesis'], ['b','30 N',null], ['c','70 N','lo-que-falta-para-el-maximo','hipotesis'], ['d','100 N','E10-roce-estatico-siempre-maximo','parcial']],
+    ok:'b',
+    antes:() => Object.assign(E, { tipo:'roce', F:30, mus:0.5, verf:'oculta' }),
+    despues:() => { E.verf = 'nueva'; crecer(); },
+    ctrl:() => `<div class="slider"><label for="q-F"><span>Tu empuje (${V('F','F')})</span><output id="q-F-o"></output></label><input id="q-F" class="r-F" type="range" min="0" max="140" step="5" value="${E.F}"></div><div class="chips" id="chips2"></div>`,
+    vivo:() => { const r = M.planoRoce({ m:20, mus:E.mus, F:E.F }); $('q-F-o').textContent = `${N1(E.F)} N`;
+      $('chips2').innerHTML = `<span class="chip">roce: ${r.quieto ? N1(r.roce) + ' N' : 'no alcanza'}</span><span class="chip">máximo μs·N = ${N1(r.fsMax)} N</span><span class="chip ${r.quieto ? '' : 'ok'}">${r.quieto ? 'no se mueve' : 'desliza'}</span>`; },
+    alCambiar:() => { E.F = +$('q-F').value; },
+    exp:`<div class="eqs"><div class="eq">${V('N','N')} = ${V('P','P')} = 200 N; máximo: μs·${V('N','N')} = 0,5·200 = 100 N</div>
+      <div class="eq">no se mueve → ${V('f','f')} = ${V('F','F')} = ${V('f','30 N')}</div></div>
+      <p>Como la caja no se mueve, las fuerzas horizontales se cancelan: el ${V('f','roce')} vale justo lo que empujas, 30 N, en contra. El valor μs·N = 100 N es el <b>tope</b> que puede dar el roce estático, no lo que da siempre.</p>
+      <p>Mueve el empuje: el roce lo sigue, igual a tu fuerza, hasta llegar a 100 N. Si empujas con más, ya no alcanza y la caja desliza.</p>
+      ${fuente('Que el roce estático siempre valga μN fue la respuesta incorrecta más elegida en las preguntas de roce del inventario de estática de Steif y Dantzler (2005), con 245 estudiantes de ingeniería de cinco universidades; no dan un porcentaje global. Las opciones de 0 N y 70 N son errores que suponemos.')}` },
+];
+// En este modo los datos de color no resaltan nada en el dibujo: no son paradas del tabulador.
+const sinParada = el => el.querySelectorAll('.v').forEach(e => { e.removeAttribute('tabindex'); e.style.cursor = 'default'; });
+function crecer(listo){ parar(); E.crece = 0; parar = animarValor(600, f => { E.crece = f; draw(); }, () => { listo && listo(); draw(); }); }
+function girar(){
+  parar(); const r = M.par({ F:6, L:2, m:12 }), T = 1.2;
+  if (RM){ E.ang = r.angulo(T); draw(); return; }
+  parar = animarValor(T*1000, f => { E.ang = r.angulo(T*f); draw(); });
+}
+function draw(){
+  if (!L.W || !E.tipo) return;
+  const c = colores(L.W), x = EXPS[S.k], ya = !!S.pred[x.id];
+  if (E.tipo === 'nudo'){
+    let r; try { r = vistaNudo(L, c, E); } catch (e) { return; }
+    lecturas($('lect2'), ya ? [['T', `T₁ = ${N1(r.T1)} N`], ['T2', `T₂ = ${N1(r.T2)} N`], ['P', `P = ${N1(r.P)} N`]] : []);
+    decir($('desc2'), ya ? `Cuerdas a ${E.a1} y ${E.a2} grados con el techo. Tensión de la cuerda 1, ${N1(r.T1)} newtons; de la cuerda 2, ${N1(r.T2)} newtons. Con el peso, cierran un triángulo.`
+      : `Un bloque de 10 kilogramos cuelga de un nudo con dos cuerdas al techo, a ${E.a1} y ${E.a2} grados. ${E.a1 === E.a2 ? 'Las dos cuerdas miden lo mismo' : 'La cuerda de 37 grados es la más larga'}. Las tensiones todavía no tienen valor.`);
+  } else if (E.tipo === 'par'){
+    vistaPar(L, c, { F:6, ang:E.ang, giro:E.giro });
+    lecturas($('lect2'), ya ? [['F', `F = 6 N cada una`], ['suma', 'ΣF = 0'], ['suma', 'Στ = 12 N·m ↺']] : []);
+    decir($('desc2'), ya ? 'La tabla gira en su sitio, en sentido antihorario; su centro no se mueve.' : 'Una tabla sobre hielo, vista desde arriba. Dos personas la empujan con 6 newtons en sus extremos, en sentidos opuestos.');
+  } else if (E.tipo === 'polea'){
+    const r = M.polea({ m1:5, m2:5 });
+    vistaPolea(L, c, { r, off:E.off*L.H/400, ver:E.ver, crece:E.crece, puntos:E.puntos });
+    lecturas($('lect2'), ya ? [['T', `T = ${N1(r.T)} N`], ['P', `P = ${N1(r.P1)} N cada uno`]] : []);
+    decir($('desc2'), ya ? 'El balde y el bloque pesan 50 newtons cada uno. La tensión es de 50 newtons en toda la cuerda.' : 'Una polea fija con un balde a la izquierda y un bloque más abajo a la derecha, quietos. Los pesos y la tensión todavía no se muestran.');
+  } else if (E.tipo === 'roce'){
+    const r = M.planoRoce({ m:20, mus:E.mus, F:E.F });
+    vistaRoce(L, c, { r, F:E.F, mus:E.mus, verf:E.verf, crece:E.crece });
+    lecturas($('lect2'), ya ? [['F', `F = ${N1(E.F)} N`], ['f', r.quieto ? `f = ${N1(r.roce)} N` : 'f no alcanza'], ['f', `f máx = μs·N = ${N1(r.fsMax)} N`]] : []);
+    decir($('desc2'), ya ? (r.quieto ? `Empuje de ${N1(E.F)} newtons; el roce estático vale ${N1(r.roce)} newtons, de un máximo de ${N1(r.fsMax)}.` : `Empuje de ${N1(E.F)} newtons: supera el máximo de ${N1(r.fsMax)} y la caja desliza.`)
+      : 'Una caja de 20 kilogramos en el piso, empujada con 30 newtons. Peso y normal de 200 newtons. El roce todavía no tiene valor.');
+  }
+}
+// Pastillas: la k solo se abre si todos los experimentos anteriores ya tienen respuesta;
+// las respondidas se revisitan libres (misma regla que los puntos del paso a paso).
+function primeraLibre(){ const j = EXPS.findIndex(x => !S.pred[x.id]); return j < 0 ? EXPS.length - 1 : j; }
+function botones(){
+  if (!$('exps').children.length){
+    $('exps').innerHTML = EXPS.map((x, k) => `<button type="button" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
+    $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+  }
+  const libre = primeraLibre();
+  [...$('exps').children].forEach((b, k) => {
+    const cerrado = k > libre; b.disabled = cerrado; b.setAttribute('aria-pressed', String(!cerrado && k === S.k));
+    if (cerrado){ b.setAttribute('aria-disabled', 'true'); b.setAttribute('aria-label', `Experimento ${k+1}, bloqueado`); }
+    else { b.removeAttribute('aria-disabled'); b.removeAttribute('aria-label'); }
+  });
+}
+function reiniciar(x){ for (const k of Object.keys(E)) delete E[k]; x.antes(); }
+function ir(k){
+  if (k > primeraLibre()) return;
+  parar();
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  reiniciar(x);
+  if (ya){ x.despues(); parar(); E.crece = 1; if (E.tipo === 'par') E.ang = M.par({ F:6, L:2, m:12 }).angulo(1.2); }
+  botones();
+  leyenda($('ley2'), x.ley);
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  sinParada($('body2'));
+  L.compactar(!ya);
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : (x.fb && x.fb[p]) || `Elegiste la ${p.toUpperCase()}. La correcta está marcada; mira la escena para ver por qué.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.ctrl() + x.exp + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
+    $('res2').querySelectorAll('input').forEach(inp => inp.addEventListener('input', () => { if (E.tipo !== 'par') parar(); E.crece = 1; x.alCambiar(); x.vivo(); draw(); }));
+    const rep = $('repetir'); if (rep) rep.onclick = () => { E.ang = 0; girar(); };
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    sinParada($('res2')); x.vivo();
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; botones();
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+    pintar();
+    // El botón elegido queda desactivado: el foco pasa a la respuesta para no perderse.
+    $('fb2').focus({ preventScroll:true });
+    // En el celular, el dibujo deja de estar pegado arriba, sube a la vista y la escena cambia un momento después.
+    const ch = chico();
+    L.compactar(false);
+    if (ch) cv.scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' });
+    draw();
+    esperar(ch ? 380 : 0, () => { if (S.k !== k) return; x.despues(); draw(); });
+  });
+  pintar(); draw();
+}
+alRedibujarTema(draw);
+addEventListener('modo', () => { if ($('m2').hidden) parar(); else L.resize(); });
+L.resize(); ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

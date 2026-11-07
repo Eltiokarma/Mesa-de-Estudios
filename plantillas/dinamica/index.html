@@ -353,8 +353,9 @@ function vistaPlano(L, c, P){
     ctx.fillText(`${fmt(P.ang, 0)}°`, B.x - 40, B.y - 10 - 8*Math.sin(th));
   }
   // Bloque
-  const l = clamp(Math.min(W, H)*0.13, 36, 54), pxm = (g.Lr - l*1.5)/P.largo;
-  const s = clamp(l*0.25 + P.s*pxm, 0, g.Lr - l*0.8);
+  // El saco arranca a casi un lado de la punta, apoyado de lleno en la rampa (no montado en el vértice).
+  const l = clamp(Math.min(W, H)*0.13, 36, 54), pxm = (g.Lr - l*2.05)/P.largo;
+  const s = clamp(l*0.8 + P.s*pxm, 0, g.Lr - l*0.8);
   const Q = { x: A.x + d.x*(s + l/2), y: A.y + d.y*(s + l/2) }, C = { x: Q.x + n.x*l/2, y: Q.y + n.y*l/2 };
   bloque(ctx, c, C.x, C.y, l, l, th);
   // Asa para arrastrar la rampa (arriba)

@@ -196,7 +196,7 @@
       "universidades": {"uni": {"semanas": [8, 10]}, "unmsm": {"temas": [14]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": ["grafica-perillas"],
+      "plantillas": ["grafica-perillas", "exponenciales-logaritmos"],
       "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
     {
@@ -213,7 +213,7 @@
       "universidades": {"uni": {"semanas": [11]}, "unmsm": {"temas": [15]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": [],
+      "plantillas": ["exponenciales-logaritmos"],
       "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
     {

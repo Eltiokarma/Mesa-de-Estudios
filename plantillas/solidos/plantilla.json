@@ -1,0 +1,17 @@
+{
+  "id": "solidos",
+  "titulo": "El sólido que se abre: prisma, pirámide, cilindro, cono y esfera",
+  "formato": "escena",
+  "unidades": [
+    "geometria.prisma-y-piramide",
+    "geometria.solidos-de-revolucion",
+    "geometria.poliedros"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}

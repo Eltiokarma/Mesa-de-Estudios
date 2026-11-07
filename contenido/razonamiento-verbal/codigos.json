@@ -168,5 +168,15 @@
   "nombre": "Se queda en lo literal",
   "respaldo": "hipotesis",
   "por_verificar": false
+ },
+ "RV35": {
+  "nombre": "Se elige un conector de otra clase por descarte o porque \"suena bien\"",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RV36": {
+  "nombre": "En incompatibilidad, se marca como incompatible lo que el texto solo no menciona",
+  "respaldo": "hipotesis",
+  "por_verificar": false
  }
 }
