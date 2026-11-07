@@ -1,0 +1,150 @@
+{
+  "titulo": "Azúcares, proteínas y grasas: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Masas atómicas: H = 1, C = 12, N = 14, O = 16, Na = 23, K = 39, I = 127. Masas molares: glucosa, fructosa y galactosa 180; glicina 75, alanina 89, serina 105, valina 117; glicerol 92; ácidos palmítico 256, esteárico 284, oleico 282 (un doble enlace C=C) y linoleico 280 (dos). Antes de sumar, piensa qué pasa con las fórmulas cada vez que dos piezas se unen o se separan.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "La lactosa, el azúcar de la leche, se forma al unirse una galactosa con una glucosa. ¿Cuál es su fórmula y su masa molar?",
+      "respuesta": "C₁₂H₂₂O₁₁; 342 g/mol.",
+      "pasos": [
+        "Las dos piezas tienen la misma fórmula, C₆H₁₂O₆, y masa 180. Juntas suman C₁₂H₂₄O₁₂ y 360.",
+        "Al unirse, una pieza pierde un H y la otra un OH: sale una molécula de agua, H₂O. Queda C₁₂H₂₂O₁₁.",
+        "Masa: 360 − 18 = 342 g/mol, la misma que la sacarosa y la maltosa (las tres tienen la misma fórmula)."
+      ],
+      "verificar": [
+        { "fn": "sacarido", "args": [["galactosa", "glucosa"]], "espera": { "M": 342, "texto": "C₁₂H₂₂O₁₁", "aguas": 1, "nombre": "lactosa" } }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Se forma el tetrapéptido Gly-Ala-Ser-Val. ¿Cuántos enlaces peptídicos tiene, cuántas moléculas de agua se liberan al formarlo y cuál es su masa molar?",
+      "respuesta": "3 enlaces peptídicos, 3 aguas; 332 g/mol.",
+      "pasos": [
+        "Cuatro piezas en fila se tocan en 3 lugares: hay 3 uniones. Cada unión es un enlace peptídico y suelta una molécula de agua.",
+        "Suma de las piezas: 75 + 89 + 105 + 117 = 386.",
+        "Se restan las 3 aguas: 386 − 3 × 18 = 386 − 54 = 332 g/mol."
+      ],
+      "verificar": [
+        { "fn": "peptido", "args": [["Gly", "Ala", "Ser", "Val"]], "espera": { "enlacesPeptidicos": 3, "aguas": 3, "masaPiezas": 386, "M": 332 } }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Un fragmento de amilosa (almidón) tiene 10 glucosas en cadena. Calcula su masa molar exacta. ¿Cuánto daría con la fórmula aproximada (C₆H₁₀O₅)ₙ?",
+      "respuesta": "1638 g/mol exacta; 1620 g/mol con (C₆H₁₀O₅)₁₀.",
+      "pasos": [
+        "10 glucosas pesan 10 × 180 = 1800 y forman 9 uniones: salen 9 aguas, 9 × 18 = 162.",
+        "Masa exacta: 1800 − 162 = 1638 g/mol (fórmula C₆₀H₁₀₂O₅₁).",
+        "Dentro de la cadena, cada glucosa perdió un agua: queda la unidad C₆H₁₀O₅, de masa 162. Con la fórmula (C₆H₁₀O₅)ₙ: 10 × 162 = 1620. La diferencia, 18, es el agua que falta contar por los dos extremos: para cadenas largas no importa."
+      ],
+      "verificar": [
+        { "fn": "polisacarido", "args": [10], "espera": { "M": 1638, "Mformula": 1620, "aguas": 9 } },
+        { "fn": "sacarido", "args": [["glucosa", "glucosa", "glucosa", "glucosa", "glucosa", "glucosa", "glucosa", "glucosa", "glucosa", "glucosa"]], "espera": { "texto": "C₆₀H₁₀₂O₅₁" } }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Se hidrolizan por completo 324 g de almidón, (C₆H₁₀O₅)ₙ, hasta glucosa. ¿Cuántos gramos de glucosa se obtienen y cuántos gramos de agua se consumen?",
+      "respuesta": "360 g de glucosa; 36 g de agua.",
+      "pasos": [
+        "(C₆H₁₀O₅)ₙ + n H₂O → n C₆H₁₂O₆. Cada unidad de 162 g gana un agua y se vuelve una glucosa de 180 g.",
+        "324 g de almidón son 324 / 162 = 2 mol de unidades.",
+        "Glucosa: 2 × 180 = 360 g. Agua: 2 × 18 = 36 g. Comprobación: 324 + 36 = 360."
+      ],
+      "verificar": [
+        { "fn": "hidrolisisAlmidon", "args": [324], "espera": { "molUnidades": 2, "glucosa": 360, "agua": 36 } }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "La trilinoleína es el triglicérido de tres ácidos linoleicos. Calcula su masa molar y su índice de yodo (gramos de I₂ que se suman a 100 g de grasa; cada doble enlace C=C suma un I₂).",
+      "respuesta": "878 g/mol; índice de yodo ≈ 173,6.",
+      "pasos": [
+        "Triglicérido = glicerol + 3 ácidos grasos − 3 aguas: 92 + 3 × 280 − 3 × 18 = 92 + 840 − 54 = 878 g/mol.",
+        "Cada ácido linoleico tiene 2 dobles enlaces: la molécula tiene 6, y suma 6 I₂ = 6 × 254 = 1524 g por mol.",
+        "Por 100 g: 1524 × 100 / 878 ≈ 173,6 g de I₂."
+      ],
+      "verificar": [
+        { "fn": "trigliceridoDe", "args": ["linoleico"], "espera": { "M": 878, "dobles": 6, "indiceYodo": 173.57630979498862 } }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "avanzado",
+      "enunciado": "Se saponifican 445 g de triestearina con NaOH. ¿Cuántos gramos de NaOH se gastan, y cuántos gramos de jabón (estearato de sodio, C₁₇H₃₅COONa) y de glicerol se obtienen?",
+      "respuesta": "60 g de NaOH; 459 g de jabón; 46 g de glicerol.",
+      "pasos": [
+        "Masa de la triestearina: 92 + 3 × 284 − 3 × 18 = 890 g/mol. 445 g son 0,5 mol.",
+        "Triglicérido + 3 NaOH → glicerol + 3 jabones. Se gastan 3 × 0,5 = 1,5 mol de NaOH: 1,5 × 40 = 60 g.",
+        "Jabón: el ácido esteárico cambia su H ácido por Na: 284 − 1 + 23 = 306. Salen 1,5 mol: 1,5 × 306 = 459 g. Glicerol: 0,5 × 92 = 46 g.",
+        "Comprobación: 445 + 60 = 505 = 459 + 46. La masa se conserva."
+      ],
+      "verificar": [
+        { "fn": "saponificacion", "args": ["estearico", 445], "espera": { "mol": 0.5, "gramosBase": 60, "gramosJabon": 459, "gramosGlicerol": 46, "jabon.M": 306 } }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "básico",
+      "enunciado": "Con una glicina, una alanina y una serina, usando cada una una sola vez, ¿cuántos tripéptidos distintos se pueden formar? ¿Y cuántos tripéptidos hay con los 20 aminoácidos, si se pueden repetir?",
+      "respuesta": "6 tripéptidos; 8000.",
+      "pasos": [
+        "Gly-Ala-Ser y Ser-Ala-Gly son moléculas distintas: la cadena tiene un principio (el extremo con NH₂) y un final (el extremo con COOH). El orden importa.",
+        "Para el primer lugar hay 3 opciones, para el segundo 2 y para el tercero 1: 3 × 2 × 1 = 6.",
+        "Con 20 aminoácidos y repetición: 20 × 20 × 20 = 8000."
+      ],
+      "verificar": [
+        { "fn": "secuencias", "args": [3, 3, false], "espera": { "total": 6 } },
+        { "fn": "secuencias", "args": [20, 3, true], "espera": { "total": 8000 } }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "El índice de saponificación son los miligramos de KOH que gasta 1 g de grasa. Compara la tripalmitina (de ácido palmítico) con la triestearina (de ácido esteárico). ¿Cuál tiene el índice mayor?",
+      "respuesta": "La tripalmitina: ≈ 208,4 contra ≈ 188,8 de la triestearina.",
+      "pasos": [
+        "Masas: tripalmitina 92 + 3 × 256 − 54 = 806; triestearina 890.",
+        "Cada molécula de triglicérido gasta 3 KOH (3 × 56 = 168 g por mol), sea grande o chica.",
+        "Por gramo: 168 000 / 806 ≈ 208,4 mg y 168 000 / 890 ≈ 188,8 mg. En 1 g caben más moléculas de la más liviana, así que gasta más KOH."
+      ],
+      "verificar": [
+        { "fn": "compararSaponificacion", "args": ["palmitico", "estearico"], "espera": { "mayor": "a", "indices.0": 208.43672456575683, "indices.1": 188.76404494382024 } }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "intermedio",
+      "enunciado": "La trilinoleína se hidrogena por completo. ¿Cuántas moléculas de H₂ gana cada molécula, cuánto aumenta su masa molar y en qué grasa se convierte?",
+      "respuesta": "6 H₂; de 878 a 890 g/mol (12 más); en triestearina.",
+      "pasos": [
+        "Cada doble enlace C=C gana un H₂ (dos átomos de H) y se vuelve simple. La trilinoleína tiene 3 × 2 = 6 dobles enlaces: gana 6 H₂.",
+        "La masa sube 6 × 2 = 12: de 878 a 890 g/mol.",
+        "Sin dobles enlaces, las cadenas de 18 carbonos son de ácido esteárico: queda triestearina, una grasa sólida."
+      ],
+      "verificar": [
+        { "fn": "hidrogenar", "args": ["linoleico"], "espera": { "H2": 6, "masaGanada": 12, "Mantes": 878, "Mdespues": 890, "producto": "triestearina", "yodoDespues": 0 } }
+      ]
+    },
+    {
+      "id": "p10",
+      "nivel": "intermedio",
+      "enunciado": "Una proteína tiene una sola cadena de 150 aminoácidos. ¿Cuántos enlaces peptídicos tiene? ¿Cuántos tiene después de cocinarla hasta que se desnaturaliza? ¿Y después de que la digestión la separa en sus aminoácidos?",
+      "respuesta": "149; siguen 149; 0 (y entran 149 moléculas de agua).",
+      "pasos": [
+        "150 aminoácidos en fila: 149 uniones, cada una un enlace peptídico.",
+        "Al cocinarla se rompen las atracciones débiles que la mantienen plegada (puentes de hidrógeno y otras): la cadena se despliega, pero los 149 enlaces peptídicos siguen ahí.",
+        "La digestión es una hidrólisis: las enzimas cortan los 149 enlaces y en cada corte entra una molécula de agua. Quedan 150 aminoácidos sueltos y 0 enlaces."
+      ],
+      "verificar": [
+        { "fn": "enlacesCadena", "args": [150], "espera": { "enlaces": 149, "aguas": 149 } },
+        { "fn": "desnaturalizar", "args": [150], "espera": { "antes.peptidicos": 149, "despues.peptidicos": 149, "despues.piezas": 1 } }
+      ]
+    }
+  ]
+}

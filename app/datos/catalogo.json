@@ -1145,7 +1145,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "biomoleculas"
+     ]
     },
     {
      "id": "quimica.recursos-naturales",
@@ -4277,6 +4279,23 @@
     "/plantillas/balance-reacciones/index.html",
     "/plantillas/balance-reacciones/motor.js",
     "/plantillas/balance-reacciones/papel.json"
+   ]
+  },
+  "biomoleculas": {
+   "id": "biomoleculas",
+   "titulo": "El taller de las piezas: azúcares, proteínas y grasas",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.biomoleculas-y-productos-naturales"
+   ],
+   "url": "/plantillas/biomoleculas/index.html",
+   "papel": "/plantillas/biomoleculas/papel.json",
+   "archivos": [
+    "/plantillas/biomoleculas/index.html",
+    "/plantillas/biomoleculas/motor.js",
+    "/plantillas/biomoleculas/papel.json"
    ]
   },
   "calorimetria": {

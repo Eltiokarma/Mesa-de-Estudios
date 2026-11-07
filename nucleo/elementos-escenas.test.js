@@ -65,6 +65,11 @@ const ESCENAS = {
       [['H', 'O'], ['--c-T']],                                 // el vapor que se enfría
     ] },
   // Viene de la rutina de química B; la prueba la cuida en cuanto la escena llegue a esta rama.
+  'biomoleculas': {
+    elementos: ['H', 'O'],   // las piezas son bloques con nombre; solo el H y el OH que salen en cada unión llevan color
+    vistas: [
+      [['H', 'O'], ['--c-n', '--c-k', '--c-Mp', '--c-Ma', '--c-M']],   // el taller: la gota de agua con todas las variables
+    ] },
   'nomenclatura-inorganica': {
     elementos: ['H', 'C', 'N', 'O', 'Na', 'Al', 'P', 'S', 'Cl', 'K', 'Ca', 'Fe', 'Zn', 'Pb'],
     vistas: [
