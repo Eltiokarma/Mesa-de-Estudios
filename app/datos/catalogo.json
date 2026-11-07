@@ -3409,7 +3409,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "trazos-rutas"
+     ]
     },
     {
      "id": "razonamiento-matematico.ordenamiento-de-informacion",
@@ -3729,7 +3731,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "trazos-rutas"
+     ]
     },
     {
      "id": "razonamiento-matematico.tablas-graficos-y-suficiencia",
@@ -5462,6 +5466,24 @@
     "/plantillas/traductor-enunciados/index.html",
     "/plantillas/traductor-enunciados/motor.js",
     "/plantillas/traductor-enunciados/papel.json"
+   ]
+  },
+  "trazos-rutas": {
+   "id": "trazos-rutas",
+   "titulo": "El lápiz y la hormiga: trazos, perímetros y rutas",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.trazos-y-perimetros",
+    "razonamiento-matematico.rutas-y-visualizacion-espacial"
+   ],
+   "url": "/plantillas/trazos-rutas/index.html",
+   "papel": "/plantillas/trazos-rutas/papel.json",
+   "archivos": [
+    "/plantillas/trazos-rutas/index.html",
+    "/plantillas/trazos-rutas/motor.js",
+    "/plantillas/trazos-rutas/papel.json"
    ]
   },
   "triangulo-estira": {

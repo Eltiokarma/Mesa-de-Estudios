@@ -31,8 +31,8 @@
       "universidades": {"unmsm": {"temas": [1, 2, 3, 4]}},
       "potencial_visual": "alto",
       "grado": 3,
-      "plantillas": [],
-      "investigacion": null
+      "plantillas": ["trazos-rutas"],
+      "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
       "id": "razonamiento-matematico.ordenamiento-de-informacion",
@@ -208,8 +208,8 @@
       "universidades": {"unmsm": {"temas": [15, 16]}},
       "potencial_visual": "alto",
       "grado": 3,
-      "plantillas": [],
-      "investigacion": null
+      "plantillas": ["trazos-rutas"],
+      "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
       "id": "razonamiento-matematico.tablas-graficos-y-suficiencia",
