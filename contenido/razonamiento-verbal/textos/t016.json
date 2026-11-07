@@ -1,0 +1,265 @@
+{
+  "id": "t016",
+  "version": 1,
+  "titulo": "La memoria del cuerpo",
+  "tema": "Ciencia · las vacunas",
+  "grado": 3,
+  "dificultad": 1,
+  "tipo_texto": "expositivo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "Cuando un microbio entra por primera vez al cuerpo, las defensas tardan varios días en reconocerlo y en fabricar lo necesario para combatirlo."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "Mientras tanto, la persona puede enfermarse de gravedad."
+      },
+      {
+        "id": "o3",
+        "rol": "apoyo",
+        "t": "El cuerpo guarda un registro: algunas de sus células de defensa recuerdan al microbio y, si vuelve, reaccionan mucho más rápido."
+      }
+    ],
+    [
+      {
+        "id": "o4",
+        "rol": "principal",
+        "t": "Una vacuna aprovecha esa memoria: le presenta al cuerpo una versión debilitada o una parte inofensiva del microbio, para que aprenda a reconocerlo sin pasar por la enfermedad."
+      },
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "Así, cuando llega el microbio verdadero, las defensas ya están preparadas."
+      },
+      {
+        "id": "o6",
+        "rol": "detalle",
+        "t": "Las vacunas también protegen a quienes no pueden recibirlas, como los bebés muy pequeños: si casi todos a su alrededor están vacunados, el microbio tiene pocas personas a quienes pasar."
+      }
+    ],
+    [
+      {
+        "id": "o7",
+        "rol": "principal",
+        "t": "Por eso, vacunarse no es solo una decisión sobre la propia salud, sino también sobre la salud de los demás."
+      },
+      {
+        "id": "o8",
+        "rol": "apoyo",
+        "t": "Una vacuna es, en cierto modo, un ensayo: el cuerpo practica su defensa antes de que llegue el microbio verdadero."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que mejor resume todo el texto.",
+        "aceptadas": [
+          "o4",
+          "o7"
+        ],
+        "ninguna": "correcta",
+        "codigos": {
+          "o1": "RV4"
+        },
+        "explicacion": "La oración 4 dice cómo funciona la vacuna y la 7 saca la conclusión: vacunarse protege también a los demás. También vale \"ninguna la dice completa\", porque la idea entera junta las dos.",
+        "explicaciones": {
+          "o1": "La primera oración explica qué pasa con un microbio nuevo: es el punto de partida.",
+          "o2": "Dice qué puede pasarle a la persona mientras tanto: es un detalle.",
+          "o3": "Explica la memoria del cuerpo, que la vacuna aprovecha; es un paso de la explicación.",
+          "o5": "Cuenta qué pasa cuando llega el microbio verdadero: es una consecuencia.",
+          "o6": "Explica cómo se protege a los bebés: es un ejemplo de la conclusión de la oración 7.",
+          "o8": "Es una imagen que repite, con otras palabras, lo que la oración 4 dice directamente."
+        }
+      },
+      "enunciado": "¿Cuál es la idea principal del texto?",
+      "alternativas": [
+        {
+          "t": "Las vacunas enseñan a las defensas a reconocer un microbio, y así protegen a quien se vacuna y a quienes lo rodean.",
+          "correcta": true,
+          "evidencia": [
+            "o4",
+            "o6",
+            "o7"
+          ],
+          "explicacion": "Junta las dos ideas del texto: la vacuna aprovecha la memoria del cuerpo (oración 4) y protege también a los demás (oraciones 6 y 7)."
+        },
+        {
+          "t": "Cuando un microbio entra por primera vez al cuerpo, las defensas tardan varios días en reconocerlo y en combatirlo.",
+          "codigo": "RV1",
+          "origen": "o1",
+          "explicacion": "Es el punto de partida, un detalle que el texto necesita para explicar cómo funciona la vacuna."
+        },
+        {
+          "t": "La salud es lo más importante en la vida de las personas.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto habla de las vacunas."
+        },
+        {
+          "t": "El cuerpo guarda un registro de los microbios que ya conoce.",
+          "codigo": "RV3",
+          "origen": "o3",
+          "explicacion": "Es una parte de la explicación, pero deja fuera lo principal: cómo la vacuna usa esa memoria y a quiénes protege."
+        },
+        {
+          "t": "Las vacunas se inventaron hace más de doscientos años.",
+          "codigo": "RV8",
+          "explicacion": "Puede ser cierto, pero el texto no lo dice."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "conector",
+      "unidad": "razonamiento-verbal.conectores",
+      "previo": {
+        "tipo": "relacion",
+        "pide": "Antes de ver las alternativas: ¿qué relación hay entre la oración 2 y la oración 3?",
+        "aceptada": "oposicion",
+        "codigos": {
+          "suma": "RV26",
+          "causa": "RV24"
+        },
+        "explicacion": "La oración 2 dice que la persona puede enfermarse de gravedad, y la 3 presenta algo que juega a favor: la memoria del cuerpo. Se oponen.",
+        "explicaciones": {
+          "suma": "La oración 3 no suma otro problema a la 2: trae algo que la compensa.",
+          "causa": "La oración 3 no es una consecuencia de la 2: el cuerpo recuerda haya o no enfermedad grave."
+        }
+      },
+      "enunciado": "¿Qué conector podría ir al comienzo de la oración 3 (\"___ el cuerpo guarda un registro…\") sin cambiar el sentido del texto?",
+      "alternativas": [
+        {
+          "t": "Sin embargo,",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o3"
+          ],
+          "explicacion": "La oración 2 dice algo malo (la persona puede enfermarse) y la 3, algo que lo compensa (el cuerpo recuerda): se oponen, como con \"sin embargo\"."
+        },
+        {
+          "t": "Por eso,",
+          "codigo": "RV24",
+          "explicacion": "Lee como consecuencia lo que es una oposición: que la persona se enferme no es la razón de que el cuerpo recuerde."
+        },
+        {
+          "t": "Además,",
+          "codigo": "RV26",
+          "explicacion": "\"Además\" suma algo en la misma dirección, pero la oración 3 trae algo bueno frente a lo malo de la 2."
+        },
+        {
+          "t": "Por ejemplo,",
+          "codigo": "RV35",
+          "explicacion": "La oración 3 no es un ejemplo de la 2: dice algo distinto."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.inferencias",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
+        "sonda": "Las vacunas contienen el microbio vivo y con toda su fuerza.",
+        "clase": "lo-contradice",
+        "codigos": {
+          "lo-dice": "RV5",
+          "se-deduce": "RV7",
+          "no-se-sabe": "RV9"
+        },
+        "explicacion": "La oración 4 dice que la vacuna lleva una versión debilitada o una parte inofensiva del microbio: la afirmación dice lo contrario.",
+        "explicaciones": {
+          "lo-dice": "El texto habla del microbio y de la vacuna, pero dice lo opuesto: la vacuna lleva una versión debilitada o una parte inofensiva.",
+          "se-deduce": "Nada en el texto permite concluir eso; la oración 4 dice justamente lo contrario.",
+          "no-se-sabe": "Sí se puede saber: la oración 4 dice que la vacuna lleva una versión debilitada o una parte inofensiva."
+        }
+      },
+      "enunciado": "Se infiere del texto que, en un barrio donde muy pocas personas estuvieran vacunadas,",
+      "alternativas": [
+        {
+          "t": "un bebé muy pequeño correría más riesgo de contagiarse.",
+          "correcta": true,
+          "evidencia": [
+            "o6"
+          ],
+          "explicacion": "La oración 6 dice que el bebé está protegido si casi todos a su alrededor están vacunados. Si pocos lo están, el microbio tiene a muchas personas a quienes pasar."
+        },
+        {
+          "t": "las defensas de los vecinos tardarían varios días en recordar al bebé.",
+          "codigo": "RV5",
+          "origen": "o1",
+          "explicacion": "Mezcla palabras del texto (\"defensas\", \"varios días\", \"recordar\"), pero en una relación que el texto no dice: las defensas recuerdan microbios, no personas."
+        },
+        {
+          "t": "todos los habitantes del barrio se enfermarían de gravedad.",
+          "codigo": "RV11",
+          "explicacion": "\"Todos\" dice mucho más de lo que el texto permite: habla de un riesgo mayor, no de que todos se enfermen."
+        },
+        {
+          "t": "los microbios se volverían más fuertes que antes.",
+          "codigo": "RV7",
+          "explicacion": "El texto no dice nada sobre microbios que se vuelvan más fuertes; esa conclusión va más allá de lo que se lee."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.sentido-contextual",
+      "enunciado": "En la oración 3, la palabra REGISTRO significa",
+      "alternativas": [
+        {
+          "t": "un recuerdo de lo que ya pasó.",
+          "correcta": true,
+          "evidencia": [
+            "o3"
+          ],
+          "explicacion": "La oración lo explica: algunas células \"recuerdan al microbio\". El registro es esa memoria."
+        },
+        {
+          "t": "un cuaderno donde se anotan datos.",
+          "codigo": "RV18",
+          "explicacion": "Es un sentido común de \"registro\" (el registro de asistencia), pero aquí no se anota nada en papel."
+        },
+        {
+          "t": "una defensa contra la enfermedad.",
+          "codigo": "RV19",
+          "explicacion": "Está en el mismo campo del texto, pero no significa lo mismo: el registro es lo que permite defenderse más rápido, no la defensa misma."
+        },
+        {
+          "t": "un microbio debilitado.",
+          "codigo": "RV5",
+          "origen": "o4",
+          "explicacion": "Repite palabras de la oración 4, pero eso es lo que lleva la vacuna, no lo que guarda el cuerpo."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-06",
+  "hechos": [
+    {
+      "afirmacion": "La memoria inmunitaria permite una respuesta más rápida ante un microbio conocido; las vacunas usan microbios debilitados o partes inofensivas; la inmunidad de grupo protege a quienes no pueden vacunarse.",
+      "fuente": "OMS, \"Cómo funcionan las vacunas\" (2020); Minsa, información sobre el esquema de vacunación."
+    },
+    {
+      "afirmacion": "Las vacunas se inventaron hace más de doscientos años (dato del distractor, fuera del texto).",
+      "fuente": "Jenner, E. (1798), vacuna contra la viruela."
+    }
+  ],
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: el revisor marcó «ninguna la dice completa» en el previo de idea principal, y tenía razón: la idea junta las oraciones 4 y 7, así que ahora «ninguna» también se acepta. El resto, 6 de 6. Una segunda verificación de los cambios confirmó claves únicas y ajustó seis detalles."
+  }
+}

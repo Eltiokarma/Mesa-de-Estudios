@@ -1,0 +1,293 @@
+{
+  "id": "t017",
+  "version": 1,
+  "titulo": "La ciudad de barro y la lluvia",
+  "tema": "Historia antigua · Chan Chan y la conservación",
+  "grado": 5,
+  "dificultad": 3,
+  "tipo_texto": "argumentativo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "Cerca de Trujillo se extiende Chan Chan, la antigua capital del reino chimú y la ciudad de barro más grande de América."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "Sus muros de adobe, decorados con figuras de peces y aves, resistieron siglos gracias a que en la costa casi nunca llueve."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "Esa misma condición es hoy su punto débil: cuando llega un fenómeno de El Niño intenso, las lluvias deshacen en semanas lo que el desierto conservó durante siglos."
+      },
+      {
+        "id": "o4",
+        "rol": "detalle",
+        "t": "Desde 1986, la Unesco la incluye en su lista de patrimonio en peligro."
+      }
+    ],
+    [
+      {
+        "id": "o5",
+        "rol": "contraste",
+        "t": "Proteger Chan Chan parece sencillo: bastaría con techar todos los muros o reconstruirlos con material nuevo."
+      },
+      {
+        "id": "o6",
+        "rol": "apoyo",
+        "t": "Pero un techo cambia la forma en que se ve el sitio y puede atrapar humedad, y un muro rehecho por completo deja de ser el muro antiguo, aunque se le parezca."
+      },
+      {
+        "id": "o7",
+        "rol": "apoyo",
+        "t": "Por eso, los conservadores suelen preferir intervenciones pequeñas: cubrir solo las partes más frágiles, reforzar la base de los muros y mejorar la salida del agua."
+      }
+    ],
+    [
+      {
+        "id": "o8",
+        "rol": "principal",
+        "t": "Conservar no es dejar todo como está ni rehacerlo todo, sino elegir, en cada caso, qué se puede perder y qué no."
+      },
+      {
+        "id": "o9",
+        "rol": "apoyo",
+        "t": "En Chan Chan, esa elección se hace contra el reloj de la próxima lluvia."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "intencion",
+      "unidad": "razonamiento-verbal.inferencias",
+      "previo": {
+        "tipo": "proposito",
+        "pide": "Antes de ver las alternativas: ¿qué busca sobre todo el autor?",
+        "aceptada": "convencer",
+        "codigos": {
+          "explicar": "RV14",
+          "narrar": "RV13"
+        },
+        "explicacion": "El texto explica el problema de Chan Chan, pero para sostener una idea: conservar es elegir qué se puede perder (oración 8).",
+        "explicaciones": {
+          "explicar": "El texto explica por qué la lluvia daña los muros, pero lo hace para defender una idea sobre la conservación.",
+          "narrar": "El texto no cuenta una historia en orden: presenta un problema y una manera de pensarlo."
+        }
+      },
+      "enunciado": "¿Cuál es la intención principal del autor?",
+      "alternativas": [
+        {
+          "t": "Sostener una idea sobre lo que significa conservar, a partir del caso de Chan Chan.",
+          "correcta": true,
+          "evidencia": [
+            "o8"
+          ],
+          "explicacion": "El autor usa Chan Chan para llegar a una idea general sobre la conservación (oración 8): busca convencer."
+        },
+        {
+          "t": "Explicar por qué las lluvias de El Niño ponen en peligro los muros de Chan Chan.",
+          "codigo": "RV14",
+          "origen": "o3",
+          "explicacion": "Eso está en las oraciones 2 y 3, pero el autor lo explica para llegar a una idea sobre conservar."
+        },
+        {
+          "t": "Contar la historia del reino chimú hasta la llegada de los incas.",
+          "codigo": "RV13",
+          "explicacion": "El texto no cuenta la historia del reino: habla de cómo conservar su capital."
+        },
+        {
+          "t": "Pedir que se techen todos los muros de Chan Chan.",
+          "codigo": "RV33",
+          "origen": "o6",
+          "explicacion": "El autor no pide eso; al contrario, explica por qué techarlo todo es un problema (oración 6)."
+        },
+        {
+          "t": "Informar sobre el patrimonio en peligro en todo el mundo.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto habla de un solo sitio y de una idea sobre conservar."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que mejor resume la tesis del autor.",
+        "aceptadas": [
+          "o8"
+        ],
+        "ninguna": "RV3",
+        "codigos": {
+          "o1": "RV4"
+        },
+        "explicacion": "La oración 8 dice la tesis: conservar no es dejarlo todo ni rehacerlo todo, sino elegir qué se puede perder y qué no.",
+        "explicaciones": {
+          "o1": "La primera oración presenta Chan Chan: es el punto de partida.",
+          "o2": "Explica por qué los muros duraron tanto: es información de base.",
+          "o3": "Explica el peligro: es el problema, no la tesis.",
+          "o4": "Es un dato que confirma el peligro.",
+          "o5": "Presenta una solución que el autor va a discutir.",
+          "o6": "Explica por qué esa solución falla: es un argumento.",
+          "o7": "Cuenta lo que prefieren los conservadores; es un ejemplo de la tesis, no la tesis.",
+          "o9": "Agrega la urgencia del caso, pero la idea general está en la oración 8.",
+          "ninguna": "La oración 8 sí la dice completa: conservar es elegir qué se puede perder y qué no."
+        }
+      },
+      "enunciado": "¿Cuál es la tesis del autor?",
+      "alternativas": [
+        {
+          "t": "Conservar un sitio antiguo obliga a decidir, caso por caso, qué se puede perder y qué no.",
+          "correcta": true,
+          "evidencia": [
+            "o8"
+          ],
+          "explicacion": "Es la oración 8: conservar no es dejarlo todo ni rehacerlo todo, sino elegir."
+        },
+        {
+          "t": "Las lluvias de El Niño deshacen en semanas lo que el desierto conservó durante siglos.",
+          "codigo": "RV1",
+          "origen": "o3",
+          "explicacion": "Es un detalle: explica por qué Chan Chan está en peligro."
+        },
+        {
+          "t": "El patrimonio cultural del Perú debe ser protegido.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el autor no discute si proteger, sino cómo hacerlo."
+        },
+        {
+          "t": "Techar los muros cambia la forma en que se ve el sitio y puede atrapar humedad.",
+          "codigo": "RV3",
+          "origen": "o6",
+          "explicacion": "Es un argumento del texto (oración 6), pero deja fuera la conclusión que el autor saca."
+        },
+        {
+          "t": "Chan Chan recibe cada año miles de turistas.",
+          "codigo": "RV8",
+          "explicacion": "Puede ser cierto, pero el texto no habla de turistas."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.sentido-contextual",
+      "enunciado": "En la oración 7, la palabra INTERVENCIONES significa",
+      "alternativas": [
+        {
+          "t": "acciones sobre el sitio.",
+          "correcta": true,
+          "evidencia": [
+            "o7"
+          ],
+          "explicacion": "La oración lo explica con ejemplos: cubrir partes frágiles, reforzar la base y mejorar la salida del agua."
+        },
+        {
+          "t": "operaciones médicas.",
+          "codigo": "RV18",
+          "explicacion": "Es un sentido común de \"intervención\" (una intervención quirúrgica), pero aquí se habla de los muros."
+        },
+        {
+          "t": "reconstrucciones completas.",
+          "codigo": "RV19",
+          "origen": "o5",
+          "explicacion": "Es la solución de la oración 5 que el autor discute; la oración 7 habla de intervenciones \"pequeñas\"."
+        },
+        {
+          "t": "techos sobre todos los muros.",
+          "codigo": "RV5",
+          "origen": "o5",
+          "explicacion": "Repite palabras de la oración 5, pero esa es la solución que el autor discute, no lo que prefieren los conservadores."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "incompatibilidad",
+      "unidad": "razonamiento-verbal.compatibilidad",
+      "enunciado": "Es incompatible con el texto afirmar que",
+      "alternativas": [
+        {
+          "t": "un muro rehecho por completo con material nuevo sigue siendo el muro antiguo.",
+          "correcta": true,
+          "evidencia": [
+            "o6"
+          ],
+          "explicacion": "La oración 6 dice lo contrario: un muro rehecho por completo \"deja de ser el muro antiguo, aunque se le parezca\"."
+        },
+        {
+          "t": "no basta con techar los muros para proteger bien Chan Chan.",
+          "codigo": "RV10",
+          "origen": "o6",
+          "explicacion": "Tiene un \"no\", pero es compatible: la oración 6 explica por qué techarlo todo trae problemas."
+        },
+        {
+          "t": "los adobes de Chan Chan se hicieron con barro del valle del río Moche.",
+          "codigo": "RV36",
+          "explicacion": "El texto no lo menciona, pero tampoco dice nada en contra: que algo no esté dicho no lo vuelve incompatible."
+        },
+        {
+          "t": "la falta de lluvias ayudó a conservar una ciudad de barro.",
+          "codigo": "RV8",
+          "origen": "o2",
+          "explicacion": "Puede sonar extraño, porque uno espera que el agua dañe y no que su falta ayude, pero es lo que dice la oración 2: los muros resistieron porque casi nunca llueve."
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.extrapolacion",
+      "enunciado": "Si en la costa norte lloviera de manera moderada todos los años, según la lógica del texto,",
+      "alternativas": [
+        {
+          "t": "probablemente se habrían conservado muchos menos muros de Chan Chan.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o3"
+          ],
+          "explicacion": "Los muros duraron porque casi nunca llueve (oración 2), y la lluvia los deshace (oración 3). Con lluvia todos los años, se habrían perdido más."
+        },
+        {
+          "t": "los muros habrían resistido los siglos igual que ahora.",
+          "codigo": "RV12",
+          "explicacion": "Cambia la condición, pero deja igual la consecuencia: lo que los protegió fue justamente la falta de lluvia."
+        },
+        {
+          "t": "no existiría ninguna ciudad de barro en todo el mundo.",
+          "codigo": "RV11",
+          "explicacion": "Es una consecuencia exagerada: el texto habla de la costa norte del Perú, no de todo el mundo."
+        },
+        {
+          "t": "la Unesco habría puesto Chan Chan en su lista de peligro antes de 1986.",
+          "codigo": "RV7",
+          "explicacion": "El texto no da ninguna base para eso: es una conclusión que va más allá de lo que dice."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-06",
+  "hechos": [
+    {
+      "afirmacion": "Chan Chan, cerca de Trujillo, fue la capital chimú y es la mayor ciudad de adobe de América; sus frisos tienen peces y aves; está en la lista del patrimonio mundial en peligro desde 1986; las lluvias de El Niño la dañan.",
+      "fuente": "Unesco, ficha de la Lista del patrimonio mundial: \"Zona arqueológica de Chan Chan\" (1986)."
+    },
+    {
+      "afirmacion": "Los techos y las reconstrucciones completas tienen problemas de conservación (cambian el aspecto y la autenticidad; pueden retener humedad); se prefieren intervenciones mínimas.",
+      "fuente": "Principio de mínima intervención (Carta de Venecia, 1964; Documento de Nara sobre la autenticidad, 1994); planes de manejo de Chan Chan del Ministerio de Cultura. Por confirmar lo de la humedad en un estudio concreto."
+    }
+  ],
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: 7 de 7. Cambios: distractor de intención que se descartaba enseguida reemplazado por uno más cercano; origen y explicación de p3; código RV8 en el distractor compatible de la pregunta de incompatibilidad. Una segunda verificación de los cambios confirmó claves únicas y ajustó seis detalles."
+  }
+}

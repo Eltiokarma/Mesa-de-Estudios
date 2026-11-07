@@ -1,0 +1,221 @@
+{
+  "id": "t014",
+  "version": 1,
+  "titulo": "La quena de Mateo",
+  "tema": "Relato · paciencia",
+  "grado": 3,
+  "dificultad": 1,
+  "tipo_texto": "narrativo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "Faltaban dos semanas para la fiesta del colegio, y Mateo todavía no podía sacar una nota limpia de la quena."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "Cada tarde soplaba hasta ponerse rojo, y lo único que salía era un silbido que hacía reír a su hermana menor."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "Un domingo, cansado, guardó la quena en el fondo de su mochila y le dijo a su abuelo que no pensaba tocar nunca más."
+      }
+    ],
+    [
+      {
+        "id": "o4",
+        "rol": "detalle",
+        "t": "El abuelo no le respondió; solo le pidió que lo acompañara a la chacra."
+      },
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "Allí le mostró un surco donde, semanas antes, habían sembrado habas."
+      },
+      {
+        "id": "o6",
+        "rol": "principal",
+        "t": "—El primer día no se ve nada —dijo—, y el que se aburre de mirar la tierra vacía nunca llega a cosechar."
+      }
+    ],
+    [
+      {
+        "id": "o7",
+        "rol": "detalle",
+        "t": "Esa noche, Mateo sacó la quena de la mochila."
+      },
+      {
+        "id": "o8",
+        "rol": "detalle",
+        "t": "No sopló más fuerte, sino más despacio, y por primera vez escuchó, entre el silbido, una nota casi limpia."
+      },
+      {
+        "id": "o9",
+        "rol": "detalle",
+        "t": "No era todavía una canción, pero ya no era solo ruido."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que mejor resume lo que el relato quiere mostrar.",
+        "aceptadas": [
+          "o6"
+        ],
+        "ninguna": "RV3",
+        "codigos": {
+          "o1": "RV4",
+          "o3": "RV3"
+        },
+        "explicacion": "La oración 6 es la enseñanza del abuelo, y el resto del relato la muestra: los frutos tardan, y quien se aburre no llega a cosechar.",
+        "explicaciones": {
+          "o1": "La primera oración presenta la situación: es el comienzo del relato.",
+          "o2": "Cuenta cómo le iba a Mateo cada tarde: es un detalle.",
+          "o3": "Cuenta el momento en que Mateo se rinde; es el conflicto, no la enseñanza.",
+          "o4": "Dice lo que hizo el abuelo, pero no por qué.",
+          "o5": "Cuenta lo que el abuelo le mostró; prepara la enseñanza, pero no la dice.",
+          "o7": "Cuenta que Mateo volvió a intentarlo: es una consecuencia de la enseñanza.",
+          "o8": "Cuenta lo que pasó al intentarlo de nuevo; muestra la enseñanza, pero no la dice.",
+          "o9": "Es el final del relato: un primer resultado, no la idea que lo junta todo.",
+          "ninguna": "La oración 6 sí lo dice: el que se aburre de esperar nunca llega a cosechar."
+        }
+      },
+      "enunciado": "¿Cuál es la idea central del relato?",
+      "alternativas": [
+        {
+          "t": "Los frutos de un esfuerzo tardan en verse, y quien se rinde antes no llega a verlos.",
+          "correcta": true,
+          "evidencia": [
+            "o6",
+            "o8"
+          ],
+          "explicacion": "Es lo que dice el abuelo (oración 6) y lo que Mateo comprueba esa noche (oración 8)."
+        },
+        {
+          "t": "Mateo soplaba la quena cada tarde hasta ponerse rojo, y a su hermana le daba risa el silbido.",
+          "codigo": "RV1",
+          "origen": "o2",
+          "explicacion": "Es un detalle del comienzo del relato, no lo que el relato quiere mostrar."
+        },
+        {
+          "t": "La música es una parte importante de las fiestas andinas.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el relato no trata de las fiestas, sino de no rendirse."
+        },
+        {
+          "t": "Mateo quería dejar la quena porque no le salía ninguna nota.",
+          "codigo": "RV3",
+          "origen": "o3",
+          "explicacion": "Cuenta una parte del relato, pero deja fuera lo esencial: lo que le enseña el abuelo y lo que pasa después."
+        },
+        {
+          "t": "Todo el que practica un instrumento termina tocando bien.",
+          "codigo": "RV11",
+          "explicacion": "El relato no promete eso: termina con \"una nota casi limpia\", no con Mateo tocando bien. \"Todo el que\" dice mucho más."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.inferencias",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
+        "sonda": "La hermana de Mateo también estaba aprendiendo a tocar la quena.",
+        "clase": "no-se-sabe",
+        "codigos": {
+          "lo-dice": "RV5",
+          "se-deduce": "RV7",
+          "lo-contradice": null
+        },
+        "explicacion": "El relato solo dice que la hermana se reía del silbido (oración 2). No dice si ella tocaba: no se puede saber.",
+        "explicaciones": {
+          "lo-dice": "El relato nombra a la hermana y a la quena, pero nunca dice que ella tocara.",
+          "se-deduce": "Que se riera del silbido no permite concluir que también aprendiera: eso va más allá del relato.",
+          "lo-contradice": "El relato no dice que la hermana no tocara; simplemente no habla de eso."
+        }
+      },
+      "enunciado": "Se infiere del relato que, al mostrarle el surco de habas, el abuelo quería que Mateo",
+      "alternativas": [
+        {
+          "t": "entendiera que su práctica con la quena también necesitaba tiempo para dar fruto.",
+          "correcta": true,
+          "evidencia": [
+            "o5",
+            "o6"
+          ],
+          "explicacion": "El abuelo habla de las habas, pero Mateo acababa de rendirse con la quena (oración 3): la comparación se deduce, y esa noche Mateo vuelve a intentarlo."
+        },
+        {
+          "t": "viera las habas que habían sembrado semanas antes.",
+          "codigo": "RV6",
+          "origen": "o5",
+          "explicacion": "Eso lo dice el relato tal cual (oración 5), pero no explica para qué se las mostró."
+        },
+        {
+          "t": "dejara la música y se dedicara a trabajar en la chacra.",
+          "codigo": "RV7",
+          "explicacion": "Nada en el relato apoya eso: después de la visita, Mateo vuelve a tocar la quena."
+        },
+        {
+          "t": "aprendiera en qué época se siembran las habas en la sierra.",
+          "codigo": "RV8",
+          "explicacion": "Es algo que podría aprenderse en una chacra, pero el relato no habla de eso: el abuelo usa el surco para darle una enseñanza."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.sentido-contextual",
+      "enunciado": "En el relato, la palabra LIMPIA (en \"una nota limpia\") significa",
+      "alternativas": [
+        {
+          "t": "clara, sin silbidos ni ruido.",
+          "correcta": true,
+          "evidencia": [
+            "o1",
+            "o2",
+            "o8"
+          ],
+          "explicacion": "Una nota limpia es la que suena bien, sin el silbido que le salía a Mateo (oraciones 1, 2 y 8)."
+        },
+        {
+          "t": "lavada, sin suciedad.",
+          "codigo": "RV18",
+          "explicacion": "Es el sentido más común de \"limpia\", pero aquí se habla de un sonido, no de algo sucio."
+        },
+        {
+          "t": "fuerte.",
+          "codigo": "RV19",
+          "origen": "o8",
+          "explicacion": "Es del mismo campo (cómo suena algo), pero no significa lo mismo; además, la nota le salió cuando sopló más despacio."
+        },
+        {
+          "t": "lenta.",
+          "codigo": "RV5",
+          "origen": "o8",
+          "explicacion": "Recuerda el \"más despacio\" de la oración 8, pero eso es cómo sopló Mateo, no cómo era la nota."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-06",
+  "hechos": [],
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: 5 de 5. Cambios: RV3 para o3 en el previo (coherente con el distractor que sale de ella) y evidencia de p3. Una segunda verificación de los cambios confirmó claves únicas y ajustó seis detalles."
+  }
+}
