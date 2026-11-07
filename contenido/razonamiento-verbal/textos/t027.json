@@ -1,0 +1,251 @@
+{
+  "id": "t027",
+  "version": 1,
+  "titulo": "Una lengua que se ve",
+  "tema": "Sociedad · la lengua de señas peruana",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "argumentativo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "En el Perú, miles de personas sordas se comunican con la lengua de señas peruana, que usa las manos, el rostro y el movimiento del cuerpo."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "Desde 2010, una ley la reconoce como lengua de las personas con discapacidad auditiva en el país."
+      },
+      {
+        "id": "o3",
+        "rol": "contraste",
+        "t": "Mucha gente cree que es una simple mímica, o que en todo el mundo se usa la misma."
+      }
+    ],
+    [
+      {
+        "id": "o4",
+        "rol": "apoyo",
+        "t": "Ninguna de las dos cosas es cierta: tiene su propio vocabulario y su propia gramática, y cada país tiene la suya, como pasa con las lenguas habladas."
+      },
+      {
+        "id": "o5",
+        "rol": "apoyo",
+        "t": "Un niño sordo que la aprende desde pequeño puede desarrollar su pensamiento y su lenguaje igual que un niño que oye."
+      },
+      {
+        "id": "o6",
+        "rol": "apoyo",
+        "t": "El problema aparece cuando no tiene con quién usarla: en la escuela, en el hospital o en una oficina pública, casi nadie la conoce."
+      }
+    ],
+    [
+      {
+        "id": "o7",
+        "rol": "principal",
+        "t": "Por eso, incluir a las personas sordas no depende solo de ellas, sino de que haya intérpretes y de que más personas que oyen aprendan, aunque sea, lo básico de su lengua."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que mejor resume la tesis del autor.",
+        "aceptadas": [
+          "o7"
+        ],
+        "ninguna": "RV3",
+        "codigos": {
+          "o1": "RV4"
+        },
+        "explicacion": "La oración 7 dice la tesis: la inclusión depende también de que haya intérpretes y de que otros aprendan la lengua.",
+        "explicaciones": {
+          "o1": "La primera oración presenta la lengua de señas: es el punto de partida.",
+          "o2": "Es un dato sobre la ley: información de base.",
+          "o3": "Presenta creencias que el autor va a corregir.",
+          "o4": "Corrige esas creencias: es un argumento.",
+          "o5": "Dice lo que logra un niño que aprende la lengua: es un argumento.",
+          "o6": "Presenta el problema; la propuesta viene en la oración 7.",
+          "ninguna": "La oración 7 sí la dice completa: la inclusión no depende solo de las personas sordas."
+        }
+      },
+      "enunciado": "¿Cuál es la tesis del autor?",
+      "alternativas": [
+        {
+          "t": "Para incluir a las personas sordas hace falta que haya intérpretes y que otros aprendan su lengua.",
+          "correcta": true,
+          "evidencia": [
+            "o7"
+          ],
+          "explicacion": "Es lo que dice la oración 7: la inclusión no depende solo de las personas sordas."
+        },
+        {
+          "t": "Desde 2010, una ley reconoce la lengua de señas peruana como lengua de las personas sordas del país.",
+          "codigo": "RV1",
+          "origen": "o2",
+          "explicacion": "Es un dato del texto, un detalle."
+        },
+        {
+          "t": "Todas las personas merecen ser tratadas con respeto.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto habla de la lengua de señas y de qué falta para incluir a las personas sordas."
+        },
+        {
+          "t": "La lengua de señas tiene su propio vocabulario y su propia gramática.",
+          "codigo": "RV3",
+          "origen": "o4",
+          "explicacion": "Es un argumento del texto (oración 4), pero deja fuera lo que el autor propone."
+        },
+        {
+          "t": "Todos los peruanos deberían estar obligados por ley a aprender la lengua de señas.",
+          "codigo": "RV33",
+          "origen": "o7",
+          "explicacion": "El autor no pide una obligación: dice que más personas aprendan \"aunque sea, lo básico\"."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "compatibilidad",
+      "unidad": "razonamiento-verbal.compatibilidad",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
+        "sonda": "La ley de 2010 obliga a todos los colegios a enseñar la lengua de señas.",
+        "clase": "no-se-sabe",
+        "codigos": {
+          "lo-dice": "RV5",
+          "se-deduce": "RV7",
+          "lo-contradice": "RV36"
+        },
+        "explicacion": "El texto dice que la ley reconoce la lengua (oración 2), pero no dice qué obliga a hacer. No se puede saber.",
+        "explicaciones": {
+          "lo-dice": "El texto habla de la ley, pero solo dice que reconoce la lengua, no que obligue a enseñarla.",
+          "se-deduce": "Que la ley reconozca la lengua no permite concluir que obligue a los colegios a enseñarla: eso va más allá del texto.",
+          "lo-contradice": "El texto no dice que la ley no obligue a los colegios; simplemente no dice qué obliga."
+        }
+      },
+      "enunciado": "Es compatible con el texto afirmar que",
+      "alternativas": [
+        {
+          "t": "la lengua de señas que se usa en el Perú es distinta de la de otros países.",
+          "correcta": true,
+          "evidencia": [
+            "o4"
+          ],
+          "explicacion": "La oración 4 dice que cada país tiene la suya."
+        },
+        {
+          "t": "la lengua de señas es la misma en todos los países del mundo.",
+          "codigo": "RV11",
+          "origen": "o4",
+          "explicacion": "Choca con la oración 4: cada país tiene la suya."
+        },
+        {
+          "t": "un niño sordo no puede desarrollar su pensamiento y su lenguaje igual que un niño que oye.",
+          "codigo": "RV10",
+          "origen": "o5",
+          "explicacion": "La oración 5 dice lo contrario: si aprende la lengua desde pequeño, puede desarrollarlo igual."
+        },
+        {
+          "t": "la lengua de señas es una simple mímica que cualquiera entiende.",
+          "codigo": "RV8",
+          "origen": "o3",
+          "explicacion": "Es una creencia común, pero la oración 4 dice que no es cierta."
+        },
+        {
+          "t": "en los hospitales del Perú, un paciente sordo suele ser atendido en su propia lengua.",
+          "codigo": "RV9",
+          "origen": "o6",
+          "explicacion": "Choca con la oración 6: si en el hospital casi nadie conoce la lengua de señas, un paciente sordo no suele ser atendido en ella."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "referente",
+      "unidad": "razonamiento-verbal.cohesion-y-coherencia",
+      "enunciado": "En la oración 6, ¿quién es el que «no tiene con quién usarla»?",
+      "alternativas": [
+        {
+          "t": "El niño sordo de la oración 5.",
+          "correcta": true,
+          "evidencia": [
+            "o5",
+            "o6"
+          ],
+          "explicacion": "La oración 6 sigue hablando del niño sordo que aprendió la lengua: el problema es que no tiene con quién usarla."
+        },
+        {
+          "t": "El niño que oye.",
+          "codigo": "RV27",
+          "origen": "o5",
+          "explicacion": "Es lo último que se nombra en la oración 5, pero el niño que oye no usa la lengua de señas: se habla del niño sordo."
+        },
+        {
+          "t": "La persona que trabaja en una oficina pública.",
+          "codigo": "RV5",
+          "origen": "o6",
+          "explicacion": "Repite palabras de la misma oración, pero esa persona es la que no conoce la lengua, no la que no tiene con quién usarla."
+        },
+        {
+          "t": "Los intérpretes.",
+          "codigo": "RV7",
+          "explicacion": "El texto nombra a los intérpretes recién en la oración 7, como parte de la solución."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.extrapolacion",
+      "enunciado": "Si en una escuela todos los profesores y alumnos aprendieran lo básico de la lengua de señas, según la lógica del texto, un niño sordo de esa escuela",
+      "alternativas": [
+        {
+          "t": "tendría con quién comunicarse en clase.",
+          "correcta": true,
+          "evidencia": [
+            "o6",
+            "o7"
+          ],
+          "explicacion": "El problema, según la oración 6, es no tener con quién usar la lengua. En esa escuela, ese problema se reduciría."
+        },
+        {
+          "t": "seguiría sin tener con quién usar su lengua en la escuela.",
+          "codigo": "RV12",
+          "explicacion": "Cambia la condición, pero deja igual la consecuencia: si todos aprenden lo básico, ya hay con quién usarla."
+        },
+        {
+          "t": "ya no necesitaría intérpretes en ningún lugar del país.",
+          "codigo": "RV11",
+          "explicacion": "Lo que cambia es esa escuela, no el hospital ni las oficinas del resto del país."
+        },
+        {
+          "t": "tendría que dejar su lengua y aprender a leer los labios.",
+          "codigo": "RV7",
+          "explicacion": "Al contrario: si todos saben lo básico, podría usar su lengua. Esa conclusión no sale del texto."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-06",
+  "hechos": [
+    {
+      "afirmacion": "La Ley 29535 (2010) otorga reconocimiento oficial a la lengua de señas peruana; las lenguas de señas tienen gramática propia y son distintas en cada país; la adquisición temprana permite un desarrollo lingüístico y cognitivo típico.",
+      "fuente": "Ley 29535 (2010), Ley que otorga reconocimiento oficial a la lengua de señas peruana; Emmorey, K. (2002). Language, cognition, and the brain. Erlbaum; Mayberry, R. (2010), sobre la adquisición temprana."
+    }
+  ],
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "Cambios aplicados tras la revisión a ciegas; la segunda verificación pidió cuatro retoques de redacción (t025 p5, t026 p2, t027 p2 y la oración 8 de t028), ya aplicados."
+  }
+}

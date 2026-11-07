@@ -1,0 +1,85 @@
+{
+  "id": "e015",
+  "version": 1,
+  "tipo": "eliminacion",
+  "unidad": "razonamiento-verbal.eliminacion-de-oraciones",
+  "titulo": "Eliminación de oraciones: El agua que hierve en la altura",
+  "grado": 4,
+  "dificultad": 2,
+  "cuerpo": {
+    "oraciones": [
+      {
+        "n": "I",
+        "t": "En las ciudades altas, el agua hierve a menos de 100 °C."
+      },
+      {
+        "n": "II",
+        "t": "Esto pasa porque arriba la presión del aire es menor."
+      },
+      {
+        "n": "III",
+        "t": "Por eso, en la altura el agua hierve a más temperatura que en la costa."
+      },
+      {
+        "n": "IV",
+        "t": "En Juliaca, a unos 3800 metros, el agua hierve cerca de los 87 °C."
+      }
+    ]
+  },
+  "previo": {
+    "tipo": "marcar-oracion",
+    "pide": "Antes de ver las alternativas: toca la oración que sobra.",
+    "aceptadas": [
+      "III"
+    ],
+    "codigos": {
+      "I": "RV38",
+      "II": "RV5",
+      "IV": "RV30"
+    },
+    "explicacion": "La oración I dice que en la altura el agua hierve a menos de 100 °C, y la III dice que hierve a más temperatura que en la costa: la III contradice a las demás.",
+    "explicaciones": {
+      "I": "La oración I presenta el tema: el agua hierve a menos de 100 °C en la altura.",
+      "II": "No repite \"hierve\", pero da la causa de lo que dice la I: es pertinente.",
+      "IV": "Es un dato nuevo, pero es un ejemplo del tema: Juliaca es una ciudad alta."
+    }
+  },
+  "enunciado": "¿Qué oración se debe eliminar?",
+  "alternativas": [
+    {
+      "t": "III",
+      "correcta": true,
+      "evidencia": [],
+      "explicacion": "Es incompatible: dice lo contrario de la I y de la IV, que dan una temperatura menor en la altura."
+    },
+    {
+      "t": "I",
+      "codigo": "RV38",
+      "explicacion": "Presenta el tema; las demás oraciones lo explican o dan un ejemplo."
+    },
+    {
+      "t": "II",
+      "codigo": "RV5",
+      "explicacion": "No repite las palabras del tema, pero explica su causa: es pertinente."
+    },
+    {
+      "t": "IV",
+      "codigo": "RV30",
+      "explicacion": "Es un dato nuevo, pero es un ejemplo de lo que dice la I."
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07",
+  "hechos": [
+    {
+      "afirmacion": "A unos 3800 m de altura la presión atmosférica es de unos 64 kPa y el agua hierve cerca de 87 °C.",
+      "fuente": "Tablas de vapor de agua; plantilla de calorimetría del proyecto (plantillas/calorimetria/)."
+    }
+  ],
+  "revision": {
+    "por": "subagente (resolución a ciegas de 5 ejercicios cada uno) y una segunda verificación a ciegas de los cambios",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: resuelto bien. La oración III exigía saber física para verla incompatible; ahora contradice a la I dentro del mismo texto."
+  }
+}

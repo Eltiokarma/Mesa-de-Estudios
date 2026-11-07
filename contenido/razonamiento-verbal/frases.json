@@ -34,5 +34,9 @@
   "RV33": "El autor no toma esa postura en el texto.",
   "RV34": "No hace falta que el texto lo diga con esas palabras: se deduce de lo que dice.",
   "RV35": "Ese conector no corresponde a la relación entre las dos partes: fíjate si se suman, se oponen o una causa la otra.",
-  "RV36": "Que el texto no mencione algo no significa que lo contradiga: incompatible es lo que choca con lo que dice."
+  "RV36": "Que el texto no mencione algo no significa que lo contradiga: incompatible es lo que choca con lo que dice.",
+  "RV37": "La oración que empieza con \"por eso\" o \"así\" es una conclusión: va al final, no al principio.",
+  "RV38": "La oración que presenta el tema no sobra: es la que le da sentido a las demás.",
+  "RV39": "Eso es un rasgo de esa palabra, no la clase: busca qué tienen en común las demás y cuál no lo comparte.",
+  "RV40": "Que una palabra sea poco conocida no la saca del grupo: averigua qué nombra antes de excluirla."
 }

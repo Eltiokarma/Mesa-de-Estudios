@@ -1,0 +1,68 @@
+{
+  "id": "e009",
+  "version": 1,
+  "tipo": "conector",
+  "unidad": "razonamiento-verbal.conectores",
+  "grado": 5,
+  "dificultad": 2,
+  "cuerpo": {
+    "oracion": "El puente de Q'eswachaka parece frágil, ___ resiste el paso de cientos de personas, ___ las comunidades lo renuevan cada año."
+  },
+  "previo": {
+    "tipo": "relacion",
+    "pide": "Antes de ver las alternativas: ¿qué relación hay entre \"parece frágil\" y \"resiste el paso de cientos de personas\"?",
+    "aceptada": "oposicion",
+    "codigos": {
+      "suma": "RV26",
+      "causa": "RV24"
+    },
+    "explicacion": "Lo que parece frágil debería romperse con facilidad, y este puente resiste: las dos partes se oponen.",
+    "explicaciones": {
+      "suma": "Resistir no es otra cualidad en la misma dirección que parecer frágil: va en contra de ella.",
+      "causa": "Parecer frágil no es la causa de que el puente resista."
+    }
+  },
+  "enunciado": "Elige los conectores que completan la oración.",
+  "alternativas": [
+    {
+      "t": "pero / porque",
+      "correcta": true,
+      "evidencia": [],
+      "explicacion": "Parecer frágil y resistir se oponen (\"pero\"); que lo renueven cada año es la razón de que resista (\"porque\")."
+    },
+    {
+      "t": "por eso / aunque",
+      "codigo": "RV24",
+      "explicacion": "Que parezca frágil no es la razón de que resista: las dos ideas se oponen. Y la renovación no va en contra de que resista: lo explica."
+    },
+    {
+      "t": "y / aunque",
+      "codigo": "RV26",
+      "explicacion": "\"Y\" suma dos ideas en la misma dirección, pero parecer frágil y resistir van en sentidos contrarios."
+    },
+    {
+      "t": "pero / aunque",
+      "codigo": "RV23",
+      "explicacion": "El primer conector está bien, pero el segundo no: renovar el puente cada año no va en contra de que resista, es la razón de que resista."
+    },
+    {
+      "t": "es decir / porque",
+      "codigo": "RV35",
+      "explicacion": "\"Es decir\" anuncia que se repite lo mismo, y resistir no es lo mismo que parecer frágil."
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07",
+  "hechos": [
+    {
+      "afirmacion": "El puente de Q'eswachaka, en Canas (Cusco), se renueva cada año con fibras de ichu; la UNESCO lo inscribió en 2013 como patrimonio cultural inmaterial.",
+      "fuente": "UNESCO, Lista Representativa del Patrimonio Cultural Inmaterial (2013)."
+    }
+  ],
+  "revision": {
+    "por": "subagente (resolución a ciegas de 5 ejercicios cada uno) y una segunda verificación a ciegas de los cambios",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: resuelto bien. Sin cambios de clave."
+  }
+}

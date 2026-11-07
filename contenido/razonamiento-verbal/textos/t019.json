@@ -1,0 +1,254 @@
+{
+  "id": "t019",
+  "version": 1,
+  "titulo": "El pez pequeño que sostiene al mar",
+  "tema": "Perú costeño · la anchoveta",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "expositivo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "Frente a la costa del Perú, el viento empuja el agua de la superficie mar adentro, y en su lugar sube agua fría del fondo."
+      },
+      {
+        "id": "o2",
+        "rol": "apoyo",
+        "t": "Esa agua trae nutrientes que alimentan a millones de algas diminutas, y de ellas se alimenta la anchoveta, un pez que no llega a medir veinte centímetros."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "De la anchoveta comen, a su vez, aves como el guanay, lobos marinos y peces más grandes."
+      }
+    ],
+    [
+      {
+        "id": "o4",
+        "rol": "principal",
+        "t": "Por eso, un pez tan pequeño es una de las piezas de las que depende buena parte de la vida del mar peruano."
+      },
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "Cuando llega un fenómeno de El Niño, el agua de la superficie se calienta y la que sube del fondo trae menos nutrientes."
+      },
+      {
+        "id": "o6",
+        "rol": "detalle",
+        "t": "La anchoveta se aleja o baja a aguas más profundas, y con ella se van los animales que la comen."
+      },
+      {
+        "id": "o7",
+        "rol": "detalle",
+        "t": "A comienzos de la década de 1970, un Niño fuerte llegó después de años en que se había pescado demasiado, y la población de anchoveta se derrumbó."
+      }
+    ],
+    [
+      {
+        "id": "o8",
+        "rol": "principal",
+        "t": "Desde entonces se sabe que cuidar la anchoveta no es solo cuidar una pesca: es cuidar una cadena entera que empieza en el agua fría."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que mejor resume todo el texto.",
+        "aceptadas": [
+          "o4",
+          "o8"
+        ],
+        "ninguna": "RV3",
+        "codigos": {
+          "o1": "RV4"
+        },
+        "explicacion": "La oración 4 dice que la vida del mar depende de la anchoveta, y la 8 saca la conclusión: cuidarla es cuidar toda la cadena.",
+        "explicaciones": {
+          "o1": "La primera oración explica cómo sube el agua fría: es el punto de partida.",
+          "o2": "Explica de qué se alimenta la anchoveta: es un eslabón de la explicación.",
+          "o3": "Dice quiénes comen anchoveta: es otro eslabón.",
+          "o5": "Explica qué pasa con El Niño: es un detalle.",
+          "o6": "Cuenta la consecuencia de El Niño: es un detalle.",
+          "o7": "Cuenta un caso concreto, el de la década de 1970: es un ejemplo.",
+          "ninguna": "Las oraciones 4 y 8 sí lo dicen: la vida del mar depende de la anchoveta, y cuidarla es cuidar la cadena."
+        }
+      },
+      "enunciado": "¿Cuál es la idea principal del texto?",
+      "alternativas": [
+        {
+          "t": "De la anchoveta depende buena parte de la vida del mar peruano, y por eso cuidarla es cuidar toda una cadena.",
+          "correcta": true,
+          "evidencia": [
+            "o4",
+            "o8"
+          ],
+          "explicacion": "Junta lo que dicen las oraciones 4 y 8: un pez pequeño sostiene a muchos animales, y cuidarlo es cuidar la cadena entera."
+        },
+        {
+          "t": "Frente a la costa, el viento empuja el agua de la superficie mar adentro y en su lugar sube agua fría del fondo.",
+          "codigo": "RV1",
+          "origen": "o1",
+          "explicacion": "Es el punto de partida, un detalle de cómo llegan los nutrientes. El texto lo usa para llegar a una idea más amplia."
+        },
+        {
+          "t": "El mar peruano es uno de los más ricos del mundo.",
+          "codigo": "RV8",
+          "explicacion": "Puede ser cierto, pero el texto no lo dice. La idea principal sale de lo que se leyó."
+        },
+        {
+          "t": "La anchoveta se alimenta de algas, y de ella comen aves, lobos marinos y peces más grandes.",
+          "codigo": "RV3",
+          "origen": "o2",
+          "explicacion": "Resume solo el primer párrafo: deja fuera por qué importa y la conclusión de cuidarla."
+        },
+        {
+          "t": "Los océanos son importantes para la vida en el planeta.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto habla del mar peruano y de un pez en particular."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.inferencias",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
+        "sonda": "El guanay se alimenta solo de anchoveta.",
+        "clase": "no-se-sabe",
+        "codigos": {
+          "lo-dice": "RV5",
+          "se-deduce": "RV7",
+          "lo-contradice": null
+        },
+        "explicacion": "El texto dice que el guanay come anchoveta (oración 3), pero no dice si come algo más. No se puede saber.",
+        "explicaciones": {
+          "lo-dice": "El texto nombra al guanay y a la anchoveta, pero no dice \"solo\".",
+          "se-deduce": "Que el guanay coma anchoveta no permite concluir que no coma otra cosa: eso va más allá del texto.",
+          "lo-contradice": "El texto no dice que el guanay coma otras cosas; simplemente no lo dice."
+        }
+      },
+      "enunciado": "Se infiere del texto que, durante un fenómeno de El Niño fuerte,",
+      "alternativas": [
+        {
+          "t": "las aves que comen anchoveta tendrían menos alimento cerca de la costa.",
+          "correcta": true,
+          "evidencia": [
+            "o3",
+            "o6"
+          ],
+          "explicacion": "Si la anchoveta se aleja o baja (oración 6), los animales que se alimentan de ella, como el guanay (oración 3), la encuentran menos."
+        },
+        {
+          "t": "el agua de la superficie se calienta y sube agua con menos nutrientes.",
+          "codigo": "RV6",
+          "origen": "o5",
+          "explicacion": "Eso lo dice el texto tal cual (oración 5): no es una inferencia."
+        },
+        {
+          "t": "el viento empujaría a las anchovetas mar adentro.",
+          "codigo": "RV5",
+          "origen": "o1",
+          "explicacion": "Usa palabras de la oración 1 (\"viento\", \"mar adentro\"), pero el viento empuja el agua, no los peces."
+        },
+        {
+          "t": "desaparecerían para siempre todos los peces del mar peruano.",
+          "codigo": "RV11",
+          "explicacion": "\"Para siempre\" y \"todos\" dicen mucho más de lo que el texto permite: habla de peces que se alejan o bajan."
+        },
+        {
+          "t": "los pescadores dejarían de trabajar y se irían a vivir a la sierra.",
+          "codigo": "RV7",
+          "explicacion": "El texto no dice nada de los pescadores; esa conclusión va más allá de lo que se puede deducir."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "incompatibilidad",
+      "unidad": "razonamiento-verbal.compatibilidad",
+      "enunciado": "Es incompatible con el texto afirmar que",
+      "alternativas": [
+        {
+          "t": "el agua fría que sube del fondo del mar es pobre en nutrientes.",
+          "correcta": true,
+          "evidencia": [
+            "o2"
+          ],
+          "explicacion": "Choca con la oración 2: esa agua trae nutrientes que alimentan a las algas."
+        },
+        {
+          "t": "no solo los peces grandes dependen de la anchoveta.",
+          "codigo": "RV10",
+          "origen": "o3",
+          "explicacion": "Tiene un \"no\", pero es compatible: la oración 3 dice que también la comen aves y lobos marinos."
+        },
+        {
+          "t": "la anchoveta se exporta como harina de pescado.",
+          "codigo": "RV36",
+          "explicacion": "El texto no lo menciona, pero tampoco dice nada en contra: que algo no esté dicho no lo vuelve incompatible."
+        },
+        {
+          "t": "un pez muy pequeño puede sostener a animales mucho más grandes.",
+          "codigo": "RV8",
+          "origen": "o4",
+          "explicacion": "Puede sonar extraño, porque uno espera que lo grande sostenga a lo pequeño, pero es justo lo que dice la oración 4."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.extrapolacion",
+      "enunciado": "Si un año se pescara poca anchoveta y no llegara ningún Niño, según la lógica del texto,",
+      "alternativas": [
+        {
+          "t": "la población de anchoveta tendría más posibilidades de mantenerse.",
+          "correcta": true,
+          "evidencia": [
+            "o7"
+          ],
+          "explicacion": "La oración 7 dice que la población se derrumbó cuando un Niño fuerte llegó después de años de pescar demasiado. Sin esas dos cosas, el riesgo sería menor."
+        },
+        {
+          "t": "la población de anchoveta se derrumbaría igual que en la década de 1970.",
+          "codigo": "RV12",
+          "explicacion": "Cambia la condición, pero deja igual la consecuencia: el derrumbe se explica justamente por la sobrepesca y El Niño."
+        },
+        {
+          "t": "la anchoveta crecería hasta medir más de un metro.",
+          "codigo": "RV7",
+          "explicacion": "Nada en el texto dice que la anchoveta crezca más si se pesca menos: esa idea va más allá de lo que se lee."
+        },
+        {
+          "t": "todas las especies del mar peruano se duplicarían.",
+          "codigo": "RV11",
+          "explicacion": "Es una consecuencia exagerada que no sale del texto."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-06",
+  "hechos": [
+    {
+      "afirmacion": "El afloramiento frente a la costa peruana trae agua fría y rica en nutrientes; la anchoveta (menos de 20 cm) es la base de la cadena (guanay, lobos marinos); El Niño reduce los nutrientes; la pesquería colapsó a comienzos de los años 70 por sobrepesca y El Niño de 1972.",
+      "fuente": "Chavez, F. P. y otros (2008). The northern Humboldt Current System. Progress in Oceanography 79; Imarpe, información sobre la anchoveta. Talla: FishBase, Engraulis ringens (talla máxima cercana a 20 cm)."
+    }
+  ],
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: 9 de 9. Cambios: distractor RV3 que era un detalle reemplazado por un resumen a medias; fuente de la talla de la anchoveta. Una segunda verificación de los cambios corrigió la concordancia de t023 p2 y cuatro detalles."
+  }
+}

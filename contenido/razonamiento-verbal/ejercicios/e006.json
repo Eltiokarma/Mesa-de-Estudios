@@ -1,0 +1,54 @@
+{
+  "id": "e006",
+  "version": 1,
+  "tipo": "termino-excluido",
+  "unidad": "razonamiento-verbal.definiciones",
+  "grado": 4,
+  "dificultad": 2,
+  "cuerpo": {
+    "terminos": [
+      "cobre",
+      "aluminio",
+      "wolframio",
+      "azufre"
+    ]
+  },
+  "enunciado": "¿Qué término no pertenece al grupo?",
+  "alternativas": [
+    {
+      "t": "azufre",
+      "correcta": true,
+      "evidencia": [],
+      "explicacion": "Es el único no metal: el cobre, el aluminio y el wolframio son metales."
+    },
+    {
+      "t": "aluminio",
+      "codigo": "RV22",
+      "explicacion": "Se piensa en ollas y latas y no en una mina, pero el aluminio es un metal como los otros."
+    },
+    {
+      "t": "cobre",
+      "codigo": "RV39",
+      "explicacion": "Es el único de color rojizo, pero el color es un rasgo secundario: sigue siendo un metal."
+    },
+    {
+      "t": "wolframio",
+      "codigo": "RV40",
+      "explicacion": "El wolframio, también llamado tungsteno, es un metal: con él se hacían los filamentos de los focos."
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07",
+  "hechos": [
+    {
+      "afirmacion": "El wolframio (tungsteno) es un metal usado en filamentos de lámparas incandescentes; el azufre es un no metal.",
+      "fuente": "Tabla periódica; Chang, Química."
+    }
+  ],
+  "revision": {
+    "por": "subagente (resolución a ciegas de 5 ejercicios cada uno) y una segunda verificación a ciegas de los cambios",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: resuelto bien. El carbón no es un elemento; quedó el azufre. El oro (único precioso) pasó a cobre."
+  }
+}
