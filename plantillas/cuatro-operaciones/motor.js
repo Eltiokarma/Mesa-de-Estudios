@@ -20,6 +20,13 @@
  *   cuadroColumnas(plan, t)            el cuadro t de una suma o multiplicación (t de 0 a columnas): qué hay en cada fila,
  *                                      en el resultado y en la casilla de la llevada, y qué se está moviendo
  *   cuadroResta(R, t)                  lo mismo para la resta (t de 0 a acciones.length)
+ * La cuenta hecha a mano (el arrastre del explorador)
+ *   aMano(op, A, B, b)                 el tablero inicial: en la suma, las piezas de las dos filas ya juntas en cada
+ *                                      columna, sin llevar; en la resta, el minuendo arriba y el sustraendo abajo
+ *   abrirMano(m, k)                    abre 1 pieza de la columna k en b piezas de la columna k − 1 (el préstamo a mano)
+ *   juntarMano(m, k)                   junta b piezas de la columna k en 1 de la columna k + 1 (la llevada a mano)
+ *   estadoMano(m)                      lo que se ve: valor (no cambia al abrir ni al juntar), qué columnas pueden
+ *                                      juntar (llenos) o no alcanzan para quitar (faltan), y el resultado cuando está listo
  * Complemento aritmético
  *   complemento(N, b)                  CA(N) = bᵏ − N con la regla «a b − 1 todas, a b la última significativa», el
  *                                      relleno (N + CA llena la caja de bᵏ con llevadas en cadena), y los errores
@@ -45,10 +52,10 @@
  *                                      la escalera y su copia, y los errores
  *   sumatoria(tipo, n)                 1 + … + n, pares, impares (n²), cuadrados y cubos, con su fórmula
  * División entera
- *   division(D, d)                     por defecto (D = d·q + r) y por exceso (D = d·(q + 1) − r′), con r + r′ = d,
+ *   division(D, d)                     por defecto (D = d·q + r) y por exceso (D = d·(q + 1) − rₑ), con r + rₑ = d,
  *                                      y los errores sobre el residuo por exceso
  *   residuoMaximo(d)                   d − 1, y los errores
- *   residuosIguales(d)                 ¿cuándo r = r′? (d par y r = d/2), y los errores
+ *   residuosIguales(d)                 ¿cuándo r = rₑ? (d par y r = d/2), y los errores
  * Cantidad de cifras
  *   cifrasProducto(m, n)               un número de m cifras por uno de n cifras tiene m + n − 1 o m + n cifras
  *
@@ -493,7 +500,7 @@
     const out = { D: num(Dv), d: num(dv), q: num(q), r: num(r), exacta, qExceso: exacta ? null : num(q + 1n), rExceso: re === null ? null : num(re),
       residuoMaximo: num(dv - 1n), filas: { llenas: num(q), sobran: num(r), huecos: re === null ? 0 : num(re) } };
     out.errores = exacta ? {} : limpiar({
-      igualAlDefecto: num(r),                                         // cree que r′ = r
+      igualAlDefecto: num(r),                                         // cree que rₑ = r
       divisorMenosUnoMenosR: dv - 1n - r > 0n ? num(dv - 1n - r) : undefined, // resta del residuo máximo: d − 1 − r
       sumaElDivisor: num(dv + r),                                      // suma el divisor al residuo
       masUno: num(r + 1n),                                             // cree que si el cociente sube 1, el residuo también
@@ -505,7 +512,7 @@
     if (dv < 2) throw new Error('d debe ser mayor o igual que 2');
     return { d: dv, maximo: dv - 1, errores: limpiar({ igualAlDivisor: dv, mitad: Math.floor(dv / 2), menosDos: dv - 2 > 0 ? dv - 2 : undefined }, dv - 1) };
   }
-  // r = r′ solo si r = d − r, es decir, d par y r = d/2. La respuesta es el residuo, o 'nunca' si d es impar.
+  // r = rₑ solo si r = d − r, es decir, d par y r = d/2. La respuesta es el residuo, o 'nunca' si d es impar.
   function residuosIguales(d) {
     const dv = num(positivo(d, 'd'));
     if (dv < 2) throw new Error('d debe ser mayor o igual que 2');
@@ -531,7 +538,48 @@
       }, r) };
   }
 
-  return { sumaColumnas, multiplicaPorCifra, cuadroColumnas, restaColumnas, cuadroResta, complemento, diferenciaInvertida,
+  // ---------- la cuenta hecha a mano ----------
+  // m = { op: 'suma' | 'resta', b, cuentas (las piezas que se mueven, de las unidades hacia la izquierda), abajo (en la
+  // resta, las piezas que hay que quitar) }. Las columnas son fijas: K, las del resultado (o las del minuendo).
+  function estadoMano(m) {
+    if (!m || (m.op !== 'suma' && m.op !== 'resta') || !Array.isArray(m.cuentas)) throw new Error('m debe venir de aMano');
+    const b = base(m.b), c = m.cuentas.map((x, i) => num(natural(x, `cuentas[${i}]`))), K = c.length;
+    const abajo = m.op === 'resta' ? m.abajo.slice() : null;
+    const valor = c.reduce((s, x, k) => s + BigInt(x) * pot(b, k), 0n);
+    const llenos = c.map((x, k) => (x >= b && k + 1 < K ? k : -1)).filter(k => k >= 0);
+    const out = { op: m.op, b, K, cuentas: c, abajo, valor: num(valor), llenos };
+    if (m.op === 'suma') {
+      out.listo = c.every(x => x < b); out.resultado = c.slice();
+      out.texto = out.listo ? sinCerosIzq(texto(c.slice().reverse())) : null;
+    } else {
+      out.faltan = c.map((x, k) => (x < abajo[k] ? k : -1)).filter(k => k >= 0);
+      out.resultado = c.map((x, k) => (x >= abajo[k] ? x - abajo[k] : null));
+      out.diferencia = num(valor - abajo.reduce((s, x, k) => s + BigInt(x) * pot(b, k), 0n));
+      out.listo = !out.faltan.length && out.resultado.every(x => x < b);
+      out.texto = out.listo ? sinCerosIzq(texto(out.resultado.slice().reverse())) : null;
+    }
+    return out;
+  }
+  function aMano(op, A, B, b) {
+    b = base(b);
+    if (op === 'suma') { const R = sumaColumnas([A, B], b); return estadoMano({ op, b, cuentas: R.columnas.map(c => c.entran.reduce((s, x) => s + x, 0)) }); }
+    if (op === 'resta') { const R = restaColumnas(A, B, b); return estadoMano({ op, b, cuentas: R.arriba.slice(), abajo: R.abajo.slice() }); }
+    throw new Error("op debe ser 'suma' o 'resta'");
+  }
+  function abrirMano(m, k) {
+    const e = estadoMano(m); entero(k, 'k', 1, e.K - 1);
+    if (!(e.cuentas[k] >= 1)) throw new Error(`no hay piezas en la columna ${k} para abrir`);
+    const c = e.cuentas.slice(); c[k] -= 1; c[k - 1] += e.b;
+    return Object.assign(estadoMano({ op: e.op, b: e.b, cuentas: c, abajo: e.abajo }), { accion: 'abrir', orden: k });
+  }
+  function juntarMano(m, k) {
+    const e = estadoMano(m); entero(k, 'k', 0, e.K - 2);
+    if (!(e.cuentas[k] >= e.b)) throw new Error(`para juntar hacen falta ${e.b} piezas en la columna ${k}`);
+    const c = e.cuentas.slice(); c[k] -= e.b; c[k + 1] += 1;
+    return Object.assign(estadoMano({ op: e.op, b: e.b, cuentas: c, abajo: e.abajo }), { accion: 'juntar', orden: k });
+  }
+
+  return { aMano, abrirMano, juntarMano, estadoMano, sumaColumnas, multiplicaPorCifra, cuadroColumnas, restaColumnas, cuadroResta, complemento, diferenciaInvertida,
     conSuReverso, cifrasFaltantes, cripto, invertidos, sumaAritmetica, sumatoria, division, residuoMaximo, residuosIguales,
     cifrasProducto, leer, texto, conBase, sub, SIMBOLOS };
 });

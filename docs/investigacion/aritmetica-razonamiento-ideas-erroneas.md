@@ -125,6 +125,8 @@ Errores de cálculo típicos de los problemas de academia. No encontré estudios
 | Cortes contra piezas: una varilla en n piezas lleva n cortes (son n − 1) | Sin dato |
 | Estacas en un contorno cerrado contadas como en una línea (sobra una) | Sin dato |
 | Mínimo de pesadas partiendo en mitades en vez de en tercios | Sin dato |
+
+Numeración, cuatro operaciones y potenciación (7 nov 2026): no encontramos estudios con cifras; los errores de `plantillas/numeracion/`, `plantillas/cuatro-operaciones/` y `plantillas/potenciacion/` son hipótesis nuestras y se miden en el colegio.
 | Calendarios: no contar el 29 de febrero o el día de partida | Sin dato |
 | Edades: plantear la ecuación con las edades de hoy en una frase del futuro | RM1 |
 
