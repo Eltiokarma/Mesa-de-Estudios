@@ -629,6 +629,8 @@ const PROBP = { n:2, o1:15, d:[50,30], f:[10,10,-10] };
 const EXP   = { n:2, o1:15, d:[50,30], f:[10,10,-10] };
 const S = { step:0, max:0, pred:null, hl:null, reveal:-1e9, imgs:0, dims:[], explore:false, sobre:false };
 let W = 0, H = 0, sx = 1, sy = 1, XMIN = -22, XMAX = 78, rev = null, agarra = false;
+// Mientras se arrastra el objeto, el marco del banco queda fijo (si no, el banco se movería bajo el dedo).
+let marco = null;
 // Celular con predicción pendiente: el dibujo más bajo y pegado arriba (nucleo/celular.js).
 let compacto = false;
 function compactar(on){ on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === compacto) return; compacto = on; resize(); }
@@ -708,7 +710,8 @@ function lens(L, k, c){
 function draw(){
   if (!W) return;
   const p = S.explore ? EXP : PROBP, sys = build(p), ch = chain(sys);
-  if (S.explore){
+  if (S.explore && marco){ XMIN = marco.xmin; XMAX = marco.xmax; }
+  else if (S.explore){
     const xl = sys.lenses[sys.lenses.length - 1].x, last = ch[ch.length - 1];
     XMIN = sys.x0 - 7; XMAX = xl + 30;
     if (ch.length === sys.lenses.length && !last.inf && last.i > 0 && last.x < xl + 70) XMAX = Math.max(XMAX, last.x + 8);
@@ -995,15 +998,13 @@ function cercaObjeto(p, r){
   const dy = p.y < y1 ? y1 - p.y : p.y > y2 ? p.y - y2 : 0;
   return Math.hypot(p.x - x, dy) < r;
 }
-// Mientras se arrastra, la escala del banco queda fija (si no, el banco se movería bajo el dedo).
-let marco = null;
 Celular.arrastre(cv, {
   activo: () => S.explore,
   cerca: cercaObjeto,
-  empezar: () => { agarra = true; marco = { xmin: XMIN, sx }; cv.classList.add('agarrando'); draw(); },
+  empezar: () => { agarra = true; marco = { xmin: XMIN, xmax: XMAX }; cv.classList.add('agarrando'); draw(); },
   mover: p => {
     const sl = $('e-o1'); if (!sl) return;
-    const x = marco.xmin + p.x/marco.sx;
+    const x = Math.max(marco.xmin + 1, XMIN + p.x/sx);
     sl.value = String(Math.max(4, Math.min(40, Math.round(-x*2)/2)));
     sl.dispatchEvent(new Event('input'));
   },
