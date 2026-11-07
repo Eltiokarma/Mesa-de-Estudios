@@ -85,6 +85,13 @@ const ESCENAS = {
     vistas: [
       [['H', 'O'], ['--c-n', '--c-k', '--c-Mp', '--c-Ma', '--c-M']],   // el taller: la gota de agua con todas las variables
     ] },
+  'hidrocarburos': {
+    elementos: ['C', 'H'],
+    vistas: [
+      [['C', 'H'], ['--c-cad', '--c-loc', '--c-sus', '--c-mul']],
+      [['C', 'H'], ['--c-T']],
+      [['C', 'H'], ['--c-mul', '--c-ang']],
+    ] },
   'nomenclatura-inorganica': {
     elementos: ['H', 'C', 'N', 'O', 'Na', 'Al', 'P', 'S', 'Cl', 'K', 'Ca', 'Fe', 'Zn', 'Pb'],
     vistas: [

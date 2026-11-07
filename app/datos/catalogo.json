@@ -1092,7 +1092,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "hidrocarburos"
+     ]
     },
     {
      "id": "quimica.funciones-organicas",
@@ -4801,6 +4803,23 @@
     "/plantillas/gravitacion/index.html",
     "/plantillas/gravitacion/motor.js",
     "/plantillas/gravitacion/papel.json"
+   ]
+  },
+  "hidrocarburos": {
+   "id": "hidrocarburos",
+   "titulo": "Bolitas y palitos: hidrocarburos",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.hidrocarburos"
+   ],
+   "url": "/plantillas/hidrocarburos/index.html",
+   "papel": "/plantillas/hidrocarburos/papel.json",
+   "archivos": [
+    "/plantillas/hidrocarburos/index.html",
+    "/plantillas/hidrocarburos/motor.js",
+    "/plantillas/hidrocarburos/papel.json"
    ]
   },
   "identidades-trig": {
