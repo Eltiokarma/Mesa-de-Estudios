@@ -83,20 +83,20 @@
     {
       "id": "p11",
       "nivel": "intermedio",
-      "enunciado": "En el laboratorio del colegio se electroliza agua con un poco de Na₂SO₄ en un voltámetro de Hofmann, con 2 A durante 1 hora, 20 minutos y 25 segundos. ¿Qué gas se junta en cada tubo y cuántos litros, en condiciones normales? Si la misma carga pasara por NaCl fundido, ¿qué saldría en cada electrodo y cuánto?",
-      "respuesta": "Agua: H₂ en el cátodo (−), 1,12 L, y O₂ en el ánodo (+), 0,56 L. NaCl fundido: 2,3 g de sodio en el cátodo y 1,12 L de Cl₂ en el ánodo.",
+      "enunciado": "En el laboratorio del colegio se electroliza agua con un poco de Na₂SO₄ en un voltámetro de Hofmann, con 3 A durante 1 hora, 4 minutos y 20 segundos. ¿Qué gas se junta en cada tubo y cuántos litros, en condiciones normales? Si la misma carga pasara por NaCl fundido, ¿qué saldría en cada electrodo y cuánto?",
+      "respuesta": "Agua: H₂ en el cátodo (−), 1,344 L, y O₂ en el ánodo (+), 0,672 L. NaCl fundido: 2,76 g de sodio en el cátodo y 1,344 L de Cl₂ en el ánodo.",
       "pasos": [
-        "Tiempo en segundos: 3600 + 20 · 60 + 25 = 4825 s. Carga: Q = 2 · 4825 = 9650 C. Moles de electrones: 9650 / 96 500 = 0,1 mol.",
-        "Cátodo (polo −, reducción): 2 H₂O + 2 e⁻ → H₂ + 2 OH⁻. Cada H₂ necesita 2 electrones: 0,1 / 2 = 0,05 mol de H₂, es decir, 0,05 · 22,4 = 1,12 L.",
-        "Ánodo (polo +, oxidación): 2 H₂O → O₂ + 4 H⁺ + 4 e⁻. Cada O₂ suelta 4 electrones: 0,1 / 4 = 0,025 mol de O₂, es decir, 0,56 L. Sale el doble de hidrógeno que de oxígeno, como en la fórmula H₂O. Si divides entre 2 también para el O₂, te salen 1,12 L, como si los dos gases salieran iguales.",
+        "Tiempo en segundos: 3600 + 4 · 60 + 20 = 3860 s. Carga: Q = 3 · 3860 = 11 580 C. Moles de electrones: 11 580 / 96 500 = 0,12 mol.",
+        "Cátodo (polo −, reducción): 2 H₂O + 2 e⁻ → H₂ + 2 OH⁻. Cada H₂ necesita 2 electrones: 0,12 / 2 = 0,06 mol de H₂, es decir, 0,06 · 22,4 = 1,344 L.",
+        "Ánodo (polo +, oxidación): 2 H₂O → O₂ + 4 H⁺ + 4 e⁻. Cada O₂ suelta 4 electrones: 0,12 / 4 = 0,03 mol de O₂, es decir, 0,672 L. Sale el doble de hidrógeno que de oxígeno, como en la fórmula H₂O. Si divides entre 2 también para el O₂, te salen 1,344 L, como si los dos gases salieran iguales.",
         "El Na₂SO₄ no se gasta: solo hace que el agua conduzca. Por eso no sale sodio.",
-        "NaCl fundido (sin agua): en el cátodo, Na⁺ + e⁻ → Na: 0,1 mol de Na, es decir, 0,1 · 23 = 2,3 g. En el ánodo, 2 Cl⁻ → Cl₂ + 2 e⁻: 0,05 mol de Cl₂, es decir, 1,12 L.",
-        "Con salmuera (NaCl disuelto en agua) el ánodo también da Cl₂, pero en el cátodo sale H₂, no sodio: se reduce el agua."
+        "NaCl fundido (sin agua): en el cátodo, Na⁺ + e⁻ → Na: 0,12 mol de Na, es decir, 0,12 · 23 = 2,76 g. En el ánodo, 2 Cl⁻ → Cl₂ + 2 e⁻: 0,06 mol de Cl₂, es decir, 1,344 L.",
+        "Con salmuera concentrada (NaCl disuelto en agua) el ánodo también da Cl₂, pero en el cátodo sale H₂, no sodio: se reduce el agua. En el ánodo compiten el Cl⁻ y el agua: si la salmuera está diluida, sale también O₂, y con muy poca sal, sobre todo O₂."
       ],
       "verificar": [
-        {"fn": "electrolizar", "args": ["agua-sulfato", {"I": 2, "s": 4825}], "espera": {"Q": 9650, "molE": 0.1, "catodo.producto": "H₂", "catodo.L": 1.12, "anodo.producto": "O₂", "anodo.L": 0.56, "errores.oxigenoConDos": 1.12}},
-        {"fn": "electrolizar", "args": ["nacl-fundido", {"Q": 9650}], "espera": {"catodo.producto": "Na", "catodo.g": 2.3, "anodo.producto": "Cl₂", "anodo.L": 1.12}},
-        {"fn": "electrolizar", "args": ["nacl-acuoso", {"Q": 9650}], "espera": {"catodo.producto": "H₂", "anodo.producto": "Cl₂"}}
+        {"fn": "electrolizar", "args": ["agua-sulfato", {"I": 3, "s": 3860}], "espera": {"Q": 11580, "molE": 0.12, "catodo.producto": "H₂", "catodo.L": 1.344, "anodo.producto": "O₂", "anodo.L": 0.672, "errores.oxigenoConDos": 1.344}},
+        {"fn": "electrolizar", "args": ["nacl-fundido", {"I": 3, "s": 3860}], "espera": {"molE": 0.12, "catodo.producto": "Na", "catodo.g": 2.76, "anodo.producto": "Cl₂", "anodo.L": 1.344}},
+        {"fn": "electrolizar", "args": ["nacl-acuoso", {"Q": 11580}], "espera": {"catodo.producto": "H₂", "anodo.producto": "Cl₂"}}
       ]
     },
     {

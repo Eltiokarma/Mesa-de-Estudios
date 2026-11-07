@@ -214,7 +214,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
 
   <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
   <div id="m2" class="mode" hidden>
-    <section class="bench" aria-label="Experimentos con pilas">
+    <section class="bench" aria-label="Experimentos con pilas y celdas electrolíticas">
       <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
       <p class="sr" id="desc2" aria-live="polite"></p>
       <div class="legend" id="leyenda2"></div>
@@ -379,10 +379,12 @@ function crearEscena(cv, idDesc, idLey){
   const leyendaGases = () => {
     const sis = E.cfg.sistemas || ['agua-sulfato'], ion = new Set(sis.flatMap(id => (IONES[id] || []).map(x => x[0])));
     const NI = { Na:'Na⁺ · ion sodio', Cl:'Cl⁻ · ion cloruro', an:'SO₄²⁻ · ion sulfato' };
+    if (E.cfg.mostrar && sis.includes('nacl-acuoso')) ion.add('OH');
     const prod = []; for (const id of sis){ const S = MC.electrolizar(id); for (const P of [S.catodo, S.anodo]) if (!prod.some(q => q.producto === P.producto)) prod.push(P); }
     const NP = { 'H₂':'hidrógeno', 'O₂':'oxígeno', 'Cl₂':'cloro', 'Na':'sodio metálico' };
     return `<span><i class="pt" style="background:var(--c-e)"></i>e⁻ · electrones (solo en metal y cable)</span>`
-      + [...ion].map(k => `<span><i class="pt" style="background:var(${k === 'an' ? '--c-an' : '--el-' + k})"></i>${NI[k]}</span>`).join('')
+      + [...ion].map(k => k === 'OH' ? `<span><i class="pt" style="background:var(--paper); border:1.3px solid var(--ink)"></i>OH⁻ · ion hidróxido</span>`
+        : `<span><i class="pt" style="background:var(${k === 'an' ? '--c-an' : '--el-' + k})"></i>${NI[k]}</span>`).join('')
       + (E.cfg.mostrar ? prod.map(P => `<span><i class="pt" style="background:var(--el-${P.id})"></i>${P.producto} · ${NP[P.producto]}</span>`).join('') : '');
   };
   const leyendaFaraday = () => `<span><i class="pt" style="background:var(--c-e)"></i>e⁻ · electrones (solo en metal y alambre)</span>`
@@ -672,7 +674,18 @@ function crearEscena(cv, idDesc, idLey){
      Cada celda tiene su fuente: el polo − va al electrodo de la izquierda (cátodo) y el + al de la derecha (ánodo).
      Los electrones salen del ánodo y entran al cátodo, siempre por el cable; en el líquido solo se mueven iones.
      Cuántas moléculas (o átomos) se forman con los electrones que pasaron lo dice MC.productos. */
-  const IONES = { 'agua-sulfato':[['Na', 1, 6], ['an', -2, 3]], 'nacl-acuoso':[['Na', 1, 5], ['Cl', -1, 5]], 'nacl-fundido':[['Na', 1, 9], ['Cl', -1, 9]] };
+  // Iones del dibujo. Con 12 electrones se gastan 12 Cl⁻ (6 Cl₂) y, en la sal fundida, 12 Na⁺; por eso hay 13 de cada uno.
+  const IONES = { 'agua-sulfato':[['Na', 1, 6], ['an', -2, 3]], 'nacl-acuoso':[['Na', 1, 13], ['Cl', -1, 13]], 'nacl-fundido':[['Na', 1, 13], ['Cl', -1, 13]] };
+  // u de cada electrodo dentro del recipiente (el dibujo pone el cátodo a la izquierda y el ánodo a la derecha)
+  const U_CAT = 0.25, U_AN = 0.75;
+  // quita de la celda k los n iones 'que' más cercanos al electrodo (se gastan al formar el producto)
+  function gastar(g, k, que, n, uE){
+    for (let i = 0; i < n; i++){
+      let mejor = -1, d0 = Infinity;
+      g.iones[k].forEach((p, j) => { if (p.que !== que) return; const d = Math.hypot(p.u - uE, (p.v - .5)*0.6); if (d < d0){ d0 = d; mejor = j; } });
+      if (mejor >= 0) g.iones[k].splice(mejor, 1);
+    }
+  }
   function iniciarGases(){
     const sis = E.cfg.sistemas || ['agua-sulfato'], rnd = MC.azar(E.cfg.semilla*17 + 3);
     E.gas = { sis, rnd, meta:E.cfg.meta || 24, corriendo:false, emitidos:0, reloj:0, dots:[], burbujas:[],
@@ -684,12 +697,19 @@ function crearEscena(cv, idDesc, idLey){
   E.terminarGases = () => {
     const g = E.gas; if (!g) return;
     g.corriendo = false; g.emitidos = g.meta; g.dots = []; g.burbujas = [];
-    g.sis.forEach((id, k) => { g.llegados[k] = g.salidos[k] = g.meta; const r = MC.productos(id, g.meta); g.nivel[k] = { catodo:r.catodo.unidades, anodo:r.anodo.unidades }; });
+    g.sis.forEach((id, k) => {
+      g.llegados[k] = g.salidos[k] = g.meta; const r = MC.productos(id, g.meta); g.nivel[k] = { catodo:r.catodo.unidades, anodo:r.anodo.unidades };
+      if (id !== 'agua-sulfato') gastar(g, k, 'Cl', 2*r.anodo.unidades, U_AN);
+      if (id === 'nacl-fundido') gastar(g, k, 'Na', r.catodo.unidades, U_CAT);
+      if (id === 'nacl-acuoso') for (let i = 0; i < g.meta; i++) g.iones[k].push({ que:'OH', q:-1, u:U_CAT + (g.rnd() - .5)*0.3, v:g.rnd(), a:g.rnd()*6.3 });
+    });
   };
   function pasoGases(dt){
     const g = E.gas; if (!g) return;
     for (const lista of g.iones) for (const p of lista){
       p.a += (g.rnd() - .5)*dt*5; p.u += Math.cos(p.a)*0.07*dt; p.v += Math.sin(p.a)*0.07*dt;
+      // con corriente, los cationes derivan hacia el cátodo (−) y los aniones hacia el ánodo (+)
+      if (g.corriendo){ const meta = p.q > 0 ? U_CAT : U_AN; if (Math.abs(p.u - meta) > 0.06) p.u += Math.sign(meta - p.u)*0.06*dt; }
       if (p.u < 0 || p.u > 1){ p.u = clamp(p.u, 0, 1); p.a = Math.PI - p.a; }
       if (p.v < 0 || p.v > 1){ p.v = clamp(p.v, 0, 1); p.a = -p.a; }
     }
@@ -705,13 +725,21 @@ function crearEscena(cv, idDesc, idLey){
       g.sis.forEach((id, k) => {
         g.dots.push({ k, tramo:'anodo', s:0 }, { k, tramo:'catodo', s:0 });
         const antes = MC.productos(id, g.salidos[k]).anodo.unidades; g.salidos[k]++;
-        if (MC.productos(id, g.salidos[k]).anodo.unidades > antes) g.burbujas.push({ k, lado:'anodo', s:0, w:g.rnd() - .5 });
+        if (MC.productos(id, g.salidos[k]).anodo.unidades > antes){
+          g.burbujas.push({ k, lado:'anodo', s:0, w:g.rnd() - .5 });
+          if (id !== 'agua-sulfato') gastar(g, k, 'Cl', 2, U_AN);   // 2 Cl⁻ → Cl₂ + 2 e⁻
+        }
       });
     }
     for (const d of g.dots) d.s += dt*0.9;
     for (const d of g.dots.filter(d => d.s >= 1 && d.tramo === 'catodo')){
       const id = g.sis[d.k], antes = MC.productos(id, g.llegados[d.k]).catodo.unidades; g.llegados[d.k]++;
-      if (MC.productos(id, g.llegados[d.k]).catodo.unidades > antes) g.burbujas.push({ k:d.k, lado:'catodo', s:0, w:g.rnd() - .5 });
+      // en la salmuera, por cada electrón que entra al cátodo aparece un OH⁻ junto a él (2 H₂O + 2 e⁻ → H₂ + 2 OH⁻)
+      if (id === 'nacl-acuoso') g.iones[d.k].push({ que:'OH', q:-1, u:U_CAT + (g.rnd() - .5)*0.12, v:0.25 + 0.5*g.rnd(), a:g.rnd()*6.3 });
+      if (MC.productos(id, g.llegados[d.k]).catodo.unidades > antes){
+        g.burbujas.push({ k:d.k, lado:'catodo', s:0, w:g.rnd() - .5 });
+        if (id === 'nacl-fundido') gastar(g, d.k, 'Na', 1, U_CAT);   // Na⁺ + e⁻ → Na
+      }
     }
     g.dots = g.dots.filter(d => d.s < 1);
     if (g.emitidos >= g.meta && !g.dots.length) g.corriendo = false;
@@ -750,9 +778,13 @@ function crearEscena(cv, idDesc, idLey){
       // iones (debajo de los tubos)
       for (const p of g.iones[k]){
         const x = ce.x0 + 8 + p.u*(ce.x1 - ce.x0 - 16), y = l.yL + 8 + p.v*(l.yB - l.yL - 16);
-        const col = p.que === 'an' ? c.an : c[p.que], r = p.q < 0 ? R*0.85 : R, big = E.hl === p.que;
-        ctx.beginPath(); ctx.arc(x, y, r*(big ? 1.3 : 1), 0, Math.PI*2); ctx.fillStyle = col; ctx.fill();
-        ctx.fillStyle = c.card; ctx.font = `800 ${Math.round(R*1.05)}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        const oh = p.que === 'OH', col = p.que === 'an' ? c.an : oh ? c.paper : c[p.que], r = (p.q < 0 ? R*0.85 : R)*(E.hl === p.que ? 1.3 : 1);
+        ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2); ctx.fillStyle = col; ctx.fill();
+        // OH⁻: sin color de elemento (es O y H a la vez), solo un aro de tinta
+        if (oh){ ctx.strokeStyle = c.ink; ctx.lineWidth = 1.3; ctx.stroke(); }
+        // Na⁺: un aro claro por dentro, para que no se confunda con la tinta ni con el cable
+        if (p.que === 'Na'){ ctx.beginPath(); ctx.arc(x, y, r - 1.8, 0, Math.PI*2); ctx.strokeStyle = c.card; ctx.lineWidth = 1.1; ctx.stroke(); }
+        ctx.fillStyle = oh ? c.ink : c.card; ctx.font = `800 ${Math.round(R*(p.que === 'Na' ? 1.45 : 1.05))}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
         ctx.fillText(p.q === 1 ? '+' : p.q === -1 ? '−' : '2−', x, y + .5);
       }
       // electrodos (varillas que entran por abajo)
@@ -798,10 +830,11 @@ function crearEscena(cv, idDesc, idLey){
       const ty = l.yC + 15, tam = chico ? 10 : 11.5;
       rotulo(ctx, c, ce.xc, ty, chico ? 'cátodo −' : 'cátodo (−)', c.ink, 'center', 800, tam);
       rotulo(ctx, c, ce.xa, ty, chico ? 'ánodo +' : 'ánodo (+)', c.ink, 'center', 800, tam);
-      if (g.emitidos){
+      if (g.emitidos && !g.corriendo && !g.burbujas.length){
+        // los contadores salen al terminar: a media corrida irían desfasados (las burbujas del ánodo y del cátodo no llegan juntas)
         const nC = g.nivel[k].catodo, nA = g.nivel[k].anodo;
         rotuloColor(ctx, c, ce.cx, ty + 17, [[S.catodo.producto + ': ', c.ink], [String(nC), c[S.catodo.id]], ['  ·  ', c.muted], [S.anodo.producto + ': ', c.ink], [String(nA), c[S.anodo.id]]], 'center', 800, tam);
-      } else if (l.n === 1 || k === 0) rotulo(ctx, c, l.n > 1 ? W/2 : ce.cx, ty + 17, E.cfg.aviso || 'Responde para hacer pasar la corriente', c.muted, 'center', 800, tam);
+      } else if (!g.emitidos && (l.n === 1 || k === 0)) rotulo(ctx, c, l.n > 1 ? W/2 : ce.cx, ty + 17, E.cfg.aviso || 'Responde para hacer pasar la corriente', c.muted, 'center', 800, tam);
     });
     if (g.emitidos) rotuloColor(ctx, c, W/2, l.yC + 49, [['e⁻ por cada cable: ', c.ink], [String(g.emitidos), c.e]], 'center', 800, chico ? 10.5 : 11.5);
   }
@@ -1066,8 +1099,8 @@ go(0);
    Experimentos del catálogo de docs/investigacion/equilibrio-acidos-electroquimica-ideas-erroneas.md:
    EC1 y EC5 (¿qué lleva el puente?), EC11 (sin puente, cada vaso se carga), "duplicar la reacción" (hipótesis,
    ligada a EC12), Faraday con Cu²⁺ y Ag⁺ en serie (hipótesis), EC3/EC4 (¿el ánodo siempre a la izquierda?) y,
-   desde el 7 nov 2026, la electrólisis del agua (H₂ y O₂ en 2 : 1; "el hidrógeno en el polo positivo", EC7) y la
-   del NaCl en agua contra fundido ("sale sodio", hipótesis; electrólisis como disociación, EC7).
+   desde el 7 nov 2026, la electrólisis del agua (H₂ y O₂ en 2 : 1; "el hidrógeno en el polo positivo", confusión de
+   polos, EC3/EC6) y la del NaCl en agua contra fundido ("sale sodio", hipótesis; electrólisis como disociación, EC7).
    La escena se mueve recién después de responder. */
 (function(){
 const $ = id => document.getElementById(id);
@@ -1078,7 +1111,7 @@ const H = t => V('H', t), O = t => V('O', t), Na = t => V('Na', t), Cl = t => V(
 const AGUA = MC.electrolizar('agua-sulfato', { Q:19300 }), SALA = MC.electrolizar('nacl-acuoso', { Q:9650 }), SALF = MC.electrolizar('nacl-fundido', { Q:9650 });
 // una semirreacción o ecuación con cada especie en su color
 const pintaEc = t => t.replace(/H₂O|OH⁻|H₂SO₄|NaOH|NaCl|Na₂SO₄|(?:\d+ )?e⁻|H⁺|H₂|O₂|Cl₂|Cl⁻|Na⁺|Na/g, m =>
-  /e⁻$/.test(m) ? e(m) : m === 'H₂' || m === 'H⁺' ? H(m) : m === 'O₂' ? O(m) : m === 'Cl₂' || m === 'Cl⁻' ? Cl(m) : m === 'Na⁺' || m === 'Na' ? Na(m) : m);
+  /e⁻$/.test(m) ? e(m) : m === 'H₂' ? H(m) : m === 'O₂' ? O(m) : m === 'Cl₂' || m === 'Cl⁻' ? Cl(m) : m === 'Na⁺' || m === 'Na' ? Na(m) : m);
 
 const EXPS = [
   { id:'puente', corto:'¿Qué lleva el puente?',
@@ -1172,11 +1205,11 @@ const EXPS = [
     exp:() => `<div class="eqs"><div class="eq">${pintaEc(AGUA.catodo.semirreaccion)}<span class="note">cátodo (−): reducción</span></div>
       <div class="eq">${pintaEc(AGUA.anodo.semirreaccion)}<span class="note">ánodo (+): oxidación</span></div>
       <div class="eq">${pintaEc(AGUA.global)}<span class="note">global</span></div>
-      <div class="eq">Con ${e('19 300 C')} (${e(fmt(AGUA.molE, 1) + ' mol de e⁻')}): ${H(`${fmt(AGUA.catodo.mol, 1)} mol = ${fmt(AGUA.catodo.L, 2)} L de H₂`)} · ${O(`${fmt(AGUA.anodo.mol, 2)} mol = ${fmt(AGUA.anodo.L, 2)} L de O₂`)}<span class="note">en condiciones normales, 22,4 L/mol</span></div></div>
+      <div class="eq">Con ${e('19 300 C')} ${e('(' + fmt(AGUA.molE, 1) + ' mol de e⁻)')}: ${H(`${fmt(AGUA.catodo.mol, 1)} mol = ${fmt(AGUA.catodo.L, 2)} L de H₂`)} · ${O(`${fmt(AGUA.anodo.mol, 2)} mol = ${fmt(AGUA.anodo.L, 2)} L de O₂`)}<span class="note">en condiciones normales, 22,4 L/mol</span></div></div>
       <p>Los ${e('electrones')} entran por el cátodo y salen por el ánodo, siempre por el cable: en el agua no hay electrones sueltos, solo se mueven los iones del Na₂SO₄. Por cada ${O('O₂')} tienen que salir 4 electrones y por cada ${H('H₂')} basta que lleguen 2. Como por el cable pasan los mismos electrones, el tubo del ${H('hidrógeno')} se llena el doble. Con la carga: 2 F por mol de ${H('H₂')} y 4 F por mol de ${O('O₂')}.</p>
       <p class="fuente">En una tesis de la UNAM se documentó la idea de que "la reducción del hidrógeno ocurre en el polo positivo", sin porcentaje (Tagle Barrios, 2024). Que los gases salgan iguales o que salga más oxígeno son hipótesis nuestras.</p>` },
   { id:'sal', corto:'Sal en agua o fundida',
-    q:`Se electroliza NaCl en dos celdas. A la izquierda, una salmuera concentrada: NaCl disuelto en agua. A la derecha, NaCl fundido a más de 800 °C, sin nada de agua. En los dos ánodos (+) sale cloro, ${Cl('Cl₂')}. ¿Qué sale en cada cátodo (−)?`,
+    q:`Se electroliza NaCl en dos celdas. A la izquierda, una salmuera concentrada: NaCl disuelto en agua. A la derecha, NaCl fundido a más de 800 °C, sin nada de agua. En los dos ánodos (+) sale cloro, ${Cl('Cl₂')} (si la salmuera estuviera diluida, saldría además algo de O₂). ¿Qué sale en cada cátodo (−)?`,
     opts:[['a','En la salmuera, sodio; en la sal fundida, sodio','nacl-acuoso-sale-sodio','hipotesis'],
           ['b','En la salmuera, nada: la corriente solo separa Na⁺ y Cl⁻; en la sal fundida, sodio','electrolisis-como-disociacion','parcial'],
           ['c','En la salmuera, H₂; en la sal fundida, sodio',null],
@@ -1187,12 +1220,15 @@ const EXPS = [
       d:'Elegiste la D. En la sal fundida no hay agua ni ningún otro hidrógeno: lo único que puede ganar electrones es el Na⁺, y sale sodio metálico. La correcta está marcada.' },
     antes:ver => { E.config({ tipo:'gases', sistemas:['nacl-acuoso', 'nacl-fundido'], meta:12, semilla:7, mostrar:ver }); if (ver) E.terminarGases(); },
     despues:() => { E.cfg.mostrar = true; E.leyenda(); E.correrGases(); },
-    exp:() => `<div class="eqs"><div class="eq">${pintaEc(SALA.catodo.semirreaccion)} · ${pintaEc(SALA.anodo.semirreaccion)}<span class="note">salmuera</span></div>
+    exp:() => `<div class="eqs"><div class="eq">${pintaEc(SALA.catodo.semirreaccion)}<span class="note">salmuera, cátodo (−)</span></div>
+      <div class="eq">${pintaEc(SALA.anodo.semirreaccion)}<span class="note">salmuera, ánodo (+)</span></div>
       <div class="eq">${pintaEc(SALA.global)}</div>
-      <div class="eq">${pintaEc(SALF.catodo.semirreaccion)} · ${pintaEc(SALF.anodo.semirreaccion)}<span class="note">sal fundida</span></div>
+      <div class="eq">${pintaEc(SALF.catodo.semirreaccion)}<span class="note">sal fundida, cátodo (−)</span></div>
+      <div class="eq">${pintaEc(SALF.anodo.semirreaccion)}<span class="note">sal fundida, ánodo (+)</span></div>
       <div class="eq">${pintaEc(SALF.global)}</div>
-      <div class="eq">Con ${e('9650 C')} (${e(fmt(SALA.molE, 1) + ' mol de e⁻')}): ${H(`${fmt(SALA.catodo.L, 2)} L de H₂`)} en la salmuera · ${Na(`${fmt(SALF.catodo.mol, 1)} mol = ${fmt(SALF.catodo.g, 1)} g de Na`)} en la fundida · ${Cl(`${fmt(SALA.anodo.L, 2)} L de Cl₂`)} en cada ánodo</div></div>
+      <div class="eq">Con ${e('9650 C')} ${e('(' + fmt(SALA.molE, 1) + ' mol de e⁻)')}: ${H(`${fmt(SALA.catodo.L, 2)} L de H₂`)} en la salmuera · ${Na(`${fmt(SALF.catodo.mol, 1)} mol = ${fmt(SALF.catodo.g, 1)} g de Na`)} en la fundida · ${Cl(`${fmt(SALA.anodo.L, 2)} L de Cl₂`)} en cada ánodo</div></div>
       <p>Con los mismos ${e('electrones')}, la sal fundida da dos átomos de ${Na('sodio')} por cada molécula de ${H('H₂')} de la salmuera: cada ${Na('Na⁺')} toma un solo electrón. En la salmuera, el ${Na('Na⁺')} se queda en el agua y, con los OH⁻ que salen del cátodo, queda NaOH disuelto. Así se fabrican la soda cáustica y el cloro; el sodio metálico se saca de la sal fundida.</p>
+      <p>En el ánodo compiten el ${Cl('Cl⁻')} y el agua. Con salmuera concentrada sale casi solo ${Cl('Cl₂')}; si está diluida, sale también O₂, y con muy poca sal, sobre todo O₂.</p>
       <p class="fuente">No encontramos estudios que midan el error de que en la salmuera "sale sodio": es una hipótesis nuestra, como la D. La B sale de una idea que una tesis de la UNAM documenta sin porcentaje: confundir la electrólisis con la disociación (Tagle Barrios, 2024).</p>` },
 ];
 const S = { k:0, pred:{}, t0:Date.now() };
