@@ -120,8 +120,12 @@ for (const b of bancos) {
     assert.deepEqual(h.map(x => `${x.item} ~ ${x.plantilla}: ${x.motivo} | ${x.texto.slice(0, 120)}`), []);
   });
 
-  test(`${b.curso}: la respuesta no es un número que ya está en el enunciado, y los atajos son iguales en A y B`, () => {
-    for (const p of b.pares) {
+  test(`${b.curso}: avisos de parecido con el papel y de códigos compartidos con una predicción (no falla)`, t => {
+    for (const x of Parecidos.avisos([b])) t.diagnostic(`${x.item} ~ ${x.plantilla}: ${x.motivo} | ${x.texto.slice(0, 120)}`);
+  });
+
+  test(`${b.curso}: la respuesta no es un número que ya está en el enunciado, y los atajos son iguales en A y B (también la reserva)`, () => {
+    for (const p of [...b.pares, ...(b.reserva || [])]) {
       const firma = {};
       for (const f of Pruebas.FORMAS) {
         const it = p[f], id = p.par + f, nums = new Set((it.enunciado.replace(/−/g, '-').match(/\d+(?:,\d+)?/g) || []).map(x => x.replace(',', '.')));
@@ -135,9 +139,9 @@ for (const b of bancos) {
     }
   });
 
-  test(`${b.curso}: forma de las opciones (largo) y lugar de la correcta entre los valores`, () => {
+  test(`${b.curso}: forma de las opciones (largo) y lugar de la correcta entre los valores (también la reserva)`, () => {
     let corta = 0, larga = 0, textuales = 0, menor = 0, mayor = 0, numericos = 0;
-    for (const p of b.pares) for (const f of Pruebas.FORMAS) {
+    for (const p of [...b.pares, ...(b.reserva || [])]) for (const f of Pruebas.FORMAS) {
       const op = p[f].opciones, id = p.par + f, c = op.findIndex(o => o.correcta);
       const L = op.map(o => o.texto.length), otros = L.filter((_, i) => i !== c);
       // Ninguna opción correcta mucho más larga o mucho más corta que todas las demás.

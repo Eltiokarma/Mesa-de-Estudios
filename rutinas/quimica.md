@@ -697,3 +697,37 @@ Se trabajó en paralelo, con hasta 3 subagentes a la vez. Las unidades de biomol
    - que avise cuando un ítem comparte dos o más códigos de error con una predicción de su escena.
 3. En la escena `balance-reacciones`, el respaldo de ES12 dice «documentado». El 21,9 % es de todo el subtema de balance, no de dejar el O₂ en 1, así que debería ser «parcial».
 4. En `catalogo/pruebas/pruebas.test.js`, los chequeos de atajos, largo de opciones y lugar de la correcta solo miran `pares`. Convendría correrlos también sobre `reserva`, para que un par de reserva no falle recién al pasarlo.
+
+## 7 nov 2026 · parecidos y reserva en las pruebas del banco (pedido de la principal)
+
+**Qué cambió**
+- **`catalogo/pruebas/parecidos.js`** tiene una función nueva, `avisos()`. Revisa dos cosas:
+  - si un ítem se parece a un problema del `papel.json` de su plantilla, con el mismo criterio de palabras y números que ya se usaba con las predicciones;
+  - si comparte dos o más códigos de error con una predicción de su escena. Para saber qué códigos tiene cada predicción, `codigosEscena()` junta las opciones `['a', 'texto', 'CÓDIGO', …]` que están seguidas en el `index.html`.
+  - Los avisos no tumban la prueba. `pruebas.test.js` los muestra como diagnóstico en un test aparte, y `node catalogo/pruebas/parecidos.js` también los lista.
+- **`catalogo/pruebas/pruebas.test.js`**: los chequeos de atajos, largo de las opciones y lugar de la correcta ahora también corren sobre `reserva`.
+- `npm test`: 3460 de 3460.
+
+**Avisos de hoy: 65 en total.** 37 son de códigos compartidos y 28 de parecido con el papel. Ninguno falla.
+
+| Curso | Códigos compartidos | Papel |
+|---|---|---|
+| Física | 5 | 5 |
+| Química | 8 | 6 |
+| Geometría (geo) | 5 | 6 |
+| Sólidos (sol) | 1 | 0 |
+| Aritmética (ari) | 3 | 3 |
+| Fracciones (fr) | 1 | 1 |
+| Álgebra | 3 | 0 |
+| Trigonometría (tri) | 3 | 2 |
+| Circunferencia trigonométrica (ct) | 1 | 0 |
+| Razonamiento matemático (rm) | 7 | 5 |
+
+**Cómo leerlos**
+- Casi todos los pares originales de los bancos (qui-01 a qui-08, fis-01 a fis-05, etc.) comparten los tres distractores con una predicción de su escena.
+  - Es lo esperado cuando el ítem mide la misma idea errónea.
+  - Lo que hay que mirar es si además repite la tarea: el aviso no lo distingue.
+  - En química, qui-15 (de la reserva) sale por compartir olvida-pureza y multiplica-pureza con la predicción del paso 6. El revisor a ciegas lo dio por transferencia, porque pide el rendimiento y no la pureza.
+- Los de papel con 100 % de palabras en común merecen una mirada: fis-08B, fis-10A, geo-05A/B, geo-10A/B, fr-02B y tri-10A/B. Lo mismo rm-08B y qui-01A/B, que tienen los mismos números.
+
+La lista completa se ve con `node catalogo/pruebas/parecidos.js`.
