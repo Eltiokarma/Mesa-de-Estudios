@@ -75,6 +75,11 @@ const etiquetaUbic = (u, k) => { const v = ubic(u, k); if (!v) return ''; const 
   return `${UNI_CORTA[k] || k} · ${pal} ${v.length > 2 ? `${v[0]}–${v[v.length - 1]}` : v.join(', ')}`; };
 const visto = id => !!est.vistas[id];
 const cursoDeUnidad = id => cat.cursos.find(c => c.unidades.some(u => u.id === id));
+// Módulo de lectura del curso con prueba de entrada y salida propias (razonamiento verbal: textos t000a y t000b).
+// Sus pruebas siguen las reglas de las demás: la entrada va al entrar al curso y la salida la abre el profesor (?salida=).
+const lecturaConPrueba = c => c && Object.values(cat.plantillas).find(p => p.formato === 'lectura' && p.entrada && p.salida
+  && c.unidades.some(u => u.plantillas.includes(p.id)));
+const lecturaSt = p => (est.practica || {})[p.id] || {};
 const ctxPrueba = () => ({ $app, cat, est, esc, guardar, registrar, marcarDia, pruebas });
 // Las escenas abren su propia página (con botón para volver); las predicciones y la lectura van dentro de la app.
 // La lectura recibe además la unidad, para mostrar solo los textos que la tocan.
@@ -142,9 +147,14 @@ function vInicio() {
   const sig = pend.filter(x => x !== conEscena).slice(0, 4).map(x => `<a class="item" href="#/curso/${esc(x.c.id)}">${icono(x.c.id)}
       <span class="tx"><span class="t">${esc(x.u.nombre)}</span><br><span class="d">${esc(x.c.nombre)} · ${esc(etiquetaUbic(x.u, est.uni))}</span></span>
       <span class="der">${tagAdelanto(x.u)}${x.u.plantillas.length ? `<span class="tag acento">${ETIQUETA[cat.plantillas[x.u.plantillas[0]].formato] || 'Módulo'}</span>` : ''}›</span></a>`).join('');
-  const salidas = pruebas ? cat.cursos.filter(c => pruebas.cursos[c.id] && PruebaCurso.habilitada(est, c.id) && est.pruebas[c.id] && est.pruebas[c.id].entrada && !est.pruebas[c.id].salida) : [];
+  const salidas = pruebas ? cat.cursos.filter(c => pruebas.cursos[c.id] && PruebaCurso.habilitada(est, c.id) && est.pruebas[c.id] && est.pruebas[c.id].entrada && !est.pruebas[c.id].salida)
+    .map(c => ({ c, href: `#/prueba/${c.id}/salida` })) : [];
+  for (const c of cat.cursos) {
+    const p = lecturaConPrueba(c);
+    if (p && PruebaCurso.habilitada(est, c.id) && lecturaSt(p).entrada && !lecturaSt(p).salida) salidas.push({ c, href: `${p.url}/salida` });
+  }
   $app.innerHTML = `
-    ${salidas.map(c => `<a class="aviso" style="display:block;text-decoration:none;margin-top:0" href="#/prueba/${esc(c.id)}/salida">Tu profesor abrió la prueba de salida de ${esc(c.nombre)}. Hazla aquí ›</a>`).join('')}
+    ${salidas.map(({ c, href }) => `<a class="aviso" style="display:block;text-decoration:none;margin-top:0" href="${esc(href)}">Tu profesor abrió la prueba de salida de ${esc(c.nombre)}. Hazla aquí ›</a>`).join('')}
     <header class="saludo"><span class="avatar">${esc((est.nombre || '?')[0].toUpperCase())}</span>
       <div><p class="sub">Hola${est.nombre ? `, ${esc(est.nombre)}` : ''} 👋</p><h1>¿Qué entendemos hoy?</h1></div>
       <a class="btn borde solo-grande" href="#/otro" style="margin-left:auto">Otro alumno en esta PC</a></header>
@@ -177,6 +187,10 @@ function vCurso(id) {
   const c = cat.cursos.find(x => x.id === id); if (!c) return ir('#/cursos');
   // La primera vez que entra a un curso con banco de pruebas, va primero la prueba de entrada.
   if (PruebaCurso.pideEntrada(ctxPrueba(), id) && !(est.pruebas[id] || {}).enCurso) { sessionStorage.setItem('prueba-auto-' + id, '1'); return ir(`#/prueba/${id}/entrada`); }
+  // Curso de lectura: la entrada es el primer texto del módulo. Se lleva al alumno una vez por sesión, para que
+  // el botón de volver deje ver el curso (al abrir cualquier unidad, la entrada vuelve a ir primero).
+  const lec = lecturaConPrueba(c);
+  if (lec && !lecturaSt(lec).entrada && sessionStorage.getItem('lectura-auto-' + id) !== '1') { sessionStorage.setItem('lectura-auto-' + id, '1'); return ir(lec.url); }
   const todas = sessionStorage.getItem('todas') === '1';
   const us = todas ? c.unidades : unidadesDe(c, est.uni);
   const ord = [...us].sort((a, b) => Math.min(...(ubic(a, est.uni) || [99])) - Math.min(...(ubic(b, est.uni) || [99])));
@@ -193,7 +207,7 @@ function vCurso(id) {
   }).join('');
   $app.innerHTML = `<a class="volver" href="#/cursos" aria-label="Volver">‹</a>
     <h1>${esc(c.nombre)}</h1><p class="sub">${esc(AREA_TXT[c.area])} · ${us.length} unidades · ${Math.round(avance(c, todas ? '' : est.uni) * 100)} % estudiado</p>
-    ${PruebaCurso.tarjeta(ctxPrueba(), c.id)}
+    ${PruebaCurso.tarjeta(ctxPrueba(), c.id)}${lec ? tarjetaLectura(lec, c) : ''}
     <div class="chips"><button class="chip${todas ? '' : ' on'}" data-todas="0">${esc(UNI_CORTA[est.uni] || 'Mi universidad')}</button><button class="chip${todas ? ' on' : ''}" data-todas="1">Todas las unidades</button></div>
     <div class="lista unidades" style="margin-top:12px">${filas}</div>`;
   $app.querySelectorAll('[data-todas]').forEach(b => b.onclick = () => { sessionStorage.setItem('todas', b.dataset.todas); vCurso(id); });
@@ -201,6 +215,19 @@ function vCurso(id) {
     const k = b.dataset.ver; if (est.vistas[k]) delete est.vistas[k]; else { est.vistas[k] = hoy(); marcarDia(); }
     guardar(); vCurso(id);
   });
+}
+
+// Tarjeta de las pruebas del módulo de lectura en la página del curso (como la de PruebaCurso).
+function tarjetaLectura(p, c) {
+  const st = lecturaSt(p);
+  if (!st.entrada) return `<div class="card prueba-tarjeta"><div class="etq-p">Prueba de entrada pendiente</div>
+    <p>Un texto corto con preguntas. No es nota: sirve para ver de dónde partes.</p><a class="btn morado" href="${esc(p.url)}">Hacer la prueba de entrada ›</a></div>`;
+  if (!st.salida) return PruebaCurso.habilitada(est, c.id)
+    ? `<div class="card prueba-tarjeta destacada"><div class="etq-p">Prueba de salida</div>
+      <p>Tu profesor ya la abrió. Es un texto parecido al de la entrada, y al final ves cuánto avanzaste.</p><a class="btn morado" href="${esc(p.url)}/salida">Hacer la prueba de salida ›</a></div>`
+    : `<div class="card prueba-tarjeta"><div class="etq-p">Prueba de salida</div><p>La prueba de salida la abre tu profesor cuando terminen el curso.</p></div>`;
+  return `<div class="card prueba-tarjeta"><div class="etq-p">Pruebas del curso</div>
+    <p>Entrada ${st.entrada.aciertos} de ${st.entrada.total} · Salida <b>${st.salida.aciertos} de ${st.salida.total}</b></p></div>`;
 }
 
 function vProgreso() {

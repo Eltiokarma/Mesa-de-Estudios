@@ -1,8 +1,8 @@
 {
   "curso": "trigonometria",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "fecha": "2026-11-06",
-  "minutos": 14,
+  "minutos": 12,
   "informes": [
     "docs/investigacion/trigonometria-ideas-erroneas.md"
   ],
@@ -30,50 +30,6 @@
     "arco-sin-radio": {
       "respaldo": "hipotesis",
       "describe": "Da el ángulo en radianes como si fuera la longitud del arco"
-    },
-    "GE1-area-como-lado": {
-      "respaldo": "documentado",
-      "describe": "Cree que el área crece igual que el radio"
-    },
-    "arco-depende-solo-del-angulo": {
-      "respaldo": "hipotesis",
-      "describe": "Cree que el arco y el área solo dependen del ángulo"
-    },
-    "arco-igual-area-doble": {
-      "respaldo": "hipotesis",
-      "describe": "Cree que el arco no cambia con el radio y el área crece como él"
-    },
-    "vueltas-sin-2pi": {
-      "respaldo": "hipotesis",
-      "describe": "Divide la distancia entre el radio, sin 2π"
-    },
-    "vueltas-perimetro-pi-r": {
-      "respaldo": "hipotesis",
-      "describe": "Usa π·r como perímetro de la rueda"
-    },
-    "vueltas-con-diametro": {
-      "respaldo": "hipotesis",
-      "describe": "Usa 2π por el diámetro como perímetro"
-    },
-    "bici-mismas-vueltas": {
-      "respaldo": "hipotesis",
-      "describe": "Cree que la rueda da las mismas vueltas que el pedal"
-    },
-    "bici-invertido": {
-      "respaldo": "hipotesis",
-      "describe": "Divide los radios al revés"
-    },
-    "bici-faja-en-el-eje": {
-      "respaldo": "hipotesis",
-      "describe": "Trata la rueda como si la moviera la cadena, y no el eje del piñón"
-    },
-    "centesimal-igual": {
-      "respaldo": "hipotesis",
-      "describe": "Cree que los grados centesimales y los sexagesimales son iguales"
-    },
-    "factor-centesimal-invertido": {
-      "respaldo": "hipotesis",
-      "describe": "Multiplica por 9/10 en vez de 10/9"
     },
     "TR11-TR12-abscisa-sin-signo": {
       "respaldo": "parcial",
@@ -118,6 +74,30 @@
     "suma-de-lados": {
       "respaldo": "hipotesis",
       "describe": "Suma los dos lados"
+    },
+    "ID8-olvida-el-dos": {
+      "respaldo": "hipotesis",
+      "describe": "Usa 1 − sen²x: olvida el 2 de cos 2x = 1 − 2 sen²x"
+    },
+    "ID15-olvida-el-cuadrado": {
+      "respaldo": "hipotesis",
+      "describe": "Usa 1 − 2 sen x: olvida elevar al cuadrado"
+    },
+    "ID7-cos-doble-como-pitagorica": {
+      "respaldo": "hipotesis",
+      "describe": "Confunde cos 2x con cos²x + sen²x = 1"
+    },
+    "TR16-tangente-de-la-suma-lineal": {
+      "respaldo": "hipotesis",
+      "describe": "Reparte la tangente: tan(a + b) = tan a + tan b"
+    },
+    "ID11-signo-del-denominador": {
+      "respaldo": "hipotesis",
+      "describe": "Suma en el denominador: 1 + tan a · tan b"
+    },
+    "ID6-producto-de-tangentes": {
+      "respaldo": "hipotesis",
+      "describe": "Multiplica las tangentes"
     }
   },
   "pares": [
@@ -243,260 +223,6 @@
             "texto": "5π/6 cm",
             "valor": 2.61799,
             "error": "arco-sin-radio"
-          }
-        ]
-      }
-    },
-    {
-      "par": "tri-04",
-      "plantilla": "cinta-radio",
-      "unidad": "trigonometria.angulo-trigonometrico",
-      "mide": "Sistemas sexagesimal y centesimal: S/9 = C/10",
-      "A": {
-        "enunciado": "Un ángulo mide 54° sexagesimales. ¿Cuántos grados centesimales mide?",
-        "datos": {
-          "S": 54
-        },
-        "opciones": [
-          {
-            "texto": "54ᵍ",
-            "valor": 54,
-            "error": "centesimal-igual"
-          },
-          {
-            "texto": "60ᵍ",
-            "valor": 60,
-            "correcta": true
-          },
-          {
-            "texto": "48,6ᵍ",
-            "valor": 48.6,
-            "error": "factor-centesimal-invertido"
-          }
-        ]
-      },
-      "B": {
-        "enunciado": "Un ángulo mide 72° sexagesimales. ¿Cuántos grados centesimales mide?",
-        "datos": {
-          "S": 72
-        },
-        "opciones": [
-          {
-            "texto": "72ᵍ",
-            "valor": 72,
-            "error": "centesimal-igual"
-          },
-          {
-            "texto": "80ᵍ",
-            "valor": 80,
-            "correcta": true
-          },
-          {
-            "texto": "64,8ᵍ",
-            "valor": 64.8,
-            "error": "factor-centesimal-invertido"
-          }
-        ]
-      }
-    },
-    {
-      "par": "tri-05",
-      "plantilla": "cinta-radio",
-      "unidad": "trigonometria.longitud-de-arco-y-sector",
-      "mide": "Con el mismo ángulo, el arco va con el radio y el área con el radio al cuadrado",
-      "A": {
-        "enunciado": "Un sector circular tiene un ángulo central de 60° y un radio de 4 cm. Si el radio se triplica y el ángulo no cambia, ¿qué pasa con su arco y con su área?",
-        "datos": {
-          "theta": 60,
-          "r": 4,
-          "modelo": {
-            "k": 3
-          }
-        },
-        "opciones": [
-          {
-            "texto": "El arco el triple y el área el triple",
-            "clave": "3|3",
-            "error": "GE1-area-como-lado"
-          },
-          {
-            "texto": "El arco igual y el área igual",
-            "clave": "1|1",
-            "error": "arco-depende-solo-del-angulo"
-          },
-          {
-            "texto": "El arco el triple y el área 9 veces",
-            "clave": "3|9",
-            "correcta": true
-          },
-          {
-            "texto": "El arco igual y el área el triple",
-            "clave": "1|3",
-            "error": "arco-igual-area-doble"
-          }
-        ]
-      },
-      "B": {
-        "enunciado": "Un sector circular tiene un ángulo central de 45° y un radio de 10 cm. Si el radio se reduce a la mitad y el ángulo no cambia, ¿qué pasa con su arco y con su área?",
-        "datos": {
-          "theta": 45,
-          "r": 10,
-          "modelo": {
-            "k": 0.5
-          }
-        },
-        "opciones": [
-          {
-            "texto": "El arco a la mitad y el área a la mitad",
-            "clave": "0,5|0,5",
-            "error": "GE1-area-como-lado"
-          },
-          {
-            "texto": "El arco igual y el área igual",
-            "clave": "1|1",
-            "error": "arco-depende-solo-del-angulo"
-          },
-          {
-            "texto": "El arco a la mitad y el área a la cuarta parte",
-            "clave": "0,5|0,25",
-            "correcta": true
-          },
-          {
-            "texto": "El arco igual y el área a la mitad",
-            "clave": "1|0,5",
-            "error": "arco-igual-area-doble"
-          }
-        ]
-      }
-    },
-    {
-      "par": "tri-06",
-      "plantilla": "cinta-radio",
-      "unidad": "trigonometria.longitud-de-arco-y-sector",
-      "mide": "Vueltas de una rueda: distancia entre el perímetro 2πr",
-      "A": {
-        "enunciado": "Un aro de 0,4 m de radio rueda por el piso sin patinar y recorre 12π m. ¿Cuántos giros completos da?",
-        "datos": {
-          "r": 0.4,
-          "dPi": 12
-        },
-        "opciones": [
-          {
-            "texto": "30",
-            "valor": 30,
-            "error": "vueltas-perimetro-pi-r"
-          },
-          {
-            "texto": "15",
-            "valor": 15,
-            "correcta": true
-          },
-          {
-            "texto": "7,5",
-            "valor": 7.5,
-            "error": "vueltas-con-diametro"
-          },
-          {
-            "texto": "30π",
-            "valor": 94.2478,
-            "error": "vueltas-sin-2pi"
-          }
-        ]
-      },
-      "B": {
-        "enunciado": "Una llanta de 0,3 m de radio rueda por la pista sin patinar y recorre 18π m. ¿Cuántos giros completos da?",
-        "datos": {
-          "r": 0.3,
-          "dPi": 18
-        },
-        "opciones": [
-          {
-            "texto": "60",
-            "valor": 60,
-            "error": "vueltas-perimetro-pi-r"
-          },
-          {
-            "texto": "30",
-            "valor": 30,
-            "correcta": true
-          },
-          {
-            "texto": "15",
-            "valor": 15,
-            "error": "vueltas-con-diametro"
-          },
-          {
-            "texto": "60π",
-            "valor": 188.4956,
-            "error": "vueltas-sin-2pi"
-          }
-        ]
-      }
-    },
-    {
-      "par": "tri-08",
-      "plantilla": "cinta-radio",
-      "unidad": "trigonometria.longitud-de-arco-y-sector",
-      "mide": "Cadena y eje en la bicicleta: la cadena iguala arcos y el eje iguala vueltas",
-      "A": {
-        "enunciado": "Pedro pedalea 2 vueltas completas. En su bicicleta, la catalina (12 cm de radio) mueve con la cadena un piñón de 4 cm de radio, y ese piñón comparte eje con la llanta trasera, de 30 cm de radio. ¿Cuántos giros da la llanta trasera?",
-        "datos": {
-          "plato": 12,
-          "pinon": 4,
-          "rueda": 30,
-          "pedal": 2
-        },
-        "opciones": [
-          {
-            "texto": "2",
-            "valor": 2,
-            "error": "bici-mismas-vueltas"
-          },
-          {
-            "texto": "0,67",
-            "valor": 0.6667,
-            "error": "bici-invertido"
-          },
-          {
-            "texto": "6",
-            "valor": 6,
-            "correcta": true
-          },
-          {
-            "texto": "0,8",
-            "valor": 0.8,
-            "error": "bici-faja-en-el-eje"
-          }
-        ]
-      },
-      "B": {
-        "enunciado": "Rosa pedalea 3 vueltas completas. En su bicicleta, la catalina (18 cm de radio) mueve con la cadena un piñón de 6 cm de radio, y ese piñón comparte eje con la llanta trasera, de 36 cm de radio. ¿Cuántos giros da la llanta trasera?",
-        "datos": {
-          "plato": 18,
-          "pinon": 6,
-          "rueda": 36,
-          "pedal": 3
-        },
-        "opciones": [
-          {
-            "texto": "3",
-            "valor": 3,
-            "error": "bici-mismas-vueltas"
-          },
-          {
-            "texto": "1",
-            "valor": 1,
-            "error": "bici-invertido"
-          },
-          {
-            "texto": "9",
-            "valor": 9,
-            "correcta": true
-          },
-          {
-            "texto": "1,5",
-            "valor": 1.5,
-            "error": "bici-faja-en-el-eje"
           }
         ]
       }
@@ -751,6 +477,140 @@
             "texto": "23 cm",
             "valor": 23,
             "error": "suma-de-lados"
+          }
+        ]
+      }
+    },
+    {
+      "par": "id-01",
+      "plantilla": "identidades-trig",
+      "unidad": "trigonometria.arcos-multiples",
+      "mide": "Coseno del ángulo doble: cos 2x = 1 − 2 sen²x",
+      "A": {
+        "enunciado": "El ángulo x es agudo y sen x = 2/5. ¿Cuánto vale cos 2x?",
+        "datos": {
+          "modelo": {
+            "sen": "2/5"
+          }
+        },
+        "opciones": [
+          {
+            "texto": "21/25",
+            "valor": 0.84,
+            "error": "ID8-olvida-el-dos"
+          },
+          {
+            "texto": "17/25",
+            "valor": 0.68,
+            "correcta": true
+          },
+          {
+            "texto": "1/5",
+            "valor": 0.2,
+            "error": "ID15-olvida-el-cuadrado"
+          },
+          {
+            "texto": "1",
+            "valor": 1,
+            "error": "ID7-cos-doble-como-pitagorica"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "El ángulo x es agudo y sen x = 3/5. ¿Cuánto vale cos 2x?",
+        "datos": {
+          "modelo": {
+            "sen": "3/5"
+          }
+        },
+        "opciones": [
+          {
+            "texto": "16/25",
+            "valor": 0.64,
+            "error": "ID8-olvida-el-dos"
+          },
+          {
+            "texto": "7/25",
+            "valor": 0.28,
+            "correcta": true
+          },
+          {
+            "texto": "−1/5",
+            "valor": -0.2,
+            "error": "ID15-olvida-el-cuadrado"
+          },
+          {
+            "texto": "1",
+            "valor": 1,
+            "error": "ID7-cos-doble-como-pitagorica"
+          }
+        ]
+      }
+    },
+    {
+      "par": "id-02",
+      "plantilla": "identidades-trig",
+      "unidad": "trigonometria.arcos-compuestos",
+      "mide": "Tangente de la suma: (tan a + tan b)/(1 − tan a · tan b)",
+      "A": {
+        "enunciado": "Los ángulos a y b cumplen tan a = 2 y tan b = 1/3. ¿Cuánto vale tan(a + b)?",
+        "datos": {
+          "modelo": {
+            "ta": "2",
+            "tb": "1/3"
+          }
+        },
+        "opciones": [
+          {
+            "texto": "7/3",
+            "valor": 2.3333333333333335,
+            "error": "TR16-tangente-de-la-suma-lineal"
+          },
+          {
+            "texto": "7/5",
+            "valor": 1.4,
+            "error": "ID11-signo-del-denominador"
+          },
+          {
+            "texto": "7",
+            "valor": 7,
+            "correcta": true
+          },
+          {
+            "texto": "2/3",
+            "valor": 0.6666666666666666,
+            "error": "ID6-producto-de-tangentes"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Los ángulos a y b cumplen tan a = 2/3 y tan b = 1/4. ¿Cuánto vale tan(a + b)?",
+        "datos": {
+          "modelo": {
+            "ta": "2/3",
+            "tb": "1/4"
+          }
+        },
+        "opciones": [
+          {
+            "texto": "11/12",
+            "valor": 0.9166666666666666,
+            "error": "TR16-tangente-de-la-suma-lineal"
+          },
+          {
+            "texto": "11/14",
+            "valor": 0.7857142857142857,
+            "error": "ID11-signo-del-denominador"
+          },
+          {
+            "texto": "11/10",
+            "valor": 1.1,
+            "correcta": true
+          },
+          {
+            "texto": "1/6",
+            "valor": 0.16666666666666666,
+            "error": "ID6-producto-de-tangentes"
           }
         ]
       }

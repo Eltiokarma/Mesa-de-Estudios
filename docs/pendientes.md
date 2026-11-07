@@ -8,7 +8,7 @@
 npm test
 ```
 
-Deben pasar 1389 pruebas.
+Deben pasar 1567 pruebas.
 
 ```bash
 npm run dev
@@ -51,8 +51,8 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 
 | Id | Módulo | Informe de ideas erróneas | Nota |
 | --- | --- | --- | --- |
-| ma2 | Geometría | Hechas: `ampliadora`, `triangulo-estira`, `angulo-inscrito` y `poligonos` | Faltan sólidos, analítica y congruencia (las hace la sesión paralela matematica-b) |
-| ma1 | Trigonometría | Hechas: `cinta-radio`, `circunferencia-trig` y `caso-ambiguo` (ley de senos y cosenos) | Las tres escenas del informe están hechas; faltan identidades, arcos compuestos y funciones inversas |
+| ma2 | Geometría | Hechas: `ampliadora`, `triangulo-estira`, `angulo-inscrito`, `poligonos`, `solidos` y `geometria-analitica` | Falta congruencia (sesión matematica-b) |
+| ma1 | Trigonometría | Hechas: `cinta-radio`, `circunferencia-trig`, `caso-ambiguo` e `identidades-trig` | Faltan funciones trigonométricas inversas (sesión matematica-a) |
 | ma3 | Álgebra | Hechas: `grafica-perillas`, `traductor-enunciados`, `cuadrado-crece` (productos notables y factorización) y `sucesiones` | Faltan polinomios y división, exponenciales y logaritmos (con escena propia), matrices y complejos |
 | ma1 a ma3 | Trigonometría, geometría, funciones | Informes del 6 nov: `trigonometria-`, `geometria-` y `algebra-funciones-ideas-erroneas.md` | Cifras de resúmenes, por verificar con los PDF (`fuentes/por-conseguir.md`); cada informe trae 3 escenas y casos |
 | ma4 | Aritmética | Hechas: `porcentajes-sucesivos` (predicciones), `regla-de-tres`, `probabilidad-dados`, `sucesiones` y `fracciones` (fracciones, decimales, MCD y MCM, promedios) | Falta interés (la hace la sesión paralela matematica-b); fracciones sin ítems en el banco todavía |
@@ -132,7 +132,7 @@ Cinco conversaciones aparte trabajan solas, cada una en su rama y sin tocar cat�
   - Una tipografía redondeada común entre la app y las escenas.
   - Revisar el modo oscuro de las ilustraciones.
   - Llevar a `nucleo/` lo que cada escena repite (la cinta y la gráfica ya dejan el dibujo fijo arriba mientras se elige: `.bench` sticky y lienzo de ~240 px) y las revisiones vuelven a encontrar: en el celular, subir el lienzo al responder (scrollIntoView y animar después) y dejar que el dedo desplace la página sobre el dibujo salvo cerca de lo que se arrastra (touch-action: pan-y). Salió en la celda, la ampliadora y el triángulo.
-- **la1, pruebas de entrada y salida por curso (hecha el 6 nov 2026; revisada y ampliada el mismo día):** banco en `catalogo/pruebas/` (formato en `docs/arquitectura.md`), dos formas paralelas A y B por curso en orden contrabalanceado, 65 ítems por forma en siete cursos (física 10, química 10, geometría 9, trigonometría 10, álgebra 10, aritmética 8, razonamiento matemático 8), cada respuesta y cada distractor verificados con el motor de su plantilla. Aritmética y razonamiento matemático llevan 2 pares por cada uno de sus 4 módulos; trigonometría suma la circunferencia y el caso ambiguo; álgebra, el traductor de enunciados (y 2 de `cuadrado-crece` en reserva). Ningún ítem repite una predicción de escena ni un problema de generador (prueba automática), la respuesta nunca está escrita en el enunciado, los atajos caen igual en A y B y las opciones tienen la misma forma. La salida y las soluciones las abre el profesor (`?salida=`, `?soluciones=`) y hay «Otro alumno en esta PC». Falta:
+- **la1, pruebas de entrada y salida por curso (hecha el 6 nov 2026; revisada y ampliada el mismo día):** banco en `catalogo/pruebas/` (formato en `docs/arquitectura.md`), dos formas paralelas A y B por curso en orden contrabalanceado, 66 ítems por forma en siete cursos (física 10, química 10, geometría 10, trigonometría 8, álgebra 10, aritmética 10, razonamiento matemático 8; desde el 7 nov, 2 por plantilla en los cursos de matemática), cada respuesta y cada distractor verificados con el motor de su plantilla. Aritmética y razonamiento matemático llevan 2 pares por cada uno de sus 4 módulos; trigonometría suma la circunferencia y el caso ambiguo; álgebra, el traductor de enunciados (y 2 de `cuadrado-crece` en reserva). Ningún ítem repite una predicción de escena ni un problema de generador (prueba automática), la respuesta nunca está escrita en el enunciado, los atajos caen igual en A y B y las opciones tienen la misma forma. La salida y las soluciones las abre el profesor (`?salida=`, `?soluciones=`) y hay «Otro alumno en esta PC». Falta:
   - Al agregar una plantilla a un curso, sumar sus ítems (la prueba avisa).
   - Álgebra tiene 2 pares de `cuadrado-crece` en `reserva`: cuando esa plantilla entre al catálogo, pasarlos a `pares` (la prueba avisa) y bajar dos de la gráfica con perillas para no pasar de 10.
   - Sin ítems todavía (la prueba avisa): sucesiones en álgebra, tiro parabólico en física, mol y composición en química; razonamiento verbal no tiene banco (formato lectura).
