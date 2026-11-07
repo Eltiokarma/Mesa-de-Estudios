@@ -1,0 +1,135 @@
+{
+  "titulo": "El cordel que encierra: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 minutos por problema, como en el examen. Si lo que se suma es fijo, el producto es máximo cuando los sumandos son iguales: con a·x + b·y fijo, el mejor caso es a·x = b·y. Si lo que se multiplica es fijo, la suma es mínima cuando los factores son iguales. Para el camino más corto que toca una recta, refleja uno de los puntos al otro lado y une con una recta. En los precios, el ingreso es precio por cantidad: su gráfica es una parábola y el máximo está a la mitad entre sus dos ceros.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Con 36 m de cerca se arma un corral rectangular. ¿Cuál es la mayor área que puede encerrar y qué medidas tiene ese corral?",
+      "respuesta": "81 m², con un cuadrado de 9 m por lado.",
+      "pasos": [
+        "Si el ancho es x y el largo es y, el perímetro es 2x + 2y = 36, o sea x + y = 18.",
+        "Con la suma fija, el producto x · y es máximo cuando x = y: x = y = 9.",
+        "El área es 9 · 9 = 81 m². Compara: 10 × 8 da 80 y 17 × 1 da 17, con la misma cerca."
+      ],
+      "verificar": [ { "fn": "productoMaximo", "args": [{ "a": 2, "b": 2, "total": 36 }], "espera": { "x": 9, "y": 9, "producto": 81 } },
+                     { "fn": "rectangulo", "args": [{ "perimetro": 36, "ancho": 10 }], "espera": { "area": 80 } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Dos números positivos suman 20. ¿Cuál es el mayor valor que puede tener su producto?",
+      "respuesta": "100.",
+      "pasos": [
+        "Con la suma fija, el producto es máximo cuando los dos números son iguales: 10 y 10.",
+        "El producto es 10 · 10 = 100.",
+        "Comprueba con vecinos: 9 · 11 = 99 y 8 · 12 = 96. Cuanto más se separan, menor es el producto."
+      ],
+      "verificar": [ { "fn": "productoMaximo", "args": [{ "a": 1, "b": 1, "total": 20 }], "espera": { "x": 10, "producto": 100 } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Un granjero tiene 60 m de malla para cercar un terreno rectangular junto a un río recto. El lado del río no se cerca. ¿Qué área máxima puede cercar?",
+      "respuesta": "450 m²: 30 m a lo largo del río y 15 m hacia adentro.",
+      "pasos": [
+        "Si los dos lados perpendiculares al río miden x y el lado paralelo mide y, la malla cumple 2x + y = 60.",
+        "Lo que se suma es 2x y y. El producto (2x) · y es máximo cuando 2x = y = 30, y entonces x · y también lo es.",
+        "x = 15 e y = 30: el área es 15 · 30 = 450 m².",
+        "Si haces un cuadrado (x = y = 20), el área es 400 m²: el cuadrado ya no es el mejor, porque ahora no se suman x e y por igual."
+      ],
+      "verificar": [ { "fn": "paredMaxima", "args": [{ "malla": 60 }], "espera": { "x": 15, "paralelo": 30, "area": 450, "errores.cuadrado.area": 400 } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Con 120 m de malla se cerca un terreno rectangular y se divide en dos corrales iguales con una malla paralela a uno de sus lados. ¿Cuál es la mayor área total que se puede encerrar?",
+      "respuesta": "600 m², con tres tramos de 20 m y dos de 30 m.",
+      "pasos": [
+        "Hay tres tramos de largo x (los dos extremos y la división) y dos tramos de largo y: 3x + 2y = 120.",
+        "El producto (3x) · (2y) es máximo cuando 3x = 2y = 60: x = 20 e y = 30.",
+        "El área total es x · y = 20 · 30 = 600 m².",
+        "Si pones x = y, cada tramo mide 120/5 = 24 m y el área es 576 m²: un poco menos."
+      ],
+      "verificar": [ { "fn": "productoMaximo", "args": [{ "a": 3, "b": 2, "total": 120 }], "espera": { "x": 20, "y": 30, "producto": 600, "errores.factoresIguales.producto": 576 } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "básico",
+      "enunciado": "El producto de dos números positivos es 49. ¿Cuál es la menor suma que pueden tener?",
+      "respuesta": "14.",
+      "pasos": [
+        "Con el producto fijo, la suma es mínima cuando los dos números son iguales: 7 y 7.",
+        "La suma es 7 + 7 = 14.",
+        "Compara: 1 + 49 = 50. Es lo mismo que pasa con un terreno de área fija: el cuadrado necesita menos cerca."
+      ],
+      "verificar": [ { "fn": "sumaMinima", "args": [{ "producto": 49 }], "espera": { "x": 7, "suma": 14, "errores.unoYTodo": 50 } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Ana está a 4 m de la orilla de un río recto y su casa está a 2 m de la misma orilla, del mismo lado. Los pies de las perpendiculares desde Ana y desde la casa hasta la orilla están a 8 m uno del otro. Ana quiere ir a la orilla a llenar un balde y luego a su casa. ¿Cuál es el recorrido mínimo y a qué distancia del pie de Ana debe tocar la orilla?",
+      "respuesta": "10 m, tocando la orilla a 16/3 m (5 1/3 m) del pie de Ana.",
+      "pasos": [
+        "Refleja la casa al otro lado de la orilla: queda a 2 m por debajo. Cualquier camino Ana, orilla, casa mide lo mismo que el camino Ana, orilla, reflejo.",
+        "El camino más corto al reflejo es la recta. Sus catetos son 8 m (a lo largo de la orilla) y 4 + 2 = 6 m: la recta mide √(64 + 36) = 10 m.",
+        "Por triángulos semejantes, la recta corta la orilla en la proporción 4 : 2. Del pie de Ana: 8 · 4/6 = 16/3 m.",
+        "Si Ana baja en perpendicular, el camino mide 4 + 2√17, un poco más de 12 m."
+      ],
+      "verificar": [ { "fn": "recorridoMinimo", "args": [{ "a": 4, "b": 2, "d": 8 }], "espera": { "minimo": 10, "pExacto": "16/3", "exactos.perpendicularA": "4 + 2√17" } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "La luz de una linterna, ubicada a 2 m de un espejo plano, se refleja en el espejo y llega a un punto que está a 6 m del espejo. Los pies de las perpendiculares desde la linterna y desde el punto hasta el espejo están a 15 m. ¿Qué distancia recorre la luz?",
+      "respuesta": "17 m.",
+      "pasos": [
+        "La luz se refleja con el mismo ángulo a la entrada y a la salida. Ese camino es justo el más corto que toca el espejo.",
+        "Refleja el punto de llegada al otro lado del espejo: los catetos son 15 m y 2 + 6 = 8 m.",
+        "La distancia es √(225 + 64) = √289 = 17 m.",
+        "La luz toca el espejo a 15 · 2/8 = 15/4 m del pie de la linterna."
+      ],
+      "verificar": [ { "fn": "recorridoMinimo", "args": [{ "a": 2, "b": 6, "d": 15 }], "espera": { "minimo": 17, "pExacto": "15/4" } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Una combi cobra S/ 2 el pasaje y lleva 900 pasajeros al día. Por cada 10 céntimos de aumento pierde 30 pasajeros. ¿Qué pasaje le da el mayor ingreso y cuánto gana al día?",
+      "respuesta": "S/ 2,50: lleva 750 pasajeros y gana S/ 1875.",
+      "pasos": [
+        "Con n aumentos de 10 céntimos, el pasaje es 2 + 0,1n soles y los pasajeros son 900 − 30n.",
+        "El ingreso (2 + 0,1n)(900 − 30n) se hace cero en n = −20 (pasaje gratis) y en n = 30 (nadie sube).",
+        "La parábola tiene su máximo a la mitad entre sus ceros: n = (−20 + 30)/2 = 5.",
+        "Pasaje: 2 + 0,5 = S/ 2,50; pasajeros: 900 − 150 = 750; ingreso: 2,5 · 750 = S/ 1875. Sin aumento ganaba S/ 1800."
+      ],
+      "verificar": [ { "fn": "ingresoMaximo", "args": [{ "p0": 2, "q0": 900, "dp": 0.1, "dq": 30 }], "espera": { "u": 5, "precio": 2.5, "cantidad": 750, "ingreso": 1875, "erroresIngreso.noCambiar": 1800 } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "intermedio",
+      "enunciado": "Un restaurante vende 80 almuerzos al día a S/ 12. Por cada sol que baja el precio, vende 10 almuerzos más. ¿Qué precio le da el mayor ingreso?",
+      "respuesta": "S/ 10: vende 100 almuerzos y gana S/ 1000.",
+      "pasos": [
+        "Con una rebaja de r soles: precio 12 − r, almuerzos 80 + 10r. Ingreso (12 − r)(80 + 10r).",
+        "Los ceros son r = 12 (gratis) y r = −8 (subir 8 soles y no vender nada).",
+        "El máximo está a la mitad: r = (12 − 8)/2 = 2. El precio es 12 − 2 = S/ 10.",
+        "Ingreso: 10 · 100 = S/ 1000. Sin rebaja gana 12 · 80 = S/ 960; con S/ 3 de rebaja, 9 · 110 = S/ 990."
+      ],
+      "verificar": [ { "fn": "ingresoMaximo", "args": [{ "p0": 12, "q0": 80, "dp": 1, "dq": 10 }], "espera": { "u": -2, "precio": 10, "cantidad": 100, "ingreso": 1000, "errores.noCambiar": 12 } },
+                     { "fn": "ingreso", "args": [{ "p0": 12, "q0": 80, "dp": 1, "dq": 10, "u": -3 }], "espera": { "ingreso": 990 } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Se pintan las 9 casillas de un tablero de 3 × 3 de modo que dos casillas que se tocan, aunque sea solo por una esquina, tengan colores distintos. ¿Cuál es el menor número de colores que se necesita?",
+      "respuesta": "4 colores.",
+      "pasos": [
+        "Mira las cuatro casillas de una esquina del tablero (un bloque de 2 × 2): cada una toca a las otras tres. Con menos de 4 colores, dos de ellas repetirían color.",
+        "Con 4 colores sí se puede: fila de arriba A B A, fila del medio C D C, fila de abajo A B A.",
+        "Revisa: cada casilla está rodeada de colores distintos al suyo. Si solo contaran los lados, bastarían 2 colores, como en un tablero de ajedrez."
+      ],
+      "verificar": [ { "fn": "minimoColores", "args": [{ "regiones": 9, "vecinos": [[0, 1], [1, 2], [3, 4], [4, 5], [6, 7], [7, 8], [0, 3], [1, 4], [2, 5], [3, 6], [4, 7], [5, 8], [0, 4], [1, 5], [3, 7], [4, 8], [1, 3], [2, 4], [4, 6], [5, 7]] }], "espera": { "colores": 4 } },
+                     { "fn": "revisarPintura", "args": [{ "regiones": 9, "vecinos": [[0, 1], [1, 2], [3, 4], [4, 5], [6, 7], [7, 8], [0, 3], [1, 4], [2, 5], [3, 6], [4, 7], [5, 8], [0, 4], [1, 5], [3, 7], [4, 8], [1, 3], [2, 4], [4, 6], [5, 7]], "colores": [0, 1, 0, 2, 3, 2, 0, 1, 0] }], "espera": { "valida": true, "usados": 4 } } ]
+    }
+  ]
+}
