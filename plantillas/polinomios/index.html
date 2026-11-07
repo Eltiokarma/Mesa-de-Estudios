@@ -238,7 +238,7 @@ const lerp = (a, b, f) => a + (b - a)*f;
 function tween(dur, paso, fin, lineal){
   if (RM || !dur){ paso(1); if (fin) setTimeout(fin, 0); return; }
   const t0 = performance.now();
-  const tick = now => { const f = Math.min(1, (now - t0)/dur); paso(lineal ? f : suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
+  const tick = now => { const f = Math.max(0, Math.min(1, (now - t0)/dur)); paso(lineal ? f : suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
   requestAnimationFrame(tick);
 }
 // En el celular, una ecuación larga se parte solo entre tramos (después de ⟹, ⟺, ;, «: » o « = »), nunca dentro de una
