@@ -731,3 +731,46 @@ Se trabajó en paralelo, con hasta 3 subagentes a la vez. Las unidades de biomol
 - Los de papel con 100 % de palabras en común merecen una mirada: fis-08B, fis-10A, geo-05A/B, geo-10A/B, fr-02B y tri-10A/B. Lo mismo rm-08B y qui-01A/B, que tienen los mismos números.
 
 La lista completa se ve con `node catalogo/pruebas/parecidos.js`.
+
+## 7 nov 2026 · ítems de los bancos que copiaban el papel (pedido de la principal)
+
+- Rehíce 12 formas en seis bancos. Las de física, geometría, aritmética, trigonometría y razonamiento matemático las toqué a pedido explícito de la principal.
+
+  | Ítem | Ahora |
+  |---|---|
+  | fis-08B | Cámara de fuelle, f = 6 cm, flor a 18 cm → 9 cm |
+  | fis-10A | Columpio que baja 0,8 m → 4 m/s |
+  | geo-05A | Terreno de 30, 40 y 50 m → 24 m |
+  | geo-05B | Repisa esquinera de 18, 24 y 30 cm → 14,4 cm |
+  | geo-10A | Apretones en una mesa de 9, sin los vecinos → 27 |
+  | geo-10B | Cintas en una ronda de 11 → 44 |
+  | fr-02B | Jarabe cada 6 h y pastilla cada 9 h → 18 h |
+  | tri-10A | Lámpara con brazos de 15 y 7 cm a 60° → 13 cm |
+  | tri-10B | Brazo robótico de 16 y 10 cm a 60° → 14 cm |
+  | rm-08B | 5, 8, 13, 20, … → término 10 = 104 |
+  | qui-01A | 12 CO y 7 O₂ |
+  | qui-01B | 3 C₂H₄ y 8 O₂ |
+
+  Mismos códigos de error y misma dificultad que antes; las respuestas salen del motor. En verificar.js solo cambió fis-10, que ahora usa `energia.rapidez`.
+- Hubo una revisión a ciegas: las 16 claves estaban bien. Encontró defectos de redacción, todos corregidos:
+  - en geo-10A el 54 era defendible;
+  - en tri-10 no quedaba claro qué distancia ni qué ángulo se pedía;
+  - fis-10B decía «se lanza» y faltaban datos;
+  - qui-01 se acertaba por descarte;
+  - rm-08 no fijaba la sucesión;
+  - la posición de la correcta era la misma en A y B.
+- El revisor propuso además tareas inversas, porque todos estos pares calcan la tarea de una predicción. La principal decidió:
+  - el banco mide transferencia cercana: misma tarea y mismos errores, con otra situación y otros números;
+  - copiar el papel o la escena no vale;
+  - la tarea inversa no se usa porque cambia el error que se mide.
+
+  Quedó escrito en `docs/arquitectura.md`. La transferencia lejana quedó como idea en `docs/pendientes.md`, con las propuestas del revisor:
+  - fis-08: cuánto se mueve la pantalla si el objeto se aleja;
+  - fis-10: la rapidez en un punto intermedio;
+  - geo-05: el área a partir de la hipotenusa y la altura;
+  - geo-10: cuántos niños hay a partir de las cintas;
+  - fr-02: cuántas veces se encendió una luz hasta coincidir;
+  - tri-10: un lado adyacente con 120°;
+  - rm-08: qué lugar ocupa un término;
+  - qui-01: en cuál de cuatro mezclas el limitante es el O₂.
+- Pruebas: npm test da 3503 de 3504. Solo falla «pruebas.json al día»; hace falta `npm run catalogo`. Ninguno de estos ítems sale ya con aviso de papel.

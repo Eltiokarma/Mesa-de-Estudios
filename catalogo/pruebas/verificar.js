@@ -73,8 +73,9 @@ const V = {
     return { correcta: im.i, errores: { 'lente-suma-inversas': 1 / (1 / d.f + 1 / d.o), 'objeto-lejano-en-el-foco': d.f, 'imagen-espejo': d.o } };
   },
   'fis-10': d => {
-    const r = motor('energia').rampaResorte({ m: d.m, h: d.h, k: 1 }), g = 10;
-    return { correcta: r.v, errores: { 'energia-sin-raiz': 2 * g * d.h, 'energia-sin-mitad': Math.sqrt(g * d.h), 'energia-v-igual-gh': g * d.h } };
+    // Baja h sin roce desde el reposo (tobogán o columpio): la rapidez abajo solo depende de h.
+    const E = motor('energia'), g = E.G, v = E.rapidez(d.h, 0, 0, g);
+    return { correcta: v, errores: { 'energia-sin-raiz': 2 * g * d.h, 'energia-sin-mitad': Math.sqrt(g * d.h), 'energia-v-igual-gh': g * d.h } };
   },
   'fis-09': d => {
     const E = motor('optica-espejo-esferico'), im = E.imagen(d.o, d.f, 1), ds = E.describir(im);

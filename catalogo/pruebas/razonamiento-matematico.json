@@ -600,7 +600,7 @@
       "unidad": "razonamiento-matematico.razonamiento-inductivo",
       "mide": "Sucesión de segundo orden: la diferencia crece, no se repite",
       "A": {
-        "enunciado": "Observa la sucesión 2, 6, 12, 20, … ¿Cuál es el término que ocupa el lugar 10?",
+        "enunciado": "Observa la sucesión 2, 6, 12, 20, … Si las diferencias siguen creciendo de 2 en 2, ¿cuál es el término que ocupa el lugar 10?",
         "datos": {
           "k": 10,
           "modelo": {
@@ -636,38 +636,38 @@
         ]
       },
       "B": {
-        "enunciado": "Observa la sucesión 3, 8, 15, 24, … ¿Cuál es el término que ocupa el lugar 10?",
+        "enunciado": "Observa la sucesión 5, 8, 13, 20, … Si las diferencias siguen creciendo de 2 en 2, ¿cuál es el término que ocupa el lugar 10?",
         "datos": {
           "k": 10,
           "modelo": {
             "terminos": [
-              3,
+              5,
               8,
-              15,
-              24
+              13,
+              20
             ]
           }
         },
         "opciones": [
           {
-            "texto": "48",
-            "valor": 48,
+            "texto": "32",
+            "valor": 32,
             "error": "lineal-en-cuadratica"
           },
           {
-            "texto": "78",
-            "valor": 78,
+            "texto": "62",
+            "valor": 62,
             "error": "repite-la-ultima-diferencia"
           },
           {
-            "texto": "120",
-            "valor": 120,
-            "correcta": true
+            "texto": "58",
+            "valor": 58,
+            "error": "RM2-objeto-entero"
           },
           {
-            "texto": "70",
-            "valor": 70,
-            "error": "RM2-objeto-entero"
+            "texto": "104",
+            "valor": 104,
+            "correcta": true
           }
         ]
       }
