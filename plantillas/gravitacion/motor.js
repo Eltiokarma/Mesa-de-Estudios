@@ -63,8 +63,11 @@
  *                                Posición: x = r·sen φ, y = r·cos φ (sale de (0, r0) hacia +x).
  *                                tipo: 'cae' (toca el suelo: r = Rp en φchoque), 'circular' (|e| < 1e-9), 'eliptica',
  *                                'escapa' (e ≥ 1). rMin, rMax (Infinity si escapa), a = p/(1 − e²) y T = 2π·√(a³/GM)
+ *                                (con tipo 'cae', rMin y rMax son el perigeo y el apogeo de la cónica completa, aunque el
+ *                                perigeo quede bajo el suelo)
  *                                si es cerrada; energia = ½·v0² − GM/r0 (por kg): negativa = atada, cero o más = escapa;
- *                                vc = √(GM/r0) y ve = √(2·GM/r0). recorrido(n, rTope) da n + 1 puntos { phi, r, x, y, t }
+ *                                vc = √(GM/r0), ve = √(2·GM/r0) y vSinChoque = √(2·GM·Rp/(r0·(r0 + Rp))) (la menor
+ *                                rapidez con que la bala no toca el suelo: su perigeo queda justo en Rp). recorrido(n, rTope) da n + 1 puntos { phi, r, x, y, t }
  *                                (t por la segunda ley de Kepler: dt = r²/H·dφ, integrado con Simpson) hasta el choque,
  *                                una vuelta o r = rTope (por defecto 6·Rp); en(t) da la posición en el instante t.
  *   balanza({ m, a, g })         una persona de masa m sobre una balanza dentro de un ascensor que acelera hacia abajo
@@ -247,7 +250,7 @@
       return { phi, r, x: r * Math.sin(phi), y: r * Math.cos(phi), t, fin: false };
     }
     return { v0, h0, r0, H, p, e, tipo, phiChoque, rMin, rMax, a, T, energia, vc: Math.sqrt(c.GM / r0), ve: Math.sqrt(2 * c.GM / r0),
-      rDe, tDe, recorrido, en };
+      vSinChoque: Math.sqrt(2 * c.GM * c.Rp / (r0 * (r0 + c.Rp))), rDe, tDe, recorrido, en };
   }
 
   function balanza(o) {

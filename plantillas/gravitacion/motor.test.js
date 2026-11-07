@@ -149,6 +149,16 @@ test('Kepler II: sectores de igual tiempo barren áreas iguales; r·v⊥ constan
 });
 
 // 3. Lo que enseña la escena
+test('cañón: por debajo de vSinChoque la bala cae al suelo; desde ahí da vueltas (desde 2R, unos 4,6 km/s)', () => {
+  for (const h0 of [0.2 * R, R, 2 * R]) {
+    const v = motor.lanzamiento({ v0: 1000, h0 }).vSinChoque;
+    assert.equal(motor.lanzamiento({ v0: v * 0.999, h0 }).tipo, 'cae');
+    assert.notEqual(motor.lanzamiento({ v0: v * 1.001, h0 }).tipo, 'cae');
+    cerca(motor.lanzamiento({ v0: v, h0 }).rMin, R, 'perigeo en el suelo', 1e-9);
+  }
+  cerca(motor.lanzamiento({ v0: 1000, h0: R }).vSinChoque, 8000 / Math.sqrt(3), 'desde 2R');
+});
+
 test('G1: a la altura de la estación espacial la gravedad sigue siendo casi el 90 %, y nunca llega a cero', () => {
   cerca(motor.gAltura({ h: 4e5 }).fraccion, 256 / 289, 'estación');
   let antes = Infinity;

@@ -2,7 +2,7 @@
   "plantilla": "gravitacion",
   "unidades": "SI: kg, m, s, N, J. Valores de academia: G = 6,67·10⁻¹¹ N·m²/kg², g0 = 10 m/s², R = 6400 km = 6,4·10⁶ m, GM de la Tierra = g0·R² = 4,096·10¹⁴ m³/s², un día = 86 400 s, π el de verdad. Otro planeta: kM masas y kR radios terrestres.",
   "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' (una lista) y compara 'espera'. Los campos anidados van con punto (errores.lineal); los números se comparan con la tolerancia relativa; los textos y null, exactos. r va de centro a centro y h es la altura sobre la superficie (r = Rp + h). En comparar y kepler3 todo es razón (cuántas veces cambia). En lanzamiento, e lleva signo: negativo si el punto de lanzamiento es el más lejano del centro; phiChoque en radianes.",
-  "verificacion": "",
+  "verificacion": "Verificador independiente (subagente, 7 nov 2026): recalculó los 193 campos de los 19 casos sin leer el código del motor, casos.json ni las pruebas, solo la cabecera de motor.js. Usó python3 con fracciones exactas, raíces exactas cuando el número es un cuadrado perfecto y caminos alternativos (g = GM/r², T = 2πr/v, Newton-Raphson para el geoestacionario, rp·vp = ra·va). Resultado: los 193 campos coinciden con tolerancia 1e-9 y ninguna discrepancia.",
   "tolerancia": 1e-9,
   "casos": [
     { "nombre": "Informe, problema guiado (estación espacial a 400 km, R = 6400 km) → g = 10·(16/17)² = 2560/289 ≈ 8,86 m/s², el 256/289 ≈ 89 % del suelo. Distractores: cero (G1), la misma del suelo, 160/17 (g ∝ 1/r) y 2560 (distancia desde el suelo)",
