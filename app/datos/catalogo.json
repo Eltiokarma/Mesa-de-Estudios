@@ -1782,7 +1782,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "binomio-newton"
+     ]
     }
    ]
   },
@@ -4372,6 +4374,23 @@
     "/plantillas/balance-reacciones/index.html",
     "/plantillas/balance-reacciones/motor.js",
     "/plantillas/balance-reacciones/papel.json"
+   ]
+  },
+  "binomio-newton": {
+   "id": "binomio-newton",
+   "titulo": "El tablero de los caminos: binomio de Newton",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "algebra.binomio-de-newton"
+   ],
+   "url": "/plantillas/binomio-newton/index.html",
+   "papel": "/plantillas/binomio-newton/papel.json",
+   "archivos": [
+    "/plantillas/binomio-newton/index.html",
+    "/plantillas/binomio-newton/motor.js",
+    "/plantillas/binomio-newton/papel.json"
    ]
   },
   "biomoleculas": {

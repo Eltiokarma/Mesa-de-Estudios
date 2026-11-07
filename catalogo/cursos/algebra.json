@@ -312,7 +312,7 @@
       "universidades": {"uni": {"semanas": [20]}, "unmsm": {"temas": [10]}},
       "potencial_visual": "bajo",
       "grado": 5,
-      "plantillas": [],
+      "plantillas": ["binomio-newton"],
       "investigacion": null
     }
   ]
