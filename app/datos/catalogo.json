@@ -4006,7 +4006,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "tipologia-textual"
+     ]
     },
     {
      "id": "razonamiento-verbal.tema-e-idea-principal",
@@ -5794,6 +5796,30 @@
     "/plantillas/termodinamica/index.html",
     "/plantillas/termodinamica/motor.js",
     "/plantillas/termodinamica/papel.json"
+   ]
+  },
+  "tipologia-textual": {
+   "id": "tipologia-textual",
+   "titulo": "¿Qué clase de texto es?",
+   "formato": "lectura",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-verbal.tipologia-textual"
+   ],
+   "url": "#/lectura/tipologia-textual",
+   "banco": "/contenido/razonamiento-verbal/indice-tipologia-textual.json",
+   "papel": null,
+   "entrada": null,
+   "salida": null,
+   "archivos": [
+    "/contenido/razonamiento-verbal/indice-tipologia-textual.json",
+    "/contenido/razonamiento-verbal/codigos.json",
+    "/contenido/razonamiento-verbal/frases.json",
+    "/contenido/razonamiento-verbal/textos/t031.json",
+    "/contenido/razonamiento-verbal/textos/t032.json",
+    "/contenido/razonamiento-verbal/textos/t033.json",
+    "/contenido/razonamiento-verbal/textos/t034.json"
    ]
   },
   "tiro-parabolico": {

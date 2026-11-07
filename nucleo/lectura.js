@@ -80,6 +80,66 @@
     return l.map((o, k) => ({ ...o, id: o.id || o.n, n: k + 1, parrafo: 1 }));
   }
   const numero = (item, id) => { const o = oraciones(item).find(x => x.id === id); return o ? o.n : null; };
+
+  // ---------- Figuras de los textos discontinuos (tabla, gráfico de barras, recuadros de una infografía) ----------
+  // item.figuras: [{ id, tipo, despues, titulo, nota, … }]. "despues" es cuántos párrafos van antes (0: arriba de todo).
+  //   tabla:     columnas: ['Año', 'Toneladas'], filas: [{ id, celdas: ['2019', '150'] }]
+  //   barras:    unidad: 'mm', barras: [{ id, etiqueta: 'Ene', valor: 120 }]   (barras horizontales desde 0)
+  //   recuadros: recuadros: [{ id, titulo, t }]
+  // Cada fila, barra o recuadro (y la figura entera) tiene id propio, y "evidencia" u "origen" pueden apuntar a él.
+  const TIPOS_FIGURA = { tabla: 'filas', barras: 'barras', recuadros: 'recuadros' };
+  const NOMBRE_FIGURA = { tabla: 'la tabla', barras: 'el gráfico', recuadros: 'la infografía' };
+  const figuras = item => (item && Array.isArray(item.figuras)) ? item.figuras : [];
+  const textoParte = (f, x) => f.tipo === 'tabla' ? (x.celdas || []).map((c, k) => `${(f.columnas || [])[k] || ''}: ${c}`).join(' · ')
+    : f.tipo === 'barras' ? `${x.etiqueta}: ${x.valor}${f.unidad ? ' ' + f.unidad : ''}`
+    : `${x.titulo ? x.titulo + ': ' : ''}${x.t || ''}`;
+  // Partes citables de las figuras: la figura entera y cada fila, barra o recuadro, con un texto para citarlas.
+  function elementos(item) {
+    const out = [];
+    for (const f of figuras(item)) {
+      out.push({ id: f.id, figura: f.id, tipo: f.tipo, parte: false, t: f.titulo || '' });
+      for (const x of f[TIPOS_FIGURA[f.tipo]] || []) out.push({ id: x.id, figura: f.id, tipo: f.tipo, parte: true, t: textoParte(f, x), nombre: f.tipo === 'tabla' ? (x.celdas || [])[0] : f.tipo === 'barras' ? x.etiqueta : x.titulo });
+    }
+    return out;
+  }
+  // Ids a los que pueden apuntar "evidencia", "origen" y "aceptadas": oraciones y partes de figuras.
+  const referencias = item => new Set([...oraciones(item).map(o => o.id), ...elementos(item).map(e => e.id)]);
+  // Cómo se nombra en una explicación: «la oración 3», «la fila «2019» de la tabla», «el gráfico».
+  function etiquetaRef(item, id) {
+    const n = numero(item, id);
+    if (n !== null) return `la oración ${n}`;
+    const e = elementos(item).find(x => x.id === id);
+    if (!e) return String(id);
+    if (!e.parte) return NOMBRE_FIGURA[e.tipo];
+    const parte = { tabla: 'la fila', barras: 'la barra', recuadros: 'el recuadro' }[e.tipo];
+    return `${parte}${e.nombre ? ` «${e.nombre}»` : ''} ${NOMBRE_FIGURA[e.tipo].replace(/^el /, 'del ').replace(/^la /, 'de la ')}`;
+  }
+  // Lo que se cita debajo de una explicación, en el orden del texto: { id, marca (número u otra etiqueta corta), t }.
+  function citas(item, ids) {
+    const ors = oraciones(item).filter(o => ids.includes(o.id)).map(o => ({ id: o.id, marca: String(item.ejercicio ? o.id : o.n), t: o.t }));
+    const els = elementos(item).filter(e => ids.includes(e.id)).map(e => ({ id: e.id, marca: { tabla: 'Tabla', barras: 'Gráfico', recuadros: 'Infografía' }[e.tipo], t: e.t }));
+    return [...ors, ...els];
+  }
+  function validarFiguras(it, mal) {
+    const fs = it.figuras;
+    if (fs === undefined) return;
+    if (!Array.isArray(fs)) { mal('"figuras" debe ser una lista'); return; }
+    const npar = (it.parrafos || []).length;
+    for (const f of fs) {
+      const d = `figura ${f && f.id}`;
+      if (!f || !f.id || !TIPOS_FIGURA[f.tipo]) { mal(`${d}: necesita id y un tipo (${Object.keys(TIPOS_FIGURA).join(', ')})`); continue; }
+      if (!f.titulo) mal(`${d}: falta el título`);
+      if (!Number.isInteger(f.despues) || f.despues < 0 || f.despues > npar) mal(`${d}: "despues" debe ser un entero de 0 a ${npar}`);
+      const partes = f[TIPOS_FIGURA[f.tipo]];
+      if (!Array.isArray(partes) || partes.length < 2) { mal(`${d}: necesita al menos 2 elementos en "${TIPOS_FIGURA[f.tipo]}"`); continue; }
+      for (const x of partes) {
+        if (!x || !x.id) { mal(`${d}: un elemento no tiene id`); continue; }
+        if (f.tipo === 'tabla' && (!Array.isArray(x.celdas) || !Array.isArray(f.columnas) || x.celdas.length !== f.columnas.length)) mal(`${d}.${x.id}: la fila debe tener una celda por columna`);
+        if (f.tipo === 'barras' && (!x.etiqueta || typeof x.valor !== 'number' || !Number.isFinite(x.valor) || x.valor < 0)) mal(`${d}.${x.id}: la barra necesita etiqueta y un valor no negativo`);
+        if (f.tipo === 'recuadros' && !x.t) mal(`${d}.${x.id}: el recuadro necesita texto`);
+      }
+    }
+  }
   const problemaTexto = item => `${item.id}v${item.version}`;
   const problema = (item, q) => q && q.id ? `${problemaTexto(item)}.${q.id}` : problemaTexto(item);
 
@@ -328,9 +388,10 @@
     let it;
     try { it = normalizar(item); } catch (e) { return [String(e.message)]; }
     if (!Number.isInteger(it.version) || it.version < 1) mal('versión inválida');
-    const ors = oraciones(it), ids = new Set(ors.map(o => o.id));
+    const ors = oraciones(it), ids = referencias(it);
     if (!it.ejercicio && !ors.length) mal('el texto no tiene oraciones');
-    if (ids.size !== ors.length) mal('hay ids de oración repetidos');
+    if (ids.size !== ors.length + elementos(it).length) mal('hay ids de oración o de figura repetidos');
+    validarFiguras(it, mal);
     const codigoOk = c => !codigos || Object.prototype.hasOwnProperty.call(codigos, c);
     for (const q of it.preguntas) {
       const d = q.id || 'ítem';
@@ -375,6 +436,7 @@
   }
 
   return { LETRAS, CLASES, RELACIONES, PROPOSITOS, ANALOGIAS, TIPOS_PREVIO, NOMBRE_EJERCICIO,
+    TIPOS_FIGURA, figuras, elementos, referencias, etiquetaRef, citas,
     normalizar, oraciones, numero, problema, problemaTexto, codigoOracion, opcionesPrevio, calificarPrevio,
     preparar, calificar, respaldo, pintura, etiquetaPrevio, textoAnalogia, correccionPrevio, FRASE_NO_APLICA, avisos, formaPrueba, lista, siguiente, ev, validar };
 });

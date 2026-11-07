@@ -259,6 +259,27 @@ details[open] summary{margin-bottom:8px}
    lleva un contorno naranja a trazos (así no se confunde con un distractor solo). */
 .o.pinta-ev.pinta-di{background:color-mix(in srgb,var(--c-i) 12%,transparent);text-decoration-color:var(--c-i);outline:2px dashed var(--c-o);outline-offset:2px}
 .o.pinta-idea{text-decoration-color:var(--c-d);background:color-mix(in srgb,var(--c-d) 12%,transparent)}
+/* Textos discontinuos: tabla, barras y recuadros. Cada parte se pinta con borde y fondo (no subrayado). */
+.lec-fig{margin:4px 0 16px;padding:12px;border:1.5px solid var(--line);border-radius:12px;font-size:15px;line-height:1.4}
+.lec-fig figcaption{font-weight:800;margin-bottom:8px}
+.fig-nota{margin:8px 0 0;font-size:13px;color:var(--muted)}
+.fig-tabla{overflow-x:auto}
+.fig-tabla table{border-collapse:collapse;width:100%;min-width:260px}
+.fig-tabla th,.fig-tabla td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left;font-variant-numeric:tabular-nums}
+.fig-tabla thead th{font-size:13px;color:var(--muted)}
+.fig-barras{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.fig-barras li{display:grid;grid-template-columns:minmax(3.5em,auto) 1fr auto;align-items:center;gap:8px;border-radius:6px;padding:2px 4px}
+.fig-barras .pista{height:14px;border-radius:7px;background:color-mix(in srgb,var(--muted) 14%,transparent);overflow:hidden}
+.fig-barras .relleno{display:block;height:100%;background:var(--muted);border-radius:7px}
+.fig-barras .val{font-variant-numeric:tabular-nums;font-weight:700;white-space:nowrap}
+.fig-recuadros{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.fig-recuadros>div{border:1.5px solid var(--line);border-radius:10px;padding:8px 10px}
+.fig-recuadros p{margin:4px 0 0}
+.fig-el.pinta-ev,.fig-el.pinta-di,.fig-el.pinta-idea{outline:3px solid;outline-offset:1px}
+.fig-el.pinta-ev{outline-color:var(--c-i);background:color-mix(in srgb,var(--c-i) 12%,transparent)}
+.fig-el.pinta-di{outline-color:var(--c-o);background:color-mix(in srgb,var(--c-o) 12%,transparent)}
+.fig-el.pinta-ev.pinta-di{outline:3px dashed var(--c-o);background:color-mix(in srgb,var(--c-i) 12%,transparent)}
+.fig-el.pinta-idea{outline-color:var(--c-d);background:color-mix(in srgb,var(--c-d) 12%,transparent)}
 .marca{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
 .marca.ev{background:var(--c-i)}.marca.di{background:var(--c-o)}.marca.idea{background:var(--c-d)}
 .cita{border-left:3px solid var(--line);padding:2px 0 2px 12px;margin:6px 0 12px;font-size:16px;line-height:1.55}

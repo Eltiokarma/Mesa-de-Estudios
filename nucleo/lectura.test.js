@@ -312,3 +312,43 @@ test('pruebas de entrada y salida: orden AB o BA y eventos que resumirCursos ent
   assert.ok(r.errores.length > 0 && r.errores.every(e => /^RV\d+$/.test(e.id) && e.despues === 0 && e.antes >= 1));
   assert.deepEqual(r.plantillas.map(p => p.id), ['lectura-verbal']);
 });
+
+// ---------- Figuras de los textos discontinuos (tabla, barras, recuadros) ----------
+const DISCONTINUO = { id: 't900', version: 1, titulo: 'Lluvias', tipo_texto: 'discontinuo',
+  parrafos: [[{ id: 'o1', rol: 'principal', t: 'En Juliaca casi toda la lluvia cae de diciembre a marzo.' }],
+    [{ id: 'o2', rol: 'detalle', t: 'En invierno casi no llueve.' }]],
+  figuras: [
+    { id: 'f1', tipo: 'barras', despues: 1, titulo: 'Lluvia por mes', unidad: 'mm', barras: [{ id: 'f1a', etiqueta: 'Ene', valor: 130 }, { id: 'f1b', etiqueta: 'Jul', valor: 2 }], nota: 'Datos ilustrativos.' },
+    { id: 'f2', tipo: 'tabla', despues: 2, titulo: 'Temperatura', columnas: ['Mes', 'Mínima (°C)'], filas: [{ id: 'f2a', celdas: ['Ene', '3'] }, { id: 'f2b', celdas: ['Jul', '-8'] }] },
+    { id: 'f3', tipo: 'recuadros', despues: 0, titulo: 'Qué hacer', recuadros: [{ id: 'f3a', titulo: 'Antes', t: 'Limpiar el techo.' }, { id: 'f3b', t: 'Guardar agua.' }] }],
+  preguntas: [{ id: 'p1', tipo: 'dato', unidad: 'razonamiento-verbal.textos-discontinuos', enunciado: '¿Cuánto llueve en enero?',
+    previo: { tipo: 'clasificar', pide: '¿Qué relación tiene?', sonda: 'En julio llueve menos que en enero.', clase: 'lo-dice', codigos: { 'se-deduce': null, 'no-se-sabe': 'RV34', 'lo-contradice': null }, explicacion: 'Lo dice el gráfico.' },
+    alternativas: [{ t: '130 mm', correcta: true, evidencia: ['f1a'], explicacion: 'La barra de enero.' },
+      { t: '2 mm', codigo: 'RV5', origen: 'f1b', explicacion: 'Es julio.' }] }] };
+
+test('figuras: partes citables, referencias y etiquetas', () => {
+  const els = L.elementos(DISCONTINUO);
+  assert.deepEqual(els.map(e => e.id), ['f1', 'f1a', 'f1b', 'f2', 'f2a', 'f2b', 'f3', 'f3a', 'f3b']);
+  assert.equal(els.find(e => e.id === 'f1a').t, 'Ene: 130 mm');
+  assert.equal(els.find(e => e.id === 'f2b').t, 'Mes: Jul · Mínima (°C): -8');
+  assert.equal(els.find(e => e.id === 'f3a').t, 'Antes: Limpiar el techo.');
+  assert.ok(L.referencias(DISCONTINUO).has('f2a') && L.referencias(DISCONTINUO).has('o2'));
+  assert.equal(L.etiquetaRef(DISCONTINUO, 'o2'), 'la oración 2');
+  assert.equal(L.etiquetaRef(DISCONTINUO, 'f1a'), 'la barra «Ene» del gráfico');
+  assert.equal(L.etiquetaRef(DISCONTINUO, 'f2a'), 'la fila «Ene» de la tabla');
+  assert.equal(L.etiquetaRef(DISCONTINUO, 'f3'), 'la infografía');
+  assert.deepEqual(L.citas(DISCONTINUO, ['f1a', 'o1']).map(c => [c.id, c.marca]), [['o1', '1'], ['f1a', 'Gráfico']]);
+  assert.deepEqual(L.pintura(L.preparar(DISCONTINUO, 's').preguntas[0], 2).distractor, ['f1b']);
+});
+
+test('figuras: validar acepta el texto y rechaza figuras mal armadas', () => {
+  assert.deepEqual(L.validar(DISCONTINUO, { codigos: CODIGOS, unidades: UNIDADES }), []);
+  const con = cambio => { const t = JSON.parse(JSON.stringify(DISCONTINUO)); cambio(t); return L.validar(t); };
+  assert.ok(con(t => { t.figuras[0].despues = 3; }).some(e => /despues/.test(e)));
+  assert.ok(con(t => { t.figuras[1].filas[0].celdas.pop(); }).some(e => /una celda por columna/.test(e)));
+  assert.ok(con(t => { t.figuras[0].barras[0].valor = -1; }).some(e => /no negativo/.test(e)));
+  assert.ok(con(t => { t.figuras[2].tipo = 'torta'; }).some(e => /tipo/.test(e)));
+  assert.ok(con(t => { t.figuras[0].barras[1].id = 'o1'; }).some(e => /repetidos/.test(e)));
+  assert.ok(con(t => { t.preguntas[0].alternativas[0].evidencia = ['f9']; }).some(e => /f9/.test(e)));
+  assert.ok(con(t => { delete t.figuras[0].titulo; }).some(e => /título/.test(e)));
+});

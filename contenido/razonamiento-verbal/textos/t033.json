@@ -1,0 +1,242 @@
+{
+  "id": "t033",
+  "version": 1,
+  "titulo": "Del sismo al aluvión: por qué cayó Yungay",
+  "tema": "Historia y geografía · el aluvión de Yungay de 1970",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "expositivo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "El 31 de mayo de 1970, pasadas las tres de la tarde, un terremoto de magnitud 7,9 sacudió la costa y la sierra de Áncash."
+      },
+      {
+        "id": "o2",
+        "rol": "principal",
+        "t": "En el Callejón de Huaylas, ese sismo fue el comienzo de una cadena de causas y efectos que terminó sepultando una ciudad entera."
+      }
+    ],
+    [
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "La sacudida desprendió de la cumbre norte del Huascarán, el nevado más alto del Perú, una enorme masa de hielo y roca."
+      },
+      {
+        "id": "o4",
+        "rol": "detalle",
+        "t": "Como la ladera es muy empinada, esa masa ganó velocidad al caer, arrastró tierra y piedras, y se convirtió en un aluvión que bajó a más de doscientos kilómetros por hora."
+      },
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "En pocos minutos recorrió unos quince kilómetros y cubrió la ciudad de Yungay y parte del pueblo de Ranrahirca."
+      },
+      {
+        "id": "o6",
+        "rol": "detalle",
+        "t": "La mayoría de los habitantes de Yungay no alcanzó a escapar; entre los pocos que se salvaron estuvieron quienes subieron a tiempo a la colina del cementerio, adonde el lodo no llegó."
+      }
+    ],
+    [
+      {
+        "id": "o7",
+        "rol": "detalle",
+        "t": "En toda la región, el terremoto dejó decenas de miles de muertos, y el peligro del nevado no era nuevo: en 1962, otro aluvión caído del Huascarán ya había arrasado Ranrahirca."
+      },
+      {
+        "id": "o8",
+        "rol": "detalle",
+        "t": "Después de 1970, los sobrevivientes levantaron una nueva Yungay a poca distancia, y el lugar antiguo quedó como camposanto."
+      },
+      {
+        "id": "o9",
+        "rol": "principal",
+        "t": "Así, en Yungay, lo que causó la mayoría de las muertes no fue la sacudida del suelo, sino el aluvión que esa sacudida soltó en las alturas."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "tipo-de-texto",
+      "unidad": "razonamiento-verbal.tipologia-textual",
+      "previo": {
+        "tipo": "proposito",
+        "pide": "Antes de ver las alternativas: ¿qué busca sobre todo el autor?",
+        "aceptada": "explicar",
+        "codigos": {
+          "convencer": "RV33",
+          "narrar": "RV41"
+        },
+        "explicacion": "El autor quiere que el lector entienda cómo un sismo terminó sepultando Yungay: explica una cadena de causas y efectos (oraciones 2 y 9), sin defender una opinión.",
+        "explicaciones": {
+          "convencer": "El texto no defiende una postura ni pide nada al lector. La última oración saca una conclusión de los hechos explicados: qué causó la mayoría de las muertes.",
+          "narrar": "Las fechas y la hora ubican los hechos, pero el texto no sigue a personajes ni cuenta una historia: muestra cómo una cosa causó la otra («como la ladera es muy empinada», «así»)."
+        }
+      },
+      "enunciado": "El texto es, fundamentalmente, de tipo",
+      "alternativas": [
+        {
+          "t": "expositivo, porque explica cómo un sismo desató el aluvión que sepultó Yungay.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o9"
+          ],
+          "explicacion": "La oración 2 anuncia una cadena de causas y efectos, las del segundo párrafo la desarrollan y la 9 la cierra. El propósito es explicar."
+        },
+        {
+          "t": "narrativo, porque cuenta, con fecha y hora, lo que vivieron los habitantes de Yungay aquella tarde.",
+          "codigo": "RV41",
+          "origen": "o1",
+          "explicacion": "Las fechas y la hora son un rasgo de superficie. El texto no sigue a los habitantes ni cuenta lo que vivieron: solo menciona a quienes se salvaron, como un efecto más dentro de la cadena que explica por qué murió tanta gente."
+        },
+        {
+          "t": "argumentativo, porque sostiene que no hay que vivir al pie de un nevado.",
+          "codigo": "RV33",
+          "origen": "o7",
+          "explicacion": "El texto dice que el peligro del nevado no era nuevo, pero no aconseja nada ni defiende una postura: explica lo que pasó y por qué."
+        },
+        {
+          "t": "descriptivo, porque presenta las partes del nevado Huascarán.",
+          "codigo": "RV57",
+          "origen": "o3",
+          "explicacion": "La cumbre norte del nevado se menciona una vez, como el lugar de donde se desprendió el hielo. Ese pasaje no organiza el texto: no se describe el nevado por partes."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "estructura",
+      "unidad": "razonamiento-verbal.tipologia-textual",
+      "enunciado": "¿Qué estructura tiene el texto?",
+      "alternativas": [
+        {
+          "t": "Causa y efecto: un hecho provoca otro, y este otro más, hasta el desastre.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o3",
+            "o4",
+            "o9"
+          ],
+          "explicacion": "El sismo desprende el hielo (oración 3), el hielo se vuelve aluvión (4) y el aluvión sepulta la ciudad (5). La oración 2 lo llama «una cadena de causas y efectos»."
+        },
+        {
+          "t": "Problema y solución: el aluvión destruye Yungay y la ciudad se reconstruye.",
+          "codigo": "RV44",
+          "origen": "o8",
+          "explicacion": "La nueva Yungay aparece en la oración 8 como una consecuencia más, no como la solución a un problema. El texto no presenta la reconstrucción como respuesta al peligro."
+        },
+        {
+          "t": "Comparación y contraste entre el aluvión de 1962 y el de 1970.",
+          "codigo": "RV57",
+          "origen": "o7",
+          "explicacion": "El aluvión de 1962 se menciona en una sola oración, para decir que el peligro no era nuevo. Ese pasaje no organiza el texto: no se comparan los dos."
+        },
+        {
+          "t": "Tesis y argumentos sobre el peligro de vivir al pie de los nevados.",
+          "codigo": "RV33",
+          "explicacion": "El texto no tiene una tesis que defender: no dice qué debería hacerse, solo explica qué pasó y por qué."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.tipologia-textual",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que mejor resume todo el texto.",
+        "aceptadas": [
+          "o2",
+          "o9"
+        ],
+        "ninguna": "RV3",
+        "explicacion": "La oración 2 anuncia la idea (el sismo empezó una cadena que sepultó una ciudad) y la 9 la completa (lo que mató a la mayoría fue el aluvión que el sismo soltó). Las demás son los eslabones y las consecuencias.",
+        "explicaciones": {
+          "o1": "La primera oración da la fecha y la magnitud del sismo: es el punto de partida, no lo que el texto quiere explicar.",
+          "o3": "Es el primer efecto del sismo: un eslabón de la cadena.",
+          "o4": "Explica cómo el hielo se volvió aluvión: otro eslabón.",
+          "o5": "Dice qué cubrió el aluvión: es el resultado, pero falta su causa.",
+          "o6": "Cuenta quiénes se salvaron: es un detalle.",
+          "o7": "Da el número de muertos de la región y un antecedente de 1962: son datos de contexto.",
+          "o8": "Dice qué pasó después con la ciudad: es una consecuencia, no la idea que une el texto.",
+          "ninguna": "Las oraciones 2 y 9 sí la dicen: el sismo desató una cadena de efectos, y el aluvión, no la sacudida, causó la mayoría de las muertes."
+        }
+      },
+      "enunciado": "¿Cuál es la idea principal del texto?",
+      "alternativas": [
+        {
+          "t": "En Yungay, el sismo de 1970 mató sobre todo de forma indirecta: soltó el aluvión que sepultó la ciudad.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o9"
+          ],
+          "explicacion": "Junta lo que dicen las oraciones 2 y 9: la cadena que empieza en el sismo y que el aluvión, no la sacudida, causó la mayoría de las muertes."
+        },
+        {
+          "t": "El 31 de mayo de 1970, por la tarde, un terremoto de magnitud 7,9 sacudió la costa y la sierra de Áncash.",
+          "codigo": "RV4",
+          "origen": "o1",
+          "explicacion": "Es la primera oración: da la fecha y la magnitud, pero no dice lo que el texto explica, que es cómo ese sismo terminó sepultando Yungay."
+        },
+        {
+          "t": "Algunos habitantes de Yungay se salvaron porque subieron a la colina del cementerio.",
+          "codigo": "RV1",
+          "origen": "o6",
+          "explicacion": "Es cierto según la oración 6, pero es un detalle de lo que pasó en la ciudad."
+        },
+        {
+          "t": "Los terremotos son el mayor peligro natural que enfrenta el Perú.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general, y además el texto dice que en Yungay lo más mortal no fue la sacudida, sino el aluvión."
+        },
+        {
+          "t": "Desde 1970, el Huascarán se vigila con instrumentos que dan la alarma ante un nuevo aluvión.",
+          "codigo": "RV8",
+          "explicacion": "El texto no dice nada sobre vigilancia ni alarmas. La idea principal sale de lo que se leyó, no de lo que se sabe o se supone por otro lado."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07",
+  "hechos": [
+    {
+      "afirmacion": "El terremoto de Áncash ocurrió el 31 de mayo de 1970, hacia las 15:23 hora local, con magnitud 7,9, y causó decenas de miles de muertos (unos 66 000 a 70 000 según las fuentes).",
+      "fuente": "USGS, Earthquake Hazards Program, ficha del sismo del 31 de mayo de 1970 (Peru, M 7.9); Ericksen, G. E., Plafker, G. y Fernández Concha, J. (1970). Preliminary report on the geologic events associated with the May 31, 1970, Peru earthquake. USGS Circular 639."
+    },
+    {
+      "afirmacion": "El sismo desprendió hielo y roca de la cumbre norte del Huascarán; la avalancha se volvió un aluvión de lodo y rocas que bajó a velocidades medias del orden de 280 km/h, recorrió unos 14 a 16 km y sepultó Yungay y parte de Ranrahirca en pocos minutos.",
+      "fuente": "Plafker, G. y Ericksen, G. E. (1978). Nevados Huascarán avalanches, Peru. En B. Voight (ed.), Rockslides and Avalanches, vol. 1, 277-314. Elsevier."
+    },
+    {
+      "afirmacion": "El Huascarán es el nevado más alto del Perú.",
+      "fuente": "INEI, Compendio Estadístico Perú (cumbres más altas); Huascarán Sur, 6768 m."
+    },
+    {
+      "afirmacion": "Entre los sobrevivientes de Yungay estuvieron quienes subieron a la colina del cementerio, que el aluvión no cubrió.",
+      "fuente": "Plafker y Ericksen (1978); Campo Santo de Yungay, información del Ministerio de Cultura."
+    },
+    {
+      "afirmacion": "En enero de 1962, un aluvión desprendido del Huascarán arrasó Ranrahirca.",
+      "fuente": "Plafker y Ericksen (1978)."
+    },
+    {
+      "afirmacion": "Yungay se reconstruyó a poca distancia del lugar antiguo, que quedó como camposanto.",
+      "fuente": "Ministerio de Cultura del Perú, Campo Santo de Yungay."
+    }
+  ],
+  "revision": {
+    "por": "subagente (verificador a ciegas y revisor de contenido)",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "Coincidió a ciegas en todas las claves. Cambios: título nuevo; la alternativa narrativa habla de lo que vivieron los habitantes (sigue con RV41); el distractor «descriptivo» y la comparación 1962–1970 pasan a RV57; se agregó la Circular 639 del USGS como fuente."
+  }
+}

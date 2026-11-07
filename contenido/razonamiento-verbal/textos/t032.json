@@ -1,0 +1,207 @@
+{
+  "id": "t032",
+  "version": 1,
+  "titulo": "La reina de los Andes",
+  "tema": "Sierra · la puya de Raimondi",
+  "grado": 3,
+  "dificultad": 1,
+  "tipo_texto": "descriptivo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "principal",
+        "t": "En las punas de Áncash, a unos cuatro mil metros de altura, crece una planta que se reconoce de lejos: la puya de Raimondi."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "Vista desde el camino, parece un enorme plumero verde clavado en medio del pajonal."
+      }
+    ],
+    [
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "Su parte baja es un tronco grueso y corto, cubierto por las hojas secas de años anteriores, que cuelgan a su alrededor como una falda de paja."
+      },
+      {
+        "id": "o4",
+        "rol": "detalle",
+        "t": "Encima del tronco se abre una gran roseta de hojas largas, duras y angostas, de un verde que tira a gris."
+      },
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "Cada hoja lleva en los bordes espinas curvas, como pequeños ganchos, que se prenden de todo lo que las roza."
+      }
+    ],
+    [
+      {
+        "id": "o6",
+        "rol": "detalle",
+        "t": "Del centro de la roseta sale, una sola vez en la vida de la planta y después de muchos años, una espiga de varios metros, casi tan alta como un poste de luz."
+      },
+      {
+        "id": "o7",
+        "rol": "detalle",
+        "t": "La cubren miles de flores pequeñas, de color blanco verdoso."
+      },
+      {
+        "id": "o8",
+        "rol": "detalle",
+        "t": "Cuando las flores terminan de dar semillas, la planta entera se seca."
+      },
+      {
+        "id": "o9",
+        "rol": "detalle",
+        "t": "Por su porte, en la zona muchos la llaman la reina de los Andes."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "tipo-de-texto",
+      "unidad": "razonamiento-verbal.tipologia-textual",
+      "previo": {
+        "tipo": "proposito",
+        "pide": "Antes de ver las alternativas: ¿qué busca sobre todo el autor?",
+        "aceptada": "explicar",
+        "codigos": {
+          "convencer": "RV33",
+          "narrar": "RV41"
+        },
+        "explicacion": "El autor quiere que el lector conozca cómo es la puya de Raimondi: la presenta parte por parte, sin defender una opinión ni contar una historia. Describir es una forma de informar.",
+        "explicaciones": {
+          "convencer": "El texto no defiende ninguna opinión ni pide nada al lector: dice cómo es la planta.",
+          "narrar": "El texto menciona que la planta florece y después se seca, pero no cuenta una historia con hechos encadenados: va mostrando sus partes."
+        }
+      },
+      "enunciado": "El texto es, fundamentalmente, de tipo",
+      "alternativas": [
+        {
+          "t": "descriptivo, porque presenta la planta parte por parte para que el lector la imagine.",
+          "correcta": true,
+          "evidencia": [
+            "o3",
+            "o4",
+            "o6"
+          ],
+          "explicacion": "El texto va del tronco a las hojas y de las hojas a la espiga, con formas, colores y comparaciones («como una falda de paja», «como pequeños ganchos»). Eso es describir."
+        },
+        {
+          "t": "narrativo, porque cuenta lo que le pasa a la planta desde que florece hasta que se seca.",
+          "codigo": "RV41",
+          "origen": "o8",
+          "explicacion": "Lo de florecer y secarse está en dos oraciones (6 y 8) y sirve para describir la espiga. Que aparezca un «después» es un rasgo de superficie: el texto no cuenta una historia."
+        },
+        {
+          "t": "argumentativo, porque defiende que la puya de Raimondi merece el nombre de reina de los Andes.",
+          "codigo": "RV33",
+          "origen": "o9",
+          "explicacion": "La oración 9 solo informa cómo la llaman en la zona. El autor no da razones para defender ese nombre ni ninguna otra opinión."
+        },
+        {
+          "t": "instructivo, porque enseña al lector cómo reconocer la planta de lejos.",
+          "codigo": "RV5",
+          "origen": "o1",
+          "explicacion": "Repite las palabras «se reconoce de lejos» de la oración 1, pero el texto no da pasos ni indicaciones para el lector: describe la planta."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "estructura",
+      "unidad": "razonamiento-verbal.tipologia-textual",
+      "enunciado": "¿Cómo está organizado el texto?",
+      "alternativas": [
+        {
+          "t": "Presenta la planta y luego la describe por partes, de la base a la espiga.",
+          "correcta": true,
+          "evidencia": [
+            "o1",
+            "o3",
+            "o4",
+            "o6"
+          ],
+          "explicacion": "El primer párrafo presenta la planta; el segundo, el tronco y las hojas; el tercero, la espiga y sus flores. El orden es el de las partes, de abajo hacia arriba."
+        },
+        {
+          "t": "Sigue, en orden, la vida de la planta: cómo nace, cómo crece y cómo muere.",
+          "codigo": "RV41",
+          "origen": "o8",
+          "explicacion": "El texto no cuenta cómo nace ni cómo crece. Que al final diga que la planta se seca no vuelve el texto una secuencia de su vida: el orden lo dan las partes."
+        },
+        {
+          "t": "Plantea un problema, el de las espinas que se prenden de todo, y una manera de evitarlas.",
+          "codigo": "RV57",
+          "origen": "o5",
+          "explicacion": "Las espinas son un pasaje de la oración 5, que describe las hojas. El texto no plantea un problema ni propone cómo evitarlo: eso no organiza el texto."
+        },
+        {
+          "t": "Explica que la altura de la puna es la causa de la forma de la planta y de sus espinas.",
+          "codigo": "RV44",
+          "origen": "o1",
+          "explicacion": "El texto dice dónde crece la planta y cómo es, pero no une las dos cosas con un «porque»: esa relación de causa la pone la alternativa, no el texto."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.tipologia-textual",
+      "enunciado": "Si en la puna se ve una puya de Raimondi viva que aún no tiene espiga, se deduce del texto que esa planta",
+      "alternativas": [
+        {
+          "t": "todavía no ha florecido.",
+          "correcta": true,
+          "evidencia": [
+            "o6",
+            "o8"
+          ],
+          "explicacion": "La espiga sale una sola vez en la vida de la planta (oración 6) y, después de florecer, la planta entera se seca (oración 8). Si está viva y sin espiga, aún no floreció."
+        },
+        {
+          "t": "florecerá ese mismo año.",
+          "codigo": "RV7",
+          "origen": "o6",
+          "explicacion": "El texto dice que la espiga sale después de muchos años, pero no permite saber cuándo saldrá en una planta en particular."
+        },
+        {
+          "t": "ya floreció y perdió su espiga.",
+          "codigo": "RV9",
+          "origen": "o8",
+          "explicacion": "No puede ser: según la oración 8, una planta que ya dio flores se seca entera, y esta sigue viva."
+        },
+        {
+          "t": "nunca llegará a dar flores.",
+          "codigo": "RV11",
+          "explicacion": "«Nunca» es demasiado: el texto dice que la espiga sale una vez en la vida de la planta, así que lo esperable es que florezca algún día."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07",
+  "hechos": [
+    {
+      "afirmacion": "La puya de Raimondi (Puya raimondii) crece en las punas de Áncash, entre otros lugares de los Andes de Perú y Bolivia, alrededor de los 4000 metros; un rodal conocido está en el Parque Nacional Huascarán, en la ruta a Pastoruri.",
+      "fuente": "SERNANP, Parque Nacional Huascarán, información del área protegida; Smith, L. B. y Downs, R. J. (1974). Pitcairnioideae (Bromeliaceae). Flora Neotropica, Monografía 14(1)."
+    },
+    {
+      "afirmacion": "Tiene un tronco corto cubierto de hojas secas, una roseta de hojas duras con espinas curvas en los bordes, y florece una sola vez, tras muchos años, con una inflorescencia de varios metros cubierta por miles de flores blanco verdosas; luego muere.",
+      "fuente": "Smith, L. B. y Downs, R. J. (1974). Pitcairnioideae (Bromeliaceae). Flora Neotropica, Monografía 14(1). New York Botanical Garden."
+    },
+    {
+      "afirmacion": "Se la conoce como «reina de los Andes».",
+      "fuente": "SERNANP, Parque Nacional Huascarán; nombre común difundido en el Perú."
+    }
+  ],
+  "revision": {
+    "por": "subagente (verificador a ciegas y revisor de contenido)",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "Coincidió a ciegas en todas las claves. Cambios: altura «a unos cuatro mil metros» y espiga «de varios metros, casi tan alta como un poste de luz»; se quitaron los visitantes de las flores y las aves enredadas (sin fuente segura); el distractor de problema y solución pasa a RV57 y ahora habla de las espinas."
+  }
+}

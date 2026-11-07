@@ -38,5 +38,22 @@
   "RV37": "La oración que empieza con \"por eso\" o \"así\" es una conclusión: va al final, no al principio.",
   "RV38": "La oración que presenta el tema no sobra: es la que le da sentido a las demás.",
   "RV39": "Eso es un rasgo de esa palabra, no la clase: busca qué tienen en común las demás y cuál no lo comparte.",
-  "RV40": "Que una palabra sea poco conocida no la saca del grupo: averigua qué nombra antes de excluirla."
+  "RV40": "Que una palabra sea poco conocida no la saca del grupo: averigua qué nombra antes de excluirla.",
+  "RV41": "Te guiaste por un rasgo de la superficie (una historia, unas fechas, unas cifras). El tipo de texto lo decide lo que el autor busca sobre todo.",
+  "RV42": "Esa parte cumple otra función en el texto: no todo lo que aparece primero o con fuerza es la tesis.",
+  "RV43": "Eso repite los detalles en orden, pero un resumen dice qué los une y deja fuera lo que sobra.",
+  "RV44": "Esa síntesis une las ideas con una relación que el texto no plantea. Fíjate cómo se conectan en el texto.",
+  "RV45": "Leíste el dato de otra fila, columna o barra. Cruza bien la fila con la columna antes de responder.",
+  "RV46": "Confundiste cuánto creció con qué parte creció: una cosa es la diferencia y otra el porcentaje.",
+  "RV47": "Que dos datos vayan juntos en la figura no dice que uno cause el otro.",
+  "RV48": "Respondiste con el título o la frase de la figura, pero la pregunta se responde con sus datos.",
+  "RV49": "Lo leíste al pie de la letra. Piensa quién lo dice, a quién, dónde y para qué.",
+  "RV50": "Quien escribe, o a quien le escribe, no es la persona que el texto cita o menciona: separa a los que se comunican de las voces que trae.",
+  "RV51": "El destinatario no sale del tema, sino de cómo le habla el texto: el trato, el tono y a quién nombra.",
+  "RV52": "El texto lo presenta como una suposición, no como algo comprobado.",
+  "RV53": "Esa es la idea que el autor presenta para responderla, no la que defiende.",
+  "RV54": "Esa palabra inglesa se parece a una española, pero no significa lo mismo (es un falso amigo).",
+  "RV55": "Fíjate en el verbo: dice cuándo pasa algo o si es seguro, y eso cambia la respuesta.",
+  "RV56": "La pregunta pide qué es algo (el concepto), y elegiste un ejemplo o un caso.",
+  "RV57": "Te fijaste en una parte pequeña del texto. El tipo y la estructura los decide lo que organiza todo el texto."
 }
