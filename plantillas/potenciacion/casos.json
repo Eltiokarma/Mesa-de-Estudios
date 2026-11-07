@@ -1,0 +1,102 @@
+{
+  "plantilla": "potenciacion",
+  "unidades": "Números enteros sin unidad (fichas o cubitos). La raíz va como k y el resto como r; en la cúbica, n = 3. Las posiciones de los dibujos van en unidades de ficha: x hacia la derecha, y hacia abajo (y z hacia arriba en los cubitos).",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.ladoMenor.r, factores.0.p: el índice de una lista también va con punto); 'valor' es el resultado si es un número, un texto, un booleano o una lista sueltos; las listas se comparan completas y los textos exactos. 'tambien' son llamadas extra del mismo caso. Un error que no aparece en 'errores' es porque en ese caso daría la respuesta correcta o lo mismo que otro error.",
+  "verificacion": "",
+  "tolerancia": 1e-9,
+  "casos": [
+    { "nombre": "Paso 1: 40 fichas con lado 6 → se usan 36 y sobran 4; con lado 7 harían falta 49 y faltan 9",
+      "fn": "layoutCuadrado", "args": [40, 6],
+      "espera": { "k": 6, "usadas": 36, "sobran": 4, "faltan": 0, "exacto": false },
+      "tambien": [ { "fn": "layoutCuadrado", "args": [40, 7], "espera": { "usadas": 40, "sobran": 0, "faltan": 9 } },
+                   { "fn": "layoutCuadrado", "args": [36, 6], "espera": { "sobran": 0, "faltan": 0, "exacto": true } } ] },
+
+    { "nombre": "Predicción del paso 2: √150 → raíz 12 y resto 6 (150 = 144 + 6); por exceso 13 y faltan 19; con lado 11 sobran 29; la parte decimal 0,24",
+      "fn": "raizEntera", "args": [150],
+      "espera": { "k": 12, "r": 6, "exceso": 13, "rp": 19, "exacta": false, "restoMaximo": 24, "aproximada": "12,24",
+        "errores.confundeDefectoExceso": { "k": 13, "r": 19 }, "errores.ladoMenor": { "k": 11, "r": 29 }, "errores.restoDecimal": { "k": 12, "r": "0,24" } } },
+
+    { "nombre": "Predicción del paso 3: de 12² = 144 a 13² = 169 se agregan 2·12 + 1 = 25; sin la esquina 24; una sola fila 13; restando el lado 169 − 12 = 157",
+      "fn": "agregarParaSiguiente", "args": [12],
+      "espera": { "agrega": 25, "desde": 144, "hasta": 169, "partes.esquina": 1,
+        "errores.olvidaEsquina": 24, "errores.unLado": 13, "errores.restaLado": 157 },
+      "tambien": [ { "fn": "layoutL", "args": [12], "espera": { "cantidad": 25, "celdas.24.parte": "esquina", "celdas.24.x": 12, "celdas.24.y": 12 } } ] },
+
+    { "nombre": "Los cuadrados solo terminan en 0, 1, 4, 5, 6 o 9 (nunca en 2, 3, 7 u 8); la rueda de la última cifra",
+      "fn": "terminaciones", "args": [2],
+      "espera": { "cifras": [0, 1, 4, 5, 6, 9], "nunca": [2, 3, 7, 8], "mapa": [0, 1, 4, 9, 6, 5, 6, 9, 4, 1], "todas": false } },
+
+    { "nombre": "Los cubos terminan en cualquier cifra: la rueda de los cubos manda cada cifra a una distinta",
+      "fn": "terminaciones", "args": [3],
+      "espera": { "todas": true, "nunca": [], "mapa": [0, 1, 8, 7, 4, 5, 6, 3, 2, 9] } },
+
+    { "nombre": "Predicción del paso 4: de 7 921, 2 711, 36 000 y 2 235 solo 7 921 puede ser cuadrado (y lo es: 89²); 2 711 lo excluyen el 4 y el 9; 36 000 tiene 3 ceros; 2 235 termina en 35",
+      "fn": "puedeSerCuadrado", "args": [[7921, 2711, 36000, 2235]],
+      "espera": { "pueden": [7921], "excluidos.0.N": 2711, "excluidos.0.razones.0.id": "entre-4", "excluidos.0.razones.1.id": "entre-9",
+        "excluidos.1.razones.0.id": "ceros-impares", "excluidos.2.razones.0.id": "termina-en-5",
+        "errores.terminaEnUno": 2711, "errores.ignoraLosCeros": 36000, "errores.terminaEn5Basta": 2235 },
+      "tambien": [ { "fn": "raizEntera", "args": [7921], "espera": { "k": 89, "r": 0, "exacta": true } } ] },
+
+    { "nombre": "Criterios de 2 711: deja resto 3 entre 4 y sus cifras suman 11 (resto 2 entre 9)",
+      "fn": "criterios", "args": [2711],
+      "espera": { "excluido": true, "resto4": 3, "sumaCifras": 11, "resto9": 2, "esCuadrado": false } },
+
+    { "nombre": "Un número que pasa todos los criterios y no es cuadrado: 1 201 (los criterios solo excluyen)",
+      "fn": "criterios", "args": [1201],
+      "espera": { "excluido": false, "esCuadrado": false, "resto4": 1, "resto9": 4 } },
+
+    { "nombre": "Predicción del paso 5: 72 = 2³·3² → por 3 es 216 = 6³; para un cuadrado bastaría 2; copiando el exponente 9; por los dos primos 6",
+      "fn": "menorMultiplicador", "args": [72, 3],
+      "espera": { "m": 3, "resultado": 216, "raiz": 6, "texto": "2³ · 3²", "despues": "2³ · 3³",
+        "errores.loHaceCuadrado": 2, "errores.copiaExponente": 9, "errores.todosLosPrimos": 6 },
+      "tambien": [ { "fn": "reacomodar", "args": [72, [9, 8, 1], [6, 6, 2]], "espera": { "N": 72, "hasta.71.z": 1 } },
+                   { "fn": "esCubo", "args": [216], "espera": { "valor": true } } ] },
+
+    { "nombre": "Predicción del paso 6: 2 160 = 2⁴·3³·5 → entre 15 es 144 = 12²; arreglando solo el 5: 5; quitando 3³·5 entero: 135 (da 16, pero no es el menor); entre todos los primos: 30",
+      "fn": "menorDivisor", "args": [2160, 2],
+      "espera": { "d": 15, "resultado": 144, "raiz": 12, "texto": "2⁴ · 3³ · 5", "despues": "2⁴ · 3²",
+        "errores.olvidaExponenteMayor": 5, "errores.quitaFactorEntero": 135, "errores.todosLosPrimos": 30 } },
+
+    { "nombre": "Predicción del paso 7: de 49 a 400 (incluidos) hay 20 − 7 + 1 = 14 cuadrados; sin el + 1: 13; desde 1: 20; √(400 − 49) ≈ 18",
+      "fn": "cuadradosEntre", "args": [49, 400],
+      "espera": { "desde": 7, "hasta": 20, "cantidad": 14, "errores.sinMasUno": 13, "errores.desdeUno": 20, "errores.raizDiferencia": 18 } },
+
+    { "nombre": "Cuadrados de 3 cifras: de 10² = 100 a 31² = 961, son 22",
+      "fn": "cuadradosDeCifras", "args": [3],
+      "espera": { "desde": 10, "hasta": 31, "cantidad": 22 } },
+
+    { "nombre": "Raíz cúbica entera de 400: 7 y resto 57 (7³ = 343); por exceso 8 y faltan 112",
+      "fn": "raizEntera", "args": [400, 3],
+      "espera": { "k": 7, "r": 57, "exceso": 8, "rp": 112, "restoMaximo": 168 } },
+
+    { "nombre": "¿Qué pasa si…? 1: 1 + 3 + … + 19 son los primeros 10 impares = 10² = 100; como de 1 a 19: 190; 19²: 361; como los pares: 110",
+      "fn": "sumaImpares", "args": [10],
+      "espera": { "suma": 100, "ultimo": 19, "errores.gaussUltimo": 190, "errores.cuadradoUltimo": 361, "errores.sumaPares": 110 },
+      "tambien": [ { "fn": "capasL", "args": [3], "espera": { "fichas.8.x": 2, "fichas.8.y": 2, "fichas.8.capa": 2 } } ] },
+
+    { "nombre": "¿Qué pasa si…? 2: 65² = 6·7|25 = 4 225; con 60² + 5²: 3 625; con 6·5: 3 025; por 2: 130",
+      "fn": "terminaEn5", "args": [65],
+      "espera": { "cuadrado": 4225, "producto": 42, "texto": "42|25", "piezas.rect": 4200,
+        "errores.sumaCuadrados": 3625, "errores.porElAnterior": 3025, "errores.porDos": 130 } },
+
+    { "nombre": "¿Qué pasa si…? 3: un cuadrado entre 4 deja resto 0 o 1, nunca 2 ni 3",
+      "fn": "restosCuadrados", "args": [4],
+      "espera": { "restos": [0, 1], "nunca": [2, 3], "errores.todos": [0, 1, 2, 3], "errores.soloPares": [0, 2], "errores.soloCero": [0] } },
+
+    { "nombre": "¿Qué pasa si…? 4: la raíz entera de un número de 7 cifras tiene 4 cifras (de 1 000 a 3 162)",
+      "fn": "cifrasRaiz", "args": [7],
+      "espera": { "cifras": 4, "menor": 1000, "mayor": 3162, "errores.mitadAbajo": 3, "errores.misma": 7, "errores.depende": "depende" } },
+
+    { "nombre": "¿Qué pasa si…? 5: de 5³ a 6³ se agregan 3·25 + 3·5 + 1 = 91 cubitos; solo las caras 75; una capa nueva 36; como la L 16",
+      "fn": "agregarParaSiguiente", "args": [5, 3],
+      "espera": { "agrega": 91, "partes.caras": 75, "partes.aristas": 15, "errores.soloCaras": 75, "errores.capaNueva": 36, "errores.copiaLaL": 16 },
+      "tambien": [ { "fn": "crecerCubo", "args": [5], "espera": { "viejo": 125, "caras": 75, "aristas": 15, "esquina": 1, "agrega": 91 } } ] },
+
+    { "nombre": "Bordes: 0 y 1 son cuadrados y cubos; 2⁵² es cuadrado (2²⁶); 9 007 199 254 740 991 no lo es (resto 118 490 766)",
+      "fn": "raizEntera", "args": [0],
+      "espera": { "k": 0, "r": 0, "exacta": true, "rp": 1 },
+      "tambien": [ { "fn": "esCuadrado", "args": [1], "espera": { "valor": true } }, { "fn": "esCubo", "args": [1], "espera": { "valor": true } },
+                   { "fn": "raizEntera", "args": [4503599627370496], "espera": { "k": 67108864, "r": 0 } },
+                   { "fn": "raizEntera", "args": [9007199254740991], "espera": { "k": 94906265, "r": 118490766 } } ] }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "id": "potenciacion",
+  "titulo": "El cuadrado de fichas: potenciación y radicación",
+  "formato": "escena",
+  "unidades": [
+    "aritmetica.potenciacion-y-radicacion"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}

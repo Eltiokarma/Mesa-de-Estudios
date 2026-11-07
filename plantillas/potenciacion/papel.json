@@ -1,0 +1,124 @@
+{
+  "titulo": "El cuadrado de fichas: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Si te ayuda, imagina las fichas acomodadas en un cuadrado o los cubitos en un cubo.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Halla la raíz cuadrada entera de 300 y su resto.",
+      "respuesta": "Raíz 17 y resto 11.",
+      "pasos": [
+        "Se busca el cuadrado más grande que no pase de 300: 17 · 17 = 289 cabe y 18 · 18 = 324 ya se pasa.",
+        "La raíz entera es 17 y el resto es lo que sobra: 300 − 289 = 11.",
+        "Control: 300 = 17 · 17 + 11, y el resto 11 es menor que 2 · 17 + 1 = 35, la cantidad que haría falta para pasar al cuadrado de 18."
+      ],
+      "verificar": [ { "fn": "raizEntera", "args": [300], "espera": { "k": 17, "r": 11 } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "¿Cuál es el menor número que hay que sumarle a 300 para obtener un cuadrado perfecto?",
+      "respuesta": "24.",
+      "pasos": [
+        "El cuadrado perfecto que sigue a 300 es 18 · 18 = 324, porque 17 · 17 = 289 todavía es menor.",
+        "Hay que sumar 324 − 300 = 24. Es el resto por exceso: 18 es la raíz por exceso de 300."
+      ],
+      "verificar": [ { "fn": "raizEntera", "args": [300], "espera": { "exceso": 18, "rp": 24 } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Un cuadrado de 20 × 20 fichas se quiere agrandar a uno de 21 × 21. ¿Cuántas fichas hay que agregar?",
+      "respuesta": "41.",
+      "pasos": [
+        "El cuadrado nuevo tiene 21 · 21 = 441 fichas y el viejo, 20 · 20 = 400: faltan 441 − 400 = 41.",
+        "Sin multiplicar: se agrega una columna de 20 a la derecha, una fila de 20 abajo y la ficha de la esquina: 20 + 20 + 1 = 41."
+      ],
+      "verificar": [ { "fn": "agregarParaSiguiente", "args": [20], "espera": { "agrega": 41, "desde": 400, "hasta": 441 } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "¿Cuáles de estos números no pueden ser cuadrados perfectos: 1 369, 2 548, 49 000 y 6 075? Explica sin sacar raíces.",
+      "respuesta": "2 548, 49 000 y 6 075. (1 369 sí es cuadrado: 37 · 37.)",
+      "pasos": [
+        "2 548 termina en 8. Las últimas cifras de 0 · 0, 1 · 1, …, 9 · 9 son 0, 1, 4, 9, 6, 5, 6, 9, 4, 1: ningún cuadrado termina en 8.",
+        "49 000 termina en tres ceros. Al elevar al cuadrado un número que termina en ceros, la cantidad de ceros se duplica: siempre queda par.",
+        "6 075 termina en 5 pero no en 25. Un número que termina en 5, al cuadrado, termina en 25.",
+        "1 369 pasa esas pruebas, y en efecto 37 · 37 = 1 369."
+      ],
+      "verificar": [ { "fn": "puedeSerCuadrado", "args": [[1369, 2548, 49000, 6075]], "espera": { "pueden": [1369], "excluidos.0.razones.0.id": "ultima-cifra", "excluidos.1.razones.0.id": "ceros-impares", "excluidos.2.razones.0.id": "termina-en-5" } },
+                     { "fn": "raizEntera", "args": [1369], "espera": { "k": 37, "r": 0 } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "¿Cuál es el menor número entero positivo por el que hay que multiplicar 540 para obtener un cuadrado perfecto?",
+      "respuesta": "15 (540 · 15 = 8 100 = 90 · 90).",
+      "pasos": [
+        "Se descompone: 540 = 2² · 3³ · 5.",
+        "En un cuadrado perfecto, cada primo aparece un número par de veces. El 2 ya está bien; al 3 y al 5 les falta uno a cada uno.",
+        "Se multiplica por 3 · 5 = 15: 540 · 15 = 8 100 = 2² · 3⁴ · 5² = 90 · 90."
+      ],
+      "verificar": [ { "fn": "menorMultiplicador", "args": [540, 2], "espera": { "m": 15, "resultado": 8100, "raiz": 90 } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "¿Cuál es el menor número entero positivo por el que hay que multiplicar 1 350 para obtener un cubo perfecto?",
+      "respuesta": "20 (1 350 · 20 = 27 000 = 30 · 30 · 30).",
+      "pasos": [
+        "Se descompone: 1 350 = 2 · 3³ · 5².",
+        "En un cubo perfecto, cada primo aparece un múltiplo de 3 veces. Al 2 le faltan dos; al 3, nada; al 5, uno.",
+        "Se multiplica por 2² · 5 = 20: 1 350 · 20 = 27 000 = 2³ · 3³ · 5³ = 30 · 30 · 30."
+      ],
+      "verificar": [ { "fn": "menorMultiplicador", "args": [1350, 3], "espera": { "m": 20, "resultado": 27000, "raiz": 30 } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "¿Cuántos cuadrados perfectos hay entre 200 y 1 000?",
+      "respuesta": "17.",
+      "pasos": [
+        "El primer cuadrado que no baja de 200 es 15 · 15 = 225 (14 · 14 = 196 queda abajo).",
+        "El último que no pasa de 1 000 es 31 · 31 = 961 (32 · 32 = 1 024 se pasa).",
+        "Son los cuadrados de 15, 16, …, 31: 31 − 15 + 1 = 17 números."
+      ],
+      "verificar": [ { "fn": "cuadradosEntre", "args": [200, 1000], "espera": { "desde": 15, "hasta": 31, "cantidad": 17 } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "¿Cuántos números de 4 cifras son cuadrados perfectos?",
+      "respuesta": "68.",
+      "pasos": [
+        "Los números de 4 cifras van de 1 000 a 9 999.",
+        "31 · 31 = 961 todavía tiene 3 cifras y 32 · 32 = 1 024 ya tiene 4; 99 · 99 = 9 801 tiene 4 y 100 · 100 = 10 000 tiene 5.",
+        "Son los cuadrados de 32 a 99: 99 − 32 + 1 = 68."
+      ],
+      "verificar": [ { "fn": "cuadradosDeCifras", "args": [4], "espera": { "desde": 32, "hasta": 99, "cantidad": 68 } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Con 2 000 cubitos iguales se quiere armar el cubo macizo más grande posible. ¿Cuántos cubitos tiene cada arista y cuántos sobran?",
+      "respuesta": "12 por arista y sobran 272.",
+      "pasos": [
+        "12 · 12 · 12 = 1 728 cabe y 13 · 13 · 13 = 2 197 ya se pasa.",
+        "La raíz cúbica entera de 2 000 es 12 y sobran 2 000 − 1 728 = 272 cubitos."
+      ],
+      "verificar": [ { "fn": "raizEntera", "args": [2000, 3], "espera": { "k": 12, "r": 272 } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Calcula 1 + 3 + 5 + 7 + … + 49 y también 85 · 85, sin hacer la suma ni la multiplicación larga.",
+      "respuesta": "625 y 7 225.",
+      "pasos": [
+        "De 1 a 49 hay (49 + 1) ÷ 2 = 25 números impares. Acomodados como capas que se doblan una alrededor de la otra, forman un cuadrado de 25 × 25: la suma es 625.",
+        "85 · 85: la decena 8 por la siguiente, 9, da 72, y se escribe 25 al final: 7 225. Viene de (80 + 5)(80 + 5) = 80 · 90 + 25."
+      ],
+      "verificar": [ { "fn": "sumaImpares", "args": [25], "espera": { "suma": 625 } }, { "fn": "terminaEn5", "args": [85], "espera": { "cuadrado": 7225, "producto": 72 } } ]
+    }
+  ]
+}
