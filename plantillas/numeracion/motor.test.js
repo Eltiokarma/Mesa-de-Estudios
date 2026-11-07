@@ -69,6 +69,8 @@ test('ida y vuelta: aBase y aDecimal coinciden con toString y parseInt, en mucha
     // cada división: dividendo = cociente · b + resto, con resto < b
     A.divisiones.forEach(d => { assert.equal(d.cociente * b + d.resto, d.dividendo); assert.ok(d.resto < b); });
     erroresDistintos(A.errores, A.texto, `aBase ${n} ${b}`);
+    if (A.errores.omiteCeros) { assert.equal(A.errores.omiteCeros, A.texto.replace(/0/g, '')); assert.ok(M.valido(A.errores.omiteCeros, b).valido, 'omitir ceros da un numeral que existe'); }
+    if (A.errores.olvidaUltimoCociente) assert.equal(M.valor(A.errores.olvidaUltimoCociente, b), n % Math.pow(b, A.cifras.length - 1), 'sin el último cociente queda n mod b^(k−1)');
     const D = M.aDecimal(A.texto, b);
     assert.equal(suma(D.terminos.map(t => t.producto)), n, 'la suma de los términos es el valor');
     assert.equal(D.horner[D.horner.length - 1], n, 'Horner termina en el valor');

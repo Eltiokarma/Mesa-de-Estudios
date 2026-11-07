@@ -1,26 +1,26 @@
 {
   "titulo": "Las fichas que se agrupan: problemas para lápiz y papel",
-  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Para pasar de base 10 a otra base, divide entre la base una y otra vez; los restos son las cifras, pero se leen desde el último cociente hacia el primer resto. Para pasar a base 10, multiplica cada cifra por la base elevada a su orden (las unidades tienen orden 0). En base b las cifras van del 0 al b − 1: la cifra b nunca aparece, porque b sueltas ya forman un grupo. El subíndice indica la base: 213₅ es 213 en base 5.",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Para pasar de base 10 a otra base, divide entre la base una y otra vez; los restos son las cifras, pero se leen desde el último cociente hacia el primer resto. Para pasar a base 10, multiplica cada cifra por la base elevada a su orden (las unidades tienen orden 0). En base b las cifras van del 0 al b − 1: la cifra b nunca aparece, porque b sueltas ya forman un grupo. El subíndice indica la base: 213₍₅₎ es 213 en base 5.",
   "problemas": [
     {
       "id": "p1",
       "nivel": "básico",
       "enunciado": "Escribe 200 en base 6.",
-      "respuesta": "532₆.",
+      "respuesta": "532₍₆₎.",
       "pasos": [
         "200 ÷ 6 = 33 y sobran 2: 2 es la cifra de las unidades.",
         "33 ÷ 6 = 5 y sobran 3: 3 es la cifra de los grupos de 6.",
-        "5 ya es menor que 6: es la cifra de los grupos de 36. Leyendo desde el último cociente: 532₆. Control: 5 · 36 + 3 · 6 + 2 = 180 + 18 + 2 = 200."
+        "5 ya es menor que 6: es la cifra de los grupos de 36. Leyendo desde el último cociente: 532₍₆₎. Control: 5 · 36 + 3 · 6 + 2 = 180 + 18 + 2 = 200."
       ],
       "verificar": [ { "fn": "aBase", "args": [200, 6], "espera": { "texto": "532", "restos": [2, 3, 5], "errores.restosAlReves": "235" } } ]
     },
     {
       "id": "p2",
       "nivel": "básico",
-      "enunciado": "¿Cuánto vale 3412₅ en base 10?",
+      "enunciado": "¿Cuánto vale 3412₍₅₎ en base 10?",
       "respuesta": "482.",
       "pasos": [
-        "Cada cifra se multiplica por la potencia de 5 de su orden, contando desde la derecha y empezando en 0: 3412₅ = 3 · 5³ + 4 · 5² + 1 · 5 + 2.",
+        "Cada cifra se multiplica por la potencia de 5 de su orden, contando desde la derecha y empezando en 0: 3412₍₅₎ = 3 · 5³ + 4 · 5² + 1 · 5 + 2.",
         "3 · 125 + 4 · 25 + 1 · 5 + 2 = 375 + 100 + 5 + 2 = 482.",
         "Si se empieza a contar los exponentes en 1, sale 3 · 5⁴ + 4 · 5³ + 1 · 5² + 2 · 5 = 2410, que es 5 veces más."
       ],
@@ -29,12 +29,12 @@
     {
       "id": "p3",
       "nivel": "intermedio",
-      "enunciado": "Pasa 1234₅ a base 7.",
-      "respuesta": "365₇.",
+      "enunciado": "Pasa 1234₍₅₎ a base 7.",
+      "respuesta": "365₍₇₎.",
       "pasos": [
         "Primero a base 10: 1 · 125 + 2 · 25 + 3 · 5 + 4 = 125 + 50 + 15 + 4 = 194.",
         "Luego a base 7 por divisiones: 194 ÷ 7 = 27 y sobran 5; 27 ÷ 7 = 3 y sobran 6; 3 es menor que 7.",
-        "Leyendo desde el último cociente: 365₇. Control: 3 · 49 + 6 · 7 + 5 = 147 + 42 + 5 = 194."
+        "Leyendo desde el último cociente: 365₍₇₎. Control: 3 · 49 + 6 · 7 + 5 = 147 + 42 + 5 = 194."
       ],
       "verificar": [ { "fn": "cambiarBase", "args": ["1234", 5, 7], "espera": { "valor": 194, "texto": "365" } } ]
     },
@@ -46,19 +46,19 @@
       "pasos": [
         "121 en base b vale 1 · b² + 2 · b + 1, que es (b + 1)².",
         "(b + 1)² = 64, así que b + 1 = 8 y b = 7.",
-        "Control: 121₇ = 49 + 14 + 1 = 64. Además 7 es mayor que todas las cifras del numeral (la mayor es 2), así que el numeral existe en esa base."
+        "Control: 121₍₇₎ = 49 + 14 + 1 = 64. Además 7 es mayor que todas las cifras del numeral (la mayor es 2), así que el numeral existe en esa base."
       ],
       "verificar": [ { "fn": "baseDesconocida", "args": ["121", 64], "espera": { "base": 7 } }, { "fn": "valor", "args": ["121", 7], "espera": { "valor": 64 } } ]
     },
     {
       "id": "p5",
       "nivel": "intermedio",
-      "enunciado": "Ordena de menor a mayor: 1110₂, 31₄ y 15₇.",
-      "respuesta": "15₇ < 31₄ < 1110₂ (valen 12, 13 y 14).",
+      "enunciado": "Ordena de menor a mayor: 1110₍₂₎, 31₍₄₎ y 15₍₇₎.",
+      "respuesta": "15₍₇₎ < 31₍₄₎ < 1110₍₂₎ (valen 12, 13 y 14).",
       "pasos": [
-        "1110₂ = 8 + 4 + 2 + 0 = 14.",
-        "31₄ = 3 · 4 + 1 = 13 y 15₇ = 1 · 7 + 5 = 12.",
-        "De menor a mayor: 15₇, 31₄ y 1110₂. Mirar solo las cifras (o solo la base) engaña: el numeral con más cifras no siempre es el mayor, y tampoco el de la base mayor."
+        "1110₍₂₎ = 8 + 4 + 2 + 0 = 14.",
+        "31₍₄₎ = 3 · 4 + 1 = 13 y 15₍₇₎ = 1 · 7 + 5 = 12.",
+        "De menor a mayor: 15₍₇₎, 31₍₄₎ y 1110₍₂₎. Mirar solo la base engaña: 15₍₇₎ tiene la base mayor y es el menor. Hay que pasar todos a base 10."
       ],
       "verificar": [ { "fn": "valor", "args": ["1110", 2], "espera": { "valor": 14 } }, { "fn": "valor", "args": ["31", 4], "espera": { "valor": 13 } },
                      { "fn": "valor", "args": ["15", 7], "espera": { "valor": 12 } } ]
@@ -69,9 +69,9 @@
       "enunciado": "¿Cuántos numerales capicúas de 4 cifras hay en base 5?",
       "respuesta": "20.",
       "pasos": [
-        "Un capicúa de 4 cifras tiene la forma abba: basta elegir a y b; las otras dos cifras son su espejo.",
-        "La primera cifra a no puede ser 0: hay 4 opciones (1, 2, 3 o 4). La cifra b sí puede ser 0: hay 5 opciones (0 a 4).",
-        "En total, 4 · 5 = 20 capicúas, desde 1001₅ hasta 4444₅. Si se deja que a sea 0, se cuentan 25, pero 0110₅ no tiene 4 cifras."
+        "Un capicúa de 4 cifras tiene la forma a̅m̅m̅a̅: basta elegir a y m; las otras dos cifras son su espejo.",
+        "En a̅m̅m̅a̅, la primera cifra a no puede ser 0: hay 4 opciones (1, 2, 3 o 4). La cifra m sí puede ser 0: hay 5 opciones (0 a 4).",
+        "En total, 4 · 5 = 20 capicúas a̅m̅m̅a̅, desde 1001₍₅₎ hasta 4444₍₅₎. Si se deja que a sea 0, se cuentan 25, pero 0110₍₅₎ no tiene 4 cifras."
       ],
       "verificar": [ { "fn": "capicuas", "args": [4, 5], "espera": { "cantidad": 20, "eleccion": [4, 5], "errores.conCero": 25 } } ]
     },
@@ -102,12 +102,12 @@
     {
       "id": "p9",
       "nivel": "básico",
-      "enunciado": "Pasa 110101101₂ a base 8 sin pasar por base 10.",
-      "respuesta": "655₈.",
+      "enunciado": "Pasa 110101101₍₂₎ a base 8 sin pasar por base 10.",
+      "respuesta": "655₍₈₎.",
       "pasos": [
         "Como 8 = 2³, cada cifra de base 8 corresponde a 3 cifras de base 2. Se agrupan de a 3 desde la derecha: 110 | 101 | 101.",
-        "Cada grupo se lee en base 2: 110₂ = 6, 101₂ = 5 y 101₂ = 5.",
-        "Resultado: 655₈. Control: 6 · 64 + 5 · 8 + 5 = 429, y 110101101₂ = 256 + 128 + 32 + 8 + 4 + 1 = 429."
+        "Cada grupo se lee en base 2: 110₍₂₎ = 6, 101₍₂₎ = 5 y 101₍₂₎ = 5.",
+        "Resultado: 655₍₈₎. Control: 6 · 64 + 5 · 8 + 5 = 429, y 110101101₍₂₎ = 256 + 128 + 32 + 8 + 4 + 1 = 429."
       ],
       "verificar": [ { "fn": "agruparCifras", "args": ["110101101", 2, 3], "espera": { "texto": "655", "valor": 429 } }, { "fn": "valor", "args": ["655", 8], "espera": { "valor": 429 } } ]
     },
@@ -115,11 +115,11 @@
       "id": "p10",
       "nivel": "intermedio",
       "enunciado": "¿Cuál es el mayor numeral de 3 cifras en base 7? Escríbelo en base 7 y en base 10.",
-      "respuesta": "666₇ = 342.",
+      "respuesta": "666₍₇₎ = 342.",
       "pasos": [
-        "En base 7 la cifra mayor es 6, así que el mayor numeral de 3 cifras es 666₇.",
-        "666₇ = 6 · 49 + 6 · 7 + 6 = 294 + 42 + 6 = 342.",
-        "Si se le suma 1, se lleva en cadena y sale 1000₇ = 7³ = 343: por eso el mayor numeral de 3 cifras es 7³ − 1."
+        "En base 7 la cifra mayor es 6, así que el mayor numeral de 3 cifras es 666₍₇₎.",
+        "666₍₇₎ = 6 · 49 + 6 · 7 + 6 = 294 + 42 + 6 = 342.",
+        "Si se le suma 1, se lleva en cadena y sale 1000₍₇₎ = 7³ = 343: por eso el mayor numeral de 3 cifras es 7³ − 1."
       ],
       "verificar": [ { "fn": "numerales", "args": [3, 7], "espera": { "mayor": 342, "mayorTexto": "666" } }, { "fn": "sumarUno", "args": ["666", 7], "espera": { "texto": "1000", "valor": 343 } } ]
     }

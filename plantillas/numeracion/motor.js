@@ -98,8 +98,8 @@
   const SUP = { 0: '⁰', 1: '¹', 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹' };
   const SUB = { 0: '₀', 1: '₁', 2: '₂', 3: '₃', 4: '₄', 5: '₅', 6: '₆', 7: '₇', 8: '₈', 9: '₉' };
   const sup = e => String(e).split('').map(c => SUP[c]).join('');
-  const sub = e => String(e).split('').map(c => SUB[c]).join('');
-  // El numeral con su base en subíndice: 213₅.
+  const sub = e => '₍' + String(e).split('').map(c => SUB[c]).join('') + '₎';   // como en las academias: 213₍₅₎
+  // El numeral con su base en subíndice: 213₍₅₎.
   const conBase = (numeral, b) => texto(leer(numeral)) + sub(b);
 
   // Quita los errores que coinciden con la respuesta o con un error anterior.
@@ -196,6 +196,8 @@
     return { N: num(n), b, cifras, texto: t, conBase: t + sub(b), divisiones, restos, cantidadCifras: cifras.length,
       errores: limpiar({
         restosAlReves: texto(restos),                                        // escribe los restos en el orden en que salen
+        omiteCeros: t.includes('0') && t.replace(/0/g, '') ? t.replace(/0/g, '') : undefined, // se salta los órdenes vacíos
+        olvidaUltimoCociente: divisiones.length > 1 ? (texto(restos.slice(0, -1).reverse()).replace(/^0+/, '') || '0') : undefined, // solo los restos, sin el último cociente
         primeraDivision: divisiones.length > 1 ? String(d0.cociente) + SIMBOLOS[d0.resto] : undefined, // se queda con la primera división: cociente y resto
         sinCambiar: String(num(n)),                                          // deja el número como estaba
       }, t) };

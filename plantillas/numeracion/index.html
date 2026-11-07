@@ -92,6 +92,8 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 /* Un numeral: cada cifra en el color de su orden y la base en subíndice, en el color de b. */
 .num{font-weight:800; font-variant-numeric:tabular-nums; white-space:nowrap; letter-spacing:.02em}
 .cf.k0{color:var(--c-o0)} .cf.k1{color:var(--c-o1)} .cf.k2{color:var(--c-o2)} .cf.k3{color:var(--c-o3)}
+.raya{text-decoration:overline 1.5px; text-decoration-color:var(--ink); padding-top:2px}
+.raya .v{text-decoration:none}
 .sb{color:var(--c-b); font-weight:800; font-size:.72em; vertical-align:-.28em; line-height:0; margin-left:1px}
 
 .eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
@@ -242,17 +244,21 @@ function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const M = MotorNumeracion;
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+// Texto plano para el lector de pantalla: el subíndice se dice «en base 5» (si no, 43 con base 5 se leería «435»).
+const quitar = t => String(t).replace(/<sub[^>]*>\(?([^<)]*)\)?<\/sub>/g, ' en base $1').replace(/<[^>]+>/g, '');
 const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
 const n_ = t => V('n', t), b_ = t => V('b', t), o_ = (k, t) => V('o' + k, t);
 const SUPS = ['', '', '²', '³'];
 // Un numeral en HTML: cada cifra en el color de su orden (de las unidades hacia la izquierda) y la base en subíndice.
 function numH(t, b){
   const cs = String(t).split(''), L = cs.length;
-  return `<span class="num">${cs.map((d, i) => { const k = L - 1 - i; return `<span class="cf${k <= 3 ? ' k' + k : ''}">${d}</span>`; }).join('')}${b === null || b === undefined ? '' : `<sub class="sb">${b}</sub>`}</span>`;
+  return `<span class="num">${cs.map((d, i) => { const k = L - 1 - i; return `<span class="cf${k <= 3 ? ' k' + k : ''}">${d}</span>`; }).join('')}${b === null || b === undefined ? '' : `<sub class="sb">(${b})</sub>`}</span>`;
 }
 // Nombre de las piezas de cada orden: sueltas, paquetes de b, cajas de b², cajones de b³.
 const NOMBRE = ['sueltas', 'paquetes', 'cajas', 'cajones'];
 const NOMBRE1 = ['suelta', 'paquete', 'caja', 'cajón'];
+// El nombre de n piezas de orden k, en singular o plural: «1 cajón», «18 paquetes», «75 fichas sueltas».
+const nombreN = (k, n) => (k === 0 ? (n === 1 ? 'ficha suelta' : 'fichas sueltas') : n === 1 ? NOMBRE1[k] : NOMBRE[k]);
 const pieza = (k, b, n) => (k === 0 ? (n === 1 ? 'ficha suelta' : 'fichas sueltas') : `${n === 1 ? NOMBRE1[k] : NOMBRE[k]} de ${Math.pow(b, k)}`);
 const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
@@ -336,7 +342,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
     ctx.fillStyle = color; ctx.fillText(t, x, y);
     return w;
   }
-  // Un rótulo hecho de pedazos: [['23', 'n'], [' = ', 'ink'], ['4', 'o1'], …]; un pedazo ['5', 'b', 'sub'] va en subíndice.
+  // Un rótulo hecho de pedazos: [['23', 'n'], [' = ', 'ink'], ['4', 'o1'], …]; un pedazo ['(5)', 'b', 'sub'] va en subíndice.
   function partes(c, x, y, ps, align, tam, peso){
     tam = tam || 14; const fn = s => `${peso || 800} ${s ? Math.round(tam*.68) : tam}px ${c.font}`;
     ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
@@ -347,7 +353,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
     return tot;
   }
   // Los pedazos de un numeral: cada cifra en el color de su orden y la base en subíndice.
-  const pedazosNum = (t, b) => { const cs = String(t).split(''), L = cs.length, ps = cs.map((d, i) => [d, ko(L - 1 - i)]); if (b !== null && b !== undefined) ps.push([String(b), 'b', 'sub']); return ps; };
+  const pedazosNum = (t, b) => { const cs = String(t).split(''), L = cs.length, ps = cs.map((d, i) => [d, ko(L - 1 - i)]); if (b !== null && b !== undefined) ps.push([`(${b})`, 'b', 'sub']); return ps; };
   function linea(x1, y1, x2, y2){ ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
   function punto(x, y, r, color){ ctx.fillStyle = color; if (r < 1.6) ctx.fillRect(x - r, y - r, 2*r, 2*r); else { ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fill(); } }
 
@@ -421,7 +427,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
     });
     if (s.cifras !== false && valido){
       const q = g.cols[0];
-      rotulo(c, q.x + q.ancho - 6, g.bot + 22, String(b), c.b, 'left', 800, 13);
+      rotulo(c, q.x + q.ancho - 14, g.bot + 22, `(${b})`, c.b, 'left', 800, 13);
     }
     if (s.titulo) partes(c, R.x + R.w/2, R.y + R.h - 6, s.titulo, 'center', 12, 800);
   }
@@ -440,7 +446,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
   function dibTarjetas(c){
     const s = E.st, its = s.items, n = its.length, tam = n > 3 ? 22 : 28;
     ctx.font = `800 ${tam}px ${c.font}`;
-    const anchos = its.map(t => ctx.measureText(t.numeral).width + tam*.55 + 30 + (t.valor !== undefined ? ctx.measureText(' = ' + t.valor).width : 0));
+    const anchos = its.map(t => ctx.measureText(t.numeral).width + tam*1.1 + 30 + (t.valor !== undefined ? ctx.measureText(' = ' + t.valor).width : 0));
     // filas de tarjetas que caben
     const filas = []; let fila = [], usado = 0;
     its.forEach((t, i) => { const w = anchos[i] + 12; if (fila.length && usado + w > W - 16){ filas.push(fila); fila = []; usado = 0; } fila.push(i); usado += w; });
@@ -452,7 +458,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
       const tot = f.reduce((t, i) => t + anchos[i] + 12, -12); let x = (W - tot)/2;
       f.forEach(i => {
         const t = its[i], y = y0 + r*dy, w = anchos[i];
-        ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = t.marca === 'mal' ? c.warn : t.marca === 'ok' ? c.ok : c.line; ctx.lineWidth = t.marca ? 2 : 1.5;
+        ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = t.marca === 'mal' ? c.ink : t.marca === 'ok' ? c.ok : c.line; ctx.lineWidth = t.marca ? 2 : 1.5;
         redondeado(ctx, x, y, w, hT, 14); ctx.fill(); ctx.stroke(); ctx.restore();
         const ps = pedazosNum(t.numeral, t.b);
         if (t.valor !== undefined) ps.push([' = ', 'ink'], [String(t.valor), 'n']);
@@ -507,7 +513,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
   // ----- 121 en base b: b² + 2b + 1 armado como un cuadrado de lado b + 1 -----
   function dibCuadrado(c){
     const s = E.st, b = s.b, L = b + 1, p = Math.min(24, (W - 40)/L, (H - 70)/L), x0 = (W - L*p)/2, y0 = 34;
-    partes(c, W/2, 14, pedazosNum('121', b).concat([[' = ', 'ink'], ['1', 'o2'], ['·', 'ink'], [`${b}²`, 'o2'], [' + ', 'ink'], ['2', 'o1'], ['·', 'ink'], [String(b), 'o1'], [' + ', 'ink'], ['1', 'o0'], [` = ${M.valor('121', b)}`, 'n']]), 'center', 14, 800);
+    partes(c, W/2, 14, pedazosNum('121', b).concat([[' = ', 'ink'], ['1', 'o2'], ['·', 'ink'], [String(b), 'b'], ['²', 'ink'], [' + ', 'ink'], ['2', 'o1'], ['·', 'ink'], [String(b), 'b'], [' + ', 'ink'], ['1', 'o0'], [` = ${M.valor('121', b)}`, 'n']]), 'center', 14, 800);
     dibPieza(c, 2, b, x0, y0, p);
     dibPieza(c, 1, b, x0 + b*p + p*.1, y0, p);
     // el segundo paquete, acostado
@@ -563,7 +569,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
       g.split('').forEach(d => { rotulo(c, x + cw/2, y, d, c.ink, 'center', 800, Math.round(tam)); x += cw; idx++; });
       x += gapG;
     });
-    rotulo(c, x - gapG + 8, y + tam*.3, '2', c.b, 'left', 800, Math.round(tam*.6));
+    rotulo(c, x - gapG + 8, y + tam*.3, '(2)', c.b, 'left', 800, Math.round(tam*.6));
     if (s.fase >= 2) partes(c, W/2, H - 22, pedazosNum(G.texto, G.base).concat([[' = ', 'ink'], [String(G.valor), 'n']]), 'center', 16, 800);
   }
 
@@ -581,7 +587,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
     if (idLect) document.getElementById(idLect).innerHTML = filas.map(([k, t, v]) => `<div class="lectura" style="--k:var(${k === 'ink' ? '--ink' : '--c-' + k})"><span>${t}</span><b>${v}</b></div>`).join('');
     if (idDesc && !E.anim){
       const base = E.desc || 'Fichas agrupadas.';
-      document.getElementById(idDesc).textContent = [base, ...filas.map(([, t, v]) => `${t}: ${String(v).replace(/<[^>]+>/g, '')}.`)].join(' ');
+      document.getElementById(idDesc).textContent = [base, ...filas.map(([, t, v]) => `${t}: ${quitar(v)}.`)].join(' ');
     }
     if (E.alCambiar) E.alCambiar();
   };
@@ -611,7 +617,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
 }
 
 const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}" tabindex="-1"></p>`;
-const quitar = t => String(t).replace(/<[^>]+>/g, '');
+
 // Lecturas comunes del tablero
 const lectN = n => ['n', 'fichas (base 10)', String(n)];
 const lectB = b => ['b', 'base', String(b)];
@@ -640,12 +646,12 @@ const leyHasta = (b, k) => LEY_ORD(b).filter(([q]) => q === 'b' || +q.slice(1) <
 const P_75 = { id:'numeracion-paso2', ok:'b', opts:[
   ['a', numH(A75.errores.restosAlReves, 4), 'restos-leidos-al-reves', 'hipotesis'],
   ['b', numH(A75.texto, 4)],
-  ['c', numH(A75.errores.primeraDivision, 4), 'cociente-y-resto-de-la-primera-division', 'hipotesis'],
-  ['d', numH(A75.errores.sinCambiar, 4), 'numero-sin-cambiar', 'hipotesis']],
+  ['c', numH(A75.errores.omiteCeros, 4), 'omite-el-cero', 'hipotesis'],
+  ['d', numH(A75.errores.olvidaUltimoCociente, 4), 'olvida-el-ultimo-cociente', 'hipotesis']],
   fb:{ b:'¡Bien! 75 = 1 · 64 + 0 · 16 + 2 · 4 + 3: un cajón de 64, ninguna caja de 16, 2 paquetes de 4 y 3 sueltas.',
-    a:'3201 son los restos en el orden en que salen. Pero el primer resto, 3, son las fichas sueltas: va a la derecha, en las unidades. Las cifras se leen desde el último cociente hacia el primer resto.',
-    c:'183 junta el cociente y el resto de la primera división: 75 = 18 · 4 + 3. Pero 18 paquetes todavía se juntan de 4 en 4: hay que seguir dividiendo hasta que el cociente sea menor que 4. Además, en base 4 no existe la cifra 8.',
-    d:'75 es el mismo número escrito en base 10. En base 4 las cifras van del 0 al 3: un 7 o un 5 no pueden aparecer.' } };
+    a:'3201₍₄₎ son los restos en el orden en que salen. Pero el primer resto, 3, son las fichas sueltas: va a la derecha, en las unidades. Las cifras se leen desde el último cociente hacia el primer resto.',
+    c:'123₍₄₎ se salta el 0. Pero ese 0 dice que no quedó ninguna caja de 16 suelta; sin él, el 1 pasa a contar cajas de 16 y el numeral vale 16 + 8 + 3 = 27, no 75.',
+    d:'23₍₄₎ se queda solo con los restos (3, 2 y 0) y olvida el último cociente, el 1: es el cajón de 64. Sin él, el numeral vale 2 · 4 + 3 = 11, no 75.' } };
 
 const P_213 = { id:'numeracion-paso3', ok:'c', opts:[
   ['a', String(D213.errores.potenciasCorridas), 'potencias-corridas', 'hipotesis'],
@@ -655,27 +661,27 @@ const P_213 = { id:'numeracion-paso3', ok:'c', opts:[
   fb:{ c:'¡Bien! 2 · 25 + 1 · 5 + 3 = 50 + 5 + 3 = 58.',
     a:'290 = 2 · 5³ + 1 · 5² + 3 · 5 empieza a contar las potencias en 1. Pero la cifra de la derecha son fichas sueltas: vale 3 · 1, porque 5⁰ = 1. Las unidades tienen orden 0.',
     b:'30 = (2 + 1 + 3) · 5 trata todas las cifras igual. Pero cada lugar vale distinto: el 2 cuenta cajas de 25, el 1 un paquete de 5 y el 3 fichas sueltas.',
-    d:'213 lo lee como si estuviera en base 10, con centenas y decenas. En base 5, el 2 de la izquierda cuenta cajas de 5² = 25, no de 100.' } };
+    d:'213 lo lee como si fuera 213₍₁₀₎, en base 10, con centenas y decenas. En base 5, el 2 de la izquierda cuenta cajas de 5² = 25, no de 100.' } };
 
 const P_EXISTE = { id:'numeracion-paso4', ok:'b', opts:[
   ['a', String(V4.errores.deUnoALaBase), 'cifras-de-1-a-b', 'hipotesis'],
   ['b', String(V4.cantidad)],
   ['c', String(V4.errores.cifraIgualALaBase), 'cifra-igual-a-la-base', 'hipotesis'],
   ['d', String(V4.errores.cualquierCifra), 'cualquier-cifra-decimal-sirve', 'hipotesis']],
-  fb:{ b:'¡Bien! Existen 1000₆, 5405₆ y 2110₆. En 507₆ hay un 7 y en 3416₆ hay un 6, y en base 6 las cifras van del 0 al 5.',
-    a:'1 cuenta solo 3416₆, como si en base 6 se usaran las cifras del 1 al 6. Es al revés: van del 0 al 5. El 0 sí es una cifra (un lugar vacío) y el 6 no: 6 sueltas ya forman un paquete.',
-    c:'4 acepta 3416₆, que tiene un 6. En base 6 nunca quedan 6 sueltas, porque se juntan en un paquete: la cifra más grande es 5.',
-    d:'5 acepta todos. Pero 507₆ tiene un 7 y 3416₆ tiene un 6: en base 6 las cifras van del 0 al 5.' } };
+  fb:{ b:'¡Bien! Existen 1000₍₆₎, 5405₍₆₎ y 2110₍₆₎. En 507₍₆₎ hay un 7 y en 3416₍₆₎ hay un 6, y en base 6 las cifras van del 0 al 5.',
+    a:'1 cuenta solo 3416₍₆₎, como si en base 6 se usaran las cifras del 1 al 6. Es al revés: van del 0 al 5. El 0 sí es una cifra (un lugar vacío) y el 6 no: 6 sueltas ya forman un paquete.',
+    c:'4 acepta 3416₍₆₎, que tiene un 6. En base 6 nunca quedan 6 sueltas, porque se juntan en un paquete: la cifra más grande es 5.',
+    d:'5 acepta todos. Pero 507₍₆₎ tiene un 7 y 3416₍₆₎ tiene un 6: en base 6 las cifras van del 0 al 5.' } };
 
 const P_CMP = { id:'numeracion-paso5', ok:'c', opts:[
-  ['a', `${numH('44', 5)} es mayor`, 'compara-cifras-sin-base', 'hipotesis'],
-  ['b', `${numH('30', 8)} es mayor`, 'base-mayor-da-mas', 'hipotesis'],
-  ['c', 'Valen lo mismo'],
+  ['a', `Ana (${numH('44', 5)})`, 'compara-cifras-sin-base', 'hipotesis'],
+  ['b', `Beto (${numH('30', 8)})`, 'base-mayor-da-mas', 'hipotesis'],
+  ['c', 'Tienen lo mismo'],
   ['d', 'No se pueden comparar', 'no-se-comparan-bases-distintas', 'hipotesis']],
   fb:{ c:`¡Bien! 4 · 5 + 4 = ${C5.valorA} y 3 · 8 + 0 = ${C5.valorB}: es la misma cantidad de fichas escrita en dos bases.`,
-    a:`44 parece mayor que 30 si se leen como números de base 10. Pero en 44₅ los paquetes son de 5 y en 30₈ son de 8: 4 · 5 + 4 = ${C5.valorA} y 3 · 8 = ${C5.valorB}.`,
-    b:`La base 8 hace paquetes más grandes, pero 30₈ tiene menos paquetes y ninguna suelta: 3 · 8 = ${C5.valorB}. Y 44₅ = 4 · 5 + 4 = ${C5.valorA} también.`,
-    d:`Sí se pueden comparar: se cuentan las fichas de cada uno. 44₅ son ${C5.valorA} fichas y 30₈ también.` } };
+    a:`44 parece mayor que 30 si se leen como números de base 10. Pero en 44₍₅₎ los paquetes son de 5 y en 30₍₈₎ son de 8: 4 · 5 + 4 = ${C5.valorA} y 3 · 8 = ${C5.valorB}.`,
+    b:`La base 8 hace paquetes más grandes, pero 30₍₈₎ tiene menos paquetes y ninguna suelta: 3 · 8 = ${C5.valorB}. Y 44₍₅₎ = 4 · 5 + 4 = ${C5.valorA} también.`,
+    d:`Sí se pueden comparar: se cuentan las fichas de cada uno. 44₍₅₎ son ${C5.valorA} fichas y 30₍₈₎ también.` } };
 // Que el motor y las opciones digan lo mismo (si cambian los números, la escena avisa en la consola).
 console.assert(C5.mayor === 'iguales' && C5.errores.comparaCifras === 'A' && C5.errores.baseMayor === 'B', 'paso 5: revisar las opciones');
 
@@ -684,7 +690,7 @@ const P_BASE = { id:'numeracion-paso6', ok:'c', opts:[
   ['b', String(B6.errores.restaNumerales), 'resta-los-numerales', 'hipotesis'],
   ['c', String(B6.base)],
   ['d', String(B6.errores.sinDividir), 'resta-las-unidades-y-no-divide', 'hipotesis']],
-  fb:{ c:'¡Bien! 2 · b + 3 = 17, así que 2 · b = 14 y b = 7. Control: 23₇ = 2 · 7 + 3 = 17.',
+  fb:{ c:'¡Bien! 2 · b + 3 = 17, así que 2 · b = 14 y b = 7. Control: 23₍₇₎ = 2 · 7 + 3 = 17.',
     a:'4 es la base más chica en la que 23 existe, porque la cifra mayor es 3. Pero en base 4, 23 vale 2 · 4 + 3 = 11, no 17.',
     b:'6 sale de restar 23 − 17 como si fueran números de base 10. En base 6, 23 vale 2 · 6 + 3 = 15, no 17.',
     d:'14 = 17 − 3 son las fichas de los 2 paquetes juntos. Falta repartirlas entre los 2 paquetes: 14 ÷ 2 = 7 fichas por paquete.' } };
@@ -695,8 +701,8 @@ const P_CAPI = { id:'numeracion-paso7', ok:'b', opts:[
   ['c', String(K7.errores.conCero), 'cuenta-el-cero-al-inicio', 'hipotesis'],
   ['d', String(K7.errores.todos), 'cuenta-todos-los-de-3-cifras', 'hipotesis']],
   fb:{ b:'¡Bien! La primera cifra tiene 5 opciones (del 1 al 5), la del medio tiene 6 (del 0 al 5) y la última ya está decidida: 5 · 6 = 30.',
-    a:'25 = 5 · 5 no deja el 0 en el medio. Pero 101₆ y 505₆ son capicúas de 3 cifras: el 0 solo está prohibido adelante.',
-    c:'36 = 6 · 6 deja que la primera cifra sea 0. Pero 010₆ no tiene 3 cifras: es 10₆. La primera cifra va del 1 al 5.',
+    a:'25 = 5 · 5 no deja el 0 en el medio. Pero 101₍₆₎ y 505₍₆₎ son capicúas de 3 cifras: el 0 solo está prohibido adelante.',
+    c:'36 = 6 · 6 deja que la primera cifra sea 0. Pero 010₍₆₎ no tiene 3 cifras: es 10₍₆₎. La primera cifra va del 1 al 5.',
     d:'180 = 5 · 6 · 6 cuenta todos los numerales de 3 cifras en base 6. En un capicúa la última cifra no se elige: tiene que ser igual a la primera.' } };
 
 // ----- paso 1: agrupar 23 fichas -----
@@ -810,10 +816,9 @@ const steps = [
        desc: ya ? DESC2 : '75 fichas sueltas.', lect: ya ? LECT2 : [() => lectN(75), () => lectB(4)] }); },
    anima:fin => { const mx = maximos([G75]); Object.assign(E.st, { cuentas:[75], max:mx, ncols:4 }); E.ley = leyHasta(4, 3); E.leyenda(); E.redimensionar();
      E.plan(G75, () => { E.lect = LECT2; E.desc = DESC2; E.avisar(); fin(); }); },
-   body:() => `<p class="problem">Para escribir ${n_('75')} en base ${b_('4')} se divide entre 4 una y otra vez: 75 = 18 · 4 + 3, después 18 = 4 · 4 + 2, después 4 = 1 · 4 + 0, y 1 ya es menor que 4.</p>
-   <p>¿Cómo se escribe ${n_('75')} en base ${b_('4')}?</p>${opcionesHTML(P_75.opts, 'fb')}
+   body:() => `<p class="problem">¿Cómo se escribe ${n_('75')} en base ${b_('4')}?</p>${opcionesHTML(P_75.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
-     ${A75.divisiones.map((q, j) => `<div class="eq">${q.dividendo} = ${q.cociente}·${b_(4)} + ${o_(j, q.resto)}<span class="note">${q.dividendo} ${j === 0 ? 'fichas sueltas' : NOMBRE[j]}: ${q.cociente ? `se forman ${q.cociente} ${q.cociente === 1 ? NOMBRE1[j + 1] : NOMBRE[j + 1]} y ${q.resto === 1 ? 'queda' : 'quedan'} ${o_(j, q.resto)}` : `no alcanza para otro grupo: ${q.resto === 1 ? 'queda' : 'quedan'} ${o_(j, q.resto)}`}</span></div>`).join('')}
+     ${A75.divisiones.map((q, j) => `<div class="eq">${q.dividendo} = ${q.cociente}·${b_(4)} + ${o_(j, q.resto)}<span class="note">${q.dividendo} ${nombreN(j, q.dividendo)}: ${q.cociente ? `${q.cociente === 1 ? 'se forma' : 'se forman'} ${q.cociente} ${nombreN(j + 1, q.cociente)} y ${q.resto === 1 ? 'queda' : 'quedan'} ${o_(j, q.resto)}` : `no alcanza para otro grupo: ${q.resto === 1 ? 'queda' : 'quedan'} ${o_(j, q.resto)}`}</span></div>`).join('')}
      <div class="eq">${n_('75')} = ${numH(A75.texto, 4)}<span class="note">se lee desde el último cociente hacia el primer resto</span></div></div>
    <p>Cada división <b>es</b> una ronda de agrupar: el cociente dice cuántos grupos se formaron y el resto, cuántas piezas quedaron sin grupo. El primer resto son las ${o_(0, 'sueltas')} y va a la derecha; el último, los ${o_(3, 'cajones')}, y va a la izquierda. El 0 dice que no quedó ninguna ${o_(2, 'caja de 16')} suelta: no se puede omitir.</p>${FUENTE}</div>` },
  { k:'Paso 3', t:'Predice: 213 en base 5, a base 10', gate:P_213,
@@ -827,7 +832,7 @@ const steps = [
    <div id="tras" class="body" hidden><div class="eqs">
      <div class="eq">${numH('213', 5)} = ${o_(2, '2')}·${b_(5)}² + ${o_(1, '1')}·${b_(5)} + ${o_(0, '3')}<span class="note">descomposición polinómica: cada cifra por la base elevada a su orden; las unidades tienen orden 0</span></div>
      <div class="eq">= ${o_(2, '50')} + ${o_(1, '5')} + ${o_(0, '3')} = ${n_(D213.valor)}</div>
-     <div class="eq">((${o_(2, '2')}·5 + ${o_(1, '1')})·5 + ${o_(0, '3')}) = (11·5 + 3) = ${n_(D213.valor)}<span class="note">otra forma (Horner): abrir las cajas en paquetes y los paquetes en sueltas</span></div></div>
+     <div class="eq">((${o_(2, '2')}·${b_(5)} + ${o_(1, '1')})·${b_(5)} + ${o_(0, '3')}) = (11·${b_(5)} + 3) = ${n_(D213.valor)}<span class="note">otra forma (Horner): abrir las cajas en paquetes y los paquetes en sueltas</span></div></div>
    <p>Una ${o_(2, 'caja')} tiene 5 paquetes de 5: 25 fichas. Las 2 cajas son 50, el ${o_(1, 'paquete')} son 5 y las ${o_(0, 'sueltas')}, 3. Abre las piezas para comprobarlo:</p>
    <p><button type="button" class="btn" id="abrir3">Abrir las piezas</button></p>${FUENTE}</div>`,
    luego:() => { const bt = $('abrir3'); if (bt) bt.onclick = () => { if (S.ocupado || E.anim) return; const D = M.desagrupar('213', 5);
@@ -841,7 +846,7 @@ const steps = [
      E.secuencia(LISTA4.map((t, i) => ({ items: its.map((x, j) => { if (j > i) return x; const v = M.valido(LISTA4[j], 6); return Object.assign({}, x, { marca: v.valido ? 'ok' : 'mal', malas: v.malas.map(m => m.posicion) }); }) })), 650,
        () => { E.lect = [() => ['ink', 'existen', String(V4.cantidad)]]; E.desc = `Existen ${V4.validos.join(', ')} en base 6; no existen ${V4.invalidos.join(' ni ')}.`; E.avisar(); fin(); }); },
    body:() => `<p class="problem">En base ${b_('6')} se juntan las fichas de 6 en 6. Mira estos numerales: ${LISTA4.map(t => numH(t, 6)).join(', ')}.</p>
-   <p>¿Cuántos de ellos existen en base ${b_('6')}?</p>${opcionesHTML(P_EXISTE.opts, 'fb')}
+   <p>¿Cuántos de ellos están bien escritos (existen) en base ${b_('6')}?</p>${opcionesHTML(P_EXISTE.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
      <div class="eq">cifras de base ${b_('6')}: 0, 1, 2, 3, 4, 5<span class="note">la cifra más grande es 6 − 1 = 5</span></div></div>
    <p>Si quedaran 6 ${o_(0, 'sueltas')}, se juntarían en un ${o_(1, 'paquete')}; si quedaran 6 paquetes, en una ${o_(2, 'caja')}. Por eso, en base ${b_('b')} las cifras van del <b>0</b> al <b>b − 1</b>: la cifra b nunca aparece. El 0 sí: dice que en ese lugar no quedó nada, como en ${numH('1000', 6)} = 216.</p>${FUENTE}</div>` },
@@ -876,16 +881,16 @@ const steps = [
    <p>Se plantea la descomposición polinómica con la base como incógnita y se despeja. Con más cifras, como ${numH('121', 'b')} = 64, la ecuación tiene b²; ahí conviene probar bases desde la cifra mayor + 1, como hizo la escena: el valor crece con la base.</p>${FUENTE}</div>` },
  { k:'Paso 7', t:'Predice: los capicúas', gate:P_CAPI,
    prep:() => { const ya = !!S.pred[P_CAPI.id];
-     E.config({ modo:'capicuas', st: ya ? { b:6, tabla:true } : { b:6, tabla:false }, ley:[['o2', 'primera cifra (y última)'], ['o1', 'cifra del medio'], ['b', 'la base']],
+     E.config({ modo:'capicuas', st: ya ? { b:6, tabla:true } : { b:6, tabla:false }, ley:[['o2', 'primera cifra'], ['o1', 'cifra del medio'], ['o0', 'última cifra (copia la primera)'], ['b', 'la base']],
        desc: ya ? DESC7 : 'Tres casillas vacías para un numeral de 3 cifras en base 6; la primera y la última son iguales.', lect: ya ? LECT7 : [] }); },
    anima:fin => { Object.assign(E.st, { tabla:true, llenas:0 }); E.redimensionar();
      E.animar(0, K7.cantidad, 2600, x => { E.st.llenas = Math.floor(x + 1e-9); }, () => { E.lect = LECT7; E.desc = DESC7; E.avisar(); fin(); }, true); },
    body:() => `<p class="problem">Un numeral <b>capicúa</b> se lee igual de izquierda a derecha que de derecha a izquierda, como ${numH('343', 6)} o ${numH('151', 6)}.</p>
    <p>¿Cuántos numerales capicúas de 3 cifras hay en base ${b_('6')}?</p>${opcionesHTML(P_CAPI.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
-     <div class="eq">${o_(2, 'a')} ${o_(1, 'm')} ${o_(0, 'a')}<span class="note">la última cifra copia a la primera</span></div>
+     <div class="eq"><span class="raya">${o_(2, 'a')}${o_(1, 'm')}${o_(0, 'a')}</span><sub class="sb">(6)</sub><span class="note">la última cifra copia a la primera</span></div>
      <div class="eq">${o_(2, '5')} · ${o_(1, '6')} = ${K7.cantidad}<span class="note">primera cifra: 1 a 5 (no puede ser 0); cifra del medio: 0 a 5</span></div></div>
-   <p>Para contar numerales se cuentan las <b>elecciones</b>: cada cifra libre multiplica. En un capicúa de 3 cifras solo hay dos cifras libres; la tercera ya está decidida. Con 4 cifras (a m m a) también son dos libres, y con 5 (a m n m a), tres: en base b son (b − 1)·b<sup>libres − 1</sup>.</p>${FUENTE}</div>` },
+   <p>Para contar numerales se cuentan las <b>elecciones</b>: cada cifra libre multiplica. En un capicúa de 3 cifras solo hay dos cifras libres; la tercera ya está decidida. Con 4 cifras (<span class="raya">amma</span>) también son dos libres, y con 5 (<span class="raya">amnma</span>), tres: en base b son (b − 1)·b<sup>libres − 1</sup>.</p>${FUENTE}</div>` },
  { k:'Paso 8', t:'Explora: cualquier cantidad, cualquier base', explora:true,
    prep:() => prep8(),
    body:() => `<p class="problem">Agrega o quita ${n_('fichas')} y cambia la ${b_('base')}: las mismas fichas se desarman y se vuelven a juntar.</p>
@@ -899,8 +904,8 @@ const steps = [
    luego:() => { $('stepBody').querySelectorAll('[data-dn]').forEach(q => q.onclick = () => cambiarN8(+q.dataset.dn));
      $('stepBody').querySelectorAll('[data-db]').forEach(q => q.onclick = () => cambiarB8(+q.dataset.db)); vivo8(); } },
 ];
-function pedA(){ return [['Ana: ', 'ink'], ['4', 'o1'], ['4', 'o0'], ['5', 'b', 'sub']]; }
-function pedB(){ return [['Beto: ', 'ink'], ['3', 'o1'], ['0', 'o0'], ['8', 'b', 'sub']]; }
+function pedA(){ return [['Ana: ', 'ink'], ['4', 'o1'], ['4', 'o0'], ['(5)', 'b', 'sub']]; }
+function pedB(){ return [['Beto: ', 'ink'], ['3', 'o1'], ['0', 'o0'], ['(8)', 'b', 'sub']]; }
 function tit6(b){ const v = 2*b + 3; return [['con ', 'ink'], ['b', 'b'], [' = ', 'ink'], [String(b), 'b'], [': ', 'ink'], ['2', 'o1'], ['·', 'ink'], [String(b), 'b'], [' + ', 'ink'], ['3', 'o0'], [' = ', 'ink'], [String(v), 'n'], [v === 17 ? '  ✓ son 17' : `  (no son 17)`, 'ink']]; }
 
 const dots = $('dots');
@@ -972,14 +977,16 @@ go(0);
 
 <script>
 /* ================= MODO 2: ¿qué pasa si…? =================
-   Una ficha más a 44₅ (la llevada en cadena), 121 leído en bases cada vez mayores, las cifras de un libro, multiplicar
+   Una ficha más a 44₍₅₎ (la llevada en cadena), 121 leído en bases cada vez mayores, las cifras de un libro, multiplicar
    por la base y de base 2 a base 8 juntando cifras. La escena cambia recién después de responder. Un experimento se
    abre solo si los anteriores ya tienen respuesta. */
 (function(){
 const $ = id => document.getElementById(id);
 const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2');
 const U44 = M.sumarUno('44', 5), U444 = M.sumarUno('444', 5), L121 = M.leerEnBases('121', [3, 4, 5, 6, 7]);
-const P120 = M.cifrasPaginas(120), X324 = M.porLaBase('324', 5), G2 = M.agruparCifras('1011010', 2, 3), NM3 = M.numerales(3, 5);
+const P120 = M.cifrasPaginas(120), X324 = M.porLaBase('324', 5),
+  // por la base: 5 copias de cada pieza (20 sueltas, 10 paquetes, 15 cajas) que el motor vuelve a juntar de 5 en 5
+  X5 = M.normalizar(M.porLaBase('324', 5).cuentasAntes.map(x => 5*x), 5), MX5 = maximos([X5]), G2 = M.agruparCifras('1011010', 2, 3), NM3 = M.numerales(3, 5);
 const FUENTE = '<p class="fuente">No encontramos estudios con datos sobre estos errores; las opciones incorrectas son hipótesis nuestras.</p>';
 const S = { k:0, pred:{}, t0:Date.now(), b2:3 };
 const LEY = b => [['o0', 'fichas sueltas'], ['o1', `paquetes de ${b}`], ['o2', `cajas de ${b*b}`], ['o3', `cajones de ${b*b*b}`], ['b', 'la base']];
@@ -999,11 +1006,11 @@ const EXPS = [
     opts:[['a', numH(U44.errores.sinLlevar, 5), 'cifra-igual-a-la-base', 'hipotesis'], ['b', numH(U44.errores.unaLlevada, 5), 'lleva-solo-una-vez', 'hipotesis'],
           ['c', numH(U44.texto, 5)], ['d', numH(U44.errores.olvidaLlevar, 5), 'pone-cero-sin-llevar', 'hipotesis']],
     ok:'c',
-    fb:{ a:'45₅ tiene un 5, que en base 5 no existe: 5 sueltas forman un paquete nuevo.',
-      b:'50₅ lleva una sola vez: las 5 sueltas forman un paquete y quedan 5 paquetes. Pero 5 paquetes forman una caja de 25: hay que llevar otra vez.',
-      d:'40₅ pone el 0 en las unidades pero se olvida del paquete que se formó: serían 20 fichas, y son 25.' },
-    antes:ya => E.config({ modo:'fichas', st:{ b:5, cuentas: ya ? U44.cifras.slice().reverse() : [4, 4], max:maximos([U44.plan]), ncols:3, cifras:true },
-      ley:LEY(5).filter(([k]) => k !== 'o3'), desc: ya ? '25 fichas en base 5: una caja de 25, ningún paquete, ninguna suelta: 100 en base 5.' : '44 en base 5: 4 paquetes de 5 y 4 sueltas.',
+    fb:{ a:'45₍₅₎ tiene un 5, que en base 5 no existe: 5 sueltas forman un paquete nuevo.',
+      b:'50₍₅₎ lleva una sola vez: las 5 sueltas forman un paquete y quedan 5 paquetes. Pero 5 paquetes forman una caja de 25: hay que llevar otra vez.',
+      d:'40₍₅₎ pone el 0 en las unidades pero se olvida del paquete que se formó: serían 20 fichas, y son 25.' },
+    antes:ya => E.config({ modo:'fichas', st:{ b:5, cuentas: ya ? U44.cifras.slice().reverse() : [4, 4], max:maximos([U44.plan]).concat([0]), ncols:4, cifras:true },
+      ley:LEY(5), desc: ya ? '25 fichas en base 5: una caja de 25, ningún paquete, ninguna suelta: 100 en base 5.' : '44 en base 5: 4 paquetes de 5 y 4 sueltas.',
       lect: ya ? [() => lectN(25), () => lectNum(U44.texto, 5)] : [() => lectNum('44', 5)] }),
     despues:() => { E.st.cuentas = U44.plan.inicio.slice(); E.dibujar(); esperar(700, () => E.plan(U44.plan, () => { E.lect = [() => lectN(25), () => lectNum(U44.texto, 5)]; E.desc = 'Con una ficha más, 5 sueltas forman un paquete; 5 paquetes, una caja: 100 en base 5.'; E.avisar(); })); },
     exp:() => `<div class="eqs"><div class="eq">${numH('44', 5)} + 1 = ${numH(U44.texto, 5)}<span class="note">${U44.llevadas} llevadas en cadena: 5 sueltas → 1 paquete; 5 paquetes → 1 caja</span></div>
@@ -1045,23 +1052,25 @@ const EXPS = [
     exp:() => `<div class="eqs">${P120.tramos.map(t => `<div class="eq">de la ${t.desde} a la ${t.hasta}: ${t.hasta} − ${t.desde} + 1 = ${t.paginas} páginas × ${t.cifras} = ${t.subtotal}</div>`).join('')}
       <div class="eq">total: ${P120.tramos.map(t => t.subtotal).join(' + ')} = ${P120.total}</div>
       <div class="eq">atajo: (${n_('120')} + 1) · 3 − 111 = ${P120.formula}<span class="note">3 es la cantidad de cifras de 120 y 111 tiene tres unos</span></div></div>
-      <p>Se cuenta por tramos, según cuántas cifras tiene cada página. Hay 9 páginas de una cifra, 90 de dos, 900 de tres… Y para contar cuántos números hay de a hasta b, se hace b − a + 1: el primero también cuenta.</p>${FUENTE}` },
+      <p>Se cuenta por tramos, según cuántas cifras tiene cada página. Hay 9 páginas de una cifra, 90 de dos, 900 de tres… Y para contar cuántos números hay del primero al último, se hace último − primero + 1: el primero también cuenta.</p>${FUENTE}` },
 
   { id:'por-la-base', corto:'Multiplicar por la base',
     q:`¿Cuánto es ${numH('324', 5)} por ${b_('5')}, escrito en base 5?`,
     opts:[['a', numH(X324.errores.multiplicaComoDecimal, 5), 'multiplica-como-en-base-10', 'hipotesis'], ['b', numH(X324.errores.sumaLaBase, 5), 'suma-la-base', 'hipotesis'],
           ['c', numH(X324.texto, 5)], ['d', numH(X324.errores.dosCeros, 5), 'agrega-dos-ceros', 'hipotesis']],
     ok:'c',
-    fb:{ a:'1620 es 324 · 5 hecho en base 10, y además tiene un 6, que en base 5 no existe.',
-      b:`334₅ = ${X324.antes} + 5 suma la base una vez. Multiplicar por 5 es tomar 5 veces cada pieza.`,
-      d:'32400₅ multiplica por 25 = 5²: cada pieza subiría dos lugares.' },
-    antes:ya => E.config({ modo:'fichas', st:{ b:5, cuentas: ya ? X324.cuentasDespues.slice() : X324.cuentasAntes.slice(), max:[4, 4, 2, 3], ncols:4, cifras:true },
+    fb:{ a:'1620₍₅₎ sale de hacer 324 · 5 en base 10, y además tiene un 6, que en base 5 no existe.',
+      b:`334₍₅₎ = ${X324.antes} + 5 suma la base una vez. Multiplicar por 5 es tomar 5 veces cada pieza.`,
+      d:'32400₍₅₎ multiplica por 25 = 5²: cada pieza subiría dos lugares.' },
+    antes:ya => E.config({ modo:'fichas', st:{ b:5, cuentas: ya ? X324.cuentasDespues.slice() : X324.cuentasAntes.slice(), max:MX5, ncols:4, cifras:true },
       ley:LEY(5), desc: ya ? '324 en base 5 por 5: 3 cajones, 2 cajas, 4 paquetes y ninguna suelta: 3240 en base 5.' : '324 en base 5: 3 cajas, 2 paquetes y 4 sueltas.',
       lect: ya ? [() => lectNum(X324.texto, 5), () => lectN(X324.valor)] : [() => lectNum('324', 5), () => lectN(X324.antes)] }),
     despues:() => { E.st.cuentas = X324.cuentasAntes.slice(); E.dibujar();
-      E.secuencia([{ cuentas:X324.cuentasAntes.slice() }, { cuentas:X324.cuentasDespues.slice() }], [900, 0], () => { E.lect = [() => lectNum(X324.texto, 5), () => lectN(X324.valor)];
-        E.desc = 'Cada pieza, tomada 5 veces, forma la pieza del lugar siguiente: 3240 en base 5.'; E.avisar(); }); },
+      esperar(700, () => { E.st.cuentas = X5.inicio.slice(); E.desc = '5 copias de cada pieza: 20 sueltas, 10 paquetes y 15 cajas.'; E.avisar(); E.dibujar();
+        esperar(1100, () => E.plan(X5, () => { E.lect = [() => lectNum(X324.texto, 5), () => lectN(X324.valor)];
+          E.desc = 'Las 5 copias se juntan de 5 en 5: cada pieza forma la pieza del lugar siguiente y no queda ninguna suelta: 3240 en base 5.'; E.avisar(); })); }); },
     exp:() => `<div class="eqs"><div class="eq">${numH('324', 5)} · ${b_(5)} = ${numH(X324.texto, 5)}</div>
+      <div class="eq">5 copias: ${o_(0, 20)} sueltas, ${o_(1, 10)} paquetes, ${o_(2, 15)} cajas<span class="note">se juntan de 5 en 5: 20 sueltas → 4 paquetes; 14 paquetes → 2 cajas y quedan 4; 17 cajas → 3 cajones y quedan 2</span></div>
       <div class="eq">${X324.antes} · 5 = ${n_(X324.valor)}<span class="note">el mismo cálculo en base 10</span></div></div>
       <p>Cinco ${o_(0, 'sueltas')} forman un ${o_(1, 'paquete')}, cinco paquetes una ${o_(2, 'caja')} y cinco cajas un ${o_(3, 'cajón')}. Al multiplicar por la base, cada pieza sube un lugar y las sueltas quedan en 0: las cifras se corren a la izquierda y entra un 0, como al multiplicar por 10 en base 10.</p>${FUENTE}` },
 
@@ -1070,9 +1079,9 @@ const EXPS = [
     opts:[['a', numH(G2.errores.sumaCifrasGrupo, 8), 'suma-las-cifras-del-grupo', 'hipotesis'], ['b', numH(G2.texto, 8)],
           ['c', numH(G2.errores.desdeLaIzquierda, 8), 'agrupa-desde-la-izquierda', 'hipotesis'], ['d', numH(G2.errores.otroTamano, 8), 'agrupa-de-a-dos', 'hipotesis']],
     ok:'b',
-    fb:{ a:'121 suma las cifras de cada grupo (0 + 1 + 1 = 2). Pero 011 en base 2 no vale 2: vale 0 · 4 + 1 · 2 + 1 = 3.',
-      c:'550₈ junta de a tres desde la izquierda: 101 | 101 | 0. Pero los grupos se arman desde las unidades, como los paquetes: 1 | 011 | 010.',
-      d:'1122 junta de a dos: así se pasa a base 4 = 2². Para base 8 = 2³ se junta de a tres.' },
+    fb:{ a:'121₍₈₎ suma las cifras de cada grupo (0 + 1 + 1 = 2). Pero 011 en base 2 no vale 2: vale 0 · 4 + 1 · 2 + 1 = 3.',
+      c:'550₍₈₎ junta de a tres desde la izquierda: 101 | 101 | 0. Pero los grupos se arman desde las unidades, como los paquetes: 1 | 011 | 010.',
+      d:'1122 junta de a dos: así se escribe en base 4 (1122₍₄₎ = 90), no en base 8.' },
     antes:ya => E.config({ modo:'binario', st:{ numeral:'1011010', k:3, fase: ya ? 2 : 0 }, ley: ya ? [['o0', 'unidades de base 8'], ['o1', 'grupos de 8'], ['o2', 'grupos de 64'], ['b', 'la base'], ['n', 'el valor']] : [['b', 'la base']],
       desc: ya ? `1011010 en base 2, en grupos de tres desde la derecha: 1, 011 y 010, que valen 1, 3 y 2: ${G2.texto} en base 8 = ${G2.valor}.` : 'El numeral 1011010 en base 2.',
       lect: ya ? [() => lectNum(G2.texto, 8), () => lectN(G2.valor)] : [] }),
