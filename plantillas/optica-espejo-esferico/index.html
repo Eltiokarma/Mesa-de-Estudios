@@ -469,6 +469,7 @@ function etiquetaRayo(L, c, pts, n){
 }
 function texto(L, c, x, y, t, color, align){
   const { ctx } = L; ctx.font = `700 12px ${c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+  if (ctx.measureText(t).width > L.W - 16) ctx.font = `700 10.5px ${c.font}`;
   const tw = ctx.measureText(t).width, px = clamp(L.X(x), (align === 'left' ? 4 : tw/2 + 4), L.W - (align === 'left' ? tw + 4 : tw/2 + 4)), py = L.Y(y);
   ctx.fillStyle = c.paper; ctx.globalAlpha = .88; ctx.fillRect(px - (align === 'left' ? 3 : tw/2 + 3), py - 9, tw + 6, 18); ctx.globalAlpha = 1;
   ctx.fillStyle = color; ctx.fillText(t, px, py);
@@ -732,7 +733,7 @@ const TRAMOS7 = [
   [1.8, 1, 0, {}],
   [1.0, 0, 0, { reglaI:[0, 1], rot:'Con una lente: i = +30 cm, al otro lado' }],
   [1.8, 0, 1, { reglaI:[1, 1] }],
-  [0.01, 1, 1, { reglaI:[1, 1], rot:'Con el espejo: i = +30 cm, delante. F′ cae sobre F' }],
+  [0.01, 1, 1, { reglaI:[1, 1], rot:'Con el espejo: i = +30 cm, delante; F′ cae en F' }],
 ];
 const T7 = totalDoblez(TRAMOS7);
 function paso(dt){
@@ -750,7 +751,7 @@ function paso(dt){
     // Los botones «Ver la lente» y «Ver el espejo»: la hoja va hacia la meta.
     const d = Db.meta - Db.s, v = dt/1.2;
     ponerS(Math.abs(d) <= v ? Db.meta : Db.s + Math.sign(d)*v);
-    if (Db.s === Db.meta) Db.meta = null; else sigue = true;
+    if (Db.s === Db.meta){ Db.rot = Db.meta ? 'Con el espejo: i = +30 cm, delante' : 'Con una lente: i = +30 cm, al otro lado'; Db.meta = null; } else sigue = true;
   }
   draw();
   return sigue;
@@ -780,9 +781,9 @@ function pararTodo(){
 
 /* ---------- La hoja: s puesto por el alumno (deslizador, botones, pestaña o teclado) ---------- */
 const RM_CUADROS = [
-  { s:0, rot:'Cuadro 1 de 3 · La hoja abierta: una lente. i = +30 cm, al otro lado' },
-  { s:0.5, rot:'Cuadro 2 de 3 · A medio doblar: la imagen sigue a 30 cm de la línea' },
-  { s:1, rot:'Cuadro 3 de 3 · Doblada: el espejo. i = +30 cm, delante' },
+  { s:0, rot:'1 de 3 · Abierta, una lente: i = +30 cm' },
+  { s:0.5, rot:'2 de 3 · A medio doblar: sigue a 30 cm' },
+  { s:1, rot:'3 de 3 · Doblada, el espejo: i = +30 cm' },
 ];
 function ponerS(s, rot){
   Db.s = clamp(s, 0, 1); Db.tinte = 1; Db.reglaI = 1; Db.rot = rot === undefined ? '' : rot;
@@ -1178,9 +1179,9 @@ const TRAMOS5 = [
 ];
 const T5 = totalDoblez(TRAMOS5);
 const RM_CUADROS5 = [
-  { s:0, rot:'Cuadro 1 de 3 · La hoja abierta: la lente' },
-  { s:0.5, rot:'Cuadro 2 de 3 · A medio doblar: la imagen sigue a 5 cm de la línea' },
-  { s:1, rot:'Cuadro 3 de 3 · Doblada: el convexo. i = −5 cm, detrás' },
+  { s:0, rot:'1 de 3 · Abierta, la lente: i = −5 cm' },
+  { s:0.5, rot:'2 de 3 · A medio doblar: sigue a 5 cm' },
+  { s:1, rot:'3 de 3 · Doblada, el convexo: i = −5 cm' },
 ];
 
 const EXPS = [
@@ -1301,7 +1302,7 @@ function paso(dt){
   } else if (d && d.meta !== null){
     const q = d.meta - d.s, v = dt/1.2;
     ponerS(Math.abs(q) <= v ? d.meta : d.s + Math.sign(q)*v);
-    if (d.s === d.meta) d.meta = null; else sigue = true;
+    if (d.s === d.meta){ d.rot = d.meta ? 'Doblada: el convexo' : 'Abierta: la lente'; d.meta = null; } else sigue = true;
   }
   draw();
   return sigue;
@@ -1604,7 +1605,7 @@ function controles(){
       const q = RM_CUADROS5[d.cuadro]; ponerS(q.s, q.rot);
       if (d.cuadro >= RM_CUADROS5.length - 1) $('dob2-espejo').focus();
     };
-    $('dob2-o').oninput = () => { E.o = +$('dob2-o').value; d.estado = ''; sincronizar(); };
+    $('dob2-o').oninput = () => { E.o = +$('dob2-o').value; d.estado = ''; d.rot = ''; if (d.anim){ d.anim = false; d.estela = []; d.s = 1; d.tinte = 1; d.reglaI = 1; } sincronizar(); };
   }
 }
 function moverOjo(x, y){

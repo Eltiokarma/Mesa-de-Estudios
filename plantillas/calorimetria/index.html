@@ -1681,8 +1681,8 @@ function dBimetal(ctx, c, W, H){
   const cerrado = top[1] - 3.6 <= restY + 1.5;
   // Solo después de responder (antes, la lámina de arriba insinuaría hacia dónde se mueve la punta).
   if (E.ver){
-    ctx.save(); ctx.strokeStyle = c.olla; ctx.lineWidth = 2.5; linea(ctx, tipX + 34, y0 - 40, tipX + 34, yC - 2); linea(ctx, tipX + 34, yC - 2, tipX - 4, yC - 2); ctx.restore();
-    rotulo(ctx, c, tipX + 36, y0 - 52, cerrado ? 'contacto cerrado' : 'contacto abierto', c.muted, 'right', 700);
+    ctx.save(); ctx.strokeStyle = c.olla; ctx.lineWidth = 2.5; linea(ctx, tipX + 34, Math.min(y0 - 40, yC - 30), tipX + 34, yC - 2); linea(ctx, tipX + 34, yC - 2, tipX - 4, yC - 2); ctx.restore();
+    rotulo(ctx, c, tipX + 36, Math.min(y0 - 40, yC - 30) - 12, cerrado ? 'contacto cerrado' : 'contacto abierto', c.muted, 'right', 700);
   }
   if (E.llama){
     ctx.fillStyle = c.fuego;
@@ -2030,7 +2030,7 @@ function dBarras(ctx, c, W, H){
     ctx.save(); ctx.strokeStyle = c.T; ctx.lineWidth = 3; ctx.setLineDash(j ? [8, 5] : []); ctx.globalAlpha = E.f;
     linea(ctx, ej.X(0), ej.Y(100), ej.X(ell), ej.Y(0)); ctx.restore();
     if (E.f > 0.5){ if (j) rotulo(ctx, c, ej.X(ell*0.6) + 8, ej.Y(40) - 4, `${fmt(ell*100, 0)} cm`, c.T, 'left', 800);
-      else rotulo(ctx, c, ej.X(ell*0.4) - 8, ej.Y(60), `${fmt(ell*100, 0)} cm`, c.T, 'right', 800); }
+      else rotulo(ctx, c, ej.X(ell*0.6) + 8, ej.Y(40), `${fmt(ell*100, 0)} cm`, c.T, 'left', 800); }
   });
 }
 function dVentana(ctx, c, W, H){
