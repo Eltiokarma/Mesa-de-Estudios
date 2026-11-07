@@ -1,0 +1,1188 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El grupo que se cambia: funciones orgánicas</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md).
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4).
+
+   Colores de esta escena (claro / oscuro). Revisados con CIEDE2000 (nucleo/elementos.js, la misma medida de
+   docs/metodo/paleta.py) y contraste WCAG sobre #fdf7f1 y #241c2e, también sobre el chip .v (fondo del 8 %): contraste
+   mínimo 4,6 en los dos modos.
+     ELEMENTOS: paleta común de nucleo/elementos.js (C gris, H turquesa, O rojo, N azul), en el bloque generado de abajo.
+     VARIABLES
+       cad  cadena principal                         verde          #187a00 / #59ce3b
+       loc  localizadores (la numeración)            ladrillo       #81310e / #ff621f
+       gf   grupo funcional (familia, sufijo)        añil           #2c18dc / #958de2
+       T    temperatura de ebullición                mostaza        #665200 / #ceb13b
+       pu   puente de hidrógeno                      magenta        #8f0081 / #ff33eb
+       ac   parte del ácido (en el éster)            naranja        #a35200 / #e98f35
+       al   parte del alcohol (en el éster)          violeta        #9d00e0 / #e099ff
+   Qué sale junto: C, H, O y N siempre; con ellos cad, loc, gf y T (nombres, la caja de grupos); pu y T (puentes de
+   hidrógeno); ac y al con C, H y O (el éster; en la caja de grupos el nombre de un éster va en tinta, sin sus dos
+   partes de color). Entre los que salen juntos, y contra C, H, O, N y la tinta, ΔE00 ≥ 20 en claro y en oscuro
+   (mínimo de una variable contra un elemento o la tinta, 22,2; entre variables, 23,2: loc–T; entre elementos, 21,2:
+   C–N). Los pares que nunca comparten dibujo quedan más cerca (loc–ac 13,6; gf–al 13,9; pu–al 14,4; T–ac 19,3;
+   gf–pu 19,8), pero ningún color nombra dos cosas. Cada átomo lleva además su letra. La tinta punteada (lo que sale como agua, los carbonos que se cuentan) no nombra variables. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  /* variables */
+  --c-cad:#187a00; --c-loc:#81310e; --c-gf:#2c18dc; --c-T:#665200; --c-pu:#8f0081; --c-ac:#a35200; --c-al:#9d00e0;
+  /* tonos del mundo (no son variables) */
+  --letra-atomo:#ffffff; --palito:#8a7f93;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-cad:#59ce3b; --c-loc:#ff621f; --c-gf:#958de2; --c-T:#ceb13b; --c-pu:#ff33eb; --c-ac:#e98f35; --c-al:#e099ff;
+  --letra-atomo:#1d1626; --palito:#8d8399; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-cad:#59ce3b; --c-loc:#ff621f; --c-gf:#958de2; --c-T:#ceb13b; --c-pu:#ff33eb; --c-ac:#e98f35; --c-al:#e099ff;
+  --letra-atomo:#1d1626; --palito:#8d8399; color-scheme:dark }
+
+/* Bloque generado con Elementos.css(['C', 'H', 'O', 'N']); no se edita a mano: nucleo/elementos-escenas.test.js lo compara. */
+:root{ --el-C:#6b6b6b; --el-H:#0f766e; --el-O:#c4284e; --el-N:#136caa }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --el-C:#9a9a9a; --el-H:#5ed9c8; --el-O:#f17384; --el-N:#4eb3f9 } }
+:root[data-theme="dark"]{ --el-C:#9a9a9a; --el-H:#5ed9c8; --el-O:#f17384; --el-N:#4eb3f9 }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+/* El dedo desplaza la página sobre el dibujo; solo un toque que empieza cerca de un lugar donde puede ir el grupo, o del
+   grupo mismo, se queda con el gesto (nucleo/celular.js). */
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none}
+canvas:focus-visible{outline:3px solid var(--ink); outline-offset:-3px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+.legend svg{flex:none}
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body > *{min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+.v{font-weight:800; border-radius:6px; padding:0 2px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.f{white-space:nowrap}
+.f .v{padding:0; border-radius:3px; text-decoration:none}
+.f sub, .f sup{font-size:.72em; line-height:0}
+.v-cad{color:var(--c-cad); background:color-mix(in srgb, var(--c-cad) 8%, transparent)}
+.v-loc{color:var(--c-loc); background:color-mix(in srgb, var(--c-loc) 8%, transparent)}
+.v-gf{color:var(--c-gf); background:color-mix(in srgb, var(--c-gf) 8%, transparent)}
+.v-T{color:var(--c-T); background:color-mix(in srgb, var(--c-T) 8%, transparent)}
+.v-pu{color:var(--c-pu); background:color-mix(in srgb, var(--c-pu) 8%, transparent)}
+.v-ac{color:var(--c-ac); background:color-mix(in srgb, var(--c-ac) 8%, transparent)}
+.v-al{color:var(--c-al); background:color-mix(in srgb, var(--c-al) 8%, transparent)}
+.v-C{color:var(--el-C)} .v-H{color:var(--el-H)} .v-O{color:var(--el-O)} .v-N{color:var(--el-N)}
+.v.hl{background:none; outline:2px solid currentColor; outline-offset:1px}
+.nom{font-weight:800}
+.nom .v{padding:0; text-decoration:none; border-radius:3px}
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-size:1.04rem; font-variant-numeric:tabular-nums; min-width:0}
+.eq .note{font-size:.84rem; color:var(--muted); white-space:normal; flex-basis:100%}
+.eq .ex{white-space:normal; line-height:2}
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.opt.correct .v, .opt.wrong .v{background:none}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:20px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:40px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.seg button:disabled{opacity:.45; cursor:not-allowed}
+.estado{font-weight:700; margin:0}
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+.fila{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.tabla{border-collapse:collapse; font-size:.95rem}
+.tabla td, .tabla th{padding:4px 10px; border-bottom:1px solid var(--line); text-align:left}
+.tablaw{overflow-x:auto; min-width:0; max-width:100%}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.2fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Química · Funciones orgánicas · Problemas tipo admisión</p>
+      <h1>El grupo que se cambia</h1>
+      <p class="sub">El mismo esqueleto de carbonos con otro grupo de átomos: otra familia, otro nombre, otras propiedades. Predice y después mira.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Las moléculas">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Moléculas de bolitas y palitos: carbonos grises, hidrógenos turquesa, oxígenos rojos y nitrógenos azules"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="legend" id="ley1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos con grupos funcionales">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="El experimento: moléculas de bolitas y palitos"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="legend" id="ley2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/funciones-organicas">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'funciones-organicas', unidad: 'quimica.funciones-organicas', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la química sale de MotorFunciones (motor.js): el grafo, los grupos, la familia, el nombre, la cadena principal,
+   las clases de alcohol y de amina, los isómeros, los puentes de hidrógeno, las temperaturas de tabla, la caja de
+   grupos, la esterificación y las coordenadas. Aquí solo se pinta. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MF = MotorFunciones;
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const ease = p => p < .5 ? 2*p*p : 1 - Math.pow(-2*p + 2, 2)/2;
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 1 : d), r = Math.round(n*p)/p + 0;
+  const [e, f] = String(Math.abs(r)).split('.');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+const SUBD = { '0':'₀','1':'₁','2':'₂','3':'₃','4':'₄','5':'₅','6':'₆','7':'₇','8':'₈','9':'₉' };
+const sub = t => String(t).replace(/\d/g, d => SUBD[d]);
+const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+// Fórmula en el texto: C, H, O y N con su color; los números como subíndices.
+function F(f){
+  let h = '';
+  String(f).replace(/([A-Z][a-z]?)(\d*)|([–=≡\-()<])|(\d+)/g, (m, el, d, s, n) => {
+    if (el) h += `<span class="v v-${el}" data-var="${el}" tabindex="0">${el}${d ? `<sub>${d}</sub>` : ''}</span>`;
+    else if (s) h += s === '-' ? '–' : s === '<' ? '&lt;' : s;
+    else if (n) h += `<sub>${n}</sub>`;
+    return m;
+  });
+  return `<span class="f">${h}</span>`;
+}
+// Nombre IUPAC con sus partes de color: cadena, localizadores, grupo (sufijo o alcoxi) y, en el éster, sus dos partes.
+const TIPOS = { cad:1, loc:1, gf:1, ac:1, al:1 };
+const N = r => `<span class="nom">${r.partes.map(p => TIPOS[p.tipo] ? V(p.tipo, esc(p.t)) : esc(p.t)).join('')}</span>`;
+const sinTab = h => h.replace(/ tabindex="0"/g, '');
+
+function colores(){
+  const g = n => css(n);
+  return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'), ok:g('--ok'), warn:g('--warn'),
+    cad:g('--c-cad'), loc:g('--c-loc'), gf:g('--c-gf'), T:g('--c-T'), pu:g('--c-pu'), ac:g('--c-ac'), al:g('--c-al'),
+    el:{ C:g('--el-C'), H:g('--el-H'), O:g('--el-O'), N:g('--el-N') }, letra:g('--letra-atomo'), palito:g('--palito'), font:g('--font') };
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, x1, y1, x2, y2){ ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
+function rr(ctx, x, y, w, h, r){ ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h); }
+function texto(ctx, c, t, x, y, tam, color, align, max, peso){
+  let s = tam; ctx.font = `${peso || 700} ${s}px ${c.font}`;
+  if (max) while (s > 9 && ctx.measureText(t).width > max){ s -= 0.5; ctx.font = `${peso || 700} ${s}px ${c.font}`; }
+  ctx.fillStyle = color; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle'; ctx.fillText(t, x, y);
+  return ctx.measureText(t).width;
+}
+// Un texto hecho de partes de colores (el nombre), centrado en x; se achica hasta caber en max.
+function partesTexto(ctx, c, partes, x, y, tam, max){
+  const col = p => ({ cad:c.cad, loc:c.loc, gf:c.gf, ac:c.ac, al:c.al }[p.tipo] || c.ink);
+  let s = tam, w;
+  const medir = () => { ctx.font = `800 ${s}px ${c.font}`; return partes.reduce((t, p) => t + ctx.measureText(p.t).width, 0); };
+  w = medir(); while (max && s > 9 && w > max){ s -= 0.5; w = medir(); }
+  let xx = x - w/2; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+  for (const p of partes){ ctx.fillStyle = col(p); ctx.fillText(p.t, xx, y); xx += ctx.measureText(p.t).width; }
+}
+
+/* ----- Una molécula de bolitas y palitos -----
+   it = { m (molécula del motor), c (coordenadas), en (enlaces, si se dibujan dos copias), rot, partes, rot2, rot2Color,
+   op: { cadena, nums, grupo, tags, sale, cuenta, pu, contados, objetivos, marca, alpha }, teb: { valor, ver, p }, tachado }. */
+const RC = 0.27, RH = 0.17;
+function ajuste(it, box){
+  const A = it.c.atomos, op = it.op || {};
+  let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+  for (const p of A){ x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); y0 = Math.min(y0, p.y); y1 = Math.max(y1, p.y); }
+  const mg = 0.42 + (op.nums || op.cuenta ? 0.35 : 0);
+  return { s: Math.min(box.w/(x1 - x0 + 2*mg), box.h/(y1 - y0 + 2*mg), it.max || 58), x0, x1, y0, y1 };
+}
+function pintarMolecula(ctx, c, it, box, hl){
+  const A = it.c.atomos, op = it.op || {}, en = it.en || it.m.en;
+  const aj = ajuste(it, box), { x0, x1, y0, y1 } = aj, s = it._sFija || aj.s;
+  const cx = box.x + box.w/2, cy = box.y + box.h/2, mx = (x0 + x1)/2, my = (y0 + y1)/2;
+  const P = p => ({ X: cx + (p.x - mx)*s, Y: cy - (p.y - my)*s });
+  it._tf = { s, P };
+  const lw = Math.max(1.6, s*0.07);
+  ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  if (op.alpha !== undefined) ctx.globalAlpha = op.alpha;
+  const alfa0 = ctx.globalAlpha;
+  // Bandas pálidas: la cadena principal (un camino) y el grupo funcional (un conjunto de átomos).
+  const banda = (atomos, color, ancho, fuerte) => {
+    if (!atomos || !atomos.length) return;
+    const set = new Set(atomos);
+    ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = ancho; ctx.globalAlpha = alfa0*(fuerte ? 0.45 : 0.3);
+    ctx.beginPath();
+    for (const e of en) if (set.has(e.a) && set.has(e.b)){ const a = P(A[e.a]), b = P(A[e.b]); ctx.moveTo(a.X, a.Y); ctx.lineTo(b.X, b.Y); }
+    for (const i of set){ const q = P(A[i]); ctx.moveTo(q.X, q.Y); ctx.lineTo(q.X + 0.01, q.Y); }
+    ctx.stroke(); ctx.restore();
+  };
+  if (op.cadena) banda(op.cadena, c.cad, Math.max(12, s*0.62), hl === 'cad');
+  if (op.grupo) banda(op.grupo, c.gf, Math.max(12, s*0.7), hl === 'gf');
+  // Palitos X–H.
+  ctx.strokeStyle = c.palito; ctx.lineWidth = Math.max(1.2, s*0.05);
+  for (const p of A) if (p.padre !== null){ const a = P(A[p.padre]), b = P(p); linea(ctx, a.X, a.Y, b.X, b.Y); }
+  // Enlaces entre átomos pesados: simples, dobles, triples y los del benceno.
+  for (const e of en){
+    const a = P(A[e.a]), b = P(A[e.b]), dx = b.X - a.X, dy = b.Y - a.Y, L = Math.hypot(dx, dy) || 1, nx = -dy/L, ny = dx/L, sep = Math.max(3, s*0.09);
+    ctx.strokeStyle = c.palito; ctx.lineWidth = lw*1.1;
+    if (e.o === 2){ linea(ctx, a.X + nx*sep/1.4, a.Y + ny*sep/1.4, b.X + nx*sep/1.4, b.Y + ny*sep/1.4); linea(ctx, a.X - nx*sep/1.4, a.Y - ny*sep/1.4, b.X - nx*sep/1.4, b.Y - ny*sep/1.4); }
+    else if (e.o === 3){ linea(ctx, a.X, a.Y, b.X, b.Y); linea(ctx, a.X + nx*sep*1.3, a.Y + ny*sep*1.3, b.X + nx*sep*1.3, b.Y + ny*sep*1.3); linea(ctx, a.X - nx*sep*1.3, a.Y - ny*sep*1.3, b.X - nx*sep*1.3, b.Y - ny*sep*1.3); }
+    else linea(ctx, a.X, a.Y, b.X, b.Y);
+  }
+  if (en.some(e => e.o === 1.5)){
+    const an = MF.ciclos(it.m)[0]; let sx = 0, sy = 0; an.forEach(i => { const q = P(A[i]); sx += q.X; sy += q.Y; });
+    ctx.save(); ctx.strokeStyle = c.palito; ctx.lineWidth = lw; ctx.beginPath(); ctx.arc(sx/an.length, sy/an.length, s*0.5, 0, Math.PI*2); ctx.stroke(); ctx.restore();
+  }
+  // Puentes de hidrógeno: del H unido a O o N de una molécula al O o N de la otra.
+  if (op.pu) for (const [h, o] of op.pu){
+    const a = P(A[h]), b = P(A[o]);
+    ctx.save(); ctx.strokeStyle = c.pu; ctx.lineWidth = hl === 'pu' ? 4 : 3; ctx.setLineDash([3, 5]); linea(ctx, a.X, a.Y, b.X, b.Y); ctx.restore();
+  }
+  // Átomos.
+  const radio = p => (p.el === 'H' ? RH : RC)*s;
+  for (const p of A){
+    const q = P(p), r = radio(p);
+    ctx.beginPath(); ctx.arc(q.X, q.Y, r, 0, Math.PI*2); ctx.fillStyle = c.el[p.el] || c.muted; ctx.fill();
+    ctx.strokeStyle = c.paper; ctx.lineWidth = 1.2; ctx.stroke();
+    if (hl && hl === p.el){ ctx.strokeStyle = c.ink; ctx.lineWidth = 1.8; ctx.beginPath(); ctx.arc(q.X, q.Y, r + 2.2, 0, Math.PI*2); ctx.stroke(); }
+    if (r >= 6.5){ ctx.fillStyle = c.letra; ctx.font = `800 ${Math.round(r*1.05)}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(p.el, q.X, q.Y + 0.5); }
+  }
+  const anillo = (i, color, ancho, dash, extra) => { const q = P(A[i]); ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = ancho; if (dash) ctx.setLineDash(dash); ctx.beginPath(); ctx.arc(q.X, q.Y, radio(A[i]) + (extra || 3.5), 0, Math.PI*2); ctx.stroke(); ctx.restore(); };
+  // De dónde viene cada átomo (éster): parte del ácido y parte del alcohol.
+  if (op.tags) for (const [i, t] of Object.entries(op.tags)) anillo(+i, c[t], hl === t ? 4 : 3);
+  if (op.sale) for (const i of op.sale) anillo(i, c.ink, 2, [3, 3], 6.5);
+  if (op.contados !== undefined) A.forEach((p, k) => { if (k < op.contados) anillo(k, c.ink, 1.6, null, 2); });
+  // Lugar libre para un rótulo junto al átomo i: el más alejado de los átomos y de los rótulos ya puestos.
+  const puestos = [];
+  const libre = (i, d) => {
+    const p = A[i]; let mejor = null, val = -Infinity;
+    for (let k = 0; k < 24; k++){
+      const t = k*Math.PI/12, x = p.x + Math.cos(t)*d, y = p.y + Math.sin(t)*d;
+      let mn = Infinity;
+      for (const z of A) mn = Math.min(mn, Math.hypot(z.x - x, z.y - y) - (z.el === 'H' ? RH : RC));
+      for (const z of puestos) mn = Math.min(mn, Math.hypot(z.x - x, z.y - y) - 0.3);
+      for (const e of en) mn = Math.min(mn, Math.hypot((A[e.a].x + A[e.b].x)/2 - x, (A[e.a].y + A[e.b].y)/2 - y) - 0.08);
+      if (mn > val + 1e-9){ val = mn; mejor = { x, y }; }
+    }
+    puestos.push(mejor);
+    return P(mejor);
+  };
+  // Los carbonos que se cuentan (clase de alcohol o de amina): el centro con un anillo punteado; cada vecino, con su número.
+  if (op.cuenta){
+    anillo(op.cuenta.centro, c.ink, 2.2, [4, 3], 5);
+    op.cuenta.vecinos.forEach((i, k) => {
+      const q = libre(i, 0.5), r2 = Math.max(8, s*0.19);
+      ctx.beginPath(); ctx.arc(q.X, q.Y, r2, 0, Math.PI*2); ctx.fillStyle = c.paper; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; ctx.setLineDash([2, 2]); ctx.stroke(); ctx.setLineDash([]);
+      texto(ctx, c, String(k + 1), q.X, q.Y + 0.5, Math.max(10, r2*1.15), c.ink, 'center', 0, 900);
+    });
+  }
+  // Localizadores sobre la cadena principal.
+  if (op.nums) op.nums.forEach((i, k) => {
+    const q = libre(i, 0.54), r2 = Math.max(8, s*0.2);
+    ctx.beginPath(); ctx.arc(q.X, q.Y, r2, 0, Math.PI*2); ctx.fillStyle = c.paper; ctx.fill(); ctx.strokeStyle = c.loc; ctx.lineWidth = hl === 'loc' ? 2.6 : 1.6; ctx.stroke();
+    texto(ctx, c, String(k + 1), q.X, q.Y + 0.5, Math.max(10, r2*1.2), c.loc, 'center', 0, 900);
+  });
+  // La caja de grupos: lugares donde puede ir el grupo (anillos pálidos) y el elegido al arrastrar (punteado).
+  if (op.objetivos) for (const o of op.objetivos){ const q = P(o); ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.5; ctx.globalAlpha = alfa0*0.7; ctx.beginPath(); ctx.arc(q.X, q.Y, Math.max(12, s*0.42), 0, Math.PI*2); ctx.stroke(); ctx.restore(); }
+  if (op.marca){ const q = P(op.marca); ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2.4; ctx.setLineDash([4, 3]); ctx.beginPath(); ctx.arc(q.X, q.Y, Math.max(14, s*0.5), 0, Math.PI*2); ctx.stroke(); ctx.restore(); }
+  ctx.restore();
+}
+// Una fila o cuadrícula de moléculas, con su rótulo y, si hay, su termómetro.
+function celdas(W, n, v){
+  if (v.reaccion) return W < 560 ? { cols: 2, filas: Math.ceil(n/2) } : { cols: n, filas: 1 };
+  if (v.apilar && W < 560) return { cols: 1, filas: n };
+  const cols = W < 560 ? (n <= 2 ? n : 2) : (n === 4 ? 2 : Math.min(n, 3));
+  return { cols, filas: Math.ceil(n/cols) };
+}
+function altoCelda(W, n, v){
+  const base = n === 1 || (v.apilar && W < 560) ? (W < 560 ? (n === 1 ? 220 : 175) : 290) : v.reaccion ? (W < 560 ? 150 : 200) : (W < 560 ? (n <= 2 ? 165 : 140) : n <= 3 ? 230 : 180);
+  return base + 30 + (v.items.some(it => it.rot2) ? 16 : 0) + (v.items.some(it => it.teb) ? 34 : 0) + (v.extra || 0);
+}
+const PINTA = {};
+PINTA.mols = {
+  alto: (w, v) => { const { filas } = celdas(w, v.items.length, v); return filas*altoCelda(w, v.items.length, v) + 8 + (v.reaccion && w < 560 ? 18 : 0); },
+  llave: v => v.items.length + '|' + v.items.map(it => it.c.atomos.length).join(',') + '|' + !!v.reaccion + !!v.apilar + v.items.some(it => it.rot2) + v.items.some(it => it.teb),
+  pintar(ctx, c, W, v, hl){
+    const n = v.items.length, { cols } = celdas(W, n, v), ch = altoCelda(W, n, v), cw = (W - 8)/cols;
+    const conT = v.items.some(z => z.teb), con2 = v.items.some(z => z.rot2), pie = 30 + (con2 ? 16 : 0) + (conT ? 34 : 0);
+    const gap = v.reaccion && W < 560 ? 18 : 0;
+    const caja = k => ({ x: 4 + (k % cols)*cw, y: 4 + Math.floor(k/cols)*(ch + gap) });
+    const sComun = v.mismaEscala ? Math.min(...v.items.map(it => ajuste(it, { w: cw - 20, h: ch - pie - 14 }).s)) : 0;
+    v.items.forEach(it => { it._sFija = sComun || 0; });
+    v.items.forEach((it, k) => {
+      const { x, y } = caja(k);
+      if (n > 1 && !v.reaccion){ rr(ctx, x + 3, y + 3, cw - 6, ch - 6, 14); ctx.strokeStyle = c.line; ctx.lineWidth = 1; ctx.stroke(); }
+      const box = { x: x + 10, y: y + 8, w: cw - 20, h: ch - pie - 14 };
+      pintarMolecula(ctx, c, it, box, hl);
+      ctx.save(); if (it.op && it.op.alpha !== undefined) ctx.globalAlpha = it.op.alpha;
+      const yR = y + ch - pie + 6;
+      if (it.partes) partesTexto(ctx, c, it.partes, x + cw/2, yR, W < 560 ? 13 : 15, cw - 12);
+      else if (it.rot) texto(ctx, c, it.rot, x + cw/2, yR, W < 560 ? 13 : 15, c.ink, 'center', cw - 12, 800);
+      if (it.rot2) texto(ctx, c, it.rot2, x + cw/2, yR + 17, 12, it.rot2Color ? c[it.rot2Color] : c.muted, 'center', cw - 12, 800);
+      if (it.tachado){ ctx.strokeStyle = c.warn; ctx.lineWidth = 2.5; ctx.globalAlpha = 0.85; linea(ctx, x + 14, y + 14, x + cw - 14, y + ch - pie - 4); }
+      ctx.restore();
+      if (it.teb) termometro(ctx, c, it.teb, x + 14, yR + (con2 ? 50 : 34), cw - 28, v.rango || [-40, 100]);
+    });
+    // Signos de la reacción: + y → entre las celdas; al bajar de fila, una flecha hacia abajo.
+    if (v.reaccion && v.signos) v.signos.forEach((sg, k) => {
+      if (k + 1 >= n) return;
+      const a = caja(k), b = caja(k + 1);
+      if (a.y === b.y) texto(ctx, c, sg, b.x, a.y + (ch - pie)/2, 22, c.ink, 'center', 0, 800);
+      else texto(ctx, c, '↓', W/2, a.y + ch + gap/2 - 2, 20, c.ink, 'center', 0, 800);
+    });
+  },
+  leyenda: v => {
+    const els = new Set();
+    for (const it of v.items){ it.m.at.forEach(a => els.add(a.el)); if (it.c.atomos.some(p => p.el === 'H')) els.add('H'); }
+    const nom = { C:'carbono', H:'hidrógeno', O:'oxígeno', N:'nitrógeno' };
+    const l = ['C', 'H', 'O', 'N'].filter(e => els.has(e)).map(e => leyAt(e, nom[e]));
+    const op = k => v.items.some(it => it.op && it.op[k]);
+    if (op('cadena')) l.push(leyVar('cad', 'cadena principal'));
+    if (op('nums')) l.push(leyVar('loc', 'localizadores'));
+    if (op('grupo') || v.items.some(it => it.rot2Color === 'gf' || (it.partes && it.partes.some(p => p.tipo === 'gf')))) l.push(leyVar('gf', 'grupo funcional'));
+    if (op('pu')) l.push(`<span><svg width="18" height="6" aria-hidden="true"><line x1="1" y1="3" x2="17" y2="3" stroke="var(--c-pu)" stroke-width="3" stroke-dasharray="3 4" stroke-linecap="round"/></svg>puente de hidrógeno</span>`);
+    if (v.items.some(it => it.teb && it.teb.ver)) l.push(leyVar('T', 'temperatura de ebullición'));
+    if (v.items.some(it => it.op && it.op.tags && Object.values(it.op.tags).includes('ac'))) l.push(leyAnillo('var(--c-ac)', 'parte del ácido'));
+    if (v.items.some(it => it.op && it.op.tags && Object.values(it.op.tags).includes('al'))) l.push(leyAnillo('var(--c-al)', 'parte del alcohol'));
+    if (op('sale')) l.push(leyAnillo('var(--ink)', 'sale como agua', true));
+    if (op('cuenta')) l.push(leyAnillo('var(--ink)', 'carbonos que se cuentan', true));
+    if (op('objetivos')) l.push(leyAnillo('var(--muted)', 'lugares para el grupo'));
+    return l;
+  },
+  describir: v => v.desc || v.items.map(it => it.desc || it.rot || '').join(' '),
+};
+const leyAt = (e, t) => `<span><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="6" fill="var(--el-${e})"/></svg>${e} · ${t}</span>`;
+const leyVar = (k, t) => `<span><i style="background:var(--c-${k})"></i>${t}</span>`;
+const leyAnillo = (col, t, dash) => `<span><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="5" fill="none" stroke="${col}" stroke-width="2"${dash ? ' stroke-dasharray="2 2"' : ''}/></svg>${t}</span>`;
+// Termómetro horizontal, con la marca del aula (20 °C).
+function termometro(ctx, c, t, x, y, w, rango){
+  const [a, b] = rango, X = T => x + (clamp(T, a, b) - a)/(b - a)*w;
+  ctx.save(); rr(ctx, x, y - 4, w, 8, 4); ctx.fillStyle = c.grid; ctx.fill(); ctx.strokeStyle = c.line; ctx.stroke();
+  ctx.strokeStyle = c.muted; ctx.lineWidth = 1; ctx.setLineDash([2, 3]); linea(ctx, X(20), y - 4, X(20), y + 9); ctx.setLineDash([]);
+  texto(ctx, c, 'aula 20 °C', X(20), y + 16, 10, c.muted, 'center', 0, 700);
+  if (t.sinDato) texto(ctx, c, 'sin dato de tabla', x + w/2, y - 13, 11, c.muted, 'center', 0, 700);
+  else if (t.ver){ const p = t.p === undefined ? 1 : t.p, v = a + (t.valor - a)*p; rr(ctx, x, y - 4, Math.max(8, X(v) - x), 8, 4); ctx.fillStyle = c.T; ctx.fill();
+    texto(ctx, c, `${fmt(t.valor)} °C`, clamp(X(v), x + 24, x + w - 24), y - 13, 12, c.T, 'center', 0, 900); }
+  else texto(ctx, c, '¿?', x + w/2, y - 13, 12, c.muted, 'center', 0, 900);
+  ctx.restore();
+}
+
+/* ----- La escena: un lienzo con su vista; en el celular, con una predicción pendiente, el dibujo se encoge a escala. ----- */
+const ESCENAS = [];
+function crearEscena(cv, idDesc, modoId, idLey){
+  const E = { vista:{ tipo:'mols', items:[] }, hl:null, modoId, anims:[], compacto:false, ctx: cv.getContext('2d'), cv };
+  ESCENAS.push(E);
+  let H = 0;
+  E.W = 0; E.esc = 1;
+  E.resize = () => {
+    const w = cv.clientWidth; if (!w) return;
+    E.W = w; const Hn = PINTA[E.vista.tipo].alto(w, E.vista);
+    const h = Math.round(Celular.alto(Hn, E.compacto)); E.esc = h/Hn;
+    const dpr = Celular.dpr();
+    if (h !== H || cv.width !== Math.round(w*dpr)){ H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); }
+  };
+  new ResizeObserver(() => { E.resize(); E.dibujar(); }).observe(cv);
+  E.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === E.compacto) return; E.compacto = on; E.resize(); E.dibujar(); };
+  let llave = '';
+  E.dibujar = () => {
+    const w = cv.clientWidth; if (!w) return;
+    const P = PINTA[E.vista.tipo], k = `${w}|${E.vista.tipo}|${P.llave ? P.llave(E.vista) : ''}|${E.compacto}|${E.vista.extra || 0}`;
+    if (k !== llave){ E.resize(); llave = k; }
+    const c = colores(), dpr = Celular.dpr(), ctx = E.ctx;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, E.W, H);
+    E.ox = (E.W - E.W*E.esc)/2;
+    ctx.setTransform(dpr*E.esc, 0, 0, dpr*E.esc, dpr*E.ox, 0);
+    P.pintar(ctx, c, E.W, E.vista, E.hl);
+    const ley = (P.leyenda ? P.leyenda(E.vista) : []).join(''), el = document.getElementById(idLey);
+    if (el && el.dataset.k !== ley){ el.dataset.k = ley; el.innerHTML = ley; }
+  };
+  E.describir = () => { const t = PINTA[E.vista.tipo].describir(E.vista), el = document.getElementById(idDesc); if (el.textContent !== t) el.textContent = t; };
+  E.local = p => ({ x: (p.x - (E.ox || 0))/E.esc, y: p.y/E.esc });
+  return E;
+}
+
+/* ----- Resaltar en el dibujo lo que se toca en el texto (regla 4) ----- */
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+// Un bucle que solo corre mientras algo se mueve.
+let RAF = 0, ULT = 0;
+function pedir(){ if (!RAF){ ULT = performance.now(); RAF = requestAnimationFrame(tick); } }
+function tick(now){
+  RAF = 0; const dt = Math.min(0.05, (now - ULT)/1000); ULT = now; let sigue = false;
+  for (const E of ESCENAS){
+    if (document.getElementById(E.modoId).hidden) continue;
+    for (const a of [...E.anims]){ a.t += dt; const f = Math.min(1, a.t/a.dur); a.paso(ease(Math.max(0, f))); if (f >= 1){ E.anims.splice(E.anims.indexOf(a), 1); if (a.fin) a.fin(); } else sigue = true; }
+    E.dibujar();
+  }
+  if (sigue) pedir();
+}
+function animar(E, dur, paso, fin, retraso){
+  if (RM){ paso(1); if (fin) fin(); E.dibujar(); return; }
+  E.anims.push({ t:-(retraso || 0), dur, paso, fin }); pedir();
+}
+function cortar(E){ E.anims = []; }
+const LETRAS = 'abcd';
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}" aria-label="Opción ${LETRAS.indexOf(k) + 1}: ${t.replace(/<[^>]+>/g, '')}"><span class="l">${LETRAS.indexOf(k) + 1}</span><span>${sinTab(t)}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+const otraVez = `<button type="button" class="btn" data-repetir>Ver de nuevo</button>`;
+
+/* ----- Moléculas de la escena (todas salen del motor) ----- */
+function mol(texto, o){
+  o = o || {};
+  const m = MF.molecula(texto);
+  return { m, c: MF.coordenadas(m), op: {}, ...o };
+}
+const deResumen = (r, o) => ({ m: r.molecula, c: MF.coordenadas(r.molecula), op: {}, ...(o || {}) });
+// El nombre del motor, con la cadena principal, la numeración y el grupo funcional en el dibujo.
+function conNombre(it, que){
+  const r = MF.nombre(it.m), f = MF.funcion(it.m), op = {};
+  if (que.includes('cadena') && r.cadena && r.cadena.length > 1) op.cadena = r.cadena;
+  if (que.includes('nums') && r.cadena) op.nums = r.cadena;
+  if (que.includes('grupo') && f.principal) op.grupo = f.principal.atomos;
+  if (que.includes('familia')){ it.rot2 = f.nombreFamilia; it.rot2Color = 'gf'; }
+  it.op = { ...it.op, ...op }; it.partes = r.partes; it.rot = r.nombre;
+  return it;
+}
+// Fórmula molecular con subíndices (para el dibujo).
+const fm = it => sub(MF.formula(it.m).texto);
+// Dos copias de la molécula: si tiene un H unido a O o N, la segunda recibe ese H en su O o N (puente de hidrógeno).
+function enPar(it){
+  const pu = MF.puentes(it.m), A = it.c.atomos, n = A.length;
+  let B; const lineas = [];
+  const cen = A.reduce((s, p) => ({ x: s.x + p.x/n, y: s.y + p.y/n }), { x:0, y:0 });
+  if (pu.entreMoleculas){
+    const d = pu.donadores[0], hA = A.find(p => p.padre === d), oA = A[d], acc = pu.aceptores[0];
+    const L = Math.hypot(hA.x - oA.x, hA.y - oA.y), u = { x:(hA.x - oA.x)/L, y:(hA.y - oA.y)/L };
+    const th = Math.atan2(u.y, u.x) - Math.atan2(cen.y - A[acc].y, cen.x - A[acc].x);
+    const rot = p => ({ x: p.x*Math.cos(th) - p.y*Math.sin(th), y: p.x*Math.sin(th) + p.y*Math.cos(th) });
+    const t = { x: hA.x + u.x*1.15, y: hA.y + u.y*1.15 }, r0 = rot(A[acc]);
+    B = A.map(p => { const q = rot(p); return { ...p, x: q.x - r0.x + t.x, y: q.y - r0.y + t.y }; });
+    lineas.push([hA.i, n + acc]);
+  } else {
+    let x0 = Infinity, x1 = -Infinity; for (const p of A){ x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); }
+    B = A.map(p => ({ ...p, x: p.x + (x1 - x0) + 1.3 }));
+  }
+  it.c = { atomos: [...A, ...B.map(p => ({ ...p, i: p.i + n, padre: p.padre === null ? null : p.padre + n }))], enlaces: [] };
+  it.en = [...it.m.en, ...it.m.en.map(e => ({ ...e, a: e.a + n, b: e.b + n }))];
+  it.op.pu = lineas; it.puentes = pu;
+  return it;
+}
+// Marcas de origen en el dibujo de un éster, de un ácido o de un alcohol (los H siguen a su átomo).
+function marcar(it, tagDe){
+  const A = it.c.atomos, tags = {};
+  A.forEach((p, k) => { const t = tagDe(p.padre === null ? k : p.padre, p); if (t) tags[k] = t; });
+  it.op.tags = tags; return it;
+}
+
+/* ----- La caja de grupos: tocar un lugar del esqueleto (o arrastrar el grupo hasta él) lo pone ahí -----
+   E.caja = { n, g, pos, grupos (los que se pueden elegir), alCambiar(resumen, anterior), decir(texto) }. */
+function interaccionCaja(E){
+  const cv = E.cv;
+  const it = () => E.vista.items[0];
+  const lugarDe = (K, A, p) => (MF.CAJA[K.g].lugar === 'enlace' ? { x:(A[p - 1].x + A[p].x)/2, y:(A[p - 1].y + A[p].y)/2 } : A[p - 1]);
+  const objetivos = () => {
+    const x = it(), K = E.caja; if (!x || !x._tf || !K) return [];
+    return MF.posiciones(K.n, K.g).map(p => { const q = lugarDe(K, x.c.atomos, p), Q = x._tf.P(q); return { pos:p, q, X:Q.X, Y:Q.Y }; });
+  };
+  const grupoXY = () => { const x = it(); if (!x || !x._tf) return []; return (x.op.grupo || []).filter(i => x.m.at[i].el !== 'C').map(i => x._tf.P(x.c.atomos[i])); };
+  const cercano = (p, r) => { const q = E.local(p); let mejor = null, d0 = r/E.esc; for (const o of objetivos()){ const d = Math.hypot(o.X - q.x, o.Y - q.y); if (d < d0){ d0 = d; mejor = o; } } return mejor; };
+  const cercaGrupo = (p, r) => { const q = E.local(p); return grupoXY().some(o => Math.hypot(o.X - q.x, o.Y - q.y) < r/E.esc); };
+  let arr = null;
+  Celular.arrastre(cv, {
+    activo: () => !!E.caja && !E.ocupado,
+    cerca: (p, r) => !!cercano(p, r) || cercaGrupo(p, r),
+    empezar: p => { arr = { ini:p, movido:0, ultimo:null }; },
+    mover: p => {
+      if (!arr) return; arr.movido = Math.max(arr.movido, Math.hypot(p.x - arr.ini.x, p.y - arr.ini.y));
+      if (arr.movido < 6) return;
+      const o = cercano(p, 2000); arr.ultimo = o; const x = it(); if (x){ x.op.marca = o ? o.q : null; E.dibujar(); }
+    },
+    soltar: () => {
+      if (!arr) return;
+      const o = arr.movido < 6 ? cercano(arr.ini, Celular.RADIO_DEDO) : arr.ultimo;
+      arr = null; const x = it(); if (x) x.op.marca = null;
+      if (o) poner(o.pos); else E.dibujar();
+    },
+  });
+  cv.addEventListener('keydown', e => {
+    if (!E.caja) return;
+    const k = { ArrowRight:1, ArrowDown:1, ArrowLeft:-1, ArrowUp:-1 }[e.key]; if (!k) return;
+    e.preventDefault();
+    const l = MF.posiciones(E.caja.n, E.caja.g), i = l.indexOf(E.caja.pos);
+    poner(l[(i + k + l.length) % l.length]);
+  });
+  function poner(pos){ const K = E.caja; if (!K) return; const antes = K.r; K.pos = pos; K.r = MF.ponerGrupo(K.n, K.g, pos); K.alCambiar(K.r, antes); }
+  E.ponerCaja = poner;
+}
+// En la caja salen juntos cadena, localizadores, grupo y temperatura: el nombre de un éster va sin sus dos partes de color.
+const sinPartesEster = r => ({ ...r, partes: r.partes.map(p => (p.tipo === 'ac' || p.tipo === 'al' ? { t: p.t } : p)) });
+// La vista de la caja: el esqueleto con su grupo, la cadena, los números, el grupo funcional y el termómetro.
+function vistaCaja(r, rango){
+  const it = conNombre(deResumen(r), ['cadena', 'nums', 'grupo', 'familia']);
+  it.partes = sinPartesEster(it).partes;
+  it.teb = r.teb === null ? { sinDato:true } : { valor: r.teb, ver: true };
+  it.desc = `${r.nombre}, ${r.nombreFamilia}, ${r.formula.replace(/(\d+)/g, ' $1 ')}. ${r.teb === null ? 'Sin temperatura de ebullición en la tabla.' : 'Hierve a ' + fmt(r.teb) + ' grados.'}`;
+  return { tipo:'mols', items:[it], rango: rango || [-40, 240] };
+}
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso =================
+   Pasos 1 a 3 de «Propuesta para las plantillas → 4. Funciones orgánicas: el grupo que se cambia» de
+   docs/investigacion/quimica-materia-nomenclatura-organica-ideas-erroneas.md, más la clase de un alcohol, el éster con
+   sus dos partes, la clase de una amina y la numeración de una cetona. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'm1', 'ley1');
+const S = { step:0, max:0, pred:{} };
+
+// Datos de cada paso, todos del motor.
+const ETOH = 'CH3-CH2-OH', ETER = 'CH3-O-CH3';
+const ISO = MF.compararIsomeria(ETOH, ETER);
+const EB = MF.compararEbullicion(ETOH, ETER);
+const PAL = 'CH3-CH2-CHO', PONA = 'CH3-CO-CH3', NPAL = MF.nombre(PAL), NPONA = MF.nombre(PONA), ISO3 = MF.compararIsomeria(PAL, PONA);
+const TBU = '(CH3)3C-OH', ALC = MF.tipoAlcohol(TBU);
+const ALCS = ['CH3-CH2-CH2-OH', 'CH3-CH(OH)-CH3', TBU];
+const EST = 'CH3-COO-CH3', NEST = MF.nombre(EST), REAC = MF.esterificar('CH3-COOH', 'CH3-OH');
+const AMI = '(CH3)3C-NH2', TAM = MF.tipoAmina(AMI), NAMI = MF.nombre(AMI);
+const CET = 'CH3-CH2-CH2-CO-CH3', NCET = MF.nombre(CET);
+const nP = n => N({ partes: [{ t: n }] });
+
+const P1 = { id:'fo-etanol-eter-isomeros', ok:'b', opts:[
+  ['a', 'No: el etanol es un alcohol y el otro es un éter; los isómeros tienen que ser de la misma familia', 'FO1-otra-familia', 'parcial'],
+  ['b', 'Sí: los dos tienen los mismos átomos, pero unidos de otra forma'],
+  ['c', 'No: al pasar el O al medio se pierde el H del –OH, y ya no tienen los mismos átomos', 'FO-pierde-el-H', 'hipotesis'],
+  ['d', 'No: es la misma sustancia; solo cambió el lugar del O en el dibujo', 'FO-misma-sustancia', 'hipotesis']],
+  fb:{ b:`¡Bien! Los dos son ${sub(ISO.formulaA)}: 2 C, 6 H y 1 O. Con los átomos unidos de otra forma son dos sustancias distintas, de dos familias: isómeros de función. Mira cómo se cuentan los átomos de cada uno.`,
+    a:`Elegiste la 1. Los isómeros pueden ser de familias distintas: basta la misma fórmula molecular y otro orden de unión. El etanol y el metoximetano son los dos ${sub(ISO.formulaA)}. Que un alcohol y un éter «no pueden ser isómeros porque son de otra clase» está descrito en escolares (Schmidt, 1992, por su resumen), sin porcentaje en lo que leímos. La correcta está marcada.`,
+    c:`Elegiste la 3. El H del –OH no se pierde: al mover el O, ese H queda en el carbono, que pasa de CH₂ a CH₃. Si se pierde un H, la fórmula sería ${sub(ISO.errores.pierdeH)}, y eso no cumple las valencias. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
+    d:'Elegiste la 4. El lugar del O no es solo del dibujo: en el etanol el O está en una punta, unido a un C y a un H; en el otro, entre dos carbonos. Son uniones distintas: dos sustancias distintas. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.' } };
+const P2 = { id:'fo-ebullicion-puente-h', ok:'c', opts:[
+  ['a', 'A la misma temperatura: tienen la misma fórmula y la misma masa', 'FO-misma-formula-igual', 'hipotesis'],
+  ['b', 'El metoximetano: su O forma puentes de hidrógeno con las moléculas vecinas', 'FO2-puente-por-tener-O', 'documentado'],
+  ['c', 'El etanol: su H unido al O forma puentes de hidrógeno con las moléculas vecinas'],
+  ['d', 'El metoximetano: su molécula es simétrica y se acomoda mejor con las vecinas', 'FO-eter-simetrico', 'hipotesis']],
+  fb:{ c:`¡Bien! El etanol hierve a ${fmt(EB.a.teb)} °C y el metoximetano a ${fmt(EB.b.teb)} °C (de tabla). Mira la línea punteada: el H unido al O de un etanol apunta al O de otro. En el éter todos los H están en carbonos: no hay puente.`,
+    a:`Elegiste la 1. La misma fórmula no da la misma atracción entre moléculas: depende de cómo están unidos los átomos. Hay más de 100 °C de diferencia: ${fmt(EB.a.teb)} °C contra ${fmt(EB.b.teb)} °C (de tabla). Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
+    b:'Elegiste la 2. Tener un O no basta: el puente de hidrógeno es un H unido a O (o a N) que se va hacia el O de otra molécula. En el metoximetano todos los H están en carbonos. En una pregunta de opción múltiple, cerca de un tercio de los escolares de dos grupos (34 % de 112 y 31 % de 82) eligió el éter como el que forma puentes (Schmidt, 1996). La correcta está marcada.',
+    d:'Elegiste la 4. La simetría no le da atracción: el metoximetano no tiene ningún H unido al O, así que sus moléculas se atraen menos y hierve mucho antes. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.' } };
+const P3 = { id:'fo-aldehido-cetona', ok:'a', opts:[
+  ['a', `A: ${NPAL.nombre}; B: ${NPONA.nombre}`],
+  ['b', `A: ${NPONA.nombre}; B: ${NPAL.nombre}`, 'FO3-al-reves', 'hipotesis'],
+  ['c', `A: ${NPAL.nombre}; B: ${NPONA.errores.comoAldehido}`, 'FO3-no-distingue-posicion', 'hipotesis'],
+  ['d', `A: ${NPAL.errores.sufijoOl}; B: ${NPONA.nombre}`, 'FO-al-por-ol', 'hipotesis']],
+  fb:{ a:`¡Bien! Con el C=O en la punta (–CHO) es un aldehído: ${NPAL.nombre}. Con el C=O entre dos carbonos es una cetona: ${NPONA.nombre}. Los dos son ${sub(ISO3.formulaA)}: isómeros de función.`,
+    b:`Elegiste la 2: los nombres van al revés. La -al es del aldehído, con el C=O en la punta; la -ona, de la cetona, con el C=O en el medio. Agrupar por un solo rasgo de superficie, y cambiar de rasgo, está descrito en estudiantes (Domin, Al-Masum y Mensah, 2008, por la descripción de Graulich y Bhattacharyya, 2017), sin porcentaje; esta confusión es una hipótesis nuestra que sale de ahí. La correcta está marcada.`,
+    c:`Elegiste la 3. Que los dos tengan un C=O no los hace iguales: el lugar del C=O cambia la familia. En el medio, entre dos C, ya no hay un H en ese carbono: es una cetona (-ona). Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
+    d:`Elegiste la 4. La -ol es del alcohol, el grupo –OH. La molécula A no tiene –OH: tiene C=O en la punta, y eso es -al. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.` } };
+const P4 = { id:'fo-clase-alcohol', ok:'b', opts:[
+  ['a', `${ALC.errores.porLocalizador[0].toUpperCase() + ALC.errores.porLocalizador.slice(1)}: el –OH está en el carbono 2`, 'FO4-por-localizador', 'hipotesis'],
+  ['b', `${ALC.clase[0].toUpperCase() + ALC.clase.slice(1)}: el carbono del –OH está unido a otros 3 carbonos`],
+  ['c', `${ALC.errores.contandoElO[0].toUpperCase() + ALC.errores.contandoElO.slice(1)}: el carbono del –OH tiene 4 vecinos que no son H`, 'FO-cuenta-el-O', 'hipotesis'],
+  ['d', `${ALC.errores.porNumeroDeOH[0].toUpperCase() + ALC.errores.porNumeroDeOH.slice(1)}: la molécula tiene un solo grupo –OH`, 'FO-por-numero-de-OH', 'hipotesis']],
+  fb:{ b:'¡Bien! Se cuentan los carbonos unidos al carbono que lleva el –OH: aquí son 3. Mira los tres alcoholes: 1 carbono vecino (primario), 2 (secundario) y 3 (terciario).',
+    a:'Elegiste la 1. El número 2 del nombre dice dónde está el –OH en la cadena, no qué tipo de alcohol es. El carbono del –OH tiene 3 carbonos unidos: terciario. No reconocer el grupo ni nombrar alcoholes con su localizador está documentado en escolares de Ghana, sin porcentaje en lo que leímos (Adu-Gyamfi, Ampiah y Appiah, 2017, por la descripción de otro artículo); clasificarlos por el localizador es una hipótesis nuestra que sale de ahí. La correcta está marcada.',
+    c:'Elegiste la 3. El O no se cuenta: la clase se fija solo con los carbonos unidos al carbono del –OH. Son 3: terciario. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.',
+    d:'Elegiste la 4. Primario, secundario y terciario no dicen cuántos –OH hay, sino cuántos carbonos tiene unidos el carbono del –OH. Aquí son 3. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.' } };
+const P5 = { id:'fo-nombre-ester', ok:'c', opts:[
+  ['a', nP(NEST.errores.partesAlReves), 'FO-ester-al-reves', 'hipotesis'],
+  ['b', nP(NEST.errores.comoAcido), 'FO-ester-como-acido', 'hipotesis'],
+  ['c', nP(NEST.nombre)],
+  ['d', nP(NEST.errores.eterMasCetona), 'FO-ester-eter-mas-cetona', 'hipotesis']],
+  fb:{ c:`¡Bien! La parte con el C=O viene del ácido etanoico y da «${NEST.ester.parteAcido}»; la que está unida al O del puente viene del metanol y da «de ${NEST.ester.alquilo}». Mira la reacción con las dos partes de colores.`,
+    a:`Elegiste la 1: las partes van al revés. La parte que lleva el C=O (aquí, 2 C) es la del ácido y va primero, con -ato; la del alcohol (1 C), unida al O del puente, va después con -ilo. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
+    b:`Elegiste la 2. El ${NEST.errores.comoAcido} tiene la misma fórmula, ${sub(MF.formula(EST).texto)}, pero es otra sustancia: su –COOH tiene un H unido al O. Aquí el O del medio está entre dos carbonos: es un éster. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
+    d:'Elegiste la 4. El –COO– es un solo grupo, el éster: no se parte en un éter (–O–) y una cetona (C=O). Leer un grupo como la suma de otros dos es una hipótesis nuestra que sale de lo descrito en el informe. La correcta está marcada.' } };
+const P6 = { id:'fo-clase-amina', ok:'a', opts:[
+  ['a', `${cap(TAM.clase)}: el N está unido a un solo carbono`],
+  ['b', `${cap(TAM.errores.comoAlcohol)}: el carbono unido al N tiene otros 3 carbonos, como en el alcohol del paso 5`, 'FO-amina-como-alcohol', 'hipotesis'],
+  ['c', `${cap(TAM.errores.porLocalizador)}: el –NH₂ está en el carbono 2`, 'FO-amina-por-localizador', 'hipotesis'],
+  ['d', `${cap(TAM.errores.contandoElN)}: el carbono unido al N tiene 4 vecinos que no son H`, 'FO-amina-cuenta-el-N', 'hipotesis']],
+  fb:{ a:'¡Bien! En las aminas se cuentan los carbonos unidos al N, no al carbono: aquí el N tiene uno solo. Mira la amina junto al alcohol con el mismo esqueleto: el alcohol es terciario y la amina, primaria.',
+    b:'Elegiste la 2. Así se clasifican los alcoholes (por el carbono del –OH), pero las aminas se clasifican por el N: cuántos carbonos tiene unidos. Aquí, uno: primaria. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.',
+    c:'Elegiste la 3. El 2 del nombre dice dónde está el –NH₂ en la cadena, no la clase. El N tiene un solo carbono unido: primaria. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.',
+    d:'Elegiste la 4. En las aminas se mira el N, no el carbono: el N está unido a un solo carbono y a dos H. Primaria. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.' } };
+const P7 = { id:'fo-numeracion-cetona', ok:'b', opts:[
+  ['a', nP(NCET.errores.numeracionContraria), 'FO-numeracion-contraria', 'hipotesis'],
+  ['b', nP(NCET.nombre)],
+  ['c', nP(NCET.errores.comoAldehido), 'FO3-cetona-como-aldehido', 'hipotesis'],
+  ['d', nP(NCET.errores.sufijoOl), 'FO-ona-por-ol', 'hipotesis']],
+  fb:{ b:`¡Bien! La cadena tiene 5 carbonos y se numera desde el lado más cercano al C=O: queda en el carbono 2. Forma anterior: ${NCET.antiguo}.`,
+    a:`Elegiste la 1 (${NCET.errores.numeracionContraria}). Numeraste desde el lado más lejano al grupo. Se numera desde el extremo que le da al grupo el número más bajo: 2. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
+    c:`Elegiste la 3 (${NCET.errores.comoAldehido}). Un aldehído tiene el C=O en la punta de la cadena; aquí está entre dos carbonos: es una cetona (-ona). Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
+    d:`Elegiste la 4 (${NCET.errores.sufijoOl}). La -ol es del –OH, que aquí no hay. El C=O entre dos carbonos da -ona. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.` } };
+function cap(t){ return t[0].toUpperCase() + t.slice(1); }
+
+// Vistas de cada paso (r: ya respondió).
+function vIntro(){
+  const items = [['CC', 'etano'], [ETOH], ['CH3-CHO'], ['CH3-COOH']].map(([t]) => {
+    const it = conNombre(mol(t), ['grupo', 'familia']);
+    if (!MF.funcion(it.m).principal){ it.rot2 = 'sin grupo'; it.rot2Color = 'muted'; }
+    it.desc = `${it.rot}: ${MF.funcion(it.m).principal ? MF.funcion(it.m).nombreFamilia : 'sin grupo funcional'}.`;
+    return it;
+  });
+  return { tipo:'mols', items };
+}
+function vIsomeros(r, p){
+  const a = mol(ETOH, { rot:'A', desc:'Dibujo A, el etanol: dos carbonos en fila y, en la punta, un O con su H.' });
+  const b = mol(ETER, { rot:'B', desc:'Dibujo B: un O en el medio, entre dos carbonos con tres H cada uno.' });
+  if (r){
+    for (const it of [a, b]){ conNombre(it, ['grupo', 'familia']); if (p !== undefined && p < 1) it.op.contados = Math.floor(p*it.c.atomos.length + 0.5); else it.rot2 = `${fm(it)} · ${MF.funcion(it.m).nombreFamilia}`; }
+    a.desc = `Etanol, ${ISO.formulaA}: alcohol.`; b.desc = `Metoximetano, ${ISO.formulaB}: éter. La misma fórmula con los átomos unidos de otra forma: isómeros de función.`;
+  }
+  return { tipo:'mols', items:[a, b] };
+}
+function vEbullicion(r, p){
+  const a = mol(ETOH, { rot:'etanol', teb:{ valor: EB.a.teb, ver: !!r, p } }), b = mol(ETER, { rot:'metoximetano', teb:{ valor: EB.b.teb, ver: !!r, p } });
+  a.desc = 'Etanol: CH3–CH2–OH.'; b.desc = 'Metoximetano: CH3–O–CH3.';
+  if (r){ enPar(a); enPar(b); a.desc = `Dos moléculas de etanol: el H unido al O de una apunta al O de la otra, un puente de hidrógeno. Hierve a ${fmt(EB.a.teb)} grados.`; b.desc = `Dos moléculas de metoximetano, sin puente: todos sus H están en carbonos. Hierve a ${fmt(EB.b.teb)} grados: a 20 grados ya es gas.`; }
+  return { tipo:'mols', items:[a, b], mismaEscala:true, apilar: !!r, rango:[-40, 100] };
+}
+function vCarbonilo(r){
+  const a = mol(PAL, { rot:'A', desc:'Molécula A: tres carbonos en fila; el último tiene un O con doble enlace y un H.' });
+  const b = mol(PONA, { rot:'B', desc:'Molécula B: tres carbonos en fila; el del medio tiene un O con doble enlace.' });
+  if (r){ for (const it of [a, b]){ conNombre(it, ['grupo', 'familia']); it.rot2 = `${fm(it)} · ${MF.funcion(it.m).nombreFamilia}`; } a.desc = `A: ${NPAL.nombre}, aldehído.`; b.desc = `B: ${NPONA.nombre}, cetona. Isómeros de función.`; }
+  return { tipo:'mols', items:[a, b] };
+}
+function vAlcoholes(r){
+  const items = ALCS.map(t => { const it = conNombre(mol(t), []); it.desc = it.rot + '.'; return it; });
+  if (r) items.forEach(it => {
+    const k = MF.tipoAlcohol(it.m); it.op.cuenta = { centro: k.carbono, vecinos: k.carbonosVecinos }; it.op.grupo = [k.carbono, k.oxigeno];
+    it.rot2 = `${k.clase}: ${k.nC} C unido${k.nC > 1 ? 's' : ''}`; it.rot2Color = 'ink';
+    it.desc = `${it.rot}: el carbono del OH tiene ${k.nC} carbonos unidos, alcohol ${k.clase}.`;
+  });
+  return { tipo:'mols', items };
+}
+const TAGS = { acido:'ac', alcohol:'al' };
+function vEster(r, p){
+  if (!r){ const it = mol(EST, { rot:'¿cómo se llama?', desc:'Un éster: un CH3, un carbono con un O de doble enlace, un O de puente y otro CH3.' }); return { tipo:'mols', items:[it] }; }
+  const ac = mol('CH3-COOH'), al = mol('CH3-OH'), es = { m: REAC.ester, c: MF.coordenadas(REAC.ester), op:{} }, ag = mol('O', { rot:'agua' });
+  const ohA = REAC.sale.acido, oL = REAC.sale.alcohol;
+  marcar(ac, i => 'ac'); ac.op.sale = ac.c.atomos.map((q, k) => k).filter(k => k === ohA || ac.c.atomos[k].padre === ohA); ac.rot = REAC.nombreAcido;
+  marcar(al, i => 'al'); al.op.sale = al.c.atomos.map((q, k) => k).filter(k => al.c.atomos[k].padre === oL); al.rot = REAC.nombreAlcohol;
+  marcar(es, i => TAGS[REAC.origen[i]]); es.partes = REAC.partes;
+  // El agua: el O y un H salen del ácido; el otro H, del alcohol.
+  ag.op.tags = { 0:'ac', 1:'ac', 2:'al' };
+  const f = p === undefined ? 1 : p; es.op.alpha = f; ag.op.alpha = f;
+  ac.desc = 'Ácido etanoico: pierde el OH de su grupo.'; al.desc = 'Metanol: pierde el H de su OH.';
+  es.desc = `${REAC.nombre}: la parte del ácido con el C=O y la del alcohol unida al O del puente.`; ag.desc = 'Y una molécula de agua.';
+  return { tipo:'mols', items:[ac, al, es, ag], reaccion:true, signos:['+', '→', '+'] };
+}
+function vAmina(r){
+  const a = conNombre(mol(AMI), []); a.desc = `${NAMI.nombre}: un carbono unido a tres CH3 y a un NH2.`;
+  if (!r) return { tipo:'mols', items:[a] };
+  const b = conNombre(mol(TBU), []);
+  a.op.cuenta = { centro: TAM.nitrogeno, vecinos: TAM.carbonosVecinos }; a.op.grupo = [TAM.nitrogeno];
+  a.rot2 = `amina ${TAM.clase}: 1 C en el N`; a.rot2Color = 'ink';
+  b.op.cuenta = { centro: ALC.carbono, vecinos: ALC.carbonosVecinos }; b.op.grupo = [ALC.carbono, ALC.oxigeno];
+  b.rot2 = `alcohol ${ALC.clase}: 3 C en el C`; b.rot2Color = 'ink';
+  a.desc = `La amina: el N tiene un solo carbono unido, primaria.`; b.desc = `El alcohol con el mismo esqueleto: el carbono del OH tiene tres carbonos unidos, terciario.`;
+  return { tipo:'mols', items:[a, b] };
+}
+function vCetona(r){
+  const it = mol(CET, { rot: r ? NCET.nombre : '¿cómo se llama?', desc:'Cinco carbonos en zigzag; el cuarto desde la izquierda tiene un O con doble enlace.' });
+  if (r){ conNombre(it, ['cadena', 'nums', 'grupo']); it.desc = `Numerada desde la derecha, el lado del C=O: el grupo queda en el carbono 2, ${NCET.nombre}.`; }
+  return { tipo:'mols', items:[it] };
+}
+
+const prioridadHTML = () => `<div class="tablaw"><table class="tabla"><tr><th>Familia</th><th>Grupo</th><th>En el nombre</th><th>Ejemplo</th></tr>
+  ${[['ácido carboxílico', '–COOH', 'ácido …-oico', 'CH3-COOH'], ['éster', '–COO–', '…-oato de …-ilo', 'CH3-COO-CH3'], ['amida', '–CONH2', '-amida', 'CH3-CONH2'], ['nitrilo', '–C≡N', '-nitrilo', 'CH3-CN'],
+     ['aldehído', '–CHO', '-al', 'CH3-CHO'], ['cetona', '–CO– (entre dos C)', '-ona', 'CH3-CO-CH3'], ['alcohol', '–OH', '-ol', 'CH3-CH2-OH'], ['amina', '–NH2, –NH–, –N<', '-amina', 'CH3-NH2'], ['éter', '–O–', 'alcoxi-', 'CH3-O-CH3']]
+    .map(([f, g, s, e]) => { const r = MF.nombre(e); return `<tr><td>${f}</td><td>${F(g)}</td><td>${s}</td><td>${N(r)}${r.comun ? ` <span class="hint">(${esc(r.comun)})</span>` : ''}</td></tr>`; }).join('')}</table></div>`;
+
+const steps = [
+ { k:'Paso 1', t:'El mismo esqueleto, otro grupo', vista:() => vIntro(),
+   body:() => `<p class="problem">Los cuatro dibujos tienen el mismo esqueleto: dos carbonos unidos. Lo que cambia es el <b>grupo funcional</b>, el grupo de átomos que decide la familia, la terminación del nombre y buena parte de las propiedades.</p>
+   <p>Cada elemento tiene su color en el texto y en el dibujo: ${F('C')} gris (4 enlaces), ${F('H')} turquesa (1 enlace), ${F('O')} rojo (2 enlaces) y ${F('N')} azul (3 enlaces). Ese color es una clave, no el color real.</p>
+   <div class="eqs"><div class="eq"><span class="ex">${F('CH3–CH3')}: sin grupo, un alcano (etano).</span></div>
+   <div class="eq"><span class="ex">${F('CH3–CH2–OH')}: el ${V('gf', 'grupo')} ${F('–OH')} lo hace un alcohol: ${N(MF.nombre('CCO'))}.</span></div>
+   <div class="eq"><span class="ex">${F('CH3–CHO')}: el ${V('gf', 'grupo')} ${F('–CHO')} lo hace un aldehído: ${N(MF.nombre('CC=O'))}.</span></div>
+   <div class="eq"><span class="ex">${F('CH3–COOH')}: el ${V('gf', 'grupo')} ${F('–COOH')} lo hace un ácido carboxílico: ${N(MF.nombre('CC(=O)O'))}.</span><span class="note">En el nombre, la ${V('cad', 'cadena principal')} da la raíz (et- para 2 C) y el grupo da la terminación.</span></div></div>
+   <p class="hint">El halo del ${V('gf', 'grupo funcional')}, la ${V('cad', 'cadena principal')} y los ${V('loc', 'localizadores')} tienen su propio color. Toca un color del texto para resaltarlo en el dibujo.</p>` },
+ { k:'Paso 2', t:'Moverle el O al etanol', gate:P1, vista:r => vIsomeros(r),
+   body:() => `<p>El dibujo A es el etanol, ${F('CH3–CH2–OH')}. Si el O se pasa al medio, entre los dos carbonos, queda el dibujo B: ${F('CH3–O–CH3')}. En los dos, cada átomo tiene sus enlaces: el C 4, el O 2 y el H 1.</p>
+   <p>¿El ${F('CH3–O–CH3')} es un isómero del etanol, es decir, otra sustancia con la misma fórmula molecular?</p>${opcionesHTML(P1.opts, 'fb')}
+   <div class="tras" hidden><div class="eqs"><div class="eq"><span class="ex">${N(MF.nombre(ETOH))} ${F(ISO.formulaA)} · ${N(MF.nombre(ETER))} ${F(ISO.formulaB)}</span><span class="note">Misma fórmula molecular, otra forma de unión: isómeros. Como cambia la familia (alcohol y éter), son isómeros <b>de función</b>.</span></div></div>
+   <p>Si cambiara solo el lugar del grupo, sin cambiar la familia (propan-1-ol y propan-2-ol), serían isómeros de <b>posición</b>; si cambiara el esqueleto (butan-1-ol y 2-metilpropan-2-ol), de <b>cadena</b>.</p>
+   <div class="fila">${otraVez}</div>
+   <p class="fuente">Que un alcohol y un éter «no pueden ser isómeros porque son de otra clase» está descrito en escolares (Schmidt, 1992, por su resumen), sin porcentaje en lo que leímos. Perder el H al mover el O y confundirlo con la misma sustancia son hipótesis nuestras.</p></div>` },
+ { k:'Paso 3', t:'¿Cuál hierve a más temperatura?', gate:P2, vista:r => vEbullicion(r, r ? 1 : undefined),
+   body:() => `<p>El etanol y el metoximetano son isómeros: los dos son ${F('C2H6O')}. El etanol es el alcohol de las bebidas y del alcohol para heridas; el metoximetano (éter dimetílico) se usa como gas en algunos aerosoles.</p>
+   <p>¿Cuál tiene el ${V('T', 'punto de ebullición')} más alto, y por qué?</p>${opcionesHTML(P2.opts, 'fb')}
+   <div class="tras" hidden><div class="eqs"><div class="eq"><span class="ex">etanol: ${V('T', fmt(EB.a.teb) + ' °C')} · metoximetano: ${V('T', fmt(EB.b.teb) + ' °C')}</span><span class="note">Datos de tabla (CRC Handbook y NIST), no salen de una fórmula. A 20 °C el etanol es líquido y el metoximetano, gas.</span></div></div>
+   <p>Un ${V('pu', 'puente de hidrógeno')} es un H unido a O (o a N) que se va hacia el O o el N de otra molécula. El etanol tiene ese H en su –OH; el metoximetano tiene O, pero todos sus H están en carbonos. Su O sí puede recibir el H de una molécula de agua: por eso el metoximetano se disuelve en agua, aunque no forme puentes consigo mismo.</p>
+   <div class="fila">${otraVez}</div>
+   <p class="fuente">«Puente de hidrógeno es tener oxígeno» (FO2): en una pregunta de opción múltiple, cerca de un tercio de los escolares de dos grupos (34 % de 112 y 31 % de 82) eligió el éter (Schmidt, 1996). Las cifras salen de un resumen y están por verificar. Las otras opciones son hipótesis nuestras.</p></div>` },
+ { k:'Paso 4', t:'El C=O en la punta o en el medio', gate:P3, vista:r => vCarbonilo(r),
+   body:() => `<p>Las moléculas A, ${F('CH3–CH2–CHO')}, y B, ${F('CH3–CO–CH3')}, tienen el mismo esqueleto de 3 carbonos y un O con doble enlace (C=O). En A está en la punta; en B, en el carbono del medio.</p>
+   <p>¿Cómo se llaman?</p>${opcionesHTML(P3.opts, 'fb')}
+   <div class="tras" hidden><div class="eqs"><div class="eq"><span class="ex">A: ${N(NPAL)} (aldehído, ${F('–CHO')}) · B: ${N(NPONA)} (cetona, C=O entre dos C)</span><span class="note">Nombres comunes: ${NPAL.comun}; ${NPONA.comun}. Los dos son ${F(ISO3.formulaA)}: isómeros de función.</span></div></div>
+   <p>En el aldehído, el C del grupo es siempre el carbono 1, por eso no se escribe su número. En una cetona sí puede hacer falta (pentan-2-ona y pentan-3-ona son distintas); en la propanona y la butanona no, porque solo hay un lugar posible.</p>
+   <p class="fuente">Agrupar compuestos por un solo rasgo de superficie, y cambiar de rasgo, está descrito en estudiantes (Domin, Al-Masum y Mensah, 2008, por la descripción de Graulich y Bhattacharyya, 2017), sin porcentaje. Confundir propanal y propanona, o -al con -ol, son hipótesis nuestras que salen de ahí.</p></div>` },
+ { k:'Paso 5', t:'Tres alcoholes', gate:P4, vista:r => vAlcoholes(r),
+   body:() => `<p>Los tres son alcoholes: ${N(MF.nombre(ALCS[0]))}, ${N(MF.nombre(ALCS[1]))} y ${N(MF.nombre(ALCS[2]))}, ${F('(CH3)3C–OH')}. Los alcoholes se clasifican en primarios, secundarios y terciarios.</p>
+   <p>¿Qué tipo de alcohol es el ${N(MF.nombre(TBU))}?</p>${opcionesHTML(P4.opts, 'fb')}
+   <div class="tras" hidden><div class="eqs"><div class="eq"><span class="ex">Se mira el carbono que lleva el –OH y se cuentan los carbonos unidos a él: 1 primario, 2 secundario, 3 terciario.</span><span class="note">El metanol, ${F('CH3OH')}, no tiene carbonos vecinos: se cuenta con los primarios.</span></div></div>
+   <p>La clase importa en el examen: un alcohol primario se oxida a aldehído (y después a ácido), uno secundario a cetona, y uno terciario casi no se oxida.</p>
+   <p class="fuente">No reconocer el grupo funcional ni nombrar alcoholes con su localizador (FO4) está documentado en escolares de Ghana, sin porcentaje en lo que leímos (Adu-Gyamfi, Ampiah y Appiah, 2017, por la descripción de Adu-Gyamfi y Asaki, 2023). Clasificar por el localizador, contar el O o contar los –OH son hipótesis nuestras.</p></div>` },
+ { k:'Paso 6', t:'Un éster y su nombre', gate:P5, vista:r => vEster(r, r ? 1 : undefined),
+   body:() => `<p>Esta molécula es ${F('CH3–COO–CH3')}: un éster. Su grupo, ${F('–COO–')}, tiene un C con un O de doble enlace y otro O de puente hacia un carbono. Los ésteres dan el olor de muchas frutas y se usan en perfumes.</p>
+   <p>¿Cuál es su nombre IUPAC?</p>${opcionesHTML(P5.opts, 'fb')}
+   <div class="tras" hidden><div class="eqs"><div class="eq"><span class="ex">${esc(REAC.nombreAcido)} + ${esc(REAC.nombreAlcohol)} → ${N(NEST)} + agua</span><span class="note">El ácido pierde el –OH de su grupo y el alcohol, el H de su –OH: juntos forman el agua. Por eso el O del puente viene del alcohol.</span></div>
+   <div class="eq"><span class="ex">Nombre: (${V('ac', 'parte del ácido')}, con -ato) de (${V('al', 'parte del alcohol')}, con -ilo).</span><span class="note">Nombre común: ${NEST.comun} (del ácido acético). Fórmula: ${F(REAC.formula)}, la misma del ácido propanoico: son isómeros de función.</span></div></div>
+   <div class="fila">${otraVez}</div>
+   <p class="fuente">Las cuatro opciones salen de la tabla de lo que no tiene respaldo del informe (confundir éter con éster, leer un grupo como la suma de otros); son hipótesis nuestras, sin estudio que las mida.</p></div>` },
+ { k:'Paso 7', t:'Una amina', gate:P6, vista:r => vAmina(r),
+   body:() => `<p>Esta amina es ${F('(CH3)3C–NH2')}: ${N(NAMI)} (en muchos libros, ${NAMI.comun}). Las aminas son como el amoniaco, ${F('NH3')}, con uno, dos o tres H cambiados por carbonos; huelen a pescado.</p>
+   <p>¿Es primaria, secundaria o terciaria?</p>${opcionesHTML(P6.opts, 'fb')}
+   <div class="tras" hidden><div class="eqs"><div class="eq"><span class="ex">Amina: se cuentan los carbonos unidos al N. ${F('CH3–NH2')} primaria · ${F('(CH3)2NH')} secundaria · ${F('(CH3)3N')} terciaria.</span><span class="note">Alcohol: se cuentan los carbonos unidos al C del –OH. Con el mismo esqueleto, el alcohol es terciario y la amina, primaria.</span></div></div>
+   <p>Primo de la amina: la <b>amida</b>, ${F('–CONH2')}, tiene el N unido a un C=O (${N(MF.nombre('CH3-CONH2'))}, ${F('CH3–CONH2')}). Y el <b>nitrilo</b>, ${F('–C≡N')}, tiene el N con triple enlace (${N(MF.nombre('CH3-CN'))}).</p>
+   <p class="fuente">Clasificar la amina como un alcohol, por el localizador o contando el N son hipótesis nuestras, sin estudio que las mida.</p></div>` },
+ { k:'Paso 8', t:'Numerar una cetona', gate:P7, vista:r => vCetona(r),
+   body:() => `<p>Esta cetona es ${F('CH3–CH2–CH2–CO–CH3')}: 5 carbonos en fila, con el C=O en el cuarto contando desde la izquierda.</p>
+   <p>¿Cuál es su nombre IUPAC?</p>${opcionesHTML(P7.opts, 'fb')}
+   <div class="tras" hidden><div class="eqs"><div class="eq"><span class="ex">1. La ${V('cad', 'cadena principal')} es la más larga que contiene el grupo: 5 C (pent-).</span></div>
+   <div class="eq"><span class="ex">2. Se numera para que el ${V('gf', 'grupo')} tenga el ${V('loc', 'localizador')} más bajo; después, las ramas.</span></div>
+   <div class="eq"><span class="ex">3. ${N(NCET)}</span><span class="note">Forma anterior, que aún usan muchos libros: ${NCET.antiguo}.</span></div></div>
+   <p><b>Si hay varios grupos</b>, el de mayor prioridad da la terminación (los demás irían como prefijos):</p>
+   ${prioridadHTML()}
+   <p class="fuente">Numerar desde el lado equivocado, leer la cetona como aldehído y confundir -ona con -ol son hipótesis nuestras, de la tabla de lo que no tiene respaldo del informe.</p></div>` },
+];
+
+const dots = $('dots');
+steps.forEach((s, n) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = n + 1; b.addEventListener('click', () => go(n)); li.appendChild(b); dots.appendChild(li);
+});
+// Lo que pasa después de responder (o al pedir «Ver de nuevo»); todo lo calcula el motor.
+function mostrar(n){
+  cortar(E);
+  if (n === 1){
+    E.vista = vIsomeros(true, 0);
+    animar(E, 1.6, f => { const v = vIsomeros(true, f); E.vista.items.forEach((it, k) => { it.op.contados = v.items[k].op.contados; }); }, () => { E.vista = vIsomeros(true); E.describir(); }, 0.2);
+  } else if (n === 2){
+    E.vista = vEbullicion(true, 0);
+    animar(E, 1.2, f => { E.vista.items.forEach(it => { it.teb.p = f; }); }, () => E.describir(), 0.2);
+  } else if (n === 5){
+    E.vista = vEster(true, 0);
+    animar(E, 1.0, f => { const it = E.vista.items; it[2].op.alpha = f; it[3].op.alpha = f; }, () => E.describir(), 0.4);
+  } else E.vista = steps[n].vista(true);
+  E.dibujar(); pedir();
+}
+function enlazar(){
+  const rep = $('stepBody').querySelector('[data-repetir]'); if (rep) rep.onclick = () => { mostrar(S.step); E.describir(); subir(); };
+}
+const subir = () => { if (innerWidth < 900) $('cv').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' }); };
+function go(n){
+  if (n < 0 || n >= steps.length || n > S.max) return;
+  const s = steps[n]; S.step = n; cortar(E);
+  const r = s.gate ? !!S.pred[s.gate.id] : true;
+  E.vista = s.vista(r);
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  enlazar(); pintarDots();
+  E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.gate) prediccion(s);
+  nav(); E.dibujar(); pedir(); E.describir();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0;
+  $('next').disabled = S.step === steps.length - 1 || (s.gate && !S.pred[s.gate.id]);
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : `Ir al ${steps[k].k.toLowerCase()}: ${steps[k].t}`);
+    if (k > S.max) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled');
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(n){ if (n > S.max) S.max = n; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('stepBody').querySelectorAll('.tras').forEach(el => el.hidden = false);
+    enlazar();
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id]) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots(); nav();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    $('next').focus({ preventScroll:true });
+    // En el celular el dibujo sube a la vista y la animación arranca ~380 ms después (nucleo/celular.js).
+    const paso = S.step; E.compactar(false);
+    Celular.alResponder($('cv'), () => { mostrar(paso); E.describir(); }, () => S.step === paso);
+  }));
+  pintar();
+}
+$('next').addEventListener('click', () => { const s = steps[S.step]; if (s.gate && !S.pred[s.gate.id]) return; desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+alRedibujarTema(() => E.dibujar());
+addEventListener('modo', () => { E.resize(); E.dibujar(); pedir(); });
+go(0);
+})();
+</script>
+
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Cada experimento arranca con una predicción; lo que la respondería (los nombres, los isómeros, las partes del éster,
+   los puentes, la caja de grupos libre) se muestra después de responder. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'm2', 'ley2');
+interaccionCaja(E);
+const BAL = MF.ponerGrupo(4, 'CO', 1), BONA3 = MF.ponerGrupo(4, 'CO', 3), BONA2 = MF.ponerGrupo(4, 'CO', 2), NBONA = MF.nombre(BONA2.molecula);
+const C3 = MF.contarIsomeros('C3H8O');
+const ES = MF.esterificar('CH3-COOH', 'CH3-CH2-OH');
+const PUE = MF.puentes('CH3-O-CH3'), PUA = MF.puentes('CH3-NH2'), TEE = MF.ebullicion('CH3-O-CH3'), TEA = MF.ebullicion('CH3-NH2');
+const CJ = ['OH', 'CO', 'COOH', 'NH2'].map(g => MF.ponerGrupo(3, g, 1));
+const mayorCJ = CJ.reduce((a, b) => (b.teb > a.teb ? b : a));
+
+// La caja: el esqueleto, el grupo y lo que dice el motor; si la fórmula no cambia, avisa que son isómeros.
+const CAJA = { n:3, g:'COOH', pos:1, grupos:Object.keys(MF.CAJA), r:null };
+function resumenCaja(r, antes){
+  const iso = antes ? MF.compararIsomeria(antes.molecula, r.molecula) : null;
+  let comp = '';
+  if (iso){
+    if (iso.mismaMolecula) comp = `Es la misma sustancia que antes (${esc(antes.nombre)}): el grupo quedó en un lugar equivalente.`;
+    else if (iso.isomeros) comp = `<b>Isómeros</b> con la anterior (${esc(antes.nombre)}): la misma fórmula, ${F(r.formula)}, con otro orden de unión. Isomería de ${iso.tipo}.`;
+    else comp = `La anterior (${esc(antes.nombre)}) era ${F(antes.formula)}: otra fórmula, no son isómeros.`;
+  }
+  return `<div class="eqs"><div class="eq"><span class="ex">${N(sinPartesEster(r))} · ${F(r.formula)}</span><span class="note">Familia: ${V('gf', esc(r.nombreFamilia))}, grupo ${F(r.grupo)}.${r.comun ? ` Nombre común: ${esc(r.comun)}.` : ''}${r.antiguo !== r.nombre ? ` Forma anterior: ${esc(r.antiguo)}.` : ''}</span></div>
+    <div class="eq"><span class="ex">${V('T', 'Ebullición')}: ${r.teb === null ? 'sin dato en la tabla de la escena' : V('T', fmt(r.teb) + ' °C') + ' (de tabla)'}</span><span class="note">${r.puentes ? 'Forma puentes de hidrógeno entre sus moléculas: tiene un H unido a O o a N.' : 'No forma puentes de hidrógeno entre sus moléculas: ningún H está unido a O o a N.'}${r.conAgua ? ' Con el agua sí puede: tiene O o N que reciben el H del agua.' : ''}</span></div>
+    ${comp ? `<div class="eq"><span class="ex">${comp}</span></div>` : ''}</div>`;
+}
+function abrirCaja(grupos, inicio){
+  Object.assign(CAJA, inicio, { grupos });
+  CAJA.r = MF.ponerGrupo(CAJA.n, CAJA.g, CAJA.pos);
+  CAJA.alCambiar = (r, antes) => { pintarCaja(); const el = $('cajaRes'); if (el) el.innerHTML = resumenCaja(r, antes); E.describir(); const st = $('cajaEst'); if (st) st.textContent = `${MF.CAJA[CAJA.g].texto} en el ${MF.CAJA[CAJA.g].lugar === 'enlace' ? 'enlace ' + CAJA.pos + '–' + (CAJA.pos + 1) : 'carbono ' + CAJA.pos}: ${r.nombre}.`; };
+  E.caja = CAJA; E.cv.tabIndex = 0;
+  pintarCaja();
+  const el = $('cajaRes'); if (el) el.innerHTML = resumenCaja(CAJA.r, null);
+}
+function pintarCaja(){
+  E.vista = vistaCaja(CAJA.r);
+  const it = E.vista.items[0], A = it.c.atomos;
+  it.op.objetivos = MF.posiciones(CAJA.n, CAJA.g).map(p => (MF.CAJA[CAJA.g].lugar === 'enlace' ? { x:(A[p - 1].x + A[p].x)/2, y:(A[p - 1].y + A[p].y)/2 } : A[p - 1]));
+  E.resize(); E.dibujar();
+}
+function controlesCaja(grupos){
+  return `<div class="seg" id="cajaG" role="group" aria-label="Grupo de la caja">${grupos.map(g => `<button type="button" data-g="${g}" aria-pressed="${g === CAJA.g}">${MF.CAJA[g].texto}</button>`).join('')}</div>
+    <div class="fila"><span>Carbonos del esqueleto:</span><span class="fila" style="flex-wrap:nowrap"><button type="button" class="btn" id="cajaMenos" aria-label="Un carbono menos">−</button><b id="cajaN" aria-live="polite">${CAJA.n}</b><button type="button" class="btn" id="cajaMas" aria-label="Un carbono más">+</button></span></div>
+    <p class="hint">Toca un lugar del esqueleto (los anillos pálidos) o arrastra el grupo hasta él. Con el teclado: enfoca el dibujo y usa las flechas.</p>
+    <p class="estado" id="cajaEst" aria-live="polite"></p><div id="cajaRes"></div>`;
+}
+function enlazarCaja(){
+  const g = $('cajaG'); if (!g) return;
+  const subirL = () => { if (innerWidth < 900) $('cv2').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' }); };
+  const rehacer = antes => { const l = MF.posiciones(CAJA.n, CAJA.g); if (!l.includes(CAJA.pos)) CAJA.pos = l[0]; CAJA.r = MF.ponerGrupo(CAJA.n, CAJA.g, CAJA.pos); CAJA.alCambiar(CAJA.r, antes); $('cajaN').textContent = CAJA.n; $('cajaMenos').disabled = CAJA.n <= 1; $('cajaMas').disabled = CAJA.n >= 6; };
+  g.querySelectorAll('button').forEach(b => b.onclick = () => { const antes = CAJA.r; CAJA.g = b.dataset.g; g.querySelectorAll('button').forEach(z => z.setAttribute('aria-pressed', z === b)); rehacer(antes); subirL(); });
+  $('cajaMenos').onclick = () => { if (CAJA.n > 1){ const antes = CAJA.r; CAJA.n--; rehacer(antes); } };
+  $('cajaMas').onclick = () => { if (CAJA.n < 6){ const antes = CAJA.r; CAJA.n++; rehacer(antes); } };
+  $('cajaMenos').disabled = CAJA.n <= 1; $('cajaMas').disabled = CAJA.n >= 6;
+}
+
+const EXPS = [
+  { id:'mover-co', corto:'El C=O que se mueve',
+    q:`En el butanal, ${F('CH3–CH2–CH2–CHO')}, el C=O está en el carbono 1 (la punta). Si se pasa al carbono 3, el del anillo punteado, ¿qué sustancia queda?`,
+    opts:[['a', `${cap(NBONA.errores.numeracionContraria)}: el C=O quedó en el carbono 3`, 'FO-numeracion-contraria', 'hipotesis'],
+          ['b', `${cap(BONA3.nombre)}: la misma sustancia que con el C=O en el carbono 2`],
+          ['c', `${cap(BAL.nombre)} otra vez: sigue teniendo un C=O`, 'FO3-no-distingue-posicion', 'hipotesis'],
+          ['d', 'Una sustancia nueva: distinta del butanal y de la butanona', 'FO-posicion-equivalente', 'hipotesis']],
+    ok:'b',
+    fb:{ a:'Contado desde la otra punta, ese carbono es el 2: se numera desde el lado que le da al grupo el número más bajo. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      c:'El C=O dejó la punta: ahora está entre dos carbonos, y eso ya no es un aldehído sino una cetona. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      d:'El carbono 3 de una cadena de 4 es el carbono 2 visto desde la otra punta: sale la misma butanona. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    antes:() => { const it = conNombre(deResumen(BAL), []); it.op.marca = it.c.atomos[2]; it.desc = 'Butanal: cuatro carbonos en fila; el de la punta tiene el C=O. El tercer carbono está marcado con un anillo punteado.'; return { tipo:'mols', items:[it] }; },
+    caja:{ grupos:['CO'], inicio:{ n:4, g:'CO', pos:3 } },
+    exp:() => `<p>Ahora mueve tú el C=O por el esqueleto. En una punta es un ${V('gf', 'aldehído')} (-al); en el medio, una ${V('gf', 'cetona')} (-ona). Con 4 carbonos solo hay dos cetonas posibles… que son la misma.</p>${controlesCaja(['CO'])}
+      <p class="fuente">El motor compara las dos moléculas por su grafo: si sale la misma forma canónica, es la misma sustancia.</p>` },
+  { id:'isomeros-c3h8o', corto:'Los isómeros del C₃H₈O',
+    q:`¿Cuántas sustancias distintas tienen la fórmula ${F('C3H8O')} (alcoholes o éteres, con el esqueleto sin dobles enlaces)?`,
+    opts:[['a', `${C3.errores.sinEteres}: solo los alcoholes cuentan, porque los isómeros son de la misma familia`, 'FO1-sin-eteres', 'parcial'],
+          ['b', `${C3.n}: dos alcoholes y un éter`],
+          ['c', `${C3.errores.eteresPorEnlace}: dos alcoholes y un éter por cada enlace entre carbonos`, 'FO-eter-por-enlace', 'hipotesis'],
+          ['d', `${C3.errores.porPosiciones}: el –OH en cada carbono y el O en cada enlace`, 'FO-cada-posicion', 'hipotesis']],
+    ok:'b',
+    fb:{ a:'Un éter con la misma fórmula también es isómero: los isómeros pueden ser de familias distintas. Que un alcohol y un éter «no pueden ser isómeros» está descrito en escolares (Schmidt, 1992, por su resumen), sin porcentaje en lo que leímos.',
+      c:'El O entre el carbono 1 y el 2, o entre el 2 y el 3, da la misma molécula: un CH₃ de un lado y un CH₂–CH₃ del otro. Es un solo éter. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      d:'Algunas posiciones se repiten: el –OH en el carbono 3 es el propan-1-ol visto desde la otra punta, y los dos lugares del O dan el mismo éter. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    antes:() => ({ tipo:'mols', items:[conNombre(mol('CH3-CH2-CH2-OH', { desc:'Uno de ellos: el propan-1-ol.' }), [])].map(it => { it.rot = 'uno de ellos: ' + it.rot; it.partes = null; return it; }) }),
+    despues:() => {
+      const vistos = [];
+      const items = [['OH', 1], ['OH', 2], ['OH', 3], ['O', 1], ['O', 2]].map(([g, p]) => {
+        const r = MF.ponerGrupo(3, g, p), it = conNombre(deResumen(r), ['grupo']);
+        const rep = vistos.find(z => MF.mismaMolecula(z.molecula, r.molecula));
+        it.rot2 = rep ? 'repetido' : r.nombreFamilia; it.rot2Color = rep ? 'muted' : 'gf'; if (rep) it.tachado = true;
+        it.desc = `${MF.CAJA[g].texto} en ${g === 'O' ? 'el enlace ' + p : 'el carbono ' + p}: ${r.nombre}${rep ? ', repetido' : ''}.`;
+        if (!rep) vistos.push(r);
+        return it;
+      });
+      return { tipo:'mols', items };
+    },
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">${MF.isomeros('C3H8O').map(z => N(MF.nombre(z.molecula))).join(' · ')}</span><span class="note">Propan-1-ol y propan-2-ol: isómeros de posición. Cualquiera de los dos con el metoxietano: de función.</span></div></div>
+      <p>Con 4 carbonos ya son ${MF.contarIsomeros('C4H10O').n} (${MF.contarIsomeros('C4H10O').porFamilia.alcohol} alcoholes y ${MF.contarIsomeros('C4H10O').porFamilia.eter} éteres), y con 5, ${MF.contarIsomeros('C5H12O').n}.</p>
+      <p class="fuente">Convención de la escena: isómeros estructurales con un solo grupo, sin anillos ni dobles enlaces entre carbonos, y sin contar isómeros ópticos. Los errores de conteo son hipótesis nuestras.</p>` },
+  { id:'esterificacion', corto:'Ácido + alcohol',
+    q:`El ácido etanoico, ${F('CH3–COOH')} (${F(ES.formulaAcido)}), reacciona con el etanol, ${F('CH3–CH2–OH')} (${F(ES.formulaAlcohol)}): se forman un éster y agua. ¿Cuál es la fórmula molecular del éster?`,
+    opts:[['a', `${F(ES.errores.sinQuitarAgua)}: la suma de los dos`, 'FO-ester-sin-quitar-agua', 'hipotesis'],
+          ['b', `${F(ES.errores.quitaH2)}: la suma menos dos H`, 'FO-ester-quita-H2', 'hipotesis'],
+          ['c', `${F(ES.formula)}: la suma menos una molécula de agua`],
+          ['d', `${F(ES.errores.quitaDosAguas)}: la suma menos dos moléculas de agua, una de cada uno`, 'FO-ester-dos-aguas', 'hipotesis']],
+    ok:'c',
+    fb:{ a:'Si el éster tuviera todos los átomos, ¿de dónde saldría el agua? El agua se lleva 2 H y 1 O de la suma. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      b:'Lo que sale no es H₂ sino H₂O: el –OH del ácido y el H del –OH del alcohol. Falta quitar también un O. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      d:'Sale una sola molécula de agua por cada enlace nuevo: el ácido pone el –OH y el alcohol pone el H. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    antes:() => { const a = mol('CH3-COOH', { rot:'ácido etanoico' }), b = mol('CH3-CH2-OH', { rot:'etanol' }); a.desc = 'Ácido etanoico.'; b.desc = 'Etanol.'; return { tipo:'mols', items:[a, b], reaccion:true, signos:['+'] }; },
+    despues:p => {
+      const f = p === undefined ? 1 : p;
+      const ac = marcar(mol('CH3-COOH', { rot: ES.nombreAcido }), () => 'ac'), al = marcar(mol('CH3-CH2-OH', { rot: ES.nombreAlcohol }), () => 'al');
+      ac.op.sale = ac.c.atomos.map((q, k) => k).filter(k => k === ES.sale.acido || ac.c.atomos[k].padre === ES.sale.acido);
+      al.op.sale = al.c.atomos.map((q, k) => k).filter(k => al.c.atomos[k].padre === ES.sale.alcohol);
+      const es = marcar({ m: ES.ester, c: MF.coordenadas(ES.ester), op:{} }, i => ({ acido:'ac', alcohol:'al' })[ES.origen[i]]); es.partes = ES.partes;
+      const ag = mol('O', { rot:'agua' }); ag.op.tags = { 0:'ac', 1:'ac', 2:'al' };
+      es.op.alpha = f; ag.op.alpha = f; es.rot2 = sub(ES.formula); es.rot2Color = 'ink';
+      ac.desc = 'El ácido etanoico pierde el OH de su grupo.'; al.desc = 'El etanol pierde el H de su OH.'; es.desc = `${ES.nombre}, ${ES.formula}.`; ag.desc = 'Y sale una molécula de agua.';
+      return { tipo:'mols', items:[ac, al, es, ag], reaccion:true, signos:['+', '→', '+'] };
+    },
+    anima:true,
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">${F(ES.formulaAcido)} + ${F(ES.formulaAlcohol)} = ${F(ES.sumaReactivos)}; menos ${F('H2O')}: ${F(ES.formula)}</span><span class="note">${N({ partes: ES.partes })}: la ${V('ac', 'parte del ácido')} (con el C=O) y la ${V('al', 'parte del alcohol')} (unida al O del puente). Nombre común: acetato de etilo, el olor del quitaesmalte.</span></div></div>
+      <p>Con isótopos se comprobó que el O del agua sale del ácido y el del puente, del alcohol, como en el dibujo. La reacción necesita un ácido fuerte como catalizador y llega a un equilibrio.</p>` },
+  { id:'h-que-falta', corto:'El H que falta',
+    q:`El metoximetano, ${F('CH3–O–CH3')}, y la metanamina (metilamina), ${F('CH3–NH2')}, son gases a 20 °C. ¿Cuál forma puentes de hidrógeno entre sus propias moléculas?`,
+    opts:[['a', 'Los dos: uno tiene O y el otro N, y eso basta para formar puentes', 'FO2-basta-O-o-N', 'parcial'],
+          ['b', 'Solo el metoximetano: el O atrae más a los H que el N', 'FO-solo-el-O', 'hipotesis'],
+          ['c', 'Solo la metanamina: tiene H unidos directamente al N'],
+          ['d', 'Ninguno: para formar puentes hace falta un grupo –OH', 'FO-solo-OH', 'hipotesis']],
+    ok:'c',
+    fb:{ a:'Tener O o N no basta: hace falta un H unido a ellos. En el metoximetano todos los H están en carbonos. Creer que basta tener O está medido en escolares: cerca de un tercio eligió el éter en una pregunta parecida (Schmidt, 1996).',
+      b:'El O sí atrae más, pero en el metoximetano no hay ningún H unido al O que atraer: sus H están en carbonos. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      d:'No solo el –OH: un H unido a N también forma puentes, como en las aminas, las amidas y el amoniaco. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    antes:() => { const a = mol('CH3-O-CH3', { rot:'metoximetano', teb:{ valor: TEE.teb, ver:false } }), b = mol('CH3-NH2', { rot:'metanamina', teb:{ valor: TEA.teb, ver:false } }); a.desc = 'Metoximetano: CH3–O–CH3.'; b.desc = 'Metanamina: CH3–NH2.'; return { tipo:'mols', items:[a, b], mismaEscala:true, rango:[-40, 100] }; },
+    despues:p => {
+      const f = p === undefined ? 1 : p;
+      const a = enPar(mol('CH3-O-CH3', { rot:'metoximetano', teb:{ valor: TEE.teb, ver:true, p:f } })), b = enPar(mol('CH3-NH2', { rot:'metanamina', teb:{ valor: TEA.teb, ver:true, p:f } }));
+      a.rot2 = 'sin puente'; b.rot2 = 'puente N–H···N'; a.rot2Color = b.rot2Color = 'ink';
+      a.desc = `Dos moléculas de metoximetano, sin puente: hierve a ${fmt(TEE.teb)} grados.`; b.desc = `Dos de metanamina: el H unido al N de una apunta al N de la otra. Hierve a ${fmt(TEA.teb)} grados.`;
+      return { tipo:'mols', items:[a, b], mismaEscala:true, apilar:true, rango:[-40, 100] };
+    },
+    anima:true,
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">metoximetano: ${V('T', fmt(TEE.teb) + ' °C')} · metanamina: ${V('T', fmt(TEA.teb) + ' °C')}</span><span class="note">De tabla. ${cap(PUE.razon)}. La metanamina ${PUA.razon}.</span></div></div>
+      <p>Con el agua los dos forman ${V('pu', 'puentes de hidrógeno')}: el agua pone el H y lo lleva hacia el O del éter o hacia el N de la amina. Por eso los dos se disuelven bien en agua.</p>` },
+  { id:'caja', corto:'La caja de grupos',
+    q:'En el mismo esqueleto de 3 carbonos se pone, en el carbono 1, uno de estos grupos. ¿Con cuál la sustancia hierve a la temperatura más alta?',
+    opts:[['a', `Con ${F('–OH')}: es el único de los cuatro que forma puentes de hidrógeno`, 'FO-solo-alcohol-puente', 'hipotesis'],
+          ['b', 'Con C=O: el doble enlace con el O es el que más atrae', 'FO-doble-enlace-atrae', 'hipotesis'],
+          ['c', `Con ${F('–COOH')}: su –OH forma puentes de hidrógeno y su C=O los recibe`],
+          ['d', `Con ${F('–NH2')}: el N tiene dos H para formar puentes`, 'FO-mas-H-mas-puentes', 'hipotesis']],
+    ok:'c',
+    fb:{ a:'El –COOH también tiene un –OH, y además un C=O que recibe puentes: el ácido forma pares de moléculas muy unidas. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      b:'El C=O es polar, pero sin un H unido a O no forma puentes entre moléculas: el propanal hierve más bajo que el alcohol y que el ácido. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      d:'El N atrae menos que el O: los puentes N–H···N son más débiles que los O–H···O. La amina hierve mucho más bajo que el alcohol. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    antes:() => { const it = conNombre(mol('CCC'), []); it.rot = 'el esqueleto de 3 carbonos'; it.partes = null; it.desc = 'El esqueleto: tres carbonos en fila, sin grupo.'; return { tipo:'mols', items:[it] }; },
+    caja:{ grupos:Object.keys(MF.CAJA), inicio:{ n:3, g:'COOH', pos:1 } },
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">${CJ.map(r => `${N(r)}: ${V('T', fmt(r.teb) + ' °C')}`).join(' · ')}</span><span class="note">De tabla. El más alto: ${esc(mayorCJ.nombre)}.</span></div></div>
+      <p>Ahora arma lo que quieras: elige un grupo y ponlo en el esqueleto. El nombre, la familia, la fórmula y la ${V('T', 'ebullición')} se recalculan solos; si la fórmula no cambia, el motor te dice que son isómeros y de qué tipo.</p>${controlesCaja(Object.keys(MF.CAJA))}
+      <p class="fuente">Los puntos de ebullición son de tabla (CRC Handbook y NIST); conviene compararlos con la tabla de tu libro. Las opciones incorrectas son hipótesis nuestras.</p>` },
+];
+function cap(t){ return t[0].toUpperCase() + t.slice(1); }
+const S = { k:0, pred:{}, t0:Date.now() };
+// Regla de Gerson: un experimento se abre solo si todos los anteriores ya tienen respuesta. Los respondidos se revisitan.
+const abierto = k => EXPS.slice(0, k).every(x => S.pred[x.id]);
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => abierto(k)
+    ? `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}. ${x.corto}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function despues(x){
+  cortar(E); E.caja = null;
+  if (x.caja){ abrirCaja(x.caja.grupos, { ...x.caja.inicio }); return; }
+  if (x.anima){ E.vista = x.despues(0); E.dibujar(); animar(E, 1.2, f => { const v = x.despues(f); E.vista.items.forEach((it, k) => { it.op.alpha = v.items[k].op.alpha; if (it.teb) it.teb.p = f; }); }, () => { E.vista = x.despues(1); E.describir(); }, 0.3); }
+  else E.vista = x.despues();
+  E.dibujar(); pedir();
+}
+function ir(k){
+  if (!abierto(k)) return;
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k];
+  cortar(E); E.caja = null; E.cv.tabIndex = -1; E.vista = x.antes();
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const explicar = () => {
+    if (S.k !== k || !S.pred[x.id]) return;
+    $('res2').innerHTML = x.exp() + `<div class="nav">${x.anima ? otraVez : '<span></span>'}${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    const rep = $('res2').querySelector('[data-repetir]'); if (rep) rep.onclick = () => { despues(x); E.describir(); if (innerWidth < 900) $('cv2').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' }); };
+    if (x.caja){ enlazarCaja(); const el = $('cajaRes'); if (el && CAJA.r && E.caja) el.innerHTML = resumenCaja(CAJA.r, null); }
+  };
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira el dibujo para ver por qué.' : `Elegiste la ${LETRAS.indexOf(p) + 1}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    explicar();
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; botones(); E.compactar(false);
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+    // La caja se abre antes de pintar el resumen; la animación, ~380 ms después en el celular.
+    if (x.caja){ despues(x); pintar(); E.describir(); Celular.alResponder($('cv2'), () => {}, () => S.k === k); return; }
+    pintar();
+    Celular.alResponder($('cv2'), () => { despues(x); E.describir(); }, () => S.k === k);
+  });
+  if (S.pred[x.id]){ if (x.caja) despues(x); else E.vista = x.anima ? x.despues(1) : x.despues(); }
+  E.compactar(!S.pred[x.id]);
+  pintar(); E.dibujar(); pedir(); E.describir();
+}
+alRedibujarTema(() => E.dibujar());
+addEventListener('modo', () => { E.resize(); E.dibujar(); pedir(); });
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>
