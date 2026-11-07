@@ -1,0 +1,1155 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El armador de triángulos: congruencia</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde del plano con imán.
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4), los mismos del caso
+   ambiguo: lado a (BC) naranja, lado b (CA) azul, lado c (AB) turquesa, ángulo A fucsia, ángulo B verde y ángulo C
+   granate; además la mediana BM rojo, la distancia d de un punto a lo que equidista mostaza y la base media MN índigo.
+   Los puntos, los rótulos y los rayos sin medida, en tinta o gris.
+   CIEDE2000 entre los que salen juntos: mínimo 23,6 en claro (c–B) y 25,2 en oscuro (A–C); la mediana con a, b y c
+   25,9 / 31,8; MN con a 54,0 / 49,9; d sale sola con la tinta (48,4 / 35,4). Pares parecidos que nunca comparten dibujo:
+   d–a (19,8 / 18,9), d–B (17,3 / 18,1), m–C (17,6 / 16,8), MN–b (17,0 / 12,1) y MN–A (16,2). La mediana está a ΔE00 ≈ 5
+   del rojo de los avisos, que siempre van con texto. Con la tinta y el gris de la cáscara, todos pasan de 20 salvo el ángulo C
+   en oscuro (19,5 con la tinta y 18,0 con el gris, que solo dibuja el compás y los fantasmas). Contraste AA sobre el papel, la tarjeta y el chip .v (fondo al 8 %),
+   en claro y en oscuro: mínimo 4,54 (mostaza en claro). */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8; --eje:#a99cb0;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-a:#a05200; --c-b:#1f5fbf; --c-c:#0f766e; --c-A:#a10fbf; --c-B:#466d14; --c-C:#77032c; --c-m:#c0364a; --c-d:#7d6a00; --c-n:#3328c4;
+  --relleno:.16;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f; --eje:#6f6380;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-a:#f0a04a; --c-b:#7cb0ff; --c-c:#5ed9c8; --c-A:#cf6bfa; --c-B:#a3d65e; --c-C:#fdb4ce; --c-m:#f17384; --c-d:#e3c84a; --c-n:#9f9bff;
+  --relleno:.2; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f; --eje:#6f6380;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-a:#f0a04a; --c-b:#7cb0ff; --c-c:#5ed9c8; --c-A:#cf6bfa; --c-B:#a3d65e; --c-C:#fdb4ce; --c-m:#f17384; --c-d:#e3c84a; --c-n:#9f9bff;
+  --relleno:.2; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+@media (max-width:899px){
+  .mode.pendiente .bench{position:sticky; top:0; z-index:1; padding:6px; gap:4px; background:var(--card); border-radius:0 0 20px 20px}
+  .mode.pendiente .legend{display:none}
+}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+.lienzo:has(canvas:focus-visible){outline:3px solid var(--ink); outline-offset:2px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+.legend i.pt{width:10px; height:10px; border-radius:50%}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; grid-template-columns:minmax(0, 1fr); gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; grid-template-columns:minmax(0, 1fr); gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{white-space:nowrap; font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-a{color:var(--c-a); background:color-mix(in srgb, var(--c-a) 8%, transparent)}
+.v-b{color:var(--c-b); background:color-mix(in srgb, var(--c-b) 8%, transparent)}
+.v-c{color:var(--c-c); background:color-mix(in srgb, var(--c-c) 8%, transparent)}
+.v-A{color:var(--c-A); background:color-mix(in srgb, var(--c-A) 8%, transparent)}
+.v-B{color:var(--c-B); background:color-mix(in srgb, var(--c-B) 8%, transparent)}
+.v-C{color:var(--c-C); background:color-mix(in srgb, var(--c-C) 8%, transparent)}
+.v-m{color:var(--c-m); background:color-mix(in srgb, var(--c-m) 8%, transparent)}
+.v-d{color:var(--c-d); background:color-mix(in srgb, var(--c-d) 8%, transparent)}
+.v-n{color:var(--c-n); background:color-mix(in srgb, var(--c-n) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eqs:empty{display:none}
+.eq{display:block; line-height:2; font-family:var(--mono); font-size:1rem; font-variant-numeric:tabular-nums}
+.eq .note{display:inline-block; line-height:1.4; font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.6em; white-space:normal}
+.tabla{border-collapse:collapse; font-size:.93rem; background:var(--paper); border-radius:12px; overflow:hidden; justify-self:start}
+.tabla th, .tabla td{padding:5px 10px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top}
+.tabla th{font-size:.8rem; color:var(--muted)}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(110px, 1fr)); gap:8px}
+.lecturas:empty{display:none}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura b{display:block; color:var(--k); font:800 .95rem var(--mono); font-variant-numeric:tabular-nums; overflow-wrap:anywhere}
+.lectura span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+@media (max-width:899px){ .mode.pendiente .lecturas{display:none} }
+
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.2fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Geometría · Congruencia de triángulos · Problemas tipo admisión</p>
+      <h1>El armador de triángulos</h1>
+      <p class="sub">Te dan piezas: varillas de largo fijo y bisagras con un ángulo fijo. Trata de armar un triángulo distinto al de la figura. Si no puedes, los datos lo determinan.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo de la escena: las piezas y los triángulos que se arman">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Mesa del armador"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos con mediatriz, bisectriz, base media y notables">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/congruencia">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'congruencia', unidad: 'geometria.congruencia', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la geometría (qué triángulos salen de unos datos, dónde cierra el armador, la correspondencia de vértices,
+   cómo se superpone un triángulo sobre otro, mediatriz, bisectriz, base media, mediana y notables) sale de
+   MotorCongruencia (motor.js); aquí solo se pinta, se arrastra y se anima. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MC = MotorCongruencia;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function fmt(n, d){
+  if (n === null || n === undefined || !Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 1 : d), r = Math.round(n*p)/p + 0;
+  const [e, f] = String(Math.abs(r)).split('.');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+const grad = x => `${fmt(MC.academia(x), 1)}°`;
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const a_ = t => V('a', t), b_ = t => V('b', t), c_ = t => V('c', t), A_ = t => V('A', t), B_ = t => V('B', t), C_ = t => V('C', t);
+const m_ = t => V('m', t), d_ = t => V('d', t), n_ = t => V('n', t);
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+const tramo = (f, a, b) => clamp((f - a)/(b - a), 0, 1);
+const lerp = (a, b, f) => a + (b - a)*f;
+const lerpP = (P, Q, f) => [lerp(P[0], Q[0], f), lerp(P[1], Q[1], f)];
+function tween(dur, paso, fin){
+  if (RM || !dur){ paso(1); if (fin) setTimeout(fin, 0); return; }
+  const t0 = performance.now();
+  const tick = now => { const f = Math.min(1, (now - t0)/dur); paso(f); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
+  requestAnimationFrame(tick);
+}
+function colores(){
+  const c = { ink:css('--ink'), muted:css('--muted'), grid:css('--grid'), eje:css('--eje'), paper:css('--paper'), card:css('--card'), line:css('--line'),
+    relleno:Number(css('--relleno')) || .16, mono:css('--mono'), font:css('--font'), warn:css('--warn') };
+  for (const k of ['a', 'b', 'c', 'A', 'B', 'C', 'm', 'd', 'n']) c[k] = css('--c-' + k);
+  return c;
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+/* ================= La mesa =================
+   E.config({ vista:{x0,x1,y0,y1}, pintar(D), lect, ley, desc, mano, alCambiar })
+   mano = { pos() → [x, y], poner([x, y]) }: el punto que se arrastra (dedo, ratón o flechas); poner le pide al motor
+   adónde puede ir. 'pintar' recibe D con las herramientas de dibujo en coordenadas de la mesa. */
+function crearMesa(cv, idDesc, idLect, idLey){
+  const E = { vista:{ x0:-1, x1:10, y0:-1, y1:8 }, pintar:null, lect:[], ley:[], desc:null, mano:null, alCambiar:null,
+    hl:null, tok:0, anim:false, ocupado:false, compacto:false };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, s = 30, ox = 0, oy = 0, arr = false, sobre = false;
+  const chico = () => innerWidth < 900;
+  const base = w => (chico() ? Math.round(clamp(w*0.82, 270, 380)) : Math.round(clamp(w*0.7, 360, 520)));
+  function encuadrar(){
+    const v = E.vista, pad = 26;
+    s = Math.min((W - 2*pad)/(v.x1 - v.x0), (H - 2*pad)/(v.y1 - v.y0));
+    ox = (W - s*(v.x1 - v.x0))/2 - v.x0*s; oy = (H + s*(v.y1 - v.y0))/2 + v.y0*s;
+  }
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    const h = Math.round(Celular.alto(base(w), E.compacto)), dpr = window.devicePixelRatio || 1;
+    if (w === W && h === H) { E.dibujar(); return; }
+    W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  alRedibujarTema(() => E.dibujar());
+  const X = x => ox + x*s, Y = y => oy - y*s;
+  const mundo = (px, py) => [(px - ox)/s, (oy - py)/s];
+
+  E.config = o => {
+    E.tok++; E.anim = false;
+    Object.assign(E, { pintar:null, lect:[], ley:[], desc:null, mano:null, alCambiar:null }, o);
+    cv.tabIndex = E.mano ? 0 : -1;
+    W = 0; resize(); E.leyenda(); E.avisar();
+  };
+  E.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === E.compacto) return; E.compacto = on; W = 0; resize(); };
+  const g = (k, b) => (E.hl === k ? b + 2.5 : b);
+
+  // ----- herramientas de dibujo -----
+  function rotuloPx(c, x, y, t, color, align, tam, peso){
+    ctx.font = `${peso || 700} ${tam || 13}px ${c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+    const w = ctx.measureText(t).width; x = clamp(x, align === 'left' ? 4 : align === 'right' ? w + 4 : w/2 + 4, align === 'left' ? W - w - 4 : align === 'right' ? W - 4 : W - w/2 - 4);
+    y = clamp(y, 10, H - 10);
+    const x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+    ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .88; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+    ctx.fillStyle = color; ctx.fillText(t, x, y);
+  }
+  function linea(P, Q, color, ancho, trazos){
+    ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = ancho || 2; ctx.lineCap = 'round'; if (trazos) ctx.setLineDash(trazos);
+    ctx.beginPath(); ctx.moveTo(X(P[0]), Y(P[1])); ctx.lineTo(X(Q[0]), Y(Q[1])); ctx.stroke(); ctx.restore();
+  }
+  // Una varilla: barra gruesa con un pasador en cada punta y su rótulo al costado (lado izquierdo de P→Q, o 'lado' −1)
+  function varilla(c, P, Q, color, texto, o){
+    o = o || {};
+    const k = o.clave;
+    ctx.save(); ctx.strokeStyle = color; ctx.lineCap = 'round'; ctx.lineWidth = g(k, o.ancho || 6); ctx.globalAlpha = o.alfa === undefined ? 1 : o.alfa;
+    if (o.trazos) ctx.setLineDash(o.trazos);
+    ctx.beginPath(); ctx.moveTo(X(P[0]), Y(P[1])); ctx.lineTo(X(Q[0]), Y(Q[1])); ctx.stroke();
+    ctx.setLineDash([]);
+    if (o.pasadores !== false) for (const R of [P, Q]){ ctx.fillStyle = c.paper; ctx.beginPath(); ctx.arc(X(R[0]), Y(R[1]), 2.6, 0, 2*Math.PI); ctx.fill(); }
+    ctx.restore();
+    if (texto){
+      const dx = X(Q[0]) - X(P[0]), dy = Y(Q[1]) - Y(P[1]), L = Math.hypot(dx, dy) || 1, lado = o.lado || 1, sep = o.sep || 16;
+      const mx = (X(P[0]) + X(Q[0]))/2 + lado*(dy/L)*sep, my = (Y(P[1]) + Y(Q[1]))/2 - lado*(dx/L)*sep;
+      rotuloPx(c, mx, my, texto, color, 'center', 13);
+    }
+  }
+  // Rayo desde P con dirección polar 'ang' (grados), hasta salir del lienzo
+  function rayo(c, P, ang, color, ancho, trazos){
+    const r = ang*Math.PI/180, L = 4*Math.max(W, H)/s;
+    linea(P, [P[0] + L*Math.cos(r), P[1] + L*Math.sin(r)], color, ancho || 1.6, trazos);
+  }
+  // Bisagra: arco del ángulo con su medida (ángulos polares, en grados, antihorario)
+  function bisagra(c, V0, a0, a1, color, texto, o){
+    o = o || {};
+    const r = o.r || 22, x = X(V0[0]), y = Y(V0[1]);
+    ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = g(o.clave, 2.4); ctx.globalAlpha = o.alfa === undefined ? 1 : o.alfa;
+    ctx.beginPath(); ctx.arc(x, y, r, -a0*Math.PI/180, -a1*Math.PI/180, true); ctx.stroke(); ctx.restore();
+    if (texto){ const m = (a0 + a1)/2*Math.PI/180, rr = r + (o.sep || 16); rotuloPx(c, x + rr*Math.cos(m), y - rr*Math.sin(m), texto, color, 'center', 12); }
+  }
+  function recto(c, V0, u, v, color){
+    const k = 10, a = [u[0]*k, -u[1]*k], b = [v[0]*k, -v[1]*k], x = X(V0[0]), y = Y(V0[1]);
+    ctx.save(); ctx.strokeStyle = color || c.muted; ctx.lineWidth = 1.4; ctx.beginPath();
+    ctx.moveTo(x + a[0], y + a[1]); ctx.lineTo(x + a[0] + b[0], y + a[1] + b[1]); ctx.lineTo(x + b[0], y + b[1]); ctx.stroke(); ctx.restore();
+  }
+  function poligono(c, Vs, color, alfa, borde, trazos){
+    ctx.save(); ctx.beginPath(); Vs.forEach((P, i) => (i ? ctx.lineTo(X(P[0]), Y(P[1])) : ctx.moveTo(X(P[0]), Y(P[1])))); ctx.closePath();
+    if (alfa){ ctx.globalAlpha = alfa; ctx.fillStyle = color; ctx.fill(); ctx.globalAlpha = 1; }
+    if (borde){ ctx.strokeStyle = borde; ctx.lineWidth = 1.6; if (trazos) ctx.setLineDash(trazos); ctx.stroke(); }
+    ctx.restore();
+  }
+  function punto(c, P, nombre, color, o){
+    o = o || {};
+    const x = X(P[0]), y = Y(P[1]);
+    ctx.save(); ctx.fillStyle = color || c.ink; ctx.strokeStyle = c.paper; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(x, y, o.r || 4.5, 0, 2*Math.PI); ctx.fill(); ctx.stroke(); ctx.restore();
+    if (nombre) rotuloPx(c, x + (o.dx === undefined ? 0 : o.dx), y + (o.dy === undefined ? -15 : o.dy), nombre, o.colorRot || c.ink, 'center', 14, 800);
+  }
+  // Marca de cierre (anillo a trazos) y marca de "no sirve" (cruz)
+  function anillo(c, P, color){ ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.setLineDash([3, 3]); ctx.beginPath(); ctx.arc(X(P[0]), Y(P[1]), 9, 0, 2*Math.PI); ctx.stroke(); ctx.restore(); }
+  function cruz(c, P, color){ const x = X(P[0]), y = Y(P[1]), k = 6; ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = 2.2;
+    ctx.beginPath(); ctx.moveTo(x - k, y - k); ctx.lineTo(x + k, y + k); ctx.moveTo(x + k, y - k); ctx.lineTo(x - k, y + k); ctx.stroke(); ctx.restore(); }
+  // Arco de circunferencia (el compás), en coordenadas de la mesa
+  function circulo(c, O, r, color, trazos, a0, a1){
+    ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = 1.4; ctx.setLineDash(trazos || [4, 5]);
+    const g0 = a0 || 0, g1 = a1 === undefined ? 360 : a1;
+    ctx.beginPath(); ctx.arc(X(O[0]), Y(O[1]), r*s, -g0*Math.PI/180, -g1*Math.PI/180, g1 > g0); ctx.stroke(); ctx.restore();
+  }
+  function mano(c){
+    if (!E.mano || E.ocupado || E.anim) return;
+    const P = E.mano.pos(), x = X(P[0]), y = Y(P[1]);
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.globalAlpha = arr || sobre ? .6 : .32; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(x, y, arr ? 16 : 13, 0, 2*Math.PI); ctx.stroke(); ctx.restore();
+    if (document.activeElement === cv){ ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; ctx.setLineDash([3, 3]);
+      ctx.beginPath(); ctx.arc(x, y, 20, 0, 2*Math.PI); ctx.stroke(); ctx.restore(); }
+  }
+  E.dibujar = () => {
+    if (!W) return;
+    const c = colores();
+    ctx.clearRect(0, 0, W, H); ctx.fillStyle = c.paper; ctx.fillRect(0, 0, W, H);
+    encuadrar();
+    const D = { c, X, Y, s, W, H, g, linea, ctx,
+      varilla:(P, Q, color, t, o) => varilla(c, P, Q, color, t, o), rayo:(P, a, color, an, tr) => rayo(c, P, a, color, an, tr),
+      bisagra:(V0, a0, a1, color, t, o) => bisagra(c, V0, a0, a1, color, t, o), recto:(V0, u, v, color) => recto(c, V0, u, v, color),
+      poligono:(Vs, color, alfa, borde, tr) => poligono(c, Vs, color, alfa, borde, tr), pt:(P, n, color, o) => punto(c, P, n, color, o),
+      anillo:(P, color) => anillo(c, P, color), cruz:(P, color) => cruz(c, P, color), circulo:(O, r, color, tr, a0, a1) => circulo(c, O, r, color, tr, a0, a1),
+      rotulo:(x, y, t, color, al, tam, peso) => rotuloPx(c, X(x), Y(y), t, color, al, tam, peso),
+      rotuloPx:(x, y, t, color, al, tam, peso) => rotuloPx(c, x, y, t, color, al, tam, peso) };
+    if (E.pintar) E.pintar(D);
+    mano(c);
+  };
+  const it = (k, t, tipo) => `<span><i class="${tipo || ''}" style="background:var(${k === 'ink' ? '--ink' : k === 'muted' ? '--muted' : '--c-' + k})"></i>${t}</span>`;
+  E.leyenda = () => { document.getElementById(idLey).innerHTML = (E.ley || []).map(([k, t, tipo]) => it(k, t, tipo)).join(''); };
+  E.avisar = () => {
+    const filas = (E.lect || []).map(f => f(E));
+    document.getElementById(idLect).innerHTML = filas.map(([k, t, v]) => `<div class="lectura" style="--k:var(${k === 'ink' ? '--ink' : '--c-' + k})"><span>${t}</span><b>${v}</b></div>`).join('');
+    if (!E.anim){
+      const base0 = typeof E.desc === 'function' ? E.desc(E) : (E.desc || 'Mesa del armador.');
+      const mov = E.mano ? ' Se puede mover la punta marcada: arrástrala o toca el dibujo y usa las flechas.' : '';
+      document.getElementById(idDesc).textContent = [base0 + mov, ...filas.map(([, t, v]) => `${t}: ${v}.`)].join(' ');
+    }
+    if (E.alCambiar) E.alCambiar();
+  };
+  E.animar = (dur, paso, fin) => {
+    const tok = ++E.tok; E.anim = true;
+    tween(dur, f => { if (tok !== E.tok) return; paso(f); E.dibujar(); },
+      () => { if (tok !== E.tok) return; E.anim = false; E.dibujar(); E.avisar(); if (fin) fin(); });
+  };
+  E.parar = () => { E.tok++; E.anim = false; };
+
+  // ----- arrastre (nucleo/celular.js: el dedo desplaza la página salvo cerca de la punta) -----
+  const cerca = (p, r) => { if (!E.mano || E.ocupado || E.anim) return false; const P = E.mano.pos(); return Math.hypot(X(P[0]) - p.x, Y(P[1]) - p.y) < r; };
+  Celular.arrastre(cv, {
+    activo: () => !!E.mano && !E.ocupado && !E.anim,
+    cerca,
+    empezar: () => { arr = true; E.dibujar(); },
+    mover: p => { E.mano.poner(mundo(p.x, p.y)); E.dibujar(); E.avisar(); },
+    soltar: () => { arr = false; E.dibujar(); E.avisar(); },
+    sobre: v => { sobre = v; E.dibujar(); }
+  });
+  cv.addEventListener('focus', () => E.dibujar()); cv.addEventListener('blur', () => E.dibujar());
+  cv.addEventListener('keydown', e => {
+    if (!E.mano || E.ocupado || E.anim) return;
+    const d = { ArrowRight:[1, 0], ArrowLeft:[-1, 0], ArrowUp:[0, 1], ArrowDown:[0, -1] }[e.key];
+    if (!d) return;
+    e.preventDefault();
+    const P = E.mano.pos(), k = (E.mano.paso || 0.3)*(e.shiftKey ? 3 : 1);
+    E.mano.poner([P[0] + d[0]*k, P[1] + d[1]*k]); E.dibujar(); E.avisar();
+  });
+  return E;
+}
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+
+/* ----- El armador: dibuja lo que devuelve MC.mover(kit, P) ----- */
+const LADO_NOMBRE = { a:'BC', b:'CA', c:'AB' };
+function valorAngulo(kit, letra, r){
+  if (kit[letra] !== undefined) return kit[letra];
+  const t = r && r.triangulo ? MC.construir({ a:r.lados.a, b:r.lados.b, c:r.lados.c }).triangulos[0] : null;
+  return t ? t.academia[letra] : null;
+}
+function pintarArmador(D, kit, r, o){
+  o = o || {};
+  const c = D.c;
+  if (r.cierra && r.triangulo && o.relleno !== false){ const T = r.triangulo; D.poligono([T.A, T.B, T.C], c.ink, c.relleno*.5); }
+  for (const p of r.piezas){
+    if (p.tipo === 'rayo') D.rayo(p.de, p.angulo, c.eje, 1.6, [6, 5]);
+  }
+  for (const p of r.piezas){
+    if (p.tipo === 'varilla'){
+      const L = kit[p.lado] !== undefined ? kit[p.lado] : MC.distancia(p.de, p.a);
+      D.varilla(p.de, p.a, c[p.lado], `${p.lado} = ${fmt(L)}`, { clave:p.lado, lado: (o.ladoRot && o.ladoRot[p.lado]) || 1 });
+    } else if (p.tipo === 'elastico'){
+      const L = MC.distancia(p.de, p.a);
+      D.varilla(p.de, p.a, c[p.lado], o.medirElastico === false ? '' : `${p.lado} = ${fmt(L)}`, { clave:p.lado, ancho:3, trazos:[7, 5], pasadores:false, lado: (o.ladoRot && o.ladoRot[p.lado]) || 1 });
+    } else if (p.tipo === 'marca'){
+      D.linea(p.de, p.a, c.ink, 3);
+    } else if (p.tipo === 'bisagra'){
+      const v = valorAngulo(kit, p.letra, r);
+      D.bisagra(p.vertice, p.desde, p.hasta, c[p.letra], v === null ? '' : `${fmt(v, 1)}°`, { clave:p.letra, r: o.radio || 22 });
+    }
+  }
+  const T = r.triangulo;
+  if (o.nombres !== false){
+    const A0 = [0, 0];
+    D.pt(A0, 'A', null, { dx:-12, dy:10 });
+    if (T){ D.pt(T.B, 'B', null, { dx:10, dy:12 }); D.pt(T.C, 'C', null, { dy: T.C[1] >= 0 ? -16 : 16 }); }
+    else if (kit.c !== undefined && kit.a !== undefined && kit.b !== undefined) D.pt([kit.c, 0], 'B', null, { dx:10, dy:12 });
+    else if (kit.c !== undefined) D.pt([kit.c, 0], 'B', null, { dx:10, dy:12 });
+    else if (kit.b !== undefined && kit.a !== undefined) { const R = MC.armador(kit); D.pt(R.base.C, 'C', null, { dy:-16 }); }
+  }
+}
+// Las piezas sueltas, antes de armar (para no adelantar nada): varillas en fila y bisagras como cuñas
+function pintarSueltas(D, varillas, angulos){
+  const c = D.c, W = D.W, H = D.H, s = D.s;
+  const filas = varillas.length + (angulos && angulos.length ? 1 : 0);
+  const paso = Math.min(56, (H - 30)/Math.max(filas, 1)), top = (H - paso*filas)/2;
+  const maxL = Math.max(1, ...varillas.map(v => v[1])), k = Math.min(W*0.72/maxL, 34);
+  varillas.forEach(([l, L], i) => {
+    const y = top + paso*(i + .5) + 6, largo = L*k, x0 = (W - largo)/2;
+    D.ctx.save(); D.ctx.strokeStyle = c[l]; D.ctx.lineWidth = D.g(l, 7); D.ctx.lineCap = 'round';
+    D.ctx.beginPath(); D.ctx.moveTo(x0, y); D.ctx.lineTo(x0 + largo, y); D.ctx.stroke(); D.ctx.restore();
+    D.rotuloPx(W/2, y - 15, `${l} = ${fmt(L)}`, c[l], 'center', 13);
+  });
+  if (angulos && angulos.length){
+    const y = top + paso*(varillas.length + .5) + 18, n = angulos.length;
+    angulos.forEach(([k, g], i) => {
+      const x = W*(i + 1)/(n + 1) - 30, r = Math.min(64, W/(n + 1) - 18), a = MC.grados(g)*Math.PI/180;
+      D.ctx.save(); D.ctx.strokeStyle = c.ink; D.ctx.lineWidth = 2; D.ctx.lineCap = 'round';
+      D.ctx.beginPath(); D.ctx.moveTo(x + r, y); D.ctx.lineTo(x, y); D.ctx.lineTo(x + r*Math.cos(a), y - r*Math.sin(a)); D.ctx.stroke();
+      D.ctx.strokeStyle = c[k]; D.ctx.lineWidth = D.g(k, 3); D.ctx.beginPath(); D.ctx.arc(x, y, 22, 0, -a, true); D.ctx.stroke(); D.ctx.restore();
+      D.rotuloPx(x + r/2, y + 16, `${g}°`, c[k], 'center', 14);
+    });
+  }
+}
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearMesa($('cv'), 'desc1', 'lect1', 'leyenda1');
+const S = { step:0, max:0, pred:{}, ocupado:false, kit2:'LLL', kit8:'LLA', punto:{}, b7:null };
+
+// Datos de la escena: todo sale del motor
+const K_LLL = { a:7, b:8, c:5 }, K_LAL = { b:8, A:60, c:5 }, K_ALA = { A:60, c:8, B:45 };
+const K_LLA = { A:37, b:10, a:6.5 }, K_LLA3 = { A:37, b:10, a:6.5, inicio:0, vuelta:.5 }, K_LLA12 = { A:37, b:10, a:12 }, K_HC = { A:90, b:6, a:10, inicio:0, vuelta:.5 }, K_AAA = { A:37, B:53, C:90, desde:2.5, hasta:10 };
+const R_LLL = MC.construir(K_LLL), R_LLA = MC.construir({ A:37, b:10, a:6.5 }), R_HC = MC.construir({ A:90, b:6, a:10 }), R_AAA = MC.construir({ A:37, B:53, C:90 });
+const ABC = { nombres:'ABC', lados:[5, 7, 8], puntos:[[0, 0], [5, 0], R_LLL.triangulos[0].vertices.C] };
+// PQR: el mismo triángulo, volteado y girado, a la derecha (Q va con A, R con B y P con C)
+const PQR_P = (() => { const s = MC.construir({ a:5, b:8, c:7 }).triangulos[0].vertices; const off = 8.5; return [[s.A[0] + off, 0], [s.C[0] + off, s.C[1]], [s.B[0] + off, 0]]; })();
+const PQR = { nombres:'PQR', lados:[8, 5, 7], puntos:PQR_P };
+const CO = MC.correspondencia(ABC, PQR);
+const MH = MC.medianaHipotenusa({ catetos:[6, 8] });
+const CU = { uno:'Uno', dos:'Dos', seis:'Seis', infinitos:'Infinitos', ninguno:'Ninguno' };
+
+const P1 = { id:'congruencia-paso1', ok:'a', opts:[
+  ['a', 'Uno solo: cualquier otro que armes es el mismo, quizá dado vuelta'],
+  ['b', `${CU[R_LLL.errores.reflejoComoOtro]}: uno con la punta hacia arriba y otro hacia abajo`, 'GE9-reflejo-como-otro', 'parcial'],
+  ['c', `${CU[R_LLL.errores.ordenDeUnion]}: uno por cada orden en que se unen las varillas`, 'LLL-orden-de-union', 'hipotesis'],
+  ['d', `${CU[R_LLL.errores.bisagrasLibres]}: las uniones se pueden abrir más o menos`, 'LLL-bisagras-libres', 'hipotesis']],
+  fb:{ a:'¡Bien! Con tres varillas fijas, las uniones no tienen juego: el triángulo solo cierra en dos lugares, y esos dos son el mismo triángulo dado vuelta.',
+    b:'Elegiste la B. Sí cierra arriba y abajo, pero el de abajo es el reflejo del de arriba: si lo levantas y lo volteas, encaja exacto. Dos figuras que encajan exacto son congruentes: es un solo triángulo. La correcta está marcada.',
+    c:'Elegiste la C. Si cambias el orden en que unes las varillas, el triángulo sale girado o volteado, pero con los mismos lados y los mismos ángulos: encaja con el primero. La correcta está marcada.',
+    d:'Elegiste la D. Una unión se puede abrir solo si una de las varillas puede alargarse o acortarse. Con los tres largos fijos, cada ángulo queda fijo. La correcta está marcada.' } };
+const P2 = { id:'congruencia-paso3', ok:'c', opts:[
+  ['a', 'Sí: dos lados y un ángulo bastan, como en LAL', 'LLA-como-criterio', 'hipotesis'],
+  ['b', 'Sí: es LAL, aunque el ángulo no esté entre las dos varillas', 'LAL-angulo-no-comprendido', 'hipotesis'],
+  ['c', 'No: la varilla de 6,5 puede llegar a la base en dos lugares'],
+  ['d', 'No: la varilla de 6,5 es más corta que la de 10 y no cierra', 'LLA-lado-corto-no-cierra', 'hipotesis']],
+  fb:{ c:`¡Bien! La varilla BC gira en C como un compás y corta la base dos veces: AB puede medir ${fmt(R_LLA.terceros[0])} o ${fmt(R_LLA.terceros[1])}. Dos triángulos con los mismos tres datos que no son congruentes.`,
+    a:`Elegiste la A. En LAL el ángulo está entre los dos lados y no deja juego. Aquí el ángulo de 37° está entre AC y la base, no entre AC y BC: BC queda suelta y gira. Puede cerrar en dos lugares, con AB = ${fmt(R_LLA.terceros[0])} o ${fmt(R_LLA.terceros[1])}. La correcta está marcada.`,
+    b:'Elegiste la B. LAL pide justo eso: el ángulo entre los dos lados. Si el ángulo está frente a uno de los lados, es otro caso (LLA), y ese no siempre determina. La correcta está marcada.',
+    d:`Elegiste la D. Para cerrar, BC no tiene que medir lo que AC: tiene que llegar a la base, y C está a ${fmt(R_LLA.altura)} de ella. Como 6,5 es más que ${fmt(R_LLA.altura)}, llega, y en dos lugares. La correcta está marcada.` } };
+const P3 = { id:'congruencia-paso4', ok:'b', opts:[
+  ['a', 'No: es LLA, y LLA nunca asegura un solo triángulo', 'LLA-nunca-determina', 'hipotesis'],
+  ['b', `Sí: el compás da un solo triángulo, con AB = ${fmt(R_HC.terceros[0])}`],
+  ['c', 'No: a un triángulo rectángulo le falta además un ángulo agudo', 'rectangulo-necesita-angulo', 'hipotesis'],
+  ['d', `Sí: un solo triángulo, con AB = √${fmt(R_HC.errores.pitagorasSuma**2, 0)} ≈ ${fmt(R_HC.errores.pitagorasSuma)}`, 'GE11-suma-con-cateto', 'parcial']],
+  fb:{ b:'¡Bien! El compás de 10 corta la recta de la base dos veces, a 8 a cada lado de A. Pero los dos triángulos son reflejo uno del otro: es uno solo. Hipotenusa y cateto determinan el triángulo rectángulo.',
+    a:'Elegiste la A. LLA a veces deja dos triángulos, pero no siempre. Cuando el ángulo dado está frente al lado mayor, el segundo corte cae detrás del vértice. El ángulo recto siempre está frente al mayor, la hipotenusa: aquí hay uno solo. La correcta está marcada.',
+    c:'Elegiste la C. El ángulo recto ya es un dato. Con la hipotenusa y un cateto, el otro cateto sale de Pitágoras, y los ángulos agudos quedan fijos. La correcta está marcada.',
+    d:`Elegiste la D. √136 sale de sumar 10² + 6². Pero 10 es la hipotenusa: el cateto que falta se obtiene restando, 10² − 6² = 64, AB = 8. Un cateto no puede medir más que la hipotenusa. La correcta está marcada.` } };
+const P4 = { id:'congruencia-paso5', ok:'b', opts:[
+  ['a', 'Sí: con los tres ángulos iguales, el triángulo queda fijo', 'AAA-como-criterio', 'hipotesis'],
+  ['b', 'No siempre: pueden ser de distinto tamaño, semejantes'],
+  ['c', 'Sí: con dos ángulos ya es ALA, y aquí hay tres', 'ALA-sin-lado', 'hipotesis'],
+  ['d', 'No: con solo ángulos no se arma ningún triángulo', 'AAA-sin-triangulo', 'hipotesis']],
+  fb:{ b:'¡Bien! Los ángulos fijan la forma, pero no el tamaño: el 3-4-5 y el 6-8-10 tienen los mismos ángulos. Son semejantes, no congruentes.',
+    a:'Elegiste la A. Los ángulos fijan la forma, no el tamaño. Si alargas la base, las bisagras no cambian y el triángulo crece: 3-4-5, 6-8-10… La correcta está marcada.',
+    c:'Elegiste la C. ALA pide dos ángulos y el lado entre ellos. Aquí no hay ningún lado, y el tercer ángulo no agrega nada: sale de la suma de 180°. La correcta está marcada.',
+    d:'Elegiste la D. Sí se arma: estas bisagras cierran un triángulo con cualquier base. El problema es el contrario: se arman demasiados, de todos los tamaños. La correcta está marcada.' } };
+const P5 = { id:'congruencia-paso6', ok:'c', opts:[
+  ['a', `${CO.errores.ordenEscritura}: en el orden en que se nombran`, 'correspondencia-orden-de-escritura', 'hipotesis'],
+  ['b', `${CO.errores.porPosicion}: cada vértice con el que ocupa su lugar`, 'GE22-empareja-por-posicion', 'hipotesis'],
+  ['c', `${CO.texto}: cada vértice con el que está entre los mismos lados`],
+  ['d', 'No son congruentes: PQR está dado vuelta', 'GE9-volteado-no-congruente', 'parcial']],
+  fb:{ c:`¡Bien! A está entre los lados de 5 y 8; en PQR, el que está entre 5 y 8 es Q. B (entre 5 y 7) va con R y C (entre 7 y 8) con P: ${CO.texto}.`,
+    a:`Elegiste la A. ${CO.errores.ordenEscritura} diría que AB = PQ, pero AB = 5 y PQ = 8. El orden de las letras tiene que seguir a los lados y ángulos iguales, no al orden en que se escribieron. La correcta está marcada.`,
+    b:`Elegiste la B. Emparejar por el lugar en el dibujo (abajo a la izquierda con abajo a la izquierda) solo sirve si los dos están igual de girados. Aquí ${CO.errores.porPosicion} diría que AB = PR, y AB = 5 pero PR = 7. La correcta está marcada.`,
+    d:'Elegiste la D. Un triángulo dado vuelta sigue siendo congruente: tiene los mismos lados y ángulos, y encaja si lo levantas y lo volteas. Los dos tienen lados 5, 7 y 8 (LLL). La correcta está marcada.' } };
+const P6 = { id:'congruencia-paso7', ok:'a', opts:[
+  ['a', `${fmt(MH.mediana)}: la mitad de la hipotenusa`],
+  ['b', `${fmt(MH.errores.cateto)}: lo mismo que el cateto AB`, 'mediana-igual-cateto', 'hipotesis'],
+  ['c', `${fmt(MH.errores.altura)}: lo mismo que la altura a AC`, 'GE8-mediana-como-altura', 'parcial'],
+  ['d', `${fmt(MH.errores.promedioCatetos)}: el promedio de los catetos`, 'mediana-promedio-catetos', 'hipotesis']],
+  fb:{ a:'¡Bien! M está a la misma distancia de A, B y C: la circunferencia de diámetro AC pasa por B. BM = AM = MC = 5.',
+    b:'Elegiste la B. BM y AB salen los dos de B, pero van a puntos distintos. BM llega al medio de AC, y M está a 5 de los tres vértices. La correcta está marcada.',
+    c:'Elegiste la C. La altura es la perpendicular de B a AC, y mide 4,8. La mediana va al punto medio M, que no es el pie de la altura (salvo en el isósceles). La correcta está marcada.',
+    d:'Elegiste la D. La mediana no es un promedio de lados: es la distancia de B al punto medio de AC. Y ese punto medio es el centro de una circunferencia que pasa por A, B y C. La correcta está marcada.' } };
+
+// ----- el armador (pasos 2 y 8) -----
+const KITS2 = { LLL:K_LLL, LAL:K_LAL, ALA:K_ALA };
+const KITS8 = { LLA:K_LLA, 'LLA-mayor':K_LLA12, AAA:K_AAA, LLL:K_LLL };
+const NOMBRE_KIT = { LLL:'LLL', LAL:'LAL', ALA:'ALA', LLA:'LLA (6,5)', 'LLA-mayor':'LLA (12)', AAA:'AAA' };
+const VISTA_KIT = k => ({ LLL:{ x0:-8.5, x1:9, y0:-8.5, y1:8.5 }, LAL:{ x0:-2, x1:7, y0:-7.5, y1:7.5 }, ALA:{ x0:-1, x1:9, y0:-1, y1:9 },
+  LLA:{ x0:-1.5, x1:15, y0:-1.5, y1:13 }, 'LLA-mayor':{ x0:-5, x1:19.5, y0:-7, y1:18.5 }, AAA:{ x0:-.8, x1:10.6, y0:-.8, y1:5.6 } })[k];
+function configArmador(kits, clave, clavePunto){
+  const kit = kits[clave], R = MC.armador(kit);
+  if (!S.punto[clavePunto + clave]) S.punto[clavePunto + clave] = R.puntoInicio;
+  const estado = () => MC.mover(kit, S.punto[clavePunto + clave]);
+  E.config({ vista:VISTA_KIT(clave),
+    mano:{ pos:() => estado().punto, poner:P => { S.punto[clavePunto + clave] = MC.mover(kit, P).punto; } },
+    pintar:D => {
+      const r = estado();
+      if (R.libre.tipo === 'circulo') D.circulo(R.libre.centro, R.libre.radio, D.c.muted, [3, 6]);
+      R.cierres.forEach(Q => D.anillo(Q, D.c.ink));
+      (R.detras || []).forEach(Q => D.cruz(Q, D.c.muted));
+      pintarArmador(D, kit, r, { ladoRot:{ c:-1 } });
+    },
+    ley:[['ink', 'triángulo cerrado'], ['muted', 'por donde puede ir la punta libre']],
+    lect:[() => { const r = estado(); return ['ink', 'cierra', r.cierra ? 'sí' : 'no']; },
+      () => ['ink', 'triángulos distintos', CU[R.solucion.cuantos].toLowerCase()],
+      () => { const r = estado(); return ['c', 'AB (lado c)', r.cierra ? fmt(r.lados.c) : '—']; }],
+    desc:() => `Armador ${NOMBRE_KIT[clave]}. ${estado().cierra ? 'El triángulo está cerrado.' : 'Todavía no cierra.'}`,
+    alCambiar:() => { const el = $('vivo'); if (el) el.innerHTML = vivoArmador(kit, estado(), R); } });
+}
+function vivoArmador(kit, r, R){
+  const sol = R.solucion;
+  const t = r.cierra ? `Cerró: ${a_('a = ' + fmt(r.lados.a))}, ${b_('b = ' + fmt(r.lados.b))}, ${c_('c = ' + fmt(r.lados.c))}.` : 'Todavía no cierra: sigue moviendo la punta.';
+  return `<p>${t}</p><p>Con estos datos: ${sol.cuantos === 'infinitos' ? 'infinitos triángulos (todos semejantes)' : sol.n === 1 ? 'un solo triángulo' : sol.n === 2 ? 'dos triángulos distintos' : 'ningún triángulo'} (${sol.determina ? 'determinan el triángulo' : 'no lo determinan'}).</p>`;
+}
+function segKits(id, kits, actual){
+  return `<div class="seg" id="${id}" role="group" aria-label="Piezas">${Object.keys(kits).map(k => `<button type="button" data-k="${k}" aria-pressed="${k === actual}">${NOMBRE_KIT[k]}</button>`).join('')}</div>`;
+}
+const TXT_KIT = {
+  LLL:`Tres varillas: ${a_('a = 7')}, ${b_('b = 8')} y ${c_('c = 5')}. La varilla ${b_('b')} gira en A; el triángulo cierra solo cuando su punta llega a la punta de ${a_('a')}.`,
+  LAL:`Dos varillas, ${b_('b = 8')} y ${c_('c = 5')}, y la bisagra ${A_('A = 60°')} entre ellas. La bisagra no se mueve: la punta solo puede estar arriba o, volteada, abajo. El tercer lado (a trazos) sale solo.`,
+  ALA:`La varilla ${c_('c = 8')} con dos bisagras fijas en sus puntas: ${A_('A = 60°')} y ${B_('B = 45°')}. La punta corre por el lado de A; cierra solo donde se cruza con el lado de B.`,
+  LLA:`La bisagra ${A_('A = 37°')}, la varilla ${b_('b = 10')} pegada a ella y la varilla ${a_('a = 6,5')}, que gira en C como un compás. Mira cuántas veces toca la base.`,
+  'LLA-mayor':`Lo mismo, pero ahora la varilla que gira es la mayor: ${a_('a = 12')}, más que ${b_('b = 10')}. El ángulo ${A_('A')} queda frente al lado mayor.`,
+  AAA:`Solo bisagras: ${A_('A = 37°')}, ${B_('B = 53°')} y ${C_('C = 90°')}. Arrastra B por la base: el triángulo siempre cierra, de cualquier tamaño.` };
+
+// ----- dibujos de los pasos con predicción -----
+function dibLLL(D, f){   // f: 0 sueltas; de 0 a 1 el barrido y el volteo
+  if (f <= 0){ pintarSueltas(D, [['a', 7], ['b', 8], ['c', 5]]); return; }
+  const R = MC.armador(K_LLL), fb = tramo(f, 0, .7), fv = tramo(f, .72, 1);
+  const r = MC.mover(K_LLL, MC.enLocus(K_LLL, fb*0.97), { iman:.45 });
+  D.circulo([0, 0], 8, D.c.muted, [3, 6]);
+  const vistos = R.cierres.filter((Q, i) => fb*0.97 >= R.fCierres[i]);
+  vistos.forEach(Q => D.anillo(Q, D.c.ink));
+  if (fv <= 0) pintarArmador(D, K_LLL, r, { ladoRot:{ c:-1 } });
+  else {
+    const arriba = [[0, 0], [5, 0], R.cierres[0]], abajo = [[0, 0], [5, 0], R.cierres[1]];
+    D.poligono(arriba, D.c.ink, D.c.relleno*.6, D.c.ink);
+    D.poligono(abajo, D.c.muted, 0, D.c.muted, [2, 4]);
+    const p = MC.superponer(abajo, arriba, fv).puntos;
+    D.poligono(p, D.c.muted, .12, D.c.muted, [5, 4]);
+    pintarArmador(D, K_LLL, MC.mover(K_LLL, R.cierres[0]), { relleno:false, ladoRot:{ c:-1 } });
+    if (fv >= 1) D.rotuloPx(D.W/2, D.H - 14, 'el de abajo, volteado, encaja exacto con el de arriba', D.c.muted, 'center', 12, 600);
+  }
+}
+function dibCompas(D, kit, f, o){   // LLA: el compás gira y marca dónde toca la base
+  o = o || {};
+  const R = MC.armador(kit), sol = R.solucion;
+  if (f <= 0){ pintarArmador(D, kit, MC.mover(kit, MC.enLocus(kit, 0)), { ladoRot:{ b:-1 } }); return; }
+  const fb = tramo(f, 0, .75), ff = tramo(f, .78, 1);
+  D.circulo(R.libre.centro, R.libre.radio, D.c.muted, [3, 6], R.inicio, R.inicio - 360*(kit.vuelta || 1)*fb);
+  if (ff <= 0){ pintarArmador(D, kit, MC.mover(kit, MC.enLocus(kit, fb), { iman:.3 }), { ladoRot:{ b:-1 } }); }
+  else {
+    sol.triangulos.forEach((t, i) => {
+      const v = t.vertices, T = [v.A, v.B, v.C];
+      D.poligono(T, D.c.ink, i ? 0 : D.c.relleno*.6, D.c.ink, i ? [5, 4] : null);
+      D.varilla(v.C, v.B, D.c.a, '', { clave:'a', ancho:4, alfa: i ? .7 : 1 });
+      D.rotulo(v.B[0], -0.9, `AB = ${fmt(t.lados.c)}`, D.c.c, 'center', 12);
+      D.pt(v.B, i ? 'B′' : 'B', null, { dy:-14, dx: i ? 12 : -12 });
+    });
+    if (o.reflejo && R.detras && R.detras.length){
+      const Bd = R.detras[0], C0 = R.base.C;
+      D.poligono([[0, 0], Bd, C0], D.c.muted, .1, D.c.muted, [5, 4]);
+      D.rotulo(Bd[0], -0.9, 'el reflejo', D.c.muted, 'center', 12, 600);
+    }
+    D.varilla([0, 0], R.base.C, D.c.b, `b = ${fmt(kit.b)}`, { clave:'b', lado:-1 });
+    D.bisagra([0, 0], 0, MC.grados(kit.A), D.c.A, `${kit.A}°`, { clave:'A' });
+    D.pt([0, 0], 'A', null, { dx:-12, dy:10 }); D.pt(R.base.C, 'C', null, { dy:-16 });
+  }
+  R.cierres.forEach((Q, i) => { if (fb >= R.fCierres[i]) D.anillo(Q, D.c.ink); });
+  (R.detras || []).forEach((Q, i) => { if (fb >= R.fDetras[i]) D.cruz(Q, D.c.muted); });
+}
+function dibAAA(D, f, c){   // c: la base del triángulo dibujado; f > 0: se dibuja el triángulo
+  if (f <= 0){ pintarSueltas(D, [], [['A', 37], ['B', 53], ['C', 90]]); return; }
+  const kit = K_AAA;
+  if (c === undefined){
+    // la base crece de 5 a 10, con el 3-4-5 quieto como fantasma
+    const g = tramo(f, .15, 1), base = lerp(5, 10, suave(g));
+    const t5 = MC.mover(kit, [5, 0]).triangulo;
+    D.poligono([t5.A, t5.B, t5.C], D.c.muted, .1, D.c.muted, [5, 4]);
+    D.rotulo(2.5, -.55, '3-4-5', D.c.muted, 'center', 12, 600);
+    pintarArmador(D, kit, MC.mover(kit, [base, 0]), { ladoRot:{ c:-1, b:1, a:1 } });
+    return;
+  }
+  pintarArmador(D, kit, MC.mover(kit, [c, 0]), { ladoRot:{ c:-1 } });
+}
+function dibCorrespondencia(D, f){
+  const c = D.c, [A, B, C] = ABC.puntos;
+  const lab = (P, Q, t, color, lado) => { const mx = (P[0] + Q[0])/2, my = (P[1] + Q[1])/2, dx = Q[0] - P[0], dy = Q[1] - P[1], L = Math.hypot(dx, dy);
+    D.rotulo(mx + lado*dy/L*.55, my - lado*dx/L*.55, t, color, 'center', 13); };
+  // ABC, con sus lados en color (a = BC, b = CA, c = AB)
+  D.poligono([A, B, C], c.ink, c.relleno*.5, c.ink);
+  D.linea(A, B, c.c, D.g('c', 4)); D.linea(B, C, c.a, D.g('a', 4)); D.linea(C, A, c.b, D.g('b', 4));
+  lab(A, B, '5', c.c, -1); lab(B, C, '7', c.a, -1); lab(C, A, '8', c.b, -1);
+  D.pt(A, 'A', null, { dx:-12, dy:10 }); D.pt(B, 'B', null, { dx:10, dy:12 }); D.pt(C, 'C');
+  // PQR: antes, en tinta; después, viaja hasta encajar sobre ABC (Q en A, R en B, P en C)
+  const orig = [PQR.puntos[1], PQR.puntos[2], PQR.puntos[0]];   // Q, R, P
+  const p = f > 0 ? MC.superponer(orig, [A, B, C], tramo(f, .1, 1)).puntos : orig;
+  const [Q, R, Pp] = p;
+  if (f <= 0){
+    D.poligono([Pp, Q, R], c.ink, .06, c.ink);
+    lab(Pp, Q, '8', c.ink, 1); lab(Q, R, '5', c.ink, 1); lab(R, Pp, '7', c.ink, 1);
+  } else {
+    D.poligono([orig[2], orig[0], orig[1]], c.muted, 0, c.muted, [2, 4]);
+    D.poligono([Pp, Q, R], c.muted, .1, null);
+    D.linea(Q, R, c.c, D.g('c', 3), [6, 4]); D.linea(R, Pp, c.a, D.g('a', 3), [6, 4]); D.linea(Pp, Q, c.b, D.g('b', 3), [6, 4]);
+  }
+  const fin = f >= 1;
+  D.pt(Pp, 'P', null, { dx: fin ? 14 : -12, dy: fin ? -2 : 10 }); D.pt(Q, 'Q', null, { dx: fin ? -12 : 0, dy: fin ? 26 : -15 }); D.pt(R, 'R', null, { dx: fin ? 14 : 12, dy: fin ? 26 : 12 });
+}
+function dibMediana(D, f, B){
+  const c = D.c, h = 10, R = B ? MC.medianaHipotenusa({ hipotenusa:h, hacia:B }) : MH;
+  const [A, Bv, C, M] = [R.A, R.B, R.C, R.M];
+  D.poligono([A, Bv, C], c.ink, c.relleno*.5, null);
+  D.linea(A, Bv, c.c, D.g('c', 4)); D.linea(Bv, C, c.a, D.g('a', 4)); D.linea(A, C, c.b, D.g('b', 4));
+  const u = [(A[0] - Bv[0])/R.catetos[0], (A[1] - Bv[1])/R.catetos[0]], v = [(C[0] - Bv[0])/R.catetos[1], (C[1] - Bv[1])/R.catetos[1]];
+  D.recto(Bv, u, v, c.muted);
+  D.rotulo((A[0] + Bv[0])/2 - .7, (A[1] + Bv[1])/2 + .3, fmt(R.catetos[0]), c.c, 'center', 13);
+  D.rotulo((C[0] + Bv[0])/2 + .7, (C[1] + Bv[1])/2 + .3, fmt(R.catetos[1]), c.a, 'center', 13);
+  D.rotulo(0, -.7, `AC = ${fmt(h)}`, c.b, 'center', 13);
+  if (f > 0){
+    const g = tramo(f, 0, .5), k = tramo(f, .5, 1);
+    D.linea(M, lerpP(M, Bv, g), c.m, D.g('m', 4));
+    if (k > 0) D.circulo(M, h/2, c.muted, [3, 6], 0, 180*k);
+    if (g >= 1) D.rotulo(Bv[0]*.5 + .55, Bv[1]*.5, `BM = ${fmt(R.mediana)}`, c.m, 'left', 13);
+  }
+  D.pt(A, 'A', null, { dx:-10, dy:14 }); D.pt(C, 'C', null, { dx:10, dy:14 }); D.pt(Bv, 'B', null, { dy:-16 }); D.pt(M, 'M', null, { dy:16 });
+}
+
+const steps = [
+ { k:'Paso 1', t:'Predice: tres varillas', gate:P1,
+   prep:() => { const ya = !!S.pred[P1.id];
+     E.config({ vista:{ x0:-8.5, x1:9, y0:-8.5, y1:8.5 }, pintar:D => dibLLL(D, ya ? 1 : 0),
+       ley: ya ? [['a', 'varilla a'], ['b', 'varilla b'], ['c', 'varilla c'], ['muted', 'por donde gira la punta de b']] : [['a', 'varilla a'], ['b', 'varilla b'], ['c', 'varilla c']],
+       desc:'Tres varillas sueltas: a de 7, b de 8 y c de 5.' }); },
+   anima:fin => { let f = 0; E.pintar = D => dibLLL(D, f); E.ley = [['a', 'varilla a'], ['b', 'varilla b'], ['c', 'varilla c'], ['muted', 'por donde gira la punta de b']]; E.leyenda();
+     E.animar(RM ? 0 : 5200, x => { f = Math.max(x, .001); }, fin); },
+   body:() => `<p class="problem">Te dan tres varillas de largo fijo: ${a_('a = 7')}, ${b_('b = 8')} y ${c_('c = 5')}. Las unes por sus puntas, como quieras.</p>
+   <p>¿Cuántos triángulos distintos (que no encajen uno sobre otro) puedes armar?</p>${opcionesHTML(P1.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+     <p>La varilla ${c_('c')} queda de base y la ${b_('b')} gira en A. La punta de ${b_('b')} da toda la vuelta, pero el triángulo cierra solo donde llega también la punta de ${a_('a')}: en dos lugares, arriba y abajo. El de abajo es el de arriba dado vuelta.</p>
+     <div class="eqs"><div class="eq">${a_('a')}, ${b_('b')} y ${c_('c')} fijos → un solo triángulo<span class="note">criterio LLL</span></div></div>
+     <p>Dos triángulos son <b>congruentes</b> (≅) si encajan exacto uno sobre otro, aunque haya que girar o voltear uno: tienen los tres lados y los tres ángulos iguales. «Con estos datos, ¿queda determinado?» quiere decir: todo triángulo que cumpla los datos, ¿es congruente al primero?</p>
+     <p class="fuente">Contar el reflejo como otro triángulo se parece a GE9 del informe de geometría (la figura cambia si cambia de posición), descrito sin cifras en secundaria. Las otras dos opciones son hipótesis nuestras.</p></div>` },
+ { k:'Paso 2', t:'Arma tú: tres juegos de piezas', explora:true,
+   prep:() => configArmador(KITS2, S.kit2, 'p2'),
+   body:() => `${segKits('kits2', KITS2, S.kit2)}<p class="problem" id="txtKit">${TXT_KIT[S.kit2]}</p><div class="eqs" id="vivo"></div>
+   <p>Trata de cerrar un triángulo distinto al primero. Con estos tres juegos no se puede: cada uno <b>determina</b> el triángulo.</p>
+   <table class="tabla"><thead><tr><th>Criterio</th><th>Qué piden los datos</th></tr></thead><tbody>
+   <tr><td>LLL</td><td>los tres lados</td></tr><tr><td>LAL</td><td>dos lados y el ángulo <b>entre</b> ellos</td></tr><tr><td>ALA</td><td>dos ángulos y el lado <b>entre</b> ellos</td></tr></tbody></table>
+   <p>Si te dan dos ángulos y un lado que no está entre ellos (LAA), el tercer ángulo sale de la suma de 180°, y vuelve a ser ALA.</p>
+   <p class="hint">Con teclado: toca el dibujo y usa las flechas.</p>`,
+   alMontar:() => { $('kits2').querySelectorAll('button').forEach(b => b.onclick = () => { S.kit2 = b.dataset.k;
+     $('kits2').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); $('txtKit').innerHTML = TXT_KIT[S.kit2]; configArmador(KITS2, S.kit2, 'p2'); }); } },
+ { k:'Paso 3', t:'Predice: dos varillas y una bisagra', gate:P2,
+   prep:() => { const ya = !!S.pred[P2.id];
+     E.config({ vista:{ x0:-1, x1:15, y0:-1.6, y1:7.6 }, pintar:D => dibCompas(D, K_LLA3, ya ? 1 : 0),
+       ley:[['b', 'varilla b'], ['a', 'varilla a, que gira en C'], ['A', 'bisagra A'], ['muted', 'la base, de largo libre']],
+       desc:'La bisagra A de 37°, la varilla b de 10 hasta C y la varilla a de 6,5, que sale de C hacia la derecha sin tocar la base.' }); },
+   anima:fin => { let f = 0; E.pintar = D => dibCompas(D, K_LLA3, f); E.animar(RM ? 0 : 4200, x => { f = Math.max(x, .001); }, fin); },
+   body:() => `<p class="problem">Gael armó un triángulo ABC con la bisagra ${A_('A = 37°')}, la varilla ${b_('AC = 10')} y la varilla ${a_('BC = 6,5')}. La base, de A hacia la derecha, puede ser tan larga como haga falta.</p>
+   <p>Lía arma otro con las mismas tres piezas. ¿Su triángulo es, seguro, congruente al de Gael?</p>${opcionesHTML(P2.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+     <div class="eqs"><div class="eq">${b_('b')} = 10, ${A_('A')} = 37° → C está a ${fmt(R_LLA.altura)} de la base<span class="note">el notable de 37° y 53°: 3k = 6 con 5k = 10</span></div>
+     <div class="eq">${fmt(R_LLA.altura)} &lt; ${a_('6,5')} &lt; ${b_('10')} → el compás corta la base dos veces</div>
+     <div class="eq">${c_('AB')} = ${fmt(R_LLA.terceros[0])} o ${c_('AB')} = ${fmt(R_LLA.terceros[1])}</div></div>
+     <p>El ángulo de 37° no está entre ${b_('AC')} y ${a_('BC')}: está frente a ${a_('BC')}. Eso deja suelta a ${a_('BC')}, que gira en C como un compás. Los dos triángulos cumplen los tres datos y no encajan uno sobre otro: <b>LLA no es un criterio de congruencia</b>.</p>
+     <p class="fuente">No encontramos estudios con cifras sobre este error; las opciones incorrectas son hipótesis nuestras. El mismo compás, con la ley de senos, está en la escena del caso ambiguo de trigonometría.</p></div>` },
+ { k:'Paso 4', t:'Predice: la bisagra recta', gate:P3,
+   prep:() => { const ya = !!S.pred[P3.id];
+     E.config({ vista:{ x0:-10.5, x1:10.5, y0:-4.5, y1:7.5 }, pintar:D => dibCompas(D, K_HC, ya ? 1 : 0, { reflejo:true }),
+       ley:[['b', 'cateto b'], ['a', 'hipotenusa a, que gira en C'], ['A', 'bisagra recta A']],
+       desc:'La bisagra A de 90°, el cateto b de 6 hasta C y la hipotenusa a de 10, que sale de C hacia la derecha.' }); },
+   anima:fin => { let f = 0; E.pintar = D => dibCompas(D, K_HC, f, { reflejo:true }); E.animar(RM ? 0 : 4200, x => { f = Math.max(x, .001); }, fin); },
+   body:() => `<p class="problem">Ahora la bisagra es recta, ${A_('A = 90°')}. La varilla ${b_('AC = 6')} es un cateto y la varilla ${a_('BC = 10')} es la hipotenusa, y gira en C.</p>
+   <p>¿Queda determinado el triángulo?</p>${opcionesHTML(P3.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+     <div class="eqs"><div class="eq">${c_('AB')}² = ${a_('10')}² − ${b_('6')}² = 64 → ${c_('AB = 8')}<span class="note">el 6-8-10, notable de 37° y 53°</span></div></div>
+     <p>El compás corta la recta dos veces, a 8 a cada lado de A. Pero los dos triángulos son reflejo uno del otro: encajan. Es el criterio <b>hipotenusa y cateto</b>.</p>
+     <p>Es un LLA que sí determina, porque el ángulo dado está frente al <b>lado mayor</b>. Pasa siempre que el ángulo dado sea recto u obtuso, y también con uno agudo si el lado de enfrente es el mayor de los dos (pruébalo en el paso 8).</p>
+     <p class="fuente">Sumar los cuadrados cuando falta un cateto es GE11 del informe de geometría («Pitágoras mal aplicado»), descrito sin porcentajes. Las otras dos opciones son hipótesis nuestras.</p></div>` },
+ { k:'Paso 5', t:'Predice: solo bisagras', gate:P4,
+   prep:() => { const ya = !!S.pred[P4.id];
+     E.config({ vista:VISTA_KIT('AAA'), pintar:D => dibAAA(D, ya ? 1 : 0, ya ? S.cAAA || 10 : undefined),
+       mano: ya ? { pos:() => [S.cAAA || 10, 0], poner:P => { S.cAAA = MC.mover(K_AAA, P).punto[0]; } } : null,
+       ley: ya ? [['A', 'bisagra A'], ['B', 'bisagra B'], ['C', 'bisagra C']] : [['A', 'bisagra A'], ['B', 'bisagra B'], ['C', 'bisagra C']],
+       lect: ya ? [E => { const r = MC.mover(K_AAA, [S.cAAA || 10, 0]); return ['ink', 'lados', `${fmt(r.lados.a)}, ${fmt(r.lados.b)}, ${fmt(r.lados.c)}`]; }] : [],
+       desc:'Tres bisagras sueltas: 37°, 53° y 90°.' }); },
+   anima:fin => { let f = 0; S.cAAA = 10; E.pintar = D => dibAAA(D, f); E.animar(RM ? 0 : 3200, x => { f = Math.max(x, .001); },
+     () => { E.pintar = D => dibAAA(D, 1, S.cAAA || 10); E.mano = { pos:() => [S.cAAA || 10, 0], poner:P => { S.cAAA = MC.mover(K_AAA, P).punto[0]; } };
+       E.lect = [() => { const r = MC.mover(K_AAA, [S.cAAA || 10, 0]); return ['ink', 'lados', `${fmt(r.lados.a)}, ${fmt(r.lados.b)}, ${fmt(r.lados.c)}`]; }];
+       $('cv').tabIndex = 0; fin(); }); },
+   body:() => `<p class="problem">Los triángulos ABC y PQR tienen los mismos tres ángulos: ${A_('37°')}, ${B_('53°')} y ${C_('90°')}. No se sabe nada de sus lados.</p>
+   <p>¿Son congruentes?</p>${opcionesHTML(P4.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+     <p>Las bisagras fijan la forma, no el tamaño. Arrastra B por la base: el 3-4-5 crece hasta el 6-8-10 sin que cambie ningún ángulo. Son <b>semejantes</b> (misma forma), pero solo son congruentes si además tienen un lado igual.</p>
+     <div class="eqs"><div class="eq">3k, 4k, 5k<span class="note">el notable de 37° y 53°, para cualquier k</span></div></div>
+     <p>AAA no es criterio de congruencia. Para ver qué pasa con las áreas cuando un triángulo crece, está la escena de la ampliadora.</p>
+     <p class="fuente">No encontramos estudios con cifras sobre este error; las opciones incorrectas son hipótesis nuestras.</p></div>` },
+ { k:'Paso 6', t:'Predice: quién va con quién', gate:P5,
+   prep:() => { const ya = !!S.pred[P5.id];
+     E.config({ vista:{ x0:-1, x1:16.2, y0:-1.2, y1:8 }, pintar:D => dibCorrespondencia(D, ya ? 1 : 0),
+       ley: ya ? [['c', 'lado de 5'], ['a', 'lado de 7'], ['b', 'lado de 8']] : [['c', 'AB = 5'], ['a', 'BC = 7'], ['b', 'CA = 8'], ['ink', 'el triángulo PQR']],
+       desc:'Dos triángulos: ABC con AB = 5, BC = 7 y CA = 8, y PQR con PQ = 8, QR = 5 y RP = 7.' }); },
+   anima:fin => { let f = 0; E.pintar = D => dibCorrespondencia(D, f); E.ley = [['c', 'lado de 5'], ['a', 'lado de 7'], ['b', 'lado de 8']]; E.leyenda();
+     E.animar(RM ? 0 : 3600, x => { f = Math.max(x, .001); }, fin); },
+   body:() => `<p class="problem">En ABC: ${c_('AB = 5')}, ${a_('BC = 7')} y ${b_('CA = 8')}. En PQR: PQ = 8, QR = 5 y RP = 7.</p>
+   <p>¿Son congruentes? Si lo son, ¿cómo se escribe la congruencia, con cada vértice en su lugar?</p>${opcionesHTML(P5.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+     <div class="eqs"><div class="eq">${c_('AB')} = QR = 5, ${a_('BC')} = RP = 7, ${b_('CA')} = PQ = 8 → ${CO.texto}<span class="note">LLL</span></div></div>
+     <p>En ΔABC ≅ ΔQRP, la primera letra va con la primera, la segunda con la segunda y la tercera con la tercera: A con Q, B con R y C con P. Así, AB = QR, ∠A = ∠Q, y lo mismo con todo lo demás. Para emparejar, mira qué vértice está entre qué lados (o frente a qué lado), no el orden de las letras ni el lugar del dibujo.</p>
+     <p>PQR estaba dado vuelta: para encajar, hubo que voltearlo además de girarlo. Sigue siendo congruente.</p>
+     <p class="fuente">Emparejar por la posición en el dibujo es GE22 del informe de geometría, sin estudios con datos. Rechazar un triángulo volteado se parece a GE9 (la figura cambia si cambia de posición), descrito sin cifras en secundaria. El orden de escritura es hipótesis nuestra.</p></div>` },
+ { k:'Paso 7', t:'Predice: la mediana del triángulo rectángulo', gate:P6,
+   prep:() => { const ya = !!S.pred[P6.id];
+     E.config({ vista:{ x0:-6, x1:6, y0:-1.3, y1:5.9 }, pintar:D => dibMediana(D, ya ? 1 : 0, ya ? S.b7 : null),
+       mano: ya ? manoB7() : null,
+       ley: ya ? [['c', 'cateto AB'], ['a', 'cateto BC'], ['b', 'hipotenusa AC'], ['m', 'mediana BM']] : [['c', 'cateto AB'], ['a', 'cateto BC'], ['b', 'hipotenusa AC']],
+       lect: ya ? lect7 : [],
+       desc:'Triángulo rectángulo en B con AB = 6, BC = 8 y AC = 10; M es el punto medio de AC.' }); },
+   anima:fin => { let f = 0; E.pintar = D => dibMediana(D, f, null); E.ley = [['c', 'cateto AB'], ['a', 'cateto BC'], ['b', 'hipotenusa AC'], ['m', 'mediana BM']]; E.leyenda();
+     E.animar(RM ? 0 : 2600, x => { f = Math.max(x, .001); }, () => { S.b7 = MH.B; E.pintar = D => dibMediana(D, 1, S.b7); E.mano = manoB7(); E.lect = lect7; $('cv').tabIndex = 0; fin(); }); },
+   body:() => `<p class="problem">El triángulo ABC es rectángulo en B, con ${c_('AB = 6')}, ${a_('BC = 8')} y la hipotenusa ${b_('AC = 10')}. M es el punto medio de ${b_('AC')}.</p>
+   <p>¿Cuánto mide la ${m_('mediana BM')}?</p>${opcionesHTML(P6.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+     <div class="eqs"><div class="eq">${m_('BM')} = AM = MC = ${fmt(MH.hipotenusa/2)} = ${fr(b_('AC'))}<span class="note">mediana relativa a la hipotenusa</span></div></div>
+     <p>Arrastra B: se mueve por la semicircunferencia de diámetro AC, el ángulo en B sigue recto, los catetos cambian y ${m_('BM')} siempre mide 5. Por qué: si se completa el rectángulo ABCD, sus diagonales son iguales y se cortan en su punto medio M. Los triángulos AMB y CMD son congruentes (LAL), y MB = MA = MC.</p>
+     <p class="fuente">Confundir la mediana con la altura es GE8 del informe de geometría, con respaldo parcial y sin porcentaje. Tomarla igual a un cateto o al promedio de los catetos son hipótesis nuestras.</p></div>` },
+ { k:'Paso 8', t:'Arma tú: todas las piezas', explora:true,
+   prep:() => configArmador(KITS8, S.kit8, 'p8'),
+   body:() => `${segKits('kits8', KITS8, S.kit8)}<p class="problem" id="txtKit">${TXT_KIT[S.kit8]}</p><div class="eqs" id="vivo"></div>
+   <table class="tabla"><thead><tr><th>Datos</th><th>¿Determinan?</th></tr></thead><tbody>
+   <tr><td>LLL, LAL, ALA, LAA</td><td>Sí: son criterios de congruencia</td></tr>
+   <tr><td>LLA con el ángulo frente al lado mayor (y el rectángulo: hipotenusa y cateto)</td><td>Sí</td></tr>
+   <tr><td>LLA con el ángulo frente al lado menor</td><td>No siempre: 0, 1 o 2 triángulos</td></tr>
+   <tr><td>AAA</td><td>No: infinitos, todos semejantes</td></tr></tbody></table>
+   <p>Una cruz en la base marca un corte del compás que cae detrás de A: con ese punto, el ángulo en A ya no sería el dato.</p>
+   <p class="hint">Con teclado: toca el dibujo y usa las flechas.</p>`,
+   alMontar:() => { $('kits8').querySelectorAll('button').forEach(b => b.onclick = () => { S.kit8 = b.dataset.k;
+     $('kits8').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); $('txtKit').innerHTML = TXT_KIT[S.kit8]; configArmador(KITS8, S.kit8, 'p8'); }); } },
+];
+function fr(t){ return `${t}/2`; }
+function manoB7(){ return { paso:.3, pos:() => (S.b7 || MH.B), poner:P => { S.b7 = MC.medianaHipotenusa({ hipotenusa:10, hacia:P }).B; } }; }
+const lect7 = [() => { const R = MC.medianaHipotenusa({ hipotenusa:10, hacia:S.b7 || MH.B }); return ['c', 'AB', fmt(R.catetos[0])]; },
+  () => { const R = MC.medianaHipotenusa({ hipotenusa:10, hacia:S.b7 || MH.B }); return ['a', 'BC', fmt(R.catetos[1])]; },
+  () => { const R = MC.medianaHipotenusa({ hipotenusa:10, hacia:S.b7 || MH.B }); return ['m', 'BM', fmt(R.mediana)]; }];
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; b.dataset.label = `Ir al ${s.k.toLowerCase()}: ${s.t}`;
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  s.prep();
+  if (s.alMontar) s.alMontar();
+  pintarDots();
+  E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.gate) prediccion(s);
+  if (S.pred[s.gate && s.gate.id]) $('tras').hidden = false;
+  E.avisar();
+  nav();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+  E.ocupado = S.ocupado;
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    b.setAttribute('aria-disabled', String(k > S.max));
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : b.dataset.label);
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){ if (k > S.max) S.max = Math.min(k, steps.length - 1); }
+// Los pasos sin predicción se pueden pasar; los que tienen predicción se abren al responder.
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    S.ocupado = true; nav();
+    E.compactar(false);
+    $('next').focus({ preventScroll:true });
+    const paso = S.step;
+    Celular.alResponder($('cv'), () => s.anima(() => { S.ocupado = false; E.avisar(); nav(); }), () => S.step === paso,
+      { siNo:() => { S.ocupado = false; nav(); } });
+  }));
+  pintar();
+}
+
+$('next').addEventListener('click', () => { if ($('next').disabled) return; desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   La mediatriz, la bisectriz, la base media, el ángulo obtuso en LLA y el notable de 30° y 60°.
+   La escena cambia recién después de responder. Un experimento se abre solo si los anteriores ya tienen respuesta. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearMesa($('cv2'), 'desc2', 'lect2', 'leyenda2');
+const MT = MC.mediatriz({ A:[-5, 0], B:[5, 0], t:12 });
+const BI = MC.bisectriz({ angulo:74, d:10 });
+const BM0 = { A:[2, 9], B:[0, 0], C:[14, 0] }, BMr = MC.baseMedia(BM0);
+const K_OB = { A:120, b:5, a:7, vuelta:2/3 }, R_OB = MC.construir({ A:120, b:5, a:7 });
+const NT = MC.notable({ tipo:'30-60', hipotenusa:10 });
+const S = { k:0, pred:{}, t0:Date.now(), P:null, A:null };
+
+function dibMediatriz(D, f, P){
+  const c = D.c, A = [-5, 0], B = [5, 0], M = [0, 0];
+  const R = P ? MC.mediatriz({ A, B, hacia:P }) : MT;
+  D.linea([0, -1.5], [0, 14], c.muted, 1.4, [6, 5]);
+  D.linea(A, B, c.ink, 2.5);
+  D.recto(M, [1, 0], [0, 1], c.muted);
+  D.linea(M, R.P, c.ink, 1.6, [2, 4]);
+  if (f > 0){
+    D.poligono([A, M, R.P], c.d, .1, null); D.poligono([B, M, R.P], c.d, .1, null);
+    D.linea(R.P, A, c.d, D.g('d', 3.5)); D.linea(R.P, B, c.d, D.g('d', 3.5));
+    D.rotulo((A[0] + R.P[0])/2 - .9, (A[1] + R.P[1])/2, `PA = ${fmt(R.PA)}`, c.d, 'right', 13);
+    D.rotulo((B[0] + R.P[0])/2 + .9, (B[1] + R.P[1])/2, `PB = ${fmt(R.PB)}`, c.d, 'left', 13);
+  } else { D.linea(R.P, A, c.ink, 1.6); D.linea(R.P, B, c.ink, 1.6); }
+  D.rotulo(-2.5, -.8, '5', c.ink, 'center', 12); D.rotulo(2.5, -.8, '5', c.ink, 'center', 12);
+  D.rotulo(.35, R.P[1]/2, `PM = ${fmt(R.PM)}`, c.ink, 'left', 12, 600);
+  D.pt(A, 'A', null, { dx:-10, dy:14 }); D.pt(B, 'B', null, { dx:10, dy:14 }); D.pt(M, 'M', null, { dy:16 }); D.pt(R.P, 'P', null, { dx:-14 });
+}
+function dibBisectriz(D, f){
+  const c = D.c, O = [0, 0], R = BI;
+  D.linea(O, R.A, c.ink, 2.5); D.linea(O, R.B, c.ink, 2.5);
+  D.linea(O, [R.P[0]*1.5, R.P[1]*1.5], c.muted, 1.4, [6, 5]);
+  D.bisagra(O, 0, MC.grados(37), c.muted, '37°', { r:30 }); D.bisagra(O, MC.grados(37), MC.grados(74), c.muted, '37°', { r:38 });
+  D.linea(O, R.P, c.ink, 1.6, [2, 4]); D.rotulo(R.P[0]*.45, R.P[1]*.45 + .5, 'OP = 10', c.ink, 'right', 12, 600);
+  if (f > 0){
+    const k = tramo(f, 0, .6);
+    D.poligono([O, R.H, R.P], c.d, .1 * k, null); D.poligono([O, R.K, R.P], c.d, .1 * k, null);
+    D.linea(R.P, lerpP(R.P, R.H, k), c.d, D.g('d', 3.5)); D.linea(R.P, lerpP(R.P, R.K, k), c.d, D.g('d', 3.5));
+    if (k >= 1){
+      const u = [Math.cos(MC.grados(74)*Math.PI/180), Math.sin(MC.grados(74)*Math.PI/180)];
+      D.recto(R.H, [-1, 0], [0, 1], c.muted); D.recto(R.K, [-u[0], -u[1]], [u[1], -u[0]], c.muted);
+      D.rotulo(R.H[0] + .4, R.P[1]/2, `PH = ${fmt(R.distancias[0])}`, c.d, 'left', 13);
+      D.rotulo((R.P[0] + R.K[0])/2 + .2, (R.P[1] + R.K[1])/2 + .6, `PK = ${fmt(R.distancias[1])}`, c.d, 'left', 13);
+      D.rotulo(R.H[0]/2, -.7, `OH = ${fmt(R.OH)}`, c.ink, 'center', 12, 600);
+    }
+  }
+  D.pt(O, 'O', null, { dx:-12, dy:10 }); D.pt(R.P, 'P', null, { dx:12, dy:-10 });
+  D.pt(R.A, 'A', null, { dy:14 }); D.pt(R.B, 'B', null, { dx:-12 });
+  if (f >= 1){ D.pt(R.H, 'H', null, { dy:14 }); D.pt(R.K, 'K', null, { dx:-12, dy:-6 }); }
+}
+function dibBaseMedia(D, f, A){
+  const c = D.c, B = BM0.B, C = BM0.C, Av = A || BM0.A, R = MC.baseMedia({ A:Av, B, C });
+  D.poligono([Av, B, C], c.ink, c.relleno*.5, c.ink);
+  D.linea(B, C, c.a, D.g('a', 4)); D.rotulo(7, -.8, 'BC = 14', c.a, 'center', 13);
+  if (f > 0){ D.linea(R.M, R.N, c.n, D.g('n', 4)); D.rotulo((R.M[0] + R.N[0])/2, (R.M[1] + R.N[1])/2 + 1.3, `MN = ${fmt(R.MN)}`, c.n, 'center', 13); }
+  else D.linea(R.M, R.N, c.ink, 1.6, [5, 4]);
+  D.pt(Av, 'A'); D.pt(B, 'B', null, { dx:-10, dy:14 }); D.pt(C, 'C', null, { dx:10, dy:14 });
+  D.pt(R.M, 'M', null, { dx:-14, dy:0 }); D.pt(R.N, 'N', null, { dx:14, dy:0 });
+}
+function dibObtuso(D, f){
+  const R = MC.armador(K_OB);
+  if (f <= 0){ pintarArmador(D, K_OB, MC.mover(K_OB, R.puntoInicio), {}); D.linea([-10, 0], [0, 0], D.c.eje, 1.4, [2, 5]); return; }
+  D.linea([-10, 0], [0, 0], D.c.eje, 1.4, [2, 5]);
+  const fb = tramo(f, 0, .7), ff = tramo(f, .72, 1);
+  D.circulo(R.libre.centro, R.libre.radio, D.c.muted, [3, 6], R.inicio, R.inicio - 360*K_OB.vuelta*fb);
+  R.detras.forEach((Q, i) => { if (fb >= R.fDetras[i]) D.cruz(Q, D.c.warn); });
+  R.cierres.forEach((Q, i) => { if (fb >= R.fCierres[i]) D.anillo(Q, D.c.ink); });
+  if (ff <= 0) pintarArmador(D, K_OB, MC.mover(K_OB, MC.enLocus(K_OB, fb), { iman:.3 }), {});
+  else {
+    const t = R_OB.triangulos[0], v = t.vertices;
+    D.poligono([v.A, v.B, v.C], D.c.ink, D.c.relleno*.6, D.c.ink);
+    pintarArmador(D, K_OB, MC.mover(K_OB, v.B), { relleno:false });
+    D.rotulo(v.B[0]/2, -.8, `AB = ${fmt(t.lados.c)}`, D.c.c, 'center', 13);
+    const Bd = R.detras[0]; D.linea(R.base.C, Bd, D.c.muted, 1.6, [5, 4]);
+    D.rotulo(Bd[0], -.8, 'detrás de A', D.c.muted, 'center', 12, 600);
+  }
+}
+function dibNotable(D, f){
+  const c = D.c, Cc = [0, 0], A = [NT.mayor, 0], B = [0, NT.menor], Bp = [0, -NT.menor];
+  if (f > 0){
+    const k = tramo(f, 0, .8);
+    const p = MC.superponer([A, B, Cc], [A, Bp, Cc], k).puntos;
+    D.poligono(p, c.muted, .12, c.muted, [5, 4]);
+    if (k >= 1){ D.linea(B, Bp, c.ink, 1.6, [2, 4]); D.rotulo(-.3, -NT.menor/2, 'BB′ = 10', c.ink, 'right', 12, 600); D.pt(Bp, 'B′', null, { dx:-12, dy:6 });
+      D.rotulo(NT.mayor/2 + .4, -NT.menor/2 - .5, 'equilátero de lado 10', c.muted, 'left', 12, 600); }
+  }
+  D.poligono([A, B, Cc], c.ink, c.relleno*.5, null);
+  D.linea(A, B, c.c, D.g('c', 4)); D.linea(B, Cc, c.a, D.g('a', 4)); D.linea(Cc, A, c.b, D.g('b', 4));
+  D.recto(Cc, [1, 0], [0, 1], c.muted);
+  D.bisagra(A, 180 - 30, 180, c.A, '30°', { clave:'A', r:30 }); D.bisagra(B, 270, 270 + 60, c.B, '60°', { clave:'B', r:24 });
+  D.rotulo(NT.mayor/2 + .3, NT.menor/2 + .6, 'AB = 10', c.c, 'left', 13);
+  D.rotulo(-.3, NT.menor/2, f >= .8 ? `BC = ${fmt(NT.menor)}` : 'BC = ?', c.a, 'right', 13);
+  D.pt(A, 'A', null, { dx:12, dy:12 }); D.pt(B, 'B', null, { dx:-12 }); D.pt(Cc, 'C', null, { dx:-12, dy:12 });
+}
+
+const EXPS = [
+  { id:'mediatriz', corto:'Un punto de la mediatriz',
+    q:`M es el punto medio de AB, con AB = 10, y P está sobre la mediatriz de AB, a 12 de M. ¿Cuánto mide ${d_('PB')}?`,
+    opts:[['a', fmt(MT.errores.PMcomoPB), 'PM-como-PB', 'hipotesis'], ['b', fmt(MT.PB)], ['c', fmt(MT.errores.suma), 'suma-de-segmentos', 'hipotesis'], ['d', `√119 ≈ ${fmt(MT.errores.restaCuadrados)}`, 'GE11-resta-cuadrados', 'parcial']],
+    ok:'b',
+    fb:{ a:'12 es PM, la distancia de P a la recta AB. PB es inclinado: es la hipotenusa del triángulo PMB, y mide más que PM.',
+      c:'12 + 5 sería ir de P a M y de M a B, por los dos catetos. El segmento PB va directo, por la hipotenusa: es más corto.',
+      d:'√119 sale de restar 12² − 5². Pero PB es la hipotenusa del triángulo PMB, así que los cuadrados se suman: 144 + 25 = 169.' },
+    vista:{ x0:-8.5, x1:8.5, y0:-1.4, y1:13.3 }, dib:dibMediatriz, dur:2600, ley:[['d', 'PA y PB'], ['muted', 'mediatriz de AB']], ley0:[['muted', 'mediatriz de AB']],
+    desc:'El segmento AB de 10, su punto medio M, la mediatriz y el punto P a 12 de M.',
+    mano:() => ({ paso:.4, pos:() => (S.P || MT.P), poner:P => { const R = MC.mediatriz({ A:[-5, 0], B:[5, 0], hacia:P }); if (R.PM >= 1 && R.PM <= 13 && R.P[1] > 0) S.P = R.P; } }),
+    dibFinal:D => dibMediatriz(D, 1, S.P),
+    lect:[() => { const R = MC.mediatriz({ A:[-5, 0], B:[5, 0], hacia:S.P || MT.P }); return ['d', 'PA', fmt(R.PA)]; },
+      () => { const R = MC.mediatriz({ A:[-5, 0], B:[5, 0], hacia:S.P || MT.P }); return ['d', 'PB', fmt(R.PB)]; }],
+    exp:() => `<div class="eqs"><div class="eq">${d_('PB')}² = 12² + 5² = 169 → ${d_('PB')} = ${d_('13')} = ${d_('PA')}</div></div>
+      <p>Arrastra P por la mediatriz: ${d_('PA')} y ${d_('PB')} cambian, pero siempre juntos. Los triángulos PMA y PMB son congruentes por LAL: PM es común, MA = MB y los dos ángulos en M son rectos. Por eso <b>todo punto de la mediatriz equidista de los extremos</b> del segmento.</p>
+      <p class="fuente">Restar los cuadrados en vez de sumarlos cabe en GE11 del informe de geometría («Pitágoras mal aplicado»), sin porcentajes. Las otras dos opciones son hipótesis nuestras.</p>` },
+  { id:'bisectriz', corto:'Un punto de la bisectriz',
+    q:`El ángulo AOB mide 74° y P está sobre su bisectriz, con OP = 10. ¿A qué ${d_('distancia')} está P de cada lado del ángulo?`,
+    opts:[['a', `${fmt(BI.errores.pieComoDistancia[0])} y ${fmt(BI.errores.pieComoDistancia[1])}`, 'pie-como-distancia', 'hipotesis'], ['b', `${fmt(BI.errores.noEquidista[0])} y ${fmt(BI.errores.noEquidista[1])}`, 'bisectriz-no-equidista', 'hipotesis'],
+      ['c', `${fmt(BI.distancias[0])} y ${fmt(BI.distancias[1])}`], ['d', `${fmt(BI.errores.mitadDeOP[0])} y ${fmt(BI.errores.mitadDeOP[1])}`, 'mitad-de-OP', 'hipotesis']],
+    ok:'c',
+    fb:{ a:'8 es lo que hay de O al pie de cada perpendicular (OH y OK). La distancia de P a un lado es el largo de la perpendicular PH, que mide 6.',
+      b:'Las dos distancias son iguales: los triángulos OHP y OKP tienen la misma hipotenusa OP y el mismo ángulo de 37° en O, así que son congruentes.',
+      d:'La mitad de OP no tiene nada que ver: PH es el cateto opuesto a 37° en un triángulo de hipotenusa 10. En el notable, 3k con 5k = 10: 6.' },
+    vista:{ x0:-1.2, x1:16.5, y0:-1.4, y1:15.8 }, dib:dibBisectriz, dur:2000, ley:[['d', 'distancias de P a los lados'], ['muted', 'bisectriz']], ley0:[['muted', 'bisectriz']],
+    desc:'El ángulo AOB de 74° partido por su bisectriz en dos de 37°, y el punto P sobre ella, a 10 de O.',
+    exp:() => `<div class="eqs"><div class="eq">OP = 5k = 10 → k = 2: ${d_('PH')} = 3k = ${d_('6')}, OH = 4k = 8</div><div class="eq">ΔOHP ≅ ΔOKP<span class="note">LAA: OP común, ángulos de 37° en O y rectos en H y K</span></div></div>
+      <p>Por la congruencia, ${d_('PH = PK')}: <b>todo punto de la bisectriz equidista de los lados del ángulo</b>. Y también OH = OK.</p>
+      <p class="fuente">No encontramos estudios con cifras sobre estos errores; las opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'base-media', corto:'Los puntos medios de dos lados',
+    q:`En el triángulo ABC, ${a_('BC = 14')}. M es el punto medio de AB y N el de AC. ¿Qué se puede decir de ${n_('MN')}?`,
+    opts:[['a', `${n_('MN')} = ${fmt(BMr.errores.ladoEntero)}, igual que BC`, 'base-media-lado-entero', 'hipotesis'], ['b', `${n_('MN')} = ${fmt(BMr.MN)}, y solo si AB = AC`, 'base-media-solo-isosceles', 'hipotesis'],
+      ['c', `${n_('MN')} = ${fmt(BMr.MN)}, en cualquier triángulo`], ['d', `${n_('MN')} depende de dónde esté A`, 'base-media-depende-de-A', 'hipotesis']],
+    ok:'c',
+    fb:{ a:'MN va de la mitad de un lado a la mitad del otro: es una versión a mitad de escala de BC. Mide la mitad, 7.',
+      b:'No hace falta un triángulo isósceles. Arrastra A a cualquier lugar: MN sigue midiendo 7 y sigue paralela a BC.',
+      d:'A puede estar en cualquier lugar: MN siempre es la mitad de BC y paralela a BC. Lo que cambia es dónde queda, no cuánto mide.' },
+    vista:{ x0:-4.5, x1:18.5, y0:-1.4, y1:11.5 }, dib:dibBaseMedia, dur:1600, ley:[['a', 'lado BC'], ['n', 'base media MN']], ley0:[['a', 'lado BC']],
+    desc:'El triángulo ABC con BC = 14 y los puntos medios M de AB y N de AC.',
+    mano:() => ({ paso:.4, pos:() => (S.A || BM0.A), poner:P => { const Q = [clamp(P[0], -4, 18), clamp(P[1], 1.5, 11)]; S.A = Q; } }),
+    dibFinal:D => dibBaseMedia(D, 1, S.A),
+    lect:[() => ['a', 'BC', '14'], () => ['n', 'MN', fmt(MC.baseMedia({ A:S.A || BM0.A, B:BM0.B, C:BM0.C }).MN)]],
+    exp:() => `<div class="eqs"><div class="eq">${n_('MN')} = ${a_('BC')}/2 = ${n_('7')} y ${n_('MN')} ∥ ${a_('BC')}<span class="note">teorema de la base media</span></div></div>
+      <p>Arrastra A: el triángulo cambia, pero ${n_('MN')} sigue paralela a ${a_('BC')} y con la mitad de su largo. Por qué: si se prolonga MN hasta Q, con NQ = MN, los triángulos AMN y CQN son congruentes (LAL: AN = NC, MN = NQ y los ángulos opuestos por el vértice en N). Entonces CQ = AM = MB y CQ ∥ AB, así que MBCQ es un paralelogramo: MQ = BC, y MN es la mitad.</p>
+      <p class="fuente">No encontramos estudios con cifras sobre estos errores; las opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'obtuso', corto:'Dos lados y un ángulo obtuso',
+    q:`La bisagra mide ${A_('A = 120°')}, la varilla ${b_('AC = 5')} está pegada a ella y la varilla ${a_('BC = 7')} gira en C. ¿Cuántos triángulos distintos se pueden armar?`,
+    opts:[['a', 'Dos: LLA siempre deja dos posibilidades', 'LLA-siempre-dos', 'hipotesis'], ['b', 'Uno: el ángulo de 120° está frente al lado mayor'],
+      ['c', 'Ninguno: BC es más larga que AC y no cierra', 'lado-largo-no-cierra', 'hipotesis'], ['d', 'Infinitos: falta saber el tercer lado', 'LLA-nunca-determina', 'hipotesis']],
+    ok:'b',
+    fb:{ a:'El compás corta la recta dos veces, pero uno de los cortes cae detrás de A. Con ese punto, el ángulo en A mediría 60°, no 120°: no sirve.',
+      c:'Que BC sea más larga no impide cerrar: el compás llega de sobra a la base. Justamente, por ser la mayor, solo uno de los cortes queda delante de A.',
+      d:'El tercer lado no hace falta: sale del armado, y aquí sale uno solo, AB = 3.' },
+    vista:{ x0:-9.8, x1:5.5, y0:-3.2, y1:11.2 }, dib:dibObtuso, dur:3600, ley:[['b', 'varilla b'], ['a', 'varilla a, que gira en C'], ['A', 'bisagra A']],
+    desc:'La bisagra A de 120°, la varilla AC de 5 y la varilla BC de 7 que gira en C.',
+    exp:() => `<div class="eqs"><div class="eq">${c_('AB')} = ${fmt(R_OB.terceros[0])}<span class="note">el otro corte cae en ${fmt(R_OB.detras[0])}, detrás de A</span></div></div>
+      <p>Un ángulo obtuso siempre está frente al lado mayor del triángulo. Por eso, con ${A_('120°')}, LLA da uno o ninguno, nunca dos: ${a_('BC')} tiene que ser mayor que ${b_('AC')} para cerrar, y entonces el triángulo queda determinado.</p>
+      <p class="fuente">No encontramos estudios con cifras sobre estos errores; las opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'notable', corto:'El notable de 30° y 60°',
+    q:`Un triángulo ABC es rectángulo en C, con ${A_('A = 30°')}, ${B_('B = 60°')} y la hipotenusa ${c_('AB = 10')}. ¿Cuánto mide el cateto ${a_('BC')}, opuesto a 30°?`,
+    opts:[['a', `${NT.textos.mayor} ≈ ${fmt(NT.errores.intercambiados)}`, 'notable-catetos-cambiados', 'hipotesis'], ['b', `10/3 ≈ ${fmt(NT.errores.proporcionalAngulos)}`, 'lados-proporcionales-a-angulos', 'hipotesis'],
+      ['c', `5√2 ≈ ${fmt(NT.errores.otroNotable)}`, 'notable-equivocado-45', 'hipotesis'], ['d', fmt(NT.menor)]],
+    ok:'d',
+    fb:{ a:'5√3 es el cateto opuesto a 60°, el mayor. Frente al ángulo menor, 30°, va el lado menor: k = 5.',
+      b:'Los lados no son proporcionales a los ángulos: 30°, 60° y 90° no dan lados 1, 2 y 3. En el notable son k, k√3 y 2k.',
+      c:'5√2 es del notable de 45°, el isósceles. Aquí los ángulos son 30° y 60°: k, k√3 y 2k.' },
+    vista:{ x0:-3.5, x1:11, y0:-6.2, y1:6.2 }, dib:dibNotable, dur:2400, ley:[['c', 'hipotenusa AB'], ['a', 'cateto BC'], ['b', 'cateto AC'], ['A', 'ángulo A'], ['B', 'ángulo B']],
+    desc:'Triángulo rectángulo en C con A = 30°, B = 60° y la hipotenusa AB = 10.',
+    exp:() => `<div class="eqs"><div class="eq">${c_('2k = 10')} → k = 5: ${a_('BC = k = 5')}, ${b_('AC = k√3 = 5√3')}</div></div>
+      <p>Al voltear el triángulo sobre AC sale su reflejo, congruente. Juntos forman un triángulo con tres ángulos de 60°: un equilátero de lado 10. ${a_('BC')} es la mitad de su lado BB′, así que mide 5. Los otros notables: 45° y 45° (k, k, k√2) y 37° y 53° (3k, 4k, 5k).</p>
+      <p class="fuente">No encontramos estudios con cifras sobre estos errores; las opciones incorrectas son hipótesis nuestras.</p>` },
+];
+const abierto = k => EXPS.slice(0, k).every(x => !!S.pred[x.id]);
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => abierto(k)
+    ? `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function final(x){
+  E.config({ vista:x.vista, pintar: x.dibFinal || (D => x.dib(D, 1)), ley:x.ley, mano: x.mano ? x.mano() : null, lect:x.lect || [],
+    desc:`${x.corto}: el dibujo ya muestra la respuesta.` });
+}
+function ir(k){
+  if (k < 0 || k >= EXPS.length || !abierto(k)) return;
+  E.parar();
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  if (ya) final(x);
+  else E.config({ vista:x.vista, pintar:D => x.dib(D, 0), ley:x.ley0 || x.ley, desc:x.desc });
+  E.compactar(!ya);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const animar = () => { let f = 0; E.config({ vista:x.vista, pintar:D => x.dib(D, f), ley:x.ley, desc:x.desc });
+    E.animar(RM ? 0 : x.dur, t => { f = Math.max(t, .001); }, () => final(x)); };
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    $('otra2').onclick = () => { E.parar(); Celular.alResponder($('cv2'), animar, () => S.k === k); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar(); botones();
+    E.compactar(false);
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+    Celular.alResponder($('cv2'), animar, () => S.k === k);
+  });
+  pintar();
+}
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('resize'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

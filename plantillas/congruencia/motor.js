@@ -42,13 +42,19 @@
  *                           Ningún error vale lo mismo que la respuesta (si coincidiera, va null).
  *   armador(kit)            el armador de la escena. kit = datos de construir con letras canónicas: LLL {a,b,c},
  *                           LAL {b,A,c}, ALA {A,c,B}, LLA {A,b,a} (A con su lado adyacente b y su opuesto a) o AAA {A,B,C}
- *                           (y opcional desde/hasta: el rango del lado c, por defecto 2 a 10).
+ *                           (y opcional desde/hasta: el rango del lado c, por defecto 2 a 10). En LLL y LLA, opcional
+ *                           inicio: el ángulo polar (grados) donde arranca la punta libre (por defecto, LLL: 70° más que
+ *                           el ángulo A, o 70° menos si pasa de 180°; LLA: 60°), y vuelta: qué parte de la vuelta recorre
+ *                           enLocus (por defecto 1).
  *                           Devuelve { criterio, solucion (= construir), libre, cierres, inicio, base }:
  *                           libre es el lugar por donde se mueve el extremo libre: { tipo:'circulo', centro, radio }
  *                           (LLL: la varilla b gira en A; LLA: la varilla a gira en C), { tipo:'rayo', origen, angulo,
  *                           desde, hasta } (ALA: C corre por el rayo de A; AAA: B corre por la base) o
  *                           { tipo:'puntos', puntos } (LAL: C solo puede estar arriba o abajo).
- *                           cierres: los puntos donde el extremo libre cierra un triángulo con los datos.
+ *                           cierres: los puntos donde el extremo libre cierra un triángulo con los datos; inicio: el ángulo
+ *                           polar (círculo) o la distancia al origen (rayo) donde arranca la punta, y puntoInicio: ese punto.
+ *                           fCierres y fDetras: el f de enLocus en que la punta pasa por cada cierre y por cada corte de
+ *                           atrás (más de 1 si el barrido no llega).
  *   mover(kit, P, o)        lleva el punto P (el dedo) al lugar 'libre' y, si queda a menos de o.iman (0,35 por defecto)
  *                           de un cierre, lo pega. Devuelve { punto, cierra, indice (qué cierre), falta (cuánto falta
  *                           para cerrar: LLL |XB| − a; ALA distancia por el rayo; LLA altura sobre la base),
@@ -69,6 +75,7 @@
  *                           Devuelve { puntos, refleja, giro (grados) }.
  *   congruentes(P, Q)       ¿dos triángulos dados por sus vértices tienen los mismos tres lados? (true/false)
  *   mediatriz({ A, B, t })  P sobre la mediatriz de AB, a distancia t (con signo, a la izquierda de A→B) del punto medio M.
+ *                           En vez de t se puede dar hacia: [x, y] (P es la proyección de ese punto sobre la mediatriz).
  *                           Devuelve { P, M, PA, PB, PM, mitad (AB/2), errores: { PMcomoPB (= |t|), suma (|t| + AB/2),
  *                           restaCuadrados (√(t² − (AB/2)²), null si no existe) } }.
  *   bisectriz({ angulo, d })  ángulo AOB de vértice O = (0; 0), lado OA sobre el eje x; P en la bisectriz con OP = d.
@@ -78,7 +85,8 @@
  *                           errores: { ladoEntero: BC, cuarto: BC/4 } }.
  *   medianaHipotenusa({ catetos: [AB, BC] } o { hipotenusa, t })  rectángulo en B; AC es la hipotenusa, con A y C en
  *                           (∓ AC/2; 0) y M = (0; 0) su punto medio; con t, B está en la semicircunferencia de diámetro AC,
- *                           en el ángulo polar t (0 < t < 180). Devuelve { A, B, C, M, hipotenusa, catetos: [AB, BC],
+ *                           en el ángulo polar t (0 < t < 180); en vez de t, hacia: [x, y] pone B en la dirección de ese
+ *                           punto vista desde M (t entre 5° y 175°). Devuelve { A, B, C, M, hipotenusa, catetos: [AB, BC],
  *                           mediana (BM), altura (de B a AC), errores: { cateto: AB, otroCateto: BC, altura,
  *                           promedioCatetos, hipotenusaEntera } } (null el que coincida con la mediana).
  *   notable({ tipo, hipotenusa | menor | mayor | cateto })  tipo '30-60' (k, k√3, 2k), '45-45' (k, k, k√2) o '37-53'
@@ -131,6 +139,11 @@
   const dist = (P, Q) => Math.hypot(P[0] - Q[0], P[1] - Q[1]);
   const limpio = (x, esc) => (Math.abs(x) <= TOL * (esc || 1) ? 0 : x);
   const polar = (P, Q) => Math.atan2(Q[1] - P[1], Q[0] - P[0]) * 180 / PI;
+  // El arco del ángulo PVQ por dentro: { desde, hasta } con hasta − desde entre 0° y 180° (antihorario)
+  function arcoInterior(V, P, Q) {
+    const a = polar(V, P), b = polar(V, Q), d = ((b - a) % 360 + 360) % 360;
+    return d <= 180 ? { desde: a, hasta: a + d } : { desde: b, hasta: b + 360 - d };
+  }
 
   const CUANTOS = { 0: 'ninguno', 1: 'uno', 2: 'dos', 6: 'seis' };
   const cuantosDe = n => (n === Infinity ? 'infinitos' : CUANTOS[n]);
@@ -222,7 +235,9 @@
 
   // ---------- El armador ----------
   function canon(kit) {
-    const s = construir(kit), c = s.criterio, k = Object.keys(kit).filter(x => kit[x] !== undefined && LADOS.concat(ANGULOS).includes(x)).sort().join('');
+    if (!kit || typeof kit !== 'object') throw new Error('faltan los datos del armador');
+    const solo = {}; for (const x of LADOS.concat(ANGULOS)) if (kit[x] !== undefined) solo[x] = kit[x];
+    const s = construir(solo), c = s.criterio, k = Object.keys(solo).sort().join('');
     const pide = { LLL: 'abc', LAL: 'Abc', ALA: 'ABc', LLA: 'Aab', AAA: 'ABC' }[c];
     if (!pide || k !== pide) throw new Error(`el armador usa las letras LLL {a,b,c}, LAL {b,A,c}, ALA {A,c,B}, LLA {A,b,a} o AAA {A,B,C}`);
     return s;
@@ -237,7 +252,7 @@
       R.libre = { tipo: 'circulo', centro: A0, radio: kit.b };
       if (t) { const C = t.vertices.C; R.cierres = [C, [C[0], -C[1]]]; }
       const g = t ? t.angulos.A : 90;
-      R.inicio = g + 70 < 180 ? g + 70 : g - 70;
+      R.inicio = kit.inicio !== undefined ? numero(kit.inicio, 'inicio') : (g + 70 < 180 ? g + 70 : g - 70);
     } else if (crit === 'LAL') {
       R.base.B = [kit.c, 0];
       const C = enCirculo(A0, kit.b, grados(kit.A)); C[0] = limpio(C[0], kit.b);
@@ -254,19 +269,27 @@
       R.libre = { tipo: 'circulo', centro: C, radio: kit.a };
       R.cierres = sol.terceros.map(x => [x, 0]);
       R.detras = sol.detras.map(x => [x, 0]);
-      R.inicio = 60;
+      R.inicio = kit.inicio !== undefined ? numero(kit.inicio, 'inicio') : 60;
     } else {   // AAA
       const desde = kit.desde === undefined ? 2 : positivo(kit.desde, 'desde'), hasta = kit.hasta === undefined ? 10 : positivo(kit.hasta, 'hasta');
       if (!(hasta > desde)) throw new Error('hasta debe ser mayor que desde');
       R.libre = { tipo: 'rayo', origen: A0, angulo: 0, desde, hasta };
       R.inicio = (desde + hasta) / 2;
     }
+    const L = R.libre;
+    // en qué momento del barrido de enLocus (f de 0 a 1) la punta pasa por cada cierre y por cada corte de atrás
+    const vuelta = kit.vuelta !== undefined ? positivo(kit.vuelta, 'vuelta') : 1;
+    const fDe = Q => (L.tipo === 'circulo' ? (((R.inicio - polar(L.centro, Q)) % 360 + 360) % 360) / (360 * vuelta)
+      : L.tipo === 'rayo' ? (dist(L.origen, Q) - L.desde) / (L.hasta - L.desde) : 0);
+    R.fCierres = R.cierres.map(fDe); R.fDetras = (R.detras || []).map(fDe);
+    R.puntoInicio = L.tipo === 'circulo' ? enCirculo(L.centro, L.radio, R.inicio) : L.tipo === 'puntos' ? L.puntos[0] : enCirculo(L.origen, R.inicio, L.angulo);
     return R;
   }
   function enLocus(kit, f) {
     numero(f, 'f');
     const R = armador(kit), L = R.libre;
-    if (L.tipo === 'circulo') return enCirculo(L.centro, L.radio, R.inicio - 360 * f);
+    const vuelta = kit.vuelta !== undefined ? positivo(kit.vuelta, 'vuelta') : 1;
+    if (L.tipo === 'circulo') return enCirculo(L.centro, L.radio, R.inicio - 360 * vuelta * f);
     if (L.tipo === 'puntos') return L.puntos[f < 0.5 ? 1 : 0];
     const x = L.desde + (L.hasta - L.desde) * Math.max(0, Math.min(1, f));
     return enCirculo(L.origen, x, L.angulo);
@@ -302,7 +325,7 @@
     } else if (crit === 'LAL') {
       const B0 = R.base.B;
       piezas.push({ tipo: 'varilla', lado: 'c', de: A0, a: B0 }, { tipo: 'varilla', lado: 'b', de: A0, a: X },
-        { tipo: 'bisagra', letra: 'A', vertice: A0, desde: Math.min(0, polar(A0, X)), hasta: Math.max(0, polar(A0, X)) },
+        Object.assign({ tipo: 'bisagra', letra: 'A', vertice: A0 }, arcoInterior(A0, B0, X)),
         { tipo: 'elastico', lado: 'a', de: B0, a: X });
       falta = 0; indice = X[1] > 0 ? 0 : 1; tri = { A: A0, B: B0, C: X };
     } else if (crit === 'ALA') {
@@ -323,7 +346,7 @@
       piezas.push({ tipo: 'rayo', de: A0, angulo: 0 }, { tipo: 'rayo', de: A0, angulo: grados(kit.A) },
         { tipo: 'bisagra', letra: 'A', vertice: A0, desde: 0, hasta: grados(kit.A) },
         { tipo: 'bisagra', letra: 'B', vertice: v.B, desde: 180 - grados(kit.B), hasta: 180 },
-        { tipo: 'bisagra', letra: 'C', vertice: v.C, desde: polar(v.C, v.B), hasta: polar(v.C, v.A) },
+        Object.assign({ tipo: 'bisagra', letra: 'C', vertice: v.C }, arcoInterior(v.C, v.B, v.A)),
         { tipo: 'elastico', lado: 'c', de: v.A, a: v.B }, { tipo: 'elastico', lado: 'b', de: v.A, a: v.C }, { tipo: 'elastico', lado: 'a', de: v.B, a: v.C });
       falta = 0; tri = v; indice = 0; X = v.B;
     }
@@ -332,7 +355,7 @@
       const ab = dist(tri.A, tri.B), bc = dist(tri.B, tri.C), ca = dist(tri.C, tri.A);
       lados = { a: bc, b: ca, c: ab };
       if (crit !== 'AAA' && crit !== 'LAL') {   // la bisagra en C y el tercer lado, ya cerrado
-        if (crit === 'ALA') piezas.push({ tipo: 'bisagra', letra: 'C', vertice: tri.C, desde: polar(tri.C, tri.B), hasta: polar(tri.C, tri.A) });
+        if (crit === 'ALA') piezas.push(Object.assign({ tipo: 'bisagra', letra: 'C', vertice: tri.C }, arcoInterior(tri.C, tri.B, tri.A)));
       }
     }
     return { punto: X, cierra: !!tri, indice, falta, triangulo: tri, lados, piezas };
@@ -407,9 +430,12 @@
   // ---------- Mediatriz, bisectriz, base media, mediana a la hipotenusa ----------
   function mediatriz(o) {
     o = o || {};
-    const A = punto(o.A, 'A'), B = punto(o.B, 'B'), t = numero(o.t, 't');
+    const A = punto(o.A, 'A'), B = punto(o.B, 'B');
     const AB = dist(A, B); if (!(AB > 0)) throw new Error('A y B deben ser distintos');
     const M = [(A[0] + B[0]) / 2, (A[1] + B[1]) / 2], n = [-(B[1] - A[1]) / AB, (B[0] - A[0]) / AB];
+    let t;
+    if (o.hacia !== undefined) { const H = punto(o.hacia, 'hacia'); t = (H[0] - M[0]) * n[0] + (H[1] - M[1]) * n[1]; }
+    else t = numero(o.t, 't');
     const P = [M[0] + t * n[0], M[1] + t * n[1]], mitad = AB / 2, PA = dist(P, A);
     const e = { PMcomoPB: Math.abs(t), suma: Math.abs(t) + mitad, restaCuadrados: Math.abs(t) > mitad ? Math.sqrt(t * t - mitad * mitad) : null };
     for (const k of Object.keys(e)) if (e[k] !== null && igual(e[k], PA)) e[k] = null;
@@ -449,7 +475,9 @@
       B = [x, ab * bc / h];
     } else {
       h = positivo(o.hipotenusa, 'la hipotenusa');
-      const t = numero(o.t, 't'); if (!(t > 0 && t < 180)) throw new Error('t debe estar entre 0° y 180°');
+      let t;
+      if (o.hacia !== undefined) { const H = punto(o.hacia, 'hacia'); t = Math.max(5, Math.min(175, Math.atan2(Math.max(H[1], 0), H[0]) * 180 / PI)); }
+      else t = numero(o.t, 't'); if (!(t > 0 && t < 180)) throw new Error('t debe estar entre 0° y 180°');
       B = [h / 2 * cos(t), h / 2 * sen(t)];
     }
     const A = [-h / 2, 0], C = [h / 2, 0], M = [0, 0];

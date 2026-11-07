@@ -1,0 +1,132 @@
+{
+  "titulo": "El armador de triángulos: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Antes de usar un criterio, pregúntate: con estos datos, ¿el triángulo queda determinado? LAL pide el ángulo entre los dos lados; ALA, el lado entre los dos ángulos (LAA se vuelve ALA con la suma de 180°); LLL, los tres lados. Dos lados y un ángulo que no está entre ellos (LLA) pueden dar dos triángulos, salvo que el ángulo esté frente al lado mayor. Tres ángulos iguales no bastan: dan triángulos semejantes. Al escribir ΔABC ≅ ΔPQR, el orden de las letras dice qué vértice va con cuál.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "En los triángulos ABC y DEF se sabe que AB = DE = 9, BC = EF = 12 y que el ángulo B mide lo mismo que el ángulo E, 70°. ¿Son congruentes? ¿Con qué criterio? ¿Y si en vez de los ángulos B y E fueran iguales los ángulos C y F?",
+      "respuesta": "Sí, por LAL (el ángulo B está entre AB y BC). Con los ángulos C y F, no se puede asegurar: sería LLA.",
+      "pasos": [
+        "El ángulo B está formado por los lados BA y BC: es el ángulo comprendido entre los dos lados dados. Eso es LAL.",
+        "LAL determina el triángulo: ΔABC ≅ ΔDEF, con A con D, B con E y C con F.",
+        "El ángulo C no está entre AB y BC: está frente a AB. Con dos lados y un ángulo no comprendido (LLA) puede haber dos triángulos distintos.",
+        "Ojo: en el segundo caso el ángulo C está frente a AB = 9, que es el lado menor de los dos. Por eso no basta."
+      ],
+      "verificar": [ { "fn": "construir", "args": [{ "c": 9, "a": 12, "B": 70 }], "espera": { "criterio": "LAL", "cuantos": "uno" } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "intermedio",
+      "enunciado": "Con un ángulo A de 37°, un lado AC de 15 cm y un lado BC de 10 cm se quiere construir un triángulo ABC. ¿Cuánto puede medir AB?",
+      "respuesta": "12 − √19 cm o 12 + √19 cm (unos 7,6 cm o 16,4 cm): hay dos triángulos.",
+      "pasos": [
+        "Dibuja el ángulo de 37° en A y marca C a 15 cm sobre uno de sus lados. La altura desde C hasta el otro lado es 3k con 5k = 15: k = 3, altura 9. El pie de esa altura queda a 4k = 12 de A.",
+        "BC = 10 es mayor que la altura 9 y menor que AC = 15: con centro en C, el compás de 10 corta el otro lado dos veces, delante de A.",
+        "Cada corte está a √(10² − 9²) = √19 del pie de la altura: AB = 12 − √19 o AB = 12 + √19.",
+        "Los dos triángulos tienen los mismos tres datos y no son congruentes: LLA no es un criterio."
+      ],
+      "verificar": [ { "fn": "construir", "args": [{ "A": 37, "b": 15, "a": 10 }], "espera": { "cuantos": "dos", "altura": 9, "terceros": [7.641101056459327, 16.358898943540673] } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Una escalera de 13 m se apoya en una pared vertical. Su pie está a 5 m de la pared. ¿A qué altura llega? ¿Hay otra posición de la escalera con esos mismos datos que no sea congruente?",
+      "respuesta": "A 12 m. No hay otra: hipotenusa y cateto determinan el triángulo rectángulo.",
+      "pasos": [
+        "El triángulo es rectángulo: la escalera es la hipotenusa (13) y la distancia al pie es un cateto (5).",
+        "El otro cateto: 13² − 5² = 169 − 25 = 144, así que mide 12 m. Se resta, porque el que falta es un cateto; sumar daría √194, que es más que la escalera.",
+        "Es un caso de LLA, pero el ángulo recto está frente a la hipotenusa, el lado mayor: el compás corta la pared en un solo punto útil. Hipotenusa y cateto sí determinan."
+      ],
+      "verificar": [ { "fn": "construir", "args": [{ "A": 90, "b": 5, "a": 13 }], "espera": { "cuantos": "uno", "terceros": [12], "errores.pitagorasSuma": 13.92838827718412 } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Los triángulos MNP y XYZ tienen MN = 6, NP = 9, PM = 11, XY = 9, YZ = 11 y ZX = 6. Escribe la congruencia con los vértices en el orden correcto. Si el ángulo N mide 88°, ¿cuál de los ángulos de XYZ mide 88°?",
+      "respuesta": "ΔMNP ≅ ΔZXY; el ángulo X mide 88°.",
+      "pasos": [
+        "Se empareja por los lados, no por el orden en que se escribieron las letras. MN = 6 va con ZX = 6, NP = 9 con XY = 9 y PM = 11 con YZ = 11.",
+        "N está entre los lados de 6 y 9; en XYZ, el vértice entre ZX = 6 y XY = 9 es X. Entonces N va con X.",
+        "M está entre 11 y 6: va con Z. P está entre 9 y 11: va con Y.",
+        "ΔMNP ≅ ΔZXY. Escribir ΔMNP ≅ ΔXYZ sería emparejar mal: los lados MN = 6 y XY = 9 no son iguales."
+      ],
+      "verificar": [ { "fn": "correspondencia", "args": [{ "nombres": "MNP", "lados": [6, 9, 11] }, { "nombres": "XYZ", "lados": [9, 11, 6] }], "espera": { "texto": "ΔMNP ≅ ΔZXY", "pares.N": "X", "errores.ordenEscritura": "ΔMNP ≅ ΔXYZ" } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "básico",
+      "enunciado": "Dos postes A y B están a 16 m. Se quiere poner una lámpara P que esté a la misma distancia de los dos postes y a 17 m de cada uno. ¿A qué distancia del segmento AB queda la lámpara?",
+      "respuesta": "A 15 m, sobre la mediatriz de AB.",
+      "pasos": [
+        "Todo punto que equidista de A y de B está en la mediatriz de AB: la recta perpendicular a AB por su punto medio M.",
+        "Los triángulos PMA y PMB son congruentes (LAL: PM común, MA = MB = 8 y ángulos rectos en M).",
+        "En el triángulo rectángulo PMA: PM² = 17² − 8² = 289 − 64 = 225, así que PM = 15 m."
+      ],
+      "verificar": [ { "fn": "mediatriz", "args": [{ "A": [-8, 0], "B": [8, 0], "t": 15 }], "espera": { "PA": 17, "PB": 17, "PM": 15 } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Un ángulo AOB mide 106°. El punto P está sobre su bisectriz, a 15 cm del vértice O. ¿A qué distancia está P de cada lado del ángulo? ¿A qué distancia de O están los pies de esas perpendiculares?",
+      "respuesta": "P está a 12 cm de cada lado; los pies quedan a 9 cm de O.",
+      "pasos": [
+        "La bisectriz parte el ángulo de 106° en dos de 53°.",
+        "Desde P se bajan las perpendiculares PH a OA y PK a OB. Los triángulos OHP y OKP son rectángulos, comparten la hipotenusa OP y tienen un ángulo de 53° en O: son congruentes (LAA). Por eso PH = PK.",
+        "En el triángulo de 37° y 53° con hipotenusa 15 = 5k, k = 3: el cateto opuesto a 53° es 4k = 12 (la distancia PH) y el opuesto a 37° es 3k = 9 (OH)."
+      ],
+      "verificar": [ { "fn": "bisectriz", "args": [{ "angulo": 106, "d": 15 }], "espera": { "distancias": [12, 12], "OH": 9, "OK": 9 } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "básico",
+      "enunciado": "Los lados de un triángulo miden 10, 14 y 18. Se unen los puntos medios de sus lados y se forma un triángulo más pequeño. ¿Cuál es su perímetro?",
+      "respuesta": "21.",
+      "pasos": [
+        "Cada segmento que une dos puntos medios es una base media: es paralela al tercer lado y mide su mitad.",
+        "Los lados del triángulo pequeño miden 5, 7 y 9.",
+        "Perímetro: 5 + 7 + 9 = 21, la mitad del perímetro del grande (42)."
+      ],
+      "verificar": [ { "fn": "baseMedia", "args": [{ "A": [6.333333333333333, 7.7387911774959335], "B": [0, 0], "C": [18, 0] }], "espera": { "MN": 9, "BC": 18, "paralela": true } },
+                     { "fn": "construir", "args": [{ "a": 18, "b": 14, "c": 10 }], "espera": { "cuantos": "uno" } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "básico",
+      "enunciado": "En un triángulo rectángulo los catetos miden 9 y 12. ¿Cuánto mide la mediana relativa a la hipotenusa?",
+      "respuesta": "7,5.",
+      "pasos": [
+        "La hipotenusa mide √(81 + 144) = √225 = 15.",
+        "La mediana relativa a la hipotenusa mide la mitad de ella: 15/2 = 7,5. El punto medio de la hipotenusa está a la misma distancia de los tres vértices.",
+        "No es la altura relativa a la hipotenusa (9 · 12/15 = 7,2) ni el promedio de los catetos (10,5)."
+      ],
+      "verificar": [ { "fn": "medianaHipotenusa", "args": [{ "catetos": [9, 12] }], "espera": { "hipotenusa": 15, "mediana": 7.5, "altura": 7.2 } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "básico",
+      "enunciado": "En un triángulo rectángulo de 30° y 60°, el cateto opuesto a 60° mide 6√3. ¿Cuánto miden el otro cateto y la hipotenusa?",
+      "respuesta": "El cateto menor mide 6 y la hipotenusa 12.",
+      "pasos": [
+        "En el notable de 30° y 60° los lados son k (frente a 30°), k√3 (frente a 60°) y 2k (la hipotenusa).",
+        "k√3 = 6√3, así que k = 6.",
+        "Cateto menor: 6. Hipotenusa: 2k = 12. Es la mitad de un triángulo equilátero de lado 12, partido por su altura."
+      ],
+      "verificar": [ { "fn": "notable", "args": [{ "tipo": "30-60", "mayor": 10.392304845413264 }], "espera": { "k": 6, "menor": 6, "hipotenusa": 12 } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "intermedio",
+      "enunciado": "¿Cuáles de estos datos determinan un triángulo ABC? a) Los ángulos A = 50°, B = 60° y el lado BC = 9. b) Los ángulos A = 50°, B = 60° y C = 70°. c) Los lados 4, 5 y 10.",
+      "respuesta": "Solo a). b) da infinitos triángulos semejantes; c) no forma ningún triángulo.",
+      "pasos": [
+        "a) Es LAA: el lado BC no está entre los ángulos A y B, pero el tercer ángulo sale de la suma: C = 180° − 50° − 60° = 70°. Con B, BC y C se tiene ALA. Determina.",
+        "b) Con solo los tres ángulos se pueden armar triángulos de cualquier tamaño: todos son semejantes, pero no congruentes.",
+        "c) 4 + 5 = 9 es menor que 10: las dos varillas cortas no alcanzan a cerrar. No hay triángulo."
+      ],
+      "verificar": [ { "fn": "construir", "args": [{ "A": 50, "B": 60, "a": 9 }], "espera": { "criterio": "LAA", "cuantos": "uno", "anguloQueFalta": 70 } },
+                     { "fn": "construir", "args": [{ "A": 50, "B": 60, "C": 70 }], "espera": { "cuantos": "infinitos" } },
+                     { "fn": "construir", "args": [{ "a": 4, "b": 5, "c": 10 }], "espera": { "cuantos": "ninguno" } } ]
+    }
+  ]
+}
