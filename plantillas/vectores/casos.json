@@ -1,0 +1,111 @@
+{
+  "plantilla": "vectores",
+  "unidades": "Módulos en unidades de la cuadrícula (o en las unidades del enunciado); ángulos en grados desde el eje x positivo, antihorario. Dimensiones con los símbolos del SI: L, M, T, I, Θ, N, J.",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.sumaModulos, componentes.x); las listas se comparan completas; los textos (una dimensión como «LT⁻²») se comparan exactos. Por defecto, 37° y 53° usan el triángulo notable 3-4-5 de las academias (aproximado); con { \"exacto\": true } se usa la trigonometría exacta.",
+  "verificacion": "Verificador independiente (Claude, 7 nov 2026), sin ver el código del motor ni este archivo: recalculó los 19 casos con un script propio en Python (Fraction con los notables 3-4-5 reflejados por cuadrante, ley de cosenos comparada con la suma por componentes, hexágono por coordenadas, dimensiones como exponentes con Fraction y exponentes por Cramer). Todos los valores coinciden dentro de 1e-9. Las únicas diferencias son de formato (\"1\" para lo adimensional, el signo − tipográfico) y de convención (hexágono centrado en el origen).",
+  "tolerancia": 1e-9,
+  "casos": [
+    { "nombre": "Predicción 1 (paso 2): a = 3 y b = 4 perpendiculares → R = 5 (sumar módulos: 7; restarlos: 1; raíz sin cuadrados: √7)",
+      "fn": "resultante", "args": [3, 4, 90],
+      "espera": { "R": 5, "R2": 25, "terminoCruzado": 0, "componentes.x": 3, "componentes.y": 4, "angulo": 53.13010235415598,
+                  "errores.sumaModulos": 7, "errores.restaModulos": 1, "errores.sinCuadrados": 2.6457513110645907 } },
+
+    { "nombre": "Método del polígono: (3, 0) y luego (0, 4) cola en la punta → la punta final en (3, 4) y R = 5; el orden no importa (paralelogramo)",
+      "fn": "suma", "args": [[{ "x": 3, "y": 0 }, { "x": 0, "y": 4 }]],
+      "espera": { "x": 3, "y": 4, "modulo": 5, "puntas": [{ "x": 0, "y": 0 }, { "x": 3, "y": 0 }, { "x": 3, "y": 4 }], "errores.sumaModulos": 7 },
+      "tambien": [ { "args": [[{ "x": 0, "y": 4 }, { "x": 3, "y": 0 }]], "espera": { "x": 3, "y": 4, "modulo": 5, "puntas": [{ "x": 0, "y": 0 }, { "x": 0, "y": 4 }, { "x": 3, "y": 4 }] } } ] },
+
+    { "nombre": "Predicción 2 (paso 4): a = 5, b = 3 y θ = 60° → R² = 25 + 9 + 15 = 49, R = 7 (suma 8; con el signo menos √19; Pitágoras √34)",
+      "fn": "resultante", "args": [5, 3, 60],
+      "espera": { "R": 7, "R2": 49, "terminoCruzado": 15, "porComponentes": 7, "componentes.x": 6.5, "componentes.y": 2.598076211353316,
+                  "errores.sumaModulos": 8, "errores.cosenoMenos": 4.358898943540674, "errores.pitagoras": 5.830951894845301 } },
+
+    { "nombre": "Predicción 3 (paso 5): a = 5 y b = 3 → 2 ≤ R ≤ 8; mínimo con θ = 180°, máximo con θ = 0° (errores: mínimo 0, entre 3 y 5, máximo √34)",
+      "fn": "rango", "args": [5, 3],
+      "espera": { "minimo": 2, "maximo": 8, "thetaMinimo": 180, "thetaMaximo": 0, "perpendicular": 5.830951894845301,
+                  "errores.minimoCero": 0, "errores.entreModulos": [3, 5], "errores.maximoPerpendicular": 5.830951894845301 },
+      "tambien": [ { "fn": "resultante", "args": [5, 3, 180], "espera": { "R": 2 } }, { "fn": "resultante", "args": [5, 3, 0], "espera": { "R": 8 } } ] },
+
+    { "nombre": "¿Qué pasa si…? 2: a = 6 y b = 8; al abrir θ de 0° a 180°, R baja siempre, de 14 a 2, y vale 10 en 90° (no es el mínimo)",
+      "fn": "barrido", "args": [6, 8, 6],
+      "espera": { "decrece": true, "R90": 10, "errores.minimoEn90": 10,
+                  "puntos": [{ "theta": 0, "R": 14 }, { "theta": 30, "R": 13.532865135044615 }, { "theta": 60, "R": 12.165525060596439 }, { "theta": 90, "R": 10 },
+                             { "theta": 120, "R": 7.211102550927979 }, { "theta": 150, "R": 4.106283141320613 }, { "theta": 180, "R": 2 }] } },
+
+    { "nombre": "¿Qué pasa si…? 1: dos vectores de 4 con 120° → R = 4 (sumar: 8; signo menos: 4√3)",
+      "fn": "resultante", "args": [4, 4, 120],
+      "espera": { "R": 4, "R2": 16, "terminoCruzado": -16, "angulo": 60, "errores.sumaModulos": 8, "errores.cosenoMenos": 6.928203230275509 } },
+
+    { "nombre": "Predicción 4 (paso 6): 10 a 37° con el notable 3-4-5 → sombras 8 en x y 6 en y (cambiados: 6 y 8; el vector entero: 10; sumar al módulo: 4)",
+      "fn": "componentes", "args": [10, 37],
+      "espera": { "x": 8, "y": 6, "notable": true, "sumaCuadrados": 100,
+                  "errores.cambiados.x": 6, "errores.cambiados.y": 8, "errores.vectorEntero": 10, "errores.sumanModulo.x": 4 },
+      "tambien": [ { "args": [10, 37, { "exacto": true }], "espera": { "x": 7.986355100472928, "y": 6.018150231520483, "notable": false } } ] },
+
+    { "nombre": "Notables en los cuatro cuadrantes: 10 a 143° → (−8, 6); 5 a 217° → (−4, −3); 10 a 323° → (8, −6); 5 a 53° → (3, 4)",
+      "fn": "vector", "args": [10, 143],
+      "espera": { "x": -8, "y": 6, "modulo": 10, "angulo": 143, "notable": true },
+      "tambien": [ { "args": [5, 217], "espera": { "x": -4, "y": -3 } }, { "args": [10, 323], "espera": { "x": 8, "y": -6 } },
+                   { "args": [5, 53], "espera": { "x": 3, "y": 4 } }, { "args": [2, 90], "espera": { "x": 0, "y": 2 } }, { "args": [2, -90], "espera": { "x": 0, "y": -2, "angulo": 270 } } ] },
+
+    { "nombre": "Papel p4 y suma por componentes: 10 a 53° más 6 hacia la izquierda → R = (0, 8), módulo 8 (sumar módulos: 16; olvidar el signo de −6: (12, 8), √208)",
+      "fn": "suma", "args": [[{ "x": 6, "y": 8 }, { "x": -6, "y": 0 }]],
+      "espera": { "x": 0, "y": 8, "modulo": 8, "angulo": 90, "errores.sumaModulos": 16 },
+      "tambien": [ { "args": [[{ "x": 6, "y": 8 }, { "x": 6, "y": 0 }]], "espera": { "modulo": 14.422205101855956 } } ] },
+
+    { "nombre": "Polígono cerrado: (3, 0), (0, 4) y (−3, −4) cola en la punta vuelven al origen → resultante nula (sumar módulos: 12)",
+      "fn": "suma", "args": [[{ "x": 3, "y": 0 }, { "x": 0, "y": 4 }, { "x": -3, "y": -4 }]],
+      "espera": { "x": 0, "y": 0, "modulo": 0, "cerrado": true, "errores.sumaModulos": 12 } },
+
+    { "nombre": "Resta: (3, 4) − (3, 0) = (0, 4), módulo 4 (sumar en vez de restar: √52; restar módulos: 2)",
+      "fn": "resta", "args": [{ "x": 3, "y": 4 }, { "x": 3, "y": 0 }],
+      "espera": { "x": 0, "y": 4, "modulo": 4, "errores.sumaEnVezDeResta": 7.211102550927978, "errores.restaModulos": 2 } },
+
+    { "nombre": "¿Qué pasa si…? 3: unitario de (6, 8) = (0,6; 0,8) (sin dividir: (6, 8); entre la suma de componentes: (3/7, 4/7), que mide 5/7)",
+      "fn": "unitario", "args": [{ "x": 6, "y": 8 }],
+      "espera": { "x": 0.6, "y": 0.8, "modulo": 1, "moduloOriginal": 10,
+                  "errores.sinDividir.x": 6, "errores.sinDividir.y": 8, "errores.entreSuma.x": 0.42857142857142855, "errores.entreSuma.y": 0.5714285714285714,
+                  "errores.unos.x": 1, "errores.unos.y": 1, "errores.moduloEntreSuma": 0.7142857142857143 } },
+
+    { "nombre": "¿Qué pasa si…? 4: hexágono regular de lado 2; AB + AC + AD + AE + AF = 3·AD = (12, 0), módulo 12 = 6 lados (sumar módulos: 8 + 4√3; se anulan: 0; solo la diagonal: 4)",
+      "fn": "hexagono", "args": [2],
+      "espera": { "x": 12, "y": 0, "modulo": 12, "enDiagonales": 3, "vertices.A.x": -2, "vertices.D.x": 2, "vertices.B.y": 1.7320508075688772,
+                  "desdeA.AD.modulo": 4, "desdeA.AC.modulo": 3.4641016151377544, "pares.AB+AF.x": 2, "pares.AC+AE.x": 6,
+                  "errores.sumaModulos": 14.928203230275509, "errores.seAnulan": 0, "errores.soloDiagonal": 4 } },
+
+    { "nombre": "Producto escalar y vectorial: (3, 4)·(4, 3) = 24; ángulo de 16,26°; (1, 2, 0) × (3, 1, 0) = (0, 0, −5)",
+      "fn": "escalar", "args": [{ "x": 3, "y": 4 }, { "x": 4, "y": 3 }],
+      "espera": { "valor": 24 },
+      "tambien": [ { "fn": "anguloEntre", "args": [{ "x": 3, "y": 4 }, { "x": 4, "y": 3 }], "espera": { "valor": 16.260204708311957 } },
+                   { "fn": "vectorial", "args": [{ "x": 1, "y": 2, "z": 0 }, { "x": 3, "y": 1, "z": 0 }], "espera": { "x": 0, "y": 0, "z": -5, "modulo": 5, "errores.conCoseno": 5 } },
+                   { "fn": "escalar", "args": [{ "x": 2, "y": 0 }, { "x": 0, "y": 5 }], "espera": { "valor": 0 } } ] },
+
+    { "nombre": "Magnitudes derivadas del SI: fuerza MLT⁻², energía ML²T⁻², presión ML⁻¹T⁻², potencia ML²T⁻³, densidad ML⁻³; el ángulo y los números no tienen dimensión",
+      "fn": "texto", "args": ["fuerza"],
+      "espera": { "valor": "MLT⁻²" },
+      "tambien": [ { "args": ["energia"], "espera": { "valor": "ML²T⁻²" } }, { "args": ["presion"], "espera": { "valor": "ML⁻¹T⁻²" } },
+                   { "args": ["potencia"], "espera": { "valor": "ML²T⁻³" } }, { "args": ["densidad"], "espera": { "valor": "ML⁻³" } },
+                   { "args": ["angulo"], "espera": { "valor": "1" } }, { "args": [{ "velocidad": 1, "tiempo": 1 }], "espera": { "valor": "L" } },
+                   { "args": [{ "L": 0.5, "T": -1 }], "espera": { "valor": "L^(1/2)T⁻¹" } } ] },
+
+    { "nombre": "Predicción 5 (paso 7): en d = P·t + Q·t², [Q] = L / T² = LT⁻² (igual al miembro: L; multiplicar: LT²; sin el exponente: LT⁻¹); [P] = LT⁻¹",
+      "fn": "constante", "args": [{ "L": 1 }, [{ "dim": { "T": 1 }, "exp": 2 }]],
+      "espera": { "texto": "LT⁻²", "dimension.L": 1, "dimension.T": -2, "errores.igualAlMiembro": "L", "errores.multiplica": "LT²", "errores.exponenteUno": "LT⁻¹" },
+      "tambien": [ { "args": [{ "L": 1 }, [{ "dim": "tiempo" }]], "espera": { "texto": "LT⁻¹" } } ] },
+
+    { "nombre": "¿Qué pasa si…? 5: en h = C·sen(ω·t), ω·t no tiene dimensión → [ω] = T⁻¹ (multiplicar: T; con la altura: LT⁻¹; [C] = L)",
+      "fn": "constante", "args": [{}, [{ "dim": "tiempo" }]],
+      "espera": { "texto": "T⁻¹", "errores.igualAlMiembro": "1", "errores.multiplica": "T" },
+      "tambien": [ { "args": [{ "L": 1 }, [{ "dim": "tiempo" }]], "espera": { "texto": "LT⁻¹" } }, { "args": [{ "L": 1 }, [{ "dim": "angulo" }]], "espera": { "texto": "L" } } ] },
+
+    { "nombre": "Predicción 6 (paso 8): t = k·h^α·g^β·m^γ → L: α + β = 0; M: γ = 0; T: −2β = 1 → α = 1/2, β = −1/2, γ = 0",
+      "fn": "exponentes", "args": [{ "T": 1 }, [{ "nombre": "α", "dim": "longitud" }, { "nombre": "β", "dim": "aceleracion" }, { "nombre": "γ", "dim": "masa" }]],
+      "espera": { "exponentes.α": 0.5, "exponentes.β": -0.5, "exponentes.γ": 0, "textos.α": "1/2", "textos.β": "−1/2", "textos.γ": "0",
+                  "unica": true, "compatible": true, "bases": ["L", "M", "T"], "errores.todosUno.γ": 1 } },
+
+    { "nombre": "Homogeneidad: v² = v₀² + 2·a·d es homogénea (los tres pesan L²T⁻²); v = v₀ + a·d no lo es (el segundo término pesa L²T⁻²)",
+      "fn": "homogenea", "args": [[{ "velocidad": 2 }, { "velocidad": 2 }, { "aceleracion": 1, "longitud": 1 }]],
+      "espera": { "homogenea": true, "textos": ["L²T⁻²", "L²T⁻²", "L²T⁻²"], "distintos": [] },
+      "tambien": [ { "args": [["velocidad", "velocidad", { "aceleracion": 1, "longitud": 1 }]], "espera": { "homogenea": false, "distintos": [2] } } ] }
+  ]
+}

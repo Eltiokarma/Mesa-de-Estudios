@@ -2709,8 +2709,8 @@
   },
   "razonamiento-matematico": {
    "curso": "razonamiento-matematico",
-   "version": "1.0.0",
-   "minutos": 14,
+   "version": "1.1.0",
+   "minutos": 17,
    "errores": {
     "RM4-resta-en-encuentro": {
      "respaldo": "hipotesis",
@@ -2791,6 +2791,30 @@
     "da-la-del-medio": {
      "respaldo": "hipotesis",
      "describe": "Responde las vueltas del engranaje del medio"
+    },
+    "AR7-horario-quieto": {
+     "respaldo": "hipotesis",
+     "describe": "Deja el horario quieto en la hora exacta, como si no avanzara con los minutos"
+    },
+    "formula-signo-cambiado": {
+     "respaldo": "hipotesis",
+     "describe": "Suma 11M/2 en vez de restarlo en α = |30H − 11M/2|"
+    },
+    "no-toma-el-menor-angulo": {
+     "respaldo": "hipotesis",
+     "describe": "Da el ángulo de la vuelta por fuera, mayor que 180°"
+    },
+    "adelanto-hasta-24-horas": {
+     "respaldo": "hipotesis",
+     "describe": "Espera que el adelanto llegue a 24 horas, cuando con 12 las agujas ya coinciden"
+    },
+    "adelanto-por-hora-sin-el-cada": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta los periodos de adelanto como si fueran horas"
+    },
+    "adelanto-hasta-una-hora": {
+     "respaldo": "hipotesis",
+     "describe": "Espera que el adelanto llegue a una hora, no a 12"
     }
    },
    "pares": [
@@ -3123,13 +3147,97 @@
       ],
       "k": "69f36d425930519d176094890506345e579799d7eb43b9af8051b27fa8d8fb2501c7cdbd811f0ce6cf0507b36973df2191b7d00b66447b9cffb380e4ef7e4128d3b72fb00f0de1784ae1f69c30cdcc4cb6"
      }
+    },
+    {
+     "par": "rm-09",
+     "plantilla": "relojes-calendarios",
+     "unidad": "razonamiento-matematico.cronometria-y-calendarios",
+     "mide": "Ángulo entre las agujas: el horario también avanza con los minutos, α = |30H − 11M/2|",
+     "A": {
+      "enunciado": "Un reloj de agujas marca las 8:20. ¿Qué ángulo forman el horario y el minutero? (Se pide el menor de los dos ángulos.)",
+      "opciones": [
+       {
+        "texto": "120°"
+       },
+       {
+        "texto": "230°"
+       },
+       {
+        "texto": "130°"
+       },
+       {
+        "texto": "10°"
+       }
+      ],
+      "k": "c0f6b893d9537ce12ced916a774cd13ff1e8db9cd307ea8f02ca49feca3e55fea2bd5c5d2fb75082f0662c5690766c1bae6b183ed1dfa6445b604ac8563edae899bebef87c332f3594bebb6ee34249e9"
+     },
+     "B": {
+      "enunciado": "Un reloj de agujas marca las 7:10. ¿Qué ángulo forman el horario y el minutero? (Se pide el menor de los dos ángulos.)",
+      "opciones": [
+       {
+        "texto": "150°"
+       },
+       {
+        "texto": "205°"
+       },
+       {
+        "texto": "155°"
+       },
+       {
+        "texto": "95°"
+       }
+      ],
+      "k": "8e51e4fd82de4596c4e47454ac6518db217f09129c1cbafa881c4e7137fa9b848ef3a291d1b5b37a966c88e3a5667f1f03203b076964a7f3cad749d14e145acd591ce33211cd276c9a5b4b153432dd97"
+     }
+    },
+    {
+     "par": "rm-10",
+     "plantilla": "relojes-calendarios",
+     "unidad": "razonamiento-matematico.cronometria-y-calendarios",
+     "mide": "Un reloj que se adelanta vuelve a marcar la hora correcta al acumular 12 horas",
+     "A": {
+      "enunciado": "Un reloj de agujas se adelanta 3 minutos cada 6 horas. Se pone en la hora exacta y nadie lo vuelve a tocar. ¿Dentro de cuántos días volverá a marcar la hora correcta?",
+      "opciones": [
+       {
+        "texto": "120 días"
+       },
+       {
+        "texto": "60 días"
+       },
+       {
+        "texto": "5 días"
+       },
+       {
+        "texto": "10 días"
+       }
+      ],
+      "k": "311b29555f35693a72d881f7f96b5d5753d90f623bb6930aa529d28fea65deb8557b378a62f7093f8a7930f82aedf65797a8e2e9825c45851fd70fa130eccb80b36941caeb3645c5f723c0bb756832ed52bfc149e76a06eccae08ecc"
+     },
+     "B": {
+      "enunciado": "Un reloj de agujas se adelanta 4 minutos cada 6 horas. Se pone en la hora exacta y nadie lo vuelve a tocar. ¿Dentro de cuántos días volverá a marcar la hora correcta?",
+      "opciones": [
+       {
+        "texto": "90 días"
+       },
+       {
+        "texto": "45 días"
+       },
+       {
+        "texto": "3,75 días"
+       },
+       {
+        "texto": "7,5 días"
+       }
+      ],
+      "k": "64868697a17b32879b4bdfbe197ba94308bfbb491619cb559c92ffd0e6576be235774fb8bd1a462f7633d6460693600b0afe000a72759ab507cbfab4b2a9170f04a4e6e1de295d67d57d9bd8f02ba14c9634a9578d08c7ee76a5824b"
+     }
     }
    ]
   },
   "trigonometria": {
    "curso": "trigonometria",
-   "version": "2.0.0",
-   "minutos": 12,
+   "version": "2.1.0",
+   "minutos": 15,
    "errores": {
     "TR1-lee-2-como-2pi": {
      "respaldo": "parcial",
@@ -3222,6 +3330,30 @@
     "ID6-producto-de-tangentes": {
      "respaldo": "hipotesis",
      "describe": "Multiplica las tangentes"
+    },
+    "IN3-se-cancelan-siempre": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que arcsen(sen θ) = θ siempre, sin mirar el rango"
+    },
+    "TR14-cambia-de-funcion": {
+     "respaldo": "hipotesis",
+     "describe": "Al reducir cambia de función: sen(180° − x) = cos x"
+    },
+    "IN24-signo-al-reducir": {
+     "respaldo": "hipotesis",
+     "describe": "Al reducir pone un signo que no va: sen(180° − x) = −sen x"
+    },
+    "IN8-cancela-funciones-distintas": {
+     "respaldo": "hipotesis",
+     "describe": "Cancela funciones distintas: sen(arctan k) = k"
+    },
+    "IN9-olvida-la-raiz": {
+     "respaldo": "hipotesis",
+     "describe": "Olvida sacar la raíz del lado que sale con Pitágoras"
+    },
+    "IN10-usa-la-reciproca": {
+     "respaldo": "hipotesis",
+     "describe": "Usa la recíproca (hipotenusa entre cateto)"
     }
    },
    "pares": [
@@ -3553,6 +3685,90 @@
        }
       ],
       "k": "2060ca615092b142025f1834c6843887621211f2a28fceff9dbf3db3bcbb3d399d8179dbaf67d584e45644ee9087eeadada8b2561bbd661f54ba00386b0bcf45f847b500320ef3a564333980644536af6d199f8805f1c884f56148d63a5fb02b88ca39"
+     }
+    },
+    {
+     "par": "inv-01",
+     "plantilla": "funciones-trig-inversas",
+     "unidad": "trigonometria.funciones-trigonometricas-inversas",
+     "mide": "arcsen(sen θ) con θ fuera del rango: el ángulo de [−90°; 90°] con el mismo seno",
+     "A": {
+      "enunciado": "¿Cuánto vale arcsen(sen 130°), en grados?",
+      "opciones": [
+       {
+        "texto": "130°"
+       },
+       {
+        "texto": "50°"
+       },
+       {
+        "texto": "40°"
+       },
+       {
+        "texto": "−50°"
+       }
+      ],
+      "k": "c65f3e1eeaa96029beae1a091fc7f4ae108ea317c84e9e43110ecee51ee9f88ab684b40efbbc479b869b531a609b29cd30b8523c962f8951c2914a571d0f78ac917d9d3ecaedb3d36e8dec8378d53843ea4e41"
+     },
+     "B": {
+      "enunciado": "¿Cuánto vale arcsen(sen 160°), en grados?",
+      "opciones": [
+       {
+        "texto": "160°"
+       },
+       {
+        "texto": "20°"
+       },
+       {
+        "texto": "70°"
+       },
+       {
+        "texto": "−20°"
+       }
+      ],
+      "k": "243088832423702aa9e31f47d43d93e3269200e3834c53056b0e3eba20a21faca873af2ff1d4fa44828a71a2a85066d9be6a9a8093d46d3ac1165a1bef668825e4261c7e477321779f67d928bbdafd5591f846"
+     }
+    },
+    {
+     "par": "inv-02",
+     "plantilla": "funciones-trig-inversas",
+     "unidad": "trigonometria.funciones-trigonometricas-inversas",
+     "mide": "Compuesta sen(arctan k) con el triángulo rectángulo de catetos k y 1",
+     "A": {
+      "enunciado": "Sin calculadora, ¿cuánto vale sen(arctan(5/12))?",
+      "opciones": [
+       {
+        "texto": "5/12"
+       },
+       {
+        "texto": "60/169"
+       },
+       {
+        "texto": "13/5"
+       },
+       {
+        "texto": "5/13"
+       }
+      ],
+      "k": "ac1ae8988bee7e4c8973ebfc899094d1fe8342ff75d552f9e24ece468f0a45bcc3252aeca9c529bded200f7b44b2d46c33524830450f264f55d1068546e6e528533916a6dff54b27bc99799b4b93aecab950e5de8a1d7b"
+     },
+     "B": {
+      "enunciado": "Sin calculadora, ¿cuánto vale sen(arctan(8/15))?",
+      "opciones": [
+       {
+        "texto": "8/15"
+       },
+       {
+        "texto": "120/289"
+       },
+       {
+        "texto": "17/8"
+       },
+       {
+        "texto": "8/17"
+       }
+      ],
+      "k": "8d498331cb8c977a9d9cf2d56bf3346f1322da9bdc4aac60dcbaf411898fd856339991131955e81468a9f135cdc80565ede876b3ad57ec9c802e1ee1451c39824f4d0a9ba2f8f54125ca66864f10599937a6d3fa981581"
      }
     }
    ]

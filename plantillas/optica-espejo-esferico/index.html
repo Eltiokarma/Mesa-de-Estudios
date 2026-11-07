@@ -222,6 +222,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 </script>
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'optica-espejo-esferico', unidad: 'fisica.optica-geometrica', version: '0.1.0' };
@@ -260,7 +261,7 @@ function crearLienzo(cv, vista, dibujar){
   L.aModelo = (px, py) => [px/L.sx + L.vista.xmin, (L.H/2 - py)/L.sy];
   L.resize = () => {
     const W = cv.clientWidth; if (!W) return;
-    const H = Math.round(clamp(W*0.64, 260, 460)), dpr = window.devicePixelRatio || 1;
+    const H = Math.round(Celular.alto(clamp(W*0.64, 260, 460), L.compacto, { tope:260 })), dpr = window.devicePixelRatio || 1;
     L.W = W; L.H = H; cv.style.height = H + 'px'; cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
     ctx.setTransform(dpr,0,0,dpr,0,0);
     L.sx = W/(L.vista.xmax - L.vista.xmin); L.sy = (H/2 - 12)/L.vista.ymax;
@@ -271,6 +272,8 @@ function crearLienzo(cv, vista, dibujar){
   // Píxel x de la superficie del espejo a la altura y (el cóncavo se curva hacia el objeto).
   L.sup = y => L.X(0) - L.sag()*Math.min(1, (y/(L.D/2))**2);
   new ResizeObserver(L.resize).observe(cv);
+  // Celular con predicción pendiente: el dibujo más bajo y pegado arriba (nucleo/celular.js).
+  L.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === !!L.compacto) return; L.compacto = on; L.resize(); };
   return L;
 }
 
@@ -649,6 +652,7 @@ function go(n){
     animar(s.anim, () => { if (s.after) Object.assign(S.show, s.after); S.active = -1; draw(); describir(); });
   }
   if (s.gate) prediccion();
+  L.compactar(s.gate && !S.pred);
   if (s.explora) explorar();
   nav(); draw(); describir();
 }
@@ -683,7 +687,8 @@ function prediccion(){
     S.pred = b.dataset.k; desbloquear(S.step + 1); pintar(); nav(); pintarDots();
     const e = ERR[S.pred] || ['', ''];
     registrarPrediccion('espejo-paso3', S.pred, S.pred === 'c', e[0], e[1], t0);
-    $('next').focus();
+    $('next').focus({ preventScroll:Celular.chico() });
+    const paso = S.step; L.compactar(false); Celular.alResponder(L.cv, draw, () => S.step === paso);
   }));
   pintar();
 }
@@ -1006,6 +1011,7 @@ function ir(k){
   reiniciar(x);
   const resp = S.pred[x.id];
   if (resp) x.despues();
+  L.compactar(!resp);
   botones();
   cv.classList.toggle('sin-scroll', x.id === 'ojo' && !!resp);
   cv.classList.toggle('arrastrable', x.id === 'ojo' && !!resp);
@@ -1028,9 +1034,10 @@ function ir(k){
   btns.forEach(b => b.onclick = () => {
     if (S.pred[x.id]) return;
     const o = x.opts.find(q => q[0] === b.dataset.k);
-    S.pred[x.id] = o[0]; botones(); x.despues(); pintar();
+    S.pred[x.id] = o[0]; botones(); pintar();
     cv.classList.toggle('sin-scroll', x.id === 'ojo'); cv.classList.toggle('arrastrable', x.id === 'ojo');
-    sincronizar();
+    L.compactar(false);
+    Celular.alResponder(L.cv, () => { x.despues(); controles(); sincronizar(); }, () => S.k === k);
     registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
   });
   pintar(); sincronizar();

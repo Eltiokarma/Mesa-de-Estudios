@@ -1,12 +1,12 @@
 {
   "curso": "razonamiento-matematico",
-  "version": "1.0.0",
-  "fecha": "2026-11-06",
-  "minutos": 14,
+  "version": "1.1.0",
+  "fecha": "2026-11-07",
+  "minutos": 17,
   "informes": [
     "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
   ],
-  "nota": "Ocho pares, dos por cada módulo del curso. Comparten motor con aritmética y álgebra, pero los ítems son otros (planteo, juegos, engranajes, inducción).",
+  "nota": "Diez pares, dos por cada módulo del curso. Comparten motor con aritmética y álgebra, pero los ítems son otros (planteo, juegos, engranajes, inducción, relojes).",
   "errores": {
     "RM4-resta-en-encuentro": {
       "respaldo": "hipotesis",
@@ -87,6 +87,30 @@
     "da-la-del-medio": {
       "respaldo": "hipotesis",
       "describe": "Responde las vueltas del engranaje del medio"
+    },
+    "AR7-horario-quieto": {
+      "respaldo": "hipotesis",
+      "describe": "Deja el horario quieto en la hora exacta, como si no avanzara con los minutos"
+    },
+    "formula-signo-cambiado": {
+      "respaldo": "hipotesis",
+      "describe": "Suma 11M/2 en vez de restarlo en α = |30H − 11M/2|"
+    },
+    "no-toma-el-menor-angulo": {
+      "respaldo": "hipotesis",
+      "describe": "Da el ángulo de la vuelta por fuera, mayor que 180°"
+    },
+    "adelanto-hasta-24-horas": {
+      "respaldo": "hipotesis",
+      "describe": "Espera que el adelanto llegue a 24 horas, cuando con 12 las agujas ya coinciden"
+    },
+    "adelanto-por-hora-sin-el-cada": {
+      "respaldo": "hipotesis",
+      "describe": "Cuenta los periodos de adelanto como si fueran horas"
+    },
+    "adelanto-hasta-una-hora": {
+      "respaldo": "hipotesis",
+      "describe": "Espera que el adelanto llegue a una hora, no a 12"
     }
   },
   "pares": [
@@ -644,6 +668,134 @@
             "texto": "70",
             "valor": 70,
             "error": "RM2-objeto-entero"
+          }
+        ]
+      }
+    },
+    {
+      "par": "rm-09",
+      "plantilla": "relojes-calendarios",
+      "unidad": "razonamiento-matematico.cronometria-y-calendarios",
+      "mide": "Ángulo entre las agujas: el horario también avanza con los minutos, α = |30H − 11M/2|",
+      "A": {
+        "enunciado": "Un reloj de agujas marca las 8:20. ¿Qué ángulo forman el horario y el minutero? (Se pide el menor de los dos ángulos.)",
+        "datos": {
+          "H": 8,
+          "M": 20
+        },
+        "opciones": [
+          {
+            "texto": "120°",
+            "valor": 120,
+            "error": "AR7-horario-quieto"
+          },
+          {
+            "texto": "230°",
+            "valor": 230,
+            "error": "no-toma-el-menor-angulo"
+          },
+          {
+            "texto": "130°",
+            "valor": 130,
+            "correcta": true
+          },
+          {
+            "texto": "10°",
+            "valor": 10,
+            "error": "formula-signo-cambiado"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Un reloj de agujas marca las 7:10. ¿Qué ángulo forman el horario y el minutero? (Se pide el menor de los dos ángulos.)",
+        "datos": {
+          "H": 7,
+          "M": 10
+        },
+        "opciones": [
+          {
+            "texto": "150°",
+            "valor": 150,
+            "error": "AR7-horario-quieto"
+          },
+          {
+            "texto": "205°",
+            "valor": 205,
+            "error": "no-toma-el-menor-angulo"
+          },
+          {
+            "texto": "155°",
+            "valor": 155,
+            "correcta": true
+          },
+          {
+            "texto": "95°",
+            "valor": 95,
+            "error": "formula-signo-cambiado"
+          }
+        ]
+      }
+    },
+    {
+      "par": "rm-10",
+      "plantilla": "relojes-calendarios",
+      "unidad": "razonamiento-matematico.cronometria-y-calendarios",
+      "mide": "Un reloj que se adelanta vuelve a marcar la hora correcta al acumular 12 horas",
+      "A": {
+        "enunciado": "Un reloj de agujas se adelanta 3 minutos cada 6 horas. Se pone en la hora exacta y nadie lo vuelve a tocar. ¿Dentro de cuántos días volverá a marcar la hora correcta?",
+        "datos": {
+          "a": 3,
+          "cada": 6
+        },
+        "opciones": [
+          {
+            "texto": "120 días",
+            "valor": 120,
+            "error": "adelanto-hasta-24-horas"
+          },
+          {
+            "texto": "60 días",
+            "valor": 60,
+            "correcta": true
+          },
+          {
+            "texto": "5 días",
+            "valor": 5,
+            "error": "adelanto-hasta-una-hora"
+          },
+          {
+            "texto": "10 días",
+            "valor": 10,
+            "error": "adelanto-por-hora-sin-el-cada"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Un reloj de agujas se adelanta 4 minutos cada 6 horas. Se pone en la hora exacta y nadie lo vuelve a tocar. ¿Dentro de cuántos días volverá a marcar la hora correcta?",
+        "datos": {
+          "a": 4,
+          "cada": 6
+        },
+        "opciones": [
+          {
+            "texto": "90 días",
+            "valor": 90,
+            "error": "adelanto-hasta-24-horas"
+          },
+          {
+            "texto": "45 días",
+            "valor": 45,
+            "correcta": true
+          },
+          {
+            "texto": "3,75 días",
+            "valor": 3.75,
+            "error": "adelanto-hasta-una-hora"
+          },
+          {
+            "texto": "7,5 días",
+            "valor": 7.5,
+            "error": "adelanto-por-hora-sin-el-cada"
           }
         ]
       }

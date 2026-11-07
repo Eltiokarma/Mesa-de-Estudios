@@ -1,8 +1,8 @@
 {
   "curso": "trigonometria",
-  "version": "2.0.0",
-  "fecha": "2026-11-06",
-  "minutos": 12,
+  "version": "2.1.0",
+  "fecha": "2026-11-07",
+  "minutos": 15,
   "informes": [
     "docs/investigacion/trigonometria-ideas-erroneas.md"
   ],
@@ -98,6 +98,30 @@
     "ID6-producto-de-tangentes": {
       "respaldo": "hipotesis",
       "describe": "Multiplica las tangentes"
+    },
+    "IN3-se-cancelan-siempre": {
+      "respaldo": "hipotesis",
+      "describe": "Cree que arcsen(sen θ) = θ siempre, sin mirar el rango"
+    },
+    "TR14-cambia-de-funcion": {
+      "respaldo": "hipotesis",
+      "describe": "Al reducir cambia de función: sen(180° − x) = cos x"
+    },
+    "IN24-signo-al-reducir": {
+      "respaldo": "hipotesis",
+      "describe": "Al reducir pone un signo que no va: sen(180° − x) = −sen x"
+    },
+    "IN8-cancela-funciones-distintas": {
+      "respaldo": "hipotesis",
+      "describe": "Cancela funciones distintas: sen(arctan k) = k"
+    },
+    "IN9-olvida-la-raiz": {
+      "respaldo": "hipotesis",
+      "describe": "Olvida sacar la raíz del lado que sale con Pitágoras"
+    },
+    "IN10-usa-la-reciproca": {
+      "respaldo": "hipotesis",
+      "describe": "Usa la recíproca (hipotenusa entre cateto)"
     }
   },
   "pares": [
@@ -611,6 +635,132 @@
             "texto": "1/6",
             "valor": 0.16666666666666666,
             "error": "ID6-producto-de-tangentes"
+          }
+        ]
+      }
+    },
+    {
+      "par": "inv-01",
+      "plantilla": "funciones-trig-inversas",
+      "unidad": "trigonometria.funciones-trigonometricas-inversas",
+      "mide": "arcsen(sen θ) con θ fuera del rango: el ángulo de [−90°; 90°] con el mismo seno",
+      "A": {
+        "enunciado": "¿Cuánto vale arcsen(sen 130°), en grados?",
+        "datos": {
+          "grados": 130
+        },
+        "opciones": [
+          {
+            "texto": "130°",
+            "valor": 130,
+            "error": "IN3-se-cancelan-siempre"
+          },
+          {
+            "texto": "50°",
+            "valor": 50,
+            "correcta": true
+          },
+          {
+            "texto": "40°",
+            "valor": 40,
+            "error": "TR14-cambia-de-funcion"
+          },
+          {
+            "texto": "−50°",
+            "valor": -50,
+            "error": "IN24-signo-al-reducir"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "¿Cuánto vale arcsen(sen 160°), en grados?",
+        "datos": {
+          "grados": 160
+        },
+        "opciones": [
+          {
+            "texto": "160°",
+            "valor": 160,
+            "error": "IN3-se-cancelan-siempre"
+          },
+          {
+            "texto": "20°",
+            "valor": 20,
+            "correcta": true
+          },
+          {
+            "texto": "70°",
+            "valor": 70,
+            "error": "TR14-cambia-de-funcion"
+          },
+          {
+            "texto": "−20°",
+            "valor": -20,
+            "error": "IN24-signo-al-reducir"
+          }
+        ]
+      }
+    },
+    {
+      "par": "inv-02",
+      "plantilla": "funciones-trig-inversas",
+      "unidad": "trigonometria.funciones-trigonometricas-inversas",
+      "mide": "Compuesta sen(arctan k) con el triángulo rectángulo de catetos k y 1",
+      "A": {
+        "enunciado": "Sin calculadora, ¿cuánto vale sen(arctan(5/12))?",
+        "datos": {
+          "num": 5,
+          "den": 12
+        },
+        "opciones": [
+          {
+            "texto": "5/12",
+            "valor": 0.4166666666666667,
+            "error": "IN8-cancela-funciones-distintas"
+          },
+          {
+            "texto": "60/169",
+            "valor": 0.35502958579881655,
+            "error": "IN9-olvida-la-raiz"
+          },
+          {
+            "texto": "13/5",
+            "valor": 2.6,
+            "error": "IN10-usa-la-reciproca"
+          },
+          {
+            "texto": "5/13",
+            "valor": 0.38461538461538464,
+            "correcta": true
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Sin calculadora, ¿cuánto vale sen(arctan(8/15))?",
+        "datos": {
+          "num": 8,
+          "den": 15
+        },
+        "opciones": [
+          {
+            "texto": "8/15",
+            "valor": 0.5333333333333333,
+            "error": "IN8-cancela-funciones-distintas"
+          },
+          {
+            "texto": "120/289",
+            "valor": 0.41522491349480967,
+            "error": "IN9-olvida-la-raiz"
+          },
+          {
+            "texto": "17/8",
+            "valor": 2.125,
+            "error": "IN10-usa-la-reciproca"
+          },
+          {
+            "texto": "8/17",
+            "valor": 0.47058823529411764,
+            "correcta": true
           }
         ]
       }

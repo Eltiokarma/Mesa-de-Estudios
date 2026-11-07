@@ -136,6 +136,8 @@ Errores típicos de los problemas de admisión que no encontré medidos. Cada un
 
 Se confirman como en los otros temas: con hojas resueltas de academia y con preguntas de respuesta abierta en la prueba del lanzamiento.
 
+**Polinomios (PO1 a PO34, 7 nov 2026).** Este informe no cubre polinomios. Los errores PO1 a PO34 de `plantillas/polinomios/` (la máquina de Ruffini) son hipótesis nuestras: P(0) confundido con P(1), grado del producto sumado o multiplicado mal, Ruffini sin el 0 del término que falta, resto con la raíz de signo cambiado, cociente sin dividir entre a con divisor ax + b, (−2)² = −4 (PO15, solo con raíz negativa) y los demás que lista la cabecera de su `motor.js`. Gamboa y otros (2019) se cita solo como un parecido, sin cifras.
+
 ## Propuesta para las plantillas
 
 **Regla común.** Cada letra tiene su color y siempre está pegada a algo que se cuenta o se mide: un montón de fichas, un segmento, un área, un punto que se mueve en la gráfica. Al tocar una letra aparece "x = el **número** de …", nunca "x = …" a secas (contra AL1 a AL3). Las predicciones numéricas se comprueban al final reemplazando el valor en la escena, no con un "correcto/incorrecto".

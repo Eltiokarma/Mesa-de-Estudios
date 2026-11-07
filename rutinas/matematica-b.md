@@ -170,3 +170,177 @@ Sesión paralela a la conversación principal, en la rama `rutina/matematica-b`.
 4. En `docs/diseno.md`, un párrafo «Variables del plano con imán» con la tabla de colores de arriba.
 5. Para `docs/pendientes.md` y CLAUDE.md: «Plano con imán (6 nov 2026): `plantillas/geometria-analitica/` (distancia, punto que divide, pendiente, las tres formas de la recta, paralelas y perpendiculares, punto a recta y zapatito; 20 casos verificados aparte; 10 de papel). Falta un informe de ideas erróneas de analítica y la escena de cónicas».
 6. Banco de entrada y salida de geometría: sumar ítems cuando entre al catálogo.
+
+## 7 nov 2026 · La alcancía que gana interés (`plantillas/interes/`)
+
+El 6 nov se cortó el constructor por el límite de uso, a mitad del `index.html`. El 7 retomó desde donde quedó, y antes de seguir subí un respaldo.
+
+**Qué hice.**
+
+- **`motor.js`** (`MotorInteres`, UMD, año comercial de 360 días):
+  - interés simple y compuesto, con la torre por periodo dividida en capital, interés del capital e interés sobre interés;
+  - curvas M–t y el tiempo para duplicar;
+  - tasa efectiva y tasa por periodo, con capitalización m veces o continua;
+  - valor presente y tiempo, y `dosMontos`, que halla C y r a partir de dos montos;
+  - descuento comercial y racional, Vn a partir de Dc y Dr, y vencimiento común.
+
+  Cada resultado trae `errores` y `coinciden`.
+- **`casos.json`:** 20 casos, incluido el del informe: S/ 1000 al 10 % en 3 años da 1300 (simple) o 1331 (compuesto).
+- **`motor.test.js`:** 40 pruebas.
+- **`papel.json`:** 10 problemas propios: meses, días, capital desde el monto, compuesto trimestral, efectiva bimestral, tasa equivalente semestral, continuo, Dc y Dr de una letra, Vn desde Dc y Dr, y vencimiento común.
+- **`index.html`, paso a paso** (9 pasos, 5 predicciones):
+  1. ocho meses en la alcancía;
+  2. la recta del simple;
+  3. tres años con compuesto: el 1300 es AR16, parcial;
+  4. la capa de interés sobre interés;
+  5. la tasa efectiva de 2 % mensual;
+  6. cada cuánto se capitaliza;
+  7. el capital desde el monto (AR3, parcial);
+  8. el descuento racional de una letra;
+  9. el explorador.
+- **`index.html`, «¿qué pasa si…?»** (6 experimentos): el doble de tiempo, medio año (ahí gana el simple), cuándo se duplica, días y meses, los dos descuentos y «cada vez más seguido», que tiene tope en 1000·e.
+
+**Pruebas.** `npm test`: 1513 en total, 1511 pasan y fallan solo las 2 del catálogo, como se esperaba. Playwright revisó los dos modos completos a 1366 × 768 y 390 × 844, en claro y en oscuro, con y sin movimiento reducido: sin errores de consola ni desbordes, y antes de responder lo que se pregunta sale como «?».
+
+**Subagentes.**
+
+- **Verificador independiente** (no leyó el motor). Primera pasada: 19 casos y 10 de papel, con 100 de 100 valores OK. Usó fracciones y un segundo camino en cada caso: la torre año por año, el binomio, la serie de e, bisección y Vn = Dc·Dr/(Dc − Dr). Segunda pasada sobre lo que cambió (casos de dos montos, bordes t = 0 y r = 0, y errores nuevos): OK. También pidió:
+  - declarar en `coinciden` los errores que en r = 0 dan 0;
+  - agregar errores a `dosMontos`.
+
+  Lo apliqué. Los últimos valores de `dosMontos` los recalculé yo aparte y cuadran: 7,69 %, 7,42 %, 2097,74, 968 y 12,5 %.
+- **Revisor de contenido.** Apliqué casi todo:
+  - **Grave:**
+    - En «Los dos descuentos», el dibujo a escala y el recuadro «?» delataban el 3300. Ahora, antes de responder, son fichas de alto fijo.
+    - En «¿Cuándo se duplica?», la correcta era la única opción con decimal. Ahora todas llevan uno.
+  - **Medio:**
+    - Tres errores de unidades llevaban el prefijo AR16 sin serlo. Ahora no tienen código AR y son hipótesis.
+    - Los errores de base se reetiquetaron AR3 o AR4 (parcial) y AR5 (hipótesis), con el respaldo que trae el informe.
+    - AR16 queda «con cifra en adultos (parcial)». Los ids ligados a AR16 se unificaron.
+    - Cambié tres distractores poco creíbles: 2362,50, 2,00 % y «cuadruplica».
+    - En el paso 7, la columna equivocada iba con los colores de C e I. Ahora va gris con trama.
+    - Dc y Dr cambiaron de color (ver abajo).
+  - **Menor:** los factores ya no van en el color de r; la leyenda «interés sobre interés» sale solo después de responder.
+  - **No apliqué:** un paso de vencimiento común (está en p10).
+
+**Colores** (claro / oscuro):
+
+| Variable | Claro | Oscuro |
+| --- | --- | --- |
+| C | #1f5fbf | #7cb0ff |
+| I (interés del capital) | #a05200 | #f0a04a |
+| interés sobre interés | #a10fbf | #cf6bfa |
+| M | #466d14 | #a3d65e |
+| r | #0f766e | #5ed9c8 |
+| t | #c0364a | #f17384 |
+| Vn | #7d6a00 | #e3c84a |
+| Va | #3328c4 | #9f9bff |
+| Dc | #5a0f0f | #ff692d |
+| Dr | #2d2d0f | #a5a596 |
+
+- **Dc y Dr:** con esta paleta, ningún color saturado quedaba a ΔE00 ≥ 20 de todos los demás. Por eso son casi oscuros en claro.
+- **ΔE00 dentro de cada vista:** mínimo 23,6 en la alcancía; 22,6 (claro) y 21,2 (oscuro) en el descuento.
+- **Pares cercanos que nunca salen juntos:** Dc de oscuro queda a 17,5 del naranja de I y a 17,4 del rojo de los avisos (que siempre van con texto).
+- **Contraste:** AA, mínimo 4,79.
+
+**Para Gerson.** Dc cambia de tono entre los modos: granate en claro y naranja rojizo en oscuro. La única forma de cumplir ΔE00 ≥ 20 contra todo sin eso era usar grises. ¿Lo aceptas o prefieres gris?
+
+**Pendiente.**
+
+- En la escena faltan el vencimiento común (está en p10) y la continua como paso propio (solo está el experimento 6).
+- Faltan casos de: interés como fracción del monto, capital partido a dos tasas y vencimiento común con descuento racional.
+- AR16 está medido solo en adultos: hay que medirlo en escolares en el colegio.
+
+**Pedidos para la integración.**
+
+1. En `catalogo/cursos/aritmetica.json`, unidad `aritmetica.interes-y-descuento`: `"plantillas": ["interes"]`. Después, `npm run catalogo`.
+2. En `docs/diseno.md`, la tabla de colores de arriba.
+3. En el informe de aritmética:
+   - AR16 dice «Documentado (en adultos)», pero solo trae una cifra de resumen, de aciertos y no del error: conviene «Parcial (adultos)».
+   - La fila 116 («tasa mensual y anual sin convertir» → AR16) no es AR16: mejor «sin dato» o ligarla a AR7.
+4. Para `docs/pendientes.md` y CLAUDE.md: «Alcancía que gana interés (7 nov 2026): `plantillas/interes/` (torre de monedas con la capa de interés sobre interés, recta contra curva, tasa efectiva y capitalización, capital desde el monto, descuento comercial y racional; 20 casos verificados aparte; 10 de papel)».
+5. Banco de entrada y salida de aritmética: sumar ítems de interés cuando entre al catálogo.
+
+## 7 nov 2026 · Relojes y calendarios (`plantillas/relojes-calendarios/`)
+
+Desde esta plantilla uso los encargos oficiales de `docs/metodo/`. El verificador recibe solo las entradas que arma `entradas.py` y la cabecera del motor, sin ver `casos.json`.
+
+**Qué hice.**
+
+- **`motor.js`** (`MotorRelojes`, UMD; la cabecera describe cada función y la convención de H = 12):
+  - del reloj: `posiciones`, `angulo`, `horaConAngulo` (fracciones exactas, como 16 4/11 min) y `coincidencias`;
+  - de adelantos y atrasos: `vuelveHoraCorrecta`, `horaMarcada`, `horaReal` y `dosRelojes`;
+  - de campanadas: `campanadas` y `campanadasEn`;
+  - de calendario: `esBisiesto`, `bisiestos`, `diaSemana`, `diasEntre`, `desdeFecha` y `mes`.
+
+  Cada resultado trae `errores`, `coinciden` y `repetidos`.
+- **`casos.json`:** 20 casos con sus «tambien», incluidos los bordes:
+  - entre las 11 y las 12 no se superponen, y entre las 5 y las 6 no se oponen;
+  - 12:20;
+  - un 29 de febrero en el día de partida y el 1900, que no fue bisiesto;
+  - el 28/7/1821, que fue sábado.
+- **`motor.test.js`:** 40 pruebas. Propiedades que comprueba:
+  - cada hora forma de verdad el ángulo pedido, y un barrido fino no encuentra otras;
+  - hay 11 superposiciones cada 12 h;
+  - el ciclo de 400 años tiene 97 bisiestos y 146 097 días;
+  - el día de la semana coincide con el calendario real;
+  - ningún error coincide con la respuesta.
+- **`papel.json`:** 10 problemas propios.
+- **`index.html`, paso a paso** (9 pasos, 6 predicciones):
+  1. el ángulo a las 3:30;
+  2. el minutero que se arrastra;
+  3. cuándo se superponen entre las 3 y las 4;
+  4. cuántas veces se juntan en 24 h;
+  5. el reloj que se adelanta 5 min cada 4 h;
+  6. las 12 campanadas;
+  7. el calendario que suma días;
+  8. de lunes 15/3/2027 a un año después;
+  9. el reloj libre.
+- **`index.html`, «¿qué pasa si…?»** (6 experimentos): ángulo recto entre las 2 y las 3, el reloj que se atrasa, dos relojes, campanadas en 24 s, bisiestos de 1901 a 2100 y el mes de 31 días que empieza en jueves.
+- **Respaldo:** todo es hipótesis. Los códigos AR7 (linealidad: horario quieto, campanadas proporcionales) y RM4 (desfases) se usan como los define el informe de aritmética, sin cifra.
+
+**Pruebas.** `npm test`: 1652 en total, 1650 pasan y fallan solo las 2 del catálogo, como se esperaba. Playwright revisó 1366 × 768 y 390 × 844, en claro y en oscuro, con y sin movimiento reducido:
+
+- sin errores ni desbordes;
+- el dedo desplaza la página lejos de la punta del minutero y arrastra el minutero sobre ella;
+- en el celular, el dibujo queda fijo arriba.
+
+**Subagentes.**
+
+- **Verificador independiente.** No leyó el motor ni `casos.json`. Las horas las sacó con la congruencia 30H − 5,5M ≡ ±α (mod 360); las fechas, con Zeller y con el día juliano, comparados con datetime.
+  - **Primera pasada:** 142 de 143 valores esperados y 25 de 25 de papel. La única diferencia era de convención (la fórmula a las 12:00). Ahora la convención va escrita en la cabecera: en la fórmula, H = 12 se usa tal cual.
+  - **Segunda pasada** (con los bordes y errores nuevos): 171 de 172. La que faltaba era «signo cambiado» a las 3 con α = 0: el motor daba 540/11, que repetía otro distractor. Lo corregí: ahora da null y no se ofrece. Con eso cuadran los 172.
+- **Revisor de contenido.** Apliqué todo:
+  - el dibujo adelantaba la idea antes de responder: la meta «12 h = 720 min» en adelantos, y la regla de segundos con los tramos en campanadas;
+  - en dos predicciones la correcta era la única en onceavos: el distractor de treceavos pasó a uno en onceavos;
+  - las opciones del mes de 31 días no tenían la misma forma: ahora son cuatro listas de 3 días;
+  - el reloj libre mostraba una cuenta falsa a las 12, y además resolvía el experimento 1 de la otra pestaña: ahora lo oculta hasta que se responde;
+  - «reloj de agujas» en los enunciados, para que la opción de 24 h no sea defendible;
+  - rótulos de 12 h y detalles de texto.
+
+**Colores** (claro / oscuro): H y horario #1f5fbf / #7cb0ff; M y minutero #a05200 / #f0a04a; α #a10fbf / #cf6bfa; adelanto A #0f766e / #5ed9c8; tiempo t #466d14 / #a3d65e; campanadas n #3328c4 / #9f9bff; intervalos #c0364a / #f17384; días d #7d6a00 / #e3c84a; resto r #77032c / #fdb4ce.
+
+- **ΔE00 mínimo dentro de cada vista:** 23,6 en claro.
+- **Pares cercanos que nunca comparten vista:** M y d, H y n, α y n, intervalos y r, d y t.
+- **Contraste:** AA, mínimo 4,54.
+
+**Pendiente.**
+
+- Temas de examen que faltan:
+  - tiempo transcurrido contra lo que falta del día;
+  - campanadas que dan la hora (78 en 12 h);
+  - desde cuándo se atrasa un reloj;
+  - «el ayer del pasado mañana»;
+  - N días con N grande;
+  - el ángulo con segundos.
+- Algunas conversiones de horas a días se hacen en el HTML.
+- Los errores de cronometría no tienen datos: hay que medirlos en el colegio.
+
+**Pedidos para la integración.**
+
+1. En `catalogo/cursos/razonamiento-matematico.json`, unidad `razonamiento-matematico.cronometria-y-calendarios`: `"plantillas": ["relojes-calendarios"]`. Después, `npm run catalogo`.
+2. En `docs/diseno.md`, los colores de arriba.
+3. En el informe de aritmética, agregar la fila «Campanadas tratadas como proporción | AR7» a la tabla de mapeo.
+4. Para `docs/pendientes.md` y CLAUDE.md: «Relojes y calendarios (7 nov 2026): `plantillas/relojes-calendarios/` (ángulo entre las agujas con minutero arrastrable, superposiciones en un día, adelantos y atrasos, campanadas, bisiestos y día de la semana; 20 casos verificados aparte; 10 de papel)».
+5. Banco de razonamiento matemático: sumar ítems cuando entre al catálogo.
+6. En el motor de `interes/` hay un riesgo con la animación compartida (`tween`) cuando recibe un instante negativo. Aquí ya se arregló; en interés lo arreglo yo en una pasada aparte.

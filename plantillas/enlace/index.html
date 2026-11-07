@@ -13,21 +13,20 @@
      libre par libre (sin compartir)                            ámbar      #8f5800 / #ffc04d
      dip   dipolo de enlace; su tamaño es ΔEN                   fucsia     #a10fbf / #cf6bfa
      mu    dipolo total, la suma de los dipolos de enlace       marrón rojizo / naranja  #6b260f / #ff6600
-     Na    ion Na⁺ en la red                                    granate    #77032c / #fdb4ce
-     Cl    ion Cl⁻ en la red                                    verde      #466d14 / #a3d65e
+     Na    ion Na⁺ en la red                                    frambuesa  paleta común (nucleo/elementos.js, --el-Na)
+     Cl    ion Cl⁻ en la red                                    verde      paleta común (nucleo/elementos.js, --el-Cl)
    Los átomos de las moléculas, la carga formal, los ángulos, la hibridación y los electrones sueltos del paso 1 van en
    tinta. Salen juntos enl, libre, dip y mu (moléculas) y Na y Cl (red): ΔE00 mínimo 20,7 en claro (libre–mu) y 26,4 en
-   oscuro (libre–mu); Na–Cl 58,4 / 56,3. El único par cercano, mu–Na (16,3 en claro), nunca sale en el mismo dibujo.
+   oscuro (libre–mu); con la paleta común, Na⁺ y Cl⁻ quedan a 20 o más de todas las variables de la escena (Na–dip 20,4, Na–mu 21,9); Na⁺ queda a 16,2 del rojo de los avisos.
    Contraste mínimo contra el papel, la tarjeta, el chip (8 %) y el fondo de una opción respondida (verde 10 % o rojo 9 %;
    dentro de .opt la ficha va sin fondo): 4,88 en claro (libre) y 4,63 en oscuro (dip; mu 4,64); todos pasan AA (4,5).
-   Con el rojo de los avisos (--warn): mu a ΔE00 20,6 / 21,7 y Na⁺ a 20,6 en claro y 17,4 en oscuro; el aviso siempre va
-   con texto. */
+   Con el rojo de los avisos (--warn): mu a ΔE00 20,6 / 21,7; el aviso siempre va con texto. */
 [hidden]{display:none!important}
 :root{
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
   --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
   --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
-  --c-enl:#1f5fbf; --c-libre:#8f5800; --c-dip:#a10fbf; --c-mu:#6b260f; --c-Na:#77032c; --c-Cl:#466d14;
+  --c-enl:#1f5fbf; --c-libre:#8f5800; --c-dip:#a10fbf; --c-mu:#6b260f;
   --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
   --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
   color-scheme:light;
@@ -36,12 +35,17 @@
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-enl:#7cb0ff; --c-libre:#ffc04d; --c-dip:#cf6bfa; --c-mu:#ff6600; --c-Na:#fdb4ce; --c-Cl:#a3d65e; color-scheme:dark } }
+  --c-enl:#7cb0ff; --c-libre:#ffc04d; --c-dip:#cf6bfa; --c-mu:#ff6600; color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-enl:#7cb0ff; --c-libre:#ffc04d; --c-dip:#cf6bfa; --c-mu:#ff6600; --c-Na:#fdb4ce; --c-Cl:#a3d65e; color-scheme:dark }
+  --c-enl:#7cb0ff; --c-libre:#ffc04d; --c-dip:#cf6bfa; --c-mu:#ff6600; color-scheme:dark }
+/* Colores de los elementos: paleta común de química (nucleo/elementos.js). Este bloque sale de
+   Elementos.css(['Na', 'Cl']) y no se edita a mano: nucleo/elementos-escenas.test.js lo compara. */
+:root{ --el-Na:#8d3656; --el-Cl:#466d14 }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --el-Na:#c2849e; --el-Cl:#a3d65e } }
+:root[data-theme="dark"]{ --el-Na:#c2849e; --el-Cl:#a3d65e }
 
 *{box-sizing:border-box}
 body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
@@ -89,8 +93,8 @@ canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-se
 .v-libre{color:var(--c-libre); background:color-mix(in srgb, var(--c-libre) 8%, transparent)}
 .v-dip{color:var(--c-dip); background:color-mix(in srgb, var(--c-dip) 8%, transparent)}
 .v-mu{color:var(--c-mu); background:color-mix(in srgb, var(--c-mu) 8%, transparent)}
-.v-Na{color:var(--c-Na); background:color-mix(in srgb, var(--c-Na) 8%, transparent)}
-.v-Cl{color:var(--c-Cl); background:color-mix(in srgb, var(--c-Cl) 8%, transparent)}
+.v-Na{color:var(--el-Na); background:color-mix(in srgb, var(--el-Na) 8%, transparent)}
+.v-Cl{color:var(--el-Cl); background:color-mix(in srgb, var(--el-Cl) 8%, transparent)}
 .v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
 .opt .v{background:transparent}
 
@@ -252,7 +256,7 @@ const En_ = t => V('enl', t), Li_ = t => V('libre', t), Di_ = t => V('dip', t), 
 function colores(){
   const g = css;
   return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
-    enl:g('--c-enl'), libre:g('--c-libre'), dip:g('--c-dip'), mu:g('--c-mu'), Na:g('--c-Na'), Cl:g('--c-Cl'), font:g('--font') };
+    enl:g('--c-enl'), libre:g('--c-libre'), dip:g('--c-dip'), mu:g('--c-mu'), Na:g('--el-Na'), Cl:g('--el-Cl'), font:g('--font') };
 }
 function alfa(hex, a){
   const h = String(hex).replace('#', ''); if (h.length !== 6) return hex;
@@ -516,7 +520,7 @@ const LEY = { enl:'par enlazante (cada raya del enlace es un par)', libre:'par l
   mu:'dipolo total: la suma de los dipolos de enlace', Na:'ion Na⁺', Cl:'ion Cl⁻' };
 function leyendaHTML(v){
   return (v.vars || []).map(k => k === 'libre' ? `<span><svg width="14" height="8" aria-hidden="true"><circle cx="3.5" cy="4" r="2.6" fill="var(--c-libre)"/><circle cx="10.5" cy="4" r="2.6" fill="var(--c-libre)"/></svg>${LEY.libre}</span>`
-    : k === 'Na' || k === 'Cl' ? `<span><svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="5" fill="var(--c-${k})"/></svg>${LEY[k]}</span>`
+    : k === 'Na' || k === 'Cl' ? `<span><svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="5" fill="var(--el-${k})"/></svg>${LEY[k]}</span>`
     : k === 'dip' || k === 'mu' ? `<span><svg width="20" height="10" aria-hidden="true"><path d="M2 5h12" stroke="var(--c-${k})" stroke-width="${k === 'mu' ? 3 : 2}"/><path d="M13 1l6 4-6 4z" fill="var(--c-${k})"/></svg>${LEY[k]}</span>`
     : `<span><i style="background:var(--c-${k})"></i>${LEY[k]}</span>`).join('');
 }

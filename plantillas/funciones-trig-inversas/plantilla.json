@@ -1,0 +1,15 @@
+{
+  "id": "funciones-trig-inversas",
+  "titulo": "Una sola respuesta: funciones trigonométricas inversas",
+  "formato": "escena",
+  "unidades": [
+    "trigonometria.funciones-trigonometricas-inversas"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}
