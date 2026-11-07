@@ -5,7 +5,7 @@ Cada ejecución hace la primera pieza que falte:
 1. [x] Informe `docs/investigacion/razonamiento-verbal-ideas-erroneas.md`
 2. [x] Diseño del formato lectura, `docs/formato-lectura.md`
 3. [ ] Banco de textos propios en `contenido/razonamiento-verbal/` (18 de 30, más la pareja de entrada y salida)
-4. [ ] Guía para profesores, `docs/guia-profesores.md`
+4. [x] Guía para profesores, `docs/guia-profesores.md` (adelantada: se hizo antes de llegar a 30 textos)
 
 ---
 
@@ -264,3 +264,37 @@ En el informe amplié la definición de RV10 para que cubra también el caso inv
 **Pedidos para la integración:**
 - Integrar `rutina/verbal`.
 - Correr `npm run catalogo` (es la única prueba que falla).
+
+---
+
+## 7 nov 2026 · Pieza 4, adelantada: la guía para profesores
+
+**Por qué antes de los 30 textos.** La conversación principal pidió la guía primero, por ser lo más urgente para el colegio. Lo hice así porque está dentro de mi alcance. Lo demás que pidió (seguir sin parar con las dos tandas de textos que faltan y con los ejercicios sueltos) queda a la espera de que Gerson lo confirme, porque cambia el ritmo de la rutina, que hace una pieza por ejecución.
+
+**Qué hice.** `docs/guia-profesores.md`, unas 4 páginas en español claro, escrita después de leer `app/app.js`, `app/prueba.js`, `app/lectura.js`, `nucleo/medicion.js` y `herramientas/analizar-medicion.js`. Explica:
+- qué es la app y los tres tipos de actividad;
+- qué preparar antes de la primera clase: la dirección, el código del colegio y el enlace `…/app/?colegio=ABC`;
+- las pruebas de entrada y salida: `?salida=<curso>`, `=todas`, varios cursos separados por comas, `?soluciones=<curso>`, los nombres de los 8 cursos y las formas A y B;
+- "Otro alumno en esta PC";
+- una clase de 45 minutos con una escena;
+- cómo descargar y juntar los datos, con un ejemplo real de `analizar-medicion.js` (datos inventados, simplificados) y cómo leer la ganancia de Hake;
+- qué mide, qué no guarda, lo que la app no hace y problemas frecuentes.
+
+**Pruebas:** `npm test` da 2110 de 2110 (no toqué código).
+
+**Subagente:** un revisor contrastó cada afirmación con el código y encontró 13 problemas, todos corregidos. Los más graves:
+- Decía que se podía probar con `npm run dev` y `localhost`, pero `herramientas/servidor.js` escucha solo en 127.0.0.1, así que los celulares no llegan. Ahora dice que el equipo la instala en el laboratorio.
+- Decía que "Borrar mi avance" no borra las pruebas, pero en razonamiento verbal sí las borra (ver los pedidos).
+- Decía que "Ahora no" pospone la prueba hasta la próxima vez que se abre la app; en realidad dura hasta que se cierra el navegador (`sessionStorage`). Además, verbal no tiene "Ahora no".
+- `?soluciones=` no muestra la revisión en verbal.
+- El ejemplo de salida tenía un 25 %, imposible con 3 alumnos y 10 preguntas. Lo regeneré con la herramienta real.
+- El comando de Node pasó a un recuadro "para el equipo técnico", porque un profesor no lo va a correr.
+
+**Pedidos para la integración** (son fallos del código que salieron al escribir la guía; ahora la guía los avisa como limitaciones):
+1. **"Borrar mi avance" borra las pruebas de razonamiento verbal.** En `vPerfil` se vacía `practica: {}`, y ahí guarda `app/lectura.js` su `entrada` y su `salida`. Las de los demás cursos se conservan (`pruebas: est.pruebas`). Hay que conservar también las de lectura. Cuando se arregle, hay que quitar el aviso de la sección 4 de la guía.
+2. **Verbal no tiene "Ahora no" en la entrada**, a diferencia de los otros cursos. Decidir si debe tenerlo.
+3. **`?soluciones=razonamiento-verbal` no muestra revisión pregunta por pregunta.** Si se implementa, hay que quitar la nota de la tabla de la sección 4.
+4. **El Banco Óptico pide fuentes a fonts.googleapis.com** (ya estaba en pendientes). La guía dice "no envía sus respuestas ni ningún dato", que sí es cierto.
+5. **Cuando la app tenga dirección pública (la3),** hay que completar el punto 2.1 de la guía.
+
+**Lo que sigue:** dos tandas de textos para llegar a 30 (t019 a t030) y después los ejercicios sueltos, cuando Gerson lo confirme o en las próximas ejecuciones de la rutina.
