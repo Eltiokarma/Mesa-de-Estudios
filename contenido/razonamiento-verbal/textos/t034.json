@@ -1,0 +1,306 @@
+{
+  "id": "t034",
+  "version": 1,
+  "titulo": "Arreglar antes que botar",
+  "tema": "Sociedad · el derecho a reparar",
+  "grado": 5,
+  "dificultad": 2,
+  "tipo_texto": "argumentativo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "contraste",
+        "t": "Cuando una licuadora o un celular fallan, cada vez es más común oír que «sale más a cuenta comprar uno nuevo»."
+      },
+      {
+        "id": "o2",
+        "rol": "principal",
+        "t": "Sostengo lo contrario: los fabricantes deberían estar obligados a vender aparatos que se puedan reparar, con repuestos y manuales al alcance de cualquiera."
+      }
+    ],
+    [
+      {
+        "id": "o3",
+        "rol": "apoyo",
+        "t": "En primer lugar, cada aparato que se bota antes de tiempo se suma a una montaña de basura electrónica que crece año tras año."
+      },
+      {
+        "id": "o4",
+        "rol": "apoyo",
+        "t": "Según el Monitor Mundial de Residuos Electrónicos de 2024, en 2022 el mundo generó 62 millones de toneladas de esa basura, y menos de una cuarta parte se recogió y recicló de forma adecuada."
+      },
+      {
+        "id": "o5",
+        "rol": "apoyo",
+        "t": "Muchos aparatos se botan cuando solo una pieza ha fallado: una batería, un botón, una pantalla."
+      }
+    ],
+    [
+      {
+        "id": "o6",
+        "rol": "apoyo",
+        "t": "En segundo lugar, reparar da trabajo cerca de casa."
+      },
+      {
+        "id": "o7",
+        "rol": "apoyo",
+        "t": "En casi todos los barrios hay técnicos que arreglan radios, celulares y cocinas, pero su oficio se vuelve imposible cuando una pieza viene pegada o el fabricante no vende el repuesto."
+      },
+      {
+        "id": "o8",
+        "rol": "apoyo",
+        "t": "Cada aparato que se arregla deja el dinero en el barrio, en lugar de mandarlo a una fábrica lejana."
+      }
+    ],
+    [
+      {
+        "id": "o9",
+        "rol": "contraste",
+        "t": "Se dirá que un aparato pensado para abrirse sería más caro, y que la gente, de todos modos, prefiere lo nuevo."
+      },
+      {
+        "id": "o10",
+        "rol": "apoyo",
+        "t": "Pero exigir repuestos no prohíbe comprar lo nuevo: solo deja abierta la otra opción, y quien la elija ahorra cada vez que cambia una pieza en lugar del aparato entero."
+      },
+      {
+        "id": "o11",
+        "rol": "apoyo",
+        "t": "Además, la Unión Europea aprobó en 2024 una norma que obliga a los fabricantes a ofrecer la reparación de varios aparatos, señal de que es posible exigirlo."
+      }
+    ],
+    [
+      {
+        "id": "o12",
+        "rol": "principal",
+        "t": "Un aparato que se puede arreglar dura más, ensucia menos y le da trabajo al vecino: por eso arreglar debería ser un derecho, no un lujo."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "tipo-de-texto",
+      "unidad": "razonamiento-verbal.tipologia-textual",
+      "previo": {
+        "tipo": "proposito",
+        "pide": "Antes de ver las alternativas: ¿qué busca sobre todo el autor?",
+        "aceptada": "convencer",
+        "codigos": {
+          "explicar": "RV14",
+          "narrar": "RV13"
+        },
+        "explicacion": "El autor dice qué sostiene («Sostengo lo contrario…», oración 2), da dos razones, responde a una objeción y cierra con su postura: busca convencer.",
+        "explicaciones": {
+          "explicar": "El texto trae datos sobre la basura electrónica, pero los usa como razones a favor de una postura (oración 2). Quedarse en «informar» deja fuera lo que el autor defiende.",
+          "narrar": "El texto no cuenta una historia: la licuadora que falla en la primera oración es una situación común que sirve para plantear el tema."
+        }
+      },
+      "enunciado": "El texto es, fundamentalmente, de tipo",
+      "alternativas": [
+        {
+          "t": "argumentativo, porque defiende una postura con razones y responde a una objeción.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o9",
+            "o12"
+          ],
+          "explicacion": "La oración 2 dice la tesis; el segundo y el tercer párrafo dan dos razones; el cuarto responde a una objeción, y el último vuelve a la tesis."
+        },
+        {
+          "t": "expositivo, porque se apoya en cifras de un informe internacional y en una norma con fecha.",
+          "codigo": "RV41",
+          "origen": "o4",
+          "explicacion": "Las cifras y las fechas son un rasgo de superficie. Aquí no están para informar sin más: son pruebas de los argumentos del autor."
+        },
+        {
+          "t": "descriptivo, porque muestra cómo es el trabajo de los técnicos de barrio.",
+          "codigo": "RV57",
+          "origen": "o7",
+          "explicacion": "Los técnicos aparecen en la oración 7, dentro del segundo argumento. Ese pasaje no organiza el texto: el autor no describe su trabajo, lo menciona para defender la reparación."
+        },
+        {
+          "t": "narrativo, porque cuenta lo que ocurre cuando falla una licuadora o un celular.",
+          "codigo": "RV13",
+          "origen": "o1",
+          "explicacion": "La primera oración presenta una situación común para plantear el tema; no se cuenta una historia, y lo que sigue son razones."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "estructura",
+      "unidad": "razonamiento-verbal.tipologia-textual",
+      "enunciado": "¿Qué función cumple el cuarto párrafo en el texto?",
+      "alternativas": [
+        {
+          "t": "Expone una objeción a la tesis y la responde.",
+          "correcta": true,
+          "evidencia": [
+            "o9",
+            "o10",
+            "o11"
+          ],
+          "explicacion": "La oración 9 presenta lo que podría decir alguien en contra («Se dirá que…»), y las oraciones 10 y 11 le responden («Pero…», «Además…»)."
+        },
+        {
+          "t": "Presenta la tesis que el autor defiende en el texto.",
+          "codigo": "RV53",
+          "origen": "o9",
+          "explicacion": "Lo que dice la oración 9 no es la postura del autor: es lo que otros podrían decirle, y él lo rechaza. Su tesis está en las oraciones 2 y 12."
+        },
+        {
+          "t": "Da un ejemplo que ilustra el segundo argumento, el del trabajo en los barrios.",
+          "codigo": "RV42",
+          "origen": "o11",
+          "explicacion": "La norma europea de la oración 11 no ilustra el trabajo en los barrios: sirve para responder a la objeción, mostrando que la exigencia es posible."
+        },
+        {
+          "t": "Muestra que el autor cambia de postura y abandona la tesis del inicio.",
+          "codigo": "RV33",
+          "origen": "o9",
+          "explicacion": "El autor no cambia de postura: la objeción es ajena y la rechaza con un «Pero». El último párrafo repite la misma tesis del primero."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.tipologia-textual",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que mejor resume la tesis del autor.",
+        "aceptadas": [
+          "o2",
+          "o12"
+        ],
+        "ninguna": "RV3",
+        "codigos": {
+          "o9": "RV53"
+        },
+        "explicacion": "La oración 2 enuncia la tesis (los fabricantes deberían vender aparatos reparables) y la 12 la retoma al cierre (arreglar debería ser un derecho). Las demás son razones, pruebas o la objeción.",
+        "explicaciones": {
+          "o1": "La primera oración presenta la idea que el autor va a rechazar: «Sostengo lo contrario».",
+          "o3": "Es el primer argumento: la basura electrónica.",
+          "o4": "Es la prueba del primer argumento, con cifras.",
+          "o5": "Completa el primer argumento con un detalle.",
+          "o6": "Anuncia el segundo argumento.",
+          "o7": "Desarrolla el segundo argumento.",
+          "o8": "Cierra el segundo argumento.",
+          "o9": "Es la objeción que el autor expone para responderla, no su postura.",
+          "o10": "Responde a la objeción, pero no dice cuál es la tesis.",
+          "o11": "Es otra respuesta a la objeción.",
+          "ninguna": "Las oraciones 2 y 12 sí la dicen: aparatos reparables, porque arreglar debería ser un derecho."
+        }
+      },
+      "enunciado": "¿Cuál es la tesis del autor?",
+      "alternativas": [
+        {
+          "t": "Debería exigirse a los fabricantes que sus aparatos puedan repararse.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o12"
+          ],
+          "explicacion": "Es lo que dice la oración 2 y lo que retoma la 12. Todo lo demás sirve para sostenerlo."
+        },
+        {
+          "t": "Un aparato pensado para abrirse sería más caro, y la gente de todos modos prefiere lo nuevo.",
+          "codigo": "RV53",
+          "origen": "o9",
+          "explicacion": "Es la objeción que el autor expone para responderla. Él sostiene lo contrario."
+        },
+        {
+          "t": "En 2022 el mundo generó 62 millones de toneladas de basura electrónica, y se recicló poca.",
+          "codigo": "RV1",
+          "origen": "o4",
+          "explicacion": "Es una prueba del primer argumento, no la tesis."
+        },
+        {
+          "t": "Hay que cuidar el ambiente y producir menos basura.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el autor habla de algo más preciso, que los aparatos puedan repararse, y da también una razón que no es ambiental."
+        },
+        {
+          "t": "Cada vez es más común pensar que sale más a cuenta comprar un aparato nuevo que arreglarlo.",
+          "codigo": "RV4",
+          "origen": "o1",
+          "explicacion": "Es la primera oración, pero presenta la idea que el autor rechaza («Sostengo lo contrario»)."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.tipologia-textual",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, di qué relación tiene esta afirmación con el texto.",
+        "sonda": "Al autor le preocupa que los técnicos de los barrios se queden sin trabajo.",
+        "clase": "se-deduce",
+        "codigos": {
+          "lo-dice": "RV5",
+          "no-se-sabe": "RV34",
+          "lo-contradice": null
+        },
+        "explicacion": "El texto no lo dice con esas palabras, pero se deduce: el autor defiende la reparación porque «da trabajo cerca de casa» (oración 6) y lamenta que el oficio de los técnicos «se vuelve imposible» cuando no hay repuestos (oración 7).",
+        "explicaciones": {
+          "lo-dice": "La afirmación repite «técnicos» y «barrios», como la oración 7, pero ninguna oración dice que al autor le preocupe su trabajo: eso se deduce de que lo use como razón (oraciones 6 y 7).",
+          "no-se-sabe": "Sí se puede deducir: el segundo argumento del autor es justamente el trabajo que da reparar, y la oración 7 lamenta que ese oficio se vuelva imposible.",
+          "lo-contradice": "Nada en el texto va en contra: el autor nunca dice que le dé igual ese trabajo."
+        }
+      },
+      "enunciado": "Se infiere del texto que, para el autor, la frase «sale más a cuenta comprar uno nuevo»",
+      "alternativas": [
+        {
+          "t": "mira solo el gasto del momento y deja fuera lo que se pierde al botar.",
+          "correcta": true,
+          "evidencia": [
+            "o1",
+            "o2",
+            "o3",
+            "o8"
+          ],
+          "explicacion": "El autor la rechaza y responde con lo que esa cuenta no incluye: la basura que se acumula (oración 3) y el dinero y el trabajo que salen del barrio (oración 8)."
+        },
+        {
+          "t": "es falsa en todos los casos, sin excepción alguna.",
+          "codigo": "RV11",
+          "explicacion": "El autor no dice que nunca convenga comprar uno nuevo; incluso acepta que se pueda elegir lo nuevo (oración 10)."
+        },
+        {
+          "t": "es la idea que el autor defiende a lo largo del texto.",
+          "codigo": "RV53",
+          "origen": "o1",
+          "explicacion": "Es la idea de la que parte para rechazarla: la oración 2 empieza con «Sostengo lo contrario»."
+        },
+        {
+          "t": "la repiten sobre todo los técnicos que arreglan aparatos en los barrios.",
+          "codigo": "RV7",
+          "origen": "o7",
+          "explicacion": "El texto no dice quién repite la frase; además, a los técnicos les conviene lo contrario, porque viven de reparar."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07",
+  "hechos": [
+    {
+      "afirmacion": "En 2022 se generaron 62 millones de toneladas de residuos electrónicos en el mundo, y solo el 22,3 % se recogió y recicló de forma documentada y adecuada.",
+      "fuente": "Baldé, C. P. y otros (2024). The Global E-waste Monitor 2024. UIT y UNITAR, Ginebra/Bonn."
+    },
+    {
+      "afirmacion": "En 2024 la Unión Europea aprobó una directiva que obliga a los fabricantes a ofrecer la reparación de ciertos aparatos (lavadoras, celulares, entre otros) y a dar acceso a repuestos.",
+      "fuente": "Directiva (UE) 2024/1799 del Parlamento Europeo y del Consejo, de 13 de junio de 2024, relativa a normas comunes para promover la reparación de bienes (Diario Oficial de la UE, 10 de julio de 2024)."
+    }
+  ],
+  "revision": {
+    "por": "subagente (verificador a ciegas y revisor de contenido)",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "Coincidió a ciegas en todas las claves. Cambios: dificultad 3 → 2; oración 5 reescrita; el distractor «descriptivo» pasa a RV57; en el previo de p4, «lo dice» pasa de RV6 a RV5 (eco de la sonda)."
+  }
+}

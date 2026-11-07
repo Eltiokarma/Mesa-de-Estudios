@@ -1,0 +1,241 @@
+{
+  "id": "t031",
+  "version": 1,
+  "titulo": "El manantial de don Teodoro",
+  "tema": "Sierra · reforestar con árboles nativos",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "argumentativo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "Hace unos treinta años, don Teodoro sembró eucaliptos alrededor del manantial de su comunidad, en las alturas de Huancavelica."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "Los árboles crecieron rápido y le dieron leña y vigas, pero con el tiempo el ojo de agua empezó a dar cada vez menos, y bajo los troncos casi no volvió a crecer pasto."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "Hoy él dice que, si pudiera volver atrás, sembraría otra cosa."
+      }
+    ],
+    [
+      {
+        "id": "o4",
+        "rol": "principal",
+        "t": "Su caso enseña algo que conviene repetir: cuando se reforesta en los Andes, hay que preferir los árboles nativos, como la queñua o el quishuar, antes que el eucalipto."
+      },
+      {
+        "id": "o5",
+        "rol": "apoyo",
+        "t": "La primera razón es el agua."
+      },
+      {
+        "id": "o6",
+        "rol": "apoyo",
+        "t": "Estudios hechos en distintos países han encontrado que las plantaciones de eucalipto reducen el caudal de los ríos y manantiales cercanos, porque estos árboles crecen rápido y consumen mucha agua."
+      },
+      {
+        "id": "o7",
+        "rol": "apoyo",
+        "t": "La segunda razón es la vida que cada bosque sostiene."
+      },
+      {
+        "id": "o8",
+        "rol": "apoyo",
+        "t": "La queñua, de corteza rojiza que se desprende en láminas finas como papel, forma bosques que protegen el suelo y dan refugio a aves que casi no viven en otra parte."
+      }
+    ],
+    [
+      {
+        "id": "o9",
+        "rol": "contraste",
+        "t": "Es cierto que la queñua crece despacio y que el eucalipto da madera en pocos años."
+      },
+      {
+        "id": "o10",
+        "rol": "apoyo",
+        "t": "Pero un árbol que da leña pronto y deja a la comunidad sin agua es un mal negocio a largo plazo, como bien lo sabe don Teodoro."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "tipo-de-texto",
+      "unidad": "razonamiento-verbal.tipologia-textual",
+      "previo": {
+        "tipo": "proposito",
+        "pide": "Antes de ver las alternativas: ¿qué busca sobre todo el autor?",
+        "aceptada": "convencer",
+        "codigos": {
+          "explicar": "RV14",
+          "narrar": "RV13"
+        },
+        "explicacion": "El autor quiere que el lector acepte una postura: al reforestar en los Andes, conviene preferir los árboles nativos (oración 4). Para eso da dos razones y responde a una objeción.",
+        "explicaciones": {
+          "explicar": "El texto sí da información sobre el agua y los bosques, pero la usa como razones para defender una postura (oración 4): eso es convencer.",
+          "narrar": "La historia de don Teodoro ocupa solo el primer párrafo y sirve para llegar a la postura del autor; el resto del texto da razones, no sigue contando lo que le pasó."
+        }
+      },
+      "enunciado": "El texto es, fundamentalmente, de tipo",
+      "alternativas": [
+        {
+          "t": "argumentativo, porque defiende que se siembren árboles nativos con dos razones.",
+          "correcta": true,
+          "evidencia": [
+            "o4",
+            "o5",
+            "o7"
+          ],
+          "explicacion": "La oración 4 dice la postura del autor, las oraciones 5 y 7 anuncian sus dos razones y la 9 y la 10 responden a una objeción. El propósito que domina es convencer."
+        },
+        {
+          "t": "narrativo, porque cuenta lo que le pasó a don Teodoro con los eucaliptos que sembró junto a su manantial.",
+          "codigo": "RV41",
+          "origen": "o1",
+          "explicacion": "Que haya un personaje y una historia al comienzo es un rasgo de superficie. La historia es un caso que el autor usa para llegar a su postura, y el resto del texto argumenta."
+        },
+        {
+          "t": "expositivo, porque informa cuánta agua consumen las plantaciones de eucalipto.",
+          "codigo": "RV14",
+          "origen": "o6",
+          "explicacion": "El dato sobre el agua está en la oración 6, pero no está ahí para informar sin más: es la primera razón a favor de los árboles nativos. Llamarlo expositivo deja fuera la postura del autor."
+        },
+        {
+          "t": "descriptivo, porque presenta cómo es la corteza de la queñua.",
+          "codigo": "RV57",
+          "origen": "o8",
+          "explicacion": "La corteza rojiza se menciona en una sola frase de la oración 8. Es un pasaje dentro de un argumento, no lo que organiza el texto."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "estructura",
+      "unidad": "razonamiento-verbal.tipologia-textual",
+      "enunciado": "¿Qué función cumple el primer párrafo en el texto?",
+      "alternativas": [
+        {
+          "t": "Presenta un caso concreto que el autor usa para llegar a su tesis.",
+          "correcta": true,
+          "evidencia": [
+            "o1",
+            "o4"
+          ],
+          "explicacion": "El primer párrafo cuenta el caso de don Teodoro, y la oración 4 lo retoma («Su caso enseña algo…») para enunciar la tesis."
+        },
+        {
+          "t": "Expone la tesis general que el autor defiende en el resto del texto.",
+          "codigo": "RV4",
+          "origen": "o3",
+          "explicacion": "La tesis no está al comienzo: está en la oración 4. El primer párrafo solo cuenta un caso; lo que dice don Teodoro en la oración 3 es su experiencia, no la idea general del autor."
+        },
+        {
+          "t": "Plantea una objeción que el autor responde en el último párrafo.",
+          "codigo": "RV42",
+          "explicacion": "La objeción (la queñua crece despacio) está en la oración 9, no en el primer párrafo. El caso de don Teodoro no se opone al autor: lo apoya."
+        },
+        {
+          "t": "Inicia la historia que el texto sigue contando hasta el final.",
+          "codigo": "RV13",
+          "explicacion": "La historia no sigue: desde la oración 4 el autor da razones. Don Teodoro reaparece al final solo para recordar el caso, no para continuar la historia."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.tipologia-textual",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que dice la tesis del autor.",
+        "aceptadas": [
+          "o4"
+        ],
+        "ninguna": "RV3",
+        "explicacion": "La oración 4 dice la tesis: al reforestar en los Andes, hay que preferir los árboles nativos antes que el eucalipto. Lo demás es el caso que la anuncia, las razones que la sostienen y la respuesta a una objeción.",
+        "explicaciones": {
+          "o1": "La primera oración abre el caso de don Teodoro; es el punto de partida, no la tesis.",
+          "o2": "Cuenta qué pasó con el manantial: es parte del caso.",
+          "o3": "Es lo que piensa don Teodoro de su propia experiencia; el autor la convierte en una idea general recién en la oración 4.",
+          "o5": "Anuncia la primera razón, pero no dice qué se defiende.",
+          "o6": "Es el apoyo de la primera razón.",
+          "o7": "Anuncia la segunda razón.",
+          "o8": "Es el apoyo de la segunda razón.",
+          "o9": "Es la objeción que el autor reconoce («Es cierto que…») para luego responderla; no es su postura.",
+          "o10": "Responde a la objeción; refuerza la tesis, pero no dice qué hay que preferir al reforestar.",
+          "ninguna": "La oración 4 sí la dice completa: al reforestar en los Andes, hay que preferir los árboles nativos."
+        },
+        "codigos": {
+          "o9": "RV53"
+        }
+      },
+      "enunciado": "¿Cuál es la tesis del autor?",
+      "alternativas": [
+        {
+          "t": "Al reforestar en los Andes, conviene elegir especies nativas en lugar del eucalipto.",
+          "correcta": true,
+          "evidencia": [
+            "o4"
+          ],
+          "explicacion": "Es la oración 4 con otras palabras. Todo lo demás sirve para llegar a ella o para sostenerla."
+        },
+        {
+          "t": "Don Teodoro, si pudiera volver atrás, ya no sembraría eucaliptos junto a su manantial.",
+          "codigo": "RV4",
+          "origen": "o3",
+          "explicacion": "Es parte del caso con que empieza el texto. El autor lo usa para llegar a una idea más amplia, que vale para toda la reforestación andina."
+        },
+        {
+          "t": "Las plantaciones de eucalipto reducen el caudal de los manantiales cercanos.",
+          "codigo": "RV42",
+          "origen": "o6",
+          "explicacion": "Es la primera razón del autor: un argumento que apoya la tesis, tomado como si fuera la tesis misma."
+        },
+        {
+          "t": "Hay que sembrar más árboles en todo el país.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el autor no habla de sembrar más, sino de qué árboles elegir al reforestar en los Andes."
+        },
+        {
+          "t": "La queñua crece despacio, pero protege el suelo y da refugio a muchas aves.",
+          "codigo": "RV3",
+          "origen": "o8",
+          "explicacion": "Junta datos de la segunda razón y de la objeción, pero deja fuera lo esencial: la recomendación de preferir los árboles nativos al eucalipto."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07",
+  "hechos": [
+    {
+      "afirmacion": "Don Teodoro y su manantial son un caso inventado para ilustrar la tesis; no se presenta como un hecho real.",
+      "fuente": "Caso propio, sin fuente."
+    },
+    {
+      "afirmacion": "Las plantaciones de eucalipto reducen el caudal de los cursos de agua cercanos más que otros árboles plantados, por su alto consumo de agua.",
+      "fuente": "Farley, K. A., Jobbágy, E. G. y Jackson, R. B. (2005). Effects of afforestation on water yield: a global synthesis with implications for policy. Global Change Biology, 11(10), 1565-1576."
+    },
+    {
+      "afirmacion": "La queñua (género Polylepis) es nativa de los Andes, crece despacio, tiene corteza rojiza que se desprende en láminas delgadas y sus bosques albergan aves que dependen casi solo de ellos.",
+      "fuente": "Fjeldså, J. y Kessler, M. (1996). Conserving the biological diversity of Polylepis woodlands of the highland of Peru and Bolivia. NORDECO, Copenhague."
+    },
+    {
+      "afirmacion": "El quishuar (Buddleja coriacea) es un árbol nativo de los Andes usado en reforestación.",
+      "fuente": "Reynel, C. y Marcelo, J. (2009). Árboles de los ecosistemas forestales andinos. Manual de identificación de especies. Programa Regional ECOBONA - Intercooperation, Lima."
+    }
+  ],
+  "revision": {
+    "por": "subagente (verificador a ciegas y revisor de contenido)",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "Coincidió a ciegas en todas las claves. Cambios: el distractor «descriptivo» pasa a RV57; en la tesis, la alternativa del caudal pasa a RV42; previo con o9 como RV53 (objeción); se quitó la frase sin fuente sobre las pocas plantas bajo los eucaliptos."
+  }
+}

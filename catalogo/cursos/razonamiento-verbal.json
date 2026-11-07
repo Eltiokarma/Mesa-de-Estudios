@@ -104,7 +104,7 @@
       "universidades": {"uni": {"semanas": [10, 12]}, "unmsm": {"temas": [1, 2]}},
       "potencial_visual": "bajo",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["tipologia-textual"],
       "investigacion": null
     },
     {

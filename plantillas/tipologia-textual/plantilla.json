@@ -1,0 +1,13 @@
+{
+  "id": "tipologia-textual",
+  "titulo": "¿Qué clase de texto es?",
+  "formato": "lectura",
+  "unidades": [
+    "razonamiento-verbal.tipologia-textual"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "banco": "../../contenido/razonamiento-verbal/indice-tipologia-textual.json",
+  "pruebas": "../../contenido/razonamiento-verbal/banco.test.js",
+  "papel": null
+}
