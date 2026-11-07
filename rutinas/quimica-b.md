@@ -309,3 +309,72 @@ Los vértices van en tinta. ΔE00 mínimo 23,7 en claro y 22,0 en oscuro (r1 con
 - **`docs/diseno.md`:** «Variables de la región que se arma (`plantillas/programacion-lineal/`), paleta propia porque son nueve colores juntos: x y x ≥ 0 naranja (#a14d0c, oscuro #ff9e54), y e y ≥ 0 verde (#54690c, oscuro #68f21a), restricciones r1 azul (#1c6ea4, oscuro #88d2ff), r2 fucsia (#ba09af, oscuro #f03dff) y r3 verde petróleo (#004b3e, oscuro #2cebca), región sepia (#322916, oscuro #f9dc51), función objetivo z granate (#62010c, oscuro #f3687f), óptimo índigo (#0001cf, oscuro #868cea) y restricción nueva (#b83d56, oscuro #929b78); vértices en tinta; ΔE00 mínimo 22,0; contraste mínimo 4,51. r1, r2 y r3 nombran restricciones distintas en cada experimento, pero nunca dos a la vez.»
 - **`docs/pendientes.md`:** «**La región que se arma** (`plantillas/programacion-lineal/`, rutina de química B, 7 nov 2026): semiplanos con prueba del origen, región factible que se arma condición por condición, vértices, recta de nivel que se arrastra hasta salir por un vértice, método de los vértices, óptimos múltiples, región no acotada, vacía y restricción redundante; 20 casos verificados aparte; 10 de papel; 6 predicciones y 5 «¿qué pasa si…?»; todo hipótesis salvo PL12 y PL14 (parciales por AL19 y AL1). Sin ítems en el banco de álgebra.»
 - **`CLAUDE.md`, historia:** «Programación lineal (7 nov 2026, rutina de química B): `plantillas/programacion-lineal/` (la región que se arma: semiplanos, región factible, recta de nivel que sale por un vértice, óptimos múltiples, no acotada y vacía; 20 casos verificados aparte).»
+
+## 7 nov 2026 · La recta en trozos (`plantillas/numeros-reales/`)
+
+**Qué hice.**
+
+- **`motor.js`** (UMD, `window.MotorReales`, sin DOM; cabecera hasta la línea 74). Trabaja con fracciones exactas y ±∞; el único irracional es √2, escrito r + s·√2.
+  - Lee y escribe la notación peruana ('[−2; 3⟩', '⟨−∞; 1] ∪ {5}', 'ℝ − {2}', '∅') y devuelve siempre uniones disjuntas y ordenadas.
+  - Pertenencia; operaciones con conjuntos (unión, intersección, diferencia, complemento y diferencia simétrica); longitud; cotas, supremo, ínfimo, máximo y mínimo.
+  - |x − a| op r y |ax + b| op c; distancia entre dos puntos.
+  - Imagen de un intervalo por una función afín, por x², por 1/x y por |x|.
+  - Desigualdades: multiplicar, cadenas, signos, elevar al cuadrado e invertir.
+  - Densidad: un número entre otros dos, «el siguiente», generatriz de un periódico y aproximación.
+  - Operaciones binarias por tabla y por fórmula: conmutativa, asociativa, neutro e inversos.
+  - Cada respuesta trae `errores`, `coinciden`, `noAplica` y `repetidos`.
+- **`casos.json`:** 22 casos. **`motor.test.js`:** 44 pruebas, con propiedades comprobadas punto por punto. **`papel.json`:** 10 problemas propios.
+- **`index.html`, paso a paso** (8 pasos, todos con predicción que bloquea; 4 opciones en todas):
+  1. los extremos de [−2; 3⟩ (NR1, NR2);
+  2. [−2; 3⟩ ∩ [1; 5] = [1; 3⟩;
+  3. |x − 2| ≤ 3 como distancia: [−1; 5] (AL22 parcial);
+  4. −2x + 1 con x ∈ [−2; 3⟩: ⟨−5; 5] (AL20, hipótesis);
+  5. x² con x ∈ [−2; 3⟩: [0; 9⟩ (NR7: [4; 9⟩);
+  6. después de 0,9 no hay un número siguiente, con la lupa y la densidad de los racionales y los irracionales;
+  7. ⟨0; 1⟩ no tiene máximo, pero su supremo es 1;
+  8. el neutro de una tabla.
+- **¿Qué pasa si…?** (5): 1/x con x ∈ [−1; 2], que se parte en dos rayos; |x + 1| > 2; ⟨−3; 1] ∩ [1; 4⟩ = {1}, y luego los trozos libres con los 4 extremos arrastrables y botones para ∪, ∩, A − B, B − A, A′ y A Δ B; 0,999… = 1 con la lupa de nueves; y una tabla de 3 × 3 que no es conmutativa y no tiene neutro.
+
+**Subagentes y lo que corrigieron.**
+
+- **Verificador:** sin leer el motor, recalculó los 22 casos tratando los conjuntos como predicados con fracciones exactas, contrastados con una rejilla y ±1/1000, las imágenes por muestreo y monotonía, y las tablas por fuerza bruta. Todo coincide. Señaló: el empate 4–2 en la diagonal del caso 19, «299/100» en vez de «2,99», y errores mal listados en el caso 8.
+- **Revisor:** una grave: el título del experimento 5, «Una tabla que no es conmutativa», regalaba media respuesta. Medias:
+  - el título «La recta que no tiene huecos» era inexacto (eso es la completitud, no la densidad) e inclinaba hacia 0,999… = 1;
+  - el paso 6 decía que la densidad quita los huecos, y ℚ es denso y tiene huecos;
+  - el paso 1 hablaba de números «justo antes» del 3;
+  - una retroalimentación del paso 3 estaba al revés;
+  - el dibujo del 0,999… lo ponía a la izquierda del 1;
+  - la retroalimentación de la diagonal era falsa;
+  - tres predicciones tenían 3 opciones.
+
+  Bajas: el eje de x², la cautela en AL20 y AL22, el aumento real de la lupa, colores de la regla 4 en el paso 7, coma decimal en los trozos libres, títulos de pasos que presuponían la respuesta, el problema de papel p8 y el irracional en oscuro cerca del verde de «correcta». Todo aplicado. El irracional de la densidad pasó a 0,9 + √2/40 para no caer sobre una marca, y el p8 a 1/3 + √2/24.
+
+**Colores** (familia de matemática):
+
+| Variable | Claro | Oscuro |
+| --- | --- | --- |
+| A | #1f5fbf | #7cb0ff |
+| B | #a05200 | #f0a04a |
+| conjunto pedido (y cotas) | #a10fbf | #cf6bfa |
+| punto x | #5f6f00 | #c8dc3c |
+| centro y distancia del valor absoluto | #086a96 | #25caf4 |
+| irracional de la lupa | #541d12 | #97fcfc |
+| neutro e | #6b3dbd | #fdecaa |
+
+ΔE00 mínimo entre los que salen juntos, contando la tinta, el gris y los colores de correcto e incorrecto: 20,4 en claro y 20,6 en oscuro. Contraste mínimo 4,64. El irracional y el neutro cambian de tono entre modos. Pares cercanos que nunca salen juntos: A con el centro (9,9) y el neutro con el fucsia (10,0).
+
+**Pruebas.** `motor.test.js`: 44 de 44. `npm test`: solo fallan `catalogo.json` y «está en el catálogo». `pasada-celular.py` no editó nada ni dijo QUEDA. Playwright a 390×844 y 1366×768, claro y oscuro, con y sin movimiento reducido: sin errores de consola ni desbordes.
+
+**Pendiente.**
+
+- Todo NR es hipótesis; la literatura de 0,999… (Tall y otros) no está en el informe.
+- No cubre los axiomas de cuerpo y de orden como lista; solo en el papel y en las justificaciones.
+- En el celular, los botones de la lupa y de las operaciones suben el lienzo a la vista sin la espera de 380 ms.
+- Sin ítems en el banco de álgebra.
+
+### Pedidos para la integración
+
+- **Catálogo:** `numeros-reales` en `algebra.numeros-reales`; `npm run catalogo`; subir `VERSION`.
+- **`docs/diseno.md`:** «Variables de la recta en trozos (`plantillas/numeros-reales/`): A azul (#1f5fbf, oscuro #7cb0ff), B naranja (#a05200, oscuro #f0a04a), conjunto pedido y cotas fucsia (#a10fbf, oscuro #cf6bfa), punto x oliva (#5f6f00, oscuro #c8dc3c), centro y distancia del valor absoluto celeste (#086a96, oscuro #25caf4), irracional de la lupa (#541d12, oscuro #97fcfc) y neutro e (#6b3dbd, oscuro #fdecaa); el irracional y el neutro cambian de tono entre modos; ΔE00 mínimo 20,4; contraste mínimo 4,64. Intervalos con ⟨ ⟩ abiertos, [ ] cerrados y «;».»
+- **`docs/pendientes.md`:** «**La recta en trozos** (`plantillas/numeros-reales/`, rutina de química B, 7 nov 2026): intervalos como trozos con extremos que entran o no, operaciones con conjuntos con extremos arrastrables, valor absoluto como distancia, imagen de un intervalo por funciones afines, x² y 1/x, densidad con lupa y 0,999… = 1, supremo contra máximo, y operaciones binarias por tabla; 22 casos verificados aparte; 10 de papel; 8 predicciones y 5 «¿qué pasa si…?»; AL22 parcial, lo demás hipótesis. Falta: los axiomas de cuerpo y de orden en escena. Sin ítems en el banco de álgebra.»
+- **`CLAUDE.md`, historia:** «Números reales (7 nov 2026, rutina de química B): `plantillas/numeros-reales/` (la recta en trozos: intervalos y sus operaciones, valor absoluto como distancia, imagen de un intervalo, densidad, supremo y tablas de operación; 22 casos verificados aparte).»

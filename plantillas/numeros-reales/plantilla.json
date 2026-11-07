@@ -1,6 +1,6 @@
 {
   "id": "numeros-reales",
-  "titulo": "La recta que no tiene huecos: números reales",
+  "titulo": "La recta en trozos: números reales",
   "formato": "escena",
   "unidades": [
     "algebra.numeros-reales"

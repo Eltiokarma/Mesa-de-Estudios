@@ -1,4 +1,4 @@
-// Pruebas del motor de «La recta que no tiene huecos». Se corren desde la raíz con: node --test
+// Pruebas del motor de «La recta en trozos». Se corren desde la raíz con: node --test
 //
 // 1. Cada caso de casos.json debe salir igual del motor (regla 2 de CLAUDE.md).
 // 2. Propiedades, con conjuntos al azar (semilla fija), comprobadas punto por punto en racionales de prueba

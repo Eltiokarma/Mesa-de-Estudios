@@ -1,5 +1,5 @@
 /*
- * Motor de «La recta que no tiene huecos»: números reales, intervalos, valor absoluto, desigualdades,
+ * Motor de «La recta en trozos»: números reales, intervalos, valor absoluto, desigualdades,
  * densidad, cotas y operaciones binarias.
  *
  * Aquí vive toda la matemática de la plantilla (regla 1 de CLAUDE.md). No toca el DOM: funciona igual en el
@@ -13,7 +13,8 @@
  *   conjunto(X)                      el conjunto normalizado: unión de intervalos disjuntos y ordenados, su texto
  *   pertenece({ A, x })              ¿x ∈ A?, con el texto 3 ∉ [−2; 3⟩
  *   extremos({ A })                  ¿qué extremos entran? (−2 sí, 3 no) y los errores de corchetes
- *   operar({ A, B, op })             op: 'union', 'interseccion', 'diferencia' (A − B), 'complemento' (A′), 'simetrica'
+ *   operar({ A, B, op, decimal })    op: 'union', 'interseccion', 'diferencia' (A − B), 'complemento' (A′), 'simetrica';
+ *                                    con decimal: true, los extremos van con coma decimal (4,5 y no 9/2)
  *   longitud({ A })                  suma de las longitudes (Infinity si no es acotado)
  *   cotas({ A })                     cotas, supremo, ínfimo, máximo y mínimo (null si no existen)
  *   absoluto({ a, op, r })           |x − a| op r como conjunto: «a menos de r de a» o dos rayos
@@ -46,7 +47,7 @@
  *   AL22 el valor absoluto «quita el signo» (|x − 3| < 5 ⇒ x < 8)                            parcial (Almog e Ilany 2012)
  *   NR1  corchetes leídos al revés: ⟩ como «entra» y [ como «no entra»                       hipótesis
  *   NR2  los extremos siempre entran (o nunca entran), sin mirar el corchete                  hipótesis
- *   NR3  confundir la intersección con la unión (o al revés)                                  hipótesis
+ *   NR3  confundir la intersección con la unión (o al revés), o con la diferencia simétrica     hipótesis
  *   NR4  corchetes mal puestos al operar: en ∩ se cierra un extremo que solo está en un trozo;
  *        en A − B se deja cerrado el extremo que B quita; en A′ se copian los corchetes de A     hipótesis
  *   NR5  dentro por fuera: |x − a| ≤ r leído como dos rayos (o > r como un trozo)             hipótesis
@@ -54,10 +55,12 @@
  *   NR7  x² con x ∈ [−2; 3] da [4; 9]: elevar solo los extremos, olvidando que pasa por 0      hipótesis
  *   NR8  (−2)² = −4: el signo se queda al elevar al cuadrado                                  hipótesis
  *   NR9  hay un «número siguiente» (0,91 después de 0,9; 1 después de 0,9…)                    hipótesis
- *   NR10 0,999… es menor que 1 («el número justo antes de 1», «le falta 0,000…1»)              hipótesis
+ *   NR10 0,999… es menor que 1 («el número justo antes de 1», «le falta 0,000…1», «se acerca
+ *        pero nunca llega»)                                                                   hipótesis
  *   NR11 el supremo es el máximo aunque no esté en el conjunto (máx ⟨0; 1⟩ = 1)                hipótesis
  *   NR12 si no hay máximo, tampoco hay supremo; o el máximo es «el último antes de 1»          hipótesis
- *   NR13 el neutro de una tabla se lee en la diagonal (lo que más se repite en ella)            hipótesis
+ *   NR13 el neutro de una tabla se busca en la diagonal (un elemento que sale ahí; si empatan,
+ *        el que aparece primero)                                                              hipótesis
  *   NR14 el neutro es el primer elemento de la tabla (o 0, o 1, sin comprobar)                 hipótesis
  *   NR15 neutro de un solo lado: basta que la fila repita la cabecera                         hipótesis
  *   NR16 el inverso de x se lee en la diagonal (x ∗ x) o es el neutro mismo                    hipótesis
@@ -128,7 +131,9 @@
     throw new Error(`${que || 'el valor'}: no entiendo «${s}»`);
   }
   // Texto de un número: fracción con barra (−3/2) o, con decimal, coma decimal si es exacto (0,905)
+  let DEC = false;   // con coma decimal en todos los textos (operar con decimal: true, textoConjunto(X, true))
   function txF(a, decimal) {
+    if (decimal === undefined) decimal = DEC;
     if (esInf(a)) return a.inf > 0 ? '+∞' : `${MENOS}∞`;
     const s = a.n < 0 ? MENOS : '', n = Math.abs(a.n);
     if (a.d === 1) return s + n;
@@ -257,7 +262,7 @@
   function conjunto(X) { const L = leer(X); return Object.assign(salida(L), { longitud: num(longitudL(L)), acotado: acotadoL(L) }); }
   function pertenece(o) {
     const L = leer(o.A, 'A'), x = fin(o.x, 'x'), si = perteneceL(L, x);
-    return { pertenece: si, texto: `${txF(x)} ${si ? '∈' : '∉'} ${texto(L)}` };
+    return { pertenece: si, texto: `${txF(x, true)} ${si ? '∈' : '∉'} ${texto(L)}` };
   }
   // ¿Qué extremos finitos entran? Errores: corchetes al revés (NR1), todos entran o ninguno (NR2)
   function extremos(o) {
@@ -280,6 +285,7 @@
   // ---------- Operaciones con conjuntos ----------
   const SIMB = { union: '∪', interseccion: '∩', diferencia: MENOS, simetrica: 'Δ' };
   function operar(o) {
+    if (o && o.decimal && !DEC) { DEC = true; try { return operar(o); } finally { DEC = false; } }
     const A = leer(o.A, 'A'), op = o.op, B = op === 'complemento' ? [] : leer(o.B, 'B');
     const R = operarL(A, B, op), correcta = texto(R);
     const enA = x => perteneceL(A, x), enB = x => perteneceL(B, x);
@@ -288,7 +294,8 @@
       comoUnion: err(operarL(A, B, 'union')),                                             // NR3
       corchetes: err(recorchetear(R, x => enA(x) || enB(x))),                               // NR4: cierra lo que está en un solo trozo
       abiertos: err(recorchetear(R, () => false)),                                          // NR4: abre todo
-      vaciaSiSeTocan: R.length && R.every(I => !esInf(I.a) && igual(I.a, I.b)) ? err([]) : null   // NR18
+      vaciaSiSeTocan: R.length && R.every(I => !esInf(I.a) && igual(I.a, I.b)) ? err([]) : null,  // NR18
+      comoSimetrica: err(operarL(A, B, 'simetrica'))                                        // NR3: lo que está en uno solo
     };
     else if (op === 'union') errores = {
       comoInterseccion: err(operarL(A, B, 'interseccion')),                                 // NR3
@@ -465,6 +472,7 @@
       errores = {
         sinPartir: parte && !esInf(I.a) && !esInf(I.b) ? err(ordenarExt(invF(I.a), invF(I.b), I.ca, I.cb)) : null,   // NR17
         soloPositivos: parte ? err(Lp.map(J => monotona(J, invF, false))) : null,                                    // NR17
+        quitaCero: parte && !esInf(I.a) && !esInf(I.b) ? { texto: `${texto(ordenarExt(invF(I.a), invF(I.b), I.ca, I.cb))} ${MENOS} {0}` } : null,   // NR17: solo saca el 0
         sinVoltear: !parte && !esInf(I.a) && !esInf(I.b) && I.a.n !== 0 && I.b.n !== 0 ? { texto: crudo(invF(I.a), invF(I.b), I.ca, I.cb) } : null
       };
       nombre = '1/x';
@@ -577,7 +585,8 @@
     if (!Number.isInteger(n) || n < 1 || n > 50) throw new Error('n debe ser un entero de 1 a 50');
     const h = fDiv(fRes(q, p), F(n + 1)), rac = [];
     for (let i = 1; i <= n; i++) rac.push(fSum(p, fMul(h, F(i))));
-    const s = fDiv(fRes(q, p), F(2)), irr = num(p) + num(s) * Math.SQRT2;   // p < p + s·√2 < q porque 0 < √2 < 2
+    // un cuarto del ancho por √2: p < p + s·√2 < q porque 0 < √2 < 4 (y no cae en las marcas de décimos de la lupa)
+    const s = fDiv(fRes(q, p), F(4)), irr = num(p) + num(s) * Math.SQRT2;
     const dec = esDecimal(p) && esDecimal(q), t = x => txF(x, dec);   // con coma decimal solo si p y q la tienen
     return { p: t(p), q: t(q), promedio: num(m), promedioTexto: t(m), cuenta: `(${t(p)} + ${t(q)})/2 = ${t(m)}`,
       racionales: rac.map(t), racionalesValor: rac.map(num),
@@ -613,7 +622,8 @@
     const nueves = /^9+$/.test(p);
     const errores = {
       justoAntes: nueves ? { texto: `${dec} < ${txF(v)}: es el número justo antes de ${txF(v)}` } : null,   // NR10
-      porPoco: nueves ? { texto: `${dec} < ${txF(v)}: le falta 0,000…1` } : null                             // NR10
+      porPoco: nueves ? { texto: `${dec} < ${txF(v)}: le falta 0,000…1` } : null,                            // NR10
+      nuncaLlega: nueves ? { texto: `${dec} < ${txF(v)}: se acerca a ${txF(v)}, pero nunca llega` } : null      // NR10: un proceso que no termina
     };
     return Object.assign({ valor: num(v), texto: txF(v), decimal: dec, igualdad: `${dec} = ${txF(v)}`, relacion: nueves ? `${dec} = ${txF(v)}` : null },
       apartar(errores, `${dec} = ${txF(v)}`));
@@ -642,7 +652,7 @@
     const neutro = izq.find(e => der.includes(e)) || null;
     const inversos = {};
     if (neutro !== null) for (const x of E) inversos[x] = E.find(y => op(x, y) === neutro && op(y, x) === neutro) || null;
-    // en la diagonal: lo que más se repite (empate: lo que aparece primero)
+    // en la diagonal: lo que más sale ahí (empate: lo que aparece primero)
     const diag = E.map(x => op(x, x)), cuenta = {};
     diag.forEach(v => { cuenta[v] = (cuenta[v] || 0) + 1; });
     const masDiag = diag.reduce((m, v) => (cuenta[v] > cuenta[m] ? v : m), diag[0]);
@@ -720,7 +730,7 @@
     multiplicar, cadena, signos, cuadradoDesigualdad, inversa, entre, siguiente, generatriz, aproximar,
     operacionTabla, inversoTabla, operacionFormula,
     textoNumero: (x, decimal) => txF(aF(x), decimal),
-    textoConjunto: X => texto(leer(X)),
+    textoConjunto: (X, decimal) => { const d = DEC; DEC = !!decimal; try { return texto(leer(X)); } finally { DEC = d; } },
     contiene: (X, x) => perteneceL(leer(X), fin(x))
   };
 });

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>La recta que no tiene huecos: números reales</title>
+<title>La recta en trozos: números reales</title>
 <style>
 /* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de la región que se arma.
    Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4), de la familia de matemática:
@@ -13,7 +13,8 @@
    cambian de tono entre modos para quedar a ΔE00 ≥ 20 de la tinta y del gris de los rótulos.
    Los números racionales de la lupa van en tinta. Elegidos con CIEDE2000 (docs/metodo/paleta.py): entre los que salen
    juntos (A, B, fucsia y x; centro, fucsia y x), con la tinta, el gris y los verdes y rojos de las respuestas, el mínimo es
-   20,4 en claro (x con el verde de «correcta») y 20,9 en oscuro (fucsia con el gris). Contraste AA sobre el papel, la
+   20,4 en claro (x con el verde de «correcta») y 20,6 en oscuro (el irracional con el verde de «correcta», que salen
+   juntos en el paso 6). Contraste AA sobre el papel, la
    tarjeta y su chip (.v, fondo al 8 %), en claro y en oscuro (mínimo 4,64). */
 [hidden]{display:none!important}
 :root{
@@ -29,13 +30,13 @@
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f; --eje:#6f6380;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-A:#7cb0ff; --c-B:#f0a04a; --c-res:#cf6bfa; --c-x:#c8dc3c; --c-d:#25caf4; --c-irr:#97fcf6; --c-e:#fdecaa;
+  --c-A:#7cb0ff; --c-B:#f0a04a; --c-res:#cf6bfa; --c-x:#c8dc3c; --c-d:#25caf4; --c-irr:#97fcfc; --c-e:#fdecaa;
   color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f; --eje:#6f6380;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-A:#7cb0ff; --c-B:#f0a04a; --c-res:#cf6bfa; --c-x:#c8dc3c; --c-d:#25caf4; --c-irr:#97fcf6; --c-e:#fdecaa;
+  --c-A:#7cb0ff; --c-B:#f0a04a; --c-res:#cf6bfa; --c-x:#c8dc3c; --c-d:#25caf4; --c-irr:#97fcfc; --c-e:#fdecaa;
   color-scheme:dark }
 
 *{box-sizing:border-box}
@@ -153,8 +154,8 @@ button:focus-visible, .v:focus-visible, a:focus-visible, input:focus-visible{out
   <div class="top">
     <header>
       <p class="eyebrow">Álgebra · Números reales · Problemas tipo admisión</p>
-      <h1>La recta que no tiene huecos</h1>
-      <p class="sub">Trozos de la recta, números que se acercan y operaciones con tablas. Predice cada respuesta antes de que el dibujo la muestre; después arrastra los puntos para comprobarla.</p>
+      <h1>La recta en trozos</h1>
+      <p class="sub">Trozos de la recta, distancias, cotas y operaciones con tablas. Predice cada respuesta antes de que el dibujo la muestre; después arrastra los puntos para comprobarla.</p>
     </header>
     <nav class="tabs" aria-label="Modo de la escena">
       <a href="#paso-a-paso" id="tab1">Paso a paso</a>
@@ -333,7 +334,7 @@ function crearLienzo(cv, idDesc, idLect, idLey){
     for (const v of marcas){
       const px = X(v); linea(px, y - 4, px, y + 4, c.eje, 1.4);
       const t = o.texto ? o.texto(v) : N_(v), w = ctx.measureText(t).width;
-      if (px - w/2 > ultimo + 3 && o.sinNumeros !== true){ ctx.fillText(t, px, y + 7); ultimo = px + w/2; }
+      if (px - w/2 > ultimo + 3 && o.sinNumeros !== true){ if (o.arriba){ ctx.textBaseline = 'bottom'; ctx.fillText(t, px, y - 7); ctx.textBaseline = 'top'; } else ctx.fillText(t, px, y + 7); ultimo = px + w/2; }
     }
     ctx.restore();
     if (o.nombre) rotulo(c, x1 + 12, y - 14, o.nombre, o.colorNombre || c.muted, 'right', 12, 800);
@@ -396,7 +397,7 @@ function crearLienzo(cv, idDesc, idLect, idLey){
       M.lista().forEach((h, i) => {
         const act = (arrastrando && arrastrando.id === h.id) || (sobre && sobre.id === h.id);
         ctx.save(); ctx.strokeStyle = h.color || c.x; ctx.globalAlpha = act ? .6 : .3; ctx.lineWidth = 2.5;
-        ctx.beginPath(); ctx.arc(h.x, h.y, act ? 17 : 14, 0, 2*Math.PI); ctx.stroke(); ctx.restore();
+        ctx.beginPath(); ctx.arc(h.x, h.y, act ? 15 : 12, 0, 2*Math.PI); ctx.stroke(); ctx.restore();
         if (document.activeElement === cv && i === E.sel){ ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; ctx.setLineDash([3, 3]); ctx.beginPath(); ctx.arc(h.x, h.y, 21, 0, 2*Math.PI); ctx.stroke(); ctx.restore(); }
       });
     }
@@ -489,9 +490,9 @@ const altoTabla = n => (w, chico) => Math.round(Math.min(w*0.75, (chico ? 64 : 6
 function pintarLupa(D, arriba, w0, w1, abajo){
   const c = D.c, ctx = D.ctx, xa = arriba.X(w0), xb = arriba.X(w1);
   ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; ctx.globalAlpha = .7;
-  ctx.strokeRect(xa - 3, arriba.y - 12, Math.max(6, xb - xa + 6), 24);
+  ctx.strokeRect(xa - 3, arriba.y - 6, Math.max(6, xb - xa + 6), 12);
   ctx.setLineDash([4, 4]);
-  ctx.beginPath(); ctx.moveTo(xa - 3, arriba.y + 12); ctx.lineTo(abajo.x0 - 8, abajo.y - 16); ctx.moveTo(xb + 3, arriba.y + 12); ctx.lineTo(abajo.x1 + 8, abajo.y - 16); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(xa - 3, arriba.y + 6); ctx.lineTo(abajo.x0 - 8, abajo.y - 16); ctx.moveTo(xb + 3, arriba.y + 6); ctx.lineTo(abajo.x1 + 8, abajo.y - 16); ctx.stroke();
   ctx.restore();
 }
 </script>
@@ -521,7 +522,7 @@ const frase = t => { const s = t.split(', ').map(p => { const [v, si] = p.split(
 const P1 = { id:'numeros-reales-paso1', ok:'a', opts:[
   ['a', frase(EX.texto)], ['b', frase(EX.errores.alReves.texto), 'NR1-corchetes-al-reves', 'hipotesis'],
   ['c', frase(EX.errores.todos.texto), 'NR2-los-extremos-siempre-entran', 'hipotesis'], ['d', frase(EX.errores.ninguno.texto), 'NR2-los-extremos-nunca-entran', 'hipotesis']],
-  fb:{ a:'¡Bien! El corchete [ abraza al −2: entra. El ⟩ deja afuera al 3: no entra, aunque todos los números que están justo antes sí.',
+  fb:{ a:'¡Bien! El corchete [ abraza al −2: entra. El ⟩ deja afuera al 3: no entra, aunque 2,9; 2,99; 2,999… sí entran.',
     b:'Elegiste la B. Es al revés: [ (cerrado) dice que el −2 entra y ⟩ (abierto) dice que el 3 no entra. La correcta está marcada.',
     c:'Elegiste la C. Los extremos entran solo si su corchete es cerrado, [ o ]. El ⟩ del 3 es abierto: el 3 se queda afuera. La correcta está marcada.',
     d:'Elegiste la D. El ⟩ deja afuera al 3, pero el [ del −2 es cerrado: el −2 sí entra. La correcta está marcada.' } };
@@ -536,7 +537,7 @@ const P3 = { id:'numeros-reales-paso3', ok:'c', opts:[
   ['a', M_(AB.errores.sinBarras.texto), 'AL22-quitar-las-barras', 'parcial'], ['b', M_(AB.errores.alReves.texto), 'NR5-dentro-por-fuera', 'hipotesis'],
   ['c', M_(AB.texto)], ['d', M_(AB.errores.otroCentro.texto), 'NR6-distancia-desde-menos-a', 'hipotesis']],
   fb:{ c:'¡Bien! |x − 2| es la distancia de x a 2. A lo más 3 de 2: desde −1 hasta 5, con los extremos.',
-    a:'Elegiste la A. Quitar las barras deja x − 2 ≤ 3, pero también cuentan los que están a la izquierda: −10 cumple x ≤ 5 y está a 12 de 2. La correcta está marcada.',
+    a:'Elegiste la A. Quitar las barras deja x − 2 ≤ 3, o sea x ≤ 5, y se cuelan números lejanos: −10 cumple x ≤ 5, pero está a 12 de 2. Falta la otra mitad: −3 ≤ x − 2. La correcta está marcada.',
     b:'Elegiste la B. Esos son los que están a 3 o más de 2 (|x − 2| ≥ 3). ≤ 3 pide los cercanos: un solo trozo alrededor del 2. La correcta está marcada.',
     d:'Elegiste la D. |x − 2| mide desde 2, no desde −2: el centro es el número que se resta. [−5; 1] es |x + 2| ≤ 3. La correcta está marcada.' } };
 const P4 = { id:'numeros-reales-paso4', ok:'d', opts:[
@@ -568,10 +569,10 @@ const P7 = { id:'numeros-reales-paso7', ok:'c', opts:[
     b:'Elegiste la B. No hay un número justo antes de 1: si x < 1, (x + 1)/2 está entre x y 1. La correcta está marcada.',
     d:'Elegiste la D. Aunque no tenga máximo, ⟨0; 1⟩ está acotado: las cotas superiores son [1; +∞⟩, y la menor, 1, es el supremo. La correcta está marcada.' } };
 const P8 = { id:'numeros-reales-paso8', ok:'b', opts:[
-  ['a', M_(OT.errores.diagonal.texto), 'NR13-neutro-en-la-diagonal', 'hipotesis'], ['b', M_(OT.neutro)],
+  ['a', M_(OT.errores.diagonal.texto), 'NR13-neutro-buscado-en-la-diagonal', 'hipotesis'], ['b', M_(OT.neutro)],
   ['c', M_(OT.errores.primero.texto), 'NR14-neutro-el-primero', 'hipotesis'], ['d', 'No tiene', 'NR23-no-tiene-neutro', 'hipotesis']],
   fb:{ b:'¡Bien! La fila del 2 y la columna del 2 repiten la cabecera: 2 ∗ x = x y x ∗ 2 = x para los cuatro.',
-    a:'Elegiste la A. El 4 es lo que más se repite en la diagonal (1 ∗ 1 = 4, 3 ∗ 3 = 4), pero 4 ∗ 1 = 3, no 1: el 4 no deja igual a nadie. La correcta está marcada.',
+    a:'Elegiste la A. El 4 sale en la diagonal (1 ∗ 1 = 4 y 3 ∗ 3 = 4), pero eso no lo hace neutro: 4 ∗ 1 = 3, no 1. El 4 no deja igual a nadie. La correcta está marcada.',
     c:'Elegiste la C. El 1 es el primero de la cabecera, pero 1 ∗ 1 = 4: no deja igual al 1. La correcta está marcada.',
     d:'Elegiste la D. Busca una fila que repita la cabecera 1, 2, 3, 4: la del 2. Su columna también. La correcta está marcada.' } };
 
@@ -628,9 +629,9 @@ function dibImagen(D, f, F, vx, vf, nombre, IM, xAct){
   flechaImagen(D, top, bot, xs, y);
 }
 function dib6(D, f){
-  const c = D.c, arriba = D.eje({ y:Math.round(D.H*.24), v0:.8, v1:1.1, rotulos:[.8, .9, 1, 1.1], tam:12 });
+  const c = D.c, arriba = D.eje({ y:Math.round(D.H*.24), v0:.8, v1:1.1, rotulos:[.8, .9, 1, 1.1], tam:12, arriba:true });
   D.punto(arriba, arriba.y, .9, c.ink, '', { r:5 });
-  if (f <= 0){ D.rotulo(arriba.X(.95), arriba.y - 18, '¿?', c.muted, 'center', 13, 800); return; }
+  if (f <= 0){ D.rotulo(arriba.X(.95), arriba.y + 24, '¿?', c.muted, 'center', 13, 800); return; }
   const n = f < 1 ? 1 : S.nivel6, w = Math.pow(10, -n), w0 = .9, w1 = r3(.9 + w) || .9 + w;
   // la lupa: la ventana [0,9; 0,9 + 10⁻ⁿ] en grande
   const ventanaArriba = n === 1 ? [w0, 1] : [w0, w0 + .1*Math.max(.04, Math.pow(10, 1 - n))];
@@ -648,7 +649,7 @@ function dib6(D, f){
   } else if (ap >= 1){
     D.rotulo(abajo.X(w0 + w/2), abajo.y + 20, MR.textoNumero(Number((.9 + w/2).toFixed(n + 1)), true), c.ink, 'center', 11, 700);
   }
-  D.rotulo(D.W - 10, D.H - 12, `lupa ×${Math.pow(10, n)}`, c.muted, 'right', 11, 700);
+  D.rotulo(D.W - 10, D.H - 12, `cada marca: ${MR.textoNumero(Math.pow(10, -(n + 1)), true)}`, c.muted, 'right', 11, 700);
 }
 function dib7(D, f){
   const m = D.eje({ id:'r', y:Math.round(D.H*.72), v0:-.5, v1:2.5, paso:.5 }), y = m.y - 36;
@@ -661,8 +662,8 @@ function dib7(D, f){
   D.punto(m, y - 30, 1, D.c.res, 'supremo 1', { r:7, dy:-18, align:'center' });
   const mas = MR.entre({ p:S.x7, q:1 });
   D.punto(m, m.y, S.x7, D.c.x, `x = ${N_(S.x7)}`, { dy:34 });
-  D.linea(m.X(mas.promedio), y + 6, m.X(mas.promedio), m.y - 6, D.c.x, 1.5, [3, 3]);
-  D.rotulo(m.X(mas.promedio), m.y + 52, `más grande: ${mas.promedioTexto}`, D.c.x, 'center', 11, 800);
+  D.linea(m.X(mas.promedio), y + 6, m.X(mas.promedio), m.y - 6, D.c.muted, 1.5, [3, 3]);
+  D.rotulo(m.X(mas.promedio), m.y + 52, `más grande: ${mas.promedioTexto}`, D.c.ink, 'center', 11, 800);
 }
 function dib8(D, f){
   const filas = [], columnas = [], marcas = [];
@@ -717,7 +718,7 @@ const steps = [
      <div class="eq">${D_('|x − 2| ≤ 3')} ⇔ −3 ≤ x − 2 ≤ 3 ⇔ ${R_('−1 ≤ x ≤ 5')}</div></div>
    <p>El valor absoluto mide distancias: |x − a| es lo que hay de x hasta a. «≤ 3» son los que están a lo más 3 del ${D_('2')}: la cinta sale desde el 2 y llega a −1 y a 5. Arrastra ${X_('x')} y mira su distancia al 2.</p>
    <p>Si el signo fuera ≥, serían los lejanos: dos rayos hacia afuera. Y |x + 2| = |x − (−2)| mide desde −2.</p>
-   <p class="fuente">Quitar las barras (x − 2 ≤ 3, x ≤ 5) es la idea errónea AL22 del informe de álgebra: un estudio con 481 escolares israelíes la encontró entre los errores consistentes, sin porcentaje a la vista (Almog e Ilany, 2012). Leer el ≤ como dos rayos o medir desde −2 son hipótesis nuestras.</p></div>` },
+   <p class="fuente">Quitar las barras (x − 2 ≤ 3, x ≤ 5) es la idea errónea AL22 del informe de álgebra: un estudio con 481 escolares israelíes la encontró entre los errores consistentes, sin porcentaje a la vista (Almog e Ilany, 2012, según el informe; por verificar con el artículo). Leer el ≤ como dos rayos o medir desde −2 son hipótesis nuestras.</p></div>` },
  { k:'Paso 4', t:'Predice: dónde cae −2x + 1', gate:P4,
    prep:() => { const ya = !!S.pred[P4.id];
      E.config({ alto:(w, ch) => ch ? clamp(w*.72, 250, 300) : clamp(w*.55, 300, 380), pintar:D => dibImagen(D, ya ? 1 : 0, F4, [-3, 4, 1], [-7, 7, 1], '−2x + 1', IM4, S.x4),
@@ -733,15 +734,15 @@ const steps = [
      <div class="eq">más 1: 5 ≥ −2x + 1 > −5 → ${R_(IM4.texto)}</div></div>
    <p>Multiplicar por un número negativo le da media vuelta a la recta: lo que estaba a la izquierda pasa a la derecha. Por eso se invierte el sentido y también se intercambian los corchetes: el −2, que entraba, termina en el 5 (cerrado). Arrastra ${X_('x')}: cuando va a la derecha, ${R_('−2x + 1')} va a la izquierda.</p>
    <p>Con un factor positivo, como en 2x − 1, nada se da vuelta: ${MR.imagen({ A, f:{ tipo:'afin', k:2, t:-1 } }).texto}.</p>
-   <p class="fuente">No invertir el sentido al multiplicar por un negativo es la idea errónea AL20 del informe de álgebra, muy citada por docentes pero sin datos publicados: hipótesis. Ordenar los números sin cambiar los corchetes y olvidar el + 1 también son hipótesis nuestras.</p></div>` },
+   <p class="fuente">No invertir el sentido al multiplicar por un negativo es la idea errónea AL20 del informe de álgebra, muy citada por docentes; el informe de álgebra no trae datos: hipótesis. Ordenar los números sin cambiar los corchetes y olvidar el + 1 también son hipótesis nuestras.</p></div>` },
  { k:'Paso 5', t:'Predice: dónde cae x²', gate:P5,
    prep:() => { const ya = !!S.pred[P5.id];
-     E.config({ alto:(w, ch) => ch ? clamp(w*.72, 250, 300) : clamp(w*.55, 300, 380), pintar:D => dibImagen(D, ya ? 1 : 0, 'cuadrado', [-3, 4, 1], [-1, 10, 1], 'x²', IM5, S.x5),
+     E.config({ alto:(w, ch) => ch ? clamp(w*.72, 250, 300) : clamp(w*.55, 300, 380), pintar:D => dibImagen(D, ya ? 1 : 0, 'cuadrado', [-3, 4, 1], [-5, 10, 1], 'x²', IM5, S.x5),
        manijas: ya ? { eje:'x', paso:.1, lista:() => [{ id:'x', x:E.ejes.x.X(S.x5), y:E.ejes.x.y, nombre:'el punto x', color:css('--c-x') }], mover:(id, v) => { S.x5 = clamp(v, -2, 2.9); } } : null,
        ley: ya ? [['A', 'x ∈ A'], ['res', `x² ∈ ${IM5.texto}`], ['x', 'el punto x', 'pt']] : [['A', 'x ∈ A = [−2; 3⟩']],
        lect: ya ? [() => ['x', 'x', N_(S.x5)], () => ['res', 'x²', N_(imagenEn('cuadrado', S.x5))]] : [],
        desc: ya ? `Arriba, x en A; abajo, x² en ${IM5.texto}. Mientras x va de −2 a 0, x² baja hasta 0; después sube.` : 'Dos rectas: arriba la de x, con el trozo A de −2 (lleno) a 3 (vacío); abajo la de x², todavía vacía.' }); },
-   anima:fin => { let f = 0; E.pintar = D => dibImagen(D, f, 'cuadrado', [-3, 4, 1], [-1, 10, 1], 'x²', IM5, S.x5); E.ley = [['A', 'x ∈ A'], ['res', 'x²']]; E.leyenda(); E.animar(RM ? 0 : 3000, x => { f = Math.min(.999, x); }, fin); },
+   anima:fin => { let f = 0; E.pintar = D => dibImagen(D, f, 'cuadrado', [-3, 4, 1], [-5, 10, 1], 'x²', IM5, S.x5); E.ley = [['A', 'x ∈ A'], ['res', 'x²']]; E.leyenda(); E.animar(RM ? 0 : 3000, x => { f = Math.min(.999, x); }, fin); },
    body:() => `<p class="problem">Si ${X_('x')} está en ${A_('A = [−2; 3⟩')}, ¿en qué intervalo está ${R_('x²')}?</p>${opcionesHTML(P5.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
      <div class="eq">x ∈ [−2; 0] → x² ∈ [0; 4]<span class="note">aquí x² baja: el cuadrado de un negativo crece al alejarse del 0</span></div>
@@ -750,7 +751,7 @@ const steps = [
    <p>Elevar al cuadrado solo sirve extremo por extremo si x no cambia de signo. Cuando el intervalo pasa por el 0, hay que partirlo ahí: el menor valor de x² es 0. Mira la flecha en el dibujo: x² llega al 0 y da la vuelta.</p>
    <p>Lo mismo pasa con |x|: ${MR.imagen({ A, f:'absoluto' }).texto}. Y con 1/x el 0 es todavía peor: lo verás en «¿Qué pasa si…?».</p>
    <p class="fuente">Elevar solo los extremos, conservar el signo y cerrar el 9 son hipótesis nuestras; no encontramos estudios con datos.</p></div>` },
- { k:'Paso 6', t:'Predice: el número que sigue a 0,9', gate:P6,
+ { k:'Paso 6', t:'Predice: después de 0,9', gate:P6,
    prep:() => { const ya = !!S.pred[P6.id];
      E.config({ alto:(w, ch) => ch ? clamp(w*.62, 230, 270) : clamp(w*.5, 280, 340), pintar:D => dib6(D, ya ? 1 : 0),
        ley: ya ? (S.nivel6 === 1 ? [['ink', 'números racionales'], ['irr', 'un irracional']] : [['ink', 'números racionales']]) : [],
@@ -764,14 +765,14 @@ const steps = [
      <div class="eq">entre 0,9 y 0,91: ${SG.errores.unaCifraMas.contraejemplo}</div>
      <div class="eq">entre 0,9 y 1: ${EN.racionales.join('; ')}… y ${I_(EN.irracional.texto)} ≈ ${EN.irracional.aproximado}</div></div>
    <p>Cualquier candidato c mayor que 0,9 tiene otro antes: el promedio (0,9 + c)/2, que queda en medio. Por eso no existe «el siguiente». Acerca la lupa: cada vez aparecen diez marcas más, y nunca se acaban.</p>
-   <p>Entre dos reales distintos hay infinitos racionales y también infinitos irracionales, como ${I_(EN.irracional.texto)}, que no es una fracción porque √2 no lo es. Por eso se dice que los reales son <b>densos</b> y que la recta no tiene huecos.</p>
+   <p>Entre dos reales distintos hay infinitos racionales y también infinitos irracionales, como ${I_(EN.irracional.texto)}, que no es una fracción porque √2 no lo es. Por eso se dice que los reales son <b>densos</b> (los racionales también lo son). Pero los racionales solos dejan huecos, como el lugar de √2; con los irracionales la recta queda completa.</p>
    <p class="fuente">Creer que hay un número siguiente es una hipótesis nuestra; no encontramos estudios con datos en el informe de álgebra.</p></div>` },
- { k:'Paso 7', t:'Predice: el máximo de ⟨0; 1⟩', gate:P7,
+ { k:'Paso 7', t:'Predice: máximo de ⟨0; 1⟩', gate:P7,
    prep:() => { const ya = !!S.pred[P7.id];
      E.config({ pintar:D => dib7(D, ya ? 1 : 0),
        manijas: ya ? { eje:'r', paso:.05, lista:() => [{ id:'x', x:E.ejes.r.X(S.x7), y:E.ejes.r.y, nombre:'el punto x', color:css('--c-x') }], mover:(id, v) => { S.x7 = clamp(v, .05, .95); } } : null,
        ley: ya ? [['A', 'A = ⟨0; 1⟩'], ['res', `cotas superiores ${COT.cotasSuperiores}`], ['x', 'un elemento x', 'pt']] : [['A', 'A = ⟨0; 1⟩']],
-       lect: ya ? [() => ['x', 'x en A', N_(S.x7)], () => ['x', 'uno mayor en A', MR.entre({ p:S.x7, q:1 }).promedioTexto]] : [],
+       lect: ya ? [() => ['x', 'x en A', N_(S.x7)], () => ['ink', 'uno mayor en A', MR.entre({ p:S.x7, q:1 }).promedioTexto]] : [],
        desc: ya ? `El trozo A de 0 a 1, con los dos extremos vacíos; encima, las cotas superiores ${COT.cotasSuperiores}, que empiezan en el supremo 1.` : 'El trozo A de 0 a 1, con los dos extremos vacíos.' }); },
    anima:fin => { let f = 0; E.pintar = D => dib7(D, f); E.ley = [['A', 'A = ⟨0; 1⟩'], ['res', 'cotas superiores']]; E.leyenda(); E.animar(RM ? 0 : 1500, x => { f = Math.min(.999, x); }, fin); },
    body:() => `<p class="problem">Una <b>cota superior</b> de un conjunto es un número que no queda por debajo de ninguno de sus elementos. El <b>supremo</b> es la menor de las cotas superiores. El <b>máximo</b> es el mayor elemento del conjunto, si existe.</p>
@@ -884,8 +885,8 @@ const QT = MR.operar({ A:'⟨−3; 1]', B:'[1; 4⟩', op:'interseccion' });
 const G9 = MR.generatriz({ entero:0, periodo:'9' });
 const TN = { elementos:[0, 1, 2], tabla:[[0, 1, 2], [2, 0, 1], [1, 2, 0]] }, ON = MR.operacionTabla(TN);
 const OPS = [['union', 'A ∪ B'], ['interseccion', 'A ∩ B'], ['diferencia', 'A − B'], ['diferenciaBA', 'B − A'], ['complemento', 'A′'], ['simetrica', 'A Δ B']];
-const opActual = () => S.op === 'diferenciaBA' ? MR.operar({ A:[S.B], B:[S.A], op:'diferencia' }) : MR.operar({ A:[S.A], B:[S.B], op:S.op });
-const txA = () => MR.textoConjunto([S.A]), txB = () => MR.textoConjunto([S.B]);
+const opActual = () => S.op === 'diferenciaBA' ? MR.operar({ A:[S.B], B:[S.A], op:'diferencia', decimal:true }) : MR.operar({ A:[S.A], B:[S.B], op:S.op, decimal:true });
+const txA = () => MR.textoConjunto([S.A], true), txB = () => MR.textoConjunto([S.B], true);
 const altoDos = (w, ch) => ch ? clamp(w*.72, 250, 300) : clamp(w*.55, 300, 380);
 
 function dibInv(D, f){
@@ -915,8 +916,8 @@ function dibTrozos(D, f, libre){
   const m = D.eje({ id:'r', y:Math.round(D.H*.86), v0:-6, v1:7, paso:1 }), yA = Math.round(D.H*.16), yB = Math.round(D.H*.38), yR = Math.round(D.H*.62);
   const A = libre ? MR.conjunto([S.A]) : MR.conjunto('⟨−3; 1]'), B = libre ? MR.conjunto([S.B]) : MR.conjunto('[1; 4⟩');
   E.ejes.yA = yA; E.ejes.yB = yB;
-  D.rotulo(10, yA - 16, `A = ${A.texto}`, D.c.A, 'left', 12, 800); D.trozo(m, yA, A, D.c.A);
-  D.rotulo(10, yB - 16, `B = ${B.texto}`, D.c.B, 'left', 12, 800); D.trozo(m, yB, B, D.c.B);
+  D.rotulo(10, yA - 16, `A = ${libre ? txA() : A.texto}`, D.c.A, 'left', 12, 800); D.trozo(m, yA, A, D.c.A);
+  D.rotulo(10, yB - 16, `B = ${libre ? txB() : B.texto}`, D.c.B, 'left', 12, 800); D.trozo(m, yB, B, D.c.B);
   if (!libre){
     D.rotulo(10, yR - 16, f >= 1 ? `A ∩ B = ${QT.texto}` : 'A ∩ B = ?', D.c.res, 'left', 12, 800);
     if (f > 0){ D.guia(m, 1, yA, m.y); if (f >= .5) D.trozo(m, yR, QT, D.c.res); }
@@ -928,9 +929,9 @@ function dibTrozos(D, f, libre){
 }
 function dibNueves(D, f){
   const c = D.c, n = f >= 1 ? S.n4 : 1, w = Math.pow(10, -n);
-  const arriba = D.eje({ y:Math.round(D.H*.24), v0:.8, v1:1.1, rotulos:[.8, .9, 1, 1.1], tam:12 });
+  const arriba = D.eje({ y:Math.round(D.H*.24), v0:.8, v1:1.1, rotulos:[.8, .9, 1, 1.1], tam:12, arriba:true });
   D.punto(arriba, arriba.y, 1, c.ink, '', { r:5 });
-  if (f <= 0){ D.rotulo(arriba.X(.93), arriba.y - 18, '0,999… ¿?', c.muted, 'center', 12, 800); return; }
+  if (f <= 0) return;
   const t = MR.aproximar({ entero:0, periodo:'9', n });
   const abajo = D.eje({ y:Math.round(D.H*.72), v0:1 - w, v1:1 + w/4, rotulos:[1 - w, 1], sinNumeros:true });
   pintarLupa(D, arriba, n === 1 ? .9 : 1 - Math.max(.006, w), 1, abajo);
@@ -939,7 +940,9 @@ function dibNueves(D, f){
   D.punto(abajo, abajo.y, 1, c.ink, '1 = 0,999…', { r:5, dy:20 });
   D.linea(abajo.X(1 - w), abajo.y - 22, abajo.X(1), abajo.y - 22, c.muted, 1.5);
   D.rotulo(abajo.X(1 - w/2), abajo.y - 36, `falta ${t.huecoTexto}`, c.muted, 'center', 11, 700);
-  D.rotulo(D.W - 10, D.H - 12, `lupa ×${Math.pow(10, n)}`, c.muted, 'right', 11, 700);
+  // aumento real: cuántas veces más grande se ve un trozo abajo que arriba
+  const aum = ((abajo.x1 - abajo.x0)/(abajo.v1 - abajo.v0))/((arriba.x1 - arriba.x0)/(arriba.v1 - arriba.v0));
+  D.rotulo(D.W - 10, D.H - 12, `aumento ×${MR.textoNumero(Math.round(aum), true)}`, c.muted, 'right', 11, 700);
 }
 function dibTablaN(D, f){
   const marcas = [], filas = [], columnas = [];
@@ -951,10 +954,11 @@ function dibTablaN(D, f){
 const EXPS = [
   { id:'inverso', corto:'1/x con x ∈ [−1; 2]',
     q:`Si ${X_('x')} está en ${A_('[−1; 2]')} y x ≠ 0, ¿dónde está ${R_('1/x')}?`,
-    opts:[['a', M_(QI.errores.sinPartir.texto), 'NR17-inverso-sin-partir', 'hipotesis'], ['b', M_(QI.texto)], ['c', M_(QI.errores.soloPositivos.texto), 'NR17-inverso-solo-positivos', 'hipotesis']],
+    opts:[['a', M_(QI.errores.sinPartir.texto), 'NR17-inverso-sin-partir', 'hipotesis'], ['b', M_(QI.texto)], ['c', M_(QI.errores.soloPositivos.texto), 'NR17-inverso-solo-positivos', 'hipotesis'], ['d', M_(QI.errores.quitaCero.texto), 'NR17-quita-solo-el-cero', 'hipotesis']],
     ok:'b',
     fb:{ a:'Al invertir los extremos se olvida que x pasa por 0. Cerca de 0, 1/x se hace enorme: con x = 0,1 da 10 y con x = −0,1 da −10.',
-      c:'Ese es solo el trozo de los x positivos. Los x de [−1; 0⟩ también cuentan: 1/x va de −1 hacia −∞.' },
+      c:'Ese es solo el trozo de los x positivos. Los x de [−1; 0⟩ también cuentan: 1/x va de −1 hacia −∞.',
+      d:'Sacar el 0 no alcanza: cerca de 0, 1/x se hace enorme (con x = 0,1 da 10 y con x = −0,1 da −10), así que no se queda entre −1 y 1/2.' },
     dur:3200, alto:altoDos, dib:dibInv,
     manijas:() => ({ eje:'x', paso:.1, lista:() => [{ id:'x', x:E.ejes.x.X(S.x1), y:E.ejes.x.y, nombre:'el punto x', color:css('--c-x') }], mover:(id, v) => { S.x1 = clamp(v, -1, 2); } }),
     lect:() => [() => ['x', 'x', N_(S.x1)], () => ['res', '1/x', Math.abs(S.x1) < 1e-9 ? 'no existe' : N_(imagenEn('inverso', S.x1))]],
@@ -979,13 +983,14 @@ const EXPS = [
     desc:'La recta numérica, sin marcas especiales.', desc1:`La recta con el centro −1 y una cinta de 2 hacia cada lado; la solución son dos rayos, ${QA.texto}.`,
     exp:() => `<div class="eqs"><div class="eq">${D_('|x + 1| = |x − (−1)|')} = distancia de x a ${D_('−1')}</div><div class="eq">> 2 ⇔ x + 1 < −2 o x + 1 > 2 ⇔ ${R_(QA.texto)}</div></div>
       <p>«Más de 2 de −1»: la cinta sale desde −1 y todo lo que queda más allá de sus puntas, hacia los dos lados, cumple. Las puntas, −3 y 1, no (están justo a 2). Arrastra ${X_('x')}.</p>
-      <p class="fuente">Quitar las barras es AL22 (Almog e Ilany, 2012: errores consistentes en 481 escolares, sin porcentaje a la vista). Lo demás, hipótesis nuestras.</p>` },
+      <p class="fuente">Quitar las barras es AL22 (Almog e Ilany, 2012: errores consistentes en 481 escolares, sin porcentaje a la vista, según el informe; por verificar con el artículo). Lo demás, hipótesis nuestras.</p>` },
   { id:'trozos', corto:'Trozos que se tocan',
     q:`${A_('A = ⟨−3; 1]')} y ${B_('B = [1; 4⟩')} se tocan en el 1. ¿Cuánto es ${R_('A ∩ B')}?`,
-    opts:[['a', M_(QT.errores.abiertos.texto), 'NR18-si-se-tocan-no-se-cortan', 'hipotesis'], ['b', M_(QT.errores.comoUnion.texto), 'NR3-interseccion-como-union', 'hipotesis'], ['c', M_(QT.texto)]],
+    opts:[['a', M_(QT.errores.abiertos.texto), 'NR18-si-se-tocan-no-se-cortan', 'hipotesis'], ['b', M_(QT.errores.comoUnion.texto), 'NR3-interseccion-como-union', 'hipotesis'], ['c', M_(QT.texto)], ['d', M_(QT.errores.comoSimetrica.texto), 'NR3-interseccion-como-simetrica', 'hipotesis']],
     ok:'c',
     fb:{ a:'El 1 está en A (su corchete es ]) y en B (su corchete es [): está en los dos. La intersección no es vacía: es un solo punto.',
-      b:`${QT.errores.comoUnion.texto} es A ∪ B. ∩ pide estar en los dos a la vez.` },
+      b:`${QT.errores.comoUnion.texto} es A ∪ B. ∩ pide estar en los dos a la vez.`,
+      d:'Eso es lo que está en uno solo de los dos trozos (A Δ B). La intersección es lo contrario: lo que está en los dos, y eso es solo el 1.' },
     dur:1400, alto:altoDos, dib:(D, f) => dibTrozos(D, f, f >= 1 && !!S.pred.trozos && S.libre),
     ley:[['A', 'A'], ['B', 'B'], ['res', 'resultado']], ley0:[['A', 'A = ⟨−3; 1]'], ['B', 'B = [1; 4⟩']],
     desc:'Dos trozos: A de −3 (vacío) a 1 (lleno) y B de 1 (lleno) a 4 (vacío); se tocan en el 1.', desc1:() => `A = ${txA()}, B = ${txB()}; ${OPS.find(o => o[0] === S.op)[1]} = ${opActual().texto}.`,
@@ -997,10 +1002,11 @@ const EXPS = [
     despues:() => { S.libre = true; } },
   { id:'nueves', corto:'0,999… y el 1',
     q:'El número 0,999… tiene infinitos nueves. ¿Cómo es comparado con 1?',
-    opts:[['a', 'Menor: es el número justo antes de 1', 'NR10-justo-antes-de-1', 'hipotesis'], ['b', 'Menor: le falta 0,000…1 para llegar', 'NR10-le-falta-0000-1', 'hipotesis'], ['c', 'Igual: son el mismo número']],
-    ok:'c',
+    opts:[['a', 'Menor: es el número justo antes de 1', 'NR10-justo-antes-de-1', 'hipotesis'], ['b', 'Menor: le falta 0,000…1 para llegar', 'NR10-le-falta-0000-1', 'hipotesis'], ['c', 'Menor: se acerca a 1, pero nunca llega', 'NR10-proceso-que-no-termina', 'hipotesis'], ['d', 'Igual: son el mismo número']],
+    ok:'d',
     fb:{ a:'No hay un número justo antes de 1: si 0,999… fuera menor, el promedio con 1 estaría en medio, y no hay dónde ponerlo.',
-      b:'0,000…1 no es un número: si los ceros no se acaban, el 1 nunca llega. Lo que le falta a 0,999… es menor que cualquier positivo: es 0.' },
+      b:'0,000…1 no es un número: si los ceros no se acaban, el 1 nunca llega. Lo que le falta a 0,999… es menor que cualquier positivo: es 0.',
+      c:'0,999… no es un proceso que avanza: es un número ya hecho, con todos sus nueves. Lo que se acerca son 0,9; 0,99; 0,999…; el número con infinitos nueves ya llegó: es 1.' },
     dur:1600, alto:(w, ch) => ch ? clamp(w*.62, 230, 270) : clamp(w*.5, 280, 340), dib:dibNueves,
     lect:() => [() => ['ink', `con ${S.n4} nueves`, MR.aproximar({ entero:0, periodo:'9', n:S.n4 }).truncadoTexto], () => ['ink', 'le falta para 1', MR.aproximar({ entero:0, periodo:'9', n:S.n4 }).huecoTexto]],
     ley:[['ink', 'números racionales']], ley0:[],
@@ -1010,7 +1016,7 @@ const EXPS = [
       <p>Con 3 nueves le falta 0,001; con 6, 0,000001. Con infinitos nueves, lo que falta es menor que cualquier número positivo: no falta nada. 0,999… y 1 son dos maneras de escribir el mismo punto de la recta.</p>
       <p>Si fueran distintos, entre ellos habría otro número (el promedio), como en el paso 6. Entre 0,999… y 1 no cabe ninguno porque son el mismo.</p>
       <p class="fuente">Creer que 0,999… es menor que 1 es una hipótesis nuestra en esta escena; el informe de álgebra no trae datos.</p>` },
-  { id:'tabla', corto:'Una tabla que no es conmutativa',
+  { id:'tabla', corto:'Una tabla de 3 × 3',
     q:`En {0; 1; 2} se define ∗ con la tabla del dibujo (fila: el primero; columna: el segundo). ¿Qué se puede decir de ∗?`,
     opts:[['a', 'Es conmutativa y su neutro es 0', 'NR19-conmutativa-sin-comprobar', 'hipotesis'], ['b', 'No es conmutativa y su neutro es 0', 'NR15-neutro-de-un-solo-lado', 'hipotesis'],
       ['c', 'No es conmutativa y no tiene neutro'], ['d', 'Es conmutativa y no tiene neutro', 'NR19-conmutativa-sin-comprobar', 'hipotesis']],
@@ -1032,9 +1038,9 @@ const EXPS = [
 function manijasTrozos(){
   const extremos = () => [['A', 'a', E.ejes.yA], ['A', 'b', E.ejes.yA], ['B', 'a', E.ejes.yB], ['B', 'b', E.ejes.yB]];
   return { eje:'r', paso:.5, ayuda:'Arrastra un extremo para moverlo y tócalo para abrirlo o cerrarlo; con el teclado, ↑ ↓ eligen el extremo, ← → lo mueven y Enter lo abre o lo cierra.',
-    lista:() => extremos().map(([k, l, y]) => ({ id:k + l, x:E.ejes.r.X(S[k][l]), y, nombre:`el extremo ${l === 'a' ? 'izquierdo' : 'derecho'} de ${k}, ${S[k][l === 'a' ? 'ca' : 'cb'] ? 'cerrado' : 'abierto'}`, color:css(k === 'A' ? '--c-A' : '--c-B') })),
-    mover:(id, v) => { const T = S[id[0]], l = id[1]; if (l === 'a') T.a = Math.min(v, T.b - .5); else T.b = Math.max(v, T.a + .5); },
-    tocar:id => { const T = S[id[0]], l = id[1]; if (l === 'a') T.ca = !T.ca; else T.cb = !T.cb; document.getElementById('desc2').textContent = `${id[0]} = ${MR.textoConjunto([T])}.`; } };
+    lista:() => extremos().map(([k, l, y]) => ({ id:k + l, x:E.ejes.r.X(S[k][l]), y, nombre:`el extremo ${l === 'a' ? 'izquierdo' : 'derecho'} de ${k}, en ${MR.textoNumero(S[k][l], true)}, ${S[k][l === 'a' ? 'ca' : 'cb'] ? 'cerrado' : 'abierto'}`, color:css(k === 'A' ? '--c-A' : '--c-B') })),
+    mover:(id, v) => { const T = S[id[0]], l = id[1]; if (l === 'a') T.a = Math.min(v, T.b - 1); else T.b = Math.max(v, T.a + 1); },   // al menos 1: los anillos no se enciman
+    tocar:id => { const T = S[id[0]], l = id[1]; if (l === 'a') T.ca = !T.ca; else T.cb = !T.cb; document.getElementById('desc2').textContent = `${id[0]} = ${MR.textoConjunto([T], true)}.`; } };
 }
 const abierto = k => EXPS.slice(0, k).every(x => !!S.pred[x.id]);
 function botones(){
