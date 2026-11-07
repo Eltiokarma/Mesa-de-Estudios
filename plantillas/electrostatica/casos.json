@@ -1,0 +1,118 @@
+{
+  "plantilla": "electrostatica",
+  "unidades": "Cargas en µC (con su signo), distancias y posiciones en m, masas en kg, fuerzas en N, campo en N/C, potencial en V, trabajo y energía en J. Condensadores: capacidades en µF, cargas en µC y energías en µJ; en capacidad() y cambioPlacas(), A en m², d en m, Q en C y la capacidad en F y en pF. k = 9 × 10⁹ N·m²/C², ε₀ = 8,85 × 10⁻¹² C²/(N·m²), g = 10 m/s². Una carga en el plano es { q, x, y }. Ángulos en grados desde el eje x, antihorario.",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.mayorEmpujaMas, E.x); las listas se comparan completas; los textos y los booleanos, exactos. 'tambien' repite la llamada con otros argumentos. Los errores típicos van en 'errores': lo que da cada error (EL1 a EL9 del informe, o hipótesis nuestras).",
+  "verificacion": "Verificado por un subagente independiente (7 nov 2026) sin leer el motor ni estos casos: recalculó los 22 casos y sus variantes con fracciones exactas en Python (k = 9×10⁹, ε₀ = 8,85×10⁻¹², g = 10), por caminos alternativos (F como E·q, serie por carga común, contacto igualando kQ/R, bisección propia para las esferas colgadas). Todos los valores coinciden; los errores típicos sin definición escrita (mayorEmpujaMas, menorSeAparta, sinCuadrados = √(F1+F2)) se confirmaron como lecturas coherentes.",
+  "tolerancia": 1e-9,
+  "casos": [
+    { "nombre": "Informe y predicción 1 (paso 1): q1 = 2 µC y q2 = 6 µC a 0,3 m → F = 6/5 N sobre CADA carga; el campo de cada una en el lugar de la otra es distinto (6 × 10⁵ y 2 × 10⁵ N/C). EL1 predice que la chica recibe 3 veces más; EL2, 1/3; con 1/r, 0,36 N; sin pasar µC a C, 1,2 × 10¹² N",
+      "fn": "coulomb", "args": [2, 6, 0.3],
+      "espera": { "F": 1.2, "sobre1": 1.2, "sobre2": 1.2, "razon": 1, "tipo": "repulsion", "E2en1": 600000, "E1en2": 200000,
+                  "errores.mayorEmpujaMas": 3, "errores.mayorRecibeMas": 0.3333333333333333, "errores.unoSobreR": 0.36, "errores.sinMicro": 1200000000000 } },
+
+    { "nombre": "Informe y predicción 3 (paso 3): las mismas cargas al doble de distancia (0,6 m) → F = 3/10 N, la cuarta parte (con 1/r: 3/5 N; sin cambio: 6/5 N; al revés: 12/5 N). A la mitad (0,15 m) → 24/5 N",
+      "fn": "cambioDistancia", "args": [2, 6, 0.3, 2],
+      "espera": { "F0": 1.2, "F1": 0.3, "r1": 0.6, "razon": 0.25, "errores.lineal": 0.6, "errores.sinCambio": 1.2, "errores.alReves": 2.4, "errores.alRevesCuadrado": 4.8 },
+      "tambien": [ { "args": [2, 6, 0.3, 0.5], "espera": { "F1": 4.8, "r1": 0.15, "razon": 4, "errores.lineal": 2.4 } } ] },
+
+    { "nombre": "Atracción: +3 µC y −5 µC a 0,5 m → F = 9 × 10⁹ · 15 × 10⁻¹² / 0,25 = 27/50 N, también igual sobre las dos",
+      "fn": "coulomb", "args": [3, -5, 0.5],
+      "espera": { "F": 0.54, "sobre1": 0.54, "sobre2": 0.54, "tipo": "atraccion", "E2en1": 180000, "E1en2": 108000 } },
+
+    { "nombre": "Predicción 2 (paso 2): esferas iguales de 20 g con 1 µC y 2 µC, separadas 0,3 m → F = 1/5 N sobre cada una, tan θ = F/(mg) = 1 y θ = 45° para LAS DOS (EL3: la de menor carga se aparta el doble, o la mayor el doble; versión extrema: la mayor queda vertical)",
+      "fn": "esferas", "args": [1, 2, 0.3, 0.02, 0.02],
+      "espera": { "F": 0.2, "tan1": 1, "tan2": 1, "theta1": 45, "theta2": 45, "mismoAngulo": true, "razon": 1, "peso1": 0.2,
+                  "T1": 0.282842712474619, "T2": 0.282842712474619,
+                  "errores.menorSeAparta": 2, "errores.mayorSeAparta": 0.5, "errores.mayorVertical.thetaMayor": 0 } },
+
+    { "nombre": "Las mismas esferas con hilos de L = 0,15√2 m desde un mismo punto: el equilibrio (2L·sen θ = r) cae en r = 0,3 m y θ = 45°",
+      "fn": "esferasColgadas", "args": [1, 2, 0.02, 0.02, 0.21213203435596426],
+      "espera": { "r": 0.3, "theta1": 45, "theta2": 45, "F": 0.2, "mismoAngulo": true } },
+
+    { "nombre": "Masas distintas, cargas iguales: 2 µC y 2 µC a 0,3 m, de 30 g y 40 g → F = 2/5 N; la más liviana se aparta más (tan θ1 = 4/3, θ1 = 53°; tan θ2 = 1, θ2 = 45°): el ángulo lo decide la masa, no la carga",
+      "fn": "esferas", "args": [2, 2, 0.3, 0.03, 0.04],
+      "espera": { "F": 0.4, "tan1": 1.3333333333333333, "tan2": 1, "theta1": 53.13010235415598, "theta2": 45, "mismoAngulo": false, "T1": 0.5 } },
+
+    { "nombre": "Predicción 4 (paso 4): q0 = +2 µC en el origen, +15 µC a 0,3 m a su izquierda y +20 µC a 0,3 m debajo → 3 N hacia la derecha y 4 N hacia arriba; F neta = 5 N a 53° (sumar como números: 7 N; restar: 1 N; √7 sin cuadrados)",
+      "fn": "fuerzaSobre", "args": [[{ "q": 2, "x": 0, "y": 0 }, { "q": 15, "x": -0.3, "y": 0 }, { "q": 20, "x": 0, "y": -0.3 }], 0],
+      "espera": { "x": 3, "y": 4, "modulo": 5, "angulo": 53.13010235415598, "partes.0.modulo": 3, "partes.1.modulo": 4, "partes.1.angulo": 90,
+                  "errores.sumaModulos": 7, "errores.restaModulos": 1, "errores.sinCuadrados": 2.6457513110645907 } },
+
+    { "nombre": "Tres cargas con 37°: q0 = +1 µC en el origen, +10 µC en (−0,24; −0,18) (a 0,3 m, en la dirección de 37°) y −6 µC en (0; −0,3) → 1 N a 37° (0,8; 0,6) más 0,6 N hacia abajo: F neta = 0,8 N hacia la derecha (como números: 1,6 N)",
+      "fn": "fuerzaSobre", "args": [[{ "q": 1, "x": 0, "y": 0 }, { "q": 10, "x": -0.24, "y": -0.18 }, { "q": -6, "x": 0, "y": -0.3 }], 0],
+      "espera": { "x": 0.8, "y": 0, "modulo": 0.8, "angulo": 0, "partes.0.x": 0.8, "partes.0.y": 0.6, "partes.0.modulo": 1, "partes.1.y": -0.6,
+                  "errores.sumaModulos": 1.6, "errores.restaModulos": 0.4 } },
+
+    { "nombre": "Campo de una carga sola: +4 µC en el origen → 4 × 10⁵ N/C a 0,3 m hacia afuera; a 0,6 m, la cuarta parte; con −4 µC, hacia la carga",
+      "fn": "campo", "args": [[{ "q": 4, "x": 0, "y": 0 }], { "x": 0.3, "y": 0 }],
+      "espera": { "x": 400000, "y": 0, "modulo": 400000, "angulo": 0 },
+      "tambien": [ { "args": [[{ "q": 4, "x": 0, "y": 0 }], { "x": 0, "y": -0.6 }], "espera": { "x": 0, "y": -100000, "modulo": 100000, "angulo": 270 } },
+                   { "args": [[{ "q": -4, "x": 0, "y": 0 }], { "x": 0.3, "y": 0 }], "espera": { "x": -400000, "modulo": 400000, "angulo": 180 } } ] },
+
+    { "nombre": "Predicción 5 (paso 5): carga de prueba de +1 µC a 0,3 m de +4 µC → F = q0·E = 0,4 N, con el campo. Con −1 µC en el mismo punto la fuerza se invierte y el campo NO cambia (EL4: el campo sigue al signo de la carga de prueba)",
+      "fn": "prueba", "args": [[{ "q": 4, "x": 0, "y": 0 }], { "x": 0.3, "y": 0 }, 1],
+      "espera": { "E.x": 400000, "E.modulo": 400000, "F.x": 0.4, "F.modulo": 0.4, "F.angulo": 0, "mismoSentido": true },
+      "tambien": [ { "args": [[{ "q": 4, "x": 0, "y": 0 }], { "x": 0.3, "y": 0 }, -1],
+                     "espera": { "E.x": 400000, "F.x": -0.4, "F.angulo": 180, "mismoSentido": false,
+                                 "errores.campoSigueAlSigno.E.x": -400000, "errores.campoSigueAlSigno.F.x": 0.4, "errores.fuerzaSoloDelCampo.F.x": 0.4,
+                                 "errores.invierteCampo.E.x": -400000, "errores.invierteCampo.F.x": 0.4 } },
+                   { "args": [[{ "q": 4, "x": 0, "y": 0 }], { "x": 0.3, "y": 0 }, 3], "espera": { "E.x": 400000, "F.x": 1.2 } } ] },
+
+    { "nombre": "Predicción 6 (paso 6): punto medio entre +4 µC y −4 µC separadas 0,6 m → E = 8 × 10⁵ N/C hacia la negativa (los dos campos apuntan igual) y V = 0 (los potenciales se anulan con su signo). Sin signo, V daría 2,4 × 10⁵ V",
+      "fn": "campoYPotencial", "args": [[{ "q": 4, "x": -0.3, "y": 0 }, { "q": -4, "x": 0.3, "y": 0 }], { "x": 0, "y": 0 }],
+      "espera": { "E.x": 800000, "E.y": 0, "E.modulo": 800000, "V": 0, "Ecero": false, "Vcero": true,
+                  "errores.todoSeAnula.Ecero": true, "errores.todoSeAnula.Vcero": true, "errores.cambiados.Ecero": true, "errores.cambiados.Vcero": false,
+                  "errores.nadaSeAnula.V": 240000 } },
+
+    { "nombre": "Experimento 2: punto medio entre +4 µC y +4 µC separadas 0,6 m → E = 0 (los campos se anulan como flechas) y V = 2,4 × 10⁵ V (los potenciales se suman): E = 0 no obliga a V = 0",
+      "fn": "campoYPotencial", "args": [[{ "q": 4, "x": -0.3, "y": 0 }, { "q": 4, "x": 0.3, "y": 0 }], { "x": 0, "y": 0 }],
+      "espera": { "E.modulo": 0, "E.x": 0, "V": 240000, "Ecero": true, "Vcero": false, "errores.cambiados.Ecero": false, "errores.cambiados.Vcero": true } },
+
+    { "nombre": "Potencial con signo: +2 µC en el origen y −6 µC en (0,4; 0,3); en P = (0,4; 0) quedan a 0,4 m y 0,3 m → V = 9 × 10⁹ (2/0,4 − 6/0,3) × 10⁻⁶ = −1,35 × 10⁵ V (sin signo: 2,25 × 10⁵ V)",
+      "fn": "potencial", "args": [[{ "q": 2, "x": 0, "y": 0 }, { "q": -6, "x": 0.4, "y": 0.3 }], { "x": 0.4, "y": 0 }],
+      "espera": { "V": -135000, "partes.0.V": 45000, "partes.1.V": -180000, "errores.sinSigno": 225000 } },
+
+    { "nombre": "Trabajo (paso 7): +4 µC en el origen; q = +1 µC de A (0,3 m) a B (0,6 m) → V_A = 1,2 × 10⁵ V, V_B = 6 × 10⁴ V; el campo hace W = q(V_A − V_B) = 0,06 J y el agente, −0,06 J (sin q: 6 × 10⁴; F en A por la distancia: 0,12 J). Con −2 µC, el campo hace −0,12 J",
+      "fn": "trabajo", "args": [[{ "q": 4, "x": 0, "y": 0 }], { "x": 0.3, "y": 0 }, { "x": 0.6, "y": 0 }, 1],
+      "espera": { "VA": 120000, "VB": 60000, "diferencia": 60000, "Wcampo": 0.06, "Wagente": -0.06, "deltaU": -0.06, "UA": 0.12, "UB": 0.06,
+                  "errores.signoCambiado": -0.06, "errores.sinCarga": 60000, "errores.fuerzaPorDistancia": 0.12 },
+      "tambien": [ { "args": [[{ "q": 4, "x": 0, "y": 0 }], { "x": 0.3, "y": 0 }, { "x": 0.6, "y": 0 }, -2], "espera": { "Wcampo": -0.12, "Wagente": 0.12 } } ] },
+
+    { "nombre": "Sobre una equipotencial el trabajo es cero: de (0,3; 0) a (0; 0,3) alrededor de +4 µC, con q = 5 µC → W = 0",
+      "fn": "trabajo", "args": [[{ "q": 4, "x": 0, "y": 0 }], { "x": 0.3, "y": 0 }, { "x": 0, "y": 0.3 }, 5],
+      "espera": { "VA": 120000, "VB": 120000, "Wcampo": 0, "Wagente": 0 } },
+
+    { "nombre": "Experimento 1: entre placas con E = 1000 N/C (hacia la placa negativa), q = +4 µC, m = 2 × 10⁻⁶ kg, v0 = 100 m/s, L = 0,2 m → F = 4 × 10⁻³ N, a = 2000 m/s², t = 2 ms, se desvía 4 mm hacia la negativa. Con −4 µC: los mismos 4 mm, hacia la positiva",
+      "fn": "campoUniforme", "args": [{ "E": 1000, "q": 4, "m": 2e-6, "v0": 100, "L": 0.2 }],
+      "espera": { "F": 0.004, "a": 2000, "t": 0.002, "desvio": 0.004, "hacia": "negativa", "vy": 4, "errores.sinMedio": 0.008, "errores.dobleCarga": 0.008 },
+      "tambien": [ { "args": [{ "E": 1000, "q": -4, "m": 2e-6, "v0": 100, "L": 0.2 }], "espera": { "desvio": 0.004, "hacia": "positiva", "abajo": -0.004, "errores.mismoLado.hacia": "negativa" } } ] },
+
+    { "nombre": "Experimento 3: placas de A = 0,02 m² a d = 1 mm → C = ε₀A/d = 1,77 × 10⁻¹⁰ F = 177 pF, con o sin carga (EL7: «con Q = 0, C = Q/V = 0»). Con Q = 3,54 nC, V = 20 V",
+      "fn": "capacidad", "args": [{ "A": 0.02, "d": 0.001 }],
+      "espera": { "C": 1.77e-10, "pF": 177 },
+      "tambien": [ { "args": [{ "A": 0.02, "d": 0.001, "Q": 0 }], "espera": { "pF": 177, "V": 0, "errores.conLaCarga": 0 } },
+                   { "args": [{ "A": 0.02, "d": 0.001, "Q": 3.54e-9 }], "espera": { "pF": 177, "V": 20 } } ] },
+
+    { "nombre": "Experimento 4: las mismas placas con el doble de distancia → C = 88,5 pF, la mitad (al revés: 354; sin cambio: 177; con 1/d²: 44,25). Con el doble de área y la mitad de distancia, 4 veces",
+      "fn": "cambioPlacas", "args": [0.02, 0.001, 1, 2],
+      "espera": { "pF0": 177, "pF1": 88.5, "razon": 0.5, "errores.alReves": 354, "errores.sinCambio": 177, "errores.cuadrado": 44.25 },
+      "tambien": [ { "args": [0.02, 0.001, 2, 0.5], "espera": { "pF1": 708, "razon": 4 } } ] },
+
+    { "nombre": "Informe y predicción 7 (paso 8): 3 µF y 6 µF en serie a 12 V → Ceq = 2 µF, Q = 24 µC en cada uno, V1 = 8 V, V2 = 4 V, U = 144 µJ (sumar capacidades: 9 µF; promedio 4,5; voltaje en partes iguales: 6 y 6)",
+      "fn": "serie", "args": [[3, 6], 12],
+      "espera": { "Ceq": 2, "Q": 24, "cargas": [24, 24], "voltajes": [8, 4], "energias": [96, 48], "U": 144,
+                  "errores.sumaCapacidades": 9, "errores.promedio": 4.5, "errores.menor": 3, "errores.voltajesIguales": [6, 6], "errores.Uconsuma": 648 } },
+
+    { "nombre": "Informe: los mismos en paralelo a 12 V → Ceq = 9 µF, U = 648 µJ; los dos con 12 V, cargas 36 µC y 72 µC",
+      "fn": "paralelo", "args": [[3, 6], 12],
+      "espera": { "Ceq": 9, "Q": 108, "cargas": [36, 72], "voltajes": [12, 12], "U": 648, "energias": [216, 432], "errores.comoSerie": 2 } },
+
+    { "nombre": "Energía de un condensador: 2 µF a 12 V → U = CV²/2 = 144 µJ = QV/2 = Q²/(2C), con Q = 24 µC (sin el medio: 288)",
+      "fn": "energiaCondensador", "args": [2, 12],
+      "espera": { "U": 144, "Q": 24, "QV2": 144, "Q2C": 144, "errores.sinMedio": 288 } },
+
+    { "nombre": "Experimento 5: esfera de 1 cm con +12 µC toca una neutra de 3 cm → quedan 3 µC y 9 µC (proporcional al radio, mismo potencial 2,7 × 10⁶ V); EL8: 6 y 6",
+      "fn": "contacto", "args": [12, 0.01, 0, 0.03],
+      "espera": { "total": 12, "Q1f": 3, "Q2f": 9, "V": 2700000, "pasa": 9, "errores.mitades": 6, "errores.alReves.Q2f": 3, "errores.todaPasa.Q2f": 12 } }
+  ]
+}

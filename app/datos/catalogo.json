@@ -249,7 +249,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "choques"
+     ]
     },
     {
      "id": "fisica.oscilaciones",
@@ -416,7 +418,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "electrostatica"
+     ]
     },
     {
      "id": "fisica.corriente-y-circuitos",
@@ -2045,7 +2049,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "numeracion"
+     ]
     },
     {
      "id": "aritmetica.cuatro-operaciones",
@@ -2309,7 +2315,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "segmentos-angulos"
+     ]
     },
     {
      "id": "geometria.triangulos",
@@ -3595,7 +3603,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "maximos-minimos"
+     ]
     },
     {
      "id": "razonamiento-matematico.cortes-y-pesadas",
@@ -4301,6 +4311,23 @@
     "/plantillas/celda-galvanica/papel.json"
    ]
   },
+  "choques": {
+   "id": "choques",
+   "titulo": "Choques: impulso y cantidad de movimiento",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.impulso-y-choques"
+   ],
+   "url": "/plantillas/choques/index.html",
+   "papel": "/plantillas/choques/papel.json",
+   "archivos": [
+    "/plantillas/choques/index.html",
+    "/plantillas/choques/motor.js",
+    "/plantillas/choques/papel.json"
+   ]
+  },
   "cinetica": {
    "id": "cinetica",
    "titulo": "Cinética química",
@@ -4427,6 +4454,23 @@
     "/plantillas/divisores/index.html",
     "/plantillas/divisores/motor.js",
     "/plantillas/divisores/papel.json"
+   ]
+  },
+  "electrostatica": {
+   "id": "electrostatica",
+   "titulo": "Cargas que se empujan: Coulomb, campo y potencial",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.electrostatica"
+   ],
+   "url": "/plantillas/electrostatica/index.html",
+   "papel": "/plantillas/electrostatica/papel.json",
+   "archivos": [
+    "/plantillas/electrostatica/index.html",
+    "/plantillas/electrostatica/motor.js",
+    "/plantillas/electrostatica/papel.json"
    ]
   },
   "energia": {
@@ -4720,6 +4764,23 @@
     "/plantillas/limitante-particulas/papel.json"
    ]
   },
+  "maximos-minimos": {
+   "id": "maximos-minimos",
+   "titulo": "El cordel que encierra: máximos y mínimos",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.maximos-y-minimos"
+   ],
+   "url": "/plantillas/maximos-minimos/index.html",
+   "papel": "/plantillas/maximos-minimos/papel.json",
+   "archivos": [
+    "/plantillas/maximos-minimos/index.html",
+    "/plantillas/maximos-minimos/motor.js",
+    "/plantillas/maximos-minimos/papel.json"
+   ]
+  },
   "mol-composicion": {
    "id": "mol-composicion",
    "titulo": "Mol, masa molar y composición",
@@ -4752,6 +4813,23 @@
     "/plantillas/mruv/index.html",
     "/plantillas/mruv/motor.js",
     "/plantillas/mruv/papel.json"
+   ]
+  },
+  "numeracion": {
+   "id": "numeracion",
+   "titulo": "Las fichas que se agrupan: sistemas de numeración",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "aritmetica.numeracion"
+   ],
+   "url": "/plantillas/numeracion/index.html",
+   "papel": "/plantillas/numeracion/papel.json",
+   "archivos": [
+    "/plantillas/numeracion/index.html",
+    "/plantillas/numeracion/motor.js",
+    "/plantillas/numeracion/papel.json"
    ]
   },
   "optica-espejo-esferico": {
@@ -4913,6 +4991,23 @@
     "/plantillas/relojes-calendarios/index.html",
     "/plantillas/relojes-calendarios/motor.js",
     "/plantillas/relojes-calendarios/papel.json"
+   ]
+  },
+  "segmentos-angulos": {
+   "id": "segmentos-angulos",
+   "titulo": "La escuadra y las paralelas: segmentos y ángulos",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.segmentos-y-angulos"
+   ],
+   "url": "/plantillas/segmentos-angulos/index.html",
+   "papel": "/plantillas/segmentos-angulos/papel.json",
+   "archivos": [
+    "/plantillas/segmentos-angulos/index.html",
+    "/plantillas/segmentos-angulos/motor.js",
+    "/plantillas/segmentos-angulos/papel.json"
    ]
   },
   "solidos": {

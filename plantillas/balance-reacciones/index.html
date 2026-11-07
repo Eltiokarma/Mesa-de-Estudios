@@ -12,15 +12,15 @@
    #fdf7f1 y #241c2e, también sobre el chip .v (fondo del 8 %):
      Elementos (cada átomo lleva el color de su elemento y su letra; el texto dice "moléculas de H₂O" o "átomos de H"):
        la paleta común de química (nucleo/elementos.js), en el bloque generado más abajo: H turquesa, O rojo, N azul,
-       C gris, Cl verde, Fe gris acero, Zn azul, Cu cobre, Mn marrón rojizo y Cr verde.
+       C gris, Cl verde, Fe azul, Zn gris, Cu cobre, Mn marrón rojizo y Cr verde.
      Variables
        coeficiente (cuántas moléculas)   fucsia  #a10fbf / #cf6bfa   (el subíndice va en el color de su elemento)
        e⁻ electrones (las fichas)        dorado  #8f5f00 / #ffd54a   (el de celda-galvanica)
        carga, número de oxidación y masa: en tinta, con su signo o su unidad.
    Qué sale junto: H y O; C, H y O; Zn, Cu y Cl con e⁻; Mn, Fe, O y H con e⁻; N y H; Fe y O; Zn, H y Cl; H y O (peróxido);
    Cr, Fe, O y H con e⁻; Fe y Cl; N, O y H. Todos con el coeficiente y la tinta.
-   ΔE00 mínimo entre los que salen juntos: 21,5 en claro (C–H) y 20,2 en oscuro (Fe–tinta). Contraste mínimo 4,54 (AA)
-   en papel y en chip, en los dos modos. Parecidos que nunca comparten dibujo (Elementos.CERCANOS): C–Fe, Cl–Cr, N–Zn y
+   ΔE00 mínimo entre los que salen juntos: 21,5 en claro (C–H) y 20,2 en oscuro (Zn–tinta). Contraste mínimo 4,54 (AA)
+   en papel y en chip, en los dos modos. Parecidos que nunca comparten dibujo (Elementos.CERCANOS): C–Zn, Cl–Cr, N–Fe y
    O–Cu (18,9 en claro): cada átomo lleva su letra. */
 [hidden]{display:none!important}
 :root{
@@ -47,9 +47,9 @@
   --vidrio:#5e5670; --caja:#211a2a; --letra-atomo:#1d1626; color-scheme:dark }
 /* Colores de los elementos: paleta común de química (nucleo/elementos.js). Este bloque sale de
    Elementos.css(['H', 'C', 'N', 'O', 'Cl', 'Cr', 'Mn', 'Fe', 'Cu', 'Zn']) y no se edita a mano: nucleo/elementos-escenas.test.js lo compara. */
-:root{ --el-H:#0f766e; --el-C:#6b6b6b; --el-N:#136caa; --el-O:#c4284e; --el-Cl:#466d14; --el-Cr:#4f7303; --el-Mn:#6b260f; --el-Fe:#6a676d; --el-Cu:#c52e03; --el-Zn:#1768be }
-@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --el-H:#5ed9c8; --el-C:#9a9a9a; --el-N:#4eb3f9; --el-O:#f17384; --el-Cl:#a3d65e; --el-Cr:#58a833; --el-Mn:#ff6600; --el-Fe:#9e9ea4; --el-Cu:#ff8a3d; --el-Zn:#239af9 } }
-:root[data-theme="dark"]{ --el-H:#5ed9c8; --el-C:#9a9a9a; --el-N:#4eb3f9; --el-O:#f17384; --el-Cl:#a3d65e; --el-Cr:#58a833; --el-Mn:#ff6600; --el-Fe:#9e9ea4; --el-Cu:#ff8a3d; --el-Zn:#239af9 }
+:root{ --el-H:#0f766e; --el-C:#6b6b6b; --el-N:#136caa; --el-O:#c4284e; --el-Cl:#466d14; --el-Cr:#4f7303; --el-Mn:#6b260f; --el-Fe:#1768be; --el-Cu:#c52e03; --el-Zn:#6a676d }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --el-H:#5ed9c8; --el-C:#9a9a9a; --el-N:#4eb3f9; --el-O:#f17384; --el-Cl:#a3d65e; --el-Cr:#58a833; --el-Mn:#ff6600; --el-Fe:#209cf2; --el-Cu:#ff8a3d; --el-Zn:#9e9ea4 } }
+:root[data-theme="dark"]{ --el-H:#5ed9c8; --el-C:#9a9a9a; --el-N:#4eb3f9; --el-O:#f17384; --el-Cl:#a3d65e; --el-Cr:#58a833; --el-Mn:#ff6600; --el-Fe:#209cf2; --el-Cu:#ff8a3d; --el-Zn:#9e9ea4 }
 
 *{box-sizing:border-box}
 body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}

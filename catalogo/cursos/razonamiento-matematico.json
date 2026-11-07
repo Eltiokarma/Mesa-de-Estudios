@@ -156,8 +156,8 @@
       "universidades": {"unmsm": {"temas": [11]}},
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": [],
-      "investigacion": null
+      "plantillas": ["maximos-minimos"],
+      "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
       "id": "razonamiento-matematico.cortes-y-pesadas",

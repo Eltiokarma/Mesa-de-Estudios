@@ -11,7 +11,7 @@
    Colores de esta escena (claro / oscuro). Revisados con CIEDE2000 y contraste WCAG sobre --paper y --card:
      Elementos (cada átomo y cada montón de un elemento lleva su color; el texto dice "átomos de H" o "moléculas de H₂O"):
        la paleta común de química (nucleo/elementos.js), en el bloque generado más abajo: H turquesa, C gris, O rojo,
-       N azul, Ca lavanda, Mg azul pizarra, Fe gris acero, S añil y Cu cobre (definido, pero no sale en esta escena).
+       N azul, Ca lavanda, Mg azul pizarra, Fe azul, S añil y Cu cobre (definido, pero no sale en esta escena).
      Variables
        m  masa (g o u)            siena     #773922 / #e0a07a   (la de limitante-particulas)
        n  moles                   mostaza   #7d6a00 / #e3c84a   (la de limitante-particulas)
@@ -24,7 +24,7 @@
    (Ca–tinta). Contraste mínimo 4,54 (AA). Un color propio para % no entra: con M, N y % nuevos, lo mejor que encontramos
    (búsqueda exhaustiva por familias de tono) da ΔE00 20,4, pero con dos verdes casi iguales; por eso el porcentaje va en
    tinta, como el tiempo en cinética. Con la paleta común quedan resueltos C–tinta, C–Ca y m–O. Parecidos que nunca salen
-   juntos: Fe–C y Mg–N (Elementos.CERCANOS); Cu–m 16 si se agrega un hidrato de cobre, hay que revisarlo. */
+   juntos: Fe–N y Mg–N (Elementos.CERCANOS); Cu–m 16 si se agrega un hidrato de cobre, hay que revisarlo. */
 [hidden]{display:none!important}
 :root{
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
@@ -50,9 +50,9 @@
   --vidrio:#5e5670; --monton:#4a3d58; --letra-atomo:#1d1626; color-scheme:dark }
 /* Colores de los elementos: paleta común de química (nucleo/elementos.js). Este bloque sale de
    Elementos.css(['H', 'C', 'N', 'O', 'Mg', 'S', 'Ca', 'Fe', 'Cu']) y no se edita a mano: nucleo/elementos-escenas.test.js lo compara. */
-:root{ --el-H:#0f766e; --el-C:#6b6b6b; --el-N:#136caa; --el-O:#c4284e; --el-Mg:#425697; --el-S:#3328c4; --el-Ca:#6a5b8f; --el-Fe:#6a676d; --el-Cu:#c52e03 }
-@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --el-H:#5ed9c8; --el-C:#9a9a9a; --el-N:#4eb3f9; --el-O:#f17384; --el-Mg:#8db7ff; --el-S:#9f9bff; --el-Ca:#deb0f5; --el-Fe:#9e9ea4; --el-Cu:#ff8a3d } }
-:root[data-theme="dark"]{ --el-H:#5ed9c8; --el-C:#9a9a9a; --el-N:#4eb3f9; --el-O:#f17384; --el-Mg:#8db7ff; --el-S:#9f9bff; --el-Ca:#deb0f5; --el-Fe:#9e9ea4; --el-Cu:#ff8a3d }
+:root{ --el-H:#0f766e; --el-C:#6b6b6b; --el-N:#136caa; --el-O:#c4284e; --el-Mg:#425697; --el-S:#2d29c7; --el-Ca:#6a5b8f; --el-Fe:#1768be; --el-Cu:#c52e03 }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --el-H:#5ed9c8; --el-C:#9a9a9a; --el-N:#4eb3f9; --el-O:#f17384; --el-Mg:#8db7ff; --el-S:#9386ff; --el-Ca:#deb0f5; --el-Fe:#209cf2; --el-Cu:#ff8a3d } }
+:root[data-theme="dark"]{ --el-H:#5ed9c8; --el-C:#9a9a9a; --el-N:#4eb3f9; --el-O:#f17384; --el-Mg:#8db7ff; --el-S:#9386ff; --el-Ca:#deb0f5; --el-Fe:#209cf2; --el-Cu:#ff8a3d }
 
 *{box-sizing:border-box}
 body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}

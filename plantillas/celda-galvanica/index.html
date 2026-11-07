@@ -13,11 +13,11 @@
      --c-I   corriente (Faraday)                 azul      #1f5fbf / #7cb0ff (el de circuitos-cc)
      --c-t   tiempo (Faraday)                    oliva     #474515 / #f1f0d0
    Los metales y el K⁺ del puente llevan la paleta común de química (nucleo/elementos.js, bloque generado más abajo):
-     --el-Zn zinc y Zn²⁺ azul · --el-Fe hierro y Fe²⁺ gris acero · --el-Cu cobre y Cu²⁺ cobre · --el-Ag plata y Ag⁺
+     --el-Zn zinc y Zn²⁺ gris · --el-Fe hierro y Fe²⁺ azul · --el-Cu cobre y Cu²⁺ cobre · --el-Ag plata y Ag⁺
      turquesa · --el-K catión del puente (K⁺) violeta. En el código el K⁺ sigue llamándose «cat».
    La masa depositada va en el color de su metal. Diferencia CIEDE2000 mínima entre colores que aparecen en el
-   mismo dibujo (nucleo/elementos-escenas.test.js): 20,2 en claro (Zn–K⁺) y 20,1 en oscuro (K⁺–E°). Quedan cerca
-   pares que nunca se ven juntos (I solo sale en Faraday, sin Zn ni K⁺): Zn–I y Ag con el H de la paleta (aquí no hay H).
+   mismo dibujo (nucleo/elementos-escenas.test.js): 20,2 en claro (Fe–K⁺) y 20,1 en oscuro (K⁺–E°). Quedan cerca
+   pares que nunca se ven juntos (I solo sale en Faraday, sin Fe ni K⁺): Fe–I y Ag con el H de la paleta (aquí no hay H).
    Todos pasan el contraste AA sobre el papel, la tarjeta y el chip al 8 %. */
 [hidden]{display:none!important}
 :root{
@@ -47,9 +47,9 @@
   --cable:#cfc4dc; --vidrio:#a99cb8; --liquido:rgba(124,176,255,.07); --puente:#3a3046; color-scheme:dark }
 /* Colores de los elementos: paleta común de química (nucleo/elementos.js). Este bloque sale de
    Elementos.css(['K', 'Fe', 'Cu', 'Zn', 'Ag']) y no se edita a mano: nucleo/elementos-escenas.test.js lo compara. */
-:root{ --el-K:#7843e9; --el-Fe:#6a676d; --el-Cu:#c52e03; --el-Zn:#1768be; --el-Ag:#0b7471 }
-@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --el-K:#a788d3; --el-Fe:#9e9ea4; --el-Cu:#ff8a3d; --el-Zn:#239af9; --el-Ag:#02d6d6 } }
-:root[data-theme="dark"]{ --el-K:#a788d3; --el-Fe:#9e9ea4; --el-Cu:#ff8a3d; --el-Zn:#239af9; --el-Ag:#02d6d6 }
+:root{ --el-K:#7843e9; --el-Fe:#1768be; --el-Cu:#c52e03; --el-Zn:#6a676d; --el-Ag:#0b7471 }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --el-K:#a788d3; --el-Fe:#209cf2; --el-Cu:#ff8a3d; --el-Zn:#9e9ea4; --el-Ag:#02d6d6 } }
+:root[data-theme="dark"]{ --el-K:#a788d3; --el-Fe:#209cf2; --el-Cu:#ff8a3d; --el-Zn:#9e9ea4; --el-Ag:#02d6d6 }
 
 *{box-sizing:border-box}
 body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}

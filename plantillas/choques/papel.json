@@ -1,0 +1,157 @@
+{
+  "titulo": "Impulso y choques: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Antes de escribir números, elige un sentido positivo y ponle signo a cada velocidad. Dibuja el sistema y pregúntate qué se conserva: en todo choque o explosión se conserva la cantidad de movimiento p = m·v del sistema; la energía cinética Ec = ½·m·v² solo se conserva si el choque es elástico. El impulso es el cambio de la cantidad de movimiento, Δp = p final − p inicial, y es el área bajo la gráfica fuerza-tiempo. Toma g = 10 m/s², sen 37° = 3/5 y cos 37° = 4/5.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "En un partido en el estadio de Cusco, una pelota de 0,4 kg llega al pie de un jugador a 10 m/s y sale en sentido contrario a 15 m/s. El contacto dura 0,05 s. ¿Cuánto cambió la cantidad de movimiento de la pelota y qué fuerza media le hizo el pie?",
+      "respuesta": "Δp = 10 N·s en el sentido en que sale la pelota, y la fuerza media es de 200 N.",
+      "pasos": [
+        "Positivo hacia donde llega la pelota: la velocidad inicial es +10 m/s y la final, −15 m/s.",
+        "Δp = m·(v final − v inicial) = 0,4·(−15 − 10) = −10 N·s. El signo menos dice que el cambio apunta hacia donde sale la pelota.",
+        "Fuerza media = Δp/Δt = 10/0,05 = 200 N.",
+        "Si restas las rapideces sin signo, 0,4·(15 − 10) = 2 N·s, te sale una fuerza de solo 40 N: es el error de tratar la cantidad de movimiento como si no tuviera sentido."
+      ],
+      "verificar": [
+        { "fn": "impulso", "args": [{ "m": 0.4, "v1": 10, "v2": -15, "dt": 0.05 }], "espera": { "dp": -10, "FmediaModulo": 200, "errores.dpRestaRapideces": 2, "errores.FRestaRapideces": 40 } }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "En la estación de Huancayo, un vagón de 3000 kg que va a 2 m/s choca con otro de 1000 kg que está quieto y se quedan enganchados. ¿Con qué velocidad siguen juntos? ¿Cuánta energía cinética se pierde?",
+      "respuesta": "Siguen juntos a 1,5 m/s y se pierden 1500 J (la cuarta parte de la energía cinética).",
+      "pasos": [
+        "Antes: p = 3000·2 + 1000·0 = 6000 kg·m/s.",
+        "Después van juntos, con masa 4000 kg: 6000 = 4000·v', así que v' = 1,5 m/s.",
+        "Ec antes = ½·3000·2² = 6000 J. Ec después = ½·4000·1,5² = 4500 J.",
+        "Se pierden 6000 − 4500 = 1500 J, que se van en deformar los enganches, en calor y en ruido. La cantidad de movimiento se conserva; la energía cinética, no."
+      ],
+      "verificar": [
+        { "fn": "choque", "args": [{ "m1": 3000, "v1": 2, "m2": 1000, "v2": 0, "e": 0 }], "espera": { "v1f": 1.5, "pDespues": 6000, "EcAntes": 6000, "EcDespues": 4500, "EcPerdida": 1500, "fraccionPerdida": 0.25 } }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Un carrito de 2 kg que va a 3 m/s choca de frente, de manera elástica, con otro de 1 kg que está en reposo sobre el mismo riel. ¿Qué velocidad tiene cada uno después del choque? Comprueba que la energía cinética se conserva.",
+      "respuesta": "El de 2 kg sigue a 1 m/s en el mismo sentido y el de 1 kg sale a 4 m/s. La energía cinética es 9 J antes y después.",
+      "pasos": [
+        "Cantidad de movimiento: 2·3 + 1·0 = 2·v1' + 1·v2', o sea 2·v1' + v2' = 6.",
+        "Elástico: e = 1, así que la velocidad con que se alejan es igual a la de acercamiento: v2' − v1' = 3 − 0 = 3.",
+        "Restando las dos ecuaciones: 3·v1' = 3, v1' = 1 m/s; y v2' = 4 m/s.",
+        "Ec antes = ½·2·3² = 9 J. Ec después = ½·2·1² + ½·1·4² = 1 + 8 = 9 J.",
+        "Ojo: no intercambian velocidades. Eso solo pasa cuando las dos masas son iguales."
+      ],
+      "verificar": [
+        { "fn": "choque", "args": [{ "m1": 2, "v1": 3, "m2": 1, "v2": 0, "e": 1 }], "espera": { "v1f": 1, "v2f": 4, "EcAntes": 9, "EcDespues": 9, "errores.intercambian1": 0, "errores.intercambian2": 3 } }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Una pelota de básquet se suelta desde 5 m de altura y, después de botar en el piso, sube hasta 1,8 m. ¿Cuál es el coeficiente de restitución entre la pelota y el piso?",
+      "respuesta": "e = 0,6.",
+      "pasos": [
+        "Llega al piso con v = √(2·g·h) = √(2·10·5) = 10 m/s.",
+        "Para subir 1,8 m tiene que salir con √(2·10·1,8) = √36 = 6 m/s.",
+        "El piso no se mueve: e = (rapidez con que se aleja)/(rapidez con que se acerca) = 6/10 = 0,6.",
+        "Atajo: e = √(1,8/5) = √0,36 = 0,6. Sin la raíz te sale 0,36, que es la razón de las alturas, no la de las velocidades."
+      ],
+      "verificar": [
+        { "fn": "rebotePiso", "args": [{ "h1": 5, "h2": 1.8 }], "espera": { "e": 0.6, "vLlega": 10, "vSale": 6, "errores.sinRaiz": 0.36 } }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Dos carritos se acercan por un riel sin roce: uno de 4 kg va a 5 m/s hacia la derecha y otro de 6 kg va a 5 m/s hacia la izquierda. Chocan y quedan pegados. ¿Hacia dónde y con qué velocidad se mueven juntos? ¿Cuánta energía cinética se pierde?",
+      "respuesta": "Se mueven juntos a 1 m/s hacia la izquierda y se pierden 120 J.",
+      "pasos": [
+        "Positivo hacia la derecha: p = 4·5 + 6·(−5) = 20 − 30 = −10 kg·m/s.",
+        "Juntos, con 10 kg: −10 = 10·v', así que v' = −1 m/s: 1 m/s hacia la izquierda, hacia donde iba el de más cantidad de movimiento.",
+        "Ec antes = ½·4·25 + ½·6·25 = 50 + 75 = 125 J. Ec después = ½·10·1² = 5 J.",
+        "Se pierden 125 − 5 = 120 J. Si sumas las cantidades de movimiento sin signo (20 + 30 = 50) te sale 5 m/s, que no puede ser: chocaron de frente."
+      ],
+      "verificar": [
+        { "fn": "choque", "args": [{ "m1": 4, "v1": 5, "m2": 6, "v2": -5, "e": 0 }], "espera": { "v1f": -1, "pAntes": -10, "EcAntes": 125, "EcDespues": 5, "EcPerdida": 120 } }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "avanzado",
+      "enunciado": "Para medir la rapidez de un proyectil de 50 g, se dispara contra un bloque de madera de 4,95 kg que cuelga de dos hilos. El proyectil se queda dentro del bloque y los dos suben 0,8 m. ¿Con qué rapidez iba el proyectil?",
+      "respuesta": "Iba a 400 m/s.",
+      "pasos": [
+        "Son dos etapas. Primero la subida, con energía: el bloque con el proyectil sale con v' y sube h: ½·v'² = g·h, así que v' = √(2·10·0,8) = 4 m/s.",
+        "Después el choque, con cantidad de movimiento (la energía no se conserva al incrustarse): 0,05·v = (0,05 + 4,95)·4 = 20, así que v = 400 m/s.",
+        "Si usas solo energía, ½·0,05·v² = 5·10·0,8, te sale v = 40 m/s: diez veces menos. En el choque se pierde casi toda la energía cinética del proyectil (el 99 %)."
+      ],
+      "verificar": [
+        { "fn": "penduloInverso", "args": [{ "mb": 0.05, "M": 4.95, "h": 0.8 }], "espera": { "V": 4, "v": 400, "errores.vSoloEnergia": 40 } },
+        { "fn": "pendulo", "args": [{ "mb": 0.05, "v": 400, "M": 4.95 }], "espera": { "V": 4, "h": 0.8, "fraccionPerdida": 0.99 } }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Una patinadora de 60 kg está quieta sobre el hielo con una mochila de 4 kg. Lanza la mochila hacia adelante a 6 m/s. ¿Con qué velocidad se mueve ella? ¿De dónde sale la energía cinética que aparece?",
+      "respuesta": "Ella retrocede a 0,4 m/s. Aparecen 76,8 J de energía cinética, que salen de sus músculos.",
+      "pasos": [
+        "Antes, todo está quieto: p = 0.",
+        "Después: 0 = 60·v + 4·6, así que v = −24/60 = −0,4 m/s: retrocede.",
+        "Las dos se empujan con fuerzas iguales y opuestas durante el mismo tiempo: reciben impulsos iguales y opuestos (24 N·s cada una). La mochila sale más rápido porque tiene menos masa.",
+        "Ec después = ½·60·0,4² + ½·4·6² = 4,8 + 72 = 76,8 J. Antes era 0: la cantidad de movimiento se conserva, la energía cinética no."
+      ],
+      "verificar": [
+        { "fn": "explosion", "args": [{ "m1": 60, "m2": 4, "v2": 6 }], "espera": { "v1": -0.4, "pDespues": 0, "p2": 24, "EcLiberada": 76.8 } }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "básico",
+      "enunciado": "Sobre una tabla larga hay tres cajas puestas en fila: una de 40 kg en x = 0, una de 30 kg en x = 2 m y otra de 30 kg en x = 6 m. ¿Dónde está el centro de masa de las tres?",
+      "respuesta": "En x = 2,4 m.",
+      "pasos": [
+        "x_cm = (40·0 + 30·2 + 30·6)/(40 + 30 + 30) = (0 + 60 + 180)/100 = 2,4 m.",
+        "Queda más cerca de la caja de 40 kg que el promedio de las posiciones, (0 + 2 + 6)/3 ≈ 2,67 m, porque esa caja pesa más: cada posición cuenta según su masa."
+      ],
+      "verificar": [
+        { "fn": "centroMasa", "args": [[{ "m": 40, "x": 0 }, { "m": 30, "x": 2 }, { "m": 30, "x": 6 }]], "espera": { "x": 2.4, "errores.sinPesarX": 2.6666666666666665 } }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "intermedio",
+      "enunciado": "Una pelota de 0,5 kg está quieta. Un golpe le hace una fuerza que crece de manera uniforme de 0 a 200 N en 0,01 s y luego baja, también de manera uniforme, hasta 0 en otros 0,01 s. ¿Con qué rapidez sale la pelota? ¿Cuánto vale la fuerza media del golpe?",
+      "respuesta": "Sale a 4 m/s. La fuerza media es de 100 N, la mitad del pico.",
+      "pasos": [
+        "La gráfica fuerza-tiempo es un triángulo de base 0,02 s y altura 200 N. Su área es el impulso: ½·0,02·200 = 2 N·s.",
+        "El impulso es el cambio de la cantidad de movimiento: 2 = 0,5·v − 0, así que v = 4 m/s.",
+        "Fuerza media = impulso/tiempo = 2/0,02 = 100 N. Multiplicar el pico por el tiempo (200·0,02 = 4 N·s) es tomar un rectángulo: el doble del área de verdad."
+      ],
+      "verificar": [
+        { "fn": "areaFt", "args": [[[0, 0], [0.01, 200], [0.02, 0]]], "espera": 2 },
+        { "fn": "impulso", "args": [{ "m": 0.5, "v1": 0, "v2": 4, "dt": 0.02 }], "espera": { "dp": 2, "Fmedia": 100 } },
+        { "fn": "pulso", "args": [{ "J": 2, "dt": 0.02, "forma": "triangulo" }], "espera": { "Fmax": 200, "Fmedia": 100, "errores.FmaxPorDt": 4 } }
+      ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "En una mesa de aire, un disco de 3 kg va hacia el este a 4 m/s y otro de 2 kg va hacia el norte a 4,5 m/s. Chocan en un cruce y quedan pegados. ¿Con qué rapidez y en qué dirección salen? ¿Cuánta energía cinética se pierde?",
+      "respuesta": "Salen a 3 m/s, a 37° al norte del este. Se pierden 21,75 J.",
+      "pasos": [
+        "La cantidad de movimiento se conserva en cada eje. Este: 3·4 = 12 kg·m/s. Norte: 2·4,5 = 9 kg·m/s.",
+        "Total: √(12² + 9²) = 15 kg·m/s. Con 5 kg juntos: v = 15/5 = 3 m/s.",
+        "Dirección: tan θ = 9/12 = 3/4, así que θ = 37° al norte del este.",
+        "Ec antes = ½·3·16 + ½·2·20,25 = 24 + 20,25 = 44,25 J. Ec después = ½·5·9 = 22,5 J. Se pierden 21,75 J.",
+        "Si sumas las cantidades de movimiento como números (12 + 9 = 21) te sale 4,2 m/s: en un plano, p se suma como flechas."
+      ],
+      "verificar": [
+        { "fn": "choque2D", "args": [{ "m1": 3, "v1": 4, "ang1": 0, "m2": 2, "v2": 4.5, "ang2": 90 }], "espera": { "p": 15, "v": 3, "ang": 36.86989764584402, "EcAntes": 44.25, "EcDespues": 22.5, "EcPerdida": 21.75, "errores.sumaModulos": 4.2 } }
+      ]
+    }
+  ]
+}
