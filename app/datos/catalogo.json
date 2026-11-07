@@ -602,7 +602,9 @@
      },
      "potencial_visual": "medio",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "fisica-moderna"
+     ]
     }
    ]
   },
@@ -4689,6 +4691,23 @@
     "/plantillas/exponenciales-logaritmos/index.html",
     "/plantillas/exponenciales-logaritmos/motor.js",
     "/plantillas/exponenciales-logaritmos/papel.json"
+   ]
+  },
+  "fisica-moderna": {
+   "id": "fisica-moderna",
+   "titulo": "La lámpara y la placa: fotones y efecto fotoeléctrico",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.fisica-moderna"
+   ],
+   "url": "/plantillas/fisica-moderna/index.html",
+   "papel": "/plantillas/fisica-moderna/papel.json",
+   "archivos": [
+    "/plantillas/fisica-moderna/index.html",
+    "/plantillas/fisica-moderna/motor.js",
+    "/plantillas/fisica-moderna/papel.json"
    ]
   },
   "fluidos": {
