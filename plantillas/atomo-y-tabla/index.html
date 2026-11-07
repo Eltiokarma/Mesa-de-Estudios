@@ -228,6 +228,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 </script>
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 // La unidad principal es la estructura atómica; las predicciones de tabla periódica pasan su propia unidad.
@@ -246,7 +247,7 @@ function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0, un
    el modelo actual no tiene caminos (AT6). Las cajas son un diagrama para contar electrones, y así se dice. */
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const MA = MotorAtomo;
-const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
 function fmt(n, d){
   if (!Number.isFinite(n)) return '—';
   const p = Math.pow(10, d === undefined ? 0 : d), r = Math.round(n*p)/p + 0;
@@ -291,9 +292,14 @@ function rr(ctx, x, y, w, h, r){ ctx.beginPath(); if (ctx.roundRect) ctx.roundRe
 function azar(sem){ let s = sem >>> 0 || 1; return () => (s = (s*1664525 + 1013904223) >>> 0)/4294967296; }
 
 /* ----- Texto en el lienzo, por piezas de colores: [texto, clave de color, peso]. Baja la letra hasta 9 px si no entra. ----- */
-function anchoPiezas(ctx, c, ps, tam){ let w = 0; for (const [t, , peso] of ps){ ctx.font = `${peso || 700} ${tam}px ${c.font}`; w += ctx.measureText(t).width; } return w; }
+// Anchos y tamaños de letra guardados (la2): el mismo texto con la misma letra mide siempre lo mismo, así que no se
+// vuelve a medir en cada cuadro (antes, measureText y ctx.font de 0,5 en 0,5 px en cada dibujo).
+const ANCHOS = new Map(), TAMANOS = new Map();
+function medir(ctx, font, t){ const k = font + '\u0001' + t; let w = ANCHOS.get(k); if (w === undefined){ ctx.font = font; w = ctx.measureText(t).width; if (ANCHOS.size > 5000) ANCHOS.clear(); ANCHOS.set(k, w); } return w; }
+function recordarTam(k, calcular){ let t = TAMANOS.get(k); if (t === undefined){ t = calcular(); if (TAMANOS.size > 2000) TAMANOS.clear(); TAMANOS.set(k, t); } return t; }
+function anchoPiezas(ctx, c, ps, tam){ let w = 0; for (const [t, , peso] of ps) w += medir(ctx, `${peso || 700} ${tam}px ${c.font}`, t); return w; }
 function dibujarPiezas(ctx, c, ps, x, y, tam, align, max){
-  let t = tam; if (max) while (t > 9 && anchoPiezas(ctx, c, ps, t) > max) t -= 0.5;
+  let t = tam; if (max) t = recordarTam(`${c.font}|${tam}|${max}|${ps.map(p => p[2] + ':' + p[0]).join('\u0002')}`, () => { let u = tam; while (u > 9 && anchoPiezas(ctx, c, ps, u) > max) u -= 0.5; return u; });
   const w = anchoPiezas(ctx, c, ps, t);
   let x0 = align === 'center' ? x - w/2 : align === 'right' ? x - w : x;
   ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
@@ -370,7 +376,7 @@ function crearEscena(cv, idDesc, modoId, idLey){
   }
   E.resize = () => {
     const w = cv.clientWidth; if (!w) return;
-    Lz = layout(w); llaveLz = llave(w); const h = Lz.H, dpr = window.devicePixelRatio || 1;
+    Lz = layout(w); llaveLz = llave(w); const h = Lz.H, dpr = Celular.dpr();
     if (w !== W || h !== H){ W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); ctx.setTransform(dpr,0,0,dpr,0,0); }
   };
   E.compactar = on => { on = !!on; cv.closest('.mode').classList.toggle('pendiente', on); if (on === E.compacto) return; E.compacto = on; E.resize(); E.dibujar(); };
@@ -386,8 +392,9 @@ function crearEscena(cv, idDesc, modoId, idLey){
     ctx.beginPath(); ctx.arc(cx, cy, rn, 0, Math.PI*2); ctx.fillStyle = alfa(it.ocultar ? c.muted : c.Z, 0.16); ctx.fill();
     ctx.lineWidth = E.hl === 'Z' ? 3 : 1.6; ctx.strokeStyle = it.ocultar ? c.muted : c.Z; ctx.stroke();
     ctx.fillStyle = it.ocultar ? c.muted : c.Z; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    const tz = it.ocultar ? '?' : `${it.Z}+`; let fs = rn*0.95; ctx.font = `800 ${fs}px ${c.font}`;
-    while (fs > 7 && ctx.measureText(tz).width > rn*1.75){ fs -= 0.5; ctx.font = `800 ${fs}px ${c.font}`; }
+    const tz = it.ocultar ? '?' : `${it.Z}+`;
+    const fs = recordarTam(`núcleo|${c.font}|${rn}|${tz}`, () => { let f = rn*0.95; while (f > 7 && medir(ctx, `800 ${f}px ${c.font}`, tz) > rn*1.75) f -= 0.5; return f; });
+    ctx.font = `800 ${fs}px ${c.font}`;
     ctx.fillText(tz, cx, cy + 0.5);
     ctx.restore();
     const rnd = azar(it.Z*97 + 13);

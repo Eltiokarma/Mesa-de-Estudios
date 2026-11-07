@@ -245,7 +245,7 @@ function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0, un
    pinta lo que el motor dice. Se dibujan muchas menos moléculas de las que hay. */
 const RM = Celular.movimientoReducido();
 const MA = MotorAmbiente;
-const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
 function fmt(n, d){
   if (!Number.isFinite(n)) return '—';
   const p = Math.pow(10, d === undefined ? 0 : d), r = Math.round(n*p)/p + 0;
@@ -391,7 +391,7 @@ function crearEscena(cv, idDesc, modoId, idLey){
   }
   E.resize = () => {
     const w = cv.clientWidth; if (!w) return;
-    Lz = layout(w); const h = Lz.H, dpr = window.devicePixelRatio || 1;
+    Lz = layout(w); const h = Lz.H, dpr = Celular.dpr();
     if (w !== W || h !== H){ W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); ctx.setTransform(dpr,0,0,dpr,0,0); }
   };
   E.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); E.compacto = on; E.resize(); E.dibujar(); };

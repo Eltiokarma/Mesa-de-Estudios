@@ -227,7 +227,7 @@ function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const MI = MotorInvTrig;
 const GR = Math.PI/180;
-const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
 const fmt = (n, d) => MI.decimal(n, d === undefined ? 2 : d);
 const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
 const th_ = t => V('th', t), k_ = t => V('k', t), phi_ = t => V('phi', t), r_ = t => V('r', t);
@@ -289,7 +289,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
   }
   function resize(){
     const w = cv.clientWidth; if (!w) return;
-    const h = alto(w), dpr = window.devicePixelRatio || 1;
+    const h = alto(w), dpr = Celular.dpr();
     if (w === W && h === H) { E.dibujar(); return; }
     W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
     ctx.setTransform(dpr,0,0,dpr,0,0);

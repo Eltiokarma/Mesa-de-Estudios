@@ -236,7 +236,7 @@ function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
    físico, químico o nuclear, lo que marca la balanza, qué separa cada método y E = mc². Aquí solo se pinta. */
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const MM = MotorMateria;
-const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
 function fmt(n, d){
   if (!Number.isFinite(n)) return '—';
   const p = Math.pow(10, d === undefined ? 1 : d), r = Math.round(n*p)/p + 0;
@@ -417,7 +417,7 @@ function crearEscena(cv, idDesc, modoId, idLey){
     const w = cv.clientWidth; if (!w) return;
     E.W = w; const P = PINTA[E.vista.tipo]; Hn = P.alto(w, E.vista);
     const h = Math.round(Celular.alto(Hn, E.compacto)); E.esc = h/Hn;
-    const dpr = window.devicePixelRatio || 1;
+    const dpr = Celular.dpr();
     if (h !== H || cv.width !== Math.round(w*dpr)){ H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); }
   };
   new ResizeObserver(() => { E.resize(); E.dibujar(); }).observe(cv);
@@ -427,7 +427,7 @@ function crearEscena(cv, idDesc, modoId, idLey){
     const w = cv.clientWidth; if (!w) return;
     const k = `${w}|${E.vista.tipo}|${PINTA[E.vista.tipo].llave ? PINTA[E.vista.tipo].llave(E.vista) : ''}|${E.compacto}`;
     if (k !== llave){ E.resize(); llave = k; }
-    const c = colores(), dpr = window.devicePixelRatio || 1, ctx = E.ctx;
+    const c = colores(), dpr = Celular.dpr(), ctx = E.ctx;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, E.W, H);
     ctx.setTransform(dpr*E.esc, 0, 0, dpr*E.esc, dpr*(E.W - E.W*E.esc)/2, 0);
     PINTA[E.vista.tipo].pintar(ctx, c, E.W, E.vista, E.hl);

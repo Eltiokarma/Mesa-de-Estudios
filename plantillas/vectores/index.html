@@ -240,7 +240,7 @@ function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
    exponentes) sale de MotorVectores (motor.js); aquí solo se pinta, se arrastra y se anima. */
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const MV = MotorVectores;
-const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
 // Coma decimal y signo menos tipográfico.
 function fmt(n, d){
   if (!Number.isFinite(n)) return '—';
@@ -323,7 +323,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
     let h = E.vista === 'dim' ? 104 + Math.max(1, nb)*((w < 560 ? 18 : 22) + 12) + 14 + 70
       : Math.round(w >= 560 ? clamp(w*(c.y1 - c.y0)/(c.x1 - c.x0), 300, 460) : clamp((w - 24)*(c.y1 - c.y0)/(c.x1 - c.x0) + 24, 200, 400));
     h = Math.round(Celular.alto(h, E.compacto, { tope: E.vista === 'dim' ? 270 : 250 }));
-    const dpr = window.devicePixelRatio || 1;
+    const dpr = Celular.dpr();
     if (w === W && h === H) { E.dibujar(); return; }
     W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
     ctx.setTransform(dpr,0,0,dpr,0,0);

@@ -229,6 +229,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 </script>
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 // Cada predicción se guarda con la unidad del catálogo que mide.
@@ -250,7 +251,7 @@ function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
    recta) sale de MotorGrafica (motor.js); aquí solo se pinta, se arrastra y se anima. */
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const MG = MotorGrafica;
-const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
 function fmt(n, d){
   if (!Number.isFinite(n)) return '—';
   const p = Math.pow(10, d === undefined ? 1 : d), r = Math.round(n*p)/p + 0;
@@ -371,7 +372,7 @@ function crearEscena(cv, idDesc, idLect, idLey, idPer){
     // En pantalla grande el dibujo queda fijo al lado de la guía: que quepa con sus perillas y lecturas.
     if (innerWidth >= 900) h = Math.max(260, Math.min(h, innerHeight - 250 - 40*E.perillas.length));
     else if (E.compacto) h = Math.min(h, 240);   // celular con predicción pendiente: el dibujo queda bajito y fijo arriba
-    const dpr = window.devicePixelRatio || 1;
+    const dpr = Celular.dpr();
     if (w === W && h === H) { E.dibujar(); return; }
     W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
     ctx.setTransform(dpr,0,0,dpr,0,0);

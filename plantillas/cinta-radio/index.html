@@ -217,6 +217,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 </script>
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'cinta-radio', unidad: 'trigonometria.longitud-de-arco-y-sector', version: '0.1.0' };
@@ -233,7 +234,7 @@ function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0, un
    la faja y la bicicleta) sale de MotorCinta (motor.js); aquí solo se pinta, se arrastra y se anima. */
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const MT = MotorCinta, PI = Math.PI;
-const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
 // Coma decimal y signo menos tipográfico.
 function fmt(n, d){
   if (!Number.isFinite(n)) return '—';
@@ -325,7 +326,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
     if (E.compacto && innerWidth < 900) h = Math.round(clamp(w*0.62, 220, 260));
     else if (E.modo === 'rueda') h = w >= 560 ? 330 : 270;
     else { const c = cajaDe(), asp = (c.y1 - c.y0)/(c.x1 - c.x0); h = Math.round(w >= 560 ? clamp(w*asp*0.86, 320, 470) : clamp((w - 24)*asp + 24, 250, 400)); }
-    const dpr = window.devicePixelRatio || 1;
+    const dpr = Celular.dpr();
     if (w === W && h === H) { E.dibujar(); return; }
     W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
     ctx.setTransform(dpr,0,0,dpr,0,0);
