@@ -471,6 +471,7 @@ const geo = M.geoestacionario();
 const S = { step:0, max:0, pred:{}, hl:null, t:0, ex:{ h:H_EE, m:1000, th:Math.PI/2 }, arrastra:false };
 let parar = () => {};
 const pct = x => `${fmt(x*100, 0)} %`;
+const horas = s => `${fmt(s/3600, 1)} h`;
 
 const P1 = { id:'grav-estacion', ok:'c',
   opts:[['a', `Cero: allá arriba ya no hay gravedad, y por eso flota`, 'G1-no-hay-gravedad', 'documentado'],
@@ -509,10 +510,10 @@ const P4 = { id:'grav-masa-satelite', ok:'a',
        c:'Elegiste la C. En v = √(G·M/r), M es la masa de la Tierra, no la del satélite: la del satélite no aparece. La correcta está marcada.',
        d:'Elegiste la D. Cuesta el doble moverlo, sí, pero también lo atraen con el doble de fuerza: se compensa justo. La correcta está marcada.' } };
 const P5 = { id:'grav-kepler3', ok:'a',
-  opts:[['a', `Unas ${V('T', tiempo(oRas.T*k3.kT))}, 8 veces más: ${V('T','T')}² crece como ${V('r','r')}³`, null, ''],
-        ['b', `Unas ${V('T', tiempo(oRas.T*k3.errores.Tlineal))}, 4 veces más: el período crece en proporción al radio de la órbita`, 'G3-kepler-T-lineal', 'parcial'],
-        ['c', `Unas ${V('T', tiempo(oRas.T*k3.errores.Tcuadrado))}, 16 veces más: el período crece con el cuadrado del radio`, 'kepler-T-cuadrado', 'hipotesis'],
-        ['d', `Unas ${V('T', tiempo(oRas.T*k3.errores.Traiz))}, 2 veces más: el período crece con la raíz del radio`, 'kepler-T-raiz', 'hipotesis']],
+  opts:[['a', `Unas ${V('T', horas(oRas.T*k3.kT))}, 8 veces más: ${V('T','T')}² crece como ${V('r','r')}³`, null, ''],
+        ['b', `Unas ${V('T', horas(oRas.T*k3.errores.Tlineal))}, 4 veces más: el período crece en proporción al radio de la órbita`, 'G3-kepler-T-lineal', 'parcial'],
+        ['c', `Unas ${V('T', horas(oRas.T*k3.errores.Tcuadrado))}, 16 veces más: el período crece con el cuadrado del radio`, 'kepler-T-cuadrado', 'hipotesis'],
+        ['d', `Unas ${V('T', horas(oRas.T*k3.errores.Traiz))}, 2 veces más: el período crece con la raíz del radio`, 'kepler-T-raiz', 'hipotesis']],
   fb:{ a:'¡Bien! Con 4 veces el radio, T² crece 4³ = 64 veces y T crece √64 = 8 veces.',
        b:'Elegiste la B. El de afuera recorre 4 veces más camino, pero además va más lento (la mitad de rapidez): tarda 4 · 2 = 8 veces. La correcta está marcada.',
        c:'Elegiste la C. La tercera ley de Kepler dice T² ∝ r³, no T ∝ r²: con 4 veces el radio, T crece √64 = 8 veces. La correcta está marcada.',
@@ -593,7 +594,7 @@ const steps = [
    body:() => `<p>El satélite A gira a ras del suelo (${V('r','r = R')}, sin aire) y da una vuelta en unos ${V('T', tiempo(oRas.T))}. El satélite B gira en una órbita de radio ${V('r','r = 4R')}. ¿Cuánto tarda B en dar una vuelta?</p>${opcionesHTML(P5.opts, 'fb')}<div id="res" class="body"></div>`,
    exp:() => `<div class="eqs">
        <div class="eq">${V('T','T')} = 2π·${V('r','r')}/${V('v','v')} = 2π·√(${V('r','r')}³/(G·${V('M','M')}))<span class="note">tercera ley de Kepler: T² ∝ r³</span></div>
-       <div class="eq">${V('T','T')}_B/${V('T','T')}_A = √(4³) = √64 = 8 → ${V('T','T')}_B ≈ 8·${tiempo(oRas.T)} ≈ ${V('T', tiempo(o4.T))}</div></div>
+       <div class="eq">${V('T','T')}(B)/${V('T','T')}(A) = √(4³) = √64 = 8 → ${V('T','T')}(B) ≈ 8·${tiempo(oRas.T)} ≈ ${V('T', horas(o4.T))}</div></div>
      <p>Cuenta las vueltas: mientras B da una, A da ocho. B recorre 4 veces más camino y además va a la mitad de rapidez (${kms(o4.v)} contra ${kms(oRas.v)}): 4 · 2 = 8. A unas ${fmt(geo.rEnR, 1)} veces el radio de la Tierra (unos ${fmt(geo.h/1000, -3)} km de altura) el período llega a 24 h: ahí están los satélites geoestacionarios, que dan la vuelta junto con la Tierra y se ven quietos en el cielo.</p>
      ${fuente('Que el período crezca en proporción al radio (T ∝ r) es un error de cálculo que suponemos: es la cara, en la tercera ley de Kepler, del error de proporcionalidad medido con la fuerza (Williamson y otros, 2013). Las opciones C y D son hipótesis nuestras.')}`,
    lect:() => S.pred[P5.id] ? [['T', `A: T = ${tiempo(oRas.T)}`], ['T', `B: T = ${tiempo(o4.T)}`]] : [],
