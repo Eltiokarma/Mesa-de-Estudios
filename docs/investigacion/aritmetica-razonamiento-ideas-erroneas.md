@@ -122,6 +122,9 @@ Errores de cálculo típicos de los problemas de academia. No encontré estudios
 | Probabilidad condicional confundida con la conjunta | Sin dato en esta revisión (hay literatura sobre la falacia de la condicional transpuesta) |
 | Ángulo entre agujas sin el avance del horario (a las 3:30, 90°) | AR7 (se ignora una magnitud que cambia a la vez) |
 | Campanadas tratadas como proporción (si 6 campanadas tardan 5 s, 12 tardan 10 s) | AR7 |
+| Cortes contra piezas: una varilla en n piezas lleva n cortes (son n − 1) | Sin dato |
+| Estacas en un contorno cerrado contadas como en una línea (sobra una) | Sin dato |
+| Mínimo de pesadas partiendo en mitades en vez de en tercios | Sin dato |
 | Calendarios: no contar el 29 de febrero o el día de partida | Sin dato |
 | Edades: plantear la ecuación con las edades de hoy en una frase del futuro | RM1 |
 

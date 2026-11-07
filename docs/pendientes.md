@@ -8,7 +8,7 @@
 npm test
 ```
 
-Deben pasar 2931 pruebas.
+Deben pasar 2976 pruebas.
 
 ```bash
 npm run dev
@@ -56,7 +56,7 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 | ma3 | Álgebra | Hechas: `grafica-perillas`, `traductor-enunciados`, `cuadrado-crece` (productos notables y factorización), `sucesiones`, `exponenciales-logaritmos` y `polinomios` (Ruffini, resto, raíces racionales) | Faltan números reales, lógica y conjuntos, matrices, complejos, binomio de Newton y programación lineal |
 | ma1 a ma3 | Trigonometría, geometría, funciones | Informes del 6 nov: `trigonometria-`, `geometria-` y `algebra-funciones-ideas-erroneas.md` | Cifras de resúmenes, por verificar con los PDF (`fuentes/por-conseguir.md`); cada informe trae 3 escenas y casos |
 | ma4 | Aritmética | Hechas: `porcentajes-sucesivos` (predicciones), `regla-de-tres`, `probabilidad-dados`, `sucesiones` y `fracciones` (fracciones, decimales, MCD y MCM, promedios) | Hechas también `interes` y `divisores` (7 nov). Hechas también `numeracion` y `cuatro-operaciones`. Faltan potenciación, mezclas y razonamiento numérico |
-| ra1 | Razonamiento matemático | Hechas: `maximos-minimos` y `tablas-graficos` (7 nov), `relojes-calendarios`, `probabilidad-dados`, `regla-de-tres` (engranajes), `traductor-enunciados` (planteo), `sucesiones` (patrones con palitos, Gauss, series) y `orden-informacion` (orden, verdades y mentiras, certezas) | Faltan sucesiones, planteo de ecuaciones, edades y móviles, orden de información y verdades y mentiras |
+| ra1 | Razonamiento matemático | Hechas: `maximos-minimos`, `tablas-graficos` y `cortes-pesadas` (7 nov), `relojes-calendarios`, `probabilidad-dados`, `regla-de-tres` (engranajes), `traductor-enunciados` (planteo), `sucesiones` (patrones con palitos, Gauss, series) y `orden-informacion` (orden, verdades y mentiras, certezas) | Faltan sucesiones, planteo de ecuaciones, edades y móviles, orden de información y verdades y mentiras |
 | ra2 y pl4 | Razonamiento verbal y formato lectura | `razonamiento-verbal-ideas-erroneas.md` (RV1 a RV34, ninguno documentado; hecho por la rutina) | Formato lectura hecho en la app (pl4, 6 nov); la rutina sigue con los 30 textos, los de entrada y salida, los ejercicios sueltos y la guía docente |
 
 ### 2. Detalles de las plantillas ya hechas
@@ -73,6 +73,7 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 
 - **Cinética** (`plantillas/cinetica/`, rutina de química, 6 nov 2026): caja de discos con teoría de colisiones (energía y orientación), temperatura, catalizador y perfil de energía. Informe `docs/investigacion/cinetica-ideas-erroneas.md` (CI1 a CI13) con cifras sin verificar por el bloqueo de red: la escena no muestra porcentajes de cinética. La fracción contada queda unos pocos por ciento bajo la teoría. Falta en la escena: orden ≠ coeficiente y vida media.
 
+- **Cortes y pesadas** (`plantillas/cortes-pesadas/`, rutina de razonamiento matemático, 7 nov 2026): la sierra y la balanza (cortes en varilla y aro, estacas en línea y contorno, soga doblada, apilar para cortar, balanza de dos platillos con pesas 1, 3, 9 y 27, mínimo de pesadas por árbol de decisión); 21 casos verificados aparte (189 campos); 10 de papel. Errores sin dato, anotados en el informe de aritmética. Sin ítems en el banco.
 - **Tablas y gráficos** (`plantillas/tablas-graficos/`, rutina de razonamiento matemático, 7 nov 2026): la bodega en gráficos (eje que no empieza en 0, crecimiento absoluto contra porcentual, sectores, tabla de campeonato deducida por el motor y suficiencia de datos por enumeración); 21 casos verificados aparte (167 campos); 10 de papel. Falta el promedio ponderado (AR15). Sin ítems en el banco.
 - **Máximos y mínimos** (`plantillas/maximos-minimos/`, rutina de razonamiento matemático, 7 nov 2026): el cordel que encierra (perímetro fijo y suma fija, corral contra la pared, recorrido mínimo con reflejo en el río, precio que maximiza el ingreso y menor número de colores de un mapa); 22 casos verificados aparte; 10 de papel. Falta la predicción de «cantidad mínima de personas» (se eligió el mapa). Sin ítems en el banco (RM tiene 10 pares).
 - **Magnetismo** (`plantillas/magnetismo/`, rutina de física B, 7 nov 2026): imanes, cables y cargas (imán y carga quieta, carga paralela al campo, mano derecha frente a una vista 3D que se gira, ángulo entre v y B, electrón, hilo con 1/r, punto medio entre corrientes opuestas, fuerzas iguales entre cables, radio y periodo, conductor girado, solenoide y Oersted); 21 casos verificados aparte; 10 de papel; 8 predicciones y 5 «¿qué pasa si…?». Documentados: MG1 y MG5; parciales: MG2 a MG4, MG6 y EL9. Falta en la escena la espira (está en el motor y el papel). Sin ítems en el banco de física.

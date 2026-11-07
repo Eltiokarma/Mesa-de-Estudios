@@ -3649,7 +3649,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "cortes-pesadas"
+     ]
     },
     {
      "id": "razonamiento-matematico.planteo-de-ecuaciones",
@@ -4460,6 +4462,23 @@
     "/plantillas/congruencia/index.html",
     "/plantillas/congruencia/motor.js",
     "/plantillas/congruencia/papel.json"
+   ]
+  },
+  "cortes-pesadas": {
+   "id": "cortes-pesadas",
+   "titulo": "La sierra y la balanza: cortes y pesadas",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.cortes-y-pesadas"
+   ],
+   "url": "/plantillas/cortes-pesadas/index.html",
+   "papel": "/plantillas/cortes-pesadas/papel.json",
+   "archivos": [
+    "/plantillas/cortes-pesadas/index.html",
+    "/plantillas/cortes-pesadas/motor.js",
+    "/plantillas/cortes-pesadas/papel.json"
    ]
   },
   "cuadrado-crece": {
