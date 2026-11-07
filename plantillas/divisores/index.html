@@ -250,7 +250,7 @@ function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0, un
    predicción pendiente, subir el lienzo al responder, el dedo que desplaza la página) va con nucleo/celular.js. */
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const M = MotorDivisores;
-const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
 // Espacio de miles desde las cinco cifras (1200, 12 000).
 const fmt = n => { const t = String(Math.abs(n)); return (n < 0 ? '−' : '') + (t.length > 4 ? t.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : t); };
 const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
@@ -311,7 +311,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
     cifras: () => 290, producto: w => (w >= 560 ? 280 : 320), diagonal: w => (w >= 560 ? 320 : 290), reloj: () => 270 };
   function resize(){
     const w = cv.clientWidth; if (!w) return;
-    const h = Math.round(Celular.alto(ALTO[E.modo](w), E.compacto)), dpr = window.devicePixelRatio || 1;
+    const h = Math.round(Celular.alto(ALTO[E.modo](w), E.compacto)), dpr = Celular.dpr();
     if (w === W && h === H) { E.dibujar(); return; }
     W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
     ctx.setTransform(dpr,0,0,dpr,0,0);

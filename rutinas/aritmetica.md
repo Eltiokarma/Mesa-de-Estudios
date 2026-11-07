@@ -123,7 +123,7 @@ El revisor de cuatro operaciones revisó numeración con la regla nueva y encont
   - suma, resta y multiplicación por una cifra en columnas y en cualquier base, con la llevada y el préstamo por columna, y los cuadros de animación (`cuadroColumnas`, `cuadroResta`);
   - complemento aritmético con la regla «a 9 todas, a 10 la última significativa»;
   - cifras que faltan y criptoaritmética por fuerza bruta, con unicidad;
-  - número menos su reverso (siempre 99·(a − c)) y división entera por defecto y por exceso (r + r′ = d);
+  - número menos su reverso (siempre 99·(a − c)) y división entera por defecto y por exceso (r + rₑ = d);
   - sumatorias de academia y cantidad de cifras de un producto.
 
   Cada respuesta trae `errores`. La cabecera documenta cómo se forma cada error del reverso y las convenciones de la animación.
@@ -190,7 +190,7 @@ El revisor de cuatro operaciones revisó numeración con la regla nueva y encont
 | divisor d | #c70576 | #fb56b6 |
 | cociente q | #766619 | #f9d524 |
 | residuo por defecto r | #630b03 | #fdc3af |
-| residuo por exceso r′ | #194d2b | #c8f9d1 |
+| residuo por exceso rₑ | #194d2b | #c8f9d1 |
 | suma S | #5c330a | #fde7b9 |
 | cantidad de términos n | #1d5a87 | #06a6f9 |
 
@@ -213,7 +213,7 @@ El dividendo D y la caja de 10 000 van en tinta.
 - **Arrastre:** CLAUDE.md pide arrastrar como interacción principal. Aquí y en numeración todo va con botones. Propuesta: en el explorador, arrastrar una pieza para abrirla o juntarla.
 - **En papel y no en la escena:** la suma de los números de 3 cifras (su error de contar 899 términos no da un entero).
 - **Banco:** sin ítems en el de aritmética.
-- **Para Gerson:** ¿r′ o rₑ? La escena usa r′ y lo aclara con una nota.
+- **Decidido (Gerson, 7 nov 2026):** el residuo por exceso se escribe rₑ; cambiado en escena, motor y casos. En el celular, el tablero sube a un tope de 340 px con predicción pendiente.
 
 **Pedidos para la integración.**
 
@@ -221,3 +221,111 @@ El dividendo D y la caja de 10 000 van en tinta.
 - **`docs/diseno.md`:** la tabla de colores de arriba (el orden se hereda de numeración).
 - **`docs/pendientes.md`** (Detalles): «**Cuatro operaciones** (`plantillas/cuatro-operaciones/`, rutina de aritmética, 7 nov 2026): el tablero de las llevadas (columnas con la llevada como paquete que sube y el préstamo como paquete que se abre, también en base b; complemento aritmético, resta con ceros, cifras que faltan, sumatorias, división por defecto y por exceso, criptoaritmética, número menos su reverso y cifras de un producto); 19 casos verificados aparte; 10 de papel; 6 predicciones y 5 «¿qué pasa si…?»; todo hipótesis. Falta el arrastre. Sin ítems en el banco de aritmética.» En ma4, quitar «cuatro operaciones» de «Faltan».
 - **`CLAUDE.md`:** sumar «el tablero de las llevadas» a la lista y una línea en Historia: «Cuatro operaciones (7 nov 2026, rutina de aritmética): `plantillas/cuatro-operaciones/` (el tablero de las llevadas: complemento aritmético, préstamos, cifras que faltan, sumatorias, división por defecto y por exceso y criptoaritmética; 19 casos verificados aparte).»
+
+### Arrastre en numeración y cuatro operaciones (7 nov 2026, pedido de la principal)
+
+- **Numeración** (e397267). En el paso 8 se arrastra una pieza a la columna de la derecha para abrirla en b piezas, o b piezas a la izquierda para juntarlas.
+  - Se puede tener un estado sin normalizar, por ejemplo 8 sueltas en base 5; ahí el numeral sale «—» hasta juntar.
+  - Motor: `abrir`, `juntar`, `estado` y `desarmar`, con una prueba de 500 tableros al azar. Caso 20 nuevo, comprobado a mano.
+  - Teclado: ← y → eligen la columna, Enter abre y J junta. También hay botones y «Juntar todo».
+- **Cuatro operaciones** (5a34404). En el paso 8 está «Hacerla a mano»: en la suma se juntan las llevadas y en la resta se abren los préstamos arrastrando, con la misma interacción que numeración.
+  - Motor: `aMano`, `abrirMano`, `juntarMano` y `estadoMano`, con una prueba de 400 cuentas al azar en bases 2 a 10. Caso 20 nuevo (503 − 178 y 47 + 38), comprobado a mano.
+- **Celular:** en los dos, `Celular.arrastre` toma el gesto solo si empieza cerca de una pieza que se puede mover; lejos de ella, el dedo desplaza la página.
+- **Playwright:** con ratón y con toque, a 390 y 1366, en claro y oscuro.
+- **También en cuatro operaciones:** rₑ en vez de r′ (decisión de Gerson) y el tope de 340 px en el celular (892f620).
+
+## 7 nov 2026 · El cuadrado de fichas (`plantillas/potenciacion/`)
+
+**Qué hice.**
+
+- **`motor.js`** (UMD, `window.MotorPotenciacion`): raíces enteras con BigInt y Newton, sin `Math.sqrt`. Tiene:
+  - `raizEntera`: raíz por defecto y por exceso, con su residuo, la potencia y la siguiente;
+  - `esCuadrado` y `esCubo`;
+  - `agregarParaSiguiente`: la L de 2k + 1;
+  - terminaciones y criterios de exclusión, cada uno con su razón;
+  - `menorMultiplicador` y `menorDivisor` para cuadrado o cubo;
+  - `cuadradosEntre`, `cuadradosDeCifras` y `cifrasRaiz`;
+  - `sumaImpares`, `terminaEn5` y `restosCuadrados`;
+  - los dibujos: cuadrado con sobrante, la L, las capas de impares, el cubo isométrico y la cáscara 3k² + 3k + 1.
+- **`casos.json`:** 19 casos, verificados aparte.
+- **`motor.test.js`:** 42 pruebas, todas contra fuerza bruta:
+  - N = k² + r con 0 ≤ r ≤ 2k hasta 20 000;
+  - los criterios no excluyen ningún cuadrado hasta 1000²;
+  - multiplicadores y divisores mínimos;
+  - las fichas de los dibujos se conservan y no se enciman;
+  - ningún error coincide con la correcta ni con otro error.
+- **`papel.json`:** 10 problemas propios.
+- **Interacción:** se arrastra la esquina del cuadrado para cambiar el lado k en los pasos 1 y 8, con `Celular.arrastre`, flechas del teclado y botones.
+- **Paso a paso** (8 pasos, 6 predicciones; todo hipótesis):
+
+  | Paso | Pregunta | Correcta | Distractores |
+  | --- | --- | --- | --- |
+  | 2 | Raíz cuadrada entera por defecto de 150 y su residuo | 12 y 6 | (13; 19) `confunde-raiz-por-defecto-y-por-exceso`, (11; 29) `resto-mayor-que-2k`, (12; 0,24) `resto-como-parte-decimal` |
+  | 3 | De 15 × 15 a 16 × 16 | 31 | 30 `olvida-la-esquina`, 16 `agrega-un-solo-lado`, 32 `cuenta-dos-lados-y-repite-la-esquina` |
+  | 4 | Solo uno es cuadrado perfecto, sin sacar raíces (con la pista del resto entre 4) | 7921 | 2711 `termina-en-uno-y-por-eso-es-cuadrado`, 36 000 `ignora-los-ceros-finales`, 2235 `terminar-en-5-basta` |
+  | 5 | Menor multiplicador de 72 para que sea cubo | 3 | 2 `lo-hace-cuadrado-no-cubo`, 9 `multiplica-por-lo-que-sobra`, 6 `multiplica-por-todos-los-primos` |
+  | 6 | Menor divisor de 2160 para que sea cuadrado | 15 | 5 `olvida-el-exponente-impar-mayor`, 135 `quita-el-factor-entero`, 30 `divide-entre-todos-los-primos` |
+  | 7 | Cuadrados de 49 a 400 | 14 | 13 `olvida-el-mas-uno`, 20 `cuenta-desde-1`, 18 `raiz-de-la-diferencia` |
+
+- **«¿Qué pasa si…?»:**
+
+  | Experimento | Pregunta | Correcta | Distractores |
+  | --- | --- | --- | --- |
+  | 1 | 1 + 3 + … + 19 | 100 | 190, 361, 110 |
+  | 2 | 65² | 4225 | 3625, 3025, 130 |
+  | 3 | Restos de un cuadrado entre 3 | 0 o 1 | — |
+  | 4 | Cifras de la raíz de un número de 7 cifras | 4 | — |
+  | 5 | De 5³ a 6³ | 91 | 75, 36, 16 |
+
+**Pruebas.** `npm test`: 2584 de 2586; fallan solo las 2 de catálogo. Playwright corrió en las 8 combinaciones (1366 y 390, claro y oscuro, con y sin movimiento reducido): sin errores, asserts ni desbordes. El arrastre de la esquina funciona con el dedo (5 → 7 sin mover la página), con el ratón y con las flechas; lejos de la esquina, el dedo desplaza la página.
+
+**Subagentes.**
+
+- **Verificador independiente.** Recalculó con fuerza bruta: raíces por búsqueda lineal, multiplicadores probando uno por uno, cuadrados contados, ruedas con pow mod 10 y bordes 2⁵² y 2⁵³ − 1. **0 discrepancias** en 19 casos y 10 de papel.
+
+  Después de la revisión cambiaron tres casos, y los comprobé a mano:
+  - el paso 3 a 16² − 15² = 31;
+  - el experimento 3 a restos entre 3;
+  - campos nuevos como 3163² = 10 004 569.
+- **Revisor de contenido**, 2 graves:
+  - las lecturas en vivo de los pasos 1 y 8 se quedaban con el lado viejo;
+  - el paso 2 regalaba el paso 3 («r + r′ = 25 = 2·12 + 1» y la L completa). Se quitó y el paso 3 pasó a 15 → 16.
+
+  Medios:
+  - el paso 2 no decía «por defecto», y la raíz por exceso era defendible;
+  - rₑ en vez de r′, y la letra solo cuando k es la raíz;
+  - al 2711 del paso 4 solo lo descarta el resto entre 4. Ahora va la pista, y el experimento 3 pasó a restos entre 3 para no quedar regalado;
+  - antes de responder, el 65² ya se veía partido y la leyenda de los impares decía «lado»;
+  - regla 4: m nombraba las copias, k y r nombraban dos cosas en el paso 8, y los primos estaban en el color de N;
+  - matemática en el HTML, que pasó al motor (`area`, `potencia`, `siguiente`).
+
+  Bajos: N del paso 1 hasta 120, «√150 = 12,24…», 26 → 32 en el paso 3, el producto siempre con ×, la rueda y el hueco del paso 6.
+
+**Colores** (claro / oscuro):
+
+| Variable | Claro | Oscuro |
+| --- | --- | --- |
+| N (fichas) | #1f5fbf | #7cb0ff |
+| k (lado o raíz) | #a05200 | #f0a04a |
+| r (residuo por defecto, sobran) | #0f766e | #5ed9c8 |
+| rₑ (residuo por exceso, faltan) | #a10fbf | #cf6bfa |
+| L (se agregan) | #466d14 | #a3d65e |
+| m (multiplicador) | #b02c41 | #f17384 |
+| d (divisor) | #77032c | #fdb4ce |
+
+- **ΔE00 entre los que salen juntos:** mínimo 23,6 en claro y 25,3 en oscuro (r–L).
+- **m–d:** 13,7 / 16,8, pero nunca salen juntos (m solo en el paso 5, d solo en el paso 6).
+- **Contraste:** ≥ 4,53 en claro y ≥ 4,63 en oscuro. En las opciones, los números van en color sin chip.
+
+**Pendiente.**
+
+- La cáscara del cubo que crece todavía tapa parte del cubo viejo.
+- Sin ítems en el banco de aritmética.
+- **Para el informe:** el de aritmética no tiene ninguna fila de potenciación, numeración ni cuatro operaciones. Conviene una línea que diga que no hay datos de estos temas (no toqué `docs/`).
+
+**Pedidos para la integración.**
+
+- **Catálogo:** agregar `potenciacion` a `aritmetica.potenciacion-y-radicacion`, correr `npm run catalogo` y subir `VERSION`. Volver a hacer merge de numeración y cuatro operaciones por el arrastre.
+- **`docs/diseno.md`:** la tabla de colores de arriba.
+- **`docs/pendientes.md`** (Detalles): «**Potenciación** (`plantillas/potenciacion/`, rutina de aritmética, 7 nov 2026): el cuadrado de fichas (raíz entera por defecto y por exceso con su residuo y la esquina que se arrastra, la L de 2k + 1, criterios de exclusión por última cifra, ceros y restos, menor multiplicador o divisor para cuadrado o cubo con cubitos, cuadrados entre a y b, suma de impares, cuadrado de n5 y la cáscara del cubo); 19 casos verificados aparte; 10 de papel; 6 predicciones y 5 «¿qué pasa si…?»; todo hipótesis. Sin ítems en el banco de aritmética.» En ma4, quitar «potenciación» de «Faltan». En numeración y cuatro operaciones: «arrastre en el explorador (7 nov 2026)».
+- **`CLAUDE.md`:** sumar «el cuadrado de fichas» a la lista y una línea en Historia: «Potenciación (7 nov 2026, rutina de aritmética): `plantillas/potenciacion/` (el cuadrado de fichas: raíz entera con residuo, la L de 2k + 1, criterios de exclusión, multiplicador mínimo para cuadrado o cubo y cuadrados entre a y b; 19 casos verificados aparte).»

@@ -1,0 +1,1136 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gravitación: la Tierra, los satélites y la órbita</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md).
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4), con los de la serie de
+   física: F fuerza gravitatoria fucsia (el de la fuerza en dinámica, estática y choques), v velocidad rojo (MRUV,
+   choques), T período naranja (el del tiempo en choques y tiro parabólico), g gravedad verde (el de la aceleración en
+   tiro parabólico), r distancia al centro azul (el de la posición x en MRUV) y h altura turquesa (el de la x de energía).
+   Cruces con otras escenas: en dinámica y estática el azul es el peso P y el rojo la tensión T; en el MAS el fucsia es
+   el período T; en choques el verde es la altura h. Aquí ninguna letra ni color nombra dos cosas.
+   Medidos con docs/metodo/paleta.py: ΔE00 mínimo 23,3 en claro y 25,3 en oscuro (los dos, g–h); contraste ≥ 4,55
+   sobre el papel, la tarjeta, el chip al 8 % y el chip sobre una opción ya respondida (.opt.correct y .opt.wrong).
+   v queda cerca del rojo de los avisos, y g y h cerca del verde de «correcto»: los estados siempre llevan texto.
+   Las masas, G, R, las energías y el área barrida van en tinta. El morado de marca no se usa aquí. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-F:#a10fbf; --c-g:#456b14; --c-v:#b03244; --c-T:#964d00; --c-r:#1f5ebd; --c-h:#0e6d66;
+  --tierra:#dde6ee; --tierra2:#c9d6c0; --planeta:#ecdcc8; --sol:#f6d98f; --bloque:#f3e3d3; --suelo:#d9c8bb;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-F:#d47afb; --c-g:#a3d65e; --c-v:#f27a8a; --c-T:#f0a04a; --c-r:#7cb0ff; --c-h:#5ed9c8;
+  --tierra:#2f3a4d; --tierra2:#34442f; --planeta:#4a3d35; --sol:#6b5428; --bloque:#5a4868; --suelo:#4a3d55; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-F:#d47afb; --c-g:#a3d65e; --c-v:#f27a8a; --c-T:#f0a04a; --c-r:#7cb0ff; --c-h:#5ed9c8;
+  --tierra:#2f3a4d; --tierra2:#34442f; --planeta:#4a3d35; --sol:#6b5428; --bloque:#5a4868; --suelo:#4a3d55; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+.lienzo:focus-within{outline:3px solid var(--ink); outline-offset:2px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block; flex:none}
+.legend i.trazo{background:none!important; border-top:3px dashed var(--muted); height:0}
+.legend i.punto{background:none!important; border-top:2px dotted var(--muted); height:0}
+.lecturas{display:flex; flex-wrap:wrap; gap:6px; padding:0 4px}
+.lecturas:empty{display:none}
+.lectura{display:inline-flex; gap:6px; align-items:baseline; padding:3px 10px; border-radius:999px; border:2px solid var(--k, var(--line));
+  color:var(--k, var(--ink)); background:var(--paper); font:700 .84rem var(--mono); font-variant-numeric:tabular-nums}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.step-t:focus{outline:none}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+/* Datos con color. Fondo del 8 %; resaltado: contorno, sin fondo. Los datos en tinta con 7 %. */
+.v{white-space:nowrap; font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-F{color:var(--c-F); background:color-mix(in srgb, var(--c-F) 8%, transparent)}
+.v-g{color:var(--c-g); background:color-mix(in srgb, var(--c-g) 8%, transparent)}
+.v-v{color:var(--c-v); background:color-mix(in srgb, var(--c-v) 8%, transparent)}
+.v-T{color:var(--c-T); background:color-mix(in srgb, var(--c-T) 8%, transparent)}
+.v-r{color:var(--c-r); background:color-mix(in srgb, var(--c-r) 8%, transparent)}
+.v-h{color:var(--c-h); background:color-mix(in srgb, var(--c-h) 8%, transparent)}
+.v-m,.v-M,.v-R,.v-E{color:var(--ink); background:color-mix(in srgb, var(--ink) 7%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+
+.eqs{display:grid; grid-template-columns:minmax(0,1fr); gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:block; font-family:var(--mono); font-size:1.02rem; line-height:1.7; font-variant-numeric:tabular-nums}
+.eq .note{display:inline-block; font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.6em; white-space:normal; line-height:1.3}
+.answer{font-weight:700; padding:12px 16px; border-radius:16px; background:var(--paper); border:2px solid var(--ink); max-width:66ch}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb:focus{outline:none}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.ctrls{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 210px), 1fr)); gap:12px; align-items:end}
+.slider{display:grid; gap:4px}
+.slider label{font-weight:700; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.slider output{font-family:var(--mono); color:var(--muted)}
+input[type=range]{width:100%; accent-color:var(--ink); min-height:28px}
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.3fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Física · Gravitación universal · Problemas tipo admisión</p>
+      <h1>La Tierra, el satélite y la órbita</h1>
+      <p class="sub">¿Cuánto vale la gravedad lejos del suelo y cómo se mueve un satélite? Primero predice; después mueve el satélite y mira las fuerzas, la órbita y la gráfica.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="La Tierra y un satélite con sus fuerzas y, debajo, la gráfica de la gravedad contra la distancia">
+      <div class="lienzo"><canvas id="cv" tabindex="-1" role="img" aria-label="La Tierra y una estación espacial en órbita"></canvas></div>
+      <div class="lecturas" id="lect1" aria-hidden="true"></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="legend" id="ley1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT" tabindex="-1"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Dibujo del experimento elegido">
+      <div class="lienzo"><canvas id="cv2" tabindex="-1" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <div class="lecturas" id="lect2" aria-hidden="true"></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="legend" id="ley2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2" tabindex="-1"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/gravitacion">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'gravitacion', unidad: 'fisica.gravitacion', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la física sale de MotorGravitacion (motor.js): fuerzas, g, órbitas, trayectorias, períodos y errores.
+   Aquí solo se pinta y se escribe. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
+const M = MotorGravitacion, RT = M.R;
+// Coma decimal, espacio de miles (desde 5 cifras) y signo menos tipográfico.
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 1 : d), r = Math.round(n*p)/p + 0;
+  let [e, f] = String(Math.abs(r)).split('.');
+  if (e.length >= 5) e = e.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+// Notación científica corta: 3,6·10⁶ (con d cifras decimales en la mantisa).
+const SUP = { '-':'⁻', 0:'⁰', 1:'¹', 2:'²', 3:'³', 4:'⁴', 5:'⁵', 6:'⁶', 7:'⁷', 8:'⁸', 9:'⁹' };
+function cien(n, d){
+  if (n === 0) return '0';
+  let e = Math.floor(Math.log10(Math.abs(n))), m = n/Math.pow(10, e);
+  if (Math.abs(Math.round(m*Math.pow(10, d === undefined ? 1 : d))) >= 10*Math.pow(10, d === undefined ? 1 : d)){ m /= 10; e++; }
+  return `${fmt(m, d === undefined ? 1 : d)}·10${String(e).split('').map(ch => SUP[ch]).join('')}`;
+}
+const km = m => fmt(m/1000, 0) + ' km';
+const kms = v => fmt(v/1000, 1) + ' km/s';
+// Un período en minutos u horas, como se dice en voz alta.
+const tiempo = s => s < 3*3600 ? `${fmt(s/60, 0)} min` : `${fmt(s/3600, 1)} h`;
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+// Escribe en una región aria-live solo si el texto cambia (si no, el lector de pantalla repite en cada cuadro).
+function decir(el, t){ if (el.textContent !== t) el.textContent = t; }
+const fuente = t => `<p class="fuente">${t}</p>`;
+const opcionesHTML = (opts, idfb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idfb}" tabindex="-1"></p>`;
+
+function crearLienzo(cv, alto, dibujar){
+  const ctx = cv.getContext('2d');
+  const L = { cv, ctx, W:0, H:0 };
+  L.resize = () => {
+    const W = cv.clientWidth; if (!W) return;
+    const H = Math.round(Celular.alto(alto(W), L.compacto)), dpr = Celular.dpr();
+    L.W = W; L.H = H; cv.style.height = H + 'px'; cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    dibujar();
+  };
+  new ResizeObserver(L.resize).observe(cv);
+  // Celular con predicción pendiente: el dibujo más bajo y pegado arriba (nucleo/celular.js).
+  L.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === !!L.compacto) return; L.compacto = on; L.resize(); };
+  return L;
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, x1, y1, x2, y2){ ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
+function rr(ctx, x, y, w, h, r){ ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h); }
+// Texto con un fondo del color del papel detrás, para que se lea sobre las líneas. No se sale del lienzo.
+function rotulo(ctx, c, x, y, t, color, align, peso, tam, dash){
+  ctx.font = `${peso || 700} ${tam || (c.chico ? 11 : 12)}px ${c.font}`; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(t).width;
+  let x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  x0 = clamp(x0, 8, c.W - w - 8); y = clamp(y, 10, c.H - 10);
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - 8, w + 6, 16); ctx.restore();
+  if (dash){ ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = 1.4; ctx.setLineDash([4, 3]); rr(ctx, x0 - 5, y - 10, w + 10, 20, 6); ctx.stroke(); ctx.restore(); }
+  ctx.fillStyle = color; ctx.textAlign = 'left'; ctx.fillText(t, x0, y);
+  return { x0, w };
+}
+function colores(W, H){
+  const g = n => css(n);
+  return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
+    F:g('--c-F'), g:g('--c-g'), v:g('--c-v'), T:g('--c-T'), r:g('--c-r'), h:g('--c-h'),
+    tierra:g('--tierra'), tierra2:g('--tierra2'), planeta:g('--planeta'), sol:g('--sol'), bloque:g('--bloque'), suelo:g('--suelo'),
+    mono:g('--mono'), font:g('--font'), chico: W < 480, W, H };
+}
+function flecha(ctx, x1, y1, x2, y2, color, w, dash){
+  const ang = Math.atan2(y2 - y1, x2 - x1), l = Math.hypot(x2 - x1, y2 - y1); if (l < 3) return;
+  const p = Math.min(8 + w, l*0.6);
+  ctx.save(); ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = w; ctx.lineCap = 'butt';
+  if (dash) ctx.setLineDash(dash);
+  linea(ctx, x1, y1, x2 - Math.cos(ang)*p*0.75, y2 - Math.sin(ang)*p*0.75);
+  ctx.setLineDash([]);
+  ctx.beginPath(); ctx.moveTo(x2, y2); ctx.lineTo(x2 - Math.cos(ang - .5)*p, y2 - Math.sin(ang - .5)*p); ctx.lineTo(x2 - Math.cos(ang + .5)*p, y2 - Math.sin(ang + .5)*p);
+  ctx.closePath(); ctx.fill(); ctx.restore();
+}
+function pasoBonito(rango, n){
+  const crudo = rango/n, p = Math.pow(10, Math.floor(Math.log10(crudo))), r = crudo/p;
+  return (r < 1.5 ? 1 : r < 3 ? 2 : r < 7 ? 5 : 10)*p;
+}
+// Planeta: disco con un continente suave (no es una variable: no lleva color de variable).
+function planetaDib(ctx, c, x, y, rad, nombre, relleno){
+  ctx.save(); ctx.beginPath(); ctx.arc(x, y, rad, 0, Math.PI*2); ctx.fillStyle = relleno || c.tierra; ctx.fill();
+  if (!relleno){ ctx.clip(); ctx.fillStyle = c.tierra2; ctx.beginPath(); ctx.ellipse(x - rad*0.25, y - rad*0.2, rad*0.45, rad*0.3, -0.5, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(x + rad*0.35, y + rad*0.35, rad*0.3, rad*0.2, 0.6, 0, Math.PI*2); ctx.fill(); }
+  ctx.restore();
+  ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.arc(x, y, rad, 0, Math.PI*2); ctx.stroke(); ctx.restore();
+  if (nombre){ if (rad > 30) rotulo(ctx, c, x, y + rad*0.55, nombre, c.ink, 'center', 800, 11); else rotulo(ctx, c, x, y + rad + 12, nombre, c.ink, 'center', 800, 11); }
+}
+// Satélite pequeño con dos paneles, girado según su ángulo en la órbita.
+function sateliteDib(ctx, c, x, y, ang, tam, nombre, dy){
+  const s = tam || 1;
+  ctx.save(); ctx.translate(x, y); ctx.rotate(-ang);
+  ctx.fillStyle = c.bloque; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.3;
+  rr(ctx, -5*s, -5*s, 10*s, 10*s, 2); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = c.paper; [-1, 1].forEach(k => { ctx.beginPath(); ctx.rect(-3*s, k > 0 ? 7*s : -15*s, 6*s, 8*s); ctx.fill(); ctx.stroke(); linea(ctx, 0, k*5*s, 0, k*7*s); });
+  ctx.restore();
+  if (nombre) rotulo(ctx, c, x, y + (dy || -20), nombre, c.ink, 'center', 800, 11);
+}
+// Rótulo de una flecha: a un costado de su punto medio, sin taparla.
+function rotuloFlecha(ctx, c, x1, y1, x2, y2, t, color, lado, tam, dash){
+  const l = Math.hypot(x2 - x1, y2 - y1) || 1, nx = -(y2 - y1)/l*(lado || 1), ny = (x2 - x1)/l*(lado || 1);
+  const xm = (x1 + x2)/2 + nx*14, ym = (y1 + y2)/2 + ny*14;
+  return rotulo(ctx, c, xm, ym, t, color, nx > 0.3 ? 'left' : nx < -0.3 ? 'right' : 'center', 800, tam || 11, dash);
+}
+
+/* ---------- Vista de la órbita ----------
+   O = { rMax (m, lo que debe caber), planeta: { R, nombre }, orbitas: [r], sats: [S], tierraF, geo }
+   S = { r, th (rad, antihorario desde +x), nom, m, F: 'no'|'?'|'si', Flen, Ftxt, v: 'no'|'?'|'si', vlen, vtxt,
+         cotaR, cotaH, vueltas }
+   tierraF = { modo: '?'|'si', len, txt }: la fuerza sobre la Tierra, hacia el primer satélite. */
+function vistaOrbita(ctx, c, B, O){
+  const cx = B.x + B.w/2, cy = B.y + B.h/2, s = (Math.min(B.w, B.h)/2 - 30)/O.rMax;
+  const P = r => r*s, xy = (r, th) => ({ x: cx + r*s*Math.cos(th), y: cy - r*s*Math.sin(th) });
+  // Órbitas punteadas
+  (O.orbitas || []).forEach(r => { ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; ctx.setLineDash([2, 4]); ctx.beginPath(); ctx.arc(cx, cy, P(r), 0, Math.PI*2); ctx.stroke(); ctx.restore(); });
+  if (O.geo){ ctx.save(); ctx.strokeStyle = c.T; ctx.lineWidth = O.hl === 'T' ? 3 : 1.2; ctx.setLineDash([6, 4]); ctx.beginPath(); ctx.arc(cx, cy, P(O.geo), 0, Math.PI*2); ctx.stroke(); ctx.restore();
+    rotulo(ctx, c, cx, cy - P(O.geo) - 9, 'T = 24 h', c.T, 'center', 800, 10); }
+  planetaDib(ctx, c, cx, cy, P(O.planeta.R), O.planeta.nombre);
+  // capF: tope de las flechas de fuerza (en radios del planeta dibujado), para que la de la Tierra y la del satélite no se
+  // pisen. Se aplica como escala común (kF) a todas las flechas de fuerza: así conservan sus proporciones.
+  const kF = O.capF ? Math.min(1, P(O.planeta.R)*O.capF/(O.Fref || 58)) : 1;
+  const Q = 12;   // largo fijo y neutro de una fuerza todavía desconocida: no sugiere su tamaño
+  const hl = O.hl;
+  const res = { cx, cy, s, sats: [] };
+  O.sats.forEach((S, j) => {
+    const p = xy(S.r, S.th), ux = (cx - p.x)/(S.r*s || 1), uy = (cy - p.y)/(S.r*s || 1), ox = -ux, oy = -uy;
+    // Cotas: r desde el centro (azul) y h desde el suelo (turquesa), a los costados de la línea radial.
+    if (S.cotaR){
+      const off = 9, nx = -uy*off, ny = ux*off;
+      ctx.save(); ctx.strokeStyle = c.r; ctx.lineWidth = hl === 'r' ? 3 : 1.5; ctx.setLineDash([5, 3]); linea(ctx, cx + nx, cy + ny, p.x + nx, p.y + ny); ctx.restore();
+      rotulo(ctx, c, (cx + p.x)/2 + nx*2.2, (cy + p.y)/2 + ny*2.2, S.cotaR, c.r, nx > 0 ? 'left' : 'right', 800, 11);
+    }
+    // Referencia: la fuerza que tendría el mismo cuerpo en el suelo, en la superficie, corrida a un costado.
+    if (O.sueloF && j === 0){
+      const q = xy(O.planeta.R, S.th), tx = uy*16, ty = -ux*16, l = O.sueloF.len*kF;
+      flecha(ctx, q.x + tx, q.y + ty, q.x + tx + ux*l, q.y + ty + uy*l, c.F, 1.6);
+      rotuloFlecha(ctx, c, q.x + tx, q.y + ty, q.x + tx + ux*l, q.y + ty + uy*l, 'F en el suelo', c.F, -1, 10);
+    }
+    let rad = null;   // dónde va el nombre si ya hay un rótulo de h hacia afuera
+    if (S.cotaH){
+      const q = xy(O.planeta.R, S.th), off = -9, nx = -uy*off, ny = ux*off;
+      ctx.save(); ctx.strokeStyle = c.h; ctx.lineWidth = hl === 'h' ? 4 : 2.2; linea(ctx, q.x + nx, q.y + ny, p.x + nx, p.y + ny); ctx.restore();
+      // El rótulo sale hacia afuera de la órbita, con una línea guía desde la cota.
+      const lx = p.x + nx + ox*30, ly = p.y + ny + oy*30;
+      ctx.save(); ctx.strokeStyle = c.h; ctx.lineWidth = 1; linea(ctx, (q.x + p.x)/2 + nx, (q.y + p.y)/2 + ny, lx - ox*6, ly - oy*6); ctx.restore();
+      rotulo(ctx, c, lx, ly, S.cotaH, c.h, ox > 0.4 ? 'left' : ox < -0.4 ? 'right' : 'center', 800, 11);
+      rad = { x: lx, y: ly + (oy <= 0 && ly > 28 ? -16 : 16) };   // el nombre va justo encima (o debajo) del rótulo de h
+    }
+    // Fuerza sobre el satélite: hacia el centro del planeta.
+    if (S.F === 'si' && S.Flen > 1){ const lf = S.Flen*kF, x2 = p.x + ux*lf, y2 = p.y + uy*lf; flecha(ctx, p.x, p.y, x2, y2, c.F, S.hl ? 5 : 3); if (S.Ftxt) rotuloFlecha(ctx, c, p.x, p.y, x2, y2, S.Ftxt, c.F, S.Flado || 1); }
+    if (S.F === '?'){ const x2 = p.x + ux*Q, y2 = p.y + uy*Q; flecha(ctx, p.x, p.y, x2, y2, c.F, 2.2, [3, 3]); rotuloFlecha(ctx, c, p.x, p.y + 8, x2, y2 + 8, S.Ftxt || 'F = ?', c.F, S.Flado || 1, 12, true); }
+    // Velocidad: tangente a la órbita, en el sentido del giro (antihorario). Desconocida: solo el rótulo.
+    const tx = -Math.sin(S.th), ty = -Math.cos(S.th), alV = Math.abs(tx) < 0.3 ? 'center' : tx > 0 ? 'left' : 'right';
+    if (S.v === 'si'){
+      const x2 = p.x + tx*S.vlen, y2 = p.y + ty*S.vlen;
+      flecha(ctx, p.x, p.y, x2, y2, c.v, hl === 'v' ? 5 : 3);
+      rotulo(ctx, c, x2 + tx*12, y2 + ty*12, S.vtxt || 'v', c.v, alV, 800, 11);
+    }
+    if (S.v === '?') rotulo(ctx, c, p.x + tx*26, p.y + ty*26, 'v = ?', c.v, alV, 800, 11, true);
+    // Con S.radial (o con la cota de h), el nombre va hacia afuera de la órbita: no tapa el planeta ni la cota.
+    if (S.radial || S.cotaH){ sateliteDib(ctx, c, p.x, p.y, S.th, S.tam);
+      const al = ox > 0.4 ? 'left' : ox < -0.4 ? 'right' : 'center';
+      const t = S.vueltas !== undefined ? `${S.nom} · ${S.vueltas} ${S.vueltas === 1 ? 'vuelta' : 'vueltas'}` : S.nom;
+      if (t) rotulo(ctx, c, rad ? rad.x : p.x + ox*20, rad ? rad.y : p.y + oy*20, t, c.ink, al, 800, 11); }
+    else { sateliteDib(ctx, c, p.x, p.y, S.th, S.tam, S.nom, S.dyNom);
+      if (S.vueltas !== undefined) rotulo(ctx, c, p.x, p.y + 20, `${S.vueltas} ${S.vueltas === 1 ? 'vuelta' : 'vueltas'}`, c.ink, 'center', 800, 10); }
+    res.sats.push(p);
+  });
+  // Fuerza sobre la Tierra: desde su centro, hacia el primer satélite.
+  if (O.tierraF && O.sats.length){
+    const p = res.sats[0], d = Math.hypot(p.x - cx, p.y - cy) || 1, ux = (p.x - cx)/d, uy = (p.y - cy)/d, duda = O.tierraF.modo === '?';
+    const l = duda ? Q : O.tierraF.len*kF;
+    if (l > 1){ const x2 = cx + ux*l, y2 = cy + uy*l; flecha(ctx, cx, cy, x2, y2, c.F, duda ? 2.2 : 3, duda ? [3, 3] : null);
+      rotuloFlecha(ctx, c, cx, cy, x2, y2, O.tierraF.txt, c.F, -1, duda ? 12 : 11, duda); }
+    ctx.beginPath(); ctx.arc(cx, cy, 2.5, 0, Math.PI*2); ctx.fillStyle = c.ink; ctx.fill();
+  }
+  return res;
+}
+
+/* ---------- Gráfica de una magnitud contra la distancia ----------
+   Gr = { x0, x1, yMax, f (x → y), lineal (x → y) o null, curva, punto (x), marcas:[x], xLab, yLab, colY, suelo (x), aviso, geo } */
+function grafica(ctx, c, b, Gr){
+  const X = v => b.x + (v - Gr.x0)/(Gr.x1 - Gr.x0)*b.w, Y = v => b.y + b.h - v/Gr.yMax*b.h;
+  ctx.save(); ctx.fillStyle = c.paper; ctx.fillRect(b.x, b.y, b.w, b.h);
+  if (Gr.suelo !== undefined && Gr.suelo > Gr.x0){ ctx.fillStyle = c.grid; ctx.fillRect(b.x, b.y, X(Gr.suelo) - b.x, b.h); }
+  ctx.strokeStyle = c.grid; ctx.lineWidth = 1;
+  const px = 1, py = pasoBonito(Gr.yMax, 4);
+  ctx.font = `600 10px ${c.mono}`; ctx.fillStyle = c.r; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  for (let v = Math.ceil(Gr.x0); v <= Gr.x1 + 1e-9; v += px){ linea(ctx, X(v), b.y, X(v), b.y + b.h); ctx.fillText(fmt(v, 0), X(v), b.y + b.h + 3); }
+  ctx.textAlign = 'right'; ctx.textBaseline = 'middle'; ctx.fillStyle = Gr.colY;
+  for (let v = 0; v <= Gr.yMax + 1e-9; v += py){ linea(ctx, b.x, Y(v), b.x + b.w, Y(v)); ctx.fillText(fmt(v, py < 1 ? 1 : 0), b.x - 4, Y(v)); }
+  ctx.restore();
+  ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; linea(ctx, b.x, b.y + b.h, b.x + b.w, b.y + b.h); linea(ctx, b.x, b.y, b.x, b.y + b.h);
+  rotulo(ctx, c, b.x + b.w, b.y + b.h + 23, Gr.xLab, c.r, 'right', 800, 10);
+  rotulo(ctx, c, b.x + 6, b.y + 8, Gr.yLab, Gr.colY, 'left', 800, 10);
+  if (Gr.suelo !== undefined && Gr.suelo > Gr.x0) rotulo(ctx, c, X(Gr.suelo) - 3, b.y + b.h/2, 'suelo', c.muted, 'right', 700, 10);
+  (Gr.marcas || []).forEach(m => { ctx.save(); ctx.strokeStyle = c.h; ctx.lineWidth = 1.2; ctx.setLineDash([2, 3]); linea(ctx, X(m.x), b.y + 14, X(m.x), b.y + b.h); ctx.restore();
+    rotulo(ctx, c, X(m.x), b.y + 22 + (m.fila || 0)*14, m.t, c.h, 'center', 800, 10); });
+  if (Gr.geo){ ctx.save(); ctx.strokeStyle = c.T; ctx.lineWidth = 1.2; ctx.setLineDash([6, 4]); linea(ctx, X(Gr.geo), b.y + 14, X(Gr.geo), b.y + b.h); ctx.restore();
+    rotulo(ctx, c, X(Gr.geo) - 3, b.y + 22, 'T = 24 h', c.T, 'right', 800, 10); }
+  if (!Gr.curva){ rotulo(ctx, c, b.x + b.w/2, b.y + b.h/2, Gr.aviso || 'se dibuja al responder', c.muted, 'center', 700, 11); return { X, Y }; }
+  const xi = Gr.xi !== undefined ? Gr.xi : Math.max(Gr.x0, Gr.suelo || Gr.x0);
+  const traza = (f, col, w, dash) => { ctx.save(); ctx.beginPath(); ctx.rect(b.x, b.y, b.w, b.h); ctx.clip(); ctx.strokeStyle = col; ctx.lineWidth = w; ctx.setLineDash(dash || []);
+    ctx.beginPath(); for (let i = 0; i <= 200; i++){ const x = xi + (Gr.x1 - xi)*i/200, yy = Y(f(x)); i ? ctx.lineTo(X(x), yy) : ctx.moveTo(X(x), yy); } ctx.stroke(); ctx.restore(); };
+  if (Gr.lineal){ traza(Gr.lineal, c.muted, 2, [7, 5]); const xl = xi + (Gr.x1 - xi)*0.62; rotulo(ctx, c, X(xl), Y(Gr.lineal(xl)) - 12, Gr.linealTxt || 'si fuera 1/r', c.muted, 'left', 700, 10); }
+  traza(Gr.f, Gr.colY, Gr.hl ? 4 : 2.6);
+  if (Gr.punto !== undefined){ const x = clamp(Gr.punto, Gr.x0, Gr.x1), y = Gr.f(x);
+    ctx.save(); ctx.strokeStyle = Gr.colY; ctx.globalAlpha = .5; ctx.setLineDash([3, 3]); linea(ctx, X(x), Y(y), X(x), b.y + b.h); linea(ctx, b.x, Y(y), X(x), Y(y)); ctx.restore();
+    ctx.beginPath(); ctx.arc(X(x), Y(y), 5, 0, Math.PI*2); ctx.fillStyle = Gr.colY; ctx.fill(); }
+  return { X, Y };
+}
+function leyenda(el, claves){
+  const NOM = { F:'F · fuerza de gravedad', g:'g · gravedad (m/s²)', v:'v · velocidad', T:'T · período', r:'r · distancia al centro', h:'h · altura sobre el suelo',
+    orbita:'punteada: la órbita', lineal:'a trazos: si fuera 1/r (no lo es)', trayecto:'trazo fino: trayectorias', area:'sombreado: área barrida' };
+  el.innerHTML = claves.map(k => k === 'orbita' ? `<span><i class="punto"></i>${NOM.orbita}</span>` : k === 'lineal' ? `<span><i class="trazo"></i>${NOM.lineal}</span>` :
+    k === 'trayecto' ? `<span><i style="background:var(--muted);height:2px"></i>${NOM.trayecto}</span>` :
+    k === 'area' ? `<span><i style="background:color-mix(in srgb, var(--ink) 18%, transparent);height:10px"></i>${NOM.area}</span>` :
+    `<span><i style="background:var(--c-${k})"></i>${NOM[k]}</span>`).join('');
+}
+function lecturas(el, items){
+  const h = items.map(([k, t]) => `<span class="lectura" style="--k:${k === 'ink' ? 'var(--ink)' : `var(--c-${k})`}">${t}</span>`).join('');
+  if (el.dataset.h !== h){ el.innerHTML = h; el.dataset.h = h; }
+}
+// Reloj de la animación: avanza el tiempo de la escena (en segundos reales) sin fin, hasta que se pare.
+function reloj(paso){
+  if (RM) return () => {};
+  let id, prev = performance.now();
+  // El sello de requestAnimationFrame puede ser anterior a performance.now() del arranque: nunca un paso negativo.
+  const tick = now => { paso(clamp((now - prev)/1000, 0, 0.05)); prev = Math.max(prev, now); id = requestAnimationFrame(tick); };
+  id = requestAnimationFrame(tick);
+  return () => cancelAnimationFrame(id);
+}
+</script>
+<script>
+/* ================= MODO 1: paso a paso =================
+   Problema guiado del informe (docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md, «Gravitación»):
+   una astronauta en la estación espacial a 400 km; R = 6400 km, g0 = 10 m/s² → g = 10·(16/17)² ≈ 8,86 m/s². */
+(function(){
+const $ = id => document.getElementById(id);
+const cv = $('cv');
+const conGrafica = () => { try { return !!steps[S.step].vista().graf; } catch (e) { return false; } };
+const altoLienzo = W => W >= 560 ? (conGrafica() ? clamp(W*0.9, 500, 590) : clamp(W*0.72, 400, 500)) : (conGrafica() ? clamp(W*1.45, 500, 580) : clamp(W*1.0, 340, 420));
+const L = crearLienzo(cv, altoLienzo, () => draw());
+const H_EE = 4e5, M_EE = 4.2e5;                                   // estación espacial: 400 km, 420 t
+const gEE = M.gAltura({ h:H_EE }), oEE = M.orbita({ h:H_EE, m:M_EE });
+const fEE = M.fuerza({ m1:M.M_T, m2:M_EE, r:RT + H_EE });
+const cuarto = M.alturaParaG({ fraccion:0.25 });
+const o1 = M.orbita({ h:RT, m:1000 }), k3m = M.kepler3({ r1:2*RT, r2:2*RT, m1:1000, m2:2000 });
+const oRas = M.orbita({ r:RT }), k3 = M.kepler3({ r1:RT, r2:4*RT, T1:oRas.T }), o4 = M.orbita({ r:4*RT });
+const geo = M.geoestacionario();
+const S = { step:0, max:0, pred:{}, hl:null, t:0, ex:{ h:H_EE, m:1000, th:Math.PI/2 }, arrastra:false };
+let parar = () => {};
+const pct = x => `${fmt(x*100, 0)} %`;
+const horas = s => `${fmt(s/3600, 1)} h`;
+
+const P1 = { id:'grav-estacion', ok:'c',
+  opts:[['a', `Cero: allá arriba ya no hay gravedad, y por eso flota`, 'G1-no-hay-gravedad', 'documentado'],
+        ['b', `Casi cero: a esa altura la gravedad es muy débil, y por eso flota`, 'G1-mucho-mas-debil', 'documentado'],
+        ['c', `Cerca del ${pct(gEE.fraccion)} de la del suelo: la gravedad sigue ahí, y flota por otra razón`, null, ''],
+        ['d', `La misma que en el suelo, pero la estación hace una fuerza hacia arriba que la anula`, 'G1-la-nave-la-anula', 'documentado']],
+  fb:{ c:'¡Bien! A 400 km la gravedad de la Tierra todavía es casi el 90 % de la del suelo. Flota porque ella y la estación caen juntas.',
+       a:'Elegiste la A. La gravedad no se apaga al salir del aire: a 400 km todavía es casi el 90 % de la del suelo. La correcta está marcada.',
+       b:'Elegiste la B. 400 km parece mucho, pero es poco frente a los 6400 km que hay hasta el centro de la Tierra: la gravedad casi no baja. La correcta está marcada.',
+       d:'Elegiste la D. Si la estación la empujara hacia arriba, ella sentiría el piso como en la Tierra. Nada la empuja: ella y la estación caen juntas. La correcta está marcada.' } };
+const P2 = { id:'grav-tercera-ley', ok:'a',
+  opts:[['a', `Con la misma ${V('F','F')}, unos ${cien(fEE.F, 1)} N, hacia la estación`, null, ''],
+        ['b', `Con una ${V('F','F')} de unos ${cien(fEE.errores.segunPropiaMasa, 1)} N, mucho menor, porque la estación tiene mucha menos masa`, 'G5-el-masivo-atrae-mas', 'parcial'],
+        ['c', `Con ninguna: un cuerpo tan pequeño como la estación no atrae a un planeta`, 'G5-lo-pequeno-no-atrae', 'parcial'],
+        ['d', `Con una ${V('F','F')} mayor, porque la estación va muy rápido y su movimiento la hace tirar más fuerte`, 'tercera-ley-el-que-gira', 'hipotesis']],
+  fb:{ a:'¡Bien! Es la tercera ley de Newton: la Tierra tira de la estación y la estación tira de la Tierra con la misma fuerza.',
+       b:'Elegiste la B. La fórmula multiplica las dos masas: m de la estación y M de la Tierra están en las dos fuerzas por igual. La correcta está marcada.',
+       c:'Elegiste la C. Toda masa atrae a toda masa, también la pequeña. Y lo hace con la misma fuerza con que la atraen. La correcta está marcada.',
+       d:'Elegiste la D. Ir rápido no cambia la atracción: depende solo de las masas y la distancia, y las dos fuerzas son iguales y opuestas. La correcta está marcada.' } };
+const P3 = { id:'grav-altura-cuarto', ok:'a',
+  opts:[['a', `A ${V('h', km(cuarto.h))} de altura: al doble de distancia del centro, la gravedad baja a (1/2)²`, null, ''],
+        ['b', `A ${V('h', km(cuarto.errores.lineal))} de altura: hay que estar al cuádruple de distancia del centro, porque la gravedad es inversamente proporcional a la distancia, sin el cuadrado`, 'G3-g-lineal', 'parcial'],
+        ['c', `A ${V('h', km(cuarto.errores.desdeSuperficie))} de altura: la altura debe ser el doble del radio, porque (R/h)² = 1/4`, 'G4-distancia-desde-el-suelo', 'parcial'],
+        ['d', `A ${V('h', km(cuarto.errores.desdeSuperficieLineal))} de altura: la altura debe ser cuatro radios, porque R/h = 1/4`, 'desde-el-suelo-y-lineal', 'hipotesis']],
+  fb:{ a:'¡Bien! A 6400 km de altura la distancia al centro es 2R, el doble: la gravedad es (1/2)² = 1/4 de la del suelo.',
+       b:'Elegiste la B. La gravedad no baja en proporción a la distancia sino a su cuadrado: con el doble de distancia ya es un cuarto. La correcta está marcada.',
+       c:'Elegiste la C. La distancia de la ley va al centro de la Tierra, no al suelo: r = R + h. La correcta está marcada.',
+       d:'Elegiste la D. Aquí hay dos errores juntos: medir desde el suelo y olvidar el cuadrado. La correcta está marcada.' } };
+const P4 = { id:'grav-masa-satelite', ok:'a',
+  opts:[['a', `Los dos a unos ${V('v', kms(o1.v))}: la masa no cambia la rapidez de la órbita`, null, ''],
+        ['b', `El de 2000 kg a unos ${V('v', kms(o1.v*k3m.errores.kvConMasa))}, el doble: pesa el doble y necesita el doble de rapidez para no caer`, 'G7-rapidez-segun-masa', 'parcial'],
+        ['c', `El de 2000 kg a unos ${V('v', kms(o1.v*k3m.errores.kvConRaizMasa))}: necesita más rapidez, pero solo √2 veces, porque la masa va bajo la raíz`, 'rapidez-raiz-de-la-masa', 'hipotesis'],
+        ['d', `El de 2000 kg a unos ${V('v', kms(o1.v/k3m.km))}, la mitad: cuesta el doble moverlo y va más despacio`, 'pesado-mas-lento', 'hipotesis']],
+  fb:{ a:'¡Bien! El de 2000 kg recibe el doble de fuerza, pero también tiene el doble de masa que mover: las dos cosas se cancelan.',
+       b:'Elegiste la B. El más pesado necesita el doble de fuerza para girar igual, y la Tierra se la da: lo atrae el doble. La correcta está marcada.',
+       c:'Elegiste la C. En v = √(G·M/r), M es la masa de la Tierra, no la del satélite: la del satélite no aparece. La correcta está marcada.',
+       d:'Elegiste la D. Cuesta el doble moverlo, sí, pero también lo atraen con el doble de fuerza: se compensa justo. La correcta está marcada.' } };
+const P5 = { id:'grav-kepler3', ok:'a',
+  opts:[['a', `Unas ${V('T', horas(oRas.T*k3.kT))}, 8 veces más: ${V('T','T')}² crece como ${V('r','r')}³`, null, ''],
+        ['b', `Unas ${V('T', horas(oRas.T*k3.errores.Tlineal))}, 4 veces más: el período crece en proporción al radio de la órbita`, 'G3-kepler-T-lineal', 'hipotesis'],
+        ['c', `Unas ${V('T', horas(oRas.T*k3.errores.Tcuadrado))}, 16 veces más: el período crece con el cuadrado del radio`, 'kepler-T-cuadrado', 'hipotesis'],
+        ['d', `Unas ${V('T', horas(oRas.T*k3.errores.Traiz))}, 2 veces más: el período crece con la raíz del radio`, 'kepler-T-raiz', 'hipotesis']],
+  fb:{ a:'¡Bien! Con 4 veces el radio, T² crece 4³ = 64 veces y T crece √64 = 8 veces.',
+       b:'Elegiste la B. El de afuera recorre 4 veces más camino, pero además va más lento (la mitad de rapidez): tarda 4 · 2 = 8 veces. La correcta está marcada.',
+       c:'Elegiste la C. La tercera ley de Kepler dice T² ∝ r³, no T ∝ r²: con 4 veces el radio, T crece √64 = 8 veces. La correcta está marcada.',
+       d:'Elegiste la D. El de afuera recorre más camino y además va más lento: tarda mucho más que el doble. La correcta está marcada.' } };
+
+// Escala de tiempo de las animaciones: la órbita de la estación (92 min) se ve en unos 10 s.
+const K_EE = oEE.T/10;
+const Fsuelo = M_EE*10;                       // la F de referencia de las flechas: el peso de la estación en el suelo
+const lenF = (F, ref, max) => clamp(max*F/ref, 0, max);
+function vEE(ya, conTierra, extra, suelo){
+  const th = Math.PI/2 - 0.7 + oEE.w*S.t*K_EE;   // arranca arriba a la derecha: los rótulos caben aun con el lienzo bajo
+  return Object.assign({ rMax:1.32*RT, planeta:{ R:RT, nombre:'Tierra' }, orbitas:[RT + H_EE],
+    sats:[{ r:RT + H_EE, th, nom:'estación', F: ya ? 'si' : '?', Flen: lenF(fEE.F, Fsuelo, 58), Ftxt: ya ? 'F · la Tierra' : 'F = ?', cotaH:'h = 400 km', dyNom:-22 }],
+    tierraF: conTierra ? conTierra : null, capF:0.42, sueloF: suelo ? { len: lenF(Fsuelo, Fsuelo, 58) } : null }, extra || {});
+}
+const base = s => Object.assign({ graf:null }, s);
+const grafG = (curva, extra) => Object.assign({ x0:0, x1:7, yMax:10, f:x => 10/(x*x), lineal:null, curva, xLab:'r (en radios R)', yLab:'g (m/s²)', colY:css('--c-g'), suelo:1 }, extra || {});
+const steps = [
+ { k:'Paso 1', t:'El problema', ley:['F','h','orbita'],
+   vista:() => base({ orb: vEE(false) }),
+   body:() => `<p class="problem">Una astronauta de ${V('m','60 kg')} flota dentro de una estación espacial que gira alrededor de la Tierra a una altura de ${V('h','400 km')}. El radio de la Tierra es ${V('R','6400 km')} y en el suelo la gravedad es ${V('g','g = 10 m/s²')}. ¿Con qué ${V('F','fuerza')} la atrae la Tierra allá arriba, comparada con la del suelo? ¿Por qué flota?</p>
+   <p>A la izquierda (o arriba, en el celular) están la Tierra y la estación. El dibujo está a escala: los 400 km de altura son apenas el espacio entre el suelo y la estación. La fuerza todavía no se muestra. Toca o pasa el puntero sobre un dato para ver dónde está.</p>`,
+   lect:() => [], desc:() => 'La Tierra y una estación espacial a 400 kilómetros de altura, dibujadas a escala. La fuerza sobre la estación todavía no se muestra.' },
+ { k:'Paso 2', t:'Antes de calcular, predice', gate:P1, ley:['F','h','orbita'],
+   vista:() => base({ orb: vEE(!!S.pred[P1.id], null, null, true) }),
+   body:() => `<p>La astronauta de ${V('m','60 kg')} pesa 600 N en el suelo. Allá arriba, a ${V('h','400 km')}, ¿cuánto vale la ${V('F','fuerza')} con que la atrae la Tierra?</p>${opcionesHTML(P1.opts, 'fb')}<div id="res" class="body"></div>`,
+   exp:() => `<div class="eqs">
+       <div class="eq">${V('r','r')} = ${V('R','R')} + ${V('h','h')} = 6400 + 400 = ${V('r','6800 km')}<span class="note">la distancia va al centro</span></div>
+       <div class="eq">${V('g','g')} = 10·(6400/6800)² = 10·(16/17)² = ${V('g', fmt(gEE.g, 2) + ' m/s²')}<span class="note">el ${pct(gEE.fraccion)} de la del suelo</span></div>
+       <div class="eq">${V('F','F')} = ${V('m','m')}·${V('g','g')} = 60·${fmt(gEE.g, 2)} ≈ ${V('F', fmt(gEE.peso(60), 0) + ' N')}</div></div>
+     <p>La gravedad sigue ahí. Entonces, ¿por qué flota? Porque la estación también cae hacia la Tierra, con la misma aceleración ${V('g','g')} que ella: caen juntas, y nada la aprieta contra el piso. No llegan nunca al suelo porque van de lado muy rápido, a unos ${V('v', kms(oEE.v))}: mientras caen, la Tierra se curva debajo de ellas. Eso es estar en órbita.</p>
+     ${fuente('En una pregunta abierta de un curso universitario de astronomía en Estados Unidos, cerca de la mitad de los alumnos dijo que los astronautas flotan porque en el espacio no hay gravedad, y cerca de uno de cada siete, que allá es mucho más débil; solo uno de cada diez habló de caída libre. En una versión de opción múltiple, cerca de uno de cada cinco eligió que la nave hace una fuerza que anula la de la Tierra (Williamson y otros, 2013). Las opciones A, B y D son esas tres ideas.')}`,
+   lect:() => S.pred[P1.id] ? [['g', `g = ${fmt(gEE.g, 2)} m/s²`], ['F', `F = ${fmt(gEE.peso(60), 0)} N sobre ella`]] : [],
+   desc:() => S.pred[P1.id] ? 'La estación da vueltas a la Tierra. La flecha de la fuerza apunta al centro de la Tierra y es casi tan larga como en el suelo.' : 'La Tierra y la estación a 400 kilómetros. La flecha de la fuerza está a trazos, con un signo de pregunta.' },
+ { k:'Paso 3', t:'La otra fuerza: predice', gate:P2, ley:['F','orbita'],
+   vista:() => { const ya = !!S.pred[P2.id]; return base({ orb: vEE(true, { modo: ya ? 'si' : '?', len: lenF(fEE.F, Fsuelo, 58), txt: ya ? 'F · la estación' : 'F = ?' }, null, true) }); },
+   body:() => `<p>La estación tiene una masa de ${V('m','420 000 kg')}, y la Tierra la atrae con una ${V('F','fuerza')} de unos ${cien(fEE.F, 1)} N (con la ${V('g','g')} de esa altura). La Tierra tiene una masa de unos ${V('M', cien(M.M_T, 0) + ' kg')}. ¿Con qué fuerza atrae la estación a la Tierra?</p>${opcionesHTML(P2.opts, 'fb')}<div id="res" class="body"></div>`,
+   exp:() => `<div class="eqs">
+       <div class="eq">${V('F','F')} = G·${V('M','M')}·${V('m','m')}/${V('r','r')}²<span class="note">las dos masas están multiplicadas: es la misma F para los dos</span></div>
+       <div class="eq">estación: a = ${V('F','F')}/${V('m','m')} = ${cien(fEE.F, 1)}/${cien(M_EE, 1)} ≈ ${fmt(fEE.a2, 2)} m/s²</div>
+       <div class="eq">Tierra: a = ${V('F','F')}/${V('M','M')} = ${cien(fEE.F, 1)}/${cien(M.M_T, 1)} ≈ ${cien(fEE.a1, 0)} m/s²</div></div>
+     <p>Las dos flechas son iguales y opuestas. Lo que cambia es el efecto: con la misma fuerza, la estación, que tiene poca masa, acelera mucho; la Tierra, con su masa enorme, acelera tan poco que no se nota. Por eso parece que solo la Tierra atrae.</p>
+     ${fuente('En la pregunta abierta del mismo estudio, cerca de uno de cada cinco alumnos dijo que solo los cuerpos muy pesados atraen (Williamson y otros, 2013). Las opciones B y C son dos caras de esa idea en este problema. La D es hipótesis nuestra.')}`,
+   lect:() => S.pred[P2.id] ? [['F', `F = ${cien(fEE.F, 1)} N en los dos`]] : [],
+   desc:() => S.pred[P2.id] ? 'Dos flechas iguales y opuestas: una sobre la estación, hacia la Tierra, y otra sobre la Tierra, desde su centro hacia la estación.' : 'La flecha sobre la estación apunta a la Tierra. La flecha sobre la Tierra está a trazos, con un signo de pregunta.' },
+ { k:'Paso 4', t:'Más arriba: predice', gate:P3, ley:['F','g','h','r','orbita'], leyDespues:['F','g','h','r','orbita','lineal'],
+   vista:() => { const ya = !!S.pred[P3.id], h = ya ? RT : H_EE, gg = M.gAltura({ h }), th = Math.PI/2 + (ya ? M.orbita({ h }).w*S.t*K_EE : 0.5);
+     return base({ orb:{ rMax:2.3*RT, planeta:{ R:RT, nombre:'Tierra' }, orbitas:[RT + h],
+       sats:[{ r:RT + h, th, nom:'satélite', F:'si', Flen: lenF(gg.g, 10, 56), Ftxt:'F · la Tierra', cotaH: ya ? 'h = R' : 'h = ?', cotaR: ya ? 'r = 2R' : null }], sueloF:{ len:56 } },
+       graf: grafG(ya, { lineal: ya ? x => 10/x : null, punto: ya ? 2 : undefined, marcas: ya ? [{ x:1.5, t:'h = R/2' }, { x:2, t:'h = R', fila:1 }] : [] }) }); },
+   body:() => `<p>Un satélite sube cada vez más. En el suelo la gravedad es ${V('g','g = 10 m/s²')}. ¿A qué ${V('h','altura')} sobre el suelo la gravedad es la cuarta parte, ${V('g','2,5 m/s²')}?</p>${opcionesHTML(P3.opts, 'fb')}<div id="res" class="body"></div>`,
+   exp:() => `<div class="eqs">
+       <div class="eq">${V('g','g')} = ${V('g','g₀')}·(${V('R','R')}/${V('r','r')})² = 10/4 → (${V('R','R')}/${V('r','r')})² = 1/4 → ${V('r','r')} = 2${V('R','R')}</div>
+       <div class="eq">${V('h','h')} = ${V('r','r')} − ${V('R','R')} = 2R − R = R = ${V('h','6400 km')}</div></div>
+     <p>En la gráfica, la curva verde es la gravedad: con el doble de distancia al centro, un cuarto; con el triple, un noveno. La curva a trazos es lo que pasaría si bajara en proporción inversa a la distancia (1/r): siempre queda por encima. Las marcas turquesa son h = R/2 (g ≈ ${fmt(M.gAltura({ h:RT/2 }).g, 2)} m/s²) y h = R (2,5 m/s²).</p>
+     ${fuente('En el mismo test de gravitación, ante la Luna al doble de distancia, cerca de tres de cada cuatro alumnos respondieron, después del curso, que la fuerza sería la mitad (Williamson y otros, 2013). La opción B es esa idea en este problema. Medir la distancia desde el suelo y no desde el centro se reporta como idea frecuente, sin porcentaje: es la C. La D es hipótesis nuestra.')}`,
+   lect:() => S.pred[P3.id] ? [['h', 'h = 6400 km'], ['r', 'r = 2R'], ['g', 'g = 2,5 m/s²']] : [],
+   desc:() => S.pred[P3.id] ? 'El satélite gira a una altura igual al radio de la Tierra. Su flecha de fuerza mide un cuarto de la del suelo. En la gráfica, la curva de la gravedad baja como uno sobre r al cuadrado, por debajo de la curva a trazos.' : 'Un satélite cerca de la Tierra, con la altura marcada con un signo de pregunta. La gráfica de la gravedad contra la distancia está vacía.' },
+ { k:'Paso 5', t:'Dos satélites en la misma órbita: predice', gate:P4, ley:['v','orbita'], leyDespues:['F','v','orbita'],
+   vista:() => { const ya = !!S.pred[P4.id], th = Math.PI/2 + (ya ? o1.w*S.t*K_EE : 0);
+     return base({ orb:{ rMax:2.3*RT, planeta:{ R:RT, nombre:'Tierra' }, orbitas:[2*RT],
+       sats:[{ r:2*RT, th, nom:'1000 kg', F: ya ? 'si' : 'no', Flen:26, Ftxt:'F', v: ya ? 'si' : '?', vlen:40, vtxt:'v' },
+             { r:2*RT, th: th + Math.PI, nom:'2000 kg', tam:1.3, F: ya ? 'si' : 'no', Flen:52, Ftxt:'2F', v: ya ? 'si' : '?', vlen:40, vtxt:'v', dyNom:24 }] } }); },
+   body:() => `<p>Dos satélites giran en la misma órbita circular, a una ${V('h','altura')} igual al radio de la Tierra (${V('r','r = 2R')}). Uno tiene ${V('m','1000 kg')} y el otro ${V('m','2000 kg')}. ¿Qué ${V('v','rapidez')} necesita cada uno?</p>${opcionesHTML(P4.opts, 'fb')}<div id="res" class="body"></div>`,
+   exp:() => `<div class="eqs">
+       <div class="eq">G·${V('M','M')}·${V('m','m')}/${V('r','r')}² = ${V('m','m')}·${V('v','v')}²/${V('r','r')}<span class="note">la gravedad hace de fuerza centrípeta; m está a los dos lados</span></div>
+       <div class="eq">${V('v','v')} = √(G·${V('M','M')}/${V('r','r')}) = √(g₀·R²/2R) = √(10·6,4·10⁶/2) ≈ ${V('v', kms(o1.v))}</div></div>
+     <p>Mira las flechas: sobre el de 2000 kg la ${V('F','fuerza')} es el doble, y aun así los dos van juntos. Necesita el doble de fuerza para girar igual, y la Tierra se la da. Por eso todos los satélites a la misma altura van a la misma rapidez, sea cual sea su masa.</p>
+     ${fuente('En entrevistas a 112 universitarios de Estados Unidos, 8 dijeron que la rapidez de un planeta en su órbita depende de su masa o de su tamaño (Yu, Sahami y Denn, 2010). La opción B es esa idea con números; no está medida en problemas. Las opciones C y D son hipótesis nuestras.')}`,
+   lect:() => S.pred[P4.id] ? [['v', `v = ${kms(o1.v)} los dos`], ['F', 'F sobre el de 2000 kg: el doble']] : [],
+   desc:() => S.pred[P4.id] ? 'Los dos satélites giran juntos, en lados opuestos de la misma órbita. Sus flechas de velocidad son iguales; la de fuerza del más pesado es el doble.' : 'Dos satélites quietos en lados opuestos de la misma órbita, con sus velocidades a trazos y signos de pregunta.' },
+ { k:'Paso 6', t:'Una órbita más grande: predice', gate:P5, ley:['T','r','orbita'], leyDespues:['T','r','orbita'],
+   vista:() => { const ya = !!S.pred[P5.id], k = oRas.T/1.2;   // la órbita rasante se ve en 1,2 s
+     const s1 = ya ? oRas.estado(S.t*k) : { theta:90 }, s2 = ya ? o4.estado(S.t*k) : { theta:90 };
+     return base({ orb:{ rMax:4.15*RT, planeta:{ R:RT, nombre:'' }, orbitas:[RT, 4*RT],
+       sats:[{ r:RT, th:s1.theta*Math.PI/180, nom:'A', radial:true, vueltas: ya ? Math.floor(S.t*k/oRas.T + 1e-9) : undefined },
+             { r:4*RT, th:s2.theta*Math.PI/180, nom:'B', radial:true, cotaR:'r = 4R', vueltas: ya ? Math.floor(S.t*k/o4.T + 1e-9) : undefined }] } }); },
+   body:() => `<p>El satélite A gira a ras del suelo (${V('r','r = R')}, sin aire) y da una vuelta en unos ${V('T', tiempo(oRas.T))}. El satélite B gira en una órbita de radio ${V('r','r = 4R')}. ¿Cuánto tarda B en dar una vuelta?</p>${opcionesHTML(P5.opts, 'fb')}<div id="res" class="body"></div>`,
+   exp:() => `<div class="eqs">
+       <div class="eq">${V('T','T')} = 2π·${V('r','r')}/${V('v','v')} = 2π·√(${V('r','r')}³/(G·${V('M','M')}))<span class="note">tercera ley de Kepler: T² ∝ r³</span></div>
+       <div class="eq">${V('T','T')}(B)/${V('T','T')}(A) = √(4³) = √64 = 8 → ${V('T','T')}(B) ≈ 8·${tiempo(oRas.T)} ≈ ${V('T', horas(o4.T))}</div></div>
+     <p>Cuenta las vueltas: mientras B da una, A da ocho. B recorre 4 veces más camino y además va a la mitad de rapidez (${kms(o4.v)} contra ${kms(oRas.v)}): 4 · 2 = 8. A una distancia del centro de unas ${fmt(geo.rEnR, 1)} veces el radio de la Tierra (unos ${fmt(geo.h/1000, -3)} km de altura) el período llega a 24 h: ahí están los satélites geoestacionarios, que dan la vuelta junto con la Tierra y se ven quietos en el cielo.</p>
+     ${fuente('Las tres opciones incorrectas son hipótesis nuestras. La B se parece a un error que sí está medido: creer que la fuerza baja en proporción a la distancia, no a su cuadrado (Williamson y otros, 2013).')}`,
+   lect:() => S.pred[P5.id] ? [['T', `A: T = ${tiempo(oRas.T)}`], ['T', `B: T = ${tiempo(o4.T)}`]] : [],
+   desc:() => S.pred[P5.id] ? 'Los dos satélites giran; mientras B da una vuelta, A da ocho.' : 'Dos satélites quietos: A a ras del suelo y B en una órbita de radio cuatro veces mayor.' },
+ { k:'Paso 7', t:'La respuesta', anima:true, ley:['F','g','v','T','h','r','orbita'], leyDespues:['F','g','v','T','h','r','orbita'],
+   vista:() => { const o = vEE(true, { modo:'si', len: lenF(fEE.F, Fsuelo, 58), txt:'F · la estación' }); o.sats[0].v = 'si'; o.sats[0].vlen = 34; o.sats[0].vtxt = 'v'; o.sats[0].Flado = -1;
+     return base({ orb:o, graf: grafG(true, { punto:(RT + H_EE)/RT, marcas:[{ x:(RT + H_EE)/RT, t:'estación', fila:1 }] }) }); },
+   body:() => `<p class="answer">A ${V('h','400 km')}, la Tierra atrae a la astronauta con ${V('F', fmt(gEE.peso(60), 0) + ' N')}, el ${pct(gEE.fraccion)} de su peso en el suelo (${V('g','g')} = ${fmt(gEE.g, 2)} m/s²). Flota porque ella y la estación caen juntas.</p>
+     <p>La estación va a ${V('v', kms(oEE.v))} y da una vuelta en unos ${V('T', tiempo(oEE.T))}. Todo sale de una sola ley: ${V('F','F')} = G·${V('M','M')}·${V('m','m')}/${V('r','r')}², con la distancia ${V('r','r')} medida al centro de la Tierra, la misma fuerza sobre los dos cuerpos y la gravedad haciendo de fuerza centrípeta.</p>
+     <p>Su energía potencial gravitatoria es Ep = −G·${V('M','M')}·${V('m','m')}/${V('r','r')}: negativa, porque el cero está lejísimos, en el infinito. Para escapar de la Tierra desde el suelo (sin aire), la energía total, cinética más potencial, tiene que llegar al menos a cero: ${V('v','ve')} = √(2·g₀·R) ≈ ${kms(M.escape({}).ve)}.</p>`,
+   lect:() => [['g', `g = ${fmt(gEE.g, 2)} m/s²`], ['v', `v = ${kms(oEE.v)}`], ['T', `T = ${tiempo(oEE.T)}`]],
+   desc:() => 'La estación gira con su flecha de fuerza hacia la Tierra, la flecha igual y opuesta sobre la Tierra y su velocidad tangente. En la gráfica, su punto sobre la curva de la gravedad.' },
+ { k:'Paso 8', t:'Ahora explora tú', explora:true, ley:['F','g','v','T','h','r','orbita'],
+   vista:() => { const e = S.ex, o = M.orbita({ h:e.h, m:e.m }), r = RT + e.h;
+     const lejos = e.h > 3*RT;   // hasta 3R se ve de cerca; más allá, hasta la órbita geoestacionaria
+    return base({ orb:{ rMax: lejos ? 7.2*RT : 4.2*RT, planeta:{ R:RT, nombre:'' }, orbitas:[r], geo: lejos ? geo.r : null,
+       sats:[{ r, th:e.th, nom: `${fmt(e.m, 0)} kg`, F:'si', Flen: lenF(o.F, 5000*10, 54) + 6, Ftxt:'F', v:'si', vlen: 10 + 30*o.v/8000, vtxt:'v', cotaH: `h = ${km(e.h)}` }] },
+       graf: grafG(true, { punto: r/RT, geo: geo.rEnR }) }); },
+   body:() => `<p class="hint">Toma el satélite y llévalo más cerca o más lejos de la Tierra. Con el teclado, enfoca el dibujo y usa ↑ ↓ (100 km por toque; con Mayúsculas, 1000 km). Cambia también su masa.</p>
+     <div class="ctrls">
+       <div class="slider"><label for="e-m"><span>Masa del satélite (${V('m','m')})</span><output id="e-m-o"></output></label><input id="e-m" type="range" min="100" max="5000" step="100" value="${S.ex.m}"></div>
+     </div>
+     <div id="live" class="body"></div>`,
+   lect:() => { const o = M.orbita({ h:S.ex.h, m:S.ex.m }); return [['h', `h = ${km(S.ex.h)}`], ['g', `g = ${fmt(o.g, 2)} m/s²`], ['v', `v = ${kms(o.v)}`], ['T', `T = ${tiempo(o.T)}`]]; },
+   desc:() => '' },
+];
+function verActual(){ const P = steps[S.step].vista(); if (P.graf) P.graf.hl = S.hl === 'g'; if (S.hl === 'F') P.orb.sats.forEach(s => s.hl = true); P.orb.hl = S.hl; return P; }
+let geoUltima = null;
+function draw(){
+  if (!L.W) return;
+  const s = steps[S.step], c = colores(L.W, L.H), P = verActual(), { ctx, W, H } = L;
+  ctx.clearRect(0, 0, W, H);
+  const compacto = L.compacto && W < 900 && H < 300;
+  const conG = !!P.graf && !compacto;
+  const hO = conG ? Math.round(H*0.58) : H;
+  geoUltima = vistaOrbita(ctx, c, { x:6, y:4, w:W - 12, h:hO - 8 }, P.orb);
+  if (conG) grafica(ctx, c, { x:38, y:hO + 6, w:W - 50, h:H - hO - 38 }, P.graf);
+  lecturas($('lect1'), s.lect());
+  decir($('desc1'), s.explora ? resumen() : s.desc());
+}
+function resumen(){
+  const o = M.orbita({ h:S.ex.h, m:S.ex.m });
+  return `Satélite de ${fmt(S.ex.m, 0)} kilogramos a ${fmt(S.ex.h/1000, 0)} kilómetros de altura, a ${fmt((RT + S.ex.h)/RT, 2)} radios del centro. Gravedad ${fmt(o.g, 2)} metros por segundo al cuadrado; rapidez ${fmt(o.v/1000, 1)} kilómetros por segundo; una vuelta en ${tiempo(o.T)}.`;
+}
+function correr(){
+  parar(); const s = steps[S.step];
+  if (RM){ S.t = steps[S.step].gate === P5 ? o4.T/(oRas.T/1.2) : 2.5; draw(); return; }
+  parar = reloj(dt => {
+    S.t += dt;
+    if (s.explora && !S.arrastra){ S.ex.th += M.orbita({ h:S.ex.h }).w*dt*oRas.T/6; }   // la órbita rasante se ve en 6 s
+    draw();
+  });
+}
+const anima = s => s.anima || s.explora || (s.gate && S.pred[s.gate.id]);
+
+const dots = $('dots');
+steps.forEach((s, n) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = n + 1;
+  b.addEventListener('click', () => { go(n); $('stepT').focus({ preventScroll:true }); }); li.appendChild(b); dots.appendChild(li);
+});
+function go(n){
+  if (n < 0 || n >= steps.length || n > S.max) return;
+  parar();
+  const s = steps[n]; S.step = n; S.hl = null; S.t = 0; S.arrastra = false;
+  cv.tabIndex = s.explora ? 0 : -1;
+  cv.setAttribute('aria-label', s.explora ? 'Satélite del explorador: con las flechas del teclado lo subes o lo bajas' : 'La Tierra y un satélite en órbita, con sus fuerzas');
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  ponerLeyenda(); pintarDots();
+  L.compactar(!!(s.gate && !S.pred[s.gate.id]));
+  if (s.gate) prediccion(s);
+  if (s.explora) explorar();
+  nav(); L.resize();
+  if (anima(s)) correr();
+}
+function ponerLeyenda(){ const s = steps[S.step]; leyenda($('ley1'), s.gate && S.pred[s.gate.id] && s.leyDespues ? s.leyDespues : s.ley); }
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0;
+  const falta = s.gate && !S.pred[s.gate.id];
+  $('next').disabled = S.step === steps.length - 1 || falta;
+  $('next').textContent = falta ? 'Elige una opción' : 'Siguiente';
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    // Un paso bloqueado no anuncia su título (podría adelantar la respuesta).
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k+1}, bloqueado` : `Ir al ${steps[k].k.toLowerCase()}: ${steps[k].t}`);
+    if (k > S.max) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled');
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(n){ if (n > S.max) S.max = n; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('res').innerHTML = s.exp();
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id]) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1);
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    pintar(); pintarDots(); nav(); ponerLeyenda();
+    // El botón elegido queda desactivado: el foco pasa a la respuesta para no perderse.
+    $('fb').focus({ preventScroll:true });
+    L.compactar(false);
+    const paso = S.step; S.t = 0; L.resize();
+    Celular.alResponder(L.cv, () => correr(), () => S.step === paso && !$('m1').hidden);
+  }));
+  pintar();
+}
+
+// ----- explorador -----
+function explorar(){
+  const pon = () => {
+    $('e-m-o').textContent = `${fmt(S.ex.m, 0)} kg`;
+    const o = M.orbita({ h:S.ex.h, m:S.ex.m }), r = RT + S.ex.h;
+    $('live').innerHTML = `<div class="eqs">
+      <div class="eq">${V('r','r')} = ${V('R','R')} + ${V('h','h')} = 6400 + ${fmt(S.ex.h/1000, 0)} = ${V('r', km(r))}<span class="note">${fmt(r/RT, 2)} radios</span></div>
+      <div class="eq">${V('g','g')} = 10·(${V('R','R')}/${V('r','r')})² = ${V('g', fmt(o.g, 2) + ' m/s²')}</div>
+      <div class="eq">${V('F','F')} = ${V('m','m')}·${V('g','g')} = ${fmt(S.ex.m, 0)}·${fmt(o.g, 2)} = ${V('F', fmt(o.F, 0) + ' N')}<span class="note">cambia con la masa</span></div>
+      <div class="eq">${V('v','v')} = √(g₀·R²/${V('r','r')}) = ${V('v', kms(o.v))}<span class="note">no cambia con la masa</span></div>
+      <div class="eq">${V('T','T')} = 2π·${V('r','r')}/${V('v','v')} = ${V('T', tiempo(o.T))}</div></div>
+      <p class="hint">${Math.abs(o.T - 86400) < 1800 ? 'Casi 24 h: esta es la órbita geoestacionaria (la circunferencia naranja), a unos 36 000 km de altura.' : 'La circunferencia naranja a trazos es la órbita geoestacionaria: ahí el período es 24 h.'}</p>`;
+    sinParadaLive();
+  };
+  $('e-m').addEventListener('input', () => { S.ex.m = +$('e-m').value; pon(); draw(); });
+  S.pintarEx = pon; pon();
+}
+// En el explorador las ecuaciones se rehacen a cada movimiento: sus datos no son paradas del tabulador.
+function sinParadaLive(){ $('live').querySelectorAll('.v').forEach(e => { e.removeAttribute('tabindex'); e.style.cursor = 'default'; }); }
+const H_MAX = 6*RT;
+function ponerH(h){ S.ex.h = clamp(Math.round(h/1e5)*1e5, 0, H_MAX); if (S.pintarEx) S.pintarEx(); draw(); }
+Celular.arrastre(cv, {
+  activo: () => steps[S.step].explora,
+  cerca: (p, r) => { if (!geoUltima || !geoUltima.sats[0]) return false; const q = geoUltima.sats[0]; return Math.hypot(p.x - q.x, p.y - q.y) < r; },
+  empezar: () => { S.arrastra = true; },
+  mover: p => { const g = geoUltima; if (!g) return; const d = Math.hypot(p.x - g.cx, p.y - g.cy); S.ex.th = Math.atan2(g.cy - p.y, p.x - g.cx); ponerH(d/g.s - RT); },
+  soltar: () => { S.arrastra = false; },
+});
+cv.addEventListener('keydown', e => {
+  if (!steps[S.step].explora) return;
+  const d = { ArrowUp:1, ArrowRight:1, ArrowDown:-1, ArrowLeft:-1 }[e.key]; if (!d) return;
+  e.preventDefault(); ponerH(S.ex.h + d*(e.shiftKey ? 1e6 : 1e5));
+});
+
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); $('stepT').focus({ preventScroll:true }); });
+$('prev').addEventListener('click', () => { go(S.step - 1); $('stepT').focus({ preventScroll:true }); });
+function marcar(k){
+  S.hl = k;
+  document.querySelectorAll('#m1 .v').forEach(e => e.classList.toggle('hl', !!k && e.dataset.var === k));
+  draw();
+}
+document.addEventListener('pointerover', e => { const t = e.target.closest && e.target.closest('#m1 [data-var]'); if (t) marcar(t.dataset.var); });
+document.addEventListener('pointerout', e => { const t = e.target.closest && e.target.closest('#m1 [data-var]'); if (t && !t.contains(e.relatedTarget)) marcar(null); });
+document.addEventListener('focusin', e => { const t = e.target.closest && e.target.closest('#m1 [data-var]'); if (t) marcar(t.dataset.var); });
+document.addEventListener('focusout', e => { if (e.target.closest && e.target.closest('#m1 [data-var]')) marcar(null); });
+alRedibujarTema(draw);
+// Al cambiar de pestaña la animación se detiene; al volver, sigue donde estaba (nada queda trabado).
+addEventListener('modo', () => {
+  if ($('m1').hidden) parar();
+  else { L.resize(); if (anima(steps[S.step])) correr(); }
+});
+L.resize(); go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Preguntas de docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md: G3 (cuatro veces más lejos, NGCI),
+   G4 (otro planeta), G8 (ascensor en caída libre), el cañón de Newton con la velocidad de escape y Kepler II (G6, G7).
+   El dibujo empieza quieto y se anima recién al responder. Lo que se dibuja y los números salen de MotorGravitacion. */
+(function(){
+const $ = id => document.getElementById(id);
+const cv = $('cv2');
+const altoLienzo = W => W >= 560 ? clamp(W*0.72, 400, 540) : clamp(W*1.05, 380, 440);
+const L = crearLienzo(cv, altoLienzo, () => draw());
+const S = { k:0, pred:{}, t0:0 };
+const E = {};
+let parar = () => {};
+
+/* --- dibujos de cada experimento --- */
+// 1. Tierra y Luna: la Luna a r0 (fantasma) y a kr·r0; gráfica F–r debajo.
+function dibLuna(ctx, c, W, H, ya){
+  const hO = Math.round(H*0.5), y = hO/2 - 4, x0 = 34, xMax = W - 34, kr = E.kr, rMaxV = 5.2;
+  const X = k => x0 + (xMax - x0)*k/rMaxV;
+  planetaDib(ctx, c, x0, y, 22, 'Tierra');
+  const dib = (k, txt, Flen, fantasma) => {
+    const x = X(k);
+    ctx.save(); if (fantasma) ctx.globalAlpha = .45;
+    ctx.beginPath(); ctx.arc(x, y, 9, 0, Math.PI*2); ctx.fillStyle = c.planeta; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; ctx.stroke(); ctx.restore();
+    rotulo(ctx, c, x, y + 22, txt, c.ink, 'center', 800, 10);
+    return x;
+  };
+  const F0 = 28;
+  const xa = dib(1, kr === 1 ? 'Luna' : 'Luna antes', 0, kr !== 1);
+  flecha(ctx, xa - 10, y - 16, xa - 10 - F0, y - 16, c.F, kr === 1 ? 3 : 2); rotulo(ctx, c, xa - 10 - F0/2, y - 30, 'F', c.F, 'center', 800, 11);
+  if (kr !== 1){
+    const xb = dib(kr, `Luna a ${fmt(kr, 1)}·r`, 0, false);
+    if (ya){ const l = Math.max(F0*M.comparar({ kr }).razon, 0); flecha(ctx, xb - 10, y - 16, xb - 10 - Math.max(l, 3), y - 16, c.F, 3);
+      rotulo(ctx, c, xb - 10, y - 34, `F/${fmt(1/M.comparar({ kr }).razon, 1)}`, c.F, 'center', 800, 11); }
+    else { flecha(ctx, xb - 10, y - 16, xb - 22, y - 16, c.F, 2.2, [3, 3]); rotulo(ctx, c, xb - 16, y - 34, 'F = ?', c.F, 'center', 800, 12, true); }
+  }
+  // cota de r
+  ctx.save(); ctx.strokeStyle = c.r; ctx.lineWidth = 1.4; ctx.setLineDash([5, 3]); linea(ctx, x0, y + 48, X(1), y + 48); linea(ctx, x0, y + 43, x0, y + 53); linea(ctx, X(1), y + 43, X(1), y + 53); ctx.restore();
+  rotulo(ctx, c, (x0 + X(1))/2 + 12, y + 48, 'r', c.r, 'center', 800, 11);
+  grafica(ctx, c, { x:38, y:hO + 6, w:W - 50, h:H - hO - 38 }, { x0:0, x1:5, xi:1, yMax:1, f:x => M.comparar({ kr:x }).razon, lineal: ya ? x => M.comparar({ kr:x }).errores.lineal : null, linealTxt:'si fuera 1/r',
+    curva:ya, punto: ya ? kr : undefined, xLab:'r (en veces la distancia de antes)', yLab:'F (en veces la de antes)', colY:c.F, aviso:'se dibuja al responder' });
+}
+// 2. Tierra y un planeta: una persona en cada uno, con su peso.
+function dibPlaneta(ctx, c, W, H, ya){
+  // Los dos planetas apoyados sobre la misma línea de abajo; la Tierra a la izquierda, el planeta a la derecha.
+  const p = M.planeta({ kM:E.kM, kR:E.kR }), rT = Math.min(W*0.11, (H - 70)/7), rP = rT*E.kR, piso = H - 34;
+  const xT = 10 + rT, xP = Math.max(W - 10 - rP, xT + rT + rP + 12), yT = piso - rT, yP = piso - rP;
+  planetaDib(ctx, c, xT, yT, rT, 'Tierra');
+  planetaDib(ctx, c, xP, yP, rP, 'planeta', c.planeta);
+  const persona = (x, yy) => { ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.8; ctx.beginPath(); ctx.arc(x, yy - 22, 4, 0, Math.PI*2); ctx.stroke();
+    linea(ctx, x, yy - 18, x, yy - 8); linea(ctx, x, yy - 8, x - 4, yy); linea(ctx, x, yy - 8, x + 4, yy); linea(ctx, x - 5, yy - 15, x + 5, yy - 15); ctx.restore(); };
+  persona(xT, yT - rT); persona(xP, yP - rP);
+  // El peso sale de la persona y apunta al centro de su planeta.
+  const L0 = 34, flechaPeso = (x, yTop, l, txt, duda) => {
+    flecha(ctx, x + 10, yTop - 14, x + 10, yTop - 14 + l, c.F, duda ? 2.2 : 3, duda ? [3, 3] : null);
+    rotulo(ctx, c, x + 16, yTop - 40, txt, c.F, 'left', 800, duda ? 12 : 11, duda);
+  };
+  flechaPeso(xT, yT - rT, L0, 'F = 600 N · la Tierra');
+  if (ya) flechaPeso(xP, yP - rP, clamp(L0*p.razon, 3, 120), `F = ${fmt(600*p.razon, 0)} N · el planeta`);
+  else flechaPeso(xP, yP - rP, 12, 'F = ? · el planeta', true);
+  rotulo(ctx, c, W - 10, H - 14, `planeta: ${fmt(E.kM, 1)} masas y ${fmt(E.kR, 1)} radios de la Tierra`, c.ink, 'right', 700, 10);
+}
+// 3. Ascensor con una balanza: quieto o cayendo (a hacia abajo).
+function dibAscensor(ctx, c, W, H, ya){
+  const b = M.balanza({ m:50, a:E.a }), top = 20, alto = H - 56, xC = W*0.38, w = Math.min(130, W*0.34), h = Math.min(150, alto*0.42);
+  const recorrido = alto - h - 6, caida = ya ? Math.min(b.caida(E.t), 10) : 0, y = top + caida/10*recorrido;
+  ctx.save(); ctx.strokeStyle = c.line; ctx.lineWidth = 2; linea(ctx, xC - w/2 - 8, top, xC - w/2 - 8, top + alto); linea(ctx, xC + w/2 + 8, top, xC + w/2 + 8, top + alto); ctx.restore();
+  // cable: entero si no cae; cortado si cae
+  ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; if (E.a > 0 && ya){ linea(ctx, xC, 0, xC, top - 4); ctx.setLineDash([2, 3]); linea(ctx, xC, y - 18, xC, y); } else linea(ctx, xC, 0, xC, y); ctx.restore();
+  ctx.save(); ctx.fillStyle = c.paper; ctx.strokeStyle = c.ink; ctx.lineWidth = 2; rr(ctx, xC - w/2, y, w, h, 8); ctx.fill(); ctx.stroke(); ctx.restore();
+  // balanza y persona
+  const yb = y + h - 12; ctx.save(); ctx.fillStyle = c.bloque; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; rr(ctx, xC - 22, yb, 44, 8, 2); ctx.fill(); ctx.stroke(); ctx.restore();
+  ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; const px = xC - 4, py = yb; ctx.beginPath(); ctx.arc(px, py - 46, 6, 0, Math.PI*2); ctx.stroke();
+  linea(ctx, px, py - 40, px, py - 18); linea(ctx, px, py - 18, px - 6, py); linea(ctx, px, py - 18, px + 6, py); linea(ctx, px - 9, py - 32, px + 9, py - 32); ctx.restore();
+  rotulo(ctx, c, xC, y + 14, ya ? `balanza: ${fmt(b.lectura, 0)} N` : 'balanza: ? N', c.ink, 'center', 800, 12, !ya);
+  // peso (la Tierra la sigue atrayendo) y aceleración
+  flecha(ctx, px + 14, py - 36, px + 14, py + 14, c.F, 3); rotulo(ctx, c, xC + w/2 + 8, py - 12, 'F = 500 N', c.F, 'left', 800, 11); rotulo(ctx, c, xC + w/2 + 8, py + 4, '· la Tierra', c.F, 'left', 800, 11);
+  if (ya && E.a > 0){ flecha(ctx, xC - w/2 - 26, y + h/2 - 24, xC - w/2 - 26, y + h/2 - 24 + 4.8*E.a, c.ink, 2.4); rotulo(ctx, c, xC - w/2 - 30, y + h/2 - 34, `a = ${fmt(E.a, 1)} m/s²`, c.ink, 'right', 800, 11); }
+  rotulo(ctx, c, xC, top + alto + 10, ya ? (E.a >= 10 ? 'cable cortado: cae libre' : E.a > 0 ? 'baja acelerando' : 'quieto') : 'cable cortado', c.muted, 'center', 700, 10);
+}
+// 4. Cañón de Newton desde una torre imaginaria de altura R.
+function dibCanon(ctx, c, W, H, ya){
+  const cx = W/2, cy = H*0.56, s = Math.min(W, H*1.1)/2/(3.3*RT), Rpx = RT*s, h0 = RT;
+  planetaDib(ctx, c, cx, cy, Rpx, 'Tierra');
+  // torre
+  ctx.save(); ctx.strokeStyle = c.h; ctx.lineWidth = 3; linea(ctx, cx, cy - Rpx, cx, cy - 2*Rpx); ctx.restore();
+  rotulo(ctx, c, cx - 6, cy - 1.5*Rpx, 'torre (h = R)', c.h, 'right', 800, 10);
+  const xy = q => ({ x: cx + q.x*s, y: cy - q.y*s });
+  const traza = (v, col, w, dash) => { const l = M.lanzamiento({ v0:v, h0 }), pts = l.recorrido(240, 3.6*RT);
+    ctx.save(); ctx.beginPath(); ctx.rect(0, 0, W, H); ctx.clip(); ctx.strokeStyle = col; ctx.lineWidth = w; ctx.setLineDash(dash || []); ctx.beginPath();
+    pts.forEach((q, i) => { const p = xy(q); i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y); }); ctx.stroke(); ctx.restore(); return l; };
+  if (ya){
+    traza(M.orbita({ h:h0 }).v, c.muted, 1.2, [2, 4]);
+    traza(M.escape({ h:h0 }).ve, c.muted, 1.2);
+    const l = traza(E.v0, c.v, 2.2);
+    const q = l.en(E.t*E.k, 3.6*RT), p = xy(q);
+    // La gravedad sobre la bala: hacia el centro, con largo ∝ 1/r² (30 px a la altura de la torre).
+    const d = Math.hypot(p.x - cx, p.y - cy) || 1, lF = clamp(30*M.comparar({ kr: q.r/(2*RT) }).razon, 3, 70);
+    flecha(ctx, p.x, p.y, p.x + (cx - p.x)/d*lF, p.y + (cy - p.y)/d*lF, c.F, 2.6);
+    rotulo(ctx, c, p.x + (cx - p.x)/d*lF*0.5 + 12, p.y + (cy - p.y)/d*lF*0.5, 'F', c.F, 'left', 800, 11);
+    ctx.beginPath(); ctx.arc(p.x, p.y, 5, 0, Math.PI*2); ctx.fillStyle = c.ink; ctx.fill();
+    const tipo = { cae:'vuelve a caer', circular:'órbita circular', eliptica:'órbita elíptica', escapa:'escapa y no vuelve' }[l.tipo];
+    rotulo(ctx, c, 10, H - 14, `v₀ = ${kms(E.v0)} · ${tipo}`, c.v, 'left', 800, 12);
+  }
+  flecha(ctx, cx, cy - 2*Rpx, cx + 46, cy - 2*Rpx, c.v, 3, ya ? null : [5, 4]);
+  rotulo(ctx, c, cx + 52, cy - 2*Rpx - 12, ya ? 'v₀' : 'v₀ = ?', c.v, 'left', 800, 12, !ya);
+}
+// 5. Órbita elíptica con el Sol en un foco (Kepler II).
+function dibElipse(ctx, c, W, H, ya){
+  const k = M.kepler2({ e:E.e, n:8 }), s = Math.min((W - 40)/(2*k.a), (H - 60)/(2*k.b)), cx = W/2 + k.a*k.e*s, cy = H/2;
+  const xy = q => ({ x: cx + q.x*s, y: cy - q.y*s });
+  // elipse
+  ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; ctx.setLineDash([2, 4]); ctx.beginPath(); ctx.ellipse(cx - k.a*k.e*s, cy, k.a*s, k.b*s, 0, 0, Math.PI*2); ctx.stroke(); ctx.restore();
+  if (ya){
+    // sectores de igual tiempo, alternados
+    for (let j = 0; j < k.n; j++){
+      ctx.save(); ctx.beginPath(); ctx.moveTo(cx, cy);
+      for (let i = 0; i <= 24; i++){ const p = xy(k.posicion((j + i/24)/k.n)); ctx.lineTo(p.x, p.y); }
+      ctx.closePath(); ctx.fillStyle = c.ink; ctx.globalAlpha = j % 2 ? .07 : .16; ctx.fill(); ctx.restore();
+    }
+  }
+  ctx.beginPath(); ctx.arc(cx, cy, 11, 0, Math.PI*2); ctx.fillStyle = c.sol; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; ctx.stroke();
+  rotulo(ctx, c, cx, cy + 22, 'Sol', c.ink, 'center', 800, 11);
+  const q = ya && !RM ? k.posicion(E.t/E.Tvis) : k.posicion(0.5), p = xy(q);
+  ctx.beginPath(); ctx.arc(p.x, p.y, 7, 0, Math.PI*2); ctx.fillStyle = c.planeta; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; ctx.stroke();
+  // Flecha de v proporcional a la rapidez (64 px en el perihelio), tangente a la órbita.
+  const flechaV = (t, txt) => { const q = k.posicion(t), p = xy(q), q2 = k.posicion(t + 1e-4), vx = q2.x - q.x, vy = q2.y - q.y, l = Math.hypot(vx, vy) || 1, len = 64*q.v/k.vp;
+    const x2 = p.x + vx/l*len, y2 = p.y - vy/l*len; flecha(ctx, p.x, p.y, x2, y2, c.v, 3); rotulo(ctx, c, x2 + vx/l*12 + 10, y2 - vy/l*12, txt, c.v, 'left', 800, 12); };
+  if (ya && RM){
+    // Sin animación: el planeta en el perihelio y en el afelio, con sus dos velocidades (en razón vp/va).
+    const pa = xy(k.posicion(0)); ctx.beginPath(); ctx.arc(pa.x, pa.y, 7, 0, Math.PI*2); ctx.fillStyle = c.planeta; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; ctx.stroke();
+    flechaV(0, 'v cerca'); flechaV(0.5, 'v lejos');
+  } else if (ya){
+    flechaV(E.t/E.Tvis, 'v');
+  } else {
+    // dos signos de pregunta: cerca y lejos del Sol
+    const a = xy(k.posicion(0)), b = xy(k.posicion(0.5));
+    rotulo(ctx, c, a.x, a.y - 18, 'v = ?', c.v, 'center', 800, 12, true); rotulo(ctx, c, b.x, b.y - 18, 'v = ?', c.v, 'center', 800, 12, true);
+  }
+  rotulo(ctx, c, 10, H - 14, E.e > 0.1 ? `elipse muy alargada (e = ${fmt(E.e, 1)})` : `órbita de la Tierra (e = ${fmt(E.e, 3)})`, c.muted, 'left', 700, 10);
+}
+
+const esc = M.escape({ h:RT }), vcT = M.orbita({ h:RT }).v;
+const pl = M.planeta({ kM:4, kR:2 }), cmp4 = M.comparar({ kr:4 }), bal = M.balanza({ m:50, a:10 }), kE = M.kepler2({ e:0.6 });
+const EXPS = [
+  { id:'cuatro-veces-lejos', corto:'Cuatro veces más lejos', ley:['F','r'], leyDespues:['F','r','lineal'],
+    q:`La Tierra y la Luna se atraen con una ${V('F','fuerza')} ${V('F','F')} cuando sus centros están a una distancia ${V('r','r')}. Si la Luna estuviera cuatro veces más lejos (${V('r','4r')}), ¿con qué fuerza se atraerían?`,
+    opts:[['a', `${V('F','F/16')}: la distancia está al cuadrado, y 4² = 16`, null, ''],
+          ['b', `${V('F','F/4')}: cuatro veces más lejos, cuatro veces más débil`, 'G3-F-lineal', 'documentado'],
+          ['c', `${V('F','F/8')}: se debilita el doble de lo que se aleja`, 'G3-ocho-veces', 'documentado'],
+          ['d', `${V('F','F/2')}: la fuerza baja con la raíz de la distancia`, 'F-raiz-de-r', 'hipotesis']],
+    ok:'a',
+    fb:{ b:'Elegiste la B. La fuerza no baja en proporción a la distancia sino a su cuadrado: 4² = 16.',
+         c:'Elegiste la C. No es el doble de 4: es 4 al cuadrado. Con la distancia multiplicada por 4, la fuerza se divide entre 16.',
+         d:'Elegiste la D. Al alejarse, la fuerza baja mucho más que con la raíz: con el cuadrado de la distancia.' },
+    antes:() => Object.assign(E, { kr:4, dib:dibLuna }),
+    ctrl:() => `<div class="slider"><label for="q-kr"><span>Distancia de la Luna (en veces ${V('r','r')})</span><output id="q-kr-o"></output></label><input id="q-kr" type="range" min="1" max="5" step="0.5" value="${E.kr}"></div>`,
+    vivo:() => { $('q-kr-o').textContent = `${fmt(E.kr, 1)}·r`; },
+    alCambiar:() => { E.kr = +$('q-kr').value; },
+    exp:() => `<div class="eqs"><div class="eq">${V('F','F')} = G·M·m/${V('r','r')}² → con ${V('r','4r')}: G·M·m/(16${V('r','r')}²) = ${V('F','F/16')}</div></div>
+      <p>En la gráfica, la curva fucsia es la fuerza: con el doble de distancia, un cuarto; con el cuádruple, un dieciseisavo. La curva a trazos es la idea de «tantas veces más lejos, tantas veces más débil» (1/r): queda muy por encima. Mueve la distancia y compara.</p>
+      ${fuente('En un test de gravitación aplicado en seis universidades de Estados Unidos, ante una pregunta parecida (cuatro veces más lejos), algo más de un tercio de los alumnos eligió «cuatro veces más débil» y cerca de uno de cada seis «ocho veces más débil»; acertó cerca del 40 % (Williamson y otros, 2013). La opción D es hipótesis nuestra.')}`,
+    lect:() => [['F', `F nueva = F/${fmt(1/M.comparar({ kr:E.kr }).razon, 1)}`]],
+    desc:ya => ya ? `La Luna a ${fmt(E.kr, 1)} veces la distancia: su flecha de fuerza es ${fmt(1/M.comparar({ kr:E.kr }).razon, 1)} veces más corta. La curva de la gráfica queda por debajo de la curva a trazos.` : 'La Tierra y la Luna: antes, a la distancia r, con su flecha de fuerza; y a cuatro veces esa distancia, con la flecha a trazos y un signo de pregunta.',
+    anima:false },
+  { id:'otro-planeta', corto:'Un planeta más grande', ley:['F'],
+    q:`Una persona de ${V('m','60 kg')} pesa ${V('F','600 N')} en la Tierra. Viaja a un planeta que tiene 4 veces la ${V('M','masa')} de la Tierra y el doble de su ${V('R','radio')}. ¿Cuánto pesa ahí?`,
+    opts:[['a', `${V('F', fmt(600*pl.razon, 0) + ' N')}: la masa mayor y el radio mayor se compensan`, null, ''],
+          ['b', `${V('F', fmt(60*pl.errores.soloMasa, 0) + ' N')}: cuatro veces la masa, cuatro veces el peso`, 'G4-olvida-el-radio', 'parcial'],
+          ['c', `${V('F', fmt(60*pl.errores.radioLineal, 0) + ' N')}: cuatro veces la masa, pero el doble de lejos del centro lo reduce a la mitad`, 'G3-radio-sin-cuadrado', 'parcial'],
+          ['d', `${V('F', fmt(60*pl.errores.masaPorRadio, 0) + ' N')}: con más masa y más tamaño, atrae más por las dos cosas`, 'mas-grande-atrae-mas', 'hipotesis']],
+    ok:'a',
+    fb:{ b:'Elegiste la B. El radio también cuenta: en el suelo del planeta estás el doble de lejos de su centro, y eso divide la gravedad entre 2² = 4.',
+         c:'Elegiste la C. El radio va al cuadrado: el doble de lejos divide entre 4, no entre 2. Cuatro veces la masa entre cuatro da lo mismo.',
+         d:'Elegiste la D. Un planeta más grande te deja más lejos de su centro, y eso debilita la gravedad.' },
+    antes:() => Object.assign(E, { kM:4, kR:2, dib:dibPlaneta }),
+    ctrl:() => `<div class="ctrls"><div class="slider"><label for="q-kM"><span>Masa del planeta (en Tierras)</span><output id="q-kM-o"></output></label><input id="q-kM" type="range" min="0.5" max="9" step="0.5" value="${E.kM}"></div>
+      <div class="slider"><label for="q-kR"><span>Radio del planeta (en Tierras)</span><output id="q-kR-o"></output></label><input id="q-kR" type="range" min="0.5" max="3" step="0.5" value="${E.kR}"></div></div>`,
+    vivo:() => { $('q-kM-o').textContent = fmt(E.kM, 1); $('q-kR-o').textContent = fmt(E.kR, 1); },
+    alCambiar:() => { E.kM = +$('q-kM').value; E.kR = +$('q-kR').value; },
+    exp:() => `<div class="eqs"><div class="eq">${V('g','g')} = G·${V('M','M')}/${V('R','R')}² → 10·4/2² = ${V('g','10 m/s²')}<span class="note">la misma que en la Tierra</span></div>
+        <div class="eq">peso = m·${V('g','g')} = 60·10 = ${V('F','600 N')}</div></div>
+      <p>Dos planetas con masas distintas pueden darte el mismo peso, si el radio compensa: hace falta que la masa crezca como el cuadrado del radio. Prueba con 9 masas y 3 radios.</p>
+      ${fuente('En el mismo test de gravitación, ante dos planetas en los que una persona pesa lo mismo, cerca de dos de cada tres alumnos dijeron que deben tener la misma masa: fue la pregunta más difícil del test (Williamson y otros, 2013). Las opciones B y C son la cara de olvidar el radio, o su cuadrado, en este problema. La D es hipótesis nuestra.')}`,
+    lect:() => { const p = M.planeta({ kM:E.kM, kR:E.kR }); return [['g', `g = ${fmt(p.g, 2)} m/s²`], ['F', `peso = ${fmt(600*p.razon, 0)} N`]]; },
+    desc:ya => ya ? `La Tierra y el planeta, con una persona en cada uno. En el planeta de ${fmt(E.kM, 1)} masas y ${fmt(E.kR, 1)} radios pesa ${fmt(600*M.planeta({ kM:E.kM, kR:E.kR }).razon, 0)} newtons.` : 'La Tierra y un planeta con el doble de radio, con una persona en cada uno. En la Tierra pesa 600 newtons; en el planeta, el peso tiene un signo de pregunta.',
+    anima:false },
+  { id:'ascensor', corto:'El ascensor sin cable', ley:['F'],
+    q:`Una persona de ${V('m','50 kg')} está parada sobre una balanza dentro de un ascensor quieto: la balanza marca 500 N. De pronto se corta el cable y el ascensor cae libremente (sin roce ni freno). Mientras cae, ¿qué marca la balanza?`,
+    opts:[['a', '0 N: la persona y la balanza caen juntas y no se aprietan', null, ''],
+          ['b', 'Menos de 500 N, pero no cero: al caer, la persona pesa algo menos', 'G8-disminuye', 'documentado'],
+          ['c', 'Más de 500 N: al caer, la persona aprieta más la balanza', 'G8-aumenta', 'documentado'],
+          ['d', '500 N: la Tierra la sigue atrayendo igual que antes', 'G8-no-cambia', 'parcial']],
+    ok:'a',
+    fb:{ b:'Elegiste la B. La balanza no mide el peso: mide cuánto la aprietas. Si caen con la misma aceleración, no la aprietas nada.',
+         c:'Elegiste la C. Para apretar más la balanza, tendrías que caer más rápido que ella; caen juntas.',
+         d:'Elegiste la D. La Tierra la sigue atrayendo con 500 N, es verdad. Pero la balanza mide cuánto la aprietas, y al caer juntas no la aprietas.' },
+    antes:() => Object.assign(E, { a:10, dib:dibAscensor }),
+    ctrl:() => `<div class="slider"><label for="q-a"><span>Aceleración del ascensor hacia abajo (a)</span><output id="q-a-o"></output></label><input id="q-a" type="range" min="0" max="10" step="1" value="${E.a}"></div>`,
+    vivo:() => { $('q-a-o').textContent = `${fmt(E.a, 0)} m/s²`; },
+    alCambiar:() => { E.a = +$('q-a').value; E.t = 0; },
+    exp:() => `<div class="eqs"><div class="eq">balanza = ${V('m','m')}·(${V('g','g')} − a) = 50·(10 − 10) = 0 N</div>
+        <div class="eq">peso = ${V('m','m')}·${V('g','g')} = ${V('F','500 N')}<span class="note">no cambia: la Tierra la sigue atrayendo</span></div></div>
+      <p>La balanza no mide la fuerza de la Tierra: mide cuánto la aprieta la persona. Si las dos caen con la misma aceleración, no se aprietan. Es lo mismo que pasa en la estación espacial: hay gravedad, pero todo cae a la vez. Prueba con aceleraciones menores: la balanza marca menos, pero no cero.</p>
+      ${fuente('En Turquía, con 135 estudiantes (escolares y futuros profesores), solo uno de cada cinco dijo que la persona quedaría «ingrávida»; cerca del 44 % dijo que el peso disminuye y cerca del 14 %, que aumenta (Gürel y Acar, 2003). Que no cambie aparece en ese estudio como idea, sin porcentaje propio: es la D.')}`,
+    lect:() => [['ink', `balanza: ${fmt(M.balanza({ m:50, a:E.a }).lectura, 0)} N`], ['F', 'peso: 500 N']],
+    desc:ya => ya ? `El ascensor baja con una aceleración de ${fmt(E.a, 0)} metros por segundo al cuadrado; la balanza marca ${fmt(M.balanza({ m:50, a:E.a }).lectura, 0)} newtons. La flecha del peso sigue igual.` : 'Un ascensor quieto con una persona sobre una balanza. La balanza tiene un signo de pregunta.',
+    anima:true },
+  { id:'canon', corto:'El cañón en la torre', ley:['v','h'], leyDespues:['F','v','h','trayecto'],
+    q:`Desde lo alto de una torre imaginaria de altura ${V('h','h = R')} (a ${V('r','r = 2R')} del centro, sin aire), un cañón dispara horizontalmente. Con ${V('v', kms(vcT))} la bala da vueltas en una órbita circular. ¿Con qué ${V('v','rapidez')} hay que dispararla para que se vaya y no vuelva nunca?`,
+    opts:[['a', `Unos ${V('v', kms(esc.ve))}: √2 veces la de la órbita circular`, null, ''],
+          ['b', `Unos ${V('v', kms(esc.errores.doble))}: el doble de la de la órbita circular`, 'escape-el-doble', 'hipotesis'],
+          ['c', `${V('v', kms(esc.errores.orbital))}: con la rapidez de la órbita ya no cae, así que ya escapó`, 'escape-igual-orbital', 'hipotesis'],
+          ['d', `Ninguna: la gravedad llega hasta el infinito, así que tarde o temprano la frena y vuelve`, 'escape-imposible', 'hipotesis']],
+    ok:'a',
+    fb:{ b:'Elegiste la B. Basta con que la energía cinética iguale lo que falta de energía potencial: eso da √2 veces, menos que el doble.',
+         c:'Elegiste la C. En la órbita circular la bala sigue atada: da vueltas para siempre. Para irse hace falta más.',
+         d:'Elegiste la D. La gravedad llega lejísimos, pero se debilita tan rápido (1/r²) que una rapidez finita alcanza para no volver.' },
+    antes:() => Object.assign(E, { v0:esc.ve, k: M.orbita({ h:RT }).T/5, dib:dibCanon }),
+    ctrl:() => `<div class="slider"><label for="q-v"><span>Rapidez del disparo (${V('v','v₀')})</span><output id="q-v-o"></output></label><input id="q-v" type="range" min="3000" max="10000" step="250" value="${E.v0}"></div>`,
+    vivo:() => { $('q-v-o').textContent = kms(E.v0); },
+    alCambiar:() => { E.v0 = +$('q-v').value; E.t = 0; },
+    exp:() => `<div class="eqs"><div class="eq">½·m·${V('v','ve')}² − G·M·m/${V('r','r')} = 0 → ${V('v','ve')} = √(2·G·M/${V('r','r')}) = √2·${V('v','vc')}</div>
+        <div class="eq">${V('v','ve')} = √2·${kms(vcT)} = ${V('v', kms(esc.ve))}<span class="note">la masa de la bala se cancela</span></div></div>
+      <p>Las dos líneas finas son la órbita circular (punteada) y la de escape (continua). Mueve la rapidez: por debajo de unos ${kms(M.lanzamiento({ v0:vcT, h0:RT }).vSinChoque)}, la bala vuelve a caer al suelo; desde ahí hasta la de escape, da vueltas en una elipse (justo con ${kms(vcT)}, en un círculo); desde √2 veces la circular, se va. Con la de escape la energía total es justo cero. La flecha fucsia es la gravedad sobre la bala: siempre hacia el centro, más corta cuanto más lejos.</p>
+      <p>La torre es imaginaria: la estación espacial real está a solo 400 km, casi pegada al suelo en este dibujo.</p>
+      ${fuente('Las tres opciones incorrectas son hipótesis nuestras: no encontramos estudios que midan errores sobre la velocidad de escape.')}`,
+    lect:() => { const l = M.lanzamiento({ v0:E.v0, h0:RT }); return [['v', `v₀ = ${kms(E.v0)}`], ['ink', `energía por kg: ${l.energia >= -1 ? (Math.abs(l.energia) < 1 ? '0' : 'positiva') : 'negativa'}`]]; },
+    desc:ya => ya ? `La bala sale a ${fmt(E.v0/1000, 2)} kilómetros por segundo y ${{ cae:'vuelve a caer a la Tierra', circular:'da vueltas en una órbita circular', eliptica:'da vueltas en una elipse', escapa:'se aleja sin volver' }[M.lanzamiento({ v0:E.v0, h0:RT }).tipo]}.` : 'La Tierra con una torre de altura igual a su radio y un cañón arriba. La rapidez del disparo tiene un signo de pregunta.',
+    anima:true },
+  { id:'orbita-alargada', corto:'Una órbita alargada', ley:['v'], leyDespues:['v','area'],
+    q:`Un planeta gira alrededor del Sol en una órbita elíptica muy alargada; el Sol no está en el centro sino cerca de un extremo. ¿Cómo es su ${V('v','rapidez')} a lo largo de la órbita?`,
+    opts:[['a', 'Más rápido cerca del Sol y más lento lejos, porque al acercarse cae hacia el Sol y se acelera', null, ''],
+          ['b', 'La misma en toda la órbita, porque en el espacio nada lo frena', 'G6-rapidez-constante', 'documentado'],
+          ['c', 'Más rápido lejos del Sol, porque ahí la atracción es menor y no lo retiene', 'kepler2-al-reves', 'hipotesis'],
+          ['d', 'Más rápido en los costados de la elipse, porque ahí la curva es más suave', 'kepler2-costados', 'hipotesis']],
+    ok:'a',
+    fb:{ b:'Elegiste la B. El Sol lo atrae todo el tiempo: mientras se acerca, la fuerza lo acelera; mientras se aleja, lo frena.',
+         c:'Elegiste la C. Lejos del Sol llega frenado: subió «cuesta arriba» contra la atracción. Va más lento.',
+         d:'Elegiste la D. Lo que manda es la distancia al Sol: cuanto más cerca, más rápido.' },
+    antes:() => Object.assign(E, { e:0.6, Tvis:8, dib:dibElipse }),
+    ctrl:() => `<div class="seg" id="q-e" role="group" aria-label="Qué órbita mostrar"><button type="button" data-e="0.6">muy alargada</button><button type="button" data-e="0.0167">la de la Tierra</button></div>`,
+    vivo:() => { const b = $('q-e'); if (!b) return; b.querySelectorAll('button').forEach(x => { x.setAttribute('aria-pressed', String(+x.dataset.e === E.e)); x.onclick = () => { E.e = +x.dataset.e; E.t = 0; EXPS[S.k].vivo(); draw(); }; }); },
+    alCambiar:() => {},
+    exp:() => `<div class="eqs"><div class="eq">${V('v','v')} cerca / ${V('v','v')} lejos = (1 + e)/(1 − e) = 1,6/0,4 = ${fmt(kE.razonV, 0)}<span class="note">con e = 0,6</span></div></div>
+      <p>Los sectores sombreados se barren en tiempos iguales y tienen la misma área: cerca del Sol el sector es corto y ancho, lejos es largo y angosto. Es la segunda ley de Kepler. Prueba la órbita de la Tierra: es casi un círculo (e = 0,017), aunque en los libros se dibuje como una elipse alargada.</p>
+      ${fuente('En entrevistas a 112 universitarios de Estados Unidos antes del curso, menos de la mitad respondió esta pregunta; de los que respondieron, cerca de la mitad dijo que la rapidez es constante y cerca de un tercio dio la respuesta correcta. Cerca de tres cuartos de los entrevistados creía además que las órbitas de los planetas son elipses muy alargadas (Yu, Sahami y Denn, 2010). Las opciones C y D son hipótesis nuestras.')}`,
+    lect:() => { const k = M.kepler2({ e:E.e }); return [['v', `cerca/lejos: ${fmt(k.razonV, 2)} veces`]]; },
+    desc:ya => ya ? (E.e > 0.1 ? 'El planeta recorre la elipse: rápido cerca del Sol y lento lejos. Ocho sectores sombreados de igual área.' : 'La órbita de la Tierra: casi un círculo, con el Sol casi en el centro.') : 'Una elipse alargada con el Sol cerca de un extremo y el planeta quieto en el punto más lejano. Su rapidez tiene signos de pregunta en los dos extremos.',
+    anima:true },
+];
+// En este modo los datos de color no resaltan nada en el dibujo: no son paradas del tabulador.
+const sinParada = el => el.querySelectorAll('.v').forEach(e => { e.removeAttribute('tabindex'); e.style.cursor = 'default'; });
+function draw(){
+  if (!L.W || !E.dib) return;
+  const x = EXPS[S.k], ya = !!S.pred[x.id], c = colores(L.W, L.H);
+  L.ctx.clearRect(0, 0, L.W, L.H);
+  E.dib(L.ctx, c, L.W, L.H, ya);
+  lecturas($('lect2'), ya ? x.lect() : []);
+  decir($('desc2'), x.desc(ya));
+}
+function correr(){
+  parar(); const x = EXPS[S.k];
+  if (!x.anima){ draw(); return; }
+  if (RM){ E.t = 1.2; draw(); return; }
+  parar = reloj(dt => {
+    E.t += dt;
+    if (x.id === 'ascensor' && E.t > 3) E.t = 0;          // el ascensor vuelve arriba y cae de nuevo
+    if (x.id === 'canon'){ const l = M.lanzamiento({ v0:E.v0, h0:RT }); const q = l.en(E.t*E.k, 3.6*RT); if (q.fin && E.t > 1) { if (E.pausa === undefined) E.pausa = E.t; if (E.t - E.pausa > 1) { E.t = 0; E.pausa = undefined; } } }
+    draw();
+  });
+}
+// Pastillas: la k solo se abre si todos los experimentos anteriores ya tienen respuesta;
+// las respondidas se revisitan libres (misma regla que los puntos del paso a paso).
+function primeraLibre(){ const j = EXPS.findIndex(x => !S.pred[x.id]); return j < 0 ? EXPS.length - 1 : j; }
+function botones(){
+  if (!$('exps').children.length){
+    $('exps').innerHTML = EXPS.map((x, k) => `<button type="button" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
+    $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+  }
+  const libre = primeraLibre();
+  [...$('exps').children].forEach((b, k) => {
+    const cerrado = k > libre; b.disabled = cerrado; b.setAttribute('aria-pressed', String(!cerrado && k === S.k));
+    if (cerrado){ b.setAttribute('aria-disabled', 'true'); b.setAttribute('aria-label', `Experimento ${k+1}, bloqueado`); }
+    else { b.removeAttribute('aria-disabled'); b.removeAttribute('aria-label'); }
+  });
+}
+function ir(k){
+  if (k > primeraLibre()) return;
+  parar();
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  for (const key of Object.keys(E)) delete E[key];
+  x.antes(); E.t = 0;
+  botones();
+  leyenda($('ley2'), ya && x.leyDespues ? x.leyDespues : x.ley);
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  sinParada($('body2'));
+  L.compactar(!ya);
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.ctrl() + x.exp() + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
+    $('res2').querySelectorAll('input').forEach(inp => inp.addEventListener('input', () => { x.alCambiar(); x.vivo(); draw(); }));
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); $('t2').focus({ preventScroll:true }); };
+    sinParada($('res2')); x.vivo();
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; botones();
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+    pintar(); leyenda($('ley2'), x.leyDespues || x.ley);
+    // El botón elegido queda desactivado: el foco pasa a la respuesta para no perderse.
+    $('fb2').focus({ preventScroll:true });
+    L.compactar(false); E.t = 0; draw();
+    Celular.alResponder(L.cv, () => correr(), () => S.k === k && !$('m2').hidden);
+  });
+  pintar(); draw();
+  if (ya) correr();
+}
+alRedibujarTema(draw);
+addEventListener('modo', () => { if ($('m2').hidden) parar(); else { L.resize(); if (E.dib && S.pred[EXPS[S.k].id]) correr(); } });
+L.resize(); ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

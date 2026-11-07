@@ -2,7 +2,7 @@
   "plantilla": "cuatro-operaciones",
   "unidades": "Números enteros sin unidad. Los numerales van como texto, de la cifra de mayor orden a las unidades ('342' en base 5 es 342₍₅₎); las cuentas y las columnas, de las unidades hacia la izquierda ([4, 3, 0] son 4 sueltas, 3 paquetes y ninguna caja).",
   "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.todasANueve, columnas.0.llevadaSale: el índice de una lista también va con punto); 'valor' es el resultado si es un número, un texto o una lista sueltos; las listas se comparan completas y los textos exactos. 'tambien' son llamadas extra del mismo caso. Un error que no aparece en 'errores' es porque en ese caso daría la respuesta correcta o lo mismo que otro error.",
-  "verificacion": "Verificado por un subagente independiente (7 nov 2026) sin leer el código del motor: valores recalculados con conversión de bases y columnas simuladas en Python, y unicidad de las cifras que faltan y las criptoaritméticas comprobada por fuerza bruta propia. Coinciden todos los valores matemáticos y los errores reconstruibles. Las convenciones de animación y los errores de diferenciaInvertida se documentaron en la cabecera tras la verificación.",
+  "verificacion": "Verificado por un subagente independiente (7 nov 2026) sin leer el código del motor: valores recalculados con conversión de bases y columnas simuladas en Python, y unicidad de las cifras que faltan y las criptoaritméticas comprobada por fuerza bruta propia. Coinciden todos los valores matemáticos y los errores reconstruibles. Las convenciones de animación y los errores de diferenciaInvertida se documentaron en la cabecera tras la verificación. El caso 20 (la cuenta a mano del arrastre: 503 − 178 con dos préstamos y 47 + 38 con una llevada) se comprobó a mano por la sesión de la rutina.",
   "tolerancia": 1e-9,
   "casos": [
     { "nombre": "Paso 1: 478 + 356 = 834 en columnas; unidades 8 + 6 = 14 (queda 4, sube 1 paquete), decenas 7 + 5 + 1 = 13 (queda 3, sube 1), centenas 4 + 3 + 1 = 8; sin llevar: 724; escribiendo cada suma entera: 71214",
@@ -61,7 +61,7 @@
                    { "fn": "sumatoria", "args": ["cuadrados", 10], "espera": { "S": 385 } },
                    { "fn": "sumatoria", "args": ["cubos", 5], "espera": { "S": 225 } } ] },
 
-    { "nombre": "Predicción del paso 6: 47 ÷ 9 por defecto da q = 5 y r = 2; por exceso, q = 6 y r′ = 7 (r + r′ = 9); r′ = r: 2; d − 1 − r: 6; d + r: 11",
+    { "nombre": "Predicción del paso 6: 47 ÷ 9 por defecto da q = 5 y r = 2; por exceso, q = 6 y rₑ = 7 (r + rₑ = 9); rₑ = r: 2; d − 1 − r: 6; d + r: 11",
       "fn": "division", "args": [47, 9],
       "espera": { "q": 5, "r": 2, "qExceso": 6, "rExceso": 7, "exacta": false, "residuoMaximo": 8, "filas.llenas": 5, "filas.sobran": 2, "filas.huecos": 7,
         "errores.igualAlDefecto": 2, "errores.divisorMenosUnoMenosR": 6, "errores.sumaElDivisor": 11, "errores.masUno": 3 } },
@@ -110,6 +110,14 @@
       "espera": { "texto": "104", "valor": 29, "tras": [7, 4, 2], "conBaseResultado": "104₍₅₎" },
       "tambien": [ { "fn": "cuadroResta", "args": [{ "b": 5, "K": 3, "arriba": [2, 0, 3], "abajo": [3, 4, 1], "acciones": [{ "tipo": "abrir", "orden": 2 }, { "tipo": "abrir", "orden": 1 }, { "tipo": "quitar", "orden": 0, "hay": 7, "quita": 3, "quedan": 4 }] }, 2.4],
                      "espera": { "arriba": [7, 4, 2], "moviendo.tipo": "quitar", "moviendo.tachadas": 2 } } ] },
+
+    { "nombre": "La cuenta a mano del explorador: en 503 − 178 faltan sueltas y paquetes; abrir 1 caja da 10 paquetes (arriba 4 cajas, 10 paquetes, 3 sueltas) y el valor sigue en 503; en 47 + 38 las unidades tienen 15 piezas y, al juntar 10, quedan 5 sueltas y 8 paquetes: 85",
+      "fn": "aMano", "args": ["resta", "503", "178", 10],
+      "espera": { "cuentas": [3, 0, 5], "abajo": [8, 7, 1], "valor": 503, "diferencia": 325, "faltan": [0, 1], "resultado": [null, null, 4], "listo": false },
+      "tambien": [ { "fn": "abrirMano", "args": [{ "op": "resta", "b": 10, "cuentas": [3, 0, 5], "abajo": [8, 7, 1] }, 2], "espera": { "cuentas": [3, 10, 4], "valor": 503, "faltan": [0], "resultado": [null, 3, 3] } },
+                   { "fn": "abrirMano", "args": [{ "op": "resta", "b": 10, "cuentas": [3, 10, 4], "abajo": [8, 7, 1] }, 1], "espera": { "cuentas": [13, 9, 4], "listo": true, "texto": "325" } },
+                   { "fn": "aMano", "args": ["suma", "47", "38", 10], "espera": { "cuentas": [15, 7], "valor": 85, "llenos": [0], "listo": false } },
+                   { "fn": "juntarMano", "args": [{ "op": "suma", "b": 10, "cuentas": [15, 7] }, 0], "espera": { "cuentas": [5, 8], "listo": true, "texto": "85" } } ] },
 
     { "nombre": "Bordes: CA(1) = 9, CA(10) = 90, CA(999) = 1, CA(101₍₂₎) = 11₍₂₎; N − N = 0; 0 + 0 = 0; 111₍₂₎ + 1₍₂₎ = 1000₍₂₎",
       "fn": "complemento", "args": ["1", 10],

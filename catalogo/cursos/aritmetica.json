@@ -480,7 +480,7 @@
       },
       "potencial_visual": "bajo",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["potenciacion"],
       "investigacion": null
     },
     {

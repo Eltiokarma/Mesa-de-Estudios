@@ -248,12 +248,12 @@ const fmt2 = n => n.toLocaleString('es-PE', {maximumFractionDigits:2});
 const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
 const fr = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
 const X = x => W/2 + x*sx, Y = y => H/2 - y*sy;
-const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
 
 function resize(){
   W = cv.clientWidth; if (!W) return;
   H = Celular.alto(Math.max(240, Math.min(400, W*0.52)), compacto, { tope:240 });
-  const dpr = window.devicePixelRatio || 1;
+  const dpr = Celular.dpr();
   cv.style.height = H + 'px'; cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
   ctx.setTransform(dpr,0,0,dpr,0,0);
   sx = W/(2*XR); sy = (H/2 - 14)/9.6;
@@ -571,7 +571,7 @@ const fmt2 = n => r2(n).toLocaleString('es-PE',{maximumFractionDigits:2}).replac
 const par = n => r1(n) < 0 ? `(${fmt(n)})` : fmt(n);
 const V = (key, cls, t) => `<span class="v v-${cls}" data-var="${key}" tabindex="0">${t}</span>`;
 const fr = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
-const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
 const X = x => (x - XMIN)*sx, Y = y => H/2 - y*sy;
 const cp = v => Math.max(-1e5, Math.min(1e5, v));
 
@@ -597,7 +597,7 @@ function rays(sys){
 function resize(){
   W = cv.clientWidth; if (!W) return;
   H = Celular.alto(Math.max(260, Math.min(420, W*0.5)), compacto, { tope:260 });
-  const dpr = window.devicePixelRatio || 1;
+  const dpr = Celular.dpr();
   cv.style.height = H + 'px'; cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
   ctx.setTransform(dpr,0,0,dpr,0,0);
   sy = (H/2 - 16)/10.4;
@@ -926,7 +926,7 @@ let W = 0, H = 0, sx = 1, sy = 1;
 let compacto = false;
 function compactar(on){ on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === compacto) return; compacto = on; resize(); }
 const X = x => W*0.5 + x*sx, Y = y => H/2 - y*sy;
-const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
 const fmt = n => n.toLocaleString('es-PE', {maximumFractionDigits:1});
 
 // Estado de la escena: lo cambia cada experimento después de la predicción.
@@ -976,7 +976,7 @@ const S = { k:0, pred:{}, t0:Date.now() };
 function resize(){
   W = cv.clientWidth; if (!W) return;
   H = Celular.alto(Math.max(240, Math.min(400, W*0.52)), compacto, { tope:240 });
-  const dpr = window.devicePixelRatio || 1;
+  const dpr = Celular.dpr();
   cv.style.height = H + 'px'; cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
   ctx.setTransform(dpr,0,0,dpr,0,0);
   sx = W/(2*XR); sy = (H/2 - 14)/YL;

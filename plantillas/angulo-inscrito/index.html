@@ -223,6 +223,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 </script>
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'angulo-inscrito', unidad: 'geometria.circunferencia', version: '0.1.0' };
@@ -239,7 +240,7 @@ function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const MA = MotorAngulo;
 const GR = Math.PI/180;
-const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
 // Coma decimal y signo menos tipográfico.
 function fmt(n, d){
   if (!Number.isFinite(n)) return '—';
@@ -311,7 +312,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
     const w = cv.clientWidth; if (!w) return;
     // En el celular, el alto se ajusta a la caja del paso para no dejar papel vacío arriba y abajo.
     const c = E.caja, h = Math.round(w >= 560 ? clamp(w*0.66, 320, 470) : clamp((w - 36)*(c.y1 - c.y0)/(c.x1 - c.x0) + 36, 250, 390));
-    const dpr = window.devicePixelRatio || 1;
+    const dpr = Celular.dpr();
     if (w === W && h === H) { E.dibujar(); return; }
     W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
     ctx.setTransform(dpr,0,0,dpr,0,0);

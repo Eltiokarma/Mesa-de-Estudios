@@ -248,6 +248,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 </script>
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'solidos', unidad: 'geometria.prisma-y-piramide', version: '0.1.0' };
@@ -267,7 +268,7 @@ function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
    típicos) sale de MotorSolidos (motor.js); aquí solo se proyecta, se pinta y se anima. */
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const MS = MotorSolidos, UT = MS.util;
-const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
 // Coma decimal, espacio de miles y signo menos tipográfico.
 function fmt(n, d){
   if (!Number.isFinite(n)) return '—';
@@ -352,7 +353,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
   }
   function resize(){
     const w = cv.clientWidth; if (!w) return;
-    const h = altoDe(w), dpr = window.devicePixelRatio || 1;
+    const h = altoDe(w), dpr = Celular.dpr();
     if (w !== W || h !== H){ W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); ctx.setTransform(dpr,0,0,dpr,0,0); encuadre = null; }
     E.dibujar();
   }

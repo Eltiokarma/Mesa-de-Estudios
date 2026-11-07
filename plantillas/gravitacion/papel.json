@@ -1,0 +1,159 @@
+{
+  "titulo": "Gravitación: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Las distancias de la ley de gravitación van de centro a centro: a la altura h sobre el suelo, la distancia al centro de la Tierra es r = R + h. Trabaja con razones siempre que puedas: si r se multiplica por k, la gravedad se divide entre k². Toma G = 6,67·10⁻¹¹ N·m²/kg², g = 10 m/s² en el suelo, R = 6400 km y, cuando haga falta, G·M = g·R² para la Tierra.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Dos esferas de plomo de 200 kg y 300 kg están con sus centros a 2 m. ¿Con qué fuerza se atraen? ¿Cuál de las dos atrae más a la otra?",
+      "respuesta": "Con unos 1,0·10⁻⁶ N. Las dos se atraen con la misma fuerza.",
+      "pasos": [
+        "F = G·m1·m2/r² = 6,67·10⁻¹¹ · 200 · 300 / 2².",
+        "200 · 300 = 60 000 = 6·10⁴, y 6·10⁴ / 4 = 1,5·10⁴.",
+        "F = 6,67·10⁻¹¹ · 1,5·10⁴ ≈ 1,0·10⁻⁶ N: existe, pero es una millonésima de newton.",
+        "Por la tercera ley de Newton, la de 200 kg tira de la de 300 kg con la misma fuerza con que la de 300 kg tira de ella. La masa grande no atrae más: la fórmula tiene las dos masas multiplicadas."
+      ],
+      "verificar": [
+        { "fn": "fuerza", "args": [{ "m1": 200, "m2": 300, "r": 2 }], "espera": { "F": 1.0005e-6, "sobre1": 1.0005e-6, "sobre2": 1.0005e-6 } }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Dos cuerpos se atraen con una fuerza F. Si se duplica la masa de uno de ellos y la distancia entre sus centros se reduce a la mitad, ¿con qué fuerza se atraen ahora?",
+      "respuesta": "Con 8F.",
+      "pasos": [
+        "La fuerza es proporcional al producto de las masas: el doble de una masa da el doble de fuerza.",
+        "Es inversamente proporcional al cuadrado de la distancia: la mitad de distancia da (1/2)² = 1/4 en el denominador, o sea, 4 veces más fuerza.",
+        "En total: 2 · 4 = 8 veces. La fuerza nueva es 8F.",
+        "Si hubieras usado la distancia sin elevar al cuadrado, te saldría 4F: es el error más común."
+      ],
+      "verificar": [
+        { "fn": "comparar", "args": [{ "km1": 2, "kr": 0.5 }], "espera": { "razon": 8, "errores.lineal": 4 } }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Un satélite está a una altura de 19 200 km sobre la superficie de la Tierra. ¿Cuánto vale ahí la aceleración de la gravedad?",
+      "respuesta": "0,625 m/s², la dieciseisava parte de la del suelo.",
+      "pasos": [
+        "19 200 km = 3 · 6400 km: la altura es 3R.",
+        "La distancia al centro es r = R + h = R + 3R = 4R, cuatro veces la del suelo.",
+        "g = g0·(R/r)² = 10 · (1/4)² = 10/16 = 0,625 m/s².",
+        "Ojo: si usaras h en lugar de R + h, saldría (R/3R)² = 1/9 y g ≈ 1,1 m/s², que está mal."
+      ],
+      "verificar": [
+        { "fn": "gAltura", "args": [{ "h": 19200000 }], "espera": { "g": 0.625, "r": 25600000 } }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "¿A qué altura sobre la superficie terrestre la aceleración de la gravedad es la novena parte de la que hay en el suelo?",
+      "respuesta": "A 12 800 km de altura (dos radios terrestres).",
+      "pasos": [
+        "g/g0 = (R/r)² = 1/9, así que R/r = 1/3 y r = 3R.",
+        "r es la distancia al centro; la altura es h = r − R = 3R − R = 2R.",
+        "h = 2 · 6400 = 12 800 km.",
+        "Si se toma g ∝ 1/r (sin el cuadrado) sale r = 9R y h = 8R, que es mucho más lejos de lo debido."
+      ],
+      "verificar": [
+        { "fn": "alturaParaG", "args": [{ "fraccion": 0.1111111111111111 }], "espera": { "h": 12800000, "r": 19200000 } }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Un planeta tiene la décima parte de la masa de la Tierra y la mitad de su radio. ¿Cuánto pesaría ahí una persona de 60 kg?",
+      "respuesta": "240 N (en la Tierra pesa 600 N).",
+      "pasos": [
+        "g = G·M/R². En el planeta, M se multiplica por 1/10 y R por 1/2, así que R² se multiplica por 1/4.",
+        "g del planeta = 10 · (1/10) / (1/4) = 10 · 4/10 = 4 m/s².",
+        "Peso = m·g = 60 · 4 = 240 N.",
+        "Si solo miraras la masa, dirías 60 N; el radio más pequeño hace que la gravedad no baje tanto."
+      ],
+      "verificar": [
+        { "fn": "planeta", "args": [{ "kM": 0.1, "kR": 0.5 }], "espera": { "g": 4, "razon": 0.4 } }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Un satélite gira en órbita circular a 19 200 km de altura sobre la Tierra. Halla su rapidez y su período. Usa G·M = g·R².",
+      "respuesta": "4 km/s y 12 800π s, unas 11,2 horas.",
+      "pasos": [
+        "r = R + h = 6400 + 19 200 = 25 600 km = 4R = 2,56·10⁷ m.",
+        "La gravedad hace de fuerza centrípeta: G·M·m/r² = m·v²/r, así que v = √(G·M/r) = √(g·R²/r).",
+        "v = √(10 · (6,4·10⁶)² / 2,56·10⁷) = √(1,6·10⁷) = 4000 m/s.",
+        "T = 2π·r/v = 2π · 2,56·10⁷ / 4000 = 12 800π s ≈ 40 200 s ≈ 11,2 h.",
+        "La masa del satélite no aparece: cualquier satélite a esa altura va a 4 km/s."
+      ],
+      "verificar": [
+        { "fn": "orbita", "args": [{ "h": 19200000 }], "espera": { "v": 4000, "T": 40212.385965949354 } }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Dos satélites giran alrededor de un planeta en órbitas circulares. El primero tarda 2 horas en dar una vuelta. El segundo tiene un radio de órbita 9 veces mayor. ¿Cuánto tarda el segundo?",
+      "respuesta": "54 horas.",
+      "pasos": [
+        "Tercera ley de Kepler: T² es proporcional a r³, o sea, (T2/T1)² = (r2/r1)³.",
+        "(r2/r1)³ = 9³ = 729, y √729 = 27.",
+        "T2 = 27 · 2 h = 54 h.",
+        "Si pensaras que T crece en proporción a r, dirías 18 h: con el cubo y la raíz sale mucho más."
+      ],
+      "verificar": [
+        { "fn": "kepler3", "args": [{ "r1": 1, "r2": 9, "T1": 2 }], "espera": { "T2": 54, "errores.Tlineal": 9 } }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Un satélite de 500 kg gira en órbita circular a una altura igual al radio de la Tierra. Halla su energía cinética, su energía potencial gravitatoria y su energía total. Usa G·M = g·R².",
+      "respuesta": "Ec = 8·10⁹ J, Ep = −1,6·10¹⁰ J y E = −8·10⁹ J.",
+      "pasos": [
+        "r = R + R = 2R = 1,28·10⁷ m. G·M = 10 · (6,4·10⁶)² = 4,096·10¹⁴ m³/s².",
+        "Ep = −G·M·m/r = −4,096·10¹⁴ · 500 / 1,28·10⁷ = −1,6·10¹⁰ J. Es negativa porque el cero está en el infinito.",
+        "En la órbita, v² = G·M/r, así que Ec = ½·m·v² = ½·G·M·m/r = 8·10⁹ J: la mitad de |Ep|.",
+        "E = Ec + Ep = 8·10⁹ − 1,6·10¹⁰ = −8·10⁹ J. La energía total es negativa: el satélite está atado a la Tierra."
+      ],
+      "verificar": [
+        { "fn": "orbita", "args": [{ "h": 6400000, "m": 500 }], "espera": { "Ec": 8000000000, "Ep": -16000000000, "E": -8000000000 } }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "La velocidad de escape desde la superficie de la Tierra es de unos 11,3 km/s. ¿Cuál es la velocidad de escape desde la superficie de un planeta con 8 veces la masa de la Tierra y el doble de su radio?",
+      "respuesta": "Unos 22,6 km/s, el doble de la terrestre.",
+      "pasos": [
+        "Para escapar, la energía total debe llegar a cero: ½·m·ve² − G·M·m/R = 0, así que ve = √(2·G·M/R).",
+        "En el planeta, M se multiplica por 8 y R por 2: ve se multiplica por √(8/2) = √4 = 2.",
+        "ve = 2 · 11,3 ≈ 22,6 km/s.",
+        "La masa del cohete no importa: se cancela en la ecuación de la energía."
+      ],
+      "verificar": [
+        { "fn": "escape", "args": [{ "kM": 8, "kR": 2 }], "espera": { "ve": 22627.41699796952 } },
+        { "fn": "escape", "args": [{}], "espera": { "ve": 11313.708498984761 } }
+      ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Una astronauta de 70 kg está dentro de una estación espacial que gira a 400 km de altura. ¿Con qué fuerza la atrae la Tierra? Si se para sobre una balanza sujeta al piso de la estación, ¿qué marca la balanza?",
+      "respuesta": "La Tierra la atrae con unos 620 N. La balanza marca 0 N.",
+      "pasos": [
+        "r = 6400 + 400 = 6800 km. g = 10 · (6400/6800)² = 10 · (16/17)² = 2560/289 ≈ 8,86 m/s².",
+        "Su peso a esa altura es 70 · 8,86 ≈ 620 N: casi el 90 % del que tiene en el suelo (700 N).",
+        "La estación, la balanza y ella caen hacia la Tierra con la misma aceleración, 8,86 m/s². Nada la empuja contra la balanza.",
+        "La balanza marca 0 N. Flota porque todo cae junto, no porque falte la gravedad."
+      ],
+      "verificar": [
+        { "fn": "gAltura", "args": [{ "h": 400000 }], "espera": { "g": 8.858131487889274 } },
+        { "fn": "balanza", "args": [{ "m": 70, "a": 8.858131487889274, "g": 8.858131487889274 }], "espera": { "lectura": 0, "peso": 620.0692041522492 } }
+      ]
+    }
+  ]
+}
