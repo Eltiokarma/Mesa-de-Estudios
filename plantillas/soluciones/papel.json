@@ -121,7 +121,8 @@
         "Masa molar del H₂SO₄: 2·1 + 32 + 4·16 = 98 g/mol. Moles: 9,8/98 = 0,1 mol. M = 0,1/0,2 = 0,5 M.",
         "Cada fórmula de H₂SO₄ entrega 2 H⁺: θ = 2. Equivalentes: 0,1 · 2 = 0,2 eq.",
         "N = equivalentes/litros = 0,2/0,2 = 1 N. Es lo mismo que N = M·θ = 0,5 · 2.",
-        "La normalidad no es igual a la molaridad (eso solo pasa si θ = 1, como en el HCl) ni se divide entre θ: cuenta los H⁺, y hay el doble de H⁺ que de moléculas."
+        "La normalidad no es igual a la molaridad (eso solo pasa si θ = 1, como en el HCl) ni se divide entre θ: cuenta los H⁺, y hay el doble de H⁺ que de moléculas.",
+        "Al preparar la solución, el ácido se vierte poco a poco sobre el agua, nunca el agua sobre el ácido concentrado: se calienta tanto que puede salpicar."
       ],
       "verificar": [ { "fn": "solucion", "args": [{ "soluto": "H2SO4", "g": 9.8, "mL": 200, "theta": 2 }], "espera": { "M": 0.5, "eq": 0.2, "N": 1 } } ]
     },

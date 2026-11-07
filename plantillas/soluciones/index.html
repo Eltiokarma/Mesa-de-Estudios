@@ -1078,12 +1078,14 @@ function dibujarCristal(ctx, c, W, H, now){
   }
   ctx.beginPath(); ctx.arc(px, py, E.hl === 'g' ? 7 : 5.5, 0, Math.PI*2); ctx.fillStyle = c.g; ctx.fill();
   ctx.strokeStyle = c.paper; ctx.lineWidth = 1.5; ctx.stroke();
-  const izq = px > X(45);
-  rotulo(ctx, c, px + (izq ? -10 : 10), py - 12, VS.ver ? `vaso · ${TIPO[VS.eq.tipo]}` : 'vaso', c.ink, izq ? 'right' : 'left', 800, 11);
+  // A la izquierda de 45 °C, ya respondido, el rótulo va debajo y a la derecha del punto: ahí no pasan las curvas.
+  const izq = px > X(45), abajo = VS.ver && !izq;
+  rotulo(ctx, c, px + (izq ? -10 : 10), py + (abajo ? 16 : -12), VS.ver ? `vaso · ${TIPO[VS.eq.tipo]}` : 'vaso', c.ink, izq ? 'right' : 'left', 800, 11);
 }
 const descCristal = () => VS.ver
   ? `Vaso a ${fmt(VS.T, 0)} °C: ${fmt(VS.eq.disuelto, 1)} g de KNO₃ disueltos y ${fmt(VS.eq.solido, 1)} g de cristales en 100 g de agua; solución ${VS.eq.tipo}. En la curva caben ${fmt(VS.eq.cabe, 1)} g.`
   : `Vaso con 100 g de agua a ${fmt(CR.T1, 0)} °C y ${fmt(CR.g, 0)} g de KNO₃, todo disuelto. Al lado, la curva de solubilidad del KNO₃ y el punto del vaso.`;
+const leyCristal = ver => `<span><i class="pt" style="background:var(--c-g)"></i>KNO₃ (cada punto: ${G_PUNTO} g${ver ? '; el disuelto se mueve, los cristales son rombos en el fondo' : ''})</span><span><i style="background:var(--c-solv)"></i>agua (cada cuadro: 25 g)</span><span><i style="background:var(--c-S)"></i>S · curva de solubilidad</span>`;
 function vsControles(){
   return `<div><p class="hint" style="margin:0 0 6px">Temperatura del vaso:</p>
     <div class="seg" role="group" aria-label="Temperatura del vaso">${[0, 10, 20, 30, 40, 50, 60].map(T => `<button type="button" data-vt="${T}" aria-pressed="${Math.round(VS.T) === T}">${T} °C</button>`).join('')}</div></div>
@@ -1183,7 +1185,10 @@ function dibujarGaseosa(ctx, c, W, H, now){
       }
     }
     rotulo(ctx, c, cx, top - 26, `${b.T} °C`, c.ink, 'center', 800, 13);
-    rotulo(ctx, c, cx, gy0 + gh/2, GS.abierta ? 'destapada' : `P = ${fmt(GS.P, 0)} atm`, c.P, 'center', 800, 11);
+    // rótulo de la presión con fondo opaco, encima de los puntos de gas
+    { const t = GS.abierta ? 'destapada' : `P = ${fmt(GS.P, 0)} atm`; ctx.font = `800 11px ${c.font}`; const tw = ctx.measureText(t).width;
+      rr(ctx, cx - tw/2 - 5, gy0 + gh/2 - 9, tw + 10, 18, 9); ctx.fillStyle = c.paper; ctx.fill();
+      ctx.fillStyle = c.P; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(t, cx, gy0 + gh/2); }
     rotulo(ctx, c, cx, base + 13, '0,5 kg de agua', c.solv, 'center', 800, 11);
     if (GS.ver) rotulo(ctx, c, cx, base + 29, `${fmt(gasDe(b.T), GS.abierta ? 4 : 2)} g de CO₂ disuelto`, c.g, 'center', 800, 11);
   });
@@ -1200,7 +1205,7 @@ function gsLeer(){
   const d = $('gs-eq'); if (!d) return;
   const P = Pactual(), Pt = GS.abierta ? '0,0004' : fmt(P, 0);
   d.innerHTML = GS.bot.map(b => { const h = MS.henry({ gas:'CO2', T:b.T, P, kgAgua:GAS.kg });
-    return `<div class="eq">${b.T} °C: ${S_('S')} = k·${Pp('P')} = ${fmt(h.k, 3)} · ${Pp(Pt + ' atm')} = ${S_(fmt(h.S, GS.abierta ? 4 : 2) + ' g/kg')} → ${G(fmt(h.g, GS.abierta ? 4 : 2) + ' g')}</div>`; }).join('');
+    return `<div class="eq">${b.T} °C: ${S_('S')} = k·${Pp('P')} = ${fmt(h.k, 3)} g/(kg·atm) · ${Pp(Pt + ' atm')} = ${S_(fmt(h.S, GS.abierta ? 4 : 2) + ' g/kg')} → ${G(fmt(h.g, GS.abierta ? 4 : 2) + ' g')}</div>`; }).join('');
   $('gs-msg').textContent = GS.abierta
     ? `Destapada, el CO₂ de arriba se mezcla con el aire, donde su presión es de unos 0,0004 atm: el gas disuelto sale en burbujas hasta que casi no queda (${fmt(MS.destapar({ gas:'CO2', T:GAS.T[0], P1:GS.P, kgAgua:GAS.kg }).escapa, 2)} g escapan de la botella fría).`
     : `Con ${fmt(GS.P, 0)} atm: ${GS.bot.map(b => `${fmt(gasDe(b.T), 2)} g a ${b.T} °C`).join(' y ')}. Más presión, más gas disuelto; más temperatura, menos.`;
@@ -1296,18 +1301,18 @@ const EXPS = [
       <div class="eq">${Q('θ = 2')} H⁺ por fórmula → ${Q(`${fmt(NOR.eq, 0)} equivalente`)} </div><div class="eq">${Q('N')} = ${fr(Q('1 eq'), Vv('0,5 L'))} = ${Q('2 N')}</div><div class="eq">${Q('N')} = ${Mm('M')} · ${Q('θ')} = ${Mm('1')} · ${Q('2')} = ${Q(`${fmt(NOR.N, 0)} N`)}</div></div>
       <p>Cada H₂SO₄ puede entregar dos H⁺ al reaccionar con una base (los puntos morados). La lupa tenía 4 fórmulas y ahora cuenta 8 H⁺: hay el doble de H⁺ que de moléculas. La normalidad cuenta equivalentes (los H⁺ que puede entregar), no fórmulas. Por eso N = M · θ no es una regla suelta: sale de contar.</p>
       <p class="fuente">De 131 futuros profesores de ciencias, el 62,6 % definió bien la normalidad, pero solo el 29,8 % el número de equivalentes: la autora lo interpreta como uso de N = M · θ sin contar equivalentes (Karaer, 2019, tabla 3). Las opciones 0,5 N y 4 N son hipótesis nuestras, sin estudio que las mida.</p>` },  { id:'enfriar', corto:'Enfriar el vaso',
-    q:`Un vaso tiene ${Sv('100 g de agua')} a 60 °C con ${G(`${fmt(CR.g, 0)} g de KNO₃`)}, todo disuelto. Se enfría hasta 20 °C, agitando y con un cristalito de KNO₃ dentro. Con la ${S_('curva de solubilidad')}, ¿qué pasa?`,
-    opts:[['a',`Cristalizan unos ${fmt(ENF.cristaliza, 0)} g; el líquido que queda está insaturado, porque ya es diluido`,'SO13-diluida-es-insaturada','parcial'],
+    q:`Un vaso tiene ${Sv('100 g de agua')} a 60 °C con ${G(`${fmt(CR.g, 0)} g de KNO₃`)}, todo disuelto. Se enfría hasta 20 °C, agitando y con un cristalito de KNO₃ dentro. Cada cuadro del dibujo es una porción de 25 g de agua, no de solución. Con la ${S_('curva de solubilidad')}, ¿qué pasa?`,
+    opts:[['a',`Cristalizan unos ${fmt(ENF.cristaliza, 0)} g; el líquido que queda está insaturado, porque ya es diluido`,'SO13-diluida-es-insaturada','parcial'],
           ['b','No cristaliza nada; lo que ya se disolvió no vuelve a ser sólido','cristal-no-vuelve','hipotesis'],
-          ['c',`Cristalizan unos ${fmt(ENF.errores.laSolubilidad, 0)} g; el líquido que queda está saturado`,'cristaliza-la-solubilidad','hipotesis'],
-          ['d',`Cristalizan unos ${fmt(ENF.cristaliza, 0)} g; el líquido que queda está saturado`,null]],
+          ['c',`Cristalizan unos ${fmt(ENF.errores.laSolubilidad, 0)} g; el líquido que queda está saturado`,'cristaliza-la-solubilidad','hipotesis'],
+          ['d',`Cristalizan unos ${fmt(ENF.cristaliza, 0)} g; el líquido que queda está saturado`,null]],
     ok:'d',
     fb:{ a:`Elegiste la A. La cantidad está bien, pero el líquido que queda sobre los cristales está saturado: tiene justo lo que cabe a 20 °C (${fmt(ENF.cabe2, 1)} g). Saturada quiere decir que ya no admite más a esa temperatura, haya poco o mucho soluto; diluida solo dice que hay poco. La correcta está marcada.`,
       b:`Elegiste la B. Lo disuelto sí vuelve a ser sólido: a 20 °C, en 100 g de agua solo caben ${fmt(ENF.cabe2, 1)} g, y con el cristalito y la agitación lo que sobra se separa como cristales. La correcta está marcada.`,
       c:`Elegiste la C. ${fmt(ENF.cabe2, 1)} g es lo que marca la curva a 20 °C: lo que se queda disuelto, no lo que cristaliza. Cristaliza lo que sobra. La correcta está marcada.` },
     antes:ver => { vsIniciar(ver); E.config({ vasos:[], lupas:[], extra:dibujarCristal, descr:descCristal,
-      leyenda:`<span><i class="pt" style="background:var(--c-g)"></i>KNO₃ (cada punto: ${G_PUNTO} g; disuelto se mueve, cristal en el fondo)</span><span><i style="background:var(--c-solv)"></i>agua (cada cuadro: 25 g)</span><span><i style="background:var(--c-S)"></i>S · curva de solubilidad</span>` }); },
-    despues:() => { VS.ver = true; VS.hist = [[VS.T, VS.eq.disuelto]]; vsIrA(CR.T2, vsLeer); },
+      leyenda:leyCristal(ver) }); },
+    despues:() => { $('leyenda2').innerHTML = leyCristal(true); VS.ver = true; VS.hist = [[VS.T, VS.eq.disuelto]]; vsIrA(CR.T2, vsLeer); },
     ctrl:() => vsControles(),
     enlazar:vsEnlazar,
     exp:() => `<div class="eqs">
@@ -1318,7 +1323,7 @@ const EXPS = [
       <p>Con NaCl (la curva a trazos) casi no cristaliza nada: ${fmt(37, 0)} g a 60 °C dejan apenas ${fmt(NACL.cristaliza, 1)} g de cristales al bajar a 20 °C, porque su curva es casi plana. Cambia la temperatura y prueba sin cristalito: si se enfría despacio y sin agitar, puede quedar más disuelto de lo que cabe. Esa solución es <b>sobresaturada</b>: el punto queda encima de la curva, y un cristalito la hace cristalizar de golpe.</p>
       <p class="fuente">De 131 futuros profesores de ciencias, más de la mitad definió mal «solución diluida» y solo cerca de uno de cada cuatro la definió bien; las definiciones erróneas usaban «lo que el solvente puede disolver», que es lo que define a la saturada (Karaer, 2019). Que no cristalice nada o que cristalice lo que marca la curva son hipótesis nuestras, sin estudio que las mida. La curva usa valores de tabla redondeados, unidos en línea recta.</p>` },
   { id:'gaseosa', corto:'Dos gaseosas',
-    q:`Dos botellas cerradas de la misma gaseosa tienen CO₂ a la misma presión sobre el líquido, ${Pp(`${fmt(GAS.P, 0)} atm`)}. Una está en la refrigeradora a ${GAS.T[0]} °C y la otra al sol a ${GAS.T[1]} °C. Cuando cada una se asienta, ¿en cuál hay más ${G('CO₂ disuelto')}?`,
+    q:`Dos botellas cerradas de la misma gaseosa tienen CO₂ a la misma presión sobre el líquido, ${Pp(`${fmt(GAS.P, 0)} atm`)}. Una está en la refrigeradora a ${GAS.T[0]} °C y la otra al sol a ${GAS.T[1]} °C. Cuando cada una se asienta, ¿en cuál hay más ${G('CO₂ disuelto')}? (Cada cuadro del dibujo es una porción de 125 g de agua, no de solución.)`,
     opts:[['a','En la de 10 °C: en frío el agua retiene más gas',null],
           ['b','En la de 30 °C: el calor ayuda a disolver, como con el azúcar','SO6-gas-mas-en-caliente','parcial'],
           ['c','Igual en las dos: con la misma presión, la temperatura no cuenta','gas-solo-presion','hipotesis'],
@@ -1334,8 +1339,8 @@ const EXPS = [
     enlazar:gsEnlazar,
     exp:() => `<div class="eqs">
         <div class="eq">Ley de Henry: ${S_('S')} = k · ${Pp('P')}<span class="note">k es lo que se disuelve con 1 atm del gas; baja al calentar</span></div>
-        <div class="eq">${GAS.T[0]} °C: ${S_('S')} = ${fmt(MS.solubilidad('CO2', GAS.T[0]), 3)} · ${Pp(`${fmt(GAS.P, 0)} atm`)} = ${S_(`${fmt(CMP.S1, 2)} g/kg`)} → en 0,5 kg, ${G(`${fmt(CMP.g1, 2)} g`)}</div>
-        <div class="eq">${GAS.T[1]} °C: ${S_('S')} = ${fmt(MS.solubilidad('CO2', GAS.T[1]), 3)} · ${Pp(`${fmt(GAS.P, 0)} atm`)} = ${S_(`${fmt(CMP.S2, 2)} g/kg`)} → en 0,5 kg, ${G(`${fmt(CMP.g2, 2)} g`)}</div></div>
+        <div class="eq">${GAS.T[0]} °C: k = ${fmt(MS.solubilidad('CO2', GAS.T[0]), 3)} g/(kg·atm) → ${S_('S')} = ${fmt(MS.solubilidad('CO2', GAS.T[0]), 3)} · ${Pp(`${fmt(GAS.P, 0)} atm`)} = ${S_(`${fmt(CMP.S1, 2)} g/kg`)} → en 0,5 kg, ${G(`${fmt(CMP.g1, 2)} g`)}</div>
+        <div class="eq">${GAS.T[1]} °C: k = ${fmt(MS.solubilidad('CO2', GAS.T[1]), 3)} g/(kg·atm) → ${S_('S')} = ${fmt(MS.solubilidad('CO2', GAS.T[1]), 3)} · ${Pp(`${fmt(GAS.P, 0)} atm`)} = ${S_(`${fmt(CMP.S2, 2)} g/kg`)} → en 0,5 kg, ${G(`${fmt(CMP.g2, 2)} g`)}</div></div>
       <p>Un gas se disuelve <b>menos</b> al subir la temperatura y <b>más</b> al subir su presión sobre el líquido. Al destapar, la presión del CO₂ baja a la del aire y casi todo el gas sale en burbujas; en caliente sale más rápido y la gaseosa «se pasa». Por lo mismo, el agua tibia de un río lleva menos oxígeno para los peces. Prueba con las presiones.</p>
       <p class="fuente">En entrevistas con 6 futuros profesores de química, uno dijo que el gas se disuelve más al subir la temperatura y otro, que se disuelve menos al subir la presión; la mitad sabía que las dos influyen, pero no explicó por qué (Dindar y otros, 2010). Son casos, no porcentajes. Las opciones «igual en las dos» y «el CO₂ no se disuelve» son hipótesis nuestras. La k sale de una tabla de solubilidad del CO₂ con valores redondeados, y los 2 atm son un valor de ejemplo.</p>` },
 ];
