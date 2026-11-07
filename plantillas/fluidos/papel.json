@@ -1,0 +1,148 @@
+{
+  "titulo": "Fluidos: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. En un líquido en reposo, la presión solo depende de la profundidad h, medida en vertical desde la superficie libre: P = P₀ + ρ·g·h, sea cual sea la forma del recipiente. Compara presiones solo dentro de un mismo líquido conectado. El empuje es E = ρ del líquido · g · volumen sumergido: no depende de la masa del cuerpo. Dibuja las fuerzas de cada cuerpo con quién las ejerce (la Tierra, el hilo, el agua, el piso). Toma g = 10 m/s², agua 1000 kg/m³ y P₀ = 100 000 Pa.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Una cisterna de una casa tiene 3 m de agua. ¿Cuál es la presión del agua en el fondo, sin contar la atmósfera? ¿Y la presión absoluta?",
+      "respuesta": "30 000 Pa sin contar la atmósfera (manométrica) y 130 000 Pa absoluta.",
+      "pasos": [
+        "La profundidad del fondo, medida desde la superficie libre, es h = 3 m.",
+        "Presión manométrica: ρ·g·h = 1000 · 10 · 3 = 30 000 Pa.",
+        "La absoluta suma la de la atmósfera, que empuja sobre la superficie del agua: 100 000 + 30 000 = 130 000 Pa.",
+        "Ojo: el área del fondo o la cantidad de agua no entran en la cuenta. Una cisterna angosta de 3 m da la misma presión en el fondo."
+      ],
+      "verificar": [
+        { "fn": "presion", "args": [{ "h": 3 }], "espera": { "Pman": 30000, "Pabs": 130000 } }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "intermedio",
+      "enunciado": "Un tanque cerrado de 1 m de alto tiene una tapa de 1 m² con un tubo vertical de 0,05 m² de sección. Se llena de agua hasta que el agua sube 1,5 m dentro del tubo, sobre la tapa. ¿Cuál es la presión manométrica del agua contra la tapa, por dentro, y con qué fuerza empuja el agua la tapa hacia arriba (sin el hueco del tubo)? ¿Y la presión en el fondo?",
+      "respuesta": "15 000 Pa contra la tapa, una fuerza de 14 250 N hacia arriba. En el fondo, 25 000 Pa.",
+      "pasos": [
+        "La superficie libre está en el tubo, 1,5 m sobre la tapa. Esa es la profundidad de la tapa: h = 1,5 m, aunque encima de la tapa no haya agua.",
+        "Presión contra la tapa: 1000 · 10 · 1,5 = 15 000 Pa.",
+        "El agua empuja la tapa en toda su área menos el hueco del tubo: 1 − 0,05 = 0,95 m². Fuerza: 15 000 · 0,95 = 14 250 N, hacia arriba.",
+        "El fondo está 1,5 + 1 = 2,5 m bajo la superficie libre: 1000 · 10 · 2,5 = 25 000 Pa.",
+        "Fíjate: un tubo delgado con poca agua basta para empujar la tapa con más de 14 000 N. Medir h solo hasta la tapa (0 m) es el error típico."
+      ],
+      "verificar": [
+        { "fn": "recipiente", "args": [{ "secciones": [{ "alto": 1, "ancho": 1 }, { "alto": 2, "ancho": 0.05 }], "H": 2.5 }], "espera": { "escalones.0.P": 15000, "escalones.0.F": 14250, "Pfondo": 25000 } }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Un tubo en U de sección pareja tiene agua. Por la rama izquierda se echa aceite de densidad 800 kg/m³, que no se mezcla con el agua, hasta formar una columna de 25 cm sobre el agua. ¿Cuánto más alto queda el agua de la rama derecha que la frontera entre el aceite y el agua? ¿Qué superficie libre queda más alta y por cuánto?",
+      "respuesta": "El agua de la derecha queda 20 cm sobre la frontera. La superficie del aceite queda 5 cm más alta que la del agua.",
+      "pasos": [
+        "Toma la altura de la frontera aceite-agua. A esa altura, en las dos ramas hay agua conectada por abajo: la presión es la misma.",
+        "A la izquierda, sobre ese punto hay 25 cm de aceite: 800 · 10 · 0,25 = 2000 Pa sobre la atmosférica.",
+        "A la derecha, sobre ese punto hay x de agua: 1000 · 10 · x = 2000, así que x = 0,2 m = 20 cm.",
+        "La superficie del aceite está 25 cm sobre la frontera; la del agua, 20 cm. El aceite queda 5 cm más alto.",
+        "Error típico: comparar puntos a la misma altura en el aceite y en el agua. Solo se igualan presiones dentro del mismo líquido."
+      ],
+      "verificar": [
+        { "fn": "tuboU", "args": [{ "rho1": 800, "h1": 0.25, "rho2": 1000 }], "espera": { "x": 0.2, "diferenciaSuperficies": 0.05, "Pfrontera": 2000 } }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "básico",
+      "enunciado": "En Juliaca, a casi 3800 m de altura, un barómetro de mercurio (13 600 kg/m³) marca una columna de 48 cm. ¿Cuál es la presión atmosférica ahí? ¿Qué fracción es de la que se toma a nivel del mar, 100 000 Pa?",
+      "respuesta": "65 280 Pa, cerca de dos tercios (65 %) de la de nivel del mar.",
+      "pasos": [
+        "Sobre la columna de mercurio del barómetro casi no hay aire: la columna la sostiene la atmósfera, que empuja el mercurio del recipiente de abajo.",
+        "P₀ = ρ·g·h = 13 600 · 10 · 0,48 = 65 280 Pa.",
+        "Comparada con 100 000 Pa: 65 280 / 100 000 = 0,6528, alrededor del 65 %.",
+        "Por eso en la sierra el agua hierve a menos de 100 °C: hay menos presión sobre ella."
+      ],
+      "verificar": [
+        { "fn": "barometro", "args": [{ "rho": 13600, "h": 0.48 }], "espera": { "P0": 65280 } }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "En un taller, una gata hidráulica tiene émbolos circulares de 2 cm y 10 cm de diámetro. Con la palanca se empuja el émbolo chico con 80 N. ¿Qué fuerza hace el émbolo grande? Si el chico baja 25 cm, ¿cuánto sube el grande? Compara el trabajo en los dos émbolos.",
+      "respuesta": "2000 N. El grande sube 1 cm. El trabajo es 20 J en los dos.",
+      "pasos": [
+        "La presión que pone el émbolo chico se transmite a todo el líquido: F₁/A₁ = F₂/A₂.",
+        "Las áreas van con el diámetro al cuadrado: A₂/A₁ = (10/2)² = 25. No es 5: ese es el error de usar los diámetros.",
+        "F₂ = 80 · 25 = 2000 N.",
+        "El líquido que sale del cilindro chico entra al grande: A₁·d₁ = A₂·d₂, así que d₂ = 25 cm / 25 = 1 cm.",
+        "Trabajo: 80 · 0,25 = 20 J en el chico y 2000 · 0,01 = 20 J en el grande. La prensa multiplica la fuerza, no el trabajo."
+      ],
+      "verificar": [
+        { "fn": "prensa", "args": [{ "D1": 0.02, "D2": 0.1, "F1": 80, "d1": 0.25 }], "espera": { "F2": 2000, "d2": 0.01, "trabajo1": 20, "trabajo2": 20, "razon": 25, "errores.razonDiametros": 400 } }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Un tronco de eucalipto de 0,04 m³ y densidad 750 kg/m³ flota en un río. ¿Qué fracción de su volumen queda bajo el agua y cuánto empuje recibe? ¿Con qué fuerza vertical habría que empujarlo hacia abajo para hundirlo entero?",
+      "respuesta": "Tres cuartos bajo el agua, con 300 N de empuje. Para hundirlo entero, 100 N hacia abajo.",
+      "pasos": [
+        "Peso del tronco: 750 · 0,04 · 10 = 300 N. Como flota quieto, el empuje vale lo mismo: 300 N.",
+        "Volumen sumergido: 300 = 1000 · 10 · V, así que V = 0,03 m³, es decir, 0,03/0,04 = 3/4 del tronco. Es la razón de densidades, 750/1000.",
+        "Hundido entero, desaloja 0,04 m³: el empuje sube a 1000 · 10 · 0,04 = 400 N.",
+        "Para que quede quieto así, la fuerza hacia abajo más el peso igualan al empuje: fuerza = 400 − 300 = 100 N.",
+        "Error típico: invertir la razón (1000/750, más de 1) o dar la parte que sobresale (1/4)."
+      ],
+      "verificar": [
+        { "fn": "flotacion", "args": [{ "rhoC": 750, "V": 0.04 }], "espera": { "fraccion": 0.75, "E": 300, "W": 300, "errores.fraccionQueSobresale": 0.25 } },
+        { "fn": "sumergido", "args": [{ "rhoC": 750, "V": 0.04 }], "espera": { "E": 400, "T": 100 } }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "básico",
+      "enunciado": "Una piedra colgada de un dinamómetro marca 30 N en el aire y 20 N sumergida entera en agua. ¿Cuánto empuje recibe, cuál es su volumen y cuál su densidad?",
+      "respuesta": "Empuje de 10 N, volumen de 0,001 m³ (1 litro) y densidad de 3000 kg/m³.",
+      "pasos": [
+        "Sumergida, sobre la piedra actúan su peso (30 N, hacia abajo), la tensión del hilo y el empuje del agua (los dos hacia arriba).",
+        "Lo que marca el dinamómetro es la tensión: 20 N. Entonces el empuje es 30 − 20 = 10 N.",
+        "Volumen: 10 = 1000 · 10 · V, así que V = 0,001 m³.",
+        "Masa: 30/10 = 3 kg. Densidad: 3 / 0,001 = 3000 kg/m³."
+      ],
+      "verificar": [
+        { "fn": "sumergido", "args": [{ "m": 3, "V": 0.001 }], "espera": { "W": 30, "T": 20, "E": 10, "rhoC": 3000 } }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Un vaso con agua está sobre una balanza, que marca 50 N. Se hunde entera en el agua, sin que toque el fondo, la piedra del problema anterior (30 N y 1 litro), colgada de un dinamómetro. ¿Cuánto marca ahora el dinamómetro? ¿Y la balanza?",
+      "respuesta": "El dinamómetro marca 20 N y la balanza 60 N.",
+      "pasos": [
+        "El agua empuja la piedra hacia arriba con 1000 · 10 · 0,001 = 10 N, así que el dinamómetro marca 30 − 10 = 20 N.",
+        "Por la tercera ley, la piedra empuja el agua hacia abajo con 10 N. Esa fuerza llega al fondo del vaso y a la balanza.",
+        "La balanza marca 50 + 10 = 60 N, aunque la piedra cuelga del hilo y no toca el vaso.",
+        "Comprobación: entre los dos marcan 20 + 60 = 80 N, el peso del vaso con agua más el de la piedra. El hilo sostiene una parte y la balanza el resto."
+      ],
+      "verificar": [
+        { "fn": "balanza", "args": [{ "m": 3, "V": 0.001, "mVaso": 1, "Avaso": 0.02, "hLiq": 0.2, "bajada": 0.1 }], "espera": { "Wvaso": 50, "T": 20, "N": 60, "total": 80 } }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Por una manguera horizontal de 2 cm de diámetro corre agua a 1 m/s, con una presión absoluta de 130 000 Pa. En la boquilla, el diámetro baja a 1 cm. ¿Con qué rapidez sale el agua de la boquilla y cuál es la presión justo antes de salir, dentro de la parte angosta?",
+      "respuesta": "Sale a 4 m/s; la presión en la parte angosta es 122 500 Pa.",
+      "pasos": [
+        "Continuidad: el caudal es el mismo, A₁·v₁ = A₂·v₂. El área va con el diámetro al cuadrado: A₁/A₂ = (2/1)² = 4.",
+        "v₂ = 1 · 4 = 4 m/s. Con la razón de diámetros sin elevar al cuadrado saldría 2 m/s, y es un error.",
+        "Bernoulli en un tubo horizontal: P₁ + ½ρv₁² = P₂ + ½ρv₂².",
+        "P₂ = 130 000 + ½ · 1000 · (1² − 4²) = 130 000 − 7500 = 122 500 Pa.",
+        "Donde el agua va más rápido, la presión es menor."
+      ],
+      "verificar": [
+        { "fn": "continuidad", "args": [{ "D1": 0.02, "D2": 0.01, "v1": 1 }], "espera": { "v2": 4, "errores.razonDiametros": 2 } },
+        { "fn": "bernoulli", "args": [{ "P1": 130000, "v1": 1, "D1": 0.02, "D2": 0.01 }], "espera": { "P2": 122500 } }
+      ]
+    }
+  ]
+}
