@@ -2,7 +2,7 @@
   "plantilla": "nomenclatura-inorganica",
   "unidades": "Estados de oxidación como fracción exacta: 'texto' con su signo (+3, −2, +8/3; el menos es el signo tipográfico −) y 'valor' como número. Fórmulas en texto plano: subíndices como cifras (Fe2O3, Al2(SO4)3), carga con '^' (SO4^2-, NH4^+), agua de hidratación con '·' (FeSO4·7H2O) y el hidrácido con '(ac)' (HCl(ac)). Masas atómicas de academia (H 1, O 16, S 32, Fe 56).",
   "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'; 'tambien' agrega llamadas del mismo caso. Los campos anidados van con punto (errores.subindice, porElemento.Fe, nombres.stock). Los textos se comparan exactos. Las convenciones de nombres (stock con espacio antes del romano, «anhídrido» en la tradicional de los óxidos de no metal, sistemática de academia para oxácidos y oxisales, orto por defecto para P y B) están en la cabecera de motor.js.",
-  "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer el motor ni casos.json: recalculó los casos en Python, con estados de oxidación por suma de cargas con Fraction (en el orden de prioridad de la convención), fórmulas por cruce de cargas y mcd, oxácidos por balance de átomos del óxido + n H2O, masas de academia y nombres con las reglas de la cabecera. Coinciden todos los valores; las diferencias fueron de interpretación (la carga del catión como carga total, hoy cargaTotalCation) y de escritura de algunos errores típicos.",
+  "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer el motor ni casos.json: recalculó los casos en Python, con estados de oxidación por suma de cargas con Fraction (en el orden de prioridad de la convención), fórmulas por cruce de cargas y mcd, oxácidos por balance de átomos del óxido + n H2O, masas de academia y nombres con las reglas de la cabecera. Coinciden todos los valores; las diferencias fueron de interpretación (la carga del catión como carga total, hoy cargaTotalCation) y de escritura de algunos errores típicos. Después (7 nov 2026): por decisión de la integradora, el número romano de la stock va pegado al elemento («óxido de hierro(III)», «sulfato de hierro(II)»; en los oxácidos y oxoaniones sistemáticos se mantiene «tetraoxosulfato (VI)»), y la tabla agrega S +2, N +1 y P +1 (hipo-…-oso). Cambiaron los textos esperados con romano y, en el caso de Na2SO3, el error hipoConDos pasó a llamarse hipoEnVezDeOso (hiposulfito sería la sal del S +2); los valores no cambiaron.",
   "tolerancia": 1e-9,
   "casos": [
     { "nombre": "Paso 2 y predicción 1: en Fe2O3 el Fe tiene +3 (tres O dan −6; dos Fe dan +6). Errores: el subíndice como estado (+2), sin dividir entre los 2 Fe (+6) y el signo al revés (−3)",
@@ -46,14 +46,14 @@
 
     { "nombre": "Predicción 2: los tres nombres de Fe2O3. Errores de la stock: el subíndice como romano (II), sin dividir (VI) y sin número; en la tradicional, -oso por -ico (óxido ferroso, el nombre del FeO)",
       "fn": "nombrar", "args": ["Fe2O3"],
-      "espera": { "funcion": "óxido básico", "sistematica": "trióxido de dihierro", "stock": "óxido de hierro (III)", "tradicional": "óxido férrico",
-                  "errores.stockSubindice": "óxido de hierro (II)", "errores.stockSinDividir": "óxido de hierro (VI)", "errores.stockSinNumero": "óxido de hierro", "errores.tradicionalAlReves": "óxido ferroso" } },
+      "espera": { "funcion": "óxido básico", "sistematica": "trióxido de dihierro", "stock": "óxido de hierro(III)", "tradicional": "óxido férrico",
+                  "errores.stockSubindice": "óxido de hierro(II)", "errores.stockSinDividir": "óxido de hierro(VI)", "errores.stockSinNumero": "óxido de hierro", "errores.tradicionalAlReves": "óxido ferroso" } },
 
-    { "nombre": "Informe: FeO → óxido de hierro (II), óxido ferroso, monóxido de hierro; CO2 y SO3 (no metal: «anhídrido» en la tradicional)",
+    { "nombre": "Informe: FeO → óxido de hierro(II), óxido ferroso, monóxido de hierro; CO2 y SO3 (no metal: «anhídrido» en la tradicional)",
       "fn": "nombrar", "args": ["FeO"],
-      "espera": { "stock": "óxido de hierro (II)", "tradicional": "óxido ferroso", "sistematica": "monóxido de hierro" },
-      "tambien": [ { "args": ["SO3"], "espera": { "funcion": "óxido ácido", "sistematica": "trióxido de azufre", "stock": "óxido de azufre (VI)", "tradicional": "anhídrido sulfúrico" } },
-                   { "args": ["CO2"], "espera": { "stock": "óxido de carbono (IV)", "tradicional": "anhídrido carbónico", "sistematica": "dióxido de carbono" } } ] },
+      "espera": { "stock": "óxido de hierro(II)", "tradicional": "óxido ferroso", "sistematica": "monóxido de hierro" },
+      "tambien": [ { "args": ["SO3"], "espera": { "funcion": "óxido ácido", "sistematica": "trióxido de azufre", "stock": "óxido de azufre(VI)", "tradicional": "anhídrido sulfúrico" } },
+                   { "args": ["CO2"], "espera": { "stock": "óxido de carbono(IV)", "tradicional": "anhídrido carbónico", "sistematica": "dióxido de carbono" } } ] },
 
     { "nombre": "¿Qué pasa si…? 2: oxácidos del cloro con +1, +3, +5 y +7: HClO hipocloroso, HClO2 cloroso, HClO3 clórico, HClO4 perclórico. Errores del perclórico: sin simplificar (H2Cl2O8), el estado vecino (HClO3) y dos H (H2ClO4)",
       "fn": "formar", "args": ["oxacido", "Cl", 7],
@@ -107,17 +107,17 @@
       "espera": { "sal": "Na2SO4", "ecuacion": "H2SO4 + 2NaOH -> Na2SO4 + 2H2O", "coefs": [1, 2, 1, 2], "nombres.tradicional": "sulfato de sodio",
                   "nombres.errores.terminacionAlReves": "sulfito de sodio", "nombres.errores.terminacionUro": "sulfuro de sodio", "nombres.errores.sinCambiar": "sulfúrico de sodio" } },
 
-    { "nombre": "¿Qué pasa si…? 1: Na2SO3 es sulfito de sodio (S +4, -oso → -ito). Errores: -ato (sulfato), hipo- con un elemento de dos estados (hiposulfito) y -uro (sulfuro)",
+    { "nombre": "¿Qué pasa si…? 1: Na2SO3 es sulfito de sodio (S +4, -oso → -ito). Errores: -ato (sulfato), hipo- en vez de -oso (hiposulfito, que sería la sal del S +2) y -uro (sulfuro)",
       "fn": "nombrar", "args": ["Na2SO3"],
       "espera": { "tradicional": "sulfito de sodio", "stock": "sulfito de sodio", "sistematica": "trioxosulfato (IV) de sodio",
-                  "errores.terminacionAlReves": "sulfato de sodio", "errores.hipoConDos": "hiposulfito de sodio", "errores.terminacionUro": "sulfuro de sodio" } },
+                  "errores.terminacionAlReves": "sulfato de sodio", "errores.hipoEnVezDeOso": "hiposulfito de sodio", "errores.terminacionUro": "sulfuro de sodio" } },
 
-    { "nombre": "Informe, nombres de sales: KClO hipoclorito de potasio; NaNO2 nitrito de sodio; FeSO4 sulfato ferroso o de hierro (II); Fe2(SO4)3 sulfato férrico o de hierro (III); NaHCO3 hidrogenocarbonato de sodio (bicarbonato)",
+    { "nombre": "Informe, nombres de sales: KClO hipoclorito de potasio; NaNO2 nitrito de sodio; FeSO4 sulfato ferroso o de hierro(II); Fe2(SO4)3 sulfato férrico o de hierro(III); NaHCO3 hidrogenocarbonato de sodio (bicarbonato)",
       "fn": "nombrar", "args": ["KClO"],
       "espera": { "tradicional": "hipoclorito de potasio" },
       "tambien": [ { "args": ["NaNO2"], "espera": { "tradicional": "nitrito de sodio" } },
-                   { "args": ["FeSO4"], "espera": { "tradicional": "sulfato ferroso", "stock": "sulfato de hierro (II)" } },
-                   { "args": ["Fe2(SO4)3"], "espera": { "tradicional": "sulfato férrico", "stock": "sulfato de hierro (III)", "sistematica": "tetraoxosulfato (VI) de hierro (III)" } },
+                   { "args": ["FeSO4"], "espera": { "tradicional": "sulfato ferroso", "stock": "sulfato de hierro(II)" } },
+                   { "args": ["Fe2(SO4)3"], "espera": { "tradicional": "sulfato férrico", "stock": "sulfato de hierro(III)", "sistematica": "tetraoxosulfato (VI) de hierro(III)" } },
                    { "args": ["NaHCO3"], "espera": { "funcion": "sal ácida", "stock": "hidrogenocarbonato de sodio", "tradicional": "carbonato ácido de sodio", "comun": "bicarbonato de sodio" } } ] },
 
     { "nombre": "¿Qué pasa si…? 4: H2CO3 + KOH quitando un solo H → KHCO3, bicarbonato de potasio. Errores: quitar los dos H (K2CO3), no quitar ninguno (KH2CO3) y dejarle al HCO3 la carga −2 (K2HCO3)",
@@ -125,9 +125,9 @@
       "espera": { "sal": "KHCO3", "anion": "HCO3^-", "ecuacion": "H2CO3 + KOH -> KHCO3 + H2O", "nombres.comun": "bicarbonato de potasio", "nombres.stock": "hidrogenocarbonato de potasio",
                   "errores.quitaTodos": "K2CO3", "errores.sinQuitar": "KH2CO3", "errores.cargaSinH": "K2HCO3" } },
 
-    { "nombre": "¿Qué pasa si…? 5: sulfato de hierro (II) heptahidratado, FeSO4·7H2O (278 g/mol; 126 g de agua, 45,3 %). Errores: el romano como subíndice (Fe2SO4·7H2O), juntar el agua en la fórmula (FeSO4H14O7) y cruzar sin simplificar (Fe2(SO4)2·7H2O)",
+    { "nombre": "¿Qué pasa si…? 5: sulfato de hierro(II) heptahidratado, FeSO4·7H2O (278 g/mol; 126 g de agua, 45,3 %). Errores: el romano como subíndice (Fe2SO4·7H2O), juntar el agua en la fórmula (FeSO4H14O7) y cruzar sin simplificar (Fe2(SO4)2·7H2O)",
       "fn": "hidratoDe", "args": ["FeSO4", 7],
-      "espera": { "formula": "FeSO4·7H2O", "masaMolar": 278, "masaAgua": 126, "porcentajeAgua": 45.32374100719424, "nombres.stock": "sulfato de hierro (II) heptahidratado", "nombres.tradicional": "sulfato ferroso heptahidratado",
+      "espera": { "formula": "FeSO4·7H2O", "masaMolar": 278, "masaAgua": 126, "porcentajeAgua": 45.32374100719424, "nombres.stock": "sulfato de hierro(II) heptahidratado", "nombres.tradicional": "sulfato ferroso heptahidratado",
                   "errores.romanoComoSubindice": "Fe2SO4·7H2O", "errores.juntaElAgua": "FeSO4H14O7", "errores.sinSimplificar": "Fe2(SO4)2·7H2O" } },
 
     { "nombre": "Clasificar: óxido básico, óxido ácido, peróxido, hidruro metálico, hidruro no metálico (gas) e hidrácido (en agua), hidróxido (también NH4OH), oxácido, oxisal, sal haloidea, sal ácida, sal básica, hidratada y óxido salino (doble) para Fe3O4",

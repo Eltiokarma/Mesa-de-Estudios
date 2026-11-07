@@ -22,25 +22,27 @@
  *      Metales: Li, Na, K, Ag +1; Mg, Ca, Ba, Zn +2; Al +3; Cu y Hg +1, +2; Au +1, +3; Fe, Co, Ni +2, +3;
  *      Sn y Pb +2, +4; Cr +2, +3 (y +6 como no metal); Mn +2, +3 (y +4, +6, +7 como no metal).
  *      No metales (estados positivos, para óxidos ácidos y oxácidos): B +3; C +2, +4 (el CO es óxido neutro: no da
- *      ácido); Si +4; N +3, +5; P +3, +5; S y Se +4, +6; Cl, Br, I +1, +3, +5, +7. Negativos (hidruros y sales
+ *      ácido); Si +4; N +1, +3, +5; P +1, +3, +5; S +2, +4, +6; Se +4, +6; Cl, Br, I +1, +3, +5, +7. Negativos (hidruros y sales
  *      haloideas): H −1 con metales; F, Cl, Br, I −1; S, Se −2; N, P −3; C −4.
  *   2. Estado de oxidación por suma de cargas: 0 en una sustancia neutra y la carga en un ion. F −1, alcalinos +1,
  *      alcalinotérreos +2, Al +3, H +1 y O −2; el último elemento se despeja. Así salen solos el H −1 de los
  *      hidruros metálicos, el O −1 de los peróxidos y el O +2 del OF₂. En una sal, primero se separan sus iones.
  *   3. Tradicional: con un estado, -ico (ácido carbónico) o «de» + metal (óxido de sodio); con dos, -oso el menor e
- *      -ico el mayor; con cuatro (Cl, Br, I), hipo-…-oso, -oso, -ico y per-…-ico. Mn como no metal: +4 -oso, +6 -ico
+ *      -ico el mayor; con tres (N, P, S), hipo-…-oso, -oso e -ico (H₂SO₂ hiposulfuroso, HNO hiponitroso, H₃PO₂
+ *      hipofosforoso); con cuatro (Cl, Br, I), hipo-…-oso, -oso, -ico y per-…-ico. Mn como no metal: +4 -oso, +6 -ico
  *      y +7 per-…-ico. Los óxidos de no metal se llaman «anhídrido» en la tradicional (anhídrido sulfúrico) y
  *      «óxido» en las otras dos. Las sales cambian -oso → -ito, -ico → -ato e -hídrico → -uro.
- *   4. Stock: número romano entre paréntesis, con un espacio («óxido de hierro (III)»), solo si el elemento tiene
- *      más de un estado en la tabla. Para los oxácidos, la «stock» de academia es la funcional: «ácido
- *      tetraoxosulfúrico (VI)».
+ *   4. Stock: número romano entre paréntesis, pegado al nombre del elemento como pide la IUPAC («óxido de
+ *      hierro(III)»; el parser acepta también «hierro (III)»), solo si el elemento tiene más de un estado en la
+ *      tabla. Para los oxácidos, la «stock» de academia es la funcional, con espacio tras la raíz: «ácido
+ *      tetraoxosulfúrico (VI)»; igual en la sistemática de academia: «tetraoxosulfato (VI) de hidrógeno».
  *   5. Sistemática: prefijos mono-, di-, tri-… con la cantidad de cada átomo («trióxido de dihierro»). Delante de
  *      «óxido» se elide la vocal, como en las academias: monóxido, dióxido, trióxido, tetróxido, pentóxido, heptóxido
  *      (el parser acepta también pentaóxido, heptaóxido…). Mono- se escribe delante de «óxido» y delante de lo que
  *      se nombra primero cuando el metal tiene más de un estado, para distinguir (monosulfuro de hierro frente a
  *      trisulfuro de dihierro; monohidróxido de cobre); en lo demás se omite (cloruro de sodio, hidruro de sodio).
  *      Oxácidos y oxisales con la forma de academia: «tetraoxosulfato (VI) de hidrógeno», «tetraoxosulfato (VI) de
- *      hierro (III)». Los hidruros de S, Se y halógenos: «cloruro de hidrógeno», «sulfuro de hidrógeno», sin prefijo.
+ *      hierro(III)». Los hidruros de S, Se y halógenos: «cloruro de hidrógeno», «sulfuro de hidrógeno», sin prefijo.
  *   6. Hidrácidos: «HCl(ac)» es el hidrácido (ácido clorhídrico); «HCl» sin (ac) es el gas, cloruro de hidrógeno.
  *   7. P y B forman por defecto el oxácido orto (óxido + 3 H₂O): ácido fosfórico H₃PO₄, ácido bórico H₃BO₃; con P
  *      también meta (+1 H₂O) y piro (+2 H₂O). Cr y S también forman el di- (dos óxidos + 1 H₂O): ácido dicrómico.
@@ -48,7 +50,7 @@
  *      común con bi- (bicarbonato) solo con un H de un ácido de dos H. Sal básica: «cloruro básico de calcio»,
  *      «hidroxicloruro de calcio». Hidratos: «… heptahidratado», con el agua escrita «·7H2O».
  *   9. Notas. El MnO₂ es en realidad anfótero; la academia lo pone como «anhídrido manganoso» por la tabla de Mn como
- *      no metal, y el nombre «dióxido de manganeso» (u «óxido de manganeso (IV)») es el más aceptado. El H₃PO₃ (ácido
+ *      no metal, y el nombre «dióxido de manganeso» (u «óxido de manganeso(IV)») es el más aceptado. El H₃PO₃ (ácido
  *      fosforoso) tiene en realidad solo 2 H ácidos (uno va unido al P); la academia lo trata como si tuviera 3, y
  *      así lo hace el motor (fosfito PO₃³⁻). Los peróxidos se forman solo con H, alcalinos, alcalinotérreos y Zn.
  *  10. Masas atómicas de academia: H 1, C 12, N 14, O 16, Na 23, Mg 24, Al 27, P 31, S 32, Cl 35,5, K 39, Ca 40,
@@ -84,9 +86,9 @@
     B:  { nombre:'boro', grupo:13, nm:[3], oso:'bor', ico:'bór', an:'bor', orto:true },
     C:  { nombre:'carbono', grupo:14, nm:[2, 4], neutros:[2], neg:-4, oso:'carbon', ico:'carbón', an:'carbon', uro:'carb' },
     Si: { nombre:'silicio', grupo:14, nm:[4], oso:'silic', ico:'silíc', an:'silic' },
-    N:  { nombre:'nitrógeno', grupo:15, nm:[3, 5], neg:-3, oso:'nitr', ico:'nítr', an:'nitr', uro:'nitr' },
-    P:  { nombre:'fósforo', grupo:15, nm:[3, 5], neg:-3, oso:'fosfor', ico:'fosfór', an:'fosf', uro:'fosf', orto:true },
-    S:  { nombre:'azufre', grupo:16, nm:[4, 6], neg:-2, oso:'sulfur', ico:'sulfúr', an:'sulf', uro:'sulf', hidr:'sulfh' },
+    N:  { nombre:'nitrógeno', grupo:15, nm:[1, 3, 5], neg:-3, oso:'nitr', ico:'nítr', an:'nitr', uro:'nitr' },
+    P:  { nombre:'fósforo', grupo:15, nm:[1, 3, 5], neg:-3, oso:'fosfor', ico:'fosfór', an:'fosf', uro:'fosf', orto:true },
+    S:  { nombre:'azufre', grupo:16, nm:[2, 4, 6], neg:-2, oso:'sulfur', ico:'sulfúr', an:'sulf', uro:'sulf', hidr:'sulfh' },
     Se: { nombre:'selenio', grupo:16, nm:[4, 6], neg:-2, oso:'seleni', ico:'selén', an:'selen', uro:'seleni', hidr:'selenh' },
     F:  { nombre:'flúor', grupo:17, nm:[], neg:-1, uro:'fluor', hidr:'fluorh' },
     Cl: { nombre:'cloro', grupo:17, nm:[1, 3, 5, 7], neg:-1, oso:'clor', ico:'clór', an:'clor', uro:'clor', hidr:'clorh' },
@@ -259,7 +261,7 @@
 
   // ---------- Fichas de una fórmula ----------
   // Un tipo de catión y uno o dos tipos de anión (el segundo, solo OH⁻: sal básica). Se prefiere O²⁻ antes que O₂²⁻
-  // (PbO₂ es óxido de plomo (IV), no peróxido) y menos tipos de anión.
+  // (PbO₂ es óxido de plomo(IV), no peróxido) y menos tipos de anión.
   function descomponer(f) {
     const s = especie(f), base = s.base, carga = s.carga, cs = cationes(), as = aniones();
     const cands = [];
@@ -370,11 +372,11 @@
     if (C.tipo === 'proton') return [P(' de '), P('hidrógeno', 'H')];
     return ESTADOS[C.central].m.length > 1 ? [P(' '), P(adj(C.central, C.estado, 'm'), C.central)] : [P(' de '), P(ESTADOS[C.central].nombre, C.central)];
   }
-  // "de hierro (III)" o "de sodio".
+  // "de hierro(III)" o "de sodio".
   function catStock(C, n) {
     if (C.tipo === 'amonio') return [P(' de '), P('amonio', 'N')];
     if (C.tipo === 'proton') return [P(' de '), P(nombreEl('H', n || 1), 'H')];
-    return [P(' de '), P((n > 1 ? PREF[n] : '') + ESTADOS[C.central].nombre, C.central), ...(varios(C.central) ? [P(` (${romano(C.estado)})`)] : [])];
+    return [P(' de '), P((n > 1 ? PREF[n] : '') + ESTADOS[C.central].nombre, C.central), ...(varios(C.central) ? [P(`(${romano(C.estado)})`)] : [])];
   }
   // Nombre del anión: tradicional (sulfato), sistemático (tetraoxosulfato (VI)).
   function anTrad(A) {
@@ -392,10 +394,10 @@
   }
   const conH = (h, partes) => (h ? [P((h > 1 ? PREF[h] : '') + 'hidrogeno', 'H'), ...partes] : partes);
 
-  // Nombre de un ion suelto, para rotular las fichas: «sulfato», «hidrogenocarbonato», «hierro (III)», «amonio».
+  // Nombre de un ion suelto, para rotular las fichas: «sulfato», «hidrogenocarbonato», «hierro(III)», «amonio».
   function nombreIon(t) {
     const I = typeof t === 'string' ? ion(t) : t;
-    if (I.carga > 0) return I.tipo === 'amonio' ? 'amonio' : I.tipo === 'proton' ? 'hidrógeno' : ESTADOS[I.central].nombre + (varios(I.central) ? ` (${romano(I.carga)})` : '');
+    if (I.carga > 0) return I.tipo === 'amonio' ? 'amonio' : I.tipo === 'proton' ? 'hidrógeno' : ESTADOS[I.central].nombre + (varios(I.central) ? `(${romano(I.carga)})` : '');
     if (I.h && I.tipo === 'oxoanion') return texto(conH(I.h, anTrad({ ...I, h: 0 })));
     if (I.h) return 'hidrogeno' + texto(anTrad(I));
     return texto(anTrad(I));
@@ -538,11 +540,11 @@
     else if (fn === 'óxido básico' || fn === 'óxido ácido' || fn === 'óxido neutro') {
       const e = cl.elemento, v = cl.estado, b = at.O, a = at[e];
       sis = [P(preOxido(b), 'O'), P(' de '), P(nombreEl(e, a), e)];
-      sto = [P('óxido', 'O'), P(' de '), P(ESTADOS[e].nombre, e), ...(varios(e) ? [P(` (${romano(v)})`)] : [])];
+      sto = [P('óxido', 'O'), P(' de '), P(ESTADOS[e].nombre, e), ...(varios(e) ? [P(`(${romano(v)})`)] : [])];
       if (fn === 'óxido básico') tra = ESTADOS[e].m.length > 1 ? [P('óxido', 'O'), P(' '), P(adj(e, v, 'm'), e)] : [P('óxido', 'O'), P(' de '), P(ESTADOS[e].nombre, e)];
       else if (fn === 'óxido ácido') tra = [P('anhídrido', 'O'), P(' '), P(adj(e, v, 'nm'), e)];
       if (varios(e)) {
-        const roman = k => (k >= 1 && k <= 8 ? [P('óxido', 'O'), P(' de '), P(ESTADOS[e].nombre, e), P(` (${romano(k)})`)] : null);
+        const roman = k => (k >= 1 && k <= 8 ? [P('óxido', 'O'), P(' de '), P(ESTADOS[e].nombre, e), P(`(${romano(k)})`)] : null);
         err.stockSubindice = a !== v ? texto(roman(a)) : null;
         err.stockSinDividir = a > 1 ? texto(roman(v * a)) : null;
         err.stockSinNumero = texto([P('óxido de ' + ESTADOS[e].nombre)]);
@@ -573,7 +575,7 @@
       if (fn === 'oxácido') {
         const e = A.central, v = A.estado, tt = terminacion(e, v, 'nm'), forma = A.forma === 'normal' ? '' : A.forma === 'orto' ? '' : A.forma;
         tra = [P('ácido', 'H'), P(' '), P(forma + tt.prefijo + ESTADOS[e][tt.sufijo] + tt.sufijo, e)];
-        if (A.forma === 'orto' && e === 'P') comun = 'ácido orto' + ESTADOS[e][tt.sufijo] + tt.sufijo;
+        if (A.forma === 'orto' && e === 'P' && v === 5) comun = 'ácido orto' + ESTADOS[e][tt.sufijo] + tt.sufijo;
         sis = [...anSist(A), P(' de '), P('hidrógeno', 'H')];
         sto = [P('ácido', 'H'), P(' '), P(pre(A.O) + 'oxo', 'O'), P(pre(A.X) + ESTADOS[e].ico + 'ico', e), P(` (${romano(v)})`)];
         const t2 = { ...tt, sufijo: swap(tt.sufijo) };
@@ -613,7 +615,7 @@
         Object.assign(err, erroresAnion(A, C));
       } else if (fn === 'sal básica') {
         const k = d.hidroxidos, pk = k > 1 ? PREF[k] : '';
-        tra = [...anTrad(A), P(k > 1 ? ' dibásico' : ' básico'), P(' de '), P(ESTADOS[C.central].nombre, C.central), ...(varios(C.central) ? [P(` (${romano(C.estado)})`)] : [])];
+        tra = [...anTrad(A), P(k > 1 ? ' dibásico' : ' básico'), P(' de '), P(ESTADOS[C.central].nombre, C.central), ...(varios(C.central) ? [P(`(${romano(C.estado)})`)] : [])];
         sto = [P(pk + 'hidroxi', 'O'), ...anTrad(A), ...catStock(C)]; sis = sto.slice();
       }
     }
@@ -636,7 +638,8 @@
       r.terminacionAlReves = forma + t.prefijo + an + (t.sufijo === 'oso' ? 'ato' : 'ito') + hTxt + ' ' + cat.trim();
       if (ESTADOS[e].uro) r.terminacionUro = ESTADOS[e].uro + 'uro' + hTxt + ' ' + cat.trim();
       r.sinCambiar = forma + t.prefijo + ESTADOS[e][t.sufijo] + t.sufijo + hTxt + ' ' + cat.trim();
-      if (t.estados === 2) r.hipoConDos = 'hipo' + an + 'ito' + hTxt + ' ' + cat.trim();
+      // Hipo- con el estado -oso que no es el menor (hiposulfito por sulfito: el hiposulfito es el del S +2).
+      if (t.sufijo === 'oso' && !t.prefijo) r.hipoEnVezDeOso = 'hipo' + an + 'ito' + hTxt + ' ' + cat.trim();
       for (const k of Object.keys(r)) r[k] = r[k].replace(/\s+/g, ' ').replace(/ de de /, ' de ');
     } else if (A.tipo === 'haloideo') {
       r.sinCambiar = ESTADOS[e].hidr ? (ESTADOS[e].hidr + 'ídrico ' + cat.trim()).replace(/\s+/g, ' ') : null;

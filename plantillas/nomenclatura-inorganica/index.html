@@ -629,7 +629,7 @@ const P2 = { id:'nomenclatura-paso3', ok:'b', opts:[
   ['c', `${NFE.errores.stockSinDividir}: por la carga de los dos hierros juntos`, 'NO-stock-sin-dividir', 'hipotesis'],
   ['d', `${NFE.errores.stockSinNumero}: con el metal y el oxígeno basta, sin número`, 'NO-stock-sin-romano', 'hipotesis']],
   fb:{ b:'¡Bien! En la stock va el estado de oxidación del metal en número romano: (III). Abajo del dibujo aparecen sus tres nombres, cada parte del color de su elemento.',
-    a:`Elegiste la 1. El número romano de la stock es el estado de oxidación de cada hierro (+3), no cuántos átomos hay. «Óxido de hierro (II)» es otro compuesto, el FeO. ${NO1} La correcta está marcada.`,
+    a:`Elegiste la 1. El número romano de la stock es el estado de oxidación de cada hierro (+3), no cuántos átomos hay. «Óxido de hierro(II)» es otro compuesto, el FeO. ${NO1} La correcta está marcada.`,
     c:'Elegiste la 3. El romano es el estado de un solo átomo de hierro: +3. El hierro no llega a +6. Este error es una hipótesis nuestra, sin estudio que lo mida. La correcta está marcada.',
     d:`Elegiste la 4. El hierro tiene dos estados (+2 y +3) y forma dos óxidos: FeO y Fe₂O₃. Sin el número, el nombre no dice cuál es. Solo se omite cuando el metal tiene un estado, como el sodio. Este error es una hipótesis nuestra, sin estudio que lo mida. La correcta está marcada.` } };
 const P3 = { id:'nomenclatura-paso4', ok:'b', opts:[
@@ -726,7 +726,7 @@ const steps = [
      <tr><td>hidróxido</td><td>óxido básico + H₂O</td><td>${Fh('NaOH')} ${Nh('NaOH', 'stock')}</td></tr>
      <tr><td>oxácido</td><td>óxido ácido + H₂O</td><td>${Fh('H2SO4')} ${Nh('H2SO4', 'tradicional')}</td></tr>
      <tr><td>sal</td><td>ácido + hidróxido</td><td>${Fh('Na2SO4')} ${Nh('Na2SO4', 'tradicional')}, ${Fh('NaCl')} ${Nh('NaCl', 'tradicional')}</td></tr></tbody></table></div>
-   <p>En la tradicional, según la tabla de estados de tu academia: con un solo estado se usa -ico o «de» y el metal (óxido de sodio); con dos, casi siempre -oso e -ico; con cuatro, como el Cl, el Br y el I, hipo-…-oso, -oso, -ico y per-…-ico. Algunas tablas dan a un elemento un estado más (al azufre, un +2), y los nombres se acomodan a esa tabla. En «¿Qué pasa si…?» pruebas el cloro con sus cuatro estados, una mesa libre y un árbol libre.</p>
+   <p>En la tradicional, según la tabla de estados de tu academia: con un solo estado se usa -ico o «de» y el metal (óxido de sodio); con dos, -oso e -ico; con tres, como el S (+2, +4, +6), el N y el P (+1, +3, +5), hipo-…-oso, -oso e -ico; con cuatro, como el Cl, el Br y el I, hipo-…-oso, -oso, -ico y per-…-ico. Si tu academia usa otra tabla de estados, los nombres se acomodan a esa tabla. En «¿Qué pasa si…?» pruebas el cloro con sus cuatro estados, una mesa libre y un árbol libre.</p>
    <p class="fuente">Casi todos los errores de esta escena son hipótesis nuestras: la nomenclatura casi no está estudiada como idea errónea. Confundir subíndice y coeficiente (NO1): cerca del 40 % de 79 escolares argentinos juntó 3 X y 8 Y en «X₃Y₈» (Casado y Raviolo, 2005). Errores de nombres iónicos (NO2): un estudio en Indonesia con estudiantes universitarios de pedagogía en química (solo leímos su resumen) encontró que cerca del 37 % de lo que respondieron en nomenclatura iónica eran ideas erróneas sostenidas con seguridad alta. La fórmula leída como una etiqueta y no como una cuenta (NO3): una revisión de 38 estudios, sin porcentaje (Taskin y Bernholt, 2014). Los estados de oxidación y los nombres siguen una tabla de academia.</p>` },
 ];
 
@@ -845,15 +845,15 @@ const EXPS = [
     q:`El azufre también tiene el estado +4. Su óxido es ${Fh('SO2')}, que con agua da ${Fh('H2SO3')}, el ácido sulfuroso. Con ${Fh('NaOH')} se forma la sal ${Fh(S4.sal)}. ¿Cómo se llama en la tradicional?`,
     opts:[['a', `${N4.errores.terminacionAlReves}: la sal de un ácido del azufre termina en -ato`, 'NO-sal-oso-a-ato', 'parcial'],
           ['b', `${N4.tradicional}: el ácido es sulfuroso (-oso) y la sal cambia -oso por -ito`],
-          ['c', `${N4.errores.hipoConDos}: el +4 es el menor, y el menor lleva hipo-`, 'NO-hipo-con-dos-estados', 'hipotesis'],
+          ['c', `${N4.errores.hipoEnVezDeOso}: el +4 es menor que el +6, y el menor lleva hipo-`, 'NO-hipo-en-vez-de-oso', 'hipotesis'],
           ['d', `${N4.errores.terminacionUro}: el azufre está con su estado más bajo`, 'NO-sal-uro-sin-oxigeno', 'parcial']],
     ok:'b',
     fb:{ a:`-ato es para las sales de un ácido -ico: el sulfato (S con +6). Con +4 el ácido es sulfuroso, y su sal, sulfito. ${NO2}`,
-      c:'En nuestra tabla el azufre forma oxácidos con +4 y +6: -oso e -ico. Hipo- va con el estado más bajo cuando hay tres o cuatro (algunas tablas dan al azufre un +2, hiposulfuroso); el +4 siempre es -oso. «Hiposulfito» también se usa como nombre comercial del tiosulfato de sodio, Na₂S₂O₃, que es otra sal. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      c:'El azufre forma oxácidos con +2, +4 y +6: hipo-…-oso (+2), -oso (+4) e -ico (+6). El hiposulfito sería la sal del ácido hiposulfuroso, con el S en +2 (Na₂SO₂); con +4 el ácido es sulfuroso y su sal, sulfito. «Hiposulfito» también se usa como nombre comercial del tiosulfato de sodio, Na₂S₂O₃, que es otra sal. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
       d:`-uro es para las sales sin oxígeno, como el sulfuro de sodio, Na₂S (S con −2). Aquí hay 3 O. ${NO2}` },
     antes:() => arbolV(NA, { el:'S', v:4 }, todo), despues:() => arbolV(NA, { el:'S', v:4 }, todo), nombresR:() => S4.sal, libre:'mesa',
     exp:() => `<div class="eqs"><div class="eq"><span class="ex">${EQ(S4.ecuacion)}</span><span class="note">${Nh('Na2SO3', 'tradicional')} (S con +4) y ${Nh('Na2SO4', 'tradicional')} (S con +6): el mismo azufre, dos estados, dos sales.</span></div></div>
-      <p class="fuente">Cambiar -oso por -ato, o usar -uro en una sal con oxígeno: errores de nombres iónicos (NO2), sin dato propio. Hipo- con dos estados: hipótesis nuestra.</p>
+      <p class="fuente">Cambiar -oso por -ato, o usar -uro en una sal con oxígeno: errores de nombres iónicos (NO2), sin dato propio. Hipo- en vez de -oso: hipótesis nuestra.</p>
       <div class="nav"><button type="button" class="btn" id="abrirLibre">Ahora la mesa es tuya</button></div>
       <div id="libre" class="body" hidden><p>Elige un catión y un anión, y junta fichas (tócalas o arrástralas desde la bandeja; también con los botones) hasta que la carga sume cero. Toca una ficha de la mesa para quitarla. Elige un catión y un anión, y junta fichas (tócalas o arrástralas desde la bandeja; también con los botones) hasta que la carga sume cero. Toca una ficha de la mesa para quitarla.</p>
       <div class="campos"><label class="campo" for="xCat">Catión<select id="xCat"></select></label><label class="campo" for="xAn">Anión<select id="xAn"></select></label></div>
@@ -908,7 +908,7 @@ const EXPS = [
       <div class="eq"><span class="ex">${EQ('H2CO3 + 2KOH -> K2CO3 + 2H2O')}</span><span class="note">Quitando los dos H: la sal neutra, ${Nh('K2CO3', 'tradicional')}.</span></div></div>
       <p class="fuente">Confundir la sal ácida con la neutra o no ajustar la carga del ion con H: hipótesis nuestras. El informe solo cita que la sal ácida se toma por «sal doble», sin dato.</p>` },
   { id:'hidrato', corto:'La sal con agua',
-    q:`Hay sales que forman cristales con moléculas de agua adentro. La caparrosa, que se usa como abono, es el sulfato de hierro (II) heptahidratado. ¿Cuál es su fórmula?`,
+    q:`Hay sales que forman cristales con moléculas de agua adentro. La caparrosa, que se usa como abono, es el sulfato de hierro(II) heptahidratado. ¿Cuál es su fórmula?`,
     opts:[['a', `${Fh(HI.errores.romanoComoSubindice)}: el (II) dice que hay 2 Fe; las 7 H₂O, aparte`, 'NO-romano-como-subindice', 'hipotesis'],
           ['b', `${Fh(HI.errores.juntaElAgua)}: 1 Fe²⁺ y 1 SO₄²⁻; los 14 H y 7 O del agua, dentro de la fórmula`, 'NO1-junta-el-agua-en-la-formula', 'parcial'],
           ['c', `${Fh(HI.formula)}: 1 Fe²⁺ y 1 SO₄²⁻ suman cero; las 7 H₂O, aparte`],
@@ -917,7 +917,7 @@ const EXPS = [
     fb:{ a:'El (II) es el estado de oxidación del hierro, +2, no cuántos hay. Fe²⁺ y SO₄²⁻ suman cero con uno de cada uno. Esta opción es una hipótesis nuestra.',
       b:'Las moléculas de agua están en el cristal, pero no son parte del ion: se escriben aparte, con un punto y su número delante, como un coeficiente. Juntarlas en una sola fórmula se parece a un error documentado: cerca del 40 % de 79 escolares argentinos juntó 3 X y 8 Y en «X₃Y₈» (Casado y Raviolo, 2005).',
       d:'El cruce da Fe₂(SO₄)₂, pero se simplifica: 2 a 2 es 1 a 1. Esta opción es una hipótesis nuestra.' },
-    antes:() => mesa([], { suma:'no', bandeja:['Fe^2+', 'SO4^2-'], bandejaTapa:true, bandejaEt:'las fichas del sulfato de hierro (II), con la carga tapada', formulaTapa:true }), despues:p => mesa([{ ion:'Fe^2+', n:1 }, { ion:'SO4^2-', n:1 }], { agua:7, formula:HI.formula, p }), anima:true, nombresR:() => HI.formula,
+    antes:() => mesa([], { suma:'no', bandeja:['Fe^2+', 'SO4^2-'], bandejaTapa:true, bandejaEt:'las fichas del sulfato de hierro(II), con la carga tapada', formulaTapa:true }), despues:p => mesa([{ ion:'Fe^2+', n:1 }, { ion:'SO4^2-', n:1 }], { agua:7, formula:HI.formula, p }), anima:true, nombresR:() => HI.formula,
     exp:() => `<div class="eqs"><div class="eq"><span class="ex">${Fh(HI.formula)}: ${HI.masaMolar} g/mol, de los que ${HI.masaAgua} g son agua (7 × 18)</span><span class="note">Porcentaje de agua: ${HI.masaAgua} ÷ ${HI.masaMolar} × 100 ≈ ${String(Math.round(HI.porcentajeAgua*10)/10).replace('.', ',')} %. Al calentarlo, el agua se va y queda FeSO₄, la sal anhidra.</span></div></div>
       <p class="fuente">El romano leído como subíndice y el cruce sin simplificar son hipótesis nuestras; juntar el agua en la fórmula se parece a confundir subíndice y coeficiente (NO1).</p>` },
 ];
@@ -944,6 +944,8 @@ function despues(x){
 // Por qué un anión no se puede elegir con el catión de ahora (null si se puede).
 const porQueNo = (c, a) => MN.permitido(c, a) || (chocan([MN.ion(c).cuerpo, MN.ion(a).cuerpo]) ? 'colores parecidos' : null);
 const rotulo = i => `${txt(i)} (${MN.nombreIon(i)})`;
+// En el celular, al cambiar un selector de la mesa o del árbol libres, el dibujo vuelve a la vista.
+const alDibujo = () => { if (innerWidth < 900) $('cv2').scrollIntoView({ block:'start', behavior: RM ? 'auto' : 'smooth' }); };
 function libre(){
   const sc = $('xCat'), sa = $('xAn'); if (!sc) return;
   sc.innerHTML = CATS.map(c => `<option value="${c}">${rotulo(c)}</option>`).join('');
@@ -966,9 +968,9 @@ function libre(){
   sc.onchange = () => {
     X.cat = sc.value; const no = porQueNo(X.cat, X.an);
     if (no){ const antes = X.an; X.an = ANS.find(a => !porQueNo(X.cat, a)); aviso = `El ${txt(antes)} se apagó (${no} con ${txt(X.cat)}); ahora el anión es ${rotulo(X.an)}. `; }
-    X.nC = 1; X.nA = 1; pintarAn(); pintar();
+    X.nC = 1; X.nA = 1; pintarAn(); pintar(); alDibujo();
   };
-  sa.onchange = () => { X.an = sa.value; X.nC = 1; X.nA = 1; pintar(); };
+  sa.onchange = () => { X.an = sa.value; X.nC = 1; X.nA = 1; pintar(); alDibujo(); };
   E.libre = pintar; E.agregar = (ion, d) => { const k = ion === X.cat ? 'nC' : 'nA'; X[k] = clamp(X[k] + d, 0, 6); pintar(); };
   pintar();
 }
@@ -1002,9 +1004,9 @@ function arbol(){
     const [e, v] = sm.value.split('|'); A.m = e; A.vm = +v;
     if (chocan([A.m, A.n])){ const antes = A.n, ok = opsN.find(([k]) => !chocan([A.m, k.split('|')[0]])); const [n, w] = ok[0].split('|'); A.n = n; A.hid = w === 'h'; if (!A.hid) A.vn = +w;
       aviso = `El ${NOMBRE[antes]} se apagó con el ${NOMBRE[A.m]} (colores parecidos); ahora el no metal es el ${NOMBRE[A.n]}. `; }
-    nuevo(); pintarN(); pintar();
+    nuevo(); pintarN(); pintar(); alDibujo();
   };
-  sn.onchange = () => { const [e, v] = sn.value.split('|'); A.n = e; A.hid = v === 'h'; if (!A.hid) A.vn = +v; nuevo(); pintar(); };
+  sn.onchange = () => { const [e, v] = sn.value.split('|'); A.n = e; A.hid = v === 'h'; if (!A.hid) A.vn = +v; nuevo(); pintar(); alDibujo(); };
   E.tocarNodo = k => { if (!ETQ[k]) return; A.abiertos.add(k); A.foco = k; pintar(); };
   pintar();
 }
