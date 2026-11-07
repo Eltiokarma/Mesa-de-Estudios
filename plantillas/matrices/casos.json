@@ -1,0 +1,251 @@
+{
+  "plantilla": "matrices",
+  "unidades": "Cantidades sin unidad. Una matriz es la lista de sus filas: [[1, 0, -1], [3, 2, 1]] es de 2 × 3, con a₁₃ = −1. Las fracciones de entrada van como texto '1/2'. En los textos de salida las filas se separan con «; », el menos es tipográfico (−) y las fracciones son exactas ('−3/2'); los campos 'matriz' son números.",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera' (siempre un objeto: cada clave es un campo de la respuesta; los anidados van con punto, como errores.cambiaIJ.texto). Las listas se comparan completas y los textos exactos. 'tambien' son llamadas extra del mismo caso. Un error que no aparece en 'errores' es porque en ese caso daría la respuesta correcta o no aplica.",
+  "verificacion": "",
+  "tolerancia": 1e-9,
+  "casos": [
+    {
+      "nombre": "Orden y elemento: en una matriz de 2 × 3, a₂₃ es fila 2, columna 3; a₃₂ no existe",
+      "fn": "elemento",
+      "args": [{ "M": [[3, -1, 4], [0, 5, 2]], "i": 2, "j": 3 }],
+      "espera": { "valor": 2, "texto": "2", "coinciden": ["cambiaIJ"] },
+      "tambien": [
+        { "fn": "orden", "args": [{ "M": [[3, -1, 4], [0, 5, 2]] }], "espera": { "filas": 2, "columnas": 3, "texto": "2 × 3", "cuadrada": false } },
+        { "args": [{ "M": [[1, 2, 3], [4, 5, 6], [7, 8, 9]], "i": 2, "j": 3 }], "espera": { "valor": 6, "errores.cambiaIJ.valor": 8, "errores.cambiaIJ.id": "MT10" } }
+      ]
+    },
+    {
+      "nombre": "Construir A = (aᵢⱼ) de 2 × 3 con aᵢⱼ = 2i − j, y los tres errores de lectura",
+      "fn": "construir",
+      "args": [{ "filas": 2, "columnas": 3, "formula": { "i": 2, "j": -1, "c": 0 } }],
+      "espera": {
+        "matriz": [[1, 0, -1], [3, 2, 1]], "texto": "[1, 0, −1; 3, 2, 1]", "orden": "2 × 3",
+        "errores.cambiaIJ.matriz": [[1, 3, 5], [0, 2, 4]], "errores.cambiaIJ.id": "MT10",
+        "errores.ordenAlReves.matriz": [[1, 0], [3, 2], [5, 4]], "errores.ordenAlReves.id": "MT11",
+        "errores.porColumnas.matriz": [[1, 3], [0, 2], [-1, 1]], "errores.porColumnas.id": "MT12"
+      }
+    },
+    {
+      "nombre": "Matriz cuadrada con aᵢⱼ = i + j: es simétrica, y por columnas o con i y j cambiados da lo mismo",
+      "fn": "construir",
+      "args": [{ "filas": 3, "columnas": 3, "formula": { "i": 1, "j": 1, "c": 0 } }],
+      "espera": { "matriz": [[2, 3, 4], [3, 4, 5], [4, 5, 6]], "coinciden": ["cambiaIJ", "ordenAlReves", "porColumnas"] },
+      "tambien": [
+        { "fn": "tipos", "args": [{ "M": [[2, 3, 4], [3, 4, 5], [4, 5, 6]] }], "espera": { "simetrica": true, "diagonal": false, "traza": 12 } }
+      ]
+    },
+    {
+      "nombre": "Tipos de matrices: identidad, diagonal, triangular, antisimétrica y traza",
+      "fn": "tipos",
+      "args": [{ "M": [[1, 0], [0, 1]] }],
+      "espera": { "cuadrada": true, "identidad": true, "diagonal": true, "escalar": true, "simetrica": true, "triangularSuperior": true, "triangularInferior": true, "traza": 2 },
+      "tambien": [
+        { "args": [{ "M": [[3, 0, 0], [0, -2, 0], [0, 0, 5]] }], "espera": { "diagonal": true, "escalar": false, "identidad": false, "traza": 6, "trazaTexto": "6" } },
+        { "args": [{ "M": [[2, 7, -1], [0, 4, 3], [0, 0, 1]] }], "espera": { "triangularSuperior": true, "triangularInferior": false, "diagonal": false, "traza": 7 } },
+        { "args": [{ "M": [[0, 2], [-2, 0]] }], "espera": { "antisimetrica": true, "simetrica": false, "traza": 0 } },
+        { "args": [{ "M": [[1, 2, 3], [4, 5, 6]] }], "espera": { "cuadrada": false, "traza": null, "simetrica": false } }
+      ]
+    },
+    {
+      "nombre": "Suma, producto por escalar, transpuesta e igualdad",
+      "fn": "sumar",
+      "args": [{ "A": [[1, -2], [3, 0]], "B": [[4, 5], [-1, 2]] }],
+      "espera": { "matriz": [[5, 3], [2, 2]], "texto": "[5, 3; 2, 2]" },
+      "tambien": [
+        { "fn": "escalar", "args": [{ "k": -3, "A": [[1, -2], [3, 0]] }], "espera": { "matriz": [[-3, 6], [-9, 0]] } },
+        { "fn": "escalar", "args": [{ "k": "1/2", "A": [[1, 4]] }], "espera": { "texto": "[1/2, 2]" } },
+        { "fn": "transpuesta", "args": [{ "A": [[1, 0, -1], [3, 2, 1]] }], "espera": { "matriz": [[1, 3], [0, 2], [-1, 1]], "orden": "3 × 2" } },
+        { "fn": "iguales", "args": [{ "A": [[4, 2], [3, -1]], "B": [[4, 2], [3, -1]] }], "espera": { "valor": true, "distintas": [] } },
+        { "fn": "iguales", "args": [{ "A": [[4, 2], [3, -1]], "B": [[4, 2], [3, 1]] }], "espera": { "valor": false, "distintas": [[2, 2]] } },
+        { "fn": "iguales", "args": [{ "A": [[1, 2]], "B": [[1], [2]] }], "espera": { "valor": false, "distintas": null } }
+      ]
+    },
+    {
+      "nombre": "Producto fila por columna de 2 × 2 y sus tres errores",
+      "fn": "producto",
+      "args": [{ "A": [[1, 2], [3, -1]], "B": [[2, 0], [1, 4]] }],
+      "espera": {
+        "matriz": [[4, 8], [5, -4]], "texto": "[4, 8; 5, −4]", "orden": "2 × 2",
+        "celdas": [[{ "sumandos": [[1, 2], [2, 1]], "texto": "1 · 2 + 2 · 1" }, { "sumandos": [[1, 0], [2, 4]], "texto": "1 · 0 + 2 · 4" }],
+                   [{ "sumandos": [[3, 2], [-1, 1]], "texto": "3 · 2 + (−1) · 1" }, { "sumandos": [[3, 0], [-1, 4]], "texto": "3 · 0 + (−1) · 4" }]],
+        "errores.elementoAElemento.matriz": [[2, 0], [3, -4]], "errores.elementoAElemento.id": "MT1",
+        "errores.alReves.matriz": [[2, 4], [13, -2]], "errores.alReves.id": "MT2",
+        "errores.filaPorFila.matriz": [[2, 9], [6, -1]], "errores.filaPorFila.id": "MT14"
+      }
+    },
+    {
+      "nombre": "Producto de 2 × 3 por 3 × 2: da 2 × 2; BA existe pero es de 3 × 3",
+      "fn": "producto",
+      "args": [{ "A": [[1, 0, 2], [-1, 3, 1]], "B": [[3, 1], [2, 1], [1, 0]] }],
+      "espera": { "matriz": [[5, 1], [4, 2]], "orden": "2 × 2", "errores.alReves.matriz": [[2, 3, 7], [1, 3, 5], [1, 0, 2]], "coinciden": ["elementoAElemento", "filaPorFila"] }
+    },
+    {
+      "nombre": "Órdenes: 2 × 3 por 3 × 4 da 2 × 4 y BA no existe",
+      "fn": "ordenProducto",
+      "args": [{ "A": [2, 3], "B": [3, 4] }],
+      "espera": {
+        "AB": [2, 4], "BA": null, "texto": "AB es 2 × 4; BA no existe",
+        "errores.medio.texto": "AB es 3 × 3; BA no existe", "errores.medio.id": "MT15",
+        "errores.reves.texto": "AB es 2 × 4; BA es 4 × 2", "errores.reves.id": "MT8",
+        "errores.mismoOrden.texto": "AB no existe; BA no existe", "errores.mismoOrden.id": "MT16"
+      },
+      "tambien": [
+        { "args": [{ "A": [3, 2], "B": [2, 3] }], "espera": { "AB": [3, 3], "BA": [2, 2], "texto": "AB es 3 × 3; BA es 2 × 2" } },
+        { "args": [{ "A": [2, 3], "B": [2, 3] }], "espera": { "AB": null, "BA": null, "texto": "AB no existe; BA no existe", "coinciden": ["medio", "reves", "mismoOrden"] } }
+      ]
+    },
+    {
+      "nombre": "Primero estirar al doble a lo ancho, luego girar un cuarto de vuelta: la matriz es A·B",
+      "fn": "composicion",
+      "args": [{ "primero": [[2, 0], [0, 1]], "luego": [[0, -1], [1, 0]] }],
+      "espera": {
+        "matriz": [[0, -1], [2, 0]], "texto": "[0, −1; 2, 0]",
+        "errores.alReves.matriz": [[0, -2], [1, 0]], "errores.alReves.id": "MT2",
+        "errores.suma.matriz": [[2, -1], [1, 1]], "errores.suma.id": "MT17",
+        "errores.elementoAElemento.matriz": [[0, 0], [0, 0]], "errores.elementoAElemento.id": "MT1"
+      }
+    },
+    {
+      "nombre": "Determinante 2 × 2 positivo: [2, 2; 1, 3] da 6 − 2 = 4",
+      "fn": "det2",
+      "args": [{ "M": [[2, 2], [1, 3]] }],
+      "espera": {
+        "valor": 4, "texto": "4", "principal": 6, "secundaria": 2,
+        "errores.sumaDiagonales.valor": 8, "errores.alReves.valor": -4, "errores.filas.valor": 1, "coinciden": ["sinSigno"]
+      }
+    },
+    {
+      "nombre": "Determinante 2 × 2 negativo: [1, 4; 2, 3] da −5; sin signo daría 5 (y bc − ad también)",
+      "fn": "det2",
+      "args": [{ "M": [[1, 4], [2, 3]] }],
+      "espera": {
+        "valor": -5, "texto": "−5",
+        "errores.sinSigno.valor": 5, "errores.sinSigno.id": "MT20",
+        "errores.sumaDiagonales.valor": 11, "errores.filas.valor": -2, "coinciden": ["alReves"]
+      },
+      "tambien": [
+        { "fn": "paralelogramo", "args": [{ "M": [[1, 4], [2, 3]] }], "espera": { "u": [1, 2], "v": [4, 3], "vertices": [[0, 0], [1, 2], [5, 5], [4, 3]], "area": 5, "det": -5, "orientacion": "horario" } },
+        { "fn": "paralelogramo", "args": [{ "M": [[4, 6], [2, 3]] }], "espera": { "area": 0, "orientacion": "plano" } }
+      ]
+    },
+    {
+      "nombre": "Las dos cizallas no cambian el área: el paralelogramo de [1, 4; 2, 3] pasa a un rectángulo de 1 por −5",
+      "fn": "cizalla",
+      "args": [{ "M": [[1, 4], [2, 3]] }],
+      "espera": { "pasos": [{ "u": [1, 2], "v": [4, 3] }, { "u": [1, 2], "v": [0, -5] }, { "u": [1, 0], "v": [0, -5] }], "t1": 4, "t2": -0.4, "ancho": 1, "alto": -5, "det": -5 },
+      "tambien": [
+        { "args": [{ "M": [[2, 2], [1, 3]] }], "espera": { "pasos": [{ "u": [2, 1], "v": [2, 3] }, { "u": [2, 1], "v": [0, 2] }, { "u": [2, 0], "v": [0, 2] }], "ancho": 2, "alto": 2, "det": 4 } },
+        { "fn": "aplicar", "args": [{ "M": [[2, 2], [1, 3]], "p": [1, 1] }], "espera": { "0": 4, "1": 4 } }
+      ]
+    },
+    {
+      "nombre": "Sarrus: [2, 1, 3; 0, 4, 1; 1, 2, 5] da 41 − 16 = 25, igual que por cofactores",
+      "fn": "det3",
+      "args": [{ "M": [[2, 1, 3], [0, 4, 1], [1, 2, 5]] }],
+      "espera": {
+        "valor": 25, "texto": "25", "principales": 41, "secundarias": 16,
+        "suman": [{ "celdas": [[0, 0], [1, 1], [2, 2]], "producto": 40 }, { "celdas": [[0, 1], [1, 2], [2, 0]], "producto": 1 }, { "celdas": [[0, 2], [1, 0], [2, 1]], "producto": 0 }],
+        "restan": [{ "celdas": [[0, 2], [1, 1], [2, 0]], "producto": 12 }, { "celdas": [[0, 0], [1, 2], [2, 1]], "producto": 4 }, { "celdas": [[0, 1], [1, 0], [2, 2]], "producto": 0 }],
+        "cofactores": [{ "j": 0, "signo": 1, "menor": [[4, 1], [2, 5]], "detMenor": 18, "termino": 36 }, { "j": 1, "signo": -1, "menor": [[0, 1], [1, 5]], "detMenor": -1, "termino": 1 }, { "j": 2, "signo": 1, "menor": [[0, 4], [1, 2]], "detMenor": -4, "termino": -12 }],
+        "errores.sumaTodo.valor": 57, "errores.sumaTodo.id": "MT6",
+        "errores.soloPrincipal.valor": 40, "errores.soloPrincipal.id": "MT27",
+        "errores.alReves.valor": -25, "errores.alReves.id": "MT28"
+      }
+    },
+    {
+      "nombre": "Determinante general: fila de ceros, filas proporcionales, intercambio de filas y triangular",
+      "fn": "det",
+      "args": [{ "M": [[1, 2, 3], [0, 0, 0], [4, 5, 6]] }],
+      "espera": { "valor": 0, "texto": "0" },
+      "tambien": [
+        { "args": [{ "M": [[1, 2, 3], [2, 4, 6], [7, 1, 5]] }], "espera": { "valor": 0 } },
+        { "args": [{ "M": [[0, 4, 1], [2, 1, 3], [1, 2, 5]] }], "espera": { "valor": -25 } },
+        { "args": [{ "M": [[2, 7, -1, 4], [0, 3, 5, 1], [0, 0, -1, 6], [0, 0, 0, 2]] }], "espera": { "valor": -12 } },
+        { "args": [{ "M": [[1, 2, 3], [0, 1, 4], [5, 6, 0]] }], "espera": { "valor": 1 } },
+        { "args": [{ "M": [["1/2", 1], [3, 4]] }], "espera": { "valor": -1, "texto": "−1" } }
+      ]
+    },
+    {
+      "nombre": "det(3A) con A de 2 × 2 y det A = 4: 3² · 4 = 36",
+      "fn": "detK",
+      "args": [{ "detA": 4, "k": 3, "n": 2 }],
+      "espera": { "valor": 36, "texto": "36", "errores.lineal.valor": 12, "errores.lineal.id": "MT4", "errores.porElementos.valor": 324, "errores.porElementos.id": "MT24" },
+      "tambien": [
+        { "args": [{ "detA": 5, "k": 2, "n": 3 }], "espera": { "valor": 40, "errores.lineal.valor": 10, "errores.porElementos.valor": 2560 } },
+        { "args": [{ "detA": 7, "k": 1, "n": 2 }], "espera": { "valor": 7, "coinciden": ["lineal", "porElementos"] } }
+      ]
+    },
+    {
+      "nombre": "Propiedades: con det A = 2 y det B = 3, det(AB) = 6; las otras tres afirmaciones son falsas",
+      "fn": "propiedadesDet",
+      "args": [{ "detA": 2, "detB": 3 }],
+      "espera": {
+        "valor": 6, "texto": "det(AB) = 6",
+        "errores.suma.texto": "det(A + B) = 5", "errores.suma.id": "MT3",
+        "errores.transpuesta.texto": "det(Aᵀ) = −2", "errores.transpuesta.id": "MT25",
+        "errores.ordenCambia.texto": "det(BA) = −6", "errores.ordenCambia.id": "MT26"
+      },
+      "tambien": [
+        { "fn": "det", "args": [{ "M": [[3, 1], [1, 4]] }], "espera": { "valor": 11 } },
+        { "fn": "det", "args": [{ "M": [[3, 3], [1, 3]] }], "espera": { "valor": 6 } }
+      ]
+    },
+    {
+      "nombre": "Inversa 2 × 2: [4, 3; 2, 2] tiene det 2 e inversa [1, −3/2; −1, 2]",
+      "fn": "inversa2",
+      "args": [{ "M": [[4, 3], [2, 2]] }],
+      "espera": {
+        "matriz": [[1, -1.5], [-1, 2]], "texto": "[1, −3/2; −1, 2]", "det": 2, "adjunta": [[2, -3], [-2, 4]],
+        "errores.sinDividir.texto": "[2, −3; −2, 4]", "errores.sinDividir.id": "MT7",
+        "errores.sinSignos.texto": "[1, 3/2; 1, 2]", "errores.sinSignos.id": "MT13",
+        "errores.sinIntercambiar.texto": "[2, −3/2; −1, 1]", "errores.sinIntercambiar.id": "MT22",
+        "errores.reciprocos.texto": "[1/4, 1/3; 1/2, 1/2]", "errores.reciprocos.id": "MT23"
+      },
+      "tambien": [
+        { "args": [{ "M": [[2, 5], [1, 3]] }], "espera": { "matriz": [[3, -5], [-1, 2]], "det": 1, "coinciden": ["sinDividir"] } }
+      ]
+    },
+    {
+      "nombre": "¿Para qué k no tiene inversa [k, 6; 2, 3]? det = 3k − 12 = 0 da k = 4",
+      "fn": "kSinInversa",
+      "args": [{ "M": [["k", 6], [2, 3]] }],
+      "espera": {
+        "valor": 4, "texto": "k = 4",
+        "errores.sumaDiagonales.texto": "k = −4", "errores.sumaDiagonales.id": "MT5",
+        "errores.filas.texto": "k = 1", "errores.filas.id": "MT19",
+        "errores.cero.texto": "k = 0", "errores.cero.id": "MT21"
+      },
+      "tambien": [
+        { "args": [{ "M": [[2, "k"], [3, 6]] }], "espera": { "valor": 4, "texto": "k = 4", "errores.sumaDiagonales.texto": "k = −4", "errores.filas.texto": "k = 9" } }
+      ]
+    },
+    {
+      "nombre": "Cramer 2 × 2: 2x + y = 5 y x + 2y = 4 da Δ = 3, Δx = 6, Δy = 3, x = 2, y = 1",
+      "fn": "cramer2",
+      "args": [{ "A": [[2, 1], [1, 2]], "b": [5, 4] }],
+      "espera": {
+        "det": 3, "detX": 6, "detY": 3, "x": 2, "y": 1, "texto": "x = 2", "textoY": "y = 1",
+        "errores.sinDividir.texto": "x = 6", "errores.sinDividir.id": "MT29",
+        "errores.alReves.texto": "x = 1/2", "errores.alReves.id": "MT30",
+        "errores.otraColumna.texto": "x = 1", "errores.otraColumna.id": "MT31"
+      }
+    },
+    {
+      "nombre": "Cramer 3 × 3: x + y + z = 6, x − y + 2z = 5, 2x + y − z = 1 da (1; 2; 3)",
+      "fn": "cramer3",
+      "args": [{ "A": [[1, 1, 1], [1, -1, 2], [2, 1, -1]], "b": [6, 5, 1] }],
+      "espera": { "det": 7, "dets": [7, 14, 21], "x": 1, "y": 2, "z": 3, "texto": "x = 1; y = 2; z = 3" }
+    },
+    {
+      "nombre": "Transpuesta de un producto: (AB)ᵀ = BᵀAᵀ, no AᵀBᵀ",
+      "fn": "productoTranspuesta",
+      "args": [{ "A": [[1, 2], [0, 1]], "B": [[1, 0], [3, 1]] }],
+      "espera": {
+        "matriz": [[7, 3], [2, 1]], "texto": "[7, 3; 2, 1]",
+        "errores.AtBt.matriz": [[1, 3], [2, 7]], "errores.AtBt.id": "MT9",
+        "errores.sinTransponer.matriz": [[7, 2], [3, 1]], "errores.sinTransponer.id": "MT32"
+      }
+    }
+  ]
+}
