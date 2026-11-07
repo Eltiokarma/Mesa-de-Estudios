@@ -1,0 +1,1198 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El tablero de las llevadas: las cuatro operaciones</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de «Las fichas que se agrupan».
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4), uno por papel en toda la escena.
+   Las columnas, como en numeración: un color por orden, el mismo en la cifra, en la pieza del dibujo y en la llevada que
+   llega a esa columna: unidades (fichas sueltas) turquesa #0f766e / #5ed9c8; paquetes de b naranja #a05200 / #f0a04a;
+   cajas de b² verde #466d14 / #a3d65e; cajones de b³ rojo #b02c41 / #f17384; la base b fucsia #a10fbf / #cf6bfa.
+   La caja de 10 000 del complemento y todo lo que no es variable va en tinta.
+   Criptoaritmética: X azul rey #1430b8 / #8892fc e Y ciruela #76195f / #fdb9fd (las cifras conocidas y la llevada, en tinta).
+   División: divisor d magenta #c70576 / #fb56b6, cociente q oliva #766619 / #f9d524, residuo por defecto r granate oscuro
+   #630b03 / #fdc3af y residuo por exceso r′ verde botella #194d2b / #c8f9d1 (el dividendo D y sus fichas, en tinta).
+   Sumatorias: la suma S café #5c330a / #fde7b9 y la cantidad de términos n azul acero #1d5a87 / #06a6f9.
+   Elegidos con CIEDE2000 (docs/metodo/paleta.py). Dentro de cada vista: columnas mínimo 23,6 en claro (unidades–cajas)
+   y 25,3 en oscuro; criptoaritmética 23,0 y 24,4 (X–Y); división 25,1 y 28,7 (q–r′); sumatorias 38,8 y 50,1.
+   Entre vistas que nunca comparten pantalla quedan pares cercanos (el mínimo, cajones–d, 14,6 y 15,1).
+   Contraste AA sobre el papel, la tarjeta, el chip (.v, fondo al 8 %) y las opciones ya marcadas (correcta y elegida):
+   mínimo 4,53 en claro (unidades) y 4,62 en oscuro (d). Pares cercanos con los colores de estado, que siempre llevan
+   texto: cajones–aviso (7,6 y 5,0) y unidades–correcto (11,1). */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-o0:#0f766e; --c-o1:#a05200; --c-o2:#466d14; --c-o3:#b02c41; --c-b:#a10fbf;
+  --c-X:#1430b8; --c-Y:#76195f; --c-d:#c70576; --c-q:#766619; --c-r:#630b03; --c-rp:#194d2b; --c-S:#5c330a; --c-n:#1d5a87;
+  --relleno:.12;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-o0:#5ed9c8; --c-o1:#f0a04a; --c-o2:#a3d65e; --c-o3:#f17384; --c-b:#cf6bfa;
+  --c-X:#8892fc; --c-Y:#fdb9fd; --c-d:#fb56b6; --c-q:#f9d524; --c-r:#fdc3af; --c-rp:#c8f9d1; --c-S:#fde7b9; --c-n:#06a6f9;
+  --relleno:.16; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-o0:#5ed9c8; --c-o1:#f0a04a; --c-o2:#a3d65e; --c-o3:#f17384; --c-b:#cf6bfa;
+  --c-X:#8892fc; --c-Y:#fdb9fd; --c-d:#fb56b6; --c-q:#f9d524; --c-r:#fdc3af; --c-rp:#c8f9d1; --c-S:#fde7b9; --c-n:#06a6f9;
+  --relleno:.16; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+/* Celular con una predicción pendiente: el dibujo pegado arriba lo pone nucleo/celular.js; aquí solo se apretan las lecturas. */
+@media (max-width:899px){ .mode.pendiente .lecturas{gap:4px} .mode.pendiente .lectura{padding:2px 8px} }
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; grid-template-columns:minmax(0, 1fr); gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; grid-template-columns:minmax(0, 1fr); gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-o0{color:var(--c-o0); background:color-mix(in srgb, var(--c-o0) 8%, transparent)}
+.v-o1{color:var(--c-o1); background:color-mix(in srgb, var(--c-o1) 8%, transparent)}
+.v-o2{color:var(--c-o2); background:color-mix(in srgb, var(--c-o2) 8%, transparent)}
+.v-o3{color:var(--c-o3); background:color-mix(in srgb, var(--c-o3) 8%, transparent)}
+.v-b{color:var(--c-b); background:color-mix(in srgb, var(--c-b) 8%, transparent)}
+.v-X{color:var(--c-X); background:color-mix(in srgb, var(--c-X) 8%, transparent)}
+.v-Y{color:var(--c-Y); background:color-mix(in srgb, var(--c-Y) 8%, transparent)}
+.v-d{color:var(--c-d); background:color-mix(in srgb, var(--c-d) 8%, transparent)}
+.v-q{color:var(--c-q); background:color-mix(in srgb, var(--c-q) 8%, transparent)}
+.v-r{color:var(--c-r); background:color-mix(in srgb, var(--c-r) 8%, transparent)}
+.v-rp{color:var(--c-rp); background:color-mix(in srgb, var(--c-rp) 8%, transparent)}
+.v-S{color:var(--c-S); background:color-mix(in srgb, var(--c-S) 8%, transparent)}
+.v-n{color:var(--c-n); background:color-mix(in srgb, var(--c-n) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+/* Un numeral: cada cifra en el color de su orden y, si la base no es 10, la base en subíndice en el color de b. */
+.num{font-weight:800; font-variant-numeric:tabular-nums; white-space:nowrap; letter-spacing:.02em}
+.cf.k0{color:var(--c-o0)} .cf.k1{color:var(--c-o1)} .cf.k2{color:var(--c-o2)} .cf.k3{color:var(--c-o3)}
+.sb{color:var(--c-b); font-weight:800; font-size:.72em; vertical-align:-.28em; line-height:0; margin-left:1px}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eqs:empty{display:none}
+.eq{font-family:var(--mono); font-size:1.02rem; line-height:1.75; font-variant-numeric:tabular-nums; overflow-wrap:anywhere}
+.eq .num{font-family:var(--mono)}
+.eq .note{display:block; font-family:var(--font); font-size:.84rem; line-height:1.4; color:var(--muted); white-space:normal}
+.eq .v{white-space:nowrap}
+.eq sup{font-size:.75em; vertical-align:.6em; line-height:0}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.seg button:disabled{opacity:.45; cursor:not-allowed}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+/* Lecturas en vivo, cada una con el color de su variable */
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(110px, 1fr)); gap:8px}
+.lecturas:empty{display:none}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura b{display:block; color:var(--k); font:800 .95rem var(--mono); font-variant-numeric:tabular-nums; overflow-wrap:anywhere}
+.lectura > span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.lectura b .num{font-family:var(--mono)}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.25fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+.stepper{display:flex; flex-wrap:wrap; gap:8px}
+.stepper > div{display:inline-flex; align-items:center; gap:6px; background:var(--paper); border:1px solid var(--line); border-radius:999px; padding:4px 6px 4px 12px; flex-wrap:wrap}
+.stepper button{font:800 .95rem var(--font); min-width:38px; height:38px; padding:0 6px; border-radius:999px; border:1.5px solid var(--line); background:var(--card); color:var(--ink); cursor:pointer}
+.stepper button:disabled{opacity:.4; cursor:not-allowed}
+.stepper .val{font:800 1rem var(--mono); min-width:2.6em; text-align:center}
+.stepper .que{font-size:.85rem; color:var(--muted); font-weight:700}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Aritmética · Las cuatro operaciones · Problemas tipo admisión</p>
+      <h1>El tablero de las llevadas</h1>
+      <p class="sub">Cada columna de una cuenta guarda piezas de un tamaño: fichas sueltas, paquetes, cajas. Suma, resta, multiplica y reparte moviendo esas piezas entre columnas. Antes de cada respuesta, predice; después, el tablero te muestra por qué.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo de la escena: el tablero de columnas con sus piezas, la cuenta escrita, las filas de fichas o la escalera">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Dibujo de la escena"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos con las cuatro operaciones">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/cuatro-operaciones">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'cuatro-operaciones', unidad: 'aritmetica.cuatro-operaciones', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la matemática (columnas con sus llevadas, préstamos, complemento, cifras que faltan, criptos por fuerza bruta,
+   sumatorias, división por defecto y por exceso, cada cuadro de la animación) sale de MotorCuatroOperaciones (motor.js);
+   aquí solo se pinta y se anima. El celular va con nucleo/celular.js. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const M = MotorCuatroOperaciones;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+// Texto plano para el lector de pantalla: el subíndice se dice «en base 5» (si no, 43 con base 5 se leería «435»).
+const quitar = t => String(t).replace(/<sub[^>]*>\(?([^<)]*)\)?<\/sub>/g, ' en base $1').replace(/<[^>]+>/g, '');
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const o_ = (k, t) => V('o' + k, t), b_ = t => V('b', t);
+// Miles con espacio desde 10 000 (como en docs/diseno.md): 494 550.
+const fmt = n => { const s = String(n); return s.length >= 5 ? s.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : s; };
+// Un numeral en HTML: cada cifra en el color de su orden y, si la base no es 10, la base en subíndice.
+function numH(t, b){
+  const cs = String(t).split(''), L = cs.length;
+  return `<span class="num">${cs.map((d, i) => { const k = L - 1 - i; return `<span class="cf${k <= 3 ? ' k' + k : ''}">${d}</span>`; }).join('')}${b === null || b === undefined || b === 10 ? '' : `<sub class="sb">(${b})</sub>`}</span>`;
+}
+const conB = (t, b) => (b === 10 ? fmt(t) : `${t}₍${b}₎`);   // para los textos de devolución, sin colores
+const NOMBRE = ['sueltas', 'paquetes', 'cajas', 'cajones', 'caja grande'];
+const NOMBRE1 = ['suelta', 'paquete', 'caja', 'cajón', 'caja grande'];
+const pieza = (k, b, n) => (k === 0 ? (n === 1 ? 'ficha suelta' : 'fichas sueltas') : `${n === 1 ? NOMBRE1[k] : NOMBRE[k]} de ${fmt(Math.pow(b, k))}`);
+const cuenta = (k, b, n) => `${n === 0 ? 'ninguna' : n} ${pieza(k, b, n === 0 ? 1 : n)}`.replace('ninguna paquete', 'ningún paquete').replace('ninguna cajón', 'ningún cajón');
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+function tween(dur, paso, fin, lineal){
+  if (RM || !dur){ paso(1); if (fin) setTimeout(fin, 0); return; }
+  const t0 = performance.now();
+  const tick = now => { const f = Math.min(1, (now - t0)/dur); paso(lineal ? f : suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
+  requestAnimationFrame(tick);
+}
+const CLAVES = ['o0', 'o1', 'o2', 'o3', 'b', 'X', 'Y', 'd', 'q', 'r', 'rp', 'S', 'n'];
+function colores(){
+  const g = n => css(n);
+  const c = { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
+    ok:g('--ok'), warn:g('--warn'), relleno:Number(g('--relleno')) || .12, mono:g('--mono'), font:g('--font') };
+  for (const k of CLAVES) c[k] = g('--c-' + k);
+  return c;
+}
+const col = (c, k) => (k === 'ink' ? c.ink : k === 'muted' ? c.muted : c[k] || c.ink);
+const ko = k => (k <= 3 ? 'o' + k : 'ink');
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function redondeado(ctx, x, y, w, h, r){ r = Math.max(0, Math.min(r, w/2, h/2)); ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+// Resaltar en el dibujo la variable que se toca en el texto (regla 4).
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+// Cifras de un numeral por columna (de las unidades hacia la izquierda), rellenas con null hasta K.
+const porColumna = (t, K) => { const r = String(t).split('').reverse(); while (r.length < K) r.push(null); return r; };
+
+/* ----- estados del tablero, sacados de los cuadros que calcula el motor ----- */
+// Una suma (o una multiplicación ya copiada) en el cuadro t. o = { signos, estilos, cifras }.
+function stSuma(R, t, o){
+  o = o || {}; const q = M.cuadroColumnas(R, t), K = R.K;
+  const textos = o.cifras || R.sumandos;
+  const marcas = R.columnas.map((c, j) => (j < q.columna && c.llevadaEntra ? c.llevadaEntra : 0));
+  return { b:R.b, K, filas: q.filas.map((cu, i) => ({ signo: (o.signos || [])[i] !== undefined ? o.signos[i] : (i === q.filas.length - 1 ? '+' : ''),
+      cuentas: cu, cifras: Array.isArray(textos[i]) ? textos[i] : porColumna(textos[i], K), estilo: (o.estilos || [])[i] || 'lleno' })),
+    resultado: q.resultado, llevada: q.llevada, moviendo: q.moviendo, marcas, mostrarRes:true, columna: q.columna };
+}
+function stResta(R, t){
+  const q = M.cuadroResta(R, t), K = R.K;
+  return { b:R.b, K, filas: [ { signo:'', cuentas:q.arriba, cifras:porColumna(R.minuendo, K), nuevas:q.etiquetas, original:R.arriba, estilo:'lleno' },
+      { signo:'−', cuentas:q.abajo, cifras:porColumna(R.sustraendo, K), estilo:'hueco' } ],
+    resultado: q.resultado, llevada: Array(K).fill(0), moviendo: q.moviendo, marcas: Array(K).fill(0), mostrarRes:true };
+}
+const durSuma = R => R.columnas.reduce((s, c) => s + (c.llevadaSale ? 1500 : 1000), 0);
+const durResta = R => R.acciones.reduce((s, a) => s + (a.tipo === 'abrir' ? 900 : 1100), 0);
+
+/* ================= La escena =================
+   Modos: 'tablero' (una columna por orden, de las unidades a la derecha hacia la izquierda; una fila por número y la fila
+   del resultado; cada pieza en el color de su orden; arriba de cada columna, la casilla de la llevada), 'escrito' (la
+   cuenta escrita en columnas, con casillas vacías o letras), 'filas' (fichas repartidas en filas para la división),
+   'escalera' (la sumatoria y su copia girada) y 'tarjetas' (líneas de texto con colores). */
+function crearEscena(cv, idDesc, idLect, idLey){
+  const E = { modo:'tablero', st:{}, lect:[], ley:null, hl:null, alCambiar:null, tok:0, anim:false, compacto:false, desc:null };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0;
+  const ALTO = {
+    tablero: w => { const nf = (E.st.filas || []).length + (E.st.mostrarRes === false ? 0 : 1); return 64 + nf*(w >= 560 ? 76 : 64); },
+    escrito: w => { const n = (E.st.filas || []).length + 1, cs = celdaEscrito(w); return 40 + n*cs + 34 + (E.st.pie ? 30 : 0); },
+    filas: w => { const d = E.st.d || 9, filas = Math.ceil((E.st.D + (E.st.extra || 0))/d) + (E.st.fase >= 2 ? 0 : 0), s = Math.min(w >= 560 ? 28 : 24, (w - 150)/d); return Math.max(200, 92 + Math.max(filas, 1)*(s + 4)); },
+    escalera: w => (w >= 560 ? 330 : 300), tarjetas: w => 40 + (E.st.lineas || []).length*(w >= 560 ? 44 : 40) };
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    const h = Math.round(Celular.alto(ALTO[E.modo](w), E.compacto)), dpr = window.devicePixelRatio || 1;
+    if (w === W && h === H) { E.dibujar(); return; }
+    W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  alRedibujarTema(() => E.dibujar());
+  const grosor = (k, base) => (E.hl === k ? base + 2 : base);
+
+  E.config = o => {
+    E.tok++; E.anim = false;   // una animación vieja no sigue moviendo el dibujo nuevo
+    Object.assign(E, { modo:'tablero', st:{}, lect:[], ley:null, alCambiar:null, desc:null }, o);
+    E.listo = true; cv.tabIndex = -1;
+    W = 0; resize(); E.leyenda(); E.dibujar(); E.avisar();
+  };
+  E.redimensionar = () => { W = 0; resize(); };
+  E.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === E.compacto) return; E.compacto = on; W = 0; resize(); };
+
+  function rotulo(c, x, y, t, color, align, peso, tam){
+    ctx.font = `${peso || 700} ${tam || 13}px ${c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+    const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+    ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+    ctx.fillStyle = color; ctx.fillText(t, x, y);
+    return w;
+  }
+  // Un rótulo hecho de pedazos: [['23', 'o1'], [' = ', 'ink'], …]; un pedazo ['(5)', 'b', 'sub'] va en subíndice.
+  function partes(c, x, y, ps, align, tam, peso){
+    tam = tam || 14; const fn = s => `${peso || 800} ${s ? Math.round(tam*.68) : tam}px ${c.font}`;
+    ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
+    const ws = ps.map(([t, , s]) => { ctx.font = fn(s); return ctx.measureText(String(t)).width + (s ? 1 : 0); }), tot = ws.reduce((s, w) => s + w, 0);
+    let x0 = align === 'left' ? x : align === 'right' ? x - tot : x - tot/2;
+    ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - tam*.75, tot + 6, tam*1.55); ctx.restore();
+    ps.forEach(([t, k, s], j) => { ctx.font = fn(s); ctx.fillStyle = col(c, k || 'ink'); ctx.fillText(String(t), x0 + (s ? 1 : 0), y + (s ? tam*.32 : 0)); x0 += ws[j]; });
+    return tot;
+  }
+  function linea(x1, y1, x2, y2){ ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
+  function punto(x, y, r, color){ ctx.fillStyle = color; ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fill(); }
+
+  // ----- piezas: suelta (punto), paquete (barra), caja (cuadrado), cajón (cuadrado con fondo), caja grande (tinta) -----
+  const DIM = [[1, 1], [.8, 2.6], [2.4, 2.4], [2.7, 2.7], [3.4, 3.4]];
+  const dim = (k, u) => { const d = DIM[Math.min(k, 4)]; return [d[0]*u, d[1]*u]; };
+  function dibPieza(c, k, b, x, y, u, estilo, alfa){
+    const color = k <= 3 ? c[ko(k)] : c.ink, [w, h] = dim(k, u);
+    ctx.save(); if (alfa !== undefined) ctx.globalAlpha = alfa;
+    const hueco = estilo === 'hueco';
+    if (k === 0){
+      if (hueco){ ctx.strokeStyle = color; ctx.lineWidth = 1.2; ctx.setLineDash([2, 1.5]); ctx.beginPath(); ctx.arc(x + w/2, y + h/2, Math.max(1.2, u*.4), 0, 7); ctx.stroke(); }
+      else punto(x + w/2, y + h/2, Math.max(1.1, u*.42), color);
+    } else {
+      if (k === 3 && !hueco){ ctx.save(); ctx.strokeStyle = color; ctx.globalAlpha *= .55; ctx.lineWidth = 1; ctx.fillStyle = c.paper; ctx.beginPath(); ctx.rect(x + u*.35, y - u*.35, w, h); ctx.fill(); ctx.stroke(); ctx.restore(); }
+      if (!hueco){ ctx.save(); ctx.fillStyle = color; ctx.globalAlpha *= (k >= 4 ? c.relleno*.8 : c.relleno*1.6); redondeado(ctx, x, y, w, h, Math.min(4, u*.5)); ctx.fill(); ctx.restore(); }
+      ctx.strokeStyle = color; ctx.lineWidth = grosor(ko(k), hueco ? 1.1 : 1.4); if (hueco) ctx.setLineDash([3, 2]);
+      redondeado(ctx, x, y, w, h, Math.min(4, u*.5)); ctx.stroke(); ctx.setLineDash([]);
+      if (!hueco && k === 1 && h >= 16){ const r = Math.max(.7, Math.min(w*.22, h/(2.6*b))); for (let i = 0; i < b; i++) punto(x + w/2, y + (i + .5)*h/b, r, color); }
+      if (!hueco && (k === 2 || k === 3) && w >= 14){ ctx.save(); ctx.globalAlpha *= .3; ctx.lineWidth = 1; for (let i = 1; i < b; i++){ linea(x + i*w/b, y + 1, x + i*w/b, y + h - 1); linea(x + 1, y + i*h/b, x + w - 1, y + i*h/b); } ctx.restore(); }
+      if (k >= 4 && w >= 30){ ctx.fillStyle = color; ctx.font = `800 ${Math.round(Math.min(13, w/5))}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(fmt(Math.pow(b, k)), x + w/2, y + h/2); }
+    }
+    ctx.restore();
+  }
+  // n piezas de orden k dentro del rectángulo R, del tamaño más grande que quepa. o = { estilo, tachadas, alfa, tope }.
+  function racimo(c, k, b, n, R, o){
+    o = o || {}; if (n <= 0 || R.w <= 2 || R.h <= 2) return;
+    let u = Math.min(o.tope || 10, R.h/DIM[Math.min(k, 4)][1]), lay = null;
+    for (; u >= .9; u -= .15){
+      const [w, h] = dim(k, u), g = Math.max(1, u*.32), por = Math.max(1, Math.floor((R.w + g)/(w + g + (k === 3 ? u*.35 : 0)))), filas = Math.ceil(n/por);
+      if (filas*(h + g) - g <= R.h - (k === 3 ? u*.35 : 0)){ lay = { u, w, h, g, por, filas }; break; }
+    }
+    if (!lay){ const [w, h] = dim(k, .9); lay = { u:.9, w, h, g:1, por:Math.max(1, Math.floor(R.w/(w + 1))), filas:0 }; lay.filas = Math.ceil(n/lay.por); }
+    const ex = k === 3 ? lay.u*.35 : 0, usados = Math.min(n, lay.por);
+    const bw = usados*(lay.w + lay.g + ex) - lay.g - ex, bh = lay.filas*(lay.h + lay.g) - lay.g;
+    const x0 = R.x + (R.w - bw)/2, y0 = R.y + ex + Math.max(0, (R.h - ex - bh)/2);
+    for (let i = 0; i < n; i++){
+      const fi = Math.floor(i/lay.por), j = i % lay.por, x = x0 + j*(lay.w + lay.g + ex), y = y0 + fi*(lay.h + lay.g);
+      const tach = o.tachadas && i < o.tachadas;
+      dibPieza(c, k, b, x, y, lay.u, o.estilo, tach ? .32*(o.alfa === undefined ? 1 : o.alfa) : o.alfa);
+      if (tach){ ctx.save(); if (o.alfa !== undefined) ctx.globalAlpha = o.alfa; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.3; linea(x - 1, y - 1, x + lay.w + 1, y + lay.h + 1); linea(x + lay.w + 1, y - 1, x - 1, y + lay.h + 1); ctx.restore(); }
+    }
+  }
+
+  // ----- el tablero de columnas -----
+  function geoTablero(){
+    const s = E.st, K = s.K, izq = 30, cw = (W - izq - 6)/K, top = 34, lleH = 24;
+    const nf = s.filas.length, conRes = s.mostrarRes !== false;
+    const rowH = Math.min(W >= 560 ? 76 : 64, (H - top - lleH - 14)/(nf + (conRes ? 1 : 0)));
+    const colX = k => izq + (K - 1 - k)*cw, filaY = i => top + lleH + i*rowH, resY = top + lleH + nf*rowH + 8;
+    return { K, izq, cw, top, lleH, rowH, nf, conRes, colX, filaY, resY };
+  }
+  const areaPiezas = (g, x, y) => ({ x:x + 4, y:y + 19, w:g.cw - 8, h:g.rowH - 23 });
+  function dibTablero(c){
+    const s = E.st, g = geoTablero(), b = s.b, mv = s.moviendo || null;
+    // cabeceras de columna
+    for (let k = 0; k < g.K; k++){
+      const x = g.colX(k) + g.cw/2, colr = k <= 3 ? c[ko(k)] : c.ink;
+      rotulo(c, x, 10, NOMBRE[Math.min(k, 4)], colr, 'center', 800, g.cw < 64 ? 10 : 12);
+      rotulo(c, x, 24, k === 0 ? 'de 1' : `de ${fmt(Math.pow(b, k))}`, colr, 'center', 700, g.cw < 64 ? 9.5 : 11);
+    }
+    // casillas de la llevada
+    for (let k = 0; k < g.K; k++){
+      const x = g.colX(k), y = g.top, n = (s.llevada || [])[k] || 0, m = (s.marcas || [])[k] || 0;
+      const R = { x:x + 26, y:y + 3, w:g.cw - 32, h:g.lleH - 6 };
+      if (n && !(mv && mv.tipo === 'bajar' && mv.orden === k)){ racimo(c, k, b, n, R, { tope:6 }); rotulo(c, x + 14, y + g.lleH/2, `+${n}`, k <= 3 ? c[ko(k)] : c.ink, 'center', 800, 12); }
+      else if (m){ ctx.save(); ctx.globalAlpha = .7; rotulo(c, x + 14, y + g.lleH/2, `+${m}`, k <= 3 ? c[ko(k)] : c.ink, 'center', 800, 11); ctx.restore(); }
+    }
+    // filas de los números
+    s.filas.forEach((F, i) => {
+      const y = g.filaY(i);
+      if (F.signo) rotulo(c, 14, y + g.rowH/2, F.signo, c.ink, 'center', 800, F.signo.length > 2 ? 13 : 20);
+      for (let k = 0; k < g.K; k++){
+        const x = g.colX(k), colr = k <= 3 ? c[ko(k)] : c.ink;
+        ctx.save(); ctx.strokeStyle = c.line; ctx.lineWidth = 1; ctx.setLineDash([3, 3]); redondeado(ctx, x + 2, y + 2, g.cw - 4, g.rowH - 4, 9); ctx.stroke(); ctx.restore();
+        // la cifra escrita (y, en la resta, la que queda después del préstamo)
+        const d = F.cifras ? F.cifras[k] : null;
+        if (d !== null && d !== undefined){
+          const nueva = F.nuevas ? F.nuevas[k] : undefined;
+          if (nueva !== undefined && F.original && nueva !== F.original[k]){
+            const w = rotulo(c, x + 8, y + 11, String(d), c.muted, 'left', 700, 12);
+            ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.4; linea(x + 6, y + 15, x + 10 + w, y + 6); ctx.restore();
+            rotulo(c, x + 14 + w, y + 11, String(nueva), colr, 'left', 800, 15);
+          } else rotulo(c, x + 8, y + 11, String(d), colr, 'left', 800, 15);
+        }
+        const n = F.cuentas[k] || 0, A = areaPiezas(g, x, y);
+        if (mv && mv.tipo === 'bajar' && mv.orden === k){
+          const dy = suave(mv.f)*(g.resY - y);
+          racimo(c, k, b, n, { x:A.x, y:A.y + dy, w:A.w, h:A.h }, { estilo:F.estilo });
+          if (i === 0){ const ll = (s.llevada || [])[k] || 0; if (ll) racimo(c, k, b, ll, { x:A.x, y:g.top + 3 + suave(mv.f)*(g.resY + 19 - g.top - 3), w:A.w, h:g.lleH - 6 }, { tope:6 }); }
+        } else if (mv && mv.tipo === 'abrir' && i === 0 && mv.orden === k){
+          racimo(c, k, b, n - 1, A, { estilo:F.estilo });
+        } else if (mv && mv.tipo === 'quitar' && mv.orden === k){
+          if (i === 0){
+            if (mv.f <= .6) racimo(c, k, b, n, A, { estilo:F.estilo, tachadas:mv.tachadas });
+            else { const h = (mv.f - .6)/.4;
+              racimo(c, k, b, mv.quita, A, { estilo:F.estilo, tachadas:mv.quita, alfa:1 - h });
+              racimo(c, k, b, mv.quedan, { x:A.x, y:A.y + suave(h)*(g.resY - y), w:A.w, h:A.h }, { estilo:F.estilo }); }
+          } else racimo(c, k, b, n, A, { estilo:F.estilo, alfa:Math.max(0, 1 - mv.f/.6) });
+        } else racimo(c, k, b, n, A, { estilo:F.estilo });
+      }
+    });
+    // la pieza que se abre en el préstamo
+    if (mv && mv.tipo === 'abrir'){
+      const y = g.filaY(0), j = mv.orden, A1 = areaPiezas(g, g.colX(j), y), A0 = areaPiezas(g, g.colX(j - 1), y), f = suave(Math.min(1, mv.f/.75));
+      const [w, h] = dim(j, Math.min(8, A1.h/DIM[Math.min(j, 4)][1]));
+      const x = A1.x + A1.w/2 + f*(A0.x + A0.w/2 - A1.x - A1.w/2) - w/2, yy = A1.y + A1.h/2 - h/2 - Math.sin(f*Math.PI)*14;
+      if (mv.f < .85) dibPieza(c, j, b, x, yy, Math.min(8, A1.h/DIM[Math.min(j, 4)][1]), 'lleno', mv.f < .75 ? 1 : 1 - (mv.f - .75)/.1);
+      if (mv.f > .7) racimo(c, j - 1, b, b, { x:A0.x + A0.w*.15, y:A0.y + A0.h*.15, w:A0.w*.7, h:A0.h*.7 }, { alfa:Math.min(1, (mv.f - .7)/.3) });
+    }
+    // la fila del resultado
+    if (g.conRes){
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(8, g.resY - 5, W - 6, g.resY - 5); ctx.restore();
+      if (s.signoRes) rotulo(c, 14, g.resY + g.rowH/2, s.signoRes, c.ink, 'center', 800, 13);
+      for (let k = 0; k < g.K; k++){
+        const x = g.colX(k), y = g.resY, colr = k <= 3 ? c[ko(k)] : c.ink, n = (s.resultado || [])[k];
+        ctx.save(); ctx.strokeStyle = c.line; ctx.lineWidth = 1.5; redondeado(ctx, x + 2, y + 2, g.cw - 4, g.rowH - 4, 9); ctx.stroke(); ctx.restore();
+        if (n === null || n === undefined) continue;
+        rotulo(c, x + 8, y + 11, String(n), n >= b ? c.ink : colr, 'left', 800, n >= b ? 13 : 15);
+        if (n >= b) rotulo(c, x + g.cw - 6, y + 11, `≥ ${b}`, c.ink, 'right', 700, 10);
+        racimo(c, k, b, n, areaPiezas(g, x, y), {});
+      }
+      if (mv && mv.tipo === 'subir'){
+        const k = mv.orden, A = areaPiezas(g, g.colX(k), g.resY), f = suave(mv.f);
+        const tx = g.colX(k + 1) + 26 + (g.cw - 32)/2, ty = g.top + g.lleH/2;
+        const cx = A.x + A.w/2 + f*(tx - A.x - A.w/2), cy = A.y + A.h/2 + f*(ty - A.y - A.h/2) - Math.sin(f*Math.PI)*16;
+        const bw = Math.min(A.w, 44), bh = Math.max(14, Math.min(A.h, 34)*(1 - .4*f));
+        racimo(c, k + 1, b, mv.paquetes, { x:cx - bw/2, y:cy - bh/2, w:bw, h:bh }, { tope:7 });
+      }
+    }
+  }
+
+  // ----- la cuenta escrita en columnas -----
+  function celdaEscrito(w){ const K = E.st.K || 4; return Math.min(w >= 560 ? 56 : 48, (w - 90)/K); }
+  function dibEscrito(c){
+    const s = E.st, K = s.K, cs = celdaEscrito(W), x0 = (W - K*cs)/2 + 12, colX = k => x0 + (K - 1 - k)*cs;
+    const top = 34, nf = s.filas.length, tam = Math.round(cs*.56);
+    // llevadas, arriba de cada columna
+    (s.llevadas || []).forEach((L, k) => { if (L) rotulo(c, colX(k) + cs/2, top - 14, L.t, col(c, L.c || 'ink'), 'center', 800, Math.round(tam*.6)); });
+    const celda = (x, y, C) => {
+      if (!C) return;
+      const colr = col(c, C.c || 'ink');
+      if (C.hueco){ ctx.save(); ctx.strokeStyle = colr; ctx.lineWidth = grosor(C.c, 1.8); ctx.setLineDash([5, 3]); redondeado(ctx, x + 4, y + 4, cs - 8, cs - 8, 8); ctx.stroke(); ctx.restore(); }
+      if (C.letra){ ctx.save(); ctx.fillStyle = colr; ctx.globalAlpha = c.relleno; redondeado(ctx, x + 4, y + 4, cs - 8, cs - 8, 8); ctx.fill(); ctx.restore();
+        ctx.save(); ctx.strokeStyle = colr; ctx.lineWidth = grosor(C.c, 1.6); redondeado(ctx, x + 4, y + 4, cs - 8, cs - 8, 8); ctx.stroke(); ctx.restore(); }
+      if (C.marca){ ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; redondeado(ctx, x + 2, y + 2, cs - 4, cs - 4, 9); ctx.stroke(); ctx.restore(); }
+      ctx.font = `800 ${tam}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = colr; ctx.fillText(C.t, x + cs/2, y + cs/2 + 1);
+    };
+    s.filas.forEach((F, i) => {
+      const y = top + i*cs;
+      if (F.signo) rotulo(c, x0 - 22, y + cs/2, F.signo, c.ink, 'center', 800, tam);
+      F.celdas.slice().reverse().forEach((C, k) => celda(colX(k), y, C));
+    });
+    const yl = top + nf*cs + 4;
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(x0 - 34, yl, x0 + K*cs + 4, yl); ctx.restore();
+    (s.resultado || []).slice().reverse().forEach((C, k) => celda(colX(k), yl + 6, C));
+    if (s.pie) partes(c, W/2, yl + 6 + cs + 18, s.pie, 'center', 14, 800);
+  }
+
+  // ----- fichas en filas (división) -----
+  function dibFilas(c){
+    const s = E.st, d = s.d, D = s.D, q = Math.floor(D/d), r = D % d, filas = q + (r ? 1 : 0);
+    const sz = Math.min(W >= 560 ? 28 : 24, (W - 150)/d, (H - 92)/Math.max(1, filas) - 4), gap = 4;
+    const x0 = (W - d*(sz + gap) + gap)/2 + 14, y0 = 48;
+    // d arriba
+    ctx.save(); ctx.strokeStyle = c.d; ctx.lineWidth = grosor('d', 1.6); linea(x0, y0 - 12, x0 + d*(sz + gap) - gap, y0 - 12); linea(x0, y0 - 17, x0, y0 - 7); linea(x0 + d*(sz + gap) - gap, y0 - 17, x0 + d*(sz + gap) - gap, y0 - 7); ctx.restore();
+    partes(c, x0 + (d*(sz + gap) - gap)/2, y0 - 27, [['d', 'd'], [` = ${d} por fila`, 'd']], 'center', 13, 800);
+    for (let i = 0; i < filas; i++){
+      const y = y0 + i*(sz + gap), llena = i < q;
+      for (let j = 0; j < d; j++){
+        const x = x0 + j*(sz + gap);
+        if (llena || j < r){
+          const esR = !llena && s.fase >= 1;
+          ctx.save(); ctx.fillStyle = esR ? c.r : c.ink; ctx.globalAlpha = esR ? 1 : .62; redondeado(ctx, x + 1, y + 1, sz - 2, sz - 2, Math.min(6, sz*.3)); ctx.fill(); ctx.restore();
+          if (esR && E.hl === 'r'){ ctx.save(); ctx.strokeStyle = c.r; ctx.lineWidth = 2; redondeado(ctx, x - 1, y - 1, sz + 2, sz + 2, 6); ctx.stroke(); ctx.restore(); }
+        } else if (s.fase >= 2 && j - r < (s.huecos === undefined ? d - r : s.huecos)){
+          ctx.save(); ctx.strokeStyle = c.rp; ctx.lineWidth = grosor('rp', 1.6); ctx.setLineDash([4, 3]); redondeado(ctx, x + 1.5, y + 1.5, sz - 3, sz - 3, Math.min(6, sz*.3)); ctx.stroke(); ctx.restore();
+        }
+      }
+    }
+    // q a la izquierda
+    if (q){
+      const ya = y0, yb = y0 + q*(sz + gap) - gap, xl = x0 - 10;
+      ctx.save(); ctx.strokeStyle = c.q; ctx.lineWidth = grosor('q', 1.6); linea(xl, ya, xl, yb); linea(xl, ya, xl + 5, ya); linea(xl, yb, xl + 5, yb); ctx.restore();
+      if (s.fase >= 1) partes(c, xl - 6, (ya + yb)/2, [['q', 'q'], [` = ${q}`, 'q']], 'right', 13, 800);
+    }
+    const yU = y0 + Math.max(0, filas - 1)*(sz + gap) + sz/2, xU = x0 + d*(sz + gap) + 4;
+    if (r && s.fase >= 1){
+      if (s.fase >= 2) partes(c, W - 6, yU - 9, [['r', 'r'], [` = ${r}`, 'r']], 'right', 12, 800);
+      else partes(c, Math.min(W - 6, xU + 40), yU, [['r', 'r'], [` = ${r}`, 'r']], 'right', 12, 800);
+    }
+    if (r && s.fase >= 2 && (s.huecos === undefined || s.huecos >= d - r)) partes(c, W - 6, yU + 9, [['r′', 'rp'], [` = ${d - r}`, 'rp']], 'right', 12, 800);
+    partes(c, W/2, H - 14, s.pie || [['D', 'ink'], [` = ${D} fichas`, 'ink']], 'center', 13, 800);
+  }
+
+  // ----- la escalera de la sumatoria y su copia girada -----
+  function dibEscalera(c){
+    const s = E.st, n = s.n, p = s.p, r = s.r, par = p + (p + (n - 1)*r), term = i => p + i*r;
+    const u = Math.min((W - 96)/par, (H - 74)/n), x0 = 64, y0 = 40, cel = Math.max(1, u - (u > 4 ? .8 : .3));
+    const filaVisible = i => (s.fase === 0 ? (i < 3 || i === n - 1) : i < (s.vistas === undefined ? n : s.vistas));
+    const yF = i => (s.fase === 0 ? (i < 3 ? y0 + i*(u + 3)*1.6 : y0 + 3*(u + 3)*1.6 + 22) : y0 + i*u);
+    const ue = s.fase === 0 ? Math.min(u*1.6, (W - 120)/(p + (n - 1)*r)) : u;
+    for (let i = 0; i < n; i++){
+      if (!filaVisible(i)) continue;
+      const y = yF(i), t = term(i), hh = s.fase === 0 ? ue : cel;
+      ctx.save(); ctx.fillStyle = c.S; ctx.globalAlpha = .75;
+      if (ue >= 3.2 && s.fase === 0) for (let j = 0; j < t; j++) ctx.fillRect(x0 + j*ue + .4, y, ue - .8, hh);
+      else ctx.fillRect(x0, y, t*ue - (u > 4 ? .8 : 0), hh);
+      ctx.restore();
+      if (s.fase === 0 || i === n - 1 || i === 0) rotulo(c, x0 + t*ue + 8, y + hh/2, String(t), c.ink, 'left', 700, 11);
+      if (s.fase >= 2){
+        const f = s.copia === undefined ? 1 : s.copia, falta = par - t, xc = x0 + t*u + (1 - f)*(W - x0 - t*u);
+        ctx.save(); ctx.fillStyle = c.S; ctx.globalAlpha = .22; ctx.fillRect(xc, y, falta*u - (u > 4 ? .8 : 0), cel); ctx.restore();
+        ctx.save(); ctx.strokeStyle = c.S; ctx.lineWidth = .8; ctx.globalAlpha = .7; ctx.strokeRect(xc + .4, y + .4, falta*u - 1.6, cel - .8); ctx.restore();
+      }
+    }
+    if (s.fase === 0){ rotulo(c, x0 + 12, yF(2) + 26, '⋮', c.ink, 'center', 800, 16); }
+    // n a la izquierda
+    const ya = y0, yb = s.fase === 0 ? yF(n - 1) + ue : y0 + n*u;
+    ctx.save(); ctx.strokeStyle = c.n; ctx.lineWidth = grosor('n', 1.6); linea(x0 - 10, ya, x0 - 10, yb); linea(x0 - 10, ya, x0 - 5, ya); linea(x0 - 10, yb, x0 - 5, yb); ctx.restore();
+    if (s.fase >= 1) partes(c, x0 - 14, (ya + yb)/2, [['n', 'n'], [` = ${n}`, 'n']], 'right', 13, 800);
+    else rotulo(c, x0 - 14, (ya + yb)/2, '?', c.n, 'right', 800, 14);
+    if (s.fase >= 3){
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; linea(x0, y0 - 12, x0 + par*u, y0 - 12); linea(x0, y0 - 16, x0, y0 - 8); linea(x0 + par*u, y0 - 16, x0 + par*u, y0 - 8); ctx.restore();
+      rotulo(c, x0 + par*u/2, y0 - 24, `${p} + ${term(n - 1)} = ${par}`, c.ink, 'center', 800, 12);
+      partes(c, W/2, H - 14, [['dos escaleras: ', 'ink'], [String(n), 'n'], [` · ${par} = ${fmt(n*par)}  →  `, 'ink'], ['S', 'S'], [` = ${fmt(n*par/2)}`, 'S']], 'center', 13, 800);
+    } else if (s.fase === 0) partes(c, W/2, H - 14, [['S', 'S'], [' = ', 'ink'], [s.titulo || '', 'ink']], 'center', 13, 800);
+  }
+
+  // ----- líneas de texto -----
+  function dibTarjetas(c){
+    const s = E.st, ls = s.lineas || [], dy = W >= 560 ? 44 : 40, y0 = (H - ls.length*dy)/2 + dy/2;
+    ls.forEach((L, i) => partes(c, W/2, y0 + i*dy, L, 'center', L.tam || (W >= 560 ? 18 : 15), 800));
+  }
+
+  const DIB = { tablero:dibTablero, escrito:dibEscrito, filas:dibFilas, escalera:dibEscalera, tarjetas:dibTarjetas };
+  E.dibujar = () => { if (!W || !E.listo) return; const c = colores(); ctx.clearRect(0, 0, W, H); DIB[E.modo](c); };
+
+  E.leyenda = () => {
+    if (!idLey) return;
+    const it = (k, t) => `<span><i style="background:var(${k === 'ink' ? '--ink' : '--c-' + k})"></i>${t}</span>`;
+    document.getElementById(idLey).innerHTML = (E.ley || []).map(([k, t]) => it(k, t)).join('');
+  };
+  // Lecturas y descripción para lectores de pantalla (dicen lo mismo; antes de responder no adelantan la respuesta).
+  E.avisar = () => {
+    const filas = E.lect.map(k => k(E));
+    if (idLect) document.getElementById(idLect).innerHTML = filas.map(([k, t, v]) => `<div class="lectura" style="--k:var(${k === 'ink' ? '--ink' : '--c-' + k})"><span>${t}</span><b>${v}</b></div>`).join('');
+    if (idDesc && !E.anim){
+      const base = E.desc || 'El tablero de columnas.';
+      document.getElementById(idDesc).textContent = [base, ...filas.map(([, t, v]) => `${t}: ${quitar(v)}.`)].join(' ');
+    }
+    if (E.alCambiar) E.alCambiar();
+  };
+  E.animar = (de, a, dur, paso, fin, lineal) => {
+    const tok = ++E.tok; E.anim = true;
+    tween(dur, f => { if (tok !== E.tok) return; paso(de + (a - de)*f); E.dibujar(); },
+      () => { if (tok !== E.tok) return; E.anim = false; E.avisar(); if (fin) fin(); }, lineal);
+  };
+  // Una lista de estados, uno tras otro (cada uno se queda ms[j] milisegundos).
+  E.secuencia = (estados, ms, fin) => {
+    const tok = ++E.tok; E.anim = true; let j = 0;
+    const sig = () => { if (tok !== E.tok) return;
+      if (j >= estados.length){ E.anim = false; E.avisar(); if (fin) fin(); return; }
+      Object.assign(E.st, estados[j]); E.redimensionar(); E.avisar(); const espera = Array.isArray(ms) ? ms[j] : ms; j++; setTimeout(sig, RM ? 0 : espera); };
+    sig();
+  };
+  E.parar = () => { E.tok++; E.anim = false; };
+  return E;
+}
+
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}" aria-label="${k.toUpperCase()}: ${quitar(t)}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}" tabindex="-1"></p>`;
+// Leyenda del tablero: solo las columnas que se ven; la base solo si no es 10.
+const leyTablero = (b, K) => [['o0', 'fichas sueltas'], ['o1', `paquetes de ${b}`], ['o2', `cajas de ${b*b}`], ['o3', `cajones de ${b*b*b}`]].slice(0, Math.min(K, 4)).concat(b === 10 ? [] : [['b', 'la base']]);
+const LEY_ESCRITO = [['o0', 'unidades'], ['o1', 'decenas'], ['o2', 'centenas'], ['o3', 'millares']];
+const lectNum = (que, t, b) => ['ink', que, numH(t, b)];
+// Un numeral como celdas de la cuenta escrita: cada cifra en el color de su orden.
+const celdas = t => { const cs = String(t).split(''), L = cs.length; return cs.map((d, i) => (d === '?' ? { t:'?', c:ko(L - 1 - i), hueco:true } : { t:d, c:ko(L - 1 - i) })); };
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1');
+const S = { step:0, max:0, pred:{}, ocupado:false, p1:'b10', hecho1:false, op8:'suma', b8:10, a8:478, c8:356 };
+
+// Números de la escena: todos salen del motor
+const P1 = { b10: M.sumaColumnas(['478', '356'], 10), b5: M.sumaColumnas(['342', '213'], 5) };
+const CA = M.complemento('4073');
+const RS = M.restaColumnas('5003', '1478');
+const FA = M.cifrasFaltantes(['?85', '6??'], '1282');
+const SU = M.sumaAritmetica(2, 60, 2);
+const DV = M.division(47, 9);
+const IV = M.invertidos(132);
+const fb = (letra, ok, txt) => (letra === ok ? txt : `Elegiste la ${letra.toUpperCase()}. ${txt} La correcta está marcada.`);
+const FUENTE = '<p class="fuente">No encontramos estudios con datos sobre estos errores en las cuatro operaciones; las opciones incorrectas son hipótesis nuestras, y la app las medirá en el colegio.</p>';
+// Que el motor y las opciones digan lo mismo (si cambian los números, la escena avisa en la consola).
+console.assert(CA.errores.todasANueve && CA.errores.dejaElCero && CA.errores.potenciaDeMas, 'paso 2: revisar las opciones');
+console.assert(RS.errores.menorDelMayor && RS.errores.sinDescontar && RS.errores.cerosComoB, 'paso 3: revisar las opciones');
+console.assert(FA.unica && FA.errores.sinLlevadas && FA.errores.soloLaPrimera && FA.errores.sumaLaLlevada, 'paso 4: revisar las opciones');
+console.assert(IV.unica && IV.errores.sumaCifras && IV.errores.sinLlevada && IV.errores.mitad, 'paso 7: revisar las opciones');
+
+const P_CA = { id:'cuatro-operaciones-paso2', ok:'b', opts:[
+  ['a', CA.errores.todasANueve, 'complemento-todas-a-nueve', 'hipotesis'],
+  ['b', CA.texto],
+  ['c', CA.errores.dejaElCero, 'complemento-deja-el-cero', 'hipotesis'],
+  ['d', fmt(CA.errores.potenciaDeMas), 'complemento-potencia-de-mas', 'hipotesis']],
+  fb:{ b:'¡Bien! 4073 + 5927 = 10 000: a las unidades les faltan 7 para llegar a 10, y a cada columna de la izquierda le falta hasta 9, porque la llevada que sube pone el 1 que completa 10.',
+    a:'5926 es lo que le falta a 4073 para llegar a 9999: 4073 + 5926 = 9999. Falta 1 más para 10 000. Por eso la última cifra que no es 0 va «a 10» y no «a 9».',
+    c:'5027 deja el 0 de 4073 como estaba. Pero esa columna también está vacía y hay que llenarla: 4073 + 5027 = 9100, no 10 000. El 0 de en medio pide 9, y con la llevada llega a 10.',
+    d:'95 927 es lo que le falta para llegar a 100 000. Pero 4073 tiene cuatro cifras: su complemento se mide hasta 10 000, un 1 seguido de cuatro ceros.' } };
+
+const P_RS = { id:'cuatro-operaciones-paso3', ok:'c', opts:[
+  ['a', RS.errores.menorDelMayor, 'resta-el-menor-del-mayor', 'hipotesis'],
+  ['b', RS.errores.sinDescontar, 'presta-sin-descontar', 'hipotesis'],
+  ['c', RS.texto],
+  ['d', RS.errores.cerosComoB, 'ceros-que-prestan-quedan-en-10', 'hipotesis']],
+  fb:{ c:'¡Bien! Para quitar 8 sueltas se abre un cajón en 10 cajas, una caja en 10 paquetes y un paquete en 10 sueltas: 13 − 8 = 5, 9 − 7 = 2, 9 − 4 = 5 y 4 − 1 = 3.',
+    a:'4475 resta en cada columna el menor del mayor (8 − 3, 7 − 0, 4 − 0 y 5 − 1). Pero arriba hay 3 sueltas y hay que quitar 8: la resta no se puede dar vuelta; hay que abrir una pieza de la izquierda. Control: 4475 + 1478 = 5953, no 5003.',
+    b:'4635 pide prestado en cada columna pero no descuenta lo que prestó: el 5 de los cajones sigue en 5. La pieza que se abre deja de estar en su columna. Control: 4635 + 1478 = 6113, no 5003.',
+    d:'3635 descuenta el cajón que se abre, pero deja en 10 las cajas y los paquetes que dejan pasar el préstamo. Cada 0 recibe 10 y entrega 1 a la derecha: queda en 9. Control: 3635 + 1478 = 5113, no 5003.' } };
+
+const P_FA = { id:'cuatro-operaciones-paso4', ok:'a', opts:[
+  ['a', String(FA.suma)],
+  ['b', String(FA.errores.sinLlevadas), 'deduce-sin-llevadas', 'hipotesis'],
+  ['c', String(FA.errores.soloLaPrimera), 'olvida-la-segunda-llevada', 'hipotesis'],
+  ['d', String(FA.errores.sumaLaLlevada), 'suma-la-llevada-al-deducir', 'hipotesis']],
+  fb:{ a:'¡Bien! 585 + 697 = 1282: faltan 5, 9 y 7, que suman 21.',
+    b:'13 deduce cada columna sin las llevadas (7, 0 y 6). Pero 5 + 7 = 12 sube 1 a las decenas, y entonces ahí falta un 9, porque 8 + 9 + 1 = 18. Control: 685 + 607 = 1292, no 1282.',
+    c:'22 usa la llevada de las unidades pero olvida la de las decenas: 8 + 9 + 1 = 18 también sube 1. Por eso en las centenas falta un 5 (5 + 6 + 1 = 12), no un 6. Control: 685 + 697 = 1382, no 1282.',
+    d:'15 suma la llevada en vez de restarla: en las decenas toma 8 − 8 + 1 = 1. Pero la llevada ya entra en la columna: 8 + ☐ + 1 tiene que terminar en 8, y eso pide un 9. Control: 785 + 617 = 1402, no 1282.' } };
+
+const P_SU = { id:'cuatro-operaciones-paso5', ok:'b', opts:[
+  ['a', String(SU.errores.sinMasUno), 'cuenta-terminos-sin-el-mas-uno', 'hipotesis'],
+  ['b', String(SU.S)],
+  ['c', String(SU.errores.ultimoComoN), 'usa-el-ultimo-como-n', 'hipotesis'],
+  ['d', String(SU.errores.sinDividir), 'gauss-sin-dividir-entre-dos', 'hipotesis']],
+  fb:{ b:'¡Bien! Son 30 términos, el primero más el último dan 62, y 30 · 62 ÷ 2 = 930.',
+    a:'899 = 62 · 29 ÷ 2 cuenta 29 términos, porque (60 − 2) ÷ 2 = 29. Pero del 2 al 60 de dos en dos hay 30 números: el 2 también cuenta.',
+    c:'1830 = 60 · 61 ÷ 2 es 1 + 2 + 3 + … + 60, con los impares incluidos. Aquí solo van los pares: son 30 términos, no 60.',
+    d:'1860 = 62 · 30 son la escalera y su copia juntas: dos veces la suma. Falta dividir entre 2.' } };
+
+const P_DV = { id:'cuatro-operaciones-paso6', ok:'c', opts:[
+  ['a', String(DV.errores.igualAlDefecto), 'residuo-por-exceso-igual-al-por-defecto', 'hipotesis'],
+  ['b', String(DV.errores.divisorMenosUnoMenosR), 'resta-desde-el-residuo-maximo', 'hipotesis'],
+  ['c', String(DV.rExceso)],
+  ['d', String(DV.errores.sumaElDivisor), 'suma-el-divisor-al-residuo', 'hipotesis']],
+  fb:{ c:'¡Bien! Para completar una sexta fila (6 · 9 = 54) faltan 54 − 47 = 7 fichas: r′ = 7, y r + r′ = 2 + 7 = 9, el divisor.',
+    a:'2 son las fichas que sobran: el residuo por defecto. El residuo por exceso son las que faltan para completar otra fila de 9: 9 − 2 = 7.',
+    b:'6 = 9 − 1 − 2 cuenta desde el residuo máximo, 8. Pero lo que falta para llenar la fila se cuenta desde 9, el divisor: 9 − 2 = 7. Control: 9 · 6 − 6 = 48, no 47.',
+    d:'11 = 9 + 2 suma el divisor y el residuo. Pero el residuo por exceso es lo que falta para completar una fila de 9: no puede llegar a 9.' } };
+
+const P_IV = { id:'cuatro-operaciones-paso7', ok:'b', opts:[
+  ['a', String(IV.errores.sumaCifras), 'suma-las-cifras-del-resultado', 'hipotesis'],
+  ['b', String(IV.suma)],
+  ['c', String(IV.errores.sinLlevada), 'olvida-la-llevada-de-las-unidades', 'hipotesis'],
+  ['d', String(IV.errores.mitad), 'trata-la-suma-como-un-doble', 'hipotesis']],
+  fb:{ b:'¡Bien! Las unidades suman Y + X y las decenas, X + Y: la misma suma. Con X + Y = 12, abajo queda 2 y sube 1; arriba, 12 + 1 = 13. Sale 132 con 93 + 39, 84 + 48 o 75 + 57.',
+    a:'6 = 1 + 3 + 2 suma las cifras de 132. Pero con X + Y = 6 sale, por ejemplo, 15 + 51 = 66, no 132.',
+    c:'13 lee las decenas como X + Y = 13 y olvida la llevada que sube de las unidades. Con X + Y = 13 sale, por ejemplo, 49 + 94 = 143, no 132.',
+    d:'66 = 132 ÷ 2 trata XY + YX como el doble de un solo número. Pero XY e YX son números distintos, y dos cifras suman a lo más 9 + 8 = 17.' } };
+
+const X_ = t => V('X', t), Y_ = t => V('Y', t);
+const d_ = t => V('d', t), q_ = t => V('q', t), r_ = t => V('r', t), rp_ = t => V('rp', t), S_ = t => V('S', t), n_ = t => V('n', t);
+
+// ----- paso 1: la suma con llevadas -----
+function prep1(){
+  const R = P1[S.p1];
+  E.config({ modo:'tablero', st: stSuma(R, S.hecho1 ? R.K : 0), ley: leyTablero(R.b, R.K),
+    desc: S.hecho1 ? `${quitar(numH(R.sumandos[0], R.b))} más ${quitar(numH(R.sumandos[1], R.b))} da ${quitar(numH(R.texto, R.b))}.` : `${quitar(numH(R.sumandos[0], R.b))} y ${quitar(numH(R.sumandos[1], R.b))} en el tablero, sin sumar.`,
+    lect: [() => lectNum('suma', S.hecho1 ? R.texto : '—', R.b)], alCambiar:vivo1 });
+}
+function vivo1(){
+  const d = $('vivo1'); if (!d) return;
+  const R = P1[S.p1], b = R.b;
+  $('sum1').textContent = S.hecho1 ? 'Sumar otra vez' : 'Sumar';
+  d.innerHTML = S.hecho1 ? `<div class="eqs">${R.columnas.map(c => `<div class="eq">${c.entran.map(x => o_(Math.min(c.orden, 3), x)).join(' + ')}${c.llevadaEntra ? ` + ${o_(Math.min(c.orden, 3), c.llevadaEntra)}` : ''} = ${c.total}${c.llevadaSale ? ` = ${o_(Math.min(c.orden + 1, 3), c.llevadaSale)}·${b === 10 ? '10' : b_(b)} + ${o_(Math.min(c.orden, 3), c.cifra)}` : ''}<span class="note">${pieza(c.orden, b, 2).replace(/^fichas sueltas/, 'sueltas')}: ${c.llevadaSale ? `${c.total} piezas; ${c.llevadaSale === 1 ? 'se forma 1 pieza' : `se forman ${c.llevadaSale} piezas`} de la columna de la izquierda (la llevada) y ${c.cifra === 1 ? 'queda' : 'quedan'} ${c.cifra}` : `${c.total} ${c.total === 1 ? 'pieza' : 'piezas'}: no alcanza para otra pieza`}</span></div>`).join('')}
+    <div class="eq">${numH(R.sumandos[0], b)} + ${numH(R.sumandos[1], b)} = ${numH(R.texto, b)}</div></div>` : '<p class="hint">Toca «Sumar» y mira cada columna.</p>';
+}
+function sumar1(){
+  if (S.ocupado || E.anim) return;
+  const R = P1[S.p1]; S.hecho1 = true;
+  E.st = stSuma(R, 0); E.redimensionar(); vivo1();
+  E.animar(0, R.K, durSuma(R), t => { E.st = stSuma(R, t); }, () => prep1(), true);
+}
+
+// ----- paso 8: el explorador -----
+const MAX8 = b => Math.min(Math.pow(b, 3) - 1, 999);
+function cuenta8(){
+  const b = S.b8, A = S.a8, B = S.c8, tA = A.toString(b), tB = B.toString(b);
+  if (S.op8 === 'suma') return { R: M.sumaColumnas([tA, tB], b), st: t => stSuma(M.sumaColumnas([tA, tB], b), t), dur: R => durSuma(R), signo:'+' };
+  if (S.op8 === 'resta') return { R: M.restaColumnas(tA, tB, b), st: t => stResta(M.restaColumnas(tA, tB, b), t), dur: R => durResta(R), signo:'−' };
+  const R = M.multiplicaPorCifra(tA, B, b);
+  return { R, st: t => stSuma(R, t, { signos:[`×${B}`], cifras:[R.filas[0].map(x => String(x))] }), dur: R => durSuma(R), signo:'×' };
+}
+function arreglar8(){
+  const b = S.b8, mx = MAX8(b);
+  S.a8 = clamp(S.a8, 0, mx);
+  if (S.op8 === 'multiplica') S.c8 = clamp(S.c8, 1, b - 1);
+  else S.c8 = clamp(S.c8, 0, S.op8 === 'resta' ? S.a8 : mx);
+}
+function prep8(){
+  arreglar8();
+  const C = cuenta8(), R = C.R, b = S.b8, n = S.op8 === 'resta' ? R.acciones.length : R.K;
+  const st = S.op8 === 'multiplica' ? C.st(0) : C.st(n);
+  if (S.op8 === 'multiplica'){ st.filas = [{ signo:'', cuentas:R.cuentasNumeral, cifras:porColumna(R.numeral, R.K), estilo:'lleno' }]; st.signoRes = `×${S.c8}`; st.resultado = R.cuentas.slice(); st.moviendo = null; st.marcas = R.columnas.map(c => c.llevadaEntra); }
+  E.config({ modo:'tablero', st, ley: leyTablero(b, R.K),
+    desc: `${quitar(numH(S.a8.toString(b), b))} ${S.op8 === 'suma' ? 'más' : S.op8 === 'resta' ? 'menos' : 'por'} ${S.op8 === 'multiplica' ? S.c8 : quitar(numH(S.c8.toString(b), b))} da ${quitar(numH(R.texto, b))}.`,
+    lect: [() => lectNum('resultado', R.texto, b), () => ['ink', 'en base 10', String(R.valor)]], alCambiar:vivo8 });
+}
+function vivo8(){
+  const d = $('vivo8b'); if (!d) return;
+  const b = S.b8, C = cuenta8(), R = C.R, mx = MAX8(b), mult = S.op8 === 'multiplica';
+  $('a8').innerHTML = numH(S.a8.toString(b), b); $('c8').innerHTML = mult ? String(S.c8) : numH(S.c8.toString(b), b); $('b8').textContent = b;
+  $('stepBody').querySelectorAll('[data-da]').forEach(q => { const x = +q.dataset.da*(Math.abs(+q.dataset.da) === 1 ? 1 : b/10); q.disabled = S.ocupado || S.a8 + x < 0 || S.a8 + x > mx; q.textContent = `${x > 0 ? '+' : '−'}${Math.abs(x)}`; q.setAttribute('aria-label', `${x > 0 ? 'Sumar' : 'Restar'} ${Math.abs(x)} al primer número`); });
+  $('stepBody').querySelectorAll('[data-dc]').forEach(q => { const x = +q.dataset.dc*(Math.abs(+q.dataset.dc) === 1 ? 1 : b/10), top = mult ? b - 1 : S.op8 === 'resta' ? S.a8 : mx, bajo = mult ? 1 : 0;
+    q.hidden = mult && Math.abs(+q.dataset.dc) !== 1; q.disabled = S.ocupado || S.c8 + x < bajo || S.c8 + x > top; q.textContent = `${x > 0 ? '+' : '−'}${Math.abs(x)}`; q.setAttribute('aria-label', `${x > 0 ? 'Sumar' : 'Restar'} ${Math.abs(x)} al segundo número`); });
+  $('stepBody').querySelectorAll('[data-db]').forEach(q => { const db = +q.dataset.db; q.disabled = S.ocupado || b + db < 2 || b + db > 10; });
+  $('stepBody').querySelectorAll('[data-op]').forEach(q => q.setAttribute('aria-pressed', String(q.dataset.op === S.op8)));
+  const tA = S.a8.toString(b), tB = S.c8.toString(b);
+  d.innerHTML = `<div class="eqs"><div class="eq">${numH(tA, b)} ${C.signo === '×' ? '·' : C.signo} ${mult ? S.c8 : numH(tB, b)} = ${numH(R.texto, b)}</div>
+    ${b !== 10 ? `<div class="eq">${parseInt(tA, b)} ${C.signo === '×' ? '·' : C.signo} ${mult ? S.c8 : parseInt(tB, b)} = ${R.valor}<span class="note">la misma cuenta en base 10</span></div>` : ''}</div>`;
+}
+function mover8(cual, dx){
+  if (S.ocupado || E.anim) return;
+  const b = S.b8, x = dx*(Math.abs(dx) === 1 ? 1 : b/10);
+  if (cual === 'a') S.a8 += x; else S.c8 += x;
+  prep8(); vivo8();
+}
+function base8(db){
+  if (S.ocupado || E.anim) return;
+  S.b8 = clamp(S.b8 + db, 2, 10); prep8(); vivo8();
+}
+function op8(op){
+  if (S.ocupado || E.anim || op === S.op8) return;
+  S.op8 = op; if (op === 'multiplica') S.c8 = clamp(S.c8, 1, S.b8 - 1); prep8(); vivo8();
+}
+function animar8(){
+  if (S.ocupado || E.anim) return;
+  const C = cuenta8(), R = C.R, n = S.op8 === 'resta' ? R.acciones.length : R.K;
+  if (S.op8 === 'multiplica'){
+    E.st = Object.assign(C.st(0), {}); E.redimensionar();
+    E.animar(0, n, C.dur(R), t => { E.st = C.st(t); }, () => prep8(), true);
+  } else { E.st = C.st(0); E.redimensionar(); E.animar(0, n, C.dur(R), t => { E.st = C.st(t); }, () => prep8(), true); }
+}
+
+// Estados de las predicciones, armados con los cuadros del motor
+const stCA = t => stSuma(CA.relleno, t, { signos:['', '+'], estilos:['lleno', 'hueco'] });
+const stCA0 = () => ({ b:10, K:4, filas:[{ signo:'', cuentas:M.leer(CA.N).reverse(), cifras:porColumna(CA.N, 4), estilo:'lleno' }], resultado:[], llevada:[0, 0, 0, 0], marcas:[], mostrarRes:false });
+const escritoFA = (hasta) => {
+  const F = FA.filas, cols = FA.columnas, sumandos = ['?85', '6??'];
+  const fila = (pat, real) => pat.split('').map((ch, i) => { const k = pat.length - 1 - i;
+    return ch === '?' ? (k < hasta ? { t:real[i], c:ko(k), marca:true } : { t:'?', c:ko(k), hueco:true }) : { t:ch, c:ko(k) }; });
+  const llevadas = []; cols.forEach((c, k) => { if (k < hasta && c.llevadaSale) llevadas[k + 1] = { t:'+' + c.llevadaSale, c:ko(k + 1) }; });
+  return { K:4, filas:[{ signo:'', celdas:fila(sumandos[0], F[0]) }, { signo:'+', celdas:fila(sumandos[1], F[1]) }], resultado:celdas('1282'), llevadas };
+};
+const escritoIV = (par, fase) => {
+  const L = (letra, k) => (par ? { t:par[letra === 'X' ? 0 : 1], c:letra, letra:true } : { t:letra, c:letra, letra:true });
+  return { K:3, filas:[{ signo:'', celdas:[L('X'), L('Y')] }, { signo:'+', celdas:[L('Y'), L('X')] }],
+    resultado:[{ t:'1' }, { t:'3' }, { t:'2' }], llevadas: fase >= 1 ? [null, { t:'+1' }] : [],
+    pie: fase >= 1 ? (par ? [[par, 'ink'], [' + ', 'ink'], [par.split('').reverse().join(''), 'ink'], [' = 132', 'ink']] : [['Y', 'Y'], [' + ', 'ink'], ['X', 'X'], [' = 12: queda 2 y sube 1', 'ink']]) : null };
+};
+const LEY_IV = [['X', 'la cifra X'], ['Y', 'la cifra Y']];
+const LEY_DV = [['d', 'divisor d'], ['q', 'cociente q'], ['r', 'residuo por defecto r'], ['rp', 'residuo por exceso r′']];
+const LEY_SU = [['S', 'la suma S'], ['n', 'cantidad de términos n']];
+
+const steps = [
+ { k:'Paso 1', t:'Suma en columnas: la llevada sube', explora:true,
+   prep:() => prep1(),
+   body:() => `<p class="problem">Cada columna guarda piezas de un tamaño: ${o_(0, 'fichas sueltas')}, ${o_(1, 'paquetes de 10')} (las decenas) y ${o_(2, 'cajas de 100')} (las centenas). Para sumar, se juntan las piezas de cada columna, desde la derecha.</p>
+   <p><button type="button" class="btn primary" id="sum1">Sumar</button></p>
+   <div class="seg" role="group" aria-label="Cuenta">${[['b10', 'base 10: 478 + 356'], ['b5', 'base 5: 342₍₅₎ + 213₍₅₎']].map(([k, t]) => `<button type="button" data-p1="${k}" aria-pressed="${S.p1 === k}">${t}</button>`).join('')}</div>
+   <div id="vivo1"></div>
+   <p>Cuando una columna llega a 10 piezas, esas 10 forman <b>una</b> pieza de la columna de la izquierda: 10 ${o_(0, 'sueltas')} hacen un ${o_(1, 'paquete')}. Esa pieza que sube es la <b>llevada</b>, el «me llevo 1». En base ${b_('5')} pasa lo mismo, pero cada 5 piezas: la llevada sube apenas una columna llega a 5.</p>`,
+   luego:() => { $('sum1').onclick = sumar1; $('stepBody').querySelectorAll('[data-p1]').forEach(q => q.onclick = () => { if (S.ocupado || E.anim || q.dataset.p1 === S.p1) return; S.p1 = q.dataset.p1; S.hecho1 = false;
+     $('stepBody').querySelectorAll('[data-p1]').forEach(x => x.setAttribute('aria-pressed', String(x === q))); prep1(); vivo1(); }); vivo1(); } },
+ { k:'Paso 2', t:'Predice: el complemento aritmético', gate:P_CA,
+   prep:() => { const ya = !!S.pred[P_CA.id];
+     E.config(ya ? { modo:'tablero', st:stCA(CA.relleno.K), ley:leyTablero(10, 4).concat([['ink', 'la caja de 10 000']]), desc:`4073 y lo que le falta, 5927, llenan la caja de 10 000.`, lect:[() => lectNum('N', '4073', 10), () => lectNum('CA(N)', CA.texto, 10)] }
+       : { modo:'tablero', st:stCA0(), ley:leyTablero(10, 4), desc:'El número 4073 en el tablero: 4 cajones, ninguna caja, 7 paquetes y 3 sueltas.', lect:[() => lectNum('N', '4073', 10)] }); },
+   anima:fin => { E.config({ modo:'tablero', st:stCA(0), ley:leyTablero(10, 4).concat([['ink', 'la caja de 10 000']]), desc:'4073 y lo que le falta, columna por columna.', lect:[() => lectNum('N', '4073', 10)] });
+     esperar(900, () => E.animar(0, CA.relleno.K, durSuma(CA.relleno), t => { E.st = stCA(t); }, () => { E.lect = [() => lectNum('N', '4073', 10), () => lectNum('CA(N)', CA.texto, 10)]; E.desc = '4073 y 5927 llenan la caja de 10 000: cada columna llega justo a 10 y sube.'; E.avisar(); fin(); }, true)); },
+   body:() => `<p class="problem">El <b>complemento aritmético</b> de un número N, CA(N), es lo que le falta a N para llegar a 10<sup>k</sup>, donde k es la cantidad de cifras de N.</p>
+   <p>¿Cuál es CA(4073)?</p>${opcionesHTML(P_CA.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">CA(${numH('4073', 10)}) = 10 000 − ${numH('4073', 10)} = ${numH(CA.texto, 10)}</div>
+     <div class="eq">${o_(3, '9 − 4')} | ${o_(2, '9 − 0')} | ${o_(1, '9 − 7')} | ${o_(0, '10 − 3')} → ${o_(3, 5)}${o_(2, 9)}${o_(1, 2)}${o_(0, 7)}<span class="note">la regla de academia: «a 9 todas, a 10 la última cifra que no es 0»</span></div></div>
+   <p>En el tablero se ve por qué: las ${o_(0, 'sueltas')} necesitan 7 para llegar a 10 y suben como un ${o_(1, 'paquete')}. Ese paquete ya es 1 de los 10 que necesita la columna de los paquetes, así que ahí solo faltan 9 − 7 = 2. Y así hasta arriba: cada columna recibe la llevada de su derecha. Si el número termina en ceros, esas columnas ya están completas y no piden nada.</p>${FUENTE}</div>` },
+ { k:'Paso 3', t:'Predice: una resta con ceros', gate:P_RS,
+   prep:() => { const ya = !!S.pred[P_RS.id];
+     E.config({ modo:'tablero', st:stResta(RS, ya ? RS.acciones.length : 0), ley:leyTablero(10, 4).concat([['ink', 'a trazos: lo que se quita']]),
+       desc: ya ? `5003 menos 1478 da ${RS.texto}.` : '5003 en el tablero: 5 cajones y 3 sueltas; abajo, a trazos, las piezas de 1478 que hay que quitar.',
+       lect: ya ? [() => lectNum('diferencia', RS.texto, 10)] : [] }); },
+   anima:fin => { E.config({ modo:'tablero', st:stResta(RS, 0), ley:leyTablero(10, 4).concat([['ink', 'a trazos: lo que se quita']]), desc:'Se abren piezas para poder quitar.', lect:[] });
+     esperar(600, () => E.animar(0, RS.acciones.length, durResta(RS), t => { E.st = stResta(RS, t); }, () => { E.lect = [() => lectNum('diferencia', RS.texto, 10)]; E.desc = `Un cajón se abre en 10 cajas, una caja en 10 paquetes y un paquete en 10 sueltas; después se quita columna por columna: ${RS.texto}.`; E.avisar(); fin(); }, true)); },
+   body:() => `<p class="problem">Hay que quitarle 1478 a 5003. Arriba hay ${o_(3, '5 cajones')} y ${o_(0, '3 sueltas')}, y ninguna caja ni paquete.</p>
+   <p>¿Cuánto es 5003 − 1478?</p>${opcionesHTML(P_RS.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${o_(3, '5')} → ${o_(3, '4')} &nbsp; ${o_(2, '0')} → ${o_(2, '10')} → ${o_(2, '9')} &nbsp; ${o_(1, '0')} → ${o_(1, '10')} → ${o_(1, '9')} &nbsp; ${o_(0, '3')} → ${o_(0, '13')}<span class="note">el préstamo en cadena: un cajón se abre en 10 cajas, una de ellas en 10 paquetes y uno de ellos en 10 sueltas</span></div>
+     <div class="eq">${o_(0, '13 − 8 = 5')} &nbsp; ${o_(1, '9 − 7 = 2')} &nbsp; ${o_(2, '9 − 4 = 5')} &nbsp; ${o_(3, '4 − 1 = 3')} → ${numH(RS.texto, 10)}</div>
+     <div class="eq">control: ${numH(RS.texto, 10)} + ${numH('1478', 10)} = ${numH('5003', 10)}</div></div>
+   <p>Pedir prestado es <b>abrir</b> una pieza de la columna de la izquierda: un ${o_(1, 'paquete')} se abre en 10 ${o_(0, 'sueltas')}. Si a la izquierda no hay nada, se abre una pieza más grande, y cada columna vacía que deja pasar el préstamo se queda con 9: recibe 10 y entrega 1.</p>${FUENTE}</div>` },
+ { k:'Paso 4', t:'Predice: las cifras que faltan', gate:P_FA,
+   prep:() => { const ya = !!S.pred[P_FA.id];
+     E.config({ modo:'escrito', st:escritoFA(ya ? 3 : 0), ley:LEY_ESCRITO, desc: ya ? '585 más 697 es 1282; faltaban 5, 9 y 7.' : 'Una suma con tres casillas vacías: ? 8 5 más 6 ? ? igual a 1282.', lect: ya ? [() => ['ink', 'suma de las que faltan', String(FA.suma)]] : [] }); },
+   anima:fin => { E.config({ modo:'escrito', st:escritoFA(0), ley:LEY_ESCRITO, desc:'Se deduce columna por columna.', lect:[] });
+     E.secuencia([1, 2, 3].map(h => escritoFA(h)), [1100, 1100, 0], () => { E.lect = [() => ['ink', 'suma de las que faltan', String(FA.suma)]]; E.desc = '585 más 697 es 1282; faltaban 5, 9 y 7.'; E.avisar(); fin(); }); },
+   body:() => `<p class="problem">En la suma ${numH('☐85', 10)} + ${numH('6☐☐', 10)} = ${numH('1282', 10)} faltan tres cifras.</p>
+   <p>¿Cuánto suman las tres cifras que faltan?</p>${opcionesHTML(P_FA.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${o_(0, '5 + ☐ = 12')} → ${o_(0, '☐ = 7')}, sube ${o_(1, '1')}<span class="note">5 + ☐ termina en 2: tiene que ser 12</span></div>
+     <div class="eq">${o_(1, '8 + ☐ + 1 = 18')} → ${o_(1, '☐ = 9')}, sube ${o_(2, '1')}<span class="note">con la llevada, la columna termina en 8</span></div>
+     <div class="eq">${o_(2, '☐ + 6 + 1 = 12')} → ${o_(2, '☐ = 5')}<span class="note">y la llevada de esta columna es el 1 de los millares</span></div>
+     <div class="eq">585 + 697 = 1282 → 5 + 9 + 7 = ${FA.suma}</div></div>
+   <p>Se deduce de derecha a izquierda, porque cada columna necesita saber qué llevada le llega de su derecha. La llevada se <b>suma</b> en la columna a la que llega, así que al deducir se resta.</p>${FUENTE}</div>` },
+ { k:'Paso 5', t:'Predice: una sumatoria', gate:P_SU,
+   prep:() => { const ya = !!S.pred[P_SU.id];
+     E.config({ modo:'escalera', st:{ p:2, r:2, n:SU.n, fase: ya ? 3 : 0, titulo:'2 + 4 + 6 + … + 60' }, ley:LEY_SU,
+       desc: ya ? `La escalera 2, 4, …, 60 y su copia girada forman ${SU.n} filas de ${SU.par}: ${SU.dobles} es el doble de la suma, que es ${SU.S}.` : 'Una escalera de fichas: filas de 2, 4, 6, …, hasta 60.', lect: ya ? [() => ['S', 'S', String(SU.S)]] : [] }); },
+   anima:fin => { E.config({ modo:'escalera', st:{ p:2, r:2, n:SU.n, fase:1, vistas:0 }, ley:LEY_SU, desc:'La escalera completa.', lect:[] });
+     E.animar(0, SU.n, 1500, x => { E.st.vistas = Math.floor(x + 1e-9); }, () => { E.st.fase = 2; E.st.copia = 0;
+       esperar(400, () => E.animar(0, 1, 1300, f => { E.st.copia = f; }, () => esperar(300, () => { E.st.fase = 3; E.lect = [() => ['S', 'S', String(SU.S)]]; E.desc = `Con su copia girada, la escalera forma ${SU.n} filas de ${SU.par}: ${SU.dobles}; la suma es la mitad, ${SU.S}.`; E.dibujar(); E.avisar(); fin(); }))); }, true); },
+   body:() => `<p class="problem">Una escalera de fichas tiene filas de 2, 4, 6, … fichas, y la última fila tiene 60.</p>
+   <p>¿Cuánto es ${S_('S')} = 2 + 4 + 6 + … + 60?</p>${opcionesHTML(P_SU.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${n_('n')} = (60 − 2) ÷ 2 + 1 = ${n_(SU.n)}<span class="note">cantidad de términos: (último − primero) ÷ razón + 1; el primero también cuenta</span></div>
+     <div class="eq">2·${S_('S')} = ${n_(SU.n)} · (2 + 60) = ${SU.dobles} → ${S_('S')} = ${S_(SU.S)}<span class="note">la escalera y su copia girada forman un rectángulo de n filas por (primero + último)</span></div>
+     <div class="eq">${S_('S')} = 2 · (1 + 2 + … + 30) = 30 · 31 = ${SU.S}<span class="note">otra forma: cada término es el doble de 1, 2, …, 30</span></div></div>
+   <p>La copia girada pone, al lado de cada fila de la escalera, lo que le falta para llegar a 62: la fila de 2 recibe 60, la de 4 recibe 58… Todas las filas quedan de 62, y hay ${n_(SU.n)} filas. Así se suma cualquier sucesión que crece de a lo mismo: (primero + último) · ${n_('n')} ÷ 2.</p>${FUENTE}</div>` },
+ { k:'Paso 6', t:'Predice: la división por exceso', gate:P_DV,
+   prep:() => { const ya = !!S.pred[P_DV.id];
+     E.config({ modo:'filas', st:{ D:47, d:9, fase: ya ? 2 : 1 }, ley:LEY_DV,
+       desc: ya ? '47 fichas en filas de 9: 5 filas llenas y 2 fichas sueltas; para una sexta fila faltan 7.' : '47 fichas en filas de 9: 5 filas llenas y 2 fichas en la sexta fila.', lect: ya ? [() => ['rp', 'residuo por exceso r′', String(DV.rExceso)]] : [] }); },
+   anima:fin => { E.config({ modo:'filas', st:{ D:47, d:9, fase:2, huecos:0 }, ley:LEY_DV, desc:'Se completa la sexta fila.', lect:[] });
+     esperar(500, () => E.animar(0, DV.rExceso, 1400, x => { E.st.huecos = Math.floor(x + 1e-9); }, () => { E.lect = [() => ['rp', 'residuo por exceso r′', String(DV.rExceso)]]; E.desc = '47 fichas en filas de 9: para completar la sexta fila faltan 7 fichas.'; E.avisar(); fin(); }, true)); },
+   body:() => `<p class="problem">Se reparten 47 fichas en filas de ${d_('9')}. Por defecto, salen ${q_('5 filas')} llenas y sobran ${r_('2')}: 47 = ${d_('9')} · ${q_('5')} + ${r_('2')}.</p>
+   <p>Por exceso se cuenta una fila más, la sexta, aunque esté incompleta. ¿Cuál es el residuo por exceso?</p>${opcionesHTML(P_DV.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">47 = ${d_('9')} · ${q_('5')} + ${r_('2')}<span class="note">por defecto: D = d · q + r, con r menor que d</span></div>
+     <div class="eq">47 = ${d_('9')} · 6 − ${rp_('7')}<span class="note">por exceso: D = d · (q + 1) − r′ (en algunos libros, el residuo por exceso se escribe rₑ)</span></div>
+     <div class="eq">${r_('r')} + ${rp_('r′')} = ${r_('2')} + ${rp_('7')} = ${d_('9')}<span class="note">lo que sobra más lo que falta llena una fila: siempre suman el divisor</span></div></div>
+   <p>El residuo por defecto son las fichas que <b>sobran</b> y el residuo por exceso, los huecos que <b>faltan</b> para completar otra fila. Por eso r + r′ = d, y el cociente por exceso es q + 1. El residuo nunca llega al divisor: con ${d_('9')} por fila, lo más que puede sobrar es 8.</p>${FUENTE}</div>` },
+ { k:'Paso 7', t:'Predice: las letras que son cifras', gate:P_IV,
+   prep:() => { const ya = !!S.pred[P_IV.id];
+     E.config({ modo:'escrito', st:escritoIV(null, ya ? 1 : 0), ley:LEY_IV, desc: ya ? 'XY más YX es 132: las dos columnas suman X + Y = 12.' : 'La suma XY más YX igual a 132, con letras.', lect: ya ? [() => ['ink', 'X + Y', String(IV.suma)]] : [] }); },
+   anima:fin => { E.config({ modo:'escrito', st:escritoIV(null, 1), ley:LEY_IV, desc:'Las unidades suman Y + X = 12: queda 2 y sube 1.', lect:[] });
+     E.secuencia([{}].concat(IV.pares.slice(0, 3).map(p => escritoIV(p, 1))).concat([escritoIV(null, 1)]), [1500, 1100, 1100, 1100, 0],
+       () => { E.lect = [() => ['ink', 'X + Y', String(IV.suma)]]; E.desc = `XY más YX es 132 con ${IV.pares.join(', ')}: siempre X + Y = 12.`; E.avisar(); fin(); }); },
+   body:() => `<p class="problem">En la suma ${X_('X')}${Y_('Y')} + ${Y_('Y')}${X_('X')} = 132, cada letra es una cifra y ${X_('X')} e ${Y_('Y')} son distintas. ${X_('X')}${Y_('Y')} es el número de dos cifras con ${X_('X')} en las decenas e ${Y_('Y')} en las unidades.</p>
+   <p>¿Cuánto vale ${X_('X')} + ${Y_('Y')}?</p>${opcionesHTML(P_IV.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">unidades: ${Y_('Y')} + ${X_('X')} = 12 → queda 2, sube 1<span class="note">tiene que terminar en 2; 2 no puede ser (las decenas darían 2 + 0 = 2, no 13)</span></div>
+     <div class="eq">decenas: ${X_('X')} + ${Y_('Y')} + 1 = 13 ✓</div>
+     <div class="eq">${IV.pares.map(p => `${X_(p[0])}${Y_(p[1])} + ${Y_(p[1])}${X_(p[0])}`).join(', ')}<span class="note">todas dan 132: X e Y no quedan fijas, pero su suma sí</span></div>
+     <div class="eq">${X_('X')}${Y_('Y')} + ${Y_('Y')}${X_('X')} = 11 · (${X_('X')} + ${Y_('Y')}) = 132 → ${X_('X')} + ${Y_('Y')} = 12</div></div>
+   <p>En la criptoaritmética, las columnas dicen qué cifras pueden ser y las llevadas conectan una columna con la siguiente. Aquí las dos columnas suman lo mismo, así que XY + YX siempre es 11 veces X + Y.</p>${FUENTE}</div>` },
+ { k:'Paso 8', t:'Explora: cualquier cuenta, cualquier base', explora:true,
+   prep:() => prep8(),
+   body:() => `<p class="problem">Elige la operación, la base y los números. El tablero arma la cuenta con las mismas piezas; toca «Ver la cuenta» para mirar cómo se lleva o cómo se presta.</p>
+   <div class="seg" role="group" aria-label="Operación">${[['suma', 'suma'], ['resta', 'resta'], ['multiplica', 'por una cifra']].map(([k, t]) => `<button type="button" data-op="${k}" aria-pressed="${S.op8 === k}">${t}</button>`).join('')}</div>
+   <div class="stepper">
+     <div><span class="que">primero</span>${[-10, -1].map(d => `<button type="button" data-da="${d}"></button>`).join('')}<span class="val" id="a8" aria-live="polite"></span>${[1, 10].map(d => `<button type="button" data-da="${d}"></button>`).join('')}</div>
+     <div><span class="que">segundo</span>${[-10, -1].map(d => `<button type="button" data-dc="${d}"></button>`).join('')}<span class="val" id="c8" aria-live="polite"></span>${[1, 10].map(d => `<button type="button" data-dc="${d}"></button>`).join('')}</div>
+     <div><span class="que">base</span><button type="button" data-db="-1" aria-label="Bajar la base">−</button><span class="val" id="b8" aria-live="polite"></span><button type="button" data-db="1" aria-label="Subir la base">+</button></div>
+   </div>
+   <p><button type="button" class="btn primary" id="ver8">Ver la cuenta</button></p>
+   <div id="vivo8b"></div>
+   <p>Prueba con una resta que tenga ceros arriba, o con una base chica: en base 2, cada 2 piezas ya suben.</p>
+   <p><a class="btn primary" href="#que-pasa-si" style="display:inline-block; text-decoration:none">Seguir con ¿Qué pasa si…?</a></p>`,
+   luego:() => { $('stepBody').querySelectorAll('[data-da]').forEach(q => q.onclick = () => mover8('a', +q.dataset.da));
+     $('stepBody').querySelectorAll('[data-dc]').forEach(q => q.onclick = () => mover8('c', +q.dataset.dc));
+     $('stepBody').querySelectorAll('[data-db]').forEach(q => q.onclick = () => base8(+q.dataset.db));
+     $('stepBody').querySelectorAll('[data-op]').forEach(q => q.onclick = () => op8(q.dataset.op));
+     $('ver8').onclick = animar8; vivo8(); } },
+];
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; b.dataset.label = `Ir al ${s.k.toLowerCase()}: ${s.t}`;
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.prep) s.prep();
+  pintarDots();
+  if (s.gate) prediccion(s);
+  if (s.luego) s.luego();
+  if (E.alCambiar) E.alCambiar();
+  nav();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+  E.ocupado = S.ocupado;
+  pintarDots();
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max || (S.ocupado && k !== S.step);
+    // un paso bloqueado no delata su título
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : b.dataset.label);
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){ if (k > S.max) S.max = k; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const f = $('fb'); f.textContent = fb(p, P.ok, P.fb[p]); f.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    S.ocupado = true; nav();
+    E.compactar(false);
+    $('fb').focus({ preventScroll:true });
+    const paso = S.step, listo = () => { S.ocupado = false; E.avisar(); nav(); };
+    Celular.alResponder($('cv'), () => s.anima(listo), () => S.step === paso, { siNo:listo });
+  }));
+  pintar();
+}
+
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   El complemento de un número que termina en ceros, un número menos su reverso, las cifras de un producto, cuándo los
+   dos residuos son iguales y multiplicar en base 5. La escena cambia recién después de responder. Un experimento se
+   abre solo si los anteriores ya tienen respuesta. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2');
+const C58 = M.complemento('5800'), DI = M.diferenciaInvertida(4), CP = M.cifrasProducto(4, 3), RI = M.residuosIguales(14), X5 = M.multiplicaPorCifra('34', 3, 5);
+const EJ = ['621', '843', '984'].map(t => M.conSuReverso(t)), OTROS = ['831', '752', '962', '301'.replace('301', '503')].map(t => M.conSuReverso(t));
+const FUENTE = '<p class="fuente">No encontramos estudios con datos sobre estos errores; las opciones incorrectas son hipótesis nuestras.</p>';
+const S = { k:0, pred:{}, t0:Date.now() };
+console.assert(C58.errores.todasANueve && C58.errores.aBUltima && C58.errores.quitaLosCeros, 'ceros: revisar las opciones');
+console.assert(DI.errores.sinPrestamo && DI.errores.sinDescontar && DI.errores.soloPrimerDescuento, 'reverso: revisar las opciones');
+console.assert(X5.errores.comoDecimal && X5.errores.sinLlevar && X5.errores.olvidaSumar, 'base 5: revisar las opciones');
+const d_ = t => V('d', t), r_ = t => V('r', t), rp_ = t => V('rp', t);
+const LEY_DV = [['d', 'divisor d'], ['r', 'residuo por defecto r'], ['rp', 'residuo por exceso r′']];
+const stC58 = t => stSuma(C58.relleno, t, { signos:['', '+'], estilos:['lleno', 'hueco'] });
+const st5 = t => stSuma(X5, t, { signos:['×3'], cifras:[X5.filas[0].map(String)] });
+const st5antes = () => ({ b:5, K:3, filas:[{ signo:'', cuentas:X5.cuentasNumeral.slice(), cifras:porColumna('34', 3), estilo:'lleno' }], resultado:[], llevada:[0, 0, 0], marcas:[], mostrarRes:true, signoRes:'×3' });
+const lineaResta = R => [...[...R.N].map((d, i) => [d, ko(2 - i)]), [' − ', 'ink'], ...[...R.reverso].map((d, i) => [d, ko(2 - i)]), [' = ', 'ink'], ...[...R.texto].map((d, i) => [d, ko(2 - i)])];
+const filasD = (D, fase) => ({ D, d:14, fase, pie:[['D', 'ink'], [` = ${D} fichas`, 'ink']] });
+
+const EXPS = [
+  { id:'ceros', corto:'Un número con ceros al final',
+    q:`¿Cuál es el complemento aritmético de 5800?`,
+    opts:[['a', C58.errores.todasANueve, 'complemento-todas-a-nueve', 'hipotesis'], ['b', C58.errores.aBUltima, 'complemento-a-diez-la-ultima-aunque-sea-cero', 'hipotesis'],
+          ['c', C58.texto], ['d', C58.errores.quitaLosCeros, 'complemento-sin-reponer-los-ceros', 'hipotesis']],
+    ok:'c',
+    fb:{ a:'4199 es lo que le falta para llegar a 9999: 5800 + 4199 = 9999. Falta 1 más para 10 000.',
+      b:'4190 aplica «a 10» a la última cifra aunque es 0: 10 − 0 = 10, y escribe 0. Pero los ceros finales ya no piden nada; la última cifra que no es 0 es el 8. Control: 5800 + 4190 = 9990.',
+      d:'42 es el complemento de 58, sin los dos ceros. Pero 5800 son 58 cajas de 100: le faltan 42 cajas, es decir, 4200. Control: 5800 + 42 = 5842.' },
+    antes:ya => E.config({ modo:'tablero', st: ya ? stC58(C58.relleno.K) : { b:10, K:4, filas:[{ signo:'', cuentas:[0, 0, 8, 5], cifras:porColumna('5800', 4), estilo:'lleno' }], resultado:[], llevada:[0, 0, 0, 0], marcas:[], mostrarRes:false },
+      ley: leyTablero(10, 4).concat(ya ? [['ink', 'la caja de 10 000']] : []), desc: ya ? '5800 y 4200 llenan la caja de 10 000; las sueltas y los paquetes no piden nada.' : 'El número 5800 en el tablero: 5 cajones y 8 cajas.',
+      lect: ya ? [() => lectNum('CA(5800)', C58.texto, 10)] : [] }),
+    despues:() => { E.config({ modo:'tablero', st:stC58(0), ley:leyTablero(10, 4).concat([['ink', 'la caja de 10 000']]), desc:'5800 y lo que le falta, columna por columna.', lect:[] });
+      esperar(700, () => E.animar(0, C58.relleno.K, durSuma(C58.relleno), t => { E.st = stC58(t); }, () => { E.lect = [() => lectNum('CA(5800)', C58.texto, 10)]; E.desc = '5800 y 4200 llenan la caja de 10 000: las columnas con 0 no piden nada y las cajas llegan justo a 10.'; E.avisar(); }, true)); },
+    exp:() => `<div class="eqs"><div class="eq">CA(${numH('5800', 10)}) = 10 000 − ${numH('5800', 10)} = ${numH(C58.texto, 10)}</div>
+      <div class="eq">${o_(3, '9 − 5')} | ${o_(2, '10 − 8')} | ${o_(1, '0')} | ${o_(0, '0')} → ${numH(C58.texto, 10)}<span class="note">los ceros finales se copian; «a 10» va a la última cifra que no es 0</span></div></div>
+      <p>Las ${o_(0, 'sueltas')} y los ${o_(1, 'paquetes')} de 5800 están vacíos y el número de llegada, 10 000, también tiene esas columnas vacías: ahí no falta nada y no sube ninguna llevada. Por eso el complemento de 5800 es el de 58 con los dos ceros repuestos: 42 → 4200.</p>${FUENTE}` },
+
+  { id:'reverso', corto:'Un número menos su reverso',
+    q:'A un número de tres cifras, cuya primera cifra es mayor que la última y la última cifra no es 0, se le resta el número con las mismas cifras al revés. Si la diferencia tiene tres cifras y empieza con 4, ¿cuál es?',
+    opts:[['a', DI.errores.sinPrestamo, 'resta-el-menor-del-mayor', 'hipotesis'], ['b', DI.errores.soloPrimerDescuento, 'descuenta-solo-el-primer-prestamo', 'hipotesis'],
+          ['c', DI.errores.sinDescontar, 'presta-sin-descontar', 'hipotesis'], ['d', DI.texto]],
+    ok:'d',
+    fb:{ a:'404 resta en cada columna el menor del mayor. Pero en las unidades, arriba está la cifra menor: hay que pedir prestado, y eso cambia la cifra del medio. Por ejemplo, 621 − 126 = 495.',
+      b:'496 descuenta solo el primer préstamo: la columna del medio también pide prestado a la primera cifra, y esa pieza hay que descontarla. Con la misma regla, 621 − 126 daría 595, y la resta verdadera es 495.',
+      c:'406 pide prestado para las unidades pero no descuenta en la columna del medio. Esa columna quedó con una pieza menos arriba, así que también pide prestado y da 9. Por ejemplo, 621 − 126 = 495.' },
+    antes:ya => E.config(ya ? { modo:'tarjetas', st:{ lineas: EJ.map(lineaResta).concat([[['99 · 5 = 495', 'ink']]]) }, ley:LEY_ESCRITO.slice(0, 3), desc:'621 menos 126, 843 menos 348 y 984 menos 489 dan 495.', lect:[() => ['ink', 'diferencia', '495']] }
+      : { modo:'tarjetas', st:{ lineas:[[['un número de tres cifras', 'ink']], [['− el mismo al revés', 'ink']], [['= ', 'ink'], ['4', 'o2'], [' ? ?', 'muted']]] }, ley:LEY_ESCRITO.slice(0, 3), desc:'Un número de tres cifras menos el mismo al revés da una diferencia que empieza con 4.', lect:[] }),
+    despues:() => { E.config({ modo:'tarjetas', st:{ lineas:[] }, ley:LEY_ESCRITO.slice(0, 3), desc:'Ejemplos.', lect:[] });
+      const L = EJ.map(lineaResta);
+      E.secuencia([{ lineas:L.slice(0, 1) }, { lineas:L.slice(0, 2) }, { lineas:L }, { lineas:L.concat([[['99 · 5 = 495', 'ink']]]) }], [900, 900, 900, 0], () => { E.lect = [() => ['ink', 'diferencia', '495']]; E.desc = '621 menos 126, 843 menos 348 y 984 menos 489 dan 495, que es 99 por 5.'; E.avisar(); }); },
+    exp:() => `<div class="eqs">${EJ.concat(OTROS).map(R => `<div class="eq">${numH(R.N, 10)} − ${numH(R.reverso, 10)} = ${numH(R.texto, 10)} = 99 · ${R.k}</div>`).join('')}
+      <div class="eq">${o_(0, 'unidades')}: piden prestado → la de arriba + 10 − la de abajo<span class="note">la cifra de arriba es la menor</span></div>
+      <div class="eq">${o_(1, 'columna del medio')}: las dos cifras son iguales, pero la de arriba prestó una pieza → pide prestado: da 9</div></div>
+      <p>La diferencia es siempre 99 por (primera cifra − última cifra): 198, 297, 396, 495, 594, 693 o 792. La cifra del medio es siempre 9 y las otras dos suman 9. Si empieza con 4, la primera menos la última es 5, y la diferencia es 99 · 5 = 495.</p>${FUENTE}` },
+
+  { id:'producto', corto:'Las cifras de un producto',
+    q:'Se multiplica un número de 4 cifras por un número de 3 cifras. ¿Cuántas cifras puede tener el producto?',
+    opts:[['a', 'Siempre 7', 'siempre-la-suma-de-las-cifras', 'hipotesis'], ['b', '6 o 7'], ['c', '7 u 8', 'una-cifra-de-mas', 'hipotesis'], ['d', '12', 'multiplica-las-cantidades-de-cifras', 'hipotesis']],
+    ok:'b',
+    fb:{ a:`El producto más chico, 1000 · 100 = ${fmt(CP.menor.producto)}, tiene solo 6 cifras.`,
+      c:`Ni el producto más grande llega a 8 cifras: 9999 · 999 = ${fmt(CP.mayor.producto)} tiene 7.`,
+      d:`12 = 4 · 3 multiplica las cantidades de cifras. Pero las cifras se suman, más o menos: 1000 · 100 = ${fmt(CP.menor.producto)} tiene 6 cifras y 9999 · 999 = ${fmt(CP.mayor.producto)}, 7.` },
+    antes:ya => E.config({ modo:'tarjetas', st:{ lineas: ya ? lineasCP() : [[['un número de 4 cifras', 'ink']], [['× un número de 3 cifras', 'ink']], [['= ¿cuántas cifras?', 'muted']]] }, ley:[],
+      desc: ya ? `El menor producto, 1000 por 100, tiene ${CP.menor.cifras} cifras; el mayor, 9999 por 999, tiene ${CP.mayor.cifras}.` : 'Un número de 4 cifras por uno de 3 cifras.', lect: ya ? [() => ['ink', 'cifras', '6 o 7']] : [] }),
+    despues:() => { E.config({ modo:'tarjetas', st:{ lineas:[] }, ley:[], desc:'Los productos extremos.', lect:[] });
+      const L = lineasCP(); E.secuencia([{ lineas:L.slice(0, 2) }, { lineas:L }], [1200, 0], () => { E.lect = [() => ['ink', 'cifras', '6 o 7']]; E.desc = `El menor producto, 1000 por 100, tiene ${CP.menor.cifras} cifras; el mayor, 9999 por 999, tiene ${CP.mayor.cifras}.`; E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">1000 · 100 = ${fmt(CP.menor.producto)}<span class="note">el menor: ${CP.menor.cifras} cifras (4 + 3 − 1)</span></div>
+      <div class="eq">9999 · 999 = ${fmt(CP.mayor.producto)}<span class="note">el mayor: ${CP.mayor.cifras} cifras (4 + 3), y menos que 10 000 · 1000 = 10 000 000, que ya tiene 8</span></div></div>
+      <p>Un número de 4 cifras está entre 1000 y 10 000, y uno de 3 cifras, entre 100 y 1000. El producto queda entre 100 000 y 10 000 000: tiene 6 o 7 cifras. En general, un número de m cifras por uno de n cifras tiene m + n − 1 o m + n cifras.</p>${FUENTE}` },
+
+  { id:'iguales', corto:'El residuo por defecto y el por exceso',
+    q:`Se reparten fichas en filas de ${d_('14')}. ¿Cuándo el residuo por defecto es igual al residuo por exceso?`,
+    opts:[['a', 'Cuando el residuo es 0', 'residuo-cero-los-hace-iguales', 'hipotesis'], ['b', 'Cuando el residuo es 7'], ['c', 'Cuando el residuo es 13', 'residuo-maximo-los-hace-iguales', 'hipotesis'], ['d', 'Nunca', 'nunca-son-iguales', 'hipotesis']],
+    ok:'b',
+    fb:{ a:'Si el residuo es 0, la división es exacta: no sobra ninguna ficha y no hace falta otra fila, así que no hay residuo por exceso.',
+      c:'Si sobran 13, a la fila siguiente le falta solo 1 ficha: el residuo por exceso es 1, no 13.',
+      d:'Sí pasa: con 35 fichas salen 2 filas de 14 y sobran 7, y para una tercera fila faltan 7. Como r + r′ = 14, son iguales cuando cada uno es la mitad.' },
+    antes:ya => E.config({ modo:'filas', st:filasD(ya ? 35 : 40, 2), ley:LEY_DV, desc: ya ? '35 fichas en filas de 14: sobran 7 y faltan 7.' : '40 fichas en filas de 14: sobran 12 y faltan 2.',
+      lect: ya ? [() => ['r', 'r', '7'], () => ['rp', 'r′', '7']] : [() => ['r', 'r', '12'], () => ['rp', 'r′', '2']] }),
+    despues:() => { E.config({ modo:'filas', st:filasD(29, 2), ley:LEY_DV, desc:'Fichas en filas de 14, de 29 a 35.', lect:[] });
+      const Ds = [29, 30, 31, 32, 33, 34, 35];
+      E.secuencia(Ds.map(D => filasD(D, 2)), Ds.map((D, j) => (j === Ds.length - 1 ? 0 : 650)), () => { E.lect = [() => ['r', 'r', '7'], () => ['rp', 'r′', '7']]; E.desc = '35 fichas en filas de 14: sobran 7 y faltan 7. Son iguales solo cuando el residuo es la mitad de 14.'; E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">${r_('r')} + ${rp_('r′')} = ${d_('14')} y ${r_('r')} = ${rp_('r′')} → ${r_('r')} = ${rp_('r′')} = 7</div>
+      <div class="eq">${RI.ejemplos.map(D => `${D} = ${d_('14')} · ${Math.floor(D/14)} + ${r_('7')} = ${d_('14')} · ${Math.floor(D/14) + 1} − ${rp_('7')}`).join('<br>')}</div></div>
+      <p>Lo que sobra y lo que falta siempre completan una fila: r + r′ = d. Solo son iguales si cada uno es la mitad del divisor, y eso pide un divisor par. Con filas de 15 nunca pasa: 7 + 8 = 15.</p>${FUENTE}` },
+
+  { id:'base5', corto:'Multiplicar en base 5',
+    q:`¿Cuánto es ${numH('34', 5)} · 3, escrito en base ${b_('5')}?`,
+    opts:[['a', numH(X5.errores.comoDecimal, 5), 'multiplica-como-en-base-10', 'hipotesis'], ['b', numH(X5.errores.olvidaSumar, 5), 'olvida-sumar-la-llevada', 'hipotesis'],
+          ['c', numH(X5.texto, 5)], ['d', numH(X5.errores.sinLlevar, 5), 'multiplica-sin-llevar', 'hipotesis']],
+    ok:'c',
+    fb:{ a:'102₍₅₎ sale de hacer 34 · 3 = 102 en base 10. Pero 34₍₅₎ vale 19, y 19 · 3 = 57; en base 5 se lleva cada 5 piezas, no cada 10. Control: 102₍₅₎ = 27.',
+      b:'142₍₅₎ calcula la llevada de las unidades pero no la suma: 3 · 3 = 9 = 14₍₅₎. Con la llevada son 9 + 2 = 11 = 21₍₅₎. Control: 142₍₅₎ = 47, y 19 · 3 = 57.',
+      d:'42₍₅₎ se queda con lo que sobra en cada columna y no lleva: 12 sueltas son 2 paquetes y 2 sueltas, y esos 2 paquetes suben. Control: 42₍₅₎ = 22, y 19 · 3 = 57.' },
+    antes:ya => E.config({ modo:'tablero', st: ya ? st5(X5.K) : st5antes(), ley:leyTablero(5, 3),
+      desc: ya ? '34 en base 5 por 3: 212 en base 5.' : '34 en base 5 en el tablero: 3 paquetes de 5 y 4 sueltas.', lect: ya ? [() => lectNum('producto', X5.texto, 5), () => ['ink', 'en base 10', String(X5.valor)]] : [] }),
+    despues:() => { E.config({ modo:'tablero', st:st5antes(), ley:leyTablero(5, 3), desc:'Tres copias de cada pieza.', lect:[] });
+      esperar(800, () => { E.st = st5(0); E.desc = 'Tres copias: 12 sueltas y 9 paquetes.'; E.redimensionar(); E.avisar();
+        esperar(900, () => E.animar(0, X5.K, durSuma(X5), t => { E.st = st5(t); }, () => { E.lect = [() => lectNum('producto', X5.texto, 5), () => ['ink', 'en base 10', String(X5.valor)]]; E.desc = 'Las copias se juntan de 5 en 5: 212 en base 5.'; E.avisar(); }, true)); }); },
+    exp:() => `<div class="eqs"><div class="eq">${o_(0, '4 · 3 = 12')} = ${o_(1, '2')}·${b_(5)} + ${o_(0, '2')}<span class="note">12 sueltas: 2 paquetes suben y quedan 2</span></div>
+      <div class="eq">${o_(1, '3 · 3 + 2 = 11')} = ${o_(2, '2')}·${b_(5)} + ${o_(1, '1')}<span class="note">11 paquetes: 2 cajas suben y queda 1</span></div>
+      <div class="eq">${numH('34', 5)} · 3 = ${numH(X5.texto, 5)}<span class="note">control: 19 · 3 = 57 = 2 · 25 + 1 · 5 + 2</span></div></div>
+      <p>Multiplicar por 3 es poner tres copias de cada pieza. Después, como en la suma, cada ${b_('5')} piezas de una columna suben como una pieza de la columna de la izquierda. La llevada puede ser más que 1: aquí suben 2.</p>${FUENTE}` },
+];
+function lineasCP(){
+  return [[['1000 · 100 = ', 'ink'], [fmt(CP.menor.producto), 'ink'], ['  →  ' + CP.menor.cifras + ' cifras', 'muted']],
+          [['9999 · 999 = ', 'ink'], [fmt(CP.mayor.producto), 'ink'], ['  →  ' + CP.mayor.cifras + ' cifras', 'muted']]];
+}
+// Un experimento se abre solo si todos los anteriores ya tienen respuesta; los respondidos se revisitan libremente.
+const abierto = k => EXPS.slice(0, k).every(x => !!S.pred[x.id]);
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => abierto(k)
+    ? `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  if (k < 0 || k >= EXPS.length || !abierto(k)) return;
+  E.parar();
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  E.compactar(!ya);
+  x.antes(ya);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p class="problem">${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const f = $('fb2');
+    f.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    f.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    $('otra2').onclick = () => { E.parar(); Celular.alResponder($('cv2'), () => { x.despues(); E.avisar(); }, () => S.k === k); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar(); botones();
+    E.compactar(false); $('fb2').focus({ preventScroll:true });
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+    Celular.alResponder($('cv2'), () => { x.despues(); E.leyenda(); E.dibujar(); E.avisar(); }, () => S.k === k);
+  });
+  pintar();
+}
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+{
+  "id": "nomenclatura-inorganica",
+  "titulo": "El árbol de las funciones: nomenclatura inorgánica",
+  "formato": "escena",
+  "unidades": [
+    "quimica.nomenclatura-inorganica"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}

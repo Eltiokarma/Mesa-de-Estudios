@@ -1,0 +1,126 @@
+{
+  "titulo": "El tablero de las llevadas: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. El complemento aritmético CA(N) es lo que le falta a N para llegar a 1 seguido de tantos ceros como cifras tiene N. El subíndice indica la base: 342₍₅₎ es 342 en base 5.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Suma en columnas: 5684 + 2739.",
+      "respuesta": "8423.",
+      "pasos": [
+        "Unidades: 4 + 9 = 13. Se escribe 3 y sube 1 a las decenas.",
+        "Decenas: 8 + 3 + 1 = 12. Se escribe 2 y sube 1. Centenas: 6 + 7 + 1 = 14. Se escribe 4 y sube 1.",
+        "Millares: 5 + 2 + 1 = 8. El resultado es 8423."
+      ],
+      "verificar": [ { "fn": "sumaColumnas", "args": [["5684", "2739"], 10], "espera": { "texto": "8423", "llevadas": 3 } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Calcula el complemento aritmético de 7350.",
+      "respuesta": "2650.",
+      "pasos": [
+        "7350 tiene 4 cifras: su complemento es lo que le falta para llegar a 10 000.",
+        "El 0 final se queda. La última cifra que no es 0 es el 5: le falta 10 − 5 = 5. A las demás les falta hasta 9: 9 − 7 = 2 y 9 − 3 = 6.",
+        "Se lee 2650. Control: 7350 + 2650 = 10 000."
+      ],
+      "verificar": [ { "fn": "complemento", "args": ["7350", 10], "espera": { "texto": "2650", "relleno.texto": "10000" } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Resta en columnas: 7002 − 3586.",
+      "respuesta": "3416.",
+      "pasos": [
+        "En las unidades, 2 no alcanza para quitar 6, y en las decenas y centenas hay 0: el préstamo viene de los millares. El 7 queda en 6, cada 0 queda en 9 y las unidades pasan a 12.",
+        "Unidades: 12 − 6 = 6. Decenas: 9 − 8 = 1. Centenas: 9 − 5 = 4. Millares: 6 − 3 = 3.",
+        "El resultado es 3416. Control: 3416 + 3586 = 7002."
+      ],
+      "verificar": [ { "fn": "restaColumnas", "args": ["7002", "3586", 10], "espera": { "texto": "3416", "tras": [12, 9, 9, 6] } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Suma en base 6: 345₍₆₎ + 254₍₆₎.",
+      "respuesta": "1043₍₆₎.",
+      "pasos": [
+        "En base 6, cada 6 piezas de una columna forman una de la columna siguiente. Unidades: 5 + 4 = 9 = 6 + 3. Se escribe 3 y sube 1.",
+        "Segunda columna: 4 + 5 + 1 = 10 = 6 + 4. Se escribe 4 y sube 1. Tercera columna: 3 + 2 + 1 = 6 = 6 + 0. Se escribe 0 y sube 1.",
+        "El 1 que sube es la cuarta cifra: 1043₍₆₎. Control en base 10: 137 + 106 = 243 = 1 · 216 + 0 · 36 + 4 · 6 + 3."
+      ],
+      "verificar": [ { "fn": "sumaColumnas", "args": [["345", "254"], 6], "espera": { "texto": "1043", "valor": 243, "valores": [137, 106] } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "En la suma 4☐6 + ☐7☐ = 1032 faltan tres cifras. ¿Cuánto suman las cifras que faltan?",
+      "respuesta": "16.",
+      "pasos": [
+        "Unidades: 6 + ☐ termina en 2, así que la cifra es 6 (6 + 6 = 12) y sube 1.",
+        "Decenas: ☐ + 7 + 1 termina en 3, así que la cifra es 5 (5 + 7 + 1 = 13) y sube 1. Centenas: 4 + ☐ + 1 = 10, así que la cifra es 5.",
+        "La suma es 456 + 576 = 1032, y las cifras que faltan suman 5 + 5 + 6 = 16."
+      ],
+      "verificar": [ { "fn": "cifrasFaltantes", "args": [["4?6", "?7?"], "1032", 10], "espera": { "unica": true, "faltan": [5, 5, 6], "suma": 16 } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "básico",
+      "enunciado": "Calcula 1 + 3 + 5 + … + 79, la suma de los números impares del 1 al 79.",
+      "respuesta": "1600.",
+      "pasos": [
+        "Cantidad de términos: (79 − 1) ÷ 2 + 1 = 40.",
+        "El primero más el último dan 1 + 79 = 80, y hay 40 términos: la suma es 80 · 40 ÷ 2 = 1600.",
+        "Otra forma: la suma de los primeros 40 impares es 40² = 1600."
+      ],
+      "verificar": [ { "fn": "sumaAritmetica", "args": [1, 79, 2], "espera": { "n": 40, "S": 1600 } }, { "fn": "sumatoria", "args": ["impares", 40], "espera": { "S": 1600 } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "¿Cuánto suman todos los números de tres cifras?",
+      "respuesta": "494 550.",
+      "pasos": [
+        "Van del 100 al 999: son 999 − 100 + 1 = 900 números.",
+        "El primero más el último dan 100 + 999 = 1099.",
+        "La suma es 1099 · 900 ÷ 2 = 494 550. Si se suma del 1 al 999 (499 500), sobran los números del 1 al 99, que suman 4950."
+      ],
+      "verificar": [ { "fn": "sumaAritmetica", "args": [100, 999, 1], "espera": { "n": 900, "S": 494550, "errores.ultimoComoN": 499500 } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Al dividir un número entre 23, el cociente por defecto es 15 y el residuo por exceso es 9. ¿Cuál es el número?",
+      "respuesta": "359.",
+      "pasos": [
+        "El residuo por defecto y el residuo por exceso suman el divisor: r + 9 = 23, así que r = 14.",
+        "Por defecto, D = d · q + r = 23 · 15 + 14 = 345 + 14 = 359.",
+        "Control por exceso: 23 · 16 − 9 = 368 − 9 = 359."
+      ],
+      "verificar": [ { "fn": "division", "args": [359, 23], "espera": { "q": 15, "r": 14, "rExceso": 9 } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "En la suma XY + YX = ZYZ, cada letra es una cifra distinta. ¿Cuánto vale X + Y + Z?",
+      "respuesta": "12.",
+      "pasos": [
+        "Dos números de dos cifras suman menos de 200, así que Z = 1: es la llevada que sale de las decenas.",
+        "Las unidades dan Y + X, que termina en Z = 1: X + Y = 11 y sube 1. Las decenas dan X + Y + 1 = 12, que se escribe 2 y sube 1: Y = 2.",
+        "Entonces X = 9: 92 + 29 = 121. La suma pedida es 9 + 2 + 1 = 12."
+      ],
+      "verificar": [ { "fn": "cripto", "args": [["XY", "YX"], "ZYZ", { "distintas": true }], "espera": { "unica": true, "solucion.X": 9, "solucion.Y": 2, "solucion.Z": 1 } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "intermedio",
+      "enunciado": "Multiplica en base 5: 243₍₅₎ · 4.",
+      "respuesta": "2132₍₅₎.",
+      "pasos": [
+        "Unidades: 3 · 4 = 12 = 2 · 5 + 2. Se escribe 2 y suben 2.",
+        "Segunda columna: 4 · 4 + 2 = 18 = 3 · 5 + 3. Se escribe 3 y suben 3. Tercera columna: 2 · 4 + 3 = 11 = 2 · 5 + 1. Se escribe 1 y suben 2.",
+        "Los 2 que suben son la cuarta cifra: 2132₍₅₎. Control en base 10: 73 · 4 = 292 = 2 · 125 + 1 · 25 + 3 · 5 + 2."
+      ],
+      "verificar": [ { "fn": "multiplicaPorCifra", "args": ["243", 4, 5], "espera": { "texto": "2132", "valor": 292, "antes": 73 } } ]
+    }
+  ]
+}

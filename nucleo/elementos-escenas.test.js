@@ -52,7 +52,31 @@ const ESCENAS = {
       // La red de NaCl; por si acaso, contra todas las variables de la escena.
       [['Na', 'Cl'], ['--c-enl', '--c-libre', '--c-dip', '--c-mu']],
     ] },
+  'liquidos-y-solidos': {
+    elementos: ['H', 'C', 'N', 'O', 'F', 'S'],   // los grupos CH₃, CH₂ y CH de los alcanos van con el color del C
+    vistas: [
+      [['H', 'O'], ['--c-Pv', '--c-Pext', '--c-T']],           // frascos de agua, la olla, Puno y la olla a presión
+      [['H', 'O'], ['--c-T', '--c-pu']],                       // agua líquida con sus puentes de hidrógeno
+      [['H', 'S'], ['--c-T', '--c-pu']],                       // el H₂S gaseoso junto al agua
+      [['N', 'H', 'C', 'F', 'O'], ['--c-pu']],                 // NH₃, CH₃F y CH₃OCH₃
+      [['H', 'O', 'C'], ['--c-Pv', '--c-Pext', '--c-T']],      // el explorador (agua, etanol y acetona)
+      [['H', 'O'], ['--c-Pext', '--c-Pv', '--c-Pgas']],        // el gas recogido sobre agua
+      [['C'], ['--c-T']],                                      // butano, isobutano, pentano y neopentano
+      [['H', 'O'], ['--c-T']],                                 // el vapor que se enfría
+    ] },
   // Viene de la rutina de química B; la prueba la cuida en cuanto la escena llegue a esta rama.
+  'nomenclatura-inorganica': {
+    elementos: ['H', 'C', 'N', 'O', 'Na', 'Al', 'P', 'S', 'Cl', 'K', 'Ca', 'Fe', 'Zn', 'Pb'],
+    vistas: [
+      [['Fe', 'O', 'H'], []], [['Al', 'S', 'O'], []], [['Pb', 'O'], []], [['Na', 'O'], []],
+      [['Na', 'S', 'O', 'H'], []], [['Na', 'Cl', 'O', 'H'], []], [['Cl', 'O', 'H'], []],
+      [['K', 'C', 'O', 'H'], []], [['Fe', 'S', 'O', 'H'], []],
+      // Mesa y árbol libres: las parejas de Elementos.CERCANOS se apagan.
+      [['Na', 'O', 'H', 'N', 'P', 'S', 'Cl'], []], [['K', 'O', 'H', 'C', 'N', 'P', 'Cl'], []],
+      [['Ca', 'O', 'H', 'C', 'N', 'P', 'Cl'], []], [['Al', 'O', 'H', 'C', 'P', 'S', 'Cl'], []],
+      [['Fe', 'O', 'H', 'C', 'P', 'S', 'Cl'], []], [['Zn', 'O', 'H', 'N', 'P', 'S', 'Cl'], []],
+      [['Pb', 'O', 'H', 'C', 'N', 'S', 'Cl'], []], [['N', 'H', 'O', 'C', 'P', 'S', 'Cl'], []],
+    ] },
   'materia-energia': {
     elementos: ['H', 'C', 'O', 'Na', 'Si', 'S', 'Cl', 'Fe'],
     vistas: [
