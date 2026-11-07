@@ -263,7 +263,7 @@ const lerp = (a, b, f) => a + (b - a)*f;
 function tween(dur, paso, fin){
   if (RM || !dur){ paso(1); if (fin) setTimeout(fin, 0); return; }
   const t0 = performance.now();
-  const tick = now => { const f = Math.min(1, (now - t0)/dur); paso(suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
+  const tick = now => { const f = Math.max(0, Math.min(1, (now - t0)/dur)); paso(suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
   requestAnimationFrame(tick);
 }
 // Las personas y sus colores (regla 4: el mismo en el texto, la ficha y el cuadro)

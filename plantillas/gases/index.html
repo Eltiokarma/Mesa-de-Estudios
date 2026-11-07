@@ -655,7 +655,7 @@ function correr(desde, hasta, clave){
   cancelAnimationFrame(anim);
   if (RM){ E[clave] = hasta; aplicar(); draw(); return; }
   const t0 = performance.now(), dur = 3000;
-  const tick = now => { const f = Math.min(1, (now - t0)/dur); E[clave] = desde + (hasta - desde)*f; aplicar(); if (f < 1) anim = requestAnimationFrame(tick); };
+  const tick = now => { const f = Math.max(0, Math.min(1, (now - t0)/dur)); E[clave] = desde + (hasta - desde)*f; aplicar(); if (f < 1) anim = requestAnimationFrame(tick); };
   anim = requestAnimationFrame(tick);
 }
 function aplicar(){ if (E.tipo === 'embolo'){ E.sim.temperatura(E.T); E.sim.anchura(E.T/300); } }

@@ -642,3 +642,13 @@ Ya lleva el estilo «pegatinas»: `data-curso="algebra"` y `nucleo/pegatina.css`
    ΔE00 mínimo: 23,6 en claro y 25,2 en oscuro. Contraste mínimo: 4,63. La fila i queda a 17,4 del rojo de los avisos en oscuro; los avisos siempre llevan texto.
 3. Informe de álgebra: registrar MT1 a MT34 como hipótesis, con una línea «este informe no cubre matrices», como la que ya existe para polinomios.
 4. Línea para `docs/pendientes.md` y `CLAUDE.md`: «Matrices (7 nov 2026, sesión de matemática A): `plantillas/matrices/` (el plano que se deforma: el determinante es el área con signo del paralelogramo de las columnas, AB contra BA como orden de aplicación, inversa, Sarrus y Cramer como deslizar un vector; 22 casos verificados aparte)».
+
+## 7 nov 2026 · Arreglos chicos en transformaciones y polinomios
+
+- **`transformaciones-trig/index.html`:** en el celular, la circunferencia del paso 1 salía cortada por abajo. El encuadre `CAJA_DRAG` llegaba solo hasta y = −0,28 y ahora baja hasta −1,1, así que el círculo se ve entero (330 × 325 a 390 px). No toqué `Celular.alto` ni el estilo pegatinas. En los pasos 2 a 8, con la predicción pendiente, lo que se pregunta se ve entero.
+- **`polinomios/index.html` y `transformaciones-trig/index.html`:** tenían el mismo defecto de `tween` que encontré en matrices: el avance negativo del primer cuadro podía colgar una animación en el celular. Lo acoté con `Math.max(0, …)`.
+- **Pruebas:**
+  - `node --test`: 42 en verde en transformaciones y 41 en polinomios.
+  - La pasada del celular no da QUEDA.
+  - Playwright en las 8 combinaciones, respondiendo los 8 pasos: sin errores ni pasos colgados.
+- **Pedido:** integrar los dos `index.html`. Puede que otras escenas armadas con el mismo molde de `tween` tengan el defecto. Conviene buscar `function tween` en las plantillas y revisarlas.

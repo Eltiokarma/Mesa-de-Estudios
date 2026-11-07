@@ -807,7 +807,7 @@ function correr(clave, desde, hasta, seg){
   cancelAnimationFrame(anim);
   if (RM){ E[clave] = hasta; sincronizar(); return; }
   const t0 = performance.now(), dur = seg*1000;
-  const tick = now => { const f = Math.min(1, (now - t0)/dur); E[clave] = desde + (hasta - desde)*(clave === 't' ? f : (f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2)); sincronizar(); if (f < 1) anim = requestAnimationFrame(tick); };
+  const tick = now => { const f = Math.max(0, Math.min(1, (now - t0)/dur)); E[clave] = desde + (hasta - desde)*(clave === 't' ? f : (f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2)); sincronizar(); if (f < 1) anim = requestAnimationFrame(tick); };
   anim = requestAnimationFrame(tick);
 }
 function draw(){
