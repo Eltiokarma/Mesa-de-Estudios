@@ -1,0 +1,244 @@
+{
+  "id": "t018",
+  "version": 1,
+  "titulo": "Ríos que vuelan",
+  "tema": "Amazonía · bosque y lluvia",
+  "grado": 5,
+  "dificultad": 3,
+  "tipo_texto": "argumentativo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "Un árbol grande de la Amazonía puede sacar del suelo cientos de litros de agua en un solo día y soltarla al aire como vapor por sus hojas."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "Sumado en millones de árboles, ese vapor forma corrientes de aire húmedo que el viento lleva hacia el oeste y el sur, y que algunos científicos llaman «ríos voladores»."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "Al chocar con los Andes, parte de esa humedad sube, se enfría y cae como lluvia sobre la selva alta y los valles."
+      }
+    ],
+    [
+      {
+        "id": "o4",
+        "rol": "contraste",
+        "t": "Solemos pensar que el bosque existe porque llueve."
+      },
+      {
+        "id": "o5",
+        "rol": "principal",
+        "t": "Lo que muestran estos estudios es que también ocurre al revés: en buena parte, llueve porque el bosque existe."
+      },
+      {
+        "id": "o6",
+        "rol": "apoyo",
+        "t": "Cuando se tala una zona grande, sale menos vapor hacia el aire, y la lluvia que depende de él puede disminuir lejos de allí, en lugares que nunca vieron caer un árbol."
+      },
+      {
+        "id": "o7",
+        "rol": "detalle",
+        "t": "Esto convierte la tala en un problema que no se queda dentro de la frontera de quien la hace."
+      }
+    ],
+    [
+      {
+        "id": "o8",
+        "rol": "principal",
+        "t": "Cuidar el bosque amazónico es, entonces, también cuidar el agua de regiones que están a cientos de kilómetros."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que mejor resume todo el texto.",
+        "aceptadas": [
+          "o5",
+          "o8"
+        ],
+        "ninguna": "RV3",
+        "codigos": {
+          "o1": "RV4"
+        },
+        "explicacion": "La oración 5 da la idea central (llueve porque el bosque existe) y la 8 saca la conclusión.",
+        "explicaciones": {
+          "o1": "La primera oración da un dato sobre un árbol: es el punto de partida.",
+          "o2": "Explica qué son los ríos voladores: es un paso de la explicación.",
+          "o3": "Explica dónde cae la humedad: es otro paso.",
+          "o4": "Presenta lo que solemos pensar, que el texto va a completar.",
+          "o6": "Explica qué pasa cuando se tala: es un argumento.",
+          "o7": "Saca una consecuencia del argumento, pero no la idea principal.",
+          "ninguna": "Las oraciones 5 y 8 sí lo dicen: llueve porque el bosque existe, y cuidarlo es cuidar el agua de otras regiones."
+        }
+      },
+      "enunciado": "¿Cuál es la idea principal del texto?",
+      "alternativas": [
+        {
+          "t": "El bosque amazónico ayuda a producir la lluvia de la que dependen él mismo y regiones lejanas.",
+          "correcta": true,
+          "evidencia": [
+            "o5",
+            "o8"
+          ],
+          "explicacion": "Junta la idea de la oración 5 (llueve porque el bosque existe) con la conclusión de la 8 (cuidarlo es cuidar el agua de regiones lejanas)."
+        },
+        {
+          "t": "Un árbol grande de la Amazonía puede soltar al aire, como vapor, cientos de litros de agua en un solo día.",
+          "codigo": "RV1",
+          "origen": "o1",
+          "explicacion": "Es el dato con que empieza el texto, un detalle."
+        },
+        {
+          "t": "Los bosques son importantes para la vida del planeta.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto habla de cómo el bosque amazónico produce lluvia."
+        },
+        {
+          "t": "Al chocar con los Andes, parte de la humedad cae como lluvia sobre la selva alta y los valles.",
+          "codigo": "RV3",
+          "origen": "o3",
+          "explicacion": "Es un paso de la explicación, pero deja fuera la idea del autor: que la lluvia depende del bosque."
+        },
+        {
+          "t": "La Amazonía es el bosque tropical más grande del mundo.",
+          "codigo": "RV8",
+          "explicacion": "Puede ser cierto, pero el texto no lo dice."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "referente",
+      "unidad": "razonamiento-verbal.cohesion-y-coherencia",
+      "enunciado": "En la oración 7, ¿a qué se refiere la palabra ESTO?",
+      "alternativas": [
+        {
+          "t": "A que talar en un lugar puede reducir la lluvia en otros lugares lejanos.",
+          "correcta": true,
+          "evidencia": [
+            "o6"
+          ],
+          "explicacion": "\"Esto\" retoma lo que dice la oración 6: la tala reduce el vapor y la lluvia puede disminuir lejos. Por eso el problema \"no se queda dentro de la frontera\"."
+        },
+        {
+          "t": "A los lugares que nunca vieron caer un árbol.",
+          "codigo": "RV27",
+          "origen": "o6",
+          "explicacion": "Es lo último que se nombra antes de \"esto\", pero un lugar no \"convierte la tala en un problema\": lo hace lo que pasa con la lluvia."
+        },
+        {
+          "t": "A que el vapor de agua sale por las hojas de los árboles.",
+          "codigo": "RV5",
+          "origen": "o1",
+          "explicacion": "Repite palabras de la oración 1, pero \"esto\" retoma lo que se dice justo antes, en la oración 6."
+        },
+        {
+          "t": "A que los países deberían cerrar sus fronteras.",
+          "codigo": "RV7",
+          "explicacion": "El texto no habla de cerrar fronteras; esa lectura va más allá de lo que dice."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.inferencias",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
+        "sonda": "Los ríos voladores se pueden ver a simple vista desde un avión.",
+        "clase": "no-se-sabe",
+        "codigos": {
+          "lo-dice": "RV5",
+          "se-deduce": "RV7",
+          "lo-contradice": null
+        },
+        "explicacion": "El texto no dice nada sobre si esas corrientes se pueden ver. No se puede saber.",
+        "explicaciones": {
+          "lo-dice": "El texto nombra los ríos voladores, pero nunca dice si se ven.",
+          "se-deduce": "Que se llamen \"ríos\" no permite concluir que se vean como un río: eso va más allá del texto.",
+          "lo-contradice": "El texto no dice que no se puedan ver; simplemente no habla de eso."
+        }
+      },
+      "enunciado": "Se infiere del texto que la expresión «ríos voladores»",
+      "alternativas": [
+        {
+          "t": "compara el aire húmedo con un río porque también lleva agua de un lugar a otro.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o3"
+          ],
+          "explicacion": "El texto no lo explica, pero se deduce: esas corrientes llevan agua en forma de vapor y la dejan caer lejos, como un río la lleva por el suelo."
+        },
+        {
+          "t": "es el nombre que algunos científicos dan a corrientes de aire húmedo.",
+          "codigo": "RV6",
+          "origen": "o2",
+          "explicacion": "Eso lo dice el texto tal cual (oración 2): no es una inferencia sobre por qué se llaman así."
+        },
+        {
+          "t": "se refiere a ríos de agua que pasan por encima de los Andes.",
+          "codigo": "RV18",
+          "explicacion": "Toma la expresión al pie de la letra; el texto habla de aire húmedo, no de ríos de agua líquida."
+        },
+        {
+          "t": "significa que los ríos de la Amazonía se evaporan por completo.",
+          "codigo": "RV7",
+          "explicacion": "El texto dice que el vapor sale de las hojas de los árboles, no que los ríos se evaporen; esa lectura va más allá."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.extrapolacion",
+      "enunciado": "Si un país talara gran parte de su selva, según la lógica del texto, un país vecino que conservara la suya",
+      "alternativas": [
+        {
+          "t": "podría recibir menos lluvia aunque no hubiera talado nada.",
+          "correcta": true,
+          "evidencia": [
+            "o6",
+            "o7"
+          ],
+          "explicacion": "Según las oraciones 6 y 7, la tala reduce la lluvia lejos de donde ocurre, y el problema no se queda dentro de la frontera."
+        },
+        {
+          "t": "recibiría la misma lluvia de siempre, porque su bosque sigue intacto.",
+          "codigo": "RV12",
+          "explicacion": "Cambia la condición, pero deja igual la consecuencia: el texto dice justamente que la lluvia depende también del vapor que viene de lejos."
+        },
+        {
+          "t": "se convertiría de inmediato en un desierto.",
+          "codigo": "RV11",
+          "explicacion": "Es una consecuencia exagerada: el texto dice que la lluvia \"puede disminuir\", no que todo se seque de golpe."
+        },
+        {
+          "t": "tendría que talar también su selva para compensar.",
+          "codigo": "RV7",
+          "explicacion": "No sale del texto: talar más reduciría todavía más el vapor y la lluvia."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-06",
+  "hechos": [
+    {
+      "afirmacion": "Un árbol grande de la Amazonía puede transpirar cientos de litros (hasta unos mil) de agua al día; el vapor forma \"ríos voladores\" que el viento lleva al oeste y al sur, y la humedad cae al chocar con los Andes; la deforestación puede reducir las lluvias lejos.",
+      "fuente": "Nobre, A. D. (2014). O futuro climático da Amazônia; Staal, A. y otros (2018). Forest-rainfall cascades buffer against drought across the Amazon. Nature Climate Change 8."
+    }
+  ],
+  "revision": null
+}

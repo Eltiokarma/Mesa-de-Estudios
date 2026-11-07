@@ -1,0 +1,264 @@
+{
+  "id": "t015",
+  "version": 1,
+  "titulo": "¿Celular en el aula?",
+  "tema": "Sociedad · escuela y tecnología",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "argumentativo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "En muchos colegios se discute si los alumnos deben poder usar el celular durante las clases."
+      },
+      {
+        "id": "o2",
+        "rol": "cita",
+        "t": "Quienes quieren prohibirlo dicen que las notificaciones interrumpen la atención y que muchos alumnos terminan en las redes sociales en vez de trabajar."
+      },
+      {
+        "id": "o3",
+        "rol": "cita",
+        "t": "Recuerdan, además, que en 2023 un informe de la Unesco recomendó limitar su uso en la escuela cuando no sirve para aprender."
+      }
+    ],
+    [
+      {
+        "id": "o4",
+        "rol": "cita",
+        "t": "Quienes lo defienden responden que el celular es, para muchos alumnos, la única computadora que tienen, y que con él se puede buscar información, grabar un experimento o practicar."
+      },
+      {
+        "id": "o5",
+        "rol": "cita",
+        "t": "Dicen también que prohibirlo no enseña a usarlo bien, y que fuera del colegio nadie va a vigilarlos."
+      }
+    ],
+    [
+      {
+        "id": "o6",
+        "rol": "apoyo",
+        "t": "Las dos posturas tienen parte de razón, porque miran cosas distintas: una ve el celular como distracción, y la otra, como herramienta."
+      },
+      {
+        "id": "o7",
+        "rol": "principal",
+        "t": "Por eso, la pregunta útil no es si el celular entra o no al aula, sino para qué entra: guardado cuando no sirve y en la mano cuando la clase lo necesita."
+      },
+      {
+        "id": "o8",
+        "rol": "apoyo",
+        "t": "Esa regla le pide más trabajo al profesor, que tiene que decidir en cada clase, pero se parece más a lo que los alumnos encontrarán fuera de la escuela."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que mejor resume la tesis del autor.",
+        "aceptadas": [
+          "o7"
+        ],
+        "ninguna": "RV3",
+        "codigos": {
+          "o1": "RV4"
+        },
+        "explicacion": "La oración 7 dice la tesis: la pregunta útil no es si el celular entra al aula, sino para qué entra.",
+        "explicaciones": {
+          "o1": "La primera oración presenta el debate: es el punto de partida.",
+          "o2": "Es el argumento de quienes quieren prohibir el celular, no la tesis del autor.",
+          "o3": "Es otro argumento de los que quieren prohibirlo.",
+          "o4": "Es el argumento de quienes defienden el celular.",
+          "o5": "Es otro argumento de los que lo defienden.",
+          "o6": "Dice que las dos posturas tienen parte de razón; prepara la tesis, pero no la dice.",
+          "o8": "Reconoce un costo de la propuesta y la defiende; apoya la tesis, pero no la dice.",
+          "ninguna": "La oración 7 sí la dice completa: hay que decidir para qué entra el celular en cada clase."
+        }
+      },
+      "enunciado": "¿Cuál es la tesis del autor?",
+      "alternativas": [
+        {
+          "t": "Más que prohibir o permitir el celular, hay que decidir para qué se usa en cada clase.",
+          "correcta": true,
+          "evidencia": [
+            "o7"
+          ],
+          "explicacion": "Es lo que dice la oración 7: la pregunta útil no es si entra, sino para qué entra."
+        },
+        {
+          "t": "En 2023, un informe de la Unesco recomendó limitar el uso del celular en la escuela cuando no sirve para aprender.",
+          "codigo": "RV1",
+          "origen": "o3",
+          "explicacion": "Es un dato que usa una de las posturas. No es lo que sostiene el autor."
+        },
+        {
+          "t": "La tecnología cambió la forma de enseñar en todo el mundo.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto discute el celular en el aula, no toda la tecnología."
+        },
+        {
+          "t": "Las dos posturas sobre el celular en el aula tienen parte de razón.",
+          "codigo": "RV3",
+          "origen": "o6",
+          "explicacion": "Es una parte del razonamiento del autor (oración 6), pero deja fuera lo que propone: decidir para qué entra el celular."
+        },
+        {
+          "t": "Hay que permitir el celular porque es la única computadora de muchos alumnos.",
+          "codigo": "RV33",
+          "origen": "o4",
+          "explicacion": "Es el argumento de quienes defienden el celular (oración 4), no la tesis del autor."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "compatibilidad",
+      "unidad": "razonamiento-verbal.compatibilidad",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
+        "sonda": "El autor quiere que se prohíba el celular en el aula.",
+        "clase": "lo-contradice",
+        "codigos": {
+          "lo-dice": "RV33",
+          "se-deduce": "RV7",
+          "no-se-sabe": "RV9"
+        },
+        "explicacion": "El autor dice que el celular debe estar \"en la mano cuando la clase lo necesita\" (oración 7): no quiere prohibirlo.",
+        "explicaciones": {
+          "lo-dice": "Quienes quieren prohibirlo son una de las posturas (oración 2); el autor propone otra cosa.",
+          "se-deduce": "Que el autor reconozca que el celular distrae no permite concluir que quiera prohibirlo; en la oración 7 dice que a veces debe usarse.",
+          "no-se-sabe": "Sí se puede saber: la oración 7 dice que el celular debe estar en la mano cuando la clase lo necesita."
+        }
+      },
+      "enunciado": "Es compatible con el texto afirmar que, según el autor,",
+      "alternativas": [
+        {
+          "t": "habrá clases en que el celular deba estar guardado.",
+          "correcta": true,
+          "evidencia": [
+            "o7"
+          ],
+          "explicacion": "La oración 7 dice \"guardado cuando no sirve\": en algunas clases, el celular no se usa."
+        },
+        {
+          "t": "el celular debe estar siempre en la mano de los alumnos.",
+          "codigo": "RV11",
+          "origen": "o7",
+          "explicacion": "El autor dice \"en la mano cuando la clase lo necesita\", no siempre."
+        },
+        {
+          "t": "la regla que propone no le da más trabajo al profesor.",
+          "codigo": "RV10",
+          "origen": "o8",
+          "explicacion": "La oración 8 dice lo contrario: la regla \"le pide más trabajo al profesor\"."
+        },
+        {
+          "t": "la Unesco recomendó llevar más celulares a las aulas.",
+          "codigo": "RV9",
+          "origen": "o3",
+          "explicacion": "Choca con la oración 3: la Unesco recomendó limitar su uso cuando no sirve para aprender."
+        },
+        {
+          "t": "las notificaciones del celular ayudan a los alumnos a concentrarse.",
+          "codigo": "RV5",
+          "origen": "o2",
+          "explicacion": "Usa palabras de la oración 2, pero dice lo contrario: las notificaciones interrumpen la atención."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "conector",
+      "unidad": "razonamiento-verbal.conectores",
+      "previo": {
+        "tipo": "relacion",
+        "pide": "Antes de ver las alternativas: ¿qué relación hay entre la oración 3 y la oración 4?",
+        "aceptada": "oposicion",
+        "codigos": {
+          "suma": "RV26",
+          "causa": "RV24"
+        },
+        "explicacion": "Las oraciones 2 y 3 son los argumentos de quienes quieren prohibir el celular, y la 4 presenta a quienes lo defienden: se oponen.",
+        "explicaciones": {
+          "suma": "La oración 4 no agrega otro argumento para prohibir: presenta la postura contraria.",
+          "causa": "La oración 4 no es una consecuencia de la 3: es la respuesta de la otra postura."
+        }
+      },
+      "enunciado": "¿Qué conector podría ir al comienzo de la oración 4 (\"___ quienes lo defienden responden…\") sin cambiar el sentido del texto?",
+      "alternativas": [
+        {
+          "t": "En cambio,",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o4"
+          ],
+          "explicacion": "Las oraciones 2 y 3 dan los argumentos para prohibir el celular, y la 4 presenta la postura contraria: \"en cambio\" marca esa oposición."
+        },
+        {
+          "t": "Por lo tanto,",
+          "codigo": "RV24",
+          "explicacion": "Lee como consecuencia lo que es una oposición: la postura de la oración 4 no sale de los argumentos de la 3, les responde."
+        },
+        {
+          "t": "Asimismo,",
+          "codigo": "RV26",
+          "explicacion": "\"Asimismo\" suma algo en la misma dirección, pero la oración 4 va en contra de la 3."
+        },
+        {
+          "t": "Dicho de otro modo,",
+          "codigo": "RV35",
+          "explicacion": "\"Dicho de otro modo\" anuncia que se repite lo mismo, pero la oración 4 presenta una postura distinta."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.extrapolacion",
+      "enunciado": "Si un profesor siguiera la regla del autor en una clase en que no se va a usar el celular,",
+      "alternativas": [
+        {
+          "t": "pediría que los celulares estuvieran guardados durante esa clase.",
+          "correcta": true,
+          "evidencia": [
+            "o7"
+          ],
+          "explicacion": "La regla de la oración 7 dice \"guardado cuando no sirve\": si en esa clase no se usa, va guardado."
+        },
+        {
+          "t": "dejaría los celulares en la mano, porque a veces sirven para aprender.",
+          "codigo": "RV12",
+          "explicacion": "Cambia la condición, pero deja igual la consecuencia: la regla depende de si la clase lo necesita, y esta no lo necesita."
+        },
+        {
+          "t": "prohibiría el celular en todas las clases del año.",
+          "codigo": "RV11",
+          "origen": "o8",
+          "explicacion": "La regla se decide clase por clase (oración 8); una clase sin celular no significa prohibirlo siempre."
+        },
+        {
+          "t": "tendría que reemplazar el celular por una computadora del colegio.",
+          "codigo": "RV7",
+          "explicacion": "El texto no dice nada de eso; esa conclusión va más allá de lo que se puede deducir."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-06",
+  "hechos": [
+    {
+      "afirmacion": "En 2023, el Informe de Seguimiento de la Educación en el Mundo de la Unesco recomendó restringir el uso del celular en la escuela cuando no apoya el aprendizaje.",
+      "fuente": "Unesco (2023). Informe GEM 2023: La tecnología en la educación: ¿una herramienta en los términos de quién?"
+    }
+  ],
+  "revision": null
+}
