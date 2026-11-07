@@ -26,7 +26,7 @@
  *     segmentos      pares {i, j} de puntos conectados.
  *     triangulos     ternas de puntos conectados de dos en dos y no alineados.
  *     cuadrilateros  cuatro puntos A, B, C, D con AB, BC, CD y DA dibujados, sin tres de ellos alineados, que formen
- *                    un cuadrilátero CONVEXO (como se cuenta en academia: los cóncavos no entran). Cada uno, una vez.
+ *                    un cuadrilátero CONVEXO (convención nuestra: los cóncavos no entran). Cada uno, una vez.
  *     cuadrados      cuadriláteros con los cuatro lados iguales y los cuatro ángulos rectos.
  *     rectangulos    cuadriláteros con los cuatro ángulos rectos (los cuadrados SÍ son rectángulos).
  *   Devuelve { tipo, total, lista:[{ vertices:[índices], pts:[{x,y}], tamano }], porTamano:{ tamaño: cuántas },
@@ -42,6 +42,9 @@
  *       dobleCuenta         cada figura contada dos veces (de ida y de vuelta)      = 2·total
  *       compuestasDosVeces  las piezas una vez y cada compuesta dos veces            = piezas + 2·compuestas
  *   puntoEnPoligono(P, pts)   true si P está estrictamente adentro (sirve para el tamaño).
+ *   union(fig, caras, tipo)   caras = índices de piezas de armar(fig).caras (base 0). ¿Las piezas juntas forman una figura
+ *                             del tipo? → { es, figura (la de contar, o null), piezas }. Es la figura de contar cuyo
+ *                             tamaño es el número de piezas elegidas y que las tiene a todas adentro.
  *
  * FIGURAS DE EJEMPLO (constructores; devuelven { lineas, nombre, ... } listos para contar)
  *   recta(n)                  una línea de (0; 0) a (n − 1; 0) con n puntos marcados, uno en cada entero.
@@ -60,7 +63,7 @@
  *   triangulo(), cuadrado(l)  las figuras sueltas (el triángulo es ABC; el cuadrado va de (0; 0) a (l; l)).
  *
  * FÓRMULAS DE ACADEMIA (con los errores típicos de la escena)
- *   segmentosRecta(n)         n puntos en una recta: C(n, 2) segmentos.
+ *   segmentosRecta(n)         n puntos en una recta (n ≥ 1): C(n, 2) segmentos (con un solo punto, 0).
  *                             errores: soloPiezas n − 1; piezasYTotal n; conOrden n(n − 1) (AB y BA por separado).
  *   triangulosAbanico(n, k)   k·n(n + 1)/2 triángulos (n piezas en la base, k líneas horizontales con la base).
  *                             errores: soloPiezas (piezas triangulares: n), piezasYTotal n + 1, dobleCuenta 2·total,
@@ -73,7 +76,8 @@
  *                             lado mín, dos de lado mín − 1, …, sin contar los de lado 1 aparte);
  *                             comoCuadrada Σk² hasta mín(m, n); ladoLargo Σk² hasta máx(m, n).
  *   rectangulosCuadricula(m, n)  C(m + 1, 2)·C(n + 1, 2) (dos de las m + 1 horizontales por dos de las n + 1 verticales).
- *                             errores: soloPiezas m·n; sinCuadrados total − cuadrados; suma C(m + 1, 2) + C(n + 1, 2).
+ *                             errores: soloPiezas m·n; sinCuadrados total − cuadrados; suma C(m + 1, 2) + C(n + 1, 2);
+ *                             soloFilas m·C(n + 1, 2) (solo los rectángulos de una sola fila de alto).
  *   triangulosCuadradoDiagonales()  8 (por fuerza bruta). errores: soloPiezas 4; unaDiagonal 6 (las 4 piezas y las
  *                             2 mitades de una sola diagonal); compuestasDosVeces 12.
  *   triangulosDosCevianas()   por fuerza bruta (8). errores: soloPiezas, piezasYTotal, dobleCuenta.
@@ -287,6 +291,17 @@
     };
   }
 
+  // ---------- armar una figura juntando piezas ----------
+  function union(fig, caras, tipo) {
+    if (!Array.isArray(caras) || !caras.length) throw new Error('caras debe ser una lista de piezas');
+    const G = fig && fig.puntos && fig.conecta ? fig : armar(fig);
+    const sel = [...new Set(caras)];
+    sel.forEach(k => { if (!Number.isInteger(k) || k < 0 || k >= G.caras.length) throw new Error(`no hay pieza ${k}`); });
+    const r = contar(G, tipo), Q = sel.map(k => puntoInterior(G.caras[k].map(i => G.puntos[i])));
+    const f = r.lista.find(x => x.tamano === sel.length && Q.every(q => puntoEnPoligono(q, x.pts)));
+    return { es: !!f, figura: f || null, piezas: sel.length };
+  }
+
   // ---------- figuras de ejemplo ----------
   const p = (x, y) => ({ x, y });
   function recta(n) {
@@ -342,7 +357,7 @@
 
   // ---------- fórmulas de academia ----------
   function segmentosRecta(n) {
-    entero(n, 'n (los puntos)', 2);
+    entero(n, 'n (los puntos)', 1);
     return { total: C2(n), errores: { soloPiezas: n - 1, piezasYTotal: n, conOrden: n * (n - 1) } };
   }
   function triangulosAbanico(n, k) {
@@ -369,7 +384,7 @@
     entero(m, 'm', 1); entero(n, 'n', 1);
     const total = C2(m + 1) * C2(n + 1), cuad = cuadradosCuadricula(m, n).total;
     return { total, cuadrados: cuad, noCuadrados: total - cuad, bruta: contar(cuadricula(m, n), 'rectangulos').total,
-      errores: { soloPiezas: m * n, sinCuadrados: total - cuad, suma: C2(m + 1) + C2(n + 1) } };
+      errores: { soloPiezas: m * n, sinCuadrados: total - cuad, suma: C2(m + 1) + C2(n + 1), soloFilas: m * C2(n + 1) } };
   }
   function triangulosCuadradoDiagonales() {
     const r = contar(cuadradoDiagonales(2), 'triangulos'), una = contar(cuadradoUnaDiagonal(2), 'triangulos');
@@ -428,7 +443,7 @@
   }
 
   return {
-    armar, contar, puntoEnPoligono, area,
+    armar, contar, puntoEnPoligono, area, union,
     recta, abanico, cuadricula, cuadrado, cuadradoDiagonales, cuadradoUnaDiagonal, triangulo, dosCevianas, tresMedianas, cuadradoCompleto,
     segmentosRecta, triangulosAbanico, cuadrilaterosAbanico, cuadradosCuadricula, rectangulosCuadricula,
     triangulosCuadradoDiagonales, triangulosDosCevianas,

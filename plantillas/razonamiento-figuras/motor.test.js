@@ -141,6 +141,17 @@ test('pilas: total = suma de alturas, ocultos + visibles = total, y nada tapa un
   for (let n = 1; n <= 7; n++) { const q = motor.piramideEsquina(n); assert.equal(q.total, motor.sumaCuadrados(n)); assert.equal(q.visibles, n * n); assert.equal(q.caras, n * n + n * (n + 1)); }
 });
 
+test('union: las piezas que se juntan forman una figura de la lista solo si coinciden con ella (paso 9)', () => {
+  for (const [f, tipo] of [[motor.tresMedianas(), 'triangulos'], [motor.cuadradoCompleto(2), 'triangulos'], [motor.abanico(3, 2), 'cuadrilateros'], [motor.dosCevianas(), 'triangulos']]) {
+    const G = motor.armar(f), N = G.caras.length;
+    let n = 0;
+    for (let m = 1; m < (1 << N); m++) { const c = []; for (let i = 0; i < N; i++) if (m >> i & 1) c.push(i); if (motor.union(G, c, tipo).es) n++; }
+    assert.equal(n, motor.contar(f, tipo).total, `${f.nombre}: cada figura sale de un solo grupo de piezas`);
+  }
+  assert.throws(() => motor.union(motor.triangulo(), [3], 'triangulos'), /no hay pieza/);
+  assert.throws(() => motor.union(motor.triangulo(), [], 'triangulos'), /lista de piezas/);
+});
+
 // 3. Ningún error típico coincide con la respuesta (predicciones de la escena) y las opciones son distintas
 function distintas(ops, que) { assert.equal(new Set(ops).size, ops.length, `${que}: opciones repetidas ${ops}`); }
 test('ningún error típico coincide con la respuesta', () => {
@@ -159,8 +170,8 @@ test('ningún error típico coincide con la respuesta', () => {
   // paso 5: cuadrados de n × n (n ≥ 3) y experimento 3: m × n con m < n (m ≥ 2)
   for (let n = 3; n <= 10; n++) { const c = motor.cuadradosCuadricula(n, n); distintas([c.total, c.errores.soloPiezas, c.errores.piezasYGrande, c.errores.soloDiagonal], `cuadrados ${n}`); }
   for (let m = 2; m <= 6; m++) for (let n = m + 1; n <= 8; n++) { const c = motor.cuadradosCuadricula(m, n); distintas([c.total, c.errores.soloPiezas, c.errores.comoCuadrada, c.errores.ladoLargo], `cuadrados ${m} × ${n}`); }
-  // paso 6: rectángulos de m × n (al menos 2 filas y 2 columnas; en 2 × 2 «sin los cuadrados» da 4, como las piezas)
-  for (let m = 2; m <= 6; m++) for (let n = 2; n <= 6; n++) if (m * n > 4) { const r = motor.rectangulosCuadricula(m, n); distintas([r.total, r.errores.soloPiezas, r.errores.sinCuadrados, r.errores.suma], `rectángulos ${m} × ${n}`); }
+  // paso 6: rectángulos de m × n con 2 ≤ m < n, como la tira 2 × 3 (en 3 × 2 «solo una fila» y la suma dan 9)
+  for (let m = 2; m <= 6; m++) for (let n = m + 1; n <= 8; n++) { const r = motor.rectangulosCuadricula(m, n); distintas([r.total, r.errores.soloPiezas, r.errores.soloFilas, r.errores.suma], `rectángulos ${m} × ${n}`); }
   // experimento 5
   const e = motor.triangulosDosCevianas(); distintas([e.total, e.errores.soloPiezas, e.errores.piezasYTotal, e.errores.dobleCuenta], 'cevianas');
   // paso 7 y experimento 4: pilas
@@ -177,6 +188,7 @@ test('errores de entrada', () => {
   assert.throws(() => motor.armar({ lineas: [[{ x: 0, y: 0 }, { x: 2, y: 0 }]], puntos: [{ x: 1, y: 1 }] }), /no está sobre/);
   assert.throws(() => motor.contar(motor.cuadrado(), 'pentagonos'), /desconocido/);
   assert.throws(() => motor.recta(1), /entero de 2 o más/);
+  assert.throws(() => motor.segmentosRecta(0), /entero de 1 o más/);
   assert.throws(() => motor.abanico(0), /entero de 1 o más/);
   assert.throws(() => motor.cuadricula(2, 1.5), /entero/);
   assert.throws(() => motor.cuadrilaterosAbanico(3, 1), /entero de 2 o más/);
