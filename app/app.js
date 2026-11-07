@@ -81,6 +81,9 @@ const lecturaConPrueba = c => c && Object.values(cat.plantillas).find(p => p.for
   && c.unidades.some(u => u.plantillas.includes(p.id)));
 const lecturaSt = p => (est.practica || {})[p.id] || {};
 const ctxPrueba = () => ({ $app, cat, est, esc, guardar, registrar, marcarDia, pruebas });
+// ¿El profesor abrió la salida de este curso en este navegador? (lo mismo que PruebaCurso.habilitada, que el inicio
+// necesita antes de que lleguen prueba.js y el banco de pruebas).
+const salidaAbierta = curso => (est.salidaHabilitada || []).some(x => x === curso || x === 'todas');
 // Las escenas abren su propia página (con botón para volver); las predicciones y la lectura van dentro de la app.
 // La lectura recibe además la unidad, para mostrar solo los textos que la tocan.
 const enlace = (p, unidad) => p.formato === 'escena' ? `${p.url}?desde=app` : p.formato === 'lectura' && unidad ? `${p.url}/${encodeURIComponent(unidad)}` : p.url;
@@ -132,6 +135,18 @@ function vBienvenida() {
   };
 }
 
+// Avisos de «tu profesor abrió la salida» del inicio. Los de las pruebas por curso aparecen cuando llega el banco
+// (se carga después del primer pintado); los de la lectura no dependen de él.
+function avisosSalida() {
+  const salidas = pruebas ? cat.cursos.filter(c => pruebas.cursos[c.id] && salidaAbierta(c.id) && est.pruebas[c.id] && est.pruebas[c.id].entrada && !est.pruebas[c.id].salida)
+    .map(c => ({ c, href: `#/prueba/${c.id}/salida` })) : [];
+  for (const c of cat.cursos) {
+    const p = lecturaConPrueba(c);
+    if (p && salidaAbierta(c.id) && lecturaSt(p).entrada && !lecturaSt(p).salida) salidas.push({ c, href: `${p.url}/salida` });
+  }
+  return salidas;
+}
+
 function vInicio() {
   const q = cola(est.uni), pend = q.filter(x => !visto(x.u.id));
   const conEscena = pend.find(x => !x.a && x.u.plantillas.length) || pend[0];
@@ -151,12 +166,7 @@ function vInicio() {
   const sig = [...primeras, ...conModulo.filter(x => !primeras.includes(x))].slice(0, 4).map(x => `<a class="item" href="${esc(enlace(cat.plantillas[x.u.plantillas[0]], x.u.id))}" data-abrir="${esc(x.u.id)}">${icono(x.c.id)}
       <span class="tx"><span class="t">${esc(x.u.nombre)}</span><br><span class="d">${esc(x.c.nombre)} · ${esc(etiquetaUbic(x.u, est.uni))}</span></span>
       <span class="der">${tagAdelanto(x.u)}<span class="tag acento">${ETIQUETA[cat.plantillas[x.u.plantillas[0]].formato] || 'Módulo'}</span>›</span></a>`).join('');
-  const salidas = pruebas ? cat.cursos.filter(c => pruebas.cursos[c.id] && PruebaCurso.habilitada(est, c.id) && est.pruebas[c.id] && est.pruebas[c.id].entrada && !est.pruebas[c.id].salida)
-    .map(c => ({ c, href: `#/prueba/${c.id}/salida` })) : [];
-  for (const c of cat.cursos) {
-    const p = lecturaConPrueba(c);
-    if (p && PruebaCurso.habilitada(est, c.id) && lecturaSt(p).entrada && !lecturaSt(p).salida) salidas.push({ c, href: `${p.url}/salida` });
-  }
+  const salidas = avisosSalida();
   $app.innerHTML = `
     ${salidas.map(({ c, href }) => `<a class="aviso" style="display:block;text-decoration:none;margin-top:0" href="${esc(href)}">Tu profesor abrió la prueba de salida de ${esc(c.nombre)}. Hazla aquí ›</a>`).join('')}
     <header class="saludo"><span class="avatar">${esc((est.nombre || '?')[0].toUpperCase())}</span>
@@ -190,7 +200,8 @@ function vCursos() {
 function vCurso(id) {
   const c = cat.cursos.find(x => x.id === id); if (!c) return ir('#/cursos');
   // La primera vez que entra a un curso con banco de pruebas, va primero la prueba de entrada.
-  if (PruebaCurso.pideEntrada(ctxPrueba(), id) && !(est.pruebas[id] || {}).enCurso) { sessionStorage.setItem('prueba-auto-' + id, '1'); return ir(`#/prueba/${id}/entrada`); }
+  const PC = window.PruebaCurso;
+  if (PC && PC.pideEntrada(ctxPrueba(), id) && !(est.pruebas[id] || {}).enCurso) { sessionStorage.setItem('prueba-auto-' + id, '1'); return ir(`#/prueba/${id}/entrada`); }
   // Curso de lectura: la entrada es el primer texto del módulo. Se lleva al alumno una vez por sesión, para que
   // el botón de volver deje ver el curso (al abrir cualquier unidad, la entrada vuelve a ir primero).
   const lec = lecturaConPrueba(c);
@@ -211,7 +222,7 @@ function vCurso(id) {
   }).join('');
   $app.innerHTML = `<a class="volver" href="#/cursos" aria-label="Volver">‹</a>
     <h1>${esc(c.nombre)}</h1><p class="sub">${esc(AREA_TXT[c.area])} · ${us.length} unidades · ${Math.round(avance(c, todas ? '' : est.uni) * 100)} % estudiado</p>
-    ${PruebaCurso.tarjeta(ctxPrueba(), c.id)}${lec ? tarjetaLectura(lec, c) : ''}
+    ${PC ? PC.tarjeta(ctxPrueba(), c.id) : ''}${lec ? tarjetaLectura(lec, c) : ''}
     <div class="chips"><button class="chip${todas ? '' : ' on'}" data-todas="0">${esc(UNI_CORTA[est.uni] || 'Mi universidad')}</button><button class="chip${todas ? ' on' : ''}" data-todas="1">Todas las unidades</button></div>
     <div class="lista unidades" style="margin-top:12px">${filas}</div>`;
   $app.querySelectorAll('[data-todas]').forEach(b => b.onclick = () => { sessionStorage.setItem('todas', b.dataset.todas); vCurso(id); });
@@ -226,7 +237,7 @@ function tarjetaLectura(p, c) {
   const st = lecturaSt(p);
   if (!st.entrada) return `<div class="card prueba-tarjeta"><div class="etq-p">Prueba de entrada pendiente</div>
     <p>Un texto corto con preguntas. No es nota: sirve para ver de dónde partes.</p><a class="btn morado" href="${esc(p.url)}">Hacer la prueba de entrada ›</a></div>`;
-  if (!st.salida) return PruebaCurso.habilitada(est, c.id)
+  if (!st.salida) return salidaAbierta(c.id)
     ? `<div class="card prueba-tarjeta destacada"><div class="etq-p">Prueba de salida</div>
       <p>Tu profesor ya la abrió. Es un texto parecido al de la entrada, y al final ves cuánto avanzaste.</p><a class="btn morado" href="${esc(p.url)}/salida">Hacer la prueba de salida ›</a></div>`
     : `<div class="card prueba-tarjeta"><div class="etq-p">Prueba de salida</div><p>La prueba de salida la abre tu profesor cuando terminen el curso.</p></div>`;
@@ -363,6 +374,38 @@ async function vPapel(id) {
     <p style="margin-top:18px"><button class="btn borde" onclick="print()">Imprimir</button></p>`;
 }
 
+// ---------- Carga por partes ----------
+// El inicio solo necesita app.js, ilustraciones.js y medicion.js. Las pantallas de práctica, prueba y lectura
+// cargan sus scripts al entrar a su ruta. Todos están en la CASCARA de sw.js, así que sin conexión salen de la caché.
+const MODULOS = {
+  prueba: ['/nucleo/azar.js', '/nucleo/pruebas.js', '/app/prueba.js'],
+  practica: ['/nucleo/azar.js', '/nucleo/predicciones.js', '/app/practica.js'],
+  lectura: ['/nucleo/azar.js', '/nucleo/pruebas.js', '/nucleo/lectura.js', '/app/prueba.js', '/app/lectura.js'],
+};
+const scripts = {};
+// async = false: se bajan en paralelo pero corren en el orden en que se insertan (azar antes que pruebas, etc.).
+const script = src => scripts[src] || (scripts[src] = new Promise((ok, mal) => {
+  const s = document.createElement('script'); s.src = src; s.async = false;
+  s.onload = ok; s.onerror = () => { delete scripts[src]; s.remove(); mal(new Error('No se pudo cargar ' + src)); };
+  document.head.appendChild(s);
+}));
+const modulo = nombre => Promise.all(MODULOS[nombre].map(script));
+// Banco de pruebas de entrada y salida, con prueba.js. Es opcional: si no carga, la app funciona igual, sin pruebas por curso.
+let bancoListo = null;
+function cargarBanco() {
+  return bancoListo || (bancoListo = Promise.all([
+    fetch('datos/pruebas.json').then(r => (r.ok ? r.json() : null)).catch(() => null),
+    modulo('prueba').then(() => true, () => false),
+  ]).then(([b, ok]) => { pruebas = ok ? b : null; if (!ok) bancoListo = null; }));
+}
+// Muestra la ruta cuando esté lo que necesita; si el alumno ya se fue a otra pantalla, no hace nada.
+function cuandoListo(promesa, fn) {
+  const h = location.hash;
+  if (!$app.firstElementChild) $app.innerHTML = '<p class="vacio">Cargando…</p>';
+  promesa.then(() => { if (location.hash === h) { window.scrollTo(0, 0); fn(); } },
+    () => { if (location.hash === h) $app.innerHTML = '<p class="vacio">No se pudo cargar esta pantalla. Ábrela una vez con internet para tenerla sin conexión.</p>'; });
+}
+
 // ---------- Rutas ----------
 function ir(h) { if (location.hash === h) render(); else location.hash = h; }
 function render() {
@@ -373,15 +416,16 @@ function render() {
   $nav.querySelectorAll('a').forEach(a => a.classList.toggle('on', a.dataset.ruta === (['curso', 'papel', 'practica', 'prueba', 'lectura'].includes(ruta) ? 'cursos' : ruta === 'otro' ? 'perfil' : ruta)));
   if (ruta === 'practica') {
     $nav.querySelectorAll('a').forEach(a => a.classList.toggle('on', a.dataset.ruta === 'cursos'));
-    window.scrollTo(0, 0);
-    return Practica.vista({ $app, cat, est, esc, guardar, registrar, marcarDia }, decodeURIComponent(arg || ''));
+    return cuandoListo(modulo('practica'), () => Practica.vista({ $app, cat, est, esc, guardar, registrar, marcarDia }, decodeURIComponent(arg || '')));
   }
   if (ruta === 'lectura') {
-    window.scrollTo(0, 0);
-    return LecturaVista.vista({ $app, cat, est, esc, guardar, registrar, marcarDia }, decodeURIComponent(arg || ''), decodeURIComponent(location.hash.split('/')[3] || ''));
+    return cuandoListo(modulo('lectura'), () => LecturaVista.vista({ $app, cat, est, esc, guardar, registrar, marcarDia }, decodeURIComponent(arg || ''), decodeURIComponent(location.hash.split('/')[3] || '')));
   }
-  if (ruta === 'prueba') { window.scrollTo(0, 0); return PruebaCurso.vista(ctxPrueba(), decodeURIComponent(arg || ''), location.hash.split('/')[3] || 'entrada'); }
-  ({ inicio: vInicio, otro: vOtro, cursos: vCursos, curso: () => vCurso(decodeURIComponent(arg || '')), progreso: vProgreso, perfil: vPerfil, papel: () => vPapel(decodeURIComponent(arg || '')) }[ruta] || vInicio)();
+  if (ruta === 'prueba') return cuandoListo(cargarBanco().then(() => { if (!window.PruebaCurso) throw new Error('sin prueba.js'); }),
+    () => PruebaCurso.vista(ctxPrueba(), decodeURIComponent(arg || ''), location.hash.split('/')[3] || 'entrada'));
+  // El curso decide si va primero la prueba de entrada: espera al banco (ya suele estar, porque se pide tras el primer pintado).
+  if (ruta === 'curso') return cuandoListo(cargarBanco(), () => vCurso(decodeURIComponent(arg || '')));
+  ({ inicio: vInicio, otro: vOtro, cursos: vCursos, progreso: vProgreso, perfil: vPerfil, papel: () => vPapel(decodeURIComponent(arg || '')) }[ruta] || vInicio)();
   window.scrollTo(0, 0);
 }
 // Abrir una escena cuenta como día activo y marca la unidad como estudiada.
@@ -389,7 +433,19 @@ document.addEventListener('click', e => {
   const a = e.target.closest('[data-abrir]'); if (!a) return;
   // Si el curso de esa unidad tiene la prueba de entrada pendiente, va primero la prueba (así la entrada es en frío).
   const c = cursoDeUnidad(a.dataset.abrir);
-  if (c && PruebaCurso.pideEntrada(ctxPrueba(), c.id)) {
+  // Toque antes de que llegue el banco de pruebas: se espera para no saltarse la entrada.
+  if (c && !window.PruebaCurso) {
+    e.preventDefault();
+    const href = a.href, h = location.hash;
+    cargarBanco().then(() => {
+      if (location.hash !== h) return;
+      if (window.PruebaCurso && PruebaCurso.pideEntrada(ctxPrueba(), c.id)) { a.click(); return; }
+      est.vistas[a.dataset.abrir] = est.vistas[a.dataset.abrir] || hoy(); marcarDia(); guardar();
+      location.href = href;
+    });
+    return;
+  }
+  if (c && window.PruebaCurso && PruebaCurso.pideEntrada(ctxPrueba(), c.id)) {
     e.preventDefault(); sessionStorage.setItem('prueba-auto-' + c.id, '1');
     if (!(est.pruebas[c.id] || {}).enCurso) return ir(`#/prueba/${c.id}/entrada`);
     return ir(`#/prueba/${c.id}/${est.pruebas[c.id].enCurso.fase}`);
@@ -414,8 +470,17 @@ async function registrarSW() {
 }
 
 aplicarTema();
-// El banco de pruebas es opcional: si no carga, la app funciona igual, sin pruebas por curso.
-const cargarPruebas = fetch('datos/pruebas.json').then(r => (r.ok ? r.json() : null)).catch(() => null);
-fetch('datos/catalogo.json').then(r => r.json()).then(async c => { cat = c; pruebas = await cargarPruebas; render(); registrarSW(); })
-  .catch(() => { $app.innerHTML = '<p class="vacio">No se pudo cargar el catálogo. Revisa tu conexión e inténtalo otra vez.</p>'; });
+// Primero el catálogo y el primer pintado. Después (cuando la página terminó de cargar, para no quitarle ancho de banda
+// al primer pintado) el banco de pruebas con prueba.js; si cambia los avisos del inicio, el inicio se vuelve a pintar.
+// Al final se registra el service worker, cuya precarga es lo más pesado.
+const cargada = new Promise(ok => (document.readyState === 'complete' ? ok() : addEventListener('load', ok, { once: true })));
+fetch('datos/catalogo.json').then(r => r.json()).then(c => { cat = c; render(); })
+  .then(async () => {
+    await cargada;
+    const antes = avisosSalida().length;
+    await cargarBanco();
+    const [, ruta = 'inicio'] = location.hash.split('/');
+    if (ruta === 'inicio' && est.uni && est.grado && avisosSalida().length !== antes) vInicio();
+    registrarSW();
+  }, () => { $app.innerHTML = '<p class="vacio">No se pudo cargar el catálogo. Revisa tu conexión e inténtalo otra vez.</p>'; });
 })();

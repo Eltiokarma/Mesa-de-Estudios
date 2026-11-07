@@ -70,7 +70,7 @@
  *  - Las amilasas humanas cortan el enlace α(1→4) del almidón y del glucógeno; ninguna enzima humana corta el β(1→4) de
  *    la celulosa (sí lo hacen las celulasas de microbios, como los del estómago de la vaca o del intestino de la termita).
  *
- * Errores típicos (campo 'errores'), para armar las alternativas, con los códigos de investigacion.md: BMH5 (no restar
+ * Errores típicos (campo 'errores'), para armar las alternativas, con los códigos de docs/investigacion/biomoleculas-ideas-erroneas.md: BMH5 (no restar
  * el agua), BMH6 (n enlaces en vez de n − 1), BMH7 (resta una sola agua), BMH8 ((C₆H₁₂O₆)ₙ como fórmula del
  * polisacárido), BMH1 (la desnaturalización rompe enlaces peptídicos), BMH2 (almidón y celulosa se digieren igual), BMH3
  * y BMH9 (hidrogenación e índice de yodo), BMH10 (índice de saponificación y masa), BMH12 (orden de los aminoácidos), BM1

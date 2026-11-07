@@ -1,0 +1,146 @@
+{
+  "titulo": "Nomenclatura inorgánica: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 minutos por problema, como en el examen. Para el estado de oxidación, suma las cargas: en una sustancia neutra la suma da 0 y en un ion da su carga. Usa la tabla de estados de tu academia: O −2 (−1 en los peróxidos), H +1 (−1 en los hidruros metálicos), metales alcalinos +1 y alcalinotérreos +2. Para escribir una fórmula, junta iones hasta que la carga sume cero. Para nombrar, decide primero la función.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "El dicromato de potasio, K₂Cr₂O₇, es un sólido anaranjado que se usa en el laboratorio como oxidante. ¿Qué estado de oxidación tiene el cromo?",
+      "respuesta": "+6.",
+      "pasos": [
+        "La sustancia es neutra: la suma de los estados de oxidación por la cantidad de átomos da 0.",
+        "Potasio: 2 átomos con +1 dan +2. Oxígeno: 7 átomos con −2 dan −14.",
+        "Los 2 átomos de cromo tienen que dar lo que falta: 0 − (+2) − (−14) = +12.",
+        "Cada cromo: +12 ÷ 2 = +6. No es +2 (el subíndice) ni +12 (falta dividir entre los dos átomos)."
+      ],
+      "verificar": [ { "fn": "oxidacion", "args": ["K2Cr2O7"], "espera": { "texto.Cr": "+6" } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "intermedio",
+      "enunciado": "El nitrato de amonio, NH₄NO₃, es un fertilizante. Tiene dos iones: NH₄⁺ y NO₃⁻. ¿Qué estado de oxidación tiene el nitrógeno en cada ion?",
+      "respuesta": "−3 en el NH₄⁺ y +5 en el NO₃⁻.",
+      "pasos": [
+        "En un ion, la suma da la carga del ion, no 0.",
+        "NH₄⁺: 4 H con +1 dan +4; el N tiene que dar +1 − 4 = −3.",
+        "NO₃⁻: 3 O con −2 dan −6; el N tiene que dar −1 + 6 = +5.",
+        "El mismo elemento puede tener dos estados distintos en una sola sustancia. Si se saca el promedio de los dos nitrógenos sale +1, que no es el de ninguno."
+      ],
+      "verificar": [
+        { "fn": "estado", "args": ["NH4^+", "N"], "espera": { "texto": "−3" } },
+        { "fn": "estado", "args": ["NO3^-", "N"], "espera": { "texto": "+5" } },
+        { "fn": "oxidacion", "args": ["NH4NO3"], "espera": { "texto.N": "+1" } }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "La casiterita es el mineral del que se saca el estaño; es SnO₂. El estaño tiene +2 y +4. Escribe su nombre en las tres nomenclaturas.",
+      "respuesta": "Sistemática: dióxido de estaño. Stock: óxido de estaño(IV). Tradicional: óxido estánnico.",
+      "pasos": [
+        "Es un metal con oxígeno: óxido básico.",
+        "Estado del estaño: 2 O dan −4, así que el Sn es +4.",
+        "Sistemática: se cuentan los átomos con prefijos: 2 O → dióxido; 1 Sn → de estaño.",
+        "Stock: el estado en número romano, porque el estaño tiene más de un estado: óxido de estaño(IV).",
+        "Tradicional: con dos estados, -oso para el menor (+2) e -ico para el mayor (+4): óxido estánnico."
+      ],
+      "verificar": [ { "fn": "nombrar", "args": ["SnO2"], "espera": { "sistematica": "dióxido de estaño", "stock": "óxido de estaño(IV)", "tradicional": "óxido estánnico" } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "básico",
+      "enunciado": "Los huesos tienen fosfato de calcio. Con los iones Ca²⁺ y PO₄³⁻, escribe su fórmula y di cuántos átomos hay en una unidad.",
+      "respuesta": "Ca₃(PO₄)₂, con 13 átomos: 3 Ca, 2 P y 8 O.",
+      "pasos": [
+        "La carga tiene que sumar cero. El menor número que es múltiplo de 2 y de 3 es 6.",
+        "Hacen falta 3 Ca²⁺ (+6) y 2 PO₄³⁻ (−6).",
+        "El fosfato es un ion de varios átomos y se repite: va entre paréntesis, Ca₃(PO₄)₂.",
+        "Átomos: 3 Ca + 2 × 1 P + 2 × 4 O = 3 + 2 + 8 = 13."
+      ],
+      "verificar": [ { "fn": "formulaDeIones", "args": ["Ca^2+", "PO4^3-"], "espera": { "formula": "Ca3(PO4)2", "atomos.Ca": 3, "atomos.P": 2, "atomos.O": 8 } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "El bromo tiene los estados +1, +3, +5 y +7. Con el +3 forma un óxido, y el óxido con agua forma un ácido. Escribe el óxido, el ácido y el nombre tradicional del ácido.",
+      "respuesta": "Br₂O₃ y HBrO₂, ácido bromoso.",
+      "pasos": [
+        "Óxido: Br³⁺ con O²⁻ → Br₂O₃.",
+        "Con agua: Br₂O₃ + H₂O → H₂Br₂O₄. Todos los subíndices se dividen entre 2: HBrO₂.",
+        "Con cuatro estados: hipo-…-oso (+1), -oso (+3), -ico (+5) y per-…-ico (+7). El +3 es -oso: ácido bromoso.",
+        "Comprobación: 1 H (+1) y 2 O (−4) dejan +3 para el Br."
+      ],
+      "verificar": [ { "fn": "formar", "args": ["oxacido", "Br", 3], "espera": { "formula": "HBrO2", "oxido": "Br2O3", "nombres.tradicional": "ácido bromoso" } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "El pentóxido de dinitrógeno reacciona con agua. ¿Qué ácido se forma y cuántas moléculas salen por cada molécula de óxido?",
+      "respuesta": "N₂O₅ + H₂O → 2HNO₃: dos moléculas de ácido nítrico.",
+      "pasos": [
+        "Sumando los átomos: N₂O₅ + H₂O tiene 2 H, 2 N y 6 O.",
+        "Eso es H₂N₂O₆, que se divide entre 2: HNO₃. Salen 2 moléculas.",
+        "El N tiene +5: 1 H (+1) y 3 O (−6) dejan +5. Con +1, +3 y +5, el +5 es -ico: ácido nítrico."
+      ],
+      "verificar": [ { "fn": "formar", "args": ["oxacido", "N", 5], "espera": { "formula": "HNO3", "reaccion": "N2O5 + H2O -> 2HNO3", "nombres.tradicional": "ácido nítrico" } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "El ácido fosfórico, H₃PO₄, se neutraliza con hidróxido de calcio, Ca(OH)₂. Escribe la ecuación balanceada con la sal y el agua, y da la suma de los coeficientes.",
+      "respuesta": "2H₃PO₄ + 3Ca(OH)₂ → Ca₃(PO₄)₂ + 6H₂O; la suma es 12.",
+      "pasos": [
+        "La sal se arma con los iones Ca²⁺ y PO₄³⁻: Ca₃(PO₄)₂.",
+        "Para 2 fosfatos hacen falta 2 H₃PO₄; para 3 calcios, 3 Ca(OH)₂.",
+        "Cada H⁺ del ácido se junta con un OH⁻ de la base y forma agua: 2 × 3 = 6 H₂O.",
+        "Suma: 2 + 3 + 1 + 6 = 12. La terminación cambia: fosfórico → fosfato."
+      ],
+      "verificar": [ { "fn": "neutralizar", "args": ["H3PO4", "Ca(OH)2"], "espera": { "sal": "Ca3(PO4)2", "coefs": [2, 3, 1, 6], "nombres.tradicional": "fosfato de calcio" } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Si al ácido sulfúrico se le quita un solo H⁺ y se lo junta con el ion Na⁺, se forma una sal ácida que se usa para bajar la alcalinidad de las piscinas. Escribe su fórmula y sus nombres.",
+      "respuesta": "NaHSO₄: hidrogenosulfato de sodio (stock), sulfato ácido de sodio (tradicional); también se le dice bisulfato de sodio.",
+      "pasos": [
+        "H₂SO₄ sin un H⁺ queda como HSO₄⁻, con carga −1.",
+        "Na⁺ con HSO₄⁻: las cargas +1 y −1 suman cero con una ficha de cada una: NaHSO₄.",
+        "El H que queda se nombra: hidrogenosulfato (stock) o sulfato ácido (tradicional).",
+        "Si se quitaran los dos H, saldría la sal neutra Na₂SO₄, sulfato de sodio."
+      ],
+      "verificar": [
+        { "fn": "neutralizar", "args": ["H2SO4", "NaOH", { "quitar": 1 }], "espera": { "sal": "NaHSO4", "nombres.stock": "hidrogenosulfato de sodio", "nombres.tradicional": "sulfato ácido de sodio", "nombres.comun": "bisulfato de sodio" } }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "El sulfato de cobre(II) pentahidratado, CuSO₄·5H₂O, forma cristales azules. ¿Qué porcentaje de su masa es agua? (Cu = 63,5; S = 32; O = 16; H = 1)",
+      "respuesta": "Cerca del 36,1 %.",
+      "pasos": [
+        "Masa de CuSO₄: 63,5 + 32 + 4 × 16 = 159,5.",
+        "Masa de 5 H₂O: 5 × 18 = 90. Total: 159,5 + 90 = 249,5.",
+        "Porcentaje: 90 ÷ 249,5 × 100 ≈ 36,1 %.",
+        "Si se divide entre la sal sin agua (90 ÷ 159,5) sale cerca del 56,4 %, que no es el porcentaje del cristal."
+      ],
+      "verificar": [ { "fn": "hidratoDe", "args": ["CuSO4", 5], "espera": { "masaMolar": 249.5, "masaAgua": 90, "porcentajeAgua": 36.07214428857716, "errores.porcentajeSobreAnhidra": 56.426332288401255 } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "intermedio",
+      "enunciado": "El peróxido de bario se usaba para blanquear. Escribe su fórmula y el estado de oxidación del oxígeno. ¿Por qué no se escribe BaO?",
+      "respuesta": "BaO₂; el oxígeno tiene −1. BaO es otra sustancia, el óxido de bario.",
+      "pasos": [
+        "El peróxido es el ion O₂²⁻: dos oxígenos unidos que juntos tienen carga −2.",
+        "Ba²⁺ con O₂²⁻: una ficha de cada uno suma cero. BaO₂.",
+        "El ion O₂²⁻ no se parte: sus dos O van siempre juntos. Por eso el 2 del BaO₂ no se simplifica.",
+        "Estado del O: el Ba tiene +2, así que los 2 O dan −2 y cada uno tiene −1."
+      ],
+      "verificar": [
+        { "fn": "formulaDeIones", "args": ["Ba^2+", "O2^2-"], "espera": { "formula": "BaO2" } },
+        { "fn": "oxidacion", "args": ["BaO2"], "espera": { "texto.O": "−1" } },
+        { "fn": "clasificar", "args": ["BaO"], "espera": { "funcion": "óxido básico" } }
+      ]
+    }
+  ]
+}

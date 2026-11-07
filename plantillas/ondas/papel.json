@@ -1,0 +1,124 @@
+{
+  "titulo": "Ondas y sonido: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Antes de usar una fórmula, pregúntate qué pone el medio y qué pone la fuente: la rapidez de la onda la pone el medio (en una cuerda, v = √(T/μ), con T la tensión y μ la masa por metro); la frecuencia la pone lo que agita. Con eso, λ = v/f. En una cuerda fija en los dos extremos caben medias longitudes de onda: f = n·v/(2L), con n el número de vientres. Para el sonido, β = 10·log(I/I0) con I0 = 10⁻¹² W/m²; toma log 2 = 0,3. El periodo se escribe 1/f (aquí T es la tensión).",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "En una plaza, dos niños tensan una soga de 0,1 kg por metro con una fuerza de 90 N. Uno de ellos da un golpe seco y sale un pulso. ¿Con qué rapidez viaja el pulso y cuánto tarda en recorrer los 12 m de soga?",
+      "respuesta": "30 m/s; tarda 0,4 s.",
+      "pasos": [
+        "La rapidez la pone la soga: v = √(T/μ) = √(90 / 0,1) = √900 = 30 m/s.",
+        "El pulso avanza a rapidez constante: t = d/v = 12 / 30 = 0,4 s.",
+        "Un golpe más fuerte o más rápido cambia la forma del pulso, no su rapidez. Para que llegue antes hay que tensar más la soga o usar una más liviana."
+      ],
+      "verificar": [{ "fn": "cuerda", "args": [{ "T": 90, "mu": 0.1 }], "espera": { "v": 30 } },
+                    { "fn": "pulso", "args": [{ "A": 0.1, "ancho": 0.3, "T": 90, "mu": 0.1 }], "llamar": ["llegada", 12], "espera": 0.4 }]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "En una cuerda larga, las ondas viajan a 20 m/s. Una persona agita un extremo 5 veces por segundo. ¿Cuál es la longitud de onda? Si ahora la agita 10 veces por segundo, ¿cuánto valen la rapidez y la longitud de onda?",
+      "respuesta": "λ = 4 m. Con 10 Hz, la rapidez sigue en 20 m/s y λ baja a 2 m.",
+      "pasos": [
+        "Agitar 5 veces por segundo es f = 5 Hz. De v = λ·f: λ = v/f = 20 / 5 = 4 m.",
+        "Al agitar más rápido cambia la frecuencia, pero la cuerda es la misma: su tensión y su masa por metro no cambiaron, así que v sigue en 20 m/s.",
+        "λ = 20 / 10 = 2 m. Si f se duplica en el mismo medio, λ se reduce a la mitad y v no cambia."
+      ],
+      "verificar": [{ "fn": "onda", "args": [{ "f": 5, "v": 20 }], "espera": { "lambda": 4 } },
+                    { "fn": "onda", "args": [{ "f": 10, "v": 20 }], "espera": { "lambda": 2, "v": 20 } }]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "La ecuación de una onda en una cuerda es y = 0,04·sen(10πx − 40πt), con x e y en metros y t en segundos. Halla la amplitud, la longitud de onda, la frecuencia, la rapidez y el sentido en que viaja.",
+      "respuesta": "A = 0,04 m; λ = 0,2 m; f = 20 Hz; v = 4 m/s, hacia +x.",
+      "pasos": [
+        "Compara con y = A·sen(kx − ωt): A = 0,04 m, k = 10π rad/m y ω = 40π rad/s.",
+        "λ = 2π/k = 2π/(10π) = 0,2 m. Ojo: k no es λ.",
+        "f = ω/(2π) = 40π/(2π) = 20 Hz. Ojo: ω no es f.",
+        "v = λ·f = 0,2 · 20 = 4 m/s; también v = ω/k = 40π/(10π) = 4 m/s.",
+        "Con kx − ωt, al crecer t hay que crecer x para tener la misma fase: la onda va hacia +x."
+      ],
+      "verificar": [{ "fn": "funcionOnda", "args": [{ "A": 0.04, "kPi": 10, "wPi": 40, "signo": "-" }], "espera": { "A": 0.04, "lambda": 0.2, "f": 20, "v": 4, "sentido": "+x" } }]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Una cuerda de 0,5 m está fija en sus dos extremos; las ondas viajan en ella a 200 m/s. ¿Cuál es su frecuencia más baja de vibración? Si vibra con 3 vientres, ¿cuál es la frecuencia y cuántos nodos tiene, contando los extremos?",
+      "respuesta": "f₁ = 200 Hz. Con 3 vientres, f₃ = 600 Hz y 4 nodos.",
+      "pasos": [
+        "En el modo más bajo hay un solo vientre: la cuerda tiene media longitud de onda. λ₁ = 2L = 1 m.",
+        "f₁ = v/λ₁ = 200 / 1 = 200 Hz. Es lo mismo que f₁ = v/(2L).",
+        "Con 3 vientres caben 3 medias longitudes de onda: f₃ = 3·v/(2L) = 3 · 200 = 600 Hz.",
+        "Los nodos son los vientres más uno: 3 + 1 = 4, contando los dos extremos fijos."
+      ],
+      "verificar": [{ "fn": "estacionaria", "args": [{ "L": 0.5, "v": 200, "n": 1 }], "espera": { "f": 200, "lambda": 1 } },
+                    { "fn": "estacionaria", "args": [{ "L": 0.5, "v": 200, "n": 3 }], "espera": { "f": 600, "nodos.3": 0.5 } }]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Una cuerda de guitarra de 0,6 m da su sonido más grave con 150 Hz. ¿Con qué rapidez viajan las ondas en ella? Si el músico la tensa hasta que la tensión sea cuatro veces mayor, ¿qué frecuencia da ahora?",
+      "respuesta": "v = 180 m/s. Con cuatro veces la tensión, 300 Hz.",
+      "pasos": [
+        "En el modo más bajo, λ = 2L = 1,2 m. v = λ·f = 1,2 · 150 = 180 m/s.",
+        "v = √(T/μ): si T se multiplica por 4, v se multiplica por √4 = 2. Ahora v = 360 m/s.",
+        "La cuerda mide lo mismo, así que λ sigue siendo 1,2 m: f = 360 / 1,2 = 300 Hz. La frecuencia se duplica, no se cuadruplica."
+      ],
+      "verificar": [{ "fn": "estacionaria", "args": [{ "L": 0.6, "v": 180, "n": 1 }], "espera": { "f": 150 } },
+                    { "fn": "estacionaria", "args": [{ "L": 0.6, "v": 360, "n": 1 }], "espera": { "f": 300 } }]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Una soga delgada está unida a otra cuatro veces más pesada por metro, y las dos están tensas con la misma fuerza. Por la delgada llega una onda de 10 Hz que viaja a 40 m/s. En la soga gruesa, ¿cuánto valen la frecuencia, la rapidez y la longitud de onda?",
+      "respuesta": "f = 10 Hz; v = 20 m/s; λ = 2 m (en la delgada, λ = 4 m).",
+      "pasos": [
+        "Cada punto de la unión sube y baja al ritmo de la onda que llega: la frecuencia no cambia, sigue en 10 Hz.",
+        "La rapidez la pone cada soga: con la misma tensión y μ cuatro veces mayor, v = √(T/μ) se divide entre √4 = 2. En la gruesa, v = 20 m/s.",
+        "λ = v/f: en la delgada, 40 / 10 = 4 m; en la gruesa, 20 / 10 = 2 m. La onda se «aprieta» al pasar."
+      ],
+      "verificar": [{ "fn": "cambioMedio", "args": [{ "f": 10, "v1": 40, "v2": 20 }], "espera": { "f2": 10, "lambda1": 4, "lambda2": 2 } }]
+    },
+    {
+      "id": "p7",
+      "nivel": "básico",
+      "enunciado": "En una avenida de Lima, un bus produce junto a la vereda un nivel de 70 dB. ¿Cuál es la intensidad del sonido? Si pasa otro bus igual al lado, ¿qué nivel se mide?",
+      "respuesta": "I = 10⁻⁵ W/m². Con los dos buses, 73 dB.",
+      "pasos": [
+        "β = 10·log(I/I0): 70 = 10·log(I/10⁻¹²), así que I/10⁻¹² = 10⁷ e I = 10⁻⁵ W/m².",
+        "Con dos buses iguales, se suman las intensidades: 2 · 10⁻⁵ W/m². Los decibeles no se suman.",
+        "β = 10·log(2 · 10⁷) = 10·(log 2 + 7) = 10·(0,3 + 7) = 73 dB."
+      ],
+      "verificar": [{ "fn": "intensidad", "args": [{ "beta": 70 }], "espera": { "I": 1e-5 } },
+                    { "fn": "sumarNiveles", "args": [{ "niveles": [70, 70] }], "espera": { "betaAcademia": 73 } }]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "A 10 m de un parlante que emite igual en todas las direcciones, el nivel es de 90 dB. ¿Qué nivel se mide a 20 m? ¿A qué distancia el nivel sería de 70 dB?",
+      "respuesta": "A 20 m, 84 dB. A 100 m, 70 dB.",
+      "pasos": [
+        "La potencia se reparte en una esfera de área 4πr²: la intensidad va con 1/r². Al doble de distancia, I baja a la cuarta parte.",
+        "β₂ = β₁ + 10·log(1/4) = 90 − 10·(2 · 0,3) = 90 − 6 = 84 dB.",
+        "Para bajar 20 dB, la intensidad debe ser 100 veces menor; con 1/r², la distancia debe ser √100 = 10 veces mayor: 100 m."
+      ],
+      "verificar": [{ "fn": "distancia", "args": [{ "beta": 90, "r1": 10, "r2": 20 }], "espera": { "beta2Academia": 84 } },
+                    { "fn": "distancia", "args": [{ "beta": 90, "r1": 10, "r2": 100 }], "espera": { "beta2": 70 } }]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Cada tubo de una zampoña está cerrado en el extremo de abajo y abierto en el de arriba. Si un tubo mide 17 cm y el sonido viaja a 340 m/s, ¿cuál es la frecuencia más grave que da? ¿Y si el tubo estuviera abierto en los dos extremos?",
+      "respuesta": "Cerrado: 500 Hz. Abierto: 1000 Hz.",
+      "pasos": [
+        "En el tubo cerrado, el fondo es un nodo y la boca un vientre: en el modo más bajo cabe un cuarto de longitud de onda. λ = 4L = 0,68 m.",
+        "f = v/λ = 340 / 0,68 = 500 Hz.",
+        "Abierto en los dos extremos, hay vientres en las dos bocas: cabe media longitud de onda, λ = 2L = 0,34 m y f = 340 / 0,34 = 1000 Hz."
+      ],
+      "verificar": [{ "fn": "tubo", "args": [{ "L": 0.17, "v": 340, "tipo": "cerrado", "n": 1 }], "espera": { "f": 500 } },
+                    { "fn": "tubo", "args": [{ "L": 0.17, "v": 340, "tipo": "abierto", "n": 1 }], "espera": { "f": 1000 } }]
+    }
+  ]
+}

@@ -153,7 +153,7 @@
       "universidades": {"uni": {"semanas": [8]}, "unmsm": {"temas": [16]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": [],
+      "plantillas": ["mas"],
       "investigacion": "docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md"
     },
     {
@@ -170,7 +170,7 @@
       "universidades": {"uni": {"semanas": [9]}, "unmsm": {"temas": [16]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": [],
+      "plantillas": ["ondas"],
       "investigacion": "docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md"
     },
     {
@@ -278,7 +278,7 @@
       "universidades": {"uni": {"semanas": [17]}, "unmsm": {"temas": [14]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": [],
+      "plantillas": ["magnetismo"],
       "investigacion": "docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md"
     },
     {

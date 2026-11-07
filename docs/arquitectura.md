@@ -135,6 +135,14 @@ En el celular (menos de 900 px) la barra de abajo se queda (decisión de Gerson,
 
 **Sin conexión.** `app/sw.js` sirve también `/contenido/` (una prueba de `app/app.test.js` exige que todo lo guardado pase el filtro del `fetch` y que cada `<script>` de `index.html` esté en la cáscara).
 
+## Carga, caché y despliegue (la2 y la3, 7 nov 2026)
+
+**Carga.** `/app/` pinta apenas llega `app/datos/catalogo.json` (con `preload`); `pruebas.json` y `prueba.js` llegan después, y el curso y «Abrir escena» los esperan para que nadie se salte la prueba de entrada. `practica.js`, `prueba.js` y `lectura.js` se cargan al entrar a su ruta (`MODULOS` en `app/app.js`). Medido con un celular de gama baja emulado por 3G lenta: interactivo a los 2,5 s la primera vez (antes 9,1 s) y 0,5 s con caché (`docs/medicion/la2-gama-baja-2026-11-07.md`).
+
+**Service worker.** Al subir `VERSION`, la cáscara se baja de nuevo (`cache: 'no-cache'`) y los archivos de plantilla que ya estaban se copian de la caché anterior: una actualización pasó de 222 pedidos y 8 MB a 23 pedidos y 26 KB. Las escenas se renuevan solas con stale-while-revalidate, guardadas bajo su dirección sin `?…` (antes una escena cambiada sin subir `VERSION` no llegaba nunca al alumno).
+
+**Despliegue (la3).** El hosting tiene que servir todo por **HTTPS**: sin eso no hay service worker ni modo sin conexión, salvo en localhost. Tiene que comprimir con **brotli o gzip** todo lo que es texto (HTML, JS, CSS, JSON, SVG, webmanifest): la precarga baja de unos 8,2 MB a unos 2,6 MB, y el primer ingreso por 3G lenta pasa de 5,0 s a 2,5 s. Debe mandar **ETag o Last-Modified** con `Cache-Control: no-cache` (o un `max-age` corto) en `app/`, `nucleo/`, `plantillas/` y `contenido/`, para que cada revalidación del service worker sea un 304 de pocos bytes. `app/sw.js` nunca debe guardarse con `max-age` largo, para que los celulares vean a tiempo cada `VERSION`. El service worker tiene que poder controlar todo el sitio desde `/app/` (cabecera `Service-Worker-Allowed: /` en `app/sw.js`, o servirlo desde la raíz). `app/datos/catalogo.json` y `app/datos/pruebas.json` se publican ya armados con `npm run catalogo`. El servidor local (`herramientas/servidor.js`) ya imita esto: ETag, 304 y gzip.
+
 ## Cómo agregar cosas
 
 **Una universidad nueva** (por ejemplo, la UNA Puno):

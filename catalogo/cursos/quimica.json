@@ -154,7 +154,7 @@
       },
       "potencial_visual": "bajo",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["nomenclatura-inorganica"],
       "investigacion": "docs/investigacion/quimica-materia-nomenclatura-organica-ideas-erroneas.md"
     },
     {
@@ -532,8 +532,8 @@
       },
       "potencial_visual": "bajo",
       "grado": 5,
-      "plantillas": [],
-      "investigacion": null
+      "plantillas": ["biomoleculas"],
+      "investigacion": "docs/investigacion/biomoleculas-ideas-erroneas.md"
     },
     {
       "id": "quimica.recursos-naturales",

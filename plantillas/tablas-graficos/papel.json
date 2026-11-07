@@ -1,0 +1,374 @@
+{
+  "titulo": "La bodega en gráficos: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 minutos por problema, como en el examen. Antes de comparar barras, mira dónde empieza el eje: compara los valores, no las alturas dibujadas. Una variación porcentual es el cambio dividido entre el valor de PARTIDA. En un gráfico circular, la vuelta entera (360°) es el total: grados/360 = porcentaje/100 = cantidad/total. En un campeonato todos contra todos de n equipos a una rueda se juegan n(n − 1)/2 partidos; cada partido reparte 3 puntos si alguien gana y 2 si empatan. En suficiencia de datos, una información basta si deja UN solo valor posible: búscalos todos, no te quedes con el primero que encuentres.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Un gráfico de barras muestra los panetones que vendieron dos bodegas en diciembre: la bodega Paz vendió 60 y la bodega Inti, 48. El eje vertical empieza en 40. ¿Cuántas veces lo de Inti vendió Paz? ¿Y cuántas veces más alta se ve su barra?",
+      "respuesta": "Vendió 5/4 = 1,25 veces lo de Inti (25 % más); su barra se ve 2,5 veces más alta.",
+      "pasos": [
+        "Compara los valores, no las barras: 60/48 = 5/4 = 1,25. Vendió 12 panetones más, que es el 25 % de 48.",
+        "Sobre el eje que empieza en 40, la barra de Paz mide 60 − 40 = 20 y la de Inti, 48 − 40 = 8.",
+        "20/8 = 2,5: el dibujo exagera la diferencia porque le cortó a las dos barras los primeros 40 panetones."
+      ],
+      "verificar": [
+        {
+          "fn": "razonBarras",
+          "args": [
+            {
+              "a": 60,
+              "b": 48,
+              "inicio": 40
+            }
+          ],
+          "espera": {
+            "razon": 1.25,
+            "porcentajeMas": 25,
+            "altoA": 20,
+            "altoB": 8,
+            "dibujada": 2.5
+          }
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Los alumnos inscritos en el taller de ajedrez de un colegio fueron 30 en abril, 36 en mayo, 45 en junio y 54 en julio. ¿En qué mes creció más en porcentaje respecto del mes anterior, y cuánto?",
+      "respuesta": "En junio: de 36 a 45 sube 9, que es el 25 % de 36.",
+      "pasos": [
+        "Abril a mayo: sube 6 sobre 30, 6/30 = 20 %.",
+        "Mayo a junio: sube 9 sobre 36, 9/36 = 25 %.",
+        "Junio a julio: sube 9 sobre 45, 9/45 = 20 %. Sube lo mismo que el tramo anterior, pero parte de más arriba.",
+        "El mayor es junio, con 25 %. Ojo con la base: el porcentaje se divide entre el valor de partida (36), no entre el de llegada (45)."
+      ],
+      "verificar": [
+        {
+          "fn": "crecimientos",
+          "args": [
+            {
+              "valores": [
+                30,
+                36,
+                45,
+                54
+              ]
+            }
+          ],
+          "espera": {
+            "mayor": 1,
+            "porcentaje": 25,
+            "tramos.0.porcentaje": 20,
+            "tramos.2.porcentaje": 20
+          }
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "En un gráfico circular sobre cómo llegan al colegio 240 alumnos, el sector «a pie» mide 108°. ¿Cuántos alumnos llegan a pie y qué porcentaje son?",
+      "respuesta": "72 alumnos, el 30 %.",
+      "pasos": [
+        "La vuelta entera, 360°, son los 240 alumnos.",
+        "108/360 = 3/10: el sector es tres décimos de la vuelta, el 30 %.",
+        "3/10 de 240 = 72 alumnos."
+      ],
+      "verificar": [
+        {
+          "fn": "cantidadDeSector",
+          "args": [
+            {
+              "total": 240,
+              "grados": 108
+            }
+          ],
+          "espera": {
+            "cantidad": 72,
+            "porcentaje": 30
+          }
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "básico",
+      "enunciado": "Un kiosco vendió en una semana 45 jugos de papaya, 60 de naranja, 30 surtidos y 15 de piña. Si se hace un gráfico circular, ¿cuántos grados mide cada sector?",
+      "respuesta": "Papaya 108°, naranja 144°, surtido 72° y piña 36°.",
+      "pasos": [
+        "El total es 45 + 60 + 30 + 15 = 150 jugos: los 360°.",
+        "Cada jugo vale 360/150 = 2,4°.",
+        "Papaya: 45 · 2,4 = 108°. Naranja: 60 · 2,4 = 144°. Surtido: 30 · 2,4 = 72°. Piña: 15 · 2,4 = 36°.",
+        "Comprueba: 108 + 144 + 72 + 36 = 360."
+      ],
+      "verificar": [
+        {
+          "fn": "sectores",
+          "args": [
+            {
+              "cantidades": [
+                45,
+                60,
+                30,
+                15
+              ]
+            }
+          ],
+          "espera": {
+            "total": 150,
+            "sectores.0.grados": 108,
+            "sectores.1.grados": 144,
+            "sectores.2.grados": 72,
+            "sectores.3.grados": 36,
+            "sumaGrados": 360
+          }
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "De 200 alumnos de un colegio de Juliaca, el 30 % llega en mototaxi. De los que llegan en mototaxi, la mitad viene del mismo barrio. En un gráfico circular de los 200 alumnos, ¿cuántos grados mediría el sector «mototaxi y del mismo barrio»?",
+      "respuesta": "54°: son el 15 % del total, 30 alumnos.",
+      "pasos": [
+        "El 30 % de 200 son 60 alumnos en mototaxi.",
+        "La mitad de 60 son 30 alumnos: 30/200 = 15 % del total (el 50 % del 30 %).",
+        "15 % de 360° = 0,15 · 360 = 54°.",
+        "No es 180° (el 50 % de la vuelta): ese 50 % es de los 60 en mototaxi, no de los 200."
+      ],
+      "verificar": [
+        {
+          "fn": "sectorAnidado",
+          "args": [
+            {
+              "total": 200,
+              "porcentaje": 30,
+              "parte": 50
+            }
+          ],
+          "espera": {
+            "porcentaje": 15,
+            "grados": 54,
+            "cantidad": 30
+          }
+        }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "básico",
+      "enunciado": "En el campeonato de fulbito de un colegio juegan 6 equipos, todos contra todos. ¿Cuántos partidos se juegan si es a una rueda? ¿Y si es a dos ruedas (ida y vuelta)?",
+      "respuesta": "15 partidos a una rueda y 30 a dos ruedas.",
+      "pasos": [
+        "Cada equipo juega contra los otros 5: 6 · 5 = 30, pero así cada partido se cuenta dos veces (una por cada equipo).",
+        "A una rueda: 30/2 = 15 partidos.",
+        "A dos ruedas, cada par juega dos veces: 2 · 15 = 30 partidos."
+      ],
+      "verificar": [
+        {
+          "fn": "partidos",
+          "args": [
+            {
+              "equipos": 6
+            }
+          ],
+          "espera": {
+            "partidos": 15,
+            "porEquipo": 5
+          }
+        },
+        {
+          "fn": "partidos",
+          "args": [
+            {
+              "equipos": 6,
+              "ruedas": 2
+            }
+          ],
+          "espera": {
+            "partidos": 30,
+            "porEquipo": 10
+          }
+        }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "En un campeonato de 5 equipos todos contra todos, a una rueda, la victoria da 3 puntos, el empate 1 y la derrota 0. Al terminar, los puntos fueron 10, 7, 6, 3 y 1. ¿Cuántos partidos terminaron empatados?",
+      "respuesta": "3 empates.",
+      "pasos": [
+        "Se jugaron 5 · 4/2 = 10 partidos.",
+        "Un partido con ganador reparte 3 puntos; un empate, 2 (uno para cada equipo). Sin empates habría 10 · 3 = 30 puntos.",
+        "Hay 10 + 7 + 6 + 3 + 1 = 27 puntos: faltan 3, y cada empate quita uno. Hubo 3 empates.",
+        "No es 6: la columna de empates de la tabla sumaría 6, porque cada empate aparece en la fila de los dos equipos."
+      ],
+      "verificar": [
+        {
+          "fn": "empates",
+          "args": [
+            {
+              "equipos": 5,
+              "puntos": [
+                10,
+                7,
+                6,
+                3,
+                1
+              ]
+            }
+          ],
+          "espera": {
+            "partidos": 10,
+            "total": 27,
+            "empates": 3
+          }
+        }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Cuatro equipos jugaron todos contra todos, a una rueda. La tabla final está incompleta: Totoras PJ 3, PG 1, PE 2, PP 0, GF 3, GC 2, 5 puntos; Uros 3, 1, 0, 2, GF 3, GC 3, 3 puntos; Suris 3, 1, 1, 1, GF 3, GC 3, 4 puntos; Kantutas jugó 3 partidos e hizo 3 goles. ¿Cuántos partidos ganó, empató y perdió Kantutas, cuántos puntos tiene y cuántos goles recibió?",
+      "respuesta": "Ganó 1, empató 1 y perdió 1: 4 puntos. Recibió 4 goles.",
+      "pasos": [
+        "Las victorias y las derrotas de todo el torneo son iguales (cada partido con ganador da una de cada una): 1 + 1 + 1 + PG = 0 + 2 + 1 + PP, o sea PG = PP.",
+        "Los empates de la columna PE van de dos en dos: 2 + 0 + 1 + PE debe ser par, así que PE es impar: 1 o 3.",
+        "PE = 3 querría decir que Kantutas empató con todos, también con Uros, pero Uros no empató ningún partido. Entonces PE = 1 y PG = PP = 1. Puntos: 3 · 1 + 1 = 4.",
+        "Los goles a favor de todos suman lo mismo que los goles en contra: 3 + 3 + 3 + 3 = 12 = 2 + 3 + 3 + GC, así que GC = 4."
+      ],
+      "verificar": [
+        {
+          "fn": "deducirTabla",
+          "args": [
+            {
+              "equipos": 4,
+              "filas": [
+                {
+                  "PJ": 3,
+                  "PG": 1,
+                  "PE": 2,
+                  "PP": 0,
+                  "GF": 3,
+                  "GC": 2,
+                  "Pts": 5
+                },
+                {
+                  "PJ": 3,
+                  "PG": 1,
+                  "PE": 0,
+                  "PP": 2,
+                  "GF": 3,
+                  "GC": 3,
+                  "Pts": 3
+                },
+                {
+                  "PJ": 3,
+                  "PG": 1,
+                  "PE": 1,
+                  "PP": 1,
+                  "GF": 3,
+                  "GC": 3,
+                  "Pts": 4
+                },
+                {
+                  "PJ": 3,
+                  "PG": null,
+                  "PE": null,
+                  "PP": null,
+                  "GF": 3,
+                  "GC": null,
+                  "Pts": null
+                }
+              ]
+            }
+          ],
+          "espera": {
+            "unica": true,
+            "filas.3.PG": 1,
+            "filas.3.PE": 1,
+            "filas.3.PP": 1,
+            "filas.3.Pts": 4,
+            "filas.3.GC": 4
+          }
+        }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "intermedio",
+      "enunciado": "¿Cuántos años tiene Rosa? I: Rosa tiene 3 años más que su hermano. II: Entre los dos suman 25 años. Responde con el formato de suficiencia: A) La información I es suficiente; B) La información II es suficiente; C) Es necesario utilizar ambas informaciones; D) Cada una de las informaciones, por separado, es suficiente; E) Las informaciones dadas son insuficientes.",
+      "respuesta": "C: es necesario utilizar ambas informaciones; Rosa tiene 14 años.",
+      "pasos": [
+        "Con la I sola, Rosa podría tener 4 (hermano de 1), 5, 6…: muchas edades.",
+        "Con la II sola, Rosa y su hermano podrían tener 13 y 12, 20 y 5…: muchas.",
+        "Juntas: R = H + 3 y R + H = 25 → 2H + 3 = 25 → H = 11 y R = 14. Una sola edad: clave C."
+      ],
+      "verificar": [
+        {
+          "fn": "suficiencia",
+          "args": [
+            {
+              "variables": {
+                "rosa": [
+                  1,
+                  40
+                ],
+                "hermano": [
+                  1,
+                  40
+                ]
+              },
+              "pregunta": "rosa",
+              "I": "rosa == hermano + 3",
+              "II": "rosa + hermano == 25"
+            }
+          ],
+          "espera": {
+            "clave": "juntas",
+            "valores.juntas": [
+              14
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Se pensó un número de dos cifras. ¿Cuál es? I: Es múltiplo de 25. II: Es impar. Con el mismo formato: A) La información I es suficiente; B) La información II es suficiente; C) Es necesario utilizar ambas informaciones; D) Cada una de las informaciones, por separado, es suficiente; E) Las informaciones dadas son insuficientes.",
+      "respuesta": "E: las informaciones dadas son insuficientes (quedan 25 y 75).",
+      "pasos": [
+        "Con la I: los múltiplos de 25 de dos cifras son 25, 50 y 75. Tres posibles: no basta.",
+        "Con la II: hay 45 impares de dos cifras. No basta.",
+        "Juntas: quedan 25 y 75. Todavía son dos: ni juntas alcanzan. Si te quedabas con el primero que encontraste con la I (25), habrías marcado A; si usabas las dos solo porque estaban, C."
+      ],
+      "verificar": [
+        {
+          "fn": "suficiencia",
+          "args": [
+            {
+              "variables": {
+                "n": [
+                  10,
+                  99
+                ]
+              },
+              "pregunta": "n",
+              "I": "n % 25 == 0",
+              "II": "n % 2 == 1"
+            }
+          ],
+          "espera": {
+            "clave": "faltan",
+            "valores.juntas": [
+              25,
+              75
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
