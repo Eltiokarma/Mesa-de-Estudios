@@ -318,24 +318,26 @@ let DIBUJADOS = new Set();
 const RAD = { H:0.3, O:0.46, N:0.48, C:0.5, F:0.44, S:0.6, CH3:0.62, CH2:0.6, CH:0.58 };
 const colAt = (c, el) => /^CH/.test(el) ? c.C : (c[el] || c.C);
 // Las moléculas chicas (u < 10 px: líquido, vapor, burbuja, tubo) se pintan una vez por giro en un lienzo aparte y se
-// pegan con drawImage (la2): son decenas por cuadro y cada una pedía unos diez trazos. Hay 256 giros y la figura cae en
+// pegan con drawImage (la2): son decenas por cuadro y cada una pedía unos diez trazos. Hay 128 giros y la figura cae en
 // el píxel real más cercano: la diferencia con el trazo directo no pasa de medio píxel real. Las figuras que faltan se
-// preparan en los ratos libres del navegador (requestIdleCallback) y, mientras tanto, esa molécula va con trazo directo:
-// así ni un toque ni un cambio de tamaño pagan la preparación. Las grandes (con letras o u ≥ 10) van siempre directo.
-const FIGURAS = new Map(), GIROS = 256, FALTAN = new Map();
-let preparando = false;
-const ocioso = typeof requestIdleCallback === 'function' ? fn => requestIdleCallback(fn, { timeout: 500 }) : fn => setTimeout(() => fn({ timeRemaining: () => 4 }), 50);
+// preparan en los ratos libres del navegador y, desde 250 ms después de que aparece un tamaño nuevo, también hasta 3
+// por cuadro del bucle; mientras tanto esa molécula va con trazo directo. Así un toque que cambia el tamaño del dibujo
+// no paga la preparación. Las grandes (con letras o u ≥ 10) van siempre con trazo directo.
+const FIGURAS = new Map(), GIROS = 128, FALTAN = new Map(), TAMANOS = new Map();
+let preparando = false, NUEVAS = 0, EN_BUCLE = false;
+const ocioso = typeof requestIdleCallback === 'function' ? fn => requestIdleCallback(fn, { timeout: 300 }) : fn => setTimeout(() => fn({ timeRemaining: () => 4 }), 50);
+function crearFigura(clave, c, s, u, k, d){
+  if (FIGURAS.size > 3000){ FIGURAS.clear(); TAMANOS.clear(); }
+  const S = ML.SUSTANCIAS[s], ext = Math.max(...S.atomos.map(a => Math.hypot(a.x, a.y) + (RAD[a.el] || 0.5)))*u + 2, n = Math.ceil(2*ext*d) + 2;
+  const cv = document.createElement('canvas'); cv.width = n; cv.height = n;
+  const g = cv.getContext('2d'); g.setTransform(d, 0, 0, d, n/2, n/2);
+  trazarMolecula(g, c, S, molPuntos(S, 0, 0, u, k/GIROS*2*Math.PI), u, {});
+  const f = { cv, n }; FIGURAS.set(clave, f); FALTAN.delete(clave);
+  return f;
+}
 function prepararFiguras(plazo){
-  for (const [clave, [c, s, u, k, d]] of FALTAN){
-    if (plazo.timeRemaining() < 1) break;
-    FALTAN.delete(clave);
-    if (FIGURAS.size > 3000) FIGURAS.clear();
-    const S = ML.SUSTANCIAS[s], ext = Math.max(...S.atomos.map(a => Math.hypot(a.x, a.y) + (RAD[a.el] || 0.5)))*u + 2, n = Math.ceil(2*ext*d) + 2;
-    const cv = document.createElement('canvas'); cv.width = n; cv.height = n;
-    const g = cv.getContext('2d'); g.setTransform(d, 0, 0, d, n/2, n/2);
-    trazarMolecula(g, c, S, molPuntos(S, 0, 0, u, k/GIROS*2*Math.PI), u, {});
-    FIGURAS.set(clave, { cv, n });
-  }
+  let hechas = 0;   // aunque no quede rato libre (se cumplió el plazo de espera), unas pocas
+  for (const [clave, x] of FALTAN){ if (hechas++ >= 4 && plazo.timeRemaining() < 1) break; crearFigura(clave, ...x); }
   preparando = FALTAN.size > 0;
   if (preparando) ocioso(prepararFiguras);
 }
@@ -343,6 +345,9 @@ function figura(c, s, u, k, d){
   const clave = `${s}|${u}|${k}|${d}|${c.ink}|${c.borde}|${c.H}|${c.O}|${c.N}|${c.C}|${c.F}|${c.S}`;
   const f = FIGURAS.get(clave);
   if (f) return f;
+  const tam = `${s}|${u}|${d}`, ahora = performance.now();
+  if (!TAMANOS.has(tam)) TAMANOS.set(tam, ahora);
+  if (EN_BUCLE && NUEVAS < 3 && ahora - TAMANOS.get(tam) >= 250){ NUEVAS++; return crearFigura(clave, c, s, u, k, d); }
   if (FALTAN.size < 600) FALTAN.set(clave, [c, s, u, k, d]);
   if (!preparando){ preparando = true; ocioso(prepararFiguras); }
   return null;
@@ -880,7 +885,7 @@ function tick(now){
     if (!RM && E.vista.frascos) for (const f of E.vista.frascos.items) if (f.caja) ML.pasoCaja(f.caja, dt*E.vel);
     if (E.alAvanzar) E.alAvanzar();
     // Si nada se mueve, el dibujo ya está al día: quien cambia la vista llama a E.dibujar antes de pedir() (la2).
-    if (anima || vivo) E.dibujar();
+    if (anima || vivo){ EN_BUCLE = true; NUEVAS = 0; try { E.dibujar(); } finally { EN_BUCLE = false; } }
     if (vivo) sigue = true;
   }
   if (sigue) pedir();
