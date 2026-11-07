@@ -388,7 +388,8 @@ function crearEscena(cv, idDesc, idLect, idLey){
         const p = pts[a], q = pts[b], mx = (p.x + q.x)/2, my = (p.y + q.y)/2, dx = q.x - p.x, dy = q.y - p.y, d = Math.hypot(dx, dy) || 1;
         let nx = -dy/d, ny = dx/d; if ((mx + nx - C.cen.x)*nx + (my + ny - C.cen.y)*ny < 0 && Math.hypot(mx - C.cen.x, my - C.cen.y) > 30){ nx = -nx; ny = -ny; }
         const largo = L !== undefined ? L : Math.hypot(f.nodos[a][0] - f.nodos[b][0], f.nodos[a][1] - f.nodos[b][1]);
-        rotulo(ctx, c, mx + nx*12, my + ny*12, `${fmt(largo)} m`, c.ink, 'center', 700, 11);
+        const off = F.repetir.includes(k) ? 26 : 12;
+        rotulo(ctx, c, mx + nx*off, my + ny*off, `${fmt(largo)} m`, c.ink, 'center', 700, 11);
       });
       // lo que se repite (paralelo, un poco afuera)
       if (solo && F.repetir.length){
@@ -441,7 +442,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
       if (solo && F.trazo.length){ const p = pts[F.trazo[F.trazo.length - 1]]; punto(ctx, p.x, p.y, 11, 'transparent', c.t, 3); }
       if (F.marca !== null && solo){ const p = pts[F.marca]; punto(ctx, p.x, p.y, 13, 'transparent', c.ink, 2); }
       if (!solo){
-        rotulo(ctx, c, C.cx0 + C.cw/2, Hh - 14, `${j + 1} · ${g.nombre}`, c.ink, 'center', 800, 12);
+        rotulo(ctx, c, C.cx0 + C.cw/2, Hh - 14, W < 480 ? g.nombre : `${j + 1} · ${g.nombre}`, c.ink, 'center', 800, W < 480 ? 11 : 12);
         if (j) { ctx.save(); ctx.strokeStyle = c.line; ctx.lineWidth = 1; linea(ctx, { x:C.cx0, y:10 }, { x:C.cx0, y:Hh - 10 }); ctx.restore(); }
       }
     });
@@ -490,7 +491,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
     // medidas
     const bajo = g.T((g.x0 + g.x1)/2, g.y0), izq = g.T(g.x0, (g.y0 + g.y1)/2);
     rotulo(ctx, c, bajo.x, bajo.y + 16, `${fmt(P.ancho)} m`, S.colores ? c.b : c.ink, 'center', 800, 12);
-    rotulo(ctx, c, izq.x - 8, izq.y, `${fmt(P.alto)} m`, S.colores ? c.h : c.ink, 'right', 800, 12);
+    rotulo(ctx, c, izq.x - (S.paredes.length && S.prog > 0 ? 20 : 8), izq.y, `${fmt(P.alto)} m`, S.colores ? c.h : c.ink, 'right', 800, 12);
     if (S.muesca){
       const M = S.muesca, p = g.T((M.desde + M.hasta)/2, M.alto - M.profundidad), w = g.T(M.desde, M.alto);
       rotulo(ctx, c, g.T(M.hasta, 0).x + 8, g.T(0, M.alto - M.profundidad/2).y, `e = ${fmt(M.profundidad)} m`, c.e, 'left', 800, 12);
@@ -579,11 +580,12 @@ function crearEscena(cv, idDesc, idLect, idLey){
     const B = E.caja, pts = [];
     for (const x of [0, B.x]) for (const y of [0, B.y]) for (const z of [0, B.z]) pts.push([x, y, z]);
     // el desarrollo abierto también tiene que caber
-    if (B.des >= 0) for (const q of pts) pts.push(abrirPunto(B.des, q, Math.PI/2, B));
+    if (B.des >= 0) for (const q of pts.slice()) pts.push(abrirPunto(B.des, q, Math.PI/2, B));
     const g0 = { ox:0, oy:0, s:1 }, pp = pts.map(p => pr(p, g0));
     const xs = pp.map(p => p.x), ys = pp.map(p => p.y), w = Math.max(...xs) - Math.min(...xs), h = Math.max(...ys) - Math.min(...ys);
-    const s = Math.min((W - 70)/w, (Hh - 64)/h);
-    const ox = (W - w*s)/2 - Math.min(...xs)*s, oy = (Hh - h*s)/2 - Math.min(...ys)*s + 4;
+    const iz = W < 560 ? 62 : 100, tot = W < 560 ? 116 : 180;
+    const s = Math.min((W - tot)/w, (Hh - 64)/h);
+    const ox = iz + (W - tot - w*s)/2 - Math.min(...xs)*s, oy = (Hh - h*s)/2 - Math.min(...ys)*s + 4;
     return { s, ox, oy };
   }
   function poli(ctx, ps){ ctx.beginPath(); ps.forEach((p, k) => (k ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y))); ctx.closePath(); }
@@ -653,7 +655,8 @@ function crearEscena(cv, idDesc, idLect, idLey){
 
   // ----- arcos -----
   function dibArcos(c){
-    const A = E.arc, s = Math.min((W - 60)/A.diametro, (Hh - 50)/A.diametro), cx = W/2, cy = 26 + A.diametro*s/2 + (Hh - 50 - A.diametro*s)/2;
+    const A = E.arc, alto = A.diametro/2 + A.diametro/4,   // caben de 2 partes en adelante
+      s = Math.min((W - 60)/A.diametro, (Hh - 76)/alto), cx = W/2, cy = 32 + A.diametro*s/2 + (Hh - 76 - alto*s)/2;
     const x0 = cx - A.diametro*s/2;
     ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.setLineDash([4, 4]); linea(ctx, { x:x0 - 8, y:cy }, { x:x0 + A.diametro*s + 8, y:cy }); ctx.restore();
     ctx.save(); ctx.strokeStyle = c.G; ctx.globalAlpha = atenuar('G'); ctx.lineWidth = grosor('G', 4); ctx.beginPath(); ctx.arc(cx, cy, A.diametro*s/2, Math.PI, 2*Math.PI); ctx.stroke(); ctx.restore();
@@ -671,7 +674,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
     const R = E.reja, g0 = { ox:0, oy:0, s:1 };
     const esq = [[0,0,0],[R.a,0,0],[0,R.b,0],[R.a,R.b,0],[0,0,R.c],[R.a,R.b,R.c],[R.a,0,R.c],[0,R.b,R.c]].map(p => pr(p, g0));
     const xs = esq.map(p => p.x), ys = esq.map(p => p.y), w = Math.max(...xs) - Math.min(...xs), h = Math.max(...ys) - Math.min(...ys);
-    const s = Math.min((W - 80)/w, (Hh - 70)/h), g = { s, ox:(W - w*s)/2 - Math.min(...xs)*s, oy:(Hh - h*s)/2 - Math.min(...ys)*s + 6 };
+    const s = Math.min((W - 150)/w, (Hh - 70)/h), g = { s, ox:70 + (W - 150 - w*s)/2 - Math.min(...xs)*s, oy:(Hh - h*s)/2 - Math.min(...ys)*s + 6 };
     geo = g;
     const P = p => pr(p, g);
     ctx.save(); ctx.lineCap = 'round';
@@ -1193,12 +1196,12 @@ const EXPS = [
     antes:ya => E.config({ modo:'arcos', arc:{ diametro:12, partes:3, ver:ya, verTxt:{ G:`${E2.exacto} m`, c:`${E2.exacto} m` } },
       lect: ya ? [L('G', 'Lazo de Ana G', `${E2.exacto} m`), L('c', 'Lazo del hermano c', `${E2.exacto} m`)] : [L('G', 'Lazo de Ana G', '?'), L('c', 'Lazo del hermano c', '?')],
       ley:[['G', 'G · semicírculo grande'], ['c', 'c · semicírculos chicos']], desc:'Una recta de 12 m con un semicírculo grande arriba y tres semicírculos chicos abajo.' }),
-    despues:() => { const x = EXPS[1]; x.antes(true); const A = E.arc; let k = 1;
+    despues:() => { const x = EXPS[1]; x.antes(true); const A = E.arc; let k = 2;
       const sig = () => { if (k > 6){ x.antes(true); return; } A.partes = k; E.dibujar(); k++; E.animar(0, 1, 500, () => {}, sig); };
       sig(); },
     exp:() => `<div class="eqs"><div class="eq">${G_('G')} = ${fr('π · 12', '2')} = ${G_(E2.exacto)}</div>
       <div class="eq">${c_('c')} = 3 · ${fr('π · 4', '2')} = 3 · 2π = ${c_(E2.exacto)}</div></div>
-      <p>En el dibujo, los semicírculos chicos se parten en 1, 2, 3… hasta 6: el lazo mide siempre 6π. Cada arco mide π por su diámetro entre 2, y los diámetros siempre suman 12.</p>
+      <p>En el dibujo, los semicírculos chicos pasan de 2 a 3, 4… hasta 6: el lazo mide siempre 6π. Cada arco mide π por su diámetro entre 2, y los diámetros siempre suman 12.</p>
       <p class="fuente">Creer que si el espacio encerrado es menor, el borde también lo es, es la idea «más área, más perímetro» (GE5 del informe de geometría), que D'Amore y Fandiño Pinilla (2007) describen como frecuente, sin cifras en lo que pudimos ver (respaldo parcial). Las otras dos opciones son hipótesis nuestras.</p>` },
   { id:'obras', corto:'La calle en obras', unidad:U_RUTAS,
     q:`En otro barrio de Juliaca, la casa de Sofía y su colegio están en esquinas opuestas de un plano de 3 cuadras a la ${m_('derecha')} y 3 hacia ${n_('arriba')}. El cruce que está 1 cuadra a la derecha y 1 hacia arriba de la casa está cerrado por obras. ¿Cuántos caminos de la menor longitud le quedan?`,
