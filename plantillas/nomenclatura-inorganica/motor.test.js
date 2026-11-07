@@ -6,6 +6,7 @@
 //    función que dice y el estado que se le pidió; el oxácido tiene los átomos del óxido más el agua; cada nombre
 //    vuelve a su fórmula (y ningún nombre sirve para dos fórmulas); los errores de cada predicción nunca son un
 //    nombre o una fórmula correctos de la misma sustancia.
+//    Además, todas las parejas de la mesa libre y todas las ramas del árbol libre de la escena (LIBRES).
 // 3. Errores de entrada.
 // 4. Cada problema de papel.json coincide con el motor.
 
@@ -65,6 +66,7 @@ test('cada ion de un elemento tiene su estado como carga; cada oxoanión, el est
 test('dos fichas: carga cero, proporción más simple y átomos que cuadran; los errores no son la fórmula', () => {
   const cats = motor.cationes().filter(c => c.tipo !== 'proton'), ans = motor.aniones();
   for (const C of cats) for (const A of ans) {
+    if (motor.permitido(C, A)) { assert.throws(() => motor.formulaDeIones(C, A), /no forma/); continue; }
     const r = motor.formulaDeIones(C, A);
     assert.equal(r.nCation * C.carga + r.nAnion * A.carga, 0, r.formula);
     assert.equal(motor.mcd(r.nCation, r.nAnion), 1, `${r.formula}: más simple`);
@@ -151,6 +153,72 @@ test('neutralizar: la ecuación tiene los mismos átomos a los dos lados', () =>
   }
 });
 
+test('mesa libre: toda pareja permitida da una fórmula con nombre que vuelve a las mismas fichas; las otras se rechazan', () => {
+  const { cationes, aniones } = motor.LIBRES;
+  for (const c of cationes) for (const a of aniones) {
+    const C = motor.ion(c), A = motor.ion(a);
+    if (motor.permitido(c, a)) { assert.throws(() => motor.formulaDeIones(c, a)); continue; }
+    const r = motor.formulaDeIones(c, a), n = motor.nombrar(r.formula);
+    assert.ok(n.stock || n.tradicional, `${c} + ${a}: sin nombre`);
+    // Las fichas que lee el motor en la fórmula son las mismas que se pusieron en la mesa.
+    if (Object.keys(r.atomos).length >= 3 || A.poli || C.poli) {
+      const d = motor.descomponer(r.formula);
+      assert.equal(d.cation, c, `${r.formula}: catión`); assert.equal(d.anion, a, `${r.formula}: anión`);
+    } else assert.equal(motor.oxidacion(r.formula).valor[C.central], C.carga, `${r.formula}: estado del catión`);
+    // El nombre nombra al catión con su estado (o su adjetivo) y al anión.
+    const t = (n.stock || n.tradicional).toLowerCase();
+    if (C.tipo === 'metal' && motor.ESTADOS[C.central].m.length + (motor.ESTADOS[C.central].nm || []).length > 1) assert.ok(t.includes(`(${motor.romano(C.carga).toLowerCase()})`), `${r.formula}: «${t}»`);
+    assert.equal(motor.formulaDeNombre(n.tradicional || n.stock).formula, r.formula, `${r.formula}: vuelve`);
+  }
+});
+test('árbol libre: cada metal con cada no metal da su óxido, hidróxido, ácido y sal, todos con nombre', () => {
+  const { metales, noMetales } = motor.LIBRES;
+  for (const m of metales) for (const vm of motor.ESTADOS[m].m) for (const n of noMetales) {
+    const t = motor.ESTADOS[n], ramas = [...t.nm.filter(v => !(t.neutros || []).includes(v)).map(v => ['oxacido', v]), ...(t.hidr ? [['hidracido']] : [])];
+    for (const [fn, vn] of ramas) {
+      const ox = motor.formar('oxido', m, vm), hi = motor.formar('hidroxido', m, vm);
+      const ac = fn === 'oxacido' ? motor.formar('oxacido', n, vn) : motor.formar('hidracido', n);
+      const no = fn === 'oxacido' ? motor.oxido(n, vn).formula : motor.formar('hidruro', n).formula;
+      const sal = motor.neutralizar(ac.formula.replace('(ac)', ''), hi.formula).sal;
+      for (const f of [ox.formula, hi.formula, ac.formula, no, sal]) { const r = motor.nombrar(f); assert.ok(r.tradicional || r.stock || r.sistematica, `${m}${vm} ${n}${vn || 'H'}: ${f}`); }
+      for (const q of [1, 2]) if (q < motor.atomos(ac.formula.replace('(ac)', '')).H) motor.nombrar(motor.neutralizar(ac.formula.replace('(ac)', ''), hi.formula, { quitar: q }).sal);
+    }
+  }
+});
+
+test('mesa libre: toda pareja permitida da una fórmula con nombre que vuelve a las mismas fichas; las otras se rechazan', () => {
+  const { cationes, aniones } = motor.LIBRES;
+  for (const c of cationes) for (const a of aniones) {
+    const C = motor.ion(c), A = motor.ion(a);
+    if (motor.permitido(c, a)) { assert.throws(() => motor.formulaDeIones(c, a)); continue; }
+    const r = motor.formulaDeIones(c, a), n = motor.nombrar(r.formula);
+    assert.ok(n.stock || n.tradicional, `${c} + ${a}: sin nombre`);
+    // Las fichas que lee el motor en la fórmula son las mismas que se pusieron en la mesa.
+    if (Object.keys(r.atomos).length >= 3 || A.poli || C.poli) {
+      const d = motor.descomponer(r.formula);
+      assert.equal(d.cation, c, `${r.formula}: catión`); assert.equal(d.anion, a, `${r.formula}: anión`);
+    } else assert.equal(motor.oxidacion(r.formula).valor[C.central], C.carga, `${r.formula}: estado del catión`);
+    // El nombre nombra al catión con su estado (o su adjetivo) y al anión.
+    const t = (n.stock || n.tradicional).toLowerCase();
+    if (C.tipo === 'metal' && motor.ESTADOS[C.central].m.length + (motor.ESTADOS[C.central].nm || []).length > 1) assert.ok(t.includes(`(${motor.romano(C.carga).toLowerCase()})`), `${r.formula}: «${t}»`);
+    assert.equal(motor.formulaDeNombre(n.tradicional || n.stock).formula, r.formula, `${r.formula}: vuelve`);
+  }
+});
+test('árbol libre: cada metal con cada no metal da su óxido, hidróxido, ácido y sal, todos con nombre', () => {
+  const { metales, noMetales } = motor.LIBRES;
+  for (const m of metales) for (const vm of motor.ESTADOS[m].m) for (const n of noMetales) {
+    const t = motor.ESTADOS[n], ramas = [...t.nm.filter(v => !(t.neutros || []).includes(v)).map(v => ['oxacido', v]), ...(t.hidr ? [['hidracido']] : [])];
+    for (const [fn, vn] of ramas) {
+      const ox = motor.formar('oxido', m, vm), hi = motor.formar('hidroxido', m, vm);
+      const ac = fn === 'oxacido' ? motor.formar('oxacido', n, vn) : motor.formar('hidracido', n);
+      const no = fn === 'oxacido' ? motor.oxido(n, vn).formula : motor.formar('hidruro', n).formula;
+      const sal = motor.neutralizar(ac.formula.replace('(ac)', ''), hi.formula).sal;
+      for (const f of [ox.formula, hi.formula, ac.formula, no, sal]) { const r = motor.nombrar(f); assert.ok(r.tradicional || r.stock || r.sistematica, `${m}${vm} ${n}${vn || 'H'}: ${f}`); }
+      for (const q of [1, 2]) if (q < motor.atomos(ac.formula.replace('(ac)', '')).H) motor.nombrar(motor.neutralizar(ac.formula.replace('(ac)', ''), hi.formula, { quitar: q }).sal);
+    }
+  }
+});
+
 // 3. Errores de entrada
 test('errores de entrada', () => {
   assert.throws(() => motor.atomos('Xx2'), /elemento/);
@@ -162,6 +230,9 @@ test('errores de entrada', () => {
   assert.throws(() => motor.ion('Fe^5+'), /ion/);
   assert.throws(() => motor.formulaDeNombre('óxido de kriptonita'), /nombre/);
   assert.throws(() => motor.estado('Fe2O3', 'S'), /no hay/);
+  assert.throws(() => motor.formulaDeIones('Pb^2+', 'O2^2-'), /no forma peróxido/);
+  assert.throws(() => motor.formulaDeIones('NH4^+', 'O^2-'), /amonio/);
+  assert.throws(() => motor.nombrar('Al2O6'), /no sé nombrar/);
 });
 
 // 4. Problemas de papel (regla 6)

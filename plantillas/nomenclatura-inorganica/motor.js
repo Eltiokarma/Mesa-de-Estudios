@@ -34,9 +34,11 @@
  *   4. Stock: número romano entre paréntesis, con un espacio («óxido de hierro (III)»), solo si el elemento tiene
  *      más de un estado en la tabla. Para los oxácidos, la «stock» de academia es la funcional: «ácido
  *      tetraoxosulfúrico (VI)».
- *   5. Sistemática: prefijos mono-, di-, tri-… con la cantidad de cada átomo («trióxido de dihierro»). Mono- solo se
- *      escribe delante de «óxido» (monóxido de carbono); en lo demás se omite (cloruro de sodio, hidruro de sodio).
- *      Sin elisión salvo «monóxido» (pentaóxido, heptaóxido); el parser acepta también pentóxido y heptóxido.
+ *   5. Sistemática: prefijos mono-, di-, tri-… con la cantidad de cada átomo («trióxido de dihierro»). Delante de
+ *      «óxido» se elide la vocal, como en las academias: monóxido, dióxido, trióxido, tetróxido, pentóxido, heptóxido
+ *      (el parser acepta también pentaóxido, heptaóxido…). Mono- se escribe delante de «óxido» y delante de lo que
+ *      se nombra primero cuando el metal tiene más de un estado, para distinguir (monosulfuro de hierro frente a
+ *      trisulfuro de dihierro; monohidróxido de cobre); en lo demás se omite (cloruro de sodio, hidruro de sodio).
  *      Oxácidos y oxisales con la forma de academia: «tetraoxosulfato (VI) de hidrógeno», «tetraoxosulfato (VI) de
  *      hierro (III)». Los hidruros de S, Se y halógenos: «cloruro de hidrógeno», «sulfuro de hidrógeno», sin prefijo.
  *   6. Hidrácidos: «HCl(ac)» es el hidrácido (ácido clorhídrico); «HCl» sin (ac) es el gas, cloruro de hidrógeno.
@@ -45,7 +47,11 @@
  *   8. Sal ácida: «carbonato ácido de potasio» (tradicional), «hidrogenocarbonato de potasio» (stock); el nombre
  *      común con bi- (bicarbonato) solo con un H de un ácido de dos H. Sal básica: «cloruro básico de calcio»,
  *      «hidroxicloruro de calcio». Hidratos: «… heptahidratado», con el agua escrita «·7H2O».
- *   9. Masas atómicas de academia: H 1, C 12, N 14, O 16, Na 23, Mg 24, Al 27, P 31, S 32, Cl 35,5, K 39, Ca 40,
+ *   9. Notas. El MnO₂ es en realidad anfótero; la academia lo pone como «anhídrido manganoso» por la tabla de Mn como
+ *      no metal, y el nombre «dióxido de manganeso» (u «óxido de manganeso (IV)») es el más aceptado. El H₃PO₃ (ácido
+ *      fosforoso) tiene en realidad solo 2 H ácidos (uno va unido al P); la academia lo trata como si tuviera 3, y
+ *      así lo hace el motor (fosfito PO₃³⁻). Los peróxidos se forman solo con H, alcalinos, alcalinotérreos y Zn.
+ *  10. Masas atómicas de academia: H 1, C 12, N 14, O 16, Na 23, Mg 24, Al 27, P 31, S 32, Cl 35,5, K 39, Ca 40,
  *      Fe 56, Cu 63,5, Zn 65, Pb 207 (las demás, redondeadas).
  */
 (function (root, fabrica) {
@@ -175,6 +181,22 @@
     return ionDe(e, t.neg, { central: e, estado: t.neg, tipo: e === 'H' ? 'hidruro' : 'haloideo' });
   }
   const PEROXIDO = ionDe('O2', -2, { central: 'O', estado: -1, tipo: 'peroxido' });
+  // Peróxidos que se estudian: de los metales alcalinos y alcalinotérreos, del zinc y del hidrógeno. Con otros
+  // cationes la fórmula saldría inventada (Al₂O₆, FeO₂, PbO₄): formulaDeIones lo rechaza.
+  const FORMAN_PEROXIDO = ['H', 'Li', 'Na', 'K', 'Mg', 'Ca', 'Ba', 'Zn'];
+  // Lo que la escena deja elegir en la mesa libre y en el árbol libre (motor.test.js recorre todas las parejas).
+  const LIBRES = {
+    cationes: ['Na^+', 'K^+', 'Ca^2+', 'Al^3+', 'Fe^2+', 'Fe^3+', 'Zn^2+', 'Pb^2+', 'Pb^4+', 'NH4^+'],
+    aniones: ['O^2-', 'O2^2-', 'OH^-', 'Cl^-', 'S^2-', 'SO4^2-', 'SO3^2-', 'NO3^-', 'NO2^-', 'CO3^2-', 'HCO3^-', 'PO4^3-', 'ClO^-', 'ClO4^-'],
+    metales: ['Na', 'K', 'Ca', 'Al', 'Fe', 'Zn', 'Pb'],
+    noMetales: ['C', 'N', 'P', 'S', 'Cl'],
+  };
+  // ¿Se puede formar un compuesto con estas dos fichas? null si sí; si no, el porqué.
+  function permitido(C, A) {
+    if (A.tipo === 'peroxido' && !FORMAN_PEROXIDO.includes(C.central === 'N' && C.tipo === 'amonio' ? 'NH4' : C.central)) return 'no forma peróxido';
+    if (C.tipo === 'amonio' && ['oxido', 'hidruro'].includes(A.tipo)) return 'el amonio no forma óxido ni hidruro';
+    return null;
+  }
   const HIDROXIDO = ionDe('OH', -1, { central: 'O', tipo: 'hidroxido' });
   const AMONIO = ionDe('NH4', 1, { central: 'N', estado: -3, tipo: 'amonio' });
   const cation = (e, v) => { if (e === 'NH4') return AMONIO; if (e === 'H') return ionDe('H', 1, { central: 'H', estado: 1, tipo: 'proton' });
@@ -214,6 +236,7 @@
   function formulaDeIones(c, a) {
     const C = typeof c === 'string' ? ion(c) : c, A = typeof a === 'string' ? ion(a) : a;
     if (C.carga <= 0 || A.carga >= 0) throw new Error('hace falta un catión (+) y un anión (−)');
+    const no = permitido(C, A); if (no) throw new Error(`${C.formula} con ${A.formula}: ${no}`);
     const p = C.carga, q = -A.carga, g = mcd(p, q), nC = q / g, nA = p / g;
     const formula = escribirSal(C, nC, A, nA);
     // Errores: cruzar sin simplificar, cruzar al revés, escribir el ion sin paréntesis, juntar uno con uno sin contar
@@ -230,7 +253,7 @@
     };
     const at = atomos(formula), gg = Object.values(at).reduce((s, n) => mcd(s, n), 0);
     if (gg > 1 && !C.poli && !(A.poli && A !== PEROXIDO)) errores.simplificaTodo = plana(Object.entries(at).map(([e, n]) => [e, n / gg]));
-    return { formula, cation: C.formula, anion: A.formula, nCation: nC, nAnion: nA, cargaCation: p * nC, cargaAnion: -q * nA, suma: 0,
+    return { formula, cation: C.formula, anion: A.formula, nCation: nC, nAnion: nA, cargaPorCation: p, cargaPorAnion: -q, cargaTotalCation: p * nC, cargaTotalAnion: -q * nA, suma: 0,
       cruce: { nCation: q, nAnion: p, formula: sinSimp }, simplifica: g > 1, divisor: g, atomos: at, errores };
   }
 
@@ -321,6 +344,8 @@
   const ROM = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'];
   const pre = (n, mono) => (n === 1 ? (mono ? 'mono' : '') : PREF[n]);
   const romano = n => ROM[n];
+  // Prefijo delante de «óxido», con la elisión de academia: monóxido, dióxido, trióxido, tetróxido, pentóxido, heptóxido.
+  const preOxido = n => { const x = pre(n, true); return (/[ao]$/.test(x) && x !== 'di' ? x.slice(0, -1) : x) + 'óxido'; };
   // Un nombre es una lista de partes { t, k }: k es el elemento que da el color, o 'ink'.
   const P = (t, k) => ({ t, k: k || 'ink' });
   const texto = partes => partes ? partes.map(p => p.t).join('').replace(/\s+/g, ' ').trim() : null;
@@ -367,6 +392,15 @@
   }
   const conH = (h, partes) => (h ? [P((h > 1 ? PREF[h] : '') + 'hidrogeno', 'H'), ...partes] : partes);
 
+  // Nombre de un ion suelto, para rotular las fichas: «sulfato», «hidrogenocarbonato», «hierro (III)», «amonio».
+  function nombreIon(t) {
+    const I = typeof t === 'string' ? ion(t) : t;
+    if (I.carga > 0) return I.tipo === 'amonio' ? 'amonio' : I.tipo === 'proton' ? 'hidrógeno' : ESTADOS[I.central].nombre + (varios(I.central) ? ` (${romano(I.carga)})` : '');
+    if (I.h && I.tipo === 'oxoanion') return texto(conH(I.h, anTrad({ ...I, h: 0 })));
+    if (I.h) return 'hidrogeno' + texto(anTrad(I));
+    return texto(anTrad(I));
+  }
+
   // ---------- Clasificar ----------
   function clasificar(f) {
     const s = especie(f), at = s.base, els = Object.keys(at);
@@ -383,7 +417,7 @@
       if (e === 'H') return { funcion: 'peróxido', elemento: 'H' };
       if (e === 'F') return { funcion: 'fluoruro de oxígeno' };
       const o = oxidacion(f).porElemento, v = o[e], t = ESTADOS[e];
-      if (o.O[0] === -1 && o.O[1] === 1) return { funcion: 'peróxido', elemento: e, estado: v[0] / v[1] };
+      if (o.O[0] === -1 && o.O[1] === 1) return FORMAN_PEROXIDO.includes(e) ? { funcion: 'peróxido', elemento: e, estado: v[0] / v[1] } : { funcion: 'otra' };
       if (v[1] !== 1) return { funcion: 'óxido salino (doble)', elemento: e, estado: v[0] / v[1] };
       if (esMetal(e) && t.m.includes(v[0])) return { funcion: 'óxido básico', elemento: e, estado: v[0] };
       if ((t.nm || []).includes(v[0])) return { funcion: (t.neutros || []).includes(v[0]) ? 'óxido neutro' : 'óxido ácido', elemento: e, estado: v[0] };
@@ -404,6 +438,7 @@
       return { funcion: s.acuoso ? 'hidrácido' : 'hidruro no metálico', elemento: A.central };
     }
     if (d.hidroxidos) return { funcion: 'sal básica', anion: A.formula };
+    if (permitido(C, A)) return { funcion: 'otra' };
     if (A.tipo === 'hidroxido') return { funcion: 'hidróxido', elemento: C.central, estado: C.estado };
     if (A.tipo === 'hidruro') return { funcion: 'hidruro metálico', elemento: C.central };
     if (A.tipo === 'peroxido') return { funcion: 'peróxido', elemento: C.central };
@@ -496,13 +531,13 @@
   function nombrar(f) {
     const s = especie(f), at = s.base, els = Object.keys(at), cl = clasificar(f);
     const fn = cl.funcion === 'sal hidratada' ? cl.base : cl.funcion;
+    if (['otra', 'óxido', 'catión', 'anión', 'fluoruro de oxígeno'].includes(fn)) throw new Error(`no sé nombrar ${f}: no es un compuesto de las funciones de esta escena`);
     let sis = null, sto = null, tra = null, comun = null; const err = {};
     const ox = () => oxidacion(s.cuerpo).porElemento;
     if (fn === 'agua') { sis = [P('monóxido', 'O'), P(' de '), P('dihidrógeno', 'H')]; tra = [P('agua')]; comun = 'agua'; }
     else if (fn === 'óxido básico' || fn === 'óxido ácido' || fn === 'óxido neutro') {
       const e = cl.elemento, v = cl.estado, b = at.O, a = at[e];
-      sis = [P(pre(b, true) + (b === 1 ? 'nóxido' : 'óxido'), 'O'), P(' de '), P(nombreEl(e, a), e)];
-      if (sis[0].t === 'mononóxido') sis[0].t = 'monóxido';
+      sis = [P(preOxido(b), 'O'), P(' de '), P(nombreEl(e, a), e)];
       sto = [P('óxido', 'O'), P(' de '), P(ESTADOS[e].nombre, e), ...(varios(e) ? [P(` (${romano(v)})`)] : [])];
       if (fn === 'óxido básico') tra = ESTADOS[e].m.length > 1 ? [P('óxido', 'O'), P(' '), P(adj(e, v, 'm'), e)] : [P('óxido', 'O'), P(' de '), P(ESTADOS[e].nombre, e)];
       else if (fn === 'óxido ácido') tra = [P('anhídrido', 'O'), P(' '), P(adj(e, v, 'nm'), e)];
@@ -514,11 +549,11 @@
         if (fn === 'óxido básico' && ESTADOS[e].m.length === 2) err.tradicionalAlReves = 'óxido ' + ESTADOS[e][swap(terminacion(e, v, 'm').sufijo)] + swap(terminacion(e, v, 'm').sufijo);
       }
     } else if (fn === 'óxido salino (doble)') {
-      const e = cl.elemento; sis = [P(pre(at.O) + 'óxido', 'O'), P(' de '), P(nombreEl(e, at[e]), e)]; comun = e === 'Fe' ? 'magnetita' : null;
+      const e = cl.elemento; sis = [P(preOxido(at.O), 'O'), P(' de '), P(nombreEl(e, at[e]), e)]; comun = e === 'Fe' ? 'magnetita' : null;
       tra = ESTADOS[e].m.length === 2 ? [P('óxido', 'O'), P(' '), P(ESTADOS[e].oso + 'oso', e), P('-'), P(ESTADOS[e].ico + 'ico', e)] : null;
     } else if (fn === 'peróxido') {
       const e = els.find(x => x !== 'O');
-      sis = [P(pre(at.O) + 'óxido', 'O'), P(' de '), P(nombreEl(e, at[e]), e)];
+      sis = [P(preOxido(at.O), 'O'), P(' de '), P(nombreEl(e, at[e]), e)];
       sto = [P('peróxido', 'O'), P(' de '), P(ESTADOS[e].nombre, e)]; tra = sto.slice();
       if (e === 'H') { comun = 'agua oxigenada'; sto = null; }
     } else if (fn === 'hidruro no metálico' || fn === 'hidrácido') {
@@ -543,21 +578,23 @@
         sto = [P('ácido', 'H'), P(' '), P(pre(A.O) + 'oxo', 'O'), P(pre(A.X) + ESTADOS[e].ico + 'ico', e), P(` (${romano(v)})`)];
         const t2 = { ...tt, sufijo: swap(tt.sufijo) };
         err.terminacionAlReves = 'ácido ' + t2.prefijo + ESTADOS[e][t2.sufijo] + t2.sufijo;
+      } else if (fn === 'hidróxido' && C.tipo === 'amonio') {
+        sis = [P('hidróxido', 'O'), P(' de '), P('amonio', 'N')]; sto = sis.slice(); tra = sis.slice();
       } else if (fn === 'hidróxido') {
         const e = C.central;
-        sis = [P(pre(nA) + 'hidróxido', 'O'), P(' de '), P(ESTADOS[e].nombre, e)];
+        sis = [P(pre(nA, varios(e)) + 'hidróxido', 'O'), P(' de '), P(ESTADOS[e].nombre, e)];
         sto = [P('hidróxido', 'O'), ...catStock(C)]; tra = [P('hidróxido', 'O'), ...catTrad(C)];
         if (ESTADOS[e].m.length === 2) err.tradicionalAlReves = 'hidróxido ' + ESTADOS[e][swap(terminacion(e, C.estado, 'm').sufijo)] + swap(terminacion(e, C.estado, 'm').sufijo);
       } else if (fn === 'hidruro metálico') {
         const e = C.central;
-        sis = [P(pre(nA) + 'hidruro', 'H'), P(' de '), P(ESTADOS[e].nombre, e)];
+        sis = [P(pre(nA, varios(e)) + 'hidruro', 'H'), P(' de '), P(ESTADOS[e].nombre, e)];
         sto = [P('hidruro', 'H'), ...catStock(C)]; tra = [P('hidruro', 'H'), ...catTrad(C)];
       } else if (fn === 'sal haloidea' || (fn === 'sal ácida' && A.tipo === 'haloideo')) {
         if (A.h) {
           sto = [P('hidrogeno', 'H'), ...anTrad(A), ...catStock(C)]; sis = sto.slice();
           tra = [...anTrad(A), P(' ácido'), ...catTrad(C)]; comun = 'bi' + texto(anTrad(A)) + ' ' + texto(catStock(C));
         } else {
-          sis = [P(pre(nA) + ESTADOS[A.central].uro + 'uro', A.central), P(' de '), P(nombreEl(C.central, nC), C.central)];
+          sis = [P(pre(nA, C.tipo === 'metal' && varios(C.central)) + ESTADOS[A.central].uro + 'uro', A.central), P(' de '), P(nombreEl(C.central, nC), C.central)];
           if (C.tipo === 'amonio') sis = [P(pre(nA) + ESTADOS[A.central].uro + 'uro', A.central), P(' de '), P('amonio', 'N')];
           sto = [...anTrad(A), ...catStock(C)]; tra = [...anTrad(A), ...catTrad(C)];
         }
@@ -626,11 +663,12 @@
       if (t.neg !== undefined && !esMetal(e)) { fs.add(formar('hidruro', e).formula); if (t.hidr) fs.add(formar('hidracido', e).formula); }
     }
     fs.add('H2O'); fs.add('H2O2'); fs.add('HPO3'); fs.add('H4P2O7'); fs.add('H2Cr2O7'); fs.add('H2S2O7');
-    for (const e of ['Li', 'Na', 'K', 'Mg', 'Ca', 'Ba', 'Zn']) fs.add(formulaDeIones(cation(e, ESTADOS[e].m[0]), PEROXIDO).formula);
+    for (const e of FORMAN_PEROXIDO.filter(x => x !== 'H')) fs.add(formulaDeIones(cation(e, ESTADOS[e].m[0]), PEROXIDO).formula);
+    fs.add('NH4OH');
     const ans = aniones().filter(a => a.tipo === 'oxoanion' || (a.tipo === 'haloideo' && ['F', 'Cl', 'Br', 'I', 'S', 'Se'].includes(a.central)));
     const cats = cationes().filter(c => c.tipo !== 'proton');
     // Sin sales de Cr o Mn con aniones de Cr o Mn (CrMnO₄ y MnCrO₄ no se distinguen por sus átomos).
-    for (const C of cats) for (const A of ans) if (!(['Cr', 'Mn'].includes(C.central) && ['Cr', 'Mn'].includes(A.central))) fs.add(formulaDeIones(C, A).formula);
+    for (const C of cats) for (const A of ans) if (!permitido(C, A) && !(['Cr', 'Mn'].includes(C.central) && ['Cr', 'Mn'].includes(A.central))) fs.add(formulaDeIones(C, A).formula);
     // Sales básicas comunes (un OH).
     for (const e of ['Mg', 'Ca', 'Ba', 'Zn']) for (const x of ['Cl', 'Br', 'I']) fs.add(`${e}(OH)${x}`);
     for (const e of ['Mg', 'Ca']) fs.add(`${e}(OH)NO3`);
@@ -646,7 +684,8 @@
       // Variantes aceptadas: sin espacio antes del romano, pentóxido/heptóxido, «óxido sódico», «óxido de hierro» con un estado.
       for (const n of [r.sistematica, r.stock, r.tradicional]) if (n) {
         poner(n.replace(/ \(/g, '('), f);
-        poner(n.replace(/pentaóxido/, 'pentóxido').replace(/heptaóxido/, 'heptóxido').replace(/hexaóxido/, 'hexóxido').replace(/tetraóxido/, 'tetróxido'), f);
+        poner(n.replace(/pentóxido/, 'pentaóxido').replace(/heptóxido/, 'heptaóxido').replace(/hexóxido/, 'hexaóxido').replace(/tetróxido/, 'tetraóxido'), f);
+        poner(n.replace(/^mono(?!xido)/, ''), f);
         poner(n.replace(/^monóxido de/, 'óxido de'), f);
       }
       if (r.funcion === 'hidrácido') poner(r.tradicional + ' (ac)', f);
@@ -678,5 +717,5 @@
   }
 
   return { ESTADOS, MASAS, especie, atomos, masaMolar, ion, cationes, aniones, formulaDeIones, descomponer, oxidacion, estado,
-    clasificar, formar, oxido, neutralizar, nombrar, formulaDeNombre, universo, terminacion, romano, hidratoDe, mcd, fraccionTexto: ftexto };
+    clasificar, formar, oxido, neutralizar, nombrar, formulaDeNombre, universo, LIBRES, nombreIon, permitido: (c, a) => permitido(typeof c === 'string' ? ion(c) : c, typeof a === 'string' ? ion(a) : a), FORMAN_PEROXIDO, terminacion, romano, hidratoDe, mcd, fraccionTexto: ftexto };
 });

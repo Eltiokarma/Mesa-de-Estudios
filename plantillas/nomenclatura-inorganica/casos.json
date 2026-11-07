@@ -2,7 +2,7 @@
   "plantilla": "nomenclatura-inorganica",
   "unidades": "Estados de oxidación como fracción exacta: 'texto' con su signo (+3, −2, +8/3; el menos es el signo tipográfico −) y 'valor' como número. Fórmulas en texto plano: subíndices como cifras (Fe2O3, Al2(SO4)3), carga con '^' (SO4^2-, NH4^+), agua de hidratación con '·' (FeSO4·7H2O) y el hidrácido con '(ac)' (HCl(ac)). Masas atómicas de academia (H 1, O 16, S 32, Fe 56).",
   "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'; 'tambien' agrega llamadas del mismo caso. Los campos anidados van con punto (errores.subindice, porElemento.Fe, nombres.stock). Los textos se comparan exactos. Las convenciones de nombres (stock con espacio antes del romano, «anhídrido» en la tradicional de los óxidos de no metal, sistemática de academia para oxácidos y oxisales, orto por defecto para P y B) están en la cabecera de motor.js.",
-  "verificacion": "",
+  "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer el motor ni casos.json: recalculó los casos en Python, con estados de oxidación por suma de cargas con Fraction (en el orden de prioridad de la convención), fórmulas por cruce de cargas y mcd, oxácidos por balance de átomos del óxido + n H2O, masas de academia y nombres con las reglas de la cabecera. Coinciden todos los valores; las diferencias fueron de interpretación (la carga del catión como carga total, hoy cargaTotalCation) y de escritura de algunos errores típicos.",
   "tolerancia": 1e-9,
   "casos": [
     { "nombre": "Paso 2 y predicción 1: en Fe2O3 el Fe tiene +3 (tres O dan −6; dos Fe dan +6). Errores: el subíndice como estado (+2), sin dividir entre los 2 Fe (+6) y el signo al revés (−3)",
@@ -89,7 +89,7 @@
 
     { "nombre": "Paso 4 y predicción 3: Al^3+ con SO4^2- → Al2(SO4)3 (17 átomos: 2 Al, 3 S, 12 O). Errores: sin paréntesis (Al2SO43), cruce invertido (Al3(SO4)2) y uno a uno (AlSO4)",
       "fn": "formulaDeIones", "args": ["Al^3+", "SO4^2-"],
-      "espera": { "formula": "Al2(SO4)3", "nCation": 2, "nAnion": 3, "cargaCation": 6, "cargaAnion": -6, "atomos.Al": 2, "atomos.S": 3, "atomos.O": 12,
+      "espera": { "formula": "Al2(SO4)3", "nCation": 2, "nAnion": 3, "cargaPorCation": 3, "cargaPorAnion": -2, "cargaTotalCation": 6, "cargaTotalAnion": -6, "atomos.Al": 2, "atomos.S": 3, "atomos.O": 12,
                   "errores.sinParentesis": "Al2SO43", "errores.cruceInvertido": "Al3(SO4)2", "errores.unoAUno": "AlSO4" } },
 
     { "nombre": "Informe, cruce: Ca^2+ con PO4^3- → Ca3(PO4)2 (13 átomos); Fe^3+ con Cl^- → FeCl3",
@@ -130,12 +130,12 @@
       "espera": { "formula": "FeSO4·7H2O", "masaMolar": 278, "masaAgua": 126, "porcentajeAgua": 45.32374100719424, "nombres.stock": "sulfato de hierro (II) heptahidratado", "nombres.tradicional": "sulfato ferroso heptahidratado",
                   "errores.romanoComoSubindice": "Fe2SO4·7H2O", "errores.juntaElAgua": "FeSO4H14O7", "errores.sinSimplificar": "Fe2(SO4)2·7H2O" } },
 
-    { "nombre": "Clasificar: óxido básico, óxido ácido, peróxido, hidruro metálico, hidruro no metálico (gas) e hidrácido (en agua), hidróxido, oxácido, oxisal, sal haloidea, sal ácida, sal básica e hidratada",
+    { "nombre": "Clasificar: óxido básico, óxido ácido, peróxido, hidruro metálico, hidruro no metálico (gas) e hidrácido (en agua), hidróxido (también NH4OH), oxácido, oxisal, sal haloidea, sal ácida, sal básica, hidratada y óxido salino (doble) para Fe3O4",
       "fn": "clasificar", "args": ["CaO"],
       "espera": { "funcion": "óxido básico" },
       "tambien": [ { "args": ["Cl2O7"], "espera": { "funcion": "óxido ácido" } }, { "args": ["BaO2"], "espera": { "funcion": "peróxido" } }, { "args": ["PbO2"], "espera": { "funcion": "óxido básico" } },
                    { "args": ["CaH2"], "espera": { "funcion": "hidruro metálico" } }, { "args": ["HCl"], "espera": { "funcion": "hidruro no metálico" } }, { "args": ["HCl(ac)"], "espera": { "funcion": "hidrácido" } },
-                   { "args": ["NH3"], "espera": { "funcion": "hidruro no metálico" } }, { "args": ["Fe(OH)3"], "espera": { "funcion": "hidróxido" } }, { "args": ["HNO3"], "espera": { "funcion": "oxácido" } },
+                   { "args": ["NH3"], "espera": { "funcion": "hidruro no metálico" } }, { "args": ["Fe(OH)3"], "espera": { "funcion": "hidróxido" } }, { "args": ["NH4OH"], "espera": { "funcion": "hidróxido" } }, { "args": ["HNO3"], "espera": { "funcion": "oxácido" } },
                    { "args": ["KMnO4"], "espera": { "funcion": "oxisal" } }, { "args": ["FeS"], "espera": { "funcion": "sal haloidea" } }, { "args": ["KHCO3"], "espera": { "funcion": "sal ácida" } },
                    { "args": ["Ca(OH)Cl"], "espera": { "funcion": "sal básica" } }, { "args": ["CuSO4·5H2O"], "espera": { "funcion": "sal hidratada", "base": "oxisal" } },
                    { "args": ["Fe3O4"], "espera": { "funcion": "óxido salino (doble)" } } ] },
@@ -144,7 +144,7 @@
       "fn": "formulaDeNombre", "args": ["trióxido de dihierro"],
       "espera": { "formula": "Fe2O3" },
       "tambien": [ { "args": ["óxido de hierro(III)"], "espera": { "formula": "Fe2O3" } }, { "args": ["anhídrido sulfúrico"], "espera": { "formula": "SO3" } },
-                   { "args": ["pentóxido de dinitrógeno"], "espera": { "formula": "N2O5" } }, { "args": ["ácido tetraoxosulfúrico (VI)"], "espera": { "formula": "H2SO4" } },
+                   { "args": ["pentóxido de dinitrógeno"], "espera": { "formula": "N2O5" } }, { "args": ["pentaóxido de dinitrógeno"], "espera": { "formula": "N2O5" } }, { "args": ["hidróxido de amonio"], "espera": { "formula": "NH4OH" } }, { "args": ["ácido tetraoxosulfúrico (VI)"], "espera": { "formula": "H2SO4" } },
                    { "args": ["ácido clorhídrico"], "espera": { "formula": "HCl(ac)", "funcion": "hidrácido" } }, { "args": ["Sulfato de Aluminio"], "espera": { "formula": "Al2(SO4)3" } },
                    { "args": ["bicarbonato de potasio"], "espera": { "formula": "KHCO3" } }, { "args": ["peróxido de sodio"], "espera": { "formula": "Na2O2" } },
                    { "args": ["sulfato ferroso heptahidratado"], "espera": { "formula": "FeSO4·7H2O" } }, { "args": ["amoníaco"], "espera": { "formula": "NH3" } },
