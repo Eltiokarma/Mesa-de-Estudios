@@ -12,7 +12,25 @@
         "Sobre el eje que empieza en 40, la barra de Paz mide 60 − 40 = 20 y la de Inti, 48 − 40 = 8.",
         "20/8 = 2,5: el dibujo exagera la diferencia porque le cortó a las dos barras los primeros 40 panetones."
       ],
-      "verificar": [ { "fn": "razonBarras", "args": [{ "a": 60, "b": 48, "inicio": 40 }], "espera": { "razon": 1.25, "porcentajeMas": 25, "altoA": 20, "altoB": 8, "dibujada": 2.5 } } ]
+      "verificar": [
+        {
+          "fn": "razonBarras",
+          "args": [
+            {
+              "a": 60,
+              "b": 48,
+              "inicio": 40
+            }
+          ],
+          "espera": {
+            "razon": 1.25,
+            "porcentajeMas": 25,
+            "altoA": 20,
+            "altoB": 8,
+            "dibujada": 2.5
+          }
+        }
+      ]
     },
     {
       "id": "p2",
@@ -23,9 +41,29 @@
         "Abril a mayo: sube 6 sobre 30, 6/30 = 20 %.",
         "Mayo a junio: sube 9 sobre 36, 9/36 = 25 %.",
         "Junio a julio: sube 9 sobre 45, 9/45 = 20 %. Sube lo mismo que el tramo anterior, pero parte de más arriba.",
-        "El mayor es junio, con 25 %. Ojo con la base: si de mayo a junio dividieras 9 entre 45 (el valor final), saldría 20 % y parecería un empate con los otros dos meses."
+        "El mayor es junio, con 25 %. Ojo con la base: el porcentaje se divide entre el valor de partida (36), no entre el de llegada (45)."
       ],
-      "verificar": [ { "fn": "crecimientos", "args": [{ "valores": [30, 36, 45, 54] }], "espera": { "mayor": 1, "porcentaje": 25, "tramos.0.porcentaje": 20, "tramos.2.porcentaje": 20 } } ]
+      "verificar": [
+        {
+          "fn": "crecimientos",
+          "args": [
+            {
+              "valores": [
+                30,
+                36,
+                45,
+                54
+              ]
+            }
+          ],
+          "espera": {
+            "mayor": 1,
+            "porcentaje": 25,
+            "tramos.0.porcentaje": 20,
+            "tramos.2.porcentaje": 20
+          }
+        }
+      ]
     },
     {
       "id": "p3",
@@ -34,10 +72,24 @@
       "respuesta": "72 alumnos, el 30 %.",
       "pasos": [
         "La vuelta entera, 360°, son los 240 alumnos.",
-        "108/360 = 3/10: el sector es la décima parte por tres, o sea el 30 %.",
+        "108/360 = 3/10: el sector es tres décimos de la vuelta, el 30 %.",
         "3/10 de 240 = 72 alumnos."
       ],
-      "verificar": [ { "fn": "cantidadDeSector", "args": [{ "total": 240, "grados": 108 }], "espera": { "cantidad": 72, "porcentaje": 30 } } ]
+      "verificar": [
+        {
+          "fn": "cantidadDeSector",
+          "args": [
+            {
+              "total": 240,
+              "grados": 108
+            }
+          ],
+          "espera": {
+            "cantidad": 72,
+            "porcentaje": 30
+          }
+        }
+      ]
     },
     {
       "id": "p4",
@@ -50,7 +102,29 @@
         "Papaya: 45 · 2,4 = 108°. Naranja: 60 · 2,4 = 144°. Surtido: 30 · 2,4 = 72°. Piña: 15 · 2,4 = 36°.",
         "Comprueba: 108 + 144 + 72 + 36 = 360."
       ],
-      "verificar": [ { "fn": "sectores", "args": [{ "cantidades": [45, 60, 30, 15] }], "espera": { "total": 150, "sectores.0.grados": 108, "sectores.1.grados": 144, "sectores.2.grados": 72, "sectores.3.grados": 36, "sumaGrados": 360 } } ]
+      "verificar": [
+        {
+          "fn": "sectores",
+          "args": [
+            {
+              "cantidades": [
+                45,
+                60,
+                30,
+                15
+              ]
+            }
+          ],
+          "espera": {
+            "total": 150,
+            "sectores.0.grados": 108,
+            "sectores.1.grados": 144,
+            "sectores.2.grados": 72,
+            "sectores.3.grados": 36,
+            "sumaGrados": 360
+          }
+        }
+      ]
     },
     {
       "id": "p5",
@@ -63,7 +137,23 @@
         "15 % de 360° = 0,15 · 360 = 54°.",
         "No es 180° (el 50 % de la vuelta): ese 50 % es de los 60 en mototaxi, no de los 200."
       ],
-      "verificar": [ { "fn": "sectorAnidado", "args": [{ "total": 200, "porcentaje": 30, "parte": 50 }], "espera": { "porcentaje": 15, "grados": 54, "cantidad": 30 } } ]
+      "verificar": [
+        {
+          "fn": "sectorAnidado",
+          "args": [
+            {
+              "total": 200,
+              "porcentaje": 30,
+              "parte": 50
+            }
+          ],
+          "espera": {
+            "porcentaje": 15,
+            "grados": 54,
+            "cantidad": 30
+          }
+        }
+      ]
     },
     {
       "id": "p6",
@@ -75,8 +165,33 @@
         "A una rueda: 30/2 = 15 partidos.",
         "A dos ruedas, cada par juega dos veces: 2 · 15 = 30 partidos."
       ],
-      "verificar": [ { "fn": "partidos", "args": [{ "equipos": 6 }], "espera": { "partidos": 15, "porEquipo": 5 } },
-                     { "fn": "partidos", "args": [{ "equipos": 6, "ruedas": 2 }], "espera": { "partidos": 30, "porEquipo": 10 } } ]
+      "verificar": [
+        {
+          "fn": "partidos",
+          "args": [
+            {
+              "equipos": 6
+            }
+          ],
+          "espera": {
+            "partidos": 15,
+            "porEquipo": 5
+          }
+        },
+        {
+          "fn": "partidos",
+          "args": [
+            {
+              "equipos": 6,
+              "ruedas": 2
+            }
+          ],
+          "espera": {
+            "partidos": 30,
+            "porEquipo": 10
+          }
+        }
+      ]
     },
     {
       "id": "p7",
@@ -89,44 +204,171 @@
         "Hay 10 + 7 + 6 + 3 + 1 = 27 puntos: faltan 3, y cada empate quita uno. Hubo 3 empates.",
         "No es 6: la columna de empates de la tabla sumaría 6, porque cada empate aparece en la fila de los dos equipos."
       ],
-      "verificar": [ { "fn": "empates", "args": [{ "equipos": 5, "puntos": [10, 7, 6, 3, 1] }], "espera": { "partidos": 10, "total": 27, "empates": 3 } } ]
+      "verificar": [
+        {
+          "fn": "empates",
+          "args": [
+            {
+              "equipos": 5,
+              "puntos": [
+                10,
+                7,
+                6,
+                3,
+                1
+              ]
+            }
+          ],
+          "espera": {
+            "partidos": 10,
+            "total": 27,
+            "empates": 3
+          }
+        }
+      ]
     },
     {
       "id": "p8",
       "nivel": "avanzado",
-      "enunciado": "Cuatro equipos jugaron todos contra todos, a una rueda. La tabla final está incompleta: Cóndores PJ 3, PG 2, PE 1, PP 0, GF 6, GC 2, 7 puntos; Pumas 3, 1, 1, 1, GF 4, GC 3, 4 puntos; Vicuñas 3, 1, 1, 1, GF 3, GC 4, 4 puntos; Halcones jugó 3 partidos e hizo 2 goles. ¿Cuántos partidos ganó, empató y perdió Halcones, cuántos puntos tiene y cuántos goles recibió?",
-      "respuesta": "Ganó 0, empató 1 y perdió 2: 1 punto. Recibió 6 goles.",
+      "enunciado": "Cuatro equipos jugaron todos contra todos, a una rueda. La tabla final está incompleta: Totoras PJ 3, PG 1, PE 2, PP 0, GF 3, GC 2, 5 puntos; Uros 3, 1, 0, 2, GF 3, GC 3, 3 puntos; Suris 3, 1, 1, 1, GF 3, GC 3, 4 puntos; Kantutas jugó 3 partidos e hizo 3 goles. ¿Cuántos partidos ganó, empató y perdió Kantutas, cuántos puntos tiene y cuántos goles recibió?",
+      "respuesta": "Ganó 1, empató 1 y perdió 1: 4 puntos. Recibió 4 goles.",
       "pasos": [
-        "Las victorias y las derrotas de todo el torneo son iguales (cada partido con ganador da una de cada una): 2 + 1 + 1 + PG = 0 + 1 + 1 + PP, o sea PP = PG + 2.",
-        "Los empates de la columna PE van de dos en dos: 1 + 1 + 1 + PE debe ser par, así que PE es impar.",
-        "Como PG + PE + PP = 3 con PE impar y PP = PG + 2: PG = 0, PE = 1, PP = 2. Puntos: 3 · 0 + 1 = 1.",
-        "Los goles a favor de todos suman lo mismo que los goles en contra: 6 + 4 + 3 + 2 = 15 = 2 + 3 + 4 + GC, así que GC = 6."
+        "Las victorias y las derrotas de todo el torneo son iguales (cada partido con ganador da una de cada una): 1 + 1 + 1 + PG = 0 + 2 + 1 + PP, o sea PG = PP.",
+        "Los empates de la columna PE van de dos en dos: 2 + 0 + 1 + PE debe ser par, así que PE es impar: 1 o 3.",
+        "PE = 3 querría decir que Kantutas empató con todos, también con Uros, pero Uros no empató ningún partido. Entonces PE = 1 y PG = PP = 1. Puntos: 3 · 1 + 1 = 4.",
+        "Los goles a favor de todos suman lo mismo que los goles en contra: 3 + 3 + 3 + 3 = 12 = 2 + 3 + 3 + GC, así que GC = 4."
       ],
-      "verificar": [ { "fn": "deducirTabla", "args": [{ "equipos": 4, "filas": [{ "PJ": 3, "PG": 2, "PE": 1, "PP": 0, "GF": 6, "GC": 2, "Pts": 7 }, { "PJ": 3, "PG": 1, "PE": 1, "PP": 1, "GF": 4, "GC": 3, "Pts": 4 }, { "PJ": 3, "PG": 1, "PE": 1, "PP": 1, "GF": 3, "GC": 4, "Pts": 4 }, { "PJ": 3, "PG": null, "PE": null, "PP": null, "GF": 2, "GC": null, "Pts": null }] }], "espera": { "unica": true, "filas.3.PG": 0, "filas.3.PE": 1, "filas.3.PP": 2, "filas.3.Pts": 1, "filas.3.GC": 6 } } ]
+      "verificar": [
+        {
+          "fn": "deducirTabla",
+          "args": [
+            {
+              "equipos": 4,
+              "filas": [
+                {
+                  "PJ": 3,
+                  "PG": 1,
+                  "PE": 2,
+                  "PP": 0,
+                  "GF": 3,
+                  "GC": 2,
+                  "Pts": 5
+                },
+                {
+                  "PJ": 3,
+                  "PG": 1,
+                  "PE": 0,
+                  "PP": 2,
+                  "GF": 3,
+                  "GC": 3,
+                  "Pts": 3
+                },
+                {
+                  "PJ": 3,
+                  "PG": 1,
+                  "PE": 1,
+                  "PP": 1,
+                  "GF": 3,
+                  "GC": 3,
+                  "Pts": 4
+                },
+                {
+                  "PJ": 3,
+                  "PG": null,
+                  "PE": null,
+                  "PP": null,
+                  "GF": 3,
+                  "GC": null,
+                  "Pts": null
+                }
+              ]
+            }
+          ],
+          "espera": {
+            "unica": true,
+            "filas.3.PG": 1,
+            "filas.3.PE": 1,
+            "filas.3.PP": 1,
+            "filas.3.Pts": 4,
+            "filas.3.GC": 4
+          }
+        }
+      ]
     },
     {
       "id": "p9",
       "nivel": "intermedio",
-      "enunciado": "¿Cuántos años tiene Rosa? I: Rosa tiene 3 años más que su hermano. II: Entre los dos suman 25 años. Responde con el formato de suficiencia: A) la I sola basta; B) la II sola basta; C) las dos juntas, pero ninguna sola; D) cada una por separado; E) se necesitan más datos.",
-      "respuesta": "C: hacen falta las dos juntas; Rosa tiene 14 años.",
+      "enunciado": "¿Cuántos años tiene Rosa? I: Rosa tiene 3 años más que su hermano. II: Entre los dos suman 25 años. Responde con el formato de suficiencia: A) La información I es suficiente; B) La información II es suficiente; C) Es necesario utilizar ambas informaciones; D) Cada una de las informaciones, por separado, es suficiente; E) Las informaciones dadas son insuficientes.",
+      "respuesta": "C: es necesario utilizar ambas informaciones; Rosa tiene 14 años.",
       "pasos": [
         "Con la I sola, Rosa podría tener 4 (hermano de 1), 5, 6…: muchas edades.",
         "Con la II sola, Rosa y su hermano podrían tener 13 y 12, 20 y 5…: muchas.",
         "Juntas: R = H + 3 y R + H = 25 → 2H + 3 = 25 → H = 11 y R = 14. Una sola edad: clave C."
       ],
-      "verificar": [ { "fn": "suficiencia", "args": [{ "variables": { "rosa": [1, 40], "hermano": [1, 40] }, "pregunta": "rosa", "I": "rosa == hermano + 3", "II": "rosa + hermano == 25" }], "espera": { "clave": "juntas", "valores.juntas": [14] } } ]
+      "verificar": [
+        {
+          "fn": "suficiencia",
+          "args": [
+            {
+              "variables": {
+                "rosa": [
+                  1,
+                  40
+                ],
+                "hermano": [
+                  1,
+                  40
+                ]
+              },
+              "pregunta": "rosa",
+              "I": "rosa == hermano + 3",
+              "II": "rosa + hermano == 25"
+            }
+          ],
+          "espera": {
+            "clave": "juntas",
+            "valores.juntas": [
+              14
+            ]
+          }
+        }
+      ]
     },
     {
       "id": "p10",
       "nivel": "avanzado",
-      "enunciado": "Se pensó un número de dos cifras. ¿Cuál es? I: Es múltiplo de 25. II: Es impar. Con el mismo formato: A) la I sola basta; B) la II sola basta; C) las dos juntas; D) cada una por separado; E) se necesitan más datos.",
-      "respuesta": "E: se necesitan más datos (quedan 25 y 75).",
+      "enunciado": "Se pensó un número de dos cifras. ¿Cuál es? I: Es múltiplo de 25. II: Es impar. Con el mismo formato: A) La información I es suficiente; B) La información II es suficiente; C) Es necesario utilizar ambas informaciones; D) Cada una de las informaciones, por separado, es suficiente; E) Las informaciones dadas son insuficientes.",
+      "respuesta": "E: las informaciones dadas son insuficientes (quedan 25 y 75).",
       "pasos": [
         "Con la I: los múltiplos de 25 de dos cifras son 25, 50 y 75. Tres posibles: no basta.",
         "Con la II: hay 45 impares de dos cifras. No basta.",
-        "Juntas: quedan 25 y 75. Todavía son dos: ni juntas alcanzan. Si te quedabas con el primero que encontraste (25), habrías marcado C."
+        "Juntas: quedan 25 y 75. Todavía son dos: ni juntas alcanzan. Si te quedabas con el primero que encontraste con la I (25), habrías marcado A; si usabas las dos solo porque estaban, C."
       ],
-      "verificar": [ { "fn": "suficiencia", "args": [{ "variables": { "n": [10, 99] }, "pregunta": "n", "I": "n % 25 == 0", "II": "n % 2 == 1" }], "espera": { "clave": "faltan", "valores.juntas": [25, 75] } } ]
+      "verificar": [
+        {
+          "fn": "suficiencia",
+          "args": [
+            {
+              "variables": {
+                "n": [
+                  10,
+                  99
+                ]
+              },
+              "pregunta": "n",
+              "I": "n % 25 == 0",
+              "II": "n % 2 == 1"
+            }
+          ],
+          "espera": {
+            "clave": "faltan",
+            "valores.juntas": [
+              25,
+              75
+            ]
+          }
+        }
+      ]
     }
   ]
 }

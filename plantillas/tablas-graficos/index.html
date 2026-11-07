@@ -181,7 +181,7 @@ button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--
     <header>
       <p class="eyebrow">Razonamiento matemático · Tablas, gráficos y suficiencia de datos · Problemas tipo admisión</p>
       <h1>La bodega en gráficos</h1>
-      <p class="sub">Barras de dos bodegas, la línea de las ventas de cada mes, el gráfico circular de un colegio de Juliaca, la tabla de un campeonato y problemas de suficiencia de datos. Primero predices; después, el motor hace las cuentas y revisa todos los casos.</p>
+      <p class="sub">Barras de dos bodegas, la línea de las ventas de cada mes, el gráfico circular de un colegio de Juliaca, la tabla de un campeonato y problemas de suficiencia de datos. Primero predices; después, el motor hace las cuentas.</p>
     </header>
     <nav class="tabs" aria-label="Modo de la escena">
       <a href="#paso-a-paso" id="tab1">Paso a paso</a>
@@ -426,14 +426,14 @@ function crearEscena(cv, idDesc, idLect, idLey){
       S.valores.forEach((v, k) => {
         if (k + 1 >= S.valores.length || !(S.valores[k + 1] > v) || hechos >= L.anot) return;
         hechos++;
-        const T = C.tramos[k], x0 = g.X(k) + si*14, x1 = g.X(k + 1);
+        const T = C.tramos[k], x0 = g.X(k) + si*50, x1 = g.X(k + 1);
         ctx.save(); ctx.globalAlpha = .75*atenuar('b'); ctx.strokeStyle = c.b; ctx.lineWidth = grosor('b', 5); ctx.lineCap = 'butt';
         linea(ctx, { x:x0, y:g.bo }, { x:x0, y:g.Y(v) }); ctx.restore();
         ctx.save(); ctx.setLineDash([4, 4]); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; linea(ctx, { x:x0, y:g.Y(v) }, { x:x1, y:g.Y(v) }); ctx.restore();
         ctx.save(); ctx.globalAlpha = atenuar('d'); ctx.strokeStyle = c.d; ctx.lineWidth = grosor('d', 5); linea(ctx, { x:x1, y:g.Y(v) }, { x:x1, y:g.Y(S.valores[k + 1]) }); ctx.restore();
-        rotulo(ctx, c, x0 + 5, g.bo + (g.Y(v) - g.bo)*(si ? 0.72 : 0.5), `b = ${fmt(v, 0)}`, c.b, 'left', 800, 11);
+        rotulo(ctx, c, x0 + 5, si ? g.Y(v) + 14 : g.bo + (g.Y(v) - g.bo)*0.5, `b = ${fmt(v, 0)}`, c.b, 'left', 800, 11);
         rotulo(ctx, c, x1 - 6, g.Y(v) + 12, `Δ = +${fmt(T.cambio, 0)}`, c.d, 'right', 800, 11);
-        rotulo(ctx, c, (x0 + x1)/2, Math.min(g.Y(v), g.Y(S.valores[k + 1])) - 30, `Δ% = ${pc(T.porcentaje)}`, c.dp, 'center', 800, 11);
+        rotulo(ctx, c, (x0 + x1)/2, Math.max(g.t + 12, Math.min(g.Y(v), g.Y(S.valores[k + 1])) - 30), `Δ% = ${pc(T.porcentaje)}`, c.dp, 'center', 800, 11);
       });
       if (si === 0 && L.resaltar >= 0){
         ctx.save(); ctx.strokeStyle = c.dp; ctx.globalAlpha = .35; ctx.lineWidth = 11; ctx.lineCap = 'round';
@@ -499,7 +499,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
   // ----- equipos en ronda -----
   function dibRonda(c){
     const Ro = E.ron, n = Ro.nombres.length, alto = Hh - (Ro.bolsa ? 46 : 0);
-    const cx = W/2, cy = alto/2 + 6, rr = Math.max(30, Math.min(W/2 - 62, alto/2 - 58));
+    const cx = W/2, cy = alto/2 + 6, rr = Math.max(30, Math.min(W/2 - 92, alto/2 - 44));
     const P = k => ({ x:cx + rr*Math.cos(-Math.PI/2 + 2*Math.PI*k/n + (n === 4 ? Math.PI/4 : 0)), y:cy + rr*Math.sin(-Math.PI/2 + 2*Math.PI*k/n + (n === 4 ? Math.PI/4 : 0)) });
     const vistos = Math.floor(Ro.prog + 1e-9);
     const cuenta = {};
@@ -517,11 +517,12 @@ function crearEscena(cv, idDesc, idLect, idLey){
       const p = P(k);
       punto(ctx, c, p.x, p.y, 20, c.card, c.ink);
       ctx.save(); ctx.fillStyle = c.ink; ctx.font = `800 12px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(nm.slice(0, 2), p.x, p.y); ctx.restore();
-      const abajo = p.y >= cy - 1;
-      rotulo(ctx, c, p.x, p.y + (abajo ? 32 : -32), nm, c.ink, 'center', 800, 11);
-      if (Ro.verPuntos && Ro.puntos) rotulo(ctx, c, p.x, p.y + (abajo ? 48 : -48), `${Ro.puntos[k]} Pts`, c.Pts, 'center', 800, 11);
+      const dl = Math.hypot(p.x - cx, p.y - cy) || 1, ux = (p.x - cx)/dl, uy = (p.y - cy)/dl;
+      const al = ux > .3 ? 'left' : ux < -.3 ? 'right' : 'center', nx = p.x + 34*ux, ny = p.y + 34*uy;
+      rotulo(ctx, c, nx, ny, nm, c.ink, al, 800, 11);
+      if (Ro.verPuntos && Ro.puntos){ const n = Ro.puntos[k]; rotulo(ctx, c, nx, ny + (uy >= -0.05 ? 15 : -15), `${n} ${n === 1 ? 'punto' : 'puntos'}`, c.Pts, al, 800, 11); }
     });
-    rotulo(ctx, c, 10, 12, `partidos dibujados: ${vistos}`, c.muted, 'left', 700, 11);
+    if (vistos > 0) rotulo(ctx, c, 10, 12, `partidos dibujados: ${vistos}`, c.muted, 'left', 700, 11);
     if (Ro.bolsa){
       const tot = Ro.resultados.length*3, by = Hh - 30, s = Math.min(16, (W - 24)/tot), x0 = (W - s*tot)/2;
       let k = 0;
@@ -696,8 +697,8 @@ const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `
 const L = (k, nombre, valor) => () => [k, nombre, valor];
 
 // Suficiencia de datos: las cinco alternativas fijas del formato de admisión y el código de cada error del motor.
-const ALTERNATIVAS = [['a', 'solo-I', 'La información I sola basta; la II sola, no'], ['b', 'solo-II', 'La información II sola basta; la I sola, no'],
-  ['c', 'juntas', 'Hacen falta las dos juntas; ninguna sola basta'], ['d', 'cada-una', 'Cada una basta por separado'], ['e', 'faltan', 'Ni las dos juntas bastan: se necesitan más datos']];
+const ALTERNATIVAS = [['a', 'solo-I', 'La información I es suficiente'], ['b', 'solo-II', 'La información II es suficiente'],
+  ['c', 'juntas', 'Es necesario utilizar ambas informaciones'], ['d', 'cada-una', 'Cada una de las informaciones, por separado, es suficiente'], ['e', 'faltan', 'Las informaciones dadas son insuficientes']];
 const CODIGO_SD = { pareceBastar:'suficiencia-parece-bastar', soloLaPrimera:'suficiencia-se-queda-con-la-primera', juntasPorSiAcaso:'suficiencia-juntas-por-si-acaso',
   otraTambienBasta:'suficiencia-la-otra-tambien-basta', ningunaSola:'suficiencia-ninguna-sola', alReves:'suficiencia-al-reves' };
 function opcionesSD(R){
@@ -725,15 +726,15 @@ const T6 = MG.tablaDesdeResultados({ equipos:4, resultados:RES }), P6 = T6.filas
 const E6 = MG.empates({ equipos:4, puntos:P6 });
 const INCOMPLETA = T6.filas.map((f, k) => k === 3 ? { PJ:f.PJ, PG:null, PE:null, PP:null, GF:f.GF, GC:null, Pts:null } : { PJ:f.PJ, PG:f.PG, PE:f.PE, PP:f.PP, GF:f.GF, GC:f.GC, Pts:f.Pts });
 const D6 = MG.deducirTabla({ equipos:4, filas:INCOMPLETA });
-const F7 = MG.suficiencia({ variables:{ edad:[1, 30] }, pregunta:'edad', I:'edad + 5 == 17', II:'edad - 2 < 14' });
+const F7 = MG.suficiencia({ variables:{ edad:[3, 30] }, pregunta:'edad', I:'edad + 5 == 17', II:'edad - 2 < 14' });
 const F8 = MG.suficiencia({ variables:{ cuadernos:[1, 8], lapiceros:[1, 8] }, pregunta:'cuadernos', I:'4*cuadernos + 3*lapiceros == 25', II:'cuadernos + lapiceros == 7' });
 const veces = x => `${fmt(x, 2)} veces`;
 
 const G1 = { id:'graficos-paso1', ok:'b', opts:[
-  ['a', `${fmt(R1.errores.alturas)} veces: la barra de Rosita se ve el triple de alta que la de El Sol`, 'eje-truncado-razon-de-alturas', 'hipotesis'],
-  ['b', `${fmt(R1.razon)} veces: vendió 50 cajas y El Sol, 40`],
-  ['c', `${fmt(R1.errores.sobranteDibujado)} veces: lo que la barra de Rosita le saca a la otra mide el doble que la de El Sol`, 'eje-truncado-sobrante-dibujado', 'hipotesis'],
-  ['d', `${fmt(R1.errores.invertida)} veces: 40 cajas entre 50`, 'razon-invertida', 'hipotesis']],
+  ['a', `${fmt(R1.errores.alturas)} veces: ${R1.altoA} contra ${R1.altoB}`, 'eje-truncado-razon-de-alturas', 'hipotesis'],
+  ['b', `${fmt(R1.razon)} veces: 50 contra 40`],
+  ['c', `${fmt(R1.errores.sobranteDibujado)} veces: ${R1.diferencia} contra ${R1.altoB}`, 'eje-truncado-sobrante-dibujado', 'hipotesis'],
+  ['d', `${fmt(R1.errores.invertida)} veces: 40 contra 50`, 'razon-invertida', 'hipotesis']],
   fb:{ b:`¡Bien! Hay que leer los números del eje: 50/40 = 5/4 = ${fmt(R1.razon)}. Rosita vendió ${R1.diferencia} cajas más, un ${pc(R1.porcentajeMas)} más. Mira lo que pasa cuando el eje baja hasta 0.`,
     a:`Elegiste la A. Las barras se ven ${R1.altoA} contra ${R1.altoB}, pero el eje empieza en 35: a las dos les cortaron las primeras 35 cajas. Con los números, 50/40 = ${fmt(R1.razon)}. La correcta está marcada.`,
     c:`Elegiste la C. Lo que una barra le saca a la otra (10 cajas) comparado con lo que se ve de la otra (5) es otra trampa del eje cortado. Rosita vendió 50 y El Sol 40: ${fmt(R1.razon)} veces. La correcta está marcada.`,
@@ -741,7 +742,7 @@ const G1 = { id:'graficos-paso1', ok:'b', opts:[
 const G3 = { id:'graficos-paso3', ok:'b', opts:[
   ['a', `De ${MES[M3.masEmpinado.tramo]} a ${MES[M3.masEmpinado.tramo + 1]}: sube ${M3.masEmpinado.cambio} cajas, la subida más empinada`, 'tramo-mas-empinado', 'hipotesis'],
   ['b', `De ${MES[C3.mayor]} a ${MES[C3.mayor + 1]}: sube ${C3.cambio} sobre ${T3[C3.mayor].de}, el ${pc(C3.porcentaje)}`],
-  ['c', `De ${MES[M3.baseFinal.tramo]} a ${MES[M3.baseFinal.tramo + 1]}: sube ${T3[M3.baseFinal.tramo].cambio} sobre ${T3[M3.baseFinal.tramo].a}, el ${pc(M3.baseFinal.porcentaje)}`, 'AR3-porcentaje-sobre-el-valor-final', 'parcial'],
+  ['c', `De ${MES[M3.baseFinal.tramo]} a ${MES[M3.baseFinal.tramo + 1]}: sube ${T3[M3.baseFinal.tramo].cambio} sobre ${T3[M3.baseFinal.tramo].a}, el ${pc(M3.baseFinal.porcentaje)}`, 'AR3-porcentaje-sobre-el-valor-final', 'hipotesis'],
   ['d', `En ${MES[M3.puntoMasAlto.indice]}: es el punto más alto, con ${M3.puntoMasAlto.valor} cajas`, 'punto-mas-alto-en-vez-del-cambio', 'hipotesis']],
   fb:{ b:`¡Bien! El porcentaje compara lo que sube con el valor de partida: de noviembre a diciembre, 20 sobre 100 es ${pc(T3[0].porcentaje)}; de febrero a marzo, 10 sobre 40 es ${pc(C3.porcentaje)}. Sube menos cajas, pero desde mucho más abajo.`,
     a:`Elegiste la A. De noviembre a diciembre suben más cajas (20), pero sobre 100: ${pc(T3[0].porcentaje)}. De febrero a marzo suben 10 sobre 40: ${pc(C3.porcentaje)}. Lo empinado mide el cambio en cajas, no en porcentaje. La correcta está marcada.`,
@@ -758,18 +759,18 @@ const G4 = { id:'graficos-paso4', ok:'c', opts:[
     d:`Elegiste la D. El ${pc(S4.porcentaje)} está bien, pero se pregunta por alumnos: el ${pc(S4.porcentaje)} de 200 son ${fmt(S4.cantidad)}. La correcta está marcada.` } };
 const G6 = { id:'graficos-paso6', ok:'b', opts:[
   ['a', `${E6.errores.porEquipo}: 7, 4, 4 y 1 dejan resto 1 al dividirlos entre 3, un empate por equipo`, 'empates-contados-por-equipo', 'hipotesis'],
-  ['b', `${E6.empates}: sin empates habría ${E6.maximo} puntos y hay ${E6.total}`],
-  ['c', `${fmt(E6.errores.faltanEntreDos)}: faltan 2 puntos y cada empate reparte 2`, 'empate-reparte-dos-puntos', 'hipotesis'],
+  ['b', `${E6.empates}: faltan ${E6.maximo - E6.total} puntos y cada empate resta 1`],
+  ['c', `${fmt(E6.errores.faltanEntreDos)}: faltan ${E6.maximo - E6.total} puntos y cada empate resta 2`, 'empate-reparte-dos-puntos', 'hipotesis'],
   ['d', 'No se puede saber: faltan los resultados de cada partido', 'tabla-no-se-puede-sin-resultados', 'hipotesis']],
   fb:{ b:`¡Bien! Se jugaron 4 · 3/2 = ${E6.partidos} partidos. Un partido con ganador reparte 3 puntos; un empate, 2. Sin empates habría ${E6.maximo}; hay ${E6.total}: cada empate «pierde» un punto, así que hubo ${E6.empates}.`,
     a:`Elegiste la A. Cada equipo sí tiene un empate, pero un empate lo juegan DOS equipos: aparece en dos filas. Los 4 empates de los equipos son ${E6.empates} partidos. La correcta está marcada.`,
-    c:`Elegiste la C. Un empate reparte 2 puntos, pero un partido con ganador reparte 3: cada empate deja 1 punto menos, no 2. Faltan 2 puntos: hubo ${E6.empates} empates. La correcta está marcada.`,
+    c:`Elegiste la C. Un empate reparte 2 puntos y un partido con ganador, 3: cada empate resta 1 punto al total, no 2. Faltan 2 puntos (${E6.maximo} posibles, hay ${E6.total}): hubo ${E6.empates} empates. La correcta está marcada.`,
     d:`Elegiste la D. No hace falta saber quién le ganó a quién: basta contar los puntos. ${E6.partidos} partidos darían ${E6.maximo} puntos sin empates; hay ${E6.total}, así que hubo ${E6.empates}. La correcta está marcada.` } };
 const G7 = { id:'graficos-paso7', ok:letraDe(F7.clave), opts:opcionesSD(F7),
-  fb:{ a:`¡Bien! Con la I: edad + 5 = 17, así que Ana tiene 12, una sola edad. Con la II: de 1 a 15 años caben todas. La I sola basta; no hace falta usar la II.`,
-    b:'Elegiste la B. Con la II, Ana podría tener cualquier edad de 1 a 15. La que deja una sola edad es la I: 17 − 5 = 12. La correcta está marcada.',
-    c:'Elegiste la C. Usar las dos da 12, pero la I sola ya lo daba. En suficiencia se marca la opción más corta que alcanza: la I sola. La correcta está marcada.',
-    d:'Elegiste la D. La I basta, pero la II deja 15 edades posibles (de 1 a 15): no basta sola. La correcta está marcada.',
+  fb:{ a:`¡Bien! Con la I: edad + 5 = 17, así que Ana tiene 12, una sola edad. Con la II: de 3 a 15 años caben todas. La I sola basta; no hace falta usar la II.`,
+    b:'Elegiste la B. Con la II, Ana podría tener cualquier edad de 3 a 15. La que deja una sola edad es la I: 17 − 5 = 12. La correcta está marcada.',
+    c:'Elegiste la C. Usar las dos da 12, pero la I sola ya lo daba. En suficiencia se marca la que usa menos información: la I sola. La correcta está marcada.',
+    d:'Elegiste la D. La I basta, pero la II deja 13 edades posibles (de 3 a 15): no basta sola. La correcta está marcada.',
     e:'Elegiste la E. Sí hay datos suficientes: dentro de 5 años tendrá 17, así que hoy tiene 12. La correcta está marcada.' } };
 const G8 = { id:'graficos-paso8', ok:letraDe(F8.clave), opts:opcionesSD(F8),
   fb:{ c:`¡Bien! Con la I quedan dos compras: 1 cuaderno y 7 lapiceros (4 + 21 = 25) o 4 cuadernos y 3 lapiceros (16 + 9 = 25). Con la II quedan ${F8.valores.II.length}. Las dos juntas dejan solo la de 4 cuadernos.`,
@@ -780,7 +781,7 @@ const G8 = { id:'graficos-paso8', ok:letraDe(F8.clave), opts:opcionesSD(F8),
 
 // ---- configuraciones ----
 const barras1 = (ya, inicio) => ({ modo:'barras', bar:{ a:50, b:40, inicio: inicio === undefined ? 35 : inicio, tope:55, verValores:ya, marcarInicio:ya },
-  lect: ya ? [L('R', 'Rosita', '50 cajas'), L('So', 'El Sol', '40 cajas'), L('ink', 'Se veía', veces(R1.dibujada)), L('ink', 'De verdad', veces(R1.razon))] : [L('ink', 'Cajas de octubre', 'lee el eje')],
+  lect: ya ? [L('R', 'Rosita', '50 cajas'), L('So', 'El Sol', '40 cajas'), L('ink', 'Se veía', veces(R1.dibujada)), L('ink', 'De verdad', veces(R1.razon))] : [L('ink', 'Mes', 'octubre')],
   desc:'Gráfico de barras de las cajas de gaseosa de octubre: Rosita y El Sol. El eje vertical empieza en 35 y llega a 55.' });
 function barras2(){
   E.config({ modo:'barras', drag:true, bar:{ a:50, b:40, inicio:S.y0, tope:55, verValores:true, marcarInicio:true, deslizador:true },
@@ -823,11 +824,11 @@ function tablaCamp(filas, nuevas){
   return `<div style="overflow-x:auto"><table class="tabla"><tr><th>Equipo</th>${CAMP.map(k => `<th${k === 'Pts' ? ' class="tPts"' : ''}>${k}</th>`).join('')}</tr>${filas.map((f, j) =>
     `<tr><td>${EQ[j]}</td>${CAMP.map(k => `<td class="${k === 'Pts' ? 'tPts' : ''}${nuevas && nuevas[j] && INCOMPLETA[j][k] === null ? ' nuevo' : ''}">${f[k] === null ? '?' : f[k]}</td>`).join('')}</tr>`).join('')}</table></div>`;
 }
-const lectSuf = (F, nom) => [L('I', 'Con I', conjunto(F.valores.I)), L('II', 'Con II', conjunto(F.valores.II)), L('ink', 'Con las dos', conjunto(F.valores.juntas))].map(f => () => { const [k, t, v] = f(); return [k, `${t} (${nom})`, v]; });
+const lectSuf = (F, nom) => [L('I', 'Con I', conjunto(F.valores.I)), L('II', 'Con II', conjunto(F.valores.II)), L('ink', 'Las dos', conjunto(F.valores.juntas))].map(f => () => { const [k, t, v] = f(); return [k, `${t} (${nom})`, v]; });
 const suf7 = (ya, vista) => ({ modo:'suf', suf:{ R:F7, vars:['edad'], vista: ya ? vista : 'nada', eje:'edad de Ana (años)' },
-  lect: ya ? lectSuf(F7, 'edad') : [L('ink', 'Edades posibles', 'de 1 a 30')], desc:'Treinta fichas: las edades posibles de Ana, de 1 a 30 años.' });
+  lect: ya ? lectSuf(F7, 'edad') : [L('ink', 'Edades posibles', 'de 3 a 30')], desc:'Veintiocho fichas: las edades posibles de Ana, de 3 a 30 años.' });
 const suf8 = (ya, vista) => ({ modo:'suf', suf:{ R:F8, vars:['cuadernos', 'lapiceros'], vista: ya ? vista : 'nada' },
-  lect: ya ? lectSuf(F8, 'cuadernos') : [L('ink', 'Compras posibles', '8 × 8 = 64')], desc:'Una malla de 64 puntos: cada punto es una compra posible, de 1 a 8 cuadernos y de 1 a 8 lapiceros.' });
+  lect: ya ? lectSuf(F8, 'cuad.') : [L('ink', 'Compras posibles', '8 × 8 = 64')], desc:'Una malla de 64 puntos: cada punto es una compra posible, de 1 a 8 cuadernos y de 1 a 8 lapiceros.' });
 const VISTAS = [['I', 'Solo I'], ['II', 'Solo II'], ['juntas', 'Las dos juntas'], ['todo', 'Todo']];
 const botonesVista = (id, actual) => `<div class="seg" id="${id}" role="group" aria-label="Qué información se aplica">${VISTAS.map(([k, t]) => `<button type="button" data-v="${k}" aria-pressed="${k === actual}">${t}</button>`).join('')}</div>`;
 function montarVista(id, clave, cfg){
@@ -866,7 +867,7 @@ const steps = [
      <div class="eq">nov → dic: ${fr(d_('20'), b_('100'))} · 100 = ${dp_(pc(T3[0].porcentaje))}</div>
      <div class="eq">feb → mar: ${fr(d_('10'), b_('40'))} · 100 = ${dp_(pc(T3[3].porcentaje))}</div></div>
    <p>En el dibujo, cada subida tiene su ${b_('base')} (la barra desde 0 hasta donde parte) y su ${d_('Δ')}. De noviembre a diciembre la subida es más grande, pero la base también: 20 es la quinta parte de 100. De febrero a marzo, 10 es la cuarta parte de 40.</p>
-   <p class="fuente">Calcular el porcentaje sobre la base equivocada es AR3 del informe de aritmética: Jacobs Danan y Gelman (2018) lo describen como un error con porcentajes, sin cifra propia en lo que pudimos ver (respaldo parcial). Elegir el tramo más empinado o el punto más alto son hipótesis nuestras.</p></div>` },
+   <p class="fuente">Calcular el porcentaje sobre el valor final es una hipótesis nuestra, ligada a AR3 del informe de aritmética (porcentaje sobre la base equivocada), que tampoco tiene cifra propia. Elegir el tramo más empinado o el punto más alto también son hipótesis nuestras.</p></div>` },
  { k:'Paso 4', t:'Predice: el gráfico circular', gate:G4,
    prep:() => E.config(circular4(!!S.pred[G4.id])),
    anima:fin => { const o = circular4(true); o.cir.quintos = 0; o.cir.verPct = false; o.cir.verCant = false; o.cir.oculto = 2; E.config(o); const Ci = E.cir;
@@ -895,7 +896,7 @@ const steps = [
      <div class="eq">partidos = ${fr('4 · 3', '2')} = ${E6.partidos}<span class="note">cada partido se cuenta una vez</span></div>
      <div class="eq">${Pts_('Pts')} = 3 · ${E6.partidos} − ${E_('E')} → ${E6.total} = ${E6.maximo} − ${E_('E')} → ${E_('E')} = ${E_(String(E6.empates))}</div></div>
    <p>En el dibujo, cada partido llena 3 casillas de puntos si alguien gana y solo 2 si empatan: quedan ${E6.empates} casillas vacías, una por empate.</p>
-   <p>La tabla final trae más relaciones: PJ = PG + PE + PP; Pts = 3 · PG + PE; las victorias de todos suman lo mismo que las derrotas; la columna PE es par (cada empate está en dos filas) y los goles a favor suman lo mismo que los goles en contra. Con eso se completa una fila que falta:</p>
+   <p>La tabla final trae más relaciones: PJ = PG + PE + PP; Pts = 3 · PG + PE; las victorias de todos suman lo mismo que las derrotas; la suma de la columna PE es par (cada empate está en dos filas) y los goles a favor suman lo mismo que los goles en contra. Con eso se completa una fila que falta:</p>
    <div id="tablaC">${tablaCamp(S.deducida ? D6.filas : INCOMPLETA, S.deducida ? [0, 0, 0, 1] : null)}</div>
    <div class="fila"><button type="button" class="btn chico" id="btnDed">${S.deducida ? 'Fila deducida' : 'Que el motor complete la fila de Halcones'}</button></div>
    <p id="msgDed" class="hint">${S.deducida ? msgDed() : ''}</p>
@@ -904,12 +905,12 @@ const steps = [
    prep:() => { E.config(suf7(!!S.pred[G7.id], S.v7)); if (S.pred[G7.id]) montarVista('vista7', 'v7', suf7); },
    anima:fin => animarVistas(suf7, () => { S.v7 = 'todo'; E.config(suf7(true, 'todo')); montarVista('vista7', 'v7', suf7); fin(); }),
    body:() => `<p>En los problemas de <b>suficiencia de datos</b> no se pide la respuesta: se pide decidir qué información alcanza para hallarla. Una información basta si deja un solo valor posible.</p>
-   <p class="problem">¿Qué edad tiene Ana? (Tiene entre 1 y 30 años cumplidos.)<br>${I_('I')}: Dentro de 5 años tendrá 17.<br>${II_('II')}: Hace 2 años tenía menos de 14.</p>
+   <p class="problem">¿Qué edad tiene Ana? (Tiene entre 3 y 30 años cumplidos.)<br>${I_('I')}: Dentro de 5 años tendrá 17.<br>${II_('II')}: Hace 2 años tenía menos de 14.</p>
    ${opcionesHTML(G7.opts, 'fb')}
    <div id="tras" class="body" hidden>${botonesVista('vista7', S.v7)}
    <div class="eqs"><div class="eq">${I_('I')}: edad + 5 = 17 → edad = ${conjunto(F7.valores.I)}</div>
      <div class="eq">${II_('II')}: edad − 2 &lt; 14 → edad ${conjunto(F7.valores.II)}</div></div>
-   <p>El motor probó las 30 edades con cada información: con la ${I_('I')} queda una sola ficha; con la ${II_('II')}, quince.</p>
+   <p>El motor probó las 28 edades con cada información: con la ${I_('I')} queda una sola ficha; con la ${II_('II')}, trece.</p>
    <p class="fuente">Usar las dos «por si acaso», creer que la otra también basta y las demás opciones incorrectas son hipótesis nuestras: no encontramos estudios con cifras sobre suficiencia de datos.</p></div>` },
  { k:'Paso 8', t:'Predice: los cuadernos y los lapiceros', gate:G8,
    prep:() => { E.config(suf8(!!S.pred[G8.id], S.v8)); if (S.pred[G8.id]) montarVista('vista8', 'v8', suf8); },
@@ -924,7 +925,7 @@ const steps = [
    <p class="aviso">Antes de decir que una información basta, busca si hay otra solución.</p>
    <p class="fuente">Quedarse con la primera solución que se encuentra («parece bastar») es una hipótesis nuestra, igual que las otras opciones incorrectas.</p></div>` },
 ];
-function msgDed(){ return `El motor probó las 3⁶ = 729 formas de jugar los 6 partidos (gana uno, empate o gana el otro): ${D6.posibles} dan las filas de los otros tres equipos, y en todas Halcones queda con ${D6.filas[3].PG} PG, ${D6.filas[3].PE} PE, ${D6.filas[3].PP} PP y ${D6.filas[3].Pts} punto. Sus goles en contra salen de que los goles a favor y en contra suman lo mismo: ${D6.filas[3].GC}.`; }
+function msgDed(){ return `El motor probó las 3⁶ = 729 formas de jugar los 6 partidos (gana uno, empate o gana el otro): ${D6.posibles} dan los PG, PE, PP y Pts de los otros tres equipos, y en todas Halcones queda con ${D6.filas[3].PG} PG, ${D6.filas[3].PE} PE, ${D6.filas[3].PP} PP y ${D6.filas[3].Pts} punto. Sus goles en contra salen de que los goles a favor y en contra suman lo mismo: ${D6.filas[3].GC}.`; }
 function montarDed(){
   const b = $('btnDed'); if (!b) return;
   b.disabled = S.deducida;
@@ -1032,7 +1033,7 @@ const EXPS = [
   { id:'mismo-aumento', corto:'El mismo aumento',
     q:'En un colegio, el taller A pasó de 40 a 50 alumnos de abril a mayo, y el taller B, de 80 a 90. ¿Cuál creció más en porcentaje?',
     opts:[['a', 'Los dos por igual: cada uno ganó 10 alumnos', 'variacion-absoluta-por-porcentual', 'hipotesis'],
-          ['b', `El A: 10 sobre 40 es ${pc(D2.porcentajes[0])}; el B, 10 sobre 80, ${pc(D2.porcentajes[1])}`],
+          ['b', `El A: ${pc(D2.porcentajes[0])} contra ${pc(D2.porcentajes[1])}`],
           ['c', 'El B: llegó más alto, a 90 alumnos', 'punto-mas-alto-en-vez-del-cambio', 'hipotesis']],
     ok:'b',
     fb:{ a:`Ganaron lo mismo en alumnos (la variación absoluta), pero no en porcentaje: el A partía de 40 y el B de 80. ${pc(D2.porcentajes[0])} contra ${pc(D2.porcentajes[1])}.`,
@@ -1047,24 +1048,24 @@ const EXPS = [
       <p class="fuente">Confundir la variación absoluta con la porcentual y elegir el que llega más alto son hipótesis nuestras.</p>` },
   { id:'porcentaje-del-porcentaje', corto:'El porcentaje del porcentaje',
     q:`De los 200 alumnos de la encuesta, el 40 % eligió fútbol (${th_('144°')} del gráfico circular). De ellos, el 25 % juega en el equipo del colegio. Si en el mismo gráfico se marca el sector «juega en el equipo», ¿cuántos grados mide?`,
-    opts:[['a', `${fmt(A3.errores.parteDelTotal)}°: el 25 % de 360°`, 'AR3-porcentaje-sobre-el-total', 'parcial'],
-          ['b', `${fmt(A3.grados)}°: el 25 % del 40 % es el 10 %, y el 10 % de 360° es 36°`],
+    opts:[['a', `${fmt(A3.errores.parteDelTotal)}°: el 25 % de 360°`, 'AR3-porcentaje-sobre-el-total', 'hipotesis'],
+          ['b', `${fmt(A3.grados)}°: el 10 % de 360°`],
           ['c', `${fmt(A3.errores.grupoEntero)}°: los que juegan son del sector de fútbol`, 'grupo-entero', 'hipotesis'],
-          ['d', `${fmt(A3.errores.suma)}°: 40 % + 25 % = 65 % de 360°`, 'AR1-suma-de-porcentajes', 'parcial']],
+          ['d', `${fmt(A3.errores.suma)}°: 40 % + 25 % = 65 % de 360°`, 'AR1-suma-de-porcentajes', 'hipotesis']],
     ok:'b',
     fb:{ a:'El 25 % es de los que eligieron fútbol, no de los 200. Es la cuarta parte del sector de fútbol: 144/4 = 36°.',
          c:'Los que juegan en el equipo están dentro del fútbol, pero son solo una parte: la cuarta parte de 144°, o sea 36°.',
          d:`Los porcentajes no se suman: «el 25 % del 40 %» es 0,25 × 40 = 10 %. Y 10 % de 360° = ${fmt(A3.grados)}°.` },
     antes:ya => E.config({ modo:'circular', cir:{ cantidades:[80, 50, 40, 30], nombres:['Fútbol', 'Vóley', 'Básquet', 'Ajedrez'], verGrados:[true, false, false, false], verPct:false,
         sub:{ dentro:0, frac:.25, prog: ya ? 1 : 0, texto: ya ? `θ = ${fmt(A3.grados)}°` : '' } },
-      lect:[L('p', 'Fútbol', '40 %'), L('ink', 'En el equipo', '25 % del fútbol')].concat(ya ? [L('th', 'Sector nuevo', `${fmt(A3.grados)}°`), L('c', 'Alumnos', `${fmt(A3.cantidad)}`)] : [L('th', 'Sector nuevo', '?')]),
+      lect:[L('p', 'Fútbol', '40 %'), L('ink', 'En el equipo', '25 % de ellos')].concat(ya ? [L('th', 'Sector nuevo', `${fmt(A3.grados)}°`), L('c', 'Alumnos', `${fmt(A3.cantidad)}`)] : [L('th', 'Sector nuevo', '?')]),
       desc:'El gráfico circular de los 200 alumnos, con el sector de fútbol de 144°.' }),
     despues:() => { const x = EXPS[2]; x.antes(true); const Sb = E.cir.sub; Sb.prog = 0; Sb.texto = ''; E.animar(0, 1, 1600, v => { Sb.prog = v; }, () => x.antes(true)); },
     exp:() => `<div class="eqs"><div class="eq">${p_('p')} = 25 % · 40 % = 0,25 · 0,40 = ${p_(pc(A3.porcentaje))}</div>
       <div class="eq">${th_('θ')} = ${pc(A3.porcentaje)} · 360° = ${th_(fmt(A3.grados) + '°')}<span class="note">la cuarta parte de 144°</span></div>
       <div class="eq">${c_('c')} = ${pc(A3.porcentaje)} · 200 = ${c_(fmt(A3.cantidad))} alumnos</div></div>
       <p>En el dibujo, la parte rayada ocupa la cuarta parte del sector de fútbol: es un porcentaje de un porcentaje.</p>
-      <p class="fuente">Tomar el 25 % sobre el total es calcular sobre la base equivocada (AR3 del informe de aritmética, respaldo parcial). Sumar los porcentajes es pariente de AR1 (porcentajes sucesivos que se suman), que Jacobs Danan y Gelman (2018) midieron con universitarios; el informe liga a AR1 este tipo de pregunta («el 20 % del 30 %»), pero sin cifra propia: respaldo parcial. Tomar el sector entero es una hipótesis nuestra.</p>` },
+      <p class="fuente">Tomar el 25 % sobre el total y sumar los porcentajes son hipótesis nuestras: el informe liga el «porcentaje de un porcentaje» a AR1 y AR3, pero sin datos para este error. Tomar el sector entero también es hipótesis.</p>` },
   { id:'ida-y-vuelta', corto:'Ida y vuelta',
     q:'En el campeonato de vóley del distrito juegan 5 colegios, todos contra todos, en dos ruedas: ida y vuelta. ¿Cuántos partidos se juegan?',
     opts:[['a', `${PA.errores.unaRueda}: hay 10 parejas de colegios`, 'partidos-una-rueda', 'hipotesis'],
@@ -1073,7 +1074,7 @@ const EXPS = [
           ['d', `${PA.errores.dobleConteo}: cada colegio juega 8 partidos y son 5 colegios`, 'partidos-contados-dos-veces', 'hipotesis']],
     ok:'b',
     fb:{ a:'Hay 10 parejas, pero cada una juega dos veces (ida y vuelta): 20 partidos.',
-         c:'5 × 5 cuenta también a cada colegio contra sí mismo y cuenta cada pareja dos veces por cada rueda. Son 5 · 4/2 = 10 parejas, dos veces: 20.',
+         c:'5 × 5 = 25 incluye a cada colegio jugando contra sí mismo: son 5 partidos que no existen. 25 − 5 = 20: cada pareja aparece dos veces, ida y vuelta.',
          d:'Cada colegio sí juega 8 partidos, pero cada partido lo juegan dos colegios: 5 · 8 cuenta todo dos veces. 40/2 = 20.' },
     antes:ya => E.config({ modo:'ronda', ron:{ nombres:COLES, resultados:IDA, prog: ya ? IDA.length : 0, ruedas:2 },
       ley: ya ? [['ink', 'un partido (cada pareja, dos líneas)']] : [],
