@@ -129,7 +129,8 @@
   // Soles: siempre con dos decimales; si el valor exacto tiene más, «≈» y redondeado a céntimos.
   const soles = x => { const q = Q(x), ex = decimalExacto(q, 2); return ex !== null ? 'S/ ' + conDecimales(q, 2) : '≈ S/ ' + conDecimales(q, 2); };
   const grados = x => texto(x) + '°';
-  const milesimas = x => texto(x, { min: 3 });
+  // Milésimas: siempre con tres decimales; si el valor exacto tiene más, «≈» y redondeado a milésimas.
+  const milesimas = x => { const q = Q(x); return (decimalExacto(q, 3) !== null ? '' : '≈ ') + conDecimales(q, 3); };
   const fraccion = q => (q.d === 1n ? String(q.n) : `${q.n}/${q.d}`);
 
   // ---------- entradas ----------
@@ -267,12 +268,13 @@
     const q = enteros(d2, d1);
     const comp = daCon(P1, P2, q);
     if (!igual(comp, PM)) throw new Error('el aspa no reproduce el valor medio');
-    const errQ = limpiar({ alReves: enteros(d1, d2), conLosValores: enteros(absQ(P1), absQ(P2)), mitades: [1, 1] }, q);
+    const errQ = limpiar({ alReves: enteros(d1, d2), preciosCruzados: enteros(absQ(P2), absQ(P1)), mitades: [1, 1] }, q);
     const daria = Object.fromEntries(Object.entries(errQ).map(([k, v]) => [k, daCon(P1, P2, v)]));
     return Object.assign(base, comun, { posible: true, extremo: igual(PM, P1) || igual(PM, P2), q1: q[0], q2: q[1], proporcion: q, texto: razon(q),
       respuesta: q, errores: errQ, erroresTexto: Object.fromEntries(Object.entries(errQ).map(([k, v]) => [k, razon(v)])),
       daria: Object.fromEntries(Object.entries(daria).map(([k, v]) => [k, num(v)])),
-      dariaTexto: Object.fromEntries(Object.entries(daria).map(([k, v]) => [k, texto(v)])) });
+      dariaTexto: Object.fromEntries(Object.entries(daria).map(([k, v]) => [k, texto(v)])),
+      dariaSoles: Object.fromEntries(Object.entries(daria).map(([k, v]) => [k, soles(v)])) });
   }
   // Con q1 del primero (valor p1), ¿cuánto del segundo (valor p2) para que la mezcla valga pm?
   function cantidadPara(p1, q1, p2, pm) {
@@ -406,7 +408,7 @@
     const der = sumar(items.filter(x => cmp(x.v, A) > 0).map(x => por(x.c, resta(x.v, A))));
     const vs = items.map(x => x.v), span = num(resta(maxQ(vs.concat([A])), minQ(vs.concat([A])))) || 1;
     let estado = momentoQ.n === 0n ? 'equilibrio' : momentoQ.n > 0n ? 'baja-derecha' : 'baja-izquierda';
-    let entreTexto = null, media = null;
+    let entreTexto = null, entreValores = null, media = null;
     if (total.n > 0n) {
       const m = mezclaQ(items).m; media = num(m);
       if (estado !== 'equilibrio' && res !== undefined) {
@@ -414,14 +416,14 @@
         if (cmp(por(dist, R(2)), r) < 0) {
           estado = 'casi';
           const k = m.n * r.d / (m.d * r.n), lo = por(R(k), r), hi = suma(lo, r);   // ⌊m/res⌋·res y el siguiente
-          entreTexto = [texto(lo), texto(hi)];
+          entreTexto = [texto(lo), texto(hi)]; entreValores = [num(lo), num(hi)];
         }
       }
     }
     const t = total.n === 0n ? 0 : num(momentoQ) / (num(total) * span) * 6;
     const angulo = ANG_MAX * Math.max(-1, Math.min(1, t));
     return { apoyo: num(A), apoyoTexto: texto(A), momento: num(momentoQ), momentoTexto: texto(absQ(momentoQ)), izquierda: num(izq), izquierdaTexto: texto(izq),
-      derecha: num(der), derechaTexto: texto(der), estado, entre: entreTexto, media, angulo, total: num(total) };
+      derecha: num(der), derechaTexto: texto(der), estado, entre: entreTexto, entreValores, media, angulo, total: num(total) };
   }
   function regla(desde, hasta, paso) {
     const D = Q(desde, 'desde'), H = Q(hasta, 'hasta'), P = positivo(paso, 'paso');

@@ -249,7 +249,7 @@ const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const M = MotorMezclas;
 const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
 // Texto plano para el lector de pantalla: «S/ 4,80» se dice «4,80 soles», «60°» «60 grados», «3 : 2» «3 a 2».
-const quitar = t => String(t).replace(/<[^>]+>/g, '').replace(/≈\s*S\/\s?([\d\s,]+)/g, 'aproximadamente $1 soles').replace(/S\/\s?([\d,]+(?:\s\d{3})*)/g, '$1 soles')
+const quitar = t => String(t).replace(/<[^>]+>/g, '').replace(/≈\s*S\/\s?(\d{1,3}(?:\s\d{3})*(?:,\d+)?)/g, 'aproximadamente $1 soles').replace(/S\/\s?(\d{1,3}(?:\s\d{3})*(?:,\d+)?)/g, '$1 soles')
   .replace(/(\d)°/g, '$1 grados').replace(/ × /g, ' por ').replace(/ ÷ /g, ' entre ').replace(/ − /g, ' menos ').replace(/(\d) : (\d)/g, '$1 a $2')
   .replace(/≈/g, 'aproximadamente').replace(/…/g, '').replace(/\s+/g, ' ').trim();
 const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
@@ -288,7 +288,7 @@ document.addEventListener('mouseout', e => { if (e.target.closest && e.target.cl
 document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
 // Cómo se escribe un valor sobre la regla, según lo que se mezcla.
 const UNI = {
-  soles: { valor: v => M.soles(v).replace(',00', ''), regla: 'precio por kilo (S/)', cant: 'kg' },
+  soles: { valor: v => M.soles(v), regla: 'precio por kilo (S/)', cant: 'kg' },
   grados: { valor: v => M.grados(v), regla: 'grados de alcohol', cant: 'L' },
   quilates: { valor: v => M.texto(v) + ' quilates', corto: v => M.texto(v), regla: 'quilates', cant: 'g' },
 };
@@ -591,12 +591,12 @@ const prop = ([x, y]) => `${x} kg del de S/ 3 por cada ${y} kg del de S/ 8`;
 const P_3 = { id:'mezclas-paso3', ok:'d', opts:[
   ['a', prop(P3.errores.alReves), 'aspa-al-reves', 'hipotesis'],
   ['b', prop(P3.errores.mitades), 'mitad-y-mitad', 'hipotesis'],
-  ['c', prop(P3.errores.conLosValores), 'proporcion-con-los-precios', 'hipotesis'],
+  ['c', prop(P3.errores.preciosCruzados), 'proporcion-con-los-precios-cruzados', 'hipotesis'],
   ['d', prop(P3.proporcion)]],
   fb:{ d:`¡Bien! El de S/ 3 está a ${P3.d1Texto} del precio medio y el de S/ 8, a ${P3.d2Texto}. Para que la barra quede derecha, el que está más lejos lleva menos kilos: ${MZ3.partes[0].cantidadTexto} × ${MZ3.partes[0].brazoTexto} = ${MZ3.partes[0].momentoTexto} y ${MZ3.partes[1].cantidadTexto} × ${MZ3.partes[1].brazoTexto} = ${MZ3.partes[1].momentoTexto}.`,
-    a:`Esa es la proporción al revés: con ${P3.erroresTexto.alReves} la mezcla sale a S/ ${P3.dariaTexto.alReves} el kilo. Al de S/ 3 le toca la distancia del de S/ 8 (${P3.d2Texto}) y al de S/ 8, la del de S/ 3 (${P3.d1Texto}): ${P3.texto}.`,
-    b:`Mitad y mitad da S/ ${P3.dariaTexto.mitades}, el punto medio entre S/ 3 y S/ 8. Para bajar hasta S/ 5 hace falta más del barato: ${P3.texto}.`,
-    c:`${P3.erroresTexto.conLosValores} copia los precios: con esos kilos la mezcla sale a ${P3.dariaTexto.conLosValores.replace('≈ ', '≈ S/ ')} el kilo, y hay más del caro. Las cantidades van con las distancias al precio medio, cruzadas: ${P3.texto}.` } };
+    a:`Esa es la proporción al revés: con ${P3.erroresTexto.alReves} la mezcla sale a ${P3.dariaSoles.alReves} el kilo. Al de S/ 3 le toca la distancia del de S/ 8 (${P3.d2Texto}) y al de S/ 8, la del de S/ 3 (${P3.d1Texto}): ${P3.texto}.`,
+    b:`Mitad y mitad da ${P3.dariaSoles.mitades}, el punto medio entre S/ 3 y S/ 8. Para bajar hasta S/ 5 hace falta más del barato: ${P3.texto}.`,
+    c:`${P3.erroresTexto.preciosCruzados} cruza los precios, no las distancias: con esos kilos la mezcla sale a ${P3.dariaSoles.preciosCruzados} el kilo. Las cantidades van con las distancias al precio medio, cruzadas: ${P3.texto}.` } };
 
 const grado = t => `${t} de alcohol`;
 const P_4 = { id:'mezclas-paso4', ok:'c', opts:[
@@ -668,22 +668,17 @@ function prepExplora(e, cfg, vivo, conMedia){
       () => { const B = M.balanza(lista(e), ap(e), cfg.res); return [B.estado === 'equilibrio' ? 'pm' : 'ink', 'la barra', ESTADO[B.estado]]; }],
     desc: () => { const B = M.balanza(lista(e), ap(e), cfg.res);
       return `${cfg.cosa[0].toUpperCase() + cfg.cosa.slice(1)} A: ${M.texto(e.qa)} ${u.cant} en ${u.valor(e.va)}. ${cfg.cosa[0].toUpperCase() + cfg.cosa.slice(1)} B: ${M.texto(e.qb)} ${u.cant} en ${u.valor(e.vb)}.`
-        + (B.estado === 'casi' ? ` El punto de equilibrio está entre ${B.entre[0]} y ${B.entre[1]}.` : ''); } });
+        + (B.estado === 'casi' ? ` El punto de equilibrio está entre ${u.valor(B.entreValores[0])} y ${u.valor(B.entreValores[1])}.` : ''); } });
   return refrescar;
 }
 let refrescar1 = null, refrescar8 = null;
 function vivo1(){
   const d = $('vivo1'); if (!d) return;
-  const e = S.e1;
-  $('qa1').textContent = `${e.qa} kg`; $('qb1').textContent = `${e.qb} kg`;
-  $('stepBody').querySelectorAll('[data-q]').forEach(b => { const [k, dq] = [b.dataset.q, +b.dataset.d], x = e[k] + dq, otro = e[k === 'qa' ? 'qb' : 'qa'];
-    b.disabled = S.ocupado || x < 0 || x > 40 || (x === 0 && otro === 0); });
-  const B = M.balanza(lista({ qa:e.qa, qb:e.qb, va:2, vb:7 }), e.apoyo, 0.1);
-  d.innerHTML = `<p class="hint" style="margin:0">${B.estado === 'equilibrio' ? `La barra está derecha con el apoyo en ${m_(nb(M.soles(e.apoyo)))}: ese es el ${m_('precio medio')} de esta mezcla.`
-    : B.estado === 'casi' ? `Casi: el punto donde la barra queda derecha está entre ${nb('S/ ' + B.entre[0])} y ${nb('S/ ' + B.entre[1])}.` : 'Mueve el apoyo hasta que la barra quede derecha.'}</p>`;
+  const e = S.e1, B = M.balanza(lista(e), ap(e), 0.1);
+  d.innerHTML = `<p class="hint" style="margin:0" aria-live="polite">${B.estado === 'equilibrio' ? `La barra está derecha con el apoyo en ${m_(nb(M.soles(e.apoyo)))}: ese es el ${m_('precio medio')} de esta mezcla.`
+    : B.estado === 'casi' ? `Casi: el punto donde la barra queda derecha está entre ${nb(M.soles(B.entreValores[0]))} y ${nb(M.soles(B.entreValores[1]))}.` : `La barra ${ESTADO[B.estado]}.`}</p>`;
 }
 function prep1(){ const e = S.e1; e.va = 2; e.vb = 7; refrescar1 = prepExplora(e, Object.assign({}, CTX.soles, { desde:1, hasta:8, cada:1 }), vivo1); }
-function cambiar1(k, d){ if (S.ocupado || E.anim) return; const e = S.e1, x = e[k] + d, otro = e[k === 'qa' ? 'qb' : 'qa']; if (x < 0 || x > 40 || (x === 0 && otro === 0)) return; e[k] = x; refrescar1(); }
 
 function vivo8(){
   const d = $('vivo8'); if (!d) return;
@@ -702,7 +697,7 @@ function vivo8(){
     <div class="eq">${m_('valor medio')} = (${A_(M.texto(e.qa))} × ${A_(M.texto(e.va))} + ${B_(M.texto(e.qb))} × ${B_(M.texto(e.vb))}) ÷ (${M.texto(e.qa)} + ${M.texto(e.qb)}) = ${nb(Mz.sumaTexto)} ÷ ${Mz.totalTexto} = ${m_(nb(med))}<span class="note">${cfg.uni === 'soles' ? 'el costo total entre los kilos totales' : cfg.uni === 'grados' ? `${extra.alcoholTexto} L de alcohol puro en ${extra.volumenTexto} L` : `ley ${extra.leyTexto}: oro puro ÷ peso total`}</span></div>
     <div class="eq">${A_(pa[0].cantidadTexto)} × ${A_(pa[0].brazoTexto)} = ${pa[0].momentoTexto} y ${B_(pa[1].cantidadTexto)} × ${B_(pa[1].brazoTexto)} = ${pa[1].momentoTexto}<span class="note">cantidad × distancia al valor medio: iguales a los dos lados</span></div>
     ${A && A.posible && !A.extremo ? `<div class="eq">${A_(cfg.cosa + ' A')} : ${B_(cfg.cosa + ' B')} = ${A.texto}<span class="note">regla del aspa: cada uno con la distancia del otro (${B_(A.d2Texto)} y ${A_(A.d1Texto)})</span></div>` : ''}
-    <div class="eq" style="font-family:var(--font)">con el apoyo en ${nb(u.valor(ap(e)))}, la barra ${ESTADO[B.estado]}${B.estado === 'casi' ? ` (el equilibrio está entre ${B.entre[0]} y ${B.entre[1]})` : ''}<span class="note">izquierda: ${B.izquierdaTexto}; derecha: ${B.derechaTexto}</span></div></div>`;
+    <div class="eq" style="font-family:var(--font)">con el apoyo en ${nb(u.valor(ap(e)))}, la barra ${ESTADO[B.estado]}${B.estado === 'casi' ? ` (el equilibrio está entre ${nb(u.valor(B.entreValores[0]))} y ${nb(u.valor(B.entreValores[1]))})` : ''}<span class="note">izquierda: ${B.izquierdaTexto}; derecha: ${B.derechaTexto}</span></div></div>`;
 }
 function prep8(){ const e = S.e8; refrescar8 = prepExplora(e, CTX[e.ctx], vivo8); }
 function cambiar8(k, d, esValor){ if (S.ocupado || E.anim) return; const e = S.e8, cfg = CTX[e.ctx], x = e[k] + d;
@@ -721,7 +716,7 @@ const R2 = M.regla(3, 7, 0.5), R3 = M.regla(2, 9, 1), R5 = M.regla(0, 80, 10), R
 const bal2 = ya => ({ unidad:'soles', desde:3, hasta:7, marcas:R2, cada:2, pesas:[pesa('A', 30, 4, 'kg'), pesa('B', 20, 6, 'kg')], cmax:30,
   apoyo: ya ? P2.precioMedio : null, soportes:!ya, equilibrio:ya, pie: ya ? pieMomentos(P2, ['A', 'B']) : null,
   brazos: ya ? [{ k:'A', valor:4, texto:P2.partes[0].brazoTexto }, { k:'B', valor:6, texto:P2.partes[1].brazoTexto }] : null });
-const LECT2 = [() => ['A', 'arroz de S/ 4', '30 kg'], () => ['B', 'arroz de S/ 6', '20 kg']];
+const LECT2 = [() => ['A', `arroz de ${M.soles(4)}`, '30 kg'], () => ['B', `arroz de ${M.soles(6)}`, '20 kg']];
 const LECT2Y = LECT2.concat([() => ['pm', 'precio medio', P2.soles]]);
 const DESC2 = `La barra queda derecha con el apoyo en ${P2.soles}: 30 kg por 0,8 de distancia da ${P2.partes[0].momentoTexto}, igual que 20 kg por 1,2. Apoyada en ${P2.erroresSoles.promedioSimple}, bajaba hacia el saco de S/ 4.`;
 const bal3 = ya => ({ unidad:'soles', desde:2, hasta:9, marcas:R3, cada:1, pesas: ya ? [pesa('A', P3.q1, 3, 'kg'), pesa('B', P3.q2, 8, 'kg')] : [pesa('A', null, 3, 'kg'), pesa('B', null, 8, 'kg')], cmax:P3.q1,
@@ -742,7 +737,7 @@ const barra6 = fase => ({ O:O6, fase, rot:'48 g, 18 quilates', arriba:`cada part
   rotFino:`${O6.partesFino} partes de oro puro: ${O6.finoTexto} g`, rotLiga:`${O6.partesLiga} partes de otro metal: ${O6.ligaTexto} g`,
   pie: fase >= 2 ? [['18 × ' + O6.parteTexto + ' = ', 'ink'], [O6.finoTexto + ' g', 'f'], [' de oro puro', 'ink']] : null });
 const DESC6 = `La joya de 48 gramos, partida en 24 partes iguales de ${O6.parteTexto} gramos: ${O6.partesFino} partes son oro puro, ${O6.finoTexto} gramos, y ${O6.partesLiga} son otro metal, ${O6.ligaTexto} gramos.`;
-const bal7 = ya => ({ unidad:'quilates', desde:16, hasta:25, marcas:R7, cada:2, pesas:[pesa('A', 60, 18, 'g'), ya ? pesa('B', O7.agregar, 24, 'g') : pesa('B', null, 24, 'g')], cmax:O7.agregar,
+const bal7 = ya => ({ unidad:'quilates', desde:16, hasta:25, marcas:R7, cada:2, pesas:[pesa('A', 60, 18, 'g'), ya ? pesa('B', O7.agregar, 24, 'g') : pesa('B', null, 24, 'g')], cmax: ya ? O7.agregar : 60,
   apoyo:22, apoyoPm:true, soportes:!ya, equilibrio:ya, pie: ya ? pieMomentos(MZ7, ['A', 'B']) : null,
   brazos: ya ? [{ k:'A', valor:18, texto:O7.d1Texto }, { k:'B', valor:24, texto:O7.d2Texto }] : null });
 const DESC7 = `Con ${O7.agregarTexto} gramos de oro de 24 quilates y los 60 de 18, la barra queda derecha apoyada en 22 quilates: 60 por ${O7.d1Texto} da ${O7.momentoTexto}, igual que ${O7.agregarTexto} por ${O7.d2Texto}.`;
@@ -751,17 +746,17 @@ const LEY_BAL = (a, b, pm, regla) => [['A', a], ['B', b], ['pm', pm], ['muted', 
 const steps = [
  { k:'Paso 1', t:'Explora: los sacos en la balanza', explora:true,
    prep:() => prep1(),
-   body:() => `<p class="problem">Dos sacos de arroz: uno de ${A_('S/ 2 el kilo')} y otro de ${B_('S/ 7 el kilo')}. En la balanza, cada saco se apoya sobre su precio en la regla; un saco con más kilos pesa más. Arrastra el triángulo de apoyo (o usa las flechas o los botones) y cambia los kilos de cada saco.</p>
-   <div class="stepper">${stepperQ('qa1', 'qa', 'data-q', 'saco A')}${stepperQ('qb1', 'qb', 'data-q', 'saco B')}${apoyoBotones()}</div>
+   body:() => `<p class="problem">Dos sacos de arroz de 10 kg cada uno: uno de ${A_('S/ 2 el kilo')} y otro de ${B_('S/ 7 el kilo')}. En la balanza, cada saco se apoya sobre su precio en la regla. Arrastra el triángulo de apoyo (o usa las flechas o los botones).</p>
+   <div class="stepper">${apoyoBotones()}</div>
    <div id="vivo1"></div>
    <p>Si se mezclan los dos sacos y cada kilo de la mezcla se vende a un mismo precio, sin ganar ni perder, ese precio por kilo es el ${m_('precio medio')} de la mezcla. En esta balanza, el ${m_('precio medio')} es el punto de apoyo donde la barra queda derecha.</p>
-   <p class="hint">Prueba con sacos iguales y con sacos distintos.</p>`,
-   luego:() => { $('stepBody').querySelectorAll('[data-q]').forEach(b => b.onclick = () => cambiar1(b.dataset.q, +b.dataset.d)); enlazarApoyo(); vivo1(); } },
+   <p class="hint">Prueba a mover el apoyo hasta que la barra quede derecha.</p>`,
+   luego:() => { enlazarApoyo(); vivo1(); } },
  { k:'Paso 2', t:'Predice: el kilo de la mezcla', gate:P_2,
    prep:() => { const ya = !!S.pred[P_2.id];
-     E.config({ modo:'balanza', st:bal2(ya), ley: ya ? LEY_BAL('arroz de S/ 4', 'arroz de S/ 6', 'precio medio', 'S/ por kilo') : LEY_BAL('arroz de S/ 4', 'arroz de S/ 6', 'precio medio', 'S/ por kilo').filter(x => x[0] !== 'pm'),
+     E.config({ modo:'balanza', st:bal2(ya), ley: ya ? LEY_BAL(`arroz de ${M.soles(4)}`, `arroz de ${M.soles(6)}`, 'precio medio', 'S/ por kilo') : LEY_BAL(`arroz de ${M.soles(4)}`, `arroz de ${M.soles(6)}`, 'precio medio', 'S/ por kilo').filter(x => x[0] !== 'pm'),
        desc: ya ? DESC2 : 'Una balanza sostenida en sus dos extremos, con un saco de 30 kilos en S/ 4 y uno de 20 kilos en S/ 6.', lect: ya ? LECT2Y : LECT2 }); },
-   anima:fin => { const s = E.st; E.ley = LEY_BAL('arroz de S/ 4', 'arroz de S/ 6', 'precio medio', 'S/ por kilo'); E.leyenda();
+   anima:fin => { const s = E.st; E.ley = LEY_BAL(`arroz de ${M.soles(4)}`, `arroz de ${M.soles(6)}`, 'precio medio', 'S/ por kilo'); E.leyenda();
      const vigente = () => E.st === s;
      Object.assign(s, { soportes:false, apoyo:P2.errores.promedioSimple, angulo:0 }); E.dibujar();
      E.animar(0, B2s.angulo, 700, a => { s.angulo = a; }, () => esperar(700, () => { if (!vigente()) return;
@@ -775,16 +770,16 @@ const steps = [
    <p>Apoyada en ${nb(P2.erroresSoles.promedioSimple)}, el punto medio entre los dos precios, la barra baja hacia el saco de S/ 4, que tiene más kilos; queda derecha recién en ${nb(P2.soles)}. El precio medio es el costo total entre los kilos totales: cada precio pesa según sus kilos.</p>${FUENTE_AR15}</div>` },
  { k:'Paso 3', t:'Predice: ¿cuánto de cada uno?', gate:P_3,
    prep:() => { const ya = !!S.pred[P_3.id];
-     E.config({ modo:'balanza', st:bal3(ya), ley:LEY_BAL('arroz de S/ 3', 'arroz de S/ 8', 'precio medio buscado', 'S/ por kilo'),
+     E.config({ modo:'balanza', st:bal3(ya), ley:LEY_BAL(`arroz de ${M.soles(3)}`, `arroz de ${M.soles(8)}`, 'precio medio buscado', 'S/ por kilo'),
        desc: ya ? DESC3 : 'Una balanza sostenida en sus dos extremos, con el apoyo en S/ 5 y dos sacos sin cantidad: uno en S/ 3 y otro en S/ 8.',
-       lect: ya ? [() => ['A', 'arroz de S/ 3', `${P3.q1} kg`], () => ['B', 'arroz de S/ 8', `${P3.q2} kg`]] : [() => ['pm', 'precio medio buscado', 'S/ 5,00']] }); },
+       lect: ya ? [() => ['A', `arroz de ${M.soles(3)}`, `${P3.q1} kg`], () => ['B', `arroz de ${M.soles(8)}`, `${P3.q2} kg`]] : [() => ['pm', 'precio medio buscado', M.soles(5)]] }); },
    anima:fin => { const s = E.st, fin3 = bal3(true);
      s.pesas = [pesa('A', 0, 3, 'kg'), pesa('B', 0, 8, 'kg')]; s.cmax = P3.q1;
      E.animar(0, 1, 1200, t => { s.pesas[0].cantidad = P3.q1*t; s.pesas[1].cantidad = P3.q2*t; }, () => {
-       Object.assign(s, fin3); E.lect = [() => ['A', 'arroz de S/ 3', `${P3.q1} kg`], () => ['B', 'arroz de S/ 8', `${P3.q2} kg`]]; E.desc = DESC3; E.redimensionar(); E.avisar(); fin(); }); },
+       Object.assign(s, fin3); E.lect = [() => ['A', `arroz de ${M.soles(3)}`, `${P3.q1} kg`], () => ['B', `arroz de ${M.soles(8)}`, `${P3.q2} kg`]]; E.desc = DESC3; E.redimensionar(); E.avisar(); fin(); }); },
    body:() => `<p class="problem">Se quiere arroz de ${m_('S/ 5 el kilo')} mezclando arroz de ${A_('S/ 3 el kilo')} con arroz de ${B_('S/ 8 el kilo')}. ¿En qué proporción hay que mezclarlos?</p>${opcionesHTML(P_3.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
-     <div class="eq aspa"><span>${A_('S/ 3')}</span><span class="x">╳</span><span>8 − 5 = ${A_(P3.d2Texto)} partes</span><span>${B_('S/ 8')}</span><span>5 − 3 = ${B_(P3.d1Texto)} partes</span></div>
+     <div class="eq aspa"><span>${A_('S/ 3')}</span><span class="x">╳</span><span>8 − 5 = ${B_(P3.d2Texto)} partes</span><span>${B_('S/ 8')}</span><span>5 − 3 = ${A_(P3.d1Texto)} partes</span></div>
      <div class="eq">${A_(P3.q1)} × ${A_(P3.d1Texto)} = ${MZ3.partes[0].momentoTexto} = ${B_(P3.q2)} × ${B_(P3.d2Texto)}<span class="note">kilos × distancia a ${m_('S/ 5')}: iguales a los dos lados</span></div></div>
    <p><b>Regla del aspa:</b> a cada ingrediente le toca tantas partes como la distancia del <b>otro</b> al ${m_('precio medio')}. Las cantidades son inversamente proporcionales a las distancias: el que está más lejos lleva menos.</p>${FUENTE}</div>` },
  { k:'Paso 4', t:'Predice: el grado de la mezcla', gate:P_4,
@@ -829,14 +824,14 @@ const steps = [
      E.config({ modo:'balanza', st:bal7(ya), ley:LEY_BAL('oro de 18 quilates', 'oro de 24 quilates', 'quilates buscados', 'quilates'),
        desc: ya ? DESC7 : 'Una balanza de quilates sostenida en sus dos extremos, con el apoyo en 22: 60 gramos en 18 y el oro de 24 quilates, sin cantidad, en 24.',
        lect: ya ? [() => ['A', 'oro de 18 quilates', '60 g'], () => ['B', 'oro de 24 quilates', `${O7.agregarTexto} g`]] : [() => ['A', 'oro de 18 quilates', '60 g'], () => ['pm', 'quilates buscados', '22']] }); },
-   anima:fin => { const s = E.st; s.pesas[1] = pesa('B', 0, 24, 'g');
+   anima:fin => { const s = E.st; s.pesas[1] = pesa('B', 0, 24, 'g'); s.cmax = O7.agregar;
      E.animar(0, 1, 1200, t => { s.pesas[1].cantidad = O7.agregar*t; }, () => {
        Object.assign(s, bal7(true)); E.lect = [() => ['A', 'oro de 18 quilates', '60 g'], () => ['B', 'oro de 24 quilates', `${O7.agregarTexto} g`]]; E.desc = DESC7; E.redimensionar(); E.avisar(); fin(); }); },
-   body:() => `<p class="problem">Se tienen ${A_('60 g de oro de 18 quilates')}. ¿Cuántos gramos de ${B_('oro de 24 quilates')} hay que fundir con ellos para obtener oro de ${m_('22 quilates')}?</p>${opcionesHTML(P_7.opts, 'fb')}
+   body:() => `<p class="problem">Se tienen ${A_('60 g de oro de 18 quilates')}. ¿Cuántos gramos de ${B_('oro de 24 quilates')} (oro puro) hay que fundir con ellos para obtener oro de ${m_('22 quilates')}?</p>${opcionesHTML(P_7.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
-     <div class="eq aspa"><span>${A_('18')}</span><span class="x">╳</span><span>24 − 22 = ${A_(O7.d2Texto)} partes</span><span>${B_('24')}</span><span>22 − 18 = ${B_(O7.d1Texto)} partes</span></div>
+     <div class="eq aspa"><span>${A_('18')}</span><span class="x">╳</span><span>24 − 22 = ${B_(O7.d2Texto)} partes</span><span>${B_('24')}</span><span>22 − 18 = ${A_(O7.d1Texto)} partes</span></div>
      <div class="eq">${A_('60')} × ${A_(O7.d1Texto)} = ${O7.momentoTexto} = ${B_(O7.agregarTexto)} × ${B_(O7.d2Texto)}<span class="note">gramos × distancia a ${m_('22')}: iguales a los dos lados</span></div>
-     <div class="eq">${f_(FI7.finoTexto)} + ${f_(O7.finoAgregadoTexto)} = ${f_(O7.finoFinalTexto)} g de oro puro en ${O7.totalTexto} g → ${m_(K7.quilatesTexto)} quilates<span class="note">comprobación: ${O7.finoFinalTexto} × 24 ÷ ${O7.totalTexto}</span></div></div>
+     <div class="eq">${f_(FI7.finoTexto)} + ${B_(O7.finoAgregadoTexto)} = ${f_(O7.finoFinalTexto)} g de oro puro en ${O7.totalTexto} g → ${m_(K7.quilatesTexto)} quilates<span class="note">el oro de 24 quilates es todo oro puro; comprobación: ${O7.finoFinalTexto} × 24 ÷ ${O7.totalTexto}</span></div></div>
    <p>Una aleación también es una mezcla: los quilates (o la ley) van en la regla, los gramos son el peso. Con la regla del aspa, 60 g llevan la distancia del 24 (${O7.d2Texto}) y el oro de 24, la del 18 (${O7.d1Texto}): 2 : 4, es decir 60 : ${O7.agregarTexto}.</p>${FUENTE}</div>` },
  { k:'Paso 8', t:'Explora: cualquier mezcla', explora:true,
    prep:() => prep8(),
@@ -940,7 +935,7 @@ const balCafe = (q1, q2, pie) => ({ unidad:'soles', desde:18, hasta:30, marcas:R
   apoyo:22, equilibrio:true, pie, brazos:[{ k:'A', valor:20, texto:ES.antes.partes[0].brazoTexto }, { k:'B', valor:28, texto:ES.antes.partes[1].brazoTexto }] });
 const PIE_CAFE = pieMomentos(ES.despues, ['A', 'B']);
 const bal9 = (qb, ya) => ({ unidad:'soles', desde:2, hasta:10, marcas:R2, cada:1, pesas:[pesa('A', 1, 3, 'kg'), pesa('B', qb, 8, 'kg')], cmax:20,
-  apoyo:9, apoyoPm:true, soportes:!ya, pie: ya ? [['los dos sacos quedan a la izquierda de ', 'ink'], ['S/ 9', 'pm']] : null });
+  apoyo:9, apoyoPm:true, soportes:!ya, pie: ya ? [['los dos sacos quedan a la izquierda de ', 'ink'], [M.soles(9), 'pm']] : null });
 const vasosMA = sep => [
   { k:'A', volumen:10, alcohol:MA.alcoholA, alcoholTexto:MA.alcoholATexto, separado:sep, rot:'A: 10 L, 30°' },
   { k:'B', volumen:6, alcohol:MA.alcoholB, alcoholTexto:MA.alcoholBTexto, separado:sep, rot:'B: 6 L, 50°' }];
@@ -961,7 +956,7 @@ const EXPS = [
     fb:{ a:`Con el doble de kilos se duplica el costo (S/ ${ES.despues.sumaTexto} en vez de S/ ${ES.antes.sumaTexto}), pero también los kilos (${ES.despues.totalTexto} en vez de ${ES.antes.totalTexto}): cada kilo sigue costando ${M.soles(ES.media)}.`,
       b:`${M.soles(ES.errores.promedioSimple)} es el punto medio entre S/ 20 y S/ 28, como si hubiera lo mismo de cada café. Con 6 kg y 2 kg sigue habiendo el triple del de S/ 20 que del de S/ 28, igual que con 3 kg y 1 kg.`,
       d:`Más kilos no abaratan el kilo: el costo también crece. S/ ${ES.despues.sumaTexto} ÷ ${ES.despues.totalTexto} kg = ${M.soles(ES.media)}.` },
-    antes:ya => E.config({ modo:'balanza', st: ya ? balCafe(6, 2, PIE_CAFE) : balCafe(3, 1, null), ley:[['A', 'café de S/ 20'], ['B', 'café de S/ 28'], ['pm', 'precio medio'], ['muted', 'regla: S/ por kilo']],
+    antes:ya => E.config({ modo:'balanza', st: ya ? balCafe(6, 2, PIE_CAFE) : balCafe(3, 1, null), ley:[['A', `café de ${M.soles(20)}`], ['B', `café de ${M.soles(28)}`], ['pm', 'precio medio'], ['muted', 'regla: S/ por kilo']],
       desc: ya ? `Con 6 y 2 kilos la barra sigue derecha en S/ 22: 6 por ${ES.despues.partes[0].brazoTexto} da ${ES.despues.partes[0].momentoTexto}, igual que 2 por ${ES.despues.partes[1].brazoTexto}.` : 'Una balanza derecha apoyada en S/ 22, con 3 kilos de café en S/ 20 y 1 kilo en S/ 28.',
       lect: ya ? [() => ['pm', 'precio medio', M.soles(ES.mediaEscalada)]] : [] }),
     despues:() => { const s = E.st; E.animar(0, 1, 1200, t => { s.pesas[0] = pesa('A', 3 + 3*t, 20, 'kg'); s.pesas[1] = pesa('B', 1 + t, 28, 'kg'); },
@@ -981,7 +976,7 @@ const EXPS = [
     fb:{ a:`Con ${A9.erroresTexto.sinSigno} la mezcla sale a ${M.soles(A9.daria.sinSigno)} el kilo, no a S/ 9: el aspa con las distancias sin mirar de qué lado quedan da una proporción, pero no una que funcione.`,
       b:`Con ${A9.erroresTexto.sinSignoAlReves} la mezcla sale a ${M.soles(A9.daria.sinSignoAlReves)} el kilo. Ninguna proporción llega a S/ 9.`,
       d:'Con mucho más del de S/ 8, la mezcla se acerca a S/ 8, pero nunca lo pasa: cada kilo del de S/ 3 la baja un poco.' },
-    antes:ya => E.config({ modo:'balanza', st:bal9(ya ? 20 : 1, ya), ley:[['A', 'arroz de S/ 3'], ['B', 'arroz de S/ 8'], ['pm', 'el precio buscado'], ['muted', 'regla: S/ por kilo']],
+    antes:ya => E.config({ modo:'balanza', st:bal9(ya ? 20 : 1, ya), ley:[['A', `arroz de ${M.soles(3)}`], ['B', `arroz de ${M.soles(8)}`], ['pm', 'el precio buscado'], ['muted', 'regla: S/ por kilo']],
       desc: ya ? 'Apoyada en S/ 9, la barra baja siempre a la izquierda: los dos sacos quedan a la izquierda del apoyo, tenga los kilos que tenga el de S/ 8.' : 'Una balanza sostenida en sus extremos, con el apoyo en S/ 9 y un saco en S/ 3 y otro en S/ 8.',
       lect: ya ? [() => ['ink', 'la barra', 'baja a la izquierda']] : [] }),
     despues:() => { E.st.soportes = false; E.dibujar();

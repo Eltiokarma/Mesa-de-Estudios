@@ -2,7 +2,7 @@
   "plantilla": "mezclas",
   "unidades": "Cantidades en kilos, litros o gramos; precios en soles por kilo; grados de alcohol en porcentaje de alcohol puro en volumen (de 0 a 100); ley como fracción de metal fino (de 0 a 1, en milésimas); quilates de 0 a 24 (quilates = ley × 24). Las proporciones van como dos enteros sin factor común [q1, q2].",
   "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.promedioSimple, partes.0.momento: el índice de una lista también va con punto); las listas se comparan completas y los textos exactos (coma decimal; «≈» cuando no hay decimal exacto corto). 'tambien' son llamadas extra del mismo caso. Un error que no aparece en 'errores' es porque en ese caso daría la respuesta correcta o lo mismo que otro error.",
-  "verificacion": "",
+  "verificacion": "Verificado por un subagente independiente (7 nov 2026) sin leer el código del motor, solo su cabecera, con fracciones exactas en Python. El valor medio salió del punto donde se equilibran los momentos; las proporciones del aspa, de buscar el par entero más chico que equilibra; el agua, el oro y el cobre que se agregan, de buscar el valor que conserva el alcohol puro o el metal fino. Coinciden los 19 casos y los 10 problemas de papel.json, sin discrepancias. Tras la revisión (7 nov 2026) cambió, sin verificador independiente, el tercer error del caso del paso 3 (aspa(3, 8, 5)): la proporción con los precios 3 : 8 pasó a los precios cruzados 8 : 3, que da 48/11 ≈ S/ 4,36.",
   "tolerancia": 1e-9,
   "casos": [
     { "nombre": "Predicción del paso 2: 30 kg a S/ 4 y 20 kg a S/ 6 → S/ 240 por 50 kg = S/ 4,80 el kilo; promedio simple 5, suma de precios 10, kilos cruzados 5,2; momentos 30 × 0,8 = 24 = 20 × 1,2",
@@ -16,11 +16,11 @@
       "fn": "precioMedio", "args": [[{ "cantidad": 10, "precio": 2 }, { "cantidad": 10, "precio": 7 }]],
       "espera": { "precioMedio": 4.5, "soles": "S/ 4,50", "errores": { "sumaValores": 9 } } },
 
-    { "nombre": "Predicción del paso 3: de S/ 3 y S/ 8 para S/ 5 → 3 : 2 (distancias 2 y 3, cruzadas); al revés 2 : 3 (da S/ 6), con los precios 3 : 8 (≈ 6,64), mitad y mitad 1 : 1 (5,5)",
+    { "nombre": "Predicción del paso 3: de S/ 3 y S/ 8 para S/ 5 → 3 : 2 (distancias 2 y 3, cruzadas); al revés 2 : 3 (da S/ 6), con los precios cruzados 8 : 3 (48/11 ≈ 4,36), mitad y mitad 1 : 1 (5,5)",
       "fn": "aspa", "args": [3, 8, 5],
       "espera": { "posible": true, "proporcion": [3, 2], "texto": "3 : 2", "d1": 2, "d2": 3,
-        "errores.alReves": [2, 3], "errores.conLosValores": [3, 8], "errores.mitades": [1, 1],
-        "daria.alReves": 6, "dariaTexto.conLosValores": "≈ 6,64", "dariaTexto.mitades": "5,5" },
+        "errores.alReves": [2, 3], "errores.preciosCruzados": [8, 3], "errores.mitades": [1, 1],
+        "daria.alReves": 6, "dariaTexto.preciosCruzados": "≈ 4,36", "dariaSoles.preciosCruzados": "≈ S/ 4,36", "dariaTexto.mitades": "5,5" },
       "tambien": [ { "fn": "precioMedio", "args": [[{ "cantidad": 3, "precio": 3 }, { "cantidad": 2, "precio": 8 }]], "espera": { "precioMedio": 5 } } ] },
 
     { "nombre": "Aspa con decimales y proporción irreducible: S/ 2,50 y S/ 4 para S/ 3,10 → (4 − 3,1) : (3,1 − 2,5) = 0,9 : 0,6 = 3 : 2",
