@@ -3603,7 +3603,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "maximos-minimos"
+     ]
     },
     {
      "id": "razonamiento-matematico.cortes-y-pesadas",
@@ -4760,6 +4762,23 @@
     "/plantillas/limitante-particulas/index.html",
     "/plantillas/limitante-particulas/motor.js",
     "/plantillas/limitante-particulas/papel.json"
+   ]
+  },
+  "maximos-minimos": {
+   "id": "maximos-minimos",
+   "titulo": "El cordel que encierra: máximos y mínimos",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.maximos-y-minimos"
+   ],
+   "url": "/plantillas/maximos-minimos/index.html",
+   "papel": "/plantillas/maximos-minimos/papel.json",
+   "archivos": [
+    "/plantillas/maximos-minimos/index.html",
+    "/plantillas/maximos-minimos/motor.js",
+    "/plantillas/maximos-minimos/papel.json"
    ]
   },
   "mol-composicion": {
