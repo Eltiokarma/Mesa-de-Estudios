@@ -62,7 +62,7 @@
       },
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["atomo-y-tabla"],
       "investigacion": "docs/investigacion/atomo-enlace-ideas-erroneas.md"
     },
     {
@@ -92,7 +92,7 @@
       },
       "potencial_visual": "medio",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["atomo-y-tabla"],
       "investigacion": "docs/investigacion/atomo-enlace-ideas-erroneas.md"
     },
     {

@@ -649,7 +649,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "atomo-y-tabla"
+     ]
     },
     {
      "id": "quimica.tabla-periodica",
@@ -678,7 +680,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "atomo-y-tabla"
+     ]
     },
     {
      "id": "quimica.enlace-quimico",
@@ -4186,6 +4190,24 @@
     "/plantillas/angulo-inscrito/index.html",
     "/plantillas/angulo-inscrito/motor.js",
     "/plantillas/angulo-inscrito/papel.json"
+   ]
+  },
+  "atomo-y-tabla": {
+   "id": "atomo-y-tabla",
+   "titulo": "El átomo y la tabla periódica",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.estructura-atomica",
+    "quimica.tabla-periodica"
+   ],
+   "url": "/plantillas/atomo-y-tabla/index.html",
+   "papel": "/plantillas/atomo-y-tabla/papel.json",
+   "archivos": [
+    "/plantillas/atomo-y-tabla/index.html",
+    "/plantillas/atomo-y-tabla/motor.js",
+    "/plantillas/atomo-y-tabla/papel.json"
    ]
   },
   "calorimetria": {

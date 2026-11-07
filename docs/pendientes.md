@@ -8,7 +8,7 @@
 npm test
 ```
 
-Deben pasar 1620 pruebas.
+Deben pasar 1678 pruebas.
 
 ```bash
 npm run dev
@@ -73,6 +73,7 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 
 - **Cinética** (`plantillas/cinetica/`, rutina de química, 6 nov 2026): caja de discos con teoría de colisiones (energía y orientación), temperatura, catalizador y perfil de energía. Informe `docs/investigacion/cinetica-ideas-erroneas.md` (CI1 a CI13) con cifras sin verificar por el bloqueo de red: la escena no muestra porcentajes de cinética. La fracción contada queda unos pocos por ciento bajo la teoría. Falta en la escena: orden ≠ coeficiente y vida media.
 
+- **Átomo y tabla** (`plantillas/atomo-y-tabla/`, rutina de química, 7 nov 2026): partículas de átomos e iones, configuración con cajas (Hund y Pauli, excepciones Cr y Cu), números cuánticos, ubicación en la tabla, energía de ionización, radio y electronegatividad para Z = 1 a 36, series isoelectrónicas; tabla tocable como mapa; 29 casos verificados aparte; 10 de papel; 5 predicciones y 5 «¿qué pasa si…?». **Falta contrastar con la fuente** las energías de ionización (NIST), los radios (Clementi 1967 y Shannon) y las electronegatividades (Pauling): se escribieron y cotejaron de memoria; hacerlo antes del colegio, con el libro que use el colegio o un subagente con acceso a la web. La escala de radios es la teórica de Clementi y la escena avisa que el libro usa radios medidos. Falta lo de enlace (va en su plantilla).
 - **Estática** (`plantillas/estatica/`, rutina de física, 7 nov 2026): barra con peso propio, momentos respecto a cualquier punto, bate cortado, nudo, polea y roce estático; 21 casos verificados aparte; 10 de papel; 5 predicciones y 5 «¿qué pasa si…?» (Ortiz y otros 2005, Fischer y otros 2014, Flores-García y otros 2009). Falta en la escena alargar una sola cuerda del nudo sin cambiar su ángulo (E7); sin ítems en el banco de física todavía. Las opciones del momento inclinado, la reacción y la caja son hipótesis.
 - **Dinámica** (`plantillas/dinamica/`, rutina de física, 6 nov 2026): plano inclinado con roce estático que se ajusta, poleas, ascensor, tercera ley y empujón; 21 casos verificados aparte; 10 de papel; 3 predicciones y 6 «¿qué pasa si…?» (Halloun y Hestenes 1985, Bao y otros 2002, Castillo y otros 2013). Falta: dinámica circular en escena (va con tiro parabólico), tren de bloques, bloque sobre bloque, polea móvil y péndulo en un vagón. Para Gerson: en «¿qué pasa si…?» las pastillas dejan saltar sin responder (como en MRUV).
 - **Equilibrio químico** (`plantillas/equilibrio-quimico/`, rutina de química, 6 nov 2026): A ⇌ B y 2 X ⇌ Y con partículas, Q contra K en vez de la regla de Le Chatelier (Quílez 2017); 18 casos verificados aparte; 9 de papel. Falta el gas inerte a presión constante y Kp en la escena (está en papel). ΔH y Ea de la escena elegidos para números redondos.
