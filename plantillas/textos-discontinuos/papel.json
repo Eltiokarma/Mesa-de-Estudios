@@ -1,0 +1,607 @@
+{
+  "titulo": "Tablas, gráficos e infografías: lectura para lápiz y papel",
+  "indicacion": "Lee cada texto con calma y resuelve en tu hoja, sin la app. Haz lo que te pide «Antes de mirar las alternativas» tapando las alternativas con una hoja: así ves qué pensabas tú y no lo que te sugieren. Las oraciones llevan número para que puedas citarlas al revisar.",
+  "origen": "Generado por herramientas/papel-lectura.js desde el banco; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "t039",
+      "nivel": "básico",
+      "enunciado": "Lee el texto «Los préstamos de la biblioteca» y responde las 3 preguntas.",
+      "texto": {
+        "titulo": "Los préstamos de la biblioteca",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "Desde agosto, la biblioteca del colegio Los Algarrobos, en el distrito de San Juan de las Lomas, abre también durante el recreo largo."
+            },
+            {
+              "n": 2,
+              "t": "La bibliotecaria anotó cada mes cuántos libros se llevaron a casa los alumnos de tercero, cuarto y quinto de secundaria."
+            },
+            {
+              "n": 3,
+              "t": "La meta del colegio era que cada grado llegara a 50 préstamos por mes."
+            }
+          ],
+          [
+            {
+              "n": 4,
+              "t": "Con estos datos, la dirección decidirá en diciembre si la biblioteca seguirá abriendo en el recreo el próximo año."
+            }
+          ]
+        ],
+        "figuras": [
+          {
+            "tipo": "tabla",
+            "despues": 1,
+            "titulo": "Libros prestados por grado y por mes (2026)",
+            "columnas": [
+              "Grado",
+              "Agosto",
+              "Septiembre",
+              "Octubre"
+            ],
+            "filas": [
+              {
+                "celdas": [
+                  "3.º",
+                  "42",
+                  "55",
+                  "61"
+                ]
+              },
+              {
+                "celdas": [
+                  "4.º",
+                  "38",
+                  "47",
+                  "70"
+                ]
+              },
+              {
+                "celdas": [
+                  "5.º",
+                  "64",
+                  "51",
+                  "52"
+                ]
+              }
+            ],
+            "nota": "Datos inventados para el ejercicio. El colegio y el distrito son ficticios."
+          }
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "enunciado": "¿Cuántos libros se llevaron los alumnos de cuarto grado en septiembre?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "55 libros"
+            },
+            {
+              "letra": "B",
+              "t": "47 libros"
+            },
+            {
+              "letra": "C",
+              "t": "50 libros"
+            },
+            {
+              "letra": "D",
+              "t": "No se puede saber, porque el texto no da esa cifra."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "enunciado": "Según el texto y la tabla, ¿qué grado alcanzó la meta del colegio en los tres meses?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Cuarto grado"
+            },
+            {
+              "letra": "B",
+              "t": "Quinto grado"
+            },
+            {
+              "letra": "C",
+              "t": "Tercer grado"
+            },
+            {
+              "letra": "D",
+              "t": "Los tres grados"
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "previo": "Antes de mirar las alternativas, decide qué relación tiene esta afirmación con el texto y la tabla. «En octubre, la biblioteca prestó más libros en total que en agosto.» Elige: «Lo dice el texto», «Se deduce del texto», «El texto no lo dice ni se deduce», «Lo contradice».",
+          "enunciado": "Es incompatible con la tabla afirmar que",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "los tres grados se llevaron más libros en octubre que en agosto."
+            },
+            {
+              "letra": "B",
+              "t": "en agosto, quinto grado se llevó más libros que tercero y que cuarto."
+            },
+            {
+              "letra": "C",
+              "t": "algunos alumnos de quinto también leen en la biblioteca durante el recreo."
+            },
+            {
+              "letra": "D",
+              "t": "cuarto grado no llegó a la meta del colegio en el mes de agosto."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: B · 2: B · 3: A.",
+      "pasos": [
+        "Pregunta 1. Clave B. Hay que cruzar la fila de 4.º con la columna de septiembre: ahí dice 47.",
+        "Pregunta 2. Clave B. La meta era 50 préstamos por mes (oración 3). Quinto tuvo 64, 51 y 52: es el único que no bajó de 50 en ningún mes.",
+        "Pregunta 3. Antes de las alternativas: Se deduce del texto. Ni el párrafo ni la tabla dan el total, pero se puede sacar sumando cada columna: en agosto, 42 + 38 + 64 = 144; en octubre, 61 + 70 + 52 = 183. Se deduce.",
+        "Pregunta 3. Clave A. Tercero y cuarto subieron, pero quinto bajó: de 64 en agosto a 52 en octubre. No fueron los tres."
+      ]
+    },
+    {
+      "id": "t040",
+      "nivel": "intermedio",
+      "enunciado": "Lee el texto «¿Crecieron todos los talleres?» y responde las 3 preguntas.",
+      "texto": {
+        "titulo": "¿Crecieron todos los talleres?",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "Cada verano, la municipalidad de un distrito de la selva ofrece talleres gratuitos para escolares a orillas del río."
+            },
+            {
+              "n": 2,
+              "t": "En marzo de 2026 pegó en el mercado un afiche con el lema «¡Este verano todos nuestros talleres crecieron parejo!» y, debajo, el gráfico de inscritos."
+            },
+            {
+              "n": 3,
+              "t": "El fútbol fue otra vez el taller con más inscritos y el que sumó más chicos nuevos."
+            },
+            {
+              "n": 4,
+              "t": "Para 2027, la municipalidad piensa abrir un segundo grupo de ajedrez."
+            }
+          ]
+        ],
+        "figuras": [
+          {
+            "tipo": "barras",
+            "despues": 1,
+            "titulo": "Inscritos en los talleres de verano del distrito, 2025 y 2026",
+            "unidad": "inscritos",
+            "barras": [
+              {
+                "etiqueta": "Fútbol 2025",
+                "valor": 120
+              },
+              {
+                "etiqueta": "Fútbol 2026",
+                "valor": 150
+              },
+              {
+                "etiqueta": "Danza 2025",
+                "valor": 80
+              },
+              {
+                "etiqueta": "Danza 2026",
+                "valor": 96
+              },
+              {
+                "etiqueta": "Natación 2025",
+                "valor": 60
+              },
+              {
+                "etiqueta": "Natación 2026",
+                "valor": 54
+              },
+              {
+                "etiqueta": "Ajedrez 2025",
+                "valor": 20
+              },
+              {
+                "etiqueta": "Ajedrez 2026",
+                "valor": 40
+              }
+            ],
+            "nota": "Datos inventados para el ejercicio. El distrito no es real."
+          }
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas, decide qué relación tiene esta afirmación con el texto y el gráfico. «En 2026, el taller de danza tuvo 96 inscritos.» Elige: «Lo dice el texto», «Se deduce del texto», «El texto no lo dice ni se deduce», «Lo contradice».",
+          "enunciado": "Según el gráfico, ¿qué pasó con el taller de natación de 2025 a 2026?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Bajó de 60 a 54 inscritos."
+            },
+            {
+              "letra": "B",
+              "t": "Bajó porque sus inscritos se pasaron a ajedrez."
+            },
+            {
+              "letra": "C",
+              "t": "Creció, como todos los talleres según el afiche."
+            },
+            {
+              "letra": "D",
+              "t": "Subió de 54 a 60 inscritos."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "previo": "Antes de mirar las alternativas, decide qué relación tiene esta afirmación con el texto y el gráfico. «En 2026 se inscribieron en fútbol 30 chicos más que en 2025.» Elige: «Lo dice el texto», «Se deduce del texto», «El texto no lo dice ni se deduce», «Lo contradice».",
+          "enunciado": "De 2025 a 2026, ¿qué taller creció más en proporción, es decir, en porcentaje?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Ajedrez, que pasó de 20 a 40 inscritos."
+            },
+            {
+              "letra": "B",
+              "t": "Fútbol, que fue el que sumó más inscritos nuevos."
+            },
+            {
+              "letra": "C",
+              "t": "Todos por igual, como dice el afiche."
+            },
+            {
+              "letra": "D",
+              "t": "No se puede saber, porque el gráfico no muestra porcentajes."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "Si en 2027 el taller de ajedrez creciera en la misma proporción que de 2025 a 2026, tendría",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "40 inscritos, los mismos de 2026."
+            },
+            {
+              "letra": "B",
+              "t": "20 inscritos, los mismos que en 2025."
+            },
+            {
+              "letra": "C",
+              "t": "60 inscritos."
+            },
+            {
+              "letra": "D",
+              "t": "80 inscritos."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: A · 2: A · 3: D.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: Lo dice el texto. El gráfico lo muestra directamente: la barra de danza 2026 marca 96.",
+        "Pregunta 1. Clave A. La barra de 2025 marca 60 y la de 2026, 54: natación perdió 6 inscritos.",
+        "Pregunta 2. Antes de las alternativas: Se deduce del texto. Ni el texto ni el gráfico dan el número 30, pero sale restando las dos barras de fútbol: 150 − 120 = 30. Se deduce.",
+        "Pregunta 2. Clave A. Ajedrez se duplicó: creció 100 %. Fútbol creció 25 % (30 de 120) y danza 20 % (16 de 80); natación bajó.",
+        "Pregunta 3. Clave D. De 2025 a 2026, ajedrez se duplicó (de 20 a 40). Crecer en la misma proporción es volver a duplicarse: 40 × 2 = 80."
+      ]
+    },
+    {
+      "id": "t041",
+      "nivel": "básico",
+      "enunciado": "Lee el texto «Si la tierra tiembla» y responde las 3 preguntas.",
+      "texto": {
+        "titulo": "Si la tierra tiembla",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "En el Perú los sismos son frecuentes, porque frente a su costa una placa del fondo del océano se hunde debajo del continente."
+            },
+            {
+              "n": 2,
+              "t": "Por eso, la brigada escolar del colegio Pampa Verde, un colegio ficticio de la costa, preparó esta infografía para recordar qué hacer antes, durante y después de un temblor."
+            }
+          ]
+        ],
+        "figuras": [
+          {
+            "tipo": "recuadros",
+            "despues": 1,
+            "titulo": "Qué hacer ante un sismo",
+            "recuadros": [
+              {
+                "titulo": "Antes",
+                "t": "Ubica con tu familia las zonas seguras de tu casa y prepara una mochila de emergencia con agua, alimentos que no se malogren, linterna, radio a pilas y botiquín."
+              },
+              {
+                "titulo": "Durante",
+                "t": "Mantén la calma y no corras. Aléjate de las ventanas y de los objetos que puedan caer. Si estás en un piso alto, no uses el ascensor."
+              },
+              {
+                "titulo": "Después",
+                "t": "Sal con calma hacia un espacio abierto y aléjate de postes y cables caídos. Para avisar que estás bien, manda un mensaje de texto en lugar de llamar: así no saturas las líneas."
+              },
+              {
+                "titulo": "En el colegio",
+                "t": "Sigue a tu brigadista y participa en los simulacros: practicar el camino de salida hace que, cuando de verdad haga falta, lo recorras sin tener que pensarlo."
+              }
+            ],
+            "nota": "Consejos basados en las recomendaciones del Indeci. El colegio es ficticio."
+          }
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "enunciado": "Se infiere de la infografía que, después de un sismo fuerte, las líneas telefónicas",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "se cortan porque los postes y los cables se vienen abajo."
+            },
+            {
+              "letra": "B",
+              "t": "pueden congestionarse porque mucha gente llama a la vez."
+            },
+            {
+              "letra": "C",
+              "t": "dejan de funcionar siempre, en todas las ciudades del país."
+            },
+            {
+              "letra": "D",
+              "t": "deben quedar libres solo para las llamadas de los bomberos."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "previo": "Antes de mirar las alternativas, decide qué relación tiene esta afirmación con el texto y la infografía. «Durante un sismo, estar junto a una ventana es más peligroso que estar lejos de ella.» Elige: «Lo dice el texto», «Se deduce del texto», «El texto no lo dice ni se deduce», «Lo contradice».",
+          "enunciado": "Es compatible con el texto y la infografía afirmar que",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "si estás en un piso alto durante un sismo, conviene usar el ascensor para bajar rápido."
+            },
+            {
+              "letra": "B",
+              "t": "durante un sismo no hay ningún lugar de la casa que sea más seguro que otro."
+            },
+            {
+              "letra": "C",
+              "t": "practicar la salida en un simulacro ayuda a reaccionar mejor en un sismo real."
+            },
+            {
+              "letra": "D",
+              "t": "en el Perú los temblores ocurren muy de vez en cuando, por eso hay que prepararse."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "Según la infografía, si en un colegio nunca se hicieran simulacros, lo más probable es que, ante un sismo real, sus alumnos",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "tardaran más en encontrar y recorrer el camino de salida."
+            },
+            {
+              "letra": "B",
+              "t": "No se puede saber, porque la infografía no habla de colegios sin simulacros."
+            },
+            {
+              "letra": "C",
+              "t": "saldrían igual de rápido, porque el camino de salida es siempre el mismo."
+            },
+            {
+              "letra": "D",
+              "t": "se hicieran daño todos, sin excepción, al tratar de salir del aula."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: B · 2: C · 3: A.",
+      "pasos": [
+        "Pregunta 1. Clave B. El recuadro «Después» pide mandar un mensaje en vez de llamar para no saturar las líneas: eso supone que, si muchos llaman a la vez, las líneas se llenan.",
+        "Pregunta 2. Antes de las alternativas: Se deduce del texto. La infografía no usa la palabra \"peligroso\", pero pide alejarse de las ventanas durante el sismo: si hay que alejarse, es porque cerca de ellas se corre más riesgo. Se deduce.",
+        "Pregunta 2. Clave C. El recuadro «En el colegio» dice que practicar el camino de salida hace que se recorra sin pensarlo cuando de verdad hace falta.",
+        "Pregunta 3. Clave A. La infografía dice que practicar la salida hace que se recorra sin pensarlo. Sin práctica, habría que pensarlo en el momento, y eso toma más tiempo."
+      ]
+    },
+    {
+      "id": "t042",
+      "nivel": "avanzado (tipo UNI)",
+      "enunciado": "Lee el texto «Más luz en los parques» y responde las 4 preguntas.",
+      "texto": {
+        "titulo": "Más luz en los parques",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "Hace un año, casi nadie quería cruzar de noche el parque Los Pinos, en un distrito ficticio de la ciudad."
+            },
+            {
+              "n": 2,
+              "t": "En enero de 2026, la municipalidad cambió sus viejos faroles por luces nuevas, igual que en el parque Las Retamas."
+            },
+            {
+              "n": 3,
+              "t": "Hoy los vecinos vuelven a pasear por ahí después de las ocho, y las denuncias de robo en Los Pinos bajaron a la mitad."
+            },
+            {
+              "n": 4,
+              "t": "Las cifras hablan solas: la luz espanta a los ladrones."
+            },
+            {
+              "n": 5,
+              "t": "Por eso, la municipalidad debería iluminar todos los parques del distrito antes de fin de año, empezando por los que todavía tienen faroles viejos."
+            }
+          ]
+        ],
+        "figuras": [
+          {
+            "tipo": "tabla",
+            "despues": 1,
+            "titulo": "Robos denunciados de enero a junio en cuatro parques del distrito",
+            "columnas": [
+              "Parque",
+              "Luces nuevas en 2026",
+              "2025",
+              "2026"
+            ],
+            "filas": [
+              {
+                "celdas": [
+                  "Los Pinos",
+                  "Sí",
+                  "24",
+                  "12"
+                ]
+              },
+              {
+                "celdas": [
+                  "Las Retamas",
+                  "Sí",
+                  "18",
+                  "15"
+                ]
+              },
+              {
+                "celdas": [
+                  "La Alameda",
+                  "No",
+                  "20",
+                  "14"
+                ]
+              },
+              {
+                "celdas": [
+                  "Las Palmeras",
+                  "No",
+                  "10",
+                  "11"
+                ]
+              }
+            ],
+            "nota": "Datos inventados para el ejercicio. En 2026, el serenazgo empezó además a patrullar de noche Los Pinos y La Alameda; los otros dos parques no tuvieron patrullajes."
+          }
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "enunciado": "Si se junta lo que dice el autor con la tabla y su nota, ¿qué se puede afirmar sobre la idea de que «la luz espanta a los ladrones»?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "La tabla la prueba: en Los Pinos, las luces nuevas hicieron que los robos denunciados bajaran a la mitad en un solo año, de 24 a 12."
+            },
+            {
+              "letra": "B",
+              "t": "La tabla la contradice: los robos subieron en los dos parques con luces nuevas."
+            },
+            {
+              "letra": "C",
+              "t": "La tabla la confirma, porque, como escribe el autor, las cifras hablan solas."
+            },
+            {
+              "letra": "D",
+              "t": "La tabla la apoya solo en parte: los robos también bajaron en un parque sin luces nuevas y, en Los Pinos, hubo además patrullajes."
+            },
+            {
+              "letra": "E",
+              "t": "La tabla la prueba: en todos los parques con luces nuevas, los robos bajaron a la mitad."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "previo": "Antes de mirar las alternativas, decide qué relación tiene esta afirmación con el texto y la tabla. «En el parque Las Palmeras hubo menos robos denunciados en 2026 que en 2025.» Elige: «Lo dice el texto», «Se deduce del texto», «El texto no lo dice ni se deduce», «Lo contradice».",
+          "enunciado": "Es incompatible con la tabla y su nota afirmar que",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Los Pinos fue el único parque que tuvo a la vez luces nuevas y patrullajes."
+            },
+            {
+              "letra": "B",
+              "t": "en La Alameda, los robos bajaron gracias a las luces nuevas de 2026."
+            },
+            {
+              "letra": "C",
+              "t": "los vecinos de Las Palmeras también le han pedido a la municipalidad luces nuevas para su parque."
+            },
+            {
+              "letra": "D",
+              "t": "en Las Retamas se denunciaron menos robos en 2026 que en el año anterior."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "¿En qué parque se puede ver qué pasó con los robos cuando hubo luces nuevas, pero no patrullajes?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "En Las Retamas, donde bajaron de 18 a 15."
+            },
+            {
+              "letra": "B",
+              "t": "En Los Pinos, donde bajaron a la mitad."
+            },
+            {
+              "letra": "C",
+              "t": "En La Alameda, donde bajaron de 20 a 14."
+            },
+            {
+              "letra": "D",
+              "t": "En ninguno, porque la tabla no dice qué parques tuvieron patrullajes."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "Si el próximo año el serenazgo dejara de patrullar Los Pinos y allí los robos volvieran a subir, aunque las luces nuevas siguieran prendidas, eso indicaría que",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "la luz espanta a los ladrones, como afirma el autor del texto."
+            },
+            {
+              "letra": "B",
+              "t": "las luces nuevas atraen a los ladrones en lugar de alejarlos de los parques."
+            },
+            {
+              "letra": "C",
+              "t": "los patrullajes son lo único que reduce los robos en cualquier parque."
+            },
+            {
+              "letra": "D",
+              "t": "en ese parque, las luces solas no bastaban para mantener bajos los robos."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: D · 2: B · 3: A · 4: D.",
+      "pasos": [
+        "Pregunta 1. Clave D. En los dos parques con luces nuevas bajaron los robos, lo que va a favor del autor. Pero también bajaron en La Alameda, que no tuvo luces nuevas (de 20 a 14), y Los Pinos tuvo además patrullajes. La tabla no basta para probar que fue la luz.",
+        "Pregunta 2. Antes de las alternativas: Lo contradice. La fila de Las Palmeras dice 10 robos en 2025 y 11 en 2026: subieron. La afirmación dice lo contrario.",
+        "Pregunta 2. Clave B. La Alameda no recibió luces nuevas (dice \"No\" en su fila). Sus robos bajaron, pero no pudo ser por unas luces que no tuvo.",
+        "Pregunta 3. Clave A. Las Retamas tuvo luces nuevas (su fila) y, según la nota, no tuvo patrullajes. Es el único caso de luz sin serenazgo, y ahí los robos bajaron poco.",
+        "Pregunta 4. Clave D. Si se quita el patrullaje, se quedan las luces y los robos suben, la luz por sí sola no los mantuvo bajos. Sería una razón más para dudar de que la luz explicara toda la caída."
+      ]
+    }
+  ]
+}

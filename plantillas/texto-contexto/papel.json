@@ -1,0 +1,706 @@
+{
+  "titulo": "Quién habla, a quién y para qué: lectura para lápiz y papel",
+  "indicacion": "Lee cada texto con calma y resuelve en tu hoja, sin la app. Haz lo que te pide «Antes de mirar las alternativas» tapando las alternativas con una hoja: así ves qué pensabas tú y no lo que te sugieren. Las oraciones llevan número para que puedas citarlas al revisar.",
+  "origen": "Generado por herramientas/papel-lectura.js desde el banco; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "t043",
+      "nivel": "básico",
+      "enunciado": "Lee el texto «El sábado, el mercado se pone guapo» y responde las 4 preguntas.",
+      "texto": {
+        "titulo": "El sábado, el mercado se pone guapo",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "Comunicado a los señores socios del mercado Los Capulíes, Huancayo."
+            },
+            {
+              "n": 2,
+              "t": "La junta directiva de la asociación saluda a cada uno de ustedes y les informa lo siguiente."
+            }
+          ],
+          [
+            {
+              "n": 3,
+              "t": "En las últimas semanas hemos recibido varias quejas de los clientes."
+            },
+            {
+              "n": 4,
+              "t": "Una señora escribió en el cuaderno de reclamos: «Los pasillos están llenos de cajas y no se puede pasar con un niño en brazos»."
+            },
+            {
+              "n": 5,
+              "t": "Otro cliente anotó: «El techo gotea justo encima de los puestos de carne»."
+            },
+            {
+              "n": 6,
+              "t": "Tienen razón, y no queremos que se vayan a comprar a otro lado."
+            }
+          ],
+          [
+            {
+              "n": 7,
+              "t": "Por eso, este sábado 14, el mercado se pone guapo: haremos una faena de limpieza y pintura desde las seis de la mañana."
+            },
+            {
+              "n": 8,
+              "t": "Cada socio debe venir con una escoba, un balde y ropa de trabajo, y dejar su pasillo sin cajas antes de las ocho."
+            },
+            {
+              "n": 9,
+              "t": "La asociación pondrá la pintura, las brochas y el desayuno para todos."
+            },
+            {
+              "n": 10,
+              "t": "El techo de la zona de carnes lo arreglará un maestro contratado, con el fondo que se juntó con la cuota de octubre."
+            }
+          ],
+          [
+            {
+              "n": 11,
+              "t": "El socio que no asista ni envíe a un familiar en su lugar pagará una multa de veinte soles, como se acordó en la asamblea del mes pasado."
+            },
+            {
+              "n": 12,
+              "t": "Contamos con su puesto limpio y con su buen ánimo."
+            },
+            {
+              "n": 13,
+              "t": "Atentamente, la Junta Directiva."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas, decide qué relación tiene esta afirmación con el texto. «El comunicado lo escribieron los clientes que se quejaron.» Elige: «Lo dice el texto», «Se deduce del texto», «El texto no lo dice ni se deduce», «Lo contradice».",
+          "enunciado": "¿Quién escribe el comunicado?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Una clienta que se quejó en el cuaderno de reclamos."
+            },
+            {
+              "letra": "B",
+              "t": "La junta directiva de la asociación del mercado."
+            },
+            {
+              "letra": "C",
+              "t": "La municipalidad de Huancayo, que administra los mercados."
+            },
+            {
+              "letra": "D",
+              "t": "Los señores socios que tienen un puesto en el mercado."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "enunciado": "¿A quiénes se dirige el comunicado?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "A los clientes que dejaron quejas sobre el mercado."
+            },
+            {
+              "letra": "B",
+              "t": "A las autoridades de la ciudad, para pedir el arreglo del techo."
+            },
+            {
+              "letra": "C",
+              "t": "A los comerciantes que tienen un puesto en el mercado."
+            },
+            {
+              "letra": "D",
+              "t": "A los vecinos de Huancayo, para invitarlos a la faena del sábado."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "En el comunicado, la frase «el mercado se pone guapo» quiere decir que",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "la junta se ha enojado con los clientes quejosos."
+            },
+            {
+              "letra": "B",
+              "t": "los socios deben venir bien arreglados el sábado."
+            },
+            {
+              "letra": "C",
+              "t": "el mercado subirá los precios para pagar la pintura."
+            },
+            {
+              "letra": "D",
+              "t": "el mercado quedará limpio y pintado con la faena."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "Del comunicado se deduce que los socios del mercado",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "escribieron en el cuaderno que el techo gotea."
+            },
+            {
+              "letra": "B",
+              "t": "venden más los sábados que los demás días de la semana."
+            },
+            {
+              "letra": "C",
+              "t": "tendrán que cerrar sus puestos todo el sábado."
+            },
+            {
+              "letra": "D",
+              "t": "aportan una cuota a su asociación."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: B · 2: C · 3: D · 4: D.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: Lo contradice. Quien escribe dice que «hemos recibido» las quejas de los clientes (oración 3): los clientes se quejaron, pero el comunicado lo firma la Junta Directiva (oraciones 2 y 13).",
+        "Pregunta 1. Clave B. La oración 2 dice que la junta directiva saluda e informa, y el comunicado termina con su firma.",
+        "Pregunta 2. Clave C. El encabezado se dirige a los socios, y el texto les pide traer su escoba, despejar su pasillo y dejar limpio su puesto.",
+        "Pregunta 3. Clave D. La misma oración lo explica después de los dos puntos: habrá una faena de limpieza y pintura.",
+        "Pregunta 4. Clave D. El techo se pagará «con el fondo que se juntó con la cuota de octubre»: hay una cuota que la asociación junta entre sus socios."
+      ]
+    },
+    {
+      "id": "t044",
+      "nivel": "básico",
+      "enunciado": "Lee el texto «Un mensaje para el tío Julián» y responde las 4 preguntas.",
+      "texto": {
+        "titulo": "Un mensaje para el tío Julián",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "Hola, tío Julián, ¿cómo estás?"
+            },
+            {
+              "n": 2,
+              "t": "Aquí en Puerto Maldonado todos bien, aunque esta semana nos estamos derritiendo: ni con el ventilador prendido se puede dormir."
+            },
+            {
+              "n": 3,
+              "t": "Mi mamá te manda saludos y dice que ya no te pierdas tanto."
+            }
+          ],
+          [
+            {
+              "n": 4,
+              "t": "Te escribo porque necesito tu ayuda con una tarea."
+            },
+            {
+              "n": 5,
+              "t": "En Ciencias Sociales, la profesora Nélida nos pidió comparar cómo se construyen las casas en dos regiones del país."
+            },
+            {
+              "n": 6,
+              "t": "Ella nos dijo: «Busquen a alguien que viva allá y pídanle fotos de verdad, no de internet»."
+            },
+            {
+              "n": 7,
+              "t": "Yo elegí Arequipa porque me acordé de la casa de la abuela, la de las paredes blancas y gruesas, que por dentro estaba fresquita aunque afuera quemara el sol."
+            },
+            {
+              "n": 8,
+              "t": "Aquí, en cambio, muchas casas son de madera, con el techo alto y ventanas grandes para que corra el aire."
+            }
+          ],
+          [
+            {
+              "n": 9,
+              "t": "¿Podrías mandarme tres o cuatro fotos de casas de sillar, de preferencia del centro, que te queda cerca?"
+            },
+            {
+              "n": 10,
+              "t": "Si puedes, mándame también un audio contando por qué las hacían con esa piedra, porque tú siempre sabes esas cosas."
+            },
+            {
+              "n": 11,
+              "t": "Las necesito para el lunes, que es cuando presentamos."
+            },
+            {
+              "n": 12,
+              "t": "Gracias, tío, te quiero mucho; cuando vengas en julio te llevo al lago Sandoval."
+            },
+            {
+              "n": 13,
+              "t": "Tu sobrina, Milagros."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas, decide qué relación tiene esta afirmación con el texto. «Quien escribe conoce en persona a quien lee.» Elige: «Lo dice el texto», «Se deduce del texto», «El texto no lo dice ni se deduce», «Lo contradice».",
+          "enunciado": "¿A quién se dirige el mensaje?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "A un familiar que vive en Arequipa."
+            },
+            {
+              "letra": "B",
+              "t": "A un especialista en casas de sillar al que consulta para su tarea."
+            },
+            {
+              "letra": "C",
+              "t": "A un turista que conoció en Puerto Maldonado."
+            },
+            {
+              "letra": "D",
+              "t": "A la profesora Nélida, que dejó la tarea."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "enunciado": "En el mensaje, la expresión «nos estamos derritiendo» quiere decir que",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "la familia quiere mudarse a Arequipa por el clima."
+            },
+            {
+              "letra": "B",
+              "t": "las cosas de la casa se están derritiendo con el sol."
+            },
+            {
+              "letra": "C",
+              "t": "el ventilador de la casa se malogró esta semana."
+            },
+            {
+              "letra": "D",
+              "t": "en Puerto Maldonado está haciendo mucho calor."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "¿En qué situación escribe Milagros?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Su mamá le pidió que salude al tío, que hace tiempo no llama."
+            },
+            {
+              "letra": "B",
+              "t": "Está de visita en Arequipa y quiere fotografiar ella misma las casas del centro."
+            },
+            {
+              "letra": "C",
+              "t": "Prepara la visita de su tío en julio al lago Sandoval."
+            },
+            {
+              "letra": "D",
+              "t": "Tiene que presentar una tarea el lunes y le faltan fotos de Arequipa."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "Del mensaje se deduce que Milagros",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "prefiere vivir en Arequipa antes que en Puerto Maldonado."
+            },
+            {
+              "letra": "B",
+              "t": "nunca ha salido de Puerto Maldonado en toda su vida."
+            },
+            {
+              "letra": "C",
+              "t": "ha estado alguna vez en la casa de su abuela en Arequipa."
+            },
+            {
+              "letra": "D",
+              "t": "sabe que el sillar es una piedra que sale de los volcanes."
+            },
+            {
+              "letra": "E",
+              "t": "tiene una profesora que también vive en Arequipa."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: A · 2: D · 3: D · 4: C.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: Se deduce del texto. El mensaje no lo dice con esas palabras, pero se deduce: Milagros lo llama «tío», le manda saludos de su mamá, le dice que lo quiere y lo espera en julio (oraciones 1, 3 y 12).",
+        "Pregunta 1. Clave A. Milagros le escribe a su tío y le pide fotos de casas de Arequipa, como la profesora pidió a «alguien que viva allá».",
+        "Pregunta 2. Clave D. La misma oración lo aclara: ni con el ventilador se puede dormir. Es una exageración para decir que hace mucho calor.",
+        "Pregunta 3. Clave D. Ella misma dice que escribe por una tarea (oración 4), pide fotos (oración 9) y dice que las necesita para el lunes (oración 11).",
+        "Pregunta 4. Clave C. Se acuerda de cómo era la casa por dentro: fresquita aunque afuera quemara el sol. Eso solo lo recuerda quien estuvo ahí."
+      ]
+    },
+    {
+      "id": "t045",
+      "nivel": "intermedio",
+      "enunciado": "Lee el texto «El plástico del fitotoldo» y responde las 4 preguntas.",
+      "texto": {
+        "titulo": "El plástico del fitotoldo",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "Buenas tardes, señores padres de familia; buenas tardes, señor presidente de la APAFA."
+            },
+            {
+              "n": 2,
+              "t": "Muchos de ustedes me conocen: soy la hija de la señora Fortunata, la del puesto de quesos, y este año mis compañeros de quinto me eligieron para hablar por ellos."
+            }
+          ],
+          [
+            {
+              "n": 3,
+              "t": "Vengo a hablarles del fitotoldo que está detrás del pabellón B."
+            },
+            {
+              "n": 4,
+              "t": "Hace dos años, ahí cosechábamos lechuga, acelga y rabanito para nuestro refrigerio, aunque afuera cayera helada, como cae casi todas las noches de invierno en Juliaca."
+            },
+            {
+              "n": 5,
+              "t": "Hoy el plástico está roto, y el viento de agosto se llevó lo poco que quedaba."
+            },
+            {
+              "n": 6,
+              "t": "Cuando le preguntamos al director, nos respondió: «Este año no hay presupuesto para eso»."
+            },
+            {
+              "n": 7,
+              "t": "Él tiene razón: el dinero que llega al colegio ya tiene destino."
+            }
+          ],
+          [
+            {
+              "n": 8,
+              "t": "Por eso les pedimos a ustedes algo que no cuesta tanto: una faena de un sábado y cinco soles por familia para el plástico nuevo."
+            },
+            {
+              "n": 9,
+              "t": "Nosotros pondremos las manos: los de cuarto ya aprendieron a armar los arcos, y los de tercero se ofrecieron para regar."
+            },
+            {
+              "n": 10,
+              "t": "Ustedes saben mejor que nadie lo que vale una verdura fresca en julio, cuando en el mercado se pone cara."
+            }
+          ],
+          [
+            {
+              "n": 11,
+              "t": "No les pedimos un regalo, sino que nos ayuden a recuperar algo que ya era nuestro."
+            },
+            {
+              "n": 12,
+              "t": "Muchas gracias por escucharme."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "enunciado": "¿Quién pronuncia, con mayor probabilidad, este discurso?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Una alumna del colegio que habla en nombre de sus compañeros."
+            },
+            {
+              "letra": "B",
+              "t": "Una profesora encargada de los cultivos y del refrigerio escolar."
+            },
+            {
+              "letra": "C",
+              "t": "La señora Fortunata, que vende quesos en el mercado."
+            },
+            {
+              "letra": "D",
+              "t": "El director del colegio, que no tiene presupuesto este año."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "enunciado": "¿A quiénes se dirige principalmente el discurso?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "A sus compañeros de colegio, que antes cosechaban en el fitotoldo."
+            },
+            {
+              "letra": "B",
+              "t": "A las autoridades de Juliaca, para que paguen el plástico."
+            },
+            {
+              "letra": "C",
+              "t": "Al director, para que cambie de opinión sobre el presupuesto."
+            },
+            {
+              "letra": "D",
+              "t": "A los padres de familia, reunidos con el presidente de la APAFA."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "previo": "Antes de mirar las alternativas: ¿qué busca sobre todo quien habla? Elige: «Explicar o informar», «Convencer», «Narrar».",
+          "enunciado": "¿Qué busca principalmente quien habla?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Que los padres apoyen con trabajo y dinero el arreglo del fitotoldo."
+            },
+            {
+              "letra": "B",
+              "t": "Informar qué verduras se cosechaban en el fitotoldo hace dos años."
+            },
+            {
+              "letra": "C",
+              "t": "Criticar al director por negarse a dar dinero para el fitotoldo."
+            },
+            {
+              "letra": "D",
+              "t": "Pedir que el Estado dé más presupuesto a los colegios públicos de todo el país."
+            },
+            {
+              "letra": "E",
+              "t": "Contar la historia del fitotoldo desde que se construyó hasta hoy."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "En el discurso, la frase «Nosotros pondremos las manos» quiere decir que",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "los alumnos se encargarán del trabajo de armar y regar."
+            },
+            {
+              "letra": "B",
+              "t": "los alumnos de quinto dirigirán a los de cuarto y de tercero."
+            },
+            {
+              "letra": "C",
+              "t": "los alumnos juntarán entre ellos el dinero para el plástico."
+            },
+            {
+              "letra": "D",
+              "t": "los alumnos levantarán la mano para aprobar el pedido en la reunión."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: A · 2: D · 3: A · 4: A.",
+      "pasos": [
+        "Pregunta 1. Clave A. Dice que sus compañeros la eligieron para hablar por ellos y que «nosotros», los alumnos de cuarto y de tercero, pondrán el trabajo.",
+        "Pregunta 2. Clave D. El saludo los nombra, y a ellos se les pide la faena y los cinco soles «por familia».",
+        "Pregunta 3. Antes de las alternativas: Convencer. Cuenta qué pasó con el fitotoldo, pero para pedir algo y dar razones: busca que los padres acepten ayudar (oraciones 8 y 11).",
+        "Pregunta 3. Clave A. La oración 8 hace el pedido y la 11 lo justifica: recuperar algo que ya era de los alumnos.",
+        "Pregunta 4. Clave A. La misma oración lo explica: los de cuarto arman los arcos y los de tercero riegan."
+      ]
+    },
+    {
+      "id": "t046",
+      "nivel": "intermedio",
+      "enunciado": "Lee el texto «Lo que queda en el puesto» y responde las 5 preguntas.",
+      "texto": {
+        "titulo": "Lo que queda en el puesto",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "Hermano Teo:"
+            },
+            {
+              "n": 2,
+              "t": "Cuando leas esto, yo ya estaré río abajo, así que te dejo todo por escrito."
+            },
+            {
+              "n": 3,
+              "t": "El motor del bote jala bien, pero hay que limpiarle el filtro cada dos días, como siempre."
+            },
+            {
+              "n": 4,
+              "t": "Queda gasolina para tres recorridos largos, y la lancha que trae los víveres pasa el viernes."
+            }
+          ],
+          [
+            {
+              "n": 5,
+              "t": "El río ya está dando playa: frente a la quebrada asomó la arena y ya hay taricayas poniendo sus huevos."
+            },
+            {
+              "n": 6,
+              "t": "Don Arquímedes, el de la comunidad, me dijo ayer: «Este año han salido más taricayas; que no se lleven los huevos como el año pasado»."
+            },
+            {
+              "n": 7,
+              "t": "Le prometí que pasaríamos por la playa todas las noches, así que esa promesa ahora es tuya también."
+            },
+            {
+              "n": 8,
+              "t": "Los nidos que encontré están marcados con estacas y anotados en el cuaderno de ocurrencias, con la fecha y la hora."
+            },
+            {
+              "n": 9,
+              "t": "Si ves gente con linterna escarbando la arena, no te acerques solo: anota la hora, avisa por radio a la base y espera a la patrulla."
+            }
+          ],
+          [
+            {
+              "n": 10,
+              "t": "En la olla dejé arroz y un poco de paiche salado; no es mucho, pero es de corazón."
+            },
+            {
+              "n": 11,
+              "t": "Saluda a tu mamá cuando hables con ella por la radio el domingo."
+            },
+            {
+              "n": 12,
+              "t": "Vuelvo en veinte días, cuando me toque subir otra vez."
+            },
+            {
+              "n": 13,
+              "t": "Wílmer"
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "enunciado": "¿Quién escribe la nota, con mayor probabilidad?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Un poblador de la comunidad, preocupado porque se roben los huevos de la playa."
+            },
+            {
+              "letra": "B",
+              "t": "Alguien que vigila la playa por turnos y acaba de terminar el suyo."
+            },
+            {
+              "letra": "C",
+              "t": "El jefe de Teo, que le deja las órdenes desde la base."
+            },
+            {
+              "letra": "D",
+              "t": "Un pescador que dejó paiche salado en el puesto para vender."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "enunciado": "¿Qué relación hay entre Wílmer y Teo?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Son compañeros que se turnan en el mismo trabajo y se tienen confianza."
+            },
+            {
+              "letra": "B",
+              "t": "Teo es el nuevo jefe del puesto y Wílmer le rinde cuentas."
+            },
+            {
+              "letra": "C",
+              "t": "Son hermanos de sangre, hijos de la misma madre."
+            },
+            {
+              "letra": "D",
+              "t": "Teo es un visitante de la reserva al que le explican, paso a paso, cómo cuidar los nidos."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "previo": "Antes de mirar las alternativas, decide qué relación tiene esta afirmación con el texto. «Wílmer y Teo se encuentran en el puesto el día del cambio de turno.» Elige: «Lo dice el texto», «Se deduce del texto», «El texto no lo dice ni se deduce», «Lo contradice».",
+          "enunciado": "¿En qué situación se escribe la nota?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Wílmer deja el puesto y Teo lo reemplaza después, sin que se crucen."
+            },
+            {
+              "letra": "B",
+              "t": "Wílmer se despide de Teo porque deja el trabajo para siempre."
+            },
+            {
+              "letra": "C",
+              "t": "Esta semana robaron huevos en la playa y la comunidad pidió ayuda."
+            },
+            {
+              "letra": "D",
+              "t": "Es temporada de turistas y la reserva espera recibir más visitas que de costumbre."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "En la nota, la expresión «el río ya está dando playa» quiere decir que",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "el río creció con las lluvias y llegó hasta el puesto."
+            },
+            {
+              "letra": "B",
+              "t": "el agua bajó y quedaron al descubierto orillas de arena."
+            },
+            {
+              "letra": "C",
+              "t": "el río ofrece a la comunidad un lugar para bañarse y pasear."
+            },
+            {
+              "letra": "D",
+              "t": "el río se secó del todo y ahora solo queda arena."
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "enunciado": "Se deduce que Wílmer quiere que Teo pase por la playa todas las noches porque",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "las taricayas están en peligro de desaparecer en todo el mundo."
+            },
+            {
+              "letra": "B",
+              "t": "así se evita que alguien se lleve los huevos de las taricayas."
+            },
+            {
+              "letra": "C",
+              "t": "hay que contar cuántas crías de taricaya nacen cada noche."
+            },
+            {
+              "letra": "D",
+              "t": "las taricayas ya salieron a la arena y hay que darles de comer."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: B · 2: A · 3: A · 4: B · 5: B.",
+      "pasos": [
+        "Pregunta 1. Clave B. Se va «río abajo», deja a Teo la promesa de pasar por la playa cada noche, sabe cómo avisar a la base y volverá cuando le «toque subir otra vez»: es un turno de vigilancia.",
+        "Pregunta 2. Clave A. Wílmer le pasa a Teo su promesa y sus tareas, lo trata con cariño y volverá cuando le toque: se relevan en el mismo puesto.",
+        "Pregunta 3. Antes de las alternativas: Lo contradice. La nota lo contradice sin decirlo con esas palabras: «Cuando leas esto, yo ya estaré río abajo, así que te dejo todo por escrito» (oración 2).",
+        "Pregunta 3. Clave A. Wílmer ya se habrá ido cuando Teo lea (oración 2) y volverá en veinte días (oración 12): la nota reemplaza la conversación del relevo.",
+        "Pregunta 4. Clave B. La misma oración lo explica: frente a la quebrada «asomó la arena», donde las taricayas ponen sus huevos.",
+        "Pregunta 5. Clave B. Don Arquímedes pide que no se los lleven como el año pasado, Wílmer le prometió vigilar y explica qué hacer si alguien escarba la arena."
+      ]
+    }
+  ]
+}

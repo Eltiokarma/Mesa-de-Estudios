@@ -5103,7 +5103,7 @@
    ],
    "url": "#/lectura/lectura-ingles",
    "banco": "/contenido/razonamiento-verbal/indice-lectura-ingles.json",
-   "papel": null,
+   "papel": "/plantillas/lectura-ingles/papel.json",
    "entrada": null,
    "salida": null,
    "archivos": [
@@ -5113,7 +5113,8 @@
     "/contenido/razonamiento-verbal/textos/t051.json",
     "/contenido/razonamiento-verbal/textos/t052.json",
     "/contenido/razonamiento-verbal/textos/t053.json",
-    "/contenido/razonamiento-verbal/textos/t054.json"
+    "/contenido/razonamiento-verbal/textos/t054.json",
+    "/plantillas/lectura-ingles/papel.json"
    ]
   },
   "lectura-verbal": {
@@ -5138,7 +5139,7 @@
    ],
    "url": "#/lectura/lectura-verbal",
    "banco": "/contenido/razonamiento-verbal/indice.json",
-   "papel": null,
+   "papel": "/plantillas/lectura-verbal/papel.json",
    "entrada": "t000a",
    "salida": "t000b",
    "archivos": [
@@ -5191,7 +5192,8 @@
     "/contenido/razonamiento-verbal/ejercicios/e012.json",
     "/contenido/razonamiento-verbal/ejercicios/e013.json",
     "/contenido/razonamiento-verbal/ejercicios/e014.json",
-    "/contenido/razonamiento-verbal/ejercicios/e015.json"
+    "/contenido/razonamiento-verbal/ejercicios/e015.json",
+    "/plantillas/lectura-verbal/papel.json"
    ]
   },
   "limitante-particulas": {
@@ -5760,7 +5762,7 @@
    ],
    "url": "#/lectura/resumen-sintesis",
    "banco": "/contenido/razonamiento-verbal/indice-resumen-sintesis.json",
-   "papel": null,
+   "papel": "/plantillas/resumen-sintesis/papel.json",
    "entrada": null,
    "salida": null,
    "archivos": [
@@ -5770,7 +5772,8 @@
     "/contenido/razonamiento-verbal/textos/t035.json",
     "/contenido/razonamiento-verbal/textos/t036.json",
     "/contenido/razonamiento-verbal/textos/t037.json",
-    "/contenido/razonamiento-verbal/textos/t038.json"
+    "/contenido/razonamiento-verbal/textos/t038.json",
+    "/plantillas/resumen-sintesis/papel.json"
    ]
   },
   "segmentos-angulos": {
@@ -5907,7 +5910,7 @@
    ],
    "url": "#/lectura/texto-contexto",
    "banco": "/contenido/razonamiento-verbal/indice-texto-contexto.json",
-   "papel": null,
+   "papel": "/plantillas/texto-contexto/papel.json",
    "entrada": null,
    "salida": null,
    "archivos": [
@@ -5917,7 +5920,8 @@
     "/contenido/razonamiento-verbal/textos/t043.json",
     "/contenido/razonamiento-verbal/textos/t044.json",
     "/contenido/razonamiento-verbal/textos/t045.json",
-    "/contenido/razonamiento-verbal/textos/t046.json"
+    "/contenido/razonamiento-verbal/textos/t046.json",
+    "/plantillas/texto-contexto/papel.json"
    ]
   },
   "textos-discontinuos": {
@@ -5931,7 +5935,7 @@
    ],
    "url": "#/lectura/textos-discontinuos",
    "banco": "/contenido/razonamiento-verbal/indice-textos-discontinuos.json",
-   "papel": null,
+   "papel": "/plantillas/textos-discontinuos/papel.json",
    "entrada": null,
    "salida": null,
    "archivos": [
@@ -5941,7 +5945,8 @@
     "/contenido/razonamiento-verbal/textos/t039.json",
     "/contenido/razonamiento-verbal/textos/t040.json",
     "/contenido/razonamiento-verbal/textos/t041.json",
-    "/contenido/razonamiento-verbal/textos/t042.json"
+    "/contenido/razonamiento-verbal/textos/t042.json",
+    "/plantillas/textos-discontinuos/papel.json"
    ]
   },
   "textos-filosoficos-cientificos": {
@@ -5955,7 +5960,7 @@
    ],
    "url": "#/lectura/textos-filosoficos-cientificos",
    "banco": "/contenido/razonamiento-verbal/indice-textos-filosoficos-cientificos.json",
-   "papel": null,
+   "papel": "/plantillas/textos-filosoficos-cientificos/papel.json",
    "entrada": null,
    "salida": null,
    "archivos": [
@@ -5965,7 +5970,8 @@
     "/contenido/razonamiento-verbal/textos/t047.json",
     "/contenido/razonamiento-verbal/textos/t048.json",
     "/contenido/razonamiento-verbal/textos/t049.json",
-    "/contenido/razonamiento-verbal/textos/t050.json"
+    "/contenido/razonamiento-verbal/textos/t050.json",
+    "/plantillas/textos-filosoficos-cientificos/papel.json"
    ]
   },
   "tipologia-textual": {
@@ -5979,7 +5985,7 @@
    ],
    "url": "#/lectura/tipologia-textual",
    "banco": "/contenido/razonamiento-verbal/indice-tipologia-textual.json",
-   "papel": null,
+   "papel": "/plantillas/tipologia-textual/papel.json",
    "entrada": null,
    "salida": null,
    "archivos": [
@@ -5989,7 +5995,8 @@
     "/contenido/razonamiento-verbal/textos/t031.json",
     "/contenido/razonamiento-verbal/textos/t032.json",
     "/contenido/razonamiento-verbal/textos/t033.json",
-    "/contenido/razonamiento-verbal/textos/t034.json"
+    "/contenido/razonamiento-verbal/textos/t034.json",
+    "/plantillas/tipologia-textual/papel.json"
    ]
   },
   "tiro-parabolico": {

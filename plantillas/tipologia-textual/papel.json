@@ -1,0 +1,582 @@
+{
+  "titulo": "¿Qué clase de texto es?: lectura para lápiz y papel",
+  "indicacion": "Lee cada texto con calma y resuelve en tu hoja, sin la app. Haz lo que te pide «Antes de mirar las alternativas» tapando las alternativas con una hoja: así ves qué pensabas tú y no lo que te sugieren. Las oraciones llevan número para que puedas citarlas al revisar.",
+  "origen": "Generado por herramientas/papel-lectura.js desde el banco; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "t031",
+      "nivel": "intermedio",
+      "enunciado": "Lee el texto «El manantial de don Teodoro» y responde las 3 preguntas.",
+      "texto": {
+        "titulo": "El manantial de don Teodoro",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "Hace unos treinta años, don Teodoro sembró eucaliptos alrededor del manantial de su comunidad, en las alturas de Huancavelica."
+            },
+            {
+              "n": 2,
+              "t": "Los árboles crecieron rápido y le dieron leña y vigas, pero con el tiempo el ojo de agua empezó a dar cada vez menos, y bajo los troncos casi no volvió a crecer pasto."
+            },
+            {
+              "n": 3,
+              "t": "Hoy él dice que, si pudiera volver atrás, sembraría otra cosa."
+            }
+          ],
+          [
+            {
+              "n": 4,
+              "t": "Su caso enseña algo que conviene repetir: cuando se reforesta en los Andes, hay que preferir los árboles nativos, como la queñua o el quishuar, antes que el eucalipto."
+            },
+            {
+              "n": 5,
+              "t": "La primera razón es el agua."
+            },
+            {
+              "n": 6,
+              "t": "Estudios hechos en distintos países han encontrado que las plantaciones de eucalipto reducen el caudal de los ríos y manantiales cercanos, porque estos árboles crecen rápido y consumen mucha agua."
+            },
+            {
+              "n": 7,
+              "t": "La segunda razón es la vida que cada bosque sostiene."
+            },
+            {
+              "n": 8,
+              "t": "La queñua, de corteza rojiza que se desprende en láminas finas como papel, forma bosques que protegen el suelo y dan refugio a aves que casi no viven en otra parte."
+            }
+          ],
+          [
+            {
+              "n": 9,
+              "t": "Es cierto que la queñua crece despacio y que el eucalipto da madera en pocos años."
+            },
+            {
+              "n": 10,
+              "t": "Pero un árbol que da leña pronto y deja a la comunidad sin agua es un mal negocio a largo plazo, como bien lo sabe don Teodoro."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas: ¿qué busca sobre todo el autor? Elige: «Explicar o informar», «Convencer», «Narrar».",
+          "enunciado": "El texto es, fundamentalmente, de tipo",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "expositivo, porque informa cuánta agua consumen las plantaciones de eucalipto."
+            },
+            {
+              "letra": "B",
+              "t": "argumentativo, porque defiende que se siembren árboles nativos con dos razones."
+            },
+            {
+              "letra": "C",
+              "t": "descriptivo, porque presenta cómo es la corteza de la queñua."
+            },
+            {
+              "letra": "D",
+              "t": "narrativo, porque cuenta lo que le pasó a don Teodoro con los eucaliptos que sembró junto a su manantial."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "enunciado": "¿Qué función cumple el primer párrafo en el texto?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Inicia la historia que el texto sigue contando hasta el final."
+            },
+            {
+              "letra": "B",
+              "t": "Expone la tesis general que el autor defiende en el resto del texto."
+            },
+            {
+              "letra": "C",
+              "t": "Presenta un caso concreto que el autor usa para llegar a su tesis."
+            },
+            {
+              "letra": "D",
+              "t": "Plantea una objeción que el autor responde en el último párrafo."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "previo": "Antes de mirar las alternativas, escribe el número de la oración que dice la tesis del autor. Si ninguna lo dice completo, escribe «ninguna».",
+          "enunciado": "¿Cuál es la tesis del autor?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Las plantaciones de eucalipto reducen el caudal de los manantiales cercanos."
+            },
+            {
+              "letra": "B",
+              "t": "Al reforestar en los Andes, conviene elegir especies nativas en lugar del eucalipto."
+            },
+            {
+              "letra": "C",
+              "t": "Hay que sembrar más árboles en todo el país."
+            },
+            {
+              "letra": "D",
+              "t": "Don Teodoro, si pudiera volver atrás, ya no sembraría eucaliptos junto a su manantial."
+            },
+            {
+              "letra": "E",
+              "t": "La queñua crece despacio, pero protege el suelo y da refugio a muchas aves."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: B · 2: C · 3: B.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: Convencer. El autor quiere que el lector acepte una postura: al reforestar en los Andes, conviene preferir los árboles nativos (oración 4). Para eso da dos razones y responde a una objeción.",
+        "Pregunta 1. Clave B. La oración 4 dice la postura del autor, las oraciones 5 y 7 anuncian sus dos razones y la 9 y la 10 responden a una objeción. El propósito que domina es convencer.",
+        "Pregunta 2. Clave C. El primer párrafo cuenta el caso de don Teodoro, y la oración 4 lo retoma («Su caso enseña algo…») para enunciar la tesis.",
+        "Pregunta 3. Antes de las alternativas: la oración 4. La oración 4 dice la tesis: al reforestar en los Andes, hay que preferir los árboles nativos antes que el eucalipto. Lo demás es el caso que la anuncia, las razones que la sostienen y la respuesta a una objeción.",
+        "Pregunta 3. Clave B. Es la oración 4 con otras palabras. Todo lo demás sirve para llegar a ella o para sostenerla."
+      ]
+    },
+    {
+      "id": "t032",
+      "nivel": "básico",
+      "enunciado": "Lee el texto «La reina de los Andes» y responde las 3 preguntas.",
+      "texto": {
+        "titulo": "La reina de los Andes",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "En las punas de Áncash, a unos cuatro mil metros de altura, crece una planta que se reconoce de lejos: la puya de Raimondi."
+            },
+            {
+              "n": 2,
+              "t": "Vista desde el camino, parece un enorme plumero verde clavado en medio del pajonal."
+            }
+          ],
+          [
+            {
+              "n": 3,
+              "t": "Su parte baja es un tronco grueso y corto, cubierto por las hojas secas de años anteriores, que cuelgan a su alrededor como una falda de paja."
+            },
+            {
+              "n": 4,
+              "t": "Encima del tronco se abre una gran roseta de hojas largas, duras y angostas, de un verde que tira a gris."
+            },
+            {
+              "n": 5,
+              "t": "Cada hoja lleva en los bordes espinas curvas, como pequeños ganchos, que se prenden de todo lo que las roza."
+            }
+          ],
+          [
+            {
+              "n": 6,
+              "t": "Del centro de la roseta sale, una sola vez en la vida de la planta y después de muchos años, una espiga de varios metros, casi tan alta como un poste de luz."
+            },
+            {
+              "n": 7,
+              "t": "La cubren miles de flores pequeñas, de color blanco verdoso."
+            },
+            {
+              "n": 8,
+              "t": "Cuando las flores terminan de dar semillas, la planta entera se seca."
+            },
+            {
+              "n": 9,
+              "t": "Por su porte, en la zona muchos la llaman la reina de los Andes."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas: ¿qué busca sobre todo el autor? Elige: «Explicar o informar», «Convencer», «Narrar».",
+          "enunciado": "El texto es, fundamentalmente, de tipo",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "argumentativo, porque defiende que la puya de Raimondi merece el nombre de reina de los Andes."
+            },
+            {
+              "letra": "B",
+              "t": "instructivo, porque enseña al lector cómo reconocer la planta de lejos."
+            },
+            {
+              "letra": "C",
+              "t": "descriptivo, porque presenta la planta parte por parte para que el lector la imagine."
+            },
+            {
+              "letra": "D",
+              "t": "narrativo, porque cuenta lo que le pasa a la planta desde que florece hasta que se seca."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "enunciado": "¿Cómo está organizado el texto?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Explica que la altura de la puna es la causa de la forma de la planta y de sus espinas."
+            },
+            {
+              "letra": "B",
+              "t": "Sigue, en orden, la vida de la planta: cómo nace, cómo crece y cómo muere."
+            },
+            {
+              "letra": "C",
+              "t": "Presenta la planta y luego la describe por partes, de la base a la espiga."
+            },
+            {
+              "letra": "D",
+              "t": "Plantea un problema, el de las espinas que se prenden de todo, y una manera de evitarlas."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "Si en la puna se ve una puya de Raimondi viva que aún no tiene espiga, se deduce del texto que esa planta",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "ya floreció y perdió su espiga."
+            },
+            {
+              "letra": "B",
+              "t": "todavía no ha florecido."
+            },
+            {
+              "letra": "C",
+              "t": "nunca llegará a dar flores."
+            },
+            {
+              "letra": "D",
+              "t": "florecerá ese mismo año."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: C · 2: C · 3: B.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: Explicar o informar. El autor quiere que el lector conozca cómo es la puya de Raimondi: la presenta parte por parte, sin defender una opinión ni contar una historia. Describir es una forma de informar.",
+        "Pregunta 1. Clave C. El texto va del tronco a las hojas y de las hojas a la espiga, con formas, colores y comparaciones («como una falda de paja», «como pequeños ganchos»). Eso es describir.",
+        "Pregunta 2. Clave C. El primer párrafo presenta la planta; el segundo, el tronco y las hojas; el tercero, la espiga y sus flores. El orden es el de las partes, de abajo hacia arriba.",
+        "Pregunta 3. Clave B. La espiga sale una sola vez en la vida de la planta (oración 6) y, después de florecer, la planta entera se seca (oración 8). Si está viva y sin espiga, aún no floreció."
+      ]
+    },
+    {
+      "id": "t033",
+      "nivel": "intermedio",
+      "enunciado": "Lee el texto «Del sismo al aluvión: por qué cayó Yungay» y responde las 3 preguntas.",
+      "texto": {
+        "titulo": "Del sismo al aluvión: por qué cayó Yungay",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "El 31 de mayo de 1970, pasadas las tres de la tarde, un terremoto de magnitud 7,9 sacudió la costa y la sierra de Áncash."
+            },
+            {
+              "n": 2,
+              "t": "En el Callejón de Huaylas, ese sismo fue el comienzo de una cadena de causas y efectos que terminó sepultando una ciudad entera."
+            }
+          ],
+          [
+            {
+              "n": 3,
+              "t": "La sacudida desprendió de la cumbre norte del Huascarán, el nevado más alto del Perú, una enorme masa de hielo y roca."
+            },
+            {
+              "n": 4,
+              "t": "Como la ladera es muy empinada, esa masa ganó velocidad al caer, arrastró tierra y piedras, y se convirtió en un aluvión que bajó a más de doscientos kilómetros por hora."
+            },
+            {
+              "n": 5,
+              "t": "En pocos minutos recorrió unos quince kilómetros y cubrió la ciudad de Yungay y parte del pueblo de Ranrahirca."
+            },
+            {
+              "n": 6,
+              "t": "La mayoría de los habitantes de Yungay no alcanzó a escapar; entre los pocos que se salvaron estuvieron quienes subieron a tiempo a la colina del cementerio, adonde el lodo no llegó."
+            }
+          ],
+          [
+            {
+              "n": 7,
+              "t": "En toda la región, el terremoto dejó decenas de miles de muertos, y el peligro del nevado no era nuevo: en 1962, otro aluvión caído del Huascarán ya había arrasado Ranrahirca."
+            },
+            {
+              "n": 8,
+              "t": "Después de 1970, los sobrevivientes levantaron una nueva Yungay a poca distancia, y el lugar antiguo quedó como camposanto."
+            },
+            {
+              "n": 9,
+              "t": "Así, en Yungay, lo que causó la mayoría de las muertes no fue la sacudida del suelo, sino el aluvión que esa sacudida soltó en las alturas."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas: ¿qué busca sobre todo el autor? Elige: «Explicar o informar», «Convencer», «Narrar».",
+          "enunciado": "El texto es, fundamentalmente, de tipo",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "expositivo, porque explica cómo un sismo desató el aluvión que sepultó Yungay."
+            },
+            {
+              "letra": "B",
+              "t": "argumentativo, porque sostiene que no hay que vivir al pie de un nevado."
+            },
+            {
+              "letra": "C",
+              "t": "narrativo, porque cuenta, con fecha y hora, lo que vivieron los habitantes de Yungay aquella tarde."
+            },
+            {
+              "letra": "D",
+              "t": "descriptivo, porque presenta las partes del nevado Huascarán."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "enunciado": "¿Qué estructura tiene el texto?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Causa y efecto: un hecho provoca otro, y este otro más, hasta el desastre."
+            },
+            {
+              "letra": "B",
+              "t": "Problema y solución: el aluvión destruye Yungay y la ciudad se reconstruye."
+            },
+            {
+              "letra": "C",
+              "t": "Tesis y argumentos sobre el peligro de vivir al pie de los nevados."
+            },
+            {
+              "letra": "D",
+              "t": "Comparación y contraste entre el aluvión de 1962 y el de 1970."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "previo": "Antes de mirar las alternativas, escribe el número de la oración que mejor resume todo el texto. Si ninguna lo dice completo, escribe «ninguna».",
+          "enunciado": "¿Cuál es la idea principal del texto?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "En Yungay, el sismo de 1970 mató sobre todo de forma indirecta: soltó el aluvión que sepultó la ciudad."
+            },
+            {
+              "letra": "B",
+              "t": "Desde 1970, el Huascarán se vigila con instrumentos que dan la alarma ante un nuevo aluvión."
+            },
+            {
+              "letra": "C",
+              "t": "Algunos habitantes de Yungay se salvaron porque subieron a la colina del cementerio."
+            },
+            {
+              "letra": "D",
+              "t": "El 31 de mayo de 1970, por la tarde, un terremoto de magnitud 7,9 sacudió la costa y la sierra de Áncash."
+            },
+            {
+              "letra": "E",
+              "t": "Los terremotos son el mayor peligro natural que enfrenta el Perú."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: A · 2: A · 3: A.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: Explicar o informar. El autor quiere que el lector entienda cómo un sismo terminó sepultando Yungay: explica una cadena de causas y efectos (oraciones 2 y 9), sin defender una opinión.",
+        "Pregunta 1. Clave A. La oración 2 anuncia una cadena de causas y efectos, las del segundo párrafo la desarrollan y la 9 la cierra. El propósito es explicar.",
+        "Pregunta 2. Clave A. El sismo desprende el hielo (oración 3), el hielo se vuelve aluvión (4) y el aluvión sepulta la ciudad (5). La oración 2 lo llama «una cadena de causas y efectos».",
+        "Pregunta 3. Antes de las alternativas: la oración 2 o la oración 9. La oración 2 anuncia la idea (el sismo empezó una cadena que sepultó una ciudad) y la 9 la completa (lo que mató a la mayoría fue el aluvión que el sismo soltó). Las demás son los eslabones y las consecuencias.",
+        "Pregunta 3. Clave A. Junta lo que dicen las oraciones 2 y 9: la cadena que empieza en el sismo y que el aluvión, no la sacudida, causó la mayoría de las muertes."
+      ]
+    },
+    {
+      "id": "t034",
+      "nivel": "intermedio",
+      "enunciado": "Lee el texto «Arreglar antes que botar» y responde las 4 preguntas.",
+      "texto": {
+        "titulo": "Arreglar antes que botar",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "Cuando una licuadora o un celular fallan, cada vez es más común oír que «sale más a cuenta comprar uno nuevo»."
+            },
+            {
+              "n": 2,
+              "t": "Sostengo lo contrario: los fabricantes deberían estar obligados a vender aparatos que se puedan reparar, con repuestos y manuales al alcance de cualquiera."
+            }
+          ],
+          [
+            {
+              "n": 3,
+              "t": "En primer lugar, cada aparato que se bota antes de tiempo se suma a una montaña de basura electrónica que crece año tras año."
+            },
+            {
+              "n": 4,
+              "t": "Según el Monitor Mundial de Residuos Electrónicos de 2024, en 2022 el mundo generó 62 millones de toneladas de esa basura, y menos de una cuarta parte se recogió y recicló de forma adecuada."
+            },
+            {
+              "n": 5,
+              "t": "Muchos aparatos se botan cuando solo una pieza ha fallado: una batería, un botón, una pantalla."
+            }
+          ],
+          [
+            {
+              "n": 6,
+              "t": "En segundo lugar, reparar da trabajo cerca de casa."
+            },
+            {
+              "n": 7,
+              "t": "En casi todos los barrios hay técnicos que arreglan radios, celulares y cocinas, pero su oficio se vuelve imposible cuando una pieza viene pegada o el fabricante no vende el repuesto."
+            },
+            {
+              "n": 8,
+              "t": "Cada aparato que se arregla deja el dinero en el barrio, en lugar de mandarlo a una fábrica lejana."
+            }
+          ],
+          [
+            {
+              "n": 9,
+              "t": "Se dirá que un aparato pensado para abrirse sería más caro, y que la gente, de todos modos, prefiere lo nuevo."
+            },
+            {
+              "n": 10,
+              "t": "Pero exigir repuestos no prohíbe comprar lo nuevo: solo deja abierta la otra opción, y quien la elija ahorra cada vez que cambia una pieza en lugar del aparato entero."
+            },
+            {
+              "n": 11,
+              "t": "Además, la Unión Europea aprobó en 2024 una norma que obliga a los fabricantes a ofrecer la reparación de varios aparatos, señal de que es posible exigirlo."
+            }
+          ],
+          [
+            {
+              "n": 12,
+              "t": "Un aparato que se puede arreglar dura más, ensucia menos y le da trabajo al vecino: por eso arreglar debería ser un derecho, no un lujo."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas: ¿qué busca sobre todo el autor? Elige: «Explicar o informar», «Convencer», «Narrar».",
+          "enunciado": "El texto es, fundamentalmente, de tipo",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "descriptivo, porque muestra cómo es el trabajo de los técnicos de barrio."
+            },
+            {
+              "letra": "B",
+              "t": "argumentativo, porque defiende una postura con razones y responde a una objeción."
+            },
+            {
+              "letra": "C",
+              "t": "narrativo, porque cuenta lo que ocurre cuando falla una licuadora o un celular."
+            },
+            {
+              "letra": "D",
+              "t": "expositivo, porque se apoya en cifras de un informe internacional y en una norma con fecha."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "enunciado": "¿Qué función cumple el cuarto párrafo en el texto?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Muestra que el autor cambia de postura y abandona la tesis del inicio."
+            },
+            {
+              "letra": "B",
+              "t": "Da un ejemplo que ilustra el segundo argumento, el del trabajo en los barrios."
+            },
+            {
+              "letra": "C",
+              "t": "Presenta la tesis que el autor defiende en el texto."
+            },
+            {
+              "letra": "D",
+              "t": "Expone una objeción a la tesis y la responde."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "previo": "Antes de mirar las alternativas, escribe el número de la oración que mejor resume la tesis del autor. Si ninguna lo dice completo, escribe «ninguna».",
+          "enunciado": "¿Cuál es la tesis del autor?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Un aparato pensado para abrirse sería más caro, y la gente de todos modos prefiere lo nuevo."
+            },
+            {
+              "letra": "B",
+              "t": "Cada vez es más común pensar que sale más a cuenta comprar un aparato nuevo que arreglarlo."
+            },
+            {
+              "letra": "C",
+              "t": "Hay que cuidar el ambiente y producir menos basura."
+            },
+            {
+              "letra": "D",
+              "t": "En 2022 el mundo generó 62 millones de toneladas de basura electrónica, y se recicló poca."
+            },
+            {
+              "letra": "E",
+              "t": "Debería exigirse a los fabricantes que sus aparatos puedan repararse."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "previo": "Antes de mirar las alternativas, di qué relación tiene esta afirmación con el texto. «Al autor le preocupa que los técnicos de los barrios se queden sin trabajo.» Elige: «Lo dice el texto», «Se deduce del texto», «El texto no lo dice ni se deduce», «Lo contradice».",
+          "enunciado": "Se infiere del texto que, para el autor, la frase «sale más a cuenta comprar uno nuevo»",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "es la idea que el autor defiende a lo largo del texto."
+            },
+            {
+              "letra": "B",
+              "t": "es falsa en todos los casos, sin excepción alguna."
+            },
+            {
+              "letra": "C",
+              "t": "la repiten sobre todo los técnicos que arreglan aparatos en los barrios."
+            },
+            {
+              "letra": "D",
+              "t": "mira solo el gasto del momento y deja fuera lo que se pierde al botar."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: B · 2: D · 3: E · 4: D.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: Convencer. El autor dice qué sostiene («Sostengo lo contrario…», oración 2), da dos razones, responde a una objeción y cierra con su postura: busca convencer.",
+        "Pregunta 1. Clave B. La oración 2 dice la tesis; el segundo y el tercer párrafo dan dos razones; el cuarto responde a una objeción, y el último vuelve a la tesis.",
+        "Pregunta 2. Clave D. La oración 9 presenta lo que podría decir alguien en contra («Se dirá que…»), y las oraciones 10 y 11 le responden («Pero…», «Además…»).",
+        "Pregunta 3. Antes de las alternativas: la oración 2 o la oración 12. La oración 2 enuncia la tesis (los fabricantes deberían vender aparatos reparables) y la 12 la retoma al cierre (arreglar debería ser un derecho). Las demás son razones, pruebas o la objeción.",
+        "Pregunta 3. Clave E. Es lo que dice la oración 2 y lo que retoma la 12. Todo lo demás sirve para sostenerlo.",
+        "Pregunta 4. Antes de las alternativas: Se deduce del texto. El texto no lo dice con esas palabras, pero se deduce: el autor defiende la reparación porque «da trabajo cerca de casa» (oración 6) y lamenta que el oficio de los técnicos «se vuelve imposible» cuando no hay repuestos (oración 7).",
+        "Pregunta 4. Clave D. El autor la rechaza y responde con lo que esa cuenta no incluye: la basura que se acumula (oración 3) y el dinero y el trabajo que salen del barrio (oración 8)."
+      ]
+    }
+  ]
+}

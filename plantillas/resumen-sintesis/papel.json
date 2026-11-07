@@ -1,0 +1,597 @@
+{
+  "titulo": "Resumir y sintetizar: lectura para lápiz y papel",
+  "indicacion": "Lee cada texto con calma y resuelve en tu hoja, sin la app. Haz lo que te pide «Antes de mirar las alternativas» tapando las alternativas con una hoja: así ves qué pensabas tú y no lo que te sugieren. Las oraciones llevan número para que puedas citarlas al revisar.",
+  "origen": "Generado por herramientas/papel-lectura.js desde el banco; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "t035",
+      "nivel": "básico",
+      "enunciado": "Lee el texto «La fibra que salvó a la vicuña» y responde las 4 preguntas.",
+      "texto": {
+        "titulo": "La fibra que salvó a la vicuña",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "La vicuña es el camélido más pequeño de los Andes y vive en las punas, a gran altura."
+            },
+            {
+              "n": 2,
+              "t": "Su fibra es una de las más finas del mundo, y una prenda tejida con ella puede costar miles de dólares."
+            },
+            {
+              "n": 3,
+              "t": "Por eso mismo estuvo a punto de desaparecer: durante décadas, los cazadores la mataban para quitarle el vellón, y hacia la década de 1960 quedaban en el Perú apenas unos pocos miles."
+            }
+          ],
+          [
+            {
+              "n": 4,
+              "t": "La especie se recuperó cuando, además de las leyes que la protegieron, las comunidades de las punas dejaron de verla como una presa y empezaron a cuidarla, porque viva les deja más que muerta."
+            },
+            {
+              "n": 5,
+              "t": "Cada cierto tiempo, los comuneros organizan un chaccu: forman una larga cadena humana, arrean a las vicuñas silvestres hacia un corral de redes y las esquilan."
+            },
+            {
+              "n": 6,
+              "t": "Después las sueltan, y en dos o tres años el vellón vuelve a crecer."
+            },
+            {
+              "n": 7,
+              "t": "La fibra se vende, y lo que se gana queda en la comunidad, que por eso vigila sus pastos para que no entren cazadores."
+            }
+          ],
+          [
+            {
+              "n": 8,
+              "t": "Así, la misma fibra que casi acabó con la vicuña es hoy la razón para protegerla."
+            },
+            {
+              "n": 9,
+              "t": "En el censo nacional de 2012 se contaron en el Perú más de doscientas mil."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas, escribe el número de la oración que mejor resume el texto. Si ninguna lo dice completo, escribe «ninguna».",
+          "enunciado": "¿Cuál es el mejor resumen del texto?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Como ya hay más de doscientas mil vicuñas, las comunidades de las punas pueden organizar el chaccu y vender su fibra."
+            },
+            {
+              "letra": "B",
+              "t": "La vicuña vive en las punas, tiene una fibra muy fina, fue cazada durante décadas, se esquila en el chaccu, luego se suelta y hoy hay más de doscientas mil."
+            },
+            {
+              "letra": "C",
+              "t": "Los animales silvestres de los Andes necesitan que las personas los protejan para no desaparecer."
+            },
+            {
+              "letra": "D",
+              "t": "En el chaccu, los comuneros forman una larga cadena humana para arrear a las vicuñas hacia un corral de redes."
+            },
+            {
+              "letra": "E",
+              "t": "La caza por su fibra casi acabó con la vicuña, pero hoy esa fibra, esquilada sin matarla, lleva a las comunidades a cuidarla, y la especie se recuperó."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "enunciado": "¿Cuál es el título más adecuado para el texto?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "La vicuña, una especie a punto de desaparecer"
+            },
+            {
+              "letra": "B",
+              "t": "La vicuña: de presa a animal que se cuida"
+            },
+            {
+              "letra": "C",
+              "t": "Los camélidos de América del Sur"
+            },
+            {
+              "letra": "D",
+              "t": "La vicuña, el animal del escudo nacional"
+            },
+            {
+              "letra": "E",
+              "t": "Cómo se organiza un chaccu en las punas"
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "¿Qué alternativa dice lo mismo que la oración 8, con otras palabras?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Hoy la fibra de la vicuña se vende a un precio mucho más alto que cuando la cazaban."
+            },
+            {
+              "letra": "B",
+              "t": "Lo que antes ponía en peligro a la vicuña es ahora el motivo para cuidarla."
+            },
+            {
+              "letra": "C",
+              "t": "La fibra de la vicuña casi acabó con las razones para protegerla."
+            },
+            {
+              "letra": "D",
+              "t": "La fibra siempre fue la única razón para proteger a la vicuña."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "El segundo párrafo se puede sintetizar así:",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Las comunidades de las punas dejaron de ver a la vicuña como una presa."
+            },
+            {
+              "letra": "B",
+              "t": "Los comuneros esquilan a las vicuñas con el fin de que su vellón vuelva a crecer en dos o tres años."
+            },
+            {
+              "letra": "C",
+              "t": "Los comuneros arrean a las vicuñas, las esquilan, las sueltan, venden su fibra y vigilan sus pastos."
+            },
+            {
+              "letra": "D",
+              "t": "Las comunidades cuidan a la vicuña porque esquilarla viva les da un ingreso que se repite."
+            },
+            {
+              "letra": "E",
+              "t": "El Estado debería pagar a las comunidades por cada vicuña que cuidan en sus pastos."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: E · 2: B · 3: B · 4: D.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: la oración 4 o la oración 8. La oración 4 dice por qué se recuperó la vicuña: las comunidades la cuidan porque viva les deja más que muerta. La 8 lo junta con el comienzo: la fibra que la ponía en peligro hoy es la razón para protegerla.",
+        "Pregunta 1. Clave E. Junta las tres partes con su orden de importancia: el peligro, el cambio en las comunidades y por qué ese cambio salvó a la especie.",
+        "Pregunta 2. Clave B. Recoge el cambio que cuenta el texto: la vicuña dejó de ser una presa y pasó a ser cuidada.",
+        "Pregunta 3. Clave B. «La fibra que casi acabó con la vicuña» es lo que la ponía en peligro, y «la razón para protegerla» es el motivo para cuidarla.",
+        "Pregunta 4. Clave D. Es la idea que une el párrafo: la vicuña se esquila y se suelta, el vellón vuelve a crecer y la venta deja dinero en la comunidad, que por eso la cuida."
+      ]
+    },
+    {
+      "id": "t036",
+      "nivel": "básico",
+      "enunciado": "Lee el texto «La canoa de Rolando» y responde las 3 preguntas.",
+      "texto": {
+        "titulo": "La canoa de Rolando",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "Rolando tenía doce años y vivía en un caserío a orillas del río Itaya, cerca de Iquitos."
+            },
+            {
+              "n": 2,
+              "t": "Una mañana, su mamá le pidió que llevara en la canoa un saco de plátanos a la casa de su tía, que vivía justo en la otra orilla."
+            },
+            {
+              "n": 3,
+              "t": "Rolando subió a la canoa, apuntó la proa hacia la casa de su tía y remó con todas sus fuerzas."
+            },
+            {
+              "n": 4,
+              "t": "Pero la corriente lo arrastró río abajo, y al rato estaba más lejos que al principio, con los brazos ardiendo."
+            },
+            {
+              "n": 5,
+              "t": "Volvió a la orilla, lo intentó de nuevo remando aún más fuerte y le pasó lo mismo."
+            }
+          ],
+          [
+            {
+              "n": 6,
+              "t": "Cansado, se sentó en el barranco y se quedó mirando el agua."
+            },
+            {
+              "n": 7,
+              "t": "Vio que, junto a la orilla, el agua avanzaba despacio, y que solo en el medio el río tiraba con fuerza."
+            },
+            {
+              "n": 8,
+              "t": "Entonces subió un buen trecho río arriba, pegado a la orilla, donde la corriente casi no lo empujaba."
+            },
+            {
+              "n": 9,
+              "t": "Desde allí cruzó remando de costado y dejó que el río lo fuera bajando poco a poco, hasta que la canoa tocó la orilla justo frente a la casa de su tía."
+            },
+            {
+              "n": 10,
+              "t": "Ese día llegó sin cansarse, y entendió que el río no se había vuelto más débil: él había dejado de pelear contra él."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas, escribe el número de la oración que mejor resume lo que el relato quiere mostrar. Si ninguna lo dice completo, escribe «ninguna».",
+          "enunciado": "¿Cuál es el mejor resumen interpretativo del relato?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Rolando rema hacia la casa de su tía, la corriente lo arrastra dos veces, mira el río, sube por la orilla y cruza."
+            },
+            {
+              "letra": "B",
+              "t": "Frente a algo más fuerte que uno, sirve más observarlo y aprovecharlo que empeñarse en luchar contra él."
+            },
+            {
+              "letra": "C",
+              "t": "Los ríos de la Amazonía son muy importantes para la vida de las familias que viven en sus orillas."
+            },
+            {
+              "letra": "D",
+              "t": "Los niños no deberían cruzar solos en canoa un río con tanta corriente como el Itaya."
+            },
+            {
+              "letra": "E",
+              "t": "Aunque Rolando remó con todas sus fuerzas, la corriente arrastró su canoa río abajo."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "enunciado": "¿Cuál es el título más adecuado para el relato?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "La vida en los ríos de la Amazonía"
+            },
+            {
+              "letra": "B",
+              "t": "Cruzar con el río y no contra él"
+            },
+            {
+              "letra": "C",
+              "t": "Un saco de plátanos para la tía"
+            },
+            {
+              "letra": "D",
+              "t": "La canoa que arrastró la corriente"
+            },
+            {
+              "letra": "E",
+              "t": "Rolando, el mejor remero del caserío"
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "En la oración 10, decir que Rolando «había dejado de pelear contra él» (contra el río) equivale a decir que Rolando",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "dejó de remar y esperó a que el río se volviera más débil."
+            },
+            {
+              "letra": "B",
+              "t": "cambió su forma de cruzar y usó la corriente a su favor."
+            },
+            {
+              "letra": "C",
+              "t": "peleó contra el río hasta que el río dejó de pelear contra él."
+            },
+            {
+              "letra": "D",
+              "t": "se rindió y ya no quiso cruzar más el río."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: B · 2: B · 3: B.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: la oración 10. La oración 10 es la que más se acerca a la enseñanza: lo que cambió no fue el río, sino la manera de cruzarlo. También vale «Ninguna la dice completa», porque la enseñanza no está dicha con todas sus palabras: hay que sacarla del relato.",
+        "Pregunta 1. Clave B. Un resumen interpretativo no repite la anécdota: dice lo que enseña. Rolando falla cuando pelea contra la corriente y llega cuando la observa y la usa a su favor.",
+        "Pregunta 2. Clave B. Recoge el giro del relato: Rolando llega cuando deja de pelear contra la corriente y la usa.",
+        "Pregunta 3. Clave B. Las oraciones 8 y 9 muestran ese cambio: sube por la orilla tranquila y deja que el río lo baje mientras cruza."
+      ]
+    },
+    {
+      "id": "t037",
+      "nivel": "intermedio",
+      "enunciado": "Lee el texto «Los que separan lo que botamos» y responde las 3 preguntas.",
+      "texto": {
+        "titulo": "Los que separan lo que botamos",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "Muchos vecinos ven como un problema a los recicladores que abren las bolsas de basura: dejan restos en la vereda y trabajan sin uniforme ni horario."
+            },
+            {
+              "n": 2,
+              "t": "Sin embargo, mucho del plástico, el papel y el cartón que se recicla en las ciudades del Perú pasa primero por sus manos."
+            },
+            {
+              "n": 3,
+              "t": "Ellos separan, limpian y venden lo que, de otro modo, los camiones municipales habrían llevado al relleno sanitario."
+            }
+          ],
+          [
+            {
+              "n": 4,
+              "t": "El problema no es que existan, sino cómo trabajan: a escondidas, de noche, sin guantes y vendiendo a intermediarios que les pagan poco."
+            },
+            {
+              "n": 5,
+              "t": "Desde 2009, una ley peruana reconoce su oficio y promueve que las municipalidades los incorporen en programas de recojo selectivo."
+            },
+            {
+              "n": 6,
+              "t": "Donde esos programas funcionan, los vecinos separan sus residuos en casa, el reciclador pasa a recogerlos en un día fijo y lo que antes se rompía en la vereda llega entero y limpio."
+            }
+          ],
+          [
+            {
+              "n": 7,
+              "t": "Por eso, en lugar de perseguir a los recicladores, las municipalidades deberían sumarlos al sistema de limpieza: así la ciudad recicla más, y quienes hacen ese trabajo lo hacen con seguridad y con un pago justo."
+            },
+            {
+              "n": 8,
+              "t": "Echarlos de las calles no hace desaparecer la basura que ellos separaban; solo la manda entera al relleno."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas, escribe el número de la oración que mejor resume el texto. Si ninguna lo dice completo, escribe «ninguna».",
+          "enunciado": "¿Cuál es el mejor resumen del texto?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Mucho del plástico, el papel y el cartón que se recicla en las ciudades del Perú pasa primero por las manos de los recicladores."
+            },
+            {
+              "letra": "B",
+              "t": "Reciclar en casa debería ser obligatorio para todas las familias, y quien no separe su basura debería pagar una multa."
+            },
+            {
+              "letra": "C",
+              "t": "Las municipalidades deberían sumar a los recicladores al sistema de limpieza porque los vecinos ya separan sus residuos en casa."
+            },
+            {
+              "letra": "D",
+              "t": "Como los recicladores ya recuperan mucho de lo que se recicla, las municipalidades deberían integrarlos y no perseguirlos: se reciclaría más y ellos trabajarían seguros."
+            },
+            {
+              "letra": "E",
+              "t": "Los recicladores abren bolsas, recuperan plástico y cartón, trabajan de noche, venden a intermediarios, tienen una ley desde 2009 y recogen en días fijos donde hay programas."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "enunciado": "¿Cuál es el título más adecuado para el texto?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Los recicladores, un problema en la vereda"
+            },
+            {
+              "letra": "B",
+              "t": "Sumar a los recicladores, no perseguirlos"
+            },
+            {
+              "letra": "C",
+              "t": "La basura en las ciudades del mundo"
+            },
+            {
+              "letra": "D",
+              "t": "Una ley de 2009 para los recicladores"
+            },
+            {
+              "letra": "E",
+              "t": "Cómo trabajan los recicladores en el Perú"
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "¿Qué alternativa dice lo mismo que la oración 4, con otras palabras?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Los recicladores existen porque trabajan a escondidas y venden a intermediarios."
+            },
+            {
+              "letra": "B",
+              "t": "Los intermediarios tienen la culpa de que la ciudad recicle tan poco y de que las veredas se ensucien."
+            },
+            {
+              "letra": "C",
+              "t": "Lo malo es que haya recicladores que trabajan de noche, sin guantes y a escondidas."
+            },
+            {
+              "letra": "D",
+              "t": "Lo malo no es que haya recicladores, sino que hacen su trabajo a escondidas y en malas condiciones."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: D · 2: B · 3: D.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: la oración 7. La oración 7 dice lo que el autor propone y por qué: sumar a los recicladores en lugar de perseguirlos, para reciclar más y para que trabajen seguros. Las demás preparan o apoyan esa propuesta.",
+        "Pregunta 1. Clave D. Junta el argumento central (los recicladores ya hacen buena parte del trabajo) con la propuesta y su finalidad, que es lo que defiende el autor.",
+        "Pregunta 2. Clave B. Recoge la propuesta del autor, que es la oración 7.",
+        "Pregunta 3. Clave D. Mantiene las dos partes de la oración 4 y su relación: no esto (que existan), sino aquello (cómo trabajan)."
+      ]
+    },
+    {
+      "id": "t038",
+      "nivel": "intermedio",
+      "enunciado": "Lee el texto «El agua que sobra» y responde las 4 preguntas.",
+      "texto": {
+        "titulo": "El agua que sobra",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "En la costa peruana casi no llueve, y durante siglos la agricultura se concentró en los valles que forman los ríos que bajan de los Andes."
+            },
+            {
+              "n": 2,
+              "t": "En las últimas décadas, grandes proyectos de irrigación, como Chavimochic en La Libertad y Majes en Arequipa, llevaron agua a pampas desérticas y las convirtieron en campos de cultivo."
+            },
+            {
+              "n": 3,
+              "t": "En el desierto, el agua de riego es lo que separa la arena de la chacra."
+            }
+          ],
+          [
+            {
+              "n": 4,
+              "t": "Pero toda agua de riego lleva algo de sal disuelta, aunque sea tan poca que no se sienta al gusto."
+            },
+            {
+              "n": 5,
+              "t": "Cuando el agua se evapora bajo el sol o la absorben las plantas, la sal no se va con ella: se queda en la tierra hasta que otra agua la disuelva y la arrastre hacia abajo."
+            },
+            {
+              "n": 6,
+              "t": "Si se riega más de lo que los cultivos necesitan y el terreno no tiene drenaje, el agua que sobra se acumula bajo tierra, la capa de agua subterránea sube y, al acercarse a la superficie, se evapora y deja allí su sal."
+            },
+            {
+              "n": 7,
+              "t": "Con los años, en algunas parcelas aparece una costra blanca y los cultivos rinden cada vez menos."
+            },
+            {
+              "n": 8,
+              "t": "Por eso, la solución no es renunciar al riego, sino medir el agua que se da a cada cultivo y construir drenes que se lleven la que sobra, y con ella la sal."
+            },
+            {
+              "n": 9,
+              "t": "Lo que daña el suelo, entonces, no es el riego en sí, sino el agua que no tiene por dónde salir."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas, escribe el número de la oración que mejor resume el texto. Si ninguna lo dice completo, escribe «ninguna».",
+          "enunciado": "El texto se puede sintetizar así:",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "En la costa no llueve, se hicieron Chavimochic y Majes, el agua de riego trae sal, la capa subterránea sube y aparece una costra blanca."
+            },
+            {
+              "letra": "B",
+              "t": "El riego que volvió productivo el desierto costeño puede salar sus suelos cuando el agua que sobra no tiene por dónde salir."
+            },
+            {
+              "letra": "C",
+              "t": "Como los suelos de la costa se llenaron de sal, hubo que llevar agua de los Andes con grandes proyectos de irrigación."
+            },
+            {
+              "letra": "D",
+              "t": "Proyectos como Chavimochic y Majes llevaron agua a pampas desérticas de la costa y las convirtieron en campos de cultivo."
+            },
+            {
+              "letra": "E",
+              "t": "Los grandes proyectos de irrigación de la costa fueron un error, porque el agua que llevaron terminó salando los suelos."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "enunciado": "Si se juntan los dos párrafos en una sola idea, ¿qué relación hay entre ellos?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "El segundo suma otro beneficio del riego a los que presenta el primero."
+            },
+            {
+              "letra": "B",
+              "t": "El segundo muestra que todo riego en el desierto termina, tarde o temprano, arruinando la tierra que el primero hizo productiva."
+            },
+            {
+              "letra": "C",
+              "t": "El segundo da ejemplos de los proyectos de irrigación que nombra el primero."
+            },
+            {
+              "letra": "D",
+              "t": "El segundo muestra en qué condición el agua que, según el primero, da vida al desierto también puede dañarlo."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "¿Cuál es el título más adecuado para el texto?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Chavimochic y Majes: el desierto hecho chacra"
+            },
+            {
+              "letra": "B",
+              "t": "La costra blanca de las parcelas"
+            },
+            {
+              "letra": "C",
+              "t": "El agua en el Perú"
+            },
+            {
+              "letra": "D",
+              "t": "El fin de la agricultura en la costa peruana"
+            },
+            {
+              "letra": "E",
+              "t": "El riego en la costa y el peligro del agua que sobra"
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "¿Qué alternativa dice lo mismo que la oración 8, con otras palabras?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "En vez de dejar de regar, hay que dar a cada cultivo el agua justa y sacar la que sobra con su sal."
+            },
+            {
+              "letra": "B",
+              "t": "Con drenes y con un riego bien medido, nunca más volverá a aparecer sal en ningún suelo de la costa del Perú."
+            },
+            {
+              "letra": "C",
+              "t": "Los drenes sirven para medir el agua que se da a cada cultivo y, además, se llevan la sal que sobra."
+            },
+            {
+              "letra": "D",
+              "t": "La solución es dejar de regar y construir drenes que se lleven la sal del terreno."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: B · 2: D · 3: E · 4: A.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: la oración 9. La 9 dice la idea que se defiende: el daño no viene del riego, sino del agua que no sale. También vale «Ninguna la dice completa», porque ninguna oración junta esa idea con la del primer párrafo: el riego es lo que hace productivo el desierto.",
+        "Pregunta 1. Clave B. Junta los dos párrafos con la relación precisa: el mismo riego que crea la chacra puede dañarla, y no siempre, sino cuando el agua no tiene salida.",
+        "Pregunta 2. Clave D. El segundo párrafo se abre con «Pero» y matiza el primero: el riego hace la chacra, y el agua que no tiene por dónde salir la puede arruinar.",
+        "Pregunta 3. Clave E. Nombra las dos partes del texto: el riego que hace productiva la costa y el daño que causa el agua que sobra y no tiene salida.",
+        "Pregunta 4. Clave A. Mantiene el «no esto, sino aquello» de la oración 8: no renunciar al riego, sino medirlo y drenar el agua que sobra."
+      ]
+    }
+  ]
+}

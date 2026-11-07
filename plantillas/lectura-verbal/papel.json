@@ -1,0 +1,1203 @@
+{
+  "titulo": "Lectura y razonamiento verbal: lectura para lápiz y papel",
+  "indicacion": "Lee cada texto con calma y resuelve en tu hoja, sin la app. Haz lo que te pide «Antes de mirar las alternativas» tapando las alternativas con una hoja: así ves qué pensabas tú y no lo que te sugieren. Las oraciones llevan número para que puedas citarlas al revisar.",
+  "origen": "Generado por herramientas/papel-lectura.js desde el banco; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "t007",
+      "nivel": "intermedio",
+      "enunciado": "Lee el texto «El fruto que necesita al bosque» y responde las 4 preguntas.",
+      "texto": {
+        "titulo": "El fruto que necesita al bosque",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "En los bosques de Madre de Dios crecen castaños que pueden pasar los cuarenta metros de altura, y sus frutos, unas cápsulas duras como piedra, guardan las castañas que se venden en todo el mundo."
+            },
+            {
+              "n": 2,
+              "t": "Casi toda esa cosecha se recoge en el bosque, árbol por árbol, y no en plantaciones."
+            },
+            {
+              "n": 3,
+              "t": "Podría parecer más práctico talar alrededor y sembrar castaños en filas ordenadas."
+            }
+          ],
+          [
+            {
+              "n": 4,
+              "t": "El problema es que la flor del castaño solo se abre al empuje de abejas grandes y fuertes, capaces de levantar su tapa."
+            },
+            {
+              "n": 5,
+              "t": "Algunas de esas abejas dependen, a su vez, de las orquídeas del bosque: los machos recogen en ellas los aromas con que atraen a las hembras."
+            },
+            {
+              "n": 6,
+              "t": "Sin orquídeas hay menos abejas, y sin abejas el castaño florece, pero casi no da frutos."
+            }
+          ],
+          [
+            {
+              "n": 7,
+              "t": "Por eso, entre otras razones, los castaños sembrados lejos del bosque suelen producir muy poco."
+            },
+            {
+              "n": 8,
+              "t": "La castaña, entonces, no es solo el producto de un árbol: es el producto de un bosque entero, y quien lo tala para sembrar castaños destruye justamente lo que los hace producir."
+            },
+            {
+              "n": 9,
+              "t": "Cuidar el bosque, en este caso, no es un gasto que se opone a la ganancia, sino la condición para tenerla."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas, escribe el número de la oración que mejor resume todo el texto. Si ninguna lo dice completo, escribe «ninguna».",
+          "enunciado": "¿Cuál es la idea principal del texto?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "La flor del castaño solo se abre al empuje de abejas grandes y fuertes, capaces de levantar su tapa."
+            },
+            {
+              "letra": "B",
+              "t": "El Perú es uno de los mayores exportadores de castañas del mundo."
+            },
+            {
+              "letra": "C",
+              "t": "La producción de castañas depende de que se conserve el bosque donde crecen los castaños."
+            },
+            {
+              "letra": "D",
+              "t": "Los castaños sembrados en plantaciones lejos del bosque suelen producir muy poco."
+            },
+            {
+              "letra": "E",
+              "t": "Los bosques amazónicos son importantes para la economía del Perú."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "previo": "Antes de mirar las alternativas, decide qué relación tiene esta afirmación con el texto. «Las abejas grandes que abren la flor del castaño visitan también las flores de muchas otras plantas.» Elige: «Lo dice el texto», «Se deduce del texto», «El texto no lo dice ni se deduce», «Lo contradice».",
+          "enunciado": "Se infiere del texto que un castaño que creciera solo, en medio de un pastizal,",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "crecería más rápido y daría más castañas, porque recibiría más sol."
+            },
+            {
+              "letra": "B",
+              "t": "probablemente daría pocos frutos, aunque floreciera."
+            },
+            {
+              "letra": "C",
+              "t": "dejaría de florecer por completo."
+            },
+            {
+              "letra": "D",
+              "t": "no daría ni un solo fruto en toda su vida."
+            },
+            {
+              "letra": "E",
+              "t": "atraería a las abejas hembras con los aromas de las orquídeas del bosque."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "Es incompatible con el texto afirmar que",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "las castañas de Madre de Dios se venden también en los mercados de Lima."
+            },
+            {
+              "letra": "B",
+              "t": "los castaños sembrados en filas lejos del bosque producen tanto como los del bosque."
+            },
+            {
+              "letra": "C",
+              "t": "talar el bosque puede reducir la ganancia de quienes viven de la castaña."
+            },
+            {
+              "letra": "D",
+              "t": "no todas las abejas pueden abrir la flor del castaño."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "Si en una zona sin orquídeas viviera un tipo de abeja grande que no las necesitara, según la lógica del texto,",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "ya no haría falta cuidar ningún bosque de la Amazonía."
+            },
+            {
+              "letra": "B",
+              "t": "los castaños de esa zona seguirían necesitando un bosque con orquídeas para dar frutos."
+            },
+            {
+              "letra": "C",
+              "t": "todos los castaños del mundo empezarían a dar el doble de frutos."
+            },
+            {
+              "letra": "D",
+              "t": "los castaños de esa zona podrían dar frutos aunque no hubiera orquídeas."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: C · 2: B · 3: B · 4: D.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: la oración 8 o la oración 9. Las oraciones 8 y 9 dicen la idea: la castaña es producto del bosque entero, y cuidarlo es la condición para ganar con ella.",
+        "Pregunta 1. Clave C. Es lo que dicen las oraciones 8 y 9: la castaña es producto del bosque entero, y cuidarlo es la condición para la ganancia.",
+        "Pregunta 2. Antes de las alternativas: El texto no lo dice ni se deduce. El texto habla de esas abejas solo en relación con el castaño y con las orquídeas. No dice si visitan otras flores: no se puede saber.",
+        "Pregunta 2. Clave B. Lejos del bosque habría menos orquídeas y menos abejas; según las oraciones 6 y 7, el castaño florecería, pero casi no daría frutos.",
+        "Pregunta 3. Clave B. La oración 7 dice que los castaños sembrados lejos del bosque suelen producir muy poco: esta afirmación choca con eso.",
+        "Pregunta 4. Clave D. El texto dice que el castaño necesita abejas grandes (oración 4) y que estas faltan cuando faltan las orquídeas (oración 6). Si hubiera abejas que no dependen de ellas, el castaño tendría quién abriera su flor."
+      ]
+    },
+    {
+      "id": "t008",
+      "nivel": "básico",
+      "enunciado": "Lee el texto «Hervir no es lo mismo que cocinar» y responde las 4 preguntas.",
+      "texto": {
+        "titulo": "Hervir no es lo mismo que cocinar",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "En Lima, el agua hierve a unos 100 °C; en Juliaca, a más de 3800 metros de altura, hierve cerca de los 87 °C."
+            },
+            {
+              "n": 2,
+              "t": "Esto ocurre porque, a mayor altura, el aire presiona menos sobre el agua, y a esta le cuesta menos convertirse en vapor."
+            },
+            {
+              "n": 3,
+              "t": "Mucha gente cree que, si el agua ya hierve, la comida se está cocinando con todo el calor posible."
+            }
+          ],
+          [
+            {
+              "n": 4,
+              "t": "Lo que cocina los alimentos no es el burbujeo, sino la temperatura del agua, y en la altura esa temperatura es menor."
+            },
+            {
+              "n": 5,
+              "t": "Por eso, en Juliaca, unas papas o unos fideos tardan más en estar listos que en Lima."
+            },
+            {
+              "n": 6,
+              "t": "Subir el fuego no arregla el problema: el agua hierve con más fuerza, pero no se calienta más."
+            },
+            {
+              "n": 7,
+              "t": "La olla a presión, en cambio, encierra el vapor y aumenta la presión sobre el agua, que entonces hierve por encima de los 100 °C."
+            }
+          ],
+          [
+            {
+              "n": 8,
+              "t": "Así, en la altura no cocina más rápido quien pone más fuego, sino quien logra que el agua esté más caliente."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas, escribe el número de la oración que mejor resume todo el texto. Si ninguna lo dice completo, escribe «ninguna».",
+          "enunciado": "¿Cuál es la idea principal del texto?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "En la altura la comida tarda más porque el agua hierve a menor temperatura, y eso no se arregla con más fuego."
+            },
+            {
+              "letra": "B",
+              "t": "En Juliaca, a más de 3800 metros de altura, el agua hierve cerca de los 87 °C, y no a 100 °C como en Lima."
+            },
+            {
+              "letra": "C",
+              "t": "La altura cambia muchas cosas en la vida diaria de las personas."
+            },
+            {
+              "letra": "D",
+              "t": "Subir el fuego hace que el agua hierva con más fuerza, pero no la calienta más."
+            },
+            {
+              "letra": "E",
+              "t": "Todas las familias de la sierra deberían cocinar con olla a presión."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "enunciado": "En la oración 2, ¿a qué se refiere la palabra ESTO (en \"Esto ocurre porque…\")?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "A que en Juliaca el agua hierve a menor temperatura que en Lima."
+            },
+            {
+              "letra": "B",
+              "t": "A que el agua se convierte en vapor cuando se calienta."
+            },
+            {
+              "letra": "C",
+              "t": "A que en Juliaca hace más frío que en Lima."
+            },
+            {
+              "letra": "D",
+              "t": "A los más de 3800 metros de altura a los que está Juliaca."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "previo": "Antes de mirar las alternativas: ¿qué relación hay entre la oración 3 y la oración 4? Elige: «Suma (y, además)», «Oposición (pero, aunque, sin embargo)», «Causa o consecuencia (porque, por eso)».",
+          "enunciado": "¿Qué conector podría ir al comienzo de la oración 4 (\"___ lo que cocina los alimentos no es el burbujeo…\") sin cambiar el sentido del texto?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Por lo tanto,"
+            },
+            {
+              "letra": "B",
+              "t": "Además,"
+            },
+            {
+              "letra": "C",
+              "t": "Dicho de otro modo,"
+            },
+            {
+              "letra": "D",
+              "t": "Pero"
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "En la oración 6, la palabra ARREGLA significa",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "soluciona."
+            },
+            {
+              "letra": "B",
+              "t": "calienta más."
+            },
+            {
+              "letra": "C",
+              "t": "explica."
+            },
+            {
+              "letra": "D",
+              "t": "ordena."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: A · 2: A · 3: D · 4: A.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: la oración 4 o la oración 8. La oración 4 dice lo esencial (cocina la temperatura, no el burbujeo) y la 8 lo resume para la altura.",
+        "Pregunta 1. Clave A. Junta las dos ideas que el texto sostiene: lo que cocina es la temperatura del agua (oración 4) y en la altura hay que lograr que esté más caliente, no hervir más fuerte (oración 8).",
+        "Pregunta 2. Clave A. \"Esto\" retoma lo que dice la oración 1: la diferencia entre la temperatura a la que hierve el agua en Lima y en Juliaca. La oración 2 explica por qué ocurre.",
+        "Pregunta 3. Antes de las alternativas: Oposición. La oración 3 cuenta lo que mucha gente cree, y la 4 dice que no es así: se oponen.",
+        "Pregunta 3. Clave D. La oración 3 presenta lo que mucha gente cree, y la 4 lo corrige: se oponen, y \"pero\" marca esa oposición.",
+        "Pregunta 4. Clave A. La oración dice que subir el fuego no resuelve el problema de que el agua esté menos caliente: no lo soluciona."
+      ]
+    },
+    {
+      "id": "t009",
+      "nivel": "avanzado (tipo UNI)",
+      "enunciado": "Lee el texto «La riqueza que salía de las islas» y responde las 5 preguntas.",
+      "texto": {
+        "titulo": "La riqueza que salía de las islas",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "A mediados del siglo XIX, el Perú encontró una riqueza inesperada en unas islas pequeñas y secas frente a su costa."
+            },
+            {
+              "n": 2,
+              "t": "Durante siglos, millones de aves marinas habían dejado allí su excremento, el guano, que se acumuló en capas de muchos metros porque casi nunca llueve."
+            },
+            {
+              "n": 3,
+              "t": "En Europa, donde los campos cansados necesitaban abono, el guano se pagaba a precios muy altos, y el Estado peruano se reservó su venta."
+            }
+          ],
+          [
+            {
+              "n": 4,
+              "t": "Durante unas tres décadas, ese dinero llenó las arcas públicas: se pagaron deudas, se construyeron ferrocarriles y se abolieron la esclavitud y el tributo indígena."
+            },
+            {
+              "n": 5,
+              "t": "Años después, el historiador Jorge Basadre llamó a esa época una «prosperidad falaz»."
+            },
+            {
+              "n": 6,
+              "t": "La riqueza dependía de un recurso que se agotaba y de unos pocos compradores extranjeros; casi no se invirtió en actividades que pudieran reemplazarlo, y el país se endeudó contando con que el guano duraría."
+            },
+            {
+              "n": 7,
+              "t": "Cuando las islas se fueron vaciando y apareció el salitre como abono rival, el Estado ya no pudo pagar lo que debía."
+            }
+          ],
+          [
+            {
+              "n": 8,
+              "t": "Algunos historiadores matizan ese juicio: recuerdan que los ferrocarriles quedaron y que la abolición de la esclavitud fue un cambio real."
+            },
+            {
+              "n": 9,
+              "t": "Aun así, la lección de fondo se mantiene: un país que vive de vender un solo recurso, sin preparar nada para cuando se acabe, confunde un ingreso pasajero con una riqueza duradera."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas: ¿qué busca sobre todo el autor? Elige: «Explicar o informar», «Convencer», «Narrar».",
+          "enunciado": "¿Cuál es la intención principal del autor?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Informar sobre la historia de los abonos en el mundo."
+            },
+            {
+              "letra": "B",
+              "t": "Describir cómo se formaron las capas de guano en las islas frente a la costa peruana."
+            },
+            {
+              "letra": "C",
+              "t": "Contar lo que ocurrió en el Perú durante la época del guano."
+            },
+            {
+              "letra": "D",
+              "t": "Sacar una lección a partir de un episodio de la historia económica del Perú."
+            },
+            {
+              "letra": "E",
+              "t": "Defender que el Perú nunca debió vender el guano de sus islas."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "previo": "Antes de mirar las alternativas, escribe el número de la oración que mejor resume la tesis del autor. Si ninguna lo dice completo, escribe «ninguna».",
+          "enunciado": "¿Cuál es la tesis del autor?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Los historiadores no se ponen de acuerdo sobre si la época del guano fue buena o mala."
+            },
+            {
+              "letra": "B",
+              "t": "La economía del Perú ha tenido épocas buenas y épocas malas."
+            },
+            {
+              "letra": "C",
+              "t": "Depender de vender un solo recurso, sin prepararse para su fin, da una riqueza que no dura."
+            },
+            {
+              "letra": "D",
+              "t": "El dinero del guano sirvió para pagar deudas y construir ferrocarriles."
+            },
+            {
+              "letra": "E",
+              "t": "Las aves marinas dejaron en las islas capas de guano de muchos metros, porque allí casi nunca llueve."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "previo": "Antes de mirar las alternativas, decide qué relación tiene esta afirmación con el texto. «Según el texto, el Estado peruano dejó la venta del guano en manos privadas.» Elige: «Lo dice el texto», «Se deduce del texto», «El texto no lo dice ni se deduce», «Lo contradice».",
+          "enunciado": "Es compatible con el texto afirmar que los historiadores que matizan el juicio de Basadre",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "consideran que la época del guano solo trajo beneficios al país."
+            },
+            {
+              "letra": "B",
+              "t": "reconocen que la época del guano dejó algunos cambios duraderos."
+            },
+            {
+              "letra": "C",
+              "t": "sostienen que los ferrocarriles desaparecieron cuando el Estado dejó de pagar sus deudas."
+            },
+            {
+              "letra": "D",
+              "t": "fueron los que llamaron a esa época una «prosperidad falaz»."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "En la oración 5, la palabra FALAZ significa",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "engañosa."
+            },
+            {
+              "letra": "B",
+              "t": "abundante."
+            },
+            {
+              "letra": "C",
+              "t": "duradera."
+            },
+            {
+              "letra": "D",
+              "t": "fugaz."
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "enunciado": "Según la lógica del texto, si el Estado hubiera invertido el dinero del guano en actividades capaces de reemplazarlo,",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "el país se habría endeudado igual, contando con que el guano duraría."
+            },
+            {
+              "letra": "B",
+              "t": "nunca habría existido la Guerra del Pacífico."
+            },
+            {
+              "letra": "C",
+              "t": "la crisis que siguió al fin del guano habría sido menos probable."
+            },
+            {
+              "letra": "D",
+              "t": "el guano de las islas no se habría agotado."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: D · 2: C · 3: B · 4: A · 5: C.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: Convencer. El texto cuenta y explica, pero para defender una idea: termina sacando una lección (\"la lección de fondo se mantiene\").",
+        "Pregunta 1. Clave D. El autor cuenta la época del guano y la juzga: termina con \"la lección de fondo se mantiene\". Busca convencer, apoyado en un caso histórico.",
+        "Pregunta 2. Antes de las alternativas: la oración 9. La oración 9 dice la tesis: vivir de vender un solo recurso, sin preparar nada para cuando se acabe, es confundir un ingreso pasajero con una riqueza duradera.",
+        "Pregunta 2. Clave C. Es lo que dice la oración 9, apoyada en la 6: vivir de un solo recurso sin preparar el después confunde un ingreso pasajero con una riqueza duradera.",
+        "Pregunta 3. Antes de las alternativas: Lo contradice. La oración 3 dice que el Estado peruano \"se reservó su venta\": la afirmación dice lo contrario.",
+        "Pregunta 3. Clave B. La oración 8 dice que recuerdan que los ferrocarriles quedaron y que la abolición de la esclavitud fue un cambio real.",
+        "Pregunta 4. Clave A. Basadre llama falaz a esa prosperidad porque parecía sólida y no lo era: dependía de un recurso que se acababa (oración 6). Era engañosa.",
+        "Pregunta 5. Clave C. El texto culpa a la falta de preparación: casi no se invirtió en reemplazar el guano (oración 6). Si se hubiera hecho, el fin del guano habría golpeado menos."
+      ]
+    },
+    {
+      "id": "t012",
+      "nivel": "avanzado (tipo UNI)",
+      "enunciado": "Lee el texto «Una pizca en el salero» y responde las 5 preguntas.",
+      "texto": {
+        "titulo": "Una pizca en el salero",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "Hasta hace unas décadas, en muchos pueblos de la sierra y de la selva del Perú era común ver personas con bocio, un abultamiento en el cuello causado por la falta de yodo."
+            },
+            {
+              "n": 2,
+              "t": "El yodo es indispensable para que la glándula tiroides funcione, y su falta durante el embarazo y la infancia puede dañar el desarrollo del cerebro."
+            },
+            {
+              "n": 3,
+              "t": "En esas zonas, el suelo y el agua tienen poco yodo, así que los alimentos locales no alcanzaban a cubrir lo que el cuerpo necesita."
+            }
+          ],
+          [
+            {
+              "n": 4,
+              "t": "La solución que se eligió fue sencilla: agregar un poco de yodo a la sal de mesa, que casi todos consumen en cantidades parecidas."
+            },
+            {
+              "n": 5,
+              "t": "Con el tiempo, y con controles para que la sal que se vendía estuviera de verdad yodada, el bocio se volvió mucho menos frecuente en el país."
+            },
+            {
+              "n": 6,
+              "t": "Hoy se recomienda comer menos sal, y alguien podría pensar que eso contradice aquella campaña."
+            },
+            {
+              "n": 7,
+              "t": "No es así: no se trata de comer más sal, sino de que la poca que se coma esté yodada."
+            }
+          ],
+          [
+            {
+              "n": 8,
+              "t": "El caso muestra que una medida de salud pública no necesita ser costosa ni espectacular para ser eficaz: basta con que llegue a todos sin que cada persona tenga que acordarse de ella."
+            },
+            {
+              "n": 9,
+              "t": "Una pizca de yodo en el salero hizo, durante años, el trabajo silencioso que ninguna campaña de consejos habría logrado sola."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas: ¿qué busca sobre todo el autor? Elige: «Explicar o informar», «Convencer», «Narrar».",
+          "enunciado": "¿Cuál es la intención principal del autor?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Contar la historia de un pueblo de la sierra afectado por el bocio."
+            },
+            {
+              "letra": "B",
+              "t": "Defender un tipo de medida de salud a partir de un caso del Perú."
+            },
+            {
+              "letra": "C",
+              "t": "Informar sobre las enfermedades más comunes del Perú."
+            },
+            {
+              "letra": "D",
+              "t": "Pedir que se prohíba vender sal sin yodo en el Perú."
+            },
+            {
+              "letra": "E",
+              "t": "Explicar qué hace el yodo en la glándula tiroides y en el desarrollo del cerebro."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "previo": "Antes de mirar las alternativas, escribe el número de la oración que mejor resume la tesis del autor. Si ninguna lo dice completo, escribe «ninguna».",
+          "enunciado": "¿Cuál es la tesis del autor?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "El bocio es un abultamiento en el cuello causado por la falta de yodo en lo que se come y se bebe."
+            },
+            {
+              "letra": "B",
+              "t": "Para tener suficiente yodo basta con comer menos sal."
+            },
+            {
+              "letra": "C",
+              "t": "Agregar yodo a la sal de mesa hizo que el bocio fuera mucho menos frecuente en el Perú."
+            },
+            {
+              "letra": "D",
+              "t": "Una medida sencilla que llega a todos sin esfuerzo de cada persona puede resolver un gran problema de salud."
+            },
+            {
+              "letra": "E",
+              "t": "La salud pública es una responsabilidad de todos los ciudadanos."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "previo": "Antes de mirar las alternativas, decide qué relación tiene esta afirmación con el texto. «La sal yodada cuesta hoy más que la sal sin yodo.» Elige: «Lo dice el texto», «Se deduce del texto», «El texto no lo dice ni se deduce», «Lo contradice».",
+          "enunciado": "Es compatible con el texto afirmar que",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "la recomendación actual de comer menos sal contradice la campaña de la sal yodada."
+            },
+            {
+              "letra": "B",
+              "t": "la recomendación de comer menos sal no obliga a dejar la sal yodada."
+            },
+            {
+              "letra": "C",
+              "t": "el bocio desapareció por completo de todos los pueblos del Perú."
+            },
+            {
+              "letra": "D",
+              "t": "en la sierra, los alimentos locales tenían yodo de sobra."
+            },
+            {
+              "letra": "E",
+              "t": "el yodo es una glándula indispensable para el desarrollo del cerebro."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "En la oración 9, la palabra SILENCIOSO significa",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "que dura mucho tiempo."
+            },
+            {
+              "letra": "B",
+              "t": "que se mantiene en secreto."
+            },
+            {
+              "letra": "C",
+              "t": "que no hace ningún ruido."
+            },
+            {
+              "letra": "D",
+              "t": "que se hace sin llamar la atención."
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "enunciado": "Si en vez de yodar la sal se hubiera pedido a cada familia que comprara yodo y lo agregara por su cuenta, según la lógica del texto,",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "nadie en el Perú habría vuelto a consumir yodo nunca."
+            },
+            {
+              "letra": "B",
+              "t": "probablemente muchas personas habrían seguido sin recibir suficiente yodo."
+            },
+            {
+              "letra": "C",
+              "t": "la medida habría funcionado mejor, porque cada familia cuidaría su propio yodo."
+            },
+            {
+              "letra": "D",
+              "t": "el bocio se habría vuelto igual de raro con el tiempo."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: B · 2: D · 3: B · 4: D · 5: B.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: Convencer. El texto explica el caso, pero para sostener una idea general (oración 8): busca convencer.",
+        "Pregunta 1. Clave B. El autor cuenta el caso de la sal yodada para sostener una idea general sobre las medidas de salud pública (oración 8): busca convencer.",
+        "Pregunta 2. Antes de las alternativas: la oración 8 o la oración 9. La oración 8 dice la tesis en general y la 9 la repite con la imagen del salero.",
+        "Pregunta 2. Clave D. Es lo que dice la oración 8 y repite la 9 con el ejemplo del salero.",
+        "Pregunta 3. Antes de las alternativas: El texto no lo dice ni se deduce. El texto no habla del precio de la sal yodada. No se puede saber.",
+        "Pregunta 3. Clave B. Es lo que dice la oración 7: se puede comer menos sal y que esa poca sal esté yodada.",
+        "Pregunta 4. Clave D. La oración 8 dice que la medida funcionó sin que cada persona tuviera que acordarse de ella: su trabajo no se notaba.",
+        "Pregunta 5. Clave B. Según la oración 8, la medida funcionó porque llegaba a todos sin que cada persona tuviera que acordarse. Si dependiera de cada familia, muchas no lo harían."
+      ]
+    },
+    {
+      "id": "t017",
+      "nivel": "avanzado (tipo UNI)",
+      "enunciado": "Lee el texto «La ciudad de barro y la lluvia» y responde las 5 preguntas.",
+      "texto": {
+        "titulo": "La ciudad de barro y la lluvia",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "Cerca de Trujillo se extiende Chan Chan, la antigua capital del reino chimú y la ciudad de barro más grande de América."
+            },
+            {
+              "n": 2,
+              "t": "Sus muros de adobe, decorados con figuras de peces y aves, resistieron siglos gracias a que en la costa casi nunca llueve."
+            },
+            {
+              "n": 3,
+              "t": "Esa misma condición es hoy su punto débil: cuando llega un fenómeno de El Niño intenso, las lluvias deshacen en semanas lo que el desierto conservó durante siglos."
+            },
+            {
+              "n": 4,
+              "t": "Desde 1986, la Unesco la incluye en su lista de patrimonio en peligro."
+            }
+          ],
+          [
+            {
+              "n": 5,
+              "t": "Proteger Chan Chan parece sencillo: bastaría con techar todos los muros o reconstruirlos con material nuevo."
+            },
+            {
+              "n": 6,
+              "t": "Pero un techo cambia la forma en que se ve el sitio y puede atrapar humedad, y un muro rehecho por completo deja de ser el muro antiguo, aunque se le parezca."
+            },
+            {
+              "n": 7,
+              "t": "Por eso, los conservadores suelen preferir intervenciones pequeñas: cubrir solo las partes más frágiles, reforzar la base de los muros y mejorar la salida del agua."
+            }
+          ],
+          [
+            {
+              "n": 8,
+              "t": "Conservar no es dejar todo como está ni rehacerlo todo, sino elegir, en cada caso, qué se puede perder y qué no."
+            },
+            {
+              "n": 9,
+              "t": "En Chan Chan, esa elección se hace contra el reloj de la próxima lluvia."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas: ¿qué busca sobre todo el autor? Elige: «Explicar o informar», «Convencer», «Narrar».",
+          "enunciado": "¿Cuál es la intención principal del autor?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Sostener una idea sobre lo que significa conservar, a partir del caso de Chan Chan."
+            },
+            {
+              "letra": "B",
+              "t": "Explicar por qué las lluvias de El Niño ponen en peligro los muros de Chan Chan."
+            },
+            {
+              "letra": "C",
+              "t": "Pedir que se techen todos los muros de Chan Chan."
+            },
+            {
+              "letra": "D",
+              "t": "Informar sobre el patrimonio en peligro en todo el mundo."
+            },
+            {
+              "letra": "E",
+              "t": "Contar la historia del reino chimú hasta la llegada de los incas."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "previo": "Antes de mirar las alternativas, escribe el número de la oración que mejor resume la tesis del autor. Si ninguna lo dice completo, escribe «ninguna».",
+          "enunciado": "¿Cuál es la tesis del autor?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Conservar un sitio antiguo obliga a decidir, caso por caso, qué se puede perder y qué no."
+            },
+            {
+              "letra": "B",
+              "t": "Las lluvias de El Niño deshacen en semanas lo que el desierto conservó durante siglos."
+            },
+            {
+              "letra": "C",
+              "t": "Chan Chan recibe cada año miles de turistas."
+            },
+            {
+              "letra": "D",
+              "t": "El patrimonio cultural del Perú debe ser protegido."
+            },
+            {
+              "letra": "E",
+              "t": "Techar los muros cambia la forma en que se ve el sitio y puede atrapar humedad."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "En la oración 7, la palabra INTERVENCIONES significa",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "acciones sobre el sitio."
+            },
+            {
+              "letra": "B",
+              "t": "reconstrucciones completas."
+            },
+            {
+              "letra": "C",
+              "t": "operaciones médicas."
+            },
+            {
+              "letra": "D",
+              "t": "techos sobre todos los muros."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "Es incompatible con el texto afirmar que",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "un muro rehecho por completo con material nuevo sigue siendo el muro antiguo."
+            },
+            {
+              "letra": "B",
+              "t": "no basta con techar los muros para proteger bien Chan Chan."
+            },
+            {
+              "letra": "C",
+              "t": "los adobes de Chan Chan se hicieron con barro del valle del río Moche."
+            },
+            {
+              "letra": "D",
+              "t": "la falta de lluvias ayudó a conservar una ciudad de barro."
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "enunciado": "Si en la costa norte lloviera de manera moderada todos los años, según la lógica del texto,",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "los muros habrían resistido los siglos igual que ahora."
+            },
+            {
+              "letra": "B",
+              "t": "la Unesco habría puesto Chan Chan en su lista de peligro antes de 1986."
+            },
+            {
+              "letra": "C",
+              "t": "probablemente se habrían conservado muchos menos muros de Chan Chan."
+            },
+            {
+              "letra": "D",
+              "t": "no existiría ninguna ciudad de barro en todo el mundo."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: A · 2: A · 3: A · 4: A · 5: C.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: Convencer. El texto explica el problema de Chan Chan, pero para sostener una idea: conservar es elegir qué se puede perder (oración 8).",
+        "Pregunta 1. Clave A. El autor usa Chan Chan para llegar a una idea general sobre la conservación (oración 8): busca convencer.",
+        "Pregunta 2. Antes de las alternativas: la oración 8. La oración 8 dice la tesis: conservar no es dejarlo todo ni rehacerlo todo, sino elegir qué se puede perder y qué no.",
+        "Pregunta 2. Clave A. Es la oración 8: conservar no es dejarlo todo ni rehacerlo todo, sino elegir.",
+        "Pregunta 3. Clave A. La oración lo explica con ejemplos: cubrir partes frágiles, reforzar la base y mejorar la salida del agua.",
+        "Pregunta 4. Clave A. La oración 6 dice lo contrario: un muro rehecho por completo \"deja de ser el muro antiguo, aunque se le parezca\".",
+        "Pregunta 5. Clave C. Los muros duraron porque casi nunca llueve (oración 2), y la lluvia los deshace (oración 3). Con lluvia todos los años, se habrían perdido más."
+      ]
+    },
+    {
+      "id": "t018",
+      "nivel": "avanzado (tipo UNI)",
+      "enunciado": "Lee el texto «Ríos que vuelan» y responde las 4 preguntas.",
+      "texto": {
+        "titulo": "Ríos que vuelan",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "Un árbol grande de la Amazonía puede sacar del suelo cientos de litros de agua en un solo día y soltarla al aire como vapor por sus hojas."
+            },
+            {
+              "n": 2,
+              "t": "Sumado en millones de árboles, ese vapor forma corrientes de aire húmedo que el viento lleva hacia el oeste y el sur, y que algunos científicos llaman «ríos voladores»."
+            },
+            {
+              "n": 3,
+              "t": "Al chocar con los Andes, parte de esa humedad sube, se enfría y cae como lluvia sobre la selva alta y los valles."
+            }
+          ],
+          [
+            {
+              "n": 4,
+              "t": "Solemos pensar que el bosque existe porque llueve."
+            },
+            {
+              "n": 5,
+              "t": "Lo que muestran estos estudios es que también ocurre al revés: en buena parte, llueve porque el bosque existe."
+            },
+            {
+              "n": 6,
+              "t": "Cuando se tala una zona grande, sale menos vapor hacia el aire, y la lluvia que depende de él puede disminuir lejos de allí, en lugares que nunca vieron caer un árbol."
+            },
+            {
+              "n": 7,
+              "t": "Esto convierte la tala en un problema que no se queda dentro de la frontera de quien la hace."
+            }
+          ],
+          [
+            {
+              "n": 8,
+              "t": "Cuidar el bosque amazónico es, entonces, también cuidar el agua de regiones que están a cientos de kilómetros."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas, escribe el número de la oración que mejor resume todo el texto. Si ninguna lo dice completo, escribe «ninguna».",
+          "enunciado": "¿Cuál es la idea principal del texto?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Un árbol grande de la Amazonía puede soltar al aire, como vapor, cientos de litros de agua en un solo día."
+            },
+            {
+              "letra": "B",
+              "t": "El bosque amazónico ayuda a producir la lluvia de la que dependen él mismo y regiones lejanas."
+            },
+            {
+              "letra": "C",
+              "t": "Al chocar con los Andes, parte de la humedad cae como lluvia sobre la selva alta y los valles."
+            },
+            {
+              "letra": "D",
+              "t": "Los bosques son importantes para la vida del planeta."
+            },
+            {
+              "letra": "E",
+              "t": "La Amazonía es el bosque tropical más grande del mundo."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "enunciado": "En la oración 7, ¿a qué se refiere la palabra ESTO?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "A los lugares que nunca vieron caer un árbol."
+            },
+            {
+              "letra": "B",
+              "t": "A que talar en un lugar puede reducir la lluvia en otros lugares lejanos."
+            },
+            {
+              "letra": "C",
+              "t": "A que el vapor de agua sale por las hojas de los árboles."
+            },
+            {
+              "letra": "D",
+              "t": "A que, cuando se tala, sale menos vapor hacia el aire."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "previo": "Antes de mirar las alternativas, decide qué relación tiene esta afirmación con el texto. «Los ríos voladores llevan más agua que el río Amazonas.» Elige: «Lo dice el texto», «Se deduce del texto», «El texto no lo dice ni se deduce», «Lo contradice».",
+          "enunciado": "Se deduce del texto que a las corrientes de aire húmedo de la oración 2 se las llama «ríos voladores» porque",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "pasan sobre los Andes como un río de agua líquida."
+            },
+            {
+              "letra": "B",
+              "t": "llevan agua de un lugar a otro, como un río."
+            },
+            {
+              "letra": "C",
+              "t": "así las llaman algunos científicos."
+            },
+            {
+              "letra": "D",
+              "t": "los ríos de la Amazonía se evaporan por completo."
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "Si un país talara gran parte de su selva, según la lógica del texto, un país vecino que conservara la suya",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "recibiría la misma lluvia de siempre, porque su bosque sigue intacto."
+            },
+            {
+              "letra": "B",
+              "t": "se convertiría de inmediato en un desierto."
+            },
+            {
+              "letra": "C",
+              "t": "podría recibir menos lluvia aunque no hubiera talado nada."
+            },
+            {
+              "letra": "D",
+              "t": "tendría que talar también su selva para compensar."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: B · 2: B · 3: B · 4: C.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: la oración 5 o la oración 8. La oración 5 da la idea central (llueve porque el bosque existe) y la 8 saca la conclusión. También vale \"ninguna la dice completa\", porque la idea entera junta las dos.",
+        "Pregunta 1. Clave B. Junta la idea de la oración 5 (llueve porque el bosque existe) con la conclusión de la 8 (cuidarlo es cuidar el agua de regiones lejanas).",
+        "Pregunta 2. Clave B. \"Esto\" retoma lo que dice la oración 6: la tala reduce el vapor y la lluvia puede disminuir lejos. Por eso el problema \"no se queda dentro de la frontera\".",
+        "Pregunta 3. Antes de las alternativas: El texto no lo dice ni se deduce. El texto no compara la cantidad de agua de los ríos voladores con la del Amazonas. No se puede saber.",
+        "Pregunta 3. Clave B. El texto no lo explica, pero se deduce: esas corrientes llevan agua en forma de vapor y la dejan caer lejos (oraciones 2 y 3), como un río la lleva por el suelo.",
+        "Pregunta 4. Clave C. Según las oraciones 6 y 7, la tala reduce la lluvia lejos de donde ocurre, y el problema no se queda dentro de la frontera."
+      ]
+    },
+    {
+      "id": "e002",
+      "nivel": "analogía",
+      "enunciado": "Resuelve el ejercicio.",
+      "texto": {
+        "titulo": "Analogía",
+        "lineas": [
+          "CUY : ROEDOR"
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas: ¿qué relación hay entre las dos palabras? Escríbela con tus palabras, por ejemplo «CUY usa ROEDOR».",
+          "enunciado": "CUY : ROEDOR ::",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "cola : zorro"
+            },
+            {
+              "letra": "B",
+              "t": "ave : cóndor"
+            },
+            {
+              "letra": "C",
+              "t": "trucha : pez"
+            },
+            {
+              "letra": "D",
+              "t": "fogón : cocina"
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: C.",
+      "pasos": [
+        "Antes de las alternativas: CUY es un tipo de ROEDOR. Los roedores son mamíferos con dientes delanteros que no paran de crecer; el cuy es uno de ellos.",
+        "Clave C. Un animal y la clase a la que pertenece, en el mismo orden: el cuy es un roedor y la trucha es un pez."
+      ]
+    },
+    {
+      "id": "e005",
+      "nivel": "término excluido",
+      "enunciado": "Resuelve el ejercicio.",
+      "texto": {
+        "titulo": "Término excluido",
+        "lineas": [
+          "cóndor · pingüino · suri · murciélago"
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "enunciado": "¿Qué término no pertenece al grupo?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "cóndor"
+            },
+            {
+              "letra": "B",
+              "t": "suri"
+            },
+            {
+              "letra": "C",
+              "t": "pingüino"
+            },
+            {
+              "letra": "D",
+              "t": "murciélago"
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: D.",
+      "pasos": [
+        "Clave D. Es el único mamífero: el cóndor, el pingüino y el suri son aves, tienen plumas y ponen huevos. \"Vuela o no vuela\" no sirve: parte el grupo en dos y dos."
+      ]
+    },
+    {
+      "id": "e011",
+      "nivel": "plan de redacción",
+      "enunciado": "Resuelve el ejercicio.",
+      "texto": {
+        "titulo": "Plan de redacción: El lago Titicaca",
+        "lineas": [
+          "I. Esa contaminación daña a los peces y a la totora, y con ellos a las familias que viven del lago.",
+          "II. El lago Titicaca está entre el Perú y Bolivia, a más de 3800 metros de altura.",
+          "III. Por ello, cuidar el lago es también cuidar a quienes viven de él.",
+          "IV. En sus orillas viven pueblos que dependen de él para pescar y cultivar.",
+          "V. Sin embargo, en las últimas décadas parte de sus aguas se ha contaminado con desagües sin tratar."
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas: escribe el orden que tendría el texto.",
+          "enunciado": "Elige el orden correcto de las oraciones.",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "II – IV – V – I – III"
+            },
+            {
+              "letra": "B",
+              "t": "II – V – IV – I – III"
+            },
+            {
+              "letra": "C",
+              "t": "III – II – IV – V – I"
+            },
+            {
+              "letra": "D",
+              "t": "II – IV – V – III – I"
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: A.",
+      "pasos": [
+        "Antes de las alternativas: II – IV – V – I – III. Primero se presenta el lago (II); \"sus orillas\" lo retoma (IV); \"sin embargo\" se opone a esa vida que depende del lago (V); \"esa contaminación\" retoma la V (I), y \"por ello\" cierra (III).",
+        "Clave A. Presenta el lago, quiénes viven de él, el problema, su daño y la conclusión."
+      ]
+    },
+    {
+      "id": "e014",
+      "nivel": "eliminación de oraciones",
+      "enunciado": "Resuelve el ejercicio.",
+      "texto": {
+        "titulo": "Eliminación de oraciones: El chuño",
+        "lineas": [
+          "I. El chuño es papa deshidratada con las heladas y el sol de la puna.",
+          "II. Es un alimento que dura mucho.",
+          "III. Para hacerlo, las papas se dejan afuera varias noches de helada y luego se pisan para sacarles el agua y se secan al sol.",
+          "IV. Así preparado, el chuño puede guardarse durante años sin echarse a perder."
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas: escribe el número de la oración que sobra.",
+          "enunciado": "¿Qué oración se debe eliminar?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "II"
+            },
+            {
+              "letra": "B",
+              "t": "III"
+            },
+            {
+              "letra": "C",
+              "t": "IV"
+            },
+            {
+              "letra": "D",
+              "t": "I"
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: A.",
+      "pasos": [
+        "Antes de las alternativas: la oración II. La oración II dice que el chuño dura mucho, y la IV dice lo mismo con más precisión (\"durante años\"): la II está contenida en la IV y no aporta nada.",
+        "Clave A. Repite lo que dice la IV, con menos precisión: es redundante."
+      ]
+    }
+  ]
+}

@@ -369,6 +369,28 @@ function vOtro() {
   };
 }
 
+// Papel de un módulo de lectura (herramientas/papel-lectura.js): el texto con sus oraciones numeradas y figuras,
+// y cada pregunta con su paso previo ("Antes de mirar las alternativas…") y sus alternativas con letra.
+function papelFigura(f) {
+  let c = '';
+  if (f.tipo === 'tabla') c = `<div class="fig-tabla"><table><thead><tr>${f.columnas.map(x => `<th scope="col">${esc(x)}</th>`).join('')}</tr></thead><tbody>${f.filas.map(r =>
+    `<tr>${r.celdas.map((x, k) => k ? `<td>${esc(x)}</td>` : `<th scope="row">${esc(x)}</th>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+  else if (f.tipo === 'barras') {
+    const max = Math.max(...f.barras.map(b => b.valor)) || 1;
+    c = `<ul class="fig-barras">${f.barras.map(b => `<li><span class="et">${esc(b.etiqueta)}</span><span class="pista" aria-hidden="true"><span class="relleno" style="width:${(100 * b.valor / max).toFixed(1)}%"></span></span><span class="val">${esc(String(b.valor).replace('.', ','))}${f.unidad ? ` ${esc(f.unidad)}` : ''}</span></li>`).join('')}</ul>`;
+  } else c = `<div class="fig-recuadros">${(f.recuadros || []).map(r => `<div>${r.titulo ? `<b>${esc(r.titulo)}</b>` : ''}<p>${esc(r.t)}</p></div>`).join('')}</div>`;
+  return `<figure class="lec-fig"><figcaption>${esc(f.titulo)}</figcaption>${c}${f.nota ? `<p class="fig-nota">${esc(f.nota)}</p>` : ''}</figure>`;
+}
+function papelLectura(q) {
+  const t = q.texto, figs = t.figuras || [];
+  const fig = k => figs.filter(f => f.despues === k).map(papelFigura).join('');
+  const cuerpo = t.lineas ? t.lineas.map(l => `<p>${esc(l)}</p>`).join('')
+    : fig(0) + (t.parrafos || []).map((par, k) => `<p>${par.map(o => `<sup class="n">${o.n}</sup>${esc(o.t)}`).join(' ')}</p>${fig(k + 1)}`).join('');
+  return `<div class="papel-texto"${t.idioma ? ` lang="${esc(t.idioma)}"` : ''}>${t.lineas ? '' : `<h3>${esc(t.titulo)}</h3>`}${cuerpo}</div>
+    <ol class="papel-preg">${q.preguntas.map(p => `<li>${p.previo ? `<p class="papel-previo">${esc(p.previo)}</p>` : ''}<p>${esc(p.enunciado)}</p>
+      <ol class="papel-alts">${p.alternativas.map(a => `<li><b>${esc(a.letra)})</b> ${esc(a.t)}</li>`).join('')}</ol></li>`).join('')}</ol>`;
+}
+
 // Problemas para lápiz y papel (regla 6): sin escena, con la respuesta escondida hasta que el alumno la pida.
 async function vPapel(id) {
   const p = cat.plantillas[id]; if (!p || !p.papel) return ir('#/cursos');
@@ -381,8 +403,8 @@ async function vPapel(id) {
     <p class="sub" style="margin-top:8px">${esc(d.indicacion)}</p>
     <div class="lista papel" style="margin-top:18px">${d.problemas.map((q, k) => `<article class="card">
       <div class="etq-p">Problema ${k + 1}${q.nivel ? ` · ${esc(q.nivel)}` : ''}</div>
-      <p style="margin:8px 0 12px">${esc(q.enunciado)}</p>
-      <details><summary>Ver respuesta</summary><p><b>${esc(q.respuesta)}</b></p><ol class="sol">${q.pasos.map(x => `<li>${esc(x)}</li>`).join('')}</ol></details>
+      <p style="margin:8px 0 12px">${esc(q.enunciado)}</p>${q.texto ? papelLectura(q) : ''}
+      <details><summary>Ver respuesta</summary><p><b>${esc(q.respuesta)}</b></p><ol class="sol${q.texto ? ' sol-lectura' : ''}">${q.pasos.map(x => `<li>${esc(x)}</li>`).join('')}</ol></details>
     </article>`).join('')}</div>
     <p style="margin-top:18px"><button class="btn borde" onclick="print()">Imprimir</button></p>`;
 }
