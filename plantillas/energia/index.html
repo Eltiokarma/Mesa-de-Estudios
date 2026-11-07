@@ -1370,7 +1370,9 @@ function draw(){
     const hastaX = r.seDetiene ? r.xDetiene : 8;
     const ej = graficaFx(ctx, c, B, { puntos:pts, R:esc.R, pasoX:esc.pasoX, hasta:hastaX, nodos:true, media:r.llega ? r.Fmedia : null, cursor:e ? aqui : null });
     if (hastaX > 0.05) rotulosArea(ctx, c, ej, pts, 0, hastaX);
-    if (r.llega) rotuloEn(ctx, c, B, ej.X(8) - 110, ej.Y(r.Fmedia) + (r.Fmedia >= 0 ? -14 : 14), `F media = ${fmt(r.Fmedia, 1)} N`, c.F, 800);
+    if (r.llega){ // rótulo de la línea a trazos, arriba a la izquierda (no tapa las áreas ni los puntos)
+      ctx.save(); ctx.setLineDash([5, 4]); ctx.strokeStyle = c.F; ctx.lineWidth = 1.6; linea(ctx, B.x + 52, B.y + 12, B.x + 70, B.y + 12); ctx.restore();
+      rotuloEn(ctx, c, B, B.x + 74, B.y + 12, `F media = ${fmt(r.Fmedia, 1)} N`, c.F, 800); }
     if (r.seDetiene && r.arranca) { ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, ej.X(r.xDetiene), B.y, ej.X(r.xDetiene), B.y + B.h); ctx.restore();
       rotuloEn(ctx, c, B, ej.X(r.xDetiene) + 6, B.y + 26, `se detiene en x = ${fmt(r.xDetiene, 1)} m`, c.ink, 800); }
     GEO = { X:ej.X, Y:ej.Y, Finv: py => esc.R.y0 + (B.y + B.h - py)/B.h*(esc.R.y1 - esc.R.y0), nodos:pts.map(([x, F]) => ({ x:ej.X(x), y:ej.Y(F) })) };
