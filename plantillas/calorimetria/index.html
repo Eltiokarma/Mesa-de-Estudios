@@ -161,7 +161,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
     <header>
       <p class="eyebrow">Física · Temperatura y calor · Problemas tipo admisión</p>
       <h1>Calorimetría y cambios de fase</h1>
-      <p class="sub">Hielo, agua y vapor: a dónde va el calor y por qué a veces la temperatura no se mueve.</p>
+      <p class="sub">Hielo, agua y vapor: a dónde va el calor y qué hace la temperatura mientras tanto.</p>
     </header>
     <nav class="tabs" aria-label="Modo de la escena">
       <a href="#paso-a-paso" id="tab1">Paso a paso</a>
@@ -670,7 +670,7 @@ function nav(){
 }
 function pintarDots(){
   [...dots.querySelectorAll('button')].forEach((b, k) => {
-    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max; b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : `Ir al ${steps[k].k.toLowerCase()}: ${steps[k].t}`);
     if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
   });
 }

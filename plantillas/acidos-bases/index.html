@@ -163,7 +163,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
     <header>
       <p class="eyebrow">Química · Ácidos y bases · Problemas tipo admisión</p>
       <h1>Ácidos, bases y pH</h1>
-      <p class="sub">La lupa muestra lo que hay en el agua: moléculas enteras, iones sueltos y los H⁺ que deciden el pH. Fuerte es qué parte se rompe; concentrado, cuántas hay en cada litro.</p>
+      <p class="sub">La lupa muestra lo que hay en el agua: moléculas enteras, iones sueltos y los H⁺ que deciden el pH. Mira qué cambia con la fuerza del ácido y qué cambia con su concentración.</p>
     </header>
     <nav class="tabs" aria-label="Modo de la escena">
       <a href="#paso-a-paso" id="tab1">Paso a paso</a>
@@ -798,7 +798,7 @@ function nav(){
 }
 function pintarDots(){
   [...dots.querySelectorAll('button')].forEach((b, k) => {
-    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max; b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : `Ir al ${steps[k].k.toLowerCase()}: ${steps[k].t}`);
     if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
   });
 }

@@ -50,7 +50,7 @@
       "universidades": {"uni": {"semanas": [2]}, "unmsm": {"temas": [2, 4]}},
       "potencial_visual": "alto",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["congruencia"],
       "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {

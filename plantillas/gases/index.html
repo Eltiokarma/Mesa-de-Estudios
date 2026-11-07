@@ -160,7 +160,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
     <header>
       <p class="eyebrow">Química · Gases · Problemas tipo admisión</p>
       <h1>Gases: lo que pasa adentro</h1>
-      <p class="sub">Partículas que nunca se quedan quietas. La presión es el empuje de sus choques contra las paredes.</p>
+      <p class="sub">Partículas de gas en un tanque: ¿qué hacen cuando el gas se enfría o se calienta, y de dónde sale la presión? Predice y después mira.</p>
     </header>
     <nav class="tabs" aria-label="Modo de la escena">
       <a href="#paso-a-paso" id="tab1">Paso a paso</a>
@@ -541,7 +541,7 @@ function nav(){
 }
 function pintarDots(){
   [...dots.querySelectorAll('button')].forEach((b, k) => {
-    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max; b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : `Ir al ${steps[k].k.toLowerCase()}: ${steps[k].t}`);
     if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
   });
 }
