@@ -8,7 +8,7 @@
 //    sumatorias coinciden con sumar término a término; la cantidad de cifras de un producto, con probarlo; las
 //    cifras que faltan y las criptos de la escena tienen una sola solución. Y lo más importante para la escena:
 //    ningún error típico da la respuesta correcta ni dos errores dan lo mismo.
-// 3. Errores de entrada.
+// 3. La cuenta a mano del explorador (abrir y juntar conservan el valor) y errores de entrada.
 // 4. Cada problema de papel.json coincide con el motor.
 
 const test = require('node:test');
@@ -36,7 +36,7 @@ function comprobar(fn, args, espera, que) {
 // 1. casos.json
 test('casos.json: formato', () => {
   assert.equal(datos.plantilla, 'cuatro-operaciones');
-  assert.ok(datos.casos.length >= 15 && datos.casos.length <= 20);
+  assert.ok(datos.casos.length >= 15 && datos.casos.length <= 21);
   for (const c of datos.casos) assert.ok(c.nombre && c.fn && Array.isArray(c.args) && c.espera, JSON.stringify(c).slice(0, 80));
 });
 for (const c of datos.casos) test(c.nombre, () => {
@@ -229,6 +229,68 @@ test('cantidad de cifras de un producto: entre m + n − 1 y m + n, probándolo'
     erroresDistintos(C.errores, C.cifras, `cifras ${m} ${n}`);
   }
   assert.equal(M.cifrasProducto(15, 15).mayor.texto.length, 30, 'exacto aunque sea grande');
+});
+
+test('la cuenta a mano: abrir y juntar al azar conservan el valor; juntar todo (suma) o prestar lo necesario (resta) da la cuenta de siempre', () => {
+  for (let i = 0; i < 400; i++) {
+    const b = ent(2, 10), a = ent(0, Math.pow(b, 3) - 1), c = ent(0, i % 2 ? a : Math.pow(b, 3) - 1), op = i % 2 ? 'resta' : 'suma';
+    let m = M.aMano(op, bruto(a, b), bruto(c, b), b);
+    const v0 = m.valor;
+    assert.equal(v0, op === 'suma' ? a + c : a);
+    for (let j = 0; j < 12; j++) {
+      const abribles = m.cuentas.map((x, k) => (k >= 1 && x >= 1 ? k : -1)).filter(k => k >= 0);
+      if (rnd() < .5 && abribles.length) m = M.abrirMano(m, abribles[ent(0, abribles.length - 1)]);
+      else if (m.llenos.length) m = M.juntarMano(m, m.llenos[ent(0, m.llenos.length - 1)]);
+      assert.equal(m.valor, v0, 'abrir o juntar no cambia el valor');
+      m.cuentas.forEach(x => assert.ok(x >= 0));
+      if (op === 'resta') assert.equal(m.diferencia, a - c);
+    }
+    if (op === 'suma') {
+      for (let g = 0; g < 500 && m.llenos.length; g++) m = M.juntarMano(m, m.llenos[0]);
+      assert.ok(m.listo); assert.equal(m.texto, bruto(a + c, b), 'juntar todo da la suma');
+    } else {
+      // de derecha a izquierda: abrir donde falta (desde la primera columna con piezas), y después juntar lo que sobre
+      for (let g = 0; g < 500 && m.faltan.length; g++) { const k = m.faltan[0]; let j = k + 1; while (!m.cuentas[j]) j++; m = M.abrirMano(m, j); }
+      for (let g = 0; g < 500 && !m.listo; g++) { const k = m.resultado.findIndex(x => x >= b); m = M.juntarMano(m, k); }
+      assert.ok(m.listo); assert.equal(m.texto, bruto(a - c, b), 'prestar lo necesario da la resta');
+    }
+  }
+  assert.throws(() => M.abrirMano(M.aMano('suma', '12', '3'), 0), /mayor o igual que 1/);
+  assert.throws(() => M.abrirMano({ op: 'resta', b: 10, cuentas: [3, 0, 5], abajo: [8, 7, 1] }, 1), /no hay piezas/);
+  assert.throws(() => M.juntarMano({ op: 'suma', b: 10, cuentas: [9, 7] }, 0), /hacen falta 10/);
+  assert.throws(() => M.juntarMano({ op: 'suma', b: 10, cuentas: [5, 17] }, 1), /menor o igual/);
+  assert.throws(() => M.aMano('multiplica', '2', '3'), /op debe/);
+});
+
+test('la cuenta a mano: abrir y juntar al azar conservan el valor; juntar todo (suma) o prestar lo necesario (resta) da la cuenta de siempre', () => {
+  for (let i = 0; i < 400; i++) {
+    const b = ent(2, 10), a = ent(0, Math.pow(b, 3) - 1), c = ent(0, i % 2 ? a : Math.pow(b, 3) - 1), op = i % 2 ? 'resta' : 'suma';
+    let m = M.aMano(op, bruto(a, b), bruto(c, b), b);
+    const v0 = m.valor;
+    assert.equal(v0, op === 'suma' ? a + c : a);
+    for (let j = 0; j < 12; j++) {
+      const abribles = m.cuentas.map((x, k) => (k >= 1 && x >= 1 ? k : -1)).filter(k => k >= 0);
+      if (rnd() < .5 && abribles.length) m = M.abrirMano(m, abribles[ent(0, abribles.length - 1)]);
+      else if (m.llenos.length) m = M.juntarMano(m, m.llenos[ent(0, m.llenos.length - 1)]);
+      assert.equal(m.valor, v0, 'abrir o juntar no cambia el valor');
+      m.cuentas.forEach(x => assert.ok(x >= 0));
+      if (op === 'resta') assert.equal(m.diferencia, a - c);
+    }
+    if (op === 'suma') {
+      for (let g = 0; g < 500 && m.llenos.length; g++) m = M.juntarMano(m, m.llenos[0]);
+      assert.ok(m.listo); assert.equal(m.texto, bruto(a + c, b), 'juntar todo da la suma');
+    } else {
+      // de derecha a izquierda: abrir donde falta (desde la primera columna con piezas), y después juntar lo que sobre
+      for (let g = 0; g < 500 && m.faltan.length; g++) { const k = m.faltan[0]; let j = k + 1; while (!m.cuentas[j]) j++; m = M.abrirMano(m, j); }
+      for (let g = 0; g < 500 && !m.listo; g++) { const k = m.resultado.findIndex(x => x >= b); m = M.juntarMano(m, k); }
+      assert.ok(m.listo); assert.equal(m.texto, bruto(a - c, b), 'prestar lo necesario da la resta');
+    }
+  }
+  assert.throws(() => M.abrirMano(M.aMano('suma', '12', '3'), 0), /mayor o igual que 1/);
+  assert.throws(() => M.abrirMano({ op: 'resta', b: 10, cuentas: [3, 0, 5], abajo: [8, 7, 1] }, 1), /no hay piezas/);
+  assert.throws(() => M.juntarMano({ op: 'suma', b: 10, cuentas: [9, 7] }, 0), /hacen falta 10/);
+  assert.throws(() => M.juntarMano({ op: 'suma', b: 10, cuentas: [5, 17] }, 1), /menor o igual/);
+  assert.throws(() => M.aMano('multiplica', '2', '3'), /op debe/);
 });
 
 // 3. Errores de entrada

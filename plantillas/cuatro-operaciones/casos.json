@@ -111,6 +111,14 @@
       "tambien": [ { "fn": "cuadroResta", "args": [{ "b": 5, "K": 3, "arriba": [2, 0, 3], "abajo": [3, 4, 1], "acciones": [{ "tipo": "abrir", "orden": 2 }, { "tipo": "abrir", "orden": 1 }, { "tipo": "quitar", "orden": 0, "hay": 7, "quita": 3, "quedan": 4 }] }, 2.4],
                      "espera": { "arriba": [7, 4, 2], "moviendo.tipo": "quitar", "moviendo.tachadas": 2 } } ] },
 
+    { "nombre": "La cuenta a mano del explorador: en 503 − 178 faltan sueltas y paquetes; abrir 1 caja da 10 paquetes (arriba 4 cajas, 10 paquetes, 3 sueltas) y el valor sigue en 503; en 47 + 38 las unidades tienen 15 piezas y, al juntar 10, quedan 5 sueltas y 8 paquetes: 85",
+      "fn": "aMano", "args": ["resta", "503", "178", 10],
+      "espera": { "cuentas": [3, 0, 5], "abajo": [8, 7, 1], "valor": 503, "diferencia": 325, "faltan": [0, 1], "resultado": [null, null, 4], "listo": false },
+      "tambien": [ { "fn": "abrirMano", "args": [{ "op": "resta", "b": 10, "cuentas": [3, 0, 5], "abajo": [8, 7, 1] }, 2], "espera": { "cuentas": [3, 10, 4], "valor": 503, "faltan": [0], "resultado": [null, 3, 3] } },
+                   { "fn": "abrirMano", "args": [{ "op": "resta", "b": 10, "cuentas": [3, 10, 4], "abajo": [8, 7, 1] }, 1], "espera": { "cuentas": [13, 9, 4], "listo": true, "texto": "325" } },
+                   { "fn": "aMano", "args": ["suma", "47", "38", 10], "espera": { "cuentas": [15, 7], "valor": 85, "llenos": [0], "listo": false } },
+                   { "fn": "juntarMano", "args": [{ "op": "suma", "b": 10, "cuentas": [15, 7] }, 0], "espera": { "cuentas": [5, 8], "listo": true, "texto": "85" } } ] },
+
     { "nombre": "Bordes: CA(1) = 9, CA(10) = 90, CA(999) = 1, CA(101₍₂₎) = 11₍₂₎; N − N = 0; 0 + 0 = 0; 111₍₂₎ + 1₍₂₎ = 1000₍₂₎",
       "fn": "complemento", "args": ["1", 10],
       "espera": { "texto": "9", "potencia": 10 },

@@ -20,6 +20,13 @@
  *   cuadroColumnas(plan, t)            el cuadro t de una suma o multiplicación (t de 0 a columnas): qué hay en cada fila,
  *                                      en el resultado y en la casilla de la llevada, y qué se está moviendo
  *   cuadroResta(R, t)                  lo mismo para la resta (t de 0 a acciones.length)
+ * La cuenta hecha a mano (el arrastre del explorador)
+ *   aMano(op, A, B, b)                 el tablero inicial: en la suma, las piezas de las dos filas ya juntas en cada
+ *                                      columna, sin llevar; en la resta, el minuendo arriba y el sustraendo abajo
+ *   abrirMano(m, k)                    abre 1 pieza de la columna k en b piezas de la columna k − 1 (el préstamo a mano)
+ *   juntarMano(m, k)                   junta b piezas de la columna k en 1 de la columna k + 1 (la llevada a mano)
+ *   estadoMano(m)                      lo que se ve: valor (no cambia al abrir ni al juntar), qué columnas pueden
+ *                                      juntar (llenos) o no alcanzan para quitar (faltan), y el resultado cuando está listo
  * Complemento aritmético
  *   complemento(N, b)                  CA(N) = bᵏ − N con la regla «a b − 1 todas, a b la última significativa», el
  *                                      relleno (N + CA llena la caja de bᵏ con llevadas en cadena), y los errores
@@ -531,7 +538,48 @@
       }, r) };
   }
 
-  return { sumaColumnas, multiplicaPorCifra, cuadroColumnas, restaColumnas, cuadroResta, complemento, diferenciaInvertida,
+  // ---------- la cuenta hecha a mano ----------
+  // m = { op: 'suma' | 'resta', b, cuentas (las piezas que se mueven, de las unidades hacia la izquierda), abajo (en la
+  // resta, las piezas que hay que quitar) }. Las columnas son fijas: K, las del resultado (o las del minuendo).
+  function estadoMano(m) {
+    if (!m || (m.op !== 'suma' && m.op !== 'resta') || !Array.isArray(m.cuentas)) throw new Error('m debe venir de aMano');
+    const b = base(m.b), c = m.cuentas.map((x, i) => num(natural(x, `cuentas[${i}]`))), K = c.length;
+    const abajo = m.op === 'resta' ? m.abajo.slice() : null;
+    const valor = c.reduce((s, x, k) => s + BigInt(x) * pot(b, k), 0n);
+    const llenos = c.map((x, k) => (x >= b && k + 1 < K ? k : -1)).filter(k => k >= 0);
+    const out = { op: m.op, b, K, cuentas: c, abajo, valor: num(valor), llenos };
+    if (m.op === 'suma') {
+      out.listo = c.every(x => x < b); out.resultado = c.slice();
+      out.texto = out.listo ? sinCerosIzq(texto(c.slice().reverse())) : null;
+    } else {
+      out.faltan = c.map((x, k) => (x < abajo[k] ? k : -1)).filter(k => k >= 0);
+      out.resultado = c.map((x, k) => (x >= abajo[k] ? x - abajo[k] : null));
+      out.diferencia = num(valor - abajo.reduce((s, x, k) => s + BigInt(x) * pot(b, k), 0n));
+      out.listo = !out.faltan.length && out.resultado.every(x => x < b);
+      out.texto = out.listo ? sinCerosIzq(texto(out.resultado.slice().reverse())) : null;
+    }
+    return out;
+  }
+  function aMano(op, A, B, b) {
+    b = base(b);
+    if (op === 'suma') { const R = sumaColumnas([A, B], b); return estadoMano({ op, b, cuentas: R.columnas.map(c => c.entran.reduce((s, x) => s + x, 0)) }); }
+    if (op === 'resta') { const R = restaColumnas(A, B, b); return estadoMano({ op, b, cuentas: R.arriba.slice(), abajo: R.abajo.slice() }); }
+    throw new Error("op debe ser 'suma' o 'resta'");
+  }
+  function abrirMano(m, k) {
+    const e = estadoMano(m); entero(k, 'k', 1, e.K - 1);
+    if (!(e.cuentas[k] >= 1)) throw new Error(`no hay piezas en la columna ${k} para abrir`);
+    const c = e.cuentas.slice(); c[k] -= 1; c[k - 1] += e.b;
+    return Object.assign(estadoMano({ op: e.op, b: e.b, cuentas: c, abajo: e.abajo }), { accion: 'abrir', orden: k });
+  }
+  function juntarMano(m, k) {
+    const e = estadoMano(m); entero(k, 'k', 0, e.K - 2);
+    if (!(e.cuentas[k] >= e.b)) throw new Error(`para juntar hacen falta ${e.b} piezas en la columna ${k}`);
+    const c = e.cuentas.slice(); c[k] -= e.b; c[k + 1] += 1;
+    return Object.assign(estadoMano({ op: e.op, b: e.b, cuentas: c, abajo: e.abajo }), { accion: 'juntar', orden: k });
+  }
+
+  return { aMano, abrirMano, juntarMano, estadoMano, sumaColumnas, multiplicaPorCifra, cuadroColumnas, restaColumnas, cuadroResta, complemento, diferenciaInvertida,
     conSuReverso, cifrasFaltantes, cripto, invertidos, sumaAritmetica, sumatoria, division, residuoMaximo, residuosIguales,
     cifrasProducto, leer, texto, conBase, sub, SIMBOLOS };
 });
