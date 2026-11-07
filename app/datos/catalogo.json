@@ -306,7 +306,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "ondas"
+     ]
     },
     {
      "id": "fisica.fluidos",
@@ -4965,6 +4967,23 @@
     "/plantillas/numeracion/index.html",
     "/plantillas/numeracion/motor.js",
     "/plantillas/numeracion/papel.json"
+   ]
+  },
+  "ondas": {
+   "id": "ondas",
+   "titulo": "Ondas en una cuerda y sonido",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.ondas-mecanicas"
+   ],
+   "url": "/plantillas/ondas/index.html",
+   "papel": "/plantillas/ondas/papel.json",
+   "archivos": [
+    "/plantillas/ondas/index.html",
+    "/plantillas/ondas/motor.js",
+    "/plantillas/ondas/papel.json"
    ]
   },
   "optica-espejo-esferico": {

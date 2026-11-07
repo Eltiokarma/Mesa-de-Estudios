@@ -170,7 +170,7 @@
       "universidades": {"uni": {"semanas": [9]}, "unmsm": {"temas": [16]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": [],
+      "plantillas": ["ondas"],
       "investigacion": "docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md"
     },
     {
