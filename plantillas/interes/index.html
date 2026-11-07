@@ -384,7 +384,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
       const f = k <= Math.floor(T.prog + 1e-9) ? 1 : (k - 1 < T.prog ? T.prog - (k - 1) : 0);
       // el capital, recortado
       bloque(c, x, B - hBase, cw, hBase, c.C, 'C'); zigzag(c, x, B - hBase*0.55, cw);
-      if (k === 0 || cw > 40) rotulo(ctx, c, x + cw/2, B - hBase*0.25, k === 0 ? 'C' : '', c.card, 'center', 800, 12);
+      if (k === 0){ ctx.save(); ctx.fillStyle = c.paper; ctx.font = `800 13px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('C', x + cw/2, B - hBase*0.25); ctx.restore(); }
       if (f <= 0){ continue; }
       let y = B - hBase;
       for (let j = 0; j < k; j++){ const h = b*s*f; bloque(c, x, y - h, cw, h, c.I, 'I'); y -= h; }
@@ -463,7 +463,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
     if (Bq.tope){
       const lim = MI.capitalizacion({ C:Bq.C, j:Bq.j, m:'continua' }).I, y = B - hBase - lim*s;
       ctx.save(); ctx.strokeStyle = c.M; ctx.setLineDash([3, 4]); ctx.lineWidth = 1.6; linea(ctx, { x:L, y }, { x:Rr, y }); ctx.restore();
-      rotulo(ctx, c, Rr - 2, y - 11, `tope: ${fmt(Bq.C + lim, 2)}`, c.M, 'right', 800, 11);
+      rotulo(ctx, c, L + 2, y - 11, `tope: ${fmt(Bq.C + lim, 2)}`, c.M, 'left', 800, 11);
     }
     Bq.ops.forEach((m, k) => {
       const x = L + paso*(k + .5) - cw/2;
@@ -510,7 +510,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
   }
 
   E.dibujar = () => {
-    if (!W) return;
+    if (!W || !(E.torre || E.g || E.barras || E.fichas)) return;
     const c = colores(), R = regiones();
     ctx.clearRect(0, 0, W, H); ctx.fillStyle = c.paper; ctx.fillRect(0, 0, W, H);
     if (R.dib && R.graf){
@@ -530,7 +530,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
     if (!l){
       if (E.modo === 'torre' || E.modo === 'barras'){
         const comp = (E.torre && E.torre.tipo === 'compuesto') || E.modo === 'barras';
-        l = [['C', 'C · capital (recortado, no a escala)', true], ['I', 'I · interés del capital', true]].concat(comp ? [['X', 'interés sobre interés', true]] : []).concat([['M', 'M · monto']]);
+        l = [['C', 'C · capital (recortado, no a escala)', true], ['I', comp ? 'interés del capital (como en el simple)' : 'I · interés', true]].concat(comp ? [['X', 'interés sobre interés', true]] : []).concat([['M', 'M · monto']]);
         if (E.graf) l.push(['t', 't · tiempo']);
       } else if (E.modo === 'grafica') l = [['M', 'M · monto: recta a trazos (simple) y curva (compuesto)'], ['t', 't · tiempo']];
       else l = [];
@@ -922,7 +922,7 @@ const etQ = k => `${15*k} d`;
 
 const EXPS = [
   { id:'doble-de-tiempo', corto:'El doble de tiempo',
-    q:`${C_('S/ 1000')} al ${r_('10 % anual')} de interés compuesto ganan ${I_('S/ 610,51')} de interés en ${t_('5 años')}. ¿Cuánto interés ganan en ${t_('10 años')}?`,
+    q:`${C_('S/ 1000')} al ${r_('10 % anual')} de interés compuesto ganan S/ 610,51 de interés en ${t_('5 años')}. ¿Cuánto interés ganan en ${t_('10 años')}?`,
     opts:[['a', soles(DOB.errores.doble), 'doble-tiempo-doble-interes', 'hipotesis'],
           ['b', soles(DOB.I2)],
           ['c', soles(DOB.errores.cuadruple), 'cuadruplica', 'hipotesis']],
@@ -930,9 +930,9 @@ const EXPS = [
     fb:{ a:'El doble de tiempo da el doble de interés solo en el simple. En el compuesto, los segundos 5 años empiezan con S/ 1610,51, no con S/ 1000: ganan más que los primeros.', c:'Crece más del doble, pero no tanto: los S/ 610,51 de los primeros 5 años se multiplican por 1,61 en los siguientes 5, no por 3.' },
     antes:ya => E.config({ modo:'torre', graf:true, torre:{ C:1000, r:10, tipo:'compuesto', tmax:10, prog: ya ? 10 : 5, imax:1700, valores:true },
       g:{ C:1000, r:10, tmax:10, ymax:3000, simple:false, comp:true, hasta: ya ? 10 : 5, cursor: ya ? 10 : 5 },
-      lect:[L('C', 'Capital C', 'S/ 1000'), L('r', 'Tasa r', '10 % anual'), L('I', 'Interés en 5 años', soles(DOB.I1))].concat(ya ? [L('I', 'Interés en 10 años', soles(DOB.I2))] : []) }),
-    despues:() => { const T = E.torre, G = E.g; E.animar(5, 10, 2400, p => { T.prog = p; G.hasta = p; G.cursor = Math.round(p); }, () => { E.config(EXPS[0].antes(true)); }, true); },
-    exp:() => `<div class="eqs"><div class="eq">${I_('I')} (10 años) = ${C_('1000')} · (${r_('1,1')}<sup>${t_('10')}</sup> − 1) = ${I_(fmt(DOB.I2, 2))}</div>
+      lect:[L('C', 'Capital C', 'S/ 1000'), L('r', 'Tasa r', '10 % anual'), L('ink', 'Interés en 5 años', soles(DOB.I1))].concat(ya ? [L('ink', 'Interés en 10 años', soles(DOB.I2))] : []) }),
+    despues:() => { const T = E.torre, G = E.g; E.animar(5, 10, 2400, p => { T.prog = p; G.hasta = p; G.cursor = Math.round(p); }, () => { EXPS[0].antes(true); }, true); },
+    exp:() => `<div class="eqs"><div class="eq">interés (10 años) = ${C_('1000')} · (${r_('1,1')}<sup>${t_('10')}</sup> − 1) = ${fmt(DOB.I2, 2)}</div>
       <div class="eq">${fr(fmt(DOB.I2, 2), fmt(DOB.I1, 2))} = ${fmt(DOB.razon, 2)} = ${r_('1,1')}<sup>${t_('5')}</sup> + 1<span class="note">más del doble</span></div></div>
       <p>En los primeros 5 años la alcancía pasa de 1000 a 1610,51. En los siguientes 5, cada sol se vuelve a multiplicar por 1,61, pero ahora hay 1610,51 soles trabajando. La capa ${X_('fucsia')} crece cada vez más rápido.</p>
       <p class="fuente">Esperar el doble es tratar el compuesto como simple, la idea AR16 (documentada en adultos, ver el paso 3). Esta forma de preguntarlo y sus opciones son hipótesis nuestras.</p>` },
@@ -942,10 +942,10 @@ const EXPS = [
       [k, t, ...(k === 'a' ? ['compuesto-siempre-gana', 'hipotesis'] : k === 'c' ? ['simple-y-compuesto-iguales', 'hipotesis'] : [])]),
     ok: MED.mayor === 'simple' ? 'b' : 'a',
     fb:{ a:'Antes de completar un periodo, el compuesto todavía no tiene interés que gane interés, y la curva queda por debajo de la recta.', c:'Empatan justo en t = 1 año. Antes, la curva queda por debajo de la recta; después, por encima.' },
-    antes:ya => E.config({ modo:'grafica', g:{ C:1000, r:10, tmax:2, xpaso:0.25, ymin:950, ymax:1250, ypaso:50, simple:!!ya, comp:!!ya, etX:'t (años) →',
+    antes:ya => E.config({ modo:'grafica', g:{ C:1000, r:10, tmax:2, xpaso:0.25, xpaso:0.5, ymin:950, ymax:1250, ypaso:50, simple:!!ya, comp:!!ya, etX:'t (años) →',
         marcas: ya ? [{ t:0.5, y:MED.compuesto, et:'0,5' }, { t:1, y:1100, et:'1' }] : [] },
       lect:[L('C', 'Capital C', 'S/ 1000'), L('r', 'Tasa r', '10 % anual'), L('t', 'Tiempo t', 'medio año')].concat(ya ? [L('M', 'Simple', soles(MED.simple)), L('M', 'Compuesto', soles(MED.compuesto))] : []) }),
-    despues:() => { const G = E.g; G.simple = G.comp = true; G.hasta = 0; E.animar(0, 2, 1800, p => { G.hasta = p; }, () => E.config(EXPS[1].antes(true)), true); },
+    despues:() => { const G = E.g; G.simple = G.comp = true; G.hasta = 0; E.animar(0, 2, 1800, p => { G.hasta = p; }, () => EXPS[1].antes(true), true); },
     exp:() => `<div class="eqs"><div class="eq">simple: ${C_('1000')} · (1 + ${r_('0,10')} · ${t_('0,5')}) = ${M_(fmt(MED.simple, 2))}</div>
       <div class="eq">compuesto: ${C_('1000')} · ${r_('1,1')}<sup>${t_('0,5')}</sup> = ${M_(fmt(MED.compuesto, 2))}</div></div>
       <p>La recta y la curva se cruzan en t = 1: ahí las dos dan ${M_('S/ 1100')}. Antes del primer año, la recta va por encima; después, la curva. El compuesto gana «a la larga», no siempre.</p>
@@ -960,7 +960,7 @@ const EXPS = [
     antes:ya => E.config({ modo:'grafica', g:{ C:1000, r:10, tmax:12, ymin:0, ymax:3000, ypaso:500, simple:!!ya, comp:!!ya, lineaH:{ y:2000, t:'2C = el doble' },
         marcas: ya ? [{ t:DUP.t, y:2000, et:fmt(DUP.t, 1), dx:-8, align:'right' }, { t:10, y:2000, et:'10', dx:8, align:'left' }] : [] },
       lect:[L('C', 'Capital C', 'S/ 1000 (por ejemplo)'), L('r', 'Tasa r', '10 % anual')].concat(ya ? [L('t', 'Se duplica a los', `${fmt(DUP.t, 2)} años`)] : []) }),
-    despues:() => { const G = E.g; G.simple = G.comp = true; G.hasta = 0; E.animar(0, 12, 2400, p => { G.hasta = p; }, () => E.config(EXPS[2].antes(true)), true); },
+    despues:() => { const G = E.g; G.simple = G.comp = true; G.hasta = 0; E.animar(0, 12, 2400, p => { G.hasta = p; }, () => EXPS[2].antes(true), true); },
     exp:() => `<div class="eqs"><div class="eq">${r_('1,1')}<sup>${t_('t')}</sup> = 2 → ${t_('t')} = ${fr('log 2', 'log 1,1')} ≈ ${t_(fmt(DUP.t, 2))} años</div></div>
       <p>Con 7 años no llega (1,1<sup>7</sup> ≈ 1,95) y con 8 se pasa (1,1<sup>8</sup> ≈ 2,14). La «regla del 72» lo estima rápido: 72 ÷ 10 ≈ 7,2 años. En el simple, en cambio, se duplica cuando el interés es el 100 % del capital: 100 ÷ 10 = 10 años.</p>
       <p class="fuente">Las dos opciones incorrectas son hipótesis nuestras; la de 10 años es el compuesto calculado como simple (AR16).</p>` },
@@ -975,7 +975,7 @@ const EXPS = [
     antes:ya => E.config({ modo:'torre', torre:{ C:3600, r:1.5, tipo:'simple', tmax:3, prog: ya ? 3 : 0, ocultos:!ya, imax:220, etiqueta:etQ, unidad:'días' },
       lect:[L('C', 'Capital C', 'S/ 3600'), L('r', 'Tasa r', '3 % mensual'), L('t', 'Tiempo t', '45 días')].concat(ya ? [L('r', 'Cada 15 días', '1,5 %'), L('I', 'Interés I', soles(DIAS.I))] : []),
       desc:'Torre del préstamo cada 15 días.' }),
-    despues:() => { const T = E.torre; T.ocultos = false; T.prog = 0; E.animar(0, 3, 1800, p => { T.prog = p; }, () => E.config(EXPS[3].antes(true)), true); },
+    despues:() => { const T = E.torre; T.ocultos = false; T.prog = 0; E.animar(0, 3, 1800, p => { T.prog = p; }, () => EXPS[3].antes(true), true); },
     exp:() => `<div class="eqs"><div class="eq">${t_('45 días')} = ${fr('45', '30')} = ${t_('1,5 meses')}</div>
       <div class="eq">${I_('I')} = ${fr(`${C_('3600')} · ${r_('3')} · ${t_('1,5')}`, '100')} = ${I_(fmt(DIAS.I, 0))}</div></div>
       <p>En el dibujo, cada columna son 15 días (medio mes, el 1,5 % de ${C_('3600')} = ${I_('S/ 54')}). Tres fichas de 54 hacen ${I_('S/ 162')}. Con la tasa anual: 3 % mensual = 36 % anual, e ${I_('I')} = 3600 · 36 · 45/36 000 = 162.</p>
@@ -994,7 +994,7 @@ const EXPS = [
         : [{ titulo:'Racional', partes:[{ v:300, k:'Dr', rot:'Dr', ver:true }], oculto:true }, { titulo:'Comercial', partes:[{ v:330, k:'Dc', rot:'Dc', ver:true }], oculto:true }] },
       lect:[L('Dc', 'Descuento comercial Dc', 'S/ 330'), L('Dr', 'Descuento racional Dr', 'S/ 300')].concat(ya ? [L('Vn', 'Valor nominal Vn', soles(DES.Vn)), L('r', 'r · t', `${fmt(DES.rt, 0)} %`)] : []),
       ley: ya ? [['Va', 'Va · valor actual (fichas)', true], ['Dr', 'Dr · descuento racional', true], ['Dc', 'Dc · descuento comercial', true], ['Vn', 'Vn · valor nominal']] : [['Dr', 'Dr · descuento racional', true], ['Dc', 'Dc · descuento comercial', true]] }),
-    despues:() => { E.config(EXPS[4].antes(true)); E.fichas.prog = 0; E.animar(0, 1, 1400, p => { E.fichas.prog = p; }); },
+    despues:() => { EXPS[4].antes(true); E.fichas.prog = 0; E.animar(0, 1, 1400, p => { E.fichas.prog = p; }); },
     exp:() => `<div class="eqs"><div class="eq">${Dc_('330')} − ${Dr_('300')} = 30 = 10 % de ${Dr_('300')} → ${r_('r')} · ${t_('t')} = 10 %</div>
       <div class="eq">${Vn_('Vn')} = ${fr(`${Dc_('Dc')} · ${Dr_('Dr')}`, `${Dc_('Dc')} − ${Dr_('Dr')}`)} = ${fr(`${Dc_('330')} · ${Dr_('300')}`, '30')} = ${Vn_(fmt(DES.Vn, 0))}</div></div>
       <p>El comercial es el 10 % del ${Vn_('nominal')}: 330 ÷ 0,10 = 3300. En el dibujo, la letra son 10 fichas de S/ 330 en el comercial (una es el descuento) y 11 fichas de S/ 300 en el racional (10 son el ${Va_('valor actual')} y una más es el descuento).</p>
@@ -1009,12 +1009,12 @@ const EXPS = [
     antes:ya => E.config({ modo:'barras', barras:{ C:1000, j:100, ops:[1, 12, 360, 'continua'], ver: ya ? 4 : 1, imax:1900, tope:!!ya },
       lect:[L('C', 'Capital C', 'S/ 1000'), L('r', 'Tasa nominal', '100 % anual'), L('M', 'Anual', soles(CONT[0].M))].concat(ya ? [L('M', 'Mensual', soles(CONT[1].M)), L('M', 'Diaria', soles(CONT[2].M)), L('M', 'Continua', soles(CONT[3].M))] : []) }),
     despues:() => { const B = E.barras; B.prog = 0; let k = 1;
-      const sig = () => { if (k > 3) { E.config(EXPS[5].antes(true)); return; } B.ver = k + 1; B.prog = 0; E.animar(0, 1, 900, p => { B.prog = p; }, () => { k++; esperar(250, sig); }); };
+      const sig = () => { if (k > 3) { EXPS[5].antes(true); return; } B.ver = k + 1; B.prog = 0; E.animar(0, 1, 900, p => { B.prog = p; }, () => { k++; esperar(250, sig); }); };
       sig(); },
     exp:() => `<div class="eqs"><div class="eq">mensual: ${C_('1000')} · (1 + ${fr('1', '12')})<sup>12</sup> = ${M_(fmt(CONT[1].M, 2))}</div>
       <div class="eq">diaria: ${C_('1000')} · (1 + ${fr('1', '360')})<sup>360</sup> = ${M_(fmt(CONT[2].M, 2))}</div>
       <div class="eq">continua: ${C_('1000')} · e = ${M_(fmt(CONT[3].M, 2))}<span class="note">e ≈ 2,71828</span></div></div>
-      <p>Capitalizar más seguido ayuda cada vez menos: los montos se acercan a ${C_('C')} · e<sup>${r_('r')} · ${t_('t')}/100</sup>, el <b>interés continuo</b>. Con el 100 % en un año, el tope es 1000 · e ≈ S/ 2718,28. Así aparece el número e.</p>
+      <p>Capitalizar más seguido ayuda cada vez menos: los montos se acercan a ${C_('C')} · e<sup>r·t/100</sup>, el <b>interés continuo</b>. Con el 100 % en un año, el tope es 1000 · e ≈ S/ 2718,28. Así aparece el número e.</p>
       <p class="fuente">Las dos opciones incorrectas son hipótesis nuestras.</p>` },
 ];
 const S = { k:0, pred:{}, t0:Date.now() };
