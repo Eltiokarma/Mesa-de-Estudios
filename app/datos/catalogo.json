@@ -418,7 +418,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "electrostatica"
+     ]
     },
     {
      "id": "fisica.corriente-y-circuitos",
@@ -4450,6 +4452,23 @@
     "/plantillas/divisores/index.html",
     "/plantillas/divisores/motor.js",
     "/plantillas/divisores/papel.json"
+   ]
+  },
+  "electrostatica": {
+   "id": "electrostatica",
+   "titulo": "Cargas que se empujan: Coulomb, campo y potencial",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.electrostatica"
+   ],
+   "url": "/plantillas/electrostatica/index.html",
+   "papel": "/plantillas/electrostatica/papel.json",
+   "archivos": [
+    "/plantillas/electrostatica/index.html",
+    "/plantillas/electrostatica/motor.js",
+    "/plantillas/electrostatica/papel.json"
    ]
   },
   "energia": {

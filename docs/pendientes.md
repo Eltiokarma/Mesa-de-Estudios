@@ -8,7 +8,7 @@
 npm test
 ```
 
-Deben pasar 2194 pruebas.
+Deben pasar 2240 pruebas.
 
 ```bash
 npm run dev
@@ -73,6 +73,7 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
 
 - **Cinética** (`plantillas/cinetica/`, rutina de química, 6 nov 2026): caja de discos con teoría de colisiones (energía y orientación), temperatura, catalizador y perfil de energía. Informe `docs/investigacion/cinetica-ideas-erroneas.md` (CI1 a CI13) con cifras sin verificar por el bloqueo de red: la escena no muestra porcentajes de cinética. La fracción contada queda unos pocos por ciento bajo la teoría. Falta en la escena: orden ≠ coeficiente y vida media.
 
+- **Electrostática** (`plantillas/electrostatica/`, rutina de física B, 7 nov 2026): cargas que se empujan (las dos fuerzas siempre iguales, esferas colgadas con q y 2q, 1/r², superposición, campo visible sin carga de prueba, carga de prueba que cambia de signo, punto medio con E y V separados, trabajo que no depende del camino, condensadores en serie, placas, Q = 0 con C ≠ 0 y contacto); 22 casos verificados aparte; 10 de papel; 8 predicciones y 5 «¿qué pasa si…?». Documentados: EL1 a EL4; parciales: EL5, EL7 y EL8. Falta: dieléctricos, EL6 y EL9. Sin ítems en el banco de física. Al integrar se cambió el subtítulo, que regalaba la primera predicción.
 - **Numeración** (`plantillas/numeracion/`, rutina de aritmética, 7 nov 2026): las fichas que se agrupan (cambio de base con divisiones sucesivas como rondas de agrupar, descomposición polinómica como abrir piezas, cifras válidas, comparar bases, base desconocida, capicúas, conteo de cifras de páginas, la llevada en cadena y bases potencia); 19 casos verificados aparte; 10 de papel; 6 predicciones y 5 «¿qué pasa si…?»; todos los errores son hipótesis. Notación 213₍₅₎. Sin ítems en el banco de aritmética.
 - **Choques** (`plantillas/choques/`, rutina de física, 7 nov 2026): choques en un riel (cantidad de movimiento como flecha que se conserva en el sistema, energía cinética como barra que se puede perder, impulso como área F–t, coeficiente de restitución); 21 casos verificados aparte; 4 predicciones y 5 «¿qué pasa si…?». Falta en la escena el choque en dos dimensiones (está en motor y papel p10). Sin ítems en el banco de física.
 - **Segmentos y ángulos** (`plantillas/segmentos-angulos/`, 7 nov 2026, subagentes de la conversación principal): la escuadra y las paralelas (segmentos que se pisan y puntos medios, complemento y suplemento que completan la escuadra y la recta, bisectrices, los ocho ángulos con la secante que gira, «¿son paralelas?» con el corte a escala, quiebre y serrucho con su condición); 21 casos verificados aparte; 10 de papel; 5 predicciones y 5 «¿qué pasa si…?»; todo hipótesis salvo GE17 (sin dato). Sin ítems en el banco de geometría.
