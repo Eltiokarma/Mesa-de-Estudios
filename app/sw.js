@@ -15,7 +15,7 @@
 //   3. Solo se bajan los archivos de plantilla que no estaban (plantillas o archivos nuevos).
 //   Al activarse se borran las cachés anteriores. Los archivos copiados se siguen renovando por stale-while-revalidate.
 // Antes cada VERSION nueva volvía a bajar todo (218 archivos, 8 MB sin comprimir); ahora, la cáscara y lo nuevo.
-const VERSION = 'v124';
+const VERSION = 'v125';
 const CACHE = `lab-${VERSION}`;
 const CASCARA = ['/app/', '/app/index.html', '/app/estilos.css', '/app/app.js', '/app/manifest.webmanifest',
   '/app/practica.js', '/app/prueba.js', '/app/lectura.js', '/app/ilustraciones.js', '/app/datos/catalogo.json', '/app/datos/pruebas.json',
@@ -66,7 +66,10 @@ self.addEventListener('fetch', e => {
   if (!/^\/(app|plantillas|nucleo|contenido)\//.test(url.pathname)) return;
   e.respondWith((async () => {
     const c = await caches.open(CACHE);
-    const guardada = await c.match(e.request, { ignoreSearch: true });
+    // Una carpeta (/plantillas/x/) se precarga como /plantillas/x/index.html: sin esto, una escena que nunca se abrió
+    // con conexión no abría sin conexión.
+    const guardada = await c.match(e.request, { ignoreSearch: true })
+      || (url.pathname.endsWith('/') ? await c.match(url.origin + url.pathname + 'index.html') : undefined);
     const red = fetch(e.request).then(r => { if (r.ok) c.put(clave(e.request.url), r.clone()); return r; }).catch(() => null);
     if (guardada) { e.waitUntil(red); return guardada; }
     const r = await red;

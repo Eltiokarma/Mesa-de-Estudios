@@ -1,0 +1,9 @@
+# Solo se publica la app: app/, nucleo/, plantillas/ y contenido/ (docs/arquitectura.md, «Despliegue»).
+/docs
+/fuentes
+/rutinas
+/herramientas
+/gestion
+/catalogo
+/*.md
+/*.png

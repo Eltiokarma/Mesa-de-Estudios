@@ -22,6 +22,7 @@ docs/fundacional.md            documento base (copia del doc vivo en claude.ai)
 docs/arquitectura.md           capas (catálogo, módulos, núcleo, app, datos), formatos de módulo y cómo agregar cursos o unidades
 docs/metodo/                   cómo se construye una plantilla con subagentes (briefs del constructor, verificador y revisor)
 docs/pendientes.md             traspaso: qué hay hecho, cómo arrancar y pendientes en orden (léelo al empezar)
+docs/publicar.md               cómo publicar la app en Vercel (vercel.json, .vercelignore) y cómo comprobarla
 docs/guia-profesores.md        guía para el profesor del colegio piloto (enlaces, pruebas, laboratorio, datos)
 docs/diseno.md                 sistema de diseño: colores de marca y de variables, componentes, celular y pantalla grande
 catalogo/                      qué se enseña: cursos, unidades, en qué universidad entra cada una (JSON; ver catalogo/LEEME.md)
