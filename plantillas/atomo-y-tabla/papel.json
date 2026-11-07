@@ -1,0 +1,155 @@
+{
+  "titulo": "El átomo y la tabla periódica: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. En un ion, la carga cambia solo los electrones: los protones son Z y los neutrones, A − Z, siempre. Llena los orbitales por n + l (1s 2s 2p 3s 3p 4s 3d 4p) con Hund (una flecha en cada caja antes de aparear) y recuerda las dos excepciones del período 4: Cr (4s¹ 3d⁵) y Cu (4s¹ 3d¹⁰); ninguna otra. En los cationes salen primero los electrones de mayor n: los 4s antes que los 3d. En un período, la carga nuclear sube y el átomo se achica; en un grupo, cada capa nueva lo agranda. Con los mismos electrones, más protones dan una especie más pequeña. Números cuánticos con la convención de la escena: las cajas van de mₗ = −l a +l y primero se ponen todas las flechas hacia arriba (mₛ = +1/2).",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "El ion bromuro ⁸⁰Br⁻ tiene número atómico 35. ¿Cuántos protones, neutrones y electrones tiene?",
+      "respuesta": "35 protones, 45 neutrones y 36 electrones.",
+      "pasos": [
+        "Protones: siempre Z, sea átomo o ion: 35.",
+        "Neutrones: A − Z = 80 − 35 = 45. La carga no se toca aquí: los neutrones no tienen nada que ver con los electrones que ganó o perdió.",
+        "Electrones: el ion tiene carga 1−, así que ganó un electrón: 35 + 1 = 36."
+      ],
+      "verificar": [
+        { "fn": "particulas", "args": [{ "Z": 35, "A": 80, "carga": -1 }], "espera": { "protones": 35, "neutrones": 45, "electrones": 36 } }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Un catión X²⁺ tiene 24 electrones y 30 neutrones. ¿Cuál es su número de masa? ¿Qué elemento es?",
+      "respuesta": "A = 56; es el hierro (Z = 26).",
+      "pasos": [
+        "El catión perdió 2 electrones, así que el átomo neutro tenía 24 + 2 = 26: Z = 26, el hierro.",
+        "Número de masa: A = Z + neutrones = 26 + 30 = 56.",
+        "Comprueba: ⁵⁶Fe²⁺ tiene 26 protones, 56 − 26 = 30 neutrones y 26 − 2 = 24 electrones."
+      ],
+      "verificar": [
+        { "fn": "particulas", "args": [{ "Z": 26, "A": 56, "carga": 2 }], "espera": { "protones": 26, "neutrones": 30, "electrones": 24 } },
+        { "fn": "elemento", "args": [26], "espera": { "simbolo": "Fe" } }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Escribe la configuración abreviada del ion Co³⁺ (Z = 27) y di cuántos electrones desapareados tiene.",
+      "respuesta": "[Ar] 3d⁶, con 4 electrones desapareados.",
+      "pasos": [
+        "Átomo neutro: 27 electrones por n + l: [Ar] 4s² 3d⁷.",
+        "Para el catión 3+ salen 3 electrones, primero los de mayor n: los dos 4s y luego uno 3d. Queda [Ar] 3d⁶.",
+        "Si quitaras los últimos en llenarse (tres 3d) te saldría [Ar] 4s² 3d⁴: ese es el error típico.",
+        "Cajas del 3d con Hund: cinco flechas hacia arriba y la sexta aparea la primera caja. Quedan 4 cajas con una sola flecha: 4 desapareados (paramagnético)."
+      ],
+      "verificar": [
+        { "fn": "configuracion", "args": ["Co3+"], "espera": { "abreviada": "[Ar] 3d6", "desapareados": 4, "errores.quita-los-ultimos-en-llenarse": "[Ar] 4s2 3d4" } }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "¿Cuáles son los cuatro números cuánticos (n, l, mₗ, mₛ) del último electrón del cloro (Z = 17)?",
+      "respuesta": "n = 3, l = 1, mₗ = 0, mₛ = −1/2.",
+      "pasos": [
+        "Configuración: 1s² 2s² 2p⁶ 3s² 3p⁵. El último electrón está en la subcapa 3p: n = 3 y l = 1 (p).",
+        "Cajas del 3p, de mₗ = −1 a +1: las tres primeras flechas van hacia arriba; la cuarta aparea la caja −1 y la quinta, la caja 0.",
+        "El quinto electrón está en la caja mₗ = 0 y apunta hacia abajo: mₛ = −1/2."
+      ],
+      "verificar": [
+        { "fn": "ultimoElectron", "args": ["Cl"], "espera": { "n": 3, "l": 1, "ml": 0, "ms": -0.5 } }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "básico",
+      "enunciado": "La configuración de un átomo neutro termina en 4p⁵. ¿En qué período y grupo está? ¿Cuál es su número atómico?",
+      "respuesta": "Período 4, grupo 17 (VIIA), bloque p; Z = 35 (el bromo).",
+      "pasos": [
+        "El mayor nivel es n = 4: período 4.",
+        "Termina en p: bloque p. Electrones del último nivel: 4s² 4p⁵, siete. Grupo 10 + 7 = 17, el VIIA (halógenos).",
+        "Cuenta los electrones: [Ar] 4s² 3d¹⁰ 4p⁵ = 18 + 2 + 10 + 5 = 35."
+      ],
+      "verificar": [
+        { "fn": "enCasilla", "args": [4, 17], "espera": { "Z": 35, "simbolo": "Br", "grupoAB": "VIIA", "bloque": "p" } },
+        { "fn": "configuracion", "args": [35], "espera": { "abreviada": "[Ar] 4s2 3d10 4p5" } }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Ordena de mayor a menor radio atómico: Cl, K, Mg, Na.",
+      "respuesta": "K > Na > Mg > Cl.",
+      "pasos": [
+        "El K está en el período 4: tiene una capa más que los otros tres, que están en el período 3. Es el más grande.",
+        "Na, Mg y Cl están en el período 3, con la misma capa de afuera. De izquierda a derecha sube la carga nuclear (11, 12 y 17 protones) y atrae más a esa capa: el átomo se achica.",
+        "Orden: K > Na > Mg > Cl."
+      ],
+      "verificar": [
+        { "fn": "ordenar", "args": [["Cl", "K", "Mg", "Na"], "radio"], "espera": { "orden": ["K", "Na", "Mg", "Cl"] } }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Ordena de menor a mayor primera energía de ionización: C, N, O, F.",
+      "respuesta": "C < O < N < F.",
+      "pasos": [
+        "En el período 2 la energía de ionización sube en general, porque sube la carga nuclear en la misma capa.",
+        "Pero del N al O baja: el N tiene tres electrones 2p, uno en cada caja; el O tiene cuatro, y el cuarto comparte caja con otro. La repulsión entre los dos hace más fácil quitarlo.",
+        "Orden: C (1086) < O (1314) < N (1402) < F (1681), en kJ/mol."
+      ],
+      "verificar": [
+        { "fn": "ordenar", "args": [["C", "N", "O", "F"], "ei", "menor"], "espera": { "orden": ["C", "O", "N", "F"] } },
+        { "fn": "compararEI", "args": ["N", "O"], "espera": { "mayor": "N", "razon": "apareado" } }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Las especies S²⁻ (Z = 16), Cl⁻ (Z = 17), K⁺ (Z = 19) y Ca²⁺ (Z = 20) tienen el mismo número de electrones. ¿Cuántos? Ordénalas de mayor a menor radio.",
+      "respuesta": "18 electrones cada una (como el argón); S²⁻ > Cl⁻ > K⁺ > Ca²⁺.",
+      "pasos": [
+        "Electrones: 16 + 2 = 18, 17 + 1 = 18, 19 − 1 = 18 y 20 − 2 = 18. Son isoelectrónicas.",
+        "Con los mismos 18 electrones, la que tiene más protones los atrae más y queda más pequeña.",
+        "De mayor a menor radio: S²⁻ (16 protones) > Cl⁻ (17) > K⁺ (19) > Ca²⁺ (20). No se ordena por el tamaño de los átomos neutros: ahí el K y el Ca serían los más grandes."
+      ],
+      "verificar": [
+        { "fn": "isoelectronicos", "args": [["S2-", "Cl-", "K+", "Ca2+"]], "espera": { "todos": true, "igualA": "Ar" } },
+        { "fn": "ordenarRadios", "args": [["Ca2+", "Cl-", "S2-", "K+"]], "espera": { "orden": ["S2-", "Cl-", "K+", "Ca2+"] } }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Un elemento del período 3 tiene estas energías de ionización sucesivas, en kJ/mol: 578, 1817, 2745 y 11 577. ¿A qué grupo pertenece? ¿Qué elemento es?",
+      "respuesta": "Grupo 13 (IIIA): es el aluminio.",
+      "pasos": [
+        "Busca el gran salto: de 2745 a 11 577 se multiplica por más de 4; los otros pasos, por unas 3 veces o menos (1817/578 ≈ 3,1 y 2745/1817 ≈ 1,5).",
+        "El salto viene después del tercer electrón: el cuarto ya sale de una capa más interna. Tiene 3 electrones en la capa de afuera.",
+        "Período 3 con 3 electrones de valencia (3s² 3p¹): grupo 13, el aluminio (Z = 13)."
+      ],
+      "verificar": [
+        { "fn": "ionizacionesSucesivas", "args": ["Al"], "espera": { "salto": 3, "valencia": 3 } },
+        { "fn": "enCasilla", "args": [3, 13], "espera": { "simbolo": "Al" } }
+      ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "¿Cuál de estos iones es paramagnético: Ca²⁺ (Z = 20), Fe²⁺ (Z = 26), Cu⁺ (Z = 29) o Zn²⁺ (Z = 30)?",
+      "respuesta": "Solo el Fe²⁺: [Ar] 3d⁶, con 4 electrones desapareados.",
+      "pasos": [
+        "Ca²⁺: pierde los dos 4s y queda como el argón: todo apareado.",
+        "Fe²⁺: [Ar] 4s² 3d⁶ pierde los dos 4s: [Ar] 3d⁶. En cinco cajas, seis electrones: una caja con dos y cuatro con uno. Paramagnético.",
+        "Cu⁺: el Cu es [Ar] 4s¹ 3d¹⁰ (excepción); pierde el 4s: [Ar] 3d¹⁰, todo apareado. Zn²⁺: [Ar] 3d¹⁰, todo apareado."
+      ],
+      "verificar": [
+        { "fn": "configuracion", "args": ["Ca2+"], "espera": { "paramagnetico": false } },
+        { "fn": "configuracion", "args": ["Fe2+"], "espera": { "abreviada": "[Ar] 3d6", "desapareados": 4, "paramagnetico": true } },
+        { "fn": "configuracion", "args": ["Cu+"], "espera": { "paramagnetico": false } },
+        { "fn": "configuracion", "args": ["Zn2+"], "espera": { "paramagnetico": false } }
+      ]
+    }
+  ]
+}

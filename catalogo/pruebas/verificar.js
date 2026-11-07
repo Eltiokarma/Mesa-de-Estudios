@@ -284,6 +284,29 @@ const V = {
   'rm-08': d => { const r = motor('sucesiones').segundoOrden({ terminos: d.terminos, k: d.k });
     return { correcta: r.ak, errores: { 'lineal-en-cuadratica': r.errores.comoLineal, 'repite-la-ultima-diferencia': r.errores.comoLinealUltima, 'RM2-objeto-entero': r.errores.objetoEntero } }; },
 
+  // ---------------- Plantillas nuevas (7 nov 2026) ----------------
+  'id-01': d => { const r = motor('identidades-trig').doble({ sen: d.sen, cuadrante: 1 }).cosDoble, e = r.errores;
+    return { correcta: r.valor, errores: { 'ID8-olvida-el-dos': e.sinDos.valor, 'ID15-olvida-el-cuadrado': e.sinCuadrado.valor, 'ID7-cos-doble-como-pitagorica': e.pitagorica.valor } }; },
+  'id-02': d => { const r = motor('identidades-trig').sumaTan({ ta: d.ta, tb: d.tb }), e = r.errores;
+    return { correcta: r.valor, errores: { 'TR16-tangente-de-la-suma-lineal': e.lineal.valor, 'ID11-signo-del-denominador': e.signo.valor, 'ID6-producto-de-tangentes': e.producto.valor } }; },
+  'el-01': d => { const r = motor('exponenciales-logaritmos').logProducto({ base: d.base, a: d.a, b: d.b }), e = r.errores;
+    return { correcta: r.valor, errores: { 'AL10-log-producto-de-logs': e.productoDeLogs.valor, 'EL2-log-solo-del-primer-factor': e.precedencia.valor, 'EL1-log-da-el-numero': e.numero.valor } }; },
+  'el-02': d => { const r = motor('exponenciales-logaritmos').ecuacionBases({ b1: d.b1, e1: d.e1, b2: d.b2, e2: d.e2 }), e = r.errores;
+    if (r.soluciones.length !== 1) throw new Error('el ítem supone una sola solución');
+    return { correcta: r.valor, errores: { 'AL32-iguala-exponentes-con-bases-distintas': e.igualaExponentes.valor, 'EL7-potencia-de-potencia-suma': e.potenciaComoSuma.valor } }; },
+  'sol-01': d => { const r = motor('solidos').piramide({ base: { tipo: 'cuadrado', lado: d.lado }, h: d.h }), e = r.errores.volumen;
+    return { correcta: r.volumen, errores: { 'GE20-sin-tercio': e.sinTercio, 'piramide-mitad-del-prisma': e.mitad, 'GE14-volumen-como-area-total': e.comoArea } }; },
+  'sol-02': d => { const r = motor('solidos').esfera({ r: d.r }), e = r.errores.area;
+    return { correcta: r.area, errores: { 'esfera-area-como-circulo': e.comoCirculo * PI, 'esfera-area-dos-circulos': e.dosCirculos * PI, 'GE19-diametro-como-radio': e.conDiametro * PI } }; },
+  'ga-01': d => { const r = motor('geometria-analitica').distancia({ A: d.A, B: d.B }), e = r.errores;
+    return { correcta: r.valor, errores: { 'distancia-sin-raiz': e.sinRaiz.valor, 'distancia-suma-catetos': e.sumaCatetos.valor, 'GE11-resta-cuadrados': e.restaCuadrados.valor } }; },
+  'ga-02': d => { const r = motor('geometria-analitica').distanciaPuntoRecta({ P: d.P, L: d.L }), e = r.errores;
+    return { correcta: r.valor, errores: { 'distancia-recta-sin-raiz': e.sinRaiz.valor, 'distancia-recta-sin-dividir': e.sinDenominador.valor, 'distancia-recta-sin-c': e.sinC.valor } }; },
+  'fr-01': d => { const F = motor('fracciones'), r = F.sumar(d.f, d.g), v = x => x.n / x.d, e = r.errores;
+    return { correcta: v(r.resultado), errores: { 'AR12-suma-numeradores-y-denominadores': v(e.sumaTodo), 'suma-numeradores-multiplica-denominadores': v(e.sumaNumMultDen), 'multiplica-en-vez-de-sumar': v(e.multiplica) } }; },
+  'fr-02': d => { const r = motor('fracciones').coinciden(d.a, d.b);
+    return { correcta: r.minutos, errores: { 'AR13-mcd-en-vez-de-mcm': r.errores.mcd, 'AR13-producto': r.errores.producto, suma: r.errores.suma } }; },
+
   // ---------------- Aritmética (cuentas exactas, ver arriba) ----------------
   'ari-01': d => { const f = (1 - d.a / 100) * (1 - d.b / 100);
     return { correcta: d.P * f, errores: { 'suma-descuentos': d.P * (1 - (d.a + d.b) / 100), 'monto-descuento': d.P * (1 - f), 'un-solo-descuento': d.P * (1 - Math.max(d.a, d.b) / 100) } }; },

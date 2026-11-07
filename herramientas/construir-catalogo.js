@@ -46,6 +46,8 @@ function construir() {
       const ejercicios = (indice.ejercicios || []).map(id => `${dir}/ejercicios/${id}.json`);
       plantillas[f.id] = { id: f.id, titulo: f.titulo, formato, estado: f.estado, version: f.version, unidades: f.unidades,
         url: `#/lectura/${f.id}`, banco, papel: f.papel ? url(f.papel) : null,
+        // Ids de los textos de entrada y salida (o null): la app pide la entrada al entrar al curso sin cargar el banco.
+        entrada: indice.entrada || null, salida: indice.salida || null,
         archivos: [banco, `${dir}/codigos.json`, `${dir}/frases.json`, ...items, ...ejercicios, ...(f.papel ? [url(f.papel)] : [])] };
       continue;
     }

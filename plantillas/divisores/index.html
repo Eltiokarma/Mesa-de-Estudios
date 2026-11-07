@@ -1,0 +1,1280 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El rectángulo de fichas: divisores, primos y restos</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de la barra que se parte.
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4), uno por papel en toda la escena:
+   el número que se estudia N (las fichas, el dividendo, la base de la potencia) azul #1f5fbf / #7cb0ff; las filas
+   naranja #a05200 / #f0a04a; las columnas turquesa #0f766e / #5ed9c8; lo que sobra (el resto) granate #77032c / #fdb4ce;
+   la cantidad de divisores CD fucsia #a10fbf / #cf6bfa; la suma de divisores SD ocre #8a650f / #f9c015; el primo 2 y sus
+   potencias rojo #c0364a / #f17384; el primo 3 verde #466d14 / #a3d65e; el primo 5 café #542c12 / #b8916a.
+   El divisor que se prueba (5, 9, 10 horas del reloj), el MCD, los ciclos y lo que no es variable van en tinta.
+   Elegidos con CIEDE2000 (docs/metodo/paleta.py): entre los que salen juntos, mínimo 23,2 en claro y 21,9 en oscuro
+   (5 y la suma, en la tabla); fichas 27,1 y 25,2; criba 26,8 y 26,2. Los pares parecidos (filas–suma, filas–5) nunca
+   comparten dibujo. Contraste AA sobre el papel, la tarjeta y el chip (.v, fondo al 8 %), en claro y en oscuro
+   (mínimo 4,51 en claro, la suma; 4,98 en oscuro). */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-n:#1f5fbf; --c-f:#a05200; --c-c:#0f766e; --c-r:#77032c; --c-cd:#a10fbf; --c-sd:#8a650f; --c-p2:#c0364a; --c-p3:#466d14; --c-p5:#542c12;
+  --relleno:.14;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-n:#7cb0ff; --c-f:#f0a04a; --c-c:#5ed9c8; --c-r:#fdb4ce; --c-cd:#cf6bfa; --c-sd:#f9c015; --c-p2:#f17384; --c-p3:#a3d65e; --c-p5:#b8916a;
+  --relleno:.17; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-n:#7cb0ff; --c-f:#f0a04a; --c-c:#5ed9c8; --c-r:#fdb4ce; --c-cd:#cf6bfa; --c-sd:#f9c015; --c-p2:#f17384; --c-p3:#a3d65e; --c-p5:#b8916a;
+  --relleno:.17; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+/* Celular con una predicción pendiente: el dibujo pegado arriba lo pone nucleo/celular.js; aquí solo se apretan las lecturas. */
+@media (max-width:899px){ .mode.pendiente .lecturas{gap:4px} .mode.pendiente .lectura{padding:2px 8px} }
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+.lienzo:has(canvas:focus-visible){outline:3px solid var(--ink); outline-offset:2px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+.legend i.sq{width:12px; height:12px; border-radius:3px; opacity:.55}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; grid-template-columns:minmax(0, 1fr); gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; grid-template-columns:minmax(0, 1fr); gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-n{color:var(--c-n); background:color-mix(in srgb, var(--c-n) 8%, transparent)}
+.v-f{color:var(--c-f); background:color-mix(in srgb, var(--c-f) 8%, transparent)}
+.v-c{color:var(--c-c); background:color-mix(in srgb, var(--c-c) 8%, transparent)}
+.v-r{color:var(--c-r); background:color-mix(in srgb, var(--c-r) 8%, transparent)}
+.v-cd{color:var(--c-cd); background:color-mix(in srgb, var(--c-cd) 8%, transparent)}
+.v-sd{color:var(--c-sd); background:color-mix(in srgb, var(--c-sd) 8%, transparent)}
+.v-p2{color:var(--c-p2); background:color-mix(in srgb, var(--c-p2) 8%, transparent)}
+.v-p3{color:var(--c-p3); background:color-mix(in srgb, var(--c-p3) 8%, transparent)}
+.v-p5{color:var(--c-p5); background:color-mix(in srgb, var(--c-p5) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eqs:empty{display:none}
+.eq{font-family:var(--mono); font-size:1.02rem; line-height:1.75; font-variant-numeric:tabular-nums; overflow-wrap:anywhere}
+.eq .note{display:block; font-family:var(--font); font-size:.84rem; line-height:1.4; color:var(--muted); white-space:normal}
+.fx{white-space:nowrap}
+.eq sup, .fx sup{font-size:.75em; vertical-align:.6em; line-height:0}
+.frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1.15}
+.frac > span:first-child{border-bottom:1.5px solid currentColor; padding:0 .25em}
+.frac > span:last-child{padding:0 .25em}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.seg button:disabled{opacity:.45; cursor:not-allowed}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+/* Lecturas en vivo, cada una con el color de su variable */
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(120px, 1fr)); gap:8px}
+.lecturas:empty{display:none}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura b{display:block; color:var(--k); font:800 .95rem var(--mono); font-variant-numeric:tabular-nums; overflow-wrap:anywhere}
+.lectura span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.25fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+
+/* tabla de valores */
+.tabla{border-collapse:collapse; font-variant-numeric:tabular-nums; font-size:.92rem; background:var(--paper); border-radius:12px; overflow:hidden}
+.tabla th,.tabla td{padding:4px 8px; border-bottom:1px solid var(--line); text-align:center; min-width:2.3em}
+.tabla th{font-size:.8rem; color:var(--muted); font-weight:700; text-align:left; white-space:nowrap}
+.tabla-wrap{overflow-x:auto; max-width:100%}
+.stepper{display:flex; flex-wrap:wrap; gap:8px}
+.stepper > div{display:inline-flex; align-items:center; gap:6px; background:var(--paper); border:1px solid var(--line); border-radius:999px; padding:4px 6px 4px 12px}
+.stepper button{font:800 1.05rem var(--font); width:36px; height:36px; border-radius:50%; border:1.5px solid var(--line); background:var(--card); color:var(--ink); cursor:pointer}
+.stepper button:disabled{opacity:.4; cursor:not-allowed}
+.stepper .pot{font:800 1rem var(--mono); min-width:2.6em; text-align:center}
+.lista{font-family:var(--mono); font-size:.92rem; overflow-wrap:anywhere}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Aritmética · Divisores, primos, divisibilidad y restos · Problemas tipo admisión</p>
+      <h1>El rectángulo de fichas</h1>
+      <p class="sub">Acomoda fichas en filas, parte números en primos, tacha la criba y da vueltas al reloj de los restos. Antes de cada respuesta, predice; después, la escena te muestra por qué.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo de la escena: fichas en filas, la criba, el árbol y la tabla de divisores, cifras y restos">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Dibujo de la escena"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos con divisores, primos y restos">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/divisores">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'divisores', unidad: 'aritmetica.numeros-primos-y-divisores', version: '0.1.0' };
+const U_DIV = 'aritmetica.divisibilidad';
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0, unidad){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: unidad || PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la matemática (descomposiciones, divisores, tablas, criba, criterios, restos, ciclos y PESI) sale de
+   MotorDivisores (motor.js); aquí solo se pinta, se arrastra y se anima. El celular (dibujo fijo arriba con una
+   predicción pendiente, subir el lienzo al responder, el dedo que desplaza la página) va con nucleo/celular.js. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const M = MotorDivisores;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+// Espacio de miles desde las cinco cifras (1200, 12 000).
+const fmt = n => { const t = String(Math.abs(n)); return (n < 0 ? '−' : '') + (t.length > 4 ? t.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : t); };
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const n_ = t => V('n', t), f_ = t => V('f', t), c_ = t => V('c', t), r_ = t => V('r', t), cd_ = t => V('cd', t), sd_ = t => V('sd', t);
+const KP = { 2:'p2', 3:'p3', 5:'p5' };
+const kp = p => KP[p] || 'ink';
+const vp = (p, t) => (KP[p] ? V(KP[p], t) : t);
+const pot = (p, e) => (e === 1 ? String(p) : p + M.sup(e));
+// Una descomposición con cada primo en su color: 2³·3²·5
+const factH = n => (n === 1 ? '1' : M.factores(n).map(({ p, e }) => vp(p, pot(p, e))).join(' · '));
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+const lerp = (a, b, f) => a + (b - a)*f;
+function tween(dur, paso, fin, lineal){
+  if (RM || !dur){ paso(1); if (fin) setTimeout(fin, 0); return; }
+  const t0 = performance.now();
+  const tick = now => { const f = Math.min(1, (now - t0)/dur); paso(lineal ? f : suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
+  requestAnimationFrame(tick);
+}
+const CLAVES = ['n', 'f', 'c', 'r', 'cd', 'sd', 'p2', 'p3', 'p5'];
+function colores(){
+  const g = n => css(n);
+  const c = { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
+    relleno:Number(g('--relleno')) || .14, mono:g('--mono'), font:g('--font') };
+  for (const k of CLAVES) c[k] = g('--c-' + k);
+  return c;
+}
+const col = (c, k) => (k === 'ink' ? c.ink : k === 'muted' ? c.muted : c[k]);
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function redondeado(ctx, x, y, w, h, r){ r = Math.max(0, Math.min(r, w/2, h/2)); ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+// Resaltar en el dibujo la variable que se toca en el texto (regla 4).
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+/* ================= La escena =================
+   Modos: 'fichas' (N fichas en filas iguales, con lo que sobra; o la galería de todos los rectángulos exactos),
+   'criba' (los números del 1 al N que se tachan), 'tabla' (el árbol que parte N en primos, o la tabla de exponentes
+   donde cada casilla es un divisor), 'cifras' (cada cifra deja fichas sobrantes al agrupar de 9 en 9), 'producto'
+   (el rectángulo a × b partido en bloques de m: sobra la esquina), 'diagonal' (la diagonal de un rectángulo a × b
+   y los puntos de la cuadrícula que toca) y 'reloj' (el reloj de n horas de los restos de las potencias). */
+function crearEscena(cv, idDesc, idLect, idLey){
+  const E = { modo:'fichas', st:{}, lect:[], ley:null, hl:null, alCambiar:null, ocupado:false, tok:0, anim:false, compacto:false, desc:null };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, arrastrando = null, sobre = false;
+  const colsCriba = w => (w >= 560 ? 10 : 6);
+  const ALTO = {
+    fichas: w => E.st.galeria ? (w >= 560 ? 260 : 240) : E.st.pilas ? 200 : (E.st.slider ? 300 : 250),
+    criba: w => { const cols = colsCriba(w), rows = Math.ceil(E.st.N/cols); return Math.round(38 + rows*Math.min(48, (w - 20)/cols) + 10); },
+    tabla: w => { if (E.st.vista === 'arbol') return 260; const T = M.tabla(E.st.n); return Math.round(62 + (T.paneles > 1 ? 16 : 0) + T.filas*Math.min(36, w >= 560 ? 36 : 32) + (E.st.sumas ? 30 : 0) + 8); },
+    cifras: () => 290, producto: w => (w >= 560 ? 280 : 320), diagonal: w => (w >= 560 ? 320 : 290), reloj: () => 270 };
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    const h = Math.round(Celular.alto(ALTO[E.modo](w), E.compacto)), dpr = window.devicePixelRatio || 1;
+    if (w === W && h === H) { E.dibujar(); return; }
+    W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  alRedibujarTema(() => E.dibujar());
+  const grosor = (k, base) => (E.hl === k ? base + 2.5 : base);
+
+  E.config = o => {
+    E.tok++; E.anim = false;   // una animación vieja no sigue moviendo el dibujo nuevo
+    Object.assign(E, { modo:'fichas', st:{}, lect:[], ley:null, alCambiar:null, desc:null }, o);
+    E.listo = true;
+    cv.tabIndex = manijas().length ? 0 : -1;
+    W = 0; resize(); E.leyenda(); E.dibujar(); E.avisar();
+  };
+  E.redimensionar = () => { W = 0; resize(); };
+  // Con una predicción pendiente en el celular, el dibujo se achica y queda pegado arriba (nucleo/celular.js).
+  E.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === E.compacto) return; E.compacto = on; W = 0; resize(); };
+
+  // Texto con un fondo del color del papel detrás, para que se lea sobre las líneas.
+  function rotulo(c, x, y, t, color, align, peso, tam){
+    ctx.font = `${peso || 700} ${tam || 13}px ${c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+    const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+    ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9*(ctx.globalAlpha || 1); ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+    ctx.fillStyle = color; ctx.fillText(t, x, y);
+    return w;
+  }
+  // Un rótulo hecho de pedazos de distinto color: [['72', 'n'], [' = ', 'ink'], ['2³', 'p2'], …]
+  function partes(c, x, y, ps, align, tam, peso){
+    ctx.font = `${peso || 800} ${tam || 14}px ${c.font}`; ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
+    const ws = ps.map(([t]) => ctx.measureText(String(t)).width), tot = ws.reduce((s, w) => s + w, 0);
+    let x0 = align === 'left' ? x : align === 'right' ? x - tot : x - tot/2;
+    ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - 10, tot + 6, 20); ctx.restore();
+    ps.forEach(([t, k], j) => { ctx.fillStyle = col(c, k || 'ink'); ctx.fillText(String(t), x0, y); x0 += ws[j]; });
+    return tot;
+  }
+  function ficha(c, x, y, r, k, alfa){
+    ctx.save(); ctx.globalAlpha = alfa === undefined ? 1 : alfa; ctx.fillStyle = col(c, k);
+    if (r < 2.6) ctx.fillRect(x - r, y - r, 2*r, 2*r); else { ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fill(); }
+    ctx.restore();
+  }
+  function linea(x1, y1, x2, y2){ ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
+
+  // ----- fichas en filas -----
+  function geoSlider(){ const x0 = 70, x1 = W - 24; return { x0, x1, y:H - 26, X: f => x0 + (x1 - x0)*(f - 1)/Math.max(1, E.st.n - 1) }; }
+  function dibFichas(c){
+    const s = E.st;
+    if (s.galeria) return dibGaleria(c);
+    if (s.pilas) return dibPilas(c);
+    const n = s.n, f = Math.min(s.filas, n), co = Math.floor(n/f), sob = n % f, tc = co + (sob ? 1 : 0);
+    const arriba = 30 + (s.hallados ? 22 : 0), abajo = s.slider ? 56 : 10, izq = 70, der = 16;
+    const aw = W - izq - der, ah = H - arriba - abajo - 22;
+    const p = Math.max(3, Math.min(30, aw/tc, ah/f));
+    const gx = izq + (aw - tc*p)/2, gy = arriba + 22 + (ah - f*p)/2, r = p*.36;
+    // la cuenta arriba: N = filas × columnas (+ lo que sobra)
+    const cuenta = [[n, 'n'], [' = ', 'ink'], [f, 'f'], [' × ', 'ink'], [co, 'c']];
+    if (sob) cuenta.push([' + ', 'ink'], [sob, 'r']);
+    partes(c, W/2, 14, cuenta, 'center', 15);
+    if (s.hallados){
+      const ps = [['filas exactas: ', 'muted']];
+      s.hallados.forEach((h, j) => ps.push([(j ? ', ' : '') + h, j ? 'f' : 'f']));
+      if (!s.hallados.length) ps.push(['—', 'muted']);
+      if (s.cuenta) ps.push(['  → ', 'ink'], [`${s.hallados.length}`, 'cd']);
+      partes(c, W/2, 38, ps, 'center', 13, 700);
+    }
+    // columnas (arriba) y filas (a la izquierda)
+    ctx.save(); ctx.strokeStyle = c.c; ctx.lineWidth = grosor('c', 2);
+    linea(gx, gy - 8, gx + co*p, gy - 8); linea(gx, gy - 12, gx, gy - 4); linea(gx + co*p, gy - 12, gx + co*p, gy - 4); ctx.restore();
+    rotulo(c, clamp(gx + co*p/2, izq + 30, W - 50), gy - 18, `${co} columna${co > 1 ? 's' : ''}`, c.c, 'center', 800, 12);
+    ctx.save(); ctx.strokeStyle = c.f; ctx.lineWidth = grosor('f', 2);
+    linea(gx - 8, gy, gx - 8, gy + f*p); linea(gx - 12, gy, gx - 4, gy); linea(gx - 12, gy + f*p, gx - 4, gy + f*p); ctx.restore();
+    rotulo(c, gx - 14, gy + f*p/2, `${f} fila${f > 1 ? 's' : ''}`, c.f, 'right', 800, 12);
+    for (let i = 0; i < f; i++) for (let j = 0; j < co; j++) ficha(c, gx + (j + .5)*p, gy + (i + .5)*p, r, 'n', .85);
+    for (let i = 0; i < sob; i++) ficha(c, gx + (co + .5)*p, gy + (i + .5)*p, r*(E.hl === 'r' ? 1.15 : 1), 'r');
+    if (sob){
+      const x = gx + (co + .5)*p, y = gy + sob*p + 12, t = `sobra${sob > 1 ? 'n' : ''} ${sob}`;
+      rotulo(c, clamp(x, 40, W - 40), Math.min(y, H - abajo - 4), t, c.r, x > W - 60 ? 'right' : 'center', 800, 12);
+    }
+    if (s.slider){
+      const g = geoSlider();
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.globalAlpha = .25; ctx.lineWidth = 4; ctx.lineCap = 'round'; linea(g.x0, g.y, g.x1, g.y); ctx.restore();
+      if (n <= 40){ ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1; for (let k = 1; k <= n; k++) linea(g.X(k), g.y + 6, g.X(k), g.y + 9); ctx.restore(); }
+      rotulo(c, g.x0 - 10, g.y, 'filas', c.f, 'right', 800, 12);
+      rotulo(c, g.x0, g.y + 18, '1', c.muted, 'center', 700, 11); rotulo(c, g.x1, g.y + 18, String(n), c.muted, 'center', 700, 11);
+      const x = g.X(f);
+      ctx.save(); ctx.fillStyle = c.f; ctx.beginPath(); ctx.arc(x, g.y, 13, 0, 7); ctx.fill();
+      if (arrastrando || sobre){ ctx.strokeStyle = c.f; ctx.lineWidth = 2; ctx.globalAlpha = .4; ctx.beginPath(); ctx.arc(x, g.y, 18, 0, 7); ctx.stroke(); } ctx.restore();
+      ctx.save(); ctx.fillStyle = c.card; ctx.font = `800 12px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(String(f), x, g.y + .5); ctx.restore();
+    }
+  }
+  // Todos los rectángulos exactos, uno al lado del otro; las parejas f × c y c × f unidas por un arco.
+  function dibGaleria(c){
+    const s = E.st, L = s.galeria, k = L.length, maxF = Math.max(...L.map(x => x[0]));
+    const gap = 10, minSlot = 36;
+    let p = 14;
+    const ancho = q => L.reduce((t, x) => t + Math.max(x[1]*q, minSlot), 0) + gap*(k - 1);
+    while (p > 2 && (ancho(p) > W - 20 || 30 + maxF*p + 64 > H)) p -= .25;
+    const tot = ancho(p), y0 = 32, yl = y0 + maxF*p + 14;
+    rotulo(c, W/2, 14, `${k} rectángulo${k > 1 ? 's' : ''} exacto${k > 1 ? 's' : ''} con ${s.n} fichas`, c.cd, 'center', 800, 13);
+    let x = (W - tot)/2;
+    const centros = [];
+    L.forEach(([f, co]) => {
+      const slot = Math.max(co*p, minSlot), gx = x + (slot - co*p)/2;
+      for (let i = 0; i < f; i++) for (let j = 0; j < co; j++) ficha(c, gx + (j + .5)*p, y0 + (i + .5)*p, p*.36, 'n', .85);
+      if (f === co){ ctx.save(); ctx.strokeStyle = c.ink; ctx.setLineDash([4, 3]); ctx.lineWidth = 1.6; ctx.strokeRect(gx - 4, y0 - 4, co*p + 8, f*p + 8); ctx.restore(); }
+      partes(c, x + slot/2, yl, [[f, 'f'], ['×', 'ink'], [co, 'c']], 'center', 12, 800);
+      centros.push(x + slot/2);
+      x += slot + gap;
+    });
+    if (s.parejas){
+      ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.4;
+      for (let i = 0; i < Math.floor(k/2); i++){
+        const a = centros[i], b = centros[k - 1 - i], prof = 10 + 9*(Math.floor(k/2) - i);
+        ctx.beginPath(); ctx.moveTo(a, yl + 10); ctx.quadraticCurveTo((a + b)/2, yl + 10 + 2*prof, b, yl + 10); ctx.stroke();
+      }
+      ctx.restore();
+      if (k % 2) rotulo(c, centros[(k - 1)/2], yl + 22, 'sin pareja', c.ink, 'center', 700, 11);
+    }
+  }
+  function dibPilas(c){
+    const s = E.st, mx = Math.max(...s.pilas), p = Math.min(16, (W - 70)/mx), dy = Math.min(52, (H - 20)/s.pilas.length);
+    s.pilas.forEach((n, i) => {
+      const y = 14 + dy*(i + .5);
+      rotulo(c, 44, y, `${n}`, c.n, 'right', 800, 14);
+      for (let j = 0; j < n; j++) ficha(c, 58 + (j + .5)*p, y, p*.36, 'n', .85);
+    });
+  }
+
+  // ----- criba -----
+  function dibCriba(c){
+    const s = E.st, cols = colsCriba(W), rows = Math.ceil(s.N/cols), cell = Math.min(48, (W - 20)/cols, (H - 44)/rows);
+    const gx = (W - cols*cell)/2, gy = 34;
+    if (s.encabezado) rotulo(c, W/2, 15, s.encabezado, c.ink, 'center', 700, 13);
+    for (let k = 1; k <= s.N; k++){
+      const x = gx + ((k - 1) % cols)*cell, y = gy + Math.floor((k - 1)/cols)*cell, m = (s.marcas || {})[k] || {};
+      const por = m.por || [];
+      ctx.save(); ctx.fillStyle = por.length ? col(c, kp(por[0])) : c.card; ctx.globalAlpha = por.length ? .12 : 1;
+      redondeado(ctx, x + 2, y + 2, cell - 4, cell - 4, 7); ctx.fill(); ctx.restore();
+      ctx.save(); ctx.strokeStyle = c.line; ctx.lineWidth = 1; redondeado(ctx, x + 2, y + 2, cell - 4, cell - 4, 7); ctx.stroke(); ctx.restore();
+      ctx.save(); ctx.globalAlpha = por.length || m.uno ? .6 : 1; ctx.fillStyle = c.ink; ctx.font = `${m.primo || m.queda ? 800 : 700} ${Math.round(cell*.36)}px ${c.font}`;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(String(k), x + cell/2, y + cell/2 + 1); ctx.restore();
+      por.forEach((p, j) => { const kk = kp(p); ctx.save(); ctx.strokeStyle = col(c, kk); ctx.lineWidth = grosor(kk, 2.4); ctx.lineCap = 'round';
+        if (j === 0) linea(x + 8, y + cell - 8, x + cell - 8, y + 8); else linea(x + 8, y + 8, x + cell - 8, y + cell - 8); ctx.restore(); });
+      if (m.uno){ ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 2; ctx.setLineDash([4, 3]); linea(x + 8, y + cell - 8, x + cell - 8, y + 8); ctx.restore(); }
+      if (m.primo || m.queda){ ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2.2; ctx.beginPath(); ctx.arc(x + cell/2, y + cell/2, cell*.36, 0, 7); ctx.stroke(); ctx.restore(); }
+      if (s.actual === k){ ctx.save(); ctx.strokeStyle = col(c, kp(k)); ctx.lineWidth = 3; redondeado(ctx, x + 1, y + 1, cell - 2, cell - 2, 8); ctx.stroke(); ctx.restore(); }
+    }
+  }
+
+  // ----- árbol y tabla de divisores -----
+  function cabeceraN(c, n, y){
+    const ps = [[n, 'n'], [' = ', 'ink']];
+    M.factores(n).forEach(({ p, e }, j) => { if (j) ps.push([' · ', 'ink']); ps.push([pot(p, e), kp(p)]); });
+    if (n === 1) ps.push(['1', 'ink']);
+    partes(c, W/2, y, ps, 'center', 15);
+  }
+  function dibArbol(c){
+    const s = E.st, A = M.arbol(s.n), L = A.niveles, ver = s.niveles === undefined ? L.length : s.niveles;
+    const dy = Math.min(40, (H - 56)/L.length), dx = Math.min(48, (W - 110)/Math.max(1, L.length - 1));
+    const x0 = W/2 - dx*(L.length - 1)/2 + 18, y0 = 20;
+    const P = i => ({ x: x0 + i*dx, y: y0 + i*dy });
+    const hoja = (x, y, p) => { const k = kp(p); ctx.save(); ctx.fillStyle = c.paper; ctx.strokeStyle = col(c, k); ctx.lineWidth = grosor(k, 2.4);
+      ctx.beginPath(); ctx.arc(x, y, 13, 0, 7); ctx.fill(); ctx.stroke(); ctx.restore(); rotulo(c, x, y + 1, String(p), col(c, k), 'center', 800, 13); };
+    for (let i = 0; i < Math.min(ver, L.length); i++){
+      const a = P(i), b = P(i + 1);
+      if (i < L.length - 1){
+        ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.5; linea(a.x, a.y + 9, a.x - dx*.9, b.y - 10); linea(a.x, a.y + 9, b.x, b.y - 9); ctx.restore();
+        hoja(a.x - dx*.9, b.y, L[i].primo);
+      }
+    }
+    for (let i = 0; i < Math.min(ver + 1, L.length); i++){
+      const a = P(i), ultimo = i === L.length - 1;
+      if (ultimo && ver >= L.length) hoja(a.x, a.y, L[i].valor);
+      else if (!ultimo || i < ver) rotulo(c, a.x, a.y, String(L[i].valor), i === 0 ? c.n : c.ink, 'center', 800, i === 0 ? 16 : 14);
+      else rotulo(c, a.x, a.y, String(L[i].valor), c.ink, 'center', 800, 14);
+    }
+    if (ver >= L.length) cabeceraN(c, s.n, H - 16);
+  }
+  function geoTabla(){
+    const s = E.st, T = M.tabla(s.n), P = T.paneles, lab = 38, der = s.sumas ? 58 : 10, gapP = 12;
+    const top = 50 + (P > 1 ? 16 : 0);
+    const cw = Math.min(64, (W - lab - der - 8 - (P - 1)*gapP)/(P*T.columnas));
+    const ch = Math.min(36, (H - top - 8 - (s.sumas ? 30 : 0))/T.filas);
+    const anchoP = T.columnas*cw, tot = P*anchoP + (P - 1)*gapP;
+    const gx = lab + (W - lab - der - tot)/2;
+    return { T, P, cw, ch, top, gx, anchoP, gapP, X: (k, j) => gx + k*(anchoP + gapP) + j*cw, Y: i => top + i*ch };
+  }
+  function dibTabla(c){
+    const s = E.st;
+    if (s.vista === 'arbol') return dibArbol(c);
+    const g = geoTabla(), { T, P, cw, ch, top } = g, [p0, p1, p2] = T.primos;
+    cabeceraN(c, s.n, 14);
+    const tam = Math.round(clamp(cw/3.3 + 2, 10, 14));
+    for (let i = 0; i < T.filas; i++) if (p0) rotulo(c, g.gx - 8, g.Y(i) + ch/2, `${p0}${M.sup(i)}`, col(c, kp(p0)), 'right', 800, 12);
+    for (let k = 0; k < P; k++){
+      if (P > 1) rotulo(c, g.X(k, 0) + g.anchoP/2, top - 32, `× ${p2}${M.sup(k)}`, col(c, kp(p2)), 'center', 800, 12);
+      if (p1) for (let j = 0; j < T.columnas; j++) rotulo(c, g.X(k, j) + cw/2, top - 12, `${p1}${M.sup(j)}`, col(c, kp(p1)), 'center', 800, 12);
+    }
+    const llenas = s.llenas === undefined ? T.celdas.length : s.llenas;
+    T.celdas.forEach((q, idx) => {
+      const x = g.X(q.k, q.j), y = g.Y(q.i), marcada = s.marca && s.marca.has(q.valor);
+      ctx.save(); if (s.marca && s.atenuar && !marcada) ctx.globalAlpha = .35;
+      ctx.fillStyle = marcada ? c.cd : c.card; if (marcada) ctx.globalAlpha = .12;
+      redondeado(ctx, x + 2, y + 2, cw - 4, ch - 4, 6); ctx.fill(); ctx.restore();
+      ctx.save(); if (s.marca && s.atenuar && !marcada) ctx.globalAlpha = .35;
+      ctx.strokeStyle = marcada ? c.cd : c.line; ctx.lineWidth = marcada ? grosor('cd', 2.4) : 1; redondeado(ctx, x + 2, y + 2, cw - 4, ch - 4, 6); ctx.stroke();
+      if (idx < llenas){ ctx.fillStyle = c.ink; ctx.font = `800 ${tam}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(String(q.valor), x + cw/2, y + ch/2 + 1); }
+      ctx.restore();
+    });
+    if (s.sumas && P === 1){
+      const filas = s.sumas === true ? T.filas : s.sumas;
+      let tot = 0;
+      for (let i = 0; i < Math.min(filas, T.filas); i++){
+        const fila = T.celdas.filter(q => q.i === i).reduce((t, q) => t + q.valor, 0); tot += fila;
+        rotulo(c, g.X(0, T.columnas) + 8, g.Y(i) + ch/2, `= ${fila}`, c.sd, 'left', 800, 13);
+      }
+      if (filas >= T.filas) rotulo(c, g.X(0, T.columnas) + 8, g.Y(T.filas) + 16, `suma ${tot}`, c.sd, 'left', 800, 13);
+    }
+  }
+
+  // ----- cifras sobrantes (criterio del 9) -----
+  function dibCifras(c){
+    const s = E.st;
+    if (!s.n){
+      const k = s.lista.length, w = Math.min(110, (W - 20)/k - 10), tot = k*w + (k - 1)*10;
+      s.lista.forEach((n, j) => { const x = (W - tot)/2 + j*(w + 10), y = H/2 - 26;
+        ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = c.line; ctx.lineWidth = 1.5; redondeado(ctx, x, y, w, 52, 12); ctx.fill(); ctx.stroke(); ctx.restore();
+        rotulo(c, x + w/2, y + 26, fmt(n), c.n, 'center', 800, 17); });
+      rotulo(c, W/2, H/2 + 46, '¿cuál se puede repartir en grupos de 9 sin que sobre nada?', c.muted, 'center', 700, 12);
+      return;
+    }
+    const Z = M.cifrasNueve(s.n), L = Z.lugares, cw = (W - 20)/L.length;
+    const tp = Math.min(18, (W - 60)/9), filasT = Math.max(1, Math.ceil(Z.sobrantes/9));
+    const bh = Math.max(6, Math.min(13, (H - 50 - 30 - filasT*tp - 22)/9));
+    const y0 = 50, ty = y0 + 9*bh + 30, tx = (W - 9*tp)/2;
+    partes(c, W/2, 14, [[fmt(s.n), 'n'], [' = ' + L.map(l => (l.potencia === 1 ? String(l.cifra) : `${l.cifra} · ${fmt(l.potencia)}`)).join(' + '), 'ink']], 'center', 13, 800);
+    const destinos = []; let idx = 0;
+    L.forEach((l, j) => {
+      const cx = 10 + (j + .5)*cw, bw = Math.min(cw*.55, 46);
+      rotulo(c, cx, y0 - 14, l.potencia === 1 ? `${l.cifra} · 1` : `${l.cifra} · ${fmt(l.potencia)}`, c.ink, 'center', 700, 11);
+      for (let b = 0; b < l.cifra; b++){
+        const y = y0 + b*bh;
+        if (l.nueves){ ctx.save(); ctx.fillStyle = c.line; redondeado(ctx, cx - bw/2 - 6, y + 1, bw, bh - 2, 3); ctx.fill(); ctx.restore();
+          if (bh >= 11 && b === 0) rotulo(c, cx - 6, y + bh/2, fmt(l.nueves), c.muted, 'center', 700, 9); }
+        destinos.push({ x0: l.nueves ? cx + bw/2 - 2 : cx, y0: y + bh/2, i: idx++ });
+      }
+    });
+    rotulo(c, W/2, ty - 14, 'las fichas que sobran, en filas de 9', c.muted, 'center', 700, 11);
+    const T = destinos.length, f = s.f === undefined ? 1 : s.f, rr = Math.min(bh*.42, tp*.38);
+    destinos.forEach(d => {
+      const g = clamp((f - .6*d.i/Math.max(1, T))/.4, 0, 1), gs = suave(g);
+      const x = lerp(d.x0, tx + (d.i % 9 + .5)*tp, gs), y = lerp(d.y0, ty + (Math.floor(d.i/9) + .5)*tp, gs);
+      ficha(c, x, y, lerp(rr, tp*.38, gs), 'r');
+    });
+    if (f >= 1){
+      for (let r = 0; r < Z.filasDe9; r++){ ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; redondeado(ctx, tx - 3, ty + r*tp + 1, 9*tp + 6, tp - 2, tp/2); ctx.stroke(); ctx.restore();
+        rotulo(c, tx + 9*tp + 10, ty + (r + .5)*tp, '9', c.ink, 'left', 800, 12); }
+      const yb = ty + filasT*tp + 12;
+      rotulo(c, W/2, Math.min(yb, H - 9), Z.resto ? `${Z.sobrantes} fichas: ${Z.filasDe9} fila${Z.filasDe9 === 1 ? '' : 's'} de 9 y sobran ${Z.resto}` : `${Z.sobrantes} fichas: ${Z.filasDe9} filas de 9, no sobra ninguna`, Z.resto ? c.r : c.ink, 'center', 800, 12);
+    }
+  }
+
+  // ----- el resto de un producto: el rectángulo partido en bloques -----
+  function dibProducto(c){
+    const s = E.st, R = M.restoProducto(s.a, s.b, s.m), lado = W >= 560, rx = 46, ry = 50;
+    // en pantalla ancha, la esquina agrandada va a la derecha; en el celular, debajo
+    const zw = lado ? 190 : W - rx - 10, zh = lado ? 0 : 78;
+    const u = lado ? Math.min((W - rx - zw - 22)/s.b, (H - ry - 14)/s.a) : Math.min((W - rx - 14)/s.b, (H - ry - zh - 26)/s.a), w = s.b*u, h = s.a*u;
+    partes(c, rx + w/2, 14, [[s.a, 'f'], [' filas × ', 'ink'], [s.b, 'c'], [' columnas', 'ink']], 'center', 13, 800);
+    ctx.save(); ctx.fillStyle = c.n; ctx.globalAlpha = .1; ctx.fillRect(rx, ry, w, h); ctx.restore();
+    ctx.save(); ctx.strokeStyle = c.n; ctx.lineWidth = grosor('n', 1.8); ctx.strokeRect(rx, ry, w, h); ctx.restore();
+    const ya = ry + R.qa*s.m*u, xb = rx + R.qb*s.m*u, fase = s.fase || 0;
+    if (fase === 0){
+      rotulo(c, rx - 8, ry + h/2, String(s.a), c.f, 'right', 800, 13); rotulo(c, rx + w/2, ry - 12, String(s.b), c.c, 'center', 800, 13);
+    }
+    if (fase >= 1){
+      ctx.save(); ctx.strokeStyle = c.muted; ctx.globalAlpha = .45; ctx.lineWidth = .8;
+      for (let k = 1; k <= R.qa; k++) linea(rx, ry + k*s.m*u, rx + w, ry + k*s.m*u);
+      for (let k = 1; k <= R.qb; k++) linea(rx + k*s.m*u, ry, rx + k*s.m*u, ry + h); ctx.restore();
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.8; ctx.setLineDash([5, 3]); linea(rx, ya, rx + w, ya); linea(xb, ry, xb, ry + h); ctx.restore();
+      rotulo(c, rx - 8, (ry + ya)/2, String(R.qa*s.m), c.ink, 'right', 700, 12); rotulo(c, rx - 8, ya + (ry + h - ya)/2 + 3, String(R.ra), c.f, 'right', 800, 13);
+      rotulo(c, (rx + xb)/2, ry - 12, String(R.qb*s.m), c.ink, 'center', 700, 12); rotulo(c, xb + (rx + w - xb)/2 + 3, ry - 12, String(R.rb), c.c, 'left', 800, 13);
+    }
+    if (fase >= 2){
+      ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = .1; ctx.fillRect(rx, ry, xb - rx, ya - ry); ctx.fillRect(xb, ry, rx + w - xb, ya - ry); ctx.fillRect(rx, ya, xb - rx, ry + h - ya); ctx.restore();
+      rotulo(c, (rx + xb)/2, (ry + ya)/2, `bloques de ${s.m} × ${s.m}`, c.ink, 'center', 700, 11);
+      ctx.save(); ctx.fillStyle = c.r; ctx.globalAlpha = .55; ctx.fillRect(xb, ya, rx + w - xb, ry + h - ya); ctx.restore();
+      ctx.save(); ctx.strokeStyle = c.r; ctx.lineWidth = grosor('r', 2); ctx.strokeRect(xb, ya, rx + w - xb, ry + h - ya); ctx.restore();
+    }
+    if (fase >= 3){
+      const zx = lado ? W - zw - 8 : rx, zy = lado ? ry + 10 : ry + h + 24;
+      const pz = Math.min(22, (zw - 40)/(s.m + 1 + R.rb)), yc = zy + 14 + 1.5*pz;
+      ctx.save(); ctx.strokeStyle = c.muted; ctx.setLineDash([3, 3]); ctx.lineWidth = 1.2; linea(rx + w, ry + h, lado ? zx : zx + 30, lado ? yc : zy - 4); ctx.restore();
+      rotulo(c, zx, zy, 'la esquina, agrandada:', c.muted, 'left', 700, 11);
+      if (fase < 4){
+        const gx = zx + 4, gy = zy + 14;
+        for (let i = 0; i < R.ra; i++) for (let j = 0; j < R.rb; j++) ficha(c, gx + (j + .5)*pz, gy + (i + .5)*pz, pz*.38, 'r');
+        partes(c, gx + R.rb*pz + 12, yc, [[R.ra, 'f'], [' × ', 'ink'], [R.rb, 'c'], [` = ${R.esquina} fichas`, 'r']], 'left', 13, 800);
+      } else {
+        const grupos = Math.floor(R.esquina/s.m);
+        let x = zx + 6;
+        for (let gI = 0; gI < grupos; gI++){
+          ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; redondeado(ctx, x - 3, yc - pz/2 - 3, s.m*pz + 6, pz + 6, pz/2 + 3); ctx.stroke(); ctx.restore();
+          for (let j = 0; j < s.m; j++) ficha(c, x + (j + .5)*pz, yc, pz*.38, 'r', .45);
+          rotulo(c, x + s.m*pz/2, yc + pz/2 + 14, `grupo de ${s.m}`, c.ink, 'center', 700, 11); x += s.m*pz + 18;
+        }
+        for (let j = 0; j < R.resto; j++) ficha(c, x + (j + .5)*pz, yc, pz*.38*(E.hl === 'r' ? 1.15 : 1), 'r');
+        rotulo(c, x, yc + pz/2 + 14, R.resto ? `sobra${R.resto > 1 ? 'n' : ''} ${R.resto}` : 'no sobra nada', c.r, 'left', 800, 12);
+      }
+    }
+  }
+
+  // ----- la diagonal del rectángulo a × b (PESI) -----
+  function dibDiagonal(c){
+    const s = E.st, pw = (W - 24)/2, ph = (H - 16)/2, f = s.f === undefined ? 1 : s.f;
+    s.pares.forEach(([a, b], idx) => {
+      const px = 8 + (idx % 2)*(pw + 8), py = 8 + Math.floor(idx/2)*ph;
+      const u = Math.min((pw - 16)/b, (ph - 52)/a), gw = b*u, gh = a*u, gx = px + (pw - gw)/2, gy = py + 24;
+      partes(c, px + pw/2, py + 10, [[a, 'f'], [' × ', 'ink'], [b, 'c']], 'center', 13, 800);
+      ctx.save(); ctx.strokeStyle = c.grid; ctx.lineWidth = 1;
+      for (let i = 1; i < a; i++) linea(gx, gy + i*u, gx + gw, gy + i*u);
+      for (let j = 1; j < b; j++) linea(gx + j*u, gy, gx + j*u, gy + gh); ctx.restore();
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; ctx.strokeRect(gx, gy, gw, gh); ctx.restore();
+      ctx.save(); ctx.strokeStyle = c.f; ctx.lineWidth = grosor('f', 3); linea(gx - 4, gy, gx - 4, gy + gh); ctx.strokeStyle = c.c; ctx.lineWidth = grosor('c', 3); linea(gx, gy - 4, gx + gw, gy - 4); ctx.restore();
+      if (s.diagonal){
+        ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(gx, gy, gx + gw*f, gy + gh*f); ctx.restore();
+        const P = M.pesi(a, b);
+        if (f >= 1){
+          for (let k = 1; k < P.mcd; k++){ ctx.save(); ctx.fillStyle = c.ink; ctx.beginPath(); ctx.arc(gx + k*P.paso[1]*u, gy + k*P.paso[0]*u, 4.5, 0, 7); ctx.fill(); ctx.restore(); }
+          rotulo(c, px + pw/2, gy + gh + 14, P.pesi ? 'MCD 1: ningún punto' : `MCD ${P.mcd}: ${P.mcd - 1} punto${P.mcd > 2 ? 's' : ''}`, c.ink, 'center', 800, 11);
+        }
+      }
+    });
+  }
+
+  // ----- el reloj de los restos -----
+  function dibReloj(c){
+    const s = E.st, R = Math.max(40, Math.min(H/2 - 32, W*.24 - 6)), cx = R + 34, cy = H/2 + 2;
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.8; ctx.beginPath(); ctx.arc(cx, cy, R, 0, 7); ctx.stroke(); ctx.restore();
+    const ang = h => -Math.PI/2 + 2*Math.PI*h/s.n, P = (h, r) => ({ x: cx + r*Math.cos(ang(h)), y: cy + r*Math.sin(ang(h)) });
+    for (let h = 0; h < s.n; h++){ const a = P(h, R), b = P(h, R - 7), t = P(h, R + 15);
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; linea(a.x, a.y, b.x, b.y); ctx.restore(); rotulo(c, t.x, t.y, String(h), c.muted, 'center', 700, 12); }
+    rotulo(c, cx, Math.min(cy + R + 32, H - 8), `reloj de ${s.n} horas`, c.muted, 'center', 700, 11);
+    const k = s.k || 0, pos = k ? M.reloj(s.b, s.n, k).posiciones : [];
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.3; ctx.globalAlpha = .7;
+    for (let j = 1; j < pos.length; j++){ const a = P(pos[j - 1].hora, R - 12), b = P(pos[j].hora, R - 12); linea(a.x, a.y, b.x, b.y); } ctx.restore();
+    const visit = new Set(pos.map(q => q.hora));
+    visit.forEach(h => { const a = P(h, R - 12); ficha(c, a.x, a.y, 6, 'r'); });
+    if (pos.length){
+      const ult = pos[pos.length - 1], a = P(ult.hora, R - 22);
+      ctx.save(); ctx.strokeStyle = c.n; ctx.lineWidth = grosor('n', 3.2); ctx.lineCap = 'round'; linea(cx, cy, a.x, a.y); ctx.restore();
+      ficha(c, cx, cy, 5, 'n');
+    }
+    if (s.final){ const a = P(s.final.resto, R - 12); ctx.save(); ctx.strokeStyle = c.r; ctx.lineWidth = grosor('r', 3); ctx.beginPath(); ctx.arc(a.x, a.y, 12, 0, 7); ctx.stroke(); ctx.restore(); }
+    // la lista de la derecha: bᵏ → resto
+    const lx = cx + R + 34, dy = Math.min(20, (H - 40)/Math.max(8, pos.length + (s.final ? 2 : 0)));
+    rotulo(c, lx, 14, 'potencia → resto', c.muted, 'left', 700, 11);
+    pos.forEach((q, j) => { const y = 34 + j*dy;
+      partes(c, lx, y, [[`${s.b}${M.sup(q.k)}`, 'n'], [' → ', 'ink'], [q.hora, 'r']], 'left', 13, 800); });
+    if (s.ciclo && pos.length >= s.ciclo){
+      const y1 = 34 - dy/2 + 2, y2 = 34 + (s.ciclo - .5)*dy - 2, bx = lx + 62;
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; linea(bx, y1, bx + 6, y1); linea(bx + 6, y1, bx + 6, y2); linea(bx, y2, bx + 6, y2); ctx.restore();
+      if (W - bx > 80) rotulo(c, bx + 10, (y1 + y2)/2, `ciclo de ${s.ciclo}`, c.ink, 'left', 800, 11);
+      else { rotulo(c, bx + 10, (y1 + y2)/2 - 8, 'ciclo', c.ink, 'left', 800, 11); rotulo(c, bx + 10, (y1 + y2)/2 + 8, `de ${s.ciclo}`, c.ink, 'left', 800, 11); }
+    }
+    if (s.final){ const y = 34 + (pos.length + .6)*dy;
+      partes(c, lx, Math.min(y, H - 12), [[`${s.b}${M.sup(s.final.e)}`, 'n'], [' → ', 'ink'], [s.final.resto, 'r']], 'left', 15, 800); }
+  }
+
+  const DIB = { fichas:dibFichas, criba:dibCriba, tabla:dibTabla, cifras:dibCifras, producto:dibProducto, diagonal:dibDiagonal, reloj:dibReloj };
+  E.dibujar = () => { if (!W || !E.listo) return; const c = colores(); ctx.clearRect(0, 0, W, H); DIB[E.modo](c); };
+
+  // ----- lo que se arrastra: la manija de las filas (táctil, ratón y teclado) -----
+  function manijas(){ const s = E.st; if (E.modo !== 'fichas' || !s.slider || s.galeria) return []; const g = geoSlider(); return [{ id:'filas', x:g.X(Math.min(s.filas, s.n)), y:g.y }]; }
+  function aplicar(filas){
+    const s = E.st; filas = clamp(filas, 1, s.n);
+    if (filas === s.filas) return true;
+    if (s.mover) s.mover(filas); else s.filas = filas;
+    E.dibujar(); E.avisar(); return true;
+  }
+  function idCerca(p, radio){
+    if (E.ocupado || E.anim || !W) return null;
+    let best = null, d = radio;
+    for (const m of manijas()){ const z = Math.hypot(p.x - m.x, p.y - m.y); if (z < d){ d = z; best = m.id; } }
+    return best;
+  }
+  Celular.arrastre(cv, {
+    activo: () => !E.ocupado && !E.anim,
+    cerca: (p, r) => idCerca(p, r) !== null,
+    empezar: p => { arrastrando = idCerca(p, 40); E.dibujar(); },
+    mover: p => { if (!arrastrando) return; const g = geoSlider(); aplicar(Math.round(1 + (p.x - g.x0)/(g.x1 - g.x0)*(E.st.n - 1))); },
+    soltar: () => { arrastrando = null; E.dibujar(); },
+    sobre: v => { sobre = v; E.dibujar(); },
+  });
+  cv.addEventListener('keydown', e => {
+    if (E.ocupado || E.anim || !manijas().length) return;
+    const f = E.st.filas, d = (e.key === 'ArrowRight' || e.key === 'ArrowUp') ? 1 : (e.key === 'ArrowLeft' || e.key === 'ArrowDown') ? -1 : 0;
+    if (d && aplicar(f + d)) e.preventDefault();
+  });
+
+  E.leyenda = () => {
+    if (!idLey) return;
+    const it = (k, t) => `<span><i style="background:var(${k === 'ink' ? '--ink' : '--c-' + k})"></i>${t}</span>`;
+    document.getElementById(idLey).innerHTML = (E.ley || []).map(([k, t]) => it(k, t)).join('');
+  };
+  // Lecturas y descripción para lectores de pantalla (dicen lo mismo; antes de responder no adelantan la respuesta).
+  E.avisar = () => {
+    const filas = E.lect.map(k => k(E));
+    if (idLect) document.getElementById(idLect).innerHTML = filas.map(([k, t, v]) => `<div class="lectura" style="--k:var(${k === 'ink' ? '--ink' : '--c-' + k})"><span>${t}</span><b>${v}</b></div>`).join('');
+    if (idDesc && !E.anim){
+      const base = E.desc || { fichas:'Fichas acomodadas en filas.', criba:'Una cuadrícula con números.', tabla:'Una tabla de divisores.', cifras:'Cuatro números.',
+        producto:'Un rectángulo de fichas.', diagonal:'Cuatro rectángulos de cuadrícula.', reloj:'Un reloj de restos.' }[E.modo];
+      document.getElementById(idDesc).textContent = [base, ...filas.map(([, t, v]) => `${t}: ${v}.`)].join(' ');
+    }
+    if (E.alCambiar) E.alCambiar();
+  };
+  E.animar = (de, a, dur, paso, fin, lineal) => {
+    const tok = ++E.tok; E.anim = true;
+    tween(dur, f => { if (tok !== E.tok) return; paso(de + (a - de)*f); E.dibujar(); },
+      () => { if (tok !== E.tok) return; E.anim = false; E.avisar(); if (fin) fin(); }, lineal);
+  };
+  // Una lista de estados, uno tras otro (cada uno se queda ms[j] milisegundos).
+  E.secuencia = (estados, ms, fin) => {
+    const tok = ++E.tok; E.anim = true; let j = 0;
+    const sig = () => { if (tok !== E.tok) return;
+      if (j >= estados.length){ E.anim = false; E.avisar(); if (fin) fin(); return; }
+      Object.assign(E.st, estados[j]); E.redimensionar(); E.avisar(); const espera = Array.isArray(ms) ? ms[j] : ms; j++; setTimeout(sig, RM ? 0 : espera); };
+    sig();
+  };
+  E.parar = () => { E.tok++; E.anim = false; };
+  return E;
+}
+
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}" tabindex="-1"></p>`;
+// La criba como lista de estados: primero el 1, luego cada primo y los múltiplos que tacha, y al final los que quedan.
+function estadosCriba(N){
+  const C = M.criba(N), est = []; let m = { 1:{ uno:true } };
+  const copia = () => JSON.parse(JSON.stringify(m));
+  est.push({ marcas:copia(), actual:null, encabezado:'El 1 no es primo: se tacha aparte' });
+  for (const o of C.orden){
+    m[o.p] = { primo:true };
+    est.push({ marcas:copia(), actual:o.p, encabezado:`${o.p} es primo: se tachan sus múltiplos desde ${o.p}² = ${o.p*o.p}` });
+    for (const x of o.tacha){ m[x] = { por:[o.p] }; est.push({ marcas:copia(), actual:o.p }); }
+  }
+  C.primos.forEach(p => { m[p] = { primo:true }; });
+  est.push({ marcas:copia(), actual:null, encabezado:`${C.paraPor}² = ${C.paraPor*C.paraPor} pasa de ${N}: los que quedan son primos` });
+  return est;
+}
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1');
+const S = { step:0, max:0, pred:{}, ocupado:false, n2:12, f2:1, hall:{}, e5:[3, 2, 0], n7:3726 };
+
+// Números de la escena: todos salen del motor
+const R12 = M.rectangulos(12), CR = M.criba(30), D72 = M.divisores(72), T72 = M.tabla(72);
+const D360 = M.divisoresMultiplosDe(360, 6), T360 = M.tabla(360), C9 = [4812, 5129, 3726, 4627].map(n => M.criterio(n, 9));
+const RP = M.restoProducto(38, 47, 5);
+const fb = (letra, ok, txt) => (letra === ok ? txt : `Elegiste la ${letra.toUpperCase()}. ${txt} La correcta está marcada.`);
+const FUENTE = '<p class="fuente">No encontramos estudios con cifras sobre estos errores en divisores y divisibilidad; las opciones incorrectas son hipótesis nuestras, y la app las medirá en el colegio.</p>';
+
+const P_FICHAS = { id:'divisores-paso1', ok:'c', opts:[
+  ['a', String(R12.errores.sinExtremos), 'olvida-1-y-el-numero', 'hipotesis'],
+  ['b', String(R12.errores.soloPrimos), 'cuenta-solo-divisores-primos', 'hipotesis'],
+  ['c', String(R12.cantidad)],
+  ['d', String(R12.errores.sinOrden), 'cuenta-f-por-c-y-c-por-f-como-uno', 'hipotesis']],
+  fb:{ c:'¡Bien! Sirven 1, 2, 3, 4, 6 y 12 filas: justo los divisores de 12. Cada cantidad de filas que sale exacta es un divisor.',
+    a:'4 deja fuera la fila única de 12 y las 12 filas de 1. Esas también sirven: el 1 y el propio 12 siempre son divisores de 12.',
+    b:'2 cuenta solo los divisores primos, 2 y 3. Pero también salen exactas 1, 4, 6 y 12 filas: un divisor no tiene que ser primo.',
+    d:'3 filas de 4 y 4 filas de 3 forman el mismo rectángulo girado, pero son dos cantidades de filas distintas: 3 y 4. Hay que contar las dos.' } };
+
+const P_CRIBA = { id:'divisores-paso3', ok:'b', opts:[
+  ['a', String(CR.errores.imparesSonPrimos), 'impares-son-primos', 'hipotesis'],
+  ['b', String(CR.cantidad)],
+  ['c', String(CR.errores.unoEsPrimo), 'uno-es-primo', 'hipotesis'],
+  ['d', String(CR.errores.dosNoEsPrimo), 'dos-no-es-primo', 'hipotesis']],
+  fb:{ b:'¡Bien! Son 2, 3, 5, 7, 11, 13, 17, 19, 23 y 29.',
+    a:'No todos los impares son primos: 9 = 3 · 3, y también 15, 21, 25 y 27 tienen más de dos divisores. Y el 1 no es primo.',
+    c:'11 cuenta el 1. Pero el 1 tiene un solo divisor, él mismo, y un primo tiene exactamente dos. El 1 no es primo ni compuesto.',
+    d:'9 deja fuera al 2. El 2 es par, pero sus únicos divisores son 1 y 2: es primo, el único primo par.' } };
+
+const P_72 = { id:'divisores-paso4', ok:'b', opts:[
+  ['a', String(D72.errores.multiplicaExponentes), 'multiplica-exponentes-sin-sumar-1', 'hipotesis'],
+  ['b', String(D72.cantidad)],
+  ['c', String(D72.errores.sinExtremos), 'olvida-1-y-el-numero', 'hipotesis'],
+  ['d', String(D72.errores.sumaMasUno), 'suma-en-vez-de-multiplicar', 'hipotesis']],
+  fb:{ b:'¡Bien! (3 + 1)(2 + 1) = 4 · 3 = 12.',
+    a:'6 = 3 · 2 multiplica los exponentes. Pero un divisor puede tomar el 2 cero veces (2⁰ = 1): para el 2 hay 4 opciones (0, 1, 2 o 3 veces), no 3.',
+    c:'10 deja fuera al 1 y al 72. Los dos son divisores de 72: 72 = 1 · 72.',
+    d:'7 suma las opciones, (3 + 1) + (2 + 1). Pero cada opción del 2 se junta con cada opción del 3: se multiplican, como en una tabla de 4 filas y 3 columnas.' } };
+
+const P_360 = { id:'divisores-paso6', ok:'c', opts:[
+  ['a', String(D360.errores.todos), 'cuenta-todos-los-divisores', 'hipotesis'],
+  ['b', String(D360.errores.divisoresDeK), 'cuenta-los-divisores-de-k', 'hipotesis'],
+  ['c', String(D360.cantidad)],
+  ['d', String(D360.errores.divideCantidades), 'divide-cantidades-de-divisores', 'hipotesis']],
+  fb:{ c:'¡Bien! Para ser múltiplo de 6 = 2 · 3, el divisor tiene que tomar al menos un 2 y al menos un 3.',
+    a:'24 son todos los divisores de 360. Pero el 1, el 5 o el 9 no son múltiplos de 6.',
+    b:'4 es la cantidad de divisores de 6 (1, 2, 3 y 6). La pregunta es por los divisores de 360 que son múltiplos de 6, como 12, 30 o 360.',
+    d:'6 sale de 24 ÷ 4. Pero las cantidades de divisores no se dividen así: lo que se divide es el número, 360 ÷ 6 = 60.' } };
+
+const P_9 = { id:'divisores-paso7', unidad:U_DIV, ok:'c', opts:[
+  ['a', fmt(C9[0].n), 'criterio-del-3-para-el-9', 'hipotesis'],
+  ['b', fmt(C9[1].n), 'termina-en-9', 'hipotesis'],
+  ['c', fmt(C9[2].n)],
+  ['d', fmt(C9[3].n), 'dos-ultimas-cifras-para-el-9', 'hipotesis']],
+  fb:{ c:`¡Bien! 3 + 7 + 2 + 6 = ${C9[2].sumaCifras}, múltiplo de 9: 3726 = 9 · ${3726/9}.`,
+    a:`4 + 8 + 1 + 2 = ${C9[0].sumaCifras} es múltiplo de 3, pero no de 9: 4812 es divisible entre 3 y no entre 9. Para el 9, la suma de las cifras tiene que ser múltiplo de 9.`,
+    b:`Terminar en 9 no basta: 5129 = 9 · ${Math.floor(5129/9)} + ${C9[1].resto}. El criterio del 9 mira todas las cifras, no solo la última.`,
+    d:`27 es múltiplo de 9, pero mirar las dos últimas cifras sirve para el 4 y el 25, no para el 9: 4627 = 9 · ${Math.floor(4627/9)} + ${C9[3].resto}.` } };
+
+const P_PROD = { id:'divisores-paso8', unidad:U_DIV, ok:'b', opts:[
+  ['a', String(RP.errores.sumaRestos), 'suma-los-restos', 'hipotesis'],
+  ['b', String(RP.resto)],
+  ['c', String(RP.errores.sinReducir), 'no-reduce-el-producto-de-restos', 'hipotesis'],
+  ['d', String(RP.errores.porExceso), 'resto-por-exceso', 'hipotesis']],
+  fb:{ b:`¡Bien! Todo lo demás se arma en bloques de 5; solo la esquina de ${RP.ra} × ${RP.rb} = ${RP.esquina} fichas no, y de esas 6 sobra 1.`,
+    a:`0 sale de sumar los restos: ${RP.ra} + ${RP.rb} = 5. Pero el patio es un rectángulo: lo que no entra en bloques de 5 es la esquina de ${RP.ra} filas por ${RP.rb} columnas, ${RP.ra} · ${RP.rb} = ${RP.esquina} fichas.`,
+    c:`6 es la esquina de ${RP.ra} × ${RP.rb} fichas, pero con 6 fichas todavía se arma otro grupo de 5: sobra 1. Un resto entre 5 siempre es menor que 5.`,
+    d:`4 es lo que falta para completar otro grupo de 5: el resto por exceso (1 + 4 = 5). La pregunta es cuántas fichas sobran, es decir, el resto por defecto: 1.` } };
+
+// ----- paso 2: armar rectángulos -----
+const NS2 = [12, 18, 24, 36, 7, 13];
+const hallados = n => [...(S.hall[n] || [])].sort((a, b) => a - b);
+function anotar(){ const r = M.rectangulo(S.n2, S.f2); if (r.exacto) (S.hall[S.n2] = S.hall[S.n2] || new Set()).add(S.f2); }
+function prep2(){
+  anotar();
+  E.config({ modo:'fichas', st:{ n:S.n2, filas:S.f2, slider:true, hallados:hallados(S.n2), mover:f => { S.f2 = f; E.st.filas = f; anotar(); E.st.hallados = hallados(S.n2); } },
+    ley:[['n', 'fichas'], ['f', 'filas'], ['c', 'columnas'], ['r', 'las que sobran']],
+    desc:`${S.n2} fichas en filas iguales. Una manija abajo cambia la cantidad de filas.`,
+    lect:[() => ['n', 'fichas', String(S.n2)], () => ['f', 'filas', String(S.f2)], () => ['c', 'columnas', String(Math.floor(S.n2/S.f2))], () => ['r', 'sobran', String(S.n2 % S.f2)]],
+    alCambiar:vivo2 });
+}
+function vivo2(){
+  const d = $('vivo2'); if (!d) return;
+  const r = M.rectangulo(S.n2, S.f2), R = M.rectangulos(S.n2), h = hallados(S.n2), todos = h.length === R.cantidad;
+  const tipo = R.cantidad === 2 ? `${n_(S.n2)} solo se acomoda en 1 fila o en ${S.n2} filas: tiene exactamente dos divisores, es <b>primo</b>.` : `${n_(S.n2)} tiene más de dos divisores: es <b>compuesto</b>.`;
+  d.innerHTML = `<div class="eqs"><div class="eq">${n_(S.n2)} = ${f_(S.f2)} × ${c_(r.columnas)}${r.sobran ? ` + ${r_(r.sobran)}` : ''}<span class="note">${r.exacto ? `exacto: ${f_(S.f2)} es divisor de ${S.n2}` : `no es exacto: ${S.f2} no es divisor de ${S.n2}`}</span></div>
+    <div class="eq">filas exactas: ${h.length ? h.map(x => f_(x)).join(', ') : '—'}<span class="note">${todos ? `¡están todas! ${cd_(R.cantidad)} divisores` : `llevas ${h.length}; sigue probando`}</span></div></div>
+    ${todos ? `<p>${tipo}</p>` : ''}`;
+}
+// ----- paso 5: la tabla con exponentes que se eligen -----
+const MAX5 = [4, 2, 2], P5 = [2, 3, 5];
+const n5 = () => P5.reduce((t, p, k) => t*Math.pow(p, S.e5[k]), 1);
+function prep5(){
+  const n = n5(), T = M.tabla(n);
+  E.config({ modo:'tabla', st:{ n, vista:'tabla', sumas: T.paneles === 1 && n > 1 },
+    ley:[['n', 'el número'], ['p2', 'potencias de 2'], ['p3', 'potencias de 3'], ['p5', 'potencias de 5'], ['sd', 'sumas']],
+    desc:`La tabla de divisores de ${n}: filas, columnas y paneles con las potencias de cada primo.`,
+    lect:[() => ['n', 'número', fmt(n5())], () => ['cd', 'divisores', String(M.divisores(n5()).cantidad)], () => ['sd', 'suma', fmt(M.sumaDivisores(n5()).suma)]],
+    alCambiar:vivo5 });
+}
+function vivo5(){
+  const d = $('vivo5'); if (!d) return;
+  const n = n5(), D = M.divisores(n), SD = M.sumaDivisores(n), F = D.factores;
+  d.querySelectorAll('[data-e]').forEach(b => { const k = +b.dataset.k, mas = b.dataset.e === '+'; b.disabled = mas ? S.e5[k] >= MAX5[k] : S.e5[k] <= 0; });
+  P5.forEach((p, k) => { const t = d.querySelector(`[data-pot="${k}"]`); if (t) t.innerHTML = vp(p, `${p}${M.sup(S.e5[k])}`); });
+  const vivoEl = $('vivo5b'); if (!vivoEl) return;
+  vivoEl.innerHTML = n === 1 ? `<div class="eqs"><div class="eq">${n_('1')}: un solo divisor, él mismo<span class="note">sube algún exponente</span></div></div>` :
+    `<div class="eqs"><div class="eq">${n_(fmt(n))} = ${factH(n)}</div>
+    <div class="eq">${cd_('CD')} = ${F.map(x => `(${vp(x.p, x.e)} + 1)`).join('')} = ${cd_(D.cantidad)}<span class="note">cada primo, de 0 hasta su exponente</span></div>
+    <div class="eq">${sd_('SD')} = ${SD.terminos.map(t => `(${t.serie.map((q, j) => vp(t.p, j === 0 ? '1' : pot(t.p, j))).join(' + ')})`).join(' · ')}</div>
+    <div class="eq">${sd_('SD')} = ${SD.terminos.map(t => t.suma).join(' · ')} = ${sd_(fmt(SD.suma))}<span class="note">al multiplicar, sale cada divisor una vez</span></div>
+    <div class="eq">PD = ${D.cantidad % 2 ? `√(${n_(fmt(n))}<sup>${D.cantidad}</sup>)` : `${n_(fmt(n))}<sup>${D.cantidad/2}</sup>`}<span class="note">producto de divisores: PD = N<sup>CD/2</sup>, porque cada divisor d se junta con su pareja ${fmt(n)} ÷ d</span></div></div>
+    <p class="lista">Divisores: ${D.lista.map(fmt).join(', ')}</p>`;
+}
+// ----- paso 7: ver las fichas sobrantes de cada número -----
+function ver7(n){
+  S.n7 = n; E.parar(); Object.assign(E.st, { n, f:0 }); E.redimensionar();
+  document.querySelectorAll('#stepBody [data-n7]').forEach(q => q.setAttribute('aria-pressed', String(+q.dataset.n7 === n)));
+  const Z = M.cifrasNueve(n);
+  E.lect = [() => ['n', 'número', fmt(n)], () => ['ink', 'suma de cifras (fichas sueltas)', String(Z.sobrantes)], () => ['r', 'resto entre 9', String(Z.resto)]];
+  E.desc = `${fmt(n)}: cada cifra deja tantas fichas como vale; juntas son ${Z.sobrantes}, que en filas de 9 dejan ${Z.resto}.`;
+  E.animar(0, 1, 2200, f => { E.st.f = f; }, null, true);
+}
+
+const LEY_F = [['n', 'fichas'], ['f', 'filas'], ['c', 'columnas'], ['r', 'las que sobran'], ['cd', 'cantidad de rectángulos']];
+const ESTADO1 = { n:12, filas:1 };
+const GAL12 = { galeria:R12.exactos, parejas:true };
+const LECT1 = [() => ['cd', 'filas que sirven', String(R12.cantidad)]];
+const DESC1 = `Los seis rectángulos exactos de 12 fichas: ${R12.exactos.map(([f, c]) => `${f} × ${c}`).join(', ')}. Cada uno está unido a su pareja girada.`;
+const LECT3 = [() => ['ink', 'primos del 1 al 30', String(CR.cantidad)]];
+const DESC3 = `La criba del 1 al 30: el 1 se tacha aparte; se tachan los múltiplos de 2, de 3 y de 5. Quedan ${CR.primos.join(', ')}.`;
+const LEY_T = [['n', 'el número'], ['p2', 'potencias de 2'], ['p3', 'potencias de 3']];
+const LECT4 = [() => ['cd', 'divisores de 72', String(D72.cantidad)]];
+const DESC4 = 'La tabla de divisores de 72: 4 filas (2⁰ a 2³) por 3 columnas (3⁰ a 3²), 12 casillas, cada una un divisor.';
+const MULT6 = new Set(D360.lista);
+const LECT6 = [() => ['cd', 'múltiplos de 6', String(D360.cantidad)]];
+const DESC6 = `La tabla de divisores de 360 en dos paneles; se marcan los que tienen al menos un 2 y al menos un 3: ${D360.lista.join(', ')}.`;
+const LECT8 = [() => ['r', 'esquina', `${RP.ra} × ${RP.rb} = ${RP.esquina}`], () => ['r', 'sobran', String(RP.resto)]];
+const DESC8 = `El patio de 38 × 47 partido en bloques de 5: queda fuera solo la esquina de ${RP.ra} × ${RP.rb} = ${RP.esquina} fichas, que forman un grupo de 5 y sobra ${RP.resto}.`;
+
+const steps = [
+ { k:'Paso 1', t:'Predice: doce fichas en filas', gate:P_FICHAS,
+   prep:() => { const ya = !!S.pred[P_FICHAS.id];
+     E.config({ modo:'fichas', st: ya ? Object.assign({ n:12, filas:1 }, GAL12) : Object.assign({}, ESTADO1),
+       ley: ya ? [['n', 'fichas'], ['f', 'filas'], ['c', 'columnas'], ['cd', 'cantidad de rectángulos']] : [['n', 'fichas'], ['f', 'filas'], ['c', 'columnas']],
+       desc: ya ? DESC1 : '12 fichas en una sola fila.', lect: ya ? LECT1 : [] }); },
+   anima:fin => { const est = [], h = [];
+     for (let f = 1; f <= 12; f++){ if (12 % f === 0) h.push(f); est.push({ filas:f, hallados:h.slice(), cuenta: f === 12 }); }
+     est.push(GAL12);
+     E.ley = LEY_F; E.leyenda();
+     E.secuencia(est, est.map((x, j) => (j === est.length - 1 ? 0 : j === 11 ? 1400 : 520)), () => { E.ley = [['n', 'fichas'], ['f', 'filas'], ['c', 'columnas'], ['cd', 'cantidad de rectángulos']]; E.leyenda(); E.lect = LECT1; E.desc = DESC1; E.avisar(); fin(); }); },
+   body:() => `<p class="problem">Tienes ${n_('12 fichas')} y quieres acomodarlas en ${f_('filas')}, todas con la misma cantidad de fichas y sin que sobre ninguna.</p>
+   <p>¿Cuántas cantidades de ${f_('filas')} distintas sirven?</p>${opcionesHTML(P_FICHAS.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${n_('12')} = ${R12.parejas.map(([f, c]) => `${f_(f)} × ${c_(c)}`).join(' = ')}</div>
+     <div class="eq">divisores de 12: ${R12.filas.map(x => f_(x)).join(', ')}<span class="note">${cd_(R12.cantidad)} en total</span></div></div>
+   <p>Cada cantidad de ${f_('filas')} que sale exacta es un <b>divisor</b> de 12, y la cantidad de ${c_('columnas')} es su pareja: 12 ÷ ${f_('filas')}. Por eso los divisores vienen en parejas: 1 con 12, 2 con 6, 3 con 4. Con 5 filas, en cambio, ${r_('sobran 2')}: 5 no es divisor de 12.</p>
+   <p>El 1 y el propio número siempre son divisores: 1 fila con todas, o todas en filas de 1.</p>${FUENTE}</div>` },
+ { k:'Paso 2', t:'Arma tus rectángulos', explora:true,
+   prep:() => prep2(),
+   body:() => `<p class="problem">Elige un número de ${n_('fichas')} y arrastra la manija para cambiar la cantidad de ${f_('filas')}. Busca todas las que salen exactas, sin que ${r_('sobre')} ninguna.</p>
+   <div class="seg" role="group" aria-label="Cuántas fichas">${NS2.map(n => `<button type="button" data-n2="${n}" aria-pressed="${S.n2 === n}">${n} fichas</button>`).join('')}</div>
+   <div id="vivo2"></div>
+   <p>Un número que solo se acomoda en 1 fila o en una columna (exactamente dos divisores) es <b>primo</b>, como 7 y 13. Si tiene más, es <b>compuesto</b>. El 1 se acomoda de una sola manera: tiene un solo divisor y no es primo ni compuesto.</p>
+   <p class="hint">Con teclado: toca el dibujo; ← y → cambian las filas.</p>`,
+   luego:() => { $('stepBody').querySelectorAll('[data-n2]').forEach(b => b.onclick = () => { S.n2 = +b.dataset.n2; S.f2 = 1;
+     $('stepBody').querySelectorAll('[data-n2]').forEach(q => q.setAttribute('aria-pressed', String(q === b))); prep2(); vivo2(); }); } },
+ { k:'Paso 3', t:'Predice: los primos hasta 30', gate:P_CRIBA,
+   prep:() => { const ya = !!S.pred[P_CRIBA.id], est = estadosCriba(30), ult = est[est.length - 1];
+     E.config({ modo:'criba', st: ya ? Object.assign({ N:30 }, ult) : { N:30, marcas:{}, encabezado:'Los números del 1 al 30' },
+       ley: ya ? [['p2', 'tachados por 2'], ['p3', 'tachados por 3'], ['p5', 'tachados por 5']] : [],
+       desc: ya ? DESC3 : 'Los números del 1 al 30 en una cuadrícula.', lect: ya ? LECT3 : [] }); },
+   anima:fin => { const est = estadosCriba(30);
+     E.ley = [['p2', 'tachados por 2'], ['p3', 'tachados por 3'], ['p5', 'tachados por 5']]; E.leyenda();
+     E.secuencia(est, est.map(x => (x.encabezado ? 1300 : 170)), () => { E.lect = LECT3; E.desc = DESC3; E.avisar(); fin(); }); },
+   body:() => `<p class="problem">Un número primo tiene exactamente dos divisores: el 1 y él mismo.</p>
+   <p>¿Cuántos números primos hay del 1 al 30?</p>${opcionesHTML(P_CRIBA.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <p>Es la <b>criba de Eratóstenes</b>. Se tacha el 1. El 2 queda (es primo) y se tachan sus múltiplos en ${V('p2', 'rojo')}: 4, 6, 8… El siguiente que no está tachado, el 3, es primo: se tachan sus múltiplos en ${V('p3', 'verde')}. Luego el 5, en ${V('p5', 'café')}.</p>
+   <p>¿Por qué se empieza a tachar en el cuadrado (4, 9, 25)? Porque los múltiplos más chicos ya los tachó un primo menor: 6 = 2 · 3 ya cayó con el 2. Y se para en el 5: el siguiente primo, 7, empezaría en 7² = 49, que pasa de 30. Todo compuesto hasta 30 tiene un divisor primo menor o igual que 5.</p>
+   <div class="eqs"><div class="eq">primos del 1 al 30: ${CR.primos.join(', ')}<span class="note">${CR.cantidad}</span></div></div>${FUENTE}</div>` },
+ { k:'Paso 4', t:'Predice: los divisores de 72', gate:P_72,
+   prep:() => { const ya = !!S.pred[P_72.id];
+     E.config({ modo:'tabla', st: ya ? { n:72, vista:'tabla' } : { n:72, vista:'arbol' }, ley:LEY_T,
+       desc: ya ? DESC4 : 'El árbol de 72: se parte en 2 y 36, 36 en 2 y 18, 18 en 2 y 9, 9 en 3 y 3. Abajo, 72 = 2³ · 3².', lect: ya ? LECT4 : [] }); },
+   anima:fin => { Object.assign(E.st, { vista:'tabla', llenas:0 }); E.redimensionar();
+     E.animar(0, T72.cantidad, 3200, x => { E.st.llenas = Math.floor(x + 1e-9); }, () => { E.lect = LECT4; E.desc = DESC4; E.avisar(); fin(); }, true); },
+   body:() => `<p class="problem">El árbol parte ${n_('72')} en primos, sacando cada vez el primo más chico: ${n_('72')} = ${factH(72)}.</p>
+   <p>¿Cuántos divisores tiene ${n_('72')}?</p>${opcionesHTML(P_72.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">divisor = ${V('p2', '2<sup>i</sup>')} · ${V('p3', '3<sup>j</sup>')}<span class="note">i de 0 a 3, j de 0 a 2</span></div>
+     <div class="eq">${cd_('CD')}(72) = (${V('p2', '3')} + 1)(${V('p3', '2')} + 1) = 4 · 3 = ${cd_(D72.cantidad)}</div></div>
+   <p>Cada divisor de 72 se arma eligiendo cuántas veces toma el ${V('p2', '2')} (0, 1, 2 o 3 veces: 4 opciones, una por fila de la tabla) y cuántas el ${V('p3', '3')} (0, 1 o 2: 3 opciones, una por columna). Cada casilla es una elección, y no hay otras: ${cd_('4 · 3 = 12')}. Tomar un primo «0 veces» es lo que da el 1 y los divisores que no tienen ese primo, como el 9 o el 8. Por eso a cada exponente se le suma 1.</p>${FUENTE}</div>` },
+ { k:'Paso 5', t:'La tabla de divisores', explora:true,
+   prep:() => prep5(),
+   body:() => `<p class="problem">Elige los exponentes y mira cómo crece la tabla. Cada casilla es un divisor: una potencia de ${V('p2', '2')} por una de ${V('p3', '3')} por una de ${V('p5', '5')}.</p>
+   <div id="vivo5"><div class="stepper">${P5.map((p, k) => `<div><span class="pot" data-pot="${k}"></span><button type="button" data-e="-" data-k="${k}" aria-label="Bajar el exponente de ${p}">−</button><button type="button" data-e="+" data-k="${k}" aria-label="Subir el exponente de ${p}">+</button></div>`).join('')}</div></div>
+   <div id="vivo5b"></div>
+   <p>La ${sd_('suma de divisores')} sale de la misma tabla: cada fila suma lo mismo que la primera, por su potencia de 2. Por eso se multiplica la suma de las potencias de cada primo: (1 + 2 + 4 + …)(1 + 3 + 9 + …)(1 + 5 + …).</p>`,
+   luego:() => { $('stepBody').querySelectorAll('[data-e]').forEach(b => b.onclick = () => { const k = +b.dataset.k; S.e5[k] = clamp(S.e5[k] + (b.dataset.e === '+' ? 1 : -1), 0, MAX5[k]); prep5(); vivo5(); }); vivo5(); } },
+ { k:'Paso 6', t:'Predice: divisores que son múltiplos de 6', gate:P_360,
+   prep:() => { const ya = !!S.pred[P_360.id];
+     E.config({ modo:'tabla', st: ya ? { n:360, vista:'tabla', marca:MULT6, atenuar:true } : { n:360, vista:'tabla', llenas:0 },
+       ley: ya ? [['n', 'el número'], ['p2', 'potencias de 2'], ['p3', 'potencias de 3'], ['p5', 'potencias de 5'], ['cd', 'múltiplos de 6']] : [['n', 'el número'], ['p2', 'potencias de 2'], ['p3', 'potencias de 3'], ['p5', 'potencias de 5']],
+       desc: ya ? DESC6 : 'La tabla vacía de 360: 4 filas por 3 columnas en dos paneles.', lect: ya ? LECT6 : [] }); },
+   anima:fin => { E.ley = [['n', 'el número'], ['p2', 'potencias de 2'], ['p3', 'potencias de 3'], ['p5', 'potencias de 5'], ['cd', 'múltiplos de 6']]; E.leyenda();
+     E.animar(0, T360.cantidad, 2400, x => { E.st.llenas = Math.floor(x + 1e-9); }, () => esperar(500, () => {
+       Object.assign(E.st, { marca:MULT6, atenuar:true }); E.dibujar(); E.lect = LECT6; E.desc = DESC6; E.avisar(); fin(); }), true); },
+   body:() => `<p class="problem">${n_('360')} = ${factH(360)}. Sus divisores llenan una tabla de 4 × 3 casillas en dos paneles: sin el ${V('p5', '5')} y con el ${V('p5', '5')}.</p>
+   <p>¿Cuántos divisores de ${n_('360')} son múltiplos de 6?</p>${opcionesHTML(P_360.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${n_('360')} = 6 · 60, &nbsp; 60 = ${factH(60)}</div>
+     <div class="eq">${cd_('CD')}(60) = (2 + 1)(1 + 1)(1 + 1) = ${cd_(D360.cantidad)}<span class="note">cada múltiplo de 6 es 6 por un divisor de 60</span></div></div>
+   <p>En la tabla, un múltiplo de 6 necesita al menos un ${V('p2', '2')} (filas 2¹ a 2³: 3) y al menos un ${V('p3', '3')} (columnas 3¹ y 3²: 2), con o sin el ${V('p5', '5')} (2 paneles): ${cd_('3 · 2 · 2 = 12')} casillas. Es lo mismo que quitar el 6 y contar los divisores de 60.</p>${FUENTE}</div>` },
+ { k:'Paso 7', t:'Predice: el criterio del 9', gate:P_9,
+   prep:() => { const ya = !!S.pred[P_9.id];
+     E.config({ modo:'cifras', st: ya ? { n:S.n7, f:1 } : { lista:C9.map(x => x.n) },
+       ley: ya ? [['n', 'el número'], ['r', 'fichas que sobran']] : [['n', 'los números']],
+       desc: ya ? `${fmt(S.n7)}: cada cifra deja tantas fichas sobrantes como vale.` : 'Cuatro números: 4812, 5129, 3726 y 4627.', lect: [] }); },
+   anima:fin => { E.ley = [['n', 'el número'], ['r', 'fichas que sobran']]; E.leyenda();
+     Object.assign(E.st, { n:3726, f:0, lista:null }); E.redimensionar();
+     E.animar(0, 1, 2600, f => { E.st.f = f; }, () => { const Z = M.cifrasNueve(3726);
+       E.lect = [() => ['n', 'número', '3726'], () => ['ink', 'suma de cifras (fichas sueltas)', String(Z.sobrantes)], () => ['r', 'resto entre 9', String(Z.resto)]];
+       E.desc = 'En 3726, las fichas que sobran son 3 + 7 + 2 + 6 = 18: dos filas de 9, no sobra ninguna.'; E.avisar(); fin(); }, true); },
+   body:() => `<p class="problem">Un número es divisible entre 9 si se puede repartir en grupos de 9 sin que sobre nada.</p>
+   <p>¿Cuál de estos números es divisible entre 9?</p>${opcionesHTML(P_9.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">1000 = 999 + 1, &nbsp; 100 = 99 + 1, &nbsp; 10 = 9 + 1<span class="note">999, 99 y 9 son múltiplos de 9</span></div>
+     <div class="eq">${n_('3726')} = 3 · 999 + 7 · 99 + 2 · 9 + ${r_('(3 + 7 + 2 + 6)')}</div></div>
+   <p>Cada millar, centena o decena deja ${r_('1 ficha')} sobrante al repartirla de 9 en 9; por eso cada cifra deja tantas fichas como vale, y todas juntas son la <b>suma de las cifras</b>. El número es divisible entre 9 (es un múltiplo de 9, 9̊) si esas fichas forman filas de 9 completas. Con el 3 pasa lo mismo (999, 99 y 9 también son múltiplos de 3), pero alcanza con filas de 3: por eso todo múltiplo de 9 es múltiplo de 3, y no al revés.</p>
+   <div class="seg" role="group" aria-label="Ver otro número">${C9.map(x => `<button type="button" data-n7="${x.n}" aria-pressed="${x.n === S.n7}">${fmt(x.n)}</button>`).join('')}</div>
+   <p>Otros criterios: el 4 mira las dos últimas cifras (100 ya es múltiplo de 4) y el 8, las tres últimas; el 11: la suma de las cifras de orden impar menos la suma de las de orden par (contando desde la derecha) debe ser múltiplo de 11 (puede ser 0); es lo mismo que sumar y restar alternadamente desde la derecha, porque 10 = 11 − 1.</p>${FUENTE}</div>`,
+   luego:() => { $('stepBody').querySelectorAll('[data-n7]').forEach(b => b.onclick = () => { if (!S.ocupado) ver7(+b.dataset.n7); }); } },
+ { k:'Paso 8', t:'Predice: el resto de un producto', gate:P_PROD,
+   prep:() => { const ya = !!S.pred[P_PROD.id];
+     E.config({ modo:'producto', st:{ a:38, b:47, m:5, fase: ya ? 4 : 0 },
+       ley: ya ? [['n', 'las fichas del patio'], ['f', 'filas'], ['c', 'columnas'], ['r', 'la esquina que sobra']] : [['n', 'las fichas del patio'], ['f', 'filas'], ['c', 'columnas']],
+       desc: ya ? DESC8 : 'Un patio rectangular de 38 filas por 47 columnas de fichas.', lect: ya ? LECT8 : [] }); },
+   anima:fin => { E.ley = [['n', 'las fichas del patio'], ['f', 'filas'], ['c', 'columnas'], ['r', 'la esquina que sobra']]; E.leyenda();
+     E.secuencia([{ fase:1 }, { fase:2 }, { fase:3 }, { fase:4 }], [1400, 1400, 1600, 0], () => { E.lect = LECT8; E.desc = DESC8; E.avisar(); fin(); }); },
+   body:() => `<p class="problem">Un patio tiene ${f_('38 filas')} de ${c_('47 fichas')} cada una. Al dividir entre 5, 38 deja resto ${f_('3')} y 47 deja resto ${c_('2')}.</p>
+   <p>Si se juntan todas las fichas del patio en grupos de 5, ¿cuántas ${r_('sobran')}?</p>${opcionesHTML(P_PROD.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${f_('38')} · ${c_('47')} = (35 + ${f_('3')}) · (45 + ${c_('2')})</div>
+     <div class="eq">= 35 · 45 + 35 · ${c_('2')} + ${f_('3')} · 45 + ${f_('3')} · ${c_('2')}<span class="note">los tres primeros son múltiplos de 5</span></div>
+     <div class="eq">${f_('3')} · ${c_('2')} = ${RP.esquina} = 5 + ${r_(RP.resto)}<span class="note">resto ${r_(RP.resto)}</span></div></div>
+   <p>Las 35 filas y las 45 columnas se arman en bloques de 5 × 5; las tiras de 35 × 2 y de 3 × 45 también se reparten de 5 en 5. Solo queda fuera la <b>esquina</b> de ${f_('3')} × ${c_('2')}: <b>el resto de un producto es el resto del producto de los restos</b>. Con una suma, en cambio, se suman los restos: 38 + 47 = 85 deja 3 + 2 = 5, es decir, resto 0.</p>
+   <p>Así se calculan los restos de potencias enormes, como 7²⁰²⁶: en «¿Qué pasa si…?» los restos dan vueltas en un reloj.</p>${FUENTE}
+   <p><a class="btn primary" href="#que-pasa-si" style="display:inline-block; text-decoration:none">Seguir con ¿Qué pasa si…?</a></p></div>` },
+];
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; b.dataset.label = `Ir al ${s.k.toLowerCase()}: ${s.t}`;
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.prep) s.prep();
+  pintarDots();
+  if (s.gate) prediccion(s);
+  if (s.luego) s.luego();
+  if (E.alCambiar) E.alCambiar();
+  nav();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+  E.ocupado = S.ocupado;
+  pintarDots();
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max || (S.ocupado && k !== S.step);
+    // un paso bloqueado no delata su título
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : b.dataset.label);
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){ if (k > S.max) S.max = k; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const f = $('fb'); f.textContent = fb(p, P.ok, P.fb[p]); f.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0, P.unidad);
+    S.ocupado = true; nav();
+    E.compactar(false);
+    $('fb').focus({ preventScroll:true });
+    const paso = S.step, listo = () => { S.ocupado = false; E.avisar(); nav(); };
+    Celular.alResponder($('cv'), () => s.anima(listo), () => S.step === paso, { siNo:listo });
+  }));
+  pintar();
+}
+
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   El que no tiene pareja (cuadrados), la suma de divisores, PESI con la diagonal, los PESI con 12 (Euler) y la última
+   cifra de 7²⁰²⁶ en el reloj. La escena cambia recién después de responder. Un experimento se abre solo si los
+   anteriores ya tienen respuesta. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2');
+const R16 = M.rectangulos(16), S36 = M.sumaDivisores(36), T36 = M.tabla(36);
+const PARES = [[8, 15], [9, 21], [7, 14], [4, 9]], PP = M.parejasPesi(PARES), EU = M.euler(12), RP7 = M.restoPotencia(7, 2026, 10);
+const FUENTE = '<p class="fuente">No encontramos estudios con cifras sobre estos errores; las opciones incorrectas son hipótesis nuestras.</p>';
+const S = { k:0, pred:{}, t0:Date.now(), g1:16 };
+
+// Euler: los números del 1 al 12; primero se tachan los múltiplos de 2, luego los de 3; quedan los PESI con 12.
+function estadosEuler(){
+  const m = {}, est = [], copia = () => JSON.parse(JSON.stringify(m));
+  for (const p of [2, 3]){
+    est.push({ marcas:copia(), encabezado:`se tachan los múltiplos de ${p}` });
+    for (let k = p; k <= 12; k += p){ m[k] = m[k] || { por:[] }; m[k].por.push(p); est.push({ marcas:copia() }); }
+  }
+  EU.lista.forEach(k => { m[k] = { queda:true }; });
+  est.push({ marcas:copia(), encabezado:`quedan ${EU.phi}: los que no comparten ni el 2 ni el 3 con 12` });
+  return est;
+}
+const galeria = n => { const R = M.rectangulos(n); return { n, galeria:R.exactos, parejas:true }; };
+function verGaleria(n){
+  S.g1 = n; E.parar(); E.st = Object.assign({ filas:1 }, galeria(n)); E.redimensionar();
+  const R = M.rectangulos(n);
+  E.lect = [() => ['cd', `divisores de ${n}`, String(R.cantidad)]];
+  E.desc = `Los rectángulos exactos de ${n} fichas: ${R.exactos.map(([f, c]) => `${f} × ${c}`).join(', ')}.${R.cuadrado ? ` ${Math.sqrt(n)} × ${Math.sqrt(n)} no tiene pareja.` : ''}`;
+  E.avisar();
+  document.querySelectorAll('#body2 [data-g]').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.g === n)));
+}
+
+const EXPS = [
+  { id:'cuadrado', corto:'El que no tiene pareja',
+    q:`Los divisores de un número suelen venir en parejas: ${f_('filas')} × ${c_('columnas')} y ${c_('columnas')} × ${f_('filas')}. ¿Cuál de estos números tiene una cantidad impar de divisores?`,
+    opts:[['a', '15, porque es impar', 'numero-impar-cantidad-impar', 'hipotesis'], ['b', '16, porque es un cuadrado'],
+          ['c', '17, porque es primo', 'primo-un-solo-divisor', 'hipotesis'], ['d', 'Ninguno, porque los divisores van en parejas', 'siempre-en-parejas', 'hipotesis']],
+    ok:'b',
+    fb:{ a:'15 es impar, pero tiene 4 divisores: 1, 3, 5 y 15. Que el número sea impar no hace impar la cantidad de divisores.',
+      c:'17 tiene 2 divisores, el 1 y el 17: un primo tiene exactamente dos, una cantidad par.',
+      d:'Casi siempre van en parejas (d con n ÷ d), pero en un cuadrado hay un divisor que es su propia pareja: en 16, el 4, porque 4 · 4 = 16.' },
+    antes:ya => E.config({ modo:'fichas', st: ya ? Object.assign({ filas:1 }, galeria(S.g1)) : { pilas:[15, 16, 17], n:15, filas:1 },
+      ley: ya ? [['n', 'fichas'], ['f', 'filas'], ['c', 'columnas'], ['cd', 'cantidad de rectángulos']] : [['n', 'fichas']],
+      desc: ya ? 'Los rectángulos exactos de 16 fichas, unidos con su pareja; el 4 × 4 no tiene pareja.' : 'Tres filas de fichas: 15, 16 y 17.',
+      lect: ya ? [() => ['cd', `divisores de ${S.g1}`, String(M.rectangulos(S.g1).cantidad)]] : [] }),
+    despues:() => { S.g1 = 16; E.ley = [['n', 'fichas'], ['f', 'filas'], ['c', 'columnas'], ['cd', 'cantidad de rectángulos']]; E.leyenda();
+      const est = R16.filas.map(f => ({ pilas:null, n:16, filas:f, galeria:null })); est.push(galeria(16));
+      E.secuencia(est, est.map((x, j) => (j === est.length - 1 ? 0 : 700)), () => verGaleria(16)); },
+    exp:() => `<div class="eqs"><div class="eq">${n_('16')} = ${R16.parejas.map(([f, c]) => `${f_(f)} × ${c_(c)}`).join(' = ')}<span class="note">el ${f_('4')} × ${c_('4')} es su propia pareja</span></div>
+      <div class="eq">${n_('16')} = ${factH(16)} → ${cd_('CD')} = ${V('p2', '4')} + 1 = ${cd_(R16.cantidad)}</div></div>
+      <p>Las parejas ${f_('d')} y ${c_('16 ÷ d')} son distintas salvo cuando d · d = 16. Por eso <b>solo los cuadrados perfectos tienen una cantidad impar de divisores</b>: en la descomposición de un cuadrado, todos los exponentes son pares, y cada (exponente + 1) es impar.</p>
+      <div class="seg" role="group" aria-label="Ver otro número">${[15, 16, 17, 36].map(n => `<button type="button" data-g="${n}" aria-pressed="${n === S.g1}">${n}</button>`).join('')}</div>${FUENTE}`,
+    luego:() => document.querySelectorAll('#body2 [data-g]').forEach(b => b.onclick = () => verGaleria(+b.dataset.g)) },
+
+  { id:'suma', corto:'La suma de divisores',
+    q:`${n_('36')} = ${factH(36)}. ¿Cuánto suman todos los divisores de ${n_('36')}?`,
+    opts:[['a', String(S36.errores.cantidad), 'cantidad-en-vez-de-suma', 'hipotesis'], ['b', String(S36.errores.soloExtremos), 'suma-solo-1-y-la-potencia-mayor', 'hipotesis'],
+          ['c', String(S36.suma)], ['d', String(S36.errores.sinElNumero), 'olvida-el-propio-numero', 'hipotesis']],
+    ok:'c',
+    fb:{ a:'9 es la cantidad de divisores, (2 + 1)(2 + 1). La pregunta es cuánto suman.',
+      b:'50 = (1 + 4)(1 + 9) usa solo el 1 y la potencia mayor de cada primo. Faltan el 2 y el 3: (1 + 2 + 4)(1 + 3 + 9).',
+      d:'55 deja fuera al propio 36. El 36 es divisor de 36, y la suma de todos los divisores lo incluye; 55 es la suma de los divisores propios.' },
+    antes:ya => E.config({ modo:'tabla', st: ya ? { n:36, vista:'tabla', sumas:true } : { n:36, vista:'tabla', llenas:0 },
+      ley: ya ? [['n', 'el número'], ['p2', 'potencias de 2'], ['p3', 'potencias de 3'], ['sd', 'sumas']] : [['n', 'el número'], ['p2', 'potencias de 2'], ['p3', 'potencias de 3']],
+      desc: ya ? 'La tabla de divisores de 36 con la suma de cada fila: 13, 26 y 52; en total 91.' : 'La tabla vacía de 36: 3 filas por 3 columnas.',
+      lect: ya ? [() => ['sd', 'suma de divisores', String(S36.suma)]] : [] }),
+    despues:() => { E.ley = [['n', 'el número'], ['p2', 'potencias de 2'], ['p3', 'potencias de 3'], ['sd', 'sumas']]; E.leyenda();
+      E.animar(0, T36.cantidad, 1800, x => { E.st.llenas = Math.floor(x + 1e-9); }, () => {
+        E.st.sumas = 0; E.redimensionar();
+        E.secuencia([1, 2, 3, 4].map(k => ({ sumas: k > 3 ? true : k })), [900, 900, 900, 0], () => { E.lect = [() => ['sd', 'suma de divisores', String(S36.suma)]]; E.desc = 'Cada fila suma 13 veces su potencia de 2: 13, 26 y 52; en total 91.'; E.avisar(); }); }, true); },
+    exp:() => `<div class="eqs"><div class="eq">fila ${V('p2', '2⁰')}: 1 + 3 + 9 = 13; fila ${V('p2', '2¹')}: 2 · 13 = 26; fila ${V('p2', '2²')}: 4 · 13 = 52</div>
+      <div class="eq">${sd_('SD')}(36) = (${V('p2', '1 + 2 + 4')})(${V('p3', '1 + 3 + 9')}) = 7 · 13 = ${sd_(S36.suma)}</div></div>
+      <p>Cada fila de la tabla es la primera fila multiplicada por su potencia de ${V('p2', '2')}. Sumar las tres filas es sumar (1 + 2 + 4) veces la primera: por eso la suma de divisores se arma multiplicando la suma de las potencias de cada primo, <b>todas</b>, desde la potencia 0 (el 1) hasta la mayor.</p>${FUENTE}` },
+
+  { id:'pesi', corto:'Primos entre sí',
+    q:'Dos números son PESI (primos entre sí) si su único divisor común es el 1. ¿Cuántas de estas parejas son PESI: (8, 15), (9, 21), (7, 14) y (4, 9)?',
+    opts:[['a', String(PP.errores.ambosPrimos), 'pesi-es-que-ambos-sean-primos', 'hipotesis'], ['b', String(PP.errores.algunoPrimo), 'basta-que-uno-sea-primo', 'hipotesis'],
+          ['c', String(PP.cantidad)], ['d', String(PP.errores.ningunoDivide), 'basta-que-ninguno-divida-al-otro', 'hipotesis']],
+    ok:'c',
+    fb:{ a:'0 sería si PESI quisiera decir «los dos son primos». Pero 8 y 15 no son primos y solo comparten el 1: son PESI. Lo mismo 4 y 9.',
+      b:'(7, 14) tiene un primo, el 7, pero el 7 divide a los dos: su MCD es 7. Que uno sea primo no basta.',
+      d:'9 no divide a 21, pero los dos son múltiplos de 3. Para ser PESI no basta que ninguno divida al otro: no deben compartir ningún divisor mayor que 1.' },
+    antes:ya => E.config({ modo:'diagonal', st:{ pares:PARES, diagonal:ya, f:1 }, ley:[['f', 'filas'], ['c', 'columnas']],
+      desc: ya ? 'Cuatro cuadrículas con su diagonal: la de 8 × 15 y la de 4 × 9 no tocan ningún punto; la de 9 × 21 toca 2 y la de 7 × 14 toca 6.' : 'Cuatro cuadrículas: 8 × 15, 9 × 21, 7 × 14 y 4 × 9.',
+      lect: ya ? [() => ['ink', 'parejas PESI', String(PP.cantidad)]] : [] }),
+    despues:() => { E.st.diagonal = true; E.animar(0, 1, 2200, f => { E.st.f = f; }, () => { E.lect = [() => ['ink', 'parejas PESI', String(PP.cantidad)]];
+      E.desc = 'La diagonal de 8 × 15 y la de 4 × 9 no pasan por ningún punto de la cuadrícula; la de 9 × 21 pasa por 2 y la de 7 × 14 por 6.'; E.avisar(); }); },
+    exp:() => `<div class="eqs">${PP.pares.map(x => `<div class="eq">MCD(${f_(x.a)}, ${c_(x.b)}) = ${x.mcd}<span class="note">${x.pesi ? 'PESI' : `no son PESI: comparten el ${x.mcd}`}</span></div>`).join('')}</div>
+      <p>La diagonal de una cuadrícula de ${f_('a')} × ${c_('b')} se parte en tantos tramos iguales como el MCD(a, b): pasa por MCD − 1 puntos de la cuadrícula antes de llegar a la esquina. Si son PESI, no toca ninguno. <b>PESI no quiere decir «primos»</b>: 8 y 15 son compuestos y son PESI; 7 es primo y 7 y 14 no lo son.</p>${FUENTE}` },
+
+  { id:'euler', corto:'Los PESI con 12',
+    q:`¿Cuántos números del 1 al 12 son PESI con 12?`,
+    opts:[['a', String(EU.errores.nMenos1), 'n-menos-1-como-si-fuera-primo', 'hipotesis'], ['b', String(EU.errores.primosMenores), 'cuenta-los-primos-menores', 'hipotesis'],
+          ['c', String(EU.errores.sinInclusion), 'resta-sin-devolver-los-comunes', 'hipotesis'], ['d', String(EU.phi)]],
+    ok:'d',
+    fb:{ a:'11 = 12 − 1 sería si 12 fuera primo: para un primo p, todos los menores son PESI con él (p − 1). Pero 12 comparte el 2 o el 3 con muchos números.',
+      b:'5 cuenta los primos menores que 12 (2, 3, 5, 7, 11). Pero 2 y 3 no son PESI con 12, y el 1 sí lo es.',
+      c:'2 = 12 − 6 − 4 resta los múltiplos de 2 y los de 3; pero el 6 y el 12 son múltiplos de los dos y se restaron dos veces: hay que devolverlos, 12 − 6 − 4 + 2 = 4.' },
+    antes:ya => { const est = estadosEuler(); E.config({ modo:'criba', st: ya ? Object.assign({ N:12 }, est[est.length - 1]) : { N:12, marcas:{}, encabezado:'Los números del 1 al 12' },
+      ley: ya ? [['p2', 'múltiplos de 2'], ['p3', 'múltiplos de 3']] : [], desc: ya ? `Del 1 al 12 se tachan los múltiplos de 2 y los de 3 (el 6 y el 12, dos veces). Quedan ${EU.lista.join(', ')}.` : 'Los números del 1 al 12.',
+      lect: ya ? [() => ['ink', 'PESI con 12', String(EU.phi)]] : [] }); },
+    despues:() => { const est = estadosEuler(); E.ley = [['p2', 'múltiplos de 2'], ['p3', 'múltiplos de 3']]; E.leyenda();
+      E.secuencia(est, est.map(x => (x.encabezado ? 1200 : 300)), () => { E.lect = [() => ['ink', 'PESI con 12', String(EU.phi)]]; E.desc = `Quedan ${EU.lista.join(', ')}: ${EU.phi} números.`; E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">12 − ${V('p2', '6')} − ${V('p3', '4')} + 2 = ${EU.phi}<span class="note">el 6 y el 12 se restaron dos veces</span></div>
+      <div class="eq">φ(12) = 12 · (1 − ${V('p2', '1/2')}) · (1 − ${V('p3', '1/3')}) = ${EU.phi}<span class="note">la función de Euler</span></div>
+      <div class="eq">φ(${V('p2', '2²')} · ${V('p3', '3')}) = ${V('p2', '2¹ · 1')} · ${V('p3', '3⁰ · 2')} = ${EU.phi}<span class="note">pᵃ⁻¹(p − 1) por cada primo</span></div></div>
+      <p>Un número es PESI con 12 = ${factH(12)} si no es múltiplo de ${V('p2', '2')} ni de ${V('p3', '3')}. En la cuadrícula, los ${V('p2', 'rojos')} son los pares y los ${V('p3', 'verdes')} los múltiplos de 3; el 6 y el 12 tienen las dos marcas. Quedan 1, 5, 7 y 11. La fórmula de Euler hace la misma cuenta: la mitad no es par, y de esos, dos tercios no son múltiplos de 3.</p>${FUENTE}` },
+
+  { id:'reloj', unidad:U_DIV, corto:'La última cifra de 7²⁰²⁶',
+    q:`¿En qué cifra termina ${n_('7²⁰²⁶')}?`,
+    opts:[['a', String(RP7.errores.base), 'se-queda-con-la-cifra-de-la-base', 'hipotesis'], ['b', String(RP7.resto)],
+          ['c', String(RP7.errores.corrido), 'ciclo-corrido-en-uno', 'hipotesis'], ['d', String(RP7.errores.restoExponente), 'resto-del-exponente-como-respuesta', 'hipotesis']],
+    ok:'b',
+    fb:{ a:'7 es la cifra de la base. Pero al multiplicar por 7, la última cifra cambia: 7, 49, 343, 2401…',
+      c:'3 corre el ciclo un lugar: 2026 = 4 · 506 + 2 deja 2 pasos, y el segundo lugar del ciclo 7, 9, 3, 1 es el 9.',
+      d:'2 es el resto de dividir 2026 entre 4. Ese 2 dice en qué lugar del ciclo caes; no es la cifra.' },
+    antes:ya => E.config({ modo:'reloj', st:{ b:7, n:10, k: ya ? 8 : 1, ciclo: ya ? RP7.periodo : 0, final: ya ? { e:2026, resto:RP7.resto } : null },
+      ley: ya ? [['n', 'la potencia (aguja)'], ['r', 'la última cifra']] : [['n', 'la potencia (aguja)'], ['r', 'la última cifra']],
+      desc: ya ? `El reloj de 10 horas: la aguja salta 7, 9, 3, 1 y vuelve al 7. 7²⁰²⁶ cae en el ${RP7.resto}.` : 'Un reloj de 10 horas con la aguja en el 7: la última cifra de 7¹.',
+      lect: ya ? [() => ['r', 'última cifra', String(RP7.resto)]] : [] }),
+    despues:() => { E.secuencia([1, 2, 3, 4, 5, 6, 7, 8].map(k => ({ k, ciclo: k >= 5 ? RP7.periodo : 0, final:null })).concat([{ final:{ e:2026, resto:RP7.resto } }]),
+      [800, 800, 800, 800, 800, 800, 800, 1200, 0], () => { E.lect = [() => ['r', 'última cifra', String(RP7.resto)]]; E.desc = `La aguja salta 7, 9, 3, 1 y se repite. 2026 = 4 · 506 + 2: 7²⁰²⁶ cae donde 7², en el ${RP7.resto}.`; E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">${n_('7<sup>1</sup>')} → ${r_('7')}, ${n_('7<sup>2</sup>')} → ${r_('9')}, ${n_('7<sup>3</sup>')} → ${r_('3')}, ${n_('7<sup>4</sup>')} → ${r_('1')}, ${n_('7<sup>5</sup>')} → ${r_('7')}, …<span class="note">ciclo de 4</span></div>
+      <div class="eq">2026 = 4 · 506 + 2<span class="note">506 vueltas y 2 pasos; 4 es el gaussiano de 7 módulo 10</span></div>
+      <div class="eq">${n_('7<sup>2026</sup>')} termina como ${n_('7<sup>2</sup>')}: en ${r_(RP7.resto)}</div></div>
+      <p>La última cifra es el resto entre 10, y el resto de un producto solo depende de los restos (paso 8): por eso, para saber la última cifra de 7ⁿ⁺¹ basta multiplicar la de 7ⁿ por 7. Como solo hay 10 horas, la aguja tiene que repetir un lugar y desde ahí da vueltas: son los <b>restos potenciales</b>. Se divide el exponente entre el largo del ciclo (el gaussiano); el resto dice cuántos pasos dar después de las vueltas completas (si da 0, se cae en el último del ciclo).</p>${FUENTE}` },
+];
+// Un experimento se abre solo si todos los anteriores ya tienen respuesta; los respondidos se revisitan libremente.
+const abierto = k => EXPS.slice(0, k).every(x => !!S.pred[x.id]);
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => abierto(k)
+    ? `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  if (k < 0 || k >= EXPS.length || !abierto(k)) return;
+  E.parar();
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  E.compactar(!ya);
+  x.antes(ya);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p class="problem">${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const f = $('fb2');
+    f.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    f.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    if (x.luego) x.luego();
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    $('otra2').onclick = () => { E.parar(); x.antes(false); Celular.alResponder($('cv2'), () => { x.despues(); E.avisar(); }, () => S.k === k); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar(); botones();
+    E.compactar(false); $('fb2').focus({ preventScroll:true });
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0, x.unidad);
+    Celular.alResponder($('cv2'), () => { x.despues(); E.leyenda(); E.dibujar(); E.avisar(); }, () => S.k === k);
+  });
+  pintar();
+}
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

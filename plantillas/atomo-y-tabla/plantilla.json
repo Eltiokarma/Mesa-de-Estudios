@@ -1,0 +1,16 @@
+{
+  "id": "atomo-y-tabla",
+  "titulo": "El átomo y la tabla periódica",
+  "formato": "escena",
+  "unidades": [
+    "quimica.estructura-atomica",
+    "quimica.tabla-periodica"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}

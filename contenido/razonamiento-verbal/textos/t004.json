@@ -1,6 +1,6 @@
 {
   "id": "t004",
-  "version": 1,
+  "version": 2,
   "titulo": "Cuerdas que guardan cuentas",
   "tema": "Historia · el Tahuantinsuyo",
   "grado": 4,
@@ -73,9 +73,14 @@
         },
         "explicacion": "La oración 8 es la conclusión del autor: por encima del debate, los quipus fueron un sistema de registro eficaz.",
         "explicaciones": {
+          "o1": "La primera oración presenta los quipus: es el punto de partida, no la conclusión del autor.",
+          "o2": "Dice cómo se anotaban los números: es un detalle.",
+          "o3": "Dice quiénes hacían los quipus y qué registraban: es información de base.",
+          "o4": "Plantea la pregunta del debate, pero no la conclusión.",
           "o5": "Es la postura de \"algunos investigadores\", no la del autor.",
           "o6": "Es la postura de \"otros\" investigadores, no la del autor.",
-          "o4": "Plantea la pregunta del debate, pero no la conclusión."
+          "o7": "Dice que ninguna postura está demostrada; prepara la conclusión, pero no la dice.",
+          "ninguna": "La oración 8 sí la dice: la falta de letras no significa falta de registros."
         }
       },
       "enunciado": "¿Cuál es la idea principal del texto?",
@@ -90,7 +95,7 @@
           "explicacion": "Junta el debate (oraciones 4 a 7) con la conclusión del autor (oración 8)."
         },
         {
-          "t": "La clase de nudo y su posición en la cuerda indicaban si se trataba de unidades, decenas o centenas.",
+          "t": "La clase de nudo y su posición en la cuerda indicaban si se trataba de unidades, de decenas o de centenas.",
           "codigo": "RV1",
           "origen": "o2",
           "explicacion": "Es un detalle sobre cómo se anotaban los números. El texto lo usa como punto de partida."
@@ -127,7 +132,12 @@
           "se-deduce": "RV7",
           "lo-contradice": null
         },
-        "explicacion": "El texto presenta esa postura como de \"algunos investigadores\", y el autor dice que no está demostrada. No sabemos qué cree él."
+        "explicacion": "El texto presenta esa postura como de \"algunos investigadores\", y el autor dice que no está demostrada. No sabemos qué cree él.",
+        "explicaciones": {
+          "lo-dice": "El texto cuenta lo que creen \"algunos investigadores\", no lo que cree el autor. Atribuirle esa postura es confundir su voz con la de otros.",
+          "se-deduce": "Nada en el texto permite concluir qué cree el autor sobre los relatos: él dice que ninguna postura está demostrada (oración 7).",
+          "lo-contradice": "El texto no dice que el autor rechace esa idea; dice que no está demostrada, que no es lo mismo."
+        }
       },
       "enunciado": "Es compatible con el texto afirmar que",
       "alternativas": [
@@ -147,10 +157,10 @@
           "explicacion": "Repite palabras de la oración 5, pero le agrega \"está comprobado\", y la oración 7 dice que ninguna postura está demostrada."
         },
         {
-          "t": "los cronistas españoles inventaron lo que contaron sobre los quipus.",
+          "t": "la segunda postura niega que los quipucamayos conocieran genealogías y relatos.",
           "codigo": "RV7",
           "origen": "o6",
-          "explicacion": "El texto no dice que los cronistas inventaran nada; la segunda postura solo explica sus relatos de otra manera."
+          "explicacion": "La segunda postura no niega que conocieran los relatos: dice que los guardaban en la memoria y que el quipu solo los ayudaba a recordar (oración 6)."
         },
         {
           "t": "ningún quipu podrá ser leído jamás.",
@@ -216,6 +226,6 @@
     "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
     "fecha": "2026-11-06",
     "veredicto": "aprobado",
-    "notas": "A ciegas: 5 de 5. Cambios: \"administraron un Estado con cuerdas\" exageraba (ahora \"llevaron las cuentas\"), distractor RV8 de p2 que era cierto y no chocaba con el texto reescrito, explicación de RV11 corregida."
+    "notas": "A ciegas: 5 de 5. Cambios: \"administraron un Estado con cuerdas\" exageraba (ahora \"llevaron las cuentas\"), distractor RV8 de p2 que era cierto y no chocaba con el texto reescrito, explicación de RV11 corregida. Segunda ronda (pedidos de la integración): explicaciones en todo paso previo, versión 2 y revisión a ciegas de los cambios (coincidió con todas las claves). Distractor de p2 sobre la segunda postura reescrito (el de los cronistas era defendible)."
   }
 }

@@ -77,7 +77,7 @@ Respaldo: **documentado** (hay una cifra en un estudio publicado, vista en dos f
 | --- | --- | --- | --- | --- | --- |
 | AR14 | **Velocidad media como promedio simple** de las velocidades, en tramos de igual distancia. | Ida a 60 km/h y vuelta a 40 km/h: "50 km/h" (correcto: 48 km/h). | Hay un estudio con adultos y alumnos de 16 años que atribuye el error a la palabra "promedio"; no vi su cifra. | Parcial | *Why is calculating the average speed difficult?* (ResearchGate) |
 | AR15 | **Promedio de promedios sin ponderar.** | 30 alumnos promedian 14 y 20 alumnos promedian 16: "15" (correcto: 14,8). | Pollatsek, Lima y Well (1981) mostraron que universitarios que saben la fórmula de la media no ponderan al combinar grupos. No vi cifras. | Parcial | Pollatsek, Lima y Well (1981) |
-| AR16 | **El interés compuesto se calcula como simple** (o no se entiende que el interés gana interés). | S/ 1000 al 10 % anual durante 3 años: "S/ 1300" (compuesto: S/ 1331). | Adultos de 39 países: el 42 % respondió bien la pregunta de interés compuesto (OECD/INFE, 2023). No encontré la cifra peruana. | Documentado (en adultos) | OECD/INFE (2023); Lusardi y Mitchell (pregunta original) |
+| AR16 | **El interés compuesto se calcula como simple** (o no se entiende que el interés gana interés). | S/ 1000 al 10 % anual durante 3 años: "S/ 1300" (compuesto: S/ 1331). | Adultos de 39 países: el 42 % respondió bien la pregunta de interés compuesto (OECD/INFE, 2023). No encontré la cifra peruana. | Parcial (en adultos; la cifra es de aciertos, no del error) | OECD/INFE (2023); Lusardi y Mitchell (pregunta original) |
 
 ### Combinatoria y probabilidad
 
@@ -113,7 +113,7 @@ Errores de cálculo típicos de los problemas de academia. No encontré estudios
 | Variación porcentual con el valor final como base | AR3 |
 | Regla de tres compuesta: clasificar mal una magnitud | AR8 |
 | Mezclas: precio medio como promedio simple sin pesar cantidades | AR15 |
-| Interés: tasa mensual y anual mezcladas sin convertir | AR16 |
+| Interés: tasa mensual y anual mezcladas sin convertir | Sin dato (no es AR16; se parece a AR7) |
 | Descuento comercial confundido con descuento racional | Sin dato |
 | MCM de fracciones como MCM de numeradores y denominadores por separado | AR12, AR13 |
 | Cantidad de términos de una progresión: (último − primero)/razón, sin el +1 | Sin dato |
@@ -121,6 +121,7 @@ Errores de cálculo típicos de los problemas de academia. No encontré estudios
 | Probabilidad de "al menos uno" sumando probabilidades | AR20 |
 | Probabilidad condicional confundida con la conjunta | Sin dato en esta revisión (hay literatura sobre la falacia de la condicional transpuesta) |
 | Ángulo entre agujas sin el avance del horario (a las 3:30, 90°) | AR7 (se ignora una magnitud que cambia a la vez) |
+| Campanadas tratadas como proporción (si 6 campanadas tardan 5 s, 12 tardan 10 s) | AR7 |
 | Calendarios: no contar el 29 de febrero o el día de partida | Sin dato |
 | Edades: plantear la ecuación con las edades de hoy en una frase del futuro | RM1 |
 

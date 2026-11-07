@@ -46,7 +46,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "vectores"
+     ]
     },
     {
      "id": "fisica.movimiento-rectilineo",
@@ -136,7 +138,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "estatica"
+     ]
     },
     {
      "id": "fisica.dinamica",
@@ -647,7 +651,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "atomo-y-tabla"
+     ]
     },
     {
      "id": "quimica.tabla-periodica",
@@ -676,7 +682,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "atomo-y-tabla"
+     ]
     },
     {
      "id": "quimica.enlace-quimico",
@@ -795,7 +803,9 @@
      },
      "potencial_visual": "medio",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "balance-reacciones"
+     ]
     },
     {
      "id": "quimica.estequiometria",
@@ -1375,7 +1385,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "polinomios"
+     ]
     },
     {
      "id": "algebra.division-de-polinomios",
@@ -1402,7 +1414,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "polinomios"
+     ]
     },
     {
      "id": "algebra.factorizacion",
@@ -1459,7 +1473,9 @@
      },
      "potencial_visual": "medio",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "polinomios"
+     ]
     },
     {
      "id": "algebra.funciones",
@@ -1518,7 +1534,8 @@
      "potencial_visual": "alto",
      "grado": 5,
      "plantillas": [
-      "grafica-perillas"
+      "grafica-perillas",
+      "exponenciales-logaritmos"
      ]
     },
     {
@@ -1546,7 +1563,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "exponenciales-logaritmos"
+     ]
     },
     {
      "id": "algebra.numeros-complejos",
@@ -1878,7 +1897,9 @@
      },
      "potencial_visual": "medio",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "interes"
+     ]
     },
     {
      "id": "aritmetica.mezclas-y-aleaciones",
@@ -2079,7 +2100,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "divisores"
+     ]
     },
     {
      "id": "aritmetica.numeros-primos-y-divisores",
@@ -2108,7 +2131,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "divisores"
+     ]
     },
     {
      "id": "aritmetica.mcd-y-mcm",
@@ -2647,7 +2672,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "solidos"
+     ]
     },
     {
      "id": "geometria.prisma-y-piramide",
@@ -2678,7 +2705,8 @@
      "potencial_visual": "alto",
      "grado": 5,
      "plantillas": [
-      "ampliadora"
+      "ampliadora",
+      "solidos"
      ]
     },
     {
@@ -2710,7 +2738,8 @@
      "potencial_visual": "alto",
      "grado": 5,
      "plantillas": [
-      "ampliadora"
+      "ampliadora",
+      "solidos"
      ]
     },
     {
@@ -2735,7 +2764,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "geometria-analitica"
+     ]
     },
     {
      "id": "geometria.razonamiento-con-figuras",
@@ -3008,7 +3039,9 @@
      },
      "potencial_visual": "medio",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "identidades-trig"
+     ]
     },
     {
      "id": "trigonometria.arcos-compuestos",
@@ -3032,7 +3065,9 @@
      },
      "potencial_visual": "medio",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "identidades-trig"
+     ]
     },
     {
      "id": "trigonometria.arcos-multiples",
@@ -3058,7 +3093,9 @@
      },
      "potencial_visual": "medio",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "identidades-trig"
+     ]
     },
     {
      "id": "trigonometria.transformaciones-trigonometricas",
@@ -3470,7 +3507,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "relojes-calendarios"
+     ]
     },
     {
      "id": "razonamiento-matematico.certezas",
@@ -4171,6 +4210,41 @@
     "/plantillas/angulo-inscrito/papel.json"
    ]
   },
+  "atomo-y-tabla": {
+   "id": "atomo-y-tabla",
+   "titulo": "El átomo y la tabla periódica",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.estructura-atomica",
+    "quimica.tabla-periodica"
+   ],
+   "url": "/plantillas/atomo-y-tabla/index.html",
+   "papel": "/plantillas/atomo-y-tabla/papel.json",
+   "archivos": [
+    "/plantillas/atomo-y-tabla/index.html",
+    "/plantillas/atomo-y-tabla/motor.js",
+    "/plantillas/atomo-y-tabla/papel.json"
+   ]
+  },
+  "balance-reacciones": {
+   "id": "balance-reacciones",
+   "titulo": "Balance de reacciones: contar átomos",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.reacciones-y-balance"
+   ],
+   "url": "/plantillas/balance-reacciones/index.html",
+   "papel": "/plantillas/balance-reacciones/papel.json",
+   "archivos": [
+    "/plantillas/balance-reacciones/index.html",
+    "/plantillas/balance-reacciones/motor.js",
+    "/plantillas/balance-reacciones/papel.json"
+   ]
+  },
   "calorimetria": {
    "id": "calorimetria",
    "titulo": "Calorimetría",
@@ -4333,6 +4407,24 @@
     "/plantillas/dinamica/papel.json"
    ]
   },
+  "divisores": {
+   "id": "divisores",
+   "titulo": "El rectángulo de fichas: divisores, primos y restos",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "aritmetica.numeros-primos-y-divisores",
+    "aritmetica.divisibilidad"
+   ],
+   "url": "/plantillas/divisores/index.html",
+   "papel": "/plantillas/divisores/papel.json",
+   "archivos": [
+    "/plantillas/divisores/index.html",
+    "/plantillas/divisores/motor.js",
+    "/plantillas/divisores/papel.json"
+   ]
+  },
   "energia": {
    "id": "energia",
    "titulo": "Trabajo y energía",
@@ -4367,6 +4459,23 @@
     "/plantillas/equilibrio-quimico/papel.json"
    ]
   },
+  "estatica": {
+   "id": "estatica",
+   "titulo": "Estática: palancas, centro de gravedad y cuerdas",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.estatica"
+   ],
+   "url": "/plantillas/estatica/index.html",
+   "papel": "/plantillas/estatica/papel.json",
+   "archivos": [
+    "/plantillas/estatica/index.html",
+    "/plantillas/estatica/motor.js",
+    "/plantillas/estatica/papel.json"
+   ]
+  },
   "estequiometria-limitante": {
    "id": "estequiometria-limitante",
    "titulo": "Reactivo limitante",
@@ -4380,6 +4489,24 @@
    "papel": null,
    "archivos": [
     "/plantillas/estequiometria-limitante/generador.js"
+   ]
+  },
+  "exponenciales-logaritmos": {
+   "id": "exponenciales-logaritmos",
+   "titulo": "La escalera de la base: exponenciales y logaritmos",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "algebra.exponenciales-y-logaritmos",
+    "algebra.tipos-de-funciones-e-inversa"
+   ],
+   "url": "/plantillas/exponenciales-logaritmos/index.html",
+   "papel": "/plantillas/exponenciales-logaritmos/papel.json",
+   "archivos": [
+    "/plantillas/exponenciales-logaritmos/index.html",
+    "/plantillas/exponenciales-logaritmos/motor.js",
+    "/plantillas/exponenciales-logaritmos/papel.json"
    ]
   },
   "fracciones": {
@@ -4418,6 +4545,23 @@
     "/plantillas/gases/papel.json"
    ]
   },
+  "geometria-analitica": {
+   "id": "geometria-analitica",
+   "titulo": "El plano con imán: distancia, pendiente y ecuación de la recta",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.geometria-analitica"
+   ],
+   "url": "/plantillas/geometria-analitica/index.html",
+   "papel": "/plantillas/geometria-analitica/papel.json",
+   "archivos": [
+    "/plantillas/geometria-analitica/index.html",
+    "/plantillas/geometria-analitica/motor.js",
+    "/plantillas/geometria-analitica/papel.json"
+   ]
+  },
   "grafica-perillas": {
    "id": "grafica-perillas",
    "titulo": "La gráfica con perillas: funciones y sus transformaciones",
@@ -4436,6 +4580,42 @@
     "/plantillas/grafica-perillas/index.html",
     "/plantillas/grafica-perillas/motor.js",
     "/plantillas/grafica-perillas/papel.json"
+   ]
+  },
+  "identidades-trig": {
+   "id": "identidades-trig",
+   "titulo": "Alturas que no se suman: identidades y arcos compuestos",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "trigonometria.identidades-fundamentales",
+    "trigonometria.arcos-compuestos",
+    "trigonometria.arcos-multiples"
+   ],
+   "url": "/plantillas/identidades-trig/index.html",
+   "papel": "/plantillas/identidades-trig/papel.json",
+   "archivos": [
+    "/plantillas/identidades-trig/index.html",
+    "/plantillas/identidades-trig/motor.js",
+    "/plantillas/identidades-trig/papel.json"
+   ]
+  },
+  "interes": {
+   "id": "interes",
+   "titulo": "La alcancía que gana interés: interés simple y compuesto, tasas y descuento",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "aritmetica.interes-y-descuento"
+   ],
+   "url": "/plantillas/interes/index.html",
+   "papel": "/plantillas/interes/papel.json",
+   "archivos": [
+    "/plantillas/interes/index.html",
+    "/plantillas/interes/motor.js",
+    "/plantillas/interes/papel.json"
    ]
   },
   "lectura-verbal": {
@@ -4457,16 +4637,32 @@
    "url": "#/lectura/lectura-verbal",
    "banco": "/contenido/razonamiento-verbal/indice.json",
    "papel": null,
+   "entrada": "t000a",
+   "salida": "t000b",
    "archivos": [
     "/contenido/razonamiento-verbal/indice.json",
     "/contenido/razonamiento-verbal/codigos.json",
     "/contenido/razonamiento-verbal/frases.json",
+    "/contenido/razonamiento-verbal/textos/t000a.json",
+    "/contenido/razonamiento-verbal/textos/t000b.json",
     "/contenido/razonamiento-verbal/textos/t001.json",
     "/contenido/razonamiento-verbal/textos/t002.json",
     "/contenido/razonamiento-verbal/textos/t003.json",
     "/contenido/razonamiento-verbal/textos/t004.json",
     "/contenido/razonamiento-verbal/textos/t005.json",
-    "/contenido/razonamiento-verbal/textos/t006.json"
+    "/contenido/razonamiento-verbal/textos/t006.json",
+    "/contenido/razonamiento-verbal/textos/t007.json",
+    "/contenido/razonamiento-verbal/textos/t008.json",
+    "/contenido/razonamiento-verbal/textos/t009.json",
+    "/contenido/razonamiento-verbal/textos/t010.json",
+    "/contenido/razonamiento-verbal/textos/t011.json",
+    "/contenido/razonamiento-verbal/textos/t012.json",
+    "/contenido/razonamiento-verbal/textos/t013.json",
+    "/contenido/razonamiento-verbal/textos/t014.json",
+    "/contenido/razonamiento-verbal/textos/t015.json",
+    "/contenido/razonamiento-verbal/textos/t016.json",
+    "/contenido/razonamiento-verbal/textos/t017.json",
+    "/contenido/razonamiento-verbal/textos/t018.json"
    ]
   },
   "limitante-particulas": {
@@ -4592,6 +4788,25 @@
     "/plantillas/poligonos/papel.json"
    ]
   },
+  "polinomios": {
+   "id": "polinomios",
+   "titulo": "La máquina de Ruffini: polinomios y división",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "algebra.polinomios",
+    "algebra.division-de-polinomios",
+    "algebra.ecuaciones-polinomiales"
+   ],
+   "url": "/plantillas/polinomios/index.html",
+   "papel": "/plantillas/polinomios/papel.json",
+   "archivos": [
+    "/plantillas/polinomios/index.html",
+    "/plantillas/polinomios/motor.js",
+    "/plantillas/polinomios/papel.json"
+   ]
+  },
   "porcentajes-sucesivos": {
    "id": "porcentajes-sucesivos",
    "titulo": "Aumentos y descuentos sucesivos",
@@ -4643,6 +4858,42 @@
     "/plantillas/regla-de-tres/index.html",
     "/plantillas/regla-de-tres/motor.js",
     "/plantillas/regla-de-tres/papel.json"
+   ]
+  },
+  "relojes-calendarios": {
+   "id": "relojes-calendarios",
+   "titulo": "El reloj y el calendario: ángulo entre las agujas, adelantos, campanadas y días de la semana",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.cronometria-y-calendarios"
+   ],
+   "url": "/plantillas/relojes-calendarios/index.html",
+   "papel": "/plantillas/relojes-calendarios/papel.json",
+   "archivos": [
+    "/plantillas/relojes-calendarios/index.html",
+    "/plantillas/relojes-calendarios/motor.js",
+    "/plantillas/relojes-calendarios/papel.json"
+   ]
+  },
+  "solidos": {
+   "id": "solidos",
+   "titulo": "El sólido que se abre: prisma, pirámide, cilindro, cono y esfera",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.prisma-y-piramide",
+    "geometria.solidos-de-revolucion",
+    "geometria.poliedros"
+   ],
+   "url": "/plantillas/solidos/index.html",
+   "papel": "/plantillas/solidos/papel.json",
+   "archivos": [
+    "/plantillas/solidos/index.html",
+    "/plantillas/solidos/motor.js",
+    "/plantillas/solidos/papel.json"
    ]
   },
   "soluciones": {
@@ -4735,6 +4986,23 @@
     "/plantillas/triangulo-estira/index.html",
     "/plantillas/triangulo-estira/motor.js",
     "/plantillas/triangulo-estira/papel.json"
+   ]
+  },
+  "vectores": {
+   "id": "vectores",
+   "titulo": "Flechas que se suman: vectores y análisis dimensional",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.magnitudes-y-vectores"
+   ],
+   "url": "/plantillas/vectores/index.html",
+   "papel": "/plantillas/vectores/papel.json",
+   "archivos": [
+    "/plantillas/vectores/index.html",
+    "/plantillas/vectores/motor.js",
+    "/plantillas/vectores/papel.json"
    ]
   }
  }

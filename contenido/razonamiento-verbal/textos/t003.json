@@ -1,6 +1,6 @@
 {
   "id": "t003",
-  "version": 1,
+  "version": 2,
   "titulo": "El agua prestada",
   "tema": "Ciencia · clima y agua en los Andes",
   "grado": 4,
@@ -38,7 +38,7 @@
       {
         "id": "o6",
         "rol": "principal",
-        "t": "Pero ese aumento es engañoso, porque se está gastando la reserva y no solo lo que cada año se repone."
+        "t": "Ese aumento es engañoso, porque se está gastando la reserva y no solo lo que cada año se repone."
       },
       {
         "id": "o7",
@@ -62,6 +62,39 @@
   "preguntas": [
     {
       "id": "p1",
+      "tipo": "intencion",
+      "unidad": "razonamiento-verbal.inferencias",
+      "enunciado": "¿Cuál es la intención principal del autor?",
+      "alternativas": [
+        {
+          "t": "Advertir sobre un riesgo para el agua de los valles que dependen de glaciares.",
+          "correcta": true,
+          "evidencia": [
+            "o8",
+            "o9"
+          ],
+          "explicacion": "El autor no solo explica cómo funciona el glaciar: cierra con una advertencia y pide prepararse (oraciones 8 y 9)."
+        },
+        {
+          "t": "Contar cómo cambió la vida de los pobladores del valle del Santa en los últimos años.",
+          "codigo": "RV13",
+          "explicacion": "El texto no narra hechos de personas: explica un fenómeno y saca una conclusión."
+        },
+        {
+          "t": "Describir paso a paso cómo se forman los glaciares en las cumbres de la Cordillera Blanca y cómo se derriten en los meses secos.",
+          "codigo": "RV14",
+          "origen": "o2",
+          "explicacion": "Es solo la parte que explica; deja fuera la postura del autor, que es una advertencia."
+        },
+        {
+          "t": "Informar sobre los efectos del clima en todo el Perú.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto trata de los glaciares de una cordillera y del agua de sus ríos."
+        }
+      ]
+    },
+    {
+      "id": "p2",
       "tipo": "idea-principal",
       "unidad": "razonamiento-verbal.tema-e-idea-principal",
       "previo": {
@@ -75,10 +108,16 @@
         "codigos": {
           "o1": "RV4"
         },
-        "explicacion": "La oración 6 dice por qué el aumento de agua engaña y la 8 lo resume como conclusión. Las demás explican cómo funciona el glaciar (1 a 4), cuentan lo que parece a primera vista (5), dicen lo que pasa después (7) o proponen qué hacer (9).",
+        "explicacion": "La oración 6 dice por qué el aumento de agua engaña y la 8 lo resume como conclusión. Las demás explican cómo funciona el glaciar (1 a 3), dicen que pierde hielo (4), cuentan lo que parece a primera vista (5), dicen lo que pasa después (7) o proponen qué hacer (9).",
         "explicaciones": {
-          "o5": "Esa oración presenta lo que parece a primera vista; el \"Pero\" de la oración 6 lo corrige.",
-          "o9": "Es la propuesta del autor, que depende de la idea principal pero no la dice."
+          "o1": "La primera oración presenta el glaciar como depósito: es el punto de partida, no la idea del autor.",
+          "o2": "Explica cómo se llena y se vacía el depósito: es un detalle.",
+          "o3": "Dice para qué sirve el agua del glaciar: es información de base.",
+          "o4": "Dice que los glaciares pierden hielo; es un dato que el autor usa, no su conclusión.",
+          "o5": "Esa oración presenta lo que parece a primera vista; la oración 6 dice que esa apariencia engaña.",
+          "o7": "Dice lo que pasa después; apoya la idea principal, pero no la dice entera.",
+          "o9": "Es la propuesta del autor, que depende de la idea principal pero no la dice.",
+          "ninguna": "La oración 8 sí lo dice completo: un río con más agua puede ser la señal de que el depósito se está vaciando."
         }
       },
       "enunciado": "¿Cuál es la idea principal del texto?",
@@ -117,7 +156,7 @@
       ]
     },
     {
-      "id": "p2",
+      "id": "p3",
       "tipo": "conector",
       "unidad": "razonamiento-verbal.conectores",
       "previo": {
@@ -128,39 +167,42 @@
           "suma": "RV26",
           "causa": "RV24"
         },
-        "explicacion": "La oración 5 dice que el efecto parece bueno; la 6 empieza con \"Pero\" y dice que es engañoso. Se oponen."
+        "explicacion": "La oración 5 dice que el efecto parece bueno y la 6 dice que es engañoso: la segunda va en contra de lo que deja pensar la primera. Se oponen.",
+        "explicaciones": {
+          "suma": "La oración 6 no agrega otra ventaja: dice que la ventaja de la 5 es engañosa.",
+          "causa": "La oración 6 no es una consecuencia de la 5: la contradice. Que los ríos lleven más agua no causa que ese aumento sea engañoso."
+        }
       },
-      "enunciado": "¿Qué relación hay entre la oración 5 (\"Al principio, el efecto parece bueno…\") y la oración 6 (\"Pero ese aumento es engañoso…\")?",
+      "enunciado": "¿Qué conector podría ir al comienzo de la oración 6 (\"___ ese aumento es engañoso…\") sin cambiar el sentido del texto?",
       "alternativas": [
         {
-          "t": "La 6 corrige la impresión que deja la 5.",
+          "t": "Sin embargo,",
           "correcta": true,
           "evidencia": [
             "o5",
             "o6"
           ],
-          "explicacion": "La 5 presenta lo que parece; la 6, con \"Pero\", dice que esa apariencia engaña."
+          "explicacion": "La oración 5 dice que el efecto parece bueno y la 6, que engaña: se oponen, y \"sin embargo\" marca esa oposición."
         },
         {
-          "t": "La 6 es una consecuencia de lo que dice la 5.",
+          "t": "Por eso,",
           "codigo": "RV24",
-          "explicacion": "Se lee como causa y efecto lo que es una oposición: el \"Pero\" indica que la 6 va en contra de lo que se esperaba por la 5."
+          "explicacion": "Lee como consecuencia lo que es una oposición: que el efecto parezca bueno no es la razón de que sea engañoso."
         },
         {
-          "t": "La 6 agrega otro beneficio al que menciona la 5.",
+          "t": "Además,",
           "codigo": "RV26",
-          "explicacion": "La 6 no suma un beneficio: dice que el beneficio de la 5 es engañoso."
+          "explicacion": "La oración 6 no suma otra idea en la misma dirección: va en contra de la 5."
         },
         {
-          "t": "La 6 repite que los ríos llevan más agua en la temporada seca.",
-          "codigo": "RV5",
-          "origen": "o5",
-          "explicacion": "Esa frase repite palabras de la oración 5, no de la 6. La 6 dice algo distinto: que ese aumento engaña."
+          "t": "Dicho de otro modo,",
+          "codigo": "RV35",
+          "explicacion": "\"Dicho de otro modo\" anuncia que se repite lo mismo con otras palabras, pero la oración 6 no repite la 5: la corrige."
         }
       ]
     },
     {
-      "id": "p3",
+      "id": "p4",
       "tipo": "compatibilidad",
       "unidad": "razonamiento-verbal.compatibilidad",
       "previo": {
@@ -173,7 +215,12 @@
           "se-deduce": "RV7",
           "lo-contradice": null
         },
-        "explicacion": "El texto dice que los glaciares se reducen, pero no da fechas ni dice que vayan a desaparecer del todo. No se puede saber con lo que dice."
+        "explicacion": "El texto dice que los glaciares se reducen, pero no da fechas ni dice que vayan a desaparecer del todo. No se puede saber con lo que dice.",
+        "explicaciones": {
+          "lo-dice": "El texto dice que los glaciares pierden hielo y se reducen, pero no da ninguna fecha ni dice que vayan a desaparecer.",
+          "se-deduce": "Que los glaciares se reduzcan no permite concluir cuándo desaparecerán, ni siquiera si desaparecerán del todo: eso va más allá del texto.",
+          "lo-contradice": "El texto no dice que los glaciares vayan a durar más allá de 2050; simplemente no habla de fechas."
+        }
       },
       "enunciado": "Es compatible con el texto afirmar que",
       "alternativas": [
@@ -193,7 +240,7 @@
           "explicacion": "El texto dice que un río con más agua \"puede ser\" una señal, no que \"todo\" aumento lo sea."
         },
         {
-          "t": "el aumento del caudal en la temporada seca muestra que los glaciares están creciendo.",
+          "t": "el aumento del caudal en la temporada seca muestra que los glaciares de la cordillera están creciendo.",
           "codigo": "RV7",
           "origen": "o5",
           "explicacion": "El agua extra sale del hielo que se pierde (oraciones 4 y 6), no de glaciares que crecen. Esa lectura saca una conclusión que el texto no permite."
@@ -208,39 +255,6 @@
           "codigo": "RV10",
           "origen": "o5",
           "explicacion": "La oración 5 dice lo contrario: al principio, como se derrite más hielo, los ríos llevan más agua."
-        }
-      ]
-    },
-    {
-      "id": "p4",
-      "tipo": "intencion",
-      "unidad": "razonamiento-verbal.inferencias",
-      "enunciado": "¿Cuál es la intención principal del autor?",
-      "alternativas": [
-        {
-          "t": "Advertir que el aumento de agua en los ríos que nacen de glaciares puede ser una señal de alarma y no una buena noticia.",
-          "correcta": true,
-          "evidencia": [
-            "o8",
-            "o9"
-          ],
-          "explicacion": "El autor no solo explica: concluye que hay que prepararse, y presenta el aumento de agua como una señal de que el depósito se vacía."
-        },
-        {
-          "t": "Contar cómo cambió la vida de los pobladores del valle del Santa en los últimos años.",
-          "codigo": "RV13",
-          "explicacion": "El texto no narra hechos de personas: explica un fenómeno y saca una conclusión."
-        },
-        {
-          "t": "Describir paso a paso cómo se forman los glaciares en las cumbres de la Cordillera Blanca y cómo se derriten en los meses secos.",
-          "codigo": "RV14",
-          "origen": "o2",
-          "explicacion": "Es solo la parte que explica; deja fuera la postura del autor, que es una advertencia."
-        },
-        {
-          "t": "Informar sobre los efectos del clima en todo el Perú.",
-          "codigo": "RV2",
-          "explicacion": "Es demasiado general: el texto trata de los glaciares de una cordillera y del agua de sus ríos."
         }
       ]
     }
@@ -261,6 +275,6 @@
     "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
     "fecha": "2026-11-06",
     "veredicto": "aprobado",
-    "notas": "A ciegas: 7 de 7. Cambios: en el Santa la baja del caudal de estiaje ya ocurre (Baraer y otros, 2012), la clave de p4 deja de ser absoluta (\"puede ser una señal\"), distractor de p3 que era compatible reescrito y fuentes de los hechos."
+    "notas": "A ciegas: 7 de 7. Cambios: en el Santa la baja del caudal de estiaje ya ocurre (Baraer y otros, 2012), la clave de p4 deja de ser absoluta (\"puede ser una señal\"), distractor de p3 que era compatible reescrito y fuentes de los hechos. Segunda ronda (pedidos de la integración): explicaciones en todo paso previo, versión 2 y revisión a ciegas de los cambios (coincidió con todas las claves). Sin el \"Pero\" explícito: la pregunta es qué conector podría ir en la oración 6 (RV35 nuevo); intención antes y sin regalar la idea."
   }
 }

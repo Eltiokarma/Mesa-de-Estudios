@@ -1,0 +1,129 @@
+{
+  "titulo": "La alcancía que gana interés: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Antes de usar una fórmula, pon la tasa r % y el tiempo t en la misma unidad (año comercial: 360 días; mes: 30 días). En el interés simple, I = C · r · t/100 y M = C + I: cada periodo suma el mismo interés. En el compuesto, M = C(1 + r/100)ᵗ, con t en periodos de capitalización: el interés también gana interés. Si te dan el monto, el porcentaje es del capital, no del monto: divide, no restes.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Rosa presta S/ 1800 al 4 % mensual de interés simple durante 5 meses. ¿Cuánto gana de interés y cuánto le devuelven en total?",
+      "respuesta": "Gana S/ 360 de interés; le devuelven S/ 2160.",
+      "pasos": [
+        "La tasa es mensual y el tiempo está en meses: ya están en la misma unidad.",
+        "Cada mes gana el 4 % de S/ 1800, que es S/ 72. En 5 meses: 5 · 72 = S/ 360. Con la fórmula: I = 1800 · 4 · 5/100 = 360.",
+        "El monto es M = C + I = 1800 + 360 = S/ 2160."
+      ],
+      "verificar": [ { "fn": "interesSimple", "args": [{ "C": 1800, "r": 4, "tasa": "mensual", "t": 5, "tiempo": "meses" }], "espera": { "I": 360, "M": 2160, "porPeriodo": 72 } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "¿Qué interés simple produce un capital de S/ 5400 colocado al 20 % anual durante 80 días? Usa el año comercial.",
+      "respuesta": "S/ 240.",
+      "pasos": [
+        "La tasa es anual y el tiempo está en días: hay que convertir. Con el año comercial, 80 días son 80/360 de año.",
+        "I = 5400 · 20 · 80/36 000 = 240. El 36 000 sale de 100 · 360.",
+        "Si usas 80 como si fueran años, sale un interés de S/ 86 400, absurdo. Si usas 365 días, sale unos S/ 236,71: el examen usa el año comercial salvo que diga otra cosa."
+      ],
+      "verificar": [ { "fn": "interesSimple", "args": [{ "C": 5400, "r": 20, "tasa": "anual", "t": 80, "tiempo": "dias" }], "espera": { "I": 240, "errores.sinConvertir": 86400, "errores.anio365": 236.7123287671233 } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "intermedio",
+      "enunciado": "Un capital colocado al 6 % semestral de interés simple se convirtió en S/ 4600 al cabo de 15 meses. ¿Cuál era el capital?",
+      "respuesta": "S/ 4000.",
+      "pasos": [
+        "Pasa todo a semestres: 15 meses son 15/6 = 2,5 semestres. El interés total es 6 · 2,5 = 15 % del capital.",
+        "Entonces el monto es el 115 % del capital: M = 1,15 · C, y C = 4600/1,15 = 4000.",
+        "Ojo: el 15 % es del capital, no del monto. Restar el 15 % de 4600 da S/ 3910, que no es la respuesta: 3910 · 1,15 = 4496,50, no 4600."
+      ],
+      "verificar": [ { "fn": "capitalDesdeMonto", "args": [{ "M": 4600, "r": 6, "tasa": "semestral", "t": 15, "tiempo": "meses", "tipo": "simple" }], "espera": { "C": 4000, "factor": 1.15, "errores.interesSobreMonto": 3910 } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Se depositan S/ 8000 al 5 % trimestral con capitalización trimestral durante un año. ¿Cuál es el monto? ¿Cuánto de ese interés es interés sobre interés?",
+      "respuesta": "El monto es S/ 9724,05; S/ 124,05 son interés sobre interés.",
+      "pasos": [
+        "Un año tiene 4 trimestres, así que hay t = 4 periodos de capitalización al 5 %.",
+        "M = 8000 · (1,05)⁴ = 8000 · 1,21550625 = 9724,05.",
+        "Con interés simple serían 8000 + 4 · 400 = 9600. La diferencia, 9724,05 − 9600 = 124,05, es el interés que ganaron los intereses anteriores."
+      ],
+      "verificar": [ { "fn": "compuesto", "args": [{ "C": 8000, "r": 5, "tasa": "trimestral", "t": 1, "tiempo": "anios" }], "espera": { "M": 9724.05, "n": 4, "simple.M": 9600, "sobreInteres": 124.05 } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Un banco paga el 3 % bimestral con capitalización bimestral. ¿Qué tasa efectiva anual paga? Redondea a centésimos.",
+      "respuesta": "19,41 % anual efectiva, aproximadamente.",
+      "pasos": [
+        "Un año tiene 6 bimestres. Cada bimestre el dinero se multiplica por 1,03.",
+        "En el año se multiplica por (1,03)⁶ ≈ 1,1941, así que gana un 19,41 %.",
+        "No es 6 · 3 = 18 %: eso sería sin capitalizar. El 18 % es la tasa nominal anual; el 19,41 %, la efectiva."
+      ],
+      "verificar": [ { "fn": "efectiva", "args": [{ "r": 3, "n": 6 }], "espera": { "efectiva": 19.40522965290001, "errores.proporcional": 18 } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "¿Qué tasa semestral, con capitalización semestral, equivale a una tasa efectiva del 44 % anual?",
+      "respuesta": "20 % semestral.",
+      "pasos": [
+        "Un año son 2 semestres: (1 + r/100)² = 1,44.",
+        "Entonces 1 + r/100 = √1,44 = 1,2 y r = 20 %.",
+        "No es 44/2 = 22 %: con 22 % semestral capitalizable, en el año el dinero se multiplicaría por 1,22² = 1,4884, no por 1,44."
+      ],
+      "verificar": [ { "fn": "porPeriodo", "args": [{ "efectiva": 44, "n": 2 }], "espera": { "r": 20, "errores.proporcional": 22 } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Se colocan S/ 5000 al 12 % nominal anual con capitalización continua durante 2 años. Halla el monto. Usa que e elevado a 0,24 vale cerca de 1,27125.",
+      "respuesta": "Unos S/ 6356,25.",
+      "pasos": [
+        "Con capitalización continua el monto es M = C · e^(r·t/100), con r anual y t en años.",
+        "r · t/100 = 12 · 2/100 = 0,24, así que M = 5000 · e elevado a 0,24 ≈ 5000 · 1,27125 ≈ 6356,25.",
+        "Es apenas más que con capitalización mensual (5000 · 1,01²⁴ ≈ 6348,67): capitalizar más seguido ayuda cada vez menos y el monto se acerca a un tope."
+      ],
+      "verificar": [ { "fn": "capitalizacion", "args": [{ "C": 5000, "j": 12, "m": "continua", "t": 2 }], "espera": { "M": 6356.245752 } },
+                     { "fn": "capitalizacion", "args": [{ "C": 5000, "j": 12, "m": 12, "t": 2 }], "espera": { "M": 6348.673243 } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Una letra de cambio de S/ 8240 se descuenta 2 meses antes de su vencimiento al 18 % anual. Halla el descuento comercial, el descuento racional y cuánto se recibe en cada caso.",
+      "respuesta": "Comercial: Dc = S/ 247,20 y se recibe S/ 7992,80. Racional: Dr = S/ 240 y se recibe S/ 8000.",
+      "pasos": [
+        "En 2 meses al 18 % anual: r · t = 18 · 2/12 = 3 %.",
+        "El comercial se calcula sobre el valor nominal: Dc = 8240 · 3/100 = 247,20; Va = 8240 − 247,20 = 7992,80.",
+        "El racional se calcula sobre el valor actual: Va + 3 % de Va = 8240, o sea 1,03 · Va = 8240 y Va = 8000. Dr = 8240 − 8000 = 240 = 8240 · 3/103.",
+        "El comercial siempre es mayor: Dc − Dr = 7,20, que es justo el 3 % de 240."
+      ],
+      "verificar": [ { "fn": "descuento", "args": [{ "Vn": 8240, "r": 18, "tasa": "anual", "t": 2, "tiempo": "meses" }], "espera": { "rt": 3, "comercial.D": 247.2, "comercial.Va": 7992.8, "racional.D": 240, "racional.Va": 8000, "diferencia": 7.2 } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Los descuentos comercial y racional de una letra que vence dentro de 8 meses son S/ 180 y S/ 150. Halla el valor nominal de la letra y la tasa anual de descuento.",
+      "respuesta": "Vn = S/ 900 y la tasa es 30 % anual.",
+      "pasos": [
+        "El comercial es el racional más su interés: Dc − Dr = 30 es el r · t % de 150, así que r · t = 20 %.",
+        "El comercial es el 20 % del nominal: Vn = 180/0,20 = 900. Con la fórmula de academia: Vn = Dc · Dr/(Dc − Dr) = 180 · 150/30 = 900.",
+        "Si r · t = 20 % en 8 meses, la tasa anual es r = 20 · 12/8 = 30 %."
+      ],
+      "verificar": [ { "fn": "nominalDesdeDescuentos", "args": [{ "Dc": 180, "Dr": 150 }], "espera": { "Vn": 900, "rt": 20 } },
+                     { "fn": "descuento", "args": [{ "Vn": 900, "r": 30, "tasa": "anual", "t": 8, "tiempo": "meses" }], "espera": { "comercial.D": 180, "racional.D": 150 } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "intermedio",
+      "enunciado": "Una persona debe tres letras: S/ 2000 que vence en 40 días, S/ 3000 en 60 días y S/ 5000 en 90 días. Quiere cambiarlas por una sola letra de S/ 10 000 con descuento comercial a la misma tasa. ¿Dentro de cuántos días debe vencer?",
+      "respuesta": "Dentro de 71 días.",
+      "pasos": [
+        "Con descuento comercial y la misma tasa, el vencimiento común es el promedio de los plazos pesado por los valores nominales.",
+        "t = (2000 · 40 + 3000 · 60 + 5000 · 90)/(2000 + 3000 + 5000) = 710 000/10 000 = 71 días.",
+        "El promedio simple de los plazos, (40 + 60 + 90)/3 ≈ 63,3 días, no sirve: la letra de S/ 5000 pesa más."
+      ],
+      "verificar": [ { "fn": "vencimientoComun", "args": [{ "letras": [{ "Vn": 2000, "t": 40 }, { "Vn": 3000, "t": 60 }, { "Vn": 5000, "t": 90 }] }], "espera": { "Vn": 10000, "t": 71, "errores.promedioSimple": 63.333333333333336 } } ]
+    }
+  ]
+}

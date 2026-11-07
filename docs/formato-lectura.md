@@ -23,9 +23,9 @@ Las seis reglas de `CLAUDE.md`, traducidas a lectura:
 
 ### Flujo de una sesión
 
-Es el de `app/practica.js`, para que la medición se compare entre formatos, con dos diferencias: la unidad de trabajo es un texto y no un problema, y la prueba de salida se ofrece después de 3 textos y no de 5 problemas.
+Es el de `app/practica.js`, para que la medición se compare entre formatos, con dos diferencias: la unidad de trabajo es un texto y no un problema, y la prueba de salida la abre el profesor con `?salida=razonamiento-verbal`, como en las pruebas por curso (cambio de la integración, 7 nov 2026; antes se ofrecía después de 3 textos).
 
-1. **Prueba de entrada:** el texto `entrada` del índice, con 3 preguntas, el mismo para todos. Va **sin paso previo y sin corrección**, y las alternativas se barajan con una semilla fija (`'entrada'`), igual para todos. Así la prueba mide lo mismo en cada alumno.
+1. **Prueba de entrada:** al entrar al curso, el texto `entrada` del índice, con 3 preguntas, el mismo para todos. Va **sin paso previo y sin corrección**, y las alternativas se barajan con una semilla fija (`'entrada'`), igual para todos. Así la prueba mide lo mismo en cada alumno.
 2. **Práctica:** texto por texto. Por cada texto: leer, paso previo, preguntas con explicación. Los textos salen en el orden del índice, filtrados por la unidad que el alumno abrió. Un texto hecho no se repite hasta que se acaben los demás.
 3. **Prueba de salida:** el texto `salida`, paralelo al de entrada (los mismos tipos de pregunta, con dificultad parecida y otro tema). También sin paso previo y con semilla fija (`'salida'`).
 

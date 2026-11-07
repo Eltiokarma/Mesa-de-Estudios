@@ -1,0 +1,256 @@
+{
+  "id": "t013",
+  "version": 1,
+  "titulo": "La ciudad sin murallas",
+  "tema": "Historia antigua · Caral",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "argumentativo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "En el valle de Supe, a unos 180 kilómetros al norte de Lima, se levantan las pirámides de Caral, construidas hace unos cinco mil años."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "Es una de las ciudades más antiguas de América, de la misma época en que se levantaban las primeras pirámides de Egipto."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "Desde 1994, el equipo de la arqueóloga Ruth Shady excava el sitio."
+      }
+    ],
+    [
+      {
+        "id": "o4",
+        "rol": "detalle",
+        "t": "Entre los restos se han encontrado anchovetas y conchas del mar, que está a pocas horas de camino, junto con algodón y frutos cultivados en el valle."
+      },
+      {
+        "id": "o5",
+        "rol": "apoyo",
+        "t": "Eso hace pensar que los pescadores de la costa y los agricultores del valle intercambiaban lo que producían: pescado por algodón para hacer redes."
+      },
+      {
+        "id": "o6",
+        "rol": "detalle",
+        "t": "En cambio, no se han encontrado murallas de defensa ni armas en cantidad."
+      }
+    ],
+    [
+      {
+        "id": "o7",
+        "rol": "cita",
+        "t": "Por eso, algunos investigadores proponen que Caral fue una sociedad que se organizó más por el comercio y la religión que por la guerra."
+      },
+      {
+        "id": "o8",
+        "rol": "contraste",
+        "t": "Otros piden prudencia: que no se hayan hallado armas no prueba que no las hubiera, y todavía queda mucho por excavar."
+      },
+      {
+        "id": "o9",
+        "rol": "principal",
+        "t": "Caral muestra, en todo caso, que en los Andes se formó una vida urbana muy temprana, y que lo que sabemos de ella todavía puede cambiar con lo que falta descubrir."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que mejor resume todo el texto.",
+        "aceptadas": [
+          "o9"
+        ],
+        "ninguna": "RV3",
+        "codigos": {
+          "o1": "RV4"
+        },
+        "explicacion": "La oración 9 resume el texto: en los Andes hubo vida urbana muy temprana, y lo que sabemos de ella todavía puede cambiar con lo que falta descubrir.",
+        "explicaciones": {
+          "o1": "La primera oración dice dónde está Caral y cuándo se construyó: es el punto de partida.",
+          "o2": "Compara la antigüedad de Caral con la de Egipto: es un dato que la presenta.",
+          "o3": "Dice quién excava el sitio: es información de base.",
+          "o4": "Cuenta lo que se ha encontrado: es un detalle que sirve de prueba.",
+          "o5": "Saca una conclusión de los hallazgos (el intercambio), pero no es la idea de todo el texto.",
+          "o6": "Cuenta lo que no se ha encontrado; es el dato que abre el debate.",
+          "o7": "Es la postura de \"algunos investigadores\", no la conclusión del texto.",
+          "o8": "Es la postura de \"otros\" investigadores, que piden prudencia.",
+          "ninguna": "La oración 9 sí lo dice completo: Caral muestra una vida urbana muy temprana, y lo que sabemos de ella todavía puede cambiar."
+        }
+      },
+      "enunciado": "¿Cuál es la idea principal del texto?",
+      "alternativas": [
+        {
+          "t": "Caral revela una vida urbana muy antigua en los Andes, aunque todavía hay mucho que no se sabe de ella.",
+          "correcta": true,
+          "evidencia": [
+            "o9"
+          ],
+          "explicacion": "Es lo que dice la oración 9, que cierra el texto por encima del debate: Caral muestra una ciudad muy temprana, y lo que sabemos de ella todavía puede cambiar."
+        },
+        {
+          "t": "Entre los restos de Caral se encontraron anchovetas, conchas, algodón y frutos cultivados en el valle de Supe.",
+          "codigo": "RV1",
+          "origen": "o4",
+          "explicacion": "Es un detalle de los hallazgos. El texto lo usa para llegar a ideas más amplias."
+        },
+        {
+          "t": "Las culturas antiguas del mundo construyeron grandes ciudades.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto habla de Caral y de lo que sabemos de ella."
+        },
+        {
+          "t": "En Caral no se han encontrado murallas de defensa ni armas en cantidad.",
+          "codigo": "RV3",
+          "origen": "o6",
+          "explicacion": "Es una parte del texto, pero deja fuera lo que el autor concluye en la oración 9."
+        },
+        {
+          "t": "Caral fue declarada patrimonio de la humanidad por la Unesco.",
+          "codigo": "RV8",
+          "explicacion": "Puede ser cierto, pero el texto no lo dice. La idea principal sale de lo que se leyó."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "compatibilidad",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
+        "sonda": "Los habitantes de Caral comían productos del mar.",
+        "clase": "se-deduce",
+        "codigos": {
+          "lo-dice": "RV6",
+          "no-se-sabe": "RV34",
+          "lo-contradice": null
+        },
+        "explicacion": "El texto no lo dice así, pero se deduce: entre los restos de la ciudad hay anchovetas y conchas (oración 4), y se intercambiaba pescado (oración 5).",
+        "explicaciones": {
+          "lo-dice": "El texto nunca dice \"comían productos del mar\"; dice que se encontraron anchovetas y conchas, y de ahí se saca.",
+          "no-se-sabe": "No hace falta que el texto lo diga: si entre los restos de la ciudad hay anchovetas y conchas, se deduce que se comían.",
+          "lo-contradice": "Nada en el texto va en contra de esa idea; al contrario, los restos de pescado la apoyan."
+        }
+      },
+      "enunciado": "Es compatible con el texto afirmar que los investigadores que piden prudencia",
+      "alternativas": [
+        {
+          "t": "aceptan que hasta ahora se han encontrado pocas armas en Caral.",
+          "correcta": true,
+          "evidencia": [
+            "o6",
+            "o8"
+          ],
+          "explicacion": "No discuten el hallazgo de la oración 6: dicen que no haber encontrado armas no prueba que no las hubiera (oración 8)."
+        },
+        {
+          "t": "sostienen que en Caral se encontraron muchas armas escondidas.",
+          "codigo": "RV9",
+          "origen": "o6",
+          "explicacion": "Choca con la oración 6: no se han encontrado armas en cantidad. Los prudentes no discuten eso."
+        },
+        {
+          "t": "dan por probado que Caral se organizó más por el comercio y la religión que por la guerra.",
+          "codigo": "RV5",
+          "origen": "o7",
+          "explicacion": "Repite palabras de la oración 7, pero los que piden prudencia dicen justo que no está probado (oración 8)."
+        },
+        {
+          "t": "creen que ya no queda nada por excavar en Caral.",
+          "codigo": "RV10",
+          "origen": "o8",
+          "explicacion": "Dicen lo contrario: \"todavía queda mucho por excavar\" (oración 8)."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.extrapolacion",
+      "enunciado": "Si en una excavación futura se hallaran en Caral muchas armas y restos de murallas, según la lógica del texto,",
+      "alternativas": [
+        {
+          "t": "perdería fuerza la idea de que Caral se organizó sobre todo por el comercio y la religión.",
+          "correcta": true,
+          "evidencia": [
+            "o6",
+            "o7"
+          ],
+          "explicacion": "Esa idea se apoya en que no se han encontrado armas ni murallas (oraciones 6 y 7). Si aparecieran, la idea quedaría más débil."
+        },
+        {
+          "t": "seguiría siendo cierto que en Caral no hay murallas de defensa.",
+          "codigo": "RV12",
+          "explicacion": "Cambia la condición, pero deja igual la consecuencia: si aparecen murallas, ya no se puede decir que no las hay."
+        },
+        {
+          "t": "quedaría demostrado que todas las ciudades de los Andes fueron guerreras.",
+          "codigo": "RV11",
+          "explicacion": "Un hallazgo en Caral no dice nada de \"todas\" las ciudades andinas."
+        },
+        {
+          "t": "Caral dejaría de ser una de las ciudades más antiguas de América.",
+          "codigo": "RV7",
+          "explicacion": "Las armas no cambian la antigüedad de la ciudad: esa conclusión no sale del texto."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.sentido-contextual",
+      "enunciado": "En la oración 7, la palabra PROPONEN significa",
+      "alternativas": [
+        {
+          "t": "plantean como posible.",
+          "correcta": true,
+          "evidencia": [
+            "o7",
+            "o8"
+          ],
+          "explicacion": "Los investigadores ofrecen una explicación, no una prueba: por eso otros piden prudencia (oración 8)."
+        },
+        {
+          "t": "invitan a hacer algo.",
+          "codigo": "RV18",
+          "explicacion": "Es un sentido común de \"proponer\" (proponer un plan), pero aquí no se invita a nada: se plantea una explicación."
+        },
+        {
+          "t": "demuestran.",
+          "codigo": "RV19",
+          "explicacion": "Está en el mismo campo (dar razones), pero es mucho más fuerte: si estuviera demostrado, nadie pediría prudencia."
+        },
+        {
+          "t": "organizan.",
+          "codigo": "RV5",
+          "origen": "o7",
+          "explicacion": "Repite una palabra de la misma oración (\"se organizó\"), pero no dice qué significa \"proponen\"."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-06",
+  "hechos": [
+    {
+      "afirmacion": "Caral, en el valle de Supe (unos 180 km al norte de Lima), tiene unos 5000 años y es de la época de las primeras pirámides de Egipto; Ruth Shady la excava desde 1994; se hallaron restos de anchoveta y algodón, y no hay evidencia de fortificaciones.",
+      "fuente": "Shady, R. y otros (2001). Dating Caral, a preceramic site in the Supe Valley. Science 292(5517); Zona Arqueológica Caral."
+    }
+  ],
+  "revision": {
+    "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas: 6 de 6. Cambios: o9 redactada sin la frase que sonaba contradictoria (\"lo que sabemos depende de lo que falta descubrir\"); distractor de compatibilidad endurecido («dan por probado»). Una segunda verificación de los cambios confirmó claves únicas y ajustó seis detalles."
+  }
+}
