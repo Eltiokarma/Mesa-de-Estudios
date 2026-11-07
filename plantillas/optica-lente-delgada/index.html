@@ -260,8 +260,8 @@ const cv = document.getElementById('cv'), ctx = cv.getContext('2d');
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const F = 10, HO = 4, BASE = 30, XR = 44, YL = 12;
 const S = { step:0, max:0, d:BASE, rays:[0,0,0], pred:null, hl:null,
-  show:{obj:false, f:false, img:false, i:false}, active:-1, explore:false };
-let W = 0, H = 0, sx = 1, sy = 1, anim = null;
+  show:{obj:false, f:false, img:false, i:false}, active:-1, explore:false, sobre:false };
+let W = 0, H = 0, sx = 1, sy = 1, rayo = null, agarra = false;
 // Celular con predicción pendiente: el dibujo más bajo y pegado arriba (nucleo/celular.js).
 let compacto = false;
 function compactar(on){ on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === compacto) return; compacto = on; resize(); }
@@ -367,8 +367,8 @@ function draw(){
   }
 
   if (S.show.obj){
-    const onH = hl === 'h' || hl === 'A';
-    glow(onH || hl === 'o', c.h); arrow(-S.d, HO, c.h, onH ? 3.4 : 2.4, false); glow(false);
+    const onH = hl === 'h' || hl === 'A', mano = S.explore && (S.sobre || agarra);
+    glow(onH || hl === 'o' || mano, c.h); arrow(-S.d, HO, c.h, onH || mano ? 3.4 : 2.4, false); glow(false);
     dim(-S.d, 0, -6.6, c.o, `o = ${fmt(S.d)} cm`, hl === 'o');
   }
 
@@ -406,17 +406,24 @@ function labelRay(k, p, c){
   ctx.fillText(String(k+1), x, y - 11);
 }
 
-function animateRay(k, done){
-  cancelAnimationFrame(anim);
-  if (RM){ S.rays[k] = 1; draw(); done && done(); return; }
-  const t0 = performance.now(), dur = 1400;
-  const tick = now => {
-    const t = Math.min(1, (now - t0)/dur);
-    S.rays[k] = 1 - Math.pow(1 - t, 2); draw();
-    if (t < 1) anim = requestAnimationFrame(tick); else { done && done(); }
-  };
-  anim = requestAnimationFrame(tick);
+// Animación de un rayo con Celular.bucle: se duerme cuando nada se mueve o el lienzo no se ve.
+function paso(dt){
+  if (!rayo) { draw(); return false; }
+  rayo.t += Math.min(dt, 0.05);
+  const u = Math.min(1, rayo.t/rayo.dur);
+  S.rays[rayo.k] = 1 - Math.pow(1 - u, 2);
+  if (u >= 1){ const l = rayo.listo; rayo = null; l && l(); }
+  draw();
+  return !!rayo;
 }
+const bucle = Celular.bucle(cv, paso);
+function animateRay(k, done){
+  if (RM){ S.rays[k] = 1; rayo = null; draw(); done && done(); return; }
+  rayo = { k, t:0, dur:1.4, listo:done }; bucle.despertar();
+}
+// Al cambiar de paso o de pestaña, la animación termina de golpe: nada queda a medias.
+function pararTodo(){ if (rayo){ S.rays[rayo.k] = 1; const l = rayo.listo; rayo = null; l && l(); } }
+addEventListener('modo', () => { if (cv.offsetParent === null){ pararTodo(); draw(); } });
 
 const steps = [
  { k:'Paso 1', t:'El problema', show:{}, rays:0,
@@ -425,7 +432,7 @@ const steps = [
  { k:'Paso 2', t:'Del texto al dibujo', show:{obj:true, f:true}, rays:0,
    body:() => `<ul class="map">
      <li><b class="v-o">o = 30</b><span>Distancia del ${V('o','objeto')} a la lente. Es la flecha que está a la izquierda.</span></li>
-     <li><b class="v-f">f = 10</b><span>Distancia ${V('f','focal')}: el punto F′ donde la lente junta los rayos que llegan paralelos. Hay un foco a cada lado.</span></li>
+     <li><b class="v-f">f = 10</b><span>Distancia ${V('f','focal')}: de la lente al punto F′, donde la lente junta los rayos que llegan paralelos al eje. Hay un foco a cada lado.</span></li>
      <li><b class="v-h">h<sub>o</sub> = 4</b><span>Altura del ${V('h','objeto')}.</span></li>
    </ul>
    <p class="hint">Los puntos 2F y 2F′ están a 2·f = 20 cm. No son datos del problema, pero son la regla con la que se clasifica la imagen.</p>` },
@@ -436,13 +443,13 @@ const steps = [
      <button class="opt" type="button" data-k="b">Entre F′ y 2F′</button>
      <button class="opt" type="button" data-k="c">Más allá de 2F′</button>
      <button class="opt" type="button" data-k="d">Del mismo lado que el objeto</button>
-   </div><p class="fb" id="fb"></p>` },
+   </div><p class="fb" id="fb" tabindex="-1"></p>` },
  { k:'Paso 4', t:'Rayo 1: paralelo al eje', show:{obj:true, f:true}, rays:1, anim:0,
    body:() => `<p>Sale de la punta del objeto paralelo al eje. La lente lo dobla y lo obliga a pasar por ${V('f','F′')}.</p>
-   <p>Así se define el foco: es el punto donde se juntan todos los rayos que llegan paralelos.</p>` },
+   <p>Así se define el foco: es el punto donde se juntan todos los rayos que llegan paralelos al eje.</p>` },
  { k:'Paso 5', t:'Rayo 2: por el centro', show:{obj:true, f:true}, rays:2, anim:1,
    body:() => `<p>El rayo que pasa por el centro de la lente sigue de largo, sin desviarse.</p>
-   <p>En el centro la lente es casi una lámina delgada de caras paralelas, así que no tiene cómo doblarlo.</p>` },
+   <p>En el centro, las dos caras de la lente son casi paralelas: como en un vidrio de ventana, el rayo sale con la misma dirección con que entró. En una lente delgada, el pequeño corrimiento ni se nota.</p>` },
  { k:'Paso 6', t:'Rayo 3: por el foco F', show:{obj:true, f:true}, rays:3, anim:2, after:{img:true, i:true},
    body:() => `<p>El rayo que pasa por ${V('f','F')} antes de la lente sale paralelo al eje. Es el rayo 1 recorrido al revés: la luz hace el mismo camino en los dos sentidos.</p>
    <p>Donde los tres rayos se cruzan está la punta de la imagen. Basta con dos rayos; el tercero sirve para comprobar.</p>` },
@@ -464,24 +471,26 @@ const steps = [
  { k:'Paso 9', t:'Ahora mueve tú el objeto', show:{obj:true, f:true, img:true, i:true}, rays:3, explore:true,
    body:() => `<div class="slider">
      <label for="do-slider"><span>Distancia del objeto (${V('o','o')})</span><output id="do-out"></output></label>
-     <input id="do-slider" type="range" min="4" max="40" step="0.5" value="${S.d}">
+     <input id="do-slider" class="r-o" type="range" min="4" max="40" step="0.5" value="${S.d}">
    </div>
    <div id="live"></div>
-   <p class="hint">Prueba tres zonas: más allá de 2F, entre 2F y F, y más cerca que F. Fíjate qué pasa justo en o = 10 cm.</p>` }
+   <p class="hint">También puedes arrastrar el objeto en el dibujo. Prueba tres zonas: más allá de 2F, entre 2F y F, y más cerca que F. Fíjate qué pasa justo en o = 10 cm.</p>` }
 ];
 
 const $ = id => document.getElementById(id);
 const dots = $('dots');
 steps.forEach((s, n) => {
   const li = document.createElement('li'), b = document.createElement('button');
-  b.type = 'button'; b.textContent = n + 1; b.setAttribute('aria-label', `Ir al ${s.k.toLowerCase()}: ${s.t}`);
-  b.addEventListener('click', () => go(n)); li.appendChild(b); dots.appendChild(li);
+  b.type = 'button'; b.textContent = n + 1;
+  b.addEventListener('click', () => { go(n); $('stepT').focus({ preventScroll:true }); }); li.appendChild(b); dots.appendChild(li);
 });
 
 function go(n){
   if (n < 0 || n >= steps.length || n > S.max) return;
-  cancelAnimationFrame(anim);
-  const s = steps[n]; S.step = n; S.hl = null;
+  pararTodo();
+  const s = steps[n]; S.step = n; S.hl = null; S.explore = !!s.explore; S.sobre = false;
+  cv.classList.toggle('arrastrable', S.explore);
+  cv.setAttribute('aria-label', S.explore ? 'Lente convergente con objeto, focos, rayos e imagen. Arrastra el objeto o usa el deslizador de abajo.' : 'Lente convergente con objeto, focos y rayos');
   if (!s.explore) S.d = BASE;
   S.show = Object.assign({obj:false, f:false, img:false, i:false}, s.show);
   S.rays = [0,1,2].map(k => k < s.rays ? 1 : 0);
@@ -489,9 +498,7 @@ function go(n){
   $('stepK').textContent = `${s.k} de ${steps.length}`;
   $('stepT').textContent = s.t;
   $('stepBody').innerHTML = s.body();
-  [...dots.querySelectorAll('button')].forEach((b, k) => {
-    b.className = k === n ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
-  });
+  refreshDots();
   if (s.anim !== undefined){
     S.rays[s.anim] = 0; S.active = s.anim;
     animateRay(s.anim, () => { if (s.after){ Object.assign(S.show, s.after); } draw(); });
@@ -509,28 +516,67 @@ function updateNav(){
 }
 function unlock(n){ if (n > S.max){ S.max = n; } }
 
+// Una retroalimentación por opción: qué error refleja y por qué falla. Las tres incorrectas no tienen
+// datos de cuántos alumnos las eligen (docs/investigacion/optica-ideas-erroneas.md): son hipótesis nuestras.
+const FB1 = {
+  a: 'No es ahí. Entre la lente y F′ caería la imagen de un objeto muy lejano, cuyos rayos llegan casi paralelos al eje y se juntan cerca del foco. A 30 cm el objeto no está tan lejos: con 1/i = 1/10 − 1/30, i = 15 cm, más allá de F′. (Que este error venga de confundir «lejos» con «en el infinito» es una hipótesis nuestra.)',
+  b: 'Bien. Con el objeto más allá de 2F, la imagen cae entre F′ y 2F′. Ahora veamos por qué con los rayos.',
+  c: 'No es ahí. Más allá de 2F′ cae la imagen cuando el objeto está entre F y 2F; aquí está más lejos que 2F, así que la imagen queda más cerca de la lente: i = 15 cm, entre F′ y 2F′. Tampoco se copia la distancia del objeto, como en un espejo plano. (Hipótesis nuestra sobre el error: no hay datos de cuántos lo cometen.)',
+  d: 'No es ahí. Del lado del objeto solo cae la imagen virtual, cuando el objeto está más cerca que F (una lupa). A 30 cm los rayos sí se cruzan detrás de la lente: la imagen es real. (Hipótesis nuestra sobre el error: no hay datos de cuántos lo cometen.)'
+};
 function setupPred(){
   const btns = [...$('stepBody').querySelectorAll('.opt')];
   const paint = () => {
     if (!S.pred) return;
     btns.forEach(b => { b.disabled = true; if (b.dataset.k === 'b') b.classList.add('correct'); else if (b.dataset.k === S.pred) b.classList.add('wrong'); });
-    $('fb').textContent = S.pred === 'b'
-      ? 'Bien. Con el objeto más allá de 2F, la imagen cae entre F′ y 2F′. Ahora veamos por qué con los rayos.'
-      : 'No es ahí. La correcta está marcada en verde. Mira los rayos y vas a ver por qué.';
+    $('fb').textContent = FB1[S.pred];
   };
   const t0 = Date.now();
-  btns.forEach(b => b.addEventListener('click', () => { S.pred = b.dataset.k; unlock(S.step + 1); paint(); updateNav(); refreshDots();
+  btns.forEach(b => b.addEventListener('click', () => { if (S.pred) return; S.pred = b.dataset.k; unlock(S.step + 1); paint(); updateNav(); refreshDots();
+    $('fb').focus({ preventScroll:true });
     registrarPrediccion('una-lente-paso3', S.pred, S.pred === 'b', ERR_PASO3.m1[S.pred], 'hipotesis', t0);
     const paso = S.step; compactar(false); Celular.alResponder(cv, draw, () => S.step === paso); }));
   paint();
 }
-function refreshDots(){ [...dots.querySelectorAll('button')].forEach((b,k) => { b.disabled = k > S.max; if (k !== S.step) b.className = k <= S.max ? 'done' : ''; }); }
+// Un paso bloqueado no anuncia su título: se lee «Paso N, bloqueado».
+function refreshDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.disabled = k > S.max; b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : '');
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : `Ir al ${steps[k].k.toLowerCase()}: ${steps[k].t}`);
+    if (k > S.max) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled');
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
 
 function setupExplore(){
   const sl = $('do-slider');
   const upd = () => { S.d = parseFloat(sl.value); $('do-out').textContent = `${fmt(S.d)} cm`; renderLive(); draw(); };
   sl.addEventListener('input', upd); upd();
 }
+function ponerD(d){
+  const sl = $('do-slider'); if (!sl) return;
+  sl.value = String(Math.max(4, Math.min(40, Math.round(d*2)/2)));
+  sl.dispatchEvent(new Event('input'));
+}
+function resumen(){
+  const g = geo(S.d);
+  if (g.inf) return `Objeto a ${fmt(S.d)} cm, justo en el foco: no se forma imagen.`;
+  return `Objeto a ${fmt(S.d)} cm. Imagen ${g.di > 0 ? 'real' : 'virtual'} a ${fmt(Math.abs(g.di))} cm, ${g.m < 0 ? 'invertida' : 'derecha'}.`;
+}
+// Arrastre del objeto en el paso 9 (nucleo/celular.js): solo captura cerca de la flecha; lejos, el dedo desplaza la página.
+function cercaObjeto(p, r){
+  const x = X(-S.d), y1 = Math.min(Y(HO), Y(0)), y2 = Math.max(Y(HO), Y(0));
+  const dy = p.y < y1 ? y1 - p.y : p.y > y2 ? p.y - y2 : 0;
+  return Math.hypot(p.x - x, dy) < r;
+}
+Celular.arrastre(cv, {
+  activo: () => S.explore,
+  cerca: cercaObjeto,
+  empezar: () => { agarra = true; cv.classList.add('agarrando'); draw(); },
+  mover: p => ponerD(-(p.x - W/2)/sx),
+  soltar: () => { agarra = false; cv.classList.remove('agarrando'); draw(); decir('vivo1', resumen()); },
+  sobre: on => { S.sobre = on; draw(); },
+});
 function renderLive(){
   const g = geo(S.d), live = $('live');
   if (g.inf){
@@ -553,8 +599,8 @@ function renderLive(){
   ${!real || Math.abs(g.di) < XR ? '' : '<p class="hint">La imagen se forma tan lejos que no entra en el banco.</p>'}`;
 }
 
-$('next').addEventListener('click', () => { unlock(S.step + 1); go(S.step + 1); });
-$('prev').addEventListener('click', () => go(S.step - 1));
+$('next').addEventListener('click', () => { unlock(S.step + 1); go(S.step + 1); if ($('next').disabled) $('stepT').focus({ preventScroll:true }); });
+$('prev').addEventListener('click', () => { go(S.step - 1); if ($('prev').disabled) $('stepT').focus({ preventScroll:true }); });
 
 function setHL(k){
   S.hl = k;
