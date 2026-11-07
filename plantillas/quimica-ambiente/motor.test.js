@@ -102,7 +102,7 @@ test('CO₂: cada hidrocarburo da más masa de CO₂ que la que se quemó, y la 
 });
 test('torre: el destino sigue el orden de los puntos de ebullición, ninguna sustancia se crea y cada bandeja es más fría que lo que guarda', () => {
   const b = motor.BANDEJAS;
-  for (const d of [-60, -30, 0, 30, 60]) {
+  for (const d of [-60, -30, 0, 30, 40]) {
     const bb = b.map(x => ({ T: x.T + d, nombre: x.nombre }));
     const t = motor.torre(bb);
     const lugar = v => (v === 'fondo' ? -1 : v === 'gases' ? 99 : v);
@@ -185,6 +185,14 @@ test('partículas: la caja no encima moléculas y el reacomodo usa los mismos á
   assert.deepEqual(r.cuenta, { C: 3, H: 12, O: 12 });
   assert.equal(r.atomos.length, 27);
   assert.throws(() => motor.reacomodo(lista, [['CO2', 3], ['H2O', 5]], 20, 12, 5), /no cuadran/);
+  // La lupa de la lluvia: SO₂ → SO₃ → H₂SO₄, con los mismos átomos.
+  const l1 = motor.reacomodo([['SO2', 2], ['O2', 1], ['H2O', 2]], [['SO3', 2], ['H2O', 2]], 11, 7, 4);
+  const l2 = motor.reacomodo([['SO3', 2], ['H2O', 2]], [['H2SO4', 2]], 11, 7, 4);
+  assert.deepEqual(l1.cuenta, { S: 2, O: 8, H: 4 }); assert.deepEqual(l2.cuenta, { S: 2, O: 8, H: 4 });
+  assert.equal(motor.masaMolar({ H: 2, S: 1, O: 4 }), motor.MOLECULAS.H2SO4.reduce((t, a) => t + motor.MASAS[a.el], 0));
+  // Ningún par de átomos de una molécula se encima.
+  for (const [s, A] of Object.entries(motor.MOLECULAS)) for (let i = 0; i < A.length; i++) for (let j = i + 1; j < A.length; j++)
+    assert.ok(Math.hypot(A[i].x - A[j].x, A[i].y - A[j].y) >= motor.RADIO[A[i].el] + motor.RADIO[A[j].el] - 0.08, `${s}: átomos ${i} y ${j}`);
   const q = motor.reacomodo([['CH4', 2], ['O2', 3]], [['CO', 2], ['H2O', 4]], 20, 12, 5);
   assert.equal(q.atomos.length, 16);
   // Cada molécula de la lista tiene enlaces que unen todos sus átomos.
@@ -199,6 +207,7 @@ test('predicciones de la escena: cada error da algo distinto de la respuesta', (
   const prods = o => ['CO2', 'CO', 'C', 'H2O', 'O2', 'comb'].filter(k => (o[k] || 0) > 0).join(',');
   for (const [k, e] of Object.entries(p.errores)) assert.notEqual(prods(e), pr, k);
   const t = motor.torre();
+  assert.equal(t.destino.tetracosano, 0, 'el C₂₄ va a la bandeja de 350 °C');
   const ops = [t.destino.hexadecano, t.errores['por-densidad'].hexadecano, t.errores['el-calor-sube'].hexadecano, t.errores['invierte-la-regla'].hexadecano];
   assert.equal(new Set(ops).size, 4, 'torre: cuatro opciones distintas');
   const o = motor.oxidarHierro(112), opsO = [o.Fe2O3, ...Object.values(o.errores)];
@@ -225,6 +234,7 @@ test('errores de entrada', () => {
   assert.throws(() => motor.pH(0), /positivo/);
   assert.throws(() => motor.lluvia({ SO2: -1 }), /negativas/);
   assert.throws(() => motor.torre([{ T: 30 }, { T: 150 }]), /más caliente/);
+  assert.throws(() => motor.torre([{ T: 410 }, { T: 150 }]), /horno/);
   assert.throws(() => motor.metalurgia('pirita', 1, 0.5), /desconocida/);
   assert.throws(() => motor.metalurgia('blenda', 1, 1.5), /0 a 1/);
   assert.throws(() => motor.masaMolar({ Xx: 1 }), /desconocido/);

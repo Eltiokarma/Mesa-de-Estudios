@@ -36,7 +36,12 @@
  *    so2AAcido(m), no2AAcido(m): masa de H₂SO₄ o HNO₃ que sale de m gramos del gas.
  *  - torre(bandejas?, sustancias?, Thorno?): destilación fraccionada. { destino { s: índice | 'gases' | 'fondo' },
  *    fraccion { s: nombre }, bandejas [{ T, nombre, sustancias }], errores { 'por-densidad', 'el-calor-sube',
- *    'invierte-la-regla' } }. condensaEn(s, bandejas?, Thorno?). fraccionPorCarbonos(n).
+ *    'invierte-la-regla' } }, cada error con el lugar que daría a cada sustancia: 'por-densidad', las de 12 C o más
+ *    al fondo y las demás en su lugar real; 'el-calor-sube', se ordenan por punto de ebullición y cada una va al lugar
+ *    real de la que ocupa la posición simétrica (la que hierve más alto, donde va la que hierve más bajo);
+ *    'invierte-la-regla', la bandeja más fría de las que están MÁS calientes que su punto de ebullición (si ninguna,
+ *    'gases'). La bandeja de abajo tiene que estar más fría que el horno. condensaEn(s, bandejas?, Thorno?).
+ *    fraccionPorCarbonos(n).
  *  - metalurgia(mena, masa, ley, rendimiento): { puro, teorico, real, gas, errores { 'sin-ley', 'sin-rendimiento',
  *    'suma-perdidas' } }. MENAS: blenda (ZnS), calcosina (Cu₂S) y hematita (Fe₂O₃).
  *  - oxidarHierro(masaFe, fraccion?): 4Fe + 3O₂ → 2Fe₂O₃. { Fe2O3, O, masaFinal, errores { 'resta-oxigeno',
@@ -52,7 +57,7 @@
  *
  * Datos declarados (por verificar con la tabla que use el colegio):
  *  - Puntos de ebullición (°C, de tabla, redondeados): metano −161,5; propano −42,1; butano −0,5; pentano 36,1;
- *    n-heptano 98,4; isooctano 99,2; octano 125,7; dodecano 216,3; hexadecano 286,9. El residuo es un C₃₀H₆₂ de modelo
+ *    n-heptano 98,4; isooctano 99,2; octano 125,7; dodecano 216,3; hexadecano 286,9; tetracosano (C₂₄) 391. El residuo es un C₃₀H₆₂ de modelo
  *    a 450 °C. Torre de modelo: bandejas de abajo arriba a 350, 250, 150 y 30 °C (aceites y fuel, diésel, queroseno y
  *    gasolina), el horno a 400 °C. Lo que hierve sobre el horno queda en el fondo (residuo); lo que no se condensa en
  *    ninguna bandeja sale arriba como gas. Fracciones por número de carbonos: gases 1–4, gasolina 5–10, queroseno
@@ -76,7 +81,7 @@
  * Errores típicos (campo 'errores'): QA9 (la masa baja en el frasco cerrado), QA10 (el combustible se vuelve energía),
  * QA11 (el hierro oxidado pesa menos), QA13 (la torre separa por densidad), QA1 y QA2 (el agujero de ozono calienta),
  * QA3 y QA4 (el CO o el CO₂ dan la lluvia ácida) y los de cálculo de «Lo que no tiene respaldo» del informe.
- * CABECERA: líneas 1 a 80 (funciones, unidades, datos declarados y errores).
+ * CABECERA: líneas 1 a 85 (funciones, unidades, datos declarados y errores).
  */
 (function (root, fabrica) {
   const motor = fabrica();
@@ -131,6 +136,7 @@
     octano: { C: 8, H: 18, nombre: 'octano', Teb: 125.7 },
     dodecano: { C: 12, H: 26, nombre: 'dodecano', Teb: 216.3 },
     hexadecano: { C: 16, H: 34, nombre: 'hexadecano', Teb: 286.9 },
+    tetracosano: { C: 24, H: 50, nombre: 'tetracosano', Teb: 391 },
     residuo: { C: 30, H: 62, nombre: 'residuo (C₃₀)', Teb: 450 },
   };
   function hc(x) {
@@ -294,10 +300,11 @@
   // ---------------- Destilación fraccionada ----------------
   const BANDEJAS = [{ T: 350, nombre: 'aceites y fuel' }, { T: 250, nombre: 'diésel' }, { T: 150, nombre: 'queroseno' }, { T: 30, nombre: 'gasolina' }];
   const THORNO = 400;
-  const SUST_TORRE = ['metano', 'pentano', 'octano', 'dodecano', 'hexadecano', 'residuo'];
+  const SUST_TORRE = ['metano', 'pentano', 'octano', 'dodecano', 'hexadecano', 'tetracosano', 'residuo'];
   function condensaEn(s, bandejas, Thorno) {
     const b = bandejas || BANDEJAS, Th = Thorno === undefined ? THORNO : num(Thorno, 'Thorno'), h = hc(s);
     for (let i = 1; i < b.length; i++) if (!(b[i].T < b[i - 1].T)) throw new Error('las bandejas van de la más caliente (abajo) a la más fría (arriba)');
+    if (!(b[0].T < Th)) throw new Error('la bandeja de abajo tiene que estar más fría que el horno');
     if (h.Teb > Th) return 'fondo';
     for (let i = 0; i < b.length; i++) if (b[i].T < h.Teb) return i;
     return 'gases';
@@ -429,7 +436,10 @@
     ZnS: [{ el: 'Zn', x: -0.6, y: 0 }, { el: 'S', x: 0.6, y: 0 }],
     ZnO: [{ el: 'Zn', x: -0.6, y: 0 }, { el: 'O', x: 0.6, y: 0 }],
     Fe: [{ el: 'Fe', x: 0, y: 0 }],
-    Fe2O3: [{ el: 'Fe', x: -0.65, y: 0 }, { el: 'Fe', x: 0.65, y: 0 }, { el: 'O', x: 0, y: -0.95 }, { el: 'O', x: 0, y: 0.95 }, { el: 'O', x: 1.6, y: 0.55 }],
+    Fe2O3: [{ el: 'Fe', x: -0.75, y: 0 }, { el: 'Fe', x: 0.75, y: 0 }, { el: 'O', x: 0, y: -0.95 }, { el: 'O', x: 0, y: 0.95 }, { el: 'O', x: 1.75, y: 0.65 }],
+    SO3: [{ el: 'S', x: 0, y: 0 }, { el: 'O', x: 0, y: -1.05 }, { el: 'O', x: 0.91, y: 0.52 }, { el: 'O', x: -0.91, y: 0.52 }],
+    H2SO4: [{ el: 'S', x: 0, y: 0 }, { el: 'O', x: 0, y: -1.05 }, { el: 'O', x: 0, y: 1.05 }, { el: 'O', x: -1.05, y: 0 }, { el: 'O', x: 1.05, y: 0 },
+      { el: 'H', x: -1.8, y: 0.45 }, { el: 'H', x: 1.8, y: -0.45 }],
   };
   const RADIO = { H: 0.32, C: 0.5, N: 0.48, O: 0.46, S: 0.6, Zn: 0.62, Fe: 0.62 };
   const ENLACES = s => {
