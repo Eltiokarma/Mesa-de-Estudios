@@ -328,7 +328,7 @@ const rot = (sim, F, quien, oculta) => `${sim} = ${oculta ? '?' : N1(F) + ' N'} 
 
 // Leyenda: solo las variables que aparecen en la escena.
 const NOMBRES = {
-  P:'P · presión del agua (sobre la atmosférica)', h:'h · profundidad, en vertical hasta el nivel de la superficie libre',
+  P:'P · presión del líquido (sobre la atmosférica)', h:'h · profundidad, en vertical hasta el nivel de la superficie libre',
   Nw:'N · el techo empuja el agua', Nb:'N · lo que marca la balanza (el plato empuja el vaso)', Nf:'N · el fondo empuja el bloque',
   T:'T · lo que marca el dinamómetro (la tensión del hilo)', E:'E · empuje (el líquido)', W:'W · peso (la Tierra)', F:'F · fuerza de la mano' };
 function leyenda(el, claves){
@@ -356,9 +356,9 @@ function paredes(ctx, c, ts){
   lado(-1); lado(1); linea(ctx, ts[0].x0, ts[0].y0, ts[0].x1, ts[0].y0);
   ctx.restore();
 }
-function superficie(ctx, c, x0, x1, y){
+function superficie(ctx, c, x0, x1, y, xMarca){
   ctx.save(); ctx.strokeStyle = c.ink; ctx.globalAlpha = .55; ctx.lineWidth = 1.2; linea(ctx, x0 + 2, y, x1 - 2, y);
-  const xm = (x0 + x1)/2; ctx.globalAlpha = .8; ctx.beginPath(); ctx.moveTo(xm - 5, y - 8); ctx.lineTo(xm + 5, y - 8); ctx.lineTo(xm, y - 1); ctx.closePath(); ctx.fillStyle = c.ink; ctx.fill();
+  const xm = xMarca === undefined ? (x0 + x1)/2 : xMarca; ctx.globalAlpha = .8; ctx.beginPath(); ctx.moveTo(xm - 5, y - 8); ctx.lineTo(xm + 5, y - 8); ctx.lineTo(xm, y - 1); ctx.closePath(); ctx.fillStyle = c.ink; ctx.fill();
   ctx.restore();
 }
 
@@ -484,7 +484,7 @@ function vistaBalanza(L, c, P){
   ctx.save(); ctx.fillStyle = c.ink; ctx.font = `800 ${c.chico ? 10 : 11}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(P.etiqueta, x0, yTopB + ab/2); ctx.restore();
   if (P.arrastrable){ ctx.save(); ctx.strokeStyle = c.ink; ctx.setLineDash([3, 2]); ctx.lineWidth = P.sobre ? 2 : 1.4; rr(ctx, x0 - ab/2 - 5, yTopB - 5, ab + 10, ab + 10, 6); ctx.stroke(); ctx.restore();
     rotulo(ctx, c, x0 + ab/2 + 8, yTopB + ab/2, '↕', c.ink, 'left', 800, W, H); }
-  superficie(ctx, c, xv0, xv1, ySup);
+  superficie(ctx, c, xv0, xv1, ySup, xv0 + 9);
   paredes(ctx, c, [{ x0: xv0, x1: xv1, y0: g.yVb, y1: yRim }]);
   // Balanza
   const yP = g.yVb + 2;
@@ -496,15 +496,15 @@ function vistaBalanza(L, c, P){
   ctx.fillText(visto('N') ? `N = ${N1(r.N)} N` : 'N = ?', x0, yP + 20.5); ctx.restore();
   if (P.nota) rotulo(ctx, c, W - 6, H - 12, P.nota, c.ink, 'right', 700, W, H);
   // Fuerzas sobre el bloque, aparte
-  const xd = g.xd, ladoD = c.chico ? 26 : 32, kF = Math.min(5, (H/2 - ladoD/2 - 30)/22), yd = H/2 + 4;
+  const xd = g.xd, ladoD = c.chico ? 26 : 32, kF = Math.min(8, (H/2 - ladoD/2 - 30)/22), yd = H/2 + 4;
   rotulo(ctx, c, xd, 12, 'fuerzas sobre el bloque', c.muted, 'center', 700, W, H);
   ctx.save(); ctx.fillStyle = P.madera ? c.madera : c.bloque; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; rr(ctx, xd - ladoD/2, yd - ladoD/2, ladoD, ladoD, 3); ctx.fill(); ctx.stroke(); ctx.restore();
   const fT = { x:xd - 8, y:yd - ladoD/2, dx:0, dy:-1, F:r.T, k:kF, col:c.T, hl:P.hl === 'T', oculta:ver.T === 'oculta', crece:ver.T === 'nueva' ? cr : 1,
     txt: r.T < 0.05 && ver.T !== 'oculta' ? 'T = 0 · hilo flojo' : rot('T', r.T, 'hilo', ver.T === 'oculta'), al:'right' };
-  fT.lx = xd - 14; fT.ly = yd - ladoD/2 - (fT.oculta ? 36 : Math.max(r.T*kF, 0)) - 4;
+  fT.lx = xd - 14; fT.ly = yd - ladoD/2 - (fT.oculta ? 36 : Math.max(r.T*kF, 10)) - 4;
   const fE = { x:xd + 8, y:yd - ladoD/2, dx:0, dy:-1, F:r.E, k:kF, col:c.E, hl:P.hl === 'E', oculta:ver.E === 'oculta', crece:ver.E === 'nueva' ? cr : 1,
     txt: r.E < 0.05 && ver.E !== 'oculta' ? 'E = 0 · fuera del agua' : rot('E', r.E, P.liquido === 'aceite' ? 'aceite' : P.liquido === 'salmuera' ? 'salmuera' : 'agua', ver.E === 'oculta'), al:'left' };
-  fE.lx = xd + 14; fE.ly = yd - ladoD/2 - (fE.oculta ? 36 : r.E*kF) - 4;
+  fE.lx = xd + 14; fE.ly = yd - ladoD/2 - (fE.oculta ? 36 : Math.max(r.E*kF, 10)) - 4;
   const fW = { x:xd, y:yd + ladoD/2, dx:0, dy:1, F:r.W, k:kF, col:c.W, hl:P.hl === 'W', txt:rot('W', r.W, 'Tierra'), al:'left', lx:xd + 8, ly:yd + ladoD/2 + r.W*kF - 4 };
   [fT, fE, fW].forEach(f => fuerza(ctx, c, f, W, H));
 }
@@ -552,7 +552,7 @@ function vistaVasos(L, c, P){
 function vistaPrensa(L, c, P){
   const { ctx, W, H } = L; ctx.clearRect(0, 0, W, H);
   const r = P.r, yF = H - 64, d1 = Math.min(18, W*0.05), d2 = Math.min(W*0.36, d1*Math.sqrt(r.razon)), xa = W*0.26, xb = W*0.66;
-  const hC = Math.min(150, H*0.42), carrera = Math.min(60, hC*0.42), mov = P.ver === 'antes' ? 0 : suave(P.mov || 0);
+  const hC = Math.min(260, H - 154), carrera = Math.min(90, hC*0.4), mov = P.ver === 'antes' ? 0 : suave(P.mov || 0);
   const kd = carrera/0.5;                                                // px por metro del recorrido del émbolo chico
   const ya = yF - hC + 10 + mov*r.d1*kd, yb = yF - hC*0.55 - mov*r.d2*kd;
   // Aceite
@@ -570,7 +570,7 @@ function vistaPrensa(L, c, P){
   rotulo(ctx, c, xb, yF + 12, `${N2(r.A2)} m²`, c.ink, 'center', 700, W, H);
   // Fuerzas: la mano empuja el émbolo chico; la Tierra jala la carga.
   const kF = 50/Math.max(r.F1, 1);
-  fuerza(ctx, c, { x:xa, y:ya - 7 - 50, dx:0, dy:1, F:r.F1, k:kF, col:c.F, hl:P.hl === 'F', txt:rot('F', r.F1, 'mano'), al:'left', lx:xa + 10, ly:ya - 7 - 44 }, W, H);
+  fuerza(ctx, c, { x:xa, y:ya - 7 - 50, dx:0, dy:1, F:r.F1, k:kF, col:c.F, hl:P.hl === 'F', txt:rot('F', r.F1, 'mano'), al:'left', lx:xa - 4, ly:ya - 7 - 62 }, W, H);
   const oc = P.ver === 'antes';
   fuerza(ctx, c, { x:xb + cw/2 + 10, y:yb - 8 - ch, dx:0, dy:1, F:r.F2, k:Math.min(40/r.F2, 1), col:c.W, hl:P.hl === 'W', oculta:oc, largoOculto:36,
     txt:rot('W', r.F2, 'Tierra', oc), al:'right', lx:xb + cw/2 + 4, ly:yb - 8 - ch - 12 }, W, H);
