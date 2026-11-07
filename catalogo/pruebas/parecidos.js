@@ -56,17 +56,34 @@ function textosPapel(id) {
   try { return (JSON.parse(fs.readFileSync(f, 'utf8')).problemas || []).map(p => `${p.id}: ${p.enunciado || ''}`); } catch { return []; }
 }
 
-// Códigos de error de cada predicción de la escena: las opciones se escriben ['a', 'texto', 'CÓDIGO', …];
+// Códigos de error de cada predicción de la escena: las opciones se escriben ['a', TEXTO, 'CÓDIGO', …],
+// donde TEXTO puede ser una cadena o cualquier expresión (numH(…), T('pm', …), String(…)…);
 // las opciones seguidas (a pocas líneas una de otra) son de la misma predicción.
+// Salta la expresión del texto contando paréntesis, corchetes, llaves y cadenas hasta la coma de primer nivel.
+function codigoOpcion(l, desde) {
+  let prof = 0, j = desde;
+  for (; j < l.length; j++) {
+    const c = l[j];
+    if (c === "'" || c === '"' || c === '`') {
+      for (j++; j < l.length && l[j] !== c; j++) if (l[j] === '\\') j++;
+    } else if ('([{'.includes(c)) prof++;
+    else if (')]}'.includes(c)) { if (prof === 0) return null; prof--; }
+    else if (c === ',' && prof === 0) break;
+  }
+  const m = /^,\s*'([A-Za-z0-9]+(?:-[A-Za-z0-9]+)+)'/.exec(l.slice(j));
+  return m ? m[1] : null;
+}
 function codigosEscena(id) {
   const f = path.join(RAIZ, 'plantillas', id, 'index.html');
   if (!fs.existsSync(f)) return [];
   const lineas = fs.readFileSync(f, 'utf8').split('\n'), grupos = [];
   let ultimo = -99;
   lineas.forEach((l, i) => {
-    for (const m of l.matchAll(/\[\s*'[a-f]'\s*,\s*(?:'(?:[^'\\]|\\.)*'|`[^`]*`)\s*,\s*'([^']+)'/g)) {
+    for (const m of l.matchAll(/\[\s*'[a-f]'\s*,\s*/g)) {
+      const cod = codigoOpcion(l, m.index + m[0].length);
+      if (!cod) continue;
       if (i - ultimo > 3) grupos.push({ linea: i + 1, codigos: new Set() });
-      grupos[grupos.length - 1].codigos.add(m[1]); ultimo = i;
+      grupos[grupos.length - 1].codigos.add(cod); ultimo = i;
     }
   });
   return grupos.filter(g => g.codigos.size >= 2);
