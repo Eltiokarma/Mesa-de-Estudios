@@ -1,0 +1,13 @@
+{
+  "id": "resumen-sintesis",
+  "titulo": "Resumir y sintetizar",
+  "formato": "lectura",
+  "unidades": [
+    "razonamiento-verbal.resumen-y-sintesis"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "banco": "../../contenido/razonamiento-verbal/indice-resumen-sintesis.json",
+  "pruebas": "../../contenido/razonamiento-verbal/banco.test.js",
+  "papel": null
+}

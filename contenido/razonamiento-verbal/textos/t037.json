@@ -1,0 +1,207 @@
+{
+  "id": "t037",
+  "version": 1,
+  "titulo": "Los que separan lo que botamos",
+  "tema": "Ciudad · los recicladores",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "argumentativo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "contraste",
+        "t": "Muchos vecinos ven como un problema a los recicladores que abren las bolsas de basura: dejan restos en la vereda y trabajan sin uniforme ni horario."
+      },
+      {
+        "id": "o2",
+        "rol": "apoyo",
+        "t": "Sin embargo, mucho del plástico, el papel y el cartón que se recicla en las ciudades del Perú pasa primero por sus manos."
+      },
+      {
+        "id": "o3",
+        "rol": "apoyo",
+        "t": "Ellos separan, limpian y venden lo que, de otro modo, los camiones municipales habrían llevado al relleno sanitario."
+      }
+    ],
+    [
+      {
+        "id": "o4",
+        "rol": "apoyo",
+        "t": "El problema no es que existan, sino cómo trabajan: a escondidas, de noche, sin guantes y vendiendo a intermediarios que les pagan poco."
+      },
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "Desde 2009, una ley peruana reconoce su oficio y promueve que las municipalidades los incorporen en programas de recojo selectivo."
+      },
+      {
+        "id": "o6",
+        "rol": "ejemplo",
+        "t": "Donde esos programas funcionan, los vecinos separan sus residuos en casa, el reciclador pasa a recogerlos en un día fijo y lo que antes se rompía en la vereda llega entero y limpio."
+      }
+    ],
+    [
+      {
+        "id": "o7",
+        "rol": "principal",
+        "t": "Por eso, en lugar de perseguir a los recicladores, las municipalidades deberían sumarlos al sistema de limpieza: así la ciudad recicla más, y quienes hacen ese trabajo lo hacen con seguridad y con un pago justo."
+      },
+      {
+        "id": "o8",
+        "rol": "apoyo",
+        "t": "Echarlos de las calles no hace desaparecer la basura que ellos separaban; solo la manda entera al relleno."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "resumen",
+      "unidad": "razonamiento-verbal.resumen-y-sintesis",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que mejor resume el texto.",
+        "aceptadas": [
+          "o7"
+        ],
+        "ninguna": "RV3",
+        "codigos": {},
+        "explicacion": "La oración 7 dice lo que el autor propone y por qué: sumar a los recicladores en lugar de perseguirlos, para reciclar más y para que trabajen seguros. Las demás preparan o apoyan esa propuesta.",
+        "explicaciones": {
+          "o1": "La primera oración presenta la opinión de muchos vecinos, que el autor discute enseguida con un «Sin embargo».",
+          "o2": "Es un argumento: muestra que los recicladores son necesarios, pero todavía no dice qué propone el autor.",
+          "o3": "Explica qué hacen los recicladores; apoya la idea, pero no es la propuesta.",
+          "o4": "Señala cuál es el problema de verdad. Prepara la propuesta, pero no la dice.",
+          "o5": "Es un dato sobre la ley de 2009.",
+          "o6": "Es un ejemplo de lo que pasa donde los programas funcionan.",
+          "o8": "Es un argumento más contra echarlos; la propuesta completa está en la oración 7.",
+          "ninguna": "La oración 7 sí la dice completa: qué hacer con los recicladores y para qué."
+        }
+      },
+      "enunciado": "¿Cuál es el mejor resumen del texto?",
+      "alternativas": [
+        {
+          "t": "Como los recicladores ya recuperan mucho de lo que se recicla, las municipalidades deberían integrarlos y no perseguirlos: se reciclaría más y ellos trabajarían seguros.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o7"
+          ],
+          "explicacion": "Junta el argumento central (los recicladores ya hacen buena parte del trabajo) con la propuesta y su finalidad, que es lo que defiende el autor."
+        },
+        {
+          "t": "Los recicladores abren bolsas, recuperan plástico y cartón, trabajan de noche, venden a intermediarios, tienen una ley desde 2009 y recogen en días fijos donde hay programas.",
+          "codigo": "RV43",
+          "explicacion": "Repite los datos en el orden del texto, pero no dice qué propone el autor ni cómo se relacionan esos datos con la propuesta."
+        },
+        {
+          "t": "Las municipalidades deberían sumar a los recicladores al sistema de limpieza porque los vecinos ya separan sus residuos en casa.",
+          "codigo": "RV44",
+          "origen": "o6",
+          "explicacion": "Cambia la relación: en el texto, que los vecinos separen en casa es un resultado de los programas, no la razón para crearlos."
+        },
+        {
+          "t": "Mucho del plástico, el papel y el cartón que se recicla en las ciudades del Perú pasa primero por las manos de los recicladores.",
+          "codigo": "RV3",
+          "origen": "o2",
+          "explicacion": "Es un argumento del texto, pero deja fuera lo esencial: la propuesta del autor de sumarlos al sistema de limpieza."
+        },
+        {
+          "t": "Reciclar en casa debería ser obligatorio para todas las familias, y quien no separe su basura debería pagar una multa.",
+          "codigo": "RV33",
+          "explicacion": "El autor no propone obligar a nadie ni poner multas: esa opinión no está en el texto."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "titulo",
+      "unidad": "razonamiento-verbal.resumen-y-sintesis",
+      "enunciado": "¿Cuál es el título más adecuado para el texto?",
+      "alternativas": [
+        {
+          "t": "Sumar a los recicladores, no perseguirlos",
+          "correcta": true,
+          "evidencia": [
+            "o7"
+          ],
+          "explicacion": "Recoge la propuesta del autor, que es la oración 7."
+        },
+        {
+          "t": "Los recicladores, un problema en la vereda",
+          "codigo": "RV4",
+          "origen": "o1",
+          "explicacion": "Toma la idea de la primera oración, que es la opinión que el autor discute, no la que defiende."
+        },
+        {
+          "t": "Una ley de 2009 para los recicladores",
+          "codigo": "RV1",
+          "origen": "o5",
+          "explicacion": "La ley es un dato que apoya la propuesta; el texto no trata sobre ella."
+        },
+        {
+          "t": "La basura en las ciudades del mundo",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado amplio: el texto habla de los recicladores en las ciudades del Perú."
+        },
+        {
+          "t": "Cómo trabajan los recicladores en el Perú",
+          "codigo": "RV14",
+          "explicacion": "Nombra el tema, pero sin la postura del autor: el texto no solo describe su trabajo, propone sumarlos al sistema de limpieza."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.resumen-y-sintesis",
+      "enunciado": "¿Qué alternativa dice lo mismo que la oración 4, con otras palabras?",
+      "alternativas": [
+        {
+          "t": "Lo malo no es que haya recicladores, sino que hacen su trabajo a escondidas y en malas condiciones.",
+          "correcta": true,
+          "evidencia": [
+            "o4"
+          ],
+          "explicacion": "Mantiene las dos partes de la oración 4 y su relación: no esto (que existan), sino aquello (cómo trabajan)."
+        },
+        {
+          "t": "Lo malo es que haya recicladores que trabajan de noche, sin guantes y a escondidas.",
+          "codigo": "RV10",
+          "origen": "o4",
+          "explicacion": "Se salta el «no»: la oración 4 dice que el problema no es que existan."
+        },
+        {
+          "t": "Los recicladores existen porque trabajan a escondidas y venden a intermediarios.",
+          "codigo": "RV5",
+          "origen": "o4",
+          "explicacion": "Repite palabras de la oración 4, pero las une con un «porque» que el texto no pone."
+        },
+        {
+          "t": "Los intermediarios tienen la culpa de que la ciudad recicle tan poco y de que las veredas se ensucien.",
+          "codigo": "RV7",
+          "explicacion": "La oración 4 dice que los intermediarios pagan poco, pero no los culpa de todo lo demás: eso va más allá del texto."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07",
+  "hechos": [
+    {
+      "afirmacion": "La Ley N.° 29419, Ley que regula la actividad de los recicladores (2009), reconoce su trabajo y promueve su formalización y su inclusión en programas municipales de segregación en la fuente y recolección selectiva.",
+      "fuente": "Ley N.° 29419, publicada en El Peruano el 7 de octubre de 2009, y su reglamento (Decreto Supremo N.° 005-2010-MINAM)."
+    },
+    {
+      "afirmacion": "Una parte importante del material reciclable que se recupera en las ciudades del Perú pasa por recicladores, muchos de ellos informales, que lo venden a intermediarios (afirmación general; el texto no da cifra).",
+      "fuente": "MINAM, informes sobre el Programa de Segregación en la Fuente y Recolección Selectiva de Residuos Sólidos; Ciudad Saludable, estudios sobre recicladores en el Perú."
+    }
+  ],
+  "revision": {
+    "por": "subagente (verificador a ciegas y revisor de contenido)",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas coincidió en todas las claves y en el previo. Cambio: «buena parte del plástico…» se suavizó a «mucho del plástico…» en la oración 2 y en el distractor que la repite; el hecho queda como afirmación general, sin cifra."
+  }
+}

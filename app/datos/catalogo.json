@@ -4053,7 +4053,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "resumen-sintesis"
+     ]
     },
     {
      "id": "razonamiento-verbal.textos-discontinuos",
@@ -5595,6 +5597,30 @@
     "/plantillas/rendimiento-pureza/index.html",
     "/plantillas/rendimiento-pureza/motor.js",
     "/plantillas/rendimiento-pureza/papel.json"
+   ]
+  },
+  "resumen-sintesis": {
+   "id": "resumen-sintesis",
+   "titulo": "Resumir y sintetizar",
+   "formato": "lectura",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-verbal.resumen-y-sintesis"
+   ],
+   "url": "#/lectura/resumen-sintesis",
+   "banco": "/contenido/razonamiento-verbal/indice-resumen-sintesis.json",
+   "papel": null,
+   "entrada": null,
+   "salida": null,
+   "archivos": [
+    "/contenido/razonamiento-verbal/indice-resumen-sintesis.json",
+    "/contenido/razonamiento-verbal/codigos.json",
+    "/contenido/razonamiento-verbal/frases.json",
+    "/contenido/razonamiento-verbal/textos/t035.json",
+    "/contenido/razonamiento-verbal/textos/t036.json",
+    "/contenido/razonamiento-verbal/textos/t037.json",
+    "/contenido/razonamiento-verbal/textos/t038.json"
    ]
   },
   "segmentos-angulos": {

@@ -1,0 +1,219 @@
+{
+  "id": "t036",
+  "version": 1,
+  "titulo": "La canoa de Rolando",
+  "tema": "Relato · la Amazonía y el río",
+  "grado": 3,
+  "dificultad": 1,
+  "tipo_texto": "narrativo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "Rolando tenía doce años y vivía en un caserío a orillas del río Itaya, cerca de Iquitos."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "Una mañana, su mamá le pidió que llevara en la canoa un saco de plátanos a la casa de su tía, que vivía justo en la otra orilla."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "Rolando subió a la canoa, apuntó la proa hacia la casa de su tía y remó con todas sus fuerzas."
+      },
+      {
+        "id": "o4",
+        "rol": "detalle",
+        "t": "Pero la corriente lo arrastró río abajo, y al rato estaba más lejos que al principio, con los brazos ardiendo."
+      },
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "Volvió a la orilla, lo intentó de nuevo remando aún más fuerte y le pasó lo mismo."
+      }
+    ],
+    [
+      {
+        "id": "o6",
+        "rol": "detalle",
+        "t": "Cansado, se sentó en el barranco y se quedó mirando el agua."
+      },
+      {
+        "id": "o7",
+        "rol": "detalle",
+        "t": "Vio que, junto a la orilla, el agua avanzaba despacio, y que solo en el medio el río tiraba con fuerza."
+      },
+      {
+        "id": "o8",
+        "rol": "detalle",
+        "t": "Entonces subió un buen trecho río arriba, pegado a la orilla, donde la corriente casi no lo empujaba."
+      },
+      {
+        "id": "o9",
+        "rol": "detalle",
+        "t": "Desde allí cruzó remando de costado y dejó que el río lo fuera bajando poco a poco, hasta que la canoa tocó la orilla justo frente a la casa de su tía."
+      },
+      {
+        "id": "o10",
+        "rol": "principal",
+        "t": "Ese día llegó sin cansarse, y entendió que el río no se había vuelto más débil: él había dejado de pelear contra él."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "resumen",
+      "unidad": "razonamiento-verbal.resumen-y-sintesis",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que mejor resume lo que el relato quiere mostrar.",
+        "aceptadas": [
+          "o10"
+        ],
+        "ninguna": "correcta",
+        "codigos": {},
+        "explicacion": "La oración 10 es la que más se acerca a la enseñanza: lo que cambió no fue el río, sino la manera de cruzarlo. También vale «Ninguna la dice completa», porque la enseñanza no está dicha con todas sus palabras: hay que sacarla del relato.",
+        "explicaciones": {
+          "o1": "La primera oración presenta a Rolando y el lugar: es el comienzo del relato.",
+          "o2": "Cuenta el encargo de la mamá: es lo que pone en marcha la historia, no lo que enseña.",
+          "o3": "Cuenta el primer intento: remar derecho y con fuerza.",
+          "o4": "Cuenta el fracaso del primer intento: es un hecho del relato.",
+          "o5": "Cuenta que el segundo intento falló igual; prepara el cambio, pero no lo dice.",
+          "o6": "Rolando se detiene a mirar: es un paso importante, pero todavía no dice qué entendió.",
+          "o7": "Cuenta lo que vio en el agua: es la pista, no la enseñanza.",
+          "o8": "Cuenta lo que hizo distinto: es un hecho, no lo que el relato quiere mostrar.",
+          "o9": "Cuenta cómo cruzó al fin; falta lo que Rolando entendió."
+        }
+      },
+      "enunciado": "¿Cuál es el mejor resumen interpretativo del relato?",
+      "alternativas": [
+        {
+          "t": "Frente a algo más fuerte que uno, sirve más observarlo y aprovecharlo que empeñarse en luchar contra él.",
+          "correcta": true,
+          "evidencia": [
+            "o6",
+            "o7",
+            "o10"
+          ],
+          "explicacion": "Un resumen interpretativo no repite la anécdota: dice lo que enseña. Rolando falla cuando pelea contra la corriente y llega cuando la observa y la usa a su favor."
+        },
+        {
+          "t": "Rolando rema hacia la casa de su tía, la corriente lo arrastra dos veces, mira el río, sube por la orilla y cruza.",
+          "codigo": "RV43",
+          "explicacion": "Repite los hechos en orden, pero no dice qué significan: es un resumen de la anécdota, no de lo que el relato enseña."
+        },
+        {
+          "t": "Aunque Rolando remó con todas sus fuerzas, la corriente arrastró su canoa río abajo.",
+          "codigo": "RV3",
+          "origen": "o4",
+          "explicacion": "Se queda con la primera mitad del relato, la del fracaso. Deja fuera lo esencial: el cambio y lo que Rolando entendió."
+        },
+        {
+          "t": "Los ríos de la Amazonía son muy importantes para la vida de las familias que viven en sus orillas.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general y no sale del relato: la historia no trata de la importancia de los ríos, sino de cómo cruzar uno."
+        },
+        {
+          "t": "Los niños no deberían cruzar solos en canoa un río con tanta corriente como el Itaya.",
+          "codigo": "RV33",
+          "explicacion": "El relato no da ningún consejo de ese tipo: esa opinión la agrega el lector."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "titulo",
+      "unidad": "razonamiento-verbal.resumen-y-sintesis",
+      "enunciado": "¿Cuál es el título más adecuado para el relato?",
+      "alternativas": [
+        {
+          "t": "Cruzar con el río y no contra él",
+          "correcta": true,
+          "evidencia": [
+            "o9",
+            "o10"
+          ],
+          "explicacion": "Recoge el giro del relato: Rolando llega cuando deja de pelear contra la corriente y la usa."
+        },
+        {
+          "t": "Un saco de plátanos para la tía",
+          "codigo": "RV1",
+          "origen": "o2",
+          "explicacion": "El saco de plátanos es solo el motivo del viaje; el relato trata de cómo Rolando aprendió a cruzar."
+        },
+        {
+          "t": "La vida en los ríos de la Amazonía",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado amplio: el relato cuenta un solo cruce de un solo río."
+        },
+        {
+          "t": "La canoa que arrastró la corriente",
+          "codigo": "RV3",
+          "origen": "o4",
+          "explicacion": "Se queda con la primera mitad del relato. Falta lo esencial: que al final Rolando cruza sin cansarse."
+        },
+        {
+          "t": "Rolando, el mejor remero del caserío",
+          "codigo": "RV7",
+          "explicacion": "El relato no dice que sea el mejor remero; al contrario, al principio rema mal. Va más allá de lo que se lee."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.resumen-y-sintesis",
+      "enunciado": "En la oración 10, decir que Rolando «había dejado de pelear contra él» (contra el río) equivale a decir que Rolando",
+      "alternativas": [
+        {
+          "t": "cambió su forma de cruzar y usó la corriente a su favor.",
+          "correcta": true,
+          "evidencia": [
+            "o8",
+            "o9",
+            "o10"
+          ],
+          "explicacion": "Las oraciones 8 y 9 muestran ese cambio: sube por la orilla tranquila y deja que el río lo baje mientras cruza."
+        },
+        {
+          "t": "se rindió y ya no quiso cruzar más el río.",
+          "codigo": "RV18",
+          "explicacion": "«Dejar de pelear» suele significar rendirse, pero aquí no: Rolando sí cruzó, solo que de otra manera."
+        },
+        {
+          "t": "dejó de remar y esperó a que el río se volviera más débil.",
+          "codigo": "RV10",
+          "origen": "o10",
+          "explicacion": "La oración 10 dice que el río «no» se había vuelto más débil. Además, Rolando siguió remando, de costado."
+        },
+        {
+          "t": "peleó contra el río hasta que el río dejó de pelear contra él.",
+          "codigo": "RV5",
+          "origen": "o10",
+          "explicacion": "Repite las palabras de la oración 10, pero al revés: quien dejó de pelear fue Rolando, no el río."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07",
+  "hechos": [
+    {
+      "afirmacion": "El río Itaya pasa junto a Iquitos y desemboca allí en el Amazonas; hay caseríos en sus orillas.",
+      "fuente": "Instituto Geográfico Nacional del Perú, carta nacional (hoja de Iquitos); Gobierno Regional de Loreto, descripción de la cuenca del Itaya."
+    },
+    {
+      "afirmacion": "En un río, el agua corre más despacio cerca de las orillas y del fondo, y más rápido hacia el centro del cauce.",
+      "fuente": "Chow, V. T. (1959). Open-Channel Hydraulics. McGraw-Hill, capítulo 2 (distribución de velocidades en un canal)."
+    }
+  ],
+  "revision": {
+    "por": "subagente (verificador a ciegas y revisor de contenido)",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas coincidió en todas las claves y en el previo. Cambio: el distractor del primer fracaso de Rolando pasa de RV1 a RV3, porque resume solo la primera mitad del relato."
+  }
+}

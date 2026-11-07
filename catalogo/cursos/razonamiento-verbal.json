@@ -130,7 +130,7 @@
       "universidades": {"uni": {"semanas": [15]}, "unmsm": {"temas": [5]}},
       "potencial_visual": "bajo",
       "grado": 3,
-      "plantillas": [],
+      "plantillas": ["resumen-sintesis"],
       "investigacion": null
     },
     {

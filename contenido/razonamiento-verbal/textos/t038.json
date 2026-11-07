@@ -1,0 +1,254 @@
+{
+  "id": "t038",
+  "version": 1,
+  "titulo": "El agua que sobra",
+  "tema": "Costa · riego y sal en el suelo",
+  "grado": 5,
+  "dificultad": 2,
+  "tipo_texto": "expositivo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "En la costa peruana casi no llueve, y durante siglos la agricultura se concentró en los valles que forman los ríos que bajan de los Andes."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "En las últimas décadas, grandes proyectos de irrigación, como Chavimochic en La Libertad y Majes en Arequipa, llevaron agua a pampas desérticas y las convirtieron en campos de cultivo."
+      },
+      {
+        "id": "o3",
+        "rol": "apoyo",
+        "t": "En el desierto, el agua de riego es lo que separa la arena de la chacra."
+      }
+    ],
+    [
+      {
+        "id": "o4",
+        "rol": "apoyo",
+        "t": "Pero toda agua de riego lleva algo de sal disuelta, aunque sea tan poca que no se sienta al gusto."
+      },
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "Cuando el agua se evapora bajo el sol o la absorben las plantas, la sal no se va con ella: se queda en la tierra hasta que otra agua la disuelva y la arrastre hacia abajo."
+      },
+      {
+        "id": "o6",
+        "rol": "detalle",
+        "t": "Si se riega más de lo que los cultivos necesitan y el terreno no tiene drenaje, el agua que sobra se acumula bajo tierra, la capa de agua subterránea sube y, al acercarse a la superficie, se evapora y deja allí su sal."
+      },
+      {
+        "id": "o7",
+        "rol": "detalle",
+        "t": "Con los años, en algunas parcelas aparece una costra blanca y los cultivos rinden cada vez menos."
+      },
+      {
+        "id": "o8",
+        "rol": "apoyo",
+        "t": "Por eso, la solución no es renunciar al riego, sino medir el agua que se da a cada cultivo y construir drenes que se lleven la que sobra, y con ella la sal."
+      },
+      {
+        "id": "o9",
+        "rol": "principal",
+        "t": "Lo que daña el suelo, entonces, no es el riego en sí, sino el agua que no tiene por dónde salir."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "resumen",
+      "unidad": "razonamiento-verbal.resumen-y-sintesis",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que mejor resume el texto.",
+        "aceptadas": [
+          "o9"
+        ],
+        "ninguna": "correcta",
+        "codigos": {},
+        "explicacion": "La 9 dice la idea que se defiende: el daño no viene del riego, sino del agua que no sale. También vale «Ninguna la dice completa», porque ninguna oración junta esa idea con la del primer párrafo: el riego es lo que hace productivo el desierto.",
+        "explicaciones": {
+          "o1": "La primera oración presenta la costa y su falta de lluvia: es el punto de partida.",
+          "o2": "Da ejemplos de proyectos que llevaron agua al desierto; la oración 3 saca de ellos la idea.",
+          "o3": "Dice que el riego hace productivo el desierto, pero se queda con el primer párrafo: falta el daño que causa el agua sin salida.",
+          "o4": "Presenta el problema con un «Pero», aunque todavía no dice cuándo la sal se vuelve un daño.",
+          "o5": "Explica un paso del proceso: la sal se queda en la tierra cuando el agua se va.",
+          "o6": "Explica cómo se sala el suelo; es el mecanismo, no la idea que junta el texto.",
+          "o7": "Cuenta el resultado que se ve en las parcelas: es un detalle.",
+          "o8": "Dice la solución; se apoya en la idea de la oración 9, pero no la dice."
+        }
+      },
+      "enunciado": "El texto se puede sintetizar así:",
+      "alternativas": [
+        {
+          "t": "El riego que volvió productivo el desierto costeño puede salar sus suelos cuando el agua que sobra no tiene por dónde salir.",
+          "correcta": true,
+          "evidencia": [
+            "o3",
+            "o6",
+            "o9"
+          ],
+          "explicacion": "Junta los dos párrafos con la relación precisa: el mismo riego que crea la chacra puede dañarla, y no siempre, sino cuando el agua no tiene salida."
+        },
+        {
+          "t": "Como los suelos de la costa se llenaron de sal, hubo que llevar agua de los Andes con grandes proyectos de irrigación.",
+          "codigo": "RV44",
+          "origen": "o2",
+          "explicacion": "Invierte la relación: en el texto, el agua llegó para cultivar el desierto, y la sal es un daño que puede venir después, no la razón de los proyectos."
+        },
+        {
+          "t": "En la costa no llueve, se hicieron Chavimochic y Majes, el agua de riego trae sal, la capa subterránea sube y aparece una costra blanca.",
+          "codigo": "RV43",
+          "explicacion": "Pone en fila lo que dice el texto, pero pierde lo que lo une: que el daño no viene del riego en sí, sino del agua que no tiene por dónde salir."
+        },
+        {
+          "t": "Los grandes proyectos de irrigación de la costa fueron un error, porque el agua que llevaron terminó salando los suelos.",
+          "codigo": "RV33",
+          "explicacion": "El texto no juzga los proyectos: dice que el agua hace productivo el desierto y explica en qué condición daña el suelo."
+        },
+        {
+          "t": "Proyectos como Chavimochic y Majes llevaron agua a pampas desérticas de la costa y las convirtieron en campos de cultivo.",
+          "codigo": "RV3",
+          "origen": "o2",
+          "explicacion": "Resume solo el primer párrafo y deja fuera la mitad esencial: el riesgo de la sal y su causa."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "resumen",
+      "unidad": "razonamiento-verbal.resumen-y-sintesis",
+      "enunciado": "Si se juntan los dos párrafos en una sola idea, ¿qué relación hay entre ellos?",
+      "alternativas": [
+        {
+          "t": "El segundo muestra en qué condición el agua que, según el primero, da vida al desierto también puede dañarlo.",
+          "correcta": true,
+          "evidencia": [
+            "o3",
+            "o4",
+            "o9"
+          ],
+          "explicacion": "El segundo párrafo se abre con «Pero» y matiza el primero: el riego hace la chacra, y el agua que no tiene por dónde salir la puede arruinar."
+        },
+        {
+          "t": "El segundo suma otro beneficio del riego a los que presenta el primero.",
+          "codigo": "RV44",
+          "origen": "o4",
+          "explicacion": "Lee como suma lo que es una oposición: el «Pero» de la oración 4 introduce un daño, no otro beneficio."
+        },
+        {
+          "t": "El segundo muestra que todo riego en el desierto termina, tarde o temprano, arruinando la tierra que el primero hizo productiva.",
+          "codigo": "RV11",
+          "explicacion": "«Todo» y «tarde o temprano» van contra la oración 9: el daño no viene del riego en sí, sino del agua que no tiene por dónde salir."
+        },
+        {
+          "t": "El segundo da ejemplos de los proyectos de irrigación que nombra el primero.",
+          "codigo": "RV42",
+          "explicacion": "Confunde la función del párrafo: el segundo no da ejemplos de proyectos, explica un riesgo del riego y su causa."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "titulo",
+      "unidad": "razonamiento-verbal.resumen-y-sintesis",
+      "enunciado": "¿Cuál es el título más adecuado para el texto?",
+      "alternativas": [
+        {
+          "t": "El riego en la costa y el peligro del agua que sobra",
+          "correcta": true,
+          "evidencia": [
+            "o3",
+            "o9"
+          ],
+          "explicacion": "Nombra las dos partes del texto: el riego que hace productiva la costa y el daño que causa el agua que sobra y no tiene salida."
+        },
+        {
+          "t": "La costra blanca de las parcelas",
+          "codigo": "RV1",
+          "origen": "o7",
+          "explicacion": "La costra blanca es un detalle: la señal visible del daño, no el tema del texto."
+        },
+        {
+          "t": "El agua en el Perú",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado amplio: el texto habla del riego en la costa y de la sal en el suelo."
+        },
+        {
+          "t": "Chavimochic y Majes: el desierto hecho chacra",
+          "codigo": "RV3",
+          "origen": "o2",
+          "explicacion": "Se queda con el primer párrafo; deja fuera el problema de la sal, que ocupa la mayor parte del texto."
+        },
+        {
+          "t": "El fin de la agricultura en la costa peruana",
+          "codigo": "RV7",
+          "explicacion": "El texto no anuncia ningún fin: dice que el daño aparece en algunas parcelas y que tiene solución."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.resumen-y-sintesis",
+      "enunciado": "¿Qué alternativa dice lo mismo que la oración 8, con otras palabras?",
+      "alternativas": [
+        {
+          "t": "En vez de dejar de regar, hay que dar a cada cultivo el agua justa y sacar la que sobra con su sal.",
+          "correcta": true,
+          "evidencia": [
+            "o8"
+          ],
+          "explicacion": "Mantiene el «no esto, sino aquello» de la oración 8: no renunciar al riego, sino medirlo y drenar el agua que sobra."
+        },
+        {
+          "t": "La solución es dejar de regar y construir drenes que se lleven la sal del terreno.",
+          "codigo": "RV10",
+          "origen": "o8",
+          "explicacion": "Se salta el «no»: la oración 8 dice que la solución no es renunciar al riego."
+        },
+        {
+          "t": "Los drenes sirven para medir el agua que se da a cada cultivo y, además, se llevan la sal que sobra.",
+          "codigo": "RV5",
+          "origen": "o8",
+          "explicacion": "Usa las palabras de la oración 8, pero las mezcla: quien mide el agua es el agricultor; los drenes se llevan la que sobra."
+        },
+        {
+          "t": "Con drenes y con un riego bien medido, nunca más volverá a aparecer sal en ningún suelo de la costa del Perú.",
+          "codigo": "RV11",
+          "explicacion": "«Nunca más» y «ningún suelo» prometen mucho más de lo que dice la oración 8, que solo propone cómo evitar el daño."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-07",
+  "hechos": [
+    {
+      "afirmacion": "En la costa peruana casi no llueve y la agricultura tradicional se concentra en los valles de los ríos que bajan de los Andes.",
+      "fuente": "Pulgar Vidal, J. Geografía del Perú: las ocho regiones naturales (región chala); Autoridad Nacional del Agua, descripción de la vertiente del Pacífico."
+    },
+    {
+      "afirmacion": "Los proyectos especiales Chavimochic (La Libertad) y Majes-Siguas (Arequipa) llevaron agua de riego a pampas desérticas y ampliaron la frontera agrícola.",
+      "fuente": "Proyecto Especial Chavimochic, Gobierno Regional de La Libertad; Autodema, Proyecto Especial Majes Siguas, Gobierno Regional de Arequipa."
+    },
+    {
+      "afirmacion": "Toda agua de riego trae sales disueltas; al evaporarse el agua o al tomarla las plantas, las sales quedan en el suelo. Con riego en exceso y sin drenaje, la capa freática sube, el agua asciende por capilaridad y se evapora dejando sal en la superficie. Se controla con riego medido, lavado de sales y drenaje.",
+      "fuente": "Ayers, R. S. y Westcot, D. W. (1985). Water quality for agriculture. FAO, Estudio de Riego y Drenaje 29, rev. 1."
+    },
+    {
+      "afirmacion": "En parte de los valles irrigados de la costa peruana hay suelos con problemas de salinidad y mal drenaje.",
+      "fuente": "Por confirmar con un diagnóstico de drenaje y salinidad en la costa de la Autoridad Nacional del Agua o del antiguo INRENA; el texto dice solo «algunas parcelas»."
+    }
+  ],
+  "revision": {
+    "por": "subagente (verificador a ciegas y revisor de contenido)",
+    "fecha": "2026-11-07",
+    "veredicto": "aprobado",
+    "notas": "A ciegas coincidió en todas las claves y en el previo. Cambios: la oración 5 aclara que la sal se queda hasta que otra agua la arrastre; la 9 pone el daño en el agua sin salida; la correcta de p1 se ajustó a esa idea; en el previo, solo la 9 es aceptada (la 3 pasa a apoyo) y «ninguna» vale; dificultad bajada de 3 a 2."
+  }
+}
