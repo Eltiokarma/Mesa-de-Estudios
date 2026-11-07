@@ -8,7 +8,7 @@
 npm test
 ```
 
-Deben pasar 3404 pruebas.
+Deben pasar 3453 pruebas.
 
 ```bash
 npm run dev
@@ -71,6 +71,7 @@ Después se agrega a la unidad en `catalogo/cursos/*.json` y se corre `npm run c
   - Revisión independiente del 6 nov aplicada en el código: pruebas de entrada y salida con orden A→B o B→A y eventos `item` (Hake y errores RV antes y después), corrección neutra del paso previo cuando la frase del código no aplica (con aviso en las pruebas), oración mixta evidencia y distractor con contorno, opción `"explicar": "al-final"`, `intento` y retomar un texto a medias, hoja con lo demás `inert`, selección en color de marca, tarjetas que piden mover algo antes de confirmar. Lo de contenido (sondas, distractores, explicaciones de los previos, orden de preguntas, textos t000a y t000b) quedó para la rutina verbal; hoy 59 respuestas incorrectas de pasos previos no tienen explicación propia (14 caen en la frase neutra; ver el diagnóstico de `nucleo/lectura.test.js`).
   - **Decidido (Gerson, 6 nov 2026):** en el celular la barra de abajo no desaparece en la lectura. Los colores evidencia, distractor e idea reusan `--c-i`, `--c-o` y `--c-d`; la revisión midió contraste AA y ΔE00 ≥ 25 entre las tintas, pero naranja y verde se acercan con protanopía o deuteranopía (ΔE00 3,6 a 9,5): por eso cada color va siempre con su marquita y una frase.
 
+- **El grupo que se cambia** (`plantillas/funciones-organicas/`, rutina de química B, 7 nov 2026): el mismo esqueleto con el grupo que se mueve o se cambia (familia, nombre IUPAC y común, fórmula, ebullición y puentes de hidrógeno), isomería de función, posición y cadena, clases de alcohol y amina, el éster con sus dos partes y la esterificación; caja de grupos libre; 24 casos verificados aparte; 10 de papel; 7 predicciones y 5 «¿qué pasa si…?»; documentado solo FO2 (Schmidt 1996). Falta: amidas en el conteo de isómeros y compuestos con varios grupos. Sin ítems en el banco de química.
 - **Cinética** (`plantillas/cinetica/`, rutina de química, 6 nov 2026): caja de discos con teoría de colisiones (energía y orientación), temperatura, catalizador y perfil de energía. Informe `docs/investigacion/cinetica-ideas-erroneas.md` (CI1 a CI13) con cifras sin verificar por el bloqueo de red: la escena no muestra porcentajes de cinética. La fracción contada queda unos pocos por ciento bajo la teoría. Hecho (7 nov, 0.2.0): orden ≠ coeficiente con una tabla de velocidades y vida media de primer orden contra segundo (experimentos 6 y 7; casos 13 a 16 verificados aparte).
 
 - **Cortes y pesadas** (`plantillas/cortes-pesadas/`, rutina de razonamiento matemático, 7 nov 2026): la sierra y la balanza (cortes en varilla y aro, estacas en línea y contorno, soga doblada, apilar para cortar, balanza de dos platillos con pesas 1, 3, 9 y 27, mínimo de pesadas por árbol de decisión); 21 casos verificados aparte (189 campos); 10 de papel. Errores sin dato, anotados en el informe de aritmética. Sin ítems en el banco.

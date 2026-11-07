@@ -1124,7 +1124,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 4,
-     "plantillas": []
+     "plantillas": [
+      "funciones-organicas"
+     ]
     },
     {
      "id": "quimica.biomoleculas-y-productos-naturales",
@@ -4721,6 +4723,23 @@
     "/plantillas/fracciones/index.html",
     "/plantillas/fracciones/motor.js",
     "/plantillas/fracciones/papel.json"
+   ]
+  },
+  "funciones-organicas": {
+   "id": "funciones-organicas",
+   "titulo": "El grupo que se cambia: funciones orgánicas",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.funciones-organicas"
+   ],
+   "url": "/plantillas/funciones-organicas/index.html",
+   "papel": "/plantillas/funciones-organicas/papel.json",
+   "archivos": [
+    "/plantillas/funciones-organicas/index.html",
+    "/plantillas/funciones-organicas/motor.js",
+    "/plantillas/funciones-organicas/papel.json"
    ]
   },
   "funciones-trig-inversas": {
