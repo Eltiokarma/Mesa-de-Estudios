@@ -626,7 +626,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "plantillas": []
+     "plantillas": [
+      "materia-energia"
+     ]
     },
     {
      "id": "quimica.estructura-atomica",
@@ -4800,6 +4802,23 @@
     "/plantillas/limitante-particulas/index.html",
     "/plantillas/limitante-particulas/motor.js",
     "/plantillas/limitante-particulas/papel.json"
+   ]
+  },
+  "materia-energia": {
+   "id": "materia-energia",
+   "titulo": "La lupa y la balanza: materia y energía",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.materia-y-energia"
+   ],
+   "url": "/plantillas/materia-energia/index.html",
+   "papel": "/plantillas/materia-energia/papel.json",
+   "archivos": [
+    "/plantillas/materia-energia/index.html",
+    "/plantillas/materia-energia/motor.js",
+    "/plantillas/materia-energia/papel.json"
    ]
   },
   "maximos-minimos": {
