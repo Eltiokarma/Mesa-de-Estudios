@@ -1,0 +1,153 @@
+{
+  "plantilla": "nomenclatura-inorganica",
+  "unidades": "Estados de oxidación como fracción exacta: 'texto' con su signo (+3, −2, +8/3; el menos es el signo tipográfico −) y 'valor' como número. Fórmulas en texto plano: subíndices como cifras (Fe2O3, Al2(SO4)3), carga con '^' (SO4^2-, NH4^+), agua de hidratación con '·' (FeSO4·7H2O) y el hidrácido con '(ac)' (HCl(ac)). Masas atómicas de academia (H 1, O 16, S 32, Fe 56).",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'; 'tambien' agrega llamadas del mismo caso. Los campos anidados van con punto (errores.subindice, porElemento.Fe, nombres.stock). Los textos se comparan exactos. Las convenciones de nombres (stock con espacio antes del romano, «anhídrido» en la tradicional de los óxidos de no metal, sistemática de academia para oxácidos y oxisales, orto por defecto para P y B) están en la cabecera de motor.js.",
+  "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer el motor ni casos.json: recalculó los casos en Python, con estados de oxidación por suma de cargas con Fraction (en el orden de prioridad de la convención), fórmulas por cruce de cargas y mcd, oxácidos por balance de átomos del óxido + n H2O, masas de academia y nombres con las reglas de la cabecera. Coinciden todos los valores; las diferencias fueron de interpretación (la carga del catión como carga total, hoy cargaTotalCation) y de escritura de algunos errores típicos.",
+  "tolerancia": 1e-9,
+  "casos": [
+    { "nombre": "Paso 2 y predicción 1: en Fe2O3 el Fe tiene +3 (tres O dan −6; dos Fe dan +6). Errores: el subíndice como estado (+2), sin dividir entre los 2 Fe (+6) y el signo al revés (−3)",
+      "fn": "estado", "args": ["Fe2O3", "Fe"],
+      "espera": { "texto": "+3", "numero": 3, "atomos": 2, "total": "+6", "errores.subindice": "+2", "errores.sinDividir": "+6", "errores.signo": "−3" } },
+
+    { "nombre": "Informe: FeO → Fe +2; Fe3O4 → Fe +8/3 (promedio de un Fe²⁺ y dos Fe³⁺)",
+      "fn": "oxidacion", "args": ["FeO"],
+      "espera": { "texto.Fe": "+2", "texto.O": "−2" },
+      "tambien": [ { "args": ["Fe3O4"], "espera": { "texto.Fe": "+8/3", "valor.Fe": 2.6666666666666665, "porElemento.Fe": [8, 3] } } ] },
+
+    { "nombre": "¿Qué pasa si…? 3: Fe3O4. Errores: el subíndice (+3), sin dividir entre los 3 Fe (+8) y el signo (−8/3)",
+      "fn": "estado", "args": ["Fe3O4", "Fe"],
+      "espera": { "texto": "+8/3", "fraccion": [8, 3], "errores.subindice": "+3", "errores.sinDividir": "+8", "errores.signo": "−8/3" } },
+
+    { "nombre": "Informe: KMnO4 → Mn +7; K2Cr2O7 → Cr +6; Cr2O7^2- → Cr +6 (la suma da la carga del ion, −2)",
+      "fn": "oxidacion", "args": ["KMnO4"],
+      "espera": { "texto.Mn": "+7", "texto.K": "+1" },
+      "tambien": [ { "args": ["K2Cr2O7"], "espera": { "texto.Cr": "+6" } }, { "args": ["Cr2O7^2-"], "espera": { "texto.Cr": "+6", "carga": -2 } } ] },
+
+    { "nombre": "Informe: H2SO4 → S +6; SO4^2- → S +6; Na2S2O3 → S +2 (promedio)",
+      "fn": "oxidacion", "args": ["H2SO4"],
+      "espera": { "texto.S": "+6", "texto.H": "+1" },
+      "tambien": [ { "args": ["SO4^2-"], "espera": { "texto.S": "+6" } }, { "args": ["Na2S2O3"], "espera": { "texto.S": "+2" } } ] },
+
+    { "nombre": "Informe: HClO → Cl +1; HClO4 → Cl +7; HNO2 → N +3; H3PO4 → P +5; NaHCO3 → C +4",
+      "fn": "oxidacion", "args": ["HClO"],
+      "espera": { "texto.Cl": "+1" },
+      "tambien": [ { "args": ["HClO4"], "espera": { "texto.Cl": "+7" } }, { "args": ["HNO2"], "espera": { "texto.N": "+3" } },
+                   { "args": ["H3PO4"], "espera": { "texto.P": "+5" } }, { "args": ["NaHCO3"], "espera": { "texto.C": "+4", "texto.H": "+1" } } ] },
+
+    { "nombre": "Informe: NH4^+ → N −3 (la suma da +1, no 0). Error: igualar la suma a cero (−4)",
+      "fn": "estado", "args": ["NH4^+", "N"],
+      "espera": { "texto": "−3", "errores.sumaCero": "−4", "errores.signo": "+3" } },
+
+    { "nombre": "Informe, excepciones: O −1 en H2O2 y Na2O2; H −1 en NaH y CaH2; O +2 en OF2",
+      "fn": "oxidacion", "args": ["H2O2"],
+      "espera": { "texto.O": "−1", "texto.H": "+1" },
+      "tambien": [ { "args": ["Na2O2"], "espera": { "texto.O": "−1" } }, { "args": ["NaH"], "espera": { "texto.H": "−1" } },
+                   { "args": ["CaH2"], "espera": { "texto.H": "−1" } }, { "args": ["OF2"], "espera": { "texto.O": "+2", "texto.F": "−1" } } ] },
+
+    { "nombre": "Predicción 2: los tres nombres de Fe2O3. Errores de la stock: el subíndice como romano (II), sin dividir (VI) y sin número; en la tradicional, -oso por -ico (óxido ferroso, el nombre del FeO)",
+      "fn": "nombrar", "args": ["Fe2O3"],
+      "espera": { "funcion": "óxido básico", "sistematica": "trióxido de dihierro", "stock": "óxido de hierro (III)", "tradicional": "óxido férrico",
+                  "errores.stockSubindice": "óxido de hierro (II)", "errores.stockSinDividir": "óxido de hierro (VI)", "errores.stockSinNumero": "óxido de hierro", "errores.tradicionalAlReves": "óxido ferroso" } },
+
+    { "nombre": "Informe: FeO → óxido de hierro (II), óxido ferroso, monóxido de hierro; CO2 y SO3 (no metal: «anhídrido» en la tradicional)",
+      "fn": "nombrar", "args": ["FeO"],
+      "espera": { "stock": "óxido de hierro (II)", "tradicional": "óxido ferroso", "sistematica": "monóxido de hierro" },
+      "tambien": [ { "args": ["SO3"], "espera": { "funcion": "óxido ácido", "sistematica": "trióxido de azufre", "stock": "óxido de azufre (VI)", "tradicional": "anhídrido sulfúrico" } },
+                   { "args": ["CO2"], "espera": { "stock": "óxido de carbono (IV)", "tradicional": "anhídrido carbónico", "sistematica": "dióxido de carbono" } } ] },
+
+    { "nombre": "¿Qué pasa si…? 2: oxácidos del cloro con +1, +3, +5 y +7: HClO hipocloroso, HClO2 cloroso, HClO3 clórico, HClO4 perclórico. Errores del perclórico: sin simplificar (H2Cl2O8), el estado vecino (HClO3) y dos H (H2ClO4)",
+      "fn": "formar", "args": ["oxacido", "Cl", 7],
+      "espera": { "formula": "HClO4", "oxido": "Cl2O7", "reaccion": "Cl2O7 + H2O -> 2HClO4", "nombres.tradicional": "ácido perclórico",
+                  "errores.sinSimplificar": "H2Cl2O8", "errores.otroEstado": "HClO3", "errores.dosH": "H2ClO4" },
+      "tambien": [ { "args": ["oxacido", "Cl", 1], "espera": { "formula": "HClO", "nombres.tradicional": "ácido hipocloroso" } },
+                   { "args": ["oxacido", "Cl", 3], "espera": { "formula": "HClO2", "nombres.tradicional": "ácido cloroso" } },
+                   { "args": ["oxacido", "Cl", 5], "espera": { "formula": "HClO3", "nombres.tradicional": "ácido clórico" } } ] },
+
+    { "nombre": "Paso 6 y predicción 5: SO3 + H2O → H2SO4. Errores: un solo H con estado par (HSO4), el +4 en vez del +6 (H2SO3) y separarlo en H2S y O2",
+      "fn": "formar", "args": ["oxacido", "S", 6],
+      "espera": { "formula": "H2SO4", "reaccion": "SO3 + H2O -> H2SO4", "nombres.tradicional": "ácido sulfúrico", "nombres.sistematica": "tetraoxosulfato (VI) de hidrógeno", "nombres.stock": "ácido tetraoxosulfúrico (VI)",
+                  "errores.unSoloH": "HSO4", "errores.otroEstado": "H2SO3", "errores.hidracidoYOxigeno": "H2S + 2O2" } },
+
+    { "nombre": "Informe, regla del oxácido: S +4 → H2SO3; N +3 → HNO2; N +5 → HNO3 (N2O5 + H2O da 2HNO3, sin simplificar H2N2O6); C +4 → H2CO3",
+      "fn": "formar", "args": ["oxacido", "S", 4],
+      "espera": { "formula": "H2SO3", "nombres.tradicional": "ácido sulfuroso" },
+      "tambien": [ { "args": ["oxacido", "N", 3], "espera": { "formula": "HNO2", "nombres.tradicional": "ácido nitroso" } },
+                   { "args": ["oxacido", "N", 5], "espera": { "formula": "HNO3", "reaccion": "N2O5 + H2O -> 2HNO3", "errores.sinSimplificar": "H2N2O6" } },
+                   { "args": ["oxacido", "C", 4], "espera": { "formula": "H2CO3", "nombres.tradicional": "ácido carbónico" } } ] },
+
+    { "nombre": "Fósforo +5: orto por defecto (P2O5 + 3H2O → 2H3PO4), meta (HPO3) y piro (H4P2O7)",
+      "fn": "formar", "args": ["oxacido", "P", 5],
+      "espera": { "formula": "H3PO4", "forma": "orto", "agua": 3, "reaccion": "P2O5 + 3H2O -> 2H3PO4", "nombres.tradicional": "ácido fosfórico" },
+      "tambien": [ { "args": ["oxacido", "P", 5, { "forma": "meta" }], "espera": { "formula": "HPO3", "nombres.tradicional": "ácido metafosfórico" } },
+                   { "args": ["oxacido", "P", 5, { "forma": "piro" }], "espera": { "formula": "H4P2O7", "nombres.tradicional": "ácido pirofosfórico" } } ] },
+
+    { "nombre": "El árbol del metal: 4Fe + 3O2 → 2Fe2O3; Fe2O3 + 3H2O → 2Fe(OH)3; CaO + H2O → Ca(OH)2 (informe). Error del hidróxido: sin paréntesis (FeOH3)",
+      "fn": "formar", "args": ["oxido", "Fe", 3],
+      "espera": { "formula": "Fe2O3", "funcion": "óxido básico", "reaccion": "4Fe + 3O2 -> 2Fe2O3" },
+      "tambien": [ { "args": ["hidroxido", "Fe", 3], "espera": { "formula": "Fe(OH)3", "reaccion": "Fe2O3 + 3H2O -> 2Fe(OH)3", "nombres.tradicional": "hidróxido férrico", "errores.sinParentesis": "FeOH3" } },
+                   { "args": ["hidroxido", "Ca", 2], "espera": { "formula": "Ca(OH)2", "reaccion": "CaO + H2O -> Ca(OH)2", "nombres.stock": "hidróxido de calcio" } } ] },
+
+    { "nombre": "Paso 4 y predicción 3: Al^3+ con SO4^2- → Al2(SO4)3 (17 átomos: 2 Al, 3 S, 12 O). Errores: sin paréntesis (Al2SO43), cruce invertido (Al3(SO4)2) y uno a uno (AlSO4)",
+      "fn": "formulaDeIones", "args": ["Al^3+", "SO4^2-"],
+      "espera": { "formula": "Al2(SO4)3", "nCation": 2, "nAnion": 3, "cargaPorCation": 3, "cargaPorAnion": -2, "cargaTotalCation": 6, "cargaTotalAnion": -6, "atomos.Al": 2, "atomos.S": 3, "atomos.O": 12,
+                  "errores.sinParentesis": "Al2SO43", "errores.cruceInvertido": "Al3(SO4)2", "errores.unoAUno": "AlSO4" } },
+
+    { "nombre": "Informe, cruce: Ca^2+ con PO4^3- → Ca3(PO4)2 (13 átomos); Fe^3+ con Cl^- → FeCl3",
+      "fn": "formulaDeIones", "args": ["Ca^2+", "PO4^3-"],
+      "espera": { "formula": "Ca3(PO4)2", "atomos.Ca": 3, "atomos.P": 2, "atomos.O": 8 },
+      "tambien": [ { "args": ["Fe^3+", "Cl^-"], "espera": { "formula": "FeCl3", "nCation": 1, "nAnion": 3 } } ] },
+
+    { "nombre": "Paso 5 y predicción 4: Pb^4+ con O^2- → PbO2 (el cruce da Pb2O4 y se simplifica). Errores: sin simplificar (Pb2O4), cruce invertido (Pb2O), uno a uno (PbO). El peróxido no se simplifica: Na^+ con O2^2- → Na2O2 (no NaO)",
+      "fn": "formulaDeIones", "args": ["Pb^4+", "O^2-"],
+      "espera": { "formula": "PbO2", "cruce.formula": "Pb2O4", "simplifica": true, "divisor": 2, "errores.sinSimplificar": "Pb2O4", "errores.cruceInvertido": "Pb2O", "errores.unoAUno": "PbO" },
+      "tambien": [ { "args": ["Na^+", "O2^2-"], "espera": { "formula": "Na2O2", "simplifica": false, "errores.simplificaTodo": "NaO", "errores.cruceInvertido": "NaO4" } } ] },
+
+    { "nombre": "Paso 7 y predicción 6: H2SO4 + 2NaOH → Na2SO4 + 2H2O, sulfato de sodio (-ico → -ato). Errores: -ito (sulfito), -uro (sulfuro) y sin cambiar la terminación (sulfúrico)",
+      "fn": "neutralizar", "args": ["H2SO4", "NaOH"],
+      "espera": { "sal": "Na2SO4", "ecuacion": "H2SO4 + 2NaOH -> Na2SO4 + 2H2O", "coefs": [1, 2, 1, 2], "nombres.tradicional": "sulfato de sodio",
+                  "nombres.errores.terminacionAlReves": "sulfito de sodio", "nombres.errores.terminacionUro": "sulfuro de sodio", "nombres.errores.sinCambiar": "sulfúrico de sodio" } },
+
+    { "nombre": "¿Qué pasa si…? 1: Na2SO3 es sulfito de sodio (S +4, -oso → -ito). Errores: -ato (sulfato), hipo- con un elemento de dos estados (hiposulfito) y -uro (sulfuro)",
+      "fn": "nombrar", "args": ["Na2SO3"],
+      "espera": { "tradicional": "sulfito de sodio", "stock": "sulfito de sodio", "sistematica": "trioxosulfato (IV) de sodio",
+                  "errores.terminacionAlReves": "sulfato de sodio", "errores.hipoConDos": "hiposulfito de sodio", "errores.terminacionUro": "sulfuro de sodio" } },
+
+    { "nombre": "Informe, nombres de sales: KClO hipoclorito de potasio; NaNO2 nitrito de sodio; FeSO4 sulfato ferroso o de hierro (II); Fe2(SO4)3 sulfato férrico o de hierro (III); NaHCO3 hidrogenocarbonato de sodio (bicarbonato)",
+      "fn": "nombrar", "args": ["KClO"],
+      "espera": { "tradicional": "hipoclorito de potasio" },
+      "tambien": [ { "args": ["NaNO2"], "espera": { "tradicional": "nitrito de sodio" } },
+                   { "args": ["FeSO4"], "espera": { "tradicional": "sulfato ferroso", "stock": "sulfato de hierro (II)" } },
+                   { "args": ["Fe2(SO4)3"], "espera": { "tradicional": "sulfato férrico", "stock": "sulfato de hierro (III)", "sistematica": "tetraoxosulfato (VI) de hierro (III)" } },
+                   { "args": ["NaHCO3"], "espera": { "funcion": "sal ácida", "stock": "hidrogenocarbonato de sodio", "tradicional": "carbonato ácido de sodio", "comun": "bicarbonato de sodio" } } ] },
+
+    { "nombre": "¿Qué pasa si…? 4: H2CO3 + KOH quitando un solo H → KHCO3, bicarbonato de potasio. Errores: quitar los dos H (K2CO3), no quitar ninguno (KH2CO3) y dejarle al HCO3 la carga −2 (K2HCO3)",
+      "fn": "neutralizar", "args": ["H2CO3", "KOH", { "quitar": 1 }],
+      "espera": { "sal": "KHCO3", "anion": "HCO3^-", "ecuacion": "H2CO3 + KOH -> KHCO3 + H2O", "nombres.comun": "bicarbonato de potasio", "nombres.stock": "hidrogenocarbonato de potasio",
+                  "errores.quitaTodos": "K2CO3", "errores.sinQuitar": "KH2CO3", "errores.cargaSinH": "K2HCO3" } },
+
+    { "nombre": "¿Qué pasa si…? 5: sulfato de hierro (II) heptahidratado, FeSO4·7H2O (278 g/mol; 126 g de agua, 45,3 %). Errores: el romano como subíndice (Fe2SO4·7H2O), juntar el agua en la fórmula (FeSO4H14O7) y cruzar sin simplificar (Fe2(SO4)2·7H2O)",
+      "fn": "hidratoDe", "args": ["FeSO4", 7],
+      "espera": { "formula": "FeSO4·7H2O", "masaMolar": 278, "masaAgua": 126, "porcentajeAgua": 45.32374100719424, "nombres.stock": "sulfato de hierro (II) heptahidratado", "nombres.tradicional": "sulfato ferroso heptahidratado",
+                  "errores.romanoComoSubindice": "Fe2SO4·7H2O", "errores.juntaElAgua": "FeSO4H14O7", "errores.sinSimplificar": "Fe2(SO4)2·7H2O" } },
+
+    { "nombre": "Clasificar: óxido básico, óxido ácido, peróxido, hidruro metálico, hidruro no metálico (gas) e hidrácido (en agua), hidróxido (también NH4OH), oxácido, oxisal, sal haloidea, sal ácida, sal básica, hidratada y óxido salino (doble) para Fe3O4",
+      "fn": "clasificar", "args": ["CaO"],
+      "espera": { "funcion": "óxido básico" },
+      "tambien": [ { "args": ["Cl2O7"], "espera": { "funcion": "óxido ácido" } }, { "args": ["BaO2"], "espera": { "funcion": "peróxido" } }, { "args": ["PbO2"], "espera": { "funcion": "óxido básico" } },
+                   { "args": ["CaH2"], "espera": { "funcion": "hidruro metálico" } }, { "args": ["HCl"], "espera": { "funcion": "hidruro no metálico" } }, { "args": ["HCl(ac)"], "espera": { "funcion": "hidrácido" } },
+                   { "args": ["NH3"], "espera": { "funcion": "hidruro no metálico" } }, { "args": ["Fe(OH)3"], "espera": { "funcion": "hidróxido" } }, { "args": ["NH4OH"], "espera": { "funcion": "hidróxido" } }, { "args": ["HNO3"], "espera": { "funcion": "oxácido" } },
+                   { "args": ["KMnO4"], "espera": { "funcion": "oxisal" } }, { "args": ["FeS"], "espera": { "funcion": "sal haloidea" } }, { "args": ["KHCO3"], "espera": { "funcion": "sal ácida" } },
+                   { "args": ["Ca(OH)Cl"], "espera": { "funcion": "sal básica" } }, { "args": ["CuSO4·5H2O"], "espera": { "funcion": "sal hidratada", "base": "oxisal" } },
+                   { "args": ["Fe3O4"], "espera": { "funcion": "óxido salino (doble)" } } ] },
+
+    { "nombre": "Del nombre a la fórmula, en las tres nomenclaturas y con variantes de escritura",
+      "fn": "formulaDeNombre", "args": ["trióxido de dihierro"],
+      "espera": { "formula": "Fe2O3" },
+      "tambien": [ { "args": ["óxido de hierro(III)"], "espera": { "formula": "Fe2O3" } }, { "args": ["anhídrido sulfúrico"], "espera": { "formula": "SO3" } },
+                   { "args": ["pentóxido de dinitrógeno"], "espera": { "formula": "N2O5" } }, { "args": ["pentaóxido de dinitrógeno"], "espera": { "formula": "N2O5" } }, { "args": ["hidróxido de amonio"], "espera": { "formula": "NH4OH" } }, { "args": ["ácido tetraoxosulfúrico (VI)"], "espera": { "formula": "H2SO4" } },
+                   { "args": ["ácido clorhídrico"], "espera": { "formula": "HCl(ac)", "funcion": "hidrácido" } }, { "args": ["Sulfato de Aluminio"], "espera": { "formula": "Al2(SO4)3" } },
+                   { "args": ["bicarbonato de potasio"], "espera": { "formula": "KHCO3" } }, { "args": ["peróxido de sodio"], "espera": { "formula": "Na2O2" } },
+                   { "args": ["sulfato ferroso heptahidratado"], "espera": { "formula": "FeSO4·7H2O" } }, { "args": ["amoníaco"], "espera": { "formula": "NH3" } },
+                   { "args": ["dicromato de potasio"], "espera": { "formula": "K2Cr2O7" } } ] }
+  ]
+}
