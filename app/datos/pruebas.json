@@ -3001,7 +3001,7 @@
   },
   "razonamiento-matematico": {
    "curso": "razonamiento-matematico",
-   "version": "1.1.0",
+   "version": "1.2.0",
    "minutos": 17,
    "errores": {
     "RM4-resta-en-encuentro": {
@@ -3107,6 +3107,114 @@
     "adelanto-hasta-una-hora": {
      "respaldo": "hipotesis",
      "describe": "Espera que el adelanto llegue a una hora, no a 12"
+    },
+    "cuadrado-con-costos-distintos": {
+     "respaldo": "hipotesis",
+     "describe": "Arma un cuadrado aunque los lados cuestan distinto: lo mejor es gastar lo mismo en cada par de lados, no poner los mismos metros"
+    },
+    "costo-un-lado-de-cada-par": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta un solo lado de cada precio, como si el cerco tuviera un lado de reja y uno de malla"
+    },
+    "costo-todo-al-precio-mayor": {
+     "respaldo": "hipotesis",
+     "describe": "Calcula como si todo el cerco costara lo del material caro (el cuadrado de ese perímetro)"
+    },
+    "eje-truncado-sobrante-dibujado": {
+     "respaldo": "hipotesis",
+     "describe": "Con el eje que no empieza en 0, calcula el porcentaje con las alturas dibujadas"
+    },
+    "AR3-porcentaje-sobre-el-mayor": {
+     "respaldo": "hipotesis",
+     "describe": "Calcula el porcentaje sobre el valor mayor en vez de sobre el que se compara; ligado a AR3 (base equivocada), sin cifra propia"
+    },
+    "variacion-absoluta-por-porcentual": {
+     "respaldo": "hipotesis",
+     "describe": "Da la diferencia entre los valores como si fuera el porcentaje"
+    },
+    "balanza-sin-huecos": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que se pesan todas las masas enteras hasta la suma de las pesas, sin huecos (eso solo pasa con pesas como 1, 3 y 9)"
+    },
+    "balanza-un-solo-platillo": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta solo las sumas de pesas, como si todas fueran en el mismo platillo"
+    },
+    "balanza-cuenta-acomodos": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta cada forma de acomodar las pesas (3ⁿ − 1) como una masa distinta"
+    },
+    "perimetro-entrante-como-rectangulo": {
+     "respaldo": "hipotesis",
+     "describe": "Da el perímetro del rectángulo que encierra la figura, sin las paredes de los entrantes"
+    },
+    "perimetro-un-solo-entrante": {
+     "respaldo": "hipotesis",
+     "describe": "Suma las paredes de un solo entrante y se olvida del otro"
+    },
+    "GE4-area-por-perimetro": {
+     "respaldo": "parcial",
+     "describe": "Calcula el área en vez del perímetro (GE4)"
+    },
+    "parada-ignorada": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta todos los caminos, sin exigir que pasen por la esquina obligada"
+    },
+    "parada-suma-los-tramos": {
+     "respaldo": "hipotesis",
+     "describe": "Suma los caminos hasta la esquina y desde ella en vez de multiplicarlos"
+    },
+    "parada-como-cruce-cerrado": {
+     "respaldo": "hipotesis",
+     "describe": "Resta los caminos que pasan por la esquina, como si estuviera cerrada"
+    },
+    "arreglo-vertices-una-vez": {
+     "respaldo": "hipotesis",
+     "describe": "Divide el total entre los lados, como si cada vértice estuviera en un solo lado"
+    },
+    "arreglo-suma-de-vertices": {
+     "respaldo": "hipotesis",
+     "describe": "Responde lo que suman los vértices, no lo que suma un lado"
+    },
+    "rueda-solo-el-borde-que-toca": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta las vueltas con el borde que toca (R/r), no con el camino del centro"
+    },
+    "rueda-por-dentro-como-por-fuera": {
+     "respaldo": "hipotesis",
+     "describe": "Por dentro suma la vuelta alrededor del aro en vez de restarla: (R + r)/r"
+    },
+    "vuelta-da-la-ida": {
+     "respaldo": "hipotesis",
+     "describe": "Para regresar, da la dirección del lugar donde quedó (la de ida) en vez de la opuesta"
+    },
+    "cardinal-suma-los-catetos": {
+     "respaldo": "hipotesis",
+     "describe": "Suma lo que se alejó en cada eje en vez de usar el teorema de Pitágoras"
+    },
+    "coincidencias-sin-la-primera": {
+     "respaldo": "hipotesis",
+     "describe": "No cuenta la coincidencia del momento inicial"
+    },
+    "coincidencia-mcm-de-dos": {
+     "respaldo": "hipotesis",
+     "describe": "Usa el MCM de solo dos de los tres intervalos"
+    },
+    "coincidencia-suma-de-intervalos": {
+     "respaldo": "hipotesis",
+     "describe": "Usa la suma de los intervalos en vez del MCM"
+    },
+    "arreglo-grandes-en-vertices": {
+     "respaldo": "hipotesis",
+     "describe": "Pone los números mayores en los vértices cuando se pide la menor suma"
+    },
+    "GE19-diametro-como-radio": {
+     "respaldo": "hipotesis",
+     "describe": "Da el diámetro del aro donde se pide su radio (GE19)"
+    },
+    "catetos-y-vuelta-da-la-ida": {
+     "respaldo": "hipotesis",
+     "describe": "Suma lo que se alejó en cada eje y además da la dirección de ida en vez de la de regreso"
     }
    },
    "pares": [
