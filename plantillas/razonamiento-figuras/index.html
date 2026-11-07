@@ -1,0 +1,995 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El reflector de figuras</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md).
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
+   las piezas simples (figuras de una sola pieza) azul; las figuras compuestas (de dos piezas o más) fucsia; lo que se
+   elige para armar cada figura (los puntos o las rectas: el n de C(n, 2)) naranja; el borde de los rectángulos que son
+   cuadrados oliva; en las pilas, los cubitos que se ven turquesa y los ocultos granate. El total va en tinta.
+   ΔE00 ≥ 27 entre los colores que salen juntos (figuras: S, C, N, K; cubos: Q, O) y ≥ 20 con la tinta y el gris. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-S:#1f5fbf; --c-C:#a10fbf; --c-N:#a05200; --c-K:#5f6f00; --c-Q:#0f766e; --c-O:#77032c;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-S:#7cb0ff; --c-C:#cf6bfa; --c-N:#f0a04a; --c-K:#c8dc3c; --c-Q:#5ed9c8; --c-O:#ff8fa3;
+  color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-S:#7cb0ff; --c-C:#cf6bfa; --c-N:#f0a04a; --c-K:#c8dc3c; --c-Q:#5ed9c8; --c-O:#ff8fa3;
+  color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none}
+canvas:focus-visible{outline:3px solid var(--ink); outline-offset:-3px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-S{color:var(--c-S); background:color-mix(in srgb, var(--c-S) 8%, transparent)}
+.v-C{color:var(--c-C); background:color-mix(in srgb, var(--c-C) 8%, transparent)}
+.v-N{color:var(--c-N); background:color-mix(in srgb, var(--c-N) 8%, transparent)}
+.v-K{color:var(--c-K); background:color-mix(in srgb, var(--c-K) 8%, transparent)}
+.v-Q{color:var(--c-Q); background:color-mix(in srgb, var(--c-Q) 8%, transparent)}
+.v-O{color:var(--c-O); background:color-mix(in srgb, var(--c-O) 8%, transparent)}
+.v{white-space:nowrap}
+.opt .v{background:transparent}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1.02rem; font-variant-numeric:tabular-nums}
+.eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.5em; white-space:normal}
+.frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1.15}
+.frac > span:first-child{border-bottom:1.5px solid currentColor; padding:0 .25em; align-self:stretch; text-align:center}
+.frac > span:last-child{padding:0 .25em}
+.tot{font-weight:800}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.chips{display:flex; flex-wrap:wrap; gap:6px}
+.chip{font-size:.86rem; padding:4px 12px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); font-weight:700}
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:999px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.seg button:disabled{opacity:.45; cursor:not-allowed}
+.exps{border-radius:20px}
+.ctl{display:flex; flex-wrap:wrap; align-items:center; gap:8px 14px}
+.paso{display:inline-flex; align-items:center; gap:6px; font-weight:700}
+.paso button{width:40px; height:40px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); font:800 1.1rem var(--font); cursor:pointer}
+.paso button:disabled{opacity:.4; cursor:not-allowed}
+.paso output{min-width:2.2ch; text-align:center; font-variant-numeric:tabular-nums}
+.refl{display:flex; flex-wrap:wrap; align-items:center; gap:8px; padding:8px 10px; border-radius:16px; background:var(--paper); border:1px solid var(--line)}
+.refl button{font:700 .9rem var(--font); min-height:40px; min-width:40px; padding:6px 12px; border-radius:999px; border:1.5px solid var(--line); background:var(--card); color:var(--ink); cursor:pointer}
+.refl .rn{font-weight:700; font-size:.92rem; font-variant-numeric:tabular-nums; flex:1 1 12ch}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+.tabla{overflow-x:auto; max-width:100%}
+table.tam{border-collapse:collapse; font-variant-numeric:tabular-nums; font-size:.92rem}
+table.tam th, table.tam td{padding:4px 10px; border-bottom:1px solid var(--line); text-align:center}
+table.tam th{color:var(--muted); font-weight:700}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.3fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Geometría · Razonamiento con figuras · Problemas tipo admisión</p>
+      <h1>El reflector de figuras</h1>
+      <p class="sub">Puntos en una recta, abanicos, cuadrados, tableros y pilas de cubitos. Primero predices cuántas figuras hay; después, un reflector las ilumina una por una.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo del paso">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Dibujo del paso"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="legend" id="leg1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Dibujo del experimento">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="legend" id="leg2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg exps" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/razonamiento-figuras">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'razonamiento-figuras', unidad: 'geometria.razonamiento-con-figuras', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas de dibujo compartidas =================
+   Todo el conteo sale de MotorFiguras (motor.js): puntos, cruces, piezas, la lista de figuras que ilumina el
+   reflector (por fuerza bruta), las fórmulas y los cubitos con su visibilidad. Aquí solo se pinta. */
+const M = MotorFiguras;
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
+function fmt(n, d){
+  if (n === null || n === undefined || !Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 0 : d), r = Math.round(n*p)/p + 0;
+  const [e, f] = String(Math.abs(r)).split('.');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const CLAVES = ['S','C','N','K','Q','O'];
+const LETRAS = 'ABCDEFGHIJ';
+function colores(hl){
+  const o = { ink:css('--ink'), muted:css('--muted'), grid:css('--grid'), paper:css('--paper'), card:css('--card'), line:css('--line'),
+    font:css('--font'), hl };
+  CLAVES.forEach(k => o[k] = css('--c-' + k));
+  return o;
+}
+const LEYENDA = { S:'pieza simple (una sola pieza)', C:'figura compuesta (dos piezas o más)', N:'lo que se elige: puntos o rectas',
+  K:'borde: el rectángulo es un cuadrado', Q:'cubitos que se ven', O:'cubitos ocultos', L:'la figura' };
+function leyenda(el, claves, textos){ el.innerHTML = claves.map(k => `<span><i style="background:${k === 'L' ? 'var(--ink)' : 'var(--c-' + k + ')'}"></i>${(textos && textos[k]) || LEYENDA[k]}</span>`).join(''); }
+const piezasTxt = t => `${t} ${t === 1 ? 'pieza' : 'piezas'}`;
+
+function crearLienzo(cv, alto, dibujar){
+  const ctx = cv.getContext('2d');
+  const L = { cv, ctx, W:0, H:0, compacto:false };
+  L.resize = () => {
+    const W = cv.clientWidth; if (!W) return;
+    const H = Math.round(Celular.alto(alto(W), L.compacto)), dpr = Celular.dpr();
+    L.W = W; L.H = H; cv.style.height = H + 'px'; cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    dibujar();
+  };
+  new ResizeObserver(L.resize).observe(cv);
+  L.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === L.compacto) return; L.compacto = on; L.resize(); };
+  return L;
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, x1, y1, x2, y2){ ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
+function rotulo(ctx, c, x, y, t, color, align, tam){
+  ctx.font = `800 ${tam || 12}px ${c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+  ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .88; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+  ctx.fillStyle = color; ctx.fillText(t, x, y);
+  return w;
+}
+function punto(ctx, x, y, r, color, borde){
+  ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2); ctx.fillStyle = color; ctx.fill();
+  if (borde){ ctx.strokeStyle = borde; ctx.lineWidth = 2; ctx.stroke(); }
+}
+function contador(ctx, c, t, color){
+  if (!t) return;
+  ctx.font = `800 14px ${c.font}`; const w = ctx.measureText(t).width;
+  ctx.save(); ctx.fillStyle = c.card; ctx.globalAlpha = .94; ctx.beginPath(); ctx.roundRect(8, 8, w + 20, 28, 14); ctx.fill(); ctx.restore();
+  ctx.fillStyle = color || c.ink; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText(t, 18, 22);
+}
+
+/* ---------- Vista 1: la figura plana ----------
+   V = { tipo:'plano', G (M.armar), luz:{ pts | seg:[P, Q], k, borde }, rectasN:[[P, Q]], puntosN:[P], anillos:[P],
+         rotulos:[{ P, t, dx, dy, k }], numeros (rotula cada pieza 1, 2, …), cuenta:{ t, k } } */
+function vistaPlano(L, c, V){
+  const { ctx, W, H } = L, P = V.G.puntos;
+  const xs = P.map(q => q.x), ys = P.map(q => q.y);
+  const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+  const padX = 34, padTop = V.cuenta ? 46 : 30, padBot = 30;
+  const s = Math.min((W - 2*padX)/Math.max(x1 - x0, 1e-9), (H - padTop - padBot)/Math.max(y1 - y0, 1e-9), V.maxEscala || 90);
+  const ox = W/2 - s*(x0 + x1)/2, oy = padTop + (H - padTop - padBot)/2 + s*(y0 + y1)/2;
+  const X = x => ox + x*s, Y = y => oy - y*s;
+  const grueso = k => (c.hl && c.hl === k ? 1.6 : 1);
+  // luz del reflector: debajo de las líneas
+  if (V.luz && V.luz.pts){
+    const col = c[V.luz.k];
+    ctx.save(); ctx.beginPath(); V.luz.pts.forEach((q, i) => (i ? ctx.lineTo(X(q.x), Y(q.y)) : ctx.moveTo(X(q.x), Y(q.y)))); ctx.closePath();
+    ctx.fillStyle = col; ctx.globalAlpha = .26*(c.hl === V.luz.k ? 1.6 : 1); ctx.fill(); ctx.restore();
+  }
+  for (const [A, B] of V.rectasN || []){ ctx.save(); ctx.strokeStyle = c.N; ctx.lineWidth = 5*grueso('N'); ctx.lineCap = 'round'; ctx.globalAlpha = .9; linea(ctx, X(A.x), Y(A.y), X(B.x), Y(B.y)); ctx.restore(); }
+  ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.lineCap = 'round';
+  for (const l of V.G.lineas){ const A = P[l[0]], B = P[l[l.length - 1]]; linea(ctx, X(A.x), Y(A.y), X(B.x), Y(B.y)); }
+  if (V.luz && V.luz.pts){
+    ctx.save(); ctx.beginPath(); V.luz.pts.forEach((q, i) => (i ? ctx.lineTo(X(q.x), Y(q.y)) : ctx.moveTo(X(q.x), Y(q.y)))); ctx.closePath();
+    ctx.strokeStyle = c[V.luz.borde || V.luz.k]; ctx.lineWidth = 4.5*grueso(V.luz.borde || V.luz.k); ctx.lineJoin = 'round';
+    if (V.luz.borde) ctx.setLineDash([9, 5]);
+    ctx.stroke(); ctx.restore();
+  }
+  if (V.luz && V.luz.seg){
+    const [A, B] = V.luz.seg; ctx.save(); ctx.strokeStyle = c[V.luz.k]; ctx.lineWidth = 7*grueso(V.luz.k); ctx.lineCap = 'round';
+    linea(ctx, X(A.x), Y(A.y), X(B.x), Y(B.y)); ctx.restore();
+  }
+  if (V.numeros){
+    V.G.caras.forEach((cara, i) => {
+      const q = cara.map(j => P[j]), cx = q.reduce((t, r) => t + r.x, 0)/q.length, cy = q.reduce((t, r) => t + r.y, 0)/q.length;
+      rotulo(ctx, c, X(cx), Y(cy), String(i + 1), c.S, 'center', 11);
+    });
+  }
+  if (!V.sinPuntos) for (const q of P) punto(ctx, X(q.x), Y(q.y), 2.6, c.ink);
+  for (const q of V.puntosN || []) punto(ctx, X(q.x), Y(q.y), 5.5*grueso('N'), c.N);
+  for (const q of V.anillos || []){ ctx.save(); ctx.strokeStyle = c.N; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(X(q.x), Y(q.y), 10, 0, Math.PI*2); ctx.stroke(); ctx.restore(); }
+  for (const r of V.rotulos || []) rotulo(ctx, c, clamp(X(r.P.x) + (r.dx || 0), 12, W - 12), clamp(Y(r.P.y) + (r.dy || 0), 10, H - 10), r.t, r.k ? c[r.k] : c.ink, 'center', 13);
+  if (V.cuenta) contador(ctx, c, V.cuenta.t, V.cuenta.k ? c[V.cuenta.k] : c.ink);
+}
+
+/* ---------- Vista 2: la pila de cubitos (perspectiva isométrica, M.isometrico) ----------
+   V = { tipo:'cubos', pila (M.pila…), separar (0 a 1: las capas se separan hacia arriba o, con eje:'y', las filas hacia
+         adelante), colorear (visibles y ocultos),
+         cuenta:{ t, k } } */
+function mezcla(a, b, t){
+  const h = x => x.replace('#', ''), A = h(a), B = h(b);
+  if (A.length !== 6 || B.length !== 6) return a;
+  const ch = (X, i) => parseInt(X.slice(i, i + 2), 16);
+  return '#' + [0, 2, 4].map(i => Math.round(ch(A, i)*t + ch(B, i)*(1 - t)).toString(16).padStart(2, '0')).join('');
+}
+function vistaCubos(L, c, V){
+  const { ctx, W, H } = L, p = V.pila, sep = V.separar || 0, d = p.dims, porFilas = V.eje === 'y';
+  // se separan las capas hacia arriba (eje z) o las filas hacia adelante (eje y)
+  const alza = z => (porFilas ? z : z + sep*z*0.9), corre = y => (porFilas ? y + sep*y*1.3 : y);
+  const pr = (x, y, z) => M.isometrico({ x, y, z });
+  // marco: las dos paredes y el piso, más todas las esquinas de los cubos (separados)
+  const esquinas = [];
+  const X0 = d.largo, Y0 = corre(d.ancho - 1) + 1, Z0 = alza(d.alto - 1) + 1;
+  for (const [x, y, z] of [[0,0,0],[X0,0,0],[0,Y0,0],[X0,Y0,0],[0,0,Z0],[X0,0,Z0],[0,Y0,Z0]]) esquinas.push(pr(x, y, z));
+  const us = esquinas.map(q => q.u), vs = esquinas.map(q => q.v);
+  const u0 = Math.min(...us), u1 = Math.max(...us), v0 = Math.min(...vs), v1 = Math.max(...vs);
+  const padTop = V.cuenta ? 44 : 16;
+  const s = Math.min((W - 30)/(u1 - u0), (H - padTop - 14)/(v1 - v0), 70);
+  const ox = W/2 - s*(u0 + u1)/2, oy = padTop + (H - padTop - 14)/2 + s*(v0 + v1)/2;
+  const XY = (x, y, z) => { const q = pr(x, y, z); return [ox + q.u*s, oy - q.v*s]; };
+  // paredes (x = 0 y y = 0) y piso, con su cuadrícula tenue
+  ctx.save(); ctx.strokeStyle = c.line; ctx.lineWidth = 1;
+  const alto = Math.ceil(Z0);
+  for (let z = 0; z <= alto; z++){ linea(ctx, ...XY(0, 0, z), ...XY(X0, 0, z)); linea(ctx, ...XY(0, 0, z), ...XY(0, Y0, z)); }
+  for (let x = 0; x <= X0; x++){ linea(ctx, ...XY(x, 0, 0), ...XY(x, 0, alto)); linea(ctx, ...XY(x, 0, 0), ...XY(x, Y0, 0)); }
+  for (let y = 0; y <= d.ancho; y++){ linea(ctx, ...XY(0, y, 0), ...XY(0, y, alto)); linea(ctx, ...XY(0, y, 0), ...XY(X0, y, 0)); }
+  ctx.restore();
+  const orden = p.cubos.slice().sort((a, b) => sep > 0 ? (porFilas ? a.y - b.y || a.x + a.z - (b.x + b.z) : a.z - b.z || a.x + a.y - (b.x + b.y)) : (a.x + a.y + a.z - (b.x + b.y + b.z) || a.z - b.z));
+  const cara = (pts, color, alfa) => {
+    ctx.beginPath(); pts.forEach((q, i) => (i ? ctx.lineTo(...XY(...q)) : ctx.moveTo(...XY(...q)))); ctx.closePath();
+    ctx.fillStyle = c.paper; ctx.fill();
+    ctx.save(); ctx.globalAlpha = alfa; ctx.fillStyle = color; ctx.fill(); ctx.restore();
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 1.3; ctx.lineJoin = 'round'; ctx.stroke();
+  };
+  for (const q of orden){
+    const col = !V.colorear ? c.muted : q.visible ? c.Q : c.O, z = alza(q.z), y = corre(q.y), { x } = q;
+    const k = c.hl && V.colorear && ((c.hl === 'Q' && q.visible) || (c.hl === 'O' && !q.visible)) ? 1.5 : 1;
+    cara([[x, y, z + 1], [x + 1, y, z + 1], [x + 1, y + 1, z + 1], [x, y + 1, z + 1]], col, .22*k);
+    cara([[x + 1, y, z], [x + 1, y + 1, z], [x + 1, y + 1, z + 1], [x + 1, y, z + 1]], col, .42*k);
+    cara([[x, y + 1, z], [x + 1, y + 1, z], [x + 1, y + 1, z + 1], [x, y + 1, z + 1]], col, .6*k);
+  }
+  if (V.cuenta) contador(ctx, c, V.cuenta.t, V.cuenta.k ? c[V.cuenta.k] : c.ink);
+}
+function dibujarVista(L, c, V){
+  L.ctx.clearRect(0, 0, L.W, L.H);
+  if (!V) return;
+  (V.tipo === 'cubos' ? vistaCubos : vistaPlano)(L, c, V);
+}
+const ALTO = W => (W >= 560 ? clamp(W*0.6, 320, 430) : 300);
+
+/* ---------- El reflector: recorre la lista del motor, una figura por vez ---------- */
+function luzDe(f, tipo, conK){
+  const k = f.tamano === 1 ? 'S' : 'C';
+  if (tipo === 'segmentos') return { seg:[f.pts[0], f.pts[1]], k };
+  return { pts:f.pts, k, borde: conK && f.cuadrado ? 'K' : null };
+}
+function quePieza(f, tipo){ return tipo === 'segmentos' ? (f.tamano === 1 ? 'de un tramo' : `de ${f.tamano} tramos`) : (f.tamano === 1 ? 'de una pieza' : `de ${f.tamano} piezas`); }
+function htmlReflector(id){
+  return `<div class="refl" id="${id}" role="group" aria-label="Reflector: una figura por vez">
+    <button type="button" data-r="prev" aria-label="Figura anterior">◀</button>
+    <span class="rn" data-r="n"></span>
+    <button type="button" data-r="next" aria-label="Figura siguiente">▶</button>
+    <button type="button" data-r="play">Recorrer todas</button></div>`;
+}
+// R = { lista, tipo, i, conK }; pintar(R) dibuja; cuando, vigente() dice si sigue el mismo paso.
+function crearReflector(){
+  const R = { lista:[], tipo:'triangulos', i:-1, conK:false, tid:null, el:null, pintar:null };
+  R.parar = () => { clearTimeout(R.tid); R.tid = null; R.marcar(); };
+  R.ir = i => { if (!R.lista.length) return; R.i = clamp(i, 0, R.lista.length - 1); R.pintar && R.pintar(); R.marcar(); };
+  R.marcar = () => {
+    if (!R.el || !document.body.contains(R.el)) return;
+    const n = R.lista.length, f = R.lista[R.i];
+    R.el.querySelector('[data-r="n"]').textContent = n ? (f ? `Figura ${R.i + 1} de ${n} · ${quePieza(f, R.tipo)}` : `${n} figuras en total`) : 'No hay ninguna';
+    R.el.querySelector('[data-r="prev"]').disabled = !n || R.i <= 0;
+    R.el.querySelector('[data-r="next"]').disabled = !n || R.i >= n - 1;
+    R.el.querySelector('[data-r="play"]').textContent = R.tid ? 'Detener' : 'Recorrer todas';
+    R.el.querySelector('[data-r="play"]').disabled = !n;
+  };
+  R.recorrer = (vigente, fin) => {
+    clearTimeout(R.tid); R.tid = null;
+    const n = R.lista.length; if (!n) return;
+    if (RM){ R.ir(n - 1); fin && fin(); return; }
+    const paso = clamp(5200/n, 260, 700);
+    let i = 0;
+    const tic = () => { if (vigente && !vigente()) { R.tid = null; return; } R.i = i; R.pintar && R.pintar(); i++; if (i < n) R.tid = setTimeout(tic, paso); else { R.tid = null; fin && fin(); } R.marcar(); };
+    R.tid = 1; tic();
+  };
+  R.montar = (el, vigente) => {
+    R.el = el; if (!el) return;
+    el.querySelector('[data-r="prev"]').onclick = () => { R.parar(); R.ir(R.i - 1); };
+    el.querySelector('[data-r="next"]').onclick = () => { R.parar(); R.ir(R.i + 1); };
+    el.querySelector('[data-r="play"]').onclick = () => { if (R.tid) R.parar(); else R.recorrer(vigente); };
+    R.marcar();
+  };
+  return R;
+}
+function tablaTamanos(r, tipo){
+  const ks = Object.keys(r.porTamano).map(Number).sort((a, b) => a - b);
+  const cab = tipo === 'segmentos' ? 'Tramos' : 'Piezas';
+  return `<div class="tabla"><table class="tam"><tr><th scope="row">${cab}</th>${ks.map(k => `<td>${k === 1 ? V('S', '1') : V('C', String(k))}</td>`).join('')}<td>total</td></tr>
+    <tr><th scope="row">Figuras</th>${ks.map(k => `<td>${fmt(r.porTamano[k])}</td>`).join('')}<td class="tot">${fmt(r.total)}</td></tr></table></div>`;
+}
+const fr = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
+</script>
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const cv = $('cv');
+const S = { step:0, max:0, pred:{}, hl:null, vista:null, ex3:{ n:4, k:1, tipo:'triangulos' }, ex8:{ m:3, n:4, tipo:'rectangulos' } };
+let anim = null;
+const L = crearLienzo(cv, ALTO, draw);
+function draw(){ if (!L.W) return; dibujarVista(L, colores(S.hl), S.vista); }
+function animar(dur, cada, fin){
+  cancelAnimationFrame(anim);
+  if (RM){ cada(1); draw(); fin && fin(); return; }
+  const ini = performance.now();
+  const tick = now => { const f = Math.min(1, (now - ini)/dur); cada(f); draw(); if (f < 1) anim = requestAnimationFrame(tick); else fin && fin(); };
+  anim = requestAnimationFrame(tick);
+}
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+const R = crearReflector();
+
+// ---- Datos de los pasos (todo sale del motor) ----
+const F1 = M.recta(6), G1 = M.armar(F1), D1 = M.segmentosRecta(6), L1 = M.contar(F1, 'segmentos');
+const F2 = M.abanico(4), G2 = M.armar(F2), D2 = M.triangulosAbanico(4), L2 = M.contar(F2, 'triangulos');
+const F4 = M.cuadradoDiagonales(2), G4 = M.armar(F4), D4 = M.triangulosCuadradoDiagonales(), L4 = M.contar(F4, 'triangulos');
+const F5 = M.cuadricula(4, 4), G5 = M.armar(F5), D5 = M.cuadradosCuadricula(4, 4), L5 = M.contar(F5, 'cuadrados');
+const F6 = M.cuadricula(2, 3), G6 = M.armar(F6), D6 = M.rectangulosCuadricula(2, 3), L6 = M.contar(F6, 'rectangulos');
+const P7 = M.piramideEsquina(3);
+// letras de izquierda a derecha (el motor numera primero los extremos de la línea)
+const letra1 = i => LETRAS[G1.puntos.filter(q => q.x < G1.puntos[i].x).length];
+const letras1 = G1.puntos.map((q, i) => ({ P:q, t:letra1(i), dy:-18, k:'N' }));
+const base2 = G2.puntos.filter(q => Math.abs(q.y) < 1e-9);
+
+function opciones(P){ return `<div class="opts">${P.opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="fb"></p>`; }
+const FUENTE_AR18 = '<p class="fuente">Quedarse en las piezas sueltas u olvidar algunas figuras compuestas se parece a la enumeración sin sistema (AR18 del informe de aritmética y razonamiento): según resúmenes, en un estudio con 720 alumnos españoles de 14 y 15 años (Navarro-Pelayo, Batanero y Godino, 1996) fue el error más frecuente entre los que no habían estudiado combinatoria; la cifra está por confirmar en el original. Ese estudio no tenía figuras: que pase lo mismo al contar figuras es una suposición nuestra. Las demás opciones incorrectas son hipótesis nuestras.</p>';
+const FUENTE_AR17 = '<p class="fuente">Contar AB y BA como dos segmentos se parece al error de orden (AR17 del informe de aritmética y razonamiento): según resúmenes, en el mismo estudio con 720 alumnos españoles (Navarro-Pelayo, Batanero y Godino, 1996) fue el error más frecuente entre los que ya habían estudiado combinatoria; la cifra está por confirmar. Quedarse en los tramos se parece a la enumeración sin sistema (AR18), el más frecuente entre los que no la habían estudiado. Ese estudio no tenía figuras: que pase lo mismo aquí es una suposición nuestra, y «tramos más el total» es una hipótesis nuestra.</p>';
+const FUENTE_GE13 = '<p class="fuente">Según autores que citan a Ben-Chaim, Lappan y Houang (1985), menos de la mitad de los alumnos de 5.° a 8.° grado contó bien los cubitos de bloques dibujados; el error más común fue contar las caras que se ven, y otro, contar solo los cubitos que asoman (GE13 del informe de geometría). Aquí la pila es escalonada, no un bloque: que se repitan esos errores es una suposición nuestra. Contar la caja entera es una hipótesis nuestra.</p>';
+const n0 = x => fmt(x);
+const seg = x => `${n0(x)} segmentos`, tri = x => `${n0(x)} triángulos`, cua = x => `${n0(x)} cuadrados`, rec = x => `${n0(x)} rectángulos`, cub = x => `${n0(x)} cubitos`;
+
+const P1 = { id:'rf-paso1-recta', ok:'b',
+  opts:[['a', seg(D1.errores.soloPiezas), 'AR18-solo-piezas-simples', 'parcial'], ['b', seg(D1.total)],
+        ['c', seg(D1.errores.conOrden), 'AR17-cuenta-con-orden', 'parcial'], ['d', seg(D1.errores.piezasYTotal), 'piezas-y-el-total', 'hipotesis']],
+  fb:{ b:'¡Bien! Desde A salen 5 segmentos (AB, AC, AD, AE y AF), desde B 4 nuevos, desde C 3, desde D 2 y desde E 1: 5 + 4 + 3 + 2 + 1 = 15.',
+       a:'Elegiste la A. Esos son los 5 tramos que se ven sueltos, de un punto al siguiente. Pero AC también es un segmento: va de A a C y pasa por B. Faltan los de 2, 3, 4 y 5 tramos. La correcta está marcada.',
+       c:'Elegiste la C. Así contaste AB y también BA, que son el mismo segmento: cada uno quedó dos veces. La mitad de 30 es la respuesta. La correcta está marcada.',
+       d:'Elegiste la D. Los 5 tramos y el segmento entero AF sí cuentan, pero también AC, BD, CF y todos los que van de un punto a otro saltando puntos. La correcta está marcada.' } };
+const P2 = { id:'rf-paso2-abanico', ok:'c',
+  opts:[['a', tri(D2.errores.soloPiezas), 'AR18-solo-piezas-simples', 'parcial'], ['b', tri(D2.errores.piezasYTotal), 'piezas-y-el-total', 'hipotesis'],
+        ['c', tri(D2.total)], ['d', tri(D2.errores.dobleCuenta), 'cuenta-dos-veces', 'hipotesis']],
+  fb:{ c:'¡Bien! 4 de una pieza, 3 de dos piezas, 2 de tres y 1 de cuatro: 4 + 3 + 2 + 1 = 10.',
+       a:'Elegiste la A. Esas son las 4 piezas que se ven sueltas. Dos piezas vecinas juntas también forman un triángulo con el vértice O, y lo mismo tres o cuatro. La correcta está marcada.',
+       b:'Elegiste la B. Contaste las 4 piezas y el triángulo grande, pero hay más en el medio: dos piezas vecinas juntas forman un triángulo, y tres también. La correcta está marcada.',
+       d:'Elegiste la D. Cada triángulo se cuenta una sola vez, aunque lo mires desde la izquierda o desde la derecha: queda fijo por sus dos puntos de la base. La correcta está marcada.' } };
+const P4 = { id:'rf-paso4-diagonales', ok:'d',
+  opts:[['a', tri(D4.errores.unaDiagonal), 'AR18-compuestas-incompletas', 'parcial'], ['b', tri(D4.errores.soloPiezas), 'AR18-solo-piezas-simples', 'parcial'],
+        ['c', tri(D4.errores.compuestasDosVeces), 'compuestas-dos-veces', 'hipotesis'], ['d', tri(D4.total)]],
+  fb:{ d:'¡Bien! 4 triángulos de una pieza alrededor del centro y 4 de dos piezas: cada diagonal parte el cuadrado en dos mitades, y son dos diagonales. 4 + 4 = 8.',
+       a:'Elegiste la A. Contaste las 4 piezas y las 2 mitades que deja una diagonal. La otra diagonal también parte el cuadrado en dos mitades: son 2 más. La correcta está marcada.',
+       b:'Elegiste la B. Esas son las 4 piezas que se ven sueltas. Dos piezas vecinas juntas forman un triángulo más grande, la mitad del cuadrado. La correcta está marcada.',
+       c:'Elegiste la C. Cada mitad del cuadrado se cuenta una sola vez. Hay 4 mitades (2 por cada diagonal), no 8. La correcta está marcada.' } };
+const P5 = { id:'rf-paso5-tablero', ok:'a',
+  opts:[['a', cua(D5.total)], ['b', cua(D5.errores.soloPiezas), 'AR18-solo-piezas-simples', 'parcial'],
+        ['c', cua(D5.errores.piezasYGrande), 'piezas-y-el-total', 'hipotesis'], ['d', cua(D5.errores.soloDiagonal), 'AR18-compuestas-incompletas', 'parcial']],
+  fb:{ a:'¡Bien! 16 de 1 × 1, 9 de 2 × 2, 4 de 3 × 3 y 1 de 4 × 4: 16 + 9 + 4 + 1 = 30.',
+       b:'Elegiste la B. 4 × 4 = 16 son las casillas, los cuadrados de 1 × 1. Pero cuatro casillas juntas forman un cuadrado de 2 × 2, y también hay de 3 × 3 y el de 4 × 4. La correcta está marcada.',
+       c:'Elegiste la C. Las 16 casillas y el cuadrado grande, sí; pero en el medio hay cuadrados de 2 × 2 y de 3 × 3. La correcta está marcada.',
+       d:'Elegiste la D. Contaste los cuadrados grandes solo a lo largo de una diagonal (3 de 2 × 2, 2 de 3 × 3 y el de 4 × 4). Un cuadrado de 2 × 2 cabe también fuera de esa diagonal: en 3 posiciones por fila y 3 por columna, 3 · 3 = 9. La correcta está marcada.' } };
+const P6 = { id:'rf-paso6-tira', ok:'c',
+  opts:[['a', rec(D6.errores.soloPiezas), 'AR18-solo-piezas-simples', 'parcial'], ['b', rec(D6.errores.sinCuadrados), 'rectangulos-sin-cuadrados', 'hipotesis'],
+        ['c', rec(D6.total)], ['d', rec(D6.errores.suma), 'suma-en-vez-de-producto', 'hipotesis']],
+  fb:{ c:'¡Bien! Un rectángulo queda fijo al elegir 2 de las 3 rectas horizontales (3 maneras) y 2 de las 4 verticales (6 maneras): 3 · 6 = 18.',
+       a:'Elegiste la A. Esos son los 6 cuadritos sueltos. Dos o más cuadritos juntos que forman un rectángulo también cuentan. La correcta está marcada.',
+       b:'Elegiste la B. Dejaste fuera los cuadrados. Un cuadrado tiene cuatro ángulos rectos: también es un rectángulo. Los 6 cuadritos y los 2 cuadrados de 2 × 2 cuentan. La correcta está marcada.',
+       d:'Elegiste la D. 3 maneras de elegir las horizontales y 6 de elegir las verticales, sí; pero cada elección de unas va con cada elección de las otras: se multiplica, 3 · 6. La correcta está marcada.' } };
+const P7p = { id:'rf-paso7-pila', ok:'b',
+  opts:[['a', cub(P7.errores.soloVisibles), 'GE13-solo-cubos-visibles', 'parcial'], ['b', cub(P7.total)],
+        ['c', cub(P7.errores.carasVisibles), 'GE13-cuenta-caras-visibles', 'parcial'], ['d', cub(P7.errores.caja), 'cuenta-la-caja-entera', 'hipotesis']],
+  fb:{ b:'¡Bien! Capa por capa: 9 abajo, 4 en el medio y 1 arriba. 9 + 4 + 1 = 14, aunque solo se vean 9.',
+       a:'Elegiste la A. Esos son los cubitos que asoman. Debajo de la capa del medio y del cubito de arriba hay cubitos que no se ven, pero están: sin ellos, la pila se caería. La correcta está marcada.',
+       c:'Elegiste la C. Contaste las caras que se ven: un cubito de la orilla muestra dos o tres caras y quedó contado varias veces, y los de adentro no se contaron. La correcta está marcada.',
+       d:'Elegiste la D. 3 × 3 × 3 sería un cubo lleno. La pila es una escalera: arriba de la capa de 3 × 3 hay una de 2 × 2, no otra de 3 × 3. La correcta está marcada.' } };
+
+// ---- Vistas de cada paso ----
+function cuentaDe(i, n, k){ return { t: `${i + 1} de ${n}`, k }; }
+// el reflector pinta la figura R.lista[R.i] sobre la vista del paso
+function vistaLuz(G, extra){
+  const f = R.lista[R.i], V = Object.assign({ tipo:'plano', G }, extra || {});
+  if (f){ V.luz = luzDe(f, R.tipo, R.conK); V.cuenta = cuentaDe(R.i, R.lista.length, V.luz.k); }
+  return V;
+}
+function vista1(resuelto){
+  const V = resuelto ? vistaLuz(G1) : { tipo:'plano', G:G1 };
+  V.puntosN = G1.puntos; V.rotulos = letras1; V.sinPuntos = true; V.maxEscala = 70;
+  return V;
+}
+function vista2(resuelto){
+  const V = resuelto ? vistaLuz(G2) : { tipo:'plano', G:G2 };
+  V.rotulos = [{ P:F2.O, t:'O', dy:-16 }];
+  if (resuelto){ V.puntosN = base2; const f = R.lista[R.i]; if (f) V.anillos = f.pts.filter(q => Math.abs(q.y) < 1e-9); }
+  return V;
+}
+function vista4(resuelto){ return resuelto ? vistaLuz(G4) : { tipo:'plano', G:G4 }; }
+function vista5(resuelto){ const V = resuelto ? vistaLuz(G5) : { tipo:'plano', G:G5 }; V.sinPuntos = true; return V; }
+function rectasDe(f, m, n){
+  const xs = [...new Set(f.pts.map(q => q.x))], ys = [...new Set(f.pts.map(q => q.y))];
+  return ys.map(y => [{ x:0, y }, { x:n, y }]).concat(xs.map(x => [{ x, y:0 }, { x, y:m }]));
+}
+function vista6(resuelto){
+  const V = resuelto ? vistaLuz(G6) : { tipo:'plano', G:G6 }; V.sinPuntos = true;
+  const f = resuelto && R.lista[R.i]; if (f) V.rectasN = rectasDe(f, 2, 3);
+  return V;
+}
+function vista7(resuelto, sep){ return { tipo:'cubos', pila:P7, separar: sep === undefined ? (resuelto ? 1 : 0) : sep, colorear: !!resuelto }; }
+function figura3(){ return M.abanico(S.ex3.n, S.ex3.k); }
+function vista3(){
+  const G = M.armar(figura3()), V = vistaLuz(G);
+  V.rotulos = [{ P:figura3().O, t:'O', dy:-16 }];
+  V.puntosN = G.puntos.filter(q => Math.abs(q.y) < 1e-9);
+  return V;
+}
+function vista8(){
+  const G = M.armar(M.cuadricula(S.ex8.m, S.ex8.n)), V = vistaLuz(G); V.sinPuntos = true;
+  const f = R.lista[R.i]; if (f && S.ex8.tipo === 'rectangulos') V.rectasN = rectasDe(f, S.ex8.m, S.ex8.n);
+  return V;
+}
+// al responder: el reflector recorre la lista del paso
+function prenderReflector(lista, tipo, conK){
+  R.lista = lista.lista; R.tipo = tipo; R.conK = !!conK; R.i = -1;
+}
+function pasoActual(){ return steps[S.step]; }
+
+const steps = [
+ { k:'Paso 1', t:'Predice: los puntos de la recta', gate:P1, leg:['N','S','C'], legAntes:['N'], leyTextos:{ N:'los puntos marcados' },
+   lista:() => prenderReflector(L1, 'segmentos'),
+   vista:() => vista1(!!S.pred[P1.id]),
+   desc:() => 'Una recta con seis puntos marcados, de izquierda a derecha: A, B, C, D, E y F.' + (S.pred[P1.id] && R.lista[R.i] ? ` El reflector ilumina el segmento ${[letra1(R.lista[R.i].vertices[0]), letra1(R.lista[R.i].vertices[1])].sort().join('')}.` : ''),
+   body:() => `<p class="problem">En una recta se marcan ${V('N','6 puntos')}: A, B, C, D, E y F. ¿Cuántos segmentos tienen sus dos extremos entre esos puntos?</p>
+     <p>Antes de que el reflector los ilumine, elige.</p>${opciones(P1)}`,
+   tras:() => `<div class="eqs"><div class="eq">${V('S','5')} + ${V('C','4')} + ${V('C','3')} + ${V('C','2')} + ${V('C','1')} = <b>${n0(D1.total)}</b><span class="note">de 1, 2, 3, 4 y 5 tramos</span></div>
+       <div class="eq">C(${V('N','6')}, 2) = ${fr(`${V('N','6')} · 5`, '2')} = <b>${n0(D1.total)}</b><span class="note">elegir los 2 extremos entre ${V('N','6')} puntos</span></div></div>
+     <p>Un segmento queda fijo cuando se eligen sus dos extremos, y AB es el mismo que BA. Con ${V('N','n')} puntos en una recta hay C(n, 2) = n(n − 1)/2 segmentos. Los ${V('S','tramos')} sueltos son solo los de un tramo; los ${V('C','demás')} pasan por puntos intermedios.</p>
+     ${tablaTamanos(L1, 'segmentos')}${htmlReflector('r1')}`,
+   animar:() => R.recorrer(() => S.step === 0) },
+ { k:'Paso 2', t:'Predice: el abanico', gate:P2, leg:['S','C','N'], legAntes:['L'], leyTextos:{ L:'el abanico', N:'los puntos de la base' },
+   lista:() => prenderReflector(L2, 'triangulos'),
+   vista:() => vista2(!!S.pred[P2.id]),
+   desc:() => 'Un triángulo con vértice O arriba. Desde O bajan rayos que parten la base en cuatro piezas iguales.' + (S.pred[P2.id] && R.lista[R.i] ? ` El reflector ilumina un triángulo ${quePieza(R.lista[R.i])}.` : ''),
+   body:() => `<p class="problem">Desde el vértice O salen rayos hasta la base, que queda partida en ${V('S','4 piezas')}. ¿Cuántos triángulos hay en la figura?</p>
+     <p>Antes de ver el reflector, elige.</p>${opciones(P2)}`,
+   tras:() => `<div class="eqs"><div class="eq">${V('S','4')} + ${V('C','3')} + ${V('C','2')} + ${V('C','1')} = <b>${n0(D2.total)}</b><span class="note">de 1, 2, 3 y 4 piezas</span></div>
+       <div class="eq">C(${V('N','5')}, 2) = ${fr(`${V('N','5')} · 4`, '2')} = <b>${n0(D2.total)}</b><span class="note">2 de los ${V('N','5')} puntos de la base</span></div>
+       <div class="eq">${fr(`n(n + 1)`, '2')} = ${fr(`${V('S','4')} · ${V('N','5')}`, '2')} = <b>${n0(D2.total)}</b><span class="note">con n = ${V('S','4')} piezas</span></div></div>
+     <p>Todo triángulo del abanico tiene el vértice O y dos ${V('N','puntos de la base')}: es la misma cuenta que los segmentos de una recta. Con n piezas en la base hay n + 1 puntos y n(n + 1)/2 triángulos.</p>
+     ${tablaTamanos(L2, 'triangulos')}${htmlReflector('r1')}`,
+   animar:() => R.recorrer(() => S.step === 1) },
+ { k:'Paso 3', t:'Explora: el reflector en el abanico', leg:['S','C','N'], leyTextos:{ N:'los puntos de la base' },
+   lista:() => { const r = M.contar(figura3(), S.ex3.tipo); prenderReflector(r, S.ex3.tipo); R.i = 0; },
+   vista:() => vista3(),
+   desc:() => { const e = S.ex3, r = M.contar(figura3(), e.tipo); return `Abanico de ${e.n} ${e.n === 1 ? 'pieza' : 'piezas'} en la base con ${e.k - 1} ${e.k === 2 ? 'cuerda' : 'cuerdas'}: ${r.total} ${e.tipo === 'triangulos' ? 'triángulos' : 'cuadriláteros'}.`; },
+   body:() => `<p>Cambia las piezas de la base y agrega cuerdas paralelas a la base. El motor cuenta por fuerza bruta: prueba cada terna (o cada cuarteta) de puntos y se queda con las que tienen sus lados dibujados.</p>
+     <div class="ctl">
+       <span class="paso">Piezas: <button type="button" data-d="-1" aria-label="Una pieza menos">−</button><output id="n3"></output><button type="button" data-d="1" aria-label="Una pieza más">+</button></span>
+       <div class="seg" role="group" aria-label="Cuerdas"><button type="button" data-k="1">Sin cuerda</button><button type="button" data-k="2">1 cuerda</button><button type="button" data-k="3">2 cuerdas</button></div>
+       <div class="seg" role="group" aria-label="Qué se cuenta"><button type="button" data-t="triangulos">Triángulos</button><button type="button" data-t="cuadrilateros">Cuadriláteros</button></div>
+     </div>
+     <div id="vivo" class="body"></div>${htmlReflector('r1')}`,
+   vivo:() => {
+     const e = S.ex3, r = M.contar(figura3(), e.tipo), uno = e.n*(e.n + 1)/2;
+     const f = e.tipo === 'triangulos'
+       ? `<div class="eq">${e.k} · ${fr(`${e.n} · ${e.n + 1}`, '2')} = ${e.k} · ${uno} = <b>${n0(M.triangulosAbanico(e.n, e.k).total)}</b><span class="note">un abanico por cada línea horizontal</span></div>`
+       : `<div class="eq">C(${e.k}, 2) · ${fr(`${e.n} · ${e.n + 1}`, '2')} = ${M.C2(e.k)} · ${uno} = <b>${n0(M.cuadrilaterosAbanico(e.n, e.k).total)}</b><span class="note">dos líneas horizontales y dos rayos</span></div>`;
+     return `<div class="eqs"><div class="eq">fuerza bruta: <b>${n0(r.total)}</b></div>${f}</div>${tablaTamanos(r, e.tipo)}`;
+   },
+   montar:() => {
+     const b = $('stepBody'), e = S.ex3;
+     const pintarCtl = () => {
+       $('n3').textContent = e.n;
+       b.querySelector('[data-d="-1"]').disabled = e.n <= 1; b.querySelector('[data-d="1"]').disabled = e.n >= 7;
+       b.querySelectorAll('[data-k]').forEach(x => x.setAttribute('aria-pressed', String(+x.dataset.k === e.k)));
+       b.querySelectorAll('[data-t]').forEach(x => { x.setAttribute('aria-pressed', String(x.dataset.t === e.tipo)); x.disabled = x.dataset.t === 'cuadrilateros' && e.k < 2; });
+     };
+     const cambio = () => { if (e.k < 2) e.tipo = 'triangulos'; R.parar(); steps[2].lista(); pintarCtl(); S.vista = vista3(); vivo(); draw(); R.marcar(); };
+     b.querySelectorAll('[data-d]').forEach(x => x.onclick = () => { e.n = clamp(e.n + +x.dataset.d, 1, 7); cambio(); });
+     b.querySelectorAll('[data-k]').forEach(x => x.onclick = () => { e.k = +x.dataset.k; cambio(); });
+     b.querySelectorAll('[data-t]').forEach(x => x.onclick = () => { e.tipo = x.dataset.t; cambio(); });
+     pintarCtl();
+   } },
+ { k:'Paso 4', t:'Predice: el cuadrado y sus diagonales', gate:P4, leg:['S','C'], legAntes:['L'], leyTextos:{ L:'el cuadrado' },
+   lista:() => prenderReflector(L4, 'triangulos'),
+   vista:() => vista4(!!S.pred[P4.id]),
+   desc:() => 'Un cuadrado con sus dos diagonales, que se cortan en el centro.' + (S.pred[P4.id] && R.lista[R.i] ? ` El reflector ilumina un triángulo ${quePieza(R.lista[R.i])}.` : ''),
+   body:() => `<p class="problem">En un cuadrado se trazan sus dos diagonales. ¿Cuántos triángulos hay en la figura?</p>
+     <p>Aquí no hay fórmula: hay que contar con un sistema. Elige.</p>${opciones(P4)}`,
+   tras:() => `<div class="eqs"><div class="eq">${V('S','4')} + ${V('C','4')} = <b>${n0(D4.total)}</b><span class="note">de una pieza y de dos piezas</span></div></div>
+     <p>Cuando no hay fórmula, el sistema es contar por tamaños: primero las figuras de una ${V('S','pieza')}, luego las de ${V('C','dos piezas')}, luego las de tres… hasta la figura entera. Aquí no hay triángulos de tres piezas, y las cuatro piezas juntas forman el cuadrado, que no es un triángulo.</p>
+     ${tablaTamanos(L4, 'triangulos')}${htmlReflector('r1')}`,
+   animar:() => R.recorrer(() => S.step === 3) },
+ { k:'Paso 5', t:'Predice: los cuadrados del tablero', gate:P5, leg:['S','C'], legAntes:['L'], leyTextos:{ L:'el tablero', S:'cuadrado de 1 × 1 (una pieza)', C:'cuadrado más grande (varias piezas)' },
+   lista:() => prenderReflector(L5, 'cuadrados'),
+   vista:() => vista5(!!S.pred[P5.id]),
+   desc:() => 'Un tablero cuadrado de cuatro filas y cuatro columnas de casillas.' + (S.pred[P5.id] && R.lista[R.i] ? ` El reflector ilumina un cuadrado ${quePieza(R.lista[R.i])}.` : ''),
+   body:() => `<p class="problem">Un tablero tiene 4 × 4 casillas. ¿Cuántos cuadrados hay en total en la figura?</p>
+     <p>Antes de ver el reflector, elige.</p>${opciones(P5)}`,
+   tras:() => `<div class="eqs"><div class="eq">${V('S','4²')} + ${V('C','3²')} + ${V('C','2²')} + ${V('C','1²')} = ${V('S','16')} + ${V('C','9')} + ${V('C','4')} + ${V('C','1')} = <b>${n0(D5.total)}</b></div>
+       <div class="eq">1² + 2² + … + n² = ${fr('n(n + 1)(2n + 1)', '6')} = ${fr('4 · 5 · 9', '6')} = <b>${n0(D5.total)}</b></div></div>
+     <p>Un cuadrado de lado k cabe en 4 − k + 1 posiciones a lo ancho y en otras tantas a lo alto: de 2 × 2 hay 3 · 3 = 9, de 3 × 3 hay 2 · 2 = 4. En un tablero de n × n hay 1² + 2² + … + n² cuadrados, no n².</p>
+     ${tablaTamanos(L5, 'cuadrados')}${htmlReflector('r1')}`,
+   animar:() => R.recorrer(() => S.step === 4) },
+ { k:'Paso 6', t:'Predice: los rectángulos de la tira', gate:P6, leg:['S','C','K','N'], legAntes:['L'], leyTextos:{ L:'la tira', N:'las dos horizontales y las dos verticales elegidas' },
+   lista:() => prenderReflector(L6, 'rectangulos', true),
+   vista:() => vista6(!!S.pred[P6.id]),
+   desc:() => 'Una tira de cuadritos de dos filas y tres columnas.' + (S.pred[P6.id] && R.lista[R.i] ? ` El reflector ilumina un rectángulo ${quePieza(R.lista[R.i])}${R.lista[R.i].cuadrado ? ', que es un cuadrado' : ''}.` : ''),
+   body:() => `<p class="problem">Una tira tiene 2 × 3 cuadritos (2 filas y 3 columnas). ¿Cuántos rectángulos hay en la figura?</p>
+     <p>Antes de ver el reflector, elige.</p>${opciones(P6)}`,
+   tras:() => `<div class="eqs"><div class="eq">C(${V('N','3')}, 2) · C(${V('N','4')}, 2) = 3 · 6 = <b>${n0(D6.total)}</b><span class="note">2 de las ${V('N','3')} horizontales y 2 de las ${V('N','4')} verticales</span></div>
+       <div class="eq">${V('K','cuadrados')}: 6 + 2 = ${n0(D6.cuadrados)} · no cuadrados: ${n0(D6.noCuadrados)}</div></div>
+     <p>Cada rectángulo queda fijo por sus dos ${V('N','rectas horizontales')} y sus dos ${V('N','verticales')}. En una cuadrícula de m × n: C(m + 1, 2) · C(n + 1, 2). Los rectángulos con ${V('K','borde a rayas')} son cuadrados: también tienen cuatro ángulos rectos, así que también cuentan.</p>
+     ${tablaTamanos(L6, 'rectangulos')}${htmlReflector('r1')}`,
+   animar:() => R.recorrer(() => S.step === 5) },
+ { k:'Paso 7', t:'Predice: la pila en la esquina', gate:P7p, cubos:true, leg:['Q','O'], legAntes:['L'], leyTextos:{ L:'los cubitos' },
+   vista:() => vista7(!!S.pred[P7p.id]),
+   desc:() => 'Una pila escalonada de cubitos en la esquina de un cuarto, vista desde el frente, la derecha y arriba.' + (S.pred[P7p.id] ? ` Las capas se separan: abajo ${P7.dims.largo} por ${P7.dims.ancho}, luego 2 por 2 y arriba uno; en total ${P7.total} cubitos, ${P7.ocultos} de ellos ocultos.` : ''),
+   body:() => `<p class="problem">En la esquina de un cuarto se apilan cubitos iguales, como en el dibujo. Cada capa es un cuadrado de cubitos apoyado en las dos paredes. ¿Cuántos cubitos hay en la pila?</p>
+     <p>Antes de separar las capas, elige.</p>${opciones(P7p)}`,
+   tras:() => `<div class="eqs"><div class="eq">3² + 2² + 1² = 9 + 4 + 1 = <b>${n0(P7.total)}</b></div>
+       <div class="eq">${V('Q','se ven')} ${n0(P7.visibles)} + ${V('O','ocultos')} ${n0(P7.ocultos)} = <b>${n0(P7.total)}</b></div></div>
+     <p>Los ${V('O','cubitos ocultos')} están debajo de la capa de arriba y detrás de los de adelante. Para no olvidarlos, se cuenta capa por capa: cada capa es un cuadrado completo, aunque del dibujo solo asome una L.</p>
+     <div class="ctl"><button type="button" class="btn" id="juntar">Juntar las capas</button></div>`,
+   montar:() => { const b = $('juntar'); if (!b) return; b.onclick = () => {
+     const sep = S.vista && S.vista.separar > .5; b.textContent = sep ? 'Separar las capas' : 'Juntar las capas';
+     animar(800, f => { S.vista = vista7(true, sep ? 1 - suave(f) : suave(f)); });
+   }; },
+   animar:() => animar(1300, f => { S.vista = vista7(true, suave(f)); }) },
+ { k:'Paso 8', t:'Explora: cuadrados y rectángulos', leg:['S','C','K','N'], leyTextos:{ N:'las rectas elegidas' },
+   lista:() => { const e = S.ex8, r = M.contar(M.cuadricula(e.m, e.n), e.tipo); prenderReflector(r, e.tipo, e.tipo === 'rectangulos'); R.i = 0; },
+   vista:() => vista8(),
+   desc:() => { const e = S.ex8; return `Una cuadrícula de ${e.m} por ${e.n} cuadritos.`; },
+   body:() => `<p>Cambia las filas y las columnas. El motor cuenta por fuerza bruta y la fórmula tiene que dar lo mismo.</p>
+     <div class="ctl">
+       <span class="paso">Filas: <button type="button" data-f="-1" aria-label="Una fila menos">−</button><output id="m8"></output><button type="button" data-f="1" aria-label="Una fila más">+</button></span>
+       <span class="paso">Columnas: <button type="button" data-c="-1" aria-label="Una columna menos">−</button><output id="n8"></output><button type="button" data-c="1" aria-label="Una columna más">+</button></span>
+       <div class="seg" role="group" aria-label="Qué se cuenta"><button type="button" data-t="cuadrados">Cuadrados</button><button type="button" data-t="rectangulos">Rectángulos</button></div>
+     </div>
+     <div id="vivo" class="body"></div>${htmlReflector('r1')}`,
+   vivo:() => {
+     const e = S.ex8, r = M.contar(M.cuadricula(e.m, e.n), e.tipo), mn = Math.min(e.m, e.n);
+     let f;
+     if (e.tipo === 'cuadrados'){
+       const t = M.cuadradosCuadricula(e.m, e.n), sum = Array.from({ length:mn }, (_, j) => `${e.m - j}·${e.n - j}`).join(' + ');
+       f = `<div class="eq">${sum} = <b>${n0(t.total)}</b><span class="note">lado 1, 2, …, ${mn}</span></div>`;
+     } else {
+       const t = M.rectangulosCuadricula(e.m, e.n);
+       f = `<div class="eq">C(${V('N', String(e.m + 1))}, 2) · C(${V('N', String(e.n + 1))}, 2) = ${M.C2(e.m + 1)} · ${M.C2(e.n + 1)} = <b>${n0(t.total)}</b></div><div class="eq">${V('K','cuadrados')}: ${n0(t.cuadrados)} · no cuadrados: ${n0(t.noCuadrados)}</div>`;
+     }
+     return `<div class="eqs"><div class="eq">fuerza bruta: <b>${n0(r.total)}</b></div>${f}</div>`;
+   },
+   montar:() => {
+     const b = $('stepBody'), e = S.ex8;
+     const pintarCtl = () => {
+       $('m8').textContent = e.m; $('n8').textContent = e.n;
+       b.querySelector('[data-f="-1"]').disabled = e.m <= 1; b.querySelector('[data-f="1"]').disabled = e.m >= 6;
+       b.querySelector('[data-c="-1"]').disabled = e.n <= 1; b.querySelector('[data-c="1"]').disabled = e.n >= 6;
+       b.querySelectorAll('[data-t]').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.t === e.tipo)));
+     };
+     const cambio = () => { R.parar(); steps[7].lista(); pintarCtl(); S.vista = vista8(); vivo(); draw(); R.marcar(); };
+     b.querySelectorAll('[data-f]').forEach(x => x.onclick = () => { e.m = clamp(e.m + +x.dataset.f, 1, 6); cambio(); });
+     b.querySelectorAll('[data-c]').forEach(x => x.onclick = () => { e.n = clamp(e.n + +x.dataset.c, 1, 6); cambio(); });
+     b.querySelectorAll('[data-t]').forEach(x => x.onclick = () => { e.tipo = x.dataset.t; cambio(); });
+     pintarCtl();
+   } },
+];
+const VISTAS = [() => vista1(!!S.pred[P1.id]), () => vista2(!!S.pred[P2.id]), vista3, () => vista4(!!S.pred[P4.id]), () => vista5(!!S.pred[P5.id]), () => vista6(!!S.pred[P6.id]), null, vista8];
+R.pintar = () => { const f = VISTAS[S.step]; if (!f) return; S.vista = f(); draw(); };
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1;
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function describir(){ const s = steps[S.step]; const t = s.desc ? s.desc() : ''; $('desc1').textContent = t; cv.setAttribute('aria-label', t || 'Dibujo del paso'); }
+// La leyenda dice solo lo que el dibujo pinta: antes de responder, sin los colores que aún no aparecen.
+function ponerLeyenda(){ const s = steps[S.step], antes = s.gate && !S.pred[s.gate.id]; leyenda($('leg1'), antes ? (s.legAntes || []) : s.leg, s.leyTextos); }
+function vivo(){ const s = steps[S.step], el = $('vivo'); if (el && s.vivo) el.innerHTML = s.vivo(); describir(); }
+function parar(){ cancelAnimationFrame(anim); R.parar(); }
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max) return;
+  parar();
+  const s = steps[k]; S.step = k; S.hl = null;
+  R.lista = []; R.i = -1; R.el = null;
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body() + (s.gate ? '<div id="tras" class="body"></div>' : '');
+  ponerLeyenda();
+  pintarDots();
+  if (s.lista && (!s.gate || S.pred[s.gate.id])){ s.lista(); if (s.gate) R.i = R.lista.length - 1; }
+  S.vista = s.vista();
+  if (s.gate) prediccion(s.gate);
+  else { if (s.montar) s.montar(); R.montar($('r1'), () => S.step === k); if (s.vivo) vivo(); }
+  L.compactar(s.gate && !S.pred[s.gate.id]);
+  nav(); describir(); draw();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0;
+  $('next').disabled = S.step === steps.length - 1 || (s.gate && !S.pred[s.gate.id]);
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : `Ir al paso ${k + 1}: ${steps[k].t}`);
+    if (k > S.max) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled');
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){ if (k > S.max) S.max = k; }
+function prediccion(P){
+  const btns = [...$('stepBody').querySelectorAll('.opt')], s = steps[S.step], paso = S.step;
+  const fuente = P === P7p ? FUENTE_GE13 : P === P1 ? FUENTE_AR17 : FUENTE_AR18;
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').innerHTML = (s.tras ? s.tras() : '') + fuente;
+    if (s.montar) s.montar();
+    R.montar($('r1'), () => S.step === paso);
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id]) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1);
+    if (s.lista) s.lista();
+    pintar(); nav(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    $('next').focus({ preventScroll:true });
+    L.compactar(false);
+    // La vista cambia recién al responder: en el celular, primero sube el lienzo y después se anima.
+    Celular.alResponder(L.cv, () => {
+      S.vista = s.vista(); draw();
+      if (s.animar) s.animar();
+      describir(); ponerLeyenda();
+    }, () => S.step === paso);
+  }));
+  pintar();
+}
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+function marcar(k){
+  S.hl = k;
+  document.querySelectorAll('#m1 .v').forEach(e => e.classList.toggle('hl', !!k && e.dataset.var === k));
+  draw();
+}
+document.addEventListener('pointerover', e => { const t = e.target.closest && e.target.closest('#m1 [data-var]'); if (t) marcar(t.dataset.var); });
+document.addEventListener('pointerout', e => { const t = e.target.closest && e.target.closest('#m1 [data-var]'); if (t && !t.contains(e.relatedTarget)) marcar(null); });
+document.addEventListener('focusin', e => { const t = e.target.closest && e.target.closest('#m1 [data-var]'); if (t) marcar(t.dataset.var); });
+document.addEventListener('focusout', e => { if (e.target.closest && e.target.closest('#m1 [data-var]')) marcar(null); });
+alRedibujarTema(draw);
+addEventListener('modo', () => L.resize());
+L.resize(); go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Cada experimento pide una predicción; el dibujo cambia recién después de responder. Todo sale del motor. */
+(function(){
+const $ = id => document.getElementById(id);
+const cv = $('cv2');
+const S = { k:0, pred:{}, t0:Date.now(), vista:null };
+let anim = null;
+const L = crearLienzo(cv, ALTO, draw);
+function draw(){ if (!L.W) return; dibujarVista(L, colores(null), S.vista); }
+function animar(dur, cada, fin){
+  cancelAnimationFrame(anim);
+  if (RM){ cada(1); draw(); fin && fin(); return; }
+  const ini = performance.now();
+  const tick = now => { const f = Math.min(1, (now - ini)/dur); cada(f); draw(); if (f < 1) anim = requestAnimationFrame(tick); else fin && fin(); };
+  anim = requestAnimationFrame(tick);
+}
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+const R = crearReflector();
+const n0 = x => fmt(x);
+const tri = x => `${n0(x)} triángulos`, cua = x => `${n0(x)} cuadriláteros`, cdr = x => `${n0(x)} cuadrados`, cub = x => `${n0(x)} cubitos`;
+const NOTA_AR18 = 'Contar solo las piezas sueltas se parece a la enumeración sin sistema (AR18 del informe de aritmética y razonamiento), que según resúmenes fue el error más frecuente en un estudio de combinatoria con 720 alumnos españoles sin instrucción (cifra por confirmar). Ese estudio no tenía figuras; las demás opciones incorrectas son hipótesis nuestras.';
+const fuente = t => `<p class="fuente">${t}</p>`;
+
+const FA = M.abanico(3, 2), GA = M.armar(FA), E1 = M.triangulosAbanico(3, 2), LA = M.contar(FA, 'triangulos');
+const E2 = M.cuadrilaterosAbanico(3, 2), LQ = M.contar(FA, 'cuadrilateros');
+const FT = M.cuadricula(3, 5), GT = M.armar(FT), E3 = M.cuadradosCuadricula(3, 5), LT = M.contar(FT, 'cuadrados');
+const E4 = M.escaleraCubos([4, 3, 2, 1], 2);
+const FC = M.dosCevianas(), GC = M.armar(FC), E5 = M.triangulosDosCevianas(), LC = M.contar(FC, 'triangulos');
+const rotC = [{ P:FC.A, t:'A', dx:-12, dy:10 }, { P:FC.B, t:'B', dx:12, dy:10 }, { P:FC.C, t:'C', dy:-14 }, { P:FC.D, t:'D', dx:14, dy:-4 }, { P:FC.E, t:'E', dx:-14, dy:-4 }];
+const PC = GC.puntos.find(q => ![FC.A, FC.B, FC.C, FC.D, FC.E].some(r => Math.abs(r.x - q.x) + Math.abs(r.y - q.y) < 1e-9));
+rotC.push({ P:PC, t:'P', dy:16 });
+
+function vistaLuz(G, extra){
+  const f = R.lista[R.i], V = Object.assign({ tipo:'plano', G }, extra || {});
+  if (f){ V.luz = luzDe(f, R.tipo, R.conK); V.cuenta = { t:`${R.i + 1} de ${R.lista.length}`, k:V.luz.k }; }
+  return V;
+}
+const FUENTE_GE13_2 = '<p class="fuente">Según autores que citan a Ben-Chaim, Lappan y Houang (1985), menos de la mitad de los alumnos de 5.° a 8.° grado contó bien los cubitos de bloques dibujados; el error más común fue contar las caras que se ven, y otro, contar solo los cubitos que asoman (GE13 del informe de geometría). Aquí es una escalera, no un bloque: que se repitan esos errores es una suposición nuestra. Contar la caja entera es una hipótesis nuestra.</p>';
+const EXPS = [
+  { id:'cuerda', corto:'Una cuerda en el abanico', leg:['S','C'], legAntes:['L'], leyTextos:{ L:'el abanico con la cuerda' },
+    q:'A un abanico de 3 piezas se le agrega una cuerda paralela a la base, de un borde al otro, como en el dibujo. ¿Cuántos triángulos hay ahora?',
+    opts:[['a', tri(E1.errores.unNivel), 'un-solo-nivel', 'hipotesis'], ['b', tri(E1.errores.soloPiezas), 'AR18-solo-piezas-simples', 'parcial'],
+          ['c', tri(E1.total)], ['d', tri(E1.errores.unNivelYPiezas), 'un-nivel-y-piezas', 'hipotesis']],
+    ok:'c',
+    fb:{ a:'Elegiste la A. Esos 6 son los triángulos que llegan a la base. La cuerda forma con los rayos otro abanico, más chico, con sus propios 6 triángulos. La correcta está marcada.',
+         b:'Elegiste la B. Esas son las 3 piezas triangulares de arriba. Las piezas juntas también forman triángulos, y la base forma los suyos. La correcta está marcada.',
+         d:'Elegiste la D. Contaste los 6 que llegan a la base y las 3 piezas de arriba, pero arriba también hay triángulos de dos y de tres piezas: el abanico chico tiene 6. La correcta está marcada.' },
+    lista:() => { R.lista = LA.lista; R.tipo = 'triangulos'; R.conK = false; },
+    antes:() => ({ tipo:'plano', G:GA, rotulos:[{ P:FA.O, t:'O', dy:-16 }] }),
+    despues:() => vistaLuz(GA, { rotulos:[{ P:FA.O, t:'O', dy:-16 }] }),
+    desc:() => 'Un abanico de vértice O con tres piezas en la base, cruzado por una cuerda paralela a la base.' + (R.lista[R.i] ? ` El reflector ilumina un triángulo ${quePieza(R.lista[R.i])}.` : ''),
+    exp:`<div class="eqs"><div class="eq">2 · ${fr('3 · 4', '2')} = 2 · 6 = <b>${n0(E1.total)}</b><span class="note">un abanico por cada línea horizontal</span></div></div>
+      <p>Todo triángulo tiene el vértice O y dos puntos de una misma línea horizontal. La base da 6 y la cuerda da otros 6. Con k líneas horizontales (contando la base): k · n(n + 1)/2.</p>${fuente(NOTA_AR18)}` },
+  { id:'trapecios', corto:'Los cuadriláteros del abanico', leg:['S','C'], legAntes:['L'], leyTextos:{ L:'el abanico con la cuerda' },
+    q:'En el mismo abanico de 3 piezas con la cuerda, ¿cuántos cuadriláteros hay?',
+    opts:[['a', cua(E2.total)], ['b', cua(E2.errores.soloPiezas), 'AR18-solo-piezas-simples', 'parcial'],
+          ['c', cua(E2.errores.comoTriangulos), 'como-los-triangulos', 'hipotesis'], ['d', cua(E2.errores.piezasYTotal), 'piezas-y-el-total', 'hipotesis']],
+    ok:'a',
+    fb:{ b:'Elegiste la B. Esas son las 3 piezas de abajo, entre la cuerda y la base. Dos o tres piezas vecinas juntas también forman un cuadrilátero. La correcta está marcada.',
+         c:'Elegiste la C. Así se cuentan los triángulos, que salen de cada línea horizontal. Un cuadrilátero necesita dos líneas horizontales a la vez, y aquí hay un solo par: la cuerda y la base. La correcta está marcada.',
+         d:'Elegiste la D. Las 3 piezas y el trapecio grande, sí; pero también los de dos piezas vecinas: hay 2 más. La correcta está marcada.' },
+    lista:() => { R.lista = LQ.lista; R.tipo = 'cuadrilateros'; R.conK = false; },
+    antes:() => ({ tipo:'plano', G:GA, rotulos:[{ P:FA.O, t:'O', dy:-16 }] }),
+    despues:() => vistaLuz(GA, { rotulos:[{ P:FA.O, t:'O', dy:-16 }] }),
+    desc:() => 'El mismo abanico con la cuerda.' + (R.lista[R.i] ? ` El reflector ilumina un cuadrilátero ${quePieza(R.lista[R.i])}.` : ''),
+    exp:`<div class="eqs"><div class="eq">C(2, 2) · C(4, 2) = 1 · 6 = <b>${n0(E2.total)}</b><span class="note">2 líneas horizontales y 2 de los 4 rayos</span></div></div>
+      <p>Cada cuadrilátero es un trapecio: un lado en la cuerda, otro en la base y los otros dos en dos rayos. Elegir los dos rayos es elegir 2 de los 4 puntos de la base, como los segmentos de una recta.</p>${fuente(NOTA_AR18)}` },
+  { id:'tablero-largo', corto:'Un tablero que no es cuadrado', leg:['S','C'], legAntes:['L'], leyTextos:{ L:'el tablero', S:'cuadrado de 1 × 1', C:'cuadrado más grande' },
+    q:'Un tablero tiene 3 filas y 5 columnas de casillas. ¿Cuántos cuadrados hay en total?',
+    opts:[['a', cdr(E3.errores.soloPiezas), 'AR18-solo-piezas-simples', 'parcial'], ['b', cdr(E3.errores.comoCuadrada), 'como-cuadricula-cuadrada', 'hipotesis'],
+          ['c', cdr(E3.errores.ladoLargo), 'con-el-lado-largo', 'hipotesis'], ['d', cdr(E3.total)]],
+    ok:'d',
+    fb:{ a:'Elegiste la A. Esas son las 15 casillas. Cuatro casillas juntas forman un cuadrado de 2 × 2, y nueve, uno de 3 × 3. La correcta está marcada.',
+         b:'Elegiste la B. 1² + 2² + 3² vale para un tablero de 3 × 3. Este es más largo: cada cuadrado tiene más lugares hacia la derecha. La correcta está marcada.',
+         c:'Elegiste la C. Con el lado largo, 1² + … + 5² contaría cuadrados de 4 × 4 y 5 × 5, que no caben en 3 filas. La correcta está marcada.' },
+    lista:() => { R.lista = LT.lista; R.tipo = 'cuadrados'; R.conK = false; },
+    antes:() => ({ tipo:'plano', G:GT, sinPuntos:true }),
+    despues:() => vistaLuz(GT, { sinPuntos:true }),
+    desc:() => 'Un tablero de tres filas y cinco columnas de casillas.' + (R.lista[R.i] ? ` El reflector ilumina un cuadrado ${quePieza(R.lista[R.i])}.` : ''),
+    exp:`<div class="eqs"><div class="eq">3 · 5 + 2 · 4 + 1 · 3 = 15 + 8 + 3 = <b>${n0(E3.total)}</b><span class="note">lado 1, 2 y 3</span></div></div>
+      <p>Un cuadrado de lado k cabe en 3 − k + 1 lugares hacia abajo y en 5 − k + 1 hacia la derecha. El lado más grande es el de la dimensión menor: 3.</p>${fuente(NOTA_AR18)}` },
+  { id:'escalera', corto:'La escalera de cubitos', cubos:true, leg:['Q','O'], legAntes:['L'], leyTextos:{ L:'los cubitos' },
+    q:'Una escalera de cubitos iguales está apoyada en la pared, como en el dibujo. Cada columna es una torre de cubitos que llega hasta el piso. ¿Cuántos cubitos tiene la escalera?',
+    opts:[['a', cub(E4.errores.soloVisibles), 'GE13-solo-cubos-visibles', 'parcial'], ['b', cub(E4.errores.carasVisibles), 'GE13-cuenta-caras-visibles', 'parcial'],
+          ['c', cub(E4.total)], ['d', cub(E4.errores.caja), 'cuenta-la-caja-entera', 'hipotesis']],
+    ok:'c',
+    fb:{ a:'Elegiste la A. Esos son los cubitos que asoman. En la fila de atrás, debajo de cada escalón, hay cubitos tapados por la fila de adelante. La correcta está marcada.',
+         b:'Elegiste la B. Contaste caras: un cubito de la orilla muestra dos o tres caras y quedó contado varias veces, y los tapados no se contaron. La correcta está marcada.',
+         d:'Elegiste la D. 4 · 2 · 4 sería la caja entera. La escalera tiene columnas de 4, 3, 2 y 1 cubitos, no todas de 4. La correcta está marcada.' },
+    antes:() => ({ tipo:'cubos', pila:E4, separar:0, colorear:false }),
+    despues:() => ({ tipo:'cubos', pila:E4, separar:1, colorear:true, eje:'y' }),
+    anima:() => animar(1300, f => { S.vista = { tipo:'cubos', pila:E4, separar:suave(f), colorear:true, eje:'y' }; }),
+    desc:() => (S.vista && S.vista.colorear ? `Las dos filas de la escalera, separadas: ${E4.total} cubitos, ${E4.ocultos} de ellos ocultos.` : 'Una escalera de cubitos apoyada en la pared, vista desde el frente, la derecha y arriba.'),
+    exp:`<div class="eqs"><div class="eq">2 · (4 + 3 + 2 + 1) = 2 · 10 = <b>${n0(E4.total)}</b><span class="note">2 filas de fondo</span></div>
+      <div class="eq">${V('Q','se ven')} ${n0(E4.visibles)} + ${V('O','ocultos')} ${n0(E4.ocultos)} = <b>${n0(E4.total)}</b></div></div>
+      <p>Por columnas: cada torre llega al piso, así que se cuentan sus alturas, en la fila de adelante y en la de atrás. Los ${V('O','ocultos')} son los de la fila de atrás que tapa la de adelante.</p>` + FUENTE_GE13_2 },
+  { id:'cevianas', corto:'Dos cevianas', leg:['S','C'], legAntes:['L'], leyTextos:{ L:'el triángulo y las cevianas' },
+    q:'En el triángulo ABC se trazan las cevianas AD y BE, que se cortan en P. ¿Cuántos triángulos hay en la figura?',
+    opts:[['a', tri(E5.errores.piezasYTotal), 'piezas-y-el-total', 'hipotesis'], ['b', tri(E5.total)],
+          ['c', tri(E5.errores.soloPiezas), 'AR18-solo-piezas-simples', 'parcial'], ['d', tri(E5.errores.dobleCuenta), 'cuenta-dos-veces', 'hipotesis']],
+    ok:'b',
+    fb:{ a:'Elegiste la A. Las 3 piezas triangulares y el triángulo ABC, sí; pero hay 4 de dos piezas: ABD, ABE, ADC y BEC. La correcta está marcada.',
+         c:'Elegiste la C. Esas son las 3 piezas triangulares (ABP, AEP y BDP). Una pieza no triangular, como PDCE, junto con otra puede formar un triángulo. La correcta está marcada.',
+         d:'Elegiste la D. Cada triángulo se cuenta una vez: ABD es el mismo que DBA. La correcta está marcada.' },
+    lista:() => { R.lista = LC.lista; R.tipo = 'triangulos'; R.conK = false; },
+    antes:() => ({ tipo:'plano', G:GC, rotulos:rotC }),
+    despues:() => vistaLuz(GC, { rotulos:rotC }),
+    desc:() => 'El triángulo ABC con las cevianas AD y BE, que se cortan en P.' + (R.lista[R.i] ? ` El reflector ilumina un triángulo ${quePieza(R.lista[R.i])}.` : ''),
+    exp:`<div class="eqs"><div class="eq">${V('S','3')} + ${V('C','4')} + ${V('C','1')} = <b>${n0(E5.total)}</b><span class="note">de 1, 2 y 4 piezas</span></div></div>
+      <p>Sin fórmula, el sistema es por tamaños: las piezas, luego las de dos piezas, de tres… hasta la figura entera. Una pieza que no es triángulo (la de cuatro lados, PDCE) igual sirve para armar triángulos más grandes, como ADC.</p>${fuente(NOTA_AR18)}` },
+];
+
+function primeraLibre(){ const j = EXPS.findIndex(x => !S.pred[x.id]); return j < 0 ? EXPS.length - 1 : j; }
+function botones(){
+  const libre = primeraLibre();
+  $('exps').innerHTML = EXPS.map((x, k) => k > libre
+    ? `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function describir(){ const x = EXPS[S.k]; const t = x.desc(); $('desc2').textContent = t; cv.setAttribute('aria-label', t); }
+R.pintar = () => { const x = EXPS[S.k]; if (!S.pred[x.id]) return; S.vista = x.despues(); draw(); };
+function ir(k){
+  if (k > primeraLibre()) return;
+  cancelAnimationFrame(anim); R.parar();
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], hecho = !!S.pred[x.id];
+  R.lista = []; R.i = -1; R.el = null;
+  if (hecho && x.lista){ x.lista(); R.i = R.lista.length - 1; }
+  S.vista = hecho ? x.despues() : x.antes(); draw();
+  L.compactar(!hecho);
+  botones();
+  leyenda($('leg2'), hecho ? x.leg : x.legAntes, x.leyTextos);
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>
+    <div class="opts">${x.opts.map(([l, t]) => `<button class="opt" type="button" data-k="${l}"><span class="l">${l.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div>
+    <p class="fb" id="fb2"></p><div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira el dibujo para ver por qué.' : (x.fb && x.fb[p]) || `Elegiste la ${p.toUpperCase()}. La correcta está marcada; mira el dibujo para ver por qué.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp + (x.lista ? htmlReflector('r2') : '') + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
+    if (x.lista) R.montar($('r2'), () => S.k === k);
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0];
+    if (x.lista) x.lista();
+    botones(); pintar(); L.compactar(false);
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+    // el dibujo cambia recién ahora: en el celular, primero sube el lienzo y después se anima
+    Celular.alResponder(L.cv, () => {
+      leyenda($('leg2'), x.leg, x.leyTextos);
+      if (x.anima) x.anima();
+      else { S.vista = x.despues(); draw(); R.recorrer(() => S.k === k, describir); }
+      describir();
+    }, () => S.k === k);
+  });
+  pintar(); describir();
+}
+alRedibujarTema(draw);
+addEventListener('modo', () => L.resize());
+L.resize(); ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>
