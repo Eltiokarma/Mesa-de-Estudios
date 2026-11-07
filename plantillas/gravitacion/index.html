@@ -285,7 +285,7 @@ function rotulo(ctx, c, x, y, t, color, align, peso, tam, dash){
   ctx.font = `${peso || 700} ${tam || (c.chico ? 11 : 12)}px ${c.font}`; ctx.textBaseline = 'middle';
   const w = ctx.measureText(t).width;
   let x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
-  x0 = clamp(x0, 5, c.W - w - 5); y = clamp(y, 10, c.H - 10);
+  x0 = clamp(x0, 8, c.W - w - 8); y = clamp(y, 10, c.H - 10);
   ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - 8, w + 6, 16); ctx.restore();
   if (dash){ ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = 1.4; ctx.setLineDash([4, 3]); rr(ctx, x0 - 5, y - 10, w + 10, 20, 6); ctx.stroke(); ctx.restore(); }
   ctx.fillStyle = color; ctx.textAlign = 'left'; ctx.fillText(t, x0, y);
@@ -375,8 +375,12 @@ function vistaOrbita(ctx, c, B, O){
       flecha(ctx, p.x, p.y, x2, y2, c.v, 3, S.v === '?' ? [5, 4] : null);
       rotulo(ctx, c, x2 + tx*12, y2 + ty*12, S.v === '?' ? 'v = ?' : (S.vtxt || 'v'), c.v, Math.abs(tx) < 0.3 ? 'center' : tx > 0 ? 'left' : 'right', 800, 11, S.v === '?');
     }
-    sateliteDib(ctx, c, p.x, p.y, S.th, S.tam, S.nom, S.dyNom);
-    if (S.vueltas !== undefined) rotulo(ctx, c, p.x, p.y + 20, `${S.vueltas} ${S.vueltas === 1 ? 'vuelta' : 'vueltas'}`, c.T, 'center', 800, 10);
+    // Con S.radial, el nombre y las vueltas van hacia afuera de la órbita (no tapan el planeta).
+    if (S.radial){ sateliteDib(ctx, c, p.x, p.y, S.th, S.tam);
+      rotulo(ctx, c, p.x - ux*22, p.y - uy*22, S.nom, c.ink, 'center', 800, 11);
+      if (S.vueltas !== undefined) rotulo(ctx, c, p.x - ux*40, p.y - uy*40, `${S.vueltas} ${S.vueltas === 1 ? 'vuelta' : 'vueltas'}`, c.T, 'center', 800, 10); }
+    else { sateliteDib(ctx, c, p.x, p.y, S.th, S.tam, S.nom, S.dyNom);
+      if (S.vueltas !== undefined) rotulo(ctx, c, p.x, p.y + 20, `${S.vueltas} ${S.vueltas === 1 ? 'vuelta' : 'vueltas'}`, c.T, 'center', 800, 10); }
     res.sats.push(p);
   });
   // Fuerza sobre la Tierra: desde su centro, hacia el primer satélite.
@@ -404,7 +408,7 @@ function grafica(ctx, c, b, Gr){
   for (let v = 0; v <= Gr.yMax + 1e-9; v += py){ linea(ctx, b.x, Y(v), b.x + b.w, Y(v)); ctx.fillText(fmt(v, py < 1 ? 1 : 0), b.x - 4, Y(v)); }
   ctx.restore();
   ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; linea(ctx, b.x, b.y + b.h, b.x + b.w, b.y + b.h); linea(ctx, b.x, b.y, b.x, b.y + b.h);
-  rotulo(ctx, c, b.x + b.w - 4, b.y + b.h - 10, Gr.xLab, c.r, 'right', 800, 10);
+  rotulo(ctx, c, b.x + b.w, b.y + b.h + 23, Gr.xLab, c.r, 'right', 800, 10);
   rotulo(ctx, c, b.x + 6, b.y + 8, Gr.yLab, Gr.colY, 'left', 800, 10);
   if (Gr.suelo !== undefined && Gr.suelo > Gr.x0) rotulo(ctx, c, X(Gr.suelo) - 3, b.y + b.h/2, 'suelo', c.muted, 'right', 700, 10);
   (Gr.marcas || []).forEach(m => { ctx.save(); ctx.strokeStyle = c.h; ctx.lineWidth = 1.2; ctx.setLineDash([2, 3]); linea(ctx, X(m.x), b.y + 14, X(m.x), b.y + b.h); ctx.restore();
@@ -412,7 +416,7 @@ function grafica(ctx, c, b, Gr){
   if (Gr.geo){ ctx.save(); ctx.strokeStyle = c.T; ctx.lineWidth = 1.2; ctx.setLineDash([6, 4]); linea(ctx, X(Gr.geo), b.y + 14, X(Gr.geo), b.y + b.h); ctx.restore();
     rotulo(ctx, c, X(Gr.geo) - 3, b.y + 22, 'T = 24 h', c.T, 'right', 800, 10); }
   if (!Gr.curva){ rotulo(ctx, c, b.x + b.w/2, b.y + b.h/2, Gr.aviso || 'se dibuja al responder', c.muted, 'center', 700, 11); return { X, Y }; }
-  const xi = Math.max(Gr.x0, Gr.suelo || Gr.x0);
+  const xi = Gr.xi !== undefined ? Gr.xi : Math.max(Gr.x0, Gr.suelo || Gr.x0);
   const traza = (f, col, w, dash) => { ctx.save(); ctx.beginPath(); ctx.rect(b.x, b.y, b.w, b.h); ctx.clip(); ctx.strokeStyle = col; ctx.lineWidth = w; ctx.setLineDash(dash || []);
     ctx.beginPath(); for (let i = 0; i <= 200; i++){ const x = xi + (Gr.x1 - xi)*i/200, yy = Y(f(x)); i ? ctx.lineTo(X(x), yy) : ctx.moveTo(X(x), yy); } ctx.stroke(); ctx.restore(); };
   if (Gr.lineal){ traza(Gr.lineal, c.muted, 2, [7, 5]); const xl = xi + (Gr.x1 - xi)*0.62; rotulo(ctx, c, X(xl), Y(Gr.lineal(xl)) - 12, Gr.linealTxt || 'si fuera 1/r', c.muted, 'left', 700, 10); }
@@ -452,7 +456,7 @@ function reloj(paso){
 const $ = id => document.getElementById(id);
 const cv = $('cv');
 const conGrafica = () => { try { return !!steps[S.step].vista().graf; } catch (e) { return false; } };
-const altoLienzo = W => W >= 560 ? (conGrafica() ? clamp(W*0.95, 520, 640) : clamp(W*0.72, 400, 520)) : (conGrafica() ? clamp(W*1.45, 500, 580) : clamp(W*1.0, 340, 420));
+const altoLienzo = W => W >= 560 ? (conGrafica() ? clamp(W*0.9, 500, 590) : clamp(W*0.72, 400, 500)) : (conGrafica() ? clamp(W*1.45, 500, 580) : clamp(W*1.0, 340, 420));
 const L = crearLienzo(cv, altoLienzo, () => draw());
 const H_EE = 4e5, M_EE = 4.2e5;                                   // estación espacial: 400 km, 420 t
 const gEE = M.gAltura({ h:H_EE }), oEE = M.orbita({ h:H_EE, m:M_EE });
@@ -581,8 +585,8 @@ const steps = [
    vista:() => { const ya = !!S.pred[P5.id], k = oRas.T/1.2;   // la órbita rasante se ve en 1,2 s
      const s1 = ya ? oRas.estado(S.t*k) : { theta:90 }, s2 = ya ? o4.estado(S.t*k) : { theta:90 };
      return base({ orb:{ rMax:4.15*RT, planeta:{ R:RT, nombre:'' }, orbitas:[RT, 4*RT],
-       sats:[{ r:RT, th:s1.theta*Math.PI/180, nom:'A', dyNom:-16, vueltas: ya ? Math.floor(S.t*k/oRas.T) : undefined },
-             { r:4*RT, th:s2.theta*Math.PI/180, nom:'B', cotaR:'r = 4R', vueltas: ya ? Math.floor(S.t*k/o4.T) : undefined }] } }); },
+       sats:[{ r:RT, th:s1.theta*Math.PI/180, nom:'A', radial:true, vueltas: ya ? Math.floor(S.t*k/oRas.T) : undefined },
+             { r:4*RT, th:s2.theta*Math.PI/180, nom:'B', radial:true, cotaR:'r = 4R', vueltas: ya ? Math.floor(S.t*k/o4.T) : undefined }] } }); },
    body:() => `<p>El satélite A gira a ras del suelo (${V('r','r = R')}, sin aire) y da una vuelta en unos ${V('T', tiempo(oRas.T))}. El satélite B gira en una órbita de radio ${V('r','r = 4R')}. ¿Cuánto tarda B en dar una vuelta?</p>${opcionesHTML(P5.opts, 'fb')}<div id="res" class="body"></div>`,
    exp:() => `<div class="eqs">
        <div class="eq">${V('T','T')} = 2π·${V('r','r')}/${V('v','v')} = 2π·√(${V('r','r')}³/(G·${V('M','M')}))<span class="note">tercera ley de Kepler: T² ∝ r³</span></div>
@@ -622,7 +626,7 @@ function draw(){
   const conG = !!P.graf && !compacto;
   const hO = conG ? Math.round(H*0.58) : H;
   geoUltima = vistaOrbita(ctx, c, { x:6, y:4, w:W - 12, h:hO - 8 }, P.orb);
-  if (conG) grafica(ctx, c, { x:38, y:hO + 6, w:W - 50, h:H - hO - 26 }, P.graf);
+  if (conG) grafica(ctx, c, { x:38, y:hO + 6, w:W - 50, h:H - hO - 38 }, P.graf);
   lecturas($('lect1'), s.lect());
   decir($('desc1'), s.explora ? resumen() : s.desc());
 }
@@ -786,7 +790,7 @@ function dibLuna(ctx, c, W, H, ya){
     rotulo(ctx, c, x, y + 22, txt, c.ink, 'center', 800, 10);
     return x;
   };
-  const F0 = 60;
+  const F0 = 40;
   const xa = dib(1, kr === 1 ? 'Luna' : 'Luna antes', 0, kr !== 1);
   flecha(ctx, xa - 10, y - 16, xa - 10 - F0, y - 16, c.F, kr === 1 ? 3 : 2); rotulo(ctx, c, xa - 10 - F0/2, y - 30, 'F', c.F, 'center', 800, 11);
   if (kr !== 1){
@@ -796,25 +800,30 @@ function dibLuna(ctx, c, W, H, ya){
     else { flecha(ctx, xb - 10, y - 16, xb - 50, y - 16, c.F, 2.4, [5, 4]); rotulo(ctx, c, xb - 30, y - 34, 'F = ?', c.F, 'center', 800, 12, true); }
   }
   // cota de r
-  ctx.save(); ctx.strokeStyle = c.r; ctx.lineWidth = 1.4; ctx.setLineDash([5, 3]); linea(ctx, x0, y + 40, X(1), y + 40); ctx.restore();
-  rotulo(ctx, c, (x0 + X(1))/2, y + 40, 'r', c.r, 'center', 800, 11);
-  grafica(ctx, c, { x:38, y:hO + 6, w:W - 50, h:H - hO - 26 }, { x0:0, x1:5, yMax:1, f:x => M.comparar({ kr:x }).razon, lineal: ya ? x => M.comparar({ kr:x }).errores.lineal : null, linealTxt:'si fuera 1/r',
-    curva:ya, punto: ya ? kr : undefined, xLab:'r (en veces la distancia de antes)', yLab:'F (en veces la de antes)', colY:c.F, suelo:1, aviso:'se dibuja al responder' });
+  ctx.save(); ctx.strokeStyle = c.r; ctx.lineWidth = 1.4; ctx.setLineDash([5, 3]); linea(ctx, x0, y + 52, X(1), y + 52); linea(ctx, x0, y + 46, x0, y + 58); linea(ctx, X(1), y + 46, X(1), y + 58); ctx.restore();
+  rotulo(ctx, c, (x0 + X(1))/2 + 12, y + 52, 'r', c.r, 'center', 800, 11);
+  grafica(ctx, c, { x:38, y:hO + 6, w:W - 50, h:H - hO - 38 }, { x0:0, x1:5, xi:1, yMax:1, f:x => M.comparar({ kr:x }).razon, lineal: ya ? x => M.comparar({ kr:x }).errores.lineal : null, linealTxt:'si fuera 1/r',
+    curva:ya, punto: ya ? kr : undefined, xLab:'r (en veces la distancia de antes)', yLab:'F (en veces la de antes)', colY:c.F, aviso:'se dibuja al responder' });
 }
 // 2. Tierra y un planeta: una persona en cada uno, con su peso.
 function dibPlaneta(ctx, c, W, H, ya){
-  const p = M.planeta({ kM:E.kM, kR:E.kR }), base = Math.min(W/4.6, (H - 120)/3.4), y = H*0.58;
-  const xT = W*0.26, xP = W*0.7, rT = base, rP = clamp(base*E.kR, 10, Math.min(W*0.27, H*0.38));
-  planetaDib(ctx, c, xT, y, rT, 'Tierra');
-  planetaDib(ctx, c, xP, y, rP, 'planeta', c.planeta);
+  // Los dos planetas apoyados sobre la misma línea de abajo; la Tierra a la izquierda, el planeta a la derecha.
+  const p = M.planeta({ kM:E.kM, kR:E.kR }), rT = Math.min(W*0.11, (H - 120)/7), rP = rT*E.kR, piso = H - 34;
+  const xT = 10 + rT, xP = Math.max(W - 10 - rP, xT + rT + rP + 12), yT = piso - rT, yP = piso - rP;
+  planetaDib(ctx, c, xT, yT, rT, 'Tierra');
+  planetaDib(ctx, c, xP, yP, rP, 'planeta', c.planeta);
   const persona = (x, yy) => { ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.8; ctx.beginPath(); ctx.arc(x, yy - 22, 4, 0, Math.PI*2); ctx.stroke();
     linea(ctx, x, yy - 18, x, yy - 8); linea(ctx, x, yy - 8, x - 4, yy); linea(ctx, x, yy - 8, x + 4, yy); linea(ctx, x - 5, yy - 15, x + 5, yy - 15); ctx.restore(); };
-  persona(xT, y - rT); persona(xP, y - rP);
-  const L0 = 50;
-  flecha(ctx, xT + 12, y - rT - 30, xT + 12, y - rT - 30 + L0, c.F, 3); rotulo(ctx, c, xT + 18, y - rT - 46, 'F = 600 N · la Tierra', c.F, 'left', 800, 11);
-  if (ya){ const l = clamp(L0*p.razon, 2, 110); flecha(ctx, xP + 12, y - rP - 30, xP + 12, y - rP - 30 + l, c.F, 3); rotulo(ctx, c, xP + 18, y - rP - 46, `F = ${fmt(600*p.razon, 0)} N · el planeta`, c.F, 'left', 800, 11); }
-  else { flecha(ctx, xP + 12, y - rP - 30, xP + 12, y - rP + 6, c.F, 2.4, [5, 4]); rotulo(ctx, c, xP + 18, y - rP - 46, 'F = ? · el planeta', c.F, 'left', 800, 12, true); }
-  rotulo(ctx, c, xP, y + rP + 16, `${fmt(E.kM, 1)} masas y ${fmt(E.kR, 1)} radios de la Tierra`, c.ink, 'center', 700, 10);
+  persona(xT, yT - rT); persona(xP, yP - rP);
+  // El peso sale de la persona y apunta al centro de su planeta.
+  const L0 = 34, flechaPeso = (x, yTop, l, txt, duda) => {
+    flecha(ctx, x + 10, yTop - 14, x + 10, yTop - 14 + l, c.F, duda ? 2.4 : 3, duda ? [5, 4] : null);
+    rotulo(ctx, c, x + 16, yTop - 40, txt, c.F, 'left', 800, duda ? 12 : 11, duda);
+  };
+  flechaPeso(xT, yT - rT, L0, 'F = 600 N · la Tierra');
+  if (ya) flechaPeso(xP, yP - rP, clamp(L0*p.razon, 3, 120), `F = ${fmt(600*p.razon, 0)} N · el planeta`);
+  else flechaPeso(xP, yP - rP, L0, 'F = ? · el planeta', true);
+  rotulo(ctx, c, W - 10, H - 14, `planeta: ${fmt(E.kM, 1)} masas y ${fmt(E.kR, 1)} radios de la Tierra`, c.ink, 'right', 700, 10);
 }
 // 3. Ascensor con una balanza: quieto o cayendo (a hacia abajo).
 function dibAscensor(ctx, c, W, H, ya){
@@ -830,9 +839,8 @@ function dibAscensor(ctx, c, W, H, ya){
   linea(ctx, px, py - 40, px, py - 18); linea(ctx, px, py - 18, px - 6, py); linea(ctx, px, py - 18, px + 6, py); linea(ctx, px - 9, py - 32, px + 9, py - 32); ctx.restore();
   rotulo(ctx, c, xC, y + 14, ya ? `balanza: ${fmt(b.lectura, 0)} N` : 'balanza: ? N', c.ink, 'center', 800, 12, !ya);
   // peso (la Tierra la sigue atrayendo) y aceleración
-  const xf = xC + w/2 + 26;
-  flecha(ctx, xf, y + h/2 - 30, xf, y + h/2 + 30, c.F, 3); rotulo(ctx, c, xf + 6, y + h/2 + 42, 'F = 500 N · la Tierra', c.F, 'left', 800, 11);
-  if (ya && E.a > 0){ flecha(ctx, xC - w/2 - 26, y + h/2 - 24, xC - w/2 - 26, y + h/2 - 24 + 4.8*E.a, c.g, 3); rotulo(ctx, c, xC - w/2 - 30, y + h/2 - 34, `a = ${fmt(E.a, 1)} m/s²`, c.g, 'right', 800, 11); }
+  flecha(ctx, px + 14, py - 36, px + 14, py + 14, c.F, 3); rotulo(ctx, c, xC + w/2 + 8, py - 12, 'F = 500 N', c.F, 'left', 800, 11); rotulo(ctx, c, xC + w/2 + 8, py + 4, '· la Tierra', c.F, 'left', 800, 11);
+  if (ya && E.a > 0){ flecha(ctx, xC - w/2 - 26, y + h/2 - 24, xC - w/2 - 26, y + h/2 - 24 + 4.8*E.a, c.ink, 2.4); rotulo(ctx, c, xC - w/2 - 30, y + h/2 - 34, `a = ${fmt(E.a, 1)} m/s²`, c.ink, 'right', 800, 11); }
   rotulo(ctx, c, xC, top + alto + 10, ya ? (E.a >= 10 ? 'cable cortado: cae libre' : E.a > 0 ? 'baja acelerando' : 'quieto') : 'cable cortado', c.muted, 'center', 700, 10);
 }
 // 4. Cañón de Newton desde una torre imaginaria de altura R.
@@ -932,7 +940,7 @@ const EXPS = [
     lect:() => { const p = M.planeta({ kM:E.kM, kR:E.kR }); return [['g', `g = ${fmt(p.g, 2)} m/s²`], ['F', `peso = ${fmt(600*p.razon, 0)} N`]]; },
     desc:ya => ya ? `La Tierra y el planeta, con una persona en cada uno. En el planeta de ${fmt(E.kM, 1)} masas y ${fmt(E.kR, 1)} radios pesa ${fmt(600*M.planeta({ kM:E.kM, kR:E.kR }).razon, 0)} newtons.` : 'La Tierra y un planeta con el doble de radio, con una persona en cada uno. En la Tierra pesa 600 newtons; en el planeta, el peso tiene un signo de pregunta.',
     anima:false },
-  { id:'ascensor', corto:'El ascensor sin cable', ley:['F'], leyDespues:['F','g'],
+  { id:'ascensor', corto:'El ascensor sin cable', ley:['F'],
     q:`Una persona de ${V('m','50 kg')} está parada sobre una balanza dentro de un ascensor quieto: la balanza marca 500 N. De pronto se corta el cable y el ascensor cae libremente (sin roce ni freno). Mientras cae, ¿qué marca la balanza?`,
     opts:[['a', '0 N: la persona y la balanza caen juntas y no se aprietan', null, ''],
           ['b', 'Menos de 500 N, pero no cero: al caer, la persona pesa algo menos', 'G8-disminuye', 'documentado'],
@@ -943,7 +951,7 @@ const EXPS = [
          c:'Elegiste la C. Para apretar más la balanza, tendrías que caer más rápido que ella; caen juntas.',
          d:'Elegiste la D. La Tierra la sigue atrayendo con 500 N, es verdad. Pero la balanza mide cuánto la aprietas, y al caer juntas no la aprietas.' },
     antes:() => Object.assign(E, { a:10, dib:dibAscensor }),
-    ctrl:() => `<div class="slider"><label for="q-a"><span>Aceleración del ascensor hacia abajo (${V('g','a')})</span><output id="q-a-o"></output></label><input id="q-a" type="range" min="0" max="10" step="1" value="${E.a}"></div>`,
+    ctrl:() => `<div class="slider"><label for="q-a"><span>Aceleración del ascensor hacia abajo (a)</span><output id="q-a-o"></output></label><input id="q-a" type="range" min="0" max="10" step="1" value="${E.a}"></div>`,
     vivo:() => { $('q-a-o').textContent = `${fmt(E.a, 0)} m/s²`; },
     alCambiar:() => { E.a = +$('q-a').value; E.t = 0; },
     exp:() => `<div class="eqs"><div class="eq">balanza = ${V('m','m')}·(${V('g','g')} − a) = 50·(10 − 10) = 0 N</div>
