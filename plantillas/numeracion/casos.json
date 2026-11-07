@@ -1,0 +1,116 @@
+{
+  "plantilla": "numeracion",
+  "unidades": "Números enteros sin unidad, salvo en el conteo de cifras (páginas). Los numerales van como texto, de la cifra de mayor orden a las unidades ('213' en base 5 es 213₍₅₎); las cuentas, de las unidades hacia arriba ([3, 1, 2] son 3 sueltas, 1 grupo de 5 y 2 grupos de 25).",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.restosAlReves, divisiones.0.resto: el índice de una lista también va con punto); 'valor' es el resultado si es un número, un texto o una lista sueltos; las listas se comparan completas y los textos exactos. 'tambien' son llamadas extra del mismo caso. Un error que no aparece en 'errores' es porque en ese caso daría la respuesta correcta o lo mismo que otro error.",
+  "verificacion": "Verificado por un subagente independiente (7 nov 2026) sin leer el motor (solo su cabecera) ni este archivo: recalculó en Python con enteros exactos y métodos distintos (potencias restadas en vez de divisiones, suma posicional en vez de Horner, conteo directo de cifras y capicúas, búsqueda de bases). Los 19 casos y los 10 problemas de papel.json coinciden; las únicas diferencias eran de formato de texto. Tras la revisión se agregaron omiteCeros (123) y olvidaUltimoCociente (23 = 75 mod 16) al caso de 75 en base 4, comprobados a mano por la sesión de la rutina.",
+  "tolerancia": 1e-9,
+  "casos": [
+    { "nombre": "Paso 1: 23 fichas en grupos de 5 → 43₍₅₎ (4 grupos de 5 y 3 sueltas); dos etapas no hacen falta: con 4 grupos no se arma uno de 25",
+      "fn": "agrupar", "args": [23, 5],
+      "espera": { "texto": "43", "cifras": [4, 3], "cuentas": [3, 4], "fichas": 23, "etapas.0.grupos": 4, "etapas.0.quedan": 3 },
+      "tambien": [ { "fn": "aBase", "args": [23, 5], "espera": { "texto": "43", "conBase": "43₍₅₎" } },
+                   { "fn": "cuadro", "args": [{ "b": 5, "inicio": [23], "etapas": [{ "tipo": "juntar", "orden": 0, "grupos": 4, "quedan": 3, "antes": [23], "despues": [3, 4] }] }, 0.5], "espera": { "cuentas": [13, 2], "hechos": 2 } } ] },
+
+    { "nombre": "Predicción del paso 2: 75 en base 4 por divisiones sucesivas → 1023₍₄₎; restos en el orden en que salen: 3201; sin el 0: 123; sin el último cociente (solo los restos 3, 2, 0): 23; cociente y resto de la primera división: 183; sin cambiar: 75",
+      "fn": "aBase", "args": [75, 4],
+      "espera": { "texto": "1023", "restos": [3, 2, 0, 1], "divisiones.0.cociente": 18, "divisiones.1.cociente": 4, "divisiones.2.cociente": 1,
+        "errores.restosAlReves": "3201", "errores.omiteCeros": "123", "errores.olvidaUltimoCociente": "23", "errores.primeraDivision": "183", "errores.sinCambiar": "75" },
+      "tambien": [ { "fn": "agrupar", "args": [75, 4], "espera": { "cuentas": [3, 2, 0, 1], "fichas": 75 } } ] },
+
+    { "nombre": "Predicción del paso 3: 213₍₅₎ = 2·25 + 1·5 + 3 → 58; potencias corridas (2·5³ + 1·5² + 3·5): 290; suma de cifras por la base: 30; leído como decimal: 213",
+      "fn": "aDecimal", "args": ["213", 5],
+      "espera": { "valor": 58, "texto": "2·5² + 1·5 + 3", "horner": [2, 11, 58], "terminos.0.producto": 50,
+        "errores.potenciasCorridas": 290, "errores.sumaCifrasPorBase": 30, "errores.comoDecimal": 213 },
+      "tambien": [ { "fn": "desagrupar", "args": ["213", 5], "espera": { "sueltas": 58, "horner": [11, 58] } } ] },
+
+    { "nombre": "Predicción del paso 4: de 507₍₆₎, 1000₍₆₎, 3416₍₆₎, 5405₍₆₎ y 2110₍₆₎ existen 3; con la cifra 6 permitida: 4; con cualquier cifra del 0 al 9: 5; con cifras del 1 al 6: 1",
+      "fn": "validos", "args": [["507", "1000", "3416", "5405", "2110"], 6],
+      "espera": { "cantidad": 3, "validos": ["1000", "5405", "2110"], "invalidos": ["507", "3416"],
+        "errores.cifraIgualALaBase": 4, "errores.cualquierCifra": 5, "errores.deUnoALaBase": 1 },
+      "tambien": [ { "fn": "valido", "args": ["3416", 6], "espera": { "valido": false, "maxima": 5, "malas.0.cifra": 6, "malas.0.orden": 0 } },
+                   { "fn": "valido", "args": ["5405", 6], "espera": { "valido": true } } ] },
+
+    { "nombre": "Predicción del paso 5: 44₍₅₎ contra 30₍₈₎ → valen lo mismo (24 y 24); comparando las cifras gana 44₍₅₎; por la base mayor gana 30₍₈₎",
+      "fn": "comparar", "args": ["44", 5, "30", 8],
+      "espera": { "mayor": "iguales", "valorA": 24, "valorB": 24, "errores.comparaCifras": "A", "errores.baseMayor": "B", "errores.noSeComparan": "no-se-puede" } },
+
+    { "nombre": "Predicción del paso 6: 23 en base b vale 17 → b = 7 (2b + 3 = 17); sin dividir: 14; la base mínima: 4; restando 23 − 17: 6",
+      "fn": "baseDesconocida", "args": ["23", 17],
+      "espera": { "base": 7, "existe": true, "ecuacion": "2·b + 3 = 17", "baseMinima": 4,
+        "errores.sinDividir": 14, "errores.baseMinima": 4, "errores.restaNumerales": 6, "errores.sumaUnidades": 10 },
+      "tambien": [ { "fn": "baseDesconocida", "args": ["23", 18], "espera": { "existe": false } },
+                   { "fn": "baseDesconocida", "args": ["121", 64], "espera": { "base": 7 } } ] },
+
+    { "nombre": "Predicción del paso 7: capicúas de 3 cifras en base 6 → 5·6 = 30; con el 0 al inicio: 36; sin el 0 en el medio: 25; todos los de 3 cifras: 180",
+      "fn": "capicuas", "args": [3, 6],
+      "espera": { "cantidad": 30, "libres": 2, "eleccion": [5, 6], "lista.0": "101", "lista.29": "555",
+        "errores.conCero": 36, "errores.sinCeroAdentro": 25, "errores.todos": 180, "errores.potencia": 216 },
+      "tambien": [ { "fn": "capicuas", "args": [4, 5], "espera": { "cantidad": 20 } }, { "fn": "capicuas", "args": [5, 2], "espera": { "cantidad": 4, "lista": ["10001", "10101", "11011", "11111"] } } ] },
+
+    { "nombre": "Cambio de base al revés: 1234₍₅₎ = 194 = 365₍₇₎; 3412₍₅₎ = 482",
+      "fn": "cambiarBase", "args": ["1234", 5, 7],
+      "espera": { "valor": 194, "texto": "365" },
+      "tambien": [ { "fn": "valor", "args": ["3412", 5], "espera": { "valor": 482 } }, { "fn": "aDecimal", "args": ["1A", 16], "espera": { "valor": 26 } } ] },
+
+    { "nombre": "Bordes: 0 en cualquier base es 0; 1 en base 2 es 1; 1000 en base 10 queda igual; 255 en base 2 son ocho unos",
+      "fn": "aBase", "args": [0, 7],
+      "espera": { "texto": "0", "cifras": [0], "restos": [0] },
+      "tambien": [ { "fn": "aBase", "args": [1, 2], "espera": { "texto": "1" } }, { "fn": "aBase", "args": [1000, 10], "espera": { "texto": "1000" } },
+                   { "fn": "aBase", "args": [255, 2], "espera": { "texto": "11111111", "cantidadCifras": 8 } },
+                   { "fn": "agrupar", "args": [0, 3], "espera": { "texto": "0", "cuentas": [0], "fichas": 0 } } ] },
+
+    { "nombre": "Cambiar de base sin perder fichas: 23 = 43₍₅₎ se desarma (4 grupos de 5 se abren) y se arma en base 3 → 212₍₃₎",
+      "fn": "reagrupar", "args": [23, 5, 3],
+      "espera": { "desde": "43", "hasta": "212", "fichas": 23, "desarmar.etapas.0.grupos": 4, "desarmar.sueltas": 23, "armar.etapas.0.grupos": 7, "armar.etapas.1.grupos": 2 } },
+
+    { "nombre": "¿Qué pasa si…? 1: agregar una ficha a 44₍₅₎ → 100₍₅₎ con dos llevadas; sin llevar: 45; llevando una sola vez: 50; poniendo 0 sin llevar: 40",
+      "fn": "sumarUno", "args": ["44", 5],
+      "espera": { "texto": "100", "valor": 25, "llevadas": 2, "cifrasNuevas": 1,
+        "errores.sinLlevar": "45", "errores.unaLlevada": "50", "errores.olvidaLlevar": "40" },
+      "tambien": [ { "fn": "sumarUno", "args": ["444", 5], "espera": { "texto": "1000", "valor": 125, "llevadas": 3 } },
+                   { "fn": "sumarUno", "args": ["231", 5], "espera": { "texto": "232", "llevadas": 0 } } ] },
+
+    { "nombre": "El mayor numeral de 3 cifras en base 5 es 444₍₅₎ = 124 = 5³ − 1; en base 7, 666₍₇₎ = 342; hay 4·25 = 100 numerales de 3 cifras en base 5",
+      "fn": "numerales", "args": [3, 5],
+      "espera": { "mayor": 124, "mayorTexto": "444", "menor": 25, "menorTexto": "100", "cantidad": 100, "errores.sinRestarUno": 125, "errores.comoDecimal": 444, "erroresCantidad.conCero": 125 },
+      "tambien": [ { "fn": "numerales", "args": [3, 7], "espera": { "mayor": 342, "cantidad": 294 } } ] },
+
+    { "nombre": "¿Qué pasa si…? 2: 121 leído en base 3 a 7 → 16, 25, 36, 49, 64 (siempre (b + 1)²); siempre 121, de uno en uno o duplicándose son ideas erróneas",
+      "fn": "leerEnBases", "args": ["121", [3, 4, 5, 6, 7]],
+      "espera": { "valores": [16, 25, 36, 49, 64], "cuadrados": true, "raices": [4, 5, 6, 7, 8], "diferencias": [9, 11, 13, 15],
+        "errores.siempreIgual": [121, 121, 121, 121, 121], "errores.deUnoEnUno": [16, 17, 18, 19, 20], "errores.seDuplica": [16, 32, 64, 128, 256] } },
+
+    { "nombre": "¿Qué pasa si…? 3: numerar un libro de 120 páginas → 9 + 180 + 63 = 252 cifras; todas con 3 cifras: 360; sin el + 1 del último tramo: 249; contando páginas: 120",
+      "fn": "cifrasPaginas", "args": [120],
+      "espera": { "total": 252, "formula": 252, "tramos.2.paginas": 21, "tramos.1.subtotal": 180,
+        "errores.mismasCifras": 360, "errores.sinMasUno": 249, "errores.cuentaPaginas": 120 },
+      "tambien": [ { "fn": "cifrasPaginas", "args": [9], "espera": { "total": 9 } }, { "fn": "cifrasPaginas", "args": [1000], "espera": { "total": 2893 } } ] },
+
+    { "nombre": "Al revés: con 192 cifras se numeran 100 páginas; con 190 no se puede (la página 100 necesita 3)",
+      "fn": "paginasConCifras", "args": [192],
+      "espera": { "paginas": 100, "existe": true },
+      "tambien": [ { "fn": "paginasConCifras", "args": [190], "espera": { "existe": false } }, { "fn": "paginasConCifras", "args": [642], "espera": { "paginas": 250 } } ] },
+
+    { "nombre": "¿Qué pasa si…? 4: 324₍₅₎ por 5 → 3240₍₅₎ (las cifras se corren y entra un 0); multiplicando como en base 10: 1620; sumando la base: 334; con dos ceros: 32400",
+      "fn": "porLaBase", "args": ["324", 5],
+      "espera": { "texto": "3240", "valor": 445, "antes": 89, "cuentasDespues": [0, 4, 2, 3],
+        "errores.multiplicaComoDecimal": "1620", "errores.sumaLaBase": "334", "errores.dosCeros": "32400" } },
+
+    { "nombre": "¿Qué pasa si…? 5: 1011010₍₂₎ a base 8 juntando de a 3 desde la derecha → 132₍₈₎ (1 | 011 | 010); desde la izquierda: 550; sumando las cifras de cada grupo: 121; de a 2: 1122",
+      "fn": "agruparCifras", "args": ["1011010", 2, 3],
+      "espera": { "texto": "132", "base": 8, "grupos": ["1", "011", "010"], "valor": 90,
+        "errores.desdeLaIzquierda": "550", "errores.sumaCifrasGrupo": "121", "errores.otroTamano": "1122" },
+      "tambien": [ { "fn": "agruparCifras", "args": ["1011010", 2, 2], "espera": { "texto": "1122", "base": 4 } }, { "fn": "valor", "args": ["132", 8], "espera": { "valor": 90 } } ] },
+
+    { "nombre": "La menor base de 4503 es 6; con un 0 adelante sigue existiendo; una cifra que vale la base no existe: 507₍₆₎ tiene un 7",
+      "fn": "baseMinima", "args": ["4503"],
+      "espera": { "base": 6, "cifraMayor": 5 },
+      "tambien": [ { "fn": "valido", "args": ["0432", 5], "espera": { "valido": true, "ceroInicial": true } },
+                   { "fn": "valido", "args": ["507", 6], "espera": { "valido": false, "malas.0.cifra": 7, "malas.0.orden": 0 } },
+                   { "fn": "baseMinima", "args": ["1"], "espera": { "base": 2 } } ] },
+
+    { "nombre": "Una ficha más se lleva en cadena desde cualquier cuenta: [5, 4, 4] en base 5 → [0, 0, 0, 1] (1000₍₅₎ = 125)",
+      "fn": "normalizar", "args": [[5, 4, 4], 5],
+      "espera": { "texto": "1000", "cuentas": [0, 0, 0, 1], "fichas": 125, "etapas.0.orden": 0, "etapas.1.orden": 1, "etapas.2.orden": 2 } }
+  ]
+}
