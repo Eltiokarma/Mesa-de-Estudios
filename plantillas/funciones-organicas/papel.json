@@ -1,0 +1,366 @@
+{
+  "titulo": "Funciones orgánicas: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 minutos por problema, como en el examen. Antes de nombrar, dibuja el esqueleto con todos los átomos: cada C tiene 4 enlaces, cada O 2, cada N 3 y cada H 1. Busca primero el grupo funcional: él decide la familia, la terminación del nombre y desde qué lado se numera. Los puntos de ebullición que se dan son datos de tabla.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Nombra CH₃–CH₂–CH(OH)–CH₃ y di si es un alcohol primario, secundario o terciario.",
+      "respuesta": "Butan-2-ol (2-butanol), alcohol secundario.",
+      "pasos": [
+        "El grupo es –OH en un carbono que no es del anillo ni de un C=O: es un alcohol, terminación -ol.",
+        "La cadena tiene 4 carbonos: butan-. Se numera desde el extremo más cercano al –OH: queda en el carbono 2 (desde el otro lado sería el 3).",
+        "Nombre: butan-2-ol.",
+        "El carbono que lleva el –OH está unido a 2 carbonos (el CH₃ de la izquierda y el CH₂ de la derecha): alcohol secundario."
+      ],
+      "verificar": [
+        {
+          "fn": "nombre",
+          "args": [
+            "CH3-CH2-CH(OH)-CH3"
+          ],
+          "espera": {
+            "nombre": "butan-2-ol",
+            "antiguo": "2-butanol",
+            "errores.numeracionContraria": "butan-3-ol"
+          }
+        },
+        {
+          "fn": "tipoAlcohol",
+          "args": [
+            "CH3-CH2-CH(OH)-CH3"
+          ],
+          "espera": {
+            "clase": "secundario",
+            "nC": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "intermedio",
+      "enunciado": "¿Cuántos compuestos distintos, alcoholes o éteres, tienen la fórmula C₄H₁₀O? Nómbralos.",
+      "respuesta": "7: butan-1-ol, butan-2-ol, 2-metilpropan-1-ol, 2-metilpropan-2-ol (alcoholes) y 1-metoxipropano, 2-metoxipropano, etoxietano (éteres).",
+      "pasos": [
+        "Hay dos esqueletos de 4 carbonos: la cadena recta y la ramificada (un C unido a otros tres).",
+        "Alcoholes: el –OH en la cadena recta puede ir en una punta o en un carbono del medio (2 alcoholes); en la ramificada, en una punta o en el carbono central (2 más). Total: 4.",
+        "Éteres: el O se mete entre dos carbonos. En la cadena recta: entre el 1 y el 2 (1-metoxipropano) o entre el 2 y el 3 (etoxietano). En la ramificada: entre el central y una punta (2-metoxipropano). Total: 3.",
+        "Ojo con los repetidos: el –OH en el carbono 3 de la cadena recta es el butan-2-ol otra vez.",
+        "4 + 3 = 7 isómeros estructurales."
+      ],
+      "verificar": [
+        {
+          "fn": "contarIsomeros",
+          "args": [
+            "C4H10O"
+          ],
+          "espera": {
+            "n": 7,
+            "porFamilia.alcohol": 4,
+            "porFamilia.eter": 3
+          }
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Nombra el éster CH₃–CH₂–COO–CH₃. ¿De qué ácido y de qué alcohol se puede obtener?",
+      "respuesta": "Propanoato de metilo; del ácido propanoico y el metanol (más agua).",
+      "pasos": [
+        "En el –COO– el C=O es del ácido y el O de puente viene del alcohol.",
+        "La parte del ácido tiene 3 C contando el del C=O: propanoato.",
+        "La parte unida al O de puente tiene 1 C: metilo.",
+        "Nombre: propanoato de metilo (primero la parte del ácido con -ato, después «de» y la parte del alcohol con -ilo).",
+        "Ácido propanoico + metanol → propanoato de metilo + agua."
+      ],
+      "verificar": [
+        {
+          "fn": "nombre",
+          "args": [
+            "CH3-CH2-COO-CH3"
+          ],
+          "espera": {
+            "nombre": "propanoato de metilo",
+            "errores.partesAlReves": "metanoato de propilo"
+          }
+        },
+        {
+          "fn": "esterificar",
+          "args": [
+            "CH3-CH2-COOH",
+            "CH3-OH"
+          ],
+          "espera": {
+            "nombre": "propanoato de metilo",
+            "formula": "C4H8O2"
+          }
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "El butan-1-ol, el butanal y el etoxietano tienen 4 carbonos cada uno. Ordénalos de mayor a menor punto de ebullición y explica el orden. (De tabla, en desorden: 34,5 °C, 117,7 °C y 74,8 °C.)",
+      "respuesta": "Butan-1-ol (117,7 °C) > butanal (74,8 °C) > etoxietano (34,5 °C).",
+      "pasos": [
+        "El butan-1-ol tiene un H unido a O: forma puentes de hidrógeno entre sus moléculas. Es el que más cuesta separar.",
+        "El butanal tiene un C=O, que es polar, pero ningún H unido a O: sus moléculas se atraen menos que las del alcohol.",
+        "El etoxietano tampoco tiene H unido a O, y su C–O–C es mucho menos polar que el C=O del aldehído: sus moléculas son las que menos se atraen.",
+        "Orden: butan-1-ol > butanal > etoxietano."
+      ],
+      "verificar": [
+        {
+          "fn": "ebullicion",
+          "args": [
+            "CH3-CH2-CH2-CH2-OH"
+          ],
+          "espera": {
+            "teb": 117.7,
+            "puentes": true
+          }
+        },
+        {
+          "fn": "ebullicion",
+          "args": [
+            "CH3-CH2-CH2-CHO"
+          ],
+          "espera": {
+            "teb": 74.8,
+            "puentes": false
+          }
+        },
+        {
+          "fn": "ebullicion",
+          "args": [
+            "C2H5-O-C2H5"
+          ],
+          "espera": {
+            "teb": 34.5,
+            "puentes": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "básico",
+      "enunciado": "Clasifica como amina primaria, secundaria o terciaria: (a) CH₃–CH₂–NH₂; (b) CH₃–NH–CH₂–CH₃; (c) (CH₃)₃N.",
+      "respuesta": "(a) primaria (etanamina); (b) secundaria (N-metiletanamina); (c) terciaria (N,N-dimetilmetanamina o trimetilamina).",
+      "pasos": [
+        "En las aminas se cuentan los carbonos unidos al N (no al carbono, como en los alcoholes).",
+        "(a) El N tiene un solo C: primaria.",
+        "(b) El N tiene dos C (un metilo y un etilo): secundaria.",
+        "(c) El N tiene tres C: terciaria."
+      ],
+      "verificar": [
+        {
+          "fn": "tipoAmina",
+          "args": [
+            "CH3-CH2-NH2"
+          ],
+          "espera": {
+            "clase": "primaria",
+            "nombre": "etanamina"
+          }
+        },
+        {
+          "fn": "tipoAmina",
+          "args": [
+            "CH3-NH-CH2-CH3"
+          ],
+          "espera": {
+            "clase": "secundaria",
+            "nombre": "N-metiletanamina"
+          }
+        },
+        {
+          "fn": "tipoAmina",
+          "args": [
+            "(CH3)3N"
+          ],
+          "espera": {
+            "clase": "terciaria"
+          }
+        }
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "básico",
+      "enunciado": "Escribe un isómero de función de la propanona, CH₃–CO–CH₃, que también tenga un C=O. ¿Por qué es de función y no de posición?",
+      "respuesta": "El propanal, CH₃–CH₂–CHO. Es de función porque cambia la familia: la propanona es una cetona y el propanal, un aldehído.",
+      "pasos": [
+        "La propanona es C₃H₆O: 3 C, 6 H y 1 O.",
+        "Si el C=O pasa a la punta de la cadena, queda CH₃–CH₂–CHO: también C₃H₆O.",
+        "Con el C=O en la punta es un aldehído (-al); entre dos carbonos, una cetona (-ona). Cambió la familia: isómero de función."
+      ],
+      "verificar": [
+        {
+          "fn": "compararIsomeria",
+          "args": [
+            "CH3-CO-CH3",
+            "CH3-CH2-CHO"
+          ],
+          "espera": {
+            "isomeros": true,
+            "tipo": "función",
+            "formulaA": "C3H6O"
+          }
+        }
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Nombra CH₃–CH(CH₃)–CH₂–CHO.",
+      "respuesta": "3-metilbutanal.",
+      "pasos": [
+        "El grupo –CHO es un aldehído: va siempre en la punta y es el carbono 1 (por eso no se escribe su número).",
+        "La cadena más larga que contiene el C del –CHO tiene 4 carbonos: butanal.",
+        "Contando desde el –CHO, el metilo queda en el carbono 3. Si se numerara desde el CH₃ de la izquierda, el metilo quedaría en el 2, pero el C del –CHO tiene que ser el 1.",
+        "Nombre: 3-metilbutanal."
+      ],
+      "verificar": [
+        {
+          "fn": "nombre",
+          "args": [
+            "CH3-CH(CH3)-CH2-CHO"
+          ],
+          "espera": {
+            "nombre": "3-metilbutanal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "¿Cuáles de estos forman puentes de hidrógeno entre sus propias moléculas: CH₃–CO–CH₃, CH₃–COOH, CH₃–O–CH₃, CH₃–CH₂–NH₂?",
+      "respuesta": "El ácido etanoico (CH₃–COOH) y la etanamina (CH₃–CH₂–NH₂).",
+      "pasos": [
+        "Para un puente de hidrógeno entre moléculas hace falta un H unido directamente a O o a N.",
+        "CH₃–CO–CH₃: su O no tiene H; todos los H están en carbonos. No.",
+        "CH₃–COOH: el –OH del grupo tiene un H unido a O. Sí.",
+        "CH₃–O–CH₃: tiene O, pero sin H unido a él. No (aunque sí puede recibir el H del agua).",
+        "CH₃–CH₂–NH₂: tiene dos H unidos al N. Sí."
+      ],
+      "verificar": [
+        {
+          "fn": "puentes",
+          "args": [
+            "CH3-CO-CH3"
+          ],
+          "espera": {
+            "entreMoleculas": false
+          }
+        },
+        {
+          "fn": "puentes",
+          "args": [
+            "CH3-COOH"
+          ],
+          "espera": {
+            "entreMoleculas": true
+          }
+        },
+        {
+          "fn": "puentes",
+          "args": [
+            "CH3-O-CH3"
+          ],
+          "espera": {
+            "entreMoleculas": false,
+            "conAgua": true
+          }
+        },
+        {
+          "fn": "puentes",
+          "args": [
+            "CH3-CH2-NH2"
+          ],
+          "espera": {
+            "entreMoleculas": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "El ácido metanoico (HCOOH) reacciona con el propan-1-ol (CH₃–CH₂–CH₂–OH). Escribe el éster que se forma, su nombre y su fórmula molecular.",
+      "respuesta": "H–COO–CH₂–CH₂–CH₃, metanoato de propilo, C₄H₈O₂ (más agua).",
+      "pasos": [
+        "El ácido pierde su –OH y el alcohol, el H de su –OH: juntos forman H₂O.",
+        "El C del ácido queda unido al O del alcohol: H–COO–CH₂–CH₂–CH₃.",
+        "Parte del ácido, 1 C: metanoato. Parte del alcohol, 3 C: propilo. Nombre: metanoato de propilo.",
+        "Fórmula: CH₂O₂ + C₃H₈O = C₄H₁₀O₃; menos H₂O da C₄H₈O₂."
+      ],
+      "verificar": [
+        {
+          "fn": "esterificar",
+          "args": [
+            "HCOOH",
+            "CH3-CH2-CH2-OH"
+          ],
+          "espera": {
+            "nombre": "metanoato de propilo",
+            "formula": "C4H8O2",
+            "sumaReactivos": "C4H10O3"
+          }
+        }
+      ]
+    },
+    {
+      "id": "p10",
+      "nivel": "intermedio",
+      "enunciado": "El C₆H₅–OH y el C₆H₅–CH₂–OH tienen los dos un –OH y un anillo de benceno. ¿Son de la misma familia?",
+      "respuesta": "No. El C₆H₅–OH es un fenol (el –OH está unido al anillo); el C₆H₅–CH₂–OH es un alcohol (fenilmetanol, alcohol bencílico), porque su –OH está en un CH₂ fuera del anillo.",
+      "pasos": [
+        "Lo que decide es a qué carbono está unido el –OH.",
+        "En el C₆H₅–OH, el –OH está unido a un carbono del anillo: fenol.",
+        "En el C₆H₅–CH₂–OH, el –OH está unido a un CH₂ que no es del anillo: alcohol (primario, porque ese CH₂ tiene un solo C unido)."
+      ],
+      "verificar": [
+        {
+          "fn": "funcion",
+          "args": [
+            "C6H5-OH"
+          ],
+          "espera": {
+            "familia": "fenol"
+          }
+        },
+        {
+          "fn": "funcion",
+          "args": [
+            "C6H5-CH2-OH"
+          ],
+          "espera": {
+            "familia": "alcohol"
+          }
+        },
+        {
+          "fn": "nombre",
+          "args": [
+            "C6H5-CH2-OH"
+          ],
+          "espera": {
+            "nombre": "fenilmetanol",
+            "comun": "alcohol bencílico"
+          }
+        },
+        {
+          "fn": "tipoAlcohol",
+          "args": [
+            "C6H5-CH2-OH"
+          ],
+          "espera": {
+            "clase": "primario"
+          }
+        }
+      ]
+    }
+  ]
+}

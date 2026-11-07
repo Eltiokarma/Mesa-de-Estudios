@@ -1,0 +1,112 @@
+{
+  "plantilla": "funciones-organicas",
+  "unidades": "Moléculas como texto: fórmula semidesarrollada (CH3-CH2-OH, CH3-O-CH3, CH3-CHO, CH3-CO-CH3, CH3-COOH, CH3-COO-CH3, CH3-NH2, (CH3)2NH, CH3-CONH2, CH3-CN, C6H5-OH; el guion, el = y el ≡ son el enlace) o SMILES sencillo (CCO, COC, CC(=O)O). Fórmulas moleculares en orden de Hill (C, H, N, O). Temperaturas en °C. La caja de grupos: ponerGrupo(n, grupo, lugar) pone el grupo en el carbono 'lugar' (o en el enlace entre el C 'lugar' y el siguiente, en O, NH y COO) de una cadena recta de n carbonos.",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'; 'tambien' agrega llamadas del mismo caso. Los campos anidados van con punto (errores.partesAlReves, a.teb); las listas se comparan completas; los textos, exactos. Nombres IUPAC con el localizador delante del sufijo (propan-2-ol); 'antiguo' da la forma anterior (2-propanol). Los isómeros se cuentan con esqueleto saturado, un solo grupo funcional y sin estereoisómeros. Las demás convenciones están en la cabecera de motor.js.",
+  "verificacion": "Verificador independiente (subagente, 7 nov 2026), sin leer el motor ni casos.json, con las moléculas escritas a mano como grafos. Contó los isómeros por fuerza bruta sobre todos los árboles etiquetados (Prüfer) con órdenes de enlace y forma canónica por permutaciones: C2H6O 2, C3H8O 3, C4H10O 7, C3H6O 2, C2H4O2 2 y C4H8O2 6. Coinciden en los 24 casos los nombres IUPAC 1979/93 y comunes, las clases de alcohol y amina, los puentes de hidrógeno y las fórmulas; los puntos de ebullición, de tabla, quedan a menos de 1 °C de CRC/NIST. Solo difieren las lecturas de algunos errores típicos (porPosiciones, contandoElN), que se aceptan como convención. Después (7 nov 2026): por la revisión, el último caso de isomería de cadena pasó a butan-1-ol contra 2-metilpropan-1-ol (el motor da «cadena», igual que el criterio del verificador).",
+  "tolerancia": 1e-9,
+  "casos": [
+    { "nombre": "Paso 2 y predicción 1: el etanol y el metoximetano son isómeros de función (los dos C2H6O). Errores: «solo si son de la misma familia» (FO1) dice que no; contar sin el H del –OH da C2H5O",
+      "fn": "compararIsomeria", "args": ["CH3-CH2-OH", "CH3-O-CH3"],
+      "espera": { "formulaA": "C2H6O", "formulaB": "C2H6O", "isomeros": true, "tipo": "función", "familiaA": "alcohol", "familiaB": "eter", "errores.soloMismaFamilia.isomeros": false, "errores.pierdeH": "C2H5O" } },
+
+    { "nombre": "Paso 3 y predicción 2: el etanol hierve a 78,3 °C y el metoximetano a −24,8 °C (de tabla). Solo el etanol forma puentes de hidrógeno entre sus moléculas; el éter tiene O, pero ningún H unido a O (FO2)",
+      "fn": "compararEbullicion", "args": ["CH3-CH2-OH", "CH3-O-CH3"],
+      "espera": { "mayor": "etanol", "a.teb": 78.3, "b.teb": -24.8, "mismaFormula": true, "a.puentes": true, "b.puentes": false },
+      "tambien": [ { "fn": "puentes", "args": ["CH3-O-CH3"], "espera": { "entreMoleculas": false, "conAgua": true, "errores.porTenerO": true } },
+                   { "fn": "puentes", "args": ["CH3-CH2-OH"], "espera": { "entreMoleculas": true, "conAgua": true } } ] },
+
+    { "nombre": "Paso 4 y predicción 3: el C=O en la punta es propanal (aldehído); en el medio, propanona (cetona); son isómeros de función. Errores: -al leído como -ol (propan-1-ol) y la cetona nombrada como aldehído (propanal)",
+      "fn": "nombre", "args": ["CH3-CH2-CHO"], "espera": { "nombre": "propanal", "familia": "aldehido", "errores.sufijoOl": "propan-1-ol" },
+      "tambien": [ { "args": ["CH3-CO-CH3"], "espera": { "nombre": "propanona", "familia": "cetona", "comun": "acetona", "errores.comoAldehido": "propanal" } },
+                   { "fn": "compararIsomeria", "args": ["CH3-CH2-CHO", "CH3-CO-CH3"], "espera": { "isomeros": true, "tipo": "función", "formulaA": "C3H6O" } } ] },
+
+    { "nombre": "Paso 5 y predicción 4: el 2-metilpropan-2-ol es terciario (su C del –OH tiene 3 C unidos). Errores: por el localizador 2 (secundario), contando el O como vecino (cuaternario) y por tener un solo –OH (primario)",
+      "fn": "tipoAlcohol", "args": ["(CH3)3C-OH"],
+      "espera": { "clase": "terciario", "nC": 3, "loc": 2, "nombre": "2-metilpropan-2-ol", "errores.porLocalizador": "secundario", "errores.contandoElO": "cuaternario", "errores.porNumeroDeOH": "primario" },
+      "tambien": [ { "args": ["CH3-CH2-CH2-OH"], "espera": { "clase": "primario", "nC": 1 } }, { "args": ["CH3-CH(OH)-CH3"], "espera": { "clase": "secundario", "nC": 2 } }, { "args": ["CH3OH"], "espera": { "clase": "primario", "nC": 0 } } ] },
+
+    { "nombre": "Paso 6 y predicción 5: CH3–COO–CH3 es etanoato de metilo (acetato de metilo). Errores: las dos partes al revés (metanoato de etilo), como ácido (ácido propanoico) y como éter más cetona (metoxietanona)",
+      "fn": "nombre", "args": ["CH3-COO-CH3"],
+      "espera": { "nombre": "etanoato de metilo", "comun": "acetato de metilo", "familia": "ester", "ester.parteAcido": "etanoato", "ester.alquilo": "metilo", "errores.partesAlReves": "metanoato de etilo", "errores.comoAcido": "ácido propanoico", "errores.eterMasCetona": "metoxietanona" } },
+
+    { "nombre": "Paso 6: ácido etanoico + metanol → etanoato de metilo + agua; el agua sale del OH del ácido y del H del alcohol",
+      "fn": "esterificar", "args": ["CH3-COOH", "CH3-OH"],
+      "espera": { "nombre": "etanoato de metilo", "formula": "C3H6O2", "formulaAcido": "C2H4O2", "formulaAlcohol": "CH4O", "sumaReactivos": "C3H8O3", "origen": ["acido", "acido", "acido", "alcohol", "alcohol"] } },
+
+    { "nombre": "Experimento 3: ácido etanoico + etanol → etanoato de etilo (C4H8O2) + agua. Errores: no quitar el agua (C4H10O3), quitar H2 (C4H8O3), quitar dos aguas (C4H6O)",
+      "fn": "esterificar", "args": ["CH3-COOH", "CH3-CH2-OH"],
+      "espera": { "nombre": "etanoato de etilo", "formula": "C4H8O2", "errores.sinQuitarAgua": "C4H10O3", "errores.quitaH2": "C4H8O3", "errores.quitaDosAguas": "C4H6O" } },
+
+    { "nombre": "Paso 7 y predicción 6: la 2-metilpropan-2-amina (terc-butilamina) es primaria: el N tiene un solo C. Errores: clasificarla como un alcohol, por el C (terciaria); por el localizador 2 (secundaria); contando el N (cuaternaria)",
+      "fn": "tipoAmina", "args": ["(CH3)3C-NH2"],
+      "espera": { "clase": "primaria", "nC": 1, "nombre": "2-metilpropan-2-amina", "errores.comoAlcohol": "terciaria", "errores.porLocalizador": "secundaria", "errores.contandoElN": "cuaternaria" },
+      "tambien": [ { "fn": "nombre", "args": ["(CH3)3C-NH2"], "espera": { "comun": "terc-butilamina" } } ] },
+
+    { "nombre": "Clase de amina: CH3NH2 primaria; (CH3)2NH secundaria; (CH3)3N terciaria (cuántos C tiene unidos el N)",
+      "fn": "tipoAmina", "args": ["CH3-NH2"], "espera": { "clase": "primaria", "nombre": "metanamina" },
+      "tambien": [ { "args": ["(CH3)2NH"], "espera": { "clase": "secundaria", "nombre": "N-metilmetanamina" } }, { "args": ["(CH3)3N"], "espera": { "clase": "terciaria", "nombre": "N,N-dimetilmetanamina" } },
+                   { "fn": "nombre", "args": ["(CH3)2NH"], "espera": { "comun": "dimetilamina" } }, { "fn": "nombre", "args": ["(CH3)3N"], "espera": { "comun": "trimetilamina" } } ] },
+
+    { "nombre": "Paso 8 y predicción 7: CH3–CH2–CH2–CO–CH3 es pentan-2-ona (2-pentanona). Errores: numerar desde el otro lado (pentan-4-ona), nombrarla como aldehído (pentanal) y -ona leído como -ol (pentan-2-ol)",
+      "fn": "nombre", "args": ["CH3-CH2-CH2-CO-CH3"],
+      "espera": { "nombre": "pentan-2-ona", "antiguo": "2-pentanona", "localizadores.grupo": [2], "errores.numeracionContraria": "pentan-4-ona", "errores.comoAldehido": "pentanal", "errores.sufijoOl": "pentan-2-ol" } },
+
+    { "nombre": "Isomería de función: C2H6O tiene 2 isómeros, el etanol y el metoximetano",
+      "fn": "contarIsomeros", "args": ["C2H6O"], "espera": { "n": 2, "nombres": ["etanol", "metoximetano"], "porFamilia.alcohol": 1, "porFamilia.eter": 1 } },
+
+    { "nombre": "Experimento 2: C3H8O tiene 3 isómeros. Errores: olvidar el éter (2), un éter por cada enlace C–C (4) y cada posición como un isómero distinto (5)",
+      "fn": "contarIsomeros", "args": ["C3H8O"],
+      "espera": { "n": 3, "nombres": ["propan-1-ol", "propan-2-ol", "metoxietano"], "errores.sinEteres": 2, "errores.eteresPorEnlace": 4, "errores.porPosiciones": 5 } },
+
+    { "nombre": "C4H10O: 7 isómeros estructurales (4 alcoholes y 3 éteres; el butan-2-ol cuenta una vez)",
+      "fn": "contarIsomeros", "args": ["C4H10O"],
+      "espera": { "n": 7, "nombres": ["2-metilpropan-1-ol", "2-metilpropan-2-ol", "butan-1-ol", "butan-2-ol", "1-metoxipropano", "2-metoxipropano", "etoxietano"], "porFamilia.alcohol": 4, "porFamilia.eter": 3 } },
+
+    { "nombre": "C3H6O con esqueleto saturado (sin anillos ni C=C): 2, el propanal y la propanona",
+      "fn": "contarIsomeros", "args": ["C3H6O"], "espera": { "n": 2, "nombres": ["propanal", "propanona"] } },
+
+    { "nombre": "Ácidos y ésteres: C2H4O2 tiene el ácido etanoico y el metanoato de metilo; C4H8O2 tiene 6 (2 ácidos y 4 ésteres)",
+      "fn": "contarIsomeros", "args": ["C2H4O2"], "espera": { "n": 2, "nombres": ["ácido etanoico", "metanoato de metilo"] },
+      "tambien": [ { "args": ["C4H8O2"], "espera": { "n": 6, "nombres": ["ácido 2-metilpropanoico", "ácido butanoico", "etanoato de etilo", "metanoato de isopropilo", "metanoato de propilo", "propanoato de metilo"], "porFamilia.acido": 2, "porFamilia.ester": 4 } } ] },
+
+    { "nombre": "Puentes de hidrógeno entre moléculas: etanol sí; metoximetano no; ácido etanoico sí; propanona no; metanamina sí",
+      "fn": "puentes", "args": ["CH3-CH2-OH"], "espera": { "entreMoleculas": true },
+      "tambien": [ { "args": ["CH3-O-CH3"], "espera": { "entreMoleculas": false } }, { "args": ["CH3-COOH"], "espera": { "entreMoleculas": true } },
+                   { "args": ["CH3-CO-CH3"], "espera": { "entreMoleculas": false, "conAgua": true } }, { "args": ["CH3-NH2"], "espera": { "entreMoleculas": true, "errores.soloOH": false } } ] },
+
+    { "nombre": "Experimento 1: en el esqueleto de 4 C, el C=O en el C1 da butanal; en el C2 o en el C3, butanona (la misma). Error: leer el C3 como «butan-3-ona»",
+      "fn": "ponerGrupo", "args": [4, "CO", 3], "espera": { "nombre": "butanona", "familia": "cetona", "formula": "C4H8O" },
+      "tambien": [ { "args": [4, "CO", 1], "espera": { "nombre": "butanal", "familia": "aldehido" } }, { "args": [4, "CO", 2], "espera": { "nombre": "butanona" } },
+                   { "fn": "nombre", "args": ["CH3-CH2-CO-CH3"], "espera": { "errores.numeracionContraria": "butan-3-ona" } } ] },
+
+    { "nombre": "Experimento 5: el mismo esqueleto de 3 C con el grupo en el C1: hierve más alto el ácido propanoico (141,2 °C) que el propan-1-ol (97,2 °C), el propanal (48,0 °C) y la propan-1-amina (47,2 °C), de tabla",
+      "fn": "ponerGrupo", "args": [3, "COOH", 1], "espera": { "nombre": "ácido propanoico", "teb": 141.2, "puentes": true },
+      "tambien": [ { "args": [3, "OH", 1], "espera": { "nombre": "propan-1-ol", "teb": 97.2 } }, { "args": [3, "CO", 1], "espera": { "nombre": "propanal", "teb": 48.0, "puentes": false } },
+                   { "args": [3, "NH2", 1], "espera": { "nombre": "propan-1-amina", "teb": 47.2, "puentes": true } } ] },
+
+    { "nombre": "Experimento 4: el metoximetano no forma puentes de hidrógeno entre sus moléculas (ningún H unido a O); la metanamina sí (H unido a N). Los dos sí con el agua",
+      "fn": "puentes", "args": ["CH3-O-CH3"], "espera": { "entreMoleculas": false, "conAgua": true },
+      "tambien": [ { "args": ["CH3-NH2"], "espera": { "entreMoleculas": true, "conAgua": true } }, { "fn": "ebullicion", "args": ["CH3-NH2"], "espera": { "teb": -6.3 } } ] },
+
+    { "nombre": "Prioridad de grupos: ácido > éster > amida > nitrilo > aldehído > cetona > alcohol > amina > éter",
+      "fn": "prioridad", "args": [["amina", "eter", "alcohol", "cetona"]], "espera": { "principal": "cetona", "orden": ["cetona", "alcohol", "amina", "eter"] },
+      "tambien": [ { "args": [["eter", "ester", "acido", "aldehido", "nitrilo", "amida"]], "espera": { "orden": ["acido", "ester", "amida", "nitrilo", "aldehido", "eter"] } } ] },
+
+    { "nombre": "Nombres comunes de academia: alcohol etílico, acetona, ácido acético, formaldehído (metanal), éter dietílico (etoxietano)",
+      "fn": "nombre", "args": ["CH3-CH2-OH"], "espera": { "nombre": "etanol", "comun": "alcohol etílico" },
+      "tambien": [ { "args": ["CH3-COOH"], "espera": { "nombre": "ácido etanoico", "comun": "ácido acético" } }, { "args": ["HCHO"], "espera": { "nombre": "metanal", "comun": "formaldehído" } },
+                   { "args": ["C2H5-O-C2H5"], "espera": { "nombre": "etoxietano", "comun": "éter dietílico (éter etílico)" } }, { "args": ["CH3-CH(OH)-CH3"], "espera": { "nombre": "propan-2-ol", "antiguo": "2-propanol", "comun": "alcohol isopropílico" } } ] },
+
+    { "nombre": "Fenol contra alcohol: el –OH en el anillo es un fenol; en un CH2 fuera del anillo, un alcohol (fenilmetanol, alcohol bencílico)",
+      "fn": "funcion", "args": ["C6H5-OH"], "espera": { "familia": "fenol" },
+      "tambien": [ { "args": ["C6H5-CH2OH"], "espera": { "familia": "alcohol" } }, { "fn": "nombre", "args": ["C6H5-CH2OH"], "espera": { "nombre": "fenilmetanol", "comun": "alcohol bencílico" } } ] },
+
+    { "nombre": "Amidas y nitrilos: CH3–CONH2 es etanamida (acetamida, C2H5NO); CH3–CN es etanonitrilo (acetonitrilo, C2H3N); el C del grupo cuenta en la cadena",
+      "fn": "nombre", "args": ["CH3-CONH2"], "espera": { "nombre": "etanamida", "comun": "acetamida", "familia": "amida" },
+      "tambien": [ { "args": ["CH3-CN"], "espera": { "nombre": "etanonitrilo", "comun": "acetonitrilo", "familia": "nitrilo" } }, { "fn": "formula", "args": ["CH3-CONH2"], "espera": { "texto": "C2H5NO" } } ] },
+
+    { "nombre": "Isomería de posición y de cadena: propan-1-ol y propan-2-ol (posición); butan-1-ol y 2-metilpropan-1-ol (cadena)",
+      "fn": "compararIsomeria", "args": ["CH3-CH2-CH2-OH", "CH3-CH(OH)-CH3"], "espera": { "isomeros": true, "tipo": "posición" },
+      "tambien": [ { "args": ["CH3-CH2-CH2-CH2-OH", "CH3-CH(CH3)-CH2-OH"], "espera": { "isomeros": true, "tipo": "cadena" } }, { "args": ["CCO", "OCC"], "espera": { "isomeros": false, "mismaMolecula": true } } ] }
+  ]
+}

@@ -87,6 +87,13 @@ const ESCENAS = {
     vistas: [
       [['H', 'O'], ['--c-n', '--c-k', '--c-Mp', '--c-Ma', '--c-M']],   // el taller: la gota de agua con todas las variables
     ] },
+  'funciones-organicas': {
+    elementos: ['C', 'H', 'O', 'N'],
+    vistas: [
+      [['C', 'H', 'O', 'N'], ['--c-cad', '--c-loc', '--c-gf', '--c-T']],
+      [['C', 'H', 'O', 'N'], ['--c-pu', '--c-T']],
+      [['C', 'H', 'O'], ['--c-ac', '--c-al']],
+    ] },
   'hidrocarburos': {
     elementos: ['C', 'H'],
     vistas: [

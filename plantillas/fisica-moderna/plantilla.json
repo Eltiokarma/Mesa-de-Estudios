@@ -1,0 +1,15 @@
+{
+  "id": "fisica-moderna",
+  "titulo": "La lámpara y la placa: fotones y efecto fotoeléctrico",
+  "formato": "escena",
+  "unidades": [
+    "fisica.fisica-moderna"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json"
+}

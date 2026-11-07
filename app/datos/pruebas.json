@@ -2174,7 +2174,7 @@
   },
   "quimica": {
    "curso": "quimica",
-   "version": "1.1.0",
+   "version": "1.2.0",
    "minutos": 16,
    "errores": {
     "ES20-menor-cantidad": {
@@ -2288,6 +2288,70 @@
     "una-vida-media": {
      "respaldo": "hipotesis",
      "describe": "Aplica una sola vez la mitad"
+    },
+    "ignora-la-carga": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta los electrones como si el ion fuera neutro, sin usar su carga"
+    },
+    "carga-al-reves": {
+     "respaldo": "hipotesis",
+     "describe": "Usa la carga del ion al revés: a un anión le quita electrones en vez de sumárselos (o a un catión se los suma)"
+    },
+    "gas-agua-reparte-a-medias": {
+     "respaldo": "hipotesis",
+     "describe": "Reparte la presión total en partes iguales entre el gas y el vapor de agua"
+    },
+    "suma-porcentajes": {
+     "respaldo": "hipotesis",
+     "describe": "Junta pureza y rendimiento en un solo porcentaje (pureza + rendimiento − 100)"
+    },
+    "BMH7-un-agua": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta una sola agua aunque la cadena tenga varias uniones"
+    },
+    "olvida-el-O-del-combustible": {
+     "respaldo": "hipotesis",
+     "describe": "Al contar los oxígenos, olvida el O que trae el propio combustible (un alcohol)"
+    },
+    "da-la-fraccion-del-otro-gas": {
+     "respaldo": "hipotesis",
+     "describe": "Da la proporción del otro gas de la mezcla en vez de la que se pide"
+    },
+    "BM9-hidrolisis-sin-agua": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que la hidrólisis no gasta agua: la cadena solo se separa"
+    },
+    "olvida-el-agua": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta solo el CO₂ y olvida el agua que también se forma"
+    },
+    "solo-el-O-del-CO2": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta solo los oxígenos del CO₂ y olvida los del agua"
+    },
+    "cuenta-atomos-no-moleculas": {
+     "respaldo": "hipotesis",
+     "describe": "Da los átomos de O que hacen falta en vez de las moléculas de O₂"
+    },
+    "fraccion-sobre-la-total": {
+     "respaldo": "hipotesis",
+     "describe": "Divide la presión de vapor entre la presión total y no entre la del gas seco"
+    },
+    "olvida-pureza": {
+     "respaldo": "hipotesis",
+     "describe": "No toma en cuenta la pureza: usa toda la muestra como si reaccionara"
+    },
+    "multiplica-pureza": {
+     "respaldo": "hipotesis",
+     "describe": "Multiplica por la pureza donde hay que dividir"
+    },
+    "cuenta-como-cadena-lineal": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta n − 1 uniones aunque la cadena esté cerrada en un anillo"
+    },
+    "productos-pesan-lo-del-combustible": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que los productos pesan lo mismo que el combustible: no cuenta el O₂ que se une"
     }
    },
    "pares": [

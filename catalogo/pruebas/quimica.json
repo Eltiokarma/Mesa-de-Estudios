@@ -1,13 +1,16 @@
 {
   "curso": "quimica",
-  "version": "1.1.0",
-  "fecha": "2026-11-06",
+  "version": "1.2.0",
+  "fecha": "2026-11-07",
   "minutos": 16,
   "informes": [
     "docs/investigacion/estequiometria-ideas-erroneas.md",
     "docs/investigacion/gases-soluciones-ideas-erroneas.md",
     "docs/investigacion/equilibrio-acidos-electroquimica-ideas-erroneas.md",
-    "docs/investigacion/cinetica-ideas-erroneas.md"
+    "docs/investigacion/cinetica-ideas-erroneas.md",
+    "docs/investigacion/atomo-enlace-ideas-erroneas.md",
+    "docs/investigacion/biomoleculas-ideas-erroneas.md",
+    "docs/investigacion/quimica-ambiente-ideas-erroneas.md"
   ],
   "errores": {
     "ES20-menor-cantidad": {
@@ -121,6 +124,70 @@
     "una-vida-media": {
       "respaldo": "hipotesis",
       "describe": "Aplica una sola vez la mitad"
+    },
+    "ignora-la-carga": {
+      "respaldo": "hipotesis",
+      "describe": "Cuenta los electrones como si el ion fuera neutro, sin usar su carga"
+    },
+    "carga-al-reves": {
+      "respaldo": "hipotesis",
+      "describe": "Usa la carga del ion al revés: a un anión le quita electrones en vez de sumárselos (o a un catión se los suma)"
+    },
+    "gas-agua-reparte-a-medias": {
+      "respaldo": "hipotesis",
+      "describe": "Reparte la presión total en partes iguales entre el gas y el vapor de agua"
+    },
+    "suma-porcentajes": {
+      "respaldo": "hipotesis",
+      "describe": "Junta pureza y rendimiento en un solo porcentaje (pureza + rendimiento − 100)"
+    },
+    "BMH7-un-agua": {
+      "respaldo": "hipotesis",
+      "describe": "Cuenta una sola agua aunque la cadena tenga varias uniones"
+    },
+    "olvida-el-O-del-combustible": {
+      "respaldo": "hipotesis",
+      "describe": "Al contar los oxígenos, olvida el O que trae el propio combustible (un alcohol)"
+    },
+    "da-la-fraccion-del-otro-gas": {
+      "respaldo": "hipotesis",
+      "describe": "Da la proporción del otro gas de la mezcla en vez de la que se pide"
+    },
+    "BM9-hidrolisis-sin-agua": {
+      "respaldo": "hipotesis",
+      "describe": "Cree que la hidrólisis no gasta agua: la cadena solo se separa"
+    },
+    "olvida-el-agua": {
+      "respaldo": "hipotesis",
+      "describe": "Cuenta solo el CO₂ y olvida el agua que también se forma"
+    },
+    "solo-el-O-del-CO2": {
+      "respaldo": "hipotesis",
+      "describe": "Cuenta solo los oxígenos del CO₂ y olvida los del agua"
+    },
+    "cuenta-atomos-no-moleculas": {
+      "respaldo": "hipotesis",
+      "describe": "Da los átomos de O que hacen falta en vez de las moléculas de O₂"
+    },
+    "fraccion-sobre-la-total": {
+      "respaldo": "hipotesis",
+      "describe": "Divide la presión de vapor entre la presión total y no entre la del gas seco"
+    },
+    "olvida-pureza": {
+      "respaldo": "hipotesis",
+      "describe": "No toma en cuenta la pureza: usa toda la muestra como si reaccionara"
+    },
+    "multiplica-pureza": {
+      "respaldo": "hipotesis",
+      "describe": "Multiplica por la pureza donde hay que dividir"
+    },
+    "cuenta-como-cadena-lineal": {
+      "respaldo": "hipotesis",
+      "describe": "Cuenta n − 1 uniones aunque la cadena esté cerrada en un anillo"
+    },
+    "productos-pesan-lo-del-combustible": {
+      "respaldo": "hipotesis",
+      "describe": "Cree que los productos pesan lo mismo que el combustible: no cuenta el O₂ que se une"
     }
   },
   "pares": [
@@ -882,6 +949,467 @@
             "texto": "50 %",
             "valor": 50,
             "error": "una-vida-media"
+          }
+        ]
+      }
+    }
+  ],
+  "reserva": [
+    {
+      "par": "qui-11",
+      "plantilla": "atomo-y-tabla",
+      "unidad": "quimica.estructura-atomica",
+      "nombreUnidad": "Estructura atómica",
+      "mide": "Del ion a su elemento: un anión 3− tiene tres electrones más que protones; los neutrones no cuentan",
+      "A": {
+        "enunciado": "Un ion X³⁻ tiene 18 electrones y 16 neutrones. ¿Qué elemento es X?",
+        "datos": {
+          "electrones": 18,
+          "neutrones": 16,
+          "ion": "X^3-"
+        },
+        "opciones": [
+          {
+            "texto": "Argón (Z = 18)",
+            "clave": "Ar",
+            "error": "ignora-la-carga"
+          },
+          {
+            "texto": "Fósforo (Z = 15)",
+            "clave": "P",
+            "correcta": true
+          },
+          {
+            "texto": "Escandio (Z = 21)",
+            "clave": "Sc",
+            "error": "carga-al-reves"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Un ion X³⁻ tiene 10 electrones y 8 neutrones. ¿Qué elemento es X?",
+        "datos": {
+          "electrones": 10,
+          "neutrones": 8,
+          "ion": "X^3-"
+        },
+        "opciones": [
+          {
+            "texto": "Neón (Z = 10)",
+            "clave": "Ne",
+            "error": "ignora-la-carga"
+          },
+          {
+            "texto": "Nitrógeno (Z = 7)",
+            "clave": "N",
+            "correcta": true
+          },
+          {
+            "texto": "Aluminio (Z = 13)",
+            "clave": "Al",
+            "error": "carga-al-reves"
+          }
+        ]
+      }
+    },
+    {
+      "par": "qui-12",
+      "plantilla": "enlace",
+      "unidad": "quimica.enlace-quimico",
+      "nombreUnidad": "Enlace químico y fuerzas intermoleculares",
+      "mide": "Electrones de valencia de un anión poliatómico, al revés: la carga del ion entra en la cuenta del Lewis",
+      "A": {
+        "enunciado": "Al dibujar la estructura de Lewis del ion XO₂⁻ se reparten 18 electrones de valencia en total. ¿Cuántos electrones de valencia aporta el átomo X?",
+        "datos": {
+          "formula": "XO2^-",
+          "V": 18
+        },
+        "opciones": [
+          {
+            "texto": "6",
+            "valor": 6,
+            "error": "ignora-la-carga"
+          },
+          {
+            "texto": "7",
+            "valor": 7,
+            "error": "carga-al-reves"
+          },
+          {
+            "texto": "5",
+            "valor": 5,
+            "correcta": true
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Al dibujar la estructura de Lewis del ion XO₄²⁻ se reparten 32 electrones de valencia en total. ¿Cuántos electrones de valencia aporta el átomo X?",
+        "datos": {
+          "formula": "XO4^2-",
+          "V": 32
+        },
+        "opciones": [
+          {
+            "texto": "8",
+            "valor": 8,
+            "error": "ignora-la-carga"
+          },
+          {
+            "texto": "10",
+            "valor": 10,
+            "error": "carga-al-reves"
+          },
+          {
+            "texto": "6",
+            "valor": 6,
+            "correcta": true
+          }
+        ]
+      }
+    },
+    {
+      "par": "qui-13",
+      "plantilla": "balance-reacciones",
+      "unidad": "quimica.reacciones-y-balance",
+      "nombreUnidad": "Reacciones químicas y balance",
+      "mide": "Balance de la combustión de un alcohol: los O₂ que se gastan cubren los O del CO₂ y del agua, menos el O que ya trae el alcohol",
+      "A": {
+        "enunciado": "El etanol del alcohol de farmacia arde por completo: C₂H₅OH + O₂ → CO₂ + H₂O. En la ecuación balanceada, ¿cuántas moléculas de O₂ se gastan por cada molécula de etanol?",
+        "datos": {
+          "ecuacion": "C2H5OH + O2 -> CO2 + H2O"
+        },
+        "opciones": [
+          {
+            "texto": "3,5",
+            "valor": 3.5,
+            "error": "olvida-el-O-del-combustible"
+          },
+          {
+            "texto": "2",
+            "valor": 2,
+            "error": "solo-el-O-del-CO2"
+          },
+          {
+            "texto": "3",
+            "valor": 3,
+            "correcta": true
+          },
+          {
+            "texto": "6",
+            "valor": 6,
+            "error": "cuenta-atomos-no-moleculas"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "El butanol, un alcohol que se usa como solvente, arde por completo: C₄H₉OH + O₂ → CO₂ + H₂O. En la ecuación balanceada, ¿cuántas moléculas de O₂ se gastan por cada molécula de butanol?",
+        "datos": {
+          "ecuacion": "C4H9OH + O2 -> CO2 + H2O"
+        },
+        "opciones": [
+          {
+            "texto": "6,5",
+            "valor": 6.5,
+            "error": "olvida-el-O-del-combustible"
+          },
+          {
+            "texto": "4",
+            "valor": 4,
+            "error": "solo-el-O-del-CO2"
+          },
+          {
+            "texto": "6",
+            "valor": 6,
+            "correcta": true
+          },
+          {
+            "texto": "12",
+            "valor": 12,
+            "error": "cuenta-atomos-no-moleculas"
+          }
+        ]
+      }
+    },
+    {
+      "par": "qui-14",
+      "plantilla": "liquidos-y-solidos",
+      "unidad": "quimica.liquidos-y-solidos",
+      "nombreUnidad": "Líquidos, sólidos y cambios de estado",
+      "mide": "Gas recogido sobre agua: las moléculas de vapor por cada 100 del gas seco son Pv entre la presión del gas seco",
+      "A": {
+        "enunciado": "Un estudiante recoge nitrógeno en una probeta llena de agua, puesta boca abajo en una cubeta a 28 °C. Cuando el agua de la probeta queda a la misma altura que la de la cubeta, el gas de la probeta está a 745 mmHg. A 28 °C, la presión de vapor del agua es 28,3 mmHg. ¿Cuántas moléculas de vapor de agua hay en la probeta por cada 100 moléculas de nitrógeno?",
+        "datos": {
+          "Ptotal": 745,
+          "T": 28,
+          "Pv": 28.3
+        },
+        "opciones": [
+          {
+            "texto": "3,80",
+            "valor": 3.7986577181208054,
+            "error": "fraccion-sobre-la-total"
+          },
+          {
+            "texto": "100",
+            "valor": 100,
+            "error": "gas-agua-reparte-a-medias"
+          },
+          {
+            "texto": "3,95",
+            "valor": 3.9486535509976277,
+            "correcta": true
+          },
+          {
+            "texto": "96,20",
+            "valor": 96.20134228187919,
+            "error": "da-la-fraccion-del-otro-gas"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Un estudiante recoge hidrógeno en una probeta llena de agua, puesta boca abajo en una cubeta a 22 °C. Cuando el agua de la probeta queda a la misma altura que la de la cubeta, el gas de la probeta está a 755 mmHg. A 22 °C, la presión de vapor del agua es 19,8 mmHg. ¿Cuántas moléculas de vapor de agua hay en la probeta por cada 100 moléculas de hidrógeno?",
+        "datos": {
+          "Ptotal": 755,
+          "T": 22,
+          "Pv": 19.8
+        },
+        "opciones": [
+          {
+            "texto": "2,62",
+            "valor": 2.622516556291391,
+            "error": "fraccion-sobre-la-total"
+          },
+          {
+            "texto": "100",
+            "valor": 100,
+            "error": "gas-agua-reparte-a-medias"
+          },
+          {
+            "texto": "2,69",
+            "valor": 2.693144722524483,
+            "correcta": true
+          },
+          {
+            "texto": "97,38",
+            "valor": 97.37748344370861,
+            "error": "da-la-fraccion-del-otro-gas"
+          }
+        ]
+      }
+    },
+    {
+      "par": "qui-15",
+      "plantilla": "rendimiento-pureza",
+      "unidad": "quimica.estequiometria",
+      "nombreUnidad": "Estequiometría",
+      "mide": "Rendimiento con muestra impura: el teórico se calcula solo con la parte pura de la muestra",
+      "A": {
+        "enunciado": "Una muestra de 160 g de hierro, con 70 % de pureza, reacciona con ácido sulfúrico en exceso: Fe + H₂SO₄ → FeSO₄ + H₂. La impureza no reacciona. Se obtienen 3 g de H₂. ¿Cuál fue el rendimiento de la reacción? (Masas molares en g/mol: Fe = 56; H₂ = 2)",
+        "datos": {
+          "ecuacion": "Fe + H2SO4 -> FeSO4 + H2",
+          "muestra": 160,
+          "pureza": 70,
+          "real": 3,
+          "producto": "H2",
+          "masas": {
+            "Fe": 56,
+            "H2": 2
+          }
+        },
+        "opciones": [
+          {
+            "texto": "52,5 %",
+            "valor": 52.5,
+            "error": "olvida-pureza"
+          },
+          {
+            "texto": "75 %",
+            "valor": 75,
+            "correcta": true
+          },
+          {
+            "texto": "36,75 %",
+            "valor": 36.75,
+            "error": "multiplica-pureza"
+          },
+          {
+            "texto": "82,5 %",
+            "valor": 82.5,
+            "error": "suma-porcentajes"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Una muestra de 96 g de magnesio, con 75 % de pureza, reacciona con ácido clorhídrico en exceso: Mg + 2HCl → MgCl₂ + H₂. La impureza no reacciona. Se obtienen 4,8 g de H₂. ¿Cuál fue el rendimiento de la reacción? (Masas molares en g/mol: Mg = 24; H₂ = 2)",
+        "datos": {
+          "ecuacion": "Mg + HCl -> MgCl2 + H2",
+          "muestra": 96,
+          "pureza": 75,
+          "real": 4.8,
+          "producto": "H2",
+          "masas": {
+            "Mg": 24,
+            "H2": 2
+          }
+        },
+        "opciones": [
+          {
+            "texto": "60 %",
+            "valor": 60,
+            "error": "olvida-pureza"
+          },
+          {
+            "texto": "80 %",
+            "valor": 80,
+            "correcta": true
+          },
+          {
+            "texto": "45 %",
+            "valor": 45,
+            "error": "multiplica-pureza"
+          },
+          {
+            "texto": "85 %",
+            "valor": 85,
+            "error": "suma-porcentajes"
+          }
+        ]
+      }
+    },
+    {
+      "par": "qui-16",
+      "plantilla": "biomoleculas",
+      "unidad": "quimica.biomoleculas-y-productos-naturales",
+      "nombreUnidad": "Biomoléculas y productos naturales",
+      "mide": "Transferencia en la hidrólisis: un péptido cerrado en anillo tiene tantas uniones como aminoácidos, y cada una gasta un agua",
+      "A": {
+        "enunciado": "Un péptido cíclico está formado por 5 aminoácidos unidos en un anillo cerrado: el último se une también con el primero. Se hidroliza por completo 1 mol de este péptido hasta dejar libres los aminoácidos. ¿Cuántos gramos de agua se consumen? (Masa molar del agua: 18 g/mol)",
+        "datos": {
+          "n": 5,
+          "mol": 1
+        },
+        "opciones": [
+          {
+            "texto": "72 g",
+            "valor": 72,
+            "error": "cuenta-como-cadena-lineal"
+          },
+          {
+            "texto": "18 g",
+            "valor": 18,
+            "error": "BMH7-un-agua"
+          },
+          {
+            "texto": "0 g",
+            "valor": 0,
+            "error": "BM9-hidrolisis-sin-agua"
+          },
+          {
+            "texto": "90 g",
+            "valor": 90,
+            "correcta": true
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Un péptido cíclico está formado por 6 aminoácidos unidos en un anillo cerrado: el último se une también con el primero. Se hidroliza por completo 1 mol de este péptido hasta dejar libres los aminoácidos. ¿Cuántos gramos de agua se consumen? (Masa molar del agua: 18 g/mol)",
+        "datos": {
+          "n": 6,
+          "mol": 1
+        },
+        "opciones": [
+          {
+            "texto": "90 g",
+            "valor": 90,
+            "error": "cuenta-como-cadena-lineal"
+          },
+          {
+            "texto": "18 g",
+            "valor": 18,
+            "error": "BMH7-un-agua"
+          },
+          {
+            "texto": "0 g",
+            "valor": 0,
+            "error": "BM9-hidrolisis-sin-agua"
+          },
+          {
+            "texto": "108 g",
+            "valor": 108,
+            "correcta": true
+          }
+        ]
+      }
+    },
+    {
+      "par": "qui-17",
+      "plantilla": "quimica-ambiente",
+      "unidad": "quimica.recursos-naturales",
+      "nombreUnidad": "Petróleo y recursos naturales",
+      "mide": "Conservación de la masa en una combustión con oxígeno de sobra: los productos pesan el combustible más el O₂ que se gasta",
+      "A": {
+        "enunciado": "En un recipiente cerrado se queman por completo 0,3 g de etano (C₂H₆) con 2,4 g de oxígeno, que es más del que hace falta. Se forman dióxido de carbono y agua, y sobra oxígeno. ¿Cuántos gramos pesan, juntos, el dióxido de carbono y el agua que se forman? (Masas atómicas: H = 1; C = 12; O = 16)",
+        "datos": {
+          "hc": {
+            "C": 2,
+            "H": 6
+          },
+          "masaComb": 0.3,
+          "masaO2": 2.4
+        },
+        "opciones": [
+          {
+            "texto": "2,7 g",
+            "valor": 2.7,
+            "error": "ES15-suma-de-masas"
+          },
+          {
+            "texto": "0,3 g",
+            "valor": 0.3,
+            "error": "productos-pesan-lo-del-combustible"
+          },
+          {
+            "texto": "1,42 g",
+            "valor": 1.42,
+            "correcta": true
+          },
+          {
+            "texto": "0,88 g",
+            "valor": 0.88,
+            "error": "olvida-el-agua"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "En un recipiente cerrado se queman por completo 0,58 g de butano (C₄H₁₀) con 4,8 g de oxígeno, que es más del que hace falta. Se forman dióxido de carbono y agua, y sobra oxígeno. ¿Cuántos gramos pesan, juntos, el dióxido de carbono y el agua que se forman? (Masas atómicas: H = 1; C = 12; O = 16)",
+        "datos": {
+          "hc": {
+            "C": 4,
+            "H": 10
+          },
+          "masaComb": 0.58,
+          "masaO2": 4.8
+        },
+        "opciones": [
+          {
+            "texto": "5,38 g",
+            "valor": 5.38,
+            "error": "ES15-suma-de-masas"
+          },
+          {
+            "texto": "0,58 g",
+            "valor": 0.58,
+            "error": "productos-pesan-lo-del-combustible"
+          },
+          {
+            "texto": "2,66 g",
+            "valor": 2.66,
+            "correcta": true
+          },
+          {
+            "texto": "1,76 g",
+            "valor": 1.76,
+            "error": "olvida-el-agua"
           }
         ]
       }

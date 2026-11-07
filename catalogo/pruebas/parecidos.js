@@ -1,7 +1,10 @@
 // Detecta ítems del banco que repiten una predicción de su escena o un problema de su generador
 // (regla: la prueba no puede tomar lo mismo que el alumno ya practicó, o mediría memoria).
 // Lo usa catalogo/pruebas/pruebas.test.js; también se corre solo:
-//   node catalogo/pruebas/parecidos.js            → lista los parecidos de todo el banco
+//   node catalogo/pruebas/parecidos.js            → lista los parecidos de todo el banco y los avisos
+// Avisos (no tumban la prueba, solo se informan): un ítem que se parece a un problema del papel.json
+// de su plantilla, o que comparte dos o más códigos de error con una predicción de su escena (la misma
+// tarea con otros números, que la comparación de palabras y números no ve).
 'use strict';
 const fs = require('node:fs');
 const path = require('node:path');
@@ -46,6 +49,29 @@ function textosGenerador(id, n) {
   return [...new Set(out)];
 }
 
+// Enunciados de los problemas de lápiz y papel de una plantilla.
+function textosPapel(id) {
+  const f = path.join(RAIZ, 'plantillas', id, 'papel.json');
+  if (!fs.existsSync(f)) return [];
+  try { return (JSON.parse(fs.readFileSync(f, 'utf8')).problemas || []).map(p => `${p.id}: ${p.enunciado || ''}`); } catch { return []; }
+}
+
+// Códigos de error de cada predicción de la escena: las opciones se escriben ['a', 'texto', 'CÓDIGO', …];
+// las opciones seguidas (a pocas líneas una de otra) son de la misma predicción.
+function codigosEscena(id) {
+  const f = path.join(RAIZ, 'plantillas', id, 'index.html');
+  if (!fs.existsSync(f)) return [];
+  const lineas = fs.readFileSync(f, 'utf8').split('\n'), grupos = [];
+  let ultimo = -99;
+  lineas.forEach((l, i) => {
+    for (const m of l.matchAll(/\[\s*'[a-f]'\s*,\s*(?:'(?:[^'\\]|\\.)*'|`[^`]*`)\s*,\s*'([^']+)'/g)) {
+      if (i - ultimo > 3) grupos.push({ linea: i + 1, codigos: new Set() });
+      grupos[grupos.length - 1].codigos.add(m[1]); ultimo = i;
+    }
+  });
+  return grupos.filter(g => g.codigos.size >= 2);
+}
+
 // ¿El enunciado e se parece demasiado al texto t? Mismos números (dos o más) y palabras en común, o casi las mismas palabras.
 function parecido(e, t) {
   const Ne = numeros(e), Nt = numeros(t), Ke = palabras(e), Kt = palabras(t);
@@ -67,10 +93,32 @@ function revisar(bancos) {
   return hallados;
 }
 
-module.exports = { textosEscena, textosGenerador, parecido, revisar, numeros, palabras };
+// Avisos: parecidos con el papel y códigos de error compartidos con una predicción (2 o más).
+function avisos(bancos) {
+  const cP = {}, cC = {}, out = [];
+  for (const b of bancos) for (const p of [...b.pares, ...(b.reserva || [])]) {
+    const papel = cP[p.plantilla] = cP[p.plantilla] || textosPapel(p.plantilla);
+    const grupos = cC[p.plantilla] = cC[p.plantilla] || codigosEscena(p.plantilla);
+    for (const F of ['A', 'B']) {
+      for (const t of papel) {
+        const r = parecido(p[F].enunciado, t);
+        if (r) { out.push({ item: p.par + F, plantilla: p.plantilla, motivo: `papel: ${r}`, texto: t.slice(0, 160) }); break; }
+      }
+    }
+    const mios = new Set(p.A.opciones.map(o => o.error).filter(Boolean));
+    for (const g of grupos) {
+      const comunes = [...g.codigos].filter(c => mios.has(c));
+      if (comunes.length >= 2) { out.push({ item: p.par, plantilla: p.plantilla, motivo: `comparte ${comunes.length} códigos de error con la predicción de la línea ${g.linea}`, texto: comunes.join(', ') }); break; }
+    }
+  }
+  return out;
+}
+
+module.exports = { textosEscena, textosGenerador, textosPapel, codigosEscena, parecido, revisar, avisos, numeros, palabras };
 
 if (require.main === module) {
   const dir = __dirname;
   const bancos = fs.readdirSync(dir).filter(f => f.endsWith('.json')).map(f => JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8')));
   for (const h of revisar(bancos)) console.log(`${h.item} ~ ${h.plantilla}: ${h.motivo}\n   ${h.texto}`);
+  for (const h of avisos(bancos)) console.log(`aviso ${h.item} ~ ${h.plantilla}: ${h.motivo}\n   ${h.texto}`);
 }
