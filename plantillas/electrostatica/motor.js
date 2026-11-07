@@ -34,7 +34,9 @@
  *   energiaCondensador(C, V)           U = C·V²/2 = Q·V/2 = Q²/(2C)
  *   dielectrico(o)                     se mete una lámina de dieléctrico κ que llena el espacio entre las placas (o una
  *                                      fracción f del área): C × κ si la llena (con f, C × (1 + (κ − 1)·f)); CONECTADO, V fijo y Q, U crecen igual que C;
- *                                      DESCONECTADO, Q fija y V, E, U bajan en esa razón
+ *                                      DESCONECTADO, Q fija y V, E, U bajan en esa razón; da también el balance de
+ *                                      energía: deltaU, trabajoPila (Q que entra · V) y trabajoSobreLamina (lo que
+ *                                      las placas hacen al jalar la lámina hacia adentro = trabajoPila − deltaU)
  *   contacto(Q1, R1, Q2, R2)           dos esferas conductoras que se tocan: la carga se reparte hasta igualar el
  *                                      potencial (proporcional al radio), no en partes iguales
  *   mapaCampo(cargas, caja, n)         flechitas del campo en una cuadrícula, con su dirección y su intensidad relativa
@@ -470,6 +472,8 @@
     return {
       ...r, C0: o.C0, V0: limpio(V0), Q0: limpio(Q0), U0: limpio(U0), E0: o.d ? limpio(V0 / o.d) : undefined,
       factor: limpio(factor), razonU: limpio(r.U / U0), razonV: limpio(r.V / V0), razonQ: limpio(r.Q / Q0),
+      deltaU: limpio(r.U - U0), trabajoPila: limpio(o.conectado ? (r.Q - Q0) * V0 : 0),
+      trabajoSobreLamina: limpio((o.conectado ? (r.Q - Q0) * V0 : 0) - (r.U - U0)),
       errores: {
         nadaCambia: { V: limpio(V0), Q: limpio(Q0), C: o.C0 },             // EL6 (parcial): «el aislante no hace nada»
         vSubeConC: { V: limpio(V0 * factor), Q: limpio(Q0) },               // C sube κ veces y V «también»

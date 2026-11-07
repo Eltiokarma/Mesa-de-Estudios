@@ -736,29 +736,34 @@ function crearEscena(cv, idDesc, idLect, idLey){
   // La densidad de flechas del campo es proporcional a E; las cargas ligadas de la lámina van chicas, en gris.
   function dibujarDielec(c){
     const D = E.di, R = ME.dielectrico({ ...D.o, conectado:D.conectado, fraccion:D.f });
-    const ancho = Math.min(W*.5, 260), x0 = Math.max(70, W*.2), x1 = x0 + ancho, gap = Math.min(80, H*.34), yC = H/2 + 2, yT = yC - gap/2, yB = yC + gap/2;
+    const x0 = Math.max(70, W*.2), ancho = Math.min(W*.5, 260, (W - x0 - 26)/2), x1 = x0 + ancho, gap = Math.min(80, H*.34), yC = H/2 + 2, yT = yC - gap/2, yB = yC + gap/2;
     // lámina (entra desde la derecha)
     const xL = mix(x1 + 20, x0, D.f);
     ctx.save(); ctx.fillStyle = c.muted; ctx.globalAlpha = .16; ctx.fillRect(xL, yT + 1, ancho, gap - 2); ctx.globalAlpha = .7; ctx.strokeStyle = c.muted; ctx.lineWidth = 1.4; ctx.strokeRect(xL, yT + 1, ancho, gap - 2); ctx.restore();
     // cargas ligadas: solo en la parte que ya está entre las placas
     if (D.f > 0){
-      ctx.save(); ctx.fillStyle = c.muted; ctx.font = `700 10px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      for (let x = xL + 9; x < Math.min(x1, xL + ancho) - 4; x += 16){ ctx.fillText('−', x, yT + 9); ctx.fillText('+', x, yB - 9); }
+      ctx.save(); ctx.fillStyle = c.muted; ctx.font = `700 9px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      for (let x = xL + 9; x < Math.min(x1, xL + ancho) - 4; x += 16){ ctx.fillText('−', x, yT + 7); ctx.fillText('+', x, yB - 7); }
       ctx.restore();
     }
-    if (D.f >= .98) rotulo(ctx, c, x1 + 8, yC, `κ = ${fmt(D.o.kappa, 1)}`, c.ink, 'left', 800, 12);
+    if (D.f >= .98) rotulo(ctx, c, x1 + 20, yB - 10, `κ = ${fmt(D.o.kappa, 1)}`, c.ink, 'left', 800, 12);
     else rotulo(ctx, c, Math.min(xL + ancho/2, (xL + W)/2), yC, `κ = ${fmt(D.o.kappa, 1)}`, c.ink, 'center', 800, 12);
     // campo: líneas verticales, tantas como E/E0 · 9
     const n = Math.max(1, Math.round(9*R.E/R.E0));
-    for (let k = 0; k < n; k++){ const x = x0 + ancho*(k + .5)/n; flecha({ x, y:yT + 3 }, { x, y:yB - 3 }, c.E, grosor('E', 1.8), { alfa:.75 }); }
+    for (let k = 0; k < n; k++){ const x = x0 + ancho*(k + .5)/n; flecha({ x, y:yT + 14 }, { x, y:yB - 14 }, c.E, grosor('E', 1.8), { alfa:.75 }); }
     // placas
     ctx.save(); ctx.fillStyle = c.ink; ctx.fillRect(x0, yT - 7, ancho, 7); ctx.fillRect(x0, yB, ancho, 7); ctx.restore();
-    // cargas libres de las placas: un signo por cada 20 µC
-    const m = Math.max(1, Math.round(R.Q/20));
+    // cargas libres de las placas: un signo por cada 30 µC
+    const m = Math.max(1, Math.round(R.Q/30));
     ctx.save(); ctx.fillStyle = c.ink; ctx.font = `800 13px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     // sin signos encima del cable, que sale del centro de cada placa
-    for (let k = 0; k < m; k++){ const x = x0 + ancho*(k + .5)/m; if (Math.abs(x - (x0 + ancho/2)) < 7) continue; ctx.fillText('+', x, yT - 16); ctx.fillText('−', x, yB + 17); }
+    for (let k = 0; k < m; k++){ const x = x0 + (ancho - 18)*(k + .5)/m; if (Math.abs(x - (x0 + ancho/2)) < 7) continue; ctx.fillText('+', x, yT - 16); ctx.fillText('−', x, yB + 17); }
     ctx.restore();
+    // distancia d entre placas (cota a la derecha, como en el condensador de placas)
+    { const xd = x1 + 12, d = D.o.d;
+      ctx.save(); ctx.strokeStyle = c.r; ctx.lineWidth = grosor('r', 1.8);
+      linea(ctx, { x:xd, y:yT }, { x:xd, y:yB }); linea(ctx, { x:xd - 5, y:yT }, { x:xd + 5, y:yT }); linea(ctx, { x:xd - 5, y:yB }, { x:xd + 5, y:yB }); ctx.restore();
+      rotulo(ctx, c, xd, yT - 15, `d = ${fmt(d*1000, 0)} mm`, c.r, 'center', 800, 11); }
     // pila: conectada o no
     const xp = x0 - 46, yP = yC;
     ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2;
@@ -819,7 +824,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
     } else if (E.vista === 'placa'){
       l.push(it('C', 'C · capacidad')); l.push(it('q', 'Q · carga', true)); l.push(it('V', 'V · voltaje')); l.push(it('r', 'd · distancia'));
     } else if (E.vista === 'dielec'){
-      l.push(it('C', 'C · capacidad')); l.push(it('q', 'Q · carga', true)); l.push(it('V', 'V · voltaje')); l.push(it('E', 'E · campo (más flechas, más campo)')); l.push(it('U', 'U · energía'));
+      l.push(it('C', 'C · capacidad')); l.push(it('q', 'Q · carga', true)); l.push(it('V', 'V · voltaje')); l.push(it('E', 'E · campo (más flechas, más campo)')); l.push(it('U', 'U · energía')); l.push(it('r', 'd · distancia'));
       l.push('<span>en gris: la lámina y sus cargas ligadas</span>');
     } else if (E.vista === 'contacto'){
       l.push(it('q', 'Q · carga', true)); l.push(it('r', 'R · radio')); l.push(it('V', 'V · potencial'));
@@ -829,6 +834,8 @@ function crearEscena(cv, idDesc, idLect, idLey){
   }
   E.leyenda = () => { if (idLey) document.getElementById(idLey).innerHTML = leyenda(); };
   // Lecturas y descripción: solo lo que cada paso pide (no adelantan la respuesta).
+  // Solo las lecturas, sin tocar el aria-live (para las animaciones)
+  E.leer = () => { const ls = E.lect() || []; if (idLect) document.getElementById(idLect).innerHTML = ls.map(([k, t, v]) => `<div class="lectura${String(v).length > 14 ? ' ancha' : ''}" style="--k:${k === 'ink' ? 'var(--ink)' : `var(--c-${k})`}"><span>${t}</span><b>${v}</b></div>`).join(''); };
   E.avisar = () => {
     const ls = E.lect() || [];
     if (idLect) document.getElementById(idLect).innerHTML = ls.map(([k, t, v]) => `<div class="lectura${String(v).length > 14 ? ' ancha' : ''}" style="--k:${k === 'ink' ? 'var(--ink)' : `var(--c-${k})`}"><span>${t}</span><b>${v}</b></div>`).join('');
@@ -1223,7 +1230,7 @@ go(0);
 </script>
 <script>
 /* ================= MODO 2: ¿qué pasa si…? =================
-   Respaldos: EL7 (parcial: solo 1 de cada 8 acierta; sin cifra de cuántos responden C = 0) y EL8 (parcial: «la mayoría», sin
+   Respaldos: EL6 (parcial: ≈50 % sobre polarización, no sobre condensadores), EL7 (parcial: solo 1 de cada 8 acierta; sin cifra de cuántos responden C = 0) y EL8 (parcial: «la mayoría», sin
    porcentaje), de docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md. Lo demás, hipótesis nuestras.
    La escena cambia recién después de responder. */
 (function(){
@@ -1244,8 +1251,9 @@ function lecturasDi(){
 }
 // La lámina entra; si el alumno pide la otra situación, se vuelve a empezar sin lámina.
 function meterLamina(conectado){
-  E.di.conectado = conectado; E.di.f = 0; E.dibujar(); E.avisar();
-  E.tween(1600, f => { E.di.f = f; E.dibujar(); E.avisar(); }, () => { E.di.f = 1; E.dibujar(); E.avisar(); });
+  // en cada cuadro solo cambian el dibujo y las lecturas; el lector de pantalla recibe un aviso al final
+  E.di.conectado = conectado; E.di.f = 0; E.dibujar(); E.leer();
+  E.tween(1600, f => { E.di.f = f; E.dibujar(); E.leer(); }, () => { E.di.f = 1; E.dibujar(); E.avisar(); });
 }
 
 function lecturasSonda(){
@@ -1338,7 +1346,7 @@ const EXPS = [
       <p>La carga se conserva y pasa de una a otra hasta que las dos tienen el mismo potencial, ${P_(sci(K5V.V) + ' V')} (una vez separadas y lejos una de la otra). Solo si las esferas son iguales queda la mitad en cada una.</p>
       <p class="fuente">Que la carga se reparte hasta que las dos tengan la misma cantidad lo cree «la mayoría» de alumnos de bachillerato y de primeros años de universidad, según Guisasola y otros (2010), sin un porcentaje en lo que leímos: por eso la opción A tiene un respaldo solo parcial. Las demás son hipótesis nuestras.</p>` },
   { id:'dielectrico', corto:'Una lámina entre las placas',
-    q:`Un condensador de ${C_('10 µF')} se carga con una pila de ${P_('12 V')} (queda con ${q_('Q = 120 µC')}) y luego se <b>desconecta</b> de la pila. Ahora se mete entre sus placas una lámina de un aislante con κ = 3, que llena todo el espacio. ¿Cuánto valen su voltaje y su carga?`,
+    q:`Un condensador de ${C_('10 µF')} se carga con una pila de ${P_('12 V')} (queda con ${q_('Q = 120 µC')}) y luego se <b>desconecta</b> de la pila. Ahora se mete entre sus placas una lámina de un aislante (un dieléctrico) con κ = 3, que llena todo el espacio. Las placas están a ${r_('1 mm')}. ¿Cuánto valen su voltaje y su carga?`,
     opts:[['a', `V = ${fmt(DI.errores.nadaCambia.V, 0)} V y Q = ${fmt(DI.errores.nadaCambia.Q, 0)} µC: el aislante no hace nada, porque sus cargas no se mueven`, 'EL6-aislante-no-hace-nada', 'parcial'],
           ['b', `V = ${fmt(DI.errores.vSubeConC.V, 0)} V y Q = ${fmt(DI.errores.vSubeConC.Q, 0)} µC: el voltaje sube 3 veces, como la capacidad`, 'DI-voltaje-sube-con-C', 'hipotesis'],
           ['c', `V = ${fmt(DI.errores.otraSituacion.V, 0)} V y Q = ${fmt(DI.errores.otraSituacion.Q, 0)} µC: la carga sube 3 veces, como la capacidad`, 'DI-confunde-conectado', 'hipotesis'],
@@ -1352,10 +1360,12 @@ const EXPS = [
     despues:() => meterLamina(false),
     exp:() => `<div class="eqs"><div class="eq">${C_('C')} = κ · ${C_('C₀')} = 3 · ${C_('10')} = ${C_(fmt(DI.C, 0) + ' µF')}<span class="note">la lámina multiplica la capacidad</span></div>
       <div class="eq">${q_('Q')} = ${q_(fmt(DI.Q, 0) + ' µC')}<span class="note">desconectado: la carga no tiene a dónde ir</span></div>
-      <div class="eq">${P_('V')} = ${q_('Q')} / ${C_('C')} = ${q_('120')} / ${C_('30')} = ${P_(fmt(DI.V, 0) + ' V')} y ${E_('E')} = ${P_('V')} / d baja de ${E_(fmt(DI.E0/1000, 0) + ' kV/m')} a ${E_(fmt(DI.E/1000, 0) + ' kV/m')}</div>
+      <div class="eq">${P_('V')} = ${q_('Q')} / ${C_('C')} = ${q_('120')} / ${C_('30')} = ${P_(fmt(DI.V, 0) + ' V')} y </div>
+      <div class="eq">${E_('E')} = ${P_('V')} / ${r_('d')} baja de ${E_(fmt(DI.E0/1000, 0) + ' kV/m')} a ${E_(fmt(DI.E/1000, 0) + ' kV/m')}</div>
       <div class="eq">${U_('U')} = ${q_('Q')} · ${P_('V')} / 2 = ${U_(fmt(DI.U, 0) + ' µJ')}<span class="note">antes ${fmt(DI.U0, 0)} µJ: un tercio</span></div></div>
       <p>Las cargas del aislante se corren un poco dentro de cada molécula (los signos grises): frente a la placa + queda una capa −, y frente a la placa −, una capa +. Esas capas debilitan el campo entre las placas: hay menos flechas.</p>
       <p><b>Con la pila conectada es al revés:</b> la pila mantiene ${P_('12 V')}, así que entra más carga, ${q_(fmt(DIc.Q, 0) + ' µC')}; el campo queda igual y la energía sube a ${U_(fmt(DIc.U, 0) + ' µJ')}.</p>
+      <p><b>¿Y la energía?</b> Desconectado, baja de ${U_(fmt(DI.U0, 0) + ' µJ')} a ${U_(fmt(DI.U, 0) + ' µJ')}: los ${fmt(DI.trabajoSobreLamina, 0)} µJ que faltan son el trabajo con que las placas jalan la lámina hacia adentro. Conectado, la pila entrega ${q_('Q')} · ${P_('V')} = ${q_(fmt(DIc.Q - DIc.Q0, 0))} · ${P_('12')} = ${fmt(DIc.trabajoPila, 0)} µJ: la mitad (${fmt(DIc.deltaU, 0)} µJ) se queda en el condensador, que sube de ${U_(fmt(DIc.U0, 0) + ' µJ')} a ${U_(fmt(DIc.U, 0) + ' µJ')}, y la otra mitad es el trabajo con que la lámina es jalada.</p>
       <div class="acciones"><button type="button" class="btn" id="conectar6">Verlo con la pila conectada</button><button type="button" class="btn" id="desconectar6">Otra vez desconectado</button></div>
       <p class="fuente">Creer que un aislante no se polariza porque sus cargas no se mueven lo tenía cerca del 50 % de un grupo de universitarios de primer año (Park y otros, 2001, citado por Guisasola y otros, 2010). Ese dato es sobre la polarización, no sobre el condensador: por eso la opción A tiene un respaldo solo parcial. Las demás opciones son hipótesis nuestras: no encontramos datos sobre dieléctricos.</p>`,
     enlazar:() => { const a = $('conectar6'), b = $('desconectar6'); if (a) a.onclick = () => meterLamina(true); if (b) b.onclick = () => meterLamina(false); } },

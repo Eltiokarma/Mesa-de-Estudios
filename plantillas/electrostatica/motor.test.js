@@ -212,6 +212,9 @@ test('dieléctrico: C × κ siempre; desconectado, Q se conserva y U, V, E ÷ κ
     cerca(motor.dielectrico({ C0, Q0: C0 * V0, kappa: ka, conectado: false }).V, des.V, 'con Q0');
     cerca(motor.dielectrico({ C0, V0, kappa: ka, conectado: true, fraccion: f }).C, C0 * (1 + (ka - 1) * f), 'fracción');
     cerca(motor.dielectrico({ C0, V0, kappa: 1, conectado: false }).U, U0, 'κ = 1 no cambia nada');
+    // energía: desconectado, las placas jalan la lámina con U0 − U; conectado, la pila entrega el doble de lo que sube U
+    cerca(des.trabajoSobreLamina, U0 - des.U, 'desconectado'); cerca(con.trabajoPila, 2 * con.deltaU, 'conectado: la mitad');
+    cerca(con.trabajoSobreLamina, con.deltaU, 'conectado: la otra mitad'); assert.ok(des.trabajoSobreLamina >= -1e-9 && con.trabajoSobreLamina >= -1e-9);
   }
 });
 test('conductores que se tocan: la carga se conserva y quedan al mismo potencial (no con la misma carga)', () => {
