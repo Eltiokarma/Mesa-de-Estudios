@@ -1,0 +1,1068 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La región que se arma: programación lineal</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde del plano con imán.
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
+   x (chompas) naranja, y (chalinas) verde, la primera restricción (tejido) azul, la segunda (feria) fucsia,
+   la tercera (alpaca) verde petróleo, la región factible marrón tierra, la función objetivo z y sus rectas de nivel
+   granate, el óptimo índigo, los vértices en tinta y una restricción nueva de «¿Qué pasa si…?» en gris.
+   x ≥ 0 va en el naranja de x (sobre el eje y) e y ≥ 0 en el verde de y (sobre el eje x).
+   Elegidos con CIEDE2000: mínimo entre los diez (con la tinta) 23,7 en claro y 22,0 en oscuro (r1 con el óptimo).
+   Contraste AA sobre el papel, la tarjeta y su chip (.v, fondo al 8 %), en claro y en oscuro (mínimo 4,51). */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8; --eje:#a99cb0;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-x:#a14d0c; --c-y:#54690c; --c-r1:#1c6ea4; --c-r2:#ba09af; --c-r3:#004b3e; --c-reg:#322916; --c-z:#62010c; --c-opt:#0001cf; --c-vt:#2d2340; --c-nueva:#74676b;
+  --relleno:.16;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f; --eje:#6f6380;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-x:#ff9e54; --c-y:#68f21a; --c-r1:#88d2ff; --c-r2:#f03dff; --c-r3:#2cebca; --c-reg:#f9dc51; --c-z:#f3687f; --c-opt:#868cea; --c-vt:#f1ebf7; --c-nueva:#919688;
+  --relleno:.17; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f; --eje:#6f6380;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-x:#ff9e54; --c-y:#68f21a; --c-r1:#88d2ff; --c-r2:#f03dff; --c-r3:#2cebca; --c-reg:#f9dc51; --c-z:#f3687f; --c-opt:#868cea; --c-vt:#f1ebf7; --c-nueva:#919688;
+  --relleno:.17; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+@media (max-width:899px){
+  .mode.pendiente .bench{position:sticky; top:0; z-index:1; padding:6px; gap:4px; background:var(--card); border-radius:0 0 20px 20px}
+  .mode.pendiente .legend{display:none}
+  .mode.pendiente .lecturas{gap:4px}
+  .mode.pendiente .lectura{padding:2px 8px}
+}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+.lienzo:has(canvas:focus-visible){outline:3px solid var(--ink); outline-offset:2px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+.legend i.sq{width:12px; height:12px; border-radius:3px; opacity:.55}
+.legend i.pt{width:10px; height:10px; border-radius:50%}
+.legend i.tr{background:repeating-linear-gradient(90deg, currentColor 0 4px, transparent 4px 7px)!important}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; grid-template-columns:minmax(0, 1fr); gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; grid-template-columns:minmax(0, 1fr); gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{white-space:nowrap; font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px}
+.v-x{color:var(--c-x); background:color-mix(in srgb, var(--c-x) 8%, transparent)}
+.v-y{color:var(--c-y); background:color-mix(in srgb, var(--c-y) 8%, transparent)}
+.v-r1{color:var(--c-r1); background:color-mix(in srgb, var(--c-r1) 8%, transparent)}
+.v-r2{color:var(--c-r2); background:color-mix(in srgb, var(--c-r2) 8%, transparent)}
+.v-r3{color:var(--c-r3); background:color-mix(in srgb, var(--c-r3) 8%, transparent)}
+.v-reg{color:var(--c-reg); background:color-mix(in srgb, var(--c-reg) 8%, transparent)}
+.v-z{color:var(--c-z); background:color-mix(in srgb, var(--c-z) 8%, transparent)}
+.v-opt{color:var(--c-opt); background:color-mix(in srgb, var(--c-opt) 8%, transparent)}
+.v-vt{color:var(--c-vt); background:color-mix(in srgb, var(--c-vt) 8%, transparent)}
+.v-nueva{color:var(--c-nueva); background:color-mix(in srgb, var(--c-nueva) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eqs:empty{display:none}
+.eq{display:block; line-height:2.1; font-family:var(--mono); font-size:1.02rem; font-variant-numeric:tabular-nums}
+.eq .note{display:inline-block; line-height:1.4; font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.6em; white-space:normal}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+button:focus-visible, .v:focus-visible, a:focus-visible, input:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+/* Restricciones que se agregan con un toque */
+.chips{display:flex; flex-wrap:wrap; gap:8px}
+.chip{font:700 .92rem var(--mono); padding:8px 12px; border-radius:999px; border:2px solid var(--k); background:var(--paper); color:var(--k); cursor:pointer; min-height:44px}
+.chip[aria-pressed="true"]{background:color-mix(in srgb, var(--k) 14%, var(--paper))}
+.chip[aria-pressed="true"]::before{content:"✓ "}
+.chip[aria-pressed="false"]::before{content:"+ "}
+
+/* La perilla de la recta de nivel */
+.perilla{display:grid; gap:4px; padding:10px 14px; border-radius:16px; background:var(--paper); border:1px solid var(--line)}
+.perilla label{font-weight:700; color:var(--c-z)}
+.perilla input{width:100%; accent-color:var(--c-z); min-height:32px}
+
+/* Lecturas en vivo, cada una con el color de su variable */
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(110px, 1fr)); gap:8px}
+.lecturas:empty{display:none}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura b{display:block; color:var(--k); font:800 .95rem var(--mono); font-variant-numeric:tabular-nums; overflow-wrap:anywhere}
+.lectura span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+
+/* Tabla del método de los vértices */
+.tabla{justify-self:start; border-collapse:collapse; font:600 .95rem var(--mono); font-variant-numeric:tabular-nums; background:var(--paper); border-radius:12px; overflow:hidden; max-width:100%}
+.tabla th, .tabla td{padding:4px 12px; border-bottom:1px solid var(--line); text-align:center}
+.tabla th{font:700 .8rem var(--font); color:var(--muted)}
+.tabla td.z{color:var(--c-z)}
+.tabla tr.max td{font-weight:800; outline:2px solid var(--c-opt); outline-offset:-2px}
+.tabla-caja{overflow-x:auto; max-width:100%}
+
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.2fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Álgebra · Programación lineal · Problemas tipo admisión</p>
+      <h1>La región que se arma</h1>
+      <p class="sub">Cada condición de un problema parte el plano en dos. Agrégalas una por una, mira qué queda y desliza la recta de la ganancia para ver hasta dónde llega, antes de hacer la tabla.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo de la escena: el plano con las restricciones, la región y la recta de la ganancia">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Plano cartesiano de la escena"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos con regiones y funciones objetivo">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Plano cartesiano del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/programacion-lineal">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'programacion-lineal', unidad: 'algebra.programacion-lineal', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0, unidad){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: unidad || PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la matemática (semiplanos, cruces, vértices, la región recortada, la función objetivo, la recta de nivel y
+   el método de los vértices) sale de MotorProgLineal (motor.js); aquí solo se pinta, se arrastra y se anima. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MP = MotorProgLineal;
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
+function fmt(n, d){
+  if (n === null || n === undefined || !Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 2 : d), r = Math.round(n*p)/p + 0;
+  const [e, f] = String(Math.abs(r)).split('.');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const X_ = t => V('x', t), Y_ = t => V('y', t), R1_ = t => V('r1', t), R2_ = t => V('r2', t), R3_ = t => V('r3', t),
+  RG_ = t => V('reg', t), Z_ = t => V('z', t), OP_ = t => V('opt', t), VT_ = t => V('vt', t), NU_ = t => V('nueva', t);
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+const lerp = (a, b, f) => a + (b - a)*f;
+function tween(dur, paso, fin){
+  if (RM || !dur){ paso(1); if (fin) setTimeout(fin, 0); return; }
+  const t0 = performance.now();
+  const tick = now => { const f = Math.min(1, (now - t0)/dur); paso(suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
+  requestAnimationFrame(tick);
+}
+const CLAVES = ['x', 'y', 'r1', 'r2', 'r3', 'reg', 'z', 'opt', 'vt', 'nueva'];
+function colores(){
+  const c = { ink:css('--ink'), muted:css('--muted'), grid:css('--grid'), eje:css('--eje'), paper:css('--paper'), card:css('--card'), line:css('--line'),
+    warn:css('--warn'), ok:css('--ok'), relleno:Number(css('--relleno')) || .16, font:css('--font') };
+  for (const k of CLAVES) c[k] = css('--c-' + k);
+  return c;
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+/* ================= El plano =================
+   E.config({ vista:{x0,x1,y0,y1}, referencial, pintar(D), lect, ley, desc, nivel })
+   nivel = { Z:[a, b], k, min, max, paso, activo, alMover(k) }: la recta de nivel z = k, con una manija que se arrastra
+   (solo si el toque empieza cerca de la manija), con las flechas del teclado o con la perilla de la guía. */
+function crearPlano(cv, idDesc, idLect, idLey){
+  const E = { vista:{ x0:-2, x1:12, y0:-2, y1:13 }, pintar:null, lect:[], ley:[], desc:null, referencial:false, nivel:null,
+    hl:null, tok:0, anim:false, ocupado:false, compacto:false };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, s = 30, ox = 0, oy = 0, sobre = false, arrastrando = false;
+  const chico = () => innerWidth < 900;
+  function alto(w){
+    const h = chico() ? Math.round(clamp(w*0.95, 280, 420)) : Math.round(clamp(w*0.8, 360, 560));
+    return Celular.alto(h, E.compacto);
+  }
+  function encuadrar(){
+    const v = E.vista, pad = 18;
+    s = Math.min((W - 2*pad)/(v.x1 - v.x0), (H - 2*pad)/(v.y1 - v.y0));
+    ox = (W - s*(v.x1 - v.x0))/2 - v.x0*s; oy = (H + s*(v.y1 - v.y0))/2 + v.y0*s;
+  }
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    const h = alto(w), dpr = Celular.dpr();
+    if (w === W && h === H) { E.dibujar(); return; }
+    W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  alRedibujarTema(() => E.dibujar());
+  const X = x => ox + x*s, Y = y => oy - y*s;
+  const mundo = (px, py) => [(px - ox)/s, (oy - py)/s];
+  // la ventana visible, en coordenadas del plano (para recortar la región)
+  const ventana = () => { const [a, d] = mundo(0, 0), [b, c] = mundo(W, H); return { x0:Math.floor(a) - 1, x1:Math.ceil(b) + 1, y0:Math.floor(c) - 1, y1:Math.ceil(d) + 1 }; };
+
+  E.config = o => {
+    E.tok++; E.anim = false;
+    Object.assign(E, { pintar:null, lect:[], ley:[], desc:null, referencial:false, nivel:null }, o);
+    cv.tabIndex = E.nivel && E.nivel.activo ? 0 : -1;
+    W = 0; resize(); E.leyenda(); E.avisar();
+  };
+  E.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === E.compacto) return; E.compacto = on; W = 0; resize(); };
+  const g = (k, base) => (E.hl === k ? base + 2.5 : base);
+
+  // ----- herramientas de dibujo (coordenadas del plano) -----
+  function rotulo(c, x, y, t, color, align, tam, peso){
+    ctx.font = `${peso || 700} ${tam || 13}px ${c.font}`; ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle';
+    const w = ctx.measureText(t).width;
+    let x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+    const dx = clamp(x0, 3, W - w - 3) - x0; x0 += dx;   // que no se salga del lienzo
+    const yy = clamp(y, 10, H - 10);
+    ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .88; ctx.fillRect(x0 - 3, yy - 9, w + 6, 18); ctx.restore();
+    ctx.fillStyle = color; ctx.fillText(t, x + dx, yy);
+  }
+  function linea(P, Q, color, ancho, trazos, alfa){
+    ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = ancho || 2; ctx.lineCap = 'round'; if (trazos) ctx.setLineDash(trazos); if (alfa !== undefined) ctx.globalAlpha = alfa;
+    ctx.beginPath(); ctx.moveTo(X(P[0]), Y(P[1])); ctx.lineTo(X(Q[0]), Y(Q[1])); ctx.stroke(); ctx.restore();
+  }
+  // Una recta a·x + b·y = c de borde a borde (r es [a, b, op, c])
+  function recta(r, color, ancho, trazos, alfa){
+    const [a, b, , cc] = r, [wx0, wy1] = mundo(0, 0), [wx1, wy0] = mundo(W, H);
+    if (Math.abs(b) < 1e-12){ const x = cc/a; linea([x, wy0 - 1], [x, wy1 + 1], color, ancho, trazos, alfa); return; }
+    const y = x => (cc - a*x)/b;
+    linea([wx0 - 1, y(wx0 - 1)], [wx1 + 1, y(wx1 + 1)], color, ancho, trazos, alfa);
+  }
+  function poligono(Ps, color, alfa, borde, anchoBorde){
+    if (!Ps || Ps.length < 2) return;
+    ctx.save(); ctx.beginPath(); Ps.forEach((P, i) => (i ? ctx.lineTo(X(P[0]), Y(P[1])) : ctx.moveTo(X(P[0]), Y(P[1])))); ctx.closePath();
+    if (alfa){ ctx.globalAlpha = alfa; ctx.fillStyle = color; ctx.fill(); ctx.globalAlpha = 1; }
+    if (borde){ ctx.strokeStyle = borde; ctx.lineWidth = anchoBorde || 2; ctx.stroke(); }
+    ctx.restore();
+  }
+  function punto(c, P, nombre, color, o){
+    o = o || {};
+    const x = X(P[0]), y = Y(P[1]);
+    if (o.anillo){ ctx.save(); ctx.strokeStyle = o.anillo; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(x, y, o.ra || 11, 0, 2*Math.PI); ctx.stroke(); ctx.restore(); }
+    ctx.save(); ctx.fillStyle = color; ctx.strokeStyle = c.paper; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(x, y, o.r || 5, 0, 2*Math.PI); ctx.fill(); ctx.stroke(); ctx.restore();
+    if (nombre){
+      const dx = o.dx === undefined ? 10 : o.dx, dy = o.dy === undefined ? -14 : o.dy;
+      rotulo(c, x + dx, y + dy, nombre, o.colorRot || c.ink, dx < 0 ? 'right' : dx === 0 ? 'center' : 'left', o.tam || 13);
+    }
+  }
+  function flecha(c, P, Q, color, ancho){
+    linea(P, Q, color, ancho || 2.5);
+    const ang = Math.atan2(-(Q[1] - P[1]), Q[0] - P[0]), x = X(Q[0]), y = Y(Q[1]), k = 10;
+    ctx.save(); ctx.fillStyle = color; ctx.beginPath(); ctx.moveTo(x, y);
+    ctx.lineTo(x - k*Math.cos(ang - .45), y - k*Math.sin(ang - .45)); ctx.lineTo(x - k*Math.cos(ang + .45), y - k*Math.sin(ang + .45)); ctx.closePath(); ctx.fill(); ctx.restore();
+  }
+  function cuadricula(c){
+    const [wx0, wy1] = mundo(0, 0), [wx1, wy0] = mundo(W, H);
+    const paso = s >= 24 ? 1 : s >= 14 ? 2 : 5;
+    ctx.save();
+    if (!E.referencial){
+      ctx.strokeStyle = c.grid; ctx.lineWidth = 1;
+      for (let x = Math.ceil(wx0); x <= wx1; x++){ ctx.beginPath(); ctx.moveTo(X(x), 0); ctx.lineTo(X(x), H); ctx.stroke(); }
+      for (let y = Math.ceil(wy0); y <= wy1; y++){ ctx.beginPath(); ctx.moveTo(0, Y(y)); ctx.lineTo(W, Y(y)); ctx.stroke(); }
+    }
+    ctx.strokeStyle = c.eje; ctx.lineWidth = 1.6;
+    ctx.beginPath(); ctx.moveTo(0, Y(0)); ctx.lineTo(W, Y(0)); ctx.moveTo(X(0), 0); ctx.lineTo(X(0), H); ctx.stroke();
+    if (!E.referencial){
+      ctx.fillStyle = c.muted; ctx.font = `600 11px ${c.font}`; ctx.textBaseline = 'top'; ctx.textAlign = 'center';
+      const yx = clamp(Y(0) + 4, 2, H - 14), xy = clamp(X(0) - 5, 18, W - 2);
+      for (let x = Math.ceil(wx0/paso)*paso; x <= wx1; x += paso) if (x !== 0) ctx.fillText(fmt(x, 0), X(x), yx);
+      ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+      for (let y = Math.ceil(wy0/paso)*paso; y <= wy1; y += paso) if (y !== 0) ctx.fillText(fmt(y, 0), xy, Y(y));
+      ctx.textAlign = 'right'; ctx.textBaseline = 'top'; ctx.fillText('0', X(0) - 4, Y(0) + 3);
+    } else {
+      ctx.fillStyle = c.muted; ctx.textAlign = 'right'; ctx.textBaseline = 'bottom'; ctx.font = `600 12px ${c.font}`; ctx.fillText('Figura referencial', W - 8, H - 6);
+    }
+    ctx.font = `800 13px ${c.font}`; ctx.textBaseline = 'top';
+    ctx.fillStyle = c.x; ctx.textAlign = 'right'; ctx.fillText('x', W - 6, clamp(Y(0) - 18, 2, H - 16));
+    ctx.fillStyle = c.y; ctx.textAlign = 'left'; ctx.fillText('y', clamp(X(0) + 6, 4, W - 12), 4);
+    ctx.restore();
+  }
+  // La región que cumple una lista de restricciones, recortada a lo que se ve (la calcula el motor)
+  function region(R, noNeg){ if (!R.length && !noNeg) return []; return MP.poligono({ restricciones: R.length ? R : [[1, 0, '>=', 0]], noNegativas: noNeg, ventana: ventana() }).puntos; }
+  // La manija de la recta de nivel: su punto más cercano al origen (pie), que da el motor
+  const manija = () => { const N = E.nivel; return MP.rectaNivel({ objetivo: N.Z, k: N.k }).pie; };
+  E.dibujar = () => {
+    if (!W) return;
+    const c = colores();
+    ctx.clearRect(0, 0, W, H); ctx.fillStyle = c.paper; ctx.fillRect(0, 0, W, H);
+    encuadrar(); cuadricula(c);
+    const D = { c, X, Y, s, W, H, g, linea, recta, poligono, flecha, region,
+      rotulo:(x, y, t, color, align, tam, peso) => rotulo(c, X(x), Y(y), t, color, align, tam, peso),
+      rotuloPx:(x, y, t, color, align, tam, peso) => rotulo(c, x, y, t, color, align, tam, peso),
+      pt:(P, nombre, color, o) => punto(c, P, nombre, color || c.ink, o) };
+    if (E.pintar) E.pintar(D);
+    const N = E.nivel;
+    if (N && N.activo){
+      const P = manija(), x = X(P[0]), y = Y(P[1]);
+      ctx.save(); ctx.strokeStyle = c.z; ctx.globalAlpha = (arrastrando || sobre) ? .6 : .32; ctx.lineWidth = 2.5;
+      ctx.beginPath(); ctx.arc(x, y, arrastrando ? 16 : 13, 0, 2*Math.PI); ctx.stroke(); ctx.restore();
+      ctx.save(); ctx.fillStyle = c.z; ctx.strokeStyle = c.paper; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x, y, 7, 0, 2*Math.PI); ctx.fill(); ctx.stroke(); ctx.restore();
+      if (document.activeElement === cv){ ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5; ctx.setLineDash([3, 3]); ctx.beginPath(); ctx.arc(x, y, 20, 0, 2*Math.PI); ctx.stroke(); ctx.restore(); }
+    }
+  };
+  const it = (k, t, tipo) => `<span><i class="${tipo || ''}" style="background:var(${k === 'ink' ? '--ink' : k === 'muted' ? '--muted' : '--c-' + k}); color:var(${k === 'ink' ? '--ink' : '--c-' + k})"></i>${t}</span>`;
+  E.leyenda = () => { document.getElementById(idLey).innerHTML = (E.ley || []).map(([k, t, tipo]) => it(k, t, tipo)).join(''); };
+  E.avisar = () => {
+    const filas = (E.lect || []).map(f => f(E));
+    document.getElementById(idLect).innerHTML = filas.map(([k, t, v]) => `<div class="lectura" style="--k:var(--c-${k})"><span>${t}</span><b>${v}</b></div>`).join('');
+    if (!E.anim){
+      const base = typeof E.desc === 'function' ? E.desc(E) : (E.desc || 'Plano cartesiano.');
+      const mov = E.nivel && E.nivel.activo ? ' La recta de la ganancia se mueve: toca el dibujo y usa las flechas, o la perilla de la guía.' : '';
+      document.getElementById(idDesc).textContent = [base + mov, ...filas.map(([, t, v]) => `${t}: ${v}.`)].join(' ');
+    }
+  };
+  E.animar = (dur, paso, fin) => {
+    const tok = ++E.tok; E.anim = true;
+    tween(dur, f => { if (tok !== E.tok) return; paso(f); E.dibujar(); },
+      () => { if (tok !== E.tok) return; E.anim = false; E.dibujar(); E.avisar(); if (fin) fin(); });
+  };
+  E.parar = () => { E.tok++; E.anim = false; };
+  // Poner k (redondeado al paso y dentro del rango) y avisar
+  E.ponerK = k => {
+    const N = E.nivel; if (!N) return;
+    k = clamp(Math.round(k/N.paso)*N.paso, N.min, N.max);
+    if (k === N.k) return;
+    N.k = k; E.dibujar(); E.avisar(); if (N.alMover) N.alMover(k);
+  };
+
+  // ----- arrastrar la manija (dedo, ratón) y teclado -----
+  const activo = () => !!(E.nivel && E.nivel.activo && !E.anim && !E.ocupado);
+  Celular.arrastre(cv, {
+    activo,
+    cerca:(p, r) => { if (!activo()) return false; const P = manija(); return Math.hypot(X(P[0]) - p.x, Y(P[1]) - p.y) < r; },
+    empezar:() => { arrastrando = true; E.dibujar(); },
+    mover:p => { const [x, y] = mundo(p.x, p.y), P = [Math.round(x*100)/100, Math.round(y*100)/100];
+      E.ponerK(MP.evaluar({ objetivo: E.nivel.Z, P }).valor); },
+    soltar:() => { arrastrando = false; E.dibujar(); E.avisar(); },
+    sobre:b => { sobre = b; E.dibujar(); }
+  });
+  cv.addEventListener('focus', () => E.dibujar()); cv.addEventListener('blur', () => E.dibujar());
+  cv.addEventListener('keydown', e => {
+    if (!activo()) return;
+    const d = { ArrowRight:1, ArrowUp:1, ArrowLeft:-1, ArrowDown:-1 }[e.key];
+    if (d){ e.preventDefault(); E.ponerK(E.nivel.k + d*E.nivel.paso); }
+  });
+  return E;
+}
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+// Dibujo de una restricción: su recta (continua o punteada, según el motor) y, si se pide, su semiplano
+function pintarRestriccion(D, r, k, o){
+  o = o || {};
+  const S = MP.semiplano({ r });
+  if (o.sombra) D.poligono(D.region([r], false), D.c[k], (o.sombra === true ? 1 : o.sombra)*D.c.relleno);
+  D.recta(r, D.c[k], D.g(k, o.ancho || 2.5), S.trazo === 'punteada' ? [8, 6] : null, o.alfa);
+}
+// Vértices de la región, con sus coordenadas (o sin ellas) y el rótulo hacia afuera del centro
+function pintarVertices(D, R, noNeg, o){
+  o = o || {};
+  const VV = MP.vertices({ restricciones: R, noNegativas: noNeg });
+  if (VV.vacia) return VV;
+  const ps = VV.vertices.map(v => v.punto), cx = ps.reduce((a, P) => a + P[0], 0)/ps.length, cy = ps.reduce((a, P) => a + P[1], 0)/ps.length;
+  VV.vertices.forEach((v, i) => {
+    const P = v.punto, ang = Math.atan2(P[1] - cy, P[0] - cx), dx = Math.cos(ang) >= 0 ? 10 : -10, dy = Math.sin(ang) >= 0 ? -13 : 14;
+    const marca = o.marca === v.texto;
+    const nombre = marca && o.pregunta ? '?' : o.coords ? v.texto : '';
+    D.pt(P, nombre, D.c.vt, { dx, dy, r:5, anillo: marca ? D.c.vt : null });
+  });
+  return VV;
+}
+// Una tabla del método de los vértices; si no se ha respondido, la columna z queda con «?»
+function tablaVertices(O, ya, sufijo){
+  const filas = O.tabla.map(f => `<tr class="${ya && O.optimos.includes(f.texto) ? 'max' : ''}"><td>${f.texto}</td><td class="z">${ya ? f.cuenta : '?'}</td></tr>`).join('');
+  return `<div class="tabla-caja"><table class="tabla"><thead><tr><th scope="col">vértice (x; y)</th><th scope="col">${sufijo || 'z'}</th></tr></thead><tbody>${filas}</tbody></table></div>`;
+}
+const kPuede = (R, noNeg, Z, k) => !MP.poligono({ restricciones: R.concat([[Z[0], Z[1], '=', k]]), noNegativas: noNeg, ventana:{ x0:-100, x1:100, y0:-100, y1:100 } }).vacia;
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso =================
+   El taller de Juliaca: x chompas e y chalinas. Tejido 3x + y ≤ 21, feria x + y ≤ 11, alpaca y ≤ 9, x ≥ 0, y ≥ 0;
+   ganancia z = 40x + 20y. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearPlano($('cv'), 'desc1', 'lect1', 'leyenda1');
+const S = { step:0, max:0, pred:{}, ocupado:false, activas:{ r2:false, r3:false, x0:false, y0:false }, k6:160, k7:150 };
+
+const TEJ = MP.traducir({ porUnidad:[3, 1], total:21, frase:'a lo más' });
+const R = { r1:TEJ.restriccion, r2:MP.traducir({ porUnidad:[1, 1], total:11, frase:'a lo más' }).restriccion, r3:[0, 1, '<=', 9], x0:[1, 0, '>=', 0], y0:[0, 1, '>=', 0] };
+const COL = { r1:'r1', r2:'r2', r3:'r3', x0:'x', y0:'y' };
+const TODAS = [R.r1, R.r2, R.r3];
+const SP = MP.semiplano({ r:R.r1 });
+const PR0 = MP.prueba({ r:R.r1, P:[0, 0] }), PR1 = MP.prueba({ r:R.r1, P:[6, 9] });
+const IN = MP.interseccion({ r1:R.r1, r2:R.r2 });
+const Z1 = [40, 20], Z2 = [20, 30];
+const NV = MP.rectaNivel({ objetivo:Z1, k:200 }), DS = MP.desplazar({ objetivo:Z1, k1:100, k2:200 });
+const O1 = MP.optimizar({ restricciones:TODAS, noNegativas:true, objetivo:Z1, sentido:'max' });
+const O2 = MP.optimizar({ restricciones:TODAS, noNegativas:true, objetivo:Z2, sentido:'max', anterior:Z1 });
+const sol = v => `S/ ${fmt(v, 0)}`;
+
+const P1 = { id:'programacion-lineal-paso1', ok:'b', opts:[
+  ['a', TEJ.errores.cruzada.texto, 'PL14-coeficientes-cruzados', 'parcial'],
+  ['b', TEJ.texto],
+  ['c', TEJ.errores.sentido.texto, 'PL15-a-lo-mas-como-al-menos', 'hipotesis'],
+  ['d', TEJ.errores.igualdad.texto, 'PL12-inecuacion-como-ecuacion', 'parcial']],
+  fb:{ b:'¡Bien! Cada chompa suma 3 horas y cada chalina 1: x chompas y y chalinas usan 3x + y horas, y eso no puede pasar de 21.',
+    a:'Elegiste la A. x + 3y le pone las 3 horas a la chalina. El 3 va con la letra de lo que tarda 3 horas: la chompa, x. La correcta está marcada.',
+    c:'Elegiste la C. «A lo más 21» quiere decir 21 o menos: ≤. Con ≥ el taller tendría que usar al menos 21 horas. La correcta está marcada.',
+    d:'Elegiste la D. Con = el taller tendría que usar las 21 horas justas. «A lo más» deja usar menos: ≤. La correcta está marcada.' } };
+const P2 = { id:'programacion-lineal-paso2', ok:'c', opts:[
+  ['a', 'El lado opuesto al origen, con la recta continua', 'PL1-lado-contrario', 'hipotesis'],
+  ['b', 'El lado del origen, con la recta punteada', 'PL2-recta-punteada', 'hipotesis'],
+  ['c', 'El lado del origen, con la recta continua'],
+  ['d', 'Solo los puntos de la recta 3x + y = 21', 'PL12-inecuacion-como-ecuacion', 'parcial']],
+  fb:{ c:`¡Bien! El origen cumple: ${PR0.texto}. Y como el signo es ≤, los puntos de la recta (las 21 horas justas) también valen: continua.`,
+    a:`Elegiste la A. Prueba un punto: el origen da ${PR0.texto}, que es cierto. Así que el lado que cumple es el del origen. La correcta está marcada.`,
+    b:'Elegiste la B. El lado está bien, pero ≤ incluye el igual: los planes que usan las 21 horas justas también sirven. Punteada es para < o >. La correcta está marcada.',
+    d:'Elegiste la D. La recta son solo los planes que usan 21 horas justas. ≤ también deja usar menos horas: es todo un lado del plano. La correcta está marcada.' } };
+const P3 = { id:'programacion-lineal-paso4', ok:'a', opts:[
+  ['a', IN.texto],
+  ['b', IN.errores.intercambiada.texto, 'PL10-coordenadas-cruzadas', 'hipotesis'],
+  ['c', IN.errores.cortesMezclados.texto, 'PL10-cortes-mezclados', 'hipotesis'],
+  ['d', IN.errores.signoDespeje.texto, 'PL10-signo-al-despejar', 'hipotesis']],
+  fb:{ a:'¡Bien! Restando las ecuaciones, (3x + y) − (x + y) = 21 − 11: 2x = 10, x = 5. Y con x + y = 11, y = 6.',
+    b:'Elegiste la B. (6; 5) tiene las coordenadas al revés: 3·6 + 5 = 23, que pasa de 21. Comprueba siempre en las dos ecuaciones. La correcta está marcada.',
+    c:'Elegiste la C. 7 es donde el tejido corta el eje x y 11 donde la feria corta el eje y: son puntos de rectas distintas. El cruce tiene que cumplir las dos ecuaciones a la vez. La correcta está marcada.',
+    d:'Elegiste la D. De x + y = 11 sale y = 11 − x, no 11 + x: al pasar x al otro lado cambia de signo. Con x = 5, y = 6. La correcta está marcada.' } };
+const P4 = { id:'programacion-lineal-paso5', ok:'d', opts:[
+  ['a', `Pendiente ${NV.errores.invertida.texto}; al subir k se aleja del origen`, 'PL11-pendiente-invertida', 'hipotesis'],
+  ['b', `Pendiente ${NV.errores.signo.texto}; al subir k se aleja del origen`, 'PL11-pendiente-sin-signo', 'hipotesis'],
+  ['c', `Pendiente ${NV.pendienteTexto}; al subir k se acerca al origen`, 'PL19-direccion-al-reves', 'hipotesis'],
+  ['d', `Pendiente ${NV.pendienteTexto}; al subir k se aleja del origen`]],
+  fb:{ d:'¡Bien! De 40x + 20y = k sale y = −2x + k/20: pendiente −40/20 = −2, y el corte k/20 sube cuando sube k.',
+    a:'Elegiste la A. −1/2 sale de dividir al revés, 20/40. Al despejar y, se divide entre el número que acompaña a y: −40/20 = −2. La correcta está marcada.',
+    b:'Elegiste la B. Si x crece, para que 40x + 20y siga igual, y tiene que bajar: la recta baja hacia la derecha y su pendiente es negativa, −2. La correcta está marcada.',
+    c:'Elegiste la C. La pendiente está bien, pero con k más grande hacen falta más chompas o más chalinas: la recta se va más lejos del origen. La correcta está marcada.' } };
+const P5 = { id:'programacion-lineal-paso6', ok:'b', opts:[
+  ['a', `En el vértice ${O1.errores.mayorX.texto}`, 'PL5-vertice-de-mayor-x', 'hipotesis'],
+  ['b', `En el vértice ${O1.optimoTexto}`],
+  ['c', `En el vértice ${O1.errores.masLejano.texto}`, 'PL4-vertice-mas-lejano', 'hipotesis'],
+  ['d', 'En un punto del interior de la región', 'PL3-optimo-interior', 'hipotesis']],
+  fb:{ b:`¡Bien! La recta de pendiente −2 avanza y lo último que toca es la esquina ${O1.optimoTexto}, con z = ${O1.texto}.`,
+    a:`Elegiste la A. ${O1.errores.mayorX.texto} es el vértice con más chompas, pero ahí la ganancia es ${sol(O1.errores.mayorX.valor)}. La recta todavía puede avanzar: aún toca la región. La correcta está marcada.`,
+    c:`Elegiste la C. ${O1.errores.masLejano.texto} es el vértice más lejano del origen, pero la ganancia no mide distancia: ahí z = ${O1.errores.masLejano.valor}. La correcta está marcada.`,
+    d:'Elegiste la D. Desde un punto del interior siempre se puede empujar un poco más la recta sin salir de la región: lo último que toca es un borde, y en un borde, una esquina. La correcta está marcada.' } };
+const P6 = { id:'programacion-lineal-paso7', ok:'c', opts:[
+  ['a', `${sol(O2.errores.anterior.valor)}, en ${O2.errores.anterior.texto}`, 'PL21-optimo-no-cambia', 'hipotesis'],
+  ['b', `${sol(O2.errores.mayorX.valor)}, en ${O2.errores.mayorX.texto}`, 'PL5-vertice-de-mayor-x', 'hipotesis'],
+  ['c', `${sol(O2.valor)}, en ${O2.optimoTexto}`],
+  ['d', `${sol(O2.errores.soloEjes.valor)}, en ${O2.errores.soloEjes.texto}`, 'PL7-solo-vertices-de-los-ejes', 'hipotesis']],
+  fb:{ c:`¡Bien! La tabla completa da 0, 140, 280, 310 y 270: el mayor es ${O2.valor}, en ${O2.optimoTexto}.`,
+    a:`Elegiste la A. ${O2.errores.anterior.texto} era el mejor con los precios de antes. Con los nuevos da ${O2.errores.anterior.valor}, pero ${O2.optimoTexto} da ${O2.valor}. Cada vez que cambia z hay que volver a evaluar todos los vértices. La correcta está marcada.`,
+    b:`Elegiste la B. ${O2.errores.mayorX.texto} da solo ${O2.errores.mayorX.valor}: ahora la chalina paga más que la chompa. La correcta está marcada.`,
+    d:`Elegiste la D. ${O2.errores.soloEjes.texto} es el mejor de los vértices de los ejes, pero faltó evaluar las esquinas del medio: ${O2.optimoTexto} da ${O2.valor}. La correcta está marcada.` } };
+
+// ----- dibujos -----
+function ejesTaller(D){ D.rotuloPx(D.W - 8, D.Y(0) - 14, 'chompas', D.c.x, 'right', 11, 700); D.rotuloPx(D.X(0) + 26, 12, 'chalinas', D.c.y, 'left', 11, 700); }
+const NOMBRES = { r1:['tejido', [3.5, 11.3], 'left'], r2:['feria', [9.3, 1.9], 'left'], r3:['alpaca', [11.6, 9.6], 'right'] };
+function nombreRecta(D, k){ const [t, P, al] = NOMBRES[k]; D.rotulo(P[0], P[1], t, D.c[k], al, 12, 800); }
+function activas(){ return ['r1', 'r2', 'r3', 'x0', 'y0'].filter(k => k === 'r1' || S.activas[k]); }
+function dibTaller(D, o){
+  o = o || {};
+  const ks = o.ks || ['r1', 'r2', 'r3', 'x0', 'y0'], Rs = ks.map(k => R[k]);
+  if (o.region !== false) D.poligono(D.region(Rs, false), D.c.reg, (o.alfaReg === undefined ? 1.4 : o.alfaReg)*D.c.relleno, D.c.reg, D.g('reg', 1.2));
+  for (const k of ks) if (k !== 'x0' && k !== 'y0') { pintarRestriccion(D, R[k], COL[k]); nombreRecta(D, k); }
+  if (ks.includes('x0')) D.linea([0, -40], [0, 40], D.c.x, D.g('x', 3.5));
+  if (ks.includes('y0')) D.linea([-40, 0], [40, 0], D.c.y, D.g('y', 3.5));
+  ejesTaller(D);
+  if (o.vert) pintarVertices(D, Rs.filter((r, i) => !['x0', 'y0'].includes(ks[i])), ks.includes('x0') && ks.includes('y0'), o.vert);
+}
+function nivel(D, Z, k, o){
+  o = o || {};
+  const L = MP.rectaNivel({ objetivo:Z, k });
+  D.recta([Z[0], Z[1], '=', k], D.c.z, D.g('z', o.ancho || 3), o.trazos || null, o.alfa);
+  if (o.rot !== false){ const P = L.pie; D.rotulo(P[0] + .35, P[1] + .75, `z = ${fmt(k, 0)}`, D.c.z, 'left', 12, 800); }
+  return L;
+}
+function flechaMejora(D, Z, k){
+  const P = MP.rectaNivel({ objetivo:Z, k }).pie, n = Math.hypot(Z[0], Z[1]);
+  D.flecha(D.c, P, [P[0] + 1.6*Z[0]/n, P[1] + 1.6*Z[1]/n], D.c.z, D.g('z', 2.5));
+}
+const leyRegion = [['reg', 'región factible', 'sq'], ['r1', 'tejido'], ['r2', 'feria'], ['r3', 'alpaca'], ['x', 'x ≥ 0'], ['y', 'y ≥ 0']];
+
+// ----- lecturas del paso 3 -----
+function lectArma(){
+  const ks = activas(), Rs = ks.filter(k => k !== 'x0' && k !== 'y0').map(k => R[k]), noNeg = S.activas.x0 && S.activas.y0;
+  const extra = !noNeg ? ks.filter(k => k === 'x0' || k === 'y0').map(k => R[k]) : [];
+  const VV = MP.vertices({ restricciones: Rs.concat(extra), noNegativas: noNeg });
+  return [() => ['vt', 'condiciones', `${ks.length} de 5`], () => ['vt', 'vértices', String(VV.n)], () => ['reg', 'la región', VV.vacia ? 'vacía' : VV.acotada ? 'cerrada' : 'sin fin']];
+}
+function chipsHTML(){
+  const ch = [['r2', 'x + y ≤ 11', 'feria'], ['r3', 'y ≤ 9', 'alpaca'], ['x0', 'x ≥ 0', 'chompas'], ['y0', 'y ≥ 0', 'chalinas']];
+  return `<div class="chips" role="group" aria-label="Agregar restricciones">${ch.map(([k, t, n]) => `<button type="button" class="chip" data-r="${k}" aria-pressed="${S.activas[k]}" style="--k:var(--c-${COL[k]})" aria-label="${n}: ${t}">${t}</button>`).join('')}</div>`;
+}
+function activarChips(){
+  document.querySelectorAll('#stepBody .chip').forEach(b => b.onclick = () => {
+    const k = b.dataset.r; S.activas[k] = !S.activas[k]; b.setAttribute('aria-pressed', String(S.activas[k]));
+    E.lect = lectArma(); E.dibujar(); E.avisar();
+  });
+}
+
+// ----- la perilla de la recta de nivel (pasos 6 y 7) -----
+function perillaHTML(N, id){
+  return `<div class="perilla"><label for="${id}">Ganancia de la recta: ${Z_('k')} = <span id="${id}-v">${fmt(N.k, 0)}</span></label>
+    <input type="range" id="${id}" min="${N.min}" max="${N.max}" step="${N.paso}" value="${N.k}"></div>`;
+}
+function enlazarPerilla(id){
+  const inp = $(id); if (!inp) return;
+  inp.disabled = !E.nivel || !E.nivel.activo;
+  inp.oninput = () => E.ponerK(Number(inp.value));
+}
+function sincronizarPerilla(id){ const inp = $(id), v = $(id + '-v'); if (inp && E.nivel){ inp.value = E.nivel.k; v.textContent = fmt(E.nivel.k, 0); inp.disabled = !E.nivel.activo; } }
+const lectNivel = Z => [() => ['z', 'ganancia de la recta', sol(E.nivel.k)], () => ['reg', '¿toca la región?', kPuede(TODAS, true, Z, E.nivel.k) ? 'sí' : 'no: ya salió']];
+
+const enunciado = `<p class="problem">En un taller de Juliaca se tejen chompas y chalinas de alpaca. Cada chompa necesita 3 horas de ${R1_('tejido')} y cada chalina, 1 hora; a la semana hay a lo más 21 horas. En la ${R2_('feria')} del sábado se venden a lo más 11 prendas, y la lana de ${R3_('alpaca')} alcanza para a lo más 9 chalinas. Cada chompa deja ${Z_('S/ 40')} de ganancia y cada chalina, ${Z_('S/ 20')}.</p>`;
+const corto = `<p class="hint">${X_('x')} = el número de chompas; ${Y_('y')} = el número de chalinas. ${R1_('3x + y ≤ 21')} · ${R2_('x + y ≤ 11')} · ${R3_('y ≤ 9')} · ${X_('x ≥ 0')} · ${Y_('y ≥ 0')}</p>`;
+
+const steps = [
+ { k:'Paso 1', t:'Predice: las horas de tejido en una desigualdad', gate:P1,
+   prep:() => { const ya = !!S.pred[P1.id];
+     E.config({ pintar:D => { if (ya) dibUno(D, 1); else ejesTaller(D); },
+       ley: ya ? [['r1', 'tejido: 3x + y = 21'], ['x', 'x: chompas'], ['y', 'y: chalinas']] : [['x', 'x: chompas'], ['y', 'y: chalinas']],
+       desc: ya ? 'El plano con la recta del tejido, 3x + y = 21, y dos planes que usan las 21 horas justas: 7 chompas, o 3 chompas y 12 chalinas.' : 'El plano de los planes del taller: x chompas en el eje horizontal e y chalinas en el vertical.' }); },
+   anima:fin => { let f = 0; E.pintar = D => dibUno(D, f); E.ley = [['r1', 'tejido: 3x + y = 21'], ['x', 'x: chompas'], ['y', 'y: chalinas']]; E.leyenda();
+     E.animar(RM ? 0 : 2000, x => { f = x; }, fin); },
+   body:() => `${enunciado}
+   <p>Sea ${X_('x')} el número de chompas e ${Y_('y')} el número de chalinas de la semana. ¿Qué desigualdad dice lo de las horas de ${R1_('tejido')}?</p>${opcionesHTML(P1.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">3 h por chompa · ${X_('x')} + 1 h por chalina · ${Y_('y')} ≤ 21 h</div>
+     <div class="eq">${R1_(TEJ.texto)}</div></div>
+   <p>Cada letra es un número de prendas, y el coeficiente es lo que gasta cada una. En el dibujo, la recta ${R1_('3x + y = 21')} junta los planes que usan las 21 horas justas: 7 chompas, o 3 chompas y 12 chalinas.</p>
+   <p class="fuente">No encontramos estudios con datos sobre errores de programación lineal: estas opciones son hipótesis nuestras. Cruzar los coeficientes se parece a la inversión que el informe de álgebra anota como AL1 (Clement, 1982), aunque allí el enunciado es otro; y escribir = en vez de ≤ es el mismo mecanismo que AL19, resolver la inecuación como ecuación (Tsamir y Almog, 2001, en inecuaciones de una variable, sin porcentaje). Por eso a esas dos les damos respaldo parcial.</p></div>` },
+ { k:'Paso 2', t:'Predice: qué lado cumple la desigualdad', gate:P2,
+   prep:() => { const ya = !!S.pred[P2.id];
+     E.config({ pintar:D => dibSemi(D, ya ? 1 : 0),
+       ley: ya ? [['r1', 'tejido: 3x + y ≤ 21', 'sq'], ['vt', 'puntos de prueba', 'pt']] : [['muted', 'frontera 3x + y = 21']],
+       desc: ya ? 'La recta del tejido, continua, con el lado del origen sombreado; el origen cumple y el punto (6; 9) no.' : 'El plano con la frontera 3x + y = 21 marcada como una franja, sin elegir todavía cómo se dibuja ni qué lado cumple.' }); },
+   anima:fin => { let f = 0; E.pintar = D => dibSemi(D, f); E.ley = [['r1', 'tejido: 3x + y ≤ 21', 'sq'], ['vt', 'puntos de prueba', 'pt']]; E.leyenda();
+     E.animar(RM ? 0 : 2600, x => { f = x; }, fin); },
+   body:() => `<p class="problem">La recta ${R1_('3x + y = 21')} parte el plano en dos lados. En un lado están los planes que usan menos de 21 horas; en el otro, los que usan más.</p>
+   <p>¿Qué puntos cumplen ${R1_(TEJ.texto)} y cómo se dibuja la recta?</p>${opcionesHTML(P2.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">origen (0; 0): ${PR0.texto} → ${PR0.veredicto}</div>
+     <div class="eq">(6; 9): ${PR1.texto} → ${PR1.veredicto}</div>
+     <div class="eq">despejando y: ${R1_(SP.despeje.texto)}<span class="note">debajo de la recta</span></div></div>
+   <p>Para saber qué lado se sombrea, se prueba un punto que no esté en la recta; el origen es el más fácil. Si cumple, se sombrea su lado; si no, el otro. La recta va <b>continua</b> con ≤ o ≥ (la frontera cuenta) y <b>punteada</b> con < o > (no cuenta).</p>
+   <p>Cuidado al despejar ${Y_('y')}: si se divide entre un número negativo, el sentido se invierte. Por ejemplo, −y ≤ 5 da y ≥ −5. Probar con un punto te salva si te olvidas.</p>
+   <p class="fuente">No encontramos estudios con datos sobre estos errores en dos variables: el lado contrario y la recta punteada son hipótesis nuestras. Quedarse solo con la recta es el mismo mecanismo que AL19 del informe de álgebra (Tsamir y Almog, 2001, inecuaciones de una variable, sin porcentaje): respaldo parcial.</p></div>` },
+ { k:'Paso 3', t:'Arma la región', explora:true,
+   prep:() => { E.config({ referencial:true, pintar:D => { const ks = activas();
+       dibTaller(D, { ks, vert: (S.activas.x0 && S.activas.y0) ? {} : null }); },
+     ley: leyRegion, lect: lectArma(),
+     desc:() => `Figura referencial. Están puestas: ${activas().map(k => ({ r1:'tejido', r2:'feria', r3:'alpaca', x0:'x ≥ 0', y0:'y ≥ 0' })[k]).join(', ')}. La región sombreada cumple todas a la vez.` }); },
+   body:() => `<p class="problem">Cada condición del problema es un semiplano. Toca cada una para agregarla (o quitarla). La ${RG_('región factible')} es lo que cumple <b>todas</b> a la vez: los planes posibles del taller.</p>
+   ${chipsHTML()}
+   ${corto}
+   <p>Mira qué pasa antes de agregar ${X_('x ≥ 0')} e ${Y_('y ≥ 0')}: la región se escapa a los negativos, como si se pudieran tejer −2 chompas. Las cantidades de prendas no son negativas, y esas dos condiciones casi nunca vienen escritas en el enunciado: hay que ponerlas.</p>
+   <p>Con las cinco, la región queda cerrada y tiene esquinas: sus <b>vértices</b>. El dibujo es referencial (sin cuadrícula): las coordenadas se calculan en el paso siguiente.</p>
+   <p class="fuente">Olvidar x ≥ 0 e y ≥ 0 es una hipótesis nuestra; no encontramos estudios con datos.</p>` },
+ { k:'Paso 4', t:'Predice: un vértice de la región', gate:P3,
+   prep:() => { const ya = !!S.pred[P3.id];
+     E.config({ referencial:!ya, pintar:D => dibTaller(D, { vert: ya ? { coords:true, marca:IN.texto } : { marca:IN.texto, pregunta:true } }),
+       ley:[['reg', 'región factible', 'sq'], ['r1', 'tejido'], ['r2', 'feria'], ['vt', 'vértices', 'pt']],
+       desc: ya ? `La región con sus cinco vértices: ${O1.tabla.map(f => f.texto).join(', ')}.` : 'Figura referencial: la región de cinco vértices; uno está marcado con un signo de pregunta, donde se cruzan el tejido y la feria.' }); },
+   anima:fin => { E.referencial = false; E.pintar = D => dibTaller(D, { vert:{ coords:true, marca:IN.texto } }); E.animar(RM ? 0 : 600, () => {}, fin); },
+   body:() => `<p class="problem">Uno de los vértices es donde se cruzan las rectas del ${R1_('tejido')}, ${R1_('3x + y = 21')}, y de la ${R2_('feria')}, ${R2_('x + y = 11')}.</p>
+   <p>¿Cuáles son sus coordenadas?</p>${opcionesHTML(P3.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">(${R1_('3x + y')}) − (${R2_('x + y')}) = 21 − 11 → 2x = 10 → ${X_('x = 5')}</div>
+     <div class="eq">${R2_('x + y = 11')} → y = 11 − 5 → ${Y_('y = 6')}</div>
+     <div class="eq">comprueba: 3·5 + 6 = 21 ✓ y 5 + 6 = 11 ✓</div></div>
+   <p>Ahora el dibujo tiene cuadrícula y los cinco vértices con sus coordenadas. Los de los ejes salen de un solo corte: ${VT_('(7; 0)')} es donde el tejido corta el eje x, y ${VT_('(0; 9)')} donde la alpaca corta el eje y. ${VT_('(2; 9)')} es el cruce de la feria con la alpaca. ¿Y (4; 9), donde se cruzan el tejido y la alpaca? No es vértice: 4 + 9 = 13 pasa de 11 prendas.</p>
+   <p class="fuente">Las tres formas de calcular mal el cruce son hipótesis nuestras; pasar x al otro lado sin cambiarle el signo es la «transposición» que el informe de álgebra anota como AL16, también sin datos.</p></div>` },
+ { k:'Paso 5', t:'Predice: la recta de la ganancia', gate:P4,
+   prep:() => { const ya = !!S.pred[P4.id];
+     E.config({ pintar:D => dibNiveles(D, ya ? 1 : 0),
+       ley: ya ? [['reg', 'región factible', 'sq'], ['z', 'rectas de nivel z = k'], ['vt', 'vértices', 'pt']] : [['reg', 'región factible', 'sq'], ['vt', 'vértices', 'pt']],
+       desc: ya ? 'La región con cuatro rectas de ganancia paralelas, z = 0, 80, 160 y 240, cada vez más lejos del origen, y una flecha hacia donde sube z.' : 'La región del taller con sus vértices; todavía sin la recta de la ganancia.' }); },
+   anima:fin => { let f = 0; E.pintar = D => dibNiveles(D, f); E.ley = [['reg', 'región factible', 'sq'], ['z', 'rectas de nivel z = k'], ['vt', 'vértices', 'pt']]; E.leyenda();
+     E.animar(RM ? 0 : 2800, x => { f = x; }, fin); },
+   body:() => `<p class="problem">La ganancia de la semana es ${Z_('z = 40x + 20y')} soles. Todos los planes que dan la misma ganancia ${Z_('k')} están en la recta ${Z_('40x + 20y = k')}: su <b>recta de nivel</b>. Por ejemplo, con ${Z_('k = 200')} pasa por (5; 0) y (0; 10).</p>
+   <p>¿Cómo es esa recta y qué le pasa al subir ${Z_('k')}?</p>${opcionesHTML(P4.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq">${Z_('40x + 20y = k')} → y = −2x + ${Z_('k')}/20<span class="note">pendiente −40/20 = ${NV.pendienteTexto}</span></div>
+     <div class="eq">de k = 100 a k = 200, la recta avanza ${DS.vectorTexto}<span class="note">en la dirección (40; 20): ${DS.origen}</span></div></div>
+   <p>Todas las rectas de nivel son paralelas: solo cambia ${Z_('k')}. La pendiente es −a/b, el número de x entre el de y, con signo menos. Al subir ${Z_('k')}, la recta avanza en la dirección de la flecha (40; 20), hacia más chompas y más chalinas.</p>
+   <p class="fuente">Leer mal la pendiente y mover la recta al revés son hipótesis nuestras; no encontramos estudios con datos.</p></div>` },
+ { k:'Paso 6', t:'Predice: dónde sale la recta', gate:P5,
+   prep:() => { const ya = !!S.pred[P5.id];
+     E.config({ pintar:D => dibSale(D, ya ? 1 : 0),
+       nivel:{ Z:Z1, k: ya ? S.k6 : 160, min:0, max:440, paso:20, activo:ya, alMover:k => { S.k6 = k; sincronizarPerilla('k6'); } },
+       ley: ya ? [['reg', 'región factible', 'sq'], ['z', 'recta de la ganancia'], ['opt', 'óptimo', 'pt'], ['vt', 'vértices', 'pt']] : [['reg', 'región factible', 'sq'], ['z', 'recta de la ganancia z = 160'], ['vt', 'vértices', 'pt']],
+       lect: ya ? lectNivel(Z1) : [],
+       desc: ya ? (E => `La recta de la ganancia z = ${E.nivel.k}; el óptimo marcado es ${O1.optimoTexto}.`) : 'La región con sus vértices y la recta de la ganancia z = 160, que la cruza.' });
+     enlazarPerilla('k6'); },
+   anima:fin => { let f = 0; E.nivel.activo = false; E.pintar = D => dibSale(D, f); E.ley = [['reg', 'región factible', 'sq'], ['z', 'recta de la ganancia'], ['opt', 'óptimo', 'pt'], ['vt', 'vértices', 'pt']]; E.leyenda();
+     E.animar(RM ? 0 : 2600, x => { f = x; E.nivel.k = Math.round(lerp(160, O1.valor, Math.min(1, x*1.25))); }, () => {
+       E.nivel.k = O1.valor; S.k6 = O1.valor; E.nivel.activo = true; $('cv').tabIndex = 0; E.pintar = D => dibSale(D, 1); E.lect = lectNivel(Z1); E.desc = E => `La recta de la ganancia z = ${E.nivel.k}; el óptimo marcado es ${O1.optimoTexto}.`;
+       E.dibujar(); E.avisar(); sincronizarPerilla('k6'); fin(); }); },
+   body:() => `<p class="problem">En el dibujo está la recta ${Z_('z = 160')}: los planes que dan S/ 160. Cruza la región, así que el taller puede ganar eso y más. Imagina que la empujas hacia donde sube ${Z_('z')}, sin que deje de tocar la región.</p>
+   <p>¿En qué punto la toca por última vez?</p>${opcionesHTML(P5.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   ${perillaHTML({ k:S.k6, min:0, max:440, paso:20 }, 'k6')}
+   <p>Arrastra la manija de la recta (o usa la perilla) y mira cuándo deja de tocar la región: pasado ${Z_(O1.texto)}, ningún plan da tanto. El último punto que toca es la esquina ${OP_(O1.optimoTexto)}: 5 chompas y 6 chalinas, ${Z_(sol(O1.valor))}.</p>
+   <p>Por eso el óptimo de una región cerrada siempre está en un <b>vértice</b>: desde el interior siempre se puede empujar un poco más. Si la recta de nivel fuera paralela a un lado, saldría por todo el lado a la vez (míralo en «¿Qué pasa si…?»).</p>
+   <p class="fuente">Creer que el óptimo está en el interior, en el vértice más lejano del origen o en el de más chompas son hipótesis nuestras; no encontramos estudios con datos.</p></div>` },
+ { k:'Paso 7', t:'Predice: la ganancia máxima con otros precios', gate:P6,
+   prep:() => { const ya = !!S.pred[P6.id];
+     E.config({ pintar:D => dibTabla(D, ya ? 1 : 0),
+       nivel: ya ? { Z:Z2, k:S.k7, min:0, max:420, paso:10, activo:true, alMover:k => { S.k7 = k; sincronizarPerilla('k7'); } } : null,
+       ley: ya ? [['reg', 'región factible', 'sq'], ['z', 'recta z = 20x + 30y'], ['opt', 'óptimo', 'pt'], ['vt', 'vértices', 'pt']] : [['reg', 'región factible', 'sq'], ['vt', 'vértices', 'pt']],
+       lect: ya ? lectNivel(Z2) : [],
+       desc: ya ? (E => `La recta z = 20x + 30y con k = ${E.nivel.k}; el óptimo marcado es ${O2.optimoTexto}.`) : 'La región del taller con sus cinco vértices.' });
+     enlazarPerilla('k7'); },
+   anima:fin => { let f = 0; E.pintar = D => dibTabla(D, f); E.ley = [['reg', 'región factible', 'sq'], ['z', 'recta z = 20x + 30y'], ['opt', 'óptimo', 'pt'], ['vt', 'vértices', 'pt']]; E.leyenda();
+     $('tabla7').innerHTML = tablaVertices(O2, true, 'z = 20x + 30y');
+     E.animar(RM ? 0 : 2000, x => { f = x; }, () => {
+       S.k7 = O2.valor; E.config({ pintar:D => dibTabla(D, 1), nivel:{ Z:Z2, k:S.k7, min:0, max:420, paso:10, activo:true, alMover:k => { S.k7 = k; sincronizarPerilla('k7'); } },
+         ley:[['reg', 'región factible', 'sq'], ['z', 'recta z = 20x + 30y'], ['opt', 'óptimo', 'pt'], ['vt', 'vértices', 'pt']], lect:lectNivel(Z2),
+         desc:E => `La recta z = 20x + 30y con k = ${E.nivel.k}; el óptimo marcado es ${O2.optimoTexto}.` });
+       enlazarPerilla('k7'); sincronizarPerilla('k7'); fin(); }); },
+   body:() => `<p class="problem">La cooperativa cambia los precios: ahora cada chompa deja ${Z_('S/ 20')} y cada chalina ${Z_('S/ 30')}, así que ${Z_('z = 20x + 30y')}. La región es la misma. El <b>método de los vértices</b>: se evalúa ${Z_('z')} en cada vértice y se elige el mejor.</p>
+   <div id="tabla7">${tablaVertices(O2, !!S.pred[P6.id], 'z = 20x + 30y')}</div>
+   <p>¿Cuál es ahora la ganancia máxima?</p>${opcionesHTML(P6.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   ${perillaHTML({ k:S.k7, min:0, max:420, paso:10 }, 'k7')}
+   <p>Con la chalina más cara, la recta de nivel está menos inclinada (pendiente −20/30 = −2/3) y sale por otra esquina: ${OP_(O2.optimoTexto)}, 2 chompas y 9 chalinas, ${Z_(sol(O2.valor))}. Esta vez es también el vértice más lejano del origen, pero es casualidad: en el paso anterior no lo era.</p>
+   <p>El método de los vértices no falla si se evalúan <b>todos</b>. La recta de nivel te dice cuál va a ganar antes de hacer las cuentas, y la tabla lo confirma.</p>
+   <p class="fuente">Quedarse con el óptimo de antes, evaluar solo los vértices de los ejes o elegir el de más chompas son hipótesis nuestras; no encontramos estudios con datos.</p></div>` },
+];
+
+// Paso 1: la recta del tejido y dos planes de 21 horas justas
+function dibUno(D, f){
+  ejesTaller(D);
+  if (f <= 0) return;
+  D.recta(R.r1, D.c.r1, D.g('r1', 2.5), null, Math.min(1, f*2));
+  if (f > .4){ nombreRecta(D, 'r1'); D.pt([7, 0], '7 chompas: 21 h', D.c.vt, { dx:8, dy:-14 }); }
+  if (f > .7) D.pt([3, 12], '3 y 12: 21 h', D.c.vt, { dx:10, dy:2 });
+}
+// Paso 2: la franja (antes) y el semiplano con los puntos de prueba (después)
+function dibSemi(D, f){
+  ejesTaller(D);
+  if (f <= 0){ D.recta(R.r1, D.c.muted, 10, null, .22); D.rotulo(4.6, 7.4, '3x + y = 21', D.c.muted, 'left', 12, 700); return; }
+  const a = Math.min(1, f*1.6);
+  D.poligono(D.region([R.r1], false), D.c.r1, 1.2*D.c.relleno*a);
+  pintarRestriccion(D, R.r1, 'r1');
+  nombreRecta(D, 'r1');
+  D.pt([0, 0], f > .3 ? 'cumple' : '', D.c.vt, { dx:8, dy:-14, anillo: D.c.vt });
+  if (f > .6) D.pt([6, 9], 'no cumple', D.c.vt, { dx:10, dy:-14 });
+}
+// Paso 5: rectas de nivel que van apareciendo
+function dibNiveles(D, f){
+  dibTaller(D, { vert:{ coords:true } });
+  if (f <= 0) return;
+  const ks = [0, 80, 160, 240];
+  ks.forEach((k, i) => { const t = clamp(f*4.5 - i, 0, 1); if (t > 0) nivel(D, Z1, k, { alfa:t, ancho:2, rot: t >= 1 && i > 0 }); });
+  if (f > .8) flechaMejora(D, Z1, 240);
+}
+// Paso 6: la recta que se desliza
+function dibSale(D, f){
+  dibTaller(D, { vert:{ coords:true } });
+  const k = E.nivel ? E.nivel.k : 160;
+  nivel(D, Z1, k);
+  flechaMejora(D, Z1, k);
+  if (f >= 1) D.pt(O1.optimo, '', D.c.opt, { r:7, anillo:D.c.opt, ra:12 });
+}
+// Paso 7: la recta de los nuevos precios hasta su óptimo
+function dibTabla(D, f){
+  dibTaller(D, { vert:{ coords:true } });
+  if (f <= 0) return;
+  const k = E.nivel && E.nivel.activo ? E.nivel.k : Math.round(lerp(0, O2.valor, f));
+  nivel(D, Z2, k);
+  if (f >= 1){ flechaMejora(D, Z2, k); D.pt(O2.optimo, '', D.c.opt, { r:7, anillo:D.c.opt, ra:12 }); }
+}
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; b.dataset.label = `Ir al ${s.k.toLowerCase()}: ${s.t}`;
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  s.prep();
+  if (s.explora) activarChips();
+  pintarDots();
+  // con una predicción pendiente (o en el paso de armar la región, mientras se tocan las condiciones) el dibujo queda arriba
+  E.compactar((s.gate && !S.pred[s.gate.id]) || !!s.explora);
+  if (s.gate) prediccion(s);
+  nav();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+  E.ocupado = S.ocupado;
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    b.setAttribute('aria-disabled', String(k > S.max));
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : b.dataset.label);
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){ if (k > S.max) S.max = k; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    S.ocupado = true; nav();
+    E.compactar(false);
+    $('next').focus({ preventScroll:true });
+    const paso = S.step;
+    Celular.alResponder($('cv'), () => s.anima(() => { S.ocupado = false; if (S.step === paso) s.prep(); nav(); }), () => S.step === paso,
+      { siNo:() => { S.ocupado = false; nav(); } });
+  }));
+  pintar();
+}
+
+$('next').addEventListener('click', () => { if ($('next').disabled) return; desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Óptimos en todo un lado, minimizar, una región que no se cierra, una región vacía y una condición que sobra.
+   La escena cambia recién después de responder. Un experimento se abre solo si los anteriores ya tienen respuesta. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearPlano($('cv2'), 'desc2', 'lect2', 'leyenda2');
+const TALLER = [[3, 1, '<=', 21], [1, 1, '<=', 11], [0, 1, '<=', 9]];
+const QP = MP.optimizar({ restricciones:TALLER, noNegativas:true, objetivo:[40, 40], sentido:'max' });
+const CHACRA = [[1, 1, '>=', 6], [1, 0, '<=', 5], [0, 1, '<=', 4]];
+const QM = MP.optimizar({ restricciones:CHACRA, noNegativas:true, objetivo:[2, 3], sentido:'min' });
+const CUY = [[1, 2, '>=', 8], [3, 1, '>=', 9]];
+const QCm = MP.optimizar({ restricciones:CUY, noNegativas:true, objetivo:[1, 1], sentido:'min' });
+const QCM = MP.optimizar({ restricciones:CUY, noNegativas:true, objetivo:[1, 1], sentido:'max' });
+const PED = [1, 1, '>=', 12];
+const QV = MP.optimizar({ restricciones:TALLER.concat([PED]), noNegativas:true, objetivo:[40, 20], sentido:'max' });
+const Q0 = MP.optimizar({ restricciones:TALLER, noNegativas:true, objetivo:[40, 20], sentido:'max' });
+const C1 = MP.interseccion({ r1:TALLER[0], r2:PED }), C2 = MP.interseccion({ r1:TALLER[2], r2:PED });
+const F1 = MP.prueba({ r:TALLER[1], P:C1.punto }), F2 = MP.prueba({ r:TALLER[1], P:C2.punto });
+const X8 = [1, 0, '<=', 8];
+const RD = MP.redundante({ restricciones:TALLER.concat([X8]), noNegativas:true, indice:3 });
+const COLS = ['r1', 'r2', 'r3'];
+const VT = { x0:-2, x1:12, y0:-2, y1:13 };
+
+function base(D, Rs, o){
+  o = o || {};
+  const reg = D.region(Rs, true);
+  if (o.region !== false && reg.length) D.poligono(reg, D.c.reg, (o.alfaReg === undefined ? 1.4 : o.alfaReg)*D.c.relleno, D.c.reg, 1.2);
+  Rs.forEach((r, i) => pintarRestriccion(D, r, COLS[i]));
+  D.linea([0, 0], [0, 40], D.c.x, D.g('x', 3)); D.linea([0, 0], [40, 0], D.c.y, D.g('y', 3));
+  if (o.nombres) o.nombres.forEach(([t, P, al], i) => D.rotulo(P[0], P[1], t, D.c[COLS[i]], al || 'left', 12, 800));
+  if (o.vert !== false) pintarVertices(D, Rs, true, { coords:true });
+}
+function nivelQ(D, Z, k, alfa){
+  const L = MP.rectaNivel({ objetivo:Z, k });
+  D.recta([Z[0], Z[1], '=', k], D.c.z, D.g('z', 3), null, alfa);
+  const n = Math.hypot(Z[0], Z[1]);   // el rótulo, corrido a lo largo de la recta para no tapar los vértices
+  D.rotulo(L.pie[0] + 1.8*Z[1]/n + .3, L.pie[1] - 1.8*Z[0]/n + .5, `z = ${fmt(k, 0)}`, D.c.z, 'left', 12, 800);
+}
+const NOMT = [['tejido', [3.5, 11.3]], ['feria', [9.3, 1.9]], ['alpaca', [11.6, 9.6], 'right']];
+
+const EXPS = [
+  { id:'paralela', corto:'Mismo precio para las dos',
+    q:`La chalina sube: ahora cada chompa y cada chalina dejan ${Z_('S/ 40')}, así que ${Z_('z = 40x + 40y')}. La región del taller es la misma. ¿Dónde está la ganancia máxima?`,
+    opts:[['a', `Solo en ${QP.errores.unicoPrimero.texto}`, 'PL9-optimo-unico', 'hipotesis'], ['b', `Solo en ${QP.errores.unicoUltimo.texto}`, 'PL9-optimo-unico', 'hipotesis'],
+      ['c', `En todo el lado de ${QP.optimos[0]} a ${QP.optimos[1]}`], ['d', `En ningún punto, porque ${QP.optimos[0]} y ${QP.optimos[1]} empatan`, 'PL9-empate-sin-optimo', 'hipotesis']],
+    ok:'c',
+    fb:{ a:`${QP.optimos[0]} da ${QP.texto}, pero ${QP.optimos[1]} también, y cualquier punto del lado entre ellos.`,
+      b:`${QP.optimos[1]} da ${QP.texto}, pero ${QP.optimos[0]} también, y cualquier punto del lado entre ellos.`,
+      d:'Un empate no quita el máximo: lo reparte. El valor máximo existe (S/ 440) y lo dan muchos planes.' },
+    vista:VT, dur:2600,
+    dib:(D, f) => { base(D, TALLER, { nombres:NOMT });
+      if (f > 0){ const k = Math.round(lerp(120, QP.valor, Math.min(1, f*1.2))); nivelQ(D, [40, 40], k);
+        if (f >= 1){ D.linea(QP.lado[0], QP.lado[1], D.c.opt, 7, null, .85); QP.lado.forEach(P => D.pt(P, '', D.c.opt, { r:6 })); } } },
+    ley:[['reg', 'región factible', 'sq'], ['z', 'recta z = 40x + 40y'], ['opt', 'óptimos: todo el lado'], ['vt', 'vértices', 'pt']],
+    ley0:[['reg', 'región factible', 'sq'], ['r2', 'feria: x + y ≤ 11'], ['vt', 'vértices', 'pt']], desc:'La región del taller con sus cinco vértices.',
+    exp:() => `${tablaVertices(QP, true, 'z = 40x + 40y')}
+      <p>La recta de nivel ${Z_('40x + 40y = k')} tiene pendiente −1, la misma que la ${R2_('feria')}, ${R2_('x + y = 11')}: son paralelas. Al empujarla, sale de la región por todo ese lado a la vez. Hay infinitos ${OP_('óptimos')}: todos los puntos de ${QP.optimos[0]} a ${QP.optimos[1]}, por ejemplo (4; 7) o (3; 8), dan ${Z_(`S/ ${QP.texto}`)}.</p>
+      <p>En la tabla se ve como un empate entre dos vértices vecinos. Si el examen pregunta «cuántas soluciones enteras», hay que contar los puntos enteros de ese lado.</p>
+      <p class="fuente">Creer que el óptimo siempre es único es hipótesis nuestra; no encontramos estudios con datos.</p>` },
+  { id:'minimizar', corto:'Minimizar un costo',
+    q:`En una chacra de Ilave se siembran ${X_('x')} hectáreas de papa e ${Y_('y')} de quinua. Hay que sembrar ${R1_('al menos 6 ha en total')}, ${R2_('a lo más 5 de papa')} y ${R3_('a lo más 4 de quinua')}. Cada hectárea de papa cuesta 2 mil soles y cada una de quinua, 3 mil: ${Z_('z = 2x + 3y')} (en miles). ¿Dónde el costo es mínimo?`,
+    opts:[['a', QM.errores.masCercano.texto, 'PL4-vertice-mas-cercano', 'hipotesis'], ['b', QM.errores.sentidoContrario.texto, 'PL8-maximo-por-minimo', 'hipotesis'],
+      ['c', QM.errores.origen.texto, 'PL20-origen-fuera-de-la-region', 'hipotesis'], ['d', QM.optimoTexto]],
+    ok:'d',
+    fb:{ a:`${QM.errores.masCercano.texto} es el vértice más cercano al origen, pero cuesta ${QM.errores.masCercano.valor} mil: la quinua es más cara.`,
+      b:`${QM.errores.sentidoContrario.texto} es donde el costo es máximo: ${QM.errores.sentidoContrario.valor} mil. Aquí se busca el menor.`,
+      c:'(0; 0) cuesta 0, pero no siembra nada: no cumple «al menos 6 ha». El origen no está en la región.' },
+    vista:{ x0:-1, x1:8, y0:-1, y1:8 }, dur:2600,
+    dib:(D, f) => { base(D, CHACRA, { nombres:[['al menos 6 ha', [0.6, 6.4]], ['papa ≤ 5', [5.2, 6.9]], ['quinua ≤ 4', [5.3, 3.5]]] });
+      D.rotuloPx(D.W - 8, D.Y(0) - 14, 'papa (ha)', D.c.x, 'right', 11, 700); D.rotuloPx(D.X(0) + 26, 12, 'quinua (ha)', D.c.y, 'left', 11, 700);
+      if (f > 0){ const k = Math.round(lerp(22, QM.valor, Math.min(1, f*1.2))); nivelQ(D, [2, 3], k);
+        if (f >= 1) D.pt(QM.optimo, '', D.c.opt, { r:7, anillo:D.c.opt, ra:12 }); } },
+    ley:[['reg', 'región factible', 'sq'], ['z', 'recta del costo z = 2x + 3y'], ['opt', 'óptimo', 'pt'], ['vt', 'vértices', 'pt']],
+    ley0:[['reg', 'región factible', 'sq'], ['r1', 'x + y ≥ 6'], ['r2', 'x ≤ 5'], ['r3', 'y ≤ 4']], desc:'La región de la chacra: un triángulo de vértices (5; 1), (5; 4) y (2; 4).',
+    exp:() => `${tablaVertices(QM, true, 'z = 2x + 3y')}
+      <p>Para minimizar, la recta de nivel se empuja al revés: hacia donde ${Z_('z')} baja, acercándose al origen, hasta el último punto que toca. Aquí es ${OP_(QM.optimoTexto)}: 5 ha de papa y 1 de quinua, ${Z_(`${QM.texto} mil soles`)}.</p>
+      <p>Como el origen no está en la región, el costo no puede ser 0: hay que sembrar al menos 6 ha. Y el vértice más cercano al origen no es el más barato, porque la quinua cuesta más.</p>
+      <p class="fuente">Confundir máximo con mínimo, el vértice más cercano y el origen fuera de la región son hipótesis nuestras; no encontramos estudios con datos.</p>` },
+  { id:'no-acotada', corto:'Una región que no se cierra',
+    q:`Para alimentar cuyes se mezclan ${X_('x')} kg de alfalfa e ${Y_('y')} kg de concentrado. La mezcla necesita ${R1_('x + 2y ≥ 8')} (proteína) y ${R2_('3x + y ≥ 9')} (energía), con x ≥ 0 e y ≥ 0. El costo es ${Z_('z = x + y')} soles. ¿Qué pasa con ${Z_('z')} en esta región?`,
+    opts:[['a', `Mínimo ${QCm.texto}, en ${QCm.optimoTexto}; máximo no hay`], ['b', `Mínimo ${QCm.texto}, en ${QCm.optimoTexto}; máximo ${QCM.errores.soloVertices.valor}, en ${QCM.errores.soloVertices.texto}`, 'PL16-maximo-en-un-vertice', 'hipotesis'],
+      ['c', 'Ni mínimo ni máximo, porque la región no se cierra', 'PL22-no-acotada-sin-minimo', 'hipotesis'], ['d', 'Mínimo 0, en (0; 0); máximo no hay', 'PL20-origen-fuera-de-la-region', 'hipotesis']],
+    ok:'a',
+    fb:{ b:`${QCM.errores.soloVertices.texto} es el vértice con mayor costo, pero la región sigue sin fin: con más kilos, el costo sube todo lo que quieras.`,
+      c:`Que la región no se cierre hacia afuera no impide un mínimo: hacia el origen sí tiene borde, y la recta del costo lo toca por última vez en ${QCm.optimoTexto}.`,
+      d:'(0; 0) no da proteína ni energía: no cumple las dos condiciones. El origen no está en la región.' },
+    vista:{ x0:-1, x1:12, y0:-1, y1:11 }, dur:3000,
+    dib:(D, f) => { base(D, CUY, { nombres:[['proteína', [5.2, 2.3]], ['energía', [0.3, 7.9]]] });
+      D.rotuloPx(D.W - 8, D.Y(0) - 14, 'alfalfa', D.c.x, 'right', 11, 700); D.rotuloPx(D.X(0) + 26, 12, 'concentrado', D.c.y, 'left', 11, 700);
+      if (f > 0){ D.pt(QCm.optimo, `mínimo z = ${QCm.texto}`, D.c.opt, { r:7, anillo:D.c.opt, ra:12, dx:-12, dy:16, colorRot:D.c.opt });
+        const k = Math.round(lerp(QCm.valor, 14, f)); nivelQ(D, [1, 1], k);
+        if (f > .5){ const P = MP.rectaNivel({ objetivo:[1, 1], k }).pie; D.flecha(D.c, P, [P[0] + 1.3, P[1] + 1.3], D.c.z, 2.5); D.rotulo(P[0] + 1.6, P[1] + 1.8, 'sigue sin fin', D.c.z, 'left', 12, 800); } } },
+    ley:[['reg', 'región factible (sigue sin fin)', 'sq'], ['z', 'recta del costo'], ['opt', 'mínimo', 'pt'], ['vt', 'vértices', 'pt']],
+    ley0:[['reg', 'región factible', 'sq'], ['r1', 'x + 2y ≥ 8'], ['r2', '3x + y ≥ 9'], ['vt', 'vértices', 'pt']], desc:'La región de la mezcla: queda del lado contrario al origen y sigue sin fin hacia arriba y a la derecha. Sus vértices son (8; 0), (0; 9) y (2; 3).',
+    exp:() => `${tablaVertices(QCm, true, 'z = x + y')}
+      <p>Las dos condiciones son ≥ y el origen no las cumple: la región queda del lado contrario, y hacia arriba y a la derecha no se cierra. La recta del costo que baja la toca por última vez en ${OP_(QCm.optimoTexto)}: el mínimo es ${Z_(`S/ ${QCm.texto}`)}. Pero si sube, siempre sigue tocándola: <b>no hay máximo</b>.</p>
+      <p>En una región que no se cierra, la tabla de vértices sirve para un sentido y para el otro no: antes de hacerla, mira hacia dónde se escapa la región.</p>
+      <p class="fuente">Dar el mejor vértice como máximo, o creer que no hay ni mínimo, son hipótesis nuestras; no encontramos estudios con datos.</p>` },
+  { id:'vacia', corto:'Un pedido de 12 prendas',
+    q:`Al taller le llega un pedido: debe entregar ${NU_('al menos 12 prendas')}, ${NU_('x + y ≥ 12')}. El ${R1_('tejido')}, la ${R2_('feria')} y la ${R3_('alpaca')} siguen igual, y la ganancia es ${Z_('z = 40x + 20y')}. ¿Dónde está ahora la ganancia máxima?`,
+    opts:[['a', `En ${Q0.optimoTexto}, como antes`, 'PL23-ignorar-la-restriccion-nueva', 'hipotesis'], ['b', 'En ningún punto: ningún plan cumple todas las condiciones'],
+      ['c', `En ${C1.texto}, donde se cruzan el tejido y el pedido`, 'PL17-cruce-sin-comprobar', 'hipotesis'], ['d', `En ${C2.texto}, donde se cruzan la alpaca y el pedido`, 'PL17-cruce-sin-comprobar', 'hipotesis']],
+    ok:'b',
+    fb:{ a:`${Q0.optimoTexto} son 11 prendas: no cumple el pedido de al menos 12.`,
+      c:`${C1.texto} cumple el tejido y el pedido, pero no la feria: ${F1.texto} es falso.`,
+      d:`${C2.texto} cumple la alpaca y el pedido, pero no la feria: ${F2.texto} es falso.` },
+    vista:VT, dur:2600,
+    dib:(D, f) => { base(D, TALLER, { nombres:NOMT, alfaReg: f > 0 ? 1.4*(1 - Math.min(1, f*1.3)) : 1.4, vert: f <= 0 });
+      if (f > 0) D.poligono(D.region([PED], false), D.c.nueva, 1.3*D.c.relleno*Math.min(1, f*1.5));
+      pintarRestriccion(D, PED, 'nueva'); D.rotulo(1.2, 11.8, 'pedido', D.c.nueva, 'left', 12, 800);
+      if (f >= 1){ [C1, C2].forEach(C => D.pt(C.punto, `${C.texto} ✗ feria`, D.c.vt, { dx:10, dy:-14 }));
+        D.rotuloPx(D.W/2, D.H - 18, 'región vacía', D.c.reg, 'center', 14, 800); } },
+    ley:[['nueva', 'pedido: x + y ≥ 12', 'sq'], ['r2', 'feria: x + y ≤ 11'], ['r1', 'tejido'], ['r3', 'alpaca']],
+    ley0:[['reg', 'región de antes', 'sq'], ['nueva', 'pedido: x + y = 12'], ['vt', 'vértices', 'pt']], desc:'La región del taller de antes y la recta del pedido, x + y = 12, por encima de la feria.',
+    exp:() => `<div class="eqs"><div class="eq">${R2_('x + y ≤ 11')} y ${NU_('x + y ≥ 12')}<span class="note">no pueden cumplirse a la vez</span></div></div>
+      <p>La recta del ${NU_('pedido')} es paralela a la de la ${R2_('feria')} y está más arriba: el pedido pide del lado de arriba y la feria del lado de abajo. No queda ningún punto que cumpla las dos: la región es <b>vacía</b> y no hay ganancia máxima, porque no hay plan posible.</p>
+      <p>Los cruces ${C1.texto} y ${C2.texto} cumplen algunas condiciones, pero no todas. Un punto es candidato solo si cumple <b>todas</b>: compruébalo siempre en cada una.</p>
+      <p class="fuente">Ignorar la condición nueva o tomar un cruce sin comprobarlo son hipótesis nuestras; no encontramos estudios con datos.</p>` },
+  { id:'redundante', corto:'Una condición que sobra',
+    q:`El dueño agrega una condición: ${NU_('a lo más 8 chompas')}, ${NU_(RD.texto)}. La ganancia vuelve a ser ${Z_('z = 40x + 20y')}. ¿Qué pasa con la región y con la ganancia máxima?`,
+    opts:[['a', `Nada: la misma región y el mismo máximo, S/ ${Q0.texto} en ${Q0.optimoTexto}`], ['b', `La región gana un vértice nuevo en ${RD.errores.nuevoVertice.texto}`, 'PL18-vertice-nuevo', 'hipotesis'],
+      ['c', 'La ganancia máxima baja, porque hay una condición más', 'PL18-optimo-baja', 'hipotesis']],
+    ok:'a',
+    fb:{ b:`${RD.errores.nuevoVertice.texto} no está en la región: 3·8 + 0 = 24 pasa de las 21 horas de tejido.`,
+      c:'Una condición más puede quitar planes, pero solo si corta la región. Esta no la toca.' },
+    vista:VT, dur:2000,
+    dib:(D, f) => { base(D, TALLER, { nombres:NOMT });
+      if (f > 0) D.poligono(D.region([X8], false), D.c.nueva, .9*D.c.relleno*Math.min(1, f*1.5));
+      pintarRestriccion(D, X8, 'nueva'); D.rotulo(8.2, 12, 'x ≤ 8', D.c.nueva, 'left', 12, 800);
+      if (f >= 1) D.pt(Q0.optimo, '', D.c.opt, { r:7, anillo:D.c.opt, ra:12 }); },
+    ley:[['reg', 'región factible', 'sq'], ['nueva', 'x ≤ 8', 'sq'], ['opt', 'óptimo', 'pt'], ['vt', 'vértices', 'pt']],
+    ley0:[['reg', 'región factible', 'sq'], ['nueva', 'x = 8'], ['vt', 'vértices', 'pt']], desc:'La región del taller con sus cinco vértices y la recta vertical x = 8.',
+    exp:() => `<div class="eqs"><div class="eq">${R1_('3x + y ≤ 21')} con y ≥ 0 → 3x ≤ 21 → x ≤ 7<span class="note">ya era menos de 8</span></div></div>
+      <p>El ${R1_('tejido')} ya no deja pasar de 7 chompas, así que ${NU_('x ≤ 8')} se cumple en toda la región: es una condición <b>redundante</b>. Su semiplano tapa la región entera y no la corta. Los vértices y el ${OP_('óptimo')} quedan iguales.</p>
+      <p>En el examen, una condición redundante solo suma una recta al dibujo: no crea vértices. Un vértice es una esquina de la región, no cualquier cruce con un eje.</p>
+      <p class="fuente">Creer que toda condición nueva agrega un vértice o baja el óptimo es hipótesis nuestra; no encontramos estudios con datos.</p>` },
+];
+const S = { k:0, pred:{}, t0:Date.now() };
+const abierto = k => EXPS.slice(0, k).every(x => !!S.pred[x.id]);
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => abierto(k)
+    ? `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function configurar(x, f){
+  E.config({ vista:x.vista, pintar:D => x.dib(D, f), ley: f > 0 ? x.ley : x.ley0, desc: f > 0 ? `${x.corto}: el dibujo ya muestra la respuesta.` : x.desc });
+}
+function ir(k){
+  if (k < 0 || k >= EXPS.length || !abierto(k)) return;
+  E.parar();
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  configurar(x, ya ? 1 : 0);
+  E.compactar(!ya);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const animar = () => { let f = 0; E.pintar = D => x.dib(D, f); E.ley = x.ley; E.leyenda(); E.desc = null;
+    E.animar(RM ? 0 : x.dur, t => { f = t; }, () => { E.desc = `${x.corto}: el dibujo ya muestra la respuesta.`; E.avisar(); }); };
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + `<div class="nav"><span></span><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    $('otra2').onclick = () => { E.parar(); Celular.alResponder($('cv2'), animar, () => S.k === k); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar(); botones();
+    E.compactar(false);
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+    Celular.alResponder($('cv2'), animar, () => S.k === k);
+  });
+  pintar();
+}
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>
