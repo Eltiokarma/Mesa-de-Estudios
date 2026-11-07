@@ -343,4 +343,4 @@ Desde esta plantilla uso los encargos oficiales de `docs/metodo/`. El verificado
 3. En el informe de aritmética, agregar la fila «Campanadas tratadas como proporción | AR7» a la tabla de mapeo.
 4. Para `docs/pendientes.md` y CLAUDE.md: «Relojes y calendarios (7 nov 2026): `plantillas/relojes-calendarios/` (ángulo entre las agujas con minutero arrastrable, superposiciones en un día, adelantos y atrasos, campanadas, bisiestos y día de la semana; 20 casos verificados aparte; 10 de papel)».
 5. Banco de razonamiento matemático: sumar ítems cuando entre al catálogo.
-6. En el motor de `interes/` hay un riesgo con la animación compartida (`tween`) cuando recibe un instante negativo. Aquí ya se arregló; en interés lo arreglo yo en una pasada aparte.
+6. En el motor de `interes/` hay un riesgo con la animación compartida (`tween`) cuando recibe un instante negativo. Aquí ya se arregló; en interés quedó arreglado en un commit aparte (7 nov 2026).
