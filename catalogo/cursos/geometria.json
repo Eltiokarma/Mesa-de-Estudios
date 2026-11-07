@@ -266,7 +266,7 @@
       "universidades": {"unmsm": {"temas": [16, 17, 18]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "plantillas": ["geometria-analitica"],
+      "plantillas": ["geometria-analitica", "conicas"],
       "investigacion": null
     },
     {

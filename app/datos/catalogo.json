@@ -2842,7 +2842,8 @@
      "potencial_visual": "alto",
      "grado": 5,
      "plantillas": [
-      "geometria-analitica"
+      "geometria-analitica",
+      "conicas"
      ]
     },
     {
@@ -3372,7 +3373,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "conicas"
+     ]
     },
     {
      "id": "trigonometria.coordenadas-polares-y-complejos",
@@ -4581,6 +4584,24 @@
     "/plantillas/congruencia/index.html",
     "/plantillas/congruencia/motor.js",
     "/plantillas/congruencia/papel.json"
+   ]
+  },
+  "conicas": {
+   "id": "conicas",
+   "titulo": "La cuerda del jardinero: lugar geométrico y cónicas",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "trigonometria.conicas",
+    "geometria.geometria-analitica"
+   ],
+   "url": "/plantillas/conicas/index.html",
+   "papel": "/plantillas/conicas/papel.json",
+   "archivos": [
+    "/plantillas/conicas/index.html",
+    "/plantillas/conicas/motor.js",
+    "/plantillas/conicas/papel.json"
    ]
   },
   "conjuntos": {

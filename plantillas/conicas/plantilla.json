@@ -1,0 +1,17 @@
+{
+  "id": "conicas",
+  "titulo": "La cuerda del jardinero: lugar geométrico y cónicas",
+  "formato": "escena",
+  "unidades": [
+    "trigonometria.conicas",
+    "geometria.geometria-analitica"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json",
+  "fuera": "Cubre lugar geométrico, circunferencia por la ecuación general, parábola, elipse e hipérbola (elementos, excentricidad, lado recto y asíntotas), el reconocimiento por los signos de A y C y el cono. Quedan fuera la recta tangente a una cónica, la rotación de ejes y el término xy de la ecuación general de segundo grado. De geometria.geometria-analitica cubre la circunferencia, la parábola y la elipse; la recta está en geometria-analitica."
+}

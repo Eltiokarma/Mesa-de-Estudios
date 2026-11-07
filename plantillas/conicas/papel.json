@@ -1,0 +1,138 @@
+{
+  "titulo": "Lugar geométrico y cónicas: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 3 minutos por problema, como en el examen. Antes de calcular, mira qué denominador es mayor (elipse) o qué término es positivo (hipérbola), y escribe aparte el centro con su signo. Tres controles antes de marcar: en la elipse c² = a² − b² y e < 1; en la hipérbola c² = a² + b² y e > 1; el lado recto de la parábola es 4|p|, siempre positivo.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Halla el centro y el radio de la circunferencia x² + y² + 10x − 4y + 13 = 0.",
+      "respuesta": "Centro (−5; 2) y radio 4.",
+      "pasos": [
+        "Agrupa: (x² + 10x) + (y² − 4y) = −13.",
+        "Completa cuadrados sumando a los dos lados la mitad del coeficiente al cuadrado: 25 por x y 4 por y. Queda (x + 5)² + (y − 2)² = −13 + 25 + 4 = 16.",
+        "(x + 5)² es (x − (−5))²: el centro es (−5; 2), con los signos cambiados respecto a los de la ecuación.",
+        "r² = 16, así que r = 4 (el 16 es el radio al cuadrado, no el radio)."
+      ],
+      "verificar": [ { "fn": "circunferenciaGeneral", "args": [{ "D": 10, "E": -4, "F": 13 }], "espera": { "texto": "(−5; 2) y r = 4", "completada": "(x + 5)² + (y − 2)² = 16" } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Para la parábola (x + 1)² = 12(y − 3), halla el vértice, el foco, la directriz y la longitud del lado recto.",
+      "respuesta": "V(−1; 3), F(−1; 6), directriz y = 0 y LR = 12.",
+      "pasos": [
+        "La variable al cuadrado es x: el eje de la parábola es vertical. Vértice (−1; 3).",
+        "4p = 12, así que p = 3. Como p > 0, abre hacia arriba: el foco está 3 unidades arriba del vértice, en (−1; 6).",
+        "La directriz está 3 unidades debajo del vértice: y = 3 − 3 = 0.",
+        "LR = 4|p| = 12. Sus extremos son (−7; 6) y (5; 6), a 2|p| = 6 del foco."
+      ],
+      "verificar": [ { "fn": "parabola", "args": [{ "eje": "y", "h": -1, "k": 3, "cuatroP": 12 }], "espera": { "verticeTexto": "(−1; 3)", "focoTexto": "(−1; 6)", "directriz": "y = 0", "lr.texto": "12", "extremosLR": "(−7; 6) y (5; 6)" } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Halla la ecuación de la parábola cuyo foco es F(−3; 0) y cuya directriz es la recta x = 3.",
+      "respuesta": "y² = −12x.",
+      "pasos": [
+        "El vértice está en el medio del foco y la directriz: V(0; 0).",
+        "El foco está a la izquierda del vértice: el eje es horizontal y p = −3 (negativo, abre a la izquierda).",
+        "(y − 0)² = 4p(x − 0) = 4(−3)x: y² = −12x.",
+        "Control: el punto (−3; 6) está en la parábola (36 = −12 · (−3)); su distancia al foco es 6 y a la directriz, 3 − (−3) = 6."
+      ],
+      "verificar": [ { "fn": "parabola", "args": [{ "eje": "x", "h": 0, "k": 0, "p": -3 }], "espera": { "ecuacion": "y² = −12x", "focoTexto": "(−3; 0)", "directriz": "x = 3", "abre": "a la izquierda" } },
+                     { "fn": "distancias", "args": [{ "tipo": "parabola", "eje": "x", "h": 0, "k": 0, "p": -3, "F": [-3, 0] }, { "x": -3, "y": 6 }], "espera": { "PF": 6, "PD": 6 } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "básico",
+      "enunciado": "En la elipse x²/169 + y²/144 = 1, halla los focos, la excentricidad y el lado recto.",
+      "respuesta": "Focos (±5; 0), e = 5/13 y LR = 288/13.",
+      "pasos": [
+        "El denominador mayor está bajo x: a² = 169 y b² = 144, eje mayor horizontal. a = 13 y b = 12.",
+        "En la elipse, c² = a² − b² = 169 − 144 = 25, así que c = 5: focos (±5; 0).",
+        "e = c/a = 5/13, menor que 1, como en toda elipse.",
+        "LR = 2b²/a = 2 · 144/13 = 288/13."
+      ],
+      "verificar": [ { "fn": "elipse", "args": [{ "nx": 169, "ny": 144 }], "espera": { "focosTexto": "(±5; 0)", "e.texto": "5/13", "LR.texto": "288/13" } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Una elipse tiene centro en el origen, focos (±6; 0) y eje mayor de longitud 20. Halla su ecuación y su excentricidad.",
+      "respuesta": "x²/100 + y²/64 = 1 y e = 3/5.",
+      "pasos": [
+        "El eje mayor mide 2a = 20, así que a = 10; la distancia del centro a un foco es c = 6.",
+        "b² = a² − c² = 100 − 36 = 64, b = 8 (el triángulo 6, 8, 10 de la cuerda del jardinero).",
+        "Los focos están sobre el eje x: x²/100 + y²/64 = 1.",
+        "e = c/a = 6/10 = 3/5."
+      ],
+      "verificar": [ { "fn": "elipse", "args": [{ "a": 10, "c": 6 }], "espera": { "ecuacion": "x²/100 + y²/64 = 1", "b.texto": "8", "e.texto": "3/5" } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "En la elipse (x − 1)²/16 + (y − 2)²/25 = 1, halla los vértices, los focos y la excentricidad.",
+      "respuesta": "Vértices (1; 7) y (1; −3); focos (1; 5) y (1; −1); e = 3/5.",
+      "pasos": [
+        "Centro (1; 2). El denominador mayor, 25, está bajo y: el eje mayor es vertical, con a = 5 y b = 4.",
+        "Vértices: 5 unidades arriba y abajo del centro, (1; 7) y (1; −3).",
+        "c² = 25 − 16 = 9, c = 3: focos (1; 5) y (1; −1).",
+        "e = 3/5. Si hubieras puesto a² bajo x, los focos te saldrían en una recta horizontal: revisa siempre cuál denominador es mayor."
+      ],
+      "verificar": [ { "fn": "elipse", "args": [{ "h": 1, "k": 2, "nx": 16, "ny": 25 }], "espera": { "eje": "y", "verticesTexto": "(1; 7) y (1; −3)", "focosTexto": "(1; 5) y (1; −1)", "e.texto": "3/5" } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "En la hipérbola x²/144 − y²/25 = 1, halla los focos, la excentricidad y las asíntotas.",
+      "respuesta": "Focos (±13; 0), e = 13/12 y asíntotas y = ±(5/12)x.",
+      "pasos": [
+        "El término positivo es el de x: a² = 144 y b² = 25, eje focal horizontal. a = 12 y b = 5.",
+        "En la hipérbola, c² = a² + b² = 169, c = 13: focos (±13; 0).",
+        "e = c/a = 13/12, mayor que 1, como en toda hipérbola.",
+        "Asíntotas: y = ±(b/a)x = ±(5/12)x. Salen de igualar a 0 el lado izquierdo: x²/144 = y²/25."
+      ],
+      "verificar": [ { "fn": "hiperbola", "args": [{ "a2": 144, "b2": 25, "eje": "x" }], "espera": { "focosTexto": "(±13; 0)", "e.texto": "13/12", "asintotas": "y = ±(5/12)x" } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "En la hipérbola y²/9 − x²/16 = 1, halla los vértices, los focos y las asíntotas.",
+      "respuesta": "Vértices (0; ±3), focos (0; ±5) y asíntotas y = ±(3/4)x.",
+      "pasos": [
+        "El término positivo es el de y: el eje focal es vertical y a² = 9, aunque 16 sea mayor. a = 3 y b = 4.",
+        "Vértices: (0; ±3). c² = 9 + 16 = 25, c = 5: focos (0; ±5).",
+        "Con eje vertical, las asíntotas son y = ±(a/b)x = ±(3/4)x.",
+        "Control: si igualas a 0, y²/9 = x²/16, y = ±(3/4)x: sale lo mismo sin memorizar cuál razón va."
+      ],
+      "verificar": [ { "fn": "hiperbola", "args": [{ "a2": 9, "b2": 16, "eje": "y" }], "espera": { "verticesTexto": "(0; ±3)", "focosTexto": "(0; ±5)", "asintotas": "y = ±(3/4)x" } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Identifica la cónica 9x² + 4y² − 18x + 16y − 11 = 0 y halla su centro, sus vértices y sus focos.",
+      "respuesta": "Es una elipse de centro (1; −2), vértices (1; 1) y (1; −5), y focos (1; −2 + √5) y (1; −2 − √5).",
+      "pasos": [
+        "A = 9 y C = 4 tienen el mismo signo y son distintos: es una elipse (si fueran iguales, una circunferencia).",
+        "9(x² − 2x) + 4(y² + 4y) = 11. Completa: 9(x − 1)² − 9 + 4(y + 2)² − 16 = 11, es decir, 9(x − 1)² + 4(y + 2)² = 36.",
+        "Divide entre 36: (x − 1)²/4 + (y + 2)²/9 = 1. El 9 está bajo y: eje mayor vertical, a = 3, b = 2.",
+        "Vértices a 3 del centro: (1; 1) y (1; −5). c² = 9 − 4 = 5, c = √5: focos (1; −2 + √5) y (1; −2 − √5)."
+      ],
+      "verificar": [ { "fn": "general", "args": [{ "A": 9, "C": 4, "D": -18, "E": 16, "F": -11 }], "espera": { "tipo": "elipse", "completada": "9(x − 1)² + 4(y + 2)² = 36", "canonica": "(x − 1)²/4 + (y + 2)²/9 = 1",
+        "conica.verticesTexto": "(1; 1) y (1; −5)", "conica.focosTexto": "(1; −2 + √5) y (1; −2 − √5)" } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Identifica la cónica y² − 6y − 8x + 1 = 0 y halla su vértice, su foco y su directriz.",
+      "respuesta": "Es una parábola con V(−1; 3), F(1; 3) y directriz x = −3.",
+      "pasos": [
+        "Solo aparece y²: es una parábola de eje horizontal.",
+        "y² − 6y = 8x − 1. Completa sumando 9 a los dos lados: (y − 3)² = 8x + 8 = 8(x + 1).",
+        "Vértice (−1; 3). 4p = 8, p = 2 > 0: abre a la derecha.",
+        "Foco 2 a la derecha del vértice: (1; 3). Directriz 2 a la izquierda: x = −3."
+      ],
+      "verificar": [ { "fn": "general", "args": [{ "A": 0, "C": 1, "D": -8, "E": -6, "F": 1 }], "espera": { "tipo": "parabola", "canonica": "(y − 3)² = 8(x + 1)", "conica.verticeTexto": "(−1; 3)", "conica.focoTexto": "(1; 3)", "conica.directriz": "x = −3" } } ]
+    }
+  ]
+}

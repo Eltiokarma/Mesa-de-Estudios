@@ -204,3 +204,7 @@ Este informe no cubre las inversas. Los errores IN1 a IN29 de `plantillas/funcio
 ## Transformaciones trigonométricas (TT1 a TT13, 7 nov 2026)
 
 Los errores TT1 a TT13 de `plantillas/transformaciones-trig/` (suma a producto, producto a suma, cocientes y pulsaciones) son **hipótesis nuestras**, sin dato publicado leído; la lista está en `rutinas/matematica-a.md` y en la cabecera del motor. Se confirman o descartan con los datos del colegio piloto.
+
+## Cónicas (CO1 a CO37, 7 nov 2026)
+
+Este informe no cubre las cónicas. Los errores CO1 a CO35 y CO37 de `plantillas/conicas/` (la cuerda del jardinero) son **hipótesis nuestras**, sin dato publicado leído; la lista está en `rutinas/matematica-a.md` y en la cabecera del motor. Falta un informe que los respalde o descarte; mientras tanto se confirman con los datos del colegio piloto.

@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Pasada de pegatinas (7 nov 2026): cada escena carga nucleo/pegatina.css después de su propio <style> y marca su
 curso en <html data-curso="…"> (el color de la banda de arriba). Idempotente. Uso: python3 herramientas/pasada-pegatina.py [carpetas…]
-El curso sale de app/datos/catalogo.json (el primer curso cuya unidad usa la plantilla)."""
+El curso sale de la primera unidad de plantillas/<id>/plantilla.json (la unidad principal de la escena);
+si no hay ficha, del primer curso del catálogo cuya unidad usa la plantilla."""
 import json, os, re, sys
 raiz = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 cat = json.load(open(os.path.join(raiz, 'app/datos/catalogo.json')))
@@ -15,7 +16,9 @@ for d in ids:
     f = os.path.join(raiz, 'plantillas', d, 'index.html')
     if not os.path.exists(f): continue
     s = o = open(f, encoding='utf-8').read()
-    c = curso.get(d)
+    ficha = os.path.join(raiz, 'plantillas', d, 'plantilla.json')
+    us = json.load(open(ficha, encoding='utf-8')).get('unidades', []) if os.path.exists(ficha) else []
+    c = us[0].split('.')[0] if us else curso.get(d)
     if not c: print('SIN CURSO', d); continue
     m = re.search(r'<html\b[^>]*>', s)
     tag = m.group(0)
