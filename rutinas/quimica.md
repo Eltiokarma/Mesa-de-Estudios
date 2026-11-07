@@ -509,3 +509,59 @@ Se trabajó en paralelo, con hasta 3 subagentes a la vez. Las unidades de biomol
    
    El ΔE00 mínimo entre los que salen juntos es 20,1. Ojo: el puro y el real quedan cerca del verde de `--ok`, que siempre va con texto.
 3. Una línea en `docs/pendientes.md` y otra en `CLAUDE.md`.
+
+### quimica-ambiente (terminada; es la última de esta lista)
+
+**Qué se hizo.** `plantillas/quimica-ambiente/`, «Del pozo al cielo». Cubre las unidades `quimica.recursos-naturales` y `quimica.ambiente-y-quimica-aplicada`.
+- **`investigacion.md`.** QA1 a QA17. Casi todas las cifras salen de resúmenes y van «por verificar». QA9 (Basheer y otros, 2018) sí se leyó en el texto completo, en una sesión anterior.
+- **Motor (`window.MotorAmbiente`):**
+  - combustión completa e incompleta, balanceada, con una regla declarada para repartir el O₂;
+  - balanza en frasco cerrado y en frasco abierto;
+  - CO₂ por litro de gasolina, octanaje con regla lineal, ppm y ppb;
+  - pH de la lluvia y conversión SO₂ → SO₃ → H₂SO₄;
+  - torre de destilación;
+  - metalurgia de blenda, calcosina y hematita;
+  - corrosión;
+  - tres modelos de juguete declarados como tales: el cielo, la laguna y el smog.
+- **Números:** 32 casos, 10 problemas de papel y las pruebas del motor.
+- **Escena:**
+  - 5 predicciones: frasco sellado (QA9), falta de oxígeno, un litro de gasolina, agujero de ozono (QA1 y QA2) y lluvia ácida (QA3 y QA4);
+  - 5 experimentos: torre, clavo, octanaje, laguna y smog;
+  - el explorador combina la combustión con el O₂ regulable y la torre.
+
+**Subagentes.**
+- **Verificador:** recalculó por su cuenta (balance por espacio nulo, cuadrática de la lluvia). Coinciden todos los campos, salvo tres errores típicos de la torre que la cabecera no definía. Ya están definidos (por-densidad, el-calor-sube, invierte-la-regla), pero esa definición se escribió **después** de la verificación y nadie la recalculó aparte.
+- **Revisor.** Un grave:
+  - la opción del CO₂ en lluvia ácida era defendible, porque toda lluvia ya es algo ácida; ahora el enunciado pregunta por la diferencia con un lugar limpio.
+  
+  Medios:
+  - el ozono como gas de efecto invernadero menor: «casi no cambia»;
+  - las flechas de infrarrojo cortadas bajo la capa de ozono;
+  - la laguna regalaba la respuesta;
+  - la opción de las algas era defendible;
+  - la lupa de la lluvia, que ahora pasa por SO₃ y H₂SO₄;
+  - la química de la fundición;
+  - la regla del O₂, que ahora se presenta como «en este modelo».
+  
+  Además, 10 bajos.
+  
+  Todo corregido; volvió a probar con Playwright las 8 combinaciones.
+
+**Pendiente.**
+- Cifras QA por verificar contra los textos completos: Majer y Devetak (2019), Darcin (2010), Boyes y Stanisstreet (1997) (hay que aclarar si es de ellos o de White y otros, 1992), Khalid (2001), Kind (2004) y otros. La red los bloqueó.
+- `torre()` devuelve ahora también el tetracosano (C₂₄); los casos 29 y 30 siguen pasando.
+- Recursos minerales y metalurgia del Perú solo están en el motor y en el papel; no tienen predicción con respaldo.
+
+**Pedidos para la integración.**
+1. En `catalogo/cursos/quimica.json`, poner `"plantillas": ["quimica-ambiente"]` en `quimica.recursos-naturales` y en `quimica.ambiente-y-quimica-aplicada`, con `"investigacion": "docs/investigacion/quimica-ambiente-ideas-erroneas.md"`. Mover ahí `plantillas/quimica-ambiente/investigacion.md` (la próxima vez los informes nuevos irán directo a `docs/investigacion/`, como pediste). Después, `npm run catalogo`.
+2. En `docs/diseno.md`, los colores de química ambiental:
+   - masa m: mostaza #756300 (oscuro #e3c84a);
+   - temperatura T: verde #377703 (oscuro #97f91f);
+   - UV: violeta #7a2fc0 (oscuro #c08cff);
+   - IR, el calor de la Tierra: marrón #6b260f (oscuro #ff6600); no es rojo porque el O es rojo;
+   - pH: naranja #a05200 (oscuro #f0a04a).
+   
+   Elementos: H, C, O, S, Fe y Zn, de la paleta común. El N se pintó en tinta en la escena. ΔE00 mínimo dentro de una vista: 23,0 en claro y 21,5 en oscuro.
+3. Una línea en `docs/pendientes.md` y otra en `CLAUDE.md`.
+
+**Con esto termina la lista nueva** (rendimiento y pureza, biomoléculas, química ambiental). Si hay más, hace falta una lista nueva.

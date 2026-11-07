@@ -1,0 +1,1217 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Del pozo al cielo: combustión, petróleo, metales y el aire</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md).
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4).
+
+   Colores de esta escena (claro / oscuro). Revisados con CIEDE2000 y contraste WCAG (docs/metodo/paleta.py):
+     m    masa (lo que marca la balanza y las barras de gramos)        mostaza          #756300 / #e3c84a
+     T    temperatura (el termómetro del cielo y las bandejas)          verde            #377703 / #97f91f
+     UV   radiación ultravioleta del Sol                                violeta          #7a2fc0 / #c08cff
+     IR   infrarrojo: el calor que emite la Tierra                      marrón rojizo / naranja  #6b260f / #ff6600
+     pH   pH de la lluvia                                               naranja          #a05200 / #f0a04a
+   Los átomos llevan la paleta común de elementos (nucleo/elementos.js: H, C, O, S, Fe y Zn). Cada sustancia se ve
+   como sus átomos: el CO₂ es un C gris con dos O rojos, el SO₂ un S añil con dos O. Por eso el infrarrojo no es rojo
+   (el O ya lo es) y T no es roja. Los volúmenes, el octanaje, los porcentajes y los NOₓ de la gráfica van en tinta.
+   Qué sale junto (nucleo/elementos-escenas.test.js): los frascos y el explorador (C, H, O) con m; el cielo (C, O) con
+   UV, IR y T; la chimenea (Zn, S, O, H) con pH; el clavo (Fe, O, H) con m; la torre (C) con T; la laguna y el smog
+   (O) sin variables. ΔE00 entre elementos y variables de una misma vista: mínimo 23,0 (IR–O). Entre variables que
+   salen juntas: UV–IR 40,8; UV–T 82,1; IR–T 49,2. Pares que nunca comparten vista: m–pH 18,9 y IR–pH 16,0; T–m 20,3.
+   El único par de elementos de la paleta que no se separa y está en la escena, C–Zn, nunca sale junto (la chimenea no
+   dibuja el CO₂). T está a ΔE00 14,9 del verde de «correcto» (--ok): la respuesta siempre va con
+   texto, y dentro de .fb.ok la T va en el color del texto, subrayada en el suyo. Contraste: todos pasan AA sobre papel,
+   tarjeta, chip (8 %) y el fondo de una opción respondida (dentro de .opt la ficha va sin fondo); mínimo 4,57 (T en
+   claro sobre la opción correcta). */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-m:#756300; --c-T:#377703; --c-UV:#7a2fc0; --c-IR:#6b260f; --c-pH:#a05200;
+  --at-borde:#2d2340; --letra:#ffffff; --liq:rgba(120,110,150,.10); --humo:rgba(90,80,110,.22);
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-m:#e3c84a; --c-T:#97f91f; --c-UV:#c08cff; --c-IR:#ff6600; --c-pH:#f0a04a;
+  --at-borde:#1d1626; --letra:#1d1626; --liq:rgba(190,175,220,.10); --humo:rgba(200,185,230,.20);
+  color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-m:#e3c84a; --c-T:#97f91f; --c-UV:#c08cff; --c-IR:#ff6600; --c-pH:#f0a04a;
+  --at-borde:#1d1626; --letra:#1d1626; --liq:rgba(190,175,220,.10); --humo:rgba(200,185,230,.20);
+  color-scheme:dark }
+
+/* Paleta común de elementos de química: este bloque lo genera Elementos.css(['H', 'C', 'O', 'S', 'Fe', 'Zn']) y no
+   se edita a mano: nucleo/elementos-escenas.test.js lo compara. */
+:root{ --el-H:#0f766e; --el-C:#6b6b6b; --el-O:#c4284e; --el-S:#2d29c7; --el-Fe:#1768be; --el-Zn:#6a676d }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --el-H:#5ed9c8; --el-C:#9a9a9a; --el-O:#f17384; --el-S:#9386ff; --el-Fe:#209cf2; --el-Zn:#9e9ea4 } }
+:root[data-theme="dark"]{ --el-H:#5ed9c8; --el-C:#9a9a9a; --el-O:#f17384; --el-S:#9386ff; --el-Fe:#209cf2; --el-Zn:#9e9ea4 }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+/* El dedo desplaza la página sobre el dibujo; no hay nada que arrastrar en el lienzo (los controles van en la guía). */
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 2px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px; white-space:nowrap}
+.v-m{color:var(--c-m); background:color-mix(in srgb, var(--c-m) 8%, transparent)}
+.v-T{color:var(--c-T); background:color-mix(in srgb, var(--c-T) 8%, transparent)}
+.v-UV{color:var(--c-UV); background:color-mix(in srgb, var(--c-UV) 8%, transparent)}
+.v-IR{color:var(--c-IR); background:color-mix(in srgb, var(--c-IR) 8%, transparent)}
+.v-pH{color:var(--c-pH); background:color-mix(in srgb, var(--c-pH) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+/* Dentro de una opción (respondida o no) la ficha va sin fondo: así pasa AA sobre el verde y el rojo de la respuesta. */
+.opt .v{background:transparent}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:flex; flex-wrap:wrap; align-items:center; gap:.42em; font-family:var(--mono); font-size:1rem; font-variant-numeric:tabular-nums; min-width:0}
+.eq .note{font-family:var(--font); font-size:.84rem; color:var(--muted); white-space:normal; flex-basis:100%}
+.eq .ex{white-space:normal; line-height:2}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+/* En la retroalimentación correcta (verde), la T verde se confundiría con el texto: va en el color del texto, subrayada en el de T. */
+.fb.ok .v-T{color:inherit; text-decoration-color:var(--c-T)}
+
+.ctrls{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap:12px; align-items:end}
+.slider{display:grid; gap:4px}
+.slider label{font-weight:700; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.slider output{font-family:var(--mono); font-variant-numeric:tabular-nums}
+input[type=range]{width:100%; accent-color:var(--ink); min-height:32px}
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.seg button:disabled{opacity:.45; cursor:not-allowed}
+.lect{font-size:.92rem; font-variant-numeric:tabular-nums; display:grid; gap:4px}
+.lect .fila{display:flex; flex-wrap:wrap; gap:2px 14px}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.2fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Química · Recursos naturales y ambiente · Problemas tipo admisión</p>
+      <h1>Del pozo al cielo</h1>
+      <p class="sub">Combustión, petróleo, metales, aire y agua, con los mismos colores. Predice y después mira.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Frascos, el cielo y la chimenea">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Frascos con moléculas sobre una balanza, barras de masa, el cielo con sus capas y una chimenea con la lluvia, según el paso"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="legend" id="ley1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Experimentos con petróleo, hierro, gasolina, agua y aire">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Una torre de destilación, un clavo en una balanza, dos gasolinas, una laguna y el aire de una ciudad, que se completan al responder"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="legend" id="ley2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/quimica-ambiente">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+// Las predicciones de recursos (combustión, gasolina, destilación, octanaje) van con la unidad 'quimica.recursos-naturales'.
+const PLANTILLA = { id: 'quimica-ambiente', unidad: 'quimica.ambiente-y-quimica-aplicada', version: '0.1.0' };
+const RECURSOS = 'quimica.recursos-naturales';
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0, unidad){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: unidad || PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la química sale de MotorAmbiente (motor.js): ecuaciones, masas, el reparto del oxígeno, la torre, el pH, el
+   cielo de juguete, la laguna, el smog y hasta dónde va cada átomo cuando las moléculas se reacomodan. Aquí solo se
+   pinta lo que el motor dice. Se dibujan muchas menos moléculas de las que hay. */
+const RM = Celular.movimientoReducido();
+const MA = MotorAmbiente;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 0 : d), r = Math.round(n*p)/p + 0;
+  let [e, f] = String(Math.abs(r)).split('.');
+  if (e.length > 4) e = e.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  if (d && (f || '').length < d) f = (f || '').padEnd(d, '0');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const m_ = t => V('m', t), T_ = t => V('T', t), UV_ = t => V('UV', t), IR_ = t => V('IR', t), pH_ = t => V('pH', t);
+const gr = (x, d) => `${fmt(x, d === undefined ? 1 : d)} g`, gc = (x, d) => `${fmt(x, d === undefined ? 1 : d)} °C`;
+const kg = (x, d) => `${fmt(x/1000, d === undefined ? 2 : d)} kg`;
+const ease = p => (p < .5 ? 2*p*p : 1 - Math.pow(-2*p + 2, 2)/2);
+
+function colores(){
+  const g = css;
+  return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
+    m:g('--c-m'), T:g('--c-T'), UV:g('--c-UV'), IR:g('--c-IR'), pH:g('--c-pH'), warn:g('--warn'),
+    H:g('--el-H'), C:g('--el-C'), O:g('--el-O'), S:g('--el-S'), Fe:g('--el-Fe'), Zn:g('--el-Zn'),
+    borde:g('--at-borde'), letra:g('--letra'), liq:g('--liq'), humo:g('--humo'), font:g('--font'), mono:g('--mono') };
+}
+const colVar = (c, k) => c[k] || c.ink;
+function alfa(hex, a){
+  const h = String(hex).replace('#', ''); if (h.length !== 6) return hex;
+  return `rgba(${parseInt(h.slice(0, 2), 16)},${parseInt(h.slice(2, 4), 16)},${parseInt(h.slice(4, 6), 16)},${a})`;
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+function linea(ctx, x1, y1, x2, y2){ ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
+function rr(ctx, x, y, w, h, r){ ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h); }
+function flecha(ctx, x1, y1, x2, y2, col, w){
+  ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = w || 2; linea(ctx, x1, y1, x2, y2);
+  const a = Math.atan2(y2 - y1, x2 - x1), s = 6;
+  ctx.beginPath(); ctx.moveTo(x2, y2); ctx.lineTo(x2 - s*Math.cos(a - 0.45), y2 - s*Math.sin(a - 0.45)); ctx.lineTo(x2 - s*Math.cos(a + 0.45), y2 - s*Math.sin(a + 0.45)); ctx.closePath(); ctx.fill();
+}
+
+/* ----- Texto en el lienzo, por piezas de colores: [texto, clave de color, peso]. Baja la letra hasta 9 px si no entra. ----- */
+function anchoPiezas(ctx, c, ps, tam){ let w = 0; for (const [t, , peso] of ps){ ctx.font = `${peso || 700} ${tam}px ${c.font}`; w += ctx.measureText(t).width; } return w; }
+function dibujarPiezas(ctx, c, ps, x, y, tam, align, max){
+  let t = tam; if (max) while (t > 9 && anchoPiezas(ctx, c, ps, t) > max) t -= 0.5;
+  const w = anchoPiezas(ctx, c, ps, t);
+  let x0 = align === 'center' ? x - w/2 : align === 'right' ? x - w : x;
+  ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+  for (const [txt, k, peso] of ps){ ctx.font = `${peso || 700} ${t}px ${c.font}`; ctx.fillStyle = colVar(c, k); ctx.fillText(txt, x0, y); x0 += ctx.measureText(txt).width; }
+  return w;
+}
+function envolver(ctx, c, txt, max, tam){
+  ctx.font = `700 ${tam}px ${c.font}`; const pal = String(txt).split(' '), lineas = []; let l = '';
+  for (const p of pal){ const t = l ? l + ' ' + p : p; if (ctx.measureText(t).width > max && l){ lineas.push(l); l = p; } else l = t; }
+  if (l) lineas.push(l); return lineas;
+}
+// Etiqueta con fondo de papel, para que se lea sobre las flechas.
+function chapa(ctx, c, ps, x, y, tam, align, max){
+  const w = Math.min(anchoPiezas(ctx, c, ps, tam), max || Infinity), x0 = align === 'center' ? x - w/2 : align === 'right' ? x - w : x;
+  ctx.save(); ctx.fillStyle = alfa(c.paper.length === 7 ? c.paper : '#fdf7f1', 0.9); rr(ctx, x0 - 4, y - tam*0.75, w + 8, tam*1.5, 6); ctx.fill(); ctx.restore();
+  dibujarPiezas(ctx, c, ps, x, y, tam, align, max);
+}
+
+/* ----- Átomos y moléculas, con los lugares que da el motor (MOLECULAS, caja, reacomodo). u: píxeles por largo de enlace. ----- */
+let DIBUJADOS = new Set();
+const SUB = { '0':'₀', '1':'₁', '2':'₂', '3':'₃', '4':'₄', '5':'₅', '6':'₆', '7':'₇', '8':'₈', '9':'₉' };
+const ENL = {};
+const enlaces = s => ENL[s] || (ENL[s] = MA.enlaces(s));
+function atomo(ctx, c, el, x, y, r, a){
+  DIBUJADOS.add(el);
+  ctx.save(); ctx.globalAlpha = a === undefined ? 1 : a;
+  ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2); ctx.fillStyle = c[el] || c.C; ctx.fill();
+  ctx.lineWidth = Math.max(0.6, r*0.1); ctx.strokeStyle = alfa(c.borde, 0.5); ctx.stroke();
+  if (r >= 7.5){
+    ctx.fillStyle = c.letra; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    let fs = Math.min(r*0.95, 13); ctx.font = `800 ${fs}px ${c.font}`;
+    while (fs > 6 && ctx.measureText(el).width > 2*r - 2){ fs -= 0.5; ctx.font = `800 ${fs}px ${c.font}`; }
+    ctx.fillText(el, x, y + 0.5);
+  }
+  ctx.restore();
+}
+// Una molécula en un lugar { s, x, y, ang } (en largos de enlace), con origen ox, oy y escala u.
+function molecula(ctx, c, lug, ox, oy, u, a){
+  const A = MA.MOLECULAS[lug.s], co = Math.cos(lug.ang || 0), si = Math.sin(lug.ang || 0);
+  const pts = A.map(q => [ox + u*(lug.x + q.x*co - q.y*si), oy + u*(lug.y + q.x*si + q.y*co)]);
+  ctx.save(); ctx.globalAlpha = a === undefined ? 1 : a;
+  ctx.strokeStyle = c.ink; ctx.lineWidth = Math.max(0.9, u*0.12); ctx.lineCap = 'round';
+  for (const [i, j] of enlaces(lug.s)) linea(ctx, pts[i][0], pts[i][1], pts[j][0], pts[j][1]);
+  ctx.restore();
+  A.map((q, i) => i).sort((i, j) => (A[i].el === 'H') - (A[j].el === 'H')).forEach(i => atomo(ctx, c, A[i].el, pts[i][0], pts[i][1], u*(MA.RADIO[A[i].el] || 0.5), a));
+  return pts;
+}
+// Cadena de carbonos (el esqueleto de un hidrocarburo; los H no se dibujan). Desde 14 C se corta con «…».
+function cadena(ctx, c, n, x, y, s, a){
+  const k = Math.min(n, 12), r = s*0.45;
+  ctx.save(); ctx.globalAlpha = a === undefined ? 1 : a; ctx.strokeStyle = c.ink; ctx.lineWidth = 1;
+  ctx.beginPath(); for (let i = 0; i < k; i++){ const px = x + i*s, py = y + (i % 2 ? -s*0.4 : s*0.4); if (i) ctx.lineTo(px, py); else ctx.moveTo(px, py); } ctx.stroke(); ctx.restore();
+  for (let i = 0; i < k; i++) atomo(ctx, c, 'C', x + i*s, y + (i % 2 ? -s*0.4 : s*0.4), r, a);
+  if (n > k){ ctx.save(); ctx.globalAlpha = a === undefined ? 1 : a; ctx.fillStyle = c.muted; ctx.font = `800 ${s*1.6}px ${c.font}`; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText('…', x + k*s - s*0.3, y); ctx.restore(); }
+  return k*s;
+}
+
+/* ----- La escena -----
+   E.vista dice qué se ve, en paneles (el primero es el principal: en el celular, con una predicción pendiente, es el
+   único que se muestra):
+     frasco:  { re (reacomodo del motor), W, H, p (0 antes, 1 después), abierto, salida (0–1: los gases se van),
+                balanza:{ piezas }, etq:[piezas], bajo:[[piezas]] }
+     barras:  { items:[{ etq:[piezas], valor, k, oculto, texto }], max }
+     cielo:   { agujero (0–1), co2 (ppm), flechas (ultravioleta e infrarrojo), lect:[[piezas], [piezas]] }
+     chimenea:{ ver, lupa { a, b } (dos reacomodos del motor), p (0–2), pH:[piezas] }
+     torre:   { t (torre del motor), p (0–1: suben), ver, oculto:[sustancias tapadas] }
+     clavo:   { re, p, balanza:[piezas] }
+     octano:  { partes:[{ vol, oct }], valor, ver }
+     grafica: { xs, series:[{ ys, k, dash, etq, oculto, w }], xmax, ymax, xlab, ylab, marcas:[{ x, etq }], p }
+     pie: 'texto', vars:[claves de la leyenda], desc: 'texto para el lector de pantalla'
+   Nada regala la respuesta antes de responder: lo que la delataría queda tapado o fuera del dibujo. */
+const ESCENAS = [];
+let TT = 0; // reloj del humo y la lluvia (s)
+function crearEscena(cv, idDesc, modoId, idLey){
+  const E = { vista:{ paneles:[] }, hl:null, modoId, anims:[], compacto:false };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, Lz = null;
+  const paneles = () => (E.vista.paneles || []).filter(k => E.vista[k]);
+  function layout(w){
+    const v = E.vista, chico = innerWidth < 900, L = { p:[] };
+    let ks = paneles(); if (E.compacto && chico) ks = ks.slice(0, 1);
+    const tope = E.compacto && chico ? 236 : Infinity;
+    let y = 6;
+    for (const k of ks){
+      const resta = tope - y; let h;
+      if (k === 'frasco'){ const F = v.frasco, bw = Math.min(w - 24, 380); h = Math.min(bw*F.H/F.W + (F.etq ? 20 : 4) + (F.balanza ? 46 : 0) + (F.bajo || []).length*15 + 8, chico ? 330 : 360, resta); }
+      else if (k === 'barras') h = Math.min(16 + v.barras.items.length*30, resta);
+      else if (k === 'cielo') h = Math.min(chico ? 236 : 270, resta);
+      else if (k === 'chimenea') h = Math.min(chico ? 230 : 250, resta);
+      else if (k === 'torre') h = Math.min(chico ? 300 : 320, resta);
+      else if (k === 'clavo') h = Math.min(200, resta);
+      else if (k === 'octano') h = Math.min(170, resta);
+      else if (k === 'grafica') h = Math.min(chico ? 240 : 260, resta);
+      L.p.push({ k, y, h }); y += h + 8;
+    }
+    if (v.pie && !(E.compacto && chico)){ const c = colores(); L.pie = envolver(ctx, c, v.pie, w - 24, 11.5); L.yPie = y; y += L.pie.length*15 + 2; }
+    L.H = Math.round(Celular.alto(Math.max(80, y + 2), E.compacto, { tope:240 }));
+    return L;
+  }
+  E.resize = () => {
+    const w = cv.clientWidth; if (!w) return;
+    Lz = layout(w); const h = Lz.H, dpr = window.devicePixelRatio || 1;
+    if (w !== W || h !== H){ W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); ctx.setTransform(dpr,0,0,dpr,0,0); }
+  };
+  E.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); E.compacto = on; E.resize(); E.dibujar(); };
+  new ResizeObserver(() => { E.resize(); E.dibujar(); }).observe(cv);
+  E.vivo = () => paneles().some(k => k === 'chimenea');
+
+  // Un reacomodo del motor en p (0 antes, 1 después): moléculas enteras en los extremos, átomos viajando en medio.
+  function dibujarRe(c, re, p, ox, oy, k){
+    const e = ease(clamp(p, 0, 1));
+    if (p <= 0) for (const l of re.antes) molecula(ctx, c, l, ox, oy, k);
+    else if (p >= 1) for (const l of re.despues) molecula(ctx, c, l, ox, oy, k);
+    else for (const a of re.atomos) atomo(ctx, c, a.el, ox + k*(a.x0 + (a.x1 - a.x0)*e), oy + k*(a.y0 + (a.y1 - a.y0)*e), k*(MA.RADIO[a.el] || 0.5));
+  }
+
+  // ----- Frasco (o caja) con moléculas, y la balanza debajo -----
+  function panelFrasco(c, P){
+    const F = E.vista.frasco, re = F.re, hTop = F.etq ? 20 : 4, hBal = F.balanza ? 46 : 0, hBajo = (F.bajo || []).length*15;
+    const k = Math.min(Math.min(W - 24, 380)/F.W, (P.h - hTop - hBal - hBajo - 8)/F.H), fw = F.W*k, fh = F.H*k, x0 = (W - fw)/2, y0 = P.y + hTop;
+    if (F.etq) dibujarPiezas(ctx, c, F.etq, W/2, P.y + 9, 12, 'center', W - 12);
+    rr(ctx, x0, y0, fw, fh, 8); ctx.fillStyle = c.paper; ctx.fill();
+    const p = F.p === undefined ? 0 : F.p, e = ease(clamp(p, 0, 1)), s = F.salida || 0;
+    if (p <= 0) for (const l of re.antes) molecula(ctx, c, l, x0, y0, k);
+    else if (p >= 1){
+      for (const l of re.despues){
+        const gas = F.abierto && l.s !== 'C' && l.s !== 'O2'; // el O₂ que sobra es aire: se queda
+        if (gas && s >= 1) continue;
+        molecula(ctx, c, gas ? Object.assign({}, l, { y: l.y - s*(F.H + 2) }) : l, x0, y0, k, gas ? 1 - s*0.9 : 1);
+      }
+    } else for (const a of re.atomos) atomo(ctx, c, a.el, x0 + k*(a.x0 + (a.x1 - a.x0)*e), y0 + k*(a.y0 + (a.y1 - a.y0)*e), k*(MA.RADIO[a.el] || 0.5));
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6;
+    if (F.abierto){ ctx.beginPath(); ctx.moveTo(x0 + fw*0.3, y0); ctx.lineTo(x0, y0); ctx.lineTo(x0, y0 + fh); ctx.lineTo(x0 + fw, y0 + fh); ctx.lineTo(x0 + fw, y0); ctx.lineTo(x0 + fw*0.7, y0); ctx.stroke(); }
+    else { rr(ctx, x0, y0, fw, fh, 8); ctx.stroke(); if (F.balanza){ ctx.lineWidth = 4; linea(ctx, x0 - 3, y0, x0 + fw + 3, y0); } }
+    let y = y0 + fh;
+    if (F.balanza){
+      ctx.strokeStyle = c.ink; ctx.lineWidth = 3; linea(ctx, x0 - 10, y + 5, x0 + fw + 10, y + 5);
+      const bw = Math.min(fw + 20, 250); rr(ctx, W/2 - bw/2, y + 8, bw, 32, 8); ctx.fillStyle = c.card; ctx.fill(); ctx.lineWidth = 1.4; ctx.strokeStyle = c.ink; ctx.stroke();
+      dibujarPiezas(ctx, c, F.balanza, W/2, y + 24, 13, 'center', bw - 10);
+      y += hBal;
+    }
+    (F.bajo || []).forEach((ps, j) => dibujarPiezas(ctx, c, ps, W/2, y + 10 + j*15, 11.5, 'center', W - 12));
+  }
+
+  // ----- Barras de masa -----
+  function panelBarras(c, P){
+    const B = E.vista.barras, x0 = Math.min(140, W*0.36), x1 = W - 74;
+    B.items.forEach((q, i) => {
+      const y = P.y + 8 + i*30, h = 16, w = (x1 - x0)*clamp((q.valor || 0)/B.max, 0, 1)*(B.p === undefined ? 1 : B.p);
+      dibujarPiezas(ctx, c, q.etq, 8, y + h/2, 11.5, 'left', x0 - 12);
+      ctx.fillStyle = c.grid; ctx.fillRect(x0, y, x1 - x0, h);
+      if (q.oculto){ dibujarPiezas(ctx, c, [['?', 'muted', 800]], x0 + 8, y + h/2, 12, 'left'); return; }
+      ctx.fillStyle = colVar(c, q.k); ctx.fillRect(x0, y, w, h);
+      dibujarPiezas(ctx, c, [[q.texto, q.k, 800]], Math.min(x0 + w + 6, x1 + 4), y + h/2, 11, 'left', W - Math.min(x0 + w + 6, x1 + 4) - 4);
+    });
+  }
+
+  // ----- El cielo: capa de ozono arriba, CO₂ en el medio, el suelo abajo -----
+  function panelCielo(c, P){
+    const K = E.vista.cielo, yOz = P.y + 30, hOz = 22, yG = P.y + P.h - 40, mid = W/2, hw = (K.agujero || 0)*W*0.17;
+    // Sol (decoración, en gris) y la capa de ozono.
+    ctx.save(); ctx.fillStyle = alfa(c.muted, 0.35); ctx.beginPath(); ctx.arc(24, P.y + 14, 10, 0, Math.PI*2); ctx.fill(); ctx.restore();
+    ctx.save(); ctx.fillStyle = alfa(c.muted, 0.10); ctx.fillRect(0, yOz, mid - hw, hOz); ctx.fillRect(mid + hw, yOz, W - mid - hw, hOz); ctx.restore();
+    const nO = Math.max(6, Math.floor(W/34));
+    for (let i = 0; i < nO; i++){ const x = (i + 0.5)*W/nO; if (Math.abs(x - mid) < hw) continue; molecula(ctx, c, { s:'O3', x:0, y:0, ang:0 }, x, yOz + hOz/2 - 1, 5.6); }
+    // CO₂ del aire (posiciones del motor). Su nombre va en el pie: así ningún rótulo queda bajo una flecha.
+    const n = Math.round(K.co2/70), zona = { x:10, y:yOz + hOz + 30, w:W - 20, h:Math.max(30, yG - yOz - hOz - 62) };
+    const co2 = MA.caja([['CO2', n]], 34, 8, 4).map(l => ({ l, x:zona.x + l.x/34*zona.w, y:zona.y + l.y/8*zona.h }));
+    // Ultravioleta: el ozono lo frena; por el agujero llega al suelo. Antes de responder no hay flechas: dirían la respuesta.
+    if (K.flechas){
+      const wUV = E.hl === 'UV' ? 3.2 : 2.2;
+      [0.2, 0.32, 0.44, 0.56, 0.68, 0.8].forEach(f => {
+        const x = f*W, pasa = Math.abs(x - mid) < hw;
+        if (pasa) flecha(ctx, x - 8, P.y + 26, x, yG - 3, c.UV, wUV);
+        else { ctx.strokeStyle = c.UV; ctx.lineWidth = wUV; linea(ctx, x - 3, P.y + 24, x, yOz + hOz/2); ctx.lineWidth = 1.6; linea(ctx, x - 4, yOz + hOz/2 - 4, x + 4, yOz + hOz/2 + 4); linea(ctx, x + 4, yOz + hOz/2 - 4, x - 4, yOz + hOz/2 + 4); }
+      });
+      // Infrarrojo: la Tierra lo emite. Las flechas que escapan cruzan la capa de ozono y salen por arriba; las que
+      // vuelven suben hasta una molécula de CO₂ y bajan desde ella (más CO₂, más flechas que vuelven).
+      const wIR = E.hl === 'IR' ? 3.2 : 2.2, vuelven = clamp(Math.round((K.co2 - 180)/150), 0, 4), usadas = new Set();
+      const xs = [0.12, 0.36, 0.64, 0.88], orden = [1, 2, 0, 3];
+      xs.forEach((f, i) => {
+        const x = f*W;
+        if (orden.indexOf(i) < vuelven && co2.length > usadas.size){
+          let m = null; for (const q of co2) if (!usadas.has(q) && (!m || Math.abs(q.x - x) < Math.abs(m.x - x))) m = q;
+          usadas.add(m);
+          ctx.strokeStyle = c.IR; ctx.lineWidth = wIR; linea(ctx, x, yG - 2, m.x - 3, m.y + 6);
+          flecha(ctx, m.x + 3, m.y + 6, m.x + 14, yG - 3, c.IR, wIR);
+        } else flecha(ctx, x, yG - 2, x + 10, P.y + 2, c.IR, wIR);
+      });
+    }
+    for (const q of co2) molecula(ctx, c, { s:q.l.s, x:0, y:0, ang:q.l.ang }, q.x, q.y, 5.2);
+    chapa(ctx, c, [['Sol', 'muted', 700]], 40, P.y + 14, 10.5, 'left');
+    chapa(ctx, c, [['capa de ozono (O₃), a unos 25 km', 'muted', 700]], W - 8, P.y + 14, 10.5, 'right', W - 90);
+    // El suelo y las lecturas.
+    ctx.fillStyle = alfa(c.muted, 0.16); ctx.fillRect(0, yG, W, P.y + P.h - yG);
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; linea(ctx, 0, yG, W, yG);
+    const [l1, l2] = K.lect || [];
+    if (l1) dibujarPiezas(ctx, c, l1, 10, yG + 18, 12, 'left', W/2 - 14);
+    if (l2) dibujarPiezas(ctx, c, l2, W - 10, yG + 18, 12, 'right', W/2 - 14);
+  }
+
+  // ----- La fundición: humo, nube, lluvia y una lupa en una gota -----
+  function panelChimenea(c, P){
+    const K = E.vista.chimenea, yG = P.y + P.h - 26, bx = 14, bw = Math.min(110, W*0.3), bh = 56, cx = bx + bw - 22, ctop = yG - bh - 70;
+    // Fábrica y chimenea (en tinta).
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.fillStyle = c.card;
+    ctx.beginPath(); ctx.rect(bx, yG - bh, bw, bh); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.rect(cx, ctop, 14, yG - bh - ctop); ctx.fill(); ctx.stroke();
+    dibujarPiezas(ctx, c, [['fundición de zinc', 'ink', 800]], bx + bw/2, yG - bh/2 - 6, 11, 'center', bw - 6);
+    // Mineral de blenda en la puerta (ZnS, del motor).
+    for (let i = 0; i < 3; i++) molecula(ctx, c, { s:'ZnS', x:0, y:0, ang:0 }, bx + 16 + i*24, yG - 10, 6.4);
+    // Humo que sube hacia la nube (decoración: no dice qué gases son).
+    const nx = W*0.66, ny = P.y + 26;
+    for (let i = 0; i < 6; i++){
+      const f = ((RM ? 0.5 : (TT*0.12 + i/6)) % 1), x = cx + 7 + (nx - cx - 7)*f, y = ctop - 6 - (ctop - 6 - ny - 18)*f;
+      ctx.beginPath(); ctx.arc(x, y, 7 + 6*f, 0, Math.PI*2); ctx.fillStyle = c.humo; ctx.fill();
+    }
+    // Nube y lluvia.
+    ctx.fillStyle = alfa(c.muted, 0.28);
+    for (const [dx, dy, r] of [[-34, 6, 16], [-12, -2, 20], [14, 2, 18], [36, 8, 14]]){ ctx.beginPath(); ctx.arc(nx + dx, ny + 12 + dy, r, 0, Math.PI*2); ctx.fill(); }
+    ctx.strokeStyle = alfa(c.muted, 0.8); ctx.lineWidth = 1.6;
+    for (let i = 0; i < 7; i++){
+      const x = nx - 40 + i*13, f = ((RM ? 0.4 : TT*0.8 + i*0.37) % 1), y = ny + 34 + (yG - ny - 44)*f;
+      linea(ctx, x, y, x - 2, y + 7);
+    }
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; linea(ctx, 0, yG, W, yG);
+    // Lupa en una gota.
+    const R = Math.min(70, W*0.155), lx = W - R - 10, ly = P.y + P.h*0.46, ul = R*1.5/11;
+    ctx.beginPath(); ctx.arc(lx, ly, R, 0, Math.PI*2); ctx.fillStyle = c.paper; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.stroke();
+    if (!K.ver){ dibujarPiezas(ctx, c, [['?', 'muted', 800]], lx, ly, 22, 'center'); }
+    else { const q = K.p === undefined ? 2 : K.p; dibujarRe(c, q < 1 ? K.lupa.a : K.lupa.b, q < 1 ? q : q - 1, lx - 5.5*ul, ly - 3.5*ul, ul); }
+    const etl = !K.ver ? 'una gota, de cerca' : (K.p === undefined || K.p >= 2) ? 'H₂SO₄ en la gota' : K.p < 1 ? 'SO₂ + O₂ → SO₃' : 'SO₃ + H₂O → H₂SO₄';
+    dibujarPiezas(ctx, c, [[etl, K.ver ? 'ink' : 'muted', 700]], lx, ly + R + 9, 10.5, 'center', 2*R + 16);
+    chapa(ctx, c, K.pH, nx - 10, yG + 13, 12.5, 'center', W*0.6);
+  }
+
+  // ----- Torre de destilación -----
+  function panelTorre(c, P){
+    const K = E.vista.torre, t = K.t, nb = t.bandejas.length, tx0 = 30, tw = Math.min(W*0.46, 210), ytop = P.y + 40, ybot = P.y + P.h - 40;
+    const yB = i => ybot - (i + 1)*(ybot - ytop)/(nb + 1); // bandeja i (0 = la de abajo)
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 2; rr(ctx, tx0, ytop, tw, ybot - ytop, 10); ctx.stroke();
+    // Salida de arriba (gases) y horno (abajo).
+    ctx.lineWidth = 1.6; linea(ctx, tx0 + tw/2, ytop, tx0 + tw/2, ytop - 12); linea(ctx, tx0 + tw/2, ytop - 12, tx0 + tw + 14, ytop - 12);
+    dibujarPiezas(ctx, c, [['gases', 'ink', 700]], tx0 + tw + 18, ytop - 12, 11, 'left');
+    flecha(ctx, 4, ybot - 14, tx0 + 2, ybot - 14, c.ink, 1.6);
+    dibujarPiezas(ctx, c, [['petróleo del horno, a ', 'ink', 700], [gc(t.Thorno, 0), 'T', 800]], tx0, ybot + 14, 11, 'left', W - tx0 - 6);
+    dibujarPiezas(ctx, c, [['fondo: ', 'ink', 700], ['residuo', 'ink', 800]], tx0 + tw + 8, ybot - 12, 11, 'left', W - tx0 - tw - 12);
+    for (let i = 0; i < nb; i++){
+      const y = yB(i), b = t.bandejas[i];
+      ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; linea(ctx, tx0, y, tx0 + tw*0.8, y); linea(ctx, tx0 + tw, y, tx0 + tw + 10, y);
+      dibujarPiezas(ctx, c, [[gc(b.T, 0), 'T', 800], ['  ' + b.nombre, 'ink', 700]], tx0 + tw + 14, y, 11.5, 'left', W - tx0 - tw - 18);
+    }
+    if (!K.ver){ dibujarPiezas(ctx, c, [['?', 'muted', 800]], tx0 + tw/2, (ytop + ybot)/2, 26, 'center'); return; }
+    // Cada sustancia sube desde el horno hasta su lugar (el motor dice dónde).
+    const lugarY = d => d === 'fondo' ? ybot - 12 : d === 'gases' ? ytop - 2 : yB(d) - 10;
+    const fila = {};
+    const p = K.p === undefined ? 1 : ease(clamp(K.p, 0, 1));
+    for (const s of Object.keys(t.destino)){
+      const d = t.destino[s], k = fila[d] = (fila[d] || 0) + 1, h = MA.HIDROCARBUROS[s];
+      const yf = lugarY(d) - (k - 1)*14, y = ybot - 12 + (yf - (ybot - 12))*p, x = tx0 + 8;
+      const oc = (K.oculto || []).includes(s);
+      if (d === 'gases' && p >= 1){ cadena(ctx, c, h.C, tx0 + tw*0.5 + 4, ytop - 22, 5); dibujarPiezas(ctx, c, [[h.nombre, 'ink', 700]], tx0 + tw*0.5 + 14, ytop - 22, 10, 'left'); continue; }
+      if (oc){ dibujarPiezas(ctx, c, [['? ', 'muted', 800], [h.nombre, 'ink', 700]], x, y, 10.5, 'left', tw - 12); continue; }
+      const w = cadena(ctx, c, h.C, x + 3, y, 5);
+      dibujarPiezas(ctx, c, [[h.nombre, 'ink', 700]], x + w + (h.C > 12 ? 16 : 8), y, 10, 'left', tw - w - 24);
+    }
+  }
+
+  // ----- Clavo en agua sobre una balanza, con la lupa -----
+  function panelClavo(c, P){
+    const K = E.vista.clavo, vw = Math.min(120, W*0.32), vx = 18, vy = P.y + 18, vh = P.h - 70;
+    ctx.fillStyle = c.liq; ctx.fillRect(vx, vy + vh*0.3, vw, vh*0.7);
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(vx, vy); ctx.lineTo(vx, vy + vh); ctx.lineTo(vx + vw, vy + vh); ctx.lineTo(vx + vw, vy); ctx.stroke();
+    // El clavo, con el color del Fe; la herrumbre lo cubre con un rayado a medida que avanza.
+    const nx = vx + vw/2 - 5, p = clamp(K.p || 0, 0, 1);
+    DIBUJADOS.add('Fe'); ctx.fillStyle = c.Fe; ctx.fillRect(nx, vy + 10, 10, vh - 16); ctx.fillRect(nx - 7, vy + 6, 24, 6);
+    if (p > 0){ ctx.save(); ctx.globalAlpha = 0.7*p; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.2; for (let y = vy + 8; y < vy + vh - 6; y += 5) linea(ctx, nx - 2 - 3*p, y + 4, nx + 12 + 3*p, y); ctx.restore(); }
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 3; linea(ctx, vx - 8, vy + vh + 4, vx + vw + 8, vy + vh + 4);
+    rr(ctx, vx - 4, vy + vh + 8, vw + 8, 30, 8); ctx.fillStyle = c.card; ctx.fill(); ctx.lineWidth = 1.4; ctx.stroke();
+    dibujarPiezas(ctx, c, K.balanza, vx + vw/2, vy + vh + 23, 12.5, 'center', vw + 2);
+    // Lupa con los átomos (reacomodo del motor).
+    const lx0 = vx + vw + 22, lw = W - lx0 - 10, re = K.re, k = Math.min(lw/re.W, (P.h - 30)/re.H), ly0 = P.y + 18;
+    rr(ctx, lx0, ly0, re.W*k, re.H*k, 10); ctx.fillStyle = c.paper; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; ctx.stroke();
+    const e = ease(p);
+    if (p <= 0) for (const l of re.antes) molecula(ctx, c, l, lx0, ly0, k);
+    else if (p >= 1) for (const l of re.despues) molecula(ctx, c, l, lx0, ly0, k);
+    else for (const a of re.atomos) atomo(ctx, c, a.el, lx0 + k*(a.x0 + (a.x1 - a.x0)*e), ly0 + k*(a.y0 + (a.y1 - a.y0)*e), k*(MA.RADIO[a.el] || 0.5));
+    dibujarPiezas(ctx, c, [['la superficie del clavo, de cerca', 'muted', 700]], lx0 + re.W*k/2, P.y + 8, 10.5, 'center', re.W*k);
+  }
+
+  // ----- Dos gasolinas y el octanaje de la mezcla -----
+  function panelOctano(c, P){
+    const K = E.vista.octano, tot = K.partes.reduce((s, q) => s + q.vol, 0), hmax = P.h - 64, y0 = P.y + 16 + hmax;
+    K.partes.forEach((q, i) => {
+      const x = 18 + i*70, h = hmax*q.vol/tot;
+      ctx.fillStyle = c.liq; ctx.fillRect(x, y0 - h, 50, h);
+      ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.moveTo(x, y0 - hmax); ctx.lineTo(x, y0); ctx.lineTo(x + 50, y0); ctx.lineTo(x + 50, y0 - hmax); ctx.stroke();
+      dibujarPiezas(ctx, c, [[`${q.vol} %`, 'ink', 800]], x + 25, y0 - h/2, 12, 'center');
+      dibujarPiezas(ctx, c, [[`${q.oct} octanos`, 'ink', 700]], x + 25, y0 + 12, 10.5, 'center', 66);
+    });
+    // Escala de octanaje: de 80 a 100.
+    const gx0 = 170, gx1 = W - 18, gy = P.y + P.h*0.42, tx = o => gx0 + (o - 80)/20*(gx1 - gx0);
+    if (gx1 - gx0 < 120) return;
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 2; linea(ctx, gx0, gy, gx1, gy);
+    ctx.font = `700 10px ${c.font}`; ctx.fillStyle = c.muted; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    for (let o = 80; o <= 100; o += 5){ ctx.lineWidth = 1; linea(ctx, tx(o), gy - 4, tx(o), gy + 4); ctx.fillText(String(o), tx(o), gy + 7); }
+    for (const q of K.partes){ ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; linea(ctx, tx(q.oct), gy - 12, tx(q.oct), gy); }
+    dibujarPiezas(ctx, c, [['octanaje de la mezcla', 'ink', 800]], (gx0 + gx1)/2, gy - 30, 11.5, 'center', gx1 - gx0);
+    if (!K.ver) dibujarPiezas(ctx, c, [['?', 'muted', 800]], (gx0 + gx1)/2, gy - 14, 16, 'center');
+    else { const x = tx(K.valor); ctx.fillStyle = c.ink; ctx.beginPath(); ctx.moveTo(x, gy - 2); ctx.lineTo(x - 6, gy - 14); ctx.lineTo(x + 6, gy - 14); ctx.closePath(); ctx.fill(); dibujarPiezas(ctx, c, [[fmt(K.valor, 1), 'ink', 800]], x, gy + 26, 12.5, 'center'); }
+  }
+
+  // ----- Gráfica de líneas (laguna y smog) -----
+  function panelGrafica(c, P){
+    const G = E.vista.grafica, x0 = 34, x1 = W - 12, y0 = P.y + P.h - 30;
+    // Leyenda de la gráfica, arriba, en filas que se parten si no entran; la gráfica empieza debajo.
+    const ley = []; let yl = P.y + 9, xl = x0;
+    for (const s of G.series){
+      const w = anchoPiezas(ctx, c, [[s.etq, 'ink', 700]], 10.5) + 30;
+      if (xl + w > x1){ xl = x0; yl += 14; }
+      ley.push({ s, x:xl, y:yl }); xl += w;
+    }
+    const y1 = yl + 16 + (G.marcas && G.marcas.length ? 12 : 0);
+    for (const { s, x, y } of ley){
+      ctx.save(); ctx.strokeStyle = colVar(c, s.k); ctx.lineWidth = 2.4; if (s.dash) ctx.setLineDash(s.dash); linea(ctx, x, y, x + 16, y); ctx.restore();
+      dibujarPiezas(ctx, c, [[s.etq, 'ink', 700]], x + 20, y, 10.5, 'left');
+    }
+    const px = x => x0 + x/G.xmax*(x1 - x0), py = y => y0 - y/G.ymax*(y0 - y1);
+    ctx.strokeStyle = c.grid; ctx.lineWidth = 1; ctx.font = `700 10px ${c.font}`; ctx.fillStyle = c.muted;
+    for (let x = 0; x <= G.xmax; x += G.pasoX){ linea(ctx, px(x), y0, px(x), y1); ctx.textAlign = 'center'; ctx.textBaseline = 'top'; ctx.fillText(String(x), px(x), y0 + 3); }
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; linea(ctx, x0, y0, x1, y0); linea(ctx, x0, y0, x0, y1);
+    dibujarPiezas(ctx, c, [[G.xlab, 'muted', 700]], x1, y0 + 20, 10.5, 'right');
+    const n = Math.round((G.p === undefined ? 1 : clamp(G.p, 0, 1))*(G.xs.length - 1));
+    for (const s of G.series){
+      const col = colVar(c, s.k);
+      if (s.el) DIBUJADOS.add(s.el);
+      if (!s.oculto){
+        ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = s.w || 2.4; if (s.dash) ctx.setLineDash(s.dash); ctx.beginPath();
+        for (let i = 0; i <= n; i++){ if (s.hasta !== undefined && G.xs[i] > s.hasta) break; const X = px(G.xs[i]), Y = py(Math.min(s.ys[i], G.ymax)); if (i) ctx.lineTo(X, Y); else ctx.moveTo(X, Y); }
+        ctx.stroke(); ctx.restore();
+      }
+    }
+    if (G.series.some(s => s.oculto)) chapa(ctx, c, [['? ', 'muted', 800], [G.tapado || 'se ve al responder', 'ink', 700]], x0 + (x1 - x0)*(G.rotX === undefined ? 0.5 : G.rotX), y1 + (y0 - y1)*(G.rotY === undefined ? 0.5 : G.rotY), 11.5, 'center', (x1 - x0)*Math.min(G.rotX === undefined ? 0.5 : G.rotX, 1 - (G.rotX === undefined ? 0.5 : G.rotX))*2 - 8);
+    for (const mk of G.marcas || []){ ctx.save(); ctx.strokeStyle = c.muted; ctx.setLineDash([3, 3]); ctx.lineWidth = 1; linea(ctx, px(mk.x), y0, px(mk.x), y1); ctx.restore(); dibujarPiezas(ctx, c, [[mk.etq, 'muted', 700]], clamp(px(mk.x), x0 + 30, x1 - 30), y1 - 6, 10, 'center'); }
+  }
+
+  E.dibujar = () => {
+    E.resize(); if (!W || !Lz) return;
+    const c = colores();
+    DIBUJADOS = new Set();
+    ctx.clearRect(0, 0, W, H);
+    for (const P of Lz.p){
+      ctx.save(); ctx.beginPath(); ctx.rect(0, P.y - 4, W, P.h + 8); ctx.clip();
+      if (P.k === 'frasco') panelFrasco(c, P);
+      else if (P.k === 'barras') panelBarras(c, P);
+      else if (P.k === 'cielo') panelCielo(c, P);
+      else if (P.k === 'chimenea') panelChimenea(c, P);
+      else if (P.k === 'torre') panelTorre(c, P);
+      else if (P.k === 'clavo') panelClavo(c, P);
+      else if (P.k === 'octano') panelOctano(c, P);
+      else if (P.k === 'grafica') panelGrafica(c, P);
+      ctx.restore();
+    }
+    if (Lz.pie){ ctx.save(); ctx.fillStyle = c.muted; ctx.font = `700 11.5px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; Lz.pie.forEach((l, k) => ctx.fillText(l, W/2, Lz.yPie + 6 + k*15)); ctx.restore(); }
+    const ley = leyendaHTML(E.vista), el = document.getElementById(idLey);
+    if (el && el.dataset.k !== ley){ el.dataset.k = ley; el.innerHTML = ley; }
+  };
+  E.describir = () => { const t = E.vista.desc || '', el = document.getElementById(idDesc); if (el.textContent !== t) el.textContent = t; };
+  E.cv = cv;
+  return E;
+}
+const LEY = { m:'m · masa', T:'T · temperatura', UV:'ultravioleta del Sol', IR:'infrarrojo: calor que emite la Tierra', pH:'pH de la lluvia' };
+const NOMBRE_EL = { H:'hidrógeno', C:'carbono', O:'oxígeno', S:'azufre', Fe:'hierro', Zn:'zinc' };
+function leyendaHTML(v){
+  const els = ['H', 'C', 'O', 'S', 'Fe', 'Zn'].filter(e => DIBUJADOS.has(e))
+    .map(e => `<span><svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="5" fill="var(--el-${e})"/></svg>${e} · ${NOMBRE_EL[e]}</span>`).join('');
+  return els + (v.vars || []).map(k => `<span><i style="background:var(--c-${k})"></i>${LEY[k]}</span>`).join('');
+}
+// Resaltar en el dibujo lo que se toca en el texto (regla 4).
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+
+// Un bucle: avanza las animaciones y el humo de la escena visible.
+let RAF = 0, ULT = 0;
+function pedir(){ if (!RAF){ ULT = performance.now(); RAF = requestAnimationFrame(tick); } }
+function tick(now){
+  RAF = 0; const dt = Math.min(0.05, (now - ULT)/1000); ULT = now; let sigue = false;
+  if (!RM) TT += dt;
+  for (const E of ESCENAS){
+    if (document.getElementById(E.modoId).hidden) continue;
+    for (const a of [...E.anims]){ a.t += dt; const f = Math.min(1, a.t/a.dur); a.paso(f); if (f >= 1){ E.anims.splice(E.anims.indexOf(a), 1); if (a.fin) a.fin(); } else sigue = true; }
+    E.dibujar();
+    if (!RM && E.vivo()) sigue = true;
+  }
+  if (sigue) pedir();
+}
+// Animación de dur segundos; con movimiento reducido, de una vez.
+function animar(E, dur, paso, fin, retraso){
+  if (RM){ paso(1); if (fin) fin(); E.dibujar(); return; }
+  E.anims.push({ t:-(retraso || 0), dur, paso:f => paso(Math.max(0, f)), fin }); pedir();
+}
+function cortar(E){ E.anims = []; }
+const LETRAS = 'abcd';
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}" aria-label="Opción ${LETRAS.indexOf(k) + 1}: ${t.replace(/<[^>]+>/g, '')}"><span class="l">${LETRAS.indexOf(k) + 1}</span><span>${t.replace(/ tabindex="0"/g, '')}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+const otraVez = `<button type="button" class="btn" data-repetir>Ver de nuevo</button>`;
+// La fuente queda escrita aquí para quien lea el código; la medición guarda solo la categoría.
+const RES = (cat, fuente) => cat;
+// Respuestas de «¿Qué pasa si…?»: la misma variable que abre los experimentos en orden. El explorador del paso 8 la lee
+// para no regalar la torre (experimento 1): hasta responderlo, las sustancias de la torre quedan tapadas.
+const PRED_EXP = {};
+const DESCUBRE = 'Descúbrelo en «¿Qué pasa si…?», experimento 1';
+// Productos de un reparto del motor, como lista para reacomodo.
+const listaProductos = r => [['CO2', r.CO2], ['CO', r.CO], ['C', r.C], ['H2O', r.H2O], ['O2', r.O2], ['CH4', r.comb]].filter(q => q[1] > 0);
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso =================
+   docs/investigacion/quimica-ambiente-ideas-erroneas.md: QA9 y QA10 (la masa al quemar), QA1 y QA2 (ozono e invernadero), QA3,
+   QA4 y QA7 (cada gas con su daño) y la tabla «Lo que no tiene respaldo» (combustión incompleta y CO₂ por litro). */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'm1', 'ley1');
+const S = { step:0, max:0, pred:{}, ocupado:false, abierto:false };
+
+// Datos de los pasos (todos del motor).
+const FR = MA.balanzaCombustion('metano', 1.6, 8, 250, true), FA = MA.balanzaCombustion('metano', 1.6, 0, 250, false);
+const RF = FR.reparto;
+const RE1 = Object.assign(MA.reacomodo([['CH4', 2], ['O2', 5]], [['CO2', 2], ['H2O', 4], ['O2', 1]], 14, 9, 3), { W:14, H:9 });
+const INC = MA.repartoO2('metano', 4, 6), INC_T = MA.combustion('metano', 'incompleta');
+const RE2 = Object.assign(MA.reacomodo([['CH4', 4], ['O2', 6]], listaProductos(INC), 16, 10, 5), { W:16, H:10 });
+const LIT = MA.co2PorLitro(1, 0.7, 'octano'), OCT_T = MA.combustion('octano');
+const C0 = MA.cielo({ ozono:300, co2:420 }), C1 = MA.cielo({ ozono:150, co2:420 }), CC = MA.cambioCielo({ ozono:300, co2:420 }, { ozono:150, co2:420 });
+const LL = MA.lluvia({ SO2:2.5e-5 }), VECES = MA.compararPH(LL.pH, MA.LLUVIA_NORMAL).veces;
+// La lupa de la gota: SO₂ → SO₃ → H₂SO₄ con los mismos átomos (la semilla de la segunda deja las moléculas donde quedó la primera).
+const LUPA = { a:MA.reacomodo([['SO2', 2], ['O2', 1], ['H2O', 2]], [['SO3', 2], ['H2O', 2]], 11, 7, 4), b:MA.reacomodo([['SO3', 2], ['H2O', 2]], [['H2SO4', 2]], 11, 7, 105) };
+const OZONO = 'Según un resumen de 1997, cerca del 80 % de un grupo de escolares ingleses de 13 y 14 años creía que el agujero de ozono causa el efecto invernadero, y cerca del 60 % lo explicaba con «entra más energía del sol». Son cifras de un resumen, por verificar.';
+
+const P0 = { id:'ambiente-paso2', unidad:RECURSOS, ok:'c', opts:[
+  ['a', 'Menos: el CO₂ y el vapor de agua que se forman casi no pesan.', 'QA9-masa-baja-cerrado', RES('documentado', 'Basheer y otros 2018, tabla 3: 45 % de respuestas erróneas antes de enseñar, 195 escolares')],
+  ['b', 'Menos: el metano se convirtió en energía, en calor y luz, y esa masa ya no está.', 'QA10-se-vuelve-energia', RES('parcial', 'Carbon TIME y RSC: descrita, sin porcentaje')],
+  ['c', 'Lo mismo: los átomos solo cambian de compañero y ninguno sale del frasco.'],
+  ['d', 'Más: al metano se le sumó el oxígeno, y los productos pesan más que él.', 'se-suma-oxigeno-cerrado', RES('hipotesis', 'informe: inversa de QA11, confunde cerrado con abierto')]],
+  fb:{ c:`¡Bien! Los átomos de C, H y O que había al principio son los mismos del final: cambian de compañero, pero ninguno sale. La balanza marca ${m_(gr(FR.despues))} antes y después.`,
+    a:`Los gases sí pesan: el CO₂ y el vapor de agua que se formaron pesan ${gr(FR.gases)}, justo lo que pesaban el metano y el oxígeno que se gastaron. Como el frasco está cerrado, siguen adentro y la balanza los cuenta. En un estudio con 195 escolares de 8.º grado (Basheer y otros, 2018), cerca del 45 % respondió mal en el recipiente cerrado antes de la enseñanza, y cerca del 19 % después; esa cifra junta todas las respuestas erróneas, no solo esta. La correcta está marcada.`,
+    b:`La energía de una combustión sale de romper y formar enlaces, no de que la materia desaparezca: los átomos del metano siguen ahí, en el CO₂ y en el agua. Si fuera así, la balanza marcaría ${gr(FR.errores['se-vuelve-energia'])}. Materiales de enseñanza basados en investigación la describen como una idea frecuente, sin porcentaje (Carbon TIME, de la Universidad Estatal de Michigan, y la Real Sociedad de Química). La correcta está marcada.`,
+    d:`El oxígeno ya estaba dentro del frasco y la balanza ya lo contaba: pasa del O₂ al CO₂ y al agua, pero no entra nada nuevo. Si se sumara, marcaría ${gr(FR.errores['se-suma-oxigeno'])}. En un frasco abierto sí entra oxígeno del aire, pero entonces los gases se van. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.` } };
+const P1 = { id:'ambiente-paso3', unidad:RECURSOS, ok:'a', opts:[
+  ['a', 'CO y H₂O: el oxígeno alcanza para el agua y para un O por cada C.'],
+  ['b', 'Nada: si el oxígeno no alcanza, la reacción no ocurre.', 'ES23-sin-reactivo-no-hay-reaccion', RES('parcial', 'Dahsah y otros 2006: descrita, sin porcentaje')],
+  ['c', 'CO₂ y H₂O, como siempre: solo que sale menos de cada uno.', 'incompleta-menos-de-lo-mismo', RES('hipotesis', 'informe, «Lo que no tiene respaldo»')],
+  ['d', 'CO₂, H₂O y sobra metano: se quema por completo solo lo que alcanza.', 'incompleta-sobra-combustible', RES('hipotesis', 'informe; cercana al razonamiento de limitante, ES20')]],
+  fb:{ a:`¡Bien! Los 8 H forman 4 H₂O, que usan 4 de los 6 átomos de O. Los otros 2 O alcanzan para un O por cada C: 2 CO. Para que salga CO₂ hacen falta 4 O₂ por cada 2 CH₄: un átomo de O más por cada C.`,
+    b:`Sí hay reacción: el metano arde con lo que hay. Lo que cambia es el producto: con poco oxígeno, cada C se queda con un solo O. La idea de que, si un reactivo no alcanza, no hay reacción está descrita en un estudio de Dahsah y otros (2006), sin porcentaje. La correcta está marcada.`,
+    c:`Para sacar CO₂ de todo el carbono harían falta 4 O₂ por cada 2 CH₄, y solo hay 3. Con menos oxígeno no sale «menos de lo mismo»: sale otra sustancia, el CO, con un solo O por cada C. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
+    d:`Así razonaríamos con un reactivo limitante, si la ecuación fuera siempre la completa. Pero el metano no se queda sin quemar: el oxígeno se reparte entre todos los C y forma CO. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.` } };
+const P2 = { id:'ambiente-paso4', unidad:RECURSOS, ok:'b', opts:[
+  ['a', `Unos ${kg(LIT.errores['olvida-los-carbonos'])}: sale una molécula de CO₂ por cada molécula de octano.`, 'co2-olvida-los-carbonos', RES('hipotesis', 'informe, «Lo que no tiene respaldo»')],
+  ['b', `Unos ${kg(LIT.CO2, 2)}: cada C se lleva dos O que vienen del aire.`],
+  ['c', `Unos ${kg(LIT.errores['no-supera-al-combustible'])}: no puede salir más masa que la de la gasolina.`, 'co2-no-supera-al-combustible', RES('hipotesis', 'informe; sale de QA9 y QA10')],
+  ['d', `Unos ${kg(LIT.errores['litro-como-kilo'], 2)}: un litro de gasolina pesa un kilogramo.`, 'co2-litro-como-kilo', RES('hipotesis', 'informe, «Lo que no tiene respaldo»')]],
+  fb:{ b:`¡Bien! Cada molécula de octano tiene 8 C, y cada C sale como CO₂ con dos O del aire. De 700 g de gasolina salen ${m_(gr(LIT.CO2, 0))} de CO₂: unas ${fmt(LIT.razon, 1)} veces su masa.`,
+    a:`El octano tiene 8 C, y cada uno sale en su propia molécula de CO₂: son 8 CO₂ por cada octano, no uno. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
+    c:`Sí puede: al CO₂ se le suman los O que vienen del aire, que no estaban en la gasolina. Los 700 g de gasolina se juntan con ${gr(LIT.O2, 0)} de O₂. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.`,
+    d:`La gasolina flota en el agua: es más liviana. Con 0,70 g/mL, un litro pesa 700 g, no 1000 g. Esta opción es una hipótesis nuestra, sin estudio que la mida. La correcta está marcada.` } };
+const P3 = { id:'ambiente-paso5', ok:'d', opts:[
+  ['a', 'Sube mucho la temperatura: por el agujero entra más luz del Sol, ultravioleta incluido, y calienta.', 'QA2-entra-mas-sol', RES('documentado', 'resumen de 1997, autoría por aclarar (Boyes y Stanisstreet o White y otros): cerca del 60 %, por verificar')],
+  ['b', 'Sube la temperatura: el calor queda atrapado debajo del agujero, como en un invernadero.', 'QA1-ozono-causa-invernadero', RES('documentado', 'resumen de 1997, autoría por aclarar: cerca del 80 %, por verificar; Arslan y otros 2012: 56 % de 256')],
+  ['c', 'Baja mucho la temperatura: el calor de la Tierra se escapa al espacio por el agujero.', 'QA1-calor-se-escapa', RES('hipotesis', 'inversa de QA1')],
+  ['d', 'Llega más ultravioleta, que el ozono frenaba, pero la temperatura media casi no cambia.']],
+  fb:{ d:`¡Bien! El ozono frena el ${UV_('ultravioleta')}: por el agujero llega más, unas ${fmt(C1.uv, 1)} veces lo de antes en el modelo. Pero el calor que sale de la Tierra es ${IR_('infrarrojo')}, y lo retienen otros gases, como el CO₂, que siguen igual: la ${T_('temperatura media')} casi no cambia.`,
+    a:`El ozono frena casi solo el ultravioleta, que trae muy poca de la energía que calienta el suelo. La luz visible, que es la que más calienta, pasa igual con o sin ozono. ${OZONO} La correcta está marcada.`,
+    b:`El efecto invernadero no es un techo con un hueco: es el CO₂ y otros gases, repartidos en todo el aire, que devuelven parte del infrarrojo que emite la Tierra. El agujero de ozono no cambia ese CO₂. ${OZONO} Otro estudio encontró que cerca del 56 % de 256 futuros profesores de Turquía unía los dos problemas (Arslan y otros, 2012, por verificar). La correcta está marcada.`,
+    c:`El ozono también absorbe un poco de infrarrojo, pero tan poco que al abrirse el agujero la temperatura media casi no cambia. El calor no sale por un hueco: sale como infrarrojo por todo el cielo. Esta opción es una hipótesis nuestra, la idea al revés de las que sí están documentadas. La correcta está marcada.` } };
+const P4 = { id:'ambiente-paso7', ok:'c', opts:[
+  ['a', 'El CO₂: se disuelve en las gotas y forma el ácido de la lluvia.', 'QA4-co2-lluvia-acida', RES('parcial', 'Boyes y Stanisstreet 1997b, resumen: «la mayoría», sin porcentaje')],
+  ['b', 'El CO: es el gas más dañino del humo, y vuelve ácida el agua.', 'QA3-co-lluvia-acida', RES('documentado', 'Darcin 2010: 76 % de 298 futuros profesores, por verificar')],
+  ['c', 'El SO₂: en el aire pasa a SO₃, que con el agua forma H₂SO₄.'],
+  ['d', 'Todos por igual: cualquier gas de la chimenea contamina la lluvia.', 'QA7-una-sola-contaminacion', RES('parcial', 'Boyes y Stanisstreet 1993, resumen: no unen causa con efecto, sin porcentaje')]],
+  fb:{ c:`¡Bien! El SO₂ se oxida a SO₃ en el aire, y el SO₃ con el agua de las gotas forma ácido sulfúrico, un ácido fuerte. En el modelo, el ${pH_('pH')} de la lluvia baja de 5,6 a ${pH_(fmt(LL.pH, 1))}.`,
+    a:`El CO₂ sí se disuelve y forma ácido carbónico, pero es débil y está en todo el aire: también en el lugar limpio, cuya lluvia ya tiene un pH cercano a 5,6. No explica la diferencia. Lo que baja el pH mucho más es el SO₂ de la chimenea (y, en las ciudades, los NOₓ). En escolares ingleses, la mitad unía los autos con la lluvia ácida, pero la mayoría culpaba al CO₂ y no a los NOₓ (según el resumen de un estudio de Boyes y Stanisstreet; sin porcentaje exacto, por verificar). La correcta está marcada.`,
+    b:`El CO es tóxico porque se une a la hemoglobina de la sangre, pero en el agua no forma ácidos. En un estudio con 298 futuros profesores de ciencias de Turquía (Darcin, 2010), cerca del 76 % culpó al CO de la lluvia ácida (cifra por verificar). La correcta está marcada.`,
+    d:`Cada gas hace su daño: el CO es tóxico, el CO₂ retiene calor y el SO₂ vuelve ácida la lluvia. Un resumen de Boyes y Stanisstreet (1993) dice que los escolares conocen muchos problemas del aire, pero no unen cada causa con su efecto; no da porcentaje. La correcta está marcada.` } };
+
+// ----- Vistas -----
+const balTxt = v => [['m = ', 'ink', 700], [v, 'm', 800]];
+function vFrasco(r, p){
+  return { paneles:['frasco'], frasco:{ re:RE1, W:RE1.W, H:RE1.H, p: r ? (p === undefined ? 1 : p) : 0,
+      balanza: balTxt(r && (p === undefined || p >= 1) ? gr(FR.despues) : r ? '…' : `${gr(FR.antes)} antes · ? después`),
+      etq:[['Frasco sellado con metano y oxígeno', 'ink', 800]] },
+    pie: r ? 'Los mismos 2 C, 8 H y 10 O antes y después: solo cambian de compañero.' : 'Cada figura es una molécula, con sus átomos del color de su elemento. Se dibujan muchas menos de las que hay.',
+    vars:['m'], desc: r ? `Los átomos del metano y del oxígeno se reacomodan en CO2 y agua. La balanza marca ${fmt(FR.despues, 1)} gramos antes y después.` : `Un frasco sellado con metano y oxígeno sobre una balanza que marca ${fmt(FR.antes, 1)} gramos.` };
+}
+function vAbierto(p, s){
+  return { paneles:['frasco'], frasco:{ re:RE1, W:RE1.W, H:RE1.H, p, abierto:true, salida:s,
+      balanza: balTxt(s >= 1 ? gr(FA.despues) : gr(FA.antes)),
+      etq:[['El mismo frasco, ahora abierto', 'ink', 800]],
+      bajo: s >= 1 ? [[['salieron ', 'ink', 700], [gr(FA.gases), 'm', 800], [' de CO₂ y vapor de agua', 'ink', 700]]] : [] },
+    pie:'Abierto: el oxígeno viene del aire y la balanza no lo pesa; los gases que se forman se van.', vars:['m'],
+    desc:`Con el frasco abierto, los gases se van: la balanza baja de ${fmt(FA.antes, 1)} a ${fmt(FA.despues, 1)} gramos, aunque salieron ${fmt(FA.gases, 1)} gramos de gases.` };
+}
+function vIncompleta(r, p){
+  return { paneles:['frasco'], frasco:{ re:RE2, W:RE2.W, H:RE2.H, p: r ? (p === undefined ? 1 : p) : 0,
+      etq:[['4 CH₄ y solo 6 O₂', 'ink', 800]],
+      bajo: r && (p === undefined || p >= 1) ? [[[`${INC.CO} CO y ${INC.H2O} H₂O: los mismos ${RE2.atomos.length} átomos`, 'ink', 700]]] : [[['¿qué se forma?', 'muted', 700]]] },
+    pie: r ? 'Cada C se quedó con un solo O: es monóxido de carbono, CO.' : 'Se dibujan 4 moléculas de metano y 6 de oxígeno: la misma razón de 2 a 3.', vars:[],
+    desc: r ? `El metano se quema con poco oxígeno: salen ${INC.CO} moléculas de CO y ${INC.H2O} de agua.` : 'Una caja con 4 moléculas de metano y 6 de oxígeno.' };
+}
+function vLitro(r, p){
+  const it = (etq, v, oculto) => ({ etq:[[etq, 'ink', 700]], k:'m', valor:v, oculto, texto:gr(v, 0) });
+  return { paneles:['barras'], barras:{ max:2600, p: r ? (p === undefined ? 1 : p) : 1, items: r
+      ? [it('gasolina', LIT.masa), it('O₂ del aire', LIT.O2), it('CO₂', LIT.CO2), it('vapor de agua', LIT.H2O)]
+      : [it('gasolina', LIT.masa), it('CO₂', 0, true)] },
+    pie: r ? 'Lo que entra (gasolina y O₂) pesa lo mismo que lo que sale (CO₂ y agua).' : 'Un litro de gasolina, tomada como octano de 0,70 g/mL.', vars:['m'],
+    desc: r ? `Entran ${fmt(LIT.masa, 0)} gramos de gasolina y ${fmt(LIT.O2, 0)} de oxígeno; salen ${fmt(LIT.CO2, 0)} de CO2 y ${fmt(LIT.H2O, 0)} de agua.` : 'Un litro de gasolina, 700 gramos; el CO2 está tapado.' };
+}
+const lectCielo = (cie, ver) => [[['UV en el suelo: ', 'ink', 700], [ver ? '×' + fmt(cie.uv, 1) : '?', 'UV', 800]], [['T media: ', 'ink', 700], [ver ? gc(cie.T) : '?', 'T', 800]]];
+function vCielo(r, p){
+  const a = r ? (p === undefined ? 1 : p) : 0;
+  return { paneles:['cielo'], cielo:{ agujero:a, co2:420, flechas:!!r, lect: r ? lectCielo(a >= 1 ? C1 : C0, true) : [[['con agujero, UV: ', 'ink', 700], ['?', 'UV', 800]], [['con agujero, T: ', 'ink', 700], ['?', 'T', 800]]] },
+    pie: r ? 'Flechas que bajan: el ultravioleta, que el ozono frena y que pasa por el agujero. Flechas que suben: el calor que emite la Tierra; las moléculas del medio, el CO₂ del aire, devuelven una parte. Es un esquema.' : `Arriba, el O₃; en el medio, el CO₂ del aire. Hoy, sin agujero: UV ×1,0 y una temperatura media de ${gc(C0.T)} en el modelo.`,
+    vars: r ? ['UV', 'IR', 'T'] : ['UV', 'T'],
+    desc: r ? `Con el agujero, el ultravioleta en el suelo sube a ${fmt(C1.uv, 1)} veces; la temperatura media sigue en ${fmt(C1.T, 1)} grados.` : 'El cielo: la capa de ozono arriba, el CO2 en el medio y el suelo abajo. Lo que pasa con un agujero está tapado.' };
+}
+function vCO2(x){
+  const cie = MA.cielo({ ozono: x.agujero ? 150 : 300, co2:x.co2 });
+  return { paneles:['cielo'], cielo:{ agujero: x.agujero ? 1 : 0, co2:x.co2, flechas:true, lect:lectCielo(cie, true) },
+    pie:'Las moléculas del medio son el CO₂ del aire. Con más CO₂ vuelven más flechas de calor y sube la temperatura; el ultravioleta no cambia.', vars:['UV', 'IR', 'T'],
+    desc:`Con ${x.co2} ppm de CO2 y la capa de ozono ${x.agujero ? 'con agujero' : 'entera'}: ultravioleta por ${fmt(cie.uv, 1)}, temperatura media ${fmt(cie.T, 1)} grados.` };
+}
+function vChimenea(r, p){
+  return { paneles:['chimenea'], chimenea:{ ver:!!r, lupa:LUPA, p, pH: r ? [['pH de la lluvia: ', 'ink', 700], [fmt(LL.pH, 1), 'pH', 800], [' (normal: 5,6)', 'ink', 700]] : [['pH de la lluvia: ', 'ink', 700], ['?', 'pH', 800]] },
+    pie: r ? 'En la gota, el SO₂ termina como ácido sulfúrico. El humo es un dibujo: no muestra qué gases lleva.' : 'El humo es un dibujo: no muestra qué gases lleva. La lupa se abre al responder.', vars:['pH'],
+    desc: r ? `La lluvia cerca de la fundición tiene pH ${fmt(LL.pH, 1)}: el SO2 se oxida y forma ácido sulfúrico en las gotas.` : 'Una fundición de zinc con su chimenea, una nube y lluvia. El pH de la lluvia está tapado.' };
+}
+
+const steps = [
+ { k:'Paso 1', t:'El problema', vista:() => vFrasco(false),
+   body:() => `<p class="problem">Del petróleo sale la gasolina; del gas natural, el metano de la cocina; de las minas del Perú, el zinc. Cuando algo se quema, ¿qué pasa con su masa? ¿Qué sale cuando falta oxígeno? ¿Qué gases dañan el cielo y la lluvia, y cómo?</p>
+   <p>En el dibujo, cada figura es una molécula, con cada átomo del color de su elemento. Se dibujan muchas menos moléculas de las que hay. La balanza da la ${m_('masa')}.</p>
+   <p class="hint">Cada variable tiene su color en el texto, en el dibujo y en las cuentas, como ${m_('la masa')}. Toca un color del texto para resaltarlo en el dibujo.</p>` },
+ { k:'Paso 2', t:'El frasco sellado: predice', gate:P0, vista:r => vFrasco(r),
+   anima: fin => { E.vista = vFrasco(true, 0); E.dibujar(); animar(E, 1.8, f => { E.vista = vFrasco(true, f); }, () => { E.vista = vFrasco(true, 1); fin(); }, 0.2); },
+   body:() => `<p>Un frasco de vidrio sellado tiene un poco de metano y de oxígeno, y está sobre una balanza que marca ${m_(gr(FR.antes))}. Una chispa enciende el metano, que se quema. Cuando el frasco se enfría, ¿qué marca la balanza?</p>${opcionesHTML(P0.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq"><span class="ex">CH₄ + 2O₂ → CO₂ + 2H₂O</span><span class="note">${fmt(1.6, 1)} g de CH₄ + ${fmt(FR.O2usado, 1)} g de O₂ = ${fmt(RF.CO2*44, 1)} g de CO₂ + ${fmt(RF.H2O*18, 1)} g de H₂O. Sobran ${fmt(RF.O2*32, 1)} g de O₂. Antes y después: ${m_(gr(FR.antes))}.</span></div>
+   </div>
+   <div class="nav"><span></span><button type="button" class="btn" id="abrir">Abrir el frasco y quemar otra vez</button></div>
+   <p class="fuente">En el frasco cerrado, cerca del 45 % de 195 escolares de 8.º grado respondió mal antes de enseñar, sumando todas las respuestas erróneas (Basheer y otros, 2018). Que el combustible se vuelve energía: descrita en materiales de enseñanza, sin porcentaje. «Más» es una hipótesis nuestra.</p></div>` },
+ { k:'Paso 3', t:'Falta oxígeno: predice', gate:P1, vista:r => vIncompleta(r),
+   anima: fin => { E.vista = vIncompleta(true, 0); E.dibujar(); animar(E, 1.8, f => { E.vista = vIncompleta(true, f); }, () => { E.vista = vIncompleta(true, 1); fin(); }, 0.2); },
+   body:() => `<p>En una cocina con poca ventilación, el metano se quema con poco oxígeno: 3 moléculas de O₂ por cada 2 de CH₄. Para quemarlo por completo harían falta 4. ¿Qué se forma?</p>${opcionesHTML(P1.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq"><span class="ex">${INC_T.texto}</span><span class="note">En este modelo, el O alcanza primero para el agua, después para un O por cada C (CO) y, si sobra, para el segundo O (CO₂). Por cada CH₄: con ${fmt(INC.umbrales.hollin)} O₂ el carbono queda como hollín; con ${fmt(INC.umbrales.todoCO, 1)}, como CO; con ${fmt(INC.umbrales.todoCO2)} o más, como CO₂. En una llama real salen mezclas, con algo de H₂ y hollín. Ensaya otras cantidades en el paso 8.</span></div>
+   </div>
+   <p>El CO no tiene color ni olor, y es tóxico: se une a la hemoglobina de la sangre en lugar del oxígeno. Por eso una cocina o una terma a gas necesitan ventilación.</p>
+   <p class="fuente">«No hay reacción»: descrita en un estudio de Dahsah y otros (2006), sin porcentaje. Las otras dos opciones incorrectas son hipótesis nuestras.</p></div>` },
+ { k:'Paso 4', t:'Un litro de gasolina: predice', gate:P2, vista:r => vLitro(r),
+   anima: fin => { animar(E, 1.4, f => { E.vista = vLitro(true, f); }, () => { E.vista = vLitro(true, 1); fin(); }, 0.2); },
+   body:() => `<p>Un auto quema 1 L de gasolina. Tómala como octano, C₈H₁₈, de 0,70 g/mL: son ${m_('700 g')}. Si se quema por completo, ¿cuánto CO₂ sale por el escape?</p>${opcionesHTML(P2.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq"><span class="ex">${OCT_T.texto}</span><span class="note">${fmt(LIT.n, 2)} mol de octano × 8 × 44 g/mol = ${m_(gr(LIT.CO2, 0))} de CO₂. Entran ${m_(gr(LIT.masa, 0))} + ${m_(gr(LIT.O2, 0))} y salen ${m_(gr(LIT.CO2, 0))} + ${m_(gr(LIT.H2O, 0))}.</span></div>
+   </div>
+   <p class="fuente">No encontramos estudios que midan estos errores de cálculo: las tres opciones incorrectas son hipótesis nuestras, para confirmar con los datos del colegio.</p></div>` },
+ { k:'Paso 5', t:'El agujero de ozono: predice', gate:P3, vista:r => vCielo(r),
+   anima: fin => { E.vista = vCielo(true, 0); E.dibujar(); animar(E, 1.6, f => { E.vista = vCielo(true, f); }, () => { E.vista = vCielo(true, 1); fin(); }, 0.2); },
+   body:() => `<p>Arriba, a unos 25 km, está la capa de ozono. Más abajo, en todo el aire, hay CO₂. El Sol manda luz visible, ultravioleta e infrarrojo. Se abre un agujero en la capa de ozono. ¿Qué pasa en el suelo?</p>${opcionesHTML(P3.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq"><span class="ex">${UV_('UV')}: ×${fmt(C0.uv, 1)} → ×${fmt(C1.uv, 1)} · ${T_('T')}: ${T_(gc(C0.T))} → ${T_(gc(C1.T))}</span><span class="note">Modelo de juguete del motor: el ultravioleta en el suelo crece cuando el ozono baja (de 300 a 150 unidades Dobson); la temperatura media depende del CO₂. El ozono tiene un efecto muy pequeño en la temperatura, y el modelo lo toma como cero.</span></div>
+   </div>
+   <p>Son dos problemas distintos. El agujero de ozono deja pasar más ultravioleta, que daña la piel y los ojos; lo abrieron los CFC de los aerosoles y refrigeradoras viejas. El calentamiento lo causan el CO₂, el metano y otros gases, que devuelven el infrarrojo de la Tierra.</p>
+   <p class="fuente">${OZONO} «Baja la temperatura» es una hipótesis nuestra.</p></div>` },
+ { k:'Paso 6', t:'El CO₂ y el calor', vista:() => vCO2(S.cie),
+   body:() => `<p>Ahora cambia el CO₂ del aire. Hace 200 años había unas 280 ppm; hoy hay unas 420 ppm. Mira qué lectura cambia y cuál no.</p>
+   <div class="ctrls"><div class="slider"><label for="xCO2"><span>CO₂ del aire</span><output id="xCO2o"></output></label><input id="xCO2" type="range" min="280" max="800" step="20" value="${S.cie.co2}"></div></div>
+   <div class="seg" id="xOz" role="group" aria-label="Capa de ozono"><button type="button" data-a="0" aria-pressed="${!S.cie.agujero}">Ozono entero</button><button type="button" data-a="1" aria-pressed="${S.cie.agujero}">Con agujero</button></div>
+   <div class="lect" id="liveC" aria-live="off"></div>
+   <p>El CO₂ no frena la luz que entra: deja pasar la luz visible y el ultravioleta. Lo que hace es absorber parte del ${IR_('infrarrojo')} que sube desde el suelo y devolverlo hacia abajo. Con más CO₂ vuelve más calor, y la ${T_('temperatura media')} sube.</p>
+   <p class="hint">Modelo de juguete: ${T_('T')} = 14 + 3 · log₂(CO₂/280) °C, con 3 °C cada vez que el CO₂ se duplica (el valor central del IPCC). Sirve para comparar, no para pronosticar.</p>` },
+ { k:'Paso 7', t:'La chimenea y la lluvia: predice', gate:P4, vista:r => vChimenea(r),
+   anima: fin => { E.vista = vChimenea(true, 0); E.dibujar(); pedir(); animar(E, 3, f => { E.vista = vChimenea(true, 2*f); }, () => { E.vista = vChimenea(true, 2); fin(); }, 0.3); },
+   body:() => `<p>Una fundición tuesta blenda, el mineral de zinc: 2ZnS + 3O₂ → 2ZnO + 2SO₂. Por su chimenea salen SO₂ y, de los quemadores de la planta, CO₂ y algo de CO. Días después, la lluvia de la zona es mucho más ácida que la lluvia de un lugar limpio. ¿Qué gas de la chimenea causa esa diferencia?</p>${opcionesHTML(P4.opts, 'fb')}
+   <div id="tras" class="body" hidden><div class="eqs">
+     <div class="eq"><span class="ex">2SO₂ + O₂ → 2SO₃ · SO₃ + H₂O → H₂SO₄</span><span class="note">64 g de SO₂ dan ${fmt(MA.so2AAcido(64), 0)} g de H₂SO₄. Con ${fmt(2.5, 1)} × 10⁻⁵ mol/L en la gota y sus dos H⁺, el ${pH_('pH')} baja a ${pH_(fmt(LL.pH, 1))}: unas ${fmt(VECES, 0)} veces más H⁺ que la lluvia normal, de pH 5,6.</span></div>
+     <div class="eq"><span class="ex">4NO₂ + O₂ + 2H₂O → 4HNO₃</span><span class="note">Los NOₓ de los motores de los autos hacen lo mismo con el ácido nítrico. El CO₂ forma ácido carbónico, que es débil: por eso la lluvia limpia ya tiene pH 5,6.</span></div>
+   </div>
+   <p>Las fundiciones modernas atrapan el SO₂ y lo venden como ácido sulfúrico; cuando no lo hacen, la lluvia de la zona se vuelve ácida.</p>
+   <p class="fuente">CO: cerca del 76 % de 298 futuros profesores de ciencias de Turquía (Darcin, 2010, por verificar). CO₂: «la mayoría» de los escolares que unen los autos con la lluvia ácida, sin porcentaje (Boyes y Stanisstreet, resumen). «Todos por igual»: la idea de que la contaminación es una sola cosa, descrita sin porcentaje (Boyes y Stanisstreet, 1993).</p></div>` },
+ { k:'Paso 8', t:'Ahora explora tú', explora:true, vista:() => vistaExp(),
+   body:() => `<div class="seg" id="xQue" role="group" aria-label="Qué explorar"><button type="button" data-q="comb" aria-pressed="${X.que === 'comb'}">Combustión</button><button type="button" data-q="torre" aria-pressed="${X.que === 'torre'}">Torre de destilación</button></div>
+   <div class="ctrls">
+     <div class="slider" id="xO2b"><label for="xO2"><span>Moléculas de O₂ para 4 de CH₄</span><output id="xO2o"></output></label><input id="xO2" type="range" min="4" max="10" step="1" value="${X.nO2}"></div>
+     <div class="slider" id="xDTb"><label for="xDT"><span>Temperatura de las bandejas</span><output id="xDTo"></output></label><input id="xDT" type="range" min="-60" max="40" step="10" value="${X.dT}"></div>
+   </div>
+   <div class="lect" id="live" aria-live="off"></div>
+   <p class="hint" id="xHint"></p>` },
+];
+S.cie = { co2:420, agujero:false };
+
+// ----- Explorador -----
+const X = { que:'comb', nO2:6, dT:0 };
+function vistaExp(){
+  if (X.que === 'torre'){
+    const t = MA.torre(MA.BANDEJAS.map(b => ({ T:b.T + X.dT, nombre:b.nombre })));
+    return { paneles:['torre'], torre:{ t, ver:!!PRED_EXP['torre'] },
+      pie: PRED_EXP['torre'] ? 'Cada cadena es el esqueleto de carbonos de una molécula; los H no se dibujan.' : 'Dónde se recoge cada sustancia: ' + DESCUBRE + '.',
+      vars:['T'], desc:'' };
+  }
+  const r = MA.repartoO2('metano', 4, X.nO2), re = Object.assign(MA.reacomodo([['CH4', 4], ['O2', X.nO2]], listaProductos(r), 20, 13, 7), { W:20, H:13 });
+  return { paneles:['frasco', 'barras'], frasco:{ re, W:20, H:13, p:X.p === undefined ? 1 : X.p, etq:[[`4 CH₄ y ${X.nO2} O₂`, 'ink', 800]] },
+    barras:{ max:Math.max(r.masas[0], 1)*1.05, items:[{ etq:[['antes', 'ink', 700]], k:'m', valor:r.masas[0], texto:`${fmt(r.masas[0], 0)} u` }, { etq:[['después', 'ink', 700]], k:'m', valor:r.masas[1], texto:`${fmt(r.masas[1], 0)} u` }] },
+    pie:'Masas en unidades de masa atómica (u), con H = 1, C = 12 y O = 16.', vars:['m'], desc:'' };
+}
+function explorar(){
+  const vivo = anim => {
+    $('xQue').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.q === X.que)));
+    $('xO2b').hidden = X.que !== 'comb'; $('xDTb').hidden = X.que !== 'torre';
+    $('xO2o').textContent = `${X.nO2} (razón ${fmt(X.nO2/4, 2)})`; $('xDTo').textContent = (X.dT > 0 ? '+' : X.dT < 0 ? '−' : '±') + Math.abs(X.dT) + ' °C';
+    if (X.que === 'comb'){
+      const r = MA.repartoO2('metano', 4, X.nO2);
+      const nom = { CO2:'CO₂', CO:'CO', C:'C (hollín)', H2O:'H₂O', O2:'O₂ que sobra', CH4:'CH₄ sin quemar' };
+      $('live').innerHTML = `<div class="fila"><span>Sale: ${listaProductos(r).map(([s, n]) => `${fmt(n, 0)} ${nom[s]}`).join(' · ')}</span></div>
+        <div class="fila"><span>${m_('m')} antes: ${m_(fmt(r.masas[0], 0) + ' u')}</span><span>${m_('m')} después: ${m_(fmt(r.masas[1], 0) + ' u')}</span></div>`;
+      $('xHint').textContent = 'Con 4 O₂ (uno por CH₄) el carbono queda como hollín; con 6, como CO; con 8 o más, como CO₂. Entre esos números salen mezclas.';
+    } else {
+      const t = MA.torre(MA.BANDEJAS.map(b => ({ T:b.T + X.dT, nombre:b.nombre })));
+      $('live').innerHTML = PRED_EXP['torre']
+        ? `<div class="fila">${Object.entries(t.fraccion).map(([s, f]) => `<span>${MA.HIDROCARBUROS[s].nombre}: ${f}</span>`).join('')}</div>`
+        : `<div class="fila"><span>? ${DESCUBRE}</span></div>`;
+      $('xHint').textContent = 'Las bandejas van de 350 °C abajo a 30 °C arriba; el deslizador las sube o las baja a todas juntas.';
+    }
+    E.vista = vistaExp(); E.dibujar();
+    if (anim && X.que === 'comb' && !RM){ X.p = 0; E.vista = vistaExp(); E.dibujar(); cortar(E); animar(E, 1.1, f => { X.p = f; E.vista = vistaExp(); }, () => { X.p = 1; E.vista = vistaExp(); }); }
+    E.describir();
+  };
+  $('xQue').querySelectorAll('button').forEach(b => b.onclick = () => { X.que = b.dataset.q; vivo(false); });
+  $('xO2').oninput = () => { X.nO2 = +$('xO2').value; X.p = 1; vivo(false); };
+  $('xO2').onchange = () => vivo(true);
+  $('xDT').oninput = () => { X.dT = +$('xDT').value; vivo(false); };
+  vivo(false);
+}
+function enlazarPaso6(){
+  const vivo = () => {
+    const cie = MA.cielo({ ozono: S.cie.agujero ? 150 : 300, co2:S.cie.co2 });
+    $('xCO2o').textContent = `${S.cie.co2} ppm`;
+    $('xOz').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String((b.dataset.a === '1') === S.cie.agujero)));
+    $('liveC').innerHTML = `<div class="fila"><span>${UV_('UV')} en el suelo: ${UV_('×' + fmt(cie.uv, 1))}</span><span>${T_('T')} media: ${T_(gc(cie.T))}</span></div>`;
+    E.vista = vCO2(S.cie); E.dibujar(); E.describir();
+  };
+  $('xCO2').oninput = () => { S.cie.co2 = +$('xCO2').value; vivo(); };
+  $('xOz').querySelectorAll('button').forEach(b => b.onclick = () => { S.cie.agujero = b.dataset.a === '1'; vivo(); });
+  vivo();
+}
+function enlazarPaso2(){
+  const b = $('abrir'); if (!b) return;
+  b.onclick = () => {
+    if (S.ocupado) return;
+    S.ocupado = true; nav(); b.disabled = true;
+    const listo = () => { S.ocupado = false; nav(); b.disabled = false; b.textContent = 'Volver al frasco sellado'; E.describir(); S.abierto = true; };
+    if (S.abierto){ S.abierto = false; E.vista = vFrasco(true); E.dibujar(); E.describir(); S.ocupado = false; nav(); b.disabled = false; b.textContent = 'Abrir el frasco y quemar otra vez'; return; }
+    Celular.alResponder($('cv'), () => {
+      E.vista = vAbierto(0, 0); E.dibujar();
+      animar(E, 1.5, f => { E.vista = vAbierto(f, 0); }, () => animar(E, 1.4, f => { E.vista = vAbierto(1, f); }, () => { E.vista = vAbierto(1, 1); listo(); }), 0.2);
+    }, () => S.step === 1, { siNo:() => { S.ocupado = false; nav(); b.disabled = false; } });
+  };
+}
+
+// ----- Navegación -----
+const dots = $('dots');
+steps.forEach((s, n) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = n + 1; b.addEventListener('click', () => go(n)); li.appendChild(b); dots.appendChild(li);
+});
+function go(n){
+  if (n < 0 || n >= steps.length || n > S.max || S.ocupado) return;
+  const s = steps[n]; S.step = n; cortar(E); S.abierto = false;
+  const r = s.gate ? !!S.pred[s.gate.id] : true;
+  E.vista = s.vista(s.gate ? r : undefined);
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  pintarDots();
+  E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.gate) prediccion(s);
+  if (n === 1) enlazarPaso2();
+  if (n === 5) enlazarPaso6();
+  if (s.explora) explorar();
+  nav(); E.dibujar(); pedir(); E.describir();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+  [...dots.querySelectorAll('button')].forEach(b => { if (S.ocupado) b.disabled = true; });
+  if (!S.ocupado) pintarDots();
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : `Ir al ${steps[k].k.toLowerCase()}: ${steps[k].t}`);
+    if (k > S.max) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled');
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(n){ if (n > S.max) S.max = n; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.innerHTML = (p === P.ok ? '' : `Elegiste la ${LETRAS.indexOf(p) + 1}. `) + P.fb[p].replace(/ tabindex="0"/g, ''); fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    const tras = $('tras'); if (tras) tras.hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0, P.unidad);
+    S.ocupado = true; nav();
+    E.compactar(false);
+    $('next').focus({ preventScroll:true });
+    const paso = S.step;
+    // En el celular, el dibujo sube a la vista y se anima después (nucleo/celular.js).
+    Celular.alResponder($('cv'), () => { s.anima(() => { S.ocupado = false; nav(); E.describir(); }); E.describir(); },
+      () => S.step === paso, { siNo:() => { S.ocupado = false; nav(); } });
+  }));
+  pintar();
+}
+$('next').addEventListener('click', () => { const s = steps[S.step]; if (S.ocupado || (s.gate && !S.pred[s.gate.id])) return; desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+alRedibujarTema(() => E.dibujar());
+addEventListener('modo', () => {
+  // Al volver de «¿Qué pasa si…?», el explorador se rehace: puede haber algo recién descubierto.
+  if (!document.getElementById('m1').hidden && steps[S.step].explora && !S.ocupado) go(S.step);
+  else { E.resize(); E.dibujar(); pedir(); }
+});
+go(0);
+})();
+</script>
+
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   docs/investigacion/quimica-ambiente-ideas-erroneas.md: QA13 (la torre), QA11, QA12 y QA17 (el clavo), QA15 (la laguna), QA8 (el smog) y la tabla
+   «Lo que no tiene respaldo» (octanaje y destilación). */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'm2', 'ley2');
+const T0 = MA.torre(), HEX = MA.HIDROCARBUROS.hexadecano;
+const OX = MA.oxidarHierro(112), REC = Object.assign(MA.reacomodo([['Fe', 4], ['O2', 3], ['H2O', 2]], [['Fe2O3', 2], ['H2O', 2]], 14, 10, 9), { W:14, H:10 });
+const MZ = MA.mezclaOctanaje([{ vol:60, oct:84 }, { vol:40, oct:97 }]), PL = MA.paraLlegar(84, 97, 90);
+const LAG = MA.eutrofizacion(1), SM = MA.smog(1);
+const lugar = d => d === 'fondo' ? 'en el fondo, con el residuo' : d === 'gases' ? 'arriba, con los gases' : `en la bandeja de ${gc(MA.BANDEJAS[d].T, 0)}`;
+const balClavo = v => [['m del clavo = ', 'ink', 700], [v, 'm', 800]];
+const graficaLaguna = (ver, p) => ({ paneles:['grafica'], grafica:{ xs:LAG.serie.map(d => d.dia), xmax:40, pasoX:10, ymax:10, xlab:'días', p, rotX:0.66, rotY:0.45, tapado:'el O₂ y los peces, al responder',
+    series:[{ ys:LAG.serie.map(d => d.algas), k:'ink', dash:[6, 4], etq:'algas vivas (unidades)', w:2, hasta: ver ? undefined : LAG.diaMaxAlgas },
+      { ys:LAG.serie.map(d => d.O2), k:'O', el:'O', etq:'O₂ disuelto (mg/L)', oculto:!ver },
+      { ys:LAG.serie.map(d => d.peces*8), k:'muted', dash:[2, 3], etq:'peces vivos (8 = todos)', oculto:!ver, w:2 }],
+    marcas: ver ? [{ x:LAG.diaMaxAlgas, etq:'más algas' }, { x:LAG.diaMinO2, etq:'menos O₂' }] : [{ x:LAG.diaMaxAlgas, etq:'más algas' }] } });
+const graficaSmog = (ver, p) => ({ paneles:['grafica'], grafica:{ xs:SM.horas.map(h => h.h), xmax:23, pasoX:6, ymax:Math.max(...SM.horas.map(h => Math.max(h.O3, h.NO2)))*1.1, xlab:'hora del día', p, rotY:0.8, tapado:'los NOₓ y el ozono, al responder',
+    series:[{ ys:SM.horas.map(h => h.sol*SM.picoO3), k:'muted', etq:'sol', w:1.6 },
+      { ys:SM.horas.map(h => h.NO2), k:'ink', dash:[6, 4], etq:'NOₓ de los autos', w:2, oculto:!ver },
+      { ys:SM.horas.map(h => h.O3), k:'O', el:'O', etq:'ozono (O₃) en la calle', oculto:!ver }] } });
+
+const EXPS = [
+  { id:'torre', corto:'La torre de destilación', unidad:RECURSOS, ok:'b',
+    q:`El petróleo entra por abajo, a ${T_(gc(T0.Thorno, 0))}, y su vapor sube por la torre. Las bandejas, de abajo arriba, están a ${T_('350')}, ${T_('250')}, ${T_('150')} y ${T_('30 °C')}. El hexadecano (C₁₆H₃₄) hierve a ${T_(gc(HEX.Teb, 0))}. ¿Dónde se recoge?`,
+    opts:[['a', 'En el fondo, con el residuo: sus moléculas son grandes y densas, y se hunden.', 'QA13-por-densidad', RES('parcial', 'Oak National Academy y CTI 2022: descrita, sin cifra')],
+          ['b', `En la bandeja de ${gc(250, 0)}: es la primera más fría que su punto de ebullición.`],
+          ['c', 'En la de 30 °C, arriba: el calor sube y arrastra las moléculas más pesadas.', 'torre-el-calor-sube', RES('hipotesis', 'informe, «Lo que no tiene respaldo»')],
+          ['d', 'En la de 350 °C: se queda en la bandeja que está más caliente que su punto de ebullición.', 'torre-invierte-la-regla', RES('hipotesis', 'hipótesis nuestra')]],
+    fb:{ a:'La torre no separa por densidad: separa por punto de ebullición. El hexadecano entra como vapor, porque el horno está a 400 °C, y sube hasta que encuentra una bandeja más fría que 287 °C. Materiales de enseñanza describen esta confusión, sin porcentaje; un artículo de 2022 dice que hay poca investigación sobre las ideas de los alumnos acerca de la destilación.',
+      c:'El vapor sube, sí, pero cada sustancia se condensa apenas llega a una bandeja más fría que su punto de ebullición. Las moléculas grandes hierven más alto y se condensan antes, más abajo. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      d:'En una bandeja más caliente que su punto de ebullición, el hexadecano sigue siendo vapor: no puede condensarse ahí. Sigue subiendo. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    antes:() => ({ paneles:['torre'], torre:{ t:T0, ver:false }, pie:'La torre por dentro. Dónde sale cada sustancia se ve al responder.', vars:['T'], desc:'Una torre de destilación con cuatro bandejas a 350, 250, 150 y 30 grados.' }),
+    anima:true,
+    despues:p => ({ paneles:['torre'], torre:{ t:T0, ver:true, p: p === undefined ? 1 : p },
+      pie:'Cada cadena es el esqueleto de carbonos de una molécula; los H no se dibujan. Ninguna sustancia nueva aparece en la torre.', vars:['T'],
+      desc:`Cada sustancia sube y se condensa en la primera bandeja más fría que su punto de ebullición. El hexadecano, ${lugar(T0.destino.hexadecano)}: diésel.` }),
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">${MA.SUST_TORRE.map(s => `${MA.HIDROCARBUROS[s].nombre} ${T_(gc(MA.HIDROCARBUROS[s].Teb, 0))} → ${T0.fraccion[s]}`).join(' · ')}</span><span class="note">Lo que hierve sobre la temperatura del horno no llega a evaporarse y queda en el fondo; lo que no se condensa ni a 30 °C sale arriba como gas. Puntos de ebullición de tabla, redondeados; el residuo es un C₃₀ de modelo.</span></div></div>
+      <p>La torre no fabrica sustancias: el petróleo es una mezcla y la torre solo la separa. Las sustancias nuevas aparecen después, en el craqueo, que rompe las moléculas grandes en otras más chicas. Prueba la torre con otras temperaturas en el paso 8.</p>
+      <p class="fuente">Separar por densidad: descrita en materiales de enseñanza, sin cifra. Las otras dos opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'clavo', corto:'El clavo que se oxida', ok:'d',
+    q:`Un clavo de hierro de ${m_('112 g')} se deja en agua con aire hasta que todo su hierro se vuelve herrumbre: 4Fe + 3O₂ → 2Fe₂O₃. No se cae ningún trozo. ¿Cuánto pesa al final?`,
+    opts:[['a', `${gr(OX.errores['resta-oxigeno'], 0)}: el óxido se come al hierro, y se pierde la masa del oxígeno.`, 'QA11-oxidado-pesa-menos', RES('parcial', 'Kind 2004, RSC: descrita en alumnos de 15 años; cifras contradictorias, no se usan')],
+          ['b', `${gr(OX.errores['no-cambia'], 0)}: la herrumbre sigue siendo el mismo hierro, con otro color.`, 'QA12-sigue-siendo-hierro', RES('parcial', 'Dávila Acedo y otros 2017: 25 % de 28 lo llama cambio físico, otra pregunta')],
+          ['c', `${gr(OX.errores['uno-a-uno'], 0)}: cada átomo de hierro da una unidad de Fe₂O₃.`, 'corrosion-uno-a-uno', RES('hipotesis', 'hipótesis nuestra')],
+          ['d', `${gr(OX.Fe2O3, 0)}: el hierro se unió al oxígeno del aire.`]],
+    fb:{ a:'Al oxidarse, el hierro no pierde átomos: gana los del oxígeno. 112 g de hierro se unen a 48 g de oxígeno. La revisión de Kind (2004) para la Real Sociedad de Química describe esta idea en alumnos de 15 años; las cifras que vimos se contradicen, así que no damos ninguna.',
+      b:'La herrumbre es otra sustancia, óxido de hierro, con los átomos de hierro y además los de oxígeno: por eso pesa más. En un grupo de 28 escolares de 3.º de ESO, cerca del 25 % llamó «cambio físico» a una reja que se oxida (Dávila Acedo y otros, 2017), una idea cercana.',
+      c:'En el Fe₂O₃ hay dos átomos de hierro: 112 g de hierro (2 mol) dan 1 mol de Fe₂O₃, no 2. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    antes:() => ({ paneles:['clavo'], clavo:{ re:REC, p:0, balanza:balClavo('112 g → ?') }, pie:'De cerca: átomos de hierro, moléculas de O₂ del aire y de agua.', vars:['m'], desc:'Un clavo de 112 gramos en agua sobre una balanza; la masa final está tapada.' }),
+    anima:true,
+    despues:p => ({ paneles:['clavo'], clavo:{ re:REC, p: p === undefined ? 1 : p, balanza:balClavo(p === undefined || p >= 1 ? gr(OX.Fe2O3, 0) : '…') },
+      pie:'El hierro y el oxígeno forman Fe₂O₃. El agua no se gasta en la ecuación, pero sin ella el hierro no se oxida.', vars:['m'],
+      desc:`El hierro se une al oxígeno: el clavo pasa de 112 a ${fmt(OX.Fe2O3, 0)} gramos.` }),
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">4Fe + 3O₂ → 2Fe₂O₃ · ${m_('224 g')} + ${m_('96 g')} = ${m_('320 g')}</span><span class="note">Con 112 g de Fe (2 mol) se unen ${fmt(OX.O, 0)} g de O: el clavo sube a ${m_(gr(OX.Fe2O3, 0))}. Si se caen trozos de herrumbre, la balanza puede bajar, pero no porque el hierro pierda masa.</span></div></div>
+      <p>Para oxidarse, el hierro necesita agua y oxígeno a la vez: con solo agua hervida y tapada, o en aire seco, casi no se oxida. La sal lo acelera, y una capa de zinc (el galvanizado) lo protege, porque el zinc se oxida primero.</p>
+      <p class="fuente">El hierro oxidado «pesa menos»: descrita por Kind (2004), sin una cifra confiable. «Sigue siendo hierro»: cercana a un 25 % de 28 escolares en otra pregunta (Dávila Acedo y otros, 2017). «Uno a uno» es una hipótesis nuestra.</p>` },
+  { id:'octanaje', corto:'El octanaje de una mezcla', unidad:RECURSOS, ok:'a',
+    q:'Un grifo mezcla 60 % de gasolina de 84 octanos con 40 % de una de 97, en volumen. Con la regla de academia, ¿qué octanaje tiene la mezcla?',
+    opts:[['a', `${fmt(MZ.octanaje, 1)}: cada gasolina cuenta según el volumen que pone.`],
+          ['b', `${fmt(MZ.errores['promedio-simple'], 1)}: el promedio de 84 y 97.`, 'octanaje-promedio-simple', RES('hipotesis', 'informe, «Lo que no tiene respaldo»')],
+          ['c', '97: en la mezcla manda la gasolina de más octanos.', 'octanaje-manda-la-mejor', RES('hipotesis', 'hipótesis nuestra')],
+          ['d', '84: el motor detona con la peor de las dos, y esa manda.', 'octanaje-manda-la-peor', RES('hipotesis', 'hipótesis nuestra')]],
+    fb:{ b:'El promedio simple sirve solo si las dos se mezclan por partes iguales. Aquí hay más de la de 84, así que la mezcla queda más cerca de 84. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      c:'Ninguna de las dos manda: la mezcla queda entre las dos, más cerca de la que pone más volumen. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      d:'Ninguna de las dos manda: la mezcla queda entre las dos, más cerca de la que pone más volumen. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    antes:() => ({ paneles:['octano'], octano:{ partes:[{ vol:60, oct:84 }, { vol:40, oct:97 }], ver:false }, pie:'Dos tanques que se mezclan. La aguja se ve al responder.', vars:[], desc:'Sesenta por ciento de gasolina de 84 octanos y cuarenta por ciento de una de 97.' }),
+    despues:() => ({ paneles:['octano'], octano:{ partes:[{ vol:60, oct:84 }, { vol:40, oct:97 }], ver:true, valor:MZ.octanaje },
+      pie:'La mezcla queda entre 84 y 97, más cerca de la que pone más volumen.', vars:[], desc:`La mezcla tiene ${fmt(MZ.octanaje, 1)} octanos con la regla lineal.` }),
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">0,60 × 84 + 0,40 × 97 = ${fmt(MZ.octanaje, 1)}</span><span class="note">Regla de academia: un promedio pesado por el volumen. Las mezclas reales no siguen la recta con exactitud. Para llegar a 90 octanos haría falta ${fmt(PL.porcentajeB, 1)} % de la de 97.</span></div></div>
+      <p>El octanaje no es el porcentaje de octano de la gasolina ni su energía: dice cuánto resiste la detonación, comparada con una mezcla de isooctano (100) y n-heptano (0). Una gasolina de 90 octanos detona como una mezcla de 90 % de isooctano y 10 % de n-heptano.</p>
+      <p class="fuente">No encontramos estudios con alumnos sobre el octanaje: las tres opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'laguna', corto:'La laguna verde', ok:'c',
+    q:`A una laguna llegan los nitratos y fosfatos de los fertilizantes de los campos. En unos ${LAG.diaMaxAlgas} días el agua se pone verde de algas. Una semana después aparecen peces muertos. ¿Por qué mueren?`,
+    opts:[['a', 'Las algas los tapan: cubren la laguna, y los peces se quedan sin espacio ni comida.', 'QA15-solo-algas', RES('parcial', 'Baños-González y otros 2022: dificultades parecidas, sin cifra; Jescovitch y otros 2020: 20 % y 5 % la nombran, por verificar')],
+          ['b', 'Los fertilizantes los envenenan: los nitratos y fosfatos son tóxicos para ellos.', 'eutrofizacion-nutriente-toxico', RES('hipotesis', 'hipótesis nuestra')],
+          ['c', 'Las algas mueren, y las bacterias que las descomponen gastan el oxígeno del agua.'],
+          ['d', 'Las algas gastan el oxígeno al hacer la fotosíntesis, mientras crecen y ponen verde el agua.', 'eutrofizacion-algas-gastan-al-crecer', RES('hipotesis', 'hipótesis nuestra')]],
+    fb:{ a:'Las algas no son el final: es una cadena. Los nutrientes hacen crecer las algas; cuando se acaban, las algas mueren, y las bacterias que las descomponen gastan el oxígeno disuelto. Un estudio con 224 escolares de 5.º y 6.º de primaria en España encontró dificultades para ver esas fases (Baños-González y otros, 2022, sin cifra). En otro, con 225 universitarios, solo cerca del 20 % de los de pesquería y del 5 % de los de biología nombró la eutrofización (Jescovitch y otros, 2020, por verificar).',
+      b:'En estas cantidades, los nitratos y fosfatos son abono, no veneno: por eso crecen tanto las algas. El daño viene después, cuando falta el oxígeno. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      d:'La fotosíntesis produce oxígeno. De noche las algas respiran, pero lo que deja la laguna sin oxígeno una semana después es la descomposición de las algas muertas. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    antes:() => Object.assign(graficaLaguna(false, 1), { pie:'Modelo de juguete del motor: las algas, día a día.', vars:[], desc:`Las algas de la laguna crecen durante ${LAG.diaMaxAlgas} días. El oxígeno y los peces están tapados.` }),
+    anima:true,
+    despues:p => Object.assign(graficaLaguna(true, p === undefined ? 1 : p), { pie:'Mientras las algas crecen, el oxígeno no baja. Baja después, cuando se descomponen.', vars:[],
+      desc:`Las algas llegan a su máximo el día ${LAG.diaMaxAlgas}; el oxígeno disuelto baja a ${fmt(LAG.minO2, 1)} miligramos por litro el día ${LAG.diaMinO2}, y los peces mueren.` }),
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">nutrientes → algas → algas muertas → bacterias → menos O₂ → peces muertos</span><span class="note">Modelo de juguete del motor, con valores que solo sirven para ver el orden de la cadena: el oxígeno llega a su mínimo, ${fmt(LAG.minO2, 1)} mg/L, el día ${LAG.diaMinO2}, ${LAG.diaMinO2 - LAG.diaMaxAlgas} días después del máximo de algas. Con menos de 2 mg/L, la mayoría de los peces no sobrevive.</span></div></div>
+      <p>Se llama eutrofización. Se evita tratando las aguas servidas y usando menos fertilizante cerca de ríos y lagunas.</p>
+      <p class="fuente">«Las algas los tapan»: dificultades parecidas en escolares de primaria, sin cifra (Baños-González y otros, 2022). Las otras dos opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'smog', corto:'El ozono de la calle', ok:'b',
+    q:'En una ciudad con mucho tráfico, el ozono del aire de la calle, que irrita los ojos y los pulmones, sube en las mañanas de sol, llega a lo más alto cerca del mediodía y baja de noche. ¿De dónde sale?',
+    opts:[['a', 'Baja de la capa de ozono de arriba, sobre todo por el agujero.', 'smog-baja-de-la-capa', RES('hipotesis', 'hipótesis nuestra, cercana a QA1')],
+          ['b', 'Se forma en el aire, con el sol y los NOₓ de los autos.'],
+          ['c', 'Sale directo del escape de los autos, junto con el humo.', 'smog-sale-del-escape', RES('hipotesis', 'hipótesis nuestra')],
+          ['d', 'Lo forma el CO₂ del tráfico cuando el sol lo calienta.', 'smog-co2-forma-ozono', RES('hipotesis', 'hipótesis nuestra, cercana a QA3')]],
+    fb:{ a:'La capa de ozono está a unos 25 km y no baja a la calle; además, el ozono de la calle sube y baja cada día, con el sol y el tráfico. Esta opción es una hipótesis nuestra, sin estudio que la mida.',
+      c:`Si saliera del escape, sería mayor en las horas punta, a las ${SM.errores['sale-del-escape']} de la mañana. Pero, en este modelo, llega a su máximo cerca de las ${SM.horaPico}, cuando el sol está alto: se forma en el aire. Esta opción es una hipótesis nuestra, sin estudio que la mida.`,
+      d:'El CO₂ no forma ozono: es el gas del efecto invernadero. El ozono de la calle sale de los NOₓ y de los hidrocarburos que los autos no quemaron. Esta opción es una hipótesis nuestra, sin estudio que la mida.' },
+    antes:() => Object.assign(graficaSmog(false, 1), { pie:'Modelo de juguete del motor: un día de sol en una calle con tráfico.', vars:[], desc:'El sol durante un día en una calle con tráfico. Los NOx y el ozono están tapados.' }),
+    anima:true,
+    despues:p => Object.assign(graficaSmog(true, p === undefined ? 1 : p), { pie:'Los NOₓ suben en las horas punta; el ozono, horas después, con el sol alto.', vars:[],
+      desc:`Los NOx de los autos tienen su máximo a las ${SM.errores['sale-del-escape']}; el ozono, a las ${SM.horaPico}, cuando el sol está alto.` }),
+    exp:() => `<div class="eqs"><div class="eq"><span class="ex">NO₂ + luz → NO + O · O + O₂ → O₃</span><span class="note">El sol rompe el NO₂ de los autos; el O suelto se une al O₂ del aire y forma ozono. Los hidrocarburos sin quemar ayudan a que el ciclo siga. Es el smog fotoquímico.</span></div></div>
+      <p>El ozono es «bueno» arriba, donde frena el ultravioleta, y «malo» abajo, donde lo respiramos. Es la misma molécula, O₃, en dos lugares distintos.</p>
+      <p class="fuente">En un estudio con 1012 escolares eslovenos de 14 y 15 años, solo cerca del 19 % tuvo un conocimiento adecuado del smog fotoquímico (Majer y Devetak, 2019, según el resumen, por verificar). Las tres opciones incorrectas son hipótesis nuestras.</p>` },
+];
+const S = { k:0, pred:PRED_EXP, t0:Date.now(), ocupado:false };
+// Regla de Gerson: un experimento se abre solo si todos los anteriores ya tienen respuesta. Los respondidos se revisitan.
+const abierto = k => EXPS.slice(0, k).every(x => S.pred[x.id]);
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => abierto(k)
+    ? `<button type="button" aria-pressed="${k === S.k}" data-k="${k}"${S.ocupado ? ' disabled' : ''}>${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}. ${x.corto}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function despues(x, fin){
+  cortar(E);
+  if (x.anima){ E.vista = x.despues(0); E.dibujar(); animar(E, 1.8, f => { E.vista = x.despues(f); }, () => { E.vista = x.despues(1); if (fin) fin(); }, 0.3); }
+  else { E.vista = x.despues(); if (fin) fin(); }
+  E.dibujar(); pedir();
+}
+function ir(k){
+  if (!abierto(k) || S.ocupado) return;
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  cortar(E); E.vista = ya ? (x.anima ? x.despues(1) : x.despues()) : x.antes();
+  E.compactar(!ya);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const explicar = () => {
+    if (S.k !== k || !S.pred[x.id]) return;
+    $('res2').innerHTML = x.exp() + `<div class="nav">${x.anima ? otraVez : '<span></span>'}${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    const sig = $('sig2'); if (sig) sig.onclick = () => { if (S.ocupado) return; ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    const rep = $('res2').querySelector('[data-repetir]');
+    if (rep) rep.onclick = () => { if (S.ocupado) return; Celular.alResponder($('cv2'), () => despues(x, () => E.describir()), () => S.k === k); };
+  };
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.innerHTML = p === x.ok ? '¡Bien pensado! Mira el dibujo y la explicación para ver por qué.' : `Elegiste la ${LETRAS.indexOf(p) + 1}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    explicar();
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id] || S.ocupado) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; S.ocupado = true; pintar(); botones();
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0, x.unidad);
+    E.compactar(false);
+    Celular.alResponder($('cv2'), () => { despues(x, () => { S.ocupado = false; botones(); E.describir(); }); E.describir(); },
+      () => S.k === k, { siNo:() => { S.ocupado = false; botones(); } });
+  });
+  pintar(); E.dibujar(); pedir(); E.describir();
+}
+alRedibujarTema(() => E.dibujar());
+addEventListener('modo', () => { E.resize(); E.dibujar(); pedir(); });
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>

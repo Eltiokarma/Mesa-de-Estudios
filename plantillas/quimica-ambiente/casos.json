@@ -1,0 +1,605 @@
+{
+  "plantilla": "quimica-ambiente",
+  "unidades": "Masa en g (en metalurgia, la unidad que entra es la que sale); moles en mol; volumen en L y densidad en g/mL; temperatura en °C; concentración en mol/L; ppm y ppb en masa (en agua, 1 ppm = 1 mg/L); ozono en unidades Dobson; CO₂ del aire en ppm.",
+  "constantes": "Masas atómicas de academia: H = 1, C = 12, N = 14, O = 16, S = 32, Fe = 56, Cu = 63,5, Zn = 65. Gasolina como octano puro, 0,70 g/mL. Puntos de ebullición de tabla redondeados: metano −161,5; pentano 36,1; octano 125,7; dodecano 216,3; hexadecano 286,9 °C; residuo C₃₀ a 450 °C (modelo). Torre: bandejas de 350, 250, 150 y 30 °C y horno a 400 °C. Lluvia normal: pH 5,6. Cielo de juguete: ultravioleta ∝ (300/DU)^1,1 y T = 14 + 3·log₂(CO₂/280) °C. Octanaje: regla lineal por volumen.",
+  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.resta-oxigeno es lo que da el error típico 'resta-oxigeno'; atomos.C es [izquierda, derecha]). El campo vacío '' es el resultado entero. Los textos, booleanos y listas se comparan exactos; los números, con la tolerancia relativa.",
+  "verificacion": "Lo recalculó un subagente independiente el 7 de noviembre de 2026, sin ver el motor ni los casos: los 32 casos en Python con fracciones exactas. Balanceó con el espacio nulo de la matriz de átomos y siguió la regla de reparto del O₂, la cuadrática de la lluvia y la torre que declara la cabecera. Coinciden todos los campos dentro de 1e-9, salvo tres errores típicos de la torre (por-densidad, el-calor-sube, invierte-la-regla): la cabecera no los define, así que quedaron sin verificar.",
+  "tolerancia": 1e-09,
+  "casos": [
+    {
+      "nombre": "Combustión completa del metano: CH₄ + 2O₂ → CO₂ + 2H₂O, 80 g a cada lado",
+      "fn": "combustion",
+      "args": [
+        "metano",
+        "completa"
+      ],
+      "espera": {
+        "coef.comb": 1,
+        "coef.O2": 2,
+        "coef.CO2": 1,
+        "coef.H2O": 2,
+        "atomos.C": [
+          1,
+          1
+        ],
+        "atomos.H": [
+          4,
+          4
+        ],
+        "atomos.O": [
+          4,
+          4
+        ],
+        "masas": [
+          80,
+          80
+        ],
+        "balanceada": true,
+        "texto": "CH₄ + 2O₂ → CO₂ + 2H₂O"
+      }
+    },
+    {
+      "nombre": "Combustión incompleta del metano: 2CH₄ + 3O₂ → 2CO + 4H₂O, 128 g a cada lado",
+      "fn": "combustion",
+      "args": [
+        "metano",
+        "incompleta"
+      ],
+      "espera": {
+        "coef.comb": 2,
+        "coef.O2": 3,
+        "coef.CO": 2,
+        "coef.H2O": 4,
+        "atomos.C": [
+          2,
+          2
+        ],
+        "atomos.H": [
+          8,
+          8
+        ],
+        "atomos.O": [
+          6,
+          6
+        ],
+        "masas": [
+          128,
+          128
+        ]
+      }
+    },
+    {
+      "nombre": "Combustión completa del octano: 2C₈H₁₈ + 25O₂ → 16CO₂ + 18H₂O, 1028 g a cada lado",
+      "fn": "combustion",
+      "args": [
+        "octano",
+        "completa"
+      ],
+      "espera": {
+        "coef.comb": 2,
+        "coef.O2": 25,
+        "coef.CO2": 16,
+        "coef.H2O": 18,
+        "atomos.C": [
+          16,
+          16
+        ],
+        "atomos.H": [
+          36,
+          36
+        ],
+        "atomos.O": [
+          50,
+          50
+        ],
+        "masas": [
+          1028,
+          1028
+        ],
+        "texto": "2C₈H₁₈ + 25O₂ → 16CO₂ + 18H₂O"
+      }
+    },
+    {
+      "nombre": "Combustión incompleta del octano: 2C₈H₁₈ + 17O₂ → 16CO + 18H₂O, 772 g",
+      "fn": "combustion",
+      "args": [
+        "octano",
+        "incompleta"
+      ],
+      "espera": {
+        "coef.comb": 2,
+        "coef.O2": 17,
+        "coef.CO": 16,
+        "coef.H2O": 18,
+        "atomos.O": [
+          34,
+          34
+        ],
+        "masas": [
+          772,
+          772
+        ]
+      }
+    },
+    {
+      "nombre": "Hollín: 2C₈H₁₈ + 9O₂ → 16C + 18H₂O, 516 g",
+      "fn": "combustion",
+      "args": [
+        "octano",
+        "hollin"
+      ],
+      "espera": {
+        "coef.comb": 2,
+        "coef.O2": 9,
+        "coef.C": 16,
+        "coef.H2O": 18,
+        "atomos.O": [
+          18,
+          18
+        ],
+        "masas": [
+          516,
+          516
+        ]
+      }
+    },
+    {
+      "nombre": "Oxígeno intermedio: 1 mol de CH₄ con 7/4 mol de O₂ da 2 de H₂O, 1/2 de CO y 1/2 de CO₂; umbrales 3/2 y 2",
+      "fn": "repartoO2",
+      "args": [
+        "metano",
+        1,
+        1.75
+      ],
+      "espera": {
+        "H2O": 2,
+        "CO": 0.5,
+        "CO2": 0.5,
+        "C": 0,
+        "O2": 0,
+        "comb": 0,
+        "masas": [
+          72,
+          72
+        ],
+        "umbrales.todoCO": 1.5,
+        "umbrales.todoCO2": 2,
+        "umbrales.hollin": 1
+      }
+    },
+    {
+      "nombre": "Predicción del paso 3: 2 CH₄ con 3 O₂ dan solo CO y H₂O; cada error da otra cosa",
+      "fn": "repartoO2",
+      "args": [
+        "metano",
+        2,
+        3
+      ],
+      "espera": {
+        "H2O": 4,
+        "CO": 2,
+        "CO2": 0,
+        "C": 0,
+        "comb": 0,
+        "productos": [
+          "CO",
+          "H2O"
+        ],
+        "errores.menos-de-lo-mismo.CO2": 2,
+        "errores.no-hay-reaccion.comb": 2,
+        "errores.sobra-combustible.CO2": 1.5,
+        "errores.sobra-combustible.H2O": 3,
+        "errores.sobra-combustible.comb": 0.5
+      }
+    },
+    {
+      "nombre": "Con razón O₂/CH₄ de 1 todo el carbono queda como hollín",
+      "fn": "repartoO2",
+      "args": [
+        "metano",
+        4,
+        4
+      ],
+      "espera": {
+        "H2O": 8,
+        "C": 4,
+        "CO": 0,
+        "CO2": 0,
+        "productos": [
+          "C",
+          "H2O"
+        ]
+      }
+    },
+    {
+      "nombre": "Balanza (QA9): 1,6 g de CH₄ y 8 g de O₂ en un frasco de 250 g cerrado: 259,6 g antes y después",
+      "fn": "balanzaCombustion",
+      "args": [
+        "metano",
+        1.6,
+        8,
+        250,
+        true
+      ],
+      "espera": {
+        "antes": 259.6,
+        "despues": 259.6,
+        "comparada": "igual",
+        "gases": 8,
+        "O2usado": 6.4,
+        "errores.se-vuelve-energia": 258,
+        "errores.se-suma-oxigeno": 266
+      }
+    },
+    {
+      "nombre": "Balanza con el frasco abierto: queda el frasco; salen 8 g de gases por 1,6 g de metano",
+      "fn": "balanzaCombustion",
+      "args": [
+        "metano",
+        1.6,
+        0,
+        250,
+        false
+      ],
+      "espera": {
+        "antes": 251.6,
+        "despues": 250,
+        "comparada": "menor",
+        "gases": 8,
+        "O2usado": 6.4
+      }
+    },
+    {
+      "nombre": "CO₂ por litro de gasolina (octano, 0,70 g/mL): 123200/57 g de CO₂, 140000/57 de O₂ y 18900/19 de H₂O",
+      "fn": "co2PorLitro",
+      "args": [
+        1,
+        0.7,
+        "octano"
+      ],
+      "espera": {
+        "masa": 700,
+        "n": 6.140350877192983,
+        "CO2": 2161.40350877193,
+        "O2": 2456.1403508771928,
+        "H2O": 994.7368421052631,
+        "razon": 3.087719298245614,
+        "errores.no-supera-al-combustible": 700,
+        "errores.olvida-los-carbonos": 270.17543859649123,
+        "errores.litro-como-kilo": 3087.7192982456145
+      }
+    },
+    {
+      "nombre": "Octanaje, definición: 80 % de isooctano y 20 % de n-heptano da 80 octanos",
+      "fn": "octanaje",
+      "args": [
+        0.8
+      ],
+      "espera": {
+        "": 80
+      }
+    },
+    {
+      "nombre": "Octanaje de una mezcla (regla lineal de academia): 60 % de 84 y 40 % de 97 da 446/5",
+      "fn": "mezclaOctanaje",
+      "args": [
+        [
+          {
+            "vol": 60,
+            "oct": 84
+          },
+          {
+            "vol": 40,
+            "oct": 97
+          }
+        ]
+      ],
+      "espera": {
+        "octanaje": 89.2,
+        "errores.promedio-simple": 90.5,
+        "errores.manda-la-mejor": 97,
+        "errores.manda-la-peor": 84
+      }
+    },
+    {
+      "nombre": "Para llegar a 90 octanos con gasolinas de 84 y 97 hace falta 6/13 de la de 97",
+      "fn": "paraLlegar",
+      "args": [
+        84,
+        97,
+        90
+      ],
+      "espera": {
+        "fraccionB": 0.46153846153846156,
+        "porcentajeB": 46.15384615384615
+      }
+    },
+    {
+      "nombre": "ppm y ppb: 0,5 mg de Pb en 2 L de agua dan 0,25 ppm = 250 ppb",
+      "fn": "ppm",
+      "args": [
+        0.5,
+        2
+      ],
+      "espera": {
+        "mgL": 0.25,
+        "ppm": 0.25,
+        "ppb": 250,
+        "porcentaje": 2.5e-05,
+        "errores.ppb-entre-mil": 0.00025
+      }
+    },
+    {
+      "nombre": "Dosis de cloro: 2 ppm en un tanque de 5000 L son 10 g",
+      "fn": "dosisPpm",
+      "args": [
+        2,
+        5000
+      ],
+      "espera": {
+        "mg": 10000,
+        "g": 10
+      }
+    },
+    {
+      "nombre": "ppm a porcentaje: 35 ppm de CO en el aire son 7/2000 %",
+      "fn": "ppmAPorcentaje",
+      "args": [
+        35
+      ],
+      "espera": {
+        "porcentaje": 0.0035,
+        "errores.porcentaje-entre-100": 0.35
+      }
+    },
+    {
+      "nombre": "pH de la lluvia: [H⁺] = 10⁻⁴ mol/L da pH 4",
+      "fn": "pH",
+      "args": [
+        0.0001
+      ],
+      "espera": {
+        "": 4
+      }
+    },
+    {
+      "nombre": "pH 4 contra pH 5: 10 veces más H⁺ (no 1,25 veces, como diría una escala lineal)",
+      "fn": "compararPH",
+      "args": [
+        4,
+        5
+      ],
+      "espera": {
+        "veces": 10,
+        "errores.lineal": 1.25
+      }
+    },
+    {
+      "nombre": "pH 4 contra la lluvia normal de pH 5,6: unas 39,8 veces más H⁺",
+      "fn": "compararPH",
+      "args": [
+        4,
+        5.6
+      ],
+      "espera": {
+        "veces": 39.810717055349734
+      }
+    },
+    {
+      "nombre": "Ácido sulfúrico en la gota: 5 × 10⁻⁴ mol/L contando los dos H⁺ da pH 3",
+      "fn": "acidoFuerte",
+      "args": [
+        0.0005,
+        2
+      ],
+      "espera": {
+        "H": 0.001,
+        "pH": 3,
+        "errores.un-H": 3.3010299956639813
+      }
+    },
+    {
+      "nombre": "Lluvia sin SO₂ ni NOₓ: pH 5,6 (solo el CO₂ del aire)",
+      "fn": "lluvia",
+      "args": [
+        {}
+      ],
+      "espera": {
+        "pH": 5.6,
+        "acida": false
+      }
+    },
+    {
+      "nombre": "Del SO₂ al ácido: 64 g de SO₂ dan 98 g de H₂SO₄",
+      "fn": "so2AAcido",
+      "args": [
+        64
+      ],
+      "espera": {
+        "": 98
+      }
+    },
+    {
+      "nombre": "Del NO₂ al ácido: 46 g de NO₂ dan 63 g de HNO₃",
+      "fn": "no2AAcido",
+      "args": [
+        46
+      ],
+      "espera": {
+        "": 63
+      }
+    },
+    {
+      "nombre": "Metalurgia del zinc: 1000 kg de blenda con 50 % de ZnS y 90 % de rendimiento",
+      "fn": "metalurgia",
+      "args": [
+        "blenda",
+        1000,
+        0.5,
+        0.9
+      ],
+      "espera": {
+        "puro": 500,
+        "teorico": 335.0515463917526,
+        "real": 301.54639175257734,
+        "gas": 329.89690721649487,
+        "errores.sin-ley": 603.0927835051547,
+        "errores.sin-rendimiento": 335.0515463917526
+      }
+    },
+    {
+      "nombre": "Metalurgia del cobre: Cu₂S + O₂ → 2Cu + SO₂ con 318 g de Cu₂S da 254 g de Cu",
+      "fn": "metalurgia",
+      "args": [
+        "calcosina",
+        318,
+        1,
+        1
+      ],
+      "espera": {
+        "teorico": 254,
+        "real": 254,
+        "gas": 128
+      }
+    },
+    {
+      "nombre": "Balance del cobre: Cu 2, S 1, O 2; 191 g a cada lado",
+      "fn": "balance",
+      "args": [
+        [
+          [
+            1,
+            {
+              "Cu": 2,
+              "S": 1
+            }
+          ],
+          [
+            1,
+            {
+              "O": 2
+            }
+          ]
+        ],
+        [
+          [
+            2,
+            {
+              "Cu": 1
+            }
+          ],
+          [
+            1,
+            {
+              "S": 1,
+              "O": 2
+            }
+          ]
+        ]
+      ],
+      "espera": {
+        "atomos.Cu": [
+          2,
+          2
+        ],
+        "atomos.S": [
+          1,
+          1
+        ],
+        "atomos.O": [
+          2,
+          2
+        ],
+        "masas": [
+          191,
+          191
+        ],
+        "balanceada": true
+      }
+    },
+    {
+      "nombre": "Corrosión: 112 g de Fe dan 160 g de Fe₂O₃; la masa sube 48 g",
+      "fn": "oxidarHierro",
+      "args": [
+        112
+      ],
+      "espera": {
+        "Fe2O3": 160,
+        "O": 48,
+        "masaFinal": 160,
+        "errores.resta-oxigeno": 64,
+        "errores.no-cambia": 112,
+        "errores.uno-a-uno": 320
+      }
+    },
+    {
+      "nombre": "Torre de destilación: bandejas de 350, 250, 150 y 30 °C, horno a 400 °C",
+      "fn": "torre",
+      "args": [],
+      "espera": {
+        "destino.metano": "gases",
+        "destino.pentano": 3,
+        "destino.octano": 3,
+        "destino.dodecano": 2,
+        "destino.hexadecano": 1,
+        "destino.residuo": "fondo",
+        "fraccion.octano": "gasolina",
+        "fraccion.dodecano": "queroseno",
+        "fraccion.hexadecano": "diésel",
+        "fraccion.residuo": "residuo",
+        "errores.por-densidad.hexadecano": "fondo",
+        "errores.el-calor-sube.hexadecano": 3,
+        "errores.invierte-la-regla.hexadecano": 0
+      }
+    },
+    {
+      "nombre": "Fracciones por número de carbonos: el C₁₂ es queroseno",
+      "fn": "fraccionPorCarbonos",
+      "args": [
+        12
+      ],
+      "espera": {
+        "": "queroseno"
+      }
+    },
+    {
+      "nombre": "Cielo: un agujero de ozono (300 → 150 DU) sube el ultravioleta y no cambia la temperatura del modelo",
+      "fn": "cambioCielo",
+      "args": [
+        {
+          "ozono": 300,
+          "co2": 420
+        },
+        {
+          "ozono": 150,
+          "co2": 420
+        }
+      ],
+      "espera": {
+        "uv": "sube",
+        "T": "igual",
+        "despues.uv": 2.1435469250725863
+      }
+    },
+    {
+      "nombre": "Cielo: duplicar el CO₂ (280 → 560 ppm) sube 3 °C la temperatura del modelo y no cambia el ultravioleta",
+      "fn": "cambioCielo",
+      "args": [
+        {
+          "ozono": 300,
+          "co2": 280
+        },
+        {
+          "ozono": 300,
+          "co2": 560
+        }
+      ],
+      "espera": {
+        "uv": "igual",
+        "T": "sube",
+        "antes.T": 14,
+        "despues.T": 17
+      }
+    }
+  ]
+}

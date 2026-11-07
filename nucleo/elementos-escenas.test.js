@@ -70,6 +70,16 @@ const ESCENAS = {
     vistas: [
       [['Fe', 'O'], ['--c-imp', '--c-pur', '--c-teo', '--c-real']],   // la hematita (pasos 1 a 3, experimento 2, explorador)
     ] },
+  'quimica-ambiente': {
+    elementos: ['H', 'C', 'O', 'S', 'Fe', 'Zn'],   // sin N: los NOₓ van en tinta; las cadenas de la torre dibujan solo sus C
+    vistas: [
+      [['C', 'H', 'O'], ['--c-m']],                      // el frasco sellado y abierto, la combustión incompleta y el explorador
+      [['C', 'O'], ['--c-UV', '--c-IR', '--c-T']],       // el cielo: O₃ arriba, CO₂ en el medio
+      [['Zn', 'S', 'O', 'H'], ['--c-pH']],               // la fundición (ZnS) y la gota con SO₂ y H₂O; el CO₂ no se dibuja
+      [['Fe', 'O', 'H'], ['--c-m']],                     // el clavo que se oxida (sin el N del aire)
+      [['C'], ['--c-T']],                                // la torre de destilación
+      [['O'], []],                                       // la laguna y el smog: el O₂ y el O₃ de las gráficas
+    ] },
   'biomoleculas': {
     elementos: ['H', 'O'],   // las piezas son bloques con nombre; solo el H y el OH que salen en cada unión llevan color
     vistas: [
