@@ -5,8 +5,11 @@
  * navegador (window.MotorElectrostatica) y en Node (require('./motor.js')), donde lo prueban casos.json y papel.json.
  *
  * Unidades: cargas en µC (microcoulomb), distancias y posiciones en metros, masas en kg, campo en N/C, potencial
- * en V, fuerza en N, trabajo y energía en J. Condensadores: capacidades en µF, cargas en µC y energías en µJ
- * (porque µF · V² = µJ). k = 9 × 10⁹ N·m²/C², ε₀ = 8,85 × 10⁻¹² C²/(N·m²) y g = 10 m/s², como en las academias.
+ * en V, fuerza en N, trabajo y energía en J. Excepciones:
+ *   - serie, paralelo y energiaCondensador: capacidades en µF, cargas en µC y energías en µJ (µF · V² = µJ).
+ *   - capacidad y cambioPlacas: todo en SI (A en m², d en m, Q en C, C en F); además dan la capacidad en pF.
+ *   - contacto: cargas en µC y radios en m.
+ * k = 9 × 10⁹ N·m²/C², ε₀ = 8,85 × 10⁻¹² C²/(N·m²) y g = 10 m/s², como en las academias.
  * Una carga en el plano es { q, x, y } (q en µC con su signo; x e y en m). Ángulos en grados desde el eje x, antihorario.
  *
  *   coulomb(q1, q2, r)                 fuerza entre dos cargas: la MISMA sobre cada una (tercera ley), y el campo de
@@ -19,6 +22,7 @@
  *   prueba(cargas, punto, q0)          carga de prueba q0 en el punto: F = q0·E; con q0 < 0, F va contra E y E no cambia
  *   trabajo(cargas, A, B, q)           trabajo del campo al llevar q de A a B, W = q(V_A − V_B); el del agente externo
  *                                      que la lleva despacio es el opuesto; ΔU = q(V_B − V_A)
+ *   trabajoCamino(cargas, puntos, q)   el mismo trabajo por un camino quebrado (suma de tramos): no depende del camino
  *   esferas(q1, q2, r, m1, m2, g)      dos esferas colgadas separadas r: tan θ = F/(m·g); con masas iguales, mismo ángulo
  *   esferasColgadas(q1, q2, m1, m2, L, g)  lo mismo con hilos de largo L desde un mismo punto: busca r (bisección)
  *   campoUniforme(o)                   carga que entra entre dos placas: F = qE, a = qE/m, tiempo, desvío y hacia qué placa
@@ -33,6 +37,16 @@
  *
  * Cada resultado que alimenta una predicción trae un campo 'errores' con lo que dan los errores típicos.
  * Los errores con dato están en docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md (EL1 a EL9).
+ * Los que no son un valor del mismo tipo que la respuesta:
+ *   coulomb: mayorEmpujaMas y mayorRecibeMas son la razón sobre1/sobre2 que predice cada idea, con q1 la menor
+ *     (EL1: |q mayor|/|q menor|; EL2: la inversa). Lo correcto es razon = 1.
+ *   esferas: menorSeAparta y mayorSeAparta son la razón tan θ(menor carga)/tan θ(mayor carga) que predice cada idea
+ *     (EL3 con EL1: |q mayor|/|q menor|; con EL2: la inversa); mayorVertical da θ = 0 para la de mayor carga.
+ *   fuerzaSobre y campo: sinCuadrados = √(F1 + F2 + …), «Pitágoras sin elevar al cuadrado»; sumaModulos y
+ *     restaModulos suman o restan los módulos como números.
+ *   campoYPotencial: todoSeAnula, cambiados y nadaSeAnula dicen qué se anularía (Ecero, Vcero) según cada idea.
+ *   trabajoCamino: caminoLargoMas y caminoLargoMenos escalan W con la razón de largos (camino / recta y al revés);
+ *     cero, «por un camino que vuelve por equipotenciales no hay trabajo».
  */
 (function (root, fabrica) {
   const motor = fabrica();
@@ -253,6 +267,31 @@
     };
   }
 
+  function trabajoCamino(cargas, puntos, q) {
+    numero(q, 'la carga q');
+    if (!Array.isArray(puntos) || puntos.length < 2) throw new Error('el camino necesita al menos dos puntos');
+    const P = puntos.map((p, k) => punto(p, `el punto ${k + 1}`));
+    let W = 0, largo = 0;
+    const tramos = [];
+    for (let k = 1; k < P.length; k++) {
+      const w = trabajo(cargas, P[k - 1], P[k], q).Wcampo;
+      tramos.push(w); W += w; largo += Math.hypot(P[k].x - P[k - 1].x, P[k].y - P[k - 1].y);
+    }
+    const directo = trabajo(cargas, P[0], P[P.length - 1], q).Wcampo;
+    const recta = Math.hypot(P[P.length - 1].x - P[0].x, P[P.length - 1].y - P[0].y);
+    const esc = Math.max(1e-300, ...tramos.map(Math.abs), Math.abs(directo));
+    if (Math.abs(W - directo) <= 1e-9 * esc) W = directo;
+    return {
+      W: limpio(W), directo, igual: Math.abs(W - directo) <= 1e-9 * esc, tramos: tramos.map(limpio),
+      largo: limpio(largo), recta: limpio(recta),
+      errores: {
+        caminoLargoMas: limpio(directo * largo / recta),     // más camino, más trabajo
+        caminoLargoMenos: limpio(directo * recta / largo),   // más camino, menos trabajo
+        cero: 0,                                             // «volviendo por equipotenciales no hay trabajo»
+      },
+    };
+  }
+
   // ---------- Esferas colgadas ----------
   function esferas(q1, q2, r, m1, m2, g) {
     const gg = g === undefined ? G : positivo(g, 'g');
@@ -309,6 +348,7 @@
       F: limpio(Math.abs(F)), a: limpio(Math.abs(a)), t: limpio(t), desvio: limpio(Math.abs(y)), hacia,
       vy: limpio(Math.abs(a * t)), angulo: limpio(Math.atan2(Math.abs(a * t), o.v0) * GRADOS),
       choca, abajo: limpio(y),
+      fuerzaEntrePeso: limpio(Math.abs(F) / (o.m * (o.g === undefined ? G : o.g))),   // para decir si la gravedad cuenta
       errores: {
         mismoLado: { desvio: limpio(Math.abs(y)), hacia: 'negativa' },     // el campo decide el lado, no el signo de q
         sinMedio: limpio(Math.abs(a * t * t)),                             // y = a·t² sin el 1/2
@@ -486,7 +526,7 @@
 
   return {
     K, EPS0, MICRO, G, TOL,
-    coulomb, cambioDistancia, fuerzaSobre, campo, potencial, campoYPotencial, prueba, trabajo,
+    coulomb, cambioDistancia, fuerzaSobre, campo, potencial, campoYPotencial, prueba, trabajo, trabajoCamino,
     esferas, esferasColgadas, campoUniforme, trayectoriaUniforme,
     capacidad, cambioPlacas, serie, paralelo, energiaCondensador, contacto,
     mapaCampo, curvaNivel, radioEquipotencial, azar,

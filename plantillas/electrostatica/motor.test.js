@@ -134,6 +134,13 @@ test('trabajo: no depende del camino, es −ΔU y vale cero sobre una equipotenc
     assert.ok(Math.abs(ab.Wcampo + bc.Wcampo - ac.Wcampo) <= 1e-8 * esc, 'W(A→B) + W(B→C) = W(A→C)');
     cerca(ab.Wcampo, -(ab.UB - ab.UA), 'W = −ΔU', 1e-8); cerca(ab.Wagente, -ab.Wcampo, 'agente = −campo');
   }
+  // por un camino quebrado al azar da lo mismo que en línea recta
+  for (let k = 0; k < 100; k++) {
+    const cs = cargasAzar(1 + Math.floor(rnd() * 3)), pts = Array.from({ length: 3 + Math.floor(rnd() * 5) }, () => puntoLejos(cs)), q = qAzar();
+    const t = motor.trabajoCamino(cs, pts, q);
+    assert.ok(t.igual, 'el camino no importa'); cerca(t.W, motor.trabajo(cs, pts[0], pts[pts.length - 1], q).Wcampo, 'W', 1e-8);
+    assert.ok(t.largo >= t.recta - 1e-12);
+  }
   // alrededor de una carga sola, la circunferencia es equipotencial
   for (let k = 0; k < 50; k++) {
     const q = qAzar(), r = al(0.05, 2), a = al(0, 6.3), b = al(0, 6.3);
@@ -245,6 +252,7 @@ test('errores de entrada', () => {
   assert.throws(() => motor.contacto(1, 0, 1, 1), /mayor que cero/);
   assert.throws(() => motor.mapaCampo([{ q: 1, x: 0, y: 0 }], { x0: 1, x1: 0, y0: 0, y1: 1 }), /caja/);
   assert.throws(() => motor.radioEquipotencial(4, -1), /mismo signo/);
+  assert.throws(() => motor.trabajoCamino([{ q: 1, x: 0, y: 0 }], [{ x: 1, y: 0 }], 1), /dos puntos/);
   // acepta el punto como [x, y]
   cerca(motor.campo([{ q: 4, x: 0, y: 0 }], [0.3, 0]).modulo, 400000, 'punto como lista');
 });

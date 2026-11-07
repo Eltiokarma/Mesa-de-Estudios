@@ -14,14 +14,14 @@
    Elegidos con CIEDE2000 (docs/metodo/paleta.py): entre los que salen juntos, ΔE00 mínimo 21,9 en claro y 24,5 en
    oscuro con Coulomb y las esferas (q, F, r, θ), 21,9 y 24,5 con el campo, el potencial y el trabajo (q, E, F, r, V,
    W) y 28,9 y 26,2 con los condensadores (C, q, V, U). Pares parecidos que nunca comparten pantalla: θ–V, θ–W, U–E,
-   C–F. Todos pasan AA (≥ 4,5) sobre el papel y sobre su chip (.v, fondo al 8 %), en claro y en oscuro. El peso y la
+   C–F. Todos pasan AA (≥ 4,5; el más justo, U claro #2a7638, 4,7 sobre su chip) sobre el papel y sobre su chip (.v, fondo al 8 %), en claro y en oscuro. El peso y la
    tensión del hilo, el área de las placas, los rótulos de los puntos y las trayectorias van en tinta o gris. */
 [hidden]{display:none!important}
 :root{
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
   --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
   --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
-  --c-q:#a05200; --c-F:#1f5fbf; --c-E:#0f766e; --c-V:#b3246b; --c-r:#5c531f; --c-th:#a10fbf; --c-W:#7a1010; --c-C:#3328c4; --c-U:#2c7a3a;
+  --c-q:#a05200; --c-F:#1f5fbf; --c-E:#0f766e; --c-V:#b3246b; --c-r:#5c531f; --c-th:#a10fbf; --c-W:#7a1010; --c-C:#3328c4; --c-U:#2a7638;
   --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
   --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
   color-scheme:light;
@@ -139,6 +139,7 @@ button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--
 .lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(128px, 1fr)); gap:8px}
 .lecturas:empty{display:none}
 .lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura.ancha{grid-column:1/-1}
 .lectura b{display:block; color:var(--k); font:800 .95rem var(--mono); font-variant-numeric:tabular-nums; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
 .lectura span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
 
@@ -304,7 +305,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
   function altoVista(w){
     const chico = w < 560;
     switch (E.vista){
-      case 'esferas': return chico ? 220 : 340;
+      case 'esferas': return chico ? 240 : 340;
       case 'placas': return chico ? 250 : 320;
       case 'cond': return chico ? 250 : 300;
       case 'placa': return chico ? 250 : 300;
@@ -429,8 +430,13 @@ function crearEscena(cv, idDesc, idLect, idLey){
     // campo: flechitas en una cuadrícula (se ven haya o no carga de prueba)
     if (E.ver.campo && E.prog.campo > 0 && fuentes().length){
       const m = mapa(), lado = s.k*m.paso;
+      // sin flechitas encima de la carga de prueba, de su rótulo ni de la sonda P
+      const Pp = E.prueba ? aP(E.prueba, s) : null, Ps = E.sonda ? aP(E.sonda, s) : null;
+      const tapa = q => (Pp && (Math.hypot(q.x - Pp.x, q.y - Pp.y) < 44 || (Math.abs(q.x - Pp.x) < 62 && q.y < Pp.y && q.y > Pp.y - 44)))
+        || (Ps && Math.hypot(q.x - Ps.x, q.y - Ps.y) < 30);
       for (const p of m.puntos){
         if (!p.modulo) continue;
+        if (tapa(aP(p, s))) continue;
         const P = aP(p, s), L = lado*.62*(.35 + .65*p.nivel), d = { x:p.ux*L/2, y:-p.uy*L/2 };
         flecha({ x:P.x - d.x, y:P.y - d.y }, { x:P.x + d.x, y:P.y + d.y }, c.E, grosor('E', 1.5), { alfa:(.25 + .6*p.nivel)*E.prog.campo });
       }
@@ -438,8 +444,15 @@ function crearEscena(cv, idDesc, idLect, idLey){
     // equipotenciales
     if (E.ver.eq.length && E.prog.eq > 0){
       for (const e of equipotenciales()){
-        ctx.save(); ctx.strokeStyle = c.V; ctx.lineWidth = grosor('V', 2); ctx.setLineDash([6, 5]); ctx.globalAlpha = E.prog.eq;
-        ctx.beginPath(); for (const t of e.tramos){ const a = aP({ x:t.x1, y:t.y1 }, s), b = aP({ x:t.x2, y:t.y2 }, s); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); } ctx.stroke(); ctx.restore();
+        // trazo discontinuo: los tramos vienen sueltos (una celda cada uno), así que se dibuja uno sí y otro no
+        // según la celda en la que cae su punto medio (de a dos celdas)
+        const cel = 2*(E.caja.x1 - E.caja.x0)/70;
+        ctx.save(); ctx.strokeStyle = c.V; ctx.lineWidth = grosor('V', 2); ctx.lineCap = 'butt'; ctx.globalAlpha = E.prog.eq;
+        ctx.beginPath(); for (const t of e.tramos){
+          const mx = (t.x1 + t.x2)/2, my = (t.y1 + t.y2)/2;
+          if ((Math.floor(mx/cel) + Math.floor(my/cel)) % 2) continue;
+          const a = aP({ x:t.x1, y:t.y1 }, s), b = aP({ x:t.x2, y:t.y2 }, s); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+        } ctx.stroke(); ctx.restore();
         if (E.prog.eq >= 1 && e.etq && e.tramos.length){
           let best = null; for (const t of e.tramos){ const a = aP({ x:t.x1, y:t.y1 }, s); const sc = (e.donde === 'arriba' ? -a.y : a.x - a.y*.3); if (a.y > 14 && a.y < H - 14 && a.x > 30 && a.x < W - 30 && (!best || sc > best.sc)) best = { ...a, sc }; }
           if (best) rotulo(ctx, c, best.x + (e.dx || 6), best.y + (e.dy || 0), e.etq, c.V, e.dx < 0 ? 'right' : 'left', 800, 12);
@@ -511,7 +524,9 @@ function crearEscena(cv, idDesc, idLect, idLey){
         const r = ME.prueba(fuentes(), E.prueba, E.prueba.q), uE = r.E.modulo ? { x:r.E.x/r.E.modulo, y:-r.E.y/r.E.modulo } : { x:1, y:0 }, n = { x:-uE.y, y:uE.x };
         if (E.ver.Ep){
           const L = r.E.modulo*E.mPorE*s.k;
-          const Q = flecha({ x:P.x - n.x*8, y:P.y - n.y*8 }, { x:P.x - n.x*8 + uE.x*L, y:P.y - n.y*8 + uE.y*L }, c.E, grosor('E', 3), { tope: W*.38 });
+          // desde el borde del disco; si F va igual que E, las dos se corren un poco para no taparse
+          const o = { x:P.x + uE.x*13 - (r.mismoSentido ? n.x*5 : 0), y:P.y + uE.y*13 - (r.mismoSentido ? n.y*5 : 0) };
+          const Q = flecha(o, { x:o.x + uE.x*L, y:o.y + uE.y*L }, c.E, grosor('E', 3), { tope: W*.38 });
           if (Q && E.ver.rotE !== false) rotulo(ctx, c, Q.x + uE.x*10, Q.y - 12, 'E', c.E, 'center', 800, 14);
         }
         if (E.ver.Fp && r.F.modulo){
@@ -520,12 +535,13 @@ function crearEscena(cv, idDesc, idLect, idLey){
           const L = Math.hypot(Fx, Fy)*E.mPorN*s.k;
           if (L > 2){
             const u = { x:Fx/Math.hypot(Fx, Fy), y:-Fy/Math.hypot(Fx, Fy) };
-            const Q = flecha({ x:P.x + n.x*8, y:P.y + n.y*8 }, { x:P.x + n.x*8 + u.x*L, y:P.y + n.y*8 + u.y*L }, c.F, grosor('F', 4), { tope: W*.38 });
-            if (Q && f >= 1) rotulo(ctx, c, (P.x + Q.x)/2 + n.x*8, (P.y + Q.y)/2 + n.y*8 + 16, 'F', c.F, 'center', 800, 14);
+            const sep = r.mismoSentido && E.ver.Ep ? 5 : 0, o = { x:P.x + u.x*13 + n.x*sep, y:P.y + u.y*13 + n.y*sep };
+            const Q = flecha(o, { x:o.x + u.x*L, y:o.y + u.y*L }, c.F, grosor('F', 4), { tope: W*.38 });
+            if (Q && f >= 1) rotulo(ctx, c, (o.x + Q.x)/2, (o.y + Q.y)/2 + 16, 'F', c.F, 'center', 800, 14);
           }
         }
       }
-      disco(P, E.prueba.q, 11, c, E.ver.rotP === false ? '' : `q₀ = ${conSigno(E.prueba.q)} µC`, E.prueba.lado || -1);
+      disco(P, E.prueba.q, 11, c, E.ver.rotP === false ? '' : `${E.prueba.n || 'q₀'} = ${conSigno(E.prueba.q)} µC`, E.prueba.lado || -1);
       if (E.arr.prueba) manija(P, 18, c);
     }
     // sonda P (un punto sin carga): el campo E ahí
@@ -577,28 +593,36 @@ function crearEscena(cv, idDesc, idLect, idLey){
     if (f >= 1 && E.ver.F){
       const k = Math.min(64, A.x - rad - 12)/Math.max(R.F, R.peso1);
       for (const [P, s] of [[A, -1], [B, 1]]){
-          flecha(P, { x:P.x, y:P.y + R.peso1*k }, c.muted, 2.2);
-        const u = { x:piv.x - P.x, y:piv.y - P.y }, Lu = Math.hypot(u.x, u.y), T = R.T1*k;
-        flecha(P, { x:P.x + u.x/Lu*T, y:P.y + u.y/Lu*T }, c.muted, 2.2, { trazos:true });
+        // peso: desde el borde de abajo, del mismo largo que F (las dos valen 0,2 N)
+        flecha({ x:P.x, y:P.y + rad }, { x:P.x, y:P.y + rad + R.peso1*k }, c.muted, 2.2);
+        // tensión: a lo largo del hilo, corrida 4 px para que no lo tape
+        const u = { x:piv.x - P.x, y:piv.y - P.y }, Lu = Math.hypot(u.x, u.y), T = R.T1*k, n = { x:-u.y/Lu*4*s, y:u.x/Lu*4*s };
+        flecha({ x:P.x + u.x/Lu*rad + n.x, y:P.y + u.y/Lu*rad + n.y }, { x:P.x + u.x/Lu*(rad + T) + n.x, y:P.y + u.y/Lu*(rad + T) + n.y }, c.muted, 2.2, { trazos:true });
         const Q = flecha({ x:P.x + s*(rad + 1), y:P.y }, { x:P.x + s*(rad + 1 + R.F*k), y:P.y }, c.F, grosor('F', 4.5));
         if (Q) rotulo(ctx, c, Q.x + s*4, P.y - 14, `F = ${fmt(R.F, 2)} N`, c.F, s > 0 ? 'right' : 'left', 800, 12);
-        rotulo(ctx, c, P.x + 6, P.y + R.peso1*k + 4, 'mg', c.muted, 'left', 700, 12);
+        rotulo(ctx, c, P.x + 6, P.y + rad + R.peso1*k - 4, 'mg', c.muted, 'left', 700, 12);
       }
     }
     for (const [P, q, n] of [[A, S.q1, S.n1], [B, S.q2, S.n2]]) disco(P, q, rad, c, '', 1);
-    rotulo(ctx, c, A.x - (f >= 1 ? 4 : 22), A.y + rad + 14, S.n1, c.q, f >= 1 ? 'center' : 'right', 800, 13);
-    rotulo(ctx, c, B.x + (f >= 1 ? 4 : 22), B.y + rad + 14, S.n2, c.q, f >= 1 ? 'center' : 'left', 800, 13);
+    rotulo(ctx, c, A.x - (f >= 1 ? rad + 4 : 22), A.y + (f >= 1 ? rad + 6 : rad + 14), S.n1, c.q, 'right', 800, 13);
+    rotulo(ctx, c, B.x + (f >= 1 ? rad + 4 : 22), B.y + (f >= 1 ? rad + 6 : rad + 14), S.n2, c.q, 'left', 800, 13);
     if (f < 1 && f === 0){
       // las manos que las sostienen (antes de soltarlas)
       rotulo(ctx, c, W/2, A.y + rad + 40, 'las sostenemos juntas', c.muted, 'center', 700, 12);
     }
-    if (f >= 1 && E.ver.F) rotulo(ctx, c, W/2, Math.max(A.y, B.y) + rad + 34, `r = ${fmt(S.r, 2)} m`, c.r, 'center', 800, 12);
+    if (f >= 1 && E.ver.F){
+      // raya con topes de centro a centro, debajo de los pesos
+      const k = Math.min(64, A.x - rad - 12)/Math.max(R.F, R.peso1), y = Math.max(A.y, B.y) + rad + R.peso1*k + 14;
+      ctx.save(); ctx.strokeStyle = c.r; ctx.lineWidth = grosor('r', 1.8);
+      linea(ctx, { x:A.x, y }, { x:B.x, y }); linea(ctx, { x:A.x, y:y - 6 }, { x:A.x, y:y + 6 }); linea(ctx, { x:B.x, y:y - 6 }, { x:B.x, y:y + 6 }); ctx.restore();
+      rotulo(ctx, c, W/2, y + 13, `r = ${fmt(S.r, 2)} m`, c.r, 'center', 800, 12);
+    }
   }
 
   // ----- carga entre placas -----
   // E.pl = { o (datos del motor), parts: [{ q, prog }], escY }: + arriba, − abajo; el desvío vertical va exagerado.
   function dibujarPlacas(c){
-    const x0 = 46, x1 = W - 34, yT = 34, yB = H - 34, ym = (yT + yB)/2;
+    const x0 = 46, x1 = W - 62, yT = 34, yB = H - 34, ym = (yT + yB)/2;
     ctx.save(); ctx.fillStyle = c.ink; ctx.fillRect(x0, yT - 8, x1 - x0, 7); ctx.fillRect(x0, yB + 1, x1 - x0, 7); ctx.restore();
     rotulo(ctx, c, x1 - 2, yT - 22, 'placa +', c.ink, 'right', 800, 12); rotulo(ctx, c, x1 - 2, yB + 22, 'placa −', c.ink, 'right', 800, 12);
     // campo uniforme: flechas iguales hacia abajo
@@ -620,12 +644,14 @@ function crearEscena(cv, idDesc, idLect, idLey){
       // al entrar, la flecha de la velocidad
       if (f === 0) flecha({ x:P.x - 34, y:P.y }, { x:P.x - 14, y:P.y }, c.muted, 2);
       disco(P, p.q, 11, c, '', 1);
-      rotulo(ctx, c, f >= 1 ? P.x - 16 : P.x + 18, P.y + (f >= 1 ? (p.q > 0 ? -16 : 16) : 0), `${conSigno(p.q)} µC`, c.q, f >= 1 ? 'right' : 'left', 800, 12);
+      // rótulo de la carga: a la izquierda, del lado de afuera de la curva (no cruza la trayectoria)
+      if (f >= 1) rotulo(ctx, c, P.x - 16, P.y + (p.q > 0 ? 14 : -14), `${conSigno(p.q)} µC`, c.q, 'right', 800, 12);
+      else rotulo(ctx, c, P.x + 18, P.y, `${conSigno(p.q)} µC`, c.q, 'left', 800, 12);
       if (f >= 1 && p.medir){
-        const r = ME.campoUniforme(o);
-        ctx.save(); ctx.strokeStyle = c.r; ctx.lineWidth = grosor('r', 1.6); linea(ctx, { x:x1 + 8, y:ym }, { x:x1 + 8, y:P.y });
-        linea(ctx, { x:x1 + 3, y:ym }, { x:x1 + 13, y:ym }); linea(ctx, { x:x1 + 3, y:P.y }, { x:x1 + 13, y:P.y }); ctx.restore();
-        rotulo(ctx, c, x1 - 4, (ym + P.y)/2, `${fmt(r.desvio*1000, 1)} mm`, c.r, 'right', 800, 12);
+        const r = ME.campoUniforme(o), xr = x1 + 22;
+        ctx.save(); ctx.strokeStyle = c.r; ctx.lineWidth = grosor('r', 1.6); linea(ctx, { x:xr, y:ym }, { x:xr, y:P.y });
+        linea(ctx, { x:xr - 5, y:ym }, { x:xr + 5, y:ym }); linea(ctx, { x:xr - 5, y:P.y }, { x:xr + 5, y:P.y }); ctx.restore();
+        rotulo(ctx, c, xr + 8, (ym + P.y)/2, `${fmt(r.desvio*1000, 0)} mm`, c.r, 'left', 800, 11);
       }
     }
     rotulo(ctx, c, x0, H - 10, 'desvío vertical exagerado', c.muted, 'left', 600, 11);
@@ -682,7 +708,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
     // cables
     ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.6; linea(ctx, { x:x0 + ancho/2, y:yT - 7 }, { x:x0 + ancho/2, y:12 }); linea(ctx, { x:x0 + ancho/2, y:yB + 7 }, { x:x0 + ancho/2, y:H - 12 }); ctx.restore();
     // cargas en las placas
-    const n = 7, a = P.carga;
+    const n = 8, a = P.carga;
     if (a > 0) for (let k = 0; k < n; k++){
       const x = x0 + ancho*(k + .5)/n;
       ctx.save(); ctx.globalAlpha = a; ctx.fillStyle = c.ink; ctx.font = `800 15px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
@@ -699,7 +725,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
       rotulo(ctx, c, xr, yC + 2, `Q = ${fmt(P.Q*1e9*a, 2)} nC`, c.q, 'left', 800, ch ? 12 : 13);
       rotulo(ctx, c, xr, yC + 24, `V = ${fmt(P.Q*a/C.C, 1)} V`, c.V, 'left', 800, ch ? 12 : 13);
     }
-    rotulo(ctx, c, x0 + ancho/2, H - 6 - 8, `área A = ${fmt(P.A*1e4, 0)} cm²`, c.muted, 'center', 700, 11);
+    rotulo(ctx, c, x0 + ancho/2 + 8, H - 14, `área A = ${fmt(P.A*1e4, 0)} cm²`, c.muted, 'left', 700, 11);
   }
 
   // ----- dos esferas conductoras que se tocan -----
@@ -753,7 +779,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
   // Lecturas y descripción: solo lo que cada paso pide (no adelantan la respuesta).
   E.avisar = () => {
     const ls = E.lect() || [];
-    if (idLect) document.getElementById(idLect).innerHTML = ls.map(([k, t, v]) => `<div class="lectura" style="--k:${k === 'ink' ? 'var(--ink)' : `var(--c-${k})`}"><span>${t}</span><b>${v}</b></div>`).join('');
+    if (idLect) document.getElementById(idLect).innerHTML = ls.map(([k, t, v]) => `<div class="lectura${String(v).length > 14 ? ' ancha' : ''}" style="--k:${k === 'ink' ? 'var(--ink)' : `var(--c-${k})`}"><span>${t}</span><b>${v}</b></div>`).join('');
     if (idDesc) document.getElementById(idDesc).textContent = (E.desc() || '') + (ls.length ? ' ' + ls.map(([, t, v]) => `${t.replace(/<[^>]+>/g, '')}: ${v}`).join('. ') + '.' : '');
     if (E.alCambiar) E.alCambiar();
   };
@@ -807,7 +833,8 @@ function crearEscena(cv, idDesc, idLect, idLey){
 }
 
 // Opciones de predicción (las mismas en los dos modos)
-const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+const sinCorte = t => String(t).replace(/ = /g, '&nbsp;=&nbsp;');
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${sinCorte(t)}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
 const NC = 'N/C';
 // Fuentes (cifras de resúmenes, por verificar con los PDF: docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md)
 const fuenteBP = 'Un estudio con 133 estudiantes de ingeniería de Barcelona, que ya habían aprobado la física del bachillerato y del primer año, encontró que cerca del 46 % cree que la carga mayor empuja más a la menor, cerca del 32 % cree que sobre la mayor actúa más fuerza y solo un 15 % responde que las dos fuerzas son iguales (Bohigas y Periago, 2010).';
@@ -830,6 +857,10 @@ const Q5 = [{ q:4, x:0, y:0, n:'Q' }], P5 = ME.prueba(Q5, { x:0.3, y:0 }, 1), P5
 const D6 = [{ q:4, x:-0.3, y:0, n:'q₁' }, { q:-4, x:0.3, y:0, n:'q₂' }], M6 = ME.campoYPotencial(D6, { x:0, y:0 });
 const W7 = ME.trabajo(Q5, { x:0.3, y:0 }, { x:0.6, y:0 }, 1);
 const S8 = ME.serie([3, 6], 12), PA8 = ME.paralelo([3, 6], 12);
+// el camino largo del paso 7: sube por la equipotencial de A, sale en línea recta y baja por la de B
+const arco = (r, a0, a1) => { const p = []; for (let k = 0; k <= 24; k++){ const a = (a0 + (a1 - a0)*k/24)*Math.PI/180; p.push({ x:r*Math.cos(a), y:r*Math.sin(a) }); } return p; };
+const CAMINO7 = [...arco(.3, 0, 90), ...arco(.6, 90, 0)];
+const T7 = ME.trabajoCamino(Q5, CAMINO7, 1);
 
 const P1 = { id:'electrostatica-paso1', ok:'c', opts:[
   ['a', 'q₂ empuja más a q₁, porque tiene el triple de carga', 'EL1-mayor-empuja-mas', 'documentado'],
@@ -885,6 +916,15 @@ const P6 = { id:'electrostatica-paso6', ok:'b', opts:[
     a:'Elegiste la A. Los potenciales se anulan, pero los campos no: el de +q se aleja de ella y el de −q va hacia ella, así que en el medio apuntan igual. La correcta está marcada.',
     c:'Elegiste la C. Es al revés: el campo es una flecha y aquí las dos apuntan igual; el potencial es un número con signo y aquí se anula. La correcta está marcada.',
     d:'Elegiste la D. El campo está bien, pero el potencial lleva el signo de la carga: +1,2 × 10⁵ V y −1,2 × 10⁵ V suman cero. La correcta está marcada.' } };
+const P7 = { id:'electrostatica-paso7', ok:'a', opts:[
+  ['a', `W = ${fmt(T7.W, 2)} J, lo mismo que en línea recta`],
+  ['b', `W ≈ ${fmt(T7.errores.caminoLargoMas, 2)} J, más, porque el camino es más largo`, 'EP-camino-largo-mas-trabajo', 'hipotesis'],
+  ['c', `W ≈ ${fmt(T7.errores.caminoLargoMenos, 2)} J, menos, porque la fuerza se reparte en más camino`, 'EP-camino-largo-menos-trabajo', 'hipotesis'],
+  ['d', 'W = 0 J, porque casi todo el camino va por equipotenciales', 'EP-camino-largo-cero', 'hipotesis']],
+  fb:{ a:'¡Bien! El trabajo del campo solo depende de los potenciales de A y de B.',
+    b:'Elegiste la B. En los tramos por las equipotenciales el campo es perpendicular al movimiento y no hace trabajo: el camino largo no suma nada. La correcta está marcada.',
+    c:'Elegiste la C. El trabajo no se reparte: en los tramos por las equipotenciales es cero y en el tramo de una a otra es el mismo de la recta. La correcta está marcada.',
+    d:`Elegiste la D. En las equipotenciales el trabajo es cero, pero falta el tramo que va de una a la otra: ahí el campo hace los ${fmt(T7.W, 2)} J. La correcta está marcada.` } };
 const P8 = { id:'electrostatica-paso8', ok:'b', opts:[
   ['a', `C equivalente = ${fmt(S8.errores.sumaCapacidades, 1)} µF`, 'CC-serie-suma-capacidades', 'hipotesis'],
   ['b', `C equivalente = ${fmt(S8.Ceq, 1)} µF`],
@@ -921,12 +961,13 @@ const steps = [
  { k:'Paso 1', t:'Predice: ¿quién empuja más?', gate:P1,
    prep:() => { const ya = !!S.pred[P1.id]; E.config({ caja:{ x0:-.45, x1:.45, y0:-.2, y1:.2 }, cargas:[{ q:2, x:-.15, y:0, n:'q₁' }, { q:6, x:.15, y:0, n:'q₂' }],
      ver:{ r:[0, 1], par:ya }, lect: () => ya || S.p1 ? lecturasPar() : [['r', 'Distancia r', '0,3 m']],
-     desc: () => 'Dos cargas positivas en una recta; q₂ se dibuja más grande que q₁.' }); },
+     desc: () => 'Dos cargas positivas en una recta; q₂ se dibuja más grande que q₁ (el tamaño es la carga, no la fuerza).' }); },
    anima:fin => { E.ver.par = true; E.leyenda(); S.p1 = true; E.crecer('par', 900, () => { E.avisar(); fin(); }); },
    body:() => `<p>Dos cargas positivas, ${q_('q₁ = +2 µC')} y ${q_('q₂ = +6 µC')}, están a ${r_('r = 0,3 m')}. Las dos son positivas: se repelen. ${q_('q₂')} tiene el triple de carga. ¿Cómo son las fuerzas que se hacen?</p>${opcionesHTML(P1.opts, 'fb')}
    <div id="tras" class="body" hidden>
    <div class="eqs"><div class="eq">${F_('F')} = k · ${q_('q₁')} · ${q_('q₂')} / ${r_('r')}²</div>
    <div class="eq">${F_('F')} = 9 × 10⁹ · ${q_('2 × 10⁻⁶')} · ${q_('6 × 10⁻⁶')} / ${r_('0,3')}² = ${F_(fmt(C1.F, 2) + ' N')}<span class="note">sobre cada una, 6/5 N</span></div></div>
+   <p>El disco de ${q_('q₂')} es más grande porque tiene más carga; las flechas son la fuerza, y miden lo mismo.</p>
    <p>Lo que sí es distinto es el <b>campo</b> de cada una en el lugar de la otra: el de ${q_('q₂')} donde está ${q_('q₁')} vale ${E_(sci(C1.E2en1) + ' ' + NC)}, y el de ${q_('q₁')} donde está ${q_('q₂')}, ${E_(sci(C1.E1en2) + ' ' + NC)}. La fuerza es carga por campo, y sale igual: ${q_('2 µC')} · ${E_('6 × 10⁵')} = ${q_('6 µC')} · ${E_('2 × 10⁵')} = ${F_('1,2 N')}.</p>
    <p class="aviso">No olvides pasar los µC a C: 1 µC = 10⁻⁶ C. Con 2 y 6 en vez de 2 × 10⁻⁶ y 6 × 10⁻⁶, la fuerza saldría ${sci(C1.errores.sinMicro)} N.</p>
    <p class="fuente">${fuenteBP} La opción D es una hipótesis nuestra.</p></div>` },
@@ -939,7 +980,7 @@ const steps = [
    <div id="tras" class="body" hidden>
    <p>Cada esfera queda quieta con tres fuerzas: la eléctrica ${F_('F')} (horizontal), el peso mg y la tensión del hilo (en gris). La ${F_('F')} es la misma en las dos, como en el paso 1.</p>
    <div class="eqs"><div class="eq">tan ${th_('θ')} = ${F_('F')} / (m · g) = ${F_(fmt(ES.F, 2))} / (0,02 · 10) = ${fmt(ES.tan1, 0)} → ${th_('θ = ' + fmt(ES.theta1, 0) + '°')}<span class="note">para las dos</span></div></div>
-   <p>Las esferas quedan separadas ${r_('r = 0,3 m')}. Si una pesara más, esa se apartaría menos: el ángulo lo decide la masa, no la carga.</p>
+   <p>Las esferas quedan separadas ${r_('r = 0,3 m')}. Si una pesara más, esa se apartaría menos: la diferencia entre los dos ángulos la pone la masa, no cuál tiene más carga.</p>
    <p class="fuente">En el mismo estudio de Barcelona, con esferas de q y 2q, cerca del 57 % eligió que la de menor carga se aparta el doble, cerca del 19 % que se aparta más la de mayor carga, y solo cerca de 1 de cada 4 acertó (Bohigas y Periago, 2010). La opción D es una hipótesis nuestra.</p></div>` },
  { k:'Paso 3', t:'Predice: el doble de distancia', gate:P3,
    prep:() => { const ya = !!S.pred[P3.id]; E.config({ caja:{ x0:-.5, x1:.75, y0:-.22, y1:.2 }, cargas:[{ q:2, x:-.15, y:0, n:'q₁' }, { q:6, x: ya ? (S.x3 === undefined ? .45 : S.x3) : .15, y:0, n:'q₂' }],
@@ -963,12 +1004,12 @@ const steps = [
    <p><b>Principio de superposición:</b> cada carga empuja a ${q_('q₀')} como si estuviera sola, y las fuerzas se suman como flechas. Se pone la cola de ${F_('F₂')} en la punta de ${F_('F₁')}.</p>
    <div class="eqs"><div class="eq">${F_('F₁')} = 9 × 10⁹ · ${q_('15 × 10⁻⁶')} · ${q_('2 × 10⁻⁶')} / ${r_('0,3')}² = ${F_('3 N')}</div>
    <div class="eq">${F_('F₂')} = 9 × 10⁹ · ${q_('20 × 10⁻⁶')} · ${q_('2 × 10⁻⁶')} / ${r_('0,3')}² = ${F_('4 N')}</div>
-   <div class="eq">${F_('F')} = √(${F_('3')}² + ${F_('4')}²) = ${F_(fmt(F4.modulo, 0) + ' N')}<span class="note">a ${fmt(Math.round(F4.angulo), 0)}° sobre la horizontal: tan = 4/3</span></div></div>
+   <div class="eq">${F_('F')} = √(${F_('3')}² + ${F_('4')}²) = ${F_(fmt(F4.modulo, 0) + ' N')}<span class="note">forma α = ${fmt(Math.round(F4.angulo), 0)}° con la horizontal: tan α = 4/3</span></div></div>
    <p class="aviso">Las fuerzas (y los campos) se suman como números solo si apuntan hacia el mismo lado.</p>
    <p class="fuente">Sumar o restar las fuerzas como números sin mirar su dirección es una hipótesis nuestra: no encontramos estudios que lo midan en electrostática.</p></div>` },
  { k:'Paso 5', t:'Predice: la carga de prueba cambia de signo', gate:P5q,
    prep:() => { const ya = !!S.pred[P5q.id]; const pr = ya ? (S.p5 === undefined ? { q:-1, x:.3, y:0 } : S.p5) : { q:1, x:.3, y:0 };
-     E.config({ caja:{ x0:-.55, x1:.65, y0:-.42, y1:.42 }, cargas:Q5, prueba:pr, mPorN:.25, mPorE:4e-7, ver:{ campo:1, Fp:true, Ep:true },
+     E.config({ caja:{ x0:-.55, x1:.65, y0:-.42, y1:.42 }, cargas:Q5, prueba:pr, mPorN: $('cv').clientWidth < 560 ? .4 : .25, mPorE:4e-7, ver:{ campo:1, Fp:true, Ep:true },
        arr: ya ? { prueba:true, min:.12 } : {}, lect:lecturasPrueba, alCambiar:() => { if (S.pred[P5q.id]) S.p5 = E.prueba ? { ...E.prueba } : null; botones5(); },
        desc: () => 'Una carga fija Q con su campo dibujado en todo el plano, y una carga de prueba q₀ a su derecha.' }); },
    anima:fin => { E.prog.giro = 0; E.prueba.q = -1; E.cambio(); E.crecer('giro', 1000, () => { E.permitir({ prueba:true, min:.12 }); E.avisar(); fin(); }); },
@@ -976,7 +1017,7 @@ const steps = [
    <div id="tras" class="body" hidden>
    <div class="eqs"><div class="eq">${E_('E')} = k · ${q_('Q')} / ${r_('r')}² = 9 × 10⁹ · ${q_('4 × 10⁻⁶')} / ${r_('0,3')}² = ${E_(sci(P5.E.modulo) + ' ' + NC)}<span class="note">alejándose de Q, que es positiva</span></div>
    <div class="eq">${F_('F')} = ${q_('q₀')} · ${E_('E')} = (${q_('−1 × 10⁻⁶')}) · ${E_('4 × 10⁵')} = ${F_('−' + fmt(P5n.F.modulo, 1) + ' N')}<span class="note">el signo menos: contra el campo</span></div></div>
-   <p>El campo es de ${q_('Q')}: no cambia al cambiar, mover o quitar ${q_('q₀')}. Una carga de prueba positiva se mueve con las flechas del campo; una negativa, contra ellas.</p>
+   <p>El campo es de ${q_('Q')}: no cambia al cambiar, mover o quitar ${q_('q₀')}. Sobre una carga de prueba positiva, la fuerza apunta como las flechas del campo; sobre una negativa, al revés.</p>
    <div class="acciones"><button type="button" class="btn" id="signo5">Cambiar el signo de q₀</button><button type="button" class="btn" id="quitar5">Quitar q₀</button></div>
    <p class="problem">Arrastra ${q_('q₀')} (o toca el dibujo y usa las flechas): cerca de ${q_('Q')} el campo es más fuerte y la fuerza también.</p>
    <p class="fuente">En el estudio de Barcelona, cerca de 3 de cada 4 alumnos dibujó el campo de una carga solo donde había otra carga, y con un sentido que dependía del signo de esa otra; y cerca del 45 % razonó «más campo, más fuerza» sin mirar la carga que lo siente (Bohigas y Periago, 2010). Esa cifra es sobre cuánta fuerza, no sobre su sentido: por eso la opción C tiene un respaldo solo parcial. La opción D es una hipótesis nuestra.</p></div>` },
@@ -994,19 +1035,26 @@ const steps = [
    <p>El campo es una <b>flecha</b>: el de ${q_('q₁')} se aleja de ella y el de ${q_('q₂')} va hacia ella; en el medio los dos apuntan hacia la derecha y se suman. El potencial es un <b>número con signo</b>: se suman +1,2 × 10⁵ V y −1,2 × 10⁵ V, y da cero.</p>
    <p>Toda la recta del medio (a trazos) tiene ${P_('V = 0')}, y en ella el campo no es cero. Arrastra P: mira cómo ${E_('E')} y ${P_('V')} cambian por separado.</p>
    <p class="fuente">Creer que «si el campo es cero, el potencial también» (o que entre cargas opuestas «todo se anula») es una hipótesis nuestra: el informe solo encontró entrevistas sobre el campo en el punto medio, sin porcentajes.</p></div>` },
- { k:'Paso 7', t:'El trabajo: de A a B',
-   prep:() => { E.config({ caja:{ x0:-.72, x1:.72, y0:-.66, y1:.7 }, cargas:Q5, prueba: { q:1, x:.3, y:0, lado:1 },
-     ver:{ eq:[{ V:W7.VA, etq:`V en A = ${sci(W7.VA)} V`, donde:'arriba', dy:-10 }, { V:W7.VB, etq:`V en B = ${sci(W7.VB)} V`, donde:'arriba', dy:-10 }], puntos:[{ x:.3, y:0, n:'A', dy:16, dx:-12 }, { x:.6, y:0, n:'B', dy:16, dx:10 }], rotP:false },
-     lect:lecturasTrabajo, desc: () => 'Una carga fija Q, con dos equipotenciales a trazos que pasan por A y por B, y una carga q en A.' }); S.W = 0; },
-   entrar:() => { const b = $('mover7'), b2 = $('otro7'); if (b) b.onclick = () => mover7([{ x:.3, y:0 }, { x:.6, y:0 }]);
-     if (b2) b2.onclick = () => mover7([...arco(.3, 0, 90), ...arco(.6, 90, 0)]); },
-   body:() => `<p>${q_('Q = +4 µC')} está fija. Llevamos una carga ${q_('q = +1 µC')} desde A, a ${r_('0,3 m')}, hasta B, a ${r_('0,6 m')}. Las circunferencias a trazos son <b>equipotenciales</b>: todos sus puntos tienen el mismo ${P_('V')}.</p>
-   <div class="acciones"><button type="button" class="btn primary" id="mover7">Llevar q de A a B</button><button type="button" class="btn" id="otro7">Por otro camino</button></div>
+ { k:'Paso 7', t:'Predice: el trabajo por otro camino', gate:P7,
+   prep:() => { const ya = !!S.pred[P7.id]; E.config({ caja:{ x0:-.72, x1:.72, y0:-.66, y1:.7 }, cargas:Q5, prueba: { q:1, x: ya ? .6 : .3, y:0, n:'q', lado:1 },
+     ver:{ eq:[{ V:W7.VA, etq:`V en A = ${sci(W7.VA)} V`, donde:'arriba', dy:-10 }, { V:W7.VB, etq:`V en B = ${sci(W7.VB)} V`, donde:'arriba', dy:-10 }], puntos:[{ x:.3, y:0, n:'A', dy:-16, dx:-12 }, { x:.6, y:0, n:'B', dy:-16, dx:12 }],
+       camino: ya ? { pts:CAMINO7 } : null },
+     lect:lecturasTrabajo, desc: () => 'Una carga fija Q, con dos equipotenciales a trazos que pasan por A y por B, y una carga q que se lleva de A a B.' }); },
+   anima:fin => mover7(CAMINO7, fin),
+   entrar:() => { const b = $('mover7'), b2 = $('otro7');
+     if (b) b.onclick = () => { if (S.ocupado) return; S.ocupado = true; E.ocupado = true; nav(); mover7([{ x:.3, y:0 }, { x:.6, y:0 }], () => { S.ocupado = false; E.ocupado = false; nav(); }); };
+     if (b2) b2.onclick = () => { if (S.ocupado || !S.pred[P7.id]) return; S.ocupado = true; E.ocupado = true; nav(); mover7(CAMINO7, () => { S.ocupado = false; E.ocupado = false; nav(); }); }; },
+   body:() => `<p>${q_('Q = +4 µC')} está fija. Llevamos una carga ${q_('q = +1 µC')} en línea recta desde A, a ${r_('0,3 m')}, hasta B, a ${r_('0,6 m')}. Las circunferencias a trazos son <b>equipotenciales</b>: todos sus puntos tienen el mismo ${P_('V')}.</p>
    <div class="eqs"><div class="eq">${P_('V<sub>A</sub>')} = 9 × 10⁹ · ${q_('4 × 10⁻⁶')} / ${r_('0,3')} = ${P_(sci(W7.VA) + ' V')} y ${P_('V<sub>B</sub>')} = ${P_(sci(W7.VB) + ' V')}</div>
    <div class="eq">${W_('W')} del campo = ${q_('q')} · (${P_('V<sub>A</sub>')} − ${P_('V<sub>B</sub>')}) = ${q_('10⁻⁶')} · ${P_('6 × 10⁴')} = ${W_(fmt(W7.Wcampo, 2) + ' J')}</div></div>
-   <p>El campo empuja a ${q_('q')} hacia afuera, en el sentido en que se mueve: su trabajo es positivo. Una persona que la lleve despacio, sin que gane rapidez, tiene que frenarla: hace ${W_(fmt(W7.Wagente, 2) + ' J')}. La energía potencial baja: ΔU = q(${P_('V<sub>B</sub>')} − ${P_('V<sub>A</sub>')}) = ${fmt(W7.deltaU, 2)} J.</p>
-   <p>Por el otro camino (dando la vuelta por arriba) da lo mismo: mientras va por una equipotencial, el trabajo es cero, y solo cuenta el tramo de una a otra.</p>
-   <p class="aviso">No sirve «fuerza por distancia» con la fuerza de A (${fmt(W7.errores.fuerzaPorDistancia, 2)} J): la fuerza baja mientras q se aleja.</p>` },
+   <div class="acciones"><button type="button" class="btn" id="mover7">Llevar q de A a B en línea recta</button></div>
+   <p>El campo empuja a ${q_('q')} hacia afuera, en el sentido en que se mueve: su trabajo es positivo. Una persona que la lleve despacio, sin que gane rapidez, tiene que frenarla: hace ${W_(fmt(W7.Wagente, 2) + ' J')}. La energía potencial baja: ${U_('ΔU')} = ${q_('q')}(${P_('V<sub>B</sub>')} − ${P_('V<sub>A</sub>')}) = ${U_(fmt(W7.deltaU, 2) + ' J')}.</p>
+   <p>Ahora la llevamos por un camino largo: sube por la equipotencial de A, sale hasta la de B y baja por ella hasta B. ¿Cuánto trabajo hace el campo?</p>${opcionesHTML(P7.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <p>Mientras ${q_('q')} va por una equipotencial, ${P_('V')} no cambia y el trabajo es cero: el campo es perpendicular al camino. Solo cuenta el tramo de una equipotencial a la otra, y ese tramo da los mismos ${W_(fmt(T7.W, 2) + ' J')}. El trabajo del campo depende solo de dónde empieza y dónde termina: ${W_('W')} = ${q_('q')}(${P_('V<sub>A</sub>')} − ${P_('V<sub>B</sub>')}).</p>
+   <div class="acciones"><button type="button" class="btn" id="otro7">Repetir por el camino largo</button></div>
+   <p class="aviso">No sirve «fuerza por distancia» con la fuerza de A (${fmt(W7.errores.fuerzaPorDistancia, 2)} J): la fuerza baja mientras q se aleja.</p>
+   <p class="fuente">Las opciones incorrectas de este paso son hipótesis nuestras.</p></div>` },
  { k:'Paso 8', t:'Predice: condensadores en serie', gate:P8,
    prep:() => { const ya = !!S.pred[P8.id]; E.config({ vista:'cond', cd:{ modo: ya ? (S.modo8 || 'serie') : 'serie', Cs:[3, 6], V:12, revelado:ya },
      lect: () => { const m = E.cd.modo, R = m === 'serie' ? S8 : PA8; return E.cd.revelado ? [['C', 'C equivalente', `${fmt(R.Ceq, 1)} µF`], ['q', 'Cargas', R.cargas.map(q => fmt(q, 0)).join(' y ') + ' µC'], ['V', 'Voltajes', R.voltajes.map(v => fmt(v, 0)).join(' y ') + ' V'], ['U', 'Energía U', `${fmt(R.U, 0)} µJ`]] : [['C', 'C₁ y C₂', '3 µF y 6 µF'], ['V', 'Pila', '12 V']]; },
@@ -1019,7 +1067,7 @@ const steps = [
    <div class="eq">${q_('Q')} = ${C_('C')} · ${P_('V')} = ${C_('2')} · ${P_('12')} = ${q_(fmt(S8.Q, 0) + ' µC')}<span class="note">la misma en los dos</span></div>
    <div class="eq">${P_('V₁')} = ${q_('24')} / ${C_('3')} = ${P_(fmt(S8.voltajes[0], 0) + ' V')} y ${P_('V₂')} = ${q_('24')} / ${C_('6')} = ${P_(fmt(S8.voltajes[1], 0) + ' V')}<span class="note">suman 12 V</span></div>
    <div class="eq">${U_('U')} = ${C_('C')} · ${P_('V')}² / 2 = ${C_('2')} · ${P_('12')}² / 2 = ${U_(fmt(S8.U, 0) + ' µJ')}</div></div>
-   <p>En serie, la placa de en medio de cada par está aislada: la carga que llega a una es la que sale de la otra, así que los dos tienen la misma ${q_('Q')}. El más chico se queda con más voltaje. En paralelo los dos tienen los 12 V y las capacidades sí se suman: ${C_(fmt(PA8.Ceq, 0) + ' µF')} y ${U_(fmt(PA8.U, 0) + ' µJ')}.</p>
+   <p>En serie, las dos placas unidas por el cable del medio quedan aisladas: la carga que llega a una sale de la otra, así que los dos tienen la misma ${q_('Q')}. El más chico se queda con más voltaje. En paralelo los dos tienen los 12 V y las capacidades sí se suman: ${C_(fmt(PA8.Ceq, 0) + ' µF')} y ${U_(fmt(PA8.U, 0) + ' µJ')}.</p>
    <div class="acciones"><button type="button" class="btn" id="modo8">${S.modo8 === 'paralelo' ? 'Ponerlos en serie' : 'Ponerlos en paralelo'}</button></div>
    <p class="fuente">Sumar capacidades en serie, como si fueran resistencias, es una hipótesis nuestra: en entrevistas del test DIRECT aparece el error inverso (Engelhardt y Beichner, 2004), sin porcentaje. Sigue con «¿Qué pasa si…?» y con los problemas de lápiz y papel.</p></div>` },
 ];
@@ -1037,22 +1085,19 @@ function enlazar5(){
   botones5();
 }
 // Paso 7: llevar q por un camino; el trabajo acumulado sale del motor en cada cuadro.
-function arco(r, a0, a1){ const p = []; for (let k = 0; k <= 24; k++){ const a = (a0 + (a1 - a0)*k/24)*Math.PI/180; p.push({ x:r*Math.cos(a), y:r*Math.sin(a) }); } return p; }
 function lecturasTrabajo(){
   const p = E.prueba, V = ME.potencial(Q5, p).V, w = ME.trabajo(Q5, { x:.3, y:0 }, p, 1);
   return [['V', 'V de q', `${sci(V)} V`], ['W', 'W del campo', `${fmt(w.Wcampo, 3)} J`], ['W', 'W del agente', `${fmt(w.Wagente, 3)} J`]];
 }
-function mover7(pts){
-  if (S.ocupado) return;
-  // radial: de A a B; el otro camino: sube por la equipotencial de A, sale radial y baja por la de B
-  const camino = pts.length === 2 ? pts : [{ x:.3, y:0 }, ...pts.slice(0, 25), { x:0, y:.6 }, ...pts.slice(25)];
+function mover7(camino, fin){
+  // la carga recorre el camino; el trabajo acumulado sale del motor en cada cuadro (lecturasTrabajo)
   const L = []; let tot = 0; for (let k = 1; k < camino.length; k++){ tot += Math.hypot(camino[k].x - camino[k - 1].x, camino[k].y - camino[k - 1].y); L.push(tot); }
-  E.ver.camino = { pts:camino }; S.ocupado = true; E.ocupado = true; nav();
-  E.tween(2200, f => {
+  E.ver.camino = { pts:camino };
+  E.tween(camino.length > 2 ? 2600 : 1400, f => {
     const d = f*tot; let k = L.findIndex(x => x >= d); if (k < 0) k = L.length - 1;
     const d0 = k ? L[k - 1] : 0, g = (d - d0)/((L[k] - d0) || 1), a = camino[k], b = camino[k + 1];
     E.prueba.x = mix(a.x, b.x, g); E.prueba.y = mix(a.y, b.y, g); E.dibujar(); E.avisar();
-  }, () => { E.prueba.x = .6; E.prueba.y = 0; S.ocupado = false; E.ocupado = false; E.dibujar(); E.avisar(); nav(); });
+  }, () => { E.prueba.x = .6; E.prueba.y = 0; E.dibujar(); E.avisar(); fin(); });
 }
 
 const dots = $('dots');
@@ -1124,7 +1169,7 @@ go(0);
 </script>
 <script>
 /* ================= MODO 2: ¿qué pasa si…? =================
-   Respaldos: EL7 (documentado: en un grupo de 40, cerca de 1 de cada 8 acierta) y EL8 (parcial: «la mayoría», sin
+   Respaldos: EL7 (parcial: solo 1 de cada 8 acierta; sin cifra de cuántos responden C = 0) y EL8 (parcial: «la mayoría», sin
    porcentaje), de docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md. Lo demás, hipótesis nuestras.
    La escena cambia recién después de responder. */
 (function(){
@@ -1143,7 +1188,7 @@ function lecturasSonda(){
 
 const EXPS = [
   { id:'signo-entre-placas', corto:'Entre placas, al revés',
-    q:`Entre dos placas el campo ${E_('E = 1000 N/C')} es uniforme y apunta hacia la placa negativa. Una partícula con ${q_('+4 µC')} entra horizontal y sale desviada ${fmt(U1.desvio*1000, 0)} mm hacia la placa negativa. Ahora entra otra igual, con la misma rapidez, pero con ${q_('−4 µC')}. ¿Qué hace?`,
+    q:`Entre dos placas el campo ${E_('E = 1000 N/C')} es uniforme y apunta hacia la placa negativa. Una partícula de 2 × 10⁻⁶ kg con ${q_('+4 µC')} entra horizontal a 100 m/s entre placas de 20 cm de largo (sin contar la gravedad: su peso es unas ${fmt(U1.fuerzaEntrePeso, 0)} veces menor que la fuerza eléctrica) y sale desviada ${fmt(U1.desvio*1000, 0)} mm hacia la placa negativa. Ahora entra otra igual, con la misma rapidez, pero con ${q_('−4 µC')}. ¿Qué hace?`,
     opts:[['a', `Se desvía ${fmt(U1.errores.mismoLado.desvio*1000, 0)} mm hacia la placa negativa, como la otra`, 'UN-el-campo-decide-el-lado', 'hipotesis'],
           ['b', `Se desvía ${fmt(U1n.desvio*1000, 0)} mm hacia la placa positiva`],
           ['c', 'No se desvía: el campo solo empuja a las positivas', 'UN-negativa-no-se-desvia', 'hipotesis'],
@@ -1151,11 +1196,11 @@ const EXPS = [
     ok:'b',
     fb:{ a:'La fuerza es q·E: con q negativa, F apunta contra el campo, hacia la placa positiva.', c:'El campo empuja a cualquier carga: F = q·E. Con q negativa la empuja hacia el otro lado.', d:'La carga tiene el mismo tamaño (4 µC), así que la fuerza y el desvío miden lo mismo; solo cambia el lado.' },
     antes:ya => E.config({ vista:'placas', pl:{ o:O1, ref:U1.desvio, parts:[{ q:4, prog:1, medir:true }, { q:-4, prog: ya ? 1 : 0, medir:true }] },
-      lect: () => [['E', 'Campo E', '1000 N/C'], ['F', 'F = q·E', `${sci(U1.F)} N`], ...(ya ? [['r', 'Desvío de −4 µC', `${fmt(U1n.desvio*1000, 1)} mm, a +`]] : [])],
+      lect: () => [['E', 'Campo E', '1000 N/C'], ['F', 'F = q·E', `${sci(U1.F)} N`], ...(ya ? [['r', 'Desvío de −4 µC', `${fmt(U1n.desvio*1000, 0)} mm, hacia la placa +`]] : [])],
       desc: () => 'Dos placas con campo uniforme hacia la negativa. Una partícula positiva ya pasó y se desvió hacia abajo; otra negativa está por entrar.' }),
-    despues:() => { E.lect = () => [['E', 'Campo E', '1000 N/C'], ['F', 'F = q·E', `${sci(U1.F)} N`], ['r', 'Desvío de −4 µC', `${fmt(U1n.desvio*1000, 1)} mm, a +`]];
+    despues:() => { E.lect = () => [['E', 'Campo E', '1000 N/C'], ['F', 'F = q·E', `${sci(U1.F)} N`], ['r', 'Desvío de −4 µC', `${fmt(U1n.desvio*1000, 0)} mm, hacia la placa +`]];
       const p = E.pl.parts[1]; E.tween(1400, f => { p.prog = f; E.dibujar(); }, () => E.avisar()); },
-    exp:() => `<div class="eqs"><div class="eq">${F_('F')} = ${q_('q')} · ${E_('E')} = ${q_('4 × 10⁻⁶')} · ${E_('1000')} = ${F_(sci(U1.F) + ' N')}; a = ${F_('F')} / m = ${fmt(U1.a, 0)} m/s²</div>
+    exp:() => `<div class="eqs"><div class="eq">${F_('F')} = ${q_('q')} · ${E_('E')} = ${q_('4 × 10⁻⁶')} · ${E_('1000')} = ${F_(sci(U1.F) + ' N')}; a = ${F_('F')} / m = ${F_(sci(U1.F))} / ${sci(O1.m)} = ${fmt(U1.a, 0)} m/s²</div>
       <div class="eq">t = L / v₀ = 0,2 / 100 = ${fmt(U1.t*1000, 0)} ms → desvío = a · t² / 2 = ${r_(fmt(U1.desvio*1000, 0) + ' mm')}</div></div>
       <p>Las dos sienten una fuerza del mismo tamaño, pero con sentidos opuestos: la positiva va con el campo y la negativa, contra él. Dentro de las placas la trayectoria es una parábola, como un tiro horizontal hacia un lado o hacia el otro.</p>
       <p class="fuente">Las opciones incorrectas son hipótesis nuestras.</p>` },
@@ -1178,7 +1223,7 @@ const EXPS = [
       <p class="fuente">Las opciones incorrectas son hipótesis nuestras.</p>` },
   { id:'condensador-sin-carga', corto:'Un condensador sin carga',
     q:`Un condensador de placas (área 200 cm², a 1 mm) tiene ${q_('Q = 3,54 nC')} y ${P_('V = 20 V')}: su capacidad es ${C_('C = ' + pF(C3.pF))}. Se descarga por completo y queda con ${q_('Q = 0')}. ¿Cuál es ahora su capacidad?`,
-    opts:[['a', 'C = 0, porque C = Q/V y ahora Q = 0', 'EL7-sin-carga-sin-capacidad', 'documentado'],
+    opts:[['a', 'C = 0, porque C = Q/V y ahora Q = 0', 'EL7-sin-carga-sin-capacidad', 'parcial'],
           ['b', `C = ${pF(C3c.pF)}, porque depende del área y de la distancia entre placas`],
           ['c', `C = ${pF(C3.pF*2)}, porque vacío le cabe el doble`, 'CC-capacidad-como-espacio-libre', 'hipotesis'],
           ['d', 'No se puede saber, porque hace falta conocer Q y V', 'CC-hace-falta-Q', 'hipotesis']],
@@ -1191,7 +1236,7 @@ const EXPS = [
     exp:() => `<div class="eqs"><div class="eq">${C_('C')} = ε₀ · A / ${r_('d')} = 8,85 × 10⁻¹² · 0,02 / ${r_('10⁻³')} = ${C_(sci(C3.C) + ' F')} = ${C_(pF(C3.pF))}<span class="note">no lleva Q</span></div>
       <div class="eq">${C_('C')} = ${q_('Q')} / ${P_('V')} = ${q_('3,54 × 10⁻⁹')} / ${P_('20')}<span class="note">si Q baja a la mitad, V también: el cociente no cambia</span></div></div>
       <p>La capacidad es como el tamaño de un vaso: no cambia porque el vaso esté vacío. Es una propiedad del condensador (su área, su distancia y lo que hay entre las placas), no de cuánta carga tiene.</p>
-      <p class="fuente">En un grupo de 40 universitarios de primer año de ingeniería con enseñanza tradicional, solo cerca de 1 de cada 8 acertó una pregunta como esta; según los autores, la mayoría razonó con la fórmula C = Q/V (Guisasola, Zubimendi, Franco y Ceberio, 2010). Las opciones C y D son hipótesis nuestras.</p>` },
+      <p class="fuente">En un grupo de 40 universitarios de primer año de ingeniería con enseñanza tradicional, solo cerca de 1 de cada 8 acertó una pregunta como esta; según los autores, la mayoría razonó con la fórmula C = Q/V (Guisasola, Zubimendi, Franco y Ceberio, 2010). No dicen cuántos respondieron C = 0, así que la opción A tiene un respaldo solo parcial. Las opciones C y D son hipótesis nuestras.</p>` },
   { id:'placas-al-doble', corto:'Placas más separadas',
     q:`Al mismo condensador (${C_(pF(C4.pF0))}, placas a ${r_('1 mm')}) se le separan las placas hasta ${r_('2 mm')}, sin cambiar el área. ¿Cuál es su nueva capacidad?`,
     opts:[['a', `C = ${pF(C4.errores.alReves)}`, 'CC-mas-lejos-mas-capacidad', 'hipotesis'],
@@ -1223,7 +1268,7 @@ const EXPS = [
       E.tween(2600, f => { E.prog.ct = 3*f; E.dibujar(); }, () => { E.prog.ct = 3; E.dibujar(); E.avisar(); }); },
     exp:() => `<div class="eqs"><div class="eq">${P_('V')} = k · ${q_('Q<sub>A</sub>')} / ${r_('R<sub>A</sub>')} = k · ${q_('Q<sub>B</sub>')} / ${r_('R<sub>B</sub>')} → ${q_('Q<sub>A</sub>')} : ${q_('Q<sub>B</sub>')} = ${r_('1')} : ${r_('3')}</div>
       <div class="eq">${q_('Q<sub>A</sub>')} = 12 · 1/4 = ${q_(fmt(K5.Q1f, 0) + ' µC')} y ${q_('Q<sub>B</sub>')} = 12 · 3/4 = ${q_(fmt(K5.Q2f, 0) + ' µC')}<span class="note">la suma sigue siendo 12</span></div></div>
-      <p>La carga se conserva y pasa de una a otra hasta que las dos tienen el mismo potencial, ${P_(sci(K5.V) + ' V')}. Solo si las esferas son iguales queda la mitad en cada una.</p>
+      <p>La carga se conserva y pasa de una a otra hasta que las dos tienen el mismo potencial, ${P_(sci(K5.V) + ' V')} (una vez separadas y lejos una de la otra). Solo si las esferas son iguales queda la mitad en cada una.</p>
       <p class="fuente">Que la carga se reparte hasta que las dos tengan la misma cantidad lo cree «la mayoría» de alumnos de bachillerato y de primeros años de universidad, según Guisasola y otros (2010), sin un porcentaje en lo que leímos: por eso la opción A tiene un respaldo solo parcial. Las demás son hipótesis nuestras.</p>` },
 ];
 const S = { k:0, pred:{}, t0:Date.now() };
