@@ -1638,7 +1638,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "numeros-complejos"
+     ]
     },
     {
      "id": "algebra.matrices-y-determinantes",
@@ -3191,7 +3193,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "transformaciones-trig"
+     ]
     },
     {
      "id": "trigonometria.funciones-trigonometricas",
@@ -5276,6 +5280,23 @@
     "/plantillas/numeracion/papel.json"
    ]
   },
+  "numeros-complejos": {
+   "id": "numeros-complejos",
+   "titulo": "La flecha en el plano: números complejos",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "algebra.numeros-complejos"
+   ],
+   "url": "/plantillas/numeros-complejos/index.html",
+   "papel": "/plantillas/numeros-complejos/papel.json",
+   "archivos": [
+    "/plantillas/numeros-complejos/index.html",
+    "/plantillas/numeros-complejos/motor.js",
+    "/plantillas/numeros-complejos/papel.json"
+   ]
+  },
   "numeros-reales": {
    "id": "numeros-reales",
    "titulo": "La recta en trozos: números reales",
@@ -5731,6 +5752,23 @@
     "/plantillas/traductor-enunciados/index.html",
     "/plantillas/traductor-enunciados/motor.js",
     "/plantillas/traductor-enunciados/papel.json"
+   ]
+  },
+  "transformaciones-trig": {
+   "id": "transformaciones-trig",
+   "titulo": "Dos flechas en la circunferencia: transformaciones trigonométricas",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "trigonometria.transformaciones-trigonometricas"
+   ],
+   "url": "/plantillas/transformaciones-trig/index.html",
+   "papel": "/plantillas/transformaciones-trig/papel.json",
+   "archivos": [
+    "/plantillas/transformaciones-trig/index.html",
+    "/plantillas/transformaciones-trig/motor.js",
+    "/plantillas/transformaciones-trig/papel.json"
    ]
   },
   "traslados-sucesos": {

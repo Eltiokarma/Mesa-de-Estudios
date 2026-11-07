@@ -166,7 +166,7 @@
       "universidades": {"uni": {"semanas": [8, 9]}, "unmsm": {"temas": [10]}},
       "potencial_visual": "bajo",
       "grado": 5,
-      "plantillas": [],
+      "plantillas": ["transformaciones-trig"],
       "investigacion": "docs/investigacion/trigonometria-ideas-erroneas.md"
     },
     {

@@ -364,3 +364,188 @@ Hubo dos cortes por el límite de uso; los avances quedaron en commits parciales
 4. Líneas para `docs/pendientes.md` y `CLAUDE.md`: «Funciones trigonométricas inversas (7 nov 2026, rutina de matemática A): `plantillas/funciones-trig-inversas/` (la ventana principal: la recta y = k corta la onda muchas veces y solo un corte cae en la ventana; reflejo en y = x, arcsen y arccos en la circunferencia, compuestas con el triángulo, dominio y suma de arcotangentes; 19 casos verificados aparte)». Con esto, en la fila ma1 de pendientes solo faltan las transformaciones.
 
 **Fin de la lista.** Las cuatro plantillas pedidas están hechas. La conversación principal mandó por mensaje una lista nueva (transformaciones trigonométricas, complejos, matrices, binomio de Newton, números reales, programación lineal y cónicas). Queda en espera hasta que Gerson confirme.
+
+## Lista nueva (confirmada por Gerson el 7 nov 2026)
+
+La conversación principal mandó una lista nueva: transformaciones trigonométricas, números complejos, matrices, binomio de Newton, números reales, programación lineal y cónicas. Gerson la confirmó en esta sesión.
+
+- Números reales, programación lineal, lógica y conjuntos ya los hicieron otras rutinas, así que los salté.
+- Quedan cinco: transformaciones, complejos, matrices, binomio y cónicas.
+- Corren hasta 3 subagentes a la vez.
+
+## 7 nov 2026 · Números complejos: la flecha en el plano (`plantillas/numeros-complejos/`)
+
+**Qué hice.**
+
+- **`motor.js`**: UMD con aritmética exacta (fracciones y radicales k√m). La cabecera para el verificador va hasta la línea 102. Cubre:
+  - potencias de i, con su ciclo y las potencias negativas;
+  - operaciones en forma binómica: suma, producto, conjugado y cociente con el conjugado;
+  - módulo y argumento principal en ⟨−180°; 180°], con el campo `positivo` en [0°; 360°⟩;
+  - polar cis y paso a binómica;
+  - producto y cociente en polar;
+  - De Moivre con cualquier entero;
+  - raíces de la cuadrática con Δ < 0;
+  - √(−a)·√(−b).
+
+  Hay errores propios del CX1 al CX35. En la cabecera quedaron escritas tres convenciones:
+  - `restaModulos` va a `noAplica` si el módulo sale ≤ 0;
+  - `reparte` también se calcula con radicales;
+  - «±3i» va pegado y «1 ± 2i» con espacios.
+- **`casos.json`**: 19 casos con 84 llamadas en `tambien`.
+- **`motor.test.js`**: 38 pruebas.
+  - Propiedades: el ciclo de iⁿ, (z/w)·w = z, z·z̄ = |z|², la ida y vuelta entre polar y binómica, De Moivre contra la multiplicación repetida y las raíces de la cuadrática.
+  - Ningún error coincide con la respuesta, en los casos y en un barrido de 300.
+  - Las opciones de la escena salen del motor.
+- **`papel.json`**: 10 problemas propios.
+- **`plantilla.json`**: solo la unidad `algebra.numeros-complejos`. No puse `trigonometria.coordenadas-polares-y-complejos`, porque su temario pide coordenadas polares de puntos y forma exponencial.
+- **`index.html`**: el plano de Argand con la flecha de z que se arrastra.
+  - **Paso a paso** (8 predicciones):
+    - i², donde multiplicar por i gira 90°;
+    - i⁴³, con las vueltas contadas;
+    - (2 + 3i)(1 − 2i);
+    - |−4 + 3i|, con la hipotenusa y sus cuadritos;
+    - el conjugado como reflejo;
+    - (5 + i)/(1 − i);
+    - −1 + √3 i en polar;
+    - (2 cis 10°)(3 cis 30°), con el triángulo semejante.
+  - **¿Qué pasa si…?** (5): i⁻¹, √(−4)·√(−9) = −6, el cociente en polar, (1 + i)⁸ y x² − 4x + 13 = 0.
+- **Respaldo.**
+  - AL9 es 'parcial' solo en el paso 4. El informe nombra √(a² + b²) = a + b (Aguerrea y otros 2022, sin cifra).
+  - AL11 queda como hipótesis.
+  - CX1 a CX35 son hipótesis nuestras, porque el informe no trata los complejos.
+
+**Pruebas.** `motor.test.js` pasa 38 de 38. En `npm test` fallan solo las 2 de catálogo y app, y la de matrices, que todavía está a medio hacer en esta rama. La pasada del celular no da QUEDA. Playwright pasa en las 8 combinaciones.
+
+**Subagentes.**
+
+- **Verificador independiente.** Recalculó todo en Q(i) con Fraction y con cmath, sin leer el motor ni `casos.json`. Coincidieron todos los valores y los 10 problemas de papel. Quedaron escritas sus convenciones y entraron sus bordes:
+  - i⁻¹⁰⁰ e i⁻²⁰²⁷;
+  - z = 0 y la división entre 0;
+  - Arg de −5 y de 3i;
+  - cocientes entre imaginarios puros;
+  - De Moivre con n ≤ 0;
+  - un producto que cae en 180° y no en −180°;
+  - cuadráticas con a < 0, con Δ > 0 y con Δ = 0;
+  - −√3 − i.
+
+  Además, p4 ahora comprueba la igualdad pedida.
+- **Revisor de contenido.**
+  - **Lo grave:** en el paso 8, z = 2 cis 15° y w = 3 cis 20° casi coincidían y la flecha de w tapaba a z en el celular. Ahora z = 2 cis 10° y w = 3 cis 30°, con la respuesta 6 cis 40°.
+  - **También corregí:**
+    - los rótulos encimados del paso 7 y las lecturas cortadas;
+    - los experimentos 1 y 2, donde la justificación de la correcta la delataba; ahora todas las opciones tienen la misma forma;
+    - el distractor «3 + 3i», que no era creíble; ahora es «3 − 2i» (CX35, multiplicar por w y no por w̄);
+    - «z = 5 + 1 · i»;
+    - el subtítulo, que hablaba de la suma;
+    - w sin color en las ecuaciones;
+    - el azul de θ, que nombraba dos ángulos; el ángulo del resultado va en tinta;
+    - la b de la fórmula cuadrática, que chocaba con Im;
+    - el rango de Arg, con la otra convención;
+    - el matiz de AL9;
+    - el distractor «3 cis 2,5°», que ahora es «3 cis (−60°)».
+
+**Pendiente.** Del temario quedan la forma exponencial, las raíces n-ésimas y las regiones en el plano.
+
+**Pedidos para la integración.**
+
+1. Catálogo: `numeros-complejos` en `algebra.numeros-complejos`, y luego `npm run catalogo`. Rebalancear los ítems de álgebra (la prueba avisa).
+2. `docs/diseno.md`. ΔE00 mínimo entre variables: 23,6 en claro y 25,3 en oscuro. Contraste mínimo: 4,63. w queda a ΔE00 11 del verde de «correcto», que siempre lleva texto.
+
+   | Variable | Claro | Oscuro |
+   | --- | --- | --- |
+   | Re (a) | #a05200 | #f0a04a |
+   | Im (b) | #466d14 | #a3d65e |
+   | r (flecha de z y \|z\|) | #a10fbf | #cf6bfa |
+   | θ (Arg z) | #1f5fbf | #7cb0ff |
+   | w | #0f766e | #5ed9c8 |
+
+3. Informe de álgebra: registrar CX1 a CX35 como hipótesis nuestras.
+4. Línea para `docs/pendientes.md` y `CLAUDE.md`: «Números complejos (7 nov 2026, sesión de matemática A): `plantillas/numeros-complejos/` (la flecha en el plano: multiplicar por i gira 90°, módulo con cuadritos, conjugado como reflejo, producto que gira y estira, De Moivre; 19 casos verificados aparte)».
+
+## 7 nov 2026 · Transformaciones trigonométricas: dos flechas en la circunferencia (`plantillas/transformaciones-trig/`)
+
+**Qué hice.**
+
+- **`motor.js`** (UMD; la cabecera para el verificador va hasta la línea 76).
+  - Calcula la suma a producto en sus cuatro casos, el producto a suma (también con `veces`), el cociente con dónde no existe (`en: {original, simplificada}`), agrupar, series y el rombo de las dos flechas. Tiene también las pulsaciones y `simplificar({arriba, abajo})` para el papel.
+  - Los valores son exactos con múltiplos de 15°; `exacto: true` también cuando el resultado sale exacto aunque haya otro ángulo. Con otros ángulos el valor es numérico y siempre va con 3 cifras.
+  - No usa la convención 37°/53°.
+  - Hay errores TT1 a TT13.
+- **`casos.json`**: 22 casos; el formato admite `"espera": {"error": …}`.
+- **`motor.test.js`**: 42 pruebas. Incluye la prueba de propiedades (en los casos y en un barrido que cubre las flechas que se arrastran) y las 12 predicciones.
+- **`papel.json`**: 10 problemas propios.
+- **`plantilla.json`**: unidad `trigonometria.transformaciones-trigonometricas`.
+- **`index.html`**: dos puntos en la circunferencia, en A y en B, que se arrastran. La suma de las dos flechas es un rombo: apunta en M = (A + B)/2 y mide 2 cos D, con D = (A − B)/2. La altura y el avance dan las cuatro fórmulas y el cociente.
+  - **Paso a paso** (7 predicciones):
+    - la dirección de la suma;
+    - su largo;
+    - sen 75° + sen 15°;
+    - sen 75° − sen 15°;
+    - cos 105° − cos 15°;
+    - 2 sen 75° cos 45°;
+    - el cociente (sen 5x + sen 3x)/(cos 5x + cos 3x), que después se arrastra y da tan 4x en vivo.
+  - **¿Qué pasa si…?** (5):
+    - cos 20° + cos 100° + cos 140°;
+    - las pulsaciones de sen 9t + sen 7t;
+    - 2 sen 75° sen 30°;
+    - cos 105° + cos 15°;
+    - otro cociente.
+- **Respaldo.** Todo va como hipótesis, porque el informe deja fuera las transformaciones (línea 5).
+  - TR16 va como extensión nuestra. El ejemplo del informe, sen 30° + sen 60° = sen 90°, tiene la forma del distractor del paso 4.
+  - TR12 también va como extensión: se aplica a cos 120°.
+  - TT1 a TT13 son hipótesis nuestras.
+
+**Pruebas.** `motor.test.js` pasa 42 de 42. La pasada del celular no da QUEDA. Playwright pasa en las 8 combinaciones:
+- sin errores ni desbordes;
+- el bloqueo aguanta;
+- el dedo lejos de las flechas desplaza la página.
+
+En `npm test` falla, además de lo esperado, la prueba de matrices, que todavía está a medio hacer.
+
+**Subagentes.**
+
+- **Verificador independiente.** Calculó cada valor directo, sin las fórmulas de transformación. Reconoció las formas exactas a + b√2 + c√3 + d√6 y comprobó los cocientes en cuatro ángulos. Coincidieron los 20 casos y los 10 de papel. Pidió:
+  - formato coherente (positivos primero, y el signo afuera cuando todo es negativo);
+  - que p6, p8 y p9 comprobaran el problema mismo y no un hermano.
+
+  Entraron sus bordes:
+  - A = B y A = −B;
+  - sumas que dan 0;
+  - cos A − cos B en los dos órdenes y con ángulos negativos;
+  - productos con α = β;
+  - cocientes donde el denominador es 0;
+  - series largas y ángulos que no son múltiplos de 15°;
+  - el rombo fuera de rango, que da error.
+- **Revisor de contenido.** Sin graves. Corregí:
+  - la ecuación del cociente, que pedía scroll lateral en el celular y ahora va en tres líneas;
+  - rótulos encimados en los pasos 3 y 7 y en el experimento 1;
+  - la nota del paso 5, que no correspondía a su distractor;
+  - la cita de TR16;
+  - el título del paso 7, que insinuaba dos términos;
+  - las leyendas α (= M) y β (= D);
+  - cos x y cos 5x, que no tenían color;
+  - «−(√6 + √2)/4»;
+  - TT13, separado de TT1;
+  - lecturas con 3 cifras;
+  - p9 (N en vez de M, por la serie) y el control de p10;
+  - la flecha de 20° en oscuro, que estaba a ΔE00 19,5 de la tinta y ahora va en el verde de D.
+
+**Pendiente.** No están las productorias del temario.
+
+**Pedidos para la integración.**
+
+1. Catálogo: `transformaciones-trig` en `trigonometria.transformaciones-trigonometricas`, y luego `npm run catalogo`. Sus ítems de prueba van a `reserva`.
+2. `docs/diseno.md`, colores de esta escena:
+
+   | Variable | Claro | Oscuro |
+   | --- | --- | --- |
+   | A | #1f5fbf | #7cb0ff |
+   | B | #7d6a00 | #e3c84a |
+   | M = (A + B)/2, también α en producto a suma | #a10fbf | #cf6bfa |
+   | D = (A − B)/2, también β | #2e7535 | #7fd36a |
+   | Suma | #77032c | #fdb4ce |
+   | Resta (cuerda) | #b04a00 | #ff8a3d |
+
+   ΔE00 mínimo: 23,5 en claro y 23,7 en oscuro. Contraste mínimo: 4,54.
+3. Informe de trigonometría: registrar TT1 a TT13 como hipótesis nuestras.
+4. Línea para `docs/pendientes.md` y `CLAUDE.md`: «Transformaciones trigonométricas (7 nov 2026, sesión de matemática A): `plantillas/transformaciones-trig/` (dos flechas en la circunferencia: la suma es un rombo que apunta en la semisuma y mide 2 cos de la semidiferencia; suma a producto, producto a suma, cocientes y pulsaciones; 22 casos verificados aparte)». Con esto, la fila ma1 de pendientes queda cubierta salvo cónicas y polares.

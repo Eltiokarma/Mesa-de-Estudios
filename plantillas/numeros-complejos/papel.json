@@ -1,0 +1,135 @@
+{
+  "titulo": "Números complejos: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Tres controles antes de marcar: i² = −1 (no 1), así que cada i · i se vuelve un −1; el módulo es √(a² + b²), nunca a + b; y el argumento se lee mirando en qué cuadrante está el punto (a; b), no solo con arctan(b/a). El argumento principal se toma entre −180° y 180°.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Calcula i²⁰²⁷, i⁻² y √(−25) · √(−4).",
+      "respuesta": "i²⁰²⁷ = −i, i⁻² = −1 y √(−25) · √(−4) = −10.",
+      "pasos": [
+        "Como 2027 = 4 · 506 + 3, las 506 vueltas completas no cambian nada y quedan tres cuartos de vuelta, i³ = −i.",
+        "i⁻² = 1/i² = 1/(−1) = −1. También: girar 90° hacia atrás dos veces deja la flecha en −1.",
+        "√(−25) = 5i y √(−4) = 2i. Su producto es 10i² = −10. No vale juntar las raíces: √((−25)(−4)) = √100 = 10 es falso aquí."
+      ],
+      "verificar": [ { "fn": "potenciaI", "args": [{ "n": 2027 }], "espera": { "texto": "−i" } },
+                     { "fn": "potenciaI", "args": [{ "n": -2 }], "espera": { "texto": "−1" } },
+                     { "fn": "raizNegativa", "args": [{ "a": 25, "b": 4 }], "espera": { "texto": "−10" } } ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Si z = 4 − 3i y w = −1 + 5i, halla z + w, z − w y el opuesto de w.",
+      "respuesta": "z + w = 3 + 2i, z − w = 5 − 8i y −w = 1 − 5i.",
+      "pasos": [
+        "Se suma parte real con parte real y parte imaginaria con parte imaginaria: (4 − 1) + (−3 + 5)i = 3 + 2i.",
+        "Al restar, el signo menos alcanza a las dos partes de w: (4 + 1) + (−3 − 5)i = 5 − 8i.",
+        "El opuesto cambia el signo de las dos partes: −w = 1 − 5i."
+      ],
+      "verificar": [ { "fn": "sumar", "args": [{ "z": { "re": 4, "im": -3 }, "w": { "re": -1, "im": 5 } }], "espera": { "texto": "3 + 2i" } },
+                     { "fn": "restar", "args": [{ "z": { "re": 4, "im": -3 }, "w": { "re": -1, "im": 5 } }], "espera": { "texto": "5 − 8i" } },
+                     { "fn": "opuesto", "args": [{ "z": { "re": -1, "im": 5 } }], "espera": { "texto": "1 − 5i" } } ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Efectúa (3 − i)(2 + 5i).",
+      "respuesta": "11 + 13i.",
+      "pasos": [
+        "Se multiplica cada término por cada término: 3 · 2 + 3 · 5i − i · 2 − i · 5i = 6 + 15i − 2i − 5i².",
+        "Como i² = −1, el último término es −5(−1) = +5.",
+        "Se juntan las partes: (6 + 5) + (15 − 2)i = 11 + 13i."
+      ],
+      "verificar": [ { "fn": "multiplicar", "args": [{ "z": { "re": 3, "im": -1 }, "w": { "re": 2, "im": 5 } }], "espera": { "texto": "11 + 13i" } } ]
+    },
+    {
+      "id": "p4",
+      "nivel": "básico",
+      "enunciado": "Halla x e y reales si (x − 1) + (y + 2)i = 4 − 3i.",
+      "respuesta": "x = 5 e y = −5.",
+      "pasos": [
+        "Dos complejos son iguales si tienen la misma parte real y la misma parte imaginaria.",
+        "Parte real: x − 1 = 4, así que x = 5.",
+        "Parte imaginaria: y + 2 = −3, así que y = −5. Comprobación: con x = 5 e y = −5, (x − 1) + (y + 2)i = 4 − 3i."
+      ],
+      "verificar": [ { "fn": "sumar", "args": [{ "z": { "re": 5, "im": -5 }, "w": { "re": -1, "im": 2 } }], "espera": { "texto": "4 − 3i" } } ]
+    },
+    {
+      "id": "p5",
+      "nivel": "básico",
+      "enunciado": "Si z = 5 − 12i, halla z̄, |z| y el producto z · z̄.",
+      "respuesta": "z̄ = 5 + 12i, |z| = 13 y z · z̄ = 169.",
+      "pasos": [
+        "El conjugado cambia solo el signo de la parte imaginaria: z̄ = 5 + 12i (el reflejo de z en el eje real).",
+        "|z| = √(5² + 12²) = √(25 + 144) = √169 = 13. No es 5 + 12 = 17.",
+        "z · z̄ = 5² + 12² = 169 = |z|²: sale un número real."
+      ],
+      "verificar": [ { "fn": "conjugado", "args": [{ "z": { "re": 5, "im": -12 } }], "espera": { "texto": "5 + 12i" } },
+                     { "fn": "modulo", "args": [{ "z": { "re": 5, "im": -12 } }], "espera": { "texto": "13" } },
+                     { "fn": "multiplicar", "args": [{ "z": { "re": 5, "im": -12 }, "w": { "re": 5, "im": 12 } }], "espera": { "texto": "169" } } ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Expresa (1 + 7i)/(3 + i) en la forma a + bi.",
+      "respuesta": "1 + 2i.",
+      "pasos": [
+        "Se multiplica arriba y abajo por el conjugado del denominador, 3 − i.",
+        "Arriba: (1 + 7i)(3 − i) = 3 − i + 21i − 7i² = 3 + 7 + 20i = 10 + 20i. Abajo: (3 + i)(3 − i) = 9 + 1 = 10.",
+        "Se divide cada parte entre 10: 1 + 2i. Dividir parte por parte (1/3 + 7i) da otra cosa."
+      ],
+      "verificar": [ { "fn": "dividir", "args": [{ "z": { "re": 1, "im": 7 }, "w": { "re": 3, "im": 1 } }], "espera": { "texto": "1 + 2i", "numerador.texto": "10 + 20i", "denominador.texto": "10" } } ]
+    },
+    {
+      "id": "p7",
+      "nivel": "intermedio",
+      "enunciado": "Escribe z = −√3 − i en forma polar.",
+      "respuesta": "z = 2 cis (−150°), que también se escribe 2 cis 210° si el argumento se toma de 0° a 360°.",
+      "pasos": [
+        "Módulo: |z| = √(3 + 1) = 2.",
+        "El punto (−√3; −1) está en el tercer cuadrante. El ángulo agudo con el eje real tiene tangente 1/√3: es 30°.",
+        "arctan(b/a) = arctan(1/√3) daría 30°, que es del primer cuadrante. En el tercero el argumento es −180° + 30° = −150°."
+      ],
+      "verificar": [ { "fn": "polar", "args": [{ "z": { "re": "-√3", "im": -1 } }], "espera": { "texto": "2 cis (−150°)", "errores.arctanDirecto.texto": "2 cis 30°" } },
+                     { "fn": "argumento", "args": [{ "z": { "re": "-√3", "im": -1 } }], "espera": { "grados": -150, "positivo": 210 } } ]
+    },
+    {
+      "id": "p8",
+      "nivel": "intermedio",
+      "enunciado": "Si z = 4 cis 70° y w = 2 cis 25°, halla z · w y z/w. Escribe z/w también en la forma a + bi.",
+      "respuesta": "z · w = 8 cis 95° y z/w = 2 cis 45° = √2 + √2 i.",
+      "pasos": [
+        "Al multiplicar, los módulos se multiplican y los argumentos se suman: 4 · 2 = 8 y 70° + 25° = 95°.",
+        "Al dividir, los módulos se dividen y los argumentos se restan: 4/2 = 2 y 70° − 25° = 45°.",
+        "2 cis 45° = 2 cos 45° + 2 sen 45° i = 2(√2/2) + 2(√2/2)i = √2 + √2 i."
+      ],
+      "verificar": [ { "fn": "productoPolar", "args": [{ "z": { "r": 4, "theta": 70 }, "w": { "r": 2, "theta": 25 } }], "espera": { "texto": "8 cis 95°" } },
+                     { "fn": "cocientePolar", "args": [{ "z": { "r": 4, "theta": 70 }, "w": { "r": 2, "theta": 25 } }], "espera": { "texto": "2 cis 45°" } },
+                     { "fn": "binomica", "args": [{ "r": 2, "theta": 45 }], "espera": { "texto": "√2 + √2 i" } } ]
+    },
+    {
+      "id": "p9",
+      "nivel": "avanzado",
+      "enunciado": "Calcula (√3 + i)⁶.",
+      "respuesta": "−64.",
+      "pasos": [
+        "En forma polar: |√3 + i| = √(3 + 1) = 2 y el argumento es 30° (primer cuadrante, tangente 1/√3).",
+        "Por De Moivre: (2 cis 30°)⁶ = 2⁶ cis (6 · 30°) = 64 cis 180°.",
+        "cis 180° = −1, así que el resultado es −64. Repartir el exponente, (√3)⁶ + i⁶ = 27 − 1 = 26, es un error."
+      ],
+      "verificar": [ { "fn": "deMoivre", "args": [{ "z": { "re": "√3", "im": 1 }, "n": 6 }], "espera": { "texto": "−64", "polar": "64 cis 180°" } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "avanzado",
+      "enunciado": "Resuelve x² + 6x + 25 = 0 en los complejos. Halla también la suma y el producto de las raíces.",
+      "respuesta": "x = −3 ± 4i; la suma es −6 y el producto, 25.",
+      "pasos": [
+        "Δ = 6² − 4 · 1 · 25 = 36 − 100 = −64. Es negativo: no hay raíces reales, pero sí complejas.",
+        "√(−64) = 8i, así que x = (−6 ± 8i)/2 = −3 ± 4i. Se divide entre 2 la parte real y también la imaginaria.",
+        "Las dos raíces son conjugadas: suman (−3 + 4i) + (−3 − 4i) = −6, el opuesto del coeficiente de x, y su producto es 9 + 16 = 25, el término independiente (aquí el coeficiente de x² es 1)."
+      ],
+      "verificar": [ { "fn": "cuadratica", "args": [{ "a": 1, "b": 6, "c": 25 }], "espera": { "texto": "−3 ± 4i", "delta": -64, "suma": "−6", "producto": "25" } } ]
+    }
+  ]
+}
