@@ -184,3 +184,65 @@ Sesión paralela a la conversación principal, en la rama `rutina/razonamiento-m
 - `docs/pendientes.md` (ra1): «Hecha `cortes-pesadas` (cortes en abierta y cerrada, estacas, soga doblada, apilado, balanza de dos platillos con 1, 3, 9 y mínimo de pesadas; 21 casos verificados aparte)».
 - `CLAUDE.md`, historia: «Cortes y pesadas (7 nov 2026, rutina de razonamiento matemático): `plantillas/cortes-pesadas/` (la sierra y la balanza: cortes contra piezas en varilla y aro, estacas en línea y contorno, soga doblada, apilar para cortar, pesas en los dos platillos y la moneda falsa en tres grupos con el mínimo buscado por árbol de decisión; 21 casos verificados aparte).»
 - `docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md`: si te parece, agregar filas «sin dato» para cortes contra piezas, estacas en cerrada y pesadas en mitades.
+
+## 7 nov 2026 · El lápiz y la hormiga (`plantillas/trazos-rutas/`)
+
+**Qué hice.** Unidades `razonamiento-matematico.trazos-y-perimetros` y `razonamiento-matematico.rutas-y-visualizacion-espacial`. El constructor se cortó a medias por el límite de uso; siguió desde el respaldo.
+
+- **`motor.js`** (UMD, `MotorTrazos`, sin DOM; cabecera hasta la línea 131): figuras como grafos (`motor.figuras`: sobre, ventanas, casita, parque, ventanal, chakana, reja), grados e impares, un solo trazo por vuelta atrás con conteo de trabas, cartero (repetir lo mínimo, por fuerza bruta de emparejamientos), perímetros escalonados por coordenadas (sin entrantes = rectángulo que encierra; un entrante suma 2e), caminos en cuadrícula por recurrencia con cruces cerrados y en el espacio (multinomial), la hormiga en la caja con los tres desarrollos y arcos sobre una recta.
+- **`casos.json`:** 21 casos (13 con «tambien»). **`motor.test.js`:** 43 pruebas (la regla de los impares contra la vuelta atrás en 400 figuras al azar, cartero contra un Dijkstra sobre estados, caminos por recurrencia, combinatorio y lista, cerrar un cruce quita hasta·desde, escaleras sin entrantes, la hormiga contra una barrida de las seis parejas de caras, un empate de desarrollos va a `coinciden`, errores que no coinciden).
+- **`papel.json`:** 10 problemas propios (figuras de un trazo, ventanas, cartero, escalera, chakana, arcos, calles con obras, la caja).
+- **Paso a paso** (8 pasos, 5 predicciones que bloquean):
+  1. ¿cuál sale de un solo trazo? la casita (menos líneas, sin cruces, «todas si se empieza bien»; hipótesis);
+  2. trazar tocando puntos;
+  3. parque de 8 × 6 con diagonales: 54 m (48, 60, 96; hipótesis);
+  4. perímetro de la escalera: 28 m (14, 24; 34 es el área, `GE4-area-por-perimetro`, parcial porque el dato del TIMSS es del sentido contrario);
+  5. escalera, chakana y entrante (se arrastra el fondo);
+  6. calles de 4 × 3 cuadras en Juliaca: 35 (12, 128; 19 son los de pocos giros, `AR18-enumeracion-sin-sistema`, documentado con cifra por confirmar);
+  7. llenar los cruces;
+  8. la caja de 8 × 4 × 2: 10 cm (2√21 por dentro, 14 por aristas, 2 + 4√5; hipótesis), y después los tres desarrollos.
+- **¿Qué pasa si…?** (5, con bloqueo): el ventanal (3 trazos), los lazos sobre 12 m (6π; 2π es GE5 parcial), la calle en obras 3 × 3 (8), el dado de 2 cm (2√5) y la araña en la reja 2 × 2 × 1 (30; 120 es AR17 parcial, 243 = 3⁵).
+
+**Pruebas.** `npm test`: 3172, pasan 3170; fallan solo los 2 del catálogo. `herramientas/pasada-celular.py` sin QUEDA. Playwright a 1366×768 y 390×844, claro y oscuro, con y sin movimiento reducido: sin errores ni desbordes, lienzo visible al responder; el revisor comprobó con toques simulados que tocar los cruces y arrastrar el entrante funcionan y que el dedo desplaza la página lejos del mango.
+
+**Subagentes.**
+
+- **Verificador independiente** (cabecera más la definición de las figuras, porque la cabecera no daba los tramos): un trazo por vuelta atrás propia, cartero por Dijkstra y emparejamientos, caminos por tres métodos, perímetros por coordenadas y celdas, la hormiga en fracciones exactas. Todo coincide salvo el cubo: los tres desarrollos empatan y el error del segundo desarrollo se descartaba sin pasar a `coinciden`; arreglado en el motor y el caso. Papel sin errores. El cambio 32 → 243 del exp. 5 lo comprobé yo (3⁵).
+- **Revisor de contenido** (nada grave). Se aplicó todo:
+  - AR17 del exp. 5 pasa a parcial: el dato es de elegir grupos, no de ordenar pasos repetidos;
+  - el distractor 2⁵ = 32 no lo pensaría nadie en una reja de tres direcciones: ahora 3⁵ = 243;
+  - la fracción 5!/(2!·2!·1!) se leía mal (raya corta): CSS de `.frac` arreglado (puede pasar en otras plantillas con el mismo CSS);
+  - ecuaciones partidas en los pasos 3 y 6, «llega 1 camino», la letra b con un solo significado (el ancho), rótulos y retroalimentaciones más precisas, la indicación del papel ya no resume la regla del rectángulo.
+
+**Colores** (claro / oscuro):
+
+| Grupo | Variable | Claro | Oscuro |
+| --- | --- | --- | --- |
+| Figuras | impares i | #a10fbf | #cf6bfa |
+| Figuras | trazo t | #1f5fbf | #7cb0ff |
+| Figuras | repetido R | #a05200 | #f0a04a |
+| Escalera | base b | #0f766e | #5ed9c8 |
+| Escalera | alto h | #c0364a | #f17384 |
+| Escalera | entrante e | #7d6a00 | #e3c84a |
+| Calles y reja | m | #466d14 | #a3d65e |
+| Calles y reja | n | #77032c | #fdb4ce |
+| Calles y reja | N | #3328c4 | #9f9bff |
+| Caja y reja | x | #086a96 | #25caf4 |
+| Caja y reja | y | #b3246b | #ff86bd |
+| Caja y reja | z | #8f5800 | #ffc04d |
+| Caja | ruta d | #255c1f | #5fe06a |
+| Arcos | G (grande) | #6a3fc0 | #b49cff |
+| Arcos | c (chicos) | #7a4a1e | #d9a877 |
+
+- ΔE00 mínimo entre los que salen juntos: 22,7 en claro y 26,2 en oscuro (el revisor lo confirmó). Los pares bajo 20 nunca comparten vista (listados en el CSS). En oscuro, la X de «obras» (`--warn`) queda a 17,4 del granate de n, que solo sale en el texto.
+- Contraste ≥ 4,54:1 en claro y 4,64:1 en oscuro, chips incluidos.
+
+**Pendiente.** Proyecciones de un sólido (tema de la unidad de rutas) no entraron. Revisar si el CSS de `.frac` con la raya corta está en otras plantillas.
+
+**Pedidos para la integración.**
+
+- Catálogo: `"trazos-rutas"` en `razonamiento-matematico.trazos-y-perimetros` y `razonamiento-matematico.rutas-y-visualizacion-espacial` (con `investigacion` en el informe de aritmética y razonamiento); `npm run catalogo`; `VERSION` de `app/sw.js`; rebalanceo del banco de RM si toca.
+- `docs/diseno.md`: la tabla de colores de arriba.
+- `docs/pendientes.md` (ra1): «Hecha `trazos-rutas` (un solo trazo con Euler, cartero, perímetros escalonados con entrante, caminos en cuadrícula con obras y en el espacio, y la hormiga en la caja; 21 casos verificados aparte)».
+- `CLAUDE.md`, historia: «Trazos y rutas (7 nov 2026, rutina de razonamiento matemático): `plantillas/trazos-rutas/` (el lápiz y la hormiga: figuras de un solo trazo con los vértices impares y vuelta atrás, recorrido mínimo repitiendo lo menos, escaleras que se corren y el entrante que suma, caminos por las calles con el cruce cerrado y la hormiga que abre la caja; 21 casos verificados aparte).»
+- Posible arreglo común: `.frac > span:first-child{align-self:stretch; text-align:center}` y `.frac > span{white-space:nowrap}` donde haya fracciones con denominador ancho.
