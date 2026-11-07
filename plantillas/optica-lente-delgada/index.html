@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es">
+<html lang="es" data-curso="fisica">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -135,10 +135,12 @@ input.r-o{ accent-color:var(--c-o) } input.r-f{ accent-color:var(--c-f) } input.
 button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible, canvas:focus-visible{ outline:3px solid var(--ink); outline-offset:2px }
 .hint{ font-size:.88rem; color:var(--muted) }
 </style>
+<link rel="stylesheet" href="../../nucleo/pegatina.css">
 </head>
 <body>
 
 <main class="wrap">
+  <div class="top">
   <header>
     <p class="eyebrow">Óptica · Lentes delgadas · Problemas tipo admisión</p>
     <h1>Banco Óptico</h1>
@@ -149,6 +151,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible, ca
     <a href="#sistema" id="tab2">Dos o tres lentes</a>
     <a href="#que-pasa-si" id="tab3">¿Qué pasa si…?</a>
   </nav>
+  </div>
 
   <!-- ===== MODO 1: una lente ===== -->
   <div id="m1" class="mode">

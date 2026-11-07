@@ -15,11 +15,11 @@
 //   3. Solo se bajan los archivos de plantilla que no estaban (plantillas o archivos nuevos).
 //   Al activarse se borran las cachés anteriores. Los archivos copiados se siguen renovando por stale-while-revalidate.
 // Antes cada VERSION nueva volvía a bajar todo (218 archivos, 8 MB sin comprimir); ahora, la cáscara y lo nuevo.
-const VERSION = 'v114';
+const VERSION = 'v115';
 const CACHE = `lab-${VERSION}`;
 const CASCARA = ['/app/', '/app/index.html', '/app/estilos.css', '/app/app.js', '/app/manifest.webmanifest',
   '/app/practica.js', '/app/prueba.js', '/app/lectura.js', '/app/ilustraciones.js', '/app/datos/catalogo.json', '/app/datos/pruebas.json',
-  '/nucleo/azar.js', '/nucleo/predicciones.js', '/nucleo/medicion.js', '/nucleo/pruebas.js', '/nucleo/lectura.js', '/nucleo/celular.js', '/nucleo/elementos.js', '/app/iconos/icono.svg', '/app/iconos/icono-192.png', '/app/iconos/icono-512.png'];
+  '/nucleo/azar.js', '/nucleo/predicciones.js', '/nucleo/medicion.js', '/nucleo/pruebas.js', '/nucleo/lectura.js', '/nucleo/celular.js', '/nucleo/elementos.js', '/nucleo/pegatina.css', '/app/iconos/icono.svg', '/app/iconos/icono-192.png', '/app/iconos/icono-512.png'];
 
 // Clave de la caché: la dirección sin «?…» (las respuestas se buscan con ignoreSearch).
 const clave = u => { const x = new URL(u, location.origin); return x.origin + x.pathname; };

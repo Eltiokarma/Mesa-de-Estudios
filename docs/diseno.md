@@ -30,7 +30,7 @@ Pedido de Gerson con referencias de Dribbble y Pinterest: la cáscara de la app 
 - **Navegación:** píldora con contorno y la sección activa en lavanda.
 - **Movimiento** (solo sin «reducir movimiento»): las tarjetas entran escalonadas, las barras se llenan y las viñetas flotan.
 - **Títulos** con la letra redondeada del sistema cuando existe (`ui-rounded`; en Android cae a la de siempre).
-- Dentro de las escenas no cambia nada: ahí mandan los colores de las variables.
+- **Escenas (aprobado por Gerson el 7 nov 2026):** cada escena carga `nucleo/pegatina.css` y marca su curso en `<html data-curso>` (`herramientas/pasada-pegatina.py`). La banda de arriba (título, subtítulo y pestañas, `.top`) va en el pastel del curso con su base; el lienzo, la guía de pasos y las tarjetas llevan contorno y una base neutra crema; las opciones y los botones se apoyan en una base y se hunden al tocarlos. Dentro del dibujo, las ecuaciones y las opciones siguen mandando los colores de las variables: el color del curso no entra ahí, para no confundirse con ninguna variable (el lavanda de física y la distancia focal, por ejemplo).
 
 ## Dos familias de color que no se mezclan
 
