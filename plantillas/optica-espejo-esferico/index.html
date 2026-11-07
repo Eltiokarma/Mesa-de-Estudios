@@ -1382,7 +1382,7 @@ function draw(){
     ctx.setLineDash([5, 4]); ctx.strokeStyle = c.muted; ctx.globalAlpha = .9; ctx.lineWidth = 1.3;
     for (const b of pl.bordes){ const [xs, ys] = salida(L, b.yM, b.pend); linea(ctx, L.X(0), L.Y(b.yM), L.X(xs), L.Y(ys)); }
     ctx.restore();
-    texto(L, c, -40, 11.3, 'campo del convexo', c.ray, 'left');
+    texto(L, c, -40, 10, 'campo del convexo', c.ray, 'left');
   }
 
   espejo(L, c); puntos(L, c, E.f, null);
