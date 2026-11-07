@@ -1,0 +1,16 @@
+{
+  "id": "geometria-analitica",
+  "titulo": "El plano con imán: distancia, pendiente y ecuación de la recta",
+  "formato": "escena",
+  "unidades": [
+    "geometria.geometria-analitica"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "escena": "index.html",
+  "motor": "motor.js",
+  "casos": "casos.json",
+  "pruebas": "motor.test.js",
+  "papel": "papel.json",
+  "fuera": "Cubre distancia, punto medio y punto que divide, pendiente, las tres formas de la recta, paralelas y perpendiculares, distancia de un punto a una recta y área por coordenadas. Quedan fuera la circunferencia, la parábola y la elipse de la unidad: la circunferencia solo aparece en un problema de papel (p10) y en el motor (circunferencia y circunferenciaGeneral), sin escena."
+}
