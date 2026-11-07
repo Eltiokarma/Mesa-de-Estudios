@@ -8,9 +8,89 @@ Cada ejecución construye una plantilla de escena de física, completa y revisad
 - **Celular:** en las plantillas nuevas, usar `nucleo/celular.js` (ejemplo en `plantillas/mruv/`) en vez de copiar a mano el lienzo compacto y sticky.
 
 - **Pastillas de «¿Qué pasa si…?» bloqueadas** (decisión de Gerson, 6 nov 2026, recibida de la conversación principal). Se puede ir a un experimento solo si todos los anteriores ya tienen respuesta. Los respondidos se revisitan libremente. Los bloqueados llevan `disabled`, `aria-disabled` y aria-label «Experimento N, bloqueado», igual que los puntos del paso a paso. También se cierran las otras vías de salto, como el hash o el teclado. La pestaña entre modos no se bloquea. En `dinamica/` lo arregla la conversación principal: no tocarla.
-- Dinámica ya está integrada en `claude/awesome-wozniak-5etl1n` (catálogo, diseño, pendientes y el pedido del informe). Tiro parabólico (6 nov), estática, choques, fluidos, MAS, ondas mecánicas, termodinámica y gravitación (7 nov) quedaron hechos (abajo). Con esto la lista de física está completa. **Lista nueva (huecos de escenas hechas):** dinámica, tiro parabólico, energía y circuitos (hechas, abajo), calorimetría y espejos (en curso), calorimetría, circuitos y espejos.
+- Dinámica ya está integrada en `claude/awesome-wozniak-5etl1n` (catálogo, diseño, pendientes y el pedido del informe). Tiro parabólico (6 nov), estática, choques, fluidos, MAS, ondas mecánicas, termodinámica y gravitación (7 nov) quedaron hechos (abajo). Con esto la lista de física está completa. **Lista nueva (huecos de escenas hechas):** dinámica, tiro parabólico, energía, circuitos y espejos (hechas, abajo); calorimetría y Banco Óptico 0.3.0 (en curso), calorimetría, circuitos y espejos.
 - Los avisos de «terminado» van a la conversación principal nueva: `session_01P39d2yUDZET7Wso3ubSiiV` (desde el 7 nov; la anterior era `session_01P39d2yLWTLWLv3TGZ6FkHB`). Ella integra estática.
 - Desde el 7 nov la rutina sigue el método de `docs/metodo/`: constructor, verificador independiente con `entradas.py`, revisor y correcciones al mismo constructor. Lecciones nuevas de ese brief: al menos 4 predicciones en el paso a paso, opciones con la misma forma, ningún distractor que coincida con la respuesta, nombres de experimentos sin la respuesta y dibujo fijo y compacto arriba en el celular mientras hay predicción pendiente.
+
+## 7 nov 2026 · Espejos esféricos 0.2.0: el doblez (`plantillas/optica-espejo-esferico/`)
+
+Punto 6 de la lista nueva.
+
+**Qué hay de nuevo.**
+
+- **Paso 7, «La hoja que se dobla».** Muestra una lente de la misma f cuya hoja de salida se dobla 180° sobre la línea del espejo, como la página de un libro, con la regla de i viajando en la hoja.
+  - No es metáfora: el rayo reflejado es el espejo del que atraviesa la lente.
+  - F′ cae sobre F, 2F′ sobre C, y la imagen conserva su distancia a la bisagra.
+  - Así se ve que «i > 0 = delante» es la misma regla de la lente, y la escena dice de frente que es un «truco de papel»: en el espejo la luz nunca pasa detrás.
+  - Mientras la hoja está de canto no se pinta la imagen, para no reforzar S1.
+  - En los cuadros intermedios una cota dice «30 cm, medidos en la hoja».
+  - Con movimiento reducido son 3 cuadros (s = 0, 0,2 y 1), con un botón.
+  - La pestaña de la hoja se arrastra (Celular.arrastre) y también hay deslizador y teclado.
+  - El paso a paso queda con 10 pasos.
+- **Experimento 5, «Doblo la hoja del convexo».** La imagen virtual pasa detrás, a 5 cm.
+- **Motor.** Funciones nuevas: PROYECCION, pendienteLente, plegar, anchoHoja, sDeCanto, sMasCercano y hojaDeSalida. La cabecera describe cada campo.
+- **Casos y pruebas.**
+  - casos.json se migró al formato fn/args/espera, sin cambiar valores, y ahora entradas.py lo lee.
+  - Hay 22 casos (D1 a D15 nuevos) y 62 pruebas, entre ellas 11 de propiedad.
+- **Papel.** Entra p10 (la imagen de la lente y la del espejo, 72 cm entre ellas). Quedan 10 problemas.
+- **Predicciones nuevas.**
+  - El signo de i en el paso 7: los tres distractores son hipótesis.
+  - Dónde queda la imagen del convexo al doblar: S1 parcial y dos hipótesis.
+- **Lo que se arregló de lo publicado.**
+  - 7 respaldos «documentado» pasaron a parcial.
+  - El 80 % de lentes ahora se atribuye a John, Molepo y Chirwa (2017), no a Goldberg y McDermott.
+  - «41,6 %» pasó a «cerca del 42 %».
+  - Hay retroalimentación por distractor.
+  - pinch-zoom.
+  - «Muevo el ojo» usa Celular.arrastre, y el dedo lejos desplaza la página.
+  - Celular.bucle en todas las animaciones.
+  - Pasos bloqueados «Paso N, bloqueado».
+  - Chips al 8 %.
+
+**Verificador independiente.** Recalculó los 22 casos (los 7 migrados también):
+- con 1/o + 1/i = 2/R en fracciones;
+- con trazado de dos rayos con reflexión exacta;
+- con el doblez como matriz de rotación más la proyección.
+
+Con s = 1, la imagen de la lente doblada cae donde la pone el espejo. Todo coincide. Pidió documentar en la cabecera las salidas de hojaDeSalida, y ya está.
+
+**Revisor de contenido.**
+- **Lo grave:** con movimiento reducido, el cuadro intermedio (s = 0,5) dibujaba la imagen pegada a la línea del espejo mientras decía «sigue a 30 cm», justo la idea S1. Además, la regla de i se salía del lienzo. Se arregló con tres cambios: la regla siempre dentro, la cota medida en la hoja y el cuadro en s = 0,2.
+- **Lo medio:**
+  - la B del paso 3 decía «a 30 cm» y delataba la respuesta;
+  - la D de «Quito la pantalla» era defendible y su retroalimentación era falsa;
+  - una fuente citaba una cifra de Redish que el informe pide no usar con alumnos;
+  - la lente abierta podía sembrar S6 («la luz atraviesa el espejo»), y ahora se presenta como truco de papel.
+- **Lo bajo:**
+  - el enunciado del paso 7 con la ecuación;
+  - opciones del paso 3 más parejas;
+  - la fuente del paso 7;
+  - rótulos de F′ y de la pestaña;
+  - la redacción y el orden de p10;
+  - el id de la opción B;
+  - el anillo de 2F′ con s ≥ 0,9.
+- **Lo que se confirmó bien:** la física del doblez y que el convenio de signos es uno solo en la escena, el motor, el papel y el Banco Óptico.
+
+**Colores** (para `docs/diseno.md`):
+
+| Variable | Claro | Oscuro |
+| --- | --- | --- |
+| o | #a05200 | #f0a04a |
+| f | #6b3dbd | #ab8cf2 |
+| i | #0f766e | #3dcdc3 |
+| h | #b02c41 | #f17384 |
+| R | #466d14 | #a3d65e |
+| rayos | #035c8c | #5cb8ff |
+| A (nuevo) | #3d2e00 | #ffdc14 |
+
+- A ya no comparte el rojo con h. Es el mismo ocre oscuro y amarillo del roce de energía, en otra escena.
+- Par mínimo: f–rayos, con ΔE00 22,0 en claro y 25,6 en oscuro.
+- AA mínimo: 4,63.
+
+**Pedidos para la integración.**
+1. `npm run catalogo` (0.2.0).
+2. Los colores en docs/diseno.md.
+3. En `docs/investigacion/optica-espejos-esfericos.md`, el «Hecho» quedó atrás: todavía dice «Falta la animación del doblez», «4 preguntas» y «9 problemas», y la tabla del paso 3 trae A y D como documentado (ahora son parcial).
 
 ## 7 nov 2026 · Circuitos 0.2.0: medidores que se arrastran (`plantillas/circuitos-cc/`)
 
