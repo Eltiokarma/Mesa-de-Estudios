@@ -1,0 +1,1226 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La lámpara y la placa: fotones y efecto fotoeléctrico</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de inducción.
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4). Del resto del bloque se
+   repiten el voltaje V de la pila magenta (el de circuitos; también V₀, que es el voltaje de la pila al revés con
+   el que la corriente llega a cero) y la corriente I granate (la de inducción). Nuevos: longitud de onda λ petróleo,
+   frecuencia f oliva, energía del fotón E naranja, función trabajo φ azul, energía cinética máxima Kmax verde y
+   potencia (intensidad) de la luz P violeta.
+   El nivel n del hidrógeno, la constante h, el número de fotones N, las cargas e, los tiempos y los ejes van en tinta
+   o gris. El color del haz y de los fotones del dibujo es el de la luz que se vería (calculado en motor.colorLuz,
+   gris si no es visible): no es un color de variable, y la leyenda lo dice.
+   Elegidos con CIEDE2000 (docs/metodo/paleta.py), con los grupos que comparten pantalla: el tubo (λ, E, φ, Kmax, V, I,
+   P), la gráfica (f, Kmax, φ, E, λ), el láser (P, E, λ), el hidrógeno (E, λ) y los rayos X (V, λ, E). ΔE00 mínimo
+   entre los que salen juntos: 21,1 en claro (f con Kmax, en la gráfica) y 20,6 en oscuro (E con I, en el tubo). Todos pasan AA (≥ 4,5) sobre el papel
+   y sobre su chip (.v, fondo al 8 %), en claro y en oscuro; el más justo es E claro #a55412, 4,58 sobre su chip. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-lam:#0d6b78; --c-f:#5c531f; --c-E:#a55412; --c-phi:#1f5fbf; --c-K:#2a7638; --c-V:#b3246b;
+  --c-I:#6e110c; --c-P:#7614b8;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-lam:#24e4f9; --c-f:#fdf2b4; --c-E:#ffa64d; --c-phi:#7cb0ff; --c-K:#7fd67f; --c-V:#ff86bd;
+  --c-I:#f95a24; --c-P:#aa74fb;
+  color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-lam:#24e4f9; --c-f:#fdf2b4; --c-E:#ffa64d; --c-phi:#7cb0ff; --c-K:#7fd67f; --c-V:#ff86bd;
+  --c-I:#f95a24; --c-P:#aa74fb;
+  color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+@media (max-width:899px){
+  .mode.pendiente .lecturas{gap:4px}
+  .mode.pendiente .lectura{padding:2px 8px}
+}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+.lienzo:focus-within{outline:3px solid var(--ink); outline-offset:2px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend span span{display:inline}
+.legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
+.legend i.sq{width:12px; height:12px; border-radius:50%}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px; white-space:nowrap}
+.v-lam{color:var(--c-lam); background:color-mix(in srgb, var(--c-lam) 8%, transparent)}
+.v-f{color:var(--c-f); background:color-mix(in srgb, var(--c-f) 8%, transparent)}
+.v-E{color:var(--c-E); background:color-mix(in srgb, var(--c-E) 8%, transparent)}
+.v-phi{color:var(--c-phi); background:color-mix(in srgb, var(--c-phi) 8%, transparent)}
+.v-K{color:var(--c-K); background:color-mix(in srgb, var(--c-K) 8%, transparent)}
+.v-V{color:var(--c-V); background:color-mix(in srgb, var(--c-V) 8%, transparent)}
+.v-I{color:var(--c-I); background:color-mix(in srgb, var(--c-I) 8%, transparent)}
+.v-P{color:var(--c-P); background:color-mix(in srgb, var(--c-P) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); overflow-x:auto}
+.eq{display:block; line-height:1.9; font-family:var(--mono); font-size:1.02rem; font-variant-numeric:tabular-nums}
+.eq .note{display:inline-block; font-family:var(--font); font-size:.84rem; color:var(--muted); margin-left:.5em; white-space:normal; line-height:1.4}
+.aviso{background:var(--acento); color:var(--acento-ink); border-radius:16px; padding:10px 14px; font-size:.93rem}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.seg button:disabled{opacity:.45; cursor:not-allowed}
+
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+.acciones{display:flex; flex-wrap:wrap; gap:8px}
+.acciones .btn{min-height:40px; padding:9px 16px}
+button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+/* Lecturas en vivo, cada una con el color de su variable */
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(128px, 1fr)); gap:8px}
+.lecturas:empty{display:none}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura.ancha{grid-column:1/-1}
+.lectura b{display:block; color:var(--k); font:800 .95rem var(--mono); font-variant-numeric:tabular-nums; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.lectura span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+
+/* Pantalla grande (laboratorio de cómputo, 1366 × 768): dibujo a la izquierda, fijo; guía a la derecha. */
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.35fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+
+/* Deslizadores del experimento (teclado y toque: input range nativo) */
+.controles{display:grid; gap:6px; padding:2px 6px}
+.controles:empty{display:none}
+.ctl{display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:2px 10px; font-size:.86rem; color:var(--muted)}
+.ctl output{font:800 .9rem var(--mono); color:var(--k); font-variant-numeric:tabular-nums}
+.ctl input{grid-column:1/-1; width:100%; margin:0; accent-color:var(--k); min-height:28px}
+.ctl .v{cursor:default; text-decoration:none}
+</style>
+
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Física · Física moderna · Problemas tipo admisión</p>
+      <h1>La lámpara y la placa</h1>
+      <p class="sub">¿Qué decide si una luz arranca electrones de un metal, cuántos salen y con cuánta energía? ¿Cómo se cuentan los fotones de un láser, la luz que emite un átomo de hidrógeno o los rayos X de un tubo? Predice frente al dibujo; después mueve la longitud de onda, la intensidad y el voltaje de la pila, y mira el amperímetro.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <!-- ===== MODO 1: paso a paso ===== -->
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo del paso">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Dibujo del paso"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="controles" id="ctl1"></div>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODO 2: ¿qué pasa si…? ===== -->
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Dibujo del experimento">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="controles" id="ctl2"></div>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/fisica-moderna">Problemas para lápiz y papel</a></p>
+</main>
+
+<script>
+// Si la escena se abrió desde la app, mostrar un botón para volver (en iPhone, la app instalada no tiene "atrás").
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'fisica-moderna', unidad: 'fisica.fisica-moderna', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+
+/* ================= Piezas compartidas =================
+   Toda la física (energía del fotón, efecto fotoeléctrico, la corriente del tubo, el movimiento de cada electrón
+   entre las placas, los fotones por segundo, los niveles del hidrógeno, los rayos X y hasta el color de la luz) sale
+   de MotorFisicaModerna (motor.js); aquí solo se pinta, se anima y se leen los deslizadores. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MF = MotorFisicaModerna;
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
+// Coma decimal y signo menos tipográfico.
+function fmt(n, d){
+  if (!Number.isFinite(n)) return '—';
+  const p = Math.pow(10, d === undefined ? 1 : d), r = Math.round(n*p)/p + 0;
+  const [e, f] = String(Math.abs(r)).split('.');
+  return (r < 0 ? '−' : '') + e + (f ? ',' + f : '');
+}
+// Notación científica de academia: 3,1 × 10¹⁵
+const SUP = { '-':'⁻', '0':'⁰', '1':'¹', '2':'²', '3':'³', '4':'⁴', '5':'⁵', '6':'⁶', '7':'⁷', '8':'⁸', '9':'⁹' };
+function sci(x, d){
+  if (x === 0) return '0';
+  let k = Math.floor(Math.log10(Math.abs(x))), m = x/Math.pow(10, k);
+  const p = Math.pow(10, d === undefined ? 1 : d);
+  if (Math.round(Math.abs(m)*p)/p >= 10){ m /= 10; k++; }
+  return `${fmt(m, d === undefined ? 1 : d)} × 10${String(k).split('').map(c => SUP[c]).join('')}`;
+}
+const V_ = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const l_ = t => V_('lam', t), f_ = t => V_('f', t), E_ = t => V_('E', t), p_ = t => V_('phi', t), K_ = t => V_('K', t),
+  V2_ = t => V_('V', t), I_ = t => V_('I', t), P_ = t => V_('P', t);
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+const mix = (a, b, f) => a + (b - a)*f;
+const uA = I => `${fmt(I*1e6, 2)} µA`;
+const mW = P => `${fmt(P*1000, P*1000 < 1 && P > 0 ? 2 : 1)} mW`;
+const voltios = V => `${V > 0 ? '+' : ''}${fmt(V, 1)} V`;
+const nm = l => `${fmt(l, l < 1 ? 2 : 0)} nm`;
+const NREF = MF.fotonesPorSegundo(1e-3, 620).N;   // fotones por segundo de 1 mW a 620 nm: el ritmo de referencia del dibujo
+const PHI0 = 2.5;                                 // función trabajo del metal de la escena (eV)
+
+function colores(){
+  const g = n => css(n);
+  return { ink:g('--ink'), muted:g('--muted'), grid:g('--grid'), paper:g('--paper'), card:g('--card'), line:g('--line'),
+    lam:g('--c-lam'), f:g('--c-f'), E:g('--c-E'), phi:g('--c-phi'), K:g('--c-K'), V:g('--c-V'), I:g('--c-I'), P:g('--c-P'),
+    font:g('--font') };
+}
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+// El color de la luz que se vería (del motor); gris si no es visible. No es un color de variable.
+function colorDeLuz(lambda, c, alfa){
+  const q = MF.colorLuz(lambda);
+  if (!q) return c.muted;
+  return alfa === undefined ? `rgb(${q.r},${q.g},${q.b})` : `rgba(${q.r},${q.g},${q.b},${alfa})`;
+}
+function linea(ctx, p, q){ ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke(); }
+// Resaltar en el dibujo la variable que se toca en el texto (regla 4).
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v[tabindex]'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v[tabindex]')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v[tabindex]'); resaltar(s ? s.dataset.var : null); });
+
+/* ================= La escena =================
+   Vistas: 'tubo' (la lámpara, el tubo de vacío con el cátodo de metal y el colector, la pila y el amperímetro; con
+   ver.iv, la curva corriente–voltaje debajo), 'grafica' (Kmax contra f), 'laser' (un puntero láser y sus fotones),
+   'bohr' (niveles de energía del hidrógeno y el fotón de un salto; con ver.espectro, la franja visible con las
+   líneas de Balmer) y 'rayos' (tubo de rayos X y su espectro continuo). */
+function crearEscena(cv, idDesc, idLect, idLey, idCtl){
+  const E = { vista:'tubo', hl:null, tok:0, compacto:false, lect:() => [], desc:() => '', ver:{}, ctl:{} };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  const rnd = MF.azar(7);
+  let W = 0, H = 0;
+  function altoVista(w){
+    const chico = w < 560, v = E.vista;
+    if (v === 'tubo') return (chico ? 250 : 280) + (E.ver.iv ? (chico ? 130 : 140) : 0);
+    if (v === 'grafica') return chico ? 270 : 320;
+    if (v === 'laser') return chico ? 200 : 250;
+    if (v === 'bohr') return (chico ? 260 : 310) + (E.ver.espectro ? 64 : 0);
+    if (v === 'rayos') return chico ? 290 : 340;
+    return 260;
+  }
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    const h = Math.round(Celular.alto(altoVista(w), E.compacto, { tope: E.tope || 250 }));
+    const dpr = Celular.dpr();
+    if (w === W && h === H) { E.dibujar(); return; }
+    W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  alRedibujarTema(() => E.dibujar());
+
+  // ----- partículas (fotones y electrones), con un bucle que se duerme (nucleo/celular.js) -----
+  let fot = [], ele = [], acum = 0, rx = [];
+  function reiniciar(){ fot = []; ele = []; acum = 0; rx = []; }
+  const bucle = Celular.bucle(cv, dt => {
+    if (!W) return false;
+    dt = Math.min(dt, 0.05);
+    const mueve = !RM && E.particulas && (E.vista === 'tubo' || E.vista === 'laser' || E.vista === 'rayos');
+    if (mueve) avanzar(dt);
+    E.dibujar();
+    return mueve;
+  });
+  E.despertar = () => bucle.despertar();
+
+  E.config = o => {
+    E.tok++;
+    Object.assign(E, { vista:'tubo', lect:() => [], desc:() => '', tope:250, particulas:true, leyendaExtra:null }, o);
+    E.t = Object.assign({ lambda:620, phi:PHI0, P:1e-3, V:0, metal:'metal' }, o.t);
+    E.ver = Object.assign({}, o.ver);
+    E.ctl = Object.assign({}, o.ctl);
+    reiniciar();
+    W = 0; resize(); E.controles(); E.leyenda(); E.avisar(); E.despertar();
+  };
+  E.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === !!E.compacto) return; E.compacto = on; W = 0; resize(); };
+  E.redimensionar = () => { W = 0; resize(); };
+  E.cambio = () => { E.lecturas(); E.dibujar(); E.despertar(); };
+  E.tween = (dur, paso, fin) => {
+    const tok = E.tok;
+    if (RM || !dur){ paso(1); if (fin) setTimeout(() => { if (E.tok === tok) fin(); }, 0); return; }
+    const t0 = performance.now();
+    const tick = now => {
+      if (E.tok !== tok) return;
+      const f = Math.min(1, (now - t0)/dur); paso(f);
+      if (f < 1) requestAnimationFrame(tick); else if (fin) fin();
+    };
+    requestAnimationFrame(tick);
+  };
+  // Lleva una o varias magnitudes del tubo de su valor actual a otro, redibujando y leyendo en vivo.
+  E.llevar = (hacia, dur, fin) => {
+    const de = {}; for (const k in hacia) de[k] = E.t[k];
+    E.tween(dur, f => { const s = suave(f); for (const k in hacia) E.t[k] = mix(de[k], hacia[k], s); E.sincronizar(); E.cambio(); }, () => { E.avisar(); if (fin) fin(); });
+  };
+  E.progreso = (k, dur, fin) => { E.ver[k] = 0; E.tween(dur, f => { E.ver[k] = suave(f); E.dibujar(); }, () => { E.ver[k] = 1; E.dibujar(); if (fin) fin(); }); };
+
+  function tuboAhora(){ return MF.fototubo(E.t); }
+  function ritmoFotones(){ return clamp(14*MF.fotonesPorSegundo(Math.max(E.t.P, 1e-12), E.t.lambda).N/NREF, 0, 60); }
+  function avanzar(dt){
+    if (E.vista === 'tubo'){
+      acum += ritmoFotones()*dt;
+      while (acum >= 1 && fot.length < 70){ acum -= 1; fot.push({ s:0, j:rnd(), l:E.t.lambda }); }
+      if (acum >= 1) acum = 0;
+      for (const p of fot) p.s += dt/0.55;
+      // cada fotón llega con la λ que tenía al salir de la lámpara
+      for (const p of fot.filter(p => p.s >= 1)){
+        const Ef = MF.foton(p.l).E;
+        if (Ef > E.t.phi && rnd() < 0.5 && ele.length < 120){ const K = MF.emitir(Ef, E.t.phi, rnd()); ele.push({ x:0, v:Math.sqrt(K), y:rnd() }); }
+      }
+      fot = fot.filter(p => p.s < 1);
+      for (const e of ele){ const s = MF.avanzarElectron(e, E.t.V, dt/1.0); e.x = s.x; e.v = s.v; e.fin = s.llego || s.volvio; }
+      ele = ele.filter(e => !e.fin);
+    } else if (E.vista === 'laser'){
+      const N = MF.fotonesPorSegundo(1e-3, 620).N;
+      acum += N/1e14*dt;
+      while (acum >= 1){ acum -= 1; fot.push({ s:0, j:rnd() }); }
+      for (const p of fot) p.s += dt/1.4;
+      fot = fot.filter(p => p.s < 1);
+    } else if (E.vista === 'rayos'){
+      acum += 9*dt;
+      while (acum >= 1){ acum -= 1; ele.push({ s:0, y:rnd() }); }
+      for (const e of ele) e.s += dt/0.7;
+      for (const e of ele.filter(e => e.s >= 1)) if (rnd() < 0.5) rx.push({ s:0, a:rnd() });
+      ele = ele.filter(e => e.s < 1);
+      for (const q of rx) q.s += dt/0.6;
+      rx = rx.filter(q => q.s < 1);
+    }
+  }
+  // Con movimiento reducido: una foto fija de las partículas, calculada con el mismo modelo.
+  function fotoFija(){
+    const pts = { fot:[], ele:[] };
+    if (!E.particulas) return pts;
+    if (E.vista === 'tubo'){
+      const r = tuboAhora(), n = Math.round(ritmoFotones()/3);
+      for (let k = 0; k < n; k++) pts.fot.push({ s:(k + .5)/n, j:(k*0.37) % 1 });
+      if (r.emite && E.t.P > 0){
+        const m = Math.max(2, Math.round(ritmoFotones()/4));
+        for (let k = 0; k < m; k++){
+          const K = MF.emitir(r.E, E.t.phi, (k + .5)/m), e = MF.electron(K, E.t.V, 0);
+          const T = e.tLlega !== null ? e.tLlega : e.tVuelve !== null ? e.tVuelve : 1;
+          pts.ele.push({ x:MF.electron(K, E.t.V, T*((k*0.61) % 1)).x, y:(k*0.43) % 1 });
+        }
+      }
+    }
+    return pts;
+  }
+
+  // ----- dibujo -----
+  const resaltado = k => E.hl === k;
+  // Texto con fondo del color del papel, para que se lea sobre las líneas; con la variable resaltada, un contorno.
+  function rotulo(x, y, t, color, align, tam, k){
+    const c = E.c, T = tam || 13;
+    ctx.textBaseline = 'middle'; ctx.font = `800 ${T}px ${c.font}`;
+    const w = ctx.measureText(t).width, x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+    ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .9; ctx.fillRect(x0 - 3, y - T*.7, w + 6, T*1.4); ctx.restore();
+    if (k && resaltado(k)){ ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.strokeRect(x0 - 4, y - T*.75, w + 8, T*1.5); ctx.restore(); }
+    ctx.fillStyle = color; ctx.textAlign = 'left'; ctx.fillText(t, x0, y);
+    return w;
+  }
+  function flecha(P, Q, color, ancho, o){
+    o = o || {};
+    const L = Math.hypot(Q.x - P.x, Q.y - P.y); if (L < 2) return;
+    const u = { x:(Q.x - P.x)/L, y:(Q.y - P.y)/L }, n = { x:-u.y, y:u.x };
+    const cab = Math.min(L*.5, 6 + ancho*1.5), base = { x:Q.x - u.x*cab, y:Q.y - u.y*cab };
+    ctx.save(); ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = ancho; ctx.lineCap = 'round'; ctx.globalAlpha = o.alfa === undefined ? 1 : o.alfa;
+    if (o.trazos) ctx.setLineDash([5, 4]);
+    linea(ctx, P, base); ctx.setLineDash([]);
+    ctx.beginPath(); ctx.moveTo(Q.x, Q.y); ctx.lineTo(base.x + n.x*cab*.5, base.y + n.y*cab*.5); ctx.lineTo(base.x - n.x*cab*.5, base.y - n.y*cab*.5); ctx.closePath(); ctx.fill();
+    ctx.restore();
+  }
+  // Un fotón: un pedacito de onda a lo largo de la dirección u, centrado en P.
+  function ondita(P, u, largo, amp, color, ancho, ondas){
+    const n = { x:-u.y, y:u.x }, m = 18, k = ondas || 2;
+    ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = ancho || 2; ctx.lineCap = 'round'; ctx.beginPath();
+    for (let j = 0; j <= m; j++){
+      const s = j/m - .5, w = Math.sin(j/m*k*2*Math.PI)*amp*Math.sin(j/m*Math.PI);
+      const X = P.x + u.x*s*largo + n.x*w, Y = P.y + u.y*s*largo + n.y*w;
+      if (j) ctx.lineTo(X, Y); else ctx.moveTo(X, Y);
+    }
+    ctx.stroke(); ctx.restore();
+  }
+  function marco(x, y, w, h, r, fondo, borde, ancho){
+    ctx.save(); ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h);
+    if (fondo){ ctx.fillStyle = fondo; ctx.fill(); }
+    if (borde){ ctx.strokeStyle = borde; ctx.lineWidth = ancho || 1.5; ctx.stroke(); }
+    ctx.restore();
+  }
+  function electronPunto(P, c, r){ ctx.save(); ctx.fillStyle = c.ink; ctx.beginPath(); ctx.arc(P.x, P.y, r || 3, 0, 7); ctx.fill(); ctx.restore(); }
+
+  E.dibujar = () => {
+    if (!W) return;
+    const c = E.c = colores();
+    ctx.clearRect(0, 0, W, H); ctx.fillStyle = c.paper; ctx.fillRect(0, 0, W, H);
+    ({ tubo:dibujarTubo, grafica:dibujarGrafica, laser:dibujarLaser, bohr:dibujarBohr, rayos:dibujarRayos })[E.vista](c);
+  };
+
+  // ----- el fototubo -----
+  // E.t = { lambda, phi, P, V, metal }; ver = { I: muestra la lectura del amperímetro (si no, «?»), iv: { curvas:[o],
+  // marcaV0, hasta } }
+  function geomTubo(){
+    const g = E.ver.iv ? (W < 560 ? 130 : 140) : 0, Hs = H - g;
+    return { Hs, g, lamp:{ x:Math.max(22, W*.08), y:Hs*.12 }, x0:W*.2, x1:W*.96, y0:Hs*.25, y1:Hs*.68,
+      xc:W*.31, xa:W*.86, p0:Hs*.31, p1:Hs*.62, yw:Hs*.88 };
+  }
+  function dibujarTubo(c){
+    const G = geomTubo(), t = E.t, r = tuboAhora(), luz = colorDeLuz(t.lambda, c), chico = W < 560;
+    const spot = { x:G.xc - 3, y:(G.p0 + G.p1)/2 };
+    // el haz (del color de la luz; gris si no se ve)
+    if (t.P > 0){
+      const u = { x:spot.x - G.lamp.x, y:spot.y - G.lamp.y }, L = Math.hypot(u.x, u.y), n = { x:-u.y/L, y:u.x/L };
+      const w = 4 + 6*clamp(t.P/2e-3, 0, 1);
+      ctx.save(); ctx.fillStyle = colorDeLuz(t.lambda, c, .22); if (!MF.colorLuz(t.lambda)){ ctx.fillStyle = c.muted; ctx.globalAlpha = .16; }
+      ctx.beginPath(); ctx.moveTo(G.lamp.x + n.x*3, G.lamp.y + n.y*3); ctx.lineTo(spot.x + n.x*w, spot.y + n.y*w); ctx.lineTo(spot.x - n.x*w, spot.y - n.y*w); ctx.lineTo(G.lamp.x - n.x*3, G.lamp.y - n.y*3); ctx.closePath(); ctx.fill(); ctx.restore();
+      const lista = RM ? fotoFija().fot : (E.particulas ? fot : []);
+      const ud = { x:u.x/L, y:u.y/L };
+      for (const p of lista){ const s = .08 + .9*p.s, P = { x:G.lamp.x + u.x*s + n.x*(p.j - .5)*w*1.2, y:G.lamp.y + u.y*s + n.y*(p.j - .5)*w*1.2 }; ondita(P, ud, 14, 3, p.l ? colorDeLuz(p.l, c) : luz, 2); }
+    }
+    // la lámpara
+    ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.arc(G.lamp.x, G.lamp.y, 10, 0, 7); ctx.fill(); ctx.stroke();
+    if (t.P > 0){ ctx.fillStyle = luz; ctx.globalAlpha = .35 + .5*clamp(t.P/2e-3, 0, 1); ctx.beginPath(); ctx.arc(G.lamp.x, G.lamp.y, 6.5, 0, 7); ctx.fill(); }
+    ctx.restore();
+    const xl = G.lamp.x + 24;
+    rotulo(xl, G.lamp.y - 8, `P = ${mW(t.P)}`, c.P, 'left', 12, 'P');
+    rotulo(xl, G.lamp.y + 9, `λ = ${nm(t.lambda)}${MF.region(t.lambda).visible ? '' : (t.lambda < 380 ? ' · ultravioleta' : ' · infrarrojo')}`, c.lam, 'left', 12, 'lam');
+    // el tubo de vidrio
+    marco(G.x0, G.y0, G.x1 - G.x0, G.y1 - G.y0, 16, null, c.muted, 1.4);
+    rotulo(G.x1 - 8, G.y0 + 10, 'vacío', c.muted, 'right', 11);
+    // cátodo (metal) y colector
+    ctx.save(); ctx.fillStyle = c.ink; ctx.fillRect(G.xc - 3, G.p0, 6, G.p1 - G.p0); ctx.fillRect(G.xa - 3, G.p0, 6, G.p1 - G.p0); ctx.restore();
+    if (resaltado('phi')){ ctx.save(); ctx.strokeStyle = c.phi; ctx.lineWidth = 2.5; ctx.strokeRect(G.xc - 6, G.p0 - 3, 12, G.p1 - G.p0 + 6); ctx.restore(); }
+    // electrones
+    const lista = RM ? fotoFija().ele : (E.particulas ? ele : []);
+    for (const e of lista){ const x = mix(G.xc + 6, G.xa - 6, e.x), y = mix(G.p0 + 6, G.p1 - 6, e.y); electronPunto({ x, y }, c, chico ? 2.6 : 3); }
+    // circuito: del cátodo baja al cable de abajo, pasa por la pila y el amperímetro y sube al colector
+    const xp = W*.40, xA = W*.70, yw = G.yw;
+    ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.6;
+    ctx.beginPath(); ctx.moveTo(G.xc, G.p1); ctx.lineTo(G.xc, yw); ctx.lineTo(xp - 6, yw); ctx.moveTo(xp + 6, yw); ctx.lineTo(xA - 11, yw); ctx.moveTo(xA + 11, yw); ctx.lineTo(G.xa, yw); ctx.lineTo(G.xa, G.p1); ctx.stroke(); ctx.restore();
+    // pila: la placa larga es el polo +; con V > 0 el + va hacia el colector (a la derecha)
+    const mas = t.V >= 0 ? 1 : -1, anchoV = resaltado('V') ? 3.4 : 2;
+    ctx.save(); ctx.strokeStyle = c.V; ctx.lineWidth = anchoV;
+    linea(ctx, { x:xp + 5*mas, y:yw - 11 }, { x:xp + 5*mas, y:yw + 11 }); ctx.lineWidth = anchoV + 2.4; linea(ctx, { x:xp - 5*mas, y:yw - 6 }, { x:xp - 5*mas, y:yw + 6 }); ctx.restore();
+    ctx.save(); ctx.fillStyle = c.V; ctx.font = `800 10px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('+', xp + 5*mas + 6*mas, yw - 12); ctx.restore();
+    rotulo(xp, yw + 15, `V = ${voltios(t.V)}`, c.V, 'center', 12, 'V');
+    // amperímetro
+    ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.arc(xA, yw, 11, 0, 7); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = c.ink; ctx.font = `800 11px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('A', xA, yw + 1); ctx.restore();
+    rotulo(xA, yw + 15, `I = ${E.ver.I ? uA(r.I) : '?'}`, c.I, 'center', 12, 'I');
+    // rótulos de las placas
+    rotulo(G.xc + 7, G.y1 + 12, `${t.metal}: φ = ${fmt(t.phi, 1)} eV`, c.phi, 'left', 12, 'phi');
+    rotulo(G.xa - 6, G.y1 + 12, 'colector', c.muted, 'right', 11);
+    if (E.ver.iv) panelIV(c, { x:8, y:G.Hs + 2, w:W - 16, h:G.g - 8 });
+  }
+  // Curva corriente–voltaje: las curvas de E.ver.iv.curvas (a trazos, de antes) y la del tubo actual.
+  function panelIV(c, R){
+    const iv = E.ver.iv, Vmin = -3, Vmax = 6, r = tuboAhora();
+    const curvas = (iv.curvas || []).concat([Object.assign({}, E.t, { vivo:true })]);
+    const Imax = Math.max(1e-6, ...curvas.map(o => MF.fototubo(Object.assign({}, o, { V:1 })).Isat))*1.25;
+    marco(R.x, R.y, R.w, R.h, 10, null, c.line, 1);
+    const X = V => R.x + 26 + (R.w - 40)*(V - Vmin)/(Vmax - Vmin), Y = I => R.y + R.h - 28 - (R.h - 46)*I/Imax;
+    ctx.save(); ctx.strokeStyle = c.grid; ctx.lineWidth = 1;
+    for (let V = Vmin; V <= Vmax; V++) linea(ctx, { x:X(V), y:R.y + 14 }, { x:X(V), y:Y(0) });
+    ctx.strokeStyle = c.muted; linea(ctx, { x:X(Vmin), y:Y(0) }, { x:X(Vmax), y:Y(0) }); linea(ctx, { x:X(0), y:R.y + 12 }, { x:X(0), y:Y(0) }); ctx.restore();
+    ctx.save(); ctx.fillStyle = c.muted; ctx.font = `700 10px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    for (const V of [-3, 0, 3]) ctx.fillText(fmt(V, 0), X(V), Y(0) + 3);
+    ctx.textAlign = 'right'; ctx.fillText('V (V)', R.x + R.w - 6, Y(0) + 3); ctx.restore();
+    rotulo(R.x + 8, R.y + 10, 'I contra V', c.I, 'left', 11, 'I');
+    const hasta = iv.hasta === undefined ? 1 : iv.hasta;
+    for (const o of curvas){
+      const pts = MF.curvaIV(o, Vmin, Vmax, 90), lim = o.vivo ? Vmin + (Vmax - Vmin)*hasta : Vmax;
+      ctx.save(); ctx.strokeStyle = c.I; ctx.lineWidth = resaltado('I') ? 3.6 : 2.4; ctx.globalAlpha = o.vivo ? 1 : .6; if (!o.vivo) ctx.setLineDash([5, 4]);
+      ctx.beginPath(); let prim = true; for (const p of pts){ if (p.V > lim + 1e-9) break; const P = { x:X(p.V), y:Y(p.I) }; if (prim){ ctx.moveTo(P.x, P.y); prim = false; } else ctx.lineTo(P.x, P.y); } ctx.stroke(); ctx.restore();
+    }
+    if (iv.marcaV0 && r.emite){
+      ctx.save(); ctx.strokeStyle = c.V; ctx.setLineDash([3, 3]); ctx.lineWidth = 1.4; linea(ctx, { x:X(-r.V0), y:R.y + 14 }, { x:X(-r.V0), y:Y(0) }); ctx.restore();
+      { ctx.font = `800 11px ${c.font}`; const tx = `−V₀ = −${fmt(r.V0, 2)} V`, w = ctx.measureText(tx).width, xx = clamp(X(-r.V0), R.x + 4 + w/2, R.x + R.w - 4 - w/2); rotulo(xx, Y(0) + 17, tx, c.V, 'center', 11, 'V'); }
+    }
+    if (iv.punto !== false){ ctx.save(); ctx.fillStyle = c.I; ctx.beginPath(); ctx.arc(X(clamp(E.t.V, Vmin, Vmax)), Y(r.I), 4.5, 0, 7); ctx.fill(); ctx.restore(); }
+    ctx.save(); ctx.fillStyle = c.muted; ctx.font = `700 10px ${c.font}`; ctx.textAlign = 'right'; ctx.textBaseline = 'middle'; ctx.fillText(fmt(Imax/1.25*1e6, 1) + ' µA', X(0) - 4, Y(Imax/1.25)); ctx.restore();
+  }
+
+  // ----- la gráfica Kmax contra f -----
+  // ver = { puntos: 0..1 (cuántos de los puntos medidos se ven), recta: 0..1, ext: 0..1 (la prolongación hasta −φ) }
+  const LAMBDAS = [620, 550, 450, 400, 310, 248, 200];
+  function dibujarGrafica(c){
+    const v = E.ver, phi = E.t.phi, fe = MF.fotoelectrico(400, phi), fMax = 1.6e15;
+    const Kmin = mix(0, -3, v.ext || 0), Kmax = 4.5;
+    const R = { x:44, y:16, w:W - 60, h:H - 52 };
+    const X = f => R.x + R.w*f/fMax, Y = K => R.y + R.h*(Kmax - K)/(Kmax - Kmin);
+    ctx.save(); ctx.strokeStyle = c.grid; ctx.lineWidth = 1;
+    for (let f = 2e14; f <= fMax + 1; f += 2e14) linea(ctx, { x:X(f), y:R.y }, { x:X(f), y:R.y + R.h });
+    for (let K = Math.ceil(Kmin); K <= Kmax; K++) linea(ctx, { x:R.x, y:Y(K) }, { x:R.x + R.w, y:Y(K) });
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; linea(ctx, { x:R.x, y:Y(0) }, { x:R.x + R.w, y:Y(0) }); linea(ctx, { x:R.x, y:R.y }, { x:R.x, y:R.y + R.h }); ctx.restore();
+    ctx.save(); ctx.fillStyle = c.muted; ctx.font = `700 10px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    for (let f = 0; f <= fMax + 1; f += 4e14) ctx.fillText(fmt(f/1e14, 0), X(f), R.y + R.h + 4);
+    ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    for (let K = Math.ceil(Kmin); K <= Kmax; K++) ctx.fillText(fmt(K, 0), R.x - 5, Y(K));
+    ctx.restore();
+    rotulo(R.x + R.w, R.y + R.h + 22, 'f (× 10¹⁴ Hz)', c.f, 'right', 11, 'f');
+    rotulo(R.x + 4, R.y + 8, 'Kmax (eV)', c.K, 'left', 11, 'K');
+    if (!v.puntos && !v.recta){ rotulo(R.x + R.w*.55, R.y + R.h*.45, '?', c.ink, 'center', 26); return; }
+    // prolongación hasta f = 0 (a trazos) y la recta desde f₀
+    const h = MF.constantes().hEv;
+    if (v.ext){
+      ctx.save(); ctx.strokeStyle = c.muted; ctx.globalAlpha = v.ext; ctx.setLineDash([4, 4]); ctx.lineWidth = 1.5; linea(ctx, { x:X(0), y:Y(-phi) }, { x:X(fe.f0), y:Y(0) }); ctx.restore();
+      if (v.ext > .6){ ctx.save(); ctx.fillStyle = c.phi; ctx.beginPath(); ctx.arc(X(0), Y(-phi), 4, 0, 7); ctx.fill(); ctx.restore(); rotulo(X(0) + 8, Y(-phi), `−φ = −${fmt(phi, 1)} eV`, c.phi, 'left', 11, 'phi'); }
+    }
+    if (v.recta){
+      const f1 = mix(fe.f0, fMax, v.recta);
+      ctx.save(); ctx.strokeStyle = c.K; ctx.lineWidth = resaltado('K') ? 4.4 : 3; ctx.lineCap = 'round'; linea(ctx, { x:X(fe.f0), y:Y(0) }, { x:X(f1), y:Y(h*f1 - phi) }); ctx.restore();
+    }
+    if (v.recta > .9){
+      ctx.save(); ctx.fillStyle = c.f; ctx.beginPath(); ctx.arc(X(fe.f0), Y(0), 4.5, 0, 7); ctx.fill(); ctx.restore();
+      rotulo(X(fe.f0), Y(0) + 13, `f₀ ≈ ${sci(fe.f0, 1)} Hz`, c.f, 'center', 11, 'f');
+      // triángulo de la pendiente
+      const fa = 0.85e15, fb = 1.15e15, Ka = h*fa - phi, Kb = h*fb - phi;
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.2; ctx.setLineDash([3, 3]); linea(ctx, { x:X(fa), y:Y(Ka) }, { x:X(fb), y:Y(Ka) }); linea(ctx, { x:X(fb), y:Y(Ka) }, { x:X(fb), y:Y(Kb) }); ctx.restore();
+      rotulo(X(fb) + 5, Y((Ka + Kb)/2), 'pendiente: h', c.ink, 'left', 11);
+    }
+    const n = Math.round((v.puntos || 0)*LAMBDAS.length);
+    LAMBDAS.slice(0, n).forEach(l => {
+      const r = MF.fotoelectrico(l, phi), P = { x:X(r.f), y:Y(r.Kmax) };
+      ctx.save(); ctx.lineWidth = 2; ctx.strokeStyle = c.K; ctx.fillStyle = r.emite ? c.K : c.paper; ctx.beginPath(); ctx.arc(P.x, P.y, 4.5, 0, 7); ctx.fill(); ctx.stroke(); ctx.restore();
+    });
+    if (n >= 2) rotulo(X(5.2e14), Y(0) - 14, 'sin electrones', c.muted, 'center', 10);
+  }
+
+  // ----- el láser -----
+  // ver = { N: muestra el número de fotones por segundo }
+  function dibujarLaser(c){
+    const y = H*.5, x0 = W*.05, x1 = W*.25, xd = W*.93, luz = colorDeLuz(620, c);
+    marco(x0, y - 14, x1 - x0, 28, 6, c.card, c.ink, 1.6);
+    ctx.save(); ctx.fillStyle = c.ink; ctx.fillRect(x1 - 4, y - 5, 6, 10); ctx.restore();
+    ctx.save(); ctx.strokeStyle = colorDeLuz(620, c, .35); ctx.lineWidth = 5; linea(ctx, { x:x1 + 2, y }, { x:xd, y }); ctx.restore();
+    marco(xd, y - 22, 10, 44, 3, c.card, c.ink, 1.6);
+    const lista = RM ? Array.from({ length:14 }, (_, k) => ({ s:(k + .5)/14, j:(k*.37) % 1 })) : fot;
+    for (const p of lista){ const x = mix(x1 + 6, xd - 4, p.s); ctx.save(); ctx.fillStyle = luz; ctx.strokeStyle = c.ink; ctx.lineWidth = .8; ctx.beginPath(); ctx.arc(x, y + (p.j - .5)*4, 3, 0, 7); ctx.fill(); ctx.stroke(); ctx.restore(); }
+    rotulo(x0, y - 28, 'P = 1 mW', c.P, 'left', 12, 'P');
+    rotulo((x1 + xd)/2, y - 28, 'λ = 620 nm', c.lam, 'center', 12, 'lam');
+    rotulo((x1 + xd)/2, y + 28, E.ver.N ? `N ≈ ${sci(MF.fotonesPorSegundo(1e-3, 620).N, 1)} fotones por segundo` : 'N = ? fotones por segundo', c.ink, 'center', W < 420 ? 11 : 12);
+    if (E.ver.N) rotulo((x1 + xd)/2, y + 48, 'cada punto del dibujo: unos 10¹⁴ fotones', c.muted, 'center', 10);
+    rotulo(xd + 8, y - 32, 'pantalla', c.muted, 'right', 10);
+  }
+
+  // ----- niveles del hidrógeno -----
+  // ver = { escala: 0 (sin escala) a 1 (a escala), valores: bool, foton: 0..1 (el fotón se ve con su color), espectro }
+  function dibujarBohr(c){
+    const v = E.ver, Hs = H - (v.espectro ? 64 : 0), f = v.escala || 0, chico = W < 560;
+    const yTop = Math.max(26, Hs*.1), yN1 = Hs*.9, yN2 = Hs*.68;
+    const parejo = { 1:yN1, 2:Hs*.7, 3:Hs*.5, 4:Hs*.3, 0:yTop };
+    const real = n => n === 1 ? yN1 : n === 0 ? yTop : yTop + (yN2 - yTop)*MF.bohr(n)/MF.bohr(2);
+    const y = n => mix(parejo[n], real(n), f);
+    const xa = chico ? 52 : 70, xb = W*.62;
+    for (const n of [1, 2, 3, 4, 0]){
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = n === 0 ? 1.2 : 2.2; if (n === 0) ctx.setLineDash([4, 4]); linea(ctx, { x:xa, y:y(n) }, { x:xb, y:y(n) }); ctx.restore();
+      ctx.save(); ctx.fillStyle = c.ink; ctx.font = `800 12px ${c.font}`; ctx.textAlign = 'right'; ctx.textBaseline = 'middle'; ctx.fillText(n === 0 ? 'n = ∞' : `n = ${n}`, xa - 6, y(n)); ctx.restore();
+      if (v.valores){ ctx.save(); ctx.fillStyle = c.muted; ctx.font = `700 11px ${c.font}`; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText(n === 0 ? '0 eV' : `${fmt(MF.bohr(n), 2)} eV`, xb + 6, y(n)); ctx.restore(); }
+    }
+    // corte del eje entre n = 1 y n = 2 cuando está a escala
+    if (f > .5){ const ym = (y(1) + y(2))/2; ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; for (const dx of [-3, 3]) linea(ctx, { x:xa + 10 + dx - 4, y:ym + 4 }, { x:xa + 10 + dx + 4, y:ym - 4 }); ctx.restore(); }
+    rotulo(W - 8, 9, f > .5 ? 'a escala (eje cortado entre 1 y 2)' : 'niveles sin escala', c.muted, 'right', 10);
+    // el salto de 3 a 2 y el fotón
+    const xs = xa + (xb - xa)*.35;
+    flecha({ x:xs, y:y(3) + 2 }, { x:xs, y:y(2) - 2 }, c.ink, 2.4);
+    const ym = (y(3) + y(2))/2, T = MF.transicion(3, 2), luz = v.foton ? colorDeLuz(T.lambda, c) : c.muted;
+    const largo = Math.min(W*.24, 90);
+    ctx.save(); ctx.globalAlpha = .4 + .6*(v.foton || 0); ondita({ x:xs + 18 + largo/2, y:ym }, { x:1, y:0 }, largo, 5, luz, 2.6, 4); ctx.restore();
+    flecha({ x:xs + 18 + largo - 4, y:ym }, { x:xs + 18 + largo + 6, y:ym }, luz, 2.4);
+    rotulo(xs + 18 + largo/2, ym - 15, v.foton ? `λ ≈ ${nm(T.lambda)}` : 'λ = ?', c.lam, 'center', 12, 'lam');
+    if (v.valores) rotulo(xs + 18 + largo/2, ym + 15, `E ≈ ${fmt(T.E, 2)} eV`, c.E, 'center', 12, 'E');
+    if (v.espectro){
+      const R = { x:14, y:H - 54, w:W - 28, h:18 }, X = l => R.x + R.w*(l - 380)/(750 - 380);
+      for (let px = 0; px < R.w; px++){ ctx.fillStyle = colorDeLuz(380 + 370*px/R.w, c, .28); ctx.fillRect(R.x + px, R.y, 1, R.h); }
+      ctx.save(); ctx.strokeStyle = c.line; ctx.strokeRect(R.x, R.y, R.w, R.h); ctx.restore();
+      for (const n of [3, 4, 5, 6]){ const l = MF.transicion(n, 2).lambda; ctx.save(); ctx.strokeStyle = colorDeLuz(l, c); ctx.lineWidth = n === 3 ? 4 : 2.5; linea(ctx, { x:X(l), y:R.y - 2 }, { x:X(l), y:R.y + R.h + 2 }); ctx.restore(); }
+      ctx.save(); ctx.fillStyle = c.muted; ctx.font = `700 10px ${c.font}`; ctx.textBaseline = 'top'; ctx.textAlign = 'left'; ctx.fillText('380 nm', R.x, R.y + R.h + 4); ctx.textAlign = 'right'; ctx.fillText('750 nm', R.x + R.w, R.y + R.h + 4);
+      ctx.restore(); rotulo(R.x + R.w/2, R.y - 10, 'luz visible del hidrógeno (de n = 3, 4, 5 y 6 a n = 2)', c.muted, 'center', 10);
+    }
+  }
+
+  // ----- tubo de rayos X -----
+  // ver = { curvas: [{ V, trazos }], hasta: 0..1 (la última curva crece), lmin: bool }
+  function dibujarRayos(c){
+    const v = E.ver, Ht = H*.5, xc = W*.12, xa = W*.66, yt = Ht*.5, chico = W < 560;
+    marco(W*.04, Ht*.18, W*.8, Ht*.64, 16, null, c.muted, 1.4);
+    // filamento (cátodo) y blanco (ánodo, con la cara inclinada)
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2; ctx.beginPath(); for (let k = 0; k <= 6; k++) ctx.lineTo(xc - 4 + (k % 2)*8, yt - 12 + k*4); ctx.stroke(); ctx.restore();
+    ctx.save(); ctx.fillStyle = c.ink; ctx.beginPath(); ctx.moveTo(xa, yt - 16); ctx.lineTo(xa + 26, yt - 16); ctx.lineTo(xa + 26, yt + 16); ctx.lineTo(xa + 12, yt + 16); ctx.closePath(); ctx.fill(); ctx.restore();
+    // electrones que se aceleran (x crece con t²) y rayos X que salen hacia abajo
+    const lista = RM ? Array.from({ length:5 }, (_, k) => ({ s:(k + .5)/5, y:(k*.43) % 1 })) : ele;
+    for (const e of lista) electronPunto({ x:mix(xc + 8, xa + 4, e.s*e.s), y:yt + (e.y - .5)*14 }, c, 2.6);
+    const lr = RM ? [{ s:.5, a:.3 }] : rx;
+    for (const q of lr){ const P = { x:xa + 8 + (q.a - .5)*20, y:mix(yt + 18, Ht*.98, q.s) }; ondita(P, { x:0, y:1 }, 16, 3, c.muted, 2, 3); }
+    rotulo(xa + 30, Ht*.92, 'rayos X', c.muted, 'left', 11);
+    const Vt = v.curvas && v.curvas.length ? v.curvas[v.curvas.length - 1].V : 31000;
+    rotulo(W*.44, Ht*.1, `V = ${fmt(Vt/1000, 0)} kV`, c.V, 'center', 12, 'V');
+    rotulo(xc - 4, Ht*.82 + 10, 'filamento', c.muted, 'left', 10);
+    rotulo(xa + 13, yt - 26, 'blanco', c.muted, 'center', 10);
+    // espectro continuo
+    const R = { x:40, y:Ht + 8, w:W - 54, h:H - Ht - 34 }, lMax = 0.16;
+    const X = l => R.x + R.w*l/lMax, Y = s => R.y + R.h - R.h*.68*s;
+    ctx.save(); ctx.strokeStyle = c.grid; for (let l = 0.02; l <= lMax + 1e-9; l += 0.02) linea(ctx, { x:X(l), y:R.y }, { x:X(l), y:R.y + R.h }); ctx.restore();
+    ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; linea(ctx, { x:R.x, y:R.y + R.h }, { x:R.x + R.w, y:R.y + R.h }); linea(ctx, { x:R.x, y:R.y }, { x:R.x, y:R.y + R.h }); ctx.restore();
+    ctx.save(); ctx.fillStyle = c.muted; ctx.font = `700 10px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    for (let l = 0; l <= lMax + 1e-9; l += 0.04) ctx.fillText(fmt(l, 2), X(l), R.y + R.h + 3);
+    ctx.textAlign = 'right'; ctx.fillText('λ (nm)', R.x + R.w, R.y + R.h + 14); ctx.restore();
+    rotulo(R.x + R.w, R.y + 6, 'intensidad de los rayos X', c.muted, 'right', 10);
+    const curvas = v.curvas || [];
+    if (!curvas.length){ rotulo(R.x + R.w*.45, R.y + R.h*.5, '?', c.ink, 'center', 24); return; }
+    curvas.forEach((q, j) => {
+      const ultima = j === curvas.length - 1, hasta = ultima && v.hasta !== undefined ? v.hasta : 1;
+      const lm = MF.rayosX(q.V).lambdaMin;
+      ctx.save(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2.2; ctx.globalAlpha = q.trazos ? .55 : 1; if (q.trazos) ctx.setLineDash([5, 4]);
+      ctx.beginPath(); let prim = true;
+      for (let k = 0; k <= 160*hasta; k++){ const l = lm + (lMax - lm)*k/160, P = { x:X(l), y:Y(MF.espectroRayosX(q.V, l)) }; if (prim){ ctx.moveTo(P.x, P.y); prim = false; } else ctx.lineTo(P.x, P.y); }
+      ctx.stroke(); ctx.restore();
+      if (v.lmin && hasta > .2 && !q.trazos){
+        ctx.save(); ctx.strokeStyle = c.lam; ctx.lineWidth = resaltado('lam') ? 3 : 1.8; linea(ctx, { x:X(lm), y:R.y + 14 }, { x:X(lm), y:R.y + R.h }); ctx.restore();
+        { ctx.font = `800 11px ${c.font}`; const tx = `λmin = ${fmt(lm, 2)} nm`, w = ctx.measureText(tx).width; rotulo(Math.max(X(lm), R.x + 4 + w/2), R.y + 6, tx, c.lam, 'center', 11, 'lam'); }
+      }
+    });
+  }
+
+  // ----- leyenda, lecturas, deslizadores -----
+  function leyenda(){
+    const it = (k, t, sq) => `<span><i class="${sq ? 'sq' : ''}" style="background:var(--c-${k})"></i><span>${t}</span></span>`;
+    const l = [], v = E.vista;
+    if (v === 'tubo'){
+      l.push(it('P', 'P · potencia (intensidad) de la luz')); l.push(it('lam', 'λ · longitud de onda'));
+      l.push(it('phi', 'φ · función trabajo del metal')); l.push(it('V', 'V · voltaje de la pila (+ lleva hacia el colector; − frena)'));
+      l.push(it('I', 'I · corriente (amperímetro)'));
+      l.push('<span>haz y fotones: del color de la luz que se vería (gris si no se ve)</span>');
+      l.push('<span>puntos de tinta: electrones</span>');
+      if (E.ver.iv) l.push('<span>abajo, I contra V; a trazos, la curva de antes</span>');
+    } else if (v === 'grafica'){
+      l.push(it('K', 'Kmax · energía cinética máxima')); l.push(it('f', 'f · frecuencia de la luz'));
+      if (E.ver.ext) l.push(it('phi', 'φ · función trabajo'));
+      if (E.ver.puntos) l.push('<span>puntos llenos: hubo electrones; vacíos: no salió ninguno</span>');
+    } else if (v === 'laser'){
+      l.push(it('P', 'P · potencia del láser')); l.push(it('lam', 'λ · longitud de onda'));
+      l.push('<span>puntos del color de la luz: fotones</span>');
+    } else if (v === 'bohr'){
+      l.push(it('lam', 'λ · longitud de onda del fotón'));
+      if (E.ver.valores) l.push(it('E', 'E · energía del fotón'));
+      l.push('<span>líneas de tinta: niveles de energía; la flecha, el salto del electrón</span>');
+      l.push('<span>onda: el fotón, del color de su luz (gris mientras no lo sepas)</span>');
+    } else if (v === 'rayos'){
+      l.push(it('V', 'V · voltaje del tubo'));
+      if (E.ver.lmin) l.push(it('lam', 'λmin · longitud de onda mínima'));
+      l.push('<span>puntos de tinta: electrones; ondas grises: rayos X</span>');
+      if (E.ver.curvas && E.ver.curvas.length > 1) l.push('<span>a trazos, el espectro de antes</span>');
+    }
+    if (E.leyendaExtra) l.push(E.leyendaExtra);
+    return l.join('');
+  }
+  E.leyenda = () => { if (idLey) document.getElementById(idLey).innerHTML = leyenda(); };
+  // Lecturas y descripción: solo lo que cada paso pide (no adelantan la respuesta).
+  E.lecturas = () => {
+    const ls = E.lect() || [];
+    if (idLect) document.getElementById(idLect).innerHTML = ls.map(([k, t, v]) => `<div class="lectura${String(v).length > 16 ? ' ancha' : ''}" style="--k:${k === 'ink' ? 'var(--ink)' : `var(--c-${k})`}"><span>${t}</span><b>${v}</b></div>`).join('');
+    const out = id => document.getElementById(idCtl).querySelector(`[data-o="${id}"]`);
+    if (idCtl){ const a = out('lambda'), b = out('P'), d = out('V'); if (a) a.textContent = nm(E.t.lambda); if (b) b.textContent = mW(E.t.P); if (d) d.textContent = voltios(E.t.V); }
+    return ls;
+  };
+  E.avisar = () => {
+    const ls = E.lecturas();
+    if (idDesc) document.getElementById(idDesc).textContent = (E.desc() || '') + (ls.length ? ' ' + ls.map(([, t, v]) => `${t}: ${v}`).join('. ') + '.' : '');
+  };
+  // Deslizadores (input range: teclado, ratón y toque). Solo los que el paso deja libres.
+  const RANGOS = { lambda:{ min:200, max:750, step:1, k:'lam', n:'Longitud de onda', s:'λ' }, P:{ min:0, max:2, step:0.05, k:'P', n:'Intensidad (potencia)', s:'P', esc:1e-3 },
+    V:{ min:-3, max:6, step:0.1, k:'V', n:'Voltaje de la pila', s:'V' } };
+  E.controles = () => {
+    if (!idCtl) return;
+    const box = document.getElementById(idCtl);
+    box.innerHTML = Object.keys(RANGOS).filter(k => E.ctl[k]).map(k => {
+      const R = RANGOS[k], val = E.t[k]/(R.esc || 1), id = `${idCtl}-${k}`;
+      return `<label class="ctl" style="--k:var(--c-${R.k})" for="${id}"><span>${R.n} <b class="v v-${R.k}" data-var="${R.k}">${R.s}</b></span><output data-o="${k}"></output>
+        <input id="${id}" type="range" min="${R.min}" max="${R.max}" step="${R.step}" value="${val}" data-k="${k}"></label>`;
+    }).join('');
+    box.querySelectorAll('input').forEach(inp => inp.addEventListener('input', () => {
+      const k = inp.dataset.k; E.t[k] = +inp.value*(RANGOS[k].esc || 1); E.cambio(); clearTimeout(E.tAvisar); E.tAvisar = setTimeout(() => E.avisar(), 400);
+    }));
+    E.lecturas();
+  };
+  // Pone los deslizadores donde están los valores del tubo (tras una animación).
+  E.sincronizar = () => {
+    if (!idCtl) return;
+    document.getElementById(idCtl).querySelectorAll('input').forEach(inp => { const k = inp.dataset.k; inp.value = E.t[k]/(RANGOS[k].esc || 1); });
+  };
+  E.particulasOn = on => { E.particulas = on; E.despertar(); };
+  return E;
+}
+
+// Opciones de predicción (las mismas en los dos modos)
+const sinCorte = t => String(t).replace(/ = /g, '&nbsp;=&nbsp;').replace(/ × /g, '&nbsp;×&nbsp;').replace(/ ≈ /g, '&nbsp;≈&nbsp;').replace(/(\d) (eV|V|nm|Hz|mW|µA|kV|fotones)/g, '$1&nbsp;$2');
+const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${sinCorte(t)}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+// Lecturas del tubo (con «?» las que el paso todavía no muestra)
+function lecturaTubo(E, claves){
+  const t = E.t, r = MF.fototubo(t), F = MF.fotoelectrico(t.lambda, t.phi), q = k => claves.includes(k);
+  const L = [];
+  if (q('lam') || q('lam?')) L.push(['lam', 'Longitud de onda λ', nm(t.lambda)]);
+  if (q('P')) L.push(['P', 'Potencia P', mW(t.P)]);
+  if (q('E')) L.push(['E', 'Energía del fotón E', `${fmt(F.E, 2)} eV`]); else if (q('E?')) L.push(['E', 'Energía del fotón E', '?']);
+  if (q('phi')) L.push(['phi', 'Función trabajo φ', `${fmt(t.phi, 1)} eV`]);
+  if (q('K')) L.push(['K', 'Kmax del electrón', F.emite ? `${fmt(F.Kmax, 2)} eV` : 'no salen']); else if (q('K?')) L.push(['K', 'Kmax del electrón', '?']);
+  if (q('V')) L.push(['V', 'Voltaje de la pila V', voltios(t.V)]);
+  if (q('I')) L.push(['I', 'Corriente I', uA(r.I)]); else if (q('I?')) L.push(['I', 'Corriente I', '?']);
+  return L;
+}
+</script>
+
+<script>
+/* ================= MODO 1: paso a paso =================
+   Respaldos (docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md): 'documentado' FM1 (pasos 1 y 2: con
+   enseñanza tradicional cerca de 2 de cada 10 de 26 acierta la pregunta del voltaje y el error lo comete cerca de
+   4 de cada 10 de los que fallan), FM2 en el paso 1 (la misma pregunta del informe: cerca de 4 de cada 10 de 26
+   acierta; es un dato de aciertos, que no separa los errores) y FM3 (paso 5: cerca de 1 de cada 6 dibuja bien la
+   gráfica antes de ver opciones; también de aciertos); 'parcial' la variante «la pila ayuda a vencer φ» de FM1 (está
+   en la definición, el dato no la separa), FM2 en el paso 4 («más intensidad, electrones más rápidos» está descrito,
+   pero el dato es de otra pregunta) y FM4 (debates en clase, sin porcentaje); lo demás, hipótesis nuestras. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1', 'ctl1');
+const S = { step:0, max:0, pred:{}, ocupado:false };
+
+// Números de la escena (todos del motor)
+const F1 = MF.fotoelectrico(620, PHI0), F3 = MF.fotoelectrico(310, PHI0), FE = MF.fotoelectrico(400, PHI0);
+const C4 = MF.cambioFototubo({ lambda:310, phi:PHI0, P:1e-3, V:2 }, { lambda:310, phi:PHI0, P:2e-3, V:2 });
+const N6 = MF.fotonesPorSegundo(1e-3, 620), T7 = MF.transicion(3, 2), X8 = MF.rayosX(31000), H = MF.constantes();
+const kV = 31000;
+
+const P1 = { id:'fisica-moderna-paso1', ok:'b', opts:[
+  ['a', 'Marca corriente, porque a la placa le llega el doble de energía cada segundo', 'FM2-intensidad-arranca-electrones', 'documentado'],
+  ['b', `Marca cero, porque cada fotón sigue trayendo ${fmt(F1.E, 0)} eV, menos que los ${fmt(PHI0, 1)} eV de φ`],
+  ['c', 'Marca cero, pero marcaría corriente si además se sube el voltaje de la pila', 'FM1-cero-pero-con-voltaje-si', 'documentado'],
+  ['d', 'Marca corriente, pero de electrones que salen más lentos', 'FM2-FM4-salen-lentos', 'hipotesis']],
+  fb:{ b:'¡Bien! La luz llega en paquetes, los fotones. Duplicar la intensidad duplica cuántos llegan, pero cada uno trae lo mismo: 2 eV, y no alcanza para sacar un electrón.',
+    a:'Elegiste la A. Llega el doble de energía, sí, pero repartida en el doble de fotones de 2 eV cada uno. Un electrón recibe la energía de un solo fotón, y 2 eV no alcanzan. La correcta está marcada.',
+    c:'Elegiste la C. Sí marca cero, pero el voltaje tampoco lo arregla: la pila no puede arrancar electrones del metal. Eso es justo el paso siguiente. La correcta está marcada.',
+    d:'Elegiste la D. No salen electrones lentos: no sale ninguno. Cada fotón de 2 eV no alcanza los 2,5 eV que cuesta sacar un electrón. La correcta está marcada.' } };
+const P2 = { id:'fisica-moderna-paso2', ok:'d', opts:[
+  ['a', 'Marca corriente, porque la pila ahora arranca electrones del metal', 'FM1-pila-arranca-electrones', 'documentado'],
+  ['b', 'Marca corriente desde unos 0,5 V, porque la pila pone los 0,5 eV que le faltan a cada fotón', 'FM1-pila-vence-funcion-trabajo', 'parcial'],
+  ['c', 'Marca cero, porque la pila frena a los electrones que salen', 'FM-pila-a-favor-frena', 'hipotesis'],
+  ['d', 'Marca cero, porque la pila no arranca electrones: solo mueve a los que ya salieron']],
+  fb:{ d:'¡Bien! La pila actúa sobre electrones que ya están fuera del metal. Si la luz no saca ninguno, no hay nada que mover: la corriente es cero con cualquier voltaje.',
+    a:'Elegiste la A. Esto no es un resistor: no vale V = IR. La pila no saca electrones del metal; solo acelera o frena a los que la luz ya arrancó. La correcta está marcada.',
+    b:'Elegiste la B. La energía para salir del metal tiene que venir de un solo fotón, de una vez. La pila no se suma a esa cuenta: actúa recién afuera. La correcta está marcada.',
+    c:'Elegiste la C. Sí marca cero, pero no porque la pila frene: con el positivo en el colector, la pila atrae a los electrones hacia él. Marca cero porque no sale ninguno. La correcta está marcada.' } };
+const P3 = { id:'fisica-moderna-paso3', ok:'a', opts:[
+  ['a', `Kmax = ${fmt(F3.Kmax, 1)} eV y V₀ = ${fmt(F3.V0, 1)} V`],
+  ['b', `Kmax = ${fmt(F3.errores.sinRestarPhi.Kmax, 0)} eV y V₀ = ${fmt(F3.errores.sinRestarPhi.V0, 0)} V`, 'FM-kmax-sin-restar-phi', 'hipotesis'],
+  ['c', `Kmax = ${fmt(F3.Kmax, 1)} eV y V₀ = ${sci(F3.errores.mezclaJeV.V0, 1)} V`, 'FM-mezcla-joules-y-eV', 'hipotesis'],
+  ['d', `Kmax = ${fmt(F3.errores.sumaPhi.Kmax, 1)} eV y V₀ = ${fmt(F3.errores.sumaPhi.V0, 1)} V`, 'FM-kmax-suma-phi', 'hipotesis']],
+  fb:{ a:'¡Bien! Cada fotón trae 1240/310 = 4 eV; 2,5 eV se gastan en salir del metal y al electrón más rápido le quedan 1,5 eV. Para frenarlo hacen falta 1,5 V.',
+    b:'Elegiste la B. Falta restar la función trabajo: de los 4 eV del fotón, 2,5 eV se gastan en sacar al electrón del metal. La correcta está marcada.',
+    c:'Elegiste la C. Kmax está bien, pero 2,4 × 10⁻¹⁹ es Kmax en joules. El voltaje es la energía dividida entre la carga: 2,4 × 10⁻¹⁹ J / 1,6 × 10⁻¹⁹ C = 1,5 V. La correcta está marcada.',
+    d:'Elegiste la D. La función trabajo se resta, no se suma: es lo que cuesta salir del metal. La correcta está marcada.' } };
+const P4 = { id:'fisica-moderna-paso4', ok:'c', opts:[
+  ['a', 'V₀ sube y la corriente de saturación se duplica', 'FM2-intensidad-sube-V0', 'parcial'],
+  ['b', 'V₀ sube y la corriente de saturación no cambia', 'FM2-intensidad-es-energia', 'parcial'],
+  ['c', 'V₀ no cambia y la corriente de saturación se duplica'],
+  ['d', 'V₀ no cambia y la corriente de saturación tampoco', 'FM4-corriente-por-rapidez', 'parcial']],
+  fb:{ c:'¡Bien! El doble de fotones arranca el doble de electrones por segundo: la corriente de saturación se duplica. Pero cada fotón sigue trayendo 4 eV, así que Kmax y V₀ no cambian.',
+    a:'Elegiste la A. La corriente sí se duplica, pero V₀ depende de la energía de cada fotón, que no cambió. Las dos curvas se anulan en el mismo −V₀. La correcta está marcada.',
+    b:'Elegiste la B. La intensidad no cambia la energía de cada fotón (V₀ queda igual); cambia cuántos fotones llegan, y con ellos cuántos electrones. La correcta está marcada.',
+    d:'Elegiste la D. V₀ no cambia, cierto, pero la corriente no depende de lo rápido que vayan los electrones: depende de cuántos llegan por segundo, y ahora salen el doble. La correcta está marcada.' } };
+const P5 = { id:'fisica-moderna-paso5', ok:'d', opts:[
+  ['a', 'Una recta que sale del origen (f = 0, Kmax = 0), con pendiente h', 'FM3-sin-frecuencia-de-corte', 'documentado'],
+  ['b', `Una recta que sale de f₀ ≈ ${sci(FE.f0, 1)} Hz, con pendiente φ`, 'FM-pendiente-es-phi', 'hipotesis'],
+  ['c', `Una recta que sale de f = 0 con Kmax = ${fmt(PHI0, 1)} eV, con pendiente h`, 'FM-kmax-suma-phi-grafica', 'hipotesis'],
+  ['d', `Una recta que sale de f₀ ≈ ${sci(FE.f0, 1)} Hz, con pendiente h`]],
+  fb:{ d:'¡Bien! Kmax = h·f − φ: una recta de pendiente h. Por debajo de f₀ = φ/h no sale ningún electrón, así que la gráfica empieza recién en f₀.',
+    a:'Elegiste la A. Con luz de frecuencia muy baja no sale ningún electrón (lo viste con la luz roja): la recta no puede salir del origen. Empieza en la frecuencia umbral f₀. La correcta está marcada.',
+    b:'Elegiste la B. f₀ está bien, pero la pendiente es h: por cada hertz más, el fotón trae h más de energía. φ es cuánto se resta, no la pendiente. La correcta está marcada.',
+    c:'Elegiste la C. La función trabajo se resta: Kmax = h·f − φ. Por eso la recta, si se prolonga, cortaría el eje en −2,5 eV, no en +2,5 eV. La correcta está marcada.' } };
+const P6 = { id:'fisica-moderna-paso6', ok:'a', opts:[
+  ['a', `N ≈ ${sci(N6.N, 1)} fotones por segundo`],
+  ['b', `N ≈ ${sci(N6.errores.porCargaE, 1)} fotones por segundo`, 'FM-cada-foton-de-1-eV', 'hipotesis'],
+  ['c', `N ≈ ${sci(N6.errores.enEv, 0)} fotones por segundo`, 'FM-N-con-E-en-eV', 'hipotesis'],
+  ['d', `N ≈ ${sci(N6.errores.multiplica, 1)} fotones por segundo`, 'FM-N-multiplica-P-por-E', 'hipotesis']],
+  fb:{ a:'¡Bien! Cada fotón trae 2 eV = 3,2 × 10⁻¹⁹ J, y el láser entrega 10⁻³ J por segundo: N = P/E ≈ 3,1 × 10¹⁵. Por eso no se notan los paquetes: son muchísimos.',
+    b:'Elegiste la B. Dividiste entre 1,6 × 10⁻¹⁹ J, que es 1 eV; pero cada fotón trae 2 eV. La correcta está marcada.',
+    c:'Elegiste la C. P está en joules por segundo; la energía del fotón también tiene que ir en joules: 2 eV = 3,2 × 10⁻¹⁹ J. La correcta está marcada.',
+    d:'Elegiste la D. Hay que dividir: la energía de cada segundo repartida entre la energía de un fotón, N = P/E. La correcta está marcada.' } };
+const P7 = { id:'fisica-moderna-paso7', ok:'c', opts:[
+  ['a', `λ ≈ ${nm(T7.errores.unoSobreN.lambda)}: luz verde`, 'FM-bohr-1-sobre-n', 'hipotesis'],
+  ['b', `λ ≈ ${nm(T7.errores.unNivel.lambda)}: infrarrojo, no se ve`, 'FM-bohr-un-solo-nivel', 'hipotesis'],
+  ['c', `λ ≈ ${nm(T7.lambda)}: luz roja`],
+  ['d', `λ ≈ ${nm(T7.errores.sumaNiveles.lambda)}: ultravioleta, no se ve`, 'FM-bohr-suma-niveles', 'hipotesis']],
+  fb:{ c:'¡Bien! E3 = −13,6/9 ≈ −1,51 eV y E2 = −13,6/4 = −3,4 eV: el fotón se lleva la diferencia, 17/9 ≈ 1,89 eV, y λ = 1240/1,89 ≈ 656 nm, roja.',
+    a:'Elegiste la A. La energía de los niveles va con 1/n², no con 1/n: E3 = −13,6/9 y E2 = −13,6/4. La correcta está marcada.',
+    b:'Elegiste la B. El fotón no se lleva la energía de un nivel: se lleva la DIFERENCIA entre los dos niveles. La correcta está marcada.',
+    d:'Elegiste la D. Las energías de los niveles se restan, no se suman: el fotón se lleva lo que el electrón baja. La correcta está marcada.' } };
+const P8 = { id:'fisica-moderna-paso8', ok:'b', opts:[
+  ['a', `λmin ≈ ${fmt(X8.errores.sinKilo, 0)} nm`, 'FM-rayosX-sin-kilo', 'hipotesis'],
+  ['b', `λmin ≈ ${fmt(X8.lambdaMin, 2)} nm`],
+  ['c', `λmin ≈ ${sci(X8.errores.sinE, 1)} nm`, 'FM-rayosX-sin-carga-e', 'hipotesis'],
+  ['d', `λmin ≈ ${sci(X8.errores.joulesConEv, 1)} nm`, 'FM-rayosX-joules-con-eV-nm', 'hipotesis']],
+  fb:{ b:'¡Bien! Cada electrón llega con 31 000 eV. El fotón más energético se lleva todo eso: λmin = 1240/31 000 = 0,04 nm.',
+    a:'Elegiste la A. Son 31 kV = 31 000 V, no 31 V: cada electrón llega con 31 000 eV. La correcta está marcada.',
+    c:'Elegiste la C. La energía del electrón es e·V = 1,6 × 10⁻¹⁹ · 31 000 J: falta la carga. h·c/(e·V) da 4 × 10⁻¹¹ m = 0,04 nm. La correcta está marcada.',
+    d:'Elegiste la D. Mezclaste unidades: con hc = 1240 eV·nm la energía va en eV (31 000 eV), no en joules. La correcta está marcada.' } };
+
+const LECT_TODO = ['lam', 'P', 'E', 'phi', 'K', 'V', 'I'];
+const ctlTodo = { lambda:true, P:true, V:true };
+function libres(ctl){ E.ctl = ctl; E.controles(); }
+const tubo = (t, o) => Object.assign({ vista:'tubo', t, desc: () => `Una lámpara ilumina una placa de ${t.metal || 'metal'} dentro de un tubo de vacío; enfrente está la placa colectora. Por fuera, un circuito une las dos placas con una pila y un amperímetro.` }, o);
+const lectP = claves => () => lecturaTubo(E, claves);
+const steps = [
+ { k:'Paso 1', t:'Predice: más intensidad', gate:P1,
+   prep:() => { const ya = !!S.pred[P1.id];
+     E.config(tubo({ lambda:620, P: ya ? 2e-3 : 1e-3, V:0 }, { ver:{ I:true }, ctl: ya ? { P:true } : {}, lect: lectP(ya ? LECT_TODO.filter(k => k !== 'K') : ['lam', 'P', 'E?', 'phi', 'V', 'I']) })); },
+   anima:fin => { E.lect = lectP(LECT_TODO.filter(k => k !== 'K')); E.llevar({ P:2e-3 }, 1800, () => { libres({ P:true }); fin(); }); },
+   body:() => `<p>Dentro de un tubo de vacío hay una placa de metal con una función trabajo ${p_('φ = 2,5 eV')} (la energía mínima que cuesta sacar un electrón), frente a una placa colectora. Una lámpara ilumina el metal con luz roja de ${l_('λ = 620 nm')} y potencia ${P_('P = 1 mW')}. La pila está en ${V2_('V = 0')} y el amperímetro marca ${I_('cero')}. Dato: hc = 1240 eV·nm. Si se duplica la intensidad de la luz (${P_('P = 2 mW')}), ¿qué marca el amperímetro?</p>${opcionesHTML(P1.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${E_('E')} = hc / ${l_('λ')} = 1240 / ${l_('620')} = ${E_('2 eV')}<span class="note">energía de cada fotón</span></div>
+   <div class="eq">${E_('2 eV')} &lt; ${p_('φ = 2,5 eV')} → no sale ningún electrón → ${I_('I = 0')}</div>
+   <div class="eq">${P_('P')} × 2 → el doble de fotones, cada uno de ${E_('2 eV')}</div></div>
+   <p>La luz llega en paquetes de energía, los fotones: ${E_('E')} = h·f = hc/${l_('λ')}. Un electrón absorbe un fotón entero, y solo uno. Si ese fotón no alcanza para pagar ${p_('φ')}, el electrón no sale, lleguen los fotones que lleguen. Mueve la intensidad: el haz se llena de fotones y el amperímetro sigue en cero.</p>
+   <p class="fuente">En un estudio con 26 universitarios de un curso tradicional, cerca de 4 de cada 10 acertó una pregunta como esta (Steinberg, Oberem y McDermott, 1996, citados por McKagan y otros, 2009). Es un dato de aciertos: no dice cuántos eligieron cada error. En otro grupo, cerca de 1 de cada 20 de los que fallaron dijo de forma explícita que basta subir la intensidad (opción A). Creer que el voltaje haría pasar corriente (C) fue el error más común en esos estudios. La D es hipótesis nuestra.</p></div>` },
+ { k:'Paso 2', t:'Predice: más voltaje', gate:P2,
+   prep:() => { const ya = !!S.pred[P2.id];
+     E.config(tubo({ lambda:620, P:1e-3, V: ya ? 6 : 0 }, { ver:{ I:true }, ctl: ya ? { P:true, V:true } : {}, lect: lectP(['lam', 'P', 'E', 'phi', 'V', 'I']) })); },
+   anima:fin => { E.llevar({ V:6 }, 2200, () => { libres({ P:true, V:true }); fin(); }); },
+   body:() => `<p>La misma luz de ${l_('620 nm')} y ${P_('1 mW')} sobre el mismo metal (${p_('φ = 2,5 eV')}); el amperímetro marca cero. Ahora se sube el voltaje de la pila de ${V2_('0 V')} a ${V2_('6 V')}, con el polo positivo hacia la placa colectora: así, la pila atrae hacia el colector a cualquier electrón que esté fuera del metal. ¿Qué marca el amperímetro?</p>${opcionesHTML(P2.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${E_('E = 2 eV')} &lt; ${p_('φ = 2,5 eV')} → no sale ningún electrón</div>
+   <div class="eq">${V2_('V')} = 0, 2, 4, 6 V… → ${I_('I = 0')}<span class="note">la pila no tiene a quién mover</span></div></div>
+   <p>El fototubo no es un resistor: aquí no vale V = IR. La pila solo acelera o frena a los electrones que la luz ya sacó del metal. Prueba con los dos deslizadores: con esta luz, ni la intensidad ni el voltaje encienden el amperímetro.</p>
+   <p class="fuente">En una pregunta de examen con luz que no arranca electrones y un voltaje que se sube, solo cerca de 2 de cada 10 de 26 universitarios de un curso tradicional acertó. De los que fallaron alguna parte, cerca de 4 de cada 10 usó la ley de Ohm: creer que el voltaje hace pasar corriente o que ayuda a vencer la función trabajo (Steinberg y otros, 1996, citados por McKagan y otros, 2009). El dato no separa esas dos variantes, por eso la B tiene un respaldo parcial. La C es hipótesis nuestra.</p></div>` },
+ { k:'Paso 3', t:'Predice: luz ultravioleta', gate:P3,
+   prep:() => { const ya = !!S.pred[P3.id];
+     E.config(tubo({ lambda:310, P:1e-3, V: ya ? -1.5 : 0 }, { ver:{ I:true, iv: ya ? { curvas:[], marcaV0:true } : null }, ctl: ya ? { lambda:true, V:true } : {},
+       lect: lectP(ya ? LECT_TODO : ['lam', 'P', 'E?', 'phi', 'K?', 'V', 'I']) })); },
+   anima:fin => { E.lect = lectP(LECT_TODO); E.ver.iv = { curvas:[], marcaV0:false }; E.redimensionar(); E.leyenda();
+     E.llevar({ V:-1.5 }, 2800, () => { E.ver.iv.marcaV0 = true; E.dibujar(); libres({ lambda:true, V:true }); fin(); }); },
+   body:() => `<p>Se cambia la lámpara por una de luz ultravioleta de ${l_('λ = 310 nm')}, con la misma potencia (${P_('1 mW')}) y el mismo metal (${p_('φ = 2,5 eV')}). Ahora el amperímetro marca corriente. Datos: hc = 1240 eV·nm y e = 1,6 × 10⁻¹⁹ C. ¿Cuál es la energía cinética máxima ${K_('Kmax')} de los electrones que salen y cuál es el potencial de frenado ${V2_('V₀')}, el voltaje de la pila puesta al revés con el que la corriente llega justo a cero?</p>${opcionesHTML(P3.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${E_('E')} = 1240 / ${l_('310')} = ${E_('4 eV')}</div>
+   <div class="eq">${K_('Kmax')} = ${E_('E')} − ${p_('φ')} = ${E_('4')} − ${p_('2,5')} = ${K_('1,5 eV')} = ${K_('2,4 × 10⁻¹⁹ J')}</div>
+   <div class="eq">e · ${V2_('V₀')} = ${K_('Kmax')} → ${V2_('V₀')} = ${K_('2,4 × 10⁻¹⁹ J')} / 1,6 × 10⁻¹⁹ C = ${V2_('1,5 V')}</div></div>
+   <p>Cada electrón recibe los ${E_('4 eV')} de un fotón y gasta al menos ${p_('2,5 eV')} en salir; los que salen de la superficie se quedan con lo más, ${K_('1,5 eV')}. Con la pila al revés, cada electrón pierde e·${V2_('V')} de energía en el camino: a ${V2_('−1,5 V')} los más rápidos llegan justo al borde del colector y se regresan. En electronvoltios, ${V2_('V₀')} tiene el mismo número que ${K_('Kmax')}. Abajo, la curva de la corriente contra el voltaje; mueve λ y el voltaje y mira cómo cambia ${V2_('−V₀')}.</p>
+   <p class="fuente">Las opciones incorrectas son hipótesis nuestras: olvidar la función trabajo y mezclar joules con electronvoltios son errores de cálculo frecuentes en los problemas de admisión, pero no encontramos estudios que los midan.</p></div>` },
+ { k:'Paso 4', t:'Predice: más intensidad con luz ultravioleta', gate:P4,
+   prep:() => { const ya = !!S.pred[P4.id];
+     E.config(tubo({ lambda:310, P: ya ? 2e-3 : 1e-3, V:2 }, { ver:{ I:true, iv: ya ? { curvas:[{ lambda:310, phi:PHI0, P:1e-3 }], marcaV0:true } : null }, ctl: ya ? ctlTodo : {},
+       lect: lectP(ya ? LECT_TODO : ['lam', 'P', 'phi', 'V', 'I']) })); },
+   anima:fin => { E.lect = lectP(LECT_TODO); E.ver.iv = { curvas:[{ lambda:310, phi:PHI0, P:1e-3 }], marcaV0:true }; E.redimensionar(); E.leyenda();
+     E.llevar({ P:2e-3 }, 1600, () => E.llevar({ V:-2 }, 2400, () => E.llevar({ V:2 }, 1200, () => { libres(ctlTodo); fin(); }))); },
+   body:() => `<p>Con la luz de ${l_('310 nm')} y la pila a favor (${V2_('V = +2 V')}), todos los electrones que salen llegan al colector: esa es la corriente de saturación, ${I_('2,5 µA')}. Ahora se duplica la intensidad: ${P_('P')} pasa de ${P_('1 mW')} a ${P_('2 mW')}, con la misma ${l_('λ')}. ¿Qué pasa con el potencial de frenado ${V2_('V₀')} y con la corriente de saturación?</p>${opcionesHTML(P4.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${P_('P')} × 2 → el doble de fotones por segundo → el doble de electrones → ${I_('Isat')}: ${I_(uA(C4.antes.Isat))} → ${I_(uA(C4.despues.Isat))}</div>
+   <div class="eq">${E_('E')} = 1240 / ${l_('310')} = ${E_('4 eV')} igual → ${K_('Kmax = 1,5 eV')} → ${V2_('V₀ = 1,5 V')} igual</div></div>
+   <p>Mira la curva: la de trazos es la de antes. La nueva sube al doble, pero las dos se anulan en el mismo ${V2_('−V₀')}. La <b>frecuencia</b> de la luz decide si un electrón sale y con cuánta energía; la <b>intensidad</b> decide cuántos salen. Ahora los tres deslizadores están libres: es tu laboratorio.</p>
+   <p class="fuente">La idea de que más intensidad da electrones más rápidos está descrita en los estudios (McKagan y otros, 2009), pero el dato que tenemos, cerca de 4 de cada 10 que acierta en 26 alumnos, es de otra pregunta: por eso A y B tienen un respaldo parcial. Que más rapidez da más corriente (D) provocó «debates acalorados» en clase, según el mismo estudio, sin porcentaje: respaldo parcial.</p></div>` },
+ { k:'Paso 5', t:'Predice: la gráfica de Kmax', gate:P5,
+   prep:() => { const ya = !!S.pred[P5.id];
+     E.config({ vista:'grafica', t:{ phi:PHI0 }, ver: ya ? { puntos:1, recta:1, ext:1 } : {},
+       lect: () => [['phi', 'Función trabajo φ', '2,5 eV'], ['ink', 'h', '4,13 × 10⁻¹⁵ eV·s']],
+       desc: () => ya ? 'Gráfica de Kmax contra la frecuencia f: los puntos medidos, la recta que empieza en la frecuencia umbral y su prolongación a trazos hasta f = 0.' : 'Ejes vacíos de una gráfica: Kmax en eV contra la frecuencia f.' }); },
+   anima:fin => { E.leyenda(); E.progreso('puntos', 1400, () => E.progreso('recta', 900, () => { E.leyenda(); E.progreso('ext', 800, () => { E.leyenda(); fin(); }); })); },
+   body:() => `<p>Con el mismo metal (${p_('φ = 2,5 eV')}) se repite el experimento con luces de muchas frecuencias ${f_('f')}; con cada una se mide ${K_('Kmax')} (con el potencial de frenado) y se grafica ${K_('Kmax')} contra ${f_('f')}. Dato: h = 4,13 × 10⁻¹⁵ eV·s (es lo mismo que hc = 1240 eV·nm con c = 3 × 10⁸ m/s). ¿Cómo es la gráfica?</p>${opcionesHTML(P5.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${K_('Kmax')} = h · ${f_('f')} − ${p_('φ')}<span class="note">recta de pendiente h</span></div>
+   <div class="eq">${K_('Kmax')} = 0 → ${f_('f₀')} = ${p_('φ')} / h = ${p_('2,5')} / 4,13 × 10⁻¹⁵ ≈ ${f_(sci(FE.f0, 1) + ' Hz')}</div>
+   <div class="eq">prolongada hasta ${f_('f')} = 0, cortaría el eje en ${K_('Kmax')} = −${p_('φ')} = −${p_('2,5 eV')}</div></div>
+   <p>Los puntos vacíos son luces con ${f_('f')} menor que ${f_('f₀')}: ahí no sale ningún electrón, con ninguna intensidad, y ${K_('Kmax')} no existe. Desde ${f_('f₀')}, cada hertz de más le da h de energía al electrón: la pendiente es la misma para todos los metales; lo que cambia de un metal a otro es dónde empieza la recta. Ese es el gráfico de los problemas de examen: de la pendiente sale h y del corte, ${p_('φ')}.</p>
+   <p class="fuente">Antes de ver opciones, solo cerca de 1 de cada 6 alumnos de un curso universitario de Colorado dibujó algo parecido a la gráfica correcta (McKagan y otros, 2009). Es un dato de aciertos y no separa los errores, pero no reconocer la frecuencia de corte (opción A) es la dificultad que describe el estudio. B y C son hipótesis nuestras.</p></div>` },
+ { k:'Paso 6', t:'Predice: los fotones de un láser', gate:P6,
+   prep:() => { const ya = !!S.pred[P6.id];
+     E.config({ vista:'laser', ver:{ N:ya }, lect: () => [['P', 'Potencia P', '1 mW'], ['lam', 'Longitud de onda λ', '620 nm']].concat(ya ? [['E', 'Energía del fotón E', '2 eV = 3,2 × 10⁻¹⁹ J']] : []),
+       desc: () => 'Un puntero láser rojo dispara su haz contra una pantalla. En el dibujo, el haz es una fila de fotones.' }); },
+   anima:fin => { E.ver.N = true; E.lect = () => [['P', 'Potencia P', '1 mW'], ['lam', 'Longitud de onda λ', '620 nm'], ['E', 'Energía del fotón E', '2 eV = 3,2 × 10⁻¹⁹ J']]; E.dibujar(); fin(); },
+   body:() => `<p>Un puntero láser rojo emite luz de ${l_('λ = 620 nm')} con una potencia ${P_('P = 1 mW')}, es decir, 10⁻³ J cada segundo. Datos: hc = 1240 eV·nm y 1 eV = 1,6 × 10⁻¹⁹ J. ¿Cuántos fotones emite por segundo?</p>${opcionesHTML(P6.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${E_('E')} = 1240 / ${l_('620')} = ${E_('2 eV')} = 2 · 1,6 × 10⁻¹⁹ = ${E_('3,2 × 10⁻¹⁹ J')}</div>
+   <div class="eq">N = ${P_('P')} / ${E_('E')} = ${P_('10⁻³ J/s')} / ${E_('3,2 × 10⁻¹⁹ J')} ≈ ${sci(N6.N, 1)} fotones por segundo</div></div>
+   <p>La potencia es energía por segundo, y cada fotón es un paquete de ${E_('E')}: dividir da cuántos paquetes salen cada segundo. Con más potencia, más fotones; con otra λ, otro tamaño de paquete. Es la misma idea del paso 4: la intensidad cuenta fotones.</p>
+   <p class="fuente">Las opciones incorrectas son hipótesis nuestras: no encontramos estudios con porcentaje sobre este cálculo.</p></div>` },
+ { k:'Paso 7', t:'Predice: el salto del átomo de hidrógeno', gate:P7,
+   prep:() => { const ya = !!S.pred[P7.id];
+     E.config({ vista:'bohr', ver: ya ? { escala:1, valores:true, foton:1, espectro:true } : { escala:0, foton:0 },
+       lect: () => ya ? [['E', 'Energía del fotón E', `${fmt(T7.E, 2)} eV`], ['lam', 'Longitud de onda λ', nm(T7.lambda)]] : [['ink', 'Nivel n = 1', '−13,6 eV'], ['ink', 'Salto', 'de n = 3 a n = 2']],
+       desc: () => ya ? 'Niveles de energía del hidrógeno a escala, con el salto de n = 3 a n = 2 y el fotón rojo que sale; abajo, la franja de luz visible con las cuatro líneas del hidrógeno.' : 'Niveles de energía del hidrógeno, dibujados sin escala, y una flecha que baja del nivel 3 al nivel 2; sale un fotón cuya longitud de onda se pregunta.' }); },
+   anima:fin => { E.ver.valores = true; E.leyenda(); E.lect = () => [['E', 'Energía del fotón E', `${fmt(T7.E, 2)} eV`], ['lam', 'Longitud de onda λ', nm(T7.lambda)]]; E.avisar();
+     E.progreso('escala', 1300, () => E.progreso('foton', 600, () => { E.ver.espectro = true; E.redimensionar(); E.leyenda(); fin(); })); },
+   body:() => `<p>En el átomo de hidrógeno, el electrón solo puede tener ciertas energías, una por cada nivel n = 1, 2, 3… En el nivel n = 1 la energía es −13,6 eV. El electrón pasa del nivel n = 3 al nivel n = 2 y emite un fotón. Con hc = 1240 eV·nm, ¿qué longitud de onda ${l_('λ')} tiene ese fotón y cómo se ve?</p>${opcionesHTML(P7.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">En = −13,6 / n² eV → E3 = −13,6/9 ≈ −1,51 eV y E2 = −13,6/4 = −3,4 eV</div>
+   <div class="eq">${E_('E')} = E3 − E2 = 13,6 · (1/4 − 1/9) = ${E_('17/9 ≈ 1,89 eV')}</div>
+   <div class="eq">${l_('λ')} = 1240 / ${E_('1,89')} ≈ ${l_(nm(T7.lambda))}<span class="note">roja: la primera línea de Balmer</span></div></div>
+   <p>El electrón baja de nivel y la diferencia de energía sale como un fotón. Como los niveles se juntan arriba (van con 1/n²), cada salto tiene su propia energía y su propio color: por eso el hidrógeno no brilla con todos los colores, sino con unas pocas líneas. Las que terminan en n = 2 son visibles (Balmer); las que terminan en n = 1 son ultravioleta (Lyman: de 2 a 1, ${nm(MF.transicion(2, 1).lambda)}).</p>
+   <p class="fuente">Las opciones incorrectas son hipótesis nuestras. Una cautela: el modelo de Bohr sirve para los niveles de energía del hidrógeno, pero el modelo actual describe al electrón con orbitales, no con órbitas. En un estudio con 421 escolares griegos, cerca de 7 de cada 10 se quedaba con la imagen de Bohr aun cuando se pedía el modelo actual (Zarkadis, Stamovlasis y Papageorgiou, 2021).</p></div>` },
+ { k:'Paso 8', t:'Predice: el tubo de rayos X', gate:P8,
+   prep:() => { const ya = !!S.pred[P8.id];
+     E.config({ vista:'rayos', ver: ya ? { curvas:[{ V:kV }], lmin:true } : { curvas:[] },
+       lect: () => [['V', 'Voltaje del tubo V', '31 kV']].concat(ya ? [['E', 'Energía máx. del fotón', '31 000 eV'], ['lam', 'λmin', `${fmt(X8.lambdaMin, 2)} nm`]] : []),
+       desc: () => 'Un tubo de rayos X: los electrones salen de un filamento, se aceleran con el voltaje del tubo y chocan contra un blanco de metal, del que salen rayos X. Abajo, ' + (ya ? 'su espectro: la intensidad contra la longitud de onda, que empieza en λmin.' : 'los ejes vacíos de su espectro.') }); },
+   anima:fin => { E.ver.curvas = [{ V:kV }]; E.ver.lmin = true; E.leyenda();
+     E.lect = () => [['V', 'Voltaje del tubo V', '31 kV'], ['E', 'Energía máx. del fotón', '31 000 eV'], ['lam', 'λmin', `${fmt(X8.lambdaMin, 2)} nm`]]; E.avisar();
+     E.progreso('hasta', 1400, fin); },
+   body:() => `<p>En un tubo de rayos X, los electrones se aceleran con un voltaje ${V2_('V = 31 kV')} y chocan contra un blanco de metal; al frenarse, emiten rayos X. Datos: h = 6,6 × 10⁻³⁴ J·s, c = 3 × 10⁸ m/s, e = 1,6 × 10⁻¹⁹ C (o hc = 1240 eV·nm). ¿Cuál es la longitud de onda más corta de los rayos X que salen?</p>${opcionesHTML(P8.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">cada electrón llega con e · ${V2_('V')} = 31 000 eV = 4,96 × 10⁻¹⁵ J</div>
+   <div class="eq">el fotón más energético se lleva todo: ${E_('Emax')} = ${E_('31 000 eV')}</div>
+   <div class="eq">${l_('λmin')} = hc / ${E_('Emax')} = hc / (e · ${V2_('V')}) = 1240 / 31 000 = ${l_('0,04 nm')}<span class="note">con h, c y e en SI: 4 × 10⁻¹¹ m</span></div></div>
+   <p>Es el efecto fotoeléctrico al revés: allá un fotón da su energía a un electrón; aquí un electrón frena y su energía sale como fotones. El fotón más energético se lleva toda la energía de un electrón, y por eso el espectro tiene un borde: ninguna λ menor que ${l_('λmin')}. Los demás fotones salen con parte de la energía, con λ más largas.</p>
+   <p class="fuente">Las opciones incorrectas son hipótesis nuestras. Sigue en «¿Qué pasa si…?»: otro metal, luces que compiten, la pila al revés, la mitad de la longitud de onda y más voltaje en el tubo.</p></div>` },
+];
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1;
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = sinCorte(s.body());
+  E.compacto = !!(s.gate && !S.pred[s.gate.id]); Celular.compactar($('m1'), E.compacto);
+  if (s.prep) s.prep();
+  pintarDots();
+  if (s.gate) prediccion(s);
+  nav();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+  [...dots.querySelectorAll('button')].forEach((b, j) => { b.disabled = j > S.max || S.ocupado; });
+  document.querySelectorAll('#ctl1 input').forEach(i => { i.disabled = S.ocupado; });
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    // un paso bloqueado no anuncia su título
+    if (k > S.max){ b.setAttribute('aria-disabled', 'true'); b.setAttribute('aria-label', `Paso ${k + 1}, bloqueado`); }
+    else { b.removeAttribute('aria-disabled'); b.setAttribute('aria-label', `Ir al paso ${k + 1}: ${steps[k].t}`); }
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+function desbloquear(k){ if (k > S.max) S.max = k; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    S.ocupado = true; nav();
+    $('next').focus({ preventScroll:true });
+    const paso = S.step;
+    E.compactar(false);
+    Celular.alResponder($('cv'), () => s.anima(() => { S.ocupado = false; E.avisar(); nav(); }), () => S.step === paso,
+      { siNo: () => { S.ocupado = false; nav(); } });
+  }));
+  pintar();
+}
+
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+go(0);
+})();
+</script>
+
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Respaldos: FM2 'documentado' en el experimento 2 para «solo la roja, porque trae más energía» (cerca de 1 de cada
+   20 de los que fallaron dijo de forma explícita que basta subir la intensidad) y 'parcial' para «las dos, la roja
+   con más corriente» (la idea está en FM2, sin dato propio); lo demás, hipótesis nuestras
+   (docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md). La escena cambia recién después de responder:
+   mientras tanto, el tubo queda quieto, sin fotones ni electrones, y el amperímetro con «?». */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2', null);
+const Z1 = MF.fotoelectrico(310, 4.3), R2 = MF.fototubo({ lambda:620, phi:PHI0, P:0.1, V:2 }), A2 = MF.fototubo({ lambda:460, phi:PHI0, P:2e-4, V:2 });
+const C3 = MF.cambioFototubo({ lambda:310, phi:PHI0, P:1e-3, V:0 }, { lambda:310, phi:PHI0, P:1e-3, V:-1 });
+const L4 = MF.cambioLambda(310, 155, PHI0), X5 = MF.cambioRayosX(31000, 62000);
+const descTubo = m => `Una lámpara ilumina una placa de ${m} dentro de un tubo de vacío, frente a la placa colectora; por fuera, una pila y un amperímetro.`;
+const quieto = ya => ({ particulas:ya, ver:{ I:ya } });
+
+const EXPS = [
+  { id:'otro-metal', corto:'Otro metal',
+    q:`Con la luz de ${l_('310 nm')} (fotones de ${E_('4 eV')}), el metal de ${p_('φ = 2,5 eV')} soltaba electrones con ${K_('Kmax = 1,5 eV')}. Se cambia la placa por una de zinc, con ${p_('φ ≈ 4,3 eV')}, y se deja la pila a favor. ¿Qué pasa?`,
+    opts:[['a', 'Salen con la misma Kmax = 1,5 eV, porque la luz es la misma', 'FM-el-metal-no-importa', 'hipotesis'],
+          ['b', `Salen con Kmax = ${fmt(Z1.errores.sumaPhi.Kmax, 1)} eV, porque se suma la función trabajo`, 'FM-kmax-suma-phi', 'hipotesis'],
+          ['c', 'No sale ninguno, porque cada fotón trae 4 eV, menos que 4,3 eV'],
+          ['d', 'Salen menos electrones, porque al zinc le cuesta más soltarlos', 'FM-phi-mayor-menos-electrones', 'hipotesis']],
+    ok:'c',
+    fb:{ a:'La luz es la misma, pero sacar un electrón del zinc cuesta más que los 4 eV de cada fotón.', b:'La función trabajo se resta: es lo que cuesta salir. Y aquí cuesta más de lo que trae el fotón.', d:'No salen «menos»: no sale ninguno. Un fotón de 4 eV no alcanza los 4,3 eV, y no se puede juntar la energía de dos fotones.' },
+    antes:ya => E.config(Object.assign({ t:{ lambda:310, phi:4.3, P:1e-3, V:2, metal:'zinc' }, lect: () => lecturaTubo(E, ya ? ['lam', 'E', 'phi', 'K', 'I'] : ['lam', 'E', 'phi', 'V', 'I?']), desc: () => descTubo('zinc') }, quieto(ya))),
+    despues:() => { E.ver.I = true; E.lect = () => lecturaTubo(E, ['lam', 'E', 'phi', 'K', 'I']); E.particulasOn(true); E.avisar(); },
+    exp:() => `<div class="eqs"><div class="eq">${E_('E')} = 1240 / ${l_('310')} = ${E_('4 eV')} &lt; ${p_('φ ≈ 4,3 eV')} → ${I_('I = 0')}</div>
+      <div class="eq">${l_('λ₀')} = 1240 / ${p_('4,3')} ≈ ${l_(nm(Z1.lambda0))}<span class="note">el zinc necesita luz de menos de unos 288 nm</span></div></div>
+      <p>Cada metal tiene su función trabajo y, con ella, su longitud de onda umbral. La misma luz que arranca electrones de un metal puede no arrancar ninguno de otro.</p>
+      <p class="fuente">Las opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'roja-azul', corto:'Roja intensa o azul tenue',
+    q:`Sobre el metal de ${p_('φ = 2,5 eV')}, con la pila a favor, se compara una luz roja muy intensa (${l_('620 nm')}, ${P_('100 mW')}) con una luz azul tenue (${l_('460 nm')}, ${P_('0,2 mW')}, quinientas veces menos potencia). Dato: hc = 1240 eV·nm. ¿Cuál hace marcar corriente al amperímetro?`,
+    opts:[['a', 'Solo la azul, porque sus fotones traen unos 2,7 eV, más que 2,5 eV'],
+          ['b', 'Solo la roja, porque trae quinientas veces más energía por segundo', 'FM2-basta-subir-la-intensidad', 'documentado'],
+          ['c', 'Las dos, pero la roja da más corriente porque es más intensa', 'FM2-intensidad-compensa-frecuencia', 'parcial'],
+          ['d', 'Ninguna, porque la azul es muy tenue y la roja no alcanza', 'FM-intensidad-minima', 'hipotesis']],
+    ok:'a',
+    fb:{ b:'La roja trae mucha energía por segundo, pero en fotones de 2 eV: ninguno alcanza por sí solo.', c:'La roja no da corriente con ninguna intensidad: sus fotones de 2 eV no alcanzan los 2,5 eV.', d:'No hay una intensidad mínima: cada fotón azul que llega puede arrancar un electrón. Con poca luz salen pocos, pero salen.' },
+    antes:ya => E.config(Object.assign({ t:{ lambda:620, phi:PHI0, P:0.1, V:2 }, lect: () => lecturaTubo(E, ya ? ['lam', 'P', 'E', 'K', 'I'] : ['lam', 'P', 'V', 'I?']), desc: () => descTubo('metal') + ' Primero se prueba la luz roja.' }, quieto(ya))),
+    despues:() => { E.ver.I = true; E.lect = () => lecturaTubo(E, ['lam', 'P', 'E', 'K', 'I']); E.particulasOn(true); E.avisar();
+      const tok = E.tok; setTimeout(() => { if (E.tok !== tok) return; ponerLuz('azul'); }, RM ? 0 : 3200); },
+    exp:() => `<div class="acciones"><button type="button" class="btn" id="luzRoja">Ver la roja</button><button type="button" class="btn" id="luzAzul">Ver la azul</button></div>
+      <div class="eqs"><div class="eq">roja: ${E_('E')} = 1240 / ${l_('620')} = ${E_('2 eV')} &lt; ${p_('φ')} → ${I_('I = 0')}, con ${P_('100 mW')} o con más</div>
+      <div class="eq">azul: ${E_('E')} = 1240 / ${l_('460')} ≈ ${E_('2,7 eV')} &gt; ${p_('φ')} → ${K_('Kmax')} ≈ ${K_(fmt(A2.Kmax, 2) + ' eV')} y ${I_('I')} ≈ ${I_(uA(A2.I))}</div></div>
+      <p>La roja inunda el tubo de fotones y no saca ninguno; la azul manda pocos fotones, y cada uno puede sacar un electrón. Lo que decide si hay corriente es la energía de cada fotón, es decir, la frecuencia. La intensidad solo decide cuánta corriente hay cuando sí salen.</p>
+      <p class="fuente">En un curso que usó una simulación, cerca de 1 de cada 20 de los que fallaron dijo de forma explícita que basta subir la intensidad (McKagan y otros, 2009): la opción B tiene ese respaldo. La C sale de la misma idea, sin dato propio (parcial). La D es hipótesis nuestra.</p>` },
+  { id:'pila-al-reves', corto:'La pila al revés',
+    q:`Con la luz de ${l_('310 nm')} y ${P_('1 mW')} sobre el metal de ${p_('φ = 2,5 eV')}, los electrones salen con hasta ${K_('Kmax = 1,5 eV')} y el amperímetro marca ${I_(uA(C3.antes.I))} con la pila en ${V2_('0 V')}; con la pila al revés, la corriente llega a cero en ${V2_('V₀ = 1,5 V')}, el potencial de frenado. Se da vuelta la pila y se pone en ${V2_('1 V')} de frenado (${V2_('V = −1 V')}). ¿Qué pasa con la corriente?`,
+    opts:[['a', 'Baja a cero, porque la pila al revés frena a todos los electrones', 'FM-frenado-detiene-a-todos', 'hipotesis'],
+          ['b', 'No cambia, porque mientras V sea menor que V₀ llegan todos', 'FM-frenado-todo-o-nada', 'hipotesis'],
+          ['c', 'Sube, porque ahora la pila empuja a los electrones del metal', 'FM1-pila-empuja-al-reves', 'hipotesis'],
+          ['d', 'Baja, pero no a cero, porque solo llegan los que salen con más de 1 eV']],
+    ok:'d',
+    fb:{ a:'Frena a todos, sí, pero los que salen con más de 1 eV todavía alcanzan el colector. La corriente es cero recién en −1,5 V.', b:'Los electrones no salen todos con 1,5 eV: esa es la energía máxima. Los que salen con menos de 1 eV ya no llegan.', c:'La pila no saca electrones del metal; al revés, le quita energía a cada uno en el camino.' },
+    antes:ya => E.config({ t:{ lambda:310, phi:PHI0, P:1e-3, V: ya ? -1 : 0 }, ver:{ I:true, iv: ya ? { curvas:[], marcaV0:true } : null },
+      lect: () => lecturaTubo(E, ya ? ['lam', 'K', 'V', 'I'] : ['lam', 'K', 'V', 'I']), desc: () => descTubo('metal') }),
+    despues:() => { E.ver.iv = { curvas:[], marcaV0:true }; E.redimensionar(); E.leyenda(); E.llevar({ V:-1 }, 2000); },
+    exp:() => `<div class="eqs"><div class="eq">llega el que sale con K &gt; e · |${V2_('V')}| = 1 eV, de un máximo de ${K_('1,5 eV')}</div>
+      <div class="eq">${I_('I')} = ${I_(uA(C3.antes.I))} → ${I_(uA(C3.despues.I))}<span class="note">en el modelo de la escena, un tercio</span></div>
+      <div class="eq">${V2_('V = −1,5 V = −V₀')} → ${I_('I = 0')}</div></div>
+      <p>Los electrones salen con energías distintas, desde casi cero hasta ${K_('Kmax')}: los de la superficie salen con más. La pila al revés les quita e·|${V2_('V')}| a cada uno; los que no tienen tanto se regresan. Por eso la corriente baja poco a poco y se anula justo en ${V2_('−V₀')}. Que la caída sea recta es una simplificación del dibujo (cada energía, entre 0 y ${K_('Kmax')}, igual de probable); en un tubo real la curva es más suave, pero el corte en −V₀ es el mismo.</p>
+      <p class="fuente">Las opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'mitad-lambda', corto:'La mitad de la longitud de onda',
+    q:`Con la luz de ${l_('310 nm')}, el metal de ${p_('φ = 2,5 eV')} da ${K_('Kmax = 1,5 eV')}. Se cambia por una luz ultravioleta de la mitad de longitud de onda, ${l_('155 nm')}, con la misma potencia. Dato: hc = 1240 eV·nm. ¿Cuánto vale ahora ${K_('Kmax')}?`,
+    opts:[['a', `Kmax = ${fmt(L4.errores.doble, 0)} eV`, 'FM-kmax-proporcional-a-f', 'hipotesis'],
+          ['b', `Kmax = ${fmt(L4.Kmax1, 1)} eV`],
+          ['c', `Kmax = ${fmt(L4.Kmax0/2, 2)} eV`, 'FM-lambda-y-f-al-reves', 'hipotesis'],
+          ['d', `Kmax = ${fmt(L4.errores.sinPhi, 0)} eV`, 'FM-kmax-sin-restar-phi', 'hipotesis']],
+    ok:'b',
+    fb:{ a:'La energía del fotón se duplica, pero la función trabajo se resta igual: Kmax = 8 − 2,5, no 2 · 1,5.', c:'Con menos λ el fotón trae MÁS energía, no menos: E = hc/λ.', d:'Falta restar la función trabajo: 8 − 2,5.' },
+    antes:ya => E.config({ t:{ lambda: ya ? 155 : 310, phi:PHI0, P:1e-3, V:0 }, ver:{ I:true }, lect: () => lecturaTubo(E, ya ? ['lam', 'E', 'phi', 'K', 'I'] : ['lam', 'phi', 'K', 'I']), desc: () => descTubo('metal') }),
+    despues:() => { E.lect = () => lecturaTubo(E, ['lam', 'E', 'phi', 'K', 'I']); E.llevar({ lambda:155 }, 2200); },
+    exp:() => `<div class="eqs"><div class="eq">${E_('E')}: 1240/${l_('310')} = ${E_('4 eV')} → 1240/${l_('155')} = ${E_('8 eV')}<span class="note">la mitad de λ, el doble de energía</span></div>
+      <div class="eq">${K_('Kmax')} = ${E_('8')} − ${p_('2,5')} = ${K_('5,5 eV')}<span class="note">no se duplica</span></div></div>
+      <p>La energía del fotón es inversa a la longitud de onda, pero ${K_('Kmax')} no: primero hay que pagar ${p_('φ')}, que no cambia. Mira los electrones: salen bastante más rápido. Y la corriente baja a la mitad: con la misma potencia y fotones del doble de energía, llegan la mitad de fotones por segundo.</p>
+      <p class="fuente">Las opciones incorrectas son hipótesis nuestras.</p>` },
+  { id:'mas-voltaje', corto:'Más voltaje en el tubo de rayos X',
+    q:`El tubo de rayos X trabaja con ${V2_('31 kV')} y sus rayos X más cortos tienen ${l_('λmin = 0,04 nm')}. Se sube el voltaje a ${V2_('62 kV')}. ¿Cuánto vale ahora ${l_('λmin')}?`,
+    opts:[['a', `λmin = ${fmt(X5.errores.proporcional, 2)} nm`, 'FM-rayosX-lambda-proporcional-a-V', 'hipotesis'],
+          ['b', `λmin = ${fmt(X5.errores.igual, 2)} nm`, 'FM-rayosX-voltaje-solo-cantidad', 'hipotesis'],
+          ['c', `λmin = ${fmt(X5.errores.cuadrado, 2)} nm`, 'FM-rayosX-con-el-cuadrado', 'hipotesis'],
+          ['d', `λmin = ${fmt(X5.lambdaMin1, 2)} nm`]],
+    ok:'d',
+    fb:{ a:'Con más voltaje, cada electrón llega con más energía y el fotón más energético tiene λ más CORTA.', b:'El voltaje sí cambia la energía de cada electrón: el doble. Así cambia el borde del espectro.', c:'λmin = hc/(eV): inversa al voltaje, no a su cuadrado.' },
+    antes:ya => E.config({ vista:'rayos', ver:{ curvas: ya ? [{ V:31000, trazos:true }, { V:62000 }] : [{ V:31000 }], lmin:true },
+      lect: () => [['V', 'Voltaje del tubo V', ya ? '31 kV → 62 kV' : '31 kV'], ['lam', 'λmin', ya ? `${fmt(X5.lambdaMin0, 2)} nm → ${fmt(X5.lambdaMin1, 2)} nm` : `${fmt(X5.lambdaMin0, 2)} nm`]],
+      desc: () => 'El tubo de rayos X y, abajo, su espectro con el borde en λmin.' }),
+    despues:() => { E.ver.curvas = [{ V:31000, trazos:true }, { V:62000 }]; E.leyenda();
+      E.lect = () => [['V', 'Voltaje del tubo V', '31 kV → 62 kV'], ['lam', 'λmin', `${fmt(X5.lambdaMin0, 2)} nm → ${fmt(X5.lambdaMin1, 2)} nm`]]; E.avisar(); E.progreso('hasta', 1400); },
+    exp:() => `<div class="eqs"><div class="eq">${l_('λmin')} = 1240 / ${V2_('62 000')} = ${l_('0,02 nm')}<span class="note">el doble de voltaje, la mitad de λmin</span></div></div>
+      <p>Con el doble de voltaje, cada electrón llega con el doble de energía, y el fotón más energético también: su λ es la mitad. El borde del espectro se corre hacia λ más cortas (rayos X más penetrantes).</p>
+      <p class="fuente">Las opciones incorrectas son hipótesis nuestras.</p>` },
+];
+function ponerLuz(cual){
+  if (cual === 'azul'){ E.t.lambda = 460; E.t.P = 2e-4; } else { E.t.lambda = 620; E.t.P = 0.1; }
+  E.cambio(); E.avisar();
+  const r = $('luzRoja'), a = $('luzAzul');
+  if (r && a){ r.setAttribute('aria-pressed', String(cual !== 'azul')); a.setAttribute('aria-pressed', String(cual === 'azul')); }
+}
+const S = { k:0, pred:{}, t0:Date.now() };
+// Pastillas: la k solo se abre si todos los experimentos anteriores ya tienen respuesta; las respondidas se revisitan.
+function primeraLibre(){ const j = EXPS.findIndex(x => !S.pred[x.id]); return j < 0 ? EXPS.length - 1 : j; }
+function botones(){
+  const libre = primeraLibre();
+  $('exps').innerHTML = EXPS.map((x, k) => k > libre
+    ? `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  if (k > primeraLibre()) return;
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  E.compacto = !ya; Celular.compactar($('m2'), !ya);
+  x.antes(ya);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p>${sinCorte(x.q)}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la opción ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = sinCorte(x.exp()) + (k < EXPS.length - 1 ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    const r = $('luzRoja'), a = $('luzAzul');
+    if (r && a){ r.onclick = () => ponerLuz('roja'); a.onclick = () => ponerLuz('azul'); r.setAttribute('aria-pressed', String(E.t.lambda !== 460)); a.setAttribute('aria-pressed', String(E.t.lambda === 460)); }
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; botones(); pintar();
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+    E.compactar(false);
+    Celular.alResponder($('cv2'), () => { x.despues(); E.leyenda(); E.dibujar(); }, () => S.k === k);
+  });
+  pintar();
+}
+ir(0);
+})();
+</script>
+
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>
