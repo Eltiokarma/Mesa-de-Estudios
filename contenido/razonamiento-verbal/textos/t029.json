@@ -1,0 +1,305 @@
+{
+  "id": "t029",
+  "version": 1,
+  "titulo": "«Es solo una teoría»",
+  "tema": "Ciencia · qué es una teoría científica",
+  "grado": 5,
+  "dificultad": 3,
+  "tipo_texto": "argumentativo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "En la conversación de todos los días, decir que algo «es solo una teoría» significa que es una suposición sin pruebas, una idea que alguien tuvo y que podría ser falsa."
+      },
+      {
+        "id": "o2",
+        "rol": "apoyo",
+        "t": "En la ciencia, la palabra se usa casi al revés."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "Una teoría científica es una explicación amplia que reúne muchos hechos comprobados, que permite hacer predicciones y que ha resistido muchos intentos de demostrar que es falsa."
+      },
+      {
+        "id": "o4",
+        "rol": "detalle",
+        "t": "La teoría de la evolución o la de que la materia está formada por átomos no son corazonadas: son de las explicaciones mejor comprobadas que existen."
+      }
+    ],
+    [
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "Eso no quiere decir que una teoría sea definitiva."
+      },
+      {
+        "id": "o6",
+        "rol": "detalle",
+        "t": "Si aparecen hechos que no puede explicar, se corrige, se amplía o, en casos raros, se reemplaza por otra mejor."
+      },
+      {
+        "id": "o7",
+        "rol": "contraste",
+        "t": "Algunos ven en esa posibilidad una debilidad: si puede cambiar, dicen, no vale la pena creerle."
+      }
+    ],
+    [
+      {
+        "id": "o8",
+        "rol": "principal",
+        "t": "Es al revés: lo que hace confiable a una teoría no es que sea intocable, sino que se ha puesto a prueba muchas veces y que sigue abierta a ser revisada."
+      },
+      {
+        "id": "o9",
+        "rol": "apoyo",
+        "t": "Confundir los dos sentidos de la palabra lleva a despreciar justamente el conocimiento más sólido que tenemos."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.sentido-contextual",
+      "enunciado": "En la oración 3, la palabra TEORÍA significa",
+      "alternativas": [
+        {
+          "t": "una explicación comprobada que reúne muchos hechos.",
+          "correcta": true,
+          "evidencia": [
+            "o3"
+          ],
+          "explicacion": "Es la definición que da la misma oración 3 para el sentido científico."
+        },
+        {
+          "t": "una suposición sin pruebas.",
+          "codigo": "RV18",
+          "origen": "o1",
+          "explicacion": "Es el sentido de todos los días (oración 1), que el texto dice que la ciencia usa \"casi al revés\"."
+        },
+        {
+          "t": "una ley que ya no puede cambiar.",
+          "codigo": "RV19",
+          "origen": "o5",
+          "explicacion": "Está en el mismo campo, pero choca con las oraciones 5 y 6: una teoría se puede corregir."
+        },
+        {
+          "t": "una corazonada.",
+          "codigo": "RV5",
+          "origen": "o4",
+          "explicacion": "Repite una palabra de la oración 4, pero esa oración dice que las teorías \"no son corazonadas\"."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que mejor resume la tesis del autor.",
+        "aceptadas": [
+          "o8"
+        ],
+        "ninguna": "RV3",
+        "codigos": {
+          "o1": "RV4",
+          "o7": "RV33"
+        },
+        "explicacion": "La oración 8 dice la tesis: una teoría es confiable porque ha sido muy probada y sigue abierta a revisión.",
+        "explicaciones": {
+          "o1": "La primera oración da el sentido de todos los días: es el punto de partida.",
+          "o2": "Dice que la ciencia usa la palabra al revés; prepara la tesis, pero no la dice.",
+          "o3": "Define una teoría científica: es información de base.",
+          "o4": "Da ejemplos de teorías: es un detalle.",
+          "o5": "Aclara que una teoría no es definitiva; es un paso del razonamiento.",
+          "o6": "Explica cómo cambia una teoría: es un paso del razonamiento.",
+          "o7": "Presenta la objeción que el autor va a responder.",
+          "o9": "Saca una consecuencia de la tesis, pero la tesis está en la oración 8.",
+          "ninguna": "La oración 8 sí la dice completa."
+        }
+      },
+      "enunciado": "¿Cuál es la tesis del autor?",
+      "alternativas": [
+        {
+          "t": "Una teoría científica es confiable porque ha sido muy probada y sigue abierta a revisión, no porque no pueda cambiar.",
+          "correcta": true,
+          "evidencia": [
+            "o8"
+          ],
+          "explicacion": "Es lo que dice la oración 8, que responde a quienes ven una debilidad en que las teorías puedan cambiar."
+        },
+        {
+          "t": "La teoría de la evolución es una de las explicaciones mejor comprobadas que existen.",
+          "codigo": "RV1",
+          "origen": "o4",
+          "explicacion": "Es un ejemplo del texto, un detalle."
+        },
+        {
+          "t": "La ciencia es la forma más importante de conocimiento que tenemos.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto discute qué significa \"teoría\" y por qué una teoría es confiable."
+        },
+        {
+          "t": "En la ciencia, la palabra «teoría» significa casi lo contrario de lo que significa en la conversación de todos los días.",
+          "codigo": "RV3",
+          "origen": "o2",
+          "explicacion": "Es una parte del texto (oración 2), pero deja fuera la tesis sobre por qué una teoría es confiable."
+        },
+        {
+          "t": "Las teorías científicas no deberían cambiar nunca.",
+          "codigo": "RV33",
+          "origen": "o8",
+          "explicacion": "El autor dice lo contrario: lo que las hace confiables es que siguen abiertas a revisión."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "compatibilidad",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
+        "sonda": "El autor cree que la teoría de los átomos nunca podrá corregirse.",
+        "clase": "lo-contradice",
+        "codigos": {
+          "lo-dice": "RV11",
+          "se-deduce": "RV7",
+          "no-se-sabe": "RV9"
+        },
+        "explicacion": "Las oraciones 5 y 6 dicen que ninguna teoría es definitiva y que puede corregirse si aparecen hechos nuevos: la afirmación dice lo contrario.",
+        "explicaciones": {
+          "lo-dice": "El texto dice que la teoría de los átomos está muy comprobada, pero no que nunca pueda corregirse; al contrario, dice que ninguna teoría es definitiva.",
+          "se-deduce": "Que esté muy comprobada no permite concluir que nunca se corregirá; el autor dice lo contrario en las oraciones 5 y 6.",
+          "no-se-sabe": "Sí se puede saber: el autor dice que ninguna teoría es definitiva (oración 5)."
+        }
+      },
+      "enunciado": "Es compatible con el texto afirmar que",
+      "alternativas": [
+        {
+          "t": "una teoría bien comprobada puede corregirse si aparecen hechos nuevos.",
+          "correcta": true,
+          "evidencia": [
+            "o6"
+          ],
+          "explicacion": "Es lo que dice la oración 6."
+        },
+        {
+          "t": "toda teoría científica termina siendo reemplazada por otra.",
+          "codigo": "RV11",
+          "origen": "o6",
+          "explicacion": "La oración 6 dice que se reemplaza \"en casos raros\"; \"toda\" dice mucho más."
+        },
+        {
+          "t": "una teoría científica es una idea sin pruebas que alguien tuvo.",
+          "codigo": "RV5",
+          "origen": "o1",
+          "explicacion": "Repite palabras de la oración 1, pero ese es el sentido de todos los días, no el científico."
+        },
+        {
+          "t": "el autor considera una debilidad que las teorías puedan cambiar.",
+          "codigo": "RV33",
+          "origen": "o7",
+          "explicacion": "Esa es la postura de \"algunos\" (oración 7); el autor dice \"es al revés\"."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.extrapolacion",
+      "enunciado": "Si mañana se encontrara un hecho que la teoría de los átomos no puede explicar, según el autor, lo esperable sería que",
+      "alternativas": [
+        {
+          "t": "la teoría se revisara para explicar también ese hecho.",
+          "correcta": true,
+          "evidencia": [
+            "o6",
+            "o8"
+          ],
+          "explicacion": "La oración 6 dice que, si aparecen hechos que una teoría no explica, se corrige o se amplía."
+        },
+        {
+          "t": "la teoría siguiera exactamente igual, porque está muy comprobada.",
+          "codigo": "RV12",
+          "explicacion": "Cambia la condición, pero deja igual la consecuencia: el autor dice que ante hechos nuevos la teoría se revisa."
+        },
+        {
+          "t": "toda la química se derrumbara y hubiera que empezar de cero.",
+          "codigo": "RV11",
+          "explicacion": "Es una consecuencia exagerada: el autor dice que lo normal es corregir o ampliar, y que reemplazar es raro."
+        },
+        {
+          "t": "quedara demostrado que la teoría siempre fue una corazonada.",
+          "codigo": "RV7",
+          "explicacion": "El autor dice lo contrario: que una teoría pueda revisarse no la vuelve una corazonada."
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "intencion",
+      "unidad": "razonamiento-verbal.inferencias",
+      "previo": {
+        "tipo": "proposito",
+        "pide": "Antes de ver las alternativas: ¿qué busca sobre todo el autor?",
+        "aceptada": "convencer",
+        "codigos": {
+          "explicar": "RV14",
+          "narrar": "RV13"
+        },
+        "explicacion": "El texto explica dos sentidos de una palabra, pero para responder a una objeción y defender una idea (oraciones 7 y 8).",
+        "explicaciones": {
+          "explicar": "El texto explica qué es una teoría, pero lo hace para responder a quienes la desprecian: busca convencer.",
+          "narrar": "El texto no cuenta hechos en orden: discute una idea."
+        }
+      },
+      "enunciado": "¿Cuál es la intención principal del autor?",
+      "alternativas": [
+        {
+          "t": "Corregir una confusión sobre una palabra que lleva a despreciar el conocimiento científico.",
+          "correcta": true,
+          "evidencia": [
+            "o8",
+            "o9"
+          ],
+          "explicacion": "El autor aclara los dos sentidos de \"teoría\" y responde a una objeción, para que no se desprecie el conocimiento más sólido (oración 9)."
+        },
+        {
+          "t": "Explicar qué afirma la teoría de la evolución.",
+          "codigo": "RV14",
+          "origen": "o4",
+          "explicacion": "La teoría de la evolución aparece como ejemplo, pero el texto no la explica."
+        },
+        {
+          "t": "Contar cómo los científicos descubrieron, a lo largo de los siglos, que la materia está formada por átomos.",
+          "codigo": "RV13",
+          "explicacion": "El texto no cuenta ningún descubrimiento: discute qué es una teoría."
+        },
+        {
+          "t": "Convencer de que las teorías científicas nunca se equivocan.",
+          "codigo": "RV33",
+          "explicacion": "El autor dice lo contrario: las teorías pueden corregirse."
+        },
+        {
+          "t": "Informar sobre las ciencias que existen.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto habla de una palabra y de cómo se usa en la ciencia."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-06",
+  "hechos": [
+    {
+      "afirmacion": "Una teoría científica es una explicación bien comprobada que reúne hechos, permite predicciones y ha resistido pruebas; puede corregirse o, raramente, reemplazarse; la evolución y la teoría atómica están entre las mejor comprobadas.",
+      "fuente": "National Academy of Sciences (2008). Science, evolution, and creationism; AAAS, Science for all Americans (1990), cap. 1."
+    }
+  ],
+  "revision": null
+}

@@ -1,0 +1,304 @@
+{
+  "id": "t025",
+  "version": 1,
+  "titulo": "La fiebre del caucho",
+  "tema": "Amazonía · historia del caucho",
+  "grado": 5,
+  "dificultad": 3,
+  "tipo_texto": "argumentativo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "A fines del siglo XIX, la llanta inflable de las bicicletas, y luego la de los autos, convirtió el caucho en una de las materias primas más buscadas del mundo."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "El mejor venía de árboles que crecían dispersos en la Amazonía, y su látex solo podía recogerse a mano, árbol por árbol."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "Iquitos pasó de ser un pueblo pequeño a una ciudad con casas cubiertas de azulejos traídos de Europa."
+      }
+    ],
+    [
+      {
+        "id": "o4",
+        "rol": "detalle",
+        "t": "Esa riqueza tuvo un costo que durante años se ocultó: en zonas como el Putumayo, empresas caucheras obligaron a miles de indígenas a trabajar con castigos, secuestros y asesinatos."
+      },
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "En 1912, un informe del diplomático británico Roger Casement lo denunció ante el mundo."
+      },
+      {
+        "id": "o6",
+        "rol": "detalle",
+        "t": "El auge terminó poco después, y no por esas denuncias: semillas de árboles de caucho llevadas de la Amazonía a Asia habían dado lugar a grandes plantaciones, que producían más barato."
+      }
+    ],
+    [
+      {
+        "id": "o7",
+        "rol": "contraste",
+        "t": "Suele contarse esta historia como la de una riqueza que se perdió por mala suerte."
+      },
+      {
+        "id": "o8",
+        "rol": "principal",
+        "t": "Su lección es otra: una economía que depende de extraer un recurso a la fuerza, sin cultivarlo, es injusta y frágil a la vez, y su final puede llegar desde muy lejos, sin que nadie en la región pueda impedirlo."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "intencion",
+      "unidad": "razonamiento-verbal.inferencias",
+      "previo": {
+        "tipo": "proposito",
+        "pide": "Antes de ver las alternativas: ¿qué busca sobre todo el autor?",
+        "aceptada": "convencer",
+        "codigos": {
+          "explicar": "RV14",
+          "narrar": "RV13"
+        },
+        "explicacion": "El texto cuenta y explica, pero para corregir una manera de ver la historia y defender otra (oraciones 7 y 8).",
+        "explicaciones": {
+          "explicar": "El texto explica la época del caucho, pero termina discutiendo cómo se cuenta: busca convencer.",
+          "narrar": "El texto cuenta hechos, pero no se queda en ellos: los juzga y saca una lección."
+        }
+      },
+      "enunciado": "¿Cuál es la intención principal del autor?",
+      "alternativas": [
+        {
+          "t": "Discutir la manera habitual de contar la época del caucho y proponer otra lectura.",
+          "correcta": true,
+          "evidencia": [
+            "o7",
+            "o8"
+          ],
+          "explicacion": "El autor presenta cómo \"suele contarse\" esta historia (oración 7) y la corrige con su propia lección (oración 8): busca convencer."
+        },
+        {
+          "t": "Narrar cómo Iquitos pasó de ser un pueblo pequeño a una ciudad con casas de azulejos europeos.",
+          "codigo": "RV13",
+          "origen": "o3",
+          "explicacion": "Eso aparece en la oración 3, pero el texto no se queda en contar: usa la historia para sacar una lección."
+        },
+        {
+          "t": "Explicar por qué la llanta inflable hizo tan valioso el caucho a fines del siglo XIX.",
+          "codigo": "RV14",
+          "origen": "o1",
+          "explicacion": "Es el punto de partida (oración 1); esta alternativa deja fuera la postura del autor."
+        },
+        {
+          "t": "Pedir que se vuelvan a explotar los árboles de caucho de la Amazonía.",
+          "codigo": "RV33",
+          "explicacion": "El autor no pide eso; critica justamente cómo se explotaron."
+        },
+        {
+          "t": "Informar sobre las materias primas más buscadas del mundo.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto habla del caucho amazónico y de lo que su historia enseña."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que mejor resume la tesis del autor.",
+        "aceptadas": [
+          "o8"
+        ],
+        "ninguna": "RV3",
+        "codigos": {
+          "o1": "RV4",
+          "o7": "RV33"
+        },
+        "explicacion": "La oración 8 dice la tesis: una economía que extrae a la fuerza, sin cultivar, es injusta y frágil.",
+        "explicaciones": {
+          "o1": "La primera oración explica por qué el caucho se volvió valioso: es el punto de partida.",
+          "o2": "Explica de dónde venía el caucho y cómo se recogía: es un dato que sirve de base.",
+          "o3": "Cuenta un efecto de la riqueza en Iquitos: es un detalle.",
+          "o4": "Cuenta el costo humano: es un argumento, no la tesis.",
+          "o5": "Cuenta la denuncia de Casement: es un hecho.",
+          "o6": "Cuenta cómo terminó el auge: es un hecho que apoya la tesis.",
+          "o7": "Presenta la manera de contar la historia que el autor va a rechazar.",
+          "ninguna": "La oración 8 sí la dice completa: esa economía era injusta y frágil a la vez."
+        }
+      },
+      "enunciado": "¿Cuál es la tesis del autor?",
+      "alternativas": [
+        {
+          "t": "La economía del caucho fue injusta y frágil porque se basó en extraer a la fuerza, sin cultivar.",
+          "correcta": true,
+          "evidencia": [
+            "o8"
+          ],
+          "explicacion": "Es lo que dice la oración 8, que el autor presenta como la verdadera lección de la historia."
+        },
+        {
+          "t": "En 1912, un informe del diplomático británico Roger Casement denunció ante el mundo los abusos cometidos en el Putumayo.",
+          "codigo": "RV1",
+          "origen": "o5",
+          "explicacion": "Es un hecho del texto, un detalle que apoya la tesis."
+        },
+        {
+          "t": "El auge del caucho terminó cuando las plantaciones de Asia empezaron a producir más barato.",
+          "codigo": "RV3",
+          "origen": "o6",
+          "explicacion": "Cuenta cómo terminó, pero deja fuera lo que el autor saca de ese final: que esa economía era frágil e injusta."
+        },
+        {
+          "t": "La época del caucho fue una riqueza que se perdió por mala suerte.",
+          "codigo": "RV33",
+          "origen": "o7",
+          "explicacion": "Es la manera de contarla que el autor rechaza (oración 7)."
+        },
+        {
+          "t": "La Amazonía ha tenido muchas épocas de riqueza y de pobreza.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto juzga una época concreta."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.inferencias",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
+        "sonda": "Las denuncias de Casement fueron la causa del fin del auge del caucho.",
+        "clase": "lo-contradice",
+        "codigos": {
+          "lo-dice": "RV10",
+          "se-deduce": "RV7",
+          "no-se-sabe": "RV9"
+        },
+        "explicacion": "La oración 6 dice que el auge terminó \"no por esas denuncias\", sino por las plantaciones de Asia: la afirmación dice lo contrario.",
+        "explicaciones": {
+          "lo-dice": "Ojo con el \"no\": la oración 6 dice que el auge terminó \"no por esas denuncias\".",
+          "se-deduce": "Que las denuncias y el fin del auge ocurrieran cerca en el tiempo no permite concluir que una cosa causara la otra; el texto lo niega.",
+          "no-se-sabe": "Sí se puede saber: la oración 6 lo dice, y dice lo contrario."
+        }
+      },
+      "enunciado": "Se infiere del texto que las plantaciones de Asia producían más barato, entre otras razones, porque",
+      "alternativas": [
+        {
+          "t": "sus árboles estaban juntos y no había que buscarlos dispersos por el bosque.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o6"
+          ],
+          "explicacion": "En la Amazonía, los árboles crecían dispersos y se recogía árbol por árbol (oración 2); en una plantación, los árboles están juntos."
+        },
+        {
+          "t": "sus semillas habían sido llevadas desde la Amazonía.",
+          "codigo": "RV6",
+          "origen": "o6",
+          "explicacion": "Eso lo dice el texto (oración 6), pero no explica por qué producían más barato."
+        },
+        {
+          "t": "en Asia no existía ninguna ley contra el trabajo forzado.",
+          "codigo": "RV7",
+          "explicacion": "El texto no habla de las leyes de Asia; esa razón va más allá de lo que dice."
+        },
+        {
+          "t": "usaban el caucho para hacer llantas inflables de bicicleta.",
+          "codigo": "RV5",
+          "origen": "o1",
+          "explicacion": "Usa palabras de la oración 1, pero eso es para qué servía el caucho, no por qué en Asia costaba menos producirlo."
+        },
+        {
+          "t": "el clima de Asia es mucho mejor que el de la Amazonía para que crezcan los árboles de caucho.",
+          "codigo": "RV8",
+          "explicacion": "Es una idea de fuera del texto: el texto no compara los climas."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.sentido-contextual",
+      "enunciado": "En la oración 8, la palabra FRÁGIL significa",
+      "alternativas": [
+        {
+          "t": "que puede venirse abajo con facilidad.",
+          "correcta": true,
+          "evidencia": [
+            "o6",
+            "o8"
+          ],
+          "explicacion": "La economía del caucho se derrumbó en poco tiempo cuando apareció la competencia de Asia (oración 6): era frágil."
+        },
+        {
+          "t": "que se rompe como el vidrio.",
+          "codigo": "RV18",
+          "explicacion": "Es el sentido más común de \"frágil\", pero aquí no se habla de un objeto."
+        },
+        {
+          "t": "pequeña.",
+          "codigo": "RV19",
+          "explicacion": "Está cerca (algo débil), pero no es lo mismo: la economía del caucho no era pequeña, sino que podía caer fácilmente."
+        },
+        {
+          "t": "injusta.",
+          "codigo": "RV5",
+          "origen": "o8",
+          "explicacion": "Es otra palabra de la misma oración, pero nombra otra cualidad: \"injusta y frágil a la vez\"."
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "tipo": "extrapolacion",
+      "unidad": "razonamiento-verbal.extrapolacion",
+      "enunciado": "Si los caucheros de la Amazonía hubieran sembrado sus propias plantaciones antes que en Asia, según la lógica del texto,",
+      "alternativas": [
+        {
+          "t": "la competencia de las plantaciones de Asia les habría hecho menos daño.",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o6"
+          ],
+          "explicacion": "El texto explica la caída por la competencia de plantaciones más baratas (oración 6); con plantaciones propias, esa ventaja de Asia habría sido menor."
+        },
+        {
+          "t": "el auge habría terminado igual cuando Asia empezó a producir más barato.",
+          "codigo": "RV12",
+          "explicacion": "Cambia la condición, pero deja igual la consecuencia: la ventaja de Asia venía justamente de tener plantaciones."
+        },
+        {
+          "t": "Iquitos sería hoy la ciudad más rica del mundo.",
+          "codigo": "RV11",
+          "explicacion": "Es una consecuencia exagerada que no sale del texto."
+        },
+        {
+          "t": "nunca se habría escrito el informe de Casement.",
+          "codigo": "RV7",
+          "explicacion": "El informe denunció los abusos, que no dependían de tener o no plantaciones: esa conclusión no sale del texto."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-06",
+  "hechos": [
+    {
+      "afirmacion": "El auge del caucho (aprox. 1880 a 1914) se debió a la demanda de llantas; Iquitos creció con casas de azulejos europeos; en el Putumayo, la Peruvian Amazon Company sometió a indígenas a trabajo forzado; Roger Casement lo denunció en 1912; el auge terminó por las plantaciones de Asia, nacidas de semillas sacadas de la Amazonía (Wickham, 1876).",
+      "fuente": "Casement, R. (1912). Correspondence respecting the treatment of British colonial subjects and native Indians employed in the collection of rubber in the Putumayo district (Blue Book); Santos Granero, F. y Barclay, F. (2002). La frontera domesticada. PUCP; Chirif, A. (2009), sobre el Putumayo."
+    }
+  ],
+  "revision": null
+}

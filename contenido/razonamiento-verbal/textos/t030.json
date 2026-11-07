@@ -1,0 +1,241 @@
+{
+  "id": "t030",
+  "version": 1,
+  "titulo": "El tren que sube a las nubes",
+  "tema": "Historia republicana · el Ferrocarril Central",
+  "grado": 4,
+  "dificultad": 2,
+  "tipo_texto": "expositivo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "El Ferrocarril Central del Perú sube desde el Callao, a orillas del mar, hasta más de 4700 metros de altura en la cordillera, y baja luego hacia Huancayo."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "Durante mucho tiempo fue uno de los trenes que llegaban más alto en el mundo."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "Su construcción empezó en 1870, impulsada por el empresario estadounidense Henry Meiggs, y el ingeniero polaco Ernest Malinowski dirigió el diseño del trazo."
+      }
+    ],
+    [
+      {
+        "id": "o4",
+        "rol": "apoyo",
+        "t": "Para ganar altura en valles muy estrechos, la vía no podía subir en línea recta: habría quedado demasiado empinada para el tren."
+      },
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "Por eso se usaron zigzags, en los que el tren avanza, se detiene, cambia de vía y sigue subiendo en retroceso, además de decenas de túneles y puentes."
+      },
+      {
+        "id": "o6",
+        "rol": "detalle",
+        "t": "Miles de trabajadores, muchos de ellos llegados de otros países, levantaron la obra en condiciones muy duras, y muchos murieron por accidentes y enfermedades."
+      }
+    ],
+    [
+      {
+        "id": "o7",
+        "rol": "principal",
+        "t": "El tren muestra cómo una obra puede vencer una geografía casi imposible, pero también que ese logro técnico tuvo un costo humano que no debe olvidarse."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que mejor resume todo el texto.",
+        "aceptadas": [
+          "o7"
+        ],
+        "ninguna": "RV3",
+        "codigos": {
+          "o1": "RV4"
+        },
+        "explicacion": "La oración 7 junta las dos caras de la historia: el logro técnico y su costo humano.",
+        "explicaciones": {
+          "o1": "La primera oración dice el recorrido del tren: es el punto de partida.",
+          "o2": "Es un dato sobre la altura: un detalle.",
+          "o3": "Dice cuándo empezó y quiénes lo impulsaron: información de base.",
+          "o4": "Explica el problema de la pendiente: un paso de la explicación.",
+          "o5": "Explica cómo se resolvió el problema: un detalle técnico.",
+          "o6": "Cuenta el costo humano; es la mitad de la idea principal.",
+          "ninguna": "La oración 7 sí lo dice completo: el logro técnico y su costo humano."
+        }
+      },
+      "enunciado": "¿Cuál es la idea principal del texto?",
+      "alternativas": [
+        {
+          "t": "El Ferrocarril Central venció una geografía muy difícil, aunque a costa de muchas vidas.",
+          "correcta": true,
+          "evidencia": [
+            "o7"
+          ],
+          "explicacion": "Es lo que dice la oración 7: el logro técnico y su costo humano."
+        },
+        {
+          "t": "Para ganar altura, el tren avanza, se detiene, cambia de vía y sigue subiendo en retroceso.",
+          "codigo": "RV1",
+          "origen": "o5",
+          "explicacion": "Es un detalle de cómo sube el tren."
+        },
+        {
+          "t": "Los trenes fueron importantes para el desarrollo de los países.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el texto habla de un tren y de lo que su historia muestra."
+        },
+        {
+          "t": "El Ferrocarril Central venció una geografía casi imposible con zigzags, túneles y puentes.",
+          "codigo": "RV3",
+          "origen": "o5",
+          "explicacion": "Es la mitad de la idea: deja fuera el costo humano que, según el autor, no debe olvidarse."
+        },
+        {
+          "t": "El Ferrocarril Central llevaba minerales de la sierra al puerto del Callao.",
+          "codigo": "RV8",
+          "explicacion": "Es un dato conocido, pero el texto no lo dice."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.inferencias",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
+        "sonda": "Henry Meiggs trabajó con sus propias manos en la construcción de las vías.",
+        "clase": "no-se-sabe",
+        "codigos": {
+          "lo-dice": "RV5",
+          "se-deduce": "RV7",
+          "lo-contradice": "RV36"
+        },
+        "explicacion": "El texto dice que Meiggs impulsó la construcción (oración 3), pero no dice si trabajó en ella con sus manos. No se puede saber.",
+        "explicaciones": {
+          "lo-dice": "El texto nombra a Meiggs, pero solo dice que impulsó la obra.",
+          "se-deduce": "Que impulsara la obra no permite concluir que trabajara en ella con sus manos: eso va más allá del texto.",
+          "lo-contradice": "El texto no dice que Meiggs no trabajara en las vías; simplemente no lo dice."
+        }
+      },
+      "enunciado": "Se infiere del texto que los zigzags permitían",
+      "alternativas": [
+        {
+          "t": "subir la cordillera sin que la vía quedara demasiado empinada.",
+          "correcta": true,
+          "evidencia": [
+            "o4",
+            "o5"
+          ],
+          "explicacion": "La oración 4 dice que la vía no podía subir en línea recta porque quedaría muy empinada; el \"por eso\" de la 5 presenta los zigzags como la solución."
+        },
+        {
+          "t": "que el tren avanzara, se detuviera y cambiara de vía.",
+          "codigo": "RV6",
+          "origen": "o5",
+          "explicacion": "Eso describe cómo funciona un zigzag (oración 5), pero no responde para qué servía."
+        },
+        {
+          "t": "que los trabajadores llegados de otros países descansaran durante la obra.",
+          "codigo": "RV5",
+          "origen": "o6",
+          "explicacion": "Usa palabras de la oración 6, pero no tiene nada que ver con los zigzags."
+        },
+        {
+          "t": "que el tren llegara a Huancayo más rápido que por una vía recta.",
+          "codigo": "RV7",
+          "explicacion": "El texto no dice que los zigzags ahorren tiempo; al contrario, el tren se detiene y retrocede."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "referente",
+      "unidad": "razonamiento-verbal.cohesion-y-coherencia",
+      "enunciado": "En la oración 7, ¿a qué se refiere la expresión ESE LOGRO TÉCNICO?",
+      "alternativas": [
+        {
+          "t": "A haber construido una vía que sube por una geografía casi imposible.",
+          "correcta": true,
+          "evidencia": [
+            "o4",
+            "o5",
+            "o7"
+          ],
+          "explicacion": "Es lo que la misma oración acaba de nombrar: vencer una geografía casi imposible, con zigzags, túneles y puentes."
+        },
+        {
+          "t": "A los accidentes y las enfermedades que sufrieron los trabajadores llegados de otros países.",
+          "codigo": "RV27",
+          "origen": "o6",
+          "explicacion": "Es lo último que se nombra antes de la oración 7, pero eso es el costo humano, no el logro."
+        },
+        {
+          "t": "A los túneles de la oración 5.",
+          "codigo": "RV3",
+          "origen": "o5",
+          "explicacion": "Los túneles son parte del logro, pero no todo: el logro es haber vencido la geografía con toda la obra."
+        },
+        {
+          "t": "A que el tren fuera el más rápido del mundo.",
+          "codigo": "RV7",
+          "explicacion": "El texto habla de altura, no de rapidez; esa idea no sale del texto."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.sentido-contextual",
+      "enunciado": "En la oración 7, la palabra VENCER significa",
+      "alternativas": [
+        {
+          "t": "superar un obstáculo.",
+          "correcta": true,
+          "evidencia": [
+            "o4",
+            "o7"
+          ],
+          "explicacion": "La geografía era el obstáculo (oración 4), y la obra lo superó."
+        },
+        {
+          "t": "ganar una competencia o una pelea.",
+          "codigo": "RV18",
+          "explicacion": "Es el sentido más común de \"vencer\", pero aquí no hay un rival: se habla de la geografía."
+        },
+        {
+          "t": "destruir.",
+          "codigo": "RV19",
+          "explicacion": "Está en el mismo campo (dominar algo), pero no es lo mismo: la obra no destruyó la cordillera, la atravesó."
+        },
+        {
+          "t": "subir en retroceso.",
+          "codigo": "RV5",
+          "origen": "o5",
+          "explicacion": "Repite palabras de la oración 5, pero eso es cómo funciona un zigzag, no lo que significa \"vencer\"."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-06",
+  "hechos": [
+    {
+      "afirmacion": "El Ferrocarril Central va del Callao a Huancayo y pasa los 4700 m (túnel de La Galera, unos 4781 m); fue uno de los más altos del mundo; se inició en 1870 con Henry Meiggs y el trazo de Ernest Malinowski; usa zigzags, decenas de túneles y puentes; muchos trabajadores (entre ellos chinos y chilenos) murieron por accidentes y enfermedades como la verruga peruana.",
+      "fuente": "Ferrocarril Central Andino, información histórica; Basadre, J., Historia de la República del Perú, sobre la obra de Meiggs; estudios sobre la \"fiebre de La Oroya\" (bartonelosis) en la construcción."
+    }
+  ],
+  "revision": null
+}

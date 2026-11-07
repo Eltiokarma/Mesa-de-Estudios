@@ -1,0 +1,207 @@
+{
+  "id": "t028",
+  "version": 1,
+  "titulo": "La mancha",
+  "tema": "Relato · decir la verdad",
+  "grado": 3,
+  "dificultad": 1,
+  "tipo_texto": "narrativo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "En el concurso de dibujo del colegio, el de Carla ganó el primer puesto."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "Cuando fue a recoger su diploma, vio en la mesa del jurado la hoja de su amiga Inés, que había quedado sin puesto."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "Tenía una mancha de témpera en una esquina, la misma que Carla le había hecho sin querer al pasarle un pincel el día del concurso."
+      },
+      {
+        "id": "o4",
+        "rol": "detalle",
+        "t": "Carla recordó que, antes de la mancha, el dibujo de Inés le había parecido el mejor de todos, con sus colores del lago al atardecer."
+      }
+    ],
+    [
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "Esa tarde no salió al recreo, aunque era su hora favorita del día."
+      },
+      {
+        "id": "o6",
+        "rol": "detalle",
+        "t": "Buscó a la profesora y le contó lo de la mancha."
+      },
+      {
+        "id": "o7",
+        "rol": "detalle",
+        "t": "La profesora miró las dos hojas, habló con el jurado y, al día siguiente, anunció que el primer puesto sería compartido."
+      }
+    ],
+    [
+      {
+        "id": "o8",
+        "rol": "principal",
+        "t": "Inés la abrazó, y Carla sintió que el diploma valía menos que antes, pero que ella se sentía más liviana."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que mejor resume lo que el relato quiere mostrar.",
+        "aceptadas": [
+          "o8"
+        ],
+        "ninguna": "correcta",
+        "codigos": {
+          "o1": "RV4"
+        },
+        "explicacion": "La oración 8 muestra la enseñanza: Carla pierde algo, pero se siente más liviana. También vale \"ninguna la dice completa\", porque la enseñanza no está dicha con todas sus palabras.",
+        "explicaciones": {
+          "o1": "La primera oración presenta el premio: es el comienzo del relato.",
+          "o2": "Cuenta lo que vio Carla: es un hecho.",
+          "o3": "Cuenta de dónde salía la mancha: es un detalle importante, pero no la enseñanza.",
+          "o4": "Cuenta lo que recordó Carla; prepara lo que hará después.",
+          "o5": "Es un detalle: Carla no salió al recreo.",
+          "o6": "Cuenta lo que hizo Carla, pero no lo que el relato muestra con eso.",
+          "o7": "Cuenta la decisión de la profesora: es un hecho del final."
+        }
+      },
+      "enunciado": "¿Cuál es la idea central del relato?",
+      "alternativas": [
+        {
+          "t": "Decir la verdad, aunque se pierda algo, deja la conciencia tranquila.",
+          "correcta": true,
+          "evidencia": [
+            "o6",
+            "o8"
+          ],
+          "explicacion": "Carla cuenta lo que pasó aunque eso le hace compartir su premio, y al final se siente \"más liviana\" (oración 8)."
+        },
+        {
+          "t": "Inés quedó sin puesto en el concurso de dibujo del colegio.",
+          "codigo": "RV1",
+          "origen": "o2",
+          "explicacion": "Es un hecho del relato, un detalle."
+        },
+        {
+          "t": "Los concursos del colegio premian a los mejores estudiantes.",
+          "codigo": "RV2",
+          "explicacion": "Es demasiado general: el relato no trata de los concursos, sino de lo que hace Carla."
+        },
+        {
+          "t": "Carla ganó el primer puesto, pero después tuvo que compartirlo con Inés.",
+          "codigo": "RV3",
+          "origen": "o7",
+          "explicacion": "Cuenta lo que pasó, pero deja fuera lo esencial: por qué Carla habló y cómo se sintió."
+        },
+        {
+          "t": "Los jurados de los concursos siempre se equivocan.",
+          "codigo": "RV11",
+          "explicacion": "El relato cuenta un caso; \"siempre\" dice mucho más. Además, el jurado no sabía de la mancha."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "inferencia",
+      "unidad": "razonamiento-verbal.inferencias",
+      "previo": {
+        "tipo": "clasificar",
+        "pide": "Antes de ver las alternativas, decide qué relación tiene esta afirmación con el texto.",
+        "sonda": "Carla se sintió responsable por la mancha.",
+        "clase": "se-deduce",
+        "codigos": {
+          "lo-dice": "RV6",
+          "no-se-sabe": "RV34",
+          "lo-contradice": null
+        },
+        "explicacion": "El relato no lo dice con esas palabras, pero se deduce: no salió al recreo y fue a contarle a la profesora (oraciones 5 y 6).",
+        "explicaciones": {
+          "lo-dice": "El relato nunca dice \"se sintió responsable\"; eso se saca de lo que hace Carla.",
+          "no-se-sabe": "No hace falta que el relato lo diga: dejar el recreo para ir a contar lo que pasó muestra que se sentía responsable.",
+          "lo-contradice": "Nada en el relato muestra lo contrario; Carla actúa como alguien que se siente responsable."
+        }
+      },
+      "enunciado": "Se infiere del relato que Carla le contó a la profesora lo de la mancha porque",
+      "alternativas": [
+        {
+          "t": "pensaba que la mancha le había quitado a Inés un puesto que merecía.",
+          "correcta": true,
+          "evidencia": [
+            "o3",
+            "o4"
+          ],
+          "explicacion": "La mancha era suya (oración 3) y, antes de ella, el dibujo de Inés le parecía el mejor (oración 4)."
+        },
+        {
+          "t": "la mancha era de témpera y estaba en una esquina de la hoja.",
+          "codigo": "RV6",
+          "origen": "o3",
+          "explicacion": "Eso lo dice el relato (oración 3), pero no explica por qué Carla habló."
+        },
+        {
+          "t": "quería que el jurado descalificara a Inés.",
+          "codigo": "RV7",
+          "explicacion": "Nada en el relato apoya eso: al contrario, el resultado es que Inés comparte el primer puesto."
+        },
+        {
+          "t": "en los colegios se castiga con dureza a quien mancha, aunque sea sin querer, el trabajo de otro.",
+          "codigo": "RV8",
+          "explicacion": "Es una idea de fuera del relato: el relato no habla de castigos."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "sentido-contextual",
+      "unidad": "razonamiento-verbal.sentido-contextual",
+      "enunciado": "En la oración 8, la palabra LIVIANA significa",
+      "alternativas": [
+        {
+          "t": "tranquila, sin un peso en la conciencia.",
+          "correcta": true,
+          "evidencia": [
+            "o6",
+            "o8"
+          ],
+          "explicacion": "Carla se quitó de encima lo que le preocupaba al contar la verdad: se siente liviana por dentro."
+        },
+        {
+          "t": "que pesa pocos kilos.",
+          "codigo": "RV18",
+          "explicacion": "Es el sentido literal de \"liviana\", pero aquí se habla de cómo se siente Carla, no de su peso."
+        },
+        {
+          "t": "contenta por haber ganado.",
+          "codigo": "RV19",
+          "origen": "o8",
+          "explicacion": "Está cerca (se siente bien), pero no es por haber ganado: el diploma ahora \"valía menos\"."
+        },
+        {
+          "t": "con el diploma en la mano.",
+          "codigo": "RV5",
+          "origen": "o8",
+          "explicacion": "Repite palabras de la misma oración, pero no dice qué significa \"liviana\"."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-06",
+  "hechos": [],
+  "revision": null
+}
