@@ -2,7 +2,7 @@
 
 6 de noviembre de 2026 · Propuesta de diseño para la tarea pl4 de la hoja de ruta
 
-Es el tercer formato de `docs/arquitectura.md`, junto a "escena" y "predicciones", y sirve para razonamiento verbal: textos con preguntas, donde cada alternativa incorrecta es un error con nombre. Los errores salen de `docs/investigacion/razonamiento-verbal-ideas-erroneas.md` (códigos RV1 a RV57).
+Es el tercer formato de `docs/arquitectura.md`, junto a "escena" y "predicciones", y sirve para razonamiento verbal: textos con preguntas, donde cada alternativa incorrecta es un error con nombre. Los errores salen de `docs/investigacion/razonamiento-verbal-ideas-erroneas.md` (códigos RV1 a RV58).
 
 **Es una propuesta.** No toca `nucleo/`, `app/` ni `catalogo/`: eso lo implementa la conversación principal (pedidos en la sección 8). Lo que sí queda fijo desde ahora es el **formato JSON del banco** (sección 5), porque los textos de `contenido/razonamiento-verbal/` se escriben con él.
 
@@ -277,7 +277,7 @@ Ejemplo completo, propio. La versión que vale es la del banco, `contenido/razon
 | `previo.tipo` | Campos | Cómo se califica |
 | --- | --- | --- |
 | `marcar-oracion` | `pide`, `aceptadas` (una o más oraciones), `ninguna` (solo en idea principal: el código si el alumno toca "Ninguna la dice completa", o `"correcta"` si la idea es implícita), `codigos` (código por oración), `explicacion`, `explicaciones` (opcional, por oración) | Correcta si la oración está en `aceptadas`. **En idea principal**, `aceptadas` son justo las oraciones con rol `principal`, y el código de las demás sale, en este orden: de `codigos`; RV4 si es la primera oración del texto (`o1`); y si no, del rol: `detalle`, `ejemplo` y `cita` → RV1; `general` → RV2; `apoyo` y `contraste` → RV3. **En eliminación**, no hay roles: `codigos` es obligatorio para cada oración no aceptada (RV30, RV31 o RV32). |
-| `clasificar` | `pide`, `sonda` (la afirmación), `clase` (`lo-dice`, `se-deduce`, `no-se-sabe` o `lo-contradice`), `codigos` (un código o `null` por cada una de las otras tres clases; "no se sabe" ante algo que se deduce es RV34), `explicacion` | Correcta si coincide con `clase`. Si no, el código de esa clase. |
+| `clasificar` | `pide`, `sonda` (la afirmación), `clase` (`lo-dice`, `se-deduce`, `no-se-sabe` o `lo-contradice`), `codigos` (un código o `null` por cada una de las otras tres clases; "no se sabe" ante algo que se deduce es RV34, y "lo dice" es RV58, nunca RV6 ni RV5), `explicacion` | Correcta si coincide con `clase`. Si no, el código de esa clase. |
 | `relacion` | `pide`, `aceptada` (por ahora, siempre `oposicion`), `codigos` (`{ "suma": "RV26", "causa": "RV24" }`), `explicacion` | Igual |
 | `relacion-analogia` | `pide`, `aceptada` (`a-produce-b`, `b-produce-a`, `a-parte-de-b`, `b-parte-de-a`, `a-usa-b`, `b-usa-a`, `a-tipo-de-b`, `b-tipo-de-a`, `a-causa-b`, `b-causa-a`, `sinonimos`, `contrarios`), `explicacion` | Correcta si coincide. Si no, el código lo fija la regla, sin tabla: la inversa de la aceptada → RV16; cualquier otra → RV17. |
 | `proposito` | `pide`, `aceptada` (`explicar`, `convencer` o `narrar`), `codigos`, `explicacion` | Igual |

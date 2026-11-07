@@ -126,7 +126,7 @@
         "sonda": "Carla se sintió responsable por la mancha.",
         "clase": "se-deduce",
         "codigos": {
-          "lo-dice": "RV6",
+          "lo-dice": "RV58",
           "no-se-sabe": "RV34",
           "lo-contradice": null
         },
@@ -208,6 +208,6 @@
     "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
     "fecha": "2026-11-07",
     "veredicto": "aprobado",
-    "notas": "Cambios aplicados tras la revisión a ciegas; la segunda verificación pidió cuatro retoques de redacción (t025 p5, t026 p2, t027 p2 y la oración 8 de t028), ya aplicados."
+    "notas": "Cambios aplicados tras la revisión a ciegas; la segunda verificación pidió cuatro retoques de redacción (t025 p5, t026 p2, t027 p2 y la oración 8 de t028), ya aplicados. Rutina verbal C (7 nov 2026): en el previo clasificar, «lo dice» ante lo que se deduce pasó a RV58 (antes RV6, RV5 o null)."
   }
 }

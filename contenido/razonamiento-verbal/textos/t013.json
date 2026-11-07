@@ -131,7 +131,7 @@
         "sonda": "Los habitantes de Caral comían productos del mar.",
         "clase": "se-deduce",
         "codigos": {
-          "lo-dice": "RV6",
+          "lo-dice": "RV58",
           "no-se-sabe": "RV34",
           "lo-contradice": null
         },
@@ -251,6 +251,6 @@
     "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
     "fecha": "2026-11-07",
     "veredicto": "aprobado",
-    "notas": "A ciegas: 6 de 6. Cambios: o9 redactada sin la frase que sonaba contradictoria (\"lo que sabemos depende de lo que falta descubrir\"); distractor de compatibilidad endurecido («dan por probado»). Una segunda verificación de los cambios confirmó claves únicas y ajustó seis detalles."
+    "notas": "A ciegas: 6 de 6. Cambios: o9 redactada sin la frase que sonaba contradictoria (\"lo que sabemos depende de lo que falta descubrir\"); distractor de compatibilidad endurecido («dan por probado»). Una segunda verificación de los cambios confirmó claves únicas y ajustó seis detalles. Rutina verbal C (7 nov 2026): en el previo clasificar, «lo dice» ante lo que se deduce pasó a RV58 (antes RV6, RV5 o null)."
   }
 }

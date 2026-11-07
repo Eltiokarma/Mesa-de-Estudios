@@ -144,7 +144,7 @@
         "sonda": "La abuela estaba segura de que su balanza pesaba bien.",
         "clase": "se-deduce",
         "codigos": {
-          "lo-dice": "RV6",
+          "lo-dice": "RV58",
           "no-se-sabe": "RV34",
           "lo-contradice": null
         },
@@ -269,6 +269,6 @@
     "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
     "fecha": "2026-11-06",
     "veredicto": "aprobado",
-    "notas": "A ciegas: 7 de 7. Cambios: la correcta de p2 incluye que el paquete era de la señora (el distractor RV6 era defendible y se reemplazó por uno que choca con el relato, RV9); \"idea central\" en vez de \"tema\"; previo de propósito con RV33 en \"convencer\". Una segunda verificación de los ítems cambiados confirmó claves únicas; se ajustaron cuatro explicaciones y un enunciado."
+    "notas": "A ciegas: 7 de 7. Cambios: la correcta de p2 incluye que el paquete era de la señora (el distractor RV6 era defendible y se reemplazó por uno que choca con el relato, RV9); \"idea central\" en vez de \"tema\"; previo de propósito con RV33 en \"convencer\". Una segunda verificación de los ítems cambiados confirmó claves únicas; se ajustaron cuatro explicaciones y un enunciado. Rutina verbal C (7 nov 2026): en el previo clasificar, «lo dice» ante lo que se deduce pasó a RV58 (antes RV6, RV5 o null)."
   }
 }
