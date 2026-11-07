@@ -381,4 +381,38 @@ Cada ejecución construye una plantilla de escena de química nueva, en la rama 
   - el puente de hidrógeno contra la presión externa en oscuro.
   
   Además, 10 bajos.
-- **Estado:** las correcciones están EN CURSO. Mis decisiones: GQ18 y GQ16 pasan a 'parcial', que es lo prudente.
+- **Estado:** todo corregido. Decidí bajar GQ18 y GQ16 a 'parcial', que es lo prudente. Lo que se arregló:
+  - las correctas ahora caen en posiciones variadas, y en ninguna predicción la correcta es la más larga;
+  - la barra del gas sobre agua solo aparece después de responder;
+  - opciones nuevas para Puno y para el butano;
+  - el butano sin orientar antes de responder;
+  - el paso 3 con el ritmo de equilibrio del motor también con movimiento reducido;
+  - el color del puente de hidrógeno pasó a granate/rosa (#570011 / #fbb1e5), porque el propuesto no pasaba AA en oscuro;
+  - la cabecera del motor ya declara R y el CO₂ en Pa;
+  - con la regla nueva de la conversación principal, el subtítulo y el paso 1 ya no regalan nada.
+
+  Volvió a correr Playwright en las 8 combinaciones, sin errores.
+
+**Pendiente.**
+- La humedad relativa solo está en el motor y en el papel; no tiene escena.
+- Hay que cotejar con la tabla del colegio:
+  - las constantes de Antoine;
+  - los puntos de ebullición del CRC;
+  - los puntos triples;
+  - los momentos dipolares que cita el paso 6 (H₂O 1,85 D y H₂S 0,97 D, de memoria; no salen de un informe).
+- El agua tiene dos tramos de Antoine que difieren 0,55 % a 100 °C; el motor deja la ebullición en 100,0 °C entre 760,1 y 764,3 mmHg.
+
+**Pedidos para la integración.**
+1. En `catalogo/cursos/quimica.json`, unidad `quimica.liquidos-y-solidos`, poner `"plantillas": ["liquidos-y-solidos"]`. Después, `npm run catalogo` y, si hace falta, rebalancear el banco de química.
+2. En `docs/diseno.md`, las variables de líquidos y sólidos (`plantillas/liquidos-y-solidos/`):
+   - presión de vapor Pv: azul (#1f5fbf, oscuro #7cb0ff);
+   - presión externa Pext: naranja (#a05200, oscuro #f0a04a);
+   - temperatura T: verde (#377703, oscuro #97f91f), no rojo, porque el O de la paleta común es rojo;
+   - puente de hidrógeno: granate (#570011, oscuro #fbb1e5);
+   - presión del gas seco Pgas: fucsia (#a10fbf, oscuro #cf6bfa);
+   - los elementos, con la paleta común.
+
+   El ΔE00 mínimo entre variables es 20,4 (puente de hidrógeno contra Pgas).
+3. En `docs/pendientes.md` y en `CLAUDE.md`, una línea como las demás.
+
+**Con esto se termina la cola de esta rutina** (equilibrio químico, cinética, mol y composición, átomo y tabla, enlace, líquidos y sólidos). Si Gerson quiere más química A, hay que darle una lista nueva. La química B (materia, nomenclatura y orgánica) va en su propia rutina.
