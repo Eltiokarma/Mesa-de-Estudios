@@ -123,6 +123,102 @@
     "EL7-potencia-de-potencia-suma": {
       "respaldo": "hipotesis",
       "describe": "En una potencia de potencia suma los exponentes en vez de multiplicarlos"
+    },
+    "AL9-modulo-suma-partes": {
+      "respaldo": "parcial",
+      "describe": "Suma las partes en vez de usar Pitágoras: |a + bi| = |a| + |b|"
+    },
+    "CX10-raiz-de-la-suma": {
+      "respaldo": "hipotesis",
+      "describe": "Saca la raíz de |a| + |b|, sin elevar al cuadrado"
+    },
+    "CX11-sin-raiz": {
+      "respaldo": "hipotesis",
+      "describe": "Da a² + b² y olvida la raíz"
+    },
+    "CX2-i-cubo-es-i": {
+      "respaldo": "hipotesis",
+      "describe": "Cree que i³ = i"
+    },
+    "CX3-usa-el-cociente": {
+      "respaldo": "hipotesis",
+      "describe": "Usa el cociente de dividir el exponente entre 4 en vez del resto"
+    },
+    "CX4-ciclo-corrido": {
+      "respaldo": "hipotesis",
+      "describe": "Corre el ciclo de las potencias de i un lugar (i⁰ = i)"
+    },
+    "AL22-quitar-las-barras": {
+      "respaldo": "parcial",
+      "describe": "Quita las barras del valor absoluto: |x − a| ≤ r como x ≤ a + r"
+    },
+    "NR5-dentro-por-fuera": {
+      "respaldo": "hipotesis",
+      "describe": "Confunde «a lo más r de a» con los dos rayos de afuera"
+    },
+    "NR6-distancia-desde-menos-a": {
+      "respaldo": "hipotesis",
+      "describe": "Mide la distancia desde −a: cambia el signo del centro"
+    },
+    "AL20-no-invertir-con-negativo": {
+      "respaldo": "hipotesis",
+      "describe": "Multiplica por un negativo y deja los extremos en el mismo orden"
+    },
+    "NR20-ordena-sin-voltear-corchetes": {
+      "respaldo": "hipotesis",
+      "describe": "Ordena los extremos pero deja cada corchete en su lugar"
+    },
+    "NR22-olvida-sumar": {
+      "respaldo": "hipotesis",
+      "describe": "Multiplica por k y olvida sumar el término t"
+    },
+    "PO8-resto-con-el-signo-del-divisor": {
+      "respaldo": "hipotesis",
+      "describe": "Para x + a evalúa P(a) en vez de P(−a)"
+    },
+    "PO15-potencia-par-de-negativo": {
+      "respaldo": "hipotesis",
+      "describe": "Una potencia par de un negativo le sale negativa"
+    },
+    "PO27-resto-es-el-independiente": {
+      "respaldo": "hipotesis",
+      "describe": "Da el término independiente como resto"
+    },
+    "PO17-factor-con-el-signo-cambiado": {
+      "respaldo": "hipotesis",
+      "describe": "Para que x − r sea factor iguala a cero P(−r)"
+    },
+    "PO33-factor-con-suma-de-coeficientes": {
+      "respaldo": "hipotesis",
+      "describe": "Iguala a cero la suma de coeficientes, P(1)"
+    },
+    "AL16-despeje-con-signo-cambiado": {
+      "respaldo": "hipotesis",
+      "describe": "Despeja k con el signo cambiado"
+    },
+    "PL14-coeficientes-cruzados": {
+      "respaldo": "parcial",
+      "describe": "Cruza los coeficientes: pone a cada variable el dato de la otra"
+    },
+    "PL15-a-lo-mas-como-al-menos": {
+      "respaldo": "hipotesis",
+      "describe": "Lee «a lo más» como ≥"
+    },
+    "PL12-inecuacion-como-ecuacion": {
+      "respaldo": "parcial",
+      "describe": "Escribe la condición como ecuación, con =, y no como inecuación"
+    },
+    "PL5-vertice-de-mayor-x": {
+      "respaldo": "hipotesis",
+      "describe": "Toma como óptimo el vértice de mayor x"
+    },
+    "PL4-vertice-mas-lejano": {
+      "respaldo": "hipotesis",
+      "describe": "Toma como óptimo el vértice más lejano del origen"
+    },
+    "PL7-solo-vertices-de-los-ejes": {
+      "respaldo": "hipotesis",
+      "describe": "Evalúa solo los vértices que están en los ejes"
     }
   },
   "pares": [
@@ -768,6 +864,570 @@
             "texto": "x = 7",
             "valor": 7,
             "correcta": true
+          }
+        ]
+      }
+    }
+  ],
+  "reserva": [
+    {
+      "par": "cx-01",
+      "plantilla": "numeros-complejos",
+      "unidad": "algebra.numeros-complejos",
+      "mide": "Módulo de un complejo: |a + bi| = √(a² + b²), el largo de la flecha",
+      "A": {
+        "enunciado": "¿Cuál es el módulo del número complejo z = 8 − 15i?",
+        "datos": {
+          "re": 8,
+          "im": -15
+        },
+        "opciones": [
+          {
+            "texto": "23",
+            "valor": 23,
+            "error": "AL9-modulo-suma-partes"
+          },
+          {
+            "texto": "17",
+            "valor": 17,
+            "correcta": true
+          },
+          {
+            "texto": "289",
+            "valor": 289,
+            "error": "CX11-sin-raiz"
+          },
+          {
+            "texto": "√23",
+            "valor": 4.795831523312719,
+            "error": "CX10-raiz-de-la-suma"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "¿Cuál es el módulo del número complejo z = −12 + 5i?",
+        "datos": {
+          "re": -12,
+          "im": 5
+        },
+        "opciones": [
+          {
+            "texto": "17",
+            "valor": 17,
+            "error": "AL9-modulo-suma-partes"
+          },
+          {
+            "texto": "13",
+            "valor": 13,
+            "correcta": true
+          },
+          {
+            "texto": "169",
+            "valor": 169,
+            "error": "CX11-sin-raiz"
+          },
+          {
+            "texto": "√17",
+            "valor": 4.123105625617661,
+            "error": "CX10-raiz-de-la-suma"
+          }
+        ]
+      }
+    },
+    {
+      "par": "cx-02",
+      "plantilla": "numeros-complejos",
+      "unidad": "algebra.numeros-complejos",
+      "mide": "Potencias de i: se usa el resto de dividir el exponente entre 4 (i³ = −i)",
+      "A": {
+        "enunciado": "Si i² = −1, ¿a qué es igual i²⁷?",
+        "datos": {
+          "modelo": {
+            "n": 27
+          }
+        },
+        "opciones": [
+          {
+            "texto": "i",
+            "error": "CX2-i-cubo-es-i"
+          },
+          {
+            "texto": "−i",
+            "correcta": true
+          },
+          {
+            "texto": "−1",
+            "error": "CX3-usa-el-cociente"
+          },
+          {
+            "texto": "1",
+            "error": "CX4-ciclo-corrido"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Si i² = −1, ¿a qué es igual i⁵⁹?",
+        "datos": {
+          "modelo": {
+            "n": 59
+          }
+        },
+        "opciones": [
+          {
+            "texto": "1",
+            "error": "CX4-ciclo-corrido"
+          },
+          {
+            "texto": "−1",
+            "error": "CX3-usa-el-cociente"
+          },
+          {
+            "texto": "−i",
+            "correcta": true
+          },
+          {
+            "texto": "i",
+            "error": "CX2-i-cubo-es-i"
+          }
+        ]
+      }
+    },
+    {
+      "par": "re-01",
+      "plantilla": "numeros-reales",
+      "unidad": "algebra.numeros-reales",
+      "mide": "|x − a| ≤ r es un trozo: los x que están a lo más r de a",
+      "A": {
+        "enunciado": "¿Qué conjunto de números reales es la solución de |x − 5| ≤ 4?",
+        "datos": {
+          "a": 5,
+          "r": 4
+        },
+        "opciones": [
+          {
+            "texto": "⟨−∞; 9]",
+            "error": "AL22-quitar-las-barras"
+          },
+          {
+            "texto": "[1; 9]",
+            "correcta": true
+          },
+          {
+            "texto": "⟨−∞; 1] ∪ [9; +∞⟩",
+            "error": "NR5-dentro-por-fuera"
+          },
+          {
+            "texto": "[−9; −1]",
+            "error": "NR6-distancia-desde-menos-a"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "¿Qué conjunto de números reales es la solución de |x − 3| ≤ 5?",
+        "datos": {
+          "a": 3,
+          "r": 5
+        },
+        "opciones": [
+          {
+            "texto": "⟨−∞; 8]",
+            "error": "AL22-quitar-las-barras"
+          },
+          {
+            "texto": "[−2; 8]",
+            "correcta": true
+          },
+          {
+            "texto": "⟨−∞; −2] ∪ [8; +∞⟩",
+            "error": "NR5-dentro-por-fuera"
+          },
+          {
+            "texto": "[−8; 2]",
+            "error": "NR6-distancia-desde-menos-a"
+          }
+        ]
+      }
+    },
+    {
+      "par": "re-02",
+      "plantilla": "numeros-reales",
+      "unidad": "algebra.numeros-reales",
+      "mide": "Imagen de un intervalo por kx + t con k negativo: los extremos se dan vuelta con sus corchetes",
+      "A": {
+        "enunciado": "Se sabe que x ∈ ⟨−2; 4]. ¿Cuál es el intervalo de los valores que toma −3x + 1?",
+        "datos": {
+          "A": "⟨−2; 4]",
+          "k": -3,
+          "t": 1
+        },
+        "opciones": [
+          {
+            "texto": "⟨7; −11]",
+            "error": "AL20-no-invertir-con-negativo"
+          },
+          {
+            "texto": "⟨−11; 7]",
+            "error": "NR20-ordena-sin-voltear-corchetes"
+          },
+          {
+            "texto": "[−11; 7⟩",
+            "correcta": true
+          },
+          {
+            "texto": "[−12; 6⟩",
+            "error": "NR22-olvida-sumar"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Se sabe que x ∈ [−1; 3⟩. ¿Cuál es el intervalo de los valores que toma −4x + 2?",
+        "datos": {
+          "A": "[−1; 3⟩",
+          "k": -4,
+          "t": 2
+        },
+        "opciones": [
+          {
+            "texto": "[6; −10⟩",
+            "error": "AL20-no-invertir-con-negativo"
+          },
+          {
+            "texto": "[−10; 6⟩",
+            "error": "NR20-ordena-sin-voltear-corchetes"
+          },
+          {
+            "texto": "⟨−10; 6]",
+            "correcta": true
+          },
+          {
+            "texto": "⟨−12; 4]",
+            "error": "NR22-olvida-sumar"
+          }
+        ]
+      }
+    },
+    {
+      "par": "po-01",
+      "plantilla": "polinomios",
+      "unidad": "algebra.division-de-polinomios",
+      "mide": "Teorema del resto: el resto de P(x) ÷ (x + a) es P(−a)",
+      "A": {
+        "enunciado": "Al dividir T(x) = x³ + 2x² − 2x + 7 entre x + 2, ¿qué resto se obtiene?",
+        "datos": {
+          "modelo": {
+            "coefs": [
+              1,
+              2,
+              -2,
+              7
+            ],
+            "divisor": [
+              1,
+              2
+            ]
+          }
+        },
+        "opciones": [
+          {
+            "texto": "19",
+            "valor": 19,
+            "error": "PO8-resto-con-el-signo-del-divisor"
+          },
+          {
+            "texto": "11",
+            "valor": 11,
+            "correcta": true
+          },
+          {
+            "texto": "−5",
+            "valor": -5,
+            "error": "PO15-potencia-par-de-negativo"
+          },
+          {
+            "texto": "7",
+            "valor": 7,
+            "error": "PO27-resto-es-el-independiente"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Al dividir M(x) = x³ + 3x² − 3x + 5 entre x + 2, ¿qué resto se obtiene?",
+        "datos": {
+          "modelo": {
+            "coefs": [
+              1,
+              3,
+              -3,
+              5
+            ],
+            "divisor": [
+              1,
+              2
+            ]
+          }
+        },
+        "opciones": [
+          {
+            "texto": "19",
+            "valor": 19,
+            "error": "PO8-resto-con-el-signo-del-divisor"
+          },
+          {
+            "texto": "15",
+            "valor": 15,
+            "correcta": true
+          },
+          {
+            "texto": "−9",
+            "valor": -9,
+            "error": "PO15-potencia-par-de-negativo"
+          },
+          {
+            "texto": "5",
+            "valor": 5,
+            "error": "PO27-resto-es-el-independiente"
+          }
+        ]
+      }
+    },
+    {
+      "par": "po-02",
+      "plantilla": "polinomios",
+      "unidad": "algebra.ecuaciones-polinomiales",
+      "mide": "Teorema del factor: x − r es factor si P(r) = 0",
+      "A": {
+        "enunciado": "¿Qué valor debe tener k para que x − 3 sea factor de x³ + x² + kx − 12?",
+        "datos": {
+          "modelo": {
+            "coefs": [
+              1,
+              1,
+              "k",
+              -12
+            ],
+            "raiz": 3
+          }
+        },
+        "opciones": [
+          {
+            "texto": "−10",
+            "valor": -10,
+            "error": "PO17-factor-con-el-signo-cambiado"
+          },
+          {
+            "texto": "−8",
+            "valor": -8,
+            "correcta": true
+          },
+          {
+            "texto": "10",
+            "valor": 10,
+            "error": "PO33-factor-con-suma-de-coeficientes"
+          },
+          {
+            "texto": "8",
+            "valor": 8,
+            "error": "AL16-despeje-con-signo-cambiado"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "¿Qué valor debe tener k para que x − 4 sea factor de x³ − 2x² + kx + 8?",
+        "datos": {
+          "modelo": {
+            "coefs": [
+              1,
+              -2,
+              "k",
+              8
+            ],
+            "raiz": 4
+          }
+        },
+        "opciones": [
+          {
+            "texto": "−22",
+            "valor": -22,
+            "error": "PO17-factor-con-el-signo-cambiado"
+          },
+          {
+            "texto": "−10",
+            "valor": -10,
+            "correcta": true
+          },
+          {
+            "texto": "−7",
+            "valor": -7,
+            "error": "PO33-factor-con-suma-de-coeficientes"
+          },
+          {
+            "texto": "10",
+            "valor": 10,
+            "error": "AL16-despeje-con-signo-cambiado"
+          }
+        ]
+      }
+    },
+    {
+      "par": "pl-01",
+      "plantilla": "programacion-lineal",
+      "unidad": "algebra.programacion-lineal",
+      "mide": "Traducir una condición de recursos: cada coeficiente va con su variable y «a lo más» es ≤",
+      "A": {
+        "enunciado": "Un taller fabrica x mesas e y sillas por semana. Cada mesa necesita 5 h de barnizado y cada silla, 2 h. En la semana hay a lo más 40 h de barnizado. ¿Qué inecuación expresa esta condición?",
+        "datos": {
+          "p": 5,
+          "q": 2,
+          "total": 40,
+          "frase": "a lo más"
+        },
+        "opciones": [
+          {
+            "texto": "2x + 5y ≤ 40",
+            "error": "PL14-coeficientes-cruzados"
+          },
+          {
+            "texto": "5x + 2y ≥ 40",
+            "error": "PL15-a-lo-mas-como-al-menos"
+          },
+          {
+            "texto": "5x + 2y ≤ 40",
+            "correcta": true
+          },
+          {
+            "texto": "5x + 2y = 40",
+            "error": "PL12-inecuacion-como-ecuacion"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Un comedor prepara x menús de pollo e y menús de pescado al día. Cada menú de pollo lleva 3 papas y cada menú de pescado, 4. Al día hay como máximo 120 papas. ¿Qué inecuación expresa esta condición?",
+        "datos": {
+          "p": 3,
+          "q": 4,
+          "total": 120,
+          "frase": "como máximo"
+        },
+        "opciones": [
+          {
+            "texto": "4x + 3y ≤ 120",
+            "error": "PL14-coeficientes-cruzados"
+          },
+          {
+            "texto": "3x + 4y ≥ 120",
+            "error": "PL15-a-lo-mas-como-al-menos"
+          },
+          {
+            "texto": "3x + 4y ≤ 120",
+            "correcta": true
+          },
+          {
+            "texto": "3x + 4y = 120",
+            "error": "PL12-inecuacion-como-ecuacion"
+          }
+        ]
+      }
+    },
+    {
+      "par": "pl-02",
+      "plantilla": "programacion-lineal",
+      "unidad": "algebra.programacion-lineal",
+      "mide": "Método de los vértices: el máximo está en el vértice donde z es mayor, no en el más lejano ni en el de mayor x",
+      "A": {
+        "enunciado": "La región factible está dada por x ≥ 0, y ≥ 0, 4x + y ≤ 24, x + y ≤ 9 e y ≤ 7. ¿En qué punto de la región z = 8x + 7y toma su valor máximo?",
+        "datos": {
+          "modelo": {
+            "restricciones": [
+              [
+                4,
+                1,
+                "<=",
+                24
+              ],
+              [
+                1,
+                1,
+                "<=",
+                9
+              ],
+              [
+                0,
+                1,
+                "<=",
+                7
+              ]
+            ],
+            "objetivo": [
+              8,
+              7
+            ]
+          }
+        },
+        "opciones": [
+          {
+            "texto": "(6; 0)",
+            "error": "PL5-vertice-de-mayor-x"
+          },
+          {
+            "texto": "(5; 4)",
+            "correcta": true
+          },
+          {
+            "texto": "(2; 7)",
+            "error": "PL4-vertice-mas-lejano"
+          },
+          {
+            "texto": "(0; 7)",
+            "error": "PL7-solo-vertices-de-los-ejes"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "La región factible está dada por x ≥ 0, y ≥ 0, 5x + y ≤ 25, x + y ≤ 9 e y ≤ 8. ¿En qué punto de la región z = 5x + 4y toma su valor máximo?",
+        "datos": {
+          "modelo": {
+            "restricciones": [
+              [
+                5,
+                1,
+                "<=",
+                25
+              ],
+              [
+                1,
+                1,
+                "<=",
+                9
+              ],
+              [
+                0,
+                1,
+                "<=",
+                8
+              ]
+            ],
+            "objetivo": [
+              5,
+              4
+            ]
+          }
+        },
+        "opciones": [
+          {
+            "texto": "(5; 0)",
+            "error": "PL5-vertice-de-mayor-x"
+          },
+          {
+            "texto": "(4; 5)",
+            "correcta": true
+          },
+          {
+            "texto": "(1; 8)",
+            "error": "PL4-vertice-mas-lejano"
+          },
+          {
+            "texto": "(0; 8)",
+            "error": "PL7-solo-vertices-de-los-ejes"
           }
         ]
       }
