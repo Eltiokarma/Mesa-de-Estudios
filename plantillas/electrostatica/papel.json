@@ -230,25 +230,26 @@
     {
       "id": "p7",
       "nivel": "intermedio",
-      "enunciado": "Dos esferitas de 30 g cada una, con +2 µC cada una, cuelgan de hilos atados al mismo punto y quedan en equilibrio separadas 30 cm. ¿Qué ángulo forma cada hilo con la vertical? (g = 10 m/s²)",
+      "enunciado": "Dos bolitas de papel aluminio de 0,3 g cada una, con +200 nC cada una, cuelgan de hilos atados al mismo punto y quedan en equilibrio separadas 30 cm. ¿Qué ángulo forma cada hilo con la vertical? (g = 10 m/s²)",
       "respuesta": "53° cada uno.",
       "pasos": [
-        "Fuerza eléctrica: F = 9 × 10⁹ · (2 × 10⁻⁶)² / (0,3)² = 0,036 / 0,09 = 0,4 N. Peso: mg = 0,03 · 10 = 0,3 N.",
-        "En cada esferita, la tensión equilibra a F (horizontal) y al peso (vertical): tan θ = F / (mg) = 0,4 / 0,3 = 4/3.",
+        "Fuerza eléctrica: F = 9 × 10⁹ · (2 × 10⁻⁷)² / (0,3)² = 3,6 × 10⁻⁴ / 0,09 = 4 × 10⁻³ N. Peso: mg = 3 × 10⁻⁴ · 10 = 3 × 10⁻³ N.",
+        "En cada bolita, la tensión equilibra a F (horizontal) y al peso (vertical): tan θ = F / (mg) = (4 × 10⁻³) / (3 × 10⁻³) = 4/3.",
         "θ = 53°. Si una tuviera el doble de carga, el ángulo seguiría siendo el mismo para las dos: la fuerza es la misma sobre cada una."
       ],
       "verificar": [
         {
           "fn": "esferas",
           "args": [
-            2,
-            2,
+            0.2,
+            0.2,
             0.3,
-            0.03,
-            0.03
+            0.0003,
+            0.0003
           ],
           "espera": {
-            "F": 0.4,
+            "F": 0.004,
+            "peso1": 0.003,
             "tan1": 1.3333333333333333,
             "theta1": 53.13010235415598,
             "mismoAngulo": true

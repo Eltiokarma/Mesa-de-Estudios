@@ -596,13 +596,14 @@ function crearEscena(cv, idDesc, idLect, idLey){
     if (f >= 1 && E.ver.F){
       const k = Math.min(64, A.x - rad - 12)/Math.max(R.F, R.peso1);
       for (const [P, s] of [[A, -1], [B, 1]]){
-        // peso: desde el borde de abajo, del mismo largo que F (las dos valen 0,2 N)
+        // peso: desde el borde de abajo, del mismo largo que F (las dos valen 2 × 10⁻³ N)
         flecha({ x:P.x, y:P.y + rad }, { x:P.x, y:P.y + rad + R.peso1*k }, c.muted, 2.2);
         // tensión: a lo largo del hilo, corrida 4 px para que no lo tape
         const u = { x:piv.x - P.x, y:piv.y - P.y }, Lu = Math.hypot(u.x, u.y), T = R.T1*k, n = { x:-u.y/Lu*4*s, y:u.x/Lu*4*s };
         flecha({ x:P.x + u.x/Lu*rad + n.x, y:P.y + u.y/Lu*rad + n.y }, { x:P.x + u.x/Lu*(rad + T) + n.x, y:P.y + u.y/Lu*(rad + T) + n.y }, c.muted, 2.2, { trazos:true });
         const Q = flecha({ x:P.x + s*(rad + 1), y:P.y }, { x:P.x + s*(rad + 1 + R.F*k), y:P.y }, c.F, grosor('F', 4.5));
-        if (Q) rotulo(ctx, c, Q.x + s*4, P.y - 14, `F = ${fmt(R.F, 2)} N`, c.F, s > 0 ? 'right' : 'left', 800, 12);
+        // rótulo sobre la flecha, hacia afuera: así no pisa el hilo ni la tensión
+        if (Q) rotulo(ctx, c, P.x + s*(rad + 2), P.y - 14, `F = ${sci(R.F)} N`, c.F, s > 0 ? 'left' : 'right', 800, 11);
         rotulo(ctx, c, P.x + 6, P.y + rad + R.peso1*k - 4, 'mg', c.muted, 'left', 700, 12);
       }
     }
@@ -909,7 +910,8 @@ const S = { step:0, max:0, pred:{}, ocupado:false };
 // Números de la escena (todos del motor)
 const C1 = ME.coulomb(2, 6, 0.3);
 const D3 = ME.cambioDistancia(2, 6, 0.3, 2), D3m = ME.cambioDistancia(2, 6, 0.3, 0.5);
-const ES = ME.esferas(1, 2, 0.3, 0.02, 0.02);
+// Paso 2: bolitas de 0,2 g con 100 nC y 200 nC (el motor usa µC: 0,1 y 0,2)
+const ES = ME.esferas(0.1, 0.2, 0.3, 0.0002, 0.0002);
 const T4 = [{ q:2, x:0, y:0, n:'q₀' }, { q:15, x:-0.3, y:0, n:'q₁' }, { q:20, x:0, y:-0.3, n:'q₂' }];
 const F4 = ME.fuerzaSobre(T4, 0);
 const Q5 = [{ q:4, x:0, y:0, n:'Q' }], P5 = ME.prueba(Q5, { x:0.3, y:0 }, 1), P5n = ME.prueba(Q5, { x:0.3, y:0 }, -1);
@@ -1032,14 +1034,14 @@ const steps = [
    <p class="aviso">No olvides pasar los µC a C: 1 µC = 10⁻⁶ C. Con 2 y 6 en vez de 2 × 10⁻⁶ y 6 × 10⁻⁶, la fuerza saldría ${sci(C1.errores.sinMicro)} N.</p>
    <p class="fuente">${fuenteBP} La opción D es una hipótesis nuestra.</p></div>` },
  { k:'Paso 2', t:'Predice: las esferas colgadas', gate:P2,
-   prep:() => { const ya = !!S.pred[P2.id]; E.config({ vista:'esferas', esf:{ q1:1, q2:2, m:.02, r:.3, n1:'q', n2:'2q' }, prog:{ esf: ya ? 1 : 0 }, ver:{ F:ya, th:ya },
-     lect: () => ya || S.p2 ? [['q', 'Cargas (µC)', '1 y 2'], lF(ES.F, 'F en cada una'), ['th', 'Ángulos θ', `${fmt(ES.theta1, 0)}° y ${fmt(ES.theta2, 0)}°`]] : [['q', 'Cargas (µC)', '1 y 2'], ['ink', 'Masas (g)', '20 y 20']],
+   prep:() => { const ya = !!S.pred[P2.id]; E.config({ vista:'esferas', esf:{ q1:.1, q2:.2, m:.0002, r:.3, n1:'q', n2:'2q' }, prog:{ esf: ya ? 1 : 0 }, ver:{ F:ya, th:ya },
+     lect: () => ya || S.p2 ? [['q', 'Cargas (nC)', '100 y 200'], ['F', 'F en cada una', `${sci(ES.F)} N`], ['th', 'Ángulos θ', `${fmt(ES.theta1, 0)}° y ${fmt(ES.theta2, 0)}°`]] : [['q', 'Cargas (nC)', '100 y 200'], ['ink', 'Masas (g)', '0,2 y 0,2']],
      desc: () => 'Dos esferas iguales cuelgan de hilos atados al mismo punto.' }); },
    anima:fin => { S.p2 = true; E.crecer('esf', 1400, () => { E.ver.F = true; E.ver.th = true; E.leyenda(); E.dibujar(); E.avisar(); fin(); }); },
-   body:() => `<p>Dos esferas iguales, de 20 g cada una, cuelgan de hilos iguales atados al mismo punto. Una tiene carga ${q_('q = 1 µC')} y la otra ${q_('2q = 2 µC')}. Las sostenemos juntas y las soltamos: se repelen. ¿Cómo quedan los hilos?</p>${opcionesHTML(P2.opts, 'fb')}
+   body:() => `<p>Dos bolitas iguales de papel aluminio, de 0,2 g cada una, cuelgan de hilos iguales atados al mismo punto. Una tiene carga ${q_('q = 100 nC')} y la otra ${q_('2q = 200 nC')}. Las sostenemos juntas y las soltamos: se repelen. ¿Cómo quedan los hilos?</p>${opcionesHTML(P2.opts, 'fb')}
    <div id="tras" class="body" hidden>
    <p>Cada esfera queda quieta con tres fuerzas: la eléctrica ${F_('F')} (horizontal), el peso mg y la tensión del hilo (en gris). La ${F_('F')} es la misma en las dos, como en el paso 1.</p>
-   <div class="eqs"><div class="eq">tan ${th_('θ')} = ${F_('F')} / (m · g) = ${F_(fmt(ES.F, 2))} / (0,02 · 10) = ${fmt(ES.tan1, 0)} → ${th_('θ = ' + fmt(ES.theta1, 0) + '°')}<span class="note">para las dos</span></div></div>
+   <div class="eqs"><div class="eq">tan ${th_('θ')} = ${F_('F')} / (m · g) = ${F_(sci(ES.F))} / (2 × 10⁻⁴ · 10) = ${fmt(ES.tan1, 0)} → ${th_('θ = ' + fmt(ES.theta1, 0) + '°')}<span class="note">para las dos</span></div></div>
    <p>Las esferas quedan separadas ${r_('r = 0,3 m')}. Si una pesara más, esa se apartaría menos: la diferencia entre los dos ángulos la pone la masa, no cuál tiene más carga.</p>
    <p class="fuente">En el mismo estudio de Barcelona, con esferas de q y 2q, cerca del 57 % eligió que la de menor carga se aparta el doble, cerca del 19 % que se aparta más la de mayor carga, y solo cerca de 1 de cada 4 acertó (Bohigas y Periago, 2010). La opción D es una hipótesis nuestra.</p></div>` },
  { k:'Paso 3', t:'Predice: el doble de distancia', gate:P3,
