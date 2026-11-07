@@ -2,7 +2,7 @@
  "plantilla": "mas",
  "unidades": "SI: kg, m, s, N, J; g = 10 m/s². x(t) = A·sen(ωt + φ) con φ en grados; π el de verdad salvo con pi2: true (π² ≈ 10 solo en T y f). Los ángulos de fase de academia (16°, 37°, 53°, 74° y sus reflejos en otros cuadrantes) toman los valores del triángulo notable.",
  "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' (una lista) y compara 'espera'. Los campos anidados van con punto (errores.periodoInvertido, puntos.centro.v, cada.0.x); los números se comparan con la tolerancia relativa. 'enPosicionResorte' es resorte(o).enPosicion(x) y 'estadoResorte' es resorte(o).estado(t). En el resorte vertical, x se mide desde el equilibrio, positiva hacia arriba; el estiramiento es deq − x. En el péndulo, ay es la aceleración del ascensor hacia arriba y ax la horizontal; gef = √((g + ay)² + ax²). 'comparar' da cuántas veces cambia cada magnitud del primer oscilador al segundo.",
- "verificacion": "",
+ "verificacion": "Verificado aparte por un subagente sin acceso al código del motor ni a casos.json (7 nov 2026). Usó fracciones exactas y métodos distintos: energía para vmax y A, círculo de referencia para los instantes, diagrama de fuerzas para la g efectiva y el equilibrio vertical, y fuerza y estiramiento para serie y paralelo. Los 23 casos coinciden dentro de 1e-9; errores.periodoConG del caso 4 daba el período correcto y se cambió.",
  "tolerancia": 1e-09,
  "casos": [
   {
@@ -162,7 +162,7 @@
    }
   },
   {
-   "nombre": "Resorte vertical con el mismo bloque y resorte (m = 2/5, k = 40), A = 1/20 desde el equilibrio → deq = 1/10 m, T = π/5 s, igual que en horizontal. Soltado desde arriba (x = +A): el resorte está estirado 1/20 m; en el punto más bajo, 3/20 m",
+   "nombre": "Resorte vertical con el mismo bloque y resorte (m = 2/5, k = 40), A = 1/20 desde el equilibrio → deq = 1/10 m, T = π/5 s, igual que en horizontal. Soltado desde arriba (x = +A): el resorte está estirado 1/20 m; en el punto más bajo, 3/20 m. Error: tratarlo como un péndulo con el estiramiento máximo, 2π·√((deq + A)/g) = 2π·√(3/200) ≈ 0,77 s",
    "fn": "resorte",
    "args": [
     {
@@ -177,7 +177,7 @@
     "T": 0.6283185307179586,
     "omega": 10,
     "E": 0.05,
-    "errores.periodoConG": 0.6283185307179586,
+    "errores.periodoConG": 0.7695298980971184,
     "errores.amplitudConDeq": 0.15
    }
   },

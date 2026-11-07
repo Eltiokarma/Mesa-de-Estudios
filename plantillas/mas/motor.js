@@ -36,7 +36,10 @@
  *   trigFase(grados, exacto)            → { sen, cos } con los valores de academia
  *   resorte({ m, k, A, phi, orientacion: 'horizontal' | 'vertical', g, ay, pi2, exacto } | { m, k, x0, v0, ... })
  *       ω, T, f, A, φ, vmax = A·ω, amax = A·ω², E = ½·k·A², Fmax = k·A, deq; x(t), v(t), a(t), estado(t) (con el
- *       punto del círculo de referencia), enPosicion(x) (energía y rapidez en una posición), puntos (centro y extremo).
+ *       punto del círculo de referencia), enPosicion(x) (energía y rapidez en una posición), puntos (centro y extremo,
+ *       en magnitudes: rapidez y |a|, sin signo).
+ *       Círculo de referencia: con fase = ωt + φ, el punto está en px = A·sen(fase), py = −A·cos(fase), con el eje y
+ *       hacia arriba; gira en sentido antihorario y su sombra sobre el eje horizontal es x. Con fase 0 está abajo.
  *       Con x0 y v0 (en lugar de A y phi) halla A = √(x0² + (v0/ω)²) y φ.
  *   pendulo({ L | hilo + radio, g, m, theta0, phi, ay, ax, pi2 })   T, ω, f, gef, amplitud en arco y en ángulo,
  *       vmax (por energía, exacta) y vmaxMAS = ω·L·θ0; estado(t).
@@ -171,7 +174,7 @@
         periodoInvertido: 2 * PI * Math.sqrt(k / m),   // T = 2π√(k/m)
         periodoSinDosPi: Math.sqrt(m / k),              // T = √(m/k)
         periodoSinRaiz: 2 * PI * m / k,                 // T ∝ m
-        periodoConG: orientacion === 'vertical' ? 2 * PI * Math.sqrt(m / k) * Math.sqrt(G / gef) : null, // creer que g cambia T: T·√(10/gef)
+        periodoConG: orientacion === 'vertical' ? 2 * PI * Math.sqrt((deq + A) / gef) : null, // T = 2π√(estiramiento máximo/g), como si fuera un péndulo
         vmaxConOmega2: A * w * w,                       // vmax = Aω²
         amaxConOmega: A * w,                            // amax = Aω
         energiaSinMedio: k * A * A,                     // E = kA²
