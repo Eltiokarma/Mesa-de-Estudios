@@ -4,6 +4,9 @@ Cada ejecución construye una plantilla de escena de física, completa y revisad
 
 ## Reglas vigentes para las próximas plantillas
 
+- **Orden vigente** (aviso de la conversación principal, 7 nov 2026): choques, fluidos, MAS, ondas mecánicas, termodinámica y, después, gravitación. Electrostática, magnetismo, inducción, física moderna y ondas electromagnéticas pasaron a la rutina de física B (rama `rutina/fisica-b`): ya no son de esta lista.
+- **Celular:** en las plantillas nuevas, usar `nucleo/celular.js` (ejemplo en `plantillas/mruv/`) en vez de copiar a mano el lienzo compacto y sticky.
+
 - **Pastillas de «¿Qué pasa si…?» bloqueadas** (decisión de Gerson, 6 nov 2026, recibida de la conversación principal). Se puede ir a un experimento solo si todos los anteriores ya tienen respuesta. Los respondidos se revisitan libremente. Los bloqueados llevan `disabled`, `aria-disabled` y aria-label «Experimento N, bloqueado», igual que los puntos del paso a paso. También se cierran las otras vías de salto, como el hash o el teclado. La pestaña entre modos no se bloquea. En `dinamica/` lo arregla la conversación principal: no tocarla.
 - Dinámica ya está integrada en `claude/awesome-wozniak-5etl1n` (catálogo, diseño, pendientes y el pedido del informe). Tiro parabólico (6 nov) y estática (7 nov) quedaron hechos (abajo). La próxima ejecución sigue con **choques (impulso y cantidad de movimiento)**.
 - Los avisos de «terminado» van a la conversación principal nueva: `session_01P39d2yUDZET7Wso3ubSiiV` (desde el 7 nov; la anterior era `session_01P39d2yLWTLWLv3TGZ6FkHB`). Ella integra estática.
