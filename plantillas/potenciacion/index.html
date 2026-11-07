@@ -8,15 +8,15 @@
 /* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de «Las fichas que se agrupan».
    Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4), uno por papel en toda la escena:
    las fichas o cubitos que se tienen, N, azul #1f5fbf / #7cb0ff (el mismo de numeración); el lado del cuadrado o la arista
-   del cubo, k (la raíz), naranja #a05200 / #f0a04a; las que sobran, el resto r, turquesa #0f766e / #5ed9c8; las que faltan
-   para el cuadrado siguiente, el resto por exceso r′, fucsia #a10fbf / #cf6bfa; las que se agregan para pasar de un
+   del cubo, k (la raíz), naranja #a05200 / #f0a04a; las que sobran, el residuo por defecto r, turquesa #0f766e / #5ed9c8; las que faltan
+   para el cuadrado siguiente, el residuo por exceso rₑ, fucsia #a10fbf / #cf6bfa; las que se agregan para pasar de un
    cuadrado (o un cubo) al siguiente, la L o la cáscara, verde #466d14 / #a3d65e; el multiplicador m rojo #b02c41 / #f17384
    y el divisor d granate #77032c / #fdb4ce. Los primos de una descomposición y lo que no es variable van en tinta.
-   Elegidos con CIEDE2000 (docs/metodo/paleta.py). Dentro de cada vista: N, k, r, r′ y L mínimo 23,6 en claro (r–L) y 25,3
+   Elegidos con CIEDE2000 (docs/metodo/paleta.py). Dentro de cada vista: N, k, r, rₑ y L mínimo 23,6 en claro (r–L) y 25,3
    en oscuro; con m: k–m 25,8 y 31,8; con d: N–d 38,9 y 33,4, k–d 32,3 y 34,9. Pares bajo 20 que nunca comparten vista:
    m–d (13,7 y 16,8; el multiplicador es del cubo del paso 5 y el divisor, del paso 6). Contraste AA sobre el papel, la
    tarjeta, el chip (.v, fondo al 8 %) y las opciones ya marcadas (correcta y elegida), donde los números van sin chip
-   (.t-*): mínimo 4,53 en claro (r en la opción correcta) y 4,63 en oscuro (r′ en la opción correcta). Pares cercanos con
+   (.t-*): mínimo 4,53 en claro (r en la opción correcta) y 4,63 en oscuro (rₑ en la opción correcta). Pares cercanos con
    los colores de estado, que siempre llevan texto: m–aviso (7,6 y 5,0) y r–correcto (11,1). */
 [hidden]{display:none!important}
 :root{
@@ -243,7 +243,7 @@ function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
 }
 
 /* ================= Piezas compartidas =================
-   Toda la matemática (raíces enteras y restos, la L, terminaciones y criterios, descomposiciones, conteos) y todas las
+   Toda la matemática (raíces enteras y residuos, la L, terminaciones y criterios, descomposiciones, conteos) y todas las
    posiciones de las fichas y los cubitos salen de MotorPotenciacion (motor.js); aquí solo se pinta y se anima.
    El celular (dibujo fijo arriba con una predicción pendiente, subir el lienzo al responder, arrastre sin robarle el
    desplazamiento a la página) va con nucleo/celular.js. */
@@ -252,9 +252,9 @@ const M = MotorPotenciacion;
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 // Texto plano para el lector de pantalla: «12²» se dice «12 al cuadrado» (si no, se leería «122»).
 const quitar = t => String(t).replace(/<sup>2<\/sup>|²/g, ' al cuadrado').replace(/<sup>3<\/sup>|³/g, ' al cubo')
-  .replace(/⁴/g, ' a la cuarta').replace(/∛/g, 'raíz cúbica de ').replace(/√/g, 'raíz de ').replace(/ × /g, ' por ').replace(/ · /g, ' por ')
-  .replace(/ − /g, ' menos ').replace(/≈/g, 'aproximadamente').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
-const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+  .replace(/⁴/g, ' a la cuarta').replace(/∛/g, 'raíz cúbica de ').replace(/√/g, 'raíz de ').replace(/ × /g, ' por ').replace(/ × /g, ' por ')
+  .replace(/ − /g, ' menos ').replace(/≈/g, 'aproximadamente').replace(/rₑ/g, 'r sub e').replace(/…/g, '').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0"${t === 'rₑ' ? ' aria-label="r sub e"' : ''}>${t}</span>`;
 const T = (k, t) => `<span class="t-${k}">${t}</span>`;
 const mil = x => M.miles(x).replace(/ /g, '\u00a0');   // sin cortar la línea entre los grupos de cifras
 const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
@@ -287,7 +287,9 @@ function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document
 document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
 document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
 document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
-const TIPO = { cuadrado:'N', ficha:'N', sobra:'r', falta:'rp', L:'L', L2:'L', viejo:'N', m:'m' };
+const TIPO = { cuadrado:'N', ficha:'N', sobra:'r', falta:'rp', sobraX:'muted', faltaX:'muted', L:'L', L2:'L', viejo:'N', N2:'N', N3:'N', m:'m' };
+// Las copias del cubo del paso 5 son las mismas fichas N, con menos intensidad.
+const ALFA = { N2:.62, N3:.36 };
 </script>
 <script>
 /* ================= La escena =================
@@ -304,7 +306,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
   const pCuad = w => { const s = E.st; return Math.min(26, (w - 40)/Math.max(1, s.cols || 1)); };
   const ALTO = {
     cuadrado: w => clamp((E.st.rows || 1)*pCuad(w) + (E.st.k != null ? 34 : 18) + (E.st.pie ? 34 : 12), 190, 470),
-    cubo: w => (w >= 560 ? 360 : 330), chips: () => 230, recta: () => 210,
+    cubo: w => (w >= 560 ? 360 : 330), chips: w => (w >= 560 ? 230 : 180), recta: () => 210,
     rueda: w => (w >= 560 ? 330 : 470), tarjetas: w => { const n = (E.st.items || []).length, porFila = w >= 560 ? 4 : 2; return 40 + Math.ceil(n/porFila)*74; },
     area5: w => (w >= 560 ? 330 : 310), cifras: () => 230 };
   function resize(){
@@ -363,7 +365,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
   function ficha(c, g, x, y, tipo, alfa){
     const k = TIPO[tipo] || 'N', color = c[k], q = g.p*.08, w = g.p*.84, X = g.x0 + x*g.p + q, Y = g.y0 + y*g.p + q, r = Math.max(1, g.p*.22);
     ctx.save(); if (alfa !== undefined) ctx.globalAlpha = alfa;
-    if (tipo === 'falta'){ ctx.strokeStyle = color; ctx.lineWidth = grosor(k, 1.3); ctx.setLineDash([3, 2.5]); redondeado(ctx, X, Y, w, w, r); ctx.stroke(); ctx.restore(); return; }
+    if (tipo === 'falta' || tipo === 'faltaX'){ ctx.strokeStyle = color; ctx.lineWidth = grosor(k, 1.3); ctx.setLineDash([3, 2.5]); redondeado(ctx, X, Y, w, w, r); ctx.stroke(); ctx.restore(); return; }
     ctx.fillStyle = color; ctx.globalAlpha = (alfa === undefined ? 1 : alfa)*(tipo === 'L2' ? c.relleno : .3); redondeado(ctx, X, Y, w, w, r); ctx.fill();
     ctx.globalAlpha = alfa === undefined ? 1 : alfa; ctx.strokeStyle = color; ctx.lineWidth = grosor(k, g.p < 9 ? 1 : 1.4); redondeado(ctx, X, Y, w, w, r); ctx.stroke();
     ctx.restore();
@@ -412,17 +414,17 @@ function crearEscena(cv, idDesc, idLect, idLey){
       ctx.strokeStyle = color; ctx.lineWidth = u < 10 ? .8 : 1.1; ctx.stroke();
     };
     M.ordenar(cs.slice()).forEach(q => {
-      const k = TIPO[q.tipo] || 'N', color = c[k], { x, y, z } = q;
-      cara([P(x + 1, y, z), P(x + 1, y + 1, z), P(x + 1, y + 1, z + 1), P(x + 1, y, z + 1)], color, .42);
-      cara([P(x, y + 1, z), P(x + 1, y + 1, z), P(x + 1, y + 1, z + 1), P(x, y + 1, z + 1)], color, .24);
-      cara([P(x, y, z + 1), P(x + 1, y, z + 1), P(x + 1, y + 1, z + 1), P(x, y + 1, z + 1)], color, .12);
+      const k = TIPO[q.tipo] || 'N', color = c[k], { x, y, z } = q, a = ALFA[q.tipo] || 1;
+      cara([P(x + 1, y, z), P(x + 1, y + 1, z), P(x + 1, y + 1, z + 1), P(x + 1, y, z + 1)], color, .42*a);
+      cara([P(x, y + 1, z), P(x + 1, y + 1, z), P(x + 1, y + 1, z + 1), P(x, y + 1, z + 1)], color, .24*a);
+      cara([P(x, y, z + 1), P(x + 1, y, z + 1), P(x + 1, y + 1, z + 1), P(x, y + 1, z + 1)], color, .12*a);
     });
     if (s.pie) partes(c, W/2, H - 15, s.pie, 'center', 14, 800);
   }
 
   // ----- los primos de una descomposición -----
   function dibChips(c){
-    const s = E.st, r = Math.min(17, (W - 40)/(s.lista.length*2.5)), paso = 2*r + 6, y = H*.52;
+    const s = E.st, r = Math.min(17, (W - 40)/(s.lista.length*2.5)), paso = 2*r + 6, y = H*.56;
     const chip = (x, y, p, k, punteada) => {
       ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = col(c, k); ctx.lineWidth = grosor(k, 2); if (punteada) ctx.setLineDash([4, 3]);
       ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fill(); ctx.stroke(); ctx.restore();
@@ -430,18 +432,18 @@ function crearEscena(cv, idDesc, idLect, idLey){
     };
     if (!s.fase){
       const x0 = W/2 - (s.lista.length - 1)*paso/2;
-      s.lista.forEach((p, i) => chip(x0 + i*paso, y, p, 'N'));
+      s.lista.forEach((p, i) => chip(x0 + i*paso, y, p, 'ink'));
       rotulo(c, W/2, y + r + 22, s.titulo || '', c.muted, 'center', 700, 12);
     } else {
       const gap = 14, anchoG = s.grupos.map(g => g.length*paso - 6), tot = anchoG.reduce((t, w) => t + w + gap, -gap) + (s.sueltos.length ? gap*1.5 + s.sueltos.length*paso : 0);
       let x = W/2 - tot/2;
       s.grupos.forEach((g, j) => {
-        ctx.save(); ctx.strokeStyle = c.N; ctx.lineWidth = 1.4; redondeado(ctx, x - 5, y - r - 5, anchoG[j] + 10, 2*r + 10, r + 4); ctx.stroke(); ctx.restore();
-        g.forEach((p, i) => chip(x + r + i*paso, y, p, 'N'));
+        ctx.save(); ctx.strokeStyle = c.k; ctx.lineWidth = grosor('k', 1.6); redondeado(ctx, x - 5, y - r - 5, anchoG[j] + 10, 2*r + 10, r + 4); ctx.stroke(); ctx.restore();
+        g.forEach((p, i) => chip(x + r + i*paso, y, p, 'ink'));
         x += anchoG[j] + gap;
       });
       x += gap*.5;
-      const sube = s.fase >= 2 ? 50 : 0;
+      const sube = s.fase >= 2 ? 44 : 0;
       s.sueltos.forEach((p, i) => chip(x + r + i*paso, y - sube, p, s.colorSueltos || 'd'));
       if (s.fase >= 2 && s.sueltos.length) partes(c, x + (s.sueltos.length*paso - 6)/2, y - sube - r - 14, s.rotSueltos || [], 'center', 13, 800);
     }
@@ -486,15 +488,16 @@ function crearEscena(cv, idDesc, idLect, idLey){
     if (!lado){ tarjetas(c, items, 10, 58); }
     else { const w0 = W; W = W*.56; tarjetas(c, items.slice(0, 2), 14, 66); ctx.save(); ctx.translate(0, 76); tarjetas(c, items.slice(2), 14, 66); ctx.restore(); W = w0; }
     if (!s.rueda) return;
-    const T = M.terminaciones(s.n || 2), R = lado ? Math.min(92, H*.27) : Math.min(92, (H - 160)*.31), cx = lado ? W*.78 : W/2, cy = lado ? H/2 + 14 : 160 + (H - 160)/2 + 8;
+    const T = M.terminaciones(s.n || 2), R = lado ? Math.min(84, H*.25) : Math.min(84, (H - 160)*.28), cx = lado ? W*.78 : W/2, cy = lado ? H/2 + 14 : 160 + (H - 160)/2 + 8;
     const pos = d => { const a = -Math.PI/2 + d*2*Math.PI/10; return [cx + R*Math.cos(a), cy + R*Math.sin(a)]; };
-    partes(c, cx, cy - R*1.2 - 22, [['última cifra de ', 'muted'], ['k', 'k'], [' → de ', 'muted'], ['k', 'k'], ['2', 'muted', 'sup']], 'center', 12, 700);
+    const RA = R + 13 + 11;   // centro de los aros: fuera del círculo del número (radio 13) con su propio radio (7) y 4 px de aire
+    partes(c, cx, cy - RA - 7 - 16, [['última cifra de ', 'muted'], ['k', 'k'], [' → de ', 'muted'], ['k', 'k'], ['2', 'muted', 'sup']], 'center', 12, 700);
     T.mapa.forEach((e, d) => {
       const [x1, y1] = pos(d), [x2, y2] = pos(e);
       ctx.save(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.3;
-      if (d === e){ const [ex, ey] = [cx + (x1 - cx)*1.2, cy + (y1 - cy)*1.2]; ctx.beginPath(); ctx.arc(ex, ey, 7, 0, 7); ctx.stroke(); }
+      if (d === e){ const [ex, ey] = [cx + (x1 - cx)*RA/R, cy + (y1 - cy)*RA/R]; ctx.beginPath(); ctx.arc(ex, ey, 7, 0, 7); ctx.stroke(); }
       else {
-        const f1 = .2, f2 = .8, ax = x1 + (x2 - x1)*f1, ay = y1 + (y2 - y1)*f1, bx = x1 + (x2 - x1)*f2, by = y1 + (y2 - y1)*f2;
+        const dl = Math.hypot(x2 - x1, y2 - y1), ux = (x2 - x1)/dl, uy = (y2 - y1)/dl, ax = x1 + ux*18, ay = y1 + uy*18, bx = x2 - ux*18, by = y2 - uy*18;
         linea(ax, ay, bx, by); const ang = Math.atan2(by - ay, bx - ax);
         ctx.beginPath(); ctx.moveTo(bx, by); ctx.lineTo(bx - 7*Math.cos(ang - .45), by - 7*Math.sin(ang - .45)); ctx.lineTo(bx - 7*Math.cos(ang + .45), by - 7*Math.sin(ang + .45)); ctx.closePath(); ctx.fillStyle = c.muted; ctx.fill();
       }
@@ -510,24 +513,31 @@ function crearEscena(cv, idDesc, idLect, idLey){
 
   // ----- (10a + 5)²: el cuadrado partido en un rectángulo y una esquina -----
   function dibArea5(c){
-    const s = E.st, A = s.a*10, L = A + 5, t = s.t || 0;
-    const esc = Math.min((W - 90)/(L + 2), (H - 70)/(A + 10 + 5)), x0 = (W - (L)*esc)/2 + 10, y0 = 34;
+    // Las medidas salen de M.terminaEn5 (s.P): lado x = A + u, con A = piezas.ancho y u = 5; el rectángulo es A × piezas.alto.
+    const s = E.st, P = s.P, A = P.piezas.ancho, u = P.x - A, Al = P.piezas.alto, L = P.x, t = s.t || 0;
+    const esc = Math.min((W - 90)/(L + 2*u), (H - 70)/(Al + u)), x0 = (W - L*esc)/2 + 10, y0 = 34;
     const rect = (x, y, w, h, k, alfa) => { ctx.save(); ctx.fillStyle = col(c, k); ctx.globalAlpha = alfa; ctx.fillRect(x0 + x*esc, y0 + y*esc, w*esc, h*esc); ctx.globalAlpha = 1; ctx.strokeStyle = col(c, k); ctx.lineWidth = 1.5; ctx.strokeRect(x0 + x*esc, y0 + y*esc, w*esc, h*esc); ctx.restore(); };
+    if (s.entero){
+      rect(0, 0, L, L, 'N', c.relleno);
+      partes(c, x0 + L*esc/2, y0 - 12, [[String(L), 'k']], 'center', 13, 800);
+      partes(c, x0 - 16, y0 + L*esc/2, [[String(L), 'k']], 'center', 13, 800);
+      if (s.pie) partes(c, W/2, H - 14, s.pie, 'center', 14, 800);
+      return;
+    }
     rect(0, 0, A, A, 'N', c.relleno);
-    rect(0, A, A, 5, 'N', c.relleno);
-    // la tira de la derecha (5 × A) gira y baja debajo de la de abajo
-    const cxs = A + 2.5, cys = A/2, cxd = A/2, cyd = A + 7.5, cxx = cxs + (cxd - cxs)*t, cyy = cys + (cyd - cys)*t;
+    rect(0, A, A, u, 'N', c.relleno);
+    // la tira de la derecha (u × A) gira y baja debajo de la de abajo
+    const cxs = A + u/2, cys = A/2, cxd = A/2, cyd = A + 1.5*u, cxx = cxs + (cxd - cxs)*t, cyy = cys + (cyd - cys)*t;
     ctx.save(); ctx.translate(x0 + cxx*esc, y0 + cyy*esc); ctx.rotate(t*Math.PI/2);
-    ctx.fillStyle = c.N; ctx.globalAlpha = c.relleno; ctx.fillRect(-2.5*esc, -A/2*esc, 5*esc, A*esc); ctx.globalAlpha = 1; ctx.strokeStyle = c.N; ctx.lineWidth = 1.5; ctx.strokeRect(-2.5*esc, -A/2*esc, 5*esc, A*esc); ctx.restore();
-    const ex = t > 0 ? A + 2.5*t*4 : A, ey = A;
-    rect(Math.min(ex, A + 8), ey, 5, 5, 'ink', .16);
+    ctx.fillStyle = c.N; ctx.globalAlpha = c.relleno; ctx.fillRect(-u/2*esc, -A/2*esc, u*esc, A*esc); ctx.globalAlpha = 1; ctx.strokeStyle = c.N; ctx.lineWidth = 1.5; ctx.strokeRect(-u/2*esc, -A/2*esc, u*esc, A*esc); ctx.restore();
+    rect(A + Math.min(8, 8*t), A, u, u, 'ink', .16);
     partes(c, x0 + A*esc/2, y0 - 12, [[String(A), 'k']], 'center', 13, 800);
-    if (t < .5) partes(c, x0 + (A + 2.5)*esc, y0 - 12, [['5', 'k']], 'center', 13, 800);
-    if (t < 1){ partes(c, x0 - 16, y0 + A*esc/2, [[String(A), 'k']], 'center', 13, 800); if (t < .5) partes(c, x0 - 16, y0 + (A + 2.5)*esc, [['5', 'k']], 'center', 13, 800); }
+    if (t < .5) partes(c, x0 + (A + u/2)*esc, y0 - 12, [[String(u), 'k']], 'center', 13, 800);
+    if (t < 1){ partes(c, x0 - 16, y0 + A*esc/2, [[String(A), 'k']], 'center', 13, 800); if (t < .5) partes(c, x0 - 16, y0 + (A + u/2)*esc, [[String(u), 'k']], 'center', 13, 800); }
     if (t >= 1){
-      partes(c, x0 + A*esc/2, y0 + (A/2 + 5)*esc, [[String(A), 'k'], [' × ', 'ink'], [String(A + 10), 'k'], [' = ', 'ink'], [mil(A*(A + 10)), 'N']], 'center', 14, 800);
-      partes(c, x0 - 16, y0 + (A + 10)*esc/2, [[String(A + 10), 'k']], 'center', 13, 800);
-      partes(c, x0 + (A + 10.5)*esc, y0 + (A + 2.5)*esc + 22, [['5 × 5 = 25', 'ink']], 'center', 12, 800);
+      partes(c, x0 + A*esc/2, y0 + (Al/2)*esc, [[String(A), 'k'], [' × ', 'ink'], [String(Al), 'k'], [' = ', 'ink'], [mil(P.piezas.rect), 'N']], 'center', 14, 800);
+      partes(c, x0 - 16, y0 + Al*esc/2, [[String(Al), 'k']], 'center', 13, 800);
+      partes(c, x0 + (A + 8 + u/2)*esc, y0 + (A + u)*esc + 14, [[`${u} × ${u} = ${P.piezas.esquina}`, 'ink']], 'center', 12, 800);
     }
     if (s.pie) partes(c, W/2, H - 14, s.pie, 'center', 14, 800);
   }
@@ -577,7 +587,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
   // Lecturas y descripción para lectores de pantalla (dicen lo mismo; antes de responder no adelantan la respuesta).
   E.avisar = () => {
     const filas = E.lect.map(k => k(E));
-    if (idLect) document.getElementById(idLect).innerHTML = filas.map(([k, t, v]) => `<div class="lectura" style="--k:var(${k === 'ink' ? '--ink' : '--c-' + k})"><span>${t}</span><b>${v}</b></div>`).join('');
+    if (idLect) document.getElementById(idLect).innerHTML = filas.map(([k, t, v]) => `<div class="lectura" style="--k:var(${k === 'ink' ? '--ink' : k === 'muted' ? '--muted' : '--c-' + k})"><span>${t}</span><b>${v}</b></div>`).join('');
     if (idDesc && !E.anim){
       const base = E.desc || 'Fichas acomodadas.';
       document.getElementById(idDesc).textContent = quitar([base, ...filas.map(([, t, v]) => `${t}: ${v}.`)].join(' '));
@@ -609,8 +619,8 @@ function rejilla(N, kmax){
   for (let k = 1; k <= kmax; k++){ const L = M.layoutCuadrado(N, k); cols = Math.max(cols, L.ancho); rows = Math.max(rows, L.alto); }
   return { cols, rows };
 }
-// Dos opciones de raíz y resto con la misma forma.
-const raizResto = (k, r) => `raíz ${T('k', k)} y resto ${T('r', r)}`;
+// Las opciones de raíz y residuo, todas con la misma forma.
+const raizResto = (k, r) => `raíz ${T('k', k)} y residuo ${T('r', r)}`;
 </script>
 <script>
 /* ================= MODO 1: paso a paso ================= */
@@ -621,45 +631,52 @@ const S = { step:0, max:0, pred:{}, ocupado:false, n1:40, k1:5, n8:150, k8:12 };
 const N_ = t => V('N', t), k_ = t => V('k', t), r_ = t => V('r', t), rp_ = t => V('rp', t), L_ = t => V('L', t), m_ = t => V('m', t), d_ = t => V('d', t);
 
 // Números de la escena: todos salen del motor
-const R150 = M.raizEntera(150), A12 = M.agregarParaSiguiente(12), L12 = M.layoutL(12);
+const R150 = M.raizEntera(150), A15 = M.agregarParaSiguiente(15), L15 = M.layoutL(15);
+const R11 = M.raizEntera(150 - R150.errores.ladoMenor.r), R351 = M.raizEntera(351);
 const LISTA4 = [2711, 36000, 7921, 2235], P4 = M.puedeSerCuadrado(LISTA4), R7921 = M.raizEntera(7921), T2 = M.terminaciones(2);
 const C72 = M.menorMultiplicador(72, 3), RE72 = M.reacomodar(72, [9, 8, 1], [6, 6, 2]);
 const D2160 = M.menorDivisor(2160, 2), F2160 = M.fichasFactores(2160, 2);
-const Q49 = M.cuadradosEntre(49, 400);
+const Q49 = M.cuadradosEntre(49, 400), Q50 = M.cuadradosEntre(50, 399);
+// Lo que da cada distractor, también del motor (para las retroalimentaciones)
+const X72 = m => M.menorMultiplicador(72 * m, 3), X2160 = d => M.menorDivisor(2160 / d, 2);
 const fb = (letra, ok, txt) => (letra === ok ? txt : `Elegiste la ${letra.toUpperCase()}. ${txt} La correcta está marcada.`);
 const FUENTE = '<p class="fuente">No encontramos estudios con datos sobre estos errores en potenciación y radicación; las opciones incorrectas son hipótesis nuestras, y la app las medirá en el colegio.</p>';
-const LEY_CUAD = [['N', 'fichas'], ['k', 'lado k'], ['r', 'sobran (r)'], ['rp', 'faltan (r′)']];
+const LEY_CUAD = [['N', 'fichas'], ['k', 'lado k'], ['r', 'residuo por defecto r'], ['rp', 'residuo por exceso rₑ'], ['muted', 'sobran o faltan con otro lado']];
 const corto = c => { const r = c.razones[0]; return r.id === 'ultima-cifra' ? `termina en ${c.N % 10}` : r.id === 'ceros-impares' ? `${c.ceros} ${pl(c.ceros, 'cero', 'ceros')} al final` : r.id === 'termina-en-5' ? 'termina en 5, no en 25' : r.id === 'entre-4' ? `entre 4 deja ${c.resto4}` : `cifras: suma ${c.sumaCifras}`; };
 
 console.assert(R150.k === 12 && R150.r === 6 && R150.errores.confundeDefectoExceso && R150.errores.ladoMenor && R150.errores.restoDecimal, 'paso 2: revisar las opciones');
+console.assert(A15.agrega === 31 && A15.errores.olvidaEsquina === 30 && A15.errores.unLado === 16 && A15.errores.repiteEsquina === 32, 'paso 3: revisar las opciones');
+console.assert(R150.r + R150.rp === 2 * R150.k + 1, 'paso 3: revisar r + rₑ');
 console.assert(P4.pueden.length === 1 && P4.pueden[0] === 7921 && Object.keys(P4.errores).length === 3, 'paso 4: revisar las opciones');
+console.assert(M.criterios(2711).resto4 === 3 && M.criterios(2711).sumaCifras === 11 && M.criterios(2711).resto9 === 2 && M.criterios(36000).ceros === 3, 'paso 4: revisar los textos');
+console.assert(M.raizEntera(72 * C72.errores.loHaceCuadrado).exacta && M.raizEntera(72 * C72.errores.loHaceCuadrado).k === 12, 'paso 5: revisar los textos');
 
 const P_150 = { id:'potenciacion-paso2', ok:'b', opts:[
   ['a', raizResto(R150.errores.confundeDefectoExceso.k, R150.errores.confundeDefectoExceso.r), 'confunde-raiz-por-defecto-y-por-exceso', 'hipotesis'],
   ['b', raizResto(R150.k, R150.r)],
   ['c', raizResto(R150.errores.ladoMenor.k, R150.errores.ladoMenor.r), 'resto-mayor-que-2k', 'hipotesis'],
   ['d', raizResto(R150.errores.restoDecimal.k, R150.errores.restoDecimal.r), 'resto-como-parte-decimal', 'hipotesis']],
-  fb:{ b:`¡Bien! 12 × 12 = 144 cabe en 150 y 13 × 13 = 169 ya se pasa: la raíz entera es 12 y sobran 150 − 144 = 6.`,
-    a:`13 es la raíz por exceso: 13 × 13 = 169 se pasa de 150, y 19 son las fichas que faltarían para ese cuadrado. La raíz entera (por defecto) es el lado del cuadrado que sí se arma: 12, y sobran 6.`,
-    c:`Con lado 11 se usan 121 fichas y sobran 29, pero con esas 29 todavía se agranda el cuadrado: de 11 × 11 a 12 × 12 hacen falta solo 23. La raíz es 12 y sobran 6.`,
-    d:`√150 ≈ ${R150.aproximada}, pero ${R150.decimal} no es el resto. El resto son fichas enteras que sobran: 150 − 144 = 6.` } };
+  fb:{ b:`¡Bien! ${R150.k} × ${R150.k} = ${R150.potencia} cabe en 150 y ${R150.exceso} × ${R150.exceso} = ${R150.siguiente} ya se pasa: la raíz por defecto es ${R150.k} y el residuo, 150 − ${R150.potencia} = ${R150.r}.`,
+    a:`${R150.exceso} es la raíz por exceso: ${R150.exceso} × ${R150.exceso} = ${R150.siguiente} se pasa de 150, y ${R150.rp} son las fichas que faltarían para ese cuadrado (el residuo por exceso). La raíz por defecto es el lado del cuadrado que sí se arma: ${R150.k}, y sobran ${R150.r}.`,
+    c:`Con lado ${R11.k} se usan ${R11.potencia} fichas y sobran ${R150.errores.ladoMenor.r}, pero con 150 fichas todavía se arma un cuadrado más grande: ${R150.k} × ${R150.k} = ${R150.potencia}. La raíz por defecto es ${R150.k} y el residuo, ${R150.r}.`,
+    d:`√150 = ${R150.aproximada}…, pero ${R150.decimal} no es el residuo. El residuo son fichas enteras que sobran: 150 − ${R150.potencia} = ${R150.r}.` } };
 
 const P_L = { id:'potenciacion-paso3', ok:'d', opts:[
-  ['a', T('L', A12.errores.olvidaEsquina), 'olvida-la-esquina', 'hipotesis'],
-  ['b', T('L', A12.errores.unLado), 'agrega-un-solo-lado', 'hipotesis'],
-  ['c', T('L', A12.errores.restaLado), 'resta-el-lado-del-area', 'hipotesis'],
-  ['d', T('L', A12.agrega)]],
-  fb:{ d:'¡Bien! Una columna de 12 a la derecha, una fila de 12 abajo y la ficha de la esquina: 12 + 12 + 1 = 25. Y 169 − 144 = 25.',
-    a:'24 = 12 + 12 pone una columna y una fila de 12, pero queda un hueco en la esquina: falta 1. Son 12 + 12 + 1 = 25.',
-    b:'13 es una sola fila. Para pasar de 12 × 12 a 13 × 13 crecen los dos lados: una columna de 12 y una fila de 13.',
-    c:'157 = 169 − 12 le resta el lado al cuadrado nuevo. Se restan fichas, no lados: 169 − 144 = 25.' } };
+  ['a', T('L', A15.errores.olvidaEsquina), 'olvida-la-esquina', 'hipotesis'],
+  ['b', T('L', A15.errores.unLado), 'agrega-un-solo-lado', 'hipotesis'],
+  ['c', T('L', A15.errores.repiteEsquina), 'cuenta-dos-lados-y-repite-la-esquina', 'hipotesis'],
+  ['d', T('L', A15.agrega)]],
+  fb:{ d:`¡Bien! Una columna de ${A15.k} a la derecha, una fila de ${A15.k} abajo y la ficha de la esquina: ${A15.k} + ${A15.k} + 1 = ${A15.agrega}. Y ${A15.hasta} − ${A15.desde} = ${A15.agrega}.`,
+    a:`${A15.errores.olvidaEsquina} = ${A15.k} + ${A15.k} pone una columna y una fila de ${A15.k}, pero queda un hueco en la esquina: falta 1. Son ${A15.k} + ${A15.k} + 1 = ${A15.agrega}.`,
+    b:`${A15.errores.unLado} es una sola fila. Para pasar de ${A15.k} × ${A15.k} a ${A15.k + 1} × ${A15.k + 1} crecen los dos lados: una columna de ${A15.k} y una fila de ${A15.k + 1}.`,
+    c:`${A15.errores.repiteEsquina} = ${A15.k + 1} + ${A15.k + 1} pone una columna de ${A15.k + 1} y una fila de ${A15.k + 1}, pero las dos pasan por la esquina: esa ficha se contó dos veces. Son ${A15.k} + ${A15.k + 1} = ${A15.agrega}.` } };
 
 const P_CRIT = { id:'potenciacion-paso4', ok:'c', opts:[
   ['a', T('N', mil(2711)), 'termina-en-uno-y-por-eso-es-cuadrado', 'hipotesis'],
   ['b', T('N', mil(36000)), 'ignora-los-ceros-finales', 'hipotesis'],
   ['c', T('N', mil(7921))],
   ['d', T('N', mil(2235)), 'terminar-en-5-basta', 'hipotesis']],
-  fb:{ c:`¡Bien! 7 921 = 89 × 89. Los otros tres se descartan sin sacar raíces.`,
+  fb:{ c:`¡Bien! 7 921 = ${R7921.k} × ${R7921.k}. Los otros tres se descartan sin sacar raíces.`,
     a:'2 711 termina en 1, como 81 o 121, pero eso no basta. Entre 4 deja resto 3 (basta mirar 11 ÷ 4), y un cuadrado deja 0 o 1. Además sus cifras suman 11: entre 9 deja 2, y en un cuadrado ese resto es 0, 1, 4 o 7.',
     b:'36 es un cuadrado, pero 36 000 = 36 × 1 000 y termina en tres ceros. Un cuadrado termina en una cantidad par de ceros: 60 × 60 = 3 600 y 600 × 600 = 360 000.',
     d:'2 235 termina en 5, pero un cuadrado que termina en 5 termina en 25: 15 × 15 = 225, 25 × 25 = 625, 35 × 35 = 1 225. 2 235 termina en 35.' } };
@@ -669,44 +686,51 @@ const P_CUBO = { id:'potenciacion-paso5', ok:'a', opts:[
   ['b', T('m', C72.errores.loHaceCuadrado), 'lo-hace-cuadrado-no-cubo', 'hipotesis'],
   ['c', T('m', C72.errores.copiaExponente), 'multiplica-por-lo-que-sobra', 'hipotesis'],
   ['d', T('m', C72.errores.todosLosPrimos), 'multiplica-por-todos-los-primos', 'hipotesis']],
-  fb:{ a:`¡Bien! 72 × 3 = 216 = 2³ · 3³ = 6 × 6 × 6.`,
-    b:`Por 2 sale 144 = 12 × 12: un cuadrado, no un cubo. En un cubo cada primo va un múltiplo de 3 veces: 2³ ya está y a 3² le falta un 3.`,
-    c:`Por 9 sale 648 = 2³ · 3⁴: ahora el 3 se pasa. A 3² le falta un solo 3, no dos más.`,
-    d:`Por 6 sale 432 = 2⁴ · 3³: el 3 queda bien, pero el 2, que ya estaba completo (2³), se pasa.` } };
+  fb:{ a:`¡Bien! 72 × ${C72.m} = ${C72.resultado} = ${C72.despues} = ${C72.raiz} × ${C72.raiz} × ${C72.raiz}.`,
+    b:`Por ${C72.errores.loHaceCuadrado} sale ${X72(C72.errores.loHaceCuadrado).N} = 12 × 12: un cuadrado, no un cubo. En un cubo cada primo va un múltiplo de 3 veces: 2³ ya está y a 3² le falta un 3.`,
+    c:`Por ${C72.errores.copiaExponente} sale ${X72(C72.errores.copiaExponente).N} = ${X72(C72.errores.copiaExponente).texto}: ahora el 3 se pasa. A 3² le falta un solo 3, no dos más.`,
+    d:`Por ${C72.errores.todosLosPrimos} sale ${X72(C72.errores.todosLosPrimos).N} = ${X72(C72.errores.todosLosPrimos).texto}: el 3 queda bien, pero el 2, que ya estaba completo (2³), se pasa.` } };
 
 const P_DIV = { id:'potenciacion-paso6', ok:'b', opts:[
   ['a', T('d', D2160.errores.olvidaExponenteMayor), 'olvida-el-exponente-impar-mayor', 'hipotesis'],
   ['b', T('d', D2160.d)],
   ['c', T('d', D2160.errores.quitaFactorEntero), 'quita-el-factor-entero', 'hipotesis'],
   ['d', T('d', D2160.errores.todosLosPrimos), 'divide-entre-todos-los-primos', 'hipotesis']],
-  fb:{ b:`¡Bien! 2 160 ÷ 15 = 144 = 2⁴ · 3² = 12 × 12.`,
-    a:`Entre 5 queda 432 = 2⁴ · 3³, y 3³ todavía tiene un 3 sin pareja. Hay que quitar ese 3 también: 3 · 5 = 15.`,
-    c:`Entre 135 sale 16 = 4 × 4, que sí es cuadrado, pero 135 no es el menor: de 3³ basta quitar un 3, porque 3² ya forma una pareja. Entre 15 sale 144.`,
-    d:`Entre 30 queda 72 = 2³ · 3², y ahora el 2 queda sin pareja: 2⁴ ya estaba bien y no había que tocarlo.` } };
+  fb:{ b:`¡Bien! 2 160 ÷ ${D2160.d} = ${D2160.resultado} = ${D2160.despues} = ${D2160.raiz} × ${D2160.raiz}.`,
+    a:`Entre ${D2160.errores.olvidaExponenteMayor} queda ${X2160(D2160.errores.olvidaExponenteMayor).N} = ${X2160(D2160.errores.olvidaExponenteMayor).texto}, y 3³ todavía tiene un 3 sin pareja. Hay que quitar ese 3 también: 3 × 5 = ${D2160.d}.`,
+    c:`Entre ${D2160.errores.quitaFactorEntero} sale ${X2160(D2160.errores.quitaFactorEntero).N} = 4 × 4, que sí es cuadrado, pero ${D2160.errores.quitaFactorEntero} no es el menor: de 3³ basta quitar un 3, porque 3² ya forma una pareja. Entre ${D2160.d} sale ${D2160.resultado}.`,
+    d:`Entre ${D2160.errores.todosLosPrimos} queda ${X2160(D2160.errores.todosLosPrimos).N} = ${X2160(D2160.errores.todosLosPrimos).texto}, y ahora el 2 queda sin pareja: 2⁴ ya estaba bien y no había que tocarlo.` } };
 
 const P_CONT = { id:'potenciacion-paso7', ok:'a', opts:[
   ['a', String(Q49.cantidad)],
   ['b', String(Q49.errores.sinMasUno), 'olvida-el-mas-uno', 'hipotesis'],
   ['c', String(Q49.errores.desdeUno), 'cuenta-desde-1', 'hipotesis'],
   ['d', String(Q49.errores.raizDiferencia), 'raiz-de-la-diferencia', 'hipotesis']],
-  fb:{ a:`¡Bien! Son los cuadrados de 7, 8, …, 20: 20 − 7 + 1 = 14.`,
-    b:`20 − 7 = 13 cuenta los saltos de 7² a 20², no los cuadrados. Como 49 y 400 cuentan los dos, son 20 − 7 + 1 = 14.`,
-    c:`20 son todos los cuadrados de 1² a 20²; los de 1² a 6² (de 1 a 36) quedan antes del 49. Son 20 − 7 + 1 = 14.`,
-    d:`√(400 − 49) = √351 ≈ 18 mide la distancia entre los extremos, pero los cuadrados no están repartidos parejo: cada vez se separan más. Se cuentan los lados, de 7 a 20: 14.` } };
-console.assert(M.cuadradosEntre(50, 399).cantidad === 12 && M.cuadradosEntre(50, 399).desde === 8 && M.cuadradosEntre(50, 399).hasta === 19, 'paso 7: revisar el ejemplo');
-console.assert(Q49.errores.sinMasUno === 13 && Q49.errores.desdeUno === 20 && Q49.errores.raizDiferencia === 18, 'paso 7: revisar las opciones');
+  fb:{ a:`¡Bien! Son los cuadrados de ${Q49.desde}, ${Q49.desde + 1}, …, ${Q49.hasta}: ${Q49.hasta} − ${Q49.desde} + 1 = ${Q49.cantidad}.`,
+    b:`${Q49.hasta} − ${Q49.desde} = ${Q49.errores.sinMasUno} cuenta los saltos de ${Q49.desde}² a ${Q49.hasta}², no los cuadrados. Como 49 y 400 cuentan los dos, son ${Q49.hasta} − ${Q49.desde} + 1 = ${Q49.cantidad}.`,
+    c:`${Q49.hasta} son todos los cuadrados de 1² a ${Q49.hasta}²; los de 1² a ${Q49.desde - 1}² quedan antes del 49. Son ${Q49.hasta} − ${Q49.desde} + 1 = ${Q49.cantidad}.`,
+    d:`√(400 − 49) = √351 ≈ ${R351.aproximada.slice(0, -1)} mide la distancia entre los extremos, pero los cuadrados no están repartidos parejo: cada vez se separan más. Se cuentan los lados, de ${Q49.desde} a ${Q49.hasta}: ${Q49.cantidad}.` } };
 
 // ----- paso 1 y paso 8: el cuadrado que se arrastra -----
+// La letra r (o rₑ) y su color solo van cuando el lado es la raíz por defecto (o por exceso); si no, «sobran» o «faltan».
 const kmaxDe = N => clamp(Math.ceil(Math.sqrt(N)) + 3, 2, 20);   // hasta dónde se deja probar el lado (solo dibujo)
+function rolLado(L){ const R = M.raizEntera(L.N); return { defecto: L.k === R.k, exceso: !R.exacta && L.k === R.exceso }; }
 function tablero(N, k, ref){
-  const L = M.layoutCuadrado(N, k), g = rejilla(N, kmaxDe(N));
-  return { fichas:L.fichas, huecos:L.huecos, k, cols:g.cols, rows:g.rows, manija:true, alMover:ref, L };
+  const L = M.layoutCuadrado(N, k), g = rejilla(N, kmaxDe(N)), P = rolLado(L);
+  return { fichas:L.fichas.map(f => (f.tipo === 'sobra' && !P.defecto ? Object.assign({}, f, { tipo:'sobraX' }) : f)),
+    huecos:L.huecos.map(h => (P.exceso ? h : Object.assign({}, h, { tipo:'faltaX' }))), k, cols:g.cols, rows:g.rows, manija:true, alMover:ref, L };
 }
-function lectTablero(){ const s = E.st, L = s.L;
-  return [() => ['N', 'fichas N', String(L.N)], () => ['k', 'lado k', String(s.k)], () => ['ink', 'k × k', String(L.usadas + L.faltan)],
-    () => (L.faltan ? ['rp', 'faltan r′', String(L.faltan)] : ['r', 'sobran r', String(L.sobran)])]; }
-function descTablero(){ const L = E.st.L;
-  return `${L.N} fichas y un cuadrado de lado ${E.st.k}: ` + (L.faltan ? `para completarlo faltan ${L.faltan}.` : L.sobran ? `se usan ${L.usadas} y sobran ${L.sobran}.` : `no sobra ni falta ninguna.`); }
+// Cada lectura mira E.st.L en el momento de leer (no una copia vieja).
+function lectTablero(){
+  const L = () => E.st.L;
+  return [() => ['N', 'fichas N', String(L().N)], () => ['k', 'lado k', String(E.st.k)], () => ['ink', 'k × k', String(L().area)],
+    () => { const l = L(), P = rolLado(l);
+      return l.faltan ? (P.exceso ? ['rp', 'residuo por exceso rₑ', String(l.faltan)] : ['muted', 'faltan', String(l.faltan)])
+        : (P.defecto ? ['r', 'residuo por defecto r', String(l.sobran)] : ['muted', 'sobran', String(l.sobran)]); }];
+}
+function descTablero(){ const L = E.st.L, P = rolLado(L);
+  return `${L.N} fichas y un cuadrado de lado ${E.st.k}: ` + (L.faltan ? `para completarlo ${pl(L.faltan, 'falta', 'faltan')} ${L.faltan}${P.exceso ? ' (el lado es la raíz por exceso)' : ''}.`
+    : L.sobran ? `se usan ${L.usadas} y ${pl(L.sobran, 'sobra', 'sobran')} ${L.sobran}${P.defecto ? ' (el lado es la raíz por defecto)' : ''}.` : `no sobra ni falta ninguna.`); }
 function prepTablero(n, k, mover, vivo){
   E.config({ modo:'cuadrado', st:tablero(n, k, mover), ley:LEY_CUAD, desc:'', lect:[], alCambiar:vivo });
   E.lect = lectTablero(); E.desc = descTablero(); E.avisar();
@@ -716,21 +740,22 @@ function moverTablero(clave, k, vivo){
   const n = S['n' + clave]; k = clamp(Math.round(k), 1, kmaxDe(n));
   if (k === S['k' + clave] && E.st.k === k) return;
   S['k' + clave] = k;
-  const L = M.layoutCuadrado(n, k);
-  Object.assign(E.st, { fichas:L.fichas, huecos:L.huecos, k, L });
+  const T0 = tablero(n, k, E.st.alMover);
+  Object.assign(E.st, { fichas:T0.fichas, huecos:T0.huecos, k, L:T0.L });
   E.desc = descTablero(); E.dibujar(); E.avisar();
 }
-const eqTablero = L => L.faltan
-  ? `<div class="eq">${k_(L.k)}² − ${N_(L.N)} = ${L.usadas + L.faltan} − ${L.N} = ${rp_(L.faltan)}<span class="note">${pl(L.faltan, 'falta', 'faltan')} ${L.faltan} para completar el cuadrado de lado ${L.k}</span></div>`
-  : L.sobran ? `<div class="eq">${N_(L.N)} − ${k_(L.k)}² = ${L.N} − ${L.usadas} = ${r_(L.sobran)}<span class="note">${pl(L.sobran, 'sobra', 'sobran')} ${L.sobran}</span></div>`
-  : `<div class="eq">${N_(L.N)} = ${k_(L.k)}²<span class="note">no sobra ni falta ninguna: ${L.N} es un cuadrado perfecto y √${L.N} = ${L.k}</span></div>`;
+const eqTablero = L => { const P = rolLado(L);
+  return L.faltan
+  ? `<div class="eq">${k_(L.k)}² − ${N_(L.N)} = ${L.area} − ${L.N} = ${P.exceso ? rp_(L.faltan) : L.faltan}<span class="note">${P.exceso ? 'residuo por exceso rₑ: ' : ''}${pl(L.faltan, 'falta', 'faltan')} ${L.faltan} para completar el cuadrado de lado ${L.k}</span></div>`
+  : L.sobran ? `<div class="eq">${N_(L.N)} − ${k_(L.k)}² = ${L.N} − ${L.area} = ${P.defecto ? r_(L.sobran) : L.sobran}<span class="note">${P.defecto ? 'residuo por defecto r: ' : ''}${pl(L.sobran, 'sobra', 'sobran')} ${L.sobran}</span></div>`
+  : `<div class="eq">${N_(L.N)} = ${k_(L.k)}²<span class="note">no sobra ni falta ninguna: ${L.N} es un cuadrado perfecto y √${L.N} = ${L.k}</span></div>`; };
 
 const mover1 = k => moverTablero('1', k, vivo1);
 function prep1(){ prepTablero(S.n1, S.k1, mover1, vivo1); }
 function vivo1(){
   const d = $('vivo1'); if (!d) return;
   $('n1v').textContent = S.n1; $('k1v').textContent = S.k1;
-  $('stepBody').querySelectorAll('[data-dn]').forEach(q => { const x = S.n1 + +q.dataset.dn; q.disabled = S.ocupado || x < 1 || x > 200; });
+  $('stepBody').querySelectorAll('[data-dn]').forEach(q => { const x = S.n1 + +q.dataset.dn; q.disabled = S.ocupado || x < 1 || x > 120; });
   $('stepBody').querySelectorAll('[data-dk]').forEach(q => { const x = S.k1 + +q.dataset.dk; q.disabled = S.ocupado || x < 1 || x > kmaxDe(S.n1); });
   d.innerHTML = `<div class="eqs">${eqTablero(E.st.L)}</div>`;
 }
@@ -745,14 +770,14 @@ const mover8 = k => moverTablero('8', k, vivo8);
 function prep8(){ prepTablero(S.n8, S.k8, mover8, vivo8); }
 function vivo8(){
   const d = $('vivo8'); if (!d) return;
-  const n = S.n8, R = M.raizEntera(n), C = M.criterios(n), R3 = M.raizEntera(n, 3);
+  const n = S.n8, R = M.raizEntera(n), C = M.criterios(n), R3 = M.raizEntera(n, 3), P = rolLado(E.st.L);
   $('n8v').textContent = n; $('k8v').textContent = S.k8;
   $('stepBody').querySelectorAll('[data-dn]').forEach(q => { const x = n + +q.dataset.dn; q.disabled = S.ocupado || x < 1 || x > 400; });
   $('stepBody').querySelectorAll('[data-dk]').forEach(q => { const x = S.k8 + +q.dataset.dk; q.disabled = S.ocupado || x < 1 || x > kmaxDe(n); });
   d.innerHTML = `<div class="eqs">${eqTablero(E.st.L)}
-    <div class="eq">√${N_(n)}: raíz por defecto ${k_(R.k)} y resto ${r_(R.r)}${R.exacta ? '' : `; por exceso ${R.exceso} y resto ${rp_(R.rp)}`}<span class="note">${R.exacta ? 'raíz exacta' : `√${n} ≈ ${R.aproximada}`}</span></div>
+    <div class="eq">√${N_(n)}: raíz por defecto ${R.k} y residuo ${P.defecto ? r_(R.r) : R.r}${R.exacta ? '' : `; raíz por exceso ${R.exceso} y residuo por exceso ${P.exceso ? rp_(R.rp) : R.rp}`}<span class="note">${R.exacta ? 'raíz exacta' : `√${n} = ${R.aproximada}…`}</span></div>
     <div class="eq" style="font-family:var(--font)">${C.excluido ? `no puede ser cuadrado: ${C.razones.map(x => x.texto).join('; ')}` : `pasa las pruebas de la última cifra, de los ceros, del 5, del 4 y del 9${C.esCuadrado ? '' : ', y aun así no es cuadrado'}`}<span class="note">criterios de exclusión</span></div>
-    <div class="eq">∛${N_(n)}: raíz cúbica entera ${R3.k} y resto ${R3.r}<span class="note">${R3.exacta ? `${n} es un cubo perfecto` : `${R3.k}³ = ${R3.N - R3.r} ≤ ${n} < ${R3.N + R3.rp} = ${R3.exceso}³`}</span></div></div>`;
+    <div class="eq">∛${N_(n)}: raíz cúbica entera ${R3.k} y residuo ${R3.r}<span class="note">${R3.exacta ? `${n} es un cubo perfecto` : `${R3.k}³ = ${R3.potencia} ≤ ${n} < ${R3.siguiente} = ${R3.exceso}³`}</span></div></div>`;
 }
 function mayor8(){ if (S.ocupado || E.anim) return; mover8(M.raizEntera(S.n8).k); }
 
@@ -767,28 +792,31 @@ const enlazar = (cl, max, prep, mover) => {
 };
 
 // Estados del dibujo de cada predicción (antes y después de responder)
-const F150 = M.layoutFilas(150, 15).fichas, L150 = M.layoutCuadrado(150, 12, 'L');
-const H150 = L12.celdas.slice(R150.r).map(c => ({ x:c.x, y:c.y, tipo:'falta' }));
-const st150 = ya => (ya ? { fichas:L150.fichas, huecos:H150, k:12, cols:15, rows:13 } : { fichas:F150, huecos:[], k:null, cols:15, rows:13 });
-const LECT150 = [() => ['N', 'fichas N', '150'], () => ['k', 'lado k', String(R150.k)], () => ['r', 'sobran r', String(R150.r)], () => ['rp', 'faltan r′ para 13 × 13', String(R150.rp)]];
-const DESC150 = `150 fichas: un cuadrado de lado 12 usa 144 y sobran 6; para el cuadrado de lado 13 faltarían 19.`;
-const C144 = M.layoutCuadrado(144).fichas, EXT12 = L12.celdas.map(c => ({ x:c.x, y:c.y, tipo:'L' }));
-const PIE_L = [['12', 'k'], [' + ', 'ink'], ['12', 'k'], [' + ', 'ink'], ['1', 'L'], [' = ', 'ink'], [String(A12.agrega), 'L']];
-const LECT_L = [() => ['N', 'antes: 12 × 12', String(A12.desde)], () => ['L', 'se agregan', String(A12.agrega)], () => ['ink', 'después: 13 × 13', String(A12.hasta)]];
-const DESC_L = `Al cuadrado de 12 por 12 se le agregan una columna de 12, una fila de 12 y la esquina: 25 fichas, y queda uno de 13 por 13.`;
+const F150 = M.layoutFilas(150, 15).fichas, L150 = M.layoutCuadrado(150, R150.k);   // las que sobran, aparte
+const st150 = ya => (ya ? { fichas:L150.fichas, huecos:[], k:R150.k, cols:15, rows:13 } : { fichas:F150, huecos:[], k:null, cols:15, rows:13 });
+const LEY150 = [['N', 'fichas'], ['k', 'raíz por defecto k'], ['r', 'residuo por defecto r']];
+const LECT150 = [() => ['N', 'fichas N', '150'], () => ['k', 'raíz por defecto k', String(R150.k)], () => ['r', 'residuo por defecto r', String(R150.r)], () => ['rp', `residuo por exceso rₑ (para ${R150.exceso} × ${R150.exceso})`, String(R150.rp)]];
+const DESC150 = `150 fichas: un cuadrado de lado ${R150.k} usa ${R150.potencia} y sobran ${R150.r}, aparte. Para el cuadrado de lado ${R150.exceso} faltarían ${R150.rp}.`;
+const C225 = M.layoutCuadrado(A15.desde).fichas, EXT15 = L15.celdas.map(c => ({ x:c.x, y:c.y, tipo:'L' }));
+const PIE_L = [[String(A15.k), 'k'], [' + ', 'ink'], [String(A15.k), 'k'], [' + ', 'ink'], ['1', 'L'], [' = ', 'ink'], [String(A15.agrega), 'L']];
+const LECT_L = [() => ['N', `antes: ${A15.k} × ${A15.k}`, String(A15.desde)], () => ['L', 'se agregan', String(A15.agrega)], () => ['ink', `después: ${A15.k + 1} × ${A15.k + 1}`, String(A15.hasta)]];
+const DESC_L = `Al cuadrado de ${A15.k} por ${A15.k} se le agregan una columna de ${A15.k}, una fila de ${A15.k} y la esquina: ${A15.agrega} fichas, y queda uno de ${A15.k + 1} por ${A15.k + 1}.`;
 const items4 = ya => LISTA4.map(N => { const c = M.criterios(N);
   return ya ? { N, marca: c.excluido ? 'mal' : 'ok', sub: c.excluido ? [['✗ ' + corto(c), 'ink']] : [['✓ = ', 'ink'], [String(R7921.k), 'k'], ['2', 'ink', 'sup']] } : { N }; });
-const DESC4 = `2 711 no puede ser cuadrado: entre 4 deja 3. 36 000 tampoco: termina en tres ceros. 2 235 tampoco: termina en 35. 7 921 sí: es 89 al cuadrado. La rueda: las últimas cifras de un cuadrado son ${T2.cifras.join(', ')}; nunca ${T2.nunca.join(', ')}.`;
+const DESC4 = `2 711 no puede ser cuadrado: entre 4 deja 3. 36 000 tampoco: termina en tres ceros. 2 235 tampoco: termina en 35. 7 921 sí: es ${R7921.k} al cuadrado. La rueda: las últimas cifras de un cuadrado son ${T2.cifras.join(', ')}; nunca ${T2.nunca.join(', ')}.`;
 const CUBO_ANTES = M.cuboIso(9, 8, 1).map(c => Object.assign(c, { tipo:'viejo' }));
-const CUBO_FIN = M.cuboIso(6, 6, 6).map(c => Object.assign(c, { tipo: c.z < 2 ? 'viejo' : 'm' }));
+// Las tres copias de 6 × 6 × 2: las tres son 72 cubitos (N), con distinta intensidad.
+const CUBO_FIN = M.cuboIso(6, 6, 6).map(c => Object.assign(c, { tipo: c.z < 2 ? 'viejo' : c.z < 4 ? 'N2' : 'N3' }));
+const LEY5 = [['N', '72 cubitos (cada copia)'], ['m', '× 3: multiplicador m'], ['k', 'arista k']];
 const PIE5 = [['72', 'N'], [' × ', 'ink'], [String(C72.m), 'm'], [' = ', 'ink'], [String(C72.resultado), 'ink'], [' = ', 'ink'], [String(C72.raiz), 'k'], ['3', 'ink', 'sup']];
 const LECT5 = [() => ['N', 'cubitos', '72'], () => ['m', 'multiplicador m', String(C72.m)], () => ['k', 'arista k', String(C72.raiz)]];
-const DESC5 = '72 cubitos se acomodan en dos capas de 6 por 6; con 2 copias más (72 por 3 = 216) se completa un cubo de 6 por 6 por 6.';
+const DESC5 = `72 cubitos se acomodan en dos capas de 6 por 6. Tres copias iguales (72 por ${C72.m} = ${C72.resultado}) completan un cubo de ${C72.raiz} por ${C72.raiz} por ${C72.raiz}.`;
+const LEY6 = [['k', 'parejas: forman la raíz'], ['d', 'los que se quitan (divisor d)']];
 const PIE6 = [[mil(2160), 'N'], [' ÷ ', 'ink'], [String(D2160.d), 'd'], [' = ', 'ink'], [String(D2160.resultado), 'ink'], [' = ', 'ink'], [String(D2160.raiz), 'k'], ['2', 'ink', 'sup']];
-const DESC6 = `2 160 es 2 por 2 por 2 por 2 por 3 por 3 por 3 por 5. En parejas: (2, 2), (2, 2), (3, 3); quedan sueltos un 3 y el 5. Entre 15 queda 144, que es 12 al cuadrado.`;
+const DESC6 = `2 160 es 2 por 2 por 2 por 2 por 3 por 3 por 3 por 5. En parejas: (2, 2), (2, 2), (3, 3); quedan sueltos un 3 y el 5. Entre ${D2160.d} queda ${D2160.resultado}, que es ${D2160.raiz} al cuadrado.`;
 const LECT6 = [() => ['N', 'número', mil(2160)], () => ['d', 'divisor d', String(D2160.d)], () => ['k', 'raíz', String(D2160.raiz)]];
 const PIE7 = [[String(Q49.cantidad), 'ink'], [' cuadrados: de ', 'ink'], [String(Q49.desde), 'k'], ['2', 'ink', 'sup'], [' a ', 'ink'], [String(Q49.hasta), 'k'], ['2', 'ink', 'sup']];
-const DESC7 = `De 49 a 400 están los cuadrados de 7 a 20: ${Q49.lista.join(', ')}. Son 14.`;
+const DESC7 = `De 49 a 400 están los cuadrados de ${Q49.desde} a ${Q49.hasta}: ${Q49.lista.join(', ')}. Son ${Q49.cantidad}.`;
 
 const steps = [
  { k:'Paso 1', t:'Explora: fichas en cuadrado', explora:true,
@@ -796,43 +824,45 @@ const steps = [
    body:() => `<p class="problem">Tienes ${N_('N fichas')}. Arrastra la esquina naranja (o usa los botones de lado) para probar cuadrados de otro lado ${k_('k')}: el cuadrado lleva ${k_('k')} × ${k_('k')} fichas.</p>
    ${stepper('1')}
    <div id="vivo1"></div>
-   <p>Las que no entran en el cuadrado quedan aparte: ${r_('sobran')}. Si el cuadrado es más grande que las fichas, quedan huecos: ${rp_('faltan')}. Cuando no sobra ni falta ninguna, ${N_('N')} es un <b>cuadrado perfecto</b> y su <b>raíz cuadrada</b> es el lado: √${N_('N')} = ${k_('k')}.</p>
+   <p>Las que no entran en el cuadrado quedan aparte: sobran. Si el cuadrado es más grande que las fichas, quedan huecos: faltan. Cuando no sobra ni falta ninguna, ${N_('N')} es un <b>cuadrado perfecto</b> y su <b>raíz cuadrada</b> es el lado: √${N_('N')} = ${k_('k')}.</p>
+   <p>Si no es cuadrado perfecto, el lado del cuadrado más grande que se arma es la <b>raíz por defecto</b>, y las que sobran son el <b>residuo por defecto</b> ${r_('r')}. El lado del cuadrado siguiente, que no se llega a completar, es la <b>raíz por exceso</b>, y las que faltan son el <b>residuo por exceso</b> ${rp_('rₑ')}.</p>
    <p class="hint">Prueba con 36, 49 y 50 fichas. ¿Cuál de esos números es un cuadrado perfecto?</p>`,
-   luego:() => { enlazar('1', 200, prep1, mover1); vivo1(); } },
+   luego:() => { enlazar('1', 120, prep1, mover1); vivo1(); } },
  { k:'Paso 2', t:'Predice: la raíz de 150', gate:P_150,
    prep:() => { const ya = !!S.pred[P_150.id];
-     E.config({ modo:'cuadrado', st:st150(ya), ley: ya ? LEY_CUAD : [['N', 'fichas']], desc: ya ? DESC150 : '150 fichas en 10 filas de 15.', lect: ya ? LECT150 : [() => ['N', 'fichas N', '150']] }); },
-   anima:fin => { Object.assign(E.st, { desde:F150, fichas:L150.fichas, huecos:[], t:0, k:null }); E.ley = LEY_CUAD; E.leyenda();
-     E.animar(0, 1, 1700, t => { E.st.t = t; }, () => { E.st.k = 12; E.st.huecos = H150; E.st.desde = null; E.lect = LECT150; E.desc = DESC150; E.dibujar(); E.avisar(); fin(); }); },
-   body:() => `<p class="problem">Calcula la raíz cuadrada entera de ${N_('150')} y su resto.</p>${opcionesHTML(P_150.opts, 'fb')}
+     E.config({ modo:'cuadrado', st:st150(ya), ley: ya ? LEY150 : [['N', 'fichas']], desc: ya ? DESC150 : '150 fichas en 10 filas de 15.', lect: ya ? LECT150 : [() => ['N', 'fichas N', '150']] }); },
+   anima:fin => { Object.assign(E.st, { desde:F150, fichas:L150.fichas, huecos:[], t:0, k:null }); E.ley = LEY150; E.leyenda();
+     E.animar(0, 1, 1700, t => { E.st.t = t; }, () => { E.st.k = R150.k; E.st.desde = null; E.lect = LECT150; E.desc = DESC150; E.dibujar(); E.avisar(); fin(); }); },
+   body:() => `<p class="problem">Calcula la raíz cuadrada entera por defecto de ${N_('150')} y su residuo.</p>${opcionesHTML(P_150.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
-     <div class="eq">${k_('12')}² = 144 ≤ ${N_('150')} &lt; 169 = 13²<span class="note">12 es la raíz por defecto (el cuadrado que cabe) y 13, la raíz por exceso (el que se pasa)</span></div>
-     <div class="eq">${N_('150')} = ${k_('12')}² + ${r_('6')}<span class="note">resto por defecto: las que sobran</span></div>
-     <div class="eq">13² − ${N_('150')} = ${rp_('19')}<span class="note">resto por exceso: las que faltan para el de 13</span></div>
-     <div class="eq">${r_('6')} + ${rp_('19')} = 25 = 2 · ${k_('12')} + 1</div></div>
-   <p>El resto nunca llega a 2 · ${k_('12')} + 1 = 25: con 25 sobrantes ya se arma el cuadrado de 13. Por eso, en la raíz cuadrada entera, el resto va de 0 a 2${k_('k')}. Si te sale más grande, la raíz se quedó corta.</p>${FUENTE}</div>` },
- { k:'Paso 3', t:'Predice: de 12 × 12 a 13 × 13', gate:P_L,
-   prep:() => { const ya = !!S.pred[P_L.id];
-     E.config({ modo:'cuadrado', st:{ fichas:C144, huecos:[], k:12, cols:13, rows:13, extra: ya ? EXT12 : [], esquina: ya ? { x:12, y:12 } : null, pie: ya ? PIE_L : null },
-       ley: ya ? [['N', 'las 144 fichas'], ['k', 'lado k'], ['L', 'las que se agregan']] : [['N', 'las 144 fichas'], ['k', 'lado k']],
-       desc: ya ? DESC_L : 'Un cuadrado de 12 por 12 fichas: 144.', lect: ya ? LECT_L : [() => ['N', '12 × 12', String(A12.desde)]] }); },
-   anima:fin => { Object.assign(E.st, { extra:EXT12, extraVer:0, esquina:{ x:12, y:12 }, pie:PIE_L }); E.ley = [['N', 'las 144 fichas'], ['k', 'lado k'], ['L', 'las que se agregan']]; E.leyenda(); E.redimensionar();
-     E.animar(0, EXT12.length, 2400, x => { E.st.extraVer = Math.floor(x + 1e-9); }, () => { E.lect = LECT_L; E.desc = DESC_L; E.avisar(); fin(); }, true); },
-   body:() => `<p class="problem">Un cuadrado de ${k_('12')} × ${k_('12')} fichas se quiere agrandar a uno de 13 × 13.</p>
+     <div class="eq">${k_(R150.k)}² = ${R150.potencia} ≤ ${N_('150')} &lt; ${R150.siguiente} = ${R150.exceso}²<span class="note">${R150.k} es la raíz por defecto (el cuadrado que cabe) y ${R150.exceso}, la raíz por exceso (el que se pasa)</span></div>
+     <div class="eq">${N_('150')} = ${k_(R150.k)}² + ${r_(R150.r)}<span class="note">residuo por defecto ${r_('r')}: las que sobran</span></div>
+     <div class="eq">${R150.exceso}² − ${N_('150')} = ${rp_(R150.rp)}<span class="note">residuo por exceso ${rp_('rₑ')}: las que faltan para el de ${R150.exceso}</span></div></div>
+   <p>La raíz cuadrada entera se busca con el cuadrado más grande que se puede armar: si sobran tantas fichas que todavía se agranda, la raíz se quedó corta. Y el residuo son fichas enteras, no los decimales de √150.</p>${FUENTE}</div>` },
+ { k:'Paso 3', t:`Predice: de ${A15.k} × ${A15.k} a ${A15.k + 1} × ${A15.k + 1}`, gate:P_L,
+   prep:() => { const ya = !!S.pred[P_L.id], n = A15.k + 1;
+     E.config({ modo:'cuadrado', st:{ fichas:C225, huecos:[], k:A15.k, cols:n, rows:n, extra: ya ? EXT15 : [], esquina: ya ? { x:A15.k, y:A15.k } : null, pie: ya ? PIE_L : null },
+       ley: ya ? [['N', `las ${A15.desde} fichas`], ['k', 'lado k'], ['L', 'las que se agregan']] : [['N', `las ${A15.desde} fichas`], ['k', 'lado k']],
+       desc: ya ? DESC_L : `Un cuadrado de ${A15.k} por ${A15.k} fichas: ${A15.desde}.`, lect: ya ? LECT_L : [() => ['N', `${A15.k} × ${A15.k}`, String(A15.desde)]] }); },
+   anima:fin => { Object.assign(E.st, { extra:EXT15, extraVer:0, esquina:{ x:A15.k, y:A15.k }, pie:PIE_L }); E.ley = [['N', `las ${A15.desde} fichas`], ['k', 'lado k'], ['L', 'las que se agregan']]; E.leyenda(); E.redimensionar();
+     E.animar(0, EXT15.length, 2400, x => { E.st.extraVer = Math.floor(x + 1e-9); }, () => { E.lect = LECT_L; E.desc = DESC_L; E.avisar(); fin(); }, true); },
+   body:() => `<p class="problem">Un cuadrado de ${k_(A15.k)} × ${k_(A15.k)} fichas se quiere agrandar a uno de ${A15.k + 1} × ${A15.k + 1}.</p>
    <p>¿Cuántas fichas hay que ${L_('agregar')}?</p>${opcionesHTML(P_L.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
-     <div class="eq">13² − ${k_('12')}² = 169 − 144 = ${L_('25')}</div>
-     <div class="eq">${k_('12')} + ${k_('12')} + 1 = ${L_('25')}<span class="note">una columna, una fila y la esquina: una L</span></div>
-     <div class="eq">(${k_('k')} + 1)² = ${k_('k')}² + 2${k_('k')} + 1</div></div>
-   <p>Para pasar de un cuadrado perfecto al siguiente se agrega siempre una ${L_('L')} de 2${k_('k')} + 1 fichas. Por eso los cuadrados se separan cada vez más: 1, 4, 9, 16, 25… se llevan 3, 5, 7, 9…</p>${FUENTE}</div>` },
- { k:'Paso 4', t:'Predice: ¿cuál puede ser cuadrado?', gate:P_CRIT,
+     <div class="eq">${A15.k + 1}² − ${k_(A15.k)}² = ${A15.hasta} − ${A15.desde} = ${L_(A15.agrega)}</div>
+     <div class="eq">${k_(A15.k)} + ${k_(A15.k)} + 1 = ${L_(A15.agrega)}<span class="note">una columna, una fila y la esquina: una L</span></div>
+     <div class="eq">(${k_('k')} + 1)² = ${k_('k')}² + 2${k_('k')} + 1</div>
+     <div class="eq">${r_('r')} + ${rp_('rₑ')} = 2${k_('k')} + 1<span class="note">en el paso 2: ${R150.r} + ${R150.rp} = ${R150.r + R150.rp} = 2 × ${R150.k} + 1</span></div></div>
+   <p>Para pasar de un cuadrado perfecto al siguiente se agrega siempre una ${L_('L')} de 2${k_('k')} + 1 fichas. Por eso, en la raíz cuadrada entera, el residuo por defecto ${r_('r')} va de 0 a 2${k_('k')}: con 2${k_('k')} + 1 sobrantes ya se arma el cuadrado siguiente. Y lo que sobra más lo que falta es justo esa ${L_('L')}: ${r_('r')} + ${rp_('rₑ')} = 2${k_('k')} + 1.</p>${FUENTE}</div>` },
+ { k:'Paso 4', t:'Predice: ¿cuál es cuadrado?', gate:P_CRIT,
    prep:() => { const ya = !!S.pred[P_CRIT.id];
      E.config({ modo:'rueda', st:{ items:items4(ya), rueda:ya, n:2 }, ley: ya ? [['N', 'números'], ['k', 'raíz'], ['ink', 'cifras en que termina un cuadrado']] : [['N', 'números']],
        desc: ya ? DESC4 : 'Cuatro números: 2 711, 36 000, 7 921 y 2 235.', lect:[] }); },
    anima:fin => { const pre = items4(false), fin4 = items4(true);
      E.ley = [['N', 'números'], ['k', 'raíz'], ['ink', 'cifras en que termina un cuadrado']]; E.leyenda();
      E.secuencia(LISTA4.map((_, i) => ({ items: fin4.map((x, j) => (j <= i ? x : pre[j])) })).concat([{ rueda:true }]), 700, () => { E.desc = DESC4; E.avisar(); fin(); }); },
-   body:() => `<p class="problem">Sin sacar raíces: ¿cuál de estos números puede ser un cuadrado perfecto? ${LISTA4.map(n => N_(mil(n))).join(', ')}.</p>${opcionesHTML(P_CRIT.opts, 'fb')}
+   body:() => `<p class="problem">Solo uno de estos números es cuadrado perfecto: ${LISTA4.map(n => N_(mil(n))).join(', ')}. Sin sacar raíces, ¿cuál?</p>
+   <p class="hint">Pista: un cuadrado, dividido entre 4, deja resto 0 o 1.</p>${opcionesHTML(P_CRIT.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
      <div class="eq">última cifra de ${k_('k')}: 0 1 2 3 4 5 6 7 8 9<br>última cifra de ${k_('k')}²: ${T2.mapa.join(' ')}<span class="note">un cuadrado nunca termina en 2, 3, 7 u 8</span></div>
      ${P4.excluidos.map(x => `<div class="eq">${N_(mil(x.N))}: ${x.razones.map(r => r.texto).join('; ')}</div>`).join('')}
@@ -841,28 +871,28 @@ const steps = [
  { k:'Paso 5', t:'Predice: completar un cubo', gate:P_CUBO,
    prep:() => { const ya = !!S.pred[P_CUBO.id];
      E.config({ modo:'cubo', st:{ cubos: ya ? CUBO_FIN : CUBO_ANTES, dims:[9, 8, 6], pie: ya ? PIE5 : null },
-       ley: ya ? [['N', 'los 72 cubitos'], ['m', 'las copias que se agregan'], ['k', 'arista k']] : [['N', 'cubitos']],
+       ley: ya ? LEY5 : [['N', 'cubitos']],
        desc: ya ? DESC5 : '72 cubitos en una capa de 9 por 8.', lect: ya ? LECT5 : [() => ['N', 'cubitos', '72']] }); },
    anima:fin => { Object.assign(E.st, { desde:RE72.desde, cubos:RE72.hasta.map(c => Object.assign({}, c, { tipo:'viejo' })), t:0 });
-     E.ley = [['N', 'los 72 cubitos'], ['m', 'las copias que se agregan'], ['k', 'arista k']]; E.leyenda();
+     E.ley = LEY5; E.leyenda();
      E.animar(0, 1, 1500, t => { E.st.t = t; }, () => { E.st.desde = null;
        E.secuencia([{ cubos:CUBO_FIN.filter(c => c.z < 4) }, { cubos:CUBO_FIN, pie:PIE5 }], [800, 0], () => { E.lect = LECT5; E.desc = DESC5; E.avisar(); fin(); }); }); },
-   body:() => `<p class="problem">Con ${N_('72')} cubitos iguales se quiere armar un cubo macizo, pero no alcanza. Si ${N_('72')} = 2³ · 3², ¿cuál es el menor número por el que hay que ${m_('multiplicar')} 72 para obtener un cubo perfecto?</p>${opcionesHTML(P_CUBO.opts, 'fb')}
+   body:() => `<p class="problem">Con ${N_('72')} cubitos iguales se quiere armar un cubo macizo, pero no alcanza. Si ${N_('72')} = ${C72.texto}, ¿cuál es el menor número por el que hay que ${m_('multiplicar')} 72 para obtener un cubo perfecto?</p>${opcionesHTML(P_CUBO.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
-     <div class="eq">${N_('72')} = 2³ · 3² = (2 · 2 · 2) · (3 · 3)<span class="note">al 3 le falta un compañero para formar un trío</span></div>
-     <div class="eq">${N_('72')} · ${m_('3')} = 2³ · 3³ = (2 · 3)³ = ${k_('6')}³ = 216</div></div>
+     <div class="eq">${N_('72')} = ${C72.texto} = (2 × 2 × 2) × (3 × 3)<span class="note">al 3 le falta un compañero para formar un trío</span></div>
+     <div class="eq">${N_('72')} × ${m_(C72.m)} = ${C72.despues} = (2 × 3)³ = ${k_(C72.raiz)}³ = ${C72.resultado}</div></div>
    <p>En un cubo perfecto, cada primo de la descomposición aparece en tríos: su exponente es múltiplo de 3. Se multiplica por lo que le <b>falta</b> a cada exponente para llegar al siguiente múltiplo de 3. Para un cuadrado se arman parejas: exponentes pares. Y a diferencia de los cuadrados, un cubo puede terminar en cualquier cifra (2³ = 8, 3³ = 27, 7³ = 343).</p>${FUENTE}</div>` },
  { k:'Paso 6', t:'Predice: dividir para tener un cuadrado', gate:P_DIV,
    prep:() => { const ya = !!S.pred[P_DIV.id];
      E.config({ modo:'chips', st:{ lista:F2160.lista, grupos:F2160.grupos, sueltos:F2160.sueltos, fase: ya ? 2 : 0, titulo:'los primos de 2 160', pie: ya ? PIE6 : null, rotSueltos:[['÷ ', 'ink'], [String(D2160.d), 'd']] },
-       ley: ya ? [['N', 'primos en pareja'], ['d', 'los que se quitan'], ['k', 'raíz']] : [['N', 'primos de 2 160']],
+       ley: ya ? LEY6 : [['ink', 'primos de 2 160']],
        desc: ya ? DESC6 : '2 160 descompuesto: 2, 2, 2, 2, 3, 3, 3 y 5.', lect: ya ? LECT6 : [() => ['N', 'número', mil(2160)]] }); },
-   anima:fin => { E.ley = [['N', 'primos en pareja'], ['d', 'los que se quitan'], ['k', 'raíz']]; E.leyenda();
+   anima:fin => { E.ley = LEY6; E.leyenda();
      E.secuencia([{ fase:1 }, { fase:2 }, { pie:PIE6 }], [900, 900, 0], () => { E.lect = LECT6; E.desc = DESC6; E.avisar(); fin(); }); },
-   body:() => `<p class="problem">${N_(mil(2160))} = 2⁴ · 3³ · 5. ¿Cuál es el menor número entre el que hay que ${d_('dividir')} 2 160 para obtener un cuadrado perfecto?</p>${opcionesHTML(P_DIV.opts, 'fb')}
+   body:() => `<p class="problem">${N_(mil(2160))} = ${D2160.texto}. ¿Cuál es el menor número entre el que hay que ${d_('dividir')} 2 160 para obtener un cuadrado perfecto?</p>${opcionesHTML(P_DIV.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
-     <div class="eq">${N_(mil(2160))} = (2 · 2) · (2 · 2) · (3 · 3) · 3 · 5<span class="note">en parejas; un 3 y el 5 quedan sin pareja</span></div>
-     <div class="eq">${N_(mil(2160))} ÷ ${d_('15')} = 2⁴ · 3² = (2² · 3)² = ${k_('12')}² = 144</div></div>
+     <div class="eq">${N_(mil(2160))} = (2 × 2) × (2 × 2) × (3 × 3) × 3 × 5<span class="note">en parejas; un 3 y el 5 quedan sin pareja</span></div>
+     <div class="eq">${N_(mil(2160))} ÷ ${d_(D2160.d)} = ${D2160.despues} = (2² × 3)² = ${k_(D2160.raiz)}² = ${D2160.resultado}</div></div>
    <p>Un cuadrado perfecto se parte en dos mitades iguales: cada primo va en parejas, con exponente par. Para quitar lo que sobra se divide entre los primos sin pareja, uno por cada exponente impar. Para multiplicar se hace al revés: se les busca la pareja.</p>${FUENTE}</div>` },
  { k:'Paso 7', t:'Predice: cuadrados en un tramo', gate:P_CONT,
    prep:() => { const ya = !!S.pred[P_CONT.id];
@@ -872,9 +902,9 @@ const steps = [
      E.animar(0, Q49.cantidad, 2600, x => { E.st.vistos = Math.floor(x + 1e-9); }, () => { E.st.pie = PIE7; E.dibujar(); E.lect = [() => ['ink', 'cuadrados', String(Q49.cantidad)]]; E.desc = DESC7; E.avisar(); fin(); }, true); },
    body:() => `<p class="problem">¿Cuántos cuadrados perfectos hay de 49 a 400, contando los dos extremos?</p>${opcionesHTML(P_CONT.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs">
-     <div class="eq">49 = ${k_('7')}² y 400 = ${k_('20')}²</div>
-     <div class="eq">${k_('7')}², ${k_('8')}², ${k_('9')}², …, ${k_('20')}²: 20 − 7 + 1 = 14<span class="note">de 7 a 20 hay 14 números: el primero también cuenta</span></div></div>
-   <p>Para contar cuadrados se cuentan sus <b>raíces</b>. Si los extremos no son cuadrados, se toma la raíz por exceso del menor y la raíz por defecto del mayor: de 50 a 399 serían de 8² a 19², es decir 19 − 8 + 1 = 12.</p>${FUENTE}</div>` },
+     <div class="eq">49 = ${k_(Q49.desde)}² y 400 = ${k_(Q49.hasta)}²</div>
+     <div class="eq">${k_(Q49.desde)}², ${k_(Q49.desde + 1)}², ${k_(Q49.desde + 2)}², …, ${k_(Q49.hasta)}²: ${Q49.hasta} − ${Q49.desde} + 1 = ${Q49.cantidad}<span class="note">de ${Q49.desde} a ${Q49.hasta} hay ${Q49.cantidad} números: el primero también cuenta</span></div></div>
+   <p>Para contar cuadrados se cuentan sus <b>raíces</b>. Si los extremos no son cuadrados, se toma la raíz por exceso del menor y la raíz por defecto del mayor: de 50 a 399 serían de ${Q50.desde}² a ${Q50.hasta}², es decir ${Q50.hasta} − ${Q50.desde} + 1 = ${Q50.cantidad}.</p>${FUENTE}</div>` },
  { k:'Paso 8', t:'Explora: cualquier cantidad', explora:true,
    prep:() => prep8(),
    body:() => `<p class="problem">Cambia la cantidad de ${N_('fichas')} y el ${k_('lado')} (arrastra la esquina o usa los botones). Abajo, la raíz entera, los criterios y la raíz cúbica de ese número.</p>
@@ -955,39 +985,44 @@ go(0);
 <script>
 /* ================= MODO 2: ¿qué pasa si…? =================
    La suma de los primeros impares (las L apiladas), el cuadrado de un número que termina en 5, los restos de un cuadrado
-   entre 4, las cifras de la raíz y el cubo que crece. La escena cambia recién después de responder. Un experimento se
+   entre 3 (entre 4 ya es la pista del paso 4), las cifras de la raíz y el cubo que crece. La escena cambia recién después de responder. Un experimento se
    abre solo si los anteriores ya tienen respuesta. */
 (function(){
 const $ = id => document.getElementById(id);
 const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2');
 const N_ = t => V('N', t), k_ = t => V('k', t), L_ = t => V('L', t);
 const S10 = M.sumaImpares(10), FI = M.filasImpares(10), CL = M.capasL(10);
-const T65 = M.terminaEn5(65), R4 = M.restosCuadrados(4), TR = M.tablaRestos(4, 8), C7 = M.cifrasRaiz(7), A5 = M.agregarParaSiguiente(5, 3), CC = M.crecerCubo(5);
+const T65 = M.terminaEn5(65), R3m = M.restosCuadrados(3), TR = M.tablaRestos(3, 9), C7 = M.cifrasRaiz(7), A5 = M.agregarParaSiguiente(5, 3), CC = M.crecerCubo(5);
 const FUENTE = '<p class="fuente">No encontramos estudios con datos sobre estos errores; las opciones incorrectas son hipótesis nuestras.</p>';
 const S = { k:0, pred:{}, t0:Date.now() };
 const lista = xs => xs.length === 1 ? `Solo ${xs[0]}` : xs.slice(0, -1).join(', ') + ' o ' + xs[xs.length - 1];
-console.assert(Object.keys(S10.errores).length === 3 && Object.keys(T65.errores).length === 3 && Object.keys(R4.errores).length === 3 && Object.keys(C7.errores).length === 3, 'qué pasa si: revisar las opciones');
+console.assert(T65.errores.sumaCuadrados === 3625 && T65.errores.porElAnterior === M.terminaEn5(55).cuadrado && M.terminaEn5(85).cuadrado === 7225, 'qué pasa si 2: revisar los textos');
+console.assert(Object.keys(S10.errores).length === 3 && Object.keys(T65.errores).length === 3 && Object.keys(R3m.errores).length === 3 && M.criterios(2711).sumaCifras % 3 === 2 && Object.keys(C7.errores).length === 3, 'qué pasa si: revisar las opciones');
 
+const PIE65 = [['65', 'k'], ['2', 'ink', 'sup'], [' = ' + mil(T65.piezas.rect) + ' + ' + T65.piezas.esquina + ' = ', 'ink'], [mil(T65.cuadrado), 'N']];
+const DESC65 = `El cuadrado de 65 se parte en 60 más 5 por lado; la tira de 5 por 60 de la derecha baja y forma con el resto un rectángulo de ${T65.piezas.ancho} por ${T65.piezas.alto}, ${mil(T65.piezas.rect)}; queda la esquina de 5 por 5, ${T65.piezas.esquina}. En total, ${mil(T65.cuadrado)}.`;
+const DESC_R3 = `Los cuadrados de 1 a ${TR.length} entre 3 dejan ${TR.map(t => t.resto).join(', ')}: solo 0 y 1.`;
+const LEY_IMP = [['L', 'filas de 1, 3, 5, … fichas'], ['k', 'lado']];
 const capaTipo = f => (f.capa % 2 ? 'L2' : 'L');
 const IMP_ANTES = FI.fichas.map(f => ({ x:f.x, y:f.y, tipo:capaTipo(f) })), IMP_FIN = CL.fichas.map(f => ({ x:f.x, y:f.y, tipo:capaTipo(f) }));
 const CUBO_VIEJO = CC.separados.filter(c => c.parte === 'viejo').map(c => Object.assign({}, c, { tipo:'viejo' }));
 const conParte = ps => CC.separados.filter(c => ps.includes(c.parte)).map(c => Object.assign({}, c, { tipo: c.parte === 'viejo' ? 'viejo' : 'L' }));
-const itemsRestos = ya => TR.map(t => (ya ? { ps:[[String(t.k), 'k'], ['2', 'ink', 'sup'], [' = ' + t.cuadrado, 'ink']], sub:[['resto ' + t.resto, 'ink']], tam:16 } : { ps:[[String(t.k), 'k'], ['2', 'ink', 'sup'], [' ÷ 4', 'ink']], tam:16 }));
+const itemsRestos = ya => TR.map(t => (ya ? { ps:[[String(t.k), 'k'], ['2', 'ink', 'sup'], [' = ' + t.cuadrado, 'ink']], sub:[['resto ' + t.resto, 'ink']], tam:16 } : { ps:[[String(t.k), 'k'], ['2', 'ink', 'sup'], [' ÷ 3', 'ink']], tam:16 }));
 
 const EXPS = [
   { id:'impares', corto:'La suma de los impares',
-    q:`¿Cuánto es 1 + 3 + 5 + 7 + … + 19, la suma de los primeros ${k_('10')} números impares?`,
+    q:`¿Cuánto es 1 + 3 + 5 + 7 + … + 19, la suma de los primeros ${S10.n} números impares?`,
     opts:[['a', T('N', S10.errores.gaussUltimo), 'suma-de-1-a-19', 'hipotesis'], ['b', T('N', S10.suma)],
           ['c', T('N', S10.errores.cuadradoUltimo), 'cuadrado-del-ultimo', 'hipotesis'], ['d', T('N', S10.errores.sumaPares), 'suma-de-los-pares', 'hipotesis']],
     ok:'b',
-    fb:{ a:'190 = 1 + 2 + 3 + … + 19 suma también los pares 2, 4, …, 18. Solo van los impares.',
-      c:'361 = 19 × 19 es el cuadrado del último impar, no de cuántos impares hay. Hay 10 impares, y suman 10 × 10.',
-      d:'110 = 10 × 11 es la suma de los primeros 10 pares, 2 + 4 + … + 20: cada par es uno más que su impar, así que da 10 más.' },
+    fb:{ a:`${S10.errores.gaussUltimo} = 1 + 2 + 3 + … + ${S10.ultimo} suma también los pares 2, 4, …, ${S10.ultimo - 1}. Solo van los impares.`,
+      c:`${S10.errores.cuadradoUltimo} = ${S10.ultimo} × ${S10.ultimo} es el cuadrado del último impar, no de cuántos impares hay. Hay ${S10.n} impares, y suman ${S10.n} × ${S10.n}.`,
+      d:`${S10.errores.sumaPares} = ${S10.n} × ${S10.n + 1} es la suma de los primeros ${S10.n} pares, 2 + 4 + … + ${S10.ultimo + 1}: cada par es uno más que su impar, así que da ${S10.n} más.` },
     antes:ya => E.config({ modo:'cuadrado', st:{ fichas: ya ? IMP_FIN : IMP_ANTES, huecos:[], k: ya ? 10 : null, cols:19, rows:10,
         pie: ya ? [['1 + 3 + … + 19 = ', 'ink'], ['10', 'k'], ['2', 'ink', 'sup'], [' = ' + S10.suma, 'N']] : null },
-      ley:[['L', 'filas de 1, 3, 5, … fichas'], ['k', 'lado']], desc: ya ? 'Las filas de 1, 3, 5 hasta 19 fichas, dobladas en L, se apilan en un cuadrado de 10 por 10: 100 fichas.' : 'Diez filas de fichas: 1, 3, 5, 7, hasta 19.',
+      ley: ya ? LEY_IMP : [['L', 'filas de 1, 3, 5, … fichas']], desc: ya ? 'Las filas de 1, 3, 5 hasta 19 fichas, dobladas en L, se apilan en un cuadrado de 10 por 10: 100 fichas.' : 'Diez filas de fichas: 1, 3, 5, 7, hasta 19.',
       lect: ya ? [() => ['N', 'suma', String(S10.suma)]] : [] }),
-    despues:() => { Object.assign(E.st, { desde:IMP_ANTES, fichas:IMP_FIN, t:0, k:null, pie:null }); E.dibujar();
+    despues:() => { Object.assign(E.st, { desde:IMP_ANTES, fichas:IMP_FIN, t:0, k:null, pie:null }); E.ley = LEY_IMP; E.dibujar();
       esperar(500, () => E.animar(0, 1, 2200, t => { E.st.t = t; }, () => { E.st.desde = null; E.st.k = 10; E.st.pie = [['1 + 3 + … + 19 = ', 'ink'], ['10', 'k'], ['2', 'ink', 'sup'], [' = ' + S10.suma, 'N']];
         E.lect = [() => ['N', 'suma', String(S10.suma)]]; E.desc = 'Las filas de 1, 3, 5 hasta 19 fichas, dobladas en L, se apilan en un cuadrado de 10 por 10: 100 fichas.'; E.dibujar(); E.avisar(); })); },
     exp:() => `<div class="eqs"><div class="eq">1 = 1², 1 + 3 = 2², 1 + 3 + 5 = 3², …<span class="note">cada impar es una L que agranda el cuadrado en 1</span></div>
@@ -999,34 +1034,35 @@ const EXPS = [
     opts:[['a', T('N', mil(T65.errores.sumaCuadrados)), 'suma-de-cuadrados', 'hipotesis'], ['b', T('N', mil(T65.errores.porElAnterior)), 'decena-por-la-anterior', 'hipotesis'],
           ['c', T('N', mil(T65.errores.porDos)), 'multiplica-por-2', 'hipotesis'], ['d', T('N', mil(T65.cuadrado))]],
     ok:'d',
-    fb:{ a:'3 625 = 60² + 5² olvida los dos rectángulos de 60 por 5: (60 + 5)² = 60² + 2 · 60 · 5 + 5² = 3 600 + 600 + 25 = 4 225.',
-      b:'3 025 sale de 6 · 5 = 30 y 25 al final, pero eso es 55 × 55. La decena se multiplica por la siguiente: 6 · 7 = 42.',
-      c:'130 = 65 · 2 es el doble. Elevar al cuadrado es multiplicar el número por sí mismo: 65 · 65.' },
-    antes:ya => E.config({ modo:'area5', st:{ a:6, t: ya ? 1 : 0, pie: ya ? [['65', 'k'], ['2', 'ink', 'sup'], [' = ' + mil(T65.piezas.rect) + ' + 25 = ', 'ink'], [mil(T65.cuadrado), 'N']] : null },
-      ley:[['k', 'lados'], ['N', 'área']], desc: ya ? 'El cuadrado de 65 se parte: la tira de 5 por 60 de la derecha baja y forma con el resto un rectángulo de 60 por 70, 4 200; queda la esquina de 5 por 5, 25.' : 'Un cuadrado de lado 65, partido en 60 más 5 por cada lado.',
+    fb:{ a:`${mil(T65.errores.sumaCuadrados)} = 60² + 5² olvida los dos rectángulos de 60 por 5: (60 + 5)² = 60² + 2 × 60 × 5 + 5² = 3 600 + 600 + 25 = ${mil(T65.cuadrado)}.`,
+      b:`${mil(T65.errores.porElAnterior)} sale de 6 × 5 = 30 y 25 al final, pero eso es 55 × 55. La decena se multiplica por la siguiente: 6 × 7 = ${T65.producto}.`,
+      c:`${T65.errores.porDos} = 65 × 2 es el doble. Elevar al cuadrado es multiplicar el número por sí mismo: 65 × 65.` },
+    antes:ya => E.config({ modo:'area5', st:{ P:T65, entero:!ya, t: ya ? 1 : 0, pie: ya ? PIE65 : null },
+      ley:[['k', 'lados'], ['N', 'área']], desc: ya ? DESC65 : 'Un cuadrado de lado 65.',
       lect: ya ? [() => ['N', 'área', mil(T65.cuadrado)]] : [] }),
-    despues:() => { E.st.t = 0; E.st.pie = null; E.dibujar();
-      esperar(500, () => E.animar(0, 1, 1800, t => { E.st.t = t; }, () => { E.st.pie = [['65', 'k'], ['2', 'ink', 'sup'], [' = ' + mil(T65.piezas.rect) + ' + 25 = ', 'ink'], [mil(T65.cuadrado), 'N']];
-        E.lect = [() => ['N', 'área', mil(T65.cuadrado)]]; E.desc = 'La tira de 5 por 60 baja: un rectángulo de 60 por 70, 4 200, más la esquina de 5 por 5, 25: 4 225.'; E.dibujar(); E.avisar(); })); },
-    exp:() => `<div class="eqs"><div class="eq">${k_('65')}² = 60 · 70 + 25 = 4 200 + 25 = ${N_(mil(T65.cuadrado))}</div>
-      <div class="eq">6 · 7 = ${T65.producto} → ${T65.producto}|25<span class="note">la decena por la siguiente, y 25 al final</span></div></div>
+    despues:() => { E.st.entero = true; E.st.t = 0; E.st.pie = null; E.dibujar();
+      esperar(600, () => { E.st.entero = false; E.dibujar();
+        esperar(700, () => E.animar(0, 1, 1800, t => { E.st.t = t; }, () => { E.st.pie = PIE65;
+          E.lect = [() => ['N', 'área', mil(T65.cuadrado)]]; E.desc = DESC65; E.dibujar(); E.avisar(); })); }); },
+    exp:() => `<div class="eqs"><div class="eq">${k_('65')}² = ${T65.piezas.ancho} × ${T65.piezas.alto} + ${T65.piezas.esquina} = ${mil(T65.piezas.rect)} + ${T65.piezas.esquina} = ${N_(mil(T65.cuadrado))}</div>
+      <div class="eq">6 × 7 = ${T65.producto} → ${T65.producto}|25<span class="note">la decena por la siguiente, y 25 al final</span></div></div>
       <p>La tira de la derecha (5 por 60) se pasa abajo: el cuadrado de 65 se vuelve un rectángulo de 60 por 70 y sobra la esquina de 5 por 5. Así se ve por qué un cuadrado que termina en 5 siempre termina en 25: 15² = 225, 25² = 625, 85² = 7 225.</p>${FUENTE}` },
 
-  { id:'restos-4', corto:'Dividir un cuadrado entre 4',
-    q:'Se divide un cuadrado perfecto entre 4. ¿Qué restos puede dejar?',
-    opts:[['a', lista(R4.errores.todos), 'cualquier-resto', 'hipotesis'], ['b', lista(R4.errores.soloPares), 'solo-restos-pares', 'hipotesis'],
-          ['c', lista(R4.restos)], ['d', lista(R4.errores.soloCero), 'solo-resto-cero', 'hipotesis']],
+  { id:'restos-3', corto:'Dividir un cuadrado entre 3',
+    q:'Se divide un cuadrado perfecto entre 3. ¿Qué restos puede dejar?',
+    opts:[['a', lista(R3m.errores.todos), 'cualquier-resto', 'hipotesis'], ['b', lista(R3m.errores.soloPares), 'solo-restos-pares', 'hipotesis'],
+          ['c', lista(R3m.restos)], ['d', lista(R3m.errores.soloCero), 'solo-resto-cero', 'hipotesis']],
     ok:'c',
-    fb:{ a:'Prueba: 1, 4, 9, 16, 25, 36… entre 4 dejan 1, 0, 1, 0, 1, 0. Nunca aparecen el 2 ni el 3.',
-      b:'9 entre 4 deja 1, no 0 ni 2: el cuadrado de un impar deja siempre resto 1.',
-      d:'16 deja 0, pero 25 deja 1: los cuadrados de los impares dejan 1.' },
-    antes:ya => E.config({ modo:'tarjetas', st:{ items:itemsRestos(ya), titulo:'cuadrados entre 4' }, ley:[['k', 'el número que se eleva']],
-      desc: ya ? `Los cuadrados de 1 a 8 entre 4 dejan ${TR.map(t => t.resto).join(', ')}: solo 0 y 1.` : 'Los cuadrados de 1 a 8, para dividir entre 4.', lect:[] }),
+    fb:{ a:`Prueba: ${TR.slice(0, 6).map(t => t.cuadrado).join(', ')}… entre 3 dejan ${TR.slice(0, 6).map(t => t.resto).join(', ')}. Nunca aparece el 2.`,
+      b:`${TR[1].cuadrado} entre 3 deja ${TR[1].resto}, no 0 ni 2: si el número no es múltiplo de 3, su cuadrado deja 1.`,
+      d:`${TR[2].cuadrado} deja ${TR[2].resto}, pero ${TR[3].cuadrado} deja ${TR[3].resto}: los cuadrados de los números que no son múltiplos de 3 dejan 1.` },
+    antes:ya => E.config({ modo:'tarjetas', st:{ items:itemsRestos(ya), titulo:'cuadrados entre 3' }, ley:[['k', 'el número que se eleva']],
+      desc: ya ? DESC_R3 : `Los cuadrados de 1 a ${TR.length}, para dividir entre 3.`, lect:[] }),
     despues:() => { const pre = itemsRestos(false), fin = itemsRestos(true);
-      E.secuencia(TR.map((_, i) => ({ items: fin.map((x, j) => (j <= i ? x : pre[j])) })), 450, () => { E.desc = `Los cuadrados de 1 a 8 entre 4 dejan ${TR.map(t => t.resto).join(', ')}: solo 0 y 1.`; E.avisar(); }); },
-    exp:() => `<div class="eqs"><div class="eq">(2j)² = 4j²<span class="note">un par al cuadrado: resto 0</span></div>
-      <div class="eq">(2j + 1)² = 4j² + 4j + 1 = 4(j² + j) + 1<span class="note">un impar al cuadrado: resto 1</span></div></div>
-      <p>Por eso un número que entre 4 deja 2 o 3 no puede ser cuadrado: es uno de los criterios del paso 4. Entre 4 basta mirar las dos últimas cifras: 2 711 termina en 11, y 11 entre 4 deja 3.</p>${FUENTE}` },
+      E.secuencia(TR.map((_, i) => ({ items: fin.map((x, j) => (j <= i ? x : pre[j])) })), 420, () => { E.desc = DESC_R3; E.avisar(); }); },
+    exp:() => `<div class="eqs"><div class="eq">(3j)² = 9j² = 3 × 3j²<span class="note">un múltiplo de 3 al cuadrado: resto 0</span></div>
+      <div class="eq">(3j ± 1)² = 9j² ± 6j + 1 = 3 × (3j² ± 2j) + 1<span class="note">los demás: resto 1</span></div></div>
+      <p>Por eso un número que entre 3 deja resto 2 no puede ser cuadrado. Entre 3, el resto es el mismo que el de la suma de las cifras: 2 711 suma 11, y 11 entre 3 deja 2. Es primo hermano del criterio del 9 del paso 4.</p>${FUENTE}` },
 
   { id:'cifras-raiz', corto:'Las cifras de la raíz',
     q:'Un número tiene 7 cifras. ¿Cuántas cifras tiene su raíz cuadrada entera?',
@@ -1041,7 +1077,7 @@ const EXPS = [
     despues:() => { E.st.fase = 0; E.st.lineas = []; E.ley = [['N', 'cifras del número'], ['k', 'cifras de la raíz']]; E.leyenda(); E.dibujar();
       E.secuencia([{ fase:1 }, { lineas:LIN7.slice(0, 1) }, { lineas:LIN7 }], [800, 800, 0], () => { E.lect = [() => ['k', 'cifras de la raíz', String(C7.cifras)]]; E.desc = DESC7; E.avisar(); }); },
     exp:() => `<div class="eqs"><div class="eq">${mil(C7.menor)}² = ${mil(C7.menorCuadrado)}<span class="note">el menor de 7 cifras es un cuadrado de 4 cifras</span></div>
-      <div class="eq">${mil(C7.mayor)}² = ${mil(C7.mayorCuadrado)} y ${mil(C7.mayor + 1)}² = ${mil(C7.siguienteCuadrado)}<span class="note">el siguiente ya tiene 8 cifras</span></div></div>
+      <div class="eq">${mil(C7.mayor)}² = ${mil(C7.mayorCuadrado)} y ${mil(C7.siguiente)}² = ${mil(C7.siguienteCuadrado)}<span class="note">el siguiente ya tiene 8 cifras</span></div></div>
       <p>Al elevar al cuadrado, la cantidad de cifras casi se duplica. Por eso, para la raíz, se separan las cifras de a dos desde la derecha: cada grupo da una cifra de la raíz, aunque el primero tenga una sola. 7 cifras → 4 grupos → 4 cifras.</p>${FUENTE}` },
 
   { id:'cubo-crece', corto:'El cubo que crece',
@@ -1049,23 +1085,23 @@ const EXPS = [
     opts:[['a', T('L', A5.errores.soloCaras), 'solo-las-tres-caras', 'hipotesis'], ['b', T('L', A5.errores.capaNueva), 'una-capa-del-cubo-nuevo', 'hipotesis'],
           ['c', T('L', A5.agrega)], ['d', T('L', A5.errores.copiaLaL), 'copia-la-l-del-cuadrado', 'hipotesis']],
     ok:'c',
-    fb:{ a:'75 = 3 · 25 tapa tres caras de 5 por 5, pero quedan huecos en tres aristas (3 · 5 = 15) y en la esquina: 75 + 15 + 1 = 91.',
-      b:'36 = 6 · 6 es una sola capa del cubo nuevo. El cubo crece hacia tres lados a la vez, no hacia uno.',
-      d:'16 = 3 · 5 + 1 copia la L del cuadrado con tres lados. Pero en el cubo cada lado nuevo es una cara de 5 por 5, no una fila de 5.' },
+    fb:{ a:`${A5.errores.soloCaras} = 3 × ${A5.k * A5.k} tapa tres caras de ${A5.k} por ${A5.k}, pero quedan huecos en tres aristas (3 × ${A5.k} = ${A5.partes.aristas}) y en la esquina: ${A5.partes.caras} + ${A5.partes.aristas} + 1 = ${A5.agrega}.`,
+      b:`${A5.errores.capaNueva} = ${A5.k + 1} × ${A5.k + 1} es una sola capa del cubo nuevo. El cubo crece hacia tres lados a la vez, no hacia uno.`,
+      d:`${A5.errores.copiaLaL} = 3 × ${A5.k} + 1 copia la L del cuadrado con tres lados. Pero en el cubo cada lado nuevo es una cara de ${A5.k} por ${A5.k}, no una fila de ${A5.k}.` },
     antes:ya => E.config({ modo:'cubo', st:{ cubos: ya ? conParte(['viejo', 'cara', 'arista', 'esquina']) : CUBO_VIEJO, dims:[7.5, 7.5, 7.5], pie: ya ? PIE_C : null },
       ley: ya ? [['N', 'el cubo de 5'], ['L', 'los que se agregan']] : [['N', 'el cubo de 5']],
       desc: ya ? DESC_C : 'Un cubo de 5 por 5 por 5: 125 cubitos.', lect: ya ? [() => ['L', 'se agregan', String(A5.agrega)]] : [] }),
     despues:() => { E.st.cubos = CUBO_VIEJO; E.st.pie = null; E.ley = [['N', 'el cubo de 5'], ['L', 'los que se agregan']]; E.leyenda(); E.dibujar();
-      E.secuencia([{ cubos:conParte(['viejo', 'cara']), pie:[['3 · 25 = ', 'ink'], ['75', 'L']] }, { cubos:conParte(['viejo', 'cara', 'arista']), pie:[['75 + 3 · 5 = ', 'ink'], ['90', 'L']] },
+      E.secuencia([{ cubos:conParte(['viejo', 'cara']), pie:[[`3 × ${A5.k * A5.k} = `, 'ink'], [String(A5.partes.caras), 'L']] }, { cubos:conParte(['viejo', 'cara', 'arista']), pie:[[`${A5.partes.caras} + 3 × ${A5.k} = `, 'ink'], [String(A5.partes.caras + A5.partes.aristas), 'L']] },
         { cubos:conParte(['viejo', 'cara', 'arista', 'esquina']), pie:PIE_C }], [900, 900, 900], () => { E.lect = [() => ['L', 'se agregan', String(A5.agrega)]]; E.desc = DESC_C; E.avisar(); }); },
     exp:() => `<div class="eqs"><div class="eq">6³ − ${k_('5')}³ = 216 − 125 = ${L_(A5.agrega)}</div>
-      <div class="eq">3 · ${k_('5')}² + 3 · ${k_('5')} + 1 = 75 + 15 + 1 = ${L_(A5.agrega)}<span class="note">tres caras, tres aristas y la esquina</span></div>
+      <div class="eq">3 × ${k_('5')}² + 3 × ${k_('5')} + 1 = 75 + 15 + 1 = ${L_(A5.agrega)}<span class="note">tres caras, tres aristas y la esquina</span></div>
       <div class="eq">(${k_('k')} + 1)³ = ${k_('k')}³ + 3${k_('k')}² + 3${k_('k')} + 1</div></div>
       <p>En el dibujo, las piezas nuevas están corridas hacia afuera para que se vean; al juntarlas queda el cubo de 6. En el cuadrado se agrega una L (2${k_('k')} + 1); en el cubo, una cáscara de tres caras, tres aristas y una esquina. Por eso los cubos se separan todavía más rápido: 1, 8, 27, 64, 125, 216…</p>${FUENTE}` },
 ];
-const LIN7 = [[[mil(C7.menor), 'k'], ['2', 'ink', 'sup'], [' = ' + mil(C7.menorCuadrado), 'N']], [[mil(C7.mayor + 1), 'k'], ['2', 'ink', 'sup'], [' = ' + mil(C7.siguienteCuadrado), 'ink'], ['  (8 cifras)', 'muted']]];
+const LIN7 = [[[mil(C7.menor), 'k'], ['2', 'ink', 'sup'], [' = ' + mil(C7.menorCuadrado), 'N']], [[mil(C7.siguiente), 'k'], ['2', 'ink', 'sup'], [' = ' + mil(C7.siguienteCuadrado), 'ink'], ['  (8 cifras)', 'muted']]];
 const DESC7 = `Las 7 cifras, de a dos desde la derecha, forman 4 grupos: la raíz tiene 4 cifras. 1 000 al cuadrado es 1 000 000, y 3 163 al cuadrado ya tiene 8 cifras.`;
-const PIE_C = [['75 + 15 + 1 = ', 'ink'], [String(A5.agrega), 'L']];
+const PIE_C = [[`${A5.partes.caras} + ${A5.partes.aristas} + 1 = `, 'ink'], [String(A5.agrega), 'L']];
 const DESC_C = 'Al cubo de 5 se le agregan, dibujadas aparte, tres caras de 25, tres aristas de 5 y la esquina: 91 cubitos, y queda un cubo de 6 por 6 por 6.';
 
 // Un experimento se abre solo si todos los anteriores ya tienen respuesta; los respondidos se revisitan libremente.

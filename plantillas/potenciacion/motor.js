@@ -9,9 +9,10 @@
  * devuelven números de JavaScript solo si caben exactos (hasta 2⁵³ − 1); si no, el motor avisa en vez de redondear.
  *
  * Raíz entera (n = 2 cuadrada, n = 3 cúbica)
- *   raizEntera(N, n)             k = ⌊ⁿ√N⌋ por defecto y k + 1 por exceso; resto r = N − kⁿ (0 ≤ r ≤ (k+1)ⁿ − kⁿ − 1,
- *                                es decir, r ≤ 2k en la cuadrada) y resto por exceso r′ = (k+1)ⁿ − N; dos decimales
- *                                de la raíz (truncados) y los errores típicos al dar la raíz y el resto
+ *   raizEntera(N, n)             k = ⌊ⁿ√N⌋ por defecto y k + 1 por exceso; potencia kⁿ y siguiente (k+1)ⁿ; residuo por
+ *                                defecto r = N − kⁿ (0 ≤ r ≤ (k+1)ⁿ − kⁿ − 1, es decir, r ≤ 2k en la cuadrada) y residuo
+ *                                por exceso rₑ = (k+1)ⁿ − N (campo rp); dos decimales de la raíz (truncados) y los
+ *                                errores típicos al dar la raíz y el residuo
  *   esCuadrado(N), esCubo(N)     ¿N = k² o N = k³ para un entero k?
  *   agregarParaSiguiente(k, n)   de kⁿ a (k+1)ⁿ: la L de 2k + 1 fichas (o la cáscara de 3k² + 3k + 1 cubitos), por partes
  * Cifras terminales y criterios
@@ -129,7 +130,7 @@
     const aproximada = `${k},${String(dec).padStart(2, '0')}`;
     const correcta = { k: exacto(k), r: exacto(r) };
     const km = k - 1n;
-    return { N: exacto(X), n, k: exacto(k), r: exacto(r), exceso: exacto(k + 1n), rp: exacto(rp), exacta: r === 0n, restoMaximo: exacto(max),
+    return { N: exacto(X), n, k: exacto(k), r: exacto(r), exceso: exacto(k + 1n), rp: exacto(rp), potencia: exacto(pot(k, n)), siguiente: exacto(pot(k + 1n, n)), exacta: r === 0n, restoMaximo: exacto(max),
       decimal, aproximada, respuesta: correcta,
       errores: limpiar({
         confundeDefectoExceso: r === 0n ? undefined : { k: exacto(k + 1n), r: exacto(rp) },   // da la raíz por exceso y lo que falta como resto
@@ -149,7 +150,7 @@
         errores: limpiar({
           olvidaEsquina: num(2n * K),                     // pone una fila y una columna de k y olvida la esquina
           unLado: num(K + 1n),                            // agrega solo una fila
-          restaLado: num((K + 1n) * (K + 1n) - K),        // resta el lado del área: (k+1)² − k
+          repiteEsquina: num(2n * (K + 1n)),              // una columna y una fila de k + 1: cuenta dos veces la esquina
         }, num(agrega)) };
     }
     return { k: num(K), n, agrega: num(agrega), partes: { caras: num(3n * K * K), aristas: num(3n * K), esquina: 1 }, desde: num(K ** 3n), hasta: num((K + 1n) ** 3n),
@@ -214,7 +215,7 @@
   }
   const SUP = { 0: '⁰', 1: '¹', 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹' };
   const sup = e => String(e).split('').map(c => SUP[c]).join('');
-  const textoFactores = f => (f.length ? f.map(({ p, e }) => (e === 1 ? String(p) : p + sup(e))).join(' · ') : '1');
+  const textoFactores = f => (f.length ? f.map(({ p, e }) => (e === 1 ? String(p) : p + sup(e))).join(' × ') : '1');
   const producto = pares => pares.reduce((s, [p, e]) => s * pot(BigInt(p), e), 1n);
   function menorMultiplicador(N, n) {
     n = indice(n);
@@ -273,7 +274,7 @@
     const cifras = String(menor).length;
     if (String(mayor).length !== cifras) throw new Error('la cantidad de cifras debería no depender del número');
     return { c, cifras, menor: num(menor), mayor: num(mayor), grupos: Math.ceil(c / 2),
-      menorCuadrado: exacto(menor * menor), mayorCuadrado: exacto(mayor * mayor), siguienteCuadrado: exacto((mayor + 1n) * (mayor + 1n)),
+      siguiente: exacto(mayor + 1n), menorCuadrado: exacto(menor * menor), mayorCuadrado: exacto(mayor * mayor), siguienteCuadrado: exacto((mayor + 1n) * (mayor + 1n)),
       errores: limpiar({ mitadAbajo: Math.floor(c / 2) || undefined, misma: c, depende: 'depende' }, cifras) };
   }
 
@@ -351,7 +352,7 @@
       }
     }
     const xs = fichas.concat(huecos).map(c => c.x + 1), ys = fichas.concat(huecos).map(c => c.y + 1);
-    return { N: X, k: K, usadas: lleno, sobran, faltan: K * K - lleno, fichas, huecos,
+    return { N: X, k: K, area: K * K, usadas: lleno, sobran, faltan: K * K - lleno, fichas, huecos,
       ancho: Math.max(K, ...xs, 1), alto: Math.max(K, ...ys, 1), exacto: X === K * K };
   }
   // La L de k² a (k+1)²: la columna de la derecha (k fichas) y la fila de abajo (k + 1, con la esquina al final).
