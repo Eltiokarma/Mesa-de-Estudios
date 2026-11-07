@@ -8,9 +8,104 @@ Cada ejecución construye una plantilla de escena de física, completa y revisad
 - **Celular:** en las plantillas nuevas, usar `nucleo/celular.js` (ejemplo en `plantillas/mruv/`) en vez de copiar a mano el lienzo compacto y sticky.
 
 - **Pastillas de «¿Qué pasa si…?» bloqueadas** (decisión de Gerson, 6 nov 2026, recibida de la conversación principal). Se puede ir a un experimento solo si todos los anteriores ya tienen respuesta. Los respondidos se revisitan libremente. Los bloqueados llevan `disabled`, `aria-disabled` y aria-label «Experimento N, bloqueado», igual que los puntos del paso a paso. También se cierran las otras vías de salto, como el hash o el teclado. La pestaña entre modos no se bloquea. En `dinamica/` lo arregla la conversación principal: no tocarla.
-- Dinámica ya está integrada en `claude/awesome-wozniak-5etl1n` (catálogo, diseño, pendientes y el pedido del informe). Tiro parabólico (6 nov), estática, choques, fluidos, MAS, ondas mecánicas, termodinámica y gravitación (7 nov) quedaron hechos (abajo). Con esto la lista de física está completa. **Lista nueva (huecos de escenas hechas):** dinámica, tiro parabólico, energía, circuitos y espejos (hechas, abajo); calorimetría y Banco Óptico 0.3.0 (en curso), calorimetría, circuitos y espejos.
+- Dinámica ya está integrada en `claude/awesome-wozniak-5etl1n` (catálogo, diseño, pendientes y el pedido del informe). Tiro parabólico (6 nov), estática, choques, fluidos, MAS, ondas mecánicas, termodinámica y gravitación (7 nov) quedaron hechos (abajo). Con esto la lista de física está completa. **Lista nueva (huecos de escenas hechas):** dinámica, tiro parabólico, energía, calorimetría, circuitos y espejos (hechas, abajo); Banco Óptico 0.3.0 (en curso), calorimetría, circuitos y espejos.
 - Los avisos de «terminado» van a la conversación principal nueva: `session_01P39d2yUDZET7Wso3ubSiiV` (desde el 7 nov; la anterior era `session_01P39d2yLWTLWLv3TGZ6FkHB`). Ella integra estática.
 - Desde el 7 nov la rutina sigue el método de `docs/metodo/`: constructor, verificador independiente con `entradas.py`, revisor y correcciones al mismo constructor. Lecciones nuevas de ese brief: al menos 4 predicciones en el paso a paso, opciones con la misma forma, ningún distractor que coincida con la respuesta, nombres de experimentos sin la respuesta y dibujo fijo y compacto arriba en el celular mientras hay predicción pendiente.
+
+## 7 nov 2026 · Calorimetría 0.2.0: dilatación y transferencia de calor (`plantillas/calorimetria/`)
+
+Es el punto 4 de la lista nueva. El título pasa a «Temperatura y calor».
+
+**Qué hay de nuevo.**
+
+- **Cuatro pestañas en una grilla de 2 columnas.** A 390 px cada una mide 172 px y no hay desborde (scrollWidth = clientWidth).
+  - «Dilatación» (8 pasos y 5 predicciones): el riel, la placa con 2α, la arandela, la tira bimetálica (de 120 °C, con un botón para enfriar) y el agua de 0 a 10 °C con la fórmula de Kell. Al final hay un explorador con asa.
+  - «Transferencia» (9 pasos y 6 predicciones): el hielo sobre aluminio y madera (comparación cualitativa), Fourier, la ventana (caras a 20 y 5 °C, con la nota del aire pegado al vidrio), la barra en serie con la unión que se arrastra, la olla con convección, la noche en Puno (pérdida radiativa) y Stefan, marcado «Para la UNI».
+  - «¿Qué pasa si…?» suma «Dos tazas» y llega a 6 experimentos.
+- **Motor.** 14 funciones nuevas con `errores`, más las de apoyo, y las tablas de materiales, líquidos y efusividad. Las funciones de antes no cambian.
+- **Casos y pruebas.** 39 casos, de los cuales 24 son nuevos, y 69 pruebas.
+- **Letras.**
+  - ℓ para la longitud, porque L es el calor latente.
+  - 2α y 3α para área y volumen.
+  - Q/t para el flujo.
+- **Respaldos.**
+  - Q2 documentado (Jara Guerrero 1991: el 48 % de 113 dijo que el hielo se derrite antes sobre la madera).
+  - Parcial: Q10 («Dos tazas», porque no está el PDF de Georgiou y Sharma), Q11 (el agujero), Q12 (las nubes), Q6 y Q7.
+  - Todo lo demás es hipótesis.
+- **Papel.**
+  - Salen p4, p7 y p9 y entran p10 a p13: el riel, la arandela, el derrame y la barra en serie.
+  - El riel de p10 tiene datos distintos a los de la escena.
+  - Quedan 10 problemas.
+- **Lo que se arregló de lo publicado.**
+  - Chips al 8 % y .v.hl con contorno.
+  - La leyenda que regalaba el experimento 1.
+  - Las opciones correctas que iban sin razón, ahora parejas.
+  - «Toco el metal» C y D pasan a parcial.
+  - Retroalimentación por distractor.
+  - pinch-zoom.
+  - Todas las animaciones con Celular.bucle.
+  - Pasos bloqueados que se anuncian «Paso N, bloqueado».
+
+**Verificador independiente.**
+- **Métodos:** fracciones exactas y Decimal de 50 dígitos.
+  - Dilatación exacta con (1+αΔT)ⁿ, comparada con 2α y 3α.
+  - Timoshenko para la tira.
+  - Resistencias ℓ/(kA) para la serie.
+  - Stefan como razón de T⁴.
+  - Bisección y búsqueda dorada para Kell y el frasco.
+- **Resultado:** los 24 casos coinciden.
+- **Pedidos, ya aplicados:**
+  - la tabla de efusividades en la cabecera;
+  - que los nombres de los casos 18 y 19 digan que usan la aproximación;
+  - tolerancias escritas como relativas.
+
+**Revisor de contenido.** No encontró nada grave.
+- **Lo medio:**
+  - el eje «no entra» delataba la respuesta de la arandela;
+  - la «temperatura de contacto» de 18 °C sobre un hielo que se derrite no era física, y tampoco la cifra de 5,5 veces;
+  - la noche en Puno no conectaba la pérdida con «amanece más fría»: ahora hay texto y el cielo está oscuro;
+  - la razón del parcial de «Dos tazas» contradecía el informe;
+  - la tira terminaba curvada hacia la opción incorrecta;
+  - la fórmula del explorador se leía «212 × 10⁻⁶»;
+  - los exploradores no actualizaban el aria-live;
+  - la ventana parecía un dato real.
+- **Lo bajo:**
+  - unidades de k;
+  - límites de los deslizadores;
+  - mercurio a −40 °C;
+  - ejes en turquesa;
+  - p10 y p13;
+  - una opción D.
+
+**Colores** (para `docs/diseno.md`):
+
+| Variable | Claro | Oscuro |
+| --- | --- | --- |
+| T | #c0364a | #f17384 |
+| Q y Q/t | #1f5fbf | #7cb0ff |
+| m | #a05200 | #f0a04a |
+| c | #466d14 | #a3d65e |
+| L | #a10fbf | #cf6bfa |
+| α | #3328c4 | #9f9bff |
+| ℓ | #0f766e | #5ed9c8 |
+| A | #7d6a00 | #e3c84a |
+| V | #5a1f08 | #f57a1f |
+| k | #255c1f | #5fe06a |
+
+- **ΔE00 mínimo por pestaña** (claro / oscuro):
+  - Paso a paso y «¿Qué pasa si…?»: 25,9 / 26,9.
+  - Dilatación: 24,5 / 26,9.
+  - Transferencia: 20,4 / 21,2.
+- **Pares por debajo de 20.** c–k (8,8), L–α, Q–α, c–A, m–A y m–V nunca salen en la misma pestaña. c va solo en las dos primeras y k solo en Transferencia.
+- **AA mínimo:** 4,54.
+- **Cruces con otras escenas:**
+  - m, c y L cambiaron: diseno.md todavía trae m #b85a06, c #4f7a17 y L #6b3dbd morado.
+  - Q sigue azul aquí, mientras que en termodinámica es naranja.
+
+**Pedidos para la integración.**
+1. `npm run catalogo`: cambian el título y la versión 0.2.0. No hace falta una unidad nueva, porque `fisica.temperatura-y-calor` ya trae dilatación y transferencia.
+2. Llevar los colores a docs/diseno.md.
+3. Actualizar pendientes. Si Gerson saca Stefan, se borran el paso 8 de Transferencia y su caso.
 
 ## 7 nov 2026 · Espejos esféricos 0.2.0: el doblez (`plantillas/optica-espejo-esferico/`)
 
