@@ -61,6 +61,9 @@
  * que otro error anterior) no aparece: así la escena nunca tiene dos opciones iguales. Cuando el error es una fórmula,
  * «lo mismo» se mide por la tabla de verdad, no por el texto. Ninguno de estos errores tiene estudio que lo mida en el
  * informe de aritmética: todos son hipótesis nuestras.
+ * Excepción: formasCondicional no deja caer errores que coinciden entre sí por la tabla. La recíproca (q → p) y la
+ * inversa (~p → ~q) son equivalentes entre sí, y las dos son incorrectas en el paso 7: se comparan con la correcta por
+ * la tabla y entre sí solo por el texto.
  */
 (function (root, fabrica) {
   const api = fabrica();
@@ -170,15 +173,40 @@
     if (f.t === 'no') return '~' + hijo(f.a, 'no');
     return `${hijo(f.a, f.t, 'a')} ${SIM[f.t]} ${hijo(f.b, f.t, 'b')}`;
   }
+  // Cómo se dice (lector de pantalla). Los paréntesis no se dicen: ~ de algo compuesto es «no es cierto que …»; las
+  // partes de → y ↔ van sin más (salvo que la parte sea otro → o ↔, que sí lleva «abre paréntesis … cierra paréntesis»);
+  // una parte ∧ ∨ Δ dentro de otro de esos conectivos va en forma corta: (p ∧ q) ∨ r es «tanto p como q, o r», (p ∨ q) ∧ r
+  // es «ya sea p o q, y r». ~(p ∨ q) → (q ∨ r) es «si no es cierto que p o q, entonces q o r».
   const PALABRA = { y: 'y', o: 'o', ox: 'o exclusivo' };
+  const literal = h => h.t === 'var' || (h.t === 'no' && h.a.t === 'var');
+  const conParentesis = h => `abre paréntesis, ${leer(h)}, cierra paréntesis`;
+  function leerNo(h) {
+    if (h.a.t === 'var') return 'no ' + h.a.n;
+    if (h.a.t === 'no') return 'no ' + leerNo(h.a);
+    return 'no es cierto que ' + leer(h.a);
+  }
+  function corta(h) {
+    const a = parte(h.a, h.t, 'a'), b = parte(h.b, h.t, 'b');
+    if (h.t === 'y') return `tanto ${a} como ${b}`;
+    if (h.t === 'o') return `ya sea ${a} o ${b}`;
+    return `o bien ${a} o bien ${b}, pero no ambas`;
+  }
+  function parte(h, padre, lado) {
+    if (h.t === 'var') return h.n;
+    if (h.t === 'no') return leerNo(h);
+    if (h.t === 'si' || h.t === 'sii') return conParentesis(h);
+    if (padre === 'si' || padre === 'sii') return leer(h);
+    if (h.t === padre && lado === 'a') return leer(h);
+    return corta(h);
+  }
   function leer(f) {
     f = A(f);
-    const caja = h => (h.t === 'var' || h.t === 'no' ? leer(h) : `abre paréntesis, ${leer(h)}, cierra paréntesis`);
     if (f.t === 'var') return f.n;
-    if (f.t === 'no') return 'no ' + caja(f.a);
-    if (f.t === 'si') return `si ${caja(f.a)}, entonces ${caja(f.b)}`;
-    if (f.t === 'sii') return `${caja(f.a)} si y solo si ${caja(f.b)}`;
-    return `${caja(f.a)} ${PALABRA[f.t]} ${caja(f.b)}`;
+    if (f.t === 'no') return leerNo(f);
+    const a = parte(f.a, f.t, 'a'), b = parte(f.b, f.t, 'b'), coma = literal(f.a) || (f.a.t === f.t && f.t !== 'si' && f.t !== 'sii') ? '' : ',';
+    if (f.t === 'si') return `si ${a}, entonces ${b}`;
+    if (f.t === 'sii') return `${a}${coma} si y solo si ${b}`;
+    return `${a}${coma} ${PALABRA[f.t]} ${b}`;
   }
 
   // ---------- evaluar ----------
@@ -483,7 +511,7 @@
     return OPS[c.op](pasa(c.a, valores), pasa(c.b, valores));
   }
   // Medidas en unidades de cuadrícula. Cada bloque tiene entrada a la izquierda y salida a la derecha, a la altura ym.
-  const M_ = { intW: 2, intH: 1.8, hueco: 0.5, riel: 0.5, sep: 0.3, pad: 0.35, cab: 0.75, foco: 1.2 };
+  const M_ = { intW: 2, intH: 1.8, hueco: 0.5, riel: 0.5, sep: 0.5, pad: 0.35, cab: 1.1, foco: 1.6 };
   function medir(c) {
     if (c.k === 'int') { c.w = M_.intW; c.h = M_.intH; c.ym = c.h / 2; return c; }
     if (c.k === 'serie') {
@@ -553,7 +581,7 @@
     const out = { elementos: [], cables: [], focos: [] };
     const x0 = 1.2; // pila a la izquierda
     colocar(c, x0, 0.4, out, null);
-    const ym = 0.4 + c.ym, xf = x0 + c.w + 1.1;
+    const ym = 0.4 + c.ym, xf = x0 + c.w + 1.9;
     out.cables.push({ x1: 0.5, y1: ym, x2: x0, y2: ym, id: c.id, dueno: null });
     out.cables.push({ x1: x0 + c.w, y1: ym, x2: xf - 0.45, y2: ym, id: c.id, dueno: null });
     out.focos.push({ id: c.id, x: xf, y: ym, r: 0.45, chico: false, dueno: null, principal: true });

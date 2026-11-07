@@ -2,10 +2,10 @@
   "plantilla": "logica",
   "unidades": "Valores de verdad como true (V) y false (F). Las fórmulas se escriben con ~ ∧ ∨ Δ → ↔ y paréntesis; las variables son p, q, r y s. Las filas de una tabla van en el orden de academia: la primera variable es V en la primera mitad de las filas y la última alterna V, F, V, F. Una fila se escribe como texto con los valores de las variables en orden alfabético («V F» es p = V, q = F).",
   "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.reciproca, filas.0.valor: el índice de una lista también va con punto); las listas se comparan completas y los textos exactos. 'tambien' son llamadas extra del mismo caso. Un error que no aparece en 'errores' es porque en ese caso daría la respuesta correcta o lo mismo que otro error (para las fórmulas, «lo mismo» es la misma tabla de verdad).",
-  "verificacion": "",
+  "verificacion": "Verificado por un subagente independiente (7 nov 2026) sin leer el código del motor: cada fórmula se tradujo a mano a una función de Python con la jerarquía de la cabecera, y las tablas completas (itertools.product, V primero), la clasificación, las equivalencias, los contraejemplos y los errores se recalcularon por fuerza bruta. Los 20 casos y los 10 problemas de papel.json coinciden; los textos de leer() se revisaron solo por su sentido. Tras la revisión (7 nov 2026) cambiaron, sin verificador independiente, el caso del lector de pantalla (leer() ya no dice los paréntesis: ~(p ∨ q) → (q ∨ r) se lee «si no es cierto que p o q, entonces q o r») y la fórmula del caso del paso 2, que pasó de (p ∧ q) ∨ ~r a (p ∧ q) ∧ ~r (mismas 3 variables y mismos números).",
   "casos": [
-    { "nombre": "Predicción del paso 2: (p ∧ q) ∨ ~r tiene 3 variables → 2³ = 8 filas; errores 2 × 3 = 6, 3 y 3² = 9",
-      "fn": "filasDe", "args": ["(p ∧ q) ∨ ~r"],
+    { "nombre": "Predicción del paso 2: (p ∧ q) ∧ ~r tiene 3 variables → 2³ = 8 filas; errores 2 × 3 = 6, 3 y 3² = 9",
+      "fn": "filasDe", "args": ["(p ∧ q) ∧ ~r"],
       "espera": { "variables": 3, "filas": 8, "errores.dobleDeVariables": 6, "errores.igualAVariables": 3, "errores.cuadrado": 9 } },
 
     { "nombre": "Con 2 variables, 2 × 2 = 2² = 4 y 2² = 4 coinciden con la respuesta y no aparecen como errores; queda solo «igual a las variables» (2)",
@@ -70,10 +70,12 @@
                    { "fn": "imprimir", "args": ["~[p | q]"], "espera": { "valor": "~(p ∨ q)" } },
                    { "fn": "imprimir", "args": ["(p -> q) <-> (~q => ~p)", { "minimo": true }], "espera": { "valor": "p → q ↔ ~q → ~p" } } ] },
 
-    { "nombre": "Lector de pantalla: los símbolos se leen con palabras",
-      "fn": "leer", "args": ["(p ∧ ~q) → r"],
-      "espera": { "valor": "si abre paréntesis, p y no q, cierra paréntesis, entonces r" },
-      "tambien": [ { "fn": "leer", "args": ["p ↔ q"], "espera": { "valor": "p si y solo si q" } },
+    { "nombre": "Lector de pantalla: los símbolos se leen con palabras y los paréntesis no se dicen: ~ de algo compuesto es «no es cierto que», las partes de → van sin más y (p ∧ q) ∨ r es «tanto p como q, o r»",
+      "fn": "leer", "args": ["~(p ∨ q) → (q ∨ r)"],
+      "espera": { "valor": "si no es cierto que p o q, entonces q o r" },
+      "tambien": [ { "fn": "leer", "args": ["(p ∧ ~q) → r"], "espera": { "valor": "si p y no q, entonces r" } },
+                   { "fn": "leer", "args": ["(p ∧ q) ∨ r"], "espera": { "valor": "tanto p como q, o r" } },
+                   { "fn": "leer", "args": ["p ↔ q"], "espera": { "valor": "p si y solo si q" } },
                    { "fn": "leer", "args": ["p Δ q"], "espera": { "valor": "p o exclusivo q" } } ] },
 
     { "nombre": "¿Qué pasa si…? 1: de 3 a 4 variables las filas pasan de 8 a 16; errores 12 (crecer de 4 en 4), 9 y 10",

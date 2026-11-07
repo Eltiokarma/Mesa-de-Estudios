@@ -222,6 +222,10 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="../../nucleo/celular.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+/* Para el análisis de la medición: casi todos los distractores miden una idea ingenua previa. Estos miden RETENCIÓN de lo
+   que la escena ya enseñó (el condicional con el antecedente F es V, del paso 3), no una idea ingenua:
+   paso 4 opción D (condicional-con-antecedente-falso-es-falso), paso 5 opción D (condicional-como-conjuncion) y
+   «¿Qué pasa si…?» 3 opciones A (condicional-con-antecedente-falso-es-falso) y D (condicional-como-bicondicional). */
 const PLANTILLA = { id: 'logica', unidad: 'aritmetica.logica-proposicional', version: '0.1.0' };
 function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
   if (!window.Medicion) return;
@@ -323,7 +327,8 @@ function crearEscena(cv, idDesc, idLect, idLey){
     const maxA = Math.max(1, ...circs.map(x => x.D.ancho));
     let U = Math.min(34, areaW/maxA);
     if (lim){ const fijo = 2*P + circs.length*26 + (tb && !lado ? tb.h + 2 : 0), sumA = circs.reduce((s, x) => s + x.D.alto, 0); if (sumA) U = Math.max(12, Math.min(U, (lim - fijo)/sumA)); }
-    let y = P; const pos = circs.map(x => { const r = { x:P, y:y + 18, U }; y += 18 + x.D.alto*U + 8; return r; });
+    // cada circuito centrado en el ancho que tiene
+    let y = P; const pos = circs.map(x => { const r = { x:P + Math.max(0, (areaW - x.D.ancho*U)/2), y:y + 18, U }; y += 18 + x.D.alto*U + 8; return r; });
     const hc = circs.length ? y : 0;
     let tx = P, ty = hc + 2;
     if (lado){ tx = W - tb.w - P; ty = P; }
@@ -333,7 +338,9 @@ function crearEscena(cv, idDesc, idLect, idLey){
   function resize(){
     const w = cv.clientWidth; if (!w) return;
     W = w; const c = colores();
-    LIM = 0; const hn = Math.round(geo(c).h), cap = Math.round(Celular.alto(hn, E.compacto));
+    // con cajas una dentro de otra, el dibujo apretado no se lee en 240 px: tope de 300
+    const anidado = (E.st.circuitos || []).some(A => A.D.elementos.some(e => e.tipo !== 'interruptor' && e.dueno != null));
+    LIM = 0; const hn = Math.round(geo(c).h), cap = Math.round(Celular.alto(hn, E.compacto, anidado ? { tope:300 } : undefined));
     if (cap < hn){ LIM = cap; H0 = Math.round(geo(c).h); } else H0 = hn;
     const h = Math.min(cap, H0), dpr = Celular.dpr();
     K = Math.min(1, h/H0); OX = (W - W*K)/2;
@@ -384,7 +391,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
     const R = M.corriente(C, E.st.valores);
     const tapado = id => A.oculto.has(A.grupo[id]);
     // rótulo: la fórmula
-    formula(c, o.x + 2, o.y - 9, A.rot || A.f, c.res, 'left', 13);
+    formula(c, o.x + Math.max(2, A.D.pila.x*U - 6), o.y - 9, A.rot || A.f, col(c, A.k || 'res'), 'left', 13);
     // cables
     const cable = (x1, y1, x2, y2, encendido) => { ctx.save(); ctx.strokeStyle = encendido ? c.ink : c.muted; ctx.lineWidth = encendido ? 3.2 : 1.5; ctx.globalAlpha = encendido ? 1 : .7; ctx.lineCap = 'round'; linea(X(x1), Y(y1), X(x2), Y(y2)); ctx.restore(); };
     for (const k of D.cables) cable(k.x1, k.y1, k.x2, k.y2, !tapado(k.id) && R.encendido[k.id]);
@@ -413,11 +420,13 @@ function crearEscena(cv, idDesc, idLect, idLey){
       } else {
         const x = X(e.x), y = Y(e.y), w = e.w*U, h = e.h*U;
         ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = .045; redondeado(ctx, x, y, w, h, 8); ctx.fill(); ctx.globalAlpha = 1; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; ctx.stroke(); ctx.restore();
-        rotulo(c, x + 6, y + Math.min(11, h*.12 + 6), OPNOM[e.op], c.ink, 'left', 800, Math.max(9, Math.min(12, U*.36)));
+        const tc = Math.max(9, Math.min(12, M.MEDIDAS.cab*U*.55));
+        rotulo(c, x + 6, y + Math.max(tc*.6 + 2, M.MEDIDAS.cab*U*.5), OPNOM[e.op], c.ink, 'left', 800, tc);
         // lo que sale de la caja: su valor
         const t = tapado(e.id) ? '?' : M.VF(R.pasa[e.id]);
-        ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; redondeado(ctx, x + w - 9, e.ym*U + o.y - 9, 18, 18, 5); ctx.fill(); ctx.stroke(); ctx.restore();
-        ctx.font = `800 12px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = c.ink; ctx.fillText(t, x + w, e.ym*U + o.y + .5);
+        const bs = Math.max(12, Math.min(18, U*.7));
+        ctx.save(); ctx.fillStyle = c.card; ctx.strokeStyle = c.ink; ctx.lineWidth = 1.4; redondeado(ctx, x + w + 1, e.ym*U + o.y - bs/2, bs, bs, 4); ctx.fill(); ctx.stroke(); ctx.restore();
+        ctx.font = `800 ${Math.round(bs*.66)}px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = c.ink; ctx.fillText(t, x + w + 1 + bs/2, e.ym*U + o.y + .5);
       }
     }
     // focos
@@ -460,7 +469,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
     s.lista.forEach((a, i) => {
       const x = x0 + paso*i;
       ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = .12; ctx.beginPath(); ctx.arc(x, y - 4, 12, 0, 7); ctx.fill(); ctx.fillRect(x - 13, y + 10, 26, 26); ctx.restore();
-      ctx.save(); if (a){ ctx.fillStyle = c.p; ctx.beginPath(); ctx.arc(x, y + 50, 10, 0, 7); ctx.fill(); } else { ctx.strokeStyle = c.muted; ctx.lineWidth = 1.6; ctx.fillStyle = c.card; ctx.beginPath(); ctx.arc(x, y + 50, 10, 0, 7); ctx.fill(); ctx.stroke(); } ctx.restore();
+      ctx.save(); if (a){ ctx.fillStyle = c.ink; ctx.beginPath(); ctx.arc(x, y + 50, 10, 0, 7); ctx.fill(); } else { ctx.strokeStyle = c.muted; ctx.lineWidth = 1.6; ctx.fillStyle = c.card; ctx.beginPath(); ctx.arc(x, y + 50, 10, 0, 7); ctx.fill(); ctx.stroke(); } ctx.restore();
       ctx.font = `800 11px ${c.font}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = a ? c.card : c.muted; ctx.fillText(M.VF(a), x, y + 50.5);
     });
     (s.frases || []).forEach((f, j) => {
@@ -517,7 +526,10 @@ function crearEscena(cv, idDesc, idLect, idLey){
   E.leyenda = () => {
     if (!idLey) return;
     const it = (k, t) => `<span><i style="background:var(${k === 'ink' ? '--ink' : k === 'muted' ? '--muted' : '--c-' + k})"></i>${t}</span>`;
-    document.getElementById(idLey).innerHTML = (E.ley || []).map(([k, t]) => it(k, t)).join('');
+    let L = E.ley || [];
+    // el interruptor invertido se explica en la leyenda desde que aparece
+    if ((E.st.circuitos || []).some(A => A.D.elementos.some(e => e.negado))) L = L.concat([['ink', '○ interruptor invertido (~): se cierra cuando su letra es F']]);
+    document.getElementById(idLey).innerHTML = L.map(([k, t]) => it(k, t)).join('');
   };
   E.avisar = () => {
     const filas = E.lect.map(k => k(E));
@@ -563,12 +575,12 @@ const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1');
 const S = { step:0, max:0, pred:{}, ocupado:false, e1:{ op:'y', valores:{ p:true, q:false }, vistas:new Set() }, e8:{ texto:'(p → q) ∧ ~r', valores:{ p:true, q:true, r:true, s:true } } };
 const p_ = t => V('p', t), q_ = t => V('q', t), r_ = t => V('r', t), res_ = t => V('res', t);
 const fb = (letra, ok, txt) => (letra === ok ? txt : `Elegiste la ${letra.toUpperCase()}. ${txt} La correcta está marcada.`);
-const FUENTE = '<p class="fuente">No encontramos estudios con datos sobre estos errores; las opciones incorrectas son hipótesis nuestras, y la app las medirá en el colegio.</p>';
+const FUENTE = '<p class="fuente">Todavía no revisamos estudios sobre estos errores: las opciones incorrectas son hipótesis nuestras, y la app las medirá en el colegio.</p>';
 const LEY_VARS = vars => vars.map(x => [x, `interruptor ${x}`]);
 const LEY_FOCO = [['res', 'foco de la fórmula: encendido V, apagado F'], ['ink', 'cable con corriente']];
 
 // Números de la escena: todos salen del motor
-const F2 = '(p ∧ q) ∨ ~r', N2 = M.filasDe(F2);
+const F2 = '(p ∧ q) ∧ ~r', N2 = M.filasDe(F2);
 const F3 = 'p → q', FF3 = M.filasFalsas(F3);
 const F4 = '~(p ∨ q) → (q ∨ r)', VAL4 = { p:false, q:true, r:true }, P4 = M.valorConPartes(F4, VAL4);
 const F5 = '(p → q) ∨ (q → p)', C5 = M.clasificar(F5);
@@ -651,7 +663,7 @@ const P_7 = { id:'logica-paso7', ok:'c', opts:[
     d:'El bicondicional dice además que todo par termina en 0, y 4 no termina en 0. La que equivale es la contrarrecíproca, ~q → ~p.' } };
 
 // ----- paso 1: dos interruptores y un conectivo -----
-const OP1 = { y:'p ∧ q', o:'p ∨ q' };
+const OP1 = { y:'p ∧ q' }; // el paso 1 solo usa ∧: ∨ aparece recién en el paso 4
 function prep1(){
   const e = S.e1, A = armar(OP1[e.op]);
   const t = tabla([OP1[e.op]]);
@@ -667,7 +679,6 @@ function prep1(){
 function vivo1(){
   const d = $('vivo1'); if (!d) return; const e = S.e1;
   $('stepBody').querySelectorAll('[data-int]').forEach(b => { const n = b.dataset.int; b.setAttribute('aria-pressed', String(e.valores[n])); b.innerHTML = `${T(n, n)} = ${vf(e.valores[n])}`; b.disabled = S.ocupado; });
-  $('stepBody').querySelectorAll('[data-op]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.op === e.op)));
   d.innerHTML = `<p class="hint" style="margin:0">${e.vistas.size < 4 ? `Llevas ${e.vistas.size} de las 4 combinaciones.` : 'Ya recorriste las 4 combinaciones: la tabla está completa.'}</p>`;
 }
 
@@ -698,8 +709,8 @@ function vivo8(){
   d.innerHTML = `<div class="eqs"><div class="eq">${fx(e.texto)}<span class="note">${M.filasDe(e.texto).filas} filas; columna: ${C.matriz}</span></div>
     <div class="eq" style="font-family:var(--font)">${C.nombre[0].toUpperCase() + C.nombre.slice(1)}: es V en ${C.verdaderas} y F en ${C.falsas} de las ${C.total} filas<span class="note">con ${filaPalabras(vars, e.valores).replace(/verdadero/g, 'V').replace(/falso/g, 'F').replace(/ (V|F)/g, ' = $1')}, la fórmula es ${M.VF(M.evaluar(e.texto, e.valores))}</span></div></div>`;
 }
-const TECLAS8 = ['p', 'q', 'r', 's', '~', '∧', '∨', 'Δ', '→', '↔', '(', ')'];
-const DICHO = { '~':'no', '∧':'y', '∨':'o', 'Δ':'o exclusivo', '→':'entonces', '↔':'si y solo si', '(':'abre paréntesis', ')':'cierra paréntesis' };
+const TECLAS8 = ['p', 'q', 'r', 's', '~', '∧', '∨', 'Δ', '→', '↔', '(', ')', '[', ']'];
+const DICHO = { '~':'no', '∧':'y', '∨':'o', 'Δ':'o exclusivo', '→':'entonces', '↔':'si y solo si', '(':'abre paréntesis', ')':'cierra paréntesis', '[':'abre corchete', ']':'cierra corchete' };
 
 // ----- estados del dibujo de cada predicción -----
 const V3 = { p:true, q:true, r:true };
@@ -718,7 +729,7 @@ function prep3(ya){
   const A = armar(F3); A.rot = 'p → q'; if (!ya) taparTodo(A);
   const t = tabla([F3]); t.llenas = 4; t.reveladas = ya ? 4 : 0;
   E.config({ st:{ circuitos:[A], valores:{ p:true, q:true }, tabla:t }, ley:[['p', 'p: llueve'], ['q', 'q: llevo paraguas'], ...LEY_FOCO],
-    desc: ya ? 'La promesa si llueve, llevo paraguas solo es falsa en la fila p verdadero, q falso: llueve y no llevo paraguas. En las otras tres filas el foco está encendido.' : 'La promesa si p entonces q en una caja, con el foco tapado, y la tabla con las cuatro filas sin resultado.',
+    desc: ya ? `La promesa ${M.leer(F3)} solo es falsa en la fila p verdadero, q falso: llueve y no llevo paraguas. En las otras tres filas el foco está encendido.` : `La promesa ${M.leer(F3)} en una caja, con el foco tapado, y la tabla con las cuatro filas sin resultado.`,
     lect:[] });
 }
 function prep4(ya, etapa){
@@ -729,7 +740,7 @@ function prep4(ya, etapa){
   A.oculto = new Set(etapa === 0 ? A.compuestos : etapa === 1 ? [inv, A.C.id] : etapa === 2 ? [A.C.id] : []);
   if (etapa === 1) A.oculto.delete(adentro), A.oculto.delete(cajaB);
   E.config({ st:{ circuitos:[A], valores:Object.assign({}, VAL4) }, ley:[...LEY_VARS(['p', 'q', 'r']), ['ink', 'caja, foco chico y cable con corriente'], ['res', 'foco de la fórmula']],
-    desc: ya ? `Con p falso, q verdadero y r verdadero: no abre paréntesis p o q cierra paréntesis es falso, q o r es verdadero, y la fórmula es verdadera.` : `El circuito de ${M.leer(F4)} con p falso, q verdadero y r verdadero. Los focos están tapados.`,
+    desc: ya ? `Con p falso, q verdadero y r verdadero: ${M.leer(P4.partes[0])} es ${vfPalabra(P4.valoresPartes[0])}, ${M.leer(P4.partes[1])} es ${vfPalabra(P4.valoresPartes[1])}, y la fórmula es ${vfPalabra(P4.valor)}.` : `El circuito de ${M.leer(F4)} con p falso, q verdadero y r verdadero. Los focos están tapados.`,
     lect: ya ? [() => ['ink', '~(p ∨ q)', M.VF(P4.valoresPartes[0])], () => ['ink', 'q ∨ r', M.VF(P4.valoresPartes[1])], () => ['res', 'fórmula', M.VF(P4.valor)]]
       : ['p', 'q', 'r'].map(x => () => [x, x, M.VF(VAL4[x])]) });
 }
@@ -749,14 +760,14 @@ function prep6(ya){
   const circs = [A]; if (ya) circs.push(armar(N6.texto));
   const t = tabla(['~(p ∧ q)', N6.texto], ['res', 'res']); t.llenas = 4; t.reveladas = ya ? 4 : 0;
   E.config({ st:{ circuitos:circs, valores:{ p:true, q:true }, tabla: ya ? t : null }, ley:[['p', 'p: Ana canta'], ['q', 'q: Ana baila'], ...LEY_FOCO],
-    desc: ya ? `Los focos de ${M.leer('~(p ∧ q)')} y de ${M.leer(N6.texto)} están igual en las cuatro filas.` : `Una caja que niega p y q en serie, con el foco tapado.`, lect:[] });
+    desc: ya ? `Los focos de ${M.leer('~(p ∧ q)')} y de ${M.leer(N6.texto)} están iguales en las cuatro filas.` : `Una caja que niega p y q en serie, ${M.leer('~(p ∧ q)')}, con el foco tapado.`, lect:[] });
 }
 function prep7(ya){
   const A = armar(F3); if (!ya) taparTodo(A);
   const circs = [A]; if (ya) circs.push(armar(FC7.contrarreciproca));
   const t = tabla([F3, FC7.contrarreciproca, FC7.reciproca], ['res', 'res', 'ink']); t.llenas = 4; t.reveladas = ya ? 4 : 0;
   E.config({ st:{ circuitos:circs, valores:{ p:true, q:true }, tabla: ya ? t : null }, ley:[['p', 'p: termina en 0'], ['q', 'q: es par'], ...LEY_FOCO],
-    desc: ya ? `Las columnas de si p entonces q y de si no q entonces no p son iguales: V, F, V, V. La de si q entonces p es otra: V, V, F, V.` : `Una caja de condicional, si p entonces q, con el foco tapado.`, lect:[] });
+    desc: ya ? `Las columnas de ${M.leer(F3)} y de ${M.leer(FC7.contrarreciproca)} son iguales: ${FC7.matrices.condicional.split('').join(', ')}. La de ${M.leer(FC7.reciproca)} es otra: ${FC7.matrices.reciproca.split('').join(', ')}.` : `Una caja de condicional, ${M.leer(F3)}, con el foco tapado.`, lect:[] });
 }
 const recorrerYListo = (prep, fin) => () => { E.recorrer({}, () => { prep(true); fin(); }); };
 
@@ -764,19 +775,19 @@ const steps = [
  { k:'Paso 1', t:'Explora: dos interruptores y un foco', explora:true,
    prep:() => prep1(),
    body:() => `<p class="problem">Cada proposición simple es un interruptor: en ${vf(true)} (verdadera) la palanca está cerrada y deja pasar la corriente; en ${vf(false)} (falsa), abierta. El foco es la proposición compuesta: encendido es V; apagado, F.</p>
-   <p>Cambia ${p_('p')} y ${q_('q')}: toca cada palanca, arrástrala hacia abajo para cerrarla o hacia arriba para abrirla, o usa los botones. También puedes elegir el conectivo.</p>
+   <p>Cambia ${p_('p')} y ${q_('q')}: toca cada palanca, arrástrala hacia abajo para cerrarla o hacia arriba para abrirla, o usa los botones.</p>
    <div class="llaves">${['p', 'q'].map(n => `<button type="button" data-int="${n}" aria-pressed="false"></button>`).join('')}</div>
-   <div class="seg" role="group" aria-label="Conectivo"><button type="button" data-op="y" aria-pressed="true">${fx('p ∧ q')}: en serie</button><button type="button" data-op="o" aria-pressed="false">${fx('p ∨ q')}: en paralelo</button></div>
+   <p>El foco es ${fx('p ∧ q')} («p y q»): los dos interruptores están en serie.</p>
    <div id="vivo1"></div>
    <p class="hint">Recorre todas las combinaciones de los dos interruptores y mira cómo se llena la tabla de verdad.</p>`,
    luego:() => {
      $('stepBody').querySelectorAll('[data-int]').forEach(b => b.onclick = () => E.cambiar(b.dataset.int));
-     $('stepBody').querySelectorAll('[data-op]').forEach(b => b.onclick = () => { if (S.ocupado || E.anim) return; S.e1.op = b.dataset.op; S.e1.vistas = new Set(); prep1(); vivo1(); });
      vivo1(); } },
  { k:'Paso 2', t:'Predice: las filas de la tabla', gate:P_2,
    prep:() => prep2(!!S.pred[P_2.id]), anima:anima2,
    body:() => `<p class="problem">La tabla de verdad tiene una fila por cada combinación de valores de los interruptores. ¿Cuántas filas tiene la tabla de ${fx(F2)}?</p>${opcionesHTML(P_2.opts, 'fb')}
    <div id="tras" class="body" hidden><div class="eqs"><div class="eq">2 × 2 × 2 = 2<sup>3</sup> = ${N2.filas}<span class="note">2 posiciones por interruptor, multiplicadas</span></div></div>
+   <p>El interruptor de ${fx('~r')} lleva un círculo: es un <b>interruptor invertido</b>, que se cierra (deja pasar la corriente) cuando ${r_('r')} es F.</p>
    <p>Con <b>n</b> variables distintas, la tabla tiene <b>2<sup>n</sup></b> filas. Se ordenan como en la academia: ${p_('p')} es V en la primera mitad y F en la otra, ${q_('q')} cambia por cuartos y ${r_('r')}, la última, alterna V, F, V, F.</p>${FUENTE}</div>` },
  { k:'Paso 3', t:'Predice: ¿cuándo se rompe la promesa?', gate:P_3,
    prep:() => prep3(!!S.pred[P_3.id]), anima:fin => { E.st.circuitos[0].oculto = new Set(); recorrerYListo(prep3, fin)(); },
@@ -790,7 +801,7 @@ const steps = [
      <div class="eq">${sx('~(F ∨ V) = ~V = F')}<span class="note">la negación abarca todo el paréntesis</span></div>
      <div class="eq">${sx('V ∨ V = V')}<span class="note">∨ es V si al menos una parte es V</span></div>
      <div class="eq">${sx('F → V =')} ${res_('V')}<span class="note">el conectivo principal: el que queda afuera de todos los paréntesis</span></div></div>
-   <p><b>Jerarquía</b> (la que usan las academias): la ~ se aplica solo a lo que tiene justo a la derecha (${fx('~p ∧ q')} es «no p», y eso con q); ∧, ∨ y Δ van al mismo nivel y, mezclados, piden paréntesis; después viene → y el de mayor jerarquía es ↔. Por eso ${fx('p ∧ q → r')} es ${fx('(p ∧ q) → r')}. En esta escena siempre ponemos los paréntesis.</p>${FUENTE}</div>` },
+   <p><b>Jerarquía</b> (la más usada en las academias): la ~ se aplica solo a lo que tiene justo a la derecha (${fx('~p ∧ q')} es «no p», y eso con q); ∧, ∨ y Δ van al mismo nivel y, mezclados, piden paréntesis; después viene → y el de mayor jerarquía es ↔. Por eso ${fx('p ∧ q → r')} es ${fx('(p ∧ q) → r')}. En esta escena siempre ponemos los paréntesis.</p>${FUENTE}</div>` },
  { k:'Paso 5', t:'Predice: ¿qué tipo de fórmula es?', gate:P_5,
    prep:() => prep5(!!S.pred[P_5.id]), anima:fin => { E.st.circuitos[0].oculto = new Set(); recorrerYListo(prep5, fin)(); },
    body:() => `<p class="problem">Una fórmula es <b>tautología</b> si es V en todas las filas, <b>contradicción</b> si es F en todas, y <b>contingencia</b> si tiene filas V y filas F. ¿Qué es ${fx(F5)}?</p>${opcionesHTML(P_5.opts, 'fb')}
@@ -907,7 +918,7 @@ go(0);
 const $ = id => document.getElementById(id);
 const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2');
 const p_ = t => V('p', t), q_ = t => V('q', t), r_ = t => V('r', t), s_ = t => V('s', t);
-const FUENTE = '<p class="fuente">No encontramos estudios con datos sobre estos errores; las opciones incorrectas son hipótesis nuestras.</p>';
+const FUENTE = '<p class="fuente">Todavía no revisamos estudios sobre estos errores: las opciones incorrectas son hipótesis nuestras, y la app las medirá en el colegio.</p>';
 const LEY_FOCO = [['res', 'foco de la fórmula: encendido V, apagado F'], ['ink', 'cable con corriente']];
 const S = { k:0, pred:{}, t0:Date.now() };
 const F3a = '(p ∧ q) ∨ r', F4a = '(p ∧ q) ∨ (r ∧ s)', MF = M.masFilas(3);
@@ -922,7 +933,7 @@ const tablaLlena = (cols, ks, o) => { const t = tabla(cols, ks, o); t.llenas = t
 
 const AFTXT = { siempreV:'V en todos los casos', siempreF:'F en todos los casos', igualConsecuente:`lo mismo que ${fx('q ∧ ~r')}`, contrarioConsecuente:`lo contrario de ${fx('q ∧ ~r')}` };
 const FILA = { 'V V':`${T('p', 'p')} = V, ${T('q', 'q')} = V`, 'F F':`${T('p', 'p')} = F, ${T('q', 'q')} = F` };
-const DXTXT = d => (d.length === 0 ? 'En ninguna: dan lo mismo en todas las filas' : d.length === 1 ? `Solo en la fila ${FILA[d[0]]}` : 'En las filas donde p y q tienen valores distintos');
+const DXTXT = d => (d.length === 0 ? 'En ninguna: dan lo mismo en todas las filas' : d.length === 1 ? `Solo en la fila ${FILA[d[0]]}` : `En las filas donde ${T('p', 'p')} y ${T('q', 'q')} tienen valores distintos`);
 const QTXT = { algunoNo:'«Algún alumno del salón no aprobó»', ninguno:'«Ningún alumno del salón aprobó»', alguno:'«Algún alumno del salón aprobó»', soloAlgunos:'«Solo algunos alumnos del salón aprobaron»' };
 const SALONES = [[true, true, true, true, true], [true, true, false, true, true], [false, true, false, false, true], [false, false, false, false, false]];
 
@@ -931,7 +942,7 @@ const EXPS = [
     q:`La tabla de ${fx(F3a)} tiene 8 filas. Si se agrega una cuarta variable, ${s_('s')}, en ${fx(F4a)}, ¿cuántas filas tiene la tabla?`,
     opts:[['a', `${MF.errores.sumaIgual} filas`, 'filas-crecen-de-a-cuatro', 'hipotesis'], ['b', `${MF.despues} filas`], ['c', `${MF.errores.sumaUna} filas`, 'filas-suma-una', 'hipotesis'], ['d', `${MF.errores.sumaDos} filas`, 'filas-suma-dos', 'hipotesis']],
     ok:'b', fuente:FUENTE,
-    fb:{ a:`De 2 a 3 variables, las filas pasaron de 4 a 8: no crecen de 4 en 4, se duplican. Cada fila de antes aparece dos veces, una con s = V y otra con s = F: ${MF.despues}.`,
+    fb:{ a:`Con 1 variable hay 2 filas; con 2, 4; con 3, 8. No suben siempre lo mismo (+2, luego +4): se duplican. Cada fila de antes aparece dos veces, una con s = V y otra con s = F: ${MF.despues}.`,
       c:`No se agrega una sola fila: cada una de las 8 filas de antes se parte en dos, una con s = V y otra con s = F. 8 × 2 = ${MF.despues}.`,
       d:`No se agregan solo una fila con s = V y otra con s = F: eso pasa en cada una de las 8 filas de antes. 8 × 2 = ${MF.despues}.` },
     antes:ya => { const A = armar(ya ? F4a : F3a);
@@ -953,9 +964,9 @@ const EXPS = [
       d:`Ese se apaga solo con p = F, q = F, y ahí la promesa se cumple. Se rompe con p = V, q = F. El que va es ~p ∨ q.` },
     antes:ya => { const A = armar('p → q'); if (!ya) taparTodo(A);
       E.config({ st:{ circuitos: ya ? [A, armar(CC.respuesta)] : [A], valores:{ p:true, q:false }, tabla: ya ? tablaLlena(['p → q', CC.respuesta]) : null }, ley:[['p', 'p'], ['q', 'q'], ...LEY_FOCO],
-        desc: ya ? `Los focos de si p entonces q y de no p o q están igual en las cuatro filas.` : 'La caja de si p entonces q, con el foco tapado.', lect:[] }); },
+        desc: ya ? `Los focos de ${M.leer('p → q')} y de ${M.leer(CC.respuesta)} están iguales en las cuatro filas.` : `La caja de ${M.leer('p → q')}, con el foco tapado.`, lect:[] }); },
     despues:() => { const A = armar('p → q'); E.st.circuitos = [A, armar(CC.respuesta)]; E.st.tabla = tabla(['p → q', CC.respuesta]); E.redimensionar();
-      E.recorrer({}, () => { E.desc = `Los focos de si p entonces q y de no p o q están igual en las cuatro filas.`; E.avisar(); }); },
+      E.recorrer({}, () => { E.desc = `Los focos de ${M.leer('p → q')} y de ${M.leer(CC.respuesta)} están iguales en las cuatro filas.`; E.avisar(); }); },
     exp:() => `<div class="eqs"><div class="eq">${sx('p → q ≡ ~p ∨ q')}<span class="note">«o no se cumple el antecedente, o se cumple el consecuente»</span></div></div><p>Con esta equivalencia, cualquier condicional se puede dibujar con interruptores: un interruptor invertido del antecedente en paralelo con el consecuente.</p>` },
 
   { id:'antecedente-falso', corto:'Antecedente falso',
@@ -974,7 +985,7 @@ const EXPS = [
     exp:() => `<p>Un condicional con el antecedente F siempre es V (se dice que es verdadero «por vacuidad»). En los problemas de examen sirve al revés: si te dicen que un condicional es F, ya sabes que su antecedente es V y su consecuente es F.</p>` },
 
   { id:'o-exclusiva', corto:'«O estudias o trabajas»',
-    q:`«O estudias o trabajas», dicho como que pasa una y no las dos, es la disyunción exclusiva ${fx('p Δ q')}. ¿En qué filas da un valor distinto de la disyunción ${fx('p ∨ q')}?`,
+    q:`Con ${p_('p')}: «estudias» y ${q_('q')}: «trabajas», «O estudias o trabajas», dicho como que pasa una y no las dos, es la disyunción exclusiva ${fx('p Δ q')}. ¿En qué filas da un valor distinto de la disyunción ${fx('p ∨ q')}?`,
     opts:[['a', DXTXT(DX.errores.ambasF), 'exclusiva-difiere-con-las-dos-falsas', 'hipotesis'], ['b', DXTXT(DX.errores.distintas), 'exclusiva-difiere-con-valores-distintos', 'hipotesis'],
           ['c', DXTXT(DX.errores.ninguna), 'exclusiva-igual-a-inclusiva', 'hipotesis'], ['d', DXTXT(DX.filas)]],
     ok:'d', fuente:FUENTE,
@@ -982,10 +993,10 @@ const EXPS = [
       b:'Cuando p y q tienen valores distintos, las dos son V: se hace exactamente una cosa. Difieren cuando las dos son V.',
       c:'Difieren en una fila: si estudias y trabajas, p ∨ q es V, pero p Δ q es F, porque dice que pasa solo una.' },
     antes:ya => { const A = armar('p ∨ q'), B = armar('p Δ q'); if (!ya){ taparTodo(A); taparTodo(B); }
-      const t = tablaLlena(['p ∨ q', 'p Δ q'], ['res', 'res']); if (!ya) t.reveladas = 0;
+      const t = tablaLlena(['p ∨ q', 'p Δ q'], ['ink', 'res']); A.k = 'ink'; if (!ya) t.reveladas = 0;
       E.config({ st:{ circuitos:[A, B], valores:{ p:true, q:true }, tabla:t }, ley:[['p', 'p: estudias'], ['q', 'q: trabajas'], ...LEY_FOCO],
-        desc: ya ? 'p o q, y p o exclusivo q, solo dan distinto en la fila p verdadero, q verdadero.' : 'Los circuitos de p o q y de p o exclusivo q, con los focos tapados.', lect:[] }); },
-    despues:() => { E.st.circuitos.forEach(A => { A.oculto = new Set(); }); E.st.tabla.reveladas = 0; E.recorrer({}, () => { E.desc = 'p o q, y p o exclusivo q, solo dan distinto en la fila p verdadero, q verdadero.'; E.avisar(); }); },
+        desc: ya ? `${M.leer('p ∨ q')}, y ${M.leer('p Δ q')}, solo dan distinto en la fila p verdadero, q verdadero.` : `Los circuitos de ${M.leer('p ∨ q')} y de ${M.leer('p Δ q')}, con los focos tapados.`, lect:[] }); },
+    despues:() => { E.st.circuitos.forEach(A => { A.oculto = new Set(); }); E.st.tabla.reveladas = 0; E.recorrer({}, () => { E.desc = `${M.leer('p ∨ q')}, y ${M.leer('p Δ q')}, solo dan distinto en la fila p verdadero, q verdadero.`; E.avisar(); }); },
     exp:() => `<div class="eqs"><div class="eq">${sx('p Δ q ≡ ~(p ↔ q)')}<span class="note">la exclusiva es V cuando p y q tienen valores distintos</span></div></div><p>En el lenguaje de todos los días «o» puede ser de las dos clases; en lógica, ∨ es la inclusiva (una, la otra o las dos) y Δ la exclusiva (solo una).</p>` },
 
   { id:'cuantificador', corto:'Negar «todos»',
@@ -997,9 +1008,9 @@ const EXPS = [
       b:'«Algún alumno aprobó» puede ser verdadera junto con «todos aprobaron»: si aprueban los cinco, las dos son V. La negación tiene que ser V justo cuando la original es F.',
       d:'Si nadie aprueba, «todos aprobaron» es F, pero «solo algunos aprobaron» también es F. La negación es «algún alumno no aprobó».' },
     antes:ya => { const L = ya ? SALONES[1] : SALONES[0];
-      E.config({ modo:'alumnos', st:{ lista:L, titulo:'Un salón de 5 alumnos', frases:[{ texto:'Todos aprobaron', valor: ya ? M.cuantificador('todos', L) : null }, { texto:'Algún alumno no aprobó', valor: ya ? M.cuantificador('algunoNo', L) : null }] },
-        ley:[['p', 'p: el alumno aprobó (V)'], ['muted', 'no aprobó (F)'], ['res', 'foco de la frase']],
-        desc: ya ? 'En cada salón, todos aprobaron y algún alumno no aprobó tienen valores opuestos.' : 'Un salón de cinco alumnos que aprobaron, y dos frases con el foco tapado.', lect:[] }); },
+      E.config({ modo:'alumnos', st:{ lista:L, titulo:'Un salón de 5 alumnos', frases: ya ? [{ texto:'Todos aprobaron', valor:M.cuantificador('todos', L) }, { texto:'Algún alumno no aprobó', valor:M.cuantificador('algunoNo', L) }] : [{ texto:'Todos aprobaron', valor:null }] },
+        ley:[['ink', 'aprobó (V)'], ['muted', 'no aprobó (F)'], ['res', 'foco de la frase']],
+        desc: ya ? 'En cada salón, todos aprobaron y algún alumno no aprobó tienen valores opuestos.' : 'Un salón de cinco alumnos que aprobaron y la frase «Todos aprobaron» con el foco tapado.', lect:[] }); },
     despues:() => { E.secuencia(SALONES.map(L => st => { st.lista = L; st.frases = [{ texto:'Todos aprobaron', valor:M.cuantificador('todos', L) }, { texto:'Algún alumno no aprobó', valor:M.cuantificador('algunoNo', L) }]; }), 1100,
       () => { E.desc = 'En los cuatro salones, todos aprobaron y algún alumno no aprobó tienen valores opuestos.'; E.avisar(); }); },
     exp:() => `<div class="eqs"><div class="eq" style="font-family:var(--font)"><span aria-hidden="true">~(todos cumplen) ≡ alguno no cumple</span><span class="sr">la negación de «todos cumplen» equivale a «alguno no cumple»</span><span class="note">y ~(alguno cumple) ≡ ninguno cumple</span></div></div><p>Al negar, el cuantificador cambia («todos» pasa a «alguno») y la propiedad se niega («aprobó» pasa a «no aprobó»).</p>` },
