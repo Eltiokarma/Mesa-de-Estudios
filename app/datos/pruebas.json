@@ -1254,7 +1254,7 @@
   },
   "fisica": {
    "curso": "fisica",
-   "version": "1.2.0",
+   "version": "1.3.0",
    "minutos": 16,
    "errores": {
     "G2-altura-entre-tiempo": {
@@ -1436,6 +1436,90 @@
     "OE-la-luz-siempre-va-a-c": {
      "respaldo": "hipotesis",
      "describe": "Cree que la luz va siempre a c, también dentro del vidrio"
+    },
+    "E8-cuerda-mas-vertical-menos-tensa": {
+     "respaldo": "documentado",
+     "describe": "Cree que la cuerda más tendida (más horizontal) es la más tensa, y no la que está más cerca de la vertical"
+    },
+    "E8-tensiones-como-numeros": {
+     "respaldo": "documentado",
+     "describe": "Suma las tensiones como números: cada cuerda sostiene la mitad del peso, aunque los ángulos sean distintos"
+    },
+    "E7-tension-depende-del-largo": {
+     "respaldo": "documentado",
+     "describe": "Cree que la tensión depende de cuánto mide cada cuerda, y no de los ángulos y del peso"
+    },
+    "M1-sigue-igual": {
+     "respaldo": "parcial",
+     "describe": "Cree que cada cuerpo conserva su propia cantidad de movimiento: el que venía sigue con su misma velocidad"
+    },
+    "promedio-sin-masas": {
+     "respaldo": "hipotesis",
+     "describe": "Promedia las velocidades sin pesarlas por las masas"
+    },
+    "M5-conserva-ec-plastico": {
+     "respaldo": "parcial",
+     "describe": "Resuelve el choque plástico conservando la energía cinética en vez de la cantidad de movimiento"
+    },
+    "F4-h-hasta-el-techo": {
+     "respaldo": "documentado",
+     "describe": "Mide la profundidad hasta el techo que está justo encima del punto, y no hasta la superficie libre"
+    },
+    "h-desde-el-fondo": {
+     "respaldo": "hipotesis",
+     "describe": "Mide la profundidad desde el fondo hasta el punto"
+    },
+    "F7-igual-en-todo": {
+     "respaldo": "documentado",
+     "describe": "Cree que la presión es la misma en todo el líquido, la del fondo"
+    },
+    "O3-pendulo-pesada-mas-lenta": {
+     "respaldo": "parcial",
+     "describe": "Cree que el período del péndulo crece en proporción a la masa: a más peso, tarda más"
+    },
+    "O3-pendulo-pesada-mas-rapida": {
+     "respaldo": "parcial",
+     "describe": "Cree que el péndulo más pesado oscila más rápido, en proporción a su masa"
+    },
+    "pendulo-T-raiz-m-como-resorte": {
+     "respaldo": "hipotesis",
+     "describe": "Lleva al péndulo el T ∝ √m del resorte"
+    },
+    "ON1-ON2-mano-mas-rapida": {
+     "respaldo": "documentado",
+     "describe": "Cree que mover la mano más rápido hace que el pulso viaje más rápido"
+    },
+    "ON1-ON3-mano-mas-alta": {
+     "respaldo": "parcial",
+     "describe": "Cree que un pulso más alto (un golpe más fuerte) viaja más rápido"
+    },
+    "ON4-cuerda-mas-pesada": {
+     "respaldo": "documentado",
+     "describe": "Cree que, con la misma tensión, una cuerda más pesada lleva el pulso más rápido"
+    },
+    "G4-olvida-el-radio": {
+     "respaldo": "parcial",
+     "describe": "Calcula el peso en otro planeta solo con su masa y se olvida del radio"
+    },
+    "G3-radio-sin-cuadrado": {
+     "respaldo": "parcial",
+     "describe": "Divide entre el radio del planeta sin elevarlo al cuadrado"
+    },
+    "T9-suma-el-trabajo": {
+     "respaldo": "parcial",
+     "describe": "Suma el trabajo que hace el gas en vez de restarlo (signo del trabajo cambiado): ΔU = Q + W"
+    },
+    "T8-todo-el-calor-a-energia-interna": {
+     "respaldo": "documentado",
+     "describe": "Cree que todo el calor que recibe el gas se queda como energía interna, aunque el gas se expanda"
+    },
+    "dU-cero-a-presion-constante": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que a presión constante la energía interna no cambia"
+    },
+    "olvida-la-masa": {
+     "respaldo": "hipotesis",
+     "describe": "Divide entre el radio al cuadrado y se olvida de que el planeta tiene más masa"
     }
    },
    "pares": [
