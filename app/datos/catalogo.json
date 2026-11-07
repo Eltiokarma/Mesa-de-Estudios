@@ -1638,7 +1638,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
-     "plantillas": []
+     "plantillas": [
+      "numeros-complejos"
+     ]
     },
     {
      "id": "algebra.matrices-y-determinantes",
@@ -5274,6 +5276,23 @@
     "/plantillas/numeracion/index.html",
     "/plantillas/numeracion/motor.js",
     "/plantillas/numeracion/papel.json"
+   ]
+  },
+  "numeros-complejos": {
+   "id": "numeros-complejos",
+   "titulo": "La flecha en el plano: números complejos",
+   "formato": "escena",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "algebra.numeros-complejos"
+   ],
+   "url": "/plantillas/numeros-complejos/index.html",
+   "papel": "/plantillas/numeros-complejos/papel.json",
+   "archivos": [
+    "/plantillas/numeros-complejos/index.html",
+    "/plantillas/numeros-complejos/motor.js",
+    "/plantillas/numeros-complejos/papel.json"
    ]
   },
   "numeros-reales": {

@@ -1,0 +1,1129 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La flecha en el plano: números complejos</title>
+<style>
+/* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de funciones-trig-inversas.
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4): la parte real a de z,
+   naranja; la parte imaginaria b, verde; la flecha de z y su largo |z| (el módulo r), fucsia; el argumento θ, azul;
+   y el otro número w (su flecha, su largo y su ángulo), petróleo. Los resultados (z · w, z̄, iⁿ…) y las piezas van
+   en tinta o en gris.
+   Elegidos con CIEDE2000: ΔE00 mínimo 23,6 en claro y 25,3 en oscuro (b contra w); contraste AA sobre el papel, la
+   tarjeta y su chip (.v, fondo al 8 %): el más bajo es w en claro, 4,63, y r en oscuro, 4,64. El petróleo de w se
+   parece al verde de «correcto» (ΔE00 11): el «correcto» siempre va con texto y borde. */
+[hidden]{display:none!important}
+:root{
+  --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
+  --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
+  --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
+  --c-re:#a05200; --c-im:#466d14; --c-r:#a10fbf; --c-th:#1f5fbf; --c-w:#0f766e;
+  --relleno:.13;
+  --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-re:#f0a04a; --c-im:#a3d65e; --c-r:#cf6bfa; --c-th:#7cb0ff; --c-w:#5ed9c8;
+  --relleno:.17; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
+  --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
+  --c-re:#f0a04a; --c-im:#a3d65e; --c-r:#cf6bfa; --c-th:#7cb0ff; --c-w:#5ed9c8;
+  --relleno:.17; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 var(--font); -webkit-text-size-adjust:100%}
+.wrap{max-width:1240px; margin:0 auto; padding-block:18px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:grid; gap:16px}
+.top{display:grid; gap:12px}
+.eyebrow{margin:0; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; letter-spacing:-.01em}
+.sub{margin:4px 0 0; color:var(--muted); font-size:.95rem; max-width:60ch}
+
+.tabs{display:flex; gap:4px; padding:5px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); justify-self:start; max-width:100%}
+.tabs a{padding:9px 16px; border-radius:999px; color:var(--muted); text-decoration:none; font-weight:700; white-space:nowrap; font-size:.95rem}
+.tabs a[aria-current="page"]{background:var(--ink); color:var(--card)}
+.tabs a:hover:not([aria-current]){color:var(--ink)}
+
+.mode{display:grid; gap:16px; min-width:0; align-items:start}
+@media (max-width:899px){
+  .mode.pendiente .bench{position:sticky; top:0; z-index:1; padding:6px; gap:4px; background:var(--card); border-radius:0 0 20px 20px}
+  .mode.pendiente .legend{display:none}
+  .mode.pendiente .lecturas{gap:4px}
+}
+.bench{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:10px; display:grid; gap:8px; min-width:0}
+.lienzo{border-radius:16px; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none; outline:none}
+.lienzo:focus-within{outline:3px solid var(--ink); outline-offset:2px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:12px; height:12px; border-radius:3px; display:inline-block; border:2px solid; opacity:.9}
+.legend i.linea{width:16px; height:0; border-width:3px 0 0; border-radius:0}
+.legend i.trazos{width:16px; height:0; border-width:2px 0 0; border-style:dashed; border-radius:0}
+
+.guide{background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:20px; display:grid; gap:14px; min-width:0}
+.dots{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px}
+.dots button{width:32px; height:32px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--muted);
+  font:700 .82rem var(--font); cursor:pointer; font-variant-numeric:tabular-nums}
+.dots button.done{border-color:var(--ink); color:var(--ink)}
+.dots button.on{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.dots button:disabled{opacity:.45; cursor:not-allowed}
+#exps button:disabled{opacity:.45; cursor:not-allowed}
+.step-k{display:inline-block; margin:0; font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800;
+  color:var(--acento-ink); background:var(--acento); border-radius:999px; padding:3px 10px}
+.step-t{margin:8px 0 0; font-size:1.35rem; line-height:1.2; text-wrap:balance}
+.body{display:grid; gap:12px; min-width:0}
+.body p{margin:0; max-width:66ch}
+.problem{border-left:4px solid var(--acento); padding:6px 0 6px 14px; font-size:1.06rem; max-width:66ch}
+
+.v{font-weight:800; border-radius:6px; padding:0 3px; cursor:pointer; text-decoration:underline dotted 1.5px; text-underline-offset:3px; white-space:nowrap}
+.v-re{color:var(--c-re); background:color-mix(in srgb, var(--c-re) 8%, transparent)}
+.v-im{color:var(--c-im); background:color-mix(in srgb, var(--c-im) 8%, transparent)}
+.v-r{color:var(--c-r); background:color-mix(in srgb, var(--c-r) 8%, transparent)}
+.v-th{color:var(--c-th); background:color-mix(in srgb, var(--c-th) 8%, transparent)}
+.v-w{color:var(--c-w); background:color-mix(in srgb, var(--c-w) 8%, transparent)}
+.v.hl{background:transparent; outline:2px solid currentColor; outline-offset:1px}
+
+.eqs{display:grid; gap:10px; padding:14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); min-width:0}
+.eq{font-family:var(--mono); font-size:1rem; line-height:1.9; font-variant-numeric:tabular-nums}
+.eq .tramo{white-space:nowrap}
+.eq .note{display:inline-block; font-family:var(--font); font-size:.84rem; line-height:1.3; color:var(--muted); margin-left:.5em; white-space:normal}
+
+.opts{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:560px){ .opts{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.opt{display:flex; gap:10px; align-items:flex-start; text-align:left; padding:12px 14px; border-radius:16px; border:2px solid var(--line);
+  background:var(--paper); color:var(--ink); font:inherit; cursor:pointer; min-height:48px}
+.opt .l{flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:.85rem;
+  background:var(--card); border:1.5px solid var(--line)}
+.opt .m{font-family:var(--mono); font-variant-numeric:tabular-nums}
+.opt .m.frase{font-family:var(--font)}
+@media (hover:hover){ .opt:hover:not(:disabled){border-color:var(--ink)} }
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--paper))}
+.opt.correct .l{background:var(--ok); border-color:var(--ok); color:var(--card)}
+.opt.wrong{border-color:var(--warn); background:color-mix(in srgb, var(--warn) 9%, var(--paper))}
+.opt.wrong .l{background:var(--warn); border-color:var(--warn); color:var(--card)}
+.fb{font-weight:700; margin:0}
+.fb.ok{color:var(--ok)} .fb.mal{color:var(--warn)}
+
+.seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:22px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
+.seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
+.nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.btn{font:700 .95rem var(--font); padding:11px 20px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+button:focus-visible, .v:focus-visible, a:focus-visible, input:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+.control{display:grid; gap:4px; max-width:420px}
+.control label{font-size:.9rem; color:var(--muted); font-weight:700}
+input[type=range]{width:100%; margin:0; accent-color:var(--ink); min-height:32px}
+.hint{font-size:.88rem; color:var(--muted)}
+.fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
+.pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
+.pie a{color:var(--ink); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
+  font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
+
+.lecturas{display:grid; grid-template-columns:repeat(auto-fit, minmax(96px, 1fr)); gap:8px}
+.lecturas:empty{display:none}
+.lectura{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:6px 10px; border-left:5px solid var(--k); min-width:0}
+.lectura b{display:block; color:var(--k); font:800 .92rem var(--mono); font-variant-numeric:tabular-nums; white-space:normal; overflow-wrap:anywhere}
+.lectura span{display:block; font-size:.76rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+
+@media (min-width:900px){
+  .top{grid-template-columns:1fr auto; align-items:end}
+  .mode{grid-template-columns:minmax(0, 1.3fr) minmax(360px, 1fr)}
+  .bench{position:sticky; top:12px}
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="top">
+    <header>
+      <p class="eyebrow">Álgebra · Números complejos · Problemas tipo admisión</p>
+      <h1>La flecha en el plano</h1>
+      <p class="sub">Cada número complejo es una flecha que sale del origen. Arrastra su punta y mira qué les pasa al multiplicar, dividir, conjugar y elevar.</p>
+    </header>
+    <nav class="tabs" aria-label="Modo de la escena">
+      <a href="#paso-a-paso" id="tab1">Paso a paso</a>
+      <a href="#que-pasa-si" id="tab2">¿Qué pasa si…?</a>
+    </nav>
+  </div>
+
+  <div id="m1" class="mode">
+    <section class="bench" aria-label="Dibujo de la escena">
+      <div class="lienzo"><canvas id="cv" role="img" aria-label="Dibujo de la escena: el plano complejo"></canvas></div>
+      <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="lecturas" id="lect1"></div>
+      <div class="legend" id="leyenda1"></div>
+    </section>
+    <section class="guide">
+      <ol class="dots" id="dots"></ol>
+      <div aria-live="polite">
+        <p class="step-k" id="stepK"></p>
+        <h2 class="step-t" id="stepT"></h2>
+      </div>
+      <div id="stepBody" class="body"></div>
+      <div class="nav">
+        <button id="prev" type="button" class="btn">Anterior</button>
+        <button id="next" type="button" class="btn primary">Siguiente</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="m2" class="mode" hidden>
+    <section class="bench" aria-label="Dibujo del experimento">
+      <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="lecturas" id="lect2"></div>
+      <div class="legend" id="leyenda2"></div>
+    </section>
+    <section class="guide">
+      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div aria-live="polite">
+        <p class="step-k" id="k2"></p>
+        <h2 class="step-t" id="t2"></h2>
+      </div>
+      <div id="body2" class="body"></div>
+    </section>
+  </div>
+  <p class="pie">¿Quieres practicar sin la escena? <a href="/app/#/papel/numeros-complejos">Problemas para lápiz y papel</a></p>
+</main>
+<script>
+if (new URLSearchParams(location.search).get('desde') === 'app') addEventListener('DOMContentLoaded', () => {
+  const a = document.createElement('a'); a.href = '/app/#/cursos'; a.textContent = '‹ App'; a.className = 'volver-app';
+  a.setAttribute('aria-label', 'Volver a la app');
+  document.body.prepend(a);
+});
+</script>
+<script src="motor.js"></script>
+<script src="../../nucleo/medicion.js"></script>
+<script src="../../nucleo/celular.js"></script>
+<script>
+// Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
+const PLANTILLA = { id: 'numeros-complejos', unidad: 'algebra.numeros-complejos', version: '0.1.0' };
+function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
+  if (!window.Medicion) return;
+  Medicion.guardar({ tipo: 'prediccion', modulo: PLANTILLA.id, unidad: PLANTILLA.unidad, problema, opcion, correcta,
+    error: correcta ? '' : error, respaldo: correcta ? '' : respaldo, ms: t0 ? Date.now() - t0 : '' }, PLANTILLA.version);
+}
+/* ================= Piezas compartidas =================
+   Toda la matemática (potencias de i, operaciones, módulo, argumento, polar, De Moivre, raíces y los errores
+   típicos) sale de MotorComplejos (motor.js); aquí solo se pinta, se arrastra y se anima. */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MC = MotorComplejos;
+const GR = Math.PI/180;
+const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
+const fmt = (n, d) => MC.decimal(n, d === undefined ? 2 : d);
+const V = (k, t) => `<span class="v v-${k}" data-var="${k}" tabindex="0">${t}</span>`;
+const re_ = t => V('re', t), im_ = t => V('im', t), r_ = t => V('r', t), th_ = t => V('th', t), w_ = t => V('w', t);
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const lerp = (a, b, f) => a + (b - a)*f;
+const esperar = (ms, fn) => setTimeout(fn, RM ? 0 : ms);
+const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+function tween(dur, paso, fin){
+  if (RM || !dur){ paso(1); if (fin) setTimeout(fin, 0); return; }
+  const t0 = performance.now();
+  const tick = now => { const f = Math.min(1, (now - t0)/dur); paso(suave(f)); if (f < 1) requestAnimationFrame(tick); else if (fin) fin(); };
+  requestAnimationFrame(tick);
+}
+// Una ecuación larga se parte solo entre tramos (después de ⟹, de = o de ;), nunca a media expresión.
+function tramos(raiz){ raiz.querySelectorAll('.eq').forEach(q => { if (q.dataset.tr) return; q.dataset.tr = '1';
+  const nota = q.querySelector('.note'), html = nota ? q.innerHTML.replace(nota.outerHTML, '') : q.innerHTML;
+  q.innerHTML = html.split(/(⟹|;| = )/).reduce((a, p, i, l) => (i % 2 ? a : a + `<span class="tramo">${p}${l[i + 1] || ''}</span> `), '') + (nota ? ' ' + nota.outerHTML : ''); }); }
+const opcionesHTML = (opts, idFb, frase) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span class="m${frase ? ' frase' : ''}">${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}" aria-live="polite"></p>`;
+const KS = ['re', 'im', 'r', 'th', 'w'];
+function colores(){
+  const c = { ink:css('--ink'), muted:css('--muted'), grid:css('--grid'), paper:css('--paper'), card:css('--card'), line:css('--line'),
+    relleno:Number(css('--relleno')) || .13, font:css('--font') };
+  for (const k of KS) c[k] = css('--c-' + k);
+  return c;
+}
+const col = (c, k) => (c[k] || k);
+function alRedibujarTema(fn){
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
+  new MutationObserver(fn).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+}
+const ESCENAS = [];
+function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
+document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.v'); if (s) resaltar(s.dataset.var); });
+document.addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('.v')) resaltar(null); });
+document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.v'); resaltar(s ? s.dataset.var : null); });
+const pt = (x, y) => ({ x, y });
+const O = pt(0, 0);
+const P_ = (r, g) => pt(r*Math.cos(g*GR), r*Math.sin(g*GR));
+const deN = n => pt(n.re, n.im);                       // { re, im } numérico del motor → punto
+const zz = p => ({ re: p.x, im: p.y });                // punto → complejo para el motor (partes cortas)
+const corto = x => Math.round(x*100)/100;
+const ang = p => Math.atan2(p.y, p.x)/GR;
+/* ================= La escena =================
+   Un plano en coordenadas del mundo (eje real horizontal, eje imaginario vertical) con piezas: cuadrícula, ejes,
+   circunferencias, cuadros con cuadritos, polígonos, arcos de ángulo, flechas, puntos, textos y manijas que se
+   arrastran. Cada paso arma sus piezas con L.rehacer(L) a partir de L.estado. */
+function crearEscena(cv, idDesc, idLect, idLey){
+  const E = { L:null, lect:[], ley:[], hl:null, ocupado:false, tok:0, cad:0, anim:false, compacto:false, desc:'' };
+  ESCENAS.push(E);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, arrastrando = null, sobre = null;
+  E.angosto = () => (cv.clientWidth || W) < 520;
+  function alto(w){
+    const L = E.L; if (!L) return 300;
+    const B = L.caja, g = innerWidth >= 900 ? Math.max(300, Math.min(540, innerHeight - 200)) : 440;
+    const h = Math.round(clamp(w*(B.y1 - B.y0)/(B.x1 - B.x0), 220, g));
+    return Celular.alto(h, E.compacto, { tope:250 });
+  }
+  function resize(){
+    const w = cv.clientWidth; if (!w) return;
+    const h = alto(w), dpr = Celular.dpr();
+    if (w === W && h === H) { E.dibujar(); return; }
+    W = w; H = h; cv.style.height = h + 'px'; cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    E.dibujar();
+  }
+  new ResizeObserver(resize).observe(cv);
+  alRedibujarTema(() => E.dibujar());
+  const VACIO = () => ({ rejilla:null, ejes:null, circs:[], cuadros:[], polys:[], arcos:[], segs:[], puntos:[], textos:[], manijas:[] });
+  E.config = o => {
+    E.tok++; E.cad++; E.anim = false;
+    E.L = Object.assign({ caja:{ x0:-3, x1:3, y0:-3, y1:3 }, estado:{}, rehacer:null, mover:null, tecla:null }, VACIO(), o.L);
+    E.lect = o.lect || []; E.ley = o.ley || []; E.desc = o.desc || '';
+    E.rehacer();
+    cv.tabIndex = E.L.manijas.length ? 0 : -1;
+    cv.setAttribute('aria-label', E.L.manijas.length ? 'Dibujo de la escena: el plano complejo. Usa las flechas del teclado para mover la punta.' : 'Dibujo de la escena: el plano complejo');
+    W = 0; resize(); E.leyenda(); E.avisar();
+  };
+  E.rehacer = () => { const L = E.L; if (!L || !L.rehacer) return; Object.assign(L, VACIO()); L.rehacer(L, E); };
+  E.compactar = on => { on = !!on; Celular.compactar(cv.closest('.mode'), on); if (on === E.compacto) return; E.compacto = on; W = 0; resize(); };
+  E.redimensionar = () => { W = 0; resize(); };
+  const grosor = (k, base) => (E.hl === k ? base + 2.5 : base);
+  function escala(){
+    const L = E.L, B = L.caja, pad = 12;
+    const k = Math.min((W - 2*pad)/(B.x1 - B.x0), (H - 2*pad)/(B.y1 - B.y0));
+    const ox = (W - k*(B.x1 - B.x0))/2 - k*B.x0, oy = (H - k*(B.y1 - B.y0))/2 + k*B.y1;
+    return { k, P: p => ({ x: ox + k*p.x, y: oy - k*p.y }), mundo: q => ({ x:(q.x - ox)/k, y:(oy - q.y)/k }) };
+  }
+  E.escala = () => escala();
+  function linea(p, q){ ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke(); }
+  // Los rótulos se pintan al final, encima de todo, con fondo de papel. partes: [[texto, color], …]
+  let cola = null;
+  function rotulo(...a){ if (cola) cola.push(() => rotuloYa(...a)); else rotuloYa(...a); }
+  function rotuloYa(c, x, y, partes, align, tam, peso){
+    if (typeof partes === 'string') partes = [[partes, 'ink']];
+    ctx.font = `${peso || 800} ${tam || 12}px ${c.font}`; ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
+    const ws = partes.map(([t]) => ctx.measureText(t).width), w = ws.reduce((s, v) => s + v, 0);
+    let x0 = align === 'left' ? x : align === 'right' ? x - w : x - w/2;
+    x0 = clamp(x0, 3, W - w - 3); y = clamp(y, 10, H - 10);
+    ctx.save(); ctx.fillStyle = c.paper; ctx.globalAlpha = .92; ctx.fillRect(x0 - 3, y - 9, w + 6, 18); ctx.restore();
+    let xx = x0; partes.forEach(([t, k], i) => { ctx.fillStyle = col(c, k); ctx.fillText(t, xx, y); xx += ws[i]; });
+  }
+  function flecha(p, q, color, s){
+    const a = Math.atan2(q.y - p.y, q.x - p.x);
+    ctx.fillStyle = color; ctx.beginPath(); ctx.moveTo(q.x, q.y);
+    ctx.lineTo(q.x - s*Math.cos(a - .42), q.y - s*Math.sin(a - .42)); ctx.lineTo(q.x - s*Math.cos(a + .42), q.y - s*Math.sin(a + .42)); ctx.fill();
+  }
+  const alfa = o => (o.f === undefined ? 1 : o.f);
+  const partes = (t, k) => (typeof t === 'string' ? [[t, k || 'ink']] : t);
+  E.dibujar = () => {
+    if (!W || !E.L) return;
+    const c = colores(), L = E.L, e = escala(), B = L.caja;
+    ctx.clearRect(0, 0, W, H); cola = [];
+    // cuadrícula (un cuadrito por unidad)
+    if (L.rejilla){ const R = L.rejilla === true ? B : L.rejilla; ctx.strokeStyle = c.grid; ctx.lineWidth = 1;
+      for (let x = Math.ceil(R.x0); x <= R.x1; x++) linea(e.P(pt(x, R.y0)), e.P(pt(x, R.y1)));
+      for (let y = Math.ceil(R.y0); y <= R.y1; y++) linea(e.P(pt(R.x0, y)), e.P(pt(R.x1, y))); }
+    // ejes: Re (horizontal) e Im (vertical)
+    if (L.ejes){ const A = L.ejes; ctx.strokeStyle = c.muted; ctx.lineWidth = 1.3;
+      const x0 = B.x0 + .1, x1 = B.x1 - .1, y0 = B.y0 + .1, y1 = B.y1 - .1;
+      linea(e.P(pt(x0, 0)), e.P(pt(x1, 0))); flecha(e.P(pt(x0, 0)), e.P(pt(x1, 0)), c.muted, 7);
+      linea(e.P(pt(0, y0)), e.P(pt(0, y1))); flecha(e.P(pt(0, y0)), e.P(pt(0, y1)), c.muted, 7);
+      for (const [v, t, k] of A.tx || []){ const p = e.P(pt(v, 0)); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2; linea({ x:p.x, y:p.y - 4 }, { x:p.x, y:p.y + 4 }); if (t) rotulo(c, p.x, p.y + 14, [[t, k || 'muted']], 'center', 11, 700); }
+      for (const [v, t, k] of A.ty || []){ const p = e.P(pt(0, v)); ctx.strokeStyle = c.muted; linea({ x:p.x - 4, y:p.y }, { x:p.x + 4, y:p.y }); if (t) rotulo(c, p.x - 7, p.y, [[t, k || 'muted']], 'right', 11, 700); }
+      const px = e.P(pt(x1, 0)), py = e.P(pt(0, y1));
+      rotulo(c, px.x - 4, px.y - 13, [['Re', 'muted']], 'right', 12); rotulo(c, py.x + 8, py.y + 6, [['Im', 'muted']], 'left', 12); }
+    // circunferencias (centro en el origen)
+    for (const K of L.circs){ if (!(alfa(K) > 0)) continue; const p = e.P(O);
+      ctx.save(); ctx.globalAlpha = alfa(K); ctx.strokeStyle = col(c, K.color || 'muted'); ctx.lineWidth = K.ancho || 1.4; ctx.setLineDash(K.dash ? [5, 5] : []);
+      ctx.beginPath(); ctx.arc(p.x, p.y, e.k*K.r, 0, 7); ctx.stroke(); ctx.restore(); }
+    // cuadros con cuadritos: origen o, lados u y v, n×n cuadritos
+    for (const Q of L.cuadros){ if (!(alfa(Q) > 0)) continue;
+      const v4 = [Q.o, pt(Q.o.x + Q.u.x, Q.o.y + Q.u.y), pt(Q.o.x + Q.u.x + Q.v.x, Q.o.y + Q.u.y + Q.v.y), pt(Q.o.x + Q.v.x, Q.o.y + Q.v.y)].map(e.P), color = col(c, Q.color);
+      ctx.save(); ctx.globalAlpha = alfa(Q)*c.relleno*(E.hl === Q.color ? 2 : 1.4); ctx.fillStyle = color;
+      ctx.beginPath(); v4.forEach((p, i) => (i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y))); ctx.closePath(); ctx.fill();
+      ctx.globalAlpha = alfa(Q)*.55; ctx.strokeStyle = color; ctx.lineWidth = 1;
+      if (Q.n) for (let j = 1; j < Q.n; j++){ const f = j/Q.n;
+        linea({ x:lerp(v4[0].x, v4[1].x, f), y:lerp(v4[0].y, v4[1].y, f) }, { x:lerp(v4[3].x, v4[2].x, f), y:lerp(v4[3].y, v4[2].y, f) });
+        linea({ x:lerp(v4[0].x, v4[3].x, f), y:lerp(v4[0].y, v4[3].y, f) }, { x:lerp(v4[1].x, v4[2].x, f), y:lerp(v4[1].y, v4[2].y, f) }); }
+      ctx.globalAlpha = alfa(Q); ctx.lineWidth = 2; ctx.beginPath(); v4.forEach((p, i) => (i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y))); ctx.closePath(); ctx.stroke();
+      ctx.restore();
+      if (Q.texto && alfa(Q) >= 1){ const m = { x:(v4[0].x + v4[2].x)/2, y:(v4[0].y + v4[2].y)/2 }; rotulo(c, m.x, m.y, partes(Q.texto, Q.color), 'center', 13); } }
+    // polígonos (triángulos semejantes)
+    for (const G of L.polys){ if (!(alfa(G) > 0)) continue; const ps = G.pts.map(e.P), color = col(c, G.color);
+      ctx.save(); ctx.globalAlpha = alfa(G)*c.relleno*(G.alfa || 1.6); ctx.fillStyle = color; ctx.beginPath(); ps.forEach((p, i) => (i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y))); ctx.closePath(); ctx.fill();
+      ctx.globalAlpha = alfa(G)*.8; ctx.strokeStyle = color; ctx.lineWidth = 1.4; ctx.setLineDash(G.dash ? [4, 4] : []); ctx.stroke(); ctx.restore(); }
+    // arcos de ángulo (centro, radio en unidades del mundo, de y a en grados)
+    for (const A of L.arcos){ if (!(alfa(A) > 0)) continue;
+      const cc = e.P(A.c || O), r = e.k*(A.r || .5), a1 = lerp(A.de, A.a, A.p === undefined ? 1 : A.p), color = col(c, A.color);
+      ctx.save(); ctx.globalAlpha = alfa(A); ctx.strokeStyle = color; ctx.lineWidth = grosor(A.color, A.ancho || 2.6); ctx.setLineDash(A.dash ? [4, 4] : []);
+      ctx.beginPath(); ctx.arc(cc.x, cc.y, r, -A.de*GR, -a1*GR, a1 > A.de); ctx.stroke(); ctx.setLineDash([]);
+      if (A.flecha !== false && Math.abs(a1 - A.de) > 8){ const s = Math.sign(a1 - A.de), q = { x:cc.x + r*Math.cos(a1*GR), y:cc.y - r*Math.sin(a1*GR) },
+        p = { x:cc.x + r*Math.cos((a1 - s*5)*GR), y:cc.y - r*Math.sin((a1 - s*5)*GR) }; flecha(p, q, color, 8); }
+      ctx.restore();
+      if (A.texto && alfa(A) >= 1){ const mg = A.en === undefined ? (A.de + a1)/2 : A.en, rr = r + (A.sep || 16);
+        rotulo(c, cc.x + rr*Math.cos(mg*GR) + (A.dx || 0), cc.y - rr*Math.sin(mg*GR) + (A.dy || 0), partes(A.texto, A.color), A.align || 'center', 12); } }
+    // segmentos y flechas
+    for (const S of L.segs){ if (!(alfa(S) > 0)) continue;
+      const p = e.P(S.p), q = e.P(S.q); ctx.save(); ctx.globalAlpha = alfa(S); ctx.strokeStyle = col(c, S.color); ctx.lineWidth = grosor(S.color, S.ancho || 2.5);
+      ctx.lineCap = 'round'; ctx.setLineDash(S.dash ? [6, 5] : []);
+      const largo = Math.hypot(q.x - p.x, q.y - p.y), s = S.flecha ? Math.min(11, largo*.45) : 0;
+      if (S.flecha && largo > 1){ const u = { x:(q.x - p.x)/largo, y:(q.y - p.y)/largo }; linea(p, { x:q.x - u.x*s*.7, y:q.y - u.y*s*.7 }); ctx.setLineDash([]); flecha(p, q, col(c, S.color), s); }
+      else linea(p, q);
+      ctx.restore();
+      if (S.texto && alfa(S) >= 1){ const m = S.en ? e.P(S.en) : { x:(p.x + q.x)/2, y:(p.y + q.y)/2 };
+        rotulo(c, m.x + (S.dx || 0), m.y + (S.dy || 0), partes(S.texto, S.color), S.align || 'center', 12); } }
+    // puntos (llenos o huecos)
+    for (const Q of L.puntos){ if (!(alfa(Q) > 0)) continue;
+      const p = e.P(Q.p), color = col(c, Q.color); ctx.save(); ctx.globalAlpha = alfa(Q);
+      ctx.beginPath(); ctx.arc(p.x, p.y, Q.r || 5, 0, 7);
+      if (Q.hueco){ ctx.fillStyle = c.paper; ctx.fill(); ctx.strokeStyle = color; ctx.lineWidth = 2.2; ctx.stroke(); }
+      else { ctx.fillStyle = color; ctx.fill(); ctx.strokeStyle = c.paper; ctx.lineWidth = 2; ctx.stroke(); }
+      ctx.restore();
+      if (Q.texto && alfa(Q) >= 1) rotulo(c, p.x + (Q.dx || 0), p.y + (Q.dy === undefined ? -15 : Q.dy), partes(Q.texto, Q.hueco ? 'muted' : Q.color), Q.align || 'center', 12); }
+    // textos sueltos
+    for (const T of L.textos){ if (!(alfa(T) > 0)) continue; const p = e.P(T.p);
+      ctx.save(); ctx.globalAlpha = alfa(T); rotulo(c, p.x + (T.dx || 0), p.y + (T.dy || 0), partes(T.t, T.color), T.align || 'center', T.tam || 12, T.peso); ctx.restore(); }
+    // manijas
+    for (const M of L.manijas){
+      const p = e.P(M.p), on = arrastrando === M.id || sobre === M.id;
+      ctx.save(); ctx.fillStyle = c.ink; ctx.globalAlpha = on ? .18 : .09; ctx.beginPath(); ctx.arc(p.x, p.y, 20, 0, 7); ctx.fill(); ctx.restore();
+      ctx.fillStyle = c.card; ctx.strokeStyle = col(c, M.color); ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(p.x, p.y, 9, 0, 7); ctx.fill(); ctx.stroke();
+    }
+    const q = cola; cola = null; q.forEach(f => f());
+  };
+  const it = (k, t, tipo) => `<span><i class="${tipo || ''}" style="border-color:var(${k === 'ink' ? '--ink' : k === 'muted' ? '--muted' : '--c-' + k});${tipo ? '' : `background:color-mix(in srgb, var(${k === 'ink' || k === 'muted' ? '--' + k : '--c-' + k}) 25%, transparent)`}"></i>${t}</span>`;
+  E.leyenda = () => { document.getElementById(idLey).innerHTML = E.ley.map(([k, t, tipo]) => it(k, t, tipo)).join(''); };
+  // Lecturas y descripción para lectores de pantalla (dicen lo mismo; antes de responder no adelantan la respuesta).
+  E.avisar = () => {
+    const filas = E.lect.map(f => f(E));
+    document.getElementById(idLect).innerHTML = filas.map(([k, t, v]) => `<div class="lectura" style="--k:var(${k === 'ink' || k === 'muted' ? '--' + k : '--c-' + k})"><span>${t}</span><b>${v}</b></div>`).join('');
+    if (!E.anim) document.getElementById(idDesc).textContent = [E.desc, ...filas.map(([, t, v]) => `${t}: ${v}.`)].join(' ');
+  };
+  E.animar = (dur, paso, fin) => {
+    const tok = ++E.tok; E.anim = true;
+    tween(dur, f => { if (tok !== E.tok) return; paso(f); E.rehacer(); E.dibujar(); },
+      () => { if (tok !== E.tok) return; E.anim = false; E.avisar(); if (fin) fin(); });
+  };
+  // Varias animaciones en fila (un E.config nuevo o E.parar corta la cadena)
+  E.cadena = (fs, fin) => { const id = ++E.cad; let i = 0; const sig = () => { if (id !== E.cad) return; if (i >= fs.length){ if (fin) fin(); return; } fs[i++](sig); }; sig(); };
+  E.parar = () => { E.tok++; E.cad++; E.anim = false; };
+  // ---------- arrastrar (táctil, ratón y teclado) ----------
+  function cerca(p, radio){ if (E.ocupado || E.anim || !E.L) return null; const e = escala(); let mejor = null, dm = radio;
+    for (const M of E.L.manijas){ const q = e.P(M.p), d = Math.hypot(p.x - q.x, p.y - q.y); if (d < dm){ dm = d; mejor = M.id; } } return mejor; }
+  Celular.arrastre(cv, {
+    activo: () => !!(E.L && E.L.manijas.length) && !E.ocupado && !E.anim,
+    cerca: (p, r) => cerca(p, r),
+    empezar: p => { arrastrando = cerca(p, 40); E.dibujar(); },
+    mover: p => { if (!arrastrando || !E.L.mover) return; E.L.mover(arrastrando, escala().mundo(p), E.L); E.rehacer(); E.dibujar(); E.avisar(); },
+    soltar: () => { arrastrando = null; E.dibujar(); },
+    sobre: s => { sobre = s ? (E.L && E.L.manijas[0] ? E.L.manijas[0].id : null) : null; E.dibujar(); }
+  });
+  // Teclado: las flechas mueven la punta (← → en horizontal, ↑ ↓ en vertical).
+  cv.addEventListener('keydown', e => {
+    if (E.ocupado || E.anim || !E.L || !E.L.manijas.length || !E.L.tecla) return;
+    const k = { ArrowRight:[1, 0], ArrowLeft:[-1, 0], ArrowUp:[0, 1], ArrowDown:[0, -1] }[e.key];
+    if (!k) return;
+    e.preventDefault();
+    E.L.tecla(E.L.manijas[0].id, k[0], k[1], E.L); E.rehacer(); E.dibujar(); E.avisar();
+  });
+  return E;
+}
+// Ejes con marcas enteras (las de los bordes se omiten si el plano es angosto)
+function marcas(B, paso, angosto){
+  const tx = [], ty = [], s = paso || 1;
+  for (let x = Math.ceil(B.x0 + .4); x <= B.x1 - .4; x++) if (x && x % s === 0) tx.push([x, angosto && Math.abs(x) % (2*s) ? '' : MC.decimal(x)]);
+  for (let y = Math.ceil(B.y0 + .4); y <= B.y1 - .4; y++) if (y && y % s === 0) ty.push([y, angosto && Math.abs(y) % (2*s) ? '' : y === 1 ? 'i' : y === -1 ? '−i' : MC.decimal(y) + 'i']);
+  return { tx, ty };
+}
+// Flecha de un complejo con sus partes (a en el eje real, b en vertical)
+function flechaZ(L, p, o){
+  o = o || {};
+  if (o.partes){ L.segs.push({ p:O, q:pt(p.x, 0), color:'re', ancho:4, texto:o.ta, dy: p.y >= 0 ? -12 : 12 },
+    { p:pt(p.x, 0), q:p, color:'im', ancho:4, texto:o.tb, dx: p.x >= 0 ? -8 : 8, align: p.x >= 0 ? 'right' : 'left' }); }
+  L.segs.push({ p:O, q:p, color:o.color || 'r', ancho:o.ancho || 3, flecha:true, dash:o.dash, f:o.f });
+  if (o.texto) L.puntos.push({ p, color:o.color || 'r', r:3.5, texto:o.texto, dx:o.dx || 0, dy:o.dy === undefined ? (p.y >= 0 ? -14 : 15) : o.dy, align:o.align, f:o.f });
+}
+</script>
+<script>
+/* ================= MODO 1: paso a paso ================= */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv'), 'desc1', 'lect1', 'leyenda1');
+const S = { step:0, max:0, pred:{}, ocupado:false };
+// Todo lo que se pregunta sale del motor, con sus errores típicos
+const I2 = MC.potenciaI({ n:2 });
+const I43 = MC.potenciaI({ n:43 });
+const Z3 = { re:2, im:3 }, W3 = { re:1, im:-2 }, M3 = MC.multiplicar({ z:Z3, w:W3 });
+const Z4 = { re:-4, im:3 }, D4 = MC.modulo({ z:Z4 });
+const Z5 = { re:-3, im:2 }, C5 = MC.conjugado({ z:Z5 });
+const Z6 = { re:5, im:1 }, W6 = { re:1, im:-1 }, Q6 = MC.dividir({ z:Z6, w:W6 }), WB6 = MC.conjugado({ z:W6 });
+const Z7 = { re:-1, im:'√3' }, PO7 = MC.polar({ z:Z7 }), A7 = MC.argumento({ z:Z7 });
+const Z8 = { r:2, theta:10 }, W8 = { r:3, theta:30 }, M8 = MC.productoPolar({ z:Z8, w:W8 });
+const hip = `<p class="fuente">El informe de ideas erróneas de álgebra no trata los números complejos: estas opciones son hipótesis nuestras, armadas con errores que creemos frecuentes, y se confirman con lo que marquen los alumnos.`;
+const P1 = { id:'numeros-complejos-paso1', ok:'b', opts:[
+  ['a', I2.errores.cuadradoPositivo.texto, 'CX1-i-cuadrado-es-1', 'hipotesis'],
+  ['b', I2.texto],
+  ['c', I2.errores.nVeces.texto, 'CX5-exponente-multiplica', 'hipotesis'],
+  ['d', I2.errores.sigueI.texto, 'CX6-i-por-i-es-i', 'hipotesis']],
+  fb:{ b:'¡Bien! i se define con i² = −1: la flecha de i, girada otro cuarto de vuelta, cae en −1.',
+    a:'Elegiste la A. El cuadrado de un número real nunca es negativo, pero i no es real: se define justo con i² = −1. La correcta está marcada.',
+    c:'Elegiste la C. 2i sería i + i. El exponente 2 dice «multiplicar i por sí misma», no «por 2». La correcta está marcada.',
+    d:'Elegiste la D. Multiplicar por i sí cambia el número: la flecha gira un cuarto de vuelta. i · i no es i. La correcta está marcada.' } };
+const P2 = { id:'numeros-complejos-paso2', ok:'c', opts:[
+  ['a', I43.errores.cicloTres.texto, 'CX2-i-cubo-es-i', 'hipotesis'],
+  ['b', I43.errores.cociente.texto, 'CX3-usa-el-cociente', 'hipotesis'],
+  ['c', I43.texto],
+  ['d', I43.errores.corrido.texto, 'CX4-ciclo-corrido', 'hipotesis']],
+  fb:{ c:'¡Bien! 43 = 4 · 10 + 3: diez vueltas completas, que no cambian nada, y tres cuartos de vuelta más. i³ = −i.',
+    a:'Elegiste la A. El resto 3 está bien, pero i³ = i² · i = −1 · i = −i, no i. La correcta está marcada.',
+    b:'Elegiste la B. −1 sale de usar el cociente, 10: i¹⁰ = −1. Lo que importa es el resto, 3: las vueltas completas no mueven la flecha. La correcta está marcada.',
+    d:'Elegiste la D. 1 sale de correr el ciclo un lugar (empezar con i⁰ = i). El ciclo empieza en i⁰ = 1: 1, i, −1, −i. La correcta está marcada.' } };
+const P3 = { id:'numeros-complejos-paso3', ok:'d', opts:[
+  ['a', M3.errores.partePorParte.texto, 'CX7-parte-por-parte', 'hipotesis'],
+  ['b', M3.errores.cuadradoPositivo.texto, 'CX1-i-cuadrado-es-1', 'hipotesis'],
+  ['c', M3.errores.sigueI.texto, 'CX6-i-por-i-es-i', 'hipotesis'],
+  ['d', M3.texto]],
+  fb:{ d:'¡Bien! Son cuatro productos: 2 − 4i + 3i − 6i². Como i² = −1, el último es +6: queda 8 − i.',
+    a:'Elegiste la A. 2 − 6i multiplica solo real con real e imaginaria con imaginaria. Faltan los dos productos cruzados (−4i y 3i), y 3i · (−2i) no es −6i. La correcta está marcada.',
+    b:'Elegiste la B. −4 − i sale de tomar i² = 1: −6i² quedaría −6. Con i² = −1, −6i² = +6. La correcta está marcada.',
+    c:'Elegiste la C. 2 − 7i sale de dejar −6i² como −6i. i · i no es i: es −1. La correcta está marcada.' } };
+const P4 = { id:'numeros-complejos-paso4', ok:'b', opts:[
+  ['a', D4.errores.sumaPartes.texto, 'AL9-modulo-suma-partes', 'parcial'],
+  ['b', D4.texto],
+  ['c', D4.errores.sinRaiz.texto, 'CX11-sin-raiz', 'hipotesis'],
+  ['d', D4.errores.raizDeSuma.texto, 'CX10-raiz-de-la-suma', 'hipotesis']],
+  fb:{ b:'¡Bien! La flecha es la hipotenusa de un triángulo de catetos 4 y 3: 16 + 9 = 25 cuadritos, y √25 = 5.',
+    a:'Elegiste la A. 7 = 4 + 3 sería el camino por los dos catetos. La flecha va en línea recta: es más corta. La correcta está marcada.',
+    c:'Elegiste la C. 25 es |z|², el área del cuadro sobre la flecha. El largo es su raíz. La correcta está marcada.',
+    d:'Elegiste la D. √7 mezcla la raíz con la suma de las partes: hay que elevar al cuadrado antes de sumar. La correcta está marcada.' } };
+const P5 = { id:'numeros-complejos-paso5', ok:'b', opts:[
+  ['a', C5.errores.cambiaReal.texto, 'CX12-cambia-la-real', 'hipotesis'],
+  ['b', C5.texto],
+  ['c', C5.errores.intercambia.texto, 'CX14-intercambia', 'hipotesis'],
+  ['d', C5.errores.opuesto.texto, 'CX13-opuesto', 'hipotesis']],
+  fb:{ b:'¡Bien! El conjugado deja la parte real y cambia el signo de la imaginaria: es el reflejo de z en el eje real.',
+    a:'Elegiste la A. 3 + 2i cambia la parte real: es el reflejo en el eje imaginario. El conjugado cambia el signo de la parte imaginaria. La correcta está marcada.',
+    c:'Elegiste la C. 2 + 3i intercambia las partes. El conjugado no mueve las partes de lugar: solo cambia el signo de la imaginaria. La correcta está marcada.',
+    d:'Elegiste la D. 3 − 2i es −z, el opuesto: cambia los dos signos. El conjugado cambia solo uno. La correcta está marcada.' } };
+const P6 = { id:'numeros-complejos-paso6', ok:'c', opts:[
+  ['a', Q6.errores.partePorParte.texto, 'CX15-divide-parte-por-parte', 'hipotesis'],
+  ['b', Q6.errores.porW.texto, 'CX35-multiplica-por-w', 'hipotesis'],
+  ['c', Q6.texto],
+  ['d', Q6.errores.sinDenominador.texto, 'CX16-sin-denominador', 'hipotesis']],
+  fb:{ c:'¡Bien! Arriba y abajo por 1 + i: (5 + i)(1 + i) = 4 + 6i y (1 − i)(1 + i) = 2. Queda 2 + 3i.',
+    a:'Elegiste la A. 5 − i divide 5 entre 1 y 1 entre −1, parte por parte. Comprueba: (5 − i)(1 − i) = 4 − 6i, no 5 + i. La correcta está marcada.',
+    b:'Elegiste la B. 3 − 2i sale de multiplicar arriba por w = 1 − i en vez de por su conjugado w̄ = 1 + i. La correcta está marcada.',
+    d:'Elegiste la D. 4 + 6i es el numerador: falta dividir entre (1 − i)(1 + i) = 2. La correcta está marcada.' } };
+const P7 = { id:'numeros-complejos-paso7', ok:'d', opts:[
+  ['a', PO7.errores.arctanDirecto.texto, 'CX17-arctan-sin-cuadrante', 'hipotesis'],
+  ['b', PO7.errores.sinRaiz.texto, 'CX11-sin-raiz', 'hipotesis'],
+  ['c', PO7.errores.referencia.texto, 'CX18-angulo-de-referencia', 'hipotesis'],
+  ['d', PO7.texto]],
+  fb:{ d:'¡Bien! r = √(1 + 3) = 2, y el punto (−1; √3) está en el segundo cuadrante: θ = 180° − 60° = 120°.',
+    a:'Elegiste la A. arctan(√3/(−1)) = −60° apunta al cuarto cuadrante. El punto (−1; √3) está arriba a la izquierda, en el segundo. La correcta está marcada.',
+    b:'Elegiste la B. 4 = 1 + 3 es r². El módulo es su raíz, 2. La correcta está marcada.',
+    c:'Elegiste la C. 60° es el ángulo agudo con el eje real, pero se mide desde el eje real positivo: el punto está a la izquierda, así que es 120°. La correcta está marcada.' } };
+const P8 = { id:'numeros-complejos-paso8', ok:'a', opts:[
+  ['a', M8.texto],
+  ['b', M8.errores.multiplicaArgumentos.texto, 'CX20-multiplica-argumentos', 'hipotesis'],
+  ['c', M8.errores.sumaModulos.texto, 'CX19-suma-modulos', 'hipotesis'],
+  ['d', M8.errores.restaArgumentos.texto, 'CX21-resta-argumentos', 'hipotesis']],
+  fb:{ a:'¡Bien! Los largos se multiplican (2 · 3 = 6) y los ángulos se suman (10° + 30° = 40°).',
+    b:'Elegiste la B. 300° = 10° · 30°. Al multiplicar, la flecha de z gira el ángulo de w: los ángulos se suman. La correcta está marcada.',
+    c:'Elegiste la C. 5 = 2 + 3. El largo de z se estira tres veces (el largo de w): se multiplica. La correcta está marcada.',
+    d:'Elegiste la D. −20° = 10° − 30° es la regla de la división. Al multiplicar, los ángulos se suman. La correcta está marcada.' } };
+
+const LEY_Z = [['r', 'la flecha de z (su largo es |z|)'], ['re', 'parte real a'], ['im', 'parte imaginaria b']];
+const rej = B => ({ x0:Math.ceil(B.x0), x1:Math.floor(B.x1), y0:Math.ceil(B.y0), y1:Math.floor(B.y1) });
+function base(L, B, paso){ L.rejilla = rej(B); L.ejes = marcas(B, paso, E.angosto()); }
+const snap = (q, x0, x1, y0, y1, h) => { const s = h || 1; return pt(clamp(Math.round(q.x/s)*s, x0, x1), clamp(Math.round(q.y/s)*s, y0, y1)); };
+const sinCero = (p, prev) => (p.x === 0 && p.y === 0 ? prev : p);
+
+// Paso 1: i · i
+const BOX1 = { x0:-2.6, x1:2.6, y0:-2.3, y1:2.3 };
+function config1(r){
+  E.config({ L:{ caja:BOX1, estado:{ g:90, z:pt(2, 1), libre:r },
+    rehacer:L => { const s = L.estado;
+      base(L, BOX1); L.circs.push({ r:1, dash:true });
+      flechaZ(L, pt(1, 0), { texto:[['1', 'r']], dy:-12, dx:6 });
+      flechaZ(L, pt(0, 1), { texto:[['i', 'r']], dx:12, dy:-2 });
+      if (!s.libre && s.g > 90){ const p = P_(1, s.g);
+        L.arcos.push({ de:90, a:s.g, r:.55, color:'th', texto: s.g >= 180 ? '90°' : null, sep:12 });
+        L.segs.push({ p:O, q:p, color:'ink', ancho:3, flecha:true });
+        if (s.g >= 180) L.puntos.push({ p, color:'ink', r:3.5, texto:[['i · i = −1', 'ink']], dy:-14, dx:-10, align:'right' }); }
+      if (s.libre){ const z = s.z, iz = MC.giro({ z:zz(z), grados:90 });
+        L.puntos.push({ p:pt(-1, 0), color:'ink', r:3.5, texto:[['i² = −1', 'ink']], dy:-14, dx:-4, align:'right' });
+        L.arcos.push({ de:ang(z), a:ang(z) + 90, r:.45, color:'th', sep:10 });
+        flechaZ(L, z, { texto:[['z', 'r']], dx:12 });
+        L.segs.push({ p:O, q:deN(iz), color:'ink', ancho:2.6, flecha:true, dash:true });
+        L.puntos.push({ p:deN(iz), color:'ink', r:3, texto:[['i · z', 'ink']], dx: iz.re >= 0 ? 14 : -14, dy:-12 });
+        L.manijas = [{ id:'z', p:z, color:'r' }]; } },
+    mover:(id, q, L) => { L.estado.z = sinCero(snap(q, -2, 2, -2, 2), L.estado.z); },
+    tecla:(id, dx, dy, L) => { const z = L.estado.z; L.estado.z = sinCero(pt(clamp(z.x + dx, -2, 2), clamp(z.y + dy, -2, 2)), z); } },
+    lect: r ? lect1 : [], ley: r ? LEY_Z.slice(0, 1).concat([['ink', 'i · z', 'trazos'], ['th', 'el giro']]) : [['r', 'las flechas de 1 y de i'], ['muted', 'circunferencia de radio 1', 'trazos']],
+    desc:'El plano complejo con la flecha de 1 sobre el eje real y la flecha de i sobre el eje imaginario.' });
+}
+const lect1 = [E => ['r', 'z', MC.texto(zz(E.L.estado.z))], E => ['ink', 'i · z', MC.multiplicar({ z:zz(E.L.estado.z), w:{ re:0, im:1 } }).texto]];
+
+// Paso 2: i⁴³ (la flecha da vueltas)
+const BOX2 = { x0:-1.8, x1:1.8, y0:-1.65, y1:1.65 };
+function config2(r){
+  E.config({ L:{ caja:BOX2, estado:{ g:0, n:43, libre:r },
+    rehacer:L => { const s = L.estado, g = s.libre ? 90*s.n : s.g;
+      L.ejes = { tx:[], ty:[] }; L.circs.push({ r:1, dash:true });
+      [['1', 1, 0, 14, 10], ['i', 0, 1, -12, 12], ['−1', -1, 0, 14, -12], ['−i', 0, -1, 12, 14]].forEach(([t, x, y, dy, dx]) =>
+        L.puntos.push({ p:pt(x, y), color:'muted', hueco:true, texto:[[t, 'muted']], dy, dx }));
+      L.segs.push({ p:O, q:P_(1, g), color:'r', ancho:3.2, flecha:true });
+      const k = Math.floor(g/90 + 1e-9);
+      if (!s.libre && g > 0) L.textos.push({ p:pt(-1.72, 1.5), t:[[`giros de 90°: ${k}`, 'th']], align:'left' });
+      if (!s.libre && g >= 3870 - 1e-6) L.textos.push({ p:pt(.12, -1.32), t:[['i⁴³', 'ink']], align:'left' });
+      if (s.libre) L.textos.push({ p:pt(-1.72, 1.5), t:[[`n = ${MC.decimal(s.n)}`, 'th']], align:'left' }); } },
+    lect: r ? lect2 : [], ley:[['r', 'la flecha (1 al empezar)'], ['muted', 'circunferencia de radio 1', 'trazos']],
+    desc:'La circunferencia de radio 1 con los puntos 1, i, −1 y −i; la flecha está en 1.' });
+}
+const lect2 = [E => ['th', 'n', MC.decimal(E.L.estado.n)], E => ['th', 'resto de n ÷ 4', String(MC.potenciaI({ n:E.L.estado.n }).resto)],
+  E => ['r', 'iⁿ', MC.potenciaI({ n:E.L.estado.n }).texto]];
+
+// Paso 3: el producto en cuatro piezas
+const BOX3 = { x0:-1.6, x1:10.6, y0:-4.8, y1:6.6 };
+function config3(r){
+  E.config({ L:{ caja:BOX3, estado:{ w:pt(W3.re, W3.im), f: r ? 4 : 0, libre:r },
+    rehacer:L => { const s = L.estado, M = MC.multiplicar({ z:Z3, w:zz(s.w) });
+      base(L, BOX3, 2);
+      flechaZ(L, pt(Z3.re, Z3.im), { texto:[['z', 'r']], dx:-10, dy:-10 });
+      L.segs.push({ p:O, q:s.w, color:'w', ancho:3, flecha:true });
+      L.puntos.push({ p:s.w, color:'w', r:3.5, texto:[['w', 'w']], dx:12, dy:10 });
+      let cur = O; const bd = Z3.im*s.w.y;
+      M.piezas.forEach((q, k) => { const f = clamp(s.f - k, 0, 1); if (f <= 0) return;
+        const d = k === 2 ? .45 : 0, fin = pt(cur.x + q.num.re*f + d, cur.y + q.num.im*f), cero = !q.num.re && !q.num.im;
+        if (d && !cero) L.segs.push({ p:cur, q:pt(cur.x + d, cur.y), color:'muted', ancho:1.2 }, { p:pt(fin.x, cur.y + q.num.im), q:pt(fin.x - d, cur.y + q.num.im), color:'muted', ancho:1.2, f: f >= 1 ? 1 : 0 });
+        if (!cero) L.segs.push({ p:pt(cur.x + d, cur.y), q:fin, color: k % 2 ? 'muted' : 'ink', ancho:3.4, flecha:true,
+          texto: f >= 1 ? (k === 3 ? `${bd === 1 ? '' : bd === -1 ? '−' : MC.decimal(bd)}i² = ${q.texto}` : q.texto) : null,
+          en: k === 1 ? pt(cur.x, cur.y + q.num.im*.85*f) : null, dx: q.num.re ? 0 : (k === 1 ? -10 : 10), dy: q.num.re ? (k === 3 ? 13 : -12) : 0, align: q.num.re ? 'center' : (k === 1 ? 'right' : 'left') });
+        cur = pt(cur.x + q.num.re, cur.y + q.num.im); });
+      if (s.f >= 4){ L.segs.push({ p:O, q:deN(M.num), color:'ink', ancho:2.4, flecha:true, dash:true });
+        L.puntos.push({ p:deN(M.num), color:'ink', r:4, texto:[[`z · w = ${M.texto}`, 'ink']], dy: M.num.im >= 0 ? -15 : 16 }); }
+      if (s.libre) L.manijas = [{ id:'w', p:s.w, color:'w' }]; },
+    mover:(id, q, L) => { L.estado.w = sinCero(snap(q, 0, 2, -2, 0), L.estado.w); },
+    tecla:(id, dx, dy, L) => { const w = L.estado.w; L.estado.w = sinCero(pt(clamp(w.x + dx, 0, 2), clamp(w.y + dy, -2, 0)), w); } },
+    lect: r ? lect3 : [], ley: r ? [['r', 'z'], ['w', 'w'], ['ink', 'las cuatro piezas del producto', 'linea']] : [['r', 'la flecha de z'], ['w', 'la flecha de w']],
+    desc:'El plano complejo con la flecha de z = 2 + 3i y la flecha de w = 1 − 2i.' });
+}
+const lect3 = [E => ['w', 'w', MC.texto(zz(E.L.estado.w))], E => ['ink', 'z · w', MC.multiplicar({ z:Z3, w:zz(E.L.estado.w) }).texto]];
+
+// Paso 4: el módulo con cuadritos
+const BOX4 = { x0:-7.6, x1:3.6, y0:-4.6, y1:7.6 };
+function cuadros4(L, z, f){
+  const a = z.x, b = z.y, sb = Math.sign(b) || 1, sa = Math.sign(a) || 1, M = MC.modulo({ z:zz(z) });
+  const sal = a*b < 0 ? 1 : -1, n1 = pt(sal*b, -sal*a);   // normal hacia afuera del triángulo
+  const ent = x => (Math.abs(x - Math.round(x)) < 1e-9 ? Math.round(x) : 0);
+  L.cuadros.push({ o:pt(a, 0), u:pt(-a, 0), v:pt(0, -sb*Math.abs(a)), n:ent(Math.abs(a)), color:'re', texto:[[`a² = ${MC.decimal(M.areas[0])}`, 're']], f:f[0] },
+    { o:pt(a, 0), u:pt(0, b), v:pt(sa*Math.abs(b), 0), n:ent(Math.abs(b)), color:'im', texto:[[`b² = ${MC.decimal(M.areas[1])}`, 'im']], f:f[1] },
+    { o:O, u:pt(a, b), v:n1, n:ent(M.valor), color:'r', texto:[[`|z|² = ${M.cuadrado}`, 'r']], dy:18, f:f[2] });
+}
+function config4(r){
+  E.config({ L:{ caja:BOX4, estado:{ z:pt(Z4.re, Z4.im), f:r ? [1, 1, 1] : [0, 0, 0], libre:r },
+    rehacer:L => { const s = L.estado, z = s.z;
+      base(L, BOX4, 2);
+      if (s.f.some(x => x > 0)) cuadros4(L, z, s.f);
+      flechaZ(L, z, { partes:true, ta:[[`a = ${MC.decimal(z.x)}`, 're']], tb:[[`b = ${MC.decimal(z.y)}`, 'im']], texto:[['z', 'r']], dx:-10 });
+      if (s.f[2] >= 1) L.textos.push({ p:pt(z.x/2, z.y/2), t:[[`|z| = ${MC.modulo({ z:zz(z) }).texto}`, 'r']], dx:10, dy:-12, align:'left' });
+      if (s.libre) L.manijas = [{ id:'z', p:z, color:'r' }]; },
+    mover:(id, q, L) => { L.estado.z = snap(q, -4, -1, 1, 3); },
+    tecla:(id, dx, dy, L) => { const z = L.estado.z; L.estado.z = pt(clamp(z.x + dx, -4, -1), clamp(z.y + dy, 1, 3)); } },
+    lect: r ? lect4 : [], ley: LEY_Z,
+    desc:'El plano complejo con la flecha de z = −4 + 3i y sus partes: a = −4 sobre el eje real y b = 3 en vertical.' });
+}
+const lect4 = [E => { const M = MC.modulo({ z:zz(E.L.estado.z) }); return ['re', 'a²', MC.decimal(M.areas[0])]; },
+  E => ['im', 'b²', MC.decimal(MC.modulo({ z:zz(E.L.estado.z) }).areas[1])],
+  E => ['r', '|z|', MC.modulo({ z:zz(E.L.estado.z) }).texto]];
+
+// Paso 5: el conjugado
+const BOX5 = { x0:-4.6, x1:4.6, y0:-3.6, y1:3.6 };
+function config5(r){
+  E.config({ L:{ caja:BOX5, estado:{ z:pt(Z5.re, Z5.im), f: r ? 1 : 0, otros: r ? 1 : 0, libre:r },
+    rehacer:L => { const s = L.estado, z = s.z;
+      base(L, BOX5);
+      if (s.f > 0){ const q = pt(z.x, lerp(z.y, -z.y, s.f));
+        L.segs.push({ p:z, q:pt(z.x, -z.y), color:'muted', ancho:1.2, dash:true });
+        L.segs.push({ p:O, q, color:'ink', ancho:2.8, flecha:true, dash:true });
+        if (s.f >= 1) L.puntos.push({ p:q, color:'ink', r:4, texto:[[`z̄ = ${MC.conjugado({ z:zz(z) }).texto}`, 'ink']], dy: q.y >= 0 ? -15 : 16 }); }
+      if (s.otros > 0 && !s.libre){
+        L.puntos.push({ p:pt(-z.x, z.y), color:'muted', hueco:true, texto:[[`${C5.errores.cambiaReal.texto} (reflejo en el eje Im)`, 'muted']], dy:-15, f:s.otros, align:'left', dx:-14 },
+          { p:pt(-z.x, -z.y), color:'muted', hueco:true, texto:[[`−z = ${C5.errores.opuesto.texto}`, 'muted']], dy:16, f:s.otros }); }
+      flechaZ(L, z, { partes:true, ta:[[MC.decimal(z.x), 're']], tb:[[`${MC.decimal(z.y)}i`, 'im']], texto:[['z', 'r']], dx:-12 });
+      if (s.libre) L.manijas = [{ id:'z', p:z, color:'r' }]; },
+    mover:(id, q, L) => { L.estado.z = sinCero(snap(q, -4, 4, -3, 3), L.estado.z); },
+    tecla:(id, dx, dy, L) => { const z = L.estado.z; L.estado.z = sinCero(pt(clamp(z.x + dx, -4, 4), clamp(z.y + dy, -3, 3)), z); } },
+    lect: r ? lect5 : [], ley: r ? LEY_Z.concat([['ink', 'el conjugado z̄', 'trazos']]) : LEY_Z,
+    desc:'El plano complejo con la flecha de z = −3 + 2i y sus partes.' });
+}
+const lect5 = [E => ['ink', 'z̄', MC.conjugado({ z:zz(E.L.estado.z) }).texto], E => ['ink', 'z + z̄', MC.sumar({ z:zz(E.L.estado.z), w:MC.conjugado({ z:zz(E.L.estado.z) }).num }).texto],
+  E => { const z = zz(E.L.estado.z); return ['r', 'z · z̄ = |z|²', MC.multiplicar({ z, w:MC.conjugado({ z }).num }).texto]; }];
+
+// Paso 6: el cociente por el conjugado
+const BOX6 = { x0:-2.6, x1:6.6, y0:-2.6, y1:7.6 };
+function config6(r){
+  E.config({ L:{ caja:BOX6, estado:{ z:pt(Z6.re, Z6.im), f1: r ? 1 : 0, f2: r ? 1 : 0, f3: r ? 1 : 0, libre:r },
+    rehacer:L => { const s = L.estado, Q = MC.dividir({ z:zz(s.z), w:W6 }), nu = deN(Q.numerador.num), res = deN(Q.num);
+      base(L, BOX6);
+      flechaZ(L, s.z, { texto:[['z', 'r']], dx:12, dy: s.z.y > 0 ? -12 : 12 });
+      L.segs.push({ p:O, q:pt(W6.re, W6.im), color:'w', ancho:3, flecha:true });
+      L.puntos.push({ p:pt(W6.re, W6.im), color:'w', r:3.5, texto:[['w', 'w']], dx:12, dy:8 });
+      if (s.f1 > 0){ L.segs.push({ p:O, q:pt(W6.re, lerp(W6.im, -W6.im, s.f1)), color:'w', ancho:2.2, flecha:true, dash:true });
+        if (s.f1 >= 1) L.puntos.push({ p:deN(WB6.num), color:'w', r:3, texto:[['w̄', 'w']], dx:12, dy:-6 }); }
+      if (s.f2 > 0){ const p = pt(lerp(s.z.x, nu.x, s.f2), lerp(s.z.y, nu.y, s.f2));
+        L.segs.push({ p:O, q:p, color:'muted', ancho:2.4, flecha:true, dash:true });
+        if (s.f2 >= 1 && s.f3 <= 0 || s.f3 >= 1) L.puntos.push({ p:nu, color:'muted', hueco:true, texto:[[`z · w̄ = ${Q.numerador.texto}`, 'muted']], dy:-14 }); }
+      if (s.f3 > 0){ const p = pt(lerp(nu.x, res.x, s.f3), lerp(nu.y, res.y, s.f3));
+        L.segs.push({ p:O, q:p, color:'ink', ancho:3, flecha:true });
+        if (s.f3 >= 1) L.puntos.push({ p:res, color:'ink', r:4, texto:[[`z/w = ${Q.texto}`, 'ink']], dx:14, align:'left', dy:6 }); }
+      if (s.libre) L.manijas = [{ id:'z', p:s.z, color:'r' }]; },
+    mover:(id, q, L) => { L.estado.z = sinCero(snap(q, 0, 5, 0, 2), L.estado.z); },
+    tecla:(id, dx, dy, L) => { const z = L.estado.z; L.estado.z = sinCero(pt(clamp(z.x + dx, 0, 5), clamp(z.y + dy, 0, 2)), z); } },
+    lect: r ? lect6 : [], ley: r ? [['r', 'z'], ['w', 'w y su conjugado w̄'], ['muted', 'z · w̄', 'trazos'], ['ink', 'z/w', 'linea']] : [['r', 'la flecha de z'], ['w', 'la flecha de w']],
+    desc:'El plano complejo con la flecha de z = 5 + i y la flecha de w = 1 − i.' });
+}
+const lect6 = [E => ['r', 'z', MC.texto(zz(E.L.estado.z))], E => ['muted', 'z · w̄', MC.dividir({ z:zz(E.L.estado.z), w:W6 }).numerador.texto], E => ['ink', 'z/w', MC.dividir({ z:zz(E.L.estado.z), w:W6 }).texto]];
+
+// Paso 7: la forma polar (módulo y argumento con el cuadrante)
+const BOX7 = { x0:-2.8, x1:2.8, y0:-2.4, y1:2.8 };
+const Z7P = pt(-1, Math.sqrt(3));
+const z7 = s => (s.exacto ? Z7 : zz(s.z));
+function config7(r){
+  E.config({ L:{ caja:BOX7, estado:{ z:Z7P, exacto:true, f: r ? 1 : 0, libre:r },
+    rehacer:L => { const s = L.estado, z = s.z, A = MC.argumento({ z:z7(s) }), M = MC.modulo({ z:z7(s) });
+      base(L, BOX7);
+      if (s.f > 0){ L.circs.push({ r:M.valor, color:'r', dash:true, f:s.f });
+        L.arcos.push({ de:0, a:A.grados, p:s.f, r:.55, color:'th', texto: s.f >= 1 ? `θ = ${A.texto}` : null, sep:14, en: A.grados/2 });
+        if (!s.libre){ const q = P_(M.valor, A7.errores.arctanDirecto.num.re);
+          L.segs.push({ p:O, q, color:'muted', ancho:1.6, dash:true, f:s.f });
+          L.puntos.push({ p:q, color:'muted', hueco:true, texto:[[`arctan(b/a) = ${A7.errores.arctanDirecto.texto}`, 'muted']], dy:16, f:s.f }); } }
+      flechaZ(L, z, { partes:true, ta:[[`a = ${s.exacto ? '−1' : MC.decimal(z.x)}`, 're']], tb:[[`b = ${s.exacto ? '√3' : MC.decimal(z.y)}`, 'im']], texto:[['z', 'r']], dx:-10 });
+      if (s.f >= 1) L.textos.push({ p:pt(z.x*.8, z.y*.8), t:[[`r = ${M.texto}`, 'r']], dx: z.x < 0 ? 12 : -12, dy:0, align: z.x < 0 ? 'left' : 'right' });
+      if (s.libre) L.manijas = [{ id:'z', p:z, color:'r' }]; },
+    mover:(id, q, L) => { const s = L.estado; s.z = sinCero(snap(q, -2.5, 2.5, -2, 2.5, .5), s.z); s.exacto = false; },
+    tecla:(id, dx, dy, L) => { const s = L.estado, z = s.exacto ? pt(-1, 1.5) : s.z; s.z = sinCero(pt(clamp(z.x + dx*.5, -2.5, 2.5), clamp(z.y + dy*.5, -2, 2.5)), z); s.exacto = false; } },
+    lect: r ? lect7 : [], ley: r ? LEY_Z.concat([['th', 'el argumento θ']]) : LEY_Z,
+    desc:'El plano complejo con la flecha de z = −1 + √3 i y sus partes: a = −1 y b = √3.' });
+}
+const lect7 = [E => ['r', 'r = |z|', MC.modulo({ z:z7(E.L.estado) }).texto], E => ['th', 'θ = Arg z', MC.argumento({ z:z7(E.L.estado) }).texto], E => ['ink', 'forma polar', MC.polar({ z:z7(E.L.estado) }).texto]];
+
+// Paso 8: el producto en polar (el triángulo semejante)
+const BOX8 = { x0:-1.6, x1:6.8, y0:-0.9, y1:6.6 };
+function config8(r){
+  E.config({ L:{ caja:BOX8, estado:{ wr:W8.r, wg:W8.theta, f: r ? 1 : 0, libre:r },
+    rehacer:L => { const s = L.estado, z = P_(Z8.r, Z8.theta), w = P_(s.wr, s.wg), M = MC.productoPolar({ z:Z8, w:{ r:s.wr, theta:s.wg } }), zw = deN(M.num);
+      base(L, BOX8);
+      L.puntos.push({ p:pt(1, 0), color:'ink', r:3.5, texto:[['1', 'ink']], dy:14 });
+      if (s.f > 0){ const k = lerp(1, s.wr, s.f), g = s.wg*s.f, A = deN(MC.giro({ z:{ re:1, im:0 }, grados:g, escala:k })), B = deN(MC.giro({ z:zz(z), grados:g, escala:k }));
+        L.polys.push({ pts:[O, pt(1, 0), z], color:'r', alfa:2.2 });
+        L.polys.push({ pts:[O, A, B], color:'ink', alfa:.9, dash:true });
+        if (s.f >= 1){ L.segs.push({ p:O, q:zw, color:'ink', ancho:3, flecha:true });
+          L.arcos.push({ de:0, a:Z8.theta + s.wg, r:3.6, color:'ink', dash:true, texto:`${MC.decimal(Z8.theta + s.wg)}°`, sep:12 });
+          L.puntos.push({ p:zw, color:'ink', r:4, texto:[[`z · w = ${M.texto}`, 'ink']], dy:-15 }); } }
+      L.arcos.push({ de:0, a:Z8.theta, r:1.1, color:'th', texto:`${Z8.theta}°`, sep:12, en:Z8.theta/2 });
+      L.arcos.push({ de:0, a:s.wg, r:1.7, color:'w', texto:`${MC.decimal(s.wg)}°`, sep:12, en: s.wg*.62 });
+      flechaZ(L, z, { texto:[['z', 'r']], dx:12, dy:-10 });
+      L.segs.push({ p:O, q:w, color:'w', ancho:3, flecha:true });
+      L.puntos.push({ p:w, color:'w', r:3.5, texto:[['w', 'w']], dx:12, dy:-8 });
+      if (s.libre) L.manijas = [{ id:'w', p:w, color:'w' }]; },
+    mover:(id, q, L) => { const s = L.estado; s.wr = clamp(Math.round(Math.hypot(q.x, q.y)*10)/10, .5, 3.2); s.wg = clamp(Math.round(ang(q)), 0, 80); },
+    tecla:(id, dx, dy, L) => { const s = L.estado; s.wg = clamp(s.wg + dy*5, 0, 80); s.wr = clamp(Math.round((s.wr + dx*.1)*10)/10, .5, 3.2); } },
+    lect: r ? lect8 : [], ley: r ? [['r', 'z y el triángulo 0, 1, z'], ['th', 'el ángulo de z'], ['w', 'w y su ángulo'], ['ink', 'z · w, su ángulo y el triángulo semejante', 'trazos']] : [['r', 'la flecha de z'], ['th', 'el ángulo de z'], ['w', 'la flecha de w y su ángulo']],
+    desc:'El plano complejo con la flecha de z, de largo 2 y ángulo 10°, la flecha de w, de largo 3 y ángulo 30°, y el punto 1.' });
+}
+const lect8 = [E => { const s = E.L.estado; return ['w', 'w', MC.productoPolar({ z:{ r:1, theta:0 }, w:{ r:s.wr, theta:s.wg } }).textoDecimal]; },
+  E => { const s = E.L.estado; return ['ink', 'z · w', MC.productoPolar({ z:Z8, w:{ r:s.wr, theta:s.wg } }).textoDecimal]; }];
+
+const steps = [
+ { k:'Paso 1', t:'Predice: i por i', gate:P1,
+   prep:() => config1(!!S.pred[P1.id]),
+   anima:fin => { config1(false); const s = E.L.estado; E.animar(1000, f => { s.g = 90 + 90*f; }, () => esperar(500, () => { config1(true); fin(); })); },
+   body:() => `<p class="problem">Un número complejo a + bi se dibuja como una flecha que sale del origen hasta el punto (a; b). La flecha de 1 está sobre el eje real (horizontal) y la de i, sobre el eje imaginario (vertical), con largo 1. ¿Cuánto vale i² = i · i?</p>${opcionesHTML(P1.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">i² = −1  ⟹  i · (a + bi) = ai + bi² = −b + ai</div></div>
+   <p>Multiplicar por i gira la flecha un cuarto de vuelta (90°) en sentido antihorario, sin cambiar su largo: 1 pasa a i, e i pasa a −1. Por eso i² = −1.</p>
+   <p>Arrastra la punta de ${r_('z')} (o usa las flechas del teclado en el dibujo): la flecha i · z siempre queda girada 90°.</p>
+   ${hip}</p></div>` },
+ { k:'Paso 2', t:'Predice: muchas vueltas', gate:P2,
+   prep:() => config2(!!S.pred[P2.id]),
+   anima:fin => { config2(false); const s = E.L.estado; E.animar(RM ? 0 : 3200, f => { s.g = 3870*f; }, () => esperar(500, () => { config2(true); fin(); })); },
+   body:() => `<p class="problem">En la circunferencia de radio 1 están 1, i, −1 y −i. La flecha empieza en 1 y cada vez que se multiplica por i avanza un cuarto de vuelta. ¿Cuánto vale i⁴³?</p>${opcionesHTML(P2.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">43 = 4 · 10 + 3  ⟹  i⁴³ = (i⁴)¹⁰ · i³ = 1 · (−i) = −i</div></div>
+   <p>Cada cuatro giros la flecha vuelve a 1 (i⁴ = 1). Solo importa el resto de dividir el exponente entre 4: resto 0 → 1, resto 1 → i, resto 2 → −1, resto 3 → −i.</p>
+   <div class="control"><label for="n2">Exponente n</label><input type="range" id="n2" min="0" max="60" step="1" value="43"></div>
+   <p>Mueve el exponente: la flecha cae siempre en uno de los cuatro puntos, según el resto de dividir n entre 4.</p>
+   ${hip}</p></div>`,
+   entrar:() => { const n = $('n2'); if (!n) return; n.value = E.L.estado.n; n.oninput = () => { E.L.estado.n = +n.value; E.rehacer(); E.dibujar(); E.avisar(); }; } },
+ { k:'Paso 3', t:'Predice: un producto', gate:P3,
+   prep:() => config3(!!S.pred[P3.id]),
+   anima:fin => { config3(false); const s = E.L.estado; E.cadena([0, 1, 2, 3].map(k => n => E.animar(650, f => { s.f = k + f; }, n)), () => esperar(400, () => { config3(true); fin(); })); },
+   body:() => `<p class="problem">Sea z = ${re_('2')} + ${im_('3')}i y ${w_('w = 1 − 2i')}. ¿Cuánto vale z · w?</p>${opcionesHTML(P3.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">(${re_('2')} + ${im_('3')}i)${w_('(1 − 2i)')} = 2 − 4i + 3i − 6i² = 2 − 4i + 3i + 6 = 8 − i</div></div>
+   <p>Son cuatro productos, como en (a + b)(c + d). En el dibujo van uno detrás de otro: 2 hacia la derecha, −4i hacia abajo, 3i hacia arriba y −6i² = +6 otra vez hacia la derecha. La flecha punteada llega a la suma, 8 − i.</p>
+   <p>Arrastra la punta de ${w_('w')} (o usa las flechas del teclado): mira cómo cambian las piezas.</p>
+   ${hip}</p></div>` },
+ { k:'Paso 4', t:'Predice: el largo de la flecha', gate:P4,
+   prep:() => config4(!!S.pred[P4.id]),
+   anima:fin => { config4(false); const s = E.L.estado; E.cadena([0, 1, 2].map(k => n => E.animar(700, f => { s.f = s.f.map((x, j) => (j === k ? f : x)); }, n)), () => esperar(400, () => { config4(true); fin(); })); },
+   body:() => `<p class="problem">Sea z = ${re_('−4')} + ${im_('3')}i. Su módulo |z| es el largo de la flecha. ¿Cuánto vale ${r_('|z|')}?</p>${opcionesHTML(P4.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${r_('|z|')}² = ${re_('a')}² + ${im_('b')}² = 16 + 9 = 25  ⟹  ${r_('|z|')} = √25 = 5</div></div>
+   <p>La flecha y sus dos partes forman un triángulo rectángulo: la flecha es la hipotenusa. Cuenta los cuadritos: 16 en el cuadro de ${re_('a')} y 9 en el de ${im_('b')} llenan los 25 del cuadro de la flecha.</p>
+   <p>Arrastra la punta de ${r_('z')}: los cuadros siempre cumplen ${re_('a')}² + ${im_('b')}² = ${r_('|z|')}².</p>
+   <p class="fuente">El informe de álgebra recoge √(a² + b²) = a + b entre los errores de linealidad que tienen ingresantes chilenos a pedagogía y que persisten tras un semestre (AL9; Aguerrea y otros, 2022, según resúmenes y sin cifra del ítem). Sin los signos, esa regla da |a + bi| = |a| + |b| = 7. Las otras dos opciones son hipótesis nuestras.</p></div>` },
+ { k:'Paso 5', t:'Predice: el conjugado', gate:P5,
+   prep:() => config5(!!S.pred[P5.id]),
+   anima:fin => { config5(false); const s = E.L.estado; E.cadena([n => E.animar(900, f => { s.f = f; }, n), n => E.animar(500, f => { s.otros = f; }, n), n => esperar(900, n)], () => { config5(true); fin(); }); },
+   body:() => `<p class="problem">Sea z = ${re_('−3')} + ${im_('2')}i. ¿Cuál es su conjugado z̄?</p>${opcionesHTML(P5.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">z = ${re_('a')} + ${im_('b')}i  ⟹  z̄ = ${re_('a')} − ${im_('b')}i;  z · z̄ = ${re_('a')}² + ${im_('b')}² = ${r_('|z|')}²</div></div>
+   <p>El conjugado es el reflejo de z en el eje real: la flecha se voltea de arriba abajo. La parte real no cambia; la imaginaria cambia de signo. Por eso z + z̄ = 2${re_('a')} y z · z̄ = ${r_('|z|')}² son números reales.</p>
+   <p>Arrastra la punta de ${r_('z')}: su reflejo la sigue.</p>
+   ${hip}</p></div>` },
+ { k:'Paso 6', t:'Predice: una división', gate:P6,
+   prep:() => config6(!!S.pred[P6.id]),
+   anima:fin => { config6(false); const s = E.L.estado; E.cadena([n => E.animar(700, f => { s.f1 = f; }, n), n => E.animar(800, f => { s.f2 = f; }, n), n => E.animar(800, f => { s.f3 = f; }, n)], () => esperar(400, () => { config6(true); fin(); })); },
+   body:() => `<p class="problem">Sea z = 5 + i (${re_('a = 5')}, ${im_('b = 1')}) y ${w_('w = 1 − i')}. ¿Cuánto vale z/w en forma binómica?</p>${opcionesHTML(P6.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">(5 + i)/${w_('(1 − i)')} · ${w_('(1 + i)')}/${w_('(1 + i)')} = (5 + 5i + i + i²)/(1 − i²) = (4 + 6i)/2 = 2 + 3i</div></div>
+   <p>Para quitar la i del denominador se multiplica arriba y abajo por su conjugado, ${w_('w̄ = 1 + i')}. Abajo queda ${w_('w')} · ${w_('w̄')} = |${w_('w')}|² = 2, un número real; arriba, z · ${w_('w̄')} = 4 + 6i. En el dibujo, la flecha punteada de z · ${w_('w̄')} se encoge a la mitad y queda z/w.</p>
+   <p>Arrastra la punta de ${r_('z')} (o usa las flechas del teclado).</p>
+   ${hip}</p></div>` },
+ { k:'Paso 7', t:'Predice: la forma polar', gate:P7,
+   prep:() => config7(!!S.pred[P7.id]),
+   anima:fin => { config7(false); const s = E.L.estado; E.animar(1100, f => { s.f = f; }, () => esperar(900, () => { config7(true); fin(); })); },
+   body:() => `<p class="problem">La forma polar de z es ${r_('r')} cis ${th_('θ')} = ${r_('r')}(cos ${th_('θ')} + i sen ${th_('θ')}), con ${r_('r')} = |z| y ${th_('θ')} = Arg z, el ángulo desde el eje real positivo. Escribe z = ${re_('−1')} + ${im_('√3')} i en forma polar.</p>${opcionesHTML(P7.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">${r_('r')} = √(1 + 3) = 2;  tan ${th_('θ')} = √3/(−1) con el punto en el II cuadrante  ⟹  ${th_('θ')} = 180° − 60° = 120°</div>
+   <div class="eq">z = 2 cis 120° = 2(cos 120° + i sen 120°) = 2(−1/2 + (√3/2)i) = −1 + √3 i</div></div>
+   <p>arctan(b/a) solo devuelve ángulos entre −90° y 90°: no distingue (−1; √3) de (1; −√3). Primero se mira en qué cuadrante está el punto; después se corrige el ángulo.</p>
+   <p>Arrastra la punta de ${r_('z')} por los cuatro cuadrantes: el argumento principal cumple −180° &lt; θ ≤ 180° (algunos libros toman 0° ≤ θ &lt; 360°).</p>
+   ${hip}</p></div>` },
+ { k:'Paso 8', t:'Predice: multiplicar flechas', gate:P8,
+   prep:() => config8(!!S.pred[P8.id]),
+   anima:fin => { config8(false); const s = E.L.estado; E.animar(1400, f => { s.f = f; }, () => esperar(500, () => { config8(true); fin(); })); },
+   body:() => `<p class="problem">Sea z = ${r_('2')} cis ${th_('10°')} y ${w_('w = 3 cis 30°')}. ¿Cuánto vale z · w?</p>${opcionesHTML(P8.opts, 'fb')}
+   <div id="tras" class="body" hidden>
+   <div class="eqs"><div class="eq">(${r_('2')} cis ${th_('10°')})(${w_('3 cis 30°')}) = (2 · 3) cis (10° + 30°) = 6 cis 40°</div></div>
+   <p>Multiplicar por ${w_('w')} hace dos cosas a la vez: estira la flecha de z tantas veces como mide ${w_('w')} y la gira el ángulo de ${w_('w')}. El triángulo 0, 1, z se convierte en el triángulo 0, ${w_('w')}, z · w: tiene la misma forma (es semejante), tres veces más grande y girado 30°.</p>
+   <p>Arrastra la punta de ${w_('w')}: el triángulo grande la sigue. Al dividir pasa lo contrario: los largos se dividen y los ángulos se restan.</p>
+   ${hip}</p></div>` },
+];
+
+const dots = $('dots');
+steps.forEach((s, k) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = k + 1; b.dataset.label = `Ir al ${s.k.toLowerCase()}: ${s.t}`;
+  b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
+});
+function go(k){
+  if (k < 0 || k >= steps.length || k > S.max || S.ocupado) return;
+  const s = steps[k]; S.step = k;
+  E.parar();
+  $('stepK').textContent = `${s.k} de ${steps.length}`;
+  $('stepT').textContent = s.t;
+  $('stepBody').innerHTML = s.body();
+  tramos($('stepBody'));
+  if (s.prep) s.prep();
+  pintarDots();
+  E.compactar(s.gate && !S.pred[s.gate.id]);
+  if (s.gate) prediccion(s);
+  if (s.entrar && (!s.gate || S.pred[s.gate.id])) s.entrar();
+  nav();
+}
+function nav(){
+  const s = steps[S.step];
+  $('prev').disabled = S.step === 0 || S.ocupado;
+  const bloqueo = (s.gate && !S.pred[s.gate.id]) || S.ocupado;
+  $('next').disabled = S.step === steps.length - 1 || bloqueo;
+  $('next').textContent = s.gate && !S.pred[s.gate.id] ? 'Elige una opción' : 'Siguiente';
+  E.ocupado = S.ocupado;
+  const n = $('n2'); if (n) n.disabled = S.ocupado;
+}
+function pintarDots(){
+  [...dots.querySelectorAll('button')].forEach((b, k) => {
+    b.className = k === S.step ? 'on' : (k <= S.max ? 'done' : ''); b.disabled = k > S.max;
+    b.setAttribute('aria-label', k > S.max ? `Paso ${k + 1}, bloqueado` : b.dataset.label);
+    if (k > S.max) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled');
+    if (k === S.step) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+}
+// Se pasa al siguiente solo si el paso actual no tiene una predicción pendiente.
+function desbloquear(k){ const s = steps[S.step]; if (s.gate && !S.pred[s.gate.id]) return; if (k > S.max) S.max = k; }
+function prediccion(s){
+  const P = s.gate, btns = [...$('stepBody').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[P.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === P.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb'); fb.textContent = P.fb[p]; fb.className = 'fb ' + (p === P.ok ? 'ok' : 'mal');
+    $('tras').hidden = false;
+  };
+  const t0 = Date.now();
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (S.pred[P.id] || S.ocupado) return;
+    const o = P.opts.find(q => q[0] === b.dataset.k);
+    S.pred[P.id] = o[0]; desbloquear(S.step + 1); pintar(); pintarDots();
+    registrarPrediccion(P.id, o[0], o[0] === P.ok, o[2] || '', o[3] || '', t0);
+    S.ocupado = true; nav();
+    E.compactar(false);
+    $('next').focus({ preventScroll:true });
+    const paso = S.step;
+    Celular.alResponder($('cv'), () => s.anima(() => { S.ocupado = false; s.prep(); E.avisar(); nav(); if (s.entrar) s.entrar(); }),
+      () => S.step === paso, { siNo:() => { S.ocupado = false; nav(); } });
+  }));
+  pintar();
+}
+
+$('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
+$('prev').addEventListener('click', () => go(S.step - 1));
+addEventListener('modo', () => { if (!$('m1').hidden) E.redimensionar(); });
+go(0);
+})();
+</script>
+<script>
+/* ================= MODO 2: ¿qué pasa si…? =================
+   Experimentos con errores típicos: casi todos son hipótesis nuestras (CX), porque el informe de álgebra no trata
+   los números complejos. La escena cambia recién después de responder. Un experimento se abre solo si los
+   anteriores ya tienen respuesta. */
+(function(){
+const $ = id => document.getElementById(id);
+const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2');
+const I1 = MC.potenciaI({ n:-1 });
+const R2 = MC.raizNegativa({ a:4, b:9 });
+const Z3 = { r:6, theta:100 }, W3 = { r:2, theta:40 }, Q3 = MC.cocientePolar({ z:Z3, w:W3 });
+const D4 = MC.deMoivre({ z:{ re:1, im:1 }, n:8 });
+const C5 = MC.cuadratica({ a:1, b:-4, c:13 });
+const hip = 'El informe de álgebra no trata este error; es una hipótesis nuestra que se confirma con lo que marquen los alumnos.';
+const may = t => t.charAt(0).toUpperCase() + t.slice(1);
+const rej = B => ({ x0:Math.ceil(B.x0), x1:Math.floor(B.x1), y0:Math.ceil(B.y0), y1:Math.floor(B.y1) });
+function base(L, B, paso){ L.rejilla = rej(B); L.ejes = marcas(B, paso, E.angosto()); }
+
+// 1. i⁻¹: la flecha gira hacia atrás
+const B1 = { x0:-1.9, x1:1.9, y0:-1.7, y1:1.7 };
+function cfg1(ya){
+  E.config({ L:{ caja:B1, estado:{ f: ya ? 1 : 0 },
+    rehacer:L => { const s = L.estado;
+      L.ejes = { tx:[], ty:[] }; L.circs.push({ r:1, dash:true });
+      flechaZ(L, pt(1, 0), { texto:[['1', 'r']], dy:-12, dx:8 });
+      flechaZ(L, pt(0, 1), { texto:[['i', 'r']], dx:12, dy:-2 });
+      if (s.f > 0){ const g = -90*s.f, p = P_(1, g);
+        L.arcos.push({ de:0, a:g, r:.5, color:'th', texto: s.f >= 1 ? '−90°' : null, sep:12 });
+        L.segs.push({ p:O, q:p, color:'ink', ancho:3, flecha:true });
+        if (s.f >= 1) L.puntos.push({ p, color:'ink', r:3.5, texto:[[`i⁻¹ = 1/i = ${I1.texto}`, 'ink']], dx:12, dy:14, align:'left' }); } } },
+    lect: ya ? [() => ['ink', 'i⁻¹', I1.texto], () => ['ink', 'i · i⁻¹', MC.multiplicar({ z:{ re:0, im:1 }, w:I1.num }).texto]] : [],
+    ley:[['r', 'las flechas de 1 y de i'], ['muted', 'circunferencia de radio 1', 'trazos']].concat(ya ? [['ink', 'i⁻¹', 'linea']] : []),
+    desc:'La circunferencia de radio 1 con las flechas de 1 y de i.' });
+}
+// 2. √(−4) · √(−9)
+const B2 = { x0:-10.5, x1:3.5, y0:-1.6, y1:4.4 };
+function cfg2(ya){
+  E.config({ L:{ caja:B2, estado:{ f1: ya ? 1 : 0, f2: ya ? 1 : 0 },
+    rehacer:L => { const s = L.estado;
+      base(L, B2, 2);
+      L.puntos.push({ p:pt(-4, 0), color:'muted', hueco:true, texto:[['−4', 'muted']], dy:-14 }, { p:pt(-9, 0), color:'muted', hueco:true, texto:[['−9', 'muted']], dy:-14 });
+      if (s.f1 > 0){ L.segs.push({ p:O, q:pt(0, 2*s.f1), color:'muted', ancho:4, flecha:true }, { p:pt(.25, 0), q:pt(.25, 3*s.f1), color:'ink', ancho:4, flecha:true });
+        if (s.f1 >= 1) L.puntos.push({ p:pt(0, 2), color:'muted', r:3, texto:[[`√(−4) = ${R2.factores[0]}`, 'muted']], dx:-34, align:'right', dy:0 },
+          { p:pt(.25, 3), color:'ink', r:3, texto:[[`√(−9) = ${R2.factores[1]}`, 'ink']], dx:12, align:'left', dy:0 }); }
+      if (s.f2 > 0){ const g = 90 + 90*s.f2, p = P_(lerp(2, 6, s.f2), g);
+        L.arcos.push({ de:90, a:g, r:1.1, color:'th', texto: s.f2 >= 1 ? '90° + 90° = 180°' : null, sep:14, en:150, align:'right' });
+        L.segs.push({ p:O, q:p, color:'ink', ancho:3, flecha:true, dash:true });
+        if (s.f2 >= 1) L.puntos.push({ p, color:'ink', r:4, texto:[[`2i · 3i = 6i² = ${R2.texto}`, 'ink']], dy:32, dx:10 }); } } },
+    lect: ya ? [() => ['muted', '√(−4)', R2.factores[0]], () => ['ink', '√(−9)', R2.factores[1]], () => ['ink', 'producto', R2.texto]] : [],
+    ley: ya ? [['muted', '√(−4)', 'linea'], ['ink', '√(−9) y el producto (trazos)', 'linea'], ['th', 'ángulos']] : [['muted', 'los números −4 y −9']],
+    desc:'El plano complejo con los números −4 y −9 marcados sobre el eje real.' });
+}
+// 3. Cociente en polar
+const B3 = { x0:-2.4, x1:4.4, y0:-0.8, y1:6.7 };
+function cfg3(ya){
+  E.config({ L:{ caja:B3, estado:{ f: ya ? 1 : 0 },
+    rehacer:L => { const s = L.estado, z = P_(Z3.r, Z3.theta), w = P_(W3.r, W3.theta);
+      base(L, B3, 2);
+      L.arcos.push({ de:0, a:Z3.theta, r:.8, color:'th', texto:'100°', sep:12, en:85 });
+      L.arcos.push({ de:0, a:W3.theta, r:1.4, color:'w', texto:'40°', sep:12, en:20 });
+      flechaZ(L, z, { texto:[['z', 'r']], dx:-12 });
+      L.segs.push({ p:O, q:w, color:'w', ancho:3, flecha:true }); L.puntos.push({ p:w, color:'w', r:3.5, texto:[['w', 'w']], dx:12, dy:-6 });
+      if (s.f > 0){ const p = P_(lerp(Z3.r, Math.hypot(Q3.num.re, Q3.num.im), s.f), lerp(Z3.theta, Q3.theta, s.f));
+        L.segs.push({ p:O, q:p, color:'ink', ancho:3, flecha:true, dash:true });
+        if (s.f >= 1){ L.arcos.push({ de:0, a:Q3.theta, r:2.2, color:'ink', dash:true, texto:'60°', sep:12, en:52 });
+          L.puntos.push({ p, color:'ink', r:4, texto:[[`z/w = ${Q3.texto}`, 'ink']], dx:12, align:'left', dy:0 }); } } } },
+    lect: ya ? [() => ['ink', 'z/w', Q3.texto], () => ['ink', 'z/w (a + bi)', MC.binomica({ r:3, theta:60 }).texto]] : [],
+    ley:[['r', 'la flecha de z'], ['th', 'su ángulo'], ['w', 'la flecha de w y su ángulo']].concat(ya ? [['ink', 'z/w', 'trazos']] : []),
+    desc:'El plano complejo con la flecha de z, de largo 6 y ángulo 100°, y la flecha de w, de largo 2 y ángulo 40°.' });
+}
+// 4. De Moivre: las potencias de 1 + i en espiral
+const B4 = { x0:-9.6, x1:17.6, y0:-9.4, y1:4.6 };
+const POT4 = [1, 2, 3, 4, 5, 6, 7, 8].map(n => MC.deMoivre({ z:{ re:1, im:1 }, n }));
+function cfg4(ya){
+  E.config({ L:{ caja:B4, estado:{ f: ya ? 8 : 0 },
+    rehacer:L => { const s = L.estado;
+      base(L, B4, 4);
+      flechaZ(L, pt(1, 1), { texto:[['1 + i', 'r']], dx:-8, dy:-14, align:'right' });
+      let prev = pt(1, 1);
+      POT4.forEach((P, k) => { if (k === 0) return; const f = clamp(s.f - k, 0, 1); if (f <= 0) return;
+        const q = deN(P.num), a = lerp(45*k, 45*(k + 1), f), r = Math.pow(Math.SQRT2, k)*Math.pow(Math.SQRT2, f), p = P_(r, a);
+        L.segs.push({ p:prev, q: f >= 1 ? q : p, color:'muted', ancho:1.6, dash:true });
+        if (f >= 1) L.puntos.push({ p:q, color: k === 7 ? 'ink' : 'muted', r: k === 7 ? 5 : 3.5, texto:[[k === 7 ? `(1 + i)⁸ = ${D4.texto}` : `${k + 1}`, k === 7 ? 'ink' : 'muted']], dy: q.y >= 0 ? -14 : 14, dx: k === 7 ? -40 : k === 5 ? 14 : 0, align: k === 5 ? 'left' : 'center' });
+        prev = q; }); } },
+    lect: ya ? [() => ['r', '|1 + i|', '√2'], () => ['ink', '(1 + i)⁸', D4.texto]] : [],
+    ley:[['r', 'la flecha de 1 + i']].concat(ya ? [['muted', 'las potencias 2.ª a 7.ª', 'trazos'], ['ink', 'la octava']] : []),
+    desc:'El plano complejo con la flecha de 1 + i.' });
+}
+// 5. Cuadrática con Δ < 0
+const B5 = { x0:-3.6, x1:5.6, y0:-4.6, y1:4.6 };
+function cfg5(ya){
+  E.config({ L:{ caja:B5, estado:{ f: ya ? 1 : 0 },
+    rehacer:L => { const s = L.estado;
+      base(L, B5);
+      if (s.f > 0){ const [z1, z2] = C5.raices.map(x => deN(x.num));
+        L.segs.push({ p:z1, q:pt(z1.x, lerp(z1.y, z2.y, s.f)), color:'muted', ancho:1.4, dash:true });
+        L.puntos.push({ p:z1, color:'ink', r:5, texto:[[`x₁ = ${C5.raices[0].texto}`, 'ink']], dx:12, dy:-12, align:'left' });
+        if (s.f >= 1){ L.puntos.push({ p:z2, color:'ink', r:5, texto:[[`x₂ = ${C5.raices[1].texto}`, 'ink']], dx:12, dy:12, align:'left' });
+          L.puntos.push({ p:pt(z1.x, 0), color:'muted', hueco:true, texto:[['(x₁ + x₂)/2', 'muted']], dx:-10, dy:-12, align:'right' }); } } } },
+    lect: ya ? [() => ['ink', 'Δ', C5.deltaTexto], () => ['ink', 'x₁ + x₂', C5.suma], () => ['ink', 'x₁ · x₂', C5.producto]] : [],
+    ley: ya ? [['ink', 'las dos raíces'], ['muted', 'reflejo en el eje real', 'trazos']] : [],
+    desc:'El plano complejo, todavía vacío.' });
+}
+
+const EXPS = [
+  { id:'inverso', corto:'Una potencia negativa', frase:true,
+    q:`Multiplicar por i gira la flecha 90° en sentido antihorario. ¿Cuánto vale i⁻¹, o sea 1/i?`,
+    opts:[['a', `${I1.errores.comoPositivo.texto}: dividir entre i no mueve la flecha`, 'CX25-exponente-negativo-no-cambia', 'hipotesis'],
+      ['b', `${I1.texto}: dividir entre i gira la flecha 90° hacia atrás`],
+      ['c', `${I1.errores.soloSigno.texto}: dividir entre i gira la flecha 180°`, 'CX27-solo-el-signo', 'hipotesis'],
+      ['d', `${I1.errores.seCancelan.texto}: i⁻¹ e i se cancelan y la flecha queda en 1`, 'CX26-se-cancelan', 'hipotesis']], ok:'b',
+    fb:{ a:'Si dividir entre i no moviera la flecha, i⁻¹ sería i, y entonces i · i⁻¹ = i · i = −1, no 1.',
+      c:'Dividir entre i deshace un solo giro de 90°, no dos. Comprueba: i · (−1) = −i, no 1.',
+      d:'Lo que da 1 es el producto i · i⁻¹, no i⁻¹ solo. Si i⁻¹ fuera 1, entonces i · 1 = i, no 1.' },
+    antes:ya => cfg1(ya), despues:() => { cfg1(false); const s = E.L.estado; E.animar(900, f => { s.f = f; }, () => esperar(400, () => cfg1(true))); },
+    exp:() => `<div class="eqs"><div class="eq">1/i = 1/i · (−i)/(−i) = −i/(−i²) = −i/1 = −i</div><div class="eq">Comprobación: i · (−i) = −i² = 1</div></div>
+      <p>Multiplicar por i gira 90° hacia adelante; dividir entre i deshace ese giro: 90° hacia atrás. Por eso i⁻¹ = −i, i⁻² = −1, i⁻³ = i y i⁻⁴ = 1: el ciclo de cuatro también vale hacia atrás.</p><p class="fuente">${hip}</p>` },
+  { id:'raices-negativas', corto:'Raíces de negativos', frase:true,
+    q:`¿Cuánto vale √(−4) · √(−9)?`,
+    opts:[['a', `${R2.texto}: √(−4) · √(−9) = 2i · 3i = 6i²`],
+      ['b', `${R2.errores.juntaRaices.texto}: √(−4) · √(−9) = √((−4)(−9)) = √36`, 'CX28-junta-las-raices', 'hipotesis'],
+      ['c', `${R2.errores.sigueI.texto}: √(−4) · √(−9) = 2i · 3i = 6i`, 'CX6-i-por-i-es-i', 'hipotesis'],
+      ['d', `${may(R2.errores.noExiste.texto)}: √(−4) y √(−9) no son números`, 'CX29-negativo-sin-raiz', 'hipotesis']], ok:'a',
+    fb:{ b:'La regla √a · √b = √(ab) vale si a y b no son negativos. Con negativos, primero se saca la i de cada raíz.',
+      c:'2i · 3i = 6 · i · i = 6i²: hay dos i, y i² = −1.',
+      d:'En los reales no existe, pero en los complejos sí: √(−4) = 2i, porque (2i)² = 4i² = −4.' },
+    antes:ya => cfg2(ya), despues:() => { cfg2(false); const s = E.L.estado; E.cadena([n => E.animar(700, f => { s.f1 = f; }, n), n => E.animar(1100, f => { s.f2 = f; }, n)], () => cfg2(true)); },
+    exp:() => `<div class="eqs"><div class="eq">√(−4) · √(−9) = 2i · 3i = 6i² = −6</div></div>
+      <p>Las dos flechas apuntan hacia arriba (ángulo 90°). Al multiplicar, los largos se multiplican (2 · 3 = 6) y los ángulos se suman (90° + 90° = 180°): la flecha queda en −6.</p><p class="fuente">${hip}</p>` },
+  { id:'cociente-polar', corto:'Dividir en polar',
+    q:`Sea z = ${r_('6')} cis ${th_('100°')} y ${w_('w = 2 cis 40°')}. ¿Cuánto vale z/w?`,
+    opts:[['a', Q3.errores.sumaArgumentos.texto, 'CX22-suma-argumentos-al-dividir', 'hipotesis'], ['b', Q3.errores.restaAlReves.texto, 'CX24-resta-al-reves', 'hipotesis'],
+      ['c', Q3.texto], ['d', Q3.errores.restaModulos.texto, 'CX23-resta-modulos', 'hipotesis']], ok:'c',
+    fb:{ a:'Sumar los ángulos es la regla del producto. Al dividir, la flecha de z gira hacia atrás el ángulo de w: 100° − 40°.',
+      b:'−60° sale de restar al revés, 40° − 100°. Es la flecha de z la que gira hacia atrás el ángulo de w: 100° − 40° = 60°.',
+      d:'Los largos no se restan: z mide 6 y se encoge a la mitad, porque w mide 2. 6/2 = 3.' },
+    antes:ya => cfg3(ya), despues:() => { cfg3(false); const s = E.L.estado; E.animar(1300, f => { s.f = f; }, () => esperar(400, () => cfg3(true))); },
+    exp:() => `<div class="eqs"><div class="eq">(${r_('6')} cis ${th_('100°')})/(${w_('2 cis 40°')}) = (6/2) cis (100° − 40°) = 3 cis 60°</div></div>
+      <p>Dividir es lo contrario de multiplicar: la flecha de z se encoge tantas veces como mide ${w_('w')} y gira hacia atrás el ángulo de ${w_('w')}. En forma binómica, 3 cis 60° = 3/2 + (3√3/2)i.</p><p class="fuente">${hip}</p>` },
+  { id:'de-moivre', corto:'Una potencia grande',
+    q:`¿Cuánto vale (1 + i)⁸?`,
+    opts:[['a', D4.errores.reparte.texto, 'AL11-reparte-el-exponente', 'hipotesis'], ['b', D4.errores.porN.texto, 'CX31-modulo-por-n', 'hipotesis'],
+      ['c', D4.errores.sinModulo.texto, 'CX30-no-eleva-el-modulo', 'hipotesis'], ['d', D4.texto]], ok:'d',
+    fb:{ a:'2 = 1⁸ + i⁸ reparte el exponente sobre la suma, como si (a + b)⁸ fuera a⁸ + b⁸. Ya con el cuadrado falla: (1 + i)² = 2i, no 1 + i² = 0.',
+      b:'8√2 multiplica el largo por 8. Elevar a la 8 multiplica la flecha por sí misma ocho veces: el largo se eleva, (√2)⁸ = 16.',
+      c:'√2 deja el largo igual. Cada vez que se multiplica por 1 + i, la flecha se estira √2 veces: al final, (√2)⁸ = 16.' },
+    antes:ya => cfg4(ya), despues:() => { cfg4(false); const s = E.L.estado; E.animar(RM ? 0 : 3000, f => { s.f = 8*f; }, () => esperar(400, () => cfg4(true))); },
+    exp:() => `<div class="eqs"><div class="eq">1 + i = √2 cis 45°  ⟹  (1 + i)⁸ = (√2)⁸ cis (8 · 45°) = 16 cis 360° = 16</div></div>
+      <p>Es la fórmula de De Moivre: (${r_('r')} cis ${th_('θ')})ⁿ = ${r_('r')}ⁿ cis (n${th_('θ')}). En el dibujo, cada potencia gira 45° más y se estira √2 veces: la espiral da una vuelta entera y cae en 16, sobre el eje real.</p>
+      <p class="fuente">El informe de álgebra trata «el exponente se reparte sobre la suma», (a + b)ⁿ = aⁿ + bⁿ, como hipótesis con base en Matz (1982), sin dato propio (AL11). Las otras dos opciones son hipótesis nuestras.</p>` },
+  { id:'cuadratica', corto:'Sin raíces reales',
+    q:`Resuelve x² − 4x + 13 = 0 en los números complejos.`,
+    opts:[['a', C5.errores.sinDividirIm.texto, 'CX33-no-divide-la-parte-imaginaria', 'hipotesis'], ['b', C5.texto],
+      ['c', C5.errores.signoB.texto, 'CX32-signo-de-b', 'hipotesis'], ['d', C5.errores.sinDividir.texto, 'CX34-no-divide-entre-2a', 'hipotesis']], ok:'b',
+    fb:{ a:'√(−36) = 6i, y el 6i también se divide entre 2a = 2: queda 3i.',
+      c:'En la fórmula va menos el coeficiente de x: −(−4) = 4, y 4/2 = 2.',
+      d:'Falta dividir entre 2a = 2: (4 ± 6i)/2 = 2 ± 3i.' },
+    antes:ya => cfg5(ya), despues:() => { cfg5(false); const s = E.L.estado; E.animar(1000, f => { s.f = f; }, () => esperar(400, () => cfg5(true))); },
+    exp:() => `<div class="eqs"><div class="eq">Δ = 16 − 52 = −36;  x = (4 ± √(−36))/2 = (4 ± 6i)/2 = 2 ± 3i</div></div>
+      <p>Con Δ &lt; 0 no hay raíces reales, pero sí dos complejas, y son conjugadas: una es el reflejo de la otra en el eje real. Su suma, 4 = −b/a, y su producto, 13 = c/a = |x₁|², son reales.</p><p class="fuente">${hip}</p>` },
+];
+
+const S = { k:0, pred:{}, t0:Date.now() };
+const abierto = k => EXPS.slice(0, k).every(x => !!S.pred[x.id]);
+function botones(){
+  $('exps').innerHTML = EXPS.map((x, k) => abierto(k)
+    ? `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`
+    : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}</button>`).join('');
+  $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
+}
+function ir(k){
+  if (k < 0 || k >= EXPS.length || !abierto(k)) return;
+  E.parar();
+  S.k = k; S.t0 = Date.now();
+  const x = EXPS[k], ya = !!S.pred[x.id];
+  x.antes(ya);
+  E.compactar(!ya);
+  botones();
+  $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
+  $('t2').textContent = x.corto;
+  $('body2').innerHTML = `<p class="problem">${x.q}</p>${opcionesHTML(x.opts, 'fb2', x.frase)}<div id="res2" class="body"></div>`;
+  const btns = [...$('body2').querySelectorAll('.opt')];
+  const pintar = () => {
+    const p = S.pred[x.id]; if (!p) return;
+    btns.forEach(b => { b.disabled = true; if (b.dataset.k === x.ok) b.classList.add('correct'); else if (b.dataset.k === p) b.classList.add('wrong'); });
+    const fb = $('fb2');
+    fb.textContent = p === x.ok ? '¡Bien pensado! Mira la escena para ver por qué.' : `Elegiste la ${p.toUpperCase()}. ${x.fb[p]} La correcta está marcada.`;
+    fb.className = 'fb ' + (p === x.ok ? 'ok' : 'mal');
+    $('res2').innerHTML = x.exp() + `<div class="nav"><button type="button" class="btn" id="otra2">Ver otra vez</button>${k < EXPS.length - 1 ? `<button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button>` : ''}</div>`;
+    tramos($('res2'));
+    const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    $('otra2').onclick = () => { E.parar(); Celular.alResponder($('cv2'), () => x.despues(), () => S.k === k); };
+  };
+  btns.forEach(b => b.onclick = () => {
+    if (S.pred[x.id]) return;
+    const o = x.opts.find(q => q[0] === b.dataset.k);
+    S.pred[x.id] = o[0]; pintar(); botones();
+    E.compactar(false);
+    registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
+    Celular.alResponder($('cv2'), () => x.despues(), () => S.k === k);
+  });
+  pintar();
+}
+addEventListener('modo', () => { if (!$('m2').hidden) E.redimensionar(); });
+ir(0);
+})();
+</script>
+<script>
+/* ================= Pestañas ================= */
+(function(){
+  const modos = [['#paso-a-paso', 'm1', 'tab1'], ['#que-pasa-si', 'm2', 'tab2']];
+  function route(){
+    const k = Math.max(0, modos.findIndex(m => m[0] === location.hash));
+    modos.forEach(([, m, t], j) => {
+      document.getElementById(m).hidden = j !== k;
+      const a = document.getElementById(t);
+      if (j === k) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    dispatchEvent(new Event('modo'));
+  }
+  addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>
